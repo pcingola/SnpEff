@@ -1,0 +1,85 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+# Varialbes, files and options
+#-------------------------------------------------------------------------------
+
+string dir = "$HOME/snpEff/"
+string dirGtex = "$dir/db/GTEx"
+string dirReactome = "$dir/db/reactome"
+string dirSim = "$dirReactome/simulations"
+
+string gtexNorm = "$dirGtex/gtex_norm.txt.gz"
+
+#-------------------------------------------------------------------------------
+# Main
+#-------------------------------------------------------------------------------
+
+#---
+# Split file by columns
+#---
+
+# Count columns
+string countId = sys zcat $gtexNorm | head -n 1 | tr "\t" "\n" | wc -l
+int numCols = countId.stdout().parseInt();
+int colsPerProc = numCols / cpusLocal + 1;
+print("Number of columns in GTEx : $numCols, using $colsPerProc columns per Process\n")
+
+for( int cnum=0 ; cnum < cpusLocal ; cnum++ ) {
+	string gtexSplit = "$dirGtex/gtex_norm.split_$cnum.txt"
+	int minCol = colsPerProc * cnum;
+	int mmaxCol = colsPerProc * (cnum+1) - 1;
+	minCol = max(3, minCol)
+	print("\t$gtexSplit\t[$minCol, $mmaxCol]\n");
+
+	task( gtexSplit <- gtexNorm ) {
+		sys zcat $gtexNorm | cut -f 1,2,$minCol-$mmaxCol > $gtexSplit
+	}
+}
+wait
+
+#---
+# Calculate ncircuit for each parition
+#---
+print("Run circuit on each partition file\n")
+string[] circSplits
+
+for( int cnum=0 ; cnum < cpusLocal ; cnum++ ) {
+	string gtexSplit = "$dirGtex/gtex_norm.split_$cnum.txt"
+	string circSplit = "$dirSim/circuits.split_$cnum.txt"
+
+	print("\t$circSplit\n")
+	
+	task( circSplit <- gtexSplit ) {
+		sys java -Xmx1G -jar snpEff.jar \
+			test \
+			$dirReactome/txt/ \
+			$dirReactome/gene_ids/biomart_query_uniq.txt \
+			$dirGtex \
+			$dirGtex/GTEx_Analysis_Annotations_Sample_DS__Pilot_2013_01_31.txt \
+			$gtexSplit \
+			> $circSplit
+	}
+
+	circSplits.add(circSplit)
+}
+wait
+
+#---
+# Join circuit result files
+#---
+
+# TODO: cut the first 2 columns of each file
+# CHECK: First two columns must be equal for all files
+
+string pasteCmd = "paste " + circSplits.join() + " > $dirSim/circuits.txt";
+print("Paste commnad: $pasteCmd\n");
+
+# TODO: Remove non-zero elements
+# cd $HOME/snpEff/db/reactome/simulations
+# ./filterAllZero.sh circuits.txt
+
+# TODO: Run R analysis script
+# Rscript --vanilla simmulationResults.r 
+# evince Rplots.pdf
+

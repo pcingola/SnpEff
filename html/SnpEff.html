@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SnpEff</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <link href="js/google-code-prettify/prettify.css" rel="stylesheet">
+	<link href="css/my.css" rel="stylesheet">
+
+    <!-- hTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="ico/favicon.png">
+
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+    <!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">SnpEff</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="download.html">Download</a></li>
+              <li><a href="SnpEff_manual.html">Documentation</a></li>
+              <li><a href="SnpSift.html">SnpSift</a></li>
+              <li><a href="about.html">About</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <h1>SnpEff</h1>
+    <p class="lead">Description and basic information.</p>
+  </div>
+</header>
+
+
+  <div class="container">
+
+    <!-- Docs nav
+    ================================================== -->
+    <div class="row">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav">
+          <li><a href="#intro"><i class="icon-chevron-right"></i> Introduction</a></li>
+          <li><a href="#citing"><i class="icon-chevron-right"></i> Paper & Citations</a></li>
+          <li><a href="#1kg"><i class="icon-chevron-right"></i> Usage example</a></li>
+          <li><a href="#license"><i class="icon-chevron-right"></i> License</a></li>
+          <li><a href="#who"><i class="icon-chevron-right"></i> Who uses SnpEff?</a></li>
+          <li><a href="#integrate"><i class="icon-chevron-right"></i> Integration</a></li>
+        </ul>
+      </div>
+      <div class="span9">
+
+
+        <!-- Introduction
+        ================================================== -->
+        <section id="intro">
+          <div class="page-header">
+            <h1>1. Introduction</h1>
+          </div>
+				<p class="lead">
+				SnpEff is a variant annotation and effect prediction tool.
+				It annotates and predicts the effects of variants on genes (such as amino acid changes).
+				</p>
+
+				<p class="lead">
+				<b> Typical usage :</b>
+				<ul>
+					<li> <b>Input:</b> 
+					The inputs are predicted variants (SNPs, insertions, deletions and MNPs). 
+					The input file is usually obtained as a result of a sequencing experiment, and it is usually in variant call format (VCF).
+					<p>
+
+					<li> <b>Output:</b> 
+					SnpEff analyzes the input variants. 
+					It annotates the variants and calculates the effects they produce on known genes (e.g. amino acid changes).
+					A list of effects and annotations that SnpEff can calculate can be found <a class="body" href="faq.html#What_effects_are_predicted?">here</a>.
+				</ul>
+				</p>
+        </section>
+
+        <!-- Citing
+        ================================================== -->
+        <section id="citing">
+          <div class="page-header">
+            <h1>2. Paper & Citations</h1>
+          </div>
+				<p class="lead">
+				If you are using SnpEff or SnpSift, please cite our work.<p>
+
+				<ul>
+				<li>Citing SnpEff (you can find the paper <a class="body" href="SnpEff_paper.pdf">here</a>):
+					<blockquote> 
+					"A program for annotating and predicting the effects of single nucleotide polymorphisms, SnpEff: SNPs in the genome of Drosophila melanogaster strain w1118; iso-2; iso-3.", Cingolani P, Platts A, Wang le L, Coon M, Nguyen T, Wang L, Land SJ, Lu X, Ruden DM. Fly (Austin). 2012 Apr-Jun;6(2):80-92.  PMID: 22728672 [PubMed - in process]
+					</blockquote> 
+				<p>
+				BibTex entry: 
+<pre>
+@article{cingolani2012program,
+  title={A program for annotating and predicting the effects of single nucleotide polymorphisms, SnpEff: SNPs in the genome of Drosophila melanogaster strain w1118; iso-2; iso-3},
+  author={Cingolani, P. and Platts, A. and Coon, M. and Nguyen, T. and Wang, L. and Land, S.J. and Lu, X. and Ruden, D.M.},
+  journal={Fly},
+  volume={6},
+  number={2},
+  pages={80-92},
+  year={2012}
+}
+</pre>
+				<p>
+				<li>Citing SnpSift (you can find the paper <a class="body" href="SnpSift_paper.pdf">here</a>): 
+				<blockquote>
+				"Using Drosophila melanogaster as a model for genotoxic chemical mutational studies with a new program, SnpSift", Cingolani, P., et. al., Frontiers in Genetics, 3, 2012.
+				</blockquote>
+
+				BibTex entry: 
+<pre>
+@article{cingolani2012using,
+  title={Using Drosophila melanogaster as a model for genotoxic chemical mutational studies with a new program, SnpSift},
+  author={Cingolani, P. and Patel, V.M. and Coon, M. and Nguyen, T. and Land, S.J. and Ruden, D.M. and Lu, X.},
+  journal={Frontiers in Genetics},
+  volume={3},
+  year={2012},
+  publisher={Frontiers Media SA}
+}
+</pre>
+				</ul>
+				</p>
+        </section>
+
+
+        <!-- 1Kg example
+        ================================================== -->
+        <section id="1kg">
+          <div class="page-header">
+            <h1>3. Usage example</h1>
+          </div>
+				<p class="lead">
+				SnpEff is really fast, it can calculate predictions for all the SNPs in the <a class="body" href="http://www.1000genomes.org/">1000 Genomes</a> project in less than 15 minutes.
+				A summary page can be found <a class="body" href="1kg.html">here</a>. Effect predictions in <a class="body" href="http://sourceforge.net/projects/snpeff/files/1kg.snpeff.vcf.gz/download">VCF</a> and <a class="body" href="http://sourceforge.net/projects/snpeff/files/1kg.snpeff.txt.gz/download">TXT</a> formats.<br>
+				</p>
+        </section>
+
+        <!-- License
+        ================================================== -->
+        <section id="license">
+          <div class="page-header">
+            <h1>4. License</h1>
+          </div>
+          <p class="lead"> 
+        		SnpEff is open source. It is released as "LGPLv3".
+				</p>
+        </section>
+
+        <!-- Who uses SnpEff?
+        ================================================== -->
+        <section id="who">
+          <div class="page-header">
+            <h1>5. Who uses SnpEff?</h1>
+          </div>
+          <p class="lead"> Users of SnpEff include most major research and academic institutions, as well as pharmaceutical companies and clinical sequencing projects.</p>
+
+		  <p class="lead"> <b>Some Academic &amp; Research institutions using SnpEff:</b> </p>
+					<ul>
+					<li> Broad Institute (MIT &amp; Harvard)
+					<li> NIH (US)
+					<li> Harvard University
+					<li> Princeton University
+					<li> BGI (China)
+					<li> Massachusetts General Hospital
+					<li> Whitehead Institute, MIT
+					<li> Wellcome Trust Sanger Institute (UK)
+					<li> UC Berkeley
+					<li> Wellcome Trust Centre for Human Genetics (UK)
+					<li> University of Cambridge (UK)
+					<li> Duke University
+					<li> Max Planck (Germany)
+					<li> Cold Spring Harbor Laboratory (CSHL)
+					<li> Institut Pasteur (France)
+					<li> NCI / NIH (National Cancer Institute, US)
+					<li> McGill University (Canada)
+					<li> EMBL (Cambridge, UK)
+					<li> University of Toronto (Canada)
+					<li> University of Cambridge (UK)
+					<li> Yale University
+					<li> Columbia University
+					<li> Stanford University
+					<li> Brown University
+					<li> Genome Quebec (Canada)
+					<li> Centre national de la recherche scientifique (CNRS, France)
+					<li> University of Michigan
+					<li> Kyoto University (Japan)
+					<li> Institut National de la Recherche Agronomique (INRA, France)
+					<li> University of Wisconsin-Madison
+					<li> UT Southwestern Medical Center
+					<li> University of Southern California
+					<li> Bologna University (Italy)
+					<li> Casa Sollievo della Sofferenza - Mendel (Italy)
+					<li> Universitat Wien (Vienna, Austria)
+					<li> Ottawa University (Canada)
+					<li> Peter MacCallum Cancer Centre (Australia)
+					<li> University of Alabama Birmigham
+					<li> University of Bristol (UK)
+					<li> UC-Davis (California)
+					<li> Winsconsin University
+					<li> TUM University (Germany)
+					<li> The Translational Genomics Institute (Tgen)
+					<li> Rutgers University (New Jersey)
+					<li> Nagasaki University (Japan)
+					<li> Washington University
+					<li> Netherlands Cancer Institute (NKI)
+					<li> Centro Nacional de Biotecnolog&iacute;a, (National Center for Biotecnology) CNB-CSIC, Madrid, Spain
+					<li> University of California-Riverside
+					<li> Carleton University (Canada)
+					<li> Memorial Sloan-Kettering Cancer Center
+					<li> Boston University 
+					<li> University of California, San Francisco (UCSF) 
+					<li> Institute of Cancer Research (ICR), UK
+					<li> University of Virginia
+					<li> University of British Columbia (Canada)
+					<li> Seoul National University (Korea)
+					<li> University of Southern California (USC)
+					<li> Arizona State University (ASU)
+					<li> NeuroTexas Institute at St. David's HealthCare
+					<li> University of Otago (New Zealand)
+					<li> Queensland Institute of Medical Research (Australia)
+					<li> National University of Singapore (NUS)
+					<li> Children's Hospital of Philadelphia
+					<li> Technion (Israel)
+					<li> Queensland UNiversity (Australia)
+					<li> Vall d'Hebron Research Institute: VHIR (Barcelona. Catalonia. Spain)
+					<li> University of Pretoria (South Africa).
+					<li> Centrum Wiskunde &amp; Informatica (Amsterdam, Netherlands)
+					<li> Technical University of Denmark: DTU (Denmark)
+					<li> Spanish National Research Council (CSIC, Spain)
+					<li> Swedish University of Agricultural Sciences: SLU (Sweden)
+					<li> University of Iowa
+					<li> Bilkent University (Turkey)
+					<li> The Hebrew University of Jerusalem (Israel)
+					<li> Laboratory of Malaria and Vector Research NIH/NIAID
+					<li> Max F. Perutz Laboratories: MFPL (Vienna, Austria)
+					<li> Animal Health Trust: AHT (UK)
+					<li> BC Cancer Agency (Canada)
+					<li> University of California, Irvine
+					<li> University College London (London, UK)
+					<li> Centro Nacional de Análisis Genómico: CNAG (Barcelona, Spain)
+					</ul>
+					</p>
+		  <p class="lead"> <b>Some private Companies &amp; Corporations users of SnpEff:</b> </p>
+					<ul>
+					<li> Bayer
+					<li> Novartis
+					<li> Illumina
+					<li> Johnson &amp; Johnson
+					<li> AstraZeneca
+					<li> Novocraft 
+					<li> Sanofi (France)
+					<li> Accelrys
+					<li> DnaNexus
+					<li> Bio-Prodict (Netherlands)
+					<li> Spiral Genetics
+					<li> Covance
+					<li> Eisai (Japan)
+					<li> EdgeBio
+					<li> BioBase
+					<li> Counsyl
+					</ul>
+				</p>
+
+		<b>Note:</b> These are not by any means comprehensive lists.
+        </section>
+
+
+        <!-- Integration
+        ================================================== -->
+        <section id="integrate">
+          <div class="page-header">
+            <h1>6. Integration</h1>
+          </div>
+			<p class="lead"> 
+            SnpEff is integrated with other tools commonly used in sequencing data analysis pipelines. 
+			Most notably <a href="http://galaxyproject.org/">Galaxy</a> and <a href="http://www.broadinstitute.org/gatk/">GATK</a> projects support SnpEff.
+			By using standards, such as VCF, SnpEff makes it easy to integrate with other programs.
+			</p>
+          	<p> 
+ 			This is a screen capture from a Galaxy server (click to enlarge) <p>
+			<center> <a href="images/snpEff_galaxy.png"><img src="images/snpEff_galaxy_small.png"></a> </center>
+			</p>
+        </section>
+
+      </div>
+    </div>
+
+  </div>
+
+
+
+    <!-- Footer
+    ================================================== -->
+      <footer>
+        <p class="text-center">&copy; <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani 2013</a></p>
+      </footer>
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap-transition.js"></script>
+    <script src="js/bootstrap-alert.js"></script>
+    <script src="js/bootstrap-modal.js"></script>
+    <script src="js/bootstrap-dropdown.js"></script>
+    <script src="js/bootstrap-scrollspy.js"></script>
+    <script src="js/bootstrap-tab.js"></script>
+    <script src="js/bootstrap-tooltip.js"></script>
+    <script src="js/bootstrap-popover.js"></script>
+    <script src="js/bootstrap-button.js"></script>
+    <script src="js/bootstrap-collapse.js"></script>
+    <script src="js/bootstrap-carousel.js"></script>
+    <script src="js/bootstrap-typeahead.js"></script>
+    <script src="js/bootstrap-affix.js"></script>
+
+    <script src="js/holder/holder.js"></script>
+    <script src="js/google-code-prettify/prettify.js"></script>
+
+    <script src="js/application.js"></script>
+
+
+
+  </body>
+</html>

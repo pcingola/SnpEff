@@ -1,0 +1,277 @@
+package ca.mcgill.mcb.pcingola.stats;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
+import ca.mcgill.mcb.pcingola.util.GprHtml;
+
+/**
+ * Counters indexed by 'type' (type is a generic string that can mean anything)
+ * 
+ * @author pcingola
+ */
+@SuppressWarnings("serial")
+public class CountByType implements Serializable {
+
+	public static final String TOTAL_TYPE = "Total";
+
+	HashMap<String, Long> countByType;
+	HashMap<String, Double> scoreByType;
+
+	public CountByType() {
+		countByType = new HashMap<String, Long>();
+		scoreByType = new HashMap<String, Double>();
+	}
+
+	/**
+	 * Add score for a type
+	 * @param type
+	 * @param score
+	 */
+	public void addScore(String type, double score) {
+		Double currScore = scoreByType.get(type);
+		if (currScore == null) currScore = 0.0;
+		scoreByType.put(type, currScore + score);
+	}
+
+	public boolean contains(String key) {
+		return countByType.containsKey(key) || scoreByType.containsKey(key);
+	}
+
+	/**
+	 * How many counts of this type?
+	 * @param type
+	 * @return
+	 */
+	public long get(String type) {
+		return getCount(countByType, type);
+	}
+
+	/**
+	 * Background color used for table (heatmap)
+	 * @return An html coded color
+	 */
+	public String getColorHtml(String type) {
+		if (countByType.get(type) == null) return "ffffff"; // Not found? => White
+
+		long count = get(type);
+
+		Long max = Long.MIN_VALUE, min = Long.MAX_VALUE;
+		for (String key : countByType.keySet()) {
+			long v = get(key);
+			max = Math.max(max, v);
+			min = Math.min(min, v);
+		}
+
+		return GprHtml.heatMapColor(count, max, min, 0xff0000, 0x00ff00);
+	}
+
+	long getCount(HashMap<String, Long> hash, String type) {
+		// We have a special type called 'Total'
+		if (type.equalsIgnoreCase(TOTAL_TYPE)) {
+			long total = 0;
+			for (Long count : hash.values())
+				total += (count != null ? count : 0);
+			return total;
+		}
+
+		// OK get change by effect
+		Long count = hash.get(type);
+		return count != null ? count : 0;
+	}
+
+	/**
+	 * Score for this type?
+	 * @param type
+	 * @return
+	 */
+	public double getScore(String type) {
+		Double score = scoreByType.get(type);
+		return score != null ? score : 0.0;
+	}
+
+	/**
+	 * List all types (alphabetically sorted)
+	 * We need it as a getter for summary page (freemarker)
+	 */
+	public List<String> getTypeList() {
+		return keysSorted();
+	}
+
+	public boolean hasData() {
+		return !countByType.isEmpty();
+	}
+
+	/**
+	 * Increment counter in a hash
+	 * @param hash
+	 * @param type
+	 */
+	void inc(HashMap<String, Long> hash, String type, int toAdd) {
+		Long count = hash.get(type);
+		if (count == null) count = 0L;
+		count += toAdd;
+		hash.put(type, count);
+	}
+
+	public void inc(String type) {
+		inc(countByType, type, 1);
+	}
+
+	/**
+	 * Increment counter for a given type
+	 * @param type
+	 */
+	public void inc(String type, int increment) {
+		inc(countByType, type, increment);
+	}
+
+	/**
+	 * Is this empty
+	 */
+	public boolean isEmpty() {
+		return countByType.isEmpty() && scoreByType.isEmpty();
+	}
+
+	public Set<String> keySet() {
+		return countByType.keySet();
+	}
+
+	/**
+	 * List all types (alphabetically sorted)
+	 */
+	public List<String> keysSorted() {
+		ArrayList<String> list = new ArrayList<String>();
+
+		if (!countByType.keySet().isEmpty()) list.addAll(countByType.keySet());
+		else list.addAll(scoreByType.keySet());
+
+		Collections.sort(list);
+		return list;
+	}
+
+	/**
+	 * Maximum count
+	 */
+	public long max() {
+		long max = Long.MIN_VALUE;
+		for (Long count : countByType.values())
+			max = Math.max(max, count);
+		return max;
+	}
+
+	/**
+	 * Minimum count
+	 */
+	public long min() {
+		long min = Long.MAX_VALUE;
+		for (Long count : countByType.values())
+			min = Math.min(min, count);
+		return min;
+	}
+
+	/**
+	 * Percentage by type
+	 * @param type
+	 */
+	public double percent(String type) {
+		long total = get(TOTAL_TYPE);
+		long meth = get(type);
+		return toProb(meth, total);
+	}
+
+	/**
+	 * Remove this entry type
+	 * @param type
+	 */
+	public void remove(String type) {
+		countByType.remove(type);
+		scoreByType.remove(type);
+	}
+
+	public void setScore(String type, double score) {
+		scoreByType.put(type, score);
+	}
+
+	/**
+	 * Sum all counts.
+	 * @return
+	 */
+	public long sum() {
+		return get(TOTAL_TYPE);
+	}
+
+	double toProb(long num, long total) {
+		double p = 0;
+		if (total > 0) p = ((double) num) / ((double) total);
+		return p;
+	}
+
+	@Override
+	public String toString() {
+		return toString(false);
+	}
+
+	public String toString(boolean showScores) {
+		StringBuffer out = new StringBuffer();
+		for (String type : keysSorted())
+			out.append(type + "\t" + get(type) + (showScores ? "\t" + getScore(type) : "") + "\n");
+
+		return out.toString();
+	}
+
+	public String toStringLine() {
+		StringBuffer out = new StringBuffer();
+		for (String type : keysSorted())
+			out.append(type + ":" + get(type) + "\t");
+
+		return out.toString();
+	}
+
+	public String toStringSort() {
+		ArrayList<String> keys = new ArrayList<String>();
+		keys.addAll(countByType.keySet());
+		Collections.sort(keys, new Comparator<String>() {
+
+			@Override
+			public int compare(String arg0, String arg1) {
+				return (int) (get(arg1) - get(arg0));
+			}
+		});
+
+		StringBuffer out = new StringBuffer();
+		for (String type : keys)
+			out.append(type + "\t" + get(type) + "\n");
+
+		return out.toString();
+	}
+
+	public String toStringTop(int n) {
+		ArrayList<String> keys = new ArrayList<String>();
+		keys.addAll(countByType.keySet());
+		Collections.sort(keys, new Comparator<String>() {
+
+			@Override
+			public int compare(String arg0, String arg1) {
+				return (int) (get(arg1) - get(arg0));
+			}
+		});
+
+		StringBuffer out = new StringBuffer();
+		int i = 0;
+		for (String type : keys) {
+			out.append(type + "\t" + get(type) + "\n");
+			i++;
+			if (i++ >= n) break;
+		}
+		out.append(TOTAL_TYPE + "\t" + get(TOTAL_TYPE) + "\n");
+
+		return out.toString();
+	}
+
+}

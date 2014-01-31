@@ -1,0 +1,289 @@
+package ca.mcgill.mcb.pcingola.snpEffect.factory;
+
+import ca.mcgill.mcb.pcingola.genBank.Feature;
+import ca.mcgill.mcb.pcingola.genBank.Feature.Type;
+import ca.mcgill.mcb.pcingola.genBank.FeatureCoordinates;
+import ca.mcgill.mcb.pcingola.genBank.Features;
+import ca.mcgill.mcb.pcingola.genBank.FeaturesFile;
+import ca.mcgill.mcb.pcingola.interval.Cds;
+import ca.mcgill.mcb.pcingola.interval.Chromosome;
+import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.Gene;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.GprSeq;
+
+/**
+ * This class creates a SnpEffectPredictor from a 'features' file.
+ * This includes derived formats as GenBank and Embl.
+ * 
+ * References:
+ * 		http://www.ebi.ac.uk/embl/Documentation/User_manual/printable.html
+ * 		http://www.ebi.ac.uk/embl/Documentation/FT_definitions/feature_table.html
+ * 
+ * 
+ * @author pcingola
+ */
+public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFactory {
+
+	public static final int OFFSET = 1;
+	Chromosome chromosome; // It is assumed that there is only one 'Chromosome' (i.e. only one 'SOURCE' feature)
+	FeaturesFile featuresFile;
+
+	public SnpEffPredictorFactoryFeatures(Config config) {
+		super(config, OFFSET);
+	}
+
+	/**
+	 *	Add all features 
+	 */
+	protected void addFeatures(Features features) {
+		//---
+		// Add chromosome 
+		//---
+		for (Feature f : features.getFeatures()) {
+			// Convert coordinates to zero-based 
+			int start = f.getStart() - inOffset;
+			int end = f.getEnd() - inOffset;
+
+			// Add chromosome
+			if (f.getType() == Type.SOURCE) {
+				if (chromosome == null) {
+					String chrName = chromoName(features, f);
+					chromosome = new Chromosome(genome, start, end, 1, chrName);
+					add(chromosome);
+				} else {
+					if (verbose) System.err.println("Warnign: 'SOURCE' already assigned to chromosome. Ignoring feature:\n" + f);
+				}
+			}
+		}
+
+		// No SOURCE found? may be locusName is available.
+		if (chromosome == null) {
+			String chrName = chromoName(features, null);
+			int chrSize = sequence(features).length();
+			chromosome = new Chromosome(genome, 0, chrSize, 1, chrName);
+			add(chromosome);
+		}
+
+		// Sanity check
+		if (chromosome == null) throw new RuntimeException("Could not find SOURCE feature");
+		if (verbose) System.err.println("Chromosome: '" + chromosome.getId() + "'\tlength: " + chromosome.size());
+
+		//---
+		// Add a genes, transcripts and CDSs
+		//---
+		Gene geneLatest = null;
+		Transcript trLatest = null;
+		for (Feature f : features.getFeatures()) {
+			if (f.getType() == Type.GENE) {
+				// Add gene
+				geneLatest = findOrCreateGene(f, chromosome, false);
+				trLatest = null;
+			} else if (f.getType() == Type.MRNA) {
+				// Add transcript information
+
+				// Convert coordinates to zero-based 
+				int start = f.getStart() - inOffset;
+				int end = f.getEnd() - inOffset;
+
+				// Get gene: Make sure the transcript actually refers to the latest gene.
+				Gene gene = null;
+				if ((geneLatest != null) && geneLatest.intersects(start, end)) gene = geneLatest;
+				else gene = findOrCreateGene(f, chromosome, false); // Find or create gene
+
+				// Add transcript
+				String trId = f.getTranscriptId();
+				Transcript tr = new Transcript(gene, start, end, f.isComplement() ? -1 : 1, trId);
+
+				// Add exons?
+				if (f.hasMultipleCoordinates()) {
+					int exNum = 1;
+					for (FeatureCoordinates fc : f) {
+						Exon e = new Exon(tr, fc.start - inOffset, fc.end - inOffset, fc.complement ? -1 : +1, tr.getId() + "_" + exNum, exNum);
+						tr.add(e);
+						exNum++;
+					}
+				}
+
+				add(tr);
+
+				trLatest = tr;
+			} else if (f.getType() == Type.CDS) {
+				// Add CDS and protein coding information
+
+				// Convert coordinates to zero-based 
+				int start = f.getStart() - inOffset;
+				int end = f.getEnd() - inOffset;
+
+				// Find corresponding transcript
+				Transcript tr = null;
+				String trId = null;
+				if ((trLatest != null) && trLatest.intersects(start, end)) {
+					tr = trLatest;
+					trId = tr.getId();
+				} else {
+					// Try to find transcript
+					trId = f.getTranscriptId();
+					tr = findTranscript(trId);
+				}
+
+				if (tr == null) {
+					// Not found? => Create gene and transcript
+					Gene gene = findOrCreateGene(f, chromosome, false); // Find or create gene
+					if (debug) System.err.println("Transcript '" + trId + "' not found. Creating new transcript for gene '" + gene.getId() + "'.\n" + f);
+
+					// trId = "Tr_" + start + "_" + end;
+					tr = findTranscript(trId);
+					if (tr == null) {
+						tr = new Transcript(gene, start, end, f.isComplement() ? -1 : 1, trId);
+						add(tr);
+					}
+				}
+
+				// Mark transcript as protein coding
+				if (f.getAasequence() != null) tr.setProteinCoding(true);
+
+				// Add exons?
+				if (f.hasMultipleCoordinates()) {
+					for (FeatureCoordinates fc : f) {
+						Cds cds = new Cds(tr, fc.start - inOffset, fc.end - inOffset, f.isComplement() ? -1 : 1, "CDS_" + trId);
+						tr.add(cds);
+						add(cds);
+					}
+				} else {
+					Cds cds = new Cds(tr, f.getStart() - inOffset, f.getEnd() - inOffset, f.isComplement() ? -1 : 1, "CDS_" + trId);
+					add(cds);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Find or create a chromosome name for a feature
+	 * @param sourceFeature
+	 * @return
+	 */
+	String chromoName(Features features, Feature sourceFeature) {
+		// Try 'chromosome' from SOURCE feature
+		if (sourceFeature != null) {
+			if (sourceFeature.getType() != Type.SOURCE) throw new RuntimeException("Cannot find chromosome name in a non-SOURCE feature");
+			String chrName = sourceFeature.get("chromosome");
+			if (chrName != null) return chrName;
+		}
+
+		// Try locusName
+		String chrName = features.getLocusName();
+		if (chrName != null) return chrName;
+
+		return genome.getId();
+	}
+
+	@Override
+	public SnpEffectPredictor create() {
+		// Read gene intervals from a file
+		try {
+			// Iterate over all features
+			for (Features features : featuresFile) {
+				chromosome = null; // Make sure we create a new source for each file
+				addFeatures(features);
+
+				// Some clean-up before reading exon sequences
+				beforeExonSequences();
+
+				// Get exon sequences
+				String sequence = sequence(features);
+				addExonSequences(chromosome.getId(), sequence);
+			}
+
+			// Finish up (fix problems, add missing info, etc.)
+			finishUp();
+
+			// Check that exons have sequences
+			boolean error = config.getGenome().isMostExonsHaveSequence();
+			if (error) throw new RuntimeException("Most Exons do not have sequences!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);
+		}
+
+		return snpEffectPredictor;
+	}
+
+	/**
+	 * Find (or create) a gene from a feature
+	 * @param f
+	 * @param chr
+	 * @param warn
+	 * @return
+	 */
+	Gene findOrCreateGene(Feature f, Chromosome chr, boolean warn) {
+		int start = f.getStart() - inOffset;
+		int end = f.getEnd() - inOffset;
+
+		String geneId = geneId(f, start, end);
+		String geneName = geneName(f, start, end);
+
+		Gene gene = findGene(geneId);
+		if (gene == null) {
+			gene = new Gene(chr, start, end, f.isComplement() ? -1 : 1, geneId, geneName, "");
+			add(gene);
+			if (debug) System.err.println("WARNING: Gene '" + geneId + "' not found: created.");
+		}
+
+		return gene;
+	}
+
+	/**
+	 * Try to get geneIDs
+	 * @param f
+	 * @return
+	 */
+	protected String geneId(Feature f, int start, int end) {
+		// Try 'locus'...
+		String geneId = f.getGeneId();
+		if (geneId != null) return geneId;
+
+		return "Gene_" + start + "_" + end;
+	}
+
+	/**
+	 * Get gene name from feature
+	 * @param f
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	protected String geneName(Feature f, int start, int end) {
+		// Try 'gene'...
+		String geneName = f.getGeneName();
+		if (geneName != null) return geneName;
+
+		return "Gene_" + start + "_" + end;
+	}
+
+	/**
+	 * Get sequence either from features or from FASTA file
+	 * @param features
+	 * @return
+	 */
+	String sequence(Features features) {
+		String seq = features.getSequence();
+		if ((seq != null) && !seq.isEmpty()) return seq;
+		if (verbose) System.out.println("No sequence found in feature file.");
+
+		// No sequence information in 'features' file? => Try to read a sequence from a fasta file
+		for (String fastaFile : config.getFileListGenomeFasta()) {
+			if (verbose) System.out.println("\tTrying fasta file '" + fastaFile + "'");
+
+			if (Gpr.canRead(fastaFile)) {
+				seq = GprSeq.fastaSimpleRead(fastaFile);
+				if ((seq != null) && !seq.isEmpty()) return seq;
+			}
+		}
+
+		throw new RuntimeException("Cannot find sequence for '" + config.getGenome().getVersion() + "'");
+	}
+}

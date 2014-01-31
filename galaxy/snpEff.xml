@@ -1,0 +1,104 @@
+<tool id="snpEff" name="SnpEff" version="latest">
+	<description>Variant effect and annotation</description>
+	<command interpreter="perl">snpEffWrapper.pl eff
+-i $inputFormat 
+-o $outputFormat 
+-upDownStreamLen $udLength 
+$canon
+$hgvs
+$lof
+$motif
+#if $statsFile:
+  -stats $statsFile 
+#end if
+  $genomeVersion $input > $snpeff_output 
+</command>
+	<inputs>
+		<param format="vcf,tabular,pileup,bed" name="input" type="data" label="Sequence changes (SNPs, MNPs, InDels)"/>
+
+		<param name="inputFormat" type="select" label="Input format">
+			<option value="vcf" selected="true">VCF</option>
+			<option value="txt">Tabular</option>
+			<option value="bed">BED</option>
+		</param>
+
+		<param name="outputFormat" type="select" label="Output format">
+			<option value="vcf" selected="true">VCF</option>
+			<option value="txt">Tabular</option>
+			<option value="bed">BED</option>
+			<option value="bedAnn">BED Annotations</option>
+			<option value="gatk">VCF (GATK compatible)</option>
+		</param>
+
+		<param name="genomeVersion" type="select" label="Genome">
+			<options from_file="snpEff_genomes.loc">
+				<column name="name" index="1"/>
+				<column name="value" index="0"/>
+			</options>
+		</param>
+
+		<param name="udLength" type="select" label="Upstream / Downstream length">
+			<option value="0">No upstream / downstream intervals (0 bases)</option>
+			<option value="200">200 bases</option>
+			<option value="500">500 bases</option>
+			<option value="1000">1000 bases</option>
+			<option value="2000">2000 bases</option>
+			<option value="5000" selected="true">5000 bases</option>
+			<option value="10000">10000 bases</option>
+			<option value="20000">20000 bases</option>
+		</param>
+
+        <param name="canon" type="boolean" truevalue="-canon" falsevalue="" checked="false" label="Use only cannonical transcripts"/>
+        <param name="hgvs" type="boolean" truevalue="-hgvs" falsevalue="" checked="false" label="Annotate using HGVS nomenclature"/>
+        <param name="lof" type="boolean" truevalue="-lof" falsevalue="" checked="false" label="Annotate Loss of function (LOF) and Nonsense mediated decay (NMD)"/>
+        <param name="motif" type="boolean" truevalue="-motif" falsevalue="" checked="false" label="Annotate transcription factor binding site motifs (only available for latest GRCh37)"/>
+        <param name="generate_stats" type="boolean" truevalue="" falsevalue="-noStats" checked="true" label="Produce Summary Stats"/>
+	</inputs>
+	<outputs>
+		<data format="tabular" name="snpeff_output" >
+			<change_format>
+				<when input="outputFormat" value="txt" format="tabular" />
+				<when input="outputFormat" value="vcf" format="vcf" />
+				<when input="outputFormat" value="bed" format="bed" />
+				<when input="outputFormat" value="bedAnn" format="bed" />
+			</change_format>
+		</data>
+                
+		<data format="html" name="statsFile">
+			<filter>generate_stats == True</filter>
+		</data>
+	</outputs>
+        <stdio>
+          <exit_code range=":-1"  level="fatal"   description="Error: Cannot open file" />
+          <exit_code range="1:"  level="fatal"   description="Error" />
+        </stdio>
+        <tests>
+            <test>
+                <param name="input" ftype="vcf" value="vcf_homhet.vcf"/>
+                <param name="inputFormat" value="vcf"/>
+                <param name="outputFormat" value="vcf"/>
+                <param name="genomeVersion" value="testCase"/>
+                <param name="udLength" value="0"/>
+                <output name="snpeff_output">
+                    <assert_contents>
+                        <!-- Check that an effect was added -->
+                        <has_text text="EFF=NON_SYNONYMOUS_CODING" />
+                    </assert_contents>
+                </output>
+                <output name="statsFile">
+                    <assert_contents>
+                        <!-- Check for a HTML header indicating that this was successful -->
+                        <has_text text="SnpEff: Variant analysis" />
+                    </assert_contents>
+                </output>
+            </test>
+        </tests>
+	<help>
+
+This tool calculate the effect of variants (SNPs/MNPs/Insertions) and deletions.
+
+For details about this tool, please go to http://snpEff.sourceforge.net
+
+	</help>
+</tool>
+

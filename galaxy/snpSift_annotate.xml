@@ -1,0 +1,43 @@
+<tool id="snpSift_annotate" name="SnpSift Annotate" version="latest">
+	<description>Annotate SNPs from dbSnp</description>
+	<!-- 
+	    You will need to change the path to wherever your installation is.
+		You can change the amount of memory used, just change the -Xmx parameter (e.g. use -Xmx2G for 2Gb of memory)
+	-->
+	<requirements>
+                <requirement type="package" version="latest">snpEff</requirement>
+	</requirements>
+	<command interpreter="perl">snpSiftWrapper.pl annotate -q $dbSnp $input > $output </command>
+	<inputs>
+		<param format="vcf" name="input" type="data" label="VCF input"/>
+		<param format="vcf" name="dbSnp" type="data" label="VCF File with ID field annotated (e.g. dnSNP.vcf)" help="The ID field for a variant in input will be assigned from a matching variant in this file."/>
+		<param name="id" type="boolean" truevalue="-id" falsevalue="" checked="false" label="Only annotate ID field (do not add INFO field)"/>
+	</inputs>
+        <stdio>
+          <exit_code range=":-1"  level="fatal"   description="Error: Cannot open file" />
+          <exit_code range="1:"  level="fatal"   description="Error" />
+        </stdio>
+
+	<outputs>
+		<data format="vcf" name="output" />
+	</outputs>
+	<tests>
+	    <test>
+                <param name="input" ftype="vcf" value="annotate_1.vcf"/>
+                <param name="dbSnp" ftype="vcf" value="db_test_1.vcf"/>
+                <output name="output">
+                    <assert_contents>
+                        <has_text text="rs76166080" />
+                    </assert_contents>
+                </output>
+	    </test>
+	</tests>
+	<help>
+
+This is typically used to annotate IDs from dbSnp.
+
+For details about this tool, please go to http://snpeff.sourceforge.net/SnpSift.html#annotate
+
+	</help>
+</tool>
+

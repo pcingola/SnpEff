@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SnpEff</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <link href="js/google-code-prettify/prettify.css" rel="stylesheet">
+	<link href="css/my.css" rel="stylesheet">
+
+    <!-- hTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="ico/favicon.png">
+
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+    <!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">SnpEff</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="download.html">Download</a></li>
+              <li><a href="SnpEff_manual.html">Documentation</a></li>
+              <li><a href="SnpSift.html">SnpSift</a></li>
+              <li><a href="about.html">About</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <h1>SnpEff</h1>
+    <p class="lead">Usage (protocol) examples.</p>
+  </div>
+</header>
+
+
+  <div class="container">
+
+    <!-- Docs nav
+    ================================================== -->
+    <div class="row">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav">
+          <li><a href="#intro"><i class="icon-chevron-right"></i> Materials</a></li>
+          <li><a href="#ex1"><i class="icon-chevron-right"></i> Example 1: Coding variants</a></li>
+          <li><a href="#int"><i class="icon-chevron-right"></i> Software Integration </a></li>
+          <li><a href="#ex2"><i class="icon-chevron-right"></i> Example 2: Non-Coding variants</a></li>
+        </ul>
+      </div>
+      <div class="span9">
+
+
+        <!-- Materials
+        ================================================== -->
+        <section id="intro">
+          <div class="page-header">
+            <h1>1. Materials</h1>
+          </div>
+				<p class="lead">
+				In this protocol we show how to analyze genomic variants using the SnpEff pipeline.
+				</p>
+
+				<b>Computer hardware:</b> The materials required for this protocol are: 
+				<ul>
+					<li> a computer running a Unix operating system (Linux, OS.X), 
+					<li> at least 4GB of RAM
+					<li> at least 1Gb of free disk space, 
+					<li> Java version 1.6 or higher installed, and 
+					<li> a reasonably fast internet connection. 
+				</ul>
+				Users of Windows computers can install CygWin, a free Linux-like environment for Windows, although the precise commands listed in the protocol may need to adapted.
+
+				<br>
+				<br>
+				<b>Software:</b> We use the SnpEff annotation program and its companion tool SnpSift. 
+				These programs can perform annotation, primary impact assessment and variants filtering, as well as many other tasks beyond the scope of this protocol. 
+				We highly recommend reading their comprehensive documentation available <a href="http://snpeff.sourceforge.net/"> here </a> 
+
+				<br>
+				<br>
+				Before starting the protocol, it is necessary to download and install SnpEff. To do this, open a Unix, Linux or Cygwin shell and execute the following commands:
+<pre>
+# Move to home directory
+cd
+
+# Download and install SnpEff
+curl -v -L http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip > snpEff_latest_core.zip
+unzip snpEff_latest_core.zip
+</pre>
+				<br>
+				<br>
+				<b>Notes:</b>
+				<ul>
+					<li>SnpEff & SnpSift annotation software used in this protocol are under very active development and some command line option may change in the future. 
+					<li>The standard installation is to add the package in the "$HOME/snpEff" directory (where $HOME is your home directory). To install SnpEff elsewhere, update the "data_dir" parameter in your "snpEff.config" file, as described in the SnpEff documentation.
+				</ul>
+				<br>
+				<br>
+				Once SnpEff is installed, we will enter the following commands to download the pre-built human database (GRCh37.71) that will be used to annotate our data.
+<pre>
+cd snpEff
+java -jar snpEff.jar download -v GRCh37.71
+</pre>
+
+				A list of pre-built databases for all other species is available by running the following command: 
+<pre>
+java -jar snpEff.jar databases
+</pre>
+
+
+				</p>
+        </section>
+
+        <!-- Example 1
+        ================================================== -->
+        <section id="ex1">
+          <div class="page-header">
+            <h1>2. Example: Coding variants</h1>
+          </div>
+				<p class="lead"> We show how to use SnpEff & SnpSitf to annotate, prioritize and filter coding variants.<p>
+
+				<p>
+				<b>Dataset:</b> In this genomic annotation example, we use a simulated dataset to show how to find genetic variants of a Mendelian recessive disease, Cystic fibrosis, caused by a high impact coding variant, a nonsense mutation in CFTR gene (G542*). The data files come from the publicly available "CEPH_1463" dataset, sequenced by <a href=http://www.completegenomics.com/public-data/">Complete Genomics</a>, and contains sequencing information for a family consisting of 4 grandparents, 2 parents and 11 siblings. 
+				<br>
+				<br>
+				<img src=images/Cingolani_Figure2.png>
+				<br>
+				<br>
+				Although these are healthy individuals, we artificially introduced a known Cystic fibrosis mutation on three siblings (cases) in a manner that was consistent with the underlying haplotype structure. 
+				<br>
+				We now download and un-compress the example data used in this protocol, which, for reasons of space and time, is limited to only chromosome 7 and 17:
+
+<pre>
+# Go to SnpEff's dir
+cd ~/snpEff
+
+# Download sample data
+curl -v -L http://sourceforge.net/projects/snpeff/files/protocols.zip > protocols.zip
+unzip protocols.zip
+</pre>
+				<br>
+				<br>
+				The goal in this example is to use SnpEff to find a mutation causing a Mendelian recessive trait. This will be done using a dataset of variant calls for chromosome 7 from a pedigree of 17 healthy individuals, sequenced by Complete Genomics, in which a coding variant causing cystic fibrosis was artificially introduced in three siblings (see Materials). For the purpose of this example, we assume that we do not know the causative variant, but that we know that we are dealing with a Mendelian recessive disorder, where the three siblings are affected (cases), but the 14 parents and grandparents are not (controls).
+				<br>
+				<br>
+				Genomic variants are usually provided in a VCF file containing variant information of all the samples; storing the variant data in a single VCF file is the standard practice, not only because variant calling algorithms have better accuracy when run on all samples simultaneously, but also because it is much easier to annotate, manipulate and compare individuals when the data is stored and transferred together. 
+				A caveat of this approach is that VCF files can become very large when performing experiments with thousands of samples (from several Gigabytes to Terabytes in size). 
+				In the following protocol, SnpEff will add annotation fields to each variant record in the input VCF file. 
+				We will then use SnpSift, a filtering program to extract the most significant variants having annotations meeting certain criteria.
+				<br>
+				<br>
+
+				<h3> Step 1: Primary variant annotation and quality control.</h3>
+				Our first step is to annotate each of the ~500,000 variants contained in the VCF file. 
+				By default, SnpEff adds primary annotations and basic impact assessment for coding and non-coding variants as described above. 
+				SnpEff has several command line options that can be used in this annotation stage and which are described in detail in the <a href="http://snpeff.sourceforge.net/SnpEff_manual.html"> online manual </a>.
+				<br>
+				In this example, we annotate: 
+				<ul>
+					<li> loss of function and nonsense mediated decay predictions (by adding the "-lof" command line option); 
+					<li> protein domain annotations from the curated NextProt database (option "-nextProt"); as well as 
+					<li> putative transcription factor binding sites from the ENSEMBL 'Regulatory Build' and Jaspar database (option "-motif"). 
+				</ul>
+				<br>
+				We also instruct the program to: 
+				<ul>
+					<li> use HGVS notation for amino acid changes (option "-hgvs"); and 
+					<li> to create a web page summarizing the annotation results in "ex1.html" (option "-stats"):
+				</ul>
+
+<pre>
+java -Xmx4g -jar snpEff.jar \
+  -v \
+  -lof \
+  -motif \
+  -hgvs \
+  -nextProt \
+  GRCh37.71 \
+  protocols/ex1.vcf \
+  > protocols/ex1.eff.vcf
+</pre>
+				<br>
+				SnpEff produces three output files :
+				<ul>
+					<li> the HTML file containing summary statistics about the variants and their annotations; 
+					<li> an annotated VCF file; and 
+					<li> a text file summarizing the number of variant types per gene. 
+				</ul>
+				<br>
+				<br>
+				Creation of the summary files can be de-activated to speed up the program (for example, when the application is used together with Galaxy). 
+				By default, the statistics file "ex1.html" is a standard HTML file that can be opened in any web browser to view quality control (QC) metrics. 
+				It can also be created in comma-separated values format (CSV) to be used by downstream processing programs as part of an automated pipeline. 
+				In our example, the summary file contains basic quality control statistics calculated from the variant file: for our data, the Ts/Ts ratio is close to 2.0 (Figure 1c) and missense / silent ratio is around 1.0 (Figure 1d), both of which are expected for human data (but these numbers may differ for other species). 
+				<br>
+				<img src=images/Cingolani_Figure1.png>
+				<br>
+				Large deviations from the expected values for the organism being sequenced might indicate problems with either the sequencing or variant calling pipelines. 
+				The summary file also contains QC information for the gene annotation used as input. 
+				In this example, 829 warnings (Figure 1a) were identified as a result of possible genomic annotation errors or small inconsistencies identified in the reference genome so we have to be careful analyzing those genes/transcripts. 
+				Other summary statistics are available, such as variant types (Figure 1e), variants effects (Figure 1d and 1g), and primary impacts (Figure 1b and 1g).
+				<br>
+				<br>
+				<h3> Step 2: Counting variants in case and control subjects.</h3>
+				In the first step of our protocol, SnpEff created a VCF file with half million annotated variants. 
+				Rather than scanning each annotation manually, we will use the SnpSift program to create a filter that will identify a small subset of variants with interesting functional properties. 
+				Since the VCF files used in most sequencing studies are even larger than the one in this example, our overall approach is to start by creating a filter using a very restrictive set of criteria. 
+				If no relevant variant is found using this stringent filter, we will relax the criteria to include variants with lower predicted impact. 
+				<br>
+				<br>
+				In our example, since the pedigree is consistent with a Mendelian recessive disease, so we will first use SnpEff to find high impact variants that are homozygous in cases and either absent or heterozygous in controls. 
+				This provides a very strong genetic argument to select the promising variants and will be used as the first step in our filter. 
+				To do this, we will identify the case and control samples by providing SnpEff with pedigree information using a "TFAM" file (a standard file format used to describe pedigrees). 
+				In our example, the TFAM file ("pedigree.tfam") identifies the three cases (NA12879, NA12885, NA12886), and lists the other family members as controls. 
+				The "caseControl" command instructs the SnpSift program to count the number homozygous non-reference, heterozygous and allele count (number of non-reference alleles in each DNA sample) for both cases and controls groups (running time: ~60 minutes):
+				<br>
+				<br>
+<pre>
+java -Xmx1g -jar SnpSift.jar \
+  caseControl \
+  -v \
+  -tfam protocols/pedigree.tfam \
+  protocols/ex1.eff.vcf \
+  > protocols/ex1.eff.cc.vcf
+</pre>
+
+				<br>
+				This analysis creates an output VCF file ("ex1.eff.cc.vcf") by adding new information to the INFO field for each variant: this includes information such as "Cases=1,1,3" and "Controls=8,6,22", which correspond to the number of homozygous non-reference, heterozygous and total allele counts in cases and controls for each variant. 
+				The program also calculates basic statistics for each variant based on the allele frequencies in the two groups using different models, which can be useful as a starting point for more in-depth statistical analysis.
+				<br>
+				<br>
+				<h3> Step 3: Filtering variants. </h3>
+				We can use the "SnpSift filter" command to reduce the number of candidate loci base on alleles in cases and controls. 
+				SnpSift "filter" allows users to create powerful filters that select variants using Boolean expressions containing data from the VCF fields. 
+				The expression we use to filter the VCF file "ex1.eff.vcf" is developed as follows.
+				<br>
+				<br>
+				We expect all the three cases and none of the controls to be homozygous for the mutation. 
+				This is expressed using the following filter: "(Cases[0] = 3) & (Controls[0] = 0)". 
+				The full command line is:
+				<br>
+				<br>
+
+<pre>
+cat protocols/ex1.eff.cc.vcf | java -jar SnpSift.jar filter \
+    "(Cases[0] = 3) & (Controls[0] = 0)" \
+  > protocols/ex1.filtered.hom.vcf
+</pre>
+
+				The filtered output file, filtered.hom_cases.vcf, contains over 400 variants satisfying our criteria. 
+				This is still too large to analyze by hand, so can we can add another filter to see if any of these variants is expected to have a high impact. 
+				To identify variants where any of these impacts is classified as either "HIGH" or "MODERATE", we add the condition "EFF[*].IMPACT = 'HIGH') | (EFF[*].IMPACT = 'MODERATE')". 
+				The new filtering commands become:
+				<br>
+				<br>
+
+<pre>
+cat protocols/ex1.eff.cc.vcf \
+  | java -jar SnpSift.jar filter \
+    "(Cases[0] = 3) & (Controls[0] = 0) & ((EFF[*].IMPACT = 'HIGH') | (EFF[*].IMPACT = 'MODERATE'))" \
+  > protocols/ex1.filtered.vcf
+</pre>
+				<br>
+				After filtering, only two variants satisfy our criteria, one of them is a STOP_GAINED loss of function variant, whereas the other one is a NON_SYNONYMOUS amino acid change. 
+				The first one is a known Cystic fibrosis variant.
+				<br>
+				<br>
+
+
+<pre>
+$ cat protocols/ex1.filtered.vcf     | ./scripts/vcfInfoOnePerLine.pl
+7	117227832	.	G	T	.	.
+							AC	14
+							AN	22
+							EFF	DOWNSTREAM(MODIFIER||29|||CFTR|processed_transcript|CODING|ENST00000472848||1)
+							EFF	NEXT_PROT[beta_strand](LOW||||1419|CFTR|protein_coding|CODING|ENST00000454343|11|1)
+							EFF	NEXT_PROT[beta_strand](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
+							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|10|1)
+							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|11|1)
+							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
+							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|13|1)
+							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|14|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|10|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|11|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|13|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|14|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|15|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|8|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|9|1)
+							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly481*/c.1441G>T|1419|CFTR|protein_coding|CODING|ENST00000454343|11|1)
+							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly512*/c.1534G>T|1437|CFTR|protein_coding|CODING|ENST00000426809|11|1|WARNING_TRANSCRIPT_INCOMPLETE)
+							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly542*/c.1624G>T|1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
+							EFF	UPSTREAM(MODIFIER||1362|||AC000111.5|processed_pseudogene|NON_CODING|ENST00000448200||1)
+							LOF	(CFTR|ENSG00000001626|9|0.33)
+							NMD	(CFTR|ENSG00000001626|9|0.33)
+							Cases	3
+							Cases	0
+							Cases	6
+							Controls	0
+							Controls	8
+							Controls	8
+							CC_GENO	4.556e-04
+							CC_ALL	4.025e-02
+							CC_DOM	6.061e-03
+							CC_REC	1.000e+00
+17	39135205	.	ACA	GCA,GCG	.	.
+							AC	16
+							AC	8
+							AN	31
+							EFF	DOWNSTREAM(MODIFIER||3027|||AC004231.2|antisense|NON_CODING|ENST00000418393||1)
+							EFF	DOWNSTREAM(MODIFIER||3027|||AC004231.2|antisense|NON_CODING|ENST00000418393||2)
+							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|6|1)
+							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|6|2)
+							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|7|1)
+							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|7|2)
+							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|8|1)
+							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|8|2)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|3|1)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|3|2)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|4|1)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|4|2)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|5|1)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|5|2)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|6|1)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|6|2)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|7|1)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|7|2)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|8|1)
+							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|8|2)
+							EFF	NON_SYNONYMOUS_CODING(MODERATE||tgt/CGC|p.Cys349Arg/c.1045ACA>GCG|431|KRT40|protein_coding|CODING|ENST00000377755||2)
+							EFF	NON_SYNONYMOUS_CODING(MODERATE||tgt/CGC|p.Cys349Arg/c.1045ACA>GCG|431|KRT40|protein_coding|CODING|ENST00000398486||2)
+							EFF	SYNONYMOUS_CODING(LOW||tgt/TGC|p.Cys349Cys/c.1045ACA>GCA|431|KRT40|protein_coding|CODING|ENST00000377755||1)
+							EFF	SYNONYMOUS_CODING(LOW||tgt/TGC|p.Cys349Cys/c.1045ACA>GCA|431|KRT40|protein_coding|CODING|ENST00000398486||1)
+							EFF	UTR_3_PRIME(MODIFIER|||||KRT40|nonsense_mediated_decay|CODING|ENST00000461923|8|1)
+							EFF	UTR_3_PRIME(MODIFIER|||||KRT40|nonsense_mediated_decay|CODING|ENST00000461923|8|2)
+							Cases	3
+							Cases	0
+							Cases	6
+							Controls	0
+							Controls	12
+							Controls	18
+							CC_GENO	3.504e-02
+							CC_ALL	1.700e-01
+							CC_DOM	1.231e-01
+							CC_REC	1.000e+00
+
+</pre>
+				<br>
+				<br>
+				A chart showing how the variant propagates across the pedigree structure can be created as follows:
+				<br>
+				<br>
+<pre>
+java -jar SnpSift.jar pedShow \
+    protocols/pedigree.tfam \
+    protocols/ex1.filtered.vcf \
+    protocols/chart
+
+</pre>
+				<br>
+				<br>
+				<h3> Step 4. Using clinical databases. </h3>
+				So far, since the purpose of the example was to show how annotations and filtering are performed to uncover new variants, we assumed that the causative variant was not known. 
+				In reality the variant is known and databases, such as ClinVar, have this information in convenient VCF format that can be used for annotations. 
+				We can annotate using ClinVar by using the following command:
+				<br>
+				<br>
+
+<pre>
+java -Xmx1g -jar SnpSift.jar \
+    annotate \
+    -v \
+    protocols/db/clinvar_00-latest.vcf \
+    protocols/ex1.eff.cc.vcf \
+    > protocols/ex1.eff.cc.clinvar.vcf
+</pre>
+			<br>
+
+			Our variant of interest is then annotated as "Cystic Fibrosis"  (to find the variant, we filter for variants having ClinVar annotation "CLNDBN" that are in CFTR gene and have a STOP_CODON annotation):
+			<br>
+			<br>
+<pre>
+cat protocols/ex1.eff.cc.clinvar.vcf \
+     | java -jar SnpSift.jar filter \
+     "(exists CLNDBN) & (EFF[*].EFFECT = 'STOP_GAINED') & (EFF[*].GENE = 'CFTR')" \
+	| ./scripts/vcfInfoOnePerLine.pl 
+7	117227832	rs113993959	G	T	.	.
+							AC	14
+							AN	22
+							EFF	DOWNSTREAM(MODIFIER||29|||CFTR|processed_transcript|CODING|ENST00000472848||1)
+							EFF	NEXT_PROT[beta_strand](LOW||||1419|CFTR|protein_coding|CODING|ENST00000454343|11|1)
+							EFF	NEXT_PROT[beta_strand](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
+							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|10|1)
+							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|11|1)
+							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
+							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|13|1)
+							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|14|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|10|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|11|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|13|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|14|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|15|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|8|1)
+							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|9|1)
+							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly481*/c.1441G>T|1419|CFTR|protein_coding|CODING|ENST00000454343|11|1)
+							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly512*/c.1534G>T|1437|CFTR|protein_coding|CODING|ENST00000426809|11|1|WARNING_TRANSCRIPT_INCOMPLETE)
+							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly542*/c.1624G>T|1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
+							EFF	UPSTREAM(MODIFIER||1362|||AC000111.5|processed_pseudogene|NON_CODING|ENST00000448200||1)
+							LOF	(CFTR|ENSG00000001626|9|0.33)
+							NMD	(CFTR|ENSG00000001626|9|0.33)
+							Cases	3
+							Cases	0
+							Cases	6
+							Controls	0
+							Controls	8
+							Controls	8
+							CC_GENO	4.556e-04
+							CC_ALL	4.025e-02
+							CC_DOM	6.061e-03
+							CC_REC	1.000e+00
+							RS	113993959
+							RSPOS	117227832
+							dbSNPBuildID	132
+							SSR	0
+							SAO	1
+							VP	0x050268000601040002110100
+							GENEINFO	CFTR:1080
+							WGT	1
+							VC	SNV
+							PM
+							PMC
+							S3D
+							NSN
+							REF
+							VLD
+							OTHERKG
+							LSD
+							OM
+							CLNALLE	1
+							CLNHGVS	NC_000007.13:g.117227832G>T
+							CLNSRC	GTR|OMIM Allelic Variant|OMIM Allelic Variant
+							CLNORIGIN	1
+							CLNSRCID	GTR000500233|602421.0009|602421.0095
+							CLNSIG	5
+							CLNDSDB	GeneReviews:NCBI:OMIM:Orphanet:SNOMED CT
+							CLNDSDBID	NBK1250:C0010674:219700:586:190905008
+							CLNDBN	Cystic fibrosis
+							CLNACC	RCV000007535.1
+
+</pre>
+
+				<br>
+				<br>
+				</p>
+
+        <!-- Integration
+        ================================================== -->
+        <section id="int">
+          <div class="page-header">
+            <h1>2. Software Integration (Optional) </h1>
+          </div>
+				<br>
+				Software Integration (Optional): Sequence analysis software is often run in high performance computers combining several programs into processing pipelines. 
+				Annotations and impact assessment software needs to provide integration points with other analysis steps of the pipeline. 
+				In the following paragraphs we describe how to integrate SnpEff with two programs commonly used in sequencing analysis pipelines: i) Genome Analysis toolkit (GATK 2), a command-line driven software; and ii) Galaxy 3, a web based software.
+				<br>
+				<br>
+            
+				<h3> GATK </h3>
+				<br>
+				The Genome Analysis Toolkit 2 is one of the most popular programs for bioinformatics pipelines. 
+				Annotations can be easily integrated into GATK using SnpEff and GATK’s VariantAnnotator module. 
+				Here we show how to annotate a file using SnpEff and GATK, as an alternative way of performing step 1. 
+				You should perform this step only if your processing pipeline is based on GATK: compared to running SnpEff from the command line, the results obtained when using GATK will only contain the highest impact annotation for each variant. 
+				This was a conscious trade-off made by the designers of GATK, partly because most biologists do this implicitly when reading a list of variants, but also to improve the readability and reduce the size of the annotation results.
+				<br>
+				<br>
+            
+				The method requires two steps: i) Annotating a VCF file using SnpEff and ii) using GATK’s VariantAnnotator to incorporate those annotations into the final VCF file. 
+				When using SnpEff for GATK compatibility, we must use the "-o gatk" command line option:
+				<br>
+				<br>
+
+<pre>
+java -Xmx4g -jar snpEff.jar \
+  -v \
+  -o gatk \
+  GRCh37.71 \
+  protocols/ex1.vcf \
+  > protocols/ex1.eff.gatk.vcf
+</pre>
+				<br>
+
+				Next, we process these variants using GATK. For this step to work correctly, we need to make sure that our data files are compatible with the requirements GATK places on reference genomes (see GATK’s documentation for more details): (i) in the fasta file, chromosomes are expected to be sorted in karyotypic order; (ii) a genome fasta-index file must be available; and (iii) a dictionary file must be pre-computed. Assuming these requirements are satisfied, we can run the following command, which will produce a GATK annotated file ("ex1.gatk.vcf"):
+				<br>
+				<br>
+
+<pre>
+java -Xmx4g -jar $HOME/tools/gatk/GenomeAnalysisTK.jar \
+    -T VariantAnnotator \
+    -R $HOME/genomes/GRCh37.71.fa \
+    -A SnpEff \
+    --variant protocols/ex1.vcf \
+    --snpEffFile protocols/ex1.eff.gatk.vcf \
+    -L protocols/ex1.vcf \
+    -o protocols/ex1.gatk.vcf
+</pre>
+				<br>
+
+				Note: We assumed GATK is installed in "$HOME/tools/gatk/" and the reference genome is contained in "$HOME/genomes/GRCh37.71.fa" These file locations should be adapted to the actual path in your computer.
+
+				<h3> Galaxy </h3>
+				Anther popular tool in bioinformatics is Galaxy 3, which allows pipelines to be created in a web environment using graphical interface, making it flexible and straightforward to use. 
+				SnpEff provides <a href=http://snpeff.sourceforge.net/SnpEff_manual.html#galaxy>Galaxy modules</a>. 
+				Once these modules are installed, we can run our sample annotation pipeline in Galaxy. 
+				<br>
+				<br>
+				<img src=images/Cingolani_Figure3.png>
+				<br>
+			</p>
+        </section>
+
+        <!-- Example 2
+        ================================================== -->
+        <section id="ex2">
+          <div class="page-header">
+            <h1>3. Example: Non-Coding variants</h1>
+          </div>
+				<p class="lead"> We show how to use SnpEff & SnpSitf to annotate, prioritize and filter non-coding variants.<p>
+
+				<p>
+				<b>Dataset:</b> This example shows how to perform basic annotation of non-coding variants. 
+				It is based on a short list of 20 non-coding that were identified by sequencing a 700 kb region surrounding the gene T-box transcription factor (TBX5) in 260 patients with congenital heart disease 67. 
+				TBX5 is a transcription factor that plays a well-established dosage-dependent role in heart and limb development. 
+				Coding mutations in TBX5 have been frequently identified in patients with Holt–Oram syndrome, which is associated with abnormal hand, forearm and cardiac development.
+				<br>
+				<br>
+				<b>Data source</b>: <a href="http://www.ncbi.nlm.nih.gov/pubmed/22543974">Regulatory variation in a TBX5 enhancer leads to isolated congenital heart disease.</a>
+				<br>
+				<br>
+
+				<h3> Step 1. Annotating variants.</h3>
+				We will perform non-coding variant annotation using SnpEff following a similar approach to Procedure I. 
+				In this case, we construct a command line that instructs SnpEff to include motif information ("-motif") and putative transcription factor binding sites (TFBS) identified in the ENSEMBL Regulatory Build and the Jaspar database:
+
+				<br>
+				<br>
+<pre>
+java -Xmx4g -jar snpEff.jar \
+    -v \
+    -motif \
+    GRCh37.71 \
+    protocols/ex2.vcf \
+    > protocols/ex2.eff.basic.vcf
+</pre>
+				<br>
+
+				<h3> Step 2. Adding custom regulatory information.</h3>
+				A quick scan through the results shows that most variants are catalogued as "INTERGENIC", and none of them is associated with a known TFBS. 
+				This is not surprising since TFBS are small and also because regulatory elements involved in cardiac or limb development may not be widely active in commonly studied adult tissues. 
+				In this case, basic annotations did not provide additional information that can be used to narrow down the list of candidate SNVs. 
+				To solve this, the authors examined data from other sources, including ChIP-seq data for H3K4me1 (a post-translationally modified histone protein found in transcriptionally active genome regions, including enhancers and promoters). 
+				Data produced from ChIP-Seq analysis are frequently published in BED, BigBed or similar formats, which can be used directly by SnpEff by adding the "-interval" command line option. 
+				This command line option can be used to add annotations using ChIP-Seq experiments from the ENCODE and Epigenome Roadmap projects: since multiple "-interval" options are allowed in each command line, it is a simple way to combine several annotations:
+
+				<br>
+				<br>
+<pre>
+java -Xmx4g -jar snpEff.jar \
+    -v \
+    -motif \    
+    -interval protocols/ex2_regulatory.bed \
+    GRCh37.71 \ 
+    protocols/ex2.vcf \ 
+    > protocols/ex2.eff.vcf 
+</pre>
+				<br>
+				In the output VCF file, variants intersecting genomic regions from the "-interval" command line option are annotated as "CUSTOM[ex2_regulatory]" :  the name in brackets identifies the file name provided to distinguish multiple annotation files.
+				<br>
+				<br>
+
+				<h3> Step 3. Adding conservation information.</h3> 
+				In order to refine our search, we can also look for variants in highly conserved non-coding bases. 
+				SnpEff natively supports PhastCons scores, but can also add annotations based on any other user-defined score provided as a Wig or VCF file. 
+				The command line for annotating using the PhastCons score is: 
+				<br>
+				<br>
+<pre>
+java -Xmx1g -jar SnpSift.jar \
+    phastCons \
+    -v \
+    protocols/phastcons \
+    protocols/ex2.eff.vcf \
+    > protocols/ex2.eff.cons.vcf
+</pre>
+				<br>
+				Now we can filter our results looking for a highly conserved SNP in the regulatory region. 
+				We do this by using a "SnpSift filter" command and the appropriate Boolean expression:
+				<br>
+				<br>
+<pre>
+cat protocols/ex2.eff.cons.vcf \
+  | java -jar SnpSift.jar filter \
+    "(EFF[*].EFFECT = 'CUSTOM[ex2_regulatory]') & (exists PhastCons) & (PhastCons > 0.9)" \
+  > protocols/ex2.filtered.vcf
+</pre>
+				<br>
+
+				SnpSift filter supports a flexible syntax to create Boolean expressions using the annotation data that provides a versatile way to prioritize shorter lists of SNPs for subsequent validation. 
+				This syntax is described in detail in the <a href="http://snpeff.sourceforge.net/SnpSift.html#filter">online manual</a>. 
+				In this example, our filter results in only two candidate SNPs, one of which was extensively validated in the original study and is assumed to be causative.
+				<br>
+				<br>
+
+				The principles illustrated in our example for a small set of SNVs can be applied to millions of variants from whole genome sequencing experiments. Similarly, although we filtered the SNVs using "custom" ChIP-seq data that provided in the original study, regulatory information from public Encode or Epigenome Roadmap datasets could be used in a first line investigation before generating our own Chip-seq or RNA-seq data using disease-relevant cells and tissues.
+				<br>
+				<br>
+      </div>
+    </div>
+
+  </div>
+
+
+
+    <!-- Footer
+    ================================================== -->
+      <footer>
+        <p class="text-center">&copy; <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani 2013</a></p>
+      </footer>
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap-transition.js"></script>
+    <script src="js/bootstrap-alert.js"></script>
+    <script src="js/bootstrap-modal.js"></script>
+    <script src="js/bootstrap-dropdown.js"></script>
+    <script src="js/bootstrap-scrollspy.js"></script>
+    <script src="js/bootstrap-tab.js"></script>
+    <script src="js/bootstrap-tooltip.js"></script>
+    <script src="js/bootstrap-popover.js"></script>
+    <script src="js/bootstrap-button.js"></script>
+    <script src="js/bootstrap-collapse.js"></script>
+    <script src="js/bootstrap-carousel.js"></script>
+    <script src="js/bootstrap-typeahead.js"></script>
+    <script src="js/bootstrap-affix.js"></script>
+
+    <script src="js/holder/holder.js"></script>
+    <script src="js/google-code-prettify/prettify.js"></script>
+
+    <script src="js/application.js"></script>
+
+
+
+  </body>
+</html>

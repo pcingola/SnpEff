@@ -1,0 +1,47 @@
+<tool id="snpSift_caseControl" name="SnpSift CaseControl" version="latest">
+	<description>Count samples are in 'case' and 'control' groups.</description>
+	<!-- 
+	    You will need to change the path to wherever your installation is.
+		You can change the amount of memory used, just change the -Xmx parameter (e.g. use -Xmx2G for 2Gb of memory)
+	-->
+	<requirements>
+                <requirement type="package" version="latest">snpEff</requirement>
+	</requirements>
+	<command interpreter="perl">snpSiftWrapper.pl caseControl -q -tfam $tfam $input > $output </command>
+	<inputs>
+		<param format="vcf" name="input" type="data" label="VCF input"/>
+		<param format="tfam" name="tfam" type="data" label="TFAM file"/>
+	</inputs>
+	<outputs>
+		<data format="vcf" name="output" />
+	</outputs>
+        <stdio>
+          <exit_code range=":-1"  level="fatal"   description="Error: Cannot open file" />
+          <exit_code range="1:"  level="fatal"   description="Error" />
+        </stdio>
+	<help>
+
+**SnpSift CaseControl**
+
+Allows you to count how many samples are in 'case' group and a 'control' group. You can count 'homozygous', 'heterozygous' or 'any' variants. 
+
+Case and control are defined by a TFAM file (phenotype column)
+
+This command adds two annotations to the VCF file:
+
+ - **Cases**: Three comma separated numbers numbers representing the number of homozygous (ALT), heterozygous (ALT) and allele count in Case group
+
+ - **Controls**: Three comma separated numbers numbers representing the number of homozygous (ALT), heterozygous (ALT) and allele count in Control group
+
+ - **CC_DOM**: p-value under Dominant model
+
+ - **CC_REC**: p-value under Recesive model
+
+ - **CC_ALL**: p-value using allele counts
+
+ - **CC_GEN**: p-value using Genotypic (co-dominant) model
+
+For details about this tool, please go to http://snpeff.sourceforge.net/SnpSift.html#casecontrol
+
+	</help>
+</tool>

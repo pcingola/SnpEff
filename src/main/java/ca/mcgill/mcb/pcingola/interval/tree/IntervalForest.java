@@ -1,0 +1,222 @@
+package ca.mcgill.mcb.pcingola.interval.tree;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+
+import ca.mcgill.mcb.pcingola.interval.Chromosome;
+import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.interval.Markers;
+
+/**
+ * A set of interval trees (one per chromosome)
+ * 
+ * @author pcingola
+ */
+@SuppressWarnings("serial")
+public class IntervalForest implements Serializable, Iterable<IntervalTree> {
+
+	HashMap<String, IntervalTree> forest;
+
+	public IntervalForest() {
+		forest = new HashMap<String, IntervalTree>();
+	}
+
+	public IntervalForest(Markers intervals) {
+		forest = new HashMap<String, IntervalTree>();
+		add(intervals);
+	}
+
+	/**
+	 * Add all intervals
+	 * @param intervals
+	 */
+	public void add(Collection<? extends Marker> intervals) {
+		for (Marker i : intervals)
+			add(i);
+	}
+
+	/**
+	 * Add an interval
+	 * @param interval
+	 */
+	public void add(Marker interval) {
+		if (interval == null) return;
+		String chName = Chromosome.simpleName(interval.getChromosomeName());
+		getTree(chName).add(interval); // Add interval to tree
+	}
+
+	/**
+	 * Add all intervals
+	 * @param intervals
+	 */
+	public void add(Markers intervals) {
+		for (Marker i : intervals)
+			add(i);
+	}
+
+	/**
+	 * Build all trees
+	 */
+	public void build() {
+		for (IntervalTree tree : forest.values())
+			tree.build();
+	}
+
+	/**
+	 * Get (or create) an interval tree
+	 * @param chromo
+	 * @return
+	 */
+	public IntervalTree getTree(String chromo) {
+		chromo = Chromosome.simpleName(chromo);
+
+		// Retrieve (or create) interval tree
+		IntervalTree intervalTree = forest.get(chromo);
+		if (intervalTree == null) {
+			intervalTree = new IntervalTree();
+			forest.put(chromo, intervalTree);
+		}
+
+		return intervalTree;
+	}
+
+	/**
+	 * Is the tree 'chromo' available?
+	 * @param chromo
+	 * @return
+	 */
+	public boolean hasTree(String chromoOri) {
+		String chromo = Chromosome.simpleName(chromoOri);
+		IntervalTree intervalTree = forest.get(chromo);
+		return intervalTree != null;
+	}
+
+	/**
+	 * Return the intersection of 'markers' and this IntervalForest
+	 * 
+	 * For each marker 'm' in 'markers'
+	 * 		- query the tree to get all markers intersecting 'm'
+	 * 		- create a new interval which is the intersection of 'm' with all the resutls from the previous query.
+	 *   
+	 * @param interval
+	 * @return
+	 */
+	public Markers intersect(Markers markers) {
+		Markers result = new Markers();
+
+		// Add all intersecting intervals
+		for (Marker mm : markers) {
+			Markers query = query(mm);
+			if (query != null) {
+				for (Marker mq : query) {
+					// Intersection between 'mm' and 'mq'
+					int start = Math.max(mq.getStart(), mm.getStart());
+					int end = Math.max(mq.getEnd(), mm.getEnd());
+					Marker mintq = new Marker(mq.getParent(), start, end, mq.getStrand(), "");
+
+					// Add intersection result
+					result.add(mintq);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public Iterator<IntervalTree> iterator() {
+		return forest.values().iterator();
+	}
+
+	/**
+	 * Query all intervals that intersect with 'interval'
+	 * @param marker
+	 * @return
+	 */
+	public Markers query(Marker marker) {
+		return getTree(marker.getChromosomeName()).query(marker);
+	}
+
+	/**
+	 * Query all intervals that intersect with any interval in 'intervals'
+	 * 
+	 * @param interval
+	 * @return
+	 */
+	public Markers query(Markers marker) {
+		Markers ints = new Markers();
+
+		// Add all intersecting intervals
+		for (Marker i : marker)
+			ints.add(query(i));
+
+		return ints;
+	}
+
+	/**
+	 * Query unique intervals that intersect with any interval in 'markers'
+	 * I.e.: Return a set of intervals that intersects (at least once) with any interval in 'markers'
+	 * 
+	 * @param interval
+	 * @return
+	 */
+	public Markers queryUnique(Markers markers) {
+		HashSet<Marker> uniqueMarkers = new HashSet<Marker>();
+
+		// Add all intersecting intervals
+		for (Marker q : markers) {
+			Markers results = query(q); // Query
+
+			for (Marker r : results)
+				// Add all results 
+				uniqueMarkers.add(r);
+		}
+
+		// Create markers
+		Markers ints = new Markers();
+		for (Marker r : uniqueMarkers)
+			ints.add(r);
+
+		return ints;
+	}
+
+	public int size() {
+		int size = 0;
+		for (IntervalTree it : forest.values())
+			size += it.size();
+		return size;
+	}
+
+	/**
+	 * Obtain all intervals that intersect with 'marker.start'
+	 * @param interval
+	 * @return
+	 */
+	public Markers stab(Marker marker) {
+		return stab(marker.getChromosomeName(), marker.getStart());
+	}
+
+	/**
+	 * Obtain all intervals that intersect with 'point'
+	 * @param interval
+	 * @return
+	 */
+	public Markers stab(String chromo, int point) {
+		return getTree(chromo).stab(point);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		for (String chromo : forest.keySet()) {
+			IntervalTree tree = getTree(chromo);
+			sb.append("chr" + chromo + ":\n" + tree + "\n");
+		}
+
+		return sb.toString();
+	}
+}

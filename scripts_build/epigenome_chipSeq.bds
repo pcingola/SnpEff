@@ -1,0 +1,189 @@
+#!/usr/bin/env bds
+
+system = "cluster"
+
+#-------------------------------------------------------------------------------
+# Process Epigenome roadmap data
+#-------------------------------------------------------------------------------
+
+string epigenomeDir = "$HOME/snpEff/db/epigenome"
+string sampleExpDir = "$epigenomeDir/sample-experiment"
+string macsDir = "$epigenomeDir/macs"
+
+string java = "java -Xmx4g -XX:ParallelGCThreads=2"
+string javaXL = "java -Xmx10g -XX:ParallelGCThreads=4"
+string snpEffDir = "$HOME/snpEff"
+string snpEffConfig = "$snpEffDir/snpEff.config"
+string snpEff = "$java -jar $snpEffDir/snpEff.jar"
+string snpSift = "$java -jar $snpEffDir/SnpSift.jar"
+
+#-------------------------------------------------------------------------------
+# Match an input with a number
+#-------------------------------------------------------------------------------
+string matchInput(string[] inputs, string num) {
+	for( string in : inputs ) {
+		if( in.removeExt().removeExt().extName() == num ) {
+			return in
+		}
+	}
+
+	# Cannot find propper input? use a random one
+	return inputs[ randInt(inputs.size()) ]
+}
+
+#-------------------------------------------------------------------------------
+# Peak calling
+#-------------------------------------------------------------------------------
+
+int peakCalling() {
+	# Create all pairs of treatment-input files and run MACS on them
+	print("Peak calling (MACS)\n")
+	int count = 1;
+	for( string sample : sampleExpDir.dirPath() ) {
+		if( sample.isDir() ) {
+			string inputDir = sample + "/ChIP-Seq_Input"
+
+			# Do we have 'input'?
+			if( inputDir.isDir() ) { 
+				# Read 'inputDir' dir
+				string[] inputs = inputDir.dirPath(".*bed.gz")
+
+				# Read each experiment
+				for( string ex : sample.dirPath() ) {
+					if( ex.baseName().startsWith("Histone_") ) {
+						# Files in this experiment
+						for( string treatment : ex.dirPath(".*.bed.gz") ) {
+							string num = treatment.removeExt().removeExt().extName()
+							string input = matchInput( inputs, num )
+							string dir = macsDir + "/" + sample.baseName() + "/" + ex.baseName()
+							string name = "$dir/" + treatment.baseName().removeExt().removeExt()
+							string xls = name + "_peaks.xls"
+
+							# Create MACS output dir
+							name.mkdir()	
+							
+							print("\t$count\t$name\n");
+							task( xls <- treatment ) {
+								sys macs -t $treatment -c $input -n $name -g hs
+							}
+
+							count++;
+						}
+					}
+				}
+			}
+		}
+	}
+	print("Finished scheduling tasks\n");
+
+	# Wait for all processes to finish
+	wait
+	return 1
+}
+
+#-------------------------------------------------------------------------------
+# Create consensus peaks
+#-------------------------------------------------------------------------------
+
+int consensusPeaksBySample() {
+	print("Create consensus peaks by sample & experiment\n")
+	for( string sample : macsDir.dirPath() ) {
+		if( sample.isDir() ) {
+			string saname = sample.baseName()
+			print("\t$saname\n")
+
+			# Read each experiment
+			for( string ex : sample.dirPath() ) {
+				string exname = ex.baseName()
+
+				if( exname.startsWith("Histone_") ) {
+					# Files in this experiment
+					string[] treatments = ex.dirPath(".*_peaks.bed")
+					int count = treatments.size()
+
+					string out = sample + "/" + exname + ".cluster_$count.bed"
+
+					if( count > 50 ) {
+						print("\t\t$exname\t$count samples\n");
+						string treats = treatments.join()
+
+						task( out <- treatments ) {
+							sys $javaXL -jar $snpEffDir/SnpSift.jar intersect -v -cluster $count -intersect -minOverlap 10 $treats > $out
+						}
+					}
+				}
+			}
+		}
+	}
+
+	print("Waiting for tasks\n")
+	wait
+
+	return 1
+}
+
+#-------------------------------------------------------------------------------
+# Consensus by experiment
+#-------------------------------------------------------------------------------
+
+int consensusPeaksByExperiment(string exp, real percent) {
+	print("Create consensus peaks by experiment $exp $percent\n")
+
+	string[] samples
+	for( string sample : macsDir.dirPath() ) {
+		if( sample.isDir() ) {
+			string saname = sample.baseName()
+
+			# Read each experiment
+			for( string ex : sample.dirPath() ) {
+				string exname = ex.baseName()
+
+				if( exname == exp  ) {
+					# Files in this experiment
+					string[] treatments = ex.dirPath(".*_peaks.bed")
+					samples.add(treatments)
+				}
+			}
+		}
+	}
+
+	int count = samples.size()
+	if( count >= 2 ) {
+		int culster = toInt( percent * samples.size() )
+		if( culster < 2 )	{ culster = 2 }
+		string treats = samples.join()
+		string out = "$macsDir/$exp.cluster.$percent.$count.$culster.bed"
+		print("\tSamples: $count\t$culster\t$out\n")
+		task( out <- samples, cpus = 2 ) {
+			sys $snpSift intersect -v -cluster $count -intersect -minOverlap 10 $treats > $out
+		}
+	}
+
+	return 1
+}
+
+#-------------------------------------------------------------------------------
+# Main
+#-------------------------------------------------------------------------------
+
+# Call peaks
+# peakCalling();
+
+# consensusPeaksBySample()
+
+string[] exps = [ "Histone_H3K36me3" ,"Histone_H3K9me3" ,"Histone_H3K4me1" ,"Histone_H3K4me3" ,"Histone_H3K27me3" ,"Histone_H3K27ac" ,"Histone_H3K9ac" ,"Histone_H3K79me1" ,"Histone_H3K4me2" ,"Histone_H2AK5ac" ,"Histone_H2BK5ac" ,"Histone_H2BK120ac" ,"Histone_H4K8ac" ,"Histone_H3K18ac" ,"Histone_H2BK15ac" ,"Histone_H2BK12ac" ,"Histone_H3K4ac" ,"Histone_H3K23ac" ,"Histone_H3K14ac" ,"Histone_H4K91ac" ,"Histone_H3K79me2" ,"Histone_H3K9me1" ,"Histone_H2BK20ac" ,"Histone_H2A.Z" ,"Histone_H4K5ac" ,"Histone_H4K20me1" ,"Histone_H3K56ac" ,"Histone_H4K12ac" ,"Histone_H3K23me2" ,"Histone_H2AK9ac" ]
+real[] precents = [ 0.8, 0.5, 0.25, 0.1, 0.05]
+
+for( real perc : precents ) {
+	for( string ex : exps ) {
+		consensusPeaksByExperiment( ex, perc )
+	}
+}
+
+print("Waiting for tasks\n")
+wait
+
+# Wait for any pending task
+wait
+print("Done!\n");
+

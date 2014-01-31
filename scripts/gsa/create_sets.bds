@@ -1,0 +1,72 @@
+#!/usr/bin/env bds
+
+# Official gene names files
+string[] versions=["GRCh37.66", "GRCh37.73"]
+string genesHgnc="hgnc_complete_set.txt"
+
+#---
+# Create a mapping list of genes
+#---
+for( string ver : versions ) {
+	print("Creating gene list file: $ver\n")
+	string gtf="Homo_sapiens.$ver.gtf.gz"
+	string genesGrch = "genes.$ver.list"
+	task( genesGrch <- gtf ) {
+		sys gunzip -c $gtf | cut -f 9 | grep "gene_name" | tr "\";" "\t\t" | cut -f 2,11 | uniq | sort | uniq > $genesGrch
+	}
+}
+wait
+
+string genes="genes.list"
+sys join -a 1 genes.GRCh37.66.list genes.GRCh37.73.list | tr " " "\t" > $genes
+
+string version = versions[0]
+string gtf="Homo_sapiens.$version.gtf.gz"
+string genesGrch = "genes.$version.list"
+
+#---
+# Create new gene set files and correct some other
+#---
+
+# Remove old versions of these sets
+sys rm -f *.gmt
+
+# Copy sets from MSigDb and other dirs
+sys cp -vf MSigDB/*.gmt .
+sys cp -vf ingenuity/*.gmt .
+
+# Create 't2d' collection
+sys cat mendelian.nancy/*.gmt t2d_genes.*/*.gmt | sort | uniq > t2d.gmt 
+
+# Create 'all' collection
+sys cat *.gmt | sort | uniq > all
+sys mv all all.gmt
+
+# Create 'selected' collection
+sys cat  \
+	c2.cp.biocarta.v4.0.symbols.gmt \
+	c2.cp.kegg.v4.0.symbols.gmt \
+	c2.cp.reactome.v4.0.symbols.gmt \
+	c2.cp.v4.0.symbols.gmt \
+	c5.all.v4.0.symbols.gmt \
+	ingenuity.set.gmt \
+	t2d.gmt \
+	| sort \
+	| uniq \
+	> selected
+sys mv selected selected.gmt
+
+#---
+# Correct gene names (if they are not foung in gene list)
+print("Correcting gene names:\n")
+for( string gmt : ".".dir(".*\.gmt") ) {
+	print("\t$gmt\n")
+
+	sys cat $gmt \
+			| ./checkGeneNames.py $genesHgnc $genes \
+			> tmp_$gmt \
+			2> report.$gmt.out
+
+	sys mv tmp_$gmt $gmt 
+}
+

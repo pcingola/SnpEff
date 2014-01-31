@@ -1,0 +1,13 @@
+
+  <!-- 
+       Add this section to tool_conf.xml file in your Galaxy distribution
+  -->
+  <section name="SnpEff tools" id="snpEff_tools">
+    <tool file="snpEff/snpEff.xml" />
+    <tool file="snpEff/snpEff_download.xml" />
+    <tool file="snpEff/snpSift_annotate.xml" />
+    <tool file="snpEff/snpSift_caseControl.xml" />
+    <tool file="snpEff/snpSift_filter.xml" />
+    <tool file="snpEff/snpSift_int.xml" />
+  </section>
+

@@ -1,0 +1,32 @@
+<tool id="snpEff_download" name="SnpEff Download" version="latest">
+	<description>Download a new database</description>
+	<requirements>
+		<requirement type="package" version="latest">snpEff</requirement>
+	</requirements>
+	<command interpreter="perl">snpEffWrapper.pl download -v $genomeVersion > $logfile </command>
+	<inputs>
+		<param name="genomeVersion" type="select" label="Genome">
+			<options from_file="snpeffect_genomedb.loc">
+				<column name="name" index="1"/>
+				<column name="value" index="0"/>
+			</options>
+		</param>
+	</inputs>
+
+	<outputs>
+		<data format="txt" name="logfile" />
+	</outputs>
+        <stdio>
+          <exit_code range=":-1"  level="fatal"   description="Error: Cannot open file" />
+          <exit_code range="1:"  level="fatal"   description="Error" />
+        </stdio>
+
+	<help>
+
+This tool downloads a SnpEff database.
+
+For details about this tool, please go to http://snpEff.sourceforge.net
+
+	</help>
+</tool>
+

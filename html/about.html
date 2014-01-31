@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SnpEff</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <link href="js/google-code-prettify/prettify.css" rel="stylesheet">
+	<link href="css/my.css" rel="stylesheet">
+
+    <!-- hTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="ico/favicon.png">
+
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+    <!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">SnpEff</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="download.html">Download</a></li>
+              <li><a href="SnpEff_manual.html">Documentation</a></li>
+              <li><a href="SnpSift.html">SnpSift</a></li>
+              <li><a href="about.html">About</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <h1>SnpEff</h1>
+    <p class="lead">About, contact info, feature requests &amp; bug reports</p>
+  </div>
+</header>
+
+
+  <div class="container">
+
+    <!-- Docs nav
+    ================================================== -->
+    <div class="row">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav">
+          <li><a href="#about"><i class="icon-chevron-right"></i> About</a></li>
+          <li><a href="#acknowledgements"><i class="icon-chevron-right"></i> Acknowledgements</a></li>
+          <li><a href="#bugs"><i class="icon-chevron-right"></i> Bug reports</a></li>
+          <li><a href="#help"><i class="icon-chevron-right"></i> Asking for help</a></li>
+          <li><a href="#features"><i class="icon-chevron-right"></i> Asking for new features</a></li>
+        </ul>
+      </div>
+      <div class="span9">
+
+
+        <!-- About
+        ================================================== -->
+        <section id="about">
+          <div class="page-header">
+            <h1>1. About</h1>
+          </div>
+				<p class="lead">
+				This project is maintained by <b> <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a> (pcingola@users.sourceforge.net</a>)</b><p>
+				</p>
+        </section>
+
+        <!-- Acknowledgements
+        ================================================== -->
+        <section id="acknowledgements">
+          <div class="page-header">
+            <h1>2. Acknowledgements</h1>
+          </div>
+				<p class="lead">
+				Acknowledgements and special thanks to (in order of appearance):
+				<ul>
+					<li> Adrian Platts (McGill): tons of feedback, feature suggestions, test cases, etc.<br>
+					<li> Doug Ruden (WSU): feedback, features request, debugging.<br>
+					<li> Louis Letourneau (McGill / Genome Quebec): bug fixes, features suggestions, etc.
+					<li> Dave OConnor (UW-Madison): feature suggestions, HIV genome <br>
+					<li> Denis Reshetov (Rogaev lab): VCF output support and debugging on GTF parsing.<br>
+					<li> Louis Letourneau (McGill / Genome Quebec): Maven project
+					<li> Mark DePristo, Eric Banks &amp; David Rozen (Broad): VCF parsing and VCF output.<br>
+					<li> Jonathan Fresnedo (University of California, Davis): P.Persica genome support <br>
+					<li> <b>GATK:</b> integratetion was performed by Broad's Genome Analysis Team: David Rozen, Eric Banks and Mark DePristo
+					<li> Arno Velds (NKI: Netherlands Cancer Institute): Annomalities in ENSEMBL annotation files that led to '-onlyCoding = auto' development, as well as "rogue transcript filters". <br>
+					<li> Giulio Genovese: ENSEMBL annotation problems, fixing and improving "rogue transcript" problem. <br>
+					<li> Louis Letourneau (McGill / Genome Quebec): dbNSFP implementation
+					<li> Peter Briggs (Manchester University) : Improved Galaxy interface and wrappers. <br>
+					<li> Jim Johnson (Minnesota Supercomputing Institute, University of Minnesota): SnpSift improvements and bugfixes. <br>
+					<li> Davide Cittaro (Center for Translational Genomics and Bioinformatics, Ospedale San Raffaele): Debugging and beta-testing for both SnpEff & SnpSift. Helped to debug many interoperability, compatibility and format specification issues. <br>
+					<li> Louis Letourneau (McGill / Genome Quebec): Cancer effects, HSGV notation, etc.
+					<li> Sarmady, Mahdi (Children's hospital of Philadelphia): hg19 using transcript version from UCSC.
+					<li> Leipzig, Jeremy &amp; Sarmady, Mahdi (Children's hospital of Philadelphia): HGSV notation
+					<li> Jinghua (Frank) Feng  (University of Adelaide) : Losts of feedback, debugging and improvements in SnpSift annotations.
+					<li> Andrea Mafficini (University of Verona, Italy) : Support for dbNSFP 2.1
+					<li> Jim Johnson (Minnesota Supercomputing Institute, University of Minnesota): SnpSift 'rmFilter' bugfix. <br>
+				</ul>
+				</p>
+        </section>
+
+        <!-- Bug reports
+        ================================================== -->
+        <section id="bugs">
+          <div class="page-header">
+            <h1>3. Bug reports</h1>
+          </div>
+				<p class="lead">
+				Please send any bug reports to:
+				<address>
+				  <strong><a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a>.</strong><br>
+				  pcingola@users.sourceforge.net
+				</address>
+				</p>
+				<br>
+				<p>
+				<b>Important:</b> A bug report should include the following information (in order to try to reproduce and fix the bug)
+				<table class="table table-striped">
+					<tr> <th> Item </th><th> Explanation </th><th> Example </th> </tr>
+					<tr> <td>What?</td><td> A clear explanation of the bug condition </td><td> "a RuntimeException occurss when trying to annotate..." </td> </tr>
+					<tr> <td>How?</td><td> A minimal bug-demonstrating test case </td><td> "when running the following command/s...".<br> Make sure you send the exact command lines you are using. </td> </tr>
+					<tr> <td>Which?</td><td> Which organism and genome version you are using (if applicable) </td><td> "we use GRCh37.72" </td> </tr>
+					<tr> <td>Version:</td><td> Which SnpEFf version and sub-version you are using </td><td> "we are using SnpEFf 3.3H").<br> Hint: Running <code>java -jar snpEff.jar</code> shows version information. </td> </tr>
+					<tr> <td>Data:</td><td> Sample data enough to reproduce the conditions </td><td> "find attached a sample of the VCF file..." </td> </tr>
+					<tr> <td>Results:</td><td> What you expect to obtain (if applicable)</td><td> "we expected result X, but we obtained Y instead..." </td> </tr>
+				</table>
+				</p>
+				<br>
+				<br>
+				<p> <b>Note:</b> Try SnpEff's latest version. SnpEff is updated often, may be the bug has already been corrected (e.g you are using version 3.1A, but I've already fixed it in version 3.1B). 
+					<br>
+					I know this is obvious, but I get many emails saying:
+					<p>
+					<blockquote><i>"...I read someone was using version 2.0.5 many years ago, so I'm using that version, and I noticed the features implemented in version 3.X don't work..." </i></blockquote>
+					</p>
+				</p>
+
+        </section>
+
+        <!-- help
+        ================================================== -->
+        <section id="help">
+          <div class="page-header">
+            <h1>4. Asking for help </h1>
+          </div>
+				<p class="lead">
+				I always try to help people, but sometimes I'm too busy and I won't be able to answer your emails in due time and manner.
+				Apologies in advanced.<br>
+				Contact information:
+				<address>
+				  <strong><a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a>.</strong><br>
+				  pcingola@users.sourceforge.net
+				</address>
+				</p>
+				<br>
+				<p>
+				<b>Important:</b> A request for help, should include at least the following items:
+				<table class="table table-striped">
+					<tr> <th> Item </th><th> Explanation </th><th> Example </th> </tr>
+					<tr> <td>What?</td><td> A clear explanation of what you are trying to achieve </td><td> "I want to annotate variants... and then filter them to obtain..." </td> </tr>
+					<tr> <td>How?</td><td> A minimal demonstration of how you are trying to do it </td><td> "we run the following command...".<br> Make sure you send the exact command lines you are using. </td> </tr>
+					<tr> <td>Which?</td><td> Which organism and genome version you are using </td><td> "we are analyzing human samples using GRCh37.72 reference genome" </td> </tr>
+					<tr> <td>Version:</td><td> Which SnpEFf version and sub-version you are using </td><td> "we are using SnpEFf 3.3H").<br> Hint: Running <code>java -jar snpEff.jar</code> shows version information. </td> </tr>
+					<tr> <td>Data:</td><td> Sample data enough to reproduce the conditions </td><td> "find attached a sample of the VCF file..." </td> </tr>
+					<tr> <td>Results:</td><td> What you expect to obtain </td><td> "we wanted to get information on variants that affect splcie regions..." </td> </tr>
+				</table>
+				</p>
+				<br>
+				<br>
+				<p>
+				<b>Note:</b> A few guidelines when asking for help...
+				<ul>
+					<li> <b>Read the documentation first.</b> Please make sure you've read the documentation before asking fo help. I know this is obvious, but a lot of people ask for questions in that are shown as examples in the documentation.
+							<p>
+							</p>
+					<li> <b>Use the latest version.</b> This may sound obvious, but there are a lot of requests that boil down to
+							<p>
+							<blockquote><i> "I'm using an obsolete verision and for some reason your latest feature is not there..." </i></blockquote>
+							</p>
+					<li> <b>Be polite.</b> Again, it may be obvious, but you cannot imagine the number of emails I get saying something like 
+							<blockquote><i> "I'm doing [something very wrong] and it doesn't work, so it' your fault because your program must have a bug!" </i></blockquote>
+							or sometimes
+							<blockquote><i>"You must drop everything you are doing and do my job for me right now!" </i></blockquote>
+					<li> <b>If I don't get back to you...</b> Do remind me if I don't get back to you within a few days. Sometimes I'm swamped with work or just out of town, a polite reminder helps.
+				</ul>
+				</p>
+        </section>
+
+        <!-- features
+        ================================================== -->
+        <section id="features">
+          <div class="page-header">
+            <h1>5. Asking for new features </h1>
+          </div>
+				<p class="lead">
+				I always take into acoount features request.
+				So don't hesitate to send me your ideas.<br>
+				Contact information:
+				<address>
+				  <strong><a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a>.</strong><br>
+				  pcingola@users.sourceforge.net
+				</address>
+				</p>
+				Of course, it  doesn't mean I'll get all suggestions implemented as soon as I get an email.
+				But if a lot of people are asking for the same feature, it is a strong indicator that I should try to implement it sooner rather than later.
+				<p>
+				Please, don't be frustrated if I tell you I cannot implement your suggestion / idea. Keep in mind that some features are impossible to implement for different reasons, e.g.:
+				<ul>
+					<li> SnpEff uses some standard (e.g. VCF) and new features cannot break those standards.
+					<li> SnpEff is used by a LOT of people in MANY diferent pipelines. New features must be compatible with current infrastructure and cannot break operational production pipelines.
+					<li> Some feature requests are just too difficult to implement
+				</ul>
+        </section>
+
+      </div>
+    </div>
+
+  </div>
+
+
+
+    <!-- Footer
+    ================================================== -->
+      <footer>
+        <p class="text-center">&copy; <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani 2013</a></p>
+      </footer>
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap-transition.js"></script>
+    <script src="js/bootstrap-alert.js"></script>
+    <script src="js/bootstrap-modal.js"></script>
+    <script src="js/bootstrap-dropdown.js"></script>
+    <script src="js/bootstrap-scrollspy.js"></script>
+    <script src="js/bootstrap-tab.js"></script>
+    <script src="js/bootstrap-tooltip.js"></script>
+    <script src="js/bootstrap-popover.js"></script>
+    <script src="js/bootstrap-button.js"></script>
+    <script src="js/bootstrap-collapse.js"></script>
+    <script src="js/bootstrap-carousel.js"></script>
+    <script src="js/bootstrap-typeahead.js"></script>
+    <script src="js/bootstrap-affix.js"></script>
+
+    <script src="js/holder/holder.js"></script>
+    <script src="js/google-code-prettify/prettify.js"></script>
+
+    <script src="js/application.js"></script>
+
+
+
+  </body>
+</html>

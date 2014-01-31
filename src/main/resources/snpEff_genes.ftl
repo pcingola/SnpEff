@@ -1,0 +1,4 @@
+# The following table is formatted as tab separated values. <#assign geneRegionTab=changeStats.geneCountByRegionTable>	<#assign geneEffTab=changeStats.geneCountByEffectTable>	<#assign geneList=genome.genesSorted>	<#assign regions=geneRegionTab.typeList>	<#assign effects=geneEffTab.typeList>
+#GeneId	GeneName	BioType<#list regions as region>	Bases affected (${region})	Total score (${region})	Length (${region})</#list><#list effects as eff>	Count (${eff})</#list>
+<#list geneList as gene>${gene.id}	${gene.geneName}	${gene.bioType}<#list regions as region>	${geneRegionTab.getCounter(region).get(gene.id)}	${geneRegionTab.getCounter(region).getScore(gene.id)}	${gene.sizeof(region)}</#list><#list effects as eff>	${geneEffTab.getCounter(eff).get(gene.id)}</#list>
+</#list>

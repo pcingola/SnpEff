@@ -1,0 +1,380 @@
+package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
+
+import java.util.HashMap;
+
+import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
+import ca.mcgill.mcb.pcingola.fileIterator.SmithWaterman;
+import ca.mcgill.mcb.pcingola.genBank.Feature;
+import ca.mcgill.mcb.pcingola.genBank.Feature.Type;
+import ca.mcgill.mcb.pcingola.genBank.Features;
+import ca.mcgill.mcb.pcingola.genBank.FeaturesFile;
+import ca.mcgill.mcb.pcingola.genBank.GenBankFile;
+import ca.mcgill.mcb.pcingola.interval.Gene;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.Timer;
+
+/**
+ * Command line: Read protein sequences from a file and compare them to the ones calculated from our data structures
+ * 
+ * Note: This is done in order to see potential incompatibility 
+ *       errors between genome sequence and annotation.
+ * 
+ * @author pcingola
+ */
+public class SnpEffCmdProtein extends SnpEff {
+
+	public static boolean onlyOneError = false; // This is used in some test-cases
+	public static double maxErrorPercentage = 0.01; // Maximum allowed error is 1% (otherwise test fails)
+
+	int totalErrors = 0;
+	int totalOk = 0;
+	int totalWarnings = 0;
+	int totalNotFound = 0;
+	String configFile = Config.DEFAULT_CONFIG_FILE;
+	String proteinFile = "";
+	HashMap<String, String> proteinByTrId;
+
+	/**
+	 * Count number of differences between strings
+	 * @param s1
+	 * @param s2
+	 * @return
+	 */
+	public static int diffCount(String s1, String s2) {
+		int minLen = Math.min(s1.length(), s2.length());
+		int count = 0;
+		for (int j = 0; j < minLen; j++)
+			if (s1.charAt(j) != s2.charAt(j)) count++;
+
+		return count;
+	}
+
+	/**
+	 * Show difference between two strings
+	 * @param s1
+	 * @param s2
+	 * @return
+	 */
+	public static String diffStr(String s1, String s2) {
+		// Create a string indicating differences
+		int minLen = Math.min(s1.length(), s2.length());
+		char diff[] = new char[minLen];
+		for (int j = 0; j < minLen; j++) {
+			if (s1.charAt(j) != s2.charAt(j)) {
+				diff[j] = '|';
+			} else diff[j] = ' ';
+
+		}
+		return new String(diff);
+	}
+
+	public SnpEffCmdProtein() {
+	}
+
+	public SnpEffCmdProtein(Config config) {
+		this.config = config;
+		proteinFile = config.getFileNameProteins();
+	}
+
+	public SnpEffCmdProtein(Config config, String proteinFile) {
+		this.config = config;
+		this.proteinFile = proteinFile;
+	}
+
+	public SnpEffCmdProtein(String genomeVer, String configFile, String proteinFile) {
+		this.configFile = configFile;
+		this.genomeVer = genomeVer;
+		this.proteinFile = proteinFile;
+	}
+
+	void add(String trId, String seq, int lineNum) {
+		// Repeated transcript Id? => Check that Protein is the same 
+		if ((proteinByTrId.get(trId) != null) && (!proteinByTrId.get(trId).equals(seq))) //
+			System.err.println("ERROR: Different protein for the same transcript ID. This should never happen!!!"//
+					+ "\n\tLine number   : " + lineNum //
+					+ "\n\tTranscript ID : '" + trId + "'"//
+					+ "\n\tProtein       : " + proteinByTrId.get(trId) //
+					+ "\n\tProtein (new) : " + seq //
+			);
+
+		// Pick the first space separated string
+		if (trId.indexOf(' ') > 0) trId = trId.split("\\s")[0];
+
+		proteinByTrId.put(trId, seq); // Add it to the hash
+		if (debug) Gpr.debug("Adding proteinByTrId{'" + trId + "'} :\t" + seq);
+	}
+
+	/**
+	 * Compare two protein sequences
+	 * 
+	 * @param protein
+	 * @param proteinRef
+	 * @return
+	 */
+	boolean equals(String protein, String proteinRef) {
+		if (protein.isEmpty() && proteinRef.isEmpty()) return true;
+
+		protein = proteinFormat(protein);
+		proteinRef = proteinFormat(proteinRef);
+
+		if (protein.equals(proteinRef)) return true;
+
+		// Remove last AA in Ref sequence (e.g. when las AA in reference by is 'unknown')
+		String refUnk = "";
+		if (proteinRef.length() > 0) {
+			refUnk = proteinRef.substring(0, proteinRef.length() - 1);
+			if (protein.equals(refUnk)) return true;
+		}
+
+		// Replace First AA by 'Met'? Start codon may be translated as Met even if it normally encodes other AA.
+		// Compare everything but start codon.
+		String proteinNoStart = "", refNoStart = "";
+		if ((protein.length() > 0) && (proteinRef.length() > 0)) {
+			proteinNoStart = protein.substring(1);
+			refNoStart = proteinRef.substring(1);
+			if (proteinNoStart.equals(refNoStart)) return true;
+		}
+
+		// Rare amino acid translations (U)
+		String proteinU = protein.replace('*', 'U');
+		if (proteinU.equals(proteinRef) || proteinU.equals(refUnk)) return true;
+
+		String proteinNoStartU = proteinNoStart.replace('*', 'U');
+		if (proteinNoStartU.equals(refNoStart)) return true;
+
+		return false;
+	}
+
+	public int getTotalErrors() {
+		return totalErrors;
+	}
+
+	public int getTotalOk() {
+		return totalOk;
+	}
+
+	/**
+	 * Parse command line arguments
+	 */
+	@Override
+	public void parseArgs(String[] args) {
+		for (int i = 0; i < args.length; i++) {
+
+			// Argument starts with '-'?
+			if (args[i].startsWith("-")) usage("Unknow option '" + args[i] + "'"); // Options 
+			else if (genomeVer.isEmpty()) genomeVer = args[i];
+			else if (proteinFile.isEmpty()) proteinFile = args[i];
+			else usage("Unknow parameter '" + args[i] + "'");
+		}
+
+		// Check: Do we have all required parameters?
+		if (genomeVer.isEmpty()) usage("Missing genomer_version parameter");
+		if (proteinFile.isEmpty()) usage("Missing protein_file parameter");
+	}
+
+	/**
+	 * Compare all Protein
+	 */
+	double proteinCompare() {
+		int i = 1;
+		if (verbose) System.out.print('\t');
+
+		for (Gene gene : config.getGenome().getGenes()) {
+
+			for (Transcript tr : gene) {
+				String protein = tr.protein();
+				String proteinReference = proteinByTrId.get(tr.getId());
+
+				if (proteinReference == null) {
+					if (tr.isProteinCoding()) {
+						totalNotFound++;
+						if (debug) System.err.println("\nWARNING:Cannot find Protein for transcript " + tr.getId());
+						else if (verbose) System.out.print('-');
+					}
+				} else if (equals(protein, proteinReference)) {
+					totalOk++;
+					if (verbose) System.out.print('+');
+				} else {
+					if (debug || onlyOneError) {
+						protein = proteinFormat(protein);
+						proteinReference = proteinFormat(proteinReference);
+
+						SmithWaterman sw = new SmithWaterman(protein, proteinReference);
+						if (Math.max(protein.length(), proteinReference.length()) < SnpEffCmdCds.MAX_ALIGN_LENGTH) sw.align();
+
+						int maxScore = Math.min(protein.length(), proteinReference.length());
+						int score = sw.getAligmentScore();
+						System.err.println("\nERROR: Proteins do not match for transcript " + tr.getId() //
+								+ "\tStrand:" + tr.getStrand() //
+								+ "\tExons: " + tr.numChilds() //
+								+ "\n" //
+								+ String.format("\tSnpEff protein     (%6d) : '%s'\n", protein.length(), protein) //
+								+ String.format("\tReference protein  (%6d) : '%s'\n", proteinReference.length(), proteinReference) //
+								+ "\tAlignment (Snpeff protein vs Reference protein)." //
+								+ "\tScore: " + score //
+								+ "\tMax. possible score: " + maxScore //
+								+ "\tDiff: " + (maxScore - score) //
+								+ "\n" + sw //
+						);
+						System.err.println("Transcript details:\n" + tr);
+
+					} else if (verbose) System.out.print('*');
+
+					totalErrors++;
+
+					if (onlyOneError) {
+						System.err.println("Transcript details:\n" + tr);
+						throw new RuntimeException("DIE");
+					}
+				}
+
+				// Show a mark
+				if (verbose && (i % 100 == 0)) System.out.print("\n\t");
+				i++;
+			}
+		}
+
+		double perc = ((double) totalErrors) / ((double) (totalErrors + totalOk));
+		System.out.println("\n\tProtein check:\t" + config.getGenome().getVersion() + "\tOK: " + totalOk + "\tWarnings: " + totalWarnings + "\tNot found: " + totalNotFound + "\tErrors: " + totalErrors + "\tError percentage: " + (100 * perc) + "%");
+		return perc;
+	}
+
+	/**
+	 * Format proteins to make them easier to compare 
+	 * @param protein
+	 * @return
+	 */
+	String proteinFormat(String protein) {
+		if (protein.isEmpty()) return "";
+
+		// We use uppercase letters
+		protein = protein.toUpperCase();
+
+		// Stop codon is trimmed
+		int idxLast = protein.length() - 1;
+		char lastChar = protein.charAt(idxLast);
+		if ((lastChar == '*') || (lastChar == '?')) protein = protein.substring(0, idxLast);
+
+		// We use '?' as unknown protein
+		protein = protein.replace('X', '?');
+
+		// Remove staring '?' codons
+		if (protein.startsWith("?")) protein = protein.substring(1);
+
+		return protein;
+	}
+
+	/**
+	 * Read a file that has all proteins in fasta format
+	 */
+	void readProteinFile() {
+		proteinByTrId = new HashMap<String, String>();
+		if (proteinFile.endsWith("txt") || proteinFile.endsWith("txt.gz")) readProteinFileTxt();
+		else if (proteinFile.endsWith("gb")) readProteinFileGenBank();
+		else readProteinFileFasta();
+	}
+
+	/**
+	 * Read Proteins from a file
+	 * Format: Tab-separated format, containing "sequence \t transcriptId"
+	 */
+	void readProteinFileFasta() {
+		// Load file
+		FastaFileIterator ffi = new FastaFileIterator(proteinFile);
+		for (String seq : ffi) {
+			String trId = ffi.getTranscriptId();
+			add(trId, seq, ffi.getLineNum());
+		}
+	}
+
+	/**
+	 * Read proteins from geneBank file
+	 */
+	void readProteinFileGenBank() {
+		FeaturesFile featuresFile = new GenBankFile(proteinFile);
+		for (Features features : featuresFile) {
+			for (Feature f : features.getFeatures()) { // Find all CDS 
+				if (f.getType() == Type.CDS) { // Add CDS 'translation' record
+					String trId = f.getTranscriptId();
+					String seq = f.getAasequence();
+					if ((trId != null) && (seq != null)) add(trId, seq, -1);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Read Proteins from a file
+	 * Format: Tab-separated format, containing "sequence \t transcriptId"
+	 */
+	void readProteinFileTxt() {
+		// Load file
+		String proteinData = Gpr.readFile(proteinFile);
+		String proteinLines[] = proteinData.split("\n");
+
+		// Parse each line
+		int lineNum = 1;
+		for (String proteinLine : proteinLines) {
+			// Split tab separated fields
+			String field[] = proteinLine.split("\\s+");
+
+			// Parse fields
+			if (field.length >= 2) {
+				// OK Parse fields
+				String seq = field[1].trim();
+				String trId = field[0].trim();
+
+				add(trId, seq, lineNum);
+			}
+
+			lineNum++;
+		}
+	}
+
+	/**
+	 * Run command
+	 */
+	@Override
+	public boolean run() {
+		if (verbose) Timer.showStdErr("Checking database using protein sequences");
+
+		// Load config
+		if (config == null) readConfig();
+
+		// Read proteins
+		if (verbose) Timer.showStdErr("Reading proteins from file '" + proteinFile + "'...");
+		readProteinFile(); // Load Protein
+		if (verbose) Timer.showStdErr("done (" + proteinByTrId.size() + " Proteins).");
+
+		// Load predictor
+		if (config.getSnpEffectPredictor() == null) {
+			if (verbose) Timer.showStdErr("Reading database...");
+			config.loadSnpEffectPredictor(); // Read snpEffect predictor
+			if (verbose) Timer.showStdErr("done");
+		}
+
+		// Compare proteins
+		if (verbose) Timer.showStdErr("Comparing Proteins...");
+		proteinCompare();
+		if (verbose) Timer.showStdErr("done");
+
+		return true;
+	}
+
+	/**
+	 * Show usage and exit
+	 */
+	@Override
+	public void usage(String message) {
+		if (message != null) System.err.println("Error: " + message + "\n");
+		System.err.println("snpEff version " + SnpEff.VERSION);
+		System.err.println("Usage: snpEff protein [options] genome_version proteing_file");
+		System.err.println("\nOptions:");
+		System.err.println("\t-c , -config            : Specify config file");
+		System.err.println("\t-noLog                  : Do not report usage statistics to server");
+		System.err.println("\t-v , -verbose           : Verbose mode");
+		System.exit(-1);
+	}
+}

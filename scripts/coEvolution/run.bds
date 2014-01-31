@@ -1,0 +1,126 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+# Run epistasisary model
+#
+#
+#															Pablo Cingolani 2013
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Parameters
+#-------------------------------------------------------------------------------
+string tfam="$HOME/t2d1/pheno/pheno.age.tfam"
+string vcf="$HOME/t2d1/eff/hm.gt.vcf"
+
+int minAc=100						# Minimum Allele count in a variant
+real maxP=1e-06						# Maximum p-value to consider a variant for further analysis (logistic regression)
+int showNonSignificant=10000		# Show p-values even if non-significan (once every 'showNonSignificant')
+int numPc=3							# Number of PC to use in logistic regression
+int maxRsize=1024*1024*1024			# Process a maximum of 1G per split
+int minRsize=100*1024				# Do not split less than 100K
+
+# Available models
+string[] models = ["LD"]			# ["MAX", "ABS"]
+
+# Perform analysis on a subset of genes or positions
+string genes = ""					# e.g.	"ABCC8,ABCD1,ABCG5,ABCG8,ABHD1,ACADS,ACMSD,ADA,ADAM30,ADAMTS9,ADCY5,ADIPOQ,AEBP1,AGBL5,AGGF1,AGPAT6,AHSG,AKTIP,ANAPC5,ANK1,ANKRD55,ANPEP,AP3S2,ARAP1,ARF5,ARHGAP28,ARHGAP4,ARHGEF17,ARMC6,ARNT2,ATG16L2,ATP13A1,ATP2B3,ATXN7,AVPR2,B3GAT2,BAG3,BCAP31,BCAR1,BCL11A,BCL2,BCL2A1,BGN,BLM,BRE,BRSK2,BTBD9,C10orf47,C12orf4,C12orf43,C12orf5,C12orf70,C15orf37,C15orf38,C15orf42,C15orf5,C15orf53,C20orf111,C2CD4A,C2CD4B,C2orf16,C2orf28,C2orf53,C3orf31,C3orf49,C3orf65,C4orf42,C6orf129,C6orf57,C6orf64,C8orf37,C8orf38,C8orf85,C9orf53,CABP1,CAD,CAMK1D,CAMK2B,CAMKK2,CARS,CCAR1,CCDC121,CCND2,CCNE2,CCNT2,CD3EAP,CD81,CDC123,CDKAL1,CDKN1C,CDKN2A,CDKN2B,CDKN2B-AS,CEBPA,CEBPG,CFDP1,CGREF1,CHST5,CHST6,CHST8,CILP2,CLPB,COBLL1,COL19A1,COL9A1,COPE,COPG2,CPEB3,CREB5,CRHBP,CRIPAK,CRTC3,CTBP1,CTRB1,CTRB2,CTSD,DBNL,DDX21,DDX49,DDX50,DDX52,DGKB,DGKQ,DHTKD1,DKFZp686O24166,DMPK,DMWD,DNAH8,DNAJC5G,DPH1,DPY19L4,DPYSL5,DUSP14,DUSP8,DUSP9,DYNC2LI1,E2F3,EIF2B4,EIF3A,EIF4A2,EIF5AL1,EMILIN1,EML2,ERCC1,ERCC2,ESRP1,ETV5,EXOC6,F2RL1,FAH,FAM135A,FAM168A,FAM45A,FAM45B,FAM53A,FAM58A,FAM72B,FAM75D1,FAM75D3,FAM75D4,FAM75D5,FAM98B,FAM99A,FAM99B,FAT3,FBXO46,FCHSD2,FES,FETUB,FGF23,FGF6,FGFRL1,FITM2,FLJ35390,FLJ43663,FNDC4,FOSB,FOXA3,FSCN3,FTHL3,FTO,FURIN,GABARAPL2,GAK,GATAD2A,GCC1,GCK,GCKR,GDAP1L1,gene,GINS4,GIPR,GLIS3,GLP1R,GMIP,GOLGA7,GPATCH1,GPN1,GPR4,GRB14,GRK5,GRM8,GTF3C2,HAPLN4,HAUS7,HCFC1,HDDC3,HHEX,HIC1,HK1,HKDC1,HMG20A,HMGA2,HMGCS2,HNF1A,HNF1B,HNF4A,HOMER3,HRG,IDE,IDH2,IDH3G,IDUA,IFT172,IGF2BP2,INPP5F,INTS8,IRAK3,IRF2BP1,ITGB6,JAKMIP1,JAZF1,JPH2,KCNJ11,KCNK16,KCNK17,KCNK5,KCNQ1,KCNQ1DN,KCNQ1OT1,KCTD15,KDSR,KHK,KIAA0664,KIAA1279,KIAA1429,KIAA1530,KIF11,KIF6,KIF7,KLC3,KLF14,KLHDC5,KNG1,KRTAP5-1,KRTAP5-2,KRTAP5-3,KRTAP5-4,KRTAP5-5,KRTAP5-6,KRTCAP3,L1CAM,LAMA1,LDHD,LGR5,LINGO1,LIPH,LLPH,LOC100128081,LOC100129480,LOC100129726,LOC100129961,LOC100130872,LOC100130872-SPON2,LOC100133545,LOC100287284,LOC100287879,LOC100288748,LOC100302650,LOC143188,LOC151162,LOC283050,LOC283070,LOC283688,LOC283761,LOC284009,LOC284100,LOC284440,LOC338651,LOC344887,LOC400643,LOC402778,LOC644242,LOC646329,LOC728723,LOC728819,LOC729991,LOC729991-MEF2B,LOC79015,LOC80054,LPAR2,LRP3,LRPPRC,LRRC30,LSP1,MAEA,MAN2A2,MAN2B2,MAP3K1,MAP3K13,MAPRE3,MARCH5,MASP1,MAU2,MC4R,MDGA1,MEF2B,MESP1,MESP2,MEST,MESTIT1,METT10D,MGAT5,MIR1248,MIR132,MIR139,MIR212,MIR29A,MIR29B1,MIR3150,MIR330,MIR335,MIR4298,MIR486,MIR548A2,MIR592,MIR642A,MKRN2,MLEC,MNT,MOB2,MPV17,MRPL23,MRPL33,MRPS35,MTAP,MTHFS,MTNR1B,MYL7,MYLK,MYPOP,MYST3,NAA10,NANOS2,NAP1L4,NBPF7,NCAN,NCRNA00255,NCRNA00262,NDUFA13,NKIRAS1,NKX6-3,NOTCH2,NOVA2,NPC1L1,NR2C2AP,NRBP1,NUCB2,NUDCD3,NUDT5,OASL,OPA3,OSBPL5,OST4,OVCA2,P2RX4,P2RX7,P2RY2,P2RY6,PAFAH1B1,PAX4,PBX4,PDE2A,PDE8B,PDIA5,PDZD4,PEPD,PEX11A,PGAM2,PHGDH,PHLDA2,PHLPP1,PIK3C2A,PKIG,PLA2R1,PLEKHA7,PLEKHF2,PLEKHH2,PLIN1,PLXNB3,PMAIP1,PNCK,POLD2,POLM,POLR2J4,PPARG,PPFIBP1,PPIF,PPM1G,PPM1N,PPP1R13L,PPP2R2C,PRC1,PRDX3,PREB,PRICKLE2,PROX1,PSMD6,PSTPIP1,PTHLH,PTPLB,PTPRD,PTPRR,QPCTL,R3HDML,RAB3GAP1,RAD21,RAD51AP1,RAF1,RASA4P,RASGRP1,RBKS,RBL2,RBMS1,RCCD1,RCN2,REG4,RELT,RENBP,REP15,RFC4,RFXANK,RGS10,RND3,RNF212,RPA1,RPGRIP1L,RPL39L,RPS13,RPSAP52,RSPH6A,RTN2,RTN4RL1,RTP1,S100Z,SACS,SCAPER,SEC22A,SEC61A2,SEMA4B,SEMA5B,SENP2,SERINC3,SERPINB5,SFRP1,SFXN4,SGCG,SGK269,SGSM2,SIX5,SLBP,SLC1A1,SLC22A18,SLC22A18AS,SLC25A42,SLC26A1,SLC30A3,SLC30A8,SLC36A4,SLC38A11,SLC4A1AP,SLC5A6,SLC6A8,SLC7A10,SMAP1,SMG6,SMYD2,SMYD4,SND1,SNORA19,SNORA4,SNORA47,SNORA54,SNORA63,SNORA70F,SNORA81,SNORD2,SNORD91A,SNORD91B,SNORD98,SNRPD2,SNTN,SNX17,SPDYE1,SPON2,SPPL3,SPRED1,SPRY2,SRGN,SRPK3,SRR,SSR4,ST20,ST6GAL1,STARD10,STOX1,SUGP1,SUGP2,SUPT7L,SUPV3L1,SV2B,SYMPK,SYN2,SYNPR,SYNRG,SYT8,TACR2,TADA2A,TAX1BP1,TBC1D3,TBC1D3F,TCF23,TCF7L2,THADA,THOC7,TIAL1,TIMP4,TLE1,TLE4,TM6SF2,TMBIM4,TMED11P,TMEM161A,TMEM163,TMEM170A,TMEM175,TMEM195,TMEM214,TMEM231,TMEM41A,TNFRSF19,TNNI2,TNNT3,TOX2,TP53INP1,TRA2B,TREX2,TRIM54,TRPM5,TSEN2,TSGA13,TSPAN15,TSPAN3,TSPAN8,TSR1,TSSC4,TSSK6,TTPAL,UBE2D4,UBE2E1,UBE2E2,UCN,UNC119B,UNC45A,UPF2,URGCP,USH1C,VASP,VGLL4,VPS13C,VPS26A,VPS33B,VPS4B,VTI1A,WDR41,WDR59,WDR88,WDR93,WFS1,YJEFN3,YKT6,YSK4,ZBED3,ZCCHC24,ZFAND3,ZFAND6,ZFP1,ZFP36L2,ZFP92,ZMIZ1,ZNF101,ZNF14,ZNF253,ZNF275,ZNF506,ZNF512,ZNF513,ZNF697,ZNF710,ZNF800,ZNF93,ZNRF1"
+									#		"SLC30A8,IKZF2,PAX4,KISS1R"
+string chrPos = ""					# e.g.: "1:150974971,7:150556055,8:118184783"
+
+#-------------------------------------------------------------------------------
+# Programs
+#-------------------------------------------------------------------------------
+string snpsift = "java -Xmx10g -jar $HOME/snpEff/SnpSift.jar"
+
+#-------------------------------------------------------------------------------
+# Main
+#-------------------------------------------------------------------------------
+
+#---
+# Run for both models
+#---
+for( string model : models ) {
+
+	string fid = ""
+	string filter = ""
+	if( ! genes.isEmpty() ) {
+		fid = ".genes"
+		filter = "-genes \"$genes\""
+	} else if ( ! chrPos.isEmpty() ) {
+		fid = ".chrpos"
+		filter = "-pos \"$chrPos\""
+	}
+
+	# Run on a subset of genes
+	string out = "epistasis$fid.$model.out"
+	string txt = "epistasis$fid.$model.txt"
+	if( out <- vcf ) {
+		print("CoEvolutionary model $model\n")
+		sys $snpsift epistasis -v -cpus $cpusLocal -minAc $minAc -maxP $maxP -show $showNonSignificant -model $model $filter -out epistasis.$model.txt $tfam $vcf > $out
+	}
+}
+wait
+
+#---
+# Logistic regression on pre-selected results
+#---
+
+# Note we split the file to run N processes
+string splitDir = "split"
+string resultsDir = "split/results"
+string logisticDir = "split/logistic_$numPc"
+splitDir.mkdir()
+resultsDir.mkdir()
+logisticDir.mkdir()
+
+# Split and run several R processes to calculate logistic regression
+for( string model : models ) {
+
+	if( model == "LD" )	continue
+
+	string fid = ""
+	if( ! genes.isEmpty() ) {
+		fid = ".genes"
+	} else if ( ! chrPos.isEmpty() ) {
+		fid = ".chrpos"
+	}
+
+	string results = "epistasis$fid.$model.txt"
+	string genotypes = "epistasis$fid.$model.gt.txt"
+	string phenoCov = "epistasis.pheno.covariates.txt"
+	string prefix = "epistasis$fid.$model.split."
+
+	if( results.exists() ) {
+		# Calculate split size
+		int size = ( results.size() / cpusLocal ) + 1
+		if( size > minRsize ) {
+			size = min( maxRsize, size )
+		}
+
+		int filesSplitted = splitDir.dir("$prefix.*").size()
+		if( filesSplitted != cpusLocal ) {
+			print("Splitting file $results into $cpusLocal files. File size: " + results.size() + ", split size: $size\n");
+			sys split -C $size $results $splitDir/$prefix
+		}
+    
+		# Create a task for each file
+		for( string split : splitDir.dir("$prefix.*") ) {
+			print("\t$split\n")
+			string splitResult = splitDir + "/" + split.baseName()
+			string logistic = logisticDir + "/" + split.baseName() + ".txt"
+    
+			# Run logistic regression
+			task( logistic <- splitResult, cpus = 2 ) {
+				sys head -n 1 $results > $splitResult.tmp
+				sys cat $splitResult | grep -v "^idx1" >> $splitResult.tmp
+				sys mv $splitResult.tmp $splitResult
+				sys Rscript epistasis.r $splitResult $genotypes $phenoCov $numPc | tee $logistic
+			}
+		}
+	}
+}
+
+# OK, we are done
+wait
+print("Done!\n")

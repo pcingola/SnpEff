@@ -1,0 +1,238 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+#
+# Create databases
+#
+#-------------------------------------------------------------------------------
+
+# Commands
+string snpeff					= "java -Xmx10G -jar snpEff.jar "
+string snpeffXl					= "java -Xmx50G -jar snpEff.jar "
+string snpeffBuild				= "$snpeff build -v"
+
+# Directories
+string dirSnpeff				="$HOME/snpEff"
+string dirData					="$dirSnpeff/data"
+string dirDownload				="$dirSnpeff/download"
+string dirZip					="$dirSnpeff/zip"
+string dirBuild					="$dirSnpeff/build"
+string dirDb					="$dirSnpeff/db"
+string dirDarned				="$dirDb/darned/"
+string pwmsBin					="$dirDb/jaspar/pwms.bin"
+
+# Program parameters and switches
+bool dryrun 					= false		# Dry run: Don't build databases
+bool make	 					= false		# Mkae (build JAR files)
+bool download 					= false		# Download files
+bool build	 					= false		# Build databases
+bool distro	 					= false		# Create distribution files
+bool upload	 					= false		# Upload for distribution
+
+int	wget_wait					= 1									# Wait a few moments between file downloads (to avoid saturating the server)
+string wget						= "wget --wait=$wget_wait -r -nc "	# Wget command line
+
+# Output files
+string buildSummary				= "build.out"
+
+#-------------------------------------------------------------------------------
+# Variables
+#-------------------------------------------------------------------------------
+
+string{} built
+
+#-------------------------------------------------------------------------------
+# Add a build command
+#-------------------------------------------------------------------------------
+bool addBuild(string type, string genome) {
+	string dir = "$dirData/$genome"
+	string db = "$dir/snpEffectPredictor.bin"
+	string[] geneFiles = dir.dir("genes.*") 
+
+	# No 'genes' file? Error
+	if( geneFiles.isEmpty() ) {
+		warning("No genes file for $genome\n")
+		return( false );
+	}
+
+	string geneFile = geneFiles.head()
+	if( built.hasKey(genome) ) {
+		print("INFO : Genome $genome already built\n")
+	} else if( db <- geneFile ) {
+		if( dryrun ) {
+			print("DRY RUN:\t$type\t$genome\n")
+		} else {
+			print("BUILD:\t$type\t$genome\n")
+			task $snpeffBuild -$type $genome 2>&1 | tee $dirBuild/build.$genome.out
+		}
+	} else {
+		print("OK  :\t$type\t$genome\n")
+	}
+
+	# Mark as built
+	built{genome} = genome
+	return( true )
+}
+
+#-------------------------------------------------------------------------------
+# Build all databases
+#-------------------------------------------------------------------------------
+
+bool buildAll() {
+	print("Build: Start\n")
+	dirBuild.mkdir()	# Make sure build dir exists
+	
+	# Special cases
+	addBuild("refseq", "hg19")
+	addBuild("knowngenes", "hg19kg")
+	addBuild("gff2", "amel2")
+
+	# Look into all directories
+	print("Available databases:\n")
+	string dbids = sys $snpeff databases | cut -f 1 | tail -n +3
+
+	print("Building:\n")
+	for(string genome : dbids.stdout().lines()  ) {
+
+		# Get genome name and genes file
+		genome = genome.trim().baseName()
+		string dir = "$dirData/$genome"
+		string[] geneFiles = dir.dir("genes.*")
+
+		if( ! geneFiles.isEmpty() ) {
+			# Find genes' file type
+			string geneFile = geneFiles.head()
+			geneFile = geneFile.baseName(".gz")
+
+			# Get type from gene's file extention
+			string type = geneFile.extName()
+
+			# Convert type names
+			if( type == "gtf" )			{ type = "gtf22" }
+			else if( type == "gff" )	{ type = "gff3" }
+			else if( type == "gb" )		{ type = "genbank" }
+
+			# Build
+			addBuild(type, genome)
+		} else {
+			warning("No genes file found for '$genome', dir '$dir'\n")
+		}
+	}
+
+	wait
+
+	# Create build summary
+	print("Build: Checking build logs!\n")
+	if( ! dryrun )	sys cat $dirBuild/build.*.out | ./scripts_build/buildCheck.pl | tee $buildSummary
+
+	print("Build: Done!\n")
+	return( true )
+}
+
+#-------------------------------------------------------------------------------
+# Build special databases
+#-------------------------------------------------------------------------------
+
+void buildSpecial() {
+	buildNextProt()
+}
+
+void buildNextProt() {
+	# Note: This takes a huge amount of memory, don't run multiple of these process because the server will crash
+	# TODO: Add amount of memory to the taks and remove the constraint
+	print("Buils special.\n\tFIXME: Create a 'task' instead of a 'sys'\n")
+
+	# XML files used to build NextProt
+	string dirNextProt = "$dirSnpeff/db/nextProt/"
+	string[] xmlFiles = dirNextProt.dirPath(".*.xml")
+
+	# Check each genome version
+	for( string hg : dirData.dir("GRCh37.7.*") ) {
+		string npfile = "$dirData/$hg/nextProt.bin"
+
+		if( npfile <- xmlFiles ) {
+			print("NextProt ($hg): Build\n")
+			if( ! dryrun )	sys $snpeffXl buildNextProt -v $hg db/nextProt/
+		} else {
+			print("NextProt ($hg): OK\n")
+		}
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Copy pwms.bin to every human dir
+#-------------------------------------------------------------------------------
+void copyPwm() {
+	humanDirs := dirData.dirPath(".*/GRCh.*")
+	print("Copying $pwmsBin to human genomes\n")
+	for( string hg : humanDirs ) {
+		print("\t$hg\n")
+		sys cp $pwmsBin $hg
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Download all databases
+#-------------------------------------------------------------------------------
+
+void downloadAll() {
+	sys ./scripts_build/download_ensembl_bfmpp.sh
+	sys ./scripts_build/download_ensembl.sh
+
+	# Human specific databases
+	sys ./scripts_build/download_hg19.sh
+	sys ./scripts_build/download_hg19kg.sh
+	sys ./scripts_build/download_nextProt.sh
+	sys ./scripts_build/download_Pwms_Jaspar.sh
+	sys ./scripts_build/download_clinvar.sh 
+	sys ./scripts_build/download_gwasCatalog.sh 
+	sys ./scripts_build/download_dbSnp.sh 
+	sys ./scripts_build/download_epigenome.sh	# This might take a few days
+	#sys ./scripts_build/download_ncbi.sh		# NCBI downloads do not seem to be working OK
+	#sys ./scripts_build/download_darned.sh		# Darned not working
+
+	# Uncompress and re-compress downloaded files (avoid block compress problem with Java library)
+	string fid = sys find $dirDownload/data -iname "*.gz"
+	for( string gz : fid.stdout().lines() ) {
+		string f = gz.removeExt()
+		print("Recompress $gz <-> $f\n")
+		task gunzip -v $gz; gzip -v $f
+	}
+
+	# Move downloaded data to 'data' dir
+	sys mv $dirDownload/data/genomes/* data/genomes/ 
+	sys rmdir $dirDownload/data/genomes 
+	sys mv $dirDownload/data/* data/ 
+	sys rmdir $dirDownload/data/
+}
+
+#-------------------------------------------------------------------------------
+# Main
+#-------------------------------------------------------------------------------
+
+print("Start!\n")
+
+# Create JAR files
+if( make ) {
+	sys ./scripts_build/make_config.sh
+	sys ./scripts_build/make.sh
+}
+
+# Perform downloads
+if( download ) downloadAll()
+
+# Build genomes
+if( build ) {
+	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
+	buildAll()
+	buildSpecial()
+}
+
+# Create distribution files
+if( distro ) sys ./scripts_build/distro.sh
+
+# Upload files
+if( upload ) sys ./scripts_build/uploadSourceForge.sh
+
+wait
+print("Done!\n")

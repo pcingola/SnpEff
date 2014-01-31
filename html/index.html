@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SnpEff and SnpSift</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="ico/favicon.png">
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">SnpEff</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="download.html">Download</a></li>
+              <li><a href="SnpEff_manual.html">Documentation</a></li>
+              <li><a href="SnpSift.html">SnpSift</a></li>
+              <li><a href="about.html">About</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">SnpEff</li>
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="SnpEff.html">SnpEff description</a></li>
+              <li><a href="download.html">Download</a></li>
+              <li><a href="features.html">Features</a></li>
+              <li><a href="SnpSift.html">SnpSift</a></li>
+              <li><a href="SnpEff.html#citing">Paper &amp; Citing</a></li>
+              <li><a href="SnpEff.html#who">Who uses SnpEff?</a></li>
+              <li><a href="SnpEff.html#integrate">Integration</a></li>
+              <li class="nav-header">Help</li>
+              <li><a href="about.html#bugs">Bug reports</a></li>
+              <li><a href="about.html#features">Feature requests</a></li>
+              <li><a href="about.html#help">Asking for help</a></li>
+              <li><a href="about.html">About</a></li>
+              <li class="nav-header">Documentation</li>
+              <li><a href="SnpEff_manual.html">SnpEff manual</a></li>
+              <li><a href="SnpSift.html">SnpSift manual</a></li>
+              <li><a href="protocol.html">Usage Examples</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <div class="span9">
+          <div class="hero-unit">
+            <h1>SnpEff</h1>
+            <p>
+			Genetic variant annotation and effect prediction toolbox.
+			<br>
+			<br>
+			<a href="http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip/download" class="btn btn-primary btn-large">Download SnpEff</a>
+			<br>
+			Latest version 3.4 (2013-11-23)
+			</p>
+          </div>
+          <div class="row-fluid">
+            <div class="span4">
+              <h2>SnpEff</h2>
+              <p>
+				Genetic variant annotation and effect prediction toolbox. It annotates and predicts the effects of variants on genes (such as amino acid changes).
+				<br>
+                Features:
+				<ul>
+					<li> Supports over <b>8,500 genomes</b>.
+					<li> <b>Cancer variants analysis</b>
+					<li> <b>GATK</b> compatible (<code>-o gatk</code>)
+					<li> HGSV notations support (clinical)
+				</ul>
+			  </p>
+              <p><a class="btn" href="SnpEff.html">View details &raquo;</a></p>
+            </div><!--/span-->
+            <div class="span4">
+              <h2>Version 3.4</h2>
+              <p>Several improvement and bug fixes.
+                <ul>
+                    <li> Automatic database download ("-download" option)
+                    <li> Simplified cancer samples (TXT file).
+                    <li> Improved GenBank, GTF/GFF parsing
+                    <li> Extended cofiguration options
+                    <li> Improvements in HGSV notation
+                    <li> Galaxy support: Improvements and bug fixes
+                    <li> SnpSift: Better support for dbNSFP (v2.1)                  
+                </ul>
+              </p>
+
+              <p><a class="btn" href="features.html">View details &raquo;</a></p>
+            </div><!--/span-->
+            <div class="span4">
+              <h2>SnpSift</h2>
+			  <p> 
+              SnpSift helps filtering and manipulating genomic annotated files (VCF).
+              Once you annotated your files using SnpEff, you can use SnpSift to help you filter large genomic datasets in order to find the most significant variants 
+              </p>
+              <p><a class="btn" href="SnpSift.html">View details &raquo;</a></p>
+            </div><!--/span-->
+          </div><!--/row-->
+          <div class="row-fluid">
+            <div class="span4">
+              <h2>Paper &amp Citing</h2>
+              <p> If you are using SnpEff or SnpSift in an research or academic environment, please cite our <a class="body" href="SnpEff_paper.pdf">papers</a>.</p>
+              <p><a class="btn" href="SnpEff.html#citing">View details &raquo;</a></p>
+            </div><!--/span-->
+            <div class="span4">
+              <h2>Who uses SnpEff?</h2>
+              <p>Users of SnpEff include most major research an academic institutions, as well as pharmaceutical companies and clinical sequencing projects. </p>
+              <p><a class="btn" href="SnpEff.html#who">View details &raquo;</a></p>
+            </div><!--/span-->
+            <div class="span4">
+              <h2>Galaxy &amp; GATK</h2>
+              <p>SnpEff is integrated with other tools commonly used in sequencing data analysis pipelines. Most notably <a href="http://galaxyproject.org/">Galaxy</a> and <a href="http://www.broadinstitute.org/gatk/">GATK</a> projects support SnpEff.</p>
+              <p><a class="btn" href="SnpEff.html#integrate">View details &raquo;</a></p>
+            </div><!--/span-->
+          </div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p class="text-center">&copy; <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani 2013</a></p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap-transition.js"></script>
+    <script src="js/bootstrap-alert.js"></script>
+    <script src="js/bootstrap-modal.js"></script>
+    <script src="js/bootstrap-dropdown.js"></script>
+    <script src="js/bootstrap-scrollspy.js"></script>
+    <script src="js/bootstrap-tab.js"></script>
+    <script src="js/bootstrap-tooltip.js"></script>
+    <script src="js/bootstrap-popover.js"></script>
+    <script src="js/bootstrap-button.js"></script>
+    <script src="js/bootstrap-collapse.js"></script>
+    <script src="js/bootstrap-carousel.js"></script>
+    <script src="js/bootstrap-typeahead.js"></script>
+
+  </body>
+</html>

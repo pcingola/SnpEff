@@ -1,0 +1,62 @@
+<tool id="snpSift_filter" name="SnpSift Filter" version="latest">
+	<options sanitize="False" />
+	<description>Filter variants using arbitrary expressions</description>
+	<!-- 
+	    You will need to change the path to wherever your installation is.
+		You can change the amount of memory used, just change the -Xmx parameter (e.g. use -Xmx2G for 2Gb of memory)
+	java -Xmx6G -jar $JAVA_JAR_PATH/SnpSift.jar filter -f $input -e $exprFile > $output
+	-->
+	<requirements>
+                <requirement type="package" version="latest">snpEff</requirement>
+	</requirements>
+	<command interpreter="perl">snpSiftWrapper.pl filter filter -f $input -e $exprFile > $output </command>
+	<inputs>
+		<param format="vcf" name="input" type="data" label="VCF input"/>
+		<param name="expr" type="text" label="Expression" size="50"/>
+	</inputs>
+	<configfiles>
+		<configfile name="exprFile">
+		$expr
+		</configfile> 
+	</configfiles>
+
+	<outputs>
+		<data format="vcf" name="output" />
+	</outputs>
+        <stdio>
+          <exit_code range=":-1"  level="fatal"   description="Error: Cannot open file" />
+          <exit_code range="1:"  level="fatal"   description="Error" />
+        </stdio>
+	<help>
+
+**SnpSift filter**
+
+You can filter ia vcf file using arbitrary expressions, for instance "(QUAL > 30) | (exists INDEL) | ( countHet() > 2 )". The actual expressions can be quite complex, so it allows for a lot of flexibility.
+
+Some examples:
+
+  - *I want to filter out samples with quality less than 30*:
+
+    * **( QUAL &gt; 30 )**
+
+  - *...but we also want InDels that have quality 20 or more*:
+
+    * **(( exists INDEL ) &amp; (QUAL >= 20)) | (QUAL >= 30 )**
+
+  - *...or any homozygous variant present in more than 3 samples*:
+
+    * **(countHom() > 3) | (( exists INDEL ) &amp; (QUAL >= 20)) | (QUAL >= 30 )**
+
+  - *...or any heterozygous sample with coverage 25 or more*:
+
+    * **((countHet() > 0) &amp; (DP >= 25)) | (countHom() > 3) | (( exists INDEL ) &amp; (QUAL >= 20)) | (QUAL >= 30 )**
+
+  - *I want to keep samples where the genotype for the first sample is homozygous variant and the genotype for the second sample is reference*:
+
+    * **isHom( GEN[0] ) &amp; isVariant( GEN[0] ) &amp; isRef( GEN[1] )**
+
+
+For complete details about this tool and epressions that can be used, please go to http://snpeff.sourceforge.net/SnpSift.html#filter
+
+	</help>
+</tool>

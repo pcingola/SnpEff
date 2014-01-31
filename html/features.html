@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SnpEff</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+    <link href="js/google-code-prettify/prettify.css" rel="stylesheet">
+	<link href="css/my.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="ico/favicon.png">
+
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+    <!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">SnpEff</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="download.html">Download</a></li>
+              <li><a href="SnpEff_manual.html">Documentation</a></li>
+              <li><a href="SnpSift.html">SnpSift</a></li>
+              <li><a href="about.html">About</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+<!-- Subhead
+================================================== -->
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <h1>SnpEff</h1>
+    <p class="lead">Features, versions and roadmap</p>
+  </div>
+</header>
+
+
+  <div class="container">
+
+    <!-- Docs nav
+    ================================================== -->
+    <div class="row">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav">
+          <li><a href="#roadmap"><i class="icon-chevron-right"></i> Roadmap </a></li>
+          <li><a href="#features"><i class="icon-chevron-right"></i> Features </a></li>
+        </ul>
+      </div>
+      <div class="span9">
+
+
+        <!-- Roadmap
+        ================================================== -->
+        <section id="roadmap">
+          <div class="page-header">
+            <h1>1. Roadmap</h1>
+          </div>
+				<p class="lead"> Major features planned:
+				<ul>
+					<li> <b>Mixed variants:</b> Full support for MIXED variants: E.g. Some variants maybe a combination of Insertions, Deletions, SNPs or MNPs.
+					<li> <b>BCF</b>: Add support for BCF files (binary VCF)
+					<li> <b>Gene set enrichment analysis</b>: Algorithms for gene set enrichment analyss of sequencing variants (particularly for case control studies).
+				</ul>
+				</p>
+        </section>
+
+        <!-- Features
+        ================================================== -->
+        <section id="features">
+          <div class="page-header">
+            <h1>2. Features</h1>
+          </div>
+				<p class="lead"> Features by version</p>
+
+				<p class="lead"> <b> Version: 3.4 (2013-11-23).</b></p>
+                <ul>
+                    <li> Automatic database download ("-download" option)
+                    <li> Cancer samples: can be defined using a TXT file instead of VCF header.
+                    <li> Improved GenBank
+                    <li> Extended cofiguration options
+                    <li> Better frame handling for GTF/GFF files
+                    <li> Improvements in HGSV notation
+                    <li> Galaxy support: Improvements and bug fixes
+                    <li> SnpSift: Better support for dbNSFP (v2.1)
+                </ul>
+              </p>
+
+				<p class="lead"> <b> Version: 3.3 (2013-06-12).</b></p>
+                <ul>
+					<li> Over <b>8,500</b> genomes supported.
+					<li> All ENSEMBL (version 18) : Bacteria, Fungi, Metazoa, Plants and Protist genomes added.
+					<li> NextProt annotaions added
+                    <li> Motif annotations support added
+                    <li> SnpSift: GeneSet annotations
+                    <li> SnpEff count: Genomic region statistics counting reads, variants, intervals, etc.
+                </ul>
+              </p>
+
+				<p class="lead"> <b> Version: 3.2 (2013-14-01).</b></p>
+                <ul>
+					<li> <b>Cancer variants analysis</b>
+					<li> <b>GATK</b> compatibile (<code>-o gatk</code>)
+					<li> HGSV notations support
+                </ul>
+
+				<p class="lead"> <b> Version: 3.1 (2012-11-02).</b></p>
+				<ul>
+					<li> All NCBI bacterial genomes added: Over 2,500 genomes added!
+					<li> Loss of function effect and tag added (experimental command line option '-lof')
+					<li> Nonsense-mediated decay effect and tag added (experimental command line option '-lof')
+					<li> ENSEMBL version 68 genomes added
+					<li> SnpEff 'countReads' count number of reads and bases (form a BAM file) on each gene, transcript, exon, intron, etc.
+					<li> SnpEff Intron and Intergenic annotations improved.
+				</ul>
+
+				<p class="lead"> <b> Version: 3.0, revision 'f' (2012-08-23).</b></p>
+				<ul>
+					<li> GATK output format compatibility option: '-o gatk'
+					<li> Fixed problem when parsing comment after GFF headers.
+					<li> Added GENCODE tags for GTF parsing
+					<li> Splice site analysis tools
+					<li> Analysis of U12 branch sites.
+					<li> Minor problems caused by empty VCF headers solved.
+					<li> Fixed bug in calculation of degenerate sites.
+					<li> Fixed problem in canonical transcripts.
+					<li> Plasmodium falciparum hand curated versions (by Daniel Park, Broad): Pf3D7v72 and Pf3D7v90
+					<li> Maven project, created by Louis Letourneau.
+					<li> Project source code changed to SVN (Louis Letourneau).
+					<li> Databases will be 'backwards compatible' from now on.
+					<li> New format for VCF files: added CDS length in amino acid (AA_LEN field).
+					<li> Canonical transcript filter (command line option "-canon").
+					<li> Improved GenBank parsing.
+					<li> SnpSift 'dbnsfp': Annotate using dbNSFP (Louis Letourneau).
+					<li> SnpSift 'gwasCat': Added GWA catalog annotations.
+					<li> SnpSift 'extractFields': extract fields to TXT files (tab separated)
+					<li> SnpSift 'sift': Annotate using SIFT database.
+					<li> SnpSift 'Annotate' and 'AnnMem': Now support to add all fields in a VCF file for annotations.
+				</ul>
+
+				<p class="lead"> <b> Version: 2.1b (2012-04-26).</b></p>
+				<ul>
+					<li> Revision "2.1c" : Maven project (by Louis Letourneau)
+					<li> Revision "2.1c" : Improved Galaxy wrappers (by Peter briggs)
+					<li> Revision "2.1b" : Improved RefSeq parsing
+					<li> Revision "2.1a" : Multi-thred race condition solved.
+					<li> <b>Note</b> If you are using <b>hg19</b>, it is recommended to download the latest database (due to improved RefSeq parsing in 2.1b).
+					<li> Added multi-threaded support (command line option '-t').
+					<li> GenBank support for building databases. See details <a class="body" href="supportNewGenome.html#genbank"> here </a>.
+					<li> Config file siplified
+					<li> E.Coli database added
+					<li> Galaxy download database option added.
+					<li> Added all ENSEMBL version 66 genomes
+					<li> Database 'download' issue solved. Apparently SourceForge servers were choking on URL that had double slashes, this should not happen. Implemented a workarround.
+					<li> SnpSift GWAS catalog: Annotate using <a class="body" href="http://www.genome.gov/gwastudies/">GWAS Cataloga</a>.
+					<li> SnpSift: Added 'varType' to annotate variant type (SNP/MNP/INS/DEL), as well as HOM/HET if possible.
+					<li> Faster VCF processing.
+				</ul>
+
+				<p class="lead"> <b> Version: 2.0.5 (2011-11-25).</b></p>
+				<ul>
+					<li> Support for RARE amino acids (see details <a class="body" href="faq.html#What_is_a_rare_amino_acid?">here</a>)
+					<li> Database for Soybean (Glycine max) added
+				</ul>
+	
+				<p class="lead"> <b> Version: 2.0.5 (2011-11-25).</b></p>
+				<ul>
+					<li> Database download command, e.g. "java -jar snpEff.jar download GRCH37.64"
+					<li> Added all ENSEMBL version 65 genomes
+					<li> RefSeq annotations support added.
+					<li> Rogue transcript filter: By default SnpEff filters out some suspicious transcripts from annotations databases. This should improve false positive rates.
+					<li> Amino acid changes in HGVS style (VCF output)
+					<li> Optimized parsing for VCF files with large number of samples (genotypes).
+					<li> Option to suppress summary calculation ('-noStats'), can speed up processing considerably in cases where VCF files have hundreds or thousands of genotype fields.
+					<li> Option '-onlyCoding' is set to 'auto' to reduce number of false positives (see next).
+					<li> Option '-onlyCoding' can be assigne a value: If value is 'true', report only 'protein_coding' transcripts as proteing coding changes. If 'false', report all transcript as if they were conding. Default: Auto, i.e. if transcripts any marked as 'protein_coding' the set it to 'true', if no transcripts are marked as 'protein_coding' then set it to 'false'.</td></tr>
+					<li> Added BED output format. This is usefull to annotate the output of a Chip-Seq experiment (e.g. after performing peak calling with MACS, you want to know where the peaks hit).
+					<li> Added BED Annotation output format. This is usefull to get all annotation intervals that intersect a set of variants (or genomic regions).
+					<li> <b>SnpSift filter</b>:
+						<ul>
+							<li> Added generic index ('*') for variables, genotypes and effects. E.g.: ( 'GEN[*].GT = '1|1' )
+							<li> Added support for 'EFF' and subfields (from SnpEff processed files). E.g.: ( EFF[*].EFFECT = 'NON_SYNONYMOUS_CODING' )
+						</ul>
+					<li> <b>SnpSift intidx</b>: 
+						Designed to extract a small number of intervals from huge VCF files. 
+						Added indexing using  memory mapped I/O files for retrieving intervals from huge VCF files. 
+						Works really fast! 
+				</ul>
+
+				<p class="lead"> <b> Version: 2.0.3 (2011-10-08)</b></p>
+				<ul>
+					<li> Functional classes added in VCF output (i.e. NONE, SILENT, MISSENSE, NONSENSE)
+					<li> Added MODIFIER effect 'impact'.
+					<li> Rice genome added.
+					<li> Added all ENSEMBL version 64 genomes.
+					<li> Several minor issues solved.
+					<li> Report usage statistics to server (can be disabled using '-noLog' options).
+				</ul>
+
+				<p class="lead"> <b> Version: 2.0.2 (2011-09-09)</b></p>
+				<ul>
+					<li> VCF output format
+					<li> <b><a class="body" href="http://www.broadinstitute.org/gsa/wiki/index.php/The_Genome_Analysis_Toolkit">GATK</a></b> integration. Now you can use SnpEff from GATK's <a class="body" href="http://www.broadinstitute.org/gsa/wiki/index.php/Adding_Genomic_Annotations_Using_SnpEff_and_VariantAnnotator">VariantAnnotator</a>.
+					<li> Default input file is STDIN. I.e. inputFile parameter can be ommited now.
+					<li> Gene list outputs to a TXT file (tab separated) instead of the summary (HTML) file.
+					<li> Command line format changed for various options
+					<li> Option '-sort' deprecated.
+				</ul>
+
+				<p class="lead"> <b> Version: 1.9.6 (2011-08-08)</b></p>
+				<ul>
+					<li> Ensembl genomes v63 added.
+					<li> <b>Warning!</b> Genome names changed to agree with Ensembl naming convention, here are the names:
+						<center>
+						<table boredr=1 style="font-size: 8pt">
+								<tr> <th> Full name </td> <th> Short name </th> </tr>
+								<tr> <td> Ailuropoda_melanoleuca </td> <td> ailMel1.63 </td> </tr>
+								<tr> <td> Anolis_carolinensis </td> <td> AnoCar2.0.63 </td> </tr>
+								<tr> <td> Bos_taurus </td> <td> Btau_4.0.63 </td> </tr>
+								<tr> <td> Caenorhabditis_elegans </td> <td> WS220.63 </td> </tr>
+								<tr> <td> Callithrix_jacchus </td> <td> C_jacchus3.2.1.63 </td> </tr>
+								<tr> <td> Canis_familiaris </td> <td> BROADD2.63 </td> </tr>
+								<tr> <td> Cavia_porcellus </td> <td> cavPor3.63 </td> </tr>
+								<tr> <td> Choloepus_hoffmanni </td> <td> choHof1.63 </td> </tr>
+								<tr> <td> Ciona_intestinalis </td> <td> JGI2.63 </td> </tr>
+								<tr> <td> Ciona_savignyi </td> <td> CSAV2.0.63 </td> </tr>
+								<tr> <td> Danio_rerio </td> <td> Zv9.63 </td> </tr>
+								<tr> <td> Dasypus_novemcinctus </td> <td> dasNov2.63 </td> </tr>
+								<tr> <td> Dipodomys_ordii </td> <td> dipOrd1.63 </td> </tr>
+								<tr> <td> Drosophila_melanogaster </td> <td> BDGP5.25.63 </td> </tr>
+								<tr> <td> Echinops_telfairi </td> <td> TENREC.63 </td> </tr>
+								<tr> <td> Equus_caballus </td> <td> EquCab2.63 </td> </tr>
+								<tr> <td> Erinaceus_europaeus </td> <td> HEDGEHOG.63 </td> </tr>
+								<tr> <td> Felis_catus </td> <td> CAT.63 </td> </tr>
+								<tr> <td> Gallus_gallus </td> <td> WASHUC2.63 </td> </tr>
+								<tr> <td> Gasterosteus_aculeatus </td> <td> BROADS1.63 </td> </tr>
+								<tr> <td> Gorilla_gorilla </td> <td> gorGor3.63 </td> </tr>
+								<tr> <td> Homo_sapiens </td> <td> GRCh37.63 </td> </tr>
+								<tr> <td> Loxodonta_africana </td> <td> loxAfr3.63 </td> </tr>
+								<tr> <td> Macaca_mulatta </td> <td> MMUL_1.63 </td> </tr>
+								<tr> <td> Macropus_eugenii </td> <td> Meug_1.0.63 </td> </tr>
+								<tr> <td> Meleagris_gallopavo </td> <td> UMD2.63 </td> </tr>
+								<tr> <td> Microcebus_murinus </td> <td> micMur1.63 </td> </tr>
+								<tr> <td> Monodelphis_domestica </td> <td> BROADO5.63 </td> </tr>
+								<tr> <td> Mus_musculus </td> <td> NCBIM37.63 </td> </tr>
+								<tr> <td> Myotis_lucifugus </td> <td> Myoluc2.0.63 </td> </tr>
+								<tr> <td> Nomascus_leucogenys </td> <td> Nleu1.0.63 </td> </tr>
+								<tr> <td> Ochotona_princeps </td> <td> pika.63 </td> </tr>
+								<tr> <td> Ornithorhynchus_anatinus </td> <td> OANA5.63 </td> </tr>
+								<tr> <td> Oryctolagus_cuniculus </td> <td> oryCun2.63 </td> </tr>
+								<tr> <td> Oryzias_latipes </td> <td> MEDAKA1.63 </td> </tr>
+								<tr> <td> Otolemur_garnettii </td> <td> BUSHBABY1.63 </td> </tr>
+								<tr> <td> Pan_troglodytes </td> <td> CHIMP2.1.63 </td> </tr>
+								<tr> <td> Pongo_abelii </td> <td> PPYG2.63 </td> </tr>
+								<tr> <td> Procavia_capensis </td> <td> proCap1.63 </td> </tr>
+								<tr> <td> Pteropus_vampyrus </td> <td> pteVam1.63 </td> </tr>
+								<tr> <td> Rattus_norvegicus </td> <td> RGSC3.4.63 </td> </tr>
+								<tr> <td> Saccharomyces_cerevisiae </td> <td> EF3.63 </td> </tr>
+								<tr> <td> Sorex_araneus </td> <td> COMMON_SHREW1.63 </td> </tr>
+								<tr> <td> Spermophilus_tridecemlineatus </td> <td> SQUIRREL.63 </td> </tr>
+								<tr> <td> Sus_scrofa </td> <td> Sscrofa9.63 </td> </tr>
+								<tr> <td> Taeniopygia_guttata </td> <td> taeGut3.2.4.63 </td> </tr>
+								<tr> <td> Takifugu_rubripes </td> <td> FUGU4.63 </td> </tr>
+								<tr> <td> Tarsius_syrichta </td> <td> tarSyr1.63 </td> </tr>
+								<tr> <td> Tetraodon_nigroviridis </td> <td> TETRAODON8.63 </td> </tr>
+								<tr> <td> Tupaia_belangeri </td> <td> TREESHREW.63 </td> </tr>
+								<tr> <td> Tursiops_truncatus </td> <td> turTru1.63 </td> </tr>
+								<tr> <td> Vicugna_pacos </td> <td> vicPac1.63 </td> </tr>
+								<tr> <td> Xenopus_tropicalis </td> <td> JGI_4.2.63 </td> </tr>
+						</table>
+						</center>
+					<li> Problems with VCF heterozygous: Fixed
+					<li> Problems parsing some InDels: Fixed
+					<li> Error conditions on deletion at the border between UTR and Exon: Fixed
+					<li> Problems reporting some CDS relative positions: Fixed
+					<li> Some issues related to distance calculation on Downstream genes on negative strands: Fixed
+				</ul>
+
+				<p class="lead"> <b> Version: 1.9.5 (2011-03-10)</b></p>
+				<ul>
+					<li> Variants per gene table.
+					<li> Improvements in summary report.
+					<li> Improved GFF3 parsing.
+					<li> Several genomes added.
+				</ul>
+
+				<p class="lead"> <b> Version: 1.9 (2011-03-10)</b></p>
+				Features recently added:
+				<ul>
+					<li> Improved command line
+					<li> Genomes added (Arabidopsis) : alyrata107, athaliana130
+					<li> Genomes added (all ENSEMBL version 61): 
+<pre> ailmel1.61, anoCar2.0.61, btau4.0.61, bushBaby1.61, calJac3.2.1.61, canFam2.61, 
+ cat1.61, cavPor3.61, ce.WS220.61, chimp2.1.61, choHof1.61, cInt2.61, cSav2.0.61, 
+ danRer9.61, dasNov2.61, dipOrd1.61, dm5.25.61, equCab2.61, eriEur1.61, fugu4.61, 
+ gacu1.61, ggallus2.61, gorGor3.61, hg37.61, loxAfr3.61, medaka1.61, meug1.0.61, 
+ micMur1.61, mm37.61, mmul1.61, monDom5.61, myoLuc1.61, oana5.61, ochPri2.61, 
+ oryCun2.61, ppyg2.61, proCap1.61, pteVam1.61, rat3.4.61, sacCer2.61, sorAra1.61, 
+ speTri1.61, sScrofa9.61, taeGut3.2.4.61, tarSyr1.61, tenrec1.61, tetraodon8.61, 
+ tupBel1.61, turkey.UMD2.61, turTru1.61, vicPac1.61, xtrop4.1.61 </pre>
+					<li> Genomes added (Flybase): dm5.34
+					<li> Genomes added (legacy hg18): hg36.54
+					<li> Improved summary and statistics
+					<li> Supports BED format: if you just need to check where an interval hits (e.g. exon, intron, genes, etc.)
+					<li> Added support for GTF 2.2 format
+					<li> Improved robustnes of GFF3 and GFF2 parsing
+					<li> Improved splice site detection: SPLICE_SITE_DONOR and SPLICE_SITE_ACCEPTOR
+					<li> Improved support for insertions and deletions: CODON_INSERTION, CODON_CHANGE_PLUS_CODON_INSERTION, CODON_DELETION, CODON_CHANGE_PLUS_CODON_DELETION 
+					<li> Improved support for large deletions: EXON_DELETED and UTR_DELETED
+					<li> Added suport for INTRON_CONSERVED and INTERGENIC_CONSERVED intervals (available in GTF 2.2 files)
+					<li> Added support for ambiguous sequences in exons (e.g. sequences that have "N")
+					<li> Database dump support: <pre>java -jar snpEff.jar dump genome_version</pre>
+					<li> CDS testing support: <pre>java -jar snpEff.jar cds genome_version cds.fasta</pre>
+				</ul>
+
+				<p class="lead"> <b> Older features </b></p>
+				<ul>
+					<li> Show DNA and amino acid sequence before and after change: option "-a, --around", e.g. "-a 5" shows 5 codons around sequence change)
+					<li> <b>WARNING</b>: Since version 1.7 snpEff assumes one-based coordinates (i.e. option "-1" is the default instead of "-0")
+					<li> <b>WARNING</b>: Since version 1.7 snpEff does not sort sequence changes. You should use option "-sort" if you want that.
+					<li> Genomes added (Pseudomonas): Pseudomonas aeruginosa (paeru.PA01 and paeru.PA14) and Pseudomonas fluorescens (pfluo.SBW25.NC_009444 and pfluo.SBW25.NC_012660)
+					<li> Genomes supported (all ENSEMBL version 60): 
+<pre>
+ ailMel1.60, amel2, anoCar1.0.60, btau4.0.59, btau4.0.60, bushBaby1.60,
+ calJac3.2.1.60, canFam2.59, canFam2.60, cat1.60, cavPor3.60, ce6, ce.WS210.60,
+ chimp2.1.59, chimp2.1.60, choHof1.60, cInt2.60, cSav2.0.60, danRer6, danRer8.59,
+ danRer9.60, dasNov2.60, dipOrd1.60, dm3, dm5.12, dm5.22, dm5.25.59, dm5.25.60,
+ dm5.30, dm5.31, equCab2.60, eriEur1.60, fugu4.60, gacu1.60, ggallus2.59, ggallus2.60,
+ gorGor3.60, hg37, hg37.59, hg37.60, loxAfr3.60, medaka1.60, meug1.0.60, micMur1.60,
+ mm37, mm37.59, mm37.60, mmul1.60, monDom5.60, myoLuc1.60, oana5.60, ochPri2.60,
+ oryCun2.60, ppyg2.60, proCap1.60, pteVam1.60, rat3.4.59, rat3.4.60, sacCer2,
+ sacCer2.59, sacCer2.60, SIVmac239, sorAra1.60, speTri1.60, sScrofa9.60,
+ taeGut3.2.4.60, tarSyr1.60, tenrec1.60, testCase, tetraodon8.60, tupBel1.60,
+ turTru1.60, vicPac1.60, xtrop4.1.60 </pre>
+					<li> VCF4 input format is now supported
+					<li> Support new genome Apis Mellifera
+					<li> Statistics and plots
+					<li> Filter intervals (only analyze selected intervals)
+					<li> Supports pileup format (<a class="body" href="http://samtools.sourceforge.net/">SamTools</a>) as input format.
+					<li> One-based and zero-based positions for input and output (as well arbitrary offsets)
+					<li> Support for heterozygous SNPs (e.g. A/W)
+					<li> Predicts insertions and deletions (FRAME_SHIFT)
+					<li> Supports GFF format when building databases.
+					<li> Added: Multiple nucleotide polymorphisms (MNPs)
+					<li> New format shows SNP quality and coverage.
+					<li> Can filter SNPs, InDels and MNPs based on quality, coverage and zygosity (Hom/Het).
+				</ul>
+
+
+        </section>
+      </div>
+    </div>
+
+  </div>
+
+
+
+    <!-- Footer
+    ================================================== -->
+      <footer>
+        <p class="text-center">&copy; <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani 2013</a></p>
+      </footer>
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap-transition.js"></script>
+    <script src="js/bootstrap-alert.js"></script>
+    <script src="js/bootstrap-modal.js"></script>
+    <script src="js/bootstrap-dropdown.js"></script>
+    <script src="js/bootstrap-scrollspy.js"></script>
+    <script src="js/bootstrap-tab.js"></script>
+    <script src="js/bootstrap-tooltip.js"></script>
+    <script src="js/bootstrap-popover.js"></script>
+    <script src="js/bootstrap-button.js"></script>
+    <script src="js/bootstrap-collapse.js"></script>
+    <script src="js/bootstrap-carousel.js"></script>
+    <script src="js/bootstrap-typeahead.js"></script>
+    <script src="js/bootstrap-affix.js"></script>
+
+    <script src="js/holder/holder.js"></script>
+    <script src="js/google-code-prettify/prettify.js"></script>
+
+    <script src="js/application.js"></script>
+
+
+
+  </body>
+</html>
