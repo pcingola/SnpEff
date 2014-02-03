@@ -1,0 +1,4 @@
+Y	20245604	*	-A/-A	+	0	0	EXON_DELETED
+Y	27020260	*	-aaatttcct/-aaatttcct	+	0	0	EXON_DELETED
+Y	24327117	*	-a/-a	+	0	0	UTR_DELETED
+Y	27047322	*	-acgtacgtacg/-acgtacgtacg	+	0	0	UTR_DELETED

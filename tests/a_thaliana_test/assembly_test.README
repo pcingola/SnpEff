@@ -1,0 +1,11 @@
+
+
+Email from Adrain Platts:
+	Pablo - the attached may be of use.  It's my early test dataset.  Essentially just a number of overlapping 'reads' (actually just 
+	a fragmented DNA sequence) that when assembled should blast exactly against the first 5 kbase 
+	of the A Thaliana genome.
+
+Files:
+	- assembly_test.fa : Fake reads from A.Thaliana
+	- assembly_test.result : First 5K bases from A.Thaliana chr1
+	

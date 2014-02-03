@@ -1,0 +1,8 @@
+1	protein_coding	exon	3660633	3661579	.	-	.	 gene_id "ENSMUSG00000051951"; transcript_id "ENSMUST00000070533"; exon_number "1"; gene_name "Xkr4"; transcript_name "Xkr4-001";
+1	protein_coding	CDS	3660633	3661429	.	-	0	 gene_id "ENSMUSG00000051951"; transcript_id "ENSMUST00000070533"; exon_number "1"; gene_name "Xkr4"; transcript_name "Xkr4-001"; protein_id "ENSMUSP00000070648";
+1	protein_coding	start_codon	3661427	3661429	.	-	0	 gene_id "ENSMUSG00000051951"; transcript_id "ENSMUST00000070533"; exon_number "1"; gene_name "Xkr4"; transcript_name "Xkr4-001";
+1	protein_coding	exon	3411783	3411982	.	-	.	 gene_id "ENSMUSG00000051951"; transcript_id "ENSMUST00000070533"; exon_number "2"; gene_name "Xkr4"; transcript_name "Xkr4-001";
+1	protein_coding	CDS	3411783	3411982	.	-	1	 gene_id "ENSMUSG00000051951"; transcript_id "ENSMUST00000070533"; exon_number "2"; gene_name "Xkr4"; transcript_name "Xkr4-001"; protein_id "ENSMUSP00000070648";
+1	protein_coding	exon	3204563	3207049	.	-	.	 gene_id "ENSMUSG00000051951"; transcript_id "ENSMUST00000070533"; exon_number "3"; gene_name "Xkr4"; transcript_name "Xkr4-001";
+1	protein_coding	CDS	3206106	3207049	.	-	2	 gene_id "ENSMUSG00000051951"; transcript_id "ENSMUST00000070533"; exon_number "3"; gene_name "Xkr4"; transcript_name "Xkr4-001"; protein_id "ENSMUSP00000070648";
+1	protein_coding	stop_codon	3206103	3206105	.	-	0	 gene_id "ENSMUSG00000051951"; transcript_id "ENSMUST00000070533"; exon_number "3"; gene_name "Xkr4"; transcript_name "Xkr4-001";

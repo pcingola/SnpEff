@@ -1,0 +1,3 @@
+# These should NOT be start gained!
+12	48547482	A	G	+	0	0	START_GAINED
+12	48551378	C	T	+	0	0	START_GAINED

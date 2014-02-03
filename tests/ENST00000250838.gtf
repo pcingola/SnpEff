@@ -1,0 +1,4 @@
+Y	protein_coding	exon	20137899	20139675	.	+	.	 gene_id "ENSG00000182415"; transcript_id "ENST00000250838"; exon_number "1"; gene_name "CDY2A"; transcript_name "CDY2A-201";
+Y	protein_coding	CDS	20137995	20139617	.	+	0	 gene_id "ENSG00000182415"; transcript_id "ENST00000250838"; exon_number "1"; gene_name "CDY2A"; transcript_name "CDY2A-201"; protein_id "ENSP00000250838";
+Y	protein_coding	start_codon	20137995	20137997	.	+	0	 gene_id "ENSG00000182415"; transcript_id "ENST00000250838"; exon_number "1"; gene_name "CDY2A"; transcript_name "CDY2A-201";
+Y	protein_coding	stop_codon	20139618	20139620	.	+	0	 gene_id "ENSG00000182415"; transcript_id "ENST00000250838"; exon_number "1"; gene_name "CDY2A"; transcript_name "CDY2A-201";

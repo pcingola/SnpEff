@@ -1,0 +1,18 @@
+1	protein_coding	exon	167718854	167719017	.	+	.	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "1"; gene_name "Cd247"; transcript_name "Cd247-003";
+1	protein_coding	CDS	167718960	167719017	.	+	0	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "1"; gene_name "Cd247"; transcript_name "Cd247-003"; protein_id "ENSMUSP00000027849";
+1	protein_coding	start_codon	167718960	167718962	.	+	0	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "1"; gene_name "Cd247"; transcript_name "Cd247-003";
+1	protein_coding	exon	167785297	167785400	.	+	.	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "2"; gene_name "Cd247"; transcript_name "Cd247-003";
+1	protein_coding	CDS	167785297	167785400	.	+	2	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "2"; gene_name "Cd247"; transcript_name "Cd247-003"; protein_id "ENSMUSP00000027849";
+1	protein_coding	exon	167786531	167786587	.	+	.	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "3"; gene_name "Cd247"; transcript_name "Cd247-003";
+1	protein_coding	CDS	167786531	167786587	.	+	0	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "3"; gene_name "Cd247"; transcript_name "Cd247-003"; protein_id "ENSMUSP00000027849";
+1	protein_coding	exon	167787547	167787627	.	+	.	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "4"; gene_name "Cd247"; transcript_name "Cd247-003";
+1	protein_coding	CDS	167787547	167787627	.	+	0	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "4"; gene_name "Cd247"; transcript_name "Cd247-003"; protein_id "ENSMUSP00000027849";
+1	protein_coding	exon	167788574	167788609	.	+	.	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "5"; gene_name "Cd247"; transcript_name "Cd247-003";
+1	protein_coding	CDS	167788574	167788609	.	+	0	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "5"; gene_name "Cd247"; transcript_name "Cd247-003"; protein_id "ENSMUSP00000027849";
+1	protein_coding	exon	167789350	167789406	.	+	.	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "6"; gene_name "Cd247"; transcript_name "Cd247-003";
+1	protein_coding	CDS	167789350	167789406	.	+	0	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "6"; gene_name "Cd247"; transcript_name "Cd247-003"; protein_id "ENSMUSP00000027849";
+1	protein_coding	exon	167789920	167789955	.	+	.	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "7"; gene_name "Cd247"; transcript_name "Cd247-003";
+1	protein_coding	CDS	167789920	167789955	.	+	0	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "7"; gene_name "Cd247"; transcript_name "Cd247-003"; protein_id "ENSMUSP00000027849";
+1	protein_coding	exon	167796786	167797565	.	+	.	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "8"; gene_name "Cd247"; transcript_name "Cd247-003";
+1	protein_coding	CDS	167796786	167796974	.	+	0	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "8"; gene_name "Cd247"; transcript_name "Cd247-003"; protein_id "ENSMUSP00000027849";
+1	protein_coding	stop_codon	167796975	167796977	.	+	0	 gene_id "ENSMUSG00000005763"; transcript_id "ENSMUST00000027849"; exon_number "8"; gene_name "Cd247"; transcript_name "Cd247-003";

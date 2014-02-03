@@ -1,0 +1,2 @@
+# These should NOT be start gained
+1	145293512	G	T	+	0	0	START_GAINED

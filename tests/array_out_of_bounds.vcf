@@ -1,0 +1,49 @@
+##fileformat=VCFv4.1
+##fileDate=20110701
+##source=RTGvGA-2.2 build 35226 (2011-06-16)
+##CL=snp -o /data/seq/chhar0/rtg-working/snp/trio_17144784 -t /data/seq/chhar0/rtg-working/ch_ref/sdf.UMD_3.1_MT /data/seq/chhar0/rtg-working/map/trio/17144784_L1a/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L1a/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L1b/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L1b/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L2a/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L2a/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L2b/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L2b/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L3a/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L3a/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L3b/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L3b/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L4a/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L4a/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L4b/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L4b/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L5a/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L5a/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L5b/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L5b/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L6a/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L6a/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L6b/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L6b/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L7a/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L7a/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L7b/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L7b/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L8a/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L8a/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L8b/mated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L8b/unmated.sam.gz /data/seq/chhar0/rtg-working/map/trio/17144784_L1a/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L1a/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L1b/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L1b/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L2a/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L2a/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L2b/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L2b/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L3a/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L3a/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L3b/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L3b/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L4a/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L4a/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L4b/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L4b/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L5a/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L5a/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L5b/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L5b/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L6a/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L6a/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L6b/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L6b/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L7a/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L7a/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L7b/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L7b/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L8a/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L8a/unmated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L8b/mated.sam.gz.calibration /data/seq/chhar0/rtg-working/map/trio/17144784_L8b/unmated.sam.gz.calibration -T 6
+##RUN-ID=dbe85db6-2488-45e6-9aca-1f929cdc083d
+##TEMPLATE-SDF-ID=7fedb037-b2fd-4926-a17e-06e730d2f153
+##reference=/data/seq/chhar0/rtg-working/ch_ref/sdf.UMD_3.1_MT
+##contig=<ID="Chr1",length=158337067>
+##contig=<ID="Chr2",length=137060424>
+##contig=<ID="Chr3",length=121430405>
+##contig=<ID="Chr4",length=120829699>
+##contig=<ID="Chr5",length=121191424>
+##contig=<ID="Chr6",length=119458736>
+##contig=<ID="Chr7",length=112638659>
+##contig=<ID="Chr8",length=113384836>
+##contig=<ID="Chr9",length=105708250>
+##contig=<ID="Chr10",length=104305016>
+##contig=<ID="Chr11",length=107310763>
+##contig=<ID="Chr12",length=91163125>
+##contig=<ID="Chr13",length=84240350>
+##contig=<ID="Chr14",length=84648390>
+##contig=<ID="Chr15",length=85296676>
+##contig=<ID="Chr16",length=81724687>
+##contig=<ID="Chr17",length=75158596>
+##contig=<ID="Chr18",length=66004023>
+##contig=<ID="Chr19",length=64057457>
+##contig=<ID="Chr20",length=72042655>
+##contig=<ID="Chr21",length=71599096>
+##contig=<ID="Chr22",length=61435874>
+##contig=<ID="Chr23",length=52530062>
+##contig=<ID="Chr24",length=62714930>
+##contig=<ID="Chr25",length=42904170>
+##contig=<ID="Chr26",length=51681464>
+##contig=<ID="Chr27",length=45407902>
+##contig=<ID="Chr28",length=46312546>
+##contig=<ID="Chr29",length=51505224>
+##contig=<ID="ChrX",length=148823899>
+##contig=<ID="ChrMT",length=16338>
+##FILTER=<ID=c116,Description="Coverage exceeded 116">
+##FILTER=<ID=a10.0,Description="Ambiguity exceeded 10.0">
+##FILTER=<ID=RC,Description="RTG variant is a complex region">
+##FILTER=<ID=RX,Description="RTG variant contained within hypercomplex region">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">
+##FORMAT=<ID=GQ,Number=1,Type=Float,Description="Genotype Quality">
+##FORMAT=<ID=RE,Number=1,Type=Float,Description="RTG Total Error">
+##FORMAT=<ID=RS,Number=.,Type=String,Description="RTG Support Statistics">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	17144784
+Chr1	223919	.	CTCGACCACTGGAA	CTCACATCCATACAT,CATGACCACTGGAA	972.1	PASS	.	GT:DP:RE:GQ:RS	1/2:15:0.117:66.3:ATGACCACTGGAA,3,0.076,TCACATCCATAC,2,0.005,TCACATCCATACAT,1,0.003,TCACATCCATACATG~,2,0.005,TCACATCCATAC~,1,0.003,TCACATCCA~,1,0.003,TCACATC~,1,0.003,TCAC~,2,0.009,~AA,1,0.003,~ACTGGAA,1,0.008

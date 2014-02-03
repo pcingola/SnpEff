@@ -1,0 +1,47 @@
+
+ CHR         SNP         BP   A1      F_A      F_U   A2            P           OR
+   2   rs2222162      10602    1   0.2841   0.6222    2    6.236e-06       0.2409 
+
+
+plink --noweb --file cg --assoc --out data
+ CHR         SNP         BP   A1      F_A      F_U   A2        CHISQ            P           OR 
+   2   rs2222162      10602    1   0.2841   0.6222    2        20.51    5.918e-06       0.2409 
+
+plink --noweb --file hapmap1 --model --out data
+ CHR         SNP   A1   A2     TEST            AFF          UNAFF        CHISQ   DF            P
+   2   rs2222162    1    2     GENO        3/19/22        17/22/6           NA   NA           NA
+   2   rs2222162    1    2    TREND          25/63          56/34        19.15    1    1.207e-05
+   2   rs2222162    1    2  ALLELIC          25/63          56/34        20.51    1    5.918e-06
+   2   rs2222162    1    2      DOM          22/22           39/6           NA   NA           NA
+   2   rs2222162    1    2      REC           3/41          17/28           NA   NA           NA
+
+
+
+
+Fisher	k:28	N:89	D:45	n:69		p=0.9999562771555304	4.1215712151455495E-4
+	phyper( 27, 45, 44, 69, lower.tail = TRUE )
+	phyper( 27, 45, 44, 69, lower.tail = FALSE )
+SnpSiftCmdCaseControl.pDominant(238):	F_U:	0.6222222222222222
+SnpSiftCmdCaseControl.pDominant(241):	F_A:	0.2840909090909091
+
+
+The next table shows the association between the variant rs2222162 and disease:
+             Genotype
+             11      12      22
+Control      17      22      6				56/90 = 0.6222			
+Case         3       19      22				25/88 = 0.2841
+
+
+=> Calculate the number of minor alleles! (not the number of ALTs)
+
+
+
+
+
+ CHR         SNP   A1   A2     TEST            AFF          UNAFF        CHISQ   DF            P
+   2  rs12151780    1    2     GENO        8/23/13        5/30/10        1.997    2       0.3684
+   2  rs12151780    1    2    TREND          39/49          40/50     0.000362    1       0.9848
+   2  rs12151780    1    2  ALLELIC          39/49          40/50    0.0002874    1       0.9865
+   2  rs12151780    1    2      DOM          31/13          35/10       0.6226    1       0.4301
+   2  rs12151780    1    2      REC           8/36           5/40       0.8917    1        0.345
+

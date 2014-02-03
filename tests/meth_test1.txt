@@ -1,0 +1,11 @@
+#Bismark methylation extractor version v0.2.5
+seq_1009	+	Y	1234567	z
+seq_1009	+	Y	1234567	z
+seq_1009	+	Y	1234567	z
+seq_1009	+	Y	1234567	z
+seq_1009	+	Y	1234567	z
+seq_1009	+	Y	1234567	Z
+seq_1009	+	Y	1234567	Z
+seq_1009	+	Y	1234567	Z
+seq_1009	+	Y	1234567	Z
+seq_1009	+	Y	1234567	Z

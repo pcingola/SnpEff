@@ -1,0 +1,6 @@
+# SnpEff version 2.1 (build 2012-04-19), by Pablo Cingolani
+# Command line: SnpEff eff -v -o txt -t -noStats testHg3763Chr1 tests/test.chr1.1line.vcf 
+# Chromo	Position	Reference	Change	Change_type	Homozygous	Quality	Coverage	Warnings	Gene_ID	Gene_name	Bio_type	Trancript_ID	Exon_ID	Exon_Rank	Effect	old_AA/new_AA	Old_codon/New_codon	Codon_Num(CDS)	Codon_Degeneracy	CDS_size	Codons_around	AAs_around	Custom_interval_ID
+1	861275	C	T	SNP	Hom	764.18	0		ENSG00000187634	SAMD11	protein_coding	ENST00000420190			INTRON					537			
+1	861275	C	T	SNP	Hom	764.18	0		ENSG00000187634	SAMD11	protein_coding	ENST00000437963			INTRON					327			
+1	861275	C	T	SNP	Hom	764.18	0		ENSG00000187634	SAMD11	protein_coding	ENST00000342066			INTRON					2046			

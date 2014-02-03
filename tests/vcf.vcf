@@ -1,0 +1,39 @@
+# From http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41
+# Ref: a t C g a // C is the reference base
+#    : a t G g a // C base is a G in some individuals
+#    : a t - g a // C base is deleted w.r.t. the reference
+#    : a t CAg a // A base is inserted w.r.t. the reference sequence
+20	3	chr20:2_C/G	C	G	.	PASS	DP=100
+21	2	chr21:2_*/-C	TC	T	.	PASS	DP=100
+22	2	chr22:3_*/+A	TC	TCA	.	PASS	DP=100
+#
+# Ref: a t C g a // C is the reference base
+#    : a t G g a // C base is a G in some individuals
+#    : a t - g a // C base is deleted w.r.t. the
+#
+23	2	chr23:2_C/G	TC	TG	.	PASS	DP=100
+24	2	chr24:2_*/-C	TC	T	.	PASS	DP=100
+#
+# Ref: a t C g a // C is the reference base
+#    : a t - g a
+#    : a t - - a
+#    : a t CAg a
+#
+25	2	chr25:2_*/-C	TCG	TG	.	PASS	DP=100
+26	2	chr26:2_*/-CG	TCG	T	.	PASS	DP=100
+27	2	chr27:3_*/+A	TCG	TCAG	.	PASS	DP=100
+#
+#
+28	3	chr28:2_C/T	C	T	.	PASS	DP=100
+29	3	chr29:3_*/+TAG	C	CTAG	.	PASS	DP=100
+30	2	chr30:2_*/-CG	TCG	T	.	PASS	DP=100
+#
+31	4	chr31:4_*/-CG	GCG	G	.	PASS	DP=100
+32	4	chr32:6_*/+CG	GCG	GCGCG	.	PASS	DP=100
+#
+41	6324683	chr41:6324683_*/-AGGA	Cagga	C	.	PASS	DP=100
+42	6344830	chr42:6344830_*/-TTTGT	Gtttgt	G	.	PASS	DP=100
+43	4644521	chr43:4644521_*/-GAAG	Agaag	A	.	PASS	DP=100
+44	5703337	chr44:5703337_*/-GTG	Tgtg	T	.	PASS	DP=100
+#
+51	30768492	chr51:30768492_*/-CTCTGGC	GCTCTGGC	G	197	PASS	DP=13;NF=0;NR=4;NRS=0;NFS=4;HP=1	GT:GQ	1/1:12

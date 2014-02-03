@@ -1,0 +1,11 @@
+testCase
+Y	0-399 CHROMOSOME 'Y'
+Y:99-199, strand:1, id:Gene1, name:Gene1, bioType:mRNA
+Transcipts:
+	Y:99-199, strand: +, id:Tr1
+		Exons:
+		Y:99-101 'Exon_Y_100_102' rank:1, sequence: acc
+		Y:102-197 'Exon_Y_103_198' rank:2, sequence: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+		Y:197-199 'Exon_Y_198_200' rank:3, sequence: ccc
+
+		CDS 'Tr1': accccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
