@@ -51,10 +51,3 @@
 
 7) Upload to Galaxy ToolShed: http://toolshed.g2.bx.psu.edu/
 		Reference: http://wiki.g2.bx.psu.edu/Tool%20Shed
-
--------------------------------------------------------------------------------
-
-Maven: Manually install JAR files
-
-    mvn install:install-file -Dfile=sam-1.94.jar -DgroupId=net.sf.samtools -DartifactId=Sam -Dversion=1.94 -Dpackaging=jar
-   

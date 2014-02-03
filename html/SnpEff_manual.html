@@ -451,8 +451,10 @@ java -jar SnpSift.jar filter -f file.eff.vcf "! exists ID" > file.eff.not_in_dbS
 				This parameter points to the <code>data</code> directory where you installed the tool (i.e. in unix systems, this is <code>$HOME/snpEff/data</code>).<p>
 
 				<p> <h3>Source code </h3>
-				The source code is in GitHub (although we keep the binary distribution is at SourceForge). <br>
-				Here is the <code>git</code> command to check out the development version of the code:
+				The source code is in GitHub (although we keep the binary distribution is at SourceForge). 
+				<br>
+				<br>
+				<b> Getting the souce:</b> Here is the <code>git</code> command to check out the development version of the code:
 				<br>
 				<br>
 <pre>
@@ -462,14 +464,45 @@ git clone https://github.com/pcingola/SnpEff.git
 git clone https://github.com/pcingola/SnpSift.git
 </pre>
 				<br>
+				<b>Install required libraries:</b> 
+				Most libraries should be install using Maven, so you just need to run <code>mvn</code> command.
+				<br>
+				<br>
 				You may need to install <code>sam-jdk</code> JAR file manually on your maven repository.
 				Download the JAR file <a href="http://sourceforge.net/projects/picard/files/">here</a>, then run the following command to add the JAR to Maven:
 				<br>
 				<br>
 <pre>
-mvn install:install-file -Dfile=sam-1.94.jar -DgroupId=net.sf.samtools -DartifactId=Sam -Dversion=1.94 -Dpackaging=jar
-</pre>
+# Download JAR file
+wget http://sourceforge.net/projects/picard/files/sam-jdk/1.97/sam-1.97.jar
 
+# Manually add it to Maven
+mvn install:install-file -Dfile=sam-1.97.jar -DgroupId=net.sf.samtools -DartifactId=Sam -Dversion=1.97 -Dpackaging=jar
+</pre>
+				<br>
+				<b>Intalling test cases:</b>
+				Test cases require special "test cases databases and genome", you can find them here:
+				<br>
+				<br>
+<pre>
+# Install test databases in SnpEff's development directory (not the soruce code dir!)
+cd $HOME/snpEff
+
+# Download dtabases and genome for test cases
+wget http://sourceforge.net/projects/snpeff/files/databases/test_cases.tgz
+
+# Uncompress
+tar -xvzf test_cases.tgz
+
+# Go to Eclipse's workspace directory (where the source code is)
+cd $HOME/workspace/SnpEff
+
+# Create a link to the 'data' dir, so that we can run test cases within Eclipse
+ln -s $HOME/snpEff/data
+
+# Add data dir to 'gitignore'
+echo "/data" >> .gitignore
+</pre>
         </section>
 
         <!-- Running SnpEff
