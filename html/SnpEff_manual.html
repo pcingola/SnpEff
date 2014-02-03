@@ -451,15 +451,21 @@ java -jar SnpSift.jar filter -f file.eff.vcf "! exists ID" > file.eff.not_in_dbS
 				This parameter points to the <code>data</code> directory where you installed the tool (i.e. in unix systems, this is <code>$HOME/snpEff/data</code>).<p>
 
 				<p> <h3>Source code </h3>
-				The project is hosted at SourceForge. <br>
-				Here is the SVN command to check out the development version of the code:
-<pre>
-svn co http://svn.code.sf.net/p/snpeff/code/SnpEffect/trunk/
-</pre>
+				The source code is in GitHub (although we keep the binary distribution is at SourceForge). <br>
+				Here is the <code>git</code> command to check out the development version of the code:
 				<br>
+				<br>
+<pre>
+git clone https://github.com/pcingola/SnpEff.git
+
+# If you want to SnpSift as well
+git clone https://github.com/pcingola/SnpSift.git
+</pre>
 				<br>
 				You may need to install <code>sam-jdk</code> JAR file manually on your maven repository.
 				Download the JAR file <a href="http://sourceforge.net/projects/picard/files/">here</a>, then run the following command to add the JAR to Maven:
+				<br>
+				<br>
 <pre>
 mvn install:install-file -Dfile=sam-1.94.jar -DgroupId=net.sf.samtools -DartifactId=Sam -Dversion=1.94 -Dpackaging=jar
 </pre>
