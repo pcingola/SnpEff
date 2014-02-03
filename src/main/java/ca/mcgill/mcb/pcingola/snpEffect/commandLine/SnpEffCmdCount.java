@@ -209,12 +209,13 @@ public class SnpEffCmdCount extends SnpEff {
 		if (message != null) System.err.println("Error: " + message + "\n");
 		System.err.println("snpEff version " + VERSION);
 		System.err.println("Usage: snpEff count [options] genome file_1 file_2 ...  file_N");
-		System.err.println("\t-i intervals.bed : User defined intervals. Mutiple '-i' commands are allowed.");
 		System.err.println("\t-n name          : Output file base name. ");
 		System.err.println("\t-noGenome        : Do not count genomic intervals, only user provided intervals are used.");
-		System.err.println("\t-canon           : Use only canonical transcripts.");
 		System.err.println("\t-p               : Calculate probability model (binomial). Default: " + calcProbModel);
 		System.err.println("\tfile             : A file contianing intervals or reads. Either BAM, SAM, VCF, BED or BigBed format.");
+
+		usageGenericAndDb();
+
 		System.exit(-1);
 	}
 }
