@@ -79,6 +79,7 @@ public class SnpEff implements CommandLine {
 	protected boolean motif = false; // Annotate using motifs
 	protected boolean multiThreaded; // Use multiple threads
 	protected boolean nextProt = false; // Annotate using NextProt database
+	protected boolean noGenome = false; // Do not load genome database
 	protected boolean onlyRegulation = false; // Only build regulation tracks
 	protected boolean quiet; // Be quiet
 	protected boolean verbose; // Be verbose
@@ -220,7 +221,12 @@ public class SnpEff implements CommandLine {
 	 */
 	public void loadDb() {
 		// Read database (or create a new one)
-		if (onlyRegulation) {
+		if (noGenome) {
+			if (verbose) Timer.showStdErr("Creating empty database (no genome).");
+			SnpEffectPredictor snpEffectPredictor = new SnpEffectPredictor(new Genome());
+			config.setSnpEffectPredictor(snpEffectPredictor);
+			config.setErrorChromoHit(false); // We don't have chromosomes, so we de-activate this error.
+		} else if (onlyRegulation) {
 			// Create predictor
 			config.setSnpEffectPredictor(new SnpEffectPredictor(config.getGenome()));
 			config.setOnlyRegulation(true);
@@ -795,21 +801,21 @@ public class SnpEff implements CommandLine {
 		if (message != null) System.err.println("Error: " + message + "\n");
 		System.err.println("snpEff version " + VERSION);
 		System.err.println("Usage: snpEff [command] [options] [files]");
-		System.err.println("\nAvailable commands: ");
-		System.err.println("   [eff]           : Calculate effect of variants. Default: eff (no command or 'eff').");
-		System.err.println("   build           : Build a SnpEff database.");
-		System.err.println("   buildNextProt   : Build a SnpEff for NextProt (using NextProt's XML files).");
-		System.err.println("   cds             : Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
-		System.err.println("   closest         : Annotate the closest genomic region.");
-		System.err.println("   count           : Count how many intervals (from a BAM, BED or VCF file) overlap with each genomic interval.");
-		System.err.println("   databases       : Show currently available databases (from local config file).");
-		System.err.println("   download        : Download a SnpEff database.");
-		System.err.println("   dump            : Dump to STDOUT a SnpEff database (mostly used for debugging).");
-		System.err.println("   genes2bed       : Create a bed file from a genes list.");
-		System.err.println("   len             : Calculate total genomic length for each marker type.");
-		System.err.println("   protein         : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
-		System.err.println("   spliceAnalysis  : Perform an analysis of splice sites. Experimental feature.");
 		System.err.println("\nRun 'java -jar snpEff.jar command' for help on each specific command");
+		System.err.println("\nAvailable commands: ");
+		System.err.println("\t[eff]                        : Calculate effect of variants. Default: eff (no command or 'eff').");
+		System.err.println("\tbuild                        : Build a SnpEff database.");
+		System.err.println("\tbuildNextProt                : Build a SnpEff for NextProt (using NextProt's XML files).");
+		System.err.println("\tcds                          : Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
+		System.err.println("\tclosest                      : Annotate the closest genomic region.");
+		System.err.println("\tcount                        : Count how many intervals (from a BAM, BED or VCF file) overlap with each genomic interval.");
+		System.err.println("\tdatabases                    : Show currently available databases (from local config file).");
+		System.err.println("\tdownload                     : Download a SnpEff database.");
+		System.err.println("\tdump                         : Dump to STDOUT a SnpEff database (mostly used for debugging).");
+		System.err.println("\tgenes2bed                    : Create a bed file from a genes list.");
+		System.err.println("\tlen                          : Calculate total genomic length for each marker type.");
+		System.err.println("\tprotein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
+		System.err.println("\tspliceAnalysis               : Perform an analysis of splice sites. Experimental feature.");
 
 		usageGenericAndDb();
 
@@ -821,26 +827,26 @@ public class SnpEff implements CommandLine {
 	 */
 	protected void usageGenericAndDb() {
 		System.err.println("\nGeneric options:");
-		System.err.println("\t-c , -config     : Specify config file");
-		System.err.println("\t-d , -debug      : Debug mode (very verbose).");
-		System.err.println("\t-dataDir <path>  : Override data_dir parameter from config file.");
-		System.err.println("\t-h , -help       : Show this help and exit");
-		System.err.println("\t-if, -inOffset   : Offset input by a number of bases. E.g. '-inOffset 1' for one-based input files");
-		System.err.println("\t-of, -outOffset  : Offset output by a number of bases. E.g. '-outOffset 1' for one-based output files");
-		System.err.println("\t-noLog           : Do not report usage statistics to server");
-		System.err.println("\t-t               : Use multiple threads (implies '-noStats'). Default 'off'");
-		System.err.println("\t-q , -quiet      : Quiet mode (do not show any messages or errors)");
-		System.err.println("\t-v , -verbose    : Verbose mode");
+		System.err.println("\t-c , -config                 : Specify config file");
+		System.err.println("\t-d , -debug                  : Debug mode (very verbose).");
+		System.err.println("\t-dataDir <path>              : Override data_dir parameter from config file.");
+		System.err.println("\t-h , -help                   : Show this help and exit");
+		System.err.println("\t-if, -inOffset               : Offset input by a number of bases. E.g. '-inOffset 1' for one-based input files");
+		System.err.println("\t-of, -outOffset              : Offset output by a number of bases. E.g. '-outOffset 1' for one-based output files");
+		System.err.println("\t-noLog                       : Do not report usage statistics to server");
+		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
+		System.err.println("\t-q , -quiet                  : Quiet mode (do not show any messages or errors)");
+		System.err.println("\t-v , -verbose                : Verbose mode");
 		System.err.println("\nDatabase options:");
-		System.err.println("\t-canon                          : Only use canonical transcripts.");
-		System.err.println("\t-interval                       : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
-		System.err.println("\t-motif                          : Annotate using motifs (requires Motif database).");
-		System.err.println("\t-nextProt                       : Annotate using NextProt (requires NextProt database).");
-		System.err.println("\t-reg <name>                     : Regulation track to use (this option can be used add several times).");
-		System.err.println("\t-onlyReg                        : Only use regulation tracks.");
-		System.err.println("\t-onlyTr <file.txt>              : Only use the transcripts in this file. Format: One transcript ID per line.");
-		System.err.println("\t-ss, -spliceSiteSize <int>      : Set size for splice sites (donor and acceptor) in bases. Default: " + spliceSiteSize);
-		System.err.println("\t-ud, -upDownStreamLen <int>     : Set upstream downstream interval length (in bases)");
+		System.err.println("\t-canon                       : Only use canonical transcripts.");
+		System.err.println("\t-interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
+		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database).");
+		System.err.println("\t-nextProt                    : Annotate using NextProt (requires NextProt database).");
+		System.err.println("\t-reg <name>                  : Regulation track to use (this option can be used add several times).");
+		System.err.println("\t-onlyReg                     : Only use regulation tracks.");
+		System.err.println("\t-onlyTr <file.txt>           : Only use the transcripts in this file. Format: One transcript ID per line.");
+		System.err.println("\t-ss, -spliceSiteSize <int>   : Set size for splice sites (donor and acceptor) in bases. Default: " + spliceSiteSize);
+		System.err.println("\t-ud, -upDownStreamLen <int>  : Set upstream downstream interval length (in bases)");
 	}
 
 }

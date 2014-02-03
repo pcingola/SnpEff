@@ -99,21 +99,16 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 * If none of the transcripts is protein coding, then it is the longest cDNA. 
 	 */
 	public Transcript canonical() {
-		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
 		Transcript canonical = null;
 
 		if (isProteinCoding()) {
 			// Find canonical transcript (longest CDS)
-			for (Transcript t : this) {
+			for (Transcript t : this)
 				if (t.isProteinCoding() && ((canonical == null) || (canonical.cds().length() < t.cds().length()))) canonical = t;
-				toDelete.add(t);
-			}
 		} else {
 			// Find canonical transcript (longest cDNA)
-			for (Transcript t : this) {
+			for (Transcript t : this)
 				if ((canonical == null) || (canonical.cds().length() < t.cds().length())) canonical = t;
-				toDelete.add(t);
-			}
 		}
 
 		return canonical;

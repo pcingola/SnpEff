@@ -8,9 +8,6 @@ import net.sf.samtools.AbstractBAMFileIndex;
 import net.sf.samtools.BAMIndexMetaData;
 import net.sf.samtools.SAMFileReader;
 import ca.mcgill.mcb.pcingola.coverage.CountReadsOnMarkers;
-import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.stats.ReadsOnMarkersModel;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -23,18 +20,14 @@ import ca.mcgill.mcb.pcingola.util.Timer;
  */
 public class SnpEffCmdCount extends SnpEff {
 
-	boolean noGenome;
 	boolean calcProbModel;
-	boolean canonical = false; // Use only canonical transcripts
 	String outputBaseNames;
 	CountReadsOnMarkers countReadsOnMarkers;
 	SnpEffectPredictor snpEffectPredictor;
 	List<String> fileNames; // Files to count (can be BAM, SAM) 
-	List<String> customIntervals; // Custom intervals
 
 	public SnpEffCmdCount() {
 		fileNames = new ArrayList<String>();
-		customIntervals = new ArrayList<String>();
 	}
 
 	/**
@@ -72,11 +65,9 @@ public class SnpEffCmdCount extends SnpEff {
 	public void parseArgs(String[] args) {
 		// Parse command line arguments
 		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("-i")) customIntervals.add(args[++i]);
-			else if (args[i].equals("-p")) calcProbModel = true;
+			if (args[i].equals("-p")) calcProbModel = true;
 			else if (args[i].equals("-n")) outputBaseNames = args[++i];
 			else if (args[i].equalsIgnoreCase("-nogenome")) noGenome = true;
-			else if (args[i].equalsIgnoreCase("-canon")) canonical = true;
 			else if ((genomeVer == null) || genomeVer.isEmpty()) genomeVer = args[i];
 			else fileNames.add(args[i]);
 		}
@@ -88,10 +79,10 @@ public class SnpEffCmdCount extends SnpEff {
 		for (String file : fileNames)
 			if (!Gpr.canRead(file)) fatalError("Cannot read input file '" + file + "'");
 
-		for (String file : customIntervals)
+		for (String file : customIntervalFiles)
 			if (!Gpr.canRead(file)) fatalError("Cannot read custom intervals file '" + file + "'");
 
-		if (noGenome && customIntervals.isEmpty()) usage("No user defined intervals were defined (mandatory if '-noGenome' option is enabled)");
+		if (noGenome && customIntervalFiles.isEmpty()) usage("No user defined intervals were defined (mandatory if '-noGenome' option is enabled)");
 	}
 
 	/**
@@ -125,38 +116,11 @@ public class SnpEffCmdCount extends SnpEff {
 		// Initialize
 		//---
 
-		// Load Config
 		readConfig(); // Read config file
 
 		// Load database
-		if (noGenome) {
-			if (verbose) Timer.showStdErr("Creating empty database (no genome).");
-			snpEffectPredictor = new SnpEffectPredictor(new Genome());
-			config.setSnpEffectPredictor(snpEffectPredictor);
-			config.setErrorChromoHit(false); // We don't have chromosomes, so we de-activate this error.
-		} else {
-			if (verbose) Timer.showStdErr("Reading database for genome '" + genomeVer + "'");
-			config.loadSnpEffectPredictor(); // Read snpEffect predictor
-			snpEffectPredictor = config.getSnpEffectPredictor(); // Read snpEffect predictor
-			if (verbose) Timer.showStdErr("done");
-		}
-		countReadsOnMarkers = new CountReadsOnMarkers(snpEffectPredictor);
-
-		// Load custom interval files
-		for (String markersFile : customIntervals) {
-			// Load file
-			if (verbose) Timer.showStdErr("Reading intervals from file '" + markersFile + "'");
-			String baseName = Gpr.removeExt(Gpr.baseName(markersFile));
-			Markers markers = readMarkers(markersFile);
-
-			// Set marker type
-			for (Marker marker : markers) {
-				marker.setId(baseName + ":" + marker.getId());
-				snpEffectPredictor.add(marker);
-				countReadsOnMarkers.addMarkerType(marker, baseName);
-			}
-			if (verbose) Timer.showStdErr("Done. Intervals added : " + markers.size());
-		}
+		loadDb();
+		snpEffectPredictor = config.getSnpEffectPredictor();
 
 		// Build forest
 		if (verbose) Timer.showStdErr("Building interval forest");
@@ -166,6 +130,8 @@ public class SnpEffCmdCount extends SnpEff {
 		//---
 		// Count reads
 		//---
+		// Initialize counter
+		countReadsOnMarkers = new CountReadsOnMarkers(snpEffectPredictor);
 
 		countReadsOnMarkers.setVerbose(verbose);
 		for (String file : fileNames)
