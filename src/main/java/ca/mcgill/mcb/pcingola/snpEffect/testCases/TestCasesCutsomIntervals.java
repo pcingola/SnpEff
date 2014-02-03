@@ -6,6 +6,7 @@ import java.util.Random;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -29,11 +30,11 @@ public class TestCasesCutsomIntervals extends TestCase {
 	public void test_01() {
 		// Load database
 		String[] args = { "-interval", "tests/custom_intervals_01.gff", "testHg3770Chr22", "tests/custom_intervals_01.vcf" };
-		SnpEffCmdEff snpEff = new SnpEffCmdEff();
-		snpEff.parseArgs(args);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
 
 		// Run
-		List<VcfEntry> vcfEntries = snpEff.run(true);
+		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
 		// Check propper annotations
 		VcfEntry ve = vcfEntries.get(0);

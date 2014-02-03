@@ -15,6 +15,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -98,12 +99,11 @@ public class TestCasesHgvs extends TestCase {
 		// Create command
 		String args[] = { "-hgvs", "testHg3766Chr1", vcfFile };
 
-		SnpEffCmdEff snpeff = new SnpEffCmdEff();
-		snpeff.setVerbose(verbose);
-		snpeff.parseArgs(args);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
 
 		// Run command
-		List<VcfEntry> list = snpeff.run(true);
+		List<VcfEntry> list = cmdEff.run(true);
 
 		// Find HGVS in any 'EFF' field
 		boolean found = false;

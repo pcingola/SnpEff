@@ -16,6 +16,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -89,10 +90,10 @@ public class TestCasesIns extends TestCase {
 	public void compareVep(String genome, String vcf, String trId) {
 		String args[] = { genome, vcf };
 
-		SnpEffCmdEff snpeff = new SnpEffCmdEff();
-		snpeff.parseArgs(args);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
 
-		List<VcfEntry> vcfEnties = snpeff.run(true);
+		List<VcfEntry> vcfEnties = cmdEff.run(true);
 		for (VcfEntry ve : vcfEnties) {
 
 			// Get first effect (there should be only one)
@@ -288,8 +289,8 @@ public class TestCasesIns extends TestCase {
 	public void test_02_InsOffByOne() {
 		String args[] = { "testENST00000268124", "tests/ins_off_by_one.vcf" };
 
-		SnpEffCmdEff snpeff = new SnpEffCmdEff();
-		snpeff.parseArgs(args);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
 
 		List<VcfEntry> vcfEnties = snpeff.run(true);
 		for (VcfEntry ve : vcfEnties) {

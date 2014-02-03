@@ -4,6 +4,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -34,12 +35,11 @@ public class TestCasesCancer extends TestCase {
 		String argsTxt[] = { "-cancer", "-cancerSamples", txtFile, "-hgvs", "testHg3766Chr1", vcfFile };
 		String args[] = (txtFile == null ? argsVcf : argsTxt);
 
-		SnpEffCmdEff snpeff = new SnpEffCmdEff();
-		snpeff.setVerbose(verbose);
-		snpeff.parseArgs(args);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
 
 		// Run command
-		List<VcfEntry> list = snpeff.run(true);
+		List<VcfEntry> list = cmdEff.run(true);
 
 		// Find AA change for a genotype
 		boolean found = false;

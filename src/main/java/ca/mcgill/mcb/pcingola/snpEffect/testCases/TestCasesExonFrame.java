@@ -34,8 +34,7 @@ public class TestCasesExonFrame extends TestCase {
 		String genomeName = "testLukas";
 		String args[] = { "build", "-v", "-noLog", "-gff3", genomeName };
 
-		SnpEff snpEff = new SnpEff();
-		snpEff.parseArgs(args);
+		SnpEff snpEff = new SnpEff(args);
 		boolean ok = snpEff.run();
 
 		Assert.assertTrue(ok);
@@ -65,9 +64,9 @@ public class TestCasesExonFrame extends TestCase {
 		String argsEff[] = { "-ud", "0", genomeName, vcfFileName };
 
 		// Annotate
-		SnpEffCmdEff snpEffCmdEff = new SnpEffCmdEff();
-		snpEffCmdEff.parseArgs(argsEff);
-		List<VcfEntry> vcfEntries = snpEffCmdEff.run(true);
+		SnpEff cmd = new SnpEff(argsEff);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
 		// Analyze annotations
 		for (VcfEntry ve : vcfEntries) {

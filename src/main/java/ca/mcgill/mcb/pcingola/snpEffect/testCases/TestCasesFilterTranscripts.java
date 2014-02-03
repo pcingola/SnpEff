@@ -4,6 +4,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
@@ -26,18 +27,17 @@ public class TestCasesFilterTranscripts extends TestCase {
 	 * Filter transcripts from a file
 	 */
 	public void test_01() {
-		String args[] = { "-noStats" // 
+		String args[] = { "-v" //
+				, "-noStats" // 
 				, "-i", "vcf", "-o", "vcf" //
 				, "-onlyTr", "tests/filterTranscripts_01.txt"//
 				, "testHg3765Chr22" //
 				, "tests/test_filter_transcripts_001.vcf" //
 		};
 
-		SnpEffCmdEff cmd = new SnpEffCmdEff();
-		cmd.parseArgs(args);
-		cmd.setVerbose(true);
-
-		List<VcfEntry> vcfEntries = cmd.run(true);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		List<VcfEntry> vcfEntries = cmdEff.run(true);
 		for (VcfEntry ve : vcfEntries) {
 			System.out.println(ve);
 
@@ -56,18 +56,17 @@ public class TestCasesFilterTranscripts extends TestCase {
 	 * Filter transcripts from a file
 	 */
 	public void test_02() {
-		String args[] = { "-noStats" // 
+		String args[] = { "-v"//
+				, "-noStats" // 
 				, "-i", "vcf", "-o", "vcf" //
 				, "-onlyTr", "tests/filterTranscripts_02.txt"//
 				, "testHg3765Chr22" //
 				, "tests/test_filter_transcripts_001.vcf" //
 		};
 
-		SnpEffCmdEff cmd = new SnpEffCmdEff();
-		cmd.parseArgs(args);
-		cmd.setVerbose(true);
-
-		List<VcfEntry> vcfEntries = cmd.run(true);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		List<VcfEntry> vcfEntries = cmdEff.run(true);
 		for (VcfEntry ve : vcfEntries) {
 			System.out.println(ve);
 

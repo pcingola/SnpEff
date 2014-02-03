@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 
 /**
@@ -23,12 +24,12 @@ public class TestCasesMissenseSilentRatio extends TestCase {
 				, "./tests/missenseSilent.chr22.vcf.gz" //
 		};
 
-		SnpEffCmdEff snpEffCmdEff = new SnpEffCmdEff();
-		snpEffCmdEff.parseArgs(args);
-		snpEffCmdEff.setVerbose(true);
-		snpEffCmdEff.run();
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
 
-		double silentRatio = snpEffCmdEff.getChangeEffectResutStats().getSilentRatio();
+		snpeff.run();
+
+		double silentRatio = snpeff.getChangeEffectResutStats().getSilentRatio();
 		System.err.println("Missense / Silent ratio: " + silentRatio);
 
 		Assert.assertEquals(1.19, silentRatio, 0.1);

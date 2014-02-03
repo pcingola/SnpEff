@@ -1,11 +1,13 @@
 package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -452,7 +454,10 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 			//---
 			if (verbose) Timer.showStdErr("Reading file:" + xmlFileName);
 			File xmlFile = new File(xmlFileName);
-			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
+
+			Document doc = null;
+			if (xmlFileName.endsWith(".gz")) doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new GZIPInputStream(new FileInputStream(xmlFile)));
+			else doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
 
 			if (verbose) Timer.showStdErr("Normalizing XML document");
 			doc.getDocumentElement().normalize();

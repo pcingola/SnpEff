@@ -6,6 +6,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.WarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
@@ -37,10 +38,9 @@ public class TestCasesTranscriptError extends TestCase {
 	 * @param warningType
 	 */
 	void transcriptError(String args[], WarningType warningType) {
-		SnpEffCmdEff snpEffCmdEff = new SnpEffCmdEff();
-		snpEffCmdEff.parseArgs(args);
-		snpEffCmdEff.setVerbose(true);
-		List<VcfEntry> vcfEntries = snpEffCmdEff.run(true);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		List<VcfEntry> vcfEntries = snpeff.run(true);
 
 		boolean hasWarning = false;
 		for (VcfEntry ve : vcfEntries) {

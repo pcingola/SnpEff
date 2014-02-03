@@ -23,28 +23,16 @@ import ca.mcgill.mcb.pcingola.fileIterator.SeqChangeTxtFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.filter.ChangeEffectFilter;
 import ca.mcgill.mcb.pcingola.filter.SeqChangeFilter;
-import ca.mcgill.mcb.pcingola.interval.Chromosome;
-import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.Gene;
-import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.Motif;
-import ca.mcgill.mcb.pcingola.interval.NextProt;
-import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
-import ca.mcgill.mcb.pcingola.interval.SpliceSite;
-import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
-import ca.mcgill.mcb.pcingola.motif.Jaspar;
-import ca.mcgill.mcb.pcingola.motif.Pwm;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedAnnotationOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.OutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.TxtOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
-import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
@@ -82,24 +70,16 @@ public class SnpEffCmdEff extends SnpEff {
 	public static final int SHOW_EVERY = 100000;
 
 	boolean cancer = false; // Perform cancer comparisons
-	boolean canonical = false; // Use only canonical transcripts
 	boolean supressOutput = false; // Only used for debugging purposes 
 	boolean createSummary = true; // Do not create summary output file 
-	boolean download = false; // Download genome, if not available 
 	boolean useHgvs = false; // Use Hgvs notation
 	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
 	boolean useSequenceOntolgy = false; // Use Sequence Ontolgy terms
 	boolean useOicr = false; // Use OICR tag
-	Boolean treatAllAsProteinCoding = null; // Only use coding genes. Default is 'null' which means 'auto'
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
-	boolean onlyRegulation = false; // Only build regulation tracks
 	boolean lossOfFunction = false; // Create loss of function LOF tag?
 	boolean useGeneId = false; // Use gene ID instead of gene name (VCF output)
-	boolean nextProt = false; // Annotate using NextProt database
-	boolean motif = false; // Annotate using motifs
 	boolean createCsvSummary = false; // Use a CSV as output summary
-	int upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH; // Upstream & downstream interval length
-	int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE; // Splice site size default: 2 bases (canonical splice site)
 	int totalErrs = 0;
 	long countInputLines = 0, countVariants = 0, countEffects = 0, countVariantsFilteredOut = 0;
 	String chrStr = "";
@@ -107,7 +87,6 @@ public class SnpEffCmdEff extends SnpEff {
 	ArrayList<String> inputFiles;
 	String summaryFile; // Summary output file
 	String summaryGenesFile; // Gene table file
-	String onlyTranscriptsFile = null; // Only use the transcripts in this file (Format: One transcript ID per line)
 	String cancerSamples = null;
 	SeqChangeFilter seqChangeFilter; // Filter seqChanges (before prediction)
 	InputFormat inputFormat = InputFormat.VCF; // Format use in input files
@@ -115,23 +94,19 @@ public class SnpEffCmdEff extends SnpEff {
 	ChangeEffectFilter changeEffectResutFilter; // Filter prediction results
 	ArrayList<String> filterIntervalFiles;// Files used for filter intervals
 	IntervalForest filterIntervals; // Filter only seqChanges that match these intervals
-	ArrayList<String> customIntervalFiles; // Custom interval files (bed)
 	SeqChangeStats seqChangeStats;
 	ChangeEffectResutStats changeEffectResutStats;
 	VcfStats vcfStats;
-	HashSet<String> regulationTracks = new HashSet<String>();
 	List<VcfEntry> vcfEntriesDebug = null; // Use for debugging or testing (in some test-cases)
 
 	public SnpEffCmdEff() {
 		super();
-		upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH; // Upstream & downstream interval length
 		chrStr = ""; // Default: Don't show 'chr' before chromosome
 		inputFile = ""; // seqChange input file
 		seqChangeFilter = new SeqChangeFilter(); // Filter seqChanges (before prediction)
 		changeEffectResutFilter = new ChangeEffectFilter(); // Filter prediction results
 		filterIntervalFiles = new ArrayList<String>(); // Files used for filter intervals
 		filterIntervals = new IntervalForest(); // Filter only seqChanges that match these intervals
-		customIntervalFiles = new ArrayList<String>(); // Custom interval files
 		summaryFile = DEFAULT_SUMMARY_FILE;
 		summaryGenesFile = DEFAULT_SUMMARY_GENES_FILE;
 	}
@@ -155,10 +130,10 @@ public class SnpEffCmdEff extends SnpEff {
 				int go[] = genOri.getGenotype(); // Original genotype
 
 				if (genOri.isPhased() && genDer.isPhased()) {
-					// Phased, we only have two possible comparissons
+					// Phased, we only have two possible comparisons
 					// TODO: Check if this is correct for phased genotypes!
 					for (int i = 0; i < 2; i++) {
-						// Add comparissons
+						// Add comparisons
 						// TODO: Decide if we want to keep "back to reference" analysis (i.e. gd[d] == 0)
 						// if ((go[i] >= 0) && (gd[i] >= 0) // Both genotypes are non-missing?
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
@@ -170,10 +145,10 @@ public class SnpEffCmdEff extends SnpEff {
 						}
 					}
 				} else {
-					// Phased, we only have two possible comparissons	
+					// Phased, we only have two possible comparisons	
 					for (int d = 0; d < gd.length; d++)
 						for (int o = 0; o < go.length; o++) {
-							// Add comparissons 
+							// Add comparisons 
 							// TODO: Decide if we want to keep "back to reference" analysis (i.e. gd[d] == 0)
 							// if ((go[o] >= 0) && (gd[d] >= 0) // Both genotypes are non-missing?
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
@@ -357,7 +332,7 @@ public class SnpEffCmdEff extends SnpEff {
 				// Here we deal with Somatic vs Germline comparisons 
 				//---
 				if (anyCancerSample && impact && vcfEntry.isMultipleAlts()) {
-					// Calculate all required comparissons
+					// Calculate all required comparisons
 					Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
 
 					// Analyze each comparison
@@ -506,26 +481,13 @@ public class SnpEffCmdEff extends SnpEff {
 		this.args = args;
 
 		for (int i = 0; i < args.length; i++) {
-
 			String arg = args[i];
 
 			// Is it a command line option?
+			// Note: Generic options (such as config, verbose, debug, quiet, etc.) are parsed by SnpEff class 
+			//---
 			if (isOpt(arg)) {
-
-				//---
-				// Generic options.
-				// Note: OPtions config, verbose, debug, quiet, etc. at parse by SnpEff (parent class) 
-				//---
-				if (arg.equals("-1")) inOffset = outOffset = 1;
-				else if (arg.equals("-0")) inOffset = outOffset = 0;
-				else if (arg.equals("-h") || arg.equalsIgnoreCase("-help")) {
-					usage(null);
-					System.exit(0);
-				} else if (arg.equals("-t")) {
-					multiThreaded = true;
-					createSummary = false; // Implies '-noStats'
-				} else if (arg.equalsIgnoreCase("-fileList")) isFileList = true;
-
+				if (arg.equalsIgnoreCase("-fileList")) isFileList = true;
 				//---
 				// Output options
 				//---
@@ -574,33 +536,19 @@ public class SnpEffCmdEff extends SnpEff {
 				//---
 				// Annotation options
 				//---
-				else if (arg.equalsIgnoreCase("-treatAllAsProteinCoding")) {
-					if ((i + 1) < args.length) {
-						i++;
-						if (args[i].equalsIgnoreCase("auto")) treatAllAsProteinCoding = null;
-						else treatAllAsProteinCoding = Gpr.parseBoolSafe(args[i]);
-					}
-				} else if (arg.equalsIgnoreCase("-cancer")) cancer = true; // Perform cancer comparissons
+				else if (arg.equalsIgnoreCase("-cancer")) cancer = true; // Perform cancer comparisons
 				else if (arg.equalsIgnoreCase("-cancerSamples")) {
 					if ((i + 1) < args.length) cancerSamples = args[++i]; // Read cancer samples from TXT files
 					else usage("Missing -cancerSamples argument");
-				} else if (arg.equalsIgnoreCase("-canon")) canonical = true; // Use canonical transcripts
-				else if (arg.equalsIgnoreCase("-download")) download = true; // Download genome if not availble
-				else if (arg.equalsIgnoreCase("-lof")) lossOfFunction = true; // Add LOF tag
+				} else if (arg.equalsIgnoreCase("-lof")) lossOfFunction = true; // Add LOF tag
 				else if (arg.equalsIgnoreCase("-hgvs")) useHgvs = true; // Use HGVS notation
 				else if (arg.equalsIgnoreCase("-geneId")) useGeneId = true; // Use gene ID instead of gene name
 				else if (arg.equalsIgnoreCase("-sequenceOntolgy")) useSequenceOntolgy = true; // Use SO temrs
 				else if (arg.equalsIgnoreCase("-oicr")) useOicr = true; // Use OICR tag
-				else if (arg.equalsIgnoreCase("-onlyTr")) {
-					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
-				}
 				//---
 				// Input options
 				//---
-				else if (arg.equalsIgnoreCase("-interval")) {
-					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
-					else usage("Option '-interval' without config interval_file argument");
-				} else if ((arg.equals("-fi") || arg.equalsIgnoreCase("-filterInterval"))) {
+				else if ((arg.equals("-fi") || arg.equalsIgnoreCase("-filterInterval"))) {
 					if ((i + 1) < args.length) filterIntervalFiles.add(args[++i]);
 					else usage("Option '-fi' without config filter_interval_file argument");
 				} else if (arg.equals("-i")) {
@@ -626,21 +574,7 @@ public class SnpEffCmdEff extends SnpEff {
 							inOffset = 0; // Implies '-0' since Bed coordinates are zero-based
 						} else usage("Unknown input file format '" + inFor + "'");
 					} else usage("Missing input format in command line option '-i'");
-				} else if ((arg.equals("-if") || arg.equalsIgnoreCase("-inOffset"))) {
-					if ((i + 1) < args.length) inOffset = Gpr.parseIntSafe(args[++i]);
 				}
-				//---
-				// Regulation options
-				//---
-				else if (arg.equals("-onlyReg")) onlyRegulation = true;
-				else if (arg.equals("-reg")) {
-					if ((i + 1) < args.length) regulationTracks.add(args[++i]); // Add this track to the list
-				}
-				//---
-				// NextProt database
-				//---
-				else if (arg.equalsIgnoreCase("-nextProt")) nextProt = true; // Use NextProt database
-				else if (arg.equalsIgnoreCase("-motif")) motif = true; // Use motif database
 				//---
 				// Filters
 				//---
@@ -697,6 +631,7 @@ public class SnpEffCmdEff extends SnpEff {
 		// Check input file
 		if (inputFile.isEmpty()) inputFile = "-"; // Use STDIN as default
 		else if (!Gpr.canRead(inputFile)) usage("Cannot read input file '" + inputFile + "'");
+
 		// Read input files from file list?
 		if (isFileList) {
 			inputFiles = new ArrayList<String>();
@@ -711,24 +646,10 @@ public class SnpEffCmdEff extends SnpEff {
 		if (!isOutVcf && cancer) usage("Canccer annotation is only supported when when output is in VCF format");
 
 		// Sanity check for multi-threaded version
+		if (multiThreaded) createSummary = false; // This is implied ( '-t' => '-noStats' )
 		if (multiThreaded && cancer) usage("Cancer analysis is currently not supported in multi-threaded mode.");
 		if (multiThreaded && !isOutVcf) usage("Multi-threaded option is only supported when when output is in VCF format");
 		if (multiThreaded && createSummary) usage("Multi-threaded option should be used with 'noStats'.");
-	}
-
-	/**
-	 * Read a custom interval file
-	 * @param intFile
-	 */
-	protected int readCustomIntFile(String intFile) {
-		Markers markers = readMarkers(intFile);
-
-		// Add all markers to predictor
-		for (Marker m : markers)
-			config.getSnpEffectPredictor().add(m);
-
-		// Number added
-		return markers.size();
 	}
 
 	/**
@@ -752,127 +673,6 @@ public class SnpEffCmdEff extends SnpEff {
 		for (Marker filterInterval : markers)
 			filterIntervals.add(filterInterval);
 		return markers.size();
-	}
-
-	/**
-	 * Read regulation motif files
-	 */
-	void readMotif() {
-		if (verbose) Timer.showStdErr("Loading Motifs and PWMs");
-
-		//---
-		// Sanity checks
-		//---
-		String pwmsFileName = config.getDirDataVersion() + "/pwms.bin";
-		if (!Gpr.exists(pwmsFileName)) fatalError("Warning: Cannot open PWMs file " + pwmsFileName);
-
-		String motifBinFileName = config.getBaseFileNameMotif() + ".bin";
-		if (!Gpr.exists(motifBinFileName)) fatalError("Warning: Cannot open Motifs file " + motifBinFileName);
-
-		//---
-		// Load all PWMs
-		//---
-		if (verbose) Timer.showStdErr("\tLoading PWMs from : " + pwmsFileName);
-		Jaspar jaspar = new Jaspar();
-		jaspar.load(pwmsFileName);
-
-		//---
-		// Read motifs
-		//---		
-		if (verbose) Timer.showStdErr("\tLoading Motifs from file '" + motifBinFileName + "'");
-
-		MarkerSerializer markerSerializer = new MarkerSerializer();
-		Markers motifsDb = markerSerializer.load(motifBinFileName);
-
-		// Add (only) motif markers. The original motifs has to be serialized with Chromosomes, Genomes and other markers (otherwise it could have not been saved)
-		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
-		int countAddded = 0;
-		for (Marker m : motifsDb)
-			if (m instanceof Motif) {
-				Motif motif = (Motif) m;
-
-				// Connect motifs to their respective PWMs
-				Pwm pwm = jaspar.getPwm(motif.getPwmId());
-				if (pwm != null) {
-					// Set PWM and add to snpEffPredictor
-					motif.setPwm(pwm);
-					snpEffectPredictor.add(motif);
-					countAddded++;
-				} else Timer.showStdErr("Cannot find PWM for motif '" + motif.getId() + "'");
-			}
-
-		if (verbose) Timer.showStdErr("\tMotif database: " + countAddded + " markers loaded.");
-	}
-
-	/**
-	 * Read regulation track and update SnpEffectPredictor
-	 * @param regTrack
-	 */
-	void readNextProt() {
-		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
-
-		//---
-		// Read nextProt binary file
-		//---
-		String nextProtBinFile = config.getDirDataVersion() + "/nextProt.bin";
-		if (verbose) Timer.showStdErr("Reading NextProt database from file '" + nextProtBinFile + "'");
-
-		MarkerSerializer markerSerializer = new MarkerSerializer();
-		Markers nextProtDb = markerSerializer.load(nextProtBinFile);
-
-		// Create a collection of (only) NextProt markers. The original nextProtDb has Chromosomes, Genomes and other markers (otherwise it could have not been saved)
-		ArrayList<NextProt> nextProts = new ArrayList<NextProt>(nextProtDb.size());
-		for (Marker m : nextProtDb)
-			if (m instanceof NextProt) nextProts.add((NextProt) m);
-
-		if (verbose) Timer.showStdErr("NextProt database: " + nextProts.size() + " markers loaded.");
-
-		//---
-		// Connect nextProt annotations to transcripts and exons 
-		//---
-		if (verbose) Timer.showStdErr("Adding transcript info to NextProt markers.");
-
-		// Create a list of all transcripts
-		HashMap<String, Transcript> trs = new HashMap<String, Transcript>();
-		for (Gene g : snpEffectPredictor.getGenome().getGenes())
-			for (Transcript tr : g)
-				trs.put(tr.getId(), tr);
-
-		// Find the corresponding transcript for each nextProt marker 
-		// WARNING: The transcripts might be filtered out by the user (e.g. '-cannon' command line option or user defined sets). 
-		//          We only keep nextProt markers associated to found transcripts. All others are discarded (the user doesn't want that info).
-		ArrayList<NextProt> nextProtsToAdd = new ArrayList<NextProt>();
-		for (NextProt np : nextProts) {
-			Transcript tr = trs.get(np.getTranscriptId());
-
-			// Found transcript, now try to find an exon
-			if (tr != null) {
-				boolean assignedToExon = false;
-				for (Exon ex : tr) {
-					if (ex.intersects(np)) {
-						NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon 
-						npEx.setParent(ex);
-						nextProtsToAdd.add(npEx);
-						assignedToExon = true;
-					}
-				}
-
-				// Not assigned to an exon? Add transcript info
-				if (!assignedToExon) {
-					np.setParent(tr); // Set this transcript as parent
-					nextProtsToAdd.add(np);
-				}
-			}
-		}
-
-		//---
-		// Add all nextProt marker to predictor
-		//---
-		for (NextProt np : nextProtsToAdd)
-			snpEffectPredictor.add(np);
-
-		// Note: We might end up with more markers than we loaded (just because they map to multiple exons (although it would be highly unusual)
-		if (verbose) Timer.showStdErr("NextProt database: " + nextProtsToAdd.size() + " markers added.");
 	}
 
 	/**
@@ -911,43 +711,6 @@ public class SnpEffCmdEff extends SnpEff {
 		return pedigree;
 	}
 
-	/**
-	 * Read regulation track and update SnpEffectPredictor
-	 * @param regTrack
-	 */
-	@SuppressWarnings("unchecked")
-	void readRegulationTrack(String regTrack) {
-		//---
-		// Read file
-		//---
-		if (verbose) Timer.showStdErr("Reading regulation track '" + regTrack + "'");
-		String regFile = config.getDirDataVersion() + "/regulation_" + regTrack + ".bin";
-		ArrayList<Regulation> regulation = (ArrayList<Regulation>) Gpr.readFileSerializedGz(regFile);
-
-		//---
-		// Are all chromosomes available?
-		//---
-		Genome genome = config.getGenome();
-		HashMap<String, Integer> chrs = new HashMap<String, Integer>();
-		for (Regulation r : regulation) {
-			String chr = r.getChromosomeName();
-			int max = chrs.containsKey(chr) ? chrs.get(chr) : 0;
-			max = Math.max(max, r.getEnd());
-			chrs.put(chr, max);
-		}
-
-		// Add all chromos
-		for (String chr : chrs.keySet())
-			if (genome.getChromosome(chr) == null) genome.add(new Chromosome(genome, 0, chrs.get(chr), 1, chr));
-
-		//---
-		// Add all markers to predictor
-		//---
-		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
-		for (Regulation r : regulation)
-			snpEffectPredictor.add(r);
-	}
-
 	@Override
 	public HashMap<String, String> reportValues() {
 		HashMap<String, String> report = super.reportValues();
@@ -980,52 +743,11 @@ public class SnpEffCmdEff extends SnpEff {
 		// Read config file
 		readConfig();
 
-		// Read database (or create a new one)
-		if (onlyRegulation) {
-			// Create predictor
-			config.setSnpEffectPredictor(new SnpEffectPredictor(config.getGenome()));
-			config.setOnlyRegulation(true);
-			config.setErrorOnMissingChromo(false); // A chromosome might be missing (e.g. no regulation tracks available for 'MT')
-			config.setErrorChromoHit(false); // A chromosome's length might be smaller than the real (it's calculated using regulation features, not real chromo data)
-		} else {
-			// Read
-			if (verbose) Timer.showStdErr("Reading database for genome version '" + genomeVer + "' from file '" + config.getFileSnpEffectPredictor() + "' (this might take a while)");
-
-			// Try to download database if it doesn't exists?
-			if (download && !Gpr.canRead(config.getFileSnpEffectPredictor())) {
-				if (verbose) Timer.showStdErr("Database not installed\n\tAttempting to download and install database '" + genomeVer + "'");
-
-				// Run download command
-				String downloadArgs[] = { genomeVer };
-				SnpEffCmdDownload snpEffCmdDownload = new SnpEffCmdDownload();
-				boolean ok = run(snpEffCmdDownload, downloadArgs, null);
-				if (!ok) throw new RuntimeException("Genome download failed!");
-				else if (verbose) Timer.showStdErr("Database installed.");
-			}
-
-			config.loadSnpEffectPredictor(); // Read snpEffect predictor
-			if (verbose) Timer.showStdErr("done");
-		}
+		// Load database
+		loadDb();
 
 		// Check if we can open the input file (no need to check if it is STDIN)
 		if (!Gpr.canRead(inputFile)) usage("Cannot open input file '" + inputFile + "'");
-
-		// Set 'treatAllAsProteinCoding'
-		if (treatAllAsProteinCoding != null) config.setTreatAllAsProteinCoding(treatAllAsProteinCoding);
-		else {
-			// treatAllAsProteinCoding was set to 'auto'
-			// I.e.: Use 'true' if there is protein coding info, otherwise use false.
-			boolean tapc = !config.getGenome().hasCodingInfo();
-			if (debug) Timer.showStdErr("Setting '-treatAllAsProteinCoding' to '" + tapc + "'");
-			config.setTreatAllAsProteinCoding(tapc);
-		}
-
-		// Read custom interval files
-		for (String intFile : customIntervalFiles) {
-			if (verbose) Timer.showStdErr("Reading interval file '" + intFile + "'");
-			int count = readCustomIntFile(intFile);
-			if (verbose) Timer.showStdErr("done (" + count + " intervals loaded). ");
-		}
 
 		// Read filter interval files
 		for (String filterIntFile : filterIntervalFiles) {
@@ -1035,10 +757,6 @@ public class SnpEffCmdEff extends SnpEff {
 			if (verbose) Timer.showStdErr("done (" + count + " intervals loaded). ");
 		}
 
-		// Read regulation tracks
-		for (String regTrack : regulationTracks)
-			readRegulationTrack(regTrack);
-
 		// Build interval forest for filter (if any)
 		if (filterIntervals != null) {
 			if (verbose) Timer.showStdErr("Building filter interval forest");
@@ -1046,59 +764,9 @@ public class SnpEffCmdEff extends SnpEff {
 			if (verbose) Timer.showStdErr("done.");
 		}
 
-		// Set upstream-downstream interval length
-		config.getSnpEffectPredictor().setUpDownStreamLength(upDownStreamLength);
-
-		// Set splice site size
-		config.getSnpEffectPredictor().setSpliceSiteSize(spliceSiteSize);
-
-		// Filter canonical transcripts
-		if (canonical) {
-			if (verbose) Timer.showStdErr("Filtering out non-canonical transcripts.");
-			config.getSnpEffectPredictor().removeNonCanonical();
-
-			if (debug) {
-				// Show genes and transcript (which ones are considered 'cannonica')
-				Timer.showStdErr("Canonical transcripts:\n\t\tgeneName\tgeneId\ttranscriptId\tcdsLength");
-				for (Gene g : config.getSnpEffectPredictor().getGenome().getGenes()) {
-					for (Transcript t : g) {
-						String cds = t.cds();
-						int cdsLen = (cds != null ? cds.length() : 0);
-						System.err.println("\t\t" + g.getGeneName() + "\t" + g.getId() + "\t" + t.getId() + "\t" + cdsLen);
-					}
-				}
-			}
-			if (verbose) Timer.showStdErr("done.");
-		}
-
-		// Use transcripts set form input file
-		if (onlyTranscriptsFile != null) {
-			// Load file
-			String onlyTr = Gpr.readFile(onlyTranscriptsFile);
-			HashSet<String> trIds = new HashSet<String>();
-			for (String trId : onlyTr.split("\n"))
-				trIds.add(trId.trim());
-
-			// Remove transcripts
-			if (verbose) Timer.showStdErr("Filtering out transcripts in file '" + onlyTranscriptsFile + "'. Total " + trIds.size() + " transcript IDs.");
-			int removed = config.getSnpEffectPredictor().retainAllTranscripts(trIds);
-			if (verbose) Timer.showStdErr("Done: " + removed + " transcripts removed.");
-		}
-
-		// Read nextProt database?
-		if (nextProt) readNextProt();
-		if (motif) readMotif();
-
-		// Build tree
-		if (verbose) Timer.showStdErr("Building interval forest");
-		config.getSnpEffectPredictor().buildForest();
-		if (verbose) Timer.showStdErr("done.");
-
-		// Show some genome stats. Chromosome names are shown, a lot of people has problems with the correct chromosome names.
-		if (verbose) {
-			Timer.showStdErr("Genome stats :");
-			System.err.println(config.getGenome());
-		}
+		// Read regulation tracks
+		for (String regTrack : regulationTracks)
+			readRegulationTrack(regTrack);
 
 		// Store VCF results in a list?
 		if (createList) vcfEntriesDebug = new ArrayList<VcfEntry>();
@@ -1295,10 +963,8 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\t-download                       : Download reference genome if not available. Default: " + download);
 		System.err.println("\t-i <format>                     : Input format [ vcf, txt, pileup, bed ]. Default: VCF.");
 		System.err.println("\t-fileList                       : Input actually contains a list of files to process.");
-		System.err.println("\t-interval                       : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
 		System.err.println("\t-o <format>                     : Ouput format [ txt, vcf, gatk, bed, bedAnn ]. Default: VCF.");
 		System.err.println("\t-s,  -stats                     : Name of stats file (summary). Default is '" + DEFAULT_SUMMARY_FILE + "'");
-		System.err.println("\t-t                              : Use multiple threads (implies '-noStats'). Default 'off'");
 		System.err.println("\t-noStats                        : Do not create stats (summary) file");
 		System.err.println("\t-csvStats                       : Create CSV summary file instead of HTML");
 		System.err.println("\nSequence change filter options:");
@@ -1320,33 +986,16 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\t-no-upstream                    : Do not show UPSTREAM changes");
 		System.err.println("\t-no-utr                         : Do not show 5_PRIME_UTR or 3_PRIME_UTR changes");
 		System.err.println("\nAnnotations options:");
-		System.err.println("\t-cancer                         : Perform 'cancer' comparissons (Somatic vs Germline). Default: " + cancer);
+		System.err.println("\t-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: " + cancer);
 		System.err.println("\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");
-		System.err.println("\t-canon                          : Only use canonical transcripts.");
 		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
 		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + useHgvs);
 		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");
-		System.err.println("\t-motif                          : Annotate using motifs (requires Motif database).");
-		System.err.println("\t-nextProt                       : Annotate using NextProt (requires NextProt database).");
-		System.err.println("\t-reg <name>                     : Regulation track to use (this option can be used add several times).");
 		System.err.println("\t-oicr                           : Add OICR tag in VCF file. Default: " + useOicr);
-		System.err.println("\t-onlyReg                        : Only use regulation tracks.");
-		System.err.println("\t-onlyTr <file.txt>              : Only use the transcripts in this file. Format: One transcript ID per line.");
 		System.err.println("\t-sequenceOntolgy                : Use Sequence Ontolgy terms. Default: " + useSequenceOntolgy);
-		System.err.println("\t-ss, -spliceSiteSize <int>      : Set size for splice sites (donor and acceptor) in bases. Default: " + spliceSiteSize);
-		System.err.println("\t-ud, -upDownStreamLen <int>     : Set upstream downstream interval length (in bases)");
-		System.err.println("\nGeneric options:");
-		System.err.println("\t-0                              : File positions are zero-based (same as '-inOffset 0 -outOffset 0')");
-		System.err.println("\t-1                              : File positions are one-based (same as '-inOffset 1 -outOffset 1')");
-		System.err.println("\t-c , -config                    : Specify config file");
-		System.err.println("\t-d , -debug                     : Debug mode (very verbose).");
-		System.err.println("\t-dataDir <path>                 : Override data_dir parameter from config file.");
-		System.err.println("\t-h , -help                      : Show this help and exit");
-		System.err.println("\t-if, -inOffset                  : Offset input by a number of bases. E.g. '-inOffset 1' for one-based input files");
-		System.err.println("\t-of, -outOffset                 : Offset output by a number of bases. E.g. '-outOffset 1' for one-based output files");
-		System.err.println("\t-noLog                          : Do not report usage statistics to server");
-		System.err.println("\t-q , -quiet                     : Quiet mode (do not show any messages or errors)");
-		System.err.println("\t-v , -verbose                   : Verbose mode");
+
+		usageGenericAndDb();
+
 		System.exit(-1);
 	}
 }

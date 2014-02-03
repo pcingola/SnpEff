@@ -15,6 +15,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
  */
 public interface CommandLine {
 
+	public String[] getArgs();
+
 	/**
 	 * Parse command line arguments
 	 * @param args

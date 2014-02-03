@@ -30,7 +30,7 @@ public class IntegrationTest extends TestCase {
 	 * @param args
 	 * @return
 	 */
-	public String command(CommandLine command, String args[]) {
+	public String command(CommandLine command) {
 		PrintStream oldOut = System.out;
 		String standardOutput = "";
 		ByteArrayOutputStream output = new ByteArrayOutputStream(BUFFER_SIZE);
@@ -39,7 +39,6 @@ public class IntegrationTest extends TestCase {
 			System.setOut(new PrintStream(output));
 
 			// Run command
-			command.parseArgs(args);
 			command.run();
 
 		} catch (Throwable t) {
@@ -61,9 +60,9 @@ public class IntegrationTest extends TestCase {
 	 * @param args
 	 * @param expectedOutputFile
 	 */
-	public void command(CommandLine command, String args[], String expectedOutputFile) {
-		System.err.println("Executing command '" + showCommand(command, args) + "'");
-		String actualOutput = command(command, args);
+	public void command(CommandLine command, String expectedOutputFile) {
+		System.err.println("Executing command '" + showCommand(command) + "'");
+		String actualOutput = command(command);
 
 		System.err.println("Reading results file '" + expectedOutputFile + "'");
 		String expectedOutput = Gpr.readFile(expectedOutputFile);
@@ -78,7 +77,7 @@ public class IntegrationTest extends TestCase {
 		if (maxSize < BUFFER_SIZE) Assert.assertEquals(expectedOutput, actualOutput);
 		else {
 			if (!expectedOutput.equals(actualOutput)) {
-				String msg = "Outputs differ!\n\tFile    : '" + expectedOutputFile + "'\n\tCommand : '" + showCommand(command, args) + "'";
+				String msg = "Outputs differ!\n\tFile    : '" + expectedOutputFile + "'\n\tCommand : '" + showCommand(command) + "'";
 				System.err.println(msg);
 				System.err.println(showDiff(expectedOutput, actualOutput));
 				throw new RuntimeException(msg);
@@ -92,10 +91,10 @@ public class IntegrationTest extends TestCase {
 	 * @param args
 	 * @return
 	 */
-	public String showCommand(CommandLine command, String args[]) {
+	public String showCommand(CommandLine command) {
 		StringBuilder cmd = new StringBuilder();
 		cmd.append(command.getClass().getSimpleName() + " ");
-		for (String arg : args)
+		for (String arg : command.getArgs())
 			cmd.append(arg + " ");
 		return cmd.toString();
 	}

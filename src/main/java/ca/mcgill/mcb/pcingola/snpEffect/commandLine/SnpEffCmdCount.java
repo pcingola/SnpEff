@@ -25,6 +25,7 @@ public class SnpEffCmdCount extends SnpEff {
 
 	boolean noGenome;
 	boolean calcProbModel;
+	boolean canonical = false; // Use only canonical transcripts
 	String outputBaseNames;
 	CountReadsOnMarkers countReadsOnMarkers;
 	SnpEffectPredictor snpEffectPredictor;
@@ -75,6 +76,7 @@ public class SnpEffCmdCount extends SnpEff {
 			else if (args[i].equals("-p")) calcProbModel = true;
 			else if (args[i].equals("-n")) outputBaseNames = args[++i];
 			else if (args[i].equalsIgnoreCase("-nogenome")) noGenome = true;
+			else if (args[i].equalsIgnoreCase("-canon")) canonical = true;
 			else if ((genomeVer == null) || genomeVer.isEmpty()) genomeVer = args[i];
 			else fileNames.add(args[i]);
 		}
@@ -210,6 +212,7 @@ public class SnpEffCmdCount extends SnpEff {
 		System.err.println("\t-i intervals.bed : User defined intervals. Mutiple '-i' commands are allowed.");
 		System.err.println("\t-n name          : Output file base name. ");
 		System.err.println("\t-noGenome        : Do not count genomic intervals, only user provided intervals are used.");
+		System.err.println("\t-canon           : Use only canonical transcripts.");
 		System.err.println("\t-p               : Calculate probability model (binomial). Default: " + calcProbModel);
 		System.err.println("\tfile             : A file contianing intervals or reads. Either BAM, SAM, VCF, BED or BigBed format.");
 		System.exit(-1);

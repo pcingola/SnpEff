@@ -14,7 +14,7 @@ public class IntegrationSnpEffMultiThread extends IntegrationTest {
 	public void test() {
 		String expectedOutputFile = "tests/test.chr1.out.multi-thread.vcf.gz";
 		String args[] = { "eff", "-v", "-t", "-noStats", "testHg3763Chr1", "tests/test.chr1.vcf" };
-		command(new SnpEff(), args, expectedOutputFile);
+		command(new SnpEff(args), expectedOutputFile);
 	}
 
 }

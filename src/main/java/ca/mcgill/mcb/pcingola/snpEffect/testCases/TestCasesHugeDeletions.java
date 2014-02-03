@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -25,11 +26,10 @@ public class TestCasesHugeDeletions extends TestCase {
 	public void test_01() {
 		String args[] = { "-noOut", "testHg3766Chr1", "./tests/huge_deletion_DEL.vcf" };
 
-		SnpEffCmdEff snpEffCmdEff = new SnpEffCmdEff();
-		snpEffCmdEff.parseArgs(args);
-		snpEffCmdEff.setVerbose(verbose);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
 
-		List<VcfEntry> vcfEntries = snpEffCmdEff.run(true);
+		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {
@@ -41,10 +41,9 @@ public class TestCasesHugeDeletions extends TestCase {
 	public void test_02() {
 		String args[] = { "-noOut", "testHg3766Chr1", "./tests/huge_deletion.vcf.gz" };
 
-		SnpEffCmdEff snpEffCmdEff = new SnpEffCmdEff();
-		snpEffCmdEff.parseArgs(args);
-		snpEffCmdEff.setVerbose(verbose);
-		List<VcfEntry> vcfEntries = snpEffCmdEff.run(true);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {

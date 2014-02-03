@@ -34,6 +34,7 @@ public class FastqSplit implements CommandLine {
 	File file;
 	RandomAccessFile raf;
 	ArrayList<String> splitFileNames;
+	String args[];
 
 	/**
 	 * Main
@@ -133,6 +134,11 @@ public class FastqSplit implements CommandLine {
 		return -1;
 	}
 
+	@Override
+	public String[] getArgs() {
+		return args;
+	}
+
 	public ArrayList<String> getSplitFileNames() {
 		return splitFileNames;
 	}
@@ -181,6 +187,7 @@ public class FastqSplit implements CommandLine {
 	 */
 	@Override
 	public void parseArgs(String[] args) {
+		this.args = args;
 		int i = 0;
 		if (args[0].equals("-v")) {
 			verbose = true;

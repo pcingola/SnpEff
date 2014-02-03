@@ -5,6 +5,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
@@ -31,10 +32,9 @@ public class TestCasesNoChange extends TestCase {
 	}
 
 	void vcfNoChange(String args[]) {
-		SnpEffCmdEff snpEffCmdEff = new SnpEffCmdEff();
-		snpEffCmdEff.parseArgs(args);
-		snpEffCmdEff.setVerbose(true);
-		List<VcfEntry> vcfEntries = snpEffCmdEff.run(true);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		List<VcfEntry> vcfEntries = snpeff.run(true);
 
 		for (VcfEntry ve : vcfEntries) {
 			System.out.println(ve);

@@ -17,6 +17,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -289,12 +290,10 @@ public class TestCasesMnp extends TestCase {
 	}
 
 	public void test_01() {
-		String args[] = { "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
-		SnpEffCmdEff snpeff = new SnpEffCmdEff();
-		snpeff.setVerbose(true);
-
 		// Run
-		snpeff.parseArgs(args);
+		String args[] = { "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
 		List<VcfEntry> results = snpeff.run(true);
 
 		// Check

@@ -8,6 +8,7 @@ import org.junit.Assert;
 
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
@@ -28,13 +29,12 @@ public class TestCasesMotif extends TestCase {
 	}
 
 	void checkMotif(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact) {
-		String args[] = { "-motif", "-ud", "0", genomeVer, vcfFile };
-		SnpEffCmdEff cmd = new SnpEffCmdEff();
-		cmd.setVerbose(true);
-		cmd.parseArgs(args);
+		String args[] = { "-v", "-motif", "-ud", "0", genomeVer, vcfFile };
+		SnpEff cmd = new SnpEff(args);
 
 		// Run
-		List<VcfEntry> vcfEntries = cmd.run(true);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
 		// Check results
 		int numNextProt = 0;

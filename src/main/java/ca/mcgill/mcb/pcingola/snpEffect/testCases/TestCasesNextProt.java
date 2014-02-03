@@ -30,13 +30,12 @@ public class TestCasesNextProt extends TestCase {
 	}
 
 	void checkNextProt(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact) {
-		String args[] = { "-nextProt", genomeVer, vcfFile };
-		SnpEffCmdEff cmd = new SnpEffCmdEff();
-		cmd.setVerbose(true);
-		cmd.parseArgs(args);
+		String args[] = { "-v", "-nextProt", genomeVer, vcfFile };
+		SnpEff cmd = new SnpEff(args);
 
 		// Run
-		List<VcfEntry> vcfEntries = cmd.run(true);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
 		// Check results
 		int numNextProt = 0;
@@ -55,9 +54,9 @@ public class TestCasesNextProt extends TestCase {
 
 	public void test_01_build() {
 		String args[] = { "buildNextProt", "-v", "testHg3770Chr22", "tests/nextProt" };
-		SnpEff snpEff = new SnpEff();
-		snpEff.parseArgs(args);
-		snpEff.run();
+		SnpEff snpEff = new SnpEff(args);
+		boolean ok = snpEff.run();
+		Assert.assertEquals(true, ok);
 	}
 
 	public void test_02_eff() {
@@ -72,10 +71,16 @@ public class TestCasesNextProt extends TestCase {
 
 	public void test_04_parse() {
 		String vcfFile = "tests/test.nextProt_paren.vcf";
+		int count = 0;
 		for (VcfEntry ve : new VcfFileIterator(vcfFile)) {
 			for (VcfEffect eff : ve.parseEffects()) {
 				System.out.println(eff);
+				if (eff.getEffect() == EffectType.NEXT_PROT) count++;
 			}
 		}
+
+		System.out.println("Count: " + count);
+		Assert.assertTrue(count > 0);
+
 	}
 }
