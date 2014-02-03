@@ -225,7 +225,8 @@ public class SnpEffCmdClosest extends SnpEff {
 		if (tss) {
 			Transcript tr = findTranscript(firstMarker);
 			Marker trTss = tr.getTss();
-			return trTss.distance(queryMarker);
+			int d = trTss.distance(queryMarker);
+			return tr.intersects(queryMarker) ? -d : d; // Negative distance denotes the marker is actually intersecting the transcript's TSS
 		}
 		return firstMarker.distance(queryMarker);
 	}
