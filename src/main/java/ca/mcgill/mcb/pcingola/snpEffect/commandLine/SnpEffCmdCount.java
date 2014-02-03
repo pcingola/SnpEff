@@ -130,6 +130,7 @@ public class SnpEffCmdCount extends SnpEff {
 		//---
 		// Count reads
 		//---
+
 		// Initialize counter
 		countReadsOnMarkers = new CountReadsOnMarkers(snpEffectPredictor);
 

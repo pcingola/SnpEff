@@ -958,6 +958,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return spliceBranchSites;
 	}
 
+	/**
+	 * Create a TSS marker
+	 * @return
+	 */
+	public Marker getTss() {
+		calcCdsStartEnd();
+		Marker tss = new Marker(this, start + (isStrandPlus() ? 0 : -1), start + (isStrandPlus() ? 1 : 0), 1, "TSS_" + id);
+		return tss;
+	}
+
 	public Upstream getUpstream() {
 		return upstream;
 	}
