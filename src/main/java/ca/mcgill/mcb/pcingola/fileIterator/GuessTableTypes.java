@@ -2,7 +2,6 @@ package ca.mcgill.mcb.pcingola.fileIterator;
 
 import java.util.HashMap;
 
-import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfInfoType;
 
 /**
@@ -21,12 +20,6 @@ public class GuessTableTypes {
 	VcfInfoType types[] = null;
 	boolean multipleValues[] = null;
 	HashMap<String, Integer> names2index;
-
-	public static void main(String[] args) {
-		GuessTableTypes zzz = new GuessTableTypes(Gpr.HOME + "/snpEff/db/dbNSFP/dbNSFP2.1.head.txt");
-		zzz.guessTypes();
-		System.out.println(zzz);
-	}
 
 	public GuessTableTypes(String fileName) {
 		this.fileName = fileName;
