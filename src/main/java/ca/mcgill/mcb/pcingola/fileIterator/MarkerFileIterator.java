@@ -96,6 +96,10 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 		return ignoreChromosomeErrors;
 	}
 
+	public boolean isTabix() {
+		return tabixReader != null;
+	}
+
 	public Markers loadMarkers() {
 		Markers list = new Markers();
 		for (M t : this)
