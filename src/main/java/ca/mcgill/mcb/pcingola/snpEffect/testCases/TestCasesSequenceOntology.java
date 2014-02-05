@@ -35,7 +35,7 @@ public class TestCasesSequenceOntology extends TestCase {
 		Config config = new Config("testENST00000268124", Gpr.HOME + "/snpEff/" + Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 
-		Random rand = new Random(20140129);
+		Random rand = new Random(20140205);
 		StringBuilder out = new StringBuilder();
 
 		int count = 0;
@@ -124,7 +124,13 @@ public class TestCasesSequenceOntology extends TestCase {
 	}
 
 	public void test_01_Vep() throws IOException {
+		// create_ENST00000268124_SNP_file();
 		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.vcf", "ENST00000268124");
+	}
+
+	public void test_02_Vep() throws IOException {
+		// create_ENST00000268124_SNP_file();
+		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.02.vcf", "ENST00000268124");
 	}
 
 }
