@@ -26,12 +26,19 @@ public abstract class SpliceSite extends Marker {
 	private static final long serialVersionUID = 1636197649250882952L;
 
 	public static final int CORE_SPLICE_SITE_SIZE = 2;
+	public static final int SPLICE_REGION_EXON_SIZE = 3;
+	public static final int SPLICE_REGION_INTRON_MIN = 3;
+	public static final int SPLICE_REGION_INTRON_MAX = 8;
 
 	public SpliceSite() {
 		super();
 	}
 
 	public SpliceSite(Exon parent, int start, int end, int strand, String id) {
+		super(parent, start, end, strand, id);
+	}
+
+	public SpliceSite(Intron parent, int start, int end, int strand, String id) {
 		super(parent, start, end, strand, id);
 	}
 

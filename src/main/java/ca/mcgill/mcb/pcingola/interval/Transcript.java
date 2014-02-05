@@ -537,9 +537,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					else dist = prev.getStart() - exon.getEnd() - 1;
 
 					// Acceptor splice site: before exon start, but not before first exon
-					SpliceSite ss = exon.getSpliceSiteAcceptor();
-					if (ss == null) ss = exon.createSpliceSiteAcceptor(Math.min(spliceSiteSize, dist));
+					SpliceSite ss = exon.createSpliceSiteAcceptor(Math.min(spliceSiteSize, dist));
 					if (ss != null) list.add(ss);
+
+					// Splice site region at the end
+					SpliceSiteRegion ssrs = exon.createSpliceSiteRegionStart(SpliceSite.SPLICE_REGION_EXON_SIZE);
+					if (ssrs != null) list.add(ssrs);
 				}
 
 				//---
@@ -551,9 +554,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					else dist = exon.getStart() - next.getEnd() - 1;
 
 					// Donor splice site: after exon end, but not after last exon
-					SpliceSite ss = exon.getSpliceSiteDonor();
-					if (ss == null) ss = exon.createSpliceSiteDonor(Math.min(spliceSiteSize, dist));
+					SpliceSite ss = exon.createSpliceSiteDonor(Math.min(spliceSiteSize, dist));
 					if (ss != null) list.add(ss);
+
+					// Splice site region at the end
+					SpliceSiteRegion ssre = exon.createSpliceSiteRegionStart(SpliceSite.SPLICE_REGION_EXON_SIZE);
+					if (ssre != null) list.add(ssre);
 				}
 
 				// Sanity check

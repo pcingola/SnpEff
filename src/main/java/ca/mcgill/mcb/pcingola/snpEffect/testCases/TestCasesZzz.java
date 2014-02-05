@@ -1,18 +1,20 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
 import junit.framework.TestCase;
-import ca.mcgill.mcb.pcingola.fileIterator.SeqChangeTxtFileIterator;
-import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.GprSeq;
+import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
+import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * 
@@ -22,147 +24,120 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class TestCasesZzz extends TestCase {
 
-	boolean verbose = true;
-	boolean createOutputFile = false;
-	Random rand;
-	Config config;
-	Genome genome;
+	/**
+	 * Create a file to send to ENSEMBL's VEP.
+	 * Used for benchmarking
+	 * 
+	 * @throws IOException
+	 */
+	public static void create_ENST00000268124_SNP_file() throws IOException {
+		Config config = new Config("testENST00000268124", Gpr.HOME + "/snpEff/" + Config.DEFAULT_CONFIG_FILE);
+		config.loadSnpEffectPredictor();
+
+		Random rand = new Random(20140129);
+		StringBuilder out = new StringBuilder();
+
+		int count = 0;
+		for (Gene g : config.getGenome().getGenes()) {
+			for (Transcript tr : g) {
+				for (Exon e : tr) {
+					for (int i = e.getStart(); i < e.getEnd(); i++) {
+						if (rand.nextDouble() < 0.15) {
+
+							// Insertion length
+							int idx = i - e.getStart();
+
+							// Find 'REF'
+							String ref = e.basesAt(idx, 1);
+
+							// Create 'ALT'
+							String alt = ref;
+							while (alt.equals(ref))
+								alt = GprSeq.randSequence(rand, 1);
+
+							// Output in 'VCF' format
+							String line = e.getChromosomeName() + "\t" + (i + 1) + "\t.\t" + ref + "\t" + alt + "\t.\t.\tAC=1\tGT\t0/1";
+							System.out.println(line);
+							out.append(line + "\n");
+							count++;
+						}
+					}
+				}
+			}
+		}
+
+		System.err.println("Count:" + count);
+		String outFile = "./tests/testENST00000268124.SNP.ORI.vcf";
+		System.out.println("Output file: " + outFile);
+		Gpr.toFile(outFile, out);
+	}
 
 	public TestCasesZzz() {
 		super();
 	}
 
-	/** 
-	 * Compare each result. If one matches, we consider it OK
-	 * @param transcriptId
-	 * @param seqChange
-	 * @param resultsList
-	 * @param useSimple
-	 * @param resultsSoFar
-	 * @return
-	 */
-	boolean anyResultMatches(String transcriptId, SeqChange seqChange, List<ChangeEffect> resultsList, boolean useShort) {
-		boolean ok = false;
-		for (ChangeEffect chEff : resultsList) {
-			String resStr = chEff.toStringSimple(useShort);
-
-			Transcript tr = chEff.getTranscript();
-			if (tr != null) {
-				if ((transcriptId == null) || (transcriptId.equals(tr.getId()))) {
-					if (resStr.indexOf(seqChange.getId()) >= 0) return true; // Matches one result in this transcript
-				}
-			} else if (resStr.indexOf(seqChange.getId()) >= 0) return true; // Matches any result (out of a transcript)
-		}
-		return ok;
-	}
-
-	void initRand() {
-		rand = new Random(20100629);
-	}
-
-	void initSnpEffPredictor() {
-		initSnpEffPredictor("testCase");
-	}
-
-	void initSnpEffPredictor(String genomeName) {
-		// Create a config and force out snpPredictor for hg37 chromosome Y
-		config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
-		config.loadSnpEffectPredictor();
-		config.setTreatAllAsProteinCoding(true); // For historical reasons we set this one to 'true'....
-		genome = config.getGenome();
-		config.getSnpEffectPredictor().buildForest();
-	}
-
 	/**
-	 * Parse a SeqChange file and return a list
-	 * 
-	 * @param seqChangeFile
-	 * @return
+	 * Benchmarking: Compare with results from ENSEMBL's VEP 
 	 */
-	public List<SeqChange> parseSnpEffectFile(String seqChangeFile) {
-		ArrayList<SeqChange> seqChanges = new ArrayList<SeqChange>();
+	public void compareVepSO(String genome, String vcf, String trId) {
+		String args[] = { "-sequenceOntolgy", genome, vcf };
 
-		int inOffset = 1;
-		SeqChangeTxtFileIterator seqChangeFileIterator = new SeqChangeTxtFileIterator(seqChangeFile, config.getGenome(), inOffset);
-		for (SeqChange sc : seqChangeFileIterator)
-			seqChanges.add(sc);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
 
-		Collections.sort(seqChanges);
-		return seqChanges;
-	}
+		List<VcfEntry> vcfEnties = cmdEff.run(true);
+		for (VcfEntry ve : vcfEnties) {
 
-	/**
-	 * Calculate snp effect for a list of snps
-	 * @param snpEffFile
-	 */
-	public void snpEffect(List<SeqChange> seqChangeList, String transcriptId, boolean useShort, boolean negate) {
-		int num = 1;
-		// Predict each seqChange
-		for (SeqChange seqChange : seqChangeList) {
-			// Get results for each snp
-			List<ChangeEffect> resultsList = config.getSnpEffectPredictor().seqChangeEffect(seqChange);
+			// Get first effect (there should be only one)
+			List<VcfEffect> veffs = ve.parseEffects();
+			VcfEffect veff = null;
+			for (VcfEffect v : veffs)
+				if (v.getTranscriptId().equals(trId)) veff = v;
 
-			String msg = "";
-			msg += "Number : " + num + "\n";
-			msg += "\tExpecting   : " + (negate ? "NOT " : "") + "'" + seqChange.getId() + "'\n";
-			msg += "\tSeqChange   : " + seqChange + "\n";
-			msg += "\tResultsList :\n";
-			for (ChangeEffect res : resultsList)
-				msg += "\t" + res + "\n";
+			//---
+			// Check that reported effect is the same
+			//---
+			String vepSo = ve.getInfo("SO");
+			String eff = veff.getEffString();
+			if (!vepSo.equals(eff)) {
+				//				if (vepSo.equals("CODON_INSERTION") && eff.equals("CODON_CHANGE_PLUS_CODON_INSERTION")) ; // OK. I consider these the same
+				//				else if (vepSo.equals("STOP_GAINED,CODON_INSERTION") && eff.equals("STOP_GAINED")) ; // OK. I consider these the same
+				//				else {
+				String msg = "\n" + ve + "\n\tSnpEff:" + veff.getEffectString() + "\n\tVEP   :" + ve.getInfo("SO") + "\t" + ve.getInfo("AA") + "\t" + ve.getInfo("CODON");
+				Gpr.debug(msg);
+				throw new RuntimeException(msg);
+				//				}
+			}
 
-			if (verbose) System.out.println(msg);
+			//---
+			// Check that AA is the same
+			//---
+			String aa = veff.getAa();
+			String vepaa = ve.getInfo("AA");
+			if (aa == null && vepaa.equals("-")) ; // OK, test passed
+			else {
+				String aas[] = aa.split("[0-9]+");
+				String aav = aas[0] + (aas.length > 1 ? "/" + aas[1] : "");
 
-			// Compare each result. If one matches, we consider it OK
-			// StringBuilder resultsSoFar = new StringBuilder();
-			boolean ok = anyResultMatches(transcriptId, seqChange, resultsList, useShort);
-			ok = negate ^ ok; // Negate? (i.e. when we are looking for effects that should NOT be matched)
+				// Convert from 'Q/QLV' to '-/LV'
+				String aav2 = "";
+				if ((aas[0].length() > 1) && (aas[1].startsWith(aas[0]))) aav2 = "-/" + aas[1].substring(1);
+				if ((aas[0].length() > 1) && (aas[1].endsWith(aas[0]))) aav2 = "-/" + aas[1].substring(0, aas[1].length() - 1);
 
-			if (!ok) {
-				if (createOutputFile) {
-					for (ChangeEffect res : resultsList) {
-						SeqChange sc = res.getSeqChange();
-						System.out.println(sc.getChromosomeName() //
-								+ "\t" + (sc.getStart() + 1) //
-								+ "\t" + sc.getReference() //
-								+ "\t" + sc.getChange() //
-								+ "\t+\t0\t0" //
-								+ "\t" + res.effect(true, true, true, false) //
-						);
-					}
-				} else {
-					Gpr.debug(msg);
-					throw new RuntimeException(msg);
+				if (aav.equals(vepaa)) ; // OK, test passed
+				else if (aav2.equals(vepaa)) ; // OK, test passed
+				else if (aav.endsWith("?") && vepaa.equals("-")) ; // OK, test passed
+				else {
+					Gpr.debug(aa + " (" + aav + ")\t" + vepaa + "\t");
 				}
 			}
-			num++;
+
 		}
 	}
 
-	/**
-	 * Read snps from a file and compare them to 'out' SnpEffect predictor.
-	 * Make sure at least one effect matched the 'id' in the input TXT file
-	 */
-	public void snpEffect(String snpEffFile, String transcriptId, boolean useShort) {
-		List<SeqChange> snplist = parseSnpEffectFile(snpEffFile); // Read SNPs from file
-		snpEffect(snplist, transcriptId, useShort, false); // Predict each snp
-	}
-
-	/**
-	 * Read snps from a file and compare them to 'out' SnpEffect predictor.
-	 * Make sure NOT A SINGLE effect matched the 'id' in the input TXT file, i.e. the opposite of snpEffect...) method.
-	 */
-	public void snpEffectNegate(String snpEffFile, String transcriptId, boolean useShort) {
-		List<SeqChange> snplist = parseSnpEffectFile(snpEffFile); // Read SNPs from file
-		snpEffect(snplist, transcriptId, useShort, true); // Predict each snp
-	}
-
-	/**
-	 * Test SNP effect predictor for a transcript (Insertions)
-	 */
-	public void test_23_MNP_on_exon_edge() {
-		initSnpEffPredictor();
-		String trId = "ENST00000250823";
-		snpEffect("tests/" + trId + "_mnp_out_of_exon.txt", trId, true);
+	public void test_05_Vep() throws IOException {
+		// create_ENST00000268124_SNP_file();
+		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.vcf", "ENST00000268124");
 	}
 
 }

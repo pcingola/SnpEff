@@ -38,6 +38,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	int rank; // Exon rank in transcript
 	SpliceSiteAcceptor spliceSiteAcceptor;
 	SpliceSiteDonor spliceSiteDonor;
+	SpliceSiteRegion spliceSiteRegionStart, spliceSiteRegionEnd;
 	ExonSpliceType spliceType = ExonSpliceType.NONE;
 
 	public Exon() {
@@ -103,6 +104,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 * @return
 	 */
 	public SpliceSiteAcceptor createSpliceSiteAcceptor(int size) {
+		if (spliceSiteAcceptor != null) return spliceSiteAcceptor;
+
 		size = size - 1;
 		if (size < 0) return null;
 
@@ -118,6 +121,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 * @return
 	 */
 	public SpliceSiteDonor createSpliceSiteDonor(int size) {
+		if (spliceSiteDonor != null) return spliceSiteDonor;
+
 		size = size - 1;
 		if (size < 0) return null;
 
@@ -125,6 +130,38 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		else spliceSiteDonor = new SpliceSiteDonor(this, start - 1 - size, start - 1, strand, id);
 
 		return spliceSiteDonor;
+	}
+
+	/**
+	 * Create splice site regions
+	 * @param sizeExon
+	 * @param sizeIntron
+	 * @return
+	 */
+	public SpliceSiteRegion createSpliceSiteRegionEnd(int size) {
+		if (spliceSiteRegionEnd != null) return spliceSiteRegionEnd;
+
+		size = size - 1;
+		if (size > size()) size = size(); // Cannot be larger than this marker
+		if (size < 0) return null;
+		spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (size - 1), end, strand, id);
+		return spliceSiteRegionEnd;
+	}
+
+	/**
+	 * Create splice site regions
+	 * @param sizeExon
+	 * @param sizeIntron
+	 * @return
+	 */
+	public SpliceSiteRegion createSpliceSiteRegionStart(int size) {
+		if (spliceSiteRegionStart != null) return spliceSiteRegionStart;
+
+		size = size - 1;
+		if (size > size()) size = size(); // Cannot be larger than this marker
+		if (size < 0) return null;
+		spliceSiteRegionStart = new SpliceSiteRegion(this, start, start + (size - 1), strand, id);
+		return spliceSiteRegionStart;
 	}
 
 	/**

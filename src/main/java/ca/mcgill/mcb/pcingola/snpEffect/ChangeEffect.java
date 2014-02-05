@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
@@ -50,6 +51,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		, SPLICE_SITE_BRANCH //
 		, SPLICE_SITE_BRANCH_U12 //
 		, SPLICE_SITE_DONOR //
+		, SPLICE_SITE_REGION //
 		, START_LOST // 
 		, SYNONYMOUS_START //
 		, NON_SYNONYMOUS_START //
@@ -86,8 +88,40 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		, NEXT_PROT //
 		;
 
+		static HashMap<String, EffectType> so2efftype = new HashMap<String, ChangeEffect.EffectType>();
+
+		/**
+		 * Parse a string to an EffectType
+		 * @param effStr
+		 * @return
+		 */
+		public static EffectType parse(String str) {
+			try {
+				return EffectType.valueOf(str);
+			} catch (Exception e) {
+				// OK, the value does not exits.
+			}
+
+			// Try an SO term
+			if (so2efftype.isEmpty()) so2efftype();
+			if (so2efftype.containsKey(str)) return so2efftype.get(str);
+
+			throw new RuntimeException("Cannot parse EffectType '" + str + "'");
+		}
+
+		/**
+		 * Create a map between SO terms and EffectType
+		 */
+		static void so2efftype() {
+			for (EffectType efftype : EffectType.values()) {
+				String so = efftype.toSequenceOntology();
+				so2efftype.put(so, efftype);
+			}
+		}
+
 		public String toSequenceOntology() {
 			switch (this) {
+			case CHROMOSOME_LARGE_DELETION:
 			case CHROMOSOME:
 				return "chromosome";
 			case INTERGENIC_CONSERVED:
@@ -107,6 +141,8 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				return "splice_region_variant";
 			case SPLICE_SITE_DONOR:
 				return "splice_donor_variant";
+			case SPLICE_SITE_REGION:
+				return "splice_region";
 			case START_LOST:
 				return "initiator_codon_variant";
 			case SYNONYMOUS_START:
@@ -120,7 +156,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 			case EXON_DELETED:
 				return "exon_lost";
 			case NON_SYNONYMOUS_CODING:
-				return "missense";
+				return "missense_variant";
 			case SYNONYMOUS_CODING:
 				return "synonymous_variant";
 			case FRAME_SHIFT:
@@ -167,10 +203,8 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 			case GENE:
 			case GENOME:
 			case CUSTOM:
-				return this.toString().toLowerCase(); // Just a wild guess ... this should probably throw an Exception
-
 			default:
-				throw new RuntimeException("Sequence Ontology term not found for EffectType '" + this + "'");
+				return this.toString().toLowerCase(); // Just a wild guess ... this should probably throw an Exception
 			}
 		}
 	};
@@ -449,6 +483,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 					effectImpact = EffectImpact.MODERATE;
 					break;
 
+				case SPLICE_SITE_REGION:
 				case SPLICE_SITE_BRANCH:
 				case NON_SYNONYMOUS_START:
 				case NON_SYNONYMOUS_STOP:
@@ -579,6 +614,8 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 			return EffectType.SPLICE_SITE_BRANCH.toString();
 		case SPLICE_SITE_DONOR:
 			return EffectType.SPLICE_SITE_DONOR.toString();
+		case SPLICE_SITE_REGION:
+			return EffectType.SPLICE_SITE_REGION.toString();
 		case INTRAGENIC:
 		case START_LOST:
 		case SYNONYMOUS_START:
@@ -858,6 +895,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	public boolean isSpliceSite() {
 		return (effectType == EffectType.SPLICE_SITE_DONOR) //
 				|| (effectType == EffectType.SPLICE_SITE_ACCEPTOR) //
+				|| (effectType == EffectType.SPLICE_SITE_REGION) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH_U12) //
 		;

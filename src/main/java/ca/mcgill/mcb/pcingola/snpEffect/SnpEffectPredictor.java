@@ -44,6 +44,7 @@ public class SnpEffectPredictor implements Serializable {
 	boolean useChromosomes = true;
 	int upDownStreamLength = DEFAULT_UP_DOWN_LENGTH;
 	int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE;
+
 	Genome genome;
 	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
 	IntervalForest intervalForest;

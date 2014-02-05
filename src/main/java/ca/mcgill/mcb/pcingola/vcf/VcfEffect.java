@@ -22,6 +22,7 @@ public class VcfEffect {
 	String effectString;
 	String effectStrings[];
 	FormatVersion formatVersion;
+	String effString;
 	ChangeEffect.EffectType effect;
 	String effectDetails;
 	ChangeEffect.EffectImpact impact;
@@ -208,6 +209,14 @@ public class VcfEffect {
 		return effectDetails;
 	}
 
+	public String getEffectString() {
+		return effectString;
+	}
+
+	public String getEffString() {
+		return effString;
+	}
+
 	public String getErrorsOrWarning() {
 		return errorsOrWarning;
 	}
@@ -247,7 +256,8 @@ public class VcfEffect {
 			int index = 0;
 
 			// Effect
-			effect = ChangeEffect.EffectType.valueOf(parseEffect(effectStrings[index]));
+			effString = effectStrings[index];
+			effect = ChangeEffect.EffectType.parse(parseEffect(effectStrings[index]));
 			effectDetails = parseEffectDetails(effectStrings[index]); // Effect details: everything betwee '['  and ']' (e.g. Regulation, Custom, Motif, etc.)
 			index++;
 
