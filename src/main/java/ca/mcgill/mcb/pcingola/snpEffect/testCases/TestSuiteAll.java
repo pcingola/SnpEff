@@ -112,6 +112,9 @@ public class TestSuiteAll {
 		// Annotate using custom intervals
 		suite.addTestSuite(TestCasesCutsomIntervals.class);
 
+		// Sequence ontology
+		suite.addTestSuite(TestCasesSequenceOntology.class);
+
 		return suite;
 	}
 }
