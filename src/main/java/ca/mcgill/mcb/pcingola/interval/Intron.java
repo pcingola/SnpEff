@@ -34,8 +34,11 @@ public class Intron extends Marker {
 		if (sizeMin < 0) return null;
 		if (sizeMax > size()) sizeMax = size(); // Cannot be larger than this marker
 		if (sizeMax < sizeMin) return null; // Cannot be less than one base long
-		spliceSiteRegionStart = new SpliceSiteRegion(this, start + sizeMin - 1, start + sizeMax - 1, strand, id);
-		return spliceSiteRegionStart;
+
+		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (sizeMax - 1), end - (sizeMin - 1), strand, id);
+		else spliceSiteRegionEnd = new SpliceSiteRegion(this, start + sizeMin - 1, start + sizeMax - 1, strand, id);
+
+		return spliceSiteRegionEnd;
 	}
 
 	/**
@@ -48,8 +51,11 @@ public class Intron extends Marker {
 		if (sizeMin < 0) return null;
 		if (sizeMax > size()) sizeMax = size(); // Cannot be larger than this marker
 		if (sizeMax < sizeMin) return null; // Cannot be less than one base long
-		spliceSiteRegionEnd = new SpliceSiteRegion(this, start + sizeMin - 1, start + sizeMax - 1, strand, id);
-		return spliceSiteRegionEnd;
+
+		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start + (sizeMin - 1), start + (sizeMax - 1), strand, id);
+		else spliceSiteRegionStart = new SpliceSiteRegion(this, end - (sizeMax - 1), end - (sizeMin - 1), strand, id);
+
+		return spliceSiteRegionStart;
 	}
 
 	public Exon getExonAfter() {
@@ -62,6 +68,14 @@ public class Intron extends Marker {
 
 	public int getRank() {
 		return rank;
+	}
+
+	public SpliceSiteRegion getSpliceSiteRegionEnd() {
+		return spliceSiteRegionEnd;
+	}
+
+	public SpliceSiteRegion getSpliceSiteRegionStart() {
+		return spliceSiteRegionStart;
 	}
 
 	public String getSpliceType() {

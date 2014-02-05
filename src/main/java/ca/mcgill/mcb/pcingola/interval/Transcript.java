@@ -523,7 +523,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		if (exons.size() > 0) {
 			for (int i = 0; i < exons.size(); i++) {
-
 				Exon exon = exons.get(i);
 				Exon prev = (i >= 1 ? exons.get(i - 1) : null);
 				Exon next = (i < exons.size() - 1 ? exons.get(i + 1) : null);
@@ -541,8 +540,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					if (ss != null) list.add(ss);
 
 					// Splice site region at the end
-					SpliceSiteRegion ssrs = exon.createSpliceSiteRegionStart(SpliceSite.SPLICE_REGION_EXON_SIZE);
-					if (ssrs != null) list.add(ssrs);
+					SpliceSiteRegion ssr = exon.createSpliceSiteRegionStart(SpliceSite.SPLICE_REGION_EXON_SIZE);
+					if (ssr != null) list.add(ssr);
 				}
 
 				//---
@@ -558,8 +557,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					if (ss != null) list.add(ss);
 
 					// Splice site region at the end
-					SpliceSiteRegion ssre = exon.createSpliceSiteRegionStart(SpliceSite.SPLICE_REGION_EXON_SIZE);
-					if (ssre != null) list.add(ssre);
+					SpliceSiteRegion ssr = exon.createSpliceSiteRegionEnd(SpliceSite.SPLICE_REGION_EXON_SIZE);
+					if (ssr != null) list.add(ssr);
 				}
 
 				// Sanity check
@@ -569,6 +568,26 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					throw new RuntimeException(msg);
 				}
 			}
+		}
+
+		// Add splice site regions (Introns)
+		introns();
+		if (introns != null) {
+			for (int i = 0; i < introns.size(); i++) {
+				Intron intron = introns.get(i);
+
+				if (i > 0) {
+					SpliceSiteRegion ssrs = intron.createSpliceSiteRegionStart(SpliceSite.SPLICE_REGION_INTRON_MIN, SpliceSite.SPLICE_REGION_INTRON_MAX);
+					if (ssrs != null) list.add(ssrs);
+				}
+
+				if (i < (introns.size() - 1)) {
+					SpliceSiteRegion ssre = intron.createSpliceSiteRegionEnd(SpliceSite.SPLICE_REGION_INTRON_MIN, SpliceSite.SPLICE_REGION_INTRON_MAX);
+					if (ssre != null) list.add(ssre);
+				}
+
+			}
+
 		}
 
 		return list;

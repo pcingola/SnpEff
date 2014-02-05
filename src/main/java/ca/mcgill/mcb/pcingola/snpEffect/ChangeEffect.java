@@ -124,80 +124,117 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 			case CHROMOSOME_LARGE_DELETION:
 			case CHROMOSOME:
 				return "chromosome";
+
 			case INTERGENIC_CONSERVED:
 			case INTERGENIC:
 				return "intergenic_region";
+
 			case UPSTREAM:
 				return "upstream_gene_variant";
+
 			case UTR_5_PRIME:
 				return "5_prime_UTR_variant";
+
 			case UTR_5_DELETED:
 				return "five_prime_UTR";
+
 			case SPLICE_SITE_ACCEPTOR:
 				return "splice_acceptor_variant";
+
 			case SPLICE_SITE_BRANCH:
 				return "splice_region_variant";
+
 			case SPLICE_SITE_BRANCH_U12:
 				return "splice_region_variant";
+
 			case SPLICE_SITE_DONOR:
 				return "splice_donor_variant";
+
 			case SPLICE_SITE_REGION:
-				return "splice_region";
+				return "splice_region_variant";
+
 			case START_LOST:
 				return "initiator_codon_variant";
+
 			case SYNONYMOUS_START:
 				return "initiator_codon_variant";
+
 			case NON_SYNONYMOUS_START:
 				return "initiator_codon_variant";
+
 			case TRANSCRIPT:
 				return "nc_transcript_variant";
+
 			case EXON:
 				return "non_coding_exon_variant";
+
 			case EXON_DELETED:
 				return "exon_lost";
+
 			case NON_SYNONYMOUS_CODING:
 				return "missense_variant";
+
 			case SYNONYMOUS_CODING:
 				return "synonymous_variant";
+
 			case FRAME_SHIFT:
 				return "frameshift_variant";
+
 			case CODON_CHANGE:
 				return "coding_sequence_variant";
+
 			case CODON_INSERTION:
 				return "inframe_insertion";
+
 			case CODON_CHANGE_PLUS_CODON_INSERTION:
 				return "inframe_insertion";
+
 			case CODON_DELETION:
 				return "inframe_deletion";
+
 			case CODON_CHANGE_PLUS_CODON_DELETION:
 				return "inframe_deletion";
+
 			case STOP_GAINED:
 				return "stop_gained";
+
 			case SYNONYMOUS_STOP:
 				return "stop_retained_variant";
+
 			case NON_SYNONYMOUS_STOP:
 				return "stop_retained_variant";
+
 			case STOP_LOST:
 				return "stop_lost";
+
 			case INTRON:
 				return "intron_variant";
+
 			case UTR_3_DELETED:
 			case UTR_3_PRIME:
 				return "3_prime_UTR_variant";
+
 			case DOWNSTREAM:
 				return "downstream_gene_variant";
+
 			case INTRON_CONSERVED:
 				return "intron_variant";
+
 			case INTRAGENIC:
 				return "intragenic_variant";
+
 			case REGULATION:
 				return "regulatory_region_variant";
+
 			case RARE_AMINO_ACID:
 				return "non_conservative_missense_variant";
+
 			case CDS:
 				return "CDS";
 
 			case START_GAINED:
+				return "5_prime_UTR_premature_start_codon_gain_variant";
+
 			case MICRO_RNA:
 			case NONE:
 			case GENE:

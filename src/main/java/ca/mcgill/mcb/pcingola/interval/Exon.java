@@ -141,10 +141,12 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	public SpliceSiteRegion createSpliceSiteRegionEnd(int size) {
 		if (spliceSiteRegionEnd != null) return spliceSiteRegionEnd;
 
-		size = size - 1;
 		if (size > size()) size = size(); // Cannot be larger than this marker
 		if (size < 0) return null;
-		spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (size - 1), end, strand, id);
+
+		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (size - 1), end, strand, id);
+		else spliceSiteRegionEnd = new SpliceSiteRegion(this, start, start + (size - 1), strand, id);
+
 		return spliceSiteRegionEnd;
 	}
 
@@ -157,10 +159,12 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	public SpliceSiteRegion createSpliceSiteRegionStart(int size) {
 		if (spliceSiteRegionStart != null) return spliceSiteRegionStart;
 
-		size = size - 1;
 		if (size > size()) size = size(); // Cannot be larger than this marker
 		if (size < 0) return null;
-		spliceSiteRegionStart = new SpliceSiteRegion(this, start, start + (size - 1), strand, id);
+
+		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start, start + (size - 1), strand, id);
+		else spliceSiteRegionStart = new SpliceSiteRegion(this, end - (size - 1), end, strand, id);
+
 		return spliceSiteRegionStart;
 	}
 
@@ -204,6 +208,14 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 	public SpliceSiteDonor getSpliceSiteDonor() {
 		return spliceSiteDonor;
+	}
+
+	public SpliceSiteRegion getSpliceSiteRegionEnd() {
+		return spliceSiteRegionEnd;
+	}
+
+	public SpliceSiteRegion getSpliceSiteRegionStart() {
+		return spliceSiteRegionStart;
 	}
 
 	public ExonSpliceType getSpliceType() {

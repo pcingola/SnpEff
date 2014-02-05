@@ -34,4 +34,5 @@ public class SpliceSiteRegion extends SpliceSite {
 	public boolean intersectsCoreSpliceSite(Marker marker) {
 		return false;
 	}
+
 }

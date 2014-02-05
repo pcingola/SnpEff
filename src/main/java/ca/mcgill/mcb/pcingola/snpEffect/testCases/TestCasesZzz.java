@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -87,56 +88,42 @@ public class TestCasesZzz extends TestCase {
 
 		List<VcfEntry> vcfEnties = cmdEff.run(true);
 		for (VcfEntry ve : vcfEnties) {
-
-			// Get first effect (there should be only one)
-			List<VcfEffect> veffs = ve.parseEffects();
-			VcfEffect veff = null;
-			for (VcfEffect v : veffs)
-				if (v.getTranscriptId().equals(trId)) veff = v;
-
-			//---
-			// Check that reported effect is the same
-			//---
+			// Create a set of found variants
+			HashSet<String> vepSos = new HashSet<String>();
 			String vepSo = ve.getInfo("SO");
-			String eff = veff.getEffString();
-			if (!vepSo.equals(eff)) {
-				//				if (vepSo.equals("CODON_INSERTION") && eff.equals("CODON_CHANGE_PLUS_CODON_INSERTION")) ; // OK. I consider these the same
-				//				else if (vepSo.equals("STOP_GAINED,CODON_INSERTION") && eff.equals("STOP_GAINED")) ; // OK. I consider these the same
-				//				else {
-				String msg = "\n" + ve + "\n\tSnpEff:" + veff.getEffectString() + "\n\tVEP   :" + ve.getInfo("SO") + "\t" + ve.getInfo("AA") + "\t" + ve.getInfo("CODON");
-				Gpr.debug(msg);
-				throw new RuntimeException(msg);
-				//				}
+			for (String so : vepSo.split(",")) {
+				vepSos.add(so);
 			}
 
-			//---
-			// Check that AA is the same
-			//---
-			String aa = veff.getAa();
-			String vepaa = ve.getInfo("AA");
-			if (aa == null && vepaa.equals("-")) ; // OK, test passed
-			else {
-				String aas[] = aa.split("[0-9]+");
-				String aav = aas[0] + (aas.length > 1 ? "/" + aas[1] : "");
-
-				// Convert from 'Q/QLV' to '-/LV'
-				String aav2 = "";
-				if ((aas[0].length() > 1) && (aas[1].startsWith(aas[0]))) aav2 = "-/" + aas[1].substring(1);
-				if ((aas[0].length() > 1) && (aas[1].endsWith(aas[0]))) aav2 = "-/" + aas[1].substring(0, aas[1].length() - 1);
-
-				if (aav.equals(vepaa)) ; // OK, test passed
-				else if (aav2.equals(vepaa)) ; // OK, test passed
-				else if (aav.endsWith("?") && vepaa.equals("-")) ; // OK, test passed
-				else {
-					Gpr.debug(aa + " (" + aav + ")\t" + vepaa + "\t");
+			// Get effects for transcript 'trId'
+			HashSet<String> effSos = new HashSet<String>();
+			List<VcfEffect> veffs = ve.parseEffects();
+			for (VcfEffect veff : veffs) {
+				if (veff.getTranscriptId().equals(trId)) {
+					String eff = veff.getEffString();
+					if (eff.equals("5_prime_UTR_premature_start_codon_gain_variant")) eff = "5_prime_UTR_variant"; // OK. I consider these the same
+					effSos.add(eff);
 				}
 			}
 
+			// Make sure both sets are equal
+			if (!(effSos.containsAll(vepSos) && vepSos.containsAll(effSos))) {
+				String msg = "\n" + ve + "\n\tSnpEff: ";
+				for (String e : effSos)
+					msg += e + " ";
+
+				msg += "\n\tVep   : ";
+				for (String e : vepSos)
+					msg += e + " ";
+
+				Gpr.debug(msg);
+				//throw new RuntimeException(msg);
+			}
 		}
+
 	}
 
 	public void test_05_Vep() throws IOException {
-		// create_ENST00000268124_SNP_file();
 		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.vcf", "ENST00000268124");
 	}
 

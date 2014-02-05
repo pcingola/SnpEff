@@ -356,6 +356,19 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 					if (ex.getSpliceSiteDonor() != null) all.add(ex.getSpliceSiteDonor());
 			break;
 
+		case SPLICE_SITE_REGION:
+			// Add all exons
+			for (Transcript tr : this) {
+				for (Exon ex : tr) {
+					if (ex.getSpliceSiteRegionStart() != null) all.add(ex.getSpliceSiteRegionStart());
+					if (ex.getSpliceSiteRegionEnd() != null) all.add(ex.getSpliceSiteRegionEnd());
+				}
+				for (Intron intron : tr.introns()) {
+					if (intron.getSpliceSiteRegionStart() != null) all.add(intron.getSpliceSiteRegionStart());
+					if (intron.getSpliceSiteRegionEnd() != null) all.add(intron.getSpliceSiteRegionEnd());
+				}
+			}
+
 		case INTRAGENIC:
 			// We have to perform a set minus operation between this gene and all the transcripts
 			Markers gene = new Markers();
