@@ -34,7 +34,10 @@ public class TestCasesHugeDeletions extends TestCase {
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {
 			System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
-			Assert.assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
+
+			String eff = ve.getInfo("EFF");
+			if (eff != null) Assert.assertTrue(eff.startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
+			else throw new RuntimeException("Effect is null!");
 		}
 	}
 
