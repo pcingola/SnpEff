@@ -182,7 +182,6 @@ public class TestCasesSequenceOntology extends TestCase {
 	public void test_03_Vep() throws IOException {
 		//		create_Ins_file("testENST00000268124", "./tests/testENST00000268124.Ins.ORI.03.vcf");
 		compareVepSO("testENST00000268124", "tests/testENST00000268124.Ins.03.vcf", "ENST00000268124");
-		//compareVepSO("testENST00000268124", "tests/zzz.vcf", "ENST00000268124");
 	}
 
 }
