@@ -27,7 +27,7 @@ public class TestCasesSequenceOntology extends TestCase {
 
 	public static boolean debug = false;
 
-	public static void create_Ins_file(String genomeName, String outFile) throws IOException {
+	public static void create_Ins_file(String genomeName, String outFile, double prob) throws IOException {
 		Config config = new Config(genomeName, Gpr.HOME + "/snpEff/" + Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 
@@ -39,7 +39,7 @@ public class TestCasesSequenceOntology extends TestCase {
 			for (Transcript tr : g) {
 				for (Exon e : tr) {
 					for (int i = e.getStart(); i < e.getEnd(); i++) {
-						if (rand.nextDouble() < 0.15) {
+						if (rand.nextDouble() < prob) {
 
 							// Insertion length
 							int insLen = rand.nextInt(10) + 1;
@@ -169,19 +169,24 @@ public class TestCasesSequenceOntology extends TestCase {
 
 	}
 
-	public void test_01_Vep() throws IOException {
-		// create_SNP_file("testENST00000268124","./tests/testENST00000268124.SNP.ORI.vcf");
-		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.vcf", "ENST00000268124");
-	}
+	//	public void test_01_Vep() throws IOException {
+	//		// create_SNP_file("testENST00000268124","./tests/testENST00000268124.SNP.ORI.vcf", 0.15);
+	//		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.vcf", "ENST00000268124");
+	//	}
+	//
+	//	public void test_02_Vep() throws IOException {
+	//		// create_SNP_file("testENST00000268124","./tests/testENST00000268124.SNP.ORI.02.vcf", 0.15);
+	//		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.02.vcf", "ENST00000268124");
+	//	}
+	//
+	//	public void test_03_Vep() throws IOException {
+	//		//		create_Ins_file("testENST00000268124", "./tests/testENST00000268124.Ins.ORI.03.vcf", 0.15);
+	//		compareVepSO("testENST00000268124", "tests/testENST00000268124.Ins.03.vcf", "ENST00000268124");
+	//	}
 
-	public void test_02_Vep() throws IOException {
-		// create_SNP_file("testENST00000268124","./tests/testENST00000268124.SNP.ORI.02.vcf");
-		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.02.vcf", "ENST00000268124");
-	}
-
-	public void test_03_Vep() throws IOException {
-		//		create_Ins_file("testENST00000268124", "./tests/testENST00000268124.Ins.ORI.03.vcf");
-		compareVepSO("testENST00000268124", "tests/testENST00000268124.Ins.03.vcf", "ENST00000268124");
+	public void test_04_Vep() throws IOException {
+		create_Ins_file("testENST00000398332", "./tests/testENST00000398332.Ins.ORI.04.vcf", 0.95);
+		//		compareVepSO("testENST00000268124", "tests/testENST00000268124.Ins.03.vcf", "ENST00000268124");
 	}
 
 }
