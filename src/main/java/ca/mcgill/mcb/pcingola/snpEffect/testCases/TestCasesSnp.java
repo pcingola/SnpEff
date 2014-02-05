@@ -64,6 +64,10 @@ public class TestCasesSnp extends TestCase {
 		snpEffectPredictor = sepf.create();
 		config.setSnpEffectPredictor(snpEffectPredictor);
 
+		config.getSnpEffectPredictor().setSpliceRegionExonSize(0);
+		config.getSnpEffectPredictor().setSpliceRegionIntronMin(0);
+		config.getSnpEffectPredictor().setSpliceRegionIntronMax(0);
+
 		// Chromosome sequence
 		chromoSequence = sepf.getChromoSequence();
 		chromoBases = chromoSequence.toCharArray();

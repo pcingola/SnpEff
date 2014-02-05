@@ -142,7 +142,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		if (spliceSiteRegionEnd != null) return spliceSiteRegionEnd;
 
 		if (size > size()) size = size(); // Cannot be larger than this marker
-		if (size < 0) return null;
+		if (size <= 0) return null;
 
 		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (size - 1), end, strand, id);
 		else spliceSiteRegionEnd = new SpliceSiteRegion(this, start, start + (size - 1), strand, id);
@@ -160,7 +160,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		if (spliceSiteRegionStart != null) return spliceSiteRegionStart;
 
 		if (size > size()) size = size(); // Cannot be larger than this marker
-		if (size < 0) return null;
+		if (size <= 0) return null;
 
 		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start, start + (size - 1), strand, id);
 		else spliceSiteRegionStart = new SpliceSiteRegion(this, end - (size - 1), end, strand, id);

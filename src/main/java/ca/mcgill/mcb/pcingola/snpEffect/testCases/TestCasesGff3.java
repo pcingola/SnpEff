@@ -121,7 +121,7 @@ public class TestCasesGff3 extends TestCase {
 		// Make sure no splice site is added
 		Gene gene = sep.getGenome().getGenes().iterator().next();
 		Transcript tr = gene.iterator().next();
-		List<SpliceSite> spliceSites = tr.createSpliceSites(SpliceSite.CORE_SPLICE_SITE_SIZE);
+		List<SpliceSite> spliceSites = tr.createSpliceSites(SpliceSite.CORE_SPLICE_SITE_SIZE, 0, 0, 0);
 		Assert.assertEquals(0, spliceSites.size());
 	}
 

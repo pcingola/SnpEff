@@ -44,6 +44,9 @@ public class SnpEffectPredictor implements Serializable {
 	boolean useChromosomes = true;
 	int upDownStreamLength = DEFAULT_UP_DOWN_LENGTH;
 	int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE;
+	int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
+	int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
+	int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
 
 	Genome genome;
 	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
@@ -167,7 +170,7 @@ public class SnpEffectPredictor implements Serializable {
 			markers.add(upDownStream);
 
 		// Add splice site intervals
-		for (Marker spliceSite : genome.getGenes().createSpliceSites(spliceSiteSize))
+		for (Marker spliceSite : genome.getGenes().createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax))
 			markers.add(spliceSite);
 
 		// Intergenic markers
@@ -196,6 +199,18 @@ public class SnpEffectPredictor implements Serializable {
 
 	public Markers getMarkers() {
 		return markers;
+	}
+
+	public int getSpliceRegionExonSize() {
+		return spliceRegionExonSize;
+	}
+
+	public int getSpliceRegionIntronMax() {
+		return spliceRegionIntronMax;
+	}
+
+	public int getSpliceRegionIntronMin() {
+		return spliceRegionIntronMin;
 	}
 
 	public int getUpDownStreamLength() {
@@ -558,6 +573,18 @@ public class SnpEffectPredictor implements Serializable {
 		}
 
 		return resultsList;
+	}
+
+	public void setSpliceRegionExonSize(int spliceRegionExonSize) {
+		this.spliceRegionExonSize = spliceRegionExonSize;
+	}
+
+	public void setSpliceRegionIntronMax(int spliceRegionIntronMax) {
+		this.spliceRegionIntronMax = spliceRegionIntronMax;
+	}
+
+	public void setSpliceRegionIntronMin(int spliceRegionIntronMin) {
+		this.spliceRegionIntronMin = spliceRegionIntronMin;
 	}
 
 	public void setSpliceSiteSize(int spliceSiteSize) {

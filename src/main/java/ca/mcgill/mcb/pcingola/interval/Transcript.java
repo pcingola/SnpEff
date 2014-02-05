@@ -515,7 +515,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * 
 	 * @return
 	 */
-	public List<SpliceSite> createSpliceSites(int spliceSiteSize) {
+	public List<SpliceSite> createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
 		List<SpliceSite> list = new LinkedList<SpliceSite>();
 
 		// For each gene, transcript and exon
@@ -540,7 +540,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					if (ss != null) list.add(ss);
 
 					// Splice site region at the end
-					SpliceSiteRegion ssr = exon.createSpliceSiteRegionStart(SpliceSite.SPLICE_REGION_EXON_SIZE);
+					SpliceSiteRegion ssr = exon.createSpliceSiteRegionStart(spliceRegionExonSize);
 					if (ssr != null) list.add(ssr);
 				}
 
@@ -557,7 +557,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					if (ss != null) list.add(ss);
 
 					// Splice site region at the end
-					SpliceSiteRegion ssr = exon.createSpliceSiteRegionEnd(SpliceSite.SPLICE_REGION_EXON_SIZE);
+					SpliceSiteRegion ssr = exon.createSpliceSiteRegionEnd(spliceRegionExonSize);
 					if (ssr != null) list.add(ssr);
 				}
 
@@ -577,12 +577,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				Intron intron = introns.get(i);
 
 				if (i > 0) {
-					SpliceSiteRegion ssrs = intron.createSpliceSiteRegionStart(SpliceSite.SPLICE_REGION_INTRON_MIN, SpliceSite.SPLICE_REGION_INTRON_MAX);
+					SpliceSiteRegion ssrs = intron.createSpliceSiteRegionStart(spliceRegionIntronMin, spliceRegionIntronMax);
 					if (ssrs != null) list.add(ssrs);
 				}
 
 				if (i < (introns.size() - 1)) {
-					SpliceSiteRegion ssre = intron.createSpliceSiteRegionEnd(SpliceSite.SPLICE_REGION_INTRON_MIN, SpliceSite.SPLICE_REGION_INTRON_MAX);
+					SpliceSiteRegion ssre = intron.createSpliceSiteRegionEnd(spliceRegionIntronMin, spliceRegionIntronMax);
 					if (ssre != null) list.add(ssre);
 				}
 

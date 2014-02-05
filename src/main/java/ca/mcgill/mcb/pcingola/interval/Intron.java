@@ -33,7 +33,7 @@ public class Intron extends Marker {
 
 		if (sizeMin < 0) return null;
 		if (sizeMax > size()) sizeMax = size(); // Cannot be larger than this marker
-		if (sizeMax < sizeMin) return null; // Cannot be less than one base long
+		if (sizeMax <= sizeMin) return null; // Cannot be less than one base long
 
 		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (sizeMax - 1), end - (sizeMin - 1), strand, id);
 		else spliceSiteRegionEnd = new SpliceSiteRegion(this, start + sizeMin - 1, start + sizeMax - 1, strand, id);
@@ -50,7 +50,7 @@ public class Intron extends Marker {
 
 		if (sizeMin < 0) return null;
 		if (sizeMax > size()) sizeMax = size(); // Cannot be larger than this marker
-		if (sizeMax < sizeMin) return null; // Cannot be less than one base long
+		if (sizeMax <= sizeMin) return null; // Cannot be less than one base long
 
 		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start + (sizeMin - 1), start + (sizeMax - 1), strand, id);
 		else spliceSiteRegionStart = new SpliceSiteRegion(this, end - (sizeMax - 1), end - (sizeMin - 1), strand, id);

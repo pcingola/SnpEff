@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
+
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -110,6 +112,7 @@ public class TestCasesIns extends TestCase {
 			if (!vep.equals(eff)) {
 				if (vep.equals("CODON_INSERTION") && eff.equals("CODON_CHANGE_PLUS_CODON_INSERTION")) ; // OK. I consider these the same
 				else if (vep.equals("STOP_GAINED,CODON_INSERTION") && eff.equals("STOP_GAINED")) ; // OK. I consider these the same
+				else if (eff.equals("SPLICE_SITE_REGION")) ; // OK. I'm not checking these
 				else {
 					String msg = "\n" + ve + "\n\tSnpEff:" + veff + "\n\tVEP   :" + ve.getInfo("EFF_V") + "\t" + ve.getInfo("AA") + "\t" + ve.getInfo("CODON");
 					Gpr.debug(msg);
@@ -122,8 +125,12 @@ public class TestCasesIns extends TestCase {
 			//---
 			String aa = veff.getAa();
 			String vepaa = ve.getInfo("AA");
-			if (aa == null && vepaa.equals("-")) ; // OK, test passed
-			else {
+			if (aa == null) {
+				if (vepaa.equals("-")) ; // OK, test passed
+				else {
+					Gpr.debug(aa + "\t" + vepaa + "\t");
+				}
+			} else {
 				String aas[] = aa.split("[0-9]+");
 				String aav = aas[0] + "/" + (aas.length > 0 ? aas[1] : "");
 
@@ -172,6 +179,9 @@ public class TestCasesIns extends TestCase {
 
 		// No upstream or downstream
 		config.getSnpEffectPredictor().setUpDownStreamLength(0);
+		config.getSnpEffectPredictor().setSpliceRegionExonSize(0);
+		config.getSnpEffectPredictor().setSpliceRegionIntronMin(0);
+		config.getSnpEffectPredictor().setSpliceRegionIntronMax(0);
 
 		// Build forest
 		config.getSnpEffectPredictor().buildForest();
