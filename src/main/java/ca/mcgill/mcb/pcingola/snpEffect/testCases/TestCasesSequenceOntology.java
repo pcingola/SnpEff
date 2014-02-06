@@ -170,25 +170,24 @@ public class TestCasesSequenceOntology extends TestCase {
 
 	}
 
-	//	public void test_01_Vep() throws IOException {
-	//		// create_SNP_file("testENST00000268124","./tests/testENST00000268124.SNP.ORI.vcf", 0.15);
-	//		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.vcf", "ENST00000268124");
-	//	}
-	//
-	//	public void test_02_Vep() throws IOException {
-	//		// create_SNP_file("testENST00000268124","./tests/testENST00000268124.SNP.ORI.02.vcf", 0.15);
-	//		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.02.vcf", "ENST00000268124");
-	//	}
-	//
-	//	public void test_03_Vep() throws IOException {
-	//		//		create_Ins_file("testENST00000268124", "./tests/testENST00000268124.Ins.ORI.03.vcf", 0.15);
-	//		compareVepSO("testENST00000268124", "tests/testENST00000268124.Ins.03.vcf", "ENST00000268124");
-	//	}
+	public void test_01_Vep() throws IOException {
+		// create_SNP_file("testENST00000268124","./tests/testENST00000268124.SNP.ORI.vcf", 0.15);
+		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.vcf", "ENST00000268124");
+	}
+
+	public void test_02_Vep() throws IOException {
+		// create_SNP_file("testENST00000268124","./tests/testENST00000268124.SNP.ORI.02.vcf", 0.15);
+		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.02.vcf", "ENST00000268124");
+	}
+
+	public void test_03_Vep() throws IOException {
+		//		create_Ins_file("testENST00000268124", "./tests/testENST00000268124.Ins.ORI.03.vcf", 0.15);
+		compareVepSO("testENST00000268124", "tests/testENST00000268124.Ins.03.vcf", "ENST00000268124");
+	}
 
 	public void test_04_Vep() throws IOException {
-		create_Ins_file("testENST00000398332", "./tests/testENST00000398332.Ins.ORI.04.vcf", 0.95);
-		//		compareVepSO("testENST00000398332", "tests/testENST00000398332.Ins.04.vcf", "ENST00000398332");
-		compareVepSO("testENST00000398332", "tests/zzz.vcf", "ENST00000398332");
+		//		create_Ins_file("testENST00000398332", "./tests/testENST00000398332.Ins.ORI.04.vcf", 0.95);
+		compareVepSO("testENST00000398332", "tests/testENST00000398332.Ins.04.vcf", "ENST00000398332");
 	}
 
 }
