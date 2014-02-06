@@ -27,7 +27,48 @@ public class TestCasesSequenceOntology extends TestCase {
 
 	public static boolean debug = false;
 
-	public static void create_Ins_file(String genomeName, String outFile, double prob) throws IOException {
+	public static void createDelFile(String genomeName, String outFile, double prob) throws IOException {
+		Config config = new Config(genomeName, Gpr.HOME + "/snpEff/" + Config.DEFAULT_CONFIG_FILE);
+		config.loadSnpEffectPredictor();
+
+		Random rand = new Random(20140129);
+		StringBuilder out = new StringBuilder();
+
+		int count = 0;
+		for (Gene g : config.getGenome().getGenes()) {
+			for (Transcript tr : g) {
+				for (Exon e : tr) {
+					for (int i = e.getStart(); i < e.getEnd(); i++) {
+						if (rand.nextDouble() < prob) {
+
+							// Deletion length
+							int delLen = rand.nextInt(10) + 2;
+							if (i + delLen > e.getEnd()) delLen = e.getEnd() - i;
+
+							if (delLen >= 2) {
+								int idx = i - e.getStart();
+
+								String ref = e.basesAt(idx, delLen);
+								String alt = ref.substring(0, 1);
+
+								int pos = i + 1;
+								String line = e.getChromosomeName() + "\t" + pos + "\t.\t" + ref + "\t" + alt + "\t.\t.\tAC=1\tGT\t0/1";
+								System.out.println(line);
+								out.append(line + "\n");
+								count++;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		System.err.println("Count:" + count);
+		System.out.println("Output file: " + outFile);
+		Gpr.toFile(outFile, out);
+	}
+
+	public static void createInsFile(String genomeName, String outFile, double prob) throws IOException {
 		Config config = new Config(genomeName, Gpr.HOME + "/snpEff/" + Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 
@@ -66,13 +107,58 @@ public class TestCasesSequenceOntology extends TestCase {
 		Gpr.toFile(outFile, out);
 	}
 
+	public static void createMnpFile(String genomeName, String outFile, double prob) throws IOException {
+		Config config = new Config(genomeName, Gpr.HOME + "/snpEff/" + Config.DEFAULT_CONFIG_FILE);
+		config.loadSnpEffectPredictor();
+
+		Random rand = new Random(20140129);
+		StringBuilder out = new StringBuilder();
+
+		int count = 0;
+		for (Gene g : config.getGenome().getGenes()) {
+			for (Transcript tr : g) {
+				for (Exon e : tr) {
+					for (int i = e.getStart(); i < e.getEnd(); i++) {
+						if (rand.nextDouble() < prob) {
+
+							// Deletion length
+							int mnpLen = rand.nextInt(10) + 1;
+							if (i + mnpLen > e.getEnd()) mnpLen = e.getEnd() - i;
+
+							if (mnpLen >= 2) {
+								int idx = i - e.getStart();
+
+								String ref = e.basesAt(idx, mnpLen);
+								String alt = GprSeq.randSequence(rand, mnpLen);
+
+								// Make sure thay are not equal
+								while (ref.equals(alt))
+									alt = GprSeq.randSequence(rand, mnpLen);
+
+								int pos = i + 1;
+								String line = e.getChromosomeName() + "\t" + pos + "\t.\t" + ref + "\t" + alt + "\t.\t.\tAC=1\tGT\t0/1";
+								System.out.println(line);
+								out.append(line + "\n");
+								count++;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		System.err.println("Count:" + count);
+		System.out.println("Output file: " + outFile);
+		Gpr.toFile(outFile, out);
+	}
+
 	/**
 	 * Create a file to send to ENSEMBL's VEP.
 	 * Used for benchmarking
 	 * 
 	 * @throws IOException
 	 */
-	public static void create_SNP_file(String genomeName, String outFile) throws IOException {
+	public static void createSnpFile(String genomeName, String outFile) throws IOException {
 		Config config = new Config(genomeName, Gpr.HOME + "/snpEff/" + Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 
@@ -133,6 +219,8 @@ public class TestCasesSequenceOntology extends TestCase {
 			String vepSo = ve.getInfo("SO");
 			for (String so : vepSo.split(",")) {
 				if (so.equals("feature_elongation")) so = null; // This one is useless, if the variant is an insertion, it obviously causes an elongation
+				else if (so.equals("feature_truncation")) so = null; // This one is useless, if the variant is an insertion, it obviously causes an elongation
+
 				if (so != null) vepSos.add(so);
 			}
 
@@ -167,7 +255,6 @@ public class TestCasesSequenceOntology extends TestCase {
 			}
 
 		}
-
 	}
 
 	public void test_01_Vep() throws IOException {
@@ -188,6 +275,16 @@ public class TestCasesSequenceOntology extends TestCase {
 	public void test_04_Vep() throws IOException {
 		//		create_Ins_file("testENST00000398332", "./tests/testENST00000398332.Ins.ORI.04.vcf", 0.95);
 		compareVepSO("testENST00000398332", "tests/testENST00000398332.Ins.04.vcf", "ENST00000398332");
+	}
+
+	public void test_05_Vep() throws IOException {
+		//		createDelFile("testENST00000268124", "./tests/testENST00000268124.Del.ORI.05.vcf", 0.15);
+		compareVepSO("testENST00000268124", "tests/testENST00000268124.Del.05.vcf", "ENST00000268124");
+	}
+
+	public void test_06_Vep() throws IOException {
+		// createMnpFile("testENST00000268124", "./tests/testENST00000268124.Mnp.ORI.06.vcf", 0.15);
+		compareVepSO("testENST00000268124", "tests/testENST00000268124.Mnp.06.vcf", "ENST00000268124");
 	}
 
 }
