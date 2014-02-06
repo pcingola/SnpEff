@@ -10,6 +10,7 @@ import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.serializer.TxtSerializable;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -555,32 +556,33 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @param changeEffect
 	 * @return
 	 */
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffect) {
-		if (!intersects(seqChange)) return ChangeEffect.emptyResults(); // Sanity check
-		changeEffect.set(this, type, "");
-		return changeEffect.newList();
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+		if (!intersects(seqChange)) return false;
+		changeEffects.add(this, type, "");
+		return true;
 	}
 
 	/**
 	 * Calculate the effect of this seqChange
 	 * @param seqChange : Sequence change
-	 * @param changeEffect
+	 * @param changeEffects
 	 * @param seqChangeRef : Before analyzing results, we have to change markers using seqChangerRef to create a new reference 'on the fly'
 	 * @return
 	 */
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffect, SeqChange seqChangerRef) {
-		if (!intersects(seqChange)) return ChangeEffect.emptyResults(); // Sanity check
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects, SeqChange seqChangerRef) {
+		if (!intersects(seqChange)) return false;// Sanity check
+
 		if (seqChangerRef != null) {
 			Marker m = apply(seqChangerRef);
 
 			// Has the marker been deleted?
 			// Then there is no effect over this marker (it does not exist any more)
-			if (m == null) return ChangeEffect.emptyResults();
+			if (m == null) return false;
 
-			return m.seqChangeEffect(seqChange, changeEffect);
+			return m.seqChangeEffect(seqChange, changeEffects);
 		}
 
-		return seqChangeEffect(seqChange, changeEffect);
+		return seqChangeEffect(seqChange, changeEffects);
 	}
 
 	/**

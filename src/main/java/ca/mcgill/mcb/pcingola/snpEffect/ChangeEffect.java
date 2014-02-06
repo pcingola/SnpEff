@@ -1,8 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Custom;
@@ -251,11 +249,25 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	 * @author pcingola
 	 *
 	 */
-	public enum ErrorType {
-		ERROR_CHROMOSOME_NOT_FOUND //
+	public enum ErrorWarningType {
+		WARNING_SEQUENCE_NOT_AVAILABLE //
+		, WARNING_REF_DOES_NOT_MATCH_GENOME //
+		, WARNING_TRANSCRIPT_INCOMPLETE // 
+		, WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS //
+		, WARNING_TRANSCRIPT_NO_START_CODON //
+		, ERROR_CHROMOSOME_NOT_FOUND //
 		, ERROR_OUT_OF_CHROMOSOME_RANGE //
 		, ERROR_OUT_OF_EXON //
 		, ERROR_MISSING_CDS_SEQUENCE //
+		;
+
+		public boolean isError() {
+			return toString().startsWith("ERROR");
+		}
+
+		public boolean isWarning() {
+			return toString().startsWith("WARNING");
+		}
 	}
 
 	/**
@@ -264,14 +276,6 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	public enum FunctionalClass {
 		NONE, SILENT, MISSENSE, NONSENSE
 	}
-
-	public enum WarningType {
-		WARNING_SEQUENCE_NOT_AVAILABLE //
-		, WARNING_REF_DOES_NOT_MATCH_GENOME //
-		, WARNING_TRANSCRIPT_INCOMPLETE // 
-		, WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS //
-		, WARNING_TRANSCRIPT_NO_START_CODON //
-	};
 
 	static final boolean COMPATIBLE_v1_8 = true; // Activate this in order to get the same out as version 1.8. This is only for testing & debugging 
 
@@ -290,14 +294,6 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	String aaOld = "", aaNew = ""; // Amino acid changes
 	String aasAroundOld = "", aasAroundNew = ""; // Amino acids around
 
-	/**
-	 *  An empty list of results;
-	 * @return
-	 */
-	public static List<ChangeEffect> emptyResults() {
-		return new ArrayList<ChangeEffect>();
-	}
-
 	public ChangeEffect(SeqChange seqChange) {
 		this.seqChange = seqChange;
 	}
@@ -307,12 +303,18 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		this.seqChangeRef = seqChangeRef;
 	}
 
-	public void addError(ErrorType err) {
-		error += (error.isEmpty() ? "" : "+") + err;
-	}
+	/**
+	 * Add an error or warning
+	 * @param errwarn
+	 */
+	public void addErrorWarning(ErrorWarningType errwarn) {
+		if (errwarn == null) return;
 
-	public void addWarning(WarningType warn) {
-		warning += (warning.isEmpty() ? "" : "+") + warn;
+		if (errwarn.isError()) {
+			if (error.indexOf(errwarn.toString()) < 0) error += (error.isEmpty() ? "" : "+") + errwarn;
+		} else {
+			if (warning.indexOf(errwarn.toString()) < 0) warning += (warning.isEmpty() ? "" : "+") + errwarn;
+		}
 	}
 
 	@Override
@@ -954,20 +956,10 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		;
 	}
 
-	/**
-	 * Create a list with only one element (this results)
-	 * @return
-	 */
-	public List<ChangeEffect> newList() {
-		List<ChangeEffect> list = new ArrayList<ChangeEffect>();
-		list.add(clone());
-		return list;
-	}
-
 	public void set(Marker marker, EffectType effectType, String message) {
-		this.marker = marker;
+		setMarker(marker); // Use setter because it takes care of warnings
 		this.effectType = effectType;
-		this.message += message;
+		this.message = message;
 	}
 
 	/**
@@ -977,7 +969,9 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	 * @param codonNum
 	 * @param codonIndex
 	 */
-	public void setCodons(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
+	public EffectType setCodons(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
+		EffectType newEffectType = null;
+
 		// Replace empty by "-"
 		if (codonsOld.isEmpty()) codonsOld = "-";
 		if (codonsNew.isEmpty()) codonsNew = "-";
@@ -1037,11 +1031,13 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				}
 			}
 		} else {
-			// Only change effect in some cases
-			if ((codonNum == 0) && codonTable.isStartFirst(codonsOld) && !codonTable.isStartFirst(codonsNew)) effectType = EffectType.START_LOST;
-			else if (codonTable.isStop(codonsOld) && !codonTable.isStop(codonsNew)) effectType = EffectType.STOP_LOST;
-			else if (!codonTable.isStop(codonsOld) && codonTable.isStop(codonsNew)) effectType = EffectType.STOP_GAINED;
+			// Add a new effect in some cases
+			if ((codonNum == 0) && codonTable.isStartFirst(codonsOld) && !codonTable.isStartFirst(codonsNew)) newEffectType = EffectType.START_LOST;
+			else if (codonTable.isStop(codonsOld) && !codonTable.isStop(codonsNew)) newEffectType = EffectType.STOP_LOST;
+			else if (!codonTable.isStop(codonsOld) && codonTable.isStop(codonsNew)) newEffectType = EffectType.STOP_GAINED;
 		}
+
+		return newEffectType;
 	}
 
 	/**
@@ -1069,8 +1065,26 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		this.effectImpact = effectImpact;
 	}
 
+	public void setEffectType(EffectType effectType) {
+		this.effectType = effectType;
+	}
+
+	/**
+	 * Set marker. Add some warnings if the marker relates to incomplete transcripts
+	 * @param marker
+	 */
 	public void setMarker(Marker marker) {
 		this.marker = marker;
+
+		Transcript transcript = getTranscript();
+		if (transcript != null) {
+			// Transcript level errors or warnings
+			addErrorWarning(transcript.sanityCheck(seqChange));
+
+			// Exon level errors or warnings
+			Exon exon = getExon();
+			if (exon != null) addErrorWarning(exon.sanityCheck(seqChange));
+		}
 	}
 
 	@Override

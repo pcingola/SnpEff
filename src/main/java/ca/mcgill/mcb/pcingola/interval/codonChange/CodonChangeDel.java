@@ -3,8 +3,8 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
 /**
  * Calculate codon changes produced by a deletion
@@ -15,8 +15,8 @@ public class CodonChangeDel extends CodonChange {
 	int oldCodonCdsStart = -1;
 	int oldCodonCdsEnd = -1;
 
-	public CodonChangeDel(SeqChange seqChange, Transcript transcript, ChangeEffect changeEffect) {
-		super(seqChange, transcript, changeEffect);
+	public CodonChangeDel(SeqChange seqChange, Transcript transcript, ChangeEffects changeEffects) {
+		super(seqChange, transcript, changeEffects);
 		returnNow = false;
 		requireNetCdsChange = true;
 	}
@@ -26,7 +26,7 @@ public class CodonChangeDel extends CodonChange {
 	 * Add changeEffect to 'changeEffect'
 	 */
 	@Override
-	boolean codonChangeSingle(ChangeEffect changeEffect, Exon exon) {
+	boolean codonChangeSingle(Exon exon) {
 		// Is there any net effect?
 		if (netCdsChange.isEmpty()) return false;
 
@@ -34,8 +34,8 @@ public class CodonChangeDel extends CodonChange {
 			/**
 			 * An exon has been entirely removed 
 			 */
-			changeEffect.setCodons("", "", -1, -1);
-			changeEffect.set(exon, EffectType.EXON_DELETED, "");
+			changeEffects.add(exon, EffectType.EXON_DELETED, "");
+			changeEffects.setCodons("", "", -1, -1);
 		} else if (netCdsChange.length() % CodonChange.CODON_SIZE != 0) {
 			/**
 			 * Length not multiple of CODON_SIZE => FRAME_SHIFT
@@ -45,8 +45,8 @@ public class CodonChangeDel extends CodonChange {
 			 * 		Delete 'AA' pos 1:	ACC CGG GAA ACC CGG GAA ACC CGG G
 			 * 		Delete 'AC' pos 2:	AAC CGG GAA ACC CGG GAA ACC CGG G
 			 */
-			changeEffect.set(exon, EffectType.FRAME_SHIFT, "");
-			changeEffect.setCodons("", "", codonNum, codonIndex);
+			changeEffects.add(exon, EffectType.FRAME_SHIFT, "");
+			changeEffects.setCodons("", "", codonNum, codonIndex);
 		} else if (codonIndex == 0) {
 			/**
 			 * Length multiple of CODON_SIZE and insertion happens at codon boundary => CODON_INSERTION
@@ -55,8 +55,8 @@ public class CodonChangeDel extends CodonChange {
 			 * 		Delete 'AAA' pos 0:	CCC GGG AAA CCC GGG AAA CCC GGG
 			 */
 			codonsOld = codonsOld();
-			changeEffect.set(exon, EffectType.CODON_DELETION, "");
-			changeEffect.setCodons(codonsOld, "", codonNum, codonIndex);
+			changeEffects.add(exon, EffectType.CODON_DELETION, "");
+			changeEffects.setCodons(codonsOld, "", codonNum, codonIndex);
 		} else {
 			/**
 			 * Length multiple of CODON_SIZE and insertion does not happen at codon boundary => CODON_CHANGE_PLUS_CODON_DELETION
@@ -80,11 +80,11 @@ public class CodonChangeDel extends CodonChange {
 				 *  	Original:			ACG TCG TCC GGG AAA CCC GGG AAA CCC GGG
 				 *  	Delete 'CGT' pos 1:	ACG TCC GGG AAA CCC GGG AAA CCC GGG
 				 */
-				changeEffect.set(exon, EffectType.CODON_DELETION, "");
-				changeEffect.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+				changeEffects.add(exon, EffectType.CODON_DELETION, "");
+				changeEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 			} else {
-				changeEffect.set(exon, EffectType.CODON_CHANGE_PLUS_CODON_DELETION, "");
-				changeEffect.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+				changeEffects.add(exon, EffectType.CODON_CHANGE_PLUS_CODON_DELETION, "");
+				changeEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 			}
 		}
 

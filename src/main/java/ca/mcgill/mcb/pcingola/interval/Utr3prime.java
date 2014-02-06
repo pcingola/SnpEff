@@ -3,8 +3,8 @@ package ca.mcgill.mcb.pcingola.interval;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.interval.SeqChange.ChangeType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
 /**
  * Interval for a UTR (5 prime UTR and 3 prime UTR
@@ -37,20 +37,19 @@ public class Utr3prime extends Utr {
 	}
 
 	@Override
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffect) {
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+		if (!intersects(seqChange)) return false;
+
 		if (seqChange.includes(this) && (seqChange.getChangeType() == ChangeType.DEL)) {
-			changeEffect.set(this, EffectType.UTR_3_DELETED, ""); // A UTR was removed entirely
-			return changeEffect.newList();
+			changeEffects.add(this, EffectType.UTR_3_DELETED, ""); // A UTR was removed entirely
+			return true;
 		}
 
 		Transcript tr = (Transcript) findParent(Transcript.class);
 		String utrDistStr = utr5primeDistance(seqChange, tr);
-		changeEffect.set(this, type, utrDistStr);
+		changeEffects.add(this, type, utrDistStr);
 
-		Exon exon = (Exon) findParent(Exon.class);
-		if (exon != null) exon.check(seqChange, changeEffect); // Check that base matches the expected one
-
-		return changeEffect.newList();
+		return true;
 	}
 
 	/**

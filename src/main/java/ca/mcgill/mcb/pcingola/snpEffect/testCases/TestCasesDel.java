@@ -1,7 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
@@ -15,6 +13,7 @@ import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
@@ -278,8 +277,8 @@ public class TestCasesDel extends TestCase {
 					//---
 					// Calculate effects
 					//---
-					List<ChangeEffect> effectsAll = snpEffectPredictor.seqChangeEffect(seqChange);
-					List<ChangeEffect> effects = new ArrayList<ChangeEffect>();
+					ChangeEffects effectsAll = snpEffectPredictor.seqChangeEffect(seqChange);
+					ChangeEffects effects = new ChangeEffects();
 					for (ChangeEffect eff : effectsAll) {
 						boolean copy = true;
 
@@ -294,43 +293,55 @@ public class TestCasesDel extends TestCase {
 					Assert.assertEquals(false, effects.isEmpty()); // There should be at least one effect
 					if (debug && (effects.size() > 1)) {
 						System.out.println("Found more than one effect: " + effects.size() + "\n" + transcript);
+						System.out.println("\tEffects: ");
 						for (ChangeEffect eff : effects)
 							System.out.println("\t" + eff);
 					}
 
 					// Show
-					ChangeEffect effect = effects.get(0);
-					String effStr = effect.effect(true, true, true, false);
-					if (debug) System.out.println("\tIteration: " + i + "\tPos: " + pos //
-							+ "\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-							+ "\n\t\tSeqChange        : " + seqChange + "_strand" + (seqChangeStrand >= 0 ? "+" : "-") + "\tsize: " + seqChange.size() + "\tdelPlus: " + delPlus//
-							+ "\n\t\tNetCdsChange     : " + netChange //
-							+ "\n\t\tExpected         : " + effectExpected //
-							+ "\n\t\tEffect           : " + effStr //
-							+ "\n\t\tAA               : '" + aaOld + "' / '" + aaNew + "'" //
-							+ "\n\t\tAA (eff)         : '" + effect.getAaOld() + "' / '" + effect.getAaNew() + "'" //
-							+ "\n\t\tCodon            : '" + codonsOld + "' / '" + codonsNew + "'" //
-							+ "\n\t\tCodons(eff)      : '" + effect.getCodonsOld().toUpperCase() + "' / '" + effect.getCodonsNew().toUpperCase() + "'" //
-							+ "\n" //		
-					);
 
 					//---
 					// Check effect
 					//---
-					Assert.assertEquals(effectExpected, effStr);
+					boolean ok = false;
+					for (ChangeEffect effect : effects) {
+						String effStr = effect.effect(true, true, true, false);
+						if (effectExpected.equals(effStr)) {
+							ok = true;
+							// Check codons
+							if ((effect.getEffectType() != EffectType.FRAME_SHIFT) // No codons in 'FRAME_SHIFT'
+									&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
+									&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
+									&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
+							) {
 
-					// Check codons
-					if ((effect.getEffectType() != EffectType.FRAME_SHIFT) // No codons in 'FRAME_SHIFT'
-							&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
-					) {
-						Assert.assertEquals(codonsOld, effect.getCodonsOld().toUpperCase()); // Check codons old
+								if (codonsNew.equals("-")) codonsNew = "";
+								String codonsNewEff = effect.getCodonsNew().toUpperCase();
+								if (codonsNewEff.equals("-")) codonsNewEff = "";
 
-						if (codonsNew.equals("-")) codonsNew = "";
-						String codonsNewEff = effect.getCodonsNew().toUpperCase();
-						if (codonsNewEff.equals("-")) codonsNewEff = "";
+								if (debug //
+										|| !codonsOld.equals(effect.getCodonsOld().toUpperCase()) //
+										|| !codonsNew.equals(codonsNewEff)) {
+									System.out.println("\tIteration: " + i + "\tPos: " + pos //
+											+ "\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
+											+ "\n\t\tSeqChange        : " + seqChange + "_strand" + (seqChangeStrand >= 0 ? "+" : "-") + "\tsize: " + seqChange.size() + "\tdelPlus: " + delPlus//
+											+ "\n\t\tNetCdsChange     : " + netChange //
+											+ "\n\t\tExpected         : " + effectExpected //
+											+ "\n\t\tEffect           : " + effStr //
+											+ "\n\t\tAA               : '" + aaOld + "' / '" + aaNew + "'" //
+											+ "\n\t\tAA (eff)         : '" + effect.getAaOld() + "' / '" + effect.getAaNew() + "'" //
+											+ "\n\t\tCodon            : '" + codonsOld + "' / '" + codonsNew + "'" //
+											+ "\n\t\tCodons(eff)      : '" + effect.getCodonsOld().toUpperCase() + "' / '" + effect.getCodonsNew().toUpperCase() + "'" //
+											+ "\n" //		
+									);
+								}
 
-						Assert.assertEquals(codonsNew, codonsNewEff); // Check codons new
+								Assert.assertEquals(codonsOld, effect.getCodonsOld().toUpperCase()); // Check codons old
+								Assert.assertEquals(codonsNew, codonsNewEff); // Check codons new
+							}
+						}
 					}
+					Assert.assertEquals(ok, true);
 				}
 			}
 		}

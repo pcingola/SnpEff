@@ -1,10 +1,8 @@
 package ca.mcgill.mcb.pcingola.interval;
 
-import java.util.List;
-
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
 /**
  * Regulatory elements
@@ -41,15 +39,15 @@ public class Regulation extends Marker {
 	/**
 	 * Calculate the effect of this seqChange
 	 * @param seqChange
-	 * @param changeEffect
+	 * @param changeEffects
 	 * @return
 	 */
 	@Override
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffect) {
-		if (!intersects(seqChange)) return ChangeEffect.emptyResults(); // Sanity check
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+		if (!intersects(seqChange)) return false; // Sanity check
 		EffectType effType = EffectType.REGULATION;
-		changeEffect.set(this, effType, "");
-		return changeEffect.newList();
+		changeEffects.add(this, effType, "");
+		return true;
 	}
 
 	/**

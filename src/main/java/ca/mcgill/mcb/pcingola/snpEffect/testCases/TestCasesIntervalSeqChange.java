@@ -1,7 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
@@ -15,6 +13,7 @@ import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
@@ -108,7 +107,7 @@ public class TestCasesIntervalSeqChange extends TestCase {
 				SeqChange seqChange = new SeqChange(chromosome, start, end, "");
 
 				// Sanity checks
-				Assert.assertEquals(true, seqChange.isInterval()); // Is it a deletion?
+				Assert.assertEquals(true, seqChange.isInterval()); // Is it an interval?
 
 				//---
 				// Expected Effect
@@ -121,18 +120,17 @@ public class TestCasesIntervalSeqChange extends TestCase {
 
 					for (Intron intron : transcript.introns())
 						if (intron.intersects(seqChange)) expectedEffect = "INTRON";
-
-					// Neither exon not intron? => Intragenic
+				} else if (gene.intersects(seqChange)) {
+					// Gene intersects but transcript doesn't?
 					if (expectedEffect == null) expectedEffect = "INTRAGENIC";
 				} else expectedEffect = "INTERGENIC";
 
 				//---
 				// Calculate effects
 				//---
-
 				// Copy only some effect (other effects are not tested)
-				List<ChangeEffect> effectsAll = snpEffectPredictor.seqChangeEffect(seqChange);
-				List<ChangeEffect> effects = new ArrayList<ChangeEffect>();
+				ChangeEffects effectsAll = snpEffectPredictor.seqChangeEffect(seqChange);
+				ChangeEffects effects = new ChangeEffects();
 				for (ChangeEffect eff : effectsAll) {
 					boolean copy = true;
 
@@ -152,7 +150,7 @@ public class TestCasesIntervalSeqChange extends TestCase {
 
 				//---
 				// Check effect
-				//---		
+				//---
 				boolean isExpectedOK = false;
 				StringBuilder effSb = new StringBuilder();
 				for (ChangeEffect effect : effects) {
@@ -161,11 +159,13 @@ public class TestCasesIntervalSeqChange extends TestCase {
 					effSb.append(effstr + " ");
 
 				}
-				if (debug) System.out.println("SeqChange: " + seqChange //
-						+ "\nExpected Effect :\t" + expectedEffect //
-						+ "\nEffects         :\t" + effSb //
-						+ "\n--------------------------------------------------------------\n" //
-				);
+
+				if (debug || !isExpectedOK) //
+					System.out.println("SeqChange       : " + seqChange //
+							+ "\nExpected Effect :\t" + expectedEffect //
+							+ "\nEffects         :\t" + effSb //
+							+ "\n--------------------------------------------------------------\n" //
+					);
 				Assert.assertEquals(true, isExpectedOK);
 			}
 		}

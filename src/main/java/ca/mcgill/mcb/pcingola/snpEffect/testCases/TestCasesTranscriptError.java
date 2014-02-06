@@ -5,7 +5,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.WarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -24,12 +24,12 @@ public class TestCasesTranscriptError extends TestCase {
 
 	public void test_01() {
 		String args[] = { "testHg3763Chr20", "./tests/short_codon_bug.vcf" };
-		transcriptError(args, WarningType.WARNING_TRANSCRIPT_INCOMPLETE);
+		transcriptError(args, ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE);
 	}
 
 	public void test_02() {
 		String args[] = { "testHg3763Chr20", "./tests/incorrect_ref.vcf" };
-		transcriptError(args, WarningType.WARNING_REF_DOES_NOT_MATCH_GENOME);
+		transcriptError(args, ErrorWarningType.WARNING_REF_DOES_NOT_MATCH_GENOME);
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class TestCasesTranscriptError extends TestCase {
 	 * @param args
 	 * @param warningType
 	 */
-	void transcriptError(String args[], WarningType warningType) {
+	void transcriptError(String args[], ErrorWarningType warningType) {
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
 		List<VcfEntry> vcfEntries = snpeff.run(true);

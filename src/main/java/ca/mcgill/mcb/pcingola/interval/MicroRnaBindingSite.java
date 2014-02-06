@@ -1,9 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval;
 
-import java.util.List;
-
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
 /**
  * miRna binding site (usually this was predicted by some algorithm)
@@ -23,10 +21,10 @@ public class MicroRnaBindingSite extends Marker {
 	}
 
 	@Override
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffect) {
-		if (!intersects(seqChange)) return ChangeEffect.emptyResults(); // Sanity check
-		changeEffect.set(this, EffectType.MICRO_RNA, "" + pValue);
-		return changeEffect.newList();
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+		if (!intersects(seqChange)) return false; // Sanity check
+		changeEffects.add(this, EffectType.MICRO_RNA, "" + pValue);
+		return true;
 	}
 
 }

@@ -13,6 +13,7 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -195,14 +196,14 @@ public class TestCasesHgvs extends TestCase {
 						if (!seqChange.isChange()) protHgvs = "EXON";
 
 						// Calculate effects
-						List<ChangeEffect> effects = snpEffectPredictor.seqChangeEffect(seqChange);
+						ChangeEffects effects = snpEffectPredictor.seqChangeEffect(seqChange);
 
 						// There should be only one effect
 						Assert.assertEquals(true, effects.size() <= 1);
 
 						// Show
 						if (effects.size() == 1) {
-							ChangeEffect effect = effects.get(0);
+							ChangeEffect effect = effects.get();
 							String effStr = effect.getHgvs();
 
 							if (debug) System.out.println("\tPos: " + pos //

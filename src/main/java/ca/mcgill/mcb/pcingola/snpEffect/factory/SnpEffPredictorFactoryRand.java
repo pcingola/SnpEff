@@ -79,6 +79,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 				add(exon);
 			}
 
+			tr.adjust();
 			tr.rankExons();
 		}
 

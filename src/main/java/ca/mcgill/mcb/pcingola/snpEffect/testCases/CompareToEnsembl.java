@@ -3,7 +3,6 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -14,6 +13,7 @@ import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -99,7 +99,7 @@ public class CompareToEnsembl {
 		Collections.sort(list);
 
 		for (SeqChange seqChange : list) {
-			List<ChangeEffect> changes = snpEffectPredictor.seqChangeEffect(seqChange);
+			ChangeEffects changes = snpEffectPredictor.seqChangeEffect(seqChange);
 
 			boolean ok = false;
 			StringBuffer changesSb = new StringBuffer();
@@ -113,7 +113,7 @@ public class CompareToEnsembl {
 				Transcript tr = null;
 				while ((m != null) && (tr == null)) {
 					if (m instanceof Transcript) tr = (Transcript) m;
-					m = (Marker) m.getParent();
+					m = m.getParent();
 				}
 
 				// Compare changes?

@@ -35,6 +35,7 @@ import ca.mcgill.mcb.pcingola.outputFormatter.TxtOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.eff.MasterEff;
 import ca.mcgill.mcb.pcingola.stats.ChangeEffectResutStats;
@@ -210,7 +211,7 @@ public class SnpEffCmdEff extends SnpEff {
 					if (createSummary) seqChangeStats.sample(seqChange);
 
 					// Calculate effects
-					List<ChangeEffect> changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
+					ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
 
 					// Create new 'section'
 					outputFormatter.startSection(seqChange);
@@ -301,7 +302,7 @@ public class SnpEffCmdEff extends SnpEff {
 						if (createSummary) seqChangeStats.sample(seqChange);
 
 						// Calculate effects
-						List<ChangeEffect> changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
+						ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
 
 						// Create new 'section'
 						outputFormatter.startSection(seqChange);
@@ -345,7 +346,7 @@ public class SnpEffCmdEff extends SnpEff {
 						SeqChange seqChangeAlt = seqChanges.get(altGtNum - 1); // This our new 'seqChange'
 
 						// Calculate effects
-						List<ChangeEffect> changeEffects = snpEffectPredictor.seqChangeEffect(seqChangeAlt, seqChangeRef);
+						ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChangeAlt, seqChangeRef);
 
 						// Create new 'section'
 						outputFormatter.startSection(seqChangeAlt);

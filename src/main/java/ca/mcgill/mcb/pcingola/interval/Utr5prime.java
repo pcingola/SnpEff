@@ -6,8 +6,8 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.interval.SeqChange.ChangeType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
@@ -68,11 +68,11 @@ public class Utr5prime extends Utr {
 	}
 
 	@Override
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffect) {
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
 		// Has the whole UTR been deleted?
 		if (seqChange.includes(this) && (seqChange.getChangeType() == ChangeType.DEL)) {
-			changeEffect.set(this, EffectType.UTR_5_DELETED, ""); // A UTR was removed entirely
-			return changeEffect.newList();
+			changeEffects.add(this, EffectType.UTR_5_DELETED, ""); // A UTR was removed entirely
+			return true;
 		}
 
 		// Is it START_GAINED?
@@ -80,14 +80,10 @@ public class Utr5prime extends Utr {
 		String utrDistStr = utr5primeDistance(seqChange, tr);
 		String gained = startGained(seqChange, tr);
 
-		if (gained.length() > 0) changeEffect.set(this, EffectType.START_GAINED, gained + ", " + EffectType.UTR_5_PRIME + ": " + utrDistStr);
-		else changeEffect.set(this, type, utrDistStr);
+		changeEffects.add(this, type, utrDistStr);
+		if (!gained.isEmpty()) changeEffects.add(this, EffectType.START_GAINED, gained);
 
-		// Check that base matches the expected one
-		Exon exon = (Exon) findParent(Exon.class);
-		if (exon != null) exon.check(seqChange, changeEffect);
-
-		return changeEffect.newList();
+		return true;
 	}
 
 	/**

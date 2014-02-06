@@ -3,7 +3,7 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
 /**
  * Calculate codon changes produced by a Interval
@@ -14,8 +14,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
  */
 public class CodonChangeInterval extends CodonChange {
 
-	public CodonChangeInterval(SeqChange seqChange, Transcript transcript, ChangeEffect changeEffect) {
-		super(seqChange, transcript, changeEffect);
+	public CodonChangeInterval(SeqChange seqChange, Transcript transcript, ChangeEffects changeEffects) {
+		super(seqChange, transcript, changeEffects);
 		returnNow = false; // An interval may affect more than one exon
 	}
 
@@ -23,7 +23,7 @@ public class CodonChangeInterval extends CodonChange {
 	 * Analyze
 	 */
 	@Override
-	boolean codonChangeSingle(ChangeEffect changeEffect, Exon exon) {
+	boolean codonChangeSingle(Exon exon) {
 		return false;
 	}
 

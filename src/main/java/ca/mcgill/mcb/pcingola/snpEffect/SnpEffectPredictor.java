@@ -1,9 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import net.sf.samtools.util.RuntimeEOFException;
@@ -23,7 +21,7 @@ import ca.mcgill.mcb.pcingola.interval.Utr;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -498,7 +496,7 @@ public class SnpEffectPredictor implements Serializable {
 	 * Predict the effect of a seqChange
 	 * @param seqChange
 	 */
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange) {
+	public ChangeEffects seqChangeEffect(SeqChange seqChange) {
 		return seqChangeEffect(seqChange, null);
 	}
 
@@ -507,20 +505,21 @@ public class SnpEffectPredictor implements Serializable {
 	 * @param seqChange : Sequence change
 	 * @param seqChangeRef : Before analyzing results, we have to change markers using seqChangerRef to create a new reference 'on the fly'
 	 */
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, SeqChange seqChangerRef) {
-		// No change? => Nothing to predict
-		//if ((!seqChange.isChange()) && (!seqChange.isInterval())) return ChangeEffect.emptyResults();
+	public ChangeEffects seqChangeEffect(SeqChange seqChange, SeqChange seqChangeRef) {
+		ChangeEffects changeEffects = new ChangeEffects(seqChange, seqChangeRef);
 
-		ChangeEffect results = new ChangeEffect(seqChange);
-
+		//---
 		// Chromosome missing?
+		//---
 		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(seqChange)) {
-			results.addError(ErrorType.ERROR_CHROMOSOME_NOT_FOUND);
-			return results.newList();
+			changeEffects.addErrorWarning(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND);
+			return changeEffects;
 		}
 
+		//---
 		// Check that this is not a huge deletion.
 		// Huge deletions would crash the rest of the algorithm, so we need to stop them here.
+		//---
 		if (seqChange.isDel() && (seqChange.size() > HUGE_DELETION_SIZE_THRESHOLD)) {
 			// Get chromosome
 			String chromoName = seqChange.getChromosomeName();
@@ -529,28 +528,24 @@ public class SnpEffectPredictor implements Serializable {
 			if (chr.size() > 0) {
 				double ratio = seqChange.size() / ((double) chr.size());
 				if (ratio > HUGE_DELETION_RATIO_THRESHOLD) {
-					ArrayList<ChangeEffect> resultsList = new ArrayList<ChangeEffect>();
-					ChangeEffect changeEffect = new ChangeEffect(seqChange, seqChangerRef);
-					changeEffect.set(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
-					resultsList.add(changeEffect);
-					return resultsList;
+					changeEffects.add(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
+					return changeEffects;
 				}
 			}
 		}
 
-		// Which intervals does seqChange intersect?
+		//---
+		// Query interval tree: Which intervals does seqChange intersect?
+		//---
 		Markers intersects = query(seqChange);
 
 		// Show all results
 		boolean hitChromo = false, hitSomething = false;
-		ArrayList<ChangeEffect> resultsList = new ArrayList<ChangeEffect>();
 		if (intersects.size() > 0) {
 			for (Marker marker : intersects) {
 				if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
 				else { // Analyze all markers 
-					results = new ChangeEffect(seqChange, seqChangerRef);
-					List<ChangeEffect> resList = marker.seqChangeEffect(seqChange, results, seqChangerRef);
-					if (!resList.isEmpty()) resultsList.addAll(resList);
+					marker.seqChangeEffect(seqChange, changeEffects, seqChangeRef);
 					hitSomething = true;
 				}
 			}
@@ -558,21 +553,13 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Any errors or intergenic (i.e. did not hit any gene)
 		if (!hitChromo) {
-			if (Config.get().isErrorChromoHit()) {
-				results.addError(ErrorType.ERROR_OUT_OF_CHROMOSOME_RANGE);
-				return results.newList();
-			}
+			if (Config.get().isErrorChromoHit()) changeEffects.addErrorWarning(ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
 		} else if (!hitSomething) {
-			if (Config.get().isOnlyRegulation()) {
-				results.effectType = EffectType.NONE;
-				return results.newList();
-			} else {
-				results.effectType = EffectType.INTERGENIC;
-				return results.newList();
-			}
+			if (Config.get().isOnlyRegulation()) changeEffects.setEffectType(EffectType.NONE);
+			else changeEffects.setEffectType(EffectType.INTERGENIC);
 		}
 
-		return resultsList;
+		return changeEffects;
 	}
 
 	public void setSpliceRegionExonSize(int spliceRegionExonSize) {

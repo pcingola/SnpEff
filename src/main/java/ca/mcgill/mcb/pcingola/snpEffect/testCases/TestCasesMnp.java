@@ -15,6 +15,7 @@ import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -93,7 +94,7 @@ public class TestCasesMnp extends TestCase {
 		//---
 		// Calculate effects
 		//---
-		List<ChangeEffect> effects = snpEffectPredictor.seqChangeEffect(seqChange);
+		ChangeEffects effects = snpEffectPredictor.seqChangeEffect(seqChange);
 
 		// Show
 		ChangeEffect effect = null;
@@ -106,7 +107,7 @@ public class TestCasesMnp extends TestCase {
 				) //
 					effect = ce;
 			}
-		} else effect = effects.get(0);
+		} else effect = effects.get();
 
 		if (effect != null) {
 			String effStr = effect.effect(true, true, true, false);

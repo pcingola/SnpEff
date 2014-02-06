@@ -2,10 +2,8 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import ca.mcgill.mcb.pcingola.interval.SeqChange.ChangeType;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.WarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -71,31 +69,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		if (spliceSiteDonor != null) ex.spliceSiteDonor = (SpliceSiteDonor) spliceSiteDonor.apply(seqChange);
 
 		return ex;
-	}
-
-	/**
-	 * Check that the base in the exon corresponds with the one in the SNP
-	 * @param seqChange
-	 * @param results
-	 */
-	public void check(SeqChange seqChange, ChangeEffect results) {
-		// Only makes sense for SNPs and MNPs
-		if ((seqChange.getChangeType() != ChangeType.SNP) && (seqChange.getChangeType() != ChangeType.MNP)) return;
-
-		int mstart = Math.max(seqChange.getStart(), start);
-		int idxStart = mstart - start;
-		if (sequence.length() <= 0) results.addWarning(WarningType.WARNING_SEQUENCE_NOT_AVAILABLE);
-		else if (idxStart >= sequence.length()) results.addError(ErrorType.ERROR_OUT_OF_EXON);
-		else {
-			int mend = Math.min(seqChange.getEnd(), end);
-			int len = mend - mstart + 1;
-
-			String realReference = basesAt(idxStart, len).toUpperCase();
-			String changeReference = seqChange.reference().substring(mstart - seqChange.getStart(), mend - seqChange.getStart() + 1);
-
-			// Reference sequence different than expected?
-			if (!realReference.equals(changeReference)) results.addWarning(WarningType.WARNING_REF_DOES_NOT_MATCH_GENOME);
-		}
 	}
 
 	/**
@@ -236,6 +209,35 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		if ((spliceSiteAcceptor != null) && marker.intersects(spliceSiteAcceptor)) markers.add(spliceSiteAcceptor);
 		if ((spliceSiteDonor != null) && marker.intersects(spliceSiteDonor)) markers.add(spliceSiteDonor);
 		return markers;
+	}
+
+	/**
+	 * Check that the base in the exon corresponds with the one in the SNP
+	 * @param seqChange
+	 */
+	public ErrorWarningType sanityCheck(SeqChange seqChange) {
+		if (!intersects(seqChange)) return null;
+
+		// Only makes sense for SNPs and MNPs
+		if ((seqChange.getChangeType() != ChangeType.SNP) && (seqChange.getChangeType() != ChangeType.MNP)) return null;
+
+		int mstart = Math.max(seqChange.getStart(), start);
+		int idxStart = mstart - start;
+
+		if (sequence.length() <= 0) return ErrorWarningType.WARNING_SEQUENCE_NOT_AVAILABLE;
+		if (idxStart >= sequence.length()) return ErrorWarningType.ERROR_OUT_OF_EXON;
+
+		int mend = Math.min(seqChange.getEnd(), end);
+		int len = mend - mstart + 1;
+
+		String realReference = basesAt(idxStart, len).toUpperCase();
+		String changeReference = seqChange.reference().substring(mstart - seqChange.getStart(), mend - seqChange.getStart() + 1);
+
+		// Reference sequence different than expected?
+		if (!realReference.equals(changeReference)) return ErrorWarningType.WARNING_REF_DOES_NOT_MATCH_GENOME;
+
+		// OK
+		return null;
 	}
 
 	/**

@@ -1,13 +1,12 @@
 package ca.mcgill.mcb.pcingola.snpEffect.commandLine.eff;
 
-import java.util.List;
-
 import ca.mcgill.mcb.pcingola.akka.vcfStr.WorkerVcfStr;
 import ca.mcgill.mcb.pcingola.filter.SeqChangeFilter;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.outputFormatter.OutputFormatter;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
@@ -53,7 +52,7 @@ public class WorkerEff extends WorkerVcfStr {
 				// Does it pass the filter? => Analyze
 				if ((seqChangeFilter == null) || seqChangeFilter.filter(seqChange)) {
 					// Calculate effects
-					List<ChangeEffect> changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
+					ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
 
 					// Create new 'section'
 					outputFormatter.startSection(seqChange);

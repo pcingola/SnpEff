@@ -3,9 +3,9 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
 /**
  * Calculate codon changes produced by a SNP
@@ -13,8 +13,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorType;
  */
 public class CodonChangeSnp extends CodonChange {
 
-	public CodonChangeSnp(SeqChange seqChange, Transcript transcript, ChangeEffect changeEffect) {
-		super(seqChange, transcript, changeEffect);
+	public CodonChangeSnp(SeqChange seqChange, Transcript transcript, ChangeEffects changeEffects) {
+		super(seqChange, transcript, changeEffects);
 		returnNow = true; // A SNP can only affect one exon
 	}
 
@@ -23,14 +23,14 @@ public class CodonChangeSnp extends CodonChange {
 	 * Add changeEffect to 'changeEffect'
 	 */
 	@Override
-	boolean codonChangeSingle(ChangeEffect changeEffect, Exon exon) {
+	boolean codonChangeSingle(Exon exon) {
 		// Get old and new codons
 		codonsOld = codonsOld();
-		if (codonsOld.isEmpty()) changeEffect.addError(ErrorType.ERROR_MISSING_CDS_SEQUENCE);
+		if (codonsOld.isEmpty()) changeEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
 
 		codonsNew = codonsNew();
-		changeEffect.set(exon, EffectType.CODON_CHANGE, "");
-		changeEffect.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+		changeEffects.add(exon, EffectType.CODON_CHANGE, "");
+		changeEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 
 		return true;
 	}

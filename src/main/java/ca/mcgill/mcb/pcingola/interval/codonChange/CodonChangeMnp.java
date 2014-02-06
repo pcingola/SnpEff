@@ -1,13 +1,10 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
@@ -19,8 +16,8 @@ public class CodonChangeMnp extends CodonChange {
 	int cdsStart;
 	int cdsEnd;
 
-	public CodonChangeMnp(SeqChange seqChange, Transcript transcript, ChangeEffect changeEffect) {
-		super(seqChange, transcript, changeEffect);
+	public CodonChangeMnp(SeqChange seqChange, Transcript transcript, ChangeEffects changeEffects) {
+		super(seqChange, transcript, changeEffects);
 		returnNow = false;
 		requireNetCdsChange = true;
 	}
@@ -36,17 +33,16 @@ public class CodonChangeMnp extends CodonChange {
 	 * @return
 	 */
 	@Override
-	List<ChangeEffect> codonChange() {
-		ArrayList<ChangeEffect> changes = new ArrayList<ChangeEffect>();
-		if (!transcript.intersects(seqChange)) return changes;
+	void codonChange() {
+		if (!transcript.intersects(seqChange)) return;
 
 		// CDS coordinates
 		cdsStart = transcript.isStrandPlus() ? transcript.getCdsStart() : transcript.getCdsEnd();
 		cdsEnd = transcript.isStrandPlus() ? transcript.getCdsEnd() : transcript.getCdsStart();
 
 		// Does it intersect CDS?
-		if (cdsStart > seqChange.getEnd()) return changes;
-		if (cdsEnd < seqChange.getStart()) return changes;
+		if (cdsStart > seqChange.getEnd()) return;
+		if (cdsEnd < seqChange.getStart()) return;
 
 		// Base number relative to CDS start
 		int scStart, scEnd;
@@ -64,7 +60,7 @@ public class CodonChangeMnp extends CodonChange {
 
 		// MNP overlap in coding part 
 		int scLen = scEnd - scStart;
-		if (scLen < 0) return changes;
+		if (scLen < 0) return;
 
 		// Round to codon position
 		int scStart3 = round3(scStart, false);
@@ -95,12 +91,10 @@ public class CodonChangeMnp extends CodonChange {
 		codonsNew += padN;
 
 		// Create change effect
-		ChangeEffect changeEffectNew = changeEffect.clone();
-		changeEffectNew.set(transcript, EffectType.CODON_CHANGE, "");
-		changeEffectNew.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
-		changes.add(changeEffectNew);
+		changeEffects.add(transcript, EffectType.CODON_CHANGE, "");
+		changeEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 
-		return changes;
+		return;
 	}
 
 	/**

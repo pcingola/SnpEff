@@ -2,10 +2,9 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.util.KeyValue;
 
 /**
@@ -51,10 +50,10 @@ public class Custom extends Marker implements Iterable<KeyValue<String, String>>
 	}
 
 	@Override
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffec) {
-		if (!intersects(seqChange)) return ChangeEffect.emptyResults(); // Sanity check
-		changeEffec.set(this, EffectType.CUSTOM, label);
-		return changeEffec.newList();
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffecs) {
+		if (!intersects(seqChange)) return false; // Sanity check
+		changeEffecs.add(this, EffectType.CUSTOM, label);
+		return true;
 	}
 
 	public void setLabel(String label) {

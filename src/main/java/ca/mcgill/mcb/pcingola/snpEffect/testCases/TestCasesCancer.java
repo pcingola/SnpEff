@@ -46,7 +46,7 @@ public class TestCasesCancer extends TestCase {
 		for (VcfEntry vcfEntry : list) {
 			for (VcfEffect eff : vcfEntry.parseEffects()) {
 				if (genotype.equals(eff.getGenotype())) {
-					Gpr.debug("AA: " + eff.getAa() + "\t" + eff.getGenotype() + "\t" + eff);
+					if (debug) Gpr.debug("AA: " + eff.getAa() + "\t" + eff.getGenotype() + "\t" + eff);
 					Assert.assertEquals(aaHgsv, eff.getAa());
 					found = true;
 				}

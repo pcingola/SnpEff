@@ -1,6 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
@@ -13,6 +12,7 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
@@ -159,14 +159,15 @@ public class TestCasesSnp extends TestCase {
 						if (!seqChange.isChange()) effectExpected = "EXON";
 
 						// Calculate effects
-						List<ChangeEffect> effects = snpEffectPredictor.seqChangeEffect(seqChange);
+						ChangeEffects effects = snpEffectPredictor.seqChangeEffect(seqChange);
 
 						// There should be only one effect
+						if (debug) System.out.println(effects);
 						Assert.assertEquals(true, effects.size() <= 1);
 
 						// Show
 						if (effects.size() == 1) {
-							ChangeEffect effect = effects.get(0);
+							ChangeEffect effect = effects.get();
 							String effStr = effect.effect(true, true, true, false);
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
@@ -177,10 +178,6 @@ public class TestCasesSnp extends TestCase {
 
 							// Check effect
 							Assert.assertEquals(effectExpected, effStr);
-
-							// Check warnings
-							// if (!effect.getWarning().isEmpty()) Gpr.debug("WARN:" + effect.getWarning() + "\t" + seqChange + "\t" + seqChangeStrand);
-							// Assert.assertEquals(true, effect.getWarning().isEmpty());
 						}
 					}
 				}

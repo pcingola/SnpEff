@@ -1,12 +1,10 @@
 package ca.mcgill.mcb.pcingola.interval;
 
-import java.util.List;
-
 import ca.mcgill.mcb.pcingola.motif.Pwm;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
@@ -98,19 +96,19 @@ public class Motif extends Marker {
 	/**
 	 * Calculate the effect of this seqChange
 	 * @param seqChange
-	 * @param changeEffect
+	 * @param changeEffects
 	 * @return
 	 */
 	@Override
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffect) {
-		if (!intersects(seqChange)) return ChangeEffect.emptyResults(); // Sanity check
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+		if (!intersects(seqChange)) return false;// Sanity check
 		EffectType effType = EffectType.MOTIF;
-		changeEffect.set(this, effType, "");
+		changeEffects.add(this, effType, "");
 
 		// Calculate impact
-		changeEffect.setEffectImpact(effectImpact(seqChange));
+		changeEffects.setEffectImpact(effectImpact(seqChange));
 
-		return changeEffect.newList();
+		return true;
 	}
 
 	@Override

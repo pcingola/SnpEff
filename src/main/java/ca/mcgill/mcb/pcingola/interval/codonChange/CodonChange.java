@@ -1,13 +1,11 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.WarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
 /**
  * Analyze codon changes based on a SeqChange and a Transcript
@@ -25,7 +23,7 @@ public class CodonChange {
 	SeqChange seqChange;
 	Transcript transcript;
 	Exon exon = null;
-	ChangeEffect changeEffect;
+	ChangeEffects changeEffects;
 	int codonNum = -1;
 	int codonIndex = -1;
 	String codonsOld = ""; // Old codons (before change)
@@ -34,10 +32,10 @@ public class CodonChange {
 	String aaNew = ""; // New amino acids (after change)
 	String netCdsChange = "";
 
-	public CodonChange(SeqChange seqChange, Transcript transcript, ChangeEffect changeEffect) {
+	public CodonChange(SeqChange seqChange, Transcript transcript, ChangeEffects changeEffects) {
 		this.seqChange = seqChange;
 		this.transcript = transcript;
-		this.changeEffect = changeEffect;
+		this.changeEffects = changeEffects;
 	}
 
 	/**
@@ -47,35 +45,19 @@ public class CodonChange {
 	 * @param changeEffect
 	 * @return
 	 */
-	public List<ChangeEffect> calculate() {
-		ArrayList<ChangeEffect> changes = new ArrayList<ChangeEffect>();
-
+	public void calculate() {
 		// Split each seqChange into it's multiple options
 		for (int i = 0; i < seqChange.getChangeOptionCount(); i++) {
-			ChangeEffect changeEffectNew = changeEffect.clone(); // Create a copy of this result
-
 			// Create a new SeqChange for this option, calculate codonChange for this seqChangeOption and add result to the list
 			SeqChange seqChangeNew = seqChange.getSeqChangeOption(i);
 			if (seqChangeNew != null) {
 				// Create a specific codon change and calculate changes
-				CodonChange codonChange = factory(seqChangeNew, transcript, changeEffectNew);
-				changes.addAll(codonChange.codonChange()); // Calculate codon change and add them to the list
+				CodonChange codonChange = factory(seqChangeNew, transcript, changeEffects);
+				codonChange.codonChange(); // Calculate codon change and add them to the list
 			}
 		}
 
-		//---
-		// Should we add any warnings?
-		//---
-		WarningType warn = null;
-		if (transcript.isErrorProteinLength()) warn = WarningType.WARNING_TRANSCRIPT_INCOMPLETE;
-		else if (transcript.isErrorStopCodonsInCds()) warn = WarningType.WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS;
-		else if (transcript.isErrorStartCodon()) warn = WarningType.WARNING_TRANSCRIPT_NO_START_CODON;
-
-		// Add warning
-		if (warn != null) for (ChangeEffect cheff : changes)
-			cheff.addWarning(warn);
-
-		return changes;
+		return;
 	}
 
 	/**
@@ -106,11 +88,8 @@ public class CodonChange {
 	 * Calculate a list of codon changes
 	 * @return
 	 */
-	List<ChangeEffect> codonChange() {
-		ArrayList<ChangeEffect> changes = new ArrayList<ChangeEffect>();
-		if (!transcript.intersects(seqChange)) return changes;
-
-		List<Exon> exons = transcript.sortedStrand();
+	void codonChange() {
+		if (!transcript.intersects(seqChange)) return;
 
 		// Get coding start (after 5 prime UTR)
 		int cdsStart = transcript.getCdsStart();
@@ -122,6 +101,7 @@ public class CodonChange {
 		// Concatenate all exons
 		//---
 		int firstCdsBaseInExon = 0; // Where the exon maps to the CDS (i.e. which CDS base number does the first base in this exon maps to).
+		List<Exon> exons = transcript.sortedStrand();
 		for (Exon exon : exons) {
 			this.exon = exon;
 			if (exon.intersects(seqChange)) {
@@ -143,35 +123,30 @@ public class CodonChange {
 
 				// Use appropriate method to calculate codon change
 				boolean hasChanged = false; // Was there any change?
-				ChangeEffect changeEffectNew = changeEffect.clone();
-				changeEffectNew.setMarker(exon); // It is affecting this exon, so we set the marker
-				hasChanged = codonChangeSingle(changeEffectNew, exon);
+				hasChanged = codonChangeSingle(exon);
 
 				// Any change? => Add change to list
 				if (hasChanged) {
-					codonsAround(seqChange, changeEffectNew, codonNum); // Show codons around change (if required)
-					changes.add(changeEffectNew);
-
-					// Check that reference bases (in seqChange) match reference genome
-					if (exon != null) exon.check(seqChange, changeEffectNew);
+					changeEffects.setMarker(exon); // It is affecting this exon, so we set the marker
+					codonsAround(seqChange, codonNum); // Show codons around change (if required)
 				}
 
 				// Can we return immediately?
-				if (returnNow) return changes;
+				if (returnNow) return;
 			}
 
 			if (transcript.isStrandPlus()) firstCdsBaseInExon += Math.max(0, exon.getEnd() - Math.max(exon.getStart(), cdsStart) + 1);
 			else firstCdsBaseInExon += Math.max(0, Math.min(cdsStart, exon.getEnd()) - exon.getStart() + 1);
 		}
 
-		return changes;
+		return;
 	}
 
 	/**
 	 * Calculate the effect of a single change type: SNP, MNP, INS, DEL
 	 * @return
 	 */
-	boolean codonChangeSingle(ChangeEffect changeEffect, Exon exon) {
+	boolean codonChangeSingle(Exon exon) {
 		throw new RuntimeException("Unimplemented method for this thype of seqChange: " + seqChange.getType());
 	}
 
@@ -181,7 +156,7 @@ public class CodonChange {
 	 * @param changeEffect
 	 * @param codonNum
 	 */
-	void codonsAround(SeqChange seqChange, ChangeEffect changeEffect, int codonNum) {
+	void codonsAround(SeqChange seqChange, int codonNum) {
 		if (SHOW_CODONS_AROUND_CHANGE <= 0) return; // Nothing to do?
 
 		String cdsSeq = transcript.cds();
@@ -197,7 +172,7 @@ public class CodonChange {
 		String codonsLeft = cdsSeq.substring(codonMinBasePos, codonStartBasePos);
 		String codonsRight = cdsSeq.substring(codonEndBasePos, codonMaxBasePos);
 
-		changeEffect.setCodonsAround(codonsLeft, codonsRight);
+		changeEffects.setCodonsAround(codonsLeft, codonsRight);
 	}
 
 	/**
@@ -245,15 +220,15 @@ public class CodonChange {
 	 * Create a specific codon change for a seqChange
 	 * @param seqChange
 	 * @param transcript
-	 * @param changeEffect
+	 * @param changeEffects
 	 * @return
 	 */
-	CodonChange factory(SeqChange seqChange, Transcript transcript, ChangeEffect changeEffect) {
-		if (seqChange.isSnp()) return new CodonChangeSnp(seqChange, transcript, changeEffect);
-		if (seqChange.isIns()) return new CodonChangeIns(seqChange, transcript, changeEffect);
-		if (seqChange.isDel()) return new CodonChangeDel(seqChange, transcript, changeEffect);
-		if (seqChange.isMnp()) return new CodonChangeMnp(seqChange, transcript, changeEffect);
-		if (seqChange.isInterval()) return new CodonChangeInterval(seqChange, transcript, changeEffect);
+	CodonChange factory(SeqChange seqChange, Transcript transcript, ChangeEffects changeEffects) {
+		if (seqChange.isSnp()) return new CodonChangeSnp(seqChange, transcript, changeEffects);
+		if (seqChange.isIns()) return new CodonChangeIns(seqChange, transcript, changeEffects);
+		if (seqChange.isDel()) return new CodonChangeDel(seqChange, transcript, changeEffects);
+		if (seqChange.isMnp()) return new CodonChangeMnp(seqChange, transcript, changeEffects);
+		if (seqChange.isInterval()) return new CodonChangeInterval(seqChange, transcript, changeEffects);
 		throw new RuntimeException("Unimplemented factory for SeqChange: " + seqChange);
 	}
 

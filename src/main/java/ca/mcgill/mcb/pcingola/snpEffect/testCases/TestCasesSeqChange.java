@@ -17,6 +17,7 @@ import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryGtf22;
@@ -71,14 +72,13 @@ public class TestCasesSeqChange extends TestCase {
 	 * Compare each result. If one matches, we consider it OK
 	 * @param transcriptId
 	 * @param seqChange
-	 * @param resultsList
+	 * @param changeEffects
 	 * @param useSimple
 	 * @param resultsSoFar
 	 * @return
 	 */
-	boolean anyResultMatches(String transcriptId, SeqChange seqChange, List<ChangeEffect> resultsList, boolean useShort) {
-		boolean ok = false;
-		for (ChangeEffect chEff : resultsList) {
+	boolean anyResultMatches(String transcriptId, SeqChange seqChange, ChangeEffects changeEffects, boolean useShort) {
+		for (ChangeEffect chEff : changeEffects) {
 			String resStr = chEff.toStringSimple(useShort);
 
 			Transcript tr = chEff.getTranscript();
@@ -88,7 +88,7 @@ public class TestCasesSeqChange extends TestCase {
 				}
 			} else if (resStr.indexOf(seqChange.getId()) >= 0) return true; // Matches any result (out of a transcript)
 		}
-		return ok;
+		return false;
 	}
 
 	void initRand() {
@@ -135,26 +135,26 @@ public class TestCasesSeqChange extends TestCase {
 		// Predict each seqChange
 		for (SeqChange seqChange : seqChangeList) {
 			// Get results for each snp
-			List<ChangeEffect> resultsList = config.getSnpEffectPredictor().seqChangeEffect(seqChange);
+			ChangeEffects results = config.getSnpEffectPredictor().seqChangeEffect(seqChange);
 
 			String msg = "";
 			msg += "Number : " + num + "\n";
 			msg += "\tExpecting   : " + (negate ? "NOT " : "") + "'" + seqChange.getId() + "'\n";
 			msg += "\tSeqChange   : " + seqChange + "\n";
 			msg += "\tResultsList :\n";
-			for (ChangeEffect res : resultsList)
+			for (ChangeEffect res : results)
 				msg += "\t" + res + "\n";
 
 			if (verbose) System.out.println(msg);
 
 			// Compare each result. If one matches, we consider it OK
 			// StringBuilder resultsSoFar = new StringBuilder();
-			boolean ok = anyResultMatches(transcriptId, seqChange, resultsList, useShort);
+			boolean ok = anyResultMatches(transcriptId, seqChange, results, useShort);
 			ok = negate ^ ok; // Negate? (i.e. when we are looking for effects that should NOT be matched)
 
 			if (!ok) {
 				if (createOutputFile) {
-					for (ChangeEffect res : resultsList) {
+					for (ChangeEffect res : results) {
 						SeqChange sc = res.getSeqChange();
 						System.out.println(sc.getChromosomeName() //
 								+ "\t" + (sc.getStart() + 1) //

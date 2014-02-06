@@ -1,9 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval;
 
-import java.util.List;
-
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
 /**
  * Interval for a gene, as well as some other information: exons, utrs, cds, etc.
@@ -39,12 +37,12 @@ public class Downstream extends Marker {
 	}
 
 	@Override
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffect) {
-		if (!intersects(seqChange)) return ChangeEffect.emptyResults(); // Sanity check
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+		if (!intersects(seqChange)) return false; // Sanity check
 		int distance = distanceToTr(seqChange);
-		changeEffect.set(this, EffectType.DOWNSTREAM, distance + " bases");
-		changeEffect.setDistance(distance);
-		return changeEffect.newList();
+		changeEffects.add(this, EffectType.DOWNSTREAM, distance + " bases");
+		changeEffects.setDistance(distance);
+		return true;
 	}
 
 }

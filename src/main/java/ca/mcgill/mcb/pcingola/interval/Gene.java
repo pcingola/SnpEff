@@ -2,12 +2,11 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.stats.ObservedOverExpectedCpG;
 
 /**
@@ -213,36 +212,25 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 * @return
 	 */
 	@Override
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffect, SeqChange seqChangerRef) {
-		if (!intersects(seqChange)) return ChangeEffect.emptyResults(); // Sanity check
-
-		changeEffect.set(this, EffectType.GENE, "");
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects, SeqChange seqChangerRef) {
+		if (!intersects(seqChange)) return false; // Sanity check
 
 		boolean hitTranscript = false;
-
-		ArrayList<ChangeEffect> changeEffectList = new ArrayList<ChangeEffect>();
 		for (Transcript tr : this) {
-			ChangeEffect chEff = changeEffect.clone();
-
 			// Apply sequence change to create new 'reference'?
 			if (seqChangerRef != null) tr = tr.apply(seqChangerRef);
 
 			// Calculate effects
-			List<ChangeEffect> chEffList = tr.seqChangeEffect(seqChange, chEff);
-
-			if (!chEffList.isEmpty()) {
-				changeEffectList.addAll(chEffList);
-				hitTranscript = true; // Did we hit any transcript?
-			}
+			hitTranscript = tr.seqChangeEffect(seqChange, changeEffects);
 		}
 
 		// May be none of the transcripts are actually hit 
 		if (!hitTranscript) {
-			changeEffect.set(this, EffectType.INTRAGENIC, "");
-			return changeEffect.newList();
+			changeEffects.add(this, EffectType.INTRAGENIC, "");
+			return true;
 		}
 
-		return changeEffectList;
+		return true;
 	}
 
 	/**

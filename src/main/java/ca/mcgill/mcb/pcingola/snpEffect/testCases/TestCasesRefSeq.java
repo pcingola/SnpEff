@@ -1,7 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -12,6 +11,7 @@ import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRefSeq;
@@ -100,7 +100,7 @@ public class TestCasesRefSeq extends TestCase {
 		// Check a SNP
 		sep.buildForest();
 		SeqChange seqChange = new SeqChange(sep.getGenome().getChromosome("1"), 521603, "A", "G", 1, "", 1, 1);
-		List<ChangeEffect> effs = sep.seqChangeEffect(seqChange);
+		ChangeEffects effs = sep.seqChangeEffect(seqChange);
 		for (ChangeEffect eff : effs) {
 			System.out.println("\t" + eff);
 			Assert.assertEquals(eff.getEffectType(), EffectType.INTERGENIC);

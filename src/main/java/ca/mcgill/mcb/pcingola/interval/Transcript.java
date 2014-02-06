@@ -7,8 +7,9 @@ import java.util.Map;
 
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.stats.ObservedOverExpectedCpG;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -136,18 +137,22 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean adjust() {
 		boolean changed = false;
 		int strandSumTr = 0;
-		int newStart = start, newEnd = end;
-		if (newStart == 0 && newEnd == 0) {
-			newStart = Integer.MAX_VALUE;
-			newEnd = Integer.MIN_VALUE;
-		}
+		int newStart = Integer.MAX_VALUE;
+		int newEnd = Integer.MIN_VALUE;
+
+		// int newStart = start, newEnd = end;
+		//		
+		//		if (newStart == 0 && newEnd == 0) {
+		//			newStart = Integer.MAX_VALUE;
+		//			newEnd = Integer.MIN_VALUE;
+		//		}
 
 		int countStrandPlus = 0, countStrandMinus = 0;
 		for (Exon exon : sortedStrand()) {
 			newStart = Math.min(newStart, exon.getStart());
 			newEnd = Math.max(newEnd, exon.getEnd());
 
-			// Conun exon strands
+			// Common exon strand
 			if (exon.getStrand() > 0) countStrandPlus++;
 			else if (exon.getStrand() < 0) countStrandMinus++;
 		}
@@ -166,7 +171,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Change transcript strand?
 		if (strand != newStrand) {
 			changed = true;
-			setStart(newStrand); // Change strand
+			setStrand(newStrand); // Change strand
 		}
 
 		// Change start?
@@ -1345,16 +1350,25 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
+	 * Perfom some baseic chekcs, return error type, if any
+	 * @param seqChange
+	 * @return
+	 */
+	public ErrorWarningType sanityCheck(SeqChange seqChange) {
+		if (isErrorProteinLength()) return ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE;
+		else if (isErrorStopCodonsInCds()) return ErrorWarningType.WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS;
+		else if (isErrorStartCodon()) return ErrorWarningType.WARNING_TRANSCRIPT_NO_START_CODON;
+		return null;
+	}
+
+	/**
 	 * Get some details about the effect on this transcript
 	 * @param seqChange
 	 * @return
 	 */
 	@Override
-	public List<ChangeEffect> seqChangeEffect(SeqChange seqChange, ChangeEffect changeEffect) {
-		if (!intersects(seqChange)) return ChangeEffect.emptyResults(); // Sanity check
-
-		// Create a list of changes
-		ArrayList<ChangeEffect> changeEffectList = new ArrayList<ChangeEffect>();
+	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffectList) {
+		if (!intersects(seqChange)) return false; // Sanity check
 
 		//---
 		// Hits a UTR region?
@@ -1363,11 +1377,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Utr utr : utrs)
 			if (utr.intersects(seqChange)) {
 				// Calculate the effect
-				List<ChangeEffect> chEffList = utr.seqChangeEffect(seqChange, changeEffect.clone());
-				if (!chEffList.isEmpty()) changeEffectList.addAll(chEffList);
+				utr.seqChangeEffect(seqChange, changeEffectList);
 				included |= utr.includes(seqChange); // Is this seqChange fully included in the UTR?
 			}
-		if (included) return changeEffectList; // SeqChange fully included in the UTR? => We are done.
+		if (included) return true; // SeqChange fully included in the UTR? => We are done.
 
 		//---
 		// Hits a SpliceSiteBranch region?
@@ -1376,21 +1389,18 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (SpliceSiteBranch ssbranch : spliceBranchSites)
 			if (ssbranch.intersects(seqChange)) {
 				// Calculate the effect
-				List<ChangeEffect> chEffList = ssbranch.seqChangeEffect(seqChange, changeEffect.clone());
-				if (!chEffList.isEmpty()) changeEffectList.addAll(chEffList);
+				ssbranch.seqChangeEffect(seqChange, changeEffectList);
 				included |= ssbranch.includes(seqChange); // Is this seqChange fully included branch site?
 			}
-		if (included) return changeEffectList; // SeqChange fully included in the Branch site? => We are done.
+		if (included) return true; // SeqChange fully included in the Branch site? => We are done.
 
 		// Does it hit an intron?
 		for (Intron intron : introns())
 			if (intron.intersects(seqChange)) {
-				ChangeEffect cheff = changeEffect.clone();
-				cheff.set(intron, EffectType.INTRON, "");
-				changeEffectList.add(cheff);
+				changeEffectList.add(intron, EffectType.INTRON, "");
 				included |= intron.includes(seqChange); // Is this seqChange fully included in this intron?
 			}
-		if (included) return changeEffectList; // SeqChange fully included? => We are done.
+		if (included) return true; // SeqChange fully included? => We are done.
 
 		//---
 		// Analyze non-coding transcripts (or 'interval' seqChanges)
@@ -1399,21 +1409,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			// Do we have exon information for this transcript?
 			if (!subintervals().isEmpty()) {
 				// Add all exons
-				for (Exon exon : this) {
-					if (exon.intersects(seqChange)) {
-						ChangeEffect cheff = changeEffect.clone();
-						cheff.set(exon, EffectType.EXON, "");
-						changeEffectList.add(cheff);
-					}
-				}
-			} else {
-				// No exons annotated? Just mark it as hitting a transcript
-				ChangeEffect cheff = changeEffect.clone();
-				cheff.set(this, EffectType.TRANSCRIPT, "");
-				changeEffectList.add(cheff);
-			}
+				for (Exon exon : this)
+					if (exon.intersects(seqChange)) changeEffectList.add(exon, EffectType.EXON, "");
+			} else changeEffectList.add(this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
 
-			return changeEffectList;
+			// Ok, we are done
+			return true;
 		}
 
 		//---
@@ -1422,11 +1423,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		//---
 		if (isCds(seqChange)) {
 			// Get codon change effect 
-			CodonChange codonChange = new CodonChange(seqChange, this, changeEffect);
-			changeEffectList.addAll(codonChange.calculate());
+			CodonChange codonChange = new CodonChange(seqChange, this, changeEffectList);
+			codonChange.calculate();
+			return true;
 		}
 
-		return changeEffectList;
+		return false;
 	}
 
 	/**
