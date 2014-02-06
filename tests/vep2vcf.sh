@@ -1,8 +1,8 @@
 #!/bin/sh
 
-tr="ENST00000268124"
-base="testENST00000268124.Ins.ORI.03"
-out="testENST00000268124.Ins.03"
+tr="ENST00000398332"
+base="testENST00000398332.Ins.ORI.04"
+out="testENST00000398332.Ins.04"
 
 # Sort by position
 cat $base.vcf |  sort -k 1n,1n -k 2n,2n | cut -f 1-8 > tmp.vcf
