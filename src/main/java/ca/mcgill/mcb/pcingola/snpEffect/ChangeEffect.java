@@ -125,7 +125,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 			case INTERGENIC_CONSERVED:
 			case INTERGENIC:
-				return "intergenic_region";
+				return "intergenic_variant";
 
 			case UPSTREAM:
 				return "upstream_gene_variant";
@@ -134,7 +134,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				return "5_prime_UTR_variant";
 
 			case UTR_5_DELETED:
-				return "five_prime_UTR";
+				return "5_prime_UTR_variant+exon_loss";
 
 			case SPLICE_SITE_ACCEPTOR:
 				return "splice_acceptor_variant";
@@ -155,7 +155,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				return "initiator_codon_variant";
 
 			case SYNONYMOUS_START:
-				return "initiator_codon_variant";
+				return "initiator_codon_variant+non_canonical_start_codon";
 
 			case NON_SYNONYMOUS_START:
 				return "initiator_codon_variant";
@@ -164,10 +164,10 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				return "nc_transcript_variant";
 
 			case EXON:
-				return "non_coding_exon_variant";
+				return "non_coding_transcript_exon_variant";
 
 			case EXON_DELETED:
-				return "exon_lost";
+				return "exon_loss_variant";
 
 			case NON_SYNONYMOUS_CODING:
 				return "missense_variant";
@@ -185,13 +185,13 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				return "inframe_insertion";
 
 			case CODON_CHANGE_PLUS_CODON_INSERTION:
-				return "inframe_insertion";
+				return "inframe_variant+inframe_insertion";
 
 			case CODON_DELETION:
 				return "inframe_deletion";
 
 			case CODON_CHANGE_PLUS_CODON_DELETION:
-				return "inframe_deletion";
+				return "inframe_variant+inframe_deletion";
 
 			case STOP_GAINED:
 				return "stop_gained";
@@ -209,6 +209,8 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				return "intron_variant";
 
 			case UTR_3_DELETED:
+				return "3_prime_UTR_variant+exon_loss";
+
 			case UTR_3_PRIME:
 				return "3_prime_UTR_variant";
 
@@ -219,7 +221,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				return "intron_variant";
 
 			case INTRAGENIC:
-				return "intragenic_variant";
+				return "INTRAGENIC";
 
 			case REGULATION:
 				return "regulatory_region_variant";
@@ -234,6 +236,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				return "5_prime_UTR_premature_start_codon_gain_variant";
 
 			case MICRO_RNA:
+				return "miRNA";
 			case NONE:
 			case GENE:
 			case GENOME:
