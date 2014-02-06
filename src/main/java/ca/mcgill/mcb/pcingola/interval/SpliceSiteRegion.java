@@ -1,7 +1,6 @@
 package ca.mcgill.mcb.pcingola.interval;
 
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Interval for a splice site acceptor
@@ -24,7 +23,6 @@ public class SpliceSiteRegion extends SpliceSite {
 	public SpliceSiteRegion(Exon parent, int start, int end, int strand, String id) {
 		super(parent, start, end, strand, id);
 		type = EffectType.SPLICE_SITE_REGION;
-		Gpr.debug(this);
 	}
 
 	public SpliceSiteRegion(Intron parent, int start, int end, int strand, String id) {

@@ -37,8 +37,8 @@ public class CodonChangeIns extends CodonChange {
 			 * 		Insert 'TT' pos 1:	ATT AAC CCG GGA AAC CCG GGA AAC CCG GG
 			 * 		Insert 'TT' pos 2:	AAT TAC CCG GGA AAC CCG GGA AAC CCG GG
 			 */
-			changeEffect.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 			changeEffect.set(exon, EffectType.FRAME_SHIFT, "");
+			changeEffect.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 		} else if (codonIndex == 0) {
 			/**
 			 * Length multiple of CODON_SIZE and insertion happens at codon boundary => CODON_INSERTION
@@ -56,9 +56,6 @@ public class CodonChangeIns extends CodonChange {
 			 * 		Insert 'TTT' pos 1:	ATT TAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Insert 'TTT' pos 2:	AAT TTA CCC GGG AAA CCC GGG AAA CCC GGG
 			 */
-			codonsOld = codonsOld();
-			codonsNew = codonsNew();
-
 			if (codonsNew.toUpperCase().startsWith(codonsOld.toUpperCase())) {
 				/**
 				 *  May be the inserted base are equal to the old ones.

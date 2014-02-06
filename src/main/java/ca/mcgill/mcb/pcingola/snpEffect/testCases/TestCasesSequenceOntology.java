@@ -50,7 +50,8 @@ public class TestCasesSequenceOntology extends TestCase {
 							String ref = e.basesAt(idx, 1);
 							String alt = ref + GprSeq.randSequence(rand, insLen);
 
-							String line = e.getChromosomeName() + "\t" + i + "\t.\t" + ref + "\t" + alt + "\t.\t.\tAC=1\tGT\t0/1";
+							int pos = i + 1;
+							String line = e.getChromosomeName() + "\t" + pos + "\t.\t" + ref + "\t" + alt + "\t.\t.\tAC=1\tGT\t0/1";
 							System.out.println(line);
 							out.append(line + "\n");
 							count++;
@@ -185,8 +186,9 @@ public class TestCasesSequenceOntology extends TestCase {
 	//	}
 
 	public void test_04_Vep() throws IOException {
-		//		create_Ins_file("testENST00000398332", "./tests/testENST00000398332.Ins.ORI.04.vcf", 0.95);
-		compareVepSO("testENST00000398332", "tests/testENST00000398332.Ins.04.vcf", "ENST00000398332");
+		create_Ins_file("testENST00000398332", "./tests/testENST00000398332.Ins.ORI.04.vcf", 0.95);
+		//		compareVepSO("testENST00000398332", "tests/testENST00000398332.Ins.04.vcf", "ENST00000398332");
+		compareVepSO("testENST00000398332", "tests/zzz.vcf", "ENST00000398332");
 	}
 
 }
