@@ -8435,6 +8435,7 @@ testHg3773Chr3 	 TestCase   testHg3773Chr3
 testEmblPberghei 	 Test_Embl_Pberghei   testEmblPberghei
 testEgrandis 	 Test   testEgrandis
 testENST00000268124 	 Test   testENST00000268124
+testENST00000398332 	 Test   testENST00000398332
 GCA_000283615.1.18 	 Tetragenococcus_halophilus_nbrc_12172   GCA_000283615.1.18
 Tetragenococcus_halophilus_uid74441 	 Tetragenococcus_halophilus_uid74441   Tetragenococcus_halophilus_uid74441
 TETRAODON8.64 	 Tetraodon_nigroviridis   TETRAODON8.64
