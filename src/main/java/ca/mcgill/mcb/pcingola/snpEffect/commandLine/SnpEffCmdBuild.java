@@ -86,14 +86,14 @@ public class SnpEffCmdBuild extends SnpEff {
 	SnpEffectPredictor createSnpEffPredictor() {
 		// Create factory
 		SnpEffPredictorFactory factory = null;
-		if (geneDatabaseFormat == GeneDatabaseFormat.GTF22) factory = new SnpEffPredictorFactoryGtf22(config, inOffset);
-		else if (geneDatabaseFormat == GeneDatabaseFormat.GFF3) factory = new SnpEffPredictorFactoryGff3(config, inOffset);
-		else if (geneDatabaseFormat == GeneDatabaseFormat.GFF2) factory = new SnpEffPredictorFactoryGff2(config, inOffset);
+		if (geneDatabaseFormat == GeneDatabaseFormat.GTF22) factory = new SnpEffPredictorFactoryGtf22(config);
+		else if (geneDatabaseFormat == GeneDatabaseFormat.GFF3) factory = new SnpEffPredictorFactoryGff3(config);
+		else if (geneDatabaseFormat == GeneDatabaseFormat.GFF2) factory = new SnpEffPredictorFactoryGff2(config);
 		else if (geneDatabaseFormat == GeneDatabaseFormat.REFSEQ) factory = new SnpEffPredictorFactoryRefSeq(config);
 		else if (geneDatabaseFormat == GeneDatabaseFormat.KNOWN_GENES) factory = new SnpEffPredictorFactoryKnownGene(config);
 		else if (geneDatabaseFormat == GeneDatabaseFormat.GENBANK) factory = new SnpEffPredictorFactoryGenBank(config);
 		else if (geneDatabaseFormat == GeneDatabaseFormat.EMBL) factory = new SnpEffPredictorFactoryEmbl(config);
-		else if (geneDatabaseFormat == GeneDatabaseFormat.BIOMART) factory = new SnpEffPredictorFactoryGenesFile(config, inOffset);
+		else if (geneDatabaseFormat == GeneDatabaseFormat.BIOMART) factory = new SnpEffPredictorFactoryGenesFile(config);
 		else throw new RuntimeException("Unimplemented format " + geneDatabaseFormat);
 
 		// Create SnpEffPredictor
@@ -113,43 +113,19 @@ public class SnpEffCmdBuild extends SnpEff {
 
 			// Argument starts with '-'?
 			if (args[i].startsWith("-")) {
-				if ((args[i].equals("-c") || args[i].equalsIgnoreCase("-config"))) {
-					if ((i + 1) < args.length) configFile = args[++i];
-					else usage("Option '-c' without config file argument");
-				} else if (args[i].equalsIgnoreCase("-gff3")) {
-					geneDatabaseFormat = GeneDatabaseFormat.GFF3;
-					inOffset = outOffset = 1; // This command implies '-1' since GFF coordinates are one-based
-				} else if (args[i].equalsIgnoreCase("-gff2")) {
-					geneDatabaseFormat = GeneDatabaseFormat.GFF2;
-					inOffset = outOffset = 1; // This command implies '-1' since GFF coordinates are one-based
-				} else if (args[i].equalsIgnoreCase("-gtf22")) {
-					geneDatabaseFormat = GeneDatabaseFormat.GTF22;
-					inOffset = outOffset = 1; // This command implies '-1' since GFF coordinates are one-based
-				} else if (args[i].equalsIgnoreCase("-refseq")) {
-					geneDatabaseFormat = GeneDatabaseFormat.REFSEQ;
-					inOffset = outOffset = 0; // This command implies '-0' since UCSC files are zero-based
-				} else if (args[i].equalsIgnoreCase("-genbank")) {
-					geneDatabaseFormat = GeneDatabaseFormat.GENBANK;
-					inOffset = outOffset = 1; // This command implies '-1' since GenBank files are one-based
-				} else if (args[i].equalsIgnoreCase("-knowngenes")) {
-					geneDatabaseFormat = GeneDatabaseFormat.KNOWN_GENES;
-					inOffset = outOffset = 1; // This command implies '-1' since GenBank files are one-based
-				} else if (args[i].equalsIgnoreCase("-embl")) {
-					geneDatabaseFormat = GeneDatabaseFormat.EMBL;
-					inOffset = outOffset = 1; // This command implies '-1' since GenBank files are one-based
-				} else if (args[i].equalsIgnoreCase("-txt")) {
-					geneDatabaseFormat = GeneDatabaseFormat.BIOMART;
-				} else if (args[i].equalsIgnoreCase("-onlyReg")) {
-					onlyRegulation = true;
-				} else if (args[i].equalsIgnoreCase("-cellType")) {
+				if (args[i].equalsIgnoreCase("-gff3")) geneDatabaseFormat = GeneDatabaseFormat.GFF3;
+				else if (args[i].equalsIgnoreCase("-gff2")) geneDatabaseFormat = GeneDatabaseFormat.GFF2;
+				else if (args[i].equalsIgnoreCase("-gtf22")) geneDatabaseFormat = GeneDatabaseFormat.GTF22;
+				else if (args[i].equalsIgnoreCase("-refseq")) geneDatabaseFormat = GeneDatabaseFormat.REFSEQ;
+				else if (args[i].equalsIgnoreCase("-genbank")) geneDatabaseFormat = GeneDatabaseFormat.GENBANK;
+				else if (args[i].equalsIgnoreCase("-knowngenes")) geneDatabaseFormat = GeneDatabaseFormat.KNOWN_GENES;
+				else if (args[i].equalsIgnoreCase("-embl")) geneDatabaseFormat = GeneDatabaseFormat.EMBL;
+				else if (args[i].equalsIgnoreCase("-txt")) geneDatabaseFormat = GeneDatabaseFormat.BIOMART;
+				else if (args[i].equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
+				else if (args[i].equalsIgnoreCase("-cellType")) {
 					if ((i + 1) < args.length) cellType = args[++i];
-				} else if ((args[i].equals("-if") || args[i].equalsIgnoreCase("-inOffset"))) {
-					if ((i + 1) < args.length) inOffset = Gpr.parseIntSafe(args[++i]);
-				} else if ((args[i].equals("-of") || args[i].equalsIgnoreCase("-outOffset"))) {
-					if ((i + 1) < args.length) outOffset = Gpr.parseIntSafe(args[++i]);
-				} else if (args[i].equals("-1")) inOffset = outOffset = 1;
-				else if (args[i].equals("-0")) inOffset = outOffset = 0;
-				else usage("Unknow option '" + args[i] + "'");
+					else usage("Missing 'cellType' argument");
+				} else usage("Unknow option '" + args[i] + "'");
 			} else if (genomeVer.length() <= 0) genomeVer = args[i];
 			else usage("Unknow parameter '" + args[i] + "'");
 		}

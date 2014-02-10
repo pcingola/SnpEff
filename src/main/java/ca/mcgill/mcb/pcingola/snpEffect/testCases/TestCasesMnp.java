@@ -221,7 +221,7 @@ public class TestCasesMnp extends TestCase {
 		// Create a config and force out snpPredictor for hg37 chromosome Y
 		config = new Config(genomeVer, Config.DEFAULT_CONFIG_FILE);
 
-		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, 1, rand, maxGeneLen, maxTranscripts, maxExons);
+		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
 
 		// Create predictor
 		snpEffectPredictor = sepf.create();

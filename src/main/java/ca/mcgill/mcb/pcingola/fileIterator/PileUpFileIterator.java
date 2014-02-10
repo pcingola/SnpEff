@@ -38,26 +38,26 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class PileUpFileIterator extends SeqChangeFileIterator {
 
-	public PileUpFileIterator(String fileName, Genome genome, int positionBase) {
-		super(fileName, genome, positionBase);
+	public PileUpFileIterator(String fileName, Genome genome) {
+		super(fileName, genome, 1);
 	}
 
 	@Override
 	protected SeqChange readNext() {
 		// Try to read a line
 		try {
-			while(ready()) {
+			while (ready()) {
 				line = readLine();
 
-				if( line == null ) return null; // End of file?
+				if (line == null) return null; // End of file?
 
 				// Ignore empty lines and comment lines
-				if( (line.length() > 0) && (!line.startsWith("#")) ) {
+				if ((line.length() > 0) && (!line.startsWith("#"))) {
 					// Parse line
 					String fields[] = line.split("\\s");
 
 					// Is line OK?
-					if( fields.length >= 4 ) {
+					if (fields.length >= 4) {
 						String chromosome = fields[0].trim();
 						Chromosome chromo = getChromosome(chromosome);
 						sanityCheckChromo(chromosome, chromo); // Sanity check
@@ -73,7 +73,7 @@ public class PileUpFileIterator extends SeqChangeFileIterator {
 					}
 				}
 			}
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		return null;

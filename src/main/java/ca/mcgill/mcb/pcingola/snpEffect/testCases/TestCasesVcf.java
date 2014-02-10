@@ -11,6 +11,8 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -413,6 +415,26 @@ public class TestCasesVcf extends TestCase {
 
 			Assert.assertEquals(seqChangeExpected, seqChangeResult.toString());
 		}
+	}
+
+	public void test_17_vcf_bed_filter() {
+		String vcfFile = "tests/test_vcf_filter.vcf";
+		String bedFile = "tests/test_vcf_filter.bed";
+
+		String args[] = { "-v", "-filterinterval", bedFile, "testHg3771Chr1", vcfFile };
+		SnpEff snpeff = new SnpEff(args);
+
+		// Create command and run
+		SnpEffCmdEff effcmd = (SnpEffCmdEff) snpeff.snpEffCmd();
+		List<VcfEntry> vcfEntries = effcmd.run(true);
+
+		// All VCF entries should be filtered out
+		Gpr.debug("Vcf entries: " + vcfEntries.size());
+		Assert.assertEquals(0, vcfEntries.size());
+
+		// Nothing should be printed
+		for (VcfEntry ve : vcfEntries)
+			System.out.println(ve);
 	}
 
 }

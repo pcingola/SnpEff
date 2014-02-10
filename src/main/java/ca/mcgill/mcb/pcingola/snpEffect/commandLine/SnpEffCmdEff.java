@@ -186,8 +186,8 @@ public class SnpEffCmdEff extends SnpEff {
 
 		// Create an input file iterator
 		SeqChangeFileIterator seqChangeFileIterator;
-		if (inputFormat == InputFormat.PILEUP) seqChangeFileIterator = new PileUpFileIterator(inputFile, config.getGenome(), inOffset);
-		else if (inputFormat == InputFormat.BED) seqChangeFileIterator = new BedFileIterator(inputFile, config.getGenome(), inOffset);
+		if (inputFormat == InputFormat.PILEUP) seqChangeFileIterator = new PileUpFileIterator(inputFile, config.getGenome());
+		else if (inputFormat == InputFormat.BED) seqChangeFileIterator = new BedFileIterator(inputFile, config.getGenome());
 		else if (inputFormat == InputFormat.TXT) seqChangeFileIterator = new SeqChangeTxtFileIterator(inputFile, config.getGenome(), inOffset);
 		else throw new RuntimeException("Cannot create SeqChange file iterator on input format '" + inputFormat + "'");
 
@@ -251,7 +251,6 @@ public class SnpEffCmdEff extends SnpEff {
 
 		// Open VCF file
 		VcfFileIterator vcfFile = new VcfFileIterator(inputFile, config.getGenome());
-		vcfFile.setInOffset(inOffset); // May be there is a special inOffset (not likely to happen).
 
 		boolean anyCancerSample = false;
 		List<PedigreeEnrty> pedigree = null;
@@ -259,6 +258,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 		for (VcfEntry vcfEntry : vcfFile) {
 			boolean printed = false;
+			boolean filteredOut = false;
 
 			try {
 				countInputLines++;
@@ -280,7 +280,10 @@ public class SnpEffCmdEff extends SnpEff {
 				if (createSummary) vcfStats.sample(vcfEntry);
 
 				// Skip if there are filter intervals and they are not matched 
-				if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) continue;
+				if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) {
+					filteredOut = true;
+					continue;
+				}
 
 				// Create new 'section'
 				outputFormatter.startSection(vcfEntry);
@@ -368,7 +371,7 @@ public class SnpEffCmdEff extends SnpEff {
 				totalErrs++;
 				error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
 			} finally {
-				if (!printed) outputFormatter.printSection(vcfEntry);
+				if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
 			}
 		}
 
@@ -398,7 +401,6 @@ public class SnpEffCmdEff extends SnpEff {
 
 		// Open VCF file
 		VcfFileIterator vcfFile = new VcfFileIterator(inputFile, config.getGenome());
-		vcfFile.setInOffset(inOffset); // May be there is a special inOffset (not likely to happen).
 
 		// Master factory 
 		Props props = new Props(new UntypedActorFactory() {
@@ -497,22 +499,12 @@ public class SnpEffCmdEff extends SnpEff {
 					if ((i + 1) < args.length) {
 						String outFor = args[++i].toUpperCase();
 
-						if (outFor.equals("TXT")) {
-							outputFormat = OutputFormat.TXT;
-							outOffset = 1; // Implies '-1' since TXT coordinates are one-based
-						} else if (outFor.equals("VCF")) {
-							outputFormat = OutputFormat.VCF;
-							outOffset = 1; // Implies '-1' since VCF coordinates are one-based
-						} else if (outFor.equals("GATK")) {
-							outputFormat = OutputFormat.GATK;
-							outOffset = 1; // Implies '-1' since VCF coordinates are one-based
-						} else if (outFor.equals("BED")) {
-							outputFormat = OutputFormat.BED;
-							outOffset = 0; // Implies '0' since BED coordinates are zero-based
-						} else if (outFor.equals("BEDANN")) {
-							outputFormat = OutputFormat.BEDANN;
-							outOffset = 0; // Implies '0' since BED coordinates are zero-based
-						} else usage("Unknown output file format '" + outFor + "'");
+						if (outFor.equals("TXT")) outputFormat = OutputFormat.TXT;
+						else if (outFor.equals("VCF")) outputFormat = OutputFormat.VCF;
+						else if (outFor.equals("GATK")) outputFormat = OutputFormat.GATK;
+						else if (outFor.equals("BED")) outputFormat = OutputFormat.BED;
+						else if (outFor.equals("BEDANN")) outputFormat = OutputFormat.BEDANN;
+						else usage("Unknown output file format '" + outFor + "'");
 					}
 				} else if ((arg.equals("-a") || arg.equalsIgnoreCase("-around"))) {
 					if ((i + 1) < args.length) CodonChange.SHOW_CODONS_AROUND_CHANGE = Gpr.parseIntSafe(args[++i]);
@@ -528,8 +520,6 @@ public class SnpEffCmdEff extends SnpEff {
 				else if (arg.equalsIgnoreCase("-csvStats")) {
 					createCsvSummary = true; // Create a CSV formatted summary file.
 					if (summaryFile.equals(DEFAULT_SUMMARY_FILE)) summaryFile = DEFAULT_SUMMARY_CSV_FILE;
-				} else if ((arg.equals("-of") || arg.equalsIgnoreCase("-outOffset"))) {
-					if ((i + 1) < args.length) outOffset = Gpr.parseIntSafe(args[++i]);
 				} else if (arg.equalsIgnoreCase("-chr")) chrStr = args[++i];
 				else if (arg.equalsIgnoreCase("-useLocalTemplate")) useLocalTemplate = true; // Undocumented option (only used for development & debugging)
 				else if (arg.equalsIgnoreCase("-noOut")) supressOutput = true; // Undocumented option (only used for development & debugging)
@@ -560,19 +550,15 @@ public class SnpEffCmdEff extends SnpEff {
 						if (inFor.equals("TXT")) {
 							inputFormat = InputFormat.TXT;
 							outputFormat = OutputFormat.TXT;
-							inOffset = 1; // Implies '-1' since TXT coordinates are one-based
 						} else if (inFor.equals("PILEUP")) {
 							inputFormat = InputFormat.PILEUP;
 							outputFormat = OutputFormat.TXT;
-							inOffset = 1; // Implies '-1' since PILEUP coordinates are one-based
 						} else if (inFor.equals("VCF")) {
 							inputFormat = InputFormat.VCF;
 							outputFormat = OutputFormat.VCF;
-							inOffset = 1; // Implies '-1' since VCF coordinates are one-based
 						} else if (inFor.equals("BED")) {
 							inputFormat = InputFormat.BED;
 							outputFormat = OutputFormat.BED;
-							inOffset = 0; // Implies '-0' since Bed coordinates are zero-based
 						} else usage("Unknown input file format '" + inFor + "'");
 					} else usage("Missing input format in command line option '-i'");
 				}
@@ -818,6 +804,7 @@ public class SnpEffCmdEff extends SnpEff {
 		switch (outputFormat) {
 		case TXT:
 			outputFormatter = new TxtOutputFormatter();
+			outputFormatter.setOutOffset(outOffset);
 			break;
 		case VCF:
 			VcfOutputFormatter vof = new VcfOutputFormatter(vcfEntriesDebug);
@@ -843,7 +830,6 @@ public class SnpEffCmdEff extends SnpEff {
 		outputFormatter.setCommandLineStr(commandLineStr(false));
 		outputFormatter.setChangeEffectResutFilter(changeEffectResutFilter);
 		outputFormatter.setSupressOutput(supressOutput);
-		outputFormatter.setOutOffset(outOffset);
 		outputFormatter.setChrStr(chrStr);
 		outputFormatter.setUseSequenceOntolgy(useSequenceOntolgy);
 		outputFormatter.setUseOicr(useOicr);
@@ -965,7 +951,7 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\t-i <format>                     : Input format [ vcf, txt, pileup, bed ]. Default: VCF.");
 		System.err.println("\t-fileList                       : Input actually contains a list of files to process.");
 		System.err.println("\t-o <format>                     : Ouput format [ txt, vcf, gatk, bed, bedAnn ]. Default: VCF.");
-		System.err.println("\t-s,  -stats                     : Name of stats file (summary). Default is '" + DEFAULT_SUMMARY_FILE + "'");
+		System.err.println("\t-s , -stats                     : Name of stats file (summary). Default is '" + DEFAULT_SUMMARY_FILE + "'");
 		System.err.println("\t-noStats                        : Do not create stats (summary) file");
 		System.err.println("\t-csvStats                       : Create CSV summary file instead of HTML");
 		System.err.println("\nSequence change filter options:");
@@ -980,7 +966,7 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\t-nmp                            : Only MNPs (multiple nucleotide polymorphisms)");
 		System.err.println("\t-snp                            : Only SNPs (single nucleotide polymorphisms)");
 		System.err.println("\nResults filter options:");
-		System.err.println("\t-fi  <bedFile>                  : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)");
+		System.err.println("\t-fi , -filterInterval  <file>   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)");
 		System.err.println("\t-no-downstream                  : Do not show DOWNSTREAM changes");
 		System.err.println("\t-no-intergenic                  : Do not show INTERGENIC changes");
 		System.err.println("\t-no-intron                      : Do not show INTRON changes");

@@ -35,10 +35,6 @@ public class BedFileIterator extends SeqChangeFileIterator {
 		super(fileName, genome, 0);
 	}
 
-	public BedFileIterator(String fileName, Genome genome, int inOffset) {
-		super(fileName, genome, inOffset);
-	}
-
 	@Override
 	protected SeqChange readNext() {
 		// Try to read a line

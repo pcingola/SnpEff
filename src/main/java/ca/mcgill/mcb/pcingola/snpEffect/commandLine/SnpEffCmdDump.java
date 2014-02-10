@@ -41,8 +41,6 @@ public class SnpEffCmdDump extends SnpEff {
 			// Argument starts with '-'?
 			if (args[i].startsWith("-")) {
 				if (args[i].equalsIgnoreCase("-chr")) chrStr = args[++i];
-				else if (args[i].equals("-1")) inOffset = outOffset = 1;
-				else if (args[i].equals("-0")) inOffset = outOffset = 0;
 				else if (args[i].equals("-bed")) {
 					dumpFormat = DumpFormat.BED;
 					inOffset = outOffset = 0;

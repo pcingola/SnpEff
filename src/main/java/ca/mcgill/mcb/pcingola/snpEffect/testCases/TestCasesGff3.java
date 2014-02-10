@@ -35,12 +35,11 @@ public class TestCasesGff3 extends TestCase {
 	 * @param resultFile
 	 */
 	public SnpEffectPredictor buildAndCompare(String genome, String gff3File, String resultFile, boolean readSeqs) {
-		int inOffset = 1;
 		String expectedResult = Gpr.readFile(resultFile).trim();
 
 		// Build
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
-		SnpEffPredictorFactoryGff3 fgff3 = new SnpEffPredictorFactoryGff3(config, inOffset);
+		SnpEffPredictorFactoryGff3 fgff3 = new SnpEffPredictorFactoryGff3(config);
 		fgff3.setFileName(gff3File);
 		fgff3.setReadSequences(readSeqs);
 		SnpEffectPredictor sep = fgff3.create();

@@ -29,8 +29,8 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 	static final String ATTRIBUTE_PATTERN_REGEX = "\\s*(\\S+)\\s+\"(.*?)\"\\s*;";
 	static final Pattern ATTRIBUTE_PATTERN = Pattern.compile(ATTRIBUTE_PATTERN_REGEX);
 
-	public SnpEffPredictorFactoryGtf22(Config config, int inOffset) {
-		super(config, inOffset);
+	public SnpEffPredictorFactoryGtf22(Config config) {
+		super(config);
 		version = "GTF22";
 		fileName = config.getBaseFileNameGenes() + ".gtf";
 	}

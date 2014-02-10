@@ -22,8 +22,8 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 
-	public SnpEffPredictorFactoryGenesFile(Config config, int inOffset) {
-		super(config, inOffset);
+	public SnpEffPredictorFactoryGenesFile(Config config) {
+		super(config, 1);
 	}
 
 	@Override

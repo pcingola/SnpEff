@@ -404,10 +404,9 @@ public class TestCasesSeqChange extends TestCase {
 		//---
 		String gtfFile = "tests/ENSMUSG00000005763.gtf";
 		String genome = "testMm37.61";
-		int inOffset = 1;
 
 		config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
-		SnpEffPredictorFactoryGtf22 fgtf22 = new SnpEffPredictorFactoryGtf22(config, inOffset);
+		SnpEffPredictorFactoryGtf22 fgtf22 = new SnpEffPredictorFactoryGtf22(config);
 		fgtf22.setFileName(gtfFile);
 		fgtf22.setReadSequences(false); // Don't read sequences
 		SnpEffectPredictor snpEffectPredictor = fgtf22.create();

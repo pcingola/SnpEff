@@ -23,8 +23,8 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 
-	public SnpEffPredictorFactoryGff3(Config config, int inOffset) {
-		super(config, inOffset);
+	public SnpEffPredictorFactoryGff3(Config config) {
+		super(config);
 		version = "GFF3";
 	}
 

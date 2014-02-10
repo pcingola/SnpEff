@@ -58,7 +58,7 @@ public class SnpEffCmdClosest extends SnpEff {
 	 */
 	void bedIterate() {
 		// Open file
-		BedFileIterator bfi = new BedFileIterator(inFile, config.getGenome(), 0);
+		BedFileIterator bfi = new BedFileIterator(inFile, config.getGenome());
 		bfi.setCreateChromos(true); // Any 'new' chromosome in the input file will be created (otherwise an error will be thrown)
 
 		for (SeqChange bed : bfi) {

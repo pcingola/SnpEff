@@ -38,7 +38,7 @@ public class Markers implements Serializable, Collection<Marker> {
 		if (flLower.endsWith(".gz")) flLower = Gpr.removeExt(flLower);
 
 		// Load according to file type
-		if (flLower.endsWith(".txt")) return new BedFileIterator(fileName, null, 1).loadMarkers(); // TXT is assumed to be "chr \t start \t end"
+		if (flLower.endsWith(".txt")) return new BedFileIterator(fileName, null).loadMarkers(); // TXT is assumed to be "chr \t start \t end"
 		else if (flLower.endsWith(".bed")) return new BedFileIterator(fileName).loadMarkers();
 		else if (flLower.endsWith(".bb")) return new BigBedFileIterator(fileName).loadMarkers();
 		else if (flLower.endsWith(".vcf")) return new VcfFileIterator(fileName).loadMarkers();

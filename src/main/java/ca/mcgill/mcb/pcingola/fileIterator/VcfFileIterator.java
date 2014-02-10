@@ -188,6 +188,11 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 		this.createChromos = createChromos;
 	}
 
+	@Override
+	public void setInOffset(int inOffset) {
+		throw new RuntimeException("Cannot set input offset on VCF file!");
+	}
+
 	/**
 	 * Should we parse vcfEntries later? (lazy parsing)
 	 * @param parseNow

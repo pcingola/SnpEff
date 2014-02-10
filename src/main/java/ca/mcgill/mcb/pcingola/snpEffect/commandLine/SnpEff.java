@@ -389,9 +389,11 @@ public class SnpEff implements CommandLine {
 				} else if ((arg.equals("-c") || arg.equalsIgnoreCase("-config"))) {
 					if ((i + 1) < args.length) configFile = args[++i];
 					else usage("Option '-c' without config file argument");
-				} else if (arg.equals("-1")) inOffset = outOffset = 1;
-				else if (arg.equals("-0")) inOffset = outOffset = 0;
-				else if (arg.equals("-t")) multiThreaded = true;
+				} else if (arg.equals("-1")) {
+					inOffset = outOffset = 1;
+				} else if (arg.equals("-0")) {
+					inOffset = outOffset = 0;
+				} else if (arg.equals("-t")) multiThreaded = true;
 				else if (arg.equalsIgnoreCase("-treatAllAsProteinCoding")) {
 					if ((i + 1) < args.length) {
 						i++;
@@ -409,6 +411,8 @@ public class SnpEff implements CommandLine {
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
 				} else if ((arg.equals("-if") || arg.equalsIgnoreCase("-inOffset"))) {
 					if ((i + 1) < args.length) inOffset = Gpr.parseIntSafe(args[++i]);
+				} else if ((arg.equals("-of") || arg.equalsIgnoreCase("-outOffset"))) {
+					if ((i + 1) < args.length) outOffset = Gpr.parseIntSafe(args[++i]);
 				} else if (arg.equals("-onlyReg")) onlyRegulation = true;
 				else if (arg.equals("-reg")) {
 					if ((i + 1) < args.length) regulationTracks.add(args[++i]); // Add this track to the list
@@ -831,11 +835,11 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-d , -debug                  : Debug mode (very verbose).");
 		System.err.println("\t-dataDir <path>              : Override data_dir parameter from config file.");
 		System.err.println("\t-h , -help                   : Show this help and exit");
-		System.err.println("\t-if, -inOffset               : Offset input by a number of bases. E.g. '-inOffset 1' for one-based input files");
-		System.err.println("\t-of, -outOffset              : Offset output by a number of bases. E.g. '-outOffset 1' for one-based output files");
+		System.err.println("\t-if , -inOffset              : Offset input by a number of bases. E.g. '-inOffset 1' for one-based TXT input files");
+		System.err.println("\t-of , -outOffset             : Offset output by a number of bases. E.g. '-outOffset 1' for one-based TXT output files");
 		System.err.println("\t-noLog                       : Do not report usage statistics to server");
 		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
-		System.err.println("\t-q , -quiet                  : Quiet mode (do not show any messages or errors)");
+		System.err.println("\t-q ,  -quiet                 : Quiet mode (do not show any messages or errors)");
 		System.err.println("\t-v , -verbose                : Verbose mode");
 		System.err.println("\nDatabase options:");
 		System.err.println("\t-canon                       : Only use canonical transcripts.");
@@ -845,8 +849,8 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-reg <name>                  : Regulation track to use (this option can be used add several times).");
 		System.err.println("\t-onlyReg                     : Only use regulation tracks.");
 		System.err.println("\t-onlyTr <file.txt>           : Only use the transcripts in this file. Format: One transcript ID per line.");
-		System.err.println("\t-ss, -spliceSiteSize <int>   : Set size for splice sites (donor and acceptor) in bases. Default: " + spliceSiteSize);
-		System.err.println("\t-ud, -upDownStreamLen <int>  : Set upstream downstream interval length (in bases)");
+		System.err.println("\t-ss , -spliceSiteSize <int>  : Set size for splice sites (donor and acceptor) in bases. Default: " + spliceSiteSize);
+		System.err.println("\t-ud , -upDownStreamLen <int> : Set upstream downstream interval length (in bases)");
 	}
 
 }

@@ -33,12 +33,11 @@ public class TestCasesGtf22 extends TestCase {
 	 * @param resultFile
 	 */
 	public void buildAndCompare(String genome, String gtf22, String fastaFile, String resultFile) {
-		int inOffset = 1;
 		String expectedResult = Gpr.readFile(resultFile).trim();
 
 		// Build
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
-		SnpEffPredictorFactoryGtf22 fgtf22 = new SnpEffPredictorFactoryGtf22(config, inOffset);
+		SnpEffPredictorFactoryGtf22 fgtf22 = new SnpEffPredictorFactoryGtf22(config);
 		fgtf22.setFileName(gtf22);
 
 		// Set fasta file (or don't read sequences)

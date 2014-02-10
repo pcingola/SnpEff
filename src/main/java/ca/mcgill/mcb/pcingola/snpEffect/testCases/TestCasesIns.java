@@ -144,7 +144,7 @@ public class TestCasesIns extends TestCase {
 		int maxGeneLen = 1000;
 		int maxTranscripts = 1;
 		int maxExons = 5;
-		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, 1, rand, maxGeneLen, maxTranscripts, maxExons);
+		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
 
 		// Chromosome sequence
 		chromoSequence = sepf.getChromoSequence();

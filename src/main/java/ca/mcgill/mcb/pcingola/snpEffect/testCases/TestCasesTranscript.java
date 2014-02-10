@@ -56,7 +56,7 @@ public class TestCasesTranscript extends TestCase {
 		int maxGeneLen = 1000;
 		int maxTranscripts = 1;
 		int maxExons = 5;
-		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, 1, rand, maxGeneLen, maxTranscripts, maxExons);
+		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
 
 		// Create predictor
 		snpEffectPredictor = sepf.create();

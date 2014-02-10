@@ -72,6 +72,12 @@ public class VcfOutputFormatter extends OutputFormatter {
 	protected void addHeader() {
 		VcfEntry vcfEntry = (VcfEntry) section;
 
+		// Sanity check
+		if (vcfEntry == null) {
+			Gpr.debug("Cannot add header: No VCF entry!");
+			return;
+		}
+
 		// Get header
 		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
 
@@ -370,6 +376,11 @@ public class VcfOutputFormatter extends OutputFormatter {
 	}
 
 	@Override
+	public void setOutOffset(int outOffset) {
+		throw new RuntimeException("Cannot set output offset on '" + this.getClass().getSimpleName() + "' formatter!");
+	}
+
+	@Override
 	public void startSection(Marker marker) {
 		// Ignore other markers (e.g. seqChanges)
 		if (marker instanceof VcfEntry) super.startSection(marker);
@@ -422,4 +433,5 @@ public class VcfOutputFormatter extends OutputFormatter {
 		value = value.replaceAll("[ ,;|=()]", "_");
 		return value;
 	}
+
 }

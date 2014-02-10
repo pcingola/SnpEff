@@ -76,8 +76,8 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		typeMap.put(typeAliasStr.toUpperCase(), type);
 	}
 
-	public SnpEffPredictorFactoryGff(Config config, int inOffset) {
-		super(config, inOffset);
+	public SnpEffPredictorFactoryGff(Config config) {
+		super(config, 1);
 		markersById = new HashMap<String, Marker>();
 		genesById = new HashMap<String, Gene>();
 		transcriptsById = new HashMap<String, Transcript>();

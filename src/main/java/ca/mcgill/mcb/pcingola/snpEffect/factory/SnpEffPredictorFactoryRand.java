@@ -26,8 +26,8 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 	Chromosome chromo;
 	boolean forcePositive = false; // Force positive strand (used for debugging)
 
-	public SnpEffPredictorFactoryRand(Config config, int inOffset, Random random, int maxGeneLen, int maxTranscripts, int maxExons) {
-		super(config, inOffset);
+	public SnpEffPredictorFactoryRand(Config config, Random random, int maxGeneLen, int maxTranscripts, int maxExons) {
+		super(config);
 		this.random = random;
 		this.maxGeneLen = maxGeneLen;
 		this.maxTranscripts = maxTranscripts;

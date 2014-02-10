@@ -32,6 +32,11 @@ public class BedOutputFormatter extends OutputFormatter {
 	}
 
 	@Override
+	public void setOutOffset(int outOffset) {
+		throw new RuntimeException("Cannot set output offset on '" + this.getClass().getSimpleName() + "' formatter!");
+	}
+
+	@Override
 	public void startSection(Marker marker) {
 		// Ignore other markers (e.g. seqChanges)
 		if (marker instanceof SeqChange) super.startSection(marker);
