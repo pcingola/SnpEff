@@ -77,10 +77,11 @@ public class Utr5prime extends Utr {
 
 		// Is it START_GAINED?
 		Transcript tr = (Transcript) findParent(Transcript.class);
-		String utrDistStr = utr5primeDistance(seqChange, tr);
+		int dist = utrDistance(seqChange, tr);
 		String gained = startGained(seqChange, tr);
 
-		changeEffects.add(this, type, utrDistStr);
+		changeEffects.add(this, type, dist >= 0 ? dist + " bases from TSS" : "");
+		if (dist >= 0) changeEffects.setDistance(dist);
 		if (!gained.isEmpty()) changeEffects.add(this, EffectType.START_GAINED, gained);
 
 		return true;
@@ -133,10 +134,12 @@ public class Utr5prime extends Utr {
 	 * @return
 	 */
 	@Override
-	String utr5primeDistance(SeqChange seqChange, Transcript tr) {
-		boolean fromEnd = !(strand < 0); // We want distance from beginning of transcript (TSS = End of 5'UTR)
-		int dist = seqChange.distanceBases(get5primeUtrs(), fromEnd) + 1;
-		return dist + " bases from TSS";
+	int utrDistance(SeqChange seqChange, Transcript tr) {
+		int cdsStart = tr.getCdsStart();
+		if (cdsStart < 0) return -1;
+
+		if (isStrandPlus()) return cdsStart - seqChange.getEnd();
+		return seqChange.getStart() - cdsStart;
 	}
 
 }

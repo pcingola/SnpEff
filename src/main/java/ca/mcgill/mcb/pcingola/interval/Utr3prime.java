@@ -1,7 +1,5 @@
 package ca.mcgill.mcb.pcingola.interval;
 
-import java.util.List;
-
 import ca.mcgill.mcb.pcingola.interval.SeqChange.ChangeType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
@@ -46,8 +44,9 @@ public class Utr3prime extends Utr {
 		}
 
 		Transcript tr = (Transcript) findParent(Transcript.class);
-		String utrDistStr = utr5primeDistance(seqChange, tr);
-		changeEffects.add(this, type, utrDistStr);
+		int dist = utrDistance(seqChange, tr);
+		changeEffects.add(this, type, dist >= 0 ? dist + " bases from CDS" : "");
+		if (dist >= 0) changeEffects.setDistance(dist);
 
 		return true;
 	}
@@ -60,11 +59,12 @@ public class Utr3prime extends Utr {
 	 * @return
 	 */
 	@Override
-	String utr5primeDistance(SeqChange snp, Transcript tr) {
-		List<Utr3prime> utrs = tr.get3primeUtrs();
-		boolean fromEnd = strand < 0; // We want distance from end of transcript (beginning of 3'UTR)
-		int dist = snp.distanceBases(utrs, fromEnd) + 1;
-		return dist + " bases from CDS";
+	int utrDistance(SeqChange seqChange, Transcript tr) {
+		int cdsEnd = tr.getCdsEnd();
+		if (cdsEnd < 0) return -1;
+
+		if (isStrandPlus()) return seqChange.getStart() - cdsEnd;
+		return cdsEnd - seqChange.getEnd();
 	}
 
 }
