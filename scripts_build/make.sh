@@ -8,10 +8,8 @@ source `dirname $0`/config.sh
 
 cd $HOME/workspace/SnpEff/
 
-# mvn clean
-# mvn compile
+mvn clean compile assembly:assembly
 
-mvn assembly:assembly
 cp target/snpEff-$VERSION_SNPEFF-jar-with-dependencies.jar $HOME/snpEff/snpEff.jar
 
 # Install JAR file in local Maven repo
@@ -30,7 +28,8 @@ cd -
 #---
 cd $HOME/workspace/SnpSift/
 
-mvn assembly:assembly
+mvn clean compile assembly:assembly
+
 cp target/snpSift-$VERSION_SNPSIFT-jar-with-dependencies.jar $HOME/snpEff/SnpSift.jar
 
 # Install JAR file in local Maven repo
