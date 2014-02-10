@@ -1025,7 +1025,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 					else effectType = EffectType.START_LOST; // Non-synonymous mutation on first codon => start lost
 				} else if (codonTable.isStop(codonsOld)) {
 					// Stop codon
-					if (codonTable.isStop(codonsNew)) effectType = EffectType.NON_SYNONYMOUS_STOP; // Notice: This should never happen! (for some reason I removed this comment at some point and that create some confusion): http://www.biostars.org/post/show/51352/in-snpeff-impact-what-is-difference-between-stop_gained-and-non-synonymous_stop/
+					if (codonTable.isStop(codonsNew)) effectType = EffectType.NON_SYNONYMOUS_STOP; // Notice: This should never happen for SNPs! (for some reason I removed this comment at some point and that create some confusion): http://www.biostars.org/post/show/51352/in-snpeff-impact-what-is-difference-between-stop_gained-and-non-synonymous_stop/
 					else effectType = EffectType.STOP_LOST;
 				} else if (codonTable.isStop(codonsNew)) effectType = EffectType.STOP_GAINED;
 				else {

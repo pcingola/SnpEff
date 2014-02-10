@@ -293,7 +293,15 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			for (int i = 0; i < reference.length(); i++)
 				if (reference.charAt(i) != alt.charAt(i)) startDiff = Math.min(startDiff, i);
 
-			return new SeqChange(chromo, start + startDiff, reference.substring(startDiff), alt.substring(startDiff), strand, id, quality, coverage);
+			// MNPs
+			// Sometimes the last bases are the same and we can trim them
+			int endDiff = 0;
+			for (int i = reference.length() - 1; i >= 0; i--)
+				if (reference.charAt(i) != alt.charAt(i)) endDiff = Math.max(endDiff, i);
+
+			String newRef = reference.substring(startDiff, endDiff + 1);
+			String newAlt = alt.substring(startDiff, endDiff + 1);
+			return new SeqChange(chromo, start + startDiff, newRef, newAlt, strand, id, quality, coverage);
 		}
 
 		//---
