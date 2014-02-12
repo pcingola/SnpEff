@@ -15,7 +15,7 @@
 
 4) Build JAR files, download databases, build databases, etc.
 	
-	./scripts_build/build.sh 
+	./scripts_build/make.sh 
 	
 	4.1) Nextprot:
 	
