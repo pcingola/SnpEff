@@ -6,7 +6,7 @@ export VERSION_SNPSIFT=$VERSION_SNPEFF
 export VERSION_SNPSQL=0.2
 
 export ENSEMBL_RELEASE=74
-export ENSEMBL_BFMPP_RELEASE=18
+export ENSEMBL_BFMPP_RELEASE=21
 
 # Version values using underscores ('3_2' instead of '3.2')
 export SNPEFF_VERSION=`echo $VERSION_SNPEFF | tr "." "_"`
