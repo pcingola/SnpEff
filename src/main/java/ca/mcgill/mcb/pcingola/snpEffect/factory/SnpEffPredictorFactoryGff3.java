@@ -239,6 +239,10 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 						else if (key.equalsIgnoreCase("Parent")) parent = value;
 						else if (key.equalsIgnoreCase("Name") || key.equalsIgnoreCase("gene_name")) name = value;
 						else if (key.equalsIgnoreCase("db_xref") && (id == null)) id = value;
+						else if (key.equalsIgnoreCase("biotype")) {
+							// Use biotype field if present
+							proteinCoding |= isProteingCoding(value);
+						}
 					}
 				}
 			}

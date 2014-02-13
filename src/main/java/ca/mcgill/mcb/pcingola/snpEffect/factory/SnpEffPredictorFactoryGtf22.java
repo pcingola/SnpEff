@@ -171,8 +171,10 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 			transcriptId = attrMap.get("transcript_id");
 			geneName = attrMap.get("gene_name");
 
+			// Try to get biotype from different fields
 			geneBioType = attrMap.get("gene_biotype"); // Note: This is ENSEMBL specific
 			if (geneBioType == null) geneBioType = attrMap.get("gene_type"); // Note: This is GENCODE specific
+			if (geneBioType == null) geneBioType = attrMap.get("biotype"); // Try using 'biotype' field
 
 			trBioType = attrMap.get("transcript_type"); // Note: This is GENCODE specific
 		}
