@@ -92,7 +92,7 @@ bool buildAll() {
 	string dbids = sys $snpeff databases | cut -f 1 | tail -n +3
 
 	print("Building:\n")
-	for(string genome : dbids.stdout().lines()  ) {
+	for(string genome : dbids.lines()  ) {
 
 		# Get genome name and genes file
 		genome = genome.trim().baseName()
