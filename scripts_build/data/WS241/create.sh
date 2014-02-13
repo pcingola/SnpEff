@@ -57,5 +57,8 @@ zcat ORI/c_elegans.PRJNA13758.WS241.annotations.gff3.gz \
 		| grep -v transcript_region \
 		| grep -v transcribed_fragment \
 		| grep -v expressed_sequence_match \
+		| sed "s/Transcript://g" \
+		| sed "s/Gene://g" \
         > genes.gff
+
 
