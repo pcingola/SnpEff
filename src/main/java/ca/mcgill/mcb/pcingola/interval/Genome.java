@@ -523,7 +523,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 		// Show chromosomes info
 		sb.append("# Number of chromosomes      : " + getChromosomes().size() + "\n");
-		sb.append("# Chromosomes names [sizes]  : ");
+		sb.append("# Chromosomes names [sizes]  :\n");
 		for (Chromosome chr : getChromosomesSortedSize())
 			sb.append("#\t\t'" + chr.getId() + "' [" + chr.size() + "]\n");
 
