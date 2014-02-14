@@ -295,10 +295,23 @@ public class SnpEffCmdProtein extends SnpEff {
 	void readProteinFileGenBank() {
 		FeaturesFile featuresFile = new GenBankFile(proteinFile);
 		for (Features features : featuresFile) {
-			for (Feature f : features.getFeatures()) { // Find all CDS 
-				if (f.getType() == Type.CDS) { // Add CDS 'translation' record
-					String trId = f.getTranscriptId();
+			String trIdPrev = null;
+
+			for (Feature f : features.getFeatures()) { // Find all CDS
+				if (f.getType() == Type.GENE) {
+					// Clean up trId
+					trIdPrev = null;
+				} else if (f.getType() == Type.MRNA) {
+					// Save trId, so that next CDS record can find it 
+					trIdPrev = f.getTranscriptId();
+				} else if (f.getType() == Type.CDS) { // Add CDS 'translation' record
+					// Try using the transcript ID found in the previous record
+					String trId = trIdPrev;
+					if (trId == null) trId = f.getTranscriptId();
+
 					String seq = f.getAasequence();
+
+					if (debug) Gpr.debug(trId + "\t" + seq);
 					if ((trId != null) && (seq != null)) add(trId, seq, -1);
 				}
 			}

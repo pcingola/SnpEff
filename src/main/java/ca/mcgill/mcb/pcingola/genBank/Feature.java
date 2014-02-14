@@ -158,8 +158,12 @@ public class Feature implements Iterable<FeatureCoordinates> {
 	 * @return
 	 */
 	public String getTranscriptId() {
-		// Try 'gene'...
-		String trId = get("protein_id");
+		// Try transcript ID
+		String trId = get("transcript_id");
+		if (trId != null) return trId;
+
+		// Try 'protein'...
+		trId = get("protein_id");
 		if (trId != null) return trId;
 
 		// Try 'locus'...

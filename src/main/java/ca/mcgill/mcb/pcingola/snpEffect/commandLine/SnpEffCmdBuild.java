@@ -51,32 +51,34 @@ public class SnpEffCmdBuild extends SnpEff {
 		//---
 		// Check using CDS file
 		//---
-		if (verbose) System.out.print("CDS check:\n");
 		String cdsFile = config.getFileNameCds();
 		if (Gpr.canRead(cdsFile)) {
 			// Use FASTA format
+			if (verbose) Timer.showStdErr("CDS check (FASTA file): '" + cdsFile + "'\n");
 			SnpEffCmdCds snpEffCmdCds = new SnpEffCmdCds(config);
 			snpEffCmdCds.setVerbose(verbose);
 			snpEffCmdCds.setDebug(debug);
 			snpEffCmdCds.run();
-		} else if (verbose) System.out.println("\tOptional file '" + cdsFile + "' not found, nothing done.");
+		} else if (debug) Timer.showStdErr("\tOptional file '" + cdsFile + "' not found, nothing done.");
 
 		//---
 		// Check using proteins file
 		//---
-		if (verbose) System.out.print("Protein check:\n");
 		String protFile = config.getFileNameProteins();
 		if (Gpr.canRead(protFile)) {
+			if (verbose) Timer.showStdErr("Protein check (FASTA file): '" + protFile + "'\n");
 			SnpEffCmdProtein snpEffCmdProtein = new SnpEffCmdProtein(config);
 			snpEffCmdProtein.setVerbose(verbose);
 			snpEffCmdProtein.setDebug(debug);
 			snpEffCmdProtein.run();
 		} else if (geneDatabaseFormat == GeneDatabaseFormat.GENBANK) {
 			// GenBank format
-			SnpEffCmdProtein snpEffCmdProtein = new SnpEffCmdProtein(config, config.getBaseFileNameGenes() + ".gb");
+			String gbFile = config.getBaseFileNameGenes() + ".gb";
+			if (verbose) Timer.showStdErr("Protein check (GenBank file): '" + gbFile + "'\n");
+			SnpEffCmdProtein snpEffCmdProtein = new SnpEffCmdProtein(config, gbFile);
 			snpEffCmdProtein.setVerbose(verbose);
 			snpEffCmdProtein.run();
-		} else if (verbose) System.out.println("\tOptional file '" + protFile + "' not found, nothing done.");
+		} else if (debug) Timer.showStdErr("\tOptional file '" + protFile + "' not found, nothing done.");
 	}
 
 	/**

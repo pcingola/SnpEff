@@ -87,7 +87,7 @@ public class GenBank extends Features {
 				String s = seq[1].replaceAll("\\s", ""); // Remove all spaces
 				sequence.append(s);
 			}
-		} else System.err.println("Ignored feature '" + name + "'");;
+		} else if (debug) System.err.println("Ignored feature '" + name + "'");;
 	}
 
 	/**
