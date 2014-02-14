@@ -942,7 +942,7 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("snpEff version " + VERSION);
 		System.err.println("Usage: snpEff [eff] [options] genome_version [input_file]");
 		System.err.println("\n");
-		System.err.println("\nvariants_file                   : Default is STDIN");
+		System.err.println("\tvariants_file                   : Default is STDIN");
 		System.err.println("\n");
 		System.err.println("\nOptions:");
 		System.err.println("\t-a , -around                    : Show N codons and amino acids around change (only in coding regions). Default is " + CodonChange.SHOW_CODONS_AROUND_CHANGE + " codons.");

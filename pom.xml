@@ -15,10 +15,12 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <!--
   <scm>
     <url>https://snpeff.svn.sourceforge.net/svnroot/snpeff/SnpEffect/</url>
     <connection>https://snpeff.svn.sourceforge.net/svnroot/snpeff/SnpEffect/</connection>
   </scm>
+  -->
   <developers>
     <developer>
       <id>pcingola</id>
