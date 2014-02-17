@@ -172,9 +172,9 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	 * @param chr
 	 * @param pos
 	 */
-	public void seek(String chr, int pos) {
-		tabixReader.query(chr + ":" + pos);
-		tabixIterator = tabixReader.iterator();
+	public boolean seek(String chr, int pos) {
+		tabixIterator = tabixReader.query(chr + ":" + pos);
+		return tabixIterator != null;
 	}
 
 	public void setCreateChromos(boolean createChromos) {
