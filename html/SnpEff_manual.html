@@ -1282,6 +1282,12 @@ $ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed
 					</tr>
 					<tr>
 						<td>
+						SPLICE_SITE_REGION<br>
+						</td>
+						<td>SPLICE_SITE_REGION</td>
+					</tr>
+					<tr>
+						<td>
 						INTRAGENIC<br>
 						START_LOST<br>
 						SYNONYMOUS_START<br>
@@ -1362,6 +1368,7 @@ $ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed
 					<tr> <td> START_GAINED  </td><td> A variant in 5'UTR region produces a three base sequence that can be a START codon. </td> </tr> 
 					<tr> <td> SPLICE_SITE_ACCEPTOR  </td><td> The variant hits a splice acceptor site (defined as two bases before exon start, except for the first exon). </td> </tr> 
 					<tr> <td> SPLICE_SITE_DONOR  </td><td> The variant hits a Splice donor site (defined as two bases after coding exon end, except for the last exon). </td> </tr> 
+					<tr> <td> SPLICE_SITE_REGION  </td><td> A sequence variant in which a change has occurred within the region of the splice site, either within 1-3 bases of the exon or 3-8 bases of the intron.</td> </tr> 
 					<tr> <td> START_LOST   </td><td> Variant causes start codon to be mutated into a non-start codon. </td><td> aTg/aGg, M/R </td> </tr> 
 					<tr> <td> SYNONYMOUS_START  </td><td> Variant causes start codon to be mutated into another start codon. </td><td> Ttg/Ctg, L/L (TTG and CTG can be START codons) </td> </tr> 
 					<tr> <td> CDS  </td><td> The variant hits a CDS. </td> </tr> 
@@ -1461,6 +1468,7 @@ $ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed
 							START_GAINED<br>
 							SYNONYMOUS_CODING<br>
 							SYNONYMOUS_STOP<br>
+							SPLICE_SITE_REGION<br>
 							</td> </tr> 
 						<tr> <td> Modifier </td>		
 							<td> 
@@ -1520,10 +1528,11 @@ $ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed
 						<tr> <td> NON_SYNONYMOUS_STOP </td> <td> stop_retained_variant </td> </tr>
 						<tr> <td> RARE_AMINO_ACID </td> <td> non_conservative_missense_variant </td> </tr>
 						<tr> <td> REGULATION </td> <td> regulatory_region_variant </td> </tr>
-						<tr> <td> SPLICE_SITE_ACCEPTOR </td> <td> splice_region_variant </td> </tr>
+						<tr> <td> SPLICE_SITE_ACCEPTOR </td> <td> splice_acceptor_variant </td> </tr>
 						<tr> <td> SPLICE_SITE_BRANCH </td> <td> splice_region_variant </td> </tr>
 						<tr> <td> SPLICE_SITE_BRANCH_U12 </td> <td> splice_region_variant </td> </tr>
-						<tr> <td> SPLICE_SITE_DONOR </td> <td> splice_region_variant </td> </tr>
+						<tr> <td> SPLICE_SITE_DONOR </td> <td> splice_donor_variant </td> </tr>
+						<tr> <td> SPLICE_SITE_REGION </td> <td> splice_region_variant </td> </tr>
 						<tr> <td> START_GAINED </td> <td> start_gained </td> </tr>
 						<tr> <td> START_LOST </td> <td> initiator_codon_variant </td> </tr>
 						<tr> <td> STOP_GAINED </td> <td> stop_gained </td> </tr>
