@@ -64,10 +64,6 @@ public class TabixReader implements Iterable<String> {
 			end = _end;
 		}
 
-		public void setNoHeader(boolean noHeader) {
-			this.noHeader = noHeader;
-		}
-
 		@Override
 		public boolean hasNext() {
 			if (nextLine == null) nextLine = readNext();
@@ -128,6 +124,10 @@ public class TabixReader implements Iterable<String> {
 		@Override
 		public void remove() {
 			throw new RuntimeException("Unimplemented!");
+		}
+
+		public void setNoHeader(boolean noHeader) {
+			this.noHeader = noHeader;
 		}
 
 		@Override
@@ -354,9 +354,12 @@ public class TabixReader implements Iterable<String> {
 		return ret;
 	}
 
-	public TabixIterator query(final int tid, final int beg, final int end) {
+	private TabixIterator query(final int tid, final int beg, final int end) {
 		TPair64[] off, chunks;
 		long min_off;
+
+		if (tid < 0) return null;
+
 		TIndex idx = mIndex[tid];
 		int[] bins = new int[MAX_BIN];
 		int i, l, n_off, n_bins = reg2bins(beg, end, bins);
@@ -399,13 +402,13 @@ public class TabixReader implements Iterable<String> {
 		for (i = 0; i < n_off; ++i)
 			ret[i] = new TPair64(off[i].u, off[i].v); // in C, this is inefficient
 
-		tabixIterator = new TabixReader.TabixIterator(tid, beg, end, ret);
-		return tabixIterator;
+		return new TabixReader.TabixIterator(tid, beg, end, ret);
 	};
 
 	public TabixIterator query(final String reg) {
 		int[] x = parseReg(reg);
-		return query(x[0], x[1], x[2]);
+		tabixIterator = query(x[0], x[1], x[2]);
+		return tabixIterator;
 	}
 
 	/**
