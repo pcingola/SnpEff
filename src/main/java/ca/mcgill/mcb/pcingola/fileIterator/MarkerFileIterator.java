@@ -64,7 +64,6 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	@Override
 	public boolean hasNext() {
 		if (tabixReader == null) return super.hasNext();
-
 		if (tabixIterator == null) return false;
 
 		if (next == null) {
@@ -123,30 +122,30 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	protected String readLine() throws IOException {
 		if (tabixReader == null) return super.readLine(); // No tabix => Do 'normal' readline()
 
-		// Use tabix
 		if (nextLine != null) {
 			String nl = nextLine;
 			nextLine = null;
 			return nl;
 		}
 
+		// Use tabix
 		if (tabixIterator != null) nextLine = tabixIterator.next(); // Tabix? => Use tabix iterator
 
 		// Remove trailing '\r'
 		if ((nextLine != null) && (nextLine.length() > 0) && nextLine.charAt(nextLine.length() - 1) == '\r') nextLine = nextLine.substring(0, nextLine.length() - 1);
 
+		// Increment line counter
 		if (nextLine != null) lineNum++;
+
 		return nextLine;
 	}
 
 	@Override
 	protected boolean ready() throws IOException {
-		if ((reader == null) && (tabixReader == null)) return false; // No reader? then we are not ready
 		if (tabixReader == null) return super.ready();
 
 		if (nextLine != null) return true; // Next line is null? then we have to try to read a line (to see if one is available)
-		readLine();
-		return nextLine != null; // Line was read from the file? Then we are ready.
+		return readLine() != null; // Line was read from the file? Then we are ready.
 	}
 
 	/**

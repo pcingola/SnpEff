@@ -51,7 +51,7 @@ public class TabixReader implements Iterable<String> {
 		private TPair64[] off;
 		private long curr_off;
 		private boolean iseof;
-		private String nextLine = null;
+		private String next = null;
 		private boolean noHeader = true; // By default, do not return header lines
 
 		public TabixIterator(final int _tid, final int _beg, final int _end, final TPair64[] _off) {
@@ -66,20 +66,20 @@ public class TabixReader implements Iterable<String> {
 
 		@Override
 		public boolean hasNext() {
-			if (nextLine == null) nextLine = readNext();
-			return nextLine != null;
+			if (next == null) next = readNext(); // Try reading next item.
+			return (next != null);
+
 		}
 
 		@Override
 		public String next() {
-			if (nextLine != null) {
-				String ret = nextLine;
-				nextLine = null;
+			if (hasNext()) {
+				String ret = next;
+				next = null;
 				return ret;
 			}
-
-			if (hasNext()) return nextLine;
 			return null;
+
 		}
 
 		/**
@@ -105,12 +105,16 @@ public class TabixReader implements Iterable<String> {
 						char[] str = s.toCharArray();
 						curr_off = mFp.getFilePointer();
 						if (str.length == 0) continue;
+
+						// Check header
 						if (str[0] == mMeta) {
 							if (noHeader) continue;
 							return s;
 						}
+
+						// Check range
 						intv = getIntv(s);
-						if (intv.tid != tid || intv.beg >= end) break; // no need to proceed
+						if (((tid >= 0) && (intv.tid != tid)) || intv.beg >= end) break; // no need to proceed. Note: tid < 0 means any-chromosome (i.e. no-limits
 						else if (intv.end > beg && intv.beg < end) return s; // overlap; return
 					} else break; // end of file
 				}
@@ -328,7 +332,7 @@ public class TabixReader implements Iterable<String> {
 		// No query performed yet: create one
 		TPair64 off[] = new TPair64[1];
 		off[0] = new TPair64(0, Long.MAX_VALUE);
-		tabixIterator = new TabixIterator(0, 0, Integer.MAX_VALUE, off);
+		tabixIterator = new TabixIterator(-1, 0, Integer.MAX_VALUE, off);
 		tabixIterator.setNoHeader(false); // We want header lines
 
 		return tabixIterator;

@@ -437,4 +437,17 @@ public class TestCasesVcf extends TestCase {
 			System.out.println(ve);
 	}
 
+	public void test_18_vcf_tabix() {
+		VcfFileIterator vcf = new VcfFileIterator("./tests/test_tabix.vcf.gz");
+
+		String chrpos = "";
+		for (VcfEntry ve : vcf) {
+			System.out.println(ve);
+			chrpos += ve.getChromosomeName() + ":" + ve.getStart() + " ";
+		}
+
+		// Make sure both lines appear
+		Assert.assertEquals("1:249211906 2:41612", chrpos.trim());
+	}
+
 }
