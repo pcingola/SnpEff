@@ -953,18 +953,18 @@ $ cat test.snpeff.vcf | ./scripts/vcfEffOnePerLine.pl | java -jar SnpSift.jar ex
 				<i class="icon-hand-right"></i> Note that in SnpSift, we used <code>-</code> as input file name, which denotes STDIN.
 				<br>
 				<br>
-				<i class="icon-warning-sign"></i> <code>SnpSift extractFields</code> can get confused if the VCF field has non-alphanumeric charaters in the name (e.g. <code>dbnsfpGERP++_RS</code> has two "+" signs).
+				<i class="icon-warning-sign"></i> <code>SnpSift extractFields</code> can get confused if the VCF field has non-alphanumeric charaters in the name (e.g. <code>dbNSFP_GERP++_RS</code> has two "+" signs).
 				A quick fix, it so is to change the field names in the VCF file.
 				Here is an example:
 				<br>
 				<br>
 <pre>
 # Change field names in VCF
-$ cat kath.vcf | sed "s/dbnsfpGERP++/dbnsfpGERP/g" > kath.gerp.vcf
+$ cat kath.vcf | sed "s/dbNSFP_GERP++/dbNSFP_GERP/g" > kath.gerp.vcf
 
 # Use new names to extract fields
-$ java -jar SnpSift.jar  extractFields kath.gerp.vcf CHROM POS REF ALT dbnsfpGERP_RS dbnsfpGERP_NS
-#CHROM	POS	REF	ALT	dbnsfpGERP_RS
+$ java -jar SnpSift.jar  extractFields kath.gerp.vcf CHROM POS REF ALT dbNSFP_GERP_RS dbNSFP_GERP_NS
+#CHROM	POS	REF	ALT	dbNSFP_GERP_RS
 1	142827044	G	A		
 2	132914561	G	A		
 7	151933217	C	A		
