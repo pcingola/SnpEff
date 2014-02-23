@@ -116,7 +116,7 @@ public class SnpEffCmdCount extends SnpEff {
 		// Initialize
 		//---
 
-		readConfig(); // Read config file
+		loadConfig(); // Read config file
 
 		// Load database
 		loadDb();

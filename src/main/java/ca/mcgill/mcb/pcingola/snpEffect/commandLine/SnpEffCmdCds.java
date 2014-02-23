@@ -254,7 +254,7 @@ public class SnpEffCmdCds extends SnpEff {
 		if (verbose) Timer.showStdErr("Checking database using CDS sequences");
 
 		// Load config
-		if (config == null) readConfig();
+		if (config == null) loadConfig();
 
 		// Read CDS form file
 		if (verbose) Timer.showStdErr("Reading CDSs from file '" + cdsFile + "'...");

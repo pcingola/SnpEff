@@ -134,7 +134,7 @@ public class SnpEffCmdDatabases extends SnpEff {
 	public boolean run() {
 		// Read config (it doesn't matter which genome)
 		genomeVer = "hg19";
-		readConfig(); // Read config file
+		loadConfig(); // Read config file
 
 		// Get all genome names and sort them
 		nameByGenomeVer = new HashMap<String, String>();

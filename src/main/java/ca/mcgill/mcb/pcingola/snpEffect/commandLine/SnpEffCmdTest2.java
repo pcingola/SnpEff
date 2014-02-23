@@ -262,7 +262,7 @@ public class SnpEffCmdTest2 extends SnpEff {
 		//---
 		// Load database, build tree
 		//---
-		readConfig(); // Read config file
+		loadConfig(); // Read config file
 
 		if (verbose) Timer.showStdErr("Loading predictor...");
 		config.loadSnpEffectPredictor();

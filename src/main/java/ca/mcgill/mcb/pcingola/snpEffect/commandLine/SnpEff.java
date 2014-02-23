@@ -217,6 +217,34 @@ public class SnpEff implements CommandLine {
 	}
 
 	/**
+	 * Read config file
+	 */
+	protected void loadConfig() {
+		// Read config file
+		if (verbose) //
+			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
+					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
+			);
+		config = new Config(genomeVer, configFile, dataDir); // Read configuration
+		if (verbose) Timer.showStdErr("done");
+	}
+
+	/**
+	 * Read a custom interval file
+	 * @param intFile
+	 */
+	protected int loadCustomIntFile(String intFile) {
+		Markers markers = loadMarkers(intFile);
+
+		// Add all markers to predictor
+		for (Marker m : markers)
+			config.getSnpEffectPredictor().add(m);
+
+		// Number added
+		return markers.size();
+	}
+
+	/**
 	 * Load database 
 	 */
 	public void loadDb() {
@@ -265,13 +293,13 @@ public class SnpEff implements CommandLine {
 		// Read custom interval files
 		for (String intFile : customIntervalFiles) {
 			if (verbose) Timer.showStdErr("Reading interval file '" + intFile + "'");
-			int count = readCustomIntFile(intFile);
+			int count = loadCustomIntFile(intFile);
 			if (verbose) Timer.showStdErr("done (" + count + " intervals loaded). ");
 		}
 
 		// Read regulation tracks
 		for (String regTrack : regulationTracks)
-			readRegulationTrack(regTrack);
+			loadRegulationTrack(regTrack);
 
 		// Set upstream-downstream interval length
 		config.getSnpEffectPredictor().setUpDownStreamLength(upDownStreamLength);
@@ -313,8 +341,8 @@ public class SnpEff implements CommandLine {
 		}
 
 		// Read nextProt database?
-		if (nextProt) readNextProt();
-		if (motif) readMotif();
+		if (nextProt) loadNextProt();
+		if (motif) loadMotif();
 
 		// Build tree
 		if (verbose) Timer.showStdErr("Building interval forest");
@@ -326,6 +354,194 @@ public class SnpEff implements CommandLine {
 			Timer.showStdErr("Genome stats :");
 			System.err.println(config.getGenome());
 		}
+	}
+
+	/**
+	 * Read markers file
+	 * 
+	 * Supported formats: BED, TXT, BigBed
+	 * 
+	 * @param fileName
+	 * @return
+	 */
+	protected Markers loadMarkers(String fileName) {
+		Markers markersSeqChange = Markers.readMarkers(fileName);
+		String label = Gpr.removeExt(Gpr.baseName(fileName));
+
+		// Convert 'SeqChange' markers to 'Custom' markers
+		Markers markers = new Markers();
+		for (Marker m : markersSeqChange) {
+			if (m instanceof Custom) {
+				((Custom) m).setLabel(label);
+				markers.add(m);
+			} else {
+				// Not a custom interval? Create one
+				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), m.getStrand(), m.getId(), label);
+				custom.setScore(((SeqChange) m).getScore());
+				markers.add(custom);
+			}
+		}
+
+		// Number added
+		return markers;
+	}
+
+	/**
+	 * Read regulation motif files
+	 */
+	void loadMotif() {
+		if (verbose) Timer.showStdErr("Loading Motifs and PWMs");
+
+		//---
+		// Sanity checks
+		//---
+		String pwmsFileName = config.getDirDataVersion() + "/pwms.bin";
+		if (!Gpr.exists(pwmsFileName)) fatalError("Warning: Cannot open PWMs file " + pwmsFileName);
+
+		String motifBinFileName = config.getBaseFileNameMotif() + ".bin";
+		if (!Gpr.exists(motifBinFileName)) fatalError("Warning: Cannot open Motifs file " + motifBinFileName);
+
+		//---
+		// Load all PWMs
+		//---
+		if (verbose) Timer.showStdErr("\tLoading PWMs from : " + pwmsFileName);
+		Jaspar jaspar = new Jaspar();
+		jaspar.load(pwmsFileName);
+
+		//---
+		// Read motifs
+		//---		
+		if (verbose) Timer.showStdErr("\tLoading Motifs from file '" + motifBinFileName + "'");
+
+		MarkerSerializer markerSerializer = new MarkerSerializer();
+		Markers motifsDb = markerSerializer.load(motifBinFileName);
+
+		// Add (only) motif markers. The original motifs has to be serialized with Chromosomes, Genomes and other markers (otherwise it could have not been saved)
+		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
+		int countAddded = 0;
+		for (Marker m : motifsDb)
+			if (m instanceof Motif) {
+				Motif motif = (Motif) m;
+
+				// Connect motifs to their respective PWMs
+				Pwm pwm = jaspar.getPwm(motif.getPwmId());
+				if (pwm != null) {
+					// Set PWM and add to snpEffPredictor
+					motif.setPwm(pwm);
+					snpEffectPredictor.add(motif);
+					countAddded++;
+				} else Timer.showStdErr("Cannot find PWM for motif '" + motif.getId() + "'");
+			}
+
+		if (verbose) Timer.showStdErr("\tMotif database: " + countAddded + " markers loaded.");
+	}
+
+	/**
+	 * Read regulation track and update SnpEffectPredictor
+	 * @param regTrack
+	 */
+	void loadNextProt() {
+		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
+
+		//---
+		// Read nextProt binary file
+		//---
+		String nextProtBinFile = config.getDirDataVersion() + "/nextProt.bin";
+		if (verbose) Timer.showStdErr("Reading NextProt database from file '" + nextProtBinFile + "'");
+
+		MarkerSerializer markerSerializer = new MarkerSerializer();
+		Markers nextProtDb = markerSerializer.load(nextProtBinFile);
+
+		// Create a collection of (only) NextProt markers. The original nextProtDb has Chromosomes, Genomes and other markers (otherwise it could have not been saved)
+		ArrayList<NextProt> nextProts = new ArrayList<NextProt>(nextProtDb.size());
+		for (Marker m : nextProtDb)
+			if (m instanceof NextProt) nextProts.add((NextProt) m);
+
+		if (verbose) Timer.showStdErr("NextProt database: " + nextProts.size() + " markers loaded.");
+
+		//---
+		// Connect nextProt annotations to transcripts and exons 
+		//---
+		if (verbose) Timer.showStdErr("Adding transcript info to NextProt markers.");
+
+		// Create a list of all transcripts
+		HashMap<String, Transcript> trs = new HashMap<String, Transcript>();
+		for (Gene g : snpEffectPredictor.getGenome().getGenes())
+			for (Transcript tr : g)
+				trs.put(tr.getId(), tr);
+
+		// Find the corresponding transcript for each nextProt marker 
+		// WARNING: The transcripts might be filtered out by the user (e.g. '-cannon' command line option or user defined sets). 
+		//          We only keep nextProt markers associated to found transcripts. All others are discarded (the user doesn't want that info).
+		ArrayList<NextProt> nextProtsToAdd = new ArrayList<NextProt>();
+		for (NextProt np : nextProts) {
+			Transcript tr = trs.get(np.getTranscriptId());
+
+			// Found transcript, now try to find an exon
+			if (tr != null) {
+				boolean assignedToExon = false;
+				for (Exon ex : tr) {
+					if (ex.intersects(np)) {
+						NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon 
+						npEx.setParent(ex);
+						nextProtsToAdd.add(npEx);
+						assignedToExon = true;
+					}
+				}
+
+				// Not assigned to an exon? Add transcript info
+				if (!assignedToExon) {
+					np.setParent(tr); // Set this transcript as parent
+					nextProtsToAdd.add(np);
+				}
+			}
+		}
+
+		//---
+		// Add all nextProt marker to predictor
+		//---
+		for (NextProt np : nextProtsToAdd)
+			snpEffectPredictor.add(np);
+
+		// Note: We might end up with more markers than we loaded (just because they map to multiple exons (although it would be highly unusual)
+		if (verbose) Timer.showStdErr("NextProt database: " + nextProtsToAdd.size() + " markers added.");
+	}
+
+	/**
+	 * Read regulation track and update SnpEffectPredictor
+	 * @param regTrack
+	 */
+	@SuppressWarnings("unchecked")
+	void loadRegulationTrack(String regTrack) {
+		//---
+		// Read file
+		//---
+		if (verbose) Timer.showStdErr("Reading regulation track '" + regTrack + "'");
+		String regFile = config.getDirDataVersion() + "/regulation_" + regTrack + ".bin";
+		ArrayList<Regulation> regulation = (ArrayList<Regulation>) Gpr.readFileSerializedGz(regFile);
+
+		//---
+		// Are all chromosomes available?
+		//---
+		Genome genome = config.getGenome();
+		HashMap<String, Integer> chrs = new HashMap<String, Integer>();
+		for (Regulation r : regulation) {
+			String chr = r.getChromosomeName();
+			int max = chrs.containsKey(chr) ? chrs.get(chr) : 0;
+			max = Math.max(max, r.getEnd());
+			chrs.put(chr, max);
+		}
+
+		// Add all chromos
+		for (String chr : chrs.keySet())
+			if (genome.getChromosome(chr) == null) genome.add(new Chromosome(genome, 0, chrs.get(chr), 1, chr));
+
+		//---
+		// Add all markers to predictor
+		//---
+		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
+		for (Regulation r : regulation)
+			snpEffectPredictor.add(r);
 	}
 
 	/**
@@ -433,222 +649,6 @@ public class SnpEff implements CommandLine {
 	}
 
 	/**
-	 * Read config file
-	 */
-	protected void readConfig() {
-		// Read config file
-		if (verbose) //
-			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
-					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
-		config = new Config(genomeVer, configFile, dataDir); // Read configuration
-		if (verbose) Timer.showStdErr("done");
-	}
-
-	/**
-	 * Read a custom interval file
-	 * @param intFile
-	 */
-	protected int readCustomIntFile(String intFile) {
-		Markers markers = readMarkers(intFile);
-
-		// Add all markers to predictor
-		for (Marker m : markers)
-			config.getSnpEffectPredictor().add(m);
-
-		// Number added
-		return markers.size();
-	}
-
-	/**
-	 * Read markers file
-	 * 
-	 * Supported formats: BED, TXT, BigBed
-	 * 
-	 * @param fileName
-	 * @return
-	 */
-	protected Markers readMarkers(String fileName) {
-		Markers markersSeqChange = Markers.readMarkers(fileName);
-		String label = Gpr.removeExt(Gpr.baseName(fileName));
-
-		// Convert 'SeqChange' markers to 'Custom' markers
-		Markers markers = new Markers();
-		for (Marker m : markersSeqChange) {
-			if (m instanceof Custom) {
-				((Custom) m).setLabel(label);
-				markers.add(m);
-			} else {
-				// Not a custom interval? Create one
-				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), m.getStrand(), m.getId(), label);
-				custom.setScore(((SeqChange) m).getScore());
-				markers.add(custom);
-			}
-		}
-
-		// Number added
-		return markers;
-	}
-
-	/**
-	 * Read regulation motif files
-	 */
-	void readMotif() {
-		if (verbose) Timer.showStdErr("Loading Motifs and PWMs");
-
-		//---
-		// Sanity checks
-		//---
-		String pwmsFileName = config.getDirDataVersion() + "/pwms.bin";
-		if (!Gpr.exists(pwmsFileName)) fatalError("Warning: Cannot open PWMs file " + pwmsFileName);
-
-		String motifBinFileName = config.getBaseFileNameMotif() + ".bin";
-		if (!Gpr.exists(motifBinFileName)) fatalError("Warning: Cannot open Motifs file " + motifBinFileName);
-
-		//---
-		// Load all PWMs
-		//---
-		if (verbose) Timer.showStdErr("\tLoading PWMs from : " + pwmsFileName);
-		Jaspar jaspar = new Jaspar();
-		jaspar.load(pwmsFileName);
-
-		//---
-		// Read motifs
-		//---		
-		if (verbose) Timer.showStdErr("\tLoading Motifs from file '" + motifBinFileName + "'");
-
-		MarkerSerializer markerSerializer = new MarkerSerializer();
-		Markers motifsDb = markerSerializer.load(motifBinFileName);
-
-		// Add (only) motif markers. The original motifs has to be serialized with Chromosomes, Genomes and other markers (otherwise it could have not been saved)
-		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
-		int countAddded = 0;
-		for (Marker m : motifsDb)
-			if (m instanceof Motif) {
-				Motif motif = (Motif) m;
-
-				// Connect motifs to their respective PWMs
-				Pwm pwm = jaspar.getPwm(motif.getPwmId());
-				if (pwm != null) {
-					// Set PWM and add to snpEffPredictor
-					motif.setPwm(pwm);
-					snpEffectPredictor.add(motif);
-					countAddded++;
-				} else Timer.showStdErr("Cannot find PWM for motif '" + motif.getId() + "'");
-			}
-
-		if (verbose) Timer.showStdErr("\tMotif database: " + countAddded + " markers loaded.");
-	}
-
-	/**
-	 * Read regulation track and update SnpEffectPredictor
-	 * @param regTrack
-	 */
-	void readNextProt() {
-		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
-
-		//---
-		// Read nextProt binary file
-		//---
-		String nextProtBinFile = config.getDirDataVersion() + "/nextProt.bin";
-		if (verbose) Timer.showStdErr("Reading NextProt database from file '" + nextProtBinFile + "'");
-
-		MarkerSerializer markerSerializer = new MarkerSerializer();
-		Markers nextProtDb = markerSerializer.load(nextProtBinFile);
-
-		// Create a collection of (only) NextProt markers. The original nextProtDb has Chromosomes, Genomes and other markers (otherwise it could have not been saved)
-		ArrayList<NextProt> nextProts = new ArrayList<NextProt>(nextProtDb.size());
-		for (Marker m : nextProtDb)
-			if (m instanceof NextProt) nextProts.add((NextProt) m);
-
-		if (verbose) Timer.showStdErr("NextProt database: " + nextProts.size() + " markers loaded.");
-
-		//---
-		// Connect nextProt annotations to transcripts and exons 
-		//---
-		if (verbose) Timer.showStdErr("Adding transcript info to NextProt markers.");
-
-		// Create a list of all transcripts
-		HashMap<String, Transcript> trs = new HashMap<String, Transcript>();
-		for (Gene g : snpEffectPredictor.getGenome().getGenes())
-			for (Transcript tr : g)
-				trs.put(tr.getId(), tr);
-
-		// Find the corresponding transcript for each nextProt marker 
-		// WARNING: The transcripts might be filtered out by the user (e.g. '-cannon' command line option or user defined sets). 
-		//          We only keep nextProt markers associated to found transcripts. All others are discarded (the user doesn't want that info).
-		ArrayList<NextProt> nextProtsToAdd = new ArrayList<NextProt>();
-		for (NextProt np : nextProts) {
-			Transcript tr = trs.get(np.getTranscriptId());
-
-			// Found transcript, now try to find an exon
-			if (tr != null) {
-				boolean assignedToExon = false;
-				for (Exon ex : tr) {
-					if (ex.intersects(np)) {
-						NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon 
-						npEx.setParent(ex);
-						nextProtsToAdd.add(npEx);
-						assignedToExon = true;
-					}
-				}
-
-				// Not assigned to an exon? Add transcript info
-				if (!assignedToExon) {
-					np.setParent(tr); // Set this transcript as parent
-					nextProtsToAdd.add(np);
-				}
-			}
-		}
-
-		//---
-		// Add all nextProt marker to predictor
-		//---
-		for (NextProt np : nextProtsToAdd)
-			snpEffectPredictor.add(np);
-
-		// Note: We might end up with more markers than we loaded (just because they map to multiple exons (although it would be highly unusual)
-		if (verbose) Timer.showStdErr("NextProt database: " + nextProtsToAdd.size() + " markers added.");
-	}
-
-	/**
-	 * Read regulation track and update SnpEffectPredictor
-	 * @param regTrack
-	 */
-	@SuppressWarnings("unchecked")
-	void readRegulationTrack(String regTrack) {
-		//---
-		// Read file
-		//---
-		if (verbose) Timer.showStdErr("Reading regulation track '" + regTrack + "'");
-		String regFile = config.getDirDataVersion() + "/regulation_" + regTrack + ".bin";
-		ArrayList<Regulation> regulation = (ArrayList<Regulation>) Gpr.readFileSerializedGz(regFile);
-
-		//---
-		// Are all chromosomes available?
-		//---
-		Genome genome = config.getGenome();
-		HashMap<String, Integer> chrs = new HashMap<String, Integer>();
-		for (Regulation r : regulation) {
-			String chr = r.getChromosomeName();
-			int max = chrs.containsKey(chr) ? chrs.get(chr) : 0;
-			max = Math.max(max, r.getEnd());
-			chrs.put(chr, max);
-		}
-
-		// Add all chromos
-		for (String chr : chrs.keySet())
-			if (genome.getChromosome(chr) == null) genome.add(new Chromosome(genome, 0, chrs.get(chr), 1, chr));
-
-		//---
-		// Add all markers to predictor
-		//---
-		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
-		for (Regulation r : regulation)
-			snpEffectPredictor.add(r);
-	}
-
-	/**
 	 * Additional values to be reported
 	 * @return
 	 */
@@ -722,6 +722,10 @@ public class SnpEff implements CommandLine {
 
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	public void setGenomeVer(String genomeVer) {
+		this.genomeVer = genomeVer;
 	}
 
 	public void setVerbose(boolean verbose) {

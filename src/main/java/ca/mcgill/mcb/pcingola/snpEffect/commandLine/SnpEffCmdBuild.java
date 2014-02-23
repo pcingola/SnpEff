@@ -253,7 +253,7 @@ public class SnpEffCmdBuild extends SnpEff {
 	@Override
 	public boolean run() {
 		if (verbose) Timer.showStdErr("Building database for '" + genomeVer + "'");
-		readConfig(); // Read config file
+		loadConfig(); // Read config file
 
 		// Create SnpEffectPredictor
 		if (!onlyRegulation) {

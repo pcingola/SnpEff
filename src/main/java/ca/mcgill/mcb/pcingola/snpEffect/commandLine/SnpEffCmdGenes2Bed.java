@@ -78,7 +78,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		}
 
 		// Load config & database
-		readConfig(); // Read config file
+		loadConfig(); // Read config file
 		if (verbose) Timer.showStdErr("Loading database " + genomeVer);
 		config.loadSnpEffectPredictor();
 		Genome genome = config.getGenome();

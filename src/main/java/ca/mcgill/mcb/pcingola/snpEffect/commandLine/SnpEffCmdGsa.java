@@ -93,7 +93,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	 * Read config file, load & build database 
 	 */
 	protected void config() {
-		readConfig();
+		loadConfig();
 
 		// Read database (if gene level scores are provided, we don't need to map p_values to genes (we can skip this step)
 		if (geneScoreFile.isEmpty() && geneInterestingFile.isEmpty()) {

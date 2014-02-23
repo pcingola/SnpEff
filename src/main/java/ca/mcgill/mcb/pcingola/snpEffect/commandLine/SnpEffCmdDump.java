@@ -181,7 +181,7 @@ public class SnpEffCmdDump extends SnpEff {
 		//---
 		// Dump database
 		//---
-		readConfig(); // Read config file
+		loadConfig(); // Read config file
 
 		// Read database
 		if (verbose) Timer.showStdErr("Reading database for genome '" + genomeVer + "' (this might take a while)");

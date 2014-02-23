@@ -656,7 +656,7 @@ public class SnpEffCmdEff extends SnpEff {
 	 * @param intFile
 	 */
 	int readFilterIntFile(String intFile) {
-		Markers markers = readMarkers(intFile);
+		Markers markers = loadMarkers(intFile);
 		for (Marker filterInterval : markers)
 			filterIntervals.add(filterInterval);
 		return markers.size();
@@ -728,7 +728,7 @@ public class SnpEffCmdEff extends SnpEff {
 		filterIntervals = null;
 
 		// Read config file
-		readConfig();
+		loadConfig();
 
 		// Load database
 		loadDb();
@@ -753,7 +753,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 		// Read regulation tracks
 		for (String regTrack : regulationTracks)
-			readRegulationTrack(regTrack);
+			loadRegulationTrack(regTrack);
 
 		// Store VCF results in a list?
 		if (createList) vcfEntriesDebug = new ArrayList<VcfEntry>();

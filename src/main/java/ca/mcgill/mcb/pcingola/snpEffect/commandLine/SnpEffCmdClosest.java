@@ -237,7 +237,7 @@ public class SnpEffCmdClosest extends SnpEff {
 	@Override
 	public boolean run() {
 		// Load config
-		if (config == null) readConfig();
+		if (config == null) loadConfig();
 
 		// Load Db
 		loadDb();

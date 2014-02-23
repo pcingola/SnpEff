@@ -628,7 +628,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 	@Override
 	public boolean run() {
 		// Initialzie
-		readConfig(); // Read config file
+		loadConfig(); // Read config file
 
 		if (verbose) Timer.showStdErr("Reading database for genome version '" + genomeVer + "' from file '" + config.getFileSnpEffectPredictor() + "' (this might take a while)");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();

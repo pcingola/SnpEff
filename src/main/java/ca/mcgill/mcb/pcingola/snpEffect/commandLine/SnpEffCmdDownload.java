@@ -223,7 +223,7 @@ public class SnpEffCmdDownload extends SnpEff {
 	 * @return
 	 */
 	boolean runDownloadGenome() {
-		readConfig(); // Read config file
+		loadConfig(); // Read config file
 
 		if (verbose) Timer.showStdErr("Downloading database for '" + genomeVer + "'");
 
@@ -245,7 +245,7 @@ public class SnpEffCmdDownload extends SnpEff {
 	 */
 	boolean runDownloadSnpEff() {
 		genomeVer = ""; // No genome version
-		readConfig(); // Read config file
+		loadConfig(); // Read config file
 
 		//---
 		// Get latest version data from server

@@ -106,7 +106,7 @@ public class SnpEffCmdTestOld extends SnpEff {
 		// Initialize
 		//---
 		genomeVer = sepLoader.getGenomeVer();
-		readConfig(); // Read config file
+		loadConfig(); // Read config file
 
 		sepLoader.load(config); // Load database, build forest
 
