@@ -37,6 +37,7 @@ public class CountByType implements Serializable {
 		Double currScore = scoreByType.get(type);
 		if (currScore == null) currScore = 0.0;
 		scoreByType.put(type, currScore + score);
+		inc(type);
 	}
 
 	public boolean contains(String key) {
