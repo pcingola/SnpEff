@@ -1,22 +1,22 @@
 package ca.mcgill.mcb.pcingola;
 
-import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
-public class Zzz {
+public class Zzz extends SnpEff {
 
 	public static void main(String[] args) {
+		String genome = "testHg3771Chr1";
+		String[] argsSnpEff = { "-v", "-nextProt", "-c", Gpr.HOME + "snpEff/snpEff.config", genome };
 
-		VcfFileIterator vcf = new VcfFileIterator(Gpr.HOME + "/snpEff/test_tabix.vcf.gz");
-		// VcfFileIterator vcf = new VcfFileIterator(Gpr.HOME + "/snpEff/test_tabix.vcf");
-
-		for (VcfEntry ve : vcf) {
-			if (vcf.isHeadeSection()) {
-				System.out.println(vcf.getVcfHeader());
-			}
-			System.out.println(ve);
-		}
+		// Create object and load databases
+		Zzz zzz = new Zzz(argsSnpEff);
+		zzz.setGenomeVer(genome);
+		zzz.loadConfig();
+		zzz.loadDb();
 	}
 
+	public Zzz(String[] args) {
+		super(args);
+	}
 }
