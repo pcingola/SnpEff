@@ -641,13 +641,17 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 				trById.put(tr.getId(), tr);
 
 		// Parse all XML files in directory
+		if (verbose) Timer.showStdErr("Reading NextProt files from directory '" + xmlDirName + "'");
 		String files[] = (new File(xmlDirName)).list();
-		for (String xmlFileName : files) {
-			if (xmlFileName.endsWith(".xml.gz") || xmlFileName.endsWith(".xml")) {
-				String path = xmlDirName + "/" + xmlFileName;
-				parse(path);
+		if (files != null) {
+			for (String xmlFileName : files) {
+				if (verbose) Timer.showStdErr("\tNextProt file '" + xmlFileName + "'");
+				if (xmlFileName.endsWith(".xml.gz") || xmlFileName.endsWith(".xml")) {
+					String path = xmlDirName + "/" + xmlFileName;
+					parse(path);
+				}
 			}
-		}
+		} else fatalError("No XML files found in directory '" + xmlDirName + "'");
 
 		// Show stats
 		if (verbose) Timer.showStdErr("Proteing sequences:" //
