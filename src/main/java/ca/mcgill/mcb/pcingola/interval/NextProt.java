@@ -20,10 +20,10 @@ public class NextProt extends Marker {
 		type = EffectType.NEXT_PROT;
 	}
 
-	public NextProt(Transcript parent, int start, int end, String id) {
-		super(parent.getChromosome(), start, end, 1, id);
+	public NextProt(Transcript transcript, int start, int end, String id) {
+		super(transcript.getChromosome(), start, end, 1, id);
 		type = EffectType.NEXT_PROT;
-		transcriptId = parent.getId();
+		transcriptId = transcript.getId();
 	}
 
 	public String getTranscriptId() {

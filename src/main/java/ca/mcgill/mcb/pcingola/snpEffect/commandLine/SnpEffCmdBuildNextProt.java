@@ -548,6 +548,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 				// Create marker
 				String id = key(category, contrVoc, description);
 				NextProt nextProt = new NextProt(trData.tr, trData.chrPosStart, trData.chrPosEnd, id);
+				if (debug) Gpr.debug("Adding NextProt: " + nextProt);
 				markers.add(nextProt);
 
 				// if (subSeq.length() == 1) countAaSequence(category, contrVoc, description, subSeq);
