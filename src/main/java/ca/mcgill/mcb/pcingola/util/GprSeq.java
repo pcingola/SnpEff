@@ -14,7 +14,84 @@ public class GprSeq {
 	public static final char BASES[] = { 'A', 'C', 'G', 'T' };
 	public static final char AMINO_ACIDS[] = { 'A', 'R', 'N', 'D', 'C', 'E', 'Q', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V' };
 
+	public static byte AA_TO_CODE[];
+	public static char CODE_TO_AA[];
+	public static byte DNA_TO_CODE[];
+	public static byte CODE_TO_DNA[];
+
 	public static final String KNOWN_FILE_EXTENSIONS[] = { ".fa", ".fasta", ".fq", ".fastq", ".sai", ".sam", ".bam", ".bcf", ".vcf", "pileup", "mpileup" };
+
+	static {
+		AA_TO_CODE = new byte[256];
+		DNA_TO_CODE = new byte[256];
+
+		// Initialize everything as 'missing'
+		for (int i = 0; i < AA_TO_CODE.length; i++)
+			AA_TO_CODE[i] = DNA_TO_CODE[i] = -1;
+
+		// Initialize forward mapping: AA -> Code
+		AA_TO_CODE['-'] = 0; // Gap
+		AA_TO_CODE['A'] = 1;
+		AA_TO_CODE['B'] = 2;
+		AA_TO_CODE['C'] = 3;
+		AA_TO_CODE['D'] = 4;
+		AA_TO_CODE['E'] = 5;
+		AA_TO_CODE['F'] = 6;
+		AA_TO_CODE['G'] = 7;
+		AA_TO_CODE['H'] = 8;
+		AA_TO_CODE['I'] = 9;
+		AA_TO_CODE['K'] = 10;
+		AA_TO_CODE['L'] = 11;
+		AA_TO_CODE['M'] = 12;
+		AA_TO_CODE['N'] = 13;
+		AA_TO_CODE['P'] = 14;
+		AA_TO_CODE['Q'] = 15;
+		AA_TO_CODE['R'] = 16;
+		AA_TO_CODE['S'] = 17;
+		AA_TO_CODE['T'] = 18;
+		AA_TO_CODE['V'] = 19;
+		AA_TO_CODE['W'] = 20;
+		AA_TO_CODE['X'] = 21;
+		AA_TO_CODE['Y'] = 22;
+		AA_TO_CODE['Z'] = 23;
+		AA_TO_CODE['*'] = 24; // Stop Codon
+		AA_TO_CODE['U'] = 25; // Selenocysteine (Rare amino acid)
+
+		// Initialize reverse mapping: Codes -> AA
+		CODE_TO_AA = new char[26];
+		CODE_TO_AA[0] = '-'; // Gap
+		CODE_TO_AA[1] = 'A';
+		CODE_TO_AA[2] = 'B';
+		CODE_TO_AA[3] = 'C';
+		CODE_TO_AA[4] = 'D';
+		CODE_TO_AA[5] = 'E';
+		CODE_TO_AA[6] = 'F';
+		CODE_TO_AA[7] = 'G';
+		CODE_TO_AA[8] = 'H';
+		CODE_TO_AA[9] = 'I';
+		CODE_TO_AA[10] = 'K';
+		CODE_TO_AA[11] = 'L';
+		CODE_TO_AA[12] = 'M';
+		CODE_TO_AA[13] = 'N';
+		CODE_TO_AA[14] = 'P';
+		CODE_TO_AA[15] = 'Q';
+		CODE_TO_AA[16] = 'R';
+		CODE_TO_AA[17] = 'S';
+		CODE_TO_AA[18] = 'T';
+		CODE_TO_AA[19] = 'V';
+		CODE_TO_AA[20] = 'W';
+		CODE_TO_AA[21] = 'X';
+		CODE_TO_AA[22] = 'Y';
+		CODE_TO_AA[23] = 'Z';
+		CODE_TO_AA[24] = '*'; // Stop Codon
+		CODE_TO_AA[25] = 'U'; // Selenocysteine (Rare amino acid)
+	}
+
+	public static byte aa2Code(char aa) {
+		byte c = AA_TO_CODE[(byte) aa];
+		if (c < 0) throw new RuntimeException("Unknown code for amino acid '" + aa + "' (ord: " + ((int) aa) + " )");
+		return c;
+	}
 
 	/**
 	 * Change a fastQ encoding in a quality sequence
@@ -65,6 +142,11 @@ public class GprSeq {
 		}
 
 		return new String(newQ);
+	}
+
+	public static char code2aa(byte aacode) {
+		return CODE_TO_AA[aacode];
+
 	}
 
 	/**
