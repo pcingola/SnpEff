@@ -152,6 +152,8 @@ public class GuessTableTypes {
 				}
 
 			} else {
+				if (multipleValues == null) throw new RuntimeException("Cannot parse file '" + fileName + "'. Missing header?");
+
 				// Parse data
 				boolean done = true;
 				String values[] = line.split(columnSeparator);
