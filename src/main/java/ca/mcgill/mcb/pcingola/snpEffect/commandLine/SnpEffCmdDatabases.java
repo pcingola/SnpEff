@@ -169,7 +169,8 @@ public class SnpEffCmdDatabases extends SnpEff {
 			String name = nameByGenomeVer.get(genomeVer);
 
 			// Download link
-			String url = "http://sourceforge.net/projects/snpeff/files/databases/v" + SnpEff.VERSION_MAJOR + "/snpEff_v" + SnpEff.VERSION_MAJOR + "_" + name + ".zip";
+			String url = config.downloadUrl(genomeVer).toString();
+			// "http://sourceforge.net/projects/snpeff/files/databases/v" + SnpEff.VERSION_MAJOR + "/snpEff_v" + SnpEff.VERSION_MAJOR + "_" + name + ".zip";
 
 			String database = config.getDirData() + "/" + genomeVer + "/snpEffectPredictor.bin";
 			String status = "";

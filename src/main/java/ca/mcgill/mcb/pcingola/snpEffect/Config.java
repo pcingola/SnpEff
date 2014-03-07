@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 public class Config implements Serializable, Iterable<String> {
@@ -145,6 +147,35 @@ public class Config implements Serializable, Iterable<String> {
 				// Everything seems to be OK, go on
 				CodonTables.getInstance().add(genomeByVersion.get(genomeVersion), chr, codonTable);
 			}
+		}
+	}
+
+	/**
+	 * Build the URL for downloading a database file
+	 * 
+	 * Format  : DatabaseRepository / v VERSION / snpEff_v VERSION _ genomeVersion .zip
+	 * Example : http://downloads.sourceforge.net/project/snpeff/databases/v2_0_3/snpEff_v2_0_3_EF3.64.zip
+	 * 
+	 * @param genomeVer
+	 * @return
+	 */
+	public URL downloadUrl(String genomeVer) {
+		try {
+			String version = SnpEff.VERSION_MAJOR;
+
+			// Replace '.' by '_' 
+			version = version.replace('.', '_');
+
+			String urlRoot = getDatabaseRepository();
+
+			StringBuilder urlsb = new StringBuilder();
+			urlsb.append(urlRoot);
+			if (urlsb.charAt(urlRoot.length() - 1) != '/') urlsb.append("/");
+			urlsb.append("v" + version + "/snpEff_v" + version + "_" + genomeVer + ".zip");
+
+			return new URL(urlsb.toString());
+		} catch (MalformedURLException e) {
+			return null;
 		}
 	}
 
