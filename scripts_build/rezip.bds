@@ -1,0 +1,13 @@
+#!/usr/bin/env bds
+
+for( string gz : args ) {
+	file := gz.removeExt('.gz')
+	task( file <- gz )	sys gunzip -v $gz
+}
+
+wait
+
+for( string gz : args ) {
+	file := gz.removeExt('.gz')
+	task( gz <- file )	sys gzip -v $file
+}
