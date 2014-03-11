@@ -1,37 +1,41 @@
 #!/bin/sh
 
-db=dbNSFP2.3.txt
+base="dbNSFP2.4"
+db="$base.txt"
 
-head -n 1 dbNSFPv2.3/dbNSFP2.3_variant.chr1 > $db
+echo Create file $db
+head -n 1 $base_variant.chr1 > $db
 
-cat dbNSFPv2.3/dbNSFP2.3_variant.chr1 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr2 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr3 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr4 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr5 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr6 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr7 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr8 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr9 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chrX \
-		dbNSFPv2.3/dbNSFP2.3_variant.chrY \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr10 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr11 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr12 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr13 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr14 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr15 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr16 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr17 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr18 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr19 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr20 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr21 \
-		dbNSFPv2.3/dbNSFP2.3_variant.chr22 \
+cat $base_variant.chr1 \
+		$base_variant.chr2 \
+		$base_variant.chr3 \
+		$base_variant.chr4 \
+		$base_variant.chr5 \
+		$base_variant.chr6 \
+		$base_variant.chr7 \
+		$base_variant.chr8 \
+		$base_variant.chr9 \
+		$base_variant.chr10 \
+		$base_variant.chr11 \
+		$base_variant.chr12 \
+		$base_variant.chr13 \
+		$base_variant.chr14 \
+		$base_variant.chr15 \
+		$base_variant.chr16 \
+		$base_variant.chr17 \
+		$base_variant.chr18 \
+		$base_variant.chr19 \
+		$base_variant.chr20 \
+		$base_variant.chr21 \
+		$base_variant.chr22 \
+		$base_variant.chrX \
+		$base_variant.chrY \
 	| grep -v "^#" \
 	>> $db
 
-echo BGZIP
+echo BGZIP $db
 bgzip $db
+
+echo TABIX $db.gz
 tabix -s 1 -b 2 -e 2 $db.gz
 
