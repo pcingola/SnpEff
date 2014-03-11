@@ -145,7 +145,7 @@ void buildNextProt() {
 	for( string hg : dirData.dir("GRCh37.7.*") ) {
 		string npfile = "$dirData/$hg/nextProt.bin"
 
-		if( npfile <- xmlFiles ) {
+		if( !npfile.exitst() ) {
 			print("NextProt ($hg): Build\n")
 			sys $snpeffXl buildNextProt -v $hg db/nextProt/
 		} else {
