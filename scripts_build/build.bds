@@ -22,7 +22,6 @@ string dirDarned				="$dirDb/darned/"
 string pwmsBin					="$dirDb/jaspar/pwms.bin"
 
 # Program parameters and switches
-bool dryrun 					= false		# Dry run: Don't build databases
 bool make	 					= false		# Mkae (build JAR files)
 bool download 					= false		# Download files
 bool build	 					= false		# Build databases
@@ -59,12 +58,8 @@ bool addBuild(string type, string genome) {
 	if( built.hasKey(genome) ) {
 		print("INFO : Genome $genome already built\n")
 	} else if( db <- geneFile ) {
-		if( dryrun ) {
-			print("DRY RUN:\t$type\t$genome\n")
-		} else {
-			print("BUILD:\t$type\t$genome\n")
-			task $snpeffBuild -$type $genome 2>&1 | tee $dirBuild/build.$genome.out
-		}
+		print("BUILD:\t$type\t$genome\n")
+		task $snpeffBuild -$type $genome 2>&1 | tee $dirBuild/build.$genome.out
 	} else {
 		print("OK  :\t$type\t$genome\n")
 	}
@@ -123,7 +118,7 @@ bool buildAll() {
 
 	# Create build summary
 	print("Build: Checking build logs!\n")
-	if( ! dryrun )	sys cat $dirBuild/build.*.out | ./scripts_build/buildCheck.pl | tee $buildSummary
+	sys cat $dirBuild/build.*.out | ./scripts_build/buildCheck.pl | tee $buildSummary
 
 	print("Build: Done!\n")
 	return( true )
@@ -152,7 +147,7 @@ void buildNextProt() {
 
 		if( npfile <- xmlFiles ) {
 			print("NextProt ($hg): Build\n")
-			if( ! dryrun )	sys $snpeffXl buildNextProt -v $hg db/nextProt/
+			sys $snpeffXl buildNextProt -v $hg db/nextProt/
 		} else {
 			print("NextProt ($hg): OK\n")
 		}
