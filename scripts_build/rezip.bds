@@ -1,5 +1,7 @@
 #!/usr/bin/env bds
 
+if( args.size() <= 0 )	error("\nUsage: rezip file_1.gz file_2.gz ... file_N.gz\n")
+
 for( string gz : args ) {
 	file := gz.removeExt('.gz')
 	task( file <- gz )	sys gunzip -v $gz
