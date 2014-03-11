@@ -21,11 +21,15 @@ rmdir ftp.ncbi.nih.gov/genomes/Bacteria
 rmdir ftp.ncbi.nih.gov/genomes
 rmdir ftp.ncbi.nih.gov
 
+confFile="../../snpEff.NCBI_bacterial.config"
+echo Creating config file $confFile
+rm -vf $confFile || true
+
 for dir in `find . -mindepth 1 -maxdepth 1 -type d `
 do
 	# Config file entries
 	gen=`basename $dir`
-	echo -e "$gen.genome : $gen\n" | tee -a ncbi_append.snpEff.config
+	echo -e "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/\n" | tee -a $confFile
 
 	# Collapse all fine into one 
 	cd $dir
@@ -33,3 +37,5 @@ do
 	cd - > /dev/null
 done
 
+echo Copying to snpEff/data
+cp -rvf `find . -mindepth 1 -maxdepth 1 -type d ` ../../data/
