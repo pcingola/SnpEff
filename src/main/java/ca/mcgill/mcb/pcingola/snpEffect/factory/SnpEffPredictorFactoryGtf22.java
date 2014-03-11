@@ -63,19 +63,20 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		// Check that they are in the same chromosome
 		if (!gene.getChromosomeName().equals(chromosome.getId())) error("Gene chromosome does not match !" + "\n\tPosition    : " + chromo + ":" + start + "-" + end + "\n\t" + gene);
 
+		// No transcript ID => Create only gene. We are done.
+		if (transcriptId.isEmpty()) return;
+
 		// Get (or create) transcript
 		Transcript tr = null;
-		if (!transcriptId.isEmpty()) {
-			tr = findTranscript(transcriptId);
-			if (tr == null) {
-				tr = new Transcript(gene, start, end, strand, transcriptId);
-				if ((trBioType == null) || (trBioType.isEmpty())) trBioType = "mRNA"; // No bioType? Create a default one
-				tr.setBioType(trBioType);
-				add(tr);
-			}
-
-			if (proteinCoding) tr.setProteinCoding(proteinCoding); // Set protein coding (if available)
+		tr = findTranscript(transcriptId);
+		if (tr == null) {
+			tr = new Transcript(gene, start, end, strand, transcriptId);
+			if ((trBioType == null) || (trBioType.isEmpty())) trBioType = "mRNA"; // No bioType? Create a default one
+			tr.setBioType(trBioType);
+			add(tr);
 		}
+
+		if (proteinCoding) tr.setProteinCoding(proteinCoding); // Set protein coding (if available)
 
 		// Check that they are in the same chromosome
 		if (!tr.getChromosomeName().equals(chromosome.getId())) error("Transcript chromosome does not match !" + "\n\tPosition    : " + chromo + ":" + start + "-" + end + "\n\t" + gene);
