@@ -1056,15 +1056,15 @@ $ java -jar SnpSift.jar gwasCat gwascatalog.txt test.vcf | tee test.gwas.vcf
 				<i class="icon-warning-sign"></i> As of SnpSift version 3.5, the dbNSFP file has to be <a href="http://samtools.sourceforge.net/tabix.shtml">tabix</a> indexed (i.e. block-gzipped + tabix). This allows for faster annotations
 				<br>
 				<br>
-				There are two options:
-				<ul>
-					<li> You can download the file from SnpEff's site:
+				<i class="icon-hand-right"></i> You can download the file from SnpEff's site:
 					<ul>
-						<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP2.4.txt.gz"> here </a>
-						<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP2.4.txt.gz.tbi"> here </a>
+						<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz"> here </a>
+						<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi"> here </a>
 					</ul>
-					<li> You can create it yourself, downloading the files from <a href="https://sites.google.com/site/jpopgen/dbNSFP">DbNsfp</a> site.
-					Creating a file that SnpSift can use is simple, just follow this guideline:
+				<br>
+				<br>
+				You can also create the files yourself, downloading the files from <a href="https://sites.google.com/site/jpopgen/dbNSFP">DbNsfp</a> site.
+				Creating a file that SnpSift can use is simple, just follow this guideline:
 <pre>
 # Download dbNSFP database
 $ wget http://dbnsfp.houstonbioinformatics.org/dbNSFPzip/dbNSFP2.4.zip
