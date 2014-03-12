@@ -71,7 +71,7 @@ public class TestSuiteAll {
 		suite.addTestSuite(TestCasesJaspar.class);
 		suite.addTestSuite(TestCasesEmbl.class);
 
-		// File formats
+		// File formats: VCF
 		suite.addTestSuite(TestCasesVcf.class);
 
 		// Build database: Exon frame

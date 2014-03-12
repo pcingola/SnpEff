@@ -450,4 +450,16 @@ public class TestCasesVcf extends TestCase {
 		Assert.assertEquals("1:249211906 2:41612", chrpos.trim());
 	}
 
+	public void test_19_alt_ins() {
+		throw new RuntimeException("VCF: Add support for <INS> in ALT field");
+	}
+
+	public void test_20_alt_dup() {
+		throw new RuntimeException("VCF: Add support for <DUP> in ALT field");
+	}
+
+	public void test_21_alt_inv() {
+		throw new RuntimeException("VCF: Add support for <INV> in ALT field");
+	}
+
 }

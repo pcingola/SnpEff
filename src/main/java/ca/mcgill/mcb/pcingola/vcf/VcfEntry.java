@@ -776,7 +776,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			end = start;
 			if (ref.length() >= 1) end += ref.length() - 1;
 
-			// Strand is alwats positive (defined in VCF spec.)
+			// Strand is always positive (defined in VCF spec.)
 			strand = 1;
 			String altsStr = vcfFileIterator.readField(fields, 4).toUpperCase();
 			parseAlts(altsStr);
@@ -798,7 +798,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 			// Add genotype fields (lazy parse) 
 			if (fields.length > 9) genotypeFieldsStr = fields[9];
-		}
+		} else throw new RuntimeException("Impropper VCF entry: Not enough fields (missing tab separators?).\n" + line);
 	}
 
 	/**
