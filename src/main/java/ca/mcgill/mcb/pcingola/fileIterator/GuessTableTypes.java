@@ -12,6 +12,9 @@ import ca.mcgill.mcb.pcingola.vcf.VcfInfoType;
  */
 public class GuessTableTypes {
 
+	public static boolean debug = false;
+	public static int MIN_LINES = 10000; // Analyze at least this many lines (because some types might change)
+
 	String fileName;
 	String headerPrefix = "#";
 	String columnSeparator = "\t";
@@ -155,21 +158,31 @@ public class GuessTableTypes {
 				if (multipleValues == null) throw new RuntimeException("Cannot parse file '" + fileName + "'. Missing header?");
 
 				// Parse data
+				if (debug) System.err.println("Line: " + lfi.getLineNum());
+
 				boolean done = true;
 				String values[] = line.split(columnSeparator);
 				for (int i = 0; i < fieldNames.length; i++) {
 					// We don't know the type yet? Try to guess it
+					VcfInfoType type = guessType(values[i]);
+
+					if (debug && fieldNames[i].equals("SIFT_score")) System.err.println("\tfield[" + i + "]: '" + fieldNames[i] + "'\tfield_type: " + types[i] + "'\tvalue_type: " + type + "\tdata: '" + values[i] + "'");
+
 					if (types[i] == null) {
-						types[i] = guessType(values[i]);
-						done &= (types[i] != null);
+						types[i] = type;
+					} else {
+						// Some types can 'change'
+						if (types[i] == VcfInfoType.Integer && type == VcfInfoType.Float) types[i] = type;
+						else if (type == VcfInfoType.String) types[i] = type;
 					}
 
 					// Do we have multiple values per field?
 					multipleValues[i] |= isMultiple(values[i]);
+					done &= (types[i] != null);
 				}
 
 				// Have we guessed all types? => We are done
-				if (done) {
+				if (done && lfi.getLineNum() > MIN_LINES) {
 					lfi.close();
 					return true;
 				}
