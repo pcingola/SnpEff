@@ -285,7 +285,7 @@ public class SeqChange extends Marker {
 		} else {
 			for (int i = 0; i < changeOptions.length; i++) {
 				String ch = changeOptions[i];
-				if (ch.startsWith("+") || ch.startsWith("-")) ch = ch.substring(1);
+				if (ch.startsWith("+") || ch.startsWith("-") || ch.startsWith("=")) ch = ch.substring(1);
 				end = Math.max(end, start + ch.length() - 1);
 			}
 		}
