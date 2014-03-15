@@ -153,7 +153,6 @@ public class GuessTableTypes {
 					// Cannot parse header!
 					return false;
 				}
-
 			} else {
 				if (multipleValues == null) throw new RuntimeException("Cannot parse file '" + fileName + "'. Missing header?");
 
