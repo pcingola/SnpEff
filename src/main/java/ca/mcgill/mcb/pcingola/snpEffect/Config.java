@@ -39,6 +39,7 @@ public class Config implements Serializable, Iterable<String> {
 	public static final String KEY_LOF_DELETE_PROTEIN_CODING_BASES = "lof.deleteProteinCodingBases";
 
 	public static boolean debug = false; // Debug mode?
+	public static boolean verbose = false; // Verbose
 	private static Config configInstance = null; // Config is some kind of singleton because we want to make it accessible from everywhere
 
 	boolean treatAllAsProteinCoding; // Calculate effect only in coding genes. Default is true for testing and debugging reasons (command line default is 'false')

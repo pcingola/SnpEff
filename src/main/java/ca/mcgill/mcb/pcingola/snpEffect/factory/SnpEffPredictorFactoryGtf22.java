@@ -160,7 +160,6 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		String geneName = null;
 
 		// Is it protein coding?
-		boolean proteinCoding = isProteingCoding(source);
 		String geneBioType = "", trBioType = "";
 
 		// Parse attributes
@@ -182,6 +181,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 
 		// Use 'source' as bioType (ENSEMBL uses this field)
 		if ((trBioType == null) || trBioType.isEmpty()) trBioType = source;
+		boolean proteinCoding = isProteingCoding(trBioType);
 
 		// Transform null to empty
 		if (geneId == null) geneId = "";
