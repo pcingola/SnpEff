@@ -448,6 +448,26 @@ public abstract class SnpEffPredictorFactory {
 	void frameCorrection() {
 		if (verbose) System.out.print("\n\tCorrecting exons based on frame information.\n\t");
 
+		// Sanity check. Are all frames zero?
+		int countByFrame[] = new int[3];
+		for (Gene gene : genome.getGenes())
+			for (Transcript tr : gene) {
+				for (Exon ex : tr) {
+					int frame = ex.getFrame();
+					if (frame >= 0 && frame <= 2) countByFrame[frame]++; // Any value other than {0, 1, 2} is ignored (-1 means missing, other values are invalid)
+				}
+
+				for (Cds cds : tr.getCds()) {
+					int frame = cds.getFrame();
+					if (frame >= 0 && frame <= 2) countByFrame[frame]++; // Any value other than {0, 1, 2} is ignored (-1 means missing, other values are invalid)
+				}
+			}
+
+		int countByFrameTotal = countByFrame[0] + countByFrame[1] + countByFrame[2];
+		int countByFrameNonZero = countByFrame[1] + countByFrame[2];
+		if ((countByFrameTotal > 0) && (countByFrameNonZero <= 0)) System.err.println("WARNING: All frames are zero! This seems rather odd, please check that 'frame' information in your 'genes' file is accurate.");
+
+		// Perform exon frame adjustment
 		int i = 1;
 		for (Gene gene : genome.getGenes())
 			for (Transcript tr : gene) {
@@ -461,6 +481,7 @@ public abstract class SnpEffPredictorFactory {
 			}
 
 		if (verbose) System.out.print("");
+
 	}
 
 	/**

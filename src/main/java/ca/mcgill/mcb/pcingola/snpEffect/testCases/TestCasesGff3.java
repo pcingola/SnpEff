@@ -1,5 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class TestCasesGff3 extends TestCase {
 	 * @param resultFile
 	 */
 	public SnpEffectPredictor buildAndCompare(String genome, String gff3File, String resultFile, boolean readSeqs) {
-		String expectedResult = Gpr.readFile(resultFile).trim();
+		String expectedResult = (resultFile == null ? "" : Gpr.readFile(resultFile).trim());
 
 		// Build
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
@@ -46,7 +48,7 @@ public class TestCasesGff3 extends TestCase {
 
 		// Compare result
 		String result = show(sep.getGenome()).trim();
-		System.out.println(result);
+		System.out.println("Result:\n----------\n" + result + "\n----------\n");
 		Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 
 		return sep;
@@ -83,35 +85,35 @@ public class TestCasesGff3 extends TestCase {
 		return sb.toString();
 	}
 
-	public void testCase_Exon_Simple() {
+	public void testCase_01_Exon_Simple() {
 		String genome = "testCase";
 		String gff3File = "tests/exonSimple.gff3";
 		String resultFile = "tests/exonSimple.txt";
 		buildAndCompare(genome, gff3File, resultFile, true);
 	}
 
-	public void testCase_ExonIn() {
+	public void testCase_02_ExonIn() {
 		String genome = "testCase";
 		String gff3File = "tests/exonIn.gff3";
 		String resultFile = "tests/exonIn.txt";
 		buildAndCompare(genome, gff3File, resultFile, true);
 	}
 
-	public void testCase_ExonOut() {
+	public void testCase_03_ExonOut() {
 		String genome = "testCase";
 		String gff3File = "tests/exonOut.gff3";
 		String resultFile = "tests/exonOut.txt";
 		buildAndCompare(genome, gff3File, resultFile, true);
 	}
 
-	public void testCaseAthalianaTair10_AT5G66790() {
+	public void testCase_04_AthalianaTair10_AT5G66790() {
 		String genome = "athalianaTair10";
 		String gff3File = "tests/AT5G66790.gff3";
 		String resultFile = "tests/AT5G66790.txt";
 		buildAndCompare(genome, gff3File, resultFile, true);
 	}
 
-	public void testCasePaeruPA14muccA() {
+	public void testCase_05_PaeruPA14muccA() {
 		String genome = "paeru.PA14";
 		String gff3File = "tests/paeru.PA14.muccA.gff";
 		String resultFile = "tests/paeru.PA14.muccA.txt";
@@ -124,24 +126,50 @@ public class TestCasesGff3 extends TestCase {
 		Assert.assertEquals(0, spliceSites.size());
 	}
 
-	public void testCasePpersica() {
+	public void testCase_06_Ppersica() {
 		String genome = "ppersica139";
 		String gff3File = "tests/ppersica_139.gff";
 		String resultFile = "tests/ppersica_139.txt";
 		buildAndCompare(genome, gff3File, resultFile, false);
 	}
 
-	public void testCaseRice5() {
+	public void testCase_07_Rice5() {
 		String genome = "testRice5";
 		String gff3File = "tests/Os03t0150600.gff";
 		String resultFile = "tests/Os03t0150600.txt";
 		buildAndCompare(genome, gff3File, resultFile, false);
 	}
 
-	public void testCaseVibrio() {
+	public void testCase_08_Vibrio() {
 		String genome = "vibrio";
 		String gff3File = "tests/vibrio.gff3";
 		String resultFile = "tests/vibrio.txt";
 		buildAndCompare(genome, gff3File, resultFile, true);
 	}
+
+	public void testCase_09_AP() {
+		String genome = "testAP";
+		String gff3File = "tests/testAP_genes.gff.gz";
+		String resultFile = "tests/testAP.txt";
+
+		// Capture STDERR
+		PrintStream errOri = System.err;
+		final ByteArrayOutputStream myErr = new ByteArrayOutputStream();
+		System.setErr(new PrintStream(myErr));
+
+		// Test
+		try {
+			buildAndCompare(genome, gff3File, resultFile, true);
+		} catch (Throwable t) {
+			t.printStackTrace();
+		} finally {
+			// Restore STDERR
+			System.setErr(errOri);
+		}
+
+		// Show stderr and check message
+		System.err.println("STDERR:\n" + myErr);
+		Assert.assertTrue(myErr.toString().indexOf("WARNING: All frames are zero!") >= 0);
+	}
+
 }

@@ -140,13 +140,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		int newStart = Integer.MAX_VALUE;
 		int newEnd = Integer.MIN_VALUE;
 
-		// int newStart = start, newEnd = end;
-		//		
-		//		if (newStart == 0 && newEnd == 0) {
-		//			newStart = Integer.MAX_VALUE;
-		//			newEnd = Integer.MIN_VALUE;
-		//		}
-
 		int countStrandPlus = 0, countStrandMinus = 0;
 		for (Exon exon : sortedStrand()) {
 			newStart = Math.min(newStart, exon.getStart());
@@ -794,6 +787,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Add UTR5'
 		add(utr5);
+
+		// Update counter
 		return true;
 	}
 
