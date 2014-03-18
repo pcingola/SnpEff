@@ -170,7 +170,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 					effBuff.append("|" + reg.getCellType() + "||");
 				} else if (changeEffect.isCustom()) {
 					Marker m = changeEffect.getMarker();
-					if (m != null) effBuff.append("|" + m.getId() + "||");
+					if (m != null) effBuff.append("|" + VcfEntry.vcfInfoSafe(m.getId()) + "||");
 					else effBuff.append("|||");
 				} else effBuff.append("|||");
 
