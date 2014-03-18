@@ -243,7 +243,7 @@ public class TestCasesVcf extends TestCase {
 			// Compare seqChanges to what we expect
 			List<SeqChange> seqChanges = vcfEntry.seqChanges();
 
-			Assert.assertEquals("chr1:223921_GACCACTGGAA/ACATCCATACAT", seqChanges.get(0).toString()); // FIXME: What the hell do I actually expect here?			
+			Assert.assertEquals("chr1:223921_GACCACTGGAA/=ACATCCATACAT", seqChanges.get(0).toString()); // FIXME: What the hell do I actually expect here?			
 			Assert.assertEquals("chr1:223919_TC/AT", seqChanges.get(1).toString());
 		}
 	}

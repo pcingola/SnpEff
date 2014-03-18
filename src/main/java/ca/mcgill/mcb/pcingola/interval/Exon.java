@@ -235,11 +235,11 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		int chRefStart = mstart - seqChange.getStart();
 		if (chRefStart < 0) return ErrorWarningType.ERROR_OUT_OF_EXON;
 
-		int chRefEnd = mend - seqChange.getStart() + 1;
+		int chRefEnd = mend - seqChange.getStart();
 		String refStr = seqChange.reference();
 		if (chRefEnd >= refStr.length()) return ErrorWarningType.ERROR_OUT_OF_EXON;
 
-		String changeReference = refStr.substring(chRefStart, chRefEnd);
+		String changeReference = refStr.substring(chRefStart, chRefEnd + 1);
 
 		// Reference sequence different than expected?
 		if (!realReference.equals(changeReference)) return ErrorWarningType.WARNING_REF_DOES_NOT_MATCH_GENOME;

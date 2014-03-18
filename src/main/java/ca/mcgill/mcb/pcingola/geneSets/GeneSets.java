@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import ca.mcgill.mcb.pcingola.fileIterator.LineFileIterator;
 import ca.mcgill.mcb.pcingola.geneOntology.GoTerm;
 import ca.mcgill.mcb.pcingola.geneOntology.GoTerms;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -477,12 +478,10 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 			geneSetsByName = new HashMap<String, GeneSet>(); // and genesets by name
 
 			// Open file and initialize buffers
-			BufferedReader inFile = new BufferedReader(new FileReader(gmtFile));
-			String line;
-			int lineNum;
+			LineFileIterator lfi = new LineFileIterator(gmtFile);
 
 			// Read each line
-			for (lineNum = 0; (line = inFile.readLine()) != null; lineNum++) {
+			for (String line : lfi) {
 				line = line.trim();
 				if (!line.startsWith("#")) { // Skip comments
 
@@ -493,7 +492,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 					String description = fields[1];
 
 					// Sanity check: Does gene set already exist?
-					if (getGeneSet(geneSetName) != null) Gpr.debug("Error: File '" + gmtFile + "' line " + lineNum + ". Gene set name '" + geneSetName + "' duplicated.");
+					if (getGeneSet(geneSetName) != null) Gpr.debug("Error: File '" + gmtFile + "' line " + lfi.getLineNum() + ". Gene set name '" + geneSetName + "' duplicated.");
 
 					// Create geneSet and all genes
 					GeneSet gs = new GeneSet(geneSetName, description, this);
@@ -506,11 +505,9 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 			}
 
 			// OK, finished
-			inFile.close();
+			if (verbose) System.err.println("GeneSets added: " + geneSetsByName.size());
 
-			if (verbose) System.err.println("GeneSets added: " + lineNum);
-
-		} catch (IOException e) {
+		} catch (Exception e) {
 			if (maskException) return false;
 			throw new RuntimeException(e);
 		}

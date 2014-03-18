@@ -258,7 +258,7 @@ public class VcfEffect {
 			// Effect
 			effString = effectStrings[index];
 			effect = ChangeEffect.EffectType.parse(parseEffect(effectStrings[index]));
-			effectDetails = parseEffectDetails(effectStrings[index]); // Effect details: everything betwee '['  and ']' (e.g. Regulation, Custom, Motif, etc.)
+			effectDetails = parseEffectDetails(effectStrings[index]); // Effect details: everything between '['  and ']' (e.g. Regulation, Custom, Motif, etc.)
 			index++;
 
 			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) impact = ChangeEffect.EffectImpact.valueOf(effectStrings[index]);
