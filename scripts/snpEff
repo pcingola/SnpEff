@@ -1,12 +1,17 @@
 #!/bin/bash
+
+#---------------------------------------------------------------------------------------------------
+#
+# Wrapper for HomeBrew-science project 
 #
 # snpEff executable shell script
 # http://snpeff.sourceforge.net/
 # Extracts memory and system property Java arguments from the list of provided arguments
-# (ie -Xms 1g -Xmx 2g)
+# (ie -Xms 1g -Xmx 4g)
 #
 # Source https://gist.github.com/chapmanb/8732049
 # Created by: Brad Chapman
+#---------------------------------------------------------------------------------------------------
 
 jardir="$(cd "$(dirname "$0")" && pwd -P)"
 
@@ -16,7 +21,7 @@ then
 java="$JAVA_HOME/bin/java"
 fi
 
-default_jvm_mem_opts="-Xms512m -Xmx1g"
+default_jvm_mem_opts="-Xms1g -Xmx4g"
 jvm_mem_opts=""
 jvm_prop_opts=""
 pass_args=""
