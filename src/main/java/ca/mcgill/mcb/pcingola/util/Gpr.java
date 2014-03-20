@@ -341,6 +341,8 @@ public class Gpr {
 		StringBuilder sb = new StringBuilder();
 		for (String line : lines)
 			sb.append(line.trim().replaceAll("\\s", "") + "\n");
+
+		if (lines.length == 1) sb.deleteCharAt(sb.length() - 1);
 		return sb.toString();
 	}
 

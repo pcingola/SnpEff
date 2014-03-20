@@ -46,5 +46,5 @@ if [[ "$pass_args" != "" && "$pass_args" != *-c* ]]; then
     pass_args="$pass_args -c ${jardir}/snpEff.config"
 fi
 
-exec java $jvm_mem_opts $jvm_prop_opts -jar ${jardir}/snpEff.jar $pass_args
+exec $java $jvm_mem_opts $jvm_prop_opts -jar ${jardir}/snpEff.jar $pass_args
 exit
