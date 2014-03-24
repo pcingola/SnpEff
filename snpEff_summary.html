@@ -138,20 +138,20 @@ th a:active, th a:hover {
 <table border=0>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Genome </b> </td>
-		<td> testENST00000268124 </td>
+		<td> testHg3771Chr1 </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Date </b> </td>
-		<td> 2014-03-18 13:00 </td>
+		<td> 2014-03-24 13:07 </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> SnpEff version </b> </td>
-		<td> <pre>SnpEff 3.5f (build 2014-03-17), by Pablo Cingolani</pre> </td>
+		<td> <pre>SnpEff 3.5f (build 2014-03-18), by Pablo Cingolani</pre> </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Command line arguments </b> </td>
-		<td> <pre>SnpEff  -sequenceOntolgy testENST00000268124 
-tests/testENST00000268124.Del.05.vcf </pre> </td>
+		<td> <pre>SnpEff  -filterinterval tests/test_vcf_filter.bed 
+testHg3771Chr1 tests/test_vcf_filter.vcf </pre> </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Warnings </b> </td>
@@ -160,7 +160,7 @@ tests/testENST00000268124.Del.05.vcf </pre> </td>
 	</tr>	
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of lines (input file) </b> </td>
-		<td> 0 </td>
+		<td> 1 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of variants (before filter) </b> </td>
@@ -195,7 +195,7 @@ tests/testENST00000268124.Del.05.vcf </pre> </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Genome total length </b> </td>
-		<td> 102,531,392 </td>
+		<td> 249,250,621 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome effective length </b> </td>
@@ -448,6 +448,19 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 </center>
 <p>
 
+	<b>All variants:</b>
+	<pre>Sample ,Total
+Transitions ,2,2
+Transversions ,0,0
+Ts/Tv ,Infinity,Infinity
+</pre>
+	<p>
+	<b>Only known variants</b> (i.e. the ones having a non-empty ID field):
+	<pre>Sample ,Total
+Transitions ,2,2
+Transversions ,0,0
+Ts/Tv ,Infinity,Infinity
+</pre>
 <p>
 
 <!--==========================================================================
@@ -460,6 +473,30 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 
 Note: Number of times an allele appears once (singleton), twice (doubletons), etc.<p>
 
+	<b>All variants:</b>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Alleles+frequencies&chxl=1:|Count|2:|2|3:|Alleles&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0"><br>
+	<table class="histo">
+		<tr> <th width=15%>Min</th><td>2</td> </tr>
+		<tr> <th>Max</th><td>2</td> </tr>
+		<tr> <th>Mean</th><td>2</td> </tr>
+		<tr> <th>Median</th><td>1</td> </tr>
+		<tr> <th>Standard deviation</th><td>0</td> </tr>
+		<tr> <th>Values</th><td>2</td> </tr>
+		<tr> <th>Count</th><td>1</td> </tr>
+		</tr>
+	</table>
+	<p>
+	<b>Only known variants</b> (i.e. the ones having a non-empty ID field):
+	<table class="histo">
+		<tr> <th width=15%>Min</th><td>2</td> </tr>
+		<tr> <th>Max</th><td>2</td> </tr>
+		<tr> <th>Mean</th><td>2</td> </tr>
+		<tr> <th>Median</th><td>1</td> </tr>
+		<tr> <th>Standard deviation</th><td>0</td> </tr>
+		<tr> <th>Values</th><td>2</td> </tr>
+		<tr> <th>Count</th><td>1</td> </tr>
+		</tr>
+	</table>
 <p>
 
 

@@ -462,4 +462,18 @@ public class TestCasesVcf extends TestCase {
 		throw new RuntimeException("VCF: Add support for <INV> in ALT field");
 	}
 
+	public void test_22_huge_headers() {
+		String vcfFile = "tests/huge_header_slow.vcf.gz";
+
+		Timer timer = new Timer();
+		timer.start();
+
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		for (VcfEntry ve : vcf) {
+			System.out.println(ve);
+		}
+
+		Assert.assertTrue(timer.elapsed() < 1000); // We should be able to iterate the whole file in less than a second
+	}
+
 }

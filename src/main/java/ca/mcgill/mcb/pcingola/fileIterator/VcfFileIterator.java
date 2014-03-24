@@ -114,8 +114,9 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 	 */
 	protected VcfEntry parseVcfLine(String line) {
 		try {
-			if (line.startsWith("#")) header.addLine(line); // Header?
-			else if ((line.length() > 0) && (!line.startsWith("#"))) return new VcfEntry(this, line, lineNum, parseNow); // Vcf entry?
+			if (line.startsWith("#")) {
+				header.addLine(line); // Header?
+			} else if ((line.length() > 0) && (!line.startsWith("#"))) return new VcfEntry(this, line, lineNum, parseNow); // Vcf entry?
 		} catch (Throwable t) {
 			Gpr.debug("Fatal error reading file '" + fileName + "' (line: " + lineNum + "):\n" + line);
 			throw new RuntimeException(t);

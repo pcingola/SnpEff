@@ -19,6 +19,7 @@ public class VcfHeader {
 	StringBuffer header;
 	HashMap<String, VcfInfo> vcfInfoById;
 	ArrayList<String> sampleNames;
+	boolean chromLine = false;
 
 	public VcfHeader() {
 		header = new StringBuffer();
@@ -55,29 +56,39 @@ public class VcfHeader {
 		// Nothing to do?
 		if (newHeaderLine == null) return;
 
-		// Split header
-		String headerLines[] = header.toString().split("\n");
-		header = new StringBuffer();
+		// We should insert this line before '#CHROM' line
+		if (chromLine) {
+			// Split header
+			String headerLines[] = header.toString().split("\n");
+			header = new StringBuffer();
 
-		// Find "#CHROM" line in header (should always be the last one)
-		boolean added = false;
-		for (String line : headerLines) {
+			// Find "#CHROM" line in header (should always be the last one)
+			boolean added = false;
+			for (String line : headerLines) {
 
-			if (!added) { // Anything to add?
-
-				if (line.equals(newHeaderLine)) { // Header already added?
-					added = true; // Line already present? => Don't add
-				} else if (line.startsWith("#CHROM")) {
-					header.append(newHeaderLine + "\n"); // Add new header right before title line
-					added = true;
+				if (!added) { // Anything to add?
+					if (line.equals(newHeaderLine)) { // Header already added?
+						added = true; // Line already present? => Don't add
+					} else if (line.startsWith("#CHROM")) {
+						header.append(newHeaderLine + "\n"); // Add new header right before title line
+						added = true;
+					}
 				}
+
+				if (!line.isEmpty()) header.append(line + "\n"); // Add non-empty lines
 			}
 
-			if (!line.isEmpty()) header.append(line + "\n"); // Add non-empty lines
-		}
+			// Not added yet? => Add to the end
+			if (!added) header.append(newHeaderLine + "\n"); // Add new header right before title line
+		} else {
+			// Do we need to append a '\n'
+			char lastChar = (header.length() > 0 ? header.charAt(header.length() - 1) : '\n');
+			if (lastChar != '\n' && lastChar != '\r') header.append('\n');
 
-		// Not added yet? => Add to the end
-		if (!added) header.append(newHeaderLine + "\n"); // Add new header right before title line
+			// Append header line			
+			header.append(newHeaderLine);
+			chromLine |= newHeaderLine.startsWith("#CHROM\t");
+		}
 
 		// Cache is no longer valid
 		resetCache();
@@ -181,6 +192,8 @@ public class VcfHeader {
 		// Find "#CHROM" line in header
 		for (String line : headerLines) {
 			if (line.startsWith("#CHROM")) {
+				chromLine = true;
+
 				// This line contains all the sample names (starting on column 9)
 				String titles[] = line.split("\t");
 
@@ -226,6 +239,9 @@ public class VcfHeader {
 	 * Parse INFO fields from header
 	 */
 	public void parseInfoLines() {
+
+		chromLine = header.indexOf("#CHROM") >= 0;
+
 		if (vcfInfoById == null) {
 			vcfInfoById = new HashMap<String, VcfInfo>();
 
