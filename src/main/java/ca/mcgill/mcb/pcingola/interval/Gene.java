@@ -221,7 +221,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			if (seqChangerRef != null) tr = tr.apply(seqChangerRef);
 
 			// Calculate effects
-			hitTranscript = tr.seqChangeEffect(seqChange, changeEffects);
+			hitTranscript |= tr.seqChangeEffect(seqChange, changeEffects);
 		}
 
 		// May be none of the transcripts are actually hit 
