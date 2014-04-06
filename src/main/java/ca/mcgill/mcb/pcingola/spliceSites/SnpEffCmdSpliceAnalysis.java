@@ -330,7 +330,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 				// Options
 				if (arg.equals("-s")) saveDb = true;
 				else usage("Unknown option '" + arg + "'");
-			} else if (genomeVer == null) genomeVer = arg;
+			} else if (genomeVer == null || genomeVer.isEmpty()) genomeVer = arg;
 
 		}
 
