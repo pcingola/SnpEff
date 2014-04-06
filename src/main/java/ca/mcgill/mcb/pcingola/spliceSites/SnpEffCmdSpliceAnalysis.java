@@ -228,6 +228,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	public static int HTML_WIDTH = 20;
 	public static int HTML_HEIGHT = 100;
 
+	boolean saveDb;
 	String outputDir = ".";
 	String genomeFasta;
 	StringBuilder out = new StringBuilder();
@@ -245,8 +246,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	double thresholdU12Score;
 	int countIntrons = 0;
 	Random random = new Random();
-
-	boolean saveDb;
 
 	public SnpEffCmdSpliceAnalysis() {
 		super();
@@ -315,27 +314,21 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	 * Initialize
 	 */
 	void init() {
-		if (verbose) Timer.showStdErr("Initializing");
-		config = new Config(genomeVer);
+		loadConfig();
+
+		// Check that fasta file is avaialble
 		genomeFasta = config.getFileNameGenomeFasta();
 		if (genomeFasta == null) throw new RuntimeException("Cannot find reference genome: " + config.getFileListGenomeFasta());
 
+		// Create output dir name
 		outputDir = config.getDirData() + "/spliceSites";
 
-		// Load data
-		load();
+		// Load database
+		loadDb();
 
+		// Create transcript set
 		if (verbose) Timer.showStdErr("Filtering transcripts");
 		transcriptSet = new TranscriptSet(config.getGenome());
-		if (verbose) Timer.showStdErr("done");
-	}
-
-	/**
-	 * Lad data from files
-	 */
-	void load() {
-		if (verbose) Timer.showStdErr("Loading: " + genomeVer);
-		config.loadSnpEffectPredictor();
 		if (verbose) Timer.showStdErr("done");
 	}
 
@@ -614,7 +607,9 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	@Override
 	public void usage(String message) {
 		if (message != null) System.err.println("Error: " + message + "\n");
-		System.err.println("Usage: snpEff genome_version");
+		System.err.println("Usage: snpEff  spliceAnalysis [options] genome_version");
+		System.err.println("Options:");
+		System.err.println("    -s      : Save database");
 		System.exit(-1);
 	}
 

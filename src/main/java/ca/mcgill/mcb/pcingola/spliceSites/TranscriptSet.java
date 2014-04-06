@@ -28,11 +28,21 @@ public class TranscriptSet implements Iterable<Transcript> {
 		transcriptsByChromo = new AutoHashMap<String, ArrayList<Transcript>>(new ArrayList<Transcript>());
 
 		for (Gene gene : genome.getGenes()) {
-			if (gene.numChilds() > MAX_TRANSCRIPTS_PER_GENE) continue;
+			if (gene.numChilds() > MAX_TRANSCRIPTS_PER_GENE) {
+				System.err.println("Ignoring gene '" + gene.getGeneName() + "', too many transcripts (" + gene.numChilds() + ")");
+				continue;
+			}
 
 			for (Transcript tr : gene) {
-				if (!tr.isProteinCoding()) continue;
-				if (tr.hasError()) continue;
+
+				if (!tr.isProteinCoding()) {
+					// System.err.println("Ignoring transcript '" + tr.getId() + "', non-coding.");
+					continue;
+				}
+				if (tr.hasError()) {
+					// System.err.println("Ignoring transcript '" + tr.getId() + "', it has errors.");
+					continue;
+				}
 
 				transcripts.add(tr);
 				transcriptsByChromo.getOrCreate(tr.getChromosomeName()).add(tr);
