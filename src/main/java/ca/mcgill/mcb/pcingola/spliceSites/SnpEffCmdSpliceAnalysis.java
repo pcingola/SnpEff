@@ -309,29 +309,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	}
 
 	/**
-	 * Initialize
-	 */
-	void init() {
-		Gpr.debug("Genome: " + genomeVer);
-		loadConfig();
-
-		// Check that fasta file is avaialble
-		genomeFasta = config.getFileNameGenomeFasta();
-		if (genomeFasta == null) throw new RuntimeException("Cannot find reference genome: " + config.getFileListGenomeFasta());
-
-		// Create output dir name
-		outputDir = config.getDirData() + "/spliceSites";
-
-		// Load database
-		loadDb();
-
-		// Create transcript set
-		if (verbose) Timer.showStdErr("Filtering transcripts");
-		transcriptSet = new TranscriptSet(config.getGenome());
-		if (verbose) Timer.showStdErr("done");
-	}
-
-	/**
 	 * Show and append an output line
 	 * @param line
 	 */
@@ -361,8 +338,27 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 
 	@Override
 	public boolean run() {
-		init();
+		Gpr.debug("Genome: " + genomeVer);
+		loadConfig();
 
+		// Check that fasta file is avaialble
+		genomeFasta = config.getFileNameGenomeFasta();
+		if (genomeFasta == null) throw new RuntimeException("Cannot find reference genome: " + config.getFileListGenomeFasta());
+
+		// Create output dir name
+		outputDir = config.getDirData() + "/spliceSites";
+
+		// Load database
+		loadDb();
+
+		// Create transcript set
+		if (verbose) Timer.showStdErr("Filtering transcripts");
+		transcriptSet = new TranscriptSet(config.getGenome());
+		if (verbose) Timer.showStdErr("done");
+
+		//---
+		// Analysis
+		//---
 		spliceTypes = new SpliceTypes(config);
 		spliceTypes.setVerbose(verbose);
 		spliceTypes.setDebug(debug);
