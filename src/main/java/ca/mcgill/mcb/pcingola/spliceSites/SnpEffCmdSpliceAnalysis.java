@@ -312,6 +312,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	 * Initialize
 	 */
 	void init() {
+		Gpr.debug("Genome: " + genomeVer);
 		loadConfig();
 
 		// Check that fasta file is avaialble
