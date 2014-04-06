@@ -19,7 +19,6 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.motif.MotifLogo;
 import ca.mcgill.mcb.pcingola.motif.Pwm;
 import ca.mcgill.mcb.pcingola.probablility.FisherExactTest;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.stats.CountByType;
 import ca.mcgill.mcb.pcingola.stats.IntStats;
@@ -232,7 +231,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	String outputDir = ".";
 	String genomeFasta;
 	StringBuilder out = new StringBuilder();
-	Config config;
 	SpliceTypes spliceTypes;
 	ArrayList<String> geneList = new ArrayList<String>();
 	HashMap<String, PwmSet> pwmSetsByName = new HashMap<String, PwmSet>();
