@@ -334,6 +334,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 
 		// Sanity check
 		if (genomeVer == null) usage("Missing argument: Genome version");
+		Gpr.debug("Genome: " + genomeVer);
 	}
 
 	@Override
