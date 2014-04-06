@@ -321,11 +321,9 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	public void parseArgs(String[] args) {
 		if (args.length == 0) usage(null);
 
-		Gpr.debug("Args (len=" + args.length + "): " + args);
 		for (int idx = 0; idx < args.length; idx++) {
 			String arg = args[idx];
 
-			Gpr.debug("Arg '" + arg + "'");
 			if (isOpt(arg)) {
 				// Options
 				if (arg.equals("-s")) saveDb = true;
@@ -335,13 +333,11 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 		}
 
 		// Sanity check
-		Gpr.debug("Genome: " + genomeVer);
 		if (genomeVer == null || genomeVer.isEmpty()) usage("Missing argument: Genome version");
 	}
 
 	@Override
 	public boolean run() {
-		Gpr.debug("Genome: " + genomeVer);
 		loadConfig();
 
 		// Check that fasta file is avaialble
