@@ -119,31 +119,79 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 		public String toSequenceOntology() {
 			switch (this) {
+
+			case CDS:
+				return "coding_sequence_variant";
+
 			case CHROMOSOME_LARGE_DELETION:
 			case CHROMOSOME:
 				return "chromosome";
 
-			case INTERGENIC_CONSERVED:
+			case CODON_CHANGE:
+				return "coding_sequence_variant";
+
+			case CODON_CHANGE_PLUS_CODON_INSERTION:
+				return "disruptive_inframe_insertion";
+
+			case CODON_CHANGE_PLUS_CODON_DELETION:
+				return "disruptive_inframe_deletion";
+
+			case CODON_DELETION:
+				return "inframe_deletion";
+
+			case CODON_INSERTION:
+				return "inframe_insertion";
+
+			case DOWNSTREAM:
+				return "downstream_gene_variant";
+
+			case EXON:
+				return "exon_variant";
+
+			case EXON_DELETED:
+				return "exon_loss_variant";
+
+			case FRAME_SHIFT:
+				return "frameshift_variant";
+
+			case GENE:
+				return "gene_variant";
+
 			case INTERGENIC:
-				return "intergenic_variant";
+				return "intergenic_region";
 
-			case UPSTREAM:
-				return "upstream_gene_variant";
+			case INTERGENIC_CONSERVED:
+				return "conserved_intergenic_variant";
 
-			case UTR_5_PRIME:
-				return "5_prime_UTR_variant";
+			case INTRON:
+				return "intron_variant";
 
-			case UTR_5_DELETED:
-				return "5_prime_UTR_variant+exon_loss";
+			case INTRON_CONSERVED:
+				return "conserved_intron_variant";
+
+			case INTRAGENIC:
+				return "intragenic_variant";
+
+			case MICRO_RNA:
+				return "miRNA";
+
+			case NON_SYNONYMOUS_CODING:
+				return "missense_variant";
+
+			case NON_SYNONYMOUS_START:
+				return "initiator_codon_variant";
+
+			case NON_SYNONYMOUS_STOP:
+				return "stop_retained_variant";
+
+			case RARE_AMINO_ACID:
+				return "rare_amino_acid_variant";
+
+			case REGULATION:
+				return "regulatory_region_variant";
 
 			case SPLICE_SITE_ACCEPTOR:
 				return "splice_acceptor_variant";
-
-			case SPLICE_SITE_BRANCH:
-				return "splice_region_variant";
-
-			case SPLICE_SITE_BRANCH_U12:
-				return "splice_region_variant";
 
 			case SPLICE_SITE_DONOR:
 				return "splice_donor_variant";
@@ -151,94 +199,52 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 			case SPLICE_SITE_REGION:
 				return "splice_region_variant";
 
+			case SPLICE_SITE_BRANCH:
+				return "splice_region_variant";
+
+			case SPLICE_SITE_BRANCH_U12:
+				return "splice_region_variant";
+
 			case START_LOST:
-				return "initiator_codon_variant";
-
-			case SYNONYMOUS_START:
-				return "initiator_codon_variant+non_canonical_start_codon";
-
-			case NON_SYNONYMOUS_START:
-				return "initiator_codon_variant";
-
-			case TRANSCRIPT:
-				return "nc_transcript_variant";
-
-			case EXON:
-				return "non_coding_transcript_exon_variant";
-
-			case EXON_DELETED:
-				return "exon_loss_variant";
-
-			case NON_SYNONYMOUS_CODING:
-				return "missense_variant";
-
-			case SYNONYMOUS_CODING:
-				return "synonymous_variant";
-
-			case FRAME_SHIFT:
-				return "frameshift_variant";
-
-			case CODON_CHANGE:
-				return "coding_sequence_variant";
-
-			case CODON_INSERTION:
-				return "inframe_insertion";
-
-			case CODON_CHANGE_PLUS_CODON_INSERTION:
-				return "inframe_variant+inframe_insertion";
-
-			case CODON_DELETION:
-				return "inframe_deletion";
-
-			case CODON_CHANGE_PLUS_CODON_DELETION:
-				return "inframe_variant+inframe_deletion";
-
-			case STOP_GAINED:
-				return "stop_gained";
-
-			case SYNONYMOUS_STOP:
-				return "stop_retained_variant";
-
-			case NON_SYNONYMOUS_STOP:
-				return "stop_retained_variant";
-
-			case STOP_LOST:
-				return "stop_lost";
-
-			case INTRON:
-				return "intron_variant";
-
-			case UTR_3_DELETED:
-				return "3_prime_UTR_variant+exon_loss";
-
-			case UTR_3_PRIME:
-				return "3_prime_UTR_variant";
-
-			case DOWNSTREAM:
-				return "downstream_gene_variant";
-
-			case INTRON_CONSERVED:
-				return "intron_variant";
-
-			case INTRAGENIC:
-				return "INTRAGENIC";
-
-			case REGULATION:
-				return "regulatory_region_variant";
-
-			case RARE_AMINO_ACID:
-				return "non_conservative_missense_variant";
-
-			case CDS:
-				return "CDS";
+				return "start_lost";
 
 			case START_GAINED:
 				return "5_prime_UTR_premature_start_codon_gain_variant";
 
-			case MICRO_RNA:
-				return "miRNA";
+			case STOP_GAINED:
+				return "stop_gained";
+
+			case STOP_LOST:
+				return "stop_lost";
+
+			case SYNONYMOUS_CODING:
+				return "synonymous_variant";
+
+			case SYNONYMOUS_STOP:
+				return "stop_retained_variant";
+
+			case SYNONYMOUS_START:
+				return "initiator_codon_variant+non_canonical_start_codon";
+
+			case TRANSCRIPT:
+				return "transcript_variant";
+
+			case UPSTREAM:
+				return "upstream_gene_variant";
+
+			case UTR_3_PRIME:
+				return "3_prime_UTR_variant";
+
+			case UTR_3_DELETED:
+				return "3_prime_UTR_truncation+exon_loss";
+
+			case UTR_5_PRIME:
+				return "5_prime_UTR_variant";
+
+			case UTR_5_DELETED:
+				return "5_prime_UTR_truncation+exon_loss_variant";
+
 			case NONE:
-			case GENE:
 			case GENOME:
 			case CUSTOM:
 			default:
