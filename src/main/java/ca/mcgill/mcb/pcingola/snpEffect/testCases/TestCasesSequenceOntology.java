@@ -230,7 +230,12 @@ public class TestCasesSequenceOntology extends TestCase {
 			for (VcfEffect veff : veffs) {
 				if (veff.getTranscriptId().equals(trId)) {
 					String eff = veff.getEffString();
-					if (eff.equals("5_prime_UTR_premature_start_codon_gain_variant")) eff = "5_prime_UTR_variant"; // OK. I consider these the same
+
+					// OK. I consider these the same
+					if (eff.equals("5_prime_UTR_premature_start_codon_gain_variant")) eff = "5_prime_UTR_variant";
+					if (eff.equals("disruptive_inframe_insertion")) eff = "inframe_insertion";
+					if (eff.equals("start_lost")) eff = "initiator_codon_variant";
+
 					for (String e : eff.split("\\+"))
 						effSos.add(e);
 				}
