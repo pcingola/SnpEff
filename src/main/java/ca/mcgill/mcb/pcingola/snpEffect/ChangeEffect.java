@@ -763,6 +763,37 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	 * @return
 	 */
 	protected String getHgvsNonCoding() {
+		if (isIntron()) {
+			// Intronic nucleotides (coding DNA reference sequence only)
+			//    - beginning of the intron; the number of the last nucleotide of the preceding exon, a plus sign and the 
+			//		position in the intron, like c.77+1G, c.77+2T, ....
+			// 	  - end of the intron; the number of the first nucleotide of the following exon, a minus sign and 
+			//		the position upstream in the intron, like ..., c.78-2A, c.78-1G.
+			// 	  - in the middle of the intron, numbering changes from "c.77+.." to "c.78-.."; for introns with 
+			//		an uneven number of nucleotides the central nucleotide is the last described with a "+" (see Discussion)
+			// NOTE: the format c.IVS1+1G and c.IVS1-2G should not be used (see Discussion)
+
+			Intron intron = (Intron) marker;
+			Transcript tr = getTranscript();
+			if (tr == null) return "";
+
+			int lastNucleotied = 0, fromPrevExon = 0, fromNextExon = 0;
+
+			if (intron.isStrandPlus()) {
+				fromPrevExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
+				fromNextExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
+				lastNucleotied = tr.cDnaBaseNumber(intron.getStart() - 1);
+			} else {
+				fromNextExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
+				fromPrevExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
+				lastNucleotied = tr.cDnaBaseNumber(intron.getEnd() + 1);
+			}
+
+			// Gpr.debug(effectType + "\t" + lastNucleotied + "\t" + fromPrevExon + "\t" + fromNextExon + "\t" + marker);
+
+			if (fromNextExon >= fromPrevExon) return "c." + lastNucleotied + "+" + fromPrevExon;
+			return "c." + lastNucleotied + "-" + fromNextExon;
+		}
 		return "";
 	}
 
@@ -925,7 +956,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	}
 
 	public boolean isIntron() {
-		return effectType == EffectType.INTRON;
+		return (effectType == EffectType.INTRON) || (effectType == EffectType.INTRON_CONSERVED);
 	}
 
 	public boolean isMotif() {
