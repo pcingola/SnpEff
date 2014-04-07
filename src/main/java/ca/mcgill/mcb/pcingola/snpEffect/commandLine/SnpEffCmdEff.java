@@ -35,6 +35,7 @@ import ca.mcgill.mcb.pcingola.outputFormatter.TxtOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
+import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.eff.MasterEff;
@@ -399,8 +400,7 @@ public class SnpEffCmdEff extends SnpEff {
 		final VcfOutputFormatter vcfOutForm = (VcfOutputFormatter) outputFormatter;
 		final SnpEffCmdEff snpEffCmdEff = this;
 
-		// Open VCF file
-		VcfFileIterator vcfFile = new VcfFileIterator(inputFile, config.getGenome());
+		new VcfFileIterator(inputFile, config.getGenome());
 
 		// Master factory 
 		Props props = new Props(new UntypedActorFactory() {
@@ -583,24 +583,28 @@ public class SnpEffCmdEff extends SnpEff {
 				else if (arg.equals("-mnp")) seqChangeFilter.setChangeType(SeqChange.ChangeType.MNP);
 				else if (arg.equals("-ins")) seqChangeFilter.setChangeType(SeqChange.ChangeType.INS);
 				else if (arg.equals("-del")) seqChangeFilter.setChangeType(SeqChange.ChangeType.DEL);
-				else if (arg.equalsIgnoreCase("-no-downstream")) changeEffectResutFilter.setDownstream(true);
-				else if (arg.equalsIgnoreCase("-no-upstream")) changeEffectResutFilter.setUpstream(true);
-				else if (arg.equalsIgnoreCase("-no-intergenic")) changeEffectResutFilter.setIntergenic(true);
-				else if (arg.equalsIgnoreCase("-no-intron")) changeEffectResutFilter.setIntron(true);
-				else if (arg.equalsIgnoreCase("-no-utr")) changeEffectResutFilter.setUtr(true);
-				else if (arg.equalsIgnoreCase("-no")) {
+				else if (arg.equalsIgnoreCase("-no-downstream")) changeEffectResutFilter.add(EffectType.DOWNSTREAM);
+				else if (arg.equalsIgnoreCase("-no-upstream")) changeEffectResutFilter.add(EffectType.UPSTREAM);
+				else if (arg.equalsIgnoreCase("-no-intergenic")) changeEffectResutFilter.add(EffectType.INTERGENIC);
+				else if (arg.equalsIgnoreCase("-no-intron")) changeEffectResutFilter.add(EffectType.INTRON);
+				else if (arg.equalsIgnoreCase("-no-utr")) {
+					changeEffectResutFilter.add(EffectType.UTR_3_PRIME);
+					changeEffectResutFilter.add(EffectType.UTR_3_DELETED);
+					changeEffectResutFilter.add(EffectType.UTR_5_PRIME);
+					changeEffectResutFilter.add(EffectType.UTR_5_DELETED);
+				} else if (arg.equalsIgnoreCase("-no")) {
 					String filterOut = "";
 					if ((i + 1) < args.length) filterOut = args[++i];
 
 					String filterOutArray[] = filterOut.split(",");
 					for (String filterStr : filterOutArray) {
-						if (filterStr.equalsIgnoreCase("downstream")) changeEffectResutFilter.setDownstream(true);
-						else if (filterStr.equalsIgnoreCase("upstream")) changeEffectResutFilter.setUpstream(true);
-						else if (filterStr.equalsIgnoreCase("intergenic")) changeEffectResutFilter.setIntergenic(true);
-						else if (filterStr.equalsIgnoreCase("intron")) changeEffectResutFilter.setIntron(true);
-						else if (filterStr.equalsIgnoreCase("utr")) changeEffectResutFilter.setUtr(true);
-						else if (filterStr.equalsIgnoreCase("None")) ; // OK, nothing to do
-						else usage("Unknown filter option '" + filterStr + "'");
+						if (filterStr.equalsIgnoreCase("utr")) {
+							changeEffectResutFilter.add(EffectType.UTR_3_PRIME);
+							changeEffectResutFilter.add(EffectType.UTR_3_DELETED);
+							changeEffectResutFilter.add(EffectType.UTR_5_PRIME);
+							changeEffectResutFilter.add(EffectType.UTR_5_DELETED);
+						} else if (filterStr.equalsIgnoreCase("None")) ; // OK, nothing to do
+						else changeEffectResutFilter.add(EffectType.valueOf(filterStr.toUpperCase()));
 					}
 				} else usage("Unknow option '" + arg + "'");
 			} else if (genomeVer.isEmpty()) genomeVer = arg;
@@ -972,6 +976,7 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\t-no-intron                      : Do not show INTRON changes");
 		System.err.println("\t-no-upstream                    : Do not show UPSTREAM changes");
 		System.err.println("\t-no-utr                         : Do not show 5_PRIME_UTR or 3_PRIME_UTR changes");
+		System.err.println("\t-no EffectType                  : Do not show 'EffectType'. This option can be used several times.");
 		System.err.println("\nAnnotations options:");
 		System.err.println("\t-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: " + cancer);
 		System.err.println("\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");
