@@ -777,22 +777,24 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 			Transcript tr = getTranscript();
 			if (tr == null) return "";
 
-			int lastNucleotied = 0, fromPrevExon = 0, fromNextExon = 0;
+			int lastBase = 0, fromPrevExon = 0, fromNextExon = 0;
+			String change = "";
 
+			// All coordinates are one-based
 			if (intron.isStrandPlus()) {
 				fromPrevExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
 				fromNextExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
-				lastNucleotied = tr.cDnaBaseNumber(intron.getStart() - 1);
+				lastBase = tr.cdsBaseNumber(intron.getStart(), false) + 1;
+				change = seqChange.getReference() + ">" + seqChange.getChange();
 			} else {
 				fromNextExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
 				fromPrevExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
-				lastNucleotied = tr.cDnaBaseNumber(intron.getEnd() + 1);
+				lastBase = tr.cdsBaseNumber(intron.getEnd(), false) + 1;
+				change = GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getChange());
 			}
 
-			// Gpr.debug(effectType + "\t" + lastNucleotied + "\t" + fromPrevExon + "\t" + fromNextExon + "\t" + marker);
-
-			if (fromNextExon >= fromPrevExon) return "c." + lastNucleotied + "+" + fromPrevExon;
-			return "c." + lastNucleotied + "-" + fromNextExon;
+			if (fromNextExon >= fromPrevExon) return "c." + lastBase + "+" + fromPrevExon + change;
+			return "c." + lastBase + "-" + fromNextExon + change;
 		}
 		return "";
 	}
