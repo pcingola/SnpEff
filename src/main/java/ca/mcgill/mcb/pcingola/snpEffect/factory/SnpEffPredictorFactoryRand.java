@@ -119,7 +119,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 			size += ex.size();
 
 		// UTR5 size
-		if (size < 3) return;
+		if (size < 4) return;
 		int utr5size = random.nextInt(size / 4);
 		size -= utr5size;
 		if (utr5size > 0) {

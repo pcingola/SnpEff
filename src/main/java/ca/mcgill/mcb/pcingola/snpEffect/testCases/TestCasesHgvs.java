@@ -249,7 +249,7 @@ public class TestCasesHgvs extends TestCase {
 	//	}
 
 	public void test_05_intron() {
-		int N = 10;
+		int N = 100;
 
 		// Test N times
 		//	- Create a random gene transcript, exons
@@ -257,8 +257,8 @@ public class TestCasesHgvs extends TestCase {
 		//	- Calculate effect
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor(true);
-			if (debug) System.out.println("HGSV Test iteration: " + i + "\n" + transcript);
-			else System.out.println("HGSV Test iteration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
+			//			if (debug) System.out.println("HGSV Test iteration: " + i + "\n" + transcript);
+			//			else System.out.println("HGSV Test iteration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
 
 			System.out.println(transcript.toStringAsciiArt());
 
