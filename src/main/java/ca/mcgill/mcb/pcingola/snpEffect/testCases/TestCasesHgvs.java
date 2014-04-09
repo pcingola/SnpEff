@@ -1,5 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -106,16 +107,22 @@ public class TestCasesHgvs extends TestCase {
 		int entryNum = 1;
 		for (VcfEntry vcfEntry : list) {
 			boolean found = false;
-			String hgvs = vcfEntry.getInfo("HGVS");
+
+			// Load hgvs expexcted annotations into set
+			String hgvsStr = vcfEntry.getInfo("HGVS");
+			HashSet<String> hgvsExpected = new HashSet<String>();
+			for (String h : hgvsStr.split(",")) {
+				if (h.indexOf(':') > 0) h = h.substring(h.indexOf(':') + 1);
+				hgvsExpected.add(h);
+			}
 
 			if (debug) System.err.println(entryNum + "\t" + vcfEntry);
 
+			// Find if HGVS predicted by SnpEff matches tha expected annotations
 			for (VcfEffect eff : vcfEntry.parseEffects()) {
-				if (debug) System.err.println("\tHGVS: " + hgvs + "\tAA: " + eff.getAa() + "\t" + eff.getGenotype() + "\t" + eff);
-				if (hgvs.equals(eff.getAa())) {
-					if (debug) System.err.println("\tFOUND!");
-					found = true;
-				}
+				String hgvsReal = eff.getAa();
+				if (debug) System.err.println("\tHGVS: " + hgvsExpected.contains(hgvsReal) + "\t" + hgvsExpected + "\tAA: " + eff.getAa() + "\t" + eff.getGenotype() + "\t" + eff);
+				if (hgvsExpected.contains(hgvsReal)) found = true;
 			}
 
 			// Not found? Error
@@ -231,9 +238,13 @@ public class TestCasesHgvs extends TestCase {
 	//		snpEffect("tests/hgvs_1.vcf", "testHg3766Chr1");
 	//	}
 
-	public void test_023_intron() {
-		snpEffect("tests/ensembl_hgvs_intron.vcf", "testHg3771Chr1");
-		//		snpEffect("tests/ensembl_hgvs_intron.1.vcf", "testHg3771Chr1");
+	//	public void test_03_intron_withinCds() {
+	//		snpEffect("tests/ensembl_hgvs_intron.within_cds.vcf", "testHg3775Chr1");
+	//	}
+
+	public void test_04_intron_outsideCds() {
+		//		snpEffect("tests/ensembl_hgvs_intron.outsideCds.vcf", "testHg3775Chr1");
+		snpEffect("tests/ensembl_hgvs_intron.1.vcf", "testHg3775Chr1");
 	}
 
 }
