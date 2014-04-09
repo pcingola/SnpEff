@@ -44,7 +44,7 @@ public class TestCasesHgvs extends TestCase {
 
 	void init() {
 		initRand();
-		initSnpEffPredictor();
+		initSnpEffPredictor(false);
 	}
 
 	void initRand() {
@@ -54,7 +54,7 @@ public class TestCasesHgvs extends TestCase {
 	/**
 	 * Create a predictor
 	 */
-	void initSnpEffPredictor() {
+	void initSnpEffPredictor(boolean addUtrs) {
 		// Create a config and force out snpPredictor for hg37 chromosome Y
 		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 
@@ -66,6 +66,7 @@ public class TestCasesHgvs extends TestCase {
 
 		// Create predictor
 		sepf.setForcePositive(true); // WARNING: We only use positive strand here (the purpose is to check HGSV notation, not to check annotations)
+		sepf.setAddUtrs(addUtrs);
 		snpEffectPredictor = sepf.create();
 		config.setSnpEffectPredictor(snpEffectPredictor);
 
@@ -140,7 +141,7 @@ public class TestCasesHgvs extends TestCase {
 	//		//	- Change each base in the exon
 	//		//	- Calculate effect
 	//		for (int i = 0; i < N; i++) {
-	//			initSnpEffPredictor();
+	//			initSnpEffPredictor(false);
 	//			if (debug) System.out.println("HGSV Test iteration: " + i + "\n" + transcript);
 	//			else System.out.println("HGSV Test iteration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
 	//
@@ -242,9 +243,25 @@ public class TestCasesHgvs extends TestCase {
 	//		snpEffect("tests/ensembl_hgvs_intron.within_cds.vcf", "testHg3775Chr1");
 	//	}
 
-	public void test_04_intron_outsideCds() {
-		snpEffect("tests/ensembl_hgvs_intron.outsideCds.vcf", "testHg3775Chr1");
-		//		snpEffect("tests/ensembl_hgvs_intron.1.vcf", "testHg3775Chr1");
-	}
+	//	public void test_04_intron_outsideCds() {
+	//		snpEffect("tests/ensembl_hgvs_intron.outsideCds.vcf", "testHg3775Chr1");
+	//		//		snpEffect("tests/ensembl_hgvs_intron.1.vcf", "testHg3775Chr1");
+	//	}
 
+	public void test_05_intron() {
+		int N = 10;
+
+		// Test N times
+		//	- Create a random gene transcript, exons
+		//	- Change each base in the exon
+		//	- Calculate effect
+		for (int i = 0; i < N; i++) {
+			initSnpEffPredictor(true);
+			if (debug) System.out.println("HGSV Test iteration: " + i + "\n" + transcript);
+			else System.out.println("HGSV Test iteration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
+
+			System.out.println(transcript.toStringAsciiArt());
+
+		}
+	}
 }

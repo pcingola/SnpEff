@@ -804,7 +804,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 			// Within CDS?
 			if ((exonBasePos >= cdsLeft) && (exonBasePos <= cdsRight)) {
-				distBase = tr.cdsBaseNumber(exonBasePos, false);
+				distBase = tr.baseNumberCds(exonBasePos, false);
 
 				// Create HGSV string
 				if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
@@ -816,14 +816,14 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				exonBasePos--; // Make sure the coordinate is inside the exon
 
 				if (exonBasePos < tr.getCdsStart()) {
-					int cdnaStart = tr.cDnaBaseNumber(tr.getCdsStart()) - 1;
-					int cdnaPos = tr.cDnaBaseNumber(exonBasePos);
+					int cdnaStart = tr.baseNumberPreMRna(tr.getCdsStart()) - 1;
+					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
 					distBase = cdnaStart - cdnaPos;
 					if (distBase < 0) throw new RuntimeException("Error creating HGSV expression: Negative distance " + distBase);
 					distBaseStr = "-";
 				} else if (exonBasePos > tr.getCdsEnd()) {
-					int cdnaEnd = tr.cDnaBaseNumber(tr.getCdsEnd());
-					int cdnaPos = tr.cDnaBaseNumber(exonBasePos);
+					int cdnaEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
+					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
 					distBase = cdnaPos - cdnaEnd;
 					distBaseStr = "*";
 				} else throw new RuntimeException("This should never happen!");

@@ -231,6 +231,126 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
+	 * Calculate base number in a CDS where 'pos' maps
+	 * 
+	 * @returns Base number or '-1' if it does not map to a coding base
+	 */
+	public synchronized int baseNumberCds(int pos, boolean usePrevBaseIntron) {
+		// Doesn't hit this transcript?
+		if (!intersects(pos)) return -1;
+
+		// Is it in UTR instead of CDS? 
+		if (isUtr(pos)) return -1;
+
+		// Calculate cdsStart and cdsEnd (if not already done)
+		calcCdsStartEnd();
+
+		// All exons..
+		int firstCdsBaseInExon = 0; // Where the exon maps to the CDS (i.e. which CDS base number does the first base in this exon maps to).
+		for (Exon eint : sortedStrand()) {
+			if (eint.intersects(pos)) {
+				int cdsBaseInExon; // cdsBaseInExon: base number relative to the beginning of the coding part of this exon (i.e. excluding 5'UTRs)
+				if (strand >= 0) cdsBaseInExon = pos - Math.max(eint.getStart(), cdsStart);
+				else cdsBaseInExon = Math.min(eint.getEnd(), cdsStart) - pos;
+
+				cdsBaseInExon = Math.max(0, cdsBaseInExon);
+
+				return firstCdsBaseInExon + cdsBaseInExon;
+			} else {
+				// Before exon begins?
+				if ((isStrandPlus() && (pos < eint.getStart())) // Before exon begins (positive strand)?
+						|| (isStrandMinus() && (pos > eint.getEnd()))) // Before exon begins (negative strand)?
+					return firstCdsBaseInExon - (usePrevBaseIntron ? 1 : 0);
+			}
+
+			if (isStrandPlus()) firstCdsBaseInExon += Math.max(0, eint.getEnd() - Math.max(eint.getStart(), cdsStart) + 1);
+			else firstCdsBaseInExon += Math.max(0, Math.min(cdsStart, eint.getEnd()) - eint.getStart() + 1);
+		}
+
+		return firstCdsBaseInExon - 1;
+	}
+
+	/**
+	 * Analyze SNPs in this transcript.
+	 * Add changeEffect to 'changeEffect'
+	 */
+	public String baseNumberCds2Codon(int cdsBaseNumber) {
+		int codonNum = cdsBaseNumber / CodonChange.CODON_SIZE;
+		int min = codonNum * CodonChange.CODON_SIZE;
+		int max = codonNum * CodonChange.CODON_SIZE + CodonChange.CODON_SIZE;
+		if ((min >= 0) && (max <= cds().length())) return cds().substring(min, max).toUpperCase();
+		return null;
+	}
+
+	/**
+	 * Calculate chromosome position as function of CDS number 
+	 * 
+	 * @returns An array mapping 'pos[cdsBaseNumber] = chromosmalPos' 
+	 */
+	public synchronized int[] baseNumberCds2Pos() {
+		if (cds2pos != null) return cds2pos;
+
+		calcCdsStartEnd();
+
+		cds2pos = new int[cds().length()];
+		for (int i = 0; i < cds2pos.length; i++)
+			cds2pos[i] = -1;
+
+		int cdsMin = Math.min(cdsStart, cdsEnd);
+		int cdsMax = Math.max(cdsStart, cdsEnd);
+
+		// For each exon, add CDS position to array
+		int cdsBaseNum = 0;
+		for (Exon exon : sortedStrand()) {
+			int min = isStrandPlus() ? exon.getStart() : exon.getEnd();
+			int step = isStrandPlus() ? 1 : -1;
+			for (int pos = min; exon.intersects(pos); pos += step)
+				if ((cdsMin <= pos) && (pos <= cdsMax)) cds2pos[cdsBaseNum++] = pos;
+		}
+
+		return cds2pos;
+	}
+
+	/**
+	 * Calculate distance from transcript to a position
+	 * @param pos
+	 * @return
+	 */
+	public synchronized int baseNumberPreMRna(int pos) {
+		int count = 0;
+		for (Exon eint : sortedStrand()) {
+			if (eint.intersects(pos)) {
+				// Intersect this exon? Calculate the number of bases from the beginning
+				int dist = 0;
+				if (isStrandPlus()) dist = pos - eint.getStart();
+				else dist = eint.getEnd() - pos;
+
+				// Sanity check
+				if (dist < 0) throw new RuntimeException("Negative distance for position " + pos + ". This should never happen!\n" + this);
+
+				return count + dist + 1; // Base number is one-based
+			}
+
+			count += eint.size();
+		}
+		return -1;
+	}
+
+	/**
+	 * Convert a 'cDNA' base number to a genomic coordinate
+	 * @param baseNum
+	 * @return
+	 */
+	public synchronized int baseNumberPreMRna2Pos(int baseNum) {
+		for (Exon eint : sortedStrand()) {
+			if (eint.size() >= baseNum) return eint.getStart() + baseNum;
+			baseNum -= eint.size();
+		}
+
+		return -1;
+	}
+
+	/**
 	 * Calculate CDS start and CDS end
 	 */
 	synchronized void calcCdsStartEnd() {
@@ -286,31 +406,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Calculate distance from transcript to a position
-	 * @param pos
-	 * @return
-	 */
-	public synchronized int cDnaBaseNumber(int pos) {
-		int count = 0;
-		for (Exon eint : sortedStrand()) {
-			if (eint.intersects(pos)) {
-				// Intersect this exon? Calculate the number of bases from the beginning
-				int dist = 0;
-				if (isStrandPlus()) dist = pos - eint.getStart();
-				else dist = eint.getEnd() - pos;
-
-				// Sanity check
-				if (dist < 0) throw new RuntimeException("Negative distance for position " + pos + ". This should never happen!\n" + this);
-
-				return count + dist + 1; // Base number is one-based
-			}
-
-			count += eint.size();
-		}
-		return -1;
-	}
-
-	/**
 	 * Retrieve coding sequence
 	 */
 	public synchronized String cds() {
@@ -348,87 +443,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		}
 
 		return cds;
-	}
-
-	/**
-	 * Calculate base number in a CDS where 'pos' maps
-	 * 
-	 * @returns Base number or '-1' if it does not map to a coding base
-	 */
-	public synchronized int cdsBaseNumber(int pos, boolean usePrevBaseIntron) {
-		// Doesn't hit this transcript?
-		if (!intersects(pos)) return -1;
-
-		// Is it in UTR instead of CDS? 
-		if (isUtr(pos)) return -1;
-
-		// Calculate cdsStart and cdsEnd (if not already done)
-		calcCdsStartEnd();
-
-		// All exons..
-		int firstCdsBaseInExon = 0; // Where the exon maps to the CDS (i.e. which CDS base number does the first base in this exon maps to).
-		for (Exon eint : sortedStrand()) {
-			if (eint.intersects(pos)) {
-				int cdsBaseInExon; // cdsBaseInExon: base number relative to the beginning of the coding part of this exon (i.e. excluding 5'UTRs)
-				if (strand >= 0) cdsBaseInExon = pos - Math.max(eint.getStart(), cdsStart);
-				else cdsBaseInExon = Math.min(eint.getEnd(), cdsStart) - pos;
-
-				cdsBaseInExon = Math.max(0, cdsBaseInExon);
-
-				return firstCdsBaseInExon + cdsBaseInExon;
-			} else {
-				// Before exon begins?
-				if ((isStrandPlus() && (pos < eint.getStart())) // Before exon begins (positive strand)?
-						|| (isStrandMinus() && (pos > eint.getEnd()))) // Before exon begins (negative strand)?
-					return firstCdsBaseInExon - (usePrevBaseIntron ? 1 : 0);
-			}
-
-			if (isStrandPlus()) firstCdsBaseInExon += Math.max(0, eint.getEnd() - Math.max(eint.getStart(), cdsStart) + 1);
-			else firstCdsBaseInExon += Math.max(0, Math.min(cdsStart, eint.getEnd()) - eint.getStart() + 1);
-		}
-
-		return firstCdsBaseInExon - 1;
-	}
-
-	/**
-	 * Calculate chromosome position as function of CDS number 
-	 * 
-	 * @returns An array mapping 'pos[cdsBaseNumber] = chromosmalPos' 
-	 */
-	public synchronized int[] cdsBaseNumber2ChrPos() {
-		if (cds2pos != null) return cds2pos;
-
-		calcCdsStartEnd();
-
-		cds2pos = new int[cds().length()];
-		for (int i = 0; i < cds2pos.length; i++)
-			cds2pos[i] = -1;
-
-		int cdsMin = Math.min(cdsStart, cdsEnd);
-		int cdsMax = Math.max(cdsStart, cdsEnd);
-
-		// For each exon, add CDS position to array
-		int cdsBaseNum = 0;
-		for (Exon exon : sortedStrand()) {
-			int min = isStrandPlus() ? exon.getStart() : exon.getEnd();
-			int step = isStrandPlus() ? 1 : -1;
-			for (int pos = min; exon.intersects(pos); pos += step)
-				if ((cdsMin <= pos) && (pos <= cdsMax)) cds2pos[cdsBaseNum++] = pos;
-		}
-
-		return cds2pos;
-	}
-
-	/**
-	 * Analyze SNPs in this transcript.
-	 * Add changeEffect to 'changeEffect'
-	 */
-	public String codonByCdsBaseNumber(int cdsBaseNumber) {
-		int codonNum = cdsBaseNumber / CodonChange.CODON_SIZE;
-		int min = codonNum * CodonChange.CODON_SIZE;
-		int max = codonNum * CodonChange.CODON_SIZE + CodonChange.CODON_SIZE;
-		if ((min >= 0) && (max <= cds().length())) return cds().substring(min, max).toUpperCase();
-		return null;
 	}
 
 	/**

@@ -90,7 +90,7 @@ public class TestCasesTranscript extends TestCase {
 			else System.out.println("Test CDS pos iteration: " + iter + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
 
 			int cdsBaseNum = 0;
-			int cds2pos[] = transcript.cdsBaseNumber2ChrPos();
+			int cds2pos[] = transcript.baseNumberCds2Pos();
 
 			// For each exon...
 			for (Exon exon : transcript.sortedStrand()) {
@@ -98,7 +98,7 @@ public class TestCasesTranscript extends TestCase {
 				int min = transcript.isStrandPlus() ? exon.getStart() : exon.getEnd();
 				int step = transcript.isStrandPlus() ? 1 : -1;
 				for (int pos = min; exon.intersects(pos); pos += step, cdsBaseNum++) {
-					int cdsBaseNumCalc = transcript.cdsBaseNumber(pos, true);
+					int cdsBaseNumCalc = transcript.baseNumberCds(pos, true);
 
 					// Is it OK?
 					Assert.assertEquals(cdsBaseNum, cdsBaseNumCalc);
