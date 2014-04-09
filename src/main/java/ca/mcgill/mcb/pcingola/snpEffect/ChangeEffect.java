@@ -801,40 +801,39 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 			int cdsLeft = Math.min(tr.getCdsStart(), tr.getCdsEnd());
 			int cdsRight = Math.max(tr.getCdsStart(), tr.getCdsEnd());
 			String distBaseStr = "";
+
+			// Within CDS?
 			if ((exonBasePos >= cdsLeft) && (exonBasePos <= cdsRight)) {
 				distBase = tr.cdsBaseNumber(exonBasePos, false);
-			} else {
 
-				if (tr.isStrandPlus()) {
-					exonBasePos--; // Make sure the coordinate is inside the exon
-
-					if (exonBasePos < tr.getCdsStart()) {
-						int cdnaStart = tr.cDnaBaseNumber(tr.getCdsStart());
-						int cdnaPos = tr.cDnaBaseNumber(exonBasePos);
-						distBase = cdnaStart - cdnaPos;
-						if (distBase < 0) throw new RuntimeException("Error creating HGSV expression: Negative distance " + distBase);
-						distBaseStr = "-";
-					} else if (exonBasePos > tr.getCdsEnd()) {
-						int cdnaEnd = tr.cDnaBaseNumber(tr.getCdsEnd());
-						int cdnaPos = tr.cDnaBaseNumber(exonBasePos);
-						distBase = cdnaPos - cdnaEnd;
-						distBaseStr = "*";
-					} else throw new RuntimeException("This should never happen!");
-				} else {
-					exonBasePos++; // Make sure the coordinate is inside the exon 
-				}
+				// Create HGSV string
+				if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
+				return coding + distBaseStr + (distBase + 1) + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
 			}
 
-			if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
+			// Outside CDS
+			if (tr.isStrandPlus()) {
+				exonBasePos--; // Make sure the coordinate is inside the exon
+
+				if (exonBasePos < tr.getCdsStart()) {
+					int cdnaStart = tr.cDnaBaseNumber(tr.getCdsStart()) - 1;
+					int cdnaPos = tr.cDnaBaseNumber(exonBasePos);
+					distBase = cdnaStart - cdnaPos;
+					if (distBase < 0) throw new RuntimeException("Error creating HGSV expression: Negative distance " + distBase);
+					distBaseStr = "-";
+				} else if (exonBasePos > tr.getCdsEnd()) {
+					int cdnaEnd = tr.cDnaBaseNumber(tr.getCdsEnd());
+					int cdnaPos = tr.cDnaBaseNumber(exonBasePos);
+					distBase = cdnaPos - cdnaEnd;
+					distBaseStr = "*";
+				} else throw new RuntimeException("This should never happen!");
+			} else {
+				exonBasePos++; // Make sure the coordinate is inside the exon 
+			}
 
 			// Create HGSV string
-			return coding //
-					+ distBaseStr //
-					+ (distBase + 1) // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
-					+ "-" //
-					+ fromNextExon //
-					+ change //
-			;
+			if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
+			return coding + distBaseStr + distBase + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
 		}
 		return "";
 	}
