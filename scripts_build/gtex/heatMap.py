@@ -13,7 +13,7 @@ import sys
 debug = False
 
 # How many NAs are too much (skip genes)
-naThreshold = 0.9
+naThreshold = 0.95
 
 #------------------------------------------------------------------------------
 # Process normalized GTEx file
