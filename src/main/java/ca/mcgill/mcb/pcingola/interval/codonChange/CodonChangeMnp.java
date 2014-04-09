@@ -25,7 +25,7 @@ public class CodonChangeMnp extends CodonChange {
 	int cdsBaseNumber(int pos, boolean usePrevBaseIntron) {
 		if (pos < cdsStart) return transcript.isStrandPlus() ? 0 : transcript.cds().length() - 1;
 		if (pos > cdsEnd) return transcript.isStrandPlus() ? transcript.cds().length() - 1 : 0;
-		return transcript.cdsBaseNumber(pos, usePrevBaseIntron);
+		return transcript.baseNumberCds(pos, usePrevBaseIntron);
 	}
 
 	/**

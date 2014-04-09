@@ -762,7 +762,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	 * 
 	 * @return
 	 */
-	protected String getHgvsNonCoding() {
+	protected String getHgvsIntron() {
 		if (isIntron()) {
 			// Intronic nucleotides (coding DNA reference sequence only)
 			//    - beginning of the intron; the number of the last nucleotide of the preceding exon, a plus sign and the 
@@ -777,25 +777,69 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 			Transcript tr = getTranscript();
 			if (tr == null) return "";
 
-			int lastBase = 0, fromPrevExon = 0, fromNextExon = 0;
+			// Coding?
+			String coding = (tr.isProteinCoding() ? "c." : "n.");
+
+			int fromPrevExon = 0, fromNextExon = 0, exonBasePos = -1;
 			String change = "";
 
-			// All coordinates are one-based
+			// Calculate distance to exon (coordinates are one-based)
 			if (intron.isStrandPlus()) {
 				fromPrevExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
 				fromNextExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
-				lastBase = tr.cdsBaseNumber(intron.getStart(), false) + 1;
+				exonBasePos = intron.getStart();
 				change = seqChange.getReference() + ">" + seqChange.getChange();
 			} else {
 				fromNextExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
 				fromPrevExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
-				lastBase = tr.cdsBaseNumber(intron.getEnd(), false) + 1;
+				exonBasePos = intron.getEnd();
 				change = GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getChange());
 			}
 
-			if (fromNextExon >= fromPrevExon) return "c." + lastBase + "+" + fromPrevExon + change;
-			return "c." + lastBase + "-" + fromNextExon + change;
+			// Calculate 'exonBase' reference
+			int distBase = 0;
+			int cdsLeft = Math.min(tr.getCdsStart(), tr.getCdsEnd());
+			int cdsRight = Math.max(tr.getCdsStart(), tr.getCdsEnd());
+			String distBaseStr = "";
+
+			// Within CDS?
+			if ((exonBasePos >= cdsLeft) && (exonBasePos <= cdsRight)) {
+				distBase = tr.baseNumberCds(exonBasePos, false);
+
+				// Create HGSV string
+				if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
+				return coding + distBaseStr + (distBase + 1) + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
+			}
+
+			// Outside CDS
+			if (tr.isStrandPlus()) {
+				exonBasePos--; // Make sure the coordinate is inside the exon
+
+				if (exonBasePos < tr.getCdsStart()) {
+					int cdnaStart = tr.baseNumberPreMRna(tr.getCdsStart()) - 1;
+					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
+					distBase = cdnaStart - cdnaPos;
+					if (distBase < 0) throw new RuntimeException("Error creating HGSV expression: Negative distance " + distBase);
+					distBaseStr = "-";
+				} else if (exonBasePos > tr.getCdsEnd()) {
+					int cdnaEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
+					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
+					distBase = cdnaPos - cdnaEnd;
+					distBaseStr = "*";
+				} else throw new RuntimeException("This should never happen!");
+			} else {
+				exonBasePos++; // Make sure the coordinate is inside the exon 
+			}
+
+			// Create HGSV string
+			if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
+			return coding + distBaseStr + distBase + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
 		}
+		return "";
+	}
+
+	protected String getHgvsNonCoding() {
+		if (isIntron()) return getHgvsIntron();
 		return "";
 	}
 

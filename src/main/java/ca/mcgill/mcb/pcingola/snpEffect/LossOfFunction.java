@@ -338,7 +338,7 @@ public class LossOfFunction {
 		// Find that position of MND_BASES_BEFORE_LAST_JUNCTION before the last exon-exon junction
 		//---
 		int lastExonJunction = tr.isStrandPlus() ? lastExon.getStart() : lastExon.getEnd();
-		int chrPos[] = tr.cdsBaseNumber2ChrPos();
+		int chrPos[] = tr.baseNumberCds2Pos();
 		int lastNmdPos = -1;
 		for (int cdsi = chrPos.length - 1; cdsi >= 0; cdsi--) {
 			if (chrPos[cdsi] == lastExonJunction) {

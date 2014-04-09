@@ -66,7 +66,7 @@ public class CodonChange {
 	 * @return
 	 */
 	int cdsBaseNumber(int pos) {
-		int cdsbn = transcript.cdsBaseNumber(pos, true);
+		int cdsbn = transcript.baseNumberCds(pos, true);
 
 		// Does not intersect the transcript?
 		if (cdsbn < 0) {

@@ -246,7 +246,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 					// Get cDNA position
 					int pos = tr.isStrandMinus() ? seqChange.getStart() : seqChange.getEnd(); // First base in cDNA
-					int cdnaIdx = tr.cDnaBaseNumber(pos); // Which cDNA base number?
+					int cdnaIdx = tr.baseNumberPreMRna(pos); // Which cDNA base number?
 					if (cdnaIdx > 0) sb.append("(" + tr.getId() + "|" + cdnaIdx + ")");
 
 					oicr.add(sb.toString());

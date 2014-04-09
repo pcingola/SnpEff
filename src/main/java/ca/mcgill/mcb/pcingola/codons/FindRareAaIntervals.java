@@ -99,7 +99,7 @@ public class FindRareAaIntervals {
 		}
 
 		// Create markers. There might be more than one interval since an intron can be in the middle of the codon.
-		int cds2pos[] = tr.cdsBaseNumber2ChrPos();
+		int cds2pos[] = tr.baseNumberCds2Pos();
 		int pos = 0, posPrev = 0, start = -1;
 		int step = tr.isStrandPlus() ? 1 : -1;
 		for( int cds = aaIdx * 3; cds < (aaIdx + 1) * 3; cds++ ) {

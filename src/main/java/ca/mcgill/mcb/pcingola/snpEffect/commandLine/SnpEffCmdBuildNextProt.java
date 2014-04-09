@@ -761,7 +761,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 
 					if ((aaStart >= 0) && (aaEnd >= aaStart)) {
 						// Try to map to chromosome position
-						int cdsBase2Pos[] = tr.cdsBaseNumber2ChrPos();
+						int cdsBase2Pos[] = tr.baseNumberCds2Pos();
 						int codonStart = aaStart * 3;
 						int codonEnd = (aaEnd + 1) * 3 - 1;
 
