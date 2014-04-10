@@ -13,7 +13,9 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
- * Test case where VCF entries are huge (e.g. half chromosome deleted)
+ * Test case: Make sure VCF entries have some 'coding' (transcript biotype), even 
+ * when biotype info is not available (e.g. hg19), and we infer it 
+ * from 'isProteinCoding()' 
  * 
  * @author pcingola
  */
