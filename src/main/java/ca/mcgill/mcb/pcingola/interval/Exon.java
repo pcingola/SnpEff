@@ -145,11 +145,14 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 * Correct exons according to frame information
 	 * Shift the start position one base
 	 */
-	public void frameCorrection(int frameCorrection) {
-		if (frameCorrection <= 0) return; // Nothing to do
+	public boolean frameCorrection(int frameCorrection) {
+		if (frameCorrection <= 0) return true; // Nothing to do
 
 		// Can correct?
-		if (size() <= frameCorrection) Gpr.debug("Exon too short (size: " + size() + "), cannot correct frame!\n" + this);
+		if (size() <= frameCorrection) {
+			Gpr.debug("Exon too short (size: " + size() + "), cannot correct frame!\n" + this);
+			return false;
+		}
 
 		// Correct start or end coordinates
 		if (isStrandPlus()) start += frameCorrection;
@@ -164,6 +167,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		String sequence = getSequence();
 		if (sequence.length() >= frameCorrection) sequence = sequence.substring(frameCorrection);
 		setSequence(sequence);
+
+		return true;
 	}
 
 	@Override

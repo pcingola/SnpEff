@@ -30,11 +30,14 @@ public class Cds extends Marker implements MarkerWithFrame {
 	 * Correct coordinates according to frame differences
 	 * @param frameCorrection
 	 */
-	public void frameCorrection(int frameCorrection) {
-		if (frameCorrection <= 0) return; // Nothing to do
+	public boolean frameCorrection(int frameCorrection) {
+		if (frameCorrection <= 0) return true; // Nothing to do
 
 		// Can correct?
-		if (size() <= frameCorrection) Gpr.debug("CDS too short (size: " + size() + "), cannot correct frame!\n" + this);
+		if (size() <= frameCorrection) {
+			Gpr.debug("CDS too short (size: " + size() + "), cannot correct frame!\n" + this);
+			return false;
+		}
 
 		// Correct start or end coordinates
 		if (isStrandPlus()) start += frameCorrection;
@@ -44,6 +47,8 @@ public class Cds extends Marker implements MarkerWithFrame {
 		frame = (byte) ((frame - frameCorrection) % 3);
 		while (frame < 0)
 			frame += 3;
+
+		return true;
 	}
 
 	@Override

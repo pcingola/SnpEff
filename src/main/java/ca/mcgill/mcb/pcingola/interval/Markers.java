@@ -224,6 +224,11 @@ public class Markers implements Serializable, Collection<Marker> {
 			// Previous interval finished? => add it to list
 			if (i.start > end) {
 				if ((start >= 0) && (end >= 0)) {
+					if (end < start) {
+						Gpr.debug("WTF!?\tstart: " + start + "\tend:" + end);
+						for (Marker m : this)
+							System.out.println("\t" + m);
+					}
 					Marker im = new Marker(chromo, start, end, 1, tag);
 					intsMerged.add(im);
 				}

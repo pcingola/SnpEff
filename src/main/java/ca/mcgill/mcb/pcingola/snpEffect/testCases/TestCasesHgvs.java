@@ -141,11 +141,7 @@ public class TestCasesHgvs extends TestCase {
 	//		//	- Change each base in the exon
 	//		//	- Calculate effect
 	//		for (int i = 0; i < N; i++) {
-<<<<<<< HEAD
-	//			initSnpEffPredictor();
-=======
 	//			initSnpEffPredictor(false);
->>>>>>> 760382689d60c4d5c197b57e512f12babf5111af
 	//			if (debug) System.out.println("HGSV Test iteration: " + i + "\n" + transcript);
 	//			else System.out.println("HGSV Test iteration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
 	//
@@ -242,8 +238,6 @@ public class TestCasesHgvs extends TestCase {
 	//	public void test_02() {
 	//		snpEffect("tests/hgvs_1.vcf", "testHg3766Chr1");
 	//	}
-<<<<<<< HEAD
-=======
 
 	//	public void test_03_intron_withinCds() {
 	//		snpEffect("tests/ensembl_hgvs_intron.within_cds.vcf", "testHg3775Chr1");
@@ -267,7 +261,6 @@ public class TestCasesHgvs extends TestCase {
 			//			else System.out.println("HGSV Test iteration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
 
 			System.out.println(transcript.toStringAsciiArt());
->>>>>>> 760382689d60c4d5c197b57e512f12babf5111af
 
 		}
 	}

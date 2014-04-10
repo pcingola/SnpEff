@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Cds;
@@ -34,20 +35,22 @@ public abstract class SnpEffPredictorFactory {
 	boolean debug = false;
 	boolean verbose = false;
 	boolean readSequences = true; // Do not read sequences from GFF file (this is only used for debugging)
+	boolean createRandSequences = false; // If sequences are not read frmo a file, create random sequences
 	boolean frameCorrection;
+	int lineNum;
+	int inOffset; // This amount is subtracted to all position coordinates
+	int totalSeqsAdded = 0, totalSeqsIgnored = 0; // Number of sequences added and ignored
 	String fileName;
 	String fastaFile; // Only used for debugging or testing
 	String line;
-	int lineNum;
 	Config config;
 	Genome genome;
 	SnpEffectPredictor snpEffectPredictor;
-	int inOffset; // This amount is subtracted to all position coordinates
-	int totalSeqsAdded = 0, totalSeqsIgnored = 0; // Number of sequences added and ignored
 	HashMap<String, Integer> exonsByChromo;
 	HashMap<String, Marker> markersById;
 	HashMap<String, Gene> genesById;
 	HashMap<String, Transcript> transcriptsById;
+	Random random = new Random(20140410); // Note: we want consistent results in our test cases, so we always initialize the random generator in the same way
 
 	public SnpEffPredictorFactory(Config config, int inOffset) {
 		this.config = config;
@@ -288,6 +291,21 @@ public abstract class SnpEffPredictorFactory {
 	public abstract SnpEffectPredictor create();
 
 	/**
+	 * Create random sequences for exons
+	 * 
+	 * Note: This is only used for test cases!
+	 */
+	protected void createRandSequences() {
+		// Find all exons and add a 'random' sequence to each of them
+		for (Gene g : genome.getGenes())
+			for (Transcript tr : g)
+				for (Exon ex : tr) {
+					String sequence = GprSeq.randSequence(random, ex.size());
+					ex.setSequence(sequence);
+				}
+	}
+
+	/**
 	 * Consolidate transcripts: 
 	 * If two exons are one right next to the other, join them
 	 * E.g. exon1:1234-2345, exon2:2346-2400 => exon:1234-2400
@@ -448,7 +466,9 @@ public abstract class SnpEffPredictorFactory {
 	void frameCorrection() {
 		if (verbose) System.out.print("\n\tCorrecting exons based on frame information.\n\t");
 
+		//---
 		// Sanity check. Are all frames zero?
+		//---
 		int countByFrame[] = new int[3];
 		for (Gene gene : genome.getGenes())
 			for (Transcript tr : gene) {
@@ -467,7 +487,9 @@ public abstract class SnpEffPredictorFactory {
 		int countByFrameNonZero = countByFrame[1] + countByFrame[2];
 		if ((countByFrameTotal > 0) && (countByFrameNonZero <= 0)) System.err.println("WARNING: All frames are zero! This seems rather odd, please check that 'frame' information in your 'genes' file is accurate.");
 
+		//---
 		// Perform exon frame adjustment
+		//---
 		int i = 1;
 		for (Gene gene : genome.getGenes())
 			for (Transcript tr : gene) {
@@ -598,6 +620,10 @@ public abstract class SnpEffPredictorFactory {
 				System.out.println("");
 			}
 		}
+	}
+
+	public void setCreateRandSequences(boolean createRandSequences) {
+		this.createRandSequences = createRandSequences;
 	}
 
 	public void setDebug(boolean debug) {

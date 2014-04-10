@@ -882,9 +882,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 						Cds cdsToCorrect = findMatchingCds(exon);
 
 						// Correct exon until we get the expected frame
-						while (frameReal != exon.getFrame()) {
+						for (boolean ok = true; ok && frameReal != exon.getFrame();) {
 							// Correct both Exon and CDS
-							exon.frameCorrection(1);
+							ok &= exon.frameCorrection(1);
 							if (cdsToCorrect != null) cdsToCorrect.frameCorrection(1);
 							corrected = true;
 						}

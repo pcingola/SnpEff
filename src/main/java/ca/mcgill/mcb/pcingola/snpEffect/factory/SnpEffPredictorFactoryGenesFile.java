@@ -35,8 +35,13 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 		fileName = config.getBaseFileNameGenes() + ".txt";
 		System.out.println("Reading gene intervals file : '" + fileName + "'");
 		readGenesFile(); // Read gene info
-		beforeExonSequences(); // Some clean-up before readng exon sequences
-		if (readSequences) readExonSequences(); // Read chromosome sequences and set exon sequences
+
+		beforeExonSequences(); // Some clean-up before reading exon sequences
+
+		// Read chromosome sequences and set exon sequences
+		if (readSequences) readExonSequences();
+		else if (createRandSequences) createRandSequences();
+
 		finishUp(); // Perform adjustments
 
 		// Check that exons have sequences

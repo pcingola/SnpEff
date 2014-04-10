@@ -1,12 +1,10 @@
 package ca.mcgill.mcb.pcingola;
 
-<<<<<<< HEAD
-=======
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
->>>>>>> 760382689d60c4d5c197b57e512f12babf5111af
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 
 public class Zzz extends SnpEff {
@@ -16,11 +14,6 @@ public class Zzz extends SnpEff {
 	public static void main(String[] args) {
 		Timer.showStdErr("Start");
 
-<<<<<<< HEAD
-		Timer.showStdErr("End");
-	}
-
-=======
 		Zzz zzz = new Zzz(null);
 		zzz.load("testHg3771Chr1");
 		zzz.run();
@@ -63,5 +56,4 @@ public class Zzz extends SnpEff {
 
 		return true;
 	}
->>>>>>> 760382689d60c4d5c197b57e512f12babf5111af
 }

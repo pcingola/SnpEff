@@ -112,15 +112,11 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				readGff(UTR3);
 			}
 
-			// Some clean-up before readng exon sequences
+			// Some clean-up before reading exon sequences
 			beforeExonSequences();
 
-			if (readSequences) {
-				// Read chromosome sequences and set exon sequences
-				if (verbose) System.out.print("\tReading sequences   :\n");
-				if (mainFileHasFasta) readExonSequencesGff(fileName); // Read from GFF file (it has a '##FASTA' delimiter)
-				else readExonSequences(); // Read them from FASTA file
-			}
+			if (readSequences) readExonSequences();
+			else if (createRandSequences) createRandSequences();
 
 			if (verbose) System.out.println("\tTotal: " + totalSeqsAdded + " sequences added, " + totalSeqsIgnored + " sequences ignored.");
 
@@ -176,6 +172,14 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	 * @return true if a line was parsed
 	 */
 	protected abstract boolean parse(String line, String typeToRead);
+
+	@Override
+	protected void readExonSequences() {
+		// Read chromosome sequences and set exon sequences
+		if (verbose) System.out.print("\tReading sequences   :\n");
+		if (mainFileHasFasta) readExonSequencesGff(fileName); // Read from GFF file (it has a '##FASTA' delimiter)
+		else super.readExonSequences(); // Read them from FASTA file
+	}
 
 	/**
 	 * Read chromosome sequence from GFF3 file and extract exons' sequences 

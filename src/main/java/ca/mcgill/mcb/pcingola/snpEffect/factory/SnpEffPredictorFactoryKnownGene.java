@@ -58,8 +58,9 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 
 		beforeExonSequences(); // Some clean-up before readng exon sequences
 
-		if (readSequences) readExonSequences(); // Read chromosome sequences and set exon sequences
-		// else adjustChromosomes();
+		// Read chromosome sequences and set exon sequences
+		if (readSequences) readExonSequences();
+		else if (createRandSequences) createRandSequences();
 
 		finishUp(); // Perform adjustments
 

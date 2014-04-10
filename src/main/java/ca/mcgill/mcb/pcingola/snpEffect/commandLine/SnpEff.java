@@ -40,7 +40,15 @@ public class SnpEff implements CommandLine {
 	 *  Available gene database formats
 	 */
 	public enum GeneDatabaseFormat {
-		BIOMART, GFF3, GFF2, GTF22, REFSEQ, KNOWN_GENES, GENBANK, EMBL
+		// BED // http://genome.ucsc.edu/FAQ/FAQformat.html#format1
+		BIOMART //
+		, GFF3 // http://www.sequenceontology.org/gff3.shtml
+		, GFF2 //
+		, GTF22 // http://mblab.wustl.edu/GTF22.html
+		, REFSEQ //
+		, KNOWN_GENES //
+		, GENBANK //
+		, EMBL
 	}
 
 	/**
@@ -63,7 +71,7 @@ public class SnpEff implements CommandLine {
 	public static final String SOFTWARE_NAME = "SnpEff";
 	public static final String REVISION = "";
 	public static final String BUILD = "2014-04-07";
-	public static final String VERSION_MAJOR = "3.6";
+	public static final String VERSION_MAJOR = "3.5";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
 	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_NO_NAME;

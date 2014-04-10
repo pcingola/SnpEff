@@ -36,7 +36,7 @@ public class TestCasesGff3 extends TestCase {
 	 * @param gff3File
 	 * @param resultFile
 	 */
-	public SnpEffectPredictor buildAndCompare(String genome, String gff3File, String resultFile, boolean readSeqs) {
+	public SnpEffectPredictor buildAndCompare(String genome, String gff3File, String resultFile, boolean readSeqs, boolean createRandSequences) {
 		String expectedResult = (resultFile == null ? "" : Gpr.readFile(resultFile).trim());
 
 		// Build
@@ -44,6 +44,7 @@ public class TestCasesGff3 extends TestCase {
 		SnpEffPredictorFactoryGff3 fgff3 = new SnpEffPredictorFactoryGff3(config);
 		fgff3.setFileName(gff3File);
 		fgff3.setReadSequences(readSeqs);
+		fgff3.setCreateRandSequences(createRandSequences);
 		SnpEffectPredictor sep = fgff3.create();
 
 		// Compare result
@@ -89,35 +90,35 @@ public class TestCasesGff3 extends TestCase {
 		String genome = "testCase";
 		String gff3File = "tests/exonSimple.gff3";
 		String resultFile = "tests/exonSimple.txt";
-		buildAndCompare(genome, gff3File, resultFile, true);
+		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
 	public void testCase_02_ExonIn() {
 		String genome = "testCase";
 		String gff3File = "tests/exonIn.gff3";
 		String resultFile = "tests/exonIn.txt";
-		buildAndCompare(genome, gff3File, resultFile, true);
+		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
 	public void testCase_03_ExonOut() {
 		String genome = "testCase";
 		String gff3File = "tests/exonOut.gff3";
 		String resultFile = "tests/exonOut.txt";
-		buildAndCompare(genome, gff3File, resultFile, true);
+		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
 	public void testCase_04_AthalianaTair10_AT5G66790() {
 		String genome = "athalianaTair10";
 		String gff3File = "tests/AT5G66790.gff3";
 		String resultFile = "tests/AT5G66790.txt";
-		buildAndCompare(genome, gff3File, resultFile, true);
+		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
 	public void testCase_05_PaeruPA14muccA() {
 		String genome = "paeru.PA14";
 		String gff3File = "tests/paeru.PA14.muccA.gff";
 		String resultFile = "tests/paeru.PA14.muccA.txt";
-		SnpEffectPredictor sep = buildAndCompare(genome, gff3File, resultFile, true);
+		SnpEffectPredictor sep = buildAndCompare(genome, gff3File, resultFile, true, false);
 
 		// Make sure no splice site is added
 		Gene gene = sep.getGenome().getGenes().iterator().next();
@@ -130,21 +131,21 @@ public class TestCasesGff3 extends TestCase {
 		String genome = "ppersica139";
 		String gff3File = "tests/ppersica_139.gff";
 		String resultFile = "tests/ppersica_139.txt";
-		buildAndCompare(genome, gff3File, resultFile, false);
+		buildAndCompare(genome, gff3File, resultFile, false, false);
 	}
 
 	public void testCase_07_Rice5() {
 		String genome = "testRice5";
 		String gff3File = "tests/Os03t0150600.gff";
 		String resultFile = "tests/Os03t0150600.txt";
-		buildAndCompare(genome, gff3File, resultFile, false);
+		buildAndCompare(genome, gff3File, resultFile, false, false);
 	}
 
 	public void testCase_08_Vibrio() {
 		String genome = "vibrio";
 		String gff3File = "tests/vibrio.gff3";
 		String resultFile = "tests/vibrio.txt";
-		buildAndCompare(genome, gff3File, resultFile, true);
+		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
 	public void testCase_09_AP() {
@@ -159,7 +160,7 @@ public class TestCasesGff3 extends TestCase {
 
 		// Test
 		try {
-			buildAndCompare(genome, gff3File, resultFile, true);
+			buildAndCompare(genome, gff3File, resultFile, true, false);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
@@ -170,6 +171,13 @@ public class TestCasesGff3 extends TestCase {
 		// Show stderr and check message
 		System.err.println("STDERR:\n" + myErr);
 		Assert.assertTrue(myErr.toString().indexOf("WARNING: All frames are zero!") >= 0);
+	}
+
+	public void testCase_10_MaizeZmB73() {
+		String genome = "testMaizeZmB73";
+		String gff3File = "tests/testMaizeZmB73.gff3";
+		String resultFile = "tests/testMaizeZmB73.txt";
+		buildAndCompare(genome, gff3File, resultFile, false, true);
 	}
 
 }
