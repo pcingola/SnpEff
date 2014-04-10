@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.binseq.DnaSequence;
 import ca.mcgill.mcb.pcingola.overlap.OverlapDnaSeq;
 
-public class TestCaseOverlap extends TestCase {
+public class TestCasesOverlap extends TestCase {
 
 	/**
 	 * Overlap two sequences and check results 

@@ -32,7 +32,7 @@ public class TestSuiteAll {
 		suite.addTestSuite(TestCasesDnaSequenceByte.class);
 		suite.addTestSuite(TestCasesDnaNSequence.class);
 		suite.addTestSuite(TestCaseSequenceIndexer.class);
-		suite.addTestSuite(TestCaseOverlap.class);
+		suite.addTestSuite(TestCasesOverlap.class);
 		suite.addTestSuite(TestCasesDnaOverlap.class);
 
 		// Alignment
@@ -59,6 +59,7 @@ public class TestSuiteAll {
 		suite.addTestSuite(TestCasesNoChange.class);
 		suite.addTestSuite(TestCasesTranscriptError.class);
 		suite.addTestSuite(TestCasesHugeDeletions.class);
+		suite.addTestSuite(TestCasesCodingTag.class);
 
 		// Filter transcripts
 		suite.addTestSuite(TestCasesFilterTranscripts.class);
