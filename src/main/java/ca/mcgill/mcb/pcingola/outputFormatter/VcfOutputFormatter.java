@@ -156,8 +156,11 @@ public class VcfOutputFormatter extends OutputFormatter {
 					effBuff.append(vcfInfoSafeString(useGeneId ? gene.getId() : gene.getGeneName()));
 					effBuff.append("|");
 
-					// Transcript ID
-					effBuff.append(tr != null ? tr.getBioType() : "");
+					// Transcript biotype
+					if (tr != null) {
+						if ((tr.getBioType() != null) && !tr.getBioType().isEmpty()) effBuff.append(tr.getBioType());
+						else effBuff.append(tr.isProteinCoding() ? "protein_coding" : ""); // No biotype? Add protein_coding of we know it is.
+					}
 					effBuff.append("|");
 
 					// Protein coding gene?
