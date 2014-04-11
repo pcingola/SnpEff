@@ -818,13 +818,13 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				if (exonBasePos < tr.getCdsStart()) {
 					int cdnaStart = tr.baseNumberPreMRna(tr.getCdsStart()) - 1;
 					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
-					distBase = cdnaStart - cdnaPos;
+					distBase = cdnaStart - cdnaPos + 1;
 					if (distBase < 0) throw new RuntimeException("Error creating HGSV expression: Negative distance " + distBase);
 					distBaseStr = "-";
 				} else if (exonBasePos > tr.getCdsEnd()) {
-					int cdnaEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
+					int cdnaEnd = tr.baseNumberPreMRna(tr.getCdsEnd()) - 1;
 					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
-					distBase = cdnaPos - cdnaEnd;
+					distBase = cdnaPos - cdnaEnd + 1;
 					distBaseStr = "*";
 				} else throw new RuntimeException("This should never happen!");
 			} else {
@@ -833,7 +833,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 			// Create HGSV string
 			if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
-			return coding + distBaseStr + distBase + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
+			return coding + distBaseStr + (distBase - 1) + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
 		}
 		return "";
 	}

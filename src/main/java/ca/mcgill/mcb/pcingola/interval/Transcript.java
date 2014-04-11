@@ -1533,6 +1533,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				else art[j] = '-';
 			}
 		}
+
 		return new String(art);
 	}
 
