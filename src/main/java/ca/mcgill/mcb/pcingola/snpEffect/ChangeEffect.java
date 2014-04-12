@@ -13,7 +13,6 @@ import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.util.GprSeq;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
@@ -478,6 +477,10 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		return codonsOld + "/" + codonsNew;
 	}
 
+	public int getCodonIndex() {
+		return codonIndex;
+	}
+
 	public int getCodonNum() {
 		return codonNum;
 	}
@@ -718,194 +721,185 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 	/**
 	 * Change in HGVS notation
-	 * References: http://www.hgvs.org/mutnomen/recs.html
-	 * 
 	 * @return
 	 */
 	public String getHgvs() {
-		/**
-		 * Coordinates:
-		 * 		i) there is no nucleotide 0
-		 * 		ii) nucleotide 1 is the A of the ATG-translation initiation codon
-		 * 		iii) the nucleotide 5' of the ATG-translation initiation codon is -1, the previous -2, etc.
-		 * 		iv) the nucleotide 3' of the translation stop codon is *1, the next *2, etc.
-		 */
-		if (aaOld.isEmpty() && aaNew.isEmpty()) {
-			if (codonNum >= 0) return "" + (codonNum + 1);
-			return getHgvsNonCoding();
-		}
+		HgsvProtein hgsvProtein = new HgsvProtein(this);
+		HgsvDna hgsvDna = new HgsvDna(this);
 
-		String hgvsProt = getHgvsProtein();
-		String hgvsDna = getHgvsDna();
-		return hgvsProt + "/" + hgvsDna;
+		String hgvsProt = hgsvProtein.toString();
+		String hgvsDna = hgsvDna.toString();
+
+		return (hgvsProt != null ? hgsvProtein + "/" : "") //
+				+ (hgvsDna != null ? hgvsDna : "") //
+		;
 	}
 
-	/**
-	 * Coding change in HGVS notation (DNA changes)
-	 * References: http://www.hgvs.org/mutnomen/recs-DNA.html 
-	 * 
-	 * @return
-	 */
-	protected String getHgvsDna() {
-		if (codonNum < 0) return "";
-
-		int seqPos = codonNum * 3 + codonIndex + 1;
-
-		Transcript tr = getTranscript();
-		if ((tr == null) || tr.isStrandPlus()) return "c." + seqPos + seqChange.getReference() + ">" + seqChange.getChange();
-		return "c." + seqPos + GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getChange());
-	}
-
-	/**
-	 * Coding change in HGVS notation (DNA changes)
-	 * References: http://www.hgvs.org/mutnomen/recs.html
-	 * 
-	 * @return
-	 */
-	protected String getHgvsIntron() {
-		if (isIntron()) {
-			// Intronic nucleotides (coding DNA reference sequence only)
-			//    - beginning of the intron; the number of the last nucleotide of the preceding exon, a plus sign and the 
-			//		position in the intron, like c.77+1G, c.77+2T, ....
-			// 	  - end of the intron; the number of the first nucleotide of the following exon, a minus sign and 
-			//		the position upstream in the intron, like ..., c.78-2A, c.78-1G.
-			// 	  - in the middle of the intron, numbering changes from "c.77+.." to "c.78-.."; for introns with 
-			//		an uneven number of nucleotides the central nucleotide is the last described with a "+" (see Discussion)
-			// NOTE: the format c.IVS1+1G and c.IVS1-2G should not be used (see Discussion)
-
-			Intron intron = (Intron) marker;
-			Transcript tr = getTranscript();
-			if (tr == null) return "";
-
-			// Coding?
-			String coding = (tr.isProteinCoding() ? "c." : "n.");
-
-			int fromPrevExon = 0, fromNextExon = 0, exonBasePos = -1;
-			String change = "";
-
-			// Calculate distance to exon (coordinates are one-based)
-			if (intron.isStrandPlus()) {
-				fromPrevExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
-				fromNextExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
-				exonBasePos = intron.getStart();
-				exonBasePos--; // Make sure the coordinate is inside the exon
-				change = seqChange.getReference() + ">" + seqChange.getChange();
-			} else {
-				fromNextExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
-				fromPrevExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
-				exonBasePos = intron.getEnd();
-				exonBasePos++; // Make sure the coordinate is inside the exon
-				change = GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getChange());
-			}
-
-			// Calculate 'exonBase' reference
-			int distBase = 0;
-			int cdsLeft = Math.min(tr.getCdsStart(), tr.getCdsEnd());
-			int cdsRight = Math.max(tr.getCdsStart(), tr.getCdsEnd());
-			String distBaseStr = "";
-
-			// Intron within coding region?
-			if ((exonBasePos >= cdsLeft) && (exonBasePos <= cdsRight)) {
-				distBase = tr.baseNumberCds(exonBasePos, false) + 1;
-
-				// Create HGSV string
-				if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
-				return coding + distBaseStr + (distBase + 1) + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
-			}
-
-			// Outside CDS
-			if (tr.isStrandPlus()) {
-				if (exonBasePos <= tr.getCdsStart()) {
-					int cdnaStart = tr.baseNumberPreMRna(tr.getCdsStart());
-					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
-					distBase = cdnaStart - cdnaPos;
-					if (distBase < 0) throw new RuntimeException("Error creating HGSV expression: Negative distance " + distBase);
-					distBaseStr = "-";
-				} else if (exonBasePos >= tr.getCdsEnd()) {
-					int cdnaEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
-					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
-					distBase = cdnaPos - cdnaEnd;
-					distBaseStr = "*";
-				} else throw new RuntimeException("This should never happen!");
-			} else {
-				exonBasePos++; // Make sure the coordinate is inside the exon 
-			}
-
-			// Create HGSV string
-			if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
-			return coding + distBaseStr + (distBase - 1) + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
-		}
-		return "";
-	}
-
-	protected String getHgvsNonCoding() {
-		if (isIntron()) return getHgvsIntron();
-		return "";
-	}
-
-	/**
-	 * Coding change in HGVS notation (amino acid changes)
-	 * References: http://www.hgvs.org/mutnomen/recs.html
-	 * 
-	 * @return
-	 */
-	protected String getHgvsProtein() {
-		// Codon numbering
-		// HGVS: the translation initiator Methionine is numbered as +1
-		int aaPos = codonNum + 1;
-
-		// Convert to 3 letter code
-		// HGVS: the three-letter amino acid code is prefered (see Discussion), with "*" designating a translation 
-		// 		 termination codon; for clarity we this page describes changes using the three-letter amino acid
-		CodonTable codonTable = marker.codonTable();
-		String aaNew3 = codonTable.aaThreeLetterCode(aaNew);;
-		String aaOld3 = codonTable.aaThreeLetterCode(aaOld);;
-
-		// Synonymous changes
-		if ((effectType == EffectType.SYNONYMOUS_CODING) //
-				|| (effectType == EffectType.SYNONYMOUS_STOP) //
-		) {
-			// HGVS: Description of so called "silent" changes in the format p.Leu54Leu (or p.L54L) is not allowed; descriptions 
-			// 		 should be given at DNA level, it is non-informative and not unequivocal (there are five possibilities 
-			// 		 at DNA level which may underlie p.Leu54Leu);  correct description has the format c.162C>G.
-			return "p." + aaOld3 + aaPos + aaNew3;
-		}
-
-		// Start codon lost
-		if ((effectType == EffectType.START_LOST) //
-				|| (effectType == EffectType.SYNONYMOUS_START) //
-				|| (effectType == EffectType.NON_SYNONYMOUS_START) //
-		) {
-			// Reference : http://www.hgvs.org/mutnomen/disc.html#Met
-			// Currently, variants in the translation initiating Methionine (M1) are usually described as a substitution, e.g. p.Met1Val. 
-			// This is not correct. Either no protein is produced (p.0) or a new translation initiation site up- or downstream is used (e.g. p.Met1ValextMet-12 or p.Met1_Lys45del resp.). 
-			// Unless experimental proof is available, it is probably best to report the effect on protein level as "p.Met1?" (unknown). 
-			// When experimental data show that no protein is made, the description "p.0" is recommended (see Examples).
-			//
-			// We use the same for SYNONYMOUS_START since we cannot rally predict if the new start codon will actually be functioning as a start codon (since the Kozak sequence changed)
-			// Ditto for NON_SYNONYMOUS_START
-			return "p." + aaOld3 + "1?";
-		}
-
-		// Stop codon mutations
-		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#extp
-		// A change affecting the translation termination codon (Ter/*) introducing a new downstream termination 
-		// codon extending the C-terminus of the encoded protein described using "extTer#" (alternatively "ext*#") 
-		// where "#" is the position of the new stop codon (Ter# / *#)
-		// E.g.:
-		// 		p.*327Argext*? (alternatively p.Ter327ArgextTer? or p.*327Rext*?) describes a variant in the stop 
-		//		codon (Ter/*) at position 327, changing it to a codon for Arginine (Arg, R) and adding a tail of 
-		//		new amino acids of unknown length since the shifted frame does not contain a new stop codon.
-		if (effectType == EffectType.STOP_LOST) return "p." + aaOld3 + aaPos + aaNew3 + "ext*?";
-
-		// Reference: 		http://www.hgvs.org/mutnomen/recs-prot.html#del
-		// Nonsense variant are a special type of amino acid deletion removing the entire C-terminal part of a 
-		// protein starting at the site of the variant. A nonsense change is described using the format 
-		// p.Trp26Ter (alternatively p.Trp26*). 		
-		if (effectType == EffectType.STOP_GAINED) return "p." + aaOld3 + aaPos + "*";
-
-		return "p." + aaOld3 + aaPos + aaNew3;
-	}
+	//	/**
+	//	 * Coding change in HGVS notation (DNA changes)
+	//	 * References: http://www.hgvs.org/mutnomen/recs-DNA.html 
+	//	 * 
+	//	 * @return
+	//	 */
+	//	protected String getHgvsDna() {
+	//		if (codonNum < 0) return "";
+	//
+	//		int seqPos = codonNum * 3 + codonIndex + 1;
+	//
+	//		Transcript tr = getTranscript();
+	//		if ((tr == null) || tr.isStrandPlus()) return "c." + seqPos + seqChange.getReference() + ">" + seqChange.getChange();
+	//		return "c." + seqPos + GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getChange());
+	//	}
+	//
+	//	/**
+	//	 * Coding change in HGVS notation (DNA changes)
+	//	 * References: http://www.hgvs.org/mutnomen/recs.html
+	//	 * 
+	//	 * @return
+	//	 */
+	//	protected String getHgvsIntron() {
+	//		if (isIntron()) {
+	//			// Intronic nucleotides (coding DNA reference sequence only)
+	//			//    - beginning of the intron; the number of the last nucleotide of the preceding exon, a plus sign and the 
+	//			//		position in the intron, like c.77+1G, c.77+2T, ....
+	//			// 	  - end of the intron; the number of the first nucleotide of the following exon, a minus sign and 
+	//			//		the position upstream in the intron, like ..., c.78-2A, c.78-1G.
+	//			// 	  - in the middle of the intron, numbering changes from "c.77+.." to "c.78-.."; for introns with 
+	//			//		an uneven number of nucleotides the central nucleotide is the last described with a "+" (see Discussion)
+	//
+	//			Intron intron = (Intron) marker;
+	//			Transcript tr = getTranscript();
+	//			if (tr == null) return "";
+	//
+	//			// Coding?
+	//			String coding = (tr.isProteinCoding() ? "c." : "n.");
+	//
+	//			int fromPrevExon = 0, fromNextExon = 0, exonBasePos = -1;
+	//			String change = "";
+	//
+	//			// Calculate distance to exon (coordinates are one-based)
+	//			if (intron.isStrandPlus()) {
+	//				fromPrevExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
+	//				fromNextExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
+	//				exonBasePos = intron.getStart();
+	//				exonBasePos--; // Make sure the coordinate is inside the exon
+	//				change = seqChange.getReference() + ">" + seqChange.getChange();
+	//			} else {
+	//				fromNextExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
+	//				fromPrevExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
+	//				exonBasePos = intron.getEnd();
+	//				exonBasePos++; // Make sure the coordinate is inside the exon
+	//				change = GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getChange());
+	//			}
+	//
+	//			// Calculate 'exonBase' reference
+	//			int distBase = 0;
+	//			int cdsLeft = Math.min(tr.getCdsStart(), tr.getCdsEnd());
+	//			int cdsRight = Math.max(tr.getCdsStart(), tr.getCdsEnd());
+	//			String distBaseStr = "";
+	//
+	//			// Intron within coding region?
+	//			if ((exonBasePos >= cdsLeft) && (exonBasePos <= cdsRight)) {
+	//				distBase = tr.baseNumberCds(exonBasePos, false) + 1;
+	//
+	//				// Create HGSV string
+	//				if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
+	//				return coding + distBaseStr + (distBase + 1) + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
+	//			}
+	//
+	//			// Outside CDS
+	//			if (tr.isStrandPlus()) {
+	//				if (exonBasePos <= tr.getCdsStart()) {
+	//					int cdnaStart = tr.baseNumberPreMRna(tr.getCdsStart());
+	//					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
+	//					distBase = cdnaStart - cdnaPos;
+	//					if (distBase < 0) throw new RuntimeException("Error creating HGSV expression: Negative distance " + distBase);
+	//					distBaseStr = "-";
+	//				} else if (exonBasePos >= tr.getCdsEnd()) {
+	//					int cdnaEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
+	//					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
+	//					distBase = cdnaPos - cdnaEnd;
+	//					distBaseStr = "*";
+	//				} else throw new RuntimeException("This should never happen!");
+	//			} else {
+	//				exonBasePos++; // Make sure the coordinate is inside the exon 
+	//			}
+	//
+	//			// Create HGSV string
+	//			if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
+	//			return coding + distBaseStr + (distBase - 1) + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
+	//		}
+	//		return "";
+	//	}
+	//
+	//	protected String getHgvsNonCoding() {
+	//		if (isIntron()) return intron();
+	//		return "";
+	//	}
+	//
+	//	/**
+	//	 * Coding change in HGVS notation (amino acid changes)
+	//	 * References: http://www.hgvs.org/mutnomen/recs.html
+	//	 * 
+	//	 * @return
+	//	 */
+	//	protected String getHgvsProtein() {
+	//		// Codon numbering
+	//		// HGVS: the translation initiator Methionine is numbered as +1
+	//		int aaPos = codonNum + 1;
+	//
+	//		// Convert to 3 letter code
+	//		// HGVS: the three-letter amino acid code is prefered (see Discussion), with "*" designating a translation 
+	//		// 		 termination codon; for clarity we this page describes changes using the three-letter amino acid
+	//		CodonTable codonTable = marker.codonTable();
+	//		String aaNew3 = codonTable.aaThreeLetterCode(aaNew);;
+	//		String aaOld3 = codonTable.aaThreeLetterCode(aaOld);;
+	//
+	//		// Synonymous changes
+	//		if ((effectType == EffectType.SYNONYMOUS_CODING) //
+	//				|| (effectType == EffectType.SYNONYMOUS_STOP) //
+	//		) {
+	//			// HGVS: Description of so called "silent" changes in the format p.Leu54Leu (or p.L54L) is not allowed; descriptions 
+	//			// 		 should be given at DNA level, it is non-informative and not unequivocal (there are five possibilities 
+	//			// 		 at DNA level which may underlie p.Leu54Leu);  correct description has the format c.162C>G.
+	//			return "p." + aaOld3 + aaPos + aaNew3;
+	//		}
+	//
+	//		// Start codon lost
+	//		if ((effectType == EffectType.START_LOST) //
+	//				|| (effectType == EffectType.SYNONYMOUS_START) //
+	//				|| (effectType == EffectType.NON_SYNONYMOUS_START) //
+	//		) {
+	//			// Reference : http://www.hgvs.org/mutnomen/disc.html#Met
+	//			// Currently, variants in the translation initiating Methionine (M1) are usually described as a substitution, e.g. p.Met1Val. 
+	//			// This is not correct. Either no protein is produced (p.0) or a new translation initiation site up- or downstream is used (e.g. p.Met1ValextMet-12 or p.Met1_Lys45del resp.). 
+	//			// Unless experimental proof is available, it is probably best to report the effect on protein level as "p.Met1?" (unknown). 
+	//			// When experimental data show that no protein is made, the description "p.0" is recommended (see Examples).
+	//			//
+	//			// We use the same for SYNONYMOUS_START since we cannot rally predict if the new start codon will actually be functioning as a start codon (since the Kozak sequence changed)
+	//			// Ditto for NON_SYNONYMOUS_START
+	//			return "p." + aaOld3 + "1?";
+	//		}
+	//
+	//		// Stop codon mutations
+	//		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#extp
+	//		// A change affecting the translation termination codon (Ter/*) introducing a new downstream termination 
+	//		// codon extending the C-terminus of the encoded protein described using "extTer#" (alternatively "ext*#") 
+	//		// where "#" is the position of the new stop codon (Ter# / *#)
+	//		// E.g.:
+	//		// 		p.*327Argext*? (alternatively p.Ter327ArgextTer? or p.*327Rext*?) describes a variant in the stop 
+	//		//		codon (Ter/*) at position 327, changing it to a codon for Arginine (Arg, R) and adding a tail of 
+	//		//		new amino acids of unknown length since the shifted frame does not contain a new stop codon.
+	//		if (effectType == EffectType.STOP_LOST) return "p." + aaOld3 + aaPos + aaNew3 + "ext*?";
+	//
+	//		// Reference: 		http://www.hgvs.org/mutnomen/recs-prot.html#del
+	//		// Nonsense variant are a special type of amino acid deletion removing the entire C-terminal part of a 
+	//		// protein starting at the site of the variant. A nonsense change is described using the format 
+	//		// p.Trp26Ter (alternatively p.Trp26*). 		
+	//		if (effectType == EffectType.STOP_GAINED) return "p." + aaOld3 + aaPos + "*";
+	//
+	//		return "p." + aaOld3 + aaPos + aaNew3;
+	//	}
 
 	/**
 	 * Get intron (if any)
