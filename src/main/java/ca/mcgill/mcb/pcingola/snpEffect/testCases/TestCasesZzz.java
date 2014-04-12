@@ -170,7 +170,7 @@ public class TestCasesZzz extends TestCase {
 	}
 
 	public void test_05_intron() {
-		int N = 10;
+		int N = 1;
 
 		// Test N times
 		//	- Create a random gene transcript, exons
@@ -236,7 +236,7 @@ public class TestCasesZzz extends TestCase {
 					ChangeEffect ceff = ceffs.get();
 
 					String hgsvEff = ceffs.get().getHgvs();
-					System.out.println("\t" + pos + " [" + j + "]\tdistToExon: " + distToExon + "\tdistToTss: " + distToTss + "\thgsv: '" + hgsv + "'\tEffs: '" + hgsvEff + "'");
+					System.out.println("\tpos: " + pos + " [" + j + "]\thgsv: '" + hgsv + "'\tEff: '" + hgsvEff + "'\t" + ceff.getEffectType());
 
 					// Is this an intron? (i.e. skip other effects, such as splice site)
 					if (ceff.getEffectType() == EffectType.INTRON) Assert.assertEquals(hgsv, hgsvEff);
