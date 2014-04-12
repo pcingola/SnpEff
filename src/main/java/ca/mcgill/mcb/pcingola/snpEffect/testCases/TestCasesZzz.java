@@ -33,7 +33,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesZzz extends TestCase {
 
 	boolean debug = true;
-	boolean verbose = false;
+	boolean verbose = false || debug;
 
 	Random rand;
 	Config config;
@@ -48,6 +48,22 @@ public class TestCasesZzz extends TestCase {
 	public TestCasesZzz() {
 		super();
 		init();
+	}
+
+	/**
+	 * Distance to transcription start site (from a position before CDS start)
+	 * @param bases
+	 * @param pos
+	 * @param direction
+	 * @return
+	 */
+	int distToCodingBase(char bases[], int pos, int direction) {
+		for (int count = 0; (pos >= 0) && (pos < bases.length); pos += direction) {
+			if ((bases[pos] == '>') || (bases[pos] == '<')) return count;
+			if (bases[pos] != '-') count++;
+		}
+
+		throw new RuntimeException("This should never happen!");
 	}
 
 	/**
@@ -69,13 +85,20 @@ public class TestCasesZzz extends TestCase {
 		return -countAfter;
 	}
 
-	int distToTss(char bases[], int j, int direction) {
-		for (int count = 0; (j >= 0) && (j < bases.length); j += direction) {
-			if ((bases[j] == '>') || (bases[j] == '<')) return count;
-			if (bases[j] != '-') count++;
+	/**
+	 * Distance to UTR
+	 * @param bases
+	 * @param pos
+	 * @param direction
+	 * @return
+	 */
+	int distToUtr5(char bases[], int pos, int direction) {
+		int count = 0;
+		for (; (pos >= 0) && (pos < bases.length); pos -= direction) {
+			if (bases[pos] == '5') return count;
+			if (bases[pos] != '-') count++;
 		}
-
-		throw new RuntimeException("This should never happen!");
+		return count;
 	}
 
 	void init() {
@@ -170,7 +193,7 @@ public class TestCasesZzz extends TestCase {
 	}
 
 	public void test_05_intron() {
-		int N = 1;
+		int N = 100;
 
 		// Test N times
 		//	- Create a random gene transcript, exons
@@ -182,6 +205,11 @@ public class TestCasesZzz extends TestCase {
 			//			else System.out.println("HGSV Test iteration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
 
 			boolean tested = false;
+
+			if (it < 142) {
+				Gpr.debug("Skipping iteration: " + it);
+				continue;
+			}
 
 			// No introns? Nothing to test
 			if (transcript.introns().size() < 1) continue;
@@ -199,17 +227,30 @@ public class TestCasesZzz extends TestCase {
 			char bases[] = trstr.toCharArray();
 
 			int cdsStart = transcript.getCdsStart();
-			System.out.println("Iteration:" + it + "\tChecked: " + checked);
-			System.out.println(trstr);
-			System.out.println("Length   : " + transcript.size());
-			System.out.println("CDS start: " + cdsStart);
-			System.out.println("CDS end  : " + transcript.getCdsEnd());
-			System.out.println(transcript);
+			int cdsEnd = transcript.getCdsEnd();
+			int cdsLeft = Math.min(cdsStart, cdsEnd);
+			int cdsRight = Math.max(cdsStart, cdsEnd);
 
-			for (int j = 0, pos = transcript.getStart(); pos < cdsStart; j++, pos++) {
+			// Show data
+			System.out.println("Iteration:" + it + "\tChecked: " + checked);
+			if (verbose) {
+				System.out.println(trstr);
+				System.out.println("Length   : " + transcript.size());
+				System.out.println("CDS start: " + cdsStart);
+				System.out.println("CDS end  : " + transcript.getCdsEnd());
+				System.out.println(transcript);
+			}
+
+			// Check each intronic base
+			for (int j = 0, pos = transcript.getStart(); pos < transcript.getEnd(); j++, pos++) {
 				// Intron?
 				if (bases[j] == '-') {
 					tested = true;
+
+					if (pos < 730) {
+						Gpr.debug("\tSkipping\tpos: " + pos + " [" + j + "]");
+						continue;
+					}
 
 					// Ref & Alt
 					String refStr = "A";
@@ -222,21 +263,43 @@ public class TestCasesZzz extends TestCase {
 						altStr = GprSeq.wc(altStr);
 					}
 
-					// Find distances
+					// Distance from intron to exon boundary
 					int distToExon = distToExon(bases, j, transcript.getStrand());
-					int distToTss = distToTss(bases, j, transcript.getStrand());
 
-					//  "the number of the last nucleotide of the preceding exon"
-					if (distToExon >= 0) distToTss++;
+					// Distance from exon boundary to TSS
+					int distCoding = Integer.MIN_VALUE;
+					String distCodingStr = "";
 
-					String hgsv = "c.-" + distToTss + (distToExon >= 0 ? "+" : "") + distToExon + refStr + ">" + altStr;
+					if ((cdsLeft <= pos) && (pos <= cdsRight)) {
+						// Intron within coding region
+						distCoding = distToUtr5(bases, j, transcript.getStrand());
+						distCodingStr = "";
+
+						if (distToExon < 0) distCoding++;
+					} else if (transcript.isStrandPlus() && (pos < cdsStart)) {
+						// Intron within 5'UTR
+						distCoding = distToCodingBase(bases, j, transcript.getStrand());
+						distCodingStr = "-";
+
+						//  "the number of the last nucleotide of the preceding exon"
+						if (distToExon >= 0) distCoding++;
+					} else if (transcript.isStrandPlus() && (cdsEnd < pos)) {
+						// Intron within 3'UTR
+						distCoding = distToCodingBase(bases, j, -transcript.getStrand()) - 1; // Find first coding base opposite to transcript direction
+						distCodingStr = "*";
+
+						//  "the number of the last nucleotide of the preceding exon"
+						if (distToExon >= 0) distCoding++;
+					}
+
+					String hgsv = "c." + distCodingStr + distCoding + (distToExon >= 0 ? "+" : "") + distToExon + refStr + ">" + altStr;
 
 					// Calculate effect and compare
 					ChangeEffects ceffs = snpEffectPredictor.seqChangeEffect(sc);
 					ChangeEffect ceff = ceffs.get();
 
 					String hgsvEff = ceffs.get().getHgvs();
-					System.out.println("\tpos: " + pos + " [" + j + "]\thgsv: '" + hgsv + "'\tEff: '" + hgsvEff + "'\t" + ceff.getEffectType());
+					if (debug) System.out.println("\tpos: " + pos + " [" + j + "]\thgsv: '" + hgsv + "'\tEff: '" + hgsvEff + "'\t" + ceff.getEffectType());
 
 					// Is this an intron? (i.e. skip other effects, such as splice site)
 					if (ceff.getEffectType() == EffectType.INTRON) Assert.assertEquals(hgsv, hgsvEff);

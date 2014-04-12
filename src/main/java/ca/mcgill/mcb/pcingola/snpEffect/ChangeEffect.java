@@ -802,7 +802,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 			int cdsRight = Math.max(tr.getCdsStart(), tr.getCdsEnd());
 			String distBaseStr = "";
 
-			// Within CDS?
+			// Intron within coding region?
 			if ((exonBasePos >= cdsLeft) && (exonBasePos <= cdsRight)) {
 				distBase = tr.baseNumberCds(exonBasePos, false);
 
@@ -815,16 +815,16 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 			if (tr.isStrandPlus()) {
 				exonBasePos--; // Make sure the coordinate is inside the exon
 
-				if (exonBasePos < tr.getCdsStart()) {
-					int cdnaStart = tr.baseNumberPreMRna(tr.getCdsStart()) - 1;
+				if (exonBasePos <= tr.getCdsStart()) {
+					int cdnaStart = tr.baseNumberPreMRna(tr.getCdsStart());
 					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
-					distBase = cdnaStart - cdnaPos + 1;
+					distBase = cdnaStart - cdnaPos;
 					if (distBase < 0) throw new RuntimeException("Error creating HGSV expression: Negative distance " + distBase);
 					distBaseStr = "-";
-				} else if (exonBasePos > tr.getCdsEnd()) {
-					int cdnaEnd = tr.baseNumberPreMRna(tr.getCdsEnd()) - 1;
+				} else if (exonBasePos >= tr.getCdsEnd()) {
+					int cdnaEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
 					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
-					distBase = cdnaPos - cdnaEnd + 1;
+					distBase = cdnaPos - cdnaEnd;
 					distBaseStr = "*";
 				} else throw new RuntimeException("This should never happen!");
 			} else {

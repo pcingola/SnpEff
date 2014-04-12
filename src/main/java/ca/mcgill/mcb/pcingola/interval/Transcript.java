@@ -328,7 +328,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				// Sanity check
 				if (dist < 0) throw new RuntimeException("Negative distance for position " + pos + ". This should never happen!\n" + this);
 
-				return count + dist + 1; // Base number is one-based
+				return count + dist;
 			}
 
 			count += eint.size();
