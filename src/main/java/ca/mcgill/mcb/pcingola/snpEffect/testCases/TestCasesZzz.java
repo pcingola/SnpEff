@@ -195,6 +195,9 @@ public class TestCasesZzz extends TestCase {
 	public void test_05_intron() {
 		int N = 100;
 
+		int testIter = 142; // -1;
+		int testPos = 768; // -1;
+
 		// Test N times
 		//	- Create a random gene transcript, exons
 		//	- Change each base in the exon
@@ -206,10 +209,10 @@ public class TestCasesZzz extends TestCase {
 
 			boolean tested = false;
 
-			//			if (it < 142) {
-			//				Gpr.debug("Skipping iteration: " + it);
-			//				continue;
-			//			}
+			if (testIter >= 0 && it < testIter) {
+				Gpr.debug("Skipping iteration: " + it);
+				continue;
+			}
 
 			// No introns? Nothing to test
 			if (transcript.introns().size() < 1) continue;
@@ -247,10 +250,10 @@ public class TestCasesZzz extends TestCase {
 				if (bases[j] == '-') {
 					tested = true;
 
-					//					if (pos < 767) {
-					//						Gpr.debug("\tSkipping\tpos: " + pos + " [" + j + "]");
-					//						continue;
-					//					}
+					if (testPos >= 0 && pos < testPos) {
+						Gpr.debug("\tSkipping\tpos: " + pos + " [" + j + "]");
+						continue;
+					}
 
 					// Ref & Alt
 					String refStr = "A";
@@ -262,6 +265,17 @@ public class TestCasesZzz extends TestCase {
 						refStr = GprSeq.wc(refStr);
 						altStr = GprSeq.wc(altStr);
 					}
+
+					/*
+					 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					 * How it should be done:
+					 * 	- Calculate the distance from 'pos' to 'closest_exon_base'
+					 *  - If closest_exon_base < cdsStart : Calculate the distance from closest_exon_base to cdsStart (type "-")  
+					 *  - If closest_exon_base > cdsEnd   : Calculate the distance from closest_exon_base to cdsEnd   (type "*")
+					 *  - Else                            : Calculate the distance from closest_exon_base to cdsStart (type "")  
+					 * 
+					 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					 */
 
 					// Distance from intron to exon boundary
 					int distToExon = distToExon(bases, j, transcript.getStrand());
@@ -288,7 +302,7 @@ public class TestCasesZzz extends TestCase {
 						distCoding = distToCodingBase(bases, j, -transcript.getStrand()) - 1; // Find first coding base opposite to transcript direction
 						distCodingStr = "*";
 
-						if (distCoding <= 0) {
+						if (distCoding < 0) {
 							// Last CDS base
 							distCoding = distToUtr5(bases, j, transcript.getStrand());
 							distCodingStr = "";
