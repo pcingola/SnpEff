@@ -206,10 +206,10 @@ public class TestCasesZzz extends TestCase {
 
 			boolean tested = false;
 
-			if (it < 142) {
-				Gpr.debug("Skipping iteration: " + it);
-				continue;
-			}
+			//			if (it < 142) {
+			//				Gpr.debug("Skipping iteration: " + it);
+			//				continue;
+			//			}
 
 			// No introns? Nothing to test
 			if (transcript.introns().size() < 1) continue;
@@ -247,10 +247,10 @@ public class TestCasesZzz extends TestCase {
 				if (bases[j] == '-') {
 					tested = true;
 
-					if (pos < 730) {
-						Gpr.debug("\tSkipping\tpos: " + pos + " [" + j + "]");
-						continue;
-					}
+					//					if (pos < 767) {
+					//						Gpr.debug("\tSkipping\tpos: " + pos + " [" + j + "]");
+					//						continue;
+					//					}
 
 					// Ref & Alt
 					String refStr = "A";
@@ -288,8 +288,11 @@ public class TestCasesZzz extends TestCase {
 						distCoding = distToCodingBase(bases, j, -transcript.getStrand()) - 1; // Find first coding base opposite to transcript direction
 						distCodingStr = "*";
 
-						//  "the number of the last nucleotide of the preceding exon"
-						if (distToExon >= 0) distCoding++;
+						if (distCoding <= 0) {
+							// Last CDS base
+							distCoding = distToUtr5(bases, j, transcript.getStrand());
+							distCodingStr = "";
+						} else if (distToExon > 0) distCoding++;
 					}
 
 					String hgsv = "c." + distCodingStr + distCoding + (distToExon >= 0 ? "+" : "") + distToExon + refStr + ">" + altStr;

@@ -788,11 +788,13 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				fromPrevExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
 				fromNextExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
 				exonBasePos = intron.getStart();
+				exonBasePos--; // Make sure the coordinate is inside the exon
 				change = seqChange.getReference() + ">" + seqChange.getChange();
 			} else {
 				fromNextExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
 				fromPrevExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
 				exonBasePos = intron.getEnd();
+				exonBasePos++; // Make sure the coordinate is inside the exon
 				change = GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getChange());
 			}
 
@@ -804,7 +806,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 			// Intron within coding region?
 			if ((exonBasePos >= cdsLeft) && (exonBasePos <= cdsRight)) {
-				distBase = tr.baseNumberCds(exonBasePos, false);
+				distBase = tr.baseNumberCds(exonBasePos, false) + 1;
 
 				// Create HGSV string
 				if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
@@ -813,8 +815,6 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 			// Outside CDS
 			if (tr.isStrandPlus()) {
-				exonBasePos--; // Make sure the coordinate is inside the exon
-
 				if (exonBasePos <= tr.getCdsStart()) {
 					int cdnaStart = tr.baseNumberPreMRna(tr.getCdsStart());
 					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);

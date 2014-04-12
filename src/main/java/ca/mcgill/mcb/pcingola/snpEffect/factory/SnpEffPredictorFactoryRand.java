@@ -158,8 +158,8 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 				} else if (ex.size() >= utr3size) {
 					// Create a partial exon UTR3
 					Utr3prime utr3;
-					if (tr.isStrandMinus()) utr3 = new Utr3prime(ex, ex.getStart(), ex.getStart() + utr3size, ex.getStrand(), ex.getId());
-					else utr3 = new Utr3prime(ex, ex.getEnd() - utr3size, ex.getEnd(), ex.getStrand(), ex.getId());
+					if (tr.isStrandMinus()) utr3 = new Utr3prime(ex, ex.getStart(), ex.getStart() + (utr3size - 1), ex.getStrand(), ex.getId());
+					else utr3 = new Utr3prime(ex, ex.getEnd() - (utr3size - 1), ex.getEnd(), ex.getStrand(), ex.getId());
 					tr.add(utr3);
 					utr3size = -1;
 				} else {
