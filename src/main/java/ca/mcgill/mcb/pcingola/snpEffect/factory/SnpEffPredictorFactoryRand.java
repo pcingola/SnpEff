@@ -56,17 +56,14 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		int start = random.nextInt(maxGeneLen);
 		int end = start + Math.max(minGeneSize, random.nextInt(maxGeneLen));
 		int strand = random.nextBoolean() ? 1 : -1;
-
 		if (forcePositive) strand = 1;
-
 		Gene gene = new Gene(chromo, start, end, strand, "gene1", "gene1", "gene");
 		add(gene);
 
 		// Create transcripts
 		int numTr = Math.max(random.nextInt(maxTranscripts), 1);
-		for (int nt = 0; nt < numTr; nt++) {
+		for (int nt = 0; nt < numTr; nt++)
 			createTranscript(gene, "" + nt);
-		}
 
 		return snpEffectPredictor;
 	}
@@ -118,7 +115,9 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		for (Exon ex : tr)
 			size += ex.size();
 
-		// UTR5 size
+		//---
+		// Create UTR5
+		//---
 		if (size < 4) return;
 		int utr5size = random.nextInt(size / 4);
 		size -= utr5size;
@@ -130,8 +129,8 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 				} else if (ex.size() >= utr5size) {
 					// Create a partial exon UTR5
 					Utr5prime utr5;
-					if (tr.isStrandPlus()) utr5 = new Utr5prime(ex, ex.getStart(), ex.getStart() + utr5size, ex.getStrand(), ex.getId());
-					else utr5 = new Utr5prime(ex, ex.getEnd() - utr5size, ex.getEnd(), ex.getStrand(), ex.getId());
+					if (tr.isStrandPlus()) utr5 = new Utr5prime(ex, ex.getStart(), ex.getStart() + (utr5size - 1), ex.getStrand(), ex.getId());
+					else utr5 = new Utr5prime(ex, ex.getEnd() - (utr5size - 1), ex.getEnd(), ex.getStrand(), ex.getId());
 					tr.add(utr5);
 					utr5size = -1;
 				} else {
@@ -143,6 +142,9 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 			}
 		}
 
+		//---
+		// Create UTR3
+		//---
 		int utr3size = random.nextInt(size / 4);
 		if (utr3size > 0) {
 			// Create UTR3

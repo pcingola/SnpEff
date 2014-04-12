@@ -94,18 +94,19 @@ public class TestCasesZzz extends TestCase {
 		// Create a config and force out snpPredictor for hg37 chromosome Y
 		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 
-		// Create factory
+		// Initialize factory
 		int maxGeneLen = 1000;
 		int maxTranscripts = 1;
 		int maxExons = 5;
 		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
-
-		// Create predictor
 		sepf.setForcePositive(true); // WARNING: We only use positive strand here (the purpose is to check HGSV notation, not to check annotations)
 		sepf.setAddUtrs(addUtrs);
-		snpEffectPredictor = sepf.create();
-		config.setSnpEffectPredictor(snpEffectPredictor);
 
+		// Create predictor
+		snpEffectPredictor = sepf.create();
+
+		// Update config
+		config.setSnpEffectPredictor(snpEffectPredictor);
 		config.getSnpEffectPredictor().setSpliceRegionExonSize(0);
 		config.getSnpEffectPredictor().setSpliceRegionIntronMin(0);
 		config.getSnpEffectPredictor().setSpliceRegionIntronMax(0);
@@ -175,7 +176,7 @@ public class TestCasesZzz extends TestCase {
 		//	- Create a random gene transcript, exons
 		//	- Change each base in the exon
 		//	- Calculate effect
-		for (int i = 0; i < N;) {
+		for (int checked = 0, it = 1; checked < N; it++) {
 			initSnpEffPredictor(true);
 			//			if (debug) System.out.println("HGSV Test iteration: " + i + "\n" + transcript);
 			//			else System.out.println("HGSV Test iteration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
@@ -185,6 +186,9 @@ public class TestCasesZzz extends TestCase {
 			// No introns? Nothing to test
 			if (transcript.introns().size() < 1) continue;
 
+			// !!!!!!!!!!!!!!!!!!!!
+			// CHECK NEGATIVE STRAND TRANSCRIPTS
+			// !!!!!!!!!!!!!!!!!!!!
 			if (transcript.isStrandMinus()) {
 				Gpr.debug("!!!!!!!!!!!!!!!!!!!!");
 				continue;
@@ -195,6 +199,7 @@ public class TestCasesZzz extends TestCase {
 			char bases[] = trstr.toCharArray();
 
 			int cdsStart = transcript.getCdsStart();
+			System.out.println("Iteration:" + it + "\tChecked: " + checked);
 			System.out.println(trstr);
 			System.out.println("Length   : " + transcript.size());
 			System.out.println("CDS start: " + cdsStart);
@@ -204,10 +209,6 @@ public class TestCasesZzz extends TestCase {
 			for (int j = 0, pos = transcript.getStart(); pos < cdsStart; j++, pos++) {
 				// Intron?
 				if (bases[j] == '-') {
-
-					if (transcript.cds().equals("accgtgctcaggggggtttcatgatcatctcacggaaatgtggggttagggacaagaacttatgcggtcta")) //
-						Gpr.debug("!!!!!!!!!!!!!!!");
-
 					tested = true;
 
 					// Ref & Alt
@@ -242,7 +243,7 @@ public class TestCasesZzz extends TestCase {
 				}
 			}
 
-			if (tested) i++;
+			if (tested) checked++;
 		}
 	}
 }
