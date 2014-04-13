@@ -92,14 +92,14 @@ public class HgsvDna extends Hgsv {
 		// Left side of coding part
 		int cdnaPos = tr.baseNumberPreMRna(posExon);
 		if (posExon < cdsLeft) {
-			int cdnaStart = tr.baseNumberPreMRna(tr.getCdsStart());
+			int cdnaStart = tr.baseNumberPreMRna(cdsLeft); // tr.getCdsStart());
 			int utrDistance = Math.abs(cdnaStart - cdnaPos);
 			String utrStr = tr.isStrandPlus() ? "-" : "*";
 			return codingPrefix() + utrStr + utrDistance + posExonStr + exonDistance + baseChange();
 		}
 
 		// Right side of coding part
-		int cdnaEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
+		int cdnaEnd = tr.baseNumberPreMRna(cdsRight); // tr.getCdsEnd());
 		int utrDistance = Math.abs(cdnaEnd - cdnaPos);
 		String utrStr = tr.isStrandPlus() ? "*" : "-";
 		return codingPrefix() + utrStr + utrDistance + posExonStr + exonDistance + baseChange();
