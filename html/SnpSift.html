@@ -1088,24 +1088,26 @@ tabix -s 1 -b 2 -e 2 dbNSFP2.4.txt.gz
 <pre>
 # Donload and uncompress database (you need to do this only once):
 # WARNING: The database is 3Gb when compressed and 30Gb uncompressed.
-wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP2.1.txt.gz
-gunzip dbNSFP2.1.txt.gz
+wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP2.4.txt.gz
+gunzip dbNSFP2.4.txt.gz
 
 # Annotate using dbNSFP
-java -jar SnpSift.jar dbnsfp -v dbNSFP2.1.txt myFile.vcf > myFile.annotated.vcf
+java -jar SnpSift.jar dbnsfp -v dbNSFP2.4.txt.gz myFile.vcf > myFile.annotated.vcf
 </pre>
 
 				<i class="icon-warning-sign"></i> You can now specify which fields you want to use for annotation using the '-f' command line option followed by a comma separated list of field names.
 				Defaults fields are 
 				<ul>
-					<li> Ensembl_transcriptid
 					<li> Uniprot_acc
 					<li> Interpro_domain
-					<li> SIFT_score
+					<li> SIFT_pred
+					<li> Polyphen2_HDIV_pred
 					<li> Polyphen2_HVAR_pred
+					<li> LRT_pred
+					<li> MutationTaster_pred
 					<li> GERP++_NR
 					<li> GERP++_RS
-					<li> 29way_logOdds
+					<li> phastCons100way_vertebrate
 					<li> 1000Gp1_AF
 					<li> 1000Gp1_AFR_AF
 					<li> 1000Gp1_EUR_AF
