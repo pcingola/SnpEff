@@ -48,6 +48,7 @@ public class ChromosomeSimpleName {
 				else if (chName.startsWith(prefix + "_")) chr = chr.substring(prefix.length() + 1);
 				else if (chName.startsWith(prefix + "-")) chr = chr.substring(prefix.length() + 1);
 				else if (chName.startsWith(prefix)) chr = chr.substring(prefix.length());
+				else if (chName.startsWith("0")) chr = chr.substring(1);
 			}
 		} while (!chr.equals(chrPrev));
 
