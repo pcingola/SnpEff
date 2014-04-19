@@ -884,8 +884,12 @@ Ts/Tv         :	2.123	2.139	2.154	2.163	2.159	2.106	2.114	2.158	2.145	2.153	2.15
 				<i class="icon-warning-sign"></i>  When using multiple indexes (e.g. "EFF[*].EFFECT") you must remember to use quotes the command line. Otherwise, the shell would parse the asterisk changing the expression and producing unexpected results.
 				<br>
 				<br>
+				<br>
+				<i class="icon-hand-right"></i> You can use command line option <code>-s</code> to specify multiple field separator and <code>-e</code> to specify how to represent empty fields.
+				<br>
+				<br>
 				<p>
-				<b>Exmample 1:</b> Extracting chromosome, position, ID and allele frequency from a VCF file:
+				<b>Example 1:</b> Extracting chromosome, position, ID and allele frequency from a VCF file:
 				<pre>
 $ java -jar SnpSift.jar extractFields s.vcf CHROM POS ID AF | head
 #CHROM        POS        ID            AF
@@ -901,7 +905,7 @@ $ java -jar SnpSift.jar extractFields s.vcf CHROM POS ID AF | head
 </pre>
 
 				<p>
-				<b>Exmample 2:</b> Extracting genotype fields
+				<b>Example 2:</b> Extracting genotype fields
 <pre>
 $ java -jar SnpSift.jar extractFields file.vcf CHROM" "POS" "ID" "THETA" "GEN[0].GL[1]" "GEN[1].GL" "GEN[3].GL[*]" "GEN[*].GT"
 </pre>
@@ -929,7 +933,37 @@ $ java -jar SnpSift.jar extractFields file.vcf CHROM" "POS" "ID" "THETA" "GEN[0]
 1       47190   rs200430748     0.0153  0               0,0,0                   0       0       0       0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0 
 </pre>
 
-				<b>Exmample 3:</b> Extracting effects, one per line
+				<br>
+				<br>
+				<b>Example 3:</b> Extracting fields with multiple values in a friendlier format.
+				You can use command line option <code>-s</code> to specify multiple field separator and <code>-e</code> to specify how to represent empty fields.
+				<br>
+<pre>
+$ java -jar SnpSift.jar extractFields -s "," -e "." test.chr22.eff.vcf CHROM POS REF ALT "EFF[*].EFFECT" "EFF[*].AA" 
+</pre>
+				<br>
+				Notice how we separate same fields using "," instead of the default tab using the option <code>-s ","</code>, and we use "." for empty fiels (option <code>-e "."</code>).
+				The results is:
+				<br>
+<pre>
+#CHROM  POS        REF  ALT     EFF[*].EFFECT                           EFF[*].AA
+22      16346045   T    C       DOWNSTREAM,INTRON,SPLICE_SITE_DONOR     .,.,.
+22      16350245   C    A       INTRON,SPLICE_SITE_ACCEPTOR             .,.
+22      17054103   G    A       INTRON,SPLICE_SITE_DONOR                .,.
+22      17071906   A    T       DOWNSTREAM,NON_SYNONYMOUS_CODING        .,L512Q
+22      17072347   C    T       DOWNSTREAM,STOP_GAINED                  .,W365*
+22      17072394   C    G       DOWNSTREAM,NON_SYNONYMOUS_CODING        .,R349S
+22      17072411   G    T       DOWNSTREAM,NON_SYNONYMOUS_CODING        .,P344T
+22      17072483   A    G       DOWNSTREAM,NON_SYNONYMOUS_CODING        .,W320R
+22      17072907   G    T       DOWNSTREAM,NON_SYNONYMOUS_CODING        .,D178E
+22      17073032   C    T       DOWNSTREAM,NON_SYNONYMOUS_CODING        .,A137T
+22      17073124   G    T       DOWNSTREAM,NON_SYNONYMOUS_CODING        .,A106D
+22      17073332   A    T       DOWNSTREAM,NON_SYNONYMOUS_CODING        .,L37M
+</pre>
+				<br>
+				<br>
+
+				<b>Example 4:</b> Extracting effects, one per line
 				<br>
 				In order to extract effects, you can simply do something like this (notice that there are multiple columns per line because there are mutiple effects per variant):
 <pre>
