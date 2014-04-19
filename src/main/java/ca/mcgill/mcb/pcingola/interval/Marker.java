@@ -195,6 +195,7 @@ public class Marker extends Interval implements TxtSerializable {
 
 		Chromosome chr1 = getChromosome();
 		Chromosome chr2 = m2.getChromosome();
+
 		if ((chr1 != null) && (chr2 != null)) {
 			// Non-null: Compare chromosomes
 			int compChromo = chr1.compareChromoName(chr2);

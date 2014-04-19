@@ -436,4 +436,27 @@ public class TestCasesIntervals extends TestCase {
 		}
 	}
 
+	public void test_09_chrOrder() {
+		Genome genome = new Genome("test");
+
+		Chromosome chrA = new Chromosome(genome, 0, 1, 1, "6");
+		Chromosome chrB = new Chromosome(genome, 0, 1, 1, "10");
+		Chromosome chrC = new Chromosome(genome, 0, 1, 1, "4_ctg9_hap1");
+
+		// Order: A < B < C
+		Assert.assertTrue(chrA.compareTo(chrB) < 0);
+		Assert.assertTrue(chrA.compareTo(chrC) < 0);
+		Assert.assertTrue(chrB.compareTo(chrC) < 0);
+	}
+
+	public void test_10_chrOrder() {
+		Genome genome = new Genome("test");
+
+		Chromosome chrA = new Chromosome(genome, 0, 1, 1, "chr1");
+		Chromosome chrB = new Chromosome(genome, 0, 1, 1, "scaffold0001");
+
+		// Order: A < B
+		Assert.assertTrue(chrA.compareTo(chrB) < 0);
+	}
+
 }

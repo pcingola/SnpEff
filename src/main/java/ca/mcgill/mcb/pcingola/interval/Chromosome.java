@@ -47,9 +47,11 @@ public class Chromosome extends Marker {
 	public int compareChromoName(Interval interval) {
 		Chromosome i2 = (Chromosome) interval;
 
-		// Compare chromosome
-		if ((chromosomeNum == 0) && (i2.chromosomeNum == 0)) return id.compareTo(i2.id); // Use string comparison
-		if ((chromosomeNum != 0) && (i2.chromosomeNum == 0)) return -1; // One of them is a number? => the number goes first
+		// Both of them are non-numeric: Compare as string
+		if ((chromosomeNum == 0) && (i2.chromosomeNum == 0)) return id.compareTo(i2.id);
+
+		// One of them is a number? => the number goes first
+		if ((chromosomeNum != 0) && (i2.chromosomeNum == 0)) return -1;
 		if ((chromosomeNum == 0) && (i2.chromosomeNum != 0)) return 1;
 
 		// Use numeric comparison

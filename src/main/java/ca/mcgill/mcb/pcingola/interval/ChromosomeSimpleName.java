@@ -8,7 +8,7 @@ import java.util.HashMap;
  */
 public class ChromosomeSimpleName {
 
-	public static final String CHROMO_PREFIX[] = { "chromosome", "chromo", "chr", "group", "scaffold", "contig", "supercontig", "supercont", "0" }; // Must be lower case (see method)
+	public static final String CHROMO_PREFIX[] = { "chromosome", "chromo", "chr" }; //, "group", "scaffold", "contig", "supercontig", "supercont", "0" }; // Must be lower case (see method)
 	private static ChromosomeSimpleName instance = new ChromosomeSimpleName();
 
 	private final HashMap<String, String> map;
