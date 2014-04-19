@@ -1,29 +1,29 @@
 
 ppersica139
-1	0-46098485 CHROMOSOME '1'
-1:46082351-46098485, strand:-1, id:ppa000009m.g, name:ppa000009m.g, bioType:mRNA
+scaffold_1	0-46098485 CHROMOSOME 'scaffold_1'
+scaffold_1:46082351-46098485, strand:-1, id:ppa000009m.g, name:ppa000009m.g, bioType:mRNA
 Transcipts:
-	1:46082351-46098485, strand: -, id:PAC:17661739
-		5'UTR   :	1	46098406-46098485 UTR_5_PRIME 'Utr5prime_scaffold_1_46098407_46098486'
-		5'UTR   :	1	46095816-46095968 UTR_5_PRIME 'Utr5prime_scaffold_1_46095817_46095969'
-		5'UTR   :	1	46096045-46096142 UTR_5_PRIME 'Utr5prime_scaffold_1_46096046_46096143'
+	scaffold_1:46082351-46098485, strand: -, id:PAC:17661739
+		5'UTR   :	scaffold_1	46098406-46098485 UTR_5_PRIME 'Utr5prime_scaffold_1_46098407_46098486'
+		5'UTR   :	scaffold_1	46095816-46095968 UTR_5_PRIME 'Utr5prime_scaffold_1_46095817_46095969'
+		5'UTR   :	scaffold_1	46096045-46096142 UTR_5_PRIME 'Utr5prime_scaffold_1_46096046_46096143'
 		Exons:
-		1:46082351-46082650 'Utr3prime_scaffold_1_46082352_46082548' rank:16, sequence: 
-		1:46082817-46082923 'Exon_1_46082817_46082923' rank:15, sequence: 
-		1:46083470-46083609 'Exon_1_46083470_46083609' rank:14, sequence: 
-		1:46083702-46083927 'Exon_1_46083702_46083927' rank:13, sequence: 
-		1:46084015-46084095 'Exon_1_46084015_46084095' rank:12, sequence: 
-		1:46084209-46084355 'Exon_1_46084209_46084355' rank:11, sequence: 
-		1:46084436-46085555 'Exon_1_46084436_46085555' rank:10, sequence: 
-		1:46085770-46086062 'Exon_1_46085770_46086062' rank:9, sequence: 
-		1:46086176-46086453 'Exon_1_46086176_46086453' rank:8, sequence: 
-		1:46087155-46087353 'Exon_1_46087155_46087353' rank:7, sequence: 
-		1:46087435-46087737 'Exon_1_46087435_46087737' rank:6, sequence: 
-		1:46087829-46088931 'Exon_1_46087829_46088931' rank:5, sequence: 
-		1:46089025-46095607 'Exon_1_46089025_46095607' rank:4, sequence: 
-		1:46095762-46095968 'Exon_1_46095762_46095815' rank:3, sequence: 
-		1:46096045-46096142 'Utr5prime_scaffold_1_46096046_46096143' rank:2, sequence: 
-		1:46098406-46098485 'Utr5prime_scaffold_1_46098407_46098486' rank:1, sequence: 
-		3'UTR   :	1	46082351-46082547 UTR_3_PRIME 'Utr3prime_scaffold_1_46082352_46082548'
+		scaffold_1:46082351-46082650 'Utr3prime_scaffold_1_46082352_46082548' rank:16, sequence: 
+		scaffold_1:46082817-46082923 'Exon_scaffold_1_46082817_46082923' rank:15, sequence: 
+		scaffold_1:46083470-46083609 'Exon_scaffold_1_46083470_46083609' rank:14, sequence: 
+		scaffold_1:46083702-46083927 'Exon_scaffold_1_46083702_46083927' rank:13, sequence: 
+		scaffold_1:46084015-46084095 'Exon_scaffold_1_46084015_46084095' rank:12, sequence: 
+		scaffold_1:46084209-46084355 'Exon_scaffold_1_46084209_46084355' rank:11, sequence: 
+		scaffold_1:46084436-46085555 'Exon_scaffold_1_46084436_46085555' rank:10, sequence: 
+		scaffold_1:46085770-46086062 'Exon_scaffold_1_46085770_46086062' rank:9, sequence: 
+		scaffold_1:46086176-46086453 'Exon_scaffold_1_46086176_46086453' rank:8, sequence: 
+		scaffold_1:46087155-46087353 'Exon_scaffold_1_46087155_46087353' rank:7, sequence: 
+		scaffold_1:46087435-46087737 'Exon_scaffold_1_46087435_46087737' rank:6, sequence: 
+		scaffold_1:46087829-46088931 'Exon_scaffold_1_46087829_46088931' rank:5, sequence: 
+		scaffold_1:46089025-46095607 'Exon_scaffold_1_46089025_46095607' rank:4, sequence: 
+		scaffold_1:46095762-46095968 'Exon_scaffold_1_46095762_46095815' rank:3, sequence: 
+		scaffold_1:46096045-46096142 'Utr5prime_scaffold_1_46096046_46096143' rank:2, sequence: 
+		scaffold_1:46098406-46098485 'Utr5prime_scaffold_1_46098407_46098486' rank:1, sequence: 
+		3'UTR   :	scaffold_1	46082351-46082547 UTR_3_PRIME 'Utr3prime_scaffold_1_46082352_46082548'
 
 		CDS 'PAC:17661739':
