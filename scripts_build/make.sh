@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source `dirname $0`/config.sh
+. `dirname $0`/config.sh
 
 #---
 # Build SnpEff
@@ -19,7 +19,8 @@ mvn install:install-file \
 	-DartifactId=snpEff \
 	-Dversion=$VERSION_SNPEFF \
 	-Dpackaging=jar \
-	-DgeneratePom=true
+	-DgeneratePom=true \
+	--quiet
 
 cd - 
 
@@ -39,7 +40,8 @@ mvn install:install-file \
 	-DartifactId=snpSift \
 	-Dversion=$VERSION_SNPSIFT \
 	-Dpackaging=jar \
-	-DgeneratePom=true
+	-DgeneratePom=true \
+	--quiet
 
 cd - 
 
