@@ -31,7 +31,7 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Command line program
- * 
+ *
  * @author pcingola
  */
 public class SnpEff implements CommandLine {
@@ -70,7 +70,7 @@ public class SnpEff implements CommandLine {
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
 	public static final String REVISION = "";
-	public static final String BUILD = "2014-04-20";
+	public static final String BUILD = "2014-04-21";
 	public static final String VERSION_MAJOR = "3.6";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -81,7 +81,7 @@ public class SnpEff implements CommandLine {
 	protected String[] shiftArgs;
 	protected boolean canonical = false; // Use only canonical transcripts
 	protected boolean debug; // Debug mode
-	protected boolean download = false; // Download genome, if not available 
+	protected boolean download = false; // Download genome, if not available
 	protected boolean help; // Show command help and exit
 	protected boolean log; // Log to server (statistics)
 	protected boolean motif = false; // Annotate using motifs
@@ -153,18 +153,18 @@ public class SnpEff implements CommandLine {
 			VersionCheck versionCheck = VersionCheck.version(SnpEff.SOFTWARE_NAME, SnpEff.VERSION_SHORT, config.getVersionsUrl(), verbose);
 			if (!quiet && versionCheck.isNewVersion()) {
 				System.err.println("\n\nNEW VERSION!\n\tThere is a new " + this.getClass().getSimpleName() + " version available: " //
-						+ "\n\t\tVersion      : " + versionCheck.getLatestVersion() // 
+						+ "\n\t\tVersion      : " + versionCheck.getLatestVersion() //
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-				);
+						);
 			}
 		}
 	}
 
 	/**
 	 * 	Command line argument list (try to fit it into COMMAND_LINE_WIDTH)
-	 * 
+	 *
 	 * @param splitLines
 	 * @return
 	 */
@@ -232,7 +232,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+					);
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
 	}
@@ -253,7 +253,7 @@ public class SnpEff implements CommandLine {
 	}
 
 	/**
-	 * Load database 
+	 * Load database
 	 */
 	public void loadDb() {
 		// Read database (or create a new one)
@@ -366,9 +366,9 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Read markers file
-	 * 
+	 *
 	 * Supported formats: BED, TXT, BigBed
-	 * 
+	 *
 	 * @param fileName
 	 * @return
 	 */
@@ -418,7 +418,7 @@ public class SnpEff implements CommandLine {
 
 		//---
 		// Read motifs
-		//---		
+		//---
 		if (verbose) Timer.showStdErr("\tLoading Motifs from file '" + motifBinFileName + "'");
 
 		MarkerSerializer markerSerializer = new MarkerSerializer();
@@ -468,7 +468,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) Timer.showStdErr("NextProt database: " + nextProts.size() + " markers loaded.");
 
 		//---
-		// Connect nextProt annotations to transcripts and exons 
+		// Connect nextProt annotations to transcripts and exons
 		//---
 		if (verbose) Timer.showStdErr("Adding transcript info to NextProt markers.");
 
@@ -478,8 +478,8 @@ public class SnpEff implements CommandLine {
 			for (Transcript tr : g)
 				trs.put(tr.getId(), tr);
 
-		// Find the corresponding transcript for each nextProt marker 
-		// WARNING: The transcripts might be filtered out by the user (e.g. '-cannon' command line option or user defined sets). 
+		// Find the corresponding transcript for each nextProt marker
+		// WARNING: The transcripts might be filtered out by the user (e.g. '-cannon' command line option or user defined sets).
 		//          We only keep nextProt markers associated to found transcripts. All others are discarded (the user doesn't want that info).
 		ArrayList<NextProt> nextProtsToAdd = new ArrayList<NextProt>();
 		for (NextProt np : nextProts) {
@@ -490,7 +490,7 @@ public class SnpEff implements CommandLine {
 				boolean assignedToExon = false;
 				for (Exon ex : tr) {
 					if (ex.intersects(np)) {
-						NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon 
+						NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon
 						npEx.setParent(ex);
 						nextProtsToAdd.add(npEx);
 						assignedToExon = true;
@@ -580,8 +580,8 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("genes2bed") //
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
-				|| args[0].equalsIgnoreCase("acat") // 
-		) {
+				|| args[0].equalsIgnoreCase("acat") //
+				) {
 			command = args[argNum++].toLowerCase();
 		} else {
 			command = "eff"; // Default command is 'eff'
@@ -686,7 +686,7 @@ public class SnpEff implements CommandLine {
 			t.printStackTrace();
 		}
 
-		// Report to server (usage statistics) 
+		// Report to server (usage statistics)
 		if (log) {
 			// Log to server
 			LogStats.report(SOFTWARE_NAME, VERSION_SHORT, VERSION, ok, verbose, args, err.toString(), snpEffCmd.reportValues());
