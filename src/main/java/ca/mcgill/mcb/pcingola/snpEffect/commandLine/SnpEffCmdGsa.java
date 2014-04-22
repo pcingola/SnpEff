@@ -22,6 +22,7 @@ import ca.mcgill.mcb.pcingola.geneSets.algorithm.EnrichmentAlgorithmGreedyVariab
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.FisherPValueAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.FisherPValueGreedyAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.LeadingEdgeFractionAlgorithm;
+import ca.mcgill.mcb.pcingola.geneSets.algorithm.NoneAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.RankSumPValueAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.RankSumPValueGreedyAlgorithm;
 import ca.mcgill.mcb.pcingola.gsa.ChrPosScoreList;
@@ -41,9 +42,9 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Command line: Gene-Sets Analysis
- * 
+ *
  * Perform gene set analysys
- * 
+ *
  * @author pcingola
  */
 public class SnpEffCmdGsa extends SnpEff {
@@ -56,7 +57,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	boolean useGeneId = false; // Use geneId instead of geneName
 	boolean usePvalues = true;
 	boolean removeUnusedSets = false; // TODO: Add a comamand line option?
-	boolean orderDescending = false; // If 'true', high scores are better (sort descending and get the first values) 
+	boolean orderDescending = false; // If 'true', high scores are better (sort descending and get the first values)
 	int upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH;
 	int minGeneSetSize = 0;
 	int maxGeneSetSize = Integer.MAX_VALUE;
@@ -90,7 +91,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	}
 
 	/**
-	 * Read config file, load & build database 
+	 * Read config file, load & build database
 	 */
 	protected void config() {
 		loadConfig();
@@ -201,7 +202,7 @@ public class SnpEffCmdGsa extends SnpEff {
 			Timer.showStdErr("Intereting genes from file" //
 					+ "\n\tIntereting genes in file  : " + genesInteresting.size() //
 					+ "\n\tFound genes               : " + hasGene //
-			);
+					);
 		}
 	}
 
@@ -209,7 +210,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	 * Create interesting genes
 	 */
 	void createInterestingGenesScores() {
-		// Get 
+		// Get
 		ScoreList scores = new ScoreList();
 		for (double pval : geneScore.values())
 			scores.add(pval);
@@ -225,9 +226,9 @@ public class SnpEffCmdGsa extends SnpEff {
 		geneSets.setDoNotAddIfNotInGeneSet(true);
 		for (String geneId : geneScore.keySet()) {
 
-			if ((orderDescending && (geneScore.get(geneId) >= scoreThreshold)) // 
-					|| (!orderDescending && (geneScore.get(geneId) <= scoreThreshold)) // 
-			) {
+			if ((orderDescending && (geneScore.get(geneId) >= scoreThreshold)) //
+					|| (!orderDescending && (geneScore.get(geneId) <= scoreThreshold)) //
+					) {
 				if (geneSets.addInteresting(geneId)) countAdded++; // Count added genes
 				count++;
 			}
@@ -242,14 +243,14 @@ public class SnpEffCmdGsa extends SnpEff {
 					+ "\n\tThreshold                : %f"//
 					+ "\n\tInteresting genes        : %d  (%.2f%%)" //
 					+ "\n\tInteresting genes added  : %d  (%.2f%%)" //
-			, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
+					, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
 		}
 	}
 
 	/**
-	 * Creates a file with scores and several gene values. 
+	 * Creates a file with scores and several gene values.
 	 * Users can create regression algorithms (e.g. in R) and return the residuals
-	 * 
+	 *
 	 * @param fileName
 	 */
 	void createScoresFile(String fileName) {
@@ -307,6 +308,10 @@ public class SnpEffCmdGsa extends SnpEff {
 		EnrichmentAlgorithm algorithm = null;
 
 		switch (enrichmentAlgorithmType) {
+		case NONE:
+			algorithm = new NoneAlgorithm(geneSets);
+			break;
+
 		case RANKSUM_GREEDY:
 			algorithm = new RankSumPValueGreedyAlgorithm(geneSetsRanked, numberofGeneSetsToSelect);
 			break;
@@ -376,7 +381,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		if (verbose) Timer.showStdErr("Done." //
 				+ "\n\t\tGene sets added : " + geneSets.getGeneSetCount() //
 				+ "\n\t\tGenes added     : " + geneSets.getGeneCount() //
-		);
+				);
 	}
 
 	/**
@@ -418,7 +423,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				+ "\n\tNumber of scores         : " + chrPosScoreList.size() //
 				+ "\n\tUnmapped                 : " + unmapped //
 				+ "\n\tMapped to multiple genes : " + mappedMultiple //
-		);
+				);
 
 		if (debug) {
 			System.err.println("Mapping Gene to Score:");
@@ -438,7 +443,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	List<String> mapToGenes(String chr, int start, int end) {
 		LinkedList<String> geneIds = new LinkedList<String>();
 
-		// Query 
+		// Query
 		Marker m = new Marker(genome.getChromosome(chr), start, end, 1, "");
 
 		// Map only to closest gene?
@@ -467,7 +472,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	public void parseArgs(String[] args) {
 		if (args.length == 0) usage(null);
 
-		// Parse comamnd line 
+		// Parse comamnd line
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
 
@@ -589,7 +594,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	/**
 	 * Read gene-Score file
 	 * Format: "geneId \t p_value \n"
-	 * 
+	 *
 	 * @param geneScoreFile
 	 */
 	void readGeneScores(String geneScoreFile) {
@@ -618,7 +623,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				+ "\n\tScores added        : " + geneScore.size() //
 				+ "\n\tMin score (p-value) : " + minp //
 				+ "\n\tMax score (p-value) : " + maxp //
-		);
+				);
 	}
 
 	/**
@@ -659,7 +664,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 	/**
 	 * Read input in BED format
-	 * 
+	 *
 	 * Format: "chr \t start \t end \t id \t Score \n"
 	 *         start : zero-based
 	 *         end   : zero-based open
@@ -680,9 +685,9 @@ public class SnpEffCmdGsa extends SnpEff {
 
 	/**
 	 * Read input in TXT format
-	 * 
+	 *
 	 * Format: "chr \t pos \t score \n"
-	 * 
+	 *
 	 * Note: BED format  + score (0-based open close interval)
 	 */
 	ChrPosScoreList readInputTxt() {
@@ -700,7 +705,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				System.err.println("Warning: Ignoring line number " + lfi.getLineNum() + "." //
 						+ " Exepcting format 'chr \t pos \t score \n'.\n" //
 						+ "\tLine:\t'" + line + "'" //
-				);
+						);
 				continue;
 			}
 
@@ -790,15 +795,15 @@ public class SnpEffCmdGsa extends SnpEff {
 	}
 
 	/**
-	* Run enrichment analysis using random scores
-	*/
+	 * Run enrichment analysis using random scores
+	 */
 	protected boolean runAnalisisRand() {
 		HashMap<String, Double> geneScoreOri = geneScore; // Save original scores
 
 		for (int iter = 1; iter <= randIterations; iter++) {
 			Timer.showStdErr("Random scores. Iteration " + iter);
 
-			// Create random Scores based on input 
+			// Create random Scores based on input
 			geneScore = new HashMap<String, Double>();
 			for (String gene : geneScoreOri.keySet())
 				geneScore.put(gene, Math.random());
@@ -813,14 +818,14 @@ public class SnpEffCmdGsa extends SnpEff {
 	}
 
 	/**
-	 * Read "command" lines from file. 
+	 * Read "command" lines from file.
 	 * Loads database only once to save time
 	 * @return
 	 */
 	protected boolean runCommands() {
 		boolean ok = true;
 
-		// Read config file, load & build database 
+		// Read config file, load & build database
 		config();
 
 		// Parse commands from file
@@ -891,14 +896,14 @@ public class SnpEffCmdGsa extends SnpEff {
 		System.err.println("\t-save <file>                  : Save results to file.");
 		System.err.println("\t-score                        : Treat input data as scores instead of p-values.");
 		System.err.println("\n\tAlgorithm options:");
-		System.err.println("\t-algo <name>                  : Gene set enrichment algorithm {FISHER_GREEDY, RANKSUM_GREEDY, FISHER, RANKSUM, LEADING_EDGE_FRACTION}. Default: " + enrichmentAlgorithmType);
+		System.err.println("\t-algo <name>                  : Gene set enrichment algorithm {FISHER_GREEDY, RANKSUM_GREEDY, FISHER, RANKSUM, LEADING_EDGE_FRACTION, NONE}. Default: " + enrichmentAlgorithmType);
 		System.err.println("\t-correction <cmd>             : Correction of scores using command 'cmd' (e.g. an R script).");
 		System.err.println("\t-geneScore                    : Method to summarize gene scores {MIN, MAX, AVG, AVG_MIN_10, AVG_MAX_10, FISHER_CHI_SQUARE, Z_SCORES, SIMES}. Default: " + scoreSummary);
 		System.err.println("\t-geneScoreFile <file>         : Read gene score from file instead of calculating them. Format: 'geneId \\t score'");
-		System.err.println("\t-maxPvalue <num>              : Maximum un-adjusted p-value to show result. Default: None");
-		System.err.println("\t-maxPvalueAdj <num>           : Maximum un-adjusted p-value to show result. Default: " + maxPvalueAdjusted);
-		System.err.println("\t-saveGeneScoreFile <file>     : Save gene scores to file.");
 		System.err.println("\t-mapClosestGene               : Map to closest gene. Default: " + useClosestGene);
+		System.err.println("\t-maxPvalue <num>              : Maximum un-adjusted p-value to show result. Default: None");
+		System.err.println("\t-maxPvalueAdj <num>           : Maximum adjusted p-value to show result. Default: " + maxPvalueAdjusted);
+		System.err.println("\t-saveGeneScoreFile <file>     : Save gene scores to file.");
 		System.err.println("\t-rand <num>                   : Perform 'num' iterations using random scores. Default: " + randIterations);
 		System.err.println("\n\tAlgorithm specific options: FISHER and FISHER_GREEDY");
 		System.err.println("\t-interesting <num>            : Consider a gene 'interesting' if the score is in the 'num' percentile. Default: " + interestingPerc);

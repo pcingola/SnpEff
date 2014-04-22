@@ -14,13 +14,13 @@ import ca.mcgill.mcb.pcingola.geneSets.Result;
 
 /**
  * A generic enrichment algorithm for selecting gene-sets from a collection of gene-sets
- * 
+ *
  * @author pcingola
  */
 public abstract class EnrichmentAlgorithm {
 
 	public enum EnrichmentAlgorithmType {
-		FISHER_GREEDY, RANKSUM_GREEDY, FISHER, RANKSUM, LEADING_EDGE_FRACTION;
+		FISHER_GREEDY, RANKSUM_GREEDY, FISHER, RANKSUM, LEADING_EDGE_FRACTION, NONE;
 
 		/**
 		 * Is the algorithm base on "interesting / not-interesting" binary clasification?
@@ -185,7 +185,7 @@ public abstract class EnrichmentAlgorithm {
 							+ "</td>\t<td nowrap>" + (geneSets.isRanked() ? geneSet.rankSum() : 0) //
 							+ "</td>\t</tr>");
 				} else {
-					// Show as "normal" TXT 
+					// Show as "normal" TXT
 					print(it //
 
 							+ "\t" + result.getPvalue() //
@@ -196,7 +196,7 @@ public abstract class EnrichmentAlgorithm {
 							+ "\t" + result.getGeneSets() //
 							+ "\t" + interestingGenes //
 							+ "\t" + (geneSets.isRanked() ? geneSet.rankSum() : 0) //
-					);
+							);
 				}
 
 			}
@@ -243,7 +243,7 @@ public abstract class EnrichmentAlgorithm {
 			if ((geneSet.getGeneCount() > 0) // This term is empty? => skip it
 					&& (geneSet.getGeneCount() >= minGeneSetSize) // Use gene sets bigger than minGeneSetSize
 					&& (geneSet.getGeneCount() <= maxGeneSetSize) // Use gene sets smaller than maxGeneSetSize
-			) {
+					) {
 				// Calculate pValue
 				Apfloat pValue = pValue(geneSet);
 				Result result = new Result(geneSet, pValue, 0); // We'll update the geneSetCount later
@@ -251,7 +251,7 @@ public abstract class EnrichmentAlgorithm {
 			}
 		}
 
-		// Update the geneSetCount 
+		// Update the geneSetCount
 		for (Result res : results)
 			res.setGeneSetCountLast(results.size());
 
