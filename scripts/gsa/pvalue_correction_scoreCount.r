@@ -31,7 +31,11 @@ if( ! exists('fileName') ) {
 #---
 d = read.table(fileName, sep="\t", header=TRUE)
 
-p = d$score			# p-values or scores
+# p-values or scores. 
+# Note: the conversion 'as.numeric(as.character())' is necesary 
+# because R reads '0.6049666666666666' as a number, 
+# but reads       '0.60496666666666666' as a string (yes, R is amazing!)
+p = as.numeric(as.character(d$score))	
 c = d$scoreCount	# number of variants 
 
 # Filter out p-values of zero OR counts of zero (because of log)
