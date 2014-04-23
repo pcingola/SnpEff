@@ -56,7 +56,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	boolean useClosestGene = false; // Map to 'any' closest gene?
 	boolean useGeneId = false; // Use geneId instead of geneName
 	boolean usePvalues = true;
-	boolean removeUnusedSets = false; // TODO: Add a comamand line option?
+	boolean removeUnusedSets = false; // TODO: Add a command line option?
 	boolean orderDescending = false; // If 'true', high scores are better (sort descending and get the first values)
 	int upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH;
 	int minGeneSetSize = 0;
@@ -117,12 +117,6 @@ public class SnpEffCmdGsa extends SnpEff {
 	 * Correct scores (e.g. using covariates)
 	 */
 	void correctScores() {
-		// No correction method? nothing to do
-		if (correctionCmd == null) {
-			if (geneScoreFileSave != null) createScoresFile(geneScoreFileSave); // may be we were asked to write these files anyway...
-			return;
-		}
-
 		// Assign input and output file names (scores and residues files)
 		String scoresFile = geneScoreFileSave;
 		String residuesFile;
@@ -136,26 +130,36 @@ public class SnpEffCmdGsa extends SnpEff {
 				new File(scoresFile).deleteOnExit();
 				new File(residuesFile).deleteOnExit();
 			} else {
-				// Predefined name, use redidues file accordingly
-				residuesFile = Gpr.dirName(geneScoreFileSave) + "/" + Gpr.baseName(geneScoreFileSave) + ".out.txt";
+				// Predefined name, use residues file accordingly
+				residuesFile = Gpr.dirName(geneScoreFileSave) + "/" + Gpr.baseName(geneScoreFileSave) + ".corrected.txt";
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 
+		// No correction method? nothing to do
+		if (correctionCmd == null) {
+			if (geneScoreFileSave != null) {
+				createScoresFile(geneScoreFileSave, false); // may be we were asked to write these files anyway...
+				createScoresFile(residuesFile, true); // Only scores in this files (no additional information). Since we don't perform correction, residues and scores are the same
+			}
+			return;
+		}
+
 		// Create scores files
-		createScoresFile(scoresFile);
+		createScoresFile(scoresFile, false);
 
 		//---
 		// Invoke method
 		//---
+		String commandLine = correctionCmd + " " + scoresFile + " " + residuesFile;
 		try {
-			String commandLine = correctionCmd + " " + scoresFile + " " + residuesFile;
 			if (verbose) Timer.showStdErr("Correction: Invoking command " + commandLine);
 			Process process = Runtime.getRuntime().exec(commandLine);
 			process.waitFor();
+			if (process.exitValue() > 0) throw new RuntimeException("Process execution error, exit value '" + process.exitValue() + "'\n\tCommand line:\t" + commandLine);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Error executing command: " + commandLine, e);
 		}
 
 		//---
@@ -202,7 +206,7 @@ public class SnpEffCmdGsa extends SnpEff {
 			Timer.showStdErr("Intereting genes from file" //
 					+ "\n\tIntereting genes in file  : " + genesInteresting.size() //
 					+ "\n\tFound genes               : " + hasGene //
-					);
+			);
 		}
 	}
 
@@ -228,7 +232,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 			if ((orderDescending && (geneScore.get(geneId) >= scoreThreshold)) //
 					|| (!orderDescending && (geneScore.get(geneId) <= scoreThreshold)) //
-					) {
+			) {
 				if (geneSets.addInteresting(geneId)) countAdded++; // Count added genes
 				count++;
 			}
@@ -243,7 +247,7 @@ public class SnpEffCmdGsa extends SnpEff {
 					+ "\n\tThreshold                : %f"//
 					+ "\n\tInteresting genes        : %d  (%.2f%%)" //
 					+ "\n\tInteresting genes added  : %d  (%.2f%%)" //
-					, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
+			, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
 		}
 	}
 
@@ -253,7 +257,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	 *
 	 * @param fileName
 	 */
-	void createScoresFile(String fileName) {
+	void createScoresFile(String fileName, boolean scoresOnly) {
 		StringBuilder scores = new StringBuilder();
 		if (geneScoreFileSave != null) scores.append("geneId\tscore\tscoreCount\t" + (new GeneStats()).title() + "\n");
 
@@ -271,7 +275,9 @@ public class SnpEffCmdGsa extends SnpEff {
 			double score = gpl.score(scoreSummary);
 
 			// Add to output
-			scores.append(geneId + "\t" + score + "\t" + gpl.size() + "\t" + genesStats.getOrCreate(geneId) + "\n");
+			scores.append(geneId + "\t" + score);
+			if (!scoresOnly) scores.append("\t" + gpl.size() + "\t" + genesStats.getOrCreate(geneId));
+			scores.append("\n");
 		}
 
 		// Save to file
@@ -381,7 +387,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		if (verbose) Timer.showStdErr("Done." //
 				+ "\n\t\tGene sets added : " + geneSets.getGeneSetCount() //
 				+ "\n\t\tGenes added     : " + geneSets.getGeneCount() //
-				);
+		);
 	}
 
 	/**
@@ -423,7 +429,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				+ "\n\tNumber of scores         : " + chrPosScoreList.size() //
 				+ "\n\tUnmapped                 : " + unmapped //
 				+ "\n\tMapped to multiple genes : " + mappedMultiple //
-				);
+		);
 
 		if (debug) {
 			System.err.println("Mapping Gene to Score:");
@@ -623,7 +629,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				+ "\n\tScores added        : " + geneScore.size() //
 				+ "\n\tMin score (p-value) : " + minp //
 				+ "\n\tMax score (p-value) : " + maxp //
-				);
+		);
 	}
 
 	/**
@@ -705,7 +711,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				System.err.println("Warning: Ignoring line number " + lfi.getLineNum() + "." //
 						+ " Exepcting format 'chr \t pos \t score \n'.\n" //
 						+ "\tLine:\t'" + line + "'" //
-						);
+				);
 				continue;
 			}
 
