@@ -633,6 +633,10 @@ public class SnpEff implements CommandLine {
 				else if (arg.equalsIgnoreCase("-download")) download = true; // Download genome if not availble
 				else if (arg.equalsIgnoreCase("-onlyTr")) {
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
+				} else if ((arg.equals("-ud") || arg.equalsIgnoreCase("-upDownStreamLen"))) {
+					if ((i + 1) < args.length) upDownStreamLength = Gpr.parseIntSafe(args[++i]);
+				} else if ((arg.equals("-ss") || arg.equalsIgnoreCase("-spliceSiteSize"))) {
+					if ((i + 1) < args.length) spliceSiteSize = Gpr.parseIntSafe(args[++i]);
 				} else if ((arg.equals("-if") || arg.equalsIgnoreCase("-inOffset"))) {
 					if ((i + 1) < args.length) inOffset = Gpr.parseIntSafe(args[++i]);
 				} else if ((arg.equals("-of") || arg.equalsIgnoreCase("-outOffset"))) {
@@ -642,7 +646,6 @@ public class SnpEff implements CommandLine {
 					if ((i + 1) < args.length) regulationTracks.add(args[++i]); // Add this track to the list
 				} else if (arg.equalsIgnoreCase("-nextProt")) nextProt = true; // Use NextProt database
 				else if (arg.equalsIgnoreCase("-motif")) motif = true; // Use motif database
-
 				else {
 					// Unrecognized option? may be it's command specific. Let command parse it
 					argsList.add(arg);

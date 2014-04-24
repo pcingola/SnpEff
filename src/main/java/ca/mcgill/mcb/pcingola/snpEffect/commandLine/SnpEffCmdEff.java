@@ -56,7 +56,7 @@ import freemarker.template.TemplateException;
 
 /**
  * Command line program: Predict changes
- * 
+ *
  * @author Pablo Cingolani
  */
 public class SnpEffCmdEff extends SnpEff {
@@ -72,8 +72,8 @@ public class SnpEffCmdEff extends SnpEff {
 	public static final int SHOW_EVERY = 100000;
 
 	boolean cancer = false; // Perform cancer comparisons
-	boolean supressOutput = false; // Only used for debugging purposes 
-	boolean createSummary = true; // Do not create summary output file 
+	boolean supressOutput = false; // Only used for debugging purposes
+	boolean createSummary = true; // Do not create summary output file
 	boolean useHgvs = false; // Use Hgvs notation
 	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
 	boolean useSequenceOntology = false; // Use Sequence Ontology terms
@@ -141,22 +141,22 @@ public class SnpEffCmdEff extends SnpEff {
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
-						) {
+								) {
 							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
 					}
 				} else {
-					// Phased, we only have two possible comparisons	
+					// Phased, we only have two possible comparisons
 					for (int d = 0; d < gd.length; d++)
 						for (int o = 0; o < go.length; o++) {
-							// Add comparisons 
+							// Add comparisons
 							// TODO: Decide if we want to keep "back to reference" analysis (i.e. gd[d] == 0)
 							// if ((go[o] >= 0) && (gd[d] >= 0) // Both genotypes are non-missing?
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
-							) {
+									) {
 								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
@@ -179,7 +179,7 @@ public class SnpEffCmdEff extends SnpEff {
 	/**
 	 * Iterate on all inputs and calculate effects.
 	 * Note: This is used for all input formats except VCF, which has a different iteration modality
-	 * 
+	 *
 	 * @param outputFormatter
 	 */
 	void iterateSeqChange(String inputFile, OutputFormatter outputFormatter) {
@@ -205,7 +205,7 @@ public class SnpEffCmdEff extends SnpEff {
 				// Does it pass the filter? => Analyze
 				if ((seqChangeFilter == null) || seqChangeFilter.filter(seqChange)) {
 
-					// Skip if there are filter intervals and they are not matched 
+					// Skip if there are filter intervals and they are not matched
 					if ((filterIntervals != null) && (filterIntervals.stab(seqChange).size() <= 0)) continue;
 
 					// Perform basic statistics about this seqChange
@@ -241,10 +241,10 @@ public class SnpEffCmdEff extends SnpEff {
 	/**
 	 * Iterate on all inputs (VCF) and calculate effects.
 	 * Note: This is used only on input format VCF, which has a different iteration modality
-	 * 
+	 *
 	 * TODO: Effect analysis should be in a separate class, so we can easily reuse it for single or mutli-threaded modes.
 	 *       SnpEffCmdEff should only parse command line, and then invoke the other class (now everything is here, it's a mess)
-	 * 
+	 *
 	 * @param outputFormatter
 	 */
 	void iterateVcf(String inputFile, OutputFormatter outputFormatter) {
@@ -280,7 +280,7 @@ public class SnpEffCmdEff extends SnpEff {
 				// Sample vcf entry
 				if (createSummary) vcfStats.sample(vcfEntry);
 
-				// Skip if there are filter intervals and they are not matched 
+				// Skip if there are filter intervals and they are not matched
 				if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) {
 					filteredOut = true;
 					continue;
@@ -291,8 +291,8 @@ public class SnpEffCmdEff extends SnpEff {
 
 				//---
 				// Analyze all changes in this VCF entry
-				// Note, this is the standard analysis. 
-				// Next section deals with cancer: Somatic vs Germline comparisons 
+				// Note, this is the standard analysis.
+				// Next section deals with cancer: Somatic vs Germline comparisons
 				//---
 				boolean impact = false; // Does this entry have an impact (other than MODIFIER)?
 				List<SeqChange> seqChanges = vcfEntry.seqChanges();
@@ -334,7 +334,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 				//---
 				// Do we analyze cancer samples?
-				// Here we deal with Somatic vs Germline comparisons 
+				// Here we deal with Somatic vs Germline comparisons
 				//---
 				if (anyCancerSample && impact && vcfEntry.isMultipleAlts()) {
 					// Calculate all required comparisons
@@ -387,7 +387,7 @@ public class SnpEffCmdEff extends SnpEff {
 	/**
 	 * Multi-threaded iteration on VCF inputs and calculates effects.
 	 * Note: This is used only on input format VCF, which has a different iteration modality
-	 * 
+	 *
 	 * @param outputFormatter
 	 */
 	void iterateVcfMulti(String inputFile, final OutputFormatter outputFormatter) {
@@ -402,7 +402,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 		new VcfFileIterator(inputFile, config.getGenome());
 
-		// Master factory 
+		// Master factory
 		Props props = new Props(new UntypedActorFactory() {
 
 			private static final long serialVersionUID = 1L;
@@ -467,7 +467,7 @@ public class SnpEffCmdEff extends SnpEff {
 			throw new RuntimeException("Unimplemented option for output file type " + outputFormat);
 		}
 
-		// Create summary file names 
+		// Create summary file names
 		summaryFile = Gpr.dirName(inputFile) + "/" + base + (createCsvSummary ? "_summary.csv" : "_summary.html");
 		summaryGenesFile = Gpr.dirName(inputFile) + "/" + base + "_genes.txt";
 
@@ -487,7 +487,7 @@ public class SnpEffCmdEff extends SnpEff {
 			String arg = args[i];
 
 			// Is it a command line option?
-			// Note: Generic options (such as config, verbose, debug, quiet, etc.) are parsed by SnpEff class 
+			// Note: Generic options (such as config, verbose, debug, quiet, etc.) are parsed by SnpEff class
 			//---
 			if (isOpt(arg)) {
 				if (arg.equalsIgnoreCase("-fileList")) isFileList = true;
@@ -573,10 +573,6 @@ public class SnpEffCmdEff extends SnpEff {
 					if ((i + 1) < args.length) seqChangeFilter.setMinCoverage(Gpr.parseIntSafe(args[++i]));
 				} else if ((arg.equals("-maxC") || arg.equalsIgnoreCase("-maxCoverage"))) {
 					if ((i + 1) < args.length) seqChangeFilter.setMaxCoverage(Gpr.parseIntSafe(args[++i]));
-				} else if ((arg.equals("-ud") || arg.equalsIgnoreCase("-upDownStreamLen"))) {
-					if ((i + 1) < args.length) upDownStreamLength = Gpr.parseIntSafe(args[++i]);
-				} else if ((arg.equals("-ss") || arg.equalsIgnoreCase("-spliceSiteSize"))) {
-					if ((i + 1) < args.length) spliceSiteSize = Gpr.parseIntSafe(args[++i]);
 				} else if (arg.equals("-hom")) seqChangeFilter.setHeterozygous(false);
 				else if (arg.equals("-het")) seqChangeFilter.setHeterozygous(true);
 				else if (arg.equals("-snp")) seqChangeFilter.setChangeType(SeqChange.ChangeType.SNP);
@@ -668,7 +664,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 	/**
 	 * Read pedigree either from VCF header or from cancerSample file
-	 * 
+	 *
 	 * @param vcfFile
 	 * @return
 	 */
@@ -775,7 +771,7 @@ public class SnpEffCmdEff extends SnpEff {
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-				);
+						);
 				runAnalysis(inputFile, outputFile);
 			}
 		}
@@ -879,8 +875,8 @@ public class SnpEffCmdEff extends SnpEff {
 			// Configure FreeMaker
 			Configuration cfg = new Configuration();
 
-			// Specify the data source where the template files come from 
-			if (useLocalTemplate) cfg.setDirectoryForTemplateLoading(new File("./templates/")); // Use local 'template' directory 
+			// Specify the data source where the template files come from
+			if (useLocalTemplate) cfg.setDirectoryForTemplateLoading(new File("./templates/")); // Use local 'template' directory
 			else cfg.setClassForTemplateLoading(SnpEffCmdEff.class, "/"); // Use current directory in JAR file
 
 			cfg.setObjectWrapper(new DefaultObjectWrapper()); // Specify how templates will see the data-model. This is an advanced topic...

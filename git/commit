@@ -2,7 +2,13 @@
 
 rm -vf snpeff_*.html snpEff_genes.txt snpEff_summary.csv testSuiteAll.snpeff.txt
 
+comment="$1"
+if [ -z $comment ]
+then
+	comment="Project updated"
+fi
+
 git add -A .
-git commit -a -m "Project updated"
+git commit -a -m "$comment"
 git push origin
 
