@@ -76,7 +76,7 @@ public class SnpEffCmdEff extends SnpEff {
 	boolean createSummary = true; // Do not create summary output file 
 	boolean useHgvs = false; // Use Hgvs notation
 	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
-	boolean useSequenceOntolgy = false; // Use Sequence Ontolgy terms
+	boolean useSequenceOntology = false; // Use Sequence Ontology terms
 	boolean useOicr = false; // Use OICR tag
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
 	boolean lossOfFunction = false; // Create loss of function LOF tag?
@@ -534,7 +534,7 @@ public class SnpEffCmdEff extends SnpEff {
 				} else if (arg.equalsIgnoreCase("-lof")) lossOfFunction = true; // Add LOF tag
 				else if (arg.equalsIgnoreCase("-hgvs")) useHgvs = true; // Use HGVS notation
 				else if (arg.equalsIgnoreCase("-geneId")) useGeneId = true; // Use gene ID instead of gene name
-				else if (arg.equalsIgnoreCase("-sequenceOntolgy")) useSequenceOntolgy = true; // Use SO temrs
+				else if (arg.equalsIgnoreCase("-sequenceOntology")) useSequenceOntology = true; // Use SO temrs
 				else if (arg.equalsIgnoreCase("-oicr")) useOicr = true; // Use OICR tag
 				//---
 				// Input options
@@ -796,7 +796,7 @@ public class SnpEffCmdEff extends SnpEff {
 		// Create 'stats' objects
 		seqChangeStats = new SeqChangeStats(config.getGenome());
 		changeEffectResutStats = new ChangeEffectResutStats(config.getGenome());
-		changeEffectResutStats.setUseSequenceOntolgy(useSequenceOntolgy);
+		changeEffectResutStats.setUseSequenceOntology(useSequenceOntology);
 		vcfStats = new VcfStats();
 
 		int totalErrs = 0;
@@ -835,7 +835,7 @@ public class SnpEffCmdEff extends SnpEff {
 		outputFormatter.setChangeEffectResutFilter(changeEffectResutFilter);
 		outputFormatter.setSupressOutput(supressOutput);
 		outputFormatter.setChrStr(chrStr);
-		outputFormatter.setUseSequenceOntolgy(useSequenceOntolgy);
+		outputFormatter.setUseSequenceOntology(useSequenceOntology);
 		outputFormatter.setUseOicr(useOicr);
 		outputFormatter.setUseHgvs(useHgvs);
 		outputFormatter.setUseGeneId(useGeneId);
@@ -984,7 +984,7 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + useHgvs);
 		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");
 		System.err.println("\t-oicr                           : Add OICR tag in VCF file. Default: " + useOicr);
-		System.err.println("\t-sequenceOntolgy                : Use Sequence Ontolgy terms. Default: " + useSequenceOntolgy);
+		System.err.println("\t-sequenceOntology                : Use Sequence Ontology terms. Default: " + useSequenceOntology);
 
 		usageGenericAndDb();
 

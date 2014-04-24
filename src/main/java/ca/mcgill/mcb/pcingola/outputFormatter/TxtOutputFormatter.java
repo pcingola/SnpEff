@@ -64,7 +64,7 @@ public class TxtOutputFormatter extends OutputFormatter {
 						+ "\t" + hh // Homo Hetero info
 						+ "\t" + qual // Quality
 						+ "\t" + cov // Coverage
-						+ "\t" + changeEffect.toString(useSequenceOntolgy, useHgvs) // Sequence change result
+						+ "\t" + changeEffect.toString(useSequenceOntology, useHgvs) // Sequence change result
 						+ "\n" //
 				);
 			}

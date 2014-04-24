@@ -19,7 +19,7 @@ import ca.mcgill.mcb.pcingola.stats.plot.GoogleGenePercentBar;
 public class ChangeEffectResutStats implements SamplingStats<ChangeEffect> {
 
 	public static final String CHANGE_SEPARATOR = "\t";
-	boolean useSequenceOntolgy = false; // Use Sequence Ontolgy terms
+	boolean useSequenceOntology = false; // Use Sequence Ontology terms
 	Genome genome;
 	CountByType countByEffect, countByCodon, countByAa, countByGeneRegion, countByImpact, countByFunctionalClass, countByBioType;
 	HashSet<String> codonSet, aaSet, geneSet;
@@ -172,7 +172,7 @@ public class ChangeEffectResutStats implements SamplingStats<ChangeEffect> {
 		if ((changeEffect.getWarning() != null) && (changeEffect.getWarning().length() > 0)) countWarnings++;
 
 		// Count by effect
-		String effect = changeEffect.getEffectTypeString(useSequenceOntolgy); // changeEffect.effect(true, false, false, useSequenceOntolgy);
+		String effect = changeEffect.getEffectTypeString(useSequenceOntology); // changeEffect.effect(true, false, false, useSequenceOntology);
 		countByEffect.inc(effect);
 
 		// Count by gene region
@@ -246,8 +246,8 @@ public class ChangeEffectResutStats implements SamplingStats<ChangeEffect> {
 		}
 	}
 
-	public void setUseSequenceOntolgy(boolean useSequenceOntolgy) {
-		this.useSequenceOntolgy = useSequenceOntolgy;
+	public void setUseSequenceOntology(boolean useSequenceOntology) {
+		this.useSequenceOntology = useSequenceOntology;
 	}
 
 	/**

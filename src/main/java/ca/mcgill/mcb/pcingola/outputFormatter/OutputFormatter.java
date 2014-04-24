@@ -25,7 +25,7 @@ public abstract class OutputFormatter {
 	boolean showHeader = true; // Show header information
 	boolean useHgvs; // Use HGVS notation
 	boolean useGeneId; // Use Gene ID instead of gene name
-	boolean useSequenceOntolgy; // Use Sequence Ontolgy terms
+	boolean useSequenceOntology; // Use Sequence Ontology terms
 	boolean useOicr; // Use OICR tag
 	int sectionNum = 0;
 	int outOffset = 1;
@@ -62,7 +62,7 @@ public abstract class OutputFormatter {
 			newOutputFormatter.showHeader = showHeader;
 			newOutputFormatter.useHgvs = useHgvs;
 			newOutputFormatter.useGeneId = useGeneId;
-			newOutputFormatter.useSequenceOntolgy = useSequenceOntolgy;
+			newOutputFormatter.useSequenceOntology = useSequenceOntology;
 			newOutputFormatter.useOicr = useOicr;
 			newOutputFormatter.sectionNum = sectionNum;
 			newOutputFormatter.outOffset = outOffset;
@@ -189,8 +189,8 @@ public abstract class OutputFormatter {
 		this.useOicr = useOicr;
 	}
 
-	public void setUseSequenceOntolgy(boolean useSequenceOntolgy) {
-		this.useSequenceOntolgy = useSequenceOntolgy;
+	public void setUseSequenceOntology(boolean useSequenceOntology) {
+		this.useSequenceOntology = useSequenceOntology;
 	}
 
 	public void setVersion(String version) {
