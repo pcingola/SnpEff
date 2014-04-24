@@ -56,7 +56,7 @@ public class BedOutputFormatter extends OutputFormatter {
 			if ((changeEffectResutFilter == null) || (!changeEffectResutFilter.filter(changeEffect))) {
 
 				StringBuffer sb = new StringBuffer();
-				sb.append(changeEffect.effect(true, false, false, useSequenceOntolgy));
+				sb.append(changeEffect.effect(true, false, false, useSequenceOntology));
 
 				Marker m = changeEffect.getMarker();
 				if (m != null) chEffs.add(m.idChain("|", useGeneId, changeEffect));
