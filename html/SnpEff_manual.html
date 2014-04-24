@@ -468,18 +468,6 @@ git clone https://github.com/pcingola/SnpSift.git
 				Most libraries should be install using Maven, so you just need to run <code>mvn</code> command.
 				<br>
 				<br>
-				You may need to install <code>sam-jdk</code> JAR file manually on your maven repository.
-				Download the JAR file <a href="http://sourceforge.net/projects/picard/files/">here</a>, then run the following command to add the JAR to Maven:
-				<br>
-				<br>
-<pre>
-# Download JAR file
-wget http://sourceforge.net/projects/picard/files/sam-jdk/1.97/sam-1.97.jar
-
-# Manually add it to Maven
-mvn install:install-file -Dfile=sam-1.97.jar -DgroupId=net.sf.samtools -DartifactId=Sam -Dversion=1.97 -Dpackaging=jar
-</pre>
-				<br>
 				<b>Intalling test cases:</b>
 				Test cases require special "test cases databases and genome", you can find them here:
 				<br>

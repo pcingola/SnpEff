@@ -71,40 +71,38 @@
       <version>0.9.1</version>
     </dependency>
     <dependency>
-    	<groupId>net.sf.samtools</groupId>
-    	<artifactId>Sam</artifactId>
-    	<version>1.97</version>
+      <groupId>samtools</groupId>
+      <artifactId>samtools</artifactId>
+      <version>1.107</version>
     </dependency>
-	<dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-math3</artifactId>
-		<version>3.2</version>
-	</dependency>
-	<!-- 
-	<dependency>
-    	<groupId>org.utgenome.thirdparty</groupId>
-    	<artifactId>picard</artifactId>
-    	<version>1.86.0</version>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.2</version>
     </dependency>
-    -->
-	<dependency>
-		<groupId>log4j</groupId>
-		<artifactId>log4j</artifactId>
-		<version>1.2.15</version>
-		<exclusions>
-			<exclusion>
-				<groupId>com.sun.jdmk</groupId>
-				<artifactId>jmxtools</artifactId>
-			</exclusion>
-			<exclusion>
-				<groupId>com.sun.jmx</groupId>
-				<artifactId>jmxri</artifactId>
-			</exclusion>
-		</exclusions>
-	</dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.15</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>com.sun.jdmk</groupId>
+	  <artifactId>jmxtools</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>com.sun.jmx</groupId>
+	  <artifactId>jmxri</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
   <repositories>
+    <repository>
+      <id>hadoop-bam</id>
+      <name>Hadoop-BAM</name>
+      <url>http://hadoop-bam.sourceforge.net/maven/</url>
+    </repository>
     <repository>
       <id>ncimvn-public</id>
       <name>Public NIH repository</name>
