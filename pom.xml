@@ -71,9 +71,9 @@
       <version>0.9.1</version>
     </dependency>
     <dependency>
-    	<groupId>net.sf.samtools</groupId>
-    	<artifactId>Sam</artifactId>
-    	<version>1.97</version>
+      <groupId>samtools</groupId>
+      <artifactId>samtools</artifactId>
+      <version>1.107</version>
     </dependency>
 	<dependency>
 		<groupId>org.apache.commons</groupId>
@@ -105,6 +105,11 @@
   </dependencies>
 
   <repositories>
+    <repository>
+      <id>hadoop-bam</id>
+      <name>Hadoop-BAM</name>
+      <url>http://hadoop-bam.sourceforge.net/maven/</url>
+    </repository>
     <repository>
       <id>ncimvn-public</id>
       <name>Public NIH repository</name>
