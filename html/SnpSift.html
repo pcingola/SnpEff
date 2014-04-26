@@ -1123,7 +1123,6 @@ tabix -s 1 -b 2 -e 2 dbNSFP2.4.txt.gz
 # Donload and uncompress database (you need to do this only once):
 # WARNING: The database is 3Gb when compressed and 30Gb uncompressed.
 wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP2.4.txt.gz
-gunzip dbNSFP2.4.txt.gz
 
 # Annotate using dbNSFP
 java -jar SnpSift.jar dbnsfp -v dbNSFP2.4.txt.gz myFile.vcf > myFile.annotated.vcf

@@ -17,7 +17,7 @@ public class GprSeq {
 	public static byte AA_TO_CODE[];
 	public static char CODE_TO_AA[];
 	public static byte DNA_TO_CODE[];
-	public static byte CODE_TO_DNA[];
+	public static char CODE_TO_DNA[];
 
 	public static final String KNOWN_FILE_EXTENSIONS[] = { ".fa", ".fasta", ".fq", ".fastq", ".sai", ".sam", ".bam", ".bcf", ".vcf", "pileup", "mpileup" };
 
@@ -32,59 +32,69 @@ public class GprSeq {
 		// Initialize forward mapping: AA -> Code
 		AA_TO_CODE['-'] = 0; // Gap
 		AA_TO_CODE['A'] = 1;
-		AA_TO_CODE['B'] = 2;
-		AA_TO_CODE['C'] = 3;
+		AA_TO_CODE['R'] = 2;
+		AA_TO_CODE['N'] = 3;
 		AA_TO_CODE['D'] = 4;
-		AA_TO_CODE['E'] = 5;
-		AA_TO_CODE['F'] = 6;
-		AA_TO_CODE['G'] = 7;
-		AA_TO_CODE['H'] = 8;
-		AA_TO_CODE['I'] = 9;
-		AA_TO_CODE['K'] = 10;
+		AA_TO_CODE['C'] = 5;
+		AA_TO_CODE['E'] = 6;
+		AA_TO_CODE['Q'] = 7;
+		AA_TO_CODE['G'] = 8;
+		AA_TO_CODE['H'] = 9;
+		AA_TO_CODE['I'] = 10;
 		AA_TO_CODE['L'] = 11;
-		AA_TO_CODE['M'] = 12;
-		AA_TO_CODE['N'] = 13;
-		AA_TO_CODE['P'] = 14;
-		AA_TO_CODE['Q'] = 15;
-		AA_TO_CODE['R'] = 16;
-		AA_TO_CODE['S'] = 17;
-		AA_TO_CODE['T'] = 18;
-		AA_TO_CODE['V'] = 19;
-		AA_TO_CODE['W'] = 20;
-		AA_TO_CODE['X'] = 21;
-		AA_TO_CODE['Y'] = 22;
-		AA_TO_CODE['Z'] = 23;
-		AA_TO_CODE['*'] = 24; // Stop Codon
-		AA_TO_CODE['U'] = 25; // Selenocysteine (Rare amino acid)
+		AA_TO_CODE['K'] = 12;
+		AA_TO_CODE['M'] = 13;
+		AA_TO_CODE['F'] = 14;
+		AA_TO_CODE['P'] = 15;
+		AA_TO_CODE['S'] = 16;
+		AA_TO_CODE['T'] = 17;
+		AA_TO_CODE['W'] = 18;
+		AA_TO_CODE['Y'] = 19;
+		AA_TO_CODE['V'] = 20;
+		AA_TO_CODE['*'] = 21; // Stop Codon
+		AA_TO_CODE['U'] = 22; // Selenocysteine (Rare amino acid)
+		AA_TO_CODE['O'] = 23; // Pyrrolysine (Rare amino acid)
 
 		// Initialize reverse mapping: Codes -> AA
 		CODE_TO_AA = new char[26];
 		CODE_TO_AA[0] = '-'; // Gap
 		CODE_TO_AA[1] = 'A';
-		CODE_TO_AA[2] = 'B';
-		CODE_TO_AA[3] = 'C';
+		CODE_TO_AA[2] = 'R';
+		CODE_TO_AA[3] = 'N';
 		CODE_TO_AA[4] = 'D';
-		CODE_TO_AA[5] = 'E';
-		CODE_TO_AA[6] = 'F';
-		CODE_TO_AA[7] = 'G';
-		CODE_TO_AA[8] = 'H';
-		CODE_TO_AA[9] = 'I';
-		CODE_TO_AA[10] = 'K';
+		CODE_TO_AA[5] = 'C';
+		CODE_TO_AA[6] = 'E';
+		CODE_TO_AA[7] = 'Q';
+		CODE_TO_AA[8] = 'G';
+		CODE_TO_AA[9] = 'H';
+		CODE_TO_AA[10] = 'I';
 		CODE_TO_AA[11] = 'L';
-		CODE_TO_AA[12] = 'M';
-		CODE_TO_AA[13] = 'N';
-		CODE_TO_AA[14] = 'P';
-		CODE_TO_AA[15] = 'Q';
-		CODE_TO_AA[16] = 'R';
-		CODE_TO_AA[17] = 'S';
-		CODE_TO_AA[18] = 'T';
-		CODE_TO_AA[19] = 'V';
-		CODE_TO_AA[20] = 'W';
-		CODE_TO_AA[21] = 'X';
-		CODE_TO_AA[22] = 'Y';
-		CODE_TO_AA[23] = 'Z';
-		CODE_TO_AA[24] = '*'; // Stop Codon
-		CODE_TO_AA[25] = 'U'; // Selenocysteine (Rare amino acid)
+		CODE_TO_AA[12] = 'K';
+		CODE_TO_AA[13] = 'M';
+		CODE_TO_AA[14] = 'F';
+		CODE_TO_AA[15] = 'P';
+		CODE_TO_AA[16] = 'S';
+		CODE_TO_AA[17] = 'T';
+		CODE_TO_AA[18] = 'W';
+		CODE_TO_AA[19] = 'Y';
+		CODE_TO_AA[20] = 'V';
+		CODE_TO_AA[21] = '*'; // Stop Codon
+		CODE_TO_AA[22] = 'U'; // Selenocysteine (Rare amino acid)
+		CODE_TO_AA[23] = 'O'; // Pyrrolysine (Rare amino acid)
+
+		// DNA
+		DNA_TO_CODE['-'] = 0; // Gap
+		DNA_TO_CODE['A'] = 1;
+		DNA_TO_CODE['C'] = 2;
+		DNA_TO_CODE['G'] = 3;
+		DNA_TO_CODE['T'] = 4;
+
+		CODE_TO_DNA = new char[5];
+		CODE_TO_DNA[0] = '-'; // Gap
+		CODE_TO_DNA[1] = 'A';
+		CODE_TO_DNA[2] = 'C';
+		CODE_TO_DNA[3] = 'G';
+		CODE_TO_DNA[4] = 'T';
 	}
 
 	public static byte aa2Code(char aa) {
@@ -146,7 +156,16 @@ public class GprSeq {
 
 	public static char code2aa(byte aacode) {
 		return CODE_TO_AA[aacode];
+	}
 
+	public static char code2dna(byte dnacode) {
+		return CODE_TO_DNA[dnacode];
+	}
+
+	public static byte dna2Code(char aa) {
+		byte c = DNA_TO_CODE[(byte) aa];
+		if (c < 0) throw new RuntimeException("Unknown code for amino acid '" + aa + "' (ord: " + ((int) aa) + " )");
+		return c;
 	}
 
 	/**
@@ -177,7 +196,7 @@ public class GprSeq {
 	}
 
 	/**
-	 * Get an ID from a fastq 
+	 * Get an ID from a fastq
 	 * @param fastq
 	 * @return Fastq's id
 	 */
@@ -188,27 +207,27 @@ public class GprSeq {
 	/**
 	 * Calculate frame (as specified in GTF / GFF) using sequence length
 	 * References: http://mblab.wustl.edu/GTF22.html
-	 * 
+	 *
 	 * What frame means:
-	 * 		'0' indicates that the specified region is in frame, i.e. that 
+	 * 		'0' indicates that the specified region is in frame, i.e. that
 	 * 			its first base corresponds to the first base of a codon.
-	 *  
-	 * 		'1' indicates that there is one extra base, i.e. that the 
+	 *
+	 * 		'1' indicates that there is one extra base, i.e. that the
 	 * 			second base of the region corresponds to the first base of a codon
-	 * 
-	 * 		'2' means that the third base of the region is the first base of a 
-	 * 			codon. 
-	 * 
-	 * If the strand is '-', then the first base of the region is value of 'end', because 
+	 *
+	 * 		'2' means that the third base of the region is the first base of a
+	 * 			codon.
+	 *
+	 * If the strand is '-', then the first base of the region is value of 'end', because
 	 * the corresponding coding region will run from <end> to <start> on the reverse strand.
-	 * 
+	 *
 	 * Frame is calculated as (3 - ((length-frame) mod 3)) mod 3:
 	 * Here is why:
 	 * 		(length-frame) is the length of the previous feature starting at the first whole codon (and thus the frame subtracted out).
 	 * 		(length-frame) mod 3 is the number of bases on the 3' end beyond the last whole codon of the previous feature.
 	 * 		3-((length-frame) mod 3) is the number of bases left in the codon after removing those that are represented at the 3' end of the feature.
 	 * 		(3-((length-frame) mod 3)) mod 3 changes a 3 to a 0, since three bases makes a whole codon, and 1 and 2 are left unchanged.
-	 * 
+	 *
 	 * @param length
 	 * @return
 	 */
@@ -262,9 +281,9 @@ public class GprSeq {
 	}
 
 	/**
-	 * Create an ID: Remove everything after the first space char. 
+	 * Create an ID: Remove everything after the first space char.
 	 * Remove trailing '/1' or '/2' (if any)
-	 * 
+	 *
 	 * @param line
 	 * @return
 	 */
