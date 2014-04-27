@@ -30,74 +30,72 @@ public class GprSeq {
 			AA_TO_CODE[i] = DNA_TO_CODE[i] = -1;
 
 		// Initialize forward mapping: AA -> Code
-		AA_TO_CODE['-'] = 0; // Gap
-		AA_TO_CODE['A'] = 1;
-		AA_TO_CODE['R'] = 2;
-		AA_TO_CODE['N'] = 3;
-		AA_TO_CODE['D'] = 4;
-		AA_TO_CODE['C'] = 5;
-		AA_TO_CODE['E'] = 6;
-		AA_TO_CODE['Q'] = 7;
-		AA_TO_CODE['G'] = 8;
-		AA_TO_CODE['H'] = 9;
-		AA_TO_CODE['I'] = 10;
-		AA_TO_CODE['L'] = 11;
-		AA_TO_CODE['K'] = 12;
-		AA_TO_CODE['M'] = 13;
-		AA_TO_CODE['F'] = 14;
-		AA_TO_CODE['P'] = 15;
-		AA_TO_CODE['S'] = 16;
-		AA_TO_CODE['T'] = 17;
-		AA_TO_CODE['W'] = 18;
-		AA_TO_CODE['Y'] = 19;
-		AA_TO_CODE['V'] = 20;
-		AA_TO_CODE['*'] = 21; // Stop Codon
-		AA_TO_CODE['U'] = 22; // Selenocysteine (Rare amino acid)
-		AA_TO_CODE['O'] = 23; // Pyrrolysine (Rare amino acid)
+		AA_TO_CODE['-'] = -1; // Gap
+		AA_TO_CODE['A'] = 0;
+		AA_TO_CODE['R'] = 1;
+		AA_TO_CODE['N'] = 2;
+		AA_TO_CODE['D'] = 3;
+		AA_TO_CODE['C'] = 4;
+		AA_TO_CODE['E'] = 5;
+		AA_TO_CODE['Q'] = 6;
+		AA_TO_CODE['G'] = 7;
+		AA_TO_CODE['H'] = 8;
+		AA_TO_CODE['I'] = 9;
+		AA_TO_CODE['L'] = 10;
+		AA_TO_CODE['K'] = 11;
+		AA_TO_CODE['M'] = 12;
+		AA_TO_CODE['F'] = 13;
+		AA_TO_CODE['P'] = 14;
+		AA_TO_CODE['S'] = 15;
+		AA_TO_CODE['T'] = 16;
+		AA_TO_CODE['W'] = 17;
+		AA_TO_CODE['Y'] = 18;
+		AA_TO_CODE['V'] = 19;
+		AA_TO_CODE['*'] = 20; // Stop Codon
+		AA_TO_CODE['U'] = 21; // Selenocysteine (Rare amino acid)
+		AA_TO_CODE['O'] = 22; // Pyrrolysine (Rare amino acid)
 
 		// Initialize reverse mapping: Codes -> AA
-		CODE_TO_AA = new char[26];
-		CODE_TO_AA[0] = '-'; // Gap
-		CODE_TO_AA[1] = 'A';
-		CODE_TO_AA[2] = 'R';
-		CODE_TO_AA[3] = 'N';
-		CODE_TO_AA[4] = 'D';
-		CODE_TO_AA[5] = 'C';
-		CODE_TO_AA[6] = 'E';
-		CODE_TO_AA[7] = 'Q';
-		CODE_TO_AA[8] = 'G';
-		CODE_TO_AA[9] = 'H';
-		CODE_TO_AA[10] = 'I';
-		CODE_TO_AA[11] = 'L';
-		CODE_TO_AA[12] = 'K';
-		CODE_TO_AA[13] = 'M';
-		CODE_TO_AA[14] = 'F';
-		CODE_TO_AA[15] = 'P';
-		CODE_TO_AA[16] = 'S';
-		CODE_TO_AA[17] = 'T';
-		CODE_TO_AA[18] = 'W';
-		CODE_TO_AA[19] = 'Y';
-		CODE_TO_AA[20] = 'V';
-		CODE_TO_AA[21] = '*'; // Stop Codon
-		CODE_TO_AA[22] = 'U'; // Selenocysteine (Rare amino acid)
-		CODE_TO_AA[23] = 'O'; // Pyrrolysine (Rare amino acid)
+		CODE_TO_AA = new char[23];
+		CODE_TO_AA[0] = 'A';
+		CODE_TO_AA[1] = 'R';
+		CODE_TO_AA[2] = 'N';
+		CODE_TO_AA[3] = 'D';
+		CODE_TO_AA[4] = 'C';
+		CODE_TO_AA[5] = 'E';
+		CODE_TO_AA[6] = 'Q';
+		CODE_TO_AA[7] = 'G';
+		CODE_TO_AA[8] = 'H';
+		CODE_TO_AA[9] = 'I';
+		CODE_TO_AA[10] = 'L';
+		CODE_TO_AA[11] = 'K';
+		CODE_TO_AA[12] = 'M';
+		CODE_TO_AA[13] = 'F';
+		CODE_TO_AA[14] = 'P';
+		CODE_TO_AA[15] = 'S';
+		CODE_TO_AA[16] = 'T';
+		CODE_TO_AA[17] = 'W';
+		CODE_TO_AA[18] = 'Y';
+		CODE_TO_AA[19] = 'V';
+		CODE_TO_AA[20] = '*'; // Stop Codon
+		CODE_TO_AA[21] = 'U'; // Selenocysteine (Rare amino acid)
+		CODE_TO_AA[22] = 'O'; // Pyrrolysine (Rare amino acid)
 
 		// DNA
-		DNA_TO_CODE['-'] = 0; // Gap
-		DNA_TO_CODE['A'] = 1;
-		DNA_TO_CODE['C'] = 2;
-		DNA_TO_CODE['G'] = 3;
-		DNA_TO_CODE['T'] = 4;
+		DNA_TO_CODE['A'] = 0;
+		DNA_TO_CODE['C'] = 1;
+		DNA_TO_CODE['G'] = 2;
+		DNA_TO_CODE['T'] = 3;
 
-		CODE_TO_DNA = new char[5];
-		CODE_TO_DNA[0] = '-'; // Gap
-		CODE_TO_DNA[1] = 'A';
-		CODE_TO_DNA[2] = 'C';
-		CODE_TO_DNA[3] = 'G';
-		CODE_TO_DNA[4] = 'T';
+		CODE_TO_DNA = new char[4];
+		CODE_TO_DNA[0] = 'A';
+		CODE_TO_DNA[1] = 'C';
+		CODE_TO_DNA[2] = 'G';
+		CODE_TO_DNA[3] = 'T';
 	}
 
 	public static byte aa2Code(char aa) {
+		if (aa == '-') return -1;
 		byte c = AA_TO_CODE[(byte) aa];
 		if (c < 0) throw new RuntimeException("Unknown code for amino acid '" + aa + "' (ord: " + ((int) aa) + " )");
 		return c;
@@ -155,16 +153,19 @@ public class GprSeq {
 	}
 
 	public static char code2aa(byte aacode) {
+		if (aacode < 0) return '-';
 		return CODE_TO_AA[aacode];
 	}
 
 	public static char code2dna(byte dnacode) {
+		if (dnacode < 0) return '-';
 		return CODE_TO_DNA[dnacode];
 	}
 
-	public static byte dna2Code(char aa) {
-		byte c = DNA_TO_CODE[(byte) aa];
-		if (c < 0) throw new RuntimeException("Unknown code for amino acid '" + aa + "' (ord: " + ((int) aa) + " )");
+	public static byte dna2Code(char base) {
+		if (base == '-') return -1;
+		byte c = DNA_TO_CODE[(byte) base];
+		if (c < 0) throw new RuntimeException("Unknown code for amino acid '" + base + "' (ord: " + ((int) base) + " )");
 		return c;
 	}
 

@@ -1084,50 +1084,32 @@ $ java -jar SnpSift.jar gwasCat gwascatalog.txt test.vcf | tee test.gwas.vcf
 				<a href="https://sites.google.com/site/jpopgen/dbNSFP">Here</a> is the link to dbNSFP database website.
 				<p>
 				<br>
-				<b>Database:</b> In order to use this command, you need to download the dbNSFP database. dbNSFP is large (several GB) so it might take a while to download it.
-				<br>
-				<br>
-				<i class="icon-warning-sign"></i> As of SnpSift version 3.5, the dbNSFP file has to be <a href="http://samtools.sourceforge.net/tabix.shtml">tabix</a> indexed (i.e. block-gzipped + tabix). This allows for faster annotations
-				<br>
-				<br>
-				<i class="icon-hand-right"></i> You can download the file from SnpEff's site:
-					<ul>
-						<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz"> here </a>
-						<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi"> here </a>
-					</ul>
-				<br>
-				<br>
-				You can also create the files yourself, downloading the files from <a href="https://sites.google.com/site/jpopgen/dbNSFP">DbNsfp</a> site.
-				Creating a file that SnpSift can use is simple, just follow this guideline:
-<pre>
-# Download dbNSFP database
-$ wget http://dbnsfp.houstonbioinformatics.org/dbNSFPzip/dbNSFP2.4.zip
-
-# Uncompress
-$ unzip dbNSFP2.4.zip
-
-# Create a single file version
-$ (head -n 1 dbNSFP2.4_variant.chr1 ; cat dbNSFP2.4_variant.chr* | grep -v "^#" ) > dbNSFP2.4.txt
-
-# Compress using block-gzip algorithm
-bgzip dbNSFP2.4.txt
-
-# Create tabix index
-tabix -s 1 -b 2 -e 2 dbNSFP2.4.txt.gz
-</pre>
+				<b>Database:</b> In order to annotate using dbNSFP, you need to download the dbNSFP database and the index file. 
+				dbNSFP is large (several GB) so it might take a while to download it.
+				As of SnpSift version 3.5, the dbNSFP file has to be <a href="http://samtools.sourceforge.net/tabix.shtml">tabix</a> indexed (i.e. block-gzipped + tabix). 
+				This allows for faster annotations.
+				You can download the files from SnpEff's site:
+				<ul>
+					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz"> here </a>
+					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi"> here </a>
 				</ul>
 				</p>
+				<h3> dbNSFP Annotation example</h3> 
 				<p>
-				<b>Annotation example:</b> Here is a full example how to perform annotations
+				Here is a full example how to perform annotations
+				<br>
+				<br>
 <pre>
-# Donload and uncompress database (you need to do this only once):
-# WARNING: The database is 3Gb when compressed and 30Gb uncompressed.
+# Donload database and tabix index files (you need to do this only once):
+# WARNING: The database file is large (over 5Gb)
 wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP2.4.txt.gz
+wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP2.4.txt.gz.tbi
 
 # Annotate using dbNSFP
 java -jar SnpSift.jar dbnsfp -v dbNSFP2.4.txt.gz myFile.vcf > myFile.annotated.vcf
 </pre>
 
+				<br>
 				<i class="icon-warning-sign"></i> You can now specify which fields you want to use for annotation using the '-f' command line option followed by a comma separated list of field names.
 				Defaults fields are 
 				<ul>
@@ -1149,6 +1131,40 @@ java -jar SnpSift.jar dbnsfp -v dbNSFP2.4.txt.gz myFile.vcf > myFile.annotated.v
 					<li> ESP6500_AA_AF
 					<li> ESP6500_EA_AF
 				</ul>
+				</p>
+				<p>
+				<h3> Building dbNSFP (for developers) </h3> 
+				<i class="icon-warning-sign"></i> Users do <b>NOT</b> need to do this, since a pre-indexed database can be downloaded from SnpSift's site (see previous sub-section).
+				These instructions are mostly for developers.
+				<br>
+				<br>
+				You can also create dbNSFP files yourself, downloading the files from <a href="https://sites.google.com/site/jpopgen/dbNSFP">DbNsfp</a> site.
+				Two files are required: 
+				<ul>
+					<li> A block-gzipped database file
+					<li> The corresponding tabix index for the database file.
+				</ul>
+				<br>
+				Creating a file that SnpSift can use is simple, just follow this guideline:
+<pre>
+# Download dbNSFP database
+$ wget http://dbnsfp.houstonbioinformatics.org/dbNSFPzip/dbNSFP2.4.zip
+
+# Uncompress
+$ unzip dbNSFP2.4.zip
+
+# Create a single file version
+$ (head -n 1 dbNSFP2.4_variant.chr1 ; cat dbNSFP2.4_variant.chr* | grep -v "^#" ) > dbNSFP2.4.txt
+
+# Compress using block-gzip algorithm
+bgzip dbNSFP2.4.txt
+
+# Create tabix index
+tabix -s 1 -b 2 -e 2 dbNSFP2.4.txt.gz
+</pre>
+				</ul>
+				</p>
+				<p>
         </section>
 
         <!-- Split
