@@ -22,6 +22,7 @@ import ca.mcgill.mcb.pcingola.geneSets.algorithm.EnrichmentAlgorithmGreedyVariab
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.FisherPValueAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.FisherPValueGreedyAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.LeadingEdgeFractionAlgorithm;
+import ca.mcgill.mcb.pcingola.geneSets.algorithm.NoneAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.RankSumPValueAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.RankSumPValueGreedyAlgorithm;
 import ca.mcgill.mcb.pcingola.gsa.ChrPosScoreList;
@@ -136,7 +137,7 @@ public class SnpEffCmdGsa extends SnpEff {
 			throw new RuntimeException(e);
 		}
 
-		// No correction method? No scores? 
+		// No correction method? No scores?
 		// Nothing to do
 		if (correctionCmd == null || geneScores.isEmpty()) {
 			if (geneScoreFileSave != null) {
