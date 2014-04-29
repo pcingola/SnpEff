@@ -22,7 +22,6 @@ import ca.mcgill.mcb.pcingola.geneSets.algorithm.EnrichmentAlgorithmGreedyVariab
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.FisherPValueAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.FisherPValueGreedyAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.LeadingEdgeFractionAlgorithm;
-import ca.mcgill.mcb.pcingola.geneSets.algorithm.NoneAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.RankSumPValueAlgorithm;
 import ca.mcgill.mcb.pcingola.geneSets.algorithm.RankSumPValueGreedyAlgorithm;
 import ca.mcgill.mcb.pcingola.gsa.ChrPosScoreList;
@@ -137,8 +136,9 @@ public class SnpEffCmdGsa extends SnpEff {
 			throw new RuntimeException(e);
 		}
 
-		// No correction method? nothing to do
-		if (correctionCmd == null) {
+		// No correction method? No scores? 
+		// Nothing to do
+		if (correctionCmd == null || geneScores.isEmpty()) {
 			if (geneScoreFileSave != null) {
 				createScoresFile(geneScoreFileSave, false); // may be we were asked to write these files anyway...
 				createScoresFile(residuesFile, true); // Only scores in this files (no additional information). Since we don't perform correction, residues and scores are the same
@@ -206,7 +206,7 @@ public class SnpEffCmdGsa extends SnpEff {
 			Timer.showStdErr("Intereting genes from file" //
 					+ "\n\tIntereting genes in file  : " + genesInteresting.size() //
 					+ "\n\tFound genes               : " + hasGene //
-					);
+			);
 		}
 	}
 
@@ -232,7 +232,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 			if ((orderDescending && (geneScore.get(geneId) >= scoreThreshold)) //
 					|| (!orderDescending && (geneScore.get(geneId) <= scoreThreshold)) //
-					) {
+			) {
 				if (geneSets.addInteresting(geneId)) countAdded++; // Count added genes
 				count++;
 			}
@@ -247,7 +247,7 @@ public class SnpEffCmdGsa extends SnpEff {
 					+ "\n\tThreshold                : %f"//
 					+ "\n\tInteresting genes        : %d  (%.2f%%)" //
 					+ "\n\tInteresting genes added  : %d  (%.2f%%)" //
-					, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
+			, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
 		}
 	}
 
@@ -391,7 +391,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		if (verbose) Timer.showStdErr("Done." //
 				+ "\n\t\tGene sets added : " + geneSets.getGeneSetCount() //
 				+ "\n\t\tGenes added     : " + geneSets.getGeneCount() //
-				);
+		);
 	}
 
 	/**
@@ -433,7 +433,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				+ "\n\tNumber of scores         : " + chrPosScoreList.size() //
 				+ "\n\tUnmapped                 : " + unmapped //
 				+ "\n\tMapped to multiple genes : " + mappedMultiple //
-				);
+		);
 
 		if (debug) {
 			System.err.println("Mapping Gene to Score:");
@@ -633,7 +633,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				+ "\n\tScores added        : " + geneScore.size() //
 				+ "\n\tMin score (p-value) : " + minp //
 				+ "\n\tMax score (p-value) : " + maxp //
-				);
+		);
 	}
 
 	/**
@@ -715,7 +715,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				System.err.println("Warning: Ignoring line number " + lfi.getLineNum() + "." //
 						+ " Exepcting format 'chr \t pos \t score \n'.\n" //
 						+ "\tLine:\t'" + line + "'" //
-						);
+				);
 				continue;
 			}
 
