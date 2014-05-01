@@ -18,9 +18,9 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 /**
  * This class creates a SnpEffectPredictor from a GFF file.
  * This includes derived formats as GTF.
- * 
+ *
  * References: http://gmod.org/wiki/GFF3
- * 
+ *
  * @author pcingola
  */
 public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
@@ -147,9 +147,9 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 	/**
 	 * Is this protein coding according to the source
-	 * 
+	 *
 	 * References: http://vega.sanger.ac.uk/info/about/gene_and_transcript_types.html
-	 * 
+	 *
 	 * @param biotype
 	 * @return
 	 */
@@ -163,7 +163,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				|| biotype.equals("TR_D_gene") //
 				|| biotype.equals("TR_J_gene") //
 				|| biotype.equals("TR_V_gene") //
-		;
+				;
 	}
 
 	/**
@@ -182,7 +182,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	}
 
 	/**
-	 * Read chromosome sequence from GFF3 file and extract exons' sequences 
+	 * Read chromosome sequence from GFF3 file and extract exons' sequences
 	 */
 	protected void readExonSequencesGff(String gffFileName) {
 		try {
@@ -209,7 +209,12 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 						addExonSequences(chromoName, chromoSb.toString()); // Add all sequences
 					}
 
+					// Get sequence name
+					int idxSpace = line.indexOf(' ');
+					if (idxSpace > 0) line = line.substring(0, idxSpace);
 					chromoName = Chromosome.simpleName(line.substring(1).trim()); // New chromosome name
+
+					// Initialize buffer
 					chromoSb = new StringBuffer();
 					if (verbose) System.out.println("\t\tReading sequence '" + chromoName + "'");
 				} else chromoSb.append(line.trim());
