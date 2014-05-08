@@ -13,12 +13,12 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * This class creates a SnpEffectPredictor from a GFF3 file
- * 
- * References: 
+ *
+ * References:
  * 		- http://www.sequenceontology.org/gff3.shtml
  * 		- http://gmod.org/wiki/GFF3
  * 		- http://www.eu-sol.net/science/bioinformatics/standards-documents/gff3-format-description
- * 
+ *
  * @author pcingola
  */
 public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
@@ -196,7 +196,7 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 	protected boolean parse(String line, String typeToRead) {
 		String fields[] = line.split("\t");
 
-		// Ommit headers
+		// Omit headers
 		if (fields.length <= 6) return false;
 
 		// Is it the type that we want to read?

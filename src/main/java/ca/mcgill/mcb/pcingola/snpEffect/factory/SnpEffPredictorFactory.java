@@ -23,7 +23,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
  * This class creates a SnpEffectPredictor from a file (or a set of files) and a configuration
- * 
+ *
  * @author pcingola
  */
 public abstract class SnpEffPredictorFactory {
@@ -95,13 +95,14 @@ public abstract class SnpEffPredictorFactory {
 	}
 
 	/**
-	 * Add a Gene 
+	 * Add a Gene
 	 * @param gene
 	 */
 	protected void add(Gene gene) {
 		snpEffectPredictor.add(gene);
 
 		if (genesById.containsKey(gene.getId())) throw new RuntimeException("Gene  '" + gene.getId() + "' already exists");
+		if (debug) System.out.println("\tAdding gene: " + gene.getId() + "\t" + gene.getGeneName() + "\t" + gene.toStr());
 		genesById.put(gene.getId(), gene);
 	}
 
@@ -111,6 +112,7 @@ public abstract class SnpEffPredictorFactory {
 	 */
 	protected void add(Marker marker) {
 		addMarker(marker, false);
+		if (debug) System.out.println("\tAdding: " + marker.getId() + "\t" + marker.toStr());
 	}
 
 	/**
@@ -213,7 +215,7 @@ public abstract class SnpEffPredictorFactory {
 
 	}
 
-	/** 
+	/**
 	 * Adjust transcripts: recalculate start, end, strand, etc.
 	 */
 	void adjustTranscripts() {
@@ -292,7 +294,7 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Create random sequences for exons
-	 * 
+	 *
 	 * Note: This is only used for test cases!
 	 */
 	protected void createRandSequences() {
@@ -306,7 +308,7 @@ public abstract class SnpEffPredictorFactory {
 	}
 
 	/**
-	 * Consolidate transcripts: 
+	 * Consolidate transcripts:
 	 * If two exons are one right next to the other, join them
 	 * E.g. exon1:1234-2345, exon2:2346-2400 => exon:1234-2400
 	 * This happens mostly in GTF files, where the stop-codon is specified separated from the exon info.
@@ -369,7 +371,7 @@ public abstract class SnpEffPredictorFactory {
 	/**
 	 * Create exons from CDS info
 	 * WARNING: We might end up with redundant exons if some exons existed before this process
-	 * 
+	 *
 	 * @param tr : Transcript with CDS info, but no exons
 	 */
 	protected void exonsFromCds(Transcript tr) {
@@ -387,8 +389,8 @@ public abstract class SnpEffPredictorFactory {
 		}
 
 		// Sort CDS by strand
-		if (tr.getStrand() >= 0) Collections.sort(cdss, new IntervalComparatorByStart()); // Sort by start position 
-		else Collections.sort(cdss, new IntervalComparatorByEnd(true)); // Sort by end position (reversed) 
+		if (tr.getStrand() >= 0) Collections.sort(cdss, new IntervalComparatorByStart()); // Sort by start position
+		else Collections.sort(cdss, new IntervalComparatorByEnd(true)); // Sort by end position (reversed)
 
 		// Add cds as exons
 		// WARNING: We might end up with redundant exons if some exons existed before this process
@@ -544,7 +546,7 @@ public abstract class SnpEffPredictorFactory {
 	/**
 	 * Parse a string as a 'position'.
 	 * Note: It subtracts 'inOffset' so that all coordinates are zero-based
-	 * 
+	 *
 	 * @param posStr
 	 * @return
 	 */
