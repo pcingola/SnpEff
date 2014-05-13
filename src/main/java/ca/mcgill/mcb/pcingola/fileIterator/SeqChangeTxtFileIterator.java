@@ -26,12 +26,12 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class SeqChangeTxtFileIterator extends SeqChangeFileIterator {
 
-	public SeqChangeTxtFileIterator(String fileName, Genome genome, int positionBase) {
-		super(fileName, genome, positionBase);
+	public SeqChangeTxtFileIterator(String fileName, Genome genome, int offset) {
+		super(fileName, genome, offset);
 	}
 
-	public SeqChangeTxtFileIterator(String fileName, int positionBase) {
-		super(fileName, positionBase);
+	public SeqChangeTxtFileIterator(String fileName, int offset) {
+		super(fileName, offset);
 	}
 
 	@Override
