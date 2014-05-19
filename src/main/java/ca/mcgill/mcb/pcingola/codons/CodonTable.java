@@ -88,12 +88,14 @@ public class CodonTable {
 
 	/**
 	 * Convert 1-letter code to 3-letter code (amino acids)
-	 * 
+	 *
 	 * Reference: http://www.hgvs.org/mutnomen/standards.html#aalist
-	 * 
+	 *
 	 * @param aa in three letter code
 	 */
 	public String aaThreeLetterCode(String aa) {
+
+		throw new RuntimeException("CONVERT a sequence of AAs to a sequence of 3-letter-AA !!!!!!!! THIS CODE IS WRONG!");
 		if (isStop(aa)) return "Ter"; // Used to be "*" (see reference http://www.hgvs.org/mutnomen/standards.html#aalist)
 		String aa3 = aa3letter.get(aa.toUpperCase());
 		if (aa3 == null) return "X";
@@ -101,7 +103,7 @@ public class CodonTable {
 	}
 
 	/**
-	 * Calculate degeneracy table 
+	 * Calculate degeneracy table
 	 */
 	void calcDegeneracy() {
 		degeneracy = new HashMap<String, Integer>();
@@ -144,19 +146,19 @@ public class CodonTable {
 
 	/**
 	 * Degree of "degenerate site"
-	 * 
+	 *
 	 * What is a "degenerate site"?
-	 * 
+	 *
 	 * Here is an explanation form Stephen Wright (Univ. Toronto), who requested to add this feature
-	 * 
-	 *    "...a fourfold degenerate site would be a site where any change is synonymous. So the 
-	 *    third codon position for the arginine CGN, is a fourfold degenerate site, as is the 
+	 *
+	 *    "...a fourfold degenerate site would be a site where any change is synonymous. So the
+	 *    third codon position for the arginine CGN, is a fourfold degenerate site, as is the
 	 *    third codon position for valine, alanine, etc.
-	 *    Similarly, all second positions of a codon are zerofold degenerate, since any change is 
-	 *    nonsynonymous. Many first codon positions are also zerofold degenerate, however, for 
-	 *    example, the first codon position of AGG is NOT zerofold, because a shift to CGG is a 
+	 *    Similarly, all second positions of a codon are zerofold degenerate, since any change is
+	 *    nonsynonymous. Many first codon positions are also zerofold degenerate, however, for
+	 *    example, the first codon position of AGG is NOT zerofold, because a shift to CGG is a
 	 *    synonymous change."
-	 *    
+	 *
 	 * @param codon
 	 * @param pos
 	 * @return Degenracy level, or '-1' if not available
@@ -165,7 +167,7 @@ public class CodonTable {
 		// if( codon.length() != 3 ) throw new RuntimeException("Error: Codon does not have three bases '" + codon + "'");
 		String key = codon.toUpperCase() + "_" + pos;
 		Integer degLevel = degeneracy.get(key);
-		return degLevel != null ? degLevel : -1; // Return '-1' 
+		return degLevel != null ? degLevel : -1; // Return '-1'
 	}
 
 	public String getName() {
@@ -217,7 +219,7 @@ public class CodonTable {
 	}
 
 	/**
-	 * Is there a stop codon in this amino acid sequence 
+	 * Is there a stop codon in this amino acid sequence
 	 * @param aas
 	 * @return
 	 */
@@ -226,10 +228,10 @@ public class CodonTable {
 	}
 
 	/**
-	 * Parse a 'table' 
+	 * Parse a 'table'
 	 * Format: comma separated list of CODON/AA
 	 * E.g.: "TTT/F, TTC/F, TTA/L, TTG/L, TCT/S, TCC/S, TCA/S, TCG/S, TAT/Y, TAC/Y, TAA/*, TAG/*, TGT/C, ..."
-	 * 
+	 *
 	 * Note: A '*' indicated stop codon, a '+' indicates start codon
 	 * @param table : Codon table
 	 */
@@ -251,7 +253,7 @@ public class CodonTable {
 						aa = aa.replaceAll("\\+", ""); // Remove all '+' signs
 					}
 
-					// If it contains a '*' then is is a STOP codon 
+					// If it contains a '*' then is is a STOP codon
 					if (aa.indexOf('*') >= 0) stopCodons.add(codon);
 
 					aa2codon.put(aa, codon);

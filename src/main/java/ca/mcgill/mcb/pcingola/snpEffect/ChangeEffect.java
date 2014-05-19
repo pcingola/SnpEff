@@ -17,12 +17,12 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
  * Object used to show results of a sequence change effect.
- * 
- * TODO: Several things to improve in this class 
+ *
+ * TODO: Several things to improve in this class
  * 	- There should be a class called 'ChangeEffects' that accumulated multiple effects from a seqChange
- * 	- 
- * 
- * 
+ * 	-
+ *
+ *
  * @author pcingola
  */
 public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
@@ -42,22 +42,22 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		, INTERGENIC //
 		, UPSTREAM //
 		, UTR_5_PRIME //
-		, UTR_5_DELETED //		
+		, UTR_5_DELETED //
 		, START_GAINED //
 		, SPLICE_SITE_ACCEPTOR //
 		, SPLICE_SITE_BRANCH //
 		, SPLICE_SITE_BRANCH_U12 //
 		, SPLICE_SITE_DONOR //
 		, SPLICE_SITE_REGION //
-		, START_LOST // 
+		, START_LOST //
 		, SYNONYMOUS_START //
 		, NON_SYNONYMOUS_START //
 		, CDS //
 		, GENE //
 		, GENOME //
 		, TRANSCRIPT //
-		, EXON //		
-		, EXON_DELETED //		
+		, EXON //
+		, EXON_DELETED //
 		, NON_SYNONYMOUS_CODING //
 		, SYNONYMOUS_CODING //
 		, FRAME_SHIFT //
@@ -73,7 +73,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		, STOP_LOST //
 		, INTRON //
 		, UTR_3_PRIME //
-		, UTR_3_DELETED //		
+		, UTR_3_DELETED //
 		, DOWNSTREAM //
 		, INTRON_CONSERVED //
 		, INTERGENIC_CONSERVED //
@@ -260,7 +260,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	public enum ErrorWarningType {
 		WARNING_SEQUENCE_NOT_AVAILABLE //
 		, WARNING_REF_DOES_NOT_MATCH_GENOME //
-		, WARNING_TRANSCRIPT_INCOMPLETE // 
+		, WARNING_TRANSCRIPT_INCOMPLETE //
 		, WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS //
 		, WARNING_TRANSCRIPT_NO_START_CODON //
 		, ERROR_CHROMOSOME_NOT_FOUND //
@@ -285,7 +285,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		NONE, SILENT, MISSENSE, NONSENSE
 	}
 
-	static final boolean COMPATIBLE_v1_8 = true; // Activate this in order to get the same out as version 1.8. This is only for testing & debugging 
+	static final boolean COMPATIBLE_v1_8 = true; // Activate this in order to get the same out as version 1.8. This is only for testing & debugging
 
 	SeqChange seqChange = null;
 	SeqChange seqChangeRef = null;
@@ -498,7 +498,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	}
 
 	/**
-	 * Return impact of this effect 
+	 * Return impact of this effect
 	 * @return
 	 */
 	public EffectImpact getEffectImpact() {
@@ -732,174 +732,8 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 		return (hgvsProt != null ? hgsvProtein + "/" : "") //
 				+ (hgvsDna != null ? hgvsDna : "") //
-		;
+				;
 	}
-
-	//	/**
-	//	 * Coding change in HGVS notation (DNA changes)
-	//	 * References: http://www.hgvs.org/mutnomen/recs-DNA.html 
-	//	 * 
-	//	 * @return
-	//	 */
-	//	protected String getHgvsDna() {
-	//		if (codonNum < 0) return "";
-	//
-	//		int seqPos = codonNum * 3 + codonIndex + 1;
-	//
-	//		Transcript tr = getTranscript();
-	//		if ((tr == null) || tr.isStrandPlus()) return "c." + seqPos + seqChange.getReference() + ">" + seqChange.getChange();
-	//		return "c." + seqPos + GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getChange());
-	//	}
-	//
-	//	/**
-	//	 * Coding change in HGVS notation (DNA changes)
-	//	 * References: http://www.hgvs.org/mutnomen/recs.html
-	//	 * 
-	//	 * @return
-	//	 */
-	//	protected String getHgvsIntron() {
-	//		if (isIntron()) {
-	//			// Intronic nucleotides (coding DNA reference sequence only)
-	//			//    - beginning of the intron; the number of the last nucleotide of the preceding exon, a plus sign and the 
-	//			//		position in the intron, like c.77+1G, c.77+2T, ....
-	//			// 	  - end of the intron; the number of the first nucleotide of the following exon, a minus sign and 
-	//			//		the position upstream in the intron, like ..., c.78-2A, c.78-1G.
-	//			// 	  - in the middle of the intron, numbering changes from "c.77+.." to "c.78-.."; for introns with 
-	//			//		an uneven number of nucleotides the central nucleotide is the last described with a "+" (see Discussion)
-	//
-	//			Intron intron = (Intron) marker;
-	//			Transcript tr = getTranscript();
-	//			if (tr == null) return "";
-	//
-	//			// Coding?
-	//			String coding = (tr.isProteinCoding() ? "c." : "n.");
-	//
-	//			int fromPrevExon = 0, fromNextExon = 0, exonBasePos = -1;
-	//			String change = "";
-	//
-	//			// Calculate distance to exon (coordinates are one-based)
-	//			if (intron.isStrandPlus()) {
-	//				fromPrevExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
-	//				fromNextExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
-	//				exonBasePos = intron.getStart();
-	//				exonBasePos--; // Make sure the coordinate is inside the exon
-	//				change = seqChange.getReference() + ">" + seqChange.getChange();
-	//			} else {
-	//				fromNextExon = Math.max(0, seqChange.getStart() - intron.getStart()) + 1;
-	//				fromPrevExon = Math.max(0, intron.getEnd() - seqChange.getStart()) + 1;
-	//				exonBasePos = intron.getEnd();
-	//				exonBasePos++; // Make sure the coordinate is inside the exon
-	//				change = GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getChange());
-	//			}
-	//
-	//			// Calculate 'exonBase' reference
-	//			int distBase = 0;
-	//			int cdsLeft = Math.min(tr.getCdsStart(), tr.getCdsEnd());
-	//			int cdsRight = Math.max(tr.getCdsStart(), tr.getCdsEnd());
-	//			String distBaseStr = "";
-	//
-	//			// Intron within coding region?
-	//			if ((exonBasePos >= cdsLeft) && (exonBasePos <= cdsRight)) {
-	//				distBase = tr.baseNumberCds(exonBasePos, false) + 1;
-	//
-	//				// Create HGSV string
-	//				if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
-	//				return coding + distBaseStr + (distBase + 1) + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
-	//			}
-	//
-	//			// Outside CDS
-	//			if (tr.isStrandPlus()) {
-	//				if (exonBasePos <= tr.getCdsStart()) {
-	//					int cdnaStart = tr.baseNumberPreMRna(tr.getCdsStart());
-	//					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
-	//					distBase = cdnaStart - cdnaPos;
-	//					if (distBase < 0) throw new RuntimeException("Error creating HGSV expression: Negative distance " + distBase);
-	//					distBaseStr = "-";
-	//				} else if (exonBasePos >= tr.getCdsEnd()) {
-	//					int cdnaEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
-	//					int cdnaPos = tr.baseNumberPreMRna(exonBasePos);
-	//					distBase = cdnaPos - cdnaEnd;
-	//					distBaseStr = "*";
-	//				} else throw new RuntimeException("This should never happen!");
-	//			} else {
-	//				exonBasePos++; // Make sure the coordinate is inside the exon 
-	//			}
-	//
-	//			// Create HGSV string
-	//			if (fromNextExon >= fromPrevExon) return coding + distBaseStr + distBase + "+" + fromPrevExon + change;
-	//			return coding + distBaseStr + (distBase - 1) + "-" + fromNextExon + change; // Why "lastBase+1"? Because the definition says "...first nucleotide of the following exon"
-	//		}
-	//		return "";
-	//	}
-	//
-	//	protected String getHgvsNonCoding() {
-	//		if (isIntron()) return intron();
-	//		return "";
-	//	}
-	//
-	//	/**
-	//	 * Coding change in HGVS notation (amino acid changes)
-	//	 * References: http://www.hgvs.org/mutnomen/recs.html
-	//	 * 
-	//	 * @return
-	//	 */
-	//	protected String getHgvsProtein() {
-	//		// Codon numbering
-	//		// HGVS: the translation initiator Methionine is numbered as +1
-	//		int aaPos = codonNum + 1;
-	//
-	//		// Convert to 3 letter code
-	//		// HGVS: the three-letter amino acid code is prefered (see Discussion), with "*" designating a translation 
-	//		// 		 termination codon; for clarity we this page describes changes using the three-letter amino acid
-	//		CodonTable codonTable = marker.codonTable();
-	//		String aaNew3 = codonTable.aaThreeLetterCode(aaNew);;
-	//		String aaOld3 = codonTable.aaThreeLetterCode(aaOld);;
-	//
-	//		// Synonymous changes
-	//		if ((effectType == EffectType.SYNONYMOUS_CODING) //
-	//				|| (effectType == EffectType.SYNONYMOUS_STOP) //
-	//		) {
-	//			// HGVS: Description of so called "silent" changes in the format p.Leu54Leu (or p.L54L) is not allowed; descriptions 
-	//			// 		 should be given at DNA level, it is non-informative and not unequivocal (there are five possibilities 
-	//			// 		 at DNA level which may underlie p.Leu54Leu);  correct description has the format c.162C>G.
-	//			return "p." + aaOld3 + aaPos + aaNew3;
-	//		}
-	//
-	//		// Start codon lost
-	//		if ((effectType == EffectType.START_LOST) //
-	//				|| (effectType == EffectType.SYNONYMOUS_START) //
-	//				|| (effectType == EffectType.NON_SYNONYMOUS_START) //
-	//		) {
-	//			// Reference : http://www.hgvs.org/mutnomen/disc.html#Met
-	//			// Currently, variants in the translation initiating Methionine (M1) are usually described as a substitution, e.g. p.Met1Val. 
-	//			// This is not correct. Either no protein is produced (p.0) or a new translation initiation site up- or downstream is used (e.g. p.Met1ValextMet-12 or p.Met1_Lys45del resp.). 
-	//			// Unless experimental proof is available, it is probably best to report the effect on protein level as "p.Met1?" (unknown). 
-	//			// When experimental data show that no protein is made, the description "p.0" is recommended (see Examples).
-	//			//
-	//			// We use the same for SYNONYMOUS_START since we cannot rally predict if the new start codon will actually be functioning as a start codon (since the Kozak sequence changed)
-	//			// Ditto for NON_SYNONYMOUS_START
-	//			return "p." + aaOld3 + "1?";
-	//		}
-	//
-	//		// Stop codon mutations
-	//		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#extp
-	//		// A change affecting the translation termination codon (Ter/*) introducing a new downstream termination 
-	//		// codon extending the C-terminus of the encoded protein described using "extTer#" (alternatively "ext*#") 
-	//		// where "#" is the position of the new stop codon (Ter# / *#)
-	//		// E.g.:
-	//		// 		p.*327Argext*? (alternatively p.Ter327ArgextTer? or p.*327Rext*?) describes a variant in the stop 
-	//		//		codon (Ter/*) at position 327, changing it to a codon for Arginine (Arg, R) and adding a tail of 
-	//		//		new amino acids of unknown length since the shifted frame does not contain a new stop codon.
-	//		if (effectType == EffectType.STOP_LOST) return "p." + aaOld3 + aaPos + aaNew3 + "ext*?";
-	//
-	//		// Reference: 		http://www.hgvs.org/mutnomen/recs-prot.html#del
-	//		// Nonsense variant are a special type of amino acid deletion removing the entire C-terminal part of a 
-	//		// protein starting at the site of the variant. A nonsense change is described using the format 
-	//		// p.Trp26Ter (alternatively p.Trp26*). 		
-	//		if (effectType == EffectType.STOP_GAINED) return "p." + aaOld3 + aaPos + "*";
-	//
-	//		return "p." + aaOld3 + aaPos + aaNew3;
-	//	}
 
 	/**
 	 * Get intron (if any)
@@ -934,14 +768,14 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	}
 
 	/**
-	 * Do we have an associated marker with additional annotations? 
+	 * Do we have an associated marker with additional annotations?
 	 * @return
 	 */
 	public boolean hasAdditionalAnnotations() {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
 	}
 
 	public boolean hasError() {
@@ -1017,7 +851,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				|| (effectType == EffectType.SPLICE_SITE_REGION) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
+				;
 	}
 
 	public boolean isStartGained() {
@@ -1033,7 +867,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				|| (effectType == EffectType.UTR_3_PRIME) //
 				|| (effectType == EffectType.UTR_5_DELETED) //
 				|| (effectType == EffectType.UTR_3_DELETED) //
-		;
+				;
 	}
 
 	public void set(Marker marker, EffectType effectType, String message) {
@@ -1218,7 +1052,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		if (useHgvs) aaChange = getHgvs();
 		else aaChange = ((aaOld.length() + aaNew.length()) > 0 ? aaOld + "/" + aaNew : "");
 
-		return errWarn //		
+		return errWarn //
 				+ "\t" + geneId //
 				+ "\t" + geneName //
 				+ "\t" + bioType //
@@ -1234,7 +1068,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**
