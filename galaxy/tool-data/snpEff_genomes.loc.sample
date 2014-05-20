@@ -2963,6 +2963,7 @@ GCA_000317435.1.18 	 Calothrix_sp_pcc_6303   GCA_000317435.1.18
 GCA_000317435.1.21 	 Calothrix_sp_pcc_6303   GCA_000317435.1.21
 GCA_000316575.1.18 	 Calothrix_sp_pcc_7507   GCA_000316575.1.18
 GCA_000316575.1.21 	 Calothrix_sp_pcc_7507   GCA_000316575.1.21
+camelus_ferus 	 Camelus   camelus_ferus
 GCA_000170735.1.18 	 Caminibacter_mediatlanticus_tb_2   GCA_000170735.1.18
 GCA_000170735.1.21 	 Caminibacter_mediatlanticus_tb_2   GCA_000170735.1.21
 Campylobacter_03_427_uid226993 	 Campylobacter_03_427_uid226993   Campylobacter_03_427_uid226993
@@ -3922,7 +3923,6 @@ GCA_000282115.1.21 	 Chryseobacterium_sp_cf314   GCA_000282115.1.21
 GCA_000173075.1.18 	 Chthoniobacter_flavus_ellin428   GCA_000173075.1.18
 GCA_000173075.1.21 	 Chthoniobacter_flavus_ellin428   GCA_000173075.1.21
 GCA_000427095.1.21 	 Chthonomonas_calidirosea_t49   GCA_000427095.1.21
-Cicer_arietinum_v2 	 Cicer_arietinum_v2   Cicer_arietinum_v2
 JGI2.64 	 Ciona_intestinalis   JGI2.64
 JGI2.65 	 Ciona_intestinalis   JGI2.65
 KH.66 	 Ciona_intestinalis   KH.66
@@ -15349,7 +15349,6 @@ GCA_000013985.1.18 	 Sphingopyxis_alaskensis_rb2256   GCA_000013985.1.18
 GCA_000013985.1.21 	 Sphingopyxis_alaskensis_rb2256   GCA_000013985.1.21
 Sphingopyxis_alaskensis_RB2256_uid58351 	 Sphingopyxis_alaskensis_RB2256_uid58351   Sphingopyxis_alaskensis_RB2256_uid58351
 GCA_000371385.1.21 	 Sphingopyxis_sp_mc1   GCA_000371385.1.21
-spider_transcriptome_v1 	 spider_transcriptome_v1   spider_transcriptome_v1
 GCA_000319575.2.21 	 Spiribacter_salinus_m19_40   GCA_000319575.2.21
 GCA_000242595.3.18 	 Spirochaeta_africana_dsm_8902   GCA_000242595.3.18
 GCA_000242595.3.21 	 Spirochaeta_africana_dsm_8902   GCA_000242595.3.21

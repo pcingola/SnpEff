@@ -68,7 +68,6 @@ public class TabixReader implements Iterable<String> {
 		public boolean hasNext() {
 			if (next == null) next = readNext(); // Try reading next item.
 			return (next != null);
-
 		}
 
 		@Override

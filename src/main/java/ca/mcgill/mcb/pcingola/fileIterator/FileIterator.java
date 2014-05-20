@@ -11,7 +11,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 /**
  * Opens a file and iterates over all objects <T> in the file
  * Note: The file is not loaded in memory, thus allows to iterate over very large files
- * 
+ *
  * @author pcingola
  */
 public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
@@ -185,6 +185,6 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 				+ ":'" + fileName + "'" //
 				+ ",autoClose:" + autoClose //
 				+ (hasSeek() ? ",pos:" + ((SeekableBufferedReader) reader).position() : "") //
-		;
+				;
 	}
 }
