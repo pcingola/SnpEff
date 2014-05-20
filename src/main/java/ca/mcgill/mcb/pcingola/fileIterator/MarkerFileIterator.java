@@ -13,7 +13,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Opens a Marker file and iterates over all markers
- * 
+ *
  * @author pcingola
  */
 public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<M> {
@@ -36,7 +36,6 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 		super(fileName);
 		this.inOffset = inOffset;
 		this.genome = (genome != null ? genome : new Genome("genome"));
-		initTabix(fileName);
 	}
 
 	public MarkerFileIterator(String fileName, int inOffset) {
@@ -44,7 +43,6 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 		this.inOffset = inOffset;
 		this.genome = new Genome("genome");
 		this.createChromos = true;
-		initTabix(fileName);
 	}
 
 	/**
@@ -74,21 +72,48 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 		return (next != null);
 	}
 
-	protected void initTabix(String fileName) {
+	/**
+	 * Initialize
+	 * @param fileName : Can be null (no file is opened)
+	 * @param inOffset
+	 */
+	@Override
+	protected void init(String fileName, int inOffset) {
+		line = null;
+		lineNum = 0;
+		next = null;
+		this.fileName = fileName;
+
+		if (fileName != null) {
+			if (!initTabix(fileName)) reader = Gpr.reader(fileName);
+		}
+	}
+
+	/**
+	 * Initialize tabix reader
+	 */
+	protected boolean initTabix(String fileName) {
 		try {
 			// Do we have a tabix file?
-			if (!Gpr.exists(fileName + ".tbi")) return; // No index, cannot open in 'tabix' mode
+			if (!Gpr.exists(fileName + ".tbi")) return false; // No index, cannot open in 'tabix' mode
+
+			// Close if already open
+			if (tabixReader != null) tabixReader.close();
 
 			// Open tabix reader
 			tabixReader = new TabixReader(fileName);
 			tabixIterator = tabixReader.iterator();
 
-			// We wo'nt be using the reader
-			reader.close();
-			reader = null;
+			// We won't be using the reader
+			if (reader != null) {
+				reader.close();
+				reader = null;
+			}
 		} catch (IOException e) {
 			throw new RuntimeException("Error opening tabix file '" + fileName + "'", e);
 		}
+
+		return true;
 	}
 
 	public boolean isIgnoreChromosomeErrors() {
@@ -110,7 +135,7 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	/**
 	 * Parse a string as a 'position'.
 	 * Note: It subtracts 'inOffset' so that all coordinates are zero-based
-	 * 
+	 *
 	 * @param posStr
 	 * @return
 	 */

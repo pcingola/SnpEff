@@ -6,14 +6,13 @@ import ca.mcgill.mcb.pcingola.vcf.VcfInfoType;
 
 /**
  * Given a table in a TXT file, try to guess the value types for each column
- * 
- * @author pcingola
  *
+ * @author pcingola
  */
 public class GuessTableTypes {
 
-	public static boolean debug = false;
-	public static int MIN_LINES = 10000; // Analyze at least this many lines (because some types might change)
+	public static boolean debug = true;
+	public static int MIN_LINES = 100 * 1000; // Analyze at least this many lines (because some types might change)
 
 	String fileName;
 	String headerPrefix = "#";
@@ -89,7 +88,7 @@ public class GuessTableTypes {
 				VcfInfoType valType = guessType(val);
 				if (type == null) type = valType;
 				else if (valType == null) continue; // We cannot infer this sub-field's data type. No problem
-				else if (type != valType) return null; // There is no consensus on the data type of each sub-field => null 
+				else if (type != valType) return null; // There is no consensus on the data type of each sub-field => null
 			}
 
 			return type;
@@ -125,7 +124,7 @@ public class GuessTableTypes {
 
 	/**
 	 * Find column names form header and guess data types from values
-	 * 
+	 *
 	 * @return true of OK, false if there was an error parsing header or data
 	 */
 	public boolean guessTypes() {
@@ -156,16 +155,16 @@ public class GuessTableTypes {
 			} else {
 				if (multipleValues == null) throw new RuntimeException("Cannot parse file '" + fileName + "'. Missing header?");
 
-				// Parse data
-				if (debug) System.err.println("Line: " + lfi.getLineNum());
-
 				boolean done = true;
 				String values[] = line.split(columnSeparator);
 				for (int i = 0; i < fieldNames.length; i++) {
 					// We don't know the type yet? Try to guess it
 					VcfInfoType type = guessType(values[i]);
 
-					if (debug && fieldNames[i].equals("SIFT_score")) System.err.println("\tfield[" + i + "]: '" + fieldNames[i] + "'\tfield_type: " + types[i] + "'\tvalue_type: " + type + "\tdata: '" + values[i] + "'");
+					if (fieldNames[i].equals("1000Gp1_AMR_AF") //
+							&& values[i] != null //
+					// && !values[i].equals(".") //
+					) System.err.println("line: " + lfi.getLineNum() + "\tfield[" + i + "]: '" + fieldNames[i] + "'\tfield_type: " + types[i] + "'\tvalue_type: " + type + "\tdata: '" + values[i] + "'");
 
 					if (types[i] == null) {
 						types[i] = type;

@@ -23,7 +23,7 @@ package net.sf.samtools.tabix;
    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE.
-*/
+ */
 
 /* Contact: Heng Li <hengli@broadinstitute.org> */
 
@@ -270,6 +270,17 @@ public class TabixReader implements Iterable<String> {
 	private int chr2tid(final String chr) {
 		if (mChr2tid.containsKey(chr)) return mChr2tid.get(chr);
 		else return -1;
+	}
+
+	public void close() {
+		if (mFp != null) {
+			try {
+				mFp.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			mFp = null;
+		}
 	}
 
 	private TIntv getIntv(final String s) {

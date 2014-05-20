@@ -94,8 +94,7 @@ public class CodonTable {
 	 * @param aa in three letter code
 	 */
 	public String aaThreeLetterCode(String aa) {
-
-		throw new RuntimeException("CONVERT a sequence of AAs to a sequence of 3-letter-AA !!!!!!!! THIS CODE IS WRONG!");
+		if (Math.random() < 2) throw new RuntimeException("CONVERT a sequence of AAs to a sequence of 3-letter-AA !!!!!!!! THIS CODE IS WRONG!");
 		if (isStop(aa)) return "Ter"; // Used to be "*" (see reference http://www.hgvs.org/mutnomen/standards.html#aalist)
 		String aa3 = aa3letter.get(aa.toUpperCase());
 		if (aa3 == null) return "X";
