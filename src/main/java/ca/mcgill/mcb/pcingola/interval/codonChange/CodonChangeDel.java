@@ -32,25 +32,26 @@ public class CodonChangeDel extends CodonChange {
 
 		if (seqChange.includes(exon)) {
 			/**
-			 * An exon has been entirely removed 
+			 * An exon has been entirely removed
 			 */
 			changeEffects.add(exon, EffectType.EXON_DELETED, "");
 			changeEffects.setCodons("", "", -1, -1);
 		} else if (netCdsChange.length() % CodonChange.CODON_SIZE != 0) {
 			/**
 			 * Length not multiple of CODON_SIZE => FRAME_SHIFT
-			 * 	E.g. : 
+			 * 	E.g. :
 			 * 		Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Delete 'AA' pos 0:	ACC CGG GAA ACC CGG GAA ACC CGG G
 			 * 		Delete 'AA' pos 1:	ACC CGG GAA ACC CGG GAA ACC CGG G
 			 * 		Delete 'AC' pos 2:	AAC CGG GAA ACC CGG GAA ACC CGG G
 			 */
+			codonsOld = codonsOld();
 			changeEffects.add(exon, EffectType.FRAME_SHIFT, "");
-			changeEffects.setCodons("", "", codonNum, codonIndex);
+			changeEffects.setCodons(codonsOld, "", codonNum, codonIndex);
 		} else if (codonIndex == 0) {
 			/**
 			 * Length multiple of CODON_SIZE and insertion happens at codon boundary => CODON_INSERTION
-			 * 	E.g. : 
+			 * 	E.g. :
 			 * 		Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Delete 'AAA' pos 0:	CCC GGG AAA CCC GGG AAA CCC GGG
 			 */
@@ -60,7 +61,7 @@ public class CodonChangeDel extends CodonChange {
 		} else {
 			/**
 			 * Length multiple of CODON_SIZE and insertion does not happen at codon boundary => CODON_CHANGE_PLUS_CODON_DELETION
-			 * 	E.g. : 
+			 * 	E.g. :
 			 * 		Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Delete 'AAC' pos 1:	ACC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Delete 'ACC' pos 2:	AAC GGG AAA CCC GGG AAA CCC GGG
@@ -69,12 +70,12 @@ public class CodonChangeDel extends CodonChange {
 			codonsNew = codonsNew();
 			if (codonsNew.isEmpty() || codonsOld.startsWith(codonsNew)) {
 				/**
-				 * Note: It might happen that the last codon of the exon was deleted. 
+				 * Note: It might happen that the last codon of the exon was deleted.
 				 *       In this case there is no 'CODON_CHANGE'
-				 * E.g. 
+				 * E.g.
 				 * 		Original:				AAA CCC GGG AAA CCC GGG AAA CCC GGG
 				 * 		Delete 'GGG' pos 24:	ACC CCC GGG AAA CCC GGG AAA CCC
-				 * 
+				 *
 				 * Note2: It may also be the case that the deleted bases are equal to the following ones.
 				 *  E.g.
 				 *  	Original:			ACG TCG TCC GGG AAA CCC GGG AAA CCC GGG
@@ -83,6 +84,8 @@ public class CodonChangeDel extends CodonChange {
 				changeEffects.add(exon, EffectType.CODON_DELETION, "");
 				changeEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 			} else {
+				codonsOld = codonsOld();
+				codonsNew = codonsNew();
 				changeEffects.add(exon, EffectType.CODON_CHANGE_PLUS_CODON_DELETION, "");
 				changeEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 			}
@@ -92,7 +95,7 @@ public class CodonChangeDel extends CodonChange {
 	}
 
 	/**
-	 * Get new (modified) codons 
+	 * Get new (modified) codons
 	 * @return
 	 */
 	@Override

@@ -724,15 +724,21 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	 * @return
 	 */
 	public String getHgvs() {
+		// Calculate protein level and dna level changes
 		HgsvProtein hgsvProtein = new HgsvProtein(this);
 		HgsvDna hgsvDna = new HgsvDna(this);
-
 		String hgvsProt = hgsvProtein.toString();
 		String hgvsDna = hgsvDna.toString();
 
-		return (hgvsProt != null ? hgsvProtein + "/" : "") //
-				+ (hgvsDna != null ? hgvsDna : "") //
-				;
+		// Build output
+		StringBuilder hgsv = new StringBuilder();
+		if (hgvsProt != null) hgsv.append(hgsvProtein);
+		if (hgvsDna != null) {
+			if (hgsv.length() > 0) hgsv.append('/');
+			hgsv.append(hgvsDna);
+		}
+
+		return hgsv.toString();
 	}
 
 	/**

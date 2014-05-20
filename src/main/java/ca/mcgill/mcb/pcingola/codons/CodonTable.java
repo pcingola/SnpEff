@@ -86,6 +86,13 @@ public class CodonTable {
 		return aas.toString();
 	}
 
+	public String aaThreeLetterCode(char aa) {
+		if (aa == '*') return "Ter"; // Termination codon. Used to be "*" (see reference http://www.hgvs.org/mutnomen/standards.html#aalist)
+		String aa3 = aa3letter.get(Character.toString(aa).toUpperCase());
+		if (aa3 == null) return "???";
+		return aa3;
+	}
+
 	/**
 	 * Convert 1-letter code to 3-letter code (amino acids)
 	 *
@@ -94,11 +101,18 @@ public class CodonTable {
 	 * @param aa in three letter code
 	 */
 	public String aaThreeLetterCode(String aa) {
-		if (Math.random() < 2) throw new RuntimeException("CONVERT a sequence of AAs to a sequence of 3-letter-AA !!!!!!!! THIS CODE IS WRONG!");
-		if (isStop(aa)) return "Ter"; // Used to be "*" (see reference http://www.hgvs.org/mutnomen/standards.html#aalist)
-		String aa3 = aa3letter.get(aa.toUpperCase());
-		if (aa3 == null) return "X";
-		return aa3;
+		// Single character?
+		if (aa.length() == 1) return aaThreeLetterCode(aa.charAt(0));
+
+		// Empty?
+		if (aa.isEmpty()) return "";
+
+		// Convert each character
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < aa.length(); i++)
+			sb.append(aaThreeLetterCode(aa.charAt(i)));
+
+		return sb.toString();
 	}
 
 	/**
