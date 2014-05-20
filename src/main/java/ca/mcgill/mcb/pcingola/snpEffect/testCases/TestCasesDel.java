@@ -28,7 +28,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 public class TestCasesDel extends TestCase {
 
 	boolean debug = false;
-	boolean forcePositive = false; // Force positive strand (used for debugging)
+	boolean forcePositive = debug || false; // Force positive strand (used for debugging)
 
 	Random rand;
 	Config config;
@@ -190,6 +190,7 @@ public class TestCasesDel extends TestCase {
 		//	- Create a random Insert at each position
 		//	- Calculate effect
 		for (int i = 0; i < N; i++) {
+
 			initSnpEffPredictor();
 			if (debug) System.out.println("DEL Test iteration: " + i + "\n" + transcript);
 			else System.out.println("DEL Test iteration: " + i + "\t" + transcript.cds());
@@ -247,6 +248,7 @@ public class TestCasesDel extends TestCase {
 					String aaOld = codonTable.aa(codonsOld);
 
 					String codonsNew = codonsNew(seqChange);
+					// String aaNew = codonTable.aa(codonsNew.length() < 3 ? "" : codonsNew);
 					String aaNew = codonTable.aa(codonsNew);
 
 					// Net change
@@ -261,7 +263,7 @@ public class TestCasesDel extends TestCase {
 					if (aaNew.isEmpty()) aaNew = "-";
 
 					if (seqChange.includes(exon)) effectExpected = "EXON_DELETED";
-					else if (netChange.length() % 3 != 0) effectExpected = "FRAME_SHIFT(-)";
+					else if (netChange.length() % 3 != 0) effectExpected = "FRAME_SHIFT(" + aaOld + "/" + "-" + ")";
 					else {
 						if (cdsCodonPos == 0) effectExpected = "CODON_DELETION(" + aaOld + "/-)";
 						else {
@@ -306,6 +308,8 @@ public class TestCasesDel extends TestCase {
 					boolean ok = false;
 					for (ChangeEffect effect : effects) {
 						String effStr = effect.effect(true, true, true, false);
+						if (debug) Gpr.debug("\tIteration: " + i + "\tPos: " + pos + "\tExpected: '" + effectExpected + "'\tEffect: '" + effStr + "'");
+
 						if (effectExpected.equals(effStr)) {
 							ok = true;
 							// Check codons
@@ -322,7 +326,8 @@ public class TestCasesDel extends TestCase {
 								if (debug //
 										|| !codonsOld.equals(effect.getCodonsOld().toUpperCase()) //
 										|| !codonsNew.equals(codonsNewEff)) {
-									System.out.println("\tIteration: " + i + "\tPos: " + pos //
+									System.out.println("\tIteration: " + i //
+											+ "\tPos: " + pos //
 											+ "\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
 											+ "\n\t\tSeqChange        : " + seqChange + "_strand" + (seqChangeStrand >= 0 ? "+" : "-") + "\tsize: " + seqChange.size() + "\tdelPlus: " + delPlus//
 											+ "\n\t\tNetCdsChange     : " + netChange //
@@ -341,7 +346,7 @@ public class TestCasesDel extends TestCase {
 							}
 						}
 					}
-					Assert.assertEquals(ok, true);
+					Assert.assertEquals(true, ok);
 				}
 			}
 		}

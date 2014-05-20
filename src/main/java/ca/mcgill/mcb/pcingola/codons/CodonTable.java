@@ -68,6 +68,8 @@ public class CodonTable {
 	 * @return
 	 */
 	public String aa(String codons) {
+		if (codons.isEmpty()) return "";
+
 		char bases[] = codons.toCharArray();
 		StringBuilder aas = new StringBuilder();
 

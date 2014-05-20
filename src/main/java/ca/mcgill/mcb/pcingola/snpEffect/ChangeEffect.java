@@ -404,7 +404,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	public String getAaChange() {
 		if (aaOld.isEmpty() && aaNew.isEmpty()) return "";
 		if (aaOld.equals(aaNew)) return aaNew;
-		return aaOld + "/" + aaNew;
+		return (aaOld.isEmpty() ? "-" : aaOld) + "/" + (aaNew.isEmpty() ? "-" : aaNew);
 	}
 
 	/**
@@ -725,8 +725,8 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	 */
 	public String getHgvs() {
 		// Calculate protein level and dna level changes
-		HgsvProtein hgsvProtein = new HgsvProtein(this);
-		HgsvDna hgsvDna = new HgsvDna(this);
+		HgvsProtein hgsvProtein = new HgvsProtein(this);
+		HgvsDna hgsvDna = new HgvsDna(this);
 		String hgvsProt = hgsvProtein.toString();
 		String hgvsDna = hgsvDna.toString();
 
@@ -781,7 +781,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public boolean hasError() {
@@ -857,7 +857,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				|| (effectType == EffectType.SPLICE_SITE_REGION) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH_U12) //
-				;
+		;
 	}
 
 	public boolean isStartGained() {
@@ -873,7 +873,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				|| (effectType == EffectType.UTR_3_PRIME) //
 				|| (effectType == EffectType.UTR_5_DELETED) //
 				|| (effectType == EffectType.UTR_3_DELETED) //
-				;
+		;
 	}
 
 	public void set(Marker marker, EffectType effectType, String message) {
@@ -892,10 +892,6 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	public EffectType setCodons(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
 		EffectType newEffectType = null;
 
-		// Replace empty by "-"
-		if (codonsOld.isEmpty()) codonsOld = "-";
-		if (codonsNew.isEmpty()) codonsNew = "-";
-
 		this.codonsOld = codonsOld;
 		this.codonsNew = codonsNew;
 		this.codonNum = codonNum;
@@ -905,16 +901,16 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		boolean indel = codonsOld.length() != codonsNew.length();
 
 		// Calculate amino acids
-		if (codonsOld.equals("-")) {
-			aaOld = "-";
+		if (codonsOld.isEmpty()) {
+			aaOld = "";
 			indel = true;
 		} else {
 			aaOld = codonTable.aa(codonsOld);
 			codonDegeneracy = codonTable.degenerate(codonsOld, codonIndex); // Calculate codon degeneracy
 		}
 
-		if (codonsNew.equals("-")) {
-			aaNew = "-";
+		if (codonsNew.isEmpty()) {
+			aaNew = "";
 			indel = true;
 		} else aaNew = codonTable.aa(codonsNew);
 
@@ -1074,7 +1070,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-				;
+		;
 	}
 
 	/**

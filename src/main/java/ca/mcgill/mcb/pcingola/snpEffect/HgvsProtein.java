@@ -9,13 +9,13 @@ import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
  * References: http://www.hgvs.org/mutnomen/recs.html
  */
 
-public class HgsvProtein extends Hgsv {
+public class HgvsProtein extends Hgvs {
 
 	int codonNum, aaPos;
 	String aaNew3, aaOld3;
 	EffectType effectType;
 
-	public HgsvProtein(ChangeEffect changeEffect) {
+	public HgvsProtein(ChangeEffect changeEffect) {
 		super(changeEffect);
 
 		codonNum = changeEffect.getCodonNum();
@@ -130,6 +130,18 @@ public class HgsvProtein extends Hgsv {
 			return p + "_" + pNext;
 
 		case DEL:
+			p = pos(codonNum);
+			if (p == null) return null;
+
+			String aaOld = changeEffect.getAaOld();
+			String aaNew = changeEffect.getAaNew();
+			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
+			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
+			int end = codonNum + (aaOld.length() - aaNew.length());
+			pNext = pos(end);
+			if (pNext == null) return null;
+
+			return p + "_" + pNext;
 
 		default:
 			return null;

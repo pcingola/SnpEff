@@ -26,9 +26,9 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  * 		- for all descriptions the most 3' position possible is arbitrarily assigned to have been changed (see Exception)
  */
 
-public class HgsvDna extends Hgsv {
+public class HgvsDna extends Hgvs {
 
-	public HgsvDna(ChangeEffect changeEffect) {
+	public HgvsDna(ChangeEffect changeEffect) {
 		super(changeEffect);
 	}
 
@@ -53,7 +53,9 @@ public class HgsvDna extends Hgsv {
 
 		case INS:
 		case DEL:
-			return seqChange.netChange(1);
+			String netChange = seqChange.netChange(1);
+			if (marker == null || marker.isStrandPlus()) return netChange;
+			return GprSeq.wc(netChange);
 
 		default:
 			return null;
@@ -73,10 +75,19 @@ public class HgsvDna extends Hgsv {
 				return posIntron(seqChange.getStart());
 
 			case INS:
+				String p = posIntron(seqChange.getStart());
+				if (p == null) return null;
 				int next = seqChange.getStart() + (marker.isStrandPlus() ? 1 : -1);
-				return posIntron(seqChange.getStart()) + "_" + posIntron(next);
+				String pNext = posIntron(next);
+				if (pNext == null) return null;
+				return p + "_" + pNext;
 
 			case DEL:
+				p = posIntron(seqChange.getStart());
+				if (p == null) return null;
+				pNext = posIntron(seqChange.getEnd());
+				if (pNext == null) return null;
+				return p + "_" + pNext;
 
 			default:
 				return null;
@@ -94,8 +105,16 @@ public class HgsvDna extends Hgsv {
 			return "" + seqPos;
 
 		case INS:
-		case DEL:
 			return seqPos + "_" + (seqPos + 1);
+
+		case DEL:
+			String aaOld = changeEffect.getAaOld();
+			String aaNew = changeEffect.getAaNew();
+			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
+			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
+
+			int end = seqPos + (aaOld.length() - aaNew.length());
+			return seqPos + "_" + end;
 
 		default:
 			return null;

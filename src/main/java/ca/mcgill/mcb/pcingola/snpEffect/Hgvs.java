@@ -11,14 +11,14 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
  *
  * @author pcingola
  */
-public class Hgsv {
+public class Hgvs {
 
 	protected ChangeEffect changeEffect;
 	SeqChange seqChange;
 	Marker marker;
 	Transcript tr;
 
-	public Hgsv(ChangeEffect changeEffect) {
+	public Hgvs(ChangeEffect changeEffect) {
 		this.changeEffect = changeEffect;
 		seqChange = changeEffect.getSeqChange();
 		marker = changeEffect.getMarker();
