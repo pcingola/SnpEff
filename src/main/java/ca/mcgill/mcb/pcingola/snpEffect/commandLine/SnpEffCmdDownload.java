@@ -69,33 +69,6 @@ public class SnpEffCmdDownload extends SnpEff {
 		return f[f.length - 1];
 	}
 
-	//	/**
-	//	 * Build the URL for downloading a database file
-	//	 * 
-	//	 * Format  : DatabaseRepository / v VERSION / snpEff_v VERSION _ genomeVersion .zip
-	//	 * Example : http://downloads.sourceforge.net/project/snpeff/databases/v2_0_3/snpEff_v2_0_3_EF3.64.zip
-	//	 * 
-	//	 * @param genomeVer
-	//	 * @return
-	//	 */
-	//	private URL buildUrl() {
-	//		try {
-	//			// Replace '.' by '_' 
-	//			version = version.replace('.', '_');
-	//
-	//			String urlRoot = config.getDatabaseRepository();
-	//
-	//			StringBuilder urlsb = new StringBuilder();
-	//			urlsb.append(urlRoot);
-	//			if (urlsb.charAt(urlRoot.length() - 1) != '/') urlsb.append("/");
-	//			urlsb.append("v" + version + "/snpEff_v" + version + "_" + genomeVer + ".zip");
-	//
-	//			return new URL(urlsb.toString());
-	//		} catch (MalformedURLException e) {
-	//			return null;
-	//		}
-	//	}
-
 	/**
 	 * Download a file
 	 * @param url
@@ -144,10 +117,11 @@ public class SnpEffCmdDownload extends SnpEff {
 
 				// Show every MB
 				if ((total - lastShown) > (1024 * 1024)) {
-					if (verbose) Timer.showStdErr("Downloaded " + total + " bytes");
+					if (verbose) System.err.print(".");
 					lastShown = total;
 				}
 			}
+			if (verbose) System.err.println("");
 
 			// Close streams
 			is.close();
