@@ -6,7 +6,7 @@ import java.util.HashSet;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
@@ -141,7 +141,7 @@ public class LossOfFunction {
 	 */
 	protected boolean isLof(ChangeEffect changeEffect) {
 		// Not a sequence change? => Not LOF
-		if ((changeEffect.getSeqChange() != null) && (!changeEffect.getSeqChange().isChange())) return false;
+		if ((changeEffect.getSeqChange() != null) && (!changeEffect.getSeqChange().isVariant())) return false;
 
 		// Is this change affecting a protein coding gene?
 		Gene gene = changeEffect.getGene();
@@ -221,7 +221,7 @@ public class LossOfFunction {
 		// 		1) First (coding) exon deleted
 		//---
 		if (changeEffect.getEffectType() == EffectType.EXON_DELETED) {
-			SeqChange seqChange = changeEffect.getSeqChange();
+			Variant seqChange = changeEffect.getSeqChange();
 			if (seqChange == null) throw new RuntimeException("Cannot retrieve 'seqChange' from EXON_DELETED effect!");
 			if (seqChange.includes(tr.getFirstCodingExon())) return true;
 		}
@@ -232,7 +232,7 @@ public class LossOfFunction {
 		//---
 
 		// Find coding part of the transcript (i.e. no UTRs)
-		SeqChange seqChange = changeEffect.getSeqChange();
+		Variant seqChange = changeEffect.getSeqChange();
 		int cdsStart = tr.isStrandPlus() ? tr.getCdsStart() : tr.getCdsEnd();
 		int cdsEnd = tr.isStrandPlus() ? tr.getCdsEnd() : tr.getCdsStart();
 		Marker coding = new Marker(seqChange.getChromosome(), cdsStart, cdsEnd, 1, "");
@@ -290,7 +290,7 @@ public class LossOfFunction {
 		if (lastNmdPos < 0) return false; // No valid 'lastNmdPos'? => There is no NMD event.
 
 		// Does this change affect the region 'before' this last NMD position? => It is assumed to be NMD
-		SeqChange seqChange = changeEffect.getSeqChange();
+		Variant seqChange = changeEffect.getSeqChange();
 
 		boolean nmd;
 		if (tr.isStrandPlus()) nmd = seqChange.getStart() <= lastNmdPos;

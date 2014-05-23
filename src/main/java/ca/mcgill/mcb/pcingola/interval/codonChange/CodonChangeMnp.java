@@ -1,7 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
@@ -16,7 +16,7 @@ public class CodonChangeMnp extends CodonChange {
 	int cdsStart;
 	int cdsEnd;
 
-	public CodonChangeMnp(SeqChange seqChange, Transcript transcript, ChangeEffects changeEffects) {
+	public CodonChangeMnp(Variant seqChange, Transcript transcript, ChangeEffects changeEffects) {
 		super(seqChange, transcript, changeEffects);
 		returnNow = false;
 		requireNetCdsChange = true;

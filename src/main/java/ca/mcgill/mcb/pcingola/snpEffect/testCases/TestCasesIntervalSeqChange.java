@@ -9,7 +9,7 @@ import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Intron;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
@@ -104,7 +104,7 @@ public class TestCasesIntervalSeqChange extends TestCase {
 				int end = Math.min(pos + intLen, chromosome.getEnd());
 
 				// Create a SeqChange
-				SeqChange seqChange = new SeqChange(chromosome, start, end, "");
+				Variant seqChange = new Variant(chromosome, start, end, "");
 
 				// Sanity checks
 				Assert.assertEquals(true, seqChange.isInterval()); // Is it an interval?

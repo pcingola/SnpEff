@@ -50,7 +50,7 @@ public class Custom extends Marker implements Iterable<KeyValue<String, String>>
 	}
 
 	@Override
-	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffecs) {
+	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffecs) {
 		if (!intersects(seqChange)) return false; // Sanity check
 		changeEffecs.add(this, EffectType.CUSTOM, label);
 		return true;

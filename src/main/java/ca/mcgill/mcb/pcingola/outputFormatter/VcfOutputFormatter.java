@@ -14,7 +14,7 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.FunctionalClass;
@@ -245,7 +245,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 				//---
 				if (useOicr && (tr != null)) {
 					StringBuilder sb = new StringBuilder();
-					SeqChange seqChange = changeEffect.getSeqChange();
+					Variant seqChange = changeEffect.getSeqChange();
 
 					// Get cDNA position
 					int pos = tr.isStrandMinus() ? seqChange.getStart() : seqChange.getEnd(); // First base in cDNA

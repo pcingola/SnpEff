@@ -11,8 +11,8 @@ import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfRefAltAlign;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
-import ca.mcgill.mcb.pcingola.interval.SeqChange.ChangeType;
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect.FormatVersion;
@@ -51,7 +51,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	protected HashMap<String, String> info;
 	protected String format;
 	protected ArrayList<VcfGenotype> vcfGenotypes = null;
-	protected ChangeType changeType;
+	protected VariantType changeType;
 	protected String genotypeFields[]; // Raw fields from VCF file
 	protected String genotypeFieldsStr; // Raw fields from VCF file (one string, tab separated)
 
@@ -247,12 +247,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
-	 * Create a seqChange 
+	 * Create a variant
 	 * @return
 	 */
-	SeqChange createSeqChange(Chromosome chromo, int start, String reference, String alt, int strand, String id, double quality, int coverage) {
+	Variant createVariant(Chromosome chromo, int start, String reference, String alt, String id) {
 		// No change?
-		if (alt == null || alt.isEmpty() || alt.equals(reference)) return new SeqChange(chromo, start, reference, reference, strand, id, quality, coverage);
+		if (alt == null || alt.isEmpty() || alt.equals(reference)) return new Variant(chromo, start, reference, reference, id);
 
 		alt = alt.toUpperCase();
 
@@ -277,7 +277,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			String ch = "-" + new String(change);
 
 			// Create SeqChange
-			return new SeqChange(chromo, start, reference, ch, strand, id, quality, coverage);
+			return new Variant(chromo, start, reference, ch, id);
 		}
 
 		// Case: SNP, MNP
@@ -285,7 +285,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// 20     3 .         TC     AT      .   PASS  DP=100
 		if (reference.length() == alt.length()) {
 			// SNPs
-			if (reference.length() == 1) new SeqChange(chromo, start, reference, alt, strand, id, quality, coverage);
+			if (reference.length() == 1) new Variant(chromo, start, reference, alt, id);
 
 			// MNPs
 			// Sometimes the first bases are the same and we can trim them
@@ -301,7 +301,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 			String newRef = reference.substring(startDiff, endDiff + 1);
 			String newAlt = alt.substring(startDiff, endDiff + 1);
-			return new SeqChange(chromo, start + startDiff, newRef, newAlt, strand, id, quality, coverage);
+			return new Variant(chromo, start + startDiff, newRef, newAlt, id);
 		}
 
 		//---
@@ -319,7 +319,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			String ref = "*";
 			String ch = align.getAlignment();
 			if (!ch.startsWith("-")) throw new RuntimeException("Deletion '" + ch + "' does not start with '-'. This should never happen!");
-			return new SeqChange(chromo, start + startDiff, ref, ch, strand, id, quality, coverage);
+			return new Variant(chromo, start + startDiff, ref, ch, id);
 
 		case INS:
 			// Case: Insertion of A { tC ; tCA } tC is the reference allele
@@ -327,13 +327,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			ch = align.getAlignment();
 			ref = "*";
 			if (!ch.startsWith("+")) throw new RuntimeException("Insertion '" + ch + "' does not start with '+'. This should never happen!");
-			return new SeqChange(chromo, start + startDiff, ref, ch, strand, id, quality, coverage);
+			return new Variant(chromo, start + startDiff, ref, ch, id);
 
 		case MIXED:
 			// Case: Mixed variant (substitution)
 			reference = reference.substring(startDiff);
 			alt = alt.substring(startDiff);
-			return new SeqChange(chromo, start + startDiff, reference, "=" + alt, strand, id, quality, coverage);
+			return new Variant(chromo, start + startDiff, reference, "=" + alt, id);
 
 		default:
 			// Other change type?
@@ -358,7 +358,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return altsStr.trim().replace(' ', ',');
 	}
 
-	public ChangeType getChangeType() {
+	public VariantType getChangeType() {
 		return changeType;
 	}
 
@@ -602,7 +602,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public boolean isDel() {
-		return (changeType == ChangeType.DEL);
+		return (changeType == VariantType.DEL);
 	}
 
 	public boolean isFilterPass() {
@@ -610,23 +610,23 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public boolean isInDel() {
-		return (changeType == ChangeType.INS) || (changeType == ChangeType.DEL);
+		return (changeType == VariantType.INS) || (changeType == VariantType.DEL);
 	}
 
 	public boolean isIns() {
-		return (changeType == ChangeType.INS);
+		return (changeType == VariantType.INS);
 	}
 
 	public boolean isInterval() {
-		return (changeType == ChangeType.Interval);
+		return (changeType == VariantType.Interval);
 	}
 
 	public boolean isMixedInDel() {
-		return changeType == ChangeType.MIXED;
+		return changeType == VariantType.MIXED;
 	}
 
 	public boolean isMnp() {
-		return changeType == ChangeType.MNP;
+		return changeType == VariantType.MNP;
 	}
 
 	/**
@@ -669,7 +669,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public boolean isSnp() {
-		return changeType == ChangeType.SNP;
+		return changeType == VariantType.SNP;
 	}
 
 	/**
@@ -877,11 +877,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		// Infer change type
 		if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
-			if (ref.length() == 1) changeType = ChangeType.SNP;
-			else changeType = ChangeType.MNP;
-		} else if (ref.length() > minAltLen) changeType = ChangeType.DEL;
-		else if (ref.length() < maxAltLen) changeType = ChangeType.INS;
-		else changeType = ChangeType.MIXED;
+			if (ref.length() == 1) changeType = VariantType.SNP;
+			else changeType = VariantType.MNP;
+		} else if (ref.length() > minAltLen) changeType = VariantType.DEL;
+		else if (ref.length() < maxAltLen) changeType = VariantType.INS;
+		else changeType = VariantType.MIXED;
 	}
 
 	public List<VcfEffect> parseEffects() {
@@ -1033,32 +1033,32 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
-	 * Create a list of seqChanges from this VcfEntry
+	 * Create a list of variants from this VcfEntry
 	 * @return
 	 */
-	public List<SeqChange> seqChanges() {
-		LinkedList<SeqChange> list = new LinkedList<SeqChange>();
+	public List<Variant> variants() {
+		LinkedList<Variant> list = new LinkedList<Variant>();
 
-		// Coverage
-		int coverage = Gpr.parseIntSafe(getInfo("DP"));
-
-		// Is it heterozygous, homozygous or undefined?
-		Boolean isHetero = calcHetero();
+		//		// Coverage
+		//		int coverage = Gpr.parseIntSafe(getInfo("DP"));
+		//
+		//		// Is it heterozygous, homozygous or undefined?
+		//		Boolean isHetero = calcHetero();
 
 		// Create one SeqChange for each ALT
 		Chromosome chr = (Chromosome) parent;
 		int genotypeNumber = 1;
 		if (alts == null) {
 			// No ALTs, then it's not a change
-			SeqChange seqChange = createSeqChange(chr, start, ref, null, strand, id, getQuality(), coverage);
-			seqChange.setGenotype(Integer.toString(genotypeNumber));
-			list.add(seqChange);
+			Variant variant = createVariant(chr, start, ref, null, id);
+			variant.setGenotype(Integer.toString(genotypeNumber));
+			list.add(variant);
 		} else {
 			for (String alt : alts) {
-				SeqChange seqChange = createSeqChange(chr, start, ref, alt, strand, id, getQuality(), coverage);
-				seqChange.setHeterozygous(isHetero);
-				seqChange.setGenotype(Integer.toString(genotypeNumber));
-				list.add(seqChange);
+				Variant variant = createVariant(chr, start, ref, alt, id);
+				//				variant.setHeterozygous(isHetero);
+				variant.setGenotype(Integer.toString(genotypeNumber));
+				list.add(variant);
 				genotypeNumber++;
 			}
 		}

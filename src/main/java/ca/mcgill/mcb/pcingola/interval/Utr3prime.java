@@ -1,6 +1,6 @@
 package ca.mcgill.mcb.pcingola.interval;
 
-import ca.mcgill.mcb.pcingola.interval.SeqChange.ChangeType;
+import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
@@ -35,10 +35,10 @@ public class Utr3prime extends Utr {
 	}
 
 	@Override
-	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects) {
 		if (!intersects(seqChange)) return false;
 
-		if (seqChange.includes(this) && (seqChange.getChangeType() == ChangeType.DEL)) {
+		if (seqChange.includes(this) && (seqChange.getChangeType() == VariantType.DEL)) {
 			changeEffects.add(this, EffectType.UTR_3_DELETED, ""); // A UTR was removed entirely
 			return true;
 		}
@@ -59,7 +59,7 @@ public class Utr3prime extends Utr {
 	 * @return
 	 */
 	@Override
-	int utrDistance(SeqChange seqChange, Transcript tr) {
+	int utrDistance(Variant seqChange, Transcript tr) {
 		int cdsEnd = tr.getCdsEnd();
 		if (cdsEnd < 0) return -1;
 

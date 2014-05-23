@@ -8,7 +8,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -47,7 +47,7 @@ public class TestCasesVcf extends TestCase {
 		for (VcfEntry ve : vcf) {
 			StringBuilder sb = new StringBuilder();
 
-			for (SeqChange sc : ve.seqChanges()) {
+			for (Variant sc : ve.variants()) {
 				if (sb.length() > 0) sb.append(",");
 				sb.append(sc.getReference() + "/" + sc.getChange());
 			}
@@ -119,7 +119,7 @@ public class TestCasesVcf extends TestCase {
 		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
 		vcf.setCreateChromos(true);
 		for (VcfEntry vcfEntry : vcf) {
-			for (SeqChange seqChange : vcfEntry.seqChanges()) {
+			for (Variant seqChange : vcfEntry.variants()) {
 				System.out.println(seqChange);
 				String seqChangeStr = "chr" + seqChange.getChromosomeName() + ":" + seqChange.getStart() + "_" + seqChange.getReference() + "/" + seqChange.getChange();
 				Assert.assertEquals(seqChange.getId(), seqChangeStr);
@@ -127,55 +127,55 @@ public class TestCasesVcf extends TestCase {
 		}
 	}
 
-	/**
-	 * All variants are heterozygous
-	 */
-	public void test_02_hetero() {
-		initSnpEffPredictor("testCase");
+	//	/**
+	//	 * All variants are heterozygous
+	//	 */
+	//	public void test_02_hetero() {
+	//		initSnpEffPredictor("testCase");
+	//
+	//		String fileName = "./tests/vcf_hetero.vcf";
+	//		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
+	//		vcf.setCreateChromos(true);
+	//		for (VcfEntry vcfEntry : vcf) {
+	//			for (Variant seqChange : vcfEntry.seqChanges()) {
+	//				if (!seqChange.isHeterozygous()) throw new RuntimeException("All VCF entries in this file should be heterozygous!\n\t" + seqChange);
+	//			}
+	//		}
+	//	}
 
-		String fileName = "./tests/vcf_hetero.vcf";
-		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
-		vcf.setCreateChromos(true);
-		for (VcfEntry vcfEntry : vcf) {
-			for (SeqChange seqChange : vcfEntry.seqChanges()) {
-				if (!seqChange.isHeterozygous()) throw new RuntimeException("All VCF entries in this file should be heterozygous!\n\t" + seqChange);
-			}
-		}
-	}
+	//	/**
+	//	 * All variants are neider homozugous nor heterozygous
+	//	 */
+	//	public void test_02_homhet() {
+	//		initSnpEffPredictor("testCase");
+	//
+	//		String fileName = "./tests/vcf_homhet.vcf";
+	//		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
+	//		vcf.setCreateChromos(true);
+	//		for (VcfEntry vcfEntry : vcf) {
+	//			for (Variant seqChange : vcfEntry.seqChanges()) {
+	//				if (seqChange.isHomozygous()) throw new RuntimeException("NO multi-sample VCF entry should be homozygous!\n\t" + seqChange);
+	//				if (seqChange.isHeterozygous()) throw new RuntimeException("NO multi-sample VCF entry should be heterozygous!\n\t" + seqChange);
+	//			}
+	//		}
+	//	}
 
-	/**
-	 * All variants are neider homozugous nor heterozygous
-	 */
-	public void test_02_homhet() {
-		initSnpEffPredictor("testCase");
-
-		String fileName = "./tests/vcf_homhet.vcf";
-		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
-		vcf.setCreateChromos(true);
-		for (VcfEntry vcfEntry : vcf) {
-			for (SeqChange seqChange : vcfEntry.seqChanges()) {
-				if (seqChange.isHomozygous()) throw new RuntimeException("NO multi-sample VCF entry should be homozygous!\n\t" + seqChange);
-				if (seqChange.isHeterozygous()) throw new RuntimeException("NO multi-sample VCF entry should be heterozygous!\n\t" + seqChange);
-			}
-		}
-	}
-
-	/**
-	 * All variants are homozygous
-	 */
-	public void test_03_homo() {
-		initSnpEffPredictor("testCase");
-
-		String fileName = "./tests/vcf_homo.vcf";
-		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
-		vcf.setCreateChromos(true);
-		for (VcfEntry vcfEntry : vcf) {
-			for (SeqChange seqChange : vcfEntry.seqChanges()) {
-				Gpr.debug(seqChange.isHeterozygous() + "\t" + seqChange);
-				if (!seqChange.isHomozygous()) throw new RuntimeException("All VCF entries in this file should be homozygous!\n\t" + seqChange);
-			}
-		}
-	}
+	//	/**
+	//	 * All variants are homozygous
+	//	 */
+	//	public void test_03_homo() {
+	//		initSnpEffPredictor("testCase");
+	//
+	//		String fileName = "./tests/vcf_homo.vcf";
+	//		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
+	//		vcf.setCreateChromos(true);
+	//		for (VcfEntry vcfEntry : vcf) {
+	//			for (Variant seqChange : vcfEntry.seqChanges()) {
+	//				Gpr.debug(seqChange.isHeterozygous() + "\t" + seqChange);
+	//				if (!seqChange.isHomozygous()) throw new RuntimeException("All VCF entries in this file should be homozygous!\n\t" + seqChange);
+	//			}
+	//		}
+	//	}
 
 	/**
 	 * Deletions
@@ -187,7 +187,7 @@ public class TestCasesVcf extends TestCase {
 		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
 		vcf.setCreateChromos(true);
 		for (VcfEntry vcfEntry : vcf) {
-			for (SeqChange seqChange : vcfEntry.seqChanges()) {
+			for (Variant seqChange : vcfEntry.variants()) {
 				if (!seqChange.isDel()) throw new RuntimeException("All VCF entries in this file should be deletions!\n\t" + seqChange);
 			}
 		}
@@ -241,7 +241,7 @@ public class TestCasesVcf extends TestCase {
 			System.out.println(vcfEntry);
 
 			// Compare seqChanges to what we expect
-			List<SeqChange> seqChanges = vcfEntry.seqChanges();
+			List<Variant> seqChanges = vcfEntry.variants();
 
 			Assert.assertEquals("chr1:223921_GACCACTGGAA/=ACATCCATACAT", seqChanges.get(0).toString()); // FIXME: What the hell do I actually expect here?			
 			Assert.assertEquals("chr1:223919_TC/AT", seqChanges.get(1).toString());
@@ -289,7 +289,7 @@ public class TestCasesVcf extends TestCase {
 			System.out.println(vcfEntry);
 
 			boolean hasDel = false;
-			for (SeqChange sc : vcfEntry.seqChanges()) {
+			for (Variant sc : vcfEntry.variants()) {
 				hasDel |= sc.isDel();
 				System.out.println("\t" + sc + "\t" + sc.isDel());
 			}
@@ -406,7 +406,7 @@ public class TestCasesVcf extends TestCase {
 		for (VcfEntry ve : vcf) {
 			StringBuilder seqChangeResult = new StringBuilder();
 
-			for (SeqChange sc : ve.seqChanges()) {
+			for (Variant sc : ve.variants()) {
 				if (seqChangeResult.length() > 0) seqChangeResult.append(",");
 				seqChangeResult.append(sc.getReference() + "/" + sc.getChange());
 			}

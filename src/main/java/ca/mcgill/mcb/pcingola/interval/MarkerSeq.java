@@ -36,7 +36,7 @@ public class MarkerSeq extends Marker {
 	 * 
 	 */
 	@Override
-	public MarkerSeq apply(SeqChange seqChange) {
+	public MarkerSeq apply(Variant seqChange) {
 		// Create new exon with updated coordinates
 		MarkerSeq ex = (MarkerSeq) super.apply(seqChange);
 
@@ -77,7 +77,7 @@ public class MarkerSeq extends Marker {
 	 * @param seqChange
 	 * @param ex
 	 */
-	protected void applyDel(SeqChange seqChange, MarkerSeq ex) {
+	protected void applyDel(Variant seqChange, MarkerSeq ex) {
 		// Update sequence
 		if ((sequence != null) && (!sequence.isEmpty())) {
 
@@ -103,7 +103,7 @@ public class MarkerSeq extends Marker {
 	 * @param seqChange
 	 * @param ex
 	 */
-	protected void applyIns(SeqChange seqChange, MarkerSeq ex) {
+	protected void applyIns(Variant seqChange, MarkerSeq ex) {
 		// Update sequence
 		if ((sequence != null) && (!sequence.isEmpty())) {
 
@@ -126,7 +126,7 @@ public class MarkerSeq extends Marker {
 	 * @param seqChange
 	 * @param ex
 	 */
-	protected void applyMnp(SeqChange seqChange, MarkerSeq ex) {
+	protected void applyMnp(Variant seqChange, MarkerSeq ex) {
 		// Update sequence
 		if ((sequence != null) && (!sequence.isEmpty())) {
 			// Get sequence in positive strand direction
@@ -153,7 +153,7 @@ public class MarkerSeq extends Marker {
 	 * @param seqChange
 	 * @param ex
 	 */
-	protected void applySnp(SeqChange seqChange, MarkerSeq ex) {
+	protected void applySnp(Variant seqChange, MarkerSeq ex) {
 		// Update sequence
 		if ((sequence != null) && (!sequence.isEmpty())) {
 			// Get sequence in positive strand direction

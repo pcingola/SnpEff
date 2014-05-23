@@ -21,7 +21,7 @@ public class MicroRnaBindingSite extends Marker {
 	}
 
 	@Override
-	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects) {
 		if (!intersects(seqChange)) return false; // Sanity check
 		changeEffects.add(this, EffectType.MICRO_RNA, "" + pValue);
 		return true;

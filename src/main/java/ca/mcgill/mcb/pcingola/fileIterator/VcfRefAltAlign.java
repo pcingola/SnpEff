@@ -1,6 +1,6 @@
 package ca.mcgill.mcb.pcingola.fileIterator;
 
-import ca.mcgill.mcb.pcingola.interval.SeqChange.ChangeType;
+import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 
 /**
  * Needleman-Wunsch (global sequence alignment) algorithm for sequence  alignment (short strings, since it's not memory optimized)
@@ -12,7 +12,7 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 	public static final int MAX_SIZE = 10000; // 1024 * 1024;
 
 	String stringA, stringB;
-	ChangeType changeType;
+	VariantType changeType;
 
 	public VcfRefAltAlign(String a, String b) {
 		super(a, b);
@@ -34,12 +34,12 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 
 					if (stringB.length() > stringA.length()) {
 						if (alignment.startsWith("-")) {
-							changeType = ChangeType.DEL;
+							changeType = VariantType.DEL;
 							return alignment;
 						}
 					} else if (stringB.length() < stringA.length()) {
 						if (alignment.startsWith("+")) {
-							changeType = ChangeType.INS;
+							changeType = VariantType.INS;
 							return alignment;
 						}
 					}
@@ -55,11 +55,11 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 		return alignment;
 	}
 
-	public ChangeType getChangeType() {
+	public VariantType getChangeType() {
 		return changeType;
 	}
 
-	public void setChangeType(ChangeType changeType) {
+	public void setChangeType(VariantType changeType) {
 		this.changeType = changeType;
 	}
 
@@ -92,16 +92,16 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 			offset = 0;
 			if (stringA.equals(stringB)) {
 				// No change
-				changeType = ChangeType.Interval;
+				changeType = VariantType.Interval;
 				return true;
 			} else if (stringA.length() == 1) {
 				// SNP
-				changeType = ChangeType.SNP;
+				changeType = VariantType.SNP;
 				return true;
 			} else {
 				// MNP
 				offset = minCommonBase();
-				changeType = ChangeType.MNP;
+				changeType = VariantType.MNP;
 				return true;
 			}
 		}
@@ -113,25 +113,25 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 			// A has a deletion respect to B
 			int idx = stringB.indexOf(stringA);
 			if (idx >= 0) {
-				changeType = ChangeType.DEL;
+				changeType = VariantType.DEL;
 				offset = stringA.length();
 				alignment = "-" + stringB.substring(stringA.length(), stringB.length());
 				return true;
 			}
 
-			changeType = ChangeType.MIXED;
+			changeType = VariantType.MIXED;
 			return true;
 		} else if (stringA.length() > stringB.length()) {
 			// A has an insertion respect to B
 			int idx = stringA.indexOf(stringB);
 			if (idx >= 0) {
-				changeType = ChangeType.INS;
+				changeType = VariantType.INS;
 				offset = stringB.length();
 				alignment = "+" + stringA.substring(stringB.length(), stringA.length());
 				return true;
 			}
 
-			changeType = ChangeType.MIXED;
+			changeType = VariantType.MIXED;
 			return true;
 		}
 
@@ -157,7 +157,7 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 	 * If it is not a trivial alignment, then it's a mixed variant (a.k.a subtitution)
 	 */
 	void substitution() {
-		changeType = ChangeType.MIXED;
+		changeType = VariantType.MIXED;
 
 		// Offset
 		// Note: There must be a difference, otherwise this would be an InDel, captured in 'simpleAlign() method

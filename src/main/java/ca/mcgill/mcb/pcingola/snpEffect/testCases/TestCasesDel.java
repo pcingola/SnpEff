@@ -9,8 +9,8 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
@@ -50,7 +50,7 @@ public class TestCasesDel extends TestCase {
 	 * @param seqChange
 	 * @return
 	 */
-	String codonsNew(SeqChange seqChange) {
+	String codonsNew(Variant seqChange) {
 		int cdsBaseNum = 0;
 		String codonsNew = "";
 		char currCodon[] = new char[3];
@@ -93,7 +93,7 @@ public class TestCasesDel extends TestCase {
 	 * @param seqChange
 	 * @return
 	 */
-	String codonsOld(SeqChange seqChange) {
+	String codonsOld(Variant seqChange) {
 		int cdsBaseNum = 0;
 		String codonsOld = "";
 		char currCodon[] = new char[3];
@@ -229,11 +229,7 @@ public class TestCasesDel extends TestCase {
 					int cdsCodonPos = cdsBaseNum % 3;
 
 					// Create a SeqChange
-					int seqChangeStrand = rand.nextBoolean() ? +1 : -1;
-					if (forcePositive) seqChangeStrand = 1; // Force positive strand (for debugging)
-					if (seqChangeStrand < 0) del = GprSeq.reverseWc(delPlus);
-
-					SeqChange seqChange = new SeqChange(chromosome, start, "", "-" + del, seqChangeStrand, "", 1.0, 1);
+					Variant seqChange = new Variant(chromosome, start, "", "-" + del, "");
 
 					// Sanity checks
 					Assert.assertEquals(true, seqChange.isDel()); // Is it a deletion?
@@ -329,7 +325,7 @@ public class TestCasesDel extends TestCase {
 									System.out.println("\tIteration: " + i //
 											+ "\tPos: " + pos //
 											+ "\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-											+ "\n\t\tSeqChange        : " + seqChange + "_strand" + (seqChangeStrand >= 0 ? "+" : "-") + "\tsize: " + seqChange.size() + "\tdelPlus: " + delPlus//
+											+ "\n\t\tSeqChange        : " + seqChange + "\tsize: " + seqChange.size() + "\tdelPlus: " + delPlus//
 											+ "\n\t\tNetCdsChange     : " + netChange //
 											+ "\n\t\tExpected         : " + effectExpected //
 											+ "\n\t\tEffect           : " + effStr //

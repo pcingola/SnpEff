@@ -15,7 +15,6 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.logStatsServer.LogStats;
@@ -55,14 +54,16 @@ public class SnpEff implements CommandLine {
 	 *  Available input formats
 	 */
 	public enum InputFormat {
-		TXT, PILEUP, VCF, BED
+		// TXT, PILEUP, 
+		VCF, BED
 	}
 
 	/**
 	 *  Available output formats
 	 */
 	public enum OutputFormat {
-		TXT, VCF, BED, BEDANN, GATK
+		// TXT, 
+		VCF, BED, BEDANN, GATK
 	}
 
 	public static final int COMMAND_LINE_WIDTH = 40;
@@ -70,8 +71,8 @@ public class SnpEff implements CommandLine {
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
 	public static final String REVISION = "c";
-	public static final String BUILD = "2014-05-20";
-	public static final String VERSION_MAJOR = "3.6";
+	public static final String BUILD = "2014-06-10";
+	public static final String VERSION_MAJOR = "4.0";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
 	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_NO_NAME;
@@ -81,11 +82,11 @@ public class SnpEff implements CommandLine {
 	protected String[] shiftArgs;
 	protected boolean canonical = false; // Use only canonical transcripts
 	protected boolean debug; // Debug mode
-	protected boolean download = false; // Download genome, if not available
+	protected boolean download = true; // Download genome, if not available
 	protected boolean help; // Show command help and exit
 	protected boolean log; // Log to server (statistics)
 	protected boolean motif = false; // Annotate using motifs
-	protected boolean multiThreaded; // Use multiple threads
+	protected boolean multiThreaded = false; // Use multiple threads
 	protected boolean nextProt = false; // Annotate using NextProt database
 	protected boolean noGenome = false; // Do not load genome database
 	protected boolean onlyRegulation = false; // Only build regulation tracks
@@ -93,8 +94,8 @@ public class SnpEff implements CommandLine {
 	protected boolean verbose; // Be verbose
 	protected Boolean treatAllAsProteinCoding = null; // Only use coding genes. Default is 'null' which means 'auto'
 	protected int numWorkers = Gpr.NUM_CORES; // Max number of threads (if multi-threaded version is available)
-	protected int inOffset = 1; // By default positions are 1-based
-	protected int outOffset = 1;
+	//	protected int inOffset = 1; // By default positions are 1-based
+	//	protected int outOffset = 1;
 	protected int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE; // Splice site size default: 2 bases (canonical splice site)
 	protected int upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH; // Upstream & downstream interval length
 	protected String configFile; // Config file
@@ -385,7 +386,7 @@ public class SnpEff implements CommandLine {
 			} else {
 				// Not a custom interval? Create one
 				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), m.getStrand(), m.getId(), label);
-				custom.setScore(((SeqChange) m).getScore());
+				// custom.setScore(((Variant) m).getScore());
 				markers.add(custom);
 			}
 		}
@@ -613,10 +614,10 @@ public class SnpEff implements CommandLine {
 				} else if ((arg.equals("-c") || arg.equalsIgnoreCase("-config"))) {
 					if ((i + 1) < args.length) configFile = args[++i];
 					else usage("Option '-c' without config file argument");
-				} else if (arg.equals("-1")) {
-					inOffset = outOffset = 1;
-				} else if (arg.equals("-0")) {
-					inOffset = outOffset = 0;
+					//				} else if (arg.equals("-1")) {
+					//					inOffset = outOffset = 1;
+					//				} else if (arg.equals("-0")) {
+					//					inOffset = outOffset = 0;
 				} else if (arg.equals("-t")) multiThreaded = true;
 				else if (arg.equalsIgnoreCase("-treatAllAsProteinCoding")) {
 					if ((i + 1) < args.length) {
@@ -627,20 +628,19 @@ public class SnpEff implements CommandLine {
 				} else if (arg.equalsIgnoreCase("-interval")) {
 					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
 					else usage("Option '-interval' without config interval_file argument");
-				}
-
-				else if (arg.equalsIgnoreCase("-canon")) canonical = true; // Use canonical transcripts
-				else if (arg.equalsIgnoreCase("-download")) download = true; // Download genome if not availble
+				} else if (arg.equalsIgnoreCase("-canon")) canonical = true; // Use canonical transcripts
+				else if (arg.equalsIgnoreCase("-download")) download = true; // Download genome (if not availble locally)
+				else if (arg.equals("-nodownload")) download = false; // Do not download genome (if not availble locally)
 				else if (arg.equalsIgnoreCase("-onlyTr")) {
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
 				} else if ((arg.equals("-ud") || arg.equalsIgnoreCase("-upDownStreamLen"))) {
 					if ((i + 1) < args.length) upDownStreamLength = Gpr.parseIntSafe(args[++i]);
 				} else if ((arg.equals("-ss") || arg.equalsIgnoreCase("-spliceSiteSize"))) {
 					if ((i + 1) < args.length) spliceSiteSize = Gpr.parseIntSafe(args[++i]);
-				} else if ((arg.equals("-if") || arg.equalsIgnoreCase("-inOffset"))) {
-					if ((i + 1) < args.length) inOffset = Gpr.parseIntSafe(args[++i]);
-				} else if ((arg.equals("-of") || arg.equalsIgnoreCase("-outOffset"))) {
-					if ((i + 1) < args.length) outOffset = Gpr.parseIntSafe(args[++i]);
+					//				} else if ((arg.equals("-if") || arg.equalsIgnoreCase("-inOffset"))) {
+					//					if ((i + 1) < args.length) inOffset = Gpr.parseIntSafe(args[++i]);
+					//				} else if ((arg.equals("-of") || arg.equalsIgnoreCase("-outOffset"))) {
+					//					if ((i + 1) < args.length) outOffset = Gpr.parseIntSafe(args[++i]);
 				} else if (arg.equals("-onlyReg")) onlyRegulation = true;
 				else if (arg.equals("-reg")) {
 					if ((i + 1) < args.length) regulationTracks.add(args[++i]); // Add this track to the list
@@ -790,8 +790,8 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.onlyRegulation = onlyRegulation;
 		snpEffCmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
 		snpEffCmd.numWorkers = numWorkers;
-		snpEffCmd.inOffset = inOffset;
-		snpEffCmd.outOffset = outOffset;
+		//		snpEffCmd.inOffset = inOffset;
+		//		snpEffCmd.outOffset = outOffset;
 		snpEffCmd.spliceSiteSize = spliceSiteSize;
 		snpEffCmd.upDownStreamLength = upDownStreamLength;
 		snpEffCmd.genomeVer = genomeVer;
@@ -849,9 +849,11 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-c , -config                 : Specify config file");
 		System.err.println("\t-d , -debug                  : Debug mode (very verbose).");
 		System.err.println("\t-dataDir <path>              : Override data_dir parameter from config file.");
+		System.err.println("\t-download                    : Download a SnpEff database, if not available locally. Default: " + download);
+		System.err.println("\t-nodownload                  : Do not download a SnpEff database, if not available locally.");
 		System.err.println("\t-h , -help                   : Show this help and exit");
-		System.err.println("\t-if , -inOffset              : Offset input by a number of bases. E.g. '-inOffset 1' for one-based TXT input files");
-		System.err.println("\t-of , -outOffset             : Offset output by a number of bases. E.g. '-outOffset 1' for one-based TXT output files");
+		//		System.err.println("\t-if , -inOffset              : Offset input by a number of bases. E.g. '-inOffset 1' for one-based TXT input files");
+		//		System.err.println("\t-of , -outOffset             : Offset output by a number of bases. E.g. '-outOffset 1' for one-based TXT output files");
 		System.err.println("\t-noLog                       : Do not report usage statistics to server");
 		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
 		System.err.println("\t-q ,  -quiet                 : Quiet mode (do not show any messages or errors)");

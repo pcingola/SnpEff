@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
@@ -17,7 +17,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
  */
 public class ChangeEffects implements Iterable<ChangeEffect> {
 
-	SeqChange seqChange, seqChangeRef;
+	Variant seqChange, seqChangeRef;
 	List<ChangeEffect> effects;
 
 	/**
@@ -32,12 +32,12 @@ public class ChangeEffects implements Iterable<ChangeEffect> {
 		effects = new ArrayList<ChangeEffect>();
 	}
 
-	public ChangeEffects(SeqChange seqChange) {
+	public ChangeEffects(Variant seqChange) {
 		effects = new ArrayList<ChangeEffect>();
 		this.seqChange = seqChange;
 	}
 
-	public ChangeEffects(SeqChange seqChange, SeqChange seqChangeRef) {
+	public ChangeEffects(Variant seqChange, Variant seqChangeRef) {
 		effects = new ArrayList<ChangeEffect>();
 		this.seqChange = seqChange;
 		this.seqChangeRef = seqChangeRef;

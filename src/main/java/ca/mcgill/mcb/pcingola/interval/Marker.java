@@ -70,12 +70,12 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @param seqChange
 	 * @return A new marker after applying seqChange 
 	 */
-	public Marker apply(SeqChange seqChange) {
+	public Marker apply(Variant seqChange) {
 		// SeqChange after this marker: No effect
 		if (end < seqChange.getStart()) return this;
 
 		// We can only handle one change at a time
-		if (seqChange.isChangeMultiple()) throw new RuntimeException("Cannot apply multiple changes!\n\tseqChange.isChangeMultiple() = " + seqChange.isChangeMultiple() + "\n\tSeqChange : " + seqChange);
+		if (seqChange.isVariantMultiple()) throw new RuntimeException("Cannot apply multiple changes!\n\tseqChange.isChangeMultiple() = " + seqChange.isVariantMultiple() + "\n\tSeqChange : " + seqChange);
 		// Negative strand changes are a pain. We will eventually get rid of them...(they do not make sense any more)
 		if (seqChange.isStrandMinus()) throw new RuntimeException("Only seqChenges in postive strand are accepted!\n\tSeqChange : " + seqChange);
 
@@ -98,7 +98,7 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @param seqChange
 	 * @return
 	 */
-	protected Marker applyDel(SeqChange seqChange, int lenChange) {
+	protected Marker applyDel(Variant seqChange, int lenChange) {
 		Marker m = clone();
 
 		// SeqChange Before start: Adjust coordinates
@@ -150,7 +150,7 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @param seqChange
 	 * @return
 	 */
-	public Marker applyIns(SeqChange seqChange, int lenChange) {
+	public Marker applyIns(Variant seqChange, int lenChange) {
 		Marker m = clone();
 
 		if (seqChange.getStart() <= start) {
@@ -557,7 +557,7 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @param changeEffect
 	 * @return
 	 */
-	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects) {
 		if (!intersects(seqChange)) return false;
 		changeEffects.add(this, type, "");
 		return true;
@@ -570,7 +570,7 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @param seqChangeRef : Before analyzing results, we have to change markers using seqChangerRef to create a new reference 'on the fly'
 	 * @return
 	 */
-	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects, SeqChange seqChangerRef) {
+	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects, Variant seqChangerRef) {
 		if (!intersects(seqChange)) return false;// Sanity check
 
 		if (seqChangerRef != null) {

@@ -3,7 +3,7 @@ package ca.mcgill.mcb.pcingola.outputFormatter;
 import java.util.HashSet;
 
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 
 /**
@@ -27,7 +27,7 @@ public class BedOutputFormatter extends OutputFormatter {
 	@Override
 	public String endSection(Marker marker) {
 		// Ignore other markers (e.g. seqChanges)
-		if (marker instanceof SeqChange) return super.endSection(marker);
+		if (marker instanceof Variant) return super.endSection(marker);
 		return null;
 	}
 
@@ -39,7 +39,7 @@ public class BedOutputFormatter extends OutputFormatter {
 	@Override
 	public void startSection(Marker marker) {
 		// Ignore other markers (e.g. seqChanges)
-		if (marker instanceof SeqChange) super.startSection(marker);
+		if (marker instanceof Variant) super.startSection(marker);
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class BedOutputFormatter extends OutputFormatter {
 	 */
 	@Override
 	public String toString() {
-		SeqChange seqChange = (SeqChange) section;
+		Variant seqChange = (Variant) section;
 
 		// Show results
 		HashSet<String> chEffs = new HashSet<String>();
@@ -75,7 +75,7 @@ public class BedOutputFormatter extends OutputFormatter {
 				+ "\t" + (seqChange.getStart() + outOffset) //
 				+ "\t" + (seqChange.getEnd() + 1) // End base is not included in BED format
 				+ "\t" + changeEffSb.toString() //
-				+ "\t" + (!Double.isNaN(seqChange.getScore()) ? seqChange.getScore() : "") //
+		// + "\t" + (!Double.isNaN(seqChange.getScore()) ? seqChange.getScore() : "") //
 		;
 	}
 

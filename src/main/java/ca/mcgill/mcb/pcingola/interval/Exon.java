@@ -1,6 +1,6 @@
 package ca.mcgill.mcb.pcingola.interval;
 
-import ca.mcgill.mcb.pcingola.interval.SeqChange.ChangeType;
+import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
@@ -60,7 +60,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 * 
 	 */
 	@Override
-	public Exon apply(SeqChange seqChange) {
+	public Exon apply(Variant seqChange) {
 		// Create new exon with updated coordinates
 		Exon ex = (Exon) super.apply(seqChange);
 
@@ -220,11 +220,11 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 * Check that the base in the exon corresponds with the one in the SNP
 	 * @param seqChange
 	 */
-	public ErrorWarningType sanityCheck(SeqChange seqChange) {
+	public ErrorWarningType sanityCheck(Variant seqChange) {
 		if (!intersects(seqChange)) return null;
 
 		// Only makes sense for SNPs and MNPs
-		if ((seqChange.getChangeType() != ChangeType.SNP) && (seqChange.getChangeType() != ChangeType.MNP)) return null;
+		if ((seqChange.getChangeType() != VariantType.SNP) && (seqChange.getChangeType() != VariantType.MNP)) return null;
 
 		int mstart = Math.max(seqChange.getStart(), start);
 		int idxStart = mstart - start;

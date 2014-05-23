@@ -34,7 +34,8 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.VariantWithScore;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
@@ -648,13 +649,13 @@ public class SnpEffCmdGsa extends SnpEff {
 			chrPosScoreList = readInputVcf();
 			break;
 
-		case TXT:
-			chrPosScoreList = readInputTxt();
-			break;
-
 		case BED:
 			chrPosScoreList = readInputBed();
 			break;
+
+		//		case TXT:
+		//			chrPosScoreList = readInputTxt();
+		//			break;
 
 		default:
 			fatalError("Input format '" + inputFormat + "' not supported!");
@@ -686,8 +687,8 @@ public class SnpEffCmdGsa extends SnpEff {
 
 		int num = 1;
 		BedFileIterator bfi = new BedFileIterator(inputFile);
-		for (SeqChange sc : bfi) {
-			cppList.add(sc.getChromosome(), sc.getStart(), sc.getEnd(), sc.getScore());
+		for (Variant sc : bfi) {
+			cppList.add(sc.getChromosome(), sc.getStart(), sc.getEnd(), ((VariantWithScore) sc).getScore());
 			if (verbose) Gpr.showMark(num++, READ_INPUT_SHOW_EVERY);
 		}
 

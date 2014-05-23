@@ -9,8 +9,8 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
@@ -93,12 +93,12 @@ public class CompareToEnsembl {
 	 * @param trName
 	 */
 	public void compareEnsembl(String ensemblFile, String trName) {
-		HashMap<SeqChange, String> seqChanges = readEnsemblFile(ensemblFile);
-		ArrayList<SeqChange> list = new ArrayList<SeqChange>();
+		HashMap<Variant, String> seqChanges = readEnsemblFile(ensemblFile);
+		ArrayList<Variant> list = new ArrayList<Variant>();
 		list.addAll(seqChanges.keySet());
 		Collections.sort(list);
 
-		for (SeqChange seqChange : list) {
+		for (Variant seqChange : list) {
 			ChangeEffects changes = snpEffectPredictor.seqChangeEffect(seqChange);
 
 			boolean ok = false;
@@ -178,15 +178,15 @@ public class CompareToEnsembl {
 	 * @param fileName
 	 * @return
 	 */
-	HashMap<SeqChange, String> readEnsemblFile(String fileName) {
+	HashMap<Variant, String> readEnsemblFile(String fileName) {
 		String lines[] = Gpr.readFile(fileName).split("\n");
 
 		if (lines.length <= 0) throw new RuntimeException("Cannot open file '" + fileName + "' (or it's empty).");
 
-		HashMap<SeqChange, String> seqChanges = new HashMap<SeqChange, String>();
+		HashMap<Variant, String> seqChanges = new HashMap<Variant, String>();
 
 		for (String line : lines) {
-			SeqChange seqChange = str2seqChange(line);
+			Variant seqChange = str2seqChange(line);
 			seqChanges.put(seqChange, line);
 		}
 
@@ -198,7 +198,7 @@ public class CompareToEnsembl {
 	 * @param line
 	 * @return
 	 */
-	SeqChange str2seqChange(String line) {
+	Variant str2seqChange(String line) {
 		try {
 			String recs[] = line.split("\t");
 
@@ -228,7 +228,7 @@ public class CompareToEnsembl {
 			String id = eff + " " + recs[11] + " " + recs[10];
 
 			// Create SeqChange
-			SeqChange seqChange = new SeqChange(chromo, pos, ref, alt, 1, id, 0, 0);
+			Variant seqChange = new Variant(chromo, pos, ref, alt, id);
 			return seqChange;
 		} catch (Exception e) {
 			throw new RuntimeException("Error parsing line:\n" + line, e);

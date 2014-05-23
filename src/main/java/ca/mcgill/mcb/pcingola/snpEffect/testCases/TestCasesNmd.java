@@ -7,8 +7,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
@@ -59,7 +59,7 @@ public class TestCasesNmd extends TestCase {
 
 					// Create a seqChange
 					//					SeqChange seqChange = new SeqChange(tr.getChromosome(), expos, expos, "");
-					SeqChange seqChange = new SeqChange(tr.getChromosome(), expos, "A", "C", 1, "", -1, -1); // Create a seqChange
+					Variant seqChange = new Variant(tr.getChromosome(), expos, "A", "C"); // Create a seqChange
 
 					// Create a STOP_GAIN effect
 					ChangeEffect changeEffect = new ChangeEffect(seqChange);

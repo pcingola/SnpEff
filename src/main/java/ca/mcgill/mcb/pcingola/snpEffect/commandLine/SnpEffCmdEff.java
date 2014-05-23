@@ -17,21 +17,17 @@ import akka.actor.Props;
 import akka.actor.UntypedActorFactory;
 import ca.mcgill.mcb.pcingola.akka.vcf.VcfWorkQueue;
 import ca.mcgill.mcb.pcingola.fileIterator.BedFileIterator;
-import ca.mcgill.mcb.pcingola.fileIterator.PileUpFileIterator;
-import ca.mcgill.mcb.pcingola.fileIterator.SeqChangeFileIterator;
-import ca.mcgill.mcb.pcingola.fileIterator.SeqChangeTxtFileIterator;
+import ca.mcgill.mcb.pcingola.fileIterator.VariantFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.filter.ChangeEffectFilter;
-import ca.mcgill.mcb.pcingola.filter.SeqChangeFilter;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedAnnotationOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.OutputFormatter;
-import ca.mcgill.mcb.pcingola.outputFormatter.TxtOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
@@ -41,7 +37,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.eff.MasterEff;
 import ca.mcgill.mcb.pcingola.stats.ChangeEffectResutStats;
 import ca.mcgill.mcb.pcingola.stats.CountByType;
-import ca.mcgill.mcb.pcingola.stats.SeqChangeStats;
+import ca.mcgill.mcb.pcingola.stats.VariantStats;
 import ca.mcgill.mcb.pcingola.stats.VcfStats;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
@@ -55,7 +51,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
- * Command line program: Predict changes
+ * Command line program: Predict variant effects
  *
  * @author Pablo Cingolani
  */
@@ -83,20 +79,19 @@ public class SnpEffCmdEff extends SnpEff {
 	boolean useGeneId = false; // Use gene ID instead of gene name (VCF output)
 	boolean createCsvSummary = false; // Use a CSV as output summary
 	int totalErrs = 0;
-	long countInputLines = 0, countVariants = 0, countEffects = 0, countVariantsFilteredOut = 0;
+	long countInputLines = 0, countVariants = 0, countEffects = 0; // , countVariantsFilteredOut = 0;
 	String chrStr = "";
 	String inputFile = ""; // Input file
 	ArrayList<String> inputFiles;
 	String summaryFile; // Summary output file
 	String summaryGenesFile; // Gene table file
 	String cancerSamples = null;
-	SeqChangeFilter seqChangeFilter; // Filter seqChanges (before prediction)
 	InputFormat inputFormat = InputFormat.VCF; // Format use in input files
 	OutputFormat outputFormat = OutputFormat.VCF; // Output format
 	ChangeEffectFilter changeEffectResutFilter; // Filter prediction results
 	ArrayList<String> filterIntervalFiles;// Files used for filter intervals
 	IntervalForest filterIntervals; // Filter only seqChanges that match these intervals
-	SeqChangeStats seqChangeStats;
+	VariantStats seqChangeStats;
 	ChangeEffectResutStats changeEffectResutStats;
 	VcfStats vcfStats;
 	List<VcfEntry> vcfEntriesDebug = null; // Use for debugging or testing (in some test-cases)
@@ -105,7 +100,6 @@ public class SnpEffCmdEff extends SnpEff {
 		super();
 		chrStr = ""; // Default: Don't show 'chr' before chromosome
 		inputFile = ""; // seqChange input file
-		seqChangeFilter = new SeqChangeFilter(); // Filter seqChanges (before prediction)
 		changeEffectResutFilter = new ChangeEffectFilter(); // Filter prediction results
 		filterIntervalFiles = new ArrayList<String>(); // Files used for filter intervals
 		filterIntervals = new IntervalForest(); // Filter only seqChanges that match these intervals
@@ -141,7 +135,7 @@ public class SnpEffCmdEff extends SnpEff {
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
-								) {
+						) {
 							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
@@ -156,7 +150,7 @@ public class SnpEffCmdEff extends SnpEff {
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
-									) {
+							) {
 								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
@@ -172,7 +166,7 @@ public class SnpEffCmdEff extends SnpEff {
 		return changeEffectResutStats;
 	}
 
-	public SeqChangeStats getSeqChangeStats() {
+	public VariantStats getSeqChangeStats() {
 		return seqChangeStats;
 	}
 
@@ -186,16 +180,16 @@ public class SnpEffCmdEff extends SnpEff {
 		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
 
 		// Create an input file iterator
-		SeqChangeFileIterator seqChangeFileIterator;
-		if (inputFormat == InputFormat.PILEUP) seqChangeFileIterator = new PileUpFileIterator(inputFile, config.getGenome());
-		else if (inputFormat == InputFormat.BED) seqChangeFileIterator = new BedFileIterator(inputFile, config.getGenome());
-		else if (inputFormat == InputFormat.TXT) seqChangeFileIterator = new SeqChangeTxtFileIterator(inputFile, config.getGenome(), inOffset);
+		VariantFileIterator seqChangeFileIterator;
+		if (inputFormat == InputFormat.BED) seqChangeFileIterator = new BedFileIterator(inputFile, config.getGenome());
+		//		else if (inputFormat == InputFormat.TXT) seqChangeFileIterator = new SeqChangeTxtFileIterator(inputFile, config.getGenome());
+		//		else if (inputFormat == InputFormat.PILEUP) seqChangeFileIterator = new PileUpFileIterator(inputFile, config.getGenome());
 		else throw new RuntimeException("Cannot create SeqChange file iterator on input format '" + inputFormat + "'");
 
 		//---
 		// Iterate over input file
 		//---
-		for (SeqChange seqChange : seqChangeFileIterator) {
+		for (Variant seqChange : seqChangeFileIterator) {
 			try {
 				countInputLines++;
 
@@ -203,31 +197,28 @@ public class SnpEffCmdEff extends SnpEff {
 				if (verbose && (countVariants % SHOW_EVERY == 0)) Timer.showStdErr("\t" + countVariants + " variants");
 
 				// Does it pass the filter? => Analyze
-				if ((seqChangeFilter == null) || seqChangeFilter.filter(seqChange)) {
 
-					// Skip if there are filter intervals and they are not matched
-					if ((filterIntervals != null) && (filterIntervals.stab(seqChange).size() <= 0)) continue;
+				// Skip if there are filter intervals and they are not matched
+				if ((filterIntervals != null) && (filterIntervals.stab(seqChange).size() <= 0)) continue;
 
-					// Perform basic statistics about this seqChange
-					if (createSummary) seqChangeStats.sample(seqChange);
+				// Perform basic statistics about this seqChange
+				if (createSummary) seqChangeStats.sample(seqChange);
 
-					// Calculate effects
-					ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
+				// Calculate effects
+				ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
 
-					// Create new 'section'
-					outputFormatter.startSection(seqChange);
+				// Create new 'section'
+				outputFormatter.startSection(seqChange);
 
-					// Show results
-					for (ChangeEffect changeEffect : changeEffects) {
-						changeEffectResutStats.sample(changeEffect); // Perform basic statistics about this result
-						outputFormatter.add(changeEffect);
-						countEffects++;
-					}
+				// Show results
+				for (ChangeEffect changeEffect : changeEffects) {
+					changeEffectResutStats.sample(changeEffect); // Perform basic statistics about this result
+					outputFormatter.add(changeEffect);
+					countEffects++;
+				}
 
-					// Finish up this section
-					outputFormatter.printSection(seqChange);
-
-				} else countVariantsFilteredOut += seqChange.getChangeOptionCount();
+				// Finish up this section
+				outputFormatter.printSection(seqChange);
 			} catch (Throwable t) {
 				totalErrs++;
 				error(t, "Error while processing variant (line " + seqChangeFileIterator.getLineNum() + ") :\n\t" + seqChange + "\n" + t);
@@ -295,41 +286,37 @@ public class SnpEffCmdEff extends SnpEff {
 				// Next section deals with cancer: Somatic vs Germline comparisons
 				//---
 				boolean impact = false; // Does this entry have an impact (other than MODIFIER)?
-				List<SeqChange> seqChanges = vcfEntry.seqChanges();
-				for (SeqChange seqChange : seqChanges) {
+				List<Variant> seqChanges = vcfEntry.variants();
+				for (Variant seqChange : seqChanges) {
 					countVariants += seqChange.getChangeOptionCount();
 					if (verbose && (countVariants % SHOW_EVERY == 0)) Timer.showStdErr("\t" + countVariants + " variants");
 
-					// Does it pass the filter? => Analyze
-					if ((seqChangeFilter == null) || seqChangeFilter.filter(seqChange)) {
-						// Perform basic statistics about this seqChange
-						if (createSummary) seqChangeStats.sample(seqChange);
+					// Perform basic statistics about this seqChange
+					if (createSummary) seqChangeStats.sample(seqChange);
 
-						// Calculate effects
-						ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
+					// Calculate effects
+					ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
 
-						// Create new 'section'
-						outputFormatter.startSection(seqChange);
+					// Create new 'section'
+					outputFormatter.startSection(seqChange);
 
-						// Show results
-						for (ChangeEffect changeEffect : changeEffects) {
-							if (createSummary) changeEffectResutStats.sample(changeEffect); // Perform basic statistics about this result
+					// Show results
+					for (ChangeEffect changeEffect : changeEffects) {
+						if (createSummary) changeEffectResutStats.sample(changeEffect); // Perform basic statistics about this result
 
-							// Any errors or warnings?
-							if (changeEffect.hasError()) errByType.inc(changeEffect.getError());
-							if (changeEffect.hasWarning()) warnByType.inc(changeEffect.getWarning());
+						// Any errors or warnings?
+						if (changeEffect.hasError()) errByType.inc(changeEffect.getError());
+						if (changeEffect.hasWarning()) warnByType.inc(changeEffect.getWarning());
 
-							// Does this entry have an impact (other than MODIFIER)?
-							impact |= (changeEffect.getEffectImpact() != EffectImpact.MODIFIER);
+						// Does this entry have an impact (other than MODIFIER)?
+						impact |= (changeEffect.getEffectImpact() != EffectImpact.MODIFIER);
 
-							outputFormatter.add(changeEffect);
-							countEffects++;
-						}
+						outputFormatter.add(changeEffect);
+						countEffects++;
+					}
 
-						// Finish up this section
-						outputFormatter.printSection(seqChange);
-
-					} else countVariantsFilteredOut += seqChange.getChangeOptionCount();
+					// Finish up this section
+					outputFormatter.printSection(seqChange);
 				}
 
 				//---
@@ -346,8 +333,8 @@ public class SnpEffCmdEff extends SnpEff {
 						int altGtNum = comp.first; // comp.first is 'derived' (our new ALT)
 						int refGtNum = comp.second; // comp.second is 'original' (our new REF)
 
-						SeqChange seqChangeRef = seqChanges.get(refGtNum - 1); // After applying this seqChange, we get the new 'reference'
-						SeqChange seqChangeAlt = seqChanges.get(altGtNum - 1); // This our new 'seqChange'
+						Variant seqChangeRef = seqChanges.get(refGtNum - 1); // After applying this seqChange, we get the new 'reference'
+						Variant seqChangeAlt = seqChanges.get(altGtNum - 1); // This our new 'seqChange'
 
 						// Calculate effects
 						ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChangeAlt, seqChangeRef);
@@ -409,7 +396,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 			@Override
 			public Actor create() {
-				MasterEff master = new MasterEff(numWorkers, snpEffCmdEff, snpEffectPredictor, outputFormatter, filterIntervals, seqChangeFilter);
+				MasterEff master = new MasterEff(numWorkers, snpEffCmdEff, snpEffectPredictor, outputFormatter, filterIntervals);
 				master.setAddHeader(vcfOutForm.getNewHeaderLines().toArray(new String[0]));
 				return master;
 			}
@@ -427,23 +414,23 @@ public class SnpEffCmdEff extends SnpEff {
 	 * @return
 	 */
 	String outputFile(String inputFile) {
-		// Remove GZ extention
+		// Remove GZ extension
 		String base = Gpr.baseName(inputFile, ".gz");
 
 		// Remove extension according to input format
 		switch (inputFormat) {
-		case TXT:
-			base = Gpr.baseName(inputFile, ".txt");
+		case VCF:
+			base = Gpr.baseName(inputFile, ".vcf");
 			break;
 		case BED:
 			base = Gpr.baseName(inputFile, ".bed");
 			break;
-		case VCF:
-			base = Gpr.baseName(inputFile, ".vcf");
-			break;
-		case PILEUP:
-			base = Gpr.baseName(inputFile, ".pileup");
-			break;
+		//		case TXT:
+		//			base = Gpr.baseName(inputFile, ".txt");
+		//			break;
+		//		case PILEUP:
+		//			base = Gpr.baseName(inputFile, ".pileup");
+		//			break;
 		default:
 			throw new RuntimeException("Unimplemented option for input file type " + inputFormat);
 		}
@@ -460,9 +447,9 @@ public class SnpEffCmdEff extends SnpEff {
 		case GATK:
 			outputFile += ".vcf";
 			break;
-		case TXT:
-			outputFile += ".txt";
-			break;
+		//		case TXT:
+		//			outputFile += ".txt";
+		//			break;
 		default:
 			throw new RuntimeException("Unimplemented option for output file type " + outputFormat);
 		}
@@ -499,16 +486,16 @@ public class SnpEffCmdEff extends SnpEff {
 					if ((i + 1) < args.length) {
 						String outFor = args[++i].toUpperCase();
 
-						if (outFor.equals("TXT")) outputFormat = OutputFormat.TXT;
-						else if (outFor.equals("VCF")) outputFormat = OutputFormat.VCF;
+						// if (outFor.equals("TXT")) outputFormat = OutputFormat.TXT;
+						if (outFor.equals("VCF")) outputFormat = OutputFormat.VCF;
 						else if (outFor.equals("GATK")) outputFormat = OutputFormat.GATK;
 						else if (outFor.equals("BED")) outputFormat = OutputFormat.BED;
 						else if (outFor.equals("BEDANN")) outputFormat = OutputFormat.BEDANN;
 						else usage("Unknown output file format '" + outFor + "'");
 					}
-				} else if ((arg.equals("-a") || arg.equalsIgnoreCase("-around"))) {
-					if ((i + 1) < args.length) CodonChange.SHOW_CODONS_AROUND_CHANGE = Gpr.parseIntSafe(args[++i]);
-					else usage("Option '-i' without config interval_file argument");
+					//				} else if ((arg.equals("-a") || arg.equalsIgnoreCase("-around"))) {
+					//					if ((i + 1) < args.length) CodonChange.SHOW_CODONS_AROUND_CHANGE = Gpr.parseIntSafe(args[++i]);
+					//					else usage("Option '-i' without config interval_file argument");
 				} else if ((arg.equals("-s") || arg.equalsIgnoreCase("-stats"))) {
 					if ((i + 1) < args.length) {
 						summaryFile = args[++i];
@@ -547,13 +534,14 @@ public class SnpEffCmdEff extends SnpEff {
 					if ((i + 1) < args.length) {
 						String inFor = args[++i].toUpperCase();
 
-						if (inFor.equals("TXT")) {
-							inputFormat = InputFormat.TXT;
-							outputFormat = OutputFormat.TXT;
-						} else if (inFor.equals("PILEUP")) {
-							inputFormat = InputFormat.PILEUP;
-							outputFormat = OutputFormat.TXT;
-						} else if (inFor.equals("VCF")) {
+						//						if (inFor.equals("TXT")) {
+						//							inputFormat = InputFormat.TXT;
+						//							outputFormat = OutputFormat.TXT;
+						//						} else if (inFor.equals("PILEUP")) {
+						//							inputFormat = InputFormat.PILEUP;
+						//							outputFormat = OutputFormat.TXT;
+						//						} else 
+						if (inFor.equals("VCF")) {
 							inputFormat = InputFormat.VCF;
 							outputFormat = OutputFormat.VCF;
 						} else if (inFor.equals("BED")) {
@@ -565,20 +553,20 @@ public class SnpEffCmdEff extends SnpEff {
 				//---
 				// Filters
 				//---
-				else if ((arg.equals("-minQ") || arg.equalsIgnoreCase("-minQuality"))) {
-					if ((i + 1) < args.length) seqChangeFilter.setMinQuality(Gpr.parseIntSafe(args[++i]));
-				} else if ((arg.equals("-maxQ") || arg.equalsIgnoreCase("-maxQuality"))) {
-					if ((i + 1) < args.length) seqChangeFilter.setMaxQuality(Gpr.parseIntSafe(args[++i]));
-				} else if ((arg.equals("-minC") || arg.equalsIgnoreCase("-minCoverage"))) {
-					if ((i + 1) < args.length) seqChangeFilter.setMinCoverage(Gpr.parseIntSafe(args[++i]));
-				} else if ((arg.equals("-maxC") || arg.equalsIgnoreCase("-maxCoverage"))) {
-					if ((i + 1) < args.length) seqChangeFilter.setMaxCoverage(Gpr.parseIntSafe(args[++i]));
-				} else if (arg.equals("-hom")) seqChangeFilter.setHeterozygous(false);
-				else if (arg.equals("-het")) seqChangeFilter.setHeterozygous(true);
-				else if (arg.equals("-snp")) seqChangeFilter.setChangeType(SeqChange.ChangeType.SNP);
-				else if (arg.equals("-mnp")) seqChangeFilter.setChangeType(SeqChange.ChangeType.MNP);
-				else if (arg.equals("-ins")) seqChangeFilter.setChangeType(SeqChange.ChangeType.INS);
-				else if (arg.equals("-del")) seqChangeFilter.setChangeType(SeqChange.ChangeType.DEL);
+				//				else if ((arg.equals("-minQ") || arg.equalsIgnoreCase("-minQuality"))) {
+				//					if ((i + 1) < args.length) seqChangeFilter.setMinQuality(Gpr.parseIntSafe(args[++i]));
+				//				} else if ((arg.equals("-maxQ") || arg.equalsIgnoreCase("-maxQuality"))) {
+				//					if ((i + 1) < args.length) seqChangeFilter.setMaxQuality(Gpr.parseIntSafe(args[++i]));
+				//				} else if ((arg.equals("-minC") || arg.equalsIgnoreCase("-minCoverage"))) {
+				//					if ((i + 1) < args.length) seqChangeFilter.setMinCoverage(Gpr.parseIntSafe(args[++i]));
+				//				} else if ((arg.equals("-maxC") || arg.equalsIgnoreCase("-maxCoverage"))) {
+				//					if ((i + 1) < args.length) seqChangeFilter.setMaxCoverage(Gpr.parseIntSafe(args[++i]));
+				//				} else if (arg.equals("-hom")) seqChangeFilter.setHeterozygous(false);
+				//				else if (arg.equals("-het")) seqChangeFilter.setHeterozygous(true);
+				//				else if (arg.equals("-snp")) seqChangeFilter.setChangeType(Variant.VariantType.SNP);
+				//				else if (arg.equals("-mnp")) seqChangeFilter.setChangeType(Variant.VariantType.MNP);
+				//				else if (arg.equals("-ins")) seqChangeFilter.setChangeType(Variant.VariantType.INS);
+				//				else if (arg.equals("-del")) seqChangeFilter.setChangeType(Variant.VariantType.DEL);
 				else if (arg.equalsIgnoreCase("-no-downstream")) changeEffectResutFilter.add(EffectType.DOWNSTREAM);
 				else if (arg.equalsIgnoreCase("-no-upstream")) changeEffectResutFilter.add(EffectType.UPSTREAM);
 				else if (arg.equalsIgnoreCase("-no-intergenic")) changeEffectResutFilter.add(EffectType.INTERGENIC);
@@ -771,7 +759,7 @@ public class SnpEffCmdEff extends SnpEff {
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-						);
+				);
 				runAnalysis(inputFile, outputFile);
 			}
 		}
@@ -787,10 +775,10 @@ public class SnpEffCmdEff extends SnpEff {
 	public void runAnalysis(String inputFile, String outputFile) {
 		// Reset all counters
 		totalErrs = 0;
-		countInputLines = countVariants = countEffects = countVariantsFilteredOut = 0;
+		countInputLines = countVariants = countEffects = 0; // = countVariantsFilteredOut = 0;
 
 		// Create 'stats' objects
-		seqChangeStats = new SeqChangeStats(config.getGenome());
+		seqChangeStats = new VariantStats(config.getGenome());
 		changeEffectResutStats = new ChangeEffectResutStats(config.getGenome());
 		changeEffectResutStats.setUseSequenceOntology(useSequenceOntology);
 		vcfStats = new VcfStats();
@@ -802,10 +790,10 @@ public class SnpEffCmdEff extends SnpEff {
 		//---
 		OutputFormatter outputFormatter = null;
 		switch (outputFormat) {
-		case TXT:
-			outputFormatter = new TxtOutputFormatter();
-			outputFormatter.setOutOffset(outOffset);
-			break;
+		//		case TXT:
+		//			outputFormatter = new TxtOutputFormatter();
+		//			outputFormatter.setOutOffset(outOffset);
+		//			break;
 		case VCF:
 			VcfOutputFormatter vof = new VcfOutputFormatter(vcfEntriesDebug);
 			vof.setLossOfFunction(lossOfFunction);
@@ -914,12 +902,12 @@ public class SnpEffCmdEff extends SnpEff {
 		root.put("countEffects", countEffects);
 		root.put("countInputLines", countInputLines);
 		root.put("countVariants", countVariants);
-		root.put("countVariantsFilteredOut", countVariantsFilteredOut);
+		// root.put("countVariantsFilteredOut", countVariantsFilteredOut);
 		root.put("date", String.format("%1$TY-%1$Tm-%1$Td %1$TH:%1$TM", new Date()));
 		root.put("genesFile", Gpr.baseName(summaryGenesFile, ""));
 		root.put("genome", config.getGenome());
 		root.put("genomeVersion", genomeVer);
-		root.put("seqChangeFilter", seqChangeFilter);
+		// root.put("seqChangeFilter", seqChangeFilter);
 		root.put("seqStats", seqChangeStats);
 		root.put("snpEffectPredictor", config.getSnpEffectPredictor());
 		root.put("vcfStats", vcfStats);
@@ -954,17 +942,17 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\t-s , -stats                     : Name of stats file (summary). Default is '" + DEFAULT_SUMMARY_FILE + "'");
 		System.err.println("\t-noStats                        : Do not create stats (summary) file");
 		System.err.println("\t-csvStats                       : Create CSV summary file instead of HTML");
-		System.err.println("\nSequence change filter options:");
-		System.err.println("\t-del                            : Analyze deletions only");
-		System.err.println("\t-ins                            : Analyze insertions only");
-		System.err.println("\t-hom                            : Analyze homozygous variants only");
-		System.err.println("\t-het                            : Analyze heterozygous variants only");
-		System.err.println("\t-minQ X, -minQuality X          : Filter out variants with quality lower than X");
-		System.err.println("\t-maxQ X, -maxQuality X          : Filter out variants with quality higher than X");
-		System.err.println("\t-minC X, -minCoverage X         : Filter out variants with coverage lower than X");
-		System.err.println("\t-maxC X, -maxCoverage X         : Filter out variants with coverage higher than X");
-		System.err.println("\t-nmp                            : Only MNPs (multiple nucleotide polymorphisms)");
-		System.err.println("\t-snp                            : Only SNPs (single nucleotide polymorphisms)");
+		//		System.err.println("\nSequence change filter options:");
+		//		System.err.println("\t-del                            : Analyze deletions only");
+		//		System.err.println("\t-ins                            : Analyze insertions only");
+		//		System.err.println("\t-hom                            : Analyze homozygous variants only");
+		//		System.err.println("\t-het                            : Analyze heterozygous variants only");
+		//		System.err.println("\t-minQ X, -minQuality X          : Filter out variants with quality lower than X");
+		//		System.err.println("\t-maxQ X, -maxQuality X          : Filter out variants with quality higher than X");
+		//		System.err.println("\t-minC X, -minCoverage X         : Filter out variants with coverage lower than X");
+		//		System.err.println("\t-maxC X, -maxCoverage X         : Filter out variants with coverage higher than X");
+		//		System.err.println("\t-nmp                            : Only MNPs (multiple nucleotide polymorphisms)");
+		//		System.err.println("\t-snp                            : Only SNPs (single nucleotide polymorphisms)");
 		System.err.println("\nResults filter options:");
 		System.err.println("\t-fi , -filterInterval  <file>   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)");
 		System.err.println("\t-no-downstream                  : Do not show DOWNSTREAM changes");

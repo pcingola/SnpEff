@@ -212,7 +212,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 * @return
 	 */
 	@Override
-	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects, SeqChange seqChangerRef) {
+	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects, Variant seqChangerRef) {
 		if (!intersects(seqChange)) return false; // Sanity check
 
 		boolean hitTranscript = false;

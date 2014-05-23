@@ -9,7 +9,7 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Intergenic;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
@@ -61,7 +61,7 @@ public class SnpEffCmdClosest extends SnpEff {
 		BedFileIterator bfi = new BedFileIterator(inFile, config.getGenome());
 		bfi.setCreateChromos(true); // Any 'new' chromosome in the input file will be created (otherwise an error will be thrown)
 
-		for (SeqChange bed : bfi) {
+		for (Variant bed : bfi) {
 			try {
 				// Find closest exon
 				Markers closestMarkers = findClosestMarker(bed);

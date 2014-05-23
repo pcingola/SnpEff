@@ -1,7 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 
 /**
@@ -14,7 +14,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 public class Hgvs {
 
 	protected ChangeEffect changeEffect;
-	SeqChange seqChange;
+	Variant seqChange;
 	Marker marker;
 	Transcript tr;
 

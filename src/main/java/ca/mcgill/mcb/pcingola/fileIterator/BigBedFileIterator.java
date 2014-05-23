@@ -7,17 +7,18 @@ import org.broad.igv.bbfile.BBFileHeader;
 import org.broad.igv.bbfile.BBFileReader;
 import org.broad.igv.bbfile.BedFeature;
 
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.VariantWithScore;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * FileIterator for BigBed features
- * 
+ *
  * Note: I use Broad's IGV code to do all the work, this is just a wrapper
- * 
+ *
  * @author pablocingolani
  */
-public class BigBedFileIterator extends SeqChangeFileIterator {
+public class BigBedFileIterator extends VariantFileIterator {
 
 	BBFileReader readerBb;
 	BBFileHeader bbFileHdr;
@@ -25,7 +26,8 @@ public class BigBedFileIterator extends SeqChangeFileIterator {
 	String label;
 
 	public BigBedFileIterator(String fileName) {
-		super(null, 0);
+		super(null);
+		inOffset = 0;
 		open(fileName);
 	}
 
@@ -35,7 +37,7 @@ public class BigBedFileIterator extends SeqChangeFileIterator {
 	}
 
 	@Override
-	public SeqChange next() {
+	public Variant next() {
 		return readNext();
 	}
 
@@ -60,7 +62,7 @@ public class BigBedFileIterator extends SeqChangeFileIterator {
 	}
 
 	@Override
-	protected SeqChange readNext() {
+	protected Variant readNext() {
 		// Get next item
 		BedFeature f = iterator.next();
 		if (f == null) return null;
@@ -70,13 +72,10 @@ public class BigBedFileIterator extends SeqChangeFileIterator {
 
 		// Get score
 		String restOfFields[] = f.getRestOfFields();
-		String score = restOfFields[1];
+		double score = Gpr.parseDoubleSafe(restOfFields[1]);
 
 		// Create seqChange
-		SeqChange seqChange = new SeqChange(getChromosome(f.getChromosome()), f.getStartBase(), f.getEndBase() - 1, id);
-		seqChange.setScore(Gpr.parseDoubleSafe(score));
-
-		//		Gpr.debug(seqChange);
+		Variant seqChange = new VariantWithScore(getChromosome(f.getChromosome()), f.getStartBase(), f.getEndBase() - 1, id, score);
 
 		return seqChange;
 	}

@@ -220,12 +220,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * @return
 	 */
 	@Override
-	public Transcript apply(SeqChange seqChange) {
+	public Transcript apply(Variant seqChange) {
 		// SeqChange after this marker: No effect
 		if (end < seqChange.getStart()) return this;
 
 		// We can only handle one change at a time
-		if (seqChange.isChangeMultiple()) throw new RuntimeException("Cannot apply multiple changes!\n\tseqChange.isChangeMultiple() = " + seqChange.isChangeMultiple() + "\n\tSeqChange : " + seqChange);
+		if (seqChange.isVariantMultiple()) throw new RuntimeException("Cannot apply multiple changes!\n\tseqChange.isChangeMultiple() = " + seqChange.isVariantMultiple() + "\n\tSeqChange : " + seqChange);
 
 		// Create new transcript
 		Transcript tr = (Transcript) super.apply(seqChange);
@@ -1130,7 +1130,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * @param seqChange
 	 * @return
 	 */
-	boolean isCds(SeqChange seqChange) {
+	boolean isCds(Variant seqChange) {
 		calcCdsStartEnd();
 
 		int cs = cdsStart;
@@ -1388,7 +1388,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * @param seqChange
 	 * @return
 	 */
-	public ErrorWarningType sanityCheck(SeqChange seqChange) {
+	public ErrorWarningType sanityCheck(Variant seqChange) {
 		if (isErrorProteinLength()) return ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE;
 		else if (isErrorStopCodonsInCds()) return ErrorWarningType.WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS;
 		else if (isErrorStartCodon()) return ErrorWarningType.WARNING_TRANSCRIPT_NO_START_CODON;
@@ -1401,7 +1401,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * @return
 	 */
 	@Override
-	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffectList) {
+	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffectList) {
 		if (!intersects(seqChange)) return false; // Sanity check
 
 		//---
@@ -1439,7 +1439,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		//---
 		// Analyze non-coding transcripts (or 'interval' seqChanges)
 		//---
-		if ((!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) || seqChange.isInterval() || !seqChange.isChange()) {
+		if ((!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) || seqChange.isInterval() || !seqChange.isVariant()) {
 			// Do we have exon information for this transcript?
 			if (!subintervals().isEmpty()) {
 				// Add all exons

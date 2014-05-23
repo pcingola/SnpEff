@@ -4,8 +4,7 @@ import java.io.IOException;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
-import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 
 /**
  * Opens a sequence change file and iterates over all sequence changes
@@ -24,18 +23,18 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * 
  * @author pcingola
  */
-public class SeqChangeTxtFileIterator extends SeqChangeFileIterator {
+public class SeqChangeTxtFileIterator extends VariantFileIterator {
 
-	public SeqChangeTxtFileIterator(String fileName, Genome genome, int offset) {
-		super(fileName, genome, offset);
+	public SeqChangeTxtFileIterator(String fileName, Genome genome) {
+		super(fileName, genome);
 	}
 
-	public SeqChangeTxtFileIterator(String fileName, int offset) {
-		super(fileName, offset);
+	public SeqChangeTxtFileIterator(String fileName) {
+		super(fileName);
 	}
 
 	@Override
-	protected SeqChange readNext() {
+	protected Variant readNext() {
 		try {
 
 			while (ready()) {
@@ -70,16 +69,16 @@ public class SeqChangeTxtFileIterator extends SeqChangeFileIterator {
 							else if (strandStr.charAt(0) == '-') strand = -1;
 						}
 
-						double quality = -1;
-						if (fields.length >= 6) quality = Gpr.parseDoubleSafe(fields[5]);
-
-						int coverage = -1;
-						if (fields.length >= 7) coverage = Gpr.parseIntSafe(fields[6]);
-
+						//						double quality = -1;
+						//						if (fields.length >= 6) quality = Gpr.parseDoubleSafe(fields[5]);
+						//
+						//						int coverage = -1;
+						//						if (fields.length >= 7) coverage = Gpr.parseIntSafe(fields[6]);
 						String id = "";
 						if (fields.length >= 8) id = fields[7];
 
-						return new SeqChange(chromo, start, reference, change, strand, id, quality, coverage);
+						// return new Variant(chromo, start, reference, change, strand, id, quality, coverage);
+						return new Variant(chromo, start, reference, change, id);
 					} else throw new RuntimeException("Error reading file '" + fileName + "' line " + lineNum + " (number of fields is " + fields.length + "):\t" + line);
 				}
 			}

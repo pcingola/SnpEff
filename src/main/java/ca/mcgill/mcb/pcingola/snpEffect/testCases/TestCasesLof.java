@@ -10,10 +10,10 @@ import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
-import ca.mcgill.mcb.pcingola.interval.SeqChange.ChangeType;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
@@ -50,7 +50,7 @@ public class TestCasesLof extends TestCase {
 	 * @param exon
 	 * @return
 	 */
-	LinkedList<ChangeEffect> changeEffects(SeqChange seqChange, EffectType effectType, Marker marker) {
+	LinkedList<ChangeEffect> changeEffects(Variant seqChange, EffectType effectType, Marker marker) {
 		ChangeEffect changeEffect = new ChangeEffect(seqChange);
 		changeEffect.set(marker, effectType, "");
 		LinkedList<ChangeEffect> changeEffects = new LinkedList<ChangeEffect>();
@@ -92,10 +92,10 @@ public class TestCasesLof extends TestCase {
 	 */
 	void checkLofExonDeletedFirstExon(Transcript tr) {
 		Exon ex = tr.getFirstCodingExon();
-		SeqChange seqChange = new SeqChange(tr.getChromosome(), ex.getStart(), "AC", "A", 1, "", -1, -1);
+		Variant seqChange = new Variant(tr.getChromosome(), ex.getStart(), "AC", "A");
 		seqChange.setStart(ex.getStart());
 		seqChange.setEnd(ex.getEnd());
-		seqChange.setChangeType(ChangeType.DEL);
+		seqChange.setChangeType(VariantType.DEL);
 		if (debug) Gpr.debug("SeqChange:" + seqChange);
 		LinkedList<ChangeEffect> changeEffects = changeEffects(seqChange, EffectType.EXON_DELETED, ex);
 
@@ -117,11 +117,11 @@ public class TestCasesLof extends TestCase {
 			// Create a random seqChange
 			int delStart = random.nextInt(tr.size() - 1) + tr.getStart();
 			int delEnd = random.nextInt(tr.getEnd() - delStart) + delStart + 1;
-			SeqChange seqChange = new SeqChange(tr.getChromosome(), delStart, "AC", "A", 1, "", -1, -1);
+			Variant seqChange = new Variant(tr.getChromosome(), delStart, "AC", "A");
 			seqChange.setStart(delStart);
 			seqChange.setEnd(delEnd);
 			if (debug) Gpr.debug("SeqChange:" + seqChange);
-			seqChange.setChangeType(ChangeType.DEL);
+			seqChange.setChangeType(VariantType.DEL);
 
 			// How many coding bases are affected?
 			Marker codingDel = cds.intersect(seqChange);
@@ -159,11 +159,11 @@ public class TestCasesLof extends TestCase {
 			// All exonic positions
 			for (int pos = start; ex.intersects(pos); pos += step) {
 				// Create a seqChange
-				SeqChange seqChange;
+				Variant seqChange;
 				boolean ins = random.nextBoolean(); // Randomly choose INS or DEL
-				if (ins) seqChange = new SeqChange(tr.getChromosome(), pos, "A", "AC", 1, "", -1, -1);
-				else seqChange = new SeqChange(tr.getChromosome(), pos, "AC", "A", 1, "", -1, -1);
-				seqChange.setChangeType(ins ? ChangeType.INS : ChangeType.DEL);
+				if (ins) seqChange = new Variant(tr.getChromosome(), pos, "A", "AC");
+				else seqChange = new Variant(tr.getChromosome(), pos, "AC", "A");
+				seqChange.setChangeType(ins ? VariantType.INS : VariantType.DEL);
 				if (debug) Gpr.debug("SeqChange:" + seqChange);
 
 				// Create change effect
@@ -205,7 +205,7 @@ public class TestCasesLof extends TestCase {
 	void checkLofStartLost(Transcript tr) {
 		// Find start codon position
 		int pos = tr.getCdsStart();
-		SeqChange seqChange = new SeqChange(tr.getChromosome(), pos, "A", "C", 1, "", -1, -1); // Create a seqChange
+		Variant seqChange = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a seqChange
 		if (debug) Gpr.debug("SeqChange:" + seqChange);
 
 		// Finr exon
@@ -245,7 +245,7 @@ public class TestCasesLof extends TestCase {
 			// For all position on splice site donor positions, make sure it is LOF
 			//---
 			for (int pos = posDonor, i = 0; i < maxSize; i++, pos += step) {
-				SeqChange seqChange = new SeqChange(tr.getChromosome(), pos, "A", "C", 1, "", -1, -1); // Create a seqChange
+				Variant seqChange = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a seqChange
 				Marker marker = findMarker(seqChange, EffectType.SPLICE_SITE_ACCEPTOR, null, ex);
 				LinkedList<ChangeEffect> changeEffects = changeEffects(seqChange, EffectType.SPLICE_SITE_ACCEPTOR, marker); // Create a SPLICE_SITE_ACCEPTOR effect
 				if (debug) Gpr.debug("SeqChange:" + seqChange);
@@ -284,7 +284,7 @@ public class TestCasesLof extends TestCase {
 			// For all position on splice site donor positions, make sure it is LOF
 			//---
 			for (int pos = posDonor, i = 0; i < maxSize; i++, pos += step) {
-				SeqChange seqChange = new SeqChange(tr.getChromosome(), pos, "A", "C", 1, "", -1, -1); // Create a seqChange
+				Variant seqChange = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a seqChange
 				Marker marker = findMarker(seqChange, EffectType.SPLICE_SITE_DONOR, null, ex);
 				LinkedList<ChangeEffect> changeEffects = changeEffects(seqChange, EffectType.SPLICE_SITE_DONOR, marker); // Create a SPLICE_DONOR effect
 				if (debug) Gpr.debug("SeqChange:" + seqChange);
@@ -302,7 +302,7 @@ public class TestCasesLof extends TestCase {
 	 * Find a marker that intersects seqChange
 	 * @return
 	 */
-	Marker findMarker(SeqChange seqChange, EffectType effectType, Transcript tr, Exon exon) {
+	Marker findMarker(Variant seqChange, EffectType effectType, Transcript tr, Exon exon) {
 		Markers markers = config.getSnpEffectPredictor().query(seqChange);
 		for (Marker m : markers) {
 			Exon mex = (Exon) m.findParent(Exon.class);

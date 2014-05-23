@@ -43,10 +43,10 @@ public class SnpEffCmdDump extends SnpEff {
 				if (args[i].equalsIgnoreCase("-chr")) chrStr = args[++i];
 				else if (args[i].equals("-bed")) {
 					dumpFormat = DumpFormat.BED;
-					inOffset = outOffset = 0;
+					// inOffset = outOffset = 0;
 				} else if (args[i].equals("-txt")) {
 					dumpFormat = DumpFormat.TXT;
-					inOffset = outOffset = 1;
+					// inOffset = outOffset = 1;
 				} else usage("Unknow option '" + args[i] + "'");
 			} else if (genomeVer.length() <= 0) genomeVer = args[i];
 			else usage("Unknow parameter '" + args[i] + "'");
@@ -112,8 +112,8 @@ public class SnpEffCmdDump extends SnpEff {
 	 */
 	void printBed(Marker marker) {
 		String chr = chrStr + marker.getChromosome().getId();
-		int start = marker.getStart() + outOffset; // The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0. 
-		int end = marker.getEnd() + outOffset + 1; // The ending position of the feature in the chromosome or scaffold. The chromEnd base is not included in the display of the feature.
+		int start = marker.getStart(); // The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0. 
+		int end = marker.getEnd() + 1; // The ending position of the feature in the chromosome or scaffold. The chromEnd base is not included in the display of the feature.
 		String name = marker.getClass().getSimpleName() + "_" + marker.getId();
 		System.out.println(chr + "\t" + start + "\t" + end + "\t" + name);
 	}
@@ -124,8 +124,8 @@ public class SnpEffCmdDump extends SnpEff {
 	 */
 	void printTxt(Marker marker) {
 		String chr = chrStr + marker.getChromosome().getId();
-		int start = marker.getStart() + outOffset; // The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0. 
-		int end = marker.getEnd() + outOffset + 1; // The ending position of the feature in the chromosome or scaffold. The chromEnd base is not included in the display of the feature.
+		int start = marker.getStart(); // The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0. 
+		int end = marker.getEnd() + 1; // The ending position of the feature in the chromosome or scaffold. The chromEnd base is not included in the display of the feature.
 
 		StringBuilder info = new StringBuilder();
 		info.append(chr);

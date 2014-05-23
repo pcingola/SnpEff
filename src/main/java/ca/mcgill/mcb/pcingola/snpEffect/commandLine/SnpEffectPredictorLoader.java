@@ -15,9 +15,9 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.VariantWithScore;
 import ca.mcgill.mcb.pcingola.motif.Jaspar;
 import ca.mcgill.mcb.pcingola.motif.Pwm;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
@@ -401,7 +401,7 @@ public class SnpEffectPredictorLoader {
 		Markers markers = new Markers();
 		for (Marker m : markersSeqChange) {
 			Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), m.getStrand(), m.getId(), label);
-			custom.setScore(((SeqChange) m).getScore());
+			if (m instanceof VariantWithScore) custom.setScore(((VariantWithScore) m).getScore());
 			markers.add(custom);
 		}
 

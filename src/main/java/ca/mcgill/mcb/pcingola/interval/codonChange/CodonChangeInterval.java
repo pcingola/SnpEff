@@ -1,7 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
@@ -14,7 +14,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
  */
 public class CodonChangeInterval extends CodonChange {
 
-	public CodonChangeInterval(SeqChange seqChange, Transcript transcript, ChangeEffects changeEffects) {
+	public CodonChangeInterval(Variant seqChange, Transcript transcript, ChangeEffects changeEffects) {
 		super(seqChange, transcript, changeEffects);
 		returnNow = false; // An interval may affect more than one exon
 	}

@@ -3,7 +3,7 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
@@ -20,7 +20,7 @@ public class CodonChange {
 
 	boolean returnNow = false; // Can we return immediately after calculating the first 'codonChangeSingle()'?
 	boolean requireNetCdsChange = false;
-	SeqChange seqChange;
+	Variant seqChange;
 	Transcript transcript;
 	Exon exon = null;
 	ChangeEffects changeEffects;
@@ -32,7 +32,7 @@ public class CodonChange {
 	String aaNew = ""; // New amino acids (after change)
 	String netCdsChange = "";
 
-	public CodonChange(SeqChange seqChange, Transcript transcript, ChangeEffects changeEffects) {
+	public CodonChange(Variant seqChange, Transcript transcript, ChangeEffects changeEffects) {
 		this.seqChange = seqChange;
 		this.transcript = transcript;
 		this.changeEffects = changeEffects;
@@ -49,7 +49,7 @@ public class CodonChange {
 		// Split each seqChange into it's multiple options
 		for (int i = 0; i < seqChange.getChangeOptionCount(); i++) {
 			// Create a new SeqChange for this option, calculate codonChange for this seqChangeOption and add result to the list
-			SeqChange seqChangeNew = seqChange.getSeqChangeOption(i);
+			Variant seqChangeNew = seqChange.getSeqAltOption(i);
 			if (seqChangeNew != null) {
 				// Create a specific codon change and calculate changes
 				CodonChange codonChange = factory(seqChangeNew, transcript, changeEffects);
@@ -156,7 +156,7 @@ public class CodonChange {
 	 * @param changeEffect
 	 * @param codonNum
 	 */
-	void codonsAround(SeqChange seqChange, int codonNum) {
+	void codonsAround(Variant seqChange, int codonNum) {
 		if (SHOW_CODONS_AROUND_CHANGE <= 0) return; // Nothing to do?
 
 		String cdsSeq = transcript.cds();
@@ -223,7 +223,7 @@ public class CodonChange {
 	 * @param changeEffects
 	 * @return
 	 */
-	CodonChange factory(SeqChange seqChange, Transcript transcript, ChangeEffects changeEffects) {
+	CodonChange factory(Variant seqChange, Transcript transcript, ChangeEffects changeEffects) {
 		if (seqChange.isSnp()) return new CodonChangeSnp(seqChange, transcript, changeEffects);
 		if (seqChange.isIns()) return new CodonChangeIns(seqChange, transcript, changeEffects);
 		if (seqChange.isDel()) return new CodonChangeDel(seqChange, transcript, changeEffects);

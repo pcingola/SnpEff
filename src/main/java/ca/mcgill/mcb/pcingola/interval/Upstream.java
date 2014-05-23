@@ -23,7 +23,7 @@ public class Upstream extends Marker {
 	 * @param seqChange
 	 * @return
 	 */
-	public int distanceToTr(SeqChange seqChange) {
+	public int distanceToTr(Variant seqChange) {
 		int dist = (parent.isStrandPlus() ? end - seqChange.getStart() : seqChange.getStart() - start) + 1;
 		return Math.max(0, dist);
 	}
@@ -37,7 +37,7 @@ public class Upstream extends Marker {
 	}
 
 	@Override
-	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects) {
 		if (!intersects(seqChange)) return false; // Sanity check
 
 		// Note: We need to use the transcripts's strand

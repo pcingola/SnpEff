@@ -11,8 +11,8 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
@@ -285,9 +285,9 @@ public class TestCasesHgvs extends TestCase {
 						String effectExpected = protHgvs + "/" + dnaHgvs;
 
 						// Create a SeqChange
-						SeqChange seqChange = new SeqChange(chromosome, pos, refBase + "", snp + "", 1, "", 1.0, 1);
+						Variant seqChange = new Variant(chromosome, pos, refBase + "", snp + "", "");
 
-						if (!seqChange.isChange()) protHgvs = "EXON";
+						if (!seqChange.isVariant()) protHgvs = "EXON";
 
 						// Calculate effects
 						ChangeEffects effects = snpEffectPredictor.seqChangeEffect(seqChange);
@@ -394,7 +394,7 @@ public class TestCasesHgvs extends TestCase {
 					String hgsv = intronHgsv(bases, j, pos, refStr, altStr);
 
 					// Calculate effect and compare to expected
-					SeqChange sc = new SeqChange(transcript.getChromosome(), pos, refStr, altStr, 1, "", 0, 0);
+					Variant sc = new Variant(transcript.getChromosome(), pos, refStr, altStr, "");
 					ChangeEffects ceffs = snpEffectPredictor.seqChangeEffect(sc);
 					ChangeEffect ceff = ceffs.get();
 					String hgsvEff = ceffs.get().getHgvs();

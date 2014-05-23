@@ -1,8 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.commandLine.eff;
 
 import ca.mcgill.mcb.pcingola.akka.vcfStr.WorkerVcfStr;
-import ca.mcgill.mcb.pcingola.filter.SeqChangeFilter;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.outputFormatter.OutputFormatter;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
@@ -22,15 +21,16 @@ public class WorkerEff extends WorkerVcfStr {
 	SnpEffectPredictor snpEffectPredictor; // Predictor
 	OutputFormatter outputFormatter; // Output format
 	IntervalForest filterIntervals; // Filter only seqChanges that match these intervals
-	SeqChangeFilter seqChangeFilter; // Filter each seqChange
 
-	public WorkerEff(SnpEffCmdEff snpEffCmdEff, SnpEffectPredictor snpEffectPredictor, OutputFormatter outputFormatter, IntervalForest filterIntervals, SeqChangeFilter seqChangeFilter) {
+	//	SeqChangeFilter seqChangeFilter; // Filter each seqChange
+
+	public WorkerEff(SnpEffCmdEff snpEffCmdEff, SnpEffectPredictor snpEffectPredictor, OutputFormatter outputFormatter, IntervalForest filterIntervals) {
 		super();
 		this.snpEffCmdEff = snpEffCmdEff;
 		this.snpEffectPredictor = snpEffectPredictor;
 		this.outputFormatter = outputFormatter;
 		this.filterIntervals = filterIntervals;
-		this.seqChangeFilter = seqChangeFilter;
+		//		this.seqChangeFilter = seqChangeFilter;
 	}
 
 	@Override
@@ -48,23 +48,19 @@ public class WorkerEff extends WorkerVcfStr {
 			// Create new 'section'
 			outputFormatter.startSection(vcfEntry);
 
-			for (SeqChange seqChange : vcfEntry.seqChanges()) {
-				// Does it pass the filter? => Analyze
-				if ((seqChangeFilter == null) || seqChangeFilter.filter(seqChange)) {
-					// Calculate effects
-					ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
+			for (Variant seqChange : vcfEntry.variants()) {
+				// Calculate effects
+				ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
 
-					// Create new 'section'
-					outputFormatter.startSection(seqChange);
+				// Create new 'section'
+				outputFormatter.startSection(seqChange);
 
-					// Show results
-					for (ChangeEffect changeEffect : changeEffects)
-						outputFormatter.add(changeEffect);
+				// Show results
+				for (ChangeEffect changeEffect : changeEffects)
+					outputFormatter.add(changeEffect);
 
-					// Finish up this section
-					outputFormatter.endSection(seqChange);
-
-				}
+				// Finish up this section
+				outputFormatter.endSection(seqChange);
 			}
 
 			// Finish up this section

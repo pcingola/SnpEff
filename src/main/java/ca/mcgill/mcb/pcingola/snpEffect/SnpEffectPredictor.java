@@ -14,7 +14,7 @@ import ca.mcgill.mcb.pcingola.interval.Intergenic;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Utr;
@@ -496,7 +496,7 @@ public class SnpEffectPredictor implements Serializable {
 	 * Predict the effect of a seqChange
 	 * @param seqChange
 	 */
-	public ChangeEffects seqChangeEffect(SeqChange seqChange) {
+	public ChangeEffects seqChangeEffect(Variant seqChange) {
 		return seqChangeEffect(seqChange, null);
 	}
 
@@ -505,7 +505,7 @@ public class SnpEffectPredictor implements Serializable {
 	 * @param seqChange : Sequence change
 	 * @param seqChangeRef : Before analyzing results, we have to change markers using seqChangerRef to create a new reference 'on the fly'
 	 */
-	public ChangeEffects seqChangeEffect(SeqChange seqChange, SeqChange seqChangeRef) {
+	public ChangeEffects seqChangeEffect(Variant seqChange, Variant seqChangeRef) {
 		ChangeEffects changeEffects = new ChangeEffects(seqChange, seqChangeRef);
 
 		//---

@@ -11,7 +11,7 @@ import java.util.List;
 
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 
 /**
@@ -93,7 +93,7 @@ public class GeneCountByTypeTable implements Iterable<Gene>, Serializable {
 	 * @param seqChange
 	 */
 	public void sample(Gene gene, Marker marker, String type, ChangeEffect changeEffect) {
-		SeqChange seqChange = changeEffect.getSeqChange();
+		Variant seqChange = changeEffect.getSeqChange();
 
 		// Different seqChange? Clean the cache
 		if (prevSeqChangePos != seqChange.getStart()) {
@@ -115,9 +115,8 @@ public class GeneCountByTypeTable implements Iterable<Gene>, Serializable {
 		int size = end - start + 1;
 		if (size > 0) {
 			counter.inc(gene.getId(), size); // Increment counters
-
-			// Add score (if any)
-			if (!Double.isNaN(seqChange.getScore())) counter.addScore(gene.getId(), seqChange.getScore());
+			//			// Add score (if any)
+			//			if (!Double.isNaN(seqChange.getScore())) counter.addScore(gene.getId(), seqChange.getScore());
 		}
 
 		genes.add(gene); // Add gene to hash

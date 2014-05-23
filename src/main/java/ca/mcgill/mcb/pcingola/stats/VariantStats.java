@@ -7,37 +7,37 @@ import java.util.List;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
-import ca.mcgill.mcb.pcingola.interval.SeqChange.ChangeType;
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 
 /**
- * Some stats about seqChange objects
+ * Some stats about variant objects
  */
-public class SeqChangeStats implements SamplingStats<SeqChange> {
+public class VariantStats implements SamplingStats<Variant> {
 
 	public static final String CHANGE_SEPARATOR = "\t";
 	static final char bases[] = { 'A', 'C', 'G', 'T' };
 
 	Genome genome;
-	IntStats qualityStats;
-	IntStats coverageStats;
+	//	IntStats qualityStats;
+	//	IntStats coverageStats;
 	IntStats indelLen;
 	HashMap<String, ChrPosStats> chrPosStatsbyName;
 	long countSeqChanges = 0;
 	long countVariants = 0;
 	long countNonVariants;
 	long countNonEmptyId;
-	CountByType countByChangeType, countByChangeTypeHet, countByChangeTypeHom, baseChangesCount;
+	CountByType countByChangeType, baseChangesCount; // , countByChangeTypeHet, countByChangeTypeHom;
 
-	public SeqChangeStats(Genome genome) {
+	public VariantStats(Genome genome) {
 		this.genome = genome;
-		qualityStats = new IntStats();
-		coverageStats = new IntStats();
+		//		qualityStats = new IntStats();
+		//		coverageStats = new IntStats();
 		indelLen = new IntStats();
 		chrPosStatsbyName = new HashMap<String, ChrPosStats>();
 		countByChangeType = new CountByType();
-		countByChangeTypeHom = new CountByType();
-		countByChangeTypeHet = new CountByType();
+		//		countByChangeTypeHom = new CountByType();
+		//		countByChangeTypeHet = new CountByType();
 		baseChangesCount = new CountByType();
 	}
 
@@ -69,12 +69,12 @@ public class SeqChangeStats implements SamplingStats<SeqChange> {
 		return baseChangesCount.get(changeKey(oldBase, newBase));
 	}
 
-	public ChangeType[] getChangeType() {
-		return ChangeType.values();
+	public VariantType[] getChangeType() {
+		return VariantType.values();
 	}
 
 	public int getChangeTypeLength() {
-		return ChangeType.values().length;
+		return VariantType.values().length;
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class SeqChangeStats implements SamplingStats<SeqChange> {
 	}
 
 	/**
-	 * Total number of seqChanges
+	 * Total number of variants
 	 * @return
 	 */
 	public long getCount() {
@@ -126,28 +126,28 @@ public class SeqChangeStats implements SamplingStats<SeqChange> {
 	}
 
 	/**
-	 * Number of seqChanges by type
+	 * Number of variants by type
 	 * @return
 	 */
 	public CountByType getCountByChangeType() {
 		return countByChangeType;
 	}
 
-	/**
-	 * Number of heterozygous seqChanges by type
-	 * @return
-	 */
-	public CountByType getCountByChangeTypeHet() {
-		return countByChangeTypeHet;
-	}
-
-	/**
-	 * Number of homozygous seqChanges by type
-	 * @return
-	 */
-	public CountByType getCountByChangeTypeHom() {
-		return countByChangeTypeHom;
-	}
+	//	/**
+	//	 * Number of heterozygous variants by type
+	//	 * @return
+	//	 */
+	//	public CountByType getCountByChangeTypeHet() {
+	//		return countByChangeTypeHet;
+	//	}
+	//
+	//	/**
+	//	 * Number of homozygous variants by type
+	//	 * @return
+	//	 */
+	//	public CountByType getCountByChangeTypeHom() {
+	//		return countByChangeTypeHom;
+	//	}
 
 	/**
 	 * Number of changes by chromosome
@@ -168,13 +168,13 @@ public class SeqChangeStats implements SamplingStats<SeqChange> {
 		return countNonVariants;
 	}
 
-	public String getCoverageHistoUrl() {
-		return coverageStats.toStringPlot("Coverage histogram", "Coverage", true);
-	}
-
-	public IntStats getCoverageStats() {
-		return coverageStats;
-	}
+	//	public String getCoverageHistoUrl() {
+	//		return coverageStats.toStringPlot("Coverage histogram", "Coverage", true);
+	//	}
+	//
+	//	public IntStats getCoverageStats() {
+	//		return coverageStats;
+	//	}
 
 	/**
 	 * Genome length
@@ -217,13 +217,13 @@ public class SeqChangeStats implements SamplingStats<SeqChange> {
 		return tot > 0 ? known / tot : 0;
 	}
 
-	public String getQualityHistoUrl() {
-		return qualityStats.toStringPlot("Quality histogram", "Quality", true);
-	}
-
-	public IntStats getQualityStats() {
-		return qualityStats;
-	}
+	//	public String getQualityHistoUrl() {
+	//		return qualityStats.toStringPlot("Quality histogram", "Quality", true);
+	//	}
+	//
+	//	public IntStats getQualityStats() {
+	//		return qualityStats;
+	//	}
 
 	/**
 	 * Rate of change
@@ -303,11 +303,11 @@ public class SeqChangeStats implements SamplingStats<SeqChange> {
 
 	/**
 	 * Perform starts on an InDel
-	 * @param seqChange
+	 * @param variant
 	 */
-	void indelSample(SeqChange seqChange) {
+	void indelSample(Variant variant) {
 		// InDel length histogram
-		int len = (seqChange.isDel() ? -1 : 1) * (seqChange.getChangeOption(0).length() - 1);
+		int len = (variant.isDel() ? -1 : 1) * (variant.getChangeOption(0).length() - 1);
 		indelLen.sample(len);
 	}
 
@@ -315,9 +315,9 @@ public class SeqChangeStats implements SamplingStats<SeqChange> {
 	 * Use this sample to perform statistics
 	 */
 	@Override
-	public void sample(SeqChange seqChange) {
+	public void sample(Variant variant) {
 		// Not a real change => Ignore
-		if (!seqChange.isChange()) {
+		if (!variant.isVariant()) {
 			countNonVariants++;
 			return;
 		}
@@ -325,28 +325,28 @@ public class SeqChangeStats implements SamplingStats<SeqChange> {
 		countSeqChanges++;
 
 		// Count non-empty IDs
-		if ((seqChange.getId() != null) && !seqChange.getId().isEmpty()) countNonEmptyId++;
+		if ((variant.getId() != null) && !variant.getId().isEmpty()) countNonEmptyId++;
 
 		// Count by change type
-		String changeType = seqChange.getChangeType().toString();
+		String changeType = variant.getChangeType().toString();
 		countByChangeType.inc(changeType); // Each type of changes
 
-		// Hom or Het 
-		if (seqChange.isHomozygous()) countByChangeTypeHom.inc(changeType);
-		if (seqChange.isHeterozygous()) countByChangeTypeHet.inc(changeType);
-
-		// Quality histogram
-		if (seqChange.getQuality() >= 0) qualityStats.sample((int) seqChange.getQuality()); // Quality < 0 means 'not available'
-
-		// Coverage histogram
-		if (seqChange.getCoverage() >= 0) coverageStats.sample(seqChange.getCoverage()); // Coverage < 0 means 'not available'
+		//		// Hom or Het 
+		//		if (variant.isHomozygous()) countByChangeTypeHom.inc(changeType);
+		//		if (variant.isHeterozygous()) countByChangeTypeHet.inc(changeType);
+		//
+		//		// Quality histogram
+		//		if (variant.getQuality() >= 0) qualityStats.sample((int) variant.getQuality()); // Quality < 0 means 'not available'
+		//
+		//		// Coverage histogram
+		//		if (variant.getCoverage() >= 0) coverageStats.sample(variant.getCoverage()); // Coverage < 0 means 'not available'
 
 		// SNP stats or InDel stats
-		if (seqChange.isSnp()) snpSample(seqChange);
-		else if (seqChange.isInDel()) indelSample(seqChange);
+		if (variant.isSnp()) snpSample(variant);
+		else if (variant.isInDel()) indelSample(variant);
 
 		// Coverage by chromosome (hot spot) stats
-		Chromosome chr = seqChange.getChromosome();
+		Chromosome chr = variant.getChromosome();
 		if (chr != null) {
 			// Get stats for this chromosome
 			String chrName = chr.getId();
@@ -359,21 +359,21 @@ public class SeqChangeStats implements SamplingStats<SeqChange> {
 			}
 
 			// Perform stats
-			chrPosStats.sample(seqChange.getStart());
+			chrPosStats.sample(variant.getStart());
 		}
 	}
 
 	/**
 	 * Perform stats on a SNP 
-	 * @param seqChange
+	 * @param variant
 	 */
-	void snpSample(SeqChange seqChange) {
+	void snpSample(Variant variant) {
 		// Increment change matrix counters
-		String ref = seqChange.getReference();
-		int numOpts = seqChange.getChangeOptionCount();
+		String ref = variant.getReference();
+		int numOpts = variant.getChangeOptionCount();
 
 		for (int i = 0; i < numOpts; i++) {
-			String snp = seqChange.getChangeOption(i);
+			String snp = variant.getChangeOption(i);
 			if (ref != snp) baseChangesCount.inc(changeKey(ref, snp)); // Some case might be the same base (e.g. heterozygous SNP change "A => W", where 'W' means 'A' or 'T')
 		}
 	}

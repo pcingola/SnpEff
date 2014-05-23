@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.TestCase;
-import ca.mcgill.mcb.pcingola.fileIterator.SeqChangeFileIterator;
+import ca.mcgill.mcb.pcingola.fileIterator.VariantFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.SeqChangeTxtFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
@@ -77,7 +77,7 @@ public class TestCasesSeqChange extends TestCase {
 	 * @param resultsSoFar
 	 * @return
 	 */
-	boolean anyResultMatches(String transcriptId, SeqChange seqChange, ChangeEffects changeEffects, boolean useShort) {
+	boolean anyResultMatches(String transcriptId, Variant seqChange, ChangeEffects changeEffects, boolean useShort) {
 		for (ChangeEffect chEff : changeEffects) {
 			String resStr = chEff.toStringSimple(useShort);
 
@@ -114,12 +114,11 @@ public class TestCasesSeqChange extends TestCase {
 	 * @param seqChangeFile
 	 * @return
 	 */
-	public List<SeqChange> parseSnpEffectFile(String seqChangeFile) {
-		ArrayList<SeqChange> seqChanges = new ArrayList<SeqChange>();
+	public List<Variant> parseSnpEffectFile(String seqChangeFile) {
+		ArrayList<Variant> seqChanges = new ArrayList<Variant>();
 
-		int inOffset = 1;
-		SeqChangeTxtFileIterator seqChangeFileIterator = new SeqChangeTxtFileIterator(seqChangeFile, config.getGenome(), inOffset);
-		for (SeqChange sc : seqChangeFileIterator)
+		SeqChangeTxtFileIterator seqChangeFileIterator = new SeqChangeTxtFileIterator(seqChangeFile, config.getGenome());
+		for (Variant sc : seqChangeFileIterator)
 			seqChanges.add(sc);
 
 		Collections.sort(seqChanges);
@@ -130,10 +129,10 @@ public class TestCasesSeqChange extends TestCase {
 	 * Calculate snp effect for a list of snps
 	 * @param snpEffFile
 	 */
-	public void snpEffect(List<SeqChange> seqChangeList, String transcriptId, boolean useShort, boolean negate) {
+	public void snpEffect(List<Variant> seqChangeList, String transcriptId, boolean useShort, boolean negate) {
 		int num = 1;
 		// Predict each seqChange
-		for (SeqChange seqChange : seqChangeList) {
+		for (Variant seqChange : seqChangeList) {
 			// Get results for each snp
 			ChangeEffects results = config.getSnpEffectPredictor().seqChangeEffect(seqChange);
 
@@ -155,7 +154,7 @@ public class TestCasesSeqChange extends TestCase {
 			if (!ok) {
 				if (createOutputFile) {
 					for (ChangeEffect res : results) {
-						SeqChange sc = res.getSeqChange();
+						Variant sc = res.getSeqChange();
 						System.out.println(sc.getChromosomeName() //
 								+ "\t" + (sc.getStart() + 1) //
 								+ "\t" + sc.getReference() //
@@ -178,7 +177,7 @@ public class TestCasesSeqChange extends TestCase {
 	 * Make sure at least one effect matched the 'id' in the input TXT file
 	 */
 	public void snpEffect(String snpEffFile, String transcriptId, boolean useShort) {
-		List<SeqChange> snplist = parseSnpEffectFile(snpEffFile); // Read SNPs from file
+		List<Variant> snplist = parseSnpEffectFile(snpEffFile); // Read SNPs from file
 		snpEffect(snplist, transcriptId, useShort, false); // Predict each snp
 	}
 
@@ -187,7 +186,7 @@ public class TestCasesSeqChange extends TestCase {
 	 * Make sure NOT A SINGLE effect matched the 'id' in the input TXT file, i.e. the opposite of snpEffect...) method.
 	 */
 	public void snpEffectNegate(String snpEffFile, String transcriptId, boolean useShort) {
-		List<SeqChange> snplist = parseSnpEffectFile(snpEffFile); // Read SNPs from file
+		List<Variant> snplist = parseSnpEffectFile(snpEffFile); // Read SNPs from file
 		snpEffect(snplist, transcriptId, useShort, true); // Predict each snp
 	}
 
@@ -313,14 +312,14 @@ public class TestCasesSeqChange extends TestCase {
 	public void test_22() {
 		initSnpEffPredictor();
 
-		SeqChangeFileIterator snpFileIterator;
-		snpFileIterator = new SeqChangeTxtFileIterator("tests/chr_not_found.out", config.getGenome(), 0);
+		VariantFileIterator snpFileIterator;
+		snpFileIterator = new SeqChangeTxtFileIterator("tests/chr_not_found.out", config.getGenome());
 		snpFileIterator.setIgnoreChromosomeErrors(false);
 
 		boolean trown = false;
 		try {
 			// Read all SNPs from file. Note: This should throw an exception "Chromosome not found"
-			for (SeqChange seqChange : snpFileIterator) {
+			for (Variant seqChange : snpFileIterator) {
 				Gpr.debug(seqChange);
 			}
 		} catch (RuntimeException e) {

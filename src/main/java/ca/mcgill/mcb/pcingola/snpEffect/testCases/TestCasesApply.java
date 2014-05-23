@@ -10,8 +10,8 @@ import org.junit.Test;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -84,7 +84,7 @@ public class TestCasesApply extends TestCase {
 							newSeq = ex.isStrandPlus() ? newSeq : GprSeq.reverseWc(newSeq);
 							newSeq = newSeq.toLowerCase();
 
-							SeqChange seqChange = new SeqChange(t.getChromosome(), i, ref + "", alt + "", 1, "", -1, -1);
+							Variant seqChange = new Variant(t.getChromosome(), i, ref + "", alt + "", "");
 
 							Exon exNew = ex.apply(seqChange);
 
@@ -157,7 +157,7 @@ public class TestCasesApply extends TestCase {
 							newSeq = ex.isStrandPlus() ? newSeq : GprSeq.reverseWc(newSeq);
 							newSeq = newSeq.toLowerCase();
 
-							SeqChange seqChange = new SeqChange(t.getChromosome(), i, ref + "", "+" + altsb.toString(), 1, "", -1, -1);
+							Variant seqChange = new Variant(t.getChromosome(), i, ref + "", "+" + altsb.toString(), "");
 							if (debug) Gpr.debug("SeqChange: " + seqChange.getChangeType() + "\t" + seqChange);
 
 							Exon exNew = ex.apply(seqChange);
@@ -231,7 +231,7 @@ public class TestCasesApply extends TestCase {
 							newSeq = ex.isStrandPlus() ? newSeq : GprSeq.reverseWc(newSeq);
 							newSeq = newSeq.toLowerCase();
 
-							SeqChange seqChange = new SeqChange(t.getChromosome(), i, "", "-" + alt, 1, "", -1, -1);
+							Variant seqChange = new Variant(t.getChromosome(), i, "", "-" + alt, "");
 							if (debug) Gpr.debug("SeqChange: " + seqChange.getChangeType() + "\t" + seqChange);
 
 							Exon exNew = ex.apply(seqChange);
@@ -315,7 +315,7 @@ public class TestCasesApply extends TestCase {
 							newSeq = newSeq.toLowerCase();
 
 							// Create seqChange and apply 
-							SeqChange seqChange = new SeqChange(t.getChromosome(), i, refsb.toString(), altsb.toString(), 1, "", -1, -1);
+							Variant seqChange = new Variant(t.getChromosome(), i, refsb.toString(), altsb.toString(), "");
 							if (debug) Gpr.debug("SeqChange: " + seqChange);
 							Exon exNew = ex.apply(seqChange);
 

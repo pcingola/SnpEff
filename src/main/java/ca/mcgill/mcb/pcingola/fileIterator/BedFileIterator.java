@@ -4,39 +4,42 @@ import java.io.IOException;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.VariantWithScore;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Opens a sequence change file and iterates over all intervals in BED format.
  * Reference: http://genome.ucsc.edu/FAQ/FAQformat.html#format1
- * 
- * BED lines have three required fields and nine additional optional fields. 
+ *
+ * BED lines have three required fields and nine additional optional fields.
  * The number of fields per line must be consistent throughout any single set of data in an annotation track.
- * 
+ *
  * The first three required BED fields are:
  * 		1. chrom - The name of the chromosome (e.g. chr3, chrY, chr2_random) or scaffold (e.g. scaffold10671).
  * 		2. chromStart - The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0.
- * 		3. chromEnd - The ending position of the feature in the chromosome or scaffold. The chromEnd base is not included in the display of the feature. For example, the first 100 bases of a chromosome are defined as chromStart=0, chromEnd=100, and span the bases numbered 0-99. 
- * 
+ * 		3. chromEnd - The ending position of the feature in the chromosome or scaffold. The chromEnd base is not included in the display of the feature. For example, the first 100 bases of a chromosome are defined as chromStart=0, chromEnd=100, and span the bases numbered 0-99.
+ *
  * There are 9 additional optional BED fields, but we only use one:
- * 		4. name - Defines the name of the BED line. This label is displayed to the left of the BED line in the Genome Browser window when the track is open to full display mode or directly to the left of the item in pack mode. 
- * 		5. score - A score used for that interval 
- *     
+ * 		4. name - Defines the name of the BED line. This label is displayed to the left of the BED line in the Genome Browser window when the track is open to full display mode or directly to the left of the item in pack mode.
+ * 		5. score - A score used for that interval
+ *
  * @author pcingola
  */
-public class BedFileIterator extends SeqChangeFileIterator {
+public class BedFileIterator extends VariantFileIterator {
 
 	public BedFileIterator(String fileName) {
-		super(fileName, 0);
+		super(fileName);
+		inOffset = 0;
 	}
 
 	public BedFileIterator(String fileName, Genome genome) {
-		super(fileName, genome, 0);
+		super(fileName, genome);
+		inOffset = 0;
 	}
 
 	@Override
-	protected SeqChange readNext() {
+	protected Variant readNext() {
 		// Try to read a line
 		try {
 			while (ready()) {
@@ -52,7 +55,7 @@ public class BedFileIterator extends SeqChangeFileIterator {
 					// Is line OK?
 					if (fields.length >= 2) {
 						// Format: CHR \t START \t END \t ID \t SCORE \t ....
-						// Fields 
+						// Fields
 						String chromosome = fields[0].trim();
 						Chromosome chromo = getChromosome(chromosome);
 						sanityCheckChromo(chromosome, chromo); // Sanity check
@@ -69,15 +72,14 @@ public class BedFileIterator extends SeqChangeFileIterator {
 						String id = "line_" + lineNum;
 						if ((fields.length > 3) && (!fields[3].isEmpty())) id = fields[3];
 
-						// Score 
+						// Score
 						double score = 0;
 						if (fields.length > 4) score = Gpr.parseDoubleSafe(fields[4]);
 
-						// Create seqChange
-						SeqChange seqChange = new SeqChange(chromo, start, end, id);
-						seqChange.setScore(score);
-						seqChange.setChromosomeNameOri(chromosome);
-						return seqChange;
+						// Create variant
+						Variant variant = new VariantWithScore(chromo, start, end, id, score);
+						variant.setChromosomeNameOri(chromosome);
+						return variant;
 					}
 				}
 			}

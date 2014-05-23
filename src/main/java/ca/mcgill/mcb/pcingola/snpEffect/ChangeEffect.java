@@ -11,7 +11,7 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
@@ -287,8 +287,8 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 	static final boolean COMPATIBLE_v1_8 = true; // Activate this in order to get the same out as version 1.8. This is only for testing & debugging
 
-	SeqChange seqChange = null;
-	SeqChange seqChangeRef = null;
+	Variant seqChange = null;
+	Variant seqChangeRef = null;
 	EffectType effectType = EffectType.NONE;
 	EffectImpact effectImpact = null;
 	Marker marker = null;
@@ -302,11 +302,11 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	String aaOld = "", aaNew = ""; // Amino acid changes
 	String aasAroundOld = "", aasAroundNew = ""; // Amino acids around
 
-	public ChangeEffect(SeqChange seqChange) {
+	public ChangeEffect(Variant seqChange) {
 		this.seqChange = seqChange;
 	}
 
-	public ChangeEffect(SeqChange seqChange, SeqChange seqChangeRef) {
+	public ChangeEffect(Variant seqChange, Variant seqChangeRef) {
 		this.seqChange = seqChange;
 		this.seqChangeRef = seqChangeRef;
 	}
@@ -504,7 +504,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	public EffectImpact getEffectImpact() {
 
 		if (effectImpact == null) {
-			if ((seqChange != null) && (!seqChange.isChange())) {
+			if ((seqChange != null) && (!seqChange.isVariant())) {
 				// Not a change? => Modifier
 				effectImpact = EffectImpact.MODIFIER;
 			} else {
@@ -757,7 +757,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		return marker;
 	}
 
-	public SeqChange getSeqChange() {
+	public Variant getSeqChange() {
 		return seqChange;
 	}
 

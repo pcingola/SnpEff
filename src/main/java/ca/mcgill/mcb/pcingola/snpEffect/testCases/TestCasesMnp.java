@@ -11,8 +11,8 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
@@ -89,7 +89,7 @@ public class TestCasesMnp extends TestCase {
 
 		// Create a SeqChange
 		int seqChangeStrand = +1;
-		SeqChange seqChange = new SeqChange(chromosome, pos, ref + "", mnp + "", seqChangeStrand, "", 1.0, 1);
+		Variant seqChange = new Variant(chromosome, pos, ref + "", mnp + "", "");
 
 		//---
 		// Calculate effects

@@ -45,7 +45,7 @@ public class Motif extends Marker {
 	 * @param seqChange
 	 * @return
 	 */
-	EffectImpact effectImpact(SeqChange seqChange) {
+	EffectImpact effectImpact(Variant seqChange) {
 		if (pwm == null) return EffectImpact.MODIFIER;
 
 		EffectImpact effectImpact = EffectImpact.MODIFIER;
@@ -100,7 +100,7 @@ public class Motif extends Marker {
 	 * @return
 	 */
 	@Override
-	public boolean seqChangeEffect(SeqChange seqChange, ChangeEffects changeEffects) {
+	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects) {
 		if (!intersects(seqChange)) return false;// Sanity check
 		EffectType effType = EffectType.MOTIF;
 		changeEffects.add(this, effType, "");

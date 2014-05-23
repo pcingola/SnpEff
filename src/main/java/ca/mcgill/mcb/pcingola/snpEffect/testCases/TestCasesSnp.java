@@ -9,8 +9,8 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
@@ -148,15 +148,15 @@ public class TestCasesSnp extends TestCase {
 						}
 
 						// Create a SeqChange
-						int seqChangeStrand = rand.nextBoolean() ? +1 : -1;
+						int seqChangeStrand = 1;
 						if (exon.isStrandMinus()) refBase = GprSeq.wc(refBase);
 						if (seqChangeStrand == -exon.getStrand()) {
 							snp = GprSeq.wc(snp);
 							refBase = GprSeq.wc(refBase);
 						}
-						SeqChange seqChange = new SeqChange(chromosome, pos, refBase + "", snp + "", seqChangeStrand, "", 1.0, 1);
+						Variant seqChange = new Variant(chromosome, pos, refBase + "", snp + "", "");
 
-						if (!seqChange.isChange()) effectExpected = "EXON";
+						if (!seqChange.isVariant()) effectExpected = "EXON";
 
 						// Calculate effects
 						ChangeEffects effects = snpEffectPredictor.seqChangeEffect(seqChange);

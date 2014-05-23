@@ -7,8 +7,8 @@ import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
@@ -99,7 +99,7 @@ public class TestCasesRefSeq extends TestCase {
 
 		// Check a SNP
 		sep.buildForest();
-		SeqChange seqChange = new SeqChange(sep.getGenome().getChromosome("1"), 521603, "A", "G", 1, "", 1, 1);
+		Variant seqChange = new Variant(sep.getGenome().getChromosome("1"), 521603, "A", "G");
 		ChangeEffects effs = sep.seqChangeEffect(seqChange);
 		for (ChangeEffect eff : effs) {
 			System.out.println("\t" + eff);

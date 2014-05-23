@@ -1,11 +1,10 @@
 package ca.mcgill.mcb.pcingola;
 
-import ca.mcgill.mcb.pcingola.fileIterator.SeqChangeFileIterator;
+import ca.mcgill.mcb.pcingola.fileIterator.VariantFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.SeqChangeTxtFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Gene;
-import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Intron;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -18,23 +17,21 @@ public class Zzz extends SnpEff {
 	public static void main(String[] args) {
 		Timer.showStdErr("Start");
 
-		
 		// Create an input file iterator
 		String inputFile = Gpr.HOME + "/snpEff/ins.txt";
-		SeqChangeFileIterator seqChangeFileIterator = new SeqChangeTxtFileIterator(inputFile, 1);
+		VariantFileIterator seqChangeFileIterator = new SeqChangeTxtFileIterator(inputFile);
 
 		//---
 		// Iterate over input file
 		//---
-		for (SeqChange seqChange : seqChangeFileIterator) {
-			System.out.println(seqChange+"\t"+seqChange.getChangeType());
+		for (Variant seqChange : seqChangeFileIterator) {
+			System.out.println(seqChange + "\t" + seqChange.getChangeType());
 		}
-		
-		
-//		Zzz zzz = new Zzz(null);
-//		zzz.load("testHg3771Chr1");
-//		zzz.run();
-//		Timer.showStdErr("End");
+
+		//		Zzz zzz = new Zzz(null);
+		//		zzz.load("testHg3771Chr1");
+		//		zzz.run();
+		//		Timer.showStdErr("End");
 	}
 
 	public Zzz(String[] args) {

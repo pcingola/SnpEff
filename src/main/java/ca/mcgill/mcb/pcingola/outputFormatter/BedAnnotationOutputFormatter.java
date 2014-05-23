@@ -5,7 +5,7 @@ import java.util.HashSet;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 
 /**
@@ -27,7 +27,7 @@ public class BedAnnotationOutputFormatter extends BedOutputFormatter {
 	 */
 	@Override
 	public String toString() {
-		SeqChange seqChange = (SeqChange) section;
+		Variant seqChange = (Variant) section;
 		String variantName = seqChange.getChromosomeName() + ":" + (seqChange.getStart() + outOffset);
 
 		// Show results

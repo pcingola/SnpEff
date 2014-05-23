@@ -14,7 +14,7 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.stats.CountByKey;
@@ -105,7 +105,7 @@ public class CountReads {
 		// Open file
 		int readNum = 1;
 
-		for (SeqChange read : new BedFileIterator(fileName)) {
+		for (Variant read : new BedFileIterator(fileName)) {
 			try {
 				readLengthCount++;
 				readLengthSum += read.size();

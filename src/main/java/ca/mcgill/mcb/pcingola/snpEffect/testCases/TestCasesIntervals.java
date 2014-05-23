@@ -13,7 +13,7 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.MarkerUtil;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.SeqChange;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
@@ -54,7 +54,7 @@ public class TestCasesIntervals extends TestCase {
 	 * @param resultsSoFar
 	 * @return
 	 */
-	boolean anyResultMatches(String transcriptId, SeqChange seqChange, List<ChangeEffect> resultsList, boolean useSimple, StringBuilder resultsSoFar) {
+	boolean anyResultMatches(String transcriptId, Variant seqChange, List<ChangeEffect> resultsList, boolean useSimple, StringBuilder resultsSoFar) {
 		boolean ok = false;
 		for (ChangeEffect chEff : resultsList) {
 			String resStr = chEff.toStringSimple(!useSimple);
