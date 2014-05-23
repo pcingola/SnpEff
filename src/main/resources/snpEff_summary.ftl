@@ -151,12 +151,6 @@ th a:active, th a:hover {
 	<a href="#effectsImpact"> Number of variants by impact </a><br>
 	<a href="#effectsImpact"> Number of variants by functional class </a><br>
 	<a href="#effects"> Number of variants by effect </a><br>
-	<#if seqStats.qualityStats.validData>
-	<a href="#quality">Quality histogram</a><br>
-	</#if>
-	<#if seqStats.coverageStats.validData>
-	<a href="#coverage">Coverage histogram</a><br>
-	</#if>
 	<a href="#baseChages">Base change table</a><br>
 	<a href="#tstv">Transition vs transversions (ts/tv)</a><br>
 	<a href="#alleleFreq"> Frequency of alleles </a><br>
@@ -207,14 +201,6 @@ th a:active, th a:hover {
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of variants (before filter) </b> </td>
 		<td> ${countVariants} </td>
-	</tr>
-	<tr bgcolor=dddddd>
-		<td valign=top> <b> Filter </b> </td>
-		<td> ${seqChangeFilter} </td>
-	</tr>
-	<tr bgcolor=dddddd>
-		<td valign=top> <b> Number of variants filtered out </b> </td>
-		<td> ${countVariantsFilteredOut} </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of not variants <br>(i.e. reference equals alternative) </b> </td>
@@ -294,8 +280,6 @@ th a:active, th a:hover {
 		<tr>
 			<th> <b> Type   </b> </th>
 			<th> <b> Total  </b> </th>
-			<th> <b> Homo   </b> </th>
-			<th> <b> Hetero </b> </th>
 		</tr>
 	</thead>
     <tbody>
@@ -303,8 +287,6 @@ th a:active, th a:hover {
 	    <tr>
 	    	<td> <b> ${chType} </b> </td>
 	    	<td class="numeric" bgcolor="${seqStats.countByChangeType.getColorHtml(chType)}"> ${seqStats.countByChangeType.get(chType)} </td>
-	    	<td class="numeric" bgcolor="${seqStats.countByChangeTypeHom.getColorHtml(chType)}"> ${seqStats.countByChangeTypeHom.get(chType)} </td>
-	    	<td class="numeric" bgcolor="${seqStats.countByChangeTypeHet.getColorHtml(chType)}"> ${seqStats.countByChangeTypeHet.get(chType)} </td>
 	    </tr>
     	</#list>
     </tbody>
@@ -312,8 +294,6 @@ th a:active, th a:hover {
 	    <tr>
 	    	<th><b>Total </b> </th>
 	    	<th class="numeric"> ${seqStats.countByChangeType.get("Total")} </th>
-	    	<th class="numeric"> ${seqStats.countByChangeTypeHom.get("Total")} </th>
-	    	<th class="numeric"> ${seqStats.countByChangeTypeHet.get("Total")} </th>
 	    </tr>
     </tfoot>
 </table>
@@ -372,35 +352,6 @@ Missense / Silent ratio: </th><td class="numeric"> ${changeStats.silentRatio?str
 <img src="${changeStats.plotGene}" border=1><p>
 
 </center>
-<!--==========================================================================
-	Quality plots
-	========================================================================== -->
-
-<#if seqStats.qualityStats.validData>
-	<hr> 
-	<a name="quality"> 
-	<b> Quality: </b> 
-	<p>
-	<pre>
-		<@intstatsTable seqStats.qualityStats />
-		<img src="${seqStats.qualityHistoUrl}"><br>
-	</pre>
-</#if>
-
-<!--==========================================================================
-	Coverage
-	========================================================================== -->
-
-<#if seqStats.coverageStats.validData>
-	<hr> 
-	<a name="coverage"> 
-	<b> Coverage:</b> 
-	<p>
-	<pre>
-		<@intstatsTable seqStats.coverageStats />
-		<img src="${seqStats.coverageHistoUrl}"><br>
-	</pre>
-</#if>
 
 <!--==========================================================================
 	InDels

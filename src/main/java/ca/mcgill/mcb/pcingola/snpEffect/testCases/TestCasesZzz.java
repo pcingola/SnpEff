@@ -2,8 +2,11 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import ca.mcgill.mcb.pcingola.interval.Chromosome;
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Genome;
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * 
@@ -16,13 +19,32 @@ public class TestCasesZzz extends TestCase {
 	boolean debug = false;
 	boolean verbose = false || debug;
 
-	public void test_00_chrOrder() {
-		Genome genome = new Genome("test");
+	Config config;
+	Genome genome;
 
-		Chromosome chrA = new Chromosome(genome, 0, 1, 1, "chr1");
-		Chromosome chrB = new Chromosome(genome, 0, 1, 1, "scaffold0001");
+	void initSnpEffPredictor(String genomeName) {
+		// Create a config and force out snpPredictor for hg37 chromosome Y
+		config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
+		config.loadSnpEffectPredictor();
+		genome = config.getGenome();
+		config.getSnpEffectPredictor().buildForest();
+	}
 
-		// Order: A < B < C
-		Assert.assertTrue(chrA.compareTo(chrB) < 0);
+	/**
+	 * Basic parsing
+	 */
+	public void test_01() {
+		initSnpEffPredictor("testCase");
+
+		String fileName = "./tests/vcf.vcf";
+		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
+		vcf.setCreateChromos(true);
+		for (VcfEntry vcfEntry : vcf) {
+			for (Variant seqChange : vcfEntry.variants()) {
+				System.out.println(seqChange);
+				String seqChangeStr = "chr" + seqChange.getChromosomeName() + ":" + seqChange.getStart() + "_" + seqChange.getReference() + "/" + seqChange.getChange();
+				Assert.assertEquals(seqChangeStr, seqChange.getId());
+			}
+		}
 	}
 }

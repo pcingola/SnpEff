@@ -263,17 +263,14 @@ public class Variant extends Marker {
 			if (alt.startsWith("+")) {
 				// Insertions
 				variantType = VariantType.INS;
-				alt = alt.substring(1);
 			} else if (alt.startsWith("-")) {
 				// Deletions
 				variantType = VariantType.DEL;
 				if (alts[0].length() > 1) end = position + alts[0].length() - 2; // Update 'end' position
-				alt = alt.substring(1);
 			} else if (alt.startsWith("=")) {
 				// Mixed variant (substitution)
 				variantType = VariantType.MIXED;
 				if (alts[0].length() > 1) end = position + alts[0].length() - 2; // Update 'end' position
-				alt = alt.substring(1);
 			}
 
 			// Insertions and deletions always have '*' as reference

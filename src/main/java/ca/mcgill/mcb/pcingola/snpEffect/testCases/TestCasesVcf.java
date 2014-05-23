@@ -122,7 +122,7 @@ public class TestCasesVcf extends TestCase {
 			for (Variant seqChange : vcfEntry.variants()) {
 				System.out.println(seqChange);
 				String seqChangeStr = "chr" + seqChange.getChromosomeName() + ":" + seqChange.getStart() + "_" + seqChange.getReference() + "/" + seqChange.getChange();
-				Assert.assertEquals(seqChange.getId(), seqChangeStr);
+				Assert.assertEquals(seqChangeStr, seqChange.getId());
 			}
 		}
 	}
