@@ -23,12 +23,12 @@ public class TestCasesTranscriptError extends TestCase {
 	}
 
 	public void test_01() {
-		String args[] = { "testHg3763Chr20", "./tests/short_codon_bug.vcf" };
+		String args[] = { "-classic", "testHg3763Chr20", "./tests/short_codon_bug.vcf" };
 		transcriptError(args, ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE);
 	}
 
 	public void test_02() {
-		String args[] = { "testHg3763Chr20", "./tests/incorrect_ref.vcf" };
+		String args[] = { "-classic", "testHg3763Chr20", "./tests/incorrect_ref.vcf" };
 		transcriptError(args, ErrorWarningType.WARNING_REF_DOES_NOT_MATCH_GENOME);
 	}
 

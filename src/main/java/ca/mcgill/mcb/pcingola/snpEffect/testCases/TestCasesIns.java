@@ -91,7 +91,7 @@ public class TestCasesIns extends TestCase {
 	 * Compare with results from ENSEMBL's VEP on transcript ENST00000268124
 	 */
 	public void compareVep(String genome, String vcf, String trId) {
-		String args[] = { genome, vcf };
+		String args[] = { "-classic", genome, vcf };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
@@ -277,7 +277,7 @@ public class TestCasesIns extends TestCase {
 	 * Insertion on minus strand
 	 */
 	public void test_02_InsOffByOne() {
-		String args[] = { "testENST00000268124", "tests/ins_off_by_one.vcf" };
+		String args[] = { "-classic", "testENST00000268124", "tests/ins_off_by_one.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();

@@ -421,7 +421,7 @@ public class TestCasesVcf extends TestCase {
 		String vcfFile = "tests/test_vcf_filter.vcf";
 		String bedFile = "tests/test_vcf_filter.bed";
 
-		String args[] = { "-v", "-filterinterval", bedFile, "testHg3771Chr1", vcfFile };
+		String args[] = { "-classic", "-v", "-filterinterval", bedFile, "testHg3771Chr1", vcfFile };
 		SnpEff snpeff = new SnpEff(args);
 
 		// Create command and run

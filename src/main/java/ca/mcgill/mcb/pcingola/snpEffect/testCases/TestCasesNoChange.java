@@ -22,12 +22,12 @@ public class TestCasesNoChange extends TestCase {
 	}
 
 	public void test_01() {
-		String args[] = { "testHg3766Chr1", "./tests/test.no_change.vcf" };
+		String args[] = { "-classic", "testHg3766Chr1", "./tests/test.no_change.vcf" };
 		vcfNoChange(args);
 	}
 
 	public void test_02() {
-		String args[] = { "testHg3766Chr1", "./tests/test.no_change_02.vcf" };
+		String args[] = { "-classic", "testHg3766Chr1", "./tests/test.no_change_02.vcf" };
 		vcfNoChange(args);
 	}
 

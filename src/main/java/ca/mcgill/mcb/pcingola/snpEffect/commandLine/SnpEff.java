@@ -94,8 +94,6 @@ public class SnpEff implements CommandLine {
 	protected boolean verbose; // Be verbose
 	protected Boolean treatAllAsProteinCoding = null; // Only use coding genes. Default is 'null' which means 'auto'
 	protected int numWorkers = Gpr.NUM_CORES; // Max number of threads (if multi-threaded version is available)
-	//	protected int inOffset = 1; // By default positions are 1-based
-	//	protected int outOffset = 1;
 	protected int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE; // Splice site size default: 2 bases (canonical splice site)
 	protected int upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH; // Upstream & downstream interval length
 	protected String configFile; // Config file
@@ -614,10 +612,6 @@ public class SnpEff implements CommandLine {
 				} else if ((arg.equals("-c") || arg.equalsIgnoreCase("-config"))) {
 					if ((i + 1) < args.length) configFile = args[++i];
 					else usage("Option '-c' without config file argument");
-					//				} else if (arg.equals("-1")) {
-					//					inOffset = outOffset = 1;
-					//				} else if (arg.equals("-0")) {
-					//					inOffset = outOffset = 0;
 				} else if (arg.equals("-t")) multiThreaded = true;
 				else if (arg.equalsIgnoreCase("-treatAllAsProteinCoding")) {
 					if ((i + 1) < args.length) {
@@ -637,10 +631,6 @@ public class SnpEff implements CommandLine {
 					if ((i + 1) < args.length) upDownStreamLength = Gpr.parseIntSafe(args[++i]);
 				} else if ((arg.equals("-ss") || arg.equalsIgnoreCase("-spliceSiteSize"))) {
 					if ((i + 1) < args.length) spliceSiteSize = Gpr.parseIntSafe(args[++i]);
-					//				} else if ((arg.equals("-if") || arg.equalsIgnoreCase("-inOffset"))) {
-					//					if ((i + 1) < args.length) inOffset = Gpr.parseIntSafe(args[++i]);
-					//				} else if ((arg.equals("-of") || arg.equalsIgnoreCase("-outOffset"))) {
-					//					if ((i + 1) < args.length) outOffset = Gpr.parseIntSafe(args[++i]);
 				} else if (arg.equals("-onlyReg")) onlyRegulation = true;
 				else if (arg.equals("-reg")) {
 					if ((i + 1) < args.length) regulationTracks.add(args[++i]); // Add this track to the list
@@ -790,8 +780,6 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.onlyRegulation = onlyRegulation;
 		snpEffCmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
 		snpEffCmd.numWorkers = numWorkers;
-		//		snpEffCmd.inOffset = inOffset;
-		//		snpEffCmd.outOffset = outOffset;
 		snpEffCmd.spliceSiteSize = spliceSiteSize;
 		snpEffCmd.upDownStreamLength = upDownStreamLength;
 		snpEffCmd.genomeVer = genomeVer;
@@ -852,8 +840,6 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-download                    : Download a SnpEff database, if not available locally. Default: " + download);
 		System.err.println("\t-nodownload                  : Do not download a SnpEff database, if not available locally.");
 		System.err.println("\t-h , -help                   : Show this help and exit");
-		//		System.err.println("\t-if , -inOffset              : Offset input by a number of bases. E.g. '-inOffset 1' for one-based TXT input files");
-		//		System.err.println("\t-of , -outOffset             : Offset output by a number of bases. E.g. '-outOffset 1' for one-based TXT output files");
 		System.err.println("\t-noLog                       : Do not report usage statistics to server");
 		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
 		System.err.println("\t-q ,  -quiet                 : Quiet mode (do not show any messages or errors)");

@@ -180,7 +180,7 @@ public class TestCasesHgvs extends TestCase {
 	 */
 	public void snpEffect(String vcfFile, String genomeVer) {
 		// Create command
-		String args[] = { "-hgvs", "-ud", "0", genomeVer, vcfFile };
+		String args[] = { "-classic", "-hgvs", "-ud", "0", genomeVer, vcfFile };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();

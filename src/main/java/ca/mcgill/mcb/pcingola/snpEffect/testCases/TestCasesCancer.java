@@ -31,8 +31,8 @@ public class TestCasesCancer extends TestCase {
 	 */
 	public void snpEffect(String vcfFile, String txtFile, String aaHgsv, String genotype) {
 		// Create command
-		String argsVcf[] = { "-cancer", "-hgvs", "testHg3766Chr1", vcfFile };
-		String argsTxt[] = { "-cancer", "-cancerSamples", txtFile, "-hgvs", "testHg3766Chr1", vcfFile };
+		String argsVcf[] = { "-classic", "-cancer", "-hgvs", "testHg3766Chr1", vcfFile };
+		String argsTxt[] = { "-classic", "-cancer", "-cancerSamples", txtFile, "-hgvs", "testHg3766Chr1", vcfFile };
 		String args[] = (txtFile == null ? argsVcf : argsTxt);
 
 		SnpEff cmd = new SnpEff(args);

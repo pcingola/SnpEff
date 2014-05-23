@@ -24,7 +24,7 @@ public class TestCasesHugeDeletions extends TestCase {
 	}
 
 	public void test_01() {
-		String args[] = { "-noOut", "testHg3766Chr1", "./tests/huge_deletion_DEL.vcf" };
+		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion_DEL.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
@@ -42,7 +42,7 @@ public class TestCasesHugeDeletions extends TestCase {
 	}
 
 	public void test_02() {
-		String args[] = { "-noOut", "testHg3766Chr1", "./tests/huge_deletion.vcf.gz" };
+		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion.vcf.gz" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();

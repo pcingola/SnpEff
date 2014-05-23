@@ -18,6 +18,7 @@ public class TestCasesMissenseSilentRatio extends TestCase {
 
 	public void test_01() {
 		String args[] = { "-i", "vcf" //
+				, "-classic" //
 				, "-noOut" //
 				, "-useLocalTemplate" //
 				, "testHg3765Chr22" //

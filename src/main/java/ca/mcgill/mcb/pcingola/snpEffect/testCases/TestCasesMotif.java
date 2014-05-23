@@ -29,7 +29,7 @@ public class TestCasesMotif extends TestCase {
 	}
 
 	void checkMotif(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact) {
-		String args[] = { "-v", "-motif", "-ud", "0", genomeVer, vcfFile };
+		String args[] = { "-classic", "-v", "-motif", "-ud", "0", genomeVer, vcfFile };
 		SnpEff cmd = new SnpEff(args);
 
 		// Run

@@ -296,7 +296,7 @@ public class TestCasesMnp extends TestCase {
 
 	public void test_01() {
 		// Run
-		String args[] = { "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
+		String args[] = { "-classic", "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
 		List<VcfEntry> results = snpeff.run(true);

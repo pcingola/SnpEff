@@ -61,7 +61,7 @@ public class TestCasesExonFrame extends TestCase {
 		// Check annotations
 		//---
 		String vcfFileName = "tests/testLukas.vcf";
-		String argsEff[] = { "-ud", "0", genomeName, vcfFileName };
+		String argsEff[] = { "-classic", "-ud", "0", genomeName, vcfFileName };
 
 		// Annotate
 		SnpEff cmd = new SnpEff(argsEff);

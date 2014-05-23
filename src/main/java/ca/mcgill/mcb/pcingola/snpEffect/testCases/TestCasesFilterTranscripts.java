@@ -30,6 +30,7 @@ public class TestCasesFilterTranscripts extends TestCase {
 		String args[] = { "-v" //
 				, "-noStats" // 
 				, "-i", "vcf", "-o", "vcf" //
+				, "-classic" //
 				, "-onlyTr", "tests/filterTranscripts_01.txt"//
 				, "testHg3765Chr22" //
 				, "tests/test_filter_transcripts_001.vcf" //
@@ -59,6 +60,7 @@ public class TestCasesFilterTranscripts extends TestCase {
 		String args[] = { "-v"//
 				, "-noStats" // 
 				, "-i", "vcf", "-o", "vcf" //
+				, "-classic" //
 				, "-onlyTr", "tests/filterTranscripts_02.txt"//
 				, "testHg3765Chr22" //
 				, "tests/test_filter_transcripts_001.vcf" //

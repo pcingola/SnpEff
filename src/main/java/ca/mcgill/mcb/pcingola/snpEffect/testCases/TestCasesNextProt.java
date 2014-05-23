@@ -30,7 +30,7 @@ public class TestCasesNextProt extends TestCase {
 	}
 
 	void checkNextProt(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact) {
-		String args[] = { "-v", "-nextProt", genomeVer, vcfFile };
+		String args[] = { "-classic", "-v", "-nextProt", genomeVer, vcfFile };
 		SnpEff cmd = new SnpEff(args);
 
 		// Run

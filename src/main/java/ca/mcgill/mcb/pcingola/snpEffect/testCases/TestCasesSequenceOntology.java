@@ -207,7 +207,7 @@ public class TestCasesSequenceOntology extends TestCase {
 	 * Benchmarking: Compare with results from ENSEMBL's VEP 
 	 */
 	public void compareVepSO(String genome, String vcf, String trId) {
-		String args[] = { "-sequenceOntology", genome, vcf };
+		String args[] = { "-classic", "-sequenceOntology", genome, vcf };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();

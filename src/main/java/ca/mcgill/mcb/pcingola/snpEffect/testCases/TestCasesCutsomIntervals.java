@@ -29,7 +29,7 @@ public class TestCasesCutsomIntervals extends TestCase {
 
 	public void test_01() {
 		// Load database
-		String[] args = { "-interval", "tests/custom_intervals_01.gff", "testHg3770Chr22", "tests/custom_intervals_01.vcf" };
+		String[] args = { "-classic", "-interval", "tests/custom_intervals_01.gff", "testHg3770Chr22", "tests/custom_intervals_01.vcf" };
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
 

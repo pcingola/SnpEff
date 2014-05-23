@@ -23,7 +23,6 @@ import ca.mcgill.mcb.pcingola.filter.ChangeEffectFilter;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedAnnotationOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedOutputFormatter;
@@ -70,9 +69,9 @@ public class SnpEffCmdEff extends SnpEff {
 	boolean cancer = false; // Perform cancer comparisons
 	boolean supressOutput = false; // Only used for debugging purposes
 	boolean createSummary = true; // Do not create summary output file
-	boolean useHgvs = false; // Use Hgvs notation
+	boolean useHgvs = true; // Use Hgvs notation
 	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
-	boolean useSequenceOntology = false; // Use Sequence Ontology terms
+	boolean useSequenceOntology = true; // Use Sequence Ontology terms
 	boolean useOicr = false; // Use OICR tag
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
 	boolean lossOfFunction = false; // Create loss of function LOF tag?
@@ -493,9 +492,6 @@ public class SnpEffCmdEff extends SnpEff {
 						else if (outFor.equals("BEDANN")) outputFormat = OutputFormat.BEDANN;
 						else usage("Unknown output file format '" + outFor + "'");
 					}
-					//				} else if ((arg.equals("-a") || arg.equalsIgnoreCase("-around"))) {
-					//					if ((i + 1) < args.length) CodonChange.SHOW_CODONS_AROUND_CHANGE = Gpr.parseIntSafe(args[++i]);
-					//					else usage("Option '-i' without config interval_file argument");
 				} else if ((arg.equals("-s") || arg.equalsIgnoreCase("-stats"))) {
 					if ((i + 1) < args.length) {
 						summaryFile = args[++i];
@@ -522,7 +518,10 @@ public class SnpEffCmdEff extends SnpEff {
 				else if (arg.equalsIgnoreCase("-hgvs")) useHgvs = true; // Use HGVS notation
 				else if (arg.equalsIgnoreCase("-geneId")) useGeneId = true; // Use gene ID instead of gene name
 				else if (arg.equalsIgnoreCase("-sequenceOntology")) useSequenceOntology = true; // Use SO temrs
-				else if (arg.equalsIgnoreCase("-oicr")) useOicr = true; // Use OICR tag
+				else if (arg.equalsIgnoreCase("-classic")) {
+					useSequenceOntology = false;
+					useHgvs = false;
+				} else if (arg.equalsIgnoreCase("-oicr")) useOicr = true; // Use OICR tag
 				//---
 				// Input options
 				//---
@@ -534,13 +533,6 @@ public class SnpEffCmdEff extends SnpEff {
 					if ((i + 1) < args.length) {
 						String inFor = args[++i].toUpperCase();
 
-						//						if (inFor.equals("TXT")) {
-						//							inputFormat = InputFormat.TXT;
-						//							outputFormat = OutputFormat.TXT;
-						//						} else if (inFor.equals("PILEUP")) {
-						//							inputFormat = InputFormat.PILEUP;
-						//							outputFormat = OutputFormat.TXT;
-						//						} else 
 						if (inFor.equals("VCF")) {
 							inputFormat = InputFormat.VCF;
 							outputFormat = OutputFormat.VCF;
@@ -553,20 +545,6 @@ public class SnpEffCmdEff extends SnpEff {
 				//---
 				// Filters
 				//---
-				//				else if ((arg.equals("-minQ") || arg.equalsIgnoreCase("-minQuality"))) {
-				//					if ((i + 1) < args.length) seqChangeFilter.setMinQuality(Gpr.parseIntSafe(args[++i]));
-				//				} else if ((arg.equals("-maxQ") || arg.equalsIgnoreCase("-maxQuality"))) {
-				//					if ((i + 1) < args.length) seqChangeFilter.setMaxQuality(Gpr.parseIntSafe(args[++i]));
-				//				} else if ((arg.equals("-minC") || arg.equalsIgnoreCase("-minCoverage"))) {
-				//					if ((i + 1) < args.length) seqChangeFilter.setMinCoverage(Gpr.parseIntSafe(args[++i]));
-				//				} else if ((arg.equals("-maxC") || arg.equalsIgnoreCase("-maxCoverage"))) {
-				//					if ((i + 1) < args.length) seqChangeFilter.setMaxCoverage(Gpr.parseIntSafe(args[++i]));
-				//				} else if (arg.equals("-hom")) seqChangeFilter.setHeterozygous(false);
-				//				else if (arg.equals("-het")) seqChangeFilter.setHeterozygous(true);
-				//				else if (arg.equals("-snp")) seqChangeFilter.setChangeType(Variant.VariantType.SNP);
-				//				else if (arg.equals("-mnp")) seqChangeFilter.setChangeType(Variant.VariantType.MNP);
-				//				else if (arg.equals("-ins")) seqChangeFilter.setChangeType(Variant.VariantType.INS);
-				//				else if (arg.equals("-del")) seqChangeFilter.setChangeType(Variant.VariantType.DEL);
 				else if (arg.equalsIgnoreCase("-no-downstream")) changeEffectResutFilter.add(EffectType.DOWNSTREAM);
 				else if (arg.equalsIgnoreCase("-no-upstream")) changeEffectResutFilter.add(EffectType.UPSTREAM);
 				else if (arg.equalsIgnoreCase("-no-intergenic")) changeEffectResutFilter.add(EffectType.INTERGENIC);
@@ -933,8 +911,8 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\tvariants_file                   : Default is STDIN");
 		System.err.println("\n");
 		System.err.println("\nOptions:");
-		System.err.println("\t-a , -around                    : Show N codons and amino acids around change (only in coding regions). Default is " + CodonChange.SHOW_CODONS_AROUND_CHANGE + " codons.");
 		System.err.println("\t-chr <string>                   : Prepend 'string' to chromosome name (e.g. 'chr1' instead of '1'). Only on TXT output.");
+		System.err.println("\t-classic                        : Use old style annotaions instead of Sequence Ontology and Hgvs.");
 		System.err.println("\t-download                       : Download reference genome if not available. Default: " + download);
 		System.err.println("\t-i <format>                     : Input format [ vcf, txt, pileup, bed ]. Default: VCF.");
 		System.err.println("\t-fileList                       : Input actually contains a list of files to process.");
@@ -942,17 +920,6 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\t-s , -stats                     : Name of stats file (summary). Default is '" + DEFAULT_SUMMARY_FILE + "'");
 		System.err.println("\t-noStats                        : Do not create stats (summary) file");
 		System.err.println("\t-csvStats                       : Create CSV summary file instead of HTML");
-		//		System.err.println("\nSequence change filter options:");
-		//		System.err.println("\t-del                            : Analyze deletions only");
-		//		System.err.println("\t-ins                            : Analyze insertions only");
-		//		System.err.println("\t-hom                            : Analyze homozygous variants only");
-		//		System.err.println("\t-het                            : Analyze heterozygous variants only");
-		//		System.err.println("\t-minQ X, -minQuality X          : Filter out variants with quality lower than X");
-		//		System.err.println("\t-maxQ X, -maxQuality X          : Filter out variants with quality higher than X");
-		//		System.err.println("\t-minC X, -minCoverage X         : Filter out variants with coverage lower than X");
-		//		System.err.println("\t-maxC X, -maxCoverage X         : Filter out variants with coverage higher than X");
-		//		System.err.println("\t-nmp                            : Only MNPs (multiple nucleotide polymorphisms)");
-		//		System.err.println("\t-snp                            : Only SNPs (single nucleotide polymorphisms)");
 		System.err.println("\nResults filter options:");
 		System.err.println("\t-fi , -filterInterval  <file>   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)");
 		System.err.println("\t-no-downstream                  : Do not show DOWNSTREAM changes");
