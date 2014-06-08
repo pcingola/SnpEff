@@ -73,7 +73,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			snpEffCmdProtein.run();
 		} else if (geneDatabaseFormat == GeneDatabaseFormat.GENBANK) {
 			// GenBank format
-			String gbFile = config.getBaseFileNameGenes() + ".gb";
+			String gbFile = config.getBaseFileNameGenes() + SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK;
 			if (verbose) Timer.showStdErr("Protein check (GenBank file): '" + gbFile + "'\n");
 			SnpEffCmdProtein snpEffCmdProtein = new SnpEffCmdProtein(config, gbFile);
 			snpEffCmdProtein.setVerbose(verbose);

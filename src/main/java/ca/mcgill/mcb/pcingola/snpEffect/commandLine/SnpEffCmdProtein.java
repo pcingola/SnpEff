@@ -12,6 +12,7 @@ import ca.mcgill.mcb.pcingola.genBank.GenBankFile;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryGenBank;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 
@@ -272,7 +273,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	void readProteinFile() {
 		proteinByTrId = new HashMap<String, String>();
 		if (proteinFile.endsWith("txt") || proteinFile.endsWith("txt.gz")) readProteinFileTxt();
-		else if (proteinFile.endsWith("gb")) readProteinFileGenBank();
+		else if (proteinFile.endsWith(SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK)) readProteinFileGenBank();
 		else readProteinFileFasta();
 	}
 

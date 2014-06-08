@@ -10,9 +10,11 @@ import ca.mcgill.mcb.pcingola.snpEffect.Config;
  */
 public class SnpEffPredictorFactoryGenBank extends SnpEffPredictorFactoryFeatures {
 
+	public static final String EXTENSION_GENBANK = ".gbk";
+
 	public SnpEffPredictorFactoryGenBank(Config config) {
 		super(config);
-		fileName = config.getBaseFileNameGenes() + ".gbk";
+		fileName = config.getBaseFileNameGenes() + EXTENSION_GENBANK;
 		featuresFile = new GenBankFile(fileName);
 	}
 }
