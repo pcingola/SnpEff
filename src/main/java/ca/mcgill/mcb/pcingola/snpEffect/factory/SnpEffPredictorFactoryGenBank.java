@@ -12,7 +12,7 @@ public class SnpEffPredictorFactoryGenBank extends SnpEffPredictorFactoryFeature
 
 	public SnpEffPredictorFactoryGenBank(Config config) {
 		super(config);
-		fileName = config.getBaseFileNameGenes() + ".gb";
+		fileName = config.getBaseFileNameGenes() + ".gbk";
 		featuresFile = new GenBankFile(fileName);
 	}
 }
