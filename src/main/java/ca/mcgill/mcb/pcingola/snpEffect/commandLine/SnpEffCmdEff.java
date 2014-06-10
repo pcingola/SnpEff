@@ -181,8 +181,6 @@ public class SnpEffCmdEff extends SnpEff {
 		// Create an input file iterator
 		VariantFileIterator seqChangeFileIterator;
 		if (inputFormat == InputFormat.BED) seqChangeFileIterator = new BedFileIterator(inputFile, config.getGenome());
-		//		else if (inputFormat == InputFormat.TXT) seqChangeFileIterator = new SeqChangeTxtFileIterator(inputFile, config.getGenome());
-		//		else if (inputFormat == InputFormat.PILEUP) seqChangeFileIterator = new PileUpFileIterator(inputFile, config.getGenome());
 		else throw new RuntimeException("Cannot create SeqChange file iterator on input format '" + inputFormat + "'");
 
 		//---
@@ -424,12 +422,6 @@ public class SnpEffCmdEff extends SnpEff {
 		case BED:
 			base = Gpr.baseName(inputFile, ".bed");
 			break;
-		//		case TXT:
-		//			base = Gpr.baseName(inputFile, ".txt");
-		//			break;
-		//		case PILEUP:
-		//			base = Gpr.baseName(inputFile, ".pileup");
-		//			break;
 		default:
 			throw new RuntimeException("Unimplemented option for input file type " + inputFormat);
 		}
@@ -446,9 +438,6 @@ public class SnpEffCmdEff extends SnpEff {
 		case GATK:
 			outputFile += ".vcf";
 			break;
-		//		case TXT:
-		//			outputFile += ".txt";
-		//			break;
 		default:
 			throw new RuntimeException("Unimplemented option for output file type " + outputFormat);
 		}
@@ -768,10 +757,6 @@ public class SnpEffCmdEff extends SnpEff {
 		//---
 		OutputFormatter outputFormatter = null;
 		switch (outputFormat) {
-		//		case TXT:
-		//			outputFormatter = new TxtOutputFormatter();
-		//			outputFormatter.setOutOffset(outOffset);
-		//			break;
 		case VCF:
 			VcfOutputFormatter vof = new VcfOutputFormatter(vcfEntriesDebug);
 			vof.setLossOfFunction(lossOfFunction);
