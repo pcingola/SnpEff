@@ -84,10 +84,12 @@ public abstract class OutputFormatter {
 	 * CLose output files, if any
 	 */
 	public void close() {
-		if (out != null) try {
-			out.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		if (out != null) {
+			try {
+				out.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
@@ -96,10 +98,8 @@ public abstract class OutputFormatter {
 	 * @param marker
 	 */
 	public String endSection(Marker marker) {
-		StringBuilder sb = null;
+		StringBuilder sb = new StringBuilder();
 
-		//		if (!supressOutput) {
-		sb = new StringBuilder();
 		// Add header?
 		if (showHeader && (sectionNum == 0)) {
 			String header = toStringHeader();
@@ -111,7 +111,6 @@ public abstract class OutputFormatter {
 
 		// Add current line
 		sb.append(toString());
-		//		}
 
 		sectionNum++;
 		changeEffects.clear();
@@ -124,21 +123,25 @@ public abstract class OutputFormatter {
 	 * @param marker
 	 */
 	public void printSection(Marker marker) {
+		print(endSection(marker));
+	}
+
+	/**
+	 * Print a "raw" string to a file
+	 * @param outStr
+	 */
+	public void print(String outStr) {
 		try {
 			// Open output file?
 			if ((outputFile != null) && (out == null)) out = new BufferedWriter(new FileWriter(outputFile));
 
-			// Get string
-			String outStr = endSection(marker);
-
 			// Write something?
 			if ((outStr != null) && (!outStr.isEmpty())) {
-
 				// Write to file?
 				if (out != null) {
 					out.write(outStr);
 					out.write("\n");
-				} else System.out.println(outStr); // Show oin STDOUT
+				} else System.out.println(outStr); // Show on STDOUT
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);

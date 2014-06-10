@@ -240,17 +240,18 @@ public class SnpEffCmdEff extends SnpEff {
 
 		// Open VCF file
 		VcfFileIterator vcfFile = new VcfFileIterator(inputFile, config.getGenome());
-
 		boolean anyCancerSample = false;
 		List<PedigreeEnrty> pedigree = null;
 		CountByType errByType = new CountByType(), warnByType = new CountByType();
 
+		int countVcfEntries = 0;
 		for (VcfEntry vcfEntry : vcfFile) {
 			boolean printed = false;
 			boolean filteredOut = false;
 
 			try {
 				countInputLines++;
+				countVcfEntries++;
 
 				// Find if there is a pedigree and if it has any 'derived' entry
 				if (vcfFile.isHeadeSection()) {
@@ -350,8 +351,8 @@ public class SnpEffCmdEff extends SnpEff {
 
 				// Finish up this section
 				outputFormatter.printSection(vcfEntry);
-				printed = true;
 
+				printed = true;
 			} catch (Throwable t) {
 				totalErrs++;
 				error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
@@ -359,6 +360,9 @@ public class SnpEffCmdEff extends SnpEff {
 				if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
 			}
 		}
+
+		// Empty file? Show at least the header
+		if (countVcfEntries == 0) outputFormatter.print(vcfFile.getVcfHeader().toString());
 
 		// Close file iterator (not really needed, but just in case)
 		vcfFile.close();
@@ -764,7 +768,7 @@ public class SnpEffCmdEff extends SnpEff {
 			outputFormatter = vof;
 			break;
 		case GATK:
-			outputFormatter = new VcfOutputFormatter(config.getGenome());
+			outputFormatter = new VcfOutputFormatter();
 			((VcfOutputFormatter) outputFormatter).setGatk(true);
 			break;
 		case BED:

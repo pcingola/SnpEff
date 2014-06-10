@@ -88,6 +88,8 @@ public class CountByKey<T> implements Serializable {
 			min = Math.min(min, count);
 		return min;
 	}
+	
+	public 	int size() { return countByKey.size();}
 
 	@Override
 	public String toString() {

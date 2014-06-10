@@ -10,12 +10,11 @@ import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Custom;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
-import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.FunctionalClass;
 import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
@@ -42,19 +41,17 @@ public class VcfOutputFormatter extends OutputFormatter {
 	boolean gatk;
 	FormatVersion formatVersion = VcfEffect.FormatVersion.FORMAT_SNPEFF_4;
 	List<VcfEntry> vcfEntries;
-	Genome genome;
 
-	/**
-	 * This constructor is used mostly by 'clone()' method
-	 */
-	protected VcfOutputFormatter() {
+	// Genome genome;
+
+	public VcfOutputFormatter() {
 		super();
 	}
 
-	public VcfOutputFormatter(Genome genome) {
-		super();
-		this.genome = genome;
-	}
+	//	public VcfOutputFormatter(Genome genome) {
+	//		super();
+	//		// this.genome = genome;
+	//	}
 
 	/**
 	 * Add all vcf entries to a list (used only for debugging and test-cases)
@@ -73,10 +70,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		VcfEntry vcfEntry = (VcfEntry) section;
 
 		// Sanity check
-		if (vcfEntry == null) {
-			Gpr.debug("Cannot add header: No VCF entry!");
-			return;
-		}
+		if (vcfEntry == null) return;
 
 		// Get header
 		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
@@ -311,7 +305,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 			newOutputFormatter.needAddHeader = needAddHeader;
 			newOutputFormatter.lossOfFunction = lossOfFunction;
 			newOutputFormatter.gatk = gatk;
-			newOutputFormatter.genome = genome;
+			// newOutputFormatter.genome = genome;
 			return newOutputFormatter;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -324,8 +318,10 @@ public class VcfOutputFormatter extends OutputFormatter {
 	 */
 	@Override
 	public String endSection(Marker marker) {
-		// Ignore other markers (e.g. seqChanges)
-		if (marker instanceof VcfEntry) {
+		if (marker == null) {
+			return super.endSection(marker);
+		} else if (marker instanceof VcfEntry) {
+			// Ignore other markers (e.g. seqChanges)
 			if (vcfEntries != null) vcfEntries.add((VcfEntry) marker);
 			return super.endSection(marker);
 		}
@@ -392,6 +388,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 	@Override
 	public String toString() {
+		if (section == null) return "";
 		VcfEntry vcfEntry = (VcfEntry) section;
 		if (needAddInfo) addInfo(vcfEntry);
 		return vcfEntry.toString();

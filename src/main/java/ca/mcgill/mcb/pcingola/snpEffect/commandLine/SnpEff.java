@@ -62,7 +62,6 @@ public class SnpEff implements CommandLine {
 	 *  Available output formats
 	 */
 	public enum OutputFormat {
-		// TXT, 
 		VCF, BED, BEDANN, GATK
 	}
 
