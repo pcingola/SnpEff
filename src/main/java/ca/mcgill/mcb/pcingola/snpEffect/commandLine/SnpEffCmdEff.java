@@ -768,7 +768,7 @@ public class SnpEffCmdEff extends SnpEff {
 			outputFormatter = vof;
 			break;
 		case GATK:
-			outputFormatter = new VcfOutputFormatter();
+			outputFormatter = new VcfOutputFormatter(vcfEntriesDebug);
 			((VcfOutputFormatter) outputFormatter).setGatk(true);
 			break;
 		case BED:

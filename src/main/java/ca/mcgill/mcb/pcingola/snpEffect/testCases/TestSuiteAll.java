@@ -116,6 +116,9 @@ public class TestSuiteAll {
 		// Sequence ontology
 		suite.addTestSuite(TestCasesSequenceOntology.class);
 
+		// Other SnpEff 'eff' tests
+		suite.addTestSuite(TestCasesEff.class);
+
 		return suite;
 	}
 }
