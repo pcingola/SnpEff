@@ -11,8 +11,8 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
@@ -354,14 +354,18 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 	@Override
 	public int compareTo(ChangeEffect changeEffect) {
+		// Sort by impact
 		int comp = getEffectImpact().compareTo(changeEffect.getEffectImpact());
 		if (comp != 0) return comp;
 
+		// Sort by effect
 		comp = getEffectType().compareTo(changeEffect.getEffectType());
 		if (comp != 0) return comp;
 
+		// Sort by genomic coordinate of affected 'marker'
 		if ((getMarker() != null) && (changeEffect.getMarker() != null)) return getMarker().compareTo(changeEffect.getMarker());
 
+		// Sort by seqChange (most of the time this is equal)
 		return seqChange.compareTo(changeEffect.getSeqChange());
 	}
 
@@ -781,7 +785,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
 	}
 
 	public boolean hasError() {
@@ -857,7 +861,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				|| (effectType == EffectType.SPLICE_SITE_REGION) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
+				;
 	}
 
 	public boolean isStartGained() {
@@ -873,7 +877,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				|| (effectType == EffectType.UTR_3_PRIME) //
 				|| (effectType == EffectType.UTR_5_DELETED) //
 				|| (effectType == EffectType.UTR_3_DELETED) //
-		;
+				;
 	}
 
 	public void set(Marker marker, EffectType effectType, String message) {
@@ -1070,7 +1074,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**

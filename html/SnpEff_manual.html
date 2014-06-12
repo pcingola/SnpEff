@@ -247,7 +247,6 @@ NCBIM37.66                                                  	Mus_musculus       
 						SnpEff accepts input files in the following format:
 							<ul>
 								<li> <code>VCF</code> format, which is the de-facto standard for sequencing variants.
-								<li> <code>TXT</code> format: Although TXT format is deprecated, some people still find it useful.
 								<li> <code>BED</code> format: To annotate enrichment experiments (e.g. ChIP-Seq peaks) or other genomic data.
 							</ul>
 						</td> 
@@ -702,40 +701,6 @@ cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 - > file.eff.vcf
 				<br>
 				</p>
 
-				<p><h3>TXT</h3>
-				<i class="icon-warning-sign"></i> TXT format is currently deprecated and discouraged.
-				<br>
-				TXT file format must be tab-separated, containing columns that correspond to:
-				<ul>
-					<li>chromosome_name
-					<li>chromosome_position
-					<li>reference sequence
-					<li>changed sequence: A slash is used to separate two alleles
-					<li>strand: {+,-} (optional)
-					<li>quality (optional)
-					<li>coverage (optional)
-				</ul>
-
-				This is an example of an input TXT file:
-
-<pre>
-5   140532    T    C       +
-12  1017956   T    A       +    45    12
-2   946507    G    C       +    23    8
-14  19584687  C    T       -
-19  66520     G    -G/-G   +
-8   150029    A    */+T    +
-</pre>
-
-				<p><b>TXT: Representing an heterozygous variant</b><br> 
-				<i class="icon-warning-sign"></i> TXT format is currently deprecated and discouraged.
-				<br>
-				When representing a heterozygous SNP you can use IUB codes: M=A/C, R=A/G, W=A/T, S=C/G, Y=C/T and K=G/T. 
-				Indels are indicated by, for example, */+A, -A/* or +CC/-C. There is no difference between */+A or +A/*.
-				<br>
-				<br>
-				</p>
-
 				<p><h3>BED</h3>
 				In an enrichment experiment, such as ChIP-Seq, the results are enrichment regions, usually called "peaks".
 				It is common for "peak callers" (algorithms that detect enrichment), write the results in a BED file.
@@ -787,13 +752,17 @@ cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 - > file.eff.vcf
 				<br>
 				<br>
 				Effects information is added to the INFO field using an 'EFF' tag. 
-
+				<br>
+				<br>
+				<i class="icon-hand-right"></i> When multiple effects are available, they are sorted first by "Effect_Impact", then by "Effect" and finally by "marker's genomic coordinates" (e.g. affected transcript's genomic coordinates).
+				<br>
+				<br>
 				There can be multiple effects separated by comma. The format for each effect is:
 <pre>
 EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_Length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )
 </pre>
 
-				
+
 				<center>
 				<table class="table table-striped">
 					<tr> <th>  EFF Sub-field </th> <th>  Meaning </th> </tr>
@@ -972,130 +941,7 @@ cat output.eff.vcf \
 					<tr> <td> <tt>grep MODIFIER | wc -l </tt> </td> <td>  Count the ones you want (in this example 'MODIFIER')</td> </tr>
 				</table>
 				</p>
-
 				<br> 
-				<p><h3>TXT output format</h3>
-				<i class="icon-warning-sign"></i> TXT format is currently deprecated and discouraged.
-				<br>
-				The TXT output format consist of one line per effect. 
-				This means that you usually get more than one line per SNP since the same SNP may affect several different transcripts in the same gene.
-				<br>
-				<br>
-				The format consist of tab separated columns:
-				<center>
-				<table class="table table-striped">
-					<tr> <th>  Column </th> <th>  Meaning </th> </tr>
-					<tr> <td>  Chromosome </td> <td>  Chromosome name (usually without any leading 'chr' string) </td> </tr>
-					<tr> <td>  Position </td> <td>  One based position </td> </tr>
-					<tr> <td>  Reference </td> <td>  Reference </td> </tr>
-					<tr> <td>  Change </td> <td>  Sequence change </td> </tr>
-					<tr> <td>  Change type </td> <td>  Type of change {SNP, MNP, INS, DEL} </td> </tr>
-					<tr> <td>  Homozygous </td> <td>  Is this homozygous or heterozygous {Hom, Het} </td> </tr>
-					<tr> <td>  Quality </td> <td>  Quality score (from input file) </td> </tr>
-					<tr> <td>  Coverage </td> <td>  Coverage (from input file) </td> </tr>
-					<tr> <td>  Warnings </td> <td>  Any warnings or errors. </td> </tr>
-					<tr> <td>  Gene_ID </td> <td>  Gene ID (usually ENSEMBL) </td> </tr>
-					<tr> <td>  Gene_name </td> <td>  Gene name </td> </tr>
-					<tr> <td>  Bio_type </td> <td>  BioType, as reported by ENSEMBL. </td> </tr>
-					<tr> <td>  Transcript_ID </td> <td>  Transcript ID (usually ENSEMBL) </td> </tr>
-					<tr> <td>  Exon_ID </td> <td>  Exon ID (usually ENSEMBL) </td> </tr>
-					<tr> <td>  Exon_Rank </td> <td>  Exon number on a transcript </td> </tr>
-					<tr> <td>  Effect </td> <td>  Effect of this variant. See details below. </td> </tr>
-					<tr> <td>  old_AA/new_AA </td> <td>  Amino acid change </td> </tr>
-					<tr> <td>  old_codon/new_codon </td> <td>  Codon change </td> </tr>
-					<tr> <td>  Codon_Num(CDS) </td> <td>  Codon number in CDS </td> </tr>
-					<tr> <td>  Codon_degenaracy </td> <td>  Codon degenaracy (see below). </td> </tr>
-					<tr> <td>  CDS_size </td> <td>  CDS size in bases </td> </tr>
-					<tr> <td>  Custom_interval_ID </td> <td>  If any custom interval was used, add the IDs here (may be more than one). </td> </tr>
-				</table>
-				</center>
-				<br>
-				This is an example of an output file:
-				<br>
-				<small>
-<pre>
-chr2L   35041   T       K       SNP     Het     50                      FBgn0051973     Cda5            FBtr0078164     FBgn0051973:11  11      SYNONYMOUS_CODING       Q/Q     CAA/CAA 332     5997    
-chr2L   35041   T       K       SNP     Het     50                      FBgn0051973     Cda5            FBtr0078163     FBgn0051973:11  11      NON_SYNONYMOUS_CODING   Q/H     CAA/CAC 332     3120    
-chr2L   200401  C       Y       SNP     Het     228                     FBgn0016977     spen            FBtr0078121     CG18497:10      10      STOP_GAINED     Y/*     TAC/TAG 5240    16602   
-chr2L   194601  C       Y       SNP     Het     228                     FBgn0016977     spen            FBtr0078122     CG18497:6       6       NON_SYNONYMOUS_CODING   P/A     CCG/GCG 3473    16683   
-chr2L   779563  A       R       SNP     Het     168                     FBgn0031277     CG13947         FBtr0078005     FBgn0031277:1   1       STOP_LOST       */Y     TAA/TAC 120     360   
-chr2L   856021  *       +CGGAGGAGG/*    INS     Het     267                     FBgn0031288     CG13949         FBtr0078017     FBgn0031288:3   3       FRAME_SHIFT                     118     438     
-chr2L   856890  C       Y       SNP     Het     201                     FBgn0029095     aru             FBtr0078031                     DOWNSTREAM: 43 bases   
-chr2L   871556  G       R       SNP     Het     228                     FBgn0053526     PNUTS           FBtr0091487     CG33526:2       2       5PRIME_UTR: 18 bases from TSS  
-chr2L   878267  T       W       SNP     Het     228             WARNING: Base is 'G' but SNP says 'T'.  FBgn0031292     CG15824         FBtr0078029     CG15824:14      14      3PRIME_UTR: 14 bases from transcript end  
-</pre>
-				</small>
-				</p>
-
-				<br>
-				<i> Meaning of 'Degeneracy' column </i>: Here is an explanation form Stephen Wright (Univ. Toronto), who requested to add this feature
-	  
-<pre>
-	     "...a fourfold degenerate site would be a site where any change is synonymous. So the 
-	     third codon position for the arginine CGN, is a fourfold degenerate site, as is the 
-	     third codon position for valine, alanine, etc.
-	     Similarly, all second positions of a codon are zerofold degenerate, since any change is 
-	     nonsynonymous. Many first codon positions are also zerofold degenerate, however, for 
-	     example, the first codon position of AGG is NOT zerofold, because a shift to CGG is a 
-	     synonymous change."
-</pre>
-				</p>
-
-				<br>
-				<p> <b> Details about Hom/Het calculation (summary file and TXT output format) </b>
-				<br>
-				<br>
-				In older formats, there used to be one sample per file, so 
-				identifying Hom/Het in a per variant basis made sense.
-				<br>
-				<br>
-				In VCF files, where many samples are analyzed simultaneously, 
-				identification of Hom/Het should be done in a per sample basis 
-				instead of per variant basis. In an attempt to output that field I 
-				used a majority vote (i.e. if most samples are Hom, I output 
-				Hom, otherwise, Het). This is not strictly correct and, it 
-				may also be confusing.
-				<br>
-				<br>
-				For this reason, the output is empty when using multi-sample files, such as VCF. 
-				Unless the file contains only one sample (i.e. only one genotype field)
-				</p>
-
-				<br>
-				<p> <b> Coordinates differences between VCT and TXT outputs </b>
-				<br>
-				<br>
-				There are some situations when there seems to be a difference between TXT output coordinates and VCF output coordinates.
-				This happens because sometimes VCF files have a coordinate that does not start exactly were the variant is. 
-				Here is an example:
-				<pre>
-VCF line:                   "chr10   102770293       .       tgctgcggctgcggctgcggctacggctgcggct      tGCTGCGgctgcggctgcggctgcggctacggctgcggct"
-INS reported by SnpEff:     "chr10   102770315       *       +GCGGCT INS"
-</pre>
-<p>
-
-				At first glace, these two look different, since 102770293 is not the same as 102770315. 
-				But if you look at the sequences:
-
-<pre>
-tgctgcggctgcggctgcggct      acggctgcggct    REF (from VCF file)
-||||||||||||||||||||||      ||||||||||||
-tgctgcggctgcggctgcggctgcggctacggctgcggct    ALT (from VCF file)
-|      |         |    |||||| 
-|      |         |    gcggct                INS (reported by SnpEff TXT format)
-|      |         |    |
-102770293        |    |                     Position (VCF)
-       |         |    |
-       102770300 |    |
-                 |    |
-                 102770310
-                      |
-                      102770315             Position (TXT)
-</pre>
-				So the two VCF and TXT representations are equivalent.
-				</p>
-				<br>
-				<br>
 
 				<p><h3>BED output format</h3>
 				<br>
@@ -1844,31 +1690,6 @@ $ java -Xmx4g -jar snpEff.jar -geneId GRCh37.66 test.vcf
 </pre>
 				Note: The gene 'PLEKHN1' was annotated as 'ENSG00000187583'.
 
-				</p>
-				<h3>Chromosome names</h3>
-				<p>
-				<i class="icon-warning-sign"></i> This is only used in TXT output format, which is deprecated.
-				<br>
-				<br>
-				By default SnpEff simplifies all chromosome names. For instance 'chr1' is just '1'. 
-				Some people just hate this, so you can prepend any string you want to the chromosome name by using the <code>-chr string</code>
-				<br>
-				<br>
-				Example:
-<pre>
-$ java -Xmx4g -jar snpEff.jar eff -v -o txt -chr "CHROMOSOME" GRCh37.66 test.vcf 
-# Chromo	Position	Reference	Change	Change_type	Homozygous	Quality	Coverage	Warnings	Gene_ID	Gene_name	Bio_type	Transcript_ID	Exon_ID	Exon_Rank	Effect	old_AA/new_AA	Old_codon/New_codon	Codon_Num(CDS)	Codon_Degeneracy	CDS_size	Codons_around	AAs_around	Custom_interval_ID
-CHROMOSOME1	10469	C	G	SNP	Hom	365.78	0		ENSG00000227232	WASH7P	unprocessed_pseudogene	ENST00000423562			DOWNSTREAM: 3894 bases								
-CHROMOSOME1	10469	C	G	SNP	Hom	365.78	0		ENSG00000227232	WASH7P	unprocessed_pseudogene	ENST00000438504			DOWNSTREAM: 3894 bases								
-CHROMOSOME1	10469	C	G	SNP	Hom	365.78	0		ENSG00000227232	WASH7P	unprocessed_pseudogene	ENST00000541675			DOWNSTREAM: 3894 bases								
-CHROMOSOME1	10469	C	G	SNP	Hom	365.78	0		ENSG00000227232	WASH7P	unprocessed_pseudogene	ENST00000488147			DOWNSTREAM: 3935 bases								
-CHROMOSOME1	10469	C	G	SNP	Hom	365.78	0		ENSG00000227232	WASH7P	unprocessed_pseudogene	ENST00000538476			DOWNSTREAM: 3942 bases								
-CHROMOSOME1	10469	C	G	SNP	Hom	365.78	0		ENSG00000223972	DDX11L1	transcribed_unprocessed_pseudogene	ENST00000518655			UPSTREAM: 1405 bases								
-CHROMOSOME1	10469	C	G	SNP	Hom	365.78	0		ENSG00000223972	DDX11L1	transcribed_unprocessed_pseudogene	ENST00000450305			UPSTREAM: 1541 bases								
-CHROMOSOME1	10469	C	G	SNP	Hom	365.78	0								INTERGENIC			
-CHROMOSOME1	10469	C	G	SNP	Hom	365.78	0		ENSG00000223972	DDX11L1	processed_transcript	ENST00000456328			UPSTREAM: 1400 bases								
-CHROMOSOME1	10469	C	G	SNP	Hom	365.78	0		ENSG00000223972	DDX11L1	transcribed_unprocessed_pseudogene	ENST00000515242			UPSTREAM: 1403 bases								
-</pre>
 				</p>
         </section>
 

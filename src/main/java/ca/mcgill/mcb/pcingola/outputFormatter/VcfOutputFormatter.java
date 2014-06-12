@@ -97,10 +97,21 @@ public class VcfOutputFormatter extends OutputFormatter {
 				allWarnings &= (changeEffect.hasError() || changeEffect.hasWarning());
 		}
 
+		// Sort change effects by impact
+		Collections.sort(changeEffects);
+
+		// GATK only picks the first (i.e. highest impact) effect
+		if (gatk && changeEffects.size() > 1) {
+			ArrayList<ChangeEffect> changeEffectsGatk = new ArrayList<ChangeEffect>();
+			changeEffectsGatk.add(changeEffects.get(0));
+			changeEffects = changeEffectsGatk;
+		}
+
 		//---
 		// Calculate all effects and genes
 		//---
 		HashSet<String> effs = new HashSet<String>();
+		ArrayList<String> effsSorted = new ArrayList<String>();
 		HashSet<String> oicr = (useOicr ? new HashSet<String>() : null);
 		boolean addCustomFields = false;
 		for (ChangeEffect changeEffect : changeEffects) {
@@ -224,7 +235,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 						sb.append("REPEAT (VCF):\t" + effBuff + "\n");
 						sb.append("REPEAT (TXT):\t" + changeEffect + "\n");
 						sb.append("All    (VCF):\n");
-						for (String ce : effs)
+						for (String ce : effsSorted)
 							sb.append("\t" + ce + "\n");
 						sb.append("All    (TXT):\n");
 						for (ChangeEffect ce : changeEffects)
@@ -232,7 +243,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 						sb.append("--------------------------------------------------------------------------------\n");
 						Gpr.debug("WARNING: Repeated effect!\n" + sb);
 					}
-				}
+				} else effsSorted.add(effBuff.toString());
 
 				//---
 				// Add OICR data
@@ -262,7 +273,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		//---
 
 		// Add 'EFF' info field
-		String effStr = toStringVcfInfo(effs);
+		String effStr = toStringVcfInfo(effsSorted);
 		if (!effStr.isEmpty()) vcfEntry.addInfo(VcfEffect.VCF_INFO_EFF_NAME, effStr);
 
 		// Add 'OICR' info field
@@ -412,13 +423,9 @@ public class VcfOutputFormatter extends OutputFormatter {
 	 * @return
 	 */
 	String toStringVcfInfo(Collection<String> strs) {
-		// Sort strings
-		ArrayList<String> list = new ArrayList<String>(strs);
-		Collections.sort(list);
-
 		// Add the all
 		StringBuffer sb = new StringBuffer();
-		for (String str : list)
+		for (String str : strs)
 			if (!str.isEmpty()) sb.append(str + ",");
 
 		if (sb.length() > 0) sb.deleteCharAt(sb.length() - 1); // Remove last comma
