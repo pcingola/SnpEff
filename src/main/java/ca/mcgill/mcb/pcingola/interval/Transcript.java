@@ -80,11 +80,17 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// For each exon, add CDS position to array
 		int aaBaseNum = 0;
+		int step = isStrandPlus() ? 1 : -1;
+		int codonBase = 0;
 		for (Exon exon : sortedStrand()) {
 			int min = isStrandPlus() ? exon.getStart() : exon.getEnd();
-			int step = isStrandPlus() ? 3 : -3;
 			for (int pos = min; exon.intersects(pos) && aaBaseNum < aa2pos.length; pos += step)
-				if ((cdsMin <= pos) && (pos <= cdsMax)) aa2pos[aaBaseNum++] = pos;
+				// Is this within a CDS?
+				if ((cdsMin <= pos) && (pos <= cdsMax)) {
+					// First codon base? Add to map
+					if (codonBase == 0) aa2pos[aaBaseNum++] = pos;
+					codonBase = (codonBase + 1) % 3;
+				}
 		}
 
 		return aa2pos;
@@ -698,7 +704,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * @return An exon intersecting 'pos' (null if not found)
 	 */
 	public Exon findExon(int pos) {
-		// Is it in UTR instead of CDS?
 		for (Exon exon : this)
 			if (exon.intersects(pos)) return exon;
 		return null;
