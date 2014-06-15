@@ -12,11 +12,16 @@ import ca.mcgill.mcb.pcingola.util.GprHtml;
 
 /**
  * Counters indexed by 'type' (type is a generic string that can mean anything)
- * 
+ *
  * @author pcingola
  */
 @SuppressWarnings("serial")
 public class CountByType implements Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public static final String TOTAL_TYPE = "Total";
 
@@ -87,9 +92,17 @@ public class CountByType implements Serializable {
 	}
 
 	/**
-	 * Score for this type?
+	 * Count for this type
 	 * @param type
 	 * @return
+	 */
+	public long getCount(String type) {
+		Long score = countByType.get(type);
+		return score != null ? score : 0;
+	}
+
+	/**
+	 * Score for this type
 	 */
 	public double getScore(String type) {
 		Double score = scoreByType.get(type);
