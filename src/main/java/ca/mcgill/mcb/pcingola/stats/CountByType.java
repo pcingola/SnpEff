@@ -117,8 +117,16 @@ public class CountByType implements Serializable {
 		return keysSorted();
 	}
 
+	public boolean hasCount(String type) {
+		return countByType.containsKey(type);
+	}
+
 	public boolean hasData() {
 		return !countByType.isEmpty();
+	}
+
+	public boolean hasScore(String type) {
+		return scoreByType.containsKey(type);
 	}
 
 	/**
@@ -233,8 +241,10 @@ public class CountByType implements Serializable {
 
 	public String toString(boolean showScores) {
 		StringBuffer out = new StringBuffer();
-		for (String type : keysSorted())
-			out.append(type + "\t" + get(type) + (showScores ? "\t" + getScore(type) : "") + "\n");
+		for (String type : keysSorted()) {
+			out.append(type + "\t" + get(type) + (hasScore(type) ? "\t" + getScore(type) + "\t" + (getScore(type) / getCount(type)) : "") + "\n");
+			// out.append(type + "\t" + get(type) + (showScores ? "\t" + getScore(type) : "") + "\n");
+		}
 
 		return out.toString();
 	}
@@ -279,13 +289,11 @@ public class CountByType implements Serializable {
 		StringBuffer out = new StringBuffer();
 		int i = 0;
 		for (String type : keys) {
-			out.append(type + "\t" + get(type) + "\n");
-			i++;
-			if (i++ >= n) break;
+			out.append(type + "\t" + get(type) + (hasScore(type) ? "\t" + getScore(type) + "\t" + (getScore(type) / getCount(type)) : "") + "\n");
+			if (++i >= n) break;
 		}
 		out.append(TOTAL_TYPE + "\t" + get(TOTAL_TYPE) + "\n");
 
 		return out.toString();
 	}
-
 }
