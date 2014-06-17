@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 #------------------------------------------------------------------------------
 # Create a zip file for distribution
@@ -18,7 +18,7 @@ rm -rvf $DIR snpEff
 mkdir $DIR
 
 # Copy core files
-cp -vf snpEff.config snpEff.jar SnpSift.jar snpeff $DIR
+cp -vf snpEff.config snpEff.jar SnpSift.jar $DIR
 cp -rvf galaxy scripts $DIR
 
 cd $DIR
