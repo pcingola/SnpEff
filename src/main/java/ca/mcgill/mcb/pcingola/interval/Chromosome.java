@@ -24,8 +24,8 @@ public class Chromosome extends Marker {
 		int chr1Num = number(chr1);
 		int chr2Num = number(chr2);
 		if (chr1Num > 0 && chr2Num > 0) return chr1Num - chr2Num;
-		if (chr1Num > 0 && chr2Num <= 0) return 1;
-		if (chr1Num <= 0 && chr2Num > 0) return -1;
+		if (chr1Num > 0 && chr2Num <= 0) return -1;
+		if (chr1Num <= 0 && chr2Num > 0) return 1;
 
 		// Numbers did not work, compare strings
 		return simpleName(chr1).compareTo(simpleName(chr2));
