@@ -8,7 +8,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 /**
  * Interval for the whole chromosome
  * If a SNP has no 'ChromosomeInterval' => it is outside the chromosome => Invalid
- * 
+ *
  * @author pcingola
  *
  */
@@ -16,17 +16,23 @@ public class Chromosome extends Marker {
 
 	private static final long serialVersionUID = 1636197649250882952L;
 
-	double chromosomeNum;
-	DnaSequence sequence = null;
+	/**
+	 * Convert to chromosome number (return '0' if it cannot be converted)
+	 */
+	public static int number(String chrName) {
+		return Gpr.parseIntSafe(ChromosomeSimpleName.get(chrName));
+	}
 
 	/**
 	 * Simplify chromosome name
-	 * @param chNameOri
-	 * @return
 	 */
 	public static String simpleName(String chrName) {
 		return ChromosomeSimpleName.get(chrName);
 	}
+
+	double chromosomeNum;
+
+	DnaSequence sequence = null;
 
 	public Chromosome() {
 		super();
@@ -40,7 +46,7 @@ public class Chromosome extends Marker {
 	}
 
 	/**
-	 * Compare only chromosome's name 
+	 * Compare only chromosome's name
 	 * @param i2
 	 * @return
 	 */
@@ -77,7 +83,7 @@ public class Chromosome extends Marker {
 		return iduc.equals("M") //
 				|| iduc.startsWith("MT") //
 				|| (iduc.indexOf("MITO") >= 0) //
-		;
+				;
 	}
 
 	@Override
