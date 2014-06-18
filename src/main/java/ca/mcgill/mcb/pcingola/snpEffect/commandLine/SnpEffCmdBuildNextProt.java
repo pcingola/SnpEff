@@ -34,15 +34,16 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Parse NetxProt XML file and build a database
- * 
+ *
  * http://www.nextprot.org/
- * 
+ *
  * @author pablocingolani
  */
 public class SnpEffCmdBuildNextProt extends SnpEff {
 
 	public static final double HIGHLY_CONSERVED_AA_PERCENT = 0.99;
-	public static final int HIGHLY_CONSERVED_AA_COUNT = 30;
+
+	public static final int HIGHLY_CONSERVED_AA_COUNT = 30;;
 
 	// We don't care about these categories
 	public static final String CATAGORY_BLACK_LIST_STR[] = { "" //
@@ -59,9 +60,11 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 	public static final String NODE_NAME_ANNOTATION = "annotation";
 	public static final String NODE_NAME_ANNOTATION_LIST = "annotationList";
 	public static final String NODE_NAME_POSITION = "position";
+	public static final String NODE_NAME_PROPERTY = "property";
 	public static final String NODE_NAME_DESCRIPTION = "description";
 	public static final String NODE_NAME_CVNAME = "cvName";
 	public static final String NODE_NAME_SEQUENCE = "sequence";
+	public static final String NODE_NAME_XREF = "xref";
 
 	public static final String ATTR_NAME_UNIQUE_NAME = "uniqueName";
 	public static final String ATTR_NAME_DATABASE = "database";
@@ -71,8 +74,12 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 	public static final String ATTR_NAME_FIRST = "first";
 	public static final String ATTR_NAME_LAST = "last";
 	public static final String ATTR_NAME_ISOFORM_REF = "isoformRef";
+	public static final String ATTR_NAME_PROPERTY_NAME = "propertyName";
+	public static final String ATTR_NAME_VALUE = "value";
 
 	public static final String ATTR_VALUE_ENSEMBL = "Ensembl";
+	public static final String ATTR_VALUE_REFSEQ = "RefSeq";
+	public static final String ATTR_VALUE_NUCLEOTIDE_SEQUENCE_ID = "'nucleotide sequence ID";
 
 	public static final String NEXT_PROT_DB_DIR = Gpr.HOME + "/snpEff/db/nextProt/2012_06";
 
@@ -522,7 +529,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 			String subSeq = "";
 			if ((sequence != null) && (aaStart >= 0) && (aaEnd >= aaStart)) subSeq = sequence.substring(aaStart, aaEnd + 1);
 
-			// Check transcript 
+			// Check transcript
 			TranscriptData trData = transcriptData(isoformRef, aaStart, aaEnd, sequence, subSeq);
 
 			// Create nextProt markers

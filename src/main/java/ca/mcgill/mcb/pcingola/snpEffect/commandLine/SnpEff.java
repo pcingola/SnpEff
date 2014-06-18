@@ -54,7 +54,7 @@ public class SnpEff implements CommandLine {
 	 *  Available input formats
 	 */
 	public enum InputFormat {
-		// TXT, PILEUP, 
+		// TXT, PILEUP,
 		VCF, BED
 	}
 
@@ -77,6 +77,18 @@ public class SnpEff implements CommandLine {
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
 	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_NO_NAME;
 
+	/**
+	 * Main
+	 */
+	public static void main(String[] args) {
+		// Parse
+		SnpEff snpEff = new SnpEff(args);
+
+		// Run
+		boolean ok = snpEff.run();
+		System.exit(ok ? 0 : -1);
+	}
+
 	protected String command = "";
 	protected String[] args; // Arguments used to invoke this command
 	protected String[] shiftArgs;
@@ -88,6 +100,7 @@ public class SnpEff implements CommandLine {
 	protected boolean motif = false; // Annotate using motifs
 	protected boolean multiThreaded = false; // Use multiple threads
 	protected boolean nextProt = false; // Annotate using NextProt database
+	protected boolean nextProtKeepAllTrs = false; // Keep all nextprot entries, even if the transcript doesn't exist
 	protected boolean noGenome = false; // Do not load genome database
 	protected boolean onlyRegulation = false; // Only build regulation tracks
 	protected boolean quiet; // Be quiet
@@ -104,19 +117,8 @@ public class SnpEff implements CommandLine {
 	protected SnpEff snpEffCmd; // Real command to run
 	protected ArrayList<String> customIntervalFiles; // Custom interval files (bed)
 	protected ArrayList<String> filterIntervalFiles;// Files used for filter intervals
+
 	protected HashSet<String> regulationTracks = new HashSet<String>();
-
-	/**
-	 * Main
-	 */
-	public static void main(String[] args) {
-		// Parse
-		SnpEff snpEff = new SnpEff(args);
-
-		// Run
-		boolean ok = snpEff.run();
-		System.exit(ok ? 0 : -1);
-	}
 
 	public SnpEff() {
 		genomeVer = ""; // Genome version
@@ -477,41 +479,48 @@ public class SnpEff implements CommandLine {
 			for (Transcript tr : g)
 				trs.put(tr.getId(), tr);
 
-		// Find the corresponding transcript for each nextProt marker
-		// WARNING: The transcripts might be filtered out by the user (e.g. '-cannon' command line option or user defined sets).
-		//          We only keep nextProt markers associated to found transcripts. All others are discarded (the user doesn't want that info).
-		ArrayList<NextProt> nextProtsToAdd = new ArrayList<NextProt>();
-		for (NextProt np : nextProts) {
-			Transcript tr = trs.get(np.getTranscriptId());
+		// Add nextprot entries
+		if (nextProtKeepAllTrs) {
+			// Add all nextProt marker to predictor (even if the transcript doesn't exist)
+			// WARNING: This is not recommended
+			for (NextProt np : nextProts)
+				snpEffectPredictor.add(np);
+		} else {
+			// Find the corresponding transcript for each nextProt marker
+			// WARNING: The transcripts might be filtered out by the user (e.g. '-cannon' command line option or user defined sets).
+			//          We only keep nextProt markers associated to found transcripts. All others are discarded (the user doesn't want that info).
+			ArrayList<NextProt> nextProtsToAdd = new ArrayList<NextProt>();
+			for (NextProt np : nextProts) {
+				Transcript tr = trs.get(np.getTranscriptId());
 
-			// Found transcript, now try to find an exon
-			if (tr != null) {
-				boolean assignedToExon = false;
-				for (Exon ex : tr) {
-					if (ex.intersects(np)) {
-						NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon
-						npEx.setParent(ex);
-						nextProtsToAdd.add(npEx);
-						assignedToExon = true;
+				// Found transcript, now try to find an exon
+				if (tr != null) {
+					boolean assignedToExon = false;
+					for (Exon ex : tr) {
+						if (ex.intersects(np)) {
+							NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon
+							npEx.setParent(ex);
+							nextProtsToAdd.add(npEx);
+							assignedToExon = true;
+						}
+					}
+
+					// Not assigned to an exon? Add transcript info
+					if (!assignedToExon) {
+						np.setParent(tr); // Set this transcript as parent
+						nextProtsToAdd.add(np);
 					}
 				}
-
-				// Not assigned to an exon? Add transcript info
-				if (!assignedToExon) {
-					np.setParent(tr); // Set this transcript as parent
-					nextProtsToAdd.add(np);
-				}
 			}
+
+			// Add all nextProt marker to predictor
+			for (NextProt np : nextProtsToAdd)
+				snpEffectPredictor.add(np);
+
+			// Note: We might end up with more markers than we loaded (just because they map to multiple exons (although it would be highly unusual)
+			if (verbose) Timer.showStdErr("NextProt database: " + nextProtsToAdd.size() + " markers added.");
 		}
 
-		//---
-		// Add all nextProt marker to predictor
-		//---
-		for (NextProt np : nextProtsToAdd)
-			snpEffectPredictor.add(np);
-
-		// Note: We might end up with more markers than we loaded (just because they map to multiple exons (although it would be highly unusual)
-		if (verbose) Timer.showStdErr("NextProt database: " + nextProtsToAdd.size() + " markers added.");
 	}
 
 	/**
@@ -727,6 +736,10 @@ public class SnpEff implements CommandLine {
 
 	public void setGenomeVer(String genomeVer) {
 		this.genomeVer = genomeVer;
+	}
+
+	public void setNextProtKeepAllTrs(boolean nextProtKeepAllTrs) {
+		this.nextProtKeepAllTrs = nextProtKeepAllTrs;
 	}
 
 	public void setVerbose(boolean verbose) {
