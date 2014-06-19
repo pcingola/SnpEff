@@ -19,6 +19,8 @@ public class GprSeq {
 	public static byte DNA_TO_CODE[];
 	public static char CODE_TO_DNA[];
 
+	public static final byte GAP_CODE = (byte) -1;
+
 	public static final String KNOWN_FILE_EXTENSIONS[] = { ".fa", ".fasta", ".fq", ".fastq", ".sai", ".sam", ".bam", ".bcf", ".vcf", "pileup", "mpileup" };
 
 	static {
@@ -95,7 +97,7 @@ public class GprSeq {
 	}
 
 	public static byte aa2Code(char aa) {
-		if (aa == '-') return -1;
+		if (aa == '-') return GAP_CODE;
 		byte c = AA_TO_CODE[(byte) aa];
 		if (c < 0) throw new RuntimeException("Unknown code for amino acid '" + aa + "' (ord: " + ((int) aa) + " )");
 		return c;
