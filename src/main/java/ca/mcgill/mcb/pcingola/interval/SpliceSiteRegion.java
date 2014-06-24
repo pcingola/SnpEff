@@ -4,11 +4,11 @@ import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 
 /**
  * Interval for a splice site acceptor
- * 
- * From Sequence Ontology: A sequence variant in which a change has occurred 
- * within the region of the splice site, either within 1-3 bases of the exon 
+ *
+ * From Sequence Ontology: A sequence variant in which a change has occurred
+ * within the region of the splice site, either within 1-3 bases of the exon
  * or 3-8 bases of the intron.
- * 
+ *
  * @author pcingola
  */
 public class SpliceSiteRegion extends SpliceSite {
@@ -20,13 +20,13 @@ public class SpliceSiteRegion extends SpliceSite {
 		type = EffectType.SPLICE_SITE_REGION;
 	}
 
-	public SpliceSiteRegion(Exon parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public SpliceSiteRegion(Exon parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.SPLICE_SITE_REGION;
 	}
 
-	public SpliceSiteRegion(Intron parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public SpliceSiteRegion(Intron parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.SPLICE_SITE_REGION;
 	}
 

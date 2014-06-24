@@ -163,7 +163,7 @@ public class Markers implements Serializable, Collection<Marker> {
 				Markers query = forest.query(mi);
 
 				// Get intersect
-				Marker intersect = new Marker(mi.getParent(), mi.getStart(), mi.getEnd(), mi.getStrand(), "");
+				Marker intersect = new Marker(mi.getParent(), mi.getStart(), mi.getEnd(), mi.isStrandMinus(), "");
 				done.add(mi);
 				for (Marker m : query) {
 					if (intersect != null) {
@@ -211,7 +211,7 @@ public class Markers implements Serializable, Collection<Marker> {
 			if (!chromoName.equals(ichromoName)) {
 				// Save current interval (if a any)
 				if ((start >= 0) && (end >= 0)) {
-					Marker im = new Marker(chromo, start, end, 1, tag);
+					Marker im = new Marker(chromo, start, end, false, tag);
 					intsMerged.add(im);
 				}
 
@@ -229,7 +229,7 @@ public class Markers implements Serializable, Collection<Marker> {
 						for (Marker m : this)
 							System.out.println("\t" + m);
 					}
-					Marker im = new Marker(chromo, start, end, 1, tag);
+					Marker im = new Marker(chromo, start, end, false, tag);
 					intsMerged.add(im);
 				}
 				start = end = -1;
@@ -248,7 +248,7 @@ public class Markers implements Serializable, Collection<Marker> {
 		}
 
 		if ((start >= 0) && (end >= 0)) {
-			Marker im = new Marker(chromo, start, end, 1, tag);
+			Marker im = new Marker(chromo, start, end, false, tag);
 			intsMerged.add(im);
 		}
 
@@ -270,14 +270,14 @@ public class Markers implements Serializable, Collection<Marker> {
 					// 'i' is included in 'interval' => Do not add 'i'
 				} else if ((interval.getStart() <= i.getStart()) && (interval.getEnd() < i.getEnd())) {
 					// 'interval' overlaps left part of 'i' => Include right part of 'i'
-					ints.add(new Marker(i.getParent(), interval.getEnd() + 1, i.getEnd(), i.getStrand(), i.getId()));
+					ints.add(new Marker(i.getParent(), interval.getEnd() + 1, i.getEnd(), i.isStrandMinus(), i.getId()));
 				} else if ((i.getStart() < interval.getStart()) && (i.getEnd() <= interval.getEnd())) {
 					// 'interval' overlaps right part of 'i' => Include left part of 'i'
-					ints.add(new Marker(i.getParent(), i.getStart(), interval.getStart() - 1, i.getStrand(), i.getId()));
+					ints.add(new Marker(i.getParent(), i.getStart(), interval.getStart() - 1, i.isStrandMinus(), i.getId()));
 				} else if ((i.getStart() < interval.getStart()) && (interval.getEnd() < i.getEnd())) {
 					// 'interval' overlaps middle of 'i' => Include left and right part of 'i'
-					ints.add(new Marker(i.getParent(), i.getStart(), interval.getStart() - 1, i.getStrand(), i.getId()));
-					ints.add(new Marker(i.getParent(), interval.getEnd() + 1, i.getEnd(), i.getStrand(), i.getId()));
+					ints.add(new Marker(i.getParent(), i.getStart(), interval.getStart() - 1, i.isStrandMinus(), i.getId()));
+					ints.add(new Marker(i.getParent(), interval.getEnd() + 1, i.getEnd(), i.isStrandMinus(), i.getId()));
 				} else throw new RuntimeException("Interval intersection not analysed. This should nbever happen!");
 			} else ints.add(i); // No intersection => Just add interval
 
@@ -460,7 +460,7 @@ public class Markers implements Serializable, Collection<Marker> {
 				Markers query = forest.query(mi);
 
 				// Get union
-				Marker union = new Marker(mi.getParent(), mi.getStart(), mi.getEnd(), mi.getStrand(), "");
+				Marker union = new Marker(mi.getParent(), mi.getStart(), mi.getEnd(), mi.isStrandMinus(), "");
 				done.add(mi);
 				for (Marker m : query) {
 					if ((union != null) && (union.getStart() > m.getStart()) || (union.getEnd() < m.getEnd())) union = union.union(m);

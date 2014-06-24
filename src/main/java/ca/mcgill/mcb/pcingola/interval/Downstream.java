@@ -13,8 +13,8 @@ public class Downstream extends Marker {
 
 	private static final long serialVersionUID = 1636197649250882952L;
 
-	public Downstream(Transcript parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public Downstream(Transcript parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.DOWNSTREAM;
 	}
 

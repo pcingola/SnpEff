@@ -1,8 +1,8 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
@@ -120,7 +120,7 @@ public class CodonChangeDel extends CodonChange {
 		int cdsBaseMax = cdsBaseNumber(max);
 
 		// Swap?
-		if (transcript.getStrand() < 0) {
+		if (transcript.isStrandMinus()) {
 			int swap = cdsBaseMin;
 			cdsBaseMin = cdsBaseMax;
 			cdsBaseMax = swap;

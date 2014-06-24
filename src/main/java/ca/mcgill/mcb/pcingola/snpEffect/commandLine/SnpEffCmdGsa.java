@@ -456,7 +456,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		LinkedList<String> geneIds = new LinkedList<String>();
 
 		// Query
-		Marker m = new Marker(genome.getChromosome(chr), start, end, 1, "");
+		Marker m = new Marker(genome.getChromosome(chr), start, end, false, "");
 
 		// Map only to closest gene?
 		if (useClosestGene) {

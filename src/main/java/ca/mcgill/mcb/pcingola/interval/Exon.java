@@ -8,7 +8,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Interval for an exon
- * 
+ *
  * @author pcingola
  */
 public class Exon extends MarkerSeq implements MarkerWithFrame {
@@ -21,7 +21,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		NONE, // Not spliced
 		RETAINED, // All transcripts have this exon
 		SKIPPED, // Some transcripts skip it
-		ALTTENATIVE_3SS, // Some transcripts have and alternative 3' exon start 
+		ALTTENATIVE_3SS, // Some transcripts have and alternative 3' exon start
 		ALTTENATIVE_5SS, // Some transcripts have and alternative 5' exon end
 		MUTUALLY_EXCLUSIVE, // Mutually exclusive (respect to other exon)
 		ALTTENATIVE_PROMOMOTER, // The first exon is different in some transcripts.
@@ -45,19 +45,19 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		type = EffectType.EXON;
 	}
 
-	public Exon(Transcript parent, int start, int end, int strand, String id, int rank) {
-		super(parent, start, end, strand, id);
-		this.strand = (byte) strand;
+	public Exon(Transcript parent, int start, int end, boolean strandMinus, String id, int rank) {
+		super(parent, start, end, strandMinus, id);
+		this.strandMinus = strandMinus;
 		this.rank = rank;
 		type = EffectType.EXON;
 	}
 
 	/**
 	 * Apply seqChange to exon
-	 * 
+	 *
 	 * WARNING: There might be conditions which change the exon type (e.g. an intron is deleted)
-	 * 			Nevertheless ExonSpliceType s not updated since it reflects the exon type before a sequence change. 
-	 * 
+	 * 			Nevertheless ExonSpliceType s not updated since it reflects the exon type before a sequence change.
+	 *
 	 */
 	@Override
 	public Exon apply(Variant seqChange) {
@@ -82,8 +82,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		size = size - 1;
 		if (size < 0) return null;
 
-		if (strand >= 0) spliceSiteAcceptor = new SpliceSiteAcceptor(this, start - 1 - size, start - 1, strand, id);
-		else spliceSiteAcceptor = new SpliceSiteAcceptor(this, end + 1, end + 1 + size, strand, id);
+		if (isStrandPlus()) spliceSiteAcceptor = new SpliceSiteAcceptor(this, start - 1 - size, start - 1, strandMinus, id);
+		else spliceSiteAcceptor = new SpliceSiteAcceptor(this, end + 1, end + 1 + size, strandMinus, id);
 
 		return spliceSiteAcceptor;
 	}
@@ -99,8 +99,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		size = size - 1;
 		if (size < 0) return null;
 
-		if (strand >= 0) spliceSiteDonor = new SpliceSiteDonor(this, end + 1, end + 1 + size, strand, id);
-		else spliceSiteDonor = new SpliceSiteDonor(this, start - 1 - size, start - 1, strand, id);
+		if (isStrandPlus()) spliceSiteDonor = new SpliceSiteDonor(this, end + 1, end + 1 + size, strandMinus, id);
+		else spliceSiteDonor = new SpliceSiteDonor(this, start - 1 - size, start - 1, strandMinus, id);
 
 		return spliceSiteDonor;
 	}
@@ -117,8 +117,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		if (size > size()) size = size(); // Cannot be larger than this marker
 		if (size <= 0) return null;
 
-		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (size - 1), end, strand, id);
-		else spliceSiteRegionEnd = new SpliceSiteRegion(this, start, start + (size - 1), strand, id);
+		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (size - 1), end, strandMinus, id);
+		else spliceSiteRegionEnd = new SpliceSiteRegion(this, start, start + (size - 1), strandMinus, id);
 
 		return spliceSiteRegionEnd;
 	}
@@ -135,8 +135,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		if (size > size()) size = size(); // Cannot be larger than this marker
 		if (size <= 0) return null;
 
-		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start, start + (size - 1), strand, id);
-		else spliceSiteRegionStart = new SpliceSiteRegion(this, end - (size - 1), end, strand, id);
+		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start, start + (size - 1), strandMinus, id);
+		else spliceSiteRegionStart = new SpliceSiteRegion(this, end - (size - 1), end, strandMinus, id);
 
 		return spliceSiteRegionStart;
 	}
@@ -286,8 +286,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 				+ "\t" + sequence //
 				+ "\t" + ssdId //
 				+ "\t" + ssaId //
-				+ "\t" + (spliceType != null ? spliceType.toString() : "")//				
-		;
+				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
+				;
 	}
 
 	/**

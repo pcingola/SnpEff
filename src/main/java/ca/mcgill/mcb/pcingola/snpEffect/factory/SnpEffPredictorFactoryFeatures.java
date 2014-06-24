@@ -52,7 +52,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 			if (f.getType() == Type.SOURCE) {
 				if (chromosome == null) {
 					String chrName = chromoName(features, f);
-					chromosome = new Chromosome(genome, start, end, 1, chrName);
+					chromosome = new Chromosome(genome, start, end, chrName);
 					add(chromosome);
 				} else {
 					if (debug) System.err.println("Warnign: 'SOURCE' already assigned to chromosome. Ignoring feature:\n" + f);
@@ -64,7 +64,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		if (chromosome == null) {
 			String chrName = chromoName(features, null);
 			int chrSize = sequence(features).length();
-			chromosome = new Chromosome(genome, 0, chrSize, 1, chrName);
+			chromosome = new Chromosome(genome, 0, chrSize, chrName);
 			add(chromosome);
 		}
 
@@ -96,13 +96,13 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 				// Add transcript
 				String trId = f.getTranscriptId();
-				Transcript tr = new Transcript(gene, start, end, f.isComplement() ? -1 : 1, trId);
+				Transcript tr = new Transcript(gene, start, end, f.isComplement(), trId);
 
 				// Add exons?
 				if (f.hasMultipleCoordinates()) {
 					int exNum = 1;
 					for (FeatureCoordinates fc : f) {
-						Exon e = new Exon(tr, fc.start - inOffset, fc.end - inOffset, fc.complement ? -1 : +1, tr.getId() + "_" + exNum, exNum);
+						Exon e = new Exon(tr, fc.start - inOffset, fc.end - inOffset, fc.complement, tr.getId() + "_" + exNum, exNum);
 						tr.add(e);
 						exNum++;
 					}
@@ -138,7 +138,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 					// trId = "Tr_" + start + "_" + end;
 					tr = findTranscript(trId);
 					if (tr == null) {
-						tr = new Transcript(gene, start, end, f.isComplement() ? -1 : 1, trId);
+						tr = new Transcript(gene, start, end, f.isComplement(), trId);
 						add(tr);
 					}
 				}
@@ -149,12 +149,12 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 				// Add exons?
 				if (f.hasMultipleCoordinates()) {
 					for (FeatureCoordinates fc : f) {
-						Cds cds = new Cds(tr, fc.start - inOffset, fc.end - inOffset, f.isComplement() ? -1 : 1, "CDS_" + trId);
+						Cds cds = new Cds(tr, fc.start - inOffset, fc.end - inOffset, f.isComplement(), "CDS_" + trId);
 						tr.add(cds);
 						add(cds);
 					}
 				} else {
-					Cds cds = new Cds(tr, f.getStart() - inOffset, f.getEnd() - inOffset, f.isComplement() ? -1 : 1, "CDS_" + trId);
+					Cds cds = new Cds(tr, f.getStart() - inOffset, f.getEnd() - inOffset, f.isComplement(), "CDS_" + trId);
 					add(cds);
 				}
 			}
@@ -228,7 +228,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 		Gene gene = findGene(geneId);
 		if (gene == null) {
-			gene = new Gene(chr, start, end, f.isComplement() ? -1 : 1, geneId, geneName, "");
+			gene = new Gene(chr, start, end, f.isComplement(), geneId, geneName, "");
 			add(gene);
 			if (debug) System.err.println("WARNING: Gene '" + geneId + "' not found: created.");
 		}

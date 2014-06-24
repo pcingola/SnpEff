@@ -17,8 +17,8 @@ public class Intron extends Marker {
 	SpliceSiteRegion spliceSiteRegionStart;
 	SpliceSiteRegion spliceSiteRegionEnd;
 
-	public Intron(Transcript parent, int start, int end, int strand, String id, Exon exonBefore, Exon exonAfter) {
-		super(parent, start, end, strand, id);
+	public Intron(Transcript parent, int start, int end, boolean strandMinus, String id, Exon exonBefore, Exon exonAfter) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.INTRON;
 		this.exonAfter = exonAfter;
 		this.exonBefore = exonBefore;
@@ -35,8 +35,8 @@ public class Intron extends Marker {
 		if (sizeMax > size()) sizeMax = size(); // Cannot be larger than this marker
 		if (sizeMax <= sizeMin) return null; // Cannot be less than one base long
 
-		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (sizeMax - 1), end - (sizeMin - 1), strand, id);
-		else spliceSiteRegionEnd = new SpliceSiteRegion(this, start + sizeMin - 1, start + sizeMax - 1, strand, id);
+		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (sizeMax - 1), end - (sizeMin - 1), strandMinus, id);
+		else spliceSiteRegionEnd = new SpliceSiteRegion(this, start + sizeMin - 1, start + sizeMax - 1, strandMinus, id);
 
 		return spliceSiteRegionEnd;
 	}
@@ -52,8 +52,8 @@ public class Intron extends Marker {
 		if (sizeMax > size()) sizeMax = size(); // Cannot be larger than this marker
 		if (sizeMax <= sizeMin) return null; // Cannot be less than one base long
 
-		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start + (sizeMin - 1), start + (sizeMax - 1), strand, id);
-		else spliceSiteRegionStart = new SpliceSiteRegion(this, end - (sizeMax - 1), end - (sizeMin - 1), strand, id);
+		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start + (sizeMin - 1), start + (sizeMax - 1), strandMinus, id);
+		else spliceSiteRegionStart = new SpliceSiteRegion(this, end - (sizeMax - 1), end - (sizeMin - 1), strandMinus, id);
 
 		return spliceSiteRegionStart;
 	}

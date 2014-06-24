@@ -19,8 +19,8 @@ public class GffMarker extends Custom {
 
 	List<KeyValue<String, String>> keyValues;
 
-	public GffMarker(Marker parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id, "");
+	public GffMarker(Marker parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id, "");
 	}
 
 	/**

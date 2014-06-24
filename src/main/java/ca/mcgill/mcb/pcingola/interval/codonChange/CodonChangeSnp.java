@@ -1,8 +1,8 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
@@ -45,7 +45,7 @@ public class CodonChangeSnp extends CodonChange {
 		if (codonsOld.isEmpty()) return "";
 
 		char codonChars[] = codonsOld.toLowerCase().toCharArray();
-		char snpBase = seqChange.netChange(transcript.getStrand()).charAt(0);
+		char snpBase = seqChange.netChange(transcript.isStrandMinus()).charAt(0);
 		codonChars[codonIndex] = Character.toUpperCase(snpBase);
 
 		String codonsNew = new String(codonChars);

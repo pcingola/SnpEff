@@ -35,11 +35,11 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 	 * @param chromo
 	 * @param start
 	 * @param end
-	 * @param strand
+	 * @param strandMinus
 	 * @param name
 	 * @param parent
 	 */
-	void addInterval(String id, String type, String chromo, int start, int end, int strand, String name, boolean proteinCoding, String parent, int frame) {
+	void addInterval(String id, String type, String chromo, int start, int end, boolean strandMinus, String name, boolean proteinCoding, String parent, int frame) {
 		// Get chromosome
 		Chromosome chromosome = getOrCreateChromosome(chromo);
 
@@ -51,7 +51,7 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 			}
 
 			// Create and add gene
-			Gene gene = new Gene(chromosome, start, end, strand, id, name, "");
+			Gene gene = new Gene(chromosome, start, end, strandMinus, id, name, "");
 			add(gene);
 		} else if (is(type, TRANSCRIPT)) {
 			// Sanity check: Have we already added this one?
@@ -68,7 +68,7 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 			Gene gene = findGene(geneId, id);
 			if (gene == null) {
 				// Create and add 'fake' gene
-				gene = new Gene(chromosome, start, end, strand, geneId, geneId, "mRNA");
+				gene = new Gene(chromosome, start, end, strandMinus, geneId, geneId, "mRNA");
 				add(gene);
 				warning("Cannot find gene '" + geneId + "'. Created gene '" + gene.getId() + "' for transcript '" + id + "'");
 			}
@@ -80,7 +80,7 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 			if (!gene.getChromosomeName().equals(chromosome.getId())) error("Trying to assign Transcript to a gene in a different chromosome!" + "\n\tPosition    : " + chromo + ":" + start + "-" + end + "\n\t" + gene);
 
 			// Create and add transcript
-			Transcript tr = new Transcript(gene, start, end, strand, id);
+			Transcript tr = new Transcript(gene, start, end, strandMinus, id);
 			if (proteinCoding) tr.setProteinCoding(proteinCoding); // Set protein coding (if available)
 			add(tr);
 		} else if (is(type, EXON)) {
@@ -97,7 +97,7 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 				if ((tr == null) && (gene != null)) {
 					// Create a transcript from the gene
 					String trId = "Transcript_" + gene.getId(); // Transcript ID
-					tr = new Transcript(gene, start, end, strand, trId);
+					tr = new Transcript(gene, start, end, strandMinus, trId);
 					if (proteinCoding) tr.setProteinCoding(proteinCoding); // Set protein coding (if available)
 
 					// Add new transcript
@@ -111,12 +111,12 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 					if (gene == null) {
 						// Create and add gene
 						String gId = "Gene_" + (par.isEmpty() ? id : par); // Gene ID
-						gene = new Gene(chromosome, start, end, strand, gId, name, "");
+						gene = new Gene(chromosome, start, end, strandMinus, gId, name, "");
 					}
 
 					// Create transcript
 					String trId = par.isEmpty() ? "Transcript_" + id : par; // Transcript ID
-					tr = new Transcript(gene, start, end, strand, trId);
+					tr = new Transcript(gene, start, end, strandMinus, trId);
 					if (proteinCoding) tr.setProteinCoding(proteinCoding); // Set protein coding (if available)
 
 					// Add gene & transcript
@@ -134,19 +134,19 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 				// This can be added in different ways
 				if (type.equalsIgnoreCase("exon")) {
 					int rank = 0; // Rank information will be added later
-					Exon ex = new Exon(tr, start, end, strand, id, rank);
+					Exon ex = new Exon(tr, start, end, strandMinus, id, rank);
 					ex.setFrame(frame);
 					add(ex);
 				} else if (type.equalsIgnoreCase("CDS")) {
-					Cds cds = new Cds(tr, start, end, strand, id);
+					Cds cds = new Cds(tr, start, end, strandMinus, id);
 					cds.setFrame(frame);
 					add(cds);
 				} else if (type.equalsIgnoreCase("stop_codon") || type.equalsIgnoreCase("start_codon")) {
 					int rank = 0; // Rank information will be added later
-					Exon ex = new Exon(tr, start, end, strand, id, rank);
+					Exon ex = new Exon(tr, start, end, strandMinus, id, rank);
 					ex.setFrame(frame);
 					add(ex);
-					Cds cds = new Cds(tr, start, end, strand, type + "_" + id);
+					Cds cds = new Cds(tr, start, end, strandMinus, type + "_" + id);
 					cds.setFrame(frame);
 					add(cds);
 				}
@@ -164,10 +164,10 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 				}
 
 				// Find exon
-				Marker utr = new Marker(tr, start, end, strand, id);
+				Marker utr = new Marker(tr, start, end, strandMinus, id);
 				Exon exon = tr.queryExon(utr);
 				if (exon == null) {
-					exon = new Exon(tr, start, end, strand, id, 0);
+					exon = new Exon(tr, start, end, strandMinus, id, 0);
 					exon.setFrame(frame);
 					add(exon);
 					warning("Cannot find exon for UTR: '" + utr.getId() + "'. Creating exon '" + id + "'");
@@ -175,11 +175,11 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 
 				// Add UTR
 				if (is(type, UTR5)) {
-					Utr5prime u5 = new Utr5prime(exon, start, end, strand, id);
+					Utr5prime u5 = new Utr5prime(exon, start, end, strandMinus, id);
 					tr.add(u5);
 					add(u5);
 				} else if (is(type, UTR3)) {
-					Utr3prime u3 = new Utr3prime(exon, start, end, strand, id);
+					Utr3prime u3 = new Utr3prime(exon, start, end, strandMinus, id);
 					tr.add(u3);
 					add(u3);
 				}
@@ -210,9 +210,7 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 		int end = parsePosition(fields[4]);
 
 		// Parse strand
-		int strand = 0;
-		if (fields[6].equals("+")) strand = +1;
-		else if (fields[6].equals("-")) strand = -1;
+		boolean strandMinus = fields[6].equals("-");
 
 		int frame = (fields[7].equals(".") ? -1 : Gpr.parseIntSafe(fields[7]));
 		String name = null;
@@ -256,7 +254,7 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 		name = name.trim();
 
 		// Add interval
-		addInterval(id, type, chromo, start, end, strand, name, proteinCoding, parent, frame);
+		addInterval(id, type, chromo, start, end, strandMinus, name, proteinCoding, parent, frame);
 
 		return true;
 	}

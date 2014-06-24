@@ -12,7 +12,7 @@ public class GenericMarker extends Marker {
 	String line;
 
 	public GenericMarker(Marker parent, int start, int end, String id) {
-		super(parent, start, end, 1, id);
+		super(parent, start, end, false, id);
 	}
 
 	public String getLine() {

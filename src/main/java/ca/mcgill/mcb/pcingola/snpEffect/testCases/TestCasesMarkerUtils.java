@@ -32,9 +32,9 @@ public class TestCasesMarkerUtils extends TestCase {
 
 		// Create chromosomes
 		for (int i = 1; i < 22; i++)
-			genome.add(new Chromosome(genome, 0, 0, 1, "" + i));
-		genome.add(new Chromosome(genome, 0, 0, 1, "X"));
-		genome.add(new Chromosome(genome, 0, 0, 1, "Y"));
+			genome.add(new Chromosome(genome, 0, 0, "" + i));
+		genome.add(new Chromosome(genome, 0, 0, "X"));
+		genome.add(new Chromosome(genome, 0, 0, "Y"));
 	}
 
 	/**
@@ -57,12 +57,12 @@ public class TestCasesMarkerUtils extends TestCase {
 			if (startPrev < 0) startPrev = start;
 
 			// Create marker
-			m = new Marker(chr, start, end, 1, "");
+			m = new Marker(chr, start, end, false, "");
 			markers.add(m);
 
 			// Next interval
 			gap = rand.nextInt(maxGap);
-			mcol = new Marker(chr, startPrev, end, 1, "");
+			mcol = new Marker(chr, startPrev, end, false, "");
 			if (gap <= minGap) {
 				gap = 1;
 			} else {

@@ -6,9 +6,9 @@ import java.util.HashSet;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfLof;
@@ -235,13 +235,13 @@ public class LossOfFunction {
 		Variant seqChange = changeEffect.getSeqChange();
 		int cdsStart = tr.isStrandPlus() ? tr.getCdsStart() : tr.getCdsEnd();
 		int cdsEnd = tr.isStrandPlus() ? tr.getCdsEnd() : tr.getCdsStart();
-		Marker coding = new Marker(seqChange.getChromosome(), cdsStart, cdsEnd, 1, "");
+		Marker coding = new Marker(seqChange.getChromosome(), cdsStart, cdsEnd, false, "");
 
 		// Create an interval intersecting the CDS and the deletion
 		int start = Math.max(cdsStart, seqChange.getStart());
 		int end = Math.min(cdsEnd, seqChange.getEnd());
 		if (start >= end) return false; // No intersections with coding part of the exon? => not LOF
-		Marker codingDeleted = new Marker(seqChange.getChromosome(), start, end, 1, "");
+		Marker codingDeleted = new Marker(seqChange.getChromosome(), start, end, false, "");
 
 		// Count:
 		//   - number of coding bases deleted 
@@ -319,7 +319,7 @@ public class LossOfFunction {
 		//---
 		int cdsEnd = tr.getCdsEnd();
 		int cdsStart = tr.getCdsStart();
-		Marker cds = new Marker(tr.getChromosome(), Math.min(cdsStart, cdsEnd), Math.max(cdsStart, cdsEnd), tr.getStrand(), ""); // Create a cds marker
+		Marker cds = new Marker(tr.getChromosome(), Math.min(cdsStart, cdsEnd), Math.max(cdsStart, cdsEnd), tr.isStrandMinus(), ""); // Create a cds marker
 		Exon lastExon = null;
 		int countCodingExons = 0;
 		for (Exon exon : tr.sortedStrand()) {

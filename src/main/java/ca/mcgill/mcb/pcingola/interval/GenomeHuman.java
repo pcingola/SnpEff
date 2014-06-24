@@ -18,8 +18,8 @@ public class GenomeHuman extends Genome {
 		super("hg");
 
 		// Create all chromosomes
-		for( int i = 0; i < chrNames.length; i++ ) {
-			Chromosome chr = new Chromosome(this, 0, chrLength[i], 1, chrNames[i]);
+		for (int i = 0; i < chrNames.length; i++) {
+			Chromosome chr = new Chromosome(this, 0, chrLength[i], chrNames[i]);
 			add(chr);
 		}
 	}

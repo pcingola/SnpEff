@@ -9,8 +9,8 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Intergenic;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.util.Timer;
@@ -114,7 +114,7 @@ public class SnpEffCmdClosest extends SnpEff {
 			for (int extend = initialExtension; extend < chr.size(); extend *= 2) {
 				int start = Math.max(queryMarker.getStart() - extend, 0);
 				int end = queryMarker.getEnd() + extend;
-				Marker extended = new Marker(chr, start, end, 1, "");
+				Marker extended = new Marker(chr, start, end, false, "");
 
 				// Find all markers that intersect with 'extended interval'
 				Markers markers = snpEffectPredictor.queryDeep(extended);

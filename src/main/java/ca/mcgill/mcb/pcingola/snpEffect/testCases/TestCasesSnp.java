@@ -95,7 +95,7 @@ public class TestCasesSnp extends TestCase {
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor();
 			if (debug) System.out.println("SNP Test iteration: " + i + "\n" + transcript);
-			else System.out.println("SNP Test iteration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
+			else System.out.println("SNP Test iteration: " + i + "\t" + transcript.getStrand() + "\t" + transcript.cds());
 
 			int cdsBaseNum = 0;
 
@@ -148,9 +148,7 @@ public class TestCasesSnp extends TestCase {
 						}
 
 						// Create a SeqChange
-						int seqChangeStrand = 1;
-						if (exon.isStrandMinus()) refBase = GprSeq.wc(refBase);
-						if (seqChangeStrand == -exon.getStrand()) {
+						if (exon.isStrandMinus()) {
 							snp = GprSeq.wc(snp);
 							refBase = GprSeq.wc(refBase);
 						}
@@ -171,7 +169,7 @@ public class TestCasesSnp extends TestCase {
 							String effStr = effect.effect(true, true, true, false);
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-									+ "\t" + seqChange + (seqChange.getStrand() >= 0 ? "+" : "-") //
+									+ "\t" + seqChange + (seqChange.isStrandPlus() ? "+" : "-") //
 									+ "\tCodon: " + codon + " -> " + newCodon //
 									+ "\tAA: " + aa + " -> " + newAa //
 									+ "\tEffect: " + effStr);

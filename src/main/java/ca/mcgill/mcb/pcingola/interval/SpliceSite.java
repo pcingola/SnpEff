@@ -32,16 +32,16 @@ public abstract class SpliceSite extends Marker {
 		super();
 	}
 
-	public SpliceSite(Exon parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public SpliceSite(Exon parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 	}
 
-	public SpliceSite(Intron parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public SpliceSite(Intron parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 	}
 
-	public SpliceSite(Transcript parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public SpliceSite(Transcript parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 	}
 
 	/**

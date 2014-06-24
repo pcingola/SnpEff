@@ -508,7 +508,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 						done.add(key);
 
 						// Create BED file
-						Intron intron = new Intron(tr, start, end, 1, intronTypes, exPrev, ex);
+						Intron intron = new Intron(tr, start, end, false, intronTypes, exPrev, ex);
 						intronsByStr.put(intron.toString(), intron); // We use a hash to avoid adding the same intron multiple times
 					}
 				}

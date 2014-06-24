@@ -14,8 +14,8 @@ public abstract class Utr extends Marker {
 		super();
 	}
 
-	public Utr(Exon parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public Utr(Exon parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 	}
 
 	public abstract boolean isUtr3prime();

@@ -18,13 +18,13 @@ public class MarkerSeq extends Marker {
 
 	public MarkerSeq() {
 		super();
-		strand = 1;
+		strandMinus = false;
 		sequence = DnaSequence.empty();
 	}
 
-	public MarkerSeq(Marker parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
-		this.strand = (byte) strand;
+	public MarkerSeq(Marker parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
+		this.strandMinus = strandMinus;
 		sequence = DnaSequence.empty();
 	}
 
@@ -174,7 +174,7 @@ public class MarkerSeq extends Marker {
 	 * @return
 	 */
 	public String basesAt(int index, int len) {
-		if (strand < 0) {
+		if (isStrandMinus()) {
 			int idx = sequence.length() - index - len;
 			return GprSeq.reverseWc(sequence.getBases(idx, len)); // Minus strand => Sequence has been reversed and WC-complemented
 		}

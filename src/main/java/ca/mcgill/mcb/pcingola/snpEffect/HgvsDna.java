@@ -53,7 +53,7 @@ public class HgvsDna extends Hgvs {
 
 		case INS:
 		case DEL:
-			String netChange = seqChange.netChange(1);
+			String netChange = seqChange.netChange(false);
 			if (marker == null || marker.isStrandPlus()) return netChange;
 			return GprSeq.wc(netChange);
 

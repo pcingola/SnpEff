@@ -186,8 +186,8 @@ public class TestCasesIns extends TestCase {
 
 			// For each exon...
 			for (Exon exon : transcript.sortedStrand()) {
-				int step = exon.getStrand() >= 0 ? 1 : -1;
-				int beg = exon.getStrand() >= 0 ? exon.getStart() : exon.getEnd();
+				int step = exon.isStrandPlus() ? 1 : -1;
+				int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
 
 				// For each base in this exon...
 				for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
@@ -212,8 +212,7 @@ public class TestCasesIns extends TestCase {
 						String codonNew = "", aaNew = "";
 
 						// Create a SeqChange
-						int seqChangeStrand = 1;
-						if (seqChangeStrand == -exon.getStrand()) ins = GprSeq.reverseWc(insPlus);
+						if (exon.isStrandMinus()) ins = GprSeq.reverseWc(insPlus);
 						Variant seqChange = new Variant(chromosome, pos, "", "+" + ins, "");
 
 						// Is it an insertion?
@@ -255,7 +254,7 @@ public class TestCasesIns extends TestCase {
 							String effStr = effect.effect(true, true, true, false);
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-									+ "\t" + seqChange + "\tstrand" + (seqChange.getStrand() >= 0 ? "+" : "-") //
+									+ "\t" + seqChange + "\tstrand" + (seqChange.isStrandPlus() ? "+" : "-") //
 									+ "\tCodon: " + codonOld + " -> " + codonNew //
 									+ "\tAA: " + aaOld + " -> " + aaNew //
 									+ "\tEffect: " + effStr //

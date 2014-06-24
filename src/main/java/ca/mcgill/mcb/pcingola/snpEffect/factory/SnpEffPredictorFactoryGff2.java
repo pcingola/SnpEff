@@ -44,11 +44,11 @@ public class SnpEffPredictorFactoryGff2 extends SnpEffPredictorFactoryGff {
 	 * @param chromo
 	 * @param start
 	 * @param end
-	 * @param strand
+	 * @param strandMinus
 	 * @param name
 	 * @param parent
 	 */
-	void addInterval(String id, String type, String chromo, int start, int end, int strand, String geneId, String trId) {
+	void addInterval(String id, String type, String chromo, int start, int end, boolean strandMinus, String geneId, String trId) {
 		// Get chromosome
 		Chromosome chromosome = getOrCreateChromosome(chromo);
 
@@ -57,14 +57,14 @@ public class SnpEffPredictorFactoryGff2 extends SnpEffPredictorFactoryGff {
 			// Add gene if needed
 			Gene gene = findGene(geneId);
 			if (gene == null) {
-				gene = new Gene(chromosome, start, end, strand, geneId, geneId, "mRNA");
+				gene = new Gene(chromosome, start, end, strandMinus, geneId, geneId, "mRNA");
 				add(gene);
 			}
 
 			// Add transcript
 			Transcript tint = findTranscript(trId);
 			if (tint == null) {
-				tint = new Transcript(gene, start, end, strand, trId);
+				tint = new Transcript(gene, start, end, strandMinus, trId);
 				add(tint);
 			}
 		} else if (is(type, EXON)) {
@@ -77,7 +77,7 @@ public class SnpEffPredictorFactoryGff2 extends SnpEffPredictorFactoryGff {
 
 			// Create and add exon
 			int rank = 0; // Rank info not available in GFF2
-			Exon exon = new Exon(tint, start, end, strand, id, rank);
+			Exon exon = new Exon(tint, start, end, strandMinus, id, rank);
 			add(exon);
 		}
 
@@ -104,7 +104,7 @@ public class SnpEffPredictorFactoryGff2 extends SnpEffPredictorFactoryGff {
 		String chromo = fields[0];
 		int start = parsePosition(fields[3]);
 		int end = parsePosition(fields[4]);
-		int strand = (fields[6].equals("-") ? -1 : +1);
+		boolean strandMinus = fields[6].equals("-");
 		String geneId = "", trId = "";
 
 		// Parse attributes
@@ -132,7 +132,7 @@ public class SnpEffPredictorFactoryGff2 extends SnpEffPredictorFactoryGff {
 		id = id.trim();
 		geneId = geneId.trim();
 
-		addInterval(id, type, chromo, start, end, strand, geneId, trId);
+		addInterval(id, type, chromo, start, end, strandMinus, geneId, trId);
 
 		return true;
 	}

@@ -119,7 +119,7 @@ public class SpliceTypes {
 		}
 
 		// Add to a collection
-		SpliceSiteBranchU12 ssu12 = new SpliceSiteBranchU12(tr, bestU12Start, bestU12End, tr.getStrand(), "");
+		SpliceSiteBranchU12 ssu12 = new SpliceSiteBranchU12(tr, bestU12Start, bestU12End, tr.isStrandMinus(), "");
 		addBranchU12(donorAcceptor, ssu12);
 
 		return bestU12;

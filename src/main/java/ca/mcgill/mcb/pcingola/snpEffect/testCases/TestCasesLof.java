@@ -40,7 +40,7 @@ public class TestCasesLof extends TestCase {
 	Marker cdsMarker(Transcript tr) {
 		int start = tr.isStrandPlus() ? tr.getCdsStart() : tr.getCdsEnd();
 		int end = tr.isStrandPlus() ? tr.getCdsEnd() : tr.getCdsStart();
-		return new Marker(tr.getParent(), start, end, 1, "");
+		return new Marker(tr.getParent(), start, end, false, "");
 	}
 
 	/**

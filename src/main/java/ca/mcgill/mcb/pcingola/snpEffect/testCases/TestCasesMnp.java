@@ -121,7 +121,7 @@ public class TestCasesMnp extends TestCase {
 				if (error || debug) {
 					Gpr.debug("Fatal error:"//
 							+ "\n\tPos           : " + pos //
-							+ "\n\tSeqChange     : " + seqChange + (seqChange.getStrand() >= 0 ? "+" : "-") //
+							+ "\n\tSeqChange     : " + seqChange + (seqChange.isStrandPlus() ? "+" : "-") //
 							+ "\n\tCodon (exp)   : " + codons//
 							+ "\n\tCodon (pred)  : " + effect.getCodonsOld().toUpperCase() + "/" + effect.getCodonsNew().toUpperCase() //
 							+ "\n\tEffect (pred) : " + effStr //
@@ -272,7 +272,7 @@ public class TestCasesMnp extends TestCase {
 			initSnpEffPredictorRand();
 
 			if (debug) System.out.println("MNP Test iteration: " + i + "\nChromo:\t" + chromoSequence + "\n" + transcript);
-			else System.out.println("MNP Test iteration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
+			else System.out.println("MNP Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
 
 			if (debug) {
 				for (Exon exon : transcript.sortedStrand())

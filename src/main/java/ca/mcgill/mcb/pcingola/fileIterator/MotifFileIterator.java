@@ -49,7 +49,7 @@ public class MotifFileIterator extends MarkerFileIterator<Motif> {
 
 						// Strand
 						String strandStr = fields[6];
-						int strand = strandStr.equals("-") ? -1 : +1;
+						boolean strandMinus = strandStr.equals("-");
 
 						// Parse info field, looking for "Name=XXXX"
 						String info = fields[8];
@@ -72,7 +72,7 @@ public class MotifFileIterator extends MarkerFileIterator<Motif> {
 						}
 
 						// Create seqChange
-						Motif motif = new Motif(chromo, start, end, strand, id, name, pwmId);
+						Motif motif = new Motif(chromo, start, end, strandMinus, id, name, pwmId);
 						motif.setPwm(jaspar.getPwm(pwmId));
 						if (motif.getPwm() == null) System.err.println("Warning: Pwm '" + id + "' not found! Name = " + name);
 

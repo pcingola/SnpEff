@@ -41,25 +41,11 @@ public class Variant extends Marker {
 	boolean imprecise = false; // Imprecise variant: coordinates are not exact (E.g. see section "Encoding Structural Variants in VCF" from VCF spec. 4.1)
 	String genotype; // Genotype order number (in case there are multiple changes per entry (e.g. A VCF entry may encode multiple ALTs). Note: Genotype differences are coded as "2-1" meaning genotype 1 is used as reference and genotype 2 is used as ALT (e.g. somatic vs germline samples)
 
-	// double quality; // Quality prediction (negative means 'not available')
-	// int coverage; // Number of reads covering the position (negative means 'not available')
-	// Boolean heterozygous; // Is this an heterozygous change?
-	// double score = Double.NaN; // Score (e.g. BED files)
-
-	//	public Variant(Marker parent, int start, int end, int strand, String id) {
-	//		super(parent, start, end, strand, id);
-	//		ref = alt = "";
-	//		variantType = VariantType.Interval;
-	//		alts = new String[1];
-	//		alts[0] = "";
-	//		if (strand < 0) throw new RuntimeException("SeqChange on negative strands are no longer allowed!");
-	//	}
-
 	/**
 	 * This constructor is used when we only have interval data (e.g. when reading a BED file)
 	 */
 	public Variant(Marker parent, int start, int end, String id) {
-		super(parent, start, end, 1, id);
+		super(parent, start, end, false, id);
 		ref = alt = "";
 		variantType = VariantType.Interval;
 		alts = new String[1];
@@ -74,7 +60,7 @@ public class Variant extends Marker {
 	 * Create a variant
 	 */
 	public Variant(Marker parent, int position, String referenceStr, String altStr, String id) {
-		super(parent, position, position, 1, id);
+		super(parent, position, position, false, id);
 		init(parent, position, referenceStr, altStr, id);
 	}
 
@@ -83,7 +69,7 @@ public class Variant extends Marker {
 	 * @return
 	 */
 	public String change() {
-		return strand >= 0 ? alt : GprSeq.reverseWc(alt);
+		return isStrandPlus() ? alt : GprSeq.reverseWc(alt);
 	}
 
 	public String getChange() {
@@ -102,25 +88,13 @@ public class Variant extends Marker {
 		return variantType;
 	}
 
-	//	public int getCoverage() {
-	//		return coverage;
-	//	}
-
 	public String getGenotype() {
 		return genotype;
 	}
 
-	//	public double getQuality() {
-	//		return quality;
-	//	}
-
 	public String getReference() {
 		return ref;
 	}
-
-	//	public double getScore() {
-	//		return score;
-	//	}
 
 	/**
 	 * Create a new SeqChange for this option
@@ -141,16 +115,11 @@ public class Variant extends Marker {
 	}
 
 	@Override
-	public int getStrand() {
-		return strand;
-	}
-
-	@Override
 	public int hashCode() {
 		int hashCode = getChromosomeName().hashCode();
 		hashCode = hashCode * 31 + start;
 		hashCode = hashCode * 31 + end;
-		hashCode = hashCode * 31 + strand;
+		hashCode = hashCode * 31 + (strandMinus ? -1 : 1);
 		hashCode = hashCode * 31 + id.hashCode();
 		hashCode = hashCode * 31 + ref.hashCode();
 		hashCode = hashCode * 31 + alt.hashCode();
@@ -160,20 +129,15 @@ public class Variant extends Marker {
 	void init(Marker parent, int position, String referenceStr, String altStr, String id) {
 		ref = referenceStr.toUpperCase();
 		alt = altStr.toUpperCase();
-		//		this.quality = quality;
-		//		this.coverage = coverage;
-		//		heterozygous = false;
 
 		// Change type
 		variantType = VariantType.MNP;
 		if (alt.length() == 1) { // Is it a SNP?
 			variantType = VariantType.SNP;
 			if (alt.equals("A") || alt.equals("C") || alt.equals("G") || alt.equals("T")) {
-				//				heterozygous = false;
 				alts = new String[1];
 				alts[0] = alt;
 			} else {
-				//				heterozygous = true;
 
 				// Reference http://sourceforge.net/apps/mediawiki/samtools/index.php?title=SAM_FAQ#I_do_not_understand_the_columns_in_the_pileup_output.
 				// IUB codes: M=A/C, R=A/G, W=A/T, S=C/G, Y=C/T, K=G/T and N=A/C/G/T
@@ -238,28 +202,6 @@ public class Variant extends Marker {
 			if (alt.indexOf(',') >= 0) alts = alt.split(",");
 			else alts = alt.split("/");
 
-			//			// Heterozygous if any of the changes is different
-			//			if (changeOptions.length > 1) {
-			//				heterozygous = false;
-			//				for (int i = 0; i < (changeOptions.length - 1); i++) {
-			//					heterozygous |= !changeOptions[i].equals(changeOptions[i + 1]);
-			//				}
-			//			}
-			//
-			//			// Homozygous with more than one change? => Use only one change (since they are all the same, no need to analyze many times)
-			//			if (!heterozygous && (changeOptions.length > 1)) {
-			//				String changeOptionsNew[] = new String[1];
-			//				changeOptionsNew[0] = changeOptions[0];
-			//				changeOptions = changeOptionsNew;
-			//			}
-			//
-			//			// Use the asterisk at the end (e.g. when altStr is '*/' instead of '/*')
-			//			if (changeOptions[0].equals("*") && (changeOptions.length > 1)) {
-			//				changeOptions[0] = changeOptions[1];
-			//				changeOptions[1] = "*";
-			//				change = changeOptions[0] + "/" + changeOptions[1];
-			//			}
-
 			if (alt.startsWith("+")) {
 				// Insertions
 				variantType = VariantType.INS;
@@ -306,14 +248,6 @@ public class Variant extends Marker {
 	public boolean isInDel() {
 		return (variantType == VariantType.INS) || (variantType == VariantType.DEL);
 	}
-
-	//	public boolean isHeterozygous() {
-	//		return (heterozygous != null) && heterozygous;
-	//	}
-	//
-	//	public boolean isHomozygous() {
-	//		return (heterozygous != null) && !heterozygous;
-	//	}
 
 	public boolean isIns() {
 		return (variantType == VariantType.INS);
@@ -369,16 +303,12 @@ public class Variant extends Marker {
 	 * Return the change (always compared to 'referenceStrand') without any '+' or '-' leading characters
 	 * @return
 	 */
-	public String netChange(int referenceStrand) {
+	public String netChange(boolean reverseStrand) {
 		String netChange = alt;
 		if (alt.startsWith("+") || alt.startsWith("-")) netChange = alt.substring(1); // Remove leading char
 
 		// Need reverse-WC?
-		boolean needRwc = false;
-		if ((isStrandPlus()) && (referenceStrand < 0)) needRwc = true;
-		else if ((isStrandMinus()) && (referenceStrand >= 0)) needRwc = true;
-
-		return needRwc ? GprSeq.reverseWc(netChange) : netChange;
+		return reverseStrand ? GprSeq.reverseWc(netChange) : netChange;
 	}
 
 	/**
@@ -425,17 +355,9 @@ public class Variant extends Marker {
 		this.genotype = genotype;
 	}
 
-	//	public void setHeterozygous(Boolean heterozygous) {
-	//		this.heterozygous = heterozygous;
-	//	}
-
 	public void setImprecise(boolean imprecise) {
 		this.imprecise = imprecise;
 	}
-
-	//	public void setScore(double score) {
-	//		this.score = score;
-	//	}
 
 	@Override
 	public String toString() {

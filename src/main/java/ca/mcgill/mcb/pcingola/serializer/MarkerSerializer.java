@@ -31,16 +31,16 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Serialize markers to (and from) file
- * 
- * Note: Marker's children are serialized first (e.g. a transcript get all 
- * 		exons serialized first).  
- * 
- * Note: Since Marker is a tree-like structure, we first load all the markers and then 
- * 		assign parents. Markers are assigned a fake parent object (MarkerParentId) 
+ *
+ * Note: Marker's children are serialized first (e.g. a transcript get all
+ * 		exons serialized first).
+ *
+ * Note: Since Marker is a tree-like structure, we first load all the markers and then
+ * 		assign parents. Markers are assigned a fake parent object (MarkerParentId)
  * 		which is later replaced by the 'real' parent.
- * 
- * Note: All 'IDs' used have not meaning outside this serialization process. 
- * 
+ *
+ * Note: All 'IDs' used have not meaning outside this serialization process.
+ *
  * @author pcingola
  */
 public class MarkerSerializer {
@@ -82,7 +82,7 @@ public class MarkerSerializer {
 		Integer id = byMarker.get(m);
 		if (id == null) { throw new RuntimeException("Marker has no numeric ID. \n" //
 				+ "\tClass    : " + m.getClass().getSimpleName() + "\n" //
-				+ "\tMarker ID: '" + m.getId() + "'\n" // 
+				+ "\tMarker ID: '" + m.getId() + "'\n" //
 				+ "\t" + m); }
 		return id;
 	}
@@ -129,7 +129,7 @@ public class MarkerSerializer {
 
 	/**
 	 * Load data from file
-	 * 
+	 *
 	 * @param fileName
 	 */
 	public Markers load(String fileName) {
@@ -216,7 +216,7 @@ public class MarkerSerializer {
 			lineNum++;
 		}
 
-		//--- 
+		//---
 		// Assign parents
 		//---
 		Markers markers = new Markers();

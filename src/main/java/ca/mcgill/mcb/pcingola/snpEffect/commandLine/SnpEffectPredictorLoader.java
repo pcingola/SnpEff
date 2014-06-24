@@ -400,7 +400,7 @@ public class SnpEffectPredictorLoader {
 		// Convert 'SeqChange' markers to 'Custom' markers
 		Markers markers = new Markers();
 		for (Marker m : markersSeqChange) {
-			Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), m.getStrand(), m.getId(), label);
+			Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), m.isStrandMinus(), m.getId(), label);
 			if (m instanceof VariantWithScore) custom.setScore(((VariantWithScore) m).getScore());
 			markers.add(custom);
 		}
@@ -557,7 +557,7 @@ public class SnpEffectPredictorLoader {
 
 		// Add all chromos
 		for (String chr : chrs.keySet())
-			if (genome.getChromosome(chr) == null) genome.add(new Chromosome(genome, 0, chrs.get(chr), 1, chr));
+			if (genome.getChromosome(chr) == null) genome.add(new Chromosome(genome, 0, chrs.get(chr), chr));
 
 		//---
 		// Add all markers to predictor

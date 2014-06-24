@@ -19,8 +19,8 @@ public class Utr3prime extends Utr {
 		type = EffectType.UTR_3_PRIME;
 	}
 
-	public Utr3prime(Exon parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public Utr3prime(Exon parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.UTR_3_PRIME;
 	}
 

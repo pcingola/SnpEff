@@ -78,6 +78,6 @@ public class RandMarker {
 		if (pos < 0) throw new RuntimeException("Negative position. This should never happen!");
 		if ((pos + readLen) > chromo.size()) return null; // Read pass chromosome length (can happen)
 
-		return new Marker(chromo, (int) pos, (int) (pos + readLen - 1), 1, "");
+		return new Marker(chromo, (int) pos, (int) (pos + readLen - 1), false, "");
 	}
 }

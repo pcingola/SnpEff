@@ -53,8 +53,8 @@ public class Chromosome extends Marker {
 		super();
 	}
 
-	public Chromosome(Genome parent, int start, int end, int strand, String id) {
-		super(null, start, end, strand, id); // Parent = null to avoid sanity check (it will always fail for chromosomes)
+	public Chromosome(Genome parent, int start, int end, String id) {
+		super(null, start, end, false, id); // Parent = null to avoid sanity check (it will always fail for chromosomes)
 		this.parent = parent;
 		type = EffectType.CHROMOSOME;
 		setChromosomeName(id);

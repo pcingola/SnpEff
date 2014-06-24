@@ -19,8 +19,8 @@ public class Custom extends Marker implements Iterable<KeyValue<String, String>>
 	String label;
 	double score = Double.NaN;
 
-	public Custom(Marker parent, int start, int end, int strand, String id, String label) {
-		super(parent, start, end, strand, id);
+	public Custom(Marker parent, int start, int end, boolean strandMinus, String id, String label) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.CUSTOM;
 
 		this.label = label;

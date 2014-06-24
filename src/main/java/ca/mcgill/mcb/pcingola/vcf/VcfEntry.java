@@ -75,7 +75,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public VcfEntry(VcfFileIterator vcfFileIterator, Marker parent, String chromosomeName, int start, String id, String ref, String altsStr, double quality, String filterPass, String infoStr, String format) {
-		super(parent, start, start + ref.length() - 1, 1, id);
+		super(parent, start, start + ref.length() - 1, false, id);
 		this.chromosomeName = chromosomeName;
 		this.ref = ref;
 		parseAlts(altsStr);
@@ -93,7 +93,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * @param lineNum
 	 */
 	public VcfEntry(VcfFileIterator vcfFileIterator, String line, int lineNum, boolean parseNow) {
-		super(null, 0, 0, 1, "");
+		super(null, 0, 0, false, "");
 		this.vcfFileIterator = vcfFileIterator;
 		this.lineNum = lineNum;
 		this.line = line;
@@ -777,7 +777,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (ref.length() >= 1) end += ref.length() - 1;
 
 			// Strand is always positive (defined in VCF spec.)
-			strand = 1;
+			strandMinus = false;
 			String altsStr = vcfFileIterator.readField(fields, 4).toUpperCase();
 			parseAlts(altsStr);
 

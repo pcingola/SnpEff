@@ -72,7 +72,7 @@ public class RegulationBedFileIterator extends RegulationFileIterator {
 						// Score and all following fields are ignored 
 
 						// Create regulation
-						return new Regulation(chromo, start, end, 1, id, name, cellType);
+						return new Regulation(chromo, start, end, false, id, name, cellType);
 					}
 				}
 			}

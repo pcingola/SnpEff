@@ -20,8 +20,8 @@ public class SpliceSiteAcceptor extends SpliceSite {
 		type = EffectType.SPLICE_SITE_ACCEPTOR;
 	}
 
-	public SpliceSiteAcceptor(Exon parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public SpliceSiteAcceptor(Exon parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.SPLICE_SITE_ACCEPTOR;
 	}
 

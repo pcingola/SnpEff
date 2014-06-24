@@ -5,9 +5,9 @@ import java.io.Serializable;
 /**
  * A genomic interval.
  * Note: Intervals are assumed to be zero-based and inclusive
- *       i.e. an interval including the first base up to base X would 
- *       be [0,X] NOT [1,X] 
- * 
+ *       i.e. an interval including the first base up to base X would
+ *       be [0,X] NOT [1,X]
+ *
  * @author pcingola
  */
 public class Interval implements Comparable<Interval>, Serializable, Cloneable {
@@ -15,7 +15,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 	private static final long serialVersionUID = -3547434510230920403L;
 
 	protected int start, end;
-	protected byte strand;
+	protected boolean strandMinus;
 	protected String id = ""; // Interval's ID (e.g. gene name, transcript ID)
 	protected String chromosomeNameOri; // Original chromosome name (e.g. literal form a file)
 	protected Interval parent;
@@ -24,16 +24,16 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		start = -1;
 		end = -1;
 		id = null;
-		strand = 0;
+		strandMinus = false;
 		parent = null;
 	}
 
-	public Interval(Interval parent, int start, int end, int strand, String id) {
+	public Interval(Interval parent, int start, int end, boolean strandMinus, String id) {
 		if (start > end) throw new RuntimeException("Interval error: end before start. Start:" + start + ", End: " + end);
 		this.start = start;
 		this.end = end;
 		this.id = id;
-		this.strand = (byte) strand;
+		this.strandMinus = strandMinus;
 		this.parent = parent;
 	}
 
@@ -86,29 +86,25 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		return start;
 	}
 
-	public int getStrand() {
-		return strand;
-	}
-
 	@Override
 	public int hashCode() {
 		int hashCode = 0;
 		hashCode = hashCode * 31 + start;
 		hashCode = hashCode * 31 + end;
-		hashCode = hashCode * 31 + strand;
+		hashCode = hashCode * 31 + (strandMinus ? -1 : 1);
 		if (id != null) hashCode = hashCode * 31 + id.hashCode();
 		return hashCode;
 	}
 
 	/**
-	 * @return  true if this intersects '[iStart, iEnd]' 
+	 * @return  true if this intersects '[iStart, iEnd]'
 	 */
 	public boolean intersects(int iStart, int iEnd) {
 		return (iEnd >= start) && (iStart <= end);
 	}
 
 	/**
-	 * @return  return true if this intersects 'interval' 
+	 * @return  return true if this intersects 'interval'
 	 */
 	public boolean intersects(Interval interval) {
 		return (interval.getEnd() >= start) && (interval.getStart() <= end);
@@ -122,11 +118,15 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 	}
 
 	public boolean isStrandMinus() {
-		return strand < 0;
+		return strandMinus;
+	}
+
+	public String getStrand() {
+		return strandMinus ? "-" : "+";
 	}
 
 	public boolean isStrandPlus() {
-		return strand >= 0;
+		return !strandMinus;
 	}
 
 	public boolean isValid() {
@@ -154,8 +154,8 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		this.start = start;
 	}
 
-	public void setStrand(int strand) {
-		this.strand = (byte) strand;
+	public void setStrandMinus(boolean strand) {
+		strandMinus = strand;
 	}
 
 	public int size() {

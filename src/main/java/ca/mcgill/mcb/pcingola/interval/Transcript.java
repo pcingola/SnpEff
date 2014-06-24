@@ -56,8 +56,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		type = EffectType.TRANSCRIPT;
 	}
 
-	public Transcript(Gene gene, int start, int end, int strand, String id) {
-		super(gene, start, end, strand, id);
+	public Transcript(Gene gene, int start, int end, boolean strandMinus, String id) {
+		super(gene, start, end, strandMinus, id);
 		type = EffectType.TRANSCRIPT;
 	}
 
@@ -127,7 +127,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * @param missingUtrs
 	 */
 	boolean addMissingUtrs(Markers missingUtrs, boolean verbose) {
-		missingUtrs.sort(false, strand < 0);
+		missingUtrs.sort(false, isStrandMinus());
 
 		// Get min/max CDS positions
 		int minCds = Integer.MAX_VALUE;
@@ -137,7 +137,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			maxCds = Math.max(maxCds, c.getEnd());
 		}
 
-		if (verbose) System.out.println("Transcript '" + id + "' has missing UTRs. Strand: " + strand + " (minCds: " + minCds + " , maxCds: " + maxCds + "):");
+		if (verbose) System.out.println("Transcript '" + id + "' has missing UTRs. Strand: " + strandMinus + " (minCds: " + minCds + " , maxCds: " + maxCds + "):");
 
 		// Add intervals
 		boolean retVal = false;
@@ -147,11 +147,11 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			Utr toAdd = null;
 
 			if (isStrandPlus()) {
-				if (mu.getEnd() <= minCds) toAdd = new Utr5prime(exon, mu.getStart(), mu.getEnd(), strand, mu.getId());
-				else if (mu.getStart() >= maxCds) toAdd = new Utr3prime(exon, mu.getStart(), mu.getEnd(), strand, mu.getId());
+				if (mu.getEnd() <= minCds) toAdd = new Utr5prime(exon, mu.getStart(), mu.getEnd(), strandMinus, mu.getId());
+				else if (mu.getStart() >= maxCds) toAdd = new Utr3prime(exon, mu.getStart(), mu.getEnd(), strandMinus, mu.getId());
 			} else {
-				if (mu.getStart() >= maxCds) toAdd = new Utr5prime(exon, mu.getStart(), mu.getEnd(), strand, mu.getId());
-				else if (mu.getEnd() <= minCds) toAdd = new Utr3prime(exon, mu.getStart(), mu.getEnd(), strand, mu.getId());
+				if (mu.getStart() >= maxCds) toAdd = new Utr5prime(exon, mu.getStart(), mu.getEnd(), strandMinus, mu.getId());
+				else if (mu.getEnd() <= minCds) toAdd = new Utr3prime(exon, mu.getStart(), mu.getEnd(), strandMinus, mu.getId());
 			}
 
 			// OK?
@@ -181,8 +181,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			newEnd = Math.max(newEnd, exon.getEnd());
 
 			// Common exon strand
-			if (exon.getStrand() > 0) countStrandPlus++;
-			else if (exon.getStrand() < 0) countStrandMinus++;
+			if (exon.isStrandPlus()) countStrandPlus++;
+			else countStrandMinus++;
 		}
 
 		// UTRs
@@ -193,13 +193,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Sanity check
 		strandSumTr = countStrandPlus - countStrandMinus; // Some exons have incorrect strands, we use the strand indicated by most exons
-		int newStrand = strandSumTr >= 0 ? 1 : -1;
+		boolean newStrandMinus = strandSumTr < 0;
 		if ((countStrandPlus > 0) && (countStrandMinus > 0)) Gpr.debug("Transcript '" + id + "' has " + countStrandPlus + " exons on the plus and " + countStrandMinus + " exons on the minus strand! This should never happen!");
 
 		// Change transcript strand?
-		if (strand != newStrand) {
+		if (strandMinus != newStrandMinus) {
 			changed = true;
-			setStrand(newStrand); // Change strand
+			setStrandMinus(newStrandMinus); // Change strand
 		}
 
 		// Change start?
@@ -285,7 +285,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Exon eint : sortedStrand()) {
 			if (eint.intersects(pos)) {
 				int cdsBaseInExon; // cdsBaseInExon: base number relative to the beginning of the coding part of this exon (i.e. excluding 5'UTRs)
-				if (strand >= 0) cdsBaseInExon = pos - Math.max(eint.getStart(), cdsStart);
+				if (isStrandPlus()) cdsBaseInExon = pos - Math.max(eint.getStart(), cdsStart);
 				else cdsBaseInExon = Math.min(eint.getEnd(), cdsStart) - pos;
 
 				cdsBaseInExon = Math.max(0, cdsBaseInExon);
@@ -578,7 +578,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				//---
 				if (prev != null) {
 					int dist = 0;
-					if (strand >= 0) dist = exon.getStart() - prev.getEnd() - 1;
+					if (isStrandPlus()) dist = exon.getStart() - prev.getEnd() - 1;
 					else dist = prev.getStart() - exon.getEnd() - 1;
 
 					// Acceptor splice site: before exon start, but not before first exon
@@ -595,7 +595,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				//---
 				if (next != null) {
 					int dist = 0;
-					if (strand >= 0) dist = next.getStart() - exon.getEnd() - 1;
+					if (isStrandPlus()) dist = next.getStart() - exon.getEnd() - 1;
 					else dist = exon.getStart() - next.getEnd() - 1;
 
 					// Donor splice site: after exon end, but not after last exon
@@ -649,11 +649,11 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Create up/down stream intervals and add them to the list
 		if (isStrandPlus()) {
-			upstream = new Upstream(this, Math.max(start - upDownLength, chrMin), Math.max(start - 1, chrMin), 1, id);
-			downstream = new Downstream(this, Math.min(end + 1, chrMax), Math.min(end + upDownLength, chrMax), 1, id);
+			upstream = new Upstream(this, Math.max(start - upDownLength, chrMin), Math.max(start - 1, chrMin), false, id);
+			downstream = new Downstream(this, Math.min(end + 1, chrMax), Math.min(end + upDownLength, chrMax), false, id);
 		} else {
-			upstream = new Upstream(this, Math.min(end + 1, chrMax), Math.min(end + upDownLength, chrMax), 1, id);
-			downstream = new Downstream(this, Math.max(start - upDownLength, chrMin), Math.max(start - 1, chrMin), 1, id);
+			upstream = new Upstream(this, Math.min(end + 1, chrMax), Math.min(end + upDownLength, chrMax), false, id);
+			downstream = new Downstream(this, Math.max(start - upDownLength, chrMin), Math.max(start - 1, chrMin), false, id);
 		}
 	}
 
@@ -821,10 +821,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		if (isStrandPlus()) {
 			int end = exonFirst.getStart() + (frame - 1);
-			utr5 = new Utr5prime(exonFirst, exonFirst.getStart(), end, getStrand(), exonFirst.getId());
+			utr5 = new Utr5prime(exonFirst, exonFirst.getStart(), end, isStrandMinus(), exonFirst.getId());
 		} else {
 			int start = exonFirst.getEnd() - (frame - 1);
-			utr5 = new Utr5prime(exonFirst, start, exonFirst.getEnd(), getStrand(), exonFirst.getId());
+			utr5 = new Utr5prime(exonFirst, start, exonFirst.getEnd(), isStrandMinus(), exonFirst.getId());
 		}
 
 		// Reset frame, since it was already corrected
@@ -868,8 +868,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			// Note: We do this just for this method (only because it's easier than handling 'null' conditions)
 			utr5Start = start;
 			utr5End = end;
-			utr5 = isStrandPlus() ? new Marker(this, start - 1, start - 1, strand, "") : new Marker(this, end + 1, end + 1, strand, "");
-		} else utr5 = new Marker(this, utr5Start, utr5End, strand, "");
+			utr5 = isStrandPlus() ? new Marker(this, start - 1, start - 1, strandMinus, "") : new Marker(this, end + 1, end + 1, strandMinus, "");
+		} else utr5 = new Marker(this, utr5Start, utr5End, strandMinus, "");
 
 		// Append all exon sequences
 		for (Exon exon : exons) {
@@ -1033,7 +1033,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	public Marker getTss() {
 		calcCdsStartEnd();
-		Marker tss = new Marker(this, start + (isStrandPlus() ? 0 : -1), start + (isStrandPlus() ? 1 : 0), 1, "TSS_" + id);
+		Marker tss = new Marker(this, start + (isStrandPlus() ? 0 : -1), start + (isStrandPlus() ? 1 : 0), false, "TSS_" + id);
 		return tss;
 	}
 
@@ -1095,7 +1095,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					int size = end - start + 1;
 					if (size > 0) {
 						// Add intron to list
-						intron = new Intron(this, start, end, strand, id + "_intron_" + rank, exBefore, ex);
+						intron = new Intron(this, start, end, strandMinus, id + "_intron_" + rank, exBefore, ex);
 
 						intron.setRank(rank);
 						introns.add(intron);
@@ -1524,7 +1524,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(getChromosomeName() + ":" + start + "-" + end);
-		sb.append(", strand: " + (strand >= 0 ? "+" : "-"));
+		sb.append(", strand: " + (isStrandPlus() ? "+" : "-"));
 		if ((id != null) && (id.length() > 0)) sb.append(", id:" + id);
 		if ((bioType != null) && (bioType.length() > 0)) sb.append(", bioType:" + bioType);
 		if (isProteinCoding()) sb.append(", Protein");

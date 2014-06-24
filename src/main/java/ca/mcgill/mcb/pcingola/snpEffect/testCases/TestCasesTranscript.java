@@ -87,7 +87,7 @@ public class TestCasesTranscript extends TestCase {
 		for (int iter = 0; iter < N; iter++) {
 			initSnpEffPredictor();
 			if (debug) System.out.println("Test CDS pos iteration: " + iter + "\n" + transcript);
-			else System.out.println("Test CDS pos iteration: " + iter + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
+			else System.out.println("Test CDS pos iteration: " + iter + "\t" + transcript.getStrand() + "\t" + transcript.cds());
 
 			int cdsBaseNum = 0;
 			int cds2pos[] = transcript.baseNumberCds2Pos();
@@ -112,12 +112,12 @@ public class TestCasesTranscript extends TestCase {
 	 * Simple CDS start & CSD end case
 	 */
 	public void test_cdsStartEnd_1() {
-		Gene g = new Gene(chromosome, 0, 100, 1, "g1", "g1", "");
-		Transcript tr = new Transcript(g, 10, 100, 1, "tr1");
+		Gene g = new Gene(chromosome, 0, 100, false, "g1", "g1", "");
+		Transcript tr = new Transcript(g, 10, 100, false, "tr1");
 
-		Exon e1 = new Exon(tr, 10, 30, 1, "e1", 1);
-		Exon e2 = new Exon(tr, 50, 80, 1, "e2", 2);
-		Exon e3 = new Exon(tr, 90, 100, 1, "e3", 3);
+		Exon e1 = new Exon(tr, 10, 30, false, "e1", 1);
+		Exon e2 = new Exon(tr, 50, 80, false, "e2", 2);
+		Exon e3 = new Exon(tr, 90, 100, false, "e3", 3);
 
 		tr.add(e1);
 		tr.add(e2);
@@ -133,20 +133,20 @@ public class TestCasesTranscript extends TestCase {
 	 * CDS start & CSD end case where transcript is ALL UTR (nothing codes, presumably because of a database annotation error)
 	 */
 	public void test_cdsStartEnd_2() {
-		Gene g = new Gene(chromosome, 10, 100, 1, "g1", "g1", "");
-		Transcript tr = new Transcript(g, 10, 100, 1, "tr1");
+		Gene g = new Gene(chromosome, 10, 100, false, "g1", "g1", "");
+		Transcript tr = new Transcript(g, 10, 100, false, "tr1");
 
-		Exon e1 = new Exon(tr, 10, 30, 1, "e1", 1);
-		Exon e2 = new Exon(tr, 50, 80, 1, "e2", 2);
-		Exon e3 = new Exon(tr, 90, 100, 1, "e3", 3);
+		Exon e1 = new Exon(tr, 10, 30, false, "e1", 1);
+		Exon e2 = new Exon(tr, 50, 80, false, "e2", 2);
+		Exon e3 = new Exon(tr, 90, 100, false, "e3", 3);
 
 		tr.add(e1);
 		tr.add(e2);
 		tr.add(e3);
 
-		Utr5prime u1 = new Utr5prime(e1, 10, 30, 1, "u1");
-		Utr5prime u2 = new Utr5prime(e2, 50, 80, 1, "u2");
-		Utr5prime u3 = new Utr5prime(e3, 90, 100, 1, "u3");
+		Utr5prime u1 = new Utr5prime(e1, 10, 30, false, "u1");
+		Utr5prime u2 = new Utr5prime(e2, 50, 80, false, "u2");
+		Utr5prime u3 = new Utr5prime(e3, 90, 100, false, "u3");
 
 		tr.add(u1);
 		tr.add(u2);

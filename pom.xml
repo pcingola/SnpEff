@@ -5,7 +5,6 @@
   <artifactId>snpEff</artifactId>
   <packaging>jar</packaging>
   <name>Snp Effect</name>
-  <version>3.6</version>
   <description>Variant annotation and effect prediction tool. It annotates and predicts the effects of variants on genes (such as amino acid changes).</description>
   <url>http://snpeff.sourceforge.net/</url>
   <licenses>
@@ -162,4 +161,5 @@
       </plugin>
     </plugins>
   </build>
+  <version>4.0</version>
 </project>

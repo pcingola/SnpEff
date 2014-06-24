@@ -69,7 +69,7 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 
 		Gene gint = snpEffectPredictor.getGene(geneId);
 		if (gint == null) {
-			gint = new Gene(chromo, parsePosition(fields[3]), parsePosition(fields[4]), Gpr.parseIntSafe(fields[5]), geneId, fields[0], fields[6]);
+			gint = new Gene(chromo, parsePosition(fields[3]), parsePosition(fields[4]), Gpr.parseIntSafe(fields[5]) < 0, geneId, fields[0], fields[6]);
 			snpEffectPredictor.add(gint);
 		}
 
@@ -77,7 +77,7 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 		String transcriptId = fields[7];
 		Transcript tr = gint.get(transcriptId);
 		if (tr == null) {
-			tr = new Transcript(gint, parsePosition(fields[8]), parsePosition(fields[9]), gint.getStrand(), transcriptId);
+			tr = new Transcript(gint, parsePosition(fields[8]), parsePosition(fields[9]), gint.isStrandMinus(), transcriptId);
 			gint.add(tr);
 		}
 
@@ -85,14 +85,14 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 		String exonId = fields[10];
 		Exon exon = tr.get(exonId);
 		if (exon == null) {
-			exon = new Exon(tr, parsePosition(fields[11]), parsePosition(fields[12]), gint.getStrand(), exonId, Gpr.parseIntSafe(fields[13]));
+			exon = new Exon(tr, parsePosition(fields[11]), parsePosition(fields[12]), gint.isStrandMinus(), exonId, Gpr.parseIntSafe(fields[13]));
 			tr.add(exon);
 		}
 
 		// Any 5 prime UTRs?
 		if (fields.length >= 16) {
 			if ((fields[14].length() > 0) && (fields[15].length() > 0)) {
-				Utr5prime utrInterval = new Utr5prime(exon, parsePosition(fields[14]), parsePosition(fields[15]), gint.getStrand(), exonId);
+				Utr5prime utrInterval = new Utr5prime(exon, parsePosition(fields[14]), parsePosition(fields[15]), gint.isStrandMinus(), exonId);
 				tr.add(utrInterval);
 			}
 		}
@@ -100,7 +100,7 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 		// Any 3 prime UTRs?
 		if (fields.length >= 18) {
 			if ((fields[16].length() > 0) && (fields[17].length() > 0)) {
-				Utr3prime utrInterval = new Utr3prime(exon, parsePosition(fields[16]), parsePosition(fields[17]), gint.getStrand(), exonId);
+				Utr3prime utrInterval = new Utr3prime(exon, parsePosition(fields[16]), parsePosition(fields[17]), gint.isStrandMinus(), exonId);
 				tr.add(utrInterval);
 			}
 		}

@@ -14,8 +14,8 @@ public class MicroRnaBindingSite extends Marker {
 
 	double pValue;
 
-	public MicroRnaBindingSite(Marker parent, int start, int end, int strand, String id, double pValue) {
-		super(parent, start, end, strand, id);
+	public MicroRnaBindingSite(Marker parent, int start, int end, boolean strandMinus, String id, double pValue) {
+		super(parent, start, end, strandMinus, id);
 		this.pValue = pValue;
 		type = EffectType.MICRO_RNA;
 	}

@@ -14,8 +14,8 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.stats.CountByKey;
 import ca.mcgill.mcb.pcingola.stats.CountByType;
@@ -207,7 +207,7 @@ public class CountReads {
 					Chromosome chr = genome.getOrCreateChromosome(samRecord.getReferenceName());
 					if (chr != null) {
 						// Create a marker from read
-						Marker read = new Marker(chr, samRecord.getAlignmentStart(), samRecord.getAlignmentEnd(), 1, "");
+						Marker read = new Marker(chr, samRecord.getAlignmentStart(), samRecord.getAlignmentEnd(), false, "");
 						readLengthCount++;
 						readLengthSum += read.size();
 

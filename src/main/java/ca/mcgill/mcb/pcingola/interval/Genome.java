@@ -57,7 +57,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 			int len = Gpr.parseIntSafe(vals[1]);
 
 			// Create chromo
-			Chromosome chromosome = new Chromosome(genome, 0, len, 1, chrName);
+			Chromosome chromosome = new Chromosome(genome, 0, len, chrName);
 			genome.add(chromosome);
 		}
 		return genome;
@@ -74,7 +74,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	}
 
 	public Genome(String version) {
-		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, version);
+		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, false, version);
 		this.version = version;
 		type = EffectType.GENOME;
 		chromosomeNames = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	}
 
 	public Genome(String version, Properties properties) {
-		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, version);
+		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, false, version);
 		this.version = version;
 		type = EffectType.GENOME;
 		genes = new Genes(this);
@@ -103,12 +103,12 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 		chromosomes = new HashMap<String, Chromosome>();
 		for (String chName : chromosomeNames)
-			add(new Chromosome(this, 0, 0, 0, chName));
+			add(new Chromosome(this, 0, 0, chName));
 
 	}
 
 	public Genome(String species, String version) {
-		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, version);
+		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, false, version);
 		this.species = species;
 		this.version = version;
 		type = EffectType.GENOME;
@@ -154,7 +154,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	synchronized Chromosome createChromosome(String chromoName) {
 		Chromosome chr = getChromosome(chromoName);
 		if (chr != null) return chr; // Already created => Nothing done (some race condition might get you here)
-		chr = new Chromosome(this, 0, 0, 1, chromoName);
+		chr = new Chromosome(this, 0, 0, chromoName);
 		add(chr);
 		return chr;
 	}
@@ -359,7 +359,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				chromosome.setSequence(seq);
 			} else {
 				// Chromosome not found, create a new one
-				chromosome = new Chromosome(this, 0, seq.length(), 1, chrName);
+				chromosome = new Chromosome(this, 0, seq.length(), chrName);
 				chromosome.setSequence(seq);
 				add(chromosome);
 			}

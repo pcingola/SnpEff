@@ -33,8 +33,8 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		type = EffectType.GENE;
 	}
 
-	public Gene(Marker parent, int start, int end, int strand, String id, String geneName, String bioType) {
-		super(parent, start, end, strand, id);
+	public Gene(Marker parent, int start, int end, boolean strandMinus, String id, String geneName, String bioType) {
+		super(parent, start, end, strandMinus, id);
 		this.geneName = geneName;
 		this.bioType = bioType;
 		type = EffectType.GENE;
@@ -61,7 +61,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			for (Exon exon : tr.sortedStrand()) {
 				newStart = Math.min(newStart, exon.getStart());
 				newEnd = Math.max(newEnd, exon.getEnd());
-				strandSumGene += exon.getStrand(); // Some exons have incorrect strands, we use the strand indicated by most exons
+				strandSumGene += exon.isStrandMinus() ? -1 : 1; // Some exons have incorrect strands, we use the strand indicated by most exons
 			}
 
 			for (Utr utr : tr.getUtrs()) {
@@ -71,9 +71,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		}
 
 		// Change gene strand?
-		int newStrand = strandSumGene >= 0 ? 1 : -1;
-		if (strand != newStrand) {
-			strand = (byte) newStrand;
+		boolean newStrandMinus = strandSumGene < 0;
+		if (strandMinus != newStrandMinus) {
+			strandMinus = newStrandMinus;
 			changed = true;
 		}
 
@@ -138,11 +138,6 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	public String getGeneName() {
 		return geneName;
-	}
-
-	@Override
-	public int getStrand() {
-		return strand;
 	}
 
 	/**
@@ -389,7 +384,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getChromosomeName() + ":" + start + "-" + end);
-		sb.append(", strand:" + strand);
+		sb.append(", strand:" + (strandMinus ? "-1" : "1"));
 		if ((id != null) && (id.length() > 0)) sb.append(", id:" + id);
 		if ((geneName != null) && (geneName.length() > 0)) sb.append(", name:" + geneName);
 		if ((bioType != null) && (bioType.length() > 0)) sb.append(", bioType:" + bioType);

@@ -21,7 +21,7 @@ public class NextProt extends Marker {
 	}
 
 	public NextProt(Transcript transcript, int start, int end, String id) {
-		super(transcript.getChromosome(), start, end, 1, id);
+		super(transcript.getChromosome(), start, end, false, id);
 		type = EffectType.NEXT_PROT;
 		transcriptId = transcript.getId();
 	}

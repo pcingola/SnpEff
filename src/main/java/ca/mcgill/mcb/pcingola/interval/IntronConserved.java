@@ -12,8 +12,8 @@ public class IntronConserved extends Marker {
 
 	private static final long serialVersionUID = -3148108162409498012L;
 
-	public IntronConserved(Gene parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public IntronConserved(Gene parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.INTRON_CONSERVED;
 	}
 

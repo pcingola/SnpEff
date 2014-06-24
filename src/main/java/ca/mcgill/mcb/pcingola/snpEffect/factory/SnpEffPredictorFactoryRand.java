@@ -46,7 +46,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 	@Override
 	public SnpEffectPredictor create() {
 		// Create chromo
-		chromo = new Chromosome(genome, 0, 2 * maxGeneLen, 1, "chr1");
+		chromo = new Chromosome(genome, 0, 2 * maxGeneLen, "chr1");
 		genome.add(chromo);
 
 		// Create sequence
@@ -55,9 +55,9 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		// Create gene
 		int start = random.nextInt(maxGeneLen);
 		int end = start + Math.max(minGeneSize, random.nextInt(maxGeneLen));
-		int strand = random.nextBoolean() ? 1 : -1;
-		if (forcePositive) strand = 1;
-		Gene gene = new Gene(chromo, start, end, strand, "gene1", "gene1", "gene");
+		boolean strandMinus = !random.nextBoolean();
+		if (forcePositive) strandMinus = false;
+		Gene gene = new Gene(chromo, start, end, strandMinus, "gene1", "gene1", "gene");
 		add(gene);
 
 		// Create transcripts
@@ -76,7 +76,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 	 */
 	Transcript createTranscript(Gene gene, String trId) {
 		int start = gene.getStart(), end = gene.getEnd();
-		Transcript tr = new Transcript(gene, gene.getStart(), gene.getEnd(), gene.getStrand(), "transcript_" + trId);
+		Transcript tr = new Transcript(gene, gene.getStart(), gene.getEnd(), gene.isStrandMinus(), "transcript_" + trId);
 		tr.setProteinCoding(true);
 		add(tr);
 
@@ -88,7 +88,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 			start = tr.getStart() + size * ne + random.nextInt(size / 2);
 			end = start + random.nextInt(size / 2);
 
-			Exon exon = new Exon(tr, start, end, gene.getStrand(), "exon_" + trId + "_" + ne, ne + 1);
+			Exon exon = new Exon(tr, start, end, gene.isStrandMinus(), "exon_" + trId + "_" + ne, ne + 1);
 
 			// Set exon sequence
 			String seq = chromoSequence.substring(start, end + 1);
@@ -129,13 +129,13 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 				} else if (ex.size() >= utr5size) {
 					// Create a partial exon UTR5
 					Utr5prime utr5;
-					if (tr.isStrandPlus()) utr5 = new Utr5prime(ex, ex.getStart(), ex.getStart() + (utr5size - 1), ex.getStrand(), ex.getId());
-					else utr5 = new Utr5prime(ex, ex.getEnd() - (utr5size - 1), ex.getEnd(), ex.getStrand(), ex.getId());
+					if (tr.isStrandPlus()) utr5 = new Utr5prime(ex, ex.getStart(), ex.getStart() + (utr5size - 1), ex.isStrandMinus(), ex.getId());
+					else utr5 = new Utr5prime(ex, ex.getEnd() - (utr5size - 1), ex.getEnd(), ex.isStrandMinus(), ex.getId());
 					tr.add(utr5);
 					utr5size = -1;
 				} else {
 					// Create a full exon UTR5
-					Utr5prime utr5 = new Utr5prime(ex, ex.getStart(), ex.getEnd(), ex.getStrand(), ex.getId());
+					Utr5prime utr5 = new Utr5prime(ex, ex.getStart(), ex.getEnd(), ex.isStrandMinus(), ex.getId());
 					tr.add(utr5);
 					utr5size -= ex.size();
 				}
@@ -158,13 +158,13 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 				} else if (ex.size() >= utr3size) {
 					// Create a partial exon UTR3
 					Utr3prime utr3;
-					if (tr.isStrandMinus()) utr3 = new Utr3prime(ex, ex.getStart(), ex.getStart() + (utr3size - 1), ex.getStrand(), ex.getId());
-					else utr3 = new Utr3prime(ex, ex.getEnd() - (utr3size - 1), ex.getEnd(), ex.getStrand(), ex.getId());
+					if (tr.isStrandMinus()) utr3 = new Utr3prime(ex, ex.getStart(), ex.getStart() + (utr3size - 1), ex.isStrandMinus(), ex.getId());
+					else utr3 = new Utr3prime(ex, ex.getEnd() - (utr3size - 1), ex.getEnd(), ex.isStrandMinus(), ex.getId());
 					tr.add(utr3);
 					utr3size = -1;
 				} else {
 					// Create a full exon UTR3
-					Utr3prime utr3 = new Utr3prime(ex, ex.getStart(), ex.getEnd(), ex.getStrand(), ex.getId());
+					Utr3prime utr3 = new Utr3prime(ex, ex.getStart(), ex.getEnd(), ex.isStrandMinus(), ex.getId());
 					tr.add(utr3);
 					utr3size -= ex.size();
 				}

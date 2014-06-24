@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.TestCase;
-import ca.mcgill.mcb.pcingola.fileIterator.VariantFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.SeqChangeTxtFileIterator;
+import ca.mcgill.mcb.pcingola.fileIterator.VariantFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
@@ -215,7 +215,7 @@ public class TestCasesSeqChange extends TestCase {
 				if (seqOri != null) {
 					String seq = tint.cds();
 					// Compare CDS sequences
-					if (!seqOri.equalsIgnoreCase(seq)) throw new RuntimeException("CDS do not match:\nTranscipt:" + tint.getId() + " " + tint.getStrand() + "\n\t" + seq + "\n\t" + seqOri + "\n");
+					if (!seqOri.equalsIgnoreCase(seq)) throw new RuntimeException("CDS do not match:\nTranscipt:" + tint.getId() + " " + tint.isStrandMinus() + "\n\t" + seq + "\n\t" + seqOri + "\n");
 					else {
 						if (verbose) System.out.println("CDS compare:\n\t" + seqOri + "\n\t" + seq);
 						totalOk++;

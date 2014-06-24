@@ -58,8 +58,8 @@ public class TestCasesDel extends TestCase {
 		boolean useCodon = false;
 		currCodon[0] = currCodon[1] = currCodon[2] = ' ';
 		for (Exon exon : transcript.sortedStrand()) {
-			int step = exon.getStrand() >= 0 ? 1 : -1;
-			int beg = exon.getStrand() >= 0 ? exon.getStart() : exon.getEnd();
+			int step = exon.isStrandPlus() ? 1 : -1;
+			int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
 
 			for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
 				int cdsCodonPos = cdsBaseNum % 3;
@@ -69,7 +69,7 @@ public class TestCasesDel extends TestCase {
 				else {
 					// Should we use this base? We don't use the ones that intersect with 'seqChage' (because they are deleted)
 					char base = chromoBases[pos];
-					currCodon[cdsCodonPos] = exon.getStrand() >= 0 ? base : GprSeq.wc(base); // Update current codon					
+					currCodon[cdsCodonPos] = exon.isStrandPlus() ? base : GprSeq.wc(base); // Update current codon					
 				}
 
 				// Add it?
@@ -101,15 +101,15 @@ public class TestCasesDel extends TestCase {
 		boolean useCodon = false;
 		currCodon[0] = currCodon[1] = currCodon[2] = ' ';
 		for (Exon exon : transcript.sortedStrand()) {
-			int step = exon.getStrand() >= 0 ? 1 : -1;
-			int beg = exon.getStrand() >= 0 ? exon.getStart() : exon.getEnd();
+			int step = exon.isStrandPlus() ? 1 : -1;
+			int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
 
 			for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
 				int cdsCodonPos = cdsBaseNum % 3;
 
 				useCodon |= seqChange.intersects(pos); // Should we use this codon?
 				char base = chromoBases[pos];
-				currCodon[cdsCodonPos] = exon.getStrand() >= 0 ? base : GprSeq.wc(base); // Update current codon
+				currCodon[cdsCodonPos] = exon.isStrandPlus() ? base : GprSeq.wc(base); // Update current codon
 
 				// Finished codon?
 				if (cdsCodonPos == 2) {
@@ -199,8 +199,8 @@ public class TestCasesDel extends TestCase {
 
 			// For each exon...
 			for (Exon exon : transcript.sortedStrand()) {
-				int step = exon.getStrand() >= 0 ? 1 : -1;
-				int beg = exon.getStrand() >= 0 ? exon.getStart() : exon.getEnd();
+				int step = exon.isStrandPlus() ? 1 : -1;
+				int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
 
 				// For each base in this exon...
 				for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
@@ -212,7 +212,7 @@ public class TestCasesDel extends TestCase {
 
 					int start = pos;
 					int end = pos + delLen;
-					if (transcript.getStrand() < 0) {
+					if (transcript.isStrandMinus()) {
 						start = pos - delLen;
 						end = pos;
 					}

@@ -141,7 +141,7 @@ public class Config implements Serializable, Iterable<String> {
 				if (chr == null) {
 					// Create chromosome
 					Genome genome = genomeByVersion.get(genomeVersion);
-					chr = new Chromosome(genome, 0, 0, 1, chromo);
+					chr = new Chromosome(genome, 0, 0, chromo);
 					genome.add(chr);
 				}
 

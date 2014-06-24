@@ -55,7 +55,7 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 
 						// Strand
 						String strandStr = fields[6];
-						int strand = strandStr.equals("-") ? -1 : +1;
+						boolean strandMinus = strandStr.equals("-");
 
 						// Parse info field, looking for "Name=XXXX"
 						String info = fields[8];
@@ -75,7 +75,7 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 						}
 
 						// Create seqChange
-						Regulation seqChange = new Regulation(chromo, start, end, strand, id, name, cellType);
+						Regulation seqChange = new Regulation(chromo, start, end, strandMinus, id, name, cellType);
 						return seqChange;
 					}
 				}

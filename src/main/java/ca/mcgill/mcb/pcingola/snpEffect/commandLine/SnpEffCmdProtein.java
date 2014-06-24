@@ -208,7 +208,7 @@ public class SnpEffCmdProtein extends SnpEff {
 						int maxScore = Math.min(protein.length(), proteinReference.length());
 						int score = sw.getAligmentScore();
 						System.err.println("\nERROR: Proteins do not match for transcript " + tr.getId() //
-								+ "\tStrand:" + tr.getStrand() //
+								+ "\tStrand:" + (tr.isStrandPlus() ? 1 : -1) //
 								+ "\tExons: " + tr.numChilds() //
 								+ "\n" //
 								+ String.format("\tSnpEff protein     (%6d) : '%s'\n", protein.length(), protein) //

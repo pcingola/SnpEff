@@ -31,7 +31,7 @@ public class MicroCosmEntry {
 		return new MicroRnaBindingSite(genome.getOrCreateChromosome(chr) //
 				, start - 1 // One-based coordinates
 				, end - 1 // One-based coordinates
-				, strand.equals("-") ? -1 : +1 //
+				, strand.equals("-") //
 				, miRnaName //
 				, pValue //
 		);

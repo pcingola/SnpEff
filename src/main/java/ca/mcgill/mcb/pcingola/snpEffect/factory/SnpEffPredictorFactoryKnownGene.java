@@ -80,11 +80,11 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 	 * @param chromo
 	 * @param start
 	 * @param end
-	 * @param strand
+	 * @param strandMinus
 	 * @return
 	 */
-	Gene findOrCreateGene(String geneName, String trId, Chromosome chromo, int start, int end, int strand, boolean isCoding) {
-		Marker tr = new Marker(chromo, start, end, strand, trId);
+	Gene findOrCreateGene(String geneName, String trId, Chromosome chromo, int start, int end, boolean strandMinus, boolean isCoding) {
+		Marker tr = new Marker(chromo, start, end, strandMinus, trId);
 		List<Gene> genes = genesByName.get(geneName);
 		int geneIndex = 0;
 		if (genes != null) {
@@ -103,7 +103,7 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 
 		// Need to create a new gene
 		String geneId = geneName + (geneIndex > 0 ? "." + geneIndex : "");
-		Gene gene = new Gene(chromo, start, end, strand, geneId, geneName, isCoding ? "Protein" : "mRNA");
+		Gene gene = new Gene(chromo, start, end, strandMinus, geneId, geneName, isCoding ? "Protein" : "mRNA");
 		genesByName.add(geneName, gene);
 		add(gene);
 
@@ -133,7 +133,7 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 						int fieldNum = 0;
 						String id = fields[fieldNum++];
 						String chromoName = fields[fieldNum++];
-						int strand = (fields[fieldNum++].equals("-") ? -1 : +1);
+						boolean strandMinus = fields[fieldNum++].equals("-");
 
 						int txstart = parsePosition(fields[fieldNum++]);
 						int txend = parsePosition(fields[fieldNum++]) - 1; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
@@ -160,10 +160,10 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 						String trId = uniqueTrId(id);
 
 						// Get or create gene
-						Gene gene = findOrCreateGene(proteinId, trId, chromo, txstart, txend, strand, isCoding);
+						Gene gene = findOrCreateGene(proteinId, trId, chromo, txstart, txend, strandMinus, isCoding);
 
 						// Create transcript
-						Transcript tr = new Transcript(gene, txstart, txend, strand, trId);
+						Transcript tr = new Transcript(gene, txstart, txend, strandMinus, trId);
 						tr.setProteinCoding(isCoding);
 						add(tr);
 
@@ -175,12 +175,12 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 							int exStart = parsePosition(exStartStr[i]);
 							int exEnd = parsePosition(exEndStr[i]) - 1; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
 							String exId = trId + ".ex." + (i + 1);
-							Exon ex = new Exon(tr, exStart, exEnd, strand, exId, i);
+							Exon ex = new Exon(tr, exStart, exEnd, strandMinus, exId, i);
 							add(ex);
 
 							// CDS (ony if intersects)
 							if ((exStart <= cdsEnd) && (exEnd >= cdsStart)) {
-								Cds cds = new Cds(tr, Math.max(cdsStart, exStart), Math.min(cdsEnd, exEnd), strand, exId);
+								Cds cds = new Cds(tr, Math.max(cdsStart, exStart), Math.min(cdsEnd, exEnd), strandMinus, exId);
 								add(cds);
 							}
 						}

@@ -69,10 +69,9 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "c";
-	public static final String BUILD = "2014-06-10";
-	public static final String VERSION_MAJOR = "3.6";
-	// public static final String VERSION_MAJOR = "4.0";
+	public static final String REVISION = "";
+	public static final String BUILD = "2014-07-01";
+	public static final String VERSION_MAJOR = "4.0";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
 	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_NO_NAME;
@@ -385,7 +384,7 @@ public class SnpEff implements CommandLine {
 				markers.add(m);
 			} else {
 				// Not a custom interval? Create one
-				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), m.getStrand(), m.getId(), label);
+				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), m.isStrandMinus(), m.getId(), label);
 				// custom.setScore(((Variant) m).getScore());
 				markers.add(custom);
 			}
@@ -550,7 +549,7 @@ public class SnpEff implements CommandLine {
 
 		// Add all chromos
 		for (String chr : chrs.keySet())
-			if (genome.getChromosome(chr) == null) genome.add(new Chromosome(genome, 0, chrs.get(chr), 1, chr));
+			if (genome.getChromosome(chr) == null) genome.add(new Chromosome(genome, 0, chrs.get(chr), chr));
 
 		//---
 		// Add all markers to predictor

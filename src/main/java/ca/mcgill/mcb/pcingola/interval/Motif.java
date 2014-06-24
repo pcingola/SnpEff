@@ -28,8 +28,8 @@ public class Motif extends Marker {
 		type = EffectType.MOTIF;
 	}
 
-	public Motif(Marker parent, int start, int end, int strand, String id, String pwmName, String pwmId) {
-		super(parent, start, end, strand, id);
+	public Motif(Marker parent, int start, int end, boolean strandMinus, String id, String pwmName, String pwmId) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.MOTIF;
 		this.pwmName = pwmName;
 		this.pwmId = pwmId;
@@ -55,7 +55,7 @@ public class Motif extends Marker {
 
 			// Step 1: 
 			//     Create a marker seq (we can 'apply' a change to it and see what the resulting sequence is 
-			MarkerSeq mseq = new MarkerSeq((Marker) parent, start, end, 1, id); // Notice: We use positive strand
+			MarkerSeq mseq = new MarkerSeq((Marker) parent, start, end, false, id); // Notice: We use positive strand
 			String seqBest = pwm.getBestSequenceStr();
 			mseq.setSequence(isStrandPlus() ? seqBest : GprSeq.reverseWc(seqBest));
 			if (seqChange.isStrandMinus()) throw new RuntimeException("SeqChange in minus strand not supported!\n\t" + seqChange);

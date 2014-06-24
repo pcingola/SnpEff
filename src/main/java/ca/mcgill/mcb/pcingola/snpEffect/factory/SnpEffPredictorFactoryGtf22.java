@@ -42,11 +42,11 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 	 * @param chromo
 	 * @param start
 	 * @param end
-	 * @param strand
+	 * @param strandMinus
 	 * @param name
 	 * @param parent
 	 */
-	void addInterval(String id, String type, String chromo, int start, int end, int strand, String geneId, String geneName, String transcriptId, boolean proteinCoding, String geneBioType, String trBioType, int frame) {
+	void addInterval(String id, String type, String chromo, int start, int end, boolean strandMinus, String geneId, String geneName, String transcriptId, boolean proteinCoding, String geneBioType, String trBioType, int frame) {
 		// Get chromosome
 		Chromosome chromosome = getOrCreateChromosome(chromo);
 
@@ -56,7 +56,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 			// Create and add  gene
 			if (geneName == null) geneName = geneId;
 			if ((geneBioType == null) || (geneBioType.isEmpty())) geneBioType = "mRNA"; // No bioType? Create a default one
-			gene = new Gene(chromosome, start, end, strand, geneId, geneName, geneBioType);
+			gene = new Gene(chromosome, start, end, strandMinus, geneId, geneName, geneBioType);
 			add(gene);
 		}
 
@@ -70,7 +70,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		Transcript tr = null;
 		tr = findTranscript(transcriptId);
 		if (tr == null) {
-			tr = new Transcript(gene, start, end, strand, transcriptId);
+			tr = new Transcript(gene, start, end, strandMinus, transcriptId);
 			if ((trBioType == null) || (trBioType.isEmpty())) trBioType = "mRNA"; // No bioType? Create a default one
 			tr.setBioType(trBioType);
 			add(tr);
@@ -85,50 +85,50 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 			// This can be added in different ways
 			if (type.equals("exon")) {
 				int rank = 0; // Rank information will be added later
-				Exon exon = new Exon(tr, start, end, strand, id, rank);
+				Exon exon = new Exon(tr, start, end, strandMinus, id, rank);
 				exon.setFrame(frame);
 				add(exon);
 			} else if (type.equals("CDS")) {
-				Cds cds = new Cds(tr, start, end, strand, id);
+				Cds cds = new Cds(tr, start, end, strandMinus, id);
 				cds.setFrame(frame);
 				add(cds);
 			} else if (type.equals("stop_codon")) {
 				// According to the norm: "Unlike Genbank annotation, the stop codon is not included in the CDS for the terminal exon"
 				// So we add it as another 'CDS' (it might be contiguous to the previous CDS)
-				Cds cds = new Cds(tr, start, end, strand, id);
+				Cds cds = new Cds(tr, start, end, strandMinus, id);
 				cds.setFrame(frame);
 				add(cds);
 			} else if (type.equals("start_codon")) {
 				// Nothing to do
 			} else if (type.equals("intron_CNS")) {
-				IntronConserved intronConserved = new IntronConserved(gene, start, end, strand, id);
+				IntronConserved intronConserved = new IntronConserved(gene, start, end, strandMinus, id);
 				add(intronConserved);
 				snpEffectPredictor.add(intronConserved);
 			}
 		} else if (is(type, UTR5) || is(type, UTR3)) {
 			// Find exon
-			Marker utr = new Marker(tr, start, end, strand, id);
+			Marker utr = new Marker(tr, start, end, strandMinus, id);
 			Exon exon = tr.queryExon(utr);
 			if (exon == null) { // No exon? => Create one
 				int rank = 0; // We don't have rank information
 				String exonId = "Exon_" + chromo + "_" + (start + 1) + "_" + (end + 1);
-				exon = new Exon(tr, start, end, strand, exonId, rank);
+				exon = new Exon(tr, start, end, strandMinus, exonId, rank);
 				exon.setFrame(frame);
 				add(exon);
 			}
 
 			// Add UTR
 			if (is(type, UTR5)) {
-				Utr5prime u5int = new Utr5prime(exon, start, end, strand, id);
+				Utr5prime u5int = new Utr5prime(exon, start, end, strandMinus, id);
 				tr.add(u5int);
 				add(u5int);
 			} else if (is(type, UTR3)) {
-				Utr3prime u3int = new Utr3prime(exon, start, end, strand, id);
+				Utr3prime u3int = new Utr3prime(exon, start, end, strandMinus, id);
 				tr.add(u3int);
 				add(u3int);
 			}
 		} else if (is(type, INTERGENIC_CONSERVED)) {
-			IntergenicConserved intergenicConserved = new IntergenicConserved(chromosome, start, end, strand, id);
+			IntergenicConserved intergenicConserved = new IntergenicConserved(chromosome, start, end, strandMinus, id);
 			snpEffectPredictor.add(intergenicConserved);
 			add(intergenicConserved);
 		}
@@ -154,7 +154,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		String source = fields[1];
 		int start = parsePosition(fields[3]);
 		int end = parsePosition(fields[4]);
-		int strand = (fields[6].equals("-") ? -1 : +1);
+		boolean strandMinus = fields[6].equals("-");
 		int frame = (fields[7].equals(".") ? -1 : Gpr.parseIntSafe(fields[7]));
 		String geneId = "", transcriptId = "";
 		String geneName = null;
@@ -193,7 +193,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 
 		String id = type + "_" + chromo + "_" + (start + 1) + "_" + (end + 1); // Create ID
 		if (geneId.isEmpty()) warning("Empty gene_id. This should never happen (see norm");
-		else addInterval(id, type, chromo, start, end, strand, geneId, geneName, transcriptId, proteinCoding, geneBioType, trBioType, frame); // Add interval
+		else addInterval(id, type, chromo, start, end, strandMinus, geneId, geneName, transcriptId, proteinCoding, geneBioType, trBioType, frame); // Add interval
 
 		return true;
 	}

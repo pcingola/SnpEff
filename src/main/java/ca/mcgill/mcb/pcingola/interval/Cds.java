@@ -21,8 +21,8 @@ public class Cds extends Marker implements MarkerWithFrame {
 		type = EffectType.CDS;
 	}
 
-	public Cds(Transcript parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public Cds(Transcript parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.CDS;
 	}
 

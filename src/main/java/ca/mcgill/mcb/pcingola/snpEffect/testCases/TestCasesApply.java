@@ -136,7 +136,6 @@ public class TestCasesApply extends TestCase {
 						if (ex.size() > 1000) continue; // Skip exon if too long
 
 						if (verbose) System.out.println("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
-
 						// Change each base
 						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {
 							// Create a fake INS. 

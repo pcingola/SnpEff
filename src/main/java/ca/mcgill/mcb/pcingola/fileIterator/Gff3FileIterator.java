@@ -48,9 +48,9 @@ public class Gff3FileIterator extends MarkerFileIterator<GffMarker> {
 		int end = parsePosition(fields[4]);
 
 		// Parse strand
-		int strand = 0;
-		if (fields[6].equals("+")) strand = +1;
-		else if (fields[6].equals("-")) strand = -1;
+		boolean strandMinus = false;
+		if (fields[6].equals("+")) strandMinus = false;
+		else if (fields[6].equals("-")) strandMinus = true;
 
 		// Parse attributes
 		String attrStr = fields[8];
@@ -79,7 +79,7 @@ public class Gff3FileIterator extends MarkerFileIterator<GffMarker> {
 
 		// Create marker
 		Chromosome chromosome = getChromosome(chromo);
-		GffMarker gffMarker = new GffMarker(chromosome, start, end, strand, id);
+		GffMarker gffMarker = new GffMarker(chromosome, start, end, strandMinus, id);
 
 		// Add all key value pairs
 		if ((!type.isEmpty()) && (!type.equals("."))) gffMarker.add("type", type);

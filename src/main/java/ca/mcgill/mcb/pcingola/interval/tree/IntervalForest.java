@@ -115,7 +115,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 					// Intersection between 'mm' and 'mq'
 					int start = Math.max(mq.getStart(), mm.getStart());
 					int end = Math.max(mq.getEnd(), mm.getEnd());
-					Marker mintq = new Marker(mq.getParent(), start, end, mq.getStrand(), "");
+					Marker mintq = new Marker(mq.getParent(), start, end, mq.isStrandMinus(), "");
 
 					// Add intersection result
 					result.add(mintq);

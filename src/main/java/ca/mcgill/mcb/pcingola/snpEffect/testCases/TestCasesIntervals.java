@@ -13,8 +13,8 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.MarkerUtil;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -40,9 +40,9 @@ public class TestCasesIntervals extends TestCase {
 
 		// Create chromosomes
 		for (int i = 1; i < 22; i++)
-			genome.add(new Chromosome(genome, 0, 0, 1, "" + i));
-		genome.add(new Chromosome(genome, 0, 0, 1, "X"));
-		genome.add(new Chromosome(genome, 0, 0, 1, "Y"));
+			genome.add(new Chromosome(genome, 0, 0, "" + i));
+		genome.add(new Chromosome(genome, 0, 0, "X"));
+		genome.add(new Chromosome(genome, 0, 0, "Y"));
 	}
 
 	/** 
@@ -138,7 +138,7 @@ public class TestCasesIntervals extends TestCase {
 			for (int i = 0; i < numIntervals; i++) {
 				int start = rand.nextInt(maxStart);
 				int end = Math.min(start + rand.nextInt(maxLength), maxStart - 1);
-				Marker interval = new Marker(genome.getChromosome("" + ch), start, end, 1, "");
+				Marker interval = new Marker(genome.getChromosome("" + ch), start, end, false, "");
 				ints.add(interval);
 			}
 		}
@@ -268,10 +268,10 @@ public class TestCasesIntervals extends TestCase {
 
 		// Two identical intervals => Result should be empty
 		Markers intervals = new Markers();
-		intervals.add(new Marker(chr, 10, 90, 1, ""));
+		intervals.add(new Marker(chr, 10, 90, false, ""));
 
 		Markers intervals2 = new Markers();
-		intervals2.add(new Marker(chr, 10, 90, 1, ""));
+		intervals2.add(new Marker(chr, 10, 90, false, ""));
 
 		Markers minus = intervals.minus(intervals2);
 		assertEquals(0, minus.size());
@@ -287,10 +287,10 @@ public class TestCasesIntervals extends TestCase {
 
 		// Totally overlapping => result should be empty 
 		Markers intervals = new Markers();
-		intervals.add(new Marker(chr, 10, 90, 1, ""));
+		intervals.add(new Marker(chr, 10, 90, false, ""));
 
 		Markers intervals2 = new Markers();
-		intervals2.add(new Marker(chr, 9, 91, 1, ""));
+		intervals2.add(new Marker(chr, 9, 91, false, ""));
 
 		Markers minus = intervals.minus(intervals2);
 		assertEquals(0, minus.size());
@@ -306,10 +306,10 @@ public class TestCasesIntervals extends TestCase {
 
 		// Overlapping right part => result should be left part 
 		Markers intervals = new Markers();
-		intervals.add(new Marker(chr, 10, 90, 1, ""));
+		intervals.add(new Marker(chr, 10, 90, false, ""));
 
 		Markers intervals2 = new Markers();
-		intervals2.add(new Marker(chr, 9, 50, 1, ""));
+		intervals2.add(new Marker(chr, 9, 50, false, ""));
 
 		Markers minus = intervals.minus(intervals2);
 		assertEquals(1, minus.size());
@@ -328,10 +328,10 @@ public class TestCasesIntervals extends TestCase {
 
 		// Overlapping left part => result should be right part 
 		Markers intervals = new Markers();
-		intervals.add(new Marker(chr, 10, 90, 1, ""));
+		intervals.add(new Marker(chr, 10, 90, false, ""));
 
 		Markers intervals2 = new Markers();
-		intervals2.add(new Marker(chr, 51, 91, 1, ""));
+		intervals2.add(new Marker(chr, 51, 91, false, ""));
 
 		Markers minus = intervals.minus(intervals2);
 
@@ -351,10 +351,10 @@ public class TestCasesIntervals extends TestCase {
 
 		// Overlapping middle => result should be left & right parts 
 		Markers intervals = new Markers();
-		intervals.add(new Marker(chr, 10, 90, 1, ""));
+		intervals.add(new Marker(chr, 10, 90, false, ""));
 
 		Markers intervals2 = new Markers();
-		intervals2.add(new Marker(chr, 40, 60, 1, ""));
+		intervals2.add(new Marker(chr, 40, 60, false, ""));
 
 		Markers minus = intervals.minus(intervals2);
 
@@ -376,14 +376,14 @@ public class TestCasesIntervals extends TestCase {
 	 */
 	public void test_08() {
 		Chromosome chr = genome.getChromosome("1");
-		Marker m1 = new Marker(chr, 0, 100, 1, "");
+		Marker m1 = new Marker(chr, 0, 100, false, "");
 
 		ArrayList<Marker> list = new ArrayList<Marker>();
 		list.add(m1);
 
 		int last = m1.getEnd() + 10;
 		for (int i = m1.getStart(); i <= last; i++) {
-			Marker m = new Marker(chr, i, i, 1, "");
+			Marker m = new Marker(chr, i, i, false, "");
 
 			int dist = m.distanceBases(list, false);
 			Assert.assertEquals(i, dist);
@@ -395,9 +395,9 @@ public class TestCasesIntervals extends TestCase {
 	 */
 	public void test_08_02() {
 		Chromosome chr = genome.getChromosome("1");
-		Marker m1 = new Marker(chr, 0, 99, 1, "");
-		Marker m2 = new Marker(chr, 200, 299, 1, "");
-		Marker m3 = new Marker(chr, 400, 499, 1, "");
+		Marker m1 = new Marker(chr, 0, 99, false, "");
+		Marker m2 = new Marker(chr, 200, 299, false, "");
+		Marker m3 = new Marker(chr, 400, 499, false, "");
 
 		ArrayList<Marker> list = new ArrayList<Marker>();
 		list.add(m1);
@@ -406,7 +406,7 @@ public class TestCasesIntervals extends TestCase {
 
 		int last = m3.getEnd() + 10;
 		for (int i = m1.getStart(); i <= last; i++) {
-			Marker m = new Marker(chr, i, i, 1, "");
+			Marker m = new Marker(chr, i, i, false, "");
 
 			int dist = m.distanceBases(list, false);
 			Assert.assertEquals(i % 100, dist % 100);
@@ -418,9 +418,9 @@ public class TestCasesIntervals extends TestCase {
 	 */
 	public void test_08_03() {
 		Chromosome chr = genome.getChromosome("1");
-		Marker m1 = new Marker(chr, 0, 99, 1, "");
-		Marker m2 = new Marker(chr, 200, 299, 1, "");
-		Marker m3 = new Marker(chr, 400, 499, 1, "");
+		Marker m1 = new Marker(chr, 0, 99, false, "");
+		Marker m2 = new Marker(chr, 200, 299, false, "");
+		Marker m3 = new Marker(chr, 400, 499, false, "");
 
 		ArrayList<Marker> list = new ArrayList<Marker>();
 		list.add(m1);
@@ -429,7 +429,7 @@ public class TestCasesIntervals extends TestCase {
 
 		int last = m3.getEnd() + 10;
 		for (int i = m1.getStart(); i <= last; i++) {
-			Marker m = new Marker(chr, i, i, 1, "");
+			Marker m = new Marker(chr, i, i, false, "");
 
 			int dist = m.distanceBases(list, true);
 			Assert.assertEquals((m3.getEnd() - i) % 100, dist % 100);
@@ -439,9 +439,9 @@ public class TestCasesIntervals extends TestCase {
 	public void test_09_chrOrder() {
 		Genome genome = new Genome("test");
 
-		Chromosome chrA = new Chromosome(genome, 0, 1, 1, "6");
-		Chromosome chrB = new Chromosome(genome, 0, 1, 1, "10");
-		Chromosome chrC = new Chromosome(genome, 0, 1, 1, "4_ctg9_hap1");
+		Chromosome chrA = new Chromosome(genome, 0, 1, "6");
+		Chromosome chrB = new Chromosome(genome, 0, 1, "10");
+		Chromosome chrC = new Chromosome(genome, 0, 1, "4_ctg9_hap1");
 
 		// Order: A < B < C
 		Assert.assertTrue(chrA.compareTo(chrB) < 0);
@@ -452,8 +452,8 @@ public class TestCasesIntervals extends TestCase {
 	public void test_10_chrOrder() {
 		Genome genome = new Genome("test");
 
-		Chromosome chrA = new Chromosome(genome, 0, 1, 1, "chr1");
-		Chromosome chrB = new Chromosome(genome, 0, 1, 1, "scaffold0001");
+		Chromosome chrA = new Chromosome(genome, 0, 1, "chr1");
+		Chromosome chrB = new Chromosome(genome, 0, 1, "scaffold0001");
 
 		// Order: A < B
 		Assert.assertTrue(chrA.compareTo(chrB) < 0);

@@ -61,7 +61,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 			// Valid intergenic region?
 			if (start < end) {
 				String id = (genePrev != null ? genePrev.getGeneName() + "..." : "") + gene.getGeneName();
-				Intergenic intergenic = new Intergenic(gene.getChromosome(), start, end, 1, id);
+				Intergenic intergenic = new Intergenic(gene.getChromosome(), start, end, false, id);
 				intergenics.add(intergenic);
 			}
 

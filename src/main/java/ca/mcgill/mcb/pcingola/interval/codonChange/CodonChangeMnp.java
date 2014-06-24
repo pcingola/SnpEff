@@ -1,8 +1,8 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
@@ -113,7 +113,7 @@ public class CodonChangeMnp extends CodonChange {
 			return sb.toString();
 		}
 
-		return seqChange.netChange(transcript.getStrand());
+		return seqChange.netChange(transcript.isStrandMinus());
 	}
 
 	int round3(int num, boolean end) {

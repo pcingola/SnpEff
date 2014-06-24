@@ -86,7 +86,7 @@ public abstract class SnpEffPredictorFactory {
 			if (oldex.includes(exon)) return; // Redundant, just ignore it.
 
 			// Create a new exon with same info and different 'id'
-			exon = new Exon(tr, exon.getStart(), exon.getEnd(), exon.getStrand(), exon.getId() + "_" + tr.subintervals().size(), exon.getRank());
+			exon = new Exon(tr, exon.getStart(), exon.getEnd(), exon.isStrandMinus(), exon.getId() + "_" + tr.subintervals().size(), exon.getRank());
 		}
 
 		// Add exon
@@ -378,18 +378,18 @@ public abstract class SnpEffPredictorFactory {
 		List<Cds> cdss = tr.getCds();
 
 		// First: Check and adjust strand info
-		int trStrand = tr.getStrand() >= 0 ? 1 : -1;
-		int cdsStrand = 0;
+		boolean trStrandMinus = tr.isStrandMinus();
+		int cdsStrandSum = 0;
 		for (Cds cds : cdss)
-			cdsStrand += cds.getStrand();
-		cdsStrand = cdsStrand >= 0 ? 1 : -1;
-		if (cdsStrand != trStrand) {
-			if (verbose) System.out.print(cdsStrand >= 0 ? '+' : '-');
-			tr.setStrand(cdsStrand);
+			cdsStrandSum += cds.isStrandMinus() ? -1 : 1;
+		boolean cdsStrandMinus = cdsStrandSum < 0;
+		if (cdsStrandMinus != trStrandMinus) {
+			if (verbose) System.out.print(cdsStrandMinus ? '-' : '+');
+			tr.setStrandMinus(cdsStrandMinus);
 		}
 
 		// Sort CDS by strand
-		if (tr.getStrand() >= 0) Collections.sort(cdss, new IntervalComparatorByStart()); // Sort by start position
+		if (tr.isStrandPlus()) Collections.sort(cdss, new IntervalComparatorByStart()); // Sort by start position
 		else Collections.sort(cdss, new IntervalComparatorByEnd(true)); // Sort by end position (reversed)
 
 		// Add cds as exons
@@ -399,7 +399,7 @@ public abstract class SnpEffPredictorFactory {
 			// Create exon and add it to transcript
 			String id = "Exon_" + cds.getChromosomeName() + "_" + cds.getStart() + "_" + cds.getEnd();
 			if (tr.get(id) == null) { // Don't add an exon twice
-				Exon exon = new Exon(tr, cds.getStart(), cds.getEnd(), trStrand, id, rank);
+				Exon exon = new Exon(tr, cds.getStart(), cds.getEnd(), trStrandMinus, id, rank);
 				tr.add(exon);
 			}
 
@@ -518,7 +518,7 @@ public abstract class SnpEffPredictorFactory {
 
 		// Not found? => Create a new one
 		if (chromo == null) {
-			chromo = new Chromosome(genome, 0, 0, 1, chromoName);
+			chromo = new Chromosome(genome, 0, 0, chromoName);
 			genome.add(chromo);
 		}
 

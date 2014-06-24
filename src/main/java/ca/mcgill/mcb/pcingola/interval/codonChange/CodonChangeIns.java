@@ -1,8 +1,8 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 
@@ -23,7 +23,7 @@ public class CodonChangeIns extends CodonChange {
 	 */
 	@Override
 	boolean codonChangeSingle(Exon exon) {
-		String netChange = seqChange.netChange(transcript.getStrand());
+		String netChange = seqChange.netChange(transcript.isStrandMinus());
 
 		codonsOld = codonsOld();
 		codonsNew = codonsNew();
@@ -87,7 +87,7 @@ public class CodonChangeIns extends CodonChange {
 
 		// Insertion: Concatenate...
 		String codonsNew = codonsOld.substring(0, idx) // the first part of the codon
-				+ seqChange.netChange(transcript.getStrand()) // insertion
+				+ seqChange.netChange(transcript.isStrandMinus()) // insertion
 				+ codonsOld.substring(idx) // the last part of the codon
 		;
 

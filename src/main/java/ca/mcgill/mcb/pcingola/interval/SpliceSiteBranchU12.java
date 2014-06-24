@@ -16,8 +16,8 @@ public class SpliceSiteBranchU12 extends SpliceSiteBranch {
 		type = EffectType.SPLICE_SITE_BRANCH_U12;
 	}
 
-	public SpliceSiteBranchU12(Transcript parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public SpliceSiteBranchU12(Transcript parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.SPLICE_SITE_BRANCH_U12;
 	}
 

@@ -14,10 +14,10 @@ import ca.mcgill.mcb.pcingola.interval.Intergenic;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Utr;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
@@ -290,7 +290,7 @@ public class SnpEffectPredictor implements Serializable {
 			for (int extend = initialExtension; extend < chr.size(); extend *= 2) {
 				int start = Math.max(inputInterval.getStart() - extend, 0);
 				int end = inputInterval.getEnd() + extend;
-				Marker extended = new Marker(chr, start, end, 1, "");
+				Marker extended = new Marker(chr, start, end, false, "");
 
 				// Find all genes that intersect with the interval
 				Markers markers = query(extended);

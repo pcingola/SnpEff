@@ -136,17 +136,18 @@ public class TestCasesHgvs extends TestCase {
 		}
 
 		// Closest exon base
-		int exonBase = exonBase(bases, j, transcript.getStrand());
-		int exonDist = (j - exonBase) * transcript.getStrand();
+		int exonBase = exonBase(bases, j, transcript.isStrandMinus() ? -1 : 1);
+		int exonDist = (j - exonBase) * (transcript.isStrandMinus() ? -1 : 1);
 
 		char type = bases[exonBase];
 		String typeStr = "";
 		int basesCount = 0;
+		int step = transcript.isStrandPlus() ? 1 : -1;
 		if (type == '5') {
 			typeStr = "-";
 
 			// Count UTR5 bases until TSS
-			for (int i = exonBase; (i >= 0) && (i < bases.length); i += transcript.getStrand()) {
+			for (int i = exonBase; (i >= 0) && (i < bases.length); i += step) {
 				if (bases[i] == type) basesCount++;
 				else if (bases[i] != '-') break;
 			}
@@ -155,13 +156,13 @@ public class TestCasesHgvs extends TestCase {
 			typeStr = "*";
 
 			// Count UTR3 bases until end of coding 
-			for (int i = exonBase; (i >= 0) && (i < bases.length); i += -transcript.getStrand()) {
+			for (int i = exonBase; (i >= 0) && (i < bases.length); i -= step) {
 				if (bases[i] == type) basesCount++;
 				else if (bases[i] != '-') break;
 			}
 		} else if ((type == '>') || (type == '<')) {
 			// Count coding bases until TSS
-			for (int i = exonBase; (i >= 0) && (i < bases.length); i -= transcript.getStrand()) {
+			for (int i = exonBase; (i >= 0) && (i < bases.length); i -= step) {
 				if (bases[i] == type) basesCount++;
 				else if ((bases[i] != '-') && (bases[i] != '>') && (bases[i] != '<')) break;
 			}
@@ -233,7 +234,7 @@ public class TestCasesHgvs extends TestCase {
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor(false, true);
 			if (debug) System.out.println("HGSV Test iteration: " + i + "\n" + transcript);
-			else System.out.println("HGSV Coding\titeration: " + i + "\t" + (transcript.getStrand() >= 0 ? "+" : "-") + "\t" + transcript.cds());
+			else System.out.println("HGSV Coding\titeration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
 
 			int cdsBaseNum = 0;
 
@@ -302,7 +303,7 @@ public class TestCasesHgvs extends TestCase {
 
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-									+ "\t" + seqChange + (seqChange.getStrand() >= 0 ? "+" : "-") //
+									+ "\t" + seqChange + (seqChange.isStrandPlus() ? "+" : "-") //
 									+ "\tCodon: " + codon + " -> " + newCodon //
 									+ "\tAA: " + aa + " -> " + newAa //
 									+ "\tEffect expected: " + effectExpected //

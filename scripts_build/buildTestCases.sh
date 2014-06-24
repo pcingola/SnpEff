@@ -28,6 +28,7 @@ $SNPEFF build -noLog -gtf22 testHg3769Chr12
 
 # Test cases hg37.70
 $SNPEFF build -noLog -gtf22 testHg3770Chr22
+cp db/jaspar/pwms.bin data/testHg3770Chr22/
 
 # Test cases hg37.71
 $SNPEFF build -noLog -gtf22 testHg3771Chr1

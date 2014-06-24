@@ -21,8 +21,8 @@ public class Regulation extends Marker {
 		type = EffectType.REGULATION;
 	}
 
-	public Regulation(Marker parent, int start, int end, int strand, String id, String name, String cellType) {
-		super(parent, start, end, strand, id);
+	public Regulation(Marker parent, int start, int end, boolean strandMinus, String id, String name, String cellType) {
+		super(parent, start, end, strandMinus, id);
 		type = EffectType.REGULATION;
 		this.name = name;
 		this.cellType = cellType;

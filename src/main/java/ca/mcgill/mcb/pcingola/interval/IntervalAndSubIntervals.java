@@ -27,8 +27,8 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 		reset();
 	}
 
-	public IntervalAndSubIntervals(Marker parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public IntervalAndSubIntervals(Marker parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 		reset();
 	}
 
@@ -168,12 +168,12 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	}
 
 	@Override
-	public void setStrand(int strand) {
-		this.strand = (byte) strand;
+	public void setStrandMinus(boolean strandMinus) {
+		this.strandMinus = strandMinus;
 
 		// Change all subintervals
 		for (T t : this)
-			t.setStrand(strand);
+			t.setStrandMinus(strandMinus);
 
 		invalidateSorted(); // These are no longer correct
 	}
@@ -201,7 +201,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 		sortedStrand = new ArrayList<T>();
 		sortedStrand.addAll(subIntervals.values());
 
-		if (strand >= 0) Collections.sort(sortedStrand, new IntervalComparatorByStart()); // Sort by start position 
+		if (isStrandPlus()) Collections.sort(sortedStrand, new IntervalComparatorByStart()); // Sort by start position 
 		else Collections.sort(sortedStrand, new IntervalComparatorByEnd(true)); // Sort by end position (reversed) 
 
 		return sortedStrand;

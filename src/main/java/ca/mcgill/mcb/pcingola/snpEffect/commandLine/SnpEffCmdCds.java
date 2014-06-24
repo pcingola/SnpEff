@@ -130,7 +130,7 @@ public class SnpEffCmdCds extends SnpEff {
 						int maxScore = Math.min(cds.length(), cdsReference.length());
 						int score = sw.getAligmentScore();
 						System.err.println("\nERROR: CDSs do not match for transcript " + tr.getId() //
-								+ "\tStrand:" + tr.getStrand() //
+								+ "\tStrand:" + tr.isStrandMinus()//
 								+ "\tExons: " + tr.numChilds() //
 								+ "\n" //
 								+ String.format("\tSnpEff CDS  (%6d) : '%s'\n", cds.length(), cds.toLowerCase()) //

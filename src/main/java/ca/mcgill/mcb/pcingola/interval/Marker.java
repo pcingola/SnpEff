@@ -28,8 +28,8 @@ public class Marker extends Interval implements TxtSerializable {
 		type = EffectType.NONE;
 	}
 
-	public Marker(Marker parent, int start, int end, int strand, String id) {
-		super(parent, start, end, strand, id);
+	public Marker(Marker parent, int start, int end, boolean strandMinus, String id) {
+		super(parent, start, end, strandMinus, id);
 
 		// Adjust parent if child is not included?
 		if ((parent != null) && !parent.includes(this)) {
@@ -169,12 +169,7 @@ public class Marker extends Interval implements TxtSerializable {
 
 	@Override
 	public Marker clone() {
-		Marker m = (Marker) super.clone();
-		if (m.getStart() != start) throw new RuntimeException("Cloned start does not match!");
-		if (m.getEnd() != end) throw new RuntimeException("Cloned end does not match!");
-		if (m.getStrand() != strand) throw new RuntimeException("Cloned strand does not match!");
-		if (m.getParent() != parent) throw new RuntimeException("Cloned parent does not match!");
-		return m;
+		return (Marker) super.clone();
 	}
 
 	/**
@@ -343,7 +338,7 @@ public class Marker extends Interval implements TxtSerializable {
 		int hashCode = getChromosomeName().hashCode();
 		hashCode = hashCode * 31 + start;
 		hashCode = hashCode * 31 + end;
-		hashCode = hashCode * 31 + strand;
+		hashCode = hashCode * 31 + (strandMinus ? -1 : 1);
 		if (id != null) hashCode = hashCode * 31 + id.hashCode();
 		return hashCode;
 	}
@@ -443,7 +438,7 @@ public class Marker extends Interval implements TxtSerializable {
 		int istart = Math.max(start, m.getStart());
 		int iend = Math.min(end, m.getEnd());
 		if (iend < istart) return null;
-		return new Marker(getParent(), istart, iend, strand, "");
+		return new Marker(getParent(), istart, iend, strandMinus, "");
 	}
 
 	/**
@@ -498,14 +493,14 @@ public class Marker extends Interval implements TxtSerializable {
 				// 'this' is included in 'interval' => Nothing left
 			} else if ((interval.getStart() <= getStart()) && (interval.getEnd() < getEnd())) {
 				// 'interval' overlaps left part of 'this' => Include right part of 'this'
-				ints.add(new Marker(getParent(), interval.getEnd() + 1, getEnd(), getStrand(), getId()));
+				ints.add(new Marker(getParent(), interval.getEnd() + 1, getEnd(), isStrandMinus(), getId()));
 			} else if ((getStart() < interval.getStart()) && (getEnd() <= interval.getEnd())) {
 				// 'interval' overlaps right part of 'this' => Include left part of 'this'
-				ints.add(new Marker(getParent(), getStart(), interval.getStart() - 1, getStrand(), getId()));
+				ints.add(new Marker(getParent(), getStart(), interval.getStart() - 1, isStrandMinus(), getId()));
 			} else if ((getStart() < interval.getStart()) && (interval.getEnd() < getEnd())) {
 				// 'interval' overlaps middle of 'this' => Include left and right part of 'this'
-				ints.add(new Marker(getParent(), getStart(), interval.getStart() - 1, getStrand(), getId()));
-				ints.add(new Marker(getParent(), interval.getEnd() + 1, getEnd(), getStrand(), getId()));
+				ints.add(new Marker(getParent(), getStart(), interval.getStart() - 1, isStrandMinus(), getId()));
+				ints.add(new Marker(getParent(), interval.getEnd() + 1, getEnd(), isStrandMinus(), getId()));
 			} else throw new RuntimeException("Interval intersection not analysed. This should nbever happen!");
 		} else ints.add(this); // No intersection => Just add 'this' interval
 
@@ -599,7 +594,7 @@ public class Marker extends Interval implements TxtSerializable {
 		start = markerSerializer.getNextFieldInt();
 		end = markerSerializer.getNextFieldInt();
 		id = markerSerializer.getNextField();
-		strand = (byte) markerSerializer.getNextFieldInt();
+		strandMinus = markerSerializer.getNextFieldBoolean();
 	}
 
 	/**
@@ -614,7 +609,7 @@ public class Marker extends Interval implements TxtSerializable {
 				+ "\t" + start //
 				+ "\t" + end //
 				+ "\t" + id //
-				+ "\t" + strand //
+				+ "\t" + strandMinus //
 		;
 	}
 
@@ -643,7 +638,7 @@ public class Marker extends Interval implements TxtSerializable {
 
 		int ustart = Math.min(start, m.getStart());
 		int uend = Math.max(end, m.getEnd());
-		return new Marker(getParent(), ustart, uend, strand, "");
+		return new Marker(getParent(), ustart, uend, strandMinus, "");
 	}
 
 }

@@ -218,7 +218,7 @@ public class CodonChange {
 			return sb.toString();
 		}
 
-		return seqChange.netChange(transcript.getStrand());
+		return seqChange.netChange(transcript.isStrandMinus());
 	}
 
 }
