@@ -42,7 +42,7 @@ done
 if [ "$jvm_mem_opts" == "" ]; then
     jvm_mem_opts="$default_jvm_mem_opts"
 fi
-if [[ "$pass_args" != "" && "$pass_args" =~ "-c " ]]; then
+if [[ "$pass_args" != "" && ! "$pass_args" =~ "-c " ]]; then
     pass_args="$pass_args -c ${jardir}/snpEff.config"
 fi
 
