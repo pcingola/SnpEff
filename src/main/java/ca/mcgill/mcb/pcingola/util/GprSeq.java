@@ -103,6 +103,13 @@ public class GprSeq {
 		return c;
 	}
 
+	public static byte[] aa2Code(String aa) {
+		byte codes[] = new byte[aa.length()];
+		for (int i = 0; i < codes.length; i++)
+			codes[i] = aa2Code(aa.charAt(i));
+		return codes;
+	}
+
 	/**
 	 * Change a fastQ encoding in a quality sequence
 	 * @param qualityStr
