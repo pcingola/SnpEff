@@ -39,9 +39,6 @@ public class SnpEffCmdProtein extends SnpEff {
 
 	/**
 	 * Count number of differences between strings
-	 * @param s1
-	 * @param s2
-	 * @return
 	 */
 	public static int diffCount(String s1, String s2) {
 		int minLen = Math.min(s1.length(), s2.length());
@@ -54,9 +51,6 @@ public class SnpEffCmdProtein extends SnpEff {
 
 	/**
 	 * Show difference between two strings
-	 * @param s1
-	 * @param s2
-	 * @return
 	 */
 	public static String diffStr(String s1, String s2) {
 		// Create a string indicating differences

@@ -773,7 +773,6 @@ public class SnpEff implements CommandLine {
 		else if (command.equalsIgnoreCase("len")) snpEffCmd = new SnpEffCmdLen();
 		else if (command.equalsIgnoreCase("gsa")) snpEffCmd = new SnpEffCmdGsa();
 		else if (command.equalsIgnoreCase("acat")) snpEffCmd = new SnpEffCmdAcat();
-		else if (command.equalsIgnoreCase("test")) snpEffCmd = new SnpEffCmdTest();
 		else throw new RuntimeException("Unknown command '" + command + "'");
 
 		// Copy values to specific command

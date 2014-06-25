@@ -47,6 +47,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	Downstream downstream; // Downstream interval
 	Exon firstCodingExon; // First coding exon. I.e. where transcription start site (TSS) is.
 	int cds2pos[], aa2pos[];
+	boolean aaCheck, cdsCheck;
 
 	public Transcript() {
 		super();

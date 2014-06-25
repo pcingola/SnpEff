@@ -135,7 +135,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 					Gene gene = findOrCreateGene(f, chromosome, false); // Find or create gene
 					if (debug) System.err.println("Transcript '" + trId + "' not found. Creating new transcript for gene '" + gene.getId() + "'.\n" + f);
 
-					// trId = "Tr_" + start + "_" + end;
+					if (trId == null) trId = "Tr_" + start + "_" + end;
 					tr = findTranscript(trId);
 					if (tr == null) {
 						tr = new Transcript(gene, start, end, f.isComplement(), trId);

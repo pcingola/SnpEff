@@ -5,7 +5,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
- * Interval for a gene, as well as some other information: exons, utrs, cds, etc.
+ * CDS: The coding region of a gene, also known as the coding sequence or CDS (from Coding DNA Sequence), is 
+ * that portion of a gene's DNA or RNA, composed of exons, that codes for protein.
  * 
  * @author pcingola
  *

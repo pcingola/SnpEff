@@ -218,12 +218,13 @@ public abstract class SnpEffPredictorFactory {
 	/**
 	 * Adjust transcripts: recalculate start, end, strand, etc.
 	 */
-	void adjustTranscripts() {
+	protected void adjustTranscripts() {
 		int i = 1;
 		if (verbose) System.out.print("\n\tAdjusting transcripts: ");
 		for (Gene gene : genome.getGenes())
 			for (Transcript tr : gene)
 				if (tr.adjust()) mark(i++);
+
 	}
 
 	/**
@@ -248,6 +249,42 @@ public abstract class SnpEffPredictorFactory {
 	void chromoLen(String chromoName, int len) {
 		Chromosome chromo = getOrCreateChromosome(chromoName);
 		chromo.setLength(len);
+	}
+
+	/**
+	 * Only coding transcripts have CDS: Make sure that transcripts having CDS are protein coding
+	 * 
+	 * It might not be always "precise" though:
+	 * 
+	 * 		$ grep CDS genes.gtf | cut -f 2 | ~/snpEff/scripts/uniqCount.pl 
+	 * 		113	IG_C_gene
+	 * 		64	IG_D_gene
+	 * 		24	IG_J_gene
+	 * 		366	IG_V_gene
+	 * 		21	TR_C_gene
+	 * 		3	TR_D_gene
+	 * 		82	TR_J_gene
+	 * 		296	TR_V_gene
+	 * 		461	non_stop_decay
+	 * 		63322	nonsense_mediated_decay
+	 * 		905	polymorphic_pseudogene
+	 * 		34	processed_transcript
+	 * 		1340112	protein_coding
+	 */
+	protected void codingFromCds() {
+		int i = 0;
+		if (verbose) System.out.print("\n\tMarking as 'coding' from CDS information: ");
+		for (Gene gene : genome.getGenes())
+			for (Transcript tr : gene) {
+				if (tr.getCds() != null && !tr.getCds().isEmpty()) {
+					if (!tr.isProteinCoding()) {
+						tr.setProteinCoding(true);
+						i++;
+						if (debug) System.err.println("\t\tMarking as protein coding transcript " + tr.getId());
+					}
+				}
+			}
+		if (verbose) System.out.print("\n\tDone: " + i + " transcripts marked");
 	}
 
 	/**
@@ -457,6 +494,9 @@ public abstract class SnpEffPredictorFactory {
 
 		// Remove empty chromosomes
 		removeEmptyChromos();
+
+		// Mark as coding if there is a CDS
+		codingFromCds();
 
 		// Done
 		if (verbose) System.out.println("");
