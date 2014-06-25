@@ -21,7 +21,7 @@ snpeff build -noLog -refSeq testHg19Chr1
 #---
 # Buils all GTF 2.2
 #---
-for gen in testHg3761Chr15 testHg3761Chr16 testHg3763Chr1 testHg3763Chr20 testHg3763ChrY testHg3765Chr22 testHg3766Chr1 testHg3767Chr21Mt testHg3769Chr12 testHg3771Chr1 testHg3775Chr1 testENST00000268124
+for gen in testHg3761Chr15 testHg3761Chr16 testHg3763Chr1 testHg3763Chr20 testHg3763ChrY testHg3765Chr22 testHg3766Chr1 testHg3767Chr21Mt testHg3769Chr12 testHg3771Chr1 testHg3775Chr1 testENST00000268124 testENST00000398332
 do
 	echo
 	echo
