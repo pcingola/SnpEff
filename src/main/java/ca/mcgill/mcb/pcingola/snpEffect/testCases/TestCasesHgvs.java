@@ -336,7 +336,6 @@ public class TestCasesHgvs extends TestCase {
 
 	public void test_04_intron_outsideCds() {
 		snpEffect("tests/ensembl_hgvs_intron.outsideCds.vcf", "testHg3775Chr1");
-		//		snpEffect("tests/ensembl_hgvs_intron.1.vcf", "testHg3775Chr1");
 	}
 
 	public void test_05_intron() {
