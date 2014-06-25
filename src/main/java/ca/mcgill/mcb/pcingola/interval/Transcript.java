@@ -47,7 +47,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	Downstream downstream; // Downstream interval
 	Exon firstCodingExon; // First coding exon. I.e. where transcription start site (TSS) is.
 	int cds2pos[], aa2pos[];
-	boolean aaCheck, cdsCheck;
+	boolean aaCheck, dnaCheck;
 
 	public Transcript() {
 		super();
@@ -1126,6 +1126,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return (isStrandPlus() ? (next.getStart() - exon.getEnd()) : (exon.getStart() - next.getEnd())) - 1;
 	}
 
+	public boolean isAaCheck() {
+		return aaCheck;
+	}
+
 	@Override
 	protected boolean isAdjustIfParentDoesNotInclude(Marker parent) {
 		return true;
@@ -1148,6 +1152,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		}
 
 		return (seqChange.getEnd() >= cs) && (seqChange.getStart() <= ce);
+	}
+
+	public boolean isDnaCheck() {
+		return dnaCheck;
 	}
 
 	/**
@@ -1481,6 +1489,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		super.serializeParse(markerSerializer);
 		bioType = markerSerializer.getNextField();
 		proteinCoding = markerSerializer.getNextFieldBoolean();
+		dnaCheck = markerSerializer.getNextFieldBoolean();
+		aaCheck = markerSerializer.getNextFieldBoolean();
 		upstream = (Upstream) markerSerializer.getNextFieldMarker();
 		downstream = (Downstream) markerSerializer.getNextFieldMarker();
 
@@ -1504,6 +1514,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + bioType //
 				+ "\t" + proteinCoding //
+				+ "\t" + dnaCheck //
+				+ "\t" + aaCheck //
+				+ "\t" + proteinCoding //
 				+ "\t" + markerSerializer.save(upstream) //
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
@@ -1512,8 +1525,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		;
 	}
 
+	public void setAaCheck(boolean aaCheck) {
+		this.aaCheck = aaCheck;
+	}
+
 	public void setBioType(String bioType) {
 		this.bioType = bioType;
+	}
+
+	public void setDnaCheck(boolean dnaCheck) {
+		this.dnaCheck = dnaCheck;
 	}
 
 	public void setProteinCoding(boolean proteinCoding) {

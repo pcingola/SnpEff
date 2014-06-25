@@ -65,6 +65,7 @@ public class SnpEffCmdCds extends SnpEff {
 		// Compare all genes
 		for (Gene gint : config.getGenome().getGenes())
 			for (Transcript tr : gint) {
+				boolean ok = false;
 				String cds = tr.cds().toUpperCase();
 				String mRna = tr.mRna().toUpperCase();
 				String cdsReference = cdsByTrId.get(tr.getId());
@@ -81,6 +82,8 @@ public class SnpEffCmdCds extends SnpEff {
 					totalNotFound++;
 				} else if (cds.equals(cdsReference)) {
 					totalOk++;
+					ok = true;
+
 					if (verbose) System.out.print('+');
 
 					// Sanity check: Start and stop codons
@@ -103,6 +106,8 @@ public class SnpEffCmdCds extends SnpEff {
 					}
 				} else if (mRna.equals(cdsReference)) { // May be the file has mRNA instead of CDS?
 					totalOk++;
+					ok = true;
+
 					if (verbose) System.out.print('+');
 				} else if ((mRna.length() < cdsReference.length()) // CDS longer than mRNA? May be it is actually an mRNA + poly-A tail (instead of a CDS)
 						&& cdsReference.substring(mRna.length()).replace('A', ' ').trim().isEmpty() // May be it is an mRNA and it has a ploy-A tail added
@@ -110,6 +115,8 @@ public class SnpEffCmdCds extends SnpEff {
 				) {
 					// OK, it was a mRNA +  polyA
 					totalOk++;
+					ok = true;
+
 					if (verbose) System.out.print('+');
 				} else if ((mRna.length() > cdsReference.length()) // PolyA in the reference? 
 						&& mRna.substring(cdsReference.length()).replace('A', ' ').trim().isEmpty() // 
@@ -117,9 +124,13 @@ public class SnpEffCmdCds extends SnpEff {
 				) {
 					// OK, it was a mRNA +  polyA
 					totalOk++;
+					ok = true;
+
 					if (verbose) System.out.print('+');
 				} else if (cdsReference.indexOf(cds) >= 0) { // CDS fully included in reference?
 					totalOk++;
+					ok = true;
+
 					if (verbose) System.out.print('+');
 				} else {
 					if (debug || onlyOneError) {
@@ -152,6 +163,8 @@ public class SnpEffCmdCds extends SnpEff {
 
 					totalErrors++;
 				}
+
+				if (ok) tr.setDnaCheck(true);
 
 				// Show a mark
 				if (verbose && (i % 100 == 0)) System.out.print("\n\t");

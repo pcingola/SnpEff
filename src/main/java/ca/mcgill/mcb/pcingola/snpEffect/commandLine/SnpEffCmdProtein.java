@@ -18,24 +18,16 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Command line: Read protein sequences from a file and compare them to the ones calculated from our data structures
- * 
- * Note: This is done in order to see potential incompatibility 
+ *
+ * Note: This is done in order to see potential incompatibility
  *       errors between genome sequence and annotation.
- * 
+ *
  * @author pcingola
  */
 public class SnpEffCmdProtein extends SnpEff {
 
 	public static boolean onlyOneError = false; // This is used in some test-cases
 	public static double maxErrorPercentage = 0.01; // Maximum allowed error is 1% (otherwise test fails)
-
-	int totalErrors = 0;
-	int totalOk = 0;
-	int totalWarnings = 0;
-	int totalNotFound = 0;
-	String configFile = Config.DEFAULT_CONFIG_FILE;
-	String proteinFile = "";
-	HashMap<String, String> proteinByTrId;
 
 	/**
 	 * Count number of differences between strings
@@ -65,6 +57,16 @@ public class SnpEffCmdProtein extends SnpEff {
 		return new String(diff);
 	}
 
+	int totalErrors = 0;
+	int totalOk = 0;
+	int totalWarnings = 0;
+	int totalNotFound = 0;
+	String configFile = Config.DEFAULT_CONFIG_FILE;
+
+	String proteinFile = "";
+
+	HashMap<String, String> proteinByTrId;
+
 	public SnpEffCmdProtein() {
 	}
 
@@ -85,14 +87,14 @@ public class SnpEffCmdProtein extends SnpEff {
 	}
 
 	void add(String trId, String seq, int lineNum) {
-		// Repeated transcript Id? => Check that Protein is the same 
+		// Repeated transcript Id? => Check that Protein is the same
 		if ((proteinByTrId.get(trId) != null) && (!proteinByTrId.get(trId).equals(seq))) //
 			System.err.println("ERROR: Different protein for the same transcript ID. This should never happen!!!"//
 					+ "\n\tLine number   : " + lineNum //
 					+ "\n\tTranscript ID : '" + trId + "'"//
 					+ "\n\tProtein       : " + proteinByTrId.get(trId) //
 					+ "\n\tProtein (new) : " + seq //
-			);
+					);
 
 		// Pick the first space separated string
 		if (trId.indexOf(' ') > 0) trId = trId.split("\\s")[0];
@@ -103,7 +105,7 @@ public class SnpEffCmdProtein extends SnpEff {
 
 	/**
 	 * Compare two protein sequences
-	 * 
+	 *
 	 * @param protein
 	 * @param proteinRef
 	 * @return
@@ -158,7 +160,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		for (int i = 0; i < args.length; i++) {
 
 			// Argument starts with '-'?
-			if (args[i].startsWith("-")) usage("Unknow option '" + args[i] + "'"); // Options 
+			if (args[i].startsWith("-")) usage("Unknow option '" + args[i] + "'"); // Options
 			else if (genomeVer.isEmpty()) genomeVer = args[i];
 			else if (proteinFile.isEmpty()) proteinFile = args[i];
 			else usage("Unknow parameter '" + args[i] + "'");
@@ -190,6 +192,7 @@ public class SnpEffCmdProtein extends SnpEff {
 					}
 				} else if (equals(protein, proteinReference)) {
 					totalOk++;
+					tr.setAaCheck(true);
 					if (verbose) System.out.print('+');
 				} else {
 					if (debug || onlyOneError) {
@@ -212,7 +215,7 @@ public class SnpEffCmdProtein extends SnpEff {
 								+ "\tMax. possible score: " + maxScore //
 								+ "\tDiff: " + (maxScore - score) //
 								+ "\n" + sw //
-						);
+								);
 						System.err.println("Transcript details:\n" + tr);
 
 					} else if (verbose) System.out.print('*');
@@ -237,7 +240,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	}
 
 	/**
-	 * Format proteins to make them easier to compare 
+	 * Format proteins to make them easier to compare
 	 * @param protein
 	 * @return
 	 */
@@ -297,7 +300,7 @@ public class SnpEffCmdProtein extends SnpEff {
 					// Clean up trId
 					trIdPrev = null;
 				} else if (f.getType() == Type.MRNA) {
-					// Save trId, so that next CDS record can find it 
+					// Save trId, so that next CDS record can find it
 					trIdPrev = f.getTranscriptId();
 				} else if (f.getType() == Type.CDS) { // Add CDS 'translation' record
 					// Try using the transcript ID found in the previous record

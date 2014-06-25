@@ -268,12 +268,12 @@ public class SnpEffCmdBuild extends SnpEff {
 			// Add read rare codons annotations, if possible
 			rareAa(snpEffectPredictor);
 
+			// Check database
+			checkDb();
+
 			// Save database
 			if (verbose) Timer.showStdErr("Saving database");
 			snpEffectPredictor.save(config);
-
-			// Check database
-			checkDb();
 		}
 
 		// Read regulation elements 
