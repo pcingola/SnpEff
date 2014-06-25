@@ -52,7 +52,7 @@ public class TestSuiteAll {
 		suite.addTestSuite(TestCasesMnp.class);
 		suite.addTestSuite(TestCasesIns.class);
 		suite.addTestSuite(TestCasesDel.class);
-		suite.addTestSuite(TestCasesIntervalSeqChange.class);
+		suite.addTestSuite(TestCasesIntervalVariant.class);
 
 		suite.addTestSuite(TestCasesSnpEnsembl.class);
 		suite.addTestSuite(TestCasesMissenseSilentRatio.class);

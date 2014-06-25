@@ -9,21 +9,22 @@ import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Intron;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Test random Interval SeqChanges (e.g. when reading a BED file 
  * 
  * @author pcingola
  */
-public class TestCasesIntervalSeqChange extends TestCase {
+public class TestCasesIntervalVariant extends TestCase {
 
 	boolean debug = false;
 
@@ -37,7 +38,7 @@ public class TestCasesIntervalSeqChange extends TestCase {
 	String chromoSequence = "";
 	char chromoBases[];
 
-	public TestCasesIntervalSeqChange() {
+	public TestCasesIntervalVariant() {
 		super();
 		init();
 	}
@@ -87,10 +88,11 @@ public class TestCasesIntervalSeqChange extends TestCase {
 		//	- Create a random gene transcript, exons
 		//	- Create a random Insert at each position
 		//	- Calculate effect
+		System.out.println("INTERVAL (Variant) Test iteration:\n");
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor();
-			if (debug) System.out.println("INTERVAL (seqChange) Test iteration: " + i + "\n" + transcript);
-			else System.out.println("INTERVAL (seqChange) Test iteration: " + i);
+			if (debug) System.out.println("INTERVAL (Variant) Test iteration: " + i + "\n" + transcript);
+			else Gpr.showMark(i + 1, 1);
 
 			// For each base in the transcript
 			// For each base in this exon...
