@@ -1288,7 +1288,45 @@ $ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed
 				<br>
 				<p> <h3> Loss of function and nonsense-mediated decay predictions </h3>
 				Loss of function ('LOF') and nonsense-mediated decay ('NMD') predictions can be activated by using <code>-lof</code> command line option.
-				Details on how these variants work, can be found in <a class="body" href="snpEff_lof_nmd.pdf">these slides </a>
+				Some details on how these variants work, can be found in <a class="body" href="snpEff_lof_nmd.pdf">these slides </a>
+				<br>
+				<br>
+				Analyze if a set of effects are can create a "Loss Of Function" and "Nonsense mediated decays" effects.
+				<br>
+				Needless to say, this is a prediction based on analysis of groups of "putative effects". Proper wet-lab validation is required to infer "real" LOF. 
+				<br>
+				<br>
+				<b>References:</b> I used the LOF definition used in the following paper <a href="http://www.sciencemag.org/content/335/6070/823.abstract">"A Systematic Survey of Loss-of-Function Variants in Human Protein-Coding Genes"</a>.
+				<br>
+				<br>
+				From the paper: <i>
+						We adopted a definition for LoF variants
+						expected to correlate with complete loss of function 
+						of the affected transcripts: stop codon-introducing 
+						(nonsense) or splice site-disrupting single-nucleotide 
+						variants (SNVs), insertion/deletion (indel) variants 
+						predicted to disrupt a transcript's reading frame, or 
+						larger deletions removing either the first exon or more 
+						than 50% of the protein-coding sequence of the affected 
+						transcript.
+
+						Both nonsense SNVs and frameshift indels are enriched toward the 3' end
+						of the affected gene, consistent with a greater tolerance to truncation 
+						close to the end of the coding sequence; putative LoF variants
+						identified in the last 5% of the coding region were thus systematically 
+						removed from our high-confidence set.
+						</i>
+				<br>
+				<br>
+				Other parameters used for LOF/NMD calculations:
+				<ul>
+					<li> Number of bases before last exon-exon junction that nonsense mediated decay is supposed to occur: 50
+					<li> It is assumed that even with a protein coding change at the last 5% of the protein, the protein could still be functional.
+					<li> It is assumed that even with a protein coding change at the first 5% of the protein: "..suggesting some disrupted transcripts are rescued by transcriptional reinitiation at an alternative start codon."
+					<li> Larger deletions removing either the first exon or more than 50% of the protein-coding sequence of the affected transcript
+				</ul>
+
+				<br>
 				<br>
 				Usage example:
 <pre>
