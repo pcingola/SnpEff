@@ -910,6 +910,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tThis method is supposed to be called AFTER method"//
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
+								+ "\n\t" + this //
 						);
 					} else {
 						// Find matching cds
