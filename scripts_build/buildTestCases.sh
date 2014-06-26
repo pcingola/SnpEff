@@ -26,7 +26,7 @@ do
 	echo
 	echo
 	echo Genome: $gen
-	$SNPEFF build -noLog -gtf22 testHg3761Chr15
+	$SNPEFF build -noLog -gtf22 $gen
 done
 
 
