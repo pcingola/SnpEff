@@ -486,15 +486,27 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		double avgTrPerGene = countTranscripts / ((double) countGenes);
 		double avgExonPerTr = countExons / ((double) countTranscripts);
 
+		// Genome & Genes
+		sb.append("#-----------------------------------------------\n");
 		sb.append("# Genome name                : '" + species + "'" + "\n");
 		sb.append("# Genome version             : '" + version + "'\n");
 		sb.append("# Has protein coding info    : " + hasCodingInfo() + "\n");
 		sb.append("# Genes                      : " + countGenes + "\n");
 		sb.append("# Protein coding genes       : " + countGenesProteinCoding + "\n");
+
+		// Transcripts
+		sb.append("#-----------------------------------------------\n");
 		sb.append("# Transcripts                : " + countTranscripts + "\n");
 		sb.append(String.format("# Avg. transcripts per gene  : %.2f", avgTrPerGene) + "\n");
-		sb.append("# Checked AA transcripts     : " + countCheckAa + "\n");
-		sb.append("# Checked DNA transcripts    : " + countCheckDna + "\n");
+
+		// Checked transcripts
+		sb.append("#-----------------------------------------------\n");
+		sb.append("# Checked transcripts        : \n");
+		if (countTranscriptsProteinCoding > 0) sb.append(String.format("#               AA sequences :  %6d ( %.2f%% )\n", countCheckAa, (100.0 * countCheckAa / countTranscriptsProteinCoding)));
+		if (countTranscripts > 0) sb.append(String.format("#              DNA sequences :  %6d ( %.2f%% )\n", countCheckDna, (100.0 * countCheckDna / countTranscripts)));
+
+		// Coding transcripts
+		sb.append("#-----------------------------------------------\n");
 		sb.append("# Protein coding transcripts : " + countTranscriptsProteinCoding + "\n");
 		if (countTranscriptsProteinCoding > 0) {
 			sb.append(String.format("#              Length errors : %6d ( %.2f%% )\n", errorProteinLength, (100.0 * errorProteinLength / countTranscriptsProteinCoding)));
@@ -503,6 +515,9 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 			sb.append(String.format("#        STOP codon warnings : %6d ( %.2f%% )\n", warningStopCodon, (100.0 * warningStopCodon / countTranscriptsProteinCoding)));
 			sb.append(String.format("#               Total Errors : %6d ( %.2f%% )\n", errorTr, (100.0 * errorTr / countTranscriptsProteinCoding)));
 		}
+
+		// Exons & CDS
+		sb.append("#-----------------------------------------------\n");
 		sb.append("# Cds                        : " + countCds + "\n");
 		sb.append("# Exons                      : " + countExons + "\n");
 		sb.append("# Exons with sequence        : " + exonSeq + "\n");
@@ -526,13 +541,17 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 			}
 		}
 
-		// Show chromosomes info
+		// Chromosomes
+		sb.append("#-----------------------------------------------\n");
 		sb.append("# Number of chromosomes      : " + getChromosomes().size() + "\n");
 		sb.append("# Chromosomes names [sizes]  :\n");
 		for (Chromosome chr : getChromosomesSortedSize())
 			sb.append("#\t\t'" + chr.getId() + "' [" + chr.size() + "]\n");
 
 		if (countTranscriptsProteinCoding <= 0) sb.append("\nWARNING! : No protein coding transcripts found.\n");
+
+		// Done
+		sb.append("#-----------------------------------------------\n");
 
 		return sb.toString();
 	}

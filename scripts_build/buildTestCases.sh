@@ -16,7 +16,7 @@ $SNPEFF build -noLog -gtf22 testHg3770Chr22
 cp db/jaspar/pwms.bin data/testHg3770Chr22/
 
 # Test case testHg19Chr1
-snpeff build -noLog -refSeq testHg19Chr1
+$SNPEFF build -noLog -refSeq testHg19Chr1
 
 #---
 # Buils all GTF 2.2
