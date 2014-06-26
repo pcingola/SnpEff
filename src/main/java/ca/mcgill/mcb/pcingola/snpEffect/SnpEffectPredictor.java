@@ -25,10 +25,10 @@ import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
- * Predicts effects of SNPs 
- * 
+ * Predicts effects of SNPs
+ *
  * Note: Actually tries to predict any kind of SeqChange, not only SNPs . It is called SnpEffectPredictor for 'historical reasons'.
- * 
+ *
  * @author pcingola
  *
  */
@@ -38,17 +38,6 @@ public class SnpEffectPredictor implements Serializable {
 	public static final int DEFAULT_UP_DOWN_LENGTH = 5000;
 	public static final int HUGE_DELETION_SIZE_THRESHOLD = 1000000; // Number of bases
 	public static final double HUGE_DELETION_RATIO_THRESHOLD = 0.01; // Percentage of bases
-
-	boolean useChromosomes = true;
-	int upDownStreamLength = DEFAULT_UP_DOWN_LENGTH;
-	int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE;
-	int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
-	int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
-	int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
-
-	Genome genome;
-	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
-	IntervalForest intervalForest;
 
 	/**
 	 * Load predictor from a binary file
@@ -94,6 +83,18 @@ public class SnpEffectPredictor implements Serializable {
 		return snpEffectPredictor;
 	}
 
+	boolean useChromosomes = true;
+	int upDownStreamLength = DEFAULT_UP_DOWN_LENGTH;
+	int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE;
+	int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
+	int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
+
+	int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
+	Genome genome;
+	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
+
+	IntervalForest intervalForest;
+
 	public SnpEffectPredictor(Genome genome) {
 		this.genome = genome;
 		markers = new Markers();
@@ -107,12 +108,12 @@ public class SnpEffectPredictor implements Serializable {
 		genome.getGenes().add(gene);
 	}
 
-	/** 
+	/**
 	 * Add a marker
-	 * 
-	 * Note: Markers have to be added BEFORE building the interval trees. 
+	 *
+	 * Note: Markers have to be added BEFORE building the interval trees.
 	 *       Interval trees are built the first time you call snpEffect(snp) method.
-	 * 
+	 *
 	 * @param marker
 	 */
 	public void add(Marker marker) {
@@ -263,19 +264,19 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Find closest gene to this marker
-	 * 
-	 * In case more than one 'closest' gene is 
-	 * found (e.g. two or more genes at the 
-	 * same distance). The following rules 
+	 *
+	 * In case more than one 'closest' gene is
+	 * found (e.g. two or more genes at the
+	 * same distance). The following rules
 	 * apply:
-	 * 
-	 * 		i) If many genes have the same 'closest 
+	 *
+	 * 		i) If many genes have the same 'closest
 	 * 		   distance', coding genes are preferred.
-	 * 
-	 * 		ii) If more than one coding gene has the 
-	 * 		    same 'closet distance', a random gene 
+	 *
+	 * 		ii) If more than one coding gene has the
+	 * 		    same 'closet distance', a random gene
 	 *			is returned.
-	 * 
+	 *
 	 * @param inputInterval
 	 */
 	public Gene queryClosestGene(Marker inputInterval) {
@@ -306,7 +307,7 @@ public class SnpEffectPredictor implements Serializable {
 					}
 				}
 
-				// Found something?				
+				// Found something?
 				if (genes.size() > 0) {
 					// Find a gene having distance 'minDist'. Prefer coding genes
 					Gene minDistGene = null;
@@ -333,7 +334,7 @@ public class SnpEffectPredictor implements Serializable {
 	/**
 	 * Return a collection of intervals that intersect 'marker'
 	 * Query resulting genes, transcripts and exons to get ALL types of intervals possible
-	 * 
+	 *
 	 * @return
 	 */
 	public Markers queryDeep(Marker marker) {
@@ -404,7 +405,7 @@ public class SnpEffectPredictor implements Serializable {
 							if (tr.intersects(marker)) {
 								regionsAddHit(hits, tr, marker, showGeneDetails, compareTemplate);
 
-								// Does it intersect a UTR? 
+								// Does it intersect a UTR?
 								for (Utr utr : tr.getUtrs())
 									if (utr.intersects(marker)) regionsAddHit(hits, utr, marker, showGeneDetails, compareTemplate);
 
@@ -470,6 +471,14 @@ public class SnpEffectPredictor implements Serializable {
 	public void removeNonCanonical() {
 		for (Gene g : genome.getGenes())
 			g.removeNonCanonical();
+	}
+
+	/**
+	 * Remove all unverified transcripts
+	 */
+	public void removeUnverified() {
+		for (Gene g : genome.getGenes())
+			g.removeUnverified();
 	}
 
 	/**
@@ -544,7 +553,7 @@ public class SnpEffectPredictor implements Serializable {
 		if (intersects.size() > 0) {
 			for (Marker marker : intersects) {
 				if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
-				else { // Analyze all markers 
+				else { // Analyze all markers
 					marker.seqChangeEffect(seqChange, changeEffects, seqChangeRef);
 					hitSomething = true;
 				}

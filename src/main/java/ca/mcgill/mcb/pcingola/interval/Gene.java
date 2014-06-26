@@ -11,7 +11,7 @@ import ca.mcgill.mcb.pcingola.stats.ObservedOverExpectedCpG;
 
 /**
  * Interval for a gene, as well as transcripts
- * 
+ *
  * @author pcingola
  *
  */
@@ -95,7 +95,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	/**
 	 * Get canonical transcript
 	 * Canonical transcripts are defined as the longest CDS of amongst the protein coding transcripts.
-	 * If none of the transcripts is protein coding, then it is the longest cDNA. 
+	 * If none of the transcripts is protein coding, then it is the longest cDNA.
 	 */
 	public Transcript canonical() {
 		Transcript canonical = null;
@@ -202,6 +202,20 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	}
 
 	/**
+	 * Remove unverified transcripts
+	 */
+	public void removeUnverified() {
+		// Mark unchecked transcripts for deletion
+		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
+		for (Transcript t : this)
+			if (!t.isChecked()) toDelete.add(t);
+
+		// Remove
+		for (Transcript t : toDelete)
+			remove(t);
+	}
+
+	/**
 	 * Get some details about the effect on this gene
 	 * @param seqChange
 	 * @return
@@ -219,7 +233,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			hitTranscript |= tr.seqChangeEffect(seqChange, changeEffects);
 		}
 
-		// May be none of the transcripts are actually hit 
+		// May be none of the transcripts are actually hit
 		if (!hitTranscript) {
 			changeEffects.add(this, EffectType.INTRAGENIC, "");
 			return true;

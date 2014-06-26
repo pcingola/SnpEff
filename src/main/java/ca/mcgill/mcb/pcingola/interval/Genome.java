@@ -421,6 +421,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		int countGenes = 0, countGenesProteinCoding = 0;
 		int countTranscripts = 0, countTranscriptsProteinCoding = 0;
 		int countExons = 0, countCds = 0;
+		int countCheckAa = 0, countCheckDna = 0;
 		int errorProteinLength = 0;
 		int errorProteinStopCodons = 0;
 		int warningStopCodon = 0;
@@ -435,6 +436,8 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 			for (Transcript tr : g) {
 				if (tr.isProteinCoding()) countTranscriptsProteinCoding++;
+				if (tr.isAaCheck()) countCheckAa++;
+				if (tr.isDnaCheck()) countCheckDna++;
 
 				int numCds = tr.getCds().size();
 				int numExons = tr.subintervals().size();
@@ -490,6 +493,8 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		sb.append("# Protein coding genes       : " + countGenesProteinCoding + "\n");
 		sb.append("# Transcripts                : " + countTranscripts + "\n");
 		sb.append(String.format("# Avg. transcripts per gene  : %.2f", avgTrPerGene) + "\n");
+		sb.append("# Checked AA transcripts     : " + countCheckAa + "\n");
+		sb.append("# Checked DNA transcripts    : " + countCheckDna + "\n");
 		sb.append("# Protein coding transcripts : " + countTranscriptsProteinCoding + "\n");
 		if (countTranscriptsProteinCoding > 0) {
 			sb.append(String.format("#              Length errors : %6d ( %.2f%% )\n", errorProteinLength, (100.0 * errorProteinLength / countTranscriptsProteinCoding)));

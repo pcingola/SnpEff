@@ -29,7 +29,7 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Command line program: Build database
- * 
+ *
  * @author pcingola
  */
 public class SnpEffCmdBuild extends SnpEff {
@@ -276,7 +276,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			snpEffectPredictor.save(config);
 		}
 
-		// Read regulation elements 
+		// Read regulation elements
 		if (cellType == null) readRegulationGff(); // CellType specific is meant for BED files.
 		readRegulationBed();
 		readRegulationMotif();

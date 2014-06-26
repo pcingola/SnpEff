@@ -103,6 +103,7 @@ public class SnpEff implements CommandLine {
 	protected boolean noGenome = false; // Do not load genome database
 	protected boolean onlyRegulation = false; // Only build regulation tracks
 	protected boolean quiet; // Be quiet
+	protected boolean strict = false; // Only use transcript that have been validated
 	protected boolean verbose; // Be verbose
 	protected Boolean treatAllAsProteinCoding = null; // Only use coding genes. Default is 'null' which means 'auto'
 	protected int numWorkers = Gpr.NUM_CORES; // Max number of threads (if multi-threaded version is available)
@@ -157,7 +158,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-				);
+						);
 			}
 		}
 	}
@@ -232,7 +233,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+					);
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
 	}
@@ -331,6 +332,13 @@ public class SnpEff implements CommandLine {
 					}
 				}
 			}
+			if (verbose) Timer.showStdErr("done.");
+		}
+
+		// Filter verified transcripts
+		if (strict) {
+			if (verbose) Timer.showStdErr("Filtering out non-verified transcripts.");
+			config.getSnpEffectPredictor().removeUnverified();
 			if (verbose) Timer.showStdErr("done.");
 		}
 
@@ -588,7 +596,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
-		) {
+				) {
 			command = args[argNum++].toLowerCase();
 		} else {
 			command = "eff"; // Default command is 'eff'
@@ -605,46 +613,47 @@ public class SnpEff implements CommandLine {
 			// Is it a command line option?
 			if (isOpt(arg)) {
 
-				if (arg.equalsIgnoreCase("-noLog")) log = false;
-				else if (arg.equals("-h") || arg.equalsIgnoreCase("-help")) help = true;
-				else if (arg.equals("-v") || arg.equalsIgnoreCase("-verbose")) {
-					verbose = true;
-					quiet = false;
-				} else if (arg.equals("-q") || arg.equalsIgnoreCase("-quiet")) {
-					quiet = true;
-					verbose = false;
-				} else if (arg.equals("-d") || arg.equalsIgnoreCase("-debug")) debug = verbose = true;
+				if ((arg.equals("-c") || arg.equalsIgnoreCase("-config"))) {
+					if ((i + 1) < args.length) configFile = args[++i];
+					else usage("Option '-c' without config file argument");
+				} else if (arg.equalsIgnoreCase("-canon")) canonical = true; // Use canonical transcripts
+				else if (arg.equals("-d") || arg.equalsIgnoreCase("-debug")) debug = verbose = true;
 				else if (arg.equalsIgnoreCase("-dataDir")) {
 					if ((i + 1) < args.length) dataDir = args[++i];
 					else usage("Option '-dataDir' without data_dir argument");
-				} else if ((arg.equals("-c") || arg.equalsIgnoreCase("-config"))) {
-					if ((i + 1) < args.length) configFile = args[++i];
-					else usage("Option '-c' without config file argument");
-				} else if (arg.equals("-t")) multiThreaded = true;
+				} else if (arg.equalsIgnoreCase("-download")) download = true; // Download genome if not locally available
+				else if (arg.equals("-h") || arg.equalsIgnoreCase("-help")) help = true;
+				else if (arg.equalsIgnoreCase("-interval")) {
+					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
+					else usage("Option '-interval' without config interval_file argument");
+				} else if (arg.equalsIgnoreCase("-motif")) motif = true; // Use motif database
+				else if (arg.equalsIgnoreCase("-nextProt")) nextProt = true; // Use NextProt database
+				else if (arg.equals("-nodownload")) download = false; // Do not download genome
+				else if (arg.equalsIgnoreCase("-noLog")) log = false;
+				else if (arg.equals("-onlyReg")) onlyRegulation = true;
+				else if (arg.equalsIgnoreCase("-onlyTr")) {
+					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
+				} else if (arg.equals("-q") || arg.equalsIgnoreCase("-quiet")) {
+					quiet = true;
+					verbose = false;
+				} else if (arg.equals("-reg")) {
+					if ((i + 1) < args.length) regulationTracks.add(args[++i]); // Add this track to the list
+				} else if ((arg.equals("-ss") || arg.equalsIgnoreCase("-spliceSiteSize"))) {
+					if ((i + 1) < args.length) spliceSiteSize = Gpr.parseIntSafe(args[++i]);
+				} else if (arg.equalsIgnoreCase("-strict")) strict = true;
+				else if (arg.equals("-t")) multiThreaded = true;
 				else if (arg.equalsIgnoreCase("-treatAllAsProteinCoding")) {
 					if ((i + 1) < args.length) {
 						i++;
 						if (args[i].equalsIgnoreCase("auto")) treatAllAsProteinCoding = null;
 						else treatAllAsProteinCoding = Gpr.parseBoolSafe(args[i]);
 					}
-				} else if (arg.equalsIgnoreCase("-interval")) {
-					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
-					else usage("Option '-interval' without config interval_file argument");
-				} else if (arg.equalsIgnoreCase("-canon")) canonical = true; // Use canonical transcripts
-				else if (arg.equalsIgnoreCase("-download")) download = true; // Download genome (if not availble locally)
-				else if (arg.equals("-nodownload")) download = false; // Do not download genome (if not availble locally)
-				else if (arg.equalsIgnoreCase("-onlyTr")) {
-					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
 				} else if ((arg.equals("-ud") || arg.equalsIgnoreCase("-upDownStreamLen"))) {
 					if ((i + 1) < args.length) upDownStreamLength = Gpr.parseIntSafe(args[++i]);
-				} else if ((arg.equals("-ss") || arg.equalsIgnoreCase("-spliceSiteSize"))) {
-					if ((i + 1) < args.length) spliceSiteSize = Gpr.parseIntSafe(args[++i]);
-				} else if (arg.equals("-onlyReg")) onlyRegulation = true;
-				else if (arg.equals("-reg")) {
-					if ((i + 1) < args.length) regulationTracks.add(args[++i]); // Add this track to the list
-				} else if (arg.equalsIgnoreCase("-nextProt")) nextProt = true; // Use NextProt database
-				else if (arg.equalsIgnoreCase("-motif")) motif = true; // Use motif database
-				else {
+				} else if (arg.equals("-v") || arg.equalsIgnoreCase("-verbose")) {
+					verbose = true;
+					quiet = false;
+				} else {
 					// Unrecognized option? may be it's command specific. Let command parse it
 					argsList.add(arg);
 				}
@@ -860,10 +869,11 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
 		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database).");
 		System.err.println("\t-nextProt                    : Annotate using NextProt (requires NextProt database).");
-		System.err.println("\t-reg <name>                  : Regulation track to use (this option can be used add several times).");
 		System.err.println("\t-onlyReg                     : Only use regulation tracks.");
 		System.err.println("\t-onlyTr <file.txt>           : Only use the transcripts in this file. Format: One transcript ID per line.");
+		System.err.println("\t-reg <name>                  : Regulation track to use (this option can be used add several times).");
 		System.err.println("\t-ss , -spliceSiteSize <int>  : Set size for splice sites (donor and acceptor) in bases. Default: " + spliceSiteSize);
+		System.err.println("\t-strict                      : Only use 'validated' transcripts (i.e. sequence has been checked). Default: " + strict);
 		System.err.println("\t-ud , -upDownStreamLen <int> : Set upstream downstream interval length (in bases)");
 	}
 
