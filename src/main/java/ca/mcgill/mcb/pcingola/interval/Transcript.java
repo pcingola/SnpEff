@@ -867,15 +867,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Create UTR
 		Marker utr5 = utr5End >= 0 ? new Marker(this, utr5Start, utr5End, strandMinus, "") : null;
-		//		if (utr5End == -1) {
-		//			// UTR not found? Create a fake UTR that doesn't overlap the transcript
-		//			// Note: We do this just for this method (only because it's easier than handling 'null' conditions)
-		//			utr5Start = start;
-		//			utr5End = end;
-		//			if (start == 0) //
-		//				Gpr.debug("!!!!!!!!!!!");
-		//			utr5 = isStrandPlus() ? new Marker(this, start - 1, start - 1, strandMinus, "") : new Marker(this, end + 1, end + 1, strandMinus, "");
-		//		} else utr5 = new Marker(this, utr5Start, utr5End, strandMinus, "");
 
 		// Append all exon sequences
 		for (Exon exon : exons) {
@@ -918,7 +909,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\t" + this //
 						);
 					} else {
-						// Find matching cds
+						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
 
 						// Correct exon until we get the expected frame
@@ -949,7 +940,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Exon ex : this) {
 			// No frame info? => try to find matching CDS
 			if (ex.getFrame() < 0) {
-				// Chech a CDS that matches an exon
+				// Check a CDS that matches an exon
 				for (Cds cds : getCds()) {
 					// CDS matches the exon coordinates? => Copy frame info
 					if (isStrandPlus() && (ex.getStart() == cds.getStart())) {
