@@ -866,14 +866,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		}
 
 		// Create UTR
-		Marker utr5;
-		if (utr5End == -1) {
-			// UTR not found? Create a fake UTR that doesn't overlap the transcript
-			// Note: We do this just for this method (only because it's easier than handling 'null' conditions)
-			utr5Start = start;
-			utr5End = end;
-			utr5 = isStrandPlus() ? new Marker(this, start - 1, start - 1, strandMinus, "") : new Marker(this, end + 1, end + 1, strandMinus, "");
-		} else utr5 = new Marker(this, utr5Start, utr5End, strandMinus, "");
+		Marker utr5 = utr5End >= 0 ? new Marker(this, utr5Start, utr5End, strandMinus, "") : null;
+		//		if (utr5End == -1) {
+		//			// UTR not found? Create a fake UTR that doesn't overlap the transcript
+		//			// Note: We do this just for this method (only because it's easier than handling 'null' conditions)
+		//			utr5Start = start;
+		//			utr5End = end;
+		//			if (start == 0) //
+		//				Gpr.debug("!!!!!!!!!!!");
+		//			utr5 = isStrandPlus() ? new Marker(this, start - 1, start - 1, strandMinus, "") : new Marker(this, end + 1, end + 1, strandMinus, "");
+		//		} else utr5 = new Marker(this, utr5Start, utr5End, strandMinus, "");
 
 		// Append all exon sequences
 		for (Exon exon : exons) {
@@ -881,13 +883,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			int utrOverlap = 0;
 
 			// Check if exon overlaps UTR
-			if (utr5.includes(exon)) {
+			if (utr5 != null && utr5.includes(exon)) {
 				// The whole exon is included => No sequence change
 				seq = "";
 			} else {
 				// Add sequence
 				seq = exon.getSequence();
-				if (utr5.intersects(exon)) {
+				if (utr5 != null && utr5.intersects(exon)) {
 					utrOverlap = utr5.intersectSize(exon);
 					if (utrOverlap > 0) {
 						if (utrOverlap < seq.length()) seq = seq.substring(utrOverlap);
