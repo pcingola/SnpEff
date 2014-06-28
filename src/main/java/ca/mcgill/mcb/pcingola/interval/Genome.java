@@ -74,7 +74,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	}
 
 	public Genome(String version) {
-		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, false, version);
+		super(null, 0, Integer.MAX_VALUE, false, version);
 		this.version = version;
 		type = EffectType.GENOME;
 		chromosomeNames = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	}
 
 	public Genome(String version, Properties properties) {
-		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, false, version);
+		super(null, 0, Integer.MAX_VALUE, false, version);
 		this.version = version;
 		type = EffectType.GENOME;
 		genes = new Genes(this);

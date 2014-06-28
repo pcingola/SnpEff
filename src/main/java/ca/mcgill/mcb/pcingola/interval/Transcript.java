@@ -203,16 +203,19 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			setStrandMinus(newStrandMinus); // Change strand
 		}
 
-		// Change start?
-		if (start != newStart) {
-			start = newStart;
-			changed = true;
-		}
+		// Changed? Update values
+		if (newStart < Integer.MAX_VALUE && newEnd > Integer.MIN_VALUE) {
+			// Change start?
+			if (start != newStart) {
+				setStart(newStart);
+				changed = true;
+			}
 
-		// Change end?
-		if (end != newEnd) {
-			end = newEnd;
-			changed = true;
+			// Change end?
+			if (end != newEnd) {
+				setEnd(newEnd);
+				changed = true;
+			}
 		}
 
 		return changed;

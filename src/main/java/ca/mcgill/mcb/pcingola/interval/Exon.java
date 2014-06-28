@@ -287,7 +287,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 				+ "\t" + ssdId //
 				+ "\t" + ssaId //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
-				;
+		;
 	}
 
 	/**

@@ -29,7 +29,25 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 	}
 
 	public Interval(Interval parent, int start, int end, boolean strandMinus, String id) {
-		if (start > end) throw new RuntimeException("Interval error: end before start. Start:" + start + ", End: " + end);
+		// Sanity checks
+		if (end < start) throw new RuntimeException("Interval error: end before start." //
+				+ "\n\tClass        : " + getClass().getSimpleName() //
+				+ "\n\tStart        : " + start //
+				+ "\n\tEnd          : " + end //
+				+ "\n\tID           : " + id //
+				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
+				+ "\n\tParent       : " + parent //
+				);
+
+		if (start < 0) throw new RuntimeException("Interval has negative coordinates." //
+				+ "\n\tClass        : " + getClass().getSimpleName() //
+				+ "\n\tStart        : " + start //
+				+ "\n\tEnd          : " + end //
+				+ "\n\tID           : " + id //
+				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
+				+ "\n\tParent       : " + parent //
+				);
+
 		this.start = start;
 		this.end = end;
 		this.id = id;
@@ -86,6 +104,10 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		return start;
 	}
 
+	public String getStrand() {
+		return strandMinus ? "-" : "+";
+	}
+
 	@Override
 	public int hashCode() {
 		int hashCode = 0;
@@ -121,10 +143,6 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		return strandMinus;
 	}
 
-	public String getStrand() {
-		return strandMinus ? "-" : "+";
-	}
-
 	public boolean isStrandPlus() {
 		return !strandMinus;
 	}
@@ -139,6 +157,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 
 	public void setEnd(int end) {
 		if (end < start) throw new RuntimeException("Trying to set end before start:\n\tstart: " + start + "\n\tend : " + end + "\n\t" + this);
+		if (end < 0) throw new RuntimeException("Trying to set negative 'end' coordinate:\n\t: " + start + "\n\tend : " + end + "\n\t" + this);
 		this.end = end;
 	}
 
@@ -151,6 +170,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 	}
 
 	public void setStart(int start) {
+		if (start < 0) throw new RuntimeException("Trying to set negative 'start' coordinate:\n\t: " + start + "\n\tend : " + end + "\n\t" + this);
 		this.start = start;
 	}
 
