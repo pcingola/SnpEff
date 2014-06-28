@@ -11,6 +11,7 @@ zcat C_albicans_SC5314_version_A21-s02-m09-r08_features_with_chromosome_sequence
 	| sed "s/Ca21chr5_C_albicans_SC5314/chr5/g" \
 	| sed "s/Ca21chr6_C_albicans_SC5314/chr6/g" \
 	| sed "s/Ca21chr7_C_albicans_SC5314/chr7/g" \
+	| sed "s/Ca19-mtDNA/chrMt/g" \
 	> genes.gff
 
 
