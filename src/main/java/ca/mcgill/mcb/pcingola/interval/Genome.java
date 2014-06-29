@@ -422,6 +422,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		int countTranscripts = 0, countTranscriptsProteinCoding = 0;
 		int countExons = 0, countCds = 0;
 		int countCheckAa = 0, countCheckDna = 0;
+		int countUtrs = 0;
 		int errorProteinLength = 0;
 		int errorProteinStopCodons = 0;
 		int warningStopCodon = 0;
@@ -456,6 +457,8 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				//---
 				if (tr.isProteinCoding()) {
 					boolean hasError = false;
+
+					if (!tr.getUtrs().isEmpty()) countUtrs++;
 
 					if (tr.isErrorProteinLength()) {
 						hasError = true;
@@ -502,8 +505,8 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		// Checked transcripts
 		sb.append("#-----------------------------------------------\n");
 		sb.append("# Checked transcripts        : \n");
-		if (countTranscriptsProteinCoding > 0) sb.append(String.format("#               AA sequences :  %6d ( %.2f%% )\n", countCheckAa, (100.0 * countCheckAa / countTranscriptsProteinCoding)));
-		if (countTranscripts > 0) sb.append(String.format("#              DNA sequences :  %6d ( %.2f%% )\n", countCheckDna, (100.0 * countCheckDna / countTranscripts)));
+		if (countTranscriptsProteinCoding > 0) sb.append(String.format("#               AA sequences : %6d ( %.2f%% )\n", countCheckAa, (100.0 * countCheckAa / countTranscriptsProteinCoding)));
+		if (countTranscripts > 0) sb.append(String.format("#              DNA sequences : %6d ( %.2f%% )\n", countCheckDna, (100.0 * countCheckDna / countTranscripts)));
 
 		// Coding transcripts
 		sb.append("#-----------------------------------------------\n");
@@ -513,7 +516,9 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 			sb.append(String.format("#  STOP codons in CDS errors : %6d ( %.2f%% )\n", errorProteinStopCodons, (100.0 * errorProteinStopCodons / countTranscriptsProteinCoding)));
 			sb.append(String.format("#         START codon errors : %6d ( %.2f%% )\n", errorStartCodon, (100.0 * errorStartCodon / countTranscriptsProteinCoding)));
 			sb.append(String.format("#        STOP codon warnings : %6d ( %.2f%% )\n", warningStopCodon, (100.0 * warningStopCodon / countTranscriptsProteinCoding)));
+			sb.append(String.format("#              UTR sequences : %6d ( %.2f%% )\n", countUtrs, (100.0 * countUtrs / countTranscripts)));
 			sb.append(String.format("#               Total Errors : %6d ( %.2f%% )\n", errorTr, (100.0 * errorTr / countTranscriptsProteinCoding)));
+			if (countUtrs <= 0) sb.append("# WARNING                    : No protein coding transcript has UTR\n");
 		}
 
 		// Exons & CDS

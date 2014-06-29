@@ -1041,7 +1041,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Get all UTRs
-	 * @return
 	 */
 	public List<Utr> getUtrs() {
 		return utrs;
