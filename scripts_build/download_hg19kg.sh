@@ -51,9 +51,9 @@ echo "		, kg.proteinID"
 echo "		, kg.alignID"
 echo "	from knownGene kg"
 echo ";"
-) | mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A hg19 > genes.txt
+) | mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A hg19 > genes.kg
 
 # Compress file
-rm -f genes.txt.gz || true
-gzip genes.txt
+rm -f genes.kg.gz || true
+gzip genes.kg
 

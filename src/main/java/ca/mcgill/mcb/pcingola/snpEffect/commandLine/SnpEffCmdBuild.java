@@ -40,7 +40,7 @@ public class SnpEffCmdBuild extends SnpEff {
 
 	public SnpEffCmdBuild() {
 		super();
-		geneDatabaseFormat = GeneDatabaseFormat.GTF22; // Database format (only used if 'buildDb' is active)
+		geneDatabaseFormat = null; // GeneDatabaseFormat.GTF22; // Database format (only used if 'buildDb' is active)
 	}
 
 	/**
@@ -82,10 +82,36 @@ public class SnpEffCmdBuild extends SnpEff {
 	}
 
 	/**
+	 * Try to guess database format by checking which file type is present
+	 */
+	protected GeneDatabaseFormat guessGenesFormat() {
+		String genesBase = config.getBaseFileNameGenes();
+
+		if (fileExists(genesBase + ".gtf")) return GeneDatabaseFormat.GTF22;
+		if (fileExists(genesBase + ".gff") || fileExists(genesBase + ".gff3")) return GeneDatabaseFormat.GFF3;
+		if (fileExists(genesBase + ".gff2")) return GeneDatabaseFormat.GFF2;
+		if (fileExists(genesBase + ".gb") || fileExists(genesBase + ".gbk")) return GeneDatabaseFormat.GENBANK;
+		if (fileExists(genesBase + ".embl")) return GeneDatabaseFormat.EMBL;
+		if (fileExists(genesBase + ".refseq")) return GeneDatabaseFormat.REFSEQ;
+		if (fileExists(genesBase + ".kg")) return GeneDatabaseFormat.KNOWN_GENES;
+
+		return null;
+	}
+
+	/**
+	 * Does either 'path' or 'path'+'.gz' exist?
+	 */
+	protected boolean fileExists(String path) {
+		return Gpr.exists(path) || Gpr.exists(path + ".gz");
+	}
+
+	/**
 	 * Create SnpEffectPredictor
 	 * @return
 	 */
 	SnpEffectPredictor createSnpEffPredictor() {
+		if (geneDatabaseFormat == null) geneDatabaseFormat = guessGenesFormat();
+
 		// Create factory
 		SnpEffPredictorFactory factory = null;
 		if (geneDatabaseFormat == GeneDatabaseFormat.GTF22) factory = new SnpEffPredictorFactoryGtf22(config);
@@ -253,14 +279,14 @@ public class SnpEffCmdBuild extends SnpEff {
 	@Override
 	public boolean run() {
 		if (verbose) Timer.showStdErr("Building database for '" + genomeVer + "'");
-		loadConfig(); // Read config file
+		loadConfig(); // Read configuration file
 
 		// Create SnpEffectPredictor
 		if (!onlyRegulation) {
 			SnpEffectPredictor snpEffectPredictor = createSnpEffPredictor();
 			config.setSnpEffectPredictor(snpEffectPredictor);
 
-			// Chatacterize exons (if possible)
+			// Characterize exons (if possible)
 			ExonSpliceCharacterizer exonSpliceCharacterizer = new ExonSpliceCharacterizer(snpEffectPredictor.getGenome());
 			exonSpliceCharacterizer.setVerbose(verbose);
 			exonSpliceCharacterizer.characterize();

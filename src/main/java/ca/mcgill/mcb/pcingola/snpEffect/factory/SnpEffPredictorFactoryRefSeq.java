@@ -114,7 +114,7 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 	@Override
 	public SnpEffectPredictor create() {
 		// Read gene intervals from a file
-		if (fileName == null) fileName = config.getBaseFileNameGenes() + ".txt";
+		if (fileName == null) fileName = config.getBaseFileNameGenes() + ".refseq";
 
 		if (verbose) System.out.print("Reading gene intervals file : '" + fileName + "'\n\t\t");
 		readRefSeqFile(); // Read gene info

@@ -51,7 +51,7 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 	@Override
 	public SnpEffectPredictor create() {
 		// Read gene intervals from a file
-		if (fileName == null) fileName = config.getBaseFileNameGenes() + ".txt";
+		if (fileName == null) fileName = config.getBaseFileNameGenes() + ".kg";
 
 		System.out.println("Reading gene intervals file : '" + fileName + "'");
 		readRefSeqFile(); // Read gene info

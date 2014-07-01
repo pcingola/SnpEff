@@ -88,10 +88,10 @@ echo "	from refGene rg"
 echo "	inner join gbCdnaInfo gi"
 echo "		on rg.name=gi.acc"
 echo ";"
-) | mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A hg19 > genes.txt
+) | mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A hg19 > genes.refseq
 
 # Compress file
-gzip genes.txt
+gzip genes.refseq
 
 #---
 # Create CDS and protein files
@@ -100,7 +100,7 @@ gzip genes.txt
 # Protein fasta
 zcat human.protein.faa.gz \
 	| ../../scripts_build/hg19_proteinFasta2NM.pl refLink.txt \
-	| ../../scripts_build/hg19_proteinFastaReplaceName.pl genes.txt.gz \
+	| ../../scripts_build/hg19_proteinFastaReplaceName.pl genes.refseq.gz \
 	> protein.fa
 gzip protein.fa
 
