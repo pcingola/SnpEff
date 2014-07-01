@@ -48,6 +48,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	Exon firstCodingExon; // First coding exon. I.e. where transcription start site (TSS) is.
 	int cds2pos[], aa2pos[];
 	boolean aaCheck, dnaCheck;
+	boolean ribosomalSlippage; // Ribosomal slippage causes changes in reading frames. This might be represented as negative length introns (overlapping exons).
 
 	public Transcript() {
 		super();
@@ -489,6 +490,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	   Does the same for UTRs.
 	 */
 	public boolean collapseZeroGap() {
+		if (ribosomalSlippage) return false; // Overlapping exons are representing ribosomal slippage, so they are not annotations errors and must not be corrected.
+
 		boolean ret = false;
 		introns = null; // These need to be recalculated
 
@@ -1217,6 +1220,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return proteinCoding;
 	}
 
+	public boolean isRibosomalSlippage() {
+		return ribosomalSlippage;
+	}
+
 	/**
 	 * Does this 'pos' hit a UTR?
 	 * @param pos
@@ -1494,6 +1501,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		proteinCoding = markerSerializer.getNextFieldBoolean();
 		dnaCheck = markerSerializer.getNextFieldBoolean();
 		aaCheck = markerSerializer.getNextFieldBoolean();
+		ribosomalSlippage = markerSerializer.getNextFieldBoolean();
 		upstream = (Upstream) markerSerializer.getNextFieldMarker();
 		downstream = (Downstream) markerSerializer.getNextFieldMarker();
 
@@ -1519,6 +1527,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + proteinCoding //
 				+ "\t" + dnaCheck //
 				+ "\t" + aaCheck //
+				+ "\t" + ribosomalSlippage //
 				+ "\t" + markerSerializer.save(upstream) //
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
@@ -1541,6 +1550,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	public void setProteinCoding(boolean proteinCoding) {
 		this.proteinCoding = proteinCoding;
+	}
+
+	public void setRibosomalSlippage(boolean ribosomalSlippage) {
+		this.ribosomalSlippage = ribosomalSlippage;
 	}
 
 	@Override

@@ -18,12 +18,12 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 /**
  * This class creates a SnpEffectPredictor from a 'features' file.
  * This includes derived formats as GenBank and Embl.
- * 
+ *
  * References:
  * 		http://www.ebi.ac.uk/embl/Documentation/User_manual/printable.html
  * 		http://www.ebi.ac.uk/embl/Documentation/FT_definitions/feature_table.html
- * 
- * 
+ *
+ *
  * @author pcingola
  */
 public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFactory {
@@ -37,14 +37,14 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	}
 
 	/**
-	 *	Add all features 
+	 *	Add all features
 	 */
 	protected void addFeatures(Features features) {
 		//---
-		// Add chromosome 
+		// Add chromosome
 		//---
 		for (Feature f : features.getFeatures()) {
-			// Convert coordinates to zero-based 
+			// Convert coordinates to zero-based
 			int start = f.getStart() - inOffset;
 			int end = f.getEnd() - inOffset;
 
@@ -85,7 +85,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 			} else if (f.getType() == Type.MRNA) {
 				// Add transcript information
 
-				// Convert coordinates to zero-based 
+				// Convert coordinates to zero-based
 				int start = f.getStart() - inOffset;
 				int end = f.getEnd() - inOffset;
 
@@ -114,7 +114,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 			} else if (f.getType() == Type.CDS) {
 				// Add CDS and protein coding information
 
-				// Convert coordinates to zero-based 
+				// Convert coordinates to zero-based
 				int start = f.getStart() - inOffset;
 				int end = f.getEnd() - inOffset;
 
@@ -145,6 +145,9 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 				// Mark transcript as protein coding
 				if (f.getAasequence() != null) tr.setProteinCoding(true);
+
+				// Check and set ribosomal slippage
+				if (f.get("ribosomal_slippage") != null) tr.setRibosomalSlippage(true);
 
 				// Add exons?
 				if (f.hasMultipleCoordinates()) {
@@ -214,10 +217,6 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 	/**
 	 * Find (or create) a gene from a feature
-	 * @param f
-	 * @param chr
-	 * @param warn
-	 * @return
 	 */
 	Gene findOrCreateGene(Feature f, Chromosome chr, boolean warn) {
 		int start = f.getStart() - inOffset;

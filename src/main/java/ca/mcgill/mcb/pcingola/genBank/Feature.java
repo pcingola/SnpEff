@@ -12,7 +12,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * A feature in a GenBank or EMBL file
- * 
+ *
  * @author pablocingolani
  */
 public class Feature implements Iterable<FeatureCoordinates> {
@@ -40,7 +40,7 @@ public class Feature implements Iterable<FeatureCoordinates> {
 		}
 	}
 
-	static final String FEATURE_REGEX = "/(\\S+?)=(.*)";
+	static final String FEATURE_REGEX = "/([^=/\\s]*)(=?[^=\\n]*)";
 	static final Pattern FEATURE_PATTERN = Pattern.compile(FEATURE_REGEX);;
 	public static final String COMPLEMENT_STRING = "complement";
 
@@ -89,7 +89,7 @@ public class Feature implements Iterable<FeatureCoordinates> {
 
 	/**
 	 * Get a qualifier by name
-	 * 
+	 *
 	 * @param name
 	 * @return
 	 */
@@ -118,23 +118,11 @@ public class Feature implements Iterable<FeatureCoordinates> {
 		geneId = get("locus_tag");
 		if (geneId != null) return geneId;
 
-		//		// Try 'gene'...
-		//		geneId = get("protein_id");
-		//		if (geneId != null) return geneId;
-		//
-		//		// Try 'db_xref'...
-		//		geneId = get("db_xref");
-		//		if (geneId != null) return geneId;
-		//
 		return null;
 	}
 
 	/**
 	 * Get gene name from feature
-	 * @param f
-	 * @param start
-	 * @param end
-	 * @return
 	 */
 	public String getGeneName() {
 		// Try 'gene'...
@@ -153,9 +141,7 @@ public class Feature implements Iterable<FeatureCoordinates> {
 	}
 
 	/**
-	 * Create a transciript ID based on a feature
-	 * @param f
-	 * @return
+	 * Create a transcript ID based on a feature
 	 */
 	public String getTranscriptId() {
 		// Try transcript ID
@@ -219,7 +205,11 @@ public class Feature implements Iterable<FeatureCoordinates> {
 			if (matcher.groupCount() >= 2) {
 				String key = matcher.group(1).toLowerCase();
 				String value = matcher.group(2);
-				if (value.startsWith("\"") && value.endsWith("\"")) value = value.substring(1, value.length() - 1);
+
+				if (value == null) value = "";
+				if (value.startsWith("=")) value = value.substring(1); // Remove leading "=" sign
+				if (value.startsWith("\"") && value.endsWith("\"")) value = value.substring(1, value.length() - 1); // Remove surrounding quotes
+
 				qualifiers.put(key, value.trim());
 			}
 		}

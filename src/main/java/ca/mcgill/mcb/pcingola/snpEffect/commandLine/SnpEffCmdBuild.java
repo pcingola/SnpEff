@@ -82,30 +82,6 @@ public class SnpEffCmdBuild extends SnpEff {
 	}
 
 	/**
-	 * Try to guess database format by checking which file type is present
-	 */
-	protected GeneDatabaseFormat guessGenesFormat() {
-		String genesBase = config.getBaseFileNameGenes();
-
-		if (fileExists(genesBase + ".gtf")) return GeneDatabaseFormat.GTF22;
-		if (fileExists(genesBase + ".gff") || fileExists(genesBase + ".gff3")) return GeneDatabaseFormat.GFF3;
-		if (fileExists(genesBase + ".gff2")) return GeneDatabaseFormat.GFF2;
-		if (fileExists(genesBase + ".gb") || fileExists(genesBase + ".gbk")) return GeneDatabaseFormat.GENBANK;
-		if (fileExists(genesBase + ".embl")) return GeneDatabaseFormat.EMBL;
-		if (fileExists(genesBase + ".refseq")) return GeneDatabaseFormat.REFSEQ;
-		if (fileExists(genesBase + ".kg")) return GeneDatabaseFormat.KNOWN_GENES;
-
-		return null;
-	}
-
-	/**
-	 * Does either 'path' or 'path'+'.gz' exist?
-	 */
-	protected boolean fileExists(String path) {
-		return Gpr.exists(path) || Gpr.exists(path + ".gz");
-	}
-
-	/**
 	 * Create SnpEffectPredictor
 	 * @return
 	 */
@@ -128,6 +104,30 @@ public class SnpEffCmdBuild extends SnpEff {
 		factory.setVerbose(verbose);
 		factory.setDebug(debug);
 		return factory.create();
+	}
+
+	/**
+	 * Does either 'path' or 'path'+'.gz' exist?
+	 */
+	protected boolean fileExists(String path) {
+		return Gpr.exists(path) || Gpr.exists(path + ".gz");
+	}
+
+	/**
+	 * Try to guess database format by checking which file type is present
+	 */
+	protected GeneDatabaseFormat guessGenesFormat() {
+		String genesBase = config.getBaseFileNameGenes();
+
+		if (fileExists(genesBase + ".gtf")) return GeneDatabaseFormat.GTF22;
+		if (fileExists(genesBase + ".gff") || fileExists(genesBase + ".gff3")) return GeneDatabaseFormat.GFF3;
+		if (fileExists(genesBase + ".gff2")) return GeneDatabaseFormat.GFF2;
+		if (fileExists(genesBase + ".gb") || fileExists(genesBase + ".gbk")) return GeneDatabaseFormat.GENBANK;
+		if (fileExists(genesBase + ".embl")) return GeneDatabaseFormat.EMBL;
+		if (fileExists(genesBase + ".refseq")) return GeneDatabaseFormat.REFSEQ;
+		if (fileExists(genesBase + ".kg")) return GeneDatabaseFormat.KNOWN_GENES;
+
+		return null;
 	}
 
 	/**
