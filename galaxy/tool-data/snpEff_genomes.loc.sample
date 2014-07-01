@@ -3486,7 +3486,6 @@ Candidatus_Vesicomyosocius_okutanii_HA_uid59427 	 Candidatus_Vesicomyosocius_oku
 GCA_000147015.1.18 	 Candidatus_zinderia_insecticola_cari   GCA_000147015.1.18
 GCA_000147015.1.21 	 Candidatus_zinderia_insecticola_cari   GCA_000147015.1.21
 Candidatus_Zinderia_insecticola_CARI_uid52459 	 Candidatus_Zinderia_insecticola_CARI_uid52459   Candidatus_Zinderia_insecticola_CARI_uid52459
-CanFamBroad 	 CanFamBroad   CanFamBroad
 BROADD2.64 	 Canis_familiaris   BROADD2.64
 BROADD2.65 	 Canis_familiaris   BROADD2.65
 BROADD2.66 	 Canis_familiaris   BROADD2.66
@@ -5196,6 +5195,7 @@ GCA_000213555.1.18 	 Dysgonomonas_gadei_atcc_baa_286   GCA_000213555.1.18
 GCA_000213555.1.21 	 Dysgonomonas_gadei_atcc_baa_286   GCA_000213555.1.21
 GCA_000213575.1.18 	 Dysgonomonas_mossii_dsm_22836   GCA_000213575.1.18
 GCA_000213575.1.21 	 Dysgonomonas_mossii_dsm_22836   GCA_000213575.1.21
+ebola_zaire 	 Ebola   ebola_zaire
 GCA_000325705.1.18 	 Echinicola_vietnamensis_dsm_17526   GCA_000325705.1.18
 GCA_000325705.1.21 	 Echinicola_vietnamensis_dsm_17526   GCA_000325705.1.21
 TENREC.64 	 Echinops_telfairi   TENREC.64
@@ -10011,8 +10011,6 @@ GCA_000186425.1.18 	 Lautropia_mirabilis_atcc_51599   GCA_000186425.1.18
 GCA_000186425.1.21 	 Lautropia_mirabilis_atcc_51599   GCA_000186425.1.21
 GCA_000331715.1.21 	 Lawsonia_intracellularis_n343   GCA_000331715.1.21
 Lawsonia_intracellularis_PHE_MN1_00_uid61575 	 Lawsonia_intracellularis_PHE_MN1_00_uid61575   Lawsonia_intracellularis_PHE_MN1_00_uid61575
-LClavASM 	 LClavASM   LClavASM
-lclav 	 lclav   lclav
 GCA_000166395.1.18 	 Leadbetterella_byssophila_dsm_17132   GCA_000166395.1.18
 GCA_000166395.1.21 	 Leadbetterella_byssophila_dsm_17132   GCA_000166395.1.21
 Leadbetterella_byssophila_DSM_17132_uid60161 	 Leadbetterella_byssophila_DSM_17132_uid60161   Leadbetterella_byssophila_DSM_17132_uid60161
@@ -13210,7 +13208,6 @@ GCA_000154865.1.21 	 Providencia_stuartii_atcc_25827   GCA_000154865.1.21
 GCA_000259175.1.18 	 Providencia_stuartii_mrsn_2154   GCA_000259175.1.18
 GCA_000259175.1.21 	 Providencia_stuartii_mrsn_2154   GCA_000259175.1.21
 Providencia_stuartii_MRSN_2154_uid162193 	 Providencia_stuartii_MRSN_2154_uid162193   Providencia_stuartii_MRSN_2154_uid162193
-pRSET 	 pRSET   pRSET
 GCA_000332215.1.18 	 Pseudanabaena_biceps_pcc_7429   GCA_000332215.1.18
 GCA_000332215.1.21 	 Pseudanabaena_biceps_pcc_7429   GCA_000332215.1.21
 GCA_000317065.1.18 	 Pseudanabaena_sp_pcc_7367   GCA_000317065.1.18
