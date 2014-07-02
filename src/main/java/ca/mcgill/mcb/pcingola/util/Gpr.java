@@ -127,7 +127,7 @@ public class Gpr {
 	}
 
 	/**
-	 *  Show a long as a 64 bit binary number 
+	 *  Show a long as a 64 bit binary number
 	 * @param l
 	 * @return
 	 */
@@ -253,8 +253,8 @@ public class Gpr {
 		return "";
 	}
 
-	/** 
-	 * Generate an evenly separated pallette of colors 
+	/**
+	 * Generate an evenly separated pallette of colors
 	 * @param num	Number of colors
 	 * @return
 	 */
@@ -412,6 +412,16 @@ public class Gpr {
 	}
 
 	/**
+	 * Prepend a message to each line
+	 */
+	public static String prependEachLine(String prepend, Object lines) {
+		StringBuilder sb = new StringBuilder();
+		for (String line : lines.toString().split("\n"))
+			sb.append(prepend + line + "\n");
+		return sb.toString();
+	}
+
+	/**
 	 * Read an input stream
 	 * @param is
 	 * @return
@@ -487,9 +497,9 @@ public class Gpr {
 	/**
 	 * Read a file as a String.
 	 * Note: the file can be compressed using gzip (file name must have a ".gz" extension).
-	 * 
+	 *
 	 * @param fileName : File to read (null on error)
-	 * @param showExceptions : show exceptions if true 
+	 * @param showExceptions : show exceptions if true
 	 */
 	public static String readFile(String fileName) {
 		return readFile(fileName, false);
@@ -498,9 +508,9 @@ public class Gpr {
 	/**
 	 * Read a file as a String.
 	 * Note: the file can be compressed using gzip (file name must have a ".gz" extension).
-	 * 
+	 *
 	 * @param fileName : File to read (null on error)
-	 * @param showExceptions : show exceptions if true 
+	 * @param showExceptions : show exceptions if true
 	 */
 	public static String readFile(String fileName, boolean gzipped) {
 		BufferedReader inFile;
@@ -554,13 +564,13 @@ public class Gpr {
 	/**
 	 * Read an object from a file (supposing an object was previously serialized to that file)
 	 * Note: Same as 'readFileSerializedGz' but it throws all the exceptions
-	 * 
-	 * 
+	 *
+	 *
 	 * @param fileName
 	 * @return An object from that file
-	 * @throws IOException 
-	 * @throws FileNotFoundException 
-	 * @throws ClassNotFoundException 
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 * @throws ClassNotFoundException
 	 */
 	public static Object readFileSerializedGzThrow(String fileName) throws FileNotFoundException, IOException, ClassNotFoundException {
 		ObjectInputStream in = new ObjectInputStream(new GZIPInputStream(new FileInputStream(fileName)));
@@ -643,7 +653,7 @@ public class Gpr {
 	}
 
 	/**
-	 * Prints a stack trace for a number of steps 
+	 * Prints a stack trace for a number of steps
 	 * @param count
 	 */
 	public static void showStackTrace(int steps, int offset) {
@@ -666,7 +676,7 @@ public class Gpr {
 	/**
 	 * Splits a separated string into an array of <code>String</code> tokens. If
 	 * the input string is null, this method returns null.
-	 * 
+	 *
 	 * <p/>
 	 * Implementation note: for performance reasons, this implementation uses
 	 * neither StringTokenizer nor String.split(). StringTokenizer does not
@@ -679,7 +689,7 @@ public class Gpr {
 	 * <p/>
 	 * The result is a custom String splitter algorithm which performs well for
 	 * large Strings.
-	 * 
+	 *
 	 * @param value
 	 *            the string value to split into tokens
 	 * @return an array of String Objects or null if the string value is null
@@ -698,18 +708,18 @@ public class Gpr {
 	}
 
 	/**
-	 * Write an object to a file 
+	 * Write an object to a file
 	 * @param fileName: File to write
-	 * @param obj: Object 
+	 * @param obj: Object
 	 */
 	public static void toFile(String fileName, Object obj) {
 		toFile(fileName, obj, false);
 	}
 
 	/**
-	 * Write an object to a file 
+	 * Write an object to a file
 	 * @param fileName: File to write
-	 * @param obj: Object 
+	 * @param obj: Object
 	 */
 	public static void toFile(String fileName, Object obj, boolean append) {
 		BufferedWriter outFile;
@@ -726,7 +736,7 @@ public class Gpr {
 	 * Write an object to a file (as a string)
 	 * Note: The file is compressed using GZIP
 	 * @param fileName: File to write
-	 * @param obj: Object 
+	 * @param obj: Object
 	 */
 	public static void toFileGz(String fileName, Object obj) {
 		PrintStream outFile;
@@ -742,7 +752,7 @@ public class Gpr {
 	/**
 	 * Write an object to a file by invoking Serialization methods
 	 * @param fileName: File to write
-	 * @param obj: Object 
+	 * @param obj: Object
 	 */
 	public static void toFileSerialize(String fileName, Object obj) {
 		ObjectOutputStream out = null;
@@ -759,7 +769,7 @@ public class Gpr {
 	 * Write an object to a file by invoking Serialization methods
 	 * Note: The file is compressed using GZIP
 	 * @param fileName: File to write
-	 * @param obj: Object 
+	 * @param obj: Object
 	 */
 	public static void toFileSerializeGz(String fileName, Object obj) {
 		ObjectOutputStream out = null;
