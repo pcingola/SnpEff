@@ -11,12 +11,13 @@ public class Counter {
 
 	public long count = 0;
 
-	public void add(long add) {
+	public long add(long add) {
 		count += add;
+		return count;
 	}
 
-	public void dec() {
-		count--;
+	public long dec() {
+		return --count;
 	}
 
 	public long get() {
@@ -27,8 +28,8 @@ public class Counter {
 		return count;
 	}
 
-	public void inc() {
-		count++;
+	public long inc() {
+		return ++count;
 	}
 
 	public void reset() {
@@ -39,8 +40,9 @@ public class Counter {
 		count = newCount;
 	}
 
-	public void sub(long sub) {
+	public long sub(long sub) {
 		count -= sub;
+		return count;
 	}
 
 	@Override
