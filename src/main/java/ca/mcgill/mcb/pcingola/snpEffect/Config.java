@@ -22,34 +22,40 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 public class Config implements Serializable, Iterable<String> {
 
-	private static final long serialVersionUID = 877453207407217465L;
+	public static Config get() {
+		return configInstance;
+	}
 
+	private static final long serialVersionUID = 877453207407217465L;
 	public static final String DEFAULT_CONFIG_FILE = "snpEff.config";
 	public static final String DEFAULT_DATA_DIR = "./data";
-	public static String GENOMES_DIR = "genomes"; // Directory has one genomes information (FASTA files)
 
+	public static String GENOMES_DIR = "genomes"; // Directory has one genomes information (FASTA files)
 	// Keys in properties file
 	public static final String KEY_GENOME = ".genome";
 	public static final String KEY_REFERENCE = ".reference";
 	public static final String KEY_CODON = "codon.";
 	public static final String KEY_CODONTABLE = ".codonTable";
-	public static final String KEY_VERSIONS_URL = "versions_url";
+	public static final String KEY_DATABASE_REPOSITORY = "database.repository";
+	public static final String KEY_DATABASE_LOCAL = "database.local";
+	public static final String KEY_VERSIONS_URL = "versions.url";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_AFTER = "lof.ignoreProteinCodingAfter";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_BEFORE = "lof.ignoreProteinCodingBefore";
 	public static final String KEY_LOF_DELETE_PROTEIN_CODING_BASES = "lof.deleteProteinCodingBases";
 
 	public static boolean debug = false; // Debug mode?
 	public static boolean verbose = false; // Verbose
-	private static Config configInstance = null; // Config is some kind of singleton because we want to make it accessible from everywhere
 
+	private static Config configInstance = null; // Config is some kind of singleton because we want to make it accessible from everywhere
 	boolean treatAllAsProteinCoding; // Calculate effect only in coding genes. Default is true for testing and debugging reasons (command line default is 'false')
 	boolean onlyRegulation; // Only use regulation features
 	boolean errorOnMissingChromo; // Error if chromosome is missing
 	boolean errorChromoHit; // Error if chromosome is not hit in a query
 	double lofIgnoreProteinCodingAfter;
 	double lofIgnoreProteinCodingBefore;
-	double lofDeleteProteinCodingBases;
 
+	double lofDeleteProteinCodingBases;
+	String configDirPath = ""; // Configuration file directory
 	String dataDir; // Directory containing all databases and genomes
 	Properties properties;
 	Genome genome;
@@ -58,11 +64,8 @@ public class Config implements Serializable, Iterable<String> {
 	HashMap<String, String> nameByVersion;
 	SnpEffectPredictor snpEffectPredictor;
 	String databaseRepository = "";
-	String versionsUrl = "";
 
-	public static Config get() {
-		return configInstance;
-	}
+	String versionsUrl = "";
 
 	public Config() {
 		genome = new Genome();
@@ -97,6 +100,22 @@ public class Config implements Serializable, Iterable<String> {
 	 */
 	public Config(String genomeVersion, String configFileName, String dataDir) {
 		init(genomeVersion, configFileName, dataDir);
+	}
+
+	/**
+	 * Convert a path to an absolute (i.e. canonical) path
+	 */
+	String canonicalDir(String dirName) {
+		// Parse data dir
+		if (dirName.startsWith("~/")) dirName = Gpr.HOME + "/" + dirName.substring(2); // Relative to 'home' dir? (starts with '~/')
+		else if (dirName.startsWith("~")) dirName = Gpr.HOME + "/" + dirName.substring(1); // Relative to 'home' dir? (starts with '~')
+		else if (!dirName.startsWith("/")) dirName = configDirPath + "/" + dirName; // Not an absolute path?
+
+		// Remove all trailing slashes
+		while (dirName.endsWith("/"))
+			dirName = dirName.substring(0, dirName.length() - 1); // make sure path doesn't end with '/' (some OS can have problems with "//" in paths)
+
+		return dirName;
 	}
 
 	/**
@@ -153,10 +172,10 @@ public class Config implements Serializable, Iterable<String> {
 
 	/**
 	 * Build the URL for downloading a database file
-	 * 
+	 *
 	 * Format  : DatabaseRepository / v VERSION / snpEff_v VERSION _ genomeVersion .zip
 	 * Example : http://downloads.sourceforge.net/project/snpeff/databases/v2_0_3/snpEff_v2_0_3_EF3.64.zip
-	 * 
+	 *
 	 * @param genomeVer
 	 * @return
 	 */
@@ -164,7 +183,7 @@ public class Config implements Serializable, Iterable<String> {
 		try {
 			String version = SnpEff.VERSION_MAJOR;
 
-			// Replace '.' by '_' 
+			// Replace '.' by '_'
 			version = version.replace('.', '_');
 
 			String urlRoot = getDatabaseRepository();
@@ -212,12 +231,38 @@ public class Config implements Serializable, Iterable<String> {
 		return getDirDataVersion() + "/regulation";
 	}
 
+	/**
+	 * Database local file for a specific database, such as 'dbSnp', 'ClinVar', etc.
+	 */
+	public String getDatabaseLocal(String dbName) {
+		String dbLocal = properties.getProperty(KEY_DATABASE_LOCAL + "." + dbName, "");
+		if (dbLocal.isEmpty()) return "";
+		return canonicalDir(dbLocal);
+	}
+
 	public String getDatabaseRepository() {
 		return databaseRepository;
 	}
 
 	/**
-	 * Main data directory 
+	 * Database repository for a specific database, such as 'dbSnp', 'ClinVar', etc.
+	 */
+	public String getDatabaseRepository(String dbName) {
+		return properties.getProperty(KEY_DATABASE_REPOSITORY + "." + dbName, "");
+	}
+
+	public URL getDatabaseRepositoryUrl(String dbName) {
+		String repo = getDatabaseRepository(dbName);
+		if (repo == null || repo.isEmpty()) return null;
+		try {
+			return new URL(repo);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Main data directory
 	 * @return
 	 */
 	public String getDirData() {
@@ -225,7 +270,7 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	/**
-	 * Data dir for a specific genome version (i.e. where the database is) 
+	 * Data dir for a specific genome version (i.e. where the database is)
 	 * @return
 	 */
 	public String getDirDataVersion() {
@@ -233,7 +278,7 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	/**
-	 * Main dir 
+	 * Main dir
 	 * @return
 	 */
 	public String getDirMain() {
@@ -412,7 +457,7 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	/**
-	 * Read configuration file and create all 'genomes' 
+	 * Read configuration file and create all 'genomes'
 	 * @return
 	 */
 	private void readConfig(String genomeVersion, String configFileName) {
@@ -422,13 +467,13 @@ public class Config implements Serializable, Iterable<String> {
 		configFileName = readProperties(configFileName);
 
 		// Get config file directory
-		String cfgDir = "";
+		configDirPath = "";
 		try {
 			File configDir = new File(configFileName).getAbsoluteFile().getParentFile();
-			cfgDir = configDir.getCanonicalPath();
+			configDirPath = configDir.getCanonicalPath();
 		} catch (Exception e) {
 			// Nothing done
-			cfgDir = "";
+			configDirPath = "";
 			e.printStackTrace();
 		}
 
@@ -436,21 +481,15 @@ public class Config implements Serializable, Iterable<String> {
 		// Set attributes
 		//---
 
-		// Set data_dir if not overriden by constructor
+		// Set data_dir if not overridden by constructor
 		if (dataDir == null) dataDir = properties.getProperty("data_dir", DEFAULT_DATA_DIR);
+		dataDir = canonicalDir(dataDir); // Parse data dir
 
-		// Parse data dir
-		if (dataDir.startsWith("~")) dataDir = Gpr.HOME + "/" + dataDir.substring(1); // Relative to 'home' dir?
-		else if (!dataDir.startsWith("/")) dataDir = cfgDir + "/" + dataDir; // Not an absolute path?
-
-		// Remove all trailing slashes
-		while (dataDir.endsWith("/"))
-			dataDir = dataDir.substring(0, dataDir.length() - 1); // make sure path doesn't end with '/' (some OS can have problems with "//" in paths)
-
-		databaseRepository = properties.getProperty("database_repository", "");
+		// Repository
+		databaseRepository = properties.getProperty(KEY_DATABASE_REPOSITORY, "");
 
 		//---
-		// Find all genomes in this config file
+		// Find all genomes in this configuration file
 		//---
 		genomeByVersion = new HashMap<String, Genome>();
 		referenceByVersion = new HashMap<String, String>();
@@ -472,7 +511,7 @@ public class Config implements Serializable, Iterable<String> {
 
 		// Genome specified?
 		if (!genomeVersion.isEmpty()) {
-			// Read config file for genome version (if any)
+			// Read configuration file for genome version (if any)
 			readGenomeConfig(genomeVersion, properties);
 
 			// Codon tables
@@ -486,7 +525,7 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Read a config file for a given genome version (dataDir/genVer/snpEff.config)
 	 * Add all properties found to 'properties'
-	 * 
+	 *
 	 * @param genVer
 	 * @param properties
 	 */
@@ -494,7 +533,7 @@ public class Config implements Serializable, Iterable<String> {
 		String genomePropsFileName = dataDir + "/" + genVer + "/snpEff.config";
 		try {
 			// Read properties file "data_dir/genomeVersion/snpEff.conf"
-			// If the file exists, read all properties and add them to the main 'properties' 
+			// If the file exists, read all properties and add them to the main 'properties'
 			Properties genomeProps = new Properties();
 			genomeProps.load(new FileReader(new File(genomePropsFileName)));
 

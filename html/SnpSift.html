@@ -1217,7 +1217,7 @@ java -jar SnpSift.jar split -j huge.000.vcf huge.001.vcf huge.002.vcf ...  > hug
 				Annotate using PhastCons conservation scores.
 				</p>
 				<p>
-				<i class="icon-hand-right"></i>  You must download PhastCons files <a href="http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/"> here </a>
+				<i class="icon-hand-right"></i>  You must download PhastCons files <a href="http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/"> here </a>
 				<br>
 				<br>
 				<i class="icon-hand-right"></i>  You also need a chromosome size file, which can be created using <code>samtools faidx</code>, or you can download it from <a href="genome.fai">here</a>
@@ -1233,31 +1233,31 @@ mkdir -p db/phastCons/
 
 # Download all PhastCons files
 cd db/phastCons/
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr1.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr2.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr3.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr4.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr5.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr6.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr7.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr8.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr9.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr10.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr11.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr12.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr13.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr14.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr15.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr16.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr17.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr18.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr19.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr20.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr21.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chr22.phastCons46way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chrM.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chrX.phastCons46way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons46way/vertebrate/chrY.phastCons46way.wigFix.gz 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr1.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr2.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr3.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr4.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr5.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr6.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr7.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr8.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr9.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr10.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr11.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr12.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr13.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr14.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr15.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr16.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr17.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr18.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr19.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr20.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr21.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr22.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chrM.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chrX.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chrY.phastCons100way.wigFix.gz 
 
 # Create a chromosome size file and name it "genome.fai"
 samtools faidx path/to/genome/hg19.fa.gz

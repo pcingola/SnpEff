@@ -191,7 +191,6 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Show an error (if not 'quiet' mode)
-	 * @param message
 	 */
 	public void error(Throwable e, String message) {
 		if (verbose && (e != null)) e.printStackTrace();
@@ -200,7 +199,6 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Show an error message and exit
-	 * @param message
 	 */
 	public void fatalError(String message) {
 		System.err.println(message);
