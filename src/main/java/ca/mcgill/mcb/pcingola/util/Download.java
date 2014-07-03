@@ -78,20 +78,23 @@ public class Download {
 			if (verbose) Timer.showStdErr("Connecting to " + url);
 			URLConnection connection = url.openConnection();
 
-			for (boolean followRedirect = true; followRedirect;) {
-				HttpURLConnection httpConnection = (HttpURLConnection) connection;
-				int code = httpConnection.getResponseCode();
+			// Follow redirect? (only for http connections)
+			if (connection instanceof HttpURLConnection) {
+				for (boolean followRedirect = true; followRedirect;) {
+					HttpURLConnection httpConnection = (HttpURLConnection) connection;
+					int code = httpConnection.getResponseCode();
 
-				if (code == 200) {
-					followRedirect = false; // We are done
-				} else if (code == 302) {
-					String newUrl = connection.getHeaderField("Location");
-					if (verbose) Timer.showStdErr("Following redirect: " + newUrl);
-					url = new URL(newUrl);
-					connection = url.openConnection();
-				} else if (code == 404) {
-					throw new RuntimeException("File not found on the server. Make sure the database name is correct.");
-				} else throw new RuntimeException("Error code from server: " + code);
+					if (code == 200) {
+						followRedirect = false; // We are done
+					} else if (code == 302) {
+						String newUrl = connection.getHeaderField("Location");
+						if (verbose) Timer.showStdErr("Following redirect: " + newUrl);
+						url = new URL(newUrl);
+						connection = url.openConnection();
+					} else if (code == 404) {
+						throw new RuntimeException("File not found on the server. Make sure the database name is correct.");
+					} else throw new RuntimeException("Error code from server: " + code);
+				}
 			}
 
 			// Copy resource to local file, use remote file if no local file name specified
