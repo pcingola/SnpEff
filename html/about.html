@@ -149,21 +149,30 @@
 				<b>Important:</b> A bug report should include the following information (in order to try to reproduce and fix the bug)
 				<table class="table table-striped">
 					<tr> <th> Item </th><th> Explanation </th><th> Example </th> </tr>
-					<tr> <td>What?</td><td> A clear explanation of the bug condition </td><td> "a RuntimeException occurss when trying to annotate..." </td> </tr>
+					<tr> <td>What?</td><td> A clear explanation of the bug condition.<br>Please copy the full stack trace if one is available.</td><td> "a RuntimeException occurss when trying to annotate..." </td> </tr>
 					<tr> <td>How?</td><td> A minimal bug-demonstrating test case </td><td> "when running the following command/s...".<br> Make sure you send the exact command lines you are using. </td> </tr>
 					<tr> <td>Which?</td><td> Which organism and genome version you are using (if applicable) </td><td> "we use GRCh37.72" </td> </tr>
-					<tr> <td>Version:</td><td> Which SnpEFf version and sub-version you are using </td><td> "we are using SnpEFf 3.3H").<br> Hint: Running <code>java -jar snpEff.jar</code> shows version information. </td> </tr>
-					<tr> <td>Data:</td><td> Sample data enough to reproduce the conditions </td><td> "find attached a sample of the VCF file..." </td> </tr>
-					<tr> <td>Results:</td><td> What you expect to obtain (if applicable)</td><td> "we expected result X, but we obtained Y instead..." </td> </tr>
+					<tr> <td>Version</td><td> Which SnpEFf version and sub-version you are using?<br> Make sure to try the <b>latest version</b> since the bug might be already fixed. </td><td> "we are using SnpEFf 3.3H").<br> Hint: Running <code>java -jar snpEff.jar</code> shows version information. </td> </tr>
+					<tr> <td>Command line</td><td> The full command line that shows the issue. </td><td> <code>java -Xmx4g -jar snpEff.jar GRCh37.75 sample.vcf ...</code> </td> </tr>
+					<tr> <td>Data</td><td> Sample data enough to reproduce the conditions<br><b>Always attach the data files</b> such as VCF lines (even if you added some snippets in the email's body)  </td><td> "find attached a sample of the VCF file..." </td> </tr>
+					<tr> <td>Results</td><td> What you expect to obtain (if applicable)</td><td> "we expected result X, but we obtained Y instead..." </td> </tr>
 				</table>
 				</p>
 				<br>
+				<b>Important tips:</b> 
+				<ul>
+					<li> Make sure you <b>attached</b> a minimal dataset to reproduce the error condition. For instance, a few VCF lines showing the problem are enough (sometimes one VCF line is enough), I don't need your full VCF file.
+					<li> Always send the data <b>attached</b>, even if it's only one VCF line. There are two reasons for this: 
+						i) many times the problem is a malformed line, which I can only asses if the data is attached, and 
+						ii) I receive many emails, so reformatting copied &amp; pasted lines is a waste of time.
+					<li> If you have to send large files, as sometimes happens with genome references, try uploading them to a server (e.g. Google Drive) and sending me a link. Also remember to compress them.
+				</ul>
+				<br>
 				<br>
 				<p> <b>Note:</b> Try SnpEff's latest version. SnpEff is updated often, may be the bug has already been corrected (e.g you are using version 3.1A, but I've already fixed it in version 3.1B). 
-					<br>
-					I know this is obvious, but I get many emails saying:
+					I know this may sound obvious, but I get many emails saying something like:
 					<p>
-					<blockquote><i>"...I read someone was using version 2.0.5 many years ago, so I'm using that version, and I noticed the features implemented in version 3.X don't work..." </i></blockquote>
+					<blockquote><i>"...I'm using version 2.0.5 and I noticed the features implemented in version 3.6 don't work..." </i></blockquote>
 					</p>
 				</p>
 
@@ -192,9 +201,10 @@
 					<tr> <td>What?</td><td> A clear explanation of what you are trying to achieve </td><td> "I want to annotate variants... and then filter them to obtain..." </td> </tr>
 					<tr> <td>How?</td><td> A minimal demonstration of how you are trying to do it </td><td> "we run the following command...".<br> Make sure you send the exact command lines you are using. </td> </tr>
 					<tr> <td>Which?</td><td> Which organism and genome version you are using </td><td> "we are analyzing human samples using GRCh37.72 reference genome" </td> </tr>
-					<tr> <td>Version:</td><td> Which SnpEFf version and sub-version you are using </td><td> "we are using SnpEFf 3.3H").<br> Hint: Running <code>java -jar snpEff.jar</code> shows version information. </td> </tr>
-					<tr> <td>Data:</td><td> Sample data enough to reproduce the conditions </td><td> "find attached a sample of the VCF file..." </td> </tr>
-					<tr> <td>Results:</td><td> What you expect to obtain </td><td> "we wanted to get information on variants that affect splcie regions..." </td> </tr>
+					<tr> <td>Version</td><td> Which SnpEFf version and sub-version you are using?<br> Make sure to try the <b>latest version</b> since the issue might be already solved. </td><td> "we are using SnpEFf 3.3H").<br> Hint: Running <code>java -jar snpEff.jar</code> shows version information. </td> </tr>
+					<tr> <td>Command line</td><td> The full command line that shows the issue. </td><td> <code>java -Xmx4g -jar snpEff.jar GRCh37.75 sample.vcf ...</code> </td> </tr>
+					<tr> <td>Data</td><td> Sample data enough to reproduce the conditions<br><b>Always attach the data files</b> such as VCF lines (even if you added some snippets in the email's body)  </td><td> "find attached a sample of the VCF file..." </td> </tr>
+					<tr> <td>Results</td><td> What you expect to obtain </td><td> "we wanted to get information on variants that affect splcie regions..." </td> </tr>
 				</table>
 				</p>
 				<br>
