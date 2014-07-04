@@ -69,26 +69,17 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
+
 	public static final String REVISION = "";
+
 	public static final String BUILD = "2014-07-01";
 	public static final String VERSION_MAJOR = "4.0";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
 	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_NO_NAME;
 
-	/**
-	 * Main
-	 */
-	public static void main(String[] args) {
-		// Parse
-		SnpEff snpEff = new SnpEff(args);
-
-		// Run
-		boolean ok = snpEff.run();
-		System.exit(ok ? 0 : -1);
-	}
-
 	protected String command = "";
+
 	protected String[] args; // Arguments used to invoke this command
 	protected String[] shiftArgs;
 	protected boolean canonical = false; // Use only canonical transcripts
@@ -117,8 +108,23 @@ public class SnpEff implements CommandLine {
 	protected SnpEff snpEffCmd; // Real command to run
 	protected ArrayList<String> customIntervalFiles; // Custom interval files (bed)
 	protected ArrayList<String> filterIntervalFiles;// Files used for filter intervals
-
 	protected HashSet<String> regulationTracks = new HashSet<String>();
+
+	/**
+	 * Main
+	 */
+	public static void main(String[] args) {
+		// Parse
+		SnpEff snpEff = new SnpEff(args);
+
+		// Run
+		boolean ok = snpEff.run();
+		System.exit(ok ? 0 : -1);
+	}
+
+	public static void warning(String warningType, String details) {
+		Config.get().warning(warningType, details);
+	}
 
 	public SnpEff() {
 		genomeVer = ""; // Genome version
@@ -232,8 +238,13 @@ public class SnpEff implements CommandLine {
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
 			);
+
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
+
+		// Set some parameters
+		config.setDebug(debug);
+		config.setVerbose(verbose);
 	}
 
 	/**

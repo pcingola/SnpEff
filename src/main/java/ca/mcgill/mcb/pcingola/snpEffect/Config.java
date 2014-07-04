@@ -18,19 +18,18 @@ import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
+import ca.mcgill.mcb.pcingola.stats.CountByType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 public class Config implements Serializable, Iterable<String> {
 
-	public static Config get() {
-		return configInstance;
-	}
-
 	private static final long serialVersionUID = 877453207407217465L;
+
 	public static final String DEFAULT_CONFIG_FILE = "snpEff.config";
 	public static final String DEFAULT_DATA_DIR = "./data";
-
 	public static String GENOMES_DIR = "genomes"; // Directory has one genomes information (FASTA files)
+	public static int MAX_WARNING_COUNT = 20;
+
 	// Keys in properties file
 	public static final String KEY_GENOME = ".genome";
 	public static final String KEY_REFERENCE = ".reference";
@@ -42,18 +41,16 @@ public class Config implements Serializable, Iterable<String> {
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_AFTER = "lof.ignoreProteinCodingAfter";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_BEFORE = "lof.ignoreProteinCodingBefore";
 	public static final String KEY_LOF_DELETE_PROTEIN_CODING_BASES = "lof.deleteProteinCodingBases";
-
-	public static boolean debug = false; // Debug mode?
-	public static boolean verbose = false; // Verbose
-
 	private static Config configInstance = null; // Config is some kind of singleton because we want to make it accessible from everywhere
+
+	boolean debug = false; // Debug mode?
+	boolean verbose = false; // Verbose
 	boolean treatAllAsProteinCoding; // Calculate effect only in coding genes. Default is true for testing and debugging reasons (command line default is 'false')
 	boolean onlyRegulation; // Only use regulation features
 	boolean errorOnMissingChromo; // Error if chromosome is missing
 	boolean errorChromoHit; // Error if chromosome is not hit in a query
 	double lofIgnoreProteinCodingAfter;
 	double lofIgnoreProteinCodingBefore;
-
 	double lofDeleteProteinCodingBases;
 	String configDirPath = ""; // Configuration file directory
 	String dataDir; // Directory containing all databases and genomes
@@ -64,16 +61,20 @@ public class Config implements Serializable, Iterable<String> {
 	HashMap<String, String> nameByVersion;
 	SnpEffectPredictor snpEffectPredictor;
 	String databaseRepository = "";
-
 	String versionsUrl = "";
+	CountByType warningsCounter = new CountByType();
+
+	public static Config get() {
+		return configInstance;
+	}
 
 	public Config() {
 		genome = new Genome();
 		treatAllAsProteinCoding = false;
 		onlyRegulation = false;
-		errorOnMissingChromo = false; // Empty genome => No chromos
-		errorChromoHit = false; // Empty genome => No chromos
-		configInstance = this;
+		errorOnMissingChromo = false;
+		errorChromoHit = false;
+		configInstance = this; // Make this instance globally available
 	}
 
 	/**
@@ -425,6 +426,10 @@ public class Config implements Serializable, Iterable<String> {
 		configInstance = this;
 	}
 
+	public boolean isDebug() {
+		return debug;
+	}
+
 	public boolean isErrorChromoHit() {
 		return errorChromoHit;
 	}
@@ -439,6 +444,10 @@ public class Config implements Serializable, Iterable<String> {
 
 	public boolean isTreatAllAsProteinCoding() {
 		return treatAllAsProteinCoding;
+	}
+
+	public boolean isVerbose() {
+		return verbose;
 	}
 
 	@Override
@@ -592,6 +601,10 @@ public class Config implements Serializable, Iterable<String> {
 		}
 	}
 
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
 	public void setErrorChromoHit(boolean errorChromoHit) {
 		this.errorChromoHit = errorChromoHit;
 	}
@@ -622,6 +635,10 @@ public class Config implements Serializable, Iterable<String> {
 		this.treatAllAsProteinCoding = treatAllAsProteinCoding;
 	}
 
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -636,5 +653,21 @@ public class Config implements Serializable, Iterable<String> {
 			sb.append("\n");
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Show a warning message and exit
+	 */
+	public void warning(String warningType, String details) {
+		long count = warningsCounter.inc(warningType);
+
+		if (debug || count < MAX_WARNING_COUNT) {
+			if (debug) Gpr.debug(warningType + details, 1);
+			else System.err.println(warningType + details);
+		} else if (count <= MAX_WARNING_COUNT) {
+			String msg = "Too many '" + warningType + "' warnings, no further warnings will be shown:\n" + warningType + details;
+			if (debug) Gpr.debug(msg, 1);
+			else System.err.println(msg);
+		}
 	}
 }

@@ -2,12 +2,12 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 
 /**
- * CDS: The coding region of a gene, also known as the coding sequence or CDS (from Coding DNA Sequence), is 
+ * CDS: The coding region of a gene, also known as the coding sequence or CDS (from Coding DNA Sequence), is
  * that portion of a gene's DNA or RNA, composed of exons, that codes for protein.
- * 
+ *
  * @author pcingola
  *
  */
@@ -36,7 +36,7 @@ public class Cds extends Marker implements MarkerWithFrame {
 
 		// Can correct?
 		if (size() <= frameCorrection) {
-			Gpr.debug("CDS too short (size: " + size() + "), cannot correct frame!\n" + this);
+			SnpEff.warning("CDS too short, cannot correct frame:", " frame size " + size() + ", frame correction " + frameCorrection + ", CDS: " + this);
 			return false;
 		}
 

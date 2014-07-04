@@ -35,14 +35,12 @@ public class CountByType implements Serializable {
 
 	/**
 	 * Add score for a type
-	 * @param type
-	 * @param score
 	 */
-	public void addScore(String type, double score) {
+	public long addScore(String type, double score) {
 		Double currScore = scoreByType.get(type);
 		if (currScore == null) currScore = 0.0;
 		scoreByType.put(type, currScore + score);
-		inc(type);
+		return inc(type);
 	}
 
 	public boolean contains(String key) {
@@ -131,26 +129,25 @@ public class CountByType implements Serializable {
 
 	/**
 	 * Increment counter in a hash
-	 * @param hash
-	 * @param type
 	 */
-	void inc(HashMap<String, Long> hash, String type, int toAdd) {
+	long inc(HashMap<String, Long> hash, String type, int toAdd) {
 		Long count = hash.get(type);
 		if (count == null) count = 0L;
 		count += toAdd;
 		hash.put(type, count);
+		return count;
 	}
 
-	public void inc(String type) {
-		inc(countByType, type, 1);
+	public long inc(String type) {
+		return inc(countByType, type, 1);
 	}
 
 	/**
 	 * Increment counter for a given type
 	 * @param type
 	 */
-	public void inc(String type, int increment) {
-		inc(countByType, type, increment);
+	public long inc(String type, int increment) {
+		return inc(countByType, type, increment);
 	}
 
 	/**
