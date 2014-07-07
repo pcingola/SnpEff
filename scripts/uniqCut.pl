@@ -6,7 +6,7 @@ use strict;
 my($debug) = 0;
 
 # Parameters
-my($showDups, $showCount, $showKey) = (0, 0, 0);
+my($showDups, $showAllDups, $showCount, $showKey) = (0, 0, 0, 0);
 
 # Data
 my( %count, %values );
@@ -23,6 +23,22 @@ sub printKey($) {
 }
 
 #-------------------------------------------------------------------------------
+# Show ll duplicate lines
+#-------------------------------------------------------------------------------
+
+sub printKeyAll($) {
+	my($key) = @_;
+	my($lines) = $values{$key};
+	my(@lines) = split /\n/, $lines;
+	my($l);
+	foreach $l ( @lines ) { 
+		print "$count{$key}\t" if $showCount;
+		print "$key\t" if $showKey;
+		print "$l\n";
+	}
+}
+
+#-------------------------------------------------------------------------------
 # Main
 #-------------------------------------------------------------------------------
 
@@ -33,13 +49,14 @@ my( $arg, @fields );
 foreach $arg ( @ARGV ) {
 	print "ARG: '$arg'\n" if $debug;
 	if( $arg eq '-d' )			{ $showDups = 1; }
+	elsif( $arg eq '-D' )		{ $showAllDups = 1; }
 	elsif( $arg eq '-c' )		{ $showCount = 1; }
 	elsif( $arg eq '-k' )		{ $showKey = 1; }
 	elsif( $arg eq '-debug' )	{ $debug = 1; }
 	else					{ push(@fields, $arg); }
 }
-print "showDups :$showDups\nshowCount:$showCount\nshowKey  :$showKey\n" if $debug;
-die "Usage: cat file_tab_separated.txt | uniq_cut.pl [-c] [-d] field_1 field_2 ... field_N" if $#fields < 1;
+
+die "Usage: cat file_tab_separated.txt | uniq_cut.pl [-c] [-d] [-k] [-D] field_1 field_2 ... field_N" if $#fields < 1;
 
 #---
 # Parse STDIN
@@ -59,6 +76,7 @@ while( $l = <STDIN> ) {
 
 	if( exists $count{$key} ) {
 		$count{$key} += 1;
+		$values{$key} .= "\n$l" if $showAllDups;
 	} else {
 		$values{$key} = $l; 
 		$count{$key} = 1;
@@ -71,5 +89,6 @@ while( $l = <STDIN> ) {
 # Show unique keys
 #---
 foreach $key ( sort keys %values ) {
-	if(( $showDups && $count{$key} > 1 ) || ( !$showDups && $count{$key} <= 1 ))	{ printKey( $key ); }
+	if( $showAllDups && $count{$key} > 1 )	{ printKeyAll( $key ); }
+	elsif(( $showDups && $count{$key} > 1 ) || ( !$showDups && $count{$key} <= 1 ))	{ printKey( $key ); }
 }
