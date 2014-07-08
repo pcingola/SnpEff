@@ -96,6 +96,9 @@ public class GprSeq {
 		CODE_TO_DNA[3] = 'T';
 	}
 
+	/**
+	 * Convert from AA char to code
+	 */
 	public static byte aa2Code(char aa) {
 		if (aa == '-') return GAP_CODE;
 		byte c = AA_TO_CODE[(byte) aa];
@@ -103,6 +106,9 @@ public class GprSeq {
 		return c;
 	}
 
+	/**
+	 * Convert from AA sequence to codes
+	 */
 	public static byte[] aa2Code(String aa) {
 		byte codes[] = new byte[aa.length()];
 		for (int i = 0; i < codes.length; i++)
@@ -111,9 +117,14 @@ public class GprSeq {
 	}
 
 	/**
+	 * Code an AA pair
+	 */
+	public static int aaPairCode(byte aaCode1, byte aaCode2) {
+		return aaCode1 * GprSeq.AMINO_ACIDS.length + aaCode2;
+	}
+
+	/**
 	 * Change a fastQ encoding in a quality sequence
-	 * @param qualityStr
-	 * @return
 	 */
 	public static String changeQuality(String qualityStr, FastqVariant fqSrc, FastqVariant fqDst) {
 		if (fqSrc == fqDst) return qualityStr; // Nothing to do
@@ -161,16 +172,25 @@ public class GprSeq {
 		return new String(newQ);
 	}
 
+	/**
+	 * Convert from AA_code to AA letter
+	 */
 	public static char code2aa(byte aacode) {
 		if (aacode < 0) return '-';
 		return CODE_TO_AA[aacode];
 	}
 
+	/**
+	 * Convert from DNA_code to DNA letter
+	 */
 	public static char code2dna(byte dnacode) {
 		if (dnacode < 0) return '-';
 		return CODE_TO_DNA[dnacode];
 	}
 
+	/**
+	 * Convert from DNA letter to code
+	 */
 	public static byte dna2Code(char base) {
 		if (base == '-') return -1;
 		byte c = DNA_TO_CODE[(byte) base];
