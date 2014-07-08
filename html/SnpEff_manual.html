@@ -1203,7 +1203,7 @@ $ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed
 					This are pre-defined categories to help users find more significant variants.
 					<br>
 					<i class="icon-warning-sign"></i> Impact categories must be used with care, they were created only to help and simplify the filtering process. 
-					Obviously, there is no way to predict whether a "high impact" or a "low impact" variant is the one producing you phenotype of interest.
+					Obviously, there is no way to predict whether a "high impact" or a "low impact" variant is the one producing a phenotype of interest.
 					<br>
 					<br>
 				</ul>
@@ -1284,6 +1284,25 @@ $ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed
 				<i class="icon-warning-sign"></i> When the variant hits a RARE_AMINO_ACID mark, it is likely that 
 				the 'old_AA/new_AA' field will be incorrect. This may happen because 
 				the amino acid is not predictable using a codon table. 
+				</p>
+				<br>
+				<p> <h3> Impact prediction </h3>
+				SnpEff reports putative variant impact in order to make it easier quickly to categorize and prioritize variants.
+				<br>
+				<br>
+				<i class="icon-warning-sign"></i> Impact categories must be used with care, they were created only to help and simplify the filtering process. 
+				Obviously, there is no way to predict whether a <code>HIGH</code> impact or a <code>LOW</code> impact variant is the one producing a phenotype of interest.
+				<br>
+				<br>
+				<center>
+				<table class="table table-striped">
+					<tr> <th> Impact </th><th> Meaning </th> <th> Example </th> </tr> 
+					<tr> <td> HIGH		</td> <td> The variant is assumed to have high (disruptive) impact in the protein, probably causing protein truncation, loss of function or triggering nonsense mediated decay. </td> <td> stop_gained, frameshift_variant </td></tr> 
+					<tr> <td> MODERATE	</td> <td> A non-disruptive variant that might change protein effectiveness. </td> <td> missense_variant, inframe_deletion </td></tr> 
+					<tr> <td> LOW		</td> <td> Assumed to be mostly harmless or unlikely to change protein behavior. </td> <td> synonymous_variant </td></tr> 
+					<tr> <td> MODIFIER	</td> <td> Usually non-coding variants or variants affecting non-coding genes, where predictions are difficult or there is no evidence of impact. </td> <td> exon_variant, downstream_gene_variant </td></tr> 
+				</table>
+				</center>
 				</p>
 				<br>
 				<p> <h3> Loss of function and nonsense-mediated decay predictions </h3>
