@@ -7,13 +7,12 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 /**
  * A VCF genotype field
  * There is one genotype per sample in each VCF entry
- * 
+ *
  * @author pablocingolani
  */
 public class VcfGenotype {
 
 	String values;
-
 	int genotype[];
 	int ploidy;
 	boolean phased;
@@ -31,7 +30,7 @@ public class VcfGenotype {
 	/**
 	 * Add a name=value pair
 	 * WARNING: This method does NOT change the FORMAT field. Use VcfEntry.addFormat() method
-	 * 
+	 *
 	 * @param name
 	 * @param value
 	 */
@@ -40,7 +39,7 @@ public class VcfGenotype {
 		if ((value.indexOf(' ') >= 0) //
 				|| (value.indexOf('\t') >= 0) //
 				|| (value.indexOf('=') >= 0) //
-		) throw new RuntimeException("Error: Attempt to add a value containin illegal characters: no white-space, semi-colons, or equals-signs permitted\n\tname : '" + name + "'\n\tvalue : '" + value + "'");
+				) throw new RuntimeException("Error: Attempt to add a value containin illegal characters: no white-space, semi-colons, or equals-signs permitted\n\tname : '" + name + "'\n\tvalue : '" + value + "'");
 
 		// Sanity check format
 		if (vcfEntry.getFormat().indexOf(name) < 0) throw new RuntimeException("Error Attempt to add a field (name=" + name + ") that is not present in FORMAT field. Use VcfEntry.addFormat() method first!");
@@ -62,13 +61,13 @@ public class VcfGenotype {
 
 	/**
 	 * Get genotype numbers as an array
-	 * E.g. 
-	 * 		'0/1' -> {0, 1} 
-	 * 
-	 * WARNING: If the genotype is missing, the numeric value is '-1'. 
+	 * E.g.
+	 * 		'0/1' -> {0, 1}
+	 *
+	 * WARNING: If the genotype is missing, the numeric value is '-1'.
 	 * E.g.:
 	 * 			 './.' -> {-1, -1}
-	 *  
+	 *
 	 * @return
 	 */
 	public int[] getGenotype() {
@@ -78,11 +77,11 @@ public class VcfGenotype {
 
 	/**
 	 * Get genotype string by index
-	 * 
+	 *
 	 * WARNING: If the genotype is missing, it returns an empty string.
 	 * E.g.:
 	 * 			 './.' -> getGenotype(0) = ""
-	 *  
+	 *
 	 * @return
 	 */
 	public String getGenotype(int idx) {
@@ -98,13 +97,13 @@ public class VcfGenotype {
 
 	/**
 	 * Return as a genotype SNP code:
-	 * 		-1: if missing data of more than one ALT 
-	 * 		0:	if aa (0/0) 
+	 * 		-1: if missing data of more than one ALT
+	 * 		0:	if aa (0/0)
 	 * 		1:	if Aa (0/1 or 1/0)
 	 * 		2:	if AA (1/1)
-	 * 
+	 *
 	 * WARNING: In multi-allelic case, any non-ref is treated as ALT
-	 * 
+	 *
 	 * @return
 	 */
 	public int getGenotypeCode() {
@@ -124,10 +123,10 @@ public class VcfGenotype {
 
 	/**
 	 * Return as a genotype SNP code:
-	 * 		0:	if aa (0/0) or any missing value 
+	 * 		0:	if aa (0/0) or any missing value
 	 * 		1:	if Aa (0/1 or 1/0)
 	 * 		2:	if AA (1/1)
-	 * 
+	 *
 	 * @return
 	 */
 	public int getGenotypeCodeIgnoreMissing() {
@@ -220,10 +219,26 @@ public class VcfGenotype {
 	}
 
 	/**
-	 * Is any genotype different than REF? 
+	 * Is any genotype different than REF?
 	 * Note: This is calculated for the most likely genotype (GT field)
-	 * 
-	 * @return
+	 */
+	public boolean isRef() {
+		if (values.isEmpty()) return false;
+		parseFields(); // Lazy parse
+
+		if (genotype != null) {
+			// Any genotype is different than REF? => This is a variant
+			for (int i = 0; i < genotype.length; i++)
+				if (genotype[i] > 0) return false;
+			return true;
+		}
+
+		return !vcfEntry.isVariant();
+	}
+
+	/**
+	 * Is any genotype different than REF?
+	 * Note: This is calculated for the most likely genotype (GT field)
 	 */
 	public boolean isVariant() {
 		if (values.isEmpty()) return false;
@@ -240,7 +255,7 @@ public class VcfGenotype {
 	}
 
 	/**
-	 * Parse fields 
+	 * Parse fields
 	 */
 	void parseFields() {
 		if (fields != null) return;
@@ -270,7 +285,7 @@ public class VcfGenotype {
 					+ "\n\tFormat   : '" + vcfEntry.getFormat() + "'" //
 					+ "\n\tValues   : '" + values + "'" //
 					+ "\n\tVcf line : " + vcfEntry //
-			, e);
+					, e);
 		}
 	}
 
