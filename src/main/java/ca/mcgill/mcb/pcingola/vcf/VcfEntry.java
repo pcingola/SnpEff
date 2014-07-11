@@ -126,7 +126,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Append a 'raw' INFO string (format is not checked)
 	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
-	 * 
+	 *
 	 * @param name
 	 * @param value
 	 */
@@ -137,7 +137,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Append a 'raw' INFO string (format is not checked)
 	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
-	 * 
+	 *
 	 * @param name
 	 * @param value
 	 */
@@ -153,12 +153,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Add a "key=value" tuple the info field
-	 * 
+	 *
 	 * @param name
 	 * @param value : Can be null if it is a boolean field.
 	 */
 	public void addInfo(String name, String value) {
-		if (!isValidInfoValue(value)) throw new RuntimeException("No white-space, semi-colons, or equals-signs are permitted in INFO field. Name:\"" + name + "\" Value:\"" + value + "\"");
+		if (!isValidInfoValue(name) || !isValidInfoValue(value)) throw new RuntimeException("No white-space, semi-colons, or equals-signs are permitted in INFO field. Name:\"" + name + "\" Value:\"" + value + "\"");
 
 		String addInfoStr = name + (value != null ? "=" + value : "");
 		if (info != null) info.put(name, value); // Add to info hash (if available)
@@ -178,10 +178,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Is this entry heterozygous?
-	 * 
+	 *
 	 * 		Infer Hom/Her if there is only one sample in the file.
 	 * 		Ohtherwise the field is null.
-	 * 
+	 *
 	 * @return
 	 */
 	public Boolean calcHetero() {
@@ -193,7 +193,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// No genotype fields => Parse fields (we only parse them if there is only one GT field)
 		if (genotypeFields == null) {
 
-			// Are there more than two tabs? (i.e. more than one format field + one genotype field)  
+			// Are there more than two tabs? (i.e. more than one format field + one genotype field)
 			int countFields, fromIndex;
 			for (countFields = 0, fromIndex = 0; (fromIndex >= 0) && (countFields < 1); countFields++, fromIndex++)
 				fromIndex = genotypeFieldsStr.indexOf('\t', fromIndex);
@@ -305,7 +305,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		}
 
 		//---
-		// Simple Insertions, Deletions or Mixed Variants (substitutions) 
+		// Simple Insertions, Deletions or Mixed Variants (substitutions)
 		//---
 		VcfRefAltAlign align = new VcfRefAltAlign(alt, reference);
 		align.align();
@@ -313,8 +313,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		switch (align.getChangeType()) {
 		case DEL:
-			// Case: Deletion 
-			// 20     2 .         TC      T      .   PASS  DP=100	
+			// Case: Deletion
+			// 20     2 .         TC      T      .   PASS  DP=100
 			// 20     2 .         AGAC    AAC    .   PASS  DP=100
 			String ref = "*";
 			String ch = align.getAlignment();
@@ -585,7 +585,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Is this bi-allelic (based ONLY on the number of ALTs)
 	 * WARINIG: You should use 'calcHetero()' method for a more precise calculation.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isBiAllelic() {
@@ -632,7 +632,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Is this multi-allelic (based ONLY on the number of ALTs)
 	 * WARINIG: You should use 'calcHetero()' method for a more precise calculation.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isMultiallelic() {
@@ -796,7 +796,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			format = null;
 			if (fields.length > 8) format = vcfFileIterator.readField(fields, 8); // This field is optional, So it can be null or EMPTY ('.')
 
-			// Add genotype fields (lazy parse) 
+			// Add genotype fields (lazy parse)
 			if (fields.length > 9) genotypeFieldsStr = fields[9];
 		} else throw new RuntimeException("Impropper VCF entry: Not enough fields (missing tab separators?).\n" + line);
 	}
@@ -981,7 +981,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Parse genotype string (sparse matrix) and set all entries using 'value'
-	 * 
+	 *
 	 * @param str
 	 * @param gt
 	 * @param value
@@ -1030,40 +1030,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			infoStr = infoSb.toString();
 		}
 		return deleted;
-	}
-
-	/**
-	 * Create a list of variants from this VcfEntry
-	 * @return
-	 */
-	public List<Variant> variants() {
-		LinkedList<Variant> list = new LinkedList<Variant>();
-
-		//		// Coverage
-		//		int coverage = Gpr.parseIntSafe(getInfo("DP"));
-		//
-		//		// Is it heterozygous, homozygous or undefined?
-		//		Boolean isHetero = calcHetero();
-
-		// Create one SeqChange for each ALT
-		Chromosome chr = (Chromosome) parent;
-		int genotypeNumber = 1;
-		if (alts == null) {
-			// No ALTs, then it's not a change
-			Variant variant = createVariant(chr, start, ref, null, id);
-			variant.setGenotype(Integer.toString(genotypeNumber));
-			list.add(variant);
-		} else {
-			for (String alt : alts) {
-				Variant variant = createVariant(chr, start, ref, alt, id);
-				//				variant.setHeterozygous(isHetero);
-				variant.setGenotype(Integer.toString(genotypeNumber));
-				list.add(variant);
-				genotypeNumber++;
-			}
-		}
-
-		return list;
 	}
 
 	public void setFilterPass(String filterPass) {
@@ -1200,6 +1166,40 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		}
 
 		return this;
+	}
+
+	/**
+	 * Create a list of variants from this VcfEntry
+	 * @return
+	 */
+	public List<Variant> variants() {
+		LinkedList<Variant> list = new LinkedList<Variant>();
+
+		//		// Coverage
+		//		int coverage = Gpr.parseIntSafe(getInfo("DP"));
+		//
+		//		// Is it heterozygous, homozygous or undefined?
+		//		Boolean isHetero = calcHetero();
+
+		// Create one SeqChange for each ALT
+		Chromosome chr = (Chromosome) parent;
+		int genotypeNumber = 1;
+		if (alts == null) {
+			// No ALTs, then it's not a change
+			Variant variant = createVariant(chr, start, ref, null, id);
+			variant.setGenotype(Integer.toString(genotypeNumber));
+			list.add(variant);
+		} else {
+			for (String alt : alts) {
+				Variant variant = createVariant(chr, start, ref, alt, id);
+				//				variant.setHeterozygous(isHetero);
+				variant.setGenotype(Integer.toString(genotypeNumber));
+				list.add(variant);
+				genotypeNumber++;
+			}
+		}
+
+		return list;
 	}
 
 }

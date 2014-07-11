@@ -72,7 +72,7 @@ public class SnpEff implements CommandLine {
 
 	public static final String REVISION = "";
 
-	public static final String BUILD = "2014-07-01";
+	public static final String BUILD = "2014-07-11";
 	public static final String VERSION_MAJOR = "4.0";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -637,9 +637,9 @@ public class SnpEff implements CommandLine {
 					else usage("Option '-interval' without config interval_file argument");
 				} else if (arg.equalsIgnoreCase("-motif")) motif = true; // Use motif database
 				else if (arg.equalsIgnoreCase("-nextProt")) nextProt = true; // Use NextProt database
-				else if (arg.equals("-nodownload")) download = false; // Do not download genome
+				else if (arg.equalsIgnoreCase("-nodownload")) download = false; // Do not download genome
 				else if (arg.equalsIgnoreCase("-noLog")) log = false;
-				else if (arg.equals("-onlyReg")) onlyRegulation = true;
+				else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
 				else if (arg.equalsIgnoreCase("-onlyTr")) {
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
 				} else if (arg.equals("-q") || arg.equalsIgnoreCase("-quiet")) {
