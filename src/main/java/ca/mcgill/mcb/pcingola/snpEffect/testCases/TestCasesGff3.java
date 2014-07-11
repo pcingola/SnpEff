@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -20,7 +21,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Test case for GFF3 file parsing
- * 
+ *
  * @author pcingola
  */
 public class TestCasesGff3 extends TestCase {
@@ -32,9 +33,6 @@ public class TestCasesGff3 extends TestCase {
 
 	/**
 	 * Build a genome from a GFF3 file and compare results to 'expected' results
-	 * @param genome
-	 * @param gff3File
-	 * @param resultFile
 	 */
 	public SnpEffectPredictor buildAndCompare(String genome, String gff3File, String resultFile, boolean readSeqs, boolean createRandSequences) {
 		String expectedResult = (resultFile == null ? "" : Gpr.readFile(resultFile).trim());
@@ -73,10 +71,12 @@ public class TestCasesGff3 extends TestCase {
 		// Genes
 		ArrayList<Gene> genes = new ArrayList<Gene>();
 
+		// Sort genes
 		for (Gene gene : genome.getGenes())
-			// Sort genes
 			genes.add(gene);
+		Collections.sort(genes);
 
+		// Show genes
 		for (Gene gene : genes) {
 			sb.append(gene);
 			for (Transcript tr : gene.sortedStrand())
@@ -145,6 +145,13 @@ public class TestCasesGff3 extends TestCase {
 		String genome = "vibrio";
 		String gff3File = "tests/vibrio.gff3";
 		String resultFile = "tests/vibrio.txt";
+		buildAndCompare(genome, gff3File, resultFile, true, false);
+	}
+
+	public void testCase_09() {
+		String genome = "testAP";
+		String gff3File = "tests/testAP_genes.gff.gz";
+		String resultFile = "tests/testAP.txt";
 		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 

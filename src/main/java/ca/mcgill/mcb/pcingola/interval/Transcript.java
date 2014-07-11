@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -969,6 +970,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return list;
 	}
 
+	public List<Utr3prime> get3primeUtrsSorted() {
+		List<Utr3prime> list = get3primeUtrs();
+		Collections.sort(list);
+		return list;
+	}
+
 	/**
 	 * Create a list of 5 prime UTRs
 	 */
@@ -976,6 +983,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		ArrayList<Utr5prime> list = new ArrayList<Utr5prime>();
 		for (Utr utr : utrs)
 			if (utr instanceof Utr5prime) list.add((Utr5prime) utr);
+		return list;
+	}
+
+	public List<Utr5prime> get5primeUtrsSorted() {
+		List<Utr5prime> list = get5primeUtrs();
+		Collections.sort(list);
 		return list;
 	}
 
@@ -1568,14 +1581,14 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		if (numChilds() > 0) {
 			sb.append("\n");
-			for (Utr utr : get5primeUtrs())
+			for (Utr utr : get5primeUtrsSorted())
 				sb.append("\t\t5'UTR   :\t" + utr + "\n");
 
 			sb.append("\t\tExons:\n");
 			for (Exon exon : sorted())
 				sb.append("\t\t" + exon + "\n");
 
-			for (Utr utr : get3primeUtrs())
+			for (Utr utr : get3primeUtrsSorted())
 				sb.append("\t\t3'UTR   :\t" + utr + "\n");
 
 			// We may show CDS
