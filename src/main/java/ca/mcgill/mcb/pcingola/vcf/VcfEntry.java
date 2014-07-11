@@ -227,11 +227,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Note: We report the first error we find
 	 */
 	String checkInfo(String infoName) {
+		if (infoName.isEmpty()) return "";
+
 		VcfInfo vcfInfo = getVcfInfo(infoName);
 		if (vcfInfo == null) return "Cannot find header for INFO field '" + infoName + "'";
-
-		if (infoName.equals("UK10KWES_AC")) //
-			Gpr.debug("DEBUG!!!!!!!!");
 
 		// Split INFO value and match it to allele
 		String valsStr = getInfo(infoName);
