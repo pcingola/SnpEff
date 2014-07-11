@@ -1,24 +1,24 @@
 hg19
 1	0-622033 CHROMOSOME '1'
 5	0-180795225 CHROMOSOME '5'
+1:367658-368596, strand:1, id:OR4F16, name:OR4F16, bioType:mRNA
+Transcipts:
+	1:367658-368596, strand: +, id:NM_001005277
+		Exons:
+		1:367658-368596 'NM_001005277.ex.1', rank:1, frame:0, sequence: 
+
+		CDS 'NM_001005277':
 1:621095-622033, strand:-1, id:OR4F16.2, name:OR4F16, bioType:mRNA
 Transcipts:
 	1:621095-622033, strand: -, id:NM_001005277.2
 		Exons:
-		1:621095-622033 'NM_001005277.2.ex.1' rank:1, sequence: 
+		1:621095-622033 'NM_001005277.2.ex.1', rank:1, frame:0, sequence: 
 
 		CDS 'NM_001005277.2': 
 5:180794287-180795225, strand:1, id:OR4F16.3, name:OR4F16, bioType:mRNA
 Transcipts:
 	5:180794287-180795225, strand: +, id:NM_001005277.3
 		Exons:
-		5:180794287-180795225 'NM_001005277.3.ex.1' rank:1, sequence: 
+		5:180794287-180795225 'NM_001005277.3.ex.1', rank:1, frame:0, sequence: 
 
 		CDS 'NM_001005277.3': 
-1:367658-368596, strand:1, id:OR4F16, name:OR4F16, bioType:mRNA
-Transcipts:
-	1:367658-368596, strand: +, id:NM_001005277
-		Exons:
-		1:367658-368596 'NM_001005277.ex.1' rank:1, sequence: 
-
-		CDS 'NM_001005277':

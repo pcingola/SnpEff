@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 SNPEFF="java -Xmx2G -jar snpEff.jar"
 
@@ -6,8 +6,8 @@ SNPEFF="java -Xmx2G -jar snpEff.jar"
 # Build "special" cases
 #---
 # Test cases hg37.70
-$SNPEFF build -noLog -gtf22 testHg3770Chr22
 cp db/jaspar/pwms.bin data/testHg3770Chr22/
+$SNPEFF build -noLog -gtf22 testHg3770Chr22
 
 #---
 # Buils all GTF 2.2

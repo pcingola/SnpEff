@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -19,7 +20,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Test case for GTF22 file parsing
- * 
+ *
  * @author pcingola
  */
 public class TestCasesRefSeq extends TestCase {
@@ -75,6 +76,7 @@ public class TestCasesRefSeq extends TestCase {
 		ArrayList<Gene> genes = new ArrayList<Gene>();
 		for (Gene gene : genome.getGenes())
 			genes.add(gene);
+		Collections.sort(genes);
 
 		for (Gene gene : genes) {
 			// We don't compare protein codding in this test
