@@ -11,9 +11,9 @@ import ca.mcgill.mcb.pcingola.vcf.VcfInfoType;
 
 /**
  * ACAT: Create ACAT score for T2D project
- * 
+ *
  * Note: This is just used to compile 'ACAT' score in T2D-GENES project, not useful at all for general audience.
- * 
+ *
  * @author pcingola
  */
 public class SnpEffCmdAcat extends SnpEff {
@@ -108,7 +108,7 @@ public class SnpEffCmdAcat extends SnpEff {
 				//---
 				switch (veff.getEffect()) {
 				case REGULATION:
-					// Add NCMARK 
+					// Add NCMARK
 					if (ncmark.length() > 0) ncmark.append(",");
 					ncmark.append(veff.getBioType() + ":" + veff.getEffectDetails());
 
@@ -202,6 +202,8 @@ public class SnpEffCmdAcat extends SnpEff {
 		countByEff = new CountByType();
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		vcf.setDebug(debug);
+
 		for (VcfEntry ve : vcf) {
 			if (vcf.isHeadeSection()) {
 				addHeader(vcf); // Add header lines

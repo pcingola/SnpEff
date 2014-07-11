@@ -16,10 +16,8 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
-	public static boolean debug = false;
-
+	protected boolean debug = false;
 	protected boolean autoClose = true;
-
 	protected int lineNum;
 	protected T next;
 	protected BufferedReader reader;
@@ -179,12 +177,16 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		this.autoClose = autoClose;
 	}
 
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() //
 				+ ":'" + fileName + "'" //
 				+ ",autoClose:" + autoClose //
 				+ (hasSeek() ? ",pos:" + ((SeekableBufferedReader) reader).position() : "") //
-				;
+		;
 	}
 }

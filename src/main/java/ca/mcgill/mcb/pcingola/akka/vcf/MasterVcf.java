@@ -8,7 +8,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * A master that prcess VCF files
- * 
+ *
  * @author pablocingolani
  */
 public class MasterVcf<T> extends Master<VcfEntry, T> {

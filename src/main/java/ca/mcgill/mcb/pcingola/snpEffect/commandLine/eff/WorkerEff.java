@@ -12,7 +12,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Worker agent for SnpEff 'eff' command
- * 
+ *
  * @author pablocingolani
  */
 public class WorkerEff extends WorkerVcfStr {
@@ -30,7 +30,6 @@ public class WorkerEff extends WorkerVcfStr {
 		this.snpEffectPredictor = snpEffectPredictor;
 		this.outputFormatter = outputFormatter;
 		this.filterIntervals = filterIntervals;
-		//		this.seqChangeFilter = seqChangeFilter;
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public class WorkerEff extends WorkerVcfStr {
 			// The idea is that the workers can do this, relieving the master from this task.
 			vcfEntry.parse();
 
-			// Skip if there are filter intervals and they are not matched 
+			// Skip if there are filter intervals and they are not matched
 			if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) return null;
 
 			// Create new 'section'

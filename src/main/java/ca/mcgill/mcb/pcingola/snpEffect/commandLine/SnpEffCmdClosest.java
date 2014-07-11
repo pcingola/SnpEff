@@ -18,7 +18,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Command line: Find closes marker to each variant
- * 
+ *
  * @author pcingola
  */
 public class SnpEffCmdClosest extends SnpEff {
@@ -122,7 +122,7 @@ public class SnpEffCmdClosest extends SnpEff {
 				// Find minimum distance
 				int minDistance = minDistance(queryMarker, markers);
 				if (minDistance < Integer.MAX_VALUE) {
-					// All markers that are at minimum distance 
+					// All markers that are at minimum distance
 					Markers closest = findClosestMarkers(queryMarker, markers, minDistance);
 					return closest;
 				}
@@ -184,7 +184,7 @@ public class SnpEffCmdClosest extends SnpEff {
 			// We don't care about these
 			if ((m instanceof Chromosome) || (m instanceof Intergenic) || (m instanceof Gene) || (m instanceof Transcript)) continue;
 
-			// Find closest marker that has a transcript 
+			// Find closest marker that has a transcript
 			int dist = m.distance(queryMarker);
 			if ((dist <= minDist) && (findTranscript(m) != null)) minDist = dist;
 		}
@@ -283,6 +283,7 @@ public class SnpEffCmdClosest extends SnpEff {
 		// Open file
 		VcfFileIterator vcf = new VcfFileIterator(inFile, config.getGenome());
 		vcf.setCreateChromos(true); // Any 'new' chromosome in the input file will be created (otherwise an error will be thrown)
+		vcf.setDebug(debug);
 
 		boolean header = true;
 		for (VcfEntry ve : vcf) {

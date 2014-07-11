@@ -240,6 +240,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 		// Open VCF file
 		VcfFileIterator vcfFile = new VcfFileIterator(inputFile, config.getGenome());
+		vcfFile.setDebug(debug);
 		boolean anyCancerSample = false;
 		List<PedigreeEnrty> pedigree = null;
 		CountByType errByType = new CountByType(), warnByType = new CountByType();

@@ -5,19 +5,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Opens a fasta file and iterates over all fasta sequences in the file
- * 
+ *
  * @author pcingola
  */
 public class FastaFileIterator extends FileIterator<String> {
 
 	private static enum State {
-		DESCRIPTION, // Description parser state. 
-		SEQUENCE, // Sequence parser state. 
-		COMPLETE; // Complete parser state. 
+		DESCRIPTION, // Description parser state.
+		SEQUENCE, // Sequence parser state.
+		COMPLETE; // Complete parser state.
 	}
 
 	Pattern transcriptPattern = Pattern.compile("transcript:(\\S*)");
@@ -38,10 +37,10 @@ public class FastaFileIterator extends FileIterator<String> {
 
 	/**
 	 * Sequence name (first 'word')
-	 * 
+	 *
 	 * It extracts the characters after the leading '>' and before the first space, then
 	 * removes leading 'chr', 'chr:', etc.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getName() {
@@ -52,10 +51,10 @@ public class FastaFileIterator extends FileIterator<String> {
 
 	/**
 	 * Get transcript name from FASTA header (ENSEMBL protein files)
-	 * 
-	 * Format example: 
+	 *
+	 * Format example:
 	 *     '>ENSP00000356130 pep:known chromosome:GRCh37:1:205111633:205180694:-1 gene:ENSG00000133059 transcript:ENST00000367162'
-	 * 
+	 *
 	 * @param ffi
 	 * @return
 	 */
@@ -88,8 +87,6 @@ public class FastaFileIterator extends FileIterator<String> {
 			State state = State.DESCRIPTION;
 			while (ready()) {
 				if (line == null) line = readLine();
-
-				if (debug) Gpr.debug("State:" + state + "\tLine " + lineNum + ": " + line);
 
 				switch (state) {
 				case DESCRIPTION:

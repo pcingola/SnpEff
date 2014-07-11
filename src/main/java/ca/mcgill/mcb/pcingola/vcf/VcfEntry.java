@@ -209,9 +209,49 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
+	 * Perform several simple checks and report problems (if any).
+	 */
+	public String check() {
+		StringBuilder sb = new StringBuilder();
+
+		for (String infoName : getInfoKeys()) {
+			String err = checkInfo(infoName);
+			if (!err.isEmpty()) sb.append(err + "\n");
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * Check info field
+	 * Note: We report the first error we find
+	 */
+	String checkInfo(String infoName) {
+		VcfInfo vcfInfo = getVcfInfo(infoName);
+		if (vcfInfo == null) return "Cannot find header for INFO field '" + infoName + "'";
+
+		if (infoName.equals("UK10KWES_AC")) //
+			Gpr.debug("DEBUG!!!!!!!!");
+
+		// Split INFO value and match it to allele
+		String valsStr = getInfo(infoName);
+		if (valsStr == null) return ""; // INFO field not present, nothing to do
+
+		// Check values
+		String values[] = valsStr.split(",");
+		for (String val : values)
+			if (!VcfEntry.isValidInfoValue(val)) return "INFO filed '" + infoName + "' has an invalid value '" + val + "' (no spaces, tabs, '=' or ';' are allowed)";
+
+		// Check number of INFO elements
+		if (vcfInfo.isNumberNumber() && vcfInfo.getNumber() != values.length) return "INFO filed '" + infoName + "' has 'Number=" + vcfInfo.getNumber() + "' in header, but it contains '" + values.length + "' elements.";
+		if (vcfInfo.isNumberAllAlleles() && values.length != (alts.length + 1)) return "INFO filed '" + infoName + "' has 'Number=R' in header, but it contains '" + values.length + "' elements when there are '" + alts.length + "' alleles (it should have '" + (alts.length + 1) + "' elements).";
+		if (vcfInfo.isNumberAllAlleles() && values.length != alts.length) return "INFO filed '" + infoName + "' has 'Number=A' in header, but it contains '" + values.length + "' elements when there are '" + alts.length + "' alleles.";
+
+		return "";
+	}
+
+	/**
 	 * Compress genotypes into "HO/HE/NA" INFO fields
-	 * @param vcfEntry
-	 * @return
 	 */
 	public boolean compressGenotypes() {
 		if (getAlts().length > 1) return false;
@@ -446,8 +486,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		// Split INFO value and match it to allele
 		String infos[] = infoStr.split(",");
+
 		for (int i = 0, j = firstValue; (i < alts.length) && (j < infos.length); i++, j++)
 			if (alts[i].equalsIgnoreCase(allele)) return infos[j];
+
 		return null;
 	}
 

@@ -14,12 +14,12 @@ import ca.mcgill.mcb.pcingola.vcf.VcfHeader;
 
 /**
  * Opens a VCF file and iterates over all entries
- * 
+ *
  * Format: VCF 4.1
- * 
+ *
  * Reference: 	http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41
  * 				Old 4.0 format: http://www.1000genomes.org/wiki/doku.php?id=1000_genomes:analysis:vcf4.0
- * 
+ *
  * 1. CHROM chromosome: an identifier from the reference genome. All entries for a specific CHROM should form a contiguous block within the VCF file.(Alphanumeric String, Required)
  * 2. POS position: The reference position, with the 1st base having position 1. Positions are sorted numerically, in increasing order, within each reference sequence CHROM. (Integer, Required)
  * 3. ID semi-colon separated list of unique identifiers where available. If this is a dbSNP variant it is encouraged to use the rs number(s). No identifier should be present in more than one data record. If there is no identifier available, then the missing value should be used. (Alphanumeric String)
@@ -44,11 +44,11 @@ import ca.mcgill.mcb.pcingola.vcf.VcfHeader;
  *        - SB strand bias at this position
  *        - SOMATIC indicates that the record is a somatic mutation, for cancer genomics
  *        - VALIDATED validated by follow-up experiment
- * 
- * Warning: You can have more than one type of change simultaneously, 
+ *
+ * Warning: You can have more than one type of change simultaneously,
  *          e.g.:
  *          	TTG	->	TTGTG,T					Insertion of 'TG' and deletion of 'TG'
- *          	TA	->	T,TT					Deletion of 'A' and SNP (A replaced by T) 
+ *          	TA	->	T,TT					Deletion of 'A' and SNP (A replaced by T)
  *				T	->	TTTTGTG,TTTTG,TTGTG		Insertion of 'TTTGTG', insertion of 'TTTG' and insertion of 'TGTG'
  *
  * @author pcingola
@@ -64,11 +64,6 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 	public VcfFileIterator(BufferedReader reader) {
 		super(reader, 1);
-	}
-
-	public VcfFileIterator(Genome genome) {
-		super((String) null, 1);
-		this.genome = genome;
 	}
 
 	public VcfFileIterator(String fileName) {
@@ -175,8 +170,18 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 				if (line == null) return null; // End of file?
 
 				VcfEntry vcfEntry = parseVcfLine(line);
-				if (vcfEntry != null) return vcfEntry;
-				else headeSection |= true;
+				if (vcfEntry != null) {
+					if (debug) {
+						String err = vcfEntry.check();
+						if (!err.isEmpty()) {
+							System.err.println("WARNING: Malformed VCF entry" + (fileName != null ? "file '" + fileName + "'" : "") + ", line " + lineNum + ":\n" //
+									+ "\tEntry  : " + vcfEntry + "\n" //
+									+ "\tErrors :\n" + Gpr.prependEachLine("\t\t", err) //
+							);
+						}
+					}
+					return vcfEntry;
+				} else headeSection |= true;
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Error reading file '" + fileName + "'. Line ignored:\n\tLine (" + lineNum + "):\t'" + line + "'");

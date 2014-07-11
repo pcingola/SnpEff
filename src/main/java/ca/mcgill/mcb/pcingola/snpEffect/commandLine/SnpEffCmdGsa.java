@@ -745,6 +745,8 @@ public class SnpEffCmdGsa extends SnpEff {
 
 		int num = 1, warns = 0;
 		VcfFileIterator vcf = new VcfFileIterator(inputFile);
+		vcf.setDebug(debug);
+
 		for (VcfEntry ve : vcf) {
 			double score = ve.getInfoFloat(infoName);
 

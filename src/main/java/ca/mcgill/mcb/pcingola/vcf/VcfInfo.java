@@ -7,26 +7,26 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Represents a info elements in a VCF file
- * 
+ *
  * References: http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41
- * 
+ *
  * INFO fields should be described as follows (all keys are required):
  * 		##INFO=<ID=ID,Number=number,Type=type,Description=�description�>
- * 
+ *
  * 		Possible Types for INFO fields are: Integer, Float, Flag, Character, and String.
- * 
- * 		The Number entry is an Integer that describes the number of values that 
- * 		can be included with the INFO field. For example, if the INFO field contains 
- * 		a single number, then this value should be 1; if the INFO field describes a 
- * 		pair of numbers, then this value should be 2 and so on. If the field has one 
- * 		value per alternate allele then this value should be 'A'; if the field has 
- * 		one value for each possible genotype (more relevant to the FORMAT tags) then 
- * 		this value should be 'G'.  If the number of possible values varies, is unknown, 
- * 		or is unbounded, then this value should be '.'. The 'Flag' type indicates that 
- * 		the INFO field does not contain a Value entry, and hence the Number should be 0 in 
- * 		this case. The Description value must be surrounded by double-quotes. Double-quote 
+ *
+ * 		The Number entry is an Integer that describes the number of values that
+ * 		can be included with the INFO field. For example, if the INFO field contains
+ * 		a single number, then this value should be 1; if the INFO field describes a
+ * 		pair of numbers, then this value should be 2 and so on. If the field has one
+ * 		value per alternate allele then this value should be 'A'; if the field has
+ * 		one value for each possible genotype (more relevant to the FORMAT tags) then
+ * 		this value should be 'G'.  If the number of possible values varies, is unknown,
+ * 		or is unbounded, then this value should be '.'. The 'Flag' type indicates that
+ * 		the INFO field does not contain a Value entry, and hence the Number should be 0 in
+ * 		this case. The Description value must be surrounded by double-quotes. Double-quote
  * 		character can be escaped with backslash (\") and backslash as \\.
- * 
+ *
  * @author pablocingolani
  */
 public class VcfInfo {
@@ -35,8 +35,8 @@ public class VcfInfo {
 	 * Number of values in an INFO field.
 	 * Reference
 	 * 		http://samtools.github.io/hts-specs/VCFv4.2.pdf
-	 * 
-	 * Number of items in an INFO field. The Number entry is an Integer that describes the number of values that can be 
+	 *
+	 * Number of items in an INFO field. The Number entry is an Integer that describes the number of values that can be
 	 * included with the INFO field. For example, if the INFO field contains
 	 * a single number, then this value should be 1; if the INFO field describes a pair of numbers, then this value should
 	 * be 2 and so on. There are also certain special characters used to define special cases:
@@ -75,7 +75,7 @@ public class VcfInfo {
 	String description;
 
 	/**
-	 * Constructor using a "##INFO" line from a VCF file 
+	 * Constructor using a "##INFO" line from a VCF file
 	 * @param line
 	 */
 	public VcfInfo(String line) {
@@ -150,6 +150,10 @@ public class VcfInfo {
 		return vcfInfoNumber == VcfInfoNumber.ALL_ALLELES;
 	}
 
+	public boolean isNumberNumber() {
+		return vcfInfoNumber == VcfInfoNumber.NUMBER;
+	}
+
 	public boolean isNumberOnePerAllele() {
 		return vcfInfoNumber == VcfInfoNumber.ALLELE;
 	}
@@ -158,13 +162,20 @@ public class VcfInfo {
 		return vcfInfoNumber == VcfInfoNumber.GENOTYPE;
 	}
 
+	public boolean isNumberPerAllele() {
+		return vcfInfoNumber == VcfInfoNumber.ALLELE || vcfInfoNumber == VcfInfoNumber.ALL_ALLELES;
+	}
+
 	void parseNumber(String number) {
 		// Parse number field
 		if (number.equals("A")) vcfInfoNumber = VcfInfoNumber.ALLELE;
 		else if (number.equals("R")) vcfInfoNumber = VcfInfoNumber.ALL_ALLELES;
 		else if (number.equals("G")) vcfInfoNumber = VcfInfoNumber.GENOTYPE;
 		else if (number.equals(".")) vcfInfoNumber = VcfInfoNumber.UNLIMITED;
-		else this.number = Gpr.parseIntSafe(number);
+		else {
+			vcfInfoNumber = VcfInfoNumber.NUMBER;
+			this.number = Gpr.parseIntSafe(number);
+		}
 	}
 
 	public void setImplicit(boolean implicit) {
@@ -180,6 +191,6 @@ public class VcfInfo {
 				+ ",Type=" + vcfInfoType //
 				+ ",Description=\"" + description + "\"" //
 				+ ">" //
-		;
+				;
 	}
 }
