@@ -214,12 +214,41 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public String check() {
 		StringBuilder sb = new StringBuilder();
 
+		// Check INFO fields
 		for (String infoName : getInfoKeys()) {
 			String err = checkInfo(infoName);
 			if (!err.isEmpty()) sb.append(err + "\n");
 		}
 
+		// Check genotypes
+		sb.append(checkGenotypes());
+
 		return sb.toString();
+	}
+
+	/**
+	 * Check genotypes
+	 */
+	String checkGenotypes() {
+		StringBuilder err = new StringBuilder();
+
+		if (getVcfFileIterator() != null && getVcfFileIterator().getVcfHeader() != null) {
+			int numGt = getVcfGenotypes().size();
+			int numSamples = getVcfFileIterator().getVcfHeader().getNumberOfSamples();
+			if (numGt != numSamples) err.append("Number of genotypes (" + numGt + ") differs form the number of samples (" + numSamples + ")\n");
+		}
+
+		// Check that each genotype matches the number of alleles
+		int numAlts = getAlts().length;
+		int gtNum = 1;
+		for (VcfGenotype vgt : getVcfGenotypes()) {
+			int gts[] = vgt.getGenotype();
+			for (int i = 0; i < gts.length; i++)
+				if (gts[i] >= numAlts) err.append("Genotype number " + gtNum + " has genotype number '" + gtNum + "', but there are only '" + numAlts + "' ALTs.");
+			gtNum++;
+		}
+
+		return err.toString();
 	}
 
 	/**
@@ -313,10 +342,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			char change[] = new char[size];
 			for (int i = 0; i < change.length; i++)
 				change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-			String ch = "-" + new String(change);
+				String ch = "-" + new String(change);
 
-			// Create SeqChange
-			return new Variant(chromo, start, reference, ch, id);
+				// Create SeqChange
+				return new Variant(chromo, start, reference, ch, id);
 		}
 
 		// Case: SNP, MNP

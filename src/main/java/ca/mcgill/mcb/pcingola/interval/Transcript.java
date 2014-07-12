@@ -742,7 +742,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Return the UTR that hits position 'pos'
-	 * @param pos
+	 * @param posPrev
 	 * @return An UTR intersecting 'pos' (null if not found)
 	 */
 	public List<Utr> findUtrs(Marker marker) {

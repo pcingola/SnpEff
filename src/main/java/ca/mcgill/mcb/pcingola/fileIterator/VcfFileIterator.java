@@ -61,6 +61,8 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 	boolean parseNow = true;
 	boolean headeSection = false;
 	VcfHeader header = new VcfHeader();
+	String chrPrev = "";
+	int posPrev = -1;
 
 	public VcfFileIterator(BufferedReader reader) {
 		super(reader, 1);
@@ -172,14 +174,24 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 				VcfEntry vcfEntry = parseVcfLine(line);
 				if (vcfEntry != null) {
 					if (debug) {
+						// Debug mode? Perform some sanity checks
 						String err = vcfEntry.check();
+
+						// Check that file is sorted
+						if (vcfEntry.getChromosomeName().equals(chrPrev) && vcfEntry.getStart() < posPrev) err += "File is not sorted: Position '" + vcfEntry.getChromosomeName() + ":" + vcfEntry.getStart() + "' after position '" + chrPrev + ":" + posPrev + "'";
+						chrPrev = vcfEntry.getChromosomeName();
+						posPrev = vcfEntry.getStart();
+
+						// Any errors? Report them
 						if (!err.isEmpty()) {
 							System.err.println("WARNING: Malformed VCF entry" + (fileName != null ? "file '" + fileName + "'" : "") + ", line " + lineNum + ":\n" //
 									+ "\tEntry  : " + vcfEntry + "\n" //
 									+ "\tErrors :\n" + Gpr.prependEachLine("\t\t", err) //
-							);
+									);
 						}
 					}
+
+					// Return new entry
 					return vcfEntry;
 				} else headeSection |= true;
 			}
