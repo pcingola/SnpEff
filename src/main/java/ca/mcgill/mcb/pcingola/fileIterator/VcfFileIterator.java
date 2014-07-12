@@ -178,7 +178,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 						String err = vcfEntry.check();
 
 						// Check that file is sorted
-						if (vcfEntry.getChromosomeName().equals(chrPrev) && vcfEntry.getStart() < posPrev) err += "File is not sorted: Position '" + vcfEntry.getChromosomeName() + ":" + vcfEntry.getStart() + "' after position '" + chrPrev + ":" + posPrev + "'";
+						if (vcfEntry.getChromosomeName().equals(chrPrev) && vcfEntry.getStart() < posPrev) err += "File is not sorted: Position '" + vcfEntry.getChromosomeName() + ":" + (vcfEntry.getStart() + 1) + "' after position '" + chrPrev + ":" + (posPrev + 1) + "'";
 						chrPrev = vcfEntry.getChromosomeName();
 						posPrev = vcfEntry.getStart();
 
@@ -187,7 +187,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 							System.err.println("WARNING: Malformed VCF entry" + (fileName != null ? "file '" + fileName + "'" : "") + ", line " + lineNum + ":\n" //
 									+ "\tEntry  : " + vcfEntry + "\n" //
 									+ "\tErrors :\n" + Gpr.prependEachLine("\t\t", err) //
-									);
+							);
 						}
 					}
 
