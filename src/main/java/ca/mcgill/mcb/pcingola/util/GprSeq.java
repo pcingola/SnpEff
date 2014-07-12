@@ -117,10 +117,17 @@ public class GprSeq {
 	}
 
 	/**
-	 * Code an AA pair
+	 * Code an AA-pair
 	 */
 	public static int aaPairCode(byte aaCode1, byte aaCode2) {
 		return aaCode1 * GprSeq.AMINO_ACIDS.length + aaCode2;
+	}
+
+	/**
+	 * Code an AA-pair
+	 */
+	public static int aaPairCode(char aa1, char aa2) {
+		return aa2Code(aa1) * GprSeq.AMINO_ACIDS.length + aa2Code(aa2);
 	}
 
 	/**
@@ -178,6 +185,12 @@ public class GprSeq {
 	public static char code2aa(byte aacode) {
 		if (aacode < 0) return '-';
 		return CODE_TO_AA[aacode];
+	}
+
+	public static String code2aaPair(int code) {
+		int aaCode1 = code / GprSeq.AMINO_ACIDS.length;
+		int aaCode2 = code % GprSeq.AMINO_ACIDS.length;
+		return "" + GprSeq.code2aa((byte) aaCode1) + GprSeq.code2aa((byte) aaCode2);
 	}
 
 	/**
