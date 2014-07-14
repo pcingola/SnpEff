@@ -127,6 +127,7 @@ public class GprSeq {
 	 * Code an AA-pair
 	 */
 	public static int aaPairCode(char aa1, char aa2) {
+		if (aa1 == '-' || aa2 == '-') return -1;
 		return aa2Code(aa1) * GprSeq.AMINO_ACIDS.length + aa2Code(aa2);
 	}
 
