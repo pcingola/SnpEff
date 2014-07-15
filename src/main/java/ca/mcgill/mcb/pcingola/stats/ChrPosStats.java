@@ -1,6 +1,6 @@
 package ca.mcgill.mcb.pcingola.stats;
 
-import ca.mcgill.mcb.pcingola.stats.plot.GooglePlotInt;
+import ca.mcgill.mcb.pcingola.stats.plot.GoogleHistogram;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -110,8 +110,7 @@ public class ChrPosStats {
 	 */
 	public String toStringHistoPlot(String title, String xAxisLabel, String yAxisLabel) {
 		int pos[] = posArray(); // Create data arrays
-
-		GooglePlotInt gghisto = new GooglePlotInt(pos, count, title, xAxisLabel, yAxisLabel + "/" + factorStr()); // Create histogram
+		GoogleHistogram gghisto = new GoogleHistogram(pos, count, title, xAxisLabel, yAxisLabel + "/" + factorStr()); // Create histogram
 		return gghisto.toURLString();
 	}
 }

@@ -9,7 +9,6 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Variants statistics
@@ -53,7 +52,6 @@ public class VariantStats implements SamplingStats<Variant> {
 		if (chrPosStats == null) {
 			Chromosome chr = genome.getChromosome(chrName);
 			if (chr != null) {
-				Gpr.debug("CHROMO LEN: " + chr.size());
 				chrPosStats = new ChrPosStats(chrName, chr.size());
 				chrPosStatsbyName.put(chrName, chrPosStats);
 			}
@@ -126,7 +124,7 @@ public class VariantStats implements SamplingStats<Variant> {
 	}
 
 	public String getChrPosStatsChartUrl(String chrName) {
-		return chrPosStatsbyName.get(chrName).toStringHistoPlot("Changes histogram: " + chrName, "Position", "Changes");
+		return chrPosStatsbyName.get(chrName).toStringHistoPlot("Variants histogram: " + chrName, "Position", "Variants");
 	}
 
 	/**
