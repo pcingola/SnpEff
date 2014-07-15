@@ -9,7 +9,7 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfLof;
 import ca.mcgill.mcb.pcingola.vcf.VcfNmd;
@@ -93,11 +93,11 @@ public class LossOfFunction {
 	HashSet<Gene> genesLof;
 	HashSet<Transcript> transcriptsNmd;
 	HashSet<Gene> genesNmd;
-	Collection<ChangeEffect> changeEffects;
+	Collection<VariantEffect> changeEffects;
 	int lofCount = -1; // Number of loss of function effects
 	int nmdCount = -1; // Number of nonsense mediated decay effects
 
-	public LossOfFunction(Config config, Collection<ChangeEffect> changeEffects) {
+	public LossOfFunction(Config config, Collection<VariantEffect> changeEffects) {
 		this.changeEffects = changeEffects;
 		transcriptsLof = new HashSet<Transcript>();
 		genesLof = new HashSet<Gene>();
@@ -121,7 +121,7 @@ public class LossOfFunction {
 			lofCount = nmdCount = 0;
 
 			// Iterate over all changeEffects
-			for (ChangeEffect changeEffect : changeEffects)
+			for (VariantEffect changeEffect : changeEffects)
 				if (isLof(changeEffect)) lofCount++;
 		}
 
@@ -139,7 +139,7 @@ public class LossOfFunction {
 	 * @param changeEffect
 	 * @return
 	 */
-	protected boolean isLof(ChangeEffect changeEffect) {
+	protected boolean isLof(VariantEffect changeEffect) {
 		// Not a sequence change? => Not LOF
 		if ((changeEffect.getSeqChange() != null) && (!changeEffect.getSeqChange().isVariant())) return false;
 
@@ -212,7 +212,7 @@ public class LossOfFunction {
 	 * @param changeEffect
 	 * @return
 	 */
-	protected boolean isLofDeletion(ChangeEffect changeEffect) {
+	protected boolean isLofDeletion(VariantEffect changeEffect) {
 		Transcript tr = changeEffect.getTranscript();
 		if (tr == null) throw new RuntimeException("Transcript not found for change:\n\t" + changeEffect);
 
@@ -278,7 +278,7 @@ public class LossOfFunction {
 	 * @param changeEffect
 	 * @return
 	 */
-	protected boolean isNmd(ChangeEffect changeEffect) {
+	protected boolean isNmd(VariantEffect changeEffect) {
 		Transcript tr = changeEffect.getTranscript();
 		if (tr == null) throw new RuntimeException("Transcript not found for change:\n\t" + changeEffect);
 
@@ -364,7 +364,7 @@ public class LossOfFunction {
 	 * @param changeEffect
 	 * @return
 	 */
-	double percentCds(ChangeEffect changeEffect) {
+	double percentCds(VariantEffect changeEffect) {
 		int cdsLen = changeEffect.getAaLength();
 		int codonNum = changeEffect.getCodonNum();
 		if ((cdsLen >= 0) && (codonNum >= 0)) return codonNum / ((double) cdsLen);

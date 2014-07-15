@@ -28,7 +28,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 public class HgvsDna extends Hgvs {
 
-	public HgvsDna(ChangeEffect changeEffect) {
+	public HgvsDna(VariantEffect changeEffect) {
 		super(changeEffect);
 	}
 

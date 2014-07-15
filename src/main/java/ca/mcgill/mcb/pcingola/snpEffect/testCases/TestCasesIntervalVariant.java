@@ -11,9 +11,9 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
@@ -131,9 +131,9 @@ public class TestCasesIntervalVariant extends TestCase {
 				// Calculate effects
 				//---
 				// Copy only some effect (other effects are not tested)
-				ChangeEffects effectsAll = snpEffectPredictor.seqChangeEffect(seqChange);
-				ChangeEffects effects = new ChangeEffects();
-				for (ChangeEffect eff : effectsAll) {
+				VariantEffects effectsAll = snpEffectPredictor.variantEffect(seqChange);
+				VariantEffects effects = new VariantEffects();
+				for (VariantEffect eff : effectsAll) {
 					boolean copy = true;
 
 					if (eff.getEffectType() == EffectType.SPLICE_SITE_ACCEPTOR) copy = false;
@@ -146,7 +146,7 @@ public class TestCasesIntervalVariant extends TestCase {
 				Assert.assertEquals(false, effects.isEmpty()); // There should be at least one effect
 				if (debug && (effects.size() > 1)) {
 					System.out.println("Found more than one effect: " + effects.size() + "\n" + transcript);
-					for (ChangeEffect eff : effects)
+					for (VariantEffect eff : effects)
 						System.out.println("\t" + eff);
 				}
 
@@ -155,7 +155,7 @@ public class TestCasesIntervalVariant extends TestCase {
 				//---
 				boolean isExpectedOK = false;
 				StringBuilder effSb = new StringBuilder();
-				for (ChangeEffect effect : effects) {
+				for (VariantEffect effect : effects) {
 					String effstr = effect.effect(true, true, true, false);
 					isExpectedOK |= effstr.equals(expectedEffect);
 					effSb.append(effstr + " ");

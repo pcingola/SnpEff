@@ -191,8 +191,14 @@ th a:active, th a:hover {
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Warnings </b> </td>
 		<#assign color="#ffffff">
-		<#if changeStats.countWarnings &gt; 0> <#assign color="#ff0000"> </#if> 
+		<#if changeStats.countWarnings &gt; 0> <#assign color="#ffff00"> </#if> 
 		<td bgcolor="${color}"> ${changeStats.countWarnings} </td>
+	</tr>	
+	<tr bgcolor=ffffff> 
+		<td valign=top> <b> Errors </b> </td>
+		<#assign color="#ffffff">
+		<#if changeStats.countErrors &gt; 0> <#assign color="#ff0000"> </#if> 
+		<td bgcolor="${color}"> ${changeStats.countErrors} </td>
 	</tr>	
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of lines (input file) </b> </td>
@@ -204,17 +210,17 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of not variants <br>(i.e. reference equals alternative) </b> </td>
-		<td> ${seqStats.countNonVariants} </td>
+		<td> ${variantStats.countNonVariants} </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants processed <br> (i.e. after filter and non-variants) </b> </td>
-		<td> ${seqStats.count} </td>
+		<td> ${variantStats.count} </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of known variants <br>(i.e. non-empty ID) </b> </td>
 		<td> 
-		${seqStats.countNonEmptyId}
-		( ${ ( 100 * seqStats.getKnownRatio() )?string("0.###") }% ) 
+		${variantStats.countNonEmptyId}
+		( ${ ( 100 * variantStats.getKnownRatio() )?string("0.###") }% ) 
 		</td>
 	</tr>
 	<tr bgcolor=ffffff>
@@ -223,15 +229,15 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Genome total length </b> </td>
-		<td> ${seqStats.genomeLen} </td>
+		<td> ${variantStats.genomeLen} </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome effective length </b> </td>
-		<td> ${seqStats.genomeLenEffective} </td>
+		<td> ${variantStats.genomeLenEffective} </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Change rate </b> </td>
-		<td> 1 change every ${seqStats.rateOfChange} bases </td>
+		<td> 1 change every ${variantStats.rateOfChange} bases </td>
 	</tr>
 </table>
 <p>
@@ -249,19 +255,19 @@ th a:active, th a:hover {
 
 <table border=1>
 	<tr><th> Chromosome </th><th> Length </th><th> Changes </th><th> Change rate </th></tr> 
-	<#list seqStats.chromosomeNamesEffective as chr> 
+	<#list variantStats.chromosomeNamesEffective as chr> 
 		<tr>
 			<td> ${chr} </td>
-			<td class="numeric"> ${seqStats.getChromosomeLength(chr)} </td>
-			<td class="numeric"> ${seqStats.getCountByChromosome(chr)} </td>
-			<td class="numeric"> ${seqStats.getRateOfChangeByChromosome(chr)} </td>
+			<td class="numeric"> ${variantStats.getChromosomeLength(chr)} </td>
+			<td class="numeric"> ${variantStats.getCountByChromosome(chr)} </td>
+			<td class="numeric"> ${variantStats.getRateOfChangeByChromosome(chr)} </td>
 		</tr> 
 	</#list>
 	<tr>
 		<th> Total </th>
-		<th class="numeric"> ${seqStats.genomeLenEffective} </th>
-		<th class="numeric"> ${seqStats.count} </th>
-		<th class="numeric"> ${seqStats.rateOfChange} </th>
+		<th class="numeric"> ${variantStats.genomeLenEffective} </th>
+		<th class="numeric"> ${variantStats.count} </th>
+		<th class="numeric"> ${variantStats.rateOfChange} </th>
 	</tr> 
 </table> 
 </center>
@@ -283,17 +289,17 @@ th a:active, th a:hover {
 		</tr>
 	</thead>
     <tbody>
-    	<#list seqStats.changeType as chType>
+    	<#list variantStats.changeType as chType>
 	    <tr>
 	    	<td> <b> ${chType} </b> </td>
-	    	<td class="numeric" bgcolor="${seqStats.countByChangeType.getColorHtml(chType)}"> ${seqStats.countByChangeType.get(chType)} </td>
+	    	<td class="numeric" bgcolor="${variantStats.countByChangeType.getColorHtml(chType)}"> ${variantStats.countByChangeType.get(chType)} </td>
 	    </tr>
     	</#list>
     </tbody>
     <tfoot>
 	    <tr>
 	    	<th><b>Total </b> </th>
-	    	<th class="numeric"> ${seqStats.countByChangeType.get("Total")} </th>
+	    	<th class="numeric"> ${variantStats.countByChangeType.get("Total")} </th>
 	    </tr>
     </tfoot>
 </table>
@@ -357,13 +363,13 @@ Missense / Silent ratio: </th><td class="numeric"> ${changeStats.silentRatio?str
 	InDels
 	========================================================================== -->
 
-<#if seqStats.indelLen.validData>
+<#if variantStats.indelLen.validData>
 	<hr> 
 	<b> Insertions and deletions length:</b> 
 	<p>
 	<pre>
-		<@intstatsTable seqStats.indelLen />		
-		<img src="${seqStats.indelLenHistoUrl}"><br>
+		<@intstatsTable variantStats.indelLen />		
+		<img src="${variantStats.indelLenHistoUrl}"><br>
 	</pre>
 </#if>
 
@@ -378,10 +384,10 @@ Missense / Silent ratio: </th><td class="numeric"> ${changeStats.silentRatio?str
 
 <table border=1>
     <tr>
-    	<td> &nbsp; </td> <#list seqStats.bases as newBase > <th> <b> ${newBase} </b> </th></#list>
+    	<td> &nbsp; </td> <#list variantStats.bases as newBase > <th> <b> ${newBase} </b> </th></#list>
     </tr>
-    <#list seqStats.bases as oldBase >
-	    <tr> <th> <b> ${oldBase} </b> </th><#list seqStats.bases as newBase ><td class="numeric" bgcolor="${seqStats.getBasesChangesColor(oldBase, newBase)}"> ${seqStats.getBasesChangesCount(oldBase, newBase)} </td></#list> </tr>
+    <#list variantStats.bases as oldBase >
+	    <tr> <th> <b> ${oldBase} </b> </th><#list variantStats.bases as newBase ><td class="numeric" bgcolor="${variantStats.getBasesChangesColor(oldBase, newBase)}"> ${variantStats.getBasesChangesCount(oldBase, newBase)} </td></#list> </tr>
     </#list>
 </table>
 </center>
@@ -398,15 +404,15 @@ Missense / Silent ratio: </th><td class="numeric"> ${changeStats.silentRatio?str
 
 <small>
 <b>Note:</b> Only SNPs are used for this statistic.<br>
-<b>Note:</b> This Ts/Tv ratio is a 'raw' ratio. Some people prefer to use a ratio of rates, not observed events. In that case, you need to multiply by 2.0 (since there are twice as many possible transitions than transversions, E[Ts/Tv] ratio is twice the ratio of events).
+<b>Note:</b> This Ts/Tv ratio is a 'raw' ratio (ratio of observed events).
 </small>
 <p>
 
 <center>
 <table border=1>
-	<tr> <th> Transitions </th><td class="numeric"> ${seqStats.transitions} </td> </tr>
-	<tr> <th> Transversions </th><td class="numeric"> ${seqStats.transversions} </td> </tr>
-	<tr> <th> Ts/Tv ratio </th><td class="numeric"> ${seqStats.tsTvRatio?string("0.####")} </td> </tr>
+	<tr> <th> Transitions </th><td class="numeric"> ${variantStats.transitions} </td> </tr>
+	<tr> <th> Transversions </th><td class="numeric"> ${variantStats.transversions} </td> </tr>
+	<tr> <th> Ts/Tv ratio </th><td class="numeric"> ${variantStats.tsTvRatio?string("0.####")} </td> </tr>
 </table>
 </center>
 <p>
@@ -545,8 +551,8 @@ Note: Number of times an allele appears once (singleton), twice (doubletons), et
 <b> Changes by chromosome</b><p> 
 
 <center>
-<#list seqStats.chromosomeNamesEffective as chr> 
-	<#assign chrStats = seqStats.getChrPosStats(chr)>
+<#list variantStats.chromosomeNamesEffective as chr> 
+	<#assign chrStats = variantStats.getChrPosStats(chr)>
 	<pre>
 		<img src="${chrStats.toStringHistoPlot("Changes histogram: " + chr, "Position", "Changes")}"><br>
 		${chrStats}

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.stats.ObservedOverExpectedCpG;
 
 /**
@@ -221,7 +221,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 * @return
 	 */
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects, Variant seqChangerRef) {
+	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects, Variant seqChangerRef) {
 		if (!intersects(seqChange)) return false; // Sanity check
 
 		boolean hitTranscript = false;

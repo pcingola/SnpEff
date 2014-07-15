@@ -13,12 +13,12 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
  */
 public class Hgvs {
 
-	protected ChangeEffect changeEffect;
+	protected VariantEffect changeEffect;
 	Variant seqChange;
 	Marker marker;
 	Transcript tr;
 
-	public Hgvs(ChangeEffect changeEffect) {
+	public Hgvs(VariantEffect changeEffect) {
 		this.changeEffect = changeEffect;
 		seqChange = changeEffect.getSeqChange();
 		marker = changeEffect.getMarker();

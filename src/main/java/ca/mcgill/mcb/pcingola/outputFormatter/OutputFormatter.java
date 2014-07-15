@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import ca.mcgill.mcb.pcingola.filter.ChangeEffectFilter;
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 
 /**
@@ -36,18 +36,18 @@ public abstract class OutputFormatter {
 	BufferedWriter out;
 	Marker section;
 	ChangeEffectFilter changeEffectResutFilter = null; // Filter prediction results
-	ArrayList<ChangeEffect> changeEffects;
+	ArrayList<VariantEffect> changeEffects;
 	Config config;
 
 	public OutputFormatter() {
-		changeEffects = new ArrayList<ChangeEffect>();
+		changeEffects = new ArrayList<VariantEffect>();
 	}
 
 	/**
 	 * Add effects to list
 	 * @param changeEffects
 	 */
-	public void add(ChangeEffect changeEffect) {
+	public void add(VariantEffect changeEffect) {
 		// Passes the filter? => Add
 		if ((changeEffectResutFilter == null) || (!changeEffectResutFilter.filter(changeEffect))) changeEffects.add(changeEffect);
 	}

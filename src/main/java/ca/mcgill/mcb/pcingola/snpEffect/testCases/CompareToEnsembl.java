@@ -11,9 +11,9 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -74,7 +74,7 @@ public class CompareToEnsembl {
 	 * @param change
 	 * @return
 	 */
-	String change2str(ChangeEffect change) {
+	String change2str(VariantEffect change) {
 		String str = effTranslate(change.getEffectType());
 
 		if (change.getCodonsOld().isEmpty() && change.getCodonsNew().isEmpty()) str += " -";
@@ -99,14 +99,14 @@ public class CompareToEnsembl {
 		Collections.sort(list);
 
 		for (Variant seqChange : list) {
-			ChangeEffects changes = snpEffectPredictor.seqChangeEffect(seqChange);
+			VariantEffects changes = snpEffectPredictor.variantEffect(seqChange);
 
 			boolean ok = false;
 			StringBuffer changesSb = new StringBuffer();
 			StringBuffer changesAllSb = new StringBuffer();
 
 			// Compare to all changes found by SnpEff
-			for (ChangeEffect change : changes) {
+			for (VariantEffect change : changes) {
 				Marker m = change.getMarker();
 
 				// Find transcript

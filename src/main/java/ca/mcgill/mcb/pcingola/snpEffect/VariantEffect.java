@@ -16,16 +16,11 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
- * Object used to show results of a sequence change effect.
- *
- * TODO: Several things to improve in this class
- * 	- There should be a class called 'ChangeEffects' that accumulated multiple effects from a seqChange
- * 	-
- *
+ * Effect of a variant.
  *
  * @author pcingola
  */
-public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
+public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	public enum Coding {
 		CODING, NON_CODING
@@ -85,7 +80,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		, NEXT_PROT //
 		;
 
-		static HashMap<String, EffectType> so2efftype = new HashMap<String, ChangeEffect.EffectType>();
+		static HashMap<String, EffectType> so2efftype = new HashMap<String, VariantEffect.EffectType>();
 
 		/**
 		 * Parse a string to an EffectType
@@ -287,8 +282,8 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 
 	static final boolean COMPATIBLE_v1_8 = true; // Activate this in order to get the same out as version 1.8. This is only for testing & debugging
 
-	Variant seqChange = null;
-	Variant seqChangeRef = null;
+	Variant variant = null;
+	Variant variantRef = null;
 	EffectType effectType = EffectType.NONE;
 	EffectImpact effectImpact = null;
 	Marker marker = null;
@@ -302,13 +297,13 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	String aaOld = "", aaNew = ""; // Amino acid changes
 	String aasAroundOld = "", aasAroundNew = ""; // Amino acids around
 
-	public ChangeEffect(Variant seqChange) {
-		this.seqChange = seqChange;
+	public VariantEffect(Variant variant) {
+		this.variant = variant;
 	}
 
-	public ChangeEffect(Variant seqChange, Variant seqChangeRef) {
-		this.seqChange = seqChange;
-		this.seqChangeRef = seqChangeRef;
+	public VariantEffect(Variant variant, Variant variantRef) {
+		this.variant = variant;
+		this.variantRef = variantRef;
 	}
 
 	/**
@@ -326,9 +321,9 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	}
 
 	@Override
-	public ChangeEffect clone() {
+	public VariantEffect clone() {
 		try {
-			return (ChangeEffect) super.clone();
+			return (VariantEffect) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}
@@ -353,20 +348,20 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	}
 
 	@Override
-	public int compareTo(ChangeEffect changeEffect) {
+	public int compareTo(VariantEffect variantEffect) {
 		// Sort by impact
-		int comp = getEffectImpact().compareTo(changeEffect.getEffectImpact());
+		int comp = getEffectImpact().compareTo(variantEffect.getEffectImpact());
 		if (comp != 0) return comp;
 
 		// Sort by effect
-		comp = getEffectType().compareTo(changeEffect.getEffectType());
+		comp = getEffectType().compareTo(variantEffect.getEffectType());
 		if (comp != 0) return comp;
 
 		// Sort by genomic coordinate of affected 'marker'
-		if ((getMarker() != null) && (changeEffect.getMarker() != null)) return getMarker().compareTo(changeEffect.getMarker());
+		if ((getMarker() != null) && (variantEffect.getMarker() != null)) return getMarker().compareTo(variantEffect.getMarker());
 
-		// Sort by seqChange (most of the time this is equal)
-		return seqChange.compareTo(changeEffect.getSeqChange());
+		// Sort by variant (most of the time this is equal)
+		return variant.compareTo(variantEffect.getSeqChange());
 	}
 
 	/**
@@ -508,7 +503,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	public EffectImpact getEffectImpact() {
 
 		if (effectImpact == null) {
-			if ((seqChange != null) && (!seqChange.isVariant())) {
+			if ((variant != null) && (!variant.isVariant())) {
 				// Not a change? => Modifier
 				effectImpact = EffectImpact.MODIFIER;
 			} else {
@@ -624,7 +619,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	 * @return
 	 */
 	public FunctionalClass getFunctionalClass() {
-		if (seqChange.isSnp()) {
+		if (variant.isSnp()) {
 			if (!aaNew.equals(aaOld)) {
 				CodonTable codonTable = marker.codonTable();
 				if (codonTable.isStop(codonsNew)) return FunctionalClass.NONSENSE;
@@ -718,9 +713,9 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	 * @return
 	 */
 	public String getGenotype() {
-		if (seqChange == null) return "";
-		if (seqChangeRef != null) return seqChange.getGenotype() + "-" + seqChangeRef.getGenotype();
-		return seqChange.getGenotype();
+		if (variant == null) return "";
+		if (variantRef != null) return variant.getGenotype() + "-" + variantRef.getGenotype();
+		return variant.getGenotype();
 	}
 
 	/**
@@ -762,7 +757,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 	}
 
 	public Variant getSeqChange() {
-		return seqChange;
+		return variant;
 	}
 
 	public Transcript getTranscript() {
@@ -785,7 +780,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public boolean hasError() {
@@ -861,7 +856,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				|| (effectType == EffectType.SPLICE_SITE_REGION) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH_U12) //
-				;
+		;
 	}
 
 	public boolean isStartGained() {
@@ -877,7 +872,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				|| (effectType == EffectType.UTR_3_PRIME) //
 				|| (effectType == EffectType.UTR_5_DELETED) //
 				|| (effectType == EffectType.UTR_3_DELETED) //
-				;
+		;
 	}
 
 	public void set(Marker marker, EffectType effectType, String message) {
@@ -999,11 +994,11 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		Transcript transcript = getTranscript();
 		if (transcript != null) {
 			// Transcript level errors or warnings
-			addErrorWarning(transcript.sanityCheck(seqChange));
+			addErrorWarning(transcript.sanityCheck(variant));
 
 			// Exon level errors or warnings
 			Exon exon = getExon();
-			if (exon != null) addErrorWarning(exon.sanityCheck(seqChange));
+			if (exon != null) addErrorWarning(exon.sanityCheck(variant));
 		}
 	}
 
@@ -1044,7 +1039,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 		}
 
 		// Add seqChage's ID
-		if (!seqChange.getId().isEmpty()) customId += seqChange.getId();
+		if (!variant.getId().isEmpty()) customId += variant.getId();
 
 		// Add custom markers
 		if ((marker != null) && (marker instanceof Custom)) customId += (customId.isEmpty() ? "" : ";") + marker.getId();
@@ -1074,7 +1069,7 @@ public class ChangeEffect implements Cloneable, Comparable<ChangeEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-				;
+		;
 	}
 
 	/**

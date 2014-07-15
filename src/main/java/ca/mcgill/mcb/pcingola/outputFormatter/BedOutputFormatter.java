@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 
 /**
  * Formats output as BED file
@@ -51,7 +51,7 @@ public class BedOutputFormatter extends OutputFormatter {
 
 		// Show results
 		HashSet<String> chEffs = new HashSet<String>();
-		for (ChangeEffect changeEffect : changeEffects) {
+		for (VariantEffect changeEffect : changeEffects) {
 			// If it is not filtered out by changeEffectResutFilter  => Show it
 			if ((changeEffectResutFilter == null) || (!changeEffectResutFilter.filter(changeEffect))) {
 

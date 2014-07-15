@@ -9,8 +9,8 @@ import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -62,9 +62,9 @@ public class TestCasesNmd extends TestCase {
 					Variant seqChange = new Variant(tr.getChromosome(), expos, "A", "C"); // Create a seqChange
 
 					// Create a STOP_GAIN effect
-					ChangeEffect changeEffect = new ChangeEffect(seqChange);
+					VariantEffect changeEffect = new VariantEffect(seqChange);
 					changeEffect.set(exon, EffectType.STOP_GAINED, "");
-					LinkedList<ChangeEffect> changeEffects = new LinkedList<ChangeEffect>();
+					LinkedList<VariantEffect> changeEffects = new LinkedList<VariantEffect>();
 					changeEffects.add(changeEffect);
 
 					// Create a LOF object and analyze the effect

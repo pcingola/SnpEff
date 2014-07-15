@@ -6,8 +6,8 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
@@ -68,7 +68,7 @@ public class Utr5prime extends Utr {
 	}
 
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects) {
+	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
 		// Has the whole UTR been deleted?
 		if (seqChange.includes(this) && (seqChange.getChangeType() == VariantType.DEL)) {
 			changeEffects.add(this, EffectType.UTR_5_DELETED, ""); // A UTR was removed entirely

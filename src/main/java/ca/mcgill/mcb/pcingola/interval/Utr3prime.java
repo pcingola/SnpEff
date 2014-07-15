@@ -1,8 +1,8 @@
 package ca.mcgill.mcb.pcingola.interval;
 
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * Interval for a UTR (5 prime UTR and 3 prime UTR
@@ -35,7 +35,7 @@ public class Utr3prime extends Utr {
 	}
 
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects) {
+	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false;
 
 		if (seqChange.includes(this) && (seqChange.getChangeType() == VariantType.DEL)) {

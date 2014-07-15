@@ -11,8 +11,8 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
@@ -157,7 +157,7 @@ public class TestCasesSnp extends TestCase {
 						if (!seqChange.isVariant()) effectExpected = "EXON";
 
 						// Calculate effects
-						ChangeEffects effects = snpEffectPredictor.seqChangeEffect(seqChange);
+						VariantEffects effects = snpEffectPredictor.variantEffect(seqChange);
 
 						// There should be only one effect
 						if (debug) System.out.println(effects);
@@ -165,7 +165,7 @@ public class TestCasesSnp extends TestCase {
 
 						// Show
 						if (effects.size() == 1) {
-							ChangeEffect effect = effects.get();
+							VariantEffect effect = effects.get();
 							String effStr = effect.effect(true, true, true, false);
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //

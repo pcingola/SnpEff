@@ -2,20 +2,20 @@ package ca.mcgill.mcb.pcingola.filter;
 
 import java.util.HashSet;
 
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 
 /**
  * A Generic ChangeEffect filter
  * 
  * @author pcingola
  */
-public class ChangeEffectFilter implements Filter<ChangeEffect> {
+public class ChangeEffectFilter implements Filter<VariantEffect> {
 
 	HashSet<EffectType> filterOut;
 
 	public ChangeEffectFilter() {
-		filterOut = new HashSet<ChangeEffect.EffectType>();
+		filterOut = new HashSet<VariantEffect.EffectType>();
 	}
 
 	public void add(EffectType effType) {
@@ -36,7 +36,7 @@ public class ChangeEffectFilter implements Filter<ChangeEffect> {
 	 * @return true if it passes the filter
 	 */
 	@Override
-	public boolean filter(ChangeEffect changeEffectResut) {
+	public boolean filter(VariantEffect changeEffectResut) {
 		return filterOut.contains(changeEffectResut.getEffectType());
 	}
 

@@ -1,8 +1,8 @@
 package ca.mcgill.mcb.pcingola.interval;
 
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * Regulatory elements
@@ -43,7 +43,7 @@ public class Regulation extends Marker {
 	 * @return
 	 */
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects) {
+	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false; // Sanity check
 		EffectType effType = EffectType.REGULATION;
 		changeEffects.add(this, effType, "");

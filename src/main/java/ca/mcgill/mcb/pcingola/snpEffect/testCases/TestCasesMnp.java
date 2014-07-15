@@ -13,9 +13,9 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -94,12 +94,12 @@ public class TestCasesMnp extends TestCase {
 		//---
 		// Calculate effects
 		//---
-		ChangeEffects effects = snpEffectPredictor.seqChangeEffect(seqChange);
+		VariantEffects effects = snpEffectPredictor.variantEffect(seqChange);
 
 		// Show
-		ChangeEffect effect = null;
+		VariantEffect effect = null;
 		if (effects.size() > 1) { // Usually there is only one effect
-			for (ChangeEffect ce : effects) {
+			for (VariantEffect ce : effects) {
 				if ((ce.getEffectType() != EffectType.SPLICE_SITE_ACCEPTOR) //
 						&& (ce.getEffectType() != EffectType.SPLICE_SITE_DONOR) //
 						&& (ce.getEffectType() != EffectType.INTRON) //

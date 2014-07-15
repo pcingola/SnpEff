@@ -8,9 +8,9 @@ import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.serializer.TxtSerializable;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -356,7 +356,7 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @param m
 	 * @return
 	 */
-	public String idChain(String separator, boolean useGeneId, ChangeEffect changeEffect) {
+	public String idChain(String separator, boolean useGeneId, VariantEffect changeEffect) {
 		StringBuilder sb = new StringBuilder();
 
 		for (Marker m = this; (m != null) && !(m instanceof Chromosome) && !(m instanceof Genome); m = m.getParent()) {
@@ -552,7 +552,7 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @param changeEffect
 	 * @return
 	 */
-	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects) {
+	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false;
 		changeEffects.add(this, type, "");
 		return true;
@@ -565,7 +565,7 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @param seqChangeRef : Before analyzing results, we have to change markers using seqChangerRef to create a new reference 'on the fly'
 	 * @return
 	 */
-	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffects, Variant seqChangerRef) {
+	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects, Variant seqChangerRef) {
 		if (!intersects(seqChange)) return false;// Sanity check
 
 		if (seqChangerRef != null) {

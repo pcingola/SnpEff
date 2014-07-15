@@ -16,7 +16,7 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
@@ -54,9 +54,9 @@ public class TestCasesIntervals extends TestCase {
 	 * @param resultsSoFar
 	 * @return
 	 */
-	boolean anyResultMatches(String transcriptId, Variant seqChange, List<ChangeEffect> resultsList, boolean useSimple, StringBuilder resultsSoFar) {
+	boolean anyResultMatches(String transcriptId, Variant seqChange, List<VariantEffect> resultsList, boolean useSimple, StringBuilder resultsSoFar) {
 		boolean ok = false;
-		for (ChangeEffect chEff : resultsList) {
+		for (VariantEffect chEff : resultsList) {
 			String resStr = chEff.toStringSimple(!useSimple);
 			if (verbose) System.out.println(seqChange + "\t'" + resStr + "'");
 

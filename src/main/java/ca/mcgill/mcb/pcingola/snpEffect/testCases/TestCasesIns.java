@@ -15,8 +15,8 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -243,14 +243,14 @@ public class TestCasesIns extends TestCase {
 						}
 
 						// Calculate effects
-						ChangeEffects effects = snpEffectPredictor.seqChangeEffect(seqChange);
+						VariantEffects effects = snpEffectPredictor.variantEffect(seqChange);
 
 						// There should be at least one effect
 						Assert.assertTrue(effects.size() > 0);
 
 						// Show
 						boolean ok = false;
-						for (ChangeEffect effect : effects) {
+						for (VariantEffect effect : effects) {
 							String effStr = effect.effect(true, true, true, false);
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //

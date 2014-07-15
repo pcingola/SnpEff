@@ -10,9 +10,9 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRefSeq;
@@ -102,8 +102,8 @@ public class TestCasesRefSeq extends TestCase {
 		// Check a SNP
 		sep.buildForest();
 		Variant seqChange = new Variant(sep.getGenome().getChromosome("1"), 521603, "A", "G");
-		ChangeEffects effs = sep.seqChangeEffect(seqChange);
-		for (ChangeEffect eff : effs) {
+		VariantEffects effs = sep.variantEffect(seqChange);
+		for (VariantEffect eff : effs) {
 			System.out.println("\t" + eff);
 			Assert.assertEquals(eff.getEffectType(), EffectType.INTERGENIC);
 		}

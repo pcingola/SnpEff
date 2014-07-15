@@ -8,9 +8,9 @@ import java.util.Map;
 
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.stats.ObservedOverExpectedCpG;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -1438,7 +1438,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * @return
 	 */
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, ChangeEffects changeEffectList) {
+	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffectList) {
 		if (!intersects(seqChange)) return false; // Sanity check
 
 		//---

@@ -15,8 +15,8 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.FunctionalClass;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.FunctionalClass;
 import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.KeyValue;
@@ -93,7 +93,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		boolean allWarnings = false;
 		if (gatk) {
 			allWarnings = changeEffects.size() > 0;
-			for (ChangeEffect changeEffect : changeEffects)
+			for (VariantEffect changeEffect : changeEffects)
 				allWarnings &= (changeEffect.hasError() || changeEffect.hasWarning());
 		}
 
@@ -102,7 +102,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 		// GATK only picks the first (i.e. highest impact) effect
 		if (gatk && changeEffects.size() > 1) {
-			ArrayList<ChangeEffect> changeEffectsGatk = new ArrayList<ChangeEffect>();
+			ArrayList<VariantEffect> changeEffectsGatk = new ArrayList<VariantEffect>();
 			changeEffectsGatk.add(changeEffects.get(0));
 			changeEffects = changeEffectsGatk;
 		}
@@ -114,7 +114,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		ArrayList<String> effsSorted = new ArrayList<String>();
 		HashSet<String> oicr = (useOicr ? new HashSet<String>() : null);
 		boolean addCustomFields = false;
-		for (ChangeEffect changeEffect : changeEffects) {
+		for (VariantEffect changeEffect : changeEffects) {
 			// In GATK mode, skip changeEffects having errors or warnings (unless ALL effects have warnings)
 			if (gatk && !allWarnings && (changeEffect.hasError() || changeEffect.hasWarning())) continue;
 
@@ -170,7 +170,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 					// Protein coding gene?
 					String coding = "";
-					if (gene.getGenome().hasCodingInfo()) coding = (gene.isProteinCoding() ? ChangeEffect.Coding.CODING.toString() : ChangeEffect.Coding.NON_CODING.toString());
+					if (gene.getGenome().hasCodingInfo()) coding = (gene.isProteinCoding() ? VariantEffect.Coding.CODING.toString() : VariantEffect.Coding.NON_CODING.toString());
 					effBuff.append(coding);
 					effBuff.append("|");
 				} else if (changeEffect.isRegulation()) {
@@ -238,7 +238,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 						for (String ce : effsSorted)
 							sb.append("\t" + ce + "\n");
 						sb.append("All    (TXT):\n");
-						for (ChangeEffect ce : changeEffects)
+						for (VariantEffect ce : changeEffects)
 							sb.append("\t" + ce + "\n");
 						sb.append("--------------------------------------------------------------------------------\n");
 						Gpr.debug("WARNING: Repeated effect!\n" + sb);
@@ -292,7 +292,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 		// Add custom markers info fields
 		if (addCustomFields) {
-			for (ChangeEffect changeEffect : changeEffects) {
+			for (VariantEffect changeEffect : changeEffects) {
 				if (changeEffect.hasAdditionalAnnotations()) {
 					Custom custom = (Custom) changeEffect.getMarker();
 					for (KeyValue<String, String> kv : custom) {
@@ -369,7 +369,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 	 * @param changeEffect
 	 * @return
 	 */
-	boolean hasAnnotations(ChangeEffect changeEffect) {
+	boolean hasAnnotations(VariantEffect changeEffect) {
 		return changeEffect.getMarker() != null // Do we have a marker?
 				&& (changeEffect.getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) changeEffect.getMarker()).hasAnnotations() // Does it have additional annotations?

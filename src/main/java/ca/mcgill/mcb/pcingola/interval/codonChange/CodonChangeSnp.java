@@ -3,9 +3,9 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * Calculate codon changes produced by a SNP
@@ -13,7 +13,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
  */
 public class CodonChangeSnp extends CodonChange {
 
-	public CodonChangeSnp(Variant seqChange, Transcript transcript, ChangeEffects changeEffects) {
+	public CodonChangeSnp(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
 		super(seqChange, transcript, changeEffects);
 		returnNow = true; // A SNP can only affect one exon
 	}

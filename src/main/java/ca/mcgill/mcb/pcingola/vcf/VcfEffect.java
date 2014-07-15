@@ -1,6 +1,6 @@
 package ca.mcgill.mcb.pcingola.vcf;
 
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -23,16 +23,16 @@ public class VcfEffect {
 	String effectStrings[];
 	FormatVersion formatVersion;
 	String effString;
-	ChangeEffect.EffectType effect;
+	VariantEffect.EffectType effect;
 	String effectDetails;
-	ChangeEffect.EffectImpact impact;
-	ChangeEffect.FunctionalClass funClass;
+	VariantEffect.EffectImpact impact;
+	VariantEffect.FunctionalClass funClass;
 	String codon;
 	String aa;
 	int aaLen;
 	String gene;
 	String bioType;
-	ChangeEffect.Coding coding;
+	VariantEffect.Coding coding;
 	String transcriptId;
 	String exonId;
 	String genotype;
@@ -193,7 +193,7 @@ public class VcfEffect {
 		return bioType;
 	}
 
-	public ChangeEffect.Coding getCoding() {
+	public VariantEffect.Coding getCoding() {
 		return coding;
 	}
 
@@ -201,7 +201,7 @@ public class VcfEffect {
 		return codon;
 	}
 
-	public ChangeEffect.EffectType getEffect() {
+	public VariantEffect.EffectType getEffect() {
 		return effect;
 	}
 
@@ -225,7 +225,7 @@ public class VcfEffect {
 		return exonId;
 	}
 
-	public ChangeEffect.FunctionalClass getFunClass() {
+	public VariantEffect.FunctionalClass getFunClass() {
 		return funClass;
 	}
 
@@ -237,7 +237,7 @@ public class VcfEffect {
 		return genotype;
 	}
 
-	public ChangeEffect.EffectImpact getImpact() {
+	public VariantEffect.EffectImpact getImpact() {
 		return impact;
 	}
 
@@ -257,14 +257,14 @@ public class VcfEffect {
 
 			// Effect
 			effString = effectStrings[index];
-			effect = ChangeEffect.EffectType.parse(parseEffect(effectStrings[index]));
+			effect = VariantEffect.EffectType.parse(parseEffect(effectStrings[index]));
 			effectDetails = parseEffectDetails(effectStrings[index]); // Effect details: everything between '['  and ']' (e.g. Regulation, Custom, Motif, etc.)
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) impact = ChangeEffect.EffectImpact.valueOf(effectStrings[index]);
+			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) impact = VariantEffect.EffectImpact.valueOf(effectStrings[index]);
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) funClass = ChangeEffect.FunctionalClass.valueOf(effectStrings[index]);
+			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) funClass = VariantEffect.FunctionalClass.valueOf(effectStrings[index]);
 			index++;
 
 			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) codon = effectStrings[index];
@@ -285,7 +285,7 @@ public class VcfEffect {
 			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) bioType = effectStrings[index];
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) coding = ChangeEffect.Coding.valueOf(effectStrings[index]);
+			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) coding = VariantEffect.Coding.valueOf(effectStrings[index]);
 			index++;
 
 			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) transcriptId = effectStrings[index];
@@ -341,7 +341,7 @@ public class VcfEffect {
 		this.bioType = bioType;
 	}
 
-	public void setCoding(ChangeEffect.Coding coding) {
+	public void setCoding(VariantEffect.Coding coding) {
 		this.coding = coding;
 	}
 
@@ -349,7 +349,7 @@ public class VcfEffect {
 		this.codon = codon;
 	}
 
-	public void setEffect(ChangeEffect.EffectType effect) {
+	public void setEffect(VariantEffect.EffectType effect) {
 		this.effect = effect;
 	}
 
@@ -361,7 +361,7 @@ public class VcfEffect {
 		this.exonId = exonId;
 	}
 
-	public void setFunClass(ChangeEffect.FunctionalClass funClass) {
+	public void setFunClass(VariantEffect.FunctionalClass funClass) {
 		this.funClass = funClass;
 	}
 
@@ -369,7 +369,7 @@ public class VcfEffect {
 		this.gene = gene;
 	}
 
-	public void setImpact(ChangeEffect.EffectImpact impact) {
+	public void setImpact(VariantEffect.EffectImpact impact) {
 		this.impact = impact;
 	}
 

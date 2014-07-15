@@ -16,8 +16,8 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryGtf22;
@@ -77,8 +77,8 @@ public class TestCasesSeqChange extends TestCase {
 	 * @param resultsSoFar
 	 * @return
 	 */
-	boolean anyResultMatches(String transcriptId, Variant seqChange, ChangeEffects changeEffects, boolean useShort) {
-		for (ChangeEffect chEff : changeEffects) {
+	boolean anyResultMatches(String transcriptId, Variant seqChange, VariantEffects changeEffects, boolean useShort) {
+		for (VariantEffect chEff : changeEffects) {
 			String resStr = chEff.toStringSimple(useShort);
 
 			Transcript tr = chEff.getTranscript();
@@ -134,14 +134,14 @@ public class TestCasesSeqChange extends TestCase {
 		// Predict each seqChange
 		for (Variant seqChange : seqChangeList) {
 			// Get results for each snp
-			ChangeEffects results = config.getSnpEffectPredictor().seqChangeEffect(seqChange);
+			VariantEffects results = config.getSnpEffectPredictor().variantEffect(seqChange);
 
 			String msg = "";
 			msg += "Number : " + num + "\n";
 			msg += "\tExpecting   : " + (negate ? "NOT " : "") + "'" + seqChange.getId() + "'\n";
 			msg += "\tSeqChange   : " + seqChange + "\n";
 			msg += "\tResultsList :\n";
-			for (ChangeEffect res : results)
+			for (VariantEffect res : results)
 				msg += "\t" + res + "\n";
 
 			if (verbose) System.out.println(msg);
@@ -153,7 +153,7 @@ public class TestCasesSeqChange extends TestCase {
 
 			if (!ok) {
 				if (createOutputFile) {
-					for (ChangeEffect res : results) {
+					for (VariantEffect res : results) {
 						Variant sc = res.getSeqChange();
 						System.out.println(sc.getChromosomeName() //
 								+ "\t" + (sc.getStart() + 1) //

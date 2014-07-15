@@ -13,9 +13,9 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -291,14 +291,14 @@ public class TestCasesHgvs extends TestCase {
 						if (!seqChange.isVariant()) protHgvs = "EXON";
 
 						// Calculate effects
-						ChangeEffects effects = snpEffectPredictor.seqChangeEffect(seqChange);
+						VariantEffects effects = snpEffectPredictor.variantEffect(seqChange);
 
 						// There should be only one effect
 						Assert.assertEquals(true, effects.size() <= 1);
 
 						// Show
 						if (effects.size() == 1) {
-							ChangeEffect effect = effects.get();
+							VariantEffect effect = effects.get();
 							String effStr = effect.getHgvs();
 
 							if (debug) System.out.println("\tPos: " + pos //
@@ -395,8 +395,8 @@ public class TestCasesHgvs extends TestCase {
 
 					// Calculate effect and compare to expected
 					Variant sc = new Variant(transcript.getChromosome(), pos, refStr, altStr, "");
-					ChangeEffects ceffs = snpEffectPredictor.seqChangeEffect(sc);
-					ChangeEffect ceff = ceffs.get();
+					VariantEffects ceffs = snpEffectPredictor.variantEffect(sc);
+					VariantEffect ceff = ceffs.get();
 					String hgsvEff = ceffs.get().getHgvs();
 					if (debug) System.out.println("\tpos: " + pos + " [" + j + "]\thgsv: '" + hgsv + "'\tEff: '" + hgsvEff + "'\t" + ceff.getEffectType());
 

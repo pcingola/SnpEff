@@ -14,8 +14,8 @@ import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -50,10 +50,10 @@ public class TestCasesLof extends TestCase {
 	 * @param exon
 	 * @return
 	 */
-	LinkedList<ChangeEffect> changeEffects(Variant seqChange, EffectType effectType, Marker marker) {
-		ChangeEffect changeEffect = new ChangeEffect(seqChange);
+	LinkedList<VariantEffect> changeEffects(Variant seqChange, EffectType effectType, Marker marker) {
+		VariantEffect changeEffect = new VariantEffect(seqChange);
 		changeEffect.set(marker, effectType, "");
-		LinkedList<ChangeEffect> changeEffects = new LinkedList<ChangeEffect>();
+		LinkedList<VariantEffect> changeEffects = new LinkedList<VariantEffect>();
 		changeEffects.add(changeEffect);
 		return changeEffects;
 
@@ -97,7 +97,7 @@ public class TestCasesLof extends TestCase {
 		seqChange.setEnd(ex.getEnd());
 		seqChange.setChangeType(VariantType.DEL);
 		if (debug) Gpr.debug("SeqChange:" + seqChange);
-		LinkedList<ChangeEffect> changeEffects = changeEffects(seqChange, EffectType.EXON_DELETED, ex);
+		LinkedList<VariantEffect> changeEffects = changeEffects(seqChange, EffectType.EXON_DELETED, ex);
 
 		// Calculate LOF
 		LossOfFunction lof = new LossOfFunction(config, changeEffects);
@@ -135,7 +135,7 @@ public class TestCasesLof extends TestCase {
 				boolean delIsLof = perc > LossOfFunction.DEFAULT_DELETE_PROTEIN_CODING_BASES;
 
 				// Calculate LOF
-				LinkedList<ChangeEffect> changeEffects = changeEffects(seqChange, EffectType.TRANSCRIPT, tr); // Notice that we don't care what type of effect is, so we just use 'TRANSCRIPT'
+				LinkedList<VariantEffect> changeEffects = changeEffects(seqChange, EffectType.TRANSCRIPT, tr); // Notice that we don't care what type of effect is, so we just use 'TRANSCRIPT'
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
 				boolean islof = lof.isLof();
 				Assert.assertEquals(delIsLof, islof);
@@ -167,8 +167,8 @@ public class TestCasesLof extends TestCase {
 				if (debug) Gpr.debug("SeqChange:" + seqChange);
 
 				// Create change effect
-				LinkedList<ChangeEffect> changeEffects = changeEffects(seqChange, EffectType.FRAME_SHIFT, ex);
-				ChangeEffect changeEffect = changeEffects.get(0);
+				LinkedList<VariantEffect> changeEffects = changeEffects(seqChange, EffectType.FRAME_SHIFT, ex);
+				VariantEffect changeEffect = changeEffects.get(0);
 				changeEffect.setCodons("", "", codingBase / 3, codingBase % 3); // Set codon affected
 				int aaLen = changeEffect.getAaLength();
 
@@ -215,7 +215,7 @@ public class TestCasesLof extends TestCase {
 		if (exon == null) throw new RuntimeEOFException("Cannot find first exon for transcript " + tr.getId());
 
 		// Create a LOF object and analyze the effect
-		LinkedList<ChangeEffect> changeEffects = changeEffects(seqChange, EffectType.START_LOST, exon);
+		LinkedList<VariantEffect> changeEffects = changeEffects(seqChange, EffectType.START_LOST, exon);
 		LossOfFunction lof = new LossOfFunction(config, changeEffects);
 		boolean islof = lof.isLof();
 		Assert.assertEquals(true, islof);
@@ -247,7 +247,7 @@ public class TestCasesLof extends TestCase {
 			for (int pos = posDonor, i = 0; i < maxSize; i++, pos += step) {
 				Variant seqChange = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a seqChange
 				Marker marker = findMarker(seqChange, EffectType.SPLICE_SITE_ACCEPTOR, null, ex);
-				LinkedList<ChangeEffect> changeEffects = changeEffects(seqChange, EffectType.SPLICE_SITE_ACCEPTOR, marker); // Create a SPLICE_SITE_ACCEPTOR effect
+				LinkedList<VariantEffect> changeEffects = changeEffects(seqChange, EffectType.SPLICE_SITE_ACCEPTOR, marker); // Create a SPLICE_SITE_ACCEPTOR effect
 				if (debug) Gpr.debug("SeqChange:" + seqChange);
 
 				// Create a LOF object and analyze the effect
@@ -286,7 +286,7 @@ public class TestCasesLof extends TestCase {
 			for (int pos = posDonor, i = 0; i < maxSize; i++, pos += step) {
 				Variant seqChange = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a seqChange
 				Marker marker = findMarker(seqChange, EffectType.SPLICE_SITE_DONOR, null, ex);
-				LinkedList<ChangeEffect> changeEffects = changeEffects(seqChange, EffectType.SPLICE_SITE_DONOR, marker); // Create a SPLICE_DONOR effect
+				LinkedList<VariantEffect> changeEffects = changeEffects(seqChange, EffectType.SPLICE_SITE_DONOR, marker); // Create a SPLICE_DONOR effect
 				if (debug) Gpr.debug("SeqChange:" + seqChange);
 
 				// Create a LOF object and analyze the effect

@@ -5,7 +5,7 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * Analyze codon changes based on a SeqChange and a Transcript
@@ -22,7 +22,7 @@ public class CodonChange {
 	Variant seqChange;
 	Transcript transcript;
 	Exon exon = null;
-	ChangeEffects changeEffects;
+	VariantEffects changeEffects;
 	int codonNum = -1;
 	int codonIndex = -1;
 	String codonsOld = ""; // Old codons (before change)
@@ -31,7 +31,7 @@ public class CodonChange {
 	String aaNew = ""; // New amino acids (after change)
 	String netCdsChange = "";
 
-	public CodonChange(Variant seqChange, Transcript transcript, ChangeEffects changeEffects) {
+	public CodonChange(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
 		this.seqChange = seqChange;
 		this.transcript = transcript;
 		this.changeEffects = changeEffects;
@@ -194,7 +194,7 @@ public class CodonChange {
 	 * @param changeEffects
 	 * @return
 	 */
-	CodonChange factory(Variant seqChange, Transcript transcript, ChangeEffects changeEffects) {
+	CodonChange factory(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
 		if (seqChange.isSnp()) return new CodonChangeSnp(seqChange, transcript, changeEffects);
 		if (seqChange.isIns()) return new CodonChangeIns(seqChange, transcript, changeEffects);
 		if (seqChange.isDel()) return new CodonChangeDel(seqChange, transcript, changeEffects);

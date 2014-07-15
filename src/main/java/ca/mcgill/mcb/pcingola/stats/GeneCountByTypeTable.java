@@ -12,7 +12,7 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 
 /**
  * Count for each 'type' and 'gene'.
@@ -92,7 +92,7 @@ public class GeneCountByTypeTable implements Iterable<Gene>, Serializable {
 	 * @param marker
 	 * @param seqChange
 	 */
-	public void sample(Gene gene, Marker marker, String type, ChangeEffect changeEffect) {
+	public void sample(Gene gene, Marker marker, String type, VariantEffect changeEffect) {
 		Variant seqChange = changeEffect.getSeqChange();
 
 		// Different seqChange? Clean the cache

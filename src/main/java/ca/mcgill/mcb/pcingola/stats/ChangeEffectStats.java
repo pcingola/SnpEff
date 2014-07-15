@@ -8,15 +8,15 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.FunctionalClass;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.FunctionalClass;
 import ca.mcgill.mcb.pcingola.stats.plot.GoogleGenePercentBar;
 
 /**
  * Some stats about seqChange objects
  */
-public class ChangeEffectResutStats implements SamplingStats<ChangeEffect> {
+public class ChangeEffectStats implements SamplingStats<VariantEffect> {
 
 	public static final String CHANGE_SEPARATOR = "\t";
 	boolean useSequenceOntology = false; // Use Sequence Ontology terms
@@ -26,10 +26,11 @@ public class ChangeEffectResutStats implements SamplingStats<ChangeEffect> {
 	int aaChangeCountMax = Integer.MIN_VALUE;
 	int codonChangeCountMax = Integer.MIN_VALUE;
 	int countWarnings = 0;
+	int countErrors = 0;
 	GeneCountByTypeTable geneCountByRegionTable;
 	GeneCountByTypeTable geneCountByEffectTable;
 
-	public ChangeEffectResutStats(Genome genome) {
+	public ChangeEffectStats(Genome genome) {
 		this.genome = genome;
 		countByEffect = new CountByType();
 		countByCodon = new CountByType();
@@ -124,6 +125,10 @@ public class ChangeEffectResutStats implements SamplingStats<ChangeEffect> {
 		return countByImpact;
 	}
 
+	public int getCountErrors() {
+		return countErrors;
+	}
+
 	public int getCountWarnings() {
 		return countWarnings;
 	}
@@ -167,9 +172,10 @@ public class ChangeEffectResutStats implements SamplingStats<ChangeEffect> {
 	}
 
 	@Override
-	public void sample(ChangeEffect changeEffect) {
+	public void sample(VariantEffect changeEffect) {
 		// Any warnings?
-		if ((changeEffect.getWarning() != null) && (changeEffect.getWarning().length() > 0)) countWarnings++;
+		if (changeEffect.hasWarning()) countWarnings++;
+		if (changeEffect.hasError()) countErrors++;
 
 		// Count by effect
 		String effect = changeEffect.getEffectTypeString(useSequenceOntology); // changeEffect.effect(true, false, false, useSequenceOntology);

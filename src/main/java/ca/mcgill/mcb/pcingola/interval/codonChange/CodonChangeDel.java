@@ -3,8 +3,8 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * Calculate codon changes produced by a deletion
@@ -15,7 +15,7 @@ public class CodonChangeDel extends CodonChange {
 	int oldCodonCdsStart = -1;
 	int oldCodonCdsEnd = -1;
 
-	public CodonChangeDel(Variant seqChange, Transcript transcript, ChangeEffects changeEffects) {
+	public CodonChangeDel(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
 		super(seqChange, transcript, changeEffects);
 		returnNow = false;
 		requireNetCdsChange = true;

@@ -3,8 +3,8 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
@@ -16,7 +16,7 @@ public class CodonChangeMnp extends CodonChange {
 	int cdsStart;
 	int cdsEnd;
 
-	public CodonChangeMnp(Variant seqChange, Transcript transcript, ChangeEffects changeEffects) {
+	public CodonChangeMnp(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
 		super(seqChange, transcript, changeEffects);
 		returnNow = false;
 		requireNetCdsChange = true;

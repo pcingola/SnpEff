@@ -11,9 +11,9 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
@@ -275,9 +275,9 @@ public class TestCasesDel extends TestCase {
 					//---
 					// Calculate effects
 					//---
-					ChangeEffects effectsAll = snpEffectPredictor.seqChangeEffect(seqChange);
-					ChangeEffects effects = new ChangeEffects();
-					for (ChangeEffect eff : effectsAll) {
+					VariantEffects effectsAll = snpEffectPredictor.variantEffect(seqChange);
+					VariantEffects effects = new VariantEffects();
+					for (VariantEffect eff : effectsAll) {
 						boolean copy = true;
 
 						if (eff.getEffectType() == EffectType.SPLICE_SITE_ACCEPTOR) copy = false;
@@ -292,7 +292,7 @@ public class TestCasesDel extends TestCase {
 					if (debug && (effects.size() > 1)) {
 						System.out.println("Found more than one effect: " + effects.size() + "\n" + transcript);
 						System.out.println("\tEffects: ");
-						for (ChangeEffect eff : effects)
+						for (VariantEffect eff : effects)
 							System.out.println("\t" + eff);
 					}
 
@@ -302,7 +302,7 @@ public class TestCasesDel extends TestCase {
 					// Check effect
 					//---
 					boolean ok = false;
-					for (ChangeEffect effect : effects) {
+					for (VariantEffect effect : effects) {
 						String effStr = effect.effect(true, true, true, false);
 						if (debug) Gpr.debug("\tIteration: " + i + "\tPos: " + pos + "\tExpected: '" + effectExpected + "'\tEffect: '" + effStr + "'");
 

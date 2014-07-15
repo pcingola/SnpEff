@@ -2,7 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 
 /**
  * Coding change in HGVS notation (amino acid changes)
@@ -15,7 +15,7 @@ public class HgvsProtein extends Hgvs {
 	String aaNew3, aaOld3;
 	EffectType effectType;
 
-	public HgvsProtein(ChangeEffect changeEffect) {
+	public HgvsProtein(VariantEffect changeEffect) {
 		super(changeEffect);
 
 		codonNum = changeEffect.getCodonNum();

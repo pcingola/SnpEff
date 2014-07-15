@@ -6,61 +6,58 @@ import java.util.List;
 
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectImpact;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
 
 /**
- * A sorted collection of change effects
- * 
+ * A sorted collection of variant effects
+ *
  * @author pcingola
  */
-public class ChangeEffects implements Iterable<ChangeEffect> {
+public class VariantEffects implements Iterable<VariantEffect> {
 
-	Variant seqChange, seqChangeRef;
-	List<ChangeEffect> effects;
+	Variant variant, variantRef;
+	List<VariantEffect> effects;
 
 	/**
 	 *  An empty list of results;
 	 * @return
 	 */
-	public static ChangeEffects empty() {
-		return new ChangeEffects();
+	public static VariantEffects empty() {
+		return new VariantEffects();
 	}
 
-	public ChangeEffects() {
-		effects = new ArrayList<ChangeEffect>();
+	public VariantEffects() {
+		effects = new ArrayList<VariantEffect>();
 	}
 
-	public ChangeEffects(Variant seqChange) {
-		effects = new ArrayList<ChangeEffect>();
-		this.seqChange = seqChange;
+	public VariantEffects(Variant variant) {
+		effects = new ArrayList<VariantEffect>();
+		this.variant = variant;
 	}
 
-	public ChangeEffects(Variant seqChange, Variant seqChangeRef) {
-		effects = new ArrayList<ChangeEffect>();
-		this.seqChange = seqChange;
-		this.seqChangeRef = seqChangeRef;
-	}
-
-	public void add(ChangeEffect changeEffect) {
-		effects.add(changeEffect);
-	}
-
-	public void add(ChangeEffects changeEffects) {
-		effects.addAll(changeEffects.effects);
+	public VariantEffects(Variant variant, Variant variantRef) {
+		effects = new ArrayList<VariantEffect>();
+		this.variant = variant;
+		this.variantRef = variantRef;
 	}
 
 	/**
 	 * Add an effect
-	 * @param marker
-	 * @param effectType
-	 * @param message
 	 */
 	public void add(Marker marker, EffectType effectType, String message) {
-		ChangeEffect effNew = new ChangeEffect(seqChange, seqChangeRef);
+		VariantEffect effNew = new VariantEffect(variant, variantRef);
 		effNew.set(marker, effectType, message);
 		effects.add(effNew);
+	}
+
+	public void add(VariantEffect variantEffect) {
+		effects.add(variantEffect);
+	}
+
+	public void add(VariantEffects variantEffects) {
+		effects.addAll(variantEffects.effects);
 	}
 
 	public void addErrorWarning(ErrorWarningType errwarn) {
@@ -71,8 +68,8 @@ public class ChangeEffects implements Iterable<ChangeEffect> {
 	 * Get (or create) the latest ChangeEffect
 	 * @return
 	 */
-	public ChangeEffect get() {
-		if (effects.isEmpty()) effects.add(new ChangeEffect(seqChange, seqChangeRef));
+	public VariantEffect get() {
+		if (effects.isEmpty()) effects.add(new VariantEffect(variant, variantRef));
 		return effects.get(effects.size() - 1);
 
 	}
@@ -82,7 +79,7 @@ public class ChangeEffects implements Iterable<ChangeEffect> {
 	}
 
 	@Override
-	public Iterator<ChangeEffect> iterator() {
+	public Iterator<VariantEffect> iterator() {
 		return effects.iterator();
 	}
 
@@ -91,7 +88,7 @@ public class ChangeEffects implements Iterable<ChangeEffect> {
 
 		// Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
 		if (newEffectType != null) {
-			ChangeEffect newEff = get().clone();
+			VariantEffect newEff = get().clone();
 			newEff.setEffectType(newEffectType);
 			add(newEff);
 		}
@@ -125,7 +122,7 @@ public class ChangeEffects implements Iterable<ChangeEffect> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (ChangeEffect eff : this)
+		for (VariantEffect eff : this)
 			sb.append(eff + "\n");
 		return sb.toString();
 	}

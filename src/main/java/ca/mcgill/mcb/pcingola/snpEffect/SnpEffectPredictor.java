@@ -20,8 +20,8 @@ import ca.mcgill.mcb.pcingola.interval.Utr;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -505,8 +505,8 @@ public class SnpEffectPredictor implements Serializable {
 	 * Predict the effect of a seqChange
 	 * @param seqChange
 	 */
-	public ChangeEffects seqChangeEffect(Variant seqChange) {
-		return seqChangeEffect(seqChange, null);
+	public VariantEffects variantEffect(Variant seqChange) {
+		return variantEffect(seqChange, null);
 	}
 
 	/**
@@ -514,8 +514,8 @@ public class SnpEffectPredictor implements Serializable {
 	 * @param seqChange : Sequence change
 	 * @param seqChangeRef : Before analyzing results, we have to change markers using seqChangerRef to create a new reference 'on the fly'
 	 */
-	public ChangeEffects seqChangeEffect(Variant seqChange, Variant seqChangeRef) {
-		ChangeEffects changeEffects = new ChangeEffects(seqChange, seqChangeRef);
+	public VariantEffects variantEffect(Variant seqChange, Variant seqChangeRef) {
+		VariantEffects changeEffects = new VariantEffects(seqChange, seqChangeRef);
 
 		//---
 		// Chromosome missing?

@@ -4,8 +4,8 @@ import ca.mcgill.mcb.pcingola.akka.vcfStr.WorkerVcfStr;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.outputFormatter.OutputFormatter;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.ChangeEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
@@ -49,13 +49,13 @@ public class WorkerEff extends WorkerVcfStr {
 
 			for (Variant seqChange : vcfEntry.variants()) {
 				// Calculate effects
-				ChangeEffects changeEffects = snpEffectPredictor.seqChangeEffect(seqChange);
+				VariantEffects changeEffects = snpEffectPredictor.variantEffect(seqChange);
 
 				// Create new 'section'
 				outputFormatter.startSection(seqChange);
 
 				// Show results
-				for (ChangeEffect changeEffect : changeEffects)
+				for (VariantEffect changeEffect : changeEffects)
 					outputFormatter.add(changeEffect);
 
 				// Finish up this section
