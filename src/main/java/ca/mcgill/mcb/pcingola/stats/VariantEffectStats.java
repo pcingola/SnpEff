@@ -14,9 +14,10 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.FunctionalClass;
 import ca.mcgill.mcb.pcingola.stats.plot.GoogleGenePercentBar;
 
 /**
- * Some stats about seqChange objects
+ *
+ * Variants effet statistics
  */
-public class ChangeEffectStats implements SamplingStats<VariantEffect> {
+public class VariantEffectStats implements SamplingStats<VariantEffect> {
 
 	public static final String CHANGE_SEPARATOR = "\t";
 	boolean useSequenceOntology = false; // Use Sequence Ontology terms
@@ -30,7 +31,7 @@ public class ChangeEffectStats implements SamplingStats<VariantEffect> {
 	GeneCountByTypeTable geneCountByRegionTable;
 	GeneCountByTypeTable geneCountByEffectTable;
 
-	public ChangeEffectStats(Genome genome) {
+	public VariantEffectStats(Genome genome) {
 		this.genome = genome;
 		countByEffect = new CountByType();
 		countByCodon = new CountByType();

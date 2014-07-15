@@ -194,17 +194,17 @@ th a:active, th a:hover {
 		<#if changeStats.countWarnings &gt; 0> <#assign color="#ffff00"> </#if> 
 		<td bgcolor="${color}"> ${changeStats.countWarnings} </td>
 	</tr>	
-	<tr bgcolor=ffffff> 
+	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Errors </b> </td>
-		<#assign color="#ffffff">
+		<#assign color="#dddddd">
 		<#if changeStats.countErrors &gt; 0> <#assign color="#ff0000"> </#if> 
 		<td bgcolor="${color}"> ${changeStats.countErrors} </td>
 	</tr>	
-	<tr bgcolor=dddddd>
+	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of lines (input file) </b> </td>
 		<td> ${countInputLines} </td>
 	</tr>
-	<tr bgcolor=ffffff>
+	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants (before filter) </b> </td>
 		<td> ${countVariants} </td>
 	</tr>
@@ -223,19 +223,19 @@ th a:active, th a:hover {
 		( ${ ( 100 * variantStats.getKnownRatio() )?string("0.###") }% ) 
 		</td>
 	</tr>
-	<tr bgcolor=ffffff>
+	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of effects </b> </td>
 		<td> ${countEffects} </td>
 	</tr>
-	<tr bgcolor=dddddd>
+	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome total length </b> </td>
 		<td> ${variantStats.genomeLen} </td>
 	</tr>
-	<tr bgcolor=ffffff>
+	<tr bgcolor=dddddd>
 		<td valign=top> <b> Genome effective length </b> </td>
 		<td> ${variantStats.genomeLenEffective} </td>
 	</tr>
-	<tr bgcolor=dddddd>
+	<tr bgcolor=ffffff>
 		<td valign=top> <b> Change rate </b> </td>
 		<td> 1 change every ${variantStats.rateOfChange} bases </td>
 	</tr>
@@ -410,9 +410,9 @@ Missense / Silent ratio: </th><td class="numeric"> ${changeStats.silentRatio?str
 
 <center>
 <table border=1>
-	<tr> <th> Transitions </th><td class="numeric"> ${variantStats.transitions} </td> </tr>
-	<tr> <th> Transversions </th><td class="numeric"> ${variantStats.transversions} </td> </tr>
-	<tr> <th> Ts/Tv ratio </th><td class="numeric"> ${variantStats.tsTvRatio?string("0.####")} </td> </tr>
+	<tr> <th> Transitions </th><td class="numeric"> ${vcfStats.tsTvStats.transitions} </td> </tr>
+	<tr> <th> Transversions </th><td class="numeric"> ${vcfStats.tsTvStats.transversions} </td> </tr>
+	<tr> <th> Ts/Tv ratio </th><td class="numeric"> ${vcfStats.tsTvStats.tsTvRatio?string("0.####")} </td> </tr>
 </table>
 </center>
 <p>

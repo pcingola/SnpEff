@@ -7,7 +7,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 
 /**
  * Calculate Ts/Tv rations per sample (transitions vs transversions)
- * 
+ *
  * @author pablocingolani
  */
 public class TsTvStats implements SamplingStats<VcfEntry> {
@@ -15,16 +15,54 @@ public class TsTvStats implements SamplingStats<VcfEntry> {
 	static int GENOTYPE_SINGLE_ALT_CHANGE[] = { 1 };
 
 	List<String> sampleNames;
-	Boolean homozygous;
 	long countTs[];
 	long countTv[];
 
 	public TsTvStats() {
-		homozygous = null;
 	}
 
-	public TsTvStats(Boolean homozygous) {
-		this.homozygous = homozygous;
+	public long getTransitions() {
+		long sum = 0;
+		for (int i = 0; i < countTs.length; i++)
+			sum += countTs[i];
+		return sum;
+	}
+
+	public long getTransversions() {
+		long sum = 0;
+		for (int i = 0; i < countTv.length; i++)
+			sum += countTv[i];
+		return sum;
+	}
+
+	/**
+	 * Transitions / transverions ratio
+	 *
+	 * WARNING: I removed the '2.0' factor because it mostly confused people.
+	 * I clarify that the ratio is a 'raw' ratio in the summary page
+	 *
+	 * ------------------------------------------------------------------------
+	 * Comments that follow are out-dated. I leave it here just for reference.
+	 *
+	 * Note: Why is there a '2' in the ratio and not just "number of transitions / number of transverions"?
+	 *
+	 * From Casey Bergman (Manchester Univ.)
+	 * 		Ts:Tv ratio is a ratio of rates, not observed events. Imagine observing 100 sites with
+	 * 		transitions and 100 sites with transversions. Your method would say that the Ts:Tv rate
+	 * 		ratio is 1. But since there are 4 possible Tv mutation types and only 2 possible Ts
+	 * 		mutation types, in this example there is actually a 2-fold higher rate of Ts mutations
+	 * 		that Tv mutations per site. Thus, the Ts:Tv (rate) ratio is 2:1
+	 *
+	 * References:
+	 * 		http://www.mun.ca/biology/scarr/Transitions_vs_Transversions.html
+	 * 		http://biostar.stackexchange.com/questions/4759/ti-tv-ratio-confirms-snp-discovery-is-this-a-general-rule/
+	 *
+	 * @return
+	 */
+	public double getTsTvRatio() {
+		double ts = getTransitions();
+		double tv = getTransversions();
+		return tv > 0 ? ts / tv : 0;
 	}
 
 	/**
@@ -44,14 +82,29 @@ public class TsTvStats implements SamplingStats<VcfEntry> {
 	 */
 	public boolean isTransition(String ref, String alt) {
 		if (ref.equals("A") && alt.equals("G")) return true;
-		if (ref.equals("G") && alt.equals("A")) return true;
 		if (ref.equals("C") && alt.equals("T")) return true;
+		if (ref.equals("G") && alt.equals("A")) return true;
 		if (ref.equals("T") && alt.equals("C")) return true;
 		return false;
 	}
 
 	/**
+	 * Is this a transversion?
+	 * @param ref : Reference base (upper case)
+	 * @param alt : Alternative base (upper case)
+	 * @return
+	 */
+	public boolean isTranversion(String ref, String alt) {
+		if (ref.equals("A") && (alt.equals("C") || alt.equals("T"))) return true;
+		if (ref.equals("C") && (alt.equals("A") || alt.equals("G"))) return true;
+		if (ref.equals("G") && (alt.equals("C") || alt.equals("T"))) return true;
+		if (ref.equals("T") && (alt.equals("A") || alt.equals("G"))) return true;
+		return false;
+	}
+
+	/**
 	 * Update Ts and Tv counters
+	 * Only for SNPs
 	 */
 	@Override
 	public void sample(VcfEntry vcfEntry) {
@@ -76,26 +129,22 @@ public class TsTvStats implements SamplingStats<VcfEntry> {
 			// For each sample (i.e. 'genotype' field)
 			for (VcfGenotype vcfGenotype : vcfEntry) {
 				if (vcfGenotype.isVariant()) {
-					// When homozygous is null, accept any. Otherwise, filter accordingly
-					if ((homozygous == null) || (vcfGenotype.isHomozygous() == homozygous)) {
+					String alts[] = vcfEntry.getAlts();
+					int gens[] = vcfGenotype.getGenotype();
 
-						String alts[] = vcfEntry.getAlts();
-						int gens[] = vcfGenotype.getGenotype();
+					// Missing genotype information => assume single 'ALT' change
+					if (gens == null) gens = GENOTYPE_SINGLE_ALT_CHANGE;
 
-						// Missing genotype information => assume single 'ALT' change
-						if (gens == null) gens = GENOTYPE_SINGLE_ALT_CHANGE;
+					// For all genotypes
+					for (int gen : gens) {
+						// Genotype '0' is the REF (i.e. no base change). If it's negative, then it is not available.
+						if (gen > 0) {
+							String ref = vcfEntry.getRef();
+							String alt = alts[gen - 1];
 
-						// For all genotypes
-						for (int gen : gens) {
-							// Genotype '0' is the REF (i.e. no base change). If it's negative, then it is not available.
-							if (gen > 0) {
-								String ref = vcfEntry.getRef();
-								String alt = alts[gen - 1];
-
-								// Count Ts / Tv per sample (i.e. per genotype field)
-								if (isTransition(ref, alt)) countTs[sampleNum]++;
-								else countTv[sampleNum]++;
-							}
+							// Count Ts / Tv per sample (i.e. per genotype field)
+							if (isTransition(ref, alt)) countTs[sampleNum]++;
+							else if (isTranversion(ref, alt)) countTv[sampleNum]++;
 						}
 					}
 				}
@@ -104,16 +153,11 @@ public class TsTvStats implements SamplingStats<VcfEntry> {
 			}
 		} else {
 			// Assume only one sample: REF -> ALTs
-			boolean homo = vcfEntry.getAlts().length <= 1; // This is homozygous if there is only one ALT
-
-			if ((homozygous == null) || (homo == homozygous)) {
-				String ref = vcfEntry.getRef();
-				for (String alt : vcfEntry.getAlts()) {
-
-					if (!ref.equals(alt)) { // Is it a variant?
-						if (isTransition(ref, alt)) countTs[0]++;
-						else countTv[0]++;
-					}
+			String ref = vcfEntry.getRef();
+			for (String alt : vcfEntry.getAlts()) {
+				if (!ref.equals(alt)) { // Is it a variant?
+					if (isTransition(ref, alt)) countTs[0]++;
+					else if (isTranversion(ref, alt)) countTv[0]++;
 				}
 			}
 		}

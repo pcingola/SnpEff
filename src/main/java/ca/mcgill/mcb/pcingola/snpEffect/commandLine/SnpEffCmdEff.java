@@ -28,14 +28,14 @@ import ca.mcgill.mcb.pcingola.outputFormatter.BedAnnotationOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.OutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.eff.MasterEff;
-import ca.mcgill.mcb.pcingola.stats.ChangeEffectStats;
 import ca.mcgill.mcb.pcingola.stats.CountByType;
+import ca.mcgill.mcb.pcingola.stats.VariantEffectStats;
 import ca.mcgill.mcb.pcingola.stats.VariantStats;
 import ca.mcgill.mcb.pcingola.stats.VcfStats;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -87,11 +87,11 @@ public class SnpEffCmdEff extends SnpEff {
 	String cancerSamples = null;
 	InputFormat inputFormat = InputFormat.VCF; // Format use in input files
 	OutputFormat outputFormat = OutputFormat.VCF; // Output format
-	ChangeEffectFilter changeEffectResutFilter; // Filter prediction results
+	ChangeEffectFilter variantEffectResutFilter; // Filter prediction results
 	ArrayList<String> filterIntervalFiles;// Files used for filter intervals
 	IntervalForest filterIntervals; // Filter only variants that match these intervals
 	VariantStats variantStats;
-	ChangeEffectStats changeEffectStats;
+	VariantEffectStats variantEffectStats;
 	VcfStats vcfStats;
 	List<VcfEntry> vcfEntriesDebug = null; // Use for debugging or testing (in some test-cases)
 
@@ -99,7 +99,7 @@ public class SnpEffCmdEff extends SnpEff {
 		super();
 		chrStr = ""; // Default: Don't show 'chr' before chromosome
 		inputFile = ""; // variant input file
-		changeEffectResutFilter = new ChangeEffectFilter(); // Filter prediction results
+		variantEffectResutFilter = new ChangeEffectFilter(); // Filter prediction results
 		filterIntervalFiles = new ArrayList<String>(); // Files used for filter intervals
 		filterIntervals = new IntervalForest(); // Filter only variants that match these intervals
 		summaryFile = DEFAULT_SUMMARY_FILE;
@@ -161,8 +161,8 @@ public class SnpEffCmdEff extends SnpEff {
 		return comparisons;
 	}
 
-	public ChangeEffectStats getChangeEffectResutStats() {
-		return changeEffectStats;
+	public VariantEffectStats getChangeEffectResutStats() {
+		return variantEffectStats;
 	}
 
 	public VariantStats getvariantStats() {
@@ -202,15 +202,15 @@ public class SnpEffCmdEff extends SnpEff {
 				if (createSummary) variantStats.sample(variant);
 
 				// Calculate effects
-				VariantEffects changeEffects = snpEffectPredictor.variantEffect(variant);
+				VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
 
 				// Create new 'section'
 				outputFormatter.startSection(variant);
 
 				// Show results
-				for (VariantEffect changeEffect : changeEffects) {
-					changeEffectStats.sample(changeEffect); // Perform basic statistics about this result
-					outputFormatter.add(changeEffect);
+				for (VariantEffect variantEffect : variantEffects) {
+					variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
+					outputFormatter.add(variantEffect);
 					countEffects++;
 				}
 
@@ -294,23 +294,23 @@ public class SnpEffCmdEff extends SnpEff {
 					if (createSummary) variantStats.sample(variant);
 
 					// Calculate effects
-					VariantEffects changeEffects = snpEffectPredictor.variantEffect(variant);
+					VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
 
 					// Create new 'section'
 					outputFormatter.startSection(variant);
 
 					// Show results
-					for (VariantEffect changeEffect : changeEffects) {
-						if (createSummary) changeEffectStats.sample(changeEffect); // Perform basic statistics about this result
+					for (VariantEffect variantEffect : variantEffects) {
+						if (createSummary) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
 
 						// Any errors or warnings?
-						if (changeEffect.hasError()) errByType.inc(changeEffect.getError());
-						if (changeEffect.hasWarning()) warnByType.inc(changeEffect.getWarning());
+						if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
+						if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
 
 						// Does this entry have an impact (other than MODIFIER)?
-						impact |= (changeEffect.getEffectImpact() != EffectImpact.MODIFIER);
+						impact |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
 
-						outputFormatter.add(changeEffect);
+						outputFormatter.add(variantEffect);
 						countEffects++;
 					}
 
@@ -336,14 +336,14 @@ public class SnpEffCmdEff extends SnpEff {
 						Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
 
 						// Calculate effects
-						VariantEffects changeEffects = snpEffectPredictor.variantEffect(variantAlt, variantRef);
+						VariantEffects variantEffects = snpEffectPredictor.variantEffect(variantAlt, variantRef);
 
 						// Create new 'section'
 						outputFormatter.startSection(variantAlt);
 
 						// Show results (note, we don't add these to the statistics)
-						for (VariantEffect changeEffect : changeEffects)
-							outputFormatter.add(changeEffect);
+						for (VariantEffect variantEffect : variantEffects)
+							outputFormatter.add(variantEffect);
 
 						// Finish up this section
 						outputFormatter.printSection(variantAlt);
@@ -539,15 +539,15 @@ public class SnpEffCmdEff extends SnpEff {
 				//---
 				// Filters
 				//---
-				else if (arg.equalsIgnoreCase("-no-downstream")) changeEffectResutFilter.add(EffectType.DOWNSTREAM);
-				else if (arg.equalsIgnoreCase("-no-upstream")) changeEffectResutFilter.add(EffectType.UPSTREAM);
-				else if (arg.equalsIgnoreCase("-no-intergenic")) changeEffectResutFilter.add(EffectType.INTERGENIC);
-				else if (arg.equalsIgnoreCase("-no-intron")) changeEffectResutFilter.add(EffectType.INTRON);
+				else if (arg.equalsIgnoreCase("-no-downstream")) variantEffectResutFilter.add(EffectType.DOWNSTREAM);
+				else if (arg.equalsIgnoreCase("-no-upstream")) variantEffectResutFilter.add(EffectType.UPSTREAM);
+				else if (arg.equalsIgnoreCase("-no-intergenic")) variantEffectResutFilter.add(EffectType.INTERGENIC);
+				else if (arg.equalsIgnoreCase("-no-intron")) variantEffectResutFilter.add(EffectType.INTRON);
 				else if (arg.equalsIgnoreCase("-no-utr")) {
-					changeEffectResutFilter.add(EffectType.UTR_3_PRIME);
-					changeEffectResutFilter.add(EffectType.UTR_3_DELETED);
-					changeEffectResutFilter.add(EffectType.UTR_5_PRIME);
-					changeEffectResutFilter.add(EffectType.UTR_5_DELETED);
+					variantEffectResutFilter.add(EffectType.UTR_3_PRIME);
+					variantEffectResutFilter.add(EffectType.UTR_3_DELETED);
+					variantEffectResutFilter.add(EffectType.UTR_5_PRIME);
+					variantEffectResutFilter.add(EffectType.UTR_5_DELETED);
 				} else if (arg.equalsIgnoreCase("-no")) {
 					String filterOut = "";
 					if ((i + 1) < args.length) filterOut = args[++i];
@@ -555,12 +555,12 @@ public class SnpEffCmdEff extends SnpEff {
 					String filterOutArray[] = filterOut.split(",");
 					for (String filterStr : filterOutArray) {
 						if (filterStr.equalsIgnoreCase("utr")) {
-							changeEffectResutFilter.add(EffectType.UTR_3_PRIME);
-							changeEffectResutFilter.add(EffectType.UTR_3_DELETED);
-							changeEffectResutFilter.add(EffectType.UTR_5_PRIME);
-							changeEffectResutFilter.add(EffectType.UTR_5_DELETED);
+							variantEffectResutFilter.add(EffectType.UTR_3_PRIME);
+							variantEffectResutFilter.add(EffectType.UTR_3_DELETED);
+							variantEffectResutFilter.add(EffectType.UTR_5_PRIME);
+							variantEffectResutFilter.add(EffectType.UTR_5_DELETED);
 						} else if (filterStr.equalsIgnoreCase("None")) ; // OK, nothing to do
-						else changeEffectResutFilter.add(EffectType.valueOf(filterStr.toUpperCase()));
+						else variantEffectResutFilter.add(EffectType.valueOf(filterStr.toUpperCase()));
 					}
 				} else usage("Unknow option '" + arg + "'");
 			} else if (genomeVer.isEmpty()) genomeVer = arg;
@@ -683,7 +683,7 @@ public class SnpEffCmdEff extends SnpEff {
 		//---
 
 		// Nothing to filter out => don't waste time
-		if (!changeEffectResutFilter.anythingSet()) changeEffectResutFilter = null;
+		if (!variantEffectResutFilter.anythingSet()) variantEffectResutFilter = null;
 
 		filterIntervals = null;
 
@@ -751,8 +751,8 @@ public class SnpEffCmdEff extends SnpEff {
 
 		// Create 'stats' objects
 		variantStats = new VariantStats(config.getGenome());
-		changeEffectStats = new ChangeEffectStats(config.getGenome());
-		changeEffectStats.setUseSequenceOntology(useSequenceOntology);
+		variantEffectStats = new VariantEffectStats(config.getGenome());
+		variantEffectStats.setUseSequenceOntology(useSequenceOntology);
 		vcfStats = new VcfStats();
 
 		int totalErrs = 0;
@@ -784,7 +784,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 		outputFormatter.setVersion(VERSION_NO_NAME);
 		outputFormatter.setCommandLineStr(commandLineStr(false));
-		outputFormatter.setChangeEffectResutFilter(changeEffectResutFilter);
+		outputFormatter.setChangeEffectResutFilter(variantEffectResutFilter);
 		outputFormatter.setSupressOutput(supressOutput);
 		outputFormatter.setChrStr(chrStr);
 		outputFormatter.setUseSequenceOntology(useSequenceOntology);
@@ -865,7 +865,7 @@ public class SnpEffCmdEff extends SnpEff {
 		// Create the root hash (where data objects are)
 		HashMap<String, Object> root = new HashMap<String, Object>();
 		root.put("args", commandLineStr(createCsvSummary ? false : true));
-		root.put("changeStats", changeEffectStats);
+		root.put("changeStats", variantEffectStats);
 		root.put("chromoPlots", chromoPlots);
 		root.put("countEffects", countEffects);
 		root.put("countInputLines", countInputLines);

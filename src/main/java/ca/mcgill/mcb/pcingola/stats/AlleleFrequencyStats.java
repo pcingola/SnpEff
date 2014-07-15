@@ -4,8 +4,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 
 /**
- * Calculatenumber of alleles (number of singletons, doubletons, etc.)
- * 
+ * Calculate number of alleles (number of singletons, doubletons, etc.)
+ *
  * @author pablocingolani
  */
 public class AlleleFrequencyStats implements SamplingStats<VcfEntry> {
@@ -38,7 +38,7 @@ public class AlleleFrequencyStats implements SamplingStats<VcfEntry> {
 	public void sample(VcfEntry vcfEntry) {
 		// Is this a variant? (i.e. not the same as reference)
 		// Is this a SNP?
-		if( !vcfEntry.isSnp() || !vcfEntry.isVariant() ) return;
+		if (!vcfEntry.isSnp() || !vcfEntry.isVariant()) return;
 
 		// Do we need to initialize?
 		int genotypes = vcfEntry.getVcfGenotypes().size();
@@ -46,25 +46,25 @@ public class AlleleFrequencyStats implements SamplingStats<VcfEntry> {
 		int countGenotypes[] = new int[alts.length + 1];
 
 		// Are there any genotype fields?
-		if( genotypes > 0 ) {
+		if (genotypes > 0) {
 			// For each sample (i.e. 'genotype' field)
-			for( VcfGenotype vcfGenotype : vcfEntry ) {
-				if( vcfGenotype.isVariant() ) {
+			for (VcfGenotype vcfGenotype : vcfEntry) {
+				if (vcfGenotype.isVariant()) {
 					// Get genotypes
 					int gens[] = vcfGenotype.getGenotype();
 
 					// Missing all genotype information => assume single 'ALT' change
-					if( gens == null ) gens = GENOTYPE_SINGLE_ALT_CHANGE;
+					if (gens == null) gens = GENOTYPE_SINGLE_ALT_CHANGE;
 
 					// For all genotypes
-					for( int gen : gens )
-						if( gen > 0 ) countGenotypes[gen]++; // Genotype '0' is the REF (i.e. no base change). If it's negative, then it is not available.
+					for (int gen : gens)
+						if (gen > 0) countGenotypes[gen]++; // Genotype '0' is the REF (i.e. no base change). If it's negative, then it is not available.
 				}
 			}
 
 			// Process genotype counts
-			for( int c : countGenotypes )
-				if( c > 0 ) count.sample(c);
+			for (int c : countGenotypes)
+				if (c > 0) count.sample(c);
 		} else {
 			// Assume only one sample: REF -> ALTs
 			count.sample(1);

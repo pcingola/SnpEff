@@ -9,9 +9,10 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
- * Some stats about variant objects
+ * Variants statistics
  */
 public class VariantStats implements SamplingStats<Variant> {
 
@@ -49,6 +50,23 @@ public class VariantStats implements SamplingStats<Variant> {
 	 */
 	private String changeKey(String oldItem, String newItem) {
 		return oldItem + CHANGE_SEPARATOR + newItem;
+	}
+
+	void chromoStats(Variant variant) {
+		String chrName = variant.getChromosomeName();
+		ChrPosStats chrPosStats = chrPosStatsbyName.get(chrName);
+		// No stats? => Create a new one
+		if (chrPosStats == null) {
+			Chromosome chr = genome.getChromosome(chrName);
+			if (chr != null) {
+				Gpr.debug("CHROMO LEN: " + chr.size());
+				chrPosStats = new ChrPosStats(chrName, chr.size());
+				chrPosStatsbyName.put(chrName, chrPosStats);
+			}
+		}
+
+		// Perform stats
+		chrPosStats.sample(variant.getStart());
 	}
 
 	public char[] getBases() {
@@ -91,7 +109,7 @@ public class VariantStats implements SamplingStats<Variant> {
 	/**
 	 * A list of chromosomes that had at least one change
 	 * Note: Chromosome names are sorted.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<String> getChromosomeNamesEffective() {
@@ -125,14 +143,6 @@ public class VariantStats implements SamplingStats<Variant> {
 		return countSeqChanges;
 	}
 
-	/**
-	 * Number of variants by type
-	 * @return
-	 */
-	public CountByType getCountByChangeType() {
-		return countByChangeType;
-	}
-
 	//	/**
 	//	 * Number of heterozygous variants by type
 	//	 * @return
@@ -150,6 +160,14 @@ public class VariantStats implements SamplingStats<Variant> {
 	//	}
 
 	/**
+	 * Number of variants by type
+	 * @return
+	 */
+	public CountByType getCountByChangeType() {
+		return countByChangeType;
+	}
+
+	/**
 	 * Number of changes by chromosome
 	 * @param chromoName
 	 * @return
@@ -164,10 +182,6 @@ public class VariantStats implements SamplingStats<Variant> {
 		return countNonEmptyId;
 	}
 
-	public long getCountNonVariants() {
-		return countNonVariants;
-	}
-
 	//	public String getCoverageHistoUrl() {
 	//		return coverageStats.toStringPlot("Coverage histogram", "Coverage", true);
 	//	}
@@ -175,6 +189,10 @@ public class VariantStats implements SamplingStats<Variant> {
 	//	public IntStats getCoverageStats() {
 	//		return coverageStats;
 	//	}
+
+	public long getCountNonVariants() {
+		return countNonVariants;
+	}
 
 	/**
 	 * Genome length
@@ -187,14 +205,14 @@ public class VariantStats implements SamplingStats<Variant> {
 	/**
 	 * Genome effective length: The sum of length of every chromosome that had a change
 	 * (e.g. If there was no SNP in chromosome Y, then it doesn't count in the effective length)
-	 * 
+	 *
 	 * @return
 	 */
 	public long getGenomeLenEffective() {
 		long len = 0;
 		for (String chrName : chrPosStatsbyName.keySet()) {
 			Chromosome ch = genome.getChromosome(chrName);
-			len += ch.getEnd() - ch.getStart() + 1;
+			len += ch.size();
 		}
 
 		return len;
@@ -208,6 +226,14 @@ public class VariantStats implements SamplingStats<Variant> {
 		return indelLen.toStringPlot("Insertion deletion length histogram", "Length", true);
 	}
 
+	//	public String getQualityHistoUrl() {
+	//		return qualityStats.toStringPlot("Quality histogram", "Quality", true);
+	//	}
+	//
+	//	public IntStats getQualityStats() {
+	//		return qualityStats;
+	//	}
+
 	/**
 	 * Ratio of known variants (the one with a non-empty ID) and total variants
 	 */
@@ -216,14 +242,6 @@ public class VariantStats implements SamplingStats<Variant> {
 		double known = countNonEmptyId;
 		return tot > 0 ? known / tot : 0;
 	}
-
-	//	public String getQualityHistoUrl() {
-	//		return qualityStats.toStringPlot("Quality histogram", "Quality", true);
-	//	}
-	//
-	//	public IntStats getQualityStats() {
-	//		return qualityStats;
-	//	}
 
 	/**
 	 * Rate of change
@@ -244,56 +262,6 @@ public class VariantStats implements SamplingStats<Variant> {
 		int count = getCountByChromosome(chromoName);
 		if (count > 0) rate = len / count;
 		return rate;
-	}
-
-	public long getTransitions() {
-		return baseChangesCount.get(changeKey("A", "G")) //
-				+ baseChangesCount.get(changeKey("G", "A")) //
-				+ baseChangesCount.get(changeKey("C", "T")) //
-				+ baseChangesCount.get(changeKey("T", "C")) //
-		;
-	}
-
-	public long getTransversions() {
-		return baseChangesCount.get(changeKey("A", "C")) //
-				+ baseChangesCount.get(changeKey("C", "A")) //
-				+ baseChangesCount.get(changeKey("A", "T")) //
-				+ baseChangesCount.get(changeKey("T", "A")) //
-				+ baseChangesCount.get(changeKey("G", "C")) //
-				+ baseChangesCount.get(changeKey("C", "G")) //
-				+ baseChangesCount.get(changeKey("G", "T")) //
-				+ baseChangesCount.get(changeKey("T", "G")) //
-		;
-	}
-
-	/**
-	 * Transitions / transverions ratio
-	 * 
-	 * WARNING: I removed the '2.0' factor because it mostly confused people. 
-	 * I clarify that the ratio is a 'raw' ratio in the summary page
-	 * 
-	 * ------------------------------------------------------------------------
-	 * Comments that follow are out-dated. I leave it here just for reference.
-	 * 
-	 * Note: Why is there a '2' in the ratio and not just "number of transitions / number of transverions"?
-	 * 
-	 * From Casey Bergman (Manchester Univ.)
-	 * 		Ts:Tv ratio is a ratio of rates, not observed events. Imagine observing 100 sites with 
-	 * 		transitions and 100 sites with transversions. Your method would say that the Ts:Tv rate 
-	 * 		ratio is 1. But since there are 4 possible Tv mutation types and only 2 possible Ts 
-	 * 		mutation types, in this example there is actually a 2-fold higher rate of Ts mutations 
-	 * 		that Tv mutations per site. Thus, the Ts:Tv (rate) ratio is 2:1
-	 * 
-	 * References: 
-	 * 		http://www.mun.ca/biology/scarr/Transitions_vs_Transversions.html
-	 * 		http://biostar.stackexchange.com/questions/4759/ti-tv-ratio-confirms-snp-discovery-is-this-a-general-rule/
-	 * 
-	 * @return
-	 */
-	public double getTsTvRatio() {
-		double ts = getTransitions();
-		double tv = getTransversions();
-		return tv > 0 ? ts / tv : 0;
 	}
 
 	@Override
@@ -331,7 +299,7 @@ public class VariantStats implements SamplingStats<Variant> {
 		String changeType = variant.getChangeType().toString();
 		countByChangeType.inc(changeType); // Each type of changes
 
-		//		// Hom or Het 
+		//		// Hom or Het
 		//		if (variant.isHomozygous()) countByChangeTypeHom.inc(changeType);
 		//		if (variant.isHeterozygous()) countByChangeTypeHet.inc(changeType);
 		//
@@ -346,25 +314,11 @@ public class VariantStats implements SamplingStats<Variant> {
 		else if (variant.isInDel()) indelSample(variant);
 
 		// Coverage by chromosome (hot spot) stats
-		Chromosome chr = variant.getChromosome();
-		if (chr != null) {
-			// Get stats for this chromosome
-			String chrName = chr.getId();
-			ChrPosStats chrPosStats = chrPosStatsbyName.get(chrName);
-
-			// No stats? => Create a new one
-			if (chrPosStats == null) {
-				chrPosStats = new ChrPosStats(chrName, chr.size());
-				chrPosStatsbyName.put(chrName, chrPosStats);
-			}
-
-			// Perform stats
-			chrPosStats.sample(variant.getStart());
-		}
+		chromoStats(variant);
 	}
 
 	/**
-	 * Perform stats on a SNP 
+	 * Perform stats on a SNP
 	 * @param variant
 	 */
 	void snpSample(Variant variant) {

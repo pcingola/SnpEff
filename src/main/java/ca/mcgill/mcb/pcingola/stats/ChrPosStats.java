@@ -6,7 +6,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 /**
  * How many changes per position do we have in a chromosome.
  * Summary by dividing the chromosome into MAX_BINS bins
- * 
+ *
  * @author pcingola
  */
 public class ChrPosStats {
@@ -23,7 +23,7 @@ public class ChrPosStats {
 		this.length = length;
 		total = 0;
 
-		// Multiplier factor 
+		// Multiplier factor
 		factor = 1;
 		for (factor = 1; (length / factor) > maxBins; factor *= 10);
 
@@ -67,7 +67,7 @@ public class ChrPosStats {
 	public void sample(int position) {
 		// Ignore counts for zero or one-length chromosomes
 		if (length <= 1) {
-			// Gpr.debug("Warning: Chromosome '" + chrName + "' has length " + chrLength);
+			//Gpr.debug("Warning: Chromosome '" + chrName + "' has length " + chrLength);
 			return;
 		}
 
