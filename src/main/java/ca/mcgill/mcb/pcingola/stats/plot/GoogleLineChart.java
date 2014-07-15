@@ -32,6 +32,16 @@ public class GoogleLineChart {
 		columnTitltes.add(colTitle);
 	}
 
+	public void addColumn(String colTitle, int columnValues[]) {
+		// Convert to string
+		ArrayList<String> columnValuesStr = new ArrayList<String>();
+		for (int cv : columnValues)
+			columnValuesStr.add("" + cv);
+
+		columns.add(columnValuesStr);
+		columnTitltes.add(colTitle);
+	}
+
 	String getValue(int i, int j) {
 		if (j >= columns.size()) return null;
 		ArrayList<String> col = columns.get(j);

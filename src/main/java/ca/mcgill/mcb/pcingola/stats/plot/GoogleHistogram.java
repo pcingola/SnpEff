@@ -9,7 +9,7 @@ import com.googlecode.charts4j.Plots;
 
 /**
  * A simple wrapper to goolge charts API (from charts4j)
- * 
+ *
  * @author pcingola
  */
 public class GoogleHistogram extends GooglePlotInt {

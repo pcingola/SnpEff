@@ -322,7 +322,7 @@ public class SnpEffCmdEff extends SnpEff {
 				// Do we analyze cancer samples?
 				// Here we deal with Somatic vs Germline comparisons
 				//---
-				if (anyCancerSample && impact && vcfEntry.isMultipleAlts()) {
+				if (anyCancerSample && impact && vcfEntry.isMultiallelic()) {
 					// Calculate all required comparisons
 					Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
 

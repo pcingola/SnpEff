@@ -12,7 +12,7 @@ import com.googlecode.charts4j.Plots;
 /**
  * A simple wrapper to goolge charts API (from charts4j)
  * Plots integer data
- * 
+ *
  * @author pcingola
  */
 public class GooglePlotInt {
@@ -52,7 +52,7 @@ public class GooglePlotInt {
 
 		int gridx = (maxX - minX) / 10;
 		int gridy = (maxY - minY) / 10;
-		if( (gridx > 0) && (gridy > 0) ) chart.setGrid((maxX - minX) / 10, (maxY - minY) / 10, 3, 2);
+		if ((gridx > 0) && (gridy > 0)) chart.setGrid((maxX - minX) / 10, (maxY - minY) / 10, 3, 2);
 
 		// Adding axis info to chart.
 		chart.addXAxisLabels(AxisLabelsFactory.newAxisLabels(labelList));
@@ -99,14 +99,14 @@ public class GooglePlotInt {
 	 */
 	void prepareData(boolean averageY) {
 		int numPoints = Math.min(MAX_DATA_POINTS, plotMaxData);
-		if( x.length > numPoints ) subsample(numPoints, averageY);
+		if (x.length > numPoints) subsample(numPoints, averageY);
 
-		// Find min & max values 
+		// Find min & max values
 		minX = Integer.MAX_VALUE;
 		maxX = Integer.MIN_VALUE;
 		minY = Integer.MAX_VALUE;
 		maxY = Integer.MIN_VALUE;
-		for( int i = 0; (i < x.length) && (i < plotMaxData); i++ ) {
+		for (int i = 0; (i < x.length) && (i < plotMaxData); i++) {
 			int xx = x[i];
 			minX = Math.min(minX, xx);
 			maxX = Math.max(maxX, xx);
@@ -116,17 +116,17 @@ public class GooglePlotInt {
 			maxY = Math.max(maxY, yy);
 		}
 
-		if( minY == maxY ) minY = 0; // Otherwise the plot does not show anything when the variance is zero
+		if (minY == maxY) minY = 0; // Otherwise the plot does not show anything when the variance is zero
 
 		// Iterate over all sorted keys
 		dataList = new ArrayList<Integer>();
 		labelList = new ArrayList<String>();
 		int labelEvery = Math.max(Math.min(x.length, plotMaxData) / numberLabelsXaxis, 10);
-		for( int i = 0; (i < x.length) && (i < plotMaxData); i++ ) {
+		for (int i = 0; (i < x.length) && (i < plotMaxData); i++) {
 			int xx = x[i];
 
 			// Make sure the last point has a coordinate
-			if( (i % labelEvery == 0) || (i == (x.length - 1)) || (i == (plotMaxData - 1)) ) labelList.add(Integer.toString(xx));
+			if ((i % labelEvery == 0) || (i == (x.length - 1)) || (i == (plotMaxData - 1))) labelList.add(Integer.toString(xx));
 			else labelList.add("");
 
 			int yy = y[i];
@@ -167,7 +167,7 @@ public class GooglePlotInt {
 		this.xAxisLabel = xAxisLabel;
 	}
 
-	/** 
+	/**
 	 * Re sample data so it has at most 'numberOfPoints'
 	 */
 	public void subsample(int numberOfPoints, boolean averageY) {
@@ -175,17 +175,17 @@ public class GooglePlotInt {
 		int count[] = new int[numberOfPoints];
 		int yy[] = new int[numberOfPoints];
 
-		for( int i = 0; i < x.length; i++ ) {
+		for (int i = 0; i < x.length; i++) {
 			int j = i * numberOfPoints / x.length;
 			xx[j] += x[i];
 			yy[j] += y[i];
 			count[j]++;
 		}
 
-		for( int j = 0; j < xx.length; j++ ) {
-			if( count[j] > 1 ) {
+		for (int j = 0; j < xx.length; j++) {
+			if (count[j] > 1) {
 				xx[j] /= count[j];
-				if( averageY ) yy[j] /= count[j];
+				if (averageY) yy[j] /= count[j];
 			}
 		}
 

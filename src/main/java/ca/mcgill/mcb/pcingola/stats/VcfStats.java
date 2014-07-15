@@ -4,29 +4,41 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * VCF statistics: This are usually multi-sample statistics
- * 
+ *
+ * TODO:
+ * 		- Coverage stats
+ *
  * @author pcingola
  */
 public class VcfStats implements SamplingStats<VcfEntry> {
 
+	IntStats qualityStats;
 	TsTvStats tsTvStats;
 	TsTvStats tsTvStatsKnown;
-	AlleleFrequencyStats alleleFrequencyStats;
-	AlleleFrequencyStats alleleFrequencyStatsKnown;
+	GenotypeStats genotypeStats;
+	int countMultiallelic = 0;
 
 	public VcfStats() {
+		qualityStats = new IntStats();
 		tsTvStats = new TsTvStats();
 		tsTvStatsKnown = new TsTvStats();
-		alleleFrequencyStats = new AlleleFrequencyStats();
-		alleleFrequencyStatsKnown = new AlleleFrequencyStats();
+		genotypeStats = new GenotypeStats();
 	}
 
-	public AlleleFrequencyStats getAlleleFrequencyStats() {
-		return alleleFrequencyStats;
+	public int getCountMultiallelic() {
+		return countMultiallelic;
 	}
 
-	public AlleleFrequencyStats getAlleleFrequencyStatsKnown() {
-		return alleleFrequencyStatsKnown;
+	public GenotypeStats getGenotypeStats() {
+		return genotypeStats;
+	}
+
+	public IntStats getQualityStats() {
+		return qualityStats;
+	}
+
+	public String getQualityStatsHistoUrl() {
+		return qualityStats.toStringPlot("Quality histogram", "Quality", true);
 	}
 
 	public TsTvStats getTsTvStats() {
@@ -37,24 +49,23 @@ public class VcfStats implements SamplingStats<VcfEntry> {
 		return tsTvStatsKnown;
 	}
 
-	public String getAlleleFrequencyHistoUrl() {
-		return alleleFrequencyStats.getCount().toStringPlot("Alleles frequencies", "Alleles", true);
-	}
-
 	@Override
 	public boolean hasData() {
-		return tsTvStats.hasData() || alleleFrequencyStats.hasData();
+		return tsTvStats.hasData() || genotypeStats.hasData();
 	}
 
 	@Override
 	public void sample(VcfEntry vcfEntry) {
 		// Does it have an ID? => it is a 'known' variant.
-		if( !vcfEntry.getId().isEmpty() ) {
-			tsTvStatsKnown.sample(vcfEntry);
-			alleleFrequencyStatsKnown.sample(vcfEntry);
-		}
-
+		if (!vcfEntry.getId().isEmpty()) tsTvStatsKnown.sample(vcfEntry);
 		tsTvStats.sample(vcfEntry);
-		alleleFrequencyStats.sample(vcfEntry);
+
+		// Quality
+		if (vcfEntry.hasQuality()) qualityStats.sample((int) vcfEntry.getQuality());
+
+		// Genotype stats
+		genotypeStats.sample(vcfEntry);
+
+		if (vcfEntry.isMultiallelic()) countMultiallelic++;
 	}
 }

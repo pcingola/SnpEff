@@ -151,9 +151,12 @@ th a:active, th a:hover {
 	<a href="#effectsImpact"> Number of variants by impact </a><br>
 	<a href="#effectsImpact"> Number of variants by functional class </a><br>
 	<a href="#effects"> Number of variants by effect </a><br>
+	<a href="#quality">Quality histogram</a><br>
+	<a href="#indels">InDel length histogram</a><br>
 	<a href="#baseChages">Base change table</a><br>
 	<a href="#tstv">Transition vs transversions (ts/tv)</a><br>
-	<a href="#alleleFreq"> Frequency of alleles </a><br>
+	<a href="#alleleFreq"> Allele frequency </a><br>
+	<a href="#alleleCount"> Allele Count </a><br>
 	<a href="#codonChanges"> Codon change table </a><br>
 	<a href="#aaChanges"> Amino acid change table </a><br>
 	<a href="#chrChanges"> Chromosome change plots </a><br>
@@ -221,6 +224,12 @@ th a:active, th a:hover {
 		<td> 
 		${variantStats.countNonEmptyId}
 		( ${ ( 100 * variantStats.getKnownRatio() )?string("0.###") }% ) 
+		</td>
+	</tr>
+	<tr bgcolor=ffffff>
+		<td valign=top> <b> Number of multi-allelic VCF entries <br>(i.e. more than two alleles) </b> </td>
+		<td> 
+		${vcfStats.countMultiallelic}
 		</td>
 	</tr>
 	<tr bgcolor=dddddd>
@@ -360,18 +369,30 @@ Missense / Silent ratio: </th><td class="numeric"> ${changeStats.silentRatio?str
 </center>
 
 <!--==========================================================================
+	Quality
+	========================================================================== -->
+
+<hr> 
+<a name="quality"> 
+<b> Quality:</b> 
+<p>
+<pre>
+	<@intstatsTable vcfStats.qualityStats />		
+	<img src="${vcfStats.qualityStatsHistoUrl}"><br>
+</pre>
+
+<!--==========================================================================
 	InDels
 	========================================================================== -->
 
-<#if variantStats.indelLen.validData>
-	<hr> 
-	<b> Insertions and deletions length:</b> 
-	<p>
-	<pre>
-		<@intstatsTable variantStats.indelLen />		
-		<img src="${variantStats.indelLenHistoUrl}"><br>
-	</pre>
-</#if>
+<hr> 
+<a name="indels"> 
+<b> Insertions and deletions length:</b> 
+<p>
+<pre>
+	<@intstatsTable variantStats.indelLen />		
+	<img src="${variantStats.indelLenHistoUrl}"><br>
+</pre>
 
 <!--==========================================================================
 	Base changes
@@ -433,21 +454,44 @@ Missense / Silent ratio: </th><td class="numeric"> ${changeStats.silentRatio?str
 
 <hr> 
 <a name="alleleFreq">
-<center> <b> Frequency of alleles </b> <p> </center>
-
-Note: Number of times an allele appears once (singleton), twice (doubletons), etc.<p>
+<center> <b> Allele frequency </b> <p> </center>
 
 <#assign af=vcfStats.hasData()>
 <#if af>
-	<b>All variants:</b>
-	<img src="${vcfStats.alleleFrequencyHistoUrl}"><br>
-	<@intstatsTable vcfStats.alleleFrequencyStats.count />
-	<p>
-	<b>Only known variants</b> (i.e. the ones having a non-empty ID field):
-	<@intstatsTable vcfStats.alleleFrequencyStatsKnown.count />
+	<img src="${vcfStats.genotypeStats.alleleFrequencyHistoUrl}"><br>
+	<@intstatsTable vcfStats.genotypeStats.alleleFrequency />
+</#if>
+<p>
+	
+<!--==========================================================================
+	Allele Count
+	========================================================================== -->
+
+<hr> 
+<a name="alleleCount">
+<center> <b> Allele Count </b> <p> </center>
+<#if af>
+	<img src="${vcfStats.genotypeStats.alleleCountHistoUrl}"><br>
+	<@intstatsTable vcfStats.genotypeStats.alleleCount />
 </#if>
 <p>
 
+
+<!--==========================================================================
+	Hom/Het table
+	========================================================================== -->
+
+<hr> 
+<a name="homHet">
+<center> <b> Hom/Het per sample </b> <p> </center>
+<#if af>
+	<img src="${vcfStats.genotypeStats.hetBySampleUrl}"><br>
+	<img src="${vcfStats.genotypeStats.homBySampleUrl}"><br>
+	<img src="${vcfStats.genotypeStats.missingBySampleUrl}"><br>
+	
+	<pre>${vcfStats.genotypeStats.homHetTable}</pre>
+</#if>
+<p>
 
 <!--==========================================================================
 	Codon change table

@@ -20,25 +20,19 @@ public class VariantStats implements SamplingStats<Variant> {
 	static final char bases[] = { 'A', 'C', 'G', 'T' };
 
 	Genome genome;
-	//	IntStats qualityStats;
-	//	IntStats coverageStats;
 	IntStats indelLen;
 	HashMap<String, ChrPosStats> chrPosStatsbyName;
 	long countSeqChanges = 0;
 	long countVariants = 0;
 	long countNonVariants;
 	long countNonEmptyId;
-	CountByType countByChangeType, baseChangesCount; // , countByChangeTypeHet, countByChangeTypeHom;
+	CountByType countByChangeType, baseChangesCount;
 
 	public VariantStats(Genome genome) {
 		this.genome = genome;
-		//		qualityStats = new IntStats();
-		//		coverageStats = new IntStats();
 		indelLen = new IntStats();
 		chrPosStatsbyName = new HashMap<String, ChrPosStats>();
 		countByChangeType = new CountByType();
-		//		countByChangeTypeHom = new CountByType();
-		//		countByChangeTypeHet = new CountByType();
 		baseChangesCount = new CountByType();
 	}
 
@@ -143,22 +137,6 @@ public class VariantStats implements SamplingStats<Variant> {
 		return countSeqChanges;
 	}
 
-	//	/**
-	//	 * Number of heterozygous variants by type
-	//	 * @return
-	//	 */
-	//	public CountByType getCountByChangeTypeHet() {
-	//		return countByChangeTypeHet;
-	//	}
-	//
-	//	/**
-	//	 * Number of homozygous variants by type
-	//	 * @return
-	//	 */
-	//	public CountByType getCountByChangeTypeHom() {
-	//		return countByChangeTypeHom;
-	//	}
-
 	/**
 	 * Number of variants by type
 	 * @return
@@ -181,14 +159,6 @@ public class VariantStats implements SamplingStats<Variant> {
 	public long getCountNonEmptyId() {
 		return countNonEmptyId;
 	}
-
-	//	public String getCoverageHistoUrl() {
-	//		return coverageStats.toStringPlot("Coverage histogram", "Coverage", true);
-	//	}
-	//
-	//	public IntStats getCoverageStats() {
-	//		return coverageStats;
-	//	}
 
 	public long getCountNonVariants() {
 		return countNonVariants;
@@ -225,14 +195,6 @@ public class VariantStats implements SamplingStats<Variant> {
 	public String getIndelLenHistoUrl() {
 		return indelLen.toStringPlot("Insertion deletion length histogram", "Length", true);
 	}
-
-	//	public String getQualityHistoUrl() {
-	//		return qualityStats.toStringPlot("Quality histogram", "Quality", true);
-	//	}
-	//
-	//	public IntStats getQualityStats() {
-	//		return qualityStats;
-	//	}
 
 	/**
 	 * Ratio of known variants (the one with a non-empty ID) and total variants
@@ -298,16 +260,6 @@ public class VariantStats implements SamplingStats<Variant> {
 		// Count by change type
 		String changeType = variant.getChangeType().toString();
 		countByChangeType.inc(changeType); // Each type of changes
-
-		//		// Hom or Het
-		//		if (variant.isHomozygous()) countByChangeTypeHom.inc(changeType);
-		//		if (variant.isHeterozygous()) countByChangeTypeHet.inc(changeType);
-		//
-		//		// Quality histogram
-		//		if (variant.getQuality() >= 0) qualityStats.sample((int) variant.getQuality()); // Quality < 0 means 'not available'
-		//
-		//		// Coverage histogram
-		//		if (variant.getCoverage() >= 0) coverageStats.sample(variant.getCoverage()); // Coverage < 0 means 'not available'
 
 		// SNP stats or InDel stats
 		if (variant.isSnp()) snpSample(variant);

@@ -342,10 +342,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			char change[] = new char[size];
 			for (int i = 0; i < change.length; i++)
 				change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-				String ch = "-" + new String(change);
+			String ch = "-" + new String(change);
 
-				// Create SeqChange
-				return new Variant(chromo, start, reference, ch, id);
+			// Create SeqChange
+			return new Variant(chromo, start, reference, ch, id);
 		}
 
 		// Case: SNP, MNP
@@ -652,6 +652,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return info.containsKey(infoFieldName);
 	}
 
+	public boolean hasQuality() {
+		return quality != null;
+	}
+
 	/**
 	 * Is this bi-allelic (based ONLY on the number of ALTs)
 	 * WARINIG: You should use 'calcHetero()' method for a more precise calculation.
@@ -708,15 +712,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public boolean isMultiallelic() {
 		if (alts == null) return false;
 		return alts.length > 1; // More than one ALT option? => not homozygous
-	}
-
-	/**
-	 * Do we have more than one ATL in this entry?
-	 * @return
-	 */
-	public boolean isMultipleAlts() {
-		return getAlts().length > 1;
-
 	}
 
 	@Override
