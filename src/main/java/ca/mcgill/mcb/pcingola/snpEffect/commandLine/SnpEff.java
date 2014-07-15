@@ -330,8 +330,8 @@ public class SnpEff implements CommandLine {
 			if (verbose) Timer.showStdErr("Filtering out non-canonical transcripts.");
 			config.getSnpEffectPredictor().removeNonCanonical();
 
-			if (debug) {
-				// Show genes and transcript (which ones are considered 'cannonica')
+			if (verbose) {
+				// Show genes and transcript (which ones are considered 'canonical')
 				Timer.showStdErr("Canonical transcripts:\n\t\tgeneName\tgeneId\ttranscriptId\tcdsLength");
 				for (Gene g : config.getSnpEffectPredictor().getGenome().getGenes()) {
 					for (Transcript t : g) {
