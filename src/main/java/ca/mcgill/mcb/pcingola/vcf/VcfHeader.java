@@ -366,8 +366,9 @@ public class VcfHeader {
 			//---
 			for (String line : getLines()) {
 				if (line.startsWith("##INFO=") || line.startsWith("##FORMAT=")) {
-					VcfInfo vcfInfo = new VcfInfo(line);
-					vcfInfoById.put(vcfInfo.getId(), vcfInfo);
+					VcfInfo vcfInfo = VcfInfo.factory(line);
+					if (vcfInfo instanceof VcfInfoGenotype) vcfInfoGenotypeById.put(vcfInfo.getId(), (VcfInfoGenotype) vcfInfo);
+					else vcfInfoById.put(vcfInfo.getId(), vcfInfo);
 				}
 			}
 		}

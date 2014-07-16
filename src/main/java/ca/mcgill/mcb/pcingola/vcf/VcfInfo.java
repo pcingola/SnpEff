@@ -64,9 +64,10 @@ public class VcfInfo {
 				throw new RuntimeException("Unimplemented method for type " + this);
 			}
 		}
-	};
+	}
 
-	String line;
+	String line;;
+
 	String id;
 	VcfInfoNumber vcfInfoNumber;
 	VcfInfoType vcfInfoType;
@@ -74,6 +75,11 @@ public class VcfInfo {
 	boolean implicit; // Is this field implicit? (Added automatically by VcfHeader class)
 	boolean genotype; // Is this a 'genotype' field?
 	String description;
+
+	public static VcfInfo factory(String line) {
+		if (line.startsWith("##FORMAT=")) return new VcfInfoGenotype(line);
+		return new VcfInfo(line);
+	}
 
 	/**
 	 * Constructor using a "##INFO" line from a VCF file

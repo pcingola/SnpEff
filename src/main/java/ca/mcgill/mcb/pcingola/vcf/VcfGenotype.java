@@ -30,16 +30,14 @@ public class VcfGenotype {
 	/**
 	 * Add a name=value pair
 	 * WARNING: This method does NOT change the FORMAT field. Use VcfEntry.addFormat() method
-	 *
-	 * @param name
-	 * @param value
 	 */
 	public void add(String name, String value) {
 		// Sanity check value
 		if ((value.indexOf(' ') >= 0) //
 				|| (value.indexOf('\t') >= 0) //
 				|| (value.indexOf('=') >= 0) //
-		) throw new RuntimeException("Error: Attempt to add a value containin illegal characters: no white-space, semi-colons, or equals-signs permitted\n\tname : '" + name + "'\n\tvalue : '" + value + "'");
+				|| (value.indexOf(':') >= 0) //
+		) throw new RuntimeException("Error: Attempt to add a value containin illegal characters: no white-space, semicolons, colons, or equals-signs permitted\n\tname : '" + name + "'\n\tvalue : '" + value + "'");
 
 		// Sanity check format
 		if (vcfEntry.getFormat().indexOf(name) < 0) throw new RuntimeException("Error Attempt to add a field (name=" + name + ") that is not present in FORMAT field. Use VcfEntry.addFormat() method first!");
@@ -269,13 +267,13 @@ public class VcfGenotype {
 
 			if (values.isEmpty()) return; // Values are missing? Nothing to do
 
-			String fieldNames[] = vcfEntry.getFormat().split(":");
+			String format[] = vcfEntry.getFormatFields();
 			String fieldValues[] = values.split(":");
 
-			int min = Math.min(fieldValues.length, fieldNames.length);
+			int min = Math.min(fieldValues.length, format.length);
 
 			for (int i = 0; i < min; i++) {
-				String name = fieldNames[i];
+				String name = format[i];
 				String value = fieldValues[i];
 
 				fields.put(name, value);
@@ -295,7 +293,6 @@ public class VcfGenotype {
 
 	/**
 	 * Parse GT field
-	 * @param value
 	 */
 	void parseGt(String value) {
 		String gtStr[] = null;
@@ -304,7 +301,7 @@ public class VcfGenotype {
 			phased = true; // Phased
 		} else {
 			gtStr = value.split("/");
-			phased = false; // Unphased
+			phased = false; // Not phased
 		}
 
 		// Create fields
@@ -334,9 +331,33 @@ public class VcfGenotype {
 	}
 
 	/**
-	 * Set genotype as missing (i.e. './.')
+	 * Set a genotype field value
 	 */
-	public void setGenotypeMissing() {
+	public void set(String gtFieldName, String gtValue) {
+		String ffields[] = vcfEntry.getFormatFields();
+		if (ffields.length < 1) return; // No GT field, nothing to do
+
+		// Rebuild values
+		StringBuilder gtsb = new StringBuilder();
+		for (String fieldName : ffields) {
+			String value = get(fieldName);
+
+			if (fieldName.equals(gtFieldName)) value = gtValue; // Is this the field to replace?
+			if (value == null) value = "."; // Missing value?
+
+			gtsb.append((gtsb.length() > 0 ? ":" : "") + value); // Append field value
+		}
+		values = gtsb.toString();
+
+		// Invalidate previous parsing
+		fields = null;
+	}
+
+	/**
+	 * Set genotype value
+	 */
+	public void setGenotype(String gtValue) {
+		set("GT", gtValue);
 	}
 
 	@Override

@@ -50,6 +50,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	protected String infoStr = "";
 	protected HashMap<String, String> info;
 	protected String format;
+	protected String formatFields[];
 	protected ArrayList<VcfGenotype> vcfGenotypes = null;
 	protected VariantType changeType;
 	protected String genotypeFields[]; // Raw fields from VCF file
@@ -445,6 +446,14 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	public String getFormat() {
 		return format;
+	}
+
+	public String[] getFormatFields() {
+		if (formatFields == null) {
+			if (format == null) formatFields = new String[0];
+			else formatFields = format.split(":");
+		}
+		return formatFields;
 	}
 
 	/**
