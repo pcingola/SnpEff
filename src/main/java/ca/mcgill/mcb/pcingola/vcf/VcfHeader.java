@@ -7,9 +7,9 @@ import java.util.List;
 
 /**
  * Represents the header of a vcf file.
- * 
+ *
  * References: http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41
- * 
+ *
  * @author pablocingolani
  *
  */
@@ -18,6 +18,7 @@ public class VcfHeader {
 	int numberOfSamples = -1;
 	StringBuffer header;
 	HashMap<String, VcfInfo> vcfInfoById;
+	HashMap<String, VcfInfoGenotype> vcfInfoGenotypeById;
 	ArrayList<String> sampleNames;
 	boolean chromLine = false;
 
@@ -43,9 +44,14 @@ public class VcfHeader {
 	 * Add a 'FORMAT' meta info
 	 * @param vcfGenotypeStr
 	 */
-	public void addFormat(String formatName, String number, String type, String description) {
-		String headerFormatInfo = "##FORMAT=<ID=" + formatName + ",Number=" + number + ",Type=" + type + ",Description=\"" + description + "\">";
-		addLine(headerFormatInfo);
+	public void addFormat(VcfInfoGenotype vcfInfoGenotype) {
+		parseInfoLines();
+
+		// Not already added?
+		if (!vcfInfoGenotypeById.containsKey(vcfInfoGenotype.getId())) {
+			addLine(vcfInfoGenotype.toString()); // Add line
+			resetCache(); // Invalidate cache
+		}
 	}
 
 	/**
@@ -85,7 +91,7 @@ public class VcfHeader {
 			char lastChar = (header.length() > 0 ? header.charAt(header.length() - 1) : '\n');
 			if (lastChar != '\n' && lastChar != '\r') header.append('\n');
 
-			// Append header line			
+			// Append header line
 			header.append(newHeaderLine);
 			chromLine |= newHeaderLine.startsWith("#CHROM\t");
 		}
@@ -235,6 +241,11 @@ public class VcfHeader {
 		return vcfInfoById;
 	}
 
+	public VcfInfoGenotype getVcfInfoGenotype(String id) {
+		parseInfoLines();
+		return vcfInfoGenotypeById.get(id);
+	}
+
 	/**
 	 * Parse INFO fields from header
 	 */
@@ -255,7 +266,7 @@ public class VcfHeader {
 			vcfInfoById.put("FILTER", new VcfInfo("FILTER", VcfInfoType.String, "1", "Filter status"));
 			vcfInfoById.put("FORMAT", new VcfInfo("FORMAT", VcfInfoType.String, "1", "Format in genotype fields"));
 
-			// Add well known fields 
+			// Add well known fields
 			// Reference: http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41
 			vcfInfoById.put("AA", new VcfInfo("AA", VcfInfoType.String, "1", "Ancestral allele"));
 			vcfInfoById.put("AC", new VcfInfo("AC", VcfInfoType.Integer, "A", "Allele Frequency"));
@@ -329,9 +340,26 @@ public class VcfHeader {
 			vcfInfoById.put("NMD.NUMTR", new VcfInfo("NMD.NUMTR", VcfInfoType.Integer, ".", "SnpEff NMD number of transcripts in gene"));
 			vcfInfoById.put("NMD.PERC", new VcfInfo("NMD.PERC", VcfInfoType.Float, ".", "SnpEff NMD percentage of transcripts in this gene that are affected"));
 
+			// Genotype fields
+			vcfInfoGenotypeById = new HashMap<String, VcfInfoGenotype>();
+			vcfInfoGenotypeById.put("DP", new VcfInfoGenotype("DP", VcfInfoType.Integer, "1", "Read depth"));
+			vcfInfoGenotypeById.put("EC", new VcfInfoGenotype("EC", VcfInfoType.Integer, "A", "Expected alternate allele counts"));
+			vcfInfoGenotypeById.put("FT", new VcfInfoGenotype("FT", VcfInfoType.String, "1", "Genotype filter"));
+			vcfInfoGenotypeById.put("GT", new VcfInfoGenotype("GT", VcfInfoType.String, "1", "Genotype"));
+			vcfInfoGenotypeById.put("GP", new VcfInfoGenotype("GP", VcfInfoType.Float, "1", "Genotype phred-scaled genotype posterior probabilities"));
+			vcfInfoGenotypeById.put("GQ", new VcfInfoGenotype("GQ", VcfInfoType.Integer, "1", "Genotype conditional genotype quality, encoded as a phred quality"));
+			vcfInfoGenotypeById.put("HQ", new VcfInfoGenotype("HQ", VcfInfoType.Integer, "2", "Haplotype qualities"));
+			vcfInfoGenotypeById.put("PL", new VcfInfoGenotype("PL", VcfInfoType.String, "G", "Normalized, Phred-scaled likelihoods for genotypes"));
+			vcfInfoGenotypeById.put("PQ", new VcfInfoGenotype("PQ", VcfInfoType.Integer, "1", "Phasing quality"));
+			vcfInfoGenotypeById.put("PS", new VcfInfoGenotype("PS", VcfInfoType.Integer, "1", "Phase set"));
+			vcfInfoGenotypeById.put("MQ", new VcfInfoGenotype("MQ", VcfInfoType.Integer, "1", "RMS mapping quality."));
+
 			// Set all automatically added fields as "implicit"
 			for (VcfInfo vcfInfo : vcfInfoById.values())
 				vcfInfo.setImplicit(true);
+
+			for (VcfInfoGenotype vcfInfoGenotype : vcfInfoGenotypeById.values())
+				vcfInfoGenotype.setImplicit(true);
 
 			//---
 			// Add all INFO fields from header

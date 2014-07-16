@@ -39,7 +39,7 @@ public class VcfGenotype {
 		if ((value.indexOf(' ') >= 0) //
 				|| (value.indexOf('\t') >= 0) //
 				|| (value.indexOf('=') >= 0) //
-				) throw new RuntimeException("Error: Attempt to add a value containin illegal characters: no white-space, semi-colons, or equals-signs permitted\n\tname : '" + name + "'\n\tvalue : '" + value + "'");
+		) throw new RuntimeException("Error: Attempt to add a value containin illegal characters: no white-space, semi-colons, or equals-signs permitted\n\tname : '" + name + "'\n\tvalue : '" + value + "'");
 
 		// Sanity check format
 		if (vcfEntry.getFormat().indexOf(name) < 0) throw new RuntimeException("Error Attempt to add a field (name=" + name + ") that is not present in FORMAT field. Use VcfEntry.addFormat() method first!");
@@ -170,6 +170,10 @@ public class VcfGenotype {
 		return sb.toString();
 	}
 
+	public VcfEntry getVcfEntry() {
+		return vcfEntry;
+	}
+
 	/**
 	 * Is the most likely genotype heterozygous?
 	 * @return
@@ -285,7 +289,7 @@ public class VcfGenotype {
 					+ "\n\tFormat   : '" + vcfEntry.getFormat() + "'" //
 					+ "\n\tValues   : '" + values + "'" //
 					+ "\n\tVcf line : " + vcfEntry //
-					, e);
+			, e);
 		}
 	}
 
@@ -327,6 +331,12 @@ public class VcfGenotype {
 		genotypeLikelihoodPhred = new int[plStr.length];
 		for (int i = 0; i < plStr.length; i++)
 			genotypeLikelihoodPhred[i] = Gpr.parseIntSafe(plStr[i]);
+	}
+
+	/**
+	 * Set genotype as missing (i.e. './.')
+	 */
+	public void setGenotypeMissing() {
 	}
 
 	@Override

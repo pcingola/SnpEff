@@ -72,6 +72,7 @@ public class VcfInfo {
 	VcfInfoType vcfInfoType;
 	int number;
 	boolean implicit; // Is this field implicit? (Added automatically by VcfHeader class)
+	boolean genotype; // Is this a 'genotype' field?
 	String description;
 
 	/**
@@ -81,6 +82,7 @@ public class VcfInfo {
 	public VcfInfo(String line) {
 		// Is this an Info line?
 		if (line.startsWith("##INFO=") || line.startsWith("##FORMAT=")) {
+			genotype = line.startsWith("##FORMAT=");
 			// Remove all trailing '\n'
 			while (line.endsWith("\n"))
 				line = line.substring(0, line.length() - 1);
@@ -142,6 +144,10 @@ public class VcfInfo {
 		return vcfInfoType;
 	}
 
+	public boolean isGenotype() {
+		return genotype;
+	}
+
 	public boolean isImplicit() {
 		return implicit;
 	}
@@ -178,6 +184,10 @@ public class VcfInfo {
 		}
 	}
 
+	public void setGenotype(boolean genotype) {
+		this.genotype = genotype;
+	}
+
 	public void setImplicit(boolean implicit) {
 		this.implicit = implicit;
 	}
@@ -191,6 +201,6 @@ public class VcfInfo {
 				+ ",Type=" + vcfInfoType //
 				+ ",Description=\"" + description + "\"" //
 				+ ">" //
-				;
+		;
 	}
 }
