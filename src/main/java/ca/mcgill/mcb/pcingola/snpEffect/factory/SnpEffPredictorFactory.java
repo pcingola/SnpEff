@@ -102,7 +102,7 @@ public abstract class SnpEffPredictorFactory {
 		snpEffectPredictor.add(gene);
 
 		if (genesById.containsKey(gene.getId())) throw new RuntimeException("Gene  '" + gene.getId() + "' already exists");
-		if (debug) System.out.println("\tAdding gene: " + gene.getId() + "\t" + gene.getGeneName() + "\t" + gene.toStr());
+		if (debug) System.out.println("\tAdding gene\tID: '" + gene.getId() + "'\tname: '" + gene.getGeneName() + "'\t" + gene.toStr());
 		genesById.put(gene.getId(), gene);
 	}
 
@@ -112,7 +112,7 @@ public abstract class SnpEffPredictorFactory {
 	 */
 	protected void add(Marker marker) {
 		addMarker(marker, false);
-		if (debug) System.out.println("\tAdding: " + marker.getId() + "\t" + marker.toStr());
+		if (debug) System.out.println("\tAdding " + marker.getClass().getSimpleName() + ":\tID: '" + marker.getId() + "'\t" + marker.toStr());
 	}
 
 	/**
@@ -124,6 +124,7 @@ public abstract class SnpEffPredictorFactory {
 		gene.add(tr);
 
 		if (transcriptsById.containsKey(tr.getId())) throw new RuntimeException("Transcript  '" + tr.getId() + "' already exists");
+		if (debug) System.out.println("\tAdding transcript :\tID: '" + tr.getId() + "'\t" + tr.toStr());
 		transcriptsById.put(tr.getId(), tr);
 	}
 
@@ -253,10 +254,10 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Only coding transcripts have CDS: Make sure that transcripts having CDS are protein coding
-	 * 
+	 *
 	 * It might not be always "precise" though:
-	 * 
-	 * 		$ grep CDS genes.gtf | cut -f 2 | ~/snpEff/scripts/uniqCount.pl 
+	 *
+	 * 		$ grep CDS genes.gtf | cut -f 2 | ~/snpEff/scripts/uniqCount.pl
 	 * 		113	IG_C_gene
 	 * 		64	IG_D_gene
 	 * 		24	IG_J_gene
