@@ -37,7 +37,7 @@ public class VcfGenotype {
 				|| (value.indexOf('\t') >= 0) //
 				|| (value.indexOf('=') >= 0) //
 				|| (value.indexOf(':') >= 0) //
-		) throw new RuntimeException("Error: Attempt to add a value containin illegal characters: no white-space, semicolons, colons, or equals-signs permitted\n\tname : '" + name + "'\n\tvalue : '" + value + "'");
+				) throw new RuntimeException("Error: Attempt to add a value containin illegal characters: no white-space, semicolons, colons, or equals-signs permitted\n\tname : '" + name + "'\n\tvalue : '" + value + "'");
 
 		// Sanity check format
 		if (vcfEntry.getFormat().indexOf(name) < 0) throw new RuntimeException("Error Attempt to add a field (name=" + name + ") that is not present in FORMAT field. Use VcfEntry.addFormat() method first!");
@@ -108,11 +108,11 @@ public class VcfGenotype {
 		parseFields(); // Lazy parse
 
 		// No genotype info?
-		if (genotype == null) return -1;
+		if (genotype == null) return -1; // Missing genotype
 
 		int code = 0;
 		for (int i = 0; i < genotype.length; i++) {
-			if (genotype[i] < 0) return -1;
+			if (genotype[i] < 0) return -1; // Missing genotype
 			code += (genotype[i] > 0 ? 1 : 0); // Any variant is '1', reference is '0'
 		}
 
@@ -287,7 +287,7 @@ public class VcfGenotype {
 					+ "\n\tFormat   : '" + vcfEntry.getFormat() + "'" //
 					+ "\n\tValues   : '" + values + "'" //
 					+ "\n\tVcf line : " + vcfEntry //
-			, e);
+					, e);
 		}
 	}
 
