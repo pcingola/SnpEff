@@ -68,8 +68,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Return a string safe to be used in an 'INFO' field (VCF file)
-	 * @param str
-	 * @return
 	 */
 	public static String vcfInfoSafe(String str) {
 		return str.replaceAll("(\\s|;|,)+", "_");
@@ -89,9 +87,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Create a line form a file iterator
-	 * @param vcfFileIterator
-	 * @param line
-	 * @param lineNum
 	 */
 	public VcfEntry(VcfFileIterator vcfFileIterator, String line, int lineNum, boolean parseNow) {
 		super(null, 0, 0, false, "");
@@ -104,7 +99,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Add a 'FORMAT' field
-	 * @param vcfGenotypeStr
 	 */
 	public void addFormat(String formatName) {
 		if (format == null) format = "";
@@ -116,7 +110,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Add a genotype as a string
-	 * @param vcfGenotypeStr
 	 */
 	public void addGenotype(String vcfGenotypeStr) {
 		if (vcfGenotypes == null) vcfGenotypes = new ArrayList<VcfGenotype>();
@@ -127,9 +120,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Append a 'raw' INFO string (format is not checked)
 	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
-	 *
-	 * @param name
-	 * @param value
 	 */
 	public void addInfo(String addInfoStr) {
 		addInfo(addInfoStr, true);
@@ -138,9 +128,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Append a 'raw' INFO string (format is not checked)
 	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
-	 *
-	 * @param name
-	 * @param value
 	 */
 	protected void addInfo(String addInfoStr, boolean invalidateCache) {
 		if ((infoStr == null) || infoStr.isEmpty()) infoStr = addInfoStr;
@@ -168,7 +155,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Categorization by allele frequency
-	 * @return
 	 */
 	public AlleleFrequencyType alleleFrequencyType() {
 		double maf = maf();
@@ -182,8 +168,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 *
 	 * 		Infer Hom/Her if there is only one sample in the file.
 	 * 		Ohtherwise the field is null.
-	 *
-	 * @return
 	 */
 	public Boolean calcHetero() {
 		// No genotyping information? => Use number of ALT field
@@ -244,8 +228,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		int gtNum = 1;
 		for (VcfGenotype vgt : getVcfGenotypes()) {
 			int gts[] = vgt.getGenotype();
-			for (int i = 0; i < gts.length; i++)
-				if (gts[i] >= numAlts) err.append("Genotype number " + gtNum + " has genotype number '" + gtNum + "', but there are only '" + numAlts + "' ALTs.");
+			if (gts != null) {
+				for (int i = 0; i < gts.length; i++)
+					if (gts[i] > numAlts) err.append("Genotype number " + gtNum + " has genotype number '" + gts[i] + "', but there are only '" + numAlts + "' ALTs.\n");
+			}
 			gtNum++;
 		}
 
@@ -317,7 +303,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Create a variant
-	 * @return
 	 */
 	Variant createVariant(Chromosome chromo, int start, String reference, String alt, String id) {
 		// No change?
@@ -433,7 +418,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Original chromosome name (as it appeared in the VCF file)
-	 * @return
 	 */
 	@Override
 	public String getChromosomeNameOri() {
@@ -458,7 +442,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Return genotypes parsed as an array of codes
-	 * @return
 	 */
 	public byte[] getGenotypesScores() {
 		int numSamples = getVcfFileIterator().getVcfHeader().getSampleNames().size();
@@ -494,8 +477,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Get info string
-	 * @param key
-	 * @return
 	 */
 	public String getInfo(String key) {
 		if (info == null) parseInfo();
@@ -504,9 +485,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Get info string for a specific allele
-	 * @param key
-	 * @param allele
-	 * @return
 	 */
 	public String getInfo(String key, String allele) {
 		if (info == null) parseInfo();
@@ -543,8 +521,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Get info field as a 'double' number
 	 * The norm specifies data type as 'FLOAT', that is why the name of this method might be not intuitive
-	 * @param key
-	 * @return
 	 */
 	public double getInfoFloat(String key) {
 		if (info == null) parseInfo();
@@ -556,8 +532,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Get info field as an long number
 	 * The norm specifies data type as 'INT', that is why the name of this method might be not intuitive
-	 * @param key
-	 * @return
 	 */
 	public long getInfoInt(String key) {
 		if (info == null) parseInfo();
@@ -568,8 +542,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Get all keys available in the info field
-	 * @param key
-	 * @return
 	 */
 	public Set<String> getInfoKeys() {
 		if (info == null) parseInfo();
@@ -578,7 +550,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Get the full (unparsed) INFO field
-	 * @return
 	 */
 	public String getInfoStr() {
 		return infoStr;
@@ -586,7 +557,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Original VCF line (from file)
-	 * @return
 	 */
 	public String getLine() {
 		return line;
@@ -598,7 +568,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * number of samples in this VCF file
-	 * @return
 	 */
 	public int getNumberOfSamples() {
 		if (vcfFileIterator == null) return 0;

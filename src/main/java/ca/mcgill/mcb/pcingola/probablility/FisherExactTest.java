@@ -5,9 +5,9 @@ import org.apache.commons.math3.special.Gamma;
 import flanagan.analysis.Stat;
 
 /**
- * 
+ *
  * Calculate Fisher's exact test (based on hypergeometric distribution)
- * 
+ *
  * @author pcingola
  *
  */
@@ -28,9 +28,9 @@ public class FisherExactTest {
 	}
 
 	/**
-	 * Can ChiSquare approximation be used? A rule of the thumb says it can be 
+	 * Can ChiSquare approximation be used? A rule of the thumb says it can be
 	 * used if every expected frequency is more than 10
-	 * 
+	 *
 	 * @param k : white marbles drawn
 	 * @param N : Total marbles
 	 * @param D : White marbles => N-D : Black marbles
@@ -39,9 +39,9 @@ public class FisherExactTest {
 	 */
 	public boolean canUseChiSquareApproximation(int k, int N, int D, int n) {
 		/*
-		 * Use different names for contingency table: 
+		 * Use different names for contingency table:
 		 * See 'Global functional profiling of gene expression', Draghici et. al, table 2 (page 103)
-		 * 
+		 *
 		 * 					drawn		not drawn		|	total
 		 *	defective 		n11			n12				|	N1d
 		 *	nondefective	n21			n22				|	N2d
@@ -81,9 +81,9 @@ public class FisherExactTest {
 	 */
 	public double chiSquareApproximation(int k, int N, int D, int n) {
 		/*
-		 * Use different names for contingency table: 
+		 * Use different names for contingency table:
 		 * See 'Global functional profiling of gene expression', Draghici et. al, table 2 (page 103)
-		 * 
+		 *
 		 * 					drawn		not drawn		|	total
 		 *	defective 		n11			n12				|	N1d
 		 *	nondefective	n21			n22				|	N2d
@@ -108,12 +108,12 @@ public class FisherExactTest {
 		return chiSquareCDFComplementary(chiSquare, 1);
 	}
 
-	/** 
-	 * Chi-Square Cumulative Distribution Function 
-	 * probability that an observed chi-square value 
-	 * for a correct model should be less than chiSquare 
+	/**
+	 * Chi-Square Cumulative Distribution Function
+	 * probability that an observed chi-square value
+	 * for a correct model should be less than chiSquare
 	 * nu  =  the degrees of freedom
-	 * 
+	 *
 	 * @param chiSquare
 	 * @param nu
 	 * @return
@@ -123,12 +123,12 @@ public class FisherExactTest {
 		return Stat.incompleteGamma(nu / 2.0D, chiSquare / 2.0D);
 	}
 
-	/** 
+	/**
 	 * Chi-Square Complementary of Cumulative Distribution Function: 1 -  chiSquareCDF(x, nu)
-	 * probability that an observed chi-square value 
-	 * for a correct model should be greater than chiSquare 
+	 * probability that an observed chi-square value
+	 * for a correct model should be greater than chiSquare
 	 * nu  =  the degrees of freedom
-	 * 
+	 *
 	 * @param chiSquare
 	 * @param nu
 	 * @return
@@ -163,9 +163,9 @@ public class FisherExactTest {
 
 	/**
 	 * Fisher's exact test for less than 'k' (lower tail)
-	 * It also compares to a 'threshold' value to speedup the process. Whenever 
+	 * It also compares to a 'threshold' value to speedup the process. Whenever
 	 * cumulative probability is over the threshold, 1.0 is returned
-	 * 
+	 *
 	 * @param k : white marbles drawn
 	 * @param N : Total marbles
 	 * @param D : White marbles => N-D : Black marbles
@@ -203,8 +203,8 @@ public class FisherExactTest {
 				return cumulativeHG; // Zero? => Underflow (report current sum)
 			} else {
 				// We can use the previous value to speed up this calculation
-				// Calculate hypergeometric(k, N, D, n) / hypergeometric(k+1, N, D, n) = (D-k) (n-k) / ((k+1) (N+k+1-n-D)) 
-				int kk = i + 1; // Previous value for 'k' 
+				// Calculate hypergeometric(k, N, D, n) / hypergeometric(k+1, N, D, n) = (D-k) (n-k) / ((k+1) (N+k+1-n-D))
+				int kk = i + 1; // Previous value for 'k'
 				double num = ((double) kk) * ((double) (N + kk - n - D));
 				double den = ((double) (D - i)) * ((double) (n - i));
 				hypergeom *= num / den;
@@ -242,9 +242,9 @@ public class FisherExactTest {
 
 	/**
 	 * Fisher's exact test for 'k' or more
-	 * It also compares to a 'threshold' value to speedup the process. Whenever 
+	 * It also compares to a 'threshold' value to speedup the process. Whenever
 	 * cumulative probability is over the threshold, 1.0 is returned
-	 * 
+	 *
 	 * @param k : white marbles drawn
 	 * @param N : Total marbles
 	 * @param D : White marbles => N-D : Black marbles
@@ -274,8 +274,8 @@ public class FisherExactTest {
 				return cumulativeHG; // Zero? => Underflow (report current sum)
 			} else {
 				// We can use the previous value to speed up this calculation
-				// Calculate hypergeometric(k, N, D, n) / hypergeometric(k+1, N, D, n) = (D-k) (n-k) / ((k+1) (N+k+1-n-D)) 
-				int kk = i - 1; // Previous value for 'k' 
+				// Calculate hypergeometric(k, N, D, n) / hypergeometric(k+1, N, D, n) = (D-k) (n-k) / ((k+1) (N+k+1-n-D))
+				int kk = i - 1; // Previous value for 'k'
 				double num = ((double) (D - kk)) * ((double) (n - kk));
 				double den = ((double) i) * ((double) (N + i - n - D));
 				hypergeom *= num / den;
@@ -306,11 +306,11 @@ public class FisherExactTest {
 	/**
 	 * Pvalue for 'k' or less
 	 * Note: Includes 'k'
-	 * 
-	 * It also compares to a 'threshold' value to speedup the process. 
+	 *
+	 * It also compares to a 'threshold' value to speedup the process.
 	 * Whenever cumulative probability is over the threshold, 1.0 is returned
 	 * This is useful when we are interested on very small p-values
-	 * 
+	 *
 	 * @param k : white marbles drawn
 	 * @param N : Total marbles
 	 * @param D : White marbles => N-D : Black marbles
@@ -328,10 +328,10 @@ public class FisherExactTest {
 
 	/**
 	 * Fisher's exact test for more than 'k'
-	 * It also compares to a 'threshold' value to speedup the process. 
+	 * It also compares to a 'threshold' value to speedup the process.
 	 * Whenever cumulative probability is over the threshold, 1.0 is returned
 	 * This is useful when we are interested on very small p-values
-	 * 
+	 *
 	 * @param k : white marbles drawn
 	 * @param N : Total marbles
 	 * @param D : White marbles => N-D : Black marbles
@@ -344,11 +344,11 @@ public class FisherExactTest {
 	}
 
 	/**
-	 * Convert values to Fisher's 'R' command 
+	 * Convert values to Fisher's 'R' command
 	 * @return
 	 */
 	public String toR(int k, int N, int D, int n, boolean lowerTail) {
-		return "phyper( " + (k - 1) + ", " + D + ", " + (N - D) + ", " + n + ", lower.tail = " + Boolean.toString(lowerTail).toUpperCase() + " )";
+		return "phyper( " + k + ", " + D + ", " + (N - D) + ", " + n + ", lower.tail = " + Boolean.toString(lowerTail).toUpperCase() + " )";
 	}
 
 	/**
