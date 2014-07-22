@@ -258,7 +258,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (!VcfEntry.isValidInfoValue(val)) return "INFO filed '" + infoName + "' has an invalid value '" + val + "' (no spaces, tabs, '=' or ';' are allowed)";
 
 		// Check number of INFO elements
-		if (vcfInfo.isNumberNumber() && vcfInfo.getNumber() != values.length) return "INFO filed '" + infoName + "' has 'Number=" + vcfInfo.getNumber() + "' in header, but it contains '" + values.length + "' elements.";
+		if (vcfInfo.isNumberNumber() && vcfInfo.getNumber() != values.length) {
+			VcfInfoType type = vcfInfo.getVcfInfoType();
+			if( type == VcfInfoType.Flag && values.length == 1 ) ; // OK, flags must have one or zero values
+			else return "INFO filed '" + infoName + "' has 'Number=" + vcfInfo.getNumber() + "' in header, but it contains '" + values.length + "' elements.";
+		}
 		if (vcfInfo.isNumberAllAlleles() && values.length != (alts.length + 1)) return "INFO filed '" + infoName + "' has 'Number=R' in header, but it contains '" + values.length + "' elements when there are '" + alts.length + "' alleles (it should have '" + (alts.length + 1) + "' elements).";
 		if (vcfInfo.isNumberAllAlleles() && values.length != alts.length) return "INFO filed '" + infoName + "' has 'Number=A' in header, but it contains '" + values.length + "' elements when there are '" + alts.length + "' alleles.";
 
