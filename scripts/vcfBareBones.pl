@@ -5,11 +5,13 @@ while( $l = <STDIN> ) {
 	@t = split /\s+/, $l;
 
 	if( $l =~ /^#/ ) {
-		print "$l\n";
+		if( $l =~ /^#CHROM/ ) { print "$l\n"; } # Only use title line
 	} else {
-		$t[2] = ".";
-		$t[5] = ".";
+		$t[2] = ".";	# ID
+		$t[5] = ".";	# QUALITY
+		$t[6] = ".";	# FILTER
 
+		# Cut INFO and GENOTYPES
 		for( $i=0 ; $i <= $#t ; $i++ ) {
 			print "\t" if $i > 0;
 			$f = $t[$i];
