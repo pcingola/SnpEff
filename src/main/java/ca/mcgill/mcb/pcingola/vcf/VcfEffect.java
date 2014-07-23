@@ -5,13 +5,13 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * An 'EFF' entry in a vcf line
- * 
+ *
  * @author pablocingolani
  */
 public class VcfEffect {
 
 	/**
-	 * VcfFields in SnpEff version 2.X have a different format than 3.X 
+	 * VcfFields in SnpEff version 2.X have a different format than 3.X
 	 */
 	public enum FormatVersion {
 		FORMAT_SNPEFF_2, FORMAT_SNPEFF_3, FORMAT_SNPEFF_4
@@ -80,11 +80,11 @@ public class VcfEffect {
 		if (name.equals("EFF.TRID")) return fieldNum;
 		fieldNum++;
 
-		if (name.equals("EFF.RANK") || name.equals("EFF.EXID")) return fieldNum; // This one used to be called exonID, now it is used for exon OR intron rank 
+		if (name.equals("EFF.RANK") || name.equals("EFF.EXID")) return fieldNum; // This one used to be called exonID, now it is used for exon OR intron rank
 		fieldNum++;
 
 		if (formatVersion == FormatVersion.FORMAT_SNPEFF_4) {
-			if (name.equals("EFF.GT")) return fieldNum;
+			if (name.equals("EFF.GT") || name.equals("EFF.GENOTYPE_NUMBER") || name.equals("EFF.GENOTYPE")) return fieldNum;
 			fieldNum++;
 		}
 
@@ -93,8 +93,6 @@ public class VcfEffect {
 
 	/**
 	 * Split a 'effect' string to an array of strings
-	 * @param eff
-	 * @return
 	 */
 	public static String[] split(String eff) {
 		int idxBr = eff.indexOf('[');
@@ -119,8 +117,6 @@ public class VcfEffect {
 
 	/**
 	 * Return a string safe to be used in an 'EFF' info field (VCF file)
-	 * @param str
-	 * @return
 	 */
 	public static String vcfEffSafe(String str) {
 		return str.replaceAll("(\\s|\\(|\\)|\\[|\\]|;|,|\\|)+", "_");
@@ -128,8 +124,6 @@ public class VcfEffect {
 
 	/**
 	 * Constructor: Guess format version
-	 * @param effStr
-	 * @param formatVersion
 	 */
 	public VcfEffect(String effectString) {
 		formatVersion = null; // Force guess
@@ -173,8 +167,6 @@ public class VcfEffect {
 
 	/**
 	 * Get a subfield as an index
-	 * @param index
-	 * @return
 	 */
 	public String get(int index) {
 		if (index >= effectStrings.length) return null;
@@ -320,8 +312,6 @@ public class VcfEffect {
 	/**
 	 * Parse effect details.
 	 * E.g. NEXT_PROT[amino_acid_modification:Phosphoserine]  returns "amino_acid_modification:Phosphoserine"
-	 * @param eff
-	 * @return
 	 */
 	String parseEffectDetails(String eff) {
 		int idx = eff.indexOf('[');
