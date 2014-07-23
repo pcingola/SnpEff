@@ -32,16 +32,16 @@ public class Config implements Serializable, Iterable<String> {
 	public static int MAX_WARNING_COUNT = 20;
 
 	// Keys in properties file
-	public static final String KEY_CODON = "codon.";
-	public static final String KEY_CODONTABLE = ".codonTable";
+	public static final String KEY_CODON_PREFIX = "codon.";
+	public static final String KEY_CODONTABLE_SUFIX = ".codonTable";
 	public static final String KEY_DATA_DIR = "data.dir";
 	public static final String KEY_DATABASE_LOCAL = "database.local";
 	public static final String KEY_DATABASE_REPOSITORY = "database.repository";
-	public static final String KEY_GENOME = ".genome";
+	public static final String KEY_GENOME_SUFIX = ".genome";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_AFTER = "lof.ignoreProteinCodingAfter";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_BEFORE = "lof.ignoreProteinCodingBefore";
 	public static final String KEY_LOF_DELETE_PROTEIN_CODING_BASES = "lof.deleteProteinCodingBases";
-	public static final String KEY_REFERENCE = ".reference";
+	public static final String KEY_REFERENCE_SUFIX = ".reference";
 	public static final String KEY_VERSIONS_URL = "versions.url";
 
 	private static Config configInstance = null; // Config is some kind of singleton because we want to make it accessible from everywhere
@@ -132,8 +132,8 @@ public class Config implements Serializable, Iterable<String> {
 		// Read codon tables
 		//---
 		for (Object key : properties.keySet()) {
-			if (key.toString().startsWith(KEY_CODON)) {
-				String name = key.toString().substring(KEY_CODON.length());
+			if (key.toString().startsWith(KEY_CODON_PREFIX)) {
+				String name = key.toString().substring(KEY_CODON_PREFIX.length());
 				String table = properties.getProperty(key.toString());
 				CodonTable codonTable = new CodonTable(name, table);
 				CodonTables.getInstance().add(codonTable);
@@ -145,9 +145,9 @@ public class Config implements Serializable, Iterable<String> {
 		//---
 		for (Object key : properties.keySet()) {
 			String keyStr = key.toString();
-			if (keyStr.endsWith(KEY_CODONTABLE) && keyStr.startsWith(genomeVersion + ".")) {
+			if (keyStr.endsWith(KEY_CODONTABLE_SUFIX) && keyStr.startsWith(genomeVersion + ".")) {
 				// Everything between gneomeName and ".codonTable" is assumed to be chromosome name
-				int chrNameEnd = keyStr.length() - KEY_CODONTABLE.length();
+				int chrNameEnd = keyStr.length() - KEY_CODONTABLE_SUFIX.length();
 				int chrNameStart = genomeVersion.length() + 1;
 				int chrNameLen = chrNameEnd - chrNameStart;
 				if (chrNameLen < 0) throw new RuntimeException("Error parsing config entry '" + keyStr + "'.\n\tExpected format: GENOME.CHROMOSOME.codonTable\n\tChromosome name not found!");
@@ -510,20 +510,16 @@ public class Config implements Serializable, Iterable<String> {
 		Collections.sort(keys);
 
 		for (String key : keys) {
-			if (key.endsWith(KEY_GENOME)) {
-				String genVer = key.substring(0, key.length() - KEY_GENOME.length());
+			if (key.endsWith(KEY_GENOME_SUFIX)) {
+				String genVer = key.substring(0, key.length() - KEY_GENOME_SUFIX.length());
 
 				// Add full namne
-				String name = properties.getProperty(genVer + KEY_GENOME);
+				String name = properties.getProperty(genVer + KEY_GENOME_SUFIX);
 				nameByVersion.put(genVer, name);
 
 				// Add reference
-				String ref = properties.getProperty(genVer + KEY_REFERENCE);
+				String ref = properties.getProperty(genVer + KEY_REFERENCE_SUFIX);
 				referenceByVersion.put(genVer, ref);
-			} else {
-				if (!key.endsWith(KEY_REFERENCE) //
-						&& !key.endsWith(KEY_CODONTABLE) //
-				) Gpr.debug("property{'" + key + "'} = '" + properties.getProperty(key) + "'");
 			}
 		}
 
