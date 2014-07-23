@@ -260,7 +260,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Check number of INFO elements
 		if (vcfInfo.isNumberNumber() && vcfInfo.getNumber() != values.length) {
 			VcfInfoType type = vcfInfo.getVcfInfoType();
-			if( type == VcfInfoType.Flag && values.length == 1 ) ; // OK, flags must have one or zero values
+			if (type == VcfInfoType.Flag && values.length == 1) ; // OK, flags must have one or zero values
 			else return "INFO filed '" + infoName + "' has 'Number=" + vcfInfo.getNumber() + "' in header, but it contains '" + values.length + "' elements.";
 		}
 		if (vcfInfo.isNumberAllAlleles() && values.length != (alts.length + 1)) return "INFO filed '" + infoName + "' has 'Number=R' in header, but it contains '" + values.length + "' elements when there are '" + alts.length + "' alleles (it should have '" + (alts.length + 1) + "' elements).";
@@ -1095,6 +1095,15 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		this.lineNum = lineNum;
 	}
 
+	/**
+	 * To string as a simple "chr:start-end" format
+	 * @return
+	 */
+	@Override
+	public String toStr() {
+		return getClass().getSimpleName() + "_" + getChromosomeName() + ":" + (start + 1) + "_" + ref + "/" + getAltsStr();
+	}
+
 	@Override
 	public String toString() {
 		boolean deleteLastTab = true;
@@ -1221,12 +1230,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 */
 	public List<Variant> variants() {
 		LinkedList<Variant> list = new LinkedList<Variant>();
-
-		//		// Coverage
-		//		int coverage = Gpr.parseIntSafe(getInfo("DP"));
-		//
-		//		// Is it heterozygous, homozygous or undefined?
-		//		Boolean isHetero = calcHetero();
 
 		// Create one SeqChange for each ALT
 		Chromosome chr = (Chromosome) parent;

@@ -121,7 +121,6 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
 	/**
 	 * Read a line from reader
-	 * @throws IOException
 	 */
 	protected String readLine() throws IOException {
 		if (nextLine != null) {
@@ -141,14 +140,11 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
 	/**
 	 * Read next element
-	 * @return
 	 */
 	protected abstract T readNext();
 
 	/**
 	 * Is reader ready? I.e. Can we read a line?
-	 * @return
-	 * @throws IOException
 	 */
 	protected boolean ready() throws IOException {
 		if (reader == null) return false; // No reader? then we are not ready
@@ -164,13 +160,12 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
 	/**
 	 * Seek to 'pos' (jump to byte number 'pos' in the file
-	 * @param pos
-	 * @throws IOException
 	 */
 	public void seek(long pos) throws IOException {
 		if (!hasSeek()) throw new IOException("Seek operation not supported!");
 		((SeekableBufferedReader) reader).seek(pos);
 		next = null;
+		nextLine = null;
 	}
 
 	public void setAutoClose(boolean autoClose) {
