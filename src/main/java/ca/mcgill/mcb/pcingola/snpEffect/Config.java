@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,16 +32,18 @@ public class Config implements Serializable, Iterable<String> {
 	public static int MAX_WARNING_COUNT = 20;
 
 	// Keys in properties file
-	public static final String KEY_GENOME = ".genome";
-	public static final String KEY_REFERENCE = ".reference";
 	public static final String KEY_CODON = "codon.";
 	public static final String KEY_CODONTABLE = ".codonTable";
-	public static final String KEY_DATABASE_REPOSITORY = "database.repository";
+	public static final String KEY_DATA_DIR = "data.dir";
 	public static final String KEY_DATABASE_LOCAL = "database.local";
-	public static final String KEY_VERSIONS_URL = "versions.url";
+	public static final String KEY_DATABASE_REPOSITORY = "database.repository";
+	public static final String KEY_GENOME = ".genome";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_AFTER = "lof.ignoreProteinCodingAfter";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_BEFORE = "lof.ignoreProteinCodingBefore";
 	public static final String KEY_LOF_DELETE_PROTEIN_CODING_BASES = "lof.deleteProteinCodingBases";
+	public static final String KEY_REFERENCE = ".reference";
+	public static final String KEY_VERSIONS_URL = "versions.url";
+
 	private static Config configInstance = null; // Config is some kind of singleton because we want to make it accessible from everywhere
 
 	boolean debug = false; // Debug mode?
@@ -176,9 +179,6 @@ public class Config implements Serializable, Iterable<String> {
 	 *
 	 * Format  : DatabaseRepository / v VERSION / snpEff_v VERSION _ genomeVersion .zip
 	 * Example : http://downloads.sourceforge.net/project/snpeff/databases/v2_0_3/snpEff_v2_0_3_EF3.64.zip
-	 *
-	 * @param genomeVer
-	 * @return
 	 */
 	public URL downloadUrl(String genomeVer) {
 		try {
@@ -188,6 +188,7 @@ public class Config implements Serializable, Iterable<String> {
 			version = version.replace('.', '_');
 
 			String urlRoot = getDatabaseRepository();
+			if (urlRoot == null || urlRoot.isEmpty()) throw new RuntimeException("Cannot find database repository. Missing '" + KEY_DATABASE_REPOSITORY + "' property in config file?");
 
 			StringBuilder urlsb = new StringBuilder();
 			urlsb.append(urlRoot);
@@ -202,8 +203,6 @@ public class Config implements Serializable, Iterable<String> {
 
 	/**
 	 * Find the genome string in a 'codonTable' key string
-	 * @param codonKeyStr
-	 * @return
 	 */
 	String findGenome(String codonKeyStr) {
 		for (String genVer : genomeByVersion.keySet()) {
@@ -491,7 +490,7 @@ public class Config implements Serializable, Iterable<String> {
 		//---
 
 		// Set data_dir if not overridden by constructor
-		if (dataDir == null) dataDir = properties.getProperty("data_dir", DEFAULT_DATA_DIR);
+		if (dataDir == null) dataDir = properties.getProperty(KEY_DATA_DIR, DEFAULT_DATA_DIR);
 		dataDir = canonicalDir(dataDir); // Parse data dir
 
 		// Repository
@@ -503,8 +502,14 @@ public class Config implements Serializable, Iterable<String> {
 		genomeByVersion = new HashMap<String, Genome>();
 		referenceByVersion = new HashMap<String, String>();
 		nameByVersion = new HashMap<String, String>();
-		for (Object k : properties.keySet()) {
-			String key = k.toString();
+
+		// Sorted keys
+		ArrayList<String> keys = new ArrayList<String>();
+		for (Object k : properties.keySet())
+			keys.add(k.toString());
+		Collections.sort(keys);
+
+		for (String key : keys) {
 			if (key.endsWith(KEY_GENOME)) {
 				String genVer = key.substring(0, key.length() - KEY_GENOME.length());
 
@@ -515,6 +520,10 @@ public class Config implements Serializable, Iterable<String> {
 				// Add reference
 				String ref = properties.getProperty(genVer + KEY_REFERENCE);
 				referenceByVersion.put(genVer, ref);
+			} else {
+				if (!key.endsWith(KEY_REFERENCE) //
+						&& !key.endsWith(KEY_CODONTABLE) //
+				) Gpr.debug("property{'" + key + "'} = '" + properties.getProperty(key) + "'");
 			}
 		}
 
