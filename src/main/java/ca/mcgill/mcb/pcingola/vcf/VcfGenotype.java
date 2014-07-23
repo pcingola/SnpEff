@@ -49,8 +49,6 @@ public class VcfGenotype {
 
 	/**
 	 * Get a genotype field
-	 * @param fieldName
-	 * @return
 	 */
 	public String get(String fieldName) {
 		parseFields();
