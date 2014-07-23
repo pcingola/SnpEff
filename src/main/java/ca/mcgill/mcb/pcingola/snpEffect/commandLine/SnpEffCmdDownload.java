@@ -10,7 +10,7 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Command line program: Build database
- * 
+ *
  * @author pcingola
  */
 public class SnpEffCmdDownload extends SnpEff {
@@ -21,14 +21,6 @@ public class SnpEffCmdDownload extends SnpEff {
 		super();
 	}
 
-	//	/**
-	//	 * File name from URL (i.e. anything after the last '/')
-	//	 */
-	//	String baseName(String url) {
-	//		String f[] = url.toString().split("/");
-	//		return f[f.length - 1];
-	//	}
-
 	/**
 	 * Parse command line arguments
 	 */
@@ -38,7 +30,7 @@ public class SnpEffCmdDownload extends SnpEff {
 		for (int i = 0; i < args.length; i++) {
 
 			// Argument starts with '-'?
-			if (args[i].startsWith("-")) usage("Unknow option '" + args[i] + "'"); // Options (config, verbose, etc.) are parsed at SnpEff level 
+			if (args[i].startsWith("-")) usage("Unknow option '" + args[i] + "'"); // Options (config, verbose, etc.) are parsed at SnpEff level
 			else if (genomeVer.length() <= 0) genomeVer = args[i];
 			else usage("Unknow parameter '" + args[i] + "'");
 		}
@@ -99,7 +91,7 @@ public class SnpEffCmdDownload extends SnpEff {
 		VersionCheck versionCheck = VersionCheck.version(SnpEff.SOFTWARE_NAME, SnpEff.VERSION_SHORT, config.getVersionsUrl(), verbose);
 		if (versionCheck.isNewVersion()) {
 			Timer.showStdErr("New version: " //
-					+ "\n\tNew version  : " + versionCheck.getLatestVersion() // 
+					+ "\n\tNew version  : " + versionCheck.getLatestVersion() //
 					+ "\n\tRelease date : " + versionCheck.getLatestReleaseDate() //
 					+ "\n\tDownload URL : " + versionCheck.getLatestUrl() //
 			);

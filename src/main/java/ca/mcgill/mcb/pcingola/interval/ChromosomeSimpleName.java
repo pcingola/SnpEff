@@ -15,8 +15,6 @@ public class ChromosomeSimpleName {
 
 	/**
 	 * Get a simple name for the chromosome
-	 * @param chrName
-	 * @return
 	 */
 	public static String get(String chrName) {
 		return instance.simpleNameCache(chrName);
@@ -27,9 +25,19 @@ public class ChromosomeSimpleName {
 	}
 
 	/**
+	 * Remove 'prefix' from 'chr'
+	 */
+	String removePrefix(String chr, String prefix) {
+		String chrLower = chr.toLowerCase();
+		String prefixLower = prefix.toLowerCase();
+
+		// Remove prefix it it matches
+		if (chrLower.startsWith(prefixLower)) return chr.substring(prefix.length() + 1);
+		return chr;
+	}
+
+	/**
 	 * Simplify chromosome name
-	 * @param chr
-	 * @return
 	 */
 	protected String simpleName(String chr) {
 		if (chr == null) return "";
@@ -40,16 +48,31 @@ public class ChromosomeSimpleName {
 		do {
 			chrPrev = chr;
 
-			// Remove all common prefixes
-			for (String prefix : CHROMO_PREFIX) {
-				String chName = chr.toLowerCase();
+			// If chr matches EXACTLY, we don't remove any prefix
+			// E.g.:
+			//		Let's assume that chr is 'Chromosome'
+			//			i) If we remove prefix 'Chromosome', then we get an empty chromosome name, which is illegal.
+			//			ii) If we remove "Chromo" (another prefix), the we get "some", which doesn't make any sense.
+			//
+			// So in case of ANY exact match, it's better not to remove any prefix.
+			boolean exactMatch = false;
+			for (String prefix : CHROMO_PREFIX)
+				exactMatch |= chr.equalsIgnoreCase(prefix);
 
-				if (chName.startsWith(prefix + ":")) chr = chr.substring(prefix.length() + 1);
-				else if (chName.startsWith(prefix + "_")) chr = chr.substring(prefix.length() + 1);
-				else if (chName.startsWith(prefix + "-")) chr = chr.substring(prefix.length() + 1);
-				else if (chName.startsWith(prefix)) chr = chr.substring(prefix.length());
-				else if (chName.startsWith("0")) chr = chr.substring(1);
+			// Remove all common prefixes
+			if (!exactMatch) {
+				for (String prefix : CHROMO_PREFIX) {
+					chr = removePrefix(chr, prefix + ":");
+					chr = removePrefix(chr, prefix + "_");
+					chr = removePrefix(chr, prefix + "-");
+					chr = removePrefix(chr, prefix);
+				}
 			}
+
+			// Remove left zeros and trim spaces
+			chr = removePrefix(chr, "0");
+			chr = chr.trim();
+
 		} while (!chr.equals(chrPrev));
 
 		return chr;
@@ -57,8 +80,6 @@ public class ChromosomeSimpleName {
 
 	/**
 	 * Query cache before simplifying name
-	 * @param chrName
-	 * @return
 	 */
 	protected String simpleNameCache(String chrName) {
 		String chr = map.get(chrName);

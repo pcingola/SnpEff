@@ -23,6 +23,13 @@ import java.util.zip.ZipOutputStream;
  */
 public class Download {
 
+	private static int BUFFER_SIZE = 102400;
+
+	boolean debug = false;
+
+	boolean verbose = false;
+	boolean update; // Are we updating ?
+
 	/**
 	 * File name from URL (i.e. anything after the last '/')
 	 */
@@ -30,12 +37,6 @@ public class Download {
 		String f[] = url.toString().split("/");
 		return f[f.length - 1];
 	}
-
-	private static int BUFFER_SIZE = 102400;
-
-	boolean debug = false;
-	boolean verbose = false;
-	boolean update; // Are we updating ?
 
 	public Download() {
 	}
@@ -140,6 +141,7 @@ public class Download {
 
 			res = true;
 		} catch (Exception e) {
+			Timer.showStdErr("ERROR while connecting to " + url);
 			throw new RuntimeException(e);
 		}
 
