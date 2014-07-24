@@ -32,7 +32,7 @@ public class ChromosomeSimpleName {
 		String prefixLower = prefix.toLowerCase();
 
 		// Remove prefix it it matches
-		if (chrLower.startsWith(prefixLower)) return chr.substring(prefix.length() + 1);
+		if (chrLower.startsWith(prefixLower)) return chr.substring(prefix.length());
 		return chr;
 	}
 

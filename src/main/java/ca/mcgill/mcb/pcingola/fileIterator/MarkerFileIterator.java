@@ -187,14 +187,14 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	}
 
 	public void seek(String chr) {
+		nextLine = null;
+		next = null;
 		tabixReader.query(chr + ":1");
 		tabixIterator = tabixReader.iterator();
 	}
 
 	/**
 	 * Seek to a chr:pos region
-	 * @param chr
-	 * @param pos
 	 */
 	public boolean seek(String chr, int pos) {
 		nextLine = null;
