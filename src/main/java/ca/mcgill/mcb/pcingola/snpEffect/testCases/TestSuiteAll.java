@@ -5,7 +5,7 @@ import junit.framework.TestSuite;
 
 /**
  * Invoke all test cases for SnpEff
- * 
+ *
  * @author pcingola
  */
 public class TestSuiteAll {
@@ -78,7 +78,7 @@ public class TestSuiteAll {
 		// Build database: Exon frame
 		suite.addTestSuite(TestCasesExonFrame.class);
 
-		// File 
+		// File
 		suite.addTestSuite(TestCasesSeekableReader.class);
 		suite.addTestSuite(TestCasesFileIndexChrPos.class);
 
