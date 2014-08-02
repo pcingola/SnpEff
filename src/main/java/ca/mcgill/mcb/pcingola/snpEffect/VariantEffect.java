@@ -361,7 +361,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		if ((getMarker() != null) && (variantEffect.getMarker() != null)) return getMarker().compareTo(variantEffect.getMarker());
 
 		// Sort by variant (most of the time this is equal)
-		return variant.compareTo(variantEffect.getSeqChange());
+		return variant.compareTo(variantEffect.getVariant());
 	}
 
 	/**
@@ -550,11 +550,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				case DOWNSTREAM:
 				case EXON:
 				case GENE:
+				case GENOME:
 				case INTRAGENIC:
 				case INTERGENIC:
 				case INTERGENIC_CONSERVED:
 				case INTRON:
 				case INTRON_CONSERVED:
+				case MICRO_RNA:
 				case NONE:
 				case REGULATION:
 				case TRANSCRIPT:
@@ -756,16 +758,16 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return marker;
 	}
 
-	public Variant getSeqChange() {
-		return variant;
-	}
-
 	public Transcript getTranscript() {
 		if (marker != null) {
 			if (marker instanceof Transcript) return (Transcript) marker;
 			return (Transcript) marker.findParent(Transcript.class);
 		}
 		return null;
+	}
+
+	public Variant getVariant() {
+		return variant;
 	}
 
 	public String getWarning() {

@@ -93,7 +93,7 @@ public class GeneCountByTypeTable implements Iterable<Gene>, Serializable {
 	 * @param seqChange
 	 */
 	public void sample(Gene gene, Marker marker, String type, VariantEffect changeEffect) {
-		Variant seqChange = changeEffect.getSeqChange();
+		Variant seqChange = changeEffect.getVariant();
 
 		// Different seqChange? Clean the cache
 		if (prevSeqChangePos != seqChange.getStart()) {

@@ -141,7 +141,7 @@ public class LossOfFunction {
 	 */
 	protected boolean isLof(VariantEffect changeEffect) {
 		// Not a sequence change? => Not LOF
-		if ((changeEffect.getSeqChange() != null) && (!changeEffect.getSeqChange().isVariant())) return false;
+		if ((changeEffect.getVariant() != null) && (!changeEffect.getVariant().isVariant())) return false;
 
 		// Is this change affecting a protein coding gene?
 		Gene gene = changeEffect.getGene();
@@ -165,7 +165,7 @@ public class LossOfFunction {
 		}
 
 		// Deletion? Is another method to check
-		if (changeEffect.getSeqChange().isDel()) lof |= isLofDeletion(changeEffect);
+		if (changeEffect.getVariant().isDel()) lof |= isLofDeletion(changeEffect);
 
 		// The following effect types can be considered LOF
 		switch (changeEffect.getEffectType()) {
@@ -175,7 +175,7 @@ public class LossOfFunction {
 			if ((changeEffect.getMarker() != null) && (changeEffect.getMarker() instanceof SpliceSite)) {
 				// Get splice site marker and check if it is 'core'
 				SpliceSite spliceSite = (SpliceSite) changeEffect.getMarker();
-				if (spliceSite.intersectsCoreSpliceSite(changeEffect.getSeqChange())) lof = true; // Does it intersect the CORE splice site?
+				if (spliceSite.intersectsCoreSpliceSite(changeEffect.getVariant())) lof = true; // Does it intersect the CORE splice site?
 			}
 			break;
 
@@ -221,7 +221,7 @@ public class LossOfFunction {
 		// 		1) First (coding) exon deleted
 		//---
 		if (changeEffect.getEffectType() == EffectType.EXON_DELETED) {
-			Variant seqChange = changeEffect.getSeqChange();
+			Variant seqChange = changeEffect.getVariant();
 			if (seqChange == null) throw new RuntimeException("Cannot retrieve 'seqChange' from EXON_DELETED effect!");
 			if (seqChange.includes(tr.getFirstCodingExon())) return true;
 		}
@@ -232,7 +232,7 @@ public class LossOfFunction {
 		//---
 
 		// Find coding part of the transcript (i.e. no UTRs)
-		Variant seqChange = changeEffect.getSeqChange();
+		Variant seqChange = changeEffect.getVariant();
 		int cdsStart = tr.isStrandPlus() ? tr.getCdsStart() : tr.getCdsEnd();
 		int cdsEnd = tr.isStrandPlus() ? tr.getCdsEnd() : tr.getCdsStart();
 		Marker coding = new Marker(seqChange.getChromosome(), cdsStart, cdsEnd, false, "");
@@ -290,7 +290,7 @@ public class LossOfFunction {
 		if (lastNmdPos < 0) return false; // No valid 'lastNmdPos'? => There is no NMD event.
 
 		// Does this change affect the region 'before' this last NMD position? => It is assumed to be NMD
-		Variant seqChange = changeEffect.getSeqChange();
+		Variant seqChange = changeEffect.getVariant();
 
 		boolean nmd;
 		if (tr.isStrandPlus()) nmd = seqChange.getStart() <= lastNmdPos;

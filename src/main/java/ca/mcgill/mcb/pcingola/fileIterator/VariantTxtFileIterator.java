@@ -23,13 +23,13 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
  * 
  * @author pcingola
  */
-public class SeqChangeTxtFileIterator extends VariantFileIterator {
+public class VariantTxtFileIterator extends VariantFileIterator {
 
-	public SeqChangeTxtFileIterator(String fileName, Genome genome) {
+	public VariantTxtFileIterator(String fileName, Genome genome) {
 		super(fileName, genome);
 	}
 
-	public SeqChangeTxtFileIterator(String fileName) {
+	public VariantTxtFileIterator(String fileName) {
 		super(fileName);
 	}
 

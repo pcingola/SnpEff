@@ -250,7 +250,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 				//---
 				if (useOicr && (tr != null)) {
 					StringBuilder sb = new StringBuilder();
-					Variant seqChange = changeEffect.getSeqChange();
+					Variant seqChange = changeEffect.getVariant();
 
 					// Get cDNA position
 					int pos = tr.isStrandMinus() ? seqChange.getStart() : seqChange.getEnd(); // First base in cDNA

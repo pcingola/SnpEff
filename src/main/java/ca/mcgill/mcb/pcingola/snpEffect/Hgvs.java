@@ -20,7 +20,7 @@ public class Hgvs {
 
 	public Hgvs(VariantEffect changeEffect) {
 		this.changeEffect = changeEffect;
-		seqChange = changeEffect.getSeqChange();
+		seqChange = changeEffect.getVariant();
 		marker = changeEffect.getMarker();
 		tr = changeEffect.getTranscript();
 	}

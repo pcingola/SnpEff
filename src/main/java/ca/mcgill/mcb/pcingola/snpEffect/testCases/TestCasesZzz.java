@@ -1,12 +1,13 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
-import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 
 /**
  * 
@@ -22,29 +23,19 @@ public class TestCasesZzz extends TestCase {
 	Config config;
 	Genome genome;
 
-	void initSnpEffPredictor(String genomeName) {
-		// Create a config and force out snpPredictor for hg37 chromosome Y
-		config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
-		config.loadSnpEffectPredictor();
-		genome = config.getGenome();
-		config.getSnpEffectPredictor().buildForest();
-	}
-
 	/**
-	 * Basic parsing
+	 * Make sure all variant effects have appropriate impacts
 	 */
-	public void test_01() {
-		initSnpEffPredictor("testCase");
+	public void test_36_EffectImpact() {
+		Chromosome chr = new Chromosome(null, 0, 1, "1");
+		Variant var = new Variant(chr, 1, "A", "C");
+		var.setChangeType(VariantType.SNP);
 
-		String fileName = "./tests/vcf.vcf";
-		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
-		vcf.setCreateChromos(true);
-		for (VcfEntry vcfEntry : vcf) {
-			for (Variant seqChange : vcfEntry.variants()) {
-				System.out.println(seqChange);
-				String seqChangeStr = "chr" + seqChange.getChromosomeName() + ":" + seqChange.getStart() + "_" + seqChange.getReference() + "/" + seqChange.getChange();
-				Assert.assertEquals(seqChangeStr, seqChange.getId());
-			}
+		System.out.println(var);
+		for (EffectType eff : EffectType.values()) {
+			VariantEffect varEff = new VariantEffect(var);
+			varEff.setEffectType(eff);
+			System.out.println(var.isVariant() + "\t" + eff + "\t" + varEff.getEffectImpact());
 		}
 	}
 }

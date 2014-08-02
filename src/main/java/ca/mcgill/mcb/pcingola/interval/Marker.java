@@ -386,16 +386,16 @@ public class Marker extends Interval implements TxtSerializable {
 				break;
 
 			case DOWNSTREAM:
-				if ((changeEffect != null) && (changeEffect.getSeqChange() != null)) {
+				if ((changeEffect != null) && (changeEffect.getVariant() != null)) {
 					Downstream downstream = (Downstream) m;
-					sb.append(downstream.distanceToTr(changeEffect.getSeqChange()));
+					sb.append(downstream.distanceToTr(changeEffect.getVariant()));
 				}
 				break;
 
 			case UPSTREAM:
-				if ((changeEffect != null) && (changeEffect.getSeqChange() != null)) {
+				if ((changeEffect != null) && (changeEffect.getVariant() != null)) {
 					Upstream upstream = (Upstream) m;
-					sb.append(upstream.distanceToTr(changeEffect.getSeqChange()));
+					sb.append(upstream.distanceToTr(changeEffect.getVariant()));
 				}
 				break;
 

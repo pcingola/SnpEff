@@ -45,8 +45,8 @@ public class TestSuiteAll {
 		// Codon tables
 		suite.addTestSuite(TestCasesCodonTable.class);
 
-		// SeqChange
-		suite.addTestSuite(TestCasesSeqChange.class);
+		// Variants
+		suite.addTestSuite(TestCasesVariant.class);
 		suite.addTestSuite(TestCasesTranscript.class);
 		suite.addTestSuite(TestCasesSnp.class);
 		suite.addTestSuite(TestCasesMnp.class);

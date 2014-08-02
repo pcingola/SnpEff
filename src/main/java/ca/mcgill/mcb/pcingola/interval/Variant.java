@@ -272,7 +272,6 @@ public class Variant extends Marker {
 
 	/**
 	 * Is this a change or are the changes actually the same as the reference
-	 * @return
 	 */
 	public boolean isVariant() {
 		for (String chg : alts)
