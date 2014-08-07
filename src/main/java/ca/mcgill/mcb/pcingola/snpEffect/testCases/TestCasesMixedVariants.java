@@ -43,7 +43,7 @@ public class TestCasesMixedVariants extends TestCase {
 	 * Compare with results from ENSEMBL's VEP on transcript ENST00000268124
 	 */
 	public void compareVep(String genome, String vcf, String trId) {
-		String args[] = { "-classic", genome, vcf };
+		String args[] = { genome, vcf };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
@@ -125,8 +125,8 @@ public class TestCasesMixedVariants extends TestCase {
 		compareVep("testENST00000268124", "tests/test_mixed_01_vep.vcf", "ENST00000268124");
 	}
 
-	public void test_02_MixedVep() {
-		compareVep("testHg3770Chr22", "tests/test_mixed_02_vep.vcf", "ENST00000445220");
-	}
+	//	public void test_02_MixedVep() {
+	//		compareVep("testHg3770Chr22", "tests/test_mixed_02_vep.vcf", "ENST00000445220");
+	//	}
 
 }
