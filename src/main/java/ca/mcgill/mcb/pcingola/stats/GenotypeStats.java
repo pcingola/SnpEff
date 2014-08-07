@@ -38,6 +38,8 @@ public class GenotypeStats implements SamplingStats<VcfEntry> {
 	}
 
 	String countBySampleBarChartUrl(int count[], String title, String xlabel, String ylabel) {
+		if (countMissing == null) return "";
+
 		int[] sampleNum = new int[countMissing.length];
 		for (int i = 0; i < countMissing.length; i++)
 			sampleNum[i] = i;
@@ -71,6 +73,8 @@ public class GenotypeStats implements SamplingStats<VcfEntry> {
 	}
 
 	public String getHomHetTable() {
+		if (sampleNames == null) return "";
+
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Sample_names ");

@@ -15,8 +15,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  *
- * Test cases for cancer effect (difference betwee somatic an germline tissue)
- * 
+ * Test cases for cancer effect (difference between somatic an germline tissue)
+ *
  * @author pcingola
  */
 public class TestCasesEff extends TestCase {
@@ -82,4 +82,15 @@ public class TestCasesEff extends TestCase {
 			Assert.assertTrue(numEffs <= 1);
 		}
 	}
+
+	/**
+	 * Make sure that empty VCF does not trigger an exception when creating the summary
+	 */
+	public void test_03_EmptyVcf() {
+		String args[] = { "eff", "-noLog", "testHg3770Chr22", "tests/empty_only_header.vcf" };
+		SnpEff snpEff = new SnpEff(args);
+		boolean ok = snpEff.run();
+		Assert.assertTrue(ok);
+	}
+
 }

@@ -670,8 +670,7 @@ public class SnpEffCmdEff extends SnpEff {
 	 */
 	@Override
 	public boolean run() {
-		run(false);
-		return true;
+		return run(false) != null;
 	}
 
 	/**
@@ -719,10 +718,11 @@ public class SnpEffCmdEff extends SnpEff {
 		if (createList) vcfEntriesDebug = new ArrayList<VcfEntry>();
 
 		// Predict
+		boolean ok = true;
 		if (verbose) Timer.showStdErr("Predicting variants");
 		if (inputFiles == null) {
 			// Single input file (normal operations)
-			runAnalysis(inputFile, null);
+			ok = runAnalysis(inputFile, null);
 		} else {
 			// Multiple input files
 			for (String inputFile : inputFiles) {
@@ -732,11 +732,13 @@ public class SnpEffCmdEff extends SnpEff {
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
 				);
-				runAnalysis(inputFile, outputFile);
+				ok &= runAnalysis(inputFile, outputFile);
 			}
 		}
 		if (verbose) Timer.showStdErr("done.");
 
+		if (!ok) return null;
+		if (vcfEntriesDebug == null) return new ArrayList<VcfEntry>();
 		return vcfEntriesDebug;
 	}
 
@@ -744,7 +746,9 @@ public class SnpEffCmdEff extends SnpEff {
 	 * Calculate the effect of variants and show results
 	 * @param snpEffFile
 	 */
-	public void runAnalysis(String inputFile, String outputFile) {
+	public boolean runAnalysis(String inputFile, String outputFile) {
+		boolean ok = true;
+
 		// Reset all counters
 		totalErrs = 0;
 		countInputLines = countVariants = countEffects = 0; // = countVariantsFilteredOut = 0;
@@ -812,21 +816,22 @@ public class SnpEffCmdEff extends SnpEff {
 		if (createSummary && (summaryFile != null)) {
 			// Creates a summary output file
 			if (verbose) Timer.showStdErr("Creating summary file: " + summaryFile);
-			if (createCsvSummary) summary(SUMMARY_CSV_TEMPLATE, summaryFile, true);
-			else summary(SUMMARY_TEMPLATE, summaryFile, false);
+			if (createCsvSummary) ok &= summary(SUMMARY_CSV_TEMPLATE, summaryFile, true);
+			else ok &= summary(SUMMARY_TEMPLATE, summaryFile, false);
 
 			// Creates genes output file
 			if (verbose) Timer.showStdErr("Creating genes file: " + summaryGenesFile);
-			summary(SUMMARY_GENES_TEMPLATE, summaryGenesFile, true);
+			ok &= summary(SUMMARY_GENES_TEMPLATE, summaryGenesFile, true);
 		}
 
 		if (totalErrs > 0) System.err.println(totalErrs + " errors.");
+		return ok;
 	}
 
 	/**
 	 * Creates a summary output file (using freeMarker and a template)
 	 */
-	void summary(String templateFile, String outputFile, boolean noCommas) {
+	boolean summary(String templateFile, String outputFile, boolean noCommas) {
 		try {
 			// Configure FreeMaker
 			Configuration cfg = new Configuration();
@@ -852,9 +857,13 @@ public class SnpEffCmdEff extends SnpEff {
 			out.close();
 		} catch (IOException e) {
 			error(e, "Error creating summary: " + e.getMessage());
+			return false;
 		} catch (TemplateException e) {
 			error(e, "Error creating summary: " + e.getMessage());
+			return false;
 		}
+
+		return true;
 	}
 
 	/**

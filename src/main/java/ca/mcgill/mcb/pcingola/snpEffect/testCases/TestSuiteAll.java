@@ -53,6 +53,7 @@ public class TestSuiteAll {
 		suite.addTestSuite(TestCasesIns.class);
 		suite.addTestSuite(TestCasesDel.class);
 		suite.addTestSuite(TestCasesIntervalVariant.class);
+		suite.addTestSuite(TestCasesMixedVariants.class);
 
 		suite.addTestSuite(TestCasesSnpEnsembl.class);
 		suite.addTestSuite(TestCasesMissenseSilentRatio.class);

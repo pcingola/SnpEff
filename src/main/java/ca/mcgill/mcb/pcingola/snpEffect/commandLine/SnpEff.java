@@ -719,9 +719,6 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Run a SnpEff (usually a sub-class)
-	 * @param snpEff
-	 * @param err
-	 * @return
 	 */
 	protected boolean run(SnpEff snpEff, String args[], StringBuilder err) {
 		boolean ok = false;

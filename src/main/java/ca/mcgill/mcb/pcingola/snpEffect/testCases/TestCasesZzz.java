@@ -1,18 +1,17 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
 import junit.framework.TestCase;
-import ca.mcgill.mcb.pcingola.interval.Chromosome;
+
+import org.junit.Assert;
+
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 
 /**
- * 
+ *
  * Test case
- * 
+ *
  * @author pcingola
  */
 public class TestCasesZzz extends TestCase {
@@ -23,19 +22,11 @@ public class TestCasesZzz extends TestCase {
 	Config config;
 	Genome genome;
 
-	/**
-	 * Make sure all variant effects have appropriate impacts
-	 */
-	public void test_36_EffectImpact() {
-		Chromosome chr = new Chromosome(null, 0, 1, "1");
-		Variant var = new Variant(chr, 1, "A", "C");
-		var.setChangeType(VariantType.SNP);
-
-		System.out.println(var);
-		for (EffectType eff : EffectType.values()) {
-			VariantEffect varEff = new VariantEffect(var);
-			varEff.setEffectType(eff);
-			System.out.println(var.isVariant() + "\t" + eff + "\t" + varEff.getEffectImpact());
-		}
+	public void test_01_EmptyVcf() {
+		String args[] = { "eff", "-noLog", "testHg3770Chr22", "tests/empty_only_header.vcf" };
+		SnpEff snpEff = new SnpEff(args);
+		boolean ok = snpEff.run();
+		Assert.assertTrue(ok);
 	}
+
 }

@@ -22,6 +22,7 @@ public class TsTvStats implements SamplingStats<VcfEntry> {
 	}
 
 	public long getTransitions() {
+		if (countTs == null) return 0;
 		long sum = 0;
 		for (int i = 0; i < countTs.length; i++)
 			sum += countTs[i];
@@ -29,6 +30,8 @@ public class TsTvStats implements SamplingStats<VcfEntry> {
 	}
 
 	public long getTransversions() {
+		if (countTv == null) return 0;
+
 		long sum = 0;
 		for (int i = 0; i < countTv.length; i++)
 			sum += countTv[i];
