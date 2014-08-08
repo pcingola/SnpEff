@@ -612,8 +612,6 @@ public class Gpr {
 
 	/**
 	 * Show a mark
-	 * @param i
-	 * @param showEvery
 	 */
 	public static void showMark(int i, int showEvery) {
 		if (showEvery <= 0) return;
@@ -625,8 +623,6 @@ public class Gpr {
 
 	/**
 	 * Show a mark
-	 * @param i
-	 * @param showEvery
 	 */
 	public static void showMark(int i, int showEvery, String newLineStr) {
 		if (showEvery <= 0) return;
@@ -638,8 +634,6 @@ public class Gpr {
 
 	/**
 	 * Show a mark (on STDERR)
-	 * @param i
-	 * @param showEvery
 	 */
 	public static void showMarkStderr(int i, int showEvery) {
 		if (i % showEvery == 0) {

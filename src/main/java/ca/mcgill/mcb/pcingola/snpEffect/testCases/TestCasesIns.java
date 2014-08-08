@@ -15,10 +15,10 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
@@ -28,13 +28,14 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
- * Test random SNP changes 
- * 
+ * Test random SNP changes
+ *
  * @author pcingola
  */
 public class TestCasesIns extends TestCase {
 
 	boolean debug = false;
+	boolean verbose = false;
 	Random rand;
 	Config config;
 	Genome genome;
@@ -180,7 +181,8 @@ public class TestCasesIns extends TestCase {
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor();
 			if (debug) System.out.println("INS Test iteration: " + i + "\n" + transcript);
-			else System.out.println("INS Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+			else if (verbose) System.out.println("INS Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+			else Gpr.showMark(i + 1, 1);
 
 			int cdsBaseNum = 0;
 
@@ -280,6 +282,7 @@ public class TestCasesIns extends TestCase {
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		snpeff.setVerbose(verbose);
 
 		List<VcfEntry> vcfEnties = snpeff.run(true);
 		for (VcfEntry ve : vcfEnties) {

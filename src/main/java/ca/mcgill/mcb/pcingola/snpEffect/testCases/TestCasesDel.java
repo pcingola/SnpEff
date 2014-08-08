@@ -11,24 +11,25 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
- * Test random DEL changes 
- * 
+ * Test random DEL changes
+ *
  * @author pcingola
  */
 public class TestCasesDel extends TestCase {
 
 	boolean debug = false;
 	boolean forcePositive = debug || false; // Force positive strand (used for debugging)
+	static boolean verbose = false;
 
 	Random rand;
 	Config config;
@@ -69,7 +70,7 @@ public class TestCasesDel extends TestCase {
 				else {
 					// Should we use this base? We don't use the ones that intersect with 'seqChage' (because they are deleted)
 					char base = chromoBases[pos];
-					currCodon[cdsCodonPos] = exon.isStrandPlus() ? base : GprSeq.wc(base); // Update current codon					
+					currCodon[cdsCodonPos] = exon.isStrandPlus() ? base : GprSeq.wc(base); // Update current codon
 				}
 
 				// Add it?
@@ -193,8 +194,8 @@ public class TestCasesDel extends TestCase {
 
 			initSnpEffPredictor();
 			if (debug) System.out.println("DEL Test iteration: " + i + "\n" + transcript);
-			else System.out.println("DEL Test iteration: " + i + "\t" + transcript.cds());
-
+			else if (verbose) System.out.println("DEL Test iteration: " + i + "\t" + transcript.cds());
+			else Gpr.showMark(i + 1, 1);
 			int cdsBaseNum = 0;
 
 			// For each exon...
@@ -333,7 +334,7 @@ public class TestCasesDel extends TestCase {
 											+ "\n\t\tAA (eff)         : '" + effect.getAaOld() + "' / '" + effect.getAaNew() + "'" //
 											+ "\n\t\tCodon            : '" + codonsOld + "' / '" + codonsNew + "'" //
 											+ "\n\t\tCodons(eff)      : '" + effect.getCodonsOld().toUpperCase() + "' / '" + effect.getCodonsNew().toUpperCase() + "'" //
-											+ "\n" //		
+											+ "\n" //
 									);
 								}
 

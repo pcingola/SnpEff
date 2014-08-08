@@ -13,11 +13,11 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
@@ -41,13 +41,14 @@ class Save implements Serializable {
 }
 
 /**
- * Test random SNP changes 
- * 
+ * Test random SNP changes
+ *
  * @author pcingola
  */
 public class TestCasesMnp extends TestCase {
 
 	static boolean debug = false;
+	static boolean verbose = false;
 	static int MAX_MNP_LEN = 10;
 
 	// Create factory
@@ -272,7 +273,8 @@ public class TestCasesMnp extends TestCase {
 			initSnpEffPredictorRand();
 
 			if (debug) System.out.println("MNP Test iteration: " + i + "\nChromo:\t" + chromoSequence + "\n" + transcript);
-			else System.out.println("MNP Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+			else if (verbose) System.out.println("MNP Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+			else Gpr.showMark(i + 1, 1);
 
 			if (debug) {
 				for (Exon exon : transcript.sortedStrand())
