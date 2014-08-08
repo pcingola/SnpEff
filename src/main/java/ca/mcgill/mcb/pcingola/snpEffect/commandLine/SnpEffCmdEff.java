@@ -67,7 +67,6 @@ public class SnpEffCmdEff extends SnpEff {
 	public static final int SHOW_EVERY = 100000;
 
 	boolean cancer = false; // Perform cancer comparisons
-	boolean supressOutput = false; // Only used for debugging purposes
 	boolean createSummary = true; // Do not create summary output file
 	boolean useHgvs = true; // Use Hgvs notation
 	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
@@ -499,7 +498,6 @@ public class SnpEffCmdEff extends SnpEff {
 					if (summaryFile.equals(DEFAULT_SUMMARY_FILE)) summaryFile = DEFAULT_SUMMARY_CSV_FILE;
 				} else if (arg.equalsIgnoreCase("-chr")) chrStr = args[++i];
 				else if (arg.equalsIgnoreCase("-useLocalTemplate")) useLocalTemplate = true; // Undocumented option (only used for development & debugging)
-				else if (arg.equalsIgnoreCase("-noOut")) supressOutput = true; // Undocumented option (only used for development & debugging)
 				else if (arg.equalsIgnoreCase("-noChromoPlots")) chromoPlots = false;
 				//---
 				// Annotation options
@@ -789,7 +787,7 @@ public class SnpEffCmdEff extends SnpEff {
 		outputFormatter.setVersion(VERSION_NO_NAME);
 		outputFormatter.setCommandLineStr(commandLineStr(false));
 		outputFormatter.setChangeEffectResutFilter(variantEffectResutFilter);
-		outputFormatter.setSupressOutput(supressOutput);
+		outputFormatter.setSupressOutput(suppressOutput);
 		outputFormatter.setChrStr(chrStr);
 		outputFormatter.setUseSequenceOntology(useSequenceOntology);
 		outputFormatter.setUseOicr(useOicr);
@@ -940,4 +938,5 @@ public class SnpEffCmdEff extends SnpEff {
 
 		System.exit(-1);
 	}
+
 }

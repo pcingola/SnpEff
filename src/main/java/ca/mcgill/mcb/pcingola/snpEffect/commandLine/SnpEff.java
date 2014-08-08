@@ -79,7 +79,6 @@ public class SnpEff implements CommandLine {
 	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_NO_NAME;
 
 	protected String command = "";
-
 	protected String[] args; // Arguments used to invoke this command
 	protected String[] shiftArgs;
 	protected boolean canonical = false; // Use only canonical transcripts
@@ -95,6 +94,8 @@ public class SnpEff implements CommandLine {
 	protected boolean onlyRegulation = false; // Only build regulation tracks
 	protected boolean quiet; // Be quiet
 	protected boolean strict = false; // Only use transcript that have been validated
+	protected boolean saveOutput = false; // Save output to buffer (instead of printing it to STDOUT)
+	protected boolean suppressOutput = false; // Only used for debugging purposes
 	protected boolean verbose; // Be verbose
 	protected Boolean treatAllAsProteinCoding = null; // Only use coding genes. Default is 'null' which means 'auto'
 	protected int numWorkers = Gpr.NUM_CORES; // Max number of threads (if multi-threaded version is available)
@@ -104,6 +105,7 @@ public class SnpEff implements CommandLine {
 	protected String dataDir; // Override data_dir in config file
 	protected String genomeVer; // Genome version
 	protected String onlyTranscriptsFile = null; // Only use the transcripts in this file (Format: One transcript ID per line)
+	protected StringBuilder output = new StringBuilder();
 	protected Config config; // Configuration
 	protected SnpEff snpEffCmd; // Real command to run
 	protected ArrayList<String> customIntervalFiles; // Custom interval files (bed)
@@ -218,6 +220,10 @@ public class SnpEff implements CommandLine {
 
 	public Config getConfig() {
 		return config;
+	}
+
+	public String getOutput() {
+		return output.toString();
 	}
 
 	/**
@@ -639,6 +645,7 @@ public class SnpEff implements CommandLine {
 				else if (arg.equalsIgnoreCase("-nextProt")) nextProt = true; // Use NextProt database
 				else if (arg.equalsIgnoreCase("-nodownload")) download = false; // Do not download genome
 				else if (arg.equalsIgnoreCase("-noLog")) log = false;
+				else if (arg.equalsIgnoreCase("-noOut")) suppressOutput = true; // Undocumented option (only used for development & debugging)
 				else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
 				else if (arg.equalsIgnoreCase("-onlyTr")) {
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
@@ -673,6 +680,14 @@ public class SnpEff implements CommandLine {
 		}
 
 		shiftArgs = argsList.toArray(new String[0]);
+	}
+
+	/**
+	 * Print to screen or save to output buffer
+	 */
+	void print(Object o) {
+		if (saveOutput) output.append(o.toString() + "\n");
+		else if (!suppressOutput) System.out.println(o.toString());
 	}
 
 	/**
@@ -754,6 +769,10 @@ public class SnpEff implements CommandLine {
 
 	public void setNextProtKeepAllTrs(boolean nextProtKeepAllTrs) {
 		this.nextProtKeepAllTrs = nextProtKeepAllTrs;
+	}
+
+	public void setSupressOutput(boolean suppressOutput) {
+		this.suppressOutput = suppressOutput;
 	}
 
 	public void setVerbose(boolean verbose) {

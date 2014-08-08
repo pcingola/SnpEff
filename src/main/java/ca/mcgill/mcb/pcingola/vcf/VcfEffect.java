@@ -40,9 +40,6 @@ public class VcfEffect {
 
 	/**
 	 * Convert from field name to field number
-	 * @param name
-	 * @param formatVersion
-	 * @return
 	 */
 	public static int fieldNum(String name, FormatVersion formatVersion) {
 		int fieldNum = 0;

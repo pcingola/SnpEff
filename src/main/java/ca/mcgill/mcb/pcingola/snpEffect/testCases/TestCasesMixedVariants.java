@@ -4,18 +4,16 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.TestCase;
-import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
+import ca.mcgill.mcb.pcingola.vcf.VcfConsequence;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
@@ -51,35 +49,18 @@ public class TestCasesMixedVariants extends TestCase {
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
+		cmdEff.setDebug(debug);
 
 		List<VcfEntry> vcfEnties = cmdEff.run(true);
 		for (VcfEntry ve : vcfEnties) {
 
-			StringBuilder msg = new StringBuilder();
-
-			// Check effects
-			boolean ok = false;
-			for (VcfEffect veff : ve.parseEffects()) {
-				// Find transcript
-				if (veff.getTranscriptId().equals(trId)) {
-					// Check that reported effect is the same
-					String vep = ve.getInfo("EFF_V");
-					String eff = veff.getEffect().toString();
-
-					if (vep.equals(eff)) ok = true;
-					else {
-						if (vep.equals("CODON_INSERTION") && eff.equals("CODON_CHANGE_PLUS_CODON_INSERTION")) ok = true; // OK. I consider these the same
-						else if (vep.equals("STOP_GAINED,CODON_INSERTION") && eff.equals("STOP_GAINED")) ok = true; // OK. I consider these the same
-						else if (eff.equals("SPLICE_SITE_REGION")) ok = true; // OK. I'm not checking these
-						else {
-							String line = "\n" + ve + "\n\tSnpEff:" + veff + "\n\tVEP   :" + ve.getInfo("EFF_V") + "\t" + ve.getInfo("AA") + "\t" + ve.getInfo("CODON") + "\n";
-							msg.append(line);
-						}
-					}
-				}
+			if (verbose) {
+				System.out.println(ve);
+				for (VcfConsequence csq : VcfConsequence.parse(ve))
+					System.out.println("\t" + csq);
 			}
-
-			if (!ok) throw new RuntimeException(msg.toString());
 		}
 	}
 
@@ -125,23 +106,23 @@ public class TestCasesMixedVariants extends TestCase {
 		transcript = gene.iterator().next();
 	}
 
-	/**
-	 * Make sure we can obtain variants without producing any exception
-	 */
-	public void test_01_MixedVep() {
-		String vcfFile = "tests/mixed.vcf";
-
-		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
-		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
-			for (Variant var : ve.variants()) {
-				if (verbose) System.out.println("\t" + var);
-			}
-		}
-	}
-
-	//	public void test_02_MixedVep() {
-	//		compareVep("testHg3770Chr22", "tests/test_mixed_02_vep.vcf", "ENST00000445220");
+	//	/**
+	//	 * Make sure we can read VCF and parse variants without producing any exception
+	//	 */
+	//	public void test_01_MixedVep() {
+	//		String vcfFile = "tests/mixed_01.vcf";
+	//
+	//		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+	//		for (VcfEntry ve : vcf) {
+	//			if (verbose) System.out.println(ve);
+	//			for (Variant var : ve.variants()) {
+	//				if (verbose) System.out.println("\t" + var);
+	//			}
+	//		}
 	//	}
+
+	public void test_02_MixedVep() {
+		compareVep("testHg3770Chr22", "tests/mixed_02.vcf", null);
+	}
 
 }

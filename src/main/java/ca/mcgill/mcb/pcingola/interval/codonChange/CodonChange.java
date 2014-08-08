@@ -194,7 +194,7 @@ public class CodonChange {
 		case MNP:
 			return new CodonChangeMnp(variant, transcript, changeEffects);
 		case MIXED:
-			return new CodonChangeInterval(variant, transcript, changeEffects);
+			return new CodonChangeMixed(variant, transcript, changeEffects);
 		case INTERVAL:
 			return new CodonChangeInterval(variant, transcript, changeEffects);
 		default:
