@@ -14,6 +14,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.vcf.VcfConsequence;
+import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
@@ -58,8 +59,14 @@ public class TestCasesMixedVariants extends TestCase {
 
 			if (verbose) {
 				System.out.println(ve);
+
+				System.out.println("\tCSQ:");
 				for (VcfConsequence csq : VcfConsequence.parse(ve))
-					System.out.println("\t" + csq);
+					System.out.println("\t\t" + csq);
+
+				System.out.println("\tEFF:");
+				for (VcfEffect eff : ve.parseEffects())
+					System.out.println("\t\t" + eff);
 			}
 		}
 	}
