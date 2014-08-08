@@ -60,6 +60,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 	boolean parseNow = true;
 	boolean headeSection = false;
+	boolean errorIfUnsorted = false;
 	VcfHeader header = new VcfHeader();
 	String chrPrev = "";
 	int posPrev = -1;
@@ -106,8 +107,6 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 	/**
 	 * Parse a line from a VCF file
-	 * @param line
-	 * @return
 	 */
 	protected VcfEntry parseVcfLine(String line) {
 		try {
@@ -124,9 +123,6 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 	/**
 	 * Read a field an return a value
-	 * @param field
-	 * @param fieldNum
-	 * @return
 	 */
 	public String readField(String fields[], int fieldNum) {
 		if (fields.length > fieldNum) {
@@ -138,7 +134,6 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 	/**
 	 * Read only header info
-	 * @return
 	 */
 	public VcfHeader readHeader() {
 		// No more header to read?
@@ -173,23 +168,20 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 				VcfEntry vcfEntry = parseVcfLine(line);
 				if (vcfEntry != null) {
+
+					if (errorIfUnsorted && vcfEntry.getChromosomeName().equals(chrPrev) && vcfEntry.getStart() < posPrev) throw new RuntimeException("VCF file " + (fileName != null ? fileName : "") + "' is not sorted, genomic position " + chrPrev + ":" + (posPrev + 1) + " is before " + chrPrev + ":" + (vcfEntry.getStart() + 1));
+
 					if (debug) {
 						// Debug mode? Perform some sanity checks
 						String err = vcfEntry.check();
-
 						// Check that file is sorted
 						if (vcfEntry.getChromosomeName().equals(chrPrev) && vcfEntry.getStart() < posPrev) err += "File is not sorted: Position '" + vcfEntry.getChromosomeName() + ":" + (vcfEntry.getStart() + 1) + "' after position '" + chrPrev + ":" + (posPrev + 1) + "'";
-						chrPrev = vcfEntry.getChromosomeName();
-						posPrev = vcfEntry.getStart();
-
 						// Any errors? Report them
-						if (!err.isEmpty()) {
-							System.err.println("WARNING: Malformed VCF entry" + (fileName != null ? "file '" + fileName + "'" : "") + ", line " + lineNum + ":\n" //
-									+ "\tEntry  : " + vcfEntry + "\n" //
-									+ "\tErrors :\n" + Gpr.prependEachLine("\t\t", err) //
-							);
-						}
+						if (!err.isEmpty()) System.err.println("WARNING: Malformed VCF entry" + (fileName != null ? "file '" + fileName + "'" : "") + ", line " + lineNum + ":\n" + "\tEntry  : " + vcfEntry + "\n" + "\tErrors :\n" + Gpr.prependEachLine("\t\t", err));
 					}
+
+					chrPrev = vcfEntry.getChromosomeName();
+					posPrev = vcfEntry.getStart();
 
 					// Return new entry
 					return vcfEntry;
@@ -204,6 +196,10 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 	@Override
 	public void setCreateChromos(boolean createChromos) {
 		this.createChromos = createChromos;
+	}
+
+	public void setErrorIfUnsorted(boolean errorIfUnsorted) {
+		this.errorIfUnsorted = errorIfUnsorted;
 	}
 
 	@Override

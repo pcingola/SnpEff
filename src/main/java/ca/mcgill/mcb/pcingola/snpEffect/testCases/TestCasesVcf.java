@@ -473,4 +473,23 @@ public class TestCasesVcf extends TestCase {
 		Assert.assertTrue(timer.elapsed() < 1000); // We should be able to iterate the whole file in less than a second
 	}
 
+	public void test_23_VcfUnsorted() {
+		String vcfFile = "tests/out_of_order.vcf";
+
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		vcf.setErrorIfUnsorted(true);
+
+		boolean errorFound = false;
+		try {
+			for (VcfEntry ve : vcf) {
+				if (verbose) System.out.println(ve);
+			}
+		} catch (Exception e) {
+			errorFound = e.getMessage().startsWith("VCF file tests/out_of_order.vcf' is not sorted, genomic position 20:2622038 is before 20:2621729");
+			if (verbose) e.printStackTrace();
+		}
+
+		Assert.assertTrue(errorFound);
+	}
+
 }
