@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.TestCase;
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -24,6 +26,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesMixedVariants extends TestCase {
 
 	boolean debug = false;
+	boolean verbose = true;
+
 	Random rand;
 	Config config;
 	Genome genome;
@@ -122,7 +126,16 @@ public class TestCasesMixedVariants extends TestCase {
 	}
 
 	public void test_01_MixedVep() {
-		//compareVep("testENST00000268124", "tests/test_mixed_01_vep.vcf", "ENST00000268124");
+		String vcfFile = "tests/mixed.vcf";
+
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		for (VcfEntry ve : vcf) {
+			if (verbose) System.out.println(ve);
+			for (Variant var : ve.variants()) {
+				if (verbose) System.out.println("\t" + var);
+
+			}
+		}
 	}
 
 	//	public void test_02_MixedVep() {

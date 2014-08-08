@@ -21,8 +21,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 
 /**
- * VCF parsing test cases 
- * 
+ * VCF parsing test cases
+ *
  * @author pcingola
  */
 public class TestCasesVcf extends TestCase {
@@ -35,7 +35,6 @@ public class TestCasesVcf extends TestCase {
 
 	/**
 	 * Creates a test file
-	 * @throws IOException
 	 */
 	public static void create1kgFile() throws IOException {
 		String vcfFile = Gpr.HOME + "/snpEff/1kg.indels.vcf";
@@ -67,8 +66,6 @@ public class TestCasesVcf extends TestCase {
 
 	/**
 	 * Get file's format version
-	 * @param vcfFileName
-	 * @return
 	 */
 	FormatVersion formatVersion(String vcfFileName) {
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
@@ -96,8 +93,8 @@ public class TestCasesVcf extends TestCase {
 
 	/**
 	 * Check that the size is correct (at least for SNPs)
-	 * 
-	 * Louis Letourneau discovered this horrendous bug. This is 
+	 *
+	 * Louis Letourneau discovered this horrendous bug. This is
 	 * my first attempt to fix it....
 	 */
 	public void test_00() {
@@ -213,20 +210,20 @@ public class TestCasesVcf extends TestCase {
 
 	/**
 	 * Problems creating seqChanges
-	 * 
+	 *
 	 * The problem is when creating a seqChange from this line:
 	 * Chr1    223919  .   CTCGACCACTGGAA  CTCACATCCATACAT,CATGACCACTGGAA
-	 * 
+	 *
 	 * There are two changes:
-	 * 			CTCGACCACTGGAA   
+	 * 			CTCGACCACTGGAA
 	 * 			CTCACATCCATACAT
 	 *          => GACCACTGGAA / ACATCCATACAT  (Mixed change?)
-	 * 
+	 *
 	 * 			CTCGACCACTGGAA
-	 * 			CATGACCACTGGAA  
+	 * 			CATGACCACTGGAA
 	 * 			 ^^
 	 *          => CG / TG  (MNP)
-	 *  
+	 *
 	 */
 	public void test_06_mixed_change() {
 		// WARNING: This test is expected to fail, because this functionality is unimplemented
@@ -243,7 +240,7 @@ public class TestCasesVcf extends TestCase {
 			// Compare seqChanges to what we expect
 			List<Variant> seqChanges = vcfEntry.variants();
 
-			Assert.assertEquals("chr1:223921_GACCACTGGAA/=ACATCCATACAT", seqChanges.get(0).toString()); // FIXME: What the hell do I actually expect here?			
+			Assert.assertEquals("chr1:223921_GACCACTGGAA/=ACATCCATACAT", seqChanges.get(0).toString()); // FIXME: What the hell do I actually expect here?
 			Assert.assertEquals("chr1:223919_TC/AT", seqChanges.get(1).toString());
 		}
 	}
