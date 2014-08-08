@@ -45,7 +45,7 @@ public class CodonChangeSnp extends CodonChange {
 		if (codonsOld.isEmpty()) return "";
 
 		char codonChars[] = codonsOld.toLowerCase().toCharArray();
-		char snpBase = seqChange.netChange(transcript.isStrandMinus()).charAt(0);
+		char snpBase = variant.netChange(transcript.isStrandMinus()).charAt(0);
 		codonChars[codonIndex] = Character.toUpperCase(snpBase);
 
 		String codonsNew = new String(codonChars);

@@ -30,7 +30,7 @@ public class CodonChangeDel extends CodonChange {
 		// Is there any net effect?
 		if (netCdsChange.isEmpty()) return false;
 
-		if (seqChange.includes(exon)) {
+		if (variant.includes(exon)) {
 			/**
 			 * An exon has been entirely removed
 			 */
@@ -114,8 +114,8 @@ public class CodonChangeDel extends CodonChange {
 	 */
 	@Override
 	public String codonsOld() {
-		int min = seqChange.getStart();
-		int max = seqChange.getEnd();
+		int min = variant.getStart();
+		int max = variant.getEnd();
 		int cdsBaseMin = cdsBaseNumber(min);
 		int cdsBaseMax = cdsBaseNumber(max);
 
@@ -126,7 +126,7 @@ public class CodonChangeDel extends CodonChange {
 			cdsBaseMax = swap;
 		}
 
-		if (cdsBaseMax < cdsBaseMin) throw new RuntimeException("This should never happen!\n\tcdsBaseMin: " + cdsBaseMin + "\n\tcdsBaseMax: " + cdsBaseMax + "\n\tmin: " + min + "\n\tmax: " + max + "\n\tSeqChange: " + seqChange + "\n\ttranscript: " + transcript + "\n\tCDS.len: " + transcript.cds().length());
+		if (cdsBaseMax < cdsBaseMin) throw new RuntimeException("This should never happen!\n\tcdsBaseMin: " + cdsBaseMin + "\n\tcdsBaseMax: " + cdsBaseMax + "\n\tmin: " + min + "\n\tmax: " + max + "\n\tSeqChange: " + variant + "\n\ttranscript: " + transcript + "\n\tCDS.len: " + transcript.cds().length());
 
 		int maxCodon = cdsBaseMax / CodonChange.CODON_SIZE;
 		int minCodon = cdsBaseMin / CodonChange.CODON_SIZE;

@@ -95,7 +95,7 @@ public class TestCasesLof extends TestCase {
 		Variant seqChange = new Variant(tr.getChromosome(), ex.getStart(), "AC", "A");
 		seqChange.setStart(ex.getStart());
 		seqChange.setEnd(ex.getEnd());
-		seqChange.setChangeType(VariantType.DEL);
+		seqChange.setVariantType(VariantType.DEL);
 		if (debug) Gpr.debug("SeqChange:" + seqChange);
 		LinkedList<VariantEffect> changeEffects = changeEffects(seqChange, EffectType.EXON_DELETED, ex);
 
@@ -121,7 +121,7 @@ public class TestCasesLof extends TestCase {
 			seqChange.setStart(delStart);
 			seqChange.setEnd(delEnd);
 			if (debug) Gpr.debug("SeqChange:" + seqChange);
-			seqChange.setChangeType(VariantType.DEL);
+			seqChange.setVariantType(VariantType.DEL);
 
 			// How many coding bases are affected?
 			Marker codingDel = cds.intersect(seqChange);
@@ -163,7 +163,7 @@ public class TestCasesLof extends TestCase {
 				boolean ins = random.nextBoolean(); // Randomly choose INS or DEL
 				if (ins) seqChange = new Variant(tr.getChromosome(), pos, "A", "AC");
 				else seqChange = new Variant(tr.getChromosome(), pos, "AC", "A");
-				seqChange.setChangeType(ins ? VariantType.INS : VariantType.DEL);
+				seqChange.setVariantType(ins ? VariantType.INS : VariantType.DEL);
 				if (debug) Gpr.debug("SeqChange:" + seqChange);
 
 				// Create change effect

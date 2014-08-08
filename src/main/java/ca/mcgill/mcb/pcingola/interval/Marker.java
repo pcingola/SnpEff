@@ -90,7 +90,7 @@ public class Marker extends Interval implements TxtSerializable {
 		if (seqChange.isDel()) return applyDel(seqChange, lenChange);
 
 		// TODO : Mixed changes are not supported
-		throw new RuntimeException("Seqchange type not supported: " + seqChange.getChangeType() + "\n\t" + seqChange);
+		throw new RuntimeException("Seqchange type not supported: " + seqChange.getVariantType() + "\n\t" + seqChange);
 	}
 
 	/**

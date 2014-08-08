@@ -70,7 +70,7 @@ public class Utr5prime extends Utr {
 	@Override
 	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
 		// Has the whole UTR been deleted?
-		if (seqChange.includes(this) && (seqChange.getChangeType() == VariantType.DEL)) {
+		if (seqChange.includes(this) && (seqChange.getVariantType() == VariantType.DEL)) {
 			changeEffects.add(this, EffectType.UTR_5_DELETED, ""); // A UTR was removed entirely
 			return true;
 		}

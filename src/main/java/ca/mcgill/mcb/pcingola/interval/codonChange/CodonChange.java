@@ -8,8 +8,8 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
- * Analyze codon changes based on a SeqChange and a Transcript
- * 
+ * Analyze codon changes based on a variant and a Transcript
+ *
  * @author pcingola
  */
 public class CodonChange {
@@ -19,7 +19,7 @@ public class CodonChange {
 
 	boolean returnNow = false; // Can we return immediately after calculating the first 'codonChangeSingle()'?
 	boolean requireNetCdsChange = false;
-	Variant seqChange;
+	Variant variant;
 	Transcript transcript;
 	Exon exon = null;
 	VariantEffects changeEffects;
@@ -31,27 +31,23 @@ public class CodonChange {
 	String aaNew = ""; // New amino acids (after change)
 	String netCdsChange = "";
 
-	public CodonChange(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
-		this.seqChange = seqChange;
+	public CodonChange(Variant variant, Transcript transcript, VariantEffects changeEffects) {
+		this.variant = variant;
 		this.transcript = transcript;
 		this.changeEffects = changeEffects;
 	}
 
 	/**
 	 * Calculate all possible codon changes
-	 *  
-	 * @param seqChange
-	 * @param changeEffect
-	 * @return
 	 */
 	public void calculate() {
-		// Split each seqChange into it's multiple options
-		for (int i = 0; i < seqChange.getChangeOptionCount(); i++) {
-			// Create a new SeqChange for this option, calculate codonChange for this seqChangeOption and add result to the list
-			Variant seqChangeNew = seqChange.getSeqAltOption(i);
-			if (seqChangeNew != null) {
+		// Split each variant into it's multiple options
+		for (int i = 0; i < variant.getChangeOptionCount(); i++) {
+			// Create a new variant for this option, calculate codonChange for this variantOption and add result to the list
+			Variant variantNew = variant.getSeqAltOption(i);
+			if (variantNew != null) {
 				// Create a specific codon change and calculate changes
-				CodonChange codonChange = factory(seqChangeNew, transcript, changeEffects);
+				CodonChange codonChange = factory(variantNew, transcript, changeEffects);
 				codonChange.codonChange(); // Calculate codon change and add them to the list
 			}
 		}
@@ -61,8 +57,6 @@ public class CodonChange {
 
 	/**
 	 * Calculate base number in a cds where 'pos' is
-	 * @param pos
-	 * @return
 	 */
 	int cdsBaseNumber(int pos) {
 		int cdsbn = transcript.baseNumberCds(pos, true);
@@ -85,10 +79,9 @@ public class CodonChange {
 
 	/**
 	 * Calculate a list of codon changes
-	 * @return
 	 */
 	void codonChange() {
-		if (!transcript.intersects(seqChange)) return;
+		if (!transcript.intersects(variant)) return;
 
 		// Get coding start (after 5 prime UTR)
 		int cdsStart = transcript.getCdsStart();
@@ -103,15 +96,15 @@ public class CodonChange {
 		List<Exon> exons = transcript.sortedStrand();
 		for (Exon exon : exons) {
 			this.exon = exon;
-			if (exon.intersects(seqChange)) {
+			if (exon.intersects(variant)) {
 				int cdsBaseInExon; // cdsBaseInExon: base number relative to the beginning of the coding part of this exon (i.e. excluding 5'UTRs)
 
 				if (transcript.isStrandPlus()) {
-					int firstSeqChangeBaseInExon = Math.max(seqChange.getStart(), Math.max(exon.getStart(), cdsStart));
-					cdsBaseInExon = firstSeqChangeBaseInExon - Math.max(exon.getStart(), cdsStart);
+					int firstvariantBaseInExon = Math.max(variant.getStart(), Math.max(exon.getStart(), cdsStart));
+					cdsBaseInExon = firstvariantBaseInExon - Math.max(exon.getStart(), cdsStart);
 				} else {
-					int lastSeqChangeBaseInExon = Math.min(seqChange.getEnd(), Math.min(exon.getEnd(), cdsStart));
-					cdsBaseInExon = Math.min(exon.getEnd(), cdsStart) - lastSeqChangeBaseInExon;
+					int lastvariantBaseInExon = Math.min(variant.getEnd(), Math.min(exon.getEnd(), cdsStart));
+					cdsBaseInExon = Math.min(exon.getEnd(), cdsStart) - lastvariantBaseInExon;
 				}
 
 				if (cdsBaseInExon < 0) cdsBaseInExon = 0;
@@ -143,7 +136,7 @@ public class CodonChange {
 	 * @return
 	 */
 	boolean codonChangeSingle(Exon exon) {
-		throw new RuntimeException("Unimplemented method for this thype of seqChange: " + seqChange.getType());
+		throw new RuntimeException("Unimplemented method for this thype of variant: " + variant.getType());
 	}
 
 	/**
@@ -188,37 +181,42 @@ public class CodonChange {
 	}
 
 	/**
-	 * Create a specific codon change for a seqChange
-	 * @param seqChange
-	 * @param transcript
-	 * @param changeEffects
-	 * @return
+	 * Create a specific codon change for a variant
 	 */
-	CodonChange factory(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
-		if (seqChange.isSnp()) return new CodonChangeSnp(seqChange, transcript, changeEffects);
-		if (seqChange.isIns()) return new CodonChangeIns(seqChange, transcript, changeEffects);
-		if (seqChange.isDel()) return new CodonChangeDel(seqChange, transcript, changeEffects);
-		if (seqChange.isMnp()) return new CodonChangeMnp(seqChange, transcript, changeEffects);
-		if (seqChange.isInterval()) return new CodonChangeInterval(seqChange, transcript, changeEffects);
-		throw new RuntimeException("Unimplemented factory for SeqChange: " + seqChange);
+	CodonChange factory(Variant variant, Transcript transcript, VariantEffects changeEffects) {
+		switch (variant.getVariantType()) {
+		case SNP:
+			return new CodonChangeSnp(variant, transcript, changeEffects);
+		case INS:
+			return new CodonChangeIns(variant, transcript, changeEffects);
+		case DEL:
+			return new CodonChangeDel(variant, transcript, changeEffects);
+		case MNP:
+			return new CodonChangeMnp(variant, transcript, changeEffects);
+		case MIXED:
+			return new CodonChangeInterval(variant, transcript, changeEffects);
+		case INTERVAL:
+			return new CodonChangeInterval(variant, transcript, changeEffects);
+		default:
+			throw new RuntimeException("Unimplemented factory for variant: " + variant);
+		}
 	}
 
 	/**
 	 * We may have to calculate 'netCdsChange', which is the effect on the CDS
 	 * Note: A deletion or a MNP might affect several exons
-	 * @return
 	 */
 	protected String netCdsChange() {
 		if (!requireNetCdsChange) return "";
 
-		if (seqChange.size() > 1) {
+		if (variant.size() > 1) {
 			StringBuilder sb = new StringBuilder();
 			for (Exon exon : transcript.sortedStrand())
-				sb.append(seqChange.netChange(exon));
+				sb.append(variant.netChange(exon));
 			return sb.toString();
 		}
 
-		return seqChange.netChange(transcript.isStrandMinus());
+		return variant.netChange(transcript.isStrandMinus());
 	}
 
 }

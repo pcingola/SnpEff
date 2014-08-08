@@ -38,7 +38,7 @@ public class Utr3prime extends Utr {
 	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false;
 
-		if (seqChange.includes(this) && (seqChange.getChangeType() == VariantType.DEL)) {
+		if (seqChange.includes(this) && (seqChange.getVariantType() == VariantType.DEL)) {
 			changeEffects.add(this, EffectType.UTR_3_DELETED, ""); // A UTR was removed entirely
 			return true;
 		}

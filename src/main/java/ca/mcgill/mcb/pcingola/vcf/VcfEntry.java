@@ -674,7 +674,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public boolean isInterval() {
-		return (changeType == VariantType.Interval);
+		return (changeType == VariantType.INTERVAL);
 	}
 
 	public boolean isMixedInDel() {
@@ -1226,7 +1226,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Create a list of variants from this VcfEntry
-	 * @return
 	 */
 	public List<Variant> variants() {
 		LinkedList<Variant> list = new LinkedList<Variant>();

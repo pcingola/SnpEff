@@ -27,8 +27,8 @@ public class Variant extends Marker {
 		, MNP // Multiple nucleotide polymorphism (i.e. several bases are changed)
 		, INS // Insertion (i.e. some bases added)
 		, DEL // Deletion (some bases removed)
-		, MIXED // A mixture of insertion, deletions, SNPs and or MNPs (a.k.a. subtitution)
-		, Interval
+		, MIXED // A mixture of insertion, deletions, SNPs and or MNPs (a.k.a. substitution)
+		, INTERVAL
 		// Just analyze interval hits. Not a variant (e.g. BED input format)
 	}
 
@@ -47,7 +47,7 @@ public class Variant extends Marker {
 	public Variant(Marker parent, int start, int end, String id) {
 		super(parent, start, end, false, id);
 		ref = alt = "";
-		variantType = VariantType.Interval;
+		variantType = VariantType.INTERVAL;
 		alts = new String[1];
 		alts[0] = "";
 	}
@@ -84,10 +84,6 @@ public class Variant extends Marker {
 		return alts.length;
 	}
 
-	public VariantType getChangeType() {
-		return variantType;
-	}
-
 	public String getGenotype() {
 		return genotype;
 	}
@@ -98,12 +94,10 @@ public class Variant extends Marker {
 
 	/**
 	 * Create a new SeqChange for this option
-	 * @param i
-	 * @return
 	 */
 	public Variant getSeqAltOption(int i) {
 		// Just an interval (i.e. no changes)? => return the 'this' object
-		if (variantType == VariantType.Interval) return this;
+		if (variantType == VariantType.INTERVAL) return this;
 
 		// Not a real change? return null
 		// This might happen if ref=alt
@@ -112,6 +106,10 @@ public class Variant extends Marker {
 
 		// Create new change
 		return new Variant((Marker) parent, start, ref, alts[i], id);
+	}
+
+	public VariantType getVariantType() {
+		return variantType;
 	}
 
 	@Override
@@ -254,7 +252,11 @@ public class Variant extends Marker {
 	}
 
 	public boolean isInterval() {
-		return (variantType == VariantType.Interval);
+		return (variantType == VariantType.INTERVAL);
+	}
+
+	public boolean isMixed() {
+		return (variantType == VariantType.MIXED);
 	}
 
 	public boolean isMnp() {
@@ -346,10 +348,6 @@ public class Variant extends Marker {
 		return isStrandPlus() ? ref : GprSeq.reverseWc(ref);
 	}
 
-	public void setChangeType(VariantType changeType) {
-		variantType = changeType;
-	}
-
 	public void setGenotype(String genotype) {
 		this.genotype = genotype;
 	}
@@ -358,9 +356,13 @@ public class Variant extends Marker {
 		this.imprecise = imprecise;
 	}
 
+	public void setVariantType(VariantType variantType) {
+		this.variantType = variantType;
+	}
+
 	@Override
 	public String toString() {
-		if (variantType == VariantType.Interval) return "chr" + getChromosomeName() + ":" + start + "-" + end;
+		if (variantType == VariantType.INTERVAL) return "chr" + getChromosomeName() + ":" + start + "-" + end;
 
 		return "chr" + getChromosomeName() //
 				+ ":" + start //

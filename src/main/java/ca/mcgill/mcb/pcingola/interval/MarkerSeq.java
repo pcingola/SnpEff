@@ -47,7 +47,7 @@ public class MarkerSeq extends Marker {
 		if (ex == this) ex = (MarkerSeq) clone();
 
 		if (seqChange.intersects(this)) {
-			switch (seqChange.getChangeType()) {
+			switch (seqChange.getVariantType()) {
 			case SNP:
 				applySnp(seqChange, ex);
 				break;
@@ -65,7 +65,7 @@ public class MarkerSeq extends Marker {
 				break;
 
 			default:
-				throw new RuntimeException("Unimplemented method for sequence change type " + seqChange.getChangeType());
+				throw new RuntimeException("Unimplemented method for sequence change type " + seqChange.getVariantType());
 			}
 		} else ex.setSequence(getSequence());
 

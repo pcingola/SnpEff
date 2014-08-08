@@ -92,7 +92,7 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 			offset = 0;
 			if (stringA.equals(stringB)) {
 				// No change
-				changeType = VariantType.Interval;
+				changeType = VariantType.INTERVAL;
 				return true;
 			} else if (stringA.length() == 1) {
 				// SNP

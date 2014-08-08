@@ -487,7 +487,7 @@ public class TestCasesVariant extends TestCase {
 	public void test_36_EffectImpact() {
 		Chromosome chr = new Chromosome(null, 0, 1, "1");
 		Variant var = new Variant(chr, 1, "A", "C");
-		var.setChangeType(VariantType.SNP);
+		var.setVariantType(VariantType.SNP);
 
 		System.out.println(var);
 		for (EffectType eff : EffectType.values()) {

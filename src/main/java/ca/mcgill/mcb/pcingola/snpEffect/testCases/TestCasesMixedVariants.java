@@ -125,6 +125,9 @@ public class TestCasesMixedVariants extends TestCase {
 		transcript = gene.iterator().next();
 	}
 
+	/**
+	 * Make sure we can obtain variants without producing any exception
+	 */
 	public void test_01_MixedVep() {
 		String vcfFile = "tests/mixed.vcf";
 
@@ -133,7 +136,6 @@ public class TestCasesMixedVariants extends TestCase {
 			if (verbose) System.out.println(ve);
 			for (Variant var : ve.variants()) {
 				if (verbose) System.out.println("\t" + var);
-
 			}
 		}
 	}

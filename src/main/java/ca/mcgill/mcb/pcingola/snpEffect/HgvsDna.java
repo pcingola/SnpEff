@@ -45,7 +45,7 @@ public class HgvsDna extends Hgvs {
 	 */
 	protected String dnaBaseChange() {
 
-		switch (seqChange.getChangeType()) {
+		switch (seqChange.getVariantType()) {
 		case SNP:
 		case MNP:
 			if (marker == null || marker.isStrandPlus()) return seqChange.getReference() + ">" + seqChange.getChange();
@@ -69,7 +69,7 @@ public class HgvsDna extends Hgvs {
 	protected String pos() {
 		// Intron
 		if (changeEffect.isIntron()) {
-			switch (seqChange.getChangeType()) {
+			switch (seqChange.getVariantType()) {
 			case SNP:
 			case MNP:
 				return posIntron(seqChange.getStart());
@@ -99,7 +99,7 @@ public class HgvsDna extends Hgvs {
 		if (codonNum < 0) return null;
 		int seqPos = codonNum * 3 + changeEffect.getCodonIndex() + 1;
 
-		switch (seqChange.getChangeType()) {
+		switch (seqChange.getVariantType()) {
 		case SNP:
 		case MNP:
 			return "" + seqPos;
@@ -185,7 +185,7 @@ public class HgvsDna extends Hgvs {
 		if (pos == null) return null;
 
 		String type = "";
-		switch (seqChange.getChangeType()) {
+		switch (seqChange.getVariantType()) {
 		case INS:
 			type = "ins";
 			break;

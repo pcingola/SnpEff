@@ -23,7 +23,7 @@ public class CodonChangeIns extends CodonChange {
 	 */
 	@Override
 	boolean codonChangeSingle(Exon exon) {
-		String netChange = seqChange.netChange(transcript.isStrandMinus());
+		String netChange = variant.netChange(transcript.isStrandMinus());
 
 		codonsOld = codonsOld();
 		codonsNew = codonsNew();
@@ -87,7 +87,7 @@ public class CodonChangeIns extends CodonChange {
 
 		// Insertion: Concatenate...
 		String codonsNew = codonsOld.substring(0, idx) // the first part of the codon
-				+ seqChange.netChange(transcript.isStrandMinus()) // insertion
+				+ variant.netChange(transcript.isStrandMinus()) // insertion
 				+ codonsOld.substring(idx) // the last part of the codon
 		;
 

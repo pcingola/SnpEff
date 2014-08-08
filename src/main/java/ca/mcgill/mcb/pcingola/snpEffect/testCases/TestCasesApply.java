@@ -157,7 +157,7 @@ public class TestCasesApply extends TestCase {
 							newSeq = newSeq.toLowerCase();
 
 							Variant seqChange = new Variant(t.getChromosome(), i, ref + "", "+" + altsb.toString(), "");
-							if (debug) Gpr.debug("SeqChange: " + seqChange.getChangeType() + "\t" + seqChange);
+							if (debug) Gpr.debug("SeqChange: " + seqChange.getVariantType() + "\t" + seqChange);
 
 							Exon exNew = ex.apply(seqChange);
 
@@ -231,7 +231,7 @@ public class TestCasesApply extends TestCase {
 							newSeq = newSeq.toLowerCase();
 
 							Variant seqChange = new Variant(t.getChromosome(), i, "", "-" + alt, "");
-							if (debug) Gpr.debug("SeqChange: " + seqChange.getChangeType() + "\t" + seqChange);
+							if (debug) Gpr.debug("SeqChange: " + seqChange.getVariantType() + "\t" + seqChange);
 
 							Exon exNew = ex.apply(seqChange);
 

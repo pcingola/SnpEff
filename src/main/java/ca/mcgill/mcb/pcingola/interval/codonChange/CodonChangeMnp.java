@@ -34,24 +34,24 @@ public class CodonChangeMnp extends CodonChange {
 	 */
 	@Override
 	void codonChange() {
-		if (!transcript.intersects(seqChange)) return;
+		if (!transcript.intersects(variant)) return;
 
 		// CDS coordinates
 		cdsStart = transcript.isStrandPlus() ? transcript.getCdsStart() : transcript.getCdsEnd();
 		cdsEnd = transcript.isStrandPlus() ? transcript.getCdsEnd() : transcript.getCdsStart();
 
 		// Does it intersect CDS?
-		if (cdsStart > seqChange.getEnd()) return;
-		if (cdsEnd < seqChange.getStart()) return;
+		if (cdsStart > variant.getEnd()) return;
+		if (cdsEnd < variant.getStart()) return;
 
 		// Base number relative to CDS start
 		int scStart, scEnd;
 		if (transcript.isStrandPlus()) {
-			scStart = cdsBaseNumber(seqChange.getStart(), false);
-			scEnd = cdsBaseNumber(seqChange.getEnd(), true);
+			scStart = cdsBaseNumber(variant.getStart(), false);
+			scEnd = cdsBaseNumber(variant.getEnd(), true);
 		} else {
-			scEnd = cdsBaseNumber(seqChange.getStart(), true);
-			scStart = cdsBaseNumber(seqChange.getEnd(), false);
+			scEnd = cdsBaseNumber(variant.getStart(), true);
+			scStart = cdsBaseNumber(variant.getEnd(), false);
 		}
 
 		// Update coordinates
@@ -104,16 +104,16 @@ public class CodonChangeMnp extends CodonChange {
 	 */
 	@Override
 	protected String netCdsChange() {
-		if (seqChange.size() > 1) {
+		if (variant.size() > 1) {
 			StringBuilder sb = new StringBuilder();
 			for (Exon exon : transcript.sortedStrand()) {
-				String seq = seqChange.netChange(exon);
+				String seq = variant.netChange(exon);
 				sb.append(exon.isStrandPlus() ? seq : GprSeq.reverseWc(seq));
 			}
 			return sb.toString();
 		}
 
-		return seqChange.netChange(transcript.isStrandMinus());
+		return variant.netChange(transcript.isStrandMinus());
 	}
 
 	int round3(int num, boolean end) {

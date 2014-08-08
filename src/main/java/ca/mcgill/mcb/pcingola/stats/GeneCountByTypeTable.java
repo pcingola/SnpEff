@@ -90,7 +90,7 @@ public class GeneCountByTypeTable implements Iterable<Gene>, Serializable {
 	 * Sample this <gene, marker, type, seqChange> tuple to update statistics
 	 * @param gene
 	 * @param marker
-	 * @param seqChange
+	 * @param variant
 	 */
 	public void sample(Gene gene, Marker marker, String type, VariantEffect changeEffect) {
 		Variant seqChange = changeEffect.getVariant();

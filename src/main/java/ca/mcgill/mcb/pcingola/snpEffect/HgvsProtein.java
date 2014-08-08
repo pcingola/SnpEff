@@ -117,7 +117,7 @@ public class HgvsProtein extends Hgvs {
 	 * Protein coding position
 	 */
 	protected String pos() {
-		switch (seqChange.getChangeType()) {
+		switch (seqChange.getVariantType()) {
 		case SNP:
 		case MNP:
 			return pos(codonNum);
@@ -225,7 +225,7 @@ public class HgvsProtein extends Hgvs {
 		if (pos == null) return null;
 
 		String protChange = "";
-		switch (seqChange.getChangeType()) {
+		switch (seqChange.getVariantType()) {
 		case SNP:
 		case MNP:
 			return snpOrMnp();

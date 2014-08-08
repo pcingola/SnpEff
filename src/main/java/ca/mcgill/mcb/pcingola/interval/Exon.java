@@ -224,7 +224,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		if (!intersects(seqChange)) return null;
 
 		// Only makes sense for SNPs and MNPs
-		if ((seqChange.getChangeType() != VariantType.SNP) && (seqChange.getChangeType() != VariantType.MNP)) return null;
+		if ((seqChange.getVariantType() != VariantType.SNP) && (seqChange.getVariantType() != VariantType.MNP)) return null;
 
 		int mstart = Math.max(seqChange.getStart(), start);
 		int idxStart = mstart - start;
