@@ -62,7 +62,7 @@ public class CodonChange {
 	/**
 	 * Calculate base number in a cds where 'pos' is
 	 */
-	int cdsBaseNumber(int pos) {
+	protected int cdsBaseNumber(int pos) {
 		int cdsbn = transcript.baseNumberCds(pos, true);
 
 		// Does not intersect the transcript?
@@ -138,14 +138,14 @@ public class CodonChange {
 	/**
 	 * Calculate the effect of a single change type: SNP, MNP, INS, DEL
 	 */
-	boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChangeSingle(Exon exon) {
 		throw new RuntimeException("Unimplemented method codonChangeSingle() for\n\t\tVariant type : " + variant.getType() + "\n\t\tClass        : " + getClass().getSimpleName() + "\n\t\tVariant      : " + variant);
 	}
 
 	/**
 	 * Calculate new codons
 	 */
-	String codonsNew() {
+	public String codonsNew() {
 		throw new RuntimeException("Unimplemented method for this thype of CodonChange: " + this.getClass().getSimpleName());
 	}
 
@@ -200,10 +200,11 @@ public class CodonChange {
 	/**
 	 * Calculate all possible codon changes
 	 */
-	public void variantEffect() {
+	public VariantEffects variantEffect() {
 		// Create a specific codon change and calculate changes
 		CodonChange codonChange = factory(variant, transcript, variantEffects);
 		codonChange.codonChange(); // Calculate codon change and add them to the list
+		return variantEffects;
 	}
 
 }

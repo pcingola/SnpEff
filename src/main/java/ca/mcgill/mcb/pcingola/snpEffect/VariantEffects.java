@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,7 +23,6 @@ public class VariantEffects implements Iterable<VariantEffect> {
 
 	/**
 	 *  An empty list of results;
-	 * @return
 	 */
 	public static VariantEffects empty() {
 		return new VariantEffects();
@@ -66,12 +66,15 @@ public class VariantEffects implements Iterable<VariantEffect> {
 
 	/**
 	 * Get (or create) the latest ChangeEffect
-	 * @return
 	 */
 	public VariantEffect get() {
 		if (effects.isEmpty()) effects.add(new VariantEffect(variant, variantRef));
 		return effects.get(effects.size() - 1);
 
+	}
+
+	public VariantEffect get(int index) {
+		return effects.get(index);
 	}
 
 	public boolean isEmpty() {
@@ -117,6 +120,10 @@ public class VariantEffects implements Iterable<VariantEffect> {
 
 	public int size() {
 		return effects.size();
+	}
+
+	public void sort() {
+		Collections.sort(effects);
 	}
 
 	@Override

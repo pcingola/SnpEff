@@ -46,9 +46,9 @@ public class TestCasesMixedVariants extends TestCase {
 	}
 
 	boolean compare(List<VcfEffect> effs, List<VcfConsequence> csqs) {
-		boolean ok = false;
+		boolean ok = true;
 		for (VcfEffect eff : effs)
-			ok |= compare(eff, csqs);
+			ok &= compare(eff, csqs);
 
 		return ok;
 	}
@@ -62,10 +62,10 @@ public class TestCasesMixedVariants extends TestCase {
 				String consecuences = csq.consequence;
 				for (String cons : consecuences.split("&")) {
 					if (et.equals(cons)) {
-						if (verbose) System.out.println("\t\t\tOK :" + eff.getTranscriptId() + "\t" + et + "\t" + cons);
+						if (verbose) System.out.println("\t\tOK :" + eff.getTranscriptId() + "\t" + et + "\t" + cons);
 						return true;
 					}
-					if (verbose) System.out.println("\t\t\t    " + eff.getTranscriptId() + "\t" + et + "\t" + cons);
+					if (verbose) System.out.println("\t\t    " + eff.getTranscriptId() + "\t" + et + "\t" + cons);
 				}
 			}
 		}
@@ -101,6 +101,7 @@ public class TestCasesMixedVariants extends TestCase {
 				for (VcfEffect eff : effs)
 					if (verbose) System.out.println("\t\t" + eff);
 
+				System.out.println("\tCompare:");
 				Assert.assertTrue("EFF and CSQ do not match", compare(effs, csqs));
 			}
 		}
@@ -163,8 +164,11 @@ public class TestCasesMixedVariants extends TestCase {
 	//		}
 	//	}
 
-	public void test_02_MixedVep() {
-		compareVep("testHg3770Chr22", "tests/mixed_02.vcf", null);
+	//	public void test_02_MixedVep() {
+	//		compareVep("testHg3770Chr22", "tests/mixed_02.vcf", null);
+	//	}
+	public void test_zzz_MixedVep() {
+		compareVep("testHg3770Chr22", "tests/mixed_zzz.vcf", null);
 	}
 
 }

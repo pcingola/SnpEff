@@ -26,7 +26,7 @@ public class CodonChangeDel extends CodonChange {
 	 * Add changeEffect to 'changeEffect'
 	 */
 	@Override
-	boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChangeSingle(Exon exon) {
 		// Is there any net effect?
 		if (netCdsChange.isEmpty()) return false;
 
@@ -99,7 +99,7 @@ public class CodonChangeDel extends CodonChange {
 	 * @return
 	 */
 	@Override
-	String codonsNew() {
+	public String codonsNew() {
 		int after = netCdsChange.length() + codonIndex;
 		String codonsNew = codonsOld.substring(0, codonIndex) //
 				+ (codonsOld.length() > after ? codonsOld.substring(after) : "");

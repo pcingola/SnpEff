@@ -22,7 +22,7 @@ public class CodonChangeIns extends CodonChange {
 	 * Add changeEffect to 'changeEffect'
 	 */
 	@Override
-	boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChangeSingle(Exon exon) {
 		String netChange = variant.netChange(transcript.isStrandMinus());
 
 		codonsOld = codonsOld();
@@ -78,7 +78,7 @@ public class CodonChangeIns extends CodonChange {
 	 * Get new (modified) codons
 	 */
 	@Override
-	String codonsNew() {
+	public String codonsNew() {
 		// Inserts BEFORE base:
 		//		- In positive strand that is BEFORE pos
 		//		- In negative strand, that is AFTER pos

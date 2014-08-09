@@ -23,7 +23,7 @@ public class CodonChangeInterval extends CodonChange {
 	 * Analyze
 	 */
 	@Override
-	boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChangeSingle(Exon exon) {
 		return false;
 	}
 

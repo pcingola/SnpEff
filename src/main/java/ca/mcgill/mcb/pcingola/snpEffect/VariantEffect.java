@@ -84,8 +84,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 		/**
 		 * Parse a string to an EffectType
-		 * @param effStr
-		 * @return
 		 */
 		public static EffectType parse(String str) {
 			try {
@@ -366,9 +364,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Show a string with overall effect
-	 * @param shortFormat
-	 * @param showAaChange
-	 * @return
 	 */
 	public String effect(boolean shortFormat, boolean showAaChange, boolean showBioType, boolean useSeqOntology) {
 		String e = "";
@@ -782,7 +777,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
 	}
 
 	public boolean hasError() {
@@ -858,7 +853,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| (effectType == EffectType.SPLICE_SITE_REGION) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH) //
 				|| (effectType == EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
+				;
 	}
 
 	public boolean isStartGained() {
@@ -874,7 +869,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| (effectType == EffectType.UTR_3_PRIME) //
 				|| (effectType == EffectType.UTR_5_DELETED) //
 				|| (effectType == EffectType.UTR_3_DELETED) //
-		;
+				;
 	}
 
 	public void set(Marker marker, EffectType effectType, String message) {
@@ -885,10 +880,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Set codon change. Calculate effect type based on codon changes (for SNPs ans MNPs)
-	 * @param codonsOld
-	 * @param codonsNew
-	 * @param codonNum
-	 * @param codonIndex
 	 */
 	public EffectType setCodons(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
 		EffectType newEffectType = null;
@@ -899,23 +890,19 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		this.codonIndex = codonIndex;
 
 		CodonTable codonTable = marker.codonTable();
-		boolean indel = codonsOld.length() != codonsNew.length();
+		// boolean indel = variant.isInDel();
 
 		// Calculate amino acids
-		if (codonsOld.isEmpty()) {
-			aaOld = "";
-			indel = true;
-		} else {
+		if (codonsOld.isEmpty()) aaOld = "";
+		else {
 			aaOld = codonTable.aa(codonsOld);
 			codonDegeneracy = codonTable.degenerate(codonsOld, codonIndex); // Calculate codon degeneracy
 		}
 
-		if (codonsNew.isEmpty()) {
-			aaNew = "";
-			indel = true;
-		} else aaNew = codonTable.aa(codonsNew);
+		if (codonsNew.isEmpty()) aaNew = "";
+		else aaNew = codonTable.aa(codonsNew);
 
-		if (!indel) {
+		if (variant.isSnp() || variant.isMnp()) {
 			// SNM and MNP effects
 			if (aaOld.equals(aaNew)) {
 				// Same AA: Synonymous coding
@@ -1071,7 +1058,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**

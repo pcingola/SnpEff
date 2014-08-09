@@ -23,7 +23,7 @@ public class CodonChangeSnp extends CodonChange {
 	 * Add changeEffect to 'changeEffect'
 	 */
 	@Override
-	boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChangeSingle(Exon exon) {
 		// Get old and new codons
 		codonsOld = codonsOld();
 		if (codonsOld.isEmpty()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
@@ -36,12 +36,11 @@ public class CodonChangeSnp extends CodonChange {
 	}
 
 	/**
-	 * Get new (modified) codons 
-	 * @return
+	 * Get new (modified) codons
 	 */
 	@Override
-	String codonsNew() {
-		// Was there a problem getting 'codonsOld'? => We cannot do anything 
+	public String codonsNew() {
+		// Was there a problem getting 'codonsOld'? => We cannot do anything
 		if (codonsOld.isEmpty()) return "";
 
 		char codonChars[] = codonsOld.toLowerCase().toCharArray();
@@ -54,8 +53,6 @@ public class CodonChangeSnp extends CodonChange {
 
 	/**
 	 * Get original codons in CDS
-	 * @param codonNum
-	 * @return
 	 */
 	@Override
 	public String codonsOld() {
@@ -75,7 +72,7 @@ public class CodonChangeSnp extends CodonChange {
 
 		// Sanity checks
 		if (cdsStr.isEmpty() // Empty CDS => Cannot get codon (e.g. one or more exons are missing their sequences
-				|| (cdsLen <= minBase) // Codon past CDS sequence => Cannot get codon 
+				|| (cdsLen <= minBase) // Codon past CDS sequence => Cannot get codon
 		) return "";
 
 		// Create codon sequence

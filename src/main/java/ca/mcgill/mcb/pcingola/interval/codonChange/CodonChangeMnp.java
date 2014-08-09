@@ -97,6 +97,19 @@ public class CodonChangeMnp extends CodonChange {
 		return;
 	}
 
+	@Override
+	public String codonsNew() {
+		return codonsNew;
+	}
+
+	/**
+	 * Calculate old codons
+	 */
+	@Override
+	public String codonsOld() {
+		return codonsOld;
+	}
+
 	/**
 	 * We may have to calculate 'netCdsChange', which is the effect on the CDS
 	 * Note: A deletion or a MNP might affect several exons
