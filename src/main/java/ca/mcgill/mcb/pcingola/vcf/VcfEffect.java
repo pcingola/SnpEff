@@ -211,6 +211,24 @@ public class VcfEffect {
 		return effects;
 	}
 
+	public String getEffectsStr() {
+		StringBuilder sb = new StringBuilder();
+		for (EffectType et : effects) {
+			if (sb.length() > 0) sb.append("+");
+			sb.append(et);
+		}
+		return sb.toString();
+	}
+
+	public String getEffectsStrSo() {
+		StringBuilder sb = new StringBuilder();
+		for (EffectType et : effects) {
+			if (sb.length() > 0) sb.append("+");
+			sb.append(et.toSequenceOntology());
+		}
+		return sb.toString();
+	}
+
 	public String getEffectString() {
 		return effectString;
 	}

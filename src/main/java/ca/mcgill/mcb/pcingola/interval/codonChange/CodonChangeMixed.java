@@ -70,8 +70,11 @@ public class CodonChangeMixed extends CodonChange {
 		for (VariantEffect ve : variantEffects)
 			Gpr.debug(ve.toStringSimple(true));
 
+		// Add main effect
 		variantEffectsOri.add(varEff);
 		variantEffectsOri.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+
+		// Add 'additional' effects
 		for (int i = 1; i < variantEffects.size(); i++) {
 			variantEffectsOri.get().addEffectType(variantEffects.get(i).getEffectType());
 		}
