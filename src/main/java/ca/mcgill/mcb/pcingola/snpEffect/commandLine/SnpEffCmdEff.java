@@ -133,7 +133,7 @@ public class SnpEffCmdEff extends SnpEff {
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
-								) {
+						) {
 							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
@@ -148,7 +148,7 @@ public class SnpEffCmdEff extends SnpEff {
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
-									) {
+							) {
 								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
@@ -189,7 +189,7 @@ public class SnpEffCmdEff extends SnpEff {
 			try {
 				countInputLines++;
 
-				countVariants += variant.getChangeOptionCount();
+				countVariants++;
 				if (verbose && (countVariants % SHOW_EVERY == 0)) Timer.showStdErr("\t" + countVariants + " variants");
 
 				// Does it pass the filter? => Analyze
@@ -286,7 +286,7 @@ public class SnpEffCmdEff extends SnpEff {
 				boolean impact = false; // Does this entry have an impact (other than MODIFIER)?
 				List<Variant> variants = vcfEntry.variants();
 				for (Variant variant : variants) {
-					countVariants += variant.getChangeOptionCount();
+					countVariants++;
 					if (verbose && (countVariants % SHOW_EVERY == 0)) Timer.showStdErr("\t" + countVariants + " variants");
 
 					// Perform basic statistics about this variant
@@ -729,7 +729,7 @@ public class SnpEffCmdEff extends SnpEff {
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-						);
+				);
 				ok &= runAnalysis(inputFile, outputFile);
 			}
 		}

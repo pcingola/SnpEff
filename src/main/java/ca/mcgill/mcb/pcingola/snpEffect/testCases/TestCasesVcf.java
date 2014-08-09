@@ -48,7 +48,7 @@ public class TestCasesVcf extends TestCase {
 
 			for (Variant sc : ve.variants()) {
 				if (sb.length() > 0) sb.append(",");
-				sb.append(sc.getReference() + "/" + sc.getChange());
+				sb.append(sc.getReference() + "/" + sc.getAlt());
 			}
 
 			ve.addInfo("SEQCHANGE", sb.toString());
@@ -118,7 +118,7 @@ public class TestCasesVcf extends TestCase {
 		for (VcfEntry vcfEntry : vcf) {
 			for (Variant seqChange : vcfEntry.variants()) {
 				System.out.println(seqChange);
-				String seqChangeStr = "chr" + seqChange.getChromosomeName() + ":" + seqChange.getStart() + "_" + seqChange.getReference() + "/" + seqChange.getChange();
+				String seqChangeStr = "chr" + seqChange.getChromosomeName() + ":" + seqChange.getStart() + "_" + seqChange.getReference() + "/" + seqChange.getAlt();
 				Assert.assertEquals(seqChangeStr, seqChange.getId());
 			}
 		}
@@ -405,7 +405,7 @@ public class TestCasesVcf extends TestCase {
 
 			for (Variant sc : ve.variants()) {
 				if (seqChangeResult.length() > 0) seqChangeResult.append(",");
-				seqChangeResult.append(sc.getReference() + "/" + sc.getChange());
+				seqChangeResult.append(sc.getReference() + "/" + sc.getAlt());
 			}
 
 			String seqChangeExpected = ve.getInfo("SEQCHANGE");

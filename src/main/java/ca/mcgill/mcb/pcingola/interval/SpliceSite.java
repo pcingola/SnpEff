@@ -62,7 +62,7 @@ public abstract class SpliceSite extends Marker {
 	}
 
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
+	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false; // Sanity check
 		changeEffects.add(this, type, "");
 		return true;

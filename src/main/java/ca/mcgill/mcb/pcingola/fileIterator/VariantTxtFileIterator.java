@@ -1,42 +1,58 @@
 package ca.mcgill.mcb.pcingola.fileIterator;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
  * Opens a sequence change file and iterates over all sequence changes
- * 
+ *
  * TXT Format: Tab-separated format, containing five columns that correspond to:
  *			chr \t position \t refSeq \t newSeq \t strand \t quality \t coverage \t id \n
  * Fields strand, quality, coverage and id are optional
- * 
+ *
  * E.g.
  * 		5   140532    T		C   +	31
- * 		12  1017956   T		A   +	
+ * 		12  1017956   T		A   +
  * 		2   946507    G		C   +	21	16	Very_important_Snp
- * 		14  19584687  C		T   -	
+ * 		14  19584687  C		T   -
  * 		19  66520     G		A   +	27
  * 		8   150029    A		T   +	31
- * 
+ *
  * @author pcingola
  */
 public class VariantTxtFileIterator extends VariantFileIterator {
 
-	public VariantTxtFileIterator(String fileName, Genome genome) {
-		super(fileName, genome);
-	}
+	LinkedList<Variant> fifo = new LinkedList<Variant>();
 
 	public VariantTxtFileIterator(String fileName) {
 		super(fileName);
 	}
 
+	public VariantTxtFileIterator(String fileName, Genome genome) {
+		super(fileName, genome);
+	}
+
+	@Override
+	public boolean hasNext() {
+		if (!fifo.isEmpty()) return true;
+		return super.hasNext();
+	}
+
+	@Override
+	public Variant next() {
+		if (!fifo.isEmpty()) return fifo.removeFirst();
+		return super.next();
+	}
+
 	@Override
 	protected Variant readNext() {
 		try {
-
 			while (ready()) {
 				// Try to read a line
 				String line = readLine();
@@ -69,16 +85,16 @@ public class VariantTxtFileIterator extends VariantFileIterator {
 							else if (strandStr.charAt(0) == '-') strand = -1;
 						}
 
-						//						double quality = -1;
-						//						if (fields.length >= 6) quality = Gpr.parseDoubleSafe(fields[5]);
-						//
-						//						int coverage = -1;
-						//						if (fields.length >= 7) coverage = Gpr.parseIntSafe(fields[6]);
+						if (strand < 0) {
+							reference = GprSeq.reverseWc(reference);
+							change = GprSeq.reverseWc(change);
+						}
+
 						String id = "";
 						if (fields.length >= 8) id = fields[7];
 
-						// return new Variant(chromo, start, reference, change, strand, id, quality, coverage);
-						return new Variant(chromo, start, reference, change, id);
+						fifo = Variant.factory(chromo, start, reference, change, id);
+						return fifo.removeFirst();
 					} else throw new RuntimeException("Error reading file '" + fileName + "' line " + lineNum + " (number of fields is " + fields.length + "):\t" + line);
 				}
 			}
@@ -89,4 +105,12 @@ public class VariantTxtFileIterator extends VariantFileIterator {
 		return null;
 	}
 
+	/**
+	 * Used for debugging
+	 */
+	void showFifo() {
+		Gpr.debug("Fifo:" + fifo.size());
+		for (Variant v : fifo)
+			System.err.println("\t\t" + v);
+	}
 }

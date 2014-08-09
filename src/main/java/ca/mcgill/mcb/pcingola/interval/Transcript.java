@@ -8,10 +8,10 @@ import java.util.Map;
 
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.stats.ObservedOverExpectedCpG;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
@@ -224,23 +224,20 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Create a new transcript after applying changes in seqChange
+	 * Create a new transcript after applying changes in variant
 	 *
 	 * Note: If this transcript is unaffected, no new transcript is created (same transcript is returned)
 	 *
-	 * @param seqChange
+	 * @param variant
 	 * @return
 	 */
 	@Override
-	public Transcript apply(Variant seqChange) {
+	public Transcript apply(Variant variant) {
 		// SeqChange after this marker: No effect
-		if (end < seqChange.getStart()) return this;
-
-		// We can only handle one change at a time
-		if (seqChange.isVariantMultiple()) throw new RuntimeException("Cannot apply multiple changes!\n\tseqChange.isChangeMultiple() = " + seqChange.isVariantMultiple() + "\n\tSeqChange : " + seqChange);
+		if (end < variant.getStart()) return this;
 
 		// Create new transcript
-		Transcript tr = (Transcript) super.apply(seqChange);
+		Transcript tr = (Transcript) super.apply(variant);
 
 		// We will change information, so we need a clone
 		if (tr == this) tr = (Transcript) clone();
@@ -248,23 +245,23 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Add changed exons
 		for (Exon ex : this) {
-			Exon newExon = ex.apply(seqChange);
+			Exon newExon = ex.apply(variant);
 			if (newExon != null) tr.add(newExon);
 		}
 
 		// Add changed UTRs
 		for (Utr utr : utrs) {
-			Utr newUtr = (Utr) utr.apply(seqChange);
+			Utr newUtr = (Utr) utr.apply(variant);
 			if (newUtr != null) tr.utrs.add(newUtr);
 		}
 
 		// Up & Down stream
-		if (upstream != null) tr.upstream = (Upstream) upstream.apply(seqChange);
-		if (downstream != null) tr.downstream = (Downstream) downstream.apply(seqChange);
+		if (upstream != null) tr.upstream = (Upstream) upstream.apply(variant);
+		if (downstream != null) tr.downstream = (Downstream) downstream.apply(variant);
 
 		// Splice branch
 		for (SpliceSiteBranch sbr : spliceBranchSites) {
-			SpliceSiteBranch newSbs = (SpliceSiteBranch) sbr.apply(seqChange);
+			SpliceSiteBranch newSbs = (SpliceSiteBranch) sbr.apply(variant);
 			if (newSbs != null) tr.spliceBranchSites.add(newSbs);
 		}
 
@@ -911,7 +908,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
@@ -1077,7 +1074,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
@@ -1148,11 +1145,11 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Is this seqChange in the CDS part of this transcript?
-	 * @param seqChange
+	 * Is this variant in the CDS part of this transcript?
+	 * @param variant
 	 * @return
 	 */
-	boolean isCds(Variant seqChange) {
+	boolean isCds(Variant variant) {
 		calcCdsStartEnd();
 
 		int cs = cdsStart;
@@ -1163,7 +1160,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			ce = cdsStart;
 		}
 
-		return (seqChange.getEnd() >= cs) && (seqChange.getStart() <= ce);
+		return (variant.getEnd() >= cs) && (variant.getStart() <= ce);
 	}
 
 	/**
@@ -1422,84 +1419,14 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Perfom some baseic chekcs, return error type, if any
-	 * @param seqChange
+	 * @param variant
 	 * @return
 	 */
-	public ErrorWarningType sanityCheck(Variant seqChange) {
+	public ErrorWarningType sanityCheck(Variant variant) {
 		if (isErrorProteinLength()) return ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE;
 		else if (isErrorStopCodonsInCds()) return ErrorWarningType.WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS;
 		else if (isErrorStartCodon()) return ErrorWarningType.WARNING_TRANSCRIPT_NO_START_CODON;
 		return null;
-	}
-
-	/**
-	 * Get some details about the effect on this transcript
-	 * @param seqChange
-	 * @return
-	 */
-	@Override
-	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffectList) {
-		if (!intersects(seqChange)) return false; // Sanity check
-
-		//---
-		// Hits a UTR region?
-		//---
-		boolean included = false;
-		for (Utr utr : utrs)
-			if (utr.intersects(seqChange)) {
-				// Calculate the effect
-				utr.seqChangeEffect(seqChange, changeEffectList);
-				included |= utr.includes(seqChange); // Is this seqChange fully included in the UTR?
-			}
-		if (included) return true; // SeqChange fully included in the UTR? => We are done.
-
-		//---
-		// Hits a SpliceSiteBranch region?
-		//---
-		included = false;
-		for (SpliceSiteBranch ssbranch : spliceBranchSites)
-			if (ssbranch.intersects(seqChange)) {
-				// Calculate the effect
-				ssbranch.seqChangeEffect(seqChange, changeEffectList);
-				included |= ssbranch.includes(seqChange); // Is this seqChange fully included branch site?
-			}
-		if (included) return true; // SeqChange fully included in the Branch site? => We are done.
-
-		// Does it hit an intron?
-		for (Intron intron : introns())
-			if (intron.intersects(seqChange)) {
-				changeEffectList.add(intron, EffectType.INTRON, "");
-				included |= intron.includes(seqChange); // Is this seqChange fully included in this intron?
-			}
-		if (included) return true; // SeqChange fully included? => We are done.
-
-		//---
-		// Analyze non-coding transcripts (or 'interval' seqChanges)
-		//---
-		if ((!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) || seqChange.isInterval() || !seqChange.isVariant()) {
-			// Do we have exon information for this transcript?
-			if (!subintervals().isEmpty()) {
-				// Add all exons
-				for (Exon exon : this)
-					if (exon.intersects(seqChange)) changeEffectList.add(exon, EffectType.EXON, "");
-			} else changeEffectList.add(this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
-
-			// Ok, we are done
-			return true;
-		}
-
-		//---
-		// This is a protein coding transcript.
-		// We analyze codon replacement effect
-		//---
-		if (isCds(seqChange)) {
-			// Get codon change effect
-			CodonChange codonChange = new CodonChange(seqChange, this, changeEffectList);
-			codonChange.calculate();
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -1546,7 +1473,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
 				+ "\t" + markerSerializer.save((Iterable) spliceBranchSites)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1643,6 +1570,76 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		Markers missingUtrs = exons.minus(minus); // Perform interval minus
 		if (missingUtrs.size() > 0) return addMissingUtrs(missingUtrs, verbose); // Anything left? => There was a missing UTR
+		return false;
+	}
+
+	/**
+	 * Get some details about the effect on this transcript
+	 * @param variant
+	 * @return
+	 */
+	@Override
+	public boolean variantEffect(Variant variant, VariantEffects changeEffectList) {
+		if (!intersects(variant)) return false; // Sanity check
+
+		//---
+		// Hits a UTR region?
+		//---
+		boolean included = false;
+		for (Utr utr : utrs)
+			if (utr.intersects(variant)) {
+				// Calculate the effect
+				utr.variantEffect(variant, changeEffectList);
+				included |= utr.includes(variant); // Is this variant fully included in the UTR?
+			}
+		if (included) return true; // SeqChange fully included in the UTR? => We are done.
+
+		//---
+		// Hits a SpliceSiteBranch region?
+		//---
+		included = false;
+		for (SpliceSiteBranch ssbranch : spliceBranchSites)
+			if (ssbranch.intersects(variant)) {
+				// Calculate the effect
+				ssbranch.variantEffect(variant, changeEffectList);
+				included |= ssbranch.includes(variant); // Is this variant fully included branch site?
+			}
+		if (included) return true; // SeqChange fully included in the Branch site? => We are done.
+
+		// Does it hit an intron?
+		for (Intron intron : introns())
+			if (intron.intersects(variant)) {
+				changeEffectList.add(intron, EffectType.INTRON, "");
+				included |= intron.includes(variant); // Is this variant fully included in this intron?
+			}
+		if (included) return true; // SeqChange fully included? => We are done.
+
+		//---
+		// Analyze non-coding transcripts (or 'interval' variants)
+		//---
+		if ((!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) || variant.isInterval() || !variant.isVariant()) {
+			// Do we have exon information for this transcript?
+			if (!subintervals().isEmpty()) {
+				// Add all exons
+				for (Exon exon : this)
+					if (exon.intersects(variant)) changeEffectList.add(exon, EffectType.EXON, "");
+			} else changeEffectList.add(this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
+
+			// Ok, we are done
+			return true;
+		}
+
+		//---
+		// This is a protein coding transcript.
+		// We analyze codon replacement effect
+		//---
+		if (isCds(variant)) {
+			// Get codon change effect
+			CodonChange codonChange = new CodonChange(variant, this, changeEffectList);
+			codonChange.calculate();
+			return true;
+		}
+
 		return false;
 	}
 

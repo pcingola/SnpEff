@@ -231,11 +231,10 @@ public class VariantStats implements SamplingStats<Variant> {
 
 	/**
 	 * Perform starts on an InDel
-	 * @param variant
 	 */
 	void indelSample(Variant variant) {
 		// InDel length histogram
-		int len = (variant.isDel() ? -1 : 1) * (variant.getChangeOption(0).length() - 1);
+		int len = (variant.isDel() ? -1 : 1) * (variant.getAlt().length() - 1);
 		indelLen.sample(len);
 	}
 
@@ -260,8 +259,10 @@ public class VariantStats implements SamplingStats<Variant> {
 		countByChangeType.inc(changeType); // Each type of changes
 
 		// SNP stats or InDel stats
-		if (variant.isSnp()) snpSample(variant);
-		else if (variant.isInDel()) indelSample(variant);
+		if (variant.isVariant()) {
+			if (variant.isSnp()) snpSample(variant);
+			else if (variant.isInDel()) indelSample(variant);
+		}
 
 		// Coverage by chromosome (hot spot) stats
 		chromoStats(variant);
@@ -269,17 +270,9 @@ public class VariantStats implements SamplingStats<Variant> {
 
 	/**
 	 * Perform stats on a SNP
-	 * @param variant
 	 */
 	void snpSample(Variant variant) {
-		// Increment change matrix counters
-		String ref = variant.getReference();
-		int numOpts = variant.getChangeOptionCount();
-
-		for (int i = 0; i < numOpts; i++) {
-			String snp = variant.getChangeOption(i);
-			if (ref != snp) baseChangesCount.inc(changeKey(ref, snp)); // Some case might be the same base (e.g. heterozygous SNP change "A => W", where 'W' means 'A' or 'T')
-		}
+		baseChangesCount.inc(changeKey(variant.getReference(), variant.getAlt())); // Some case might be the same base (e.g. heterozygous SNP change "A => W", where 'W' means 'A' or 'T')
 	}
 
 }

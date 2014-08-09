@@ -182,6 +182,6 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 				+ ":'" + fileName + "'" //
 				+ ",autoClose:" + autoClose //
 				+ (hasSeek() ? ",pos:" + ((SeekableBufferedReader) reader).position() : "") //
-		;
+				;
 	}
 }

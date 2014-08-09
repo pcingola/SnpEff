@@ -199,6 +199,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public String check() {
 		StringBuilder sb = new StringBuilder();
 
+		// Check REF
+		if (ref.indexOf(",") >= 0) sb.append("REF field has multiple entries (this is not allowed)\n");
+
 		// Check INFO fields
 		for (String infoName : getInfoKeys()) {
 			String err = checkInfo(infoName);
@@ -308,9 +311,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Create a variant
 	 */
-	Variant createVariant(Chromosome chromo, int start, String reference, String alt, String id) {
+	List<Variant> createVariant(Chromosome chromo, int start, String reference, String alt, String id) {
 		// No change?
-		if (alt == null || alt.isEmpty() || alt.equals(reference)) return new Variant(chromo, start, reference, reference, id);
+		if (alt == null || alt.isEmpty() || alt.equals(reference)) return Variant.factory(chromo, start, reference, reference, id);
 
 		alt = alt.toUpperCase();
 
@@ -335,7 +338,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			String ch = "-" + new String(change);
 
 			// Create SeqChange
-			return new Variant(chromo, start, reference, ch, id);
+			return Variant.factory(chromo, start, reference, ch, id);
 		}
 
 		// Case: SNP, MNP
@@ -359,7 +362,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 			String newRef = reference.substring(startDiff, endDiff + 1);
 			String newAlt = alt.substring(startDiff, endDiff + 1);
-			return new Variant(chromo, start + startDiff, newRef, newAlt, id);
+			return Variant.factory(chromo, start + startDiff, newRef, newAlt, id);
 		}
 
 		//---
@@ -377,7 +380,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			String ref = "*";
 			String ch = align.getAlignment();
 			if (!ch.startsWith("-")) throw new RuntimeException("Deletion '" + ch + "' does not start with '-'. This should never happen!");
-			return new Variant(chromo, start + startDiff, ref, ch, id);
+			return Variant.factory(chromo, start + startDiff, ref, ch, id);
 
 		case INS:
 			// Case: Insertion of A { tC ; tCA } tC is the reference allele
@@ -385,13 +388,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			ch = align.getAlignment();
 			ref = "*";
 			if (!ch.startsWith("+")) throw new RuntimeException("Insertion '" + ch + "' does not start with '+'. This should never happen!");
-			return new Variant(chromo, start + startDiff, ref, ch, id);
+			return Variant.factory(chromo, start + startDiff, ref, ch, id);
 
 		case MIXED:
 			// Case: Mixed variant (substitution)
 			reference = reference.substring(startDiff);
 			alt = alt.substring(startDiff);
-			return new Variant(chromo, start + startDiff, reference, "=" + alt, id);
+			return Variant.factory(chromo, start + startDiff, reference, "=" + alt, id);
 
 		default:
 			// Other change type?
@@ -1235,15 +1238,20 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		int genotypeNumber = 1;
 		if (alts == null) {
 			// No ALTs, then it's not a change
-			Variant variant = createVariant(chr, start, ref, null, id);
-			variant.setGenotype(Integer.toString(genotypeNumber));
-			list.add(variant);
+			List<Variant> variants = createVariant(chr, start, ref, null, id);
+
+			for (Variant variant : variants)
+				variant.setGenotype(Integer.toString(genotypeNumber));
+
+			list.addAll(variants);
 		} else {
 			for (String alt : alts) {
-				Variant variant = createVariant(chr, start, ref, alt, id);
-				//				variant.setHeterozygous(isHetero);
-				variant.setGenotype(Integer.toString(genotypeNumber));
-				list.add(variant);
+				List<Variant> variants = createVariant(chr, start, ref, alt, id);
+
+				for (Variant variant : variants)
+					variant.setGenotype(Integer.toString(genotypeNumber));
+
+				list.addAll(variants);
 				genotypeNumber++;
 			}
 		}

@@ -112,7 +112,7 @@ public class LossOfFunction {
 
 	/**
 	 * Can this collection of effects produce a "Loss of function" 
-	 * @param changeEffects
+	 * @param variantEffects
 	 * @return
 	 */
 	public boolean isLof() {
@@ -259,7 +259,7 @@ public class LossOfFunction {
 
 	/**
 	 * Can this collection of effects produce a "Nonsense mediated decay"?
-	 * @param changeEffects
+	 * @param variantEffects
 	 * @return
 	 */
 	public boolean isNmd() {

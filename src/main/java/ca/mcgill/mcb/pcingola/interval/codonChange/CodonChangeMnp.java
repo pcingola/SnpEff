@@ -91,8 +91,8 @@ public class CodonChangeMnp extends CodonChange {
 		codonsNew += padN;
 
 		// Create change effect
-		changeEffects.add(transcript, EffectType.CODON_CHANGE, "");
-		changeEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+		variantEffects.add(transcript, EffectType.CODON_CHANGE, "");
+		variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 
 		return;
 	}

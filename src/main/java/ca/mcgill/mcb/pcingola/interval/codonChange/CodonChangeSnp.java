@@ -26,11 +26,11 @@ public class CodonChangeSnp extends CodonChange {
 	boolean codonChangeSingle(Exon exon) {
 		// Get old and new codons
 		codonsOld = codonsOld();
-		if (codonsOld.isEmpty()) changeEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
+		if (codonsOld.isEmpty()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
 
 		codonsNew = codonsNew();
-		changeEffects.add(exon, EffectType.CODON_CHANGE, "");
-		changeEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+		variantEffects.add(exon, EffectType.CODON_CHANGE, "");
+		variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 
 		return true;
 	}

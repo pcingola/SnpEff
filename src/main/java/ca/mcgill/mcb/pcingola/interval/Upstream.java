@@ -37,7 +37,7 @@ public class Upstream extends Marker {
 	}
 
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
+	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false; // Sanity check
 
 		// Note: We need to use the transcripts's strand

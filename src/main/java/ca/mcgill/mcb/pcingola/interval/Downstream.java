@@ -5,7 +5,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * Interval for a gene, as well as some other information: exons, utrs, cds, etc.
- * 
+ *
  * @author pcingola
  *
  */
@@ -37,7 +37,7 @@ public class Downstream extends Marker {
 	}
 
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
+	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false; // Sanity check
 		int distance = distanceToTr(seqChange);
 		changeEffects.add(this, EffectType.DOWNSTREAM, distance + " bases");

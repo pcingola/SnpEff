@@ -34,8 +34,8 @@ public class CodonChangeDel extends CodonChange {
 			/**
 			 * An exon has been entirely removed
 			 */
-			changeEffects.add(exon, EffectType.EXON_DELETED, "");
-			changeEffects.setCodons("", "", -1, -1);
+			variantEffects.add(exon, EffectType.EXON_DELETED, "");
+			variantEffects.setCodons("", "", -1, -1);
 		} else if (netCdsChange.length() % CodonChange.CODON_SIZE != 0) {
 			/**
 			 * Length not multiple of CODON_SIZE => FRAME_SHIFT
@@ -46,8 +46,8 @@ public class CodonChangeDel extends CodonChange {
 			 * 		Delete 'AC' pos 2:	AAC CGG GAA ACC CGG GAA ACC CGG G
 			 */
 			codonsOld = codonsOld();
-			changeEffects.add(exon, EffectType.FRAME_SHIFT, "");
-			changeEffects.setCodons(codonsOld, "", codonNum, codonIndex);
+			variantEffects.add(exon, EffectType.FRAME_SHIFT, "");
+			variantEffects.setCodons(codonsOld, "", codonNum, codonIndex);
 		} else if (codonIndex == 0) {
 			/**
 			 * Length multiple of CODON_SIZE and insertion happens at codon boundary => CODON_INSERTION
@@ -56,8 +56,8 @@ public class CodonChangeDel extends CodonChange {
 			 * 		Delete 'AAA' pos 0:	CCC GGG AAA CCC GGG AAA CCC GGG
 			 */
 			codonsOld = codonsOld();
-			changeEffects.add(exon, EffectType.CODON_DELETION, "");
-			changeEffects.setCodons(codonsOld, "", codonNum, codonIndex);
+			variantEffects.add(exon, EffectType.CODON_DELETION, "");
+			variantEffects.setCodons(codonsOld, "", codonNum, codonIndex);
 		} else {
 			/**
 			 * Length multiple of CODON_SIZE and insertion does not happen at codon boundary => CODON_CHANGE_PLUS_CODON_DELETION
@@ -81,13 +81,13 @@ public class CodonChangeDel extends CodonChange {
 				 *  	Original:			ACG TCG TCC GGG AAA CCC GGG AAA CCC GGG
 				 *  	Delete 'CGT' pos 1:	ACG TCC GGG AAA CCC GGG AAA CCC GGG
 				 */
-				changeEffects.add(exon, EffectType.CODON_DELETION, "");
-				changeEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+				variantEffects.add(exon, EffectType.CODON_DELETION, "");
+				variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 			} else {
 				codonsOld = codonsOld();
 				codonsNew = codonsNew();
-				changeEffects.add(exon, EffectType.CODON_CHANGE_PLUS_CODON_DELETION, "");
-				changeEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+				variantEffects.add(exon, EffectType.CODON_CHANGE_PLUS_CODON_DELETION, "");
+				variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 			}
 		}
 

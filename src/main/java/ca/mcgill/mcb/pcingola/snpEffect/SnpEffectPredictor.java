@@ -39,6 +39,18 @@ public class SnpEffectPredictor implements Serializable {
 	public static final int HUGE_DELETION_SIZE_THRESHOLD = 1000000; // Number of bases
 	public static final double HUGE_DELETION_RATIO_THRESHOLD = 0.01; // Percentage of bases
 
+	boolean useChromosomes = true;
+
+	int upDownStreamLength = DEFAULT_UP_DOWN_LENGTH;
+	int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE;
+	int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
+	int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
+	int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
+
+	Genome genome;
+	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
+	IntervalForest intervalForest;
+
 	/**
 	 * Load predictor from a binary file
 	 */
@@ -78,22 +90,10 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-			) snpEffectPredictor.add(m);
+					) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}
-
-	boolean useChromosomes = true;
-	int upDownStreamLength = DEFAULT_UP_DOWN_LENGTH;
-	int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE;
-	int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
-	int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
-
-	int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
-	Genome genome;
-	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
-
-	IntervalForest intervalForest;
 
 	public SnpEffectPredictor(Genome genome) {
 		this.genome = genome;
@@ -501,6 +501,45 @@ public class SnpEffectPredictor implements Serializable {
 		markerSerializer.save(databaseFile, this);
 	}
 
+	public void setSpliceRegionExonSize(int spliceRegionExonSize) {
+		this.spliceRegionExonSize = spliceRegionExonSize;
+	}
+
+	public void setSpliceRegionIntronMax(int spliceRegionIntronMax) {
+		this.spliceRegionIntronMax = spliceRegionIntronMax;
+	}
+
+	public void setSpliceRegionIntronMin(int spliceRegionIntronMin) {
+		this.spliceRegionIntronMin = spliceRegionIntronMin;
+	}
+
+	public void setSpliceSiteSize(int spliceSiteSize) {
+		this.spliceSiteSize = spliceSiteSize;
+	}
+
+	public void setUpDownStreamLength(int upDownStreamLength) {
+		this.upDownStreamLength = upDownStreamLength;
+	}
+
+	public void setUseChromosomes(boolean useChromosomes) {
+		this.useChromosomes = useChromosomes;
+	}
+
+	public int size() {
+		if (intervalForest == null) return 0;
+		return intervalForest.size();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(genome.getVersion() + "\n");
+		for (Chromosome chr : genome)
+			sb.append(chr + "\n");
+		sb.append(genome.getGenes());
+		return sb.toString();
+	}
+
 	/**
 	 * Predict the effect of a seqChange
 	 * @param seqChange
@@ -554,7 +593,7 @@ public class SnpEffectPredictor implements Serializable {
 			for (Marker marker : intersects) {
 				if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
 				else { // Analyze all markers
-					marker.seqChangeEffect(seqChange, changeEffects, seqChangeRef);
+					marker.variantEffect(seqChange, changeEffects, seqChangeRef);
 					hitSomething = true;
 				}
 			}
@@ -569,45 +608,6 @@ public class SnpEffectPredictor implements Serializable {
 		}
 
 		return changeEffects;
-	}
-
-	public void setSpliceRegionExonSize(int spliceRegionExonSize) {
-		this.spliceRegionExonSize = spliceRegionExonSize;
-	}
-
-	public void setSpliceRegionIntronMax(int spliceRegionIntronMax) {
-		this.spliceRegionIntronMax = spliceRegionIntronMax;
-	}
-
-	public void setSpliceRegionIntronMin(int spliceRegionIntronMin) {
-		this.spliceRegionIntronMin = spliceRegionIntronMin;
-	}
-
-	public void setSpliceSiteSize(int spliceSiteSize) {
-		this.spliceSiteSize = spliceSiteSize;
-	}
-
-	public void setUpDownStreamLength(int upDownStreamLength) {
-		this.upDownStreamLength = upDownStreamLength;
-	}
-
-	public void setUseChromosomes(boolean useChromosomes) {
-		this.useChromosomes = useChromosomes;
-	}
-
-	public int size() {
-		if (intervalForest == null) return 0;
-		return intervalForest.size();
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(genome.getVersion() + "\n");
-		for (Chromosome chr : genome)
-			sb.append(chr + "\n");
-		sb.append(genome.getGenes());
-		return sb.toString();
 	}
 
 }

@@ -100,7 +100,7 @@ public class Motif extends Marker {
 	 * @return
 	 */
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
+	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false;// Sanity check
 		EffectType effType = EffectType.MOTIF;
 		changeEffects.add(this, effType, "");

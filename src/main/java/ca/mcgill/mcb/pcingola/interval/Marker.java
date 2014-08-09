@@ -15,7 +15,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * An interval intended as a mark
- * 
+ *
  * @author pcingola
  */
 public class Marker extends Interval implements TxtSerializable {
@@ -60,69 +60,67 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Apply a SeqChange to a marker.
-	 * 
-	 * Create a new marker 
-	 * 		newMarker = marker.apply( seqChange )
-	 * 
-	 * such that  
-	 *		seqChange = Diff( newMarker , marker )		// Differences in seuquence 
-	 * 
-	 * @param seqChange
-	 * @return A new marker after applying seqChange 
+	 *
+	 * Create a new marker
+	 * 		newMarker = marker.apply( variant )
+	 *
+	 * such that
+	 *		variant = Diff( newMarker , marker )		// Differences in seuquence
+	 *
+	 * @param variant
+	 * @return A new marker after applying variant
 	 */
-	public Marker apply(Variant seqChange) {
+	public Marker apply(Variant variant) {
 		// SeqChange after this marker: No effect
-		if (end < seqChange.getStart()) return this;
+		if (end < variant.getStart()) return this;
 
-		// We can only handle one change at a time
-		if (seqChange.isVariantMultiple()) throw new RuntimeException("Cannot apply multiple changes!\n\tseqChange.isChangeMultiple() = " + seqChange.isVariantMultiple() + "\n\tSeqChange : " + seqChange);
 		// Negative strand changes are a pain. We will eventually get rid of them...(they do not make sense any more)
-		if (seqChange.isStrandMinus()) throw new RuntimeException("Only seqChenges in postive strand are accepted!\n\tSeqChange : " + seqChange);
+		if (variant.isStrandMinus()) throw new RuntimeException("Only seqChenges in postive strand are accepted!\n\tSeqChange : " + variant);
 
-		int lenChange = seqChange.lengthChange();
+		int lenChange = variant.lengthChange();
 		if (lenChange == 0) return this;
 
 		// SeqChange after marker end: Nothing to do
-		if (end < seqChange.getStart()) return this;
+		if (end < variant.getStart()) return this;
 
 		// We are not ready for mixed changes
-		if (seqChange.isIns()) return applyIns(seqChange, lenChange);
-		if (seqChange.isDel()) return applyDel(seqChange, lenChange);
+		if (variant.isIns()) return applyIns(variant, lenChange);
+		if (variant.isDel()) return applyDel(variant, lenChange);
 
 		// TODO : Mixed changes are not supported
-		throw new RuntimeException("Seqchange type not supported: " + seqChange.getVariantType() + "\n\t" + seqChange);
+		throw new RuntimeException("Seqchange type not supported: " + variant.getVariantType() + "\n\t" + variant);
 	}
 
 	/**
 	 * Apply a SeqChange to a marker. SeqChange is a deletion
-	 * @param seqChange
+	 * @param variant
 	 * @return
 	 */
-	protected Marker applyDel(Variant seqChange, int lenChange) {
+	protected Marker applyDel(Variant variant, int lenChange) {
 		Marker m = clone();
 
 		// SeqChange Before start: Adjust coordinates
-		if (seqChange.getEnd() < start) {
+		if (variant.getEnd() < start) {
 			m.start += lenChange;
 			m.end += lenChange;
-		} else if (seqChange.includes(this)) {
+		} else if (variant.includes(this)) {
 			// TODO: Should I create a zero length marker?
-			//       This brings a few problems: 
+			//       This brings a few problems:
 			//			- We don't have any way to represent a zero length marker (if start=end then length is 1 base)
 			//			- How does a zero length marker behaves in an INSERTION?
 			//			- How does a zero length marker intersect?
 			return null; // SeqChange completely includes this marker => The whole marker deleted
-		} else if (includes(seqChange)) m.end += lenChange; // This marker completely includes seqChange. But seqChange does not include marker (i.e. they are not equal). Only 'end' coordinate needs to be updated
+		} else if (includes(variant)) m.end += lenChange; // This marker completely includes variant. But variant does not include marker (i.e. they are not equal). Only 'end' coordinate needs to be updated
 		else {
 			// SeqChange is partially included in this marker.
 			// This is treated as three different type of deletions:
 			//		1- One before the marker
 			//		2- One inside the marker
-			//		3- One after the marker 
+			//		3- One after the marker
 			// Note that type 1 and 3 cannot exists at the same time, otherwise the deletion would fully include the marker (previous case)
 
 			// Deletion after the marker
-			if (end < seqChange.getEnd()) {
+			if (end < variant.getEnd()) {
 				// Actually this does not affect the coordinates, so we don't care about this part
 			}
 
@@ -134,9 +132,9 @@ public class Marker extends Interval implements TxtSerializable {
 			end -= (iend - istart); // Update end coordinate
 
 			// Deletion before the marker
-			if (seqChange.getStart() < start) {
+			if (variant.getStart() < start) {
 				// Update cooredinates shifting the marker to the left
-				int delta = start - seqChange.getStart();
+				int delta = start - variant.getStart();
 				m.start -= delta;
 				m.end -= delta;
 			}
@@ -147,17 +145,17 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Apply a SeqChange to a marker. SeqChange is an insertion
-	 * @param seqChange
+	 * @param variant
 	 * @return
 	 */
-	public Marker applyIns(Variant seqChange, int lenChange) {
+	public Marker applyIns(Variant variant, int lenChange) {
 		Marker m = clone();
 
-		if (seqChange.getStart() <= start) {
+		if (variant.getStart() <= start) {
 			// Insertion point before marker start? => Adjust both coordinates
 			m.start += lenChange;
 			m.end += lenChange;
-		} else if (seqChange.getStart() <= end) {
+		} else if (variant.getStart() <= end) {
 			// Insertion point after start, but before end? => Adjust end coordinate
 			m.end += lenChange;
 		} else {
@@ -297,7 +295,7 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Find chromosome and return it's number
-	 * 
+	 *
 	 * @return Chromosome number if found, -1 otherwise
 	 */
 	public double getChromosomeNum() {
@@ -307,7 +305,7 @@ public class Marker extends Interval implements TxtSerializable {
 	}
 
 	/**
-	 * Find genome 
+	 * Find genome
 	 * @return
 	 */
 	public Genome getGenome() {
@@ -420,7 +418,7 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Is 'interval' completely included in 'this'?
-	 * @return  return true if 'this' includes 'interval' 
+	 * @return  return true if 'this' includes 'interval'
 	 */
 	public boolean includes(Marker interval) {
 		if (!interval.getChromosomeName().equals(getChromosomeName())) return false;
@@ -443,7 +441,7 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Do the intervals intersect?
-	 * @return  return true if this intersects 'interval' 
+	 * @return  return true if this intersects 'interval'
 	 */
 	public boolean intersects(Marker interval) {
 		if (!interval.getChromosomeName().equals(getChromosomeName())) return false;
@@ -465,7 +463,7 @@ public class Marker extends Interval implements TxtSerializable {
 	}
 
 	/**
-	 * Adjust parent if it does not include child? 
+	 * Adjust parent if it does not include child?
 	 * @return
 	 */
 	protected boolean isAdjustIfParentDoesNotInclude(Marker parent) {
@@ -473,7 +471,7 @@ public class Marker extends Interval implements TxtSerializable {
 	}
 
 	/**
-	 * Show an error if parent does not include child? 
+	 * Show an error if parent does not include child?
 	 * @return
 	 */
 	protected boolean isShowWarningIfParentDoesNotInclude() {
@@ -482,7 +480,7 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Return the difference between two markers
-	 * 
+	 *
 	 * @param interval
 	 * @return A set of 'markers'. Note that the result can have zero, one or two markers
 	 */
@@ -516,7 +514,7 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Parse a line (form a file)
-	 * Format: "chromosome \t start \t end \t id \n" 
+	 * Format: "chromosome \t start \t end \t id \n"
 	 */
 	public void readTxt(String line, int lineNum, Genome genome, int positionBase) {
 		line = line.trim(); // Remove spaces
@@ -544,41 +542,6 @@ public class Marker extends Interval implements TxtSerializable {
 				}
 			} else throw new RuntimeException("Error line " + lineNum + " (number of fields is " + fields.length + "):\t" + line);
 		}
-	}
-
-	/**
-	 * Calculate the effect of this seqChange
-	 * @param seqChange : Sequence change
-	 * @param changeEffect
-	 * @return
-	 */
-	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
-		if (!intersects(seqChange)) return false;
-		changeEffects.add(this, type, "");
-		return true;
-	}
-
-	/**
-	 * Calculate the effect of this seqChange
-	 * @param seqChange : Sequence change
-	 * @param changeEffects
-	 * @param seqChangeRef : Before analyzing results, we have to change markers using seqChangerRef to create a new reference 'on the fly'
-	 * @return
-	 */
-	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects, Variant seqChangerRef) {
-		if (!intersects(seqChange)) return false;// Sanity check
-
-		if (seqChangerRef != null) {
-			Marker m = apply(seqChangerRef);
-
-			// Has the marker been deleted?
-			// Then there is no effect over this marker (it does not exist any more)
-			if (m == null) return false;
-
-			return m.seqChangeEffect(seqChange, changeEffects);
-		}
-
-		return seqChangeEffect(seqChange, changeEffects);
 	}
 
 	/**
@@ -631,7 +594,7 @@ public class Marker extends Interval implements TxtSerializable {
 	/**
 	 * Union of two markers
 	 * @param m
-	 * @return A new marker which is the union of the two 
+	 * @return A new marker which is the union of the two
 	 */
 	public Marker union(Marker m) {
 		if (!getChromosomeName().equals(m.getChromosomeName())) return null;
@@ -639,6 +602,41 @@ public class Marker extends Interval implements TxtSerializable {
 		int ustart = Math.min(start, m.getStart());
 		int uend = Math.max(end, m.getEnd());
 		return new Marker(getParent(), ustart, uend, strandMinus, "");
+	}
+
+	/**
+	 * Calculate the effect of this variant
+	 * @param variant : Sequence change
+	 * @param changeEffect
+	 * @return
+	 */
+	public boolean variantEffect(Variant variant, VariantEffects changeEffects) {
+		if (!intersects(variant)) return false;
+		changeEffects.add(this, type, "");
+		return true;
+	}
+
+	/**
+	 * Calculate the effect of this variant
+	 * @param variant : Sequence change
+	 * @param changeEffects
+	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
+	 * @return
+	 */
+	public boolean variantEffect(Variant variant, VariantEffects changeEffects, Variant variantrRef) {
+		if (!intersects(variant)) return false;// Sanity check
+
+		if (variantrRef != null) {
+			Marker m = apply(variantrRef);
+
+			// Has the marker been deleted?
+			// Then there is no effect over this marker (it does not exist any more)
+			if (m == null) return false;
+
+			return m.variantEffect(variant, changeEffects);
+		}
+
+		return variantEffect(variant, changeEffects);
 	}
 
 }

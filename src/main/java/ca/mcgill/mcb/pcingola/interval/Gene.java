@@ -221,7 +221,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 * @return
 	 */
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects, Variant seqChangerRef) {
+	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects, Variant seqChangerRef) {
 		if (!intersects(seqChange)) return false; // Sanity check
 
 		boolean hitTranscript = false;
@@ -230,7 +230,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			if (seqChangerRef != null) tr = tr.apply(seqChangerRef);
 
 			// Calculate effects
-			hitTranscript |= tr.seqChangeEffect(seqChange, changeEffects);
+			hitTranscript |= tr.variantEffect(seqChange, changeEffects);
 		}
 
 		// May be none of the transcripts are actually hit

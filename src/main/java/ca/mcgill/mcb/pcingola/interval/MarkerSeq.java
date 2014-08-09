@@ -139,7 +139,7 @@ public class MarkerSeq extends Marker {
 
 			StringBuilder seqsb = new StringBuilder();
 			seqsb.append(seq.substring(0, idxStart));
-			seqsb.append(seqChange.getChange().substring(0, changeSize));
+			seqsb.append(seqChange.getAlt().substring(0, changeSize));
 			seqsb.append(seq.substring(idxEnd));
 
 			// Update sequence
@@ -161,7 +161,7 @@ public class MarkerSeq extends Marker {
 
 			// Apply change to sequence
 			int idx = seqChange.getStart() - start;
-			seq = seq.substring(0, idx) + seqChange.getChange() + seq.substring(idx + 1);
+			seq = seq.substring(0, idx) + seqChange.getAlt() + seq.substring(idx + 1);
 
 			// Update sequence
 			ex.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));

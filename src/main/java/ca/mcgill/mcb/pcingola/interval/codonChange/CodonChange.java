@@ -22,7 +22,7 @@ public class CodonChange {
 	Variant variant;
 	Transcript transcript;
 	Exon exon = null;
-	VariantEffects changeEffects;
+	VariantEffects variantEffects;
 	int codonNum = -1;
 	int codonIndex = -1;
 	String codonsOld = ""; // Old codons (before change)
@@ -31,28 +31,41 @@ public class CodonChange {
 	String aaNew = ""; // New amino acids (after change)
 	String netCdsChange = "";
 
-	public CodonChange(Variant variant, Transcript transcript, VariantEffects changeEffects) {
+	/**
+	 * Create a specific codon change for a variant
+	 */
+	protected static CodonChange factory(Variant variant, Transcript transcript, VariantEffects variantEffects) {
+		switch (variant.getVariantType()) {
+		case SNP:
+			return new CodonChangeSnp(variant, transcript, variantEffects);
+		case INS:
+			return new CodonChangeIns(variant, transcript, variantEffects);
+		case DEL:
+			return new CodonChangeDel(variant, transcript, variantEffects);
+		case MNP:
+			return new CodonChangeMnp(variant, transcript, variantEffects);
+		case MIXED:
+			return new CodonChangeMixed(variant, transcript, variantEffects);
+		case INTERVAL:
+			return new CodonChangeInterval(variant, transcript, variantEffects);
+		default:
+			throw new RuntimeException("Unimplemented factory for variant: " + variant);
+		}
+	}
+
+	public CodonChange(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		this.variant = variant;
 		this.transcript = transcript;
-		this.changeEffects = changeEffects;
+		this.variantEffects = variantEffects;
 	}
 
 	/**
 	 * Calculate all possible codon changes
 	 */
 	public void calculate() {
-		// Split each variant into it's multiple options
-		for (int i = 0; i < variant.getChangeOptionCount(); i++) {
-			// Create a new variant for this option, calculate codonChange for this variantOption and add result to the list
-			Variant variantNew = variant.getSeqAltOption(i);
-			if (variantNew != null) {
-				// Create a specific codon change and calculate changes
-				CodonChange codonChange = factory(variantNew, transcript, changeEffects);
-				codonChange.codonChange(); // Calculate codon change and add them to the list
-			}
-		}
-
-		return;
+		// Create a specific codon change and calculate changes
+		CodonChange codonChange = factory(variant, transcript, variantEffects);
+		codonChange.codonChange(); // Calculate codon change and add them to the list
 	}
 
 	/**
@@ -118,7 +131,7 @@ public class CodonChange {
 				hasChanged = codonChangeSingle(exon);
 
 				// Any change? => Add change to list
-				if (hasChanged) changeEffects.setMarker(exon); // It is affecting this exon, so we set the marker
+				if (hasChanged) variantEffects.setMarker(exon); // It is affecting this exon, so we set the marker
 
 				// Can we return immediately?
 				if (returnNow) return;
@@ -133,7 +146,6 @@ public class CodonChange {
 
 	/**
 	 * Calculate the effect of a single change type: SNP, MNP, INS, DEL
-	 * @return
 	 */
 	boolean codonChangeSingle(Exon exon) {
 		throw new RuntimeException("Unimplemented method for this thype of variant: " + variant.getType());
@@ -141,7 +153,6 @@ public class CodonChange {
 
 	/**
 	 * Calculate new codons
-	 * @return
 	 */
 	String codonsNew() {
 		throw new RuntimeException("Unimplemented method for this thype of CodonChange: " + this.getClass().getSimpleName());
@@ -149,7 +160,6 @@ public class CodonChange {
 
 	/**
 	 * Calculate old codons
-	 * @return
 	 */
 	public String codonsOld() {
 		return codonsOld(1);
@@ -157,7 +167,6 @@ public class CodonChange {
 
 	/**
 	 * Calculate old codons
-	 * @return
 	 */
 	protected String codonsOld(int numCodons) {
 		String cds = transcript.cds();
@@ -178,28 +187,6 @@ public class CodonChange {
 		else if (codon.length() % 3 == 2) codon += "N";
 
 		return codon;
-	}
-
-	/**
-	 * Create a specific codon change for a variant
-	 */
-	CodonChange factory(Variant variant, Transcript transcript, VariantEffects changeEffects) {
-		switch (variant.getVariantType()) {
-		case SNP:
-			return new CodonChangeSnp(variant, transcript, changeEffects);
-		case INS:
-			return new CodonChangeIns(variant, transcript, changeEffects);
-		case DEL:
-			return new CodonChangeDel(variant, transcript, changeEffects);
-		case MNP:
-			return new CodonChangeMnp(variant, transcript, changeEffects);
-		case MIXED:
-			return new CodonChangeMixed(variant, transcript, changeEffects);
-		case INTERVAL:
-			return new CodonChangeInterval(variant, transcript, changeEffects);
-		default:
-			throw new RuntimeException("Unimplemented factory for variant: " + variant);
-		}
 	}
 
 	/**

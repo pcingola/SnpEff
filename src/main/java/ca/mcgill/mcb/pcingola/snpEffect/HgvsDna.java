@@ -41,15 +41,14 @@ public class HgvsDna extends Hgvs {
 
 	/**
 	 * DNA level base changes
-	 * @return
 	 */
 	protected String dnaBaseChange() {
 
 		switch (seqChange.getVariantType()) {
 		case SNP:
 		case MNP:
-			if (marker == null || marker.isStrandPlus()) return seqChange.getReference() + ">" + seqChange.getChange();
-			return GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getChange());
+			if (marker == null || marker.isStrandPlus()) return seqChange.getReference() + ">" + seqChange.getAlt();
+			return GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getAlt());
 
 		case INS:
 		case DEL:
@@ -64,7 +63,6 @@ public class HgvsDna extends Hgvs {
 
 	/**
 	 * Calculate position
-	 * @return
 	 */
 	protected String pos() {
 		// Intron

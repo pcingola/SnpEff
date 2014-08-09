@@ -45,7 +45,7 @@ public abstract class OutputFormatter {
 
 	/**
 	 * Add effects to list
-	 * @param changeEffects
+	 * @param variantEffects
 	 */
 	public void add(VariantEffect changeEffect) {
 		// Passes the filter? => Add

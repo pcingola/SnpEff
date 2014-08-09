@@ -35,7 +35,7 @@ public class Utr3prime extends Utr {
 	}
 
 	@Override
-	public boolean seqChangeEffect(Variant seqChange, VariantEffects changeEffects) {
+	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false;
 
 		if (seqChange.includes(this) && (seqChange.getVariantType() == VariantType.DEL)) {

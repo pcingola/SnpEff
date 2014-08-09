@@ -27,11 +27,11 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
- * 
+ *
  * Test cases used:
- * 
+ *
    Transcript: ENST00000250823
-  
+
 		Y   16167997    UPSTREAM
 		Y   16168096    UPSTREAM
 		Y   16168097    5PRIME_UTR
@@ -48,12 +48,12 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 		Y   16168940    DOWNSTREAM
 
 		Note: Coordinates in the following diagram are 16160000 + X
-		
+
 		7997       8096               8170       8271               8464       8739               8839       8938
 		|-----UP------||-----5'------||-----EX------||-----IN------||-----EX------||-----3'------||-----DO------|
 		7997           8097       8169               8272       8463               8740       8838
 
- * 
+ *
  * @author pcingola
  */
 public class TestCasesVariant extends TestCase {
@@ -70,14 +70,8 @@ public class TestCasesVariant extends TestCase {
 		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 	}
 
-	/** 
+	/**
 	 * Compare each result. If one matches, we consider it OK
-	 * @param transcriptId
-	 * @param variant
-	 * @param changeEffects
-	 * @param useSimple
-	 * @param resultsSoFar
-	 * @return
 	 */
 	boolean anyResultMatches(String transcriptId, Variant variant, VariantEffects changeEffects, boolean useShort) {
 		for (VariantEffect chEff : changeEffects) {
@@ -112,7 +106,7 @@ public class TestCasesVariant extends TestCase {
 
 	/**
 	 * Parse a variant file and return a list
-	 * 
+	 *
 	 * @param variantFile
 	 * @return
 	 */
@@ -160,7 +154,7 @@ public class TestCasesVariant extends TestCase {
 						System.out.println(sc.getChromosomeName() //
 								+ "\t" + (sc.getStart() + 1) //
 								+ "\t" + sc.getReference() //
-								+ "\t" + sc.getChange() //
+								+ "\t" + sc.getAlt() //
 								+ "\t+\t0\t0" //
 								+ "\t" + res.effect(true, true, true, false) //
 						);
@@ -397,7 +391,7 @@ public class TestCasesVariant extends TestCase {
 	}
 
 	/**
-	 * Splice site: Bug reported by Wang, Xusheng 
+	 * Splice site: Bug reported by Wang, Xusheng
 	 */
 	public void test_28_Splice_mm37_ENSMUSG00000005763() {
 		//---
@@ -425,7 +419,7 @@ public class TestCasesVariant extends TestCase {
 	}
 
 	/**
-	 * Test effect when hits a gene, but not any transcript within a gene. 
+	 * Test effect when hits a gene, but not any transcript within a gene.
 	 * This is an extremely weird case, might be an annotation problem.
 	 */
 	public void test_29_Intergenic_in_Gene() {
