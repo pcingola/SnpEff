@@ -1636,7 +1636,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		if (isCds(variant)) {
 			// Get codon change effect
 			CodonChange codonChange = new CodonChange(variant, this, changeEffectList);
-			codonChange.calculate();
+			codonChange.variantEffect();
 			return true;
 		}
 

@@ -3,8 +3,9 @@ package ca.mcgill.mcb.pcingola.fileIterator;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 
 /**
- * Needleman-Wunsch (global sequence alignment) algorithm for sequence  alignment (short strings, since it's not memory optimized)
- * 
+ * Needleman-Wunsch (global sequence alignment) algorithm for sequence  alignment
+ * Only used for short strings (algorithm is not optimized)
+ *
  * @author pcingola
  */
 public class VcfRefAltAlign extends NeedlemanWunsch {
@@ -12,7 +13,7 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 	public static final int MAX_SIZE = 10000; // 1024 * 1024;
 
 	String stringA, stringB;
-	VariantType changeType;
+	VariantType variantType;
 
 	public VcfRefAltAlign(String a, String b) {
 		super(a, b);
@@ -24,7 +25,7 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 	public String align() {
 		try {
 			if (simpleAlign()) {
-				// OK Nothing else to do 
+				// OK Nothing else to do
 			} else {
 				// Perform alignment only of sequences are not too long (we don't want an 'out of memory' issue)
 				long size = ((long) stringA.length()) * stringB.length();
@@ -34,12 +35,12 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 
 					if (stringB.length() > stringA.length()) {
 						if (alignment.startsWith("-")) {
-							changeType = VariantType.DEL;
+							variantType = VariantType.DEL;
 							return alignment;
 						}
 					} else if (stringB.length() < stringA.length()) {
 						if (alignment.startsWith("+")) {
-							changeType = VariantType.INS;
+							variantType = VariantType.INS;
 							return alignment;
 						}
 					}
@@ -55,18 +56,97 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 		return alignment;
 	}
 
-	public VariantType getChangeType() {
-		return changeType;
+	public VariantType getVariantType() {
+		return variantType;
 	}
 
-	public void setChangeType(VariantType changeType) {
-		this.changeType = changeType;
+	/**
+	 * Min position with a common base between stringA and stringB
+	 */
+	int minCommonBase() {
+		int min = Math.min(stringA.length(), stringB.length());
+		int i;
+		for (i = 0; i < min; i++)
+			if (stringA.charAt(i) != stringB.charAt(i)) return i;
+
+		return i;
+	}
+
+	public void setVariantType(VariantType variantType) {
+		this.variantType = variantType;
+	}
+
+	/**
+	 * Simplified alignment
+	 */
+	boolean simpleAlign() {
+
+		if (stringA.length() == stringB.length()) {
+			offset = 0;
+			if (stringA.equals(stringB)) {
+				// No variant
+				variantType = VariantType.INTERVAL;
+				return true;
+			} else if (stringA.length() == 1) {
+				// SNP
+				variantType = VariantType.SNP;
+				return true;
+			} else {
+				// MNP
+				offset = minCommonBase();
+				variantType = VariantType.MNP;
+				return true;
+			}
+		}
+
+		offset = minCommonBase();
+		trimCommonBasesEnd();
+
+		if (stringA.length() < stringB.length()) {
+			// A has a deletion respect to B
+			int idx = stringB.indexOf(stringA);
+			if (idx >= 0) {
+				variantType = VariantType.DEL;
+				offset = stringA.length();
+				alignment = "-" + stringB.substring(stringA.length(), stringB.length());
+				return true;
+			}
+
+			variantType = VariantType.MIXED;
+			return true;
+		} else if (stringA.length() > stringB.length()) {
+			// A has an insertion respect to B
+			int idx = stringA.indexOf(stringB);
+			if (idx >= 0) {
+				variantType = VariantType.INS;
+				offset = stringB.length();
+				alignment = "+" + stringA.substring(stringB.length(), stringA.length());
+				return true;
+			}
+
+			variantType = VariantType.MIXED;
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * If it is not a trivial alignment, then it's a mixed variant (a.k.a subtitution)
+	 */
+	void substitution() {
+		variantType = VariantType.MIXED;
+
+		// Offset
+		// Note: There must be a difference, otherwise this would be an InDel, captured in 'simpleAlign() method
+		int min = Math.min(stringA.length(), stringB.length());
+		for (int i = 0; i < min; i++)
+			if (stringA.charAt(i) == stringB.charAt(i)) offset = i;
+			else break;
 	}
 
 	/**
 	 * Trim bases that are equal at the end of stringA / stringB
-	 * @param stringA
-	 * @param stringB
 	 */
 	void trimCommonBasesEnd() {
 		int ia = stringA.length() - 1;
@@ -80,90 +160,5 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 			stringA = stringA.substring(0, ia + 1);
 			stringB = stringB.substring(0, ib + 1);
 		}
-	}
-
-	/**
-	 * Simplified alignment
-	 * @return
-	 */
-	boolean simpleAlign() {
-
-		if (stringA.length() == stringB.length()) {
-			offset = 0;
-			if (stringA.equals(stringB)) {
-				// No change
-				changeType = VariantType.INTERVAL;
-				return true;
-			} else if (stringA.length() == 1) {
-				// SNP
-				changeType = VariantType.SNP;
-				return true;
-			} else {
-				// MNP
-				offset = minCommonBase();
-				changeType = VariantType.MNP;
-				return true;
-			}
-		}
-
-		offset = minCommonBase();
-		trimCommonBasesEnd();
-
-		if (stringA.length() < stringB.length()) {
-			// A has a deletion respect to B
-			int idx = stringB.indexOf(stringA);
-			if (idx >= 0) {
-				changeType = VariantType.DEL;
-				offset = stringA.length();
-				alignment = "-" + stringB.substring(stringA.length(), stringB.length());
-				return true;
-			}
-
-			changeType = VariantType.MIXED;
-			return true;
-		} else if (stringA.length() > stringB.length()) {
-			// A has an insertion respect to B
-			int idx = stringA.indexOf(stringB);
-			if (idx >= 0) {
-				changeType = VariantType.INS;
-				offset = stringB.length();
-				alignment = "+" + stringA.substring(stringB.length(), stringA.length());
-				return true;
-			}
-
-			changeType = VariantType.MIXED;
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Min position with a common base between stringA and stringB
-	 * @param stringA
-	 * @param stringB
-	 * @return
-	 */
-	int minCommonBase() {
-		int min = Math.min(stringA.length(), stringB.length());
-		int i;
-		for (i = 0; i < min; i++)
-			if (stringA.charAt(i) != stringB.charAt(i)) return i;
-
-		return i;
-	}
-
-	/**
-	 * If it is not a trivial alignment, then it's a mixed variant (a.k.a subtitution)
-	 */
-	void substitution() {
-		changeType = VariantType.MIXED;
-
-		// Offset
-		// Note: There must be a difference, otherwise this would be an InDel, captured in 'simpleAlign() method
-		int min = Math.min(stringA.length(), stringB.length());
-		for (int i = 0; i < min; i++)
-			if (stringA.charAt(i) == stringB.charAt(i)) offset = i;
-			else break;
 	}
 }

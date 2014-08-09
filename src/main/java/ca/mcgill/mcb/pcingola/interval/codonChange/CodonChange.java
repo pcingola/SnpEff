@@ -60,15 +60,6 @@ public class CodonChange {
 	}
 
 	/**
-	 * Calculate all possible codon changes
-	 */
-	public void calculate() {
-		// Create a specific codon change and calculate changes
-		CodonChange codonChange = factory(variant, transcript, variantEffects);
-		codonChange.codonChange(); // Calculate codon change and add them to the list
-	}
-
-	/**
 	 * Calculate base number in a cds where 'pos' is
 	 */
 	int cdsBaseNumber(int pos) {
@@ -204,6 +195,15 @@ public class CodonChange {
 		}
 
 		return variant.netChange(transcript.isStrandMinus());
+	}
+
+	/**
+	 * Calculate all possible codon changes
+	 */
+	public void variantEffect() {
+		// Create a specific codon change and calculate changes
+		CodonChange codonChange = factory(variant, transcript, variantEffects);
+		codonChange.codonChange(); // Calculate codon change and add them to the list
 	}
 
 }

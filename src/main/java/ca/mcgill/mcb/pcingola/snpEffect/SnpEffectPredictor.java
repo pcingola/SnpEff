@@ -90,7 +90,7 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-					) snpEffectPredictor.add(m);
+			) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}
@@ -541,51 +541,51 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
-	 * Predict the effect of a seqChange
-	 * @param seqChange
+	 * Predict the effect of a variant
+	 * @param variant
 	 */
-	public VariantEffects variantEffect(Variant seqChange) {
-		return variantEffect(seqChange, null);
+	public VariantEffects variantEffect(Variant variant) {
+		return variantEffect(variant, null);
 	}
 
 	/**
-	 * Predict the effect of a seqChange
-	 * @param seqChange : Sequence change
-	 * @param seqChangeRef : Before analyzing results, we have to change markers using seqChangerRef to create a new reference 'on the fly'
+	 * Predict the effect of a variant
+	 * @param variant : Sequence change
+	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
 	 */
-	public VariantEffects variantEffect(Variant seqChange, Variant seqChangeRef) {
-		VariantEffects changeEffects = new VariantEffects(seqChange, seqChangeRef);
+	public VariantEffects variantEffect(Variant variant, Variant variantRef) {
+		VariantEffects variantEffects = new VariantEffects(variant, variantRef);
 
 		//---
 		// Chromosome missing?
 		//---
-		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(seqChange)) {
-			changeEffects.addErrorWarning(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND);
-			return changeEffects;
+		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(variant)) {
+			variantEffects.addErrorWarning(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND);
+			return variantEffects;
 		}
 
 		//---
 		// Check that this is not a huge deletion.
 		// Huge deletions would crash the rest of the algorithm, so we need to stop them here.
 		//---
-		if (seqChange.isDel() && (seqChange.size() > HUGE_DELETION_SIZE_THRESHOLD)) {
+		if (variant.isDel() && (variant.size() > HUGE_DELETION_SIZE_THRESHOLD)) {
 			// Get chromosome
-			String chromoName = seqChange.getChromosomeName();
+			String chromoName = variant.getChromosomeName();
 			Chromosome chr = genome.getChromosome(chromoName);
 
 			if (chr.size() > 0) {
-				double ratio = seqChange.size() / ((double) chr.size());
+				double ratio = variant.size() / ((double) chr.size());
 				if (ratio > HUGE_DELETION_RATIO_THRESHOLD) {
-					changeEffects.add(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
-					return changeEffects;
+					variantEffects.add(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
+					return variantEffects;
 				}
 			}
 		}
 
 		//---
-		// Query interval tree: Which intervals does seqChange intersect?
+		// Query interval tree: Which intervals does variant intersect?
 		//---
-		Markers intersects = query(seqChange);
+		Markers intersects = query(variant);
 
 		// Show all results
 		boolean hitChromo = false, hitSomething = false;
@@ -593,7 +593,7 @@ public class SnpEffectPredictor implements Serializable {
 			for (Marker marker : intersects) {
 				if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
 				else { // Analyze all markers
-					marker.variantEffect(seqChange, changeEffects, seqChangeRef);
+					marker.variantEffect(variant, variantEffects, variantRef);
 					hitSomething = true;
 				}
 			}
@@ -601,13 +601,13 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Any errors or intergenic (i.e. did not hit any gene)
 		if (!hitChromo) {
-			if (Config.get().isErrorChromoHit()) changeEffects.addErrorWarning(ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
+			if (Config.get().isErrorChromoHit()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
 		} else if (!hitSomething) {
-			if (Config.get().isOnlyRegulation()) changeEffects.setEffectType(EffectType.NONE);
-			else changeEffects.setEffectType(EffectType.INTERGENIC);
+			if (Config.get().isOnlyRegulation()) variantEffects.setEffectType(EffectType.NONE);
+			else variantEffects.setEffectType(EffectType.INTERGENIC);
 		}
 
-		return changeEffects;
+		return variantEffects;
 	}
 
 }

@@ -243,7 +243,19 @@ public class Variant extends Marker {
 		if (altStr.indexOf(',') >= 0 || altStr.indexOf('/') >= 0) throw new RuntimeException("Variants with multiple ALTs are not allowed (ALT: '" + altStr + "')");
 
 		// Remove leading char (we still have some test cases using old TXT format)
-		if (alt.startsWith("+") || alt.startsWith("-") || alt.startsWith("=")) alt = altStr.substring(1);
+		if (ref.equals("*")) ref = "";
+
+		if (alt.startsWith("+")) {
+			// Insertion
+			alt = ref + alt.substring(1);
+		} else if (alt.startsWith("-")) {
+			// Deletion
+			ref = alt.substring(1);
+			alt = "";
+		} else if (alt.startsWith("=")) {
+			// Mixed variant
+			alt = altStr.substring(1);
+		}
 
 		//---
 		// Calculate variant type
@@ -351,7 +363,7 @@ public class Variant extends Marker {
 	 * Return the change (always in positive strand) without any '+' or '-' leading characters
 	 */
 	public String netChange(Marker marker) {
-		String netChange = alt;
+		String netChange = ref;
 
 		int removeBefore = marker.getStart() - start;
 		if (removeBefore > 0) {

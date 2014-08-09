@@ -216,33 +216,6 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	}
 
 	/**
-	 * Get some details about the effect on this gene
-	 * @param seqChange
-	 * @return
-	 */
-	@Override
-	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects, Variant seqChangerRef) {
-		if (!intersects(seqChange)) return false; // Sanity check
-
-		boolean hitTranscript = false;
-		for (Transcript tr : this) {
-			// Apply sequence change to create new 'reference'?
-			if (seqChangerRef != null) tr = tr.apply(seqChangerRef);
-
-			// Calculate effects
-			hitTranscript |= tr.variantEffect(seqChange, changeEffects);
-		}
-
-		// May be none of the transcripts are actually hit
-		if (!hitTranscript) {
-			changeEffects.add(this, EffectType.INTRAGENIC, "");
-			return true;
-		}
-
-		return true;
-	}
-
-	/**
 	 * Parse a line from a serialized file
 	 * @param line
 	 * @return
@@ -412,6 +385,31 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		}
 
 		return sb.toString();
+	}
+
+	/**
+	 * Get some details about the effect on this gene
+	 */
+	@Override
+	public boolean variantEffect(Variant variant, VariantEffects changeEffects, Variant variantrRef) {
+		if (!intersects(variant)) return false; // Sanity check
+
+		boolean hitTranscript = false;
+		for (Transcript tr : this) {
+			// Apply sequence change to create new 'reference'?
+			if (variantrRef != null) tr = tr.apply(variantrRef);
+
+			// Calculate effects
+			hitTranscript |= tr.variantEffect(variant, changeEffects);
+		}
+
+		// May be none of the transcripts are actually hit
+		if (!hitTranscript) {
+			changeEffects.add(this, EffectType.INTRAGENIC, "");
+			return true;
+		}
+
+		return true;
 	}
 
 }

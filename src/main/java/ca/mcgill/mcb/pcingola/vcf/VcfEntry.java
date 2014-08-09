@@ -335,7 +335,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			char change[] = new char[size];
 			for (int i = 0; i < change.length; i++)
 				change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-			String ch = "-" + new String(change);
+			String ch = new String(change);
 
 			// Create SeqChange
 			return Variant.factory(chromo, start, reference, ch, id);
@@ -346,7 +346,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// 20     3 .         TC     AT      .   PASS  DP=100
 		if (reference.length() == alt.length()) {
 			// SNPs
-			if (reference.length() == 1) new Variant(chromo, start, reference, alt, id);
+			if (reference.length() == 1) return Variant.factory(chromo, start, reference, alt, id);
 
 			// MNPs
 			// Sometimes the first bases are the same and we can trim them
@@ -372,12 +372,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		align.align();
 		int startDiff = align.getOffset();
 
-		switch (align.getChangeType()) {
+		switch (align.getVariantType()) {
 		case DEL:
 			// Case: Deletion
 			// 20     2 .         TC      T      .   PASS  DP=100
 			// 20     2 .         AGAC    AAC    .   PASS  DP=100
-			String ref = "*";
+			String ref = "";
 			String ch = align.getAlignment();
 			if (!ch.startsWith("-")) throw new RuntimeException("Deletion '" + ch + "' does not start with '-'. This should never happen!");
 			return Variant.factory(chromo, start + startDiff, ref, ch, id);
@@ -386,7 +386,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			// Case: Insertion of A { tC ; tCA } tC is the reference allele
 			// 20     2 .         TC      TCA    .   PASS  DP=100
 			ch = align.getAlignment();
-			ref = "*";
+			ref = "";
 			if (!ch.startsWith("+")) throw new RuntimeException("Insertion '" + ch + "' does not start with '+'. This should never happen!");
 			return Variant.factory(chromo, start + startDiff, ref, ch, id);
 
@@ -394,11 +394,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			// Case: Mixed variant (substitution)
 			reference = reference.substring(startDiff);
 			alt = alt.substring(startDiff);
-			return Variant.factory(chromo, start + startDiff, reference, "=" + alt, id);
+			return Variant.factory(chromo, start + startDiff, reference, alt, id);
 
 		default:
 			// Other change type?
-			throw new RuntimeException("Unsupported VCF change type '" + align.getChangeType() + "'\n\tRef: " + reference + "'\n\tAlt: '" + alt + "'\n\tVcfEntry: " + this);
+			throw new RuntimeException("Unsupported VCF change type '" + align.getVariantType() + "'\n\tRef: " + reference + "'\n\tAlt: '" + alt + "'\n\tVcfEntry: " + this);
 		}
 	}
 

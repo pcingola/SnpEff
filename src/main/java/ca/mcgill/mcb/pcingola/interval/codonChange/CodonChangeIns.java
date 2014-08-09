@@ -31,7 +31,7 @@ public class CodonChangeIns extends CodonChange {
 		if (netChange.length() % CodonChange.CODON_SIZE != 0) {
 			/**
 			 * Length not multiple of CODON_SIZE => FRAME_SHIFT
-			 * 	E.g. : 
+			 * 	E.g. :
 			 * 		Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Insert 'TT' pos 0:	TTA AAC CCG GGA AAC CCG GGA AAC CCG GG
 			 * 		Insert 'TT' pos 1:	ATT AAC CCG GGA AAC CCG GGA AAC CCG GG
@@ -42,7 +42,7 @@ public class CodonChangeIns extends CodonChange {
 		} else if (codonIndex == 0) {
 			/**
 			 * Length multiple of CODON_SIZE and insertion happens at codon boundary => CODON_INSERTION
-			 * 	E.g. : 
+			 * 	E.g. :
 			 * 		Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Insert 'TTT' pos 0:	TTT AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 */
@@ -51,7 +51,7 @@ public class CodonChangeIns extends CodonChange {
 		} else {
 			/**
 			 * Length multiple of CODON_SIZE and insertion does not happen at codon boundary => CODON_CHANGE_PLUS_CODON_INSERTION
-			 * 	E.g. : 
+			 * 	E.g. :
 			 * 		Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Insert 'TTT' pos 1:	ATT TAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Insert 'TTT' pos 2:	AAT TTA CCC GGG AAA CCC GGG AAA CCC GGG
@@ -75,8 +75,7 @@ public class CodonChangeIns extends CodonChange {
 	}
 
 	/**
-	 * Get new (modified) codons 
-	 * @return
+	 * Get new (modified) codons
 	 */
 	@Override
 	String codonsNew() {

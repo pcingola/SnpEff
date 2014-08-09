@@ -24,7 +24,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 public class TestCasesZzz extends TestCase {
 
 	boolean debug = false;
-	boolean verbose = false || debug;
+	boolean verbose = true || debug;
 
 	boolean createOutputFile = false;
 	Random rand;
@@ -102,10 +102,10 @@ public class TestCasesZzz extends TestCase {
 			String msg = "";
 			msg += "Number : " + num + "\n";
 			msg += "\tExpecting   : " + (negate ? "NOT " : "") + "'" + variant.getId() + "'\n";
-			msg += "\tvariant   : " + variant + "\n";
+			msg += "\tVariant     : " + variant + "\n";
 			msg += "\tResultsList :\n";
 			for (VariantEffect res : results)
-				msg += "\t" + res + "\n";
+				msg += "\t\t" + res + "\n";
 
 			if (verbose) System.out.println(msg);
 
@@ -154,23 +154,14 @@ public class TestCasesZzz extends TestCase {
 	}
 
 	/**
-	 * Test SNP effect predictor for a transcript (Insertions)
+	 * Test SNP effect predictor for a transcript
 	 */
-	public void test_21() {
+	public void test_09() {
 		initSnpEffPredictor();
 		String trId = "ENST00000250823";
-		snpEffect("tests/" + trId + "_InDels.out", trId, false);
+		snpEffect("tests/" + trId + ".out", trId, true);
 	}
 
-	//	/**
-	//	 * Test SNP effect predictor for a transcript (Insertions)
-	//	 */
-	//	public void test_21_2() {
-	//		initSnpEffPredictor();
-	//		String trId = "ENST00000250823";
-	//		snpEffect("tests/" + trId + "_InDels_2.out", trId, false);
-	//	}
-	//
 	//	/**
 	//	 * Test SNP effect predictor for a transcript (Insertions)
 	//	 */
@@ -179,7 +170,16 @@ public class TestCasesZzz extends TestCase {
 	//		String trId = "ENST00000250823";
 	//		snpEffect("tests/" + trId + "_InDels_3.out", trId, true);
 	//	}
-	//
+
+	/**
+	 * Test SNP effect predictor for a transcript (Insertions)
+	 */
+	public void test_zzz() {
+		initSnpEffPredictor();
+		String trId = "ENST00000250823";
+		snpEffect("tests/z.txt", trId, false);
+	}
+
 	//	/**
 	//	 * Read file test: Should throw an exception (chromosome not found)
 	//	 */
