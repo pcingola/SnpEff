@@ -14,16 +14,19 @@ import ca.mcgill.mcb.pcingola.interval.Utr5prime;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
- * Test random SNP changes 
- * 
+ * Test random SNP changes
+ *
  * @author pcingola
  */
 public class TestCasesTranscript extends TestCase {
 
 	boolean debug = false;
+	boolean verbose = false;
+
 	Random rand;
 	Config config;
 	Genome genome;
@@ -81,13 +84,14 @@ public class TestCasesTranscript extends TestCase {
 	public void test_CdsPos() {
 		int N = 1000;
 
-		// Test N times: 
+		// Test N times:
 		//		- Create a random gene transcript, exons
 		// 		- Cal
 		for (int iter = 0; iter < N; iter++) {
 			initSnpEffPredictor();
 			if (debug) System.out.println("Test CDS pos iteration: " + iter + "\n" + transcript);
-			else System.out.println("Test CDS pos iteration: " + iter + "\t" + transcript.getStrand() + "\t" + transcript.cds());
+			else if (verbose) System.out.println("Test CDS pos iteration: " + iter + "\t" + transcript.getStrand() + "\t" + transcript.cds());
+			else Gpr.showMark(iter + 1, 1);
 
 			int cdsBaseNum = 0;
 			int cds2pos[] = transcript.baseNumberCds2Pos();
