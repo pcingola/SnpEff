@@ -165,8 +165,12 @@ public class TestCasesMixedVariants extends TestCase {
 	//	}
 
 	public void test_02_MixedVep() {
-		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf", null);
+		compareVep("testHg3775Chr22", "tests/z.vcf", null);
 	}
+
+	//	public void test_02_MixedVep() {
+	//		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf", null);
+	//	}
 
 	//	public void test_03_MixedVep() {
 	//		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf", null);

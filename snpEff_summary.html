@@ -141,11 +141,11 @@ th a:active, th a:hover {
 <table border=0>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Genome </b> </td>
-		<td> testHg3770Chr22 </td>
+		<td> testHg3775Chr22 </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Date </b> </td>
-		<td> 2014-08-09 17:45 </td>
+		<td> 2014-08-09 19:11 </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> SnpEff version </b> </td>
@@ -153,13 +153,12 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Command line arguments </b> </td>
-		<td> <pre>SnpEff  testHg3770Chr22 tests/mixed_zzz.vcf 
-</pre> </td>
+		<td> <pre>SnpEff  testHg3775Chr22 tests/z.vcf </pre> </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Warnings </b> </td>
 		   
-		<td bgcolor="#ffff00"> 2 </td>
+		<td bgcolor="#ffff00"> 1 </td>
 	</tr>	
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Errors </b> </td>
@@ -197,7 +196,7 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of effects </b> </td>
-		<td> 6 </td>
+		<td> 4 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome total length </b> </td>
@@ -312,16 +311,16 @@ th a:active, th a:hover {
 		</tr>
 	</thead>
 		<tr> 
-			<td> <b> HIGH </b> </td> 
+			<td> <b> MODERATE </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#00ff00"> 2 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 33.333% </td>
+			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
+			<td class="numeric" bgcolor="#00ff00"> 25% </td>
 		</tr>
 		<tr> 
 			<td> <b> MODIFIER </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#ff0000"> 4 </td> 
-			<td class="numeric" bgcolor="#ff0000"> 66.667% </td>
+			<td class="numeric" bgcolor="#ff0000"> 3 </td> 
+			<td class="numeric" bgcolor="#ff0000"> 75% </td>
 		</tr>
 </table><br>
 <p>
@@ -377,22 +376,22 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 		</tr>
 	</thead>
 		<tr> 
-			<td> <b> downstream_gene_variant </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#ff0000"> 3 </td> 
-			<td class="numeric" bgcolor="#ff0000"> 50% </td>
-		</tr>
-		<tr> 
-			<td> <b> frameshift_variant </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#7f7f00"> 2 </td> 
-			<td class="numeric" bgcolor="#7f7f00"> 33.333% </td>
-		</tr>
-		<tr> 
-			<td> <b> upstream_gene_variant </b> </td> 
+			<td> <b> coding_sequence_variant+inframe_deletion </b> </td> 
 			<th> &nbsp; </th>
 			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 16.667% </td>
+			<td class="numeric" bgcolor="#00ff00"> 25% </td>
+		</tr>
+		<tr> 
+			<td> <b> downstream_gene_variant </b> </td> 
+			<th> &nbsp; </th>
+			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
+			<td class="numeric" bgcolor="#00ff00"> 25% </td>
+		</tr>
+		<tr> 
+			<td> <b> intron_variant </b> </td> 
+			<th> &nbsp; </th>
+			<td class="numeric" bgcolor="#ff0000"> 2 </td> 
+			<td class="numeric" bgcolor="#ff0000"> 50% </td>
 		</tr>
 </table><br>
  </td>
@@ -408,20 +407,20 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 		<tr> 
 			<td> <b> DOWNSTREAM </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#ff0000"> 3 </td> 
-			<td class="numeric" bgcolor="#ff0000"> 50% </td>
+			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
+			<td class="numeric" bgcolor="#00ff00"> 25% </td>
 		</tr>
 		<tr> 
 			<td> <b> EXON </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#7f7f00"> 2 </td> 
-			<td class="numeric" bgcolor="#7f7f00"> 33.333% </td>
+			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
+			<td class="numeric" bgcolor="#00ff00"> 25% </td>
 		</tr>
 		<tr> 
-			<td> <b> UPSTREAM </b> </td> 
+			<td> <b> INTRON </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 16.667% </td>
+			<td class="numeric" bgcolor="#ff0000"> 2 </td> 
+			<td class="numeric" bgcolor="#ff0000"> 50% </td>
 		</tr>
 </table><br>
  </td>
@@ -429,7 +428,7 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 </table>
 <p>
 
-<img src="http://chart.apis.google.com/chart?cht=bvs&chbh=50,4,8&chs=800x300&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,50.0|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AAVVAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAqqAAAAAAqqAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAA..AA,AAAAAAAAAAAAAAAAAAAAAA" border=1><p>
+<img src="http://chart.apis.google.com/chart?cht=bvs&chbh=50,4,8&chs=800x300&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,50.0|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAgAAAAAAAgAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAA..AAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAgAAA,AAAAAAAAAAAAAAAAAAAAAA" border=1><p>
 
 </center>
 
@@ -548,15 +547,15 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <hr> 
 <a name="homHet">
 <center> <b> Hom/Het per sample </b> <p> </center>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Heterozygous+genotypes&chxl=1:|Heterozygous+count|3:|Sample+number&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Homozygous+%28ALT%29+genotypes&chxl=1:|Homozygous+count|3:|Sample+number&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Missing+genotypes&chxl=1:|Missing+count|3:|Sample+number&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Heterozygous+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Heterozygous+count|2:|0|3:|Sample+number"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Homozygous+%28ALT%29+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Homozygous+count|2:|0|3:|Sample+number"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Missing+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Missing+count|2:|0|3:|Sample+number"><br>
 	
-	<pre>Sample_names 
-Reference 
-Het 
-Hom 
-Missing 
+	<pre>Sample_names , No_sample_name_found
+Reference , 0
+Het , 0
+Hom , 0
+Missing , 0
 </pre>
 <p>
 
@@ -583,7 +582,7 @@ Missing
 	<thead>
 		<tr> 
 			<th> &nbsp; </th>
-			 <th> - </th>  <th> CAG </th>  <th> CTC </th>  <th> CTG </th>  <th> GAG </th> 
+			 <th> - </th>  <th> ACG </th>  <th> AGG </th>  <th> ATG </th>  <th> CCG </th>  <th> CTA </th>  <th> GCG </th>  <th> TCC </th>  <th> TCG </th> 
 		</tr>
 	</thead>
 			<tr> 
@@ -598,22 +597,130 @@ Missing
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 			</tr>
 			<tr> 
-				<th> CAG </th>
+				<th> ACG </th>
 					
-						<td class="numeric" bgcolor="#00ff00"> 2 </td>
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<th class="numeric"> 1 </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> AGG </th>
+					
+						<td class="numeric" bgcolor="#ff0000"> 2 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<th class="numeric"> &nbsp </th>
 					
-						<td class="numeric" bgcolor="#00ff00"> 2 </td>
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 			</tr>
 			<tr> 
-				<th> CTC </th>
+				<th> ATG </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> CCG </th>
+					
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> CTA </th>
+					
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> GCG </th>
+					
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -626,9 +733,17 @@ Missing
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 			</tr>
 			<tr> 
-				<th> CTG </th>
+				<th> TCC </th>
 					
-						<td class="numeric" bgcolor="#00ff00"> 2 </td>
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -639,9 +754,17 @@ Missing
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 			</tr>
 			<tr> 
-				<th> GAG </th>
+				<th> TCG </th>
 					
-						<td class="numeric" bgcolor="#ff0000"> 4 </td>
+						<td class="numeric" bgcolor="#ff0000"> 2 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -676,7 +799,7 @@ Missing
 	<thead>
 		<tr> 
 			<th> &nbsp; </th>
-			 <th> - </th>  <th> ? </th>  <th> E </th>  <th> L </th>  <th> Q </th> 
+			 <th> - </th>  <th> A </th>  <th> L </th>  <th> M </th>  <th> P </th>  <th> R </th>  <th> S </th>  <th> T </th> 
 		</tr>
 	</thead>
 			<tr> 
@@ -691,13 +814,6 @@ Missing
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-			</tr>
-			<tr> 
-				<th> ? </th>
-					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-					
-						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -706,13 +822,19 @@ Missing
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 			</tr>
 			<tr> 
-				<th> E </th>
+				<th> A </th>
 					
-						<td class="numeric" bgcolor="#ff0000"> 4 </td>
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
-						<th class="numeric"> &nbsp </th>
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -721,9 +843,91 @@ Missing
 			<tr> 
 				<th> L </th>
 					
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
-						<td class="numeric" bgcolor="#00ff00"> 2 </td>
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> M </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> P </th>
+					
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> R </th>
+					
+						<td class="numeric" bgcolor="#7f7f00"> 2 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> S </th>
+					
+						<td class="numeric" bgcolor="#ff0000"> 3 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -732,17 +936,23 @@ Missing
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 			</tr>
 			<tr> 
-				<th> Q </th>
+				<th> T </th>
 					
-						<td class="numeric" bgcolor="#00ff00"> 2 </td>
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
-						<td class="numeric" bgcolor="#00ff00"> 2 </td>
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
-						<th class="numeric"> &nbsp </th>
+						<th class="numeric"> 1 </th>
 			</tr>
 </table>
 </center>

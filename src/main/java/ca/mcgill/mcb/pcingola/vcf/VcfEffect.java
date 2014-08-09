@@ -1,6 +1,10 @@
 package ca.mcgill.mcb.pcingola.vcf;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -23,7 +27,8 @@ public class VcfEffect {
 	String effectStrings[];
 	FormatVersion formatVersion;
 	String effString;
-	VariantEffect.EffectType effect;
+	// VariantEffect.EffectType effect;
+	List<VariantEffect.EffectType> effects;
 	String effectDetails;
 	VariantEffect.EffectImpact impact;
 	VariantEffect.FunctionalClass funClass;
@@ -139,6 +144,10 @@ public class VcfEffect {
 		parse();
 	}
 
+	public void addEffect(VariantEffect.EffectType effect) {
+		effects.add(effect);
+	}
+
 	/**
 	 * Guess effect format version
 	 * @return
@@ -191,11 +200,15 @@ public class VcfEffect {
 	}
 
 	public VariantEffect.EffectType getEffect() {
-		return effect;
+		return effects.get(0);
 	}
 
 	public String getEffectDetails() {
 		return effectDetails;
+	}
+
+	public List<VariantEffect.EffectType> getEffects() {
+		return effects;
 	}
 
 	public String getEffectString() {
@@ -246,7 +259,7 @@ public class VcfEffect {
 
 			// Effect
 			effString = effectStrings[index];
-			effect = VariantEffect.EffectType.parse(parseEffect(effectStrings[index]));
+			effects = parseEffect(effectStrings[index]);
 			effectDetails = parseEffectDetails(effectStrings[index]); // Effect details: everything between '['  and ']' (e.g. Regulation, Custom, Motif, etc.)
 			index++;
 
@@ -300,10 +313,15 @@ public class VcfEffect {
 		}
 	}
 
-	String parseEffect(String eff) {
+	List<VariantEffect.EffectType> parseEffect(String eff) {
 		int idx = eff.indexOf('[');
-		if (idx < 0) return eff;
-		return eff.substring(0, idx);
+		if (idx > 0) eff = eff.substring(0, idx);
+
+		List<VariantEffect.EffectType> effs = new LinkedList<VariantEffect.EffectType>();
+		for (String es : eff.split("\\+"))
+			effs.add(VariantEffect.EffectType.parse(es));
+
+		return effs;
 	}
 
 	/**
@@ -337,7 +355,8 @@ public class VcfEffect {
 	}
 
 	public void setEffect(VariantEffect.EffectType effect) {
-		this.effect = effect;
+		effects = new LinkedList<VariantEffect.EffectType>();
+		addEffect(effect);
 	}
 
 	public void setEffectDetails(String effectDetails) {
@@ -367,7 +386,12 @@ public class VcfEffect {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(effect);
+
+		for (EffectType et : effects) {
+			if (sb.length() > 0) sb.append("+");
+			sb.append(et);
+		}
+
 		if ((effectDetails != null) && !effectDetails.isEmpty()) sb.append("[" + effectDetails + "]");
 		sb.append("(");
 

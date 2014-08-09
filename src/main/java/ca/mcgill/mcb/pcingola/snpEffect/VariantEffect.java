@@ -1,6 +1,8 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Custom;
@@ -247,7 +249,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Errors for change effect
-	 * @author pcingola
 	 *
 	 */
 	public enum ErrorWarningType {
@@ -282,7 +283,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	Variant variant = null;
 	Variant variantRef = null;
-	EffectType effectType = EffectType.NONE;
+	// EffectType effectType = EffectType.NONE;
+	List<EffectType> effectTypes;
 	EffectImpact effectImpact = null;
 	Marker marker = null;
 	String error = "", warning = "", message = ""; // Any message, warning or error?
@@ -304,9 +306,12 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		this.variantRef = variantRef;
 	}
 
+	public void addEffectType(EffectType effectType) {
+		effectTypes.add(effectType);
+	}
+
 	/**
 	 * Add an error or warning
-	 * @param errwarn
 	 */
 	public void addErrorWarning(ErrorWarningType errwarn) {
 		if (errwarn == null) return;
@@ -393,7 +398,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Amino acid change string
-	 * @return
 	 */
 	public String getAaChange() {
 		if (aaOld.isEmpty() && aaNew.isEmpty()) return "";
@@ -403,7 +407,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Amino acid change string (HGVS style)
-	 * @return
 	 */
 	public String getAaChangeHgsv() {
 		if (aaOld.isEmpty() && aaNew.isEmpty()) {
@@ -503,7 +506,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				effectImpact = EffectImpact.MODIFIER;
 			} else {
 				// TODO: Refactor.This code should be in each marker class, not here...
-				switch (effectType) {
+				switch (getEffectType()) {
 				case EXON_DELETED:
 				case FRAME_SHIFT:
 				case SPLICE_SITE_ACCEPTOR:
@@ -572,7 +575,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 					break;
 
 				default:
-					throw new RuntimeException("Unknown impact for effect type: '" + effectType + "'");
+					throw new RuntimeException("Unknown impact for effect type: '" + effectTypes + "'");
 				}
 			}
 		}
@@ -581,18 +584,24 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public EffectType getEffectType() {
-		return effectType;
+		if (effectTypes.isEmpty()) return EffectType.NONE;
+		return effectTypes.get(0);
 	}
 
 	/**
 	 * Get Effect Type as a string
-	 * @param useSeqOntology
-	 * @return
 	 */
 	public String getEffectTypeString(boolean useSeqOntology) {
-		if (effectType == null) return "";
-		if (useSeqOntology) return effectType.toSequenceOntology();
-		return effectType.toString();
+		if (effectTypes == null) return "";
+
+		StringBuilder sb = new StringBuilder();
+		for (EffectType et : effectTypes) {
+			if (sb.length() > 0) sb.append("+");
+			if (useSeqOntology) sb.append(et.toSequenceOntology());
+			else sb.append(et.toString());
+		}
+
+		return sb.toString();
 	}
 
 	public String getError() {
@@ -601,7 +610,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Get exon (if any)
-	 * @return
 	 */
 	public Exon getExon() {
 		if (marker != null) {
@@ -613,7 +621,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Return functional class of this effect (i.e.  NONSENSE, MISSENSE, SILENT or NONE)
-	 * @return
 	 */
 	public FunctionalClass getFunctionalClass() {
 		if (variant.isSnp()) {
@@ -638,7 +645,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public String getGeneRegion() {
-		switch (effectType) {
+		switch (getEffectType()) {
 		case NONE:
 		case CHROMOSOME:
 		case CHROMOSOME_LARGE_DELETION:
@@ -701,7 +708,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		case MOTIF:
 			return EffectType.MOTIF.toString();
 		default:
-			throw new RuntimeException("Unknown gene region for effect type: '" + effectType + "'");
+			throw new RuntimeException("Unknown gene region for effect type: '" + effectTypes + "'");
 		}
 	}
 
@@ -777,7 +784,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public boolean hasError() {
@@ -812,69 +819,70 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public boolean isCustom() {
-		return effectType == EffectType.CUSTOM;
+		return getEffectType() == EffectType.CUSTOM;
 	}
 
 	public boolean isDownstream() {
-		return effectType == EffectType.DOWNSTREAM;
+		return getEffectType() == EffectType.DOWNSTREAM;
 	}
 
 	public boolean isExon() {
-		return (marker instanceof Exon) || (effectType == EffectType.EXON_DELETED);
+		return (marker instanceof Exon) || (getEffectType() == EffectType.EXON_DELETED);
 	}
 
 	public boolean isFrameShift() {
-		return (effectType == EffectType.FRAME_SHIFT);
+		return (getEffectType() == EffectType.FRAME_SHIFT);
 	}
 
 	public boolean isIntergenic() {
-		return (effectType == EffectType.INTERGENIC) || (effectType == EffectType.INTERGENIC_CONSERVED);
+		return (getEffectType() == EffectType.INTERGENIC) || (getEffectType() == EffectType.INTERGENIC_CONSERVED);
 	}
 
 	public boolean isIntron() {
-		return (effectType == EffectType.INTRON) || (effectType == EffectType.INTRON_CONSERVED);
+		return (getEffectType() == EffectType.INTRON) || (getEffectType() == EffectType.INTRON_CONSERVED);
 	}
 
 	public boolean isMotif() {
-		return (effectType == EffectType.MOTIF);
+		return (getEffectType() == EffectType.MOTIF);
 	}
 
 	public boolean isNextProt() {
-		return (effectType == EffectType.NEXT_PROT);
+		return (getEffectType() == EffectType.NEXT_PROT);
 	}
 
 	public boolean isRegulation() {
-		return (effectType == EffectType.REGULATION);
+		return (getEffectType() == EffectType.REGULATION);
 	}
 
 	public boolean isSpliceSite() {
-		return (effectType == EffectType.SPLICE_SITE_DONOR) //
-				|| (effectType == EffectType.SPLICE_SITE_ACCEPTOR) //
-				|| (effectType == EffectType.SPLICE_SITE_REGION) //
-				|| (effectType == EffectType.SPLICE_SITE_BRANCH) //
-				|| (effectType == EffectType.SPLICE_SITE_BRANCH_U12) //
-				;
+		return (getEffectType() == EffectType.SPLICE_SITE_DONOR) //
+				|| (getEffectType() == EffectType.SPLICE_SITE_ACCEPTOR) //
+				|| (getEffectType() == EffectType.SPLICE_SITE_REGION) //
+				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH) //
+				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH_U12) //
+		;
 	}
 
 	public boolean isStartGained() {
-		return effectType == EffectType.START_GAINED;
+		return getEffectType() == EffectType.START_GAINED;
 	}
 
 	public boolean isUpstream() {
-		return (effectType == EffectType.UPSTREAM) || (effectType == EffectType.START_GAINED);
+		return (getEffectType() == EffectType.UPSTREAM) || (getEffectType() == EffectType.START_GAINED);
 	}
 
 	public boolean isUtr() {
-		return (effectType == EffectType.UTR_5_PRIME) //
-				|| (effectType == EffectType.UTR_3_PRIME) //
-				|| (effectType == EffectType.UTR_5_DELETED) //
-				|| (effectType == EffectType.UTR_3_DELETED) //
-				;
+		return (getEffectType() == EffectType.UTR_5_PRIME) //
+				|| (getEffectType() == EffectType.UTR_3_PRIME) //
+				|| (getEffectType() == EffectType.UTR_5_DELETED) //
+				|| (getEffectType() == EffectType.UTR_3_DELETED) //
+		;
 	}
 
 	public void set(Marker marker, EffectType effectType, String message) {
 		setMarker(marker); // Use setter because it takes care of warnings
-		this.effectType = effectType;
+		effectTypes = new LinkedList<VariantEffect.EffectType>();
+		effectTypes.add(effectType);
 		this.message = message;
 	}
 
@@ -908,30 +916,30 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				// Same AA: Synonymous coding
 				if ((codonNum == 0) && codonTable.isStartFirst(codonsOld)) {
 					// It is in the first codon (which also is a start codon)
-					if (codonTable.isStartFirst(codonsNew)) effectType = EffectType.SYNONYMOUS_START; // The new codon is also a start codon => SYNONYMOUS_START
-					else effectType = EffectType.START_LOST; // The AA is the same, but the codon is not a start codon => start lost
+					if (codonTable.isStartFirst(codonsNew)) addEffectType(EffectType.SYNONYMOUS_START); // The new codon is also a start codon => SYNONYMOUS_START
+					else setEffectType(EffectType.START_LOST); // The AA is the same, but the codon is not a start codon => start lost
 				} else if (codonTable.isStop(codonsOld)) {
 					// Stop codon
-					if (codonTable.isStop(codonsNew)) effectType = EffectType.SYNONYMOUS_STOP; // New codon is also a stop => SYNONYMOUS_STOP
-					else effectType = EffectType.STOP_LOST; // New codon is not a stop, the we've lost a stop
+					if (codonTable.isStop(codonsNew)) addEffectType(EffectType.SYNONYMOUS_STOP); // New codon is also a stop => SYNONYMOUS_STOP
+					else addEffectType(EffectType.STOP_LOST); // New codon is not a stop, the we've lost a stop
 				} else {
 					// All other cases are just SYNONYMOUS_CODING
-					effectType = EffectType.SYNONYMOUS_CODING;
+					addEffectType(EffectType.SYNONYMOUS_CODING);
 				}
 			} else {
 				// Different AA: Non-synonymous coding
 				if ((codonNum == 0) && codonTable.isStartFirst(codonsOld)) {
 					// It is in the first codon (which also is a start codon)
-					if (codonTable.isStartFirst(codonsNew)) effectType = EffectType.NON_SYNONYMOUS_START; // Non-synonymous mutation on first codon => start lost
-					else effectType = EffectType.START_LOST; // Non-synonymous mutation on first codon => start lost
+					if (codonTable.isStartFirst(codonsNew)) addEffectType(EffectType.NON_SYNONYMOUS_START); // Non-synonymous mutation on first codon => start lost
+					else addEffectType(EffectType.START_LOST); // Non-synonymous mutation on first codon => start lost
 				} else if (codonTable.isStop(codonsOld)) {
 					// Stop codon
-					if (codonTable.isStop(codonsNew)) effectType = EffectType.NON_SYNONYMOUS_STOP; // Notice: This should never happen for SNPs! (for some reason I removed this comment at some point and that create some confusion): http://www.biostars.org/post/show/51352/in-snpeff-impact-what-is-difference-between-stop_gained-and-non-synonymous_stop/
-					else effectType = EffectType.STOP_LOST;
-				} else if (codonTable.isStop(codonsNew)) effectType = EffectType.STOP_GAINED;
+					if (codonTable.isStop(codonsNew)) addEffectType(EffectType.NON_SYNONYMOUS_STOP); // Notice: This should never happen for SNPs! (for some reason I removed this comment at some point and that create some confusion): http://www.biostars.org/post/show/51352/in-snpeff-impact-what-is-difference-between-stop_gained-and-non-synonymous_stop/
+					else addEffectType(EffectType.STOP_LOST);
+				} else if (codonTable.isStop(codonsNew)) addEffectType(EffectType.STOP_GAINED);
 				else {
 					// All other cases are just NON_SYN
-					effectType = EffectType.NON_SYNONYMOUS_CODING;
+					addEffectType(EffectType.NON_SYNONYMOUS_CODING);
 				}
 			}
 		} else {
@@ -970,7 +978,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public void setEffectType(EffectType effectType) {
-		this.effectType = effectType;
+		effectTypes = new LinkedList<VariantEffect.EffectType>();
+		effectTypes.add(effectType);
 	}
 
 	/**
@@ -1058,13 +1067,11 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-				;
+		;
 	}
 
 	/**
 	 * Get the simplest string describing the effect (this is mostly used for testcases)
-	 * @param shortFormat
-	 * @return
 	 */
 	public String toStringSimple(boolean shortFormat) {
 		String transcriptId = "";
@@ -1085,8 +1092,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Return a string safe enough to be used in a VCF file
-	 * @param str
-	 * @return
 	 */
 	String vcfSafe(String str) {
 		return str;

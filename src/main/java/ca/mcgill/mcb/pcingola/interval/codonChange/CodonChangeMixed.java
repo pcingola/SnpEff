@@ -4,6 +4,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Calculate codon changes produced by a 'mixed' variant
@@ -66,8 +67,14 @@ public class CodonChangeMixed extends CodonChange {
 
 		variantEffects.sort();
 		VariantEffect varEff = variantEffects.get(0);
+		for (VariantEffect ve : variantEffects)
+			Gpr.debug(ve.toStringSimple(true));
+
 		variantEffectsOri.add(varEff);
 		variantEffectsOri.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+		for (int i = 1; i < variantEffects.size(); i++) {
+			variantEffectsOri.get().addEffectType(variantEffects.get(i).getEffectType());
+		}
 	}
 
 	void codonNum() {
