@@ -154,22 +154,21 @@ public class TestCasesZzz extends TestCase {
 	}
 
 	/**
-	 * Test SNP effect predictor for a transcript
+	 * Test SNP effect predictor for a transcript (Insertions)
 	 */
-	public void test_09() {
+	public void test_21() {
 		initSnpEffPredictor();
 		String trId = "ENST00000250823";
-		snpEffect("tests/" + trId + ".out", trId, true);
+		snpEffect("tests/" + trId + "_InDels.out", trId, false);
 	}
 
-	//	/**
-	//	 * Test SNP effect predictor for a transcript (Insertions)
-	//	 */
-	//	public void test_21_3() {
-	//		initSnpEffPredictor();
-	//		String trId = "ENST00000250823";
-	//		snpEffect("tests/" + trId + "_InDels_3.out", trId, true);
-	//	}
+	/**
+	 * Test SNP effect predictor for a transcript (Insertions)
+	 */
+	public void test_24_delete_exon_utr() {
+		initSnpEffPredictor();
+		snpEffect("tests/delete_exon_utr.txt", null, true);
+	}
 
 	/**
 	 * Test SNP effect predictor for a transcript (Insertions)
@@ -179,194 +178,5 @@ public class TestCasesZzz extends TestCase {
 		String trId = "ENST00000250823";
 		snpEffect("tests/z.txt", trId, false);
 	}
-
-	//	/**
-	//	 * Read file test: Should throw an exception (chromosome not found)
-	//	 */
-	//	public void test_22() {
-	//		initSnpEffPredictor();
-	//
-	//		VariantFileIterator snpFileIterator;
-	//		snpFileIterator = new VariantTxtFileIterator("tests/chr_not_found.out", config.getGenome());
-	//		snpFileIterator.setIgnoreChromosomeErrors(false);
-	//
-	//		boolean trown = false;
-	//		try {
-	//			// Read all SNPs from file. Note: This should throw an exception "Chromosome not found"
-	//			for (Variant variant : snpFileIterator) {
-	//				Gpr.debug(variant);
-	//			}
-	//		} catch (RuntimeException e) {
-	//			trown = true;
-	//			String expectedMessage = "ERROR: Chromosome 'chrZ' not found! File 'tests/chr_not_found.out', line 1";
-	//			if (e.getMessage().equals(expectedMessage)) ; // OK
-	//			else throw new RuntimeException("This is not the exception I was expecting!\n\tExpected message: '" + expectedMessage + "'\n\tMessage: '" + e.getMessage() + "'", e);
-	//		}
-	//
-	//		// If no exception => error
-	//		if (!trown) throw new RuntimeException("This should have thown an exception 'Chromosome not found!' but it didn't");
-	//	}
-	//
-	//	/**
-	//	 * Test SNP effect predictor for a transcript (Insertions)
-	//	 */
-	//	public void test_23_MNP_on_exon_edge() {
-	//		initSnpEffPredictor();
-	//		String trId = "ENST00000250823";
-	//		snpEffect("tests/" + trId + "_mnp_out_of_exon.txt", trId, true);
-	//	}
-	//
-	//	/**
-	//	 * Test SNP effect predictor for a transcript (Insertions)
-	//	 */
-	//	public void test_24_delete_exon_utr() {
-	//		initSnpEffPredictor();
-	//		snpEffect("tests/delete_exon_utr.txt", null, true);
-	//	}
-	//
-	//	public void test_25_exon_bases() {
-	//		System.out.println("Loading config file");
-	//		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
-	//		config.loadSnpEffectPredictor();
-	//
-	//		System.out.println("Loading fasta file");
-	//		String fastaFile = "tests/testCase.fa";
-	//		String seq = GprSeq.fastaSimpleRead(fastaFile);
-	//
-	//		// Test all bases in all exons
-	//		int countOk = 0, countErr = 0;
-	//		for (Gene gint : config.getGenome().getGenes()) {
-	//			for (Transcript tr : gint) {
-	//				System.out.println("Transcript: " + tr.getId());
-	//				List<Exon> exons = tr.sortedStrand();
-	//				for (Exon exon : exons) {
-	//					for (int i = exon.getStart(); i <= exon.getEnd(); i++) {
-	//						String base = seq.substring(i, i + 1);
-	//						String exonBase = exon.basesAt(i - exon.getStart(), 1);
-	//
-	//						if (base.equalsIgnoreCase(exonBase)) {
-	//							countOk++;
-	//						} else {
-	//							countErr++;
-	//							String msg = "ERROR:\tPosition: " + i + "\tExpected: " + base + "\tGot: " + exonBase;
-	//							Gpr.debug(msg);
-	//							throw new RuntimeException(msg);
-	//						}
-	//					}
-	//				}
-	//			}
-	//		}
-	//
-	//		System.out.println("Count OK: " + countOk + "\tCount Err: " + countErr);
-	//	}
-	//
-	//	/**
-	//	 * Test SNP effect predictor for a transcript (Insertions)
-	//	 */
-	//	public void test_26_chr15_78909452() {
-	//		initSnpEffPredictor("testHg3761Chr15");
-	//		snpEffect("tests/chr15_78909452.txt", null, true);
-	//	}
-	//
-	//	/**
-	//	 * Splice site: Bug reported by Wang, Xusheng
-	//	 */
-	//	public void test_28_Splice_mm37_ENSMUSG00000005763() {
-	//		//---
-	//		// Build snpEffect
-	//		//---
-	//		String gtfFile = "tests/ENSMUSG00000005763.gtf";
-	//		String genome = "testMm37.61";
-	//
-	//		config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
-	//		SnpEffPredictorFactoryGtf22 fgtf22 = new SnpEffPredictorFactoryGtf22(config);
-	//		fgtf22.setFileName(gtfFile);
-	//		fgtf22.setReadSequences(false); // Don't read sequences
-	//		SnpEffectPredictor snpEffectPredictor = fgtf22.create();
-	//		config.setSnpEffectPredictor(snpEffectPredictor);
-	//
-	//		// Set chromosome size (so that we don't get an exception)
-	//		for (Chromosome chr : config.getGenome())
-	//			chr.setEnd(1000000000);
-	//
-	//		//---
-	//		// Calculate effect
-	//		//---
-	//		snpEffectPredictor.buildForest();
-	//		snpEffect("tests/ENSMUSG00000005763.out", null, true);
-	//	}
-	//
-	//	/**
-	//	 * Test effect when hits a gene, but not any transcript within a gene.
-	//	 * This is an extremely weird case, might be an annotation problem.
-	//	 */
-	//	public void test_29_Intergenic_in_Gene() {
-	//		initSnpEffPredictor("testHg3763Chr20");
-	//		snpEffect("tests/warren.eff.missing.chr20.txt", null, true);
-	//	}
-	//
-	//	/**
-	//	 * Rare Amino acid
-	//	 */
-	//	public void test_30_RareAa() {
-	//		initSnpEffPredictor("testHg3765Chr22");
-	//		snpEffect("tests/rareAa.txt", null, true);
-	//	}
-	//
-	//	/**
-	//	 * MT chromo
-	//	 */
-	//	public void test_31_CodonTable() {
-	//		initSnpEffPredictor("testHg3767Chr21Mt");
-	//		snpEffect("tests/mt.txt", null, true);
-	//	}
-	//
-	//	/**
-	//	 * Start gained
-	//	 */
-	//	public void test_32_StartGained() {
-	//		initSnpEffPredictor("testHg3769Chr12");
-	//		snpEffect("tests/start_gained_test.txt", null, true);
-	//	}
-	//
-	//	/**
-	//	 * Not start gained
-	//	 */
-	//	public void test_33_StartGained_NOT() {
-	//		initSnpEffPredictor("testHg3769Chr12");
-	//		snpEffectNegate("tests/start_gained_NOT_test.txt", null, true);
-	//	}
-	//
-	//	/**
-	//	 * Start gained
-	//	 */
-	//	public void test_34_StartGained() {
-	//		initSnpEffPredictor("testHg3766Chr1");
-	//		snpEffect("tests/start_gained_test_2.txt", null, true);
-	//	}
-	//
-	//	/**
-	//	 * Not start gained
-	//	 */
-	//	public void test_35_StartGained_NOT() {
-	//		initSnpEffPredictor("testHg3766Chr1");
-	//		snpEffectNegate("tests/start_gained_NOT_test_2.txt", null, true);
-	//	}
-	//
-	//	/**
-	//	 * Make sure all variant effects have appropriate impacts
-	//	 */
-	//	public void test_36_EffectImpact() {
-	//		Chromosome chr = new Chromosome(null, 0, 1, "1");
-	//		Variant var = new Variant(chr, 1, "A", "C");
-	//		var.setVariantType(VariantType.SNP);
-	//
-	//		System.out.println(var);
-	//		for (EffectType eff : EffectType.values()) {
-	//			VariantEffect varEff = new VariantEffect(var);
-	//			varEff.setEffectType(eff);
-	//			System.out.println(var.isVariant() + "\t" + eff + "\t" + varEff.getEffectImpact());
-	//		}
-	//	}
 
 }

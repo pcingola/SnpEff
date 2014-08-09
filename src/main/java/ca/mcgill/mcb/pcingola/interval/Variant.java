@@ -278,7 +278,7 @@ public class Variant extends Marker {
 		if (isIns() || isSnp()) {
 			// These changes only affect one position in the reference genome
 			end = start;
-		} else {
+		} else if (isDel()) {
 			// Update 'end' position
 			if (ref.length() > 1) end = position + ref.length() - 1;
 		}
@@ -355,6 +355,7 @@ public class Variant extends Marker {
 	 * Return the change (always compared to 'referenceStrand') without any '+' or '-' leading characters
 	 */
 	public String netChange(boolean reverseStrand) {
+		if (isDel()) return reverseStrand ? GprSeq.reverseWc(ref) : ref; // Deleteion have empty 'alt'
 		return reverseStrand ? GprSeq.reverseWc(alt) : alt; // Need reverse-WC?
 	}
 
@@ -363,7 +364,8 @@ public class Variant extends Marker {
 	 * Return the change (always in positive strand) without any '+' or '-' leading characters
 	 */
 	public String netChange(Marker marker) {
-		String netChange = ref;
+		String netChange = alt;
+		if (isDel()) netChange = ref; // In deletions 'alt' is empty
 
 		int removeBefore = marker.getStart() - start;
 		if (removeBefore > 0) {
