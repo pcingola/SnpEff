@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
+
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -48,7 +50,7 @@ class Save implements Serializable {
 public class TestCasesMnp extends TestCase {
 
 	static boolean debug = false;
-	static boolean verbose = false;
+	static boolean verbose = false || debug;
 	static int MAX_MNP_LEN = 10;
 
 	// Create factory
@@ -148,10 +150,6 @@ public class TestCasesMnp extends TestCase {
 					Gpr.toFileSerialize(outFile, save);
 					throw new RuntimeException("Codons do not match!\n\tData dumped: '" + outFile + "'");
 				}
-
-				// Check warnings
-				//				if (!effect.getWarning().isEmpty()) Gpr.debug("WARN:" + effect.getWarning() + "\t" + seqChange + "\t" + seqChangeStrand);
-				//				Assert.assertEquals(true, effect.getWarning().isEmpty());
 			}
 		}
 	}
@@ -187,8 +185,6 @@ public class TestCasesMnp extends TestCase {
 
 	/**
 	 * Create a MNP
-	 * @param pos
-	 * @param mnpLen
 	 */
 	String createMnp(int pos, int mnpLen) {
 		char chSeq[] = chromoSequence.toCharArray();
@@ -251,8 +247,6 @@ public class TestCasesMnp extends TestCase {
 
 	/**
 	 * Create a different base
-	 * @param ref
-	 * @return
 	 */
 	char snp(char ref) {
 		char snp = ref;
@@ -262,7 +256,7 @@ public class TestCasesMnp extends TestCase {
 		return snp;
 	}
 
-	public void test() {
+	public void test_01() {
 		int N = 1000;
 
 		// Test N times
@@ -296,7 +290,7 @@ public class TestCasesMnp extends TestCase {
 		}
 	}
 
-	public void test_01() {
+	public void test_02() {
 		// Run
 		String args[] = { "-classic", "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
 		SnpEff cmd = new SnpEff(args);
@@ -315,6 +309,5 @@ public class TestCasesMnp extends TestCase {
 
 			if (aanum <= 0) throw new RuntimeException("Missing AA number!");
 		}
-
 	}
 }

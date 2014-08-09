@@ -11,23 +11,24 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Compare our results to ENSEML's Variant Effect predictor's output
- * 
+ *
  * @author pcingola
  */
 public class CompareToEnsembl {
 
 	boolean throwException = false;
+	boolean verbose = false;
 	Random rand;
 	Config config;
 	Genome genome;
@@ -70,7 +71,7 @@ public class CompareToEnsembl {
 	}
 
 	/**
-	 * Transform 'change' into an ENSEMBL-like string 
+	 * Transform 'change' into an ENSEMBL-like string
 	 * @param change
 	 * @return
 	 */
@@ -129,16 +130,16 @@ public class CompareToEnsembl {
 			}
 
 			// Was the change found?
-			if (ok) System.out.println("OK   :\t" + seqChange + "\t'" + changesSb + "'\n\tEnsembl :\t" + seqChanges.get(seqChange) + "\n" + changesAllSb);
+			if (verbose) if (ok && verbose) System.out.println("OK   :\t" + seqChange + "\t'" + changesSb + "'\n\tEnsembl :\t" + seqChanges.get(seqChange) + "\n" + changesAllSb);
 			else {
 				String line = "DIFF :\t" + seqChange + "\t'" + changesSb + "'\n\tEnsembl :\t" + seqChanges.get(seqChange) + "\n" + changesAllSb;
-				System.out.println(line);
+				if (verbose) System.out.println(line);
 				if (throwException) throw new RuntimeException(line);
 			}
 		}
 	}
 
-	/** 
+	/**
 	 * Translate an effect to make it compatible to ENSEMBL's outputS
 	 * @param eff
 	 * @param ensemblEff
@@ -193,8 +194,12 @@ public class CompareToEnsembl {
 		return seqChanges;
 	}
 
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
+
 	/**
-	 * Create a SeqChange from an ENSEMBL line 
+	 * Create a SeqChange from an ENSEMBL line
 	 * @param line
 	 * @return
 	 */

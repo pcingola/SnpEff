@@ -43,6 +43,8 @@ public class TestCasesEff extends TestCase {
 
 		SnpEff cmd = new SnpEff(args.toArray(new String[0]));
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);
@@ -89,6 +91,8 @@ public class TestCasesEff extends TestCase {
 	public void test_03_EmptyVcf() {
 		String args[] = { "eff", "-noLog", "testHg3770Chr22", "tests/empty_only_header.vcf" };
 		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
 		boolean ok = snpEff.run();
 		Assert.assertTrue(ok);
 	}
