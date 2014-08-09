@@ -164,11 +164,32 @@ public class TestCasesMixedVariants extends TestCase {
 	//		}
 	//	}
 
-	//	public void test_02_MixedVep() {
-	//		compareVep("testHg3770Chr22", "tests/mixed_02.vcf", null);
-	//	}
-	public void test_zzz_MixedVep() {
-		compareVep("testHg3770Chr22", "tests/mixed_zzz.vcf", null);
+	public void test_02_MixedVep() {
+		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf", null);
 	}
+
+	//	public void test_03_MixedVep() {
+	//		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf", null);
+	//	}
+	//
+	//	public void test_04_MixedVep() {
+	//		compareVep("testHg3775Chr12", "tests/mixed_chr12.vcf", null);
+	//	}
+	//
+	//	public void test_05_MixedVep() {
+	//		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf", null);
+	//	}
+	//
+	//	public void test_06_MixedVep() {
+	//		compareVep("testHg3775Chr7", "tests/mixed_chr7.vcf", null);
+	//	}
+	//
+	//	public void test_07_MixedVep() {
+	//		compareVep("testHg3775Chr6", "tests/mixed_chr6.vcf", null);
+	//	}
+	//
+	//	public void test_08_MixedVep() {
+	//		compareVep("testHg3775Chr1", "tests/mixed_chr1.vcf", null);
+	//	}
 
 }

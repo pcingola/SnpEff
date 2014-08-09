@@ -17,7 +17,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * The files used are:
  * 		- genes.txt : Biomart query from Ensembl (see scripts/genes_dataset.xml)
  * 		- Fasta files: One per chromosome (as described in the config file)
- * 
+ *
  * @author pcingola
  */
 public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
@@ -32,7 +32,7 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 		if ((genome.getChromoFastaFiles().length > 0) && (genome.getChromosomeNames().length != genome.getChromoFastaFiles().length)) throw new RuntimeException("Number of chromosomes does not match number of fasta files (there must be one fasta files per chromosome)\n" + genome);
 
 		// Read gene annotations from a file
-		fileName = config.getBaseFileNameGenes() + ".txt";
+		fileName = config.getBaseFileNameGenes() + ".biomart";
 		System.out.println("Reading gene intervals file : '" + fileName + "'");
 		readGenesFile(); // Read gene info
 
@@ -54,7 +54,6 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 
 	/**
 	 * Parse a line form a file
-	 * @param line
 	 */
 	void parseGenesFile(String line) {
 		// Split fields and trim them
@@ -108,11 +107,9 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 
 	/**
 	 * Read genes from a file
-	 * 
+	 *
 	 * Format: "external_gene_id \t ensembl_gene_id \t chromosome_name \t start_position \t end_position \t strand \t gene_biotype \t ensembl_transcript_id \t transcript_start \t transcript_end \t ensembl_exon_id \t exon_chrom_start \t exon_chrom_end \t rank \t 5_utr_start \t 5_utr_end \t 3_utr_start \t 3_utr_end \n"
 	 * See scripts/genes.xml (biomart query)
-	 *  
-	 * @param vcfFileName
 	 */
 	void readGenesFile() {
 		String file = ""; // File contents

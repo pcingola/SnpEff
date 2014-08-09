@@ -83,7 +83,6 @@ public class SnpEffCmdBuild extends SnpEff {
 
 	/**
 	 * Create SnpEffectPredictor
-	 * @return
 	 */
 	SnpEffectPredictor createSnpEffPredictor() {
 		if (geneDatabaseFormat == null) geneDatabaseFormat = guessGenesFormat();
@@ -126,6 +125,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		if (fileExists(genesBase + ".embl")) return GeneDatabaseFormat.EMBL;
 		if (fileExists(genesBase + ".refseq")) return GeneDatabaseFormat.REFSEQ;
 		if (fileExists(genesBase + ".kg")) return GeneDatabaseFormat.KNOWN_GENES;
+		if (fileExists(genesBase + ".biomart")) return GeneDatabaseFormat.BIOMART;
 
 		return null;
 	}

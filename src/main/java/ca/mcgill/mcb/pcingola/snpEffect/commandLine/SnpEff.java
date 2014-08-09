@@ -41,13 +41,13 @@ public class SnpEff implements CommandLine {
 	public enum GeneDatabaseFormat {
 		// BED // http://genome.ucsc.edu/FAQ/FAQformat.html#format1
 		BIOMART //
-		, GFF3 // http://www.sequenceontology.org/gff3.shtml
-		, GFF2 //
-		, GTF22 // http://mblab.wustl.edu/GTF22.html
-		, REFSEQ //
-		, KNOWN_GENES //
-		, GENBANK //
-		, EMBL
+		, GFF3 // Obsolete GFF 3 format (http://www.sequenceontology.org/gff3.shtml)
+		, GFF2 // Obsolete GFF 2 format
+		, GTF22 // GTF 2.2 format (http://mblab.wustl.edu/GTF22.html)
+		, REFSEQ // UCSC's format using RefSeq
+		, KNOWN_GENES // UCSC's format using KnownGenes
+		, GENBANK //  GeneBank file format
+		, EMBL // EMBL file format
 	}
 
 	/**
