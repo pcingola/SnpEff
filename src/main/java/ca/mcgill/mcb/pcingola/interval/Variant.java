@@ -49,6 +49,13 @@ public class Variant extends Marker {
 	public static LinkedList<Variant> factory(Chromosome chromo, int start, String ref, String altStr, String id) {
 		LinkedList<Variant> list = new LinkedList<Variant>();
 
+		// No alt? It's an interval
+		if (altStr == null) {
+			Variant var = new Variant(chromo, start, ref, null, id);
+			list.add(var);
+			return list;
+		}
+
 		// Split alts
 		String alts[];
 		if (altStr.indexOf(',') >= 0) alts = altStr.split(",");
@@ -234,8 +241,7 @@ public class Variant extends Marker {
 	}
 
 	void init(Marker parent, int position, String referenceStr, String altStr, VariantType variantType, String id) {
-		// Set ref & alt
-		if (altStr == null || altStr.isEmpty()) altStr = referenceStr;
+		if (altStr == null) altStr = referenceStr; // Not a variant (this is an interval). Set ref = alt
 		ref = referenceStr.toUpperCase();
 		alt = altStr.toUpperCase();
 

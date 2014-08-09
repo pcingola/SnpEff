@@ -52,7 +52,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	protected String format;
 	protected String formatFields[];
 	protected ArrayList<VcfGenotype> vcfGenotypes = null;
-	protected VariantType changeType;
+	protected VariantType variantType;
 	protected String genotypeFields[]; // Raw fields from VCF file
 	protected String genotypeFieldsStr; // Raw fields from VCF file (one string, tab separated)
 
@@ -308,100 +308,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return true;
 	}
 
-	/**
-	 * Create a variant
-	 */
-	List<Variant> createVariant(Chromosome chromo, int start, String reference, String alt, String id) {
-		// No change?
-		if (alt == null || alt.isEmpty() || alt.equals(reference)) return Variant.factory(chromo, start, reference, reference, id);
-
-		alt = alt.toUpperCase();
-
-		// Case: Structural variant
-		// 2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
-		if (alt.startsWith("<DEL")) {
-			int end = start + reference.length() - 1;
-
-			// If there is an 'END' tag, we should use it
-			if ((getInfo("END") != null)) {
-				// Get 'END' field and do some sanity check
-				end = (int) getInfoInt("END");
-				if (end < start) throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start);
-			}
-
-			// Create deletion string
-			// TODO: This should be changed. We should be using "imprecise" for these variants
-			int size = end - start + 1;
-			char change[] = new char[size];
-			for (int i = 0; i < change.length; i++)
-				change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-			String ch = new String(change);
-
-			// Create SeqChange
-			return Variant.factory(chromo, start, reference, ch, id);
-		}
-
-		// Case: SNP, MNP
-		// 20     3 .         C      G       .   PASS  DP=100
-		// 20     3 .         TC     AT      .   PASS  DP=100
-		if (reference.length() == alt.length()) {
-			// SNPs
-			if (reference.length() == 1) return Variant.factory(chromo, start, reference, alt, id);
-
-			// MNPs
-			// Sometimes the first bases are the same and we can trim them
-			int startDiff = Integer.MAX_VALUE;
-			for (int i = 0; i < reference.length(); i++)
-				if (reference.charAt(i) != alt.charAt(i)) startDiff = Math.min(startDiff, i);
-
-			// MNPs
-			// Sometimes the last bases are the same and we can trim them
-			int endDiff = 0;
-			for (int i = reference.length() - 1; i >= 0; i--)
-				if (reference.charAt(i) != alt.charAt(i)) endDiff = Math.max(endDiff, i);
-
-			String newRef = reference.substring(startDiff, endDiff + 1);
-			String newAlt = alt.substring(startDiff, endDiff + 1);
-			return Variant.factory(chromo, start + startDiff, newRef, newAlt, id);
-		}
-
-		//---
-		// Simple Insertions, Deletions or Mixed Variants (substitutions)
-		//---
-		VcfRefAltAlign align = new VcfRefAltAlign(alt, reference);
-		align.align();
-		int startDiff = align.getOffset();
-
-		switch (align.getVariantType()) {
-		case DEL:
-			// Case: Deletion
-			// 20     2 .         TC      T      .   PASS  DP=100
-			// 20     2 .         AGAC    AAC    .   PASS  DP=100
-			String ref = "";
-			String ch = align.getAlignment();
-			if (!ch.startsWith("-")) throw new RuntimeException("Deletion '" + ch + "' does not start with '-'. This should never happen!");
-			return Variant.factory(chromo, start + startDiff, ref, ch, id);
-
-		case INS:
-			// Case: Insertion of A { tC ; tCA } tC is the reference allele
-			// 20     2 .         TC      TCA    .   PASS  DP=100
-			ch = align.getAlignment();
-			ref = "";
-			if (!ch.startsWith("+")) throw new RuntimeException("Insertion '" + ch + "' does not start with '+'. This should never happen!");
-			return Variant.factory(chromo, start + startDiff, ref, ch, id);
-
-		case MIXED:
-			// Case: Mixed variant (substitution)
-			reference = reference.substring(startDiff);
-			alt = alt.substring(startDiff);
-			return Variant.factory(chromo, start + startDiff, reference, alt, id);
-
-		default:
-			// Other change type?
-			throw new RuntimeException("Unsupported VCF change type '" + align.getVariantType() + "'\n\tRef: " + reference + "'\n\tAlt: '" + alt + "'\n\tVcfEntry: " + this);
-		}
-	}
-
 	public String[] getAlts() {
 		return alts;
 	}
@@ -417,10 +323,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		for (String alt : alts)
 			altsStr += alt + " ";
 		return altsStr.trim().replace(' ', ',');
-	}
-
-	public VariantType getChangeType() {
-		return changeType;
 	}
 
 	/**
@@ -591,6 +493,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return ref;
 	}
 
+	public VariantType getVariantType() {
+		return variantType;
+	}
+
 	public VcfFileIterator getVcfFileIterator() {
 		return vcfFileIterator;
 	}
@@ -661,7 +567,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public boolean isDel() {
-		return (changeType == VariantType.DEL);
+		return (variantType == VariantType.DEL);
 	}
 
 	public boolean isFilterPass() {
@@ -669,23 +575,23 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public boolean isInDel() {
-		return (changeType == VariantType.INS) || (changeType == VariantType.DEL);
+		return (variantType == VariantType.INS) || (variantType == VariantType.DEL);
 	}
 
 	public boolean isIns() {
-		return (changeType == VariantType.INS);
+		return (variantType == VariantType.INS);
 	}
 
 	public boolean isInterval() {
-		return (changeType == VariantType.INTERVAL);
+		return (variantType == VariantType.INTERVAL);
 	}
 
 	public boolean isMixedInDel() {
-		return changeType == VariantType.MIXED;
+		return variantType == VariantType.MIXED;
 	}
 
 	public boolean isMnp() {
-		return changeType == VariantType.MNP;
+		return variantType == VariantType.MNP;
 	}
 
 	/**
@@ -719,7 +625,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public boolean isSnp() {
-		return changeType == VariantType.SNP;
+		return variantType == VariantType.SNP;
 	}
 
 	/**
@@ -853,7 +759,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Parse ALT field
-	 * @param altsStr
 	 */
 	void parseAlts(String altsStr) {
 		if (altsStr.length() == 1) {
@@ -927,11 +832,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		// Infer change type
 		if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
-			if (ref.length() == 1) changeType = VariantType.SNP;
-			else changeType = VariantType.MNP;
-		} else if (ref.length() > minAltLen) changeType = VariantType.DEL;
-		else if (ref.length() < maxAltLen) changeType = VariantType.INS;
-		else changeType = VariantType.MIXED;
+			if (ref.length() == 1) variantType = VariantType.SNP;
+			else variantType = VariantType.MNP;
+		} else if (ref.length() > minAltLen) variantType = VariantType.DEL;
+		else if (ref.length() < maxAltLen) variantType = VariantType.INS;
+		else variantType = VariantType.MIXED;
 	}
 
 	public List<VcfEffect> parseEffects() {
@@ -940,7 +845,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Parse 'EFF' info field and get a list of effects
-	 * @return
 	 */
 	public List<VcfEffect> parseEffects(FormatVersion formatVersion) {
 		String effStr = getInfo(VcfEffect.VCF_INFO_EFF_NAME); // Get effect string from INFO field
@@ -1238,7 +1142,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		int genotypeNumber = 1;
 		if (alts == null) {
 			// No ALTs, then it's not a change
-			List<Variant> variants = createVariant(chr, start, ref, null, id);
+			List<Variant> variants = variants(chr, start, ref, null, id);
 
 			for (Variant variant : variants)
 				variant.setGenotype(Integer.toString(genotypeNumber));
@@ -1246,7 +1150,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			list.addAll(variants);
 		} else {
 			for (String alt : alts) {
-				List<Variant> variants = createVariant(chr, start, ref, alt, id);
+				List<Variant> variants = variants(chr, start, ref, alt, id);
 
 				for (Variant variant : variants)
 					variant.setGenotype(Integer.toString(genotypeNumber));
@@ -1257,6 +1161,100 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		}
 
 		return list;
+	}
+
+	/**
+	 * Create a variant
+	 */
+	List<Variant> variants(Chromosome chromo, int start, String reference, String alt, String id) {
+		// No change?
+		if (alt == null || alt.isEmpty() || alt.equals(reference)) return Variant.factory(chromo, start, reference, null, id);
+
+		alt = alt.toUpperCase();
+
+		// Case: Structural variant
+		// 2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
+		if (alt.startsWith("<DEL")) {
+			int end = start + reference.length() - 1;
+
+			// If there is an 'END' tag, we should use it
+			if ((getInfo("END") != null)) {
+				// Get 'END' field and do some sanity check
+				end = (int) getInfoInt("END");
+				if (end < start) throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start);
+			}
+
+			// Create deletion string
+			// TODO: This should be changed. We should be using "imprecise" for these variants
+			int size = end - start + 1;
+			char change[] = new char[size];
+			for (int i = 0; i < change.length; i++)
+				change[i] = reference.length() > i ? reference.charAt(i) : 'N';
+			String ch = new String(change);
+
+			// Create SeqChange
+			return Variant.factory(chromo, start, reference, ch, id);
+		}
+
+		// Case: SNP, MNP
+		// 20     3 .         C      G       .   PASS  DP=100
+		// 20     3 .         TC     AT      .   PASS  DP=100
+		if (reference.length() == alt.length()) {
+			// SNPs
+			if (reference.length() == 1) return Variant.factory(chromo, start, reference, alt, id);
+
+			// MNPs
+			// Sometimes the first bases are the same and we can trim them
+			int startDiff = Integer.MAX_VALUE;
+			for (int i = 0; i < reference.length(); i++)
+				if (reference.charAt(i) != alt.charAt(i)) startDiff = Math.min(startDiff, i);
+
+			// MNPs
+			// Sometimes the last bases are the same and we can trim them
+			int endDiff = 0;
+			for (int i = reference.length() - 1; i >= 0; i--)
+				if (reference.charAt(i) != alt.charAt(i)) endDiff = Math.max(endDiff, i);
+
+			String newRef = reference.substring(startDiff, endDiff + 1);
+			String newAlt = alt.substring(startDiff, endDiff + 1);
+			return Variant.factory(chromo, start + startDiff, newRef, newAlt, id);
+		}
+
+		//---
+		// Simple Insertions, Deletions or Mixed Variants (substitutions)
+		//---
+		VcfRefAltAlign align = new VcfRefAltAlign(alt, reference);
+		align.align();
+		int startDiff = align.getOffset();
+
+		switch (align.getVariantType()) {
+		case DEL:
+			// Case: Deletion
+			// 20     2 .         TC      T      .   PASS  DP=100
+			// 20     2 .         AGAC    AAC    .   PASS  DP=100
+			String ref = "";
+			String ch = align.getAlignment();
+			if (!ch.startsWith("-")) throw new RuntimeException("Deletion '" + ch + "' does not start with '-'. This should never happen!");
+			return Variant.factory(chromo, start + startDiff, ref, ch, id);
+
+		case INS:
+			// Case: Insertion of A { tC ; tCA } tC is the reference allele
+			// 20     2 .         TC      TCA    .   PASS  DP=100
+			ch = align.getAlignment();
+			ref = "";
+			if (!ch.startsWith("+")) throw new RuntimeException("Insertion '" + ch + "' does not start with '+'. This should never happen!");
+			return Variant.factory(chromo, start + startDiff, ref, ch, id);
+
+		case MIXED:
+			// Case: Mixed variant (substitution)
+			reference = reference.substring(startDiff);
+			alt = alt.substring(startDiff);
+			return Variant.factory(chromo, start + startDiff, reference, alt, id);
+
+		default:
+			// Other change type?
+			throw new RuntimeException("Unsupported VCF change type '" + align.getVariantType() + "'\n\tRef: " + reference + "'\n\tAlt: '" + alt + "'\n\tVcfEntry: " + this);
+		}
 	}
 
 }

@@ -1,1 +1,0 @@
-Y	16168170	*	-G/-G	+	0	0	FRAME_SHIFT

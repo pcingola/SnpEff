@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.TestCase;
+
+import org.junit.Assert;
+
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
@@ -42,6 +45,34 @@ public class TestCasesMixedVariants extends TestCase {
 		init();
 	}
 
+	boolean compare(List<VcfEffect> effs, List<VcfConsequence> csqs) {
+		boolean ok = false;
+		for (VcfEffect eff : effs)
+			ok |= compare(eff, csqs);
+
+		return ok;
+	}
+
+	boolean compare(VcfEffect eff, List<VcfConsequence> csqs) {
+		String et = eff.getEffect().toSequenceOntology();
+
+		for (VcfConsequence csq : csqs) {
+			// Check in same transcript
+			if (csq.feature.equals(eff.getTranscriptId())) {
+				String consecuences = csq.consequence;
+				for (String cons : consecuences.split("&")) {
+					if (et.equals(cons)) {
+						if (verbose) System.out.println("\t\t\tOK :" + eff.getTranscriptId() + "\t" + et + "\t" + cons);
+						return true;
+					}
+					if (verbose) System.out.println("\t\t\t    " + eff.getTranscriptId() + "\t" + et + "\t" + cons);
+				}
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * Compare with results from ENSEMBL's VEP on transcript ENST00000268124
 	 */
@@ -61,12 +92,16 @@ public class TestCasesMixedVariants extends TestCase {
 				System.out.println(ve);
 
 				System.out.println("\tCSQ:");
-				for (VcfConsequence csq : VcfConsequence.parse(ve))
-					System.out.println("\t\t" + csq);
+				List<VcfConsequence> csqs = VcfConsequence.parse(ve);
+				for (VcfConsequence csq : csqs)
+					if (verbose) System.out.println("\t\t" + csq);
 
 				System.out.println("\tEFF:");
-				for (VcfEffect eff : ve.parseEffects())
-					System.out.println("\t\t" + eff);
+				List<VcfEffect> effs = ve.parseEffects();
+				for (VcfEffect eff : effs)
+					if (verbose) System.out.println("\t\t" + eff);
+
+				Assert.assertTrue("EFF and CSQ do not match", compare(effs, csqs));
 			}
 		}
 	}

@@ -33,7 +33,7 @@ public class CodonChangeMnp extends CodonChange {
 	 * @return
 	 */
 	@Override
-	void codonChange() {
+	protected void codonChange() {
 		if (!transcript.intersects(variant)) return;
 
 		// CDS coordinates
@@ -58,7 +58,7 @@ public class CodonChangeMnp extends CodonChange {
 		codonNum = scStart / CODON_SIZE;
 		codonIndex = scStart % CODON_SIZE;
 
-		// MNP overlap in coding part 
+		// MNP overlap in coding part
 		int scLen = scEnd - scStart;
 		if (scLen < 0) return;
 

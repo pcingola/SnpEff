@@ -84,7 +84,7 @@ public class CodonChange {
 	/**
 	 * Calculate a list of codon changes
 	 */
-	void codonChange() {
+	protected void codonChange() {
 		if (!transcript.intersects(variant)) return;
 
 		// Get coding start (after 5 prime UTR)
@@ -139,7 +139,7 @@ public class CodonChange {
 	 * Calculate the effect of a single change type: SNP, MNP, INS, DEL
 	 */
 	boolean codonChangeSingle(Exon exon) {
-		throw new RuntimeException("Unimplemented method for this thype of variant: " + variant.getType());
+		throw new RuntimeException("Unimplemented method codonChangeSingle() for\n\t\tVariant type : " + variant.getType() + "\n\t\tClass        : " + getClass().getSimpleName() + "\n\t\tVariant      : " + variant);
 	}
 
 	/**
