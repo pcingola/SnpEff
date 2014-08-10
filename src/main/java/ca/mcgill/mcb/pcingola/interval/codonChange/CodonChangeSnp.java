@@ -29,7 +29,7 @@ public class CodonChangeSnp extends CodonChange {
 		if (codonsOld.isEmpty()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
 
 		codonsNew = codonsNew();
-		variantEffects.add(exon, EffectType.CODING, "");
+		variantEffects.add(exon, EffectType.CODON_CHANGE, ""); // Use a generic low priority variant, this allows 'setCodons' to override it
 		variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 
 		return true;

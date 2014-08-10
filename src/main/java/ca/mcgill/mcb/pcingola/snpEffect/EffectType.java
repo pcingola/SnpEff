@@ -25,7 +25,6 @@ public enum EffectType {
 
 	// Moderate impact
 	, NON_SYNONYMOUS_CODING //
-	, CODON_CHANGE //
 	, CODON_INSERTION //
 	, CODON_CHANGE_PLUS_CODON_INSERTION //
 	, CODON_DELETION //
@@ -40,6 +39,7 @@ public enum EffectType {
 	, SYNONYMOUS_CODING //
 	, SYNONYMOUS_START //
 	, SYNONYMOUS_STOP //
+	, CODON_CHANGE //
 
 	// Low impact
 	, UTR_5_PRIME //
@@ -53,7 +53,6 @@ public enum EffectType {
 
 	// Modifiers
 	, CUSTOM //
-	, CODING //
 	, NEXT_PROT //
 	, INTRON_CONSERVED //
 	, INTRON //
@@ -114,7 +113,6 @@ public enum EffectType {
 		case CHROMOSOME_LARGE_DELETION:
 			return EffectImpact.HIGH;
 
-		case CODON_CHANGE:
 		case CODON_CHANGE_PLUS_CODON_DELETION:
 		case CODON_CHANGE_PLUS_CODON_INSERTION:
 		case CODON_DELETION:
@@ -133,6 +131,7 @@ public enum EffectType {
 		case SYNONYMOUS_CODING:
 		case SYNONYMOUS_START:
 		case SYNONYMOUS_STOP:
+		case CODON_CHANGE:
 			return EffectImpact.LOW;
 
 		case CDS:

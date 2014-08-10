@@ -124,7 +124,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			finishUp();
 
 			// Check that exons have sequences
-			System.out.println(config.getGenome());
+			if (verbose) System.out.println(config.getGenome());
 			boolean error = config.getGenome().isMostExonsHaveSequence();
 			if (error && readSequences) throw new RuntimeException("Most Exons do not have sequences!");
 
@@ -163,7 +163,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				|| biotype.equals("TR_D_gene") //
 				|| biotype.equals("TR_J_gene") //
 				|| biotype.equals("TR_V_gene") //
-				;
+		;
 	}
 
 	/**

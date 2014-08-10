@@ -30,7 +30,6 @@ public class CodonChangeMnp extends CodonChange {
 
 	/**
 	 * Calculate a list of codon changes
-	 * @return
 	 */
 	@Override
 	protected void codonChange() {
@@ -91,7 +90,7 @@ public class CodonChangeMnp extends CodonChange {
 		codonsNew += padN;
 
 		// Create change effect
-		variantEffects.add(transcript, EffectType.CODING, ""); // Use a generic low priority variant, this allows 'setCodons' to override it
+		variantEffects.add(transcript, EffectType.CODON_CHANGE, ""); // Use a generic low priority variant, this allows 'setCodons' to override it
 		variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 
 		return;
