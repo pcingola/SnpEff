@@ -15,6 +15,8 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class CodonChangeMixed extends CodonChange {
 
+	public static boolean debug = false;
+
 	int oldCodonCdsStart = -1;
 	int oldCodonCdsEnd = -1;
 
@@ -67,8 +69,12 @@ public class CodonChangeMixed extends CodonChange {
 
 		variantEffects.sort();
 		VariantEffect varEff = variantEffects.get(0);
-		for (VariantEffect ve : variantEffects)
-			Gpr.debug(ve.toStringSimple(true));
+
+		if (debug) {
+			Gpr.debug("Mixed variant:" + variant + "\n\t\tSNP/MNP : " + mnp + "\n\t\tInDel   : " + indel + "\n\t\tEffects : ");
+			for (VariantEffect ve : variantEffects)
+				System.err.println("\t\t\t" + ve.toStringSimple(true));
+		}
 
 		// Add main effect
 		variantEffectsOri.add(varEff);

@@ -336,6 +336,8 @@ public class VcfEffect {
 		if (idx > 0) eff = eff.substring(0, idx);
 
 		List<VariantEffect.EffectType> effs = new LinkedList<VariantEffect.EffectType>();
+		if (eff.isEmpty()) return effs;
+
 		for (String es : eff.split("\\+"))
 			effs.add(VariantEffect.EffectType.parse(es));
 

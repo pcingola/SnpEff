@@ -31,7 +31,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesMixedVariants extends TestCase {
 
 	boolean debug = false;
-	boolean verbose = true;
+	boolean verbose = false;
 
 	Random rand;
 	Config config;
@@ -48,6 +48,9 @@ public class TestCasesMixedVariants extends TestCase {
 		init();
 	}
 
+	/**
+	 * Compare two lists of results
+	 */
 	boolean compare(List<VcfEffect> effs, List<VcfConsequence> csqs) {
 		HashSet<String> trIds = new HashSet<String>();
 		for (VcfEffect eff : effs)
@@ -61,7 +64,11 @@ public class TestCasesMixedVariants extends TestCase {
 		return ok;
 	}
 
+	/**
+	 * Compare two lists of results, focusing only on transcript 'trId'
+	 */
 	boolean compare(List<VcfEffect> effs, List<VcfConsequence> csqs, String trId) {
+		if (trId == null) return true;
 		boolean ok = false;
 
 		// At least one effect has to match for this transcript
@@ -72,6 +79,22 @@ public class TestCasesMixedVariants extends TestCase {
 		return ok;
 	}
 
+	/**
+	 * Compare two SO terms, return true if they match
+	 */
+	boolean compare(String effSo, String csqSo) {
+		if (effSo.equals(csqSo)) return true;
+		if (effSo.equals("inframe_deletion") && csqSo.equals("feature_truncation")) return true;
+		if (effSo.equals("disruptive_inframe_insertion") && csqSo.equals("inframe_insertion")) return true;
+		if (effSo.equals("disruptive_inframe_deletion") && csqSo.equals("inframe_deletion")) return true;
+		if (effSo.equals("disruptive_inframe_deletion") && csqSo.equals("feature_truncation")) return true;
+		return false;
+	}
+
+	/**
+	 * Compare a single SnpEff results to a list of CSQs (ENSEMBL's VEP resutls)
+	 * @return true if 'eff' matches any CSQ
+	 */
 	boolean compare(VcfEffect eff, List<VcfConsequence> csqs) {
 		String effStr = eff.getEffectsStrSo();
 
@@ -88,7 +111,7 @@ public class TestCasesMixedVariants extends TestCase {
 					foundTranscript = true;
 					String consecuences = csq.consequence;
 					for (String cons : consecuences.split("&")) {
-						if (et.equals(cons)) {
+						if (compare(et, cons)) {
 							if (verbose) System.out.println("\t\t\tOK :" + eff.getTranscriptId() + "\t" + et + "\t" + cons);
 							return true;
 						}
@@ -102,9 +125,11 @@ public class TestCasesMixedVariants extends TestCase {
 	}
 
 	/**
-	 * Compare with results from ENSEMBL's VEP on transcript ENST00000268124
+	 * Compare with results from ENSEMBL's VEP to SnpEff
+	 * Use VCF having VEP's results
 	 */
-	public void compareVep(String genome, String vcf, String trId) {
+	public void compareVep(String genome, String vcf) {
+		System.out.println(this.getClass().getSimpleName() + ": Compare VEP, genome " + genome + ", file " + vcf);
 		String args[] = { genome, vcf };
 
 		SnpEff cmd = new SnpEff(args);
@@ -193,35 +218,35 @@ public class TestCasesMixedVariants extends TestCase {
 	}
 
 	//	public void test_zzz_MixedVep() {
-	//		compareVep("testHg3775Chr22", "tests/z.vcf", null);
+	//		compareVep("testHg3775Chr7", "tests/z.vcf");
 	//	}
 
 	public void test_02_MixedVep() {
-		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf", null);
+		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
 	}
 
 	public void test_03_MixedVep() {
-		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf", null);
+		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf");
 	}
 
 	public void test_04_MixedVep() {
-		compareVep("testHg3775Chr12", "tests/mixed_chr12.vcf", null);
+		compareVep("testHg3775Chr12", "tests/mixed_chr12.vcf");
 	}
 
 	public void test_05_MixedVep() {
-		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf", null);
+		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
 	}
 
 	public void test_06_MixedVep() {
-		compareVep("testHg3775Chr7", "tests/mixed_chr7.vcf", null);
+		compareVep("testHg3775Chr7", "tests/mixed_chr7.vcf");
 	}
 
 	public void test_07_MixedVep() {
-		compareVep("testHg3775Chr6", "tests/mixed_chr6.vcf", null);
+		compareVep("testHg3775Chr6", "tests/mixed_chr6.vcf");
 	}
 
 	public void test_08_MixedVep() {
-		compareVep("testHg3775Chr1", "tests/mixed_chr1.vcf", null);
+		compareVep("testHg3775Chr1", "tests/mixed_chr1.vcf");
 	}
 
 }
