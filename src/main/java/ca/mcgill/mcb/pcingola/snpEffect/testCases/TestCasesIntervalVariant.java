@@ -11,17 +11,17 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
- * Test random Interval SeqChanges (e.g. when reading a BED file 
- * 
+ * Test random Interval SeqChanges (e.g. when reading a BED file
+ *
  * @author pcingola
  */
 public class TestCasesIntervalVariant extends TestCase {
@@ -82,6 +82,7 @@ public class TestCasesIntervalVariant extends TestCase {
 	}
 
 	public void test_01() {
+		Gpr.debug("Test");
 		int N = 1000;
 
 		// Test N times

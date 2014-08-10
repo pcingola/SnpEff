@@ -257,6 +257,7 @@ public class TestCasesMnp extends TestCase {
 	}
 
 	public void test_01() {
+		Gpr.debug("Test");
 		int N = 1000;
 
 		// Test N times
@@ -291,6 +292,7 @@ public class TestCasesMnp extends TestCase {
 	}
 
 	public void test_02() {
+		Gpr.debug("Test");
 		// Run
 		String args[] = { "-classic", "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
 		SnpEff cmd = new SnpEff(args);

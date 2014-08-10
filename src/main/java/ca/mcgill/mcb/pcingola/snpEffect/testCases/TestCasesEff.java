@@ -10,6 +10,7 @@ import org.junit.Assert;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -55,6 +56,7 @@ public class TestCasesEff extends TestCase {
 	 * Test output order
 	 */
 	public void test_01() {
+		Gpr.debug("Test");
 		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", null);
 
 		for (VcfEntry ve : vcfEntries) {
@@ -75,6 +77,7 @@ public class TestCasesEff extends TestCase {
 	 * Test GATK option: At most one effect per VCF entry
 	 */
 	public void test_02() {
+		Gpr.debug("Test");
 		String args[] = { "-o", "gatk" };
 		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
 
@@ -89,6 +92,7 @@ public class TestCasesEff extends TestCase {
 	 * Make sure that empty VCF does not trigger an exception when creating the summary
 	 */
 	public void test_03_EmptyVcf() {
+		Gpr.debug("Test");
 		String args[] = { "eff", "-noLog", "testHg3770Chr22", "tests/empty_only_header.vcf" };
 		SnpEff snpEff = new SnpEff(args);
 		snpEff.setVerbose(verbose);

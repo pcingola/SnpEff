@@ -19,6 +19,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfConsequence;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
@@ -206,6 +207,7 @@ public class TestCasesMixedVariants extends TestCase {
 	 * Make sure we can read VCF and parse variants without producing any exception
 	 */
 	public void test_01_MixedVep() {
+		Gpr.debug("Test");
 		String vcfFile = "tests/mixed_01.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
@@ -218,30 +220,37 @@ public class TestCasesMixedVariants extends TestCase {
 	}
 
 	public void test_02_MixedVep() {
+		Gpr.debug("Test");
 		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
 	}
 
 	public void test_03_MixedVep() {
+		Gpr.debug("Test");
 		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf");
 	}
 
 	public void test_04_MixedVep() {
+		Gpr.debug("Test");
 		compareVep("testHg3775Chr12", "tests/mixed_chr12.vcf");
 	}
 
 	public void test_05_MixedVep() {
+		Gpr.debug("Test");
 		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
 	}
 
 	public void test_06_MixedVep() {
+		Gpr.debug("Test");
 		compareVep("testHg3775Chr7", "tests/mixed_chr7.vcf");
 	}
 
 	public void test_07_MixedVep() {
+		Gpr.debug("Test");
 		compareVep("testHg3775Chr6", "tests/mixed_chr6.vcf");
 	}
 
 	public void test_08_MixedVep() {
+		Gpr.debug("Test");
 		compareVep("testHg3775Chr1", "tests/mixed_chr1.vcf");
 	}
 
