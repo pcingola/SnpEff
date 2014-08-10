@@ -710,10 +710,6 @@ public class SnpEffCmdEff extends SnpEff {
 			if (verbose) Timer.showStdErr("done.");
 		}
 
-		// Read regulation tracks
-		for (String regTrack : regulationTracks)
-			loadRegulationTrack(regTrack);
-
 		// Store VCF results in a list?
 		if (createList) vcfEntriesDebug = new ArrayList<VcfEntry>();
 

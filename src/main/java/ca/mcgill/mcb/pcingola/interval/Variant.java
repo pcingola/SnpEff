@@ -284,7 +284,7 @@ public class Variant extends Marker {
 		if (isIns() || isSnp()) {
 			// These changes only affect one position in the reference genome
 			end = start;
-		} else if (isDel() || isMnp()) {
+		} else { // if (isDel() || isMnp()) {
 			// Update 'end' position
 			if (ref.length() > 1) end = start + ref.length() - 1;
 		}

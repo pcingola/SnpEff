@@ -159,7 +159,6 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Create (and add) up-down stream, splice sites, intergenic, etc
-	 * @return
 	 */
 	public Markers createGenomicRegions() {
 		Markers markers = new Markers();
@@ -181,8 +180,6 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Obtain a gene interval
-	 * @param geneIntervalId
-	 * @return
 	 */
 	public Gene getGene(String geneIntervalId) {
 		return genome.getGenes().get(geneIntervalId);
@@ -542,7 +539,6 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Predict the effect of a variant
-	 * @param variant
 	 */
 	public VariantEffects variantEffect(Variant variant) {
 		return variantEffect(variant, null);

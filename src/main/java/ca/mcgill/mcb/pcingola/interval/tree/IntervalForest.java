@@ -12,7 +12,7 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 
 /**
  * A set of interval trees (one per chromosome)
- * 
+ *
  * @author pcingola
  */
 @SuppressWarnings("serial")
@@ -31,7 +31,6 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	/**
 	 * Add all intervals
-	 * @param intervals
 	 */
 	public void add(Collection<? extends Marker> intervals) {
 		for (Marker i : intervals)
@@ -40,7 +39,6 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	/**
 	 * Add an interval
-	 * @param interval
 	 */
 	public void add(Marker interval) {
 		if (interval == null) return;
@@ -50,7 +48,6 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	/**
 	 * Add all intervals
-	 * @param intervals
 	 */
 	public void add(Markers intervals) {
 		for (Marker i : intervals)
@@ -67,8 +64,6 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	/**
 	 * Get (or create) an interval tree
-	 * @param chromo
-	 * @return
 	 */
 	public IntervalTree getTree(String chromo) {
 		chromo = Chromosome.simpleName(chromo);
@@ -85,8 +80,6 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	/**
 	 * Is the tree 'chromo' available?
-	 * @param chromo
-	 * @return
 	 */
 	public boolean hasTree(String chromoOri) {
 		String chromo = Chromosome.simpleName(chromoOri);
@@ -96,13 +89,10 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	/**
 	 * Return the intersection of 'markers' and this IntervalForest
-	 * 
+	 *
 	 * For each marker 'm' in 'markers'
 	 * 		- query the tree to get all markers intersecting 'm'
 	 * 		- create a new interval which is the intersection of 'm' with all the resutls from the previous query.
-	 *   
-	 * @param interval
-	 * @return
 	 */
 	public Markers intersect(Markers markers) {
 		Markers result = new Markers();
@@ -133,8 +123,6 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	/**
 	 * Query all intervals that intersect with 'interval'
-	 * @param marker
-	 * @return
 	 */
 	public Markers query(Marker marker) {
 		return getTree(marker.getChromosomeName()).query(marker);
@@ -142,9 +130,6 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	/**
 	 * Query all intervals that intersect with any interval in 'intervals'
-	 * 
-	 * @param interval
-	 * @return
 	 */
 	public Markers query(Markers marker) {
 		Markers ints = new Markers();
@@ -159,9 +144,6 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 	/**
 	 * Query unique intervals that intersect with any interval in 'markers'
 	 * I.e.: Return a set of intervals that intersects (at least once) with any interval in 'markers'
-	 * 
-	 * @param interval
-	 * @return
 	 */
 	public Markers queryUnique(Markers markers) {
 		HashSet<Marker> uniqueMarkers = new HashSet<Marker>();
@@ -171,7 +153,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 			Markers results = query(q); // Query
 
 			for (Marker r : results)
-				// Add all results 
+				// Add all results
 				uniqueMarkers.add(r);
 		}
 
