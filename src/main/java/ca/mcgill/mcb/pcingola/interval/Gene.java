@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.stats.ObservedOverExpectedCpG;
 

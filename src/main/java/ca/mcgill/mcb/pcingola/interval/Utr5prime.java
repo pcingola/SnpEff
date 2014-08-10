@@ -6,7 +6,7 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 

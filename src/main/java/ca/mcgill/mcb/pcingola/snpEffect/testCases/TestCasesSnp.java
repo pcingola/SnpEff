@@ -27,7 +27,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 public class TestCasesSnp extends TestCase {
 
 	boolean debug = false;
-	boolean verbose = false;
+	boolean verbose = false || debug;
 
 	Random rand;
 	Config config;
@@ -156,12 +156,12 @@ public class TestCasesSnp extends TestCase {
 							snp = GprSeq.wc(snp);
 							refBase = GprSeq.wc(refBase);
 						}
-						Variant seqChange = new Variant(chromosome, pos, refBase + "", snp + "", "");
+						Variant variant = new Variant(chromosome, pos, refBase + "", snp + "", "");
 
-						if (!seqChange.isVariant()) effectExpected = "EXON";
+						if (!variant.isVariant()) effectExpected = "EXON";
 
 						// Calculate effects
-						VariantEffects effects = snpEffectPredictor.variantEffect(seqChange);
+						VariantEffects effects = snpEffectPredictor.variantEffect(variant);
 
 						// There should be only one effect
 						if (debug) System.out.println(effects);
@@ -173,7 +173,7 @@ public class TestCasesSnp extends TestCase {
 							String effStr = effect.effect(true, true, true, false);
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-									+ "\t" + seqChange + (seqChange.isStrandPlus() ? "+" : "-") //
+									+ "\t" + variant + (variant.isStrandPlus() ? "+" : "-") //
 									+ "\tCodon: " + codon + " -> " + newCodon //
 									+ "\tAA: " + aa + " -> " + newAa //
 									+ "\tEffect: " + effStr);

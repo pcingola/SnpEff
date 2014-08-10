@@ -8,8 +8,8 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.FunctionalClass;
 import ca.mcgill.mcb.pcingola.stats.plot.GoogleGenePercentBar;
 

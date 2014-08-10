@@ -1,6 +1,6 @@
 package ca.mcgill.mcb.pcingola.interval;
 
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 
 /**
  * Interval for a conserved intergenic region

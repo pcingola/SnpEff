@@ -2,7 +2,6 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 
 /**
  * Coding change in HGVS notation (amino acid changes)

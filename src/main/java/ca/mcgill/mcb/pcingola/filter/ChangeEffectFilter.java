@@ -2,8 +2,8 @@ package ca.mcgill.mcb.pcingola.filter;
 
 import java.util.HashSet;
 
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 
 /**
  * A Generic ChangeEffect filter
@@ -15,7 +15,7 @@ public class ChangeEffectFilter implements Filter<VariantEffect> {
 	HashSet<EffectType> filterOut;
 
 	public ChangeEffectFilter() {
-		filterOut = new HashSet<VariantEffect.EffectType>();
+		filterOut = new HashSet<EffectType>();
 	}
 
 	public void add(EffectType effType) {

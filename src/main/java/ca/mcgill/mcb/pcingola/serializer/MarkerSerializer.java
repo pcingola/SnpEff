@@ -25,7 +25,7 @@ import ca.mcgill.mcb.pcingola.interval.SpliceSiteDonor;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Utr3prime;
 import ca.mcgill.mcb.pcingola.interval.Utr5prime;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 

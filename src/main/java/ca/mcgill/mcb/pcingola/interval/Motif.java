@@ -2,8 +2,8 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import ca.mcgill.mcb.pcingola.motif.Pwm;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;

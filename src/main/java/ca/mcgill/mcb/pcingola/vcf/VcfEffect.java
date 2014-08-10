@@ -3,8 +3,8 @@ package ca.mcgill.mcb.pcingola.vcf;
 import java.util.LinkedList;
 import java.util.List;
 
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -28,7 +28,7 @@ public class VcfEffect {
 	FormatVersion formatVersion;
 	String effString;
 	// VariantEffect.EffectType effect;
-	List<VariantEffect.EffectType> effects;
+	List<EffectType> effects;
 	String effectDetails;
 	VariantEffect.EffectImpact impact;
 	VariantEffect.FunctionalClass funClass;
@@ -144,7 +144,7 @@ public class VcfEffect {
 		parse();
 	}
 
-	public void addEffect(VariantEffect.EffectType effect) {
+	public void addEffect(EffectType effect) {
 		effects.add(effect);
 	}
 
@@ -199,7 +199,7 @@ public class VcfEffect {
 		return codon;
 	}
 
-	public VariantEffect.EffectType getEffect() {
+	public EffectType getEffect() {
 		return effects.get(0);
 	}
 
@@ -207,7 +207,7 @@ public class VcfEffect {
 		return effectDetails;
 	}
 
-	public List<VariantEffect.EffectType> getEffects() {
+	public List<EffectType> getEffects() {
 		return effects;
 	}
 
@@ -331,15 +331,15 @@ public class VcfEffect {
 		}
 	}
 
-	List<VariantEffect.EffectType> parseEffect(String eff) {
+	List<EffectType> parseEffect(String eff) {
 		int idx = eff.indexOf('[');
 		if (idx > 0) eff = eff.substring(0, idx);
 
-		List<VariantEffect.EffectType> effs = new LinkedList<VariantEffect.EffectType>();
+		List<EffectType> effs = new LinkedList<EffectType>();
 		if (eff.isEmpty()) return effs;
 
 		for (String es : eff.split("\\+"))
-			effs.add(VariantEffect.EffectType.parse(es));
+			effs.add(EffectType.parse(es));
 
 		return effs;
 	}
@@ -374,8 +374,8 @@ public class VcfEffect {
 		this.codon = codon;
 	}
 
-	public void setEffect(VariantEffect.EffectType effect) {
-		effects = new LinkedList<VariantEffect.EffectType>();
+	public void setEffect(EffectType effect) {
+		effects = new LinkedList<EffectType>();
 		addEffect(effect);
 	}
 

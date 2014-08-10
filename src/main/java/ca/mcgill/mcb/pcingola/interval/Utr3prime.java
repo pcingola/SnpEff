@@ -1,7 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval;
 
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**

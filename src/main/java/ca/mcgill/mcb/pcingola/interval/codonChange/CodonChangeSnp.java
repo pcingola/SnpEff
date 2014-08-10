@@ -3,7 +3,7 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
@@ -29,7 +29,7 @@ public class CodonChangeSnp extends CodonChange {
 		if (codonsOld.isEmpty()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
 
 		codonsNew = codonsNew();
-		variantEffects.add(exon, EffectType.CODON_CHANGE, "");
+		variantEffects.add(exon, EffectType.CODING, "");
 		variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 
 		return true;

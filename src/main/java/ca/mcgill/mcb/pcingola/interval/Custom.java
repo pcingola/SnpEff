@@ -3,7 +3,7 @@ package ca.mcgill.mcb.pcingola.interval;
 import java.util.Collections;
 import java.util.Iterator;
 
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.KeyValue;
 

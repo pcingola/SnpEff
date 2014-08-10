@@ -8,7 +8,6 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
 
 /**
@@ -70,7 +69,6 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	public VariantEffect get() {
 		if (effects.isEmpty()) effects.add(new VariantEffect(variant, variantRef));
 		return effects.get(effects.size() - 1);
-
 	}
 
 	public VariantEffect get(int index) {
@@ -87,13 +85,19 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	}
 
 	public void setCodons(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
-		EffectType newEffectType = get().setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+		EffectType effectOri = get().getEffectType();
+		EffectType effectNew = get().setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 
 		// Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
-		if (newEffectType != null) {
-			VariantEffect newEff = get().clone();
-			newEff.setEffectType(newEffectType);
-			add(newEff);
+		if (effectNew != null) {
+			// Higher impact? replace
+			if (effectNew.compareTo(effectOri) < 0) {
+				get().addEffectType(effectNew);
+			} else {
+				VariantEffect newEff = get().clone();
+				newEff.setEffectType(effectNew);
+				add(newEff);
+			}
 		}
 	}
 

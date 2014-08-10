@@ -3,7 +3,7 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
@@ -91,7 +91,7 @@ public class CodonChangeMnp extends CodonChange {
 		codonsNew += padN;
 
 		// Create change effect
-		variantEffects.add(transcript, EffectType.CODON_CHANGE, "");
+		variantEffects.add(transcript, EffectType.CODING, ""); // Use a generic low priority variant, this allows 'setCodons' to override it
 		variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 
 		return;

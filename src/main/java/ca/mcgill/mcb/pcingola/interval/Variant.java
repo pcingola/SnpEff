@@ -2,7 +2,7 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import java.util.LinkedList;
 
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
