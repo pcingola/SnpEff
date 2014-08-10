@@ -15,7 +15,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class CodonChangeMixed extends CodonChange {
 
-	public static boolean debug = false;
+	public static boolean debug = true;
 
 	int oldCodonCdsStart = -1;
 	int oldCodonCdsEnd = -1;

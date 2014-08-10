@@ -96,10 +96,11 @@ public class CodonChangeDel extends CodonChange {
 
 	/**
 	 * Get new (modified) codons
-	 * @return
 	 */
 	@Override
 	public String codonsNew() {
+		if (netCdsChange.isEmpty()) return "";
+
 		int after = netCdsChange.length() + codonIndex;
 		String codonsNew = codonsOld.substring(0, codonIndex) //
 				+ (codonsOld.length() > after ? codonsOld.substring(after) : "");
@@ -109,11 +110,11 @@ public class CodonChangeDel extends CodonChange {
 
 	/**
 	 * Get original codons in CDS
-	 * @param codonNum
-	 * @return
 	 */
 	@Override
 	public String codonsOld() {
+		if (netCdsChange.isEmpty()) return "";
+
 		int min = variant.getStart();
 		int max = variant.getEnd();
 		int cdsBaseMin = cdsBaseNumber(min);

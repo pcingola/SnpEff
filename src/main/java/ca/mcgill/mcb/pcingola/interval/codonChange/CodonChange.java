@@ -92,6 +92,10 @@ public class CodonChange {
 
 		// We may have to calculate 'netCdsChange', which is the effect on the CDS
 		netCdsChange = netCdsChange();
+		if (requireNetCdsChange && netCdsChange.isEmpty()) { // This can happen on mixed changes where the 'InDel' part lies outside the transcript's exons
+			codonsOld = codonsNew = "";
+			return;
+		}
 
 		//---
 		// Concatenate all exons
