@@ -58,7 +58,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  */
 public class TestCasesVariant extends TestCase {
 
-	boolean verbose = true;
+	boolean verbose = false;
 	boolean createOutputFile = false;
 	Random rand;
 	Config config;
