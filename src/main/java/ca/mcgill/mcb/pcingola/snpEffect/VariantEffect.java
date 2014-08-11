@@ -1,6 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
@@ -83,11 +82,19 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	public VariantEffect(Variant variant) {
 		this.variant = variant;
+		variantRef = null;
 	}
 
 	public VariantEffect(Variant variant, Variant variantRef) {
 		this.variant = variant;
 		this.variantRef = variantRef;
+	}
+
+	public VariantEffect(Variant variant, Variant variantRef, Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
+		this.variant = variant;
+		this.variantRef = variantRef;
+		set(marker, effectType, message);
+		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 	}
 
 	public void addEffectType(EffectType effectType) {
@@ -400,7 +407,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Get intron (if any)
-	 * @return
 	 */
 	public Intron getIntron() {
 		if (marker != null) {
@@ -437,7 +443,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
 	}
 
 	public boolean hasError() {
@@ -447,28 +453,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	public boolean hasWarning() {
 		return (warning != null) && (!warning.isEmpty());
 	}
-
-	//	/**
-	//	 * Show data header
-	//	 */
-	//	public String header() {
-	//		return "Warnings\t" //
-	//				+ "Gene_ID\t" //
-	//				+ "Gene_name\t" //
-	//				+ "Bio_type\t" //
-	//				+ "Trancript_ID\t" //
-	//				+ "Exon_ID\t" //
-	//				+ "Exon_Rank\t" //
-	//				+ "Effect\t" //
-	//				+ "old_AA/new_AA\t" //
-	//				+ "Old_codon/New_codon\t" //
-	//				+ "Codon_Num(CDS)\t" //
-	//				+ "Codon_Degeneracy\t" //
-	//				+ "CDS_size\t" //
-	//				+ "Codons_around\t" //
-	//				+ "AAs_around\t" //
-	//				+ "Custom_interval_ID";
-	//	}
 
 	public boolean isCustom() {
 		return getEffectType() == EffectType.CUSTOM;
@@ -512,7 +496,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| (getEffectType() == EffectType.SPLICE_SITE_REGION) //
 				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH) //
 				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
+				;
 	}
 
 	public boolean isStartGained() {
@@ -528,7 +512,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| (getEffectType() == EffectType.UTR_3_PRIME) //
 				|| (getEffectType() == EffectType.UTR_5_DELETED) //
 				|| (getEffectType() == EffectType.UTR_3_DELETED) //
-		;
+				;
 	}
 
 	public void set(Marker marker, EffectType effectType, String message) {
@@ -540,16 +524,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	/**
 	 * Set codon change. Calculate effect type based on codon changes (for SNPs ans MNPs)
 	 */
-	public EffectType setCodons(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
-		EffectType newEffectType = null;
-
+	public void setCodons(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
 		this.codonsOld = codonsOld;
 		this.codonsNew = codonsNew;
 		this.codonNum = codonNum;
 		this.codonIndex = codonIndex;
 
 		CodonTable codonTable = marker.codonTable();
-		// boolean indel = variant.isInDel();
 
 		// Calculate amino acids
 		if (codonsOld.isEmpty()) aaOld = "";
@@ -560,51 +541,10 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 		if (codonsNew.isEmpty()) aaNew = "";
 		else aaNew = codonTable.aa(codonsNew);
-
-		if (variant.isSnp() || variant.isMnp()) {
-			// SNM and MNP effects
-			if (aaOld.equals(aaNew)) {
-
-				// Same AA: Synonymous coding
-				if ((codonNum == 0) && codonTable.isStartFirst(codonsOld)) {
-					// It is in the first codon (which also is a start codon)
-					if (codonTable.isStartFirst(codonsNew)) newEffectType = EffectType.SYNONYMOUS_START; // The new codon is also a start codon => SYNONYMOUS_START
-					else newEffectType = EffectType.START_LOST; // The AA is the same, but the codon is not a start codon => start lost
-				} else if (codonTable.isStop(codonsOld)) {
-					// Stop codon
-					if (codonTable.isStop(codonsNew)) newEffectType = EffectType.SYNONYMOUS_STOP; // New codon is also a stop => SYNONYMOUS_STOP
-					else newEffectType = EffectType.STOP_LOST; // New codon is not a stop, the we've lost a stop
-				} else newEffectType = EffectType.SYNONYMOUS_CODING; // All other cases are just SYNONYMOUS_CODING
-
-			} else {
-
-				// Different AA: Non-synonymous coding
-				if ((codonNum == 0) && codonTable.isStartFirst(codonsOld)) {
-					// It is in the first codon (which also is a start codon)
-					if (codonTable.isStartFirst(codonsNew)) newEffectType = EffectType.NON_SYNONYMOUS_START; // Non-synonymous mutation on first codon => start lost
-					else newEffectType = EffectType.START_LOST; // Non-synonymous mutation on first codon => start lost
-				} else if (codonTable.isStop(codonsOld)) {
-					// Stop codon
-					if (codonTable.isStop(codonsNew)) newEffectType = EffectType.NON_SYNONYMOUS_STOP; // Notice: This should never happen for SNPs! (for some reason I removed this comment at some point and that create some confusion): http://www.biostars.org/post/show/51352/in-snpeff-impact-what-is-difference-between-stop_gained-and-non-synonymous_stop/
-					else newEffectType = EffectType.STOP_LOST;
-				} else if (codonTable.isStop(codonsNew)) newEffectType = EffectType.STOP_GAINED;
-				else newEffectType = EffectType.NON_SYNONYMOUS_CODING; // All other cases are just NON_SYN
-
-			}
-		} else {
-			// Add a new effect in some cases
-			if ((codonNum == 0) && codonTable.isStartFirst(codonsOld) && !codonTable.isStartFirst(codonsNew)) newEffectType = EffectType.START_LOST;
-			else if (codonTable.isStop(codonsOld) && !codonTable.isStop(codonsNew)) newEffectType = EffectType.STOP_LOST;
-			else if (!codonTable.isStop(codonsOld) && codonTable.isStop(codonsNew)) newEffectType = EffectType.STOP_GAINED;
-		}
-
-		return newEffectType;
 	}
 
 	/**
 	 * Set values for codons around change.
-	 * @param codonsLeft
-	 * @param codonsRight
 	 */
 	public void setCodonsAround(String codonsLeft, String codonsRight) {
 		codonsAroundOld = codonsLeft.toLowerCase() + codonsOld.toUpperCase() + codonsRight.toLowerCase();
@@ -627,7 +567,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public void setEffectType(EffectType effectType) {
-		effectTypes = new LinkedList<EffectType>();
+		effectTypes.clear();
 		effectTypes.add(effectType);
 		this.effectType = null;
 	}
@@ -716,7 +656,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**

@@ -44,28 +44,8 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		effects.add(effNew);
 	}
 
-	/**
-	 * Add an effect and codon information
-	 */
-	public void effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
-		VariantEffect effNew = new VariantEffect(variant, variantRef);
-		effNew.set(marker, effectType, message);
-		effects.add(effNew);
-
-		EffectType effectOri = get().getEffectType();
-		EffectType effectNew = get().setCodons(codonsOld, codonsNew, codonNum, codonIndex);
-
-		// Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
-		if (effectNew != null) {
-			// Higher impact? replace
-			if (effectNew.compareTo(effectOri) < 0) {
-				get().addEffectType(effectNew);
-			} else {
-				VariantEffect newEff = get().clone();
-				newEff.setEffectType(effectNew);
-				effects.add(effNew);
-			}
-		}
+	public void effect(VariantEffect variantEffect) {
+		effects.add(variantEffect);
 	}
 
 	/**

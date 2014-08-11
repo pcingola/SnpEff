@@ -2,11 +2,13 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 
 import java.util.List;
 
+import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
@@ -59,6 +61,55 @@ public class CodonChange {
 		this.variant = variant;
 		this.transcript = transcript;
 		this.variantEffects = variantEffects;
+	}
+
+	/**
+	 * Calculate additional effect due to codon changes
+	 * E.g. A frame-shift that also affects a stop codon
+	 */
+	public EffectType additionalEffect(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
+		EffectType newEffectType = null;
+
+		CodonTable codonTable = transcript.codonTable();
+
+		if (variant.isSnp() || variant.isMnp()) {
+			// SNM and MNP effects
+			if (aaOld.equals(aaNew)) {
+
+				// Same AA: Synonymous coding
+				if ((codonNum == 0) && codonTable.isStartFirst(codonsOld)) {
+					// It is in the first codon (which also is a start codon)
+					if (codonTable.isStartFirst(codonsNew)) newEffectType = EffectType.SYNONYMOUS_START; // The new codon is also a start codon => SYNONYMOUS_START
+					else newEffectType = EffectType.START_LOST; // The AA is the same, but the codon is not a start codon => start lost
+				} else if (codonTable.isStop(codonsOld)) {
+					// Stop codon
+					if (codonTable.isStop(codonsNew)) newEffectType = EffectType.SYNONYMOUS_STOP; // New codon is also a stop => SYNONYMOUS_STOP
+					else newEffectType = EffectType.STOP_LOST; // New codon is not a stop, the we've lost a stop
+				} else newEffectType = EffectType.SYNONYMOUS_CODING; // All other cases are just SYNONYMOUS_CODING
+
+			} else {
+
+				// Different AA: Non-synonymous coding
+				if ((codonNum == 0) && codonTable.isStartFirst(codonsOld)) {
+					// It is in the first codon (which also is a start codon)
+					if (codonTable.isStartFirst(codonsNew)) newEffectType = EffectType.NON_SYNONYMOUS_START; // Non-synonymous mutation on first codon => start lost
+					else newEffectType = EffectType.START_LOST; // Non-synonymous mutation on first codon => start lost
+				} else if (codonTable.isStop(codonsOld)) {
+					// Stop codon
+					if (codonTable.isStop(codonsNew)) newEffectType = EffectType.NON_SYNONYMOUS_STOP; // Notice: This should never happen for SNPs! (for some reason I removed this comment at some point and that create some confusion): http://www.biostars.org/post/show/51352/in-snpeff-impact-what-is-difference-between-stop_gained-and-non-synonymous_stop/
+					else newEffectType = EffectType.STOP_LOST;
+				} else if (codonTable.isStop(codonsNew)) newEffectType = EffectType.STOP_GAINED;
+				else newEffectType = EffectType.NON_SYNONYMOUS_CODING; // All other cases are just NON_SYN
+
+			}
+		} else {
+			// Add a new effect in some cases
+			if ((codonNum == 0) && codonTable.isStartFirst(codonsOld) && !codonTable.isStartFirst(codonsNew)) newEffectType = EffectType.START_LOST;
+			else if (codonTable.isStop(codonsOld) && !codonTable.isStop(codonsNew)) newEffectType = EffectType.STOP_LOST;
+			else if (!codonTable.isStop(codonsOld) && codonTable.isStop(codonsNew)) newEffectType = EffectType.STOP_GAINED;
+		}
+
+		return newEffectType;
 	}
 
 	/**
@@ -190,7 +241,13 @@ public class CodonChange {
 	 * Add an effect
 	 */
 	protected void effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
-		variantEffects.effect(marker, effectType, message, codonsOld, codonsNew, codonNum, codonIndex);
+		// Create and add variant affect
+		VariantEffect varEff = new VariantEffect(variant, null, marker, effectType, message, codonsOld, codonsNew, codonNum, codonIndex);
+		variantEffects.effect(varEff);
+
+		// Are there any additional effects? Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
+		EffectType addEffType = additionalEffect(codonsOld, codonsNew, codonNum, codonIndex);
+		if (addEffType != null) varEff.addEffectType(addEffType);
 	}
 
 	/**
