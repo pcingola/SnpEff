@@ -100,6 +100,7 @@ public class TestCasesApply extends TestCase {
 				}
 			}
 		}
+		System.err.println("");
 	}
 
 	/**
@@ -180,6 +181,7 @@ public class TestCasesApply extends TestCase {
 				}
 			}
 		}
+		System.err.println("");
 	}
 
 	/**
@@ -258,6 +260,8 @@ public class TestCasesApply extends TestCase {
 				}
 			}
 		}
+		System.err.println("");
+
 	}
 
 	/**
@@ -353,5 +357,7 @@ public class TestCasesApply extends TestCase {
 				}
 			}
 		}
+		System.err.println("");
+
 	}
 }
