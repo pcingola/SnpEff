@@ -19,35 +19,35 @@ site="ftp://ftp.ensemblgenomes.org"
 wget_wait=1
 wget="wget --wait=$wget_wait -r -nc "
 
-# #---
-# # Download from ENSEMBL
-# #---
-# 
-# for org in bacteria fungi metazoa misc_data plants protists
-# do
-# 	# Download GTF files (annotations)
-# 	$wget -A "*gtf.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/gtf/"
-# 	 
-# 	# Download FASTA files (reference genomes)
-# 	$wget -A "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
-# 
-# 	# Download CDS sequences
-# 	$wget -A "*cdna.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
-# 
-# 	# Download PROTEIN sequences
-# 	$wget -A "*.pep.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
-# 
-# done
-# 
-# #---
-# # Create directory structure
-# #---
-# 
-# # Move all downloaded file to this directory
-# for f in `find ftp.ensemblgenomes.org -type f`
-# do
-# 	mv -v "$f" .
-# done
+#---
+# Download from ENSEMBL
+#---
+
+for org in bacteria fungi metazoa misc_data plants protists
+do
+	# Download GTF files (annotations)
+	$wget -A "*gtf.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/gtf/"
+	 
+	# Download FASTA files (reference genomes)
+	$wget -A "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
+
+	# Download CDS sequences
+	$wget -A "*cdna.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
+
+	# Download PROTEIN sequences
+	$wget -A "*.pep.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
+
+done
+
+#---
+# Create directory structure
+#---
+
+# Move all downloaded file to this directory
+for f in `find ftp.ensemblgenomes.org -type f`
+do
+	mv -v "$f" .
+done
 
 # Gene annotations files
 for gtf in *.gtf.gz
