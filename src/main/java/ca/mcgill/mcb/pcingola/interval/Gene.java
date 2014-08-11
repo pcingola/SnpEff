@@ -405,7 +405,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 		// May be none of the transcripts are actually hit
 		if (!hitTranscript) {
-			changeEffects.add(this, EffectType.INTRAGENIC, "");
+			changeEffects.effect(this, EffectType.INTRAGENIC, "");
 			return true;
 		}
 

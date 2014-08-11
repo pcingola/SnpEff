@@ -3,8 +3,10 @@ package ca.mcgill.mcb.pcingola.interval.codonChange;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
@@ -185,6 +187,13 @@ public class CodonChange {
 	}
 
 	/**
+	 * Add an effect
+	 */
+	protected void effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
+		variantEffects.effect(marker, effectType, message, codonsOld, codonsNew, codonNum, codonIndex);
+	}
+
+	/**
 	 * We may have to calculate 'netCdsChange', which is the effect on the CDS
 	 * Note: A deletion or a MNP might affect several exons
 	 */
@@ -210,5 +219,4 @@ public class CodonChange {
 		codonChange.codonChange(); // Calculate codon change and add them to the list
 		return variantEffects;
 	}
-
 }

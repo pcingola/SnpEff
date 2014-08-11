@@ -231,28 +231,28 @@ public class TestCasesDel extends TestCase {
 					int cdsCodonPos = cdsBaseNum % 3;
 
 					// Create a SeqChange
-					Variant seqChange = new Variant(chromosome, start, "", "-" + del, "");
+					Variant variant = new Variant(chromosome, start, "", "-" + del, "");
 
 					// Sanity checks
-					Assert.assertEquals(true, seqChange.isDel()); // Is it a deletion?
-					Assert.assertEquals(del.length(), seqChange.size()); // Does seqChange have the correct size?
+					Assert.assertEquals(true, variant.isDel()); // Is it a deletion?
+					Assert.assertEquals(del.length(), variant.size()); // Does seqChange have the correct size?
 
 					//---
 					// Expected Effect
 					//---
 					String effectExpected = "";
-					String codonsOld = codonsOld(seqChange);
+					String codonsOld = codonsOld(variant);
 					codonsOld = codonsOld.toUpperCase();
 					String aaOld = codonTable.aa(codonsOld);
 
-					String codonsNew = codonsNew(seqChange);
+					String codonsNew = codonsNew(variant);
 					// String aaNew = codonTable.aa(codonsNew.length() < 3 ? "" : codonsNew);
 					String aaNew = codonTable.aa(codonsNew);
 
 					// Net change
 					String netChange = "";
 					for (Exon ex : transcript.sortedStrand())
-						netChange += seqChange.netChange(ex);
+						netChange += variant.netChange(ex);
 
 					// Replace empty by '-'
 					if (codonsOld.isEmpty()) codonsOld = "-";
@@ -260,7 +260,7 @@ public class TestCasesDel extends TestCase {
 					if (aaOld.isEmpty()) aaOld = "-";
 					if (aaNew.isEmpty()) aaNew = "-";
 
-					if (seqChange.includes(exon)) effectExpected = "EXON_DELETED";
+					if (variant.includes(exon)) effectExpected = "EXON_DELETED";
 					else if (netChange.length() % 3 != 0) effectExpected = "FRAME_SHIFT(" + aaOld + "/" + "-" + ")";
 					else {
 						if (cdsCodonPos == 0) effectExpected = "CODON_DELETION(" + aaOld + "/-)";
@@ -277,7 +277,7 @@ public class TestCasesDel extends TestCase {
 					//---
 					// Calculate effects
 					//---
-					VariantEffects effectsAll = snpEffectPredictor.variantEffect(seqChange);
+					VariantEffects effectsAll = snpEffectPredictor.variantEffect(variant);
 					VariantEffects effects = new VariantEffects();
 					for (VariantEffect eff : effectsAll) {
 						boolean copy = true;
@@ -286,7 +286,10 @@ public class TestCasesDel extends TestCase {
 						if (eff.getEffectType() == EffectType.SPLICE_SITE_DONOR) copy = false;
 						if (eff.getEffectType() == EffectType.INTRON) copy = false;
 
-						if (copy) effects.add(eff);
+						if (copy) {
+							Gpr.debug("COPY:" + eff);
+							effects.effect(eff.getMarker(), eff.getEffectType(), "");
+						}
 					}
 
 					// There should be only one effect in most cases
@@ -327,7 +330,7 @@ public class TestCasesDel extends TestCase {
 									System.out.println("\tIteration: " + i //
 											+ "\tPos: " + pos //
 											+ "\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-											+ "\n\t\tSeqChange        : " + seqChange + "\tsize: " + seqChange.size() + "\tdelPlus: " + delPlus//
+											+ "\n\t\tSeqChange        : " + variant + "\tsize: " + variant.size() + "\tdelPlus: " + delPlus//
 											+ "\n\t\tNetCdsChange     : " + netChange //
 											+ "\n\t\tExpected         : " + effectExpected //
 											+ "\n\t\tEffect           : " + effStr //

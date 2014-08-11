@@ -39,13 +39,13 @@ public class Utr3prime extends Utr {
 		if (!intersects(seqChange)) return false;
 
 		if (seqChange.includes(this) && (seqChange.getVariantType() == VariantType.DEL)) {
-			changeEffects.add(this, EffectType.UTR_3_DELETED, ""); // A UTR was removed entirely
+			changeEffects.effect(this, EffectType.UTR_3_DELETED, ""); // A UTR was removed entirely
 			return true;
 		}
 
 		Transcript tr = (Transcript) findParent(Transcript.class);
 		int dist = utrDistance(seqChange, tr);
-		changeEffects.add(this, type, dist >= 0 ? dist + " bases from CDS" : "");
+		changeEffects.effect(this, type, dist >= 0 ? dist + " bases from CDS" : "");
 		if (dist >= 0) changeEffects.setDistance(dist);
 
 		return true;

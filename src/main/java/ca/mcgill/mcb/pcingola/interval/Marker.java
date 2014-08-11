@@ -612,7 +612,7 @@ public class Marker extends Interval implements TxtSerializable {
 	 */
 	public boolean variantEffect(Variant variant, VariantEffects changeEffects) {
 		if (!intersects(variant)) return false;
-		changeEffects.add(this, type, "");
+		changeEffects.effect(this, type, "");
 		return true;
 	}
 

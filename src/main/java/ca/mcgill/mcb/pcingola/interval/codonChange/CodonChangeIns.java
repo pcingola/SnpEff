@@ -37,8 +37,7 @@ public class CodonChangeIns extends CodonChange {
 			 * 		Insert 'TT' pos 1:	ATT AAC CCG GGA AAC CCG GGA AAC CCG GG
 			 * 		Insert 'TT' pos 2:	AAT TAC CCG GGA AAC CCG GGA AAC CCG GG
 			 */
-			variantEffects.add(exon, EffectType.FRAME_SHIFT, "");
-			variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+			effect(exon, EffectType.FRAME_SHIFT, "", codonsOld, codonsNew, codonNum, codonIndex);
 		} else if (codonIndex == 0) {
 			/**
 			 * Length multiple of CODON_SIZE and insertion happens at codon boundary => CODON_INSERTION
@@ -46,8 +45,7 @@ public class CodonChangeIns extends CodonChange {
 			 * 		Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Insert 'TTT' pos 0:	TTT AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 */
-			variantEffects.add(exon, EffectType.CODON_INSERTION, "");
-			variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+			effect(exon, EffectType.CODON_INSERTION, "", codonsOld, codonsNew, codonNum, codonIndex);
 		} else {
 			/**
 			 * Length multiple of CODON_SIZE and insertion does not happen at codon boundary => CODON_CHANGE_PLUS_CODON_INSERTION
@@ -63,11 +61,9 @@ public class CodonChangeIns extends CodonChange {
 				 *  	Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 				 *  	Insert 'AAA' pos 1:	AAA AAA CCC GGG AAA CCC GGG AAA CCC GGG
 				 */
-				variantEffects.add(exon, EffectType.CODON_INSERTION, "");
-				variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+				effect(exon, EffectType.CODON_INSERTION, "", codonsOld, codonsNew, codonNum, codonIndex);
 			} else {
-				variantEffects.add(exon, EffectType.CODON_CHANGE_PLUS_CODON_INSERTION, "");
-				variantEffects.setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+				effect(exon, EffectType.CODON_CHANGE_PLUS_CODON_INSERTION, "", codonsOld, codonsNew, codonNum, codonIndex);
 			}
 		}
 

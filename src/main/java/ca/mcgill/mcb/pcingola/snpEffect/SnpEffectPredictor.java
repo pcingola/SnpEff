@@ -571,7 +571,7 @@ public class SnpEffectPredictor implements Serializable {
 			if (chr.size() > 0) {
 				double ratio = variant.size() / ((double) chr.size());
 				if (ratio > HUGE_DELETION_RATIO_THRESHOLD) {
-					variantEffects.add(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
+					variantEffects.effect(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
 					return variantEffects;
 				}
 			}

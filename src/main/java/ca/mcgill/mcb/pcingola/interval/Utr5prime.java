@@ -71,7 +71,7 @@ public class Utr5prime extends Utr {
 	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
 		// Has the whole UTR been deleted?
 		if (seqChange.includes(this) && (seqChange.getVariantType() == VariantType.DEL)) {
-			changeEffects.add(this, EffectType.UTR_5_DELETED, ""); // A UTR was removed entirely
+			changeEffects.effect(this, EffectType.UTR_5_DELETED, ""); // A UTR was removed entirely
 			return true;
 		}
 
@@ -80,9 +80,9 @@ public class Utr5prime extends Utr {
 		int dist = utrDistance(seqChange, tr);
 		String gained = startGained(seqChange, tr);
 
-		changeEffects.add(this, type, dist >= 0 ? dist + " bases from TSS" : "");
+		changeEffects.effect(this, type, dist >= 0 ? dist + " bases from TSS" : "");
 		if (dist >= 0) changeEffects.setDistance(dist);
-		if (!gained.isEmpty()) changeEffects.add(this, EffectType.START_GAINED, gained);
+		if (!gained.isEmpty()) changeEffects.effect(this, EffectType.START_GAINED, gained);
 
 		return true;
 	}

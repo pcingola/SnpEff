@@ -42,25 +42,41 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		this.variantRef = variantRef;
 	}
 
+	public void addErrorWarning(ErrorWarningType errwarn) {
+		get().addErrorWarning(errwarn);
+	}
+
 	/**
 	 * Add an effect
 	 */
-	public void add(Marker marker, EffectType effectType, String message) {
+	public void effect(Marker marker, EffectType effectType, String message) {
 		VariantEffect effNew = new VariantEffect(variant, variantRef);
 		effNew.set(marker, effectType, message);
 		effects.add(effNew);
 	}
 
-	public void add(VariantEffect variantEffect) {
-		effects.add(variantEffect);
-	}
+	/**
+	 * Add an effect and codon information
+	 */
+	public void effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
+		VariantEffect effNew = new VariantEffect(variant, variantRef);
+		effNew.set(marker, effectType, message);
+		effects.add(effNew);
 
-	public void add(VariantEffects variantEffects) {
-		effects.addAll(variantEffects.effects);
-	}
+		EffectType effectOri = get().getEffectType();
+		EffectType effectNew = get().setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 
-	public void addErrorWarning(ErrorWarningType errwarn) {
-		get().addErrorWarning(errwarn);
+		// Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
+		if (effectNew != null) {
+			// Higher impact? replace
+			if (effectNew.compareTo(effectOri) < 0) {
+				get().addEffectType(effectNew);
+			} else {
+				VariantEffect newEff = get().clone();
+				newEff.setEffectType(effectNew);
+				effects.add(effNew);
+			}
+		}
 	}
 
 	/**
@@ -82,23 +98,6 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	@Override
 	public Iterator<VariantEffect> iterator() {
 		return effects.iterator();
-	}
-
-	public void setCodons(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
-		EffectType effectOri = get().getEffectType();
-		EffectType effectNew = get().setCodons(codonsOld, codonsNew, codonNum, codonIndex);
-
-		// Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
-		if (effectNew != null) {
-			// Higher impact? replace
-			if (effectNew.compareTo(effectOri) < 0) {
-				get().addEffectType(effectNew);
-			} else {
-				VariantEffect newEff = get().clone();
-				newEff.setEffectType(effectNew);
-				add(newEff);
-			}
-		}
 	}
 
 	public void setCodonsAround(String codonsLeft, String codonsRight) {

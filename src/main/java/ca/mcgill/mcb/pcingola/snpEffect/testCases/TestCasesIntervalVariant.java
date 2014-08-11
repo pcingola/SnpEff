@@ -140,7 +140,7 @@ public class TestCasesIntervalVariant extends TestCase {
 					if (eff.getEffectType() == EffectType.SPLICE_SITE_ACCEPTOR) copy = false;
 					if (eff.getEffectType() == EffectType.SPLICE_SITE_DONOR) copy = false;
 
-					if (copy) effects.add(eff);
+					if (copy) effects.effect(eff.getMarker(), eff.getEffectType(), "");
 				}
 
 				// There should be only one effect in most cases

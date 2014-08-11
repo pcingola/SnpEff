@@ -170,6 +170,88 @@ public enum EffectType {
 		}
 	}
 
+	public EffectType getGeneRegion() {
+		switch (this) {
+		case NONE:
+		case CHROMOSOME:
+		case CHROMOSOME_LARGE_DELETION:
+		case CUSTOM:
+		case CDS:
+			return EffectType.NONE;
+
+		case INTERGENIC:
+		case INTERGENIC_CONSERVED:
+			return EffectType.INTERGENIC;
+
+		case UPSTREAM:
+			return EffectType.UPSTREAM;
+
+		case UTR_5_PRIME:
+		case UTR_5_DELETED:
+		case START_GAINED:
+			return EffectType.UTR_5_PRIME;
+
+		case SPLICE_SITE_ACCEPTOR:
+			return EffectType.SPLICE_SITE_ACCEPTOR;
+
+		case SPLICE_SITE_BRANCH_U12:
+		case SPLICE_SITE_BRANCH:
+			return EffectType.SPLICE_SITE_BRANCH;
+
+		case SPLICE_SITE_DONOR:
+			return EffectType.SPLICE_SITE_DONOR;
+
+		case SPLICE_SITE_REGION:
+			return EffectType.SPLICE_SITE_REGION;
+
+		case INTRAGENIC:
+		case START_LOST:
+		case SYNONYMOUS_START:
+		case NON_SYNONYMOUS_START:
+		case GENE:
+		case NEXT_PROT:
+		case TRANSCRIPT:
+			return EffectType.TRANSCRIPT;
+
+		case EXON:
+		case EXON_DELETED:
+		case NON_SYNONYMOUS_CODING:
+		case SYNONYMOUS_CODING:
+		case FRAME_SHIFT:
+		case CODON_CHANGE:
+		case CODON_INSERTION:
+		case CODON_CHANGE_PLUS_CODON_INSERTION:
+		case CODON_DELETION:
+		case CODON_CHANGE_PLUS_CODON_DELETION:
+		case STOP_GAINED:
+		case SYNONYMOUS_STOP:
+		case NON_SYNONYMOUS_STOP:
+		case STOP_LOST:
+		case RARE_AMINO_ACID:
+			return EffectType.EXON;
+
+		case INTRON:
+		case INTRON_CONSERVED:
+			return EffectType.INTRON;
+
+		case UTR_3_PRIME:
+		case UTR_3_DELETED:
+			return EffectType.UTR_3_PRIME;
+
+		case DOWNSTREAM:
+			return EffectType.DOWNSTREAM;
+
+		case REGULATION:
+			return EffectType.REGULATION;
+
+		case MOTIF:
+			return EffectType.MOTIF;
+
+		default:
+			throw new RuntimeException("Unknown gene region for effect type: '" + this + "'");
+		}
+	}
+
 	public String toSequenceOntology() {
 		switch (this) {
 

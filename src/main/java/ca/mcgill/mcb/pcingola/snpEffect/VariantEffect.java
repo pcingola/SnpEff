@@ -67,7 +67,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	Variant variant = null;
 	Variant variantRef = null;
-	// EffectType effectType = EffectType.NONE;
 	List<EffectType> effectTypes;
 	EffectType effectType;
 	EffectImpact effectImpact = null;
@@ -225,7 +224,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Get biotype
-	 * @return
 	 */
 	public String getBiotype() {
 		Gene gene = getGene();
@@ -251,11 +249,9 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Codon change string
-	 * @return
 	 */
 	public String getCodonChange() {
 		if (codonsOld.isEmpty() && codonsNew.isEmpty()) return "";
-		// if (codonsOld.equals(codonsNew)) return codonsNew;
 		return codonsOld + "/" + codonsNew;
 	}
 
@@ -363,76 +359,17 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public String getGeneRegion() {
-		switch (getEffectType()) {
-		case NONE:
-		case CHROMOSOME:
-		case CHROMOSOME_LARGE_DELETION:
-		case CUSTOM:
-		case CDS:
-			return EffectType.NONE.toString();
-		case INTERGENIC:
-		case INTERGENIC_CONSERVED:
-			return EffectType.INTERGENIC.toString();
-		case UPSTREAM:
-			return EffectType.UPSTREAM.toString();
-		case UTR_5_PRIME:
-		case UTR_5_DELETED:
-		case START_GAINED:
-			return EffectType.UTR_5_PRIME.toString();
-		case SPLICE_SITE_ACCEPTOR:
-			return EffectType.SPLICE_SITE_ACCEPTOR.toString();
-		case SPLICE_SITE_BRANCH_U12:
-		case SPLICE_SITE_BRANCH:
-			return EffectType.SPLICE_SITE_BRANCH.toString();
-		case SPLICE_SITE_DONOR:
-			return EffectType.SPLICE_SITE_DONOR.toString();
-		case SPLICE_SITE_REGION:
-			return EffectType.SPLICE_SITE_REGION.toString();
-		case INTRAGENIC:
-		case START_LOST:
-		case SYNONYMOUS_START:
-		case NON_SYNONYMOUS_START:
-		case GENE:
-		case NEXT_PROT:
-		case TRANSCRIPT:
-			if (isExon()) return EffectType.EXON.toString();
-			return EffectType.NONE.toString();
-		case EXON:
-		case EXON_DELETED:
-		case NON_SYNONYMOUS_CODING:
-		case SYNONYMOUS_CODING:
-		case FRAME_SHIFT:
-		case CODON_CHANGE:
-		case CODON_INSERTION:
-		case CODON_CHANGE_PLUS_CODON_INSERTION:
-		case CODON_DELETION:
-		case CODON_CHANGE_PLUS_CODON_DELETION:
-		case STOP_GAINED:
-		case SYNONYMOUS_STOP:
-		case NON_SYNONYMOUS_STOP:
-		case STOP_LOST:
-		case RARE_AMINO_ACID:
-			return EffectType.EXON.toString();
-		case INTRON:
-		case INTRON_CONSERVED:
-			return EffectType.INTRON.toString();
-		case UTR_3_PRIME:
-		case UTR_3_DELETED:
-			return EffectType.UTR_3_PRIME.toString();
-		case DOWNSTREAM:
-			return EffectType.DOWNSTREAM.toString();
-		case REGULATION:
-			return EffectType.REGULATION.toString();
-		case MOTIF:
-			return EffectType.MOTIF.toString();
-		default:
-			throw new RuntimeException("Unknown gene region for effect type: '" + getEffectType() + "'");
+		EffectType eff = getEffectType();
+		if (eff == EffectType.TRANSCRIPT) {
+			if (isExon()) eff = EffectType.TRANSCRIPT;
+			else eff = EffectType.NONE;
 		}
+
+		return eff.toString();
 	}
 
 	/**
 	 * Get genotype string
-	 * @return
 	 */
 	public String getGenotype() {
 		if (variant == null) return "";
@@ -442,7 +379,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * Change in HGVS notation
-	 * @return
 	 */
 	public String getHgvs() {
 		// Calculate protein level and dna level changes
@@ -512,28 +448,27 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return (warning != null) && (!warning.isEmpty());
 	}
 
-	/**
-	 * Show data header
-	 * @return
-	 */
-	public String header() {
-		return "Warnings\t" //
-				+ "Gene_ID\t" //
-				+ "Gene_name\t" //
-				+ "Bio_type\t" //
-				+ "Trancript_ID\t" //
-				+ "Exon_ID\t" //
-				+ "Exon_Rank\t" //
-				+ "Effect\t" //
-				+ "old_AA/new_AA\t" //
-				+ "Old_codon/New_codon\t" //
-				+ "Codon_Num(CDS)\t" //
-				+ "Codon_Degeneracy\t" //
-				+ "CDS_size\t" //
-				+ "Codons_around\t" //
-				+ "AAs_around\t" //
-				+ "Custom_interval_ID";
-	}
+	//	/**
+	//	 * Show data header
+	//	 */
+	//	public String header() {
+	//		return "Warnings\t" //
+	//				+ "Gene_ID\t" //
+	//				+ "Gene_name\t" //
+	//				+ "Bio_type\t" //
+	//				+ "Trancript_ID\t" //
+	//				+ "Exon_ID\t" //
+	//				+ "Exon_Rank\t" //
+	//				+ "Effect\t" //
+	//				+ "old_AA/new_AA\t" //
+	//				+ "Old_codon/New_codon\t" //
+	//				+ "Codon_Num(CDS)\t" //
+	//				+ "Codon_Degeneracy\t" //
+	//				+ "CDS_size\t" //
+	//				+ "Codons_around\t" //
+	//				+ "AAs_around\t" //
+	//				+ "Custom_interval_ID";
+	//	}
 
 	public boolean isCustom() {
 		return getEffectType() == EffectType.CUSTOM;

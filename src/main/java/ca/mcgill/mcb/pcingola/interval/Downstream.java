@@ -40,7 +40,7 @@ public class Downstream extends Marker {
 	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false; // Sanity check
 		int distance = distanceToTr(seqChange);
-		changeEffects.add(this, EffectType.DOWNSTREAM, distance + " bases");
+		changeEffects.effect(this, EffectType.DOWNSTREAM, distance + " bases");
 		changeEffects.setDistance(distance);
 		return true;
 	}

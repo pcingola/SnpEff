@@ -46,7 +46,7 @@ public class Regulation extends Marker {
 	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
 		if (!intersects(seqChange)) return false; // Sanity check
 		EffectType effType = EffectType.REGULATION;
-		changeEffects.add(this, effType, "");
+		changeEffects.effect(this, effType, "");
 		return true;
 	}
 

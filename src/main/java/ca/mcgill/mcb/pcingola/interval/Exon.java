@@ -218,30 +218,29 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 	/**
 	 * Check that the base in the exon corresponds with the one in the SNP
-	 * @param seqChange
 	 */
-	public ErrorWarningType sanityCheck(Variant seqChange) {
-		if (!intersects(seqChange)) return null;
+	public ErrorWarningType sanityCheck(Variant variant) {
+		if (!intersects(variant)) return null;
 
 		// Only makes sense for SNPs and MNPs
-		if ((seqChange.getVariantType() != VariantType.SNP) && (seqChange.getVariantType() != VariantType.MNP)) return null;
+		if ((variant.getVariantType() != VariantType.SNP) && (variant.getVariantType() != VariantType.MNP)) return null;
 
-		int mstart = Math.max(seqChange.getStart(), start);
+		int mstart = Math.max(variant.getStart(), start);
 		int idxStart = mstart - start;
 
 		if (sequence.length() <= 0) return ErrorWarningType.WARNING_SEQUENCE_NOT_AVAILABLE;
 		if (idxStart >= sequence.length()) return ErrorWarningType.ERROR_OUT_OF_EXON;
 
-		int mend = Math.min(seqChange.getEnd(), end);
+		int mend = Math.min(variant.getEnd(), end);
 		int len = mend - mstart + 1;
 
 		String realReference = basesAt(idxStart, len).toUpperCase();
 
-		int chRefStart = mstart - seqChange.getStart();
+		int chRefStart = mstart - variant.getStart();
 		if (chRefStart < 0) return ErrorWarningType.ERROR_OUT_OF_EXON;
 
-		int chRefEnd = mend - seqChange.getStart();
-		String refStr = seqChange.reference();
+		int chRefEnd = mend - variant.getStart();
+		String refStr = variant.reference();
 		if (chRefEnd >= refStr.length()) return ErrorWarningType.ERROR_OUT_OF_EXON;
 
 		String changeReference = refStr.substring(chRefStart, chRefEnd + 1);
@@ -255,8 +254,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 	/**
 	 * Parse a line from a serialized file
-	 * @param line
-	 * @return
 	 */
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {
