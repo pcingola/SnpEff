@@ -16,11 +16,10 @@ import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
-import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Test 'apply' method (apply seqChange to marker)
- * 
+ *
  * @author pcingola
  */
 public class TestCasesApply extends TestCase {
@@ -34,15 +33,14 @@ public class TestCasesApply extends TestCase {
 	}
 
 	/**
-	 * Test 'apply' on exons (test sequence changes) 
+	 * Test 'apply' on exons (test sequence changes)
 	 * Only using SNPs seqChanges
 	 */
 	@Test
 	public void test_01_Exon_SNPs() {
+		Gpr.debug("Test");
 		Config config = new Config("testHg3765Chr22");
-		Timer.show("Loading predictor");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
-		Timer.show("Done");
 
 		Random random = new Random(20130214);
 
@@ -64,7 +62,7 @@ public class TestCasesApply extends TestCase {
 						seq = ex.isStrandPlus() ? seq : GprSeq.reverseWc(seq);
 
 						// Skip some exons, otherwise test takes too much time
-						if (random.nextInt(10) > 1) continue; // Randomly some exons 
+						if (random.nextInt(10) > 1) continue; // Randomly some exons
 						if (ex.size() > 1000) continue; // Skip exon if too long
 
 						if (verbose) System.out.println("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
@@ -102,15 +100,14 @@ public class TestCasesApply extends TestCase {
 	}
 
 	/**
-	 * Test 'apply' on exons (test sequence changes) 
+	 * Test 'apply' on exons (test sequence changes)
 	 * Only using insertion seqChanges
 	 */
 	@Test
 	public void test_02_Exon_INS() {
+		Gpr.debug("Test");
 		Config config = new Config("testHg3765Chr22");
-		Timer.show("Loading predictor");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
-		Timer.show("Done");
 
 		Random random = new Random(20130214);
 
@@ -132,15 +129,15 @@ public class TestCasesApply extends TestCase {
 						seq = ex.isStrandPlus() ? seq : GprSeq.reverseWc(seq);
 
 						// Skip some exons, otherwise test takes too much time
-						if (random.nextInt(10) > 1) continue; // Randomly some exons 
+						if (random.nextInt(10) > 1) continue; // Randomly some exons
 						if (ex.size() > 1000) continue; // Skip exon if too long
 
 						if (verbose) System.out.println("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
 						// Change each base
 						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {
-							// Create a fake INS. 
+							// Create a fake INS.
 
-							// Random REF 
+							// Random REF
 							char ref = seq.charAt(idx);
 
 							// Random ALT
@@ -180,15 +177,14 @@ public class TestCasesApply extends TestCase {
 	}
 
 	/**
-	 * Test 'apply' on exons (test sequence changes) 
+	 * Test 'apply' on exons (test sequence changes)
 	 * Only using deletions seqChanges
 	 */
 	@Test
 	public void test_03_Exon_DEL() {
+		Gpr.debug("Test");
 		Config config = new Config("testHg3765Chr22");
-		Timer.show("Loading predictor");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
-		Timer.show("Done");
 
 		Random random = new Random(20130214);
 
@@ -210,14 +206,14 @@ public class TestCasesApply extends TestCase {
 						seq = ex.isStrandPlus() ? seq : GprSeq.reverseWc(seq);
 
 						// Skip some exons, otherwise test takes too much time
-						if (random.nextInt(10) > 1) continue; // Randomly some exons 
+						if (random.nextInt(10) > 1) continue; // Randomly some exons
 						if (ex.size() > 1000) continue; // Skip exon if too long
 
 						if (verbose) System.out.println("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
 
 						// Change each base
 						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {
-							// Create a fake DEL:  Random REF (since it's a deletion, alt="") 
+							// Create a fake DEL:  Random REF (since it's a deletion, alt="")
 							int delLen = 1 + random.nextInt(8);
 							int end = idx + delLen;
 							String alt = end < seq.length() ? seq.substring(idx, end) : seq.substring(idx);
@@ -255,15 +251,14 @@ public class TestCasesApply extends TestCase {
 	}
 
 	/**
-	 * Test 'apply' on exons (test sequence changes) 
+	 * Test 'apply' on exons (test sequence changes)
 	 * Only using deletions seqChanges
 	 */
 	@Test
 	public void test_04_Exon_MNP() {
+		Gpr.debug("Test");
 		Config config = new Config("testHg3765Chr22");
-		Timer.show("Loading predictor");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
-		Timer.show("Done");
 
 		Random random = new Random(20130214);
 
@@ -285,7 +280,7 @@ public class TestCasesApply extends TestCase {
 						seq = ex.isStrandPlus() ? seq : GprSeq.reverseWc(seq);
 
 						// Skip some exons, otherwise test takes too much time
-						if (random.nextInt(10) > 1) continue; // Randomly some exons 
+						if (random.nextInt(10) > 1) continue; // Randomly some exons
 						if (ex.size() > 1000) continue; // Skip exon if too long
 
 						if (verbose) System.out.println("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
@@ -313,7 +308,7 @@ public class TestCasesApply extends TestCase {
 							newSeq = ex.isStrandPlus() ? newSeq : GprSeq.reverseWc(newSeq);
 							newSeq = newSeq.toLowerCase();
 
-							// Create seqChange and apply 
+							// Create seqChange and apply
 							Variant seqChange = new Variant(t.getChromosome(), i, refsb.toString(), altsb.toString(), "");
 							if (debug) Gpr.debug("SeqChange: " + seqChange);
 							Exon exNew = ex.apply(seqChange);
