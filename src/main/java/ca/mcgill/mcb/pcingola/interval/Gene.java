@@ -244,8 +244,6 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	/**
 	 * Size of a genetic region for a given gene
-	 * @param type
-	 * @return
 	 */
 	public int sizeof(String type) {
 		// Calculate size

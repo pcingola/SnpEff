@@ -370,7 +370,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public String getGeneRegion() {
-		EffectType eff = getEffectType();
+		EffectType eff = getEffectType().getGeneRegion();
 		if (eff == EffectType.TRANSCRIPT) {
 			if (isExon()) eff = EffectType.TRANSCRIPT;
 			else eff = EffectType.NONE;

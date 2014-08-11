@@ -31,3 +31,16 @@ java -Xmx4g \
 	2>&1 \
 	| tee $DIR/testSuiteAll.snpeff.txt
 
+# # Run SnpEff test cases
+# echo
+# echo
+# echo
+# echo Test: SnpEff
+# cd $HOME/workspace/SnpEff/
+# java -Xmx4g \
+# 	-cp $DIR/snpEff.jar \
+# 	org.junit.runner.JUnitCore \
+# 	ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteVariants \
+# 	2>&1 \
+# 	| tee $DIR/testSuiteAll.snpeff.txt
+
