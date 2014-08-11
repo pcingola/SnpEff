@@ -278,7 +278,7 @@ public class TestCasesDel extends TestCase {
 					// Calculate effects
 					//---
 					VariantEffects effectsAll = snpEffectPredictor.variantEffect(variant);
-					VariantEffects effects = new VariantEffects();
+					VariantEffects effects = new VariantEffects(variant);
 					for (VariantEffect eff : effectsAll) {
 						boolean copy = true;
 

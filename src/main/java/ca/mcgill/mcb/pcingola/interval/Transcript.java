@@ -908,7 +908,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-								);
+						);
 					} else {
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
@@ -1074,7 +1074,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-				;
+		;
 	}
 
 	/**
@@ -1419,8 +1419,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Perfom some baseic chekcs, return error type, if any
-	 * @param variant
-	 * @return
 	 */
 	public ErrorWarningType sanityCheck(Variant variant) {
 		if (isErrorProteinLength()) return ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE;
@@ -1431,8 +1429,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Parse a line from a serialized file
-	 * @param line
-	 * @return
 	 */
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {
@@ -1473,7 +1469,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
 				+ "\t" + markerSerializer.save((Iterable) spliceBranchSites)//
-				;
+		;
 	}
 
 	public void setAaCheck(boolean aaCheck) {

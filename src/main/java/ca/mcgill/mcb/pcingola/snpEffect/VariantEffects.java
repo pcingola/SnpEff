@@ -20,17 +20,6 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	Variant variant, variantRef;
 	List<VariantEffect> effects;
 
-	/**
-	 *  An empty list of results;
-	 */
-	public static VariantEffects empty() {
-		return new VariantEffects();
-	}
-
-	public VariantEffects() {
-		effects = new ArrayList<VariantEffect>();
-	}
-
 	public VariantEffects(Variant variant) {
 		effects = new ArrayList<VariantEffect>();
 		this.variant = variant;

@@ -107,23 +107,23 @@ public class TestCasesIntervalVariant extends TestCase {
 				int end = Math.min(pos + intLen, chromosome.getEnd());
 
 				// Create a SeqChange
-				Variant seqChange = new Variant(chromosome, start, end, "");
+				Variant variant = new Variant(chromosome, start, end, "");
 
 				// Sanity checks
-				Assert.assertEquals(true, seqChange.isInterval()); // Is it an interval?
+				Assert.assertEquals(true, variant.isInterval()); // Is it an interval?
 
 				//---
 				// Expected Effect
 				//---
 				String expectedEffect = null;
-				if (transcript.intersects(seqChange)) {
+				if (transcript.intersects(variant)) {
 					// Does it intersect any exon?
 					for (Exon ex : transcript)
-						if (ex.intersects(seqChange)) expectedEffect = "EXON";
+						if (ex.intersects(variant)) expectedEffect = "EXON";
 
 					for (Intron intron : transcript.introns())
-						if (intron.intersects(seqChange)) expectedEffect = "INTRON";
-				} else if (gene.intersects(seqChange)) {
+						if (intron.intersects(variant)) expectedEffect = "INTRON";
+				} else if (gene.intersects(variant)) {
 					// Gene intersects but transcript doesn't?
 					if (expectedEffect == null) expectedEffect = "INTRAGENIC";
 				} else expectedEffect = "INTERGENIC";
@@ -132,8 +132,8 @@ public class TestCasesIntervalVariant extends TestCase {
 				// Calculate effects
 				//---
 				// Copy only some effect (other effects are not tested)
-				VariantEffects effectsAll = snpEffectPredictor.variantEffect(seqChange);
-				VariantEffects effects = new VariantEffects();
+				VariantEffects effectsAll = snpEffectPredictor.variantEffect(variant);
+				VariantEffects effects = new VariantEffects(variant);
 				for (VariantEffect eff : effectsAll) {
 					boolean copy = true;
 
@@ -164,7 +164,7 @@ public class TestCasesIntervalVariant extends TestCase {
 				}
 
 				if (debug || !isExpectedOK) //
-					System.out.println("SeqChange       : " + seqChange //
+					System.out.println("SeqChange       : " + variant //
 							+ "\nExpected Effect :\t" + expectedEffect //
 							+ "\nEffects         :\t" + effSb //
 							+ "\n--------------------------------------------------------------\n" //
