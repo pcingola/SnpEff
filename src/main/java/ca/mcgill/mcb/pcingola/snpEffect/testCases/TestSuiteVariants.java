@@ -28,6 +28,7 @@ public class TestSuiteVariants {
 		suite.addTestSuite(TestCasesMixedVariants.class);
 
 		suite.addTestSuite(TestCasesSnpEnsembl.class);
+
 		// Other SnpEff 'eff' tests
 		suite.addTestSuite(TestCasesEff.class);
 
