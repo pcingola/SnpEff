@@ -416,7 +416,6 @@ public class GprSeq {
 			return 'N';
 		default:
 			return base;
-			// throw new RuntimeException("Unknown base '" + base + "'");
 		}
 	}
 
