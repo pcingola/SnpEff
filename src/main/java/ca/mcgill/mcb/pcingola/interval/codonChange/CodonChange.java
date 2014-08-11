@@ -38,7 +38,7 @@ public class CodonChange {
 	/**
 	 * Create a specific codon change for a variant
 	 */
-	protected static CodonChange factory(Variant variant, Transcript transcript, VariantEffects variantEffects) {
+	public static CodonChange factory(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		switch (variant.getVariantType()) {
 		case SNP:
 			return new CodonChangeSnp(variant, transcript, variantEffects);
@@ -57,7 +57,7 @@ public class CodonChange {
 		}
 	}
 
-	public CodonChange(Variant variant, Transcript transcript, VariantEffects variantEffects) {
+	protected CodonChange(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		this.variant = variant;
 		this.transcript = transcript;
 		this.variantEffects = variantEffects;
@@ -137,7 +137,7 @@ public class CodonChange {
 	/**
 	 * Calculate a list of codon changes
 	 */
-	protected void codonChange() {
+	public void codonChange() {
 		if (!transcript.intersects(variant)) return;
 
 		// Get coding start (after 5 prime UTR)
@@ -270,13 +270,4 @@ public class CodonChange {
 		return variant.netChange(transcript.isStrandMinus());
 	}
 
-	/**
-	 * Calculate all possible codon changes
-	 */
-	public VariantEffects variantEffect() {
-		// Create a specific codon change and calculate changes
-		CodonChange codonChange = factory(variant, transcript, variantEffects);
-		codonChange.codonChange(); // Calculate codon change and add them to the list
-		return variantEffects;
-	}
 }

@@ -169,7 +169,7 @@ public class TestCasesIntervalVariant extends TestCase {
 							+ "\nExpected Effect :\t" + expectedEffect //
 							+ "\nEffects         :\t" + effSb //
 							+ "\n--------------------------------------------------------------\n" //
-					);
+							);
 				Assert.assertEquals(true, isExpectedOK);
 			}
 		}

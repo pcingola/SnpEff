@@ -457,7 +457,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
 	}
 
 	public boolean hasError() {
@@ -510,7 +510,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| (getEffectType() == EffectType.SPLICE_SITE_REGION) //
 				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH) //
 				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
+				;
 	}
 
 	public boolean isStartGained() {
@@ -526,7 +526,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| (getEffectType() == EffectType.UTR_3_PRIME) //
 				|| (getEffectType() == EffectType.UTR_5_DELETED) //
 				|| (getEffectType() == EffectType.UTR_3_DELETED) //
-		;
+				;
 	}
 
 	public void set(Marker marker, EffectType effectType, String message) {
@@ -670,7 +670,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**

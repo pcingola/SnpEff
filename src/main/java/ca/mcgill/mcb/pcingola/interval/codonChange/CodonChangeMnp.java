@@ -32,7 +32,7 @@ public class CodonChangeMnp extends CodonChange {
 	 * Calculate a list of codon changes
 	 */
 	@Override
-	protected void codonChange() {
+	public void codonChange() {
 		if (!transcript.intersects(variant)) return;
 
 		// CDS coordinates

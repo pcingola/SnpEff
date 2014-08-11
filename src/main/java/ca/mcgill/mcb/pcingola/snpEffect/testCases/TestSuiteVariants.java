@@ -18,7 +18,7 @@ public class TestSuiteVariants {
 		TestSuite suite = new TestSuite();
 
 		// Quick test
-		TestCasesTranscript.N = TestCasesSnp.N = TestCasesMnp.N = TestCasesIns.N = TestCasesDel.N = 50;
+		TestCasesTranscript.N = TestCasesSnp.N = TestCasesMnp.N = TestCasesIns.N = TestCasesDel.N = TestCasesIntervalVariant.N = 50;
 
 		// Variants
 		suite.addTestSuite(TestCasesVariant.class);

@@ -53,7 +53,7 @@ public class CodonChangeMixed extends CodonChange {
 	}
 
 	@Override
-	protected void codonChange() {
+	public void codonChange() {
 		codonChangeMnp.codonChange();
 		codonChangeIndel.codonChange();
 
