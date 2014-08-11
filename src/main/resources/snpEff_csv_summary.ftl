@@ -21,27 +21,18 @@ Command_line_arguments , ${args}
 Warnings , ${changeStats.countWarnings} 
 Number_of_lines_in_input_file, ${countInputLines}
 Number_of_variants_before_filter, ${countVariants}
-Filter, ${seqChangeFilter}
-Number_of_variants_filtered_out, ${countVariantsFilteredOut}
-Number_of_not_variants , ${seqStats.countNonVariants}
-Number_of_variants_processed , ${seqStats.count}
-Number_of_known_variants <br>(i.e. non-empty ID) , ${seqStats.countNonEmptyId}, ${ ( 100 * seqStats.getKnownRatio() ) }% 
+Number_of_not_variants , ${variantStats.countNonVariants}
+Number_of_variants_processed , ${variantStats.count}
+Number_of_known_variants <br>(i.e. non-empty ID) , ${variantStats.countNonEmptyId}, ${ ( 100 * variantStats.getKnownRatio() ) }% 
 Number_of_effects , ${countEffects} 
-Genome_total_length ,${seqStats.genomeLen} 
-Genome_effective_length ,${seqStats.genomeLenEffective} 
-Change_rate , ${seqStats.rateOfChange} 
+Genome_total_length ,${variantStats.genomeLen} 
+Genome_effective_length ,${variantStats.genomeLenEffective} 
+Change_rate , ${variantStats.rateOfChange} 
 
 # Change rate by chromosome
 
 Chromosome , Length , Changes , Change_rate 
-<#list seqStats.chromosomeNamesEffective as chr>${chr} , ${seqStats.getChromosomeLength(chr)} , ${seqStats.getCountByChromosome(chr)} , ${seqStats.getRateOfChangeByChromosome(chr)}
-</#list>
-
-# Changes by type
-
-Type, Total, Homo, Hetero
-<#list seqStats.changeType as chType>
-${chType} , ${seqStats.countByChangeType.get(chType)} , ${seqStats.countByChangeTypeHom.get(chType)} , ${seqStats.countByChangeTypeHet.get(chType)}
+<#list variantStats.chromosomeNamesEffective as chr>${chr} , ${variantStats.getChromosomeLength(chr)} , ${variantStats.getCountByChromosome(chr)} , ${variantStats.getRateOfChangeByChromosome(chr)}
 </#list>
 
 # Effects by impact
@@ -64,27 +55,23 @@ Missense_Silent_ratio, ${changeStats.silentRatio}
 
 # Quality 
 
-<#if seqStats.qualityStats.validData><@intstatsTable seqStats.qualityStats /></#if>
-
-# Coverage
-
-<#if seqStats.coverageStats.validData><@intstatsTable seqStats.coverageStats /></#if>
+<#if vcfStats.qualityStats.validData><@intstatsTable vcfStats.qualityStats /></#if>
 
 # InDel lengths
 
-<#if seqStats.indelLen.validData><@intstatsTable seqStats.indelLen /></#if>
+<#if variantStats.indelLen.validData><@intstatsTable variantStats.indelLen /></#if>
 
 # Base changes
 
-base <#list seqStats.bases as newBase > , ${newBase} </#list>
-<#list seqStats.bases as oldBase > ${oldBase} <#list seqStats.bases as newBase > , ${seqStats.getBasesChangesCount(oldBase, newBase)} </#list>
+base <#list variantStats.bases as newBase > , ${newBase} </#list>
+<#list variantStats.bases as oldBase > ${oldBase} <#list variantStats.bases as newBase > , ${variantStats.getBasesChangesCount(oldBase, newBase)} </#list>
 </#list>
 
 # Ts/Tv summary
 
-Transitions , ${seqStats.transitions} 
-Transversions , ${seqStats.transversions} 
-Ts_Tv_ratio , ${seqStats.tsTvRatio}
+Transitions , ${vcfStats.tsTvStats.transitions}
+Transversions , ${vcfStats.tsTvStats.transversions}
+Ts_Tv_ratio , ${vcfStats.tsTvStats.tsTvRatio}
 
 <#assign tstv=vcfStats.hasData()>
 <#if tstv>
@@ -103,12 +90,16 @@ ${vcfStats.tsTvStatsKnown}
 <#if af>
 # Allele frequency : All variants
 
-<@intstatsTable vcfStats.alleleFrequencyStats.count />
+<@intstatsTable vcfStats.genotypeStats.alleleFrequency />
 
-# Allele frequency : Known variants
+# Allele Count
 
-<@intstatsTable vcfStats.alleleFrequencyStatsKnown.count />
+<@intstatsTable vcfStats.genotypeStats.alleleCount />
 </#if>
+
+# Hom/Het table
+
+${vcfStats.genotypeStats.homHetTable}
 
 # Codon change table
 	
@@ -125,6 +116,6 @@ aa <#list changeStats.aaList as newAa> , ${newAa} </#list>
 # Chromosome change table
 
 <#if chromoPlots>
-<#list seqStats.chromosomeNamesEffective as chr><#assign chrStats = seqStats.getChrPosStats(chr)>${chrStats}
+<#list variantStats.chromosomeNamesEffective as chr><#assign chrStats = variantStats.getChrPosStats(chr)>${chrStats}
 </#list>
 </#if>

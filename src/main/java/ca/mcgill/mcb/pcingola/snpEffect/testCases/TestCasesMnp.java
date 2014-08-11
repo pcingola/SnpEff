@@ -310,7 +310,7 @@ public class TestCasesMnp extends TestCase {
 			String aa = eff.getAa();
 			String aaNumStr = aa.substring(1, aa.length() - 1);
 			int aanum = Gpr.parseIntSafe(aaNumStr);
-			System.out.println(eff.getAa() + "\t" + aaNumStr + "\t" + eff);
+			if (verbose) System.out.println(eff.getAa() + "\t" + aaNumStr + "\t" + eff);
 
 			if (aanum <= 0) throw new RuntimeException("Missing AA number!");
 		}

@@ -875,12 +875,11 @@ public class SnpEffCmdEff extends SnpEff {
 		root.put("countEffects", countEffects);
 		root.put("countInputLines", countInputLines);
 		root.put("countVariants", countVariants);
-		// root.put("countVariantsFilteredOut", countVariantsFilteredOut);
 		root.put("date", String.format("%1$TY-%1$Tm-%1$Td %1$TH:%1$TM", new Date()));
 		root.put("genesFile", Gpr.baseName(summaryGenesFile, ""));
 		root.put("genome", config.getGenome());
 		root.put("genomeVersion", genomeVer);
-		// root.put("variantFilter", variantFilter);
+		root.put("variantEffectResutFilter", variantEffectResutFilter);
 		root.put("variantStats", variantStats);
 		root.put("snpEffectPredictor", config.getSnpEffectPredictor());
 		root.put("vcfStats", vcfStats);
