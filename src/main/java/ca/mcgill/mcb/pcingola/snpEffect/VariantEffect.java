@@ -134,16 +134,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * @param showAaChange : If true, include codon change, biotype, etc.
 	 */
 	String codonEffect(boolean showAaChange, boolean showBioType, boolean useSeqOntology) {
-		String codonEffect = "";
-		if ((marker == null) || (codonNum < 0)) return codonEffect;
-
-		// Add codon effect
-		codonEffect += getEffectTypeString(useSeqOntology);
-
-		// Append codon change
-		if (showAaChange) codonEffect += "(" + getAaChange() + ")";
-
-		return codonEffect;
+		if ((marker == null) || (codonNum < 0)) return "";
+		return getEffectTypeString(useSeqOntology) + (showAaChange ? "(" + getAaChange() + ")" : "");
 	}
 
 	@Override

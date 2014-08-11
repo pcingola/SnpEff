@@ -30,11 +30,16 @@ public class CodonChangeDel extends CodonChange {
 		// Is there any net effect?
 		if (netCdsChange.isEmpty()) return false;
 
+		EffectType effType = null;
+
 		if (variant.includes(exon)) {
 			/**
 			 * An exon has been entirely removed
 			 */
-			effect(exon, EffectType.EXON_DELETED, "", "", "", -1, -1);
+			codonsOld = "";
+			codonsNew = "";
+			codonNum = codonIndex = -1;
+			effType = EffectType.EXON_DELETED;
 		} else if (netCdsChange.length() % CodonChange.CODON_SIZE != 0) {
 			/**
 			 * Length not multiple of CODON_SIZE => FRAME_SHIFT
@@ -45,7 +50,8 @@ public class CodonChangeDel extends CodonChange {
 			 * 		Delete 'AC' pos 2:	AAC CGG GAA ACC CGG GAA ACC CGG G
 			 */
 			codonsOld = codonsOld();
-			effect(exon, EffectType.FRAME_SHIFT, "", codonsOld, "", codonNum, codonIndex);
+			codonsNew = "";
+			effType = EffectType.FRAME_SHIFT;
 		} else if (codonIndex == 0) {
 			/**
 			 * Length multiple of CODON_SIZE and insertion happens at codon boundary => CODON_INSERTION
@@ -54,7 +60,8 @@ public class CodonChangeDel extends CodonChange {
 			 * 		Delete 'AAA' pos 0:	CCC GGG AAA CCC GGG AAA CCC GGG
 			 */
 			codonsOld = codonsOld();
-			effect(exon, EffectType.CODON_DELETION, "", codonsOld, "", codonNum, codonIndex);
+			codonsNew = "";
+			effType = EffectType.CODON_DELETION;
 		} else {
 			/**
 			 * Length multiple of CODON_SIZE and insertion does not happen at codon boundary => CODON_CHANGE_PLUS_CODON_DELETION
@@ -65,6 +72,7 @@ public class CodonChangeDel extends CodonChange {
 			 */
 			codonsOld = codonsOld();
 			codonsNew = codonsNew();
+
 			if (codonsNew.isEmpty() || codonsOld.startsWith(codonsNew)) {
 				/**
 				 * Note: It might happen that the last codon of the exon was deleted.
@@ -78,13 +86,13 @@ public class CodonChangeDel extends CodonChange {
 				 *  	Original:			ACG TCG TCC GGG AAA CCC GGG AAA CCC GGG
 				 *  	Delete 'CGT' pos 1:	ACG TCC GGG AAA CCC GGG AAA CCC GGG
 				 */
-				effect(exon, EffectType.CODON_DELETION, "", codonsOld, codonsNew, codonNum, codonIndex);
+				effType = EffectType.CODON_DELETION;
 			} else {
-				codonsOld = codonsOld();
-				codonsNew = codonsNew();
-				effect(exon, EffectType.CODON_CHANGE_PLUS_CODON_DELETION, "", codonsOld, codonsNew, codonNum, codonIndex);
+				effType = EffectType.CODON_CHANGE_PLUS_CODON_DELETION;
 			}
 		}
+
+		effect(exon, effType, "", codonsOld, codonsNew, codonNum, codonIndex, false);
 
 		return true;
 	}

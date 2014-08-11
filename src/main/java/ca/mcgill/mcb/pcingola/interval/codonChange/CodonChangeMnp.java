@@ -90,7 +90,7 @@ public class CodonChangeMnp extends CodonChange {
 		codonsNew += padN;
 
 		// Create change effect
-		effect(transcript, EffectType.CODON_CHANGE, "", codonsOld, codonsNew, codonNum, codonIndex); // Use a generic low priority variant, this allows 'setCodons' to override it
+		effect(transcript, EffectType.CODON_CHANGE, "", codonsOld, codonsNew, codonNum, codonIndex, true); // Use a generic low priority variant, this allows 'setCodons' to override it
 
 		return;
 	}

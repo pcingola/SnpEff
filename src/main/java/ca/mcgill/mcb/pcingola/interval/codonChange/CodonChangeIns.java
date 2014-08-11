@@ -28,6 +28,8 @@ public class CodonChangeIns extends CodonChange {
 		codonsOld = codonsOld();
 		codonsNew = codonsNew();
 
+		EffectType effType = null;
+
 		if (netChange.length() % CodonChange.CODON_SIZE != 0) {
 			/**
 			 * Length not multiple of CODON_SIZE => FRAME_SHIFT
@@ -37,7 +39,7 @@ public class CodonChangeIns extends CodonChange {
 			 * 		Insert 'TT' pos 1:	ATT AAC CCG GGA AAC CCG GGA AAC CCG GG
 			 * 		Insert 'TT' pos 2:	AAT TAC CCG GGA AAC CCG GGA AAC CCG GG
 			 */
-			effect(exon, EffectType.FRAME_SHIFT, "", codonsOld, codonsNew, codonNum, codonIndex);
+			effType = EffectType.FRAME_SHIFT;
 		} else if (codonIndex == 0) {
 			/**
 			 * Length multiple of CODON_SIZE and insertion happens at codon boundary => CODON_INSERTION
@@ -45,7 +47,7 @@ public class CodonChangeIns extends CodonChange {
 			 * 		Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Insert 'TTT' pos 0:	TTT AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 */
-			effect(exon, EffectType.CODON_INSERTION, "", codonsOld, codonsNew, codonNum, codonIndex);
+			effType = EffectType.CODON_INSERTION;
 		} else {
 			/**
 			 * Length multiple of CODON_SIZE and insertion does not happen at codon boundary => CODON_CHANGE_PLUS_CODON_INSERTION
@@ -61,11 +63,13 @@ public class CodonChangeIns extends CodonChange {
 				 *  	Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 				 *  	Insert 'AAA' pos 1:	AAA AAA CCC GGG AAA CCC GGG AAA CCC GGG
 				 */
-				effect(exon, EffectType.CODON_INSERTION, "", codonsOld, codonsNew, codonNum, codonIndex);
+				effType = EffectType.CODON_INSERTION;
 			} else {
-				effect(exon, EffectType.CODON_CHANGE_PLUS_CODON_INSERTION, "", codonsOld, codonsNew, codonNum, codonIndex);
+				effType = EffectType.CODON_CHANGE_PLUS_CODON_INSERTION;
 			}
 		}
+
+		effect(exon, effType, "", codonsOld, codonsNew, codonNum, codonIndex, false);
 
 		return true;
 	}

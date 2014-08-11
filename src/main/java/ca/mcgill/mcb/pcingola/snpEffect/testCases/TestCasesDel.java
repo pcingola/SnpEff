@@ -30,8 +30,8 @@ public class TestCasesDel extends TestCase {
 	public static int N = 1000;
 
 	boolean debug = false;
-	boolean forcePositive = debug || false; // Force positive strand (used for debugging)
-	static boolean verbose = false;
+	boolean forcePositive = false || debug; // Force positive strand (used for debugging)
+	boolean verbose = false || debug;
 
 	Random rand;
 	Config config;
@@ -237,7 +237,7 @@ public class TestCasesDel extends TestCase {
 					//---
 					// Expected Effect
 					//---
-					String effectExpected = "";
+					String effectExpected = "", aaExpected = "";
 					String codonsOld = codonsOld(variant);
 					codonsOld = codonsOld.toUpperCase();
 					String aaOld = codonTable.aa(codonsOld);
@@ -258,21 +258,37 @@ public class TestCasesDel extends TestCase {
 					if (aaNew.isEmpty()) aaNew = "-";
 
 					if (variant.includes(exon)) effectExpected = "EXON_DELETED";
-					else if (netChange.length() % 3 != 0) effectExpected = "FRAME_SHIFT(" + aaOld + "/" + "-" + ")";
-					else {
-						if (cdsCodonPos == 0) effectExpected = "CODON_DELETION(" + aaOld + "/-)";
-						else {
-							if (codonsOld.startsWith(codonsNew) || (codonsNew.equals("-"))) effectExpected = "CODON_DELETION(" + aaOld + "/" + aaNew + ")";
-							else effectExpected = "CODON_CHANGE_PLUS_CODON_DELETION(" + aaOld + "/" + aaNew + ")";
+					else if (netChange.length() % 3 != 0) {
+						effectExpected = "FRAME_SHIFT";
+						aaExpected = "(" + aaOld + "/" + "-" + ")";
+					} else {
+						if (cdsCodonPos == 0) {
+							effectExpected = "CODON_DELETION";
+							aaExpected = "(" + aaOld + "/-)";
+						} else {
+							if (codonsOld.startsWith(codonsNew) || (codonsNew.equals("-"))) {
+								effectExpected = "CODON_DELETION";
+								aaExpected = "(" + aaOld + "/" + aaNew + ")";
+							} else {
+								effectExpected = "CODON_CHANGE_PLUS_CODON_DELETION";
+								aaExpected = "(" + aaOld + "/" + aaNew + ")";
+							}
 						}
 
-						if ((cdsCodonNum == 0) && codonTable.isStartFirst(codonsOld) && !codonTable.isStartFirst(codonsNew)) effectExpected = "START_LOST(" + aaOld + "/" + aaNew + ")";
-						else if ((aaOld.indexOf('*') >= 0) && (aaNew.indexOf('*') < 0)) effectExpected = "STOP_LOST(" + aaOld + "/" + aaNew + ")";
-						else if ((aaNew.indexOf('*') >= 0) && (aaOld.indexOf('*') < 0)) effectExpected = "STOP_GAINED(" + aaOld + "/" + aaNew + ")";
+						if ((cdsCodonNum == 0) && codonTable.isStartFirst(codonsOld) && !codonTable.isStartFirst(codonsNew)) {
+							effectExpected = "START_LOST";
+							aaExpected = "(" + aaOld + "/" + aaNew + ")";
+						} else if ((aaOld.indexOf('*') >= 0) && (aaNew.indexOf('*') < 0)) {
+							effectExpected = "STOP_LOST";
+							aaExpected = "(" + aaOld + "/" + aaNew + ")";
+						} else if ((aaNew.indexOf('*') >= 0) && (aaOld.indexOf('*') < 0)) {
+							effectExpected = "STOP_GAINED";
+							aaExpected = "(" + aaOld + "/" + aaNew + ")";
+						}
 					}
 
 					//---
-					// Calculate effects
+					// Filter out some effects
 					//---
 					VariantEffects effectsAll = snpEffectPredictor.variantEffect(variant);
 					VariantEffects effects = new VariantEffects(variant);
@@ -283,10 +299,7 @@ public class TestCasesDel extends TestCase {
 						if (eff.getEffectType() == EffectType.SPLICE_SITE_DONOR) copy = false;
 						if (eff.getEffectType() == EffectType.INTRON) copy = false;
 
-						if (copy) {
-							Gpr.debug("COPY:" + eff);
-							effects.effect(eff.getMarker(), eff.getEffectType(), "");
-						}
+						if (copy) effects.effect(eff);
 					}
 
 					// There should be only one effect in most cases
@@ -298,49 +311,48 @@ public class TestCasesDel extends TestCase {
 							System.out.println("\t" + eff);
 					}
 
-					// Show
-
 					//---
-					// Check effect
+					// Check effects
 					//---
 					boolean ok = false;
 					for (VariantEffect effect : effects) {
-						String effStr = effect.effect(true, true, true, false);
-						if (debug) Gpr.debug("\tIteration: " + i + "\tPos: " + pos + "\tExpected: '" + effectExpected + "'\tEffect: '" + effStr + "'");
+						String effStr = effect.effect(true, false, true, false);
+						String effFullStr = effect.effect(true, true, true, false);
 
-						if (effectExpected.equals(effStr)) {
-							ok = true;
-							// Check codons
-							if ((effect.getEffectType() != EffectType.FRAME_SHIFT) // No codons in 'FRAME_SHIFT'
-									&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
-									&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
-									&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
-							) {
+						if (verbose) System.out.println("\tIteration: " + i + "\tPos: " + pos + "\tExpected: '" + effectExpected + "'\tEffect: '" + effStr + "'");
+						if (debug) {
+							System.out.println("\tIteration: " + i //
+									+ "\tPos: " + pos //
+									+ "\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
+									+ "\n\t\tVariant          : " + variant + "\tsize: " + variant.size() + "\tdelPlus: " + delPlus//
+									+ "\n\t\tNetCdsChange     : " + netChange //
+									+ "\n\t\tEffect expected  : " + effectExpected //
+									+ "\n\t\tEffect           : " + effStr + "\t" + effFullStr//
+									+ "\n\t\tAA expected      : '" + aaOld + "' / '" + aaNew + "'\t" + aaExpected //
+									+ "\n\t\tAA               : '" + effect.getAaOld() + "' / '" + effect.getAaNew() + "'" //
+									+ "\n\t\tCodon expected   : '" + codonsOld + "' / '" + codonsNew + "'" //
+									+ "\n\t\tCodons           : '" + effect.getCodonsOld().toUpperCase() + "' / '" + effect.getCodonsNew().toUpperCase() + "'" //
+									+ "\n" //
+							);
+						}
 
-								if (codonsNew.equals("-")) codonsNew = "";
-								String codonsNewEff = effect.getCodonsNew().toUpperCase();
-								if (codonsNewEff.equals("-")) codonsNewEff = "";
+						for (String e : effStr.split("\\+")) {
+							if (effectExpected.equals(e)) {
+								ok = true;
+								// Check codons
+								if ((effect.getEffectType() != EffectType.FRAME_SHIFT) // No codons in 'FRAME_SHIFT'
+										&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
+										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
+										&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
+								) {
+									if (codonsNew.equals("-")) codonsNew = "";
 
-								if (debug //
-										|| !codonsOld.equals(effect.getCodonsOld().toUpperCase()) //
-										|| !codonsNew.equals(codonsNewEff)) {
-									System.out.println("\tIteration: " + i //
-											+ "\tPos: " + pos //
-											+ "\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-											+ "\n\t\tSeqChange        : " + variant + "\tsize: " + variant.size() + "\tdelPlus: " + delPlus//
-											+ "\n\t\tNetCdsChange     : " + netChange //
-											+ "\n\t\tExpected         : " + effectExpected //
-											+ "\n\t\tEffect           : " + effStr //
-											+ "\n\t\tAA               : '" + aaOld + "' / '" + aaNew + "'" //
-											+ "\n\t\tAA (eff)         : '" + effect.getAaOld() + "' / '" + effect.getAaNew() + "'" //
-											+ "\n\t\tCodon            : '" + codonsOld + "' / '" + codonsNew + "'" //
-											+ "\n\t\tCodons(eff)      : '" + effect.getCodonsOld().toUpperCase() + "' / '" + effect.getCodonsNew().toUpperCase() + "'" //
-											+ "\n" //
-									);
+									String codonsNewEff = effect.getCodonsNew().toUpperCase();
+									if (codonsNewEff.equals("-")) codonsNewEff = "";
+
+									Assert.assertEquals(codonsOld, effect.getCodonsOld().toUpperCase()); // Check codons old
+									Assert.assertEquals(codonsNew, codonsNewEff); // Check codons new
 								}
-
-								Assert.assertEquals(codonsOld, effect.getCodonsOld().toUpperCase()); // Check codons old
-								Assert.assertEquals(codonsNew, codonsNewEff); // Check codons new
 							}
 						}
 					}

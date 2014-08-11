@@ -77,7 +77,7 @@ public class CodonChangeMixed extends CodonChange {
 		}
 
 		// Add main effect
-		effect(varEff.getMarker(), varEff.getEffectType(), "", codonsOld, codonsNew, codonNum, codonIndex);
+		effect(varEff.getMarker(), varEff.getEffectType(), "", codonsOld, codonsNew, codonNum, codonIndex, false);
 
 		// Add 'additional' effects
 		for (int i = 1; i < variantEffects.size(); i++) {

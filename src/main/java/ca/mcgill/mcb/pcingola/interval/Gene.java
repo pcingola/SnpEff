@@ -389,7 +389,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 * Get some details about the effect on this gene
 	 */
 	@Override
-	public boolean variantEffect(Variant variant, VariantEffects changeEffects, Variant variantrRef) {
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects, Variant variantrRef) {
 		if (!intersects(variant)) return false; // Sanity check
 
 		boolean hitTranscript = false;
@@ -398,12 +398,12 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			if (variantrRef != null) tr = tr.apply(variantrRef);
 
 			// Calculate effects
-			hitTranscript |= tr.variantEffect(variant, changeEffects);
+			hitTranscript |= tr.variantEffect(variant, variantEffects);
 		}
 
 		// May be none of the transcripts are actually hit
 		if (!hitTranscript) {
-			changeEffects.effect(this, EffectType.INTRAGENIC, "");
+			variantEffects.effect(this, EffectType.INTRAGENIC, "");
 			return true;
 		}
 

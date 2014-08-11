@@ -36,7 +36,6 @@ public class CompareToEnsembl {
 
 	/**
 	 * Main
-	 * @param args
 	 */
 	public static void main(String args[]) {
 		//---
@@ -61,19 +60,16 @@ public class CompareToEnsembl {
 
 	public CompareToEnsembl(String genomeName, boolean throwException) {
 		this.throwException = throwException;
-		Timer.showStdErr("Loading predictor");
+		if (verbose) Timer.showStdErr("Loading predictor");
 		config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 		snpEffectPredictor = config.getSnpEffectPredictor();
 		genome = config.getGenome();
-
 		snpEffectPredictor.buildForest();
 	}
 
 	/**
 	 * Transform 'change' into an ENSEMBL-like string
-	 * @param change
-	 * @return
 	 */
 	String change2str(VariantEffect change) {
 		String str = effTranslate(change.getEffectType());
@@ -90,8 +86,6 @@ public class CompareToEnsembl {
 
 	/**
 	 * Compare our results to some ENSEMBL annotations
-	 * @param ensemblFile
-	 * @param trName
 	 */
 	public void compareEnsembl(String ensemblFile, String trName) {
 		HashMap<Variant, String> seqChanges = readEnsemblFile(ensemblFile);
@@ -141,9 +135,6 @@ public class CompareToEnsembl {
 
 	/**
 	 * Translate an effect to make it compatible to ENSEMBL's outputS
-	 * @param eff
-	 * @param ensemblEff
-	 * @return
 	 */
 	String effTranslate(EffectType eff) {
 		switch (eff) {
@@ -163,8 +154,6 @@ public class CompareToEnsembl {
 
 	/**
 	 * Find a transcript
-	 * @param trName
-	 * @return
 	 */
 	Transcript findTranscriptByName(String trName) {
 		for (Gene gene : genome.getGenes()) {
@@ -176,8 +165,6 @@ public class CompareToEnsembl {
 
 	/**
 	 * Read a file and create a list of SeqChanges
-	 * @param fileName
-	 * @return
 	 */
 	HashMap<Variant, String> readEnsemblFile(String fileName) {
 		String lines[] = Gpr.readFile(fileName).split("\n");
@@ -200,8 +187,6 @@ public class CompareToEnsembl {
 
 	/**
 	 * Create a SeqChange from an ENSEMBL line
-	 * @param line
-	 * @return
 	 */
 	Variant str2seqChange(String line) {
 		try {
