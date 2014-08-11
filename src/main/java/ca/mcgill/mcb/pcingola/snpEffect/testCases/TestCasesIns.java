@@ -34,6 +34,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesIns extends TestCase {
 
+	public static int N = 1000;
+
 	boolean debug = false;
 	boolean verbose = false;
 	Random rand;
@@ -172,7 +174,6 @@ public class TestCasesIns extends TestCase {
 
 	public void test_01() {
 		Gpr.debug("Test");
-		int N = 1000;
 		CodonTable codonTable = genome.codonTable();
 
 		// Test N times

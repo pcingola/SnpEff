@@ -26,6 +26,8 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class TestCasesIntervalVariant extends TestCase {
 
+	public static int N = 1000;
+
 	boolean debug = false;
 
 	Random rand;
@@ -83,7 +85,6 @@ public class TestCasesIntervalVariant extends TestCase {
 
 	public void test_01() {
 		Gpr.debug("Test");
-		int N = 1000;
 
 		// Test N times
 		//	- Create a random gene transcript, exons

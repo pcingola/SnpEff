@@ -24,6 +24,7 @@ import ca.mcgill.mcb.pcingola.util.Timer;
  */
 public class TestCasesTranscript extends TestCase {
 
+	public static int N = 1000;
 	boolean debug = false;
 	boolean verbose = false;
 
@@ -83,7 +84,6 @@ public class TestCasesTranscript extends TestCase {
 
 	public void test_CdsPos() {
 		Gpr.debug("Test");
-		int N = 1000;
 
 		// Test N times:
 		//		- Create a random gene transcript, exons

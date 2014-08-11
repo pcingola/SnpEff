@@ -247,7 +247,10 @@ public class CodonChange {
 
 		// Are there any additional effects? Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
 		EffectType addEffType = additionalEffect(codonsOld, codonsNew, codonNum, codonIndex, varEff.getAaOld(), varEff.getAaNew());
-		if (addEffType != null) varEff.addEffectType(addEffType);
+		if (addEffType != null) {
+			if (addEffType.compareTo(effectType) < 0) varEff.setEffectType(addEffType); // Replace main effect
+			else varEff.addEffectType(addEffType); // Add to list
+		}
 	}
 
 	/**

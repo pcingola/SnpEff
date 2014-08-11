@@ -49,6 +49,8 @@ class Save implements Serializable {
  */
 public class TestCasesMnp extends TestCase {
 
+	public static int N = 1000;
+
 	static boolean debug = false;
 	static boolean verbose = false || debug;
 	static int MAX_MNP_LEN = 10;
@@ -258,7 +260,6 @@ public class TestCasesMnp extends TestCase {
 
 	public void test_01() {
 		Gpr.debug("Test");
-		int N = 1000;
 
 		// Test N times
 		//	- Create a random gene transcript, exons

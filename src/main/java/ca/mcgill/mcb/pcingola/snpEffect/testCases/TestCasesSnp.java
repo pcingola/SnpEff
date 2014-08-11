@@ -29,6 +29,8 @@ public class TestCasesSnp extends TestCase {
 	boolean debug = false;
 	boolean verbose = false || debug;
 
+	public static int N = 1000;
+
 	Random rand;
 	Config config;
 	Genome genome;
@@ -89,7 +91,6 @@ public class TestCasesSnp extends TestCase {
 
 	public void test_01() {
 		Gpr.debug("Test");
-		int N = 1000;
 		CodonTable codonTable = genome.codonTable();
 
 		// Test N times

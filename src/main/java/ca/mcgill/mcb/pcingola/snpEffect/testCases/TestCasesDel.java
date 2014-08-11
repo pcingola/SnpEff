@@ -27,6 +27,8 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  */
 public class TestCasesDel extends TestCase {
 
+	public static int N = 1000;
+
 	boolean debug = false;
 	boolean forcePositive = debug || false; // Force positive strand (used for debugging)
 	static boolean verbose = false;
@@ -48,8 +50,6 @@ public class TestCasesDel extends TestCase {
 
 	/**
 	 * Calcualte codonsNew using a naive algrithm
-	 * @param seqChange
-	 * @return
 	 */
 	String codonsNew(Variant seqChange) {
 		int cdsBaseNum = 0;
@@ -91,8 +91,6 @@ public class TestCasesDel extends TestCase {
 
 	/**
 	 * Calculate codonsOld using a naive algorithm
-	 * @param seqChange
-	 * @return
 	 */
 	String codonsOld(Variant seqChange) {
 		int cdsBaseNum = 0;
@@ -184,7 +182,6 @@ public class TestCasesDel extends TestCase {
 
 	public void test_01() {
 		Gpr.debug("Test");
-		int N = 1000;
 		CodonTable codonTable = genome.codonTable();
 
 		// Test N times

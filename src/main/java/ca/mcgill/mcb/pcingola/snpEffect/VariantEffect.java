@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
@@ -84,19 +85,19 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	public VariantEffect(Variant variant) {
 		this.variant = variant;
 		variantRef = null;
-		effectTypes = new LinkedList<EffectType>();
+		effectTypes = new ArrayList<EffectType>();
 	}
 
 	public VariantEffect(Variant variant, Variant variantRef) {
 		this.variant = variant;
 		this.variantRef = variantRef;
-		effectTypes = new LinkedList<EffectType>();
+		effectTypes = new ArrayList<EffectType>();
 	}
 
 	public VariantEffect(Variant variant, Variant variantRef, Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
 		this.variant = variant;
 		this.variantRef = variantRef;
-		effectTypes = new LinkedList<EffectType>();
+		effectTypes = new ArrayList<EffectType>();
 		set(marker, effectType, message);
 		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 	}
@@ -325,8 +326,17 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 */
 	public String getEffectTypeString(boolean useSeqOntology) {
 		if (effectTypes == null) return "";
-		if (useSeqOntology) return getEffectType().toSequenceOntology();
-		return getEffectType().toString();
+
+		// Show all effects
+		StringBuilder sb = new StringBuilder();
+		Collections.sort(effectTypes);
+		for (EffectType et : effectTypes) {
+			if (sb.length() > 0) sb.append('+');
+			if (useSeqOntology) sb.append(getEffectType().toSequenceOntology());
+			else sb.append(getEffectType().toString());
+		}
+
+		return sb.toString();
 	}
 
 	public String getError() {
