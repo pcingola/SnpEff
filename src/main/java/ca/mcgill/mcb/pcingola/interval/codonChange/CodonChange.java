@@ -31,8 +31,6 @@ public class CodonChange {
 	int codonIndex = -1;
 	String codonsOld = ""; // Old codons (before change)
 	String codonsNew = ""; // New codons (after change)
-	//	String aaOld = ""; // Old amino acids (before change)
-	//	String aaNew = ""; // New amino acids (after change)
 	String netCdsChange = "";
 
 	/**
@@ -58,9 +56,9 @@ public class CodonChange {
 	}
 
 	protected CodonChange(Variant variant, Transcript transcript, VariantEffects variantEffects) {
-		this.variant = variant;
 		this.transcript = transcript;
 		this.variantEffects = variantEffects;
+		this.variant = variant;
 	}
 
 	/**
@@ -242,7 +240,7 @@ public class CodonChange {
 	 */
 	protected void effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
 		// Create and add variant affect
-		VariantEffect varEff = new VariantEffect(variant, null, marker, effectType, message, codonsOld, codonsNew, codonNum, codonIndex);
+		VariantEffect varEff = new VariantEffect(variant, variantEffects.getVariantRef(), marker, effectType, message, codonsOld, codonsNew, codonNum, codonIndex);
 		variantEffects.effect(varEff);
 
 		// Are there any additional effects? Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)

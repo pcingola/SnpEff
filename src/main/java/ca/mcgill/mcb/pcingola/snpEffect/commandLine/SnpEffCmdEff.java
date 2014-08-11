@@ -19,7 +19,7 @@ import ca.mcgill.mcb.pcingola.akka.vcf.VcfWorkQueue;
 import ca.mcgill.mcb.pcingola.fileIterator.BedFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.VariantFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
-import ca.mcgill.mcb.pcingola.filter.ChangeEffectFilter;
+import ca.mcgill.mcb.pcingola.filter.VariantEffectFilter;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Variant;
@@ -86,7 +86,7 @@ public class SnpEffCmdEff extends SnpEff {
 	String cancerSamples = null;
 	InputFormat inputFormat = InputFormat.VCF; // Format use in input files
 	OutputFormat outputFormat = OutputFormat.VCF; // Output format
-	ChangeEffectFilter variantEffectResutFilter; // Filter prediction results
+	VariantEffectFilter variantEffectResutFilter; // Filter prediction results
 	ArrayList<String> filterIntervalFiles;// Files used for filter intervals
 	IntervalForest filterIntervals; // Filter only variants that match these intervals
 	VariantStats variantStats;
@@ -98,7 +98,7 @@ public class SnpEffCmdEff extends SnpEff {
 		super();
 		chrStr = ""; // Default: Don't show 'chr' before chromosome
 		inputFile = ""; // variant input file
-		variantEffectResutFilter = new ChangeEffectFilter(); // Filter prediction results
+		variantEffectResutFilter = new VariantEffectFilter(); // Filter prediction results
 		filterIntervalFiles = new ArrayList<String>(); // Files used for filter intervals
 		filterIntervals = new IntervalForest(); // Filter only variants that match these intervals
 		summaryFile = DEFAULT_SUMMARY_FILE;

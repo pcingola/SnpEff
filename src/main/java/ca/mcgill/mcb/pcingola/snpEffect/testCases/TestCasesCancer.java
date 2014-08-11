@@ -13,13 +13,13 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 /**
  *
  * Test cases for cancer effect (difference betwee somatic an germline tissue)
- * 
+ *
  * @author pcingola
  */
 public class TestCasesCancer extends TestCase {
 
-	boolean verbose = true;
 	boolean debug = false;
+	boolean verbose = false || debug;
 
 	public TestCasesCancer() {
 		super();
@@ -27,7 +27,6 @@ public class TestCasesCancer extends TestCase {
 
 	/**
 	 * Calculate snp effect for a list of snps
-	 * @param snpEffFile
 	 */
 	public void snpEffect(String vcfFile, String txtFile, String aaHgsv, String genotype) {
 		// Create command
@@ -37,6 +36,8 @@ public class TestCasesCancer extends TestCase {
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);
@@ -61,6 +62,7 @@ public class TestCasesCancer extends TestCase {
 	 * Test Somatic vs Germline
 	 */
 	public void test_01() {
+		Gpr.debug("Test");
 		String file = "tests/test.cancer.snp.01.vcf";
 		snpEffect(file, null, "p.Leu1?/c.1A>G", "2-1");
 	}
@@ -69,6 +71,7 @@ public class TestCasesCancer extends TestCase {
 	 * Test Somatic vs Germline (using TXT file)
 	 */
 	public void test_02() {
+		Gpr.debug("Test");
 		String fileVcf = "tests/test.cancer_no_ped.vcf";
 		String fileTxt = "tests/test.cancer_no_ped.txt";
 		snpEffect(fileVcf, fileTxt, "p.Leu1?/c.1A>G", "2-1");

@@ -10,11 +10,11 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
  * 
  * @author pcingola
  */
-public class ChangeEffectFilter implements Filter<VariantEffect> {
+public class VariantEffectFilter implements Filter<VariantEffect> {
 
 	HashSet<EffectType> filterOut;
 
-	public ChangeEffectFilter() {
+	public VariantEffectFilter() {
 		filterOut = new HashSet<EffectType>();
 	}
 

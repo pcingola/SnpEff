@@ -573,7 +573,7 @@ public class Marker extends Interval implements TxtSerializable {
 				+ "\t" + end //
 				+ "\t" + id //
 				+ "\t" + strandMinus //
-				;
+		;
 	}
 
 	/**
@@ -607,23 +607,11 @@ public class Marker extends Interval implements TxtSerializable {
 	/**
 	 * Calculate the effect of this variant
 	 * @param variant : Sequence change
-	 * @param changeEffect
-	 * @return
-	 */
-	public boolean variantEffect(Variant variant, VariantEffects changeEffects) {
-		if (!intersects(variant)) return false;
-		changeEffects.effect(this, type, "");
-		return true;
-	}
-
-	/**
-	 * Calculate the effect of this variant
-	 * @param variant : Sequence change
 	 * @param changeEffects
 	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
 	 * @return
 	 */
-	public boolean variantEffect(Variant variant, VariantEffects changeEffects, Variant variantrRef) {
+	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects changeEffects) {
 		if (!intersects(variant)) return false;// Sanity check
 
 		if (variantrRef != null) {
@@ -637,6 +625,18 @@ public class Marker extends Interval implements TxtSerializable {
 		}
 
 		return variantEffect(variant, changeEffects);
+	}
+
+	/**
+	 * Calculate the effect of this variant
+	 * @param variant : Sequence change
+	 * @param changeEffect
+	 * @return
+	 */
+	public boolean variantEffect(Variant variant, VariantEffects changeEffects) {
+		if (!intersects(variant)) return false;
+		changeEffects.effect(this, type, "");
+		return true;
 	}
 
 }

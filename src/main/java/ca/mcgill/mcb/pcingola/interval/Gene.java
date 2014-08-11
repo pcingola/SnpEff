@@ -389,7 +389,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 * Get some details about the effect on this gene
 	 */
 	@Override
-	public boolean variantEffect(Variant variant, VariantEffects variantEffects, Variant variantrRef) {
+	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
 
 		boolean hitTranscript = false;

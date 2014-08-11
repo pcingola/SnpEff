@@ -51,9 +51,9 @@ public class BedOutputFormatter extends OutputFormatter {
 
 		// Show results
 		HashSet<String> chEffs = new HashSet<String>();
-		for (VariantEffect changeEffect : changeEffects) {
+		for (VariantEffect changeEffect : variantEffects) {
 			// If it is not filtered out by changeEffectResutFilter  => Show it
-			if ((changeEffectResutFilter == null) || (!changeEffectResutFilter.filter(changeEffect))) {
+			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(changeEffect))) {
 
 				StringBuffer sb = new StringBuffer();
 				sb.append(changeEffect.effect(true, false, false, useSequenceOntology));

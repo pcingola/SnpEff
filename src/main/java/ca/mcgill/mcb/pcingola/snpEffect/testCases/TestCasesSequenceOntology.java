@@ -18,14 +18,15 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
- * 
+ *
  * Test case for sequence ontology
- * 
+ *
  * @author pcingola
  */
 public class TestCasesSequenceOntology extends TestCase {
 
 	public static boolean debug = false;
+	public static boolean verbose = false;
 
 	public static void createDelFile(String genomeName, String outFile, double prob) throws IOException {
 		Config config = new Config(genomeName, Gpr.HOME + "/snpEff/" + Config.DEFAULT_CONFIG_FILE);
@@ -53,7 +54,7 @@ public class TestCasesSequenceOntology extends TestCase {
 
 								int pos = i + 1;
 								String line = e.getChromosomeName() + "\t" + pos + "\t.\t" + ref + "\t" + alt + "\t.\t.\tAC=1\tGT\t0/1";
-								System.out.println(line);
+								if (verbose) System.out.println(line);
 								out.append(line + "\n");
 								count++;
 							}
@@ -63,8 +64,10 @@ public class TestCasesSequenceOntology extends TestCase {
 			}
 		}
 
-		System.err.println("Count:" + count);
-		System.out.println("Output file: " + outFile);
+		if (verbose) {
+			System.err.println("Count:" + count);
+			System.out.println("Output file: " + outFile);
+		}
 		Gpr.toFile(outFile, out);
 	}
 
@@ -93,7 +96,7 @@ public class TestCasesSequenceOntology extends TestCase {
 
 							int pos = i + 1;
 							String line = e.getChromosomeName() + "\t" + pos + "\t.\t" + ref + "\t" + alt + "\t.\t.\tAC=1\tGT\t0/1";
-							System.out.println(line);
+							if (verbose) System.out.println(line);
 							out.append(line + "\n");
 							count++;
 						}
@@ -102,8 +105,10 @@ public class TestCasesSequenceOntology extends TestCase {
 			}
 		}
 
-		System.err.println("Count:" + count);
-		System.out.println("Output file: " + outFile);
+		if (verbose) {
+			System.err.println("Count:" + count);
+			System.out.println("Output file: " + outFile);
+		}
 		Gpr.toFile(outFile, out);
 	}
 
@@ -137,7 +142,7 @@ public class TestCasesSequenceOntology extends TestCase {
 
 								int pos = i + 1;
 								String line = e.getChromosomeName() + "\t" + pos + "\t.\t" + ref + "\t" + alt + "\t.\t.\tAC=1\tGT\t0/1";
-								System.out.println(line);
+								if (verbose) System.out.println(line);
 								out.append(line + "\n");
 								count++;
 							}
@@ -147,15 +152,17 @@ public class TestCasesSequenceOntology extends TestCase {
 			}
 		}
 
-		System.err.println("Count:" + count);
-		System.out.println("Output file: " + outFile);
+		if (verbose) {
+			System.err.println("Count:" + count);
+			System.out.println("Output file: " + outFile);
+		}
 		Gpr.toFile(outFile, out);
 	}
 
 	/**
 	 * Create a file to send to ENSEMBL's VEP.
 	 * Used for benchmarking
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public static void createSnpFile(String genomeName, String outFile) throws IOException {
@@ -185,7 +192,7 @@ public class TestCasesSequenceOntology extends TestCase {
 
 							// Output in 'VCF' format
 							String line = e.getChromosomeName() + "\t" + (i + 1) + "\t.\t" + ref + "\t" + alt + "\t.\t.\tAC=1\tGT\t0/1";
-							System.out.println(line);
+							if (verbose) System.out.println(line);
 							out.append(line + "\n");
 							count++;
 						}
@@ -194,8 +201,10 @@ public class TestCasesSequenceOntology extends TestCase {
 			}
 		}
 
-		System.err.println("Count:" + count);
-		System.out.println("Output file: " + outFile);
+		if (verbose) {
+			System.err.println("Count:" + count);
+			System.out.println("Output file: " + outFile);
+		}
 		Gpr.toFile(outFile, out);
 	}
 
@@ -204,13 +213,15 @@ public class TestCasesSequenceOntology extends TestCase {
 	}
 
 	/**
-	 * Benchmarking: Compare with results from ENSEMBL's VEP 
+	 * Benchmarking: Compare with results from ENSEMBL's VEP
 	 */
 	public void compareVepSO(String genome, String vcf, String trId) {
 		String args[] = { "-classic", "-sequenceOntology", genome, vcf };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 
 		List<VcfEntry> vcfEnties = cmdEff.run(true);
 		for (VcfEntry ve : vcfEnties) {
@@ -229,15 +240,15 @@ public class TestCasesSequenceOntology extends TestCase {
 			List<VcfEffect> veffs = ve.parseEffects();
 			for (VcfEffect veff : veffs) {
 				if (veff.getTranscriptId().equals(trId)) {
-					String eff = veff.getEffString();
+					String effs = veff.getEffString();
 
-					// OK. I consider these the same
-					if (eff.equals("5_prime_UTR_premature_start_codon_gain_variant")) eff = "5_prime_UTR_variant";
-					if (eff.equals("disruptive_inframe_insertion")) eff = "inframe_insertion";
-					if (eff.equals("start_lost")) eff = "initiator_codon_variant";
-
-					for (String e : eff.split("\\+"))
-						effSos.add(e);
+					for (String eff : effs.split("\\+")) {
+						// OK. I consider these the same
+						if (eff.equals("5_prime_UTR_premature_start_codon_gain_variant")) eff = "5_prime_UTR_variant";
+						if (eff.equals("disruptive_inframe_insertion")) eff = "inframe_insertion";
+						if (eff.equals("start_lost")) eff = "initiator_codon_variant";
+						effSos.add(eff);
+					}
 				}
 			}
 
@@ -247,15 +258,16 @@ public class TestCasesSequenceOntology extends TestCase {
 			else error = !effSos.containsAll(vepSos);
 
 			if (error) {
-				String msg = "\n" + ve + "\n\tSnpEff: ";
+				String msg = "\n" + ve;
+				msg += "\n\tSnpEff    : ";
 				for (String e : effSos)
 					msg += e + " ";
 
-				msg += "\n\tVep   : ";
+				msg += "\n\tVEP       : ";
 				for (String e : vepSos)
 					msg += e + " ";
 
-				msg += "\n\tMarker   : " + ve.getChromosomeName() + ":" + ve.getStart() + "-" + ve.getEnd();
+				msg += "\n\tMarker    : " + ve.getChromosomeName() + ":" + ve.getStart() + "-" + ve.getEnd();
 				Gpr.debug(msg);
 				if (!debug) throw new RuntimeException(msg);
 			}
@@ -264,31 +276,37 @@ public class TestCasesSequenceOntology extends TestCase {
 	}
 
 	public void test_01_Vep() throws IOException {
+		Gpr.debug("Test");
 		// create_SNP_file("testENST00000268124","./tests/testENST00000268124.SNP.ORI.vcf", 0.15);
 		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.vcf", "ENST00000268124");
 	}
 
 	public void test_02_Vep() throws IOException {
+		Gpr.debug("Test");
 		// create_SNP_file("testENST00000268124","./tests/testENST00000268124.SNP.ORI.02.vcf", 0.15);
 		compareVepSO("testENST00000268124", "tests/testENST00000268124.SNP.02.vcf", "ENST00000268124");
 	}
 
 	public void test_03_Vep() throws IOException {
+		Gpr.debug("Test");
 		//		create_Ins_file("testENST00000268124", "./tests/testENST00000268124.Ins.ORI.03.vcf", 0.15);
 		compareVepSO("testENST00000268124", "tests/testENST00000268124.Ins.03.vcf", "ENST00000268124");
 	}
 
 	public void test_04_Vep() throws IOException {
+		Gpr.debug("Test");
 		//		create_Ins_file("testENST00000398332", "./tests/testENST00000398332.Ins.ORI.04.vcf", 0.95);
 		compareVepSO("testENST00000398332", "tests/testENST00000398332.Ins.04.vcf", "ENST00000398332");
 	}
 
 	public void test_05_Vep() throws IOException {
+		Gpr.debug("Test");
 		//		createDelFile("testENST00000268124", "./tests/testENST00000268124.Del.ORI.05.vcf", 0.15);
 		compareVepSO("testENST00000268124", "tests/testENST00000268124.Del.05.vcf", "ENST00000268124");
 	}
 
 	public void test_06_Vep() throws IOException {
+		Gpr.debug("Test");
 		// createMnpFile("testENST00000268124", "./tests/testENST00000268124.Mnp.ORI.06.vcf", 0.15);
 		compareVepSO("testENST00000268124", "tests/testENST00000268124.Mnp.06.vcf", "ENST00000268124");
 	}

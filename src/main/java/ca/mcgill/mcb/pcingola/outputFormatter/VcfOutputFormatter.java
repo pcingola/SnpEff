@@ -15,9 +15,9 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.FunctionalClass;
-import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.KeyValue;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -26,7 +26,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Formats output as VCF
- * 
+ *
  * @author pcingola
  */
 public class VcfOutputFormatter extends OutputFormatter {
@@ -42,20 +42,12 @@ public class VcfOutputFormatter extends OutputFormatter {
 	FormatVersion formatVersion = VcfEffect.FormatVersion.FORMAT_SNPEFF_4;
 	List<VcfEntry> vcfEntries;
 
-	// Genome genome;
-
 	public VcfOutputFormatter() {
 		super();
 	}
 
-	//	public VcfOutputFormatter(Genome genome) {
-	//		super();
-	//		// this.genome = genome;
-	//	}
-
 	/**
 	 * Add all vcf entries to a list (used only for debugging and test-cases)
-	 * @param vcfEntries
 	 */
 	public VcfOutputFormatter(List<VcfEntry> vcfEntries) {
 		super();
@@ -64,7 +56,6 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 	/**
 	 * Add header
-	 * @param vcfEntry
 	 */
 	protected void addHeader() {
 		VcfEntry vcfEntry = (VcfEntry) section;
@@ -87,24 +78,24 @@ public class VcfOutputFormatter extends OutputFormatter {
 	 */
 	protected void addInfo(VcfEntry vcfEntry) {
 		// No effects to show?
-		if (changeEffects.isEmpty()) return;
+		if (variantEffects.isEmpty()) return;
 
 		// Do all effects have warnings or errors (this could produce an empty 'EFF' field in GATK mode?
 		boolean allWarnings = false;
 		if (gatk) {
-			allWarnings = changeEffects.size() > 0;
-			for (VariantEffect changeEffect : changeEffects)
-				allWarnings &= (changeEffect.hasError() || changeEffect.hasWarning());
+			allWarnings = variantEffects.size() > 0;
+			for (VariantEffect varEff : variantEffects)
+				allWarnings &= (varEff.hasError() || varEff.hasWarning());
 		}
 
 		// Sort change effects by impact
-		Collections.sort(changeEffects);
+		Collections.sort(variantEffects);
 
 		// GATK only picks the first (i.e. highest impact) effect
-		if (gatk && changeEffects.size() > 1) {
-			ArrayList<VariantEffect> changeEffectsGatk = new ArrayList<VariantEffect>();
-			changeEffectsGatk.add(changeEffects.get(0));
-			changeEffects = changeEffectsGatk;
+		if (gatk && variantEffects.size() > 1) {
+			ArrayList<VariantEffect> varEffsGatk = new ArrayList<VariantEffect>();
+			varEffsGatk.add(variantEffects.get(0));
+			variantEffects = varEffsGatk;
 		}
 
 		//---
@@ -114,48 +105,48 @@ public class VcfOutputFormatter extends OutputFormatter {
 		ArrayList<String> effsSorted = new ArrayList<String>();
 		HashSet<String> oicr = (useOicr ? new HashSet<String>() : null);
 		boolean addCustomFields = false;
-		for (VariantEffect changeEffect : changeEffects) {
+		for (VariantEffect variantEffect : variantEffects) {
 			// In GATK mode, skip changeEffects having errors or warnings (unless ALL effects have warnings)
-			if (gatk && !allWarnings && (changeEffect.hasError() || changeEffect.hasWarning())) continue;
+			if (gatk && !allWarnings && (variantEffect.hasError() || variantEffect.hasWarning())) continue;
 
 			// If it is not filtered out by changeEffectResutFilter  => Show it
-			if ((changeEffectResutFilter == null) || (!changeEffectResutFilter.filter(changeEffect))) {
+			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(variantEffect))) {
 				StringBuilder effBuff = new StringBuilder();
 
 				// Add effect
-				effBuff.append(changeEffect.effect(true, false, false, useSequenceOntology));
+				effBuff.append(variantEffect.effect(true, false, false, useSequenceOntology));
 				effBuff.append("(");
 
 				// Add effect impact
-				effBuff.append(changeEffect.getEffectImpact());
+				effBuff.append(variantEffect.getEffectImpact());
 				effBuff.append("|");
 
 				// Add functional class
-				FunctionalClass fc = changeEffect.getFunctionalClass();
+				FunctionalClass fc = variantEffect.getFunctionalClass();
 				effBuff.append(fc == FunctionalClass.NONE ? "" : fc.toString()); // Show only if it is not empty
 				effBuff.append("|");
 
 				// Codon change
-				String codonChange = changeEffect.getCodonChange();
+				String codonChange = variantEffect.getCodonChange();
 				if (!codonChange.isEmpty()) effBuff.append(codonChange);
-				else if (changeEffect.getDistance() >= 0) effBuff.append(changeEffect.getDistance());
+				else if (variantEffect.getDistance() >= 0) effBuff.append(variantEffect.getDistance());
 				effBuff.append("|");
 
-				// Add HGVS (amino acid change) 
-				if (useHgvs) effBuff.append(changeEffect.getHgvs());
-				else effBuff.append(changeEffect.getAaChangeHgsv());
+				// Add HGVS (amino acid change)
+				if (useHgvs) effBuff.append(variantEffect.getHgvs());
+				else effBuff.append(variantEffect.getAaChangeHgsv());
 				effBuff.append("|");
 
 				// Add amino acid length
 				if (formatVersion != FormatVersion.FORMAT_SNPEFF_2) { // This field is not in format version 2
-					int aalen = changeEffect.getAaLength();
+					int aalen = variantEffect.getAaLength();
 					effBuff.append(aalen >= 0 ? aalen : "");
 					effBuff.append("|");
 				}
 
 				// Add gene info
-				Gene gene = changeEffect.getGene();
-				Transcript tr = changeEffect.getTranscript();
+				Gene gene = variantEffect.getGene();
+				Transcript tr = variantEffect.getTranscript();
 				if (gene != null) {
 					// Gene name
 					effBuff.append(vcfInfoSafeString(useGeneId ? gene.getId() : gene.getGeneName()));
@@ -173,11 +164,11 @@ public class VcfOutputFormatter extends OutputFormatter {
 					if (gene.getGenome().hasCodingInfo()) coding = (gene.isProteinCoding() ? VariantEffect.Coding.CODING.toString() : VariantEffect.Coding.NON_CODING.toString());
 					effBuff.append(coding);
 					effBuff.append("|");
-				} else if (changeEffect.isRegulation()) {
-					Regulation reg = (Regulation) changeEffect.getMarker();
+				} else if (variantEffect.isRegulation()) {
+					Regulation reg = (Regulation) variantEffect.getMarker();
 					effBuff.append("|" + reg.getCellType() + "||");
-				} else if (changeEffect.isCustom()) {
-					Marker m = changeEffect.getMarker();
+				} else if (variantEffect.isCustom()) {
+					Marker m = variantEffect.getMarker();
 					if (m != null) effBuff.append("|" + VcfEntry.vcfInfoSafe(m.getId()) + "||");
 					else effBuff.append("|||");
 				} else effBuff.append("|||");
@@ -187,12 +178,12 @@ public class VcfOutputFormatter extends OutputFormatter {
 				effBuff.append("|");
 
 				// Add exon (or intron) rank info
-				Exon ex = changeEffect.getExon();
+				Exon ex = variantEffect.getExon();
 				int rank = -1;
 				if (ex != null) rank = ex.getRank();
 				else {
 					// Do we have an intron?
-					Intron intron = changeEffect.getIntron();
+					Intron intron = variantEffect.getIntron();
 					if (intron != null) rank = intron.getRank();
 				}
 				effBuff.append(rank >= 0 ? rank : "");
@@ -200,22 +191,22 @@ public class VcfOutputFormatter extends OutputFormatter {
 				// Add genotype (or genotype difference) for this effect
 				if (formatVersion == FormatVersion.FORMAT_SNPEFF_4) {
 					effBuff.append("|");
-					effBuff.append(changeEffect.getGenotype());
+					effBuff.append(variantEffect.getGenotype());
 				}
 
 				//---
 				// Errors or warnings (this is the last thing in the list)
 				//---
-				if (changeEffect.hasError() || changeEffect.hasWarning()) {
+				if (variantEffect.hasError() || variantEffect.hasWarning()) {
 					StringBuilder err = new StringBuilder();
 
 					// Add warnings
-					if (!changeEffect.getWarning().isEmpty()) err.append(changeEffect.getWarning());
+					if (!variantEffect.getWarning().isEmpty()) err.append(variantEffect.getWarning());
 
 					// Add errors
-					if (!changeEffect.getError().isEmpty()) {
+					if (!variantEffect.getError().isEmpty()) {
 						if (err.length() > 0) err.append("+");
-						err.append(changeEffect.getError());
+						err.append(variantEffect.getError());
 					}
 
 					effBuff.append("|");
@@ -233,12 +224,12 @@ public class VcfOutputFormatter extends OutputFormatter {
 						sb.append("--------------------------------------------------------------------------------\n");
 						sb.append("VCF Entry   :\t" + vcfEntry + "\n");
 						sb.append("REPEAT (VCF):\t" + effBuff + "\n");
-						sb.append("REPEAT (TXT):\t" + changeEffect + "\n");
+						sb.append("REPEAT (TXT):\t" + variantEffect + "\n");
 						sb.append("All    (VCF):\n");
 						for (String ce : effsSorted)
 							sb.append("\t" + ce + "\n");
 						sb.append("All    (TXT):\n");
-						for (VariantEffect ce : changeEffects)
+						for (VariantEffect ce : variantEffects)
 							sb.append("\t" + ce + "\n");
 						sb.append("--------------------------------------------------------------------------------\n");
 						Gpr.debug("WARNING: Repeated effect!\n" + sb);
@@ -250,7 +241,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 				//---
 				if (useOicr && (tr != null)) {
 					StringBuilder sb = new StringBuilder();
-					Variant seqChange = changeEffect.getVariant();
+					Variant seqChange = variantEffect.getVariant();
 
 					// Get cDNA position
 					int pos = tr.isStrandMinus() ? seqChange.getStart() : seqChange.getEnd(); // First base in cDNA
@@ -261,10 +252,10 @@ public class VcfOutputFormatter extends OutputFormatter {
 				}
 
 				//---
-				// Is this annotated using a 'custom' interval? 
+				// Is this annotated using a 'custom' interval?
 				// If so, there might be additional "key=value" pairs
 				//---
-				addCustomFields |= changeEffect.hasAdditionalAnnotations();
+				addCustomFields |= variantEffect.hasAdditionalAnnotations();
 			}
 		}
 
@@ -285,14 +276,14 @@ public class VcfOutputFormatter extends OutputFormatter {
 		// Add LOF info?
 		if (lossOfFunction) {
 			// Perform LOF analysis and add annotations
-			LossOfFunction lof = new LossOfFunction(config, changeEffects);
+			LossOfFunction lof = new LossOfFunction(config, variantEffects);
 			if (lof.isLof()) vcfEntry.addInfo(LossOfFunction.VCF_INFO_LOF_NAME, lof.toStringVcfLof());
 			if (lof.isNmd()) vcfEntry.addInfo(LossOfFunction.VCF_INFO_NMD_NAME, lof.toStringVcfNmd());
 		}
 
 		// Add custom markers info fields
 		if (addCustomFields) {
-			for (VariantEffect changeEffect : changeEffects) {
+			for (VariantEffect changeEffect : variantEffects) {
 				if (changeEffect.hasAdditionalAnnotations()) {
 					Custom custom = (Custom) changeEffect.getMarker();
 					for (KeyValue<String, String> kv : custom) {
@@ -325,7 +316,6 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 	/**
 	 * Finish up section
-	 * @param marker
 	 */
 	@Override
 	public String endSection(Marker marker) {
@@ -341,7 +331,6 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 	/**
 	 * New lines to be added to header
-	 * @return
 	 */
 	public List<String> getNewHeaderLines() {
 		ArrayList<String> newLines = new ArrayList<String>();
@@ -366,8 +355,6 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 	/**
 	 * Does this
-	 * @param changeEffect
-	 * @return
 	 */
 	boolean hasAnnotations(VariantEffect changeEffect) {
 		return changeEffect.getMarker() != null // Do we have a marker?
@@ -419,8 +406,6 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 	/**
 	 * Convert a collection to a string usable in a VCF INFO field
-	 * @param strs
-	 * @return
 	 */
 	String toStringVcfInfo(Collection<String> strs) {
 		// Add the all

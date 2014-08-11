@@ -15,8 +15,8 @@ public class CodonChangeDel extends CodonChange {
 	int oldCodonCdsStart = -1;
 	int oldCodonCdsEnd = -1;
 
-	public CodonChangeDel(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
-		super(seqChange, transcript, changeEffects);
+	public CodonChangeDel(Variant variant, Transcript transcript, VariantEffects variantEffects) {
+		super(variant, transcript, variantEffects);
 		returnNow = false;
 		requireNetCdsChange = true;
 	}

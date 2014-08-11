@@ -60,6 +60,14 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		return effects.get(index);
 	}
 
+	public Variant getVariant() {
+		return variant;
+	}
+
+	public Variant getVariantRef() {
+		return variantRef;
+	}
+
 	public boolean isEmpty() {
 		return effects.isEmpty();
 	}

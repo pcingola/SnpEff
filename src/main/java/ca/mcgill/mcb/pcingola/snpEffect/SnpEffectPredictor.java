@@ -585,7 +585,7 @@ public class SnpEffectPredictor implements Serializable {
 			for (Marker marker : intersects) {
 				if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
 				else { // Analyze all markers
-					marker.variantEffect(variant, variantEffects, variantRef);
+					marker.variantEffect(variant, variantRef, variantEffects);
 					hitSomething = true;
 				}
 			}
