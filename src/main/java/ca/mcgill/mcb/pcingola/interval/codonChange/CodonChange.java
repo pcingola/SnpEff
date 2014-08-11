@@ -31,8 +31,8 @@ public class CodonChange {
 	int codonIndex = -1;
 	String codonsOld = ""; // Old codons (before change)
 	String codonsNew = ""; // New codons (after change)
-	String aaOld = ""; // Old amino acids (before change)
-	String aaNew = ""; // New amino acids (after change)
+	//	String aaOld = ""; // Old amino acids (before change)
+	//	String aaNew = ""; // New amino acids (after change)
 	String netCdsChange = "";
 
 	/**
@@ -67,7 +67,7 @@ public class CodonChange {
 	 * Calculate additional effect due to codon changes
 	 * E.g. A frame-shift that also affects a stop codon
 	 */
-	public EffectType additionalEffect(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
+	public EffectType additionalEffect(String codonsOld, String codonsNew, int codonNum, int codonIndex, String aaOld, String aaNew) {
 		EffectType newEffectType = null;
 
 		CodonTable codonTable = transcript.codonTable();
@@ -246,7 +246,7 @@ public class CodonChange {
 		variantEffects.effect(varEff);
 
 		// Are there any additional effects? Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
-		EffectType addEffType = additionalEffect(codonsOld, codonsNew, codonNum, codonIndex);
+		EffectType addEffType = additionalEffect(codonsOld, codonsNew, codonNum, codonIndex, varEff.getAaOld(), varEff.getAaNew());
 		if (addEffType != null) varEff.addEffectType(addEffType);
 	}
 

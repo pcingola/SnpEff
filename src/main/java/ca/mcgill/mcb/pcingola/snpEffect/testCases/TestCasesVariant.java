@@ -58,7 +58,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  */
 public class TestCasesVariant extends TestCase {
 
-	boolean verbose = false;
+	boolean verbose = true;
 	boolean createOutputFile = false;
 	Random rand;
 	Config config;
@@ -510,5 +510,15 @@ public class TestCasesVariant extends TestCase {
 			if (verbose) System.out.println(var.isVariant() + "\t" + eff + "\t" + varEff.getEffectImpact());
 		}
 	}
+
+	//	/**
+	//	 * Test SNP effect predictor for a transcript
+	//	 */
+	//	public void test_zzz() {
+	//		Gpr.debug("Test");
+	//		initSnpEffPredictor();
+	//		String trId = "ENST00000250823";
+	//		snpEffect("tests/z.out", trId, true);
+	//	}
 
 }
