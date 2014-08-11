@@ -1186,12 +1186,17 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (alt.startsWith("<DEL")) {
 			// Create deletion string
 			// TODO: This should be changed. We should be using "imprecise" for these variants
-			int startNew = start + reference.length();
-			int size = end - startNew + 1;
-			char change[] = new char[size];
-			for (int i = 0; i < change.length; i++)
-				change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-			String ch = new String(change);
+			String ch = ref;
+			int startNew = start;
+
+			if (end > start) {
+				startNew = start + reference.length();
+				int size = end - startNew + 1;
+				char change[] = new char[size];
+				for (int i = 0; i < change.length; i++)
+					change[i] = reference.length() > i ? reference.charAt(i) : 'N';
+				ch = new String(change);
+			}
 
 			// Create SeqChange
 			return Variant.factory(chromo, startNew, ch, "", id);

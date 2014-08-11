@@ -430,4 +430,13 @@ public class Variant extends Marker {
 		return getChromosomeName() + "\t" + start + "\t" + end + "\t" + ref + "/" + alt + "\t+";
 	}
 
+	/**
+	 * Old format, used for some test cases
+	 */
+	public String toStringOld() {
+		if (isIns()) return getChromosomeName() + ":" + getStart() + "_*" + "/+" + getAlt();
+		else if (isDel()) return getChromosomeName() + ":" + getStart() + "_*" + "/-" + getReference();
+		return getChromosomeName() + ":" + getStart() + "_" + getReference() + "/" + getAlt();
+	}
+
 }
