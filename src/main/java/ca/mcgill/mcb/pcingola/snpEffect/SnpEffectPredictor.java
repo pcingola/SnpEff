@@ -563,17 +563,14 @@ public class SnpEffectPredictor implements Serializable {
 		// Check that this is not a huge deletion.
 		// Huge deletions would crash the rest of the algorithm, so we need to stop them here.
 		//---
-		if (variant.isDel() && (variant.size() > HUGE_DELETION_SIZE_THRESHOLD)) {
-			// Get chromosome
+		// Get chromosome
+		if (variant.isDel()) {
 			String chromoName = variant.getChromosomeName();
 			Chromosome chr = genome.getChromosome(chromoName);
-
-			if (chr.size() > 0) {
-				double ratio = variant.size() / ((double) chr.size());
-				if (ratio > HUGE_DELETION_RATIO_THRESHOLD) {
-					variantEffects.effect(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
-					return variantEffects;
-				}
+			double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
+			if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
+				variantEffects.effect(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
+				return variantEffects;
 			}
 		}
 

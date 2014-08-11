@@ -728,10 +728,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			// REF and ALT
 			ref = vcfFileIterator.readField(fields, 3).toUpperCase(); // Reference and change
 
-			// Start & End coordinates are anchored to the reference genome, thus based on REF field (ALT is not taken into account)
-			end = start;
-			if (ref.length() >= 1) end += ref.length() - 1;
-
 			// Strand is always positive (defined in VCF spec.)
 			strandMinus = false;
 			String altsStr = vcfFileIterator.readField(fields, 4).toUpperCase();
@@ -747,6 +743,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			// INFO fields
 			infoStr = vcfFileIterator.readField(fields, 7);
 			info = null;
+
+			// Start & End coordinates are anchored to the reference genome, thus based on REF field (ALT is not taken into account)
+			parseEnd(altsStr);
 
 			// Genotype format
 			format = null;
@@ -831,7 +830,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		}
 
 		// Infer change type
-		if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
+		if (altsStr.startsWith("<DEL")) {
+			variantType = VariantType.DEL;
+		} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
 			if (ref.length() == 1) variantType = VariantType.SNP;
 			else variantType = VariantType.MNP;
 		} else if (ref.length() > minAltLen) variantType = VariantType.DEL;
@@ -860,6 +861,22 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			effList.add(veff);
 		}
 		return effList;
+	}
+
+	/**
+	 * Parse 'end' coordinate
+	 */
+	void parseEnd(String altStr) {
+		end = start + ref.length() - 1;
+
+		if (altStr.startsWith("<DEL")) {
+			// If there is an 'END' tag, we should use it
+			if ((getInfo("END") != null)) {
+				// Get 'END' field and do some sanity check
+				end = (int) getInfoInt("END");
+				if (end < start) throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start);
+			}
+		}
 	}
 
 	/**
@@ -917,7 +934,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Parse NMD from VcfEntry
-	 * @param vcfEntry
 	 */
 	public List<VcfNmd> parseNmd() {
 		String nmdStr = getInfo(LossOfFunction.VCF_INFO_LOF_NAME);
@@ -935,10 +951,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Parse genotype string (sparse matrix) and set all entries using 'value'
-	 *
-	 * @param str
-	 * @param gt
-	 * @param value
 	 */
 	void parseSparseGt(String str, byte gt[], int valueInt) {
 		if ((str == null) || (str.isEmpty()) || (str.equals("true"))) return;
@@ -1004,7 +1016,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * To string as a simple "chr:start-end" format
-	 * @return
 	 */
 	@Override
 	public String toStr() {
@@ -1074,8 +1085,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Uncompress VCF entry having genotypes in "HO,HE,NA" fields
-	 * @param vcfEntry
-	 * @return
 	 */
 	public VcfEntry uncompressGenotypes() {
 		// Not compressed? Nothing to do
@@ -1175,25 +1184,17 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Case: Structural variant
 		// 2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
 		if (alt.startsWith("<DEL")) {
-			int end = start + reference.length() - 1;
-
-			// If there is an 'END' tag, we should use it
-			if ((getInfo("END") != null)) {
-				// Get 'END' field and do some sanity check
-				end = (int) getInfoInt("END");
-				if (end < start) throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start);
-			}
-
 			// Create deletion string
 			// TODO: This should be changed. We should be using "imprecise" for these variants
-			int size = end - start + 1;
+			int startNew = start + reference.length();
+			int size = end - startNew + 1;
 			char change[] = new char[size];
 			for (int i = 0; i < change.length; i++)
 				change[i] = reference.length() > i ? reference.charAt(i) : 'N';
 			String ch = new String(change);
 
 			// Create SeqChange
-			return Variant.factory(chromo, start, reference, ch, id);
+			return Variant.factory(chromo, startNew, ch, "", id);
 		}
 
 		// Case: SNP, MNP
