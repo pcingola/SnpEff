@@ -36,7 +36,7 @@ public class TestCasesIns extends TestCase {
 
 	public static int N = 1000;
 
-	public static boolean debug = true;
+	public static boolean debug = false;
 	public static boolean verbose = false || debug;
 
 	Random rand;
@@ -231,24 +231,35 @@ public class TestCasesIns extends TestCase {
 
 						// Expected Effect
 						String effectExpected = "";
+						String aaExpected = "";
 						if (insLen % 3 != 0) {
-							effectExpected = "FRAME_SHIFT(" + aaOld + "/" + aaNew + ")";
+							effectExpected = "FRAME_SHIFT";
+							aaExpected = "(" + aaOld + "/" + aaNew + ")";
 						} else {
 							if (cdsCodonPos == 0) {
-								effectExpected = "CODON_INSERTION(" + aaOld + "/" + aaNew + ")";
+								effectExpected = "CODON_INSERTION";
+								aaExpected = "(" + aaOld + "/" + aaNew + ")";
 							} else {
-								if (codonNew.startsWith(codonOld)) effectExpected = "CODON_INSERTION(" + aaOld + "/" + aaNew + ")";
-								else effectExpected = "CODON_CHANGE_PLUS_CODON_INSERTION(" + aaOld + "/" + aaNew + ")";
+								if (codonNew.startsWith(codonOld)) {
+									effectExpected = "CODON_INSERTION";
+									aaExpected = "(" + aaOld + "/" + aaNew + ")";
+								} else {
+									effectExpected = "CODON_CHANGE_PLUS_CODON_INSERTION";
+									aaExpected = "(" + aaOld + "/" + aaNew + ")";
+								}
 							}
 
-							if ((cdsCodonNum == 0) && codonTable.isStartFirst(codonOld) && !codonTable.isStartFirst(codonNew)) effectExpected = "START_LOST(" + aaOld + "/" + aaNew + ")";
-							else if ((aaOld.indexOf('*') >= 0) && (aaNew.indexOf('*') < 0)) {
-								effectExpected = "STOP_LOST(" + aaOld + "/" + aaNew + ")";
-							} else if ((aaNew.indexOf('*') >= 0) && (aaOld.indexOf('*') < 0)) effectExpected = "STOP_GAINED(" + aaOld + "/" + aaNew + ")";
+							if ((cdsCodonNum == 0) && codonTable.isStartFirst(codonOld) && !codonTable.isStartFirst(codonNew)) {
+								effectExpected = "START_LOST";
+								aaExpected = "(" + aaOld + "/" + aaNew + ")";
+							} else if ((aaOld.indexOf('*') >= 0) && (aaNew.indexOf('*') < 0)) {
+								effectExpected = "STOP_LOST";
+								aaExpected = "(" + aaOld + "/" + aaNew + ")";
+							} else if ((aaNew.indexOf('*') >= 0) && (aaOld.indexOf('*') < 0)) {
+								effectExpected = "STOP_GAINED";
+								aaExpected = "(" + aaOld + "/" + aaNew + ")";
+							}
 						}
-
-						if (pos == 670) //
-							Gpr.debug("DEBUG");
 
 						// Calculate effects
 						VariantEffects effects = snpEffectPredictor.variantEffect(variant);
@@ -259,17 +270,24 @@ public class TestCasesIns extends TestCase {
 						// Show
 						boolean ok = false;
 						for (VariantEffect effect : effects) {
-							String effStr = effect.effect(true, true, true, false);
+							String effFullStr = effect.effect(true, true, false, false);
+							String effStr = effect.effect(true, false, false, false);
+							String aaStr = effFullStr.substring(effStr.length());
+
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
 									+ "\t" + variant + "\tstrand" + (variant.isStrandPlus() ? "+" : "-") //
 									+ "\tCodon: " + codonOld + " -> " + codonNew //
 									+ "\tAA: " + aaOld + " -> " + aaNew //
-									+ "\tEffect: " + effStr //
-									+ "\tEffect expected: " + effectExpected //
+									+ "\n\t\tEffect          : '" + effStr + "'\t'" + effFullStr + "'" //
+									+ "\n\t\tEffect expected : '" + effectExpected + "'" //
+									+ "\n\t\tAA              : '" + aaStr + "'" //
+									+ "\n\t\tAA expected     : '" + aaExpected + "'" //
 							);
 
-							ok |= effectExpected.equals(effStr);
+							// Check that there is a match
+							for (String e : effStr.split("\\+"))
+								if (e.equals(effectExpected) && aaStr.equals(aaExpected)) ok = true;
 						}
 
 						// Check effect
