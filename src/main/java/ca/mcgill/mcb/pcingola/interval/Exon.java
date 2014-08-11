@@ -53,28 +53,26 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	}
 
 	/**
-	 * Apply seqChange to exon
+	 * Apply variant to exon
 	 *
 	 * WARNING: There might be conditions which change the exon type (e.g. an intron is deleted)
 	 * 			Nevertheless ExonSpliceType s not updated since it reflects the exon type before a sequence change.
 	 *
 	 */
 	@Override
-	public Exon apply(Variant seqChange) {
+	public Exon apply(Variant variant) {
 		// Create new exon with updated coordinates
-		Exon ex = (Exon) super.apply(seqChange);
+		Exon ex = (Exon) super.apply(variant);
 
 		// Update sites
-		if (spliceSiteAcceptor != null) ex.spliceSiteAcceptor = (SpliceSiteAcceptor) spliceSiteAcceptor.apply(seqChange);
-		if (spliceSiteDonor != null) ex.spliceSiteDonor = (SpliceSiteDonor) spliceSiteDonor.apply(seqChange);
+		if (spliceSiteAcceptor != null) ex.spliceSiteAcceptor = (SpliceSiteAcceptor) spliceSiteAcceptor.apply(variant);
+		if (spliceSiteDonor != null) ex.spliceSiteDonor = (SpliceSiteDonor) spliceSiteDonor.apply(variant);
 
 		return ex;
 	}
 
 	/**
 	 * Create a splice site acceptor of 'maxSize' length
-	 * @param size
-	 * @return
 	 */
 	public SpliceSiteAcceptor createSpliceSiteAcceptor(int size) {
 		if (spliceSiteAcceptor != null) return spliceSiteAcceptor;
@@ -90,8 +88,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 	/**
 	 * Create a splice site donor of 'maxSize' length
-	 * @param size
-	 * @return
 	 */
 	public SpliceSiteDonor createSpliceSiteDonor(int size) {
 		if (spliceSiteDonor != null) return spliceSiteDonor;
@@ -107,9 +103,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 	/**
 	 * Create splice site regions
-	 * @param sizeExon
-	 * @param sizeIntron
-	 * @return
 	 */
 	public SpliceSiteRegion createSpliceSiteRegionEnd(int size) {
 		if (spliceSiteRegionEnd != null) return spliceSiteRegionEnd;
@@ -125,9 +118,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 	/**
 	 * Create splice site regions
-	 * @param sizeExon
-	 * @param sizeIntron
-	 * @return
 	 */
 	public SpliceSiteRegion createSpliceSiteRegionStart(int size) {
 		if (spliceSiteRegionStart != null) return spliceSiteRegionStart;
@@ -284,12 +274,11 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 				+ "\t" + ssdId //
 				+ "\t" + ssaId //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
-				;
+		;
 	}
 
 	/**
 	 * Frame can be {-1, 0, 1, 2}, where '-1' means unknown
-	 * @param frame
 	 */
 	@Override
 	public void setFrame(int frame) {

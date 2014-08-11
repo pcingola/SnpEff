@@ -65,7 +65,7 @@ public class MarkerSeq extends Marker {
 				break;
 
 			default:
-				throw new RuntimeException("Unimplemented method for variant change type " + variant.getVariantType());
+				throw new RuntimeException("Unimplemented method for variant change type " + variant.getVariantType() + "\n\tVariant: " + variant);
 			}
 		} else ex.setSequence(getSequence());
 
