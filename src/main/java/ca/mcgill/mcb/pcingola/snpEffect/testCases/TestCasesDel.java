@@ -49,7 +49,7 @@ public class TestCasesDel extends TestCase {
 	}
 
 	/**
-	 * Calcualte codonsNew using a naive algrithm
+	 * Calculate codonsNew using a naive algorithm
 	 */
 	String codonsNew(Variant seqChange) {
 		int cdsBaseNum = 0;
@@ -203,17 +203,10 @@ public class TestCasesDel extends TestCase {
 
 				// For each base in this exon...
 				for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
-					if (i == 805 && pos == 407) //
-						Gpr.debug("DEBUG!!!");
-
-					!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
-
-
+					if (i == 805 && pos == 407) {
+						verbose = debug = true;
+						Gpr.debug("DEBUG: ");
+					}
 
 					//---
 					// Create variant
@@ -360,7 +353,7 @@ public class TestCasesDel extends TestCase {
 										&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
 										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
 										&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
-								) {
+										) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
 									String codonsNewEff = effect.getCodonsNew().toUpperCase();
