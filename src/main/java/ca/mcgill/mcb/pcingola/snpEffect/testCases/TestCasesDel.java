@@ -203,9 +203,22 @@ public class TestCasesDel extends TestCase {
 
 				// For each base in this exon...
 				for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
+					if (i == 805 && pos == 407) //
+						Gpr.debug("DEBUG!!!");
+
+					!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
+
+
 					//---
-					// Create seqChange
+					// Create variant
 					//---
+
 					// Get a random base different from 'refBase'
 					int delLen = rand.nextInt(10) + 1;
 
@@ -319,22 +332,25 @@ public class TestCasesDel extends TestCase {
 						String effStr = effect.effect(true, false, true, false);
 						String effFullStr = effect.effect(true, true, true, false);
 
-						if (verbose) System.out.println("\tIteration: " + i + "\tPos: " + pos + "\tExpected: '" + effectExpected + "'\tEffect: '" + effStr + "'");
-						if (debug) {
-							System.out.println("\tIteration: " + i //
-									+ "\tPos: " + pos //
-									+ "\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-									+ "\n\t\tVariant          : " + variant + "\tsize: " + variant.size() + "\tdelPlus: " + delPlus//
-									+ "\n\t\tNetCdsChange     : " + netChange //
-									+ "\n\t\tEffect expected  : " + effectExpected //
-									+ "\n\t\tEffect           : " + effStr + "\t" + effFullStr//
-									+ "\n\t\tAA expected      : '" + aaOld + "' / '" + aaNew + "'\t" + aaExpected //
-									+ "\n\t\tAA               : '" + effect.getAaOld() + "' / '" + effect.getAaNew() + "'" //
-									+ "\n\t\tCodon expected   : '" + codonsOld + "' / '" + codonsNew + "'" //
-									+ "\n\t\tCodons           : '" + effect.getCodonsOld().toUpperCase() + "' / '" + effect.getCodonsNew().toUpperCase() + "'" //
-									+ "\n" //
-							);
-						}
+						StringBuilder msg = new StringBuilder();
+						String line = "\tIteration: " + i + "\tPos: " + pos + "\tExpected: '" + effectExpected + "'\tEffect: '" + effStr + "'";
+						msg.append(line + "\n");
+						if (verbose) System.out.println(line);
+
+						line = "\tIteration: " + i //
+								+ "\tPos: " + pos //
+								+ "\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
+								+ "\n\t\tVariant          : " + variant + "\tsize: " + variant.size() + "\tdelPlus: " + delPlus//
+								+ "\n\t\tNetCdsChange     : " + netChange //
+								+ "\n\t\tEffect expected  : " + effectExpected //
+								+ "\n\t\tEffect           : " + effStr + "\t" + effFullStr//
+								+ "\n\t\tAA expected      : '" + aaOld + "' / '" + aaNew + "'\t" + aaExpected //
+								+ "\n\t\tAA               : '" + effect.getAaOld() + "' / '" + effect.getAaNew() + "'" //
+								+ "\n\t\tCodon expected   : '" + codonsOld + "' / '" + codonsNew + "'" //
+								+ "\n\t\tCodons           : '" + effect.getCodonsOld().toUpperCase() + "' / '" + effect.getCodonsNew().toUpperCase() + "'" //
+								+ "\n";
+						msg.append(line + "\n");
+						if (debug) System.out.println(line);
 
 						for (String e : effStr.split("\\+")) {
 							if (effectExpected.equals(e)) {
@@ -350,8 +366,8 @@ public class TestCasesDel extends TestCase {
 									String codonsNewEff = effect.getCodonsNew().toUpperCase();
 									if (codonsNewEff.equals("-")) codonsNewEff = "";
 
-									Assert.assertEquals(codonsOld, effect.getCodonsOld().toUpperCase()); // Check codons old
-									Assert.assertEquals(codonsNew, codonsNewEff); // Check codons new
+									Assert.assertTrue(msg.toString(), codonsOld.equals(effect.getCodonsOld().toUpperCase())); // Check codons old
+									Assert.assertTrue(msg.toString(), codonsNew.equals(codonsNewEff)); // Check codons new
 								}
 							}
 						}

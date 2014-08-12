@@ -25,6 +25,7 @@ string pwmsBin					="$dirDb/jaspar/pwms.bin"
 bool make	 					= false		# Mkae (build JAR files)
 bool download 					= false		# Download files
 bool build	 					= false		# Build databases
+bool buildTests 				= false		# Build databases used in test cases
 bool distro	 					= false		# Create distribution files
 bool upload	 					= false		# Upload for distribution
 
@@ -73,7 +74,7 @@ bool addBuild(string type, string genome) {
 # Build all databases
 #-------------------------------------------------------------------------------
 
-bool buildAll() {
+bool buildDbAll() {
 	print("Build: Start\n")
 	dirBuild.mkdir()	# Make sure build dir exists
 	
@@ -128,9 +129,13 @@ bool buildAll() {
 # Build special databases
 #-------------------------------------------------------------------------------
 
-void buildSpecial() {
+void buildDbSpecial() {
 	buildNextProt()
 }
+
+#-------------------------------------------------------------------------------
+# Build special databases
+#-------------------------------------------------------------------------------
 
 void buildNextProt() {
 	# Note: This takes a huge amount of memory, don't run multiple of these process because the server will crash
@@ -150,6 +155,26 @@ void buildNextProt() {
 			sys $snpeffXl buildNextProt -v $hg db/nextProt/
 		} else {
 			print("NextProt ($hg): OK\n")
+		}
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Build databases used in test cases
+#-------------------------------------------------------------------------------
+
+void buildDbTest() {
+	dirs := "$dirSnpeff/data/".dir("test.*")
+
+	# This one needs PWMs
+	sys cp db/jaspar/pwms.bin data/testHg3770Chr22/
+
+	# Build all test genomes
+	for( string gen : dirs ) {
+		db := "$dirSnpeff/data/$gen/snpEffectPredictor.bin"
+		if( ! db.exists() )	{
+			println "Genome: $gen\tdb: '$db'"
+			sys $snpeff build -v $gen
 		}
 	}
 }
@@ -205,7 +230,7 @@ void downloadAll() {
 # Main
 #-------------------------------------------------------------------------------
 
-print("Start!\n")
+print("Building...\n")
 
 # Create JAR files
 if( make ) {
@@ -219,8 +244,12 @@ if( download ) downloadAll()
 # Build genomes
 if( build ) {
 	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
-	buildAll()
-	buildSpecial()
+	buildDbAll()
+	buildDbSpecial()
+}
+
+if( buildTests ) {
+	buildDbTest()
 }
 
 # Create distribution files
