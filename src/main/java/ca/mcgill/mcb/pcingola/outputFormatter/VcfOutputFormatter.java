@@ -134,7 +134,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 				// Add HGVS (amino acid change)
 				if (useHgvs) effBuff.append(variantEffect.getHgvs());
-				else effBuff.append(variantEffect.getAaChangeHgsv());
+				else effBuff.append(variantEffect.getAaChange());
 				effBuff.append("|");
 
 				// Add amino acid length
@@ -360,7 +360,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		return changeEffect.getMarker() != null // Do we have a marker?
 				&& (changeEffect.getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) changeEffect.getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public void setGatk(boolean gatk) {

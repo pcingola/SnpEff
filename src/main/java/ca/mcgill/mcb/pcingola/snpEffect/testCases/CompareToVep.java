@@ -177,7 +177,7 @@ public class CompareToVep {
 	 */
 	boolean compareHgvs(VcfEffect eff, VcfConsequence csq) {
 
-		String effHgsvDna = eff.getCodon();
+		String effHgsvDna = eff.getAa();
 		String effHgsvProt = eff.getAa();
 
 		Gpr.debug("eff: " + eff.getEffectTypesStr() + "\t" + csq.getConsequence() //
@@ -185,7 +185,7 @@ public class CompareToVep {
 				+ "\n\t\thgsv.c  :\t'" + effHgsvDna + "'\t'" + csq.getHgvsC() + "'" //
 				+ "\n\t\thgsv.p  :\t'" + effHgsvProt + "'\t'" + csq.getHgvsP() + "'" //
 				+ "\n\t\t        : " + csq //
-				);
+		);
 
 		return compareHgvsDna(eff, csq) && compareHgvsProt(eff, csq);
 	}
@@ -194,14 +194,15 @@ public class CompareToVep {
 	 * Compare HGSV DNA
 	 */
 	boolean compareHgvsDna(VcfEffect eff, VcfConsequence csq) {
-		String effHgsv = eff.getCodon();
+		String effHgsv = eff.getAa();
 		String csqHgvs = csq.getHgvsC();
 		Gpr.debug("Compare DNA: " + effHgsv + "\t" + csqHgvs);
 		if (csqHgvs.isEmpty() && effHgsv == null) return true;
 		if (!csqHgvs.isEmpty() && effHgsv == null) return false;
 		if (csqHgvs.isEmpty() && effHgsv != null) return false;
 
-		csqHgvs = csqHgvs.substring(csqHgvs.indexOf(':'));
+		csqHgvs = csqHgvs.substring(csqHgvs.indexOf(':') + 1);
+		Gpr.debug("Compare DNA: " + effHgsv + "\t" + csqHgvs + "\t" + csqHgvs.equals(effHgsv));
 		return csqHgvs.equals(effHgsv);
 	}
 
@@ -209,7 +210,7 @@ public class CompareToVep {
 	 * Compare HGSV Protein
 	 */
 	boolean compareHgvsProt(VcfEffect eff, VcfConsequence csq) {
-		String effHgsv = eff.getCodon();
+		String effHgsv = eff.getAa();
 		String csqHgvs = csq.getHgvsP();
 
 		Gpr.debug("Compare prot: " + effHgsv + "\t" + csqHgvs);
@@ -217,7 +218,7 @@ public class CompareToVep {
 		if (!csqHgvs.isEmpty() && effHgsv == null) return false;
 		if (csqHgvs.isEmpty() && effHgsv != null) return false;
 
-		csqHgvs = csqHgvs.substring(csqHgvs.indexOf(':'));
+		csqHgvs = csqHgvs.substring(csqHgvs.indexOf(':') + 1);
 		Gpr.debug("Compare prot: " + effHgsv + "\t" + csqHgvs);
 		return csqHgvs.equals(effHgsv);
 	}

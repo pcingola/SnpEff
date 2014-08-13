@@ -93,8 +93,10 @@ public class VcfConsequence {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		String fieldNames[] = vcfConsequenceHeader.getFieldNames();
-		for (int i = 0; i < fieldNames.length; i++)
-			sb.append("\t" + fieldNames[i] + " : " + get(fieldNames[i]) + "\n");
+		for (int i = 0; i < fieldNames.length; i++) {
+			if (sb.length() > 0) sb.append(", ");
+			sb.append(fieldNames[i] + ": " + get(fieldNames[i]));
+		}
 		return sb.toString();
 	}
 }

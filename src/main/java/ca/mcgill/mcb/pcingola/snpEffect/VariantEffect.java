@@ -194,18 +194,9 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	/**
-	 * Amino acid change string
-	 */
-	public String getAaChange() {
-		if (aaOld.isEmpty() && aaNew.isEmpty()) return "";
-		if (aaOld.equals(aaNew)) return aaNew;
-		return (aaOld.isEmpty() ? "-" : aaOld) + "/" + (aaNew.isEmpty() ? "-" : aaNew);
-	}
-
-	/**
 	 * Amino acid change string (HGVS style)
 	 */
-	public String getAaChangeHgsv() {
+	public String getAaChange() {
 		if (aaOld.isEmpty() && aaNew.isEmpty()) {
 			if (codonNum >= 0) return "" + (codonNum + 1);
 			return "";
@@ -465,7 +456,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -516,7 +507,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
-				;
+		;
 	}
 
 	public void set(Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
@@ -663,7 +654,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-				;
+		;
 	}
 
 	/**
