@@ -87,18 +87,21 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		this.variant = variant;
 		variantRef = null;
 		effectTypes = new ArrayList<EffectType>();
+		effectImpacts = new ArrayList<EffectImpact>();
 	}
 
 	public VariantEffect(Variant variant, Variant variantRef) {
 		this.variant = variant;
 		this.variantRef = variantRef;
 		effectTypes = new ArrayList<EffectType>();
+		effectImpacts = new ArrayList<EffectImpact>();
 	}
 
 	public VariantEffect(Variant variant, Variant variantRef, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
 		this.variant = variant;
 		this.variantRef = variantRef;
 		effectTypes = new ArrayList<EffectType>();
+		effectImpacts = new ArrayList<EffectImpact>();
 		set(marker, effectType, effectImpact, message);
 		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 	}
@@ -462,7 +465,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -521,7 +524,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| (getEffectType() == EffectType.SPLICE_SITE_REGION) //
 				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH) //
 				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH_U12) //
-				;
+		;
 	}
 
 	public boolean isStartGained() {
@@ -537,7 +540,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| (getEffectType() == EffectType.UTR_3_PRIME) //
 				|| (getEffectType() == EffectType.UTR_5_DELETED) //
 				|| (getEffectType() == EffectType.UTR_3_DELETED) //
-				;
+		;
 	}
 
 	public void set(Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
@@ -684,7 +687,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-				;
+		;
 	}
 
 	/**
