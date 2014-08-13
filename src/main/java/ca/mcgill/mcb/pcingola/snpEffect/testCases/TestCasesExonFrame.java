@@ -21,6 +21,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesExonFrame extends TestCase {
 
+	boolean verbose = false;
+
 	public TestCasesExonFrame() {
 		super();
 	}
@@ -34,11 +36,12 @@ public class TestCasesExonFrame extends TestCase {
 		// Build database
 		//---
 		String genomeName = "testLukas";
-		String args[] = { "build", "-v", "-noLog", "-gff3", genomeName };
+		String args[] = { "build", "-noLog", "-gff3", genomeName };
 
 		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
 		boolean ok = snpEff.run();
-
 		Assert.assertTrue(ok);
 
 		//---
@@ -46,7 +49,7 @@ public class TestCasesExonFrame extends TestCase {
 		//---
 		String configFile = Config.DEFAULT_CONFIG_FILE;
 		Config config = new Config(genomeName, configFile);
-		System.out.println("Loading database");
+		if (verbose) System.out.println("Loading database");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
 
 		// Find transcript (there is only one)
@@ -68,11 +71,13 @@ public class TestCasesExonFrame extends TestCase {
 		// Annotate
 		SnpEff cmd = new SnpEff(argsEff);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
 		// Analyze annotations
 		for (VcfEntry ve : vcfEntries) {
-			System.out.println(ve.toStringNoGt());
+			if (verbose) System.out.println(ve.toStringNoGt());
 
 			String expectedEffect = ve.getInfo("EXP_EFF");
 			String expectedAa = ve.getInfo("EXP_AA");
@@ -80,12 +85,14 @@ public class TestCasesExonFrame extends TestCase {
 
 			boolean found = false;
 			for (VcfEffect veff : ve.parseEffects()) {
-				System.out.println("\t" + veff);
 				String eff = veff.getEffect().toString();
 
-				System.out.println("\t\tExpecing: '" + expectedEffect + "'\tFound: '" + eff + "'");
-				System.out.println("\t\tExpecing: '" + expectedAa + "'\tFound: '" + veff.getAa() + "'");
-				System.out.println("\t\tExpecing: '" + expectedCodon + "'\tFound: '" + veff.getCodon() + "'");
+				if (verbose) {
+					System.out.println("\t" + veff);
+					System.out.println("\t\tExpecing: '" + expectedEffect + "'\tFound: '" + eff + "'");
+					System.out.println("\t\tExpecing: '" + expectedAa + "'\tFound: '" + veff.getAa() + "'");
+					System.out.println("\t\tExpecing: '" + expectedCodon + "'\tFound: '" + veff.getCodon() + "'");
+				}
 
 				// Effect matches expected?
 				if (expectedEffect.equals(eff) //

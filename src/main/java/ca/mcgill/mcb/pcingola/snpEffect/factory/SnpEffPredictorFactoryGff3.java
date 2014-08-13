@@ -30,14 +30,6 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 
 	/**
 	 * Add a new interval to SnpEffect predictor
-	 * @param id
-	 * @param type
-	 * @param chromo
-	 * @param start
-	 * @param end
-	 * @param strandMinus
-	 * @param name
-	 * @param parent
 	 */
 	void addInterval(String id, String type, String chromo, int start, int end, boolean strandMinus, String name, boolean proteinCoding, String parent, int frame) {
 		// Get chromosome
@@ -189,8 +181,6 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 
 	/**
 	 * Read and parse GFF file
-	 * @param vcfFileName
-	 * @throws Exception
 	 */
 	@Override
 	protected boolean parse(String line, String typeToRead) {

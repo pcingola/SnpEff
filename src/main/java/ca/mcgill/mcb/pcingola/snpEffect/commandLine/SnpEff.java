@@ -810,10 +810,11 @@ public class SnpEff implements CommandLine {
 		else throw new RuntimeException("Unknown command '" + command + "'");
 
 		// Copy values to specific command
-		snpEffCmd.verbose = verbose;
 		snpEffCmd.help = help;
+		snpEffCmd.verbose = verbose;
 		snpEffCmd.debug = debug;
 		snpEffCmd.quiet = quiet;
+		snpEffCmd.suppressOutput = suppressOutput;
 		snpEffCmd.configFile = configFile;
 		snpEffCmd.dataDir = dataDir;
 		snpEffCmd.canonical = canonical;

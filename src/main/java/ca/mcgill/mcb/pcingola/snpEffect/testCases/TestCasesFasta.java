@@ -11,6 +11,8 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class TestCasesFasta extends TestCase {
 
+	boolean verbose = false;
+
 	public TestCasesFasta() {
 		super();
 	}
@@ -23,7 +25,7 @@ public class TestCasesFasta extends TestCase {
 		String fastaFileName = "tests/emptyLine.fa";
 		FastaFileIterator ffi = new FastaFileIterator(fastaFileName);
 		for (String seq : ffi) {
-			System.out.println("SeqName: " + ffi.getName() + "\tSize: " + seq.length());
+			if (verbose) System.out.println("SeqName: " + ffi.getName() + "\tSize: " + seq.length());
 		}
 	}
 }

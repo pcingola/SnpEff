@@ -22,7 +22,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesCodingTag extends TestCase {
 
-	boolean verbose = true;
+	boolean verbose = false;
 
 	public TestCasesCodingTag() {
 		super();
@@ -35,6 +35,8 @@ public class TestCasesCodingTag extends TestCase {
 		// Run snpeff
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
 		// Make sure transcript coding tags are there

@@ -19,6 +19,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesTranscriptError extends TestCase {
 
+	boolean verbose = false;
+
 	public TestCasesTranscriptError() {
 		super();
 	}
@@ -43,14 +45,16 @@ public class TestCasesTranscriptError extends TestCase {
 	void transcriptError(String args[], ErrorWarningType warningType) {
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		snpeff.setVerbose(verbose);
+		snpeff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = snpeff.run(true);
 
 		boolean hasWarning = false;
 		for (VcfEntry ve : vcfEntries) {
-			System.out.println(ve);
+			if (verbose) System.out.println(ve);
 			for (VcfEffect veff : ve.parseEffects()) {
 				EffectImpact imp = veff.getImpact();
-				System.out.println("\t" + imp + "\t" + veff);
+				if (verbose) System.out.println("\t" + imp + "\t" + veff);
 
 				// Check if the warning type we expect is there
 				if (veff.getErrorsOrWarning() != null) hasWarning |= veff.getErrorsOrWarning().indexOf(warningType.toString()) >= 0;

@@ -26,6 +26,8 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class TestCasesGff3 extends TestCase {
 
+	boolean verbose = false;
+
 	public TestCasesGff3() {
 		super();
 		Exon.ToStringVersion = 1; // Set "toString()" version
@@ -40,6 +42,7 @@ public class TestCasesGff3 extends TestCase {
 		// Build
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
 		SnpEffPredictorFactoryGff3 fgff3 = new SnpEffPredictorFactoryGff3(config);
+		fgff3.setVerbose(verbose);
 		fgff3.setFileName(gff3File);
 		fgff3.setReadSequences(readSeqs);
 		fgff3.setCreateRandSequences(createRandSequences);
@@ -47,7 +50,7 @@ public class TestCasesGff3 extends TestCase {
 
 		// Compare result
 		String result = show(sep.getGenome()).trim();
-		System.out.println("Result:\n----------\n" + result + "\n----------\n");
+		if (verbose) System.out.println("Result:\n----------\n" + result + "\n----------\n");
 		Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 
 		return sep;
@@ -55,8 +58,6 @@ public class TestCasesGff3 extends TestCase {
 
 	/**
 	 * Show a genome in a 'standard' way
-	 * @param genome
-	 * @return
 	 */
 	String show(Genome genome) {
 		StringBuilder sb = new StringBuilder();

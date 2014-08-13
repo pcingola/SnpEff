@@ -397,6 +397,8 @@ public class TestCasesVcf extends TestCase {
 
 		// Create command and run
 		SnpEffCmdEff effcmd = (SnpEffCmdEff) snpeff.snpEffCmd();
+		effcmd.setVerbose(verbose);
+		effcmd.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = effcmd.run(true);
 
 		// All VCF entries should be filtered out

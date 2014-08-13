@@ -21,7 +21,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
  */
 public abstract class OutputFormatter {
 
-	boolean supressOutput; // Do not print anything
+	boolean supressOutput = false; // Do not print anything (used for testCases)
 	boolean showHeader = true; // Show header information
 	boolean useHgvs; // Use HGVS notation
 	boolean useGeneId; // Use Gene ID instead of gene name
@@ -130,7 +130,7 @@ public abstract class OutputFormatter {
 				if (out != null) {
 					out.write(outStr);
 					out.write("\n");
-				} else System.out.println(outStr); // Show on STDOUT
+				} else if (!supressOutput) System.out.println(outStr); // Show on STDOUT
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -198,7 +198,6 @@ public abstract class OutputFormatter {
 
 	/**
 	 * Starts a new section
-	 * @param section
 	 */
 	public void startSection(Marker marker) {
 		section = marker;

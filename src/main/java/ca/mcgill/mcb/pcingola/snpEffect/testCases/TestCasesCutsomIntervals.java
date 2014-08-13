@@ -19,6 +19,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesCutsomIntervals extends TestCase {
 
 	public static boolean debug = false;
+	public static boolean verbose = false || debug;
 	public static final int NUM_DEL_TEST = 10; // number of random test per transcript
 
 	Config config;
@@ -34,6 +35,8 @@ public class TestCasesCutsomIntervals extends TestCase {
 		String[] args = { "-classic", "-interval", "tests/custom_intervals_01.gff", "testHg3770Chr22", "tests/custom_intervals_01.vcf" };
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 
 		// Run
 		List<VcfEntry> vcfEntries = cmdEff.run(true);

@@ -21,8 +21,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesMotif extends TestCase {
 
-	public static boolean debug = true;
-	public static boolean verbose = true;
+	public static boolean debug = false;
+	public static boolean verbose = false || debug;
 	public static int SHOW_EVERY = 10;
 
 	public TestCasesMotif() {
@@ -30,18 +30,20 @@ public class TestCasesMotif extends TestCase {
 	}
 
 	void checkMotif(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact) {
-		String args[] = { "-classic", "-v", "-motif", "-ud", "0", genomeVer, vcfFile };
+		String args[] = { "-classic", "-motif", "-ud", "0", genomeVer, vcfFile };
 		SnpEff cmd = new SnpEff(args);
 
 		// Run
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
 		// Check results
 		int numNextProt = 0;
 		for (VcfEntry ve : vcfEntries) {
 			for (VcfEffect veff : ve.parseEffects()) {
-				System.out.println("\t" + veff);
+				if (verbose) System.out.println("\t" + veff);
 				if ((veff.getEffect() == EffectType.MOTIF) // Is it motif?
 						&& effectDetails.equals(veff.getEffectDetails()) // Are details OK?
 						&& (impact == veff.getImpact())) // Is impact OK?

@@ -3,10 +3,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
@@ -93,12 +91,8 @@ public class TestCasesEff extends TestCase {
 	 */
 	public void test_03_EmptyVcf() {
 		Gpr.debug("Test");
-		String args[] = { "eff", "-noLog", "testHg3770Chr22", "tests/empty_only_header.vcf" };
-		SnpEff snpEff = new SnpEff(args);
-		snpEff.setVerbose(verbose);
-		snpEff.setSupressOutput(!verbose);
-		boolean ok = snpEff.run();
-		Assert.assertTrue(ok);
+		String args[] = { "eff", "-noLog" };
+		snpEffect("testHg3770Chr22", "tests/empty_only_header.vcf", args);
 	}
 
 	/**
@@ -107,12 +101,6 @@ public class TestCasesEff extends TestCase {
 	public void test_04() {
 		Gpr.debug("Test");
 		String args[] = { "-csvStats" };
-		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
-
-		for (VcfEntry ve : vcfEntries) {
-			int numEffs = ve.parseEffects().size();
-			if (verbose) System.out.println("Num effects:" + numEffs + "\t" + ve);
-			Assert.assertTrue(numEffs <= 1);
-		}
+		snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
 	}
 }

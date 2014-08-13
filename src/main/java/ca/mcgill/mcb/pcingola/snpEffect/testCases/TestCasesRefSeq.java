@@ -10,11 +10,11 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRefSeq;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -25,15 +25,14 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class TestCasesRefSeq extends TestCase {
 
+	boolean verbose = false;
+
 	public TestCasesRefSeq() {
 		super();
 	}
 
 	/**
 	 * Build a genome from a RefSeq file and compare results to 'expected' results
-	 * @param genome
-	 * @param refSeqFile
-	 * @param resultFile
 	 */
 	public SnpEffectPredictor buildAndCompare(String genome, String refSeqFile, String fastaFile, String resultFile) {
 		String expectedResult = Gpr.readFile(resultFile).trim();
@@ -42,6 +41,7 @@ public class TestCasesRefSeq extends TestCase {
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
 		SnpEffPredictorFactoryRefSeq factory = new SnpEffPredictorFactoryRefSeq(config);
 		factory.setFileName(refSeqFile);
+		factory.setVerbose(verbose);
 
 		// Set fasta file (or don't read sequences)
 		if (fastaFile != null) factory.setFastaFile(fastaFile);
@@ -51,7 +51,7 @@ public class TestCasesRefSeq extends TestCase {
 
 		// Compare result
 		String result = show(sep.getGenome()).trim();
-		System.out.println(result);
+		if (verbose) System.out.println(result);
 		Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 
 		return sep;
@@ -59,8 +59,6 @@ public class TestCasesRefSeq extends TestCase {
 
 	/**
 	 * Show a genome in a 'standard' way
-	 * @param genome
-	 * @return
 	 */
 	String show(Genome genome) {
 		StringBuilder sb = new StringBuilder();
@@ -105,7 +103,7 @@ public class TestCasesRefSeq extends TestCase {
 		Variant seqChange = new Variant(sep.getGenome().getChromosome("1"), 521603, "A", "G");
 		VariantEffects effs = sep.variantEffect(seqChange);
 		for (VariantEffect eff : effs) {
-			System.out.println("\t" + eff);
+			if (verbose) System.out.println("\t" + eff);
 			Assert.assertEquals(eff.getEffectType(), EffectType.INTERGENIC);
 		}
 

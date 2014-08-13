@@ -89,7 +89,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	@Override
 	public SnpEffectPredictor create() {
 		// Read gene intervals from a file
-		System.out.println("Reading " + version + " data file  : '" + fileName + "'");
+		if (verbose) System.out.println("Reading " + version + " data file  : '" + fileName + "'");
 		try {
 			// We have to read the file a few times because we want to have all genes, then all transcripts, then all exons, etc.
 			if (verbose) System.out.print("\tReading genes       : ");
@@ -149,9 +149,6 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	 * Is this protein coding according to the source
 	 *
 	 * References: http://vega.sanger.ac.uk/info/about/gene_and_transcript_types.html
-	 *
-	 * @param biotype
-	 * @return
 	 */
 	protected boolean isProteingCoding(String biotype) {
 		return biotype.equals("protein_coding") //
@@ -168,7 +165,6 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 	/**
 	 * Parse a line
-	 * @param line
 	 * @return true if a line was parsed
 	 */
 	protected abstract boolean parse(String line, String typeToRead);
@@ -235,7 +231,6 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 	/**
 	 * Read GFF file from the beginning looking for 'typeToRead' elements
-	 * @param typeToRead
 	 */
 	protected void readGff(String typeToRead) throws Exception {
 		int count = 0;

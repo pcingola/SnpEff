@@ -17,9 +17,9 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * This class creates a SnpEffectPredictor from a TXT file dumped using UCSC table browser
- * 
+ *
  * RefSeq table schema: http://genome.ucsc.edu/cgi-bin/hgTables
- * 
+ *
  * field           example               SQL type                                 info     description
  * bin             585                   smallint(5)                              range    Indexing field to speed chromosome range queries.
  * name            NR_026818             varchar(255)                             values   Name of gene (usually transcript_id from GTF)
@@ -32,36 +32,36 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * exonCount       3                     int(10)                                  range    Number of exons
  * exonStarts      34610,35276,35720,    longblob                                          Exon start positions
  * exonEnds        35174,35481,36081,    longblob                                          Exon end positions
- * score           0                     int(11)                                  range     
+ * score           0                     int(11)                                  range
  * name2           FAM138A               varchar(255)                             values   Alternate name (e.g. gene_id from GTF)
  * cdsStartStat    unk                   enum('none', 'unk', 'incmpl', 'cmpl')    values   enum('none','unk','incmpl','cmpl')
  * cdsEndStat      unk                   enum('none', 'unk', 'incmpl', 'cmpl')    values   enum('none','unk','incmpl','cmpl')
  * exonFrames      -1,-1,-1,             longblob                                          Exon frame {0,1,2}, or -1 if no frame for exon
- *  
+ *
  * Refseq Accession format (i.e. NM_ NR_ codes) : http://www.ncbi.nlm.nih.gov/RefSeq/key.html
- * 
+ *
  * Accession       Molecule   Method       Note
- * AC_123456       Genomic    Mixed        Alternate complete genomic molecule. This prefix is used for records that are provided to reflect an alternate assembly or annotation. Primarily used for viral, prokaryotic records.    
- * AP_123456       Protein    Mixed        Protein products; alternate protein record. This prefix is used for records that are provided to reflect an alternate assembly or annotation. The AP_ prefix was originally designated for bacterial proteins but this usage was changed.    
- * NC_123456       Genomic    Mixed        Complete genomic molecules including genomes, chromosomes, organelles, plasmids.    
- * NG_123456       Genomic    Mixed        Incomplete genomic region; supplied to support the NCBI genome annotation pipeline. Represents either non-transcribed pseudogenes, or larger regions representing a gene cluster that is difficult to annotate via automatic methods.    
- * NM_123456789    mRNA       Mixed        Transcript products; mature messenger RNA (mRNA) transcripts.    
- * NP_123456789    Protein    Mixed        Protein products; primarily full-length precursor products but may include some partial proteins and mature peptide products.    
- * NR_123456       RNA        Mixed        Non-coding transcripts including structural RNAs, transcribed pseudogenes, and others.    
- * NT_123456       Genomic    Automated    Intermediate genomic assemblies of BAC and/or Whole Genome Shotgun sequence data.    
- * NW_123456789    Genomic    Automated    Intermediate genomic assemblies of BAC or Whole Genome Shotgun sequence data.    
- * NZ_ABCD12345678 Genomic    Automated    A collection of whole genome shotgun sequence data for a project. Accessions are not tracked between releases. The first four characters following the underscore (e.g. 'ABCD') identifies a genome project.    
- * XM_123456789    mRNA       Automated    Transcript products; model mRNA provided by a genome annotation process; sequence corresponds to the genomic contig.    
- * XP_123456789    Protein    Automated    Protein products; model proteins provided by a genome annotation process; sequence corresponds to the genomic contig.    
- * XR_123456       RNA        Automated    Transcript products; model non-coding transcripts provided by a genome annotation process; sequence corresponds to the genomic contig.    
- * YP_123456789    Protein    Mixed        Protein products; no corresponding transcript record provided. Primarily used for bacterial, viral, and mitochondrial records.    
- * ZP_12345678     Protein    Automated    Protein products; annotated on NZ_ accessions (often via computational methods).    
+ * AC_123456       Genomic    Mixed        Alternate complete genomic molecule. This prefix is used for records that are provided to reflect an alternate assembly or annotation. Primarily used for viral, prokaryotic records.
+ * AP_123456       Protein    Mixed        Protein products; alternate protein record. This prefix is used for records that are provided to reflect an alternate assembly or annotation. The AP_ prefix was originally designated for bacterial proteins but this usage was changed.
+ * NC_123456       Genomic    Mixed        Complete genomic molecules including genomes, chromosomes, organelles, plasmids.
+ * NG_123456       Genomic    Mixed        Incomplete genomic region; supplied to support the NCBI genome annotation pipeline. Represents either non-transcribed pseudogenes, or larger regions representing a gene cluster that is difficult to annotate via automatic methods.
+ * NM_123456789    mRNA       Mixed        Transcript products; mature messenger RNA (mRNA) transcripts.
+ * NP_123456789    Protein    Mixed        Protein products; primarily full-length precursor products but may include some partial proteins and mature peptide products.
+ * NR_123456       RNA        Mixed        Non-coding transcripts including structural RNAs, transcribed pseudogenes, and others.
+ * NT_123456       Genomic    Automated    Intermediate genomic assemblies of BAC and/or Whole Genome Shotgun sequence data.
+ * NW_123456789    Genomic    Automated    Intermediate genomic assemblies of BAC or Whole Genome Shotgun sequence data.
+ * NZ_ABCD12345678 Genomic    Automated    A collection of whole genome shotgun sequence data for a project. Accessions are not tracked between releases. The first four characters following the underscore (e.g. 'ABCD') identifies a genome project.
+ * XM_123456789    mRNA       Automated    Transcript products; model mRNA provided by a genome annotation process; sequence corresponds to the genomic contig.
+ * XP_123456789    Protein    Automated    Protein products; model proteins provided by a genome annotation process; sequence corresponds to the genomic contig.
+ * XR_123456       RNA        Automated    Transcript products; model non-coding transcripts provided by a genome annotation process; sequence corresponds to the genomic contig.
+ * YP_123456789    Protein    Mixed        Protein products; no corresponding transcript record provided. Primarily used for bacterial, viral, and mitochondrial records.
+ * ZP_12345678     Protein    Automated    Protein products; annotated on NZ_ accessions (often via computational methods).
  * NS_123456       Genomic    Automated    Genomic records that represent an assembly which does not reflect the structure of a real biological molecule. The assembly may represent an unordered assembly of unplaced scaffolds, or it may represent an assembly of DNA sequences generated from a biological sample that may not represent a single organism.
- * 
+ *
  * $ zcat genes.txt.gz | cut -f 2 | cut -b 1,2 | sort | uniq -c
  *   34466 NM
- *    6548 NR    
- * 
+ *    6548 NR
+ *
  * @author pcingola
  */
 public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
@@ -99,8 +99,6 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 	/**
 	 * Get biotype based on ID
 	 * Reference http://www.ncbi.nlm.nih.gov/RefSeq/key.html
-	 * @param id
-	 * @return
 	 */
 	String bioType(String id) {
 		if (id.length() < 2) return "";
@@ -128,7 +126,7 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 		finishUp(); // Perform adjustments
 
 		// Check that exons have sequences
-		System.out.println(config.getGenome());
+		if (verbose) System.out.println(config.getGenome());
 		boolean error = config.getGenome().isMostExonsHaveSequence();
 		if (error && readSequences) throw new RuntimeException("Most Exons do not have sequences!");
 
@@ -137,13 +135,6 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 
 	/**
 	 * Find (or create) a gene for this transcript
-	 * @param geneName
-	 * @param trId
-	 * @param chromo
-	 * @param start
-	 * @param end
-	 * @param strandMinus
-	 * @return
 	 */
 	Gene findOrCreateGene(String geneName, String trId, Chromosome chromo, int start, int end, boolean strandMinus) {
 		Marker tr = new Marker(chromo, start, end, strandMinus, trId);

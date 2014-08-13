@@ -18,6 +18,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesNoChange extends TestCase {
 
+	boolean verbose = false;
+
 	public TestCasesNoChange() {
 		super();
 	}
@@ -37,13 +39,15 @@ public class TestCasesNoChange extends TestCase {
 	void vcfNoChange(String args[]) {
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		snpeff.setVerbose(verbose);
+		snpeff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = snpeff.run(true);
 
 		for (VcfEntry ve : vcfEntries) {
-			System.out.println(ve);
+			if (verbose) System.out.println(ve);
 			for (VcfEffect veff : ve.parseEffects()) {
 				EffectImpact imp = veff.getImpact();
-				System.out.println("\t" + imp + "\t" + veff);
+				if (verbose) System.out.println("\t" + imp + "\t" + veff);
 				Assert.assertEquals(EffectImpact.MODIFIER, imp);
 			}
 		}

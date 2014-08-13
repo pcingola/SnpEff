@@ -13,11 +13,11 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
@@ -27,8 +27,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
- * Test random SNP changes 
- * 
+ * Test random SNP changes
+ *
  * @author pcingola
  */
 public class TestCasesHgvs extends TestCase {
@@ -53,9 +53,6 @@ public class TestCasesHgvs extends TestCase {
 
 	/**
 	 * Count how many bases are there until the exon
-	 * @param bases
-	 * @param pos
-	 * @return
 	 */
 	int exonBase(char bases[], int pos, int direction) {
 		int countAfter = 0, countBefore = 0;
@@ -121,13 +118,6 @@ public class TestCasesHgvs extends TestCase {
 
 	/**
 	 * Intronic HGS notation
-	 * 
-	 * @param bases
-	 * @param j
-	 * @param pos
-	 * @param refStr
-	 * @param altStr
-	 * @return
 	 */
 	String intronHgsv(char bases[], int j, int pos, String refStr, String altStr) {
 		if (transcript.isStrandMinus()) {
@@ -155,7 +145,7 @@ public class TestCasesHgvs extends TestCase {
 		} else if (type == '3') {
 			typeStr = "*";
 
-			// Count UTR3 bases until end of coding 
+			// Count UTR3 bases until end of coding
 			for (int i = exonBase; (i >= 0) && (i < bases.length); i -= step) {
 				if (bases[i] == type) basesCount++;
 				else if (bases[i] != '-') break;
@@ -177,7 +167,6 @@ public class TestCasesHgvs extends TestCase {
 
 	/**
 	 * Run SnpEff on VCF file
-	 * @param vcfFile
 	 */
 	public void snpEffect(String vcfFile, String genomeVer) {
 		// Create command
@@ -185,6 +174,8 @@ public class TestCasesHgvs extends TestCase {
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);
@@ -217,7 +208,7 @@ public class TestCasesHgvs extends TestCase {
 			// Not found? Error
 			if (!found) {
 				System.err.println("HGVS not found in variant\n" + vcfEntry + "\n" + sb);
-				// throw new RuntimeException("HGVS not found in variant\n" + vcfEntry);
+				throw new RuntimeException("HGVS not found in variant\n" + vcfEntry);
 			}
 			entryNum++;
 		}
@@ -235,7 +226,8 @@ public class TestCasesHgvs extends TestCase {
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor(false, true);
 			if (debug) System.out.println("HGSV Test iteration: " + i + "\n" + transcript);
-			else System.out.println("HGSV Coding\titeration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+			else if (verbose) System.out.println("HGSV Coding\titeration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+			else Gpr.showMark(i + 1, 1);
 
 			int cdsBaseNum = 0;
 
@@ -371,14 +363,14 @@ public class TestCasesHgvs extends TestCase {
 			char bases[] = trstr.toCharArray();
 
 			// Show data
-			System.out.println("HGSV Intron\titeration:" + checked + "\t" + (transcript.isStrandPlus() ? "+" : "-"));
 			if (verbose) {
+				System.out.println("HGSV Intron\titeration:" + checked + "\t" + (transcript.isStrandPlus() ? "+" : "-"));
 				System.out.println(trstr);
 				System.out.println("Length   : " + transcript.size());
 				System.out.println("CDS start: " + transcript.getCdsStart());
 				System.out.println("CDS end  : " + transcript.getCdsEnd());
 				System.out.println(transcript);
-			}
+			} else Gpr.showMark(it, 1);
 
 			// Check each intronic base
 			for (int j = 0, pos = transcript.getStart(); pos < transcript.getEnd(); j++, pos++) {
@@ -395,7 +387,7 @@ public class TestCasesHgvs extends TestCase {
 					// Ref & Alt
 					String refStr = "A", altStr = "T";
 
-					// Calculate expected hgsv string 
+					// Calculate expected hgsv string
 					String hgsv = intronHgsv(bases, j, pos, refStr, altStr);
 
 					// Calculate effect and compare to expected
