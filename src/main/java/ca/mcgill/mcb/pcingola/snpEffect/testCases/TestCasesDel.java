@@ -185,8 +185,6 @@ public class TestCasesDel extends TestCase {
 		Gpr.debug("Test");
 		CodonTable codonTable = genome.codonTable();
 
-		Gpr.debug("DEBUG: " + chromoSequence);
-
 		// Test N times
 		//	- Create a random gene transcript, exons
 		//	- Create a random Insert at each position
@@ -208,11 +206,6 @@ public class TestCasesDel extends TestCase {
 
 				// For each base in this exon...
 				for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
-					if (i == 805 && pos == 407) {
-						verbose = debug = true;
-						Gpr.debug("DEBUG: " + chromoSequence);
-					}
-
 					//---
 					// Create variant
 					//---
@@ -252,9 +245,7 @@ public class TestCasesDel extends TestCase {
 					String codonsOld = codonsOld(variant);
 					codonsOld = codonsOld.toUpperCase();
 					String aaOld = codonTable.aa(codonsOld);
-
 					String codonsNew = codonsNew(variant);
-					// String aaNew = codonTable.aa(codonsNew.length() < 3 ? "" : codonsNew);
 					String aaNew = codonTable.aa(codonsNew);
 
 					// Net change
@@ -410,14 +401,14 @@ public class TestCasesDel extends TestCase {
 		}
 		tr.rankExons();
 
-		System.out.println("Transcript:\n" + tr);
+		if (verbose) System.out.println("Transcript:\n" + tr);
 		Assert.assertEquals("FLPYKAVLCR", tr.protein());
 
 		//---
 		// Create variant
 		//---
 		Variant var = new Variant(chr, 397, "GCCCGATAGGA", "", "");
-		System.out.println("Variant: " + var);
+		if (verbose) System.out.println("Variant: " + var);
 		Assert.assertEquals("chr1:397_GCCCGATAGGA/", var.toString());
 
 		//---
@@ -431,8 +422,7 @@ public class TestCasesDel extends TestCase {
 		VariantEffects effectsAll = snpEffectPredictor.variantEffect(var);
 		for (VariantEffect eff : effectsAll) {
 			if (eff.getEffectType() == EffectType.CODON_CHANGE_PLUS_CODON_DELETION) {
-				// Check
-				System.out.println("\t" + eff.getEffectTypeString(false) + "\t" + eff.getCodonsOld() + "\t" + eff.getCodonsNew());
+				if (verbose) System.out.println("\t" + eff.getEffectTypeString(false) + "\t" + eff.getCodonsOld() + "\t" + eff.getCodonsNew());
 				Assert.assertEquals("TCT", eff.getCodonsNew().toUpperCase());
 			}
 		}
