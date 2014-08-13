@@ -6,13 +6,14 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  *
- * Filter transcripts 
- * 
+ * Filter transcripts
+ *
  * @author pcingola
  */
 public class TestCasesFilterTranscripts extends TestCase {
@@ -27,8 +28,9 @@ public class TestCasesFilterTranscripts extends TestCase {
 	 * Filter transcripts from a file
 	 */
 	public void test_01() {
+		Gpr.debug("Test");
 		String args[] = { "-v" //
-				, "-noStats" // 
+				, "-noStats" //
 				, "-i", "vcf", "-o", "vcf" //
 				, "-classic" //
 				, "-onlyTr", "tests/filterTranscripts_01.txt"//
@@ -57,8 +59,9 @@ public class TestCasesFilterTranscripts extends TestCase {
 	 * Filter transcripts from a file
 	 */
 	public void test_02() {
+		Gpr.debug("Test");
 		String args[] = { "-v"//
-				, "-noStats" // 
+				, "-noStats" //
 				, "-i", "vcf", "-o", "vcf" //
 				, "-classic" //
 				, "-onlyTr", "tests/filterTranscripts_02.txt"//

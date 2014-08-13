@@ -9,14 +9,15 @@ import org.junit.Assert;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
- * Test case: Make sure VCF entries have some 'coding' (transcript biotype), even 
- * when biotype info is not available (e.g. hg19), and we infer it 
- * from 'isProteinCoding()' 
- * 
+ * Test case: Make sure VCF entries have some 'coding' (transcript biotype), even
+ * when biotype info is not available (e.g. hg19), and we infer it
+ * from 'isProteinCoding()'
+ *
  * @author pcingola
  */
 public class TestCasesCodingTag extends TestCase {
@@ -28,6 +29,7 @@ public class TestCasesCodingTag extends TestCase {
 	}
 
 	public void test_01() {
+		Gpr.debug("Test");
 		String args[] = { "-classic", "-ud", "0", "-noOut", "testHg19Chr1", "./tests/missing_coding_tr_tag.vcf" };
 
 		// Run snpeff

@@ -157,6 +157,7 @@ public class TestCasesZzz extends TestCase {
 	 * Test SNP effect predictor for a transcript (Insertions)
 	 */
 	public void test_21() {
+		Gpr.debug("Test");
 		initSnpEffPredictor();
 		String trId = "ENST00000250823";
 		snpEffect("tests/" + trId + "_InDels.out", trId, false);
@@ -166,6 +167,7 @@ public class TestCasesZzz extends TestCase {
 	 * Test SNP effect predictor for a transcript (Insertions)
 	 */
 	public void test_24_delete_exon_utr() {
+		Gpr.debug("Test");
 		initSnpEffPredictor();
 		snpEffect("tests/delete_exon_utr.txt", null, true);
 	}
@@ -174,6 +176,7 @@ public class TestCasesZzz extends TestCase {
 	 * Test SNP effect predictor for a transcript (Insertions)
 	 */
 	public void test_zzz() {
+		Gpr.debug("Test");
 		initSnpEffPredictor();
 		String trId = "ENST00000250823";
 		snpEffect("tests/z.txt", trId, false);

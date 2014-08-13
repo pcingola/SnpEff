@@ -6,11 +6,12 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.gsa.ScoreList;
 import ca.mcgill.mcb.pcingola.gsa.ScoreList.ScoreSummary;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import flanagan.analysis.Stat;
 
 /**
  * GenePvalueList statistics test case
- * 
+ *
  * @author pcingola
  */
 public class TestGenePvalueList extends TestCase {
@@ -19,6 +20,7 @@ public class TestGenePvalueList extends TestCase {
 	 * Combined p-value : MIN
 	 */
 	public void test_01() {
+		Gpr.debug("Test");
 		double pvals[] = { 0.01, 0.2, 0.3 };
 
 		// Create p values
@@ -35,6 +37,7 @@ public class TestGenePvalueList extends TestCase {
 	 * Combined p-value : AVG
 	 */
 	public void test_02() {
+		Gpr.debug("Test");
 		double pvals[] = { 0.01, 0.2, 0.3 };
 
 		// Create p values
@@ -51,6 +54,7 @@ public class TestGenePvalueList extends TestCase {
 	 * Combined p-value : AVG10
 	 */
 	public void test_03() {
+		Gpr.debug("Test");
 		double pvals[] = { 0.01, 0.9, 0.2, 0.9, 0.3, 0.9, 0.01, 0.9, 0.2, 0.9, 0.3, 0.9, 0.01, 0.9, 0.2, 0.9, 0.3, 0.9, 0.17, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9 };
 
 		// Create p values
@@ -65,9 +69,10 @@ public class TestGenePvalueList extends TestCase {
 
 	/**
 	 * Complementary CDF for Chi^2 distribution
-	 * 
+	 *
 	 */
 	public void test_04() {
+		Gpr.debug("Test");
 		Random rand = new Random(20130609);
 
 		// Create many random tests
@@ -95,6 +100,7 @@ public class TestGenePvalueList extends TestCase {
 	 * Combined p-value : FISHER_CHI_SQUARE
 	 */
 	public void test_05() {
+		Gpr.debug("Test");
 		double pvals[] = { 0.01, 0.2, 0.3 };
 
 		// Create p values
@@ -111,6 +117,7 @@ public class TestGenePvalueList extends TestCase {
 	 * Combined p-value : Z_SCORES
 	 */
 	public void test_06() {
+		Gpr.debug("Test");
 		double pvals[] = { 0.01, 0.2, 0.3 };
 
 		// Create p values
@@ -125,9 +132,9 @@ public class TestGenePvalueList extends TestCase {
 
 	/**
 	 * Combined p-value : FDR
-	 * 
+	 *
 	 * Reference for this test: http://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html
-	 * 
+	 *
 	 * R code:
 	 * 		set.seed(123)
 	 * 		x <- rnorm(50, mean = c(rep(0, 25), rep(3, 25)))
@@ -135,6 +142,7 @@ public class TestGenePvalueList extends TestCase {
 	 * 		p.adjust(p, "fdr")
 	 */
 	public void test_07() {
+		Gpr.debug("Test");
 
 		double pvals[] = { 2.354054e-07, 2.101590e-05, 2.576842e-05, 9.814783e-05, 1.052610e-04, 1.241481e-04, 1.325988e-04, 1.568503e-04, 2.254557e-04, 3.795380e-04, 6.114943e-04, 1.613954e-03, 3.302430e-03, 3.538342e-03, 5.236997e-03, 6.831909e-03, 7.059226e-03, 8.805129e-03, 9.401040e-03, 1.129798e-02, 2.115017e-02, 4.922736e-02, 6.053298e-02, 6.262239e-02, 7.395153e-02, 8.281103e-02, 8.633331e-02, 1.190654e-01, 1.890796e-01, 2.058494e-01, 2.209214e-01, 2.856000e-01, 3.048895e-01, 4.660682e-01, 4.830809e-01, 4.921755e-01, 5.319453e-01, 5.751550e-01, 5.783195e-01, 6.185894e-01, 6.363620e-01, 6.448587e-01, 6.558414e-01, 6.885884e-01, 7.189864e-01, 8.179539e-01, 8.274487e-01, 8.971300e-01, 9.118680e-01, 9.437890e-01 };
 
@@ -152,7 +160,7 @@ public class TestGenePvalueList extends TestCase {
 		 * > cbind( p, p.adjust(p, "fdr"))
 		 * 			 [1,] 2.354054e-07 1.177027e-05
 		 * 			 [2,] 2.101590e-05 4.294736e-04
-		 * 			 [3,] 2.576842e-05 4.294736e-04		<-- Same as previous line (this is because an adjusted p-value cannot decrease) 
+		 * 			 [3,] 2.576842e-05 4.294736e-04		<-- Same as previous line (this is because an adjusted p-value cannot decrease)
 		 */
 		pvalue = gpl.pValueFdr(0.0005);
 		Assert.assertEquals(4.294736666666667E-4, pvalue);
@@ -165,6 +173,7 @@ public class TestGenePvalueList extends TestCase {
 	 * Test quantile
 	 */
 	public void test_08() {
+		Gpr.debug("Test");
 		// Create pvalues
 		ScoreList pvlist = new ScoreList();
 		int max = 1000;
@@ -173,7 +182,7 @@ public class TestGenePvalueList extends TestCase {
 			pvlist.add(quantile);
 		}
 
-		// Test 
+		// Test
 		for (int i = 0; i < max; i++) {
 			double quantile = ((double) i) / max;
 			double pval = pvlist.quantile(quantile);
@@ -185,6 +194,7 @@ public class TestGenePvalueList extends TestCase {
 	 * Test CDF (cumulative distribution function)
 	 */
 	public void test_09() {
+		Gpr.debug("Test");
 		// Create pvalues
 		ScoreList pvlist = new ScoreList();
 		int max = 1000;
@@ -193,7 +203,7 @@ public class TestGenePvalueList extends TestCase {
 			pvlist.add(quantile);
 		}
 
-		// Test 
+		// Test
 		for (int i = 0; i < max; i++) {
 			double quantile = ((double) i) / max;
 			double pval = pvlist.cdf(quantile);

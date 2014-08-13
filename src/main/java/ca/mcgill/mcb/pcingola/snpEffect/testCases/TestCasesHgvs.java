@@ -224,6 +224,7 @@ public class TestCasesHgvs extends TestCase {
 	}
 
 	public void test_01_coding() {
+		Gpr.debug("Test");
 		int N = 250;
 		CodonTable codonTable = genome.codonTable();
 
@@ -327,18 +328,22 @@ public class TestCasesHgvs extends TestCase {
 	}
 
 	public void test_02() {
+		Gpr.debug("Test");
 		snpEffect("tests/hgvs_1.vcf", "testHg3766Chr1");
 	}
 
 	public void test_03_intron_withinCds() {
+		Gpr.debug("Test");
 		snpEffect("tests/ensembl_hgvs_intron.within_cds.vcf", "testHg3775Chr1");
 	}
 
 	public void test_04_intron_outsideCds() {
+		Gpr.debug("Test");
 		snpEffect("tests/ensembl_hgvs_intron.outsideCds.vcf", "testHg3775Chr1");
 	}
 
 	public void test_05_intron() {
+		Gpr.debug("Test");
 		int N = 250;
 
 		int testIter = -1;

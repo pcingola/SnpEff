@@ -93,12 +93,14 @@ public class TestCasesBinomial extends TestCase {
 	}
 
 	public void test_00() {
+		Gpr.debug("Test");
 		//		generate_test();
 		//		generate_test();
 		//		generate_test();
 	}
 
 	public void test_01() {
+		Gpr.debug("Test");
 		compare(0.2880550055924883, 220, 254, 2.27799916244268e-82);
 		compare(0.48868610851489847, 25, 31, 0.000221268194173791);
 		compare(0.6629132547126394, 293, 559, 3.86472550479299e-12);
@@ -202,6 +204,7 @@ public class TestCasesBinomial extends TestCase {
 	}
 
 	public void test_02() {
+		Gpr.debug("Test");
 		compareCdf(0.5, 10, 20, 0.588098526000976);
 		compareCdf(0.5, 9, 20, 0.411901473999024);
 
@@ -308,6 +311,7 @@ public class TestCasesBinomial extends TestCase {
 	}
 
 	public void test_03() {
+		Gpr.debug("Test");
 		compareCdfUp(0.5, 10, 20, 0.411901473999024);
 
 		compareCdfUp(0.4325241487200683, 510, 684, 1.2630255422394e-62);

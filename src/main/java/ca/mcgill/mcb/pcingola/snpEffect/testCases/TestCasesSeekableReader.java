@@ -8,10 +8,11 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.fileIterator.SeekableBufferedReader;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Seekable file reader test case
- * 
+ *
  * @author pcingola
  */
 public class TestCasesSeekableReader extends TestCase {
@@ -52,6 +53,7 @@ public class TestCasesSeekableReader extends TestCase {
 	}
 
 	public void test_00() throws IOException {
+		Gpr.debug("Test");
 		String fileName = "tests/testLukas.vcf";
 		long hashExp = calcHashBufferedReader(fileName);
 		long hash = calcHash(fileName);
@@ -62,9 +64,10 @@ public class TestCasesSeekableReader extends TestCase {
 
 	/**
 	 * Basic parsing
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void test_01() throws IOException {
+		Gpr.debug("Test");
 		String dirName = "./tests/";
 		File dir = new File(dirName);
 

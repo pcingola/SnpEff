@@ -222,6 +222,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_01_short() {
+		Gpr.debug("Test");
 		long seed = 20100615;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -229,6 +230,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_01_short_getBase() {
+		Gpr.debug("Test");
 		long seed = 20110217;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -237,6 +239,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_01_short_getBases() {
+		Gpr.debug("Test");
 		long seed = 20110218;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -245,6 +248,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_01_short_replaceBase() {
+		Gpr.debug("Test");
 		long seed = 20110218;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -253,6 +257,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_02_long() {
+		Gpr.debug("Test");
 		long seed = 20100614;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -260,6 +265,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_02_long_getBase() {
+		Gpr.debug("Test");
 		long seed = 20110217;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -268,6 +274,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_02_long_getBases() {
+		Gpr.debug("Test");
 		long seed = 20110218;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -276,6 +283,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_02_long_replaceBase() {
+		Gpr.debug("Test");
 		long seed = 20110217;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -284,6 +292,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_04_Pe() {
+		Gpr.debug("Test");
 		int numTests = 1000;
 		Random rand = new Random(20100617);
 
@@ -314,6 +323,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_05_fastqReader() {
+		Gpr.debug("Test");
 		String fastqFileName = "tests/fastq_test.fastq";
 		String txtFileName = "tests/fastq_test.txt";
 
@@ -331,6 +341,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_05_quality_short() {
+		Gpr.debug("Test");
 		long seed = 20100804;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -338,6 +349,7 @@ public class TestCasesDnaSequence extends TestCase {
 	}
 
 	public void test_06_quality_long() {
+		Gpr.debug("Test");
 		long seed = 20100804;
 		int lenMask = 0xffff;
 		int numTests = 10;

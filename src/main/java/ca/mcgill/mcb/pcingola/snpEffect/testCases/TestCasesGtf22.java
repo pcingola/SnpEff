@@ -86,6 +86,7 @@ public class TestCasesGtf22 extends TestCase {
 	}
 
 	public void testCaseHg37_61_ENST00000250838() {
+		Gpr.debug("Test");
 		String genome = "testHg37.61";
 		String gtfFile = "tests/ENST00000250838.gtf";
 		String fastaFile = "tests/chrY.fa.gz";
@@ -94,6 +95,7 @@ public class TestCasesGtf22 extends TestCase {
 	}
 
 	public void testCaseHg37_61_ENST00000331397() {
+		Gpr.debug("Test");
 		String genome = "testHg37.61";
 		String gtfFile = "tests/ENST00000331397.gtf22";
 		String fastaFile = "tests/chrY.fa.gz";
@@ -102,6 +104,7 @@ public class TestCasesGtf22 extends TestCase {
 	}
 
 	public void testCaseMm37_61_ENSMUSG00000051951() {
+		Gpr.debug("Test");
 		String genome = "testMm37.61";
 		String gtfFile = "tests/ENSMUSG00000051951.gtf";
 		String resultFile = "tests/ENSMUSG00000051951.txt";
@@ -109,6 +112,7 @@ public class TestCasesGtf22 extends TestCase {
 	}
 
 	public void testCaseMm37_61_ENSMUST00000070533() {
+		Gpr.debug("Test");
 		String genome = "testMm37.61";
 		String gtfFile = "tests/ENSMUST00000070533.gtf";
 		String resultFile = "tests/ENSMUST00000070533.txt";

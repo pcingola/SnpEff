@@ -87,6 +87,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_01_Exon_Simple() {
+		Gpr.debug("Test");
 		String genome = "testCase";
 		String gff3File = "tests/exonSimple.gff3";
 		String resultFile = "tests/exonSimple.txt";
@@ -94,6 +95,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_02_ExonIn() {
+		Gpr.debug("Test");
 		String genome = "testCase";
 		String gff3File = "tests/exonIn.gff3";
 		String resultFile = "tests/exonIn.txt";
@@ -101,6 +103,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_03_ExonOut() {
+		Gpr.debug("Test");
 		String genome = "testCase";
 		String gff3File = "tests/exonOut.gff3";
 		String resultFile = "tests/exonOut.txt";
@@ -108,6 +111,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_04_AthalianaTair10_AT5G66790() {
+		Gpr.debug("Test");
 		String genome = "athalianaTair10";
 		String gff3File = "tests/AT5G66790.gff3";
 		String resultFile = "tests/AT5G66790.txt";
@@ -115,6 +119,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_05_PaeruPA14muccA() {
+		Gpr.debug("Test");
 		String genome = "paeru.PA14";
 		String gff3File = "tests/paeru.PA14.muccA.gff";
 		String resultFile = "tests/paeru.PA14.muccA.txt";
@@ -128,6 +133,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_06_Ppersica() {
+		Gpr.debug("Test");
 		String genome = "ppersica139";
 		String gff3File = "tests/ppersica_139.gff";
 		String resultFile = "tests/ppersica_139.txt";
@@ -135,6 +141,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_07_Rice5() {
+		Gpr.debug("Test");
 		String genome = "testRice5";
 		String gff3File = "tests/Os03t0150600.gff";
 		String resultFile = "tests/Os03t0150600.txt";
@@ -142,6 +149,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_08_Vibrio() {
+		Gpr.debug("Test");
 		String genome = "vibrio";
 		String gff3File = "tests/vibrio.gff3";
 		String resultFile = "tests/vibrio.txt";
@@ -149,6 +157,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_09() {
+		Gpr.debug("Test");
 		String genome = "testAP";
 		String gff3File = "tests/testAP_genes.gff.gz";
 		String resultFile = "tests/testAP.txt";
@@ -156,6 +165,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_09_AP() {
+		Gpr.debug("Test");
 		String genome = "testAP";
 		String gff3File = "tests/testAP_genes.gff.gz";
 		String resultFile = "tests/testAP.txt";
@@ -181,6 +191,7 @@ public class TestCasesGff3 extends TestCase {
 	}
 
 	public void testCase_10_MaizeZmB73() {
+		Gpr.debug("Test");
 		String genome = "testMaizeZmB73";
 		String gff3File = "tests/testMaizeZmB73.gff3";
 		String resultFile = "tests/testMaizeZmB73.txt";

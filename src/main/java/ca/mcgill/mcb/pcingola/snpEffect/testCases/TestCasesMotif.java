@@ -10,12 +10,13 @@ import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Test Motif databases
- * 
+ *
  * @author pcingola
  */
 public class TestCasesMotif extends TestCase {
@@ -42,7 +43,7 @@ public class TestCasesMotif extends TestCase {
 			for (VcfEffect veff : ve.parseEffects()) {
 				System.out.println("\t" + veff);
 				if ((veff.getEffect() == EffectType.MOTIF) // Is it motif?
-						&& effectDetails.equals(veff.getEffectDetails()) // Are details OK? 					
+						&& effectDetails.equals(veff.getEffectDetails()) // Are details OK?
 						&& (impact == veff.getImpact())) // Is impact OK?
 					numNextProt++;
 			}
@@ -52,14 +53,17 @@ public class TestCasesMotif extends TestCase {
 	}
 
 	public void test_01() {
+		Gpr.debug("Test");
 		checkMotif("testHg3770Chr22", "tests/test_motif_01.vcf", "MA0099.2:AP1", EffectImpact.LOW);
 	}
 
 	public void test_02() {
+		Gpr.debug("Test");
 		checkMotif("testHg3770Chr22", "tests/test_motif_02.vcf", "MA0099.2:AP1", EffectImpact.MODIFIER);
 	}
 
 	public void test_03() {
+		Gpr.debug("Test");
 		checkMotif("testHg3770Chr22", "tests/test_motif_03.vcf", "MA0099.2:AP1", EffectImpact.LOW);
 	}
 

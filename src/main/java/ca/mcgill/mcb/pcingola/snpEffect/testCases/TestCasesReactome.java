@@ -27,6 +27,7 @@ public class TestCasesReactome extends TestCase {
 	 * Reaction with two molecules
 	 */
 	public void test_01() {
+		Gpr.debug("Test");
 		int id = 1;
 		Entity e1 = new Entity(id++, "input_1");
 		Entity e2 = new Entity(id++, "input_2");
@@ -50,6 +51,7 @@ public class TestCasesReactome extends TestCase {
 	 * Reaction with a catalyst
 	 */
 	public void test_02() {
+		Gpr.debug("Test");
 		int id = 1;
 		Entity e1 = new Entity(id++, "input_1");
 		Entity e2 = new Entity(id++, "input_2");
@@ -80,6 +82,7 @@ public class TestCasesReactome extends TestCase {
 	 * Reaction with positive regulation
 	 */
 	public void test_03() {
+		Gpr.debug("Test");
 		int id = 1;
 		Entity e1 = new Entity(id++, "input_1");
 		Entity e2 = new Entity(id++, "input_2");
@@ -108,6 +111,7 @@ public class TestCasesReactome extends TestCase {
 	 * Reaction with negative regulation
 	 */
 	public void test_04() {
+		Gpr.debug("Test");
 		int id = 1;
 		Entity e1 = new Entity(id++, "input_1");
 		Entity e2 = new Entity(id++, "input_2");
@@ -136,6 +140,7 @@ public class TestCasesReactome extends TestCase {
 	 * Reaction with requirement
 	 */
 	public void test_05() {
+		Gpr.debug("Test");
 		int id = 1;
 		Entity e1 = new Entity(id++, "input_1");
 		Entity e2 = new Entity(id++, "input_2");

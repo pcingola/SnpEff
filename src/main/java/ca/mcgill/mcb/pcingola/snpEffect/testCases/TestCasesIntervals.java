@@ -147,6 +147,7 @@ public class TestCasesIntervals extends TestCase {
 	}
 
 	public void test_00() {
+		Gpr.debug("Test");
 		initRand();
 
 		for (int len = 1; len < 1000; len++)
@@ -157,6 +158,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Read file
 	 */
 	public void test_01() {
+		Gpr.debug("Test");
 		initRand();
 		Markers intervals = MarkerUtil.readTxt("tests/interval_data_100.txt", genome, 0);
 		compareToFile(intervals.toStringTxt(), "tests/test_01.txt");
@@ -166,6 +168,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Sort test
 	 */
 	public void test_02() {
+		Gpr.debug("Test");
 		initRand();
 		Markers intervals = randomIntervals(10, maxLen, 10, 5);
 		intervals.sort(false, false);
@@ -176,6 +179,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Sort (by end) test
 	 */
 	public void test_03() {
+		Gpr.debug("Test");
 		initRand();
 		Markers intervals = randomIntervals(100, maxLen, 25, 2);
 		intervals.sort(true, false);
@@ -186,6 +190,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Merge intervals
 	 */
 	public void test_04() {
+		Gpr.debug("Test");
 		initRand();
 		Markers intervals = randomIntervals(20, maxLen, 10, 2);
 		Markers merge = intervals.merge();
@@ -197,6 +202,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Adding intervals
 	 */
 	public void test_05() {
+		Gpr.debug("Test");
 		initRand();
 		// Create and perform union
 		Markers intervals = randomIntervals(5, maxLen, 10, 2);
@@ -226,6 +232,7 @@ public class TestCasesIntervals extends TestCase {
 	 * We have 2 implementation (brute force and interval trees), so we can compare them.
 	 */
 	public void test_06() {
+		Gpr.debug("Test");
 
 		for (int numInts = 10; numInts < 1000; numInts *= 2) {
 			// Create 'original' intervals
@@ -264,6 +271,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Minus operation for intervals
 	 */
 	public void test_07_01() {
+		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
 
 		// Two identical intervals => Result should be empty
@@ -283,6 +291,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Minus operation for intervals
 	 */
 	public void test_07_02() {
+		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
 
 		// Totally overlapping => result should be empty
@@ -302,6 +311,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Minus operation for intervals
 	 */
 	public void test_07_03() {
+		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
 
 		// Overlapping right part => result should be left part
@@ -324,6 +334,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Minus operation for intervals
 	 */
 	public void test_07_04() {
+		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
 
 		// Overlapping left part => result should be right part
@@ -347,6 +358,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Minus operation for intervals
 	 */
 	public void test_07_05() {
+		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
 
 		// Overlapping middle => result should be left & right parts
@@ -375,6 +387,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Test distance (in bases) from a list of markers
 	 */
 	public void test_08() {
+		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
 		Marker m1 = new Marker(chr, 0, 100, false, "");
 
@@ -394,6 +407,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Test distance (in bases) from a list of markers
 	 */
 	public void test_08_02() {
+		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
 		Marker m1 = new Marker(chr, 0, 99, false, "");
 		Marker m2 = new Marker(chr, 200, 299, false, "");
@@ -417,6 +431,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Test distance (in bases) from a list of markers
 	 */
 	public void test_08_03() {
+		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
 		Marker m1 = new Marker(chr, 0, 99, false, "");
 		Marker m2 = new Marker(chr, 200, 299, false, "");
@@ -437,6 +452,7 @@ public class TestCasesIntervals extends TestCase {
 	}
 
 	public void test_09_chrOrder() {
+		Gpr.debug("Test");
 		Genome genome = new Genome("test");
 
 		Chromosome chrA = new Chromosome(genome, 0, 1, "6");
@@ -450,6 +466,7 @@ public class TestCasesIntervals extends TestCase {
 	}
 
 	public void test_10_chrOrder() {
+		Gpr.debug("Test");
 		Genome genome = new Genome("test");
 
 		Chromosome chrA = new Chromosome(genome, 0, 1, "chr1");

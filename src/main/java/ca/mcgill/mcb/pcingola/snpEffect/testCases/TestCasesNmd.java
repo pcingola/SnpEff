@@ -110,6 +110,7 @@ public class TestCasesNmd extends TestCase {
 	}
 
 	public void test_01() {
+		Gpr.debug("Test");
 		// Load database
 		String genomeVer = "testHg3766Chr1";
 		Gpr.debug("Loading database '" + genomeVer + "'");

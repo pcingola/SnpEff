@@ -4,6 +4,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.fileIterator.NeedlemanWunsch;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfRefAltAlign;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * test cases for Sequence alignment
@@ -15,6 +16,7 @@ public class TestCasesAlign extends TestCase {
 	boolean verbose = false;
 
 	public void test_01() {
+		Gpr.debug("Test");
 		String as[] = { "TTT", "TTTGTT", "GCG", "G" };
 		String bs[] = { "TTTGTT", "TTT", "G", "GCG" };
 		String res[] = { "-GTT", "+GTT", "+CG", "-CG" };
@@ -34,6 +36,7 @@ public class TestCasesAlign extends TestCase {
 	}
 
 	public void test_02() {
+		Gpr.debug("Test");
 		String as[] = { "TTT", "TTTGTT", "GCG", "G" };
 		String bs[] = { "TTTGTT", "TTT", "G", "GCG" };
 		String res[] = { "-GTT", "+GTT", "+CG", "-CG" };

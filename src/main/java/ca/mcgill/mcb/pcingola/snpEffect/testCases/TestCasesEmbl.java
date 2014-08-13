@@ -8,10 +8,11 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryEmbl;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Test case for EMBL file parsing (database creation)
- * 
+ *
  * @author pcingola
  */
 public class TestCasesEmbl extends TestCase {
@@ -39,6 +40,7 @@ public class TestCasesEmbl extends TestCase {
 	}
 
 	public void testCase_Exon_Simple() {
+		Gpr.debug("Test");
 		// Create SnpEff predictor
 		String genome = "testEmblPberghei";
 		String resultFile = "tests/testEmblPberghei.genes.embl";

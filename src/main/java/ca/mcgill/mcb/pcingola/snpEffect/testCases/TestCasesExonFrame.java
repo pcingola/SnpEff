@@ -10,12 +10,13 @@ import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Test case for exon frames
- * 
+ *
  * @author pcingola
  */
 public class TestCasesExonFrame extends TestCase {
@@ -28,6 +29,7 @@ public class TestCasesExonFrame extends TestCase {
 	 * Test database: Build, check and annotate
 	 */
 	public void test_01() {
+		Gpr.debug("Test");
 		//---
 		// Build database
 		//---
@@ -40,7 +42,7 @@ public class TestCasesExonFrame extends TestCase {
 		Assert.assertTrue(ok);
 
 		//---
-		// Load database and check some numbers		
+		// Load database and check some numbers
 		//---
 		String configFile = Config.DEFAULT_CONFIG_FILE;
 		Config config = new Config(genomeName, configFile);
@@ -87,8 +89,8 @@ public class TestCasesExonFrame extends TestCase {
 
 				// Effect matches expected?
 				if (expectedEffect.equals(eff) //
-						&& ((veff.getAa() == null) || expectedAa.equals(veff.getAa())) // 
-						&& ((veff.getCodon() == null) || expectedCodon.equals(veff.getCodon())) // 
+						&& ((veff.getAa() == null) || expectedAa.equals(veff.getAa())) //
+						&& ((veff.getCodon() == null) || expectedCodon.equals(veff.getCodon())) //
 				) //
 					found = true;
 			}

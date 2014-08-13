@@ -24,6 +24,7 @@ public class TestCasesChiSquare extends TestCase {
 	}
 
 	public void test_1() {
+		Gpr.debug("Test");
 		// Data calculated using R:
 		// 		x <- 1:100
 		// 		pchisq(x,1,lower.tail=F)

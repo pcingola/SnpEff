@@ -103,10 +103,12 @@ public class TestCasesFisherExactTest extends TestCase {
 	}
 
 	public void test_0() {
+		Gpr.debug("Test");
 		// generate_test();
 	}
 
 	public void test_03_fisher() {
+		Gpr.debug("Test");
 		compareFisherUp(59, 545, 136, 95, 8.28958173422445e-18);
 		compareFisherUp(36, 345, 190, 41, 2.40265087580901e-06);
 		compareFisherUp(97, 202, 133, 105, 1.18466240918432e-17);
@@ -210,6 +212,7 @@ public class TestCasesFisherExactTest extends TestCase {
 	}
 
 	public void test_04_fisher() {
+		Gpr.debug("Test");
 		compareFisherDown(57, 470, 141, 281, 6.6866974987128e-09);
 		compareFisherDown(152, 912, 754, 203, 0.000440144803784442);
 		compareFisherDown(14, 873, 552, 42, 1.37118944858872e-05);
@@ -313,6 +316,7 @@ public class TestCasesFisherExactTest extends TestCase {
 	}
 
 	public void test_05_fisher() {
+		Gpr.debug("Test");
 		compareFisherDown(1, 100, 50, 0, 1);
 		compareFisherDown(1, 100, 0, 20, 1);
 		compareFisherDown(0, 100, 50, 0, 0);
@@ -350,6 +354,7 @@ public class TestCasesFisherExactTest extends TestCase {
 		  4.859427
 	 */
 	public void test_06_fisher_vs_chi2() {
+		Gpr.debug("Test");
 		int n11 = 25, n12 = 5;
 		int n21 = 15, n22 = 15;
 

@@ -4,10 +4,11 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
- * Calculate missense over silent ratio 
- * 
+ * Calculate missense over silent ratio
+ *
  * @author pcingola
  */
 public class TestCasesMissenseSilentRatio extends TestCase {
@@ -17,6 +18,7 @@ public class TestCasesMissenseSilentRatio extends TestCase {
 	}
 
 	public void test_01() {
+		Gpr.debug("Test");
 		String args[] = { "-i", "vcf" //
 				, "-classic" //
 				, "-noOut" //

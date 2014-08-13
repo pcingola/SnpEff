@@ -4,6 +4,7 @@ import java.util.Random;
 
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.binseq.DnaSequenceByte;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 public class TestCasesDnaSequenceByte extends TestCase {
@@ -11,6 +12,7 @@ public class TestCasesDnaSequenceByte extends TestCase {
 	public static boolean verbose = false;
 
 	public void test_01() {
+		Gpr.debug("Test");
 		Random random = new Random(20120907);
 		for (int len = 1; len < 1000; len++) {
 			for (int i = 0; i < 10; i++) {

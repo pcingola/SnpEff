@@ -111,6 +111,7 @@ public class TestCasesMarkerUtils extends TestCase {
 	 * Test for collapsing markers with zero gaps 
 	 */
 	public void test_collapseZeroGap() {
+		Gpr.debug("Test");
 		initRand();
 		int numMarkers = 20;
 		Chromosome chr = genome.getChromosome("1");

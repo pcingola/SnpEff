@@ -317,6 +317,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_07_overlap() {
+		Gpr.debug("Test");
 		overlap(//
 		"catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg"// First sequence
 		, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" // Second sequence 
@@ -326,6 +327,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_08_overlap() {
+		Gpr.debug("Test");
 		overlap(//
 		"tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" // First sequence 
 		, "catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg"// Second sequence
@@ -336,6 +338,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_09_overlap() {
+		Gpr.debug("Test");
 		overlap(//
 		"tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" // First sequence 
 		, "catagaaaccaacagccatataactggtagctttaagcggctc"// Second sequence
@@ -346,6 +349,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_10_overlap() {
+		Gpr.debug("Test");
 		overlap(//
 		"catagaaaccaacagccatataactggtagctttaagcggctc"// 
 		, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" //  
@@ -356,6 +360,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_11_overlap() {
+		Gpr.debug("Test");
 		overlap(//
 		"catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg"// 
 		, "catagaaaccaacagccatataactggtagctttaagcggctc" // 
@@ -366,6 +371,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_12_overlap() {
+		Gpr.debug("Test");
 		overlap(//
 		"catagaaaccaacagccatataactggtagctttaagcggctc" //  
 		, "catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg"// 
@@ -376,6 +382,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_13_overlap() {
+		Gpr.debug("Test");
 		overlap(//
 		"caggagcaggaaagcgagggtatcctacaaagtccagcgtaccataaacgcaagcctcaacgcagcgacgagcacgagagcggtcagtagcaatccaaac" //  
 		, "aaagtccagcgtaccataaacgcaagcctcaacgcagcgacgagcacgagagcggtcagtagcaatccaa"// 
@@ -386,6 +393,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_15_DnaCoder_copy_1() {
+		Gpr.debug("Test");
 		DnaCoder dnaCoder = DnaCoder.get();
 
 		// Rand 
@@ -442,6 +450,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_16_DnaCoder_copy_2() {
+		Gpr.debug("Test");
 		long seed = 20100812;
 		Random rand = new Random(seed);
 
@@ -464,6 +473,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_17_overlap_rand() {
+		Gpr.debug("Test");
 		int numTests = 10;
 		int minLen = 10;
 		System.err.print("\nOverlap random test:\n");
@@ -477,6 +487,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_18_DnaCoder_score_rand() {
+		Gpr.debug("Test");
 		int numTests = 10;
 		int minLen = 10;
 
@@ -494,6 +505,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	}
 
 	public void test_19_score_threshold_rand() {
+		Gpr.debug("Test");
 		int thresholdMax = 5;
 		int changesMax = 6;
 		int minLen = thresholdMax + changesMax + 10; // Big enough so that we don't run into problems creating random changes

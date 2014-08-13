@@ -26,6 +26,7 @@ public class TestCasesIntStats extends TestCase {
 	 * Calculate statistics, compare results with other programs' results
 	 */
 	public void test_01() {
+		Gpr.debug("Test");
 		String fileName = "tests/intStats_test_01.txt";
 		String file = Gpr.readFile(fileName);
 		String lines[] = file.split("\n");
