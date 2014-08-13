@@ -44,7 +44,7 @@ public class TestCasesMotif extends TestCase {
 		for (VcfEntry ve : vcfEntries) {
 			for (VcfEffect veff : ve.parseEffects()) {
 				if (verbose) System.out.println("\t" + veff);
-				if ((veff.getEffect() == EffectType.MOTIF) // Is it motif?
+				if ((veff.getEffectType() == EffectType.MOTIF) // Is it motif?
 						&& effectDetails.equals(veff.getEffectDetails()) // Are details OK?
 						&& (impact == veff.getImpact())) // Is impact OK?
 					numNextProt++;

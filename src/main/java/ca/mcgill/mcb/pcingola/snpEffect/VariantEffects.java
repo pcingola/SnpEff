@@ -31,21 +31,31 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		this.variantRef = variantRef;
 	}
 
-	public void addErrorWarning(ErrorWarningType errwarn) {
-		get().addErrorWarning(errwarn);
+	/**
+	 * Add an effect
+	 */
+	public void addEffect(Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
+		VariantEffect effNew = new VariantEffect(variant, variantRef);
+		effNew.set(marker, effectType, effectImpact, message);
+		effects.add(effNew);
 	}
 
 	/**
 	 * Add an effect
 	 */
-	public void effect(Marker marker, EffectType effectType, String message) {
-		VariantEffect effNew = new VariantEffect(variant, variantRef);
-		effNew.set(marker, effectType, message);
-		effects.add(effNew);
+	public void addEffect(Marker marker, EffectType effectType, String message) {
+		addEffect(marker, effectType, effectType.effectImpact(), message);
 	}
 
-	public void effect(VariantEffect variantEffect) {
+	/**
+	 * Add an effect
+	 */
+	public void addEffect(VariantEffect variantEffect) {
 		effects.add(variantEffect);
+	}
+
+	public void addErrorWarning(ErrorWarningType errwarn) {
+		get().addErrorWarning(errwarn);
 	}
 
 	/**
@@ -77,22 +87,29 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		return effects.iterator();
 	}
 
-	public void setCodonsAround(String codonsLeft, String codonsRight) {
-		get().setCodonsAround(codonsLeft, codonsRight);
-
+	/**
+	 * Get (or create) the latest ChangeEffect
+	 */
+	public VariantEffect newVariantEffect() {
+		return new VariantEffect(variant, variantRef);
 	}
 
-	public void setDistance(int distance) {
-		get().setDistance(distance);
-	}
-
-	public void setEffectImpact(EffectImpact effectImpact) {
-		get().setEffectImpact(effectImpact);
-	}
-
-	public void setEffectType(EffectType effectType) {
-		get().setEffectType(effectType);
-	}
+	//	public void setCodonsAround(String codonsLeft, String codonsRight) {
+	//		get().setCodonsAround(codonsLeft, codonsRight);
+	//
+	//	}
+	//
+	//	public void setDistance(int distance) {
+	//		get().setDistance(distance);
+	//	}
+	//
+	//	public void setEffectImpact(EffectImpact effectImpact) {
+	//		get().setEffectImpact(effectImpact);
+	//	}
+	//
+	//	public void setEffectType(EffectType effectType) {
+	//		get().setEffectType(effectType);
+	//	}
 
 	public void setMarker(Marker marker) {
 		get().setMarker(marker);

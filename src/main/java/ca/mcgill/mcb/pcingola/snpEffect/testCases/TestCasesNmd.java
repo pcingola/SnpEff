@@ -9,15 +9,15 @@ import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Test Nonsense mediated decay prediction
- * 
+ *
  * @author pcingola
  */
 public class TestCasesNmd extends TestCase {
@@ -35,8 +35,6 @@ public class TestCasesNmd extends TestCase {
 
 	/**
 	 * Check that NMD works for a given transcript
-	 * @param gene
-	 * @param tr
 	 */
 	void checkNmd(Gene gene, Transcript tr) {
 		if (verbose) System.err.print("\tTranscript " + tr.getId() + " " + (tr.isStrandPlus() ? '+' : '-') + " :");
@@ -59,13 +57,13 @@ public class TestCasesNmd extends TestCase {
 
 					// Create a seqChange
 					//					SeqChange seqChange = new SeqChange(tr.getChromosome(), expos, expos, "");
-					Variant seqChange = new Variant(tr.getChromosome(), expos, "A", "C"); // Create a seqChange
+					Variant variant = new Variant(tr.getChromosome(), expos, "A", "C"); // Create a seqChange
 
 					// Create a STOP_GAIN effect
-					VariantEffect changeEffect = new VariantEffect(seqChange);
-					changeEffect.set(exon, EffectType.STOP_GAINED, "");
+					VariantEffect variantEffect = new VariantEffect(variant);
+					variantEffect.set(exon, EffectType.STOP_GAINED, EffectType.STOP_GAINED.effectImpact(), "");
 					LinkedList<VariantEffect> changeEffects = new LinkedList<VariantEffect>();
-					changeEffects.add(changeEffect);
+					changeEffects.add(variantEffect);
 
 					// Create a LOF object and analyze the effect
 					LossOfFunction lof = new LossOfFunction(config, changeEffects);
@@ -87,7 +85,7 @@ public class TestCasesNmd extends TestCase {
 		//---
 		// Check that NMP prediction is 'correct'
 		//---
-		// We need a splice event in the coding part 
+		// We need a splice event in the coding part
 		if (codingExons.size() > 1) {
 			// Use the 'simple' string to check
 			StringBuilder sb = new StringBuilder();

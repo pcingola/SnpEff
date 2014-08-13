@@ -10,7 +10,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
  * Regulatory elements
- * 
+ *
  * @author pablocingolani
  */
 public class Motif extends Marker {
@@ -37,15 +37,11 @@ public class Motif extends Marker {
 
 	/**
 	 * Calculate effect impact
-	 * 
-	 * Calculate the difference between the BEST possible score and the one produce by changing the BEST sequence using this 'seqChange'
+	 *
+	 * Calculate the difference between the BEST possible score and the one produce by changing the BEST sequence using this 'variant'
 	 * It would be better to use the real reference sequence, but at this moment, we do not have it.
-	 * 
-	 * 
-	 * @param seqChange
-	 * @return
 	 */
-	EffectImpact effectImpact(Variant seqChange) {
+	EffectImpact effectImpact(Variant variant) {
 		if (pwm == null) return EffectImpact.MODIFIER;
 
 		EffectImpact effectImpact = EffectImpact.MODIFIER;
@@ -53,29 +49,29 @@ public class Motif extends Marker {
 		// Do we have PWM?
 		if (pwm != null) {
 
-			// Step 1: 
-			//     Create a marker seq (we can 'apply' a change to it and see what the resulting sequence is 
+			// Step 1:
+			//     Create a marker seq (we can 'apply' a change to it and see what the resulting sequence is
 			MarkerSeq mseq = new MarkerSeq((Marker) parent, start, end, false, id); // Notice: We use positive strand
 			String seqBest = pwm.getBestSequenceStr();
 			mseq.setSequence(isStrandPlus() ? seqBest : GprSeq.reverseWc(seqBest));
-			if (seqChange.isStrandMinus()) throw new RuntimeException("SeqChange in minus strand not supported!\n\t" + seqChange);
+			if (variant.isStrandMinus()) throw new RuntimeException("variant in minus strand not supported!\n\t" + variant);
 
 			// Step 2:
-			//     Calculate new sequence, by 'applying' seqChange to mseq.
-			if (seqChange.isSnp() || seqChange.isMnp()) {
-				MarkerSeq mseqNew = mseq.apply(seqChange);
-				String seqChanged = mseqNew.getSequence();
-				if (isStrandMinus()) seqChanged = GprSeq.reverseWc(seqChanged);
+			//     Calculate new sequence, by 'applying' variant to mseq.
+			if (variant.isSnp() || variant.isMnp()) {
+				MarkerSeq mseqNew = mseq.apply(variant);
+				String variantd = mseqNew.getSequence();
+				if (isStrandMinus()) variantd = GprSeq.reverseWc(variantd);
 
 				// Calculate score difference
 				double scoreBest = pwm.score(seqBest);
-				double scoreNew = pwm.score(seqChanged);
+				double scoreNew = pwm.score(variantd);
 				double diff = scoreBest - scoreNew;
-				if (debug) Gpr.debug("Sequences: " + seqBest + "\t" + seqChanged + "\tScores: " + scoreBest + " + " + scoreNew + " = " + diff);
+				if (debug) Gpr.debug("Sequences: " + seqBest + "\t" + variantd + "\tScores: " + scoreBest + " + " + scoreNew + " = " + diff);
 
 				// Over threshold?
 				if (Math.abs(diff) > SCORE_THRESHOLD) effectImpact = EffectImpact.LOW;
-			} else if (seqChange.isInDel()) effectImpact = EffectImpact.LOW;
+			} else if (variant.isInDel()) effectImpact = EffectImpact.LOW;
 		}
 
 		return effectImpact;
@@ -91,24 +87,6 @@ public class Motif extends Marker {
 
 	public String getPwmName() {
 		return pwmName;
-	}
-
-	/**
-	 * Calculate the effect of this seqChange
-	 * @param seqChange
-	 * @param changeEffects
-	 * @return
-	 */
-	@Override
-	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
-		if (!intersects(seqChange)) return false;// Sanity check
-		EffectType effType = EffectType.MOTIF;
-		changeEffects.effect(this, effType, "");
-
-		// Calculate impact
-		changeEffects.setEffectImpact(effectImpact(seqChange));
-
-		return true;
 	}
 
 	@Override
@@ -132,6 +110,16 @@ public class Motif extends Marker {
 
 	public void setPwm(Pwm pwm) {
 		this.pwm = pwm;
+	}
+
+	/**
+	 * Calculate the effect of this variant
+	 */
+	@Override
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false;// Sanity check
+		variantEffects.addEffect(this, type, effectImpact(variant), "");
+		return true;
 	}
 
 }

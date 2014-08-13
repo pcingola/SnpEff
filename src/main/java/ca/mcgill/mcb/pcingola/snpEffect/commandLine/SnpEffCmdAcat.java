@@ -66,8 +66,8 @@ public class SnpEffCmdAcat extends SnpEff {
 
 			if (verbose) {
 				// Count by effect
-				countByEff.inc(veff.getEffect().toString());
-				if (veff.getEffectDetails() != null && !veff.getEffectDetails().isEmpty()) countByEff.inc(veff.getEffect() + "[" + veff.getEffectDetails() + "]");
+				countByEff.inc(veff.getEffectType().toString());
+				if (veff.getEffectDetails() != null && !veff.getEffectDetails().isEmpty()) countByEff.inc(veff.getEffectType() + "[" + veff.getEffectDetails() + "]");
 			}
 
 			// Do not process is there are errors or warnings
@@ -99,14 +99,14 @@ public class SnpEffCmdAcat extends SnpEff {
 					if (acat.length() > 0) acat.append(",");
 					acat.append(gene + ":" + trId + ":" + acatScore);
 
-					acatKey = "CODING:" + veff.getImpact() + ":" + veff.getEffect();
+					acatKey = "CODING:" + veff.getImpact() + ":" + veff.getEffectType();
 				}
 
 			} else {
 				//---
 				// NonCoding scores (NCCAT)
 				//---
-				switch (veff.getEffect()) {
+				switch (veff.getEffectType()) {
 				case REGULATION:
 					// Add NCMARK
 					if (ncmark.length() > 0) ncmark.append(",");

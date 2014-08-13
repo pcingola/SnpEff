@@ -159,11 +159,7 @@ public enum EffectType {
 			return EffectImpact.LOW;
 
 		case NEXT_PROT:
-			// TODO: Refactor.This code should be in NextProt marker, not here
 			return EffectImpact.MODIFIER;
-			//		else if (((NextProt) marker).isHighlyConservedAaSequence()) effectImpact = EffectImpact.MODERATE;
-			//		else effectImpact = EffectImpact.LOW;
-			//		break;
 
 		default:
 			throw new RuntimeException("Unknown impact for effect type: '" + this + "'");

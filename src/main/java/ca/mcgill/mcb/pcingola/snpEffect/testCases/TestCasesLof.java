@@ -14,15 +14,15 @@ import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
-import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Test Loss of Function prediction
- * 
+ *
  * @author pcingola
  */
 public class TestCasesLof extends TestCase {
@@ -45,14 +45,10 @@ public class TestCasesLof extends TestCase {
 
 	/**
 	 * Create change effects
-	 * @param seqChange
-	 * @param effectType
-	 * @param exon
-	 * @return
 	 */
-	LinkedList<VariantEffect> changeEffects(Variant seqChange, EffectType effectType, Marker marker) {
-		VariantEffect changeEffect = new VariantEffect(seqChange);
-		changeEffect.set(marker, effectType, "");
+	LinkedList<VariantEffect> changeEffects(Variant variant, EffectType effectType, Marker marker) {
+		VariantEffect changeEffect = new VariantEffect(variant);
+		changeEffect.set(marker, effectType, effectType.effectImpact(), "");
 		LinkedList<VariantEffect> changeEffects = new LinkedList<VariantEffect>();
 		changeEffects.add(changeEffect);
 		return changeEffects;
@@ -61,8 +57,6 @@ public class TestCasesLof extends TestCase {
 
 	/**
 	 * Check that LOF works for a given transcript
-	 * @param gene
-	 * @param tr
 	 */
 	void checkLof(Transcript tr) {
 		// Don't check non-protein coding

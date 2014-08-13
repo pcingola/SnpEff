@@ -26,10 +26,10 @@ public class CodonChangeSnp extends CodonChange {
 	protected boolean codonChangeSingle(Exon exon) {
 		// Get old and new codons
 		codonsOld = codonsOld();
-		if (codonsOld.isEmpty()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
-
 		codonsNew = codonsNew();
 		effect(exon, EffectType.CODON_CHANGE, "", codonsOld, codonsNew, codonNum, codonIndex, true);// Use a generic low priority variant, this allows 'setCodons' to override it
+
+		if (codonsOld.isEmpty()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
 
 		return true;
 	}

@@ -14,14 +14,20 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class TestCasesGenotypeVector extends TestCase {
 
+	boolean verbose = false;
+
 	public void test_01() {
 		Gpr.debug("Test");
 		// Show masks (just to check they are OK)
-		for (byte m : GenotypeVector.mask)
-			System.out.println("Mask          :" + m + "\t" + Integer.toBinaryString(m & 0xff));
+		for (byte m : GenotypeVector.mask) {
+			String line = "Mask          :" + m + "\t" + Integer.toBinaryString(m & 0xff);
+			if (verbose) System.out.println(line);
+		}
 
-		for (byte m : GenotypeVector.reverseMask)
-			System.out.println("Reverse Mask  :" + m + "\t" + Integer.toBinaryString(m & 0xff));
+		for (byte m : GenotypeVector.reverseMask) {
+			String line = "Reverse Mask  :" + m + "\t" + Integer.toBinaryString(m & 0xff);
+			if (verbose) System.out.println(line);
+		}
 
 		for (int code = 0; code < 4; code++) {
 			GenotypeVector gv = new GenotypeVector(2);

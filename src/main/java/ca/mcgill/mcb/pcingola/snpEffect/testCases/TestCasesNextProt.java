@@ -22,7 +22,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesNextProt extends TestCase {
 
 	public static boolean debug = false;
-	public static boolean verbose = false;
+	public static boolean verbose = true;
 	public static int SHOW_EVERY = 10;
 
 	public TestCasesNextProt() {
@@ -43,11 +43,24 @@ public class TestCasesNextProt extends TestCase {
 		int numNextProt = 0;
 		for (VcfEntry ve : vcfEntries) {
 			for (VcfEffect veff : ve.parseEffects()) {
-				System.out.println("\t" + veff);
-				if ((veff.getEffect() == EffectType.NEXT_PROT) // Is it nextProt?
+
+				if ((veff.hasEffectType(EffectType.NEXT_PROT)) // Is it nextProt?
 						&& effectDetails.equals(veff.getEffectDetails()) // Are details OK?
 						&& (impact == veff.getImpact())) // Is impact OK?
 					numNextProt++;
+
+				if (verbose) //
+					System.out.println("\t" + veff //
+							+ "\n\t\tEffect type       : " + veff.getEffectType() //
+							+ "\n\t\tEffect details    : '" + veff.getEffectDetails() + "'" //
+							+ "\n\t\tEffect impact     : '" + veff.getImpact() + "'" //
+							+ "\n\t\tExpected details  : '" + effectDetails + "'" //
+							+ "\n\t\tExpected impact   : '" + impact + "'" //
+							+ "\n\t\tCount matches     : " + numNextProt //
+							+ "\thasEffectType : " + veff.hasEffectType(EffectType.NEXT_PROT) //
+							+ "\tmatch details : " + effectDetails.equals(veff.getEffectDetails()) //
+							+ "\tmatch impact: " + (impact == veff.getImpact()) //
+					);
 			}
 		}
 

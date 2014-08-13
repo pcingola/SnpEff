@@ -20,7 +20,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesHugeDeletions extends TestCase {
 
-	boolean verbose = true;
+	boolean verbose = false;
 
 	public TestCasesHugeDeletions() {
 		super();
@@ -32,8 +32,8 @@ public class TestCasesHugeDeletions extends TestCase {
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
-		cmdEff.setVerbose(false);
-		cmdEff.setSupressOutput(true);
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
@@ -44,7 +44,7 @@ public class TestCasesHugeDeletions extends TestCase {
 			boolean ok = false;
 			for (VcfEffect veff : ve.parseEffects()) {
 				if (verbose) System.out.println(veff);
-				ok |= (veff.getEffect() == EffectType.CHROMOSOME_LARGE_DELETION);
+				ok |= (veff.getEffectType() == EffectType.CHROMOSOME_LARGE_DELETION);
 			}
 
 			if (!ok) Assert.assertTrue("Expecting 'CHROMOSOME_LARGE_DELETION', not found", ok);
@@ -57,8 +57,8 @@ public class TestCasesHugeDeletions extends TestCase {
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
-		cmdEff.setVerbose(false);
-		cmdEff.setSupressOutput(true);
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants

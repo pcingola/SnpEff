@@ -52,7 +52,7 @@ public class Custom extends Marker implements Iterable<KeyValue<String, String>>
 	@Override
 	public boolean variantEffect(Variant seqChange, VariantEffects changeEffecs) {
 		if (!intersects(seqChange)) return false; // Sanity check
-		changeEffecs.effect(this, EffectType.CUSTOM, label);
+		changeEffecs.addEffect(this, EffectType.CUSTOM, label);
 		return true;
 	}
 

@@ -85,7 +85,7 @@ public class TestCasesExonFrame extends TestCase {
 
 			boolean found = false;
 			for (VcfEffect veff : ve.parseEffects()) {
-				String eff = veff.getEffect().toString();
+				String eff = veff.getEffectType().toString();
 
 				if (verbose) {
 					System.out.println("\t" + veff);

@@ -70,6 +70,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	Variant variantRef = null;
 	List<EffectType> effectTypes;
 	EffectType effectType;
+	List<EffectImpact> effectImpacts;
 	EffectImpact effectImpact = null;
 	Marker marker = null;
 	String error = "", warning = "", message = ""; // Any message, warning or error?
@@ -94,12 +95,17 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		effectTypes = new ArrayList<EffectType>();
 	}
 
-	public VariantEffect(Variant variant, Variant variantRef, Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
+	public VariantEffect(Variant variant, Variant variantRef, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
 		this.variant = variant;
 		this.variantRef = variantRef;
 		effectTypes = new ArrayList<EffectType>();
-		set(marker, effectType, message);
+		set(marker, effectType, effectImpact, message);
 		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+	}
+
+	public void addEffectImpact(EffectImpact effectImpact) {
+		effectImpacts.add(effectImpact);
+		this.effectImpact = null;
 	}
 
 	public void addEffectType(EffectType effectType) {
@@ -283,7 +289,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Return impact of this effect
 	 */
 	public EffectImpact getEffectImpact() {
-
 		if (effectImpact == null) {
 			if ((variant != null) && (!variant.isVariant())) {
 				// Not a change? => Modifier
@@ -291,16 +296,17 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 			} else {
 				// Get efefct's type highest impact
 				effectImpact = EffectImpact.MODIFIER;
-				for (EffectType et : effectTypes) {
-					EffectImpact ei = et.effectImpact();
-					if (ei.compareTo(effectImpact) < 0) effectImpact = ei;
-				}
+				for (EffectImpact eimp : effectImpacts)
+					if (eimp.compareTo(effectImpact) < 0) effectImpact = eimp;
 			}
 		}
 
 		return effectImpact;
 	}
 
+	/**
+	 * Highest effect type
+	 */
 	public EffectType getEffectType() {
 		if (effectType != null) return effectType;
 		if (effectTypes == null || effectTypes.isEmpty()) return EffectType.NONE;
@@ -311,6 +317,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 			if (et.compareTo(effectType) < 0) effectType = et;
 
 		return effectType;
+	}
+
+	/**
+	 * Highest effect type
+	 */
+	public List<EffectType> getEffectTypes() {
+		return effectTypes;
 	}
 
 	/**
@@ -449,7 +462,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
+	}
+
+	public boolean hasEffectType(EffectType effectType) {
+		for (EffectType effType : effectTypes)
+			if (effType == effectType) return true;
+		return false;
 	}
 
 	public boolean hasError() {
@@ -502,7 +521,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| (getEffectType() == EffectType.SPLICE_SITE_REGION) //
 				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH) //
 				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
+				;
 	}
 
 	public boolean isStartGained() {
@@ -518,12 +537,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| (getEffectType() == EffectType.UTR_3_PRIME) //
 				|| (getEffectType() == EffectType.UTR_5_DELETED) //
 				|| (getEffectType() == EffectType.UTR_3_DELETED) //
-		;
+				;
 	}
 
-	public void set(Marker marker, EffectType effectType, String message) {
+	public void set(Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
 		setMarker(marker); // Use setter because it takes care of warnings
 		setEffectType(effectType);
+		setEffectImpact(effectImpact);
 		this.message = message;
 	}
 
@@ -569,7 +589,9 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public void setEffectImpact(EffectImpact effectImpact) {
-		this.effectImpact = effectImpact;
+		effectImpacts.clear();
+		effectImpacts.add(effectImpact);
+		this.effectImpact = null;
 	}
 
 	public void setEffectType(EffectType effectType) {
@@ -662,7 +684,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**

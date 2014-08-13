@@ -1,11 +1,12 @@
 package ca.mcgill.mcb.pcingola.interval;
 
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * Interval for a gene, as well as some other information: exons, utrs, cds, etc.
- * 
+ *
  * @author pcingola
  *
  */
@@ -37,15 +38,15 @@ public class Upstream extends Marker {
 	}
 
 	@Override
-	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
-		if (!intersects(seqChange)) return false; // Sanity check
+	public boolean variantEffect(Variant variants, VariantEffects variantEffects) {
+		if (!intersects(variants)) return false; // Sanity check
+		int distance = distanceToTr(variants);
 
-		// Note: We need to use the transcripts's strand
-		int distance = distanceToTr(seqChange);
-		changeEffects.effect(this, EffectType.UPSTREAM, distance + " bases");
-		changeEffects.setDistance(distance);
+		VariantEffect variantEffect = variantEffects.newVariantEffect();
+		variantEffect.set(this, type, type.effectImpact(), distance + " bases");
+		variantEffect.setDistance(distance);
+		variantEffects.addEffect(variantEffect);
 
 		return true;
 	}
-
 }

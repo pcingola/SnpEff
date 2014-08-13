@@ -131,8 +131,8 @@ public class TestCasesTranscript extends TestCase {
 
 		Assert.assertEquals(10, tr.getCdsStart());
 		Assert.assertEquals(100, tr.getCdsEnd());
-		System.out.println("Transcript : " + tr);
-		System.out.println("CDS.start: " + tr.getCdsStart() + "\tCDS.end: " + tr.getCdsEnd());
+		if (verbose) System.out.println("Transcript : " + tr);
+		if (verbose) System.out.println("CDS.start: " + tr.getCdsStart() + "\tCDS.end: " + tr.getCdsEnd());
 	}
 
 	/**
@@ -161,8 +161,8 @@ public class TestCasesTranscript extends TestCase {
 
 		Assert.assertEquals(10, tr.getCdsStart());
 		Assert.assertEquals(10, tr.getCdsEnd());
-		System.out.println("Transcript : " + tr);
-		System.out.println("CDS.start: " + tr.getCdsStart() + "\tCDS.end: " + tr.getCdsEnd());
+		if (verbose) System.out.println("Transcript : " + tr);
+		if (verbose) System.out.println("CDS.start: " + tr.getCdsStart() + "\tCDS.end: " + tr.getCdsEnd());
 	}
 
 	public void test_mRnaSequence() {
@@ -170,11 +170,11 @@ public class TestCasesTranscript extends TestCase {
 		String genome = "testHg3766Chr1";
 		Config config = new Config(genome);
 
-		Timer.showStdErr("Loading genome");
+		if (verbose) Timer.showStdErr("Loading genome");
 		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
-		Timer.showStdErr("Building interval forest");
+		if (verbose) Timer.showStdErr("Building interval forest");
 		sep.buildForest();
-		Timer.showStdErr("Done");
+		if (verbose) Timer.showStdErr("Done");
 
 		for (Gene gene : sep.getGenome().getGenes()) {
 			for (Transcript tr : gene) {

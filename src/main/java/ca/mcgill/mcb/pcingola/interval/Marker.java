@@ -93,8 +93,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Apply a SeqChange to a marker. SeqChange is a deletion
-	 * @param variant
-	 * @return
 	 */
 	protected Marker applyDel(Variant variant, int lenChange) {
 		Marker m = clone();
@@ -145,8 +143,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Apply a SeqChange to a marker. SeqChange is an insertion
-	 * @param variant
-	 * @return
 	 */
 	public Marker applyIns(Variant variant, int lenChange) {
 		Marker m = clone();
@@ -172,7 +168,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Get a suitable codon table
-	 * @return
 	 */
 	public CodonTable codonTable() {
 		return CodonTables.getInstance().getTable(getGenome(), getChromosomeName());
@@ -229,8 +224,6 @@ public class Marker extends Interval implements TxtSerializable {
 	/**
 	 * Distance from the beginning/end of a list of intervals, until this SNP
 	 * It count the number of bases in 'markers'
-	 * @param markers
-	 * @return
 	 */
 	public int distanceBases(List<? extends Marker> markers, boolean fromEnd) {
 
@@ -285,7 +278,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Find chromosome name
-	 * @return
 	 */
 	public String getChromosomeName() {
 		Chromosome chromo = (Chromosome) findParent(Chromosome.class);
@@ -306,7 +298,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Find genome
-	 * @return
 	 */
 	public Genome getGenome() {
 		return (Genome) findParent(Genome.class);
@@ -314,7 +305,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Find genome name
-	 * @return
 	 */
 	public String getGenomeName() {
 		Genome genome = (Genome) findParent(Genome.class);
@@ -351,8 +341,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * A list of all IDs and parent IDs until chromosome
-	 * @param m
-	 * @return
 	 */
 	public String idChain(String separator, boolean useGeneId, VariantEffect changeEffect) {
 		StringBuilder sb = new StringBuilder();
@@ -607,11 +595,11 @@ public class Marker extends Interval implements TxtSerializable {
 	/**
 	 * Calculate the effect of this variant
 	 * @param variant : Sequence change
-	 * @param changeEffects
+	 * @param variantEffects
 	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
 	 * @return
 	 */
-	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects changeEffects) {
+	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false;// Sanity check
 
 		if (variantrRef != null) {
@@ -621,10 +609,10 @@ public class Marker extends Interval implements TxtSerializable {
 			// Then there is no effect over this marker (it does not exist any more)
 			if (m == null) return false;
 
-			return m.variantEffect(variant, changeEffects);
+			return m.variantEffect(variant, variantEffects);
 		}
 
-		return variantEffect(variant, changeEffects);
+		return variantEffect(variant, variantEffects);
 	}
 
 	/**
@@ -633,9 +621,9 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @param changeEffect
 	 * @return
 	 */
-	public boolean variantEffect(Variant variant, VariantEffects changeEffects) {
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false;
-		changeEffects.effect(this, type, "");
+		variantEffects.addEffect(this, type, "");
 		return true;
 	}
 

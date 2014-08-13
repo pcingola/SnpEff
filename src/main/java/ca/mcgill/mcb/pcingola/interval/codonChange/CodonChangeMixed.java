@@ -1,7 +1,10 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
+import java.util.List;
+
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -80,8 +83,14 @@ public class CodonChangeMixed extends CodonChange {
 		effect(varEff.getMarker(), varEff.getEffectType(), "", codonsOld, codonsNew, codonNum, codonIndex, false);
 
 		// Add 'additional' effects
+		VariantEffect varEffOri = variantEffectsOri.get();
 		for (int i = 1; i < variantEffects.size(); i++) {
-			variantEffectsOri.get().addEffectType(variantEffects.get(i).getEffectType());
+			List<EffectType> effTypes = variantEffects.get(i).getEffectTypes();
+
+			for (int j = 0; j < effTypes.size(); j++) {
+				EffectType effType = effTypes.get(j);
+				if (!varEffOri.hasEffectType(effType)) varEffOri.addEffectType(effType);
+			}
 		}
 	}
 

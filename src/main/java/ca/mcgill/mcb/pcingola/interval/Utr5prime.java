@@ -7,12 +7,13 @@ import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
  * Interval for a UTR (5 prime UTR and 3 prime UTR
- * 
+ *
  * @author pcingola
  *
  */
@@ -37,7 +38,7 @@ public class Utr5prime extends Utr {
 
 			// Get UTRs and sort them
 			utrs = tr.get5primeUtrs();
-			if (isStrandPlus()) Collections.sort(utrs, new IntervalComparatorByStart()); // Sort by start position 
+			if (isStrandPlus()) Collections.sort(utrs, new IntervalComparatorByStart()); // Sort by start position
 			else Collections.sort(utrs, new IntervalComparatorByEnd(true)); // Sort by end position (reversed)
 		}
 
@@ -67,26 +68,6 @@ public class Utr5prime extends Utr {
 		return true;
 	}
 
-	@Override
-	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
-		// Has the whole UTR been deleted?
-		if (seqChange.includes(this) && (seqChange.getVariantType() == VariantType.DEL)) {
-			changeEffects.effect(this, EffectType.UTR_5_DELETED, ""); // A UTR was removed entirely
-			return true;
-		}
-
-		// Is it START_GAINED?
-		Transcript tr = (Transcript) findParent(Transcript.class);
-		int dist = utrDistance(seqChange, tr);
-		String gained = startGained(seqChange, tr);
-
-		changeEffects.effect(this, type, dist >= 0 ? dist + " bases from TSS" : "");
-		if (dist >= 0) changeEffects.setDistance(dist);
-		if (!gained.isEmpty()) changeEffects.effect(this, EffectType.START_GAINED, gained);
-
-		return true;
-	}
-
 	/**
 	 * Is a new start codon produced?
 	 * @param chars
@@ -110,7 +91,7 @@ public class Utr5prime extends Utr {
 	 * @return A new start codon (if gained)
 	 */
 	String startGained(Variant seqChange, Transcript tr) {
-		if (!seqChange.isSnp()) return ""; // FIXME: Only SNPs supported! 
+		if (!seqChange.isSnp()) return ""; // FIXME: Only SNPs supported!
 
 		// Calculate SNP position relative to UTRs
 		int pos = seqChange.distanceBases(get5primeUtrs(), isStrandMinus());
@@ -128,7 +109,7 @@ public class Utr5prime extends Utr {
 
 	/**
 	 * Calculate distance from the end of 5'UTRs
-	 * 
+	 *
 	 * @param seqChange
 	 * @param utr
 	 * @return
@@ -140,6 +121,29 @@ public class Utr5prime extends Utr {
 
 		if (isStrandPlus()) return cdsStart - seqChange.getEnd();
 		return seqChange.getStart() - cdsStart;
+	}
+
+	@Override
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		// Has the whole UTR been deleted?
+		if (variant.includes(this) && (variant.getVariantType() == VariantType.DEL)) {
+			variantEffects.addEffect(this, EffectType.UTR_5_DELETED, ""); // A UTR was removed entirely
+			return true;
+		}
+
+		// Add distance
+		Transcript tr = (Transcript) findParent(Transcript.class);
+		int distance = utrDistance(variant, tr);
+		VariantEffect variantEffect = variantEffects.newVariantEffect();
+		variantEffect.set(this, type, type.effectImpact(), distance >= 0 ? distance + " bases from TSS" : "");
+		variantEffect.setDistance(distance);
+		variantEffects.addEffect(variantEffect);
+
+		// Start gained?
+		String gained = startGained(variant, tr);
+		if (!gained.isEmpty()) variantEffects.addEffect(this, EffectType.START_GAINED, gained);
+
+		return true;
 	}
 
 }

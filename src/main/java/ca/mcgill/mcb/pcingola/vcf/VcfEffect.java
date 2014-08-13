@@ -27,8 +27,8 @@ public class VcfEffect {
 	String effectStrings[];
 	FormatVersion formatVersion;
 	String effString;
-	// VariantEffect.EffectType effect;
-	List<EffectType> effects;
+	EffectType effectType;
+	List<EffectType> effectTypes;
 	String effectDetails;
 	VariantEffect.EffectImpact impact;
 	VariantEffect.FunctionalClass funClass;
@@ -144,13 +144,13 @@ public class VcfEffect {
 		parse();
 	}
 
-	public void addEffect(EffectType effect) {
-		effects.add(effect);
+	public void addEffectType(EffectType effectType) {
+		effectTypes.add(effectType);
+		this.effectType = null;
 	}
 
 	/**
 	 * Guess effect format version
-	 * @return
 	 */
 	public FormatVersion formatVersion() {
 		// Already set?
@@ -199,21 +199,13 @@ public class VcfEffect {
 		return codon;
 	}
 
-	public EffectType getEffect() {
-		return effects.get(0);
-	}
-
 	public String getEffectDetails() {
 		return effectDetails;
 	}
 
-	public List<EffectType> getEffects() {
-		return effects;
-	}
-
 	public String getEffectsStr() {
 		StringBuilder sb = new StringBuilder();
-		for (EffectType et : effects) {
+		for (EffectType et : effectTypes) {
 			if (sb.length() > 0) sb.append("+");
 			sb.append(et);
 		}
@@ -222,7 +214,7 @@ public class VcfEffect {
 
 	public String getEffectsStrSo() {
 		StringBuilder sb = new StringBuilder();
-		for (EffectType et : effects) {
+		for (EffectType et : effectTypes) {
 			if (sb.length() > 0) sb.append("+");
 			sb.append(et.toSequenceOntology());
 		}
@@ -231,6 +223,22 @@ public class VcfEffect {
 
 	public String getEffectString() {
 		return effectString;
+	}
+
+	public EffectType getEffectType() {
+		if (effectType != null) return effectType;
+		if (effectTypes == null || effectTypes.isEmpty()) return EffectType.NONE;
+
+		// Pick highest effect type
+		effectType = EffectType.NONE;
+		for (EffectType et : effectTypes)
+			if (et.compareTo(effectType) < 0) effectType = et;
+
+		return effectType;
+	}
+
+	public List<EffectType> getEffectTypes() {
+		return effectTypes;
 	}
 
 	public String getEffString() {
@@ -265,6 +273,14 @@ public class VcfEffect {
 		return transcriptId;
 	}
 
+	public boolean hasEffectType(EffectType effType) {
+		if (effectTypes == null) return false;
+		for (EffectType et : effectTypes)
+			if (et == effType) return true;
+		return false;
+
+	}
+
 	void parse() {
 		effectStrings = split(effectString);
 
@@ -277,7 +293,7 @@ public class VcfEffect {
 
 			// Effect
 			effString = effectStrings[index];
-			effects = parseEffect(effectStrings[index]);
+			effectTypes = parseEffect(effectStrings[index]);
 			effectDetails = parseEffectDetails(effectStrings[index]); // Effect details: everything between '['  and ']' (e.g. Regulation, Custom, Motif, etc.)
 			index++;
 
@@ -374,13 +390,13 @@ public class VcfEffect {
 		this.codon = codon;
 	}
 
-	public void setEffect(EffectType effect) {
-		effects = new LinkedList<EffectType>();
-		addEffect(effect);
-	}
-
 	public void setEffectDetails(String effectDetails) {
 		this.effectDetails = effectDetails;
+	}
+
+	public void setEffectType(EffectType effect) {
+		effectTypes = new LinkedList<EffectType>();
+		addEffectType(effect);
 	}
 
 	public void setExonId(String exonId) {
@@ -407,7 +423,7 @@ public class VcfEffect {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		for (EffectType et : effects) {
+		for (EffectType et : effectTypes) {
 			if (sb.length() > 0) sb.append("+");
 			sb.append(et);
 		}

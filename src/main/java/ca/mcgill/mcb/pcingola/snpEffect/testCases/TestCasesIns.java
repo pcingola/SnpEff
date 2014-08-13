@@ -112,7 +112,7 @@ public class TestCasesIns extends TestCase {
 				if (veff.getTranscriptId().equals(trId)) {
 					// Check that reported effect is the same
 					String vep = ve.getInfo("EFF_V");
-					String eff = veff.getEffect().toString();
+					String eff = veff.getEffectType().toString();
 
 					if (vep.equals(eff)) ok = true;
 					else {

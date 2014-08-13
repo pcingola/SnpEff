@@ -2,10 +2,12 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * NextProt annotation marker
- * 
+ *
  * @author pcingola
  */
 public class NextProt extends Marker {
@@ -48,6 +50,19 @@ public class NextProt extends Marker {
 
 	public void setHighlyConservedAaSequence(boolean highlyConservedAaSequence) {
 		this.highlyConservedAaSequence = highlyConservedAaSequence;
+	}
+
+	@Override
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false;
+
+		// Assess effect impact
+		EffectImpact effectImpact = EffectImpact.MODIFIER;
+		if (isHighlyConservedAaSequence()) effectImpact = EffectImpact.MODERATE;
+		else effectImpact = EffectImpact.LOW;
+
+		variantEffects.addEffect(this, type, effectImpact, "");
+		return true;
 	}
 
 }
