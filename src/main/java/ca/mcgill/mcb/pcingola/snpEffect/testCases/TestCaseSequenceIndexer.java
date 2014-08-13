@@ -38,17 +38,17 @@ public class TestCaseSequenceIndexer extends TestCase {
 		int seqIdx = 0;
 
 		// Read file
-		for( Fastq fastq : new FastqFileIterator(fastqFileName, FastqVariant.FASTQ_ILLUMINA) ) {
+		for (Fastq fastq : new FastqFileIterator(fastqFileName, FastqVariant.FASTQ_ILLUMINA)) {
 			String seq = fastq.getSequence();
 
-			if( seq.indexOf('N') < 0 ) {
+			if (seq.indexOf('N') < 0) {
 				// Create sequence and add it to indexer
 				String qual = fastq.getQuality();
 				DnaAndQualitySequence bseq = new DnaAndQualitySequence(seq, qual, FastqVariant.FASTQ_ILLUMINA);
 				seqIndex.add(bseq);
 
 				// Create random references to this sequence
-				for( int i = 0; i < referencesPerSequence; i++ ) {
+				for (int i = 0; i < referencesPerSequence; i++) {
 					int start = (int) (Math.random() * bseq.length());
 					long ref = SequenceReference.getReference(seqIdx, start);
 					references.add(ref);
@@ -66,7 +66,7 @@ public class TestCaseSequenceIndexer extends TestCase {
 		readFile("tests/indexer_test_01.fastq");
 
 		// Compare random references
-		for( int i = 0; i < NUMBER_OF_COMPARISSONS; i++ ) {
+		for (int i = 0; i < NUMBER_OF_COMPARISSONS; i++) {
 			// Pick 2 random references and compare them
 			long ref1 = references.get((int) (Math.random() * references.size()));
 			long ref2 = references.get((int) (Math.random() * references.size()));
@@ -83,7 +83,7 @@ public class TestCaseSequenceIndexer extends TestCase {
 			String subseq2 = seq2.getSequence().substring(start2);
 			int comp2 = subseq1.compareTo(subseq2);
 
-			if( Math.signum(comp) != Math.signum(comp2) ) throw new RuntimeException("Comparing references: " + ref1 + ", " + ref2 + "\t" + comp + " != " + comp2 + "\n\tseq1:\t" + seq1 + "\n\tseq2:\t" + seq2 + "\n\tsubseq1:\t" + subseq1 + "\n\tsubseq2:\t" + subseq2);
+			if (Math.signum(comp) != Math.signum(comp2)) throw new RuntimeException("Comparing references: " + ref1 + ", " + ref2 + "\t" + comp + " != " + comp2 + "\n\tseq1:\t" + seq1 + "\n\tseq2:\t" + seq2 + "\n\tsubseq1:\t" + subseq1 + "\n\tsubseq2:\t" + subseq2);
 		}
 	}
 
@@ -98,13 +98,13 @@ public class TestCaseSequenceIndexer extends TestCase {
 		Collections.sort(references, seqIndex);
 
 		// Check that is was sorted correctly
-		for( Long ref : references ) {
+		for (Long ref : references) {
 			DnaAndQualitySequence seq = seqIndex.get(SequenceReference.getSeqIdx(ref));
 			int start = SequenceReference.getStart(ref);
 			Math.min(seq.length() - start, latest.length());
 			String subseq = seq.getSequence().substring(start);
 
-			if( subseq.compareTo(latest) < 0 ) throw new RuntimeException("References out of order!\n\t" + SequenceReference.getSeqIdx(ref) + ":" + SequenceReference.getStart(ref) + "\t" + ref + "\t" + subseq + "\n\tLatest: " + latest);
+			if (subseq.compareTo(latest) < 0) throw new RuntimeException("References out of order!\n\t" + SequenceReference.getSeqIdx(ref) + ":" + SequenceReference.getStart(ref) + "\t" + ref + "\t" + subseq + "\n\tLatest: " + latest);
 			latest = subseq;
 		}
 	}
@@ -113,17 +113,16 @@ public class TestCaseSequenceIndexer extends TestCase {
 	 * Sequence indexer test (add sequences)
 	 */
 	public void test_03() {
-		System.out.println("\n\nSuffixIndexerNmer: Add test");
 		String fastqFileName = "tests/short.fastq";
 
 		// Create indexer
 		SuffixIndexerNmer<DnaAndQualitySequence> seqIndexNmer = new SuffixIndexerNmer<DnaAndQualitySequence>(new DnaQualSubsequenceComparator(true), 15);
 
 		// Add all sequences from a file
-		for( Fastq fastq : new FastqFileIterator(fastqFileName, FastqVariant.FASTQ_ILLUMINA) ) {
+		for (Fastq fastq : new FastqFileIterator(fastqFileName, FastqVariant.FASTQ_ILLUMINA)) {
 			String seq = fastq.getSequence();
 
-			if( seq.indexOf('N') < 0 ) {
+			if (seq.indexOf('N') < 0) {
 				// Create sequence and add it to indexer
 				String qual = fastq.getQuality();
 				DnaAndQualitySequence bseq = new DnaAndQualitySequence(seq, qual, FastqVariant.FASTQ_ILLUMINA);
@@ -139,24 +138,23 @@ public class TestCaseSequenceIndexer extends TestCase {
 	 * Sequence indexer test (overlap sequences)
 	 */
 	public void test_04() {
-		System.out.println("\n\nSuffixIndexerNmer: Add & overlap test");
 		String fastqFileName = "tests/short.fastq";
 
 		// Create indexer
 		SuffixIndexerNmer<DnaAndQualitySequence> seqIndexNmer = new SuffixIndexerNmer<DnaAndQualitySequence>(new DnaQualSubsequenceComparator(true), 15);
 
 		// Add & overlap (join) all sequences from a file
-		for( Fastq fastq : new FastqFileIterator(fastqFileName, FastqVariant.FASTQ_ILLUMINA) ) {
+		for (Fastq fastq : new FastqFileIterator(fastqFileName, FastqVariant.FASTQ_ILLUMINA)) {
 			String seq = fastq.getSequence();
 
-			if( seq.indexOf('N') < 0 ) {
+			if (seq.indexOf('N') < 0) {
 				// Create sequence and add it to indexer
 				String qual = fastq.getQuality();
 				DnaAndQualitySequence bseq = new DnaAndQualitySequence(seq, qual, FastqVariant.FASTQ_ILLUMINA);
 				seqIndexNmer.add(bseq);
 
 				boolean joined = seqIndexNmer.overlap(bseq); // Try to find the best overlap
-				if( !joined ) seqIndexNmer.add(bseq); // Nothing found? => add sequence
+				if (!joined) seqIndexNmer.add(bseq); // Nothing found? => add sequence
 			}
 		}
 
@@ -168,7 +166,6 @@ public class TestCaseSequenceIndexer extends TestCase {
 	 * Sequence indexer test (trivial assembly)
 	 */
 	public void test_05() {
-		System.out.println("\n\nSuffixIndexerNmer: Building the first 5K bases from A.Thaliana's genome");
 		String fileName = "tests/a_thaliana_test/assembly_test.fa";
 		String result = Gpr.readFile("tests/a_thaliana_test/assembly_test.result");
 
@@ -176,10 +173,10 @@ public class TestCaseSequenceIndexer extends TestCase {
 		SuffixIndexerNmer<DnaAndQualitySequence> seqIndex = new SuffixIndexerNmer<DnaAndQualitySequence>(new DnaQualSubsequenceComparator(true), NMER_SIZE);
 
 		// Read all sequences and 'assemble' them
-		for( String seq : new FastaFileIterator(fileName) ) {
+		for (String seq : new FastaFileIterator(fileName)) {
 			DnaAndQualitySequence bseq = new DnaAndQualitySequence(seq);
 			boolean joined = seqIndex.overlap(bseq); // Try to find the best overlap
-			if( !joined ) seqIndex.add(bseq); // Nothing found? => add sequence
+			if (!joined) seqIndex.add(bseq); // Nothing found? => add sequence
 		}
 
 		// There should be only one sequence in the index (for this test case)
@@ -195,9 +192,9 @@ public class TestCaseSequenceIndexer extends TestCase {
 		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }; // Two almost equal sequences (first one is longer)
 
 		SuffixIndexerNmer<DnaSequence> seqIndex = new SuffixIndexerNmer<DnaSequence>(new DnaSubsequenceComparator<DnaSequence>(true, 0), NMER_SIZE);
-		for( int i = 0; i < seqStr.length; i++ ) {
+		for (int i = 0; i < seqStr.length; i++) {
 			DnaSequence bseq = new DnaSequence(seqStr[i]);
-			if( !seqIndex.overlap(bseq) ) seqIndex.add(bseq); // Add or overlap
+			if (!seqIndex.overlap(bseq)) seqIndex.add(bseq); // Add or overlap
 		}
 
 		assertEquals(seqStr[0], seqIndex.get(1).getSequence());
@@ -210,15 +207,15 @@ public class TestCaseSequenceIndexer extends TestCase {
 	public void test_07() {
 		int nmerSize = 32;
 		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // Sequence length = 32 (same as Nmer size)
-		, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // Same sequence
-		, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac" // Added a 'c' at the end
-		, "caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // Added a 'c' at the beginning
+				, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // Same sequence
+				, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac" // Added a 'c' at the end
+				, "caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // Added a 'c' at the beginning
 		}; // Two almost equal sequences (first one is longer)
 
 		SuffixIndexerNmer<DnaSequence> seqIndex = new SuffixIndexerNmer<DnaSequence>(new DnaSubsequenceComparator<DnaSequence>(true, 0), nmerSize);
-		for( int i = 0; i < seqStr.length; i++ ) {
+		for (int i = 0; i < seqStr.length; i++) {
 			DnaSequence bseq = new DnaSequence(seqStr[i]);
-			if( !seqIndex.overlap(bseq) ) seqIndex.add(bseq); // Add or overlap
+			if (!seqIndex.overlap(bseq)) seqIndex.add(bseq); // Add or overlap
 		}
 
 		assertEquals("caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac", seqIndex.get(1).getSequence());
@@ -230,13 +227,13 @@ public class TestCaseSequenceIndexer extends TestCase {
 	public void test_08() {
 		int nmerSize = 32;
 		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // 
-		, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac" // Prepend 'c', append 'g'
+				, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac" // Prepend 'c', append 'g'
 		};
 
 		SuffixIndexerNmer<DnaSequence> seqIndex = new SuffixIndexerNmer<DnaSequence>(new DnaSubsequenceComparator<DnaSequence>(true, 0), nmerSize);
-		for( int i = 0; i < seqStr.length; i++ ) {
+		for (int i = 0; i < seqStr.length; i++) {
 			DnaSequence bseq = new DnaSequence(seqStr[i]);
-			if( !seqIndex.overlap(bseq) ) seqIndex.add(bseq); // Add or overlap
+			if (!seqIndex.overlap(bseq)) seqIndex.add(bseq); // Add or overlap
 		}
 
 		assertEquals("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac", seqIndex.get(1).getSequence());
@@ -248,13 +245,13 @@ public class TestCaseSequenceIndexer extends TestCase {
 	public void test_09() {
 		int nmerSize = 32;
 		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // 
-		, "caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // Prepend 'c', append 'g'
+				, "caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // Prepend 'c', append 'g'
 		};
 
 		SuffixIndexerNmer<DnaSequence> seqIndex = new SuffixIndexerNmer<DnaSequence>(new DnaSubsequenceComparator<DnaSequence>(true, 0), nmerSize);
-		for( int i = 0; i < seqStr.length; i++ ) {
+		for (int i = 0; i < seqStr.length; i++) {
 			DnaSequence bseq = new DnaSequence(seqStr[i]);
-			if( !seqIndex.overlap(bseq) ) seqIndex.add(bseq); // Add or overlap
+			if (!seqIndex.overlap(bseq)) seqIndex.add(bseq); // Add or overlap
 		}
 
 		assertEquals("caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", seqIndex.get(1).getSequence());
@@ -266,13 +263,13 @@ public class TestCaseSequenceIndexer extends TestCase {
 	public void test_10() {
 		int nmerSize = 32;
 		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // 
-		, "caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaag" // Prepend 'c', append 'g'
+				, "caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaag" // Prepend 'c', append 'g'
 		};
 
 		SuffixIndexerNmer<DnaSequence> seqIndex = new SuffixIndexerNmer<DnaSequence>(new DnaSubsequenceComparator<DnaSequence>(true, 0), nmerSize);
-		for( int i = 0; i < seqStr.length; i++ ) {
+		for (int i = 0; i < seqStr.length; i++) {
 			DnaSequence bseq = new DnaSequence(seqStr[i]);
-			if( !seqIndex.overlap(bseq) ) seqIndex.add(bseq); // Add or overlap
+			if (!seqIndex.overlap(bseq)) seqIndex.add(bseq); // Add or overlap
 		}
 
 		assertEquals("caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaag", seqIndex.get(1).getSequence());

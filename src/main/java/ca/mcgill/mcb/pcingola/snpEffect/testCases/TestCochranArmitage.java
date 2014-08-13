@@ -6,7 +6,7 @@ import ca.mcgill.mcb.pcingola.probablility.CochranArmitageTest;
 
 /**
  * Cochran-Armitage test statistic test case
- * 
+ *
  * @author pcingola
  */
 public class TestCochranArmitage extends TestCase {
@@ -30,7 +30,6 @@ public class TestCochranArmitage extends TestCase {
 		int N1[] = { 20, 20, 20 };
 		int N2[] = { 10, 20, 30 };
 		double test = CochranArmitageTest.get().test(N1, N2, CochranArmitageTest.WEIGHT_TREND);
-		System.out.println("Test: " + test);
 		Assert.assertEquals(-2.284, test, 0.001);
 	}
 

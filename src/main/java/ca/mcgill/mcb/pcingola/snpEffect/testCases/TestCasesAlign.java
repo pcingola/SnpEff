@@ -7,10 +7,12 @@ import ca.mcgill.mcb.pcingola.fileIterator.VcfRefAltAlign;
 
 /**
  * test cases for Sequence alignment
- * 
+ *
  * @author pcingola
  */
 public class TestCasesAlign extends TestCase {
+
+	boolean verbose = false;
 
 	public void test_01() {
 		String as[] = { "TTT", "TTTGTT", "GCG", "G" };
@@ -22,9 +24,9 @@ public class TestCasesAlign extends TestCase {
 			String a = as[i];
 			String b = bs[i];
 			NeedlemanWunsch align = new NeedlemanWunsch(a, b);
-			System.out.println("---------------------------------------- " + align.getClass().getSimpleName() + ": " + i + " ----------------------------------------");
+			if (verbose) System.out.println("---------------------------------------- " + align.getClass().getSimpleName() + ": " + i + " ----------------------------------------");
 			align.align();
-			System.out.println("a    : '" + a + "'\nb    : '" + b + "'\nAlign: '" + align.getAlignment() + "'" + "\tOffset: " + align.getOffset() + "\n");
+			if (verbose) System.out.println("a    : '" + a + "'\nb    : '" + b + "'\nAlign: '" + align.getAlignment() + "'" + "\tOffset: " + align.getOffset() + "\n");
 
 			Assert.assertEquals(res[i], align.getAlignment());
 			Assert.assertEquals(offset[i], align.getOffset());
@@ -41,9 +43,9 @@ public class TestCasesAlign extends TestCase {
 			String a = as[i];
 			String b = bs[i];
 			VcfRefAltAlign align = new VcfRefAltAlign(a, b);
-			System.out.println("---------------------------------------- " + align.getClass().getSimpleName() + ": " + i + " ----------------------------------------");
+			if (verbose) System.out.println("---------------------------------------- " + align.getClass().getSimpleName() + ": " + i + " ----------------------------------------");
 			align.align();
-			System.out.println("a    : '" + a + "'\nb    : '" + b + "'\nAlign: '" + align.getAlignment() + "'" + "\tOffset: " + align.getOffset() + "\n");
+			if (verbose) System.out.println("a    : '" + a + "'\nb    : '" + b + "'\nAlign: '" + align.getAlignment() + "'" + "\tOffset: " + align.getOffset() + "\n");
 
 			Assert.assertEquals(res[i], align.getAlignment());
 			Assert.assertEquals(offset[i], align.getOffset());

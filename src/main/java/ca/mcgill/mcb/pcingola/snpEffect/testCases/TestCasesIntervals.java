@@ -23,7 +23,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 public class TestCasesIntervals extends TestCase {
 
 	int maxLen = 100;
-	boolean verbose = true;
+	boolean verbose = false;
 	boolean compareCdsTestsEnable = false;
 	Random rand;
 	Genome genome;
@@ -45,7 +45,7 @@ public class TestCasesIntervals extends TestCase {
 		genome.add(new Chromosome(genome, 0, 0, "Y"));
 	}
 
-	/** 
+	/**
 	 * Compare each result. If one matches, we consider it OK
 	 * @param transcriptId
 	 * @param seqChange
@@ -64,7 +64,7 @@ public class TestCasesIntervals extends TestCase {
 			if ((transcriptId == null) || (transcriptId.equals(effTrId))) {
 
 				if (!seqChange.getId().equals(resStr)) {
-					// SNP effect does not match this result  
+					// SNP effect does not match this result
 					if (verbose) Gpr.debug("SeqChange: " + seqChange + "\tResult: '" + chEff + "'");
 					resultsSoFar.append(seqChange + "\t'" + resStr + "'\n");
 				} else {
@@ -105,7 +105,7 @@ public class TestCasesIntervals extends TestCase {
 
 		String sequence = new String(bases);
 		DnaSequence DnaSequence = new DnaSequence(sequence);
-		System.out.println("DnaSequence (len:" + len + ") : " + DnaSequence);
+		if (verbose) System.out.println("DnaSequence (len:" + len + ") : " + DnaSequence);
 
 		for (int i = 0; i < bases.length; i++) {
 			char base = Character.toUpperCase(DnaSequence.getBase(i));
@@ -285,7 +285,7 @@ public class TestCasesIntervals extends TestCase {
 	public void test_07_02() {
 		Chromosome chr = genome.getChromosome("1");
 
-		// Totally overlapping => result should be empty 
+		// Totally overlapping => result should be empty
 		Markers intervals = new Markers();
 		intervals.add(new Marker(chr, 10, 90, false, ""));
 
@@ -304,7 +304,7 @@ public class TestCasesIntervals extends TestCase {
 	public void test_07_03() {
 		Chromosome chr = genome.getChromosome("1");
 
-		// Overlapping right part => result should be left part 
+		// Overlapping right part => result should be left part
 		Markers intervals = new Markers();
 		intervals.add(new Marker(chr, 10, 90, false, ""));
 
@@ -326,7 +326,7 @@ public class TestCasesIntervals extends TestCase {
 	public void test_07_04() {
 		Chromosome chr = genome.getChromosome("1");
 
-		// Overlapping left part => result should be right part 
+		// Overlapping left part => result should be right part
 		Markers intervals = new Markers();
 		intervals.add(new Marker(chr, 10, 90, false, ""));
 
@@ -349,7 +349,7 @@ public class TestCasesIntervals extends TestCase {
 	public void test_07_05() {
 		Chromosome chr = genome.getChromosome("1");
 
-		// Overlapping middle => result should be left & right parts 
+		// Overlapping middle => result should be left & right parts
 		Markers intervals = new Markers();
 		intervals.add(new Marker(chr, 10, 90, false, ""));
 

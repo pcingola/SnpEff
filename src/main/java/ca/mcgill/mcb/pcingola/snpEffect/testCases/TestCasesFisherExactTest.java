@@ -10,7 +10,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Test for Hypergeometric distribution and Fisher exact test
- * 
+ *
  * @author pcingola
  *
  */
@@ -18,7 +18,7 @@ public class TestCasesFisherExactTest extends TestCase {
 
 	public static double MAX_DIFF = 0.00000000001;
 
-	boolean verbose = true;
+	boolean verbose = false;
 	double threshold = 0.01;
 	int numTests = 100;
 	int MAX = 1000;
@@ -321,33 +321,33 @@ public class TestCasesFisherExactTest extends TestCase {
 
 	/**
 	 * Compare Fisher exact test to Chi^2 approximation
-	 * 
+	 *
 	 * From R:
 		> data <- matrix(c(25, 5, 15, 15), ncol=2, byrow=T)
 		> data
 		     [,1] [,2]
 		[1,]   25    5
 		[2,]   15   15
-		
+
 		> chisq.test(data,correct=FALSE)
-		
+
 			Pearson's Chi-squared test
-		
+
 		data:  data
 		X-squared = 7.5, df = 1, p-value = 0.00617
-		
+
 		> fisher.test(data, alternative="greater")
-		
+
 			Fisher's Exact Test for Count Data
-		
+
 		data:  data
 		p-value = 0.006349
 		alternative hypothesis: true odds ratio is greater than 1
 		95 percent confidence interval:
 		 1.587561      Inf
 		sample estimates:
-		odds ratio 
-		  4.859427 
+		odds ratio
+		  4.859427
 	 */
 	public void test_06_fisher_vs_chi2() {
 		int n11 = 25, n12 = 5;
