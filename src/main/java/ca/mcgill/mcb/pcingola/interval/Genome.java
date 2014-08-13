@@ -17,10 +17,10 @@ import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
- * 
- * This is just used for the Interval class. 
+ *
+ * This is just used for the Interval class.
  * It is NOT a representation of an entire genome.
- * 
+ *
  * @author pcingola
  */
 public class Genome extends Marker implements Serializable, Iterable<Chromosome> {
@@ -40,8 +40,8 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Create a genome from a faidx file.
-	 * See "samtools faidx" command (reference http://samtools.sourceforge.net/samtools.shtml) 
-	 * 
+	 * See "samtools faidx" command (reference http://samtools.sourceforge.net/samtools.shtml)
+	 *
 	 * @param genomeName : Genome's name (version)
 	 * @param faidxFile : FAI file used to create all chromosomes
 	 * @return
@@ -119,7 +119,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Add a chromosome
-	 * @param chromo
 	 */
 	public synchronized void add(Chromosome chromo) {
 		chromosomeNames.add(chromo.getId());
@@ -128,7 +127,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Get a sorted list of chromosomes
-	 * @return
 	 */
 	public List<String> chromosomeNamesSorted() {
 		if (chromosomeNamesSorted != null) return chromosomeNamesSorted; // Already done? => return previous result
@@ -148,8 +146,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Create a chromosome named 'chromoName'
-	 * @param chromoName
-	 * @return
 	 */
 	synchronized Chromosome createChromosome(String chromoName) {
 		Chromosome chr = getChromosome(chromoName);
@@ -165,8 +161,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Find chromosome 'chromoName'
-	 * @param chromoName
-	 * @return
 	 */
 	public Chromosome getChromosome(String chromoName) {
 		String ch = Chromosome.simpleName(chromoName);
@@ -183,7 +177,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Return chromosomes sorted by size (largest chromosomes first)
-	 * @return
 	 */
 	public List<Chromosome> getChromosomesSortedSize() {
 		ArrayList<Chromosome> chrs = new ArrayList<Chromosome>();
@@ -213,7 +206,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Create a sorted list of genes (sorted by gene Id)
-	 * @return
 	 */
 	public List<Gene> getGenesSorted() {
 		ArrayList<Gene> genesSorted = new ArrayList<Gene>();
@@ -231,7 +223,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Create a sorted list of genes (sorted by genomic position)
-	 * @return
 	 */
 	public List<Gene> getGenesSortedPos() {
 		ArrayList<Gene> genesSorted = new ArrayList<Gene>();
@@ -242,8 +233,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Get or create a chromosome
-	 * @param chromoName
-	 * @return
 	 */
 	public Chromosome getOrCreateChromosome(String chromoName) {
 		Chromosome chr = getChromosome(chromoName);
@@ -261,8 +250,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Is this chromosome in this genome?
-	 * @param chromo
-	 * @return
 	 */
 	public boolean hasChromosome(String chromo) {
 		for (String ch : chromosomeNames)
@@ -272,7 +259,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Do we have coding info from genes?
-	 * @return
 	 */
 	public boolean hasCodingInfo() {
 		// Is this already calculated?
@@ -291,7 +277,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	/**
 	 * Do most exons have sequence?
 	 * This is an indicator that something went really bad building the database.
-	 * 
+	 *
 	 * @return Check if most exons have sequence assigned.
 	 */
 	public boolean isMostExonsHaveSequence() {
@@ -314,7 +300,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Total genome length: add all chromosomes
-	 * @return
 	 */
 	public long length() {
 		if (length <= 0) {
@@ -328,9 +313,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Parse a comma separated property as a string array
-	 * @param properties
-	 * @param attr
-	 * @return
 	 */
 	String[] propertyToStringArray(Properties properties, String attr) {
 		String value = properties.getProperty(attr);
@@ -346,7 +328,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Read the whole genome sequence into memory
-	 * @param fastaFile : Path to a Fasta file 
+	 * @param fastaFile : Path to a Fasta file
 	 * @return true if it was successful
 	 */
 	public boolean readGenomeSequence(String fastaFile) {
@@ -371,8 +353,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	/**
 	 * Remove a chromosome
 	 * WARINIG: Doesn't check any dependencies!
-	 * 
-	 * @param chromo
 	 */
 	public void remove(Chromosome chromo) {
 		chromosomeNames.remove(chromo.getId());
@@ -396,7 +376,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Create a string to serialize to a file
-	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -409,7 +388,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	}
 
 	/**
-	 * Show number of genes, transcripts & exons 
+	 * Show number of genes, transcripts & exons
 	 * @return true : If there is an error condition (most exons do not have sequences)
 	 */
 	@Override

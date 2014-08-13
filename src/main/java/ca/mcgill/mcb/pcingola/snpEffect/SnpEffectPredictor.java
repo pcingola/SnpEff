@@ -101,7 +101,6 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Add a gene interval
-	 * @param gene
 	 */
 	public void add(Gene gene) {
 		genome.getGenes().add(gene);
@@ -112,8 +111,6 @@ public class SnpEffectPredictor implements Serializable {
 	 *
 	 * Note: Markers have to be added BEFORE building the interval trees.
 	 *       Interval trees are built the first time you call snpEffect(snp) method.
-	 *
-	 * @param marker
 	 */
 	public void add(Marker marker) {
 		markers.add(marker);
@@ -214,8 +211,6 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Is the chromosome missing in this marker?
-	 * @param marker
-	 * @return
 	 */
 	boolean isChromosomeMissing(Marker marker) {
 		// Missing chromosome in marker?

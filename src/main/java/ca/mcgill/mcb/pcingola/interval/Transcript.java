@@ -1526,7 +1526,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Show a transcript as an ASCII Art
-	 * @return
 	 */
 	public String toStringAsciiArt() {
 		char art[] = new char[size()];

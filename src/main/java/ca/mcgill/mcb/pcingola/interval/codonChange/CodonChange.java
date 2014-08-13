@@ -169,8 +169,10 @@ public class CodonChange {
 				if (cdsBaseInExon < 0) cdsBaseInExon = 0;
 
 				// Get codon number and index within codon (where seqChage is pointing)
-				codonNum = (firstCdsBaseInExon + cdsBaseInExon) / CODON_SIZE;
-				codonIndex = (firstCdsBaseInExon + cdsBaseInExon) % CODON_SIZE;
+				if (codonNum < 0) {
+					codonNum = (firstCdsBaseInExon + cdsBaseInExon) / CODON_SIZE;
+					codonIndex = (firstCdsBaseInExon + cdsBaseInExon) % CODON_SIZE;
+				}
 
 				// Use appropriate method to calculate codon change
 				boolean hasChanged = false; // Was there any change?
@@ -268,4 +270,17 @@ public class CodonChange {
 		return variant.netChange(transcript.isStrandMinus());
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Transcript : " + transcript.getId() + "\n");
+		sb.append("Variant    : " + variant + "\n");
+		sb.append("Codonss    : " + codonsOld + "/" + codonsNew + "\tnum: " + codonNum + "\tidx: " + codonIndex + "\n");
+		sb.append("Effects    :\n");
+		for (VariantEffect veff : variantEffects)
+			sb.append("\t" + veff.getEffectTypeString(false) + "\t" + veff.getCodonsOld() + "/" + veff.getCodonsNew() + "\t" + veff.getAaOld() + "/" + veff.getAaNew() + "\n");
+
+		return sb.toString();
+	}
 }

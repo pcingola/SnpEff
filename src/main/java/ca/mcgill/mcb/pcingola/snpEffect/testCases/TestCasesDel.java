@@ -5,6 +5,7 @@ import java.util.Random;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
+import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -92,7 +93,7 @@ public class TestCasesDel extends TestCase {
 	/**
 	 * Calculate codonsOld using a naive algorithm
 	 */
-	String codonsOld(Variant seqChange) {
+	String codonsOld(Variant variant) {
 		int cdsBaseNum = 0;
 		String codonsOld = "";
 		char currCodon[] = new char[3];
@@ -106,7 +107,7 @@ public class TestCasesDel extends TestCase {
 			for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
 				int cdsCodonPos = cdsBaseNum % 3;
 
-				useCodon |= seqChange.intersects(pos); // Should we use this codon?
+				useCodon |= variant.intersects(pos); // Should we use this codon?
 				char base = chromoBases[pos];
 				currCodon[cdsCodonPos] = exon.isStrandPlus() ? base : GprSeq.wc(base); // Update current codon
 
@@ -184,6 +185,8 @@ public class TestCasesDel extends TestCase {
 		Gpr.debug("Test");
 		CodonTable codonTable = genome.codonTable();
 
+		Gpr.debug("DEBUG: " + chromoSequence);
+
 		// Test N times
 		//	- Create a random gene transcript, exons
 		//	- Create a random Insert at each position
@@ -196,6 +199,8 @@ public class TestCasesDel extends TestCase {
 			else Gpr.showMark(i + 1, 1);
 			int cdsBaseNum = 0;
 
+			String transcriptStr = transcript.toString() + "\n" + transcript.toStringAsciiArt();
+
 			// For each exon...
 			for (Exon exon : transcript.sortedStrand()) {
 				int step = exon.isStrandPlus() ? 1 : -1;
@@ -205,7 +210,7 @@ public class TestCasesDel extends TestCase {
 				for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
 					if (i == 805 && pos == 407) {
 						verbose = debug = true;
-						Gpr.debug("DEBUG: ");
+						Gpr.debug("DEBUG: " + chromoSequence);
 					}
 
 					//---
@@ -325,25 +330,25 @@ public class TestCasesDel extends TestCase {
 						String effStr = effect.effect(true, false, true, false);
 						String effFullStr = effect.effect(true, true, true, false);
 
-						StringBuilder msg = new StringBuilder();
 						String line = "\tIteration: " + i + "\tPos: " + pos + "\tExpected: '" + effectExpected + "'\tEffect: '" + effStr + "'";
+						StringBuilder msg = new StringBuilder();
 						msg.append(line + "\n");
-						if (verbose) System.out.println(line);
+						msg.append("\tIteration: " + i);
+						msg.append("\tPos: " + pos);
+						msg.append("\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]");
+						msg.append("\n\t\tVariant          : " + variant + "\tsize: " + variant.size() + "\tdelPlus: " + delPlus);
+						msg.append("\n\t\tNetCdsChange     : " + netChange);
+						msg.append("\n\t\tEffect expected  : " + effectExpected);
+						msg.append("\n\t\tEffect           : " + effStr + "\t" + effFullStr);
+						msg.append("\n\t\tAA expected      : '" + aaOld + "' / '" + aaNew + "'\t" + aaExpected);
+						msg.append("\n\t\tAA               : '" + effect.getAaOld() + "' / '" + effect.getAaNew() + "'");
+						msg.append("\n\t\tCodon expected   : '" + codonsOld + "' / '" + codonsNew + "'");
+						msg.append("\n\t\tCodons           : '" + effect.getCodonsOld().toUpperCase() + "' / '" + effect.getCodonsNew().toUpperCase() + "'");
+						msg.append("\n\nTranscript:\n" + transcriptStr + "\n");
+						msg.append(line + "\n");
 
-						line = "\tIteration: " + i //
-								+ "\tPos: " + pos //
-								+ "\n\t\tCDS base [codon] : " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-								+ "\n\t\tVariant          : " + variant + "\tsize: " + variant.size() + "\tdelPlus: " + delPlus//
-								+ "\n\t\tNetCdsChange     : " + netChange //
-								+ "\n\t\tEffect expected  : " + effectExpected //
-								+ "\n\t\tEffect           : " + effStr + "\t" + effFullStr//
-								+ "\n\t\tAA expected      : '" + aaOld + "' / '" + aaNew + "'\t" + aaExpected //
-								+ "\n\t\tAA               : '" + effect.getAaOld() + "' / '" + effect.getAaNew() + "'" //
-								+ "\n\t\tCodon expected   : '" + codonsOld + "' / '" + codonsNew + "'" //
-								+ "\n\t\tCodons           : '" + effect.getCodonsOld().toUpperCase() + "' / '" + effect.getCodonsNew().toUpperCase() + "'" //
-								+ "\n";
-						msg.append(line + "\n");
-						if (debug) System.out.println(line);
+						if (debug) System.out.println(msg);
+						else if (verbose) System.out.println(line);
 
 						for (String e : effStr.split("\\+")) {
 							if (effectExpected.equals(e)) {
@@ -353,7 +358,7 @@ public class TestCasesDel extends TestCase {
 										&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
 										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
 										&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
-										) {
+								) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
 									String codonsNewEff = effect.getCodonsNew().toUpperCase();
@@ -367,6 +372,68 @@ public class TestCasesDel extends TestCase {
 					}
 					Assert.assertEquals(true, ok);
 				}
+			}
+		}
+	}
+
+	public void test_02() {
+		//---
+		// Create a transcript
+		//---
+		String chrSeq = "CGTGTTACCAAGCATTTGGGAACCGGAATTCTACGCTGGAGTTCGCCTAACAGCTAAAGCTCAAAACAGGAGTGGTTTAGTTCACAGGCAGACCTTTAACGGTACCTACCTTAATCCGGTCAGATTTAAATTCATGATAGATGGTCTAAGTCATGCACTACTCCTACCAGTTTTGGACGTGGCGCATTGGGCCCCGACACCAAATGCGTTGGAGCGACAGCACAAACGATATCTCAGATTAAGTGCATTGAAGGCCTTCTCACGGATAGATCTATAGGTCGCTGTGTGTCGGGAAGTCTTTCATCCGCTCGGGAGTCGGGTAAATTCTTTCTTCCAGTTGTGTGTTCTACGACTGCAGAGGACAGCTCTCGCTTAGTTTCCTTCCGTTCTTTGTAAGGCCCGATAGGAATACCCGCATAATTATCCCCACAGTCTAACTTGATCCACGTCATATGGGGCGATGGCTGGAATGAGGGGGGTTCAGTGGCAGACCACGATATCTCTGTTTATCTGATGAAGAATTTTGGATACCCCAATAACTAATGTGAGAAGAGTGTGGGGTATCCAACGTGATTGGAGGGAAGTATGGAAACGAATGAAGACAAGTTCGACAAGCCGTGGTAACGATCATATGCCACCGTATTCTAACGGGGGGGGGCCGCTGTTTGAATGCCAGATAGATATTTAAAGAGGATGGCCGCCCCCCAATGGGCACGAGGAACTGACCAGAGGTAGGTATGATGGTGTGAGAGAGAGATGTAGTGTAGTTACTATAAAGATTTGAAGATCGAAAGGCTTAGTGATACGAAACCTCCCGCTACTGCGGGCCGGTATAGCAGGTCTAATACTTGGTGATAGGGCTACATCGAGCCTCGTTCGACAAGAATACCCCAGTTGCAATGGGGACCGATTCAGTCTGGGGCTCTGTGGTCCGACATTATGCCGGAATGCCTAGTATGGGAATTAAAACGATTAATATTACCTCTGGGACTATCTTTGTGCCAAACTCTACTGAGAGAGGAACGTAATCGTATTAGGGGCCAAGATAGTTTACTCCGATCCACCGTAACACTTATTTTGGGCCGTGCGTACCCACCCACGGTCATGAACGCAAACTGGATAGGGCGCGTCATACGAGCTAAAGTGTTCTCTTGGGGCAAATAAGAAGGGACTAGCTGTATTCCCCTCCCATTGTGTGGGTACAATTCGGGGGAAAGGTGTCGAGCCCAAATGCTACGGCTCGTAGATATCAGGTCCTTTAGCCGCCCGTATGTAAGCACCTCCAACGTTTTGGAGGAAGATCCCTCTCCCACGGGTTATACCATTAATGACTCCGCACTAACAATATCTTACCAGGGCCCGCAAATACCACACCGGGATACTGGAATGAATTATTCTCCGACCCATTTGATGAAACGTATGGGAACTTTCCTGTTGTATTAAACCCGCGGATACACTCTCTTGCCCACGAGTAGCCTCTACTTACTAGATTGAGAGGTACACTACGCCATTATGAAGCATTTCGACTTTCACTCCAGTATATAGAAGGTATGTGTGGATCCTTCAAAATAGTGATCCGAACCTGGTTGTAGGGGCCACCGAAATTCCGATTACTGAAGATTAATGTTTTCAAATGCCCTATTTCACTGGTGATAGCGATGGAGCCGGGCTATCATCATGGCGAAGCACGTGGGAAAGCATTCCGTCAAGGCTAGTGGGAACCTCTGCCTTGCCATGTACGCGTTCTATATACACGAACATCGATACCGGTCTCGTCCTGGGGTAGAGCCATCCTCATCACGAGTGATGTAGGACGGCTAGCTCATTAATTCACTGCGTGTCAGATAGAATGTCTTCGTGCGCAAAAATTGTTTAGGAGACCGTCGGCGCTCCCTTGGAGAGATGCCCAACGTAGAGAGGCAATCCCCGGCGTATTGGTGGTTTCTGGAACGGAACGAGACTCTTTGTTGCGTCGACTCCCGGCAACACCGGCCCCCGCCG";
+		Genome genome = new Genome("test");
+
+		Chromosome chr = new Chromosome(genome, 0, chrSeq.length() - 1, "1");
+		chr.setSequence(chrSeq);
+		genome.add(chr);
+
+		Gene gene = new Gene(chr, 333, 408, true, "gene1", "gene1", "protein_coding");
+
+		Transcript tr = new Transcript(gene, 333, 408, true, "tr1");
+		gene.add(tr);
+		tr.setProteinCoding(true);
+
+		Exon e1 = new Exon(tr, 333, 334, true, "exon1", 0);
+		Exon e2 = new Exon(tr, 353, 364, true, "exon2", 0);
+		Exon e3 = new Exon(tr, 388, 398, true, "exon3", 0);
+		Exon e4 = new Exon(tr, 404, 408, true, "exon4", 0);
+		Exon exons[] = { e1, e2, e3, e4 };
+
+		for (Exon e : exons) {
+			String seq = chrSeq.substring(e.getStart(), e.getEnd() + 1);
+			seq = GprSeq.reverseWc(seq);
+			e.setSequence(seq);
+			tr.add(e);
+
+			Cds cds = new Cds(tr, e.getStart(), e.getEnd(), e.isStrandMinus(), "");
+			tr.add(cds);
+		}
+		tr.rankExons();
+
+		System.out.println("Transcript:\n" + tr);
+		Assert.assertEquals("FLPYKAVLCR", tr.protein());
+
+		//---
+		// Create variant
+		//---
+		Variant var = new Variant(chr, 397, "GCCCGATAGGA", "", "");
+		System.out.println("Variant: " + var);
+		Assert.assertEquals("chr1:397_GCCCGATAGGA/", var.toString());
+
+		//---
+		// Calculate effects
+		//---
+		snpEffectPredictor = new SnpEffectPredictor(genome);
+		snpEffectPredictor.setUpDownStreamLength(0);
+		snpEffectPredictor.add(gene);
+		snpEffectPredictor.buildForest();
+
+		VariantEffects effectsAll = snpEffectPredictor.variantEffect(var);
+		for (VariantEffect eff : effectsAll) {
+			if (eff.getEffectType() == EffectType.CODON_CHANGE_PLUS_CODON_DELETION) {
+				// Check
+				System.out.println("\t" + eff.getEffectTypeString(false) + "\t" + eff.getCodonsOld() + "\t" + eff.getCodonsNew());
+				Assert.assertEquals("TCT", eff.getCodonsNew().toUpperCase());
 			}
 		}
 	}
