@@ -618,7 +618,7 @@ public class Marker extends Interval implements TxtSerializable {
 	/**
 	 * Calculate the effect of this variant
 	 * @param variant : Sequence change
-	 * @param changeEffect
+	 * @param variantEffect
 	 * @return
 	 */
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {

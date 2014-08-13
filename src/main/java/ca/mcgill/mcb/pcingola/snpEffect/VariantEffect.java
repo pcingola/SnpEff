@@ -465,7 +465,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -486,61 +486,37 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getEffectType() == EffectType.CUSTOM;
 	}
 
-	public boolean isDownstream() {
-		return getEffectType() == EffectType.DOWNSTREAM;
-	}
-
 	public boolean isExon() {
-		return (marker instanceof Exon) || (getEffectType() == EffectType.EXON_DELETED);
-	}
-
-	public boolean isFrameShift() {
-		return (getEffectType() == EffectType.FRAME_SHIFT);
+		return (marker instanceof Exon) || hasEffectType(EffectType.EXON_DELETED);
 	}
 
 	public boolean isIntergenic() {
-		return (getEffectType() == EffectType.INTERGENIC) || (getEffectType() == EffectType.INTERGENIC_CONSERVED);
+		return hasEffectType(EffectType.INTERGENIC) || hasEffectType(EffectType.INTERGENIC_CONSERVED);
 	}
 
 	public boolean isIntron() {
-		return (getEffectType() == EffectType.INTRON) || (getEffectType() == EffectType.INTRON_CONSERVED);
+		return hasEffectType(EffectType.INTRON) || hasEffectType(EffectType.INTRON_CONSERVED);
 	}
 
 	public boolean isMotif() {
-		return (getEffectType() == EffectType.MOTIF);
+		return hasEffectType(EffectType.MOTIF);
 	}
 
 	public boolean isNextProt() {
-		return (getEffectType() == EffectType.NEXT_PROT);
+		return hasEffectType(EffectType.NEXT_PROT);
 	}
 
 	public boolean isRegulation() {
-		return (getEffectType() == EffectType.REGULATION);
+		return hasEffectType(EffectType.REGULATION);
 	}
 
 	public boolean isSpliceSite() {
-		return (getEffectType() == EffectType.SPLICE_SITE_DONOR) //
-				|| (getEffectType() == EffectType.SPLICE_SITE_ACCEPTOR) //
-				|| (getEffectType() == EffectType.SPLICE_SITE_REGION) //
-				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH) //
-				|| (getEffectType() == EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
-	}
-
-	public boolean isStartGained() {
-		return getEffectType() == EffectType.START_GAINED;
-	}
-
-	public boolean isUpstream() {
-		return (getEffectType() == EffectType.UPSTREAM) || (getEffectType() == EffectType.START_GAINED);
-	}
-
-	public boolean isUtr() {
-		return (getEffectType() == EffectType.UTR_5_PRIME) //
-				|| (getEffectType() == EffectType.UTR_3_PRIME) //
-				|| (getEffectType() == EffectType.UTR_5_DELETED) //
-				|| (getEffectType() == EffectType.UTR_3_DELETED) //
-		;
+		return hasEffectType(EffectType.SPLICE_SITE_DONOR) //
+				|| hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
+				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
+				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
+				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
+				;
 	}
 
 	public void set(Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
@@ -687,7 +663,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**

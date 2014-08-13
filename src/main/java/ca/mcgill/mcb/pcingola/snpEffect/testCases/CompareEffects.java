@@ -33,7 +33,7 @@ public class CompareEffects {
 	SnpEffectPredictor snpEffectPredictor;
 
 	public CompareEffects(SnpEffectPredictor snpEffectPredictor, long randSeed, boolean verbose) {
-		this.genomeName = "test";
+		genomeName = "test";
 		this.randSeed = randSeed;
 		this.verbose = verbose;
 		this.snpEffectPredictor = snpEffectPredictor;
@@ -173,7 +173,7 @@ public class CompareEffects {
 								+ "\t" + sc.getAlt() //
 								+ "\t+\t0\t0" //
 								+ "\t" + res.effect(true, true, true, false) //
-						);
+								);
 					}
 				} else {
 					Gpr.debug(msg);

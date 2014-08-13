@@ -28,8 +28,8 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 public class HgvsDna extends Hgvs {
 
-	public HgvsDna(VariantEffect changeEffect) {
-		super(changeEffect);
+	public HgvsDna(VariantEffect variantEffect) {
+		super(variantEffect);
 	}
 
 	/**
@@ -44,15 +44,15 @@ public class HgvsDna extends Hgvs {
 	 */
 	protected String dnaBaseChange() {
 
-		switch (seqChange.getVariantType()) {
+		switch (variant.getVariantType()) {
 		case SNP:
 		case MNP:
-			if (marker == null || marker.isStrandPlus()) return seqChange.getReference() + ">" + seqChange.getAlt();
-			return GprSeq.wc(seqChange.getReference()) + ">" + GprSeq.wc(seqChange.getAlt());
+			if (marker == null || marker.isStrandPlus()) return variant.getReference() + ">" + variant.getAlt();
+			return GprSeq.wc(variant.getReference()) + ">" + GprSeq.wc(variant.getAlt());
 
 		case INS:
 		case DEL:
-			String netChange = seqChange.netChange(false);
+			String netChange = variant.netChange(false);
 			if (marker == null || marker.isStrandPlus()) return netChange;
 			return GprSeq.wc(netChange);
 
@@ -66,24 +66,24 @@ public class HgvsDna extends Hgvs {
 	 */
 	protected String pos() {
 		// Intron
-		if (changeEffect.isIntron()) {
-			switch (seqChange.getVariantType()) {
+		if (variantEffect.isIntron()) {
+			switch (variant.getVariantType()) {
 			case SNP:
 			case MNP:
-				return posIntron(seqChange.getStart());
+				return posIntron(variant.getStart());
 
 			case INS:
-				String p = posIntron(seqChange.getStart());
+				String p = posIntron(variant.getStart());
 				if (p == null) return null;
-				int next = seqChange.getStart() + (marker.isStrandPlus() ? 1 : -1);
+				int next = variant.getStart() + (marker.isStrandPlus() ? 1 : -1);
 				String pNext = posIntron(next);
 				if (pNext == null) return null;
 				return p + "_" + pNext;
 
 			case DEL:
-				p = posIntron(seqChange.getStart());
+				p = posIntron(variant.getStart());
 				if (p == null) return null;
-				pNext = posIntron(seqChange.getEnd());
+				pNext = posIntron(variant.getEnd());
 				if (pNext == null) return null;
 				return p + "_" + pNext;
 
@@ -93,11 +93,11 @@ public class HgvsDna extends Hgvs {
 		}
 
 		// Exon position
-		int codonNum = changeEffect.getCodonNum();
+		int codonNum = variantEffect.getCodonNum();
 		if (codonNum < 0) return null;
-		int seqPos = codonNum * 3 + changeEffect.getCodonIndex() + 1;
+		int seqPos = codonNum * 3 + variantEffect.getCodonIndex() + 1;
 
-		switch (seqChange.getVariantType()) {
+		switch (variant.getVariantType()) {
 		case SNP:
 		case MNP:
 			return "" + seqPos;
@@ -106,8 +106,8 @@ public class HgvsDna extends Hgvs {
 			return seqPos + "_" + (seqPos + 1);
 
 		case DEL:
-			String aaOld = changeEffect.getAaOld();
-			String aaNew = changeEffect.getAaNew();
+			String aaOld = variantEffect.getAaOld();
+			String aaNew = variantEffect.getAaNew();
 			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
 			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
 
@@ -123,7 +123,7 @@ public class HgvsDna extends Hgvs {
 	 * Intronic position
 	 */
 	protected String posIntron(int pos) {
-		Intron intron = (Intron) changeEffect.getMarker();
+		Intron intron = (Intron) variantEffect.getMarker();
 		if (intron == null) return null;
 
 		// Jump to closest exon position
@@ -177,13 +177,13 @@ public class HgvsDna extends Hgvs {
 
 	@Override
 	public String toString() {
-		if (seqChange == null) return null;
+		if (variant == null) return null;
 
 		String pos = pos();
 		if (pos == null) return null;
 
 		String type = "";
-		switch (seqChange.getVariantType()) {
+		switch (variant.getVariantType()) {
 		case INS:
 			type = "ins";
 			break;

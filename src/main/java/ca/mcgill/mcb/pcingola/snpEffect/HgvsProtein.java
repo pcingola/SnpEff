@@ -14,26 +14,26 @@ public class HgvsProtein extends Hgvs {
 	String aaNew3, aaOld3;
 	EffectType effectType;
 
-	public HgvsProtein(VariantEffect changeEffect) {
-		super(changeEffect);
+	public HgvsProtein(VariantEffect variantEffect) {
+		super(variantEffect);
 
-		codonNum = changeEffect.getCodonNum();
-		marker = changeEffect.getMarker();
-		effectType = changeEffect.getEffectType();
+		codonNum = variantEffect.getCodonNum();
+		marker = variantEffect.getMarker();
+		effectType = variantEffect.getEffectType();
 
 		// No marker? Nothing to do
 		if (marker != null) {
 			// Codon numbering
 			// HGVS: the translation initiator Methionine is numbered as +1
-			aaPos = codonNum + 1;
+			if (codonNum >= 0) aaPos = codonNum + 1;
 
 			// Convert to 3 letter code
 			// HGVS: the three-letter amino acid code is prefered (see Discussion), with "*" designating a translation
 			// 		 termination codon; for clarity we this page describes changes using the three-letter amino acid
 			CodonTable codonTable = marker.codonTable();
 
-			String aaNew = changeEffect.getAaNew();
-			String aaOld = changeEffect.getAaOld();
+			String aaNew = variantEffect.getAaNew();
+			String aaOld = variantEffect.getAaOld();
 
 			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew3 = "";
 			else aaNew3 = codonTable.aaThreeLetterCode(aaNew);
@@ -116,7 +116,7 @@ public class HgvsProtein extends Hgvs {
 	 * Protein coding position
 	 */
 	protected String pos() {
-		switch (seqChange.getVariantType()) {
+		switch (variant.getVariantType()) {
 		case SNP:
 		case MNP:
 			return pos(codonNum);
@@ -132,8 +132,8 @@ public class HgvsProtein extends Hgvs {
 			p = pos(codonNum);
 			if (p == null) return null;
 
-			String aaOld = changeEffect.getAaOld();
-			String aaNew = changeEffect.getAaNew();
+			String aaOld = variantEffect.getAaOld();
+			String aaNew = variantEffect.getAaNew();
 			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
 			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
 			int end = codonNum + (aaOld.length() - aaNew.length());
@@ -152,7 +152,7 @@ public class HgvsProtein extends Hgvs {
 	 */
 	protected String pos(int codonNum) {
 		if (codonNum < 0) return null;
-		Transcript tr = changeEffect.getTranscript();
+		Transcript tr = variantEffect.getTranscript();
 		String protSeq = tr.protein();
 		if (codonNum >= protSeq.length()) return null;
 		CodonTable codonTable = marker.codonTable();
@@ -161,11 +161,10 @@ public class HgvsProtein extends Hgvs {
 
 	/**
 	 * SNP or MNP changes
-	 * @return
 	 */
 	protected String snpOrMnp() {
 		// No codon change information? only codon number?
-		if (changeEffect.getAaOld().isEmpty() && changeEffect.getAaNew().isEmpty()) {
+		if (variantEffect.getAaOld().isEmpty() && variantEffect.getAaNew().isEmpty()) {
 			if (codonNum >= 0) return "" + (codonNum + 1);
 			return null;
 		}
@@ -173,7 +172,7 @@ public class HgvsProtein extends Hgvs {
 		// Synonymous changes
 		if ((effectType == EffectType.SYNONYMOUS_CODING) //
 				|| (effectType == EffectType.SYNONYMOUS_STOP) //
-		) {
+				) {
 			// HGVS: Description of so called "silent" changes in the format p.Leu54Leu (or p.L54L) is not allowed; descriptions
 			// 		 should be given at DNA level, it is non-informative and not unequivocal (there are five possibilities
 			// 		 at DNA level which may underlie p.Leu54Leu);  correct description has the format c.162C>G.
@@ -184,7 +183,7 @@ public class HgvsProtein extends Hgvs {
 		if ((effectType == EffectType.START_LOST) //
 				|| (effectType == EffectType.SYNONYMOUS_START) //
 				|| (effectType == EffectType.NON_SYNONYMOUS_START) //
-		) {
+				) {
 			// Reference : http://www.hgvs.org/mutnomen/disc.html#Met
 			// Currently, variants in the translation initiating Methionine (M1) are usually described as a substitution, e.g. p.Met1Val.
 			// This is not correct. Either no protein is produced (p.0) or a new translation initiation site up- or downstream is used (e.g. p.Met1ValextMet-12 or p.Met1_Lys45del resp.).
@@ -218,13 +217,13 @@ public class HgvsProtein extends Hgvs {
 
 	@Override
 	public String toString() {
-		if (seqChange == null || marker == null) return null;
+		if (variant == null || marker == null) return null;
 
 		String pos = pos();
 		if (pos == null) return null;
 
 		String protChange = "";
-		switch (seqChange.getVariantType()) {
+		switch (variant.getVariantType()) {
 		case SNP:
 		case MNP:
 			return snpOrMnp();
