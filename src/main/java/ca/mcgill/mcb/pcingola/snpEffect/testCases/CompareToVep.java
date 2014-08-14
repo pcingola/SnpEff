@@ -217,12 +217,17 @@ public class CompareToVep {
 	 * Compare HGSV Protein
 	 */
 	boolean compareHgvsProt(VcfEffect eff, VcfConsequence csq) {
+
 		String effHgsv = eff.getHgvsProt();
 		String csqHgvs = csq.getHgvsProt();
 
 		if (csqHgvs.isEmpty() && effHgsv == null) return true;
 		if (!csqHgvs.isEmpty() && effHgsv == null) return false;
 		if (csqHgvs.isEmpty() && effHgsv != null) return false;
+
+		// This seems to be a bug in ENSEMBL's VEP
+		// E.g.: 'ENST00000241356.4:c.945G>A(p.%3D)'
+		if (csqHgvs.endsWith("(p.%3D)")) return true;
 
 		csqHgvs = csqHgvs.substring(csqHgvs.indexOf(':') + 1);
 		return csqHgvs.equals(effHgsv);

@@ -418,17 +418,17 @@ public class TestCasesHgvs extends TestCase {
 	//		comp.setStrict(true);
 	//		comp.compareVep(vcf);
 	//	}
-
-	public void test_04() {
-		Gpr.debug("Test");
-		String genomeName = "testHg3775Chr1";
-		String vcf = "tests/ensembl_hgvs_intron.outsideCds.vep.vcf";
-		CompareToVep comp = new CompareToVep(genomeName, verbose);
-		comp.setCompareHgvs();
-		comp.setStrict(true);
-		comp.compareVep(vcf);
-	}
-
+	//
+	//	public void test_04() {
+	//		Gpr.debug("Test");
+	//		String genomeName = "testHg3775Chr1";
+	//		String vcf = "tests/ensembl_hgvs_intron.outsideCds.vep.vcf";
+	//		CompareToVep comp = new CompareToVep(genomeName, verbose);
+	//		comp.setCompareHgvs();
+	//		comp.setStrict(true);
+	//		comp.compareVep(vcf);
+	//	}
+	//
 	//	public void test_05() {
 	//		Gpr.debug("Test");
 	//		String genomeName = "testHg3775Chr1";
@@ -439,14 +439,14 @@ public class TestCasesHgvs extends TestCase {
 	//		comp.compareVep(vcf);
 	//	}
 	//
-	//	public void test_06() {
-	//		Gpr.debug("Test");
-	//		String genomeName = "testHg3775Chr1";
-	//		String vcf = "tests/ensembl_hgvs_intron.within_cds.vep.vcf";
-	//		CompareToVep comp = new CompareToVep(genomeName, verbose);
-	//		comp.setCompareHgvs();
-	//		comp.setStrict(true);
-	//		comp.compareVep(vcf);
-	//	}
+	public void test_06() {
+		Gpr.debug("Test");
+		String genomeName = "testHg3775Chr1";
+		String vcf = "tests/ensembl_hgvs_intron.within_cds.vep.vcf";
+		CompareToVep comp = new CompareToVep(genomeName, verbose);
+		comp.setCompareHgvs();
+		comp.setStrict(true);
+		comp.compareVep(vcf);
+	}
 
 }

@@ -101,11 +101,17 @@ public class HgvsDna extends Hgvs {
 		else {
 			if (tr == null) return null;
 			if (variantEffect.isUtr3()) {
-				// We are after stop codon, coordinates mus be '*1', '*2', etc.
+				// We are after stop codon, coordinates must be '*1', '*2', etc.
 				int pos = tr.baseNumberPreMRna(variant.getStart());
 				int posStop = tr.baseNumberPreMRna(tr.getCdsEnd());
 				posStart = Math.abs(pos - posStop);
 				posPrepend = "*";
+			} else if (variantEffect.isUtr5()) {
+				// We are before TSS, coordinates must be '-1', '-2', etc.
+				int pos = tr.baseNumberPreMRna(variant.getStart());
+				int posTss = tr.baseNumberPreMRna(tr.getCdsStart());
+				posStart = Math.abs(pos - posTss);
+				posPrepend = "-";
 			} else posStart = tr.baseNumberPreMRna(variant.getStart()) + 1;
 		}
 

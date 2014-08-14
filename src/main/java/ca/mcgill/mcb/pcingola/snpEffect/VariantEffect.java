@@ -514,6 +514,10 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return hasEffectType(EffectType.UTR_3_PRIME) || hasEffectType(EffectType.UTR_3_DELETED);
 	}
 
+	public boolean isUtr5() {
+		return hasEffectType(EffectType.UTR_5_PRIME) || hasEffectType(EffectType.UTR_5_DELETED);
+	}
+
 	public void set(Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
 		setMarker(marker); // Use setter because it takes care of warnings
 		setEffectType(effectType);
