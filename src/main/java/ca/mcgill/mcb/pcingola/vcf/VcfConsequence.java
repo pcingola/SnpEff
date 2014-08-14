@@ -63,11 +63,11 @@ public class VcfConsequence {
 		return get("Feature");
 	}
 
-	public String getHgvsC() {
+	public String getHgvsDna() {
 		return get("HGVSc");
 	}
 
-	public String getHgvsP() {
+	public String getHgvsProt() {
 		return get("HGVSp");
 	}
 

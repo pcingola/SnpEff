@@ -15,6 +15,7 @@ import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
@@ -401,6 +402,9 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Change in HGVS notation
 	 */
 	public String getHgvs() {
+		if (getTranscript() != null && getTranscript().getId().equals("ENST00000463758")) //
+			Gpr.debug("DEBUG!!!");
+
 		// Calculate protein level and dna level changes
 		HgvsProtein hgsvProtein = new HgvsProtein(this);
 		HgvsDna hgsvDna = new HgvsDna(this);

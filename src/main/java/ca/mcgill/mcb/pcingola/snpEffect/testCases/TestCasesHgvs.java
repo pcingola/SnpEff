@@ -318,8 +318,8 @@ public class TestCasesHgvs extends TestCase {
 
 	public void test_02() {
 		Gpr.debug("Test");
-		String genomeName = "testHg3766Chr1";
-		String vcf = "tests/hgvs_1.vcf";
+		String genomeName = "testHg3775Chr1";
+		String vcf = "tests/hgvs_1.vep.vcf";
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.compareVep(vcf);

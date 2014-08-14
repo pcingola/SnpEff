@@ -80,11 +80,12 @@ public class CompareToVep {
 			trIds.add(eff.getTranscriptId());
 
 		// All transcripts have to match (at least one effect)
-		boolean ok = true;
-		for (String trId : trIds)
-			ok &= compare(effs, csqs, trId);
+		for (String trId : trIds) {
+			boolean match = compare(effs, csqs, trId);
+			if (!match) return false;
+		}
 
-		return ok;
+		return true;
 	}
 
 	/**
@@ -96,8 +97,14 @@ public class CompareToVep {
 
 		// At least one effect has to match for this transcript
 		for (VcfEffect eff : effs)
-			if (trId.equals(eff.getTranscriptId())) //
-				ok |= compare(eff, csqs);
+			if (trId.equals(eff.getTranscriptId())) {
+				boolean match = compare(eff, csqs);
+				if (verbose) {
+					String matched = match ? "OK" : "NO";
+					System.out.println("\t\t\t" + matched + " Match:\tTranscript '" + trId + "'\tEffect " + eff.getEffectTypesStr() + "\tHGVS.dna: '" + eff.getHgvsDna() + "'\tHGVS.prot: '" + eff.getHgvsProt() + "'");
+				}
+				ok |= match;
+			}
 
 		return ok;
 	}
@@ -177,15 +184,15 @@ public class CompareToVep {
 	 */
 	boolean compareHgvs(VcfEffect eff, VcfConsequence csq) {
 
-		String effHgsvDna = eff.getAa();
-		String effHgsvProt = eff.getAa();
+		String effHgsvDna = eff.getHgvsDna();
+		String effHgsvProt = eff.getHgvsProt();
 
 		Gpr.debug("eff: " + eff.getEffectTypesStr() + "\t" + csq.getConsequence() //
 				+ "\n\t\ttrId    :\t" + eff.getTranscriptId() + "\t" + csq.getFeature() //
-				+ "\n\t\thgsv.c  :\t'" + effHgsvDna + "'\t'" + csq.getHgvsC() + "'" //
-				+ "\n\t\thgsv.p  :\t'" + effHgsvProt + "'\t'" + csq.getHgvsP() + "'" //
+				+ "\n\t\thgsv.c  :\t'" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'" //
+				+ "\n\t\thgsv.p  :\t'" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'" //
 				+ "\n\t\t        : " + csq //
-		);
+				);
 
 		return compareHgvsDna(eff, csq) && compareHgvsProt(eff, csq);
 	}
@@ -194,8 +201,8 @@ public class CompareToVep {
 	 * Compare HGSV DNA
 	 */
 	boolean compareHgvsDna(VcfEffect eff, VcfConsequence csq) {
-		String effHgsv = eff.getAa();
-		String csqHgvs = csq.getHgvsC();
+		String effHgsv = eff.getHgvsDna();
+		String csqHgvs = csq.getHgvsDna();
 		Gpr.debug("Compare DNA: " + effHgsv + "\t" + csqHgvs);
 		if (csqHgvs.isEmpty() && effHgsv == null) return true;
 		if (!csqHgvs.isEmpty() && effHgsv == null) return false;
@@ -210,8 +217,8 @@ public class CompareToVep {
 	 * Compare HGSV Protein
 	 */
 	boolean compareHgvsProt(VcfEffect eff, VcfConsequence csq) {
-		String effHgsv = eff.getAa();
-		String csqHgvs = csq.getHgvsP();
+		String effHgsv = eff.getHgvsProt();
+		String csqHgvs = csq.getHgvsProt();
 
 		Gpr.debug("Compare prot: " + effHgsv + "\t" + csqHgvs);
 		if (csqHgvs.isEmpty() && effHgsv == null) return true;

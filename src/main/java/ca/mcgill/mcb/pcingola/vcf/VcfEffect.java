@@ -270,6 +270,26 @@ public class VcfEffect {
 		return genotype;
 	}
 
+	public String getHgvsDna() {
+		if (aa == null) return null;
+		if (aa.indexOf('/') > 0) {
+			String f[] = aa.split("/");
+			if (f.length > 1 && (f[0].startsWith("c.") || f[0].startsWith("n."))) return f[0];
+		} else if (aa.startsWith("c.") || aa.startsWith("n.")) return aa;
+
+		return null;
+	}
+
+	public String getHgvsProt() {
+		if (aa == null) return null;
+		if (aa.indexOf('/') > 0) {
+			String f[] = aa.split("/");
+			if (f.length > 1 && f[1].startsWith("p.")) return f[1];
+		} else if (aa.startsWith("p.")) return aa;
+
+		return null;
+	}
+
 	public VariantEffect.EffectImpact getImpact() {
 		return impact;
 	}
