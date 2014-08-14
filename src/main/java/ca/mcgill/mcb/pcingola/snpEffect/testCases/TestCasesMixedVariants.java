@@ -3,6 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.util.Random;
 
 import junit.framework.TestCase;
+
+import org.junit.Assert;
+
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -47,6 +50,8 @@ public class TestCasesMixedVariants extends TestCase {
 	public void compareVep(String genome, String vcf) {
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		comp.compareVep(vcf);
+		System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 	void init() {
