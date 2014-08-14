@@ -60,11 +60,11 @@ public enum EffectType {
 	, INTERGENIC_CONSERVED //
 	, INTERGENIC //
 	, CDS //
-	, GENE //
-	, GENOME //
-	, TRANSCRIPT //
 	, EXON //
+	, TRANSCRIPT //
+	, GENE //
 	, CHROMOSOME //
+	, GENOME //
 	, NONE //
 	;
 

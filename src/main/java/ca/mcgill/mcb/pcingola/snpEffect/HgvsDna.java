@@ -94,8 +94,16 @@ public class HgvsDna extends Hgvs {
 
 		// Exon position
 		int codonNum = variantEffect.getCodonNum();
-		if (codonNum < 0) return null;
-		int seqPos = codonNum * 3 + variantEffect.getCodonIndex() + 1;
+		int seqPos = -1;
+		if (codonNum >= 0) {
+			seqPos = codonNum * 3 + variantEffect.getCodonIndex() + 1;
+		} else {
+			// TODO: Find base position from transcript
+			seqPos = tr.baseNumberPreMRna(variant.getStart()) + 1;
+		}
+
+		// Could not find dna position in transcript
+		if (seqPos < 0) return null;
 
 		switch (variant.getVariantType()) {
 		case SNP:
@@ -106,13 +114,18 @@ public class HgvsDna extends Hgvs {
 			return seqPos + "_" + (seqPos + 1);
 
 		case DEL:
-			String aaOld = variantEffect.getAaOld();
-			String aaNew = variantEffect.getAaNew();
-			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
-			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
+			if (tr.isProteinCoding()) {
+				String aaOld = variantEffect.getAaOld();
+				String aaNew = variantEffect.getAaNew();
+				if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
+				if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
 
-			int end = seqPos + (aaOld.length() - aaNew.length());
-			return seqPos + "_" + end;
+				int end = seqPos + 3 * (aaOld.length() - aaNew.length());
+				return seqPos + "_" + end;
+			}
+
+			// Non-coding
+			return seqPos + "_" + variant.size();
 
 		default:
 			return null;

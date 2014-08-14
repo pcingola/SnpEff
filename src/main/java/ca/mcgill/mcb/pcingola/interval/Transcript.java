@@ -349,9 +349,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Calculate distance from transcript to a position
-	 * @param pos
-	 * @return
+	 * Calculate distance from transcript start to a position
 	 */
 	public synchronized int baseNumberPreMRna(int pos) {
 		int count = 0;
@@ -375,8 +373,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Convert a 'cDNA' base number to a genomic coordinate
-	 * @param baseNum
-	 * @return
 	 */
 	public synchronized int baseNumberPreMRna2Pos(int baseNum) {
 		for (Exon eint : sortedStrand()) {
