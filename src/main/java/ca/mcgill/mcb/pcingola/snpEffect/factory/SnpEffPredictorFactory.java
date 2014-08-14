@@ -551,8 +551,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Get a chromosome. If it doesn't exist, create it
-	 * @param chromoName
-	 * @return
 	 */
 	protected Chromosome getOrCreateChromosome(String chromoName) {
 		Chromosome chromo = genome.getChromosome(chromoName);

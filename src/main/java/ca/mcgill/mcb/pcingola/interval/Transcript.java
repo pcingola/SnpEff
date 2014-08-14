@@ -49,6 +49,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	Exon firstCodingExon; // First coding exon. I.e. where transcription start site (TSS) is.
 	int cds2pos[], aa2pos[];
 	boolean aaCheck, dnaCheck;
+	boolean corrected; // Have coordinates been corrected? (e.g. frame correction)
 	boolean ribosomalSlippage; // Ribosomal slippage causes changes in reading frames. This might be represented as negative length introns (overlapping exons).
 
 	public Transcript() {
@@ -101,7 +102,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Add a CDS
-	 * @param cdsInt
 	 */
 	public void add(Cds cdsInt) {
 		cdss.add(cdsInt);
@@ -110,7 +110,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Add a SpliceSiteBranchU12
-	 * @param branchU12
 	 */
 	public void add(SpliceSiteBranchU12 branchU12) {
 		spliceBranchSites.add(branchU12);
@@ -118,7 +117,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Add a UTR
-	 * @param utr
 	 */
 	public void add(Utr utr) {
 		utrs.add(utr);
@@ -127,7 +125,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Add missing UTRs. See utrFromCds() method.
-	 * @param missingUtrs
 	 */
 	boolean addMissingUtrs(Markers missingUtrs, boolean verbose) {
 		missingUtrs.sort(false, isStrandMinus());
@@ -170,7 +167,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Adjust transcript coordinates
-	 * @return
 	 */
 	public boolean adjust() {
 		boolean changed = false;
@@ -227,9 +223,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Create a new transcript after applying changes in variant
 	 *
 	 * Note: If this transcript is unaffected, no new transcript is created (same transcript is returned)
-	 *
-	 * @param variant
-	 * @return
 	 */
 	@Override
 	public Transcript apply(Variant variant) {
@@ -539,7 +532,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Calculate CpG bias: number of CpG / expected[CpG]
-	 * @return
 	 */
 	public double cpgExonBias() {
 		ObservedOverExpectedCpG oe = new ObservedOverExpectedCpG();
@@ -548,7 +540,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Count total CpG in this transcript's exons
-	 * @return
 	 */
 	public int cpgExons() {
 		ObservedOverExpectedCpG oe = new ObservedOverExpectedCpG();
@@ -559,8 +550,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Find all splice sites.
 	 *
 	 * @param createIfMissing : If true, create canonical splice sites if they are missing.
-	 *
-	 * @return
 	 */
 	public List<SpliceSite> createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
 		List<SpliceSite> list = new LinkedList<SpliceSite>();
@@ -701,7 +690,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Return the Exon that hits position 'pos'
-	 * @param pos
 	 * @return An exon intersecting 'pos' (null if not found)
 	 */
 	public Exon findExon(int pos) {
@@ -712,8 +700,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Find a CDS that matches exactly the exon
-	 * @param exon
-	 * @return
 	 */
 	public Cds findMatchingCds(Exon exon) {
 		for (Cds cds : cdss)
@@ -723,7 +709,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Return the UTR that hits position 'pos'
-	 * @param pos
 	 * @return An UTR intersecting 'pos' (null if not found)
 	 */
 	public Utr findUtr(int pos) {
@@ -735,7 +720,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Return the UTR that hits position 'pos'
-	 * @param posPrev
 	 * @return An UTR intersecting 'pos' (null if not found)
 	 */
 	public List<Utr> findUtrs(Marker marker) {
@@ -750,8 +734,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Find the first position after 'pos' within an exon
-	 * @param pos
-	 * @return
 	 */
 	int firstExonPositionAfter(int pos) {
 		for (Exon ex : sorted()) {
@@ -774,8 +756,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * This is performed in two stages:
 	 *    i) First exon is corrected by adding a fake 5'UTR
 	 *    ii) Other exons are corrected by changing the start (or end) coordinates.
-	 *
-	 * @return
 	 */
 	public synchronized boolean frameCorrection() {
 		// Copy frame information form CDSs to Exons (if missing)
@@ -792,7 +772,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		boolean changed = changedFirst || changedNonFirst;
 
 		// We have to reset cached CDS data if anything changed
-		if (changed) resetCdsCache();
+		if (changed) {
+			resetCdsCache();
+			corrected = true;
+		}
 
 		// Return true if there was any adjustment
 		return changed;
@@ -803,8 +786,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 *
 	 * Transcripts whose first exon has a non-zero frame indicate problems.
 	 * We add a 'fake' UTR5 to compensate for reading frame.
-	 *
-	 * @param showEvery
 	 */
 	synchronized boolean frameCorrectionFirstCodingExon() {
 		List<Exon> exons = sortedStrand();
@@ -904,7 +885,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
@@ -991,7 +972,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Get all CDSs
-	 * @return
 	 */
 	public List<Cds> getCds() {
 		return cdss;
@@ -1013,7 +993,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Get first coding exon
-	 * @return
 	 */
 	public synchronized Exon getFirstCodingExon() {
 		if (firstCodingExon == null) {
@@ -1036,7 +1015,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Create a TSS marker
-	 * @return
 	 */
 	public Marker getTss() {
 		calcCdsStartEnd();
@@ -1057,7 +1035,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Does this transcript have any errors?
-	 * @return
 	 */
 	public boolean hasError() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds();
@@ -1065,17 +1042,15 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Does this transcript have any errors?
-	 * @return
 	 */
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
 	 * Get all introns (lazy init)
-	 * @return
 	 */
 	public synchronized ArrayList<Intron> introns() {
 		if (introns == null) {
@@ -1119,9 +1094,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 *
 	 * Note: Intron number 'N' is the intron between exon number N and exon number N+1
 	 * Note: Numbering is zero-based (not to be confused with exon 'ranking', which is one-based)
-	 *
-	 * @param intronNum
-	 * @return
 	 */
 	public int intronSize(int intronNum) {
 		if (intronNum >= (numChilds() - 1)) return -1;
@@ -1142,8 +1114,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Is this variant in the CDS part of this transcript?
-	 * @param variant
-	 * @return
 	 */
 	boolean isCds(Variant variant) {
 		calcCdsStartEnd();
@@ -1166,6 +1136,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return aaCheck || dnaCheck;
 	}
 
+	public boolean isCorrected() {
+		return corrected;
+	}
+
 	public boolean isDnaCheck() {
 		return dnaCheck;
 	}
@@ -1182,7 +1156,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Is the first codon a START codon?
-	 * @return
 	 */
 	public boolean isErrorStartCodon() {
 		if (!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) return false;
@@ -1232,8 +1205,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Does this 'pos' hit a UTR?
-	 * @param pos
-	 * @return
 	 */
 	public boolean isUtr(int pos) {
 		return findUtr(pos) != null;
@@ -1245,7 +1216,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Is the last codon a STOP codon?
-	 * @return
 	 */
 	public boolean isWarningStopCodon() {
 		if (!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) return false;
@@ -1260,8 +1230,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Find the last position before 'pos' within an exon
-	 * @param pos
-	 * @return
 	 */
 	int lastExonPositionBefore(int pos) {
 		int last = -1;
@@ -1283,7 +1251,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * A list of all markers in this transcript
-	 * @return
 	 */
 	@Override
 	public Markers markers() {
@@ -1315,7 +1282,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Protein sequence (amino acid sequence produced by this transcripts)
-	 * @return
 	 */
 	public String protein() {
 		if (protein == null) {
@@ -1367,8 +1333,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Return the first exon that intersects 'interval' (null if not found)
-	 * @param interval
-	 * @return
 	 */
 	public Exon queryExon(Marker interval) {
 		for (Exon ei : this)
@@ -1433,6 +1397,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		proteinCoding = markerSerializer.getNextFieldBoolean();
 		dnaCheck = markerSerializer.getNextFieldBoolean();
 		aaCheck = markerSerializer.getNextFieldBoolean();
+		corrected = markerSerializer.getNextFieldBoolean();
 		ribosomalSlippage = markerSerializer.getNextFieldBoolean();
 		upstream = (Upstream) markerSerializer.getNextFieldMarker();
 		downstream = (Downstream) markerSerializer.getNextFieldMarker();
@@ -1449,7 +1414,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Create a string to serialize to a file
-	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -1459,13 +1423,14 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + proteinCoding //
 				+ "\t" + dnaCheck //
 				+ "\t" + aaCheck //
+				+ "\t" + corrected //
 				+ "\t" + ribosomalSlippage //
 				+ "\t" + markerSerializer.save(upstream) //
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
 				+ "\t" + markerSerializer.save((Iterable) spliceBranchSites)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {

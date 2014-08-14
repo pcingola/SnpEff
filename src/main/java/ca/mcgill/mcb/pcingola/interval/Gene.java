@@ -115,7 +115,6 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	/**
 	 * Calculate CpG bias: number of CpG / expected[CpG]
-	 * @return
 	 */
 	public double cpgExonBias() {
 		ObservedOverExpectedCpG oe = new ObservedOverExpectedCpG();
@@ -142,7 +141,6 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	/**
 	 * Is any of the transcripts protein coding?
-	 * @return
 	 */
 	public boolean isProteinCoding() {
 		for (Transcript tr : this)
@@ -202,13 +200,13 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	}
 
 	/**
-	 * Remove unverified transcripts
+	 * Remove unverified or corrected transcripts
 	 */
 	public void removeUnverified() {
 		// Mark unchecked transcripts for deletion
 		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
 		for (Transcript t : this)
-			if (!t.isChecked()) toDelete.add(t);
+			if (!t.isChecked() || t.isCorrected()) toDelete.add(t);
 
 		// Remove
 		for (Transcript t : toDelete)
@@ -217,8 +215,6 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	/**
 	 * Parse a line from a serialized file
-	 * @param line
-	 * @return
 	 */
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {
@@ -229,7 +225,6 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	/**
 	 * Create a string to serialize to a file
-	 * @return
 	 */
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
