@@ -15,7 +15,6 @@ import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
@@ -402,9 +401,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Change in HGVS notation
 	 */
 	public String getHgvs() {
-		if (getTranscript() != null && getTranscript().getId().equals("ENST00000463758")) //
-			Gpr.debug("DEBUG!!!");
-
 		// Calculate protein level and dna level changes
 		HgvsProtein hgsvProtein = new HgvsProtein(this);
 		HgvsDna hgsvDna = new HgvsDna(this);
@@ -460,7 +456,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -511,7 +507,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
+				;
 	}
 
 	public void set(Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
@@ -658,7 +654,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**

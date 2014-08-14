@@ -95,15 +95,14 @@ public class HgvsDna extends Hgvs {
 		// Exon position
 		int codonNum = variantEffect.getCodonNum();
 		int seqPos = -1;
-		if (codonNum >= 0) {
-			seqPos = codonNum * 3 + variantEffect.getCodonIndex() + 1;
-		} else {
-			// TODO: Find base position from transcript
+		if (codonNum >= 0) seqPos = codonNum * 3 + variantEffect.getCodonIndex() + 1;
+		else {
+			if (tr == null) return null;
 			seqPos = tr.baseNumberPreMRna(variant.getStart()) + 1;
 		}
 
-		// Could not find dna position in transcript
-		if (seqPos < 0) return null;
+		// Could not find dna position in transcript?
+		if (seqPos <= 0) return null;
 
 		switch (variant.getVariantType()) {
 		case SNP:

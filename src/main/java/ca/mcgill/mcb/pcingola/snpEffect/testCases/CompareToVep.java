@@ -22,6 +22,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class CompareToVep {
 
+	boolean strict = false;
 	boolean compareEffect = true;
 	boolean compareHgvs = false;
 	boolean debug = false;
@@ -55,6 +56,7 @@ public class CompareToVep {
 
 		args.add("-noStats");
 		args.add("-noLog");
+		if (strict) args.add("-strict");
 		args.add(genomeName);
 		args.add(vcf);
 
@@ -63,9 +65,10 @@ public class CompareToVep {
 
 	boolean canCompare(VcfEffect eff, VcfConsequence csq) {
 		if (compareHgvs) {
-
 			// These do not produce HGSV notation, so we cannot compare them
 			if (eff.getEffectType() == EffectType.DOWNSTREAM || eff.getEffectType() == EffectType.UPSTREAM) return false;
+			if (csq.getConsequence().indexOf("NMD_transcript_varian") >= 0) return false;
+
 		}
 		return true;
 	}
@@ -278,6 +281,10 @@ public class CompareToVep {
 	public void setCompareHgvs() {
 		compareEffect = false;
 		compareHgvs = true;
+	}
+
+	public void setStrict(boolean strict) {
+		this.strict = strict;
 	}
 
 }

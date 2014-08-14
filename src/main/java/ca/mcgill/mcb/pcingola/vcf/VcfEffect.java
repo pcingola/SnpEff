@@ -274,7 +274,7 @@ public class VcfEffect {
 		if (aa == null) return null;
 		if (aa.indexOf('/') > 0) {
 			String f[] = aa.split("/");
-			if (f.length > 1 && (f[0].startsWith("c.") || f[0].startsWith("n."))) return f[0];
+			if (f.length > 1 && (f[1].startsWith("c.") || f[1].startsWith("n."))) return f[1];
 		} else if (aa.startsWith("c.") || aa.startsWith("n.")) return aa;
 
 		return null;
@@ -284,7 +284,7 @@ public class VcfEffect {
 		if (aa == null) return null;
 		if (aa.indexOf('/') > 0) {
 			String f[] = aa.split("/");
-			if (f.length > 1 && f[1].startsWith("p.")) return f[1];
+			if (f.length > 0 && f[0].startsWith("p.")) return f[0];
 		} else if (aa.startsWith("p.")) return aa;
 
 		return null;

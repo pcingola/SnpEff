@@ -1497,6 +1497,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		if ((id != null) && (id.length() > 0)) sb.append(", id:" + id);
 		if ((bioType != null) && (bioType.length() > 0)) sb.append(", bioType:" + bioType);
 		if (isProteinCoding()) sb.append(", Protein");
+		if (isAaCheck()) sb.append(", AA check");
+		if (isDnaCheck()) sb.append(", DNA check");
 
 		if (numChilds() > 0) {
 			sb.append("\n");
@@ -1566,8 +1568,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Get some details about the effect on this transcript
-	 * @param variant
-	 * @return
 	 */
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantsEffect) {

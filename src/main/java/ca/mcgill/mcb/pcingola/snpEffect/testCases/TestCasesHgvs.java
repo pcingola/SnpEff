@@ -316,15 +316,6 @@ public class TestCasesHgvs extends TestCase {
 	//		}
 	//	}
 
-	public void test_02() {
-		Gpr.debug("Test");
-		String genomeName = "testHg3775Chr1";
-		String vcf = "tests/hgvs_1.vep.vcf";
-		CompareToVep comp = new CompareToVep(genomeName, verbose);
-		comp.setCompareHgvs();
-		comp.compareVep(vcf);
-	}
-
 	//	public void test_03_intron_withinCds() {
 	//		Gpr.debug("Test");
 	//		snpEffect("testHg3766Chr1", "tests/ensembl_hgvs_intron.within_cds.vcf");
@@ -407,4 +398,24 @@ public class TestCasesHgvs extends TestCase {
 	//			if (tested) checked++;
 	//		}
 	//	}
+
+	//	public void test_02() {
+	//		Gpr.debug("Test");
+	//		String genomeName = "testHg3775Chr1";
+	//		String vcf = "tests/hgvs_1.vep.vcf";
+	//		CompareToVep comp = new CompareToVep(genomeName, verbose);
+	//		comp.setCompareHgvs();
+	//		comp.compareVep(vcf);
+	//	}
+
+	public void test_03() {
+		Gpr.debug("Test");
+		String genomeName = "testHg3775Chr1";
+		String vcf = "tests/ensembl_hgvs_intron.1.vep.vcf";
+		CompareToVep comp = new CompareToVep(genomeName, verbose);
+		comp.setCompareHgvs();
+		comp.setStrict(true);
+		comp.compareVep(vcf);
+	}
+
 }

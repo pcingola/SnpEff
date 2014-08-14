@@ -45,7 +45,6 @@ public class SnpEffCmdBuild extends SnpEff {
 
 	/**
 	 * Check if database is OK
-	 * @param snpEffectPredictor
 	 */
 	void checkDb() {
 		//---
@@ -132,7 +131,6 @@ public class SnpEffCmdBuild extends SnpEff {
 
 	/**
 	 * Parse command line arguments
-	 * @param args
 	 */
 	@Override
 	public void parseArgs(String[] args) {
@@ -314,7 +312,6 @@ public class SnpEffCmdBuild extends SnpEff {
 
 	/**
 	 * Show 'usage;' message and exit with an error code '-1'
-	 * @param message
 	 */
 	@Override
 	public void usage(String message) {

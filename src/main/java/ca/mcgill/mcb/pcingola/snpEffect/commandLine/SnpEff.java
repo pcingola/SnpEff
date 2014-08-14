@@ -166,7 +166,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-				);
+						);
 			}
 		}
 	}
@@ -243,7 +243,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+					);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -611,7 +611,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
-		) {
+				) {
 			command = args[argNum++].toLowerCase();
 		} else {
 			command = "eff"; // Default command is 'eff'
@@ -810,29 +810,30 @@ public class SnpEff implements CommandLine {
 		else throw new RuntimeException("Unknown command '" + command + "'");
 
 		// Copy values to specific command
-		snpEffCmd.help = help;
-		snpEffCmd.verbose = verbose;
-		snpEffCmd.debug = debug;
-		snpEffCmd.quiet = quiet;
-		snpEffCmd.suppressOutput = suppressOutput;
-		snpEffCmd.configFile = configFile;
-		snpEffCmd.dataDir = dataDir;
 		snpEffCmd.canonical = canonical;
+		snpEffCmd.configFile = configFile;
+		snpEffCmd.customIntervalFiles = customIntervalFiles;
+		snpEffCmd.dataDir = dataDir;
+		snpEffCmd.debug = debug;
 		snpEffCmd.download = download;
+		snpEffCmd.filterIntervalFiles = filterIntervalFiles;
+		snpEffCmd.genomeVer = genomeVer;
+		snpEffCmd.help = help;
 		snpEffCmd.log = log;
 		snpEffCmd.motif = motif;
 		snpEffCmd.multiThreaded = multiThreaded;
 		snpEffCmd.nextProt = nextProt;
-		snpEffCmd.onlyRegulation = onlyRegulation;
-		snpEffCmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
 		snpEffCmd.numWorkers = numWorkers;
-		snpEffCmd.spliceSiteSize = spliceSiteSize;
-		snpEffCmd.upDownStreamLength = upDownStreamLength;
-		snpEffCmd.genomeVer = genomeVer;
+		snpEffCmd.onlyRegulation = onlyRegulation;
 		snpEffCmd.onlyTranscriptsFile = onlyTranscriptsFile;
-		snpEffCmd.customIntervalFiles = customIntervalFiles;
-		snpEffCmd.filterIntervalFiles = filterIntervalFiles;
+		snpEffCmd.quiet = quiet;
 		snpEffCmd.regulationTracks = regulationTracks;
+		snpEffCmd.spliceSiteSize = spliceSiteSize;
+		snpEffCmd.strict = strict;
+		snpEffCmd.suppressOutput = suppressOutput;
+		snpEffCmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
+		snpEffCmd.upDownStreamLength = upDownStreamLength;
+		snpEffCmd.verbose = verbose;
 
 		// Help requested?
 		if (help) {
