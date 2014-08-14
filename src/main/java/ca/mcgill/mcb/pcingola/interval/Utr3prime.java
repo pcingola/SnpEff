@@ -37,18 +37,14 @@ public class Utr3prime extends Utr {
 
 	/**
 	 * Calculate distance from beginning of 3'UTRs
-	 *
-	 * @param snp
-	 * @param utr
-	 * @return
 	 */
 	@Override
-	int utrDistance(Variant seqChange, Transcript tr) {
+	int utrDistance(Variant variant, Transcript tr) {
 		int cdsEnd = tr.getCdsEnd();
 		if (cdsEnd < 0) return -1;
 
-		if (isStrandPlus()) return seqChange.getStart() - cdsEnd;
-		return cdsEnd - seqChange.getEnd();
+		if (isStrandPlus()) return variant.getStart() - cdsEnd;
+		return cdsEnd - variant.getEnd();
 	}
 
 	@Override

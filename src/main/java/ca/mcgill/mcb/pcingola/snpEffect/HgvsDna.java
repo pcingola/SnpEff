@@ -92,25 +92,34 @@ public class HgvsDna extends Hgvs {
 			}
 		}
 
+		String posPrepend = "";
+
 		// Exon position
 		int codonNum = variantEffect.getCodonNum();
-		int seqPos = -1;
-		if (codonNum >= 0) seqPos = codonNum * 3 + variantEffect.getCodonIndex() + 1;
+		int posStart = -1, posEnd = -1;
+		if (codonNum >= 0) posStart = codonNum * 3 + variantEffect.getCodonIndex() + 1;
 		else {
 			if (tr == null) return null;
-			seqPos = tr.baseNumberPreMRna(variant.getStart()) + 1;
+			if (variantEffect.isUtr3()) {
+				// We are after stop codon, coordinates mus be '*1', '*2', etc.
+				int pos = tr.baseNumberPreMRna(variant.getStart());
+				int posStop = tr.baseNumberPreMRna(tr.getCdsEnd());
+				posStart = Math.abs(pos - posStop);
+				posPrepend = "*";
+			} else posStart = tr.baseNumberPreMRna(variant.getStart()) + 1;
 		}
 
 		// Could not find dna position in transcript?
-		if (seqPos <= 0) return null;
+		if (posStart <= 0) return null;
 
 		switch (variant.getVariantType()) {
 		case SNP:
 		case MNP:
-			return "" + seqPos;
+			return posPrepend + posStart;
 
 		case INS:
-			return seqPos + "_" + (seqPos + 1);
+			posEnd = posStart + 1;
+			return posPrepend + posStart + "_" + posPrepend + posEnd;
 
 		case DEL:
 			if (tr.isProteinCoding()) {
@@ -119,12 +128,12 @@ public class HgvsDna extends Hgvs {
 				if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
 				if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
 
-				int end = seqPos + 3 * (aaOld.length() - aaNew.length());
-				return seqPos + "_" + end;
+				posEnd = posStart + 3 * (aaOld.length() - aaNew.length());
+			} else {
+				// Non-coding
+				posEnd = posStart + variant.size();
 			}
-
-			// Non-coding
-			return seqPos + "_" + variant.size();
+			return posPrepend + posStart + "_" + posPrepend + posEnd;
 
 		default:
 			return null;
