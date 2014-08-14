@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * An 'CSQ' entry in a vcf header line
@@ -35,7 +34,6 @@ public class VcfConsequenceHeader {
 
 		String descr = vcfInfoCsq.getDescription();
 		String fields = descr.substring(descr.lastIndexOf(':'));
-		Gpr.debug("Fields: " + fields);
 		fieldNames = fields.split("\\|");
 
 		fieldNum = new HashMap<String, Integer>();

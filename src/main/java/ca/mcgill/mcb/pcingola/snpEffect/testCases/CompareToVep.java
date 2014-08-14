@@ -31,6 +31,7 @@ public class CompareToVep {
 	String genomeName;
 	String addArgs[];
 	VcfConsequenceHeader vcfCsqHeader;
+	int countHgvsDna, countHgvsProt, countEff;
 
 	public CompareToVep(String genomeName, boolean verbose) {
 		this.genomeName = genomeName;
@@ -71,6 +72,11 @@ public class CompareToVep {
 
 		}
 		return true;
+	}
+
+	public boolean checkComapred() {
+		if (compareHgvs) return (countHgvsDna + countHgvsProt) > 0;
+		return countEff > 0;
 	}
 
 	/**
@@ -171,6 +177,7 @@ public class CompareToVep {
 		for (EffectType et : effectTypes) {
 			for (String cons : consecuences) {
 				if (compare(et.toString(), cons)) {
+					countEff++;
 					if (verbose) System.out.println("\t\t\tOK :" + eff.getTranscriptId() + "\t" + et + "\t" + cons);
 					return true;
 				}
@@ -186,15 +193,16 @@ public class CompareToVep {
 	 */
 	boolean compareHgvs(VcfEffect eff, VcfConsequence csq) {
 
-		String effHgsvDna = eff.getHgvsDna();
-		String effHgsvProt = eff.getHgvsProt();
-
-		if (verbose) System.out.println("\t\t\teff     : " + eff.getEffectTypesStr() //
-				+ "\n\t\t\tcsq     : " + csq.getConsequence() //
-				+ "\n\t\t\ttrId    : " + eff.getTranscriptId() + "\t" + csq.getFeature() //
-				+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'" //
-				+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'" //
-		);
+		if (verbose) {
+			String effHgsvDna = eff.getHgvsDna();
+			String effHgsvProt = eff.getHgvsProt();
+			System.out.println("\t\t\teff     : " + eff.getEffectTypesStr() //
+					+ "\n\t\t\tcsq     : " + csq.getConsequence() //
+					+ "\n\t\t\ttrId    : " + eff.getTranscriptId() + "\t" + csq.getFeature() //
+					+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'" //
+					+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'" //
+					);
+		}
 
 		return compareHgvsDna(eff, csq) && compareHgvsProt(eff, csq);
 	}
@@ -210,7 +218,9 @@ public class CompareToVep {
 		if (csqHgvs.isEmpty() && effHgsv != null) return false;
 
 		csqHgvs = csqHgvs.substring(csqHgvs.indexOf(':') + 1);
-		return csqHgvs.equals(effHgsv);
+		boolean eq = csqHgvs.equals(effHgsv);
+		if (eq) countHgvsDna++;
+		return eq;
 	}
 
 	/**
@@ -230,7 +240,9 @@ public class CompareToVep {
 		if (csqHgvs.endsWith("(p.%3D)")) return true;
 
 		csqHgvs = csqHgvs.substring(csqHgvs.indexOf(':') + 1);
-		return csqHgvs.equals(effHgsv);
+		boolean eq = csqHgvs.equals(effHgsv);
+		if (eq) countHgvsProt++;
+		return eq;
 	}
 
 	/**
@@ -244,22 +256,24 @@ public class CompareToVep {
 		// Run and compare VCF entries
 		List<VcfEntry> vcfEnties = runSnpEff(args(genomeName, vcf));
 		for (VcfEntry ve : vcfEnties) {
+			List<VcfConsequence> csqs = VcfConsequence.parse(vcfCsqHeader, ve);
+			List<VcfEffect> effs = ve.parseEffects();
+
 			if (verbose) {
 				System.out.println(ve);
 
 				System.out.println("\tCSQ:");
-				List<VcfConsequence> csqs = VcfConsequence.parse(vcfCsqHeader, ve);
 				for (VcfConsequence csq : csqs)
-					if (verbose) System.out.println("\t\t" + csq);
+					System.out.println("\t\t" + csq);
 
 				System.out.println("\tEFF:");
-				List<VcfEffect> effs = ve.parseEffects();
 				for (VcfEffect eff : effs)
-					if (verbose) System.out.println("\t\t" + eff);
+					System.out.println("\t\t" + eff);
 
 				System.out.println("\tCompare:");
-				Assert.assertTrue("EFF and CSQ do not match", compare(effs, csqs));
 			}
+
+			Assert.assertTrue("EFF and CSQ do not match", compare(effs, csqs));
 		}
 	}
 
@@ -290,6 +304,12 @@ public class CompareToVep {
 
 	public void setStrict(boolean strict) {
 		this.strict = strict;
+	}
+
+	@Override
+	public String toString() {
+		if (compareHgvs) return "HGVS DNA OK: " + countHgvsDna + "\tHGVS protein OK: " + countHgvsProt;
+		return "Effects OK: " + countEff;
 	}
 
 }

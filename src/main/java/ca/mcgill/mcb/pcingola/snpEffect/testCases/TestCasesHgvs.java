@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.TestCase;
+
+import org.junit.Assert;
+
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
@@ -27,7 +30,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesHgvs extends TestCase {
 
 	boolean debug = false;
-	boolean verbose = true || debug;
+	boolean verbose = false || debug;
 
 	Random rand;
 	Config config;
@@ -399,46 +402,54 @@ public class TestCasesHgvs extends TestCase {
 	//		}
 	//	}
 
-	//	public void test_02() {
-	//		Gpr.debug("Test");
-	//		String genomeName = "testHg3775Chr1";
-	//		String vcf = "tests/hgvs_1.vep.vcf";
-	//		CompareToVep comp = new CompareToVep(genomeName, verbose);
-	//		comp.setCompareHgvs();
-	//		comp.setStrict(true);
-	//		comp.compareVep(vcf);
-	//	}
-	//
-	//	public void test_03() {
-	//		Gpr.debug("Test");
-	//		String genomeName = "testHg3775Chr1";
-	//		String vcf = "tests/ensembl_hgvs_intron.1.vep.vcf";
-	//		CompareToVep comp = new CompareToVep(genomeName, verbose);
-	//		comp.setCompareHgvs();
-	//		comp.setStrict(true);
-	//		comp.compareVep(vcf);
-	//	}
-	//
-	//	public void test_04() {
-	//		Gpr.debug("Test");
-	//		String genomeName = "testHg3775Chr1";
-	//		String vcf = "tests/ensembl_hgvs_intron.outsideCds.vep.vcf";
-	//		CompareToVep comp = new CompareToVep(genomeName, verbose);
-	//		comp.setCompareHgvs();
-	//		comp.setStrict(true);
-	//		comp.compareVep(vcf);
-	//	}
-	//
-	//	public void test_05() {
-	//		Gpr.debug("Test");
-	//		String genomeName = "testHg3775Chr1";
-	//		String vcf = "tests/ensembl_hgvs_intron.vep.vcf";
-	//		CompareToVep comp = new CompareToVep(genomeName, verbose);
-	//		comp.setCompareHgvs();
-	//		comp.setStrict(true);
-	//		comp.compareVep(vcf);
-	//	}
-	//
+	public void test_02() {
+		Gpr.debug("Test");
+		String genomeName = "testHg3775Chr1";
+		String vcf = "tests/hgvs_1.vep.vcf";
+		CompareToVep comp = new CompareToVep(genomeName, verbose);
+		comp.setCompareHgvs();
+		comp.setStrict(true);
+		comp.compareVep(vcf);
+		System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+	}
+
+	public void test_03() {
+		Gpr.debug("Test");
+		String genomeName = "testHg3775Chr1";
+		String vcf = "tests/ensembl_hgvs_intron.1.vep.vcf";
+		CompareToVep comp = new CompareToVep(genomeName, verbose);
+		comp.setCompareHgvs();
+		comp.setStrict(true);
+		comp.compareVep(vcf);
+		System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+	}
+
+	public void test_04() {
+		Gpr.debug("Test");
+		String genomeName = "testHg3775Chr1";
+		String vcf = "tests/ensembl_hgvs_intron.outsideCds.vep.vcf";
+		CompareToVep comp = new CompareToVep(genomeName, verbose);
+		comp.setCompareHgvs();
+		comp.setStrict(true);
+		comp.compareVep(vcf);
+		System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+	}
+
+	public void test_05() {
+		Gpr.debug("Test");
+		String genomeName = "testHg3775Chr1";
+		String vcf = "tests/ensembl_hgvs_intron.vep.vcf";
+		CompareToVep comp = new CompareToVep(genomeName, verbose);
+		comp.setCompareHgvs();
+		comp.setStrict(true);
+		comp.compareVep(vcf);
+		System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+	}
+
 	public void test_06() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
@@ -447,6 +458,8 @@ public class TestCasesHgvs extends TestCase {
 		comp.setCompareHgvs();
 		comp.setStrict(true);
 		comp.compareVep(vcf);
+		System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 }
