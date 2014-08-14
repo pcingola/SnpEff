@@ -14,12 +14,7 @@ rm -rvf $DIR snpEff
 mkdir $DIR
 
 # Copy core files
-cp -vf snpEff.config snpEff.jar SnpSift.jar snpeff demo.1kg.vcf $DIR
-cp -rvf galaxy scripts $DIR
-
-cd $DIR
-rm -rvf `find . -name "CVS" -type d`
-cd -
+cp -rvfL snpEff.config snpEff.jar SnpSift.jar snpeff demo.1kg.vcf galaxy scripts $DIR
 
 # Change name to 'snpEff' (so that config file can be used out of the box)
 mv $DIR snpEff
