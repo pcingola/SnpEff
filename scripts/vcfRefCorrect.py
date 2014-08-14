@@ -17,7 +17,7 @@ def readFasta( fasta ):
 	for line in open(fasta):
 		if line.startswith(">"):
 			# Add previous sequence, if any
-			if chrname != '':	chrs[chrname] = ''.join(seq)
+			if chrname != '':	chrs[chrname] = ''.join(seq).upper()
 
 			chrname = line[1:].strip()
 			if chrname.startswith('chr'): chrname = chrname[3:]
@@ -32,7 +32,7 @@ def readFasta( fasta ):
 		lineNum += 1
 
 	print >> sys.stderr, ""
-	if chrname != '':   chrs[chrname] = ''.join(seq)
+	if chrname != '':   chrs[chrname] = ''.join(seq).upper()
 	return chrs
 
 #-------------------------------------------------------------------------------
