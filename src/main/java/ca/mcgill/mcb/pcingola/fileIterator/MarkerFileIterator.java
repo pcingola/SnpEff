@@ -135,9 +135,6 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	/**
 	 * Parse a string as a 'position'.
 	 * Note: It subtracts 'inOffset' so that all coordinates are zero-based
-	 *
-	 * @param posStr
-	 * @return
 	 */
 	public int parsePosition(String posStr) {
 		return Gpr.parseIntSafe(posStr) - inOffset;

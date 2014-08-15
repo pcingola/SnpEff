@@ -166,7 +166,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-						);
+				);
 			}
 		}
 	}
@@ -243,7 +243,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-					);
+			);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -255,10 +255,9 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Read a custom interval file
-	 * @param intFile
 	 */
-	protected int loadCustomIntFile(String intFile) {
-		Markers markers = loadMarkers(intFile);
+	protected int loadCustomFile(String fileName) {
+		Markers markers = loadMarkers(fileName);
 
 		// Add all markers to predictor
 		for (Marker m : markers)
@@ -317,7 +316,7 @@ public class SnpEff implements CommandLine {
 		// Read custom interval files
 		for (String intFile : customIntervalFiles) {
 			if (verbose) Timer.showStdErr("Reading interval file '" + intFile + "'");
-			int count = loadCustomIntFile(intFile);
+			int count = loadCustomFile(intFile);
 			if (verbose) Timer.showStdErr("done (" + count + " intervals loaded). ");
 		}
 
@@ -389,11 +388,7 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Read markers file
-	 *
-	 * Supported formats: BED, TXT, BigBed
-	 *
-	 * @param fileName
-	 * @return
+	 * Supported formats: BED, TXT, BigBed, GFF
 	 */
 	protected Markers loadMarkers(String fileName) {
 		Markers markersSeqChange = Markers.readMarkers(fileName);
@@ -611,7 +606,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
-				) {
+		) {
 			command = args[argNum++].toLowerCase();
 		} else {
 			command = "eff"; // Default command is 'eff'
