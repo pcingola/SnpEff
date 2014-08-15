@@ -68,7 +68,7 @@ public class CompareToVep {
 		if (compareHgvs) {
 			// These do not produce HGSV notation, so we cannot compare them
 			if (eff.getEffectType() == EffectType.DOWNSTREAM || eff.getEffectType() == EffectType.UPSTREAM) return false;
-			if (csq.getConsequence().indexOf("NMD_transcript_varian") >= 0) return false;
+			// if (csq.getConsequence().indexOf("NMD_transcript_varian") >= 0) return false;
 
 		}
 		return true;
@@ -201,7 +201,7 @@ public class CompareToVep {
 					+ "\n\t\t\ttrId    : " + eff.getTranscriptId() + "\t" + csq.getFeature() //
 					+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'" //
 					+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'" //
-					);
+			);
 		}
 
 		return compareHgvsDna(eff, csq) && compareHgvsProt(eff, csq);
