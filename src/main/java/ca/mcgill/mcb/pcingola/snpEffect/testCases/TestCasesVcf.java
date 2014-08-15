@@ -424,21 +424,6 @@ public class TestCasesVcf extends TestCase {
 		Assert.assertEquals("1:249211906 2:41612", chrpos.trim());
 	}
 
-	public void test_19_alt_ins() {
-		Gpr.debug("Test");
-		throw new RuntimeException("VCF: Add support for <INS> in ALT field");
-	}
-
-	public void test_20_alt_dup() {
-		Gpr.debug("Test");
-		throw new RuntimeException("VCF: Add support for <DUP> in ALT field");
-	}
-
-	public void test_21_alt_inv() {
-		Gpr.debug("Test");
-		throw new RuntimeException("VCF: Add support for <INV> in ALT field");
-	}
-
 	public void test_22_huge_headers() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/huge_header_slow.vcf.gz";

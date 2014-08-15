@@ -141,11 +141,11 @@ th a:active, th a:hover {
 <table border=0>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Genome </b> </td>
-		<td> testHg3770Chr22 </td>
+		<td> testHg3771Chr1 </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Date </b> </td>
-		<td> 2014-08-15 17:30 </td>
+		<td> 2014-08-15 18:26 </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> SnpEff version </b> </td>
@@ -153,8 +153,8 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Command line arguments </b> </td>
-		<td> <pre>SnpEff  testHg3770Chr22 tests/empty_only_header.vcf 
-</pre> </td>
+		<td> <pre>SnpEff  -classic -filterinterval tests/test_vcf_filter.bed 
+testHg3771Chr1 tests/test_vcf_filter.vcf </pre> </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Warnings </b> </td>
@@ -168,7 +168,7 @@ th a:active, th a:hover {
 	</tr>	
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of lines (input file) </b> </td>
-		<td> 0 </td>
+		<td> 1 </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants (before filter) </b> </td>
@@ -388,7 +388,17 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <b> Quality:</b> 
 <p>
 <pre>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Quality+histogram&chxl=1:|Count|3:|Quality&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<table class="histo">
+		<tr> <th width=15%>Min</th><td>18,805</td> </tr>
+		<tr> <th>Max</th><td>18,805</td> </tr>
+		<tr> <th>Mean</th><td>18,805</td> </tr>
+		<tr> <th>Median</th><td>9,402.5</td> </tr>
+		<tr> <th>Standard deviation</th><td>0</td> </tr>
+		<tr> <th>Values</th><td>18805</td> </tr>
+		<tr> <th>Count</th><td>1</td> </tr>
+		</tr>
+	</table>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Quality+histogram&chxl=1:|Count|2:|18805|3:|Quality&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0"><br>
 </pre>
 
 <!--==========================================================================
@@ -441,7 +451,7 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 
 <center>
 <table border=1>
-	<tr> <th> Transitions </th><td class="numeric"> 0 </td> </tr>
+	<tr> <th> Transitions </th><td class="numeric"> 2 </td> </tr>
 	<tr> <th> Transversions </th><td class="numeric"> 0 </td> </tr>
 	<tr> <th> Ts/Tv ratio </th><td class="numeric"> 0 </td> </tr>
 </table>
@@ -449,10 +459,18 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <p>
 
 	<b>All variants:</b>
-	<pre>No results available (empty input?)</pre>
+	<pre>Sample ,Total
+Transitions ,2,2
+Transversions ,0,0
+Ts/Tv ,Infinity,Infinity
+</pre>
 	<p>
 	<b>Only known variants</b> (i.e. the ones having a non-empty ID field):
-	<pre>No results available (empty input?)</pre>
+	<pre>Sample ,Total
+Transitions ,2,2
+Transversions ,0,0
+Ts/Tv ,Infinity,Infinity
+</pre>
 <p>
 
 <!--==========================================================================
@@ -463,7 +481,17 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <a name="alleleFreq">
 <center> <b> Allele frequency </b> <p> </center>
 
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Allele+Frequency+%25&chxl=1:|Count|3:|Alleles+frequency&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Allele+Frequency+%25&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Count|2:|100|3:|Alleles+frequency"><br>
+	<table class="histo">
+		<tr> <th width=15%>Min</th><td>100</td> </tr>
+		<tr> <th>Max</th><td>100</td> </tr>
+		<tr> <th>Mean</th><td>100</td> </tr>
+		<tr> <th>Median</th><td>50</td> </tr>
+		<tr> <th>Standard deviation</th><td>0</td> </tr>
+		<tr> <th>Values</th><td>100</td> </tr>
+		<tr> <th>Count</th><td>1</td> </tr>
+		</tr>
+	</table>
 <p>
 	
 <!--==========================================================================
@@ -473,7 +501,17 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <hr> 
 <a name="alleleCount">
 <center> <b> Allele Count </b> <p> </center>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|3:|Allele+Count&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|2|3:|Allele+Count&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0"><br>
+	<table class="histo">
+		<tr> <th width=15%>Min</th><td>2</td> </tr>
+		<tr> <th>Max</th><td>2</td> </tr>
+		<tr> <th>Mean</th><td>2</td> </tr>
+		<tr> <th>Median</th><td>1</td> </tr>
+		<tr> <th>Standard deviation</th><td>0</td> </tr>
+		<tr> <th>Values</th><td>2</td> </tr>
+		<tr> <th>Count</th><td>1</td> </tr>
+		</tr>
+	</table>
 <p>
 
 
@@ -484,11 +522,16 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <hr> 
 <a name="homHet">
 <center> <b> Hom/Het per sample </b> <p> </center>
-	<img src=""><br>
-	<img src=""><br>
-	<img src=""><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Heterozygous+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Heterozygous+count|2:|0|3:|Sample+number"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Homozygous+%28ALT%29+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Homozygous+count|2:|0|3:|Sample+number"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Missing+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Missing+count|2:|0|3:|Sample+number"><br>
 	
-	<pre></pre>
+	<pre>Sample_names , No_sample_name_found
+Reference , 0
+Het , 0
+Hom , 1
+Missing , 0
+</pre>
 <p>
 
 <!--==========================================================================
