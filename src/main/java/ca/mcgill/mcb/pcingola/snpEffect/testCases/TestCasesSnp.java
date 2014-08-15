@@ -46,6 +46,13 @@ public class TestCasesSnp extends TestCase {
 		init();
 	}
 
+	String effectStr(VariantEffect effect) {
+		String effStr = effect.effect(true, true, true, false);
+		String aaStr = effect.getAaChangeOld();
+		int idx = effStr.indexOf('(');
+		return effStr.substring(0, idx) + "(" + aaStr + ")";
+	}
+
 	void init() {
 		initRand();
 		initSnpEffPredictor();
@@ -172,7 +179,7 @@ public class TestCasesSnp extends TestCase {
 						// Show
 						if (effects.size() == 1) {
 							VariantEffect effect = effects.get();
-							String effStr = effect.effect(true, true, true, false);
+							String effStr = effectStr(effect);
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
 									+ "\t" + variant + (variant.isStrandPlus() ? "+" : "-") //
