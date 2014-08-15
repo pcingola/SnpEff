@@ -1,0 +1,6 @@
+##fileformat=VCFv4.0
+##VEP=v76 cache=/data_ensembl/vep/grch37/release-76/homo_sapiens/76_GRCh37 db=homo_sapiens_core_76_37@ensembldb.ensembl.org
+##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence type as predicted by VEP. Format: Allele|Gene|Feature|Feature_type|Consequence|cDNA_position|CDS_position|Protein_position|Amino_acids|Codons|Existing_variation|DISTANCE|STRAND|SYMBOL|SYMBOL_SOURCE|HGNC_ID|BIOTYPE|SIFT|PolyPhen|DOMAINS|HGVSc|HGVSp|GMAF|AFR_MAF|AMR_MAF|ASN_MAF|EUR_MAF|AA_MAF|EA_MAF|CLIN_SIG|SOMATIC|MOTIF_NAME|MOTIF_POS|HIGH_INF_POS|MOTIF_SCORE_CHANGE">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+12	51620069	.	TATATATATATATATATATATATATATATATATA	TTT	.	.	CSQ=TT|ENSG00000269339|ENST00000599633|Transcript|coding_sequence_variant&3_prime_UTR_variant&feature_truncation|42-?|42-?|14-?|||||1|AC139768.1|Clone_based_ensembl_gene||protein_coding||||||||||||||||||,TT||ENSR00000244075|RegulatoryFeature|regulatory_region_variant||||||||||||||||||||||||||||||
+12	51620069	.	TATATATATATATATATATATATATATATATATA	TTTTT	.	.	CSQ=TTTT|ENSG00000269339|ENST00000599633|Transcript|coding_sequence_variant&3_prime_UTR_variant&feature_truncation|42-?|42-?|14-?|||||1|AC139768.1|Clone_based_ensembl_gene||protein_coding||||||||||||||||||,TTTT||ENSR00000244075|RegulatoryFeature|regulatory_region_variant||||||||||||||||||||||||||||||

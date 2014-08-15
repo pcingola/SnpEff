@@ -240,7 +240,7 @@ public class CodonChange {
 	/**
 	 * Add an effect
 	 */
-	protected void effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
+	protected VariantEffect effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
 		// Create and add variant affect
 		VariantEffect varEff = new VariantEffect(variant, variantEffects.getVariantRef(), marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex);
 		variantEffects.addEffect(varEff);
@@ -251,6 +251,8 @@ public class CodonChange {
 			if (allowReplace && addEffType.compareTo(effectType) < 0) varEff.setEffectType(addEffType); // Replace main effect
 			else varEff.addEffectType(addEffType); // Add to list
 		}
+
+		return varEff;
 	}
 
 	/**

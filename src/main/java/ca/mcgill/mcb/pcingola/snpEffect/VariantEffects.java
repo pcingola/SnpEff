@@ -9,6 +9,7 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * A sorted collection of variant effects
@@ -44,6 +45,7 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	 * Add an effect
 	 */
 	public void addEffect(Marker marker, EffectType effectType, String message) {
+		Gpr.debug("ADD: " + effectType);
 		addEffect(marker, effectType, effectType.effectImpact(), message);
 	}
 
@@ -51,6 +53,7 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	 * Add an effect
 	 */
 	public void addEffect(VariantEffect variantEffect) {
+		Gpr.debug("ADD: " + variantEffect);
 		effects.add(variantEffect);
 	}
 
@@ -93,23 +96,6 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	public VariantEffect newVariantEffect() {
 		return new VariantEffect(variant, variantRef);
 	}
-
-	//	public void setCodonsAround(String codonsLeft, String codonsRight) {
-	//		get().setCodonsAround(codonsLeft, codonsRight);
-	//
-	//	}
-	//
-	//	public void setDistance(int distance) {
-	//		get().setDistance(distance);
-	//	}
-	//
-	//	public void setEffectImpact(EffectImpact effectImpact) {
-	//		get().setEffectImpact(effectImpact);
-	//	}
-	//
-	//	public void setEffectType(EffectType effectType) {
-	//		get().setEffectType(effectType);
-	//	}
 
 	public void setMarker(Marker marker) {
 		get().setMarker(marker);

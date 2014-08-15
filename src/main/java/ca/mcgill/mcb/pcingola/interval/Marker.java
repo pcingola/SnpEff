@@ -581,7 +581,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Union of two markers
-	 * @param m
 	 * @return A new marker which is the union of the two
 	 */
 	public Marker union(Marker m) {
@@ -594,10 +593,7 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Calculate the effect of this variant
-	 * @param variant : Sequence change
-	 * @param variantEffects
 	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
-	 * @return
 	 */
 	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false;// Sanity check
@@ -617,9 +613,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Calculate the effect of this variant
-	 * @param variant : Sequence change
-	 * @param variantEffect
-	 * @return
 	 */
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false;

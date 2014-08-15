@@ -80,18 +80,21 @@ public class CodonChangeMixed extends CodonChange {
 		}
 
 		// Add main effect
-		effect(varEff.getMarker(), varEff.getEffectType(), "", codonsOld, codonsNew, codonNum, codonIndex, false);
+		varEff = effect(varEff.getMarker(), varEff.getEffectType(), "", codonsOld, codonsNew, codonNum, codonIndex, false);
 
 		// Add 'additional' effects
-		VariantEffect varEffOri = variantEffectsOri.get();
 		for (int i = 1; i < variantEffects.size(); i++) {
 			List<EffectType> effTypes = variantEffects.get(i).getEffectTypes();
-
 			for (int j = 0; j < effTypes.size(); j++) {
 				EffectType effType = effTypes.get(j);
-				if (!varEffOri.hasEffectType(effType)) varEffOri.addEffectType(effType);
+				if (!varEff.hasEffectType(effType)) {
+					Gpr.debug("ADDING: " + effType);
+					varEff.addEffectType(effType);
+				}
 			}
 		}
+
+		variantEffectsOri.addEffect(varEff);
 	}
 
 	void codonNum() {
