@@ -83,14 +83,11 @@ public class CodonChangeMixed extends CodonChange {
 		varEff = effect(varEff.getMarker(), varEff.getEffectType(), "", codonsOld, codonsNew, codonNum, codonIndex, false);
 
 		// Add 'additional' effects
-		for (int i = 1; i < variantEffects.size(); i++) {
+		for (int i = 0; i < variantEffects.size(); i++) {
 			List<EffectType> effTypes = variantEffects.get(i).getEffectTypes();
 			for (int j = 0; j < effTypes.size(); j++) {
 				EffectType effType = effTypes.get(j);
-				if (!varEff.hasEffectType(effType)) {
-					Gpr.debug("ADDING: " + effType);
-					varEff.addEffectType(effType);
-				}
+				if (!varEff.hasEffectType(effType)) varEff.addEffectType(effType);
 			}
 		}
 

@@ -6,13 +6,17 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
+import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Test mixed variants
@@ -22,7 +26,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 public class TestCasesMixedVariants extends TestCase {
 
 	boolean debug = false;
-	boolean verbose = true;
+	boolean verbose = false;
 
 	Random rand;
 	Config config;
@@ -92,60 +96,60 @@ public class TestCasesMixedVariants extends TestCase {
 		transcript = gene.iterator().next();
 	}
 
-	//	/**
-	//	 * Make sure we can read VCF and parse variants without producing any exception
-	//	 */
-	//	public void test_01_MixedVep() {
-	//		Gpr.debug("Test");
-	//		String vcfFile = "tests/mixed_01.vcf";
-	//
-	//		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
-	//		for (VcfEntry ve : vcf) {
-	//			if (verbose) System.out.println(ve);
-	//			for (Variant var : ve.variants()) {
-	//				if (verbose) System.out.println("\t" + var);
-	//			}
-	//		}
-	//	}
-	//
-	//	public void test_02_MixedVep() {
-	//		Gpr.debug("Test");
-	//		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
-	//	}
-	//
-	//	public void test_03_MixedVep() {
-	//		Gpr.debug("Test");
-	//		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf");
-	//	}
-	//
-	//	public void test_04_MixedVep() {
-	//		Gpr.debug("Test");
-	//		compareVep("testHg3775Chr12", "tests/mixed_chr12.vcf");
-	//	}
-	//
-	//	public void test_05_MixedVep() {
-	//		Gpr.debug("Test");
-	//		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
-	//	}
-	//
-	//	public void test_06_MixedVep() {
-	//		Gpr.debug("Test");
-	//		compareVep("testHg3775Chr7", "tests/mixed_chr7.vcf");
-	//	}
-	//
-	//	public void test_07_MixedVep() {
-	//		Gpr.debug("Test");
-	//		compareVep("testHg3775Chr6", "tests/mixed_chr6.vcf");
-	//	}
-	//
-	//	public void test_08_MixedVep() {
-	//		Gpr.debug("Test");
-	//		compareVep("testHg3775Chr1", "tests/mixed_chr1.vcf");
-	//	}
+	/**
+	 * Make sure we can read VCF and parse variants without producing any exception
+	 */
+	public void test_01_MixedVep() {
+		Gpr.debug("Test");
+		String vcfFile = "tests/mixed_01.vcf";
 
-	//	public void test_09_MixedVep() {
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		for (VcfEntry ve : vcf) {
+			if (verbose) System.out.println(ve);
+			for (Variant var : ve.variants()) {
+				if (verbose) System.out.println("\t" + var);
+			}
+		}
+	}
+
+	public void test_02_MixedVep() {
+		Gpr.debug("Test");
+		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
+	}
+
+	public void test_03_MixedVep() {
+		Gpr.debug("Test");
+		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf");
+	}
+
+	public void test_04_MixedVep() {
+		Gpr.debug("Test");
+		compareVep("testHg3775Chr12", "tests/mixed_chr12.vcf");
+	}
+
+	public void test_05_MixedVep() {
+		Gpr.debug("Test");
+		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
+	}
+
+	public void test_06_MixedVep() {
+		Gpr.debug("Test");
+		compareVep("testHg3775Chr7", "tests/mixed_chr7.vcf");
+	}
+
+	public void test_07_MixedVep() {
+		Gpr.debug("Test");
+		compareVep("testHg3775Chr6", "tests/mixed_chr6.vcf");
+	}
+
+	public void test_08_MixedVep() {
+		Gpr.debug("Test");
+		compareVep("testHg3775Chr1", "tests/mixed_chr1.vcf");
+	}
+
+	//	public void test_zzz_MixedVep() {
 	//		Gpr.debug("Test");
-	//		compareVep("testHg3775Chr12", "tests/mixed_09.vcf");
+	//		compareVep("testHg3775Chr6", "tests/mixed_zzz.vcf");
 	//	}
 
 }

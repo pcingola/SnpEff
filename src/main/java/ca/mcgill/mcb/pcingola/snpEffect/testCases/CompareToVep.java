@@ -125,6 +125,7 @@ public class CompareToVep {
 		if (effSo.equals("disruptive_inframe_insertion") && csqSo.equals("inframe_insertion")) return true;
 		if (effSo.equals("disruptive_inframe_deletion") && csqSo.equals("inframe_deletion")) return true;
 		if (effSo.equals("disruptive_inframe_deletion") && csqSo.equals("feature_truncation")) return true;
+		if (effSo.equals("synonymous_variant") && csqSo.equals("coding_sequence_variant")) return true;
 		return false;
 	}
 
