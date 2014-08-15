@@ -68,9 +68,8 @@ public class CompareToVep {
 		if (compareHgvs) {
 			// These do not produce HGSV notation, so we cannot compare them
 			if (eff.getEffectType() == EffectType.DOWNSTREAM || eff.getEffectType() == EffectType.UPSTREAM) return false;
-			// if (csq.getConsequence().indexOf("NMD_transcript_varian") >= 0) return false;
-
 		}
+
 		return true;
 	}
 
@@ -171,12 +170,12 @@ public class CompareToVep {
 	 * Compare a single effect to CSQ
 	 */
 	boolean compareEffect(VcfEffect eff, VcfConsequence csq) {
-		List<EffectType> effectTypes = eff.getEffectTypes();
+		String effectTypes[] = eff.getEffectTypesStr().split("\\+");
 		String consecuences[] = csq.getConsequence().split("&");
 
-		for (EffectType et : effectTypes) {
+		for (String et : effectTypes) {
 			for (String cons : consecuences) {
-				if (compare(et.toString(), cons)) {
+				if (compare(et, cons)) {
 					countEff++;
 					if (verbose) System.out.println("\t\t\tOK :" + eff.getTranscriptId() + "\t" + et + "\t" + cons);
 					return true;
@@ -201,7 +200,7 @@ public class CompareToVep {
 					+ "\n\t\t\ttrId    : " + eff.getTranscriptId() + "\t" + csq.getFeature() //
 					+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'" //
 					+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'" //
-			);
+					);
 		}
 
 		return compareHgvsDna(eff, csq) && compareHgvsProt(eff, csq);
