@@ -10,6 +10,7 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
@@ -22,9 +23,11 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class CompareEffects {
 
-	boolean verbose = false;
 	boolean debug = false;
+	boolean verbose = false || debug;
+
 	boolean createOutputFile = false;
+	boolean useAaNoNum = false;
 	Config config;
 	Genome genome;
 	Random rand;
@@ -53,50 +56,70 @@ public class CompareEffects {
 	 * Compare each result. If one matches, we consider it OK
 	 */
 	boolean anyResultMatches(String transcriptId, Variant variant, VariantEffects variantEffects, boolean useShort) {
-		for (VariantEffect chEff : variantEffects) {
-			String resStr = chEff.toStringSimple(useShort);
+		for (VariantEffect varEff : variantEffects) {
 			String expectedEff = variant.getId();
 
-			Transcript tr = chEff.getTranscript();
+			Transcript tr = varEff.getTranscript();
 			if (tr != null) {
 				if ((transcriptId == null) || (transcriptId.equals(tr.getId()))) {
-					if (compareOK(expectedEff, resStr)) return true; // Matches one result in this transcript
+					if (compareOK(varEff, expectedEff)) return true; // Matches one result in this transcript
 				}
-			} else if (compareOK(expectedEff, resStr)) return true; // Matches any result (out of a transcript)
+			} else if (compareOK(varEff, expectedEff)) return true; // Matches any result (out of a transcript)
 		}
 		return false;
 	}
 
-	boolean compareAa(String expectedEffs, String realEffs) {
-		String expAa = findAa(expectedEffs);
+	boolean compareAa(VariantEffect varEff, String expEffs) {
+		String expAa = findAa(expEffs);
 		if (expAa.isEmpty()) return true; // We don't have AA information to compare
 
-		String realAa = findAa(realEffs);
-		return expAa.equals(realAa);
+		String aa = useAaNoNum ? varEff.getAaChangeOld() : varEff.getAaChange();
+		if (debug) Gpr.debug("AA compare: '" + aa + "'\tExpected AA: '" + expAa + "'");
+
+		return aa.equals(expAa);
 	}
 
 	/**
 	 * Compare effects
 	 */
-	boolean compareEff(String expectedEffs, String realEffs) {
-		for (String expEff : findEffTypes(expectedEffs))
-			for (String realEff : findEffTypes(realEffs)) {
-				if (debug) Gpr.debug("Compare effect\texp:" + expEff + "\treal:" + realEff);
-				if (expEff.equals(realEff)) return true;
+	boolean compareEff(VariantEffect varEff, String expEffs) {
+		for (EffectType effType : varEff.getEffectTypes())
+			for (String realEff : findEffTypes(expEffs)) {
+				if (debug) Gpr.debug("Compare effect\texp:" + effType + "\treal:" + realEff);
+				if (effType.toString().equals(realEff)) return true;
 			}
 
 		return false;
 	}
 
-	boolean compareOK(String expectedEffs, String realEffs) {
-		return compareEff(expectedEffs, realEffs) && compareAa(expectedEffs, realEffs);
+	boolean compareOK(VariantEffect varEff, String expEffs) {
+		String varEffStr = varEff.effect(false, true, false, false);
+		if (varEffStr.equals(expEffs)) { return true; }
+
+		return compareEff(varEff, expEffs) && compareAa(varEff, expEffs);
 	}
 
 	String findAa(String eff) {
-		int aaidx = eff.indexOf('(');
-		if (aaidx < 0) return "";
-		return eff.substring(aaidx);
+		int aaStartIdx = eff.indexOf('(');
+		int aaStopIdx = eff.indexOf(')');
+		if (aaStartIdx < 0 || aaStopIdx < 0) return "";
+		return eff.substring(aaStartIdx + 1, aaStopIdx);
 	}
+
+	//	String findAaNoNum(String eff) {
+	//		String aa = findAa(eff);
+	//
+	//		StringBuilder sb = new StringBuilder();
+	//		boolean slash = false;
+	//		for (char ch : aa.toCharArray()) {
+	//			if (Character.isDigit(ch)) {
+	//				if (!slash) sb.append('/');
+	//				slash = true;
+	//			} else sb.append(ch);
+	//		}
+	//
+	//		return sb.toString();
+	//	}
 
 	String[] findEffTypes(String eff) {
 		int aaidx = eff.indexOf('(');
@@ -136,6 +159,10 @@ public class CompareEffects {
 
 		Collections.sort(variants);
 		return variants;
+	}
+
+	public void setUseAaNoNum(boolean useAaNoNum) {
+		this.useAaNoNum = useAaNoNum;
 	}
 
 	/**

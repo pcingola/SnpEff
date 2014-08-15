@@ -105,6 +105,7 @@ public class TestCasesVariant extends TestCase {
 		String trId = "ENST00000250823";
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
+		comp.setUseAaNoNum(true);
 		comp.snpEffect("tests/" + trId + ".out", trId, true);
 	}
 
@@ -115,6 +116,7 @@ public class TestCasesVariant extends TestCase {
 		String trId = "ENST00000250823";
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
+		comp.setUseAaNoNum(true);
 		comp.snpEffect("tests/" + trId + "_all.out", trId, false);
 	}
 
@@ -183,6 +185,7 @@ public class TestCasesVariant extends TestCase {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000250823";
+		comp.setUseAaNoNum(true);
 		comp.snpEffect("tests/" + trId + "_InDels_3.out", trId, true);
 	}
 
@@ -221,6 +224,7 @@ public class TestCasesVariant extends TestCase {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000250823";
+		comp.setUseAaNoNum(true);
 		comp.snpEffect("tests/" + trId + "_mnp_out_of_exon.txt", trId, true);
 	}
 

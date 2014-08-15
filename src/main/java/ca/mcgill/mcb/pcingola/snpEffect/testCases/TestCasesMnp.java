@@ -52,7 +52,7 @@ public class TestCasesMnp extends TestCase {
 	public static int N = 1000;
 
 	static boolean debug = false;
-	static boolean verbose = false || debug;
+	static boolean verbose = true || debug;
 	static int MAX_MNP_LEN = 10;
 
 	// Create factory
@@ -258,39 +258,39 @@ public class TestCasesMnp extends TestCase {
 		return snp;
 	}
 
-	public void test_01() {
-		Gpr.debug("Test");
-
-		// Test N times
-		//	- Create a random gene transcript, exons
-		//	- Change each base in the exon
-		//	- Calculate effect
-		for (int i = 0; i < N; i++) {
-			initSnpEffPredictorRand();
-
-			if (debug) System.out.println("MNP Test iteration: " + i + "\nChromo:\t" + chromoSequence + "\n" + transcript);
-			else if (verbose) System.out.println("MNP Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
-			else Gpr.showMark(i + 1, 1);
-
-			if (debug) {
-				for (Exon exon : transcript.sortedStrand())
-					System.out.println("\tExon: " + exon + "\tSEQ:\t" + (exon.isStrandMinus() ? GprSeq.reverseWc(exon.getSequence()) : exon.getSequence()).toUpperCase());
-			}
-
-			// For each base in this exon...
-			for (int pos = 0; pos < chromoSequence.length() - 2; pos++) {
-				// MNP length
-				int mnpLen = rand.nextInt(MAX_MNP_LEN) + 2;
-				int maxMnpLen = chromoSequence.length() - pos;
-				mnpLen = Math.min(mnpLen, maxMnpLen);
-
-				String ref = chromoSequence.substring(pos, pos + mnpLen);
-				String mnp = createMnp(pos, mnpLen);
-
-				analyze(i, pos, ref, mnp);
-			}
-		}
-	}
+	//	public void test_01() {
+	//		Gpr.debug("Test");
+	//
+	//		// Test N times
+	//		//	- Create a random gene transcript, exons
+	//		//	- Change each base in the exon
+	//		//	- Calculate effect
+	//		for (int i = 0; i < N; i++) {
+	//			initSnpEffPredictorRand();
+	//
+	//			if (debug) System.out.println("MNP Test iteration: " + i + "\nChromo:\t" + chromoSequence + "\n" + transcript);
+	//			else if (verbose) System.out.println("MNP Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+	//			else Gpr.showMark(i + 1, 1);
+	//
+	//			if (debug) {
+	//				for (Exon exon : transcript.sortedStrand())
+	//					System.out.println("\tExon: " + exon + "\tSEQ:\t" + (exon.isStrandMinus() ? GprSeq.reverseWc(exon.getSequence()) : exon.getSequence()).toUpperCase());
+	//			}
+	//
+	//			// For each base in this exon...
+	//			for (int pos = 0; pos < chromoSequence.length() - 2; pos++) {
+	//				// MNP length
+	//				int mnpLen = rand.nextInt(MAX_MNP_LEN) + 2;
+	//				int maxMnpLen = chromoSequence.length() - pos;
+	//				mnpLen = Math.min(mnpLen, maxMnpLen);
+	//
+	//				String ref = chromoSequence.substring(pos, pos + mnpLen);
+	//				String mnp = createMnp(pos, mnpLen);
+	//
+	//				analyze(i, pos, ref, mnp);
+	//			}
+	//		}
+	//	}
 
 	public void test_02() {
 		Gpr.debug("Test");
@@ -299,6 +299,7 @@ public class TestCasesMnp extends TestCase {
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
 		snpeff.setVerbose(verbose);
+		snpeff.setSupressOutput(!verbose);
 		snpeff.setDebug(debug);
 		List<VcfEntry> results = snpeff.run(true);
 
@@ -310,7 +311,7 @@ public class TestCasesMnp extends TestCase {
 			String aa = eff.getAa();
 			String aaNumStr = aa.substring(1, aa.length() - 1);
 			int aanum = Gpr.parseIntSafe(aaNumStr);
-			if (verbose) System.out.println(eff.getAa() + "\t" + aaNumStr + "\t" + eff);
+			if (verbose) System.out.println("AA: '" + eff.getAa() + "'\tAA Num Str: '" + aaNumStr + "'\teff: " + eff);
 
 			if (aanum <= 0) throw new RuntimeException("Missing AA number!");
 		}

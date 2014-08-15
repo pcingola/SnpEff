@@ -144,7 +144,16 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 */
 	String codonEffect(boolean showAaChange, boolean showBioType, boolean useSeqOntology) {
 		if ((marker == null) || (codonNum < 0)) return "";
-		return getEffectTypeString(useSeqOntology) + (showAaChange ? "(" + getAaChange() + ")" : "");
+
+		if (!showAaChange) return getEffectTypeString(useSeqOntology);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(getEffectTypeString(useSeqOntology));
+		sb.append("(");
+		sb.append(getAaChange());
+		sb.append(")");
+
+		return sb.toString();
 	}
 
 	@Override
@@ -204,6 +213,15 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 		if (aaOld.equals(aaNew)) return aaNew + (codonNum + 1);
 		return aaOld + (codonNum + 1) + aaNew;
+	}
+
+	/**
+	 * Amino acid change string (old style)
+	 */
+	public String getAaChangeOld() {
+		if (aaOld.isEmpty() && aaNew.isEmpty()) return "";
+		if (aaOld.equals(aaNew)) return aaNew;
+		return (aaOld.isEmpty() ? "-" : aaOld) + "/" + (aaNew.isEmpty() ? "-" : aaNew);
 	}
 
 	/**
@@ -456,7 +474,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -507,7 +525,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
+				;
 	}
 
 	public boolean isUtr3() {
@@ -662,7 +680,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**

@@ -67,27 +67,27 @@ public class SnpEffCmdEff extends SnpEff {
 	public static final int SHOW_EVERY = 100000;
 
 	boolean cancer = false; // Perform cancer comparisons
-	boolean createSummary = true; // Do not create summary output file
-	boolean useHgvs = true; // Use Hgvs notation
-	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
-	boolean useSequenceOntology = true; // Use Sequence Ontology terms
-	boolean useOicr = false; // Use OICR tag
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
+	boolean createCsvSummary = false; // Use a CSV as output summary
+	boolean createSummary = true; // Do not create summary output file
 	boolean lossOfFunction = false; // Create loss of function LOF tag?
 	boolean useGeneId = false; // Use gene ID instead of gene name (VCF output)
-	boolean createCsvSummary = false; // Use a CSV as output summary
+	boolean useHgvs = true; // Use Hgvs notation
+	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
+	boolean useOicr = false; // Use OICR tag
+	boolean useSequenceOntology = true; // Use Sequence Ontology terms
 	int totalErrs = 0;
 	long countInputLines = 0, countVariants = 0, countEffects = 0; // , countVariantsFilteredOut = 0;
+	String cancerSamples = null;
 	String chrStr = "";
 	String inputFile = ""; // Input file
-	ArrayList<String> inputFiles;
 	String summaryFile; // Summary output file
 	String summaryGenesFile; // Gene table file
-	String cancerSamples = null;
 	InputFormat inputFormat = InputFormat.VCF; // Format use in input files
 	OutputFormat outputFormat = OutputFormat.VCF; // Output format
 	VariantEffectFilter variantEffectResutFilter; // Filter prediction results
 	ArrayList<String> filterIntervalFiles;// Files used for filter intervals
+	ArrayList<String> inputFiles;
 	IntervalForest filterIntervals; // Filter only variants that match these intervals
 	VariantStats variantStats;
 	VariantEffectStats variantEffectStats;
