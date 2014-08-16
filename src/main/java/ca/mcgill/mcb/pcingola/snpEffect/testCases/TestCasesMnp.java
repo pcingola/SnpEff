@@ -52,7 +52,7 @@ public class TestCasesMnp extends TestCase {
 	public static int N = 1000;
 
 	static boolean debug = false;
-	static boolean verbose = true || debug;
+	static boolean verbose = false || debug;
 	static int MAX_MNP_LEN = 10;
 
 	// Create factory

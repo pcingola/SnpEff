@@ -402,6 +402,20 @@ public class TestCasesVariant extends TestCase {
 	}
 
 	/**
+	 * Make sure all effect_tpyes have appropriate impacts, regions, etc.
+	 */
+	public void test_37_EffectType() {
+		for (EffectType eff : EffectType.values()) {
+			if (verbose) System.out.println("\t" + eff);
+
+			// None of these should throw an exception
+			eff.effectImpact();
+			eff.getGeneRegion();
+			eff.toSequenceOntology();
+		}
+	}
+
+	/**
 	 * Test
 	 */
 	public void test_zzz() {

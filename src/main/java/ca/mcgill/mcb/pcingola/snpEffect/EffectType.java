@@ -243,6 +243,12 @@ public enum EffectType {
 		case MOTIF:
 			return EffectType.MOTIF;
 
+		case MICRO_RNA:
+			return EffectType.MICRO_RNA;
+
+		case GENOME:
+			return EffectType.GENOME;
+
 		default:
 			throw new RuntimeException("Unknown gene region for effect type: '" + this + "'");
 		}
