@@ -72,7 +72,7 @@ public class SnpEff implements CommandLine {
 
 	public static final String REVISION = "";
 
-	public static final String BUILD = "2014-08-06";
+	public static final String BUILD = "2014-08-16";
 	public static final String VERSION_MAJOR = "4.0";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -370,9 +370,9 @@ public class SnpEff implements CommandLine {
 			if (verbose) Timer.showStdErr("Done: " + removed + " transcripts removed.");
 		}
 
-		// Read nextProt database?
-		if (nextProt) loadNextProt();
-		if (motif) loadMotif();
+		// Try to load NextProt ad motif databases
+		loadNextProt();
+		loadMotif();
 
 		// Build tree
 		if (verbose) Timer.showStdErr("Building interval forest");
@@ -422,10 +422,22 @@ public class SnpEff implements CommandLine {
 		// Sanity checks
 		//---
 		String pwmsFileName = config.getDirDataVersion() + "/pwms.bin";
-		if (!Gpr.exists(pwmsFileName)) fatalError("Warning: Cannot open PWMs file " + pwmsFileName);
-
 		String motifBinFileName = config.getBaseFileNameMotif() + ".bin";
-		if (!Gpr.exists(motifBinFileName)) fatalError("Warning: Cannot open Motifs file " + motifBinFileName);
+
+		if (!Gpr.exists(pwmsFileName) || !Gpr.exists(motifBinFileName)) {
+			// We explicitly requested this annotations, if files are not there, it's an error
+			if (motif) {
+				if (!Gpr.exists(pwmsFileName)) fatalError("Warning: Cannot open PWMs file " + pwmsFileName);
+				if (!Gpr.exists(motifBinFileName)) fatalError("Warning: Cannot open Motifs file " + motifBinFileName);
+			}
+
+			// OK, we don't have motif annotations, no problem
+			if (debug) {
+				if (!Gpr.exists(pwmsFileName)) warning("Warning: Cannot open PWMs file ", pwmsFileName);
+				if (!Gpr.exists(motifBinFileName)) warning("Warning: Cannot open Motifs file ", motifBinFileName);
+			}
+			return;
+		}
 
 		//---
 		// Load all PWMs
@@ -473,6 +485,11 @@ public class SnpEff implements CommandLine {
 		// Read nextProt binary file
 		//---
 		String nextProtBinFile = config.getDirDataVersion() + "/nextProt.bin";
+		if (!Gpr.canRead(nextProtBinFile)) {
+			if (nextProt) fatalError("NextProt database '" + nextProtBinFile + "' doesn't exist");
+			if (debug) Timer.showStdErr("NextProt database '" + nextProtBinFile + "' doesn't exist. Ignoring.");
+			return;
+		}
 		if (verbose) Timer.showStdErr("Reading NextProt database from file '" + nextProtBinFile + "'");
 
 		MarkerSerializer markerSerializer = new MarkerSerializer();
