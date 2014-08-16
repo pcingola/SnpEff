@@ -95,15 +95,17 @@ do
 	echo -e "$short.reference : ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/gtf/"
 	echo
 done
-) | tee ../snpEff.ensembl.$ENSEMBL_RELEASE.config
+) | tee ../config/snpEff.ENSEMBL_$ENSEMBL_RELEASE.config
 
-# Append to config file
-cat ../snpEff.ensembl.$ENSEMBL_RELEASE.config >> ../snpEff.config
+#---
+# Create config file
+#---
+cd -
+./scripts_build/make_config.sh
 
 # !!! #---
 # !!! # Rezip files (unzip and gzip) to avoid issues with block gzip libraries in Java
 # !!! #---
-# !!! cd -
 # !!! ./scripts_build/rezip.bds download/data/genomes/*.gz
 # !!! ./scripts_build/rezip.bds download/data/*/*.gz
 
