@@ -19,8 +19,9 @@ cat config/snpEff.core.config \
 	config/snpEff.ENSEMBL_73.config \
 	config/snpEff.ENSEMBL_74.config \
 	config/snpEff.ENSEMBL_75.config \
-	config/snpEff.ENSEMBL_BFMPP_18.config \
+	config/snpEff.ENSEMBL_76.config \
 	config/snpEff.ENSEMBL_BFMPP_21.config \
+	config/snpEff.ENSEMBL_BFMPP_22.config \
 	config/snpEff.NCBI_bacterial.config \
 	config/snpEff.etc.config \
 	> snpEff.config

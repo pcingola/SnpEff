@@ -100,12 +100,12 @@ done
 # Append to config file
 cat ../snpEff.ensembl.$ENSEMBL_RELEASE.config >> ../snpEff.config
 
-#---
-# Rezip files (unzip and gzip) to avoid issues with block gzip libraries in Java
-#---
-cd -
-./scripts_build/rezip.bds download/data/genomes/*.gz
-./scripts_build/rezip.bds download/data/*/*.gz
+# !!! #---
+# !!! # Rezip files (unzip and gzip) to avoid issues with block gzip libraries in Java
+# !!! #---
+# !!! cd -
+# !!! ./scripts_build/rezip.bds download/data/genomes/*.gz
+# !!! ./scripts_build/rezip.bds download/data/*/*.gz
 
 #---
 # Move data to 'data' dir

@@ -26,17 +26,17 @@ cd data/$REF/
 #---
 
 # Genome sequence
-wget http://hgdownload.cse.ucsc.edu/goldenPath/$REF/bigZips/chromFa.tar.gz
+wget -nc http://hgdownload.cse.ucsc.edu/goldenPath/$REF/bigZips/chromFa.tar.gz
 
 # Protein sequences
-wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.protein.faa.gz
+wget -nc ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.protein.faa.gz
 
 # CDS sequences
-wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.rna.fna.gz
+wget -nc ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.rna.fna.gz
 
 # RefLink
-wget http://hgdownload.cse.ucsc.edu/goldenPath/$REF/database/refLink.txt.gz
-gunzip refLink.txt.gz
+wget -nc http://hgdownload.cse.ucsc.edu/goldenPath/$REF/database/refLink.txt.gz
+gunzip -f refLink.txt.gz
 
 #---
 # Create FASTA file
@@ -50,14 +50,14 @@ FASTA=../$REF.fa
 echo Creating FASTA file
 rm -vf $FASTA
 cat chr[1-9].fa    >> $FASTA
-cat chr??.fa   >> $FASTA
+cat chr??.fa       >> $FASTA
 cat chr[A-Z].fa    >> $FASTA
-cat chr???*.fa >> $FASTA
+cat chr???*.fa     >> $FASTA
 
 cd -
 
 # Compress genome file
-$HOME/tools/pigz/pigz hg19.fa
+$HOME/tools/pigz/pigz -f hg19.fa
 cp hg19.fa.gz $HOME/snpEff/data/genomes/
 
 #---
@@ -91,7 +91,7 @@ echo ";"
 ) | mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A hg19 > genes.refseq
 
 # Compress file
-gzip genes.refseq
+gzip -f genes.refseq
 
 #---
 # Create CDS and protein files
@@ -102,9 +102,9 @@ zcat human.protein.faa.gz \
 	| ../../scripts_build/hg19_proteinFasta2NM.pl refLink.txt \
 	| ../../scripts_build/hg19_proteinFastaReplaceName.pl genes.refseq.gz \
 	> protein.fa
-gzip protein.fa
+gzip -f protein.fa
 
 # CDS fasta
 zcat human.rna.fna.gz | sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" > cds.fa 
-gzip cds.fa
+gzip -f cds.fa
 
