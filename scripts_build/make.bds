@@ -24,7 +24,7 @@ string pwmsBin					="$dirDb/jaspar/pwms.bin"
 # Program parameters and switches
 bool make	 					= false		# Mkae (build JAR files)
 bool download 					= false		# Download files
-bool build	 					= false		# Build databases
+bool buildDb					= false		# Build databases
 bool buildTests 				= false		# Build databases used in test cases
 bool distro	 					= false		# Create distribution files
 bool upload	 					= false		# Upload for distribution
@@ -204,9 +204,7 @@ void downloadAll() {
 	sys ./scripts_build/download_hg19kg.sh
 	sys ./scripts_build/download_nextProt.sh
 	sys ./scripts_build/download_Pwms_Jaspar.sh
-	sys ./scripts_build/download_clinvar.sh 
 	sys ./scripts_build/download_gwasCatalog.sh 
-	sys ./scripts_build/download_dbSnp.sh 
 	sys ./scripts_build/download_epigenome.sh	# This might take a few days
 	#sys ./scripts_build/download_ncbi.sh		# NCBI downloads do not seem to be working OK
 	#sys ./scripts_build/download_darned.sh		# Darned not working
@@ -242,7 +240,7 @@ if( make ) {
 if( download ) downloadAll()
 
 # Build genomes
-if( build ) {
+if( buildDb ) {
 	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
 	buildDbAll()
 	buildDbSpecial()
