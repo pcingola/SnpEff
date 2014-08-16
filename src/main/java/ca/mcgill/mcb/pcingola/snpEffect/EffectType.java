@@ -312,6 +312,12 @@ public enum EffectType {
 		case MICRO_RNA:
 			return "miRNA";
 
+		case MOTIF:
+			return "TF_binding_site_variant";
+
+		case NEXT_PROT:
+			return "sequence_feature";
+
 		case NON_SYNONYMOUS_CODING:
 			return "missense_variant";
 
@@ -384,8 +390,10 @@ public enum EffectType {
 		case NONE:
 		case GENOME:
 		case CUSTOM:
+			return "";
+
 		default:
-			return this.toString().toLowerCase(); // Just a wild guess ... this should probably throw an Exception
+			throw new RuntimeException("Unknown SO term for " + this.toString());
 		}
 	}
 }
