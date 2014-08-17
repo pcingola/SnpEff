@@ -208,31 +208,12 @@ public class HgvsProtein extends Hgvs {
 			return null;
 		}
 
-		// Synonymous changes
-		if ((variantEffect.hasEffectType(EffectType.SYNONYMOUS_CODING)) //
-				|| (variantEffect.hasEffectType(EffectType.SYNONYMOUS_STOP)) //
-		) {
-			// HGVS: Description of so called "silent" changes in the format p.Leu54Leu (or p.L54L) is not allowed; descriptions
-			// 		 should be given at DNA level, it is non-informative and not unequivocal (there are five possibilities
-			// 		 at DNA level which may underlie p.Leu54Leu);  correct description has the format c.162C>G.
-			return "p." + aaOld3 + aaPos + aaNew3;
-		}
-
-		// Start codon lost
-		if (variantEffect.hasEffectType(EffectType.START_LOST) //
-				|| variantEffect.hasEffectType(EffectType.SYNONYMOUS_START) //
-				|| variantEffect.hasEffectType(EffectType.NON_SYNONYMOUS_START) //
-		) {
-			// Reference : http://www.hgvs.org/mutnomen/disc.html#Met
-			// Currently, variants in the translation initiating Methionine (M1) are usually described as a substitution, e.g. p.Met1Val.
-			// This is not correct. Either no protein is produced (p.0) or a new translation initiation site up- or downstream is used (e.g. p.Met1ValextMet-12 or p.Met1_Lys45del resp.).
-			// Unless experimental proof is available, it is probably best to report the effect on protein level as "p.Met1?" (unknown).
-			// When experimental data show that no protein is made, the description "p.0" is recommended (see Examples).
-			//
-			// We use the same for SYNONYMOUS_START since we cannot rally predict if the new start codon will actually be functioning as a start codon (since the Kozak sequence changed)
-			// Ditto for NON_SYNONYMOUS_START
-			return "p." + aaOld3 + "1?";
-		}
+		// Stop gained
+		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#del
+		// Nonsense variant are a special type of amino acid deletion removing the entire C-terminal part of a
+		// protein starting at the site of the variant. A nonsense change is described using the format
+		// p.Trp26Ter (alternatively p.Trp26*).
+		if (variantEffect.hasEffectType(EffectType.STOP_GAINED)) return "p." + aaOld3 + aaPos + "*";
 
 		// Stop codon mutations
 		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#extp
@@ -245,11 +226,27 @@ public class HgvsProtein extends Hgvs {
 		//		new amino acids of unknown length since the shifted frame does not contain a new stop codon.
 		if (variantEffect.hasEffectType(EffectType.STOP_LOST)) return "p." + aaOld3 + aaPos + aaNew3 + "ext*?";
 
-		// Reference: 		http://www.hgvs.org/mutnomen/recs-prot.html#del
-		// Nonsense variant are a special type of amino acid deletion removing the entire C-terminal part of a
-		// protein starting at the site of the variant. A nonsense change is described using the format
-		// p.Trp26Ter (alternatively p.Trp26*).
-		if (variantEffect.hasEffectType(EffectType.STOP_GAINED)) return "p." + aaOld3 + aaPos + "*";
+		// Start codon lost
+		// Reference : http://www.hgvs.org/mutnomen/disc.html#Met
+		// Currently, variants in the translation initiating Methionine (M1) are usually described as a substitution, e.g. p.Met1Val.
+		// This is not correct. Either no protein is produced (p.0) or a new translation initiation site up- or downstream is used (e.g. p.Met1ValextMet-12 or p.Met1_Lys45del resp.).
+		// Unless experimental proof is available, it is probably best to report the effect on protein level as "p.Met1?" (unknown).
+		// When experimental data show that no protein is made, the description "p.0" is recommended (see Examples).
+		//
+		// We use the same for SYNONYMOUS_START since we cannot rally predict if the new start codon will actually be functioning as a start codon (since the Kozak sequence changed)
+		// Ditto for NON_SYNONYMOUS_START
+		if (variantEffect.hasEffectType(EffectType.START_LOST) //
+				|| variantEffect.hasEffectType(EffectType.SYNONYMOUS_START) //
+				|| variantEffect.hasEffectType(EffectType.NON_SYNONYMOUS_START) //
+		) return "p." + aaOld3 + "1?";
+
+		// Synonymous changes
+		// Description of so called "silent" changes in the format p.Leu54Leu (or p.L54L) is not allowed; descriptions
+		// should be given at DNA level, it is non-informative and not unequivocal (there are five possibilities
+		// at DNA level which may underlie p.Leu54Leu);  correct description has the format c.162C>G.
+		if ((variantEffect.hasEffectType(EffectType.SYNONYMOUS_CODING)) //
+				|| (variantEffect.hasEffectType(EffectType.SYNONYMOUS_STOP)) //
+		) return "p." + aaOld3 + aaPos + aaNew3;
 
 		return "p." + aaOld3 + aaPos + aaNew3;
 	}
