@@ -56,8 +56,11 @@ public class HgvsDna extends Hgvs {
 			if (marker == null || marker.isStrandPlus()) return netChange;
 			return GprSeq.wc(netChange);
 
+		case INTERVAL:
+			return "";
+
 		default:
-			return null;
+			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
 	}
 
@@ -87,8 +90,11 @@ public class HgvsDna extends Hgvs {
 				if (pNext == null) return null;
 				return p + "_" + pNext;
 
+			case INTERVAL:
+				return "";
+
 			default:
-				return null;
+				throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 			}
 		}
 
@@ -141,8 +147,11 @@ public class HgvsDna extends Hgvs {
 			}
 			return posPrepend + posStart + "_" + posPrepend + posEnd;
 
+		case INTERVAL:
+			return "";
+
 		default:
-			return null;
+			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
 	}
 
@@ -219,8 +228,11 @@ public class HgvsDna extends Hgvs {
 			type = "del";
 			break;
 
+		case INTERVAL:
+			return "";
+
 		default:
-			break;
+			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
 
 		return codingPrefix() + pos + type + dnaBaseChange();
