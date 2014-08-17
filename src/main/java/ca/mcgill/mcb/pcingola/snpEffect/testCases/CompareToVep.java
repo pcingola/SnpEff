@@ -201,7 +201,8 @@ public class CompareToVep {
 					+ "\n\t\t\ttrId    : " + eff.getTranscriptId() + "\t" + csq.getFeature() //
 					+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'" //
 					+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'" //
-					);
+					+ "\n" //
+			);
 		}
 
 		return compareHgvsDna(eff, csq) && compareHgvsProt(eff, csq);

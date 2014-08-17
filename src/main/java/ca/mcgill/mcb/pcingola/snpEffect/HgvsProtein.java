@@ -155,11 +155,16 @@ public class HgvsProtein extends Hgvs {
 			p = pos(codonNum);
 			if (p == null) return null;
 
+			// Frame shifts ....are described using ... the change of the first amino acid affected
+			// ... the description does not include a description of the deletion from the site of the change
+			if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return p;
+
 			String aaOld = variantEffect.getAaOld();
-			String aaNew = variantEffect.getAaNew();
 			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
-			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
-			int end = codonNum + (aaOld.length() - aaNew.length());
+			//			String aaNew = variantEffect.getAaNew();
+			//			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
+			//			int end = codonNum + (aaOld.length() - aaNew.length());
+			int end = codonNum + aaOld.length();
 			pNext = pos(end);
 			if (pNext == null) return null;
 
@@ -169,11 +174,16 @@ public class HgvsProtein extends Hgvs {
 			p = pos(codonNum);
 			if (p == null) return null;
 
+			// Frame shifts ....are described using ... the change of the first amino acid affected
+			// ... the description does not include a description of the deletion from the site of the change
+			if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return p;
+
 			aaOld = variantEffect.getAaOld();
-			aaNew = variantEffect.getAaNew();
-			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
-			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
-			end = codonNum + (aaOld.length() - aaNew.length());
+			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) aaOld = "";
+			//			aaNew = variantEffect.getAaNew();
+			//			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
+			//			end = codonNum + (aaOld.length() - aaNew.length());
+			end = codonNum + aaOld.length();
 			pNext = pos(end);
 			if (pNext == null) return null;
 			return p + "_" + pNext;

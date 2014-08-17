@@ -56,6 +56,10 @@ public class HgvsDna extends Hgvs {
 			if (marker == null || marker.isStrandPlus()) return netChange;
 			return GprSeq.wc(netChange);
 
+		case MIXED:
+			if (marker == null || marker.isStrandPlus()) return "del" + variant.getReference() + "ins" + variant.getAlt();
+			return "del" + GprSeq.wc(variant.getReference()) + "ins" + GprSeq.wc(variant.getAlt());
+
 		case INTERVAL:
 			return "";
 
@@ -84,6 +88,13 @@ public class HgvsDna extends Hgvs {
 				return p + "_" + pNext;
 
 			case DEL:
+				p = posIntron(variant.getStart());
+				if (p == null) return null;
+				pNext = posIntron(variant.getEnd());
+				if (pNext == null) return null;
+				return p + "_" + pNext;
+
+			case MIXED:
 				p = posIntron(variant.getStart());
 				if (p == null) return null;
 				pNext = posIntron(variant.getEnd());
@@ -136,11 +147,22 @@ public class HgvsDna extends Hgvs {
 		case DEL:
 			if (tr.isProteinCoding()) {
 				String aaOld = variantEffect.getAaOld();
-				String aaNew = variantEffect.getAaNew();
 				if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
-				if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
+				//				String aaNew = variantEffect.getAaNew();
+				//				if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
+				//				posEnd = posStart + 3 * (aaOld.length() - aaNew.length());
+				posEnd = posStart + 3 * aaOld.length();
+			} else {
+				// Non-coding
+				posEnd = posStart + variant.size();
+			}
+			return posPrepend + posStart + "_" + posPrepend + posEnd;
 
-				posEnd = posStart + 3 * (aaOld.length() - aaNew.length());
+		case MIXED:
+			if (tr.isProteinCoding()) {
+				String aaOld = variantEffect.getAaOld();
+				if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) aaOld = "";
+				posEnd = posStart + 3 * aaOld.length();
 			} else {
 				// Non-coding
 				posEnd = posStart + variant.size();
@@ -226,6 +248,10 @@ public class HgvsDna extends Hgvs {
 
 		case DEL:
 			type = "del";
+			break;
+
+		case MIXED:
+			type = "delins";
 			break;
 
 		case INTERVAL:
