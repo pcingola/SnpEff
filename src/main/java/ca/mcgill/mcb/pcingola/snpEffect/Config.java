@@ -396,8 +396,6 @@ public class Config implements Serializable, Iterable<String> {
 
 	/**
 	 * Get a property as a string
-	 * @param propertyName
-	 * @return
 	 */
 	protected String getString(String propertyName) {
 		return properties.getProperty(propertyName);

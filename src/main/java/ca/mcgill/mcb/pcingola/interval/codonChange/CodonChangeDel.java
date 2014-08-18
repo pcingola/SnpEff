@@ -38,7 +38,7 @@ public class CodonChangeDel extends CodonChange {
 			 */
 			codonsOld = "";
 			codonsNew = "";
-			codonNum = codonIndex = -1;
+			codonStartNum = codonStartIndex = -1;
 			effType = EffectType.EXON_DELETED;
 		} else if (netCdsChange.length() % CodonChange.CODON_SIZE != 0) {
 			/**
@@ -52,7 +52,7 @@ public class CodonChangeDel extends CodonChange {
 			codonsOld = codonsOld();
 			codonsNew = "";
 			effType = EffectType.FRAME_SHIFT;
-		} else if (codonIndex == 0) {
+		} else if (codonStartIndex == 0) {
 			/**
 			 * Length multiple of CODON_SIZE and insertion happens at codon boundary => CODON_INSERTION
 			 * 	E.g. :
@@ -92,7 +92,7 @@ public class CodonChangeDel extends CodonChange {
 			}
 		}
 
-		effect(exon, effType, "", codonsOld, codonsNew, codonNum, codonIndex, false);
+		effect(exon, effType, "", codonsOld, codonsNew, codonStartNum, codonStartIndex, false);
 
 		return true;
 	}
@@ -104,8 +104,8 @@ public class CodonChangeDel extends CodonChange {
 	public String codonsNew() {
 		if (netCdsChange.isEmpty()) return "";
 
-		int after = netCdsChange.length() + codonIndex;
-		String codonsNew = codonsOld.substring(0, codonIndex) //
+		int after = netCdsChange.length() + codonStartIndex;
+		String codonsNew = codonsOld.substring(0, codonStartIndex) //
 				+ (codonsOld.length() > after ? codonsOld.substring(after) : "");
 
 		return codonsNew;

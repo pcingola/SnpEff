@@ -133,7 +133,7 @@ public class HgvsProtein extends Hgvs {
 	protected String mixed() {
 		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return "fs";
 
-		return "delins";
+		return "delins" + aaNew3;
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class HgvsProtein extends Hgvs {
 			if (aaOld.length() == 1) return p; // Single AA deleted
 			String aaNew = variantEffect.getAaNew();
 			Gpr.debug(aaOld + "/" + aaNew);
-			end = codonNum + aaOld.length();
+			end = codonNum + aaOld.length() - 1;
 			pNext = pos(end);
 			if (pNext == null) return null;
 			return p + "_" + pNext;
@@ -201,11 +201,14 @@ public class HgvsProtein extends Hgvs {
 	 */
 	protected String pos(int codonNum) {
 		if (codonNum < 0) return null;
+
+		// Sanity check: Longer than protein?
 		Transcript tr = variantEffect.getTranscript();
 		String protSeq = tr.protein();
 		if (codonNum >= protSeq.length()) return null;
+
 		CodonTable codonTable = marker.codonTable();
-		return codonTable.aaThreeLetterCode(protSeq.charAt(codonNum)) + codonNum;
+		return codonTable.aaThreeLetterCode(protSeq.charAt(codonNum)) + (codonNum + 1);
 	}
 
 	/**

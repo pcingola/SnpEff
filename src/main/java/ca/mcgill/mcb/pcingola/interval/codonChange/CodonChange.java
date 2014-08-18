@@ -27,8 +27,8 @@ public class CodonChange {
 	Transcript transcript;
 	Exon exon = null;
 	VariantEffects variantEffects;
-	int codonNum = -1;
-	int codonIndex = -1;
+	int codonStartNum = -1;
+	int codonStartIndex = -1;
 	String codonsOld = ""; // Old codons (before change)
 	String codonsNew = ""; // New codons (after change)
 	String netCdsChange = "";
@@ -156,7 +156,7 @@ public class CodonChange {
 		for (Exon exon : exons) {
 			this.exon = exon;
 			if (exon.intersects(variant)) {
-				int cdsBaseInExon; // cdsBaseInExon: base number relative to the beginning of the coding part of this exon (i.e. excluding 5'UTRs)
+				int cdsBaseInExon = -1; // cdsBaseInExon: base number relative to the beginning of the coding part of this exon (i.e. excluding 5'UTRs)
 
 				if (transcript.isStrandPlus()) {
 					int firstvariantBaseInExon = Math.max(variant.getStart(), Math.max(exon.getStart(), cdsStart));
@@ -169,9 +169,9 @@ public class CodonChange {
 				if (cdsBaseInExon < 0) cdsBaseInExon = 0;
 
 				// Get codon number and index within codon (where seqChage is pointing)
-				if (codonNum < 0) {
-					codonNum = (firstCdsBaseInExon + cdsBaseInExon) / CODON_SIZE;
-					codonIndex = (firstCdsBaseInExon + cdsBaseInExon) % CODON_SIZE;
+				if (codonStartNum < 0) {
+					codonStartNum = (firstCdsBaseInExon + cdsBaseInExon) / CODON_SIZE;
+					codonStartIndex = (firstCdsBaseInExon + cdsBaseInExon) % CODON_SIZE;
 				}
 
 				// Use appropriate method to calculate codon change
@@ -220,7 +220,7 @@ public class CodonChange {
 		String cds = transcript.cds();
 		String codon = "";
 
-		int start = codonNum * CodonChange.CODON_SIZE;
+		int start = codonStartNum * CodonChange.CODON_SIZE;
 		int end = start + numCodons * CodonChange.CODON_SIZE;
 
 		int len = cds.length();
@@ -278,7 +278,7 @@ public class CodonChange {
 
 		sb.append("Transcript : " + transcript.getId() + "\n");
 		sb.append("Variant    : " + variant + "\n");
-		sb.append("Codonss    : " + codonsOld + "/" + codonsNew + "\tnum: " + codonNum + "\tidx: " + codonIndex + "\n");
+		sb.append("Codonss    : " + codonsOld + "/" + codonsNew + "\tnum: " + codonStartNum + "\tidx: " + codonStartIndex + "\n");
 		sb.append("Effects    :\n");
 		for (VariantEffect veff : variantEffects)
 			sb.append("\t" + veff.getEffectTypeString(false) + "\t" + veff.getCodonsOld() + "/" + veff.getCodonsNew() + "\t" + veff.getAaOld() + "/" + veff.getAaNew() + "\n");

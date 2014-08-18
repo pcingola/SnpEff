@@ -33,6 +33,18 @@ public class CodonChangeMnp extends CodonChange {
 	 */
 	@Override
 	public void codonChange() {
+		codonOldNew();
+
+		// Create change effect
+		effect(transcript, EffectType.CODON_CHANGE, "", codonsOld, codonsNew, codonStartNum, codonStartIndex, true); // Use a generic low priority variant, this allows 'setCodons' to override it
+
+		return;
+	}
+
+	/**
+	 * Calculate codons old / codons new
+	 */
+	protected void codonOldNew() {
 		if (!transcript.intersects(variant)) return;
 
 		// CDS coordinates
@@ -54,8 +66,8 @@ public class CodonChangeMnp extends CodonChange {
 		}
 
 		// Update coordinates
-		codonNum = scStart / CODON_SIZE;
-		codonIndex = scStart % CODON_SIZE;
+		codonStartNum = scStart / CODON_SIZE;
+		codonStartIndex = scStart % CODON_SIZE;
 
 		// MNP overlap in coding part
 		int scLen = scEnd - scStart;
@@ -88,11 +100,6 @@ public class CodonChangeMnp extends CodonChange {
 		// Pad codons with 'N' if required
 		codonsOld += padN;
 		codonsNew += padN;
-
-		// Create change effect
-		effect(transcript, EffectType.CODON_CHANGE, "", codonsOld, codonsNew, codonNum, codonIndex, true); // Use a generic low priority variant, this allows 'setCodons' to override it
-
-		return;
 	}
 
 	@Override

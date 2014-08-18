@@ -40,7 +40,7 @@ public class CodonChangeIns extends CodonChange {
 			 * 		Insert 'TT' pos 2:	AAT TAC CCG GGA AAC CCG GGA AAC CCG GG
 			 */
 			effType = EffectType.FRAME_SHIFT;
-		} else if (codonIndex == 0) {
+		} else if (codonStartIndex == 0) {
 			/**
 			 * Length multiple of CODON_SIZE and insertion happens at codon boundary => CODON_INSERTION
 			 * 	E.g. :
@@ -69,7 +69,7 @@ public class CodonChangeIns extends CodonChange {
 			}
 		}
 
-		effect(exon, effType, "", codonsOld, codonsNew, codonNum, codonIndex, false);
+		effect(exon, effType, "", codonsOld, codonsNew, codonStartNum, codonStartIndex, false);
 
 		return true;
 	}
@@ -82,7 +82,7 @@ public class CodonChangeIns extends CodonChange {
 		// Inserts BEFORE base:
 		//		- In positive strand that is BEFORE pos
 		//		- In negative strand, that is AFTER pos
-		int idx = codonIndex + (transcript.isStrandMinus() ? 1 : 0);
+		int idx = codonStartIndex + (transcript.isStrandMinus() ? 1 : 0);
 
 		// Insertion: Concatenate...
 		String codonsNew = codonsOld.substring(0, idx) // the first part of the codon

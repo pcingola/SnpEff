@@ -205,6 +205,14 @@ public class SnpEffectPredictor implements Serializable {
 		return spliceRegionIntronMin;
 	}
 
+	public Transcript getTranscript(String trId) {
+		for (Gene g : genome.getGenes())
+			for (Transcript tr : g)
+				if (tr.getId().equals(trId)) return tr;
+
+		return null;
+	}
+
 	public int getUpDownStreamLength() {
 		return upDownStreamLength;
 	}

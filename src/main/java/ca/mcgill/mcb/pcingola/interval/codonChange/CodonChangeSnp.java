@@ -27,7 +27,7 @@ public class CodonChangeSnp extends CodonChange {
 		// Get old and new codons
 		codonsOld = codonsOld();
 		codonsNew = codonsNew();
-		effect(exon, EffectType.CODON_CHANGE, "", codonsOld, codonsNew, codonNum, codonIndex, true);// Use a generic low priority variant, this allows 'setCodons' to override it
+		effect(exon, EffectType.CODON_CHANGE, "", codonsOld, codonsNew, codonStartNum, codonStartIndex, true);// Use a generic low priority variant, this allows 'setCodons' to override it
 
 		if (codonsOld.isEmpty()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
 
@@ -44,7 +44,7 @@ public class CodonChangeSnp extends CodonChange {
 
 		char codonChars[] = codonsOld.toLowerCase().toCharArray();
 		char snpBase = variant.netChange(transcript.isStrandMinus()).charAt(0);
-		codonChars[codonIndex] = Character.toUpperCase(snpBase);
+		codonChars[codonStartIndex] = Character.toUpperCase(snpBase);
 
 		String codonsNew = new String(codonChars);
 		return codonsNew;
@@ -62,11 +62,11 @@ public class CodonChangeSnp extends CodonChange {
 		int cdsLen = cdsStr.length();
 
 		// Calculate minBase (first codon base in the CDS)
-		int minBase = codonNum * CodonChange.CODON_SIZE;
+		int minBase = codonStartNum * CodonChange.CODON_SIZE;
 		if (minBase < 0) minBase = 0;
 
 		// Calculate maxBase (last codon base in the CDS)
-		int maxBase = codonNum * CodonChange.CODON_SIZE + numCodons * CodonChange.CODON_SIZE;
+		int maxBase = codonStartNum * CodonChange.CODON_SIZE + numCodons * CodonChange.CODON_SIZE;
 		if (maxBase > cdsLen) maxBase = cdsLen;
 
 		// Sanity checks
@@ -76,7 +76,7 @@ public class CodonChangeSnp extends CodonChange {
 
 		// Create codon sequence
 		char codonChars[] = cdsStr.substring(minBase, maxBase).toLowerCase().toCharArray();
-		codonChars[codonIndex] = Character.toUpperCase(codonChars[codonIndex]);
+		codonChars[codonStartIndex] = Character.toUpperCase(codonChars[codonStartIndex]);
 		String codon = new String(codonChars);
 		return codon;
 	}

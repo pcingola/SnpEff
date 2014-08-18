@@ -48,17 +48,17 @@ public class HgvsDna extends Hgvs {
 		case SNP:
 		case MNP:
 			if (marker == null || marker.isStrandPlus()) return variant.getReference() + ">" + variant.getAlt();
-			return GprSeq.wc(variant.getReference()) + ">" + GprSeq.wc(variant.getAlt());
+			return GprSeq.reverseWc(variant.getReference()) + ">" + GprSeq.reverseWc(variant.getAlt());
 
 		case INS:
 		case DEL:
 			String netChange = variant.netChange(false);
 			if (marker == null || marker.isStrandPlus()) return netChange;
-			return GprSeq.wc(netChange);
+			return GprSeq.reverseWc(netChange);
 
 		case MIXED:
 			if (marker == null || marker.isStrandPlus()) return "del" + variant.getReference() + "ins" + variant.getAlt();
-			return "del" + GprSeq.wc(variant.getReference()) + "ins" + GprSeq.wc(variant.getAlt());
+			return "del" + GprSeq.reverseWc(variant.getReference()) + "ins" + GprSeq.reverseWc(variant.getAlt());
 
 		case INTERVAL:
 			return "";

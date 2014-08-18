@@ -16,7 +16,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class CodonChangeMixed extends CodonChange {
+public class CodonChangeMixed extends CodonChangeMnp {
 
 	public static boolean debug = false;
 
@@ -57,15 +57,19 @@ public class CodonChangeMixed extends CodonChange {
 
 	@Override
 	public void codonChange() {
+		codonOldNew();
+
+		Gpr.debug("codonsOld: " + codonsOld + "\tcodonsNew: " + codonsNew);
+
 		codonChangeMnp.codonChange();
 		codonChangeIndel.codonChange();
-
-		codonsNew = codonsNew();
-		codonsOld = codonsOld();
-
-		codonNum();
-		codonNum = codonChangeMnp.codonNum;
-		codonIndex = codonChangeMnp.codonIndex;
+		//
+		//		codonsNew = codonsNew();
+		//		codonsOld = codonsOld();
+		//
+		//		codonNum();
+		//		codonStartNum = codonChangeMnp.codonStartNum;
+		//		codonStartIndex = codonChangeMnp.codonStartIndex;
 
 		// Set highest impact variant effect
 		if (variantEffects.isEmpty()) return; // Nothing to do
@@ -80,7 +84,7 @@ public class CodonChangeMixed extends CodonChange {
 		}
 
 		// Add main effect
-		varEff = effect(varEff.getMarker(), varEff.getEffectType(), "", codonsOld, codonsNew, codonNum, codonIndex, false);
+		varEff = effect(varEff.getMarker(), varEff.getEffectType(), "", codonsOld, codonsNew, codonStartNum, codonStartIndex, false);
 
 		// Add 'additional' effects
 		for (int i = 0; i < variantEffects.size(); i++) {
@@ -96,30 +100,30 @@ public class CodonChangeMixed extends CodonChange {
 
 	void codonNum() {
 		if (transcript.isStrandPlus()) {
-			codonNum = codonChangeMnp.codonNum;
-			codonIndex = codonChangeMnp.codonIndex;
+			codonStartNum = codonChangeMnp.codonStartNum;
+			codonStartIndex = codonChangeMnp.codonStartIndex;
 		} else {
-			codonNum = codonChangeIndel.codonNum;
-			codonIndex = codonChangeIndel.codonIndex;
+			codonStartNum = codonChangeIndel.codonStartNum;
+			codonStartIndex = codonChangeIndel.codonStartIndex;
 		}
 	}
 
-	/**
-	 * Get new (modified) codons
-	 */
-	@Override
-	public String codonsNew() {
-		if (transcript.isStrandPlus()) return codonChangeMnp.codonsNew() + codonChangeIndel.codonsNew();
-		return codonChangeIndel.codonsNew() + codonChangeMnp.codonsNew();
-	}
-
-	/**
-	 * Get original codons in CDS
-	 */
-	@Override
-	public String codonsOld() {
-		if (transcript.isStrandPlus()) return codonChangeMnp.codonsOld() + codonChangeIndel.codonsOld();
-		return codonChangeIndel.codonsOld() + codonChangeMnp.codonsOld();
-	}
+	//	/**
+	//	 * Get new (modified) codons
+	//	 */
+	//	@Override
+	//	public String codonsNew() {
+	//		if (transcript.isStrandPlus()) return codonChangeMnp.codonsNew() + codonChangeIndel.codonsNew();
+	//		return codonChangeIndel.codonsNew() + codonChangeMnp.codonsNew();
+	//	}
+	//
+	//	/**
+	//	 * Get original codons in CDS
+	//	 */
+	//	@Override
+	//	public String codonsOld() {
+	//		if (transcript.isStrandPlus()) return codonChangeMnp.codonsOld() + codonChangeIndel.codonsOld();
+	//		return codonChangeIndel.codonsOld() + codonChangeMnp.codonsOld();
+	//	}
 
 }

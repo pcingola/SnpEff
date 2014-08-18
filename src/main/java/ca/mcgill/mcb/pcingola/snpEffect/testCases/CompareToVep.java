@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.Assert;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
@@ -31,6 +32,7 @@ public class CompareToVep {
 	String genomeName;
 	String addArgs[];
 	VcfConsequenceHeader vcfCsqHeader;
+	SnpEffCmdEff cmdEff;
 	int countHgvsDna, countHgvsProt, countEff;
 
 	public CompareToVep(String genomeName, boolean verbose) {
@@ -101,6 +103,17 @@ public class CompareToVep {
 	boolean compare(List<VcfEffect> effs, List<VcfConsequence> csqs, String trId) {
 		if (trId == null) return true;
 		boolean ok = false;
+
+		if (verbose) {
+			Transcript tr = cmdEff.getConfig().getSnpEffectPredictor().getTranscript(trId);
+			if (tr != null) {
+				System.out.println("\n\t\tTranscript : '" + tr.getId() + "'");
+				System.out.println("\t\tStrand     : '" + (tr.isStrandPlus() ? "+" : "-") + "'");
+				System.out.println("\t\tCDS        : '" + tr.cds() + "'");
+				System.out.println("\t\tProtein    : '" + tr.protein() + "'");
+			} else System.out.println("Transcript " + trId + " not found.");
+
+		}
 
 		// At least one effect has to match for this transcript
 		for (VcfEffect eff : effs)
@@ -199,8 +212,8 @@ public class CompareToVep {
 			System.out.println("\t\t\teff     : " + eff.getEffectTypesStr() //
 					+ "\n\t\t\tcsq     : " + csq.getConsequence() //
 					+ "\n\t\t\ttrId    : " + eff.getTranscriptId() + "\t" + csq.getFeature() //
-					+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'" //
-					+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'" //
+					+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'\t" + (compareHgvsDna(eff, csq) ? "OK" : "BAD") //
+					+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'\t" + (compareHgvsProt(eff, csq) ? "OK" : "BAD") //
 					+ "\n" //
 			);
 		}
@@ -289,7 +302,7 @@ public class CompareToVep {
 	 */
 	List<VcfEntry> runSnpEff(String[] args) {
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		cmdEff.setDebug(debug);
