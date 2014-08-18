@@ -242,6 +242,11 @@ public class HgvsDna extends Hgvs {
 
 		String type = "";
 		switch (variant.getVariantType()) {
+		case MNP:
+		case SNP:
+			type = "";
+			break;
+
 		case INS:
 			type = "ins";
 			break;
