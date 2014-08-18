@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Coding change in HGVS notation (amino acid changes)
@@ -161,10 +162,9 @@ public class HgvsProtein extends Hgvs {
 
 			String aaOld = variantEffect.getAaOld();
 			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
-			//			String aaNew = variantEffect.getAaNew();
-			//			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
-			//			int end = codonNum + (aaOld.length() - aaNew.length());
-			int end = codonNum + aaOld.length();
+			if (aaOld.length() == 1) return p; // Single AA deleted
+
+			int end = codonNum + aaOld.length() - 1;
 			pNext = pos(end);
 			if (pNext == null) return null;
 
@@ -180,9 +180,9 @@ public class HgvsProtein extends Hgvs {
 
 			aaOld = variantEffect.getAaOld();
 			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) aaOld = "";
-			//			aaNew = variantEffect.getAaNew();
-			//			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
-			//			end = codonNum + (aaOld.length() - aaNew.length());
+			if (aaOld.length() == 1) return p; // Single AA deleted
+			String aaNew = variantEffect.getAaNew();
+			Gpr.debug(aaOld + "/" + aaNew);
 			end = codonNum + aaOld.length();
 			pNext = pos(end);
 			if (pNext == null) return null;

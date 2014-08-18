@@ -145,28 +145,8 @@ public class HgvsDna extends Hgvs {
 			return posPrepend + posStart + "_" + posPrepend + posEnd;
 
 		case DEL:
-			if (tr.isProteinCoding()) {
-				String aaOld = variantEffect.getAaOld();
-				if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
-				//				String aaNew = variantEffect.getAaNew();
-				//				if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
-				//				posEnd = posStart + 3 * (aaOld.length() - aaNew.length());
-				posEnd = posStart + 3 * aaOld.length();
-			} else {
-				// Non-coding
-				posEnd = posStart + variant.size();
-			}
-			return posPrepend + posStart + "_" + posPrepend + posEnd;
-
 		case MIXED:
-			if (tr.isProteinCoding()) {
-				String aaOld = variantEffect.getAaOld();
-				if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) aaOld = "";
-				posEnd = posStart + 3 * aaOld.length();
-			} else {
-				// Non-coding
-				posEnd = posStart + variant.size();
-			}
+			posEnd = posStart + variant.size() - 1;
 			return posPrepend + posStart + "_" + posPrepend + posEnd;
 
 		case INTERVAL:
@@ -242,11 +222,6 @@ public class HgvsDna extends Hgvs {
 
 		String type = "";
 		switch (variant.getVariantType()) {
-		case MNP:
-		case SNP:
-			type = "";
-			break;
-
 		case INS:
 			type = "ins";
 			break;
@@ -255,12 +230,12 @@ public class HgvsDna extends Hgvs {
 			type = "del";
 			break;
 
+		case MNP:
+		case SNP:
 		case MIXED:
-			type = "delins";
-			break;
-
 		case INTERVAL:
-			return "";
+			type = "";
+			break;
 
 		default:
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
