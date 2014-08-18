@@ -10,7 +10,7 @@ import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
  */
 public class VcfRefAltAlign extends NeedlemanWunsch {
 
-	public static final int MAX_SIZE = 10000; // 1024 * 1024;
+	public static final int MAX_SIZE = 10 * 1024;
 
 	String stringA, stringB;
 	VariantType variantType;
