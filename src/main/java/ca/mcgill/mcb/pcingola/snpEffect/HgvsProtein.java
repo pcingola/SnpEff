@@ -132,6 +132,17 @@ public class HgvsProtein extends Hgvs {
 	protected String mixed() {
 		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return "fs";
 
+		// Can we simplify AAs?
+		while (!aaOld3.isEmpty() && !aaNew3.isEmpty()) {
+			String ao3 = aaOld3.substring(0, 3);
+			String an3 = aaNew3.substring(0, 3);
+			if (ao3.equals(an3)) {
+				aaOld3 = aaOld3.substring(3);
+				aaNew3 = aaNew3.substring(3);
+				codonNum++;
+			} else break;
+		}
+
 		return "delins" + aaNew3;
 	}
 
@@ -145,46 +156,43 @@ public class HgvsProtein extends Hgvs {
 			return pos(codonNum);
 
 		case INS:
-			String p = pos(codonNum);
-			if (p == null) return null;
-			String pNext = pos(codonNum + 1);
-			if (pNext == null) return null;
-			return p + "_" + pNext;
+			String posStart = pos(codonNum);
+			if (posStart == null) return null;
+			String posEnd = pos(codonNum + 1);
+			if (posEnd == null) return null;
+			return posStart + "_" + posEnd;
 
 		case DEL:
-			p = pos(codonNum);
-			if (p == null) return null;
+			posStart = pos(codonNum);
+			if (posStart == null) return null;
 
 			// Frame shifts ....are described using ... the change of the first amino acid affected
 			// ... the description does not include a description of the deletion from the site of the change
-			if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return p;
+			if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return posStart;
 
-			String aaOld = variantEffect.getAaOld();
-			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
-			if (aaOld.length() == 1) return p; // Single AA deleted
+			if (aaOld3 == null || aaOld3.isEmpty() || aaOld3.equals("-")) return null;
+			if (aaOld3.length() == 3) return posStart; // Single AA deleted
 
-			int end = codonNum + aaOld.length() - 1;
-			pNext = pos(end);
-			if (pNext == null) return null;
+			int end = codonNum + (aaOld3.length() / 3) - 1;
+			posEnd = pos(end);
+			if (posEnd == null) return null;
 
-			return p + "_" + pNext;
+			return posStart + "_" + posEnd;
 
 		case MIXED:
-			p = pos(codonNum);
-			if (p == null) return null;
+			posStart = pos(codonNum);
+			if (posStart == null) return null;
 
 			// Frame shifts ....are described using ... the change of the first amino acid affected
 			// ... the description does not include a description of the deletion from the site of the change
-			if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return p;
+			if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return posStart;
 
-			aaOld = variantEffect.getAaOld();
-			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) aaOld = "";
-			if (aaOld.length() == 1) return p; // Single AA deleted
-			String aaNew = variantEffect.getAaNew();
-			end = codonNum + aaOld.length() - 1;
-			pNext = pos(end);
-			if (pNext == null) return null;
-			return p + "_" + pNext;
+			if (aaOld3 == null || aaOld3.isEmpty() || aaOld3.equals("-")) aaOld3 = "";
+			if (aaOld3.length() == 3) return posStart; // Single AA deleted
+			end = codonNum + (aaOld3.length() / 3) - 1;
+			posEnd = pos(end);
+			if (posEnd == null) return null;
+			return posStart + "_" + posEnd;
 
 		case INTERVAL:
 			return "";

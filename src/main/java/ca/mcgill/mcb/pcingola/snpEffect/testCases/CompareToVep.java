@@ -255,6 +255,14 @@ public class CompareToVep {
 
 		csqHgvs = csqHgvs.substring(csqHgvs.indexOf(':') + 1);
 		boolean eq = csqHgvs.equals(effHgsv);
+
+		// We use short frame-shift description, whereas CSQ uses long terminology
+		if (csqHgvs.indexOf("fs") > 0 && effHgsv.endsWith("fs")) {
+			String effHgsvFs = effHgsv.substring(0, effHgsv.length() - 2); // Remove trailing 'fs'
+			String csqHgsvFs = csqHgvs.substring(0, csqHgvs.indexOf("fs") - 3); // Remove last part, including last AA before 'fs' (3 leter code)
+			eq = csqHgsvFs.equals(effHgsvFs);
+		}
+
 		if (eq) countHgvsProt++;
 		return eq;
 	}

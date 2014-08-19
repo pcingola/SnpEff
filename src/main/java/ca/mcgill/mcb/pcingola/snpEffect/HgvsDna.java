@@ -74,32 +74,23 @@ public class HgvsDna extends Hgvs {
 	protected String pos() {
 		// Intron
 		if (variantEffect.isIntron()) {
+			int start, end;
+
 			switch (variant.getVariantType()) {
 			case SNP:
 			case MNP:
 				return posIntron(variant.getStart());
 
 			case INS:
-				String p = posIntron(variant.getStart());
-				if (p == null) return null;
-				int next = variant.getStart() + (marker.isStrandPlus() ? 1 : -1);
-				String pNext = posIntron(next);
-				if (pNext == null) return null;
-				return p + "_" + pNext;
+				start = variant.getStart();
+				end = variant.getStart() + (marker.isStrandPlus() ? 1 : -1);
+				break;
 
 			case DEL:
-				p = posIntron(variant.getStart());
-				if (p == null) return null;
-				pNext = posIntron(variant.getEnd());
-				if (pNext == null) return null;
-				return p + "_" + pNext;
-
 			case MIXED:
-				p = posIntron(variant.getStart());
-				if (p == null) return null;
-				pNext = posIntron(variant.getEnd());
-				if (pNext == null) return null;
-				return p + "_" + pNext;
+				start = variant.getStart();
+				end = variant.getEnd();
+				break;
 
 			case INTERVAL:
 				return "";
@@ -107,13 +98,22 @@ public class HgvsDna extends Hgvs {
 			default:
 				throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 			}
+
+			// Calculate positions and create string
+			String posStart = posIntron(start);
+			if (posStart == null) return null;
+			String posEnd = posIntron(end);
+			if (posEnd == null) return null;
+
+			if (posStart.equals(posEnd)) return posStart;
+			return tr.isStrandPlus() ? posStart + "_" + posEnd : posEnd + "_" + posStart;
 		}
 
 		if (tr == null) return null;
 		String posPrepend = "";
 
 		// Exon position
-		int codonNum = -1; // variantEffect.getCodonNum();
+		//		int codonNum = -1; // variantEffect.getCodonNum();
 		int posStart = -1, posEnd = -1;
 		// if (codonNum >= 0) posStart = codonNum * 3 + variantEffect.getCodonIndex() + 1;
 		// else {
@@ -147,12 +147,12 @@ public class HgvsDna extends Hgvs {
 
 		case INS:
 			posEnd = posStart + 1;
-			return posPrepend + posStart + "_" + posPrepend + posEnd;
+			break;
 
 		case DEL:
 		case MIXED:
 			posEnd = posStart + variant.size() - 1;
-			return posPrepend + posStart + "_" + posPrepend + posEnd;
+			break;
 
 		case INTERVAL:
 			return "";
@@ -160,6 +160,10 @@ public class HgvsDna extends Hgvs {
 		default:
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
+
+		if (posStart == posEnd) return posPrepend + posStart;
+		return posPrepend + posStart + "_" + posPrepend + posEnd;
+
 	}
 
 	/**
