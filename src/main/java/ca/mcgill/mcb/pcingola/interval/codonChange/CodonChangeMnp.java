@@ -104,17 +104,19 @@ public class CodonChangeMnp extends CodonChange {
 		//---
 		// Can we simplify codons?
 		//---
-		while (!codonsOld.isEmpty() && !codonsNew.isEmpty()) {
-			// First codon
-			String cold = codonsOld.substring(0, 3);
-			String cnew = codonsNew.substring(0, 3);
+		if ((codonsOld != null) && (codonsNew != null)) {
+			while ((codonsOld.length() >= 3) && (codonsNew.length() >= 3)) {
+				// First codon
+				String cold = codonsOld.substring(0, 3);
+				String cnew = codonsNew.substring(0, 3);
 
-			// Are codons equal? => Simplify
-			if (cold.equalsIgnoreCase(cnew)) {
-				codonsOld = codonsOld.substring(3);
-				codonsNew = codonsNew.substring(3);
-				codonStartNum++;
-			} else break;
+				// Are codons equal? => Simplify
+				if (cold.equalsIgnoreCase(cnew)) {
+					codonsOld = codonsOld.substring(3);
+					codonsNew = codonsNew.substring(3);
+					codonStartNum++;
+				} else break;
+			}
 		}
 	}
 
