@@ -99,22 +99,4 @@ public class CodonChangeMixed extends CodonChangeMnp {
 		}
 	}
 
-	//	/**
-	//	 * Get new (modified) codons
-	//	 */
-	//	@Override
-	//	public String codonsNew() {
-	//		if (transcript.isStrandPlus()) return codonChangeMnp.codonsNew() + codonChangeIndel.codonsNew();
-	//		return codonChangeIndel.codonsNew() + codonChangeMnp.codonsNew();
-	//	}
-	//
-	//	/**
-	//	 * Get original codons in CDS
-	//	 */
-	//	@Override
-	//	public String codonsOld() {
-	//		if (transcript.isStrandPlus()) return codonChangeMnp.codonsOld() + codonChangeIndel.codonsOld();
-	//		return codonChangeIndel.codonsOld() + codonChangeMnp.codonsOld();
-	//	}
-
 }
