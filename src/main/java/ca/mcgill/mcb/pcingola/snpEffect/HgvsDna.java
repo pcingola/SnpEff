@@ -117,19 +117,24 @@ public class HgvsDna extends Hgvs {
 		if (codonNum >= 0) posStart = codonNum * 3 + variantEffect.getCodonIndex() + 1;
 		else {
 			if (tr == null) return null;
+
+			int variantPos = tr.isStrandPlus() ? variant.getStart() : variant.getEnd();
 			if (variantEffect.isUtr3()) {
 				// We are after stop codon, coordinates must be '*1', '*2', etc.
-				int pos = tr.baseNumberPreMRna(variant.getStart());
+				int pos = tr.baseNumberPreMRna(variantPos);
 				int posStop = tr.baseNumberPreMRna(tr.getCdsEnd());
 				posStart = Math.abs(pos - posStop);
 				posPrepend = "*";
 			} else if (variantEffect.isUtr5()) {
 				// We are before TSS, coordinates must be '-1', '-2', etc.
-				int pos = tr.baseNumberPreMRna(variant.getStart());
+				int pos = tr.baseNumberPreMRna(variantPos);
 				int posTss = tr.baseNumberPreMRna(tr.getCdsStart());
 				posStart = Math.abs(pos - posTss);
 				posPrepend = "-";
-			} else posStart = tr.baseNumberPreMRna(variant.getStart()) + 1;
+			} else {
+				posStart = tr.baseNumberCds(variantPos, false) + 1;
+				// posStart = tr.baseNumberPreMRna(variant.getStart()) + 1;
+			}
 		}
 
 		// Could not find dna position in transcript?

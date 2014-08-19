@@ -59,17 +59,8 @@ public class CodonChangeMixed extends CodonChangeMnp {
 	public void codonChange() {
 		codonOldNew();
 
-		Gpr.debug("codonsOld: " + codonsOld + "\tcodonsNew: " + codonsNew);
-
 		codonChangeMnp.codonChange();
 		codonChangeIndel.codonChange();
-		//
-		//		codonsNew = codonsNew();
-		//		codonsOld = codonsOld();
-		//
-		//		codonNum();
-		//		codonStartNum = codonChangeMnp.codonStartNum;
-		//		codonStartIndex = codonChangeMnp.codonStartIndex;
 
 		// Set highest impact variant effect
 		if (variantEffects.isEmpty()) return; // Nothing to do

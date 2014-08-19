@@ -264,6 +264,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	/**
 	 * Calculate base number in a CDS where 'pos' maps
 	 *
+	 * @param usePrevBaseIntron: When 'pos' is intronic this method returns:
+	 * 			- if( usePrevBaseIntron== false)  => The first base in the exon after 'pos' (i.e. first coding base after intron)
+	 * 			- if( usePrevBaseIntron== true)   => The last base in the  exon before 'pos'  (i.e. last coding base before intron)
+	 *
 	 * @returns Base number or '-1' if it does not map to a coding base
 	 */
 	public synchronized int baseNumberCds(int pos, boolean usePrevBaseIntron) {

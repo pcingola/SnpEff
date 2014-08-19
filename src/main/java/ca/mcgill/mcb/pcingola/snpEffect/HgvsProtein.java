@@ -2,7 +2,6 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Coding change in HGVS notation (amino acid changes)
@@ -182,7 +181,6 @@ public class HgvsProtein extends Hgvs {
 			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) aaOld = "";
 			if (aaOld.length() == 1) return p; // Single AA deleted
 			String aaNew = variantEffect.getAaNew();
-			Gpr.debug(aaOld + "/" + aaNew);
 			end = codonNum + aaOld.length() - 1;
 			pNext = pos(end);
 			if (pNext == null) return null;
