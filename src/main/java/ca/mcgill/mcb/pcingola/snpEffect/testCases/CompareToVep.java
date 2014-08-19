@@ -25,7 +25,8 @@ public class CompareToVep {
 
 	boolean strict = false;
 	boolean compareEffect = true;
-	boolean compareHgvs = false;
+	boolean compareHgvsDna = false;
+	boolean compareHgvsProt = false;
 	boolean debug = false;
 	boolean verbose = false;
 	boolean throwException = true;
@@ -67,7 +68,7 @@ public class CompareToVep {
 	}
 
 	boolean canCompare(VcfEffect eff, VcfConsequence csq) {
-		if (compareHgvs) {
+		if (compareHgvsDna) {
 			// These do not produce HGSV notation, so we cannot compare them
 			if (eff.getEffectType() == EffectType.DOWNSTREAM || eff.getEffectType() == EffectType.UPSTREAM) return false;
 		}
@@ -76,7 +77,7 @@ public class CompareToVep {
 	}
 
 	public boolean checkComapred() {
-		if (compareHgvs) return (countHgvsDna + countHgvsProt) > 0;
+		if (compareHgvsDna || compareHgvsProt) return (countHgvsDna + countHgvsProt) > 0;
 		return countEff > 0;
 	}
 
@@ -176,7 +177,7 @@ public class CompareToVep {
 	 */
 	boolean compare(VcfEffect eff, VcfConsequence csq) {
 		if (compareEffect) return compareEffect(eff, csq);
-		if (compareHgvs) return compareHgvs(eff, csq);
+		if (compareHgvsDna || compareHgvsProt) return compareHgvs(eff, csq);
 		throw new RuntimeException("Nothing to compare!");
 	}
 
@@ -218,7 +219,9 @@ public class CompareToVep {
 			);
 		}
 
-		return compareHgvsDna(eff, csq) && compareHgvsProt(eff, csq);
+		return (!compareHgvsDna || compareHgvsDna(eff, csq)) //
+				&& //
+				(!compareHgvsProt || compareHgvsProt(eff, csq));
 	}
 
 	/**
@@ -321,7 +324,15 @@ public class CompareToVep {
 
 	public void setCompareHgvs() {
 		compareEffect = false;
-		compareHgvs = true;
+		compareHgvsDna = compareHgvsProt = true;
+	}
+
+	public void setCompareHgvsDna(boolean compareHgvsDna) {
+		this.compareHgvsDna = compareHgvsDna;
+	}
+
+	public void setCompareHgvsProt(boolean compareHgvsProt) {
+		this.compareHgvsProt = compareHgvsProt;
 	}
 
 	public void setStrict(boolean strict) {
@@ -330,7 +341,7 @@ public class CompareToVep {
 
 	@Override
 	public String toString() {
-		if (compareHgvs) return "HGVS DNA OK: " + countHgvsDna + "\tHGVS protein OK: " + countHgvsProt;
+		if (compareHgvsDna || compareHgvsProt) return "HGVS DNA OK: " + countHgvsDna + "\tHGVS protein OK: " + countHgvsProt;
 		return "Effects OK: " + countEff;
 	}
 
