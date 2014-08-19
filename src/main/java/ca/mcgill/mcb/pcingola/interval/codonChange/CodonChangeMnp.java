@@ -100,6 +100,22 @@ public class CodonChangeMnp extends CodonChange {
 		// Pad codons with 'N' if required
 		codonsOld += padN;
 		codonsNew += padN;
+
+		//---
+		// Can we simplify codons?
+		//---
+		while (!codonsOld.isEmpty() && !codonsNew.isEmpty()) {
+			// First codon
+			String cold = codonsOld.substring(0, 3);
+			String cnew = codonsNew.substring(0, 3);
+
+			// Are codons equal? => Simplify
+			if (cold.equalsIgnoreCase(cnew)) {
+				codonsOld = codonsOld.substring(3);
+				codonsNew = codonsNew.substring(3);
+				codonStartNum++;
+			} else break;
+		}
 	}
 
 	@Override
