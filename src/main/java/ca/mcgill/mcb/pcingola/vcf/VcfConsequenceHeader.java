@@ -33,11 +33,21 @@ public class VcfConsequenceHeader {
 		if (vcfInfoCsq == null) throw new RuntimeException("Cannot find " + VcfConsequence.VCF_INFO_CSQ_NAME + " in VCF header");
 
 		String descr = vcfInfoCsq.getDescription();
-		String fields = descr.substring(descr.lastIndexOf(':'));
+		String fields = descr.substring(descr.lastIndexOf(':') + 1);
 		fieldNames = fields.split("\\|");
 
 		fieldNum = new HashMap<String, Integer>();
-		for (int i = 0; i < fieldNames.length; i++)
+		for (int i = 0; i < fieldNames.length; i++) {
+			fieldNames[i] = fieldNames[i].trim();
 			fieldNum.put(fieldNames[i], i);
+		}
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (String name : fieldNames)
+			sb.append("Field '" + name + "', number " + getFieldNum(name) + "\n");
+		return sb.toString();
 	}
 }
