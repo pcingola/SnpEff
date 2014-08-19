@@ -460,4 +460,15 @@ public class TestCasesHgvs extends TestCase {
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
+	public void test_10_MixedVep_HGVS() {
+		Gpr.debug("Test");
+		String genome = "testHg3775Chr1";
+		String vcf = "tests/mixed_10_hgvs.vep.vcf";
+		CompareToVep comp = new CompareToVep(genome, verbose);
+		comp.setCompareHgvs();
+		comp.compareVep(vcf);
+		System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+	}
+
 }

@@ -168,9 +168,4 @@ public class TestCasesMixedVariants extends TestCase {
 		}
 	}
 
-	public void test_10_MixedVep_HGVS() {
-		Gpr.debug("Test");
-		compareVep("testHg3775Chr1", "tests/mixed_10_hgvs.vep.vcf", true);
-	}
-
 }
