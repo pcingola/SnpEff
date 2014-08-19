@@ -12082,6 +12082,7 @@ GCA_000265425.1.21 	 Terriglobus_roseus_dsm_18391   GCA_000265425.1.21
 Terriglobus_roseus_DSM_18391_uid168183 	 Terriglobus_roseus_DSM_18391_uid168183   Terriglobus_roseus_DSM_18391_uid168183
 GCA_000179915.2.21 	 Terriglobus_saanensis_sp1pr4   GCA_000179915.2.21
 Terriglobus_saanensis_SP1PR4_uid53251 	 Terriglobus_saanensis_SP1PR4_uid53251   Terriglobus_saanensis_SP1PR4_uid53251
+testHg19Hgvs 	 Tesg   testHg19Hgvs
 test 	 TestCase   test
 testCase 	 TestCase   testCase
 test_ENSG00000158062 	 TestCase   test_ENSG00000158062
