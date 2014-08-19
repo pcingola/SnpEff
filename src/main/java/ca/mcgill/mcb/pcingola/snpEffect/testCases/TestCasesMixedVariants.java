@@ -23,7 +23,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 public class TestCasesMixedVariants extends TestCase {
 
 	boolean debug = false;
-	boolean verbose = true || debug;
+	boolean verbose = false || debug;
 
 	Random rand;
 	Config config;
@@ -164,14 +164,9 @@ public class TestCasesMixedVariants extends TestCase {
 	//		}
 	//	}
 
-	//	public void test_10_MixedVep() {
-	//		Gpr.debug("Test");
-	//		compareVep("testHg3775Chr1", "tests/mixed_10.vep.vcf", true);
-	//	}
-
-	public void test_zzz_MixedVep() {
+	public void test_10_MixedVep_HGVS() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr1", "tests/mixed_zzz.vcf", true);
+		compareVep("testHg3775Chr1", "tests/mixed_10_hgvs.vep.vcf", true);
 	}
 
 }
