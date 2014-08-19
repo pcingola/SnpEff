@@ -113,10 +113,7 @@ public class HgvsDna extends Hgvs {
 		String posPrepend = "";
 
 		// Exon position
-		//		int codonNum = -1; // variantEffect.getCodonNum();
 		int posStart = -1, posEnd = -1;
-		// if (codonNum >= 0) posStart = codonNum * 3 + variantEffect.getCodonIndex() + 1;
-		// else {
 
 		int variantPos = tr.isStrandPlus() ? variant.getStart() : variant.getEnd();
 		if (variantEffect.isUtr3()) {
@@ -133,9 +130,7 @@ public class HgvsDna extends Hgvs {
 			posPrepend = "-";
 		} else {
 			posStart = tr.baseNumberCds(variantPos, false) + 1;
-			// posStart = tr.baseNumberPreMRna(variant.getStart()) + 1;
 		}
-		// }
 
 		// Could not find dna position in transcript?
 		if (posStart <= 0) return null;
@@ -203,7 +198,7 @@ public class HgvsDna extends Hgvs {
 		int cdsRight = Math.max(tr.getCdsStart(), tr.getCdsEnd());
 		if ((posExon >= cdsLeft) && (posExon <= cdsRight)) {
 			int distExonBase = tr.baseNumberCds(posExon, false) + 1;
-			return distExonBase + posExonStr + exonDistance;
+			return distExonBase + (exonDistance > 0 ? posExonStr + exonDistance : "");
 		}
 
 		// Left side of coding part
@@ -212,14 +207,14 @@ public class HgvsDna extends Hgvs {
 			int cdnaStart = tr.baseNumberPreMRna(cdsLeft); // tr.getCdsStart());
 			int utrDistance = Math.abs(cdnaStart - cdnaPos);
 			String utrStr = tr.isStrandPlus() ? "-" : "*";
-			return utrStr + utrDistance + posExonStr + exonDistance;
+			return utrStr + utrDistance + (exonDistance > 0 ? posExonStr + exonDistance : "");
 		}
 
 		// Right side of coding part
 		int cdnaEnd = tr.baseNumberPreMRna(cdsRight); // tr.getCdsEnd());
 		int utrDistance = Math.abs(cdnaEnd - cdnaPos);
 		String utrStr = tr.isStrandPlus() ? "*" : "-";
-		return utrStr + utrDistance + posExonStr + exonDistance;
+		return utrStr + utrDistance + (exonDistance > 0 ? posExonStr + exonDistance : "");
 	}
 
 	@Override

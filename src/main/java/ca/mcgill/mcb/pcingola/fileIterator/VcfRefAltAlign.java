@@ -104,8 +104,7 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 
 		if (stringA.length() < stringB.length()) {
 			// A has a deletion respect to B
-			int idx = stringB.indexOf(stringA);
-			if (idx >= 0) {
+			if (stringB.startsWith(stringA)) {
 				variantType = VariantType.DEL;
 				offset = stringA.length();
 				alignment = "-" + stringB.substring(stringA.length(), stringB.length());
@@ -116,8 +115,7 @@ public class VcfRefAltAlign extends NeedlemanWunsch {
 			return true;
 		} else if (stringA.length() > stringB.length()) {
 			// A has an insertion respect to B
-			int idx = stringA.indexOf(stringB);
-			if (idx >= 0) {
+			if (stringA.startsWith(stringB)) {
 				variantType = VariantType.INS;
 				offset = stringB.length();
 				alignment = "+" + stringA.substring(stringB.length(), stringA.length());
