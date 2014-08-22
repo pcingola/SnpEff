@@ -70,7 +70,7 @@ public class SnpEffCmdEff extends SnpEff {
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
 	boolean createCsvSummary = false; // Use a CSV as output summary
 	boolean createSummary = true; // Do not create summary output file
-	boolean lossOfFunction = false; // Create loss of function LOF tag?
+	boolean lossOfFunction = true; // Create loss of function LOF tag?
 	boolean useGeneId = false; // Use gene ID instead of gene name (VCF output)
 	boolean useHgvs = true; // Use Hgvs notation
 	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
