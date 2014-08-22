@@ -140,7 +140,7 @@ void buildDbSpecial() {
 void buildNextProt() {
 	# Note: This takes a huge amount of memory, don't run multiple of these process because the server will crash
 	# TODO: Add amount of memory to the taks and remove the constraint
-	print("Buils special.\n\tFIXME: Create a 'task' instead of a 'sys'\n")
+	print("Build special.\n\tFIXME: Create a 'task' instead of a 'sys'\n")
 
 	# XML files used to build NextProt
 	string dirNextProt = "$dirSnpeff/db/nextProt/"
