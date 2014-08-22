@@ -118,9 +118,9 @@ public class SnpEffCmdBuild extends SnpEff {
 		String genesBase = config.getBaseFileNameGenes();
 
 		if (fileExists(genesBase + ".gtf")) return GeneDatabaseFormat.GTF22;
-		if (fileExists(genesBase + ".gff") || fileExists(genesBase + ".gff3")) return GeneDatabaseFormat.GFF3;
+		if (fileExists(genesBase + ".gff")) return GeneDatabaseFormat.GFF3;
 		if (fileExists(genesBase + ".gff2")) return GeneDatabaseFormat.GFF2;
-		if (fileExists(genesBase + ".gb") || fileExists(genesBase + ".gbk")) return GeneDatabaseFormat.GENBANK;
+		if (fileExists(genesBase + ".gbk")) return GeneDatabaseFormat.GENBANK;
 		if (fileExists(genesBase + ".embl")) return GeneDatabaseFormat.EMBL;
 		if (fileExists(genesBase + ".refseq")) return GeneDatabaseFormat.REFSEQ;
 		if (fileExists(genesBase + ".kg")) return GeneDatabaseFormat.KNOWN_GENES;
