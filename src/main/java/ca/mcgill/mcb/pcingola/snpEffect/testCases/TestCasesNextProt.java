@@ -23,7 +23,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesNextProt extends TestCase {
 
 	public static boolean debug = false;
-	public static boolean verbose = true;
+	public static boolean verbose = false;
 	public static int SHOW_EVERY = 10;
 
 	public TestCasesNextProt() {
