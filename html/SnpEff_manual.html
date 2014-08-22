@@ -103,7 +103,7 @@
         ================================================== -->
         <section id="intro">
           <div class="page-header">
-            <h1>1. Introduction</h1>
+            <h1>Introduction</h1>
           </div>
 				<p class="lead">
 				SnpEff is a variant annotation and effect prediction tool.
@@ -165,54 +165,6 @@
 				<i class="icon-warning-sign"></i> Results cannot be trusted blindly. SnpEff results may have to analyzed and independently validated.
 				</p>
 
-				<p> <h3>Databases</h3>
-				In order to produce the annotations, SnpEff requires a database.
-				We build these databases using informations from trusted resources.
-				<br>
-				Currently, there are pre-built database for over 8,500 reference genomes.
-				This means that 99% of the cases are covered.
-				<br>
-				In some very rare occasions, people need to build a database for an organism not currently supported (e.g. the genome is not publicly available).
-				In most cases, this can be done and there is a section of this manual teaching how to build your own SnpEff database.
-				<br>
-				<br>
-				Which databases are supported? You can find out all the supported databases by running the <code>database</code> command:
-				<br>
-				<br>
-<pre>
-java -jar snpEff.jar databases
-</pre>
-				<br>
-				This command shows the database name, genome name and source data (where was the genome reference data obtained from).
-				Keep in mind that many times I use ENSEMBL reference genomes, so the name would be <code>GRCh37</code> instead of <code>hg19</code>, or <code>GRCm38</code> instead of <code>mm10</code>, and so on. 
-				<br>
-				<br>
-				<b>Example: Finding a database:</b> So, let's say you want to find out the name of the latest mouse (Mus.Musculus) database. 
-				You can runs something like this: 
-				<br>
-				<br>
-<pre>
-$ java -jar snpEff.jar databases | grep -i musculus
-GRCm38.68                                                   	Mus_musculus                                                	OK        	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
-GRCm38.69                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
-GRCm38.70                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
-GRCm38.71                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
-GRCm38.72                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
-GRCm38.73                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
-GRCm38.74                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
-NCBIM37.64                                                  	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
-NCBIM37.65                                                  	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
-NCBIM37.66                                                  	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
-</pre>
-				<br>
-				At the time of writing this, you have 10 options (obviously this will change in the future). 
-				Some are databases are GRCm version 37 (i.e. mm9) and some are version 38 (i.e. mm10).
-				Since it is generally better to use the latest release, you should probably pick <code>GRCm38.74</code>.
-				Again, this is an example of the version numbers at the time of writing this paragraph, in the future there will be other releases and you should update to the corresponding version.
-				<br>
-				<br>
-				<b>Unsupported reference genomes:</b> If your reference genome of interest is not supported yet (i.e. there is no database avaialble), you can build a database yourself (see "Building dataases" section). If you have problems adding you own organism, send me an email and I'll do my best to help you out.
-				<p>
 				<p> <h3>Citing</h3>
 				If you are using SnpEff or SnpSift, please cite our work as shown <a href="SnpEff.html#citing">here</a>. Thank you!
 				</p>
@@ -285,19 +237,66 @@ NCBIM37.66                                                  	Mus_musculus       
 					<tr> <td> Gene Sets annotations</td> <td> Gene sets (MSigDb, GO, BioCarta, KEGG, Reactome, etc.) can be used to annotate via <code>SnpSift geneSets</code> command.</td> </tr>
 				</table>
 				</p>
-        </section>
 
-		<!-- Examples
-		================================================== -->
-		<section id="examples">
-		  <div class="page-header">
-			<h1>2. Usage examples (for the impatient)</h1>
-		  </div>
+				<p> <h3>Databases</h3>
+				In order to produce the annotations, SnpEff requires a database.
+				We build these databases using informations from trusted resources.
+				<br>
+				<br>
+				<i class="icon-hand-right"></i> By default SnpEff downloads and install databases automatically (since version 4.0)
+				<br>
+				<br>
+				Currently, there are pre-built database for over 20,000 reference genomes.
+				This means that most cases are covered.
+				<br>
+				In some very rare occasions, people need to build a database for an organism not currently supported (e.g. the genome is not publicly available).
+				In most cases, this can be done and there is a section of this manual teaching how to build your own SnpEff database.
+				<br>
+				<br>
+				Which databases are supported? You can find out all the supported databases by running the <code>database</code> command:
+				<br>
+				<br>
+<pre>
+java -jar snpEff.jar databases
+</pre>
+				<br>
+				This command shows the database name, genome name and source data (where was the genome reference data obtained from).
+				Keep in mind that many times I use ENSEMBL reference genomes, so the name would be <code>GRCh37</code> instead of <code>hg19</code>, or <code>GRCm38</code> instead of <code>mm10</code>, and so on. 
+				<br>
+				<br>
+				<b>Example: Finding a database:</b> So, let's say you want to find out the name of the latest mouse (Mus.Musculus) database. 
+				You can runs something like this: 
+				<br>
+				<br>
+<pre>
+$ java -jar snpEff.jar databases | grep -i musculus
+GRCm38.68                                                   	Mus_musculus                                                	OK        	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
+GRCm38.69                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
+GRCm38.70                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
+GRCm38.71                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
+GRCm38.72                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
+GRCm38.73                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
+GRCm38.74                                                   	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
+NCBIM37.64                                                  	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
+NCBIM37.65                                                  	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
+NCBIM37.66                                                  	Mus_musculus                                                	          	http://sourceforge.net/projects/snpeff/files/databases/v3.4/snpEff_v3.4_Mus_musculus.zip
+</pre>
+				<br>
+				At the time of writing this, you have 10 options (obviously this will change in the future). 
+				Some are databases are GRCm version 37 (i.e. mm9) and some are version 38 (i.e. mm10).
+				Since it is generally better to use the latest release, you should probably pick <code>GRCm38.74</code>.
+				Again, this is an example of the version numbers at the time of writing this paragraph, in the future there will be other releases and you should update to the corresponding version.
+				<br>
+				<br>
+				<b>Unsupported reference genomes:</b> If your reference genome of interest is not supported yet (i.e. there is no database avaialble), you can build a database yourself (see "Building dataases" section). If you have problems adding you own organism, send me an email and I'll do my best to help you out.
+				<p>
+
+			<h3>Usage examples (for the impatient)</h3>
 				<p class="lead">
 				Here we'll show a few examples that should be enough to get you started.
 				</p>
 
-				<h3> Basic examples: Installing SnpEff </h3>
+				<h3> Basic example: Installing SnpEff </h3>
 				<p>
 				Obviously the first step to use the program is to install it.
 				You have to download the core program from the "Download" page.
@@ -323,28 +322,7 @@ data_dir = ~/snpEff/data/
 </pre>
 				</p>
 
-				<h3> Basic examples: Managing SnpEff databases </h3>
-				<p>
-				In order to use SnpEff, you need a database for the reference genome you want to use. 
-				SnpEff databases for the most popular genomes are already pre-built and available for you to download.
-				So there is no need for you to build it (this will save you a LOT of work).
-				<p>
-				<i class="icon-warning-sign"></i> Most of the time you don't need to build the SnpEff database. You can just download a pre-built one.
-				<p>
-
-				The easiest way to download and install a pre-built SnpEff database it using the "download" command.
-				E.g. if you want to install the SnpEff database for the human genome, you can run the following command:
-<pre>
-java -jar snpEff.jar download -v GRCh37.66
-</pre>
-				<p>
-				<i class="icon-hand-right"></i> If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
-				This is done using the '-c' command line option:
-<p><pre>
-java -Xmx4g -jar snpEff.jar download <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.66 
-</pre><p>
-
-				<h3> Basic examples: Annotate using SnpEff </h3>
+				<h3> Basic example: Annotate using SnpEff </h3>
 				Let's assume you have a VCF file ("file.vcf") and you want to annotate the variants in that file.
 				You can download the file for this example <a class="body" href="examples/file.vcf">here</a>.
 				This data is from the 1000 Genomes project, so the reference genome is the human genome (GRCh37.66).
@@ -1937,28 +1915,31 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				</p>
         </section>
 				
-		<!-- ENCODE
+		<!-- Advanced annotations
 		================================================== -->
-		<section id="ENCODE">
-		  <div class="page-header">
-			<h1>13. ENCODE </h1>
-		  </div>
-				<p class="lead">
-				ENCODE project's goal is to find all functional elements in the human genome.
-				You can perform annotations using ENCODE's data.
-				</p>
-				<p>
-				<a href="http://genome.ucsc.edu/ENCODE/">ENCODE</a> project has produced huge amounts of data (see also <a href="http://www.nature.com/encode">Nature's</a> portal).
-				This information is available for download and can be used to annotate genomic variants or regions.
-				An overview of all the data available from ENCODE is shown as an <a href="http://genome.ucsc.edu/ENCODE/dataMatrix/encodeDataMatrixHuman.html">experimental data matrix</a>.
-				The download site is <a href="http://genome.ucsc.edu/ENCODE/downloads.html">here</a>.
-				<br>
-				<br>
-				Data is available in "BigBed" format, which can be feed into SnpEff using <code>-interval</code> command line option (you can add many <code>-interval</code> options).
-				<br>
-				Here is a simple example:
-				<br>
-				<br>
+		<section id="advann">
+			<h1>Advanced annotations</h1>
+			<p class="lead">
+			SnpEff can annotate using many different 'third party' databases, such as ENCODE, Epigenome Roadmap, NextProt, etc.
+			</p>
+
+			<h3>ENCODE </h3>
+			<p class="lead">
+			ENCODE project's goal is to find all functional elements in the human genome.
+			You can perform annotations using ENCODE's data.
+			</p>
+			<p>
+			<a href="http://genome.ucsc.edu/ENCODE/">ENCODE</a> project has produced huge amounts of data (see also <a href="http://www.nature.com/encode">Nature's</a> portal).
+			This information is available for download and can be used to annotate genomic variants or regions.
+			An overview of all the data available from ENCODE is shown as an <a href="http://genome.ucsc.edu/ENCODE/dataMatrix/encodeDataMatrixHuman.html">experimental data matrix</a>.
+			The download site is <a href="http://genome.ucsc.edu/ENCODE/downloads.html">here</a>.
+			<br>
+			<br>
+			Data is available in "BigBed" format, which can be feed into SnpEff using <code>-interval</code> command line option (you can add many <code>-interval</code> options).
+			<br>
+			Here is a simple example:
+			<br>
+			<br>
 <pre>
 # Create a directory for ENCODE files
 mkdir -p db/encode
@@ -1979,38 +1960,32 @@ $ grep CUSTOM test.eff.vcf
 </pre>
 
 
-				</p>
-        </section>
+			</p>
 
-		<!-- Epigenome
-		================================================== -->
-		<section id="Epigenome">
-		  <div class="page-header">
-			<h1>14. Epigenome </h1>
-		  </div>
-				<p class="lead">
-				Epigenome Roadmap Project has produced large amounts of information that can be used by SnpEff.
-				</p>
-				<p>
-				<a href="http://www.roadmapepigenomics.org"> Epigenome Roadmap Project</a> goal is 
-				"to map DNA methylation, histone modifications, chromatin accessibility and small RNA transcripts 
-				in stem cells and primary ex vivo tissues selected to represent the normal counterparts of tissues 
-				and organ systems frequently involved in human disease".
-				A <a href="http://www.roadmapepigenomics.org/data"> data matrix </a> shows the experimental set ups 
-				currently available.
-				<br>
-				<br>
-				Unfortunately the project is not (currently) providing results files that can be used directly by annotation software, such as SnpEff.
-				They will be available later in the project. 
-				So, for the time being, data has to be downloaded an pre-processed.
-				We'll be processing these information and making it available (as SnpEff databases) as soon as we can.
-				<br>
-				<br>
-				The latest Epigenome project processed information, can be found <a href="http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz/download">here</a>.
-				This includes genomic intervals for high confidence peaks in form of <code>BED</code> files.
-				<br>
-				<br>
-				To annotate you can do:
+			<h3>Epigenome </h3>
+			<p class="lead">
+			Epigenome Roadmap Project has produced large amounts of information that can be used by SnpEff.
+			</p>
+			<p>
+			<a href="http://www.roadmapepigenomics.org"> Epigenome Roadmap Project</a> goal is 
+			"to map DNA methylation, histone modifications, chromatin accessibility and small RNA transcripts 
+			in stem cells and primary ex vivo tissues selected to represent the normal counterparts of tissues 
+			and organ systems frequently involved in human disease".
+			A <a href="http://www.roadmapepigenomics.org/data"> data matrix </a> shows the experimental set ups 
+			currently available.
+			<br>
+			<br>
+			Unfortunately the project is not (currently) providing results files that can be used directly by annotation software, such as SnpEff.
+			They will be available later in the project. 
+			So, for the time being, data has to be downloaded an pre-processed.
+			We'll be processing these information and making it available (as SnpEff databases) as soon as we can.
+			<br>
+			<br>
+			The latest Epigenome project processed information, can be found <a href="http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz/download">here</a>.
+			This includes genomic intervals for high confidence peaks in form of <code>BED</code> files.
+			<br>
+			<br>
+			To annotate you can do:
 <pre>
 # Download Epigenome project database (pre-processed as BED files)
 wget http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz/download
@@ -2030,25 +2005,19 @@ $ grep CUSTOM test.eff.vcf
 </pre>
 
 
-				</p>
-        </section>
+			</p>
 
-		<!-- NextProt
-		================================================== -->
-		<section id="NextProt">
-		  <div class="page-header">
-			<h1>15. NextProt </h1>
-		  </div>
-				<p class="lead">
-				NextProt has useful proteomic annotations than can help to identify variants causing reduced protein functionality or even loss of function.
-				</p>
-				<p>
-				<a href="http://www.nextprot.org/">Nextprot</a> project provides proteomic information that can be used for genomic annotations.
-				NextProt povides only human data.
-				<br>
-				<br>
-				This data is available by default in GRCh37 databases (latest version).
-				You only need to add the <code>-nextprot</code> command line option to get this information.
+			<h3>NextProt </h3>
+			<p class="lead">
+			NextProt has useful proteomic annotations than can help to identify variants causing reduced protein functionality or even loss of function.
+			</p>
+			<p>
+			<a href="http://www.nextprot.org/">Nextprot</a> project provides proteomic information that can be used for genomic annotations.
+			NextProt povides only human data.
+			<br>
+			<br>
+			This data is available by default in GRCh37 databases (latest version).
+			You only need to add the <code>-nextprot</code> command line option to get this information.
 <pre>
 $ java -Xmx4g -jar snpEff.jar -v -nextprot GRCh37.71 test.vcf > test.eff.vcf
 
@@ -2069,26 +2038,19 @@ $ grep glycosylation_site test.eff.vcf
                                        ,NEXT_PROT[topological_domain:Extracellular](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|5|1)
                                        ,NEXT_PROT[topological_domain:Extracellular](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|6|1)
 </pre>
-				This example shows a <code>glycosylation_site</code> marked as <code>MODERATE</code> impact, since a modification of such a site might impair protein function.
-				</p>
+			This example shows a <code>glycosylation_site</code> marked as <code>MODERATE</code> impact, since a modification of such a site might impair protein function.
+			</p>
 
-        </section>
-
-		<!-- Motif
-		================================================== -->
-		<section id="Motif">
-		  <div class="page-header">
-			<h1>16. Motif </h1>
-		  </div>
-				<p class="lead">
-				Motif annotations provided by ENSEMBL and Jaspar can be added to the standard annotations.
-				</p>
-				<p>
-				ENSEMBL provides trancription factor binding sites prediction, for human and mouse genomes, using <a href="http://jaspar.genereg.net/">Jaspar</a> motif database.
-				<br>
-				Using <code>-motif</code> command line option, you can add TFBS prediction to your annotations:
-				<br>
-				<br>
+			<h3> Motif </h3>
+			<p class="lead">
+			Motif annotations provided by ENSEMBL and Jaspar can be added to the standard annotations.
+			</p>
+			<p>
+			ENSEMBL provides trancription factor binding sites prediction, for human and mouse genomes, using <a href="http://jaspar.genereg.net/">Jaspar</a> motif database.
+			<br>
+			Using <code>-motif</code> command line option, you can add TFBS prediction to your annotations:
+			<br>
+			<br>
 <pre>
 $ java -Xmx4g -jar snpEff.jar -v -motif GRCh37.71 test.vcf > test.eff.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'
@@ -2111,16 +2073,16 @@ $ grep MOTIF test.eff.vcf
 1	2480337	.	G	A	.	PASS	AC=16;EFF=MOTIF[MA0058.1:Max](MODIFIER||||||||||1),MOTIF[MA0059.1:Cmyc](MODIFIER||||||||||1),MOTIF[MA0093.1:USF1](MODIFIER||||||||||1),MOTIF[MA0147.1:Cmyc](LOW||||||||||1),MOTIF[PB0043.1:Max](MODIFIER||||||||||1),MOTIF[PL0007.1:Max](MODIFIER||||||||||1),MOTIF[PL0014.1:mxl-1](MODIFIER||||||||||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000416860||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000432521||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000443892||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000448624||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000449660||1),INTERGENIC(MODIFIER||||||||||1)
 
 </pre>
-				<br>
-				So, for instance, the first MOTIF annotation is <code>MOTIF[PB0134.1:HNF4A]</code> corresponding to motif <a href="http://jaspar.genereg.net/cgi-bin/jaspar_db.pl?ID=PB0134.1&rm=present&collection=CORE">PB0134.1</a>, which you can look up in Jaspar.
-				</p>
+			<br>
+			So, for instance, the first MOTIF annotation is <code>MOTIF[PB0134.1:HNF4A]</code> corresponding to motif <a href="http://jaspar.genereg.net/cgi-bin/jaspar_db.pl?ID=PB0134.1&rm=present&collection=CORE">PB0134.1</a>, which you can look up in Jaspar.
+			</p>
         </section>
 
         <!-- Databases
         ================================================== -->
         <section id="databases">
           <div class="page-header">
-            <h1>17. Building databases </h1>
+            <h1>Building databases </h1>
           </div>
 				<p class="lead">
 				SnpEff needs a database to perform genomic annotations. 
@@ -2143,8 +2105,33 @@ java -jar snpEff.jar databases
 				<br>
 				<br>
 
+				<h3> Managing SnpEff databases manually </h3>
+				<p>
+				SnpEff databases for the most popular genomes are already pre-built and available for you to download.
+				So, chances are that you don't need to build a database yourself (this will save you a LOT of work).
+				<p>
+				<i class="icon-warning-sign"></i> By default SnpEff automatically downloads and installs the database for you, so you don't need to do it manually.
+				The following instructions are for people that want to pre-install databases manually (again, most people don't need to do this).
+				<br>
+				<br>
+				The easiest way to download and install a pre-built SnpEff database manually, is using the "download" command.
+				E.g. if you want to install the SnpEff database for the human genome, you can run the following command:
+<pre>
+java -jar snpEff.jar download -v GRCh37.66
+</pre>
+				<p>
+				<i class="icon-hand-right"></i> If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
+				This is done using the '-c' command line option:
+<p><pre>
+java -Xmx4g -jar snpEff.jar download <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.66 
+</pre><p>
+
 				<h3>Building a database</h3>
 				In order to build a database for a new genome, you need to:
+				<br>
+				<br>
+				<i class="icon-warning-sign"></i> Most people do NOT need to build a database, and can safely use a pre-built one. 
+				So unless you are working with a rare genome you most likely don't need to do it either.
 				<br>
 				<br>
 				<ol>
