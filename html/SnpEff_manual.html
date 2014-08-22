@@ -75,22 +75,15 @@
         <ul class="nav nav-list bs-docs-sidenav">
           <li><a href="#intro"><i class="icon-chevron-right"></i> Introduction</a></li>
           <li><a href="#run"><i class="icon-chevron-right"></i> Running SnpEff </a></li>
-          <li><a href="#seqData"><i class="icon-chevron-right"></i> Sequence data analysis </a></li>
-          <li><a href="#input"><i class="icon-chevron-right"></i> Input files </a></li>
-          <li><a href="#output"><i class="icon-chevron-right"></i> Output files </a></li>
-          <li><a href="#outputSummary"><i class="icon-chevron-right"></i> Output Summary file </a></li>
-          <li><a href="#eff"><i class="icon-chevron-right"></i> Effect prediction details </a></li>
-          <li><a href="#effNc"><i class="icon-chevron-right"></i> Regulatory and Non-coding annotations </a></li>
-          <li><a href="#filters"><i class="icon-chevron-right"></i> Annotations options </a></li>
+          <li><a href="#cmdline"><i class="icon-chevron-right"></i> Commands &amp; command line options </a></li>
+          <li><a href="#input"><i class="icon-chevron-right"></i> Input &amp; output files </a></li>
           <li><a href="#cancer"><i class="icon-chevron-right"></i> Cancer samples </a></li>
-          <li><a href="#ENCODE"><i class="icon-chevron-right"></i> Encode </a></li>
-          <li><a href="#Epigenome"><i class="icon-chevron-right"></i> Epigenome project </a></li>
-          <li><a href="#NextProt"><i class="icon-chevron-right"></i> NextProt </a></li>
-          <li><a href="#Motif"><i class="icon-chevron-right"></i> Motif </a></li>
+          <li><a href="#effNc"><i class="icon-chevron-right"></i> Additional annotations </a></li>
+          <li><a href="#outputSummary"><i class="icon-chevron-right"></i> Output Summary file </a></li>
+          <li><a href="#trouble"><i class="icon-chevron-right"></i> Torubleshooting </a></li>
           <li><a href="#databases"><i class="icon-chevron-right"></i> Building databases</a></li>
           <li><a href="#databasesNc"><i class="icon-chevron-right"></i> Building databases: Regulatory and Non-coding</a></li>
-          <li><a href="#gatk"><i class="icon-chevron-right"></i> Integration: GATK</a></li>
-          <li><a href="#galaxy"><i class="icon-chevron-right"></i> Integration: Galaxy</a></li>
+          <li><a href="#integrate"><i class="icon-chevron-right"></i> Integration: GATK and Galaxy</a></li>
           <li><a href="#utils"><i class="icon-chevron-right"></i>Commands and utilities </a></li>
         </ul>
       </div>
@@ -101,7 +94,7 @@
         ================================================== -->
         <section id="intro">
           <div class="page-header">
-            <h1>Introduction</h1>
+            <h1>1. Introduction</h1>
           </div>
 				<p class="lead">
 				SnpEff is a variant annotation and effect prediction tool.
@@ -191,6 +184,7 @@
 					<tr> <td> Genomes </td> <td> Human genome, as well as all model organisms are supported. Over 2,500 genomes are supported, which includes most mammalian, plant, bacterial and fungal genomes with published genomic data. </td> </tr>
 					<tr> <td> Speed </td> <td> SnpEff is really fast. It can annotate up to 1,000,000 variants per minute. </td> </tr>
 					<tr> <td> GATK integration </td> <td> SnpEff can be easily integrated with <a href="http://www.broadinstitute.org/gatk/">GATK</a> pipelines.</td> </tr>
+					<tr> <td> GKNO integration </td> <td> SnpEff in integrated with <a href="http://gkno.me/">GKNO</a> pipelines.</td> </tr>
 					<tr> <td> GUI </td> <td> Web based user interface via Galaxy project </td> </tr>
 					<tr> <td> Input and Output formats </td> 
 						<td> 
@@ -294,21 +288,14 @@ NCBIM37.66                                                  	Mus_musculus       
         ================================================== -->
         <section id="run">
           <div class="page-header">
-            <h1>Running SnpEff</h1>
+            <h1>2. Running SnpEff</h1>
           </div>
 				<p class="lead"> We show some basic examples how to use SnpEff.</p>
 
-				<p><h3>Command line vs Web interface</h3>
-				In order to run SnpEff you need to be comfortable running command from a command line terminal.
-				If you are not, then it is probably a good idea to ask you systems administrator to install a <a class="body"class="body" href="http://usegalaxy.org">Galaxy</a> server and use the web interface.
-				You can also use the open Galaxy server, but functionality may be limited and SnpEff versions may not be updated frequently.
-				</p>
-
 				<h3> Basic example: Installing SnpEff </h3>
 				<p>
-				Obviously the first step to use the program is to install it.
-				You have to download the core program from the "Download" page.
-				Then you have to uncompress the ZIP file.
+				Obviously the first step to use the program is to install it (for details, take a look at the <a href="download.html">download page</a>).
+				You have to download the core program and then uncompress the ZIP file.
 				In Windows systems, you can just double click and copy the contents of the ZIP file to wherever you want the program installed.
 				If you have a Unix or a Mac system, the command line would be:
 <pre>
@@ -319,28 +306,24 @@ $ unzip snpEff_latest_core.zip
 				</p>
 
 				<h3> Basic example: Annotate using SnpEff </h3>
-				Let's assume you have a VCF file ("file.vcf") and you want to annotate the variants in that file.
-				You can download the file for this example <a class="body" href="examples/file.vcf">here</a>.
-				This data is from the 1000 Genomes project, so the reference genome is the human genome (GRCh37.66).
+				Let's assume you have a VCF file and you want to annotate the variants in that file.
+				An example file is provided in <code>exmaples/file.vcf</code> (this data is from the 1000 Genomes project, so the reference genome is the human genome GRCh37).
 				<p>
-				Let's assume this is the first time you use SnpEff, so you don't have the database installed, so the first step is to download the database.
-				Then you can annotate the file:
+				As an input, we will use a <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41"> Variant Call Format (VCF) </a> file.
+				You can annotate the file by running:
 
 <p><pre>
-# Go to the directory where snpEff is installed
-cd snpEff
-
-# Do this only if you don't already have the database installed.
-java -jar snpEff.jar download -v GRCh37.66
-
-# Annotate the file
-java -Xmx4g -jar snpEff.jar eff -v GRCh37.66 file.vcf > file.eff.vcf
+java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 exmaples/file.vcf > file.eff.vcf
 </pre><p>
 
+				Notice how SnpEff automatically downloads and installs the database.
+				Next time SnpEff will use the local version, so the instalation step is only done once.
+				<br>
+				<br>
 				The annotated variants will be in the new file "file.eff.vcf".<p>
 				<p>
 				<i class="icon-warning-sign"></i> SnpEff creates a file called "snpEff_summary.html" showing basic statistics about the analyzed variants. 
-				Take a quick look at it!
+				Take a quick look at it.
 
 				<p>
 				<i class="icon-hand-right"></i> We used the java parameter -Xmx4g to increase the memory available to the Java Virtual Machine to 4G. 
@@ -351,83 +334,11 @@ java -Xmx4g -jar snpEff.jar eff -v GRCh37.66 file.vcf > file.eff.vcf
 				<i class="icon-hand-right"></i> If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
 				This is done using the '-c' command line option:
 <p><pre>
-java -Xmx4g -jar snpEff.jar eff <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.66 file.vcf > file.eff.vcf
+java -Xmx4g -jar snpEff.jar eff <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 file.vcf > file.eff.vcf
 </pre><p>
 
-
-				<h3> Advanced examples: Filter out SNPs from dbSnp </h3>
-
-				These are slightly more advanced examples. 
-				Here we'll try to show how to perform specific tasks.
-
-				If you want to filter out SNPs from dbSnp, you can do it using SnpSift.
-				You can download SnpSift from the "Downloads" page.
-				<p>
-				You can download the file for this example <a class="body" href="examples/file.vcf">here</a>.<br>
-				Here is how to do it:
-				<p>
-				<ol>
-					<li> Annotate ID fields using <code>SnpSif annotate</code> and DbSnp<br>
-						<i class="icon-hand-right"></i> We annotate using dbSnp before using SnpEff in order to 
-								have 'known' and 'unknown' statistics in SnpEff's summary page.
-								Those stats are based on the presence of an ID field. If the ID 
-								is non-empty, then it is assumed to be a 'known variant'.
-<pre>
-# Download and uncompress dbSnp database.
-wget -O dbSnp.vcf.gz ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606/VCF/00-All.vcf.gz
-gunzip dbSnp.vcf.gz
-
-# Annotate ID field using dbSnp
-java -jar SnpSif.jar annotate -v dbSnp.vcf.gz file.vcf > file.dbSnp.vcf
-</pre>
-
-					<li> Annotate using SnpEff:
-<pre>
-# Do this only if you don't already have the database installed.
-java -jar snpEff.jar download -v GRCh37.66
-
-# Annotate the file
-java -Xmx4g -jar snpEff.jar eff -v GRCh37.66 file.dbSnp.vcf > file.eff.vcf
-</pre>
-
-					<li> Filter out variants that have a non-empty ID field. 
-					These variants are the ones that are NOT in dbSnp, since we annotated the ID field using rs-numbers from dbSnp in step 1.
-<pre>
-java -jar SnpSift.jar filter -f file.eff.vcf "! exists ID" > file.eff.not_in_dbSnp.vcf
-</pre>
-					<i class="icon-hand-right"></i>The expression using to filter the file is "! exists ID".
-					This means that the ID field does not exists (i.e. the value is empty) which is represented as a dot (".") in a VCF file.
-				</ol>
-				</p>
-				<p><h3>Usage example</h3>
-				In this example, we will annotate a variants file using the human reference genome.<br>
-
-				As an input, we will use a <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41"> Variant Call Format (VCF) </a> file.
-				VCF is the de-facto standard for genetic variants.
-				<br>
-				In this example we will use a file 'demo.1kg.vcf.gz', which is provided in the distribution.
-<pre>
-# Go to SnpEff install directory
-cd ~/snpEff 
-
-# Download human database 'hg19'
-java -jar snpEff.jar download -v hg19
-
-# Annotate 
-java -Xmx2g -jar snpEff.jar hg19 -v demo.1kg.vcf > demo.1kg.snpeff.vcf
-</pre>
-
-				Here is an example of some entries in the annotated output file. 
-				You can see the 'EFF' field was added, predicting STOP_GAINED protein changes:
-
-<pre>
-$ cat demo.1kg.snpeff.vcf | grep STOP_
-1    889455    .    G    A    100.0    PASS    ...;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q236*...
-1    897062    .    C    T    100.0    PASS    ...;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*...
-1    900375    .    G    A    100.0    PASS    ...;EFF=STOP_GAINED(HIGH|NONSENSE|tGg/tAg|W578*...
-</pre>
-				Note: The real output was edited for readibility reasons.
-				</p>
+				<h3> Detailed examples </h3>
+				Take a look at several detailed examples in our <a href="protocol.html">examples page</a>.
 
 				<p><h3>Running from another directory</h3>
 				When you run SnpEff from a different directory than your install directory, you have to specify where the config file is located using the '-c' command line option.
@@ -479,973 +390,174 @@ $ ssh -i ./aws_amazon/pcingola_aws.pem ec2-user@ec2-54-234-14-244.compute-1.amaz
 				<p>
 				As you can see, it's very simple.
 
-				<p><h3>Command line options</h3>
-				In order to see all available options, you can run 
-				<pre>java -jar snpEff.jar -help</pre>
-				We'll explain many of those options in detail in the following chapters.
-				</p>
-
 				<p><h3>Loading the database</h3>
 				One of the first thins SnpEff has to do is to load the database.
-				Usually it takes frmo a few seconds to a couple of minutes, depending on database size.
+				Usually it takes from a few seconds to a couple of minutes, depending on database size.
 				Complex databases, like human, require more time to load.
 				After the database is loaded, SnpEff can analyze thousands of variants per second.
 				</p>
-        </section>
 
-        <!-- Sequence data analysis
-        ================================================== -->
-        <section id="seqData">
-          <div class="page-header">
-            <h1>5. Sequence data analysis</h1>
-          </div>
-				<p class="lead"> Here we show an example on how to get from Sequencing data to an annotated variants file </p>
-
-				<p><h3>Sequencing data example</h3>
-				<i class="icon-warning-sign"></i> This is an extremely simplified version on how to analyze the data from scratch
-				This is not meant to be a tutorial on sequencing analysis as it would be way beyond the scope of this handbook.
-				<br>
-				Let's assume you have sequence data in FASTQ format (file "s.fastq") and your reference genome is dm5.34 (fly genome)
-<pre>
-# Download the genome, uncompress and rename file
-wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/dmel_r5.34_FB2011_02/fasta/dmel-all-chromosome-r5.34.fasta.gz
-gunzip dmel-all-chromosome-r5.34.fasta.gz
-mv dmel-all-chromosome-r5.34.fasta dm5.34.fasta
-
-# Create a genome index (we assume you installed BWA http://bio-bwa.sourceforge.net/)
-bwa index -bwtsw dm5.34.fasta
-
-# Map sequences to the genome: Create SAI file
-bwa aln -bwtsw dm5.34.fasta s.fastq > s.sai
-
-# Map sequences to the genome: Create SAM file
-bwa samse dm5.34.fasta s.sai s.fastq > s.sam
-
-# Create BAM file (we assume you installed SamTools http://samtools.sourceforge.net/)
-samtools view -S -b s.sam > s.bam
-
-# Sort BAM file (will create s_sort.bam)
-samtools sort s.bam s_sort
-
-# Create VCF file (BcfTools is part of samtools distribution)
-samtools mpileup -uf dm5.34.fasta s_sort.bam | bcftools view -vcg - > s.vcf
-
-# Analyze variants using snpEff
-java -Xmx4g -jar snpEff.jar dm5.34 s.vcf > s.eff.vcf
-</pre>
-
-				This highly simplified sequencing data analysis pipeline, has the common basic steps
-				<ul>
-					<li> Index the reference genome (bwa)
-					<li> Map reads to reference genome (bwa)
-					<li> Call variants (bcftools)
-					<li> Annotate variants (SnpEff)
-				</ul>
+				<p><h3>Command line vs Web interface</h3>
+				In order to run SnpEff you need to be comfortable running command from a command line terminal.
+				If you are not, then it is probably a good idea to ask you systems administrator to install a <a class="body"class="body" href="http://usegalaxy.org">Galaxy</a> server and use the web interface.
+				You can also use the open Galaxy server, but functionality may be limited and SnpEff versions may not be updated frequently.
 				</p>
+
         </section>
-				
-        <!-- Input
+
+        <!-- Command line options
         ================================================== -->
-        <section id="input">
+        <section id="cmdline">
           <div class="page-header">
-            <h1>6. Input files </h1>
+            <h1>3. Commands &amp; command line options </h1>
           </div>
 				<p class="lead"> 
-				Files used as input to SnpEff must comply with standard formats.
-				Here we describe supported input data formats.
+				SnpEff has sevceral 'commands' that can be used for different annotaitons.
+				The default command is <code>'eff'</code> used to annotate variants.
 				</p>
-
-				<i class="icon-hand-right"></i> You can use "-" as input file name to spedicfy <b>STDIN</b>. 
-				<br>
-				For example, you can easily stream files like this:
-				<br>
-				<br>
+				<b>Help:</b> In order to see all available commands, you can run SnpEff without any arguments or use <code>-help</code> command line option:
 <pre>
-cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 - > file.eff.vcf
+# This will show a 'help' message
+java -jar snpEff.jar
+
+# This will also show a 'help' message
+java -jar snpEff.jar -help
 </pre>
 
-
-				<p><h3>VCF</h3>
-				As we mentioned before, <a class="body"class="body" href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">Variant Call Format (VCF)</a> is the recomended format for input files.
-				This is the format used by the "1000 Genomes Project", and is currently considered the de-facto standard for genomic variants.
-				Furthermore, most variant calling programs output VCF files, so it is also the simplest format to use.
-				<br>
-				In a nutshell, VCF format is tab-separated text file having the following columns:
-
-				<ol>
-					<li> Chromosome name
-					<li> Position
-					<li> Variant's ID
-					<li> Reference genome
-					<li> Alternative (i.e. variant)
-					<li> Quality score
-					<li> Filter (whether or not the variant passed quality filters)
-					<li> INFO : Generic information about this variant. SnpEff adds annotation information in this column.
-				</ol>
-
-				Here is an example of a few lines in a VCF file:
-<pre>
-#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                    
-20     14370   rs6054257 G      A       29   PASS   NS=3;DP=14;AF=0.5;DB;H2
-20     17330   .         T      A       3    q10    NS=3;DP=11;AF=0.017   
-</pre>
-				Note that the first line is header information. Header lines start with '#'
-				<br>
-				<br>
-				</p>
-
-				<p><h3>BED</h3>
-				In an enrichment experiment, such as ChIP-Seq, the results are enrichment regions, usually called "peaks".
-				It is common for "peak callers" (algorithms that detect enrichment), write the results in a BED file.
-				SnpEff can annotate BED files in order to facilitate interpretation of enrichment experiments.
-				<br>
-				<br>
-				<i class="icon-warning-sign"></i> Column fifth onwards are ignored when using BED file format and they will be lost in the output file.
-				</p>
-        </section>
-
-        <!-- Output
-        ================================================== -->
-        <section id="output">
-          <div class="page-header">
-            <h1>7. Output files </h1>
-          </div>
-				<p class="lead"> 
-				Here we describe the format of SnpEff's output files and the information added.
-				</p>
-
-				<p><h3>VCF output format</h3>
-				As we mentioned in the previous chapter, VCF is the default input format.
-				It is highly recommended to use VCF as input and output format, since it is a standard format that can be also used by other tools and software packages.
-				Thus VCF makes it much easier to integrate genomic data processing pipelines.
-				<br>
-				SnpEff adds annotation information to the INFO field of a VCF file.
-				The INFO field is the eight column of a VCF file, see previous section for a quick example or take a look at the <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">VCF specification</a> for details.
-				<br>
-				<br>
-				Here is an example of a file before and after being annotated using SnpEff:
-				<br>
-				VCF file before annotations
-<pre>
-#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                    
-1	889455	.	G	A	100.0	PASS	AF=0.0005
-1	897062	.	C	T	100.0	PASS	AF=0.0005
-</pre>
-
-				VCF file after being annotated using SnpEff
-<pre>
-#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                    
-1	889455	.	G	A	100.0	PASS	AF=0.0005;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q236*|749|NOC2L||CODING|NM_015658|)
-1	897062	.	C	T	100.0	PASS	AF=0.0005;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*|642|KLHL17||CODING|NM_198317|)
-</pre>
-				A you can see, SnpEff added an 'EFF' tag to the INFO field (eigth column).
-				</p>
-
-				<p><b>VCF EFF field</b>
-				<br>
-				<br>
-				Effects information is added to the INFO field using an 'EFF' tag. 
-				<br>
-				<br>
-				<i class="icon-hand-right"></i> When multiple effects are available, they are sorted first by "Effect_Impact", then by "Effect" and finally by "marker's genomic coordinates" (e.g. affected transcript's genomic coordinates).
-				<br>
-				<br>
-				There can be multiple effects separated by comma. The format for each effect is:
-<pre>
-EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_Length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )
-</pre>
-
-
+				Here is a list of what each command does	
 				<center>
 				<table class="table table-striped">
-					<tr> <th>  EFF Sub-field </th> <th>  Meaning </th> </tr>
-					<tr> <td>  Effect </td> <td>  Effect of this variant. See details <a class="body" href="#eff">here</a>. </td> </tr>
-					<tr> <td>  Effect impact </td> <td>  Effect impact {High, Moderate, Low, Modifier}. See details <a class="body" href="#eff">here</a>. </td> </tr>
-					<tr> <td>  Functional Class </td> <td>  Functional class {NONE, SILENT, MISSENSE, NONSENSE}. </td> </tr>
-					<tr> <td>  Codon_Change / Distance </td> <td>  Codon change: old_codon/new_codon OR distance to transcript (in case of upstream / downstream) </td> </tr>
-					<tr> <td>  Amino_Acid_Change </td> <td>  Amino acid change: old_AA AA_position/new_AA (e.g. 'E30K') </td> </tr>
-					<tr> <td>  Amino_Acid_Length</td> <td>  Length of protein in amino acids (actually, transcription length divided by 3). </td> </tr>
-					<tr> <td>  Gene_Name </td> <td>  Gene name </td> </tr>
-					<tr> <td>  Transcript_BioType </td> <td>  Transcript bioType, if available. </td> </tr>
-					<tr> <td>  Gene_Coding </td> <td>  [CODING | NON_CODING]. This field is 'CODING' if any transcript of the gene is marked as protein coding. </td> </tr>
-					<tr> <td>  Transcript_ID </td> <td>  Transcript ID (usually ENSEMBL IDs) </td> </tr>
-					<tr> <td>  Exon/Intron Rank </td> <td>  Exon rank or Intron rank (e.g. '1' for the first exon, '2' for the second exon, etc.) </td> </tr>
-					<tr> <td>  Genotype_Number </td> <td>  Genotype number corresponding to this effect (e.g. '2' if the effect corresponds to the second ALT) </td> </tr>
-					<tr> <td>  Warnings / Errors </td> <td>  Any warnings or errors (not shown if empty). </td> </tr>
+					<tr> <th>  Command      </th>	<th>  Meaning </th> </tr>
+					<tr> <td> [eff]         </td>	<td> This is the default command. It is used for annotating variant filed (e.g. VCF files). </td> </tr>
+					<tr> <td> build         </td>	<td> Build a SnpEff database from reference genome files (FASTA, GTF, etc.). </td> </tr>
+					<tr> <td> buildNextProt </td>	<td> Build NextProt database using XML files </td> </tr>
+					<tr> <td> cds           </td>	<td> Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness (invoked automatically when building a database). </td> </tr>
+					<tr> <td> closest       </td>	<td> Annotate the closest genomic region. </td> </tr>
+					<tr> <td> count         </td>	<td> Count how many intervals (from a BAM, BED or VCF file) overlap with each genomic interval. </td> </tr>
+					<tr> <td> databases     </td>	<td> Show currently available databases (from local config file). </td> </tr>
+					<tr> <td> download      </td>	<td> Download a SnpEff database. </td> </tr>
+					<tr> <td> dump          </td>	<td> Dump to STDOUT a SnpEff database (mostly used for debugging). </td> </tr>
+					<tr> <td> genes2bed     </td>	<td> Create a bed file from a genes list. </td> </tr>
+					<tr> <td> len           </td>	<td> Calculate total genomic length for each marker type. </td> </tr>
+					<tr> <td> protein       </td>	<td> Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness. (invoked automatically when building a database). </td> </tr>
+					<tr> <td> spliceAnalysis</td>	<td> Perform an analysis of splice sites. Experimental feature. </td> </tr>
 				</table>
 				</center>
-				</p>
 
-				<p><b>Errors and Warnings </b>
-				<br>
-				<br>
-				As mentioned int the previous section, the last sub-field in EFF field shows errors or warnings (if any).
-				Here is a description of the errors and warnings:
-				<center>
-				<table class="table table-striped">
-					<tr> <th>  Error </th> <th>  Meaning and possible solutions</th> </tr>
-					<tr> <td> ERROR_CHROMOSOME_NOT_FOUND </td> 
-						<td>
-							Chromosome does not exits in reference database. 
-							Typically this means that there is a mismatch between the chromosome names in your input file and the chromosome names used in the reference genome to build SnpEff's database. 
-							<br>
-							<br>
-							<b>Warning:</b> This could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment.
-							Obviously doing this makes no sense and the annotation information you'll get will be garbage.
-							That's why SnpEff shows you an error message.
-							<br>
-							<br>
-							<b>Possible solution:</b> Sometime SnpEff database matches the reference genome for your organism, and it's just that the chromosome names are changed.
-							You can fix this by changing the input file.
-							<br>
-							You can see chromosome names used by SnpEff by using <code>-v</code> (verbose) option. 
-							SnpEff will show a line like this one:
-							<pre># Chromosomes names [sizes]  : '1' [249250621] '2' [243199373] ...</pre>
-							Then you can modify your input file chromosome names to match the database (e.g. using <code>sed</code> unix command).
-						</td> 
-					</tr>
-					<tr> <td> ERROR_OUT_OF_CHROMOSOME_RANGE </td> 
-						<td> 
-							This means that the position is higher than chromosome's length. 
-							Probably an indicator that your data is not from this reference genome. 
-						</td> 
-					</tr>
-					<tr> <td> ERROR_OUT_OF_EXON </td> <td> Exonic information not matching the coordinates. Indicates a problem (or even a bug?) in the database </td> </tr>
-					<tr> <td> ERROR_MISSING_CDS_SEQUENCE </td> <td> Transcript has no CDS info. Indicates a problem (or even a bug?) in the database </td> </tr>
-				</table>
-
-				<table class="table table-striped">
-					<tr> <th>  Warning </th> <th>  Meaning and possible solutions</th> </tr>
-					<tr> <td> WARNING_REF_DOES_NOT_MATCH_GENOME </td> 
-						<td> 
-						This means that the REF field does not match the reference genome.
-						<br> 
-						<br> 
-						<i class="icon-warning-sign"></i> This warning probably indicated there is something really wrong with your data!
-						<br> 
-						<br> 
-						This happens when your data was aligned to a different reference genome than the one used to create SnpEff's database.
-						If there are many of these warnings, it's a strong indicator that the data doesn't match and all the annotations will be garbage (because you are using the wrong database).
-						<br> 
-						<br> 
-						<b>Solution:</b> Use the right database to annotate!
-						<br> 
-						<br> 
-						<i class="icon-hand-right"></i> Due to performance and memory optimizations, SnpEff only checks reference sequence on Exons.
-						</td> 
-					</tr>
-					<tr> <td> WARNING_SEQUENCE_NOT_AVAILABLE </td> <td> For some reason the exon sequence is not available, so we cannot calculate effects.</td> </tr>
-					<tr> <td> WARNING_TRANSCRIPT_INCOMPLETE</td> 
-						<td> 
-						A protein coding transcript whose length is non-multiple of 3. 
-						This means that information is missing for one or more amino acids.
-						<br>
-						This is usually due to errors in the genomic information (e.g. the genomic databases provided by UCSC or ENSEMBL).
-						Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.
-						</td> 
-					</tr>
-					<tr> <td> WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS </td> 
-						<td> 
-						A protein coding transcript has two or more STOP codons in the middle of the coding sequence (CDS).
-						This should not happen and it usually means the genomic information may have an error in this transcript.
-						<br>
-						This is usually due to errors in the genomic information (e.g. the genomic databases provided by UCSC or ENSEMBL).
-						Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.
-						</td> 
-					</tr>
-					<tr> <td> WARNING_TRANSCRIPT_NO_START_CODON </td>
-						<td> 
-						A protein coding transcript does not have a proper START codon.
-						It is rare that a real transcript does not have a START codon, so this probably indicates errors in genomic information for this transcript (e.g. the genomic databases provided by UCSC or ENSEMBL).
-						<br>
-						Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.
-						</td> 
-					</tr>
-				</table>
-				</center>
-				</p>
-				
-				<p><b>VCF Header lines </b>
-				<br>
-				<br>
-				SnpEff updates the header of the VCF file to reflect additional fields.
-				This is required by the VCF specification.
-				SnpEff also adds the command line options used to annotate the file as well as SnpEff's version, so you can keep track of what exactly was done.
-				<br>
-				<br>
-				Here is an example of some header lines added to an annotated file:
+				<b> Common options </b> The general help shows some options that are available to all commands. For instace, at the time of writing, the common options are under "Generic options" and "Database options" are these:
 <pre>
-##SnpEffVersion="SnpEff 3.1m (build 2013-02-08)"
-##SnpEffCmd="SnpEff  hg19 demo.1kg.vcf "
-##INFO=&lt;ID=EFF,Number=.,Type=String,Description="Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Amino_Acid_length | Gene_Name | Gene_BioType | Coding | Transcript | Exon [ | ERRORS | WARNINGS ] )' \"&gt;
-</pre>
-				</p>
+$ java -jar snpEff.jar
+snpEff version SnpEff 4.0 (build 2014-08-22), by Pablo Cingolani
+Usage: snpEff [command] [options] [files]
 
-				<br> 
-				<p><b>Multiple effects per VCF line</b>
-				<br> 
-				<br> 
-				Usually there is more than one effect reported in each EFF field.
-				<br>
-				There are several reasons for this:
-				<ul>
-					<li> A variant can affect multiple genes. E.g a variant can be DOWNSTREAM from one gene and UPSTREAM from another gene.
-					<li> In complex organisms, genes usually have multiple transcripts. So SnpEff reports the effect of a variant on each transcript.
-					<li> A VCF line can have more then one variant. 
-						 For instance if reference genome is 'G', but the sample has either 'A' or 'T', then this will be reported as one line, having multiple alternative variants. 
-						 E.g.: 
-<pre>
-#CHROM  POS       ID   REF  ALT      QUAL  FILTER  INFO                    
-1       889455    .    G    A,T      .     .       AF=0.0005
-</pre>
-						In this case SnpEff will report the effect of each variant on each gene and each transcript.
-				</ul>
-				</p>
+Run 'java -jar snpEff.jar command' for help on each specific command
 
-				<br>
-				<p> <b> Counting total number of effects of a given type </b>
-				<br>
-				<br>
-				Some people try to count the number of effects in a file by doing (assuming we want to count how many MODIFIER effects we have): 
-				<br>
-				<pre> grep -o MODIFIER output.eff.vcf | wc -l </pre>
-				<br>
-				This is incorrect because a VCF line can have multiple effects (e.g. when there are multiple transcripts in a gene).
-				A proper way to count effects would be:
+Available commands: 
+	[eff]                        : Calculate effect of variants. Default: eff (no command or 'eff').
+	build                        : Build a SnpEff database.
+	buildNextProt                : Build a SnpEff for NextProt (using NextProt's XML files).
+	cds                          : Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.
+	closest                      : Annotate the closest genomic region.
+	count                        : Count how many intervals (from a BAM, BED or VCF file) overlap with each genomic interval.
+	databases                    : Show currently available databases (from local config file).
+	download                     : Download a SnpEff database.
+	dump                         : Dump to STDOUT a SnpEff database (mostly used for debugging).
+	genes2bed                    : Create a bed file from a genes list.
+	len                          : Calculate total genomic length for each marker type.
+	protein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.
+	spliceAnalysis               : Perform an analysis of splice sites. Experimental feature.
 
-<pre>
-cat output.eff.vcf \
-	| cut -f 8 \
-	| tr ";" "\n" \
-	| grep ^EFF= \
-	| cut -f 2 -d = \
-	| tr "," "\n" \
-	| grep MODIFIER \
-	| wc -l
-</pre>
+Generic options:
+	-c , -config                 : Specify config file
+	-d , -debug                  : Debug mode (very verbose).
+	-dataDir [path]              : Override data_dir parameter from config file.
+	-download                    : Download a SnpEff database, if not available locally. Default: true
+	-nodownload                  : Do not download a SnpEff database, if not available locally.
+	-h , -help                   : Show this help and exit
+	-noLog                       : Do not report usage statistics to server
+	-t                           : Use multiple threads (implies '-noStats'). Default 'off'
+	-q ,  -quiet                 : Quiet mode (do not show any messages or errors)
+	-v , -verbose                : Verbose mode
 
-				Brief explanation:
-				<table class="table table-striped">
-					<tr> <td> <tt>cut -f 8 </tt> </td> <td>  Extract INFO fields </td> </tr>
-					<tr> <td> <tt>tr ";" "\n" </tt> </td> <td>  Expand each field into one line </td> </tr>
-					<tr> <td> <tt>grep ^EFF= </tt> </td> <td>  Only keep 'EFF' fields </td> </tr>
-					<tr> <td> <tt>cut -f 2 -d = </tt> </td> <td>  Keep only the effect data (drop the 'EFF=' part) </td> </tr>
-					<tr> <td> <tt>tr "," "\n" </tt> </td> <td>  Expand effects to multiple lines </td> </tr>
-					<tr> <td> <tt>grep MODIFIER | wc -l </tt> </td> <td>  Count the ones you want (in this example 'MODIFIER')</td> </tr>
-				</table>
-				</p>
-				<br> 
-
-				<p><h3>BED output format</h3>
-				<br>
-				SnpEff can annotate BED files in order to facilitate interpretation of enrichment experiments.
-				Annotations are added to the fourth column of the BED file.
-				<br>
-				E.g.: 
-<pre>
-$ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed 
-
-# SnpEff version 3.3 (build 2013-05-15), by Pablo Cingolani
-# Command line: SnpEff  -i bed BDGP5.69 /home/pcingola/fly_pvuseq/chipSeq/Sample_w1118_IP_w_5hmC/w1118_IP_w_5hmC_peaks.bed 
-# Chromo  Start     End       Name;Effect|Gene|BioType        Score
-2L        189463    190154    MACS_peak_1;Exon|exon_6_12_RETAINED|FBtr0078122|protein_coding|spen|protein_coding;Exon|exon_5_10_RETAINED|FBtr0078123|protein_coding|spen|protein_coding;Exon|exon_7_13_RETAINED|FBtr0306341|protein_coding|spen|protein_coding;Exon|exon_6_11_RETAINED|FBtr0078121|protein_coding|spen|protein_coding 245.41
-2L        195607    196120    MACS_peak_2;Exon|exon_6_12_RETAINED|FBtr0078122|protein_coding|spen|protein_coding;Exon|exon_5_10_RETAINED|FBtr0078123|protein_coding|spen|protein_coding;Exon|exon_7_13_RETAINED|FBtr0306341|protein_coding|spen|protein_coding;Exon|exon_6_11_RETAINED|FBtr0078121|protein_coding|spen|protein_coding 51.22
-2L        527253    527972    MACS_peak_3;Intron|intron_2_RETAINED-RETAINED|FBtr0078063|protein_coding|ush|protein_coding     55.97
-2L        711439    711764    MACS_peak_4;Intron|intron_1_RETAINED-RETAINED|FBtr0078045|protein_coding|ds|protein_coding      61.16
-2L        1365255   1365556   MACS_peak_5;Upstream|FBtr0077927|protein_coding|CG14346|protein_coding;Upstream|FBtr0077926|protein_coding|CG14346|protein_coding;Intergenic|NLaz...CG14346;Upstream|FBtr0077942|protein_coding|NLaz|protein_coding     62.78
-2L        1970199   1970405   MACS_peak_6;Upstream|FBtr0077813|protein_coding|Der-1|protein_coding;Intergenic|tRNA:CR31942...Der-1;Downstream|FBtr0077812|tRNA|tRNA:CR31942|tRNA      110.34
-2L        3345637   3346152   MACS_peak_7;Intron|intron_2_ALTTENATIVE_3SS-ALTTENATIVE_3SS|FBtr0089979|protein_coding|E23|protein_coding;Intron|intron_3_ALTTENATIVE_3SS-ALTTENATIVE_3SS|FBtr0089981|protein_coding|E23|protein_coding 65.49
-2L        4154734   4155027   MACS_peak_8;Intergenic|CG2955...Or24a;Downstream|FBtr0077468|protein_coding|CG2955|protein_coding       76.92
-2L        4643232   4643531   MACS_peak_9;Downstream|FBtr0110769|protein_coding|BG642163|protein_coding;Exon|exon_2_2_RETAINED|FBtr0300354|protein_coding|CG15635|protein_coding      76.92
+Database options:
+	-canon                       : Only use canonical transcripts.
+	-interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)
+	-motif                       : Annotate using motifs (requires Motif database).
+	-nextProt                    : Annotate using NextProt (requires NextProt database).
+	-onlyReg                     : Only use regulation tracks.
+	-onlyTr [file.txt]           : Only use the transcripts in this file. Format: One transcript ID per line.
+	-reg [name]                  : Regulation track to use (this option can be used add several times).
+	-ss , -spliceSiteSize [int]  : Set size for splice sites (donor and acceptor) in bases. Default: 2
+	-strict                      : Only use 'validated' transcripts (i.e. sequence has been checked). Default: false
+	-ud , -upDownStreamLen [int] : Set upstream downstream interval length (in bases)
 
 </pre>
-
-				When a peak intersects multiple transcripts or even multiple genes, each annotation is separated by a semicolon.
-				So if you look into the previous results in more detail, the fisrt line looks like this (format editted for readibility pourposes):
+		
+				<b>Help (command specific):</b> In order to see a help message for a paricular command, you can run the command without any arguments or use <code>-help</code> command line option:
 <pre>
-2L  189463  190154  MACS_peak_1;Exon|exon_6_12_RETAINED|FBtr0078122|protein_coding|spen|protein_coding
-                               ;Exon|exon_5_10_RETAINED|FBtr0078123|protein_coding|spen|protein_coding
-                               ;Exon|exon_7_13_RETAINED|FBtr0306341|protein_coding|spen|protein_coding
-                               ;Exon|exon_6_11_RETAINED|FBtr0078121|protein_coding|spen|protein_coding
+# This will show a 'help' message for command 'eff'
+$ java -jar snpEff.jar eff
+
+Command line :	SnpEff  
+
+snpEff version SnpEff 4.0 (build 2014-08-22), by Pablo Cingolani
+Usage: snpEff [eff] [options] genome_version [input_file]
+
+	variants_file                   : Default is STDIN
+
+Options:
+	-chr [string]                   : Prepend 'string' to chromosome name (e.g. 'chr1' instead of '1'). Only on TXT output.
+	-classic                        : Use old style annotaions instead of Sequence Ontology and Hgvs.
+	-download                       : Download reference genome if not available. Default: true
+	-i [format]                     : Input format [ vcf, txt, pileup, bed ]. Default: VCF.
+	-fileList                       : Input actually contains a list of files to process.
+	-o [format]                     : Ouput format [ txt, vcf, gatk, bed, bedAnn ]. Default: VCF.
+	-s , -stats                     : Name of stats file (summary). Default is 'snpEff_summary.html'
+	-noStats                        : Do not create stats (summary) file
+	-csvStats                       : Create CSV summary file instead of HTML
+
+Results filter options:
+	-fi , -filterInterval  [file]   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)
+	-no-downstream                  : Do not show DOWNSTREAM changes
+	-no-intergenic                  : Do not show INTERGENIC changes
+	-no-intron                      : Do not show INTRON changes
+	-no-upstream                    : Do not show UPSTREAM changes
+	-no-utr                         : Do not show 5_PRIME_UTR or 3_PRIME_UTR changes
+	-no EffectType                  : Do not show 'EffectType'. This option can be used several times.
+
+Annotations options:
+	-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: false
+	-cancerSamples [file]           : Two column TXT file defining 'oringinal \t derived' samples.
+	-geneId                         : Use gene ID instead of gene name (VCF output). Default: false
+	-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: true
+	-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.
+	-oicr                           : Add OICR tag in VCF file. Default: false
+	-sequenceOntology                : Use Sequence Ontology terms. Default: true
+
+Generic options:
+	-c , -config                 : Specify config file
+	-d , -debug                  : Debug mode (very verbose).
+	-dataDir [path]              : Override data_dir parameter from config file.
+	-download                    : Download a SnpEff database, if not available locally. Default: true
+	-nodownload                  : Do not download a SnpEff database, if not available locally.
+	-h , -help                   : Show this help and exit
+	-noLog                       : Do not report usage statistics to server
+	-t                           : Use multiple threads (implies '-noStats'). Default 'off'
+	-q ,  -quiet                 : Quiet mode (do not show any messages or errors)
+	-v , -verbose                : Verbose mode
+
+Database options:
+	-canon                       : Only use canonical transcripts.
+	-interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)
+	-motif                       : Annotate using motifs (requires Motif database).
+	-nextProt                    : Annotate using NextProt (requires NextProt database).
+	-onlyReg                     : Only use regulation tracks.
+	-onlyTr [file.txt]           : Only use the transcripts in this file. Format: One transcript ID per line.
+	-reg [name]                  : Regulation track to use (this option can be used add several times).
+	-ss , -spliceSiteSize [int]  : Set size for splice sites (donor and acceptor) in bases. Default: 2
+	-strict                      : Only use 'validated' transcripts (i.e. sequence has been checked). Default: false
+	-ud , -upDownStreamLen [int] : Set upstream downstream interval length (in bases)
 </pre>
-				This peak is hitting four transcripts (FBtr0078122, FBtr0078123, FBtr0306341, FBtr0078121) in gene 'spen'.
-				</p>
-				<br>
-
-				<p><h3>Exon naming convention</h3>
-				The format for the exon identifier is <code>exon_Rank_Total_Type</code>, where:
-				<ul>
-					<li> <code>rank</code> is the exon rank in the transcript (position in the transcript)
-					<li> <code>total</code> is the total number of exons in that transcript
-					<li> <code>type</code> is the exon splice type.
-				</ul>
-				<br>
-				For instance <code>exon_5_10_RETAINED</code> would be the fifth exon in a 10 exon transcript. 
-				This exon is type "RETAINED", which means it is not spliced out.
-				<br>
-				<br>
-				Exons are categorized by splicing as follows:
-				<ul>
-					<li> <code>NONE</code> : Not spliced
-					<li> <code>RETAINED</code> : All transcripts have this exon
-					<li> <code>SKIPPED</code> : Some transcripts skip it
-					<li> <code>ALTTENATIVE_3SS</code> : Some transcripts have and alternative 3' exon start 
-					<li> <code>ALTTENATIVE_5SS</code> : Some transcripts have and alternative 5' exon end
-					<li> <code>MUTUALLY_EXCLUSIVE</code> : Mutually exclusive (respect to other exon)
-					<li> <code>ALTTENATIVE_PROMOMOTER</code> : The first exon is different in some transcripts.
-					<li> <code>ALTTENATIVE_POLY_A</code> : The last exon.
-				</ul>
-				See <a href="http://en.wikipedia.org/wiki/Alternative_splicing#Modes"> this Wikipedia</a> entry for more information on exon splice types.
-				</p>
-
-				<p><h3>Intron naming convention</h3>
-				Similarly to exons, introns are named as<code>intron_Rank_ExonTypeBefore-ExonTypeAfter</code>, where:
-				<ul>
-					<li> <code>Rank</code> :  the rank number for this inton in the transcript
-					<li> <code>ExonTypeBefore</code> :  the splicing type of the exon preceding this intron (see exon naming convention for details).
-					<li> <code>ExonTypeAfter</code> :  the splicing type of the after this intron (see exon naming convention for details).
-				</ul>
-				For instance <code>intron_9_SKIPPED-RETAINED</code> would be the ninth intron of the transcript. 
-				The intron is preceded by a <code>SKIPPED</code> exon and followed by a <code>RETAINED</code> exon.
-				
-				</p>
-        </section>
-
-
-        <!-- Output Summary
-        ================================================== -->
-        <section id="outputSummary">
-          <div class="page-header">
-            <h1>8. Output summary files </h1>
-          </div>
-				<p class="lead"> 
-				SnpEff creates an additional output file showing overall statistics.
-				This "stats" file is an HTML file which can be opened using a web browser.
-				You can find an example of a 'stats' file <a href="1kg.html"> here</a>.
-				</p>
-				<p>
-				The program performs some statistics and saves them to the file 'snpEff_summary.html' on the 
-				directory where snpEff is being executed. You can see the file, by opening it in your browser.
-				<br>
-				<br>
-				<i class="icon-hand-right"></i>You can change the default location by using the '-stats' command line option. This also changes the location of the TXT summary file.
-				<br>
-				<br>
-				<i class="icon-hand-right"></i> Summary can be create in CSV format using command line option <code>-csvStats</code>. This allows easy downstream processing.
-				<br>
-				<br>
-				E.g.: In the stats file, you can see coverage histogram plots like this one <img src="http://chart.apis.google.com/chart?cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chg=11.0,40.0,3,2&chxp=1,50.0|3,50.0&chtt=Coverage+histogram&chxr=0,1.0,409.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Count|2:|1||||||||||11||||||||||21||||||||||31||||||||||41||||||||||51||||||||||61||||||||||76||||||||||3:|Coverage&chd=e:DNBSEfGaI9MKRSWZfXnrlwmZuE1wvW630e6O..638y3r7g8JsKxRlHgAkeZmY9XCR7PXRSOuOFMzNcIUJmHrHrFIFIFxEfCkDNDNBSBSB7BSB7BSApApApBSBSApAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-				</p>
-
-				<br>
-				<p> <b> "Effects by type" vs "Effects by region" </b>
-				<br>
-				<br>
-				SnpEff annotates variants. 
-				Variants produce effect of difference "types" (e.g. NON_SYNONYMOUS_CODING, STOP_GAINED). 
-				These variants affect regions of the genome (e.g. EXON, INTRON). 
-				The two tables count how many effects for each type and for each region exists.
-				<br>
-				E.g.: In an EXON region, you can have all the following effect types:	NON_SYNONYMOUS_CODING, SYNONYMOUS_CODING, FRAME_SHIFT, STOP_GAINED, etc.
-				<br>
-				<br>
-				The complicated part is that some effect types affect a region that has the same name (yes, I know, this is confusing).
-				<br>
-				E.g.: In a UTR_5_PRIME region you can have UTR_5_PRIME and START_GAINED effect type. <br>
-				<br>
-				<br>
-				This means that the number of both tables are not exactly the same, because the labels don't mean the same.
-				See the next figure as an example
-				<br>
-				<img width=700 src="images/type_vs_region.png">
-				<br>
-				So the number of effects that affect a UTR_5_PRIME <i>region</i> is 206. Of those, 57 are effects <i>type</i> START_GAINED and 149 are effects <i>type</i> UTR_5_PRIME.
-				<br>
-				How exactly are effect <i>type</i> and effect <i>region</i> related? See the following table<p>
-				<center>
-				<table class="table table-striped">
-					<tr> <th> Effect Type </th><th> Region </th> </tr> 
-					 <tr>
-						<td>
-						NONE<br>
-						CHROMOSOME<br>
-						CUSTOM<br>
-						CDS<br>
-						</td>
-						<td>NONE</td>
-					</tr>
-					<tr>
-						<td>
-						INTERGENIC<br>
-						INTERGENIC_CONSERVED<br>
-						</td>
-						<td>INTERGENIC</td>
-					</tr>
-					<tr>
-						<td>
-						UPSTREAM<br>
-						</td>
-						<td>UPSTREAM</td>
-					</tr>
-					<tr>
-						<td>
-						UTR_5_PRIME<br>
-						UTR_5_DELETED<br>
-						START_GAINED<br>
-						</td>
-						<td>UTR_5_PRIME</td>
-					</tr>
-					<tr>
-						<td>
-						SPLICE_SITE_ACCEPTOR<br>
-						</td>
-						<td>SPLICE_SITE_ACCEPTOR</td>
-					</tr>
-					<tr>
-						<td>
-						SPLICE_SITE_DONOR<br>
-						</td>
-						<td>SPLICE_SITE_DONOR</td>
-					</tr>
-					<tr>
-						<td>
-						SPLICE_SITE_REGION<br>
-						</td>
-						<td>SPLICE_SITE_REGION</td>
-					</tr>
-					<tr>
-						<td>
-						INTRAGENIC<br>
-						START_LOST<br>
-						SYNONYMOUS_START<br>
-						NON_SYNONYMOUS_START<br>
-						GENE<br>
-						TRANSCRIPT<br>
-						</td>
-						<td>EXON or NONE</td>
-					</tr>
-					<tr>
-						<td>
-						EXON<br>
-						EXON_DELETED<br>
-						NON_SYNONYMOUS_CODING<br>
-						SYNONYMOUS_CODING<br>
-						FRAME_SHIFT<br>
-						CODON_CHANGE<br>
-						CODON_INSERTION<br>
-						CODON_CHANGE_PLUS_CODON_INSERTION<br>
-						CODON_DELETION<br>
-						CODON_CHANGE_PLUS_CODON_DELETION<br>
-						STOP_GAINED<br>
-						SYNONYMOUS_STOP<br>
-						STOP_LOST<br>
-						RARE_AMINO_ACID<br>
-						</td>
-						<td>EXON</td>
-					</tr>
-					<tr>
-						<td>
-						INTRON<br>
-						INTRON_CONSERVED<br>
-						</td>
-						<td>INTRON</td>
-					</tr>
-					<tr>
-						<td>
-						UTR_3_PRIME<br>
-						UTR_3_DELETED<br>
-						</td>
-						<td>UTR_3_PRIME</td>
-					</tr>
-					<tr>
-						<td>
-						DOWNSTREAM<br>
-						</td>
-						<td>DOWNSTREAM</td>
-					</tr>
-					<tr>
-						<td>
-						REGULATION<br>
-						</td>
-						<td>REGULATION</td>
-					</tr>
-				</table>
-				</center>
-				</p>
-        </section>
-
-        <!-- Effects
-        ================================================== -->
-        <section id="eff">
-          <div class="page-header">
-            <h1>9. Effect prediction details</h1>
-          </div>
-				<p class="lead">
-				We describe the effects predicted by SnpEff
-				</p>
-				Notes:
-				<ul>
-					<li> <b> Sequence Ontology </b>
-					Sequence ontology (<a href="http://www.sequenceontology.org/">SO</a>) allows to standardize terminology used for assessing sequence changes and impact. 
-					This allows for a common language across all variant annotation programs and makes it easier to communicate using a uniform terminology.
-					<br>
-					<li> <b> Effect (Classic)</b> This are the "classic" effect names usd by SnpEff. We are moving towards a standardized classification system using Sequence Ontology.
-					<br>
-					<li><b>Effect impact</b>
-					Effects are categorized by 'impact': {High, Moderate, Low, Modifier}. 
-					This are pre-defined categories to help users find more significant variants.
-					<br>
-					<i class="icon-warning-sign"></i> Impact categories must be used with care, they were created only to help and simplify the filtering process. 
-					Obviously, there is no way to predict whether a "high impact" or a "low impact" variant is the one producing a phenotype of interest.
-					<br>
-					<br>
-				</ul>
-				Here is a list of effects and some brief explanations:
-				<br>
-				<br>
-
-				<center>
-				<table class="table table-striped">
-					<tr> <th> Effect<br>Seq. Ontology </th><th> Effect<br>Classic </th><th> Note &amp; Example </th><th>Impact</th> </tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001580"> coding_sequence_variant </a>  </td><td> CDS  </td><td> The variant hits a CDS. </td> <td> MODIFIER </td></tr> 
-					<tr> <td> chromosome  </td><td> CHROMOSOME_LARGE DELETION  </td><td> A large parte (over 1%) of the chromosome was deleted. </td> <td> HIGH </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001580"> coding_sequence_variant </a>  </td><td> CODON_CHANGE  </td><td> One or many codons are changed <br>e.g.:  An MNP of size multiple of 3 </td> <td> MODERATE </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001821"> inframe_insertion </a>  </td><td> CODON_INSERTION  </td><td> One or many codons are inserted <br>e.g.:  An insert multiple of three in a codon boundary </td> <td> MODERATE </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001824"> disruptive_inframe_insertion</a>  </td><td> CODON_CHANGE_PLUS CODON_INSERTION  </td><td> One codon is changed and one or many codons are inserted <br>e.g.:  An insert of size multiple of three, not at codon boundary </td> <td> MODERATE </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001822"> inframe_deletion </a>  </td><td> CODON_DELETION  </td><td> One or many codons are deleted <br>e.g.:  A deletion multiple of three at codon boundary </td> <td> MODERATE </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001826"> disruptive_inframe_deletion </a>  </td><td> CODON_CHANGE_PLUS CODON_DELETION  </td><td> One codon is changed and one or more codons are deleted <br>e.g.:  A deletion of size multiple of three, not at codon boundary </td> <td> MODERATE </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001632"> downstream_gene_variant </a>  </td><td> DOWNSTREAM  </td><td> Downstream of a gene (default length: 5K bases) </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001791"> exon_variant </a>  </td><td> EXON  </td><td> The vairant hits an exon. </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572"> exon_loss_variant </a>  </td><td> EXON_DELETED  </td><td> A deletion removes the whole exon. </td> <td> HIGH </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001589"> frameshift_variant </a>  </td><td> FRAME_SHIFT  </td><td> Insertion or deletion causes a frame shift <br>e.g.:  An indel size is not multple of 3 </td> <td> HIGH </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001564"> gene_variant </a>  </td><td> GENE  </td><td> The variant hits a gene. </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0000605"> intergenic_region</a> </td><td> INTERGENIC </td><td> The variant is in an intergenic region </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002017"> conserved_intergenic_variant</a> </td><td> INTERGENIC_CONSERVED </td><td> The variant is in a highly conserved intergenic region </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002011"> intragenic_variant</a> </td><td> INTRAGENIC </td><td> The variant hits a gene, but no transcripts within the gene</td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001627"> intron_variant </a>  </td><td> INTRON  </td><td> Variant hits and intron. Technically, hits no exon in the transcript. </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002018"> conserved_intron_variant </a>  </td><td> INTRON_CONSERVED  </td><td> The variant is in a highly conserved intronic region </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0000276"> miRNA </a>  </td><td> MICRO_RNA  </td><td> Variant affects an miRNA </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001583"> missense_variant </a>  </td><td> NON_SYNONYMOUS_CODING  </td><td> Variant causes a codon that produces a different amino acid <br>e.g.:  Tgg/Cgg, W/R </td> <td> MODERATE </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001582"> initiator_codon_variant </a>  </td><td> NON_SYNONYMOUS_START  </td><td> Variant causes start codon to be mutated into another start codon (the new codon produces a different AA). <br>e.g.: Atg/Ctg, M/L (ATG and CTG can be START codons) </td> <td> LOW </td> </tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001567"> stop_retained_variant </a>  </td><td> NON_SYNONYMOUS_STOP  </td><td> Variant causes stop codon to be mutated into another stop codon (the new codon produces a different AA). <br>e.g.: Atg/Ctg, M/L (ATG and CTG can be START codons) </td> <td> LOW </td> </tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002008">rare_amino_acid_variant</a> </td><td> RARE_AMINO_ACID </td><td> The variant hits a rare amino acid thus is likely to produce protein loss of function </td> <td> HIGH </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001574"> splice_acceptor_variant </a>  </td><td> SPLICE_SITE_ACCEPTOR  </td><td> The variant hits a splice acceptor site (defined as two bases before exon start, except for the first exon). </td> <td> HIGH </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001575"> splice_donor_variant </a>  </td><td> SPLICE_SITE_DONOR  </td><td> The variant hits a Splice donor site (defined as two bases after coding exon end, except for the last exon). </td> <td> HIGH </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630"> splice_region_variant </a>  </td><td> SPLICE_SITE_REGION  </td><td> A sequence variant in which a change has occurred within the region of the splice site, either within 1-3 bases of the exon or 3-8 bases of the intron.</td> <td> LOW </td> </tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630"> splice_region_variant </a>  </td><td> SPLICE_SITE_BRANCH  </td><td> A varaint affective putative (Lariat) branch point, located in the intron.</td> <td> LOW </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630"> splice_region_variant </a>  </td><td> SPLICE_SITE_BRANCH_U12  </td><td> A varaint affective putative (Lariat) branch point from U12 splicing machinery, located in the intron.</td> <td> MODERATE </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001578"> stop_lost </a>  </td><td> STOP_LOST  </td><td> Variant causes stop codon to be mutated into a non-stop codon <br>e.g.: Tga/Cga, */R </td> <td> HIGH </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001988"> 5_prime_UTR_premature start_codon_gain_variant </a>  </td><td> START_GAINED  </td><td> A variant in 5'UTR region produces a three base sequence that can be a START codon. </td> <td> LOW </td> </tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002012"> start_lost</a> </td><td> START_LOST   </td><td> Variant causes start codon to be mutated into a non-start codon. <br> e.g.: aTg/aGg, M/R </td> <td> HIGH </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001587"> stop_gained </a>  </td><td> STOP_GAINED  </td><td> Variant causes a STOP codon <br>e.g.: Cag/Tag, Q/* </td> <td> HIGH </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001819"> synonymous_variant </a>  </td><td> SYNONYMOUS_CODING  </td><td> Variant causes a codon that produces the same amino acid <br>e.g.:  Ttg/Ctg, L/L </td> <td> LOW </td> </tr> 
-					<tr> <td> <a href=""> start_retained </a>  </td><td> SYNONYMOUS_START  </td><td> Variant causes start codon to be mutated into another start codon. <br>e.g.:  Ttg/Ctg, L/L (TTG and CTG can be START codons) </td> <td> LOW </td> </tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001567"> stop_retained_variant </a>  </td><td> SYNONYMOUS_STOP  </td><td> Variant causes stop codon to be mutated into another stop codon. <br>e.g.: taA/taG, */* </td> <td> LOW </td> </tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001576"> transcript_variant </a>  </td><td> TRANSCRIPT  </td><td> The variant hits a transcript. </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001566"> regulatory_region_variant </a>  </td><td> REGULATION  </td><td> The variant hits a known regulatory feature (non-coding). </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001631"> upstream_gene_variant </a>  </td><td> UPSTREAM  </td><td> Upstream of a gene (default length: 5K bases) </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001624"> 3_prime_UTR_variant </a>  </td><td> UTR_3_PRIME  </td><td> Variant hits 3'UTR region </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002015"> 3_prime_UTR_truncation</a> + <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572"> exon_loss </a>  </td><td> UTR_3_DELETED  </td><td> The variant deletes an exon which is in the 3'UTR of the transcript </td> <td> MODERATE </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001623"> 5_prime_UTR_variant </a>  </td><td> UTR_5_PRIME  </td><td> Variant hits 5'UTR region </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002013"> 5_prime_UTR_truncation</a> + <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572">exon_loss_variant</a> </td><td> UTR_5_DELETED  </td><td> The variant deletes an exon which is in the 5'UTR of the transcript </td> <td> MODERATE </td></tr> 
-				</table> 
-				</center>
-
-				<br>
-				<p> <b>Details about Rare amino acid effect </b>
-				<br>
-				<br>
-				These are amino acids that occurs very rarely in an organism.
-				For instance, humans are supposed to use 20 amino acids, but
-				there is also one rare AA. Selenocysteine, single letter
-				code 'U', appears roughly 100 times in the whole genome.
-				The amino acid is so rare that usually it does not appear 
-				in codon translation tables. It is encoded as UGA, which usually 
-				means a STOP codon. Secondary RNA 
-				structures are assumed to enable this special translation.
-				<br>
-				<br>
-				A variant in one of these sites is likely to cause a loss of 
-				function in the protein. E.g. in case of a Selenocysteine, a 
-				loss of a selenium molecule is likely to cause loss of function.
-				Put it simply, the assumption is that there is a great deal of trouble 
-				to get that non-standard amino acid there, so it must be important.
-				RARE_AMINO_ACID mark is used to show that special attention should 
-				be paid in these cases.
-				<br>
-				<br>
-				<i class="icon-warning-sign"></i> When the variant hits a RARE_AMINO_ACID mark, it is likely that 
-				the 'old_AA/new_AA' field will be incorrect. This may happen because 
-				the amino acid is not predictable using a codon table. 
-				</p>
-				<br>
-				<p> <h3> Impact prediction </h3>
-				SnpEff reports putative variant impact in order to make it easier quickly to categorize and prioritize variants.
-				<br>
-				<br>
-				<i class="icon-warning-sign"></i> Impact categories must be used with care, they were created only to help and simplify the filtering process. 
-				Obviously, there is no way to predict whether a <code>HIGH</code> impact or a <code>LOW</code> impact variant is the one producing a phenotype of interest.
-				<br>
-				<br>
-				<center>
-				<table class="table table-striped">
-					<tr> <th> Impact </th><th> Meaning </th> <th> Example </th> </tr> 
-					<tr> <td> HIGH		</td> <td> The variant is assumed to have high (disruptive) impact in the protein, probably causing protein truncation, loss of function or triggering nonsense mediated decay. </td> <td> stop_gained, frameshift_variant </td></tr> 
-					<tr> <td> MODERATE	</td> <td> A non-disruptive variant that might change protein effectiveness. </td> <td> missense_variant, inframe_deletion </td></tr> 
-					<tr> <td> LOW		</td> <td> Assumed to be mostly harmless or unlikely to change protein behavior. </td> <td> synonymous_variant </td></tr> 
-					<tr> <td> MODIFIER	</td> <td> Usually non-coding variants or variants affecting non-coding genes, where predictions are difficult or there is no evidence of impact. </td> <td> exon_variant, downstream_gene_variant </td></tr> 
-				</table>
-				</center>
-				</p>
-				<br>
-				<p> <h3> Loss of function and nonsense-mediated decay predictions </h3>
-				Loss of function ('LOF') and nonsense-mediated decay ('NMD') predictions can be activated by using <code>-lof</code> command line option.
-				Some details on how these variants work, can be found in <a class="body" href="snpEff_lof_nmd.pdf">these slides </a>
-				<br>
-				<br>
-				Analyze if a set of effects are can create a "Loss Of Function" and "Nonsense mediated decays" effects.
-				<br>
-				Needless to say, this is a prediction based on analysis of groups of "putative effects". Proper wet-lab validation is required to infer "real" LOF. 
-				<br>
-				<br>
-				<b>References:</b> I used the LOF definition used in the following paper <a href="http://www.sciencemag.org/content/335/6070/823.abstract">"A Systematic Survey of Loss-of-Function Variants in Human Protein-Coding Genes"</a>.
-				<br>
-				<br>
-				From the paper: <i>
-						We adopted a definition for LoF variants
-						expected to correlate with complete loss of function 
-						of the affected transcripts: stop codon-introducing 
-						(nonsense) or splice site-disrupting single-nucleotide 
-						variants (SNVs), insertion/deletion (indel) variants 
-						predicted to disrupt a transcript's reading frame, or 
-						larger deletions removing either the first exon or more 
-						than 50% of the protein-coding sequence of the affected 
-						transcript.
-
-						Both nonsense SNVs and frameshift indels are enriched toward the 3' end
-						of the affected gene, consistent with a greater tolerance to truncation 
-						close to the end of the coding sequence; putative LoF variants
-						identified in the last 5% of the coding region were thus systematically 
-						removed from our high-confidence set.
-						</i>
-				<br>
-				<br>
-				Other parameters used for LOF/NMD calculations:
-				<ul>
-					<li> Number of bases before last exon-exon junction that nonsense mediated decay is supposed to occur: 50
-					<li> It is assumed that even with a protein coding change at the last 5% of the protein, the protein could still be functional.
-					<li> It is assumed that even with a protein coding change at the first 5% of the protein: "..suggesting some disrupted transcripts are rescued by transcriptional reinitiation at an alternative start codon."
-					<li> Larger deletions removing either the first exon or more than 50% of the protein-coding sequence of the affected transcript
-				</ul>
-
-				<br>
-				<br>
-				Usage example:
-<pre>
-java –Xmx4g -jar snpEff.jar –v \
-	-lof \
-	GRCh37.68 \
-	file.vcf.gz > file.eff.vcf
-</pre>
-
-				SnpEff adds 'LOF' and 'NMD' tags to INFO fields (column 8 in VCF format).  LOF and NMD tags have the following format:
-<pre>
-Gene | ID | num_transcripts | percent_affected
-</pre>
-				Where:
-				<table class="table table-striped">
-					<tr> <th> Field            </th><th> Description </th> </tr>
-					<tr> <td> Gene             </td><td> Gene name </td> </tr>
-					<tr> <td> ID               </td><td> Gene ID (usually ENSEMBL) </td> </tr>
-					<tr> <td> Num_transcripts  </td><td> Number of transcripts in this gene </td> </tr>
-					<tr> <td> percent_affected </td><td> Percentage of transcripts affected by this variant. </td> </tr>
-				</table>
-
-				<br>
-				Example: If we have this effect
-<pre>
-EFF=…, SPLICE_SITE_DONOR(HIGH||||639|ILDR2|protein_coding|CODING|ENST00000271417|1)
-</pre>
-
-				and the corresponding LOF tag is
-<pre>
-LOF=ILDR2|ENSG00000143195|7|1.00
-</pre>
-
-				The meaning of the LOF tag is:
-				<table class="table table-striped">
-					<tr> <th> Field            </th><th> Description </th> </tr>
-					<tr> <td> Gene             </td><td> ILDR2 </td> </tr>
-					<tr> <td> ID               </td><td> ENSG00000143195 </td> </tr>
-					<tr> <td> Num_transcripts  </td><td> There are 7 transcripts in this gene </td> </tr>
-					<tr> <td> percent_affected </td><td> 100% of transcripts are affected by this variant. </td> </tr>
-				</table>
-				</p>
-
-				<h3> Troubleshooting Effect predictions </h3>
-
-				<p> <b> Chromosome not found </b>
-				<br>
-				<br>
-				<i class="icon-warning-sign"></i> This is by far the most common problem. 
-				It means that the input VCF file has chromosome names that do not match SnpEff's database and don't match reference genome either, since SnpEff's database are created using reference genome chromosome names.
-				<br>
-				<br>
-				The solution is simple: fix your VCF file to use standard chromosome names.
-				You can see which chromosome names are used by SnpEff simply by using the <code>-v</code> (verbose) command line option.
-				This shows all chromosome names and their respective lengths. Notice the last line ("Chromosomes names [sizes]"):
-<pre>
-$ java -Xmx4g eff -v GRCh37.70 test.1K.vcf 
-00:00:00.000    Reading configuration file 'snpEff.config'
-00:00:00.176    done
-00:00:00.176    Reading database for genome version 'GRCh37.70' from file '/home/pcingola//snpEff/data/GRCh37.70/snpEffectPredictor.bin' (this might take a 
-00:01:13.513    done
-00:01:13.555    Setting '-treatAllAsProteinCoding' to 'false'
-00:01:13.556    Building interval forest
-00:01:32.642    done.
-00:01:38.280    Genome stats :
-# Genome name                : 'Homo_sapiens'
-# Genome version             : 'GRCh37.70'
-# Has protein coding info    : true
-# Genes                      : 62069
-# Protein coding genes       : 22643
-# Transcripts                : 206046
-# Avg. transcripts per gene  : 3.32
-# Protein coding transcripts : 85685
-# Cds                        : 756629
-# Exons                      : 1262644
-# Exons with sequence        : 1262644
-# Exons without sequence     : 0
-# Avg. exons per transcript  : 6.13
-# Number of chromosomes      : 275
-# Chromosomes names [sizes]  : '1' [249250621] '2' [243199373] '3' [198022430] '4' [191154276] '5' [180915260] '6' [171115067] '7' [159138663] 'X' [155270560] '8' [146364022] '9' [141213431] '10' [135534747] '11' [135006516] '12' [133851895] '13' [115169878] '14' [107349540] '15' [102531392] '16' [90354753] '17' [81195210] '18' [78077248] '20' [63025520] 'Y' [59373566] '19' [59128983] '22' [51304566] '21' [48129895] 'HG1287_PATCH' [249889652]  'HG1292_PATCH' [249822337]  'HG1473_PATCH' [249272860]  'HG1471_PATCH' [249269426] ...
-...
-</pre>
-				</p>
-
-				<p> <b> Apparent inconsistencies when using UCSC genome browser </b>
-				<br>
-				<br>
-				<i class="icon-warning-sign"></i> <b>WARNING:</b> Usage of hg19 genome is deprecated and discouraged, you should use GRChXX.YY instead (e.g. the latest version at the time of writing is GRCh37.70)
-				<br>
-				<br>
-				Reference sequence and annotations are made for an organism version and sub-version. 
-				For examples human genome, version 37, sub-version 70 would be called (GRCh37.70).
-				<br>
-				UCSC doesn't specify sub-version. 
-				They just say hg19.
-				This annoying sub-version problem appeared often and, having reproducibility of results in mind, I dropped UCSC annotations in favor of ENSEMBL ones (they have clear versioning).
-				</p>
-
-				<p> <b> SnpEff reporting an effect that doesn't match ENSEMBL's web page </b>
-				<br>
-				<br>
-				Please remember that databases are updated often (e.g. by ENSEMBL), so if you are using an old database, you might get different effects.<br>
-				<br>
-				For example, this transcript ENST00000487462 changed from protein_coding in GRCh37.63 
-<pre>
-1       protein_coding  exon    1655388 1655458 .       -       .        gene_id "ENSG00000008128"; transcript_id "ENST00000487462"; exon_number "1"; gene_name "CDK11A"; transcript_name "CDK11A-013";
-1       protein_coding  exon    1653905 1654270 .       -       .        gene_id "ENSG00000008128"; transcript_id "ENST00000487462"; exon_number "2"; gene_name "CDK11A"; transcript_name "CDK11A-013";
-</pre>
-...to processed_transcript in GRCh37.64:
-<pre>
-1       processed_transcript    exon    1655388 1655458 .       -       .        gene_id "ENSG00000008128"; transcript_id "ENST00000487462"; exon_number "1"; gene_name "CDK11A"; gene_biotype "protein_coding"; transcript_name "CDK11A-013";
-1       processed_transcript    exon    1653905 1654270 .       -       .        gene_id "ENSG00000008128"; transcript_id "ENST00000487462"; exon_number "2"; gene_name "CDK11A"; gene_biotype "protein_coding"; transcript_name "CDK11A-013";
-</pre>
-
-				This means that you'll get different results for this transcript using sub-version 63 or 64. I assume that latest versions are improved, so I always encourage to upgrade.
-				<br>
-				Sometimes it might even be the case that latest released database and the one shown on the web interface may be out of sync.
-				<br>
-				</p>
-
-				<p> <b> SnpEff reports a SYNONYMOUS and a NON_SYNONYMOUS effect on the same gene </b>
-				<br>
-				<br>
-				This is not a bug.
-				It is not uncommon for a gene to have more than one transcript (e.g. in human most genes have multiple transcripts). 
-				A variant (e.g. a SNP) might affect different transcripts in different ways, as a result of different reading frames.
-				<br>
-				For instance: 
-<pre>
-chr5 137622242 . C T . . EFF=NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Gaa/Aaa|E/K|CDC25C|protein_coding|CODING|ENST00000514017|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000323760|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000348983|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000356505|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000357274|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000415130|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000513970|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000514555|exon_5_137622186_137622319),
-                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000534892|exon_5_137622186_137622319)
-</pre>
-
-				in this example (it was divided into multiple lines for legibility), the first transcript ENST0000051401 has a NON_SYNONYMOUS effect, but all other transcripts have a SYNONYMOUS effect.
-				</p>
-        </section>
-
-
-        <!-- Non-coding
-        ================================================== -->
-        <section id="effNc">
-          <div class="page-header">
-            <h1>10. Non-coding &amp; Regulatory annotations</h1>
-          </div>
-				<p class="lead">
-				SnpEff can also provide non-coding and regulatory annotations.
-				Here we show how to annotate them.
-				</p>
-				<p>
-				<i class="icon-warning-sign"></i> Non-coding and regulatory annotations databases are available only for a few organisms (e.g. human, mouse, etc.).
-				We intend to incorporate more non-coding annotations as soon as public databases are available, but your organism of choice might not have a non-coding/regulatory database available.
-				</p>
-				<p>
-				First of all, you need to see if your organism has a regulatory database.
-				You can just look into the database directory to see if <code>regulation_*.bin</code> files are there.
-				For instance, for human genome:
-<pre>
-$ cd ~/snpEff
-$ cd data/GRCh37.70/
-$ ls -al
-total 2399156
-drwxr-xr-x    2 pcingola pcingola       4096 Feb 11 22:01 .
-drwxr-xr-x 2472 pcingola pcingola     122880 Feb 11 19:55 ..
--rw-r--r--    1 pcingola pcingola    6292802 Feb 11 22:01 regulation_CD4.bin
--rw-r--r--    1 pcingola pcingola    2474396 Feb 11 22:01 regulation_GM06990.bin
--rw-r--r--    1 pcingola pcingola    7924641 Feb 11 22:00 regulation_GM12878.bin
--rw-r--r--    1 pcingola pcingola    6212489 Feb 11 22:01 regulation_H1ESC.bin
--rw-r--r--    1 pcingola pcingola    5152384 Feb 11 22:00 regulation_HeLa-S3.bin
--rw-r--r--    1 pcingola pcingola    7392256 Feb 11 22:01 regulation_HepG2.bin
--rw-r--r--    1 pcingola pcingola    3991817 Feb 11 22:01 regulation_HMEC.bin
--rw-r--r--    1 pcingola pcingola    4562241 Feb 11 22:01 regulation_HSMM.bin
--rw-r--r--    1 pcingola pcingola    5550176 Feb 11 22:01 regulation_HUVEC.bin
--rw-r--r--    1 pcingola pcingola    5528240 Feb 11 22:01 regulation_IMR90.bin
--rw-r--r--    1 pcingola pcingola     534786 Feb 11 22:01 regulation_K562b.bin
--rw-r--r--    1 pcingola pcingola    8371354 Feb 11 22:01 regulation_K562.bin
--rw-r--r--    1 pcingola pcingola    3063189 Feb 11 22:01 regulation_NH-A.bin
--rw-r--r--    1 pcingola pcingola    5621629 Feb 11 22:00 regulation_NHEK.bin
--rw-r--r--    1 pcingola pcingola   89937614 Feb 11 21:57 snpEffectPredictor.bin
-</pre>
-
-				So we can annotate using any of those tracks.
-				<br>
-				E.g. To use 'HeLa-S3' and 'NHEK' tracks, you can run:
-<pre>
-java -Xmx4g -jar snpEff.jar eff -reg HeLa-S3 -reg NHEK GRCh37.70 in.vcf > out.vcf
-</pre>
-				<br>
-				<i class="icon-hand-right"></i> You can use <code>-onlyReg</code> command line option to perform only regulatory annotations (i.e. coding annotations will be omitted).
-				</p>
-        </section>
-
-        <!-- Options
-        ================================================== -->
-        <section id="filters">
-          <div class="page-header">
-            <h1>11. Annotations options </h1>
-          </div>
-				<p class="lead">
-				We describe how to change some defaults and filter input and outputs to narrow down the number of results.
-				</p>
 
 				<h3>Speed up options: Multithreaded &amp; No statistics </h3>
 				<p>
@@ -1470,11 +582,10 @@ java -Xmx4g -jar snpEff.jar eff -reg HeLa-S3 -reg NHEK GRCh37.70 in.vcf > out.vc
 				</ul>
 				</p>
 
-				<h3>HGVS notation</h3>
+				<h3>HGVS /Classic notation</h3>
 				<p>
-				SnpEff partially implements <a href="http://www.hgvs.org/">HGVS notation</a>, which is somewhat popular amongst clinicians.
-				You can activate HGVS notation using the command line option <code>-hgvs</code>.
-				When activated, the "AA" sub-field in the EFF field (VCF file, INFO column) will be written in HGVS notation.
+				SnpEff uses <a href="http://www.hgvs.org/">HGVS notation</a>, which is somewhat popular amongst clinicians.
+				You can de-activate HGVS notation (to use the old annotation style) using the command line option <code>-classic</code>.
 				</p>
 
 				<h3>Logging</h3>
@@ -1640,12 +751,541 @@ $ java -Xmx4g -jar snpEff.jar -geneId GRCh37.66 test.vcf
 				</p>
         </section>
 
+        <!-- Input & Output files
+        ================================================== -->
+        <section id="input">
+          <div class="page-header">
+            <h1>4. Input &amp; Output files </h1>
+          </div>
+				<p class="lead"> 
+				Files used as input to SnpEff must comply with standard formats.
+				Here we describe supported input data formats.
+				</p>
+
+				<p><h3>Streaming files</h3>
+				<i class="icon-hand-right"></i> You can use "-" as input file name to spedicfy <b>STDIN</b>. As of version 4.0 onwards STDIN is the default, so using no name at all, also means 'STDIN'.
+				<br>
+				For example, you can easily stream files like this:
+				<br>
+				<br>
+<pre>
+# These three commands are the same
+
+# Using STDIN (pipe), implicit (no input file name)
+cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 > file.eff.vcf
+
+# Using STDIN (pipe), exlicit '-' input file name
+cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 - > file.eff.vcf
+
+# Using explicid file name
+java -Xmx4g -jar snpEff.jar hg19 file.vcf > file.eff.vcf
+
+</pre>
+
+				<p><h3>VCF files</h3>
+				As we mentioned before, <a class="body"class="body" href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">Variant Call Format (VCF)</a> is the recomended format for input files.
+				This is the format used by the "1000 Genomes Project", and is currently considered the de-facto standard for genomic variants.
+				It is also the default format used in SnpEff.
+				<br>
+				In a nutshell, VCF format is tab-separated text file having the following columns:
+
+				<ol>
+					<li> Chromosome name
+					<li> Position
+					<li> Variant's ID
+					<li> Reference genome
+					<li> Alternative (i.e. variant)
+					<li> Quality score
+					<li> Filter (whether or not the variant passed quality filters)
+					<li> INFO : Generic information about this variant. SnpEff adds annotation information in this column.
+				</ol>
+
+				Here is an example of a few lines in a VCF file:
+<pre>
+#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                    
+20     14370   rs6054257 G      A       29   PASS   NS=3;DP=14;AF=0.5;DB;H2
+20     17330   .         T      A       3    q10    NS=3;DP=11;AF=0.017   
+</pre>
+				Note that the first line is header information. Header lines start with '#'
+				<br>
+				<br>
+				<h3>VCF output</h3>
+				As we mentioned in the previous chapter, VCF is SnpEff's default input and output format.
+				It is highly recommended to use VCF as input and output format, since it is a standard format that can be also used by other tools and software packages.
+				Thus VCF makes it much easier to integrate genomic data processing pipelines.
+				<br>
+				SnpEff adds annotation information to the INFO field of a VCF file.
+				The INFO field is the eight column of a VCF file, see previous section for a quick example or take a look at the <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">VCF specification</a> for details.
+				<br>
+				<br>
+				Here is an example of a file before and after being annotated using SnpEff:
+				<br>
+				VCF file before annotations
+<pre>
+#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                    
+:w
+1	889455	.	G	A	100.0	PASS	AF=0.0005
+1	897062	.	C	T	100.0	PASS	AF=0.0005
+</pre>
+
+				VCF file after being annotated using SnpEff
+<pre>
+#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                    
+1	889455	.	G	A	100.0	PASS	AF=0.0005;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q236*|749|NOC2L||CODING|NM_015658|)
+1	897062	.	C	T	100.0	PASS	AF=0.0005;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*|642|KLHL17||CODING|NM_198317|)
+</pre>
+				A you can see, SnpEff added an 'EFF' tag to the INFO field (eigth column).
+
+				<h3>VCF Header lines </h3>
+				SnpEff updates the header of the VCF file to reflect additional fields.
+				This is required by the VCF specification.
+				SnpEff also adds the command line options used to annotate the file as well as SnpEff's version, so you can keep track of what exactly was done.
+				<br>
+				<br>
+				Here is an example of some header lines added to an annotated file:
+<pre>
+##SnpEffVersion="SnpEff 3.1m (build 2013-02-08)"
+##SnpEffCmd="SnpEff  hg19 demo.1kg.vcf "
+##INFO=&lt;ID=EFF,Number=.,Type=String,Description="Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Amino_Acid_length | Gene_Name | Gene_BioType | Coding | Transcript | Exon [ | ERRORS | WARNINGS ] )' \"&gt;
+</pre>
+				</p>
+
+
+				<h3>EFF field (VCF output files)</h3>
+				Effects information is added to the INFO field using an 'EFF' tag. 
+				<br>
+				<br>
+				Notes:
+				<ul>
+					<li> As of version 4.0, the default output uses Sequence Ontology for 'Effect' names. You can output "old" style effect names by using the <code>-classic</code> command line option.
+					<li> When multiple effects are available, they are sorted first by "Effect_Impact", then by "Effect" and finally by "marker's genomic coordinates" (e.g. affected transcript's genomic coordinates).
+					<li> Staring from version 4.0, SnpEff outputs HGVS notation in the 'AA' sub-field by default.
+				</ul>
+				<br>
+				<br>
+				There can be multiple effects separated by comma. The format for each effect is:
+<pre>
+EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_Length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )
+</pre>
+
+				<center>
+				<table class="table table-striped">
+					<tr> <th>  EFF Sub-field </th> <th>  Meaning </th> </tr>
+					<tr> <td>  Effect </td> <td>  Effect of this variant. See details <a class="body" href="#eff">here</a>. </td> </tr>
+					<tr> <td>  Effect impact </td> <td>  Effect impact {High, Moderate, Low, Modifier}. See details <a class="body" href="#eff">here</a>. </td> </tr>
+					<tr> <td>  Functional Class </td> <td>  Functional class {NONE, SILENT, MISSENSE, NONSENSE}. </td> </tr>
+					<tr> <td>  Codon_Change / Distance </td> <td>  Codon change: old_codon/new_codon OR distance to transcript (in case of upstream / downstream) </td> </tr>
+					<tr> <td>  Amino_Acid_Change </td> <td>  Amino acid change: old_AA AA_position/new_AA (e.g. 'E30K') </td> </tr>
+					<tr> <td>  Amino_Acid_Length</td> <td>  Length of protein in amino acids (actually, transcription length divided by 3). </td> </tr>
+					<tr> <td>  Gene_Name </td> <td>  Gene name </td> </tr>
+					<tr> <td>  Transcript_BioType </td> <td>  Transcript bioType, if available. </td> </tr>
+					<tr> <td>  Gene_Coding </td> <td>  [CODING | NON_CODING]. This field is 'CODING' if any transcript of the gene is marked as protein coding. </td> </tr>
+					<tr> <td>  Transcript_ID </td> <td>  Transcript ID (usually ENSEMBL IDs) </td> </tr>
+					<tr> <td>  Exon/Intron Rank </td> <td>  Exon rank or Intron rank (e.g. '1' for the first exon, '2' for the second exon, etc.) </td> </tr>
+					<tr> <td>  Genotype_Number </td> <td>  Genotype number corresponding to this effect (e.g. '2' if the effect corresponds to the second ALT) </td> </tr>
+					<tr> <td>  Warnings / Errors </td> <td>  Any warnings or errors (not shown if empty). </td> </tr>
+				</table>
+				</center>
+				<br> 
+				<h3>Multiple effects per VCF line</h3>
+				Usually there is more than one effect reported in each EFF field.
+				<br>
+				There are several reasons for this:
+				<ul>
+					<li> A variant can affect multiple genes. E.g a variant can be DOWNSTREAM from one gene and UPSTREAM from another gene.
+					<li> In complex organisms, genes usually have multiple transcripts. So SnpEff reports the effect of a variant on each transcript.
+					<li> A VCF line can have more then one variant. 
+						 For instance if reference genome is 'G', but the sample has either 'A' or 'T', then this will be reported as one line, having multiple alternative variants. 
+						 E.g.: 
+<pre>
+#CHROM  POS       ID   REF  ALT      QUAL  FILTER  INFO                    
+1       889455    .    G    A,T      .     .       AF=0.0005
+</pre>
+						In this case SnpEff will report the effect of each variant on each gene and each transcript.
+				</ul>
+				</p>
+
+            	<h3>Effect prediction details</h3>
+				<p class="lead">
+				Detailed desription of the effect predicted by SnpEff in the <code>Effect</code> and <code>Effect_Impact</code> sub-fields.
+				</p>
+				Notes:
+				<ul>
+					<li> <b> Effect (Sequence Ontology) </b>
+					Sequence ontology (<a href="http://www.sequenceontology.org/">SO</a>) allows to standardize terminology used for assessing sequence changes and impact. 
+					This allows for a common language across all variant annotation programs and makes it easier to communicate using a uniform terminology.
+					Starting from version 4.0 VCF output uses SO terms by default.
+					<br>
+					<li> <b> Effect (Classic)</b> This are the "classic" effect names usd by SnpEff, these can be accessed using the <code>-classic</code> command line option.
+					<br>
+					<li><b>Effect impact</b>
+					Effects are categorized by 'impact': {High, Moderate, Low, Modifier}. 
+					This are pre-defined categories to help users find more significant variants.
+					<br>
+					<br>
+					<i class="icon-warning-sign"></i> Impact categories must be used with care, they were created only to help and simplify the filtering process. 
+					Obviously, there is no way to predict whether a "high impact" or a "low impact" variant is the one producing a phenotype of interest.
+					<br>
+					<br>
+				</ul>
+				Here is a list of effects and some brief explanations:
+				<br>
+				<br>
+
+				<center>
+				<table class="table table-striped">
+					<tr> <th> Effect<br>Seq. Ontology </th><th> Effect<br>Classic </th><th> Note &amp; Example </th><th>Impact</th> </tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001580"> coding_sequence_variant </a>  </td><td> CDS  </td><td> The variant hits a CDS. </td> <td> MODIFIER </td></tr> 
+					<tr> <td> chromosome  </td><td> CHROMOSOME_LARGE DELETION  </td><td> A large parte (over 1%) of the chromosome was deleted. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001580"> coding_sequence_variant </a>  </td><td> CODON_CHANGE  </td><td> One or many codons are changed <br>e.g.:  An MNP of size multiple of 3 </td> <td> MODERATE </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001821"> inframe_insertion </a>  </td><td> CODON_INSERTION  </td><td> One or many codons are inserted <br>e.g.:  An insert multiple of three in a codon boundary </td> <td> MODERATE </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001824"> disruptive_inframe_insertion</a>  </td><td> CODON_CHANGE_PLUS CODON_INSERTION  </td><td> One codon is changed and one or many codons are inserted <br>e.g.:  An insert of size multiple of three, not at codon boundary </td> <td> MODERATE </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001822"> inframe_deletion </a>  </td><td> CODON_DELETION  </td><td> One or many codons are deleted <br>e.g.:  A deletion multiple of three at codon boundary </td> <td> MODERATE </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001826"> disruptive_inframe_deletion </a>  </td><td> CODON_CHANGE_PLUS CODON_DELETION  </td><td> One codon is changed and one or more codons are deleted <br>e.g.:  A deletion of size multiple of three, not at codon boundary </td> <td> MODERATE </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001632"> downstream_gene_variant </a>  </td><td> DOWNSTREAM  </td><td> Downstream of a gene (default length: 5K bases) </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001791"> exon_variant </a>  </td><td> EXON  </td><td> The vairant hits an exon. </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572"> exon_loss_variant </a>  </td><td> EXON_DELETED  </td><td> A deletion removes the whole exon. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001589"> frameshift_variant </a>  </td><td> FRAME_SHIFT  </td><td> Insertion or deletion causes a frame shift <br>e.g.:  An indel size is not multple of 3 </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001564"> gene_variant </a>  </td><td> GENE  </td><td> The variant hits a gene. </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0000605"> intergenic_region</a> </td><td> INTERGENIC </td><td> The variant is in an intergenic region </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002017"> conserved_intergenic_variant</a> </td><td> INTERGENIC_CONSERVED </td><td> The variant is in a highly conserved intergenic region </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002011"> intragenic_variant</a> </td><td> INTRAGENIC </td><td> The variant hits a gene, but no transcripts within the gene</td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001627"> intron_variant </a>  </td><td> INTRON  </td><td> Variant hits and intron. Technically, hits no exon in the transcript. </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002018"> conserved_intron_variant </a>  </td><td> INTRON_CONSERVED  </td><td> The variant is in a highly conserved intronic region </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0000276"> miRNA </a>  </td><td> MICRO_RNA  </td><td> Variant affects an miRNA </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001583"> missense_variant </a>  </td><td> NON_SYNONYMOUS_CODING  </td><td> Variant causes a codon that produces a different amino acid <br>e.g.:  Tgg/Cgg, W/R </td> <td> MODERATE </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001582"> initiator_codon_variant </a>  </td><td> NON_SYNONYMOUS_START  </td><td> Variant causes start codon to be mutated into another start codon (the new codon produces a different AA). <br>e.g.: Atg/Ctg, M/L (ATG and CTG can be START codons) </td> <td> LOW </td> </tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001567"> stop_retained_variant </a>  </td><td> NON_SYNONYMOUS_STOP  </td><td> Variant causes stop codon to be mutated into another stop codon (the new codon produces a different AA). <br>e.g.: Atg/Ctg, M/L (ATG and CTG can be START codons) </td> <td> LOW </td> </tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002008">rare_amino_acid_variant</a> </td><td> RARE_AMINO_ACID </td><td> The variant hits a rare amino acid thus is likely to produce protein loss of function </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001574"> splice_acceptor_variant </a>  </td><td> SPLICE_SITE_ACCEPTOR  </td><td> The variant hits a splice acceptor site (defined as two bases before exon start, except for the first exon). </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001575"> splice_donor_variant </a>  </td><td> SPLICE_SITE_DONOR  </td><td> The variant hits a Splice donor site (defined as two bases after coding exon end, except for the last exon). </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630"> splice_region_variant </a>  </td><td> SPLICE_SITE_REGION  </td><td> A sequence variant in which a change has occurred within the region of the splice site, either within 1-3 bases of the exon or 3-8 bases of the intron.</td> <td> LOW </td> </tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630"> splice_region_variant </a>  </td><td> SPLICE_SITE_BRANCH  </td><td> A varaint affective putative (Lariat) branch point, located in the intron.</td> <td> LOW </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630"> splice_region_variant </a>  </td><td> SPLICE_SITE_BRANCH_U12  </td><td> A varaint affective putative (Lariat) branch point from U12 splicing machinery, located in the intron.</td> <td> MODERATE </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001578"> stop_lost </a>  </td><td> STOP_LOST  </td><td> Variant causes stop codon to be mutated into a non-stop codon <br>e.g.: Tga/Cga, */R </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001988"> 5_prime_UTR_premature start_codon_gain_variant </a>  </td><td> START_GAINED  </td><td> A variant in 5'UTR region produces a three base sequence that can be a START codon. </td> <td> LOW </td> </tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002012"> start_lost</a> </td><td> START_LOST   </td><td> Variant causes start codon to be mutated into a non-start codon. <br> e.g.: aTg/aGg, M/R </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001587"> stop_gained </a>  </td><td> STOP_GAINED  </td><td> Variant causes a STOP codon <br>e.g.: Cag/Tag, Q/* </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001819"> synonymous_variant </a>  </td><td> SYNONYMOUS_CODING  </td><td> Variant causes a codon that produces the same amino acid <br>e.g.:  Ttg/Ctg, L/L </td> <td> LOW </td> </tr> 
+					<tr> <td> <a href=""> start_retained </a>  </td><td> SYNONYMOUS_START  </td><td> Variant causes start codon to be mutated into another start codon. <br>e.g.:  Ttg/Ctg, L/L (TTG and CTG can be START codons) </td> <td> LOW </td> </tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001567"> stop_retained_variant </a>  </td><td> SYNONYMOUS_STOP  </td><td> Variant causes stop codon to be mutated into another stop codon. <br>e.g.: taA/taG, */* </td> <td> LOW </td> </tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001576"> transcript_variant </a>  </td><td> TRANSCRIPT  </td><td> The variant hits a transcript. </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001566"> regulatory_region_variant </a>  </td><td> REGULATION  </td><td> The variant hits a known regulatory feature (non-coding). </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001631"> upstream_gene_variant </a>  </td><td> UPSTREAM  </td><td> Upstream of a gene (default length: 5K bases) </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001624"> 3_prime_UTR_variant </a>  </td><td> UTR_3_PRIME  </td><td> Variant hits 3'UTR region </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002015"> 3_prime_UTR_truncation</a> + <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572"> exon_loss </a>  </td><td> UTR_3_DELETED  </td><td> The variant deletes an exon which is in the 3'UTR of the transcript </td> <td> MODERATE </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001623"> 5_prime_UTR_variant </a>  </td><td> UTR_5_PRIME  </td><td> Variant hits 5'UTR region </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002013"> 5_prime_UTR_truncation</a> + <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572">exon_loss_variant</a> </td><td> UTR_5_DELETED  </td><td> The variant deletes an exon which is in the 5'UTR of the transcript </td> <td> MODERATE </td></tr> 
+				</table> 
+				</center>
+
+				<br>
+				<p> <b>Details about Rare amino acid effect </b>
+				<br>
+				<br>
+				These are amino acids that occurs very rarely in an organism.
+				For instance, humans are supposed to use 20 amino acids, but
+				there is also one rare AA. Selenocysteine, single letter
+				code 'U', appears roughly 100 times in the whole genome.
+				The amino acid is so rare that usually it does not appear 
+				in codon translation tables. It is encoded as UGA, which usually 
+				means a STOP codon. Secondary RNA 
+				structures are assumed to enable this special translation.
+				<br>
+				<br>
+				A variant in one of these sites is likely to cause a loss of 
+				function in the protein. E.g. in case of a Selenocysteine, a 
+				loss of a selenium molecule is likely to cause loss of function.
+				Put it simply, the assumption is that there is a great deal of trouble 
+				to get that non-standard amino acid there, so it must be important.
+				RARE_AMINO_ACID mark is used to show that special attention should 
+				be paid in these cases.
+				<br>
+				<br>
+				<i class="icon-warning-sign"></i> When the variant hits a RARE_AMINO_ACID mark, it is likely that 
+				the 'old_AA/new_AA' field will be incorrect. This may happen because 
+				the amino acid is not predictable using a codon table. 
+				<br>
+				<p> <h3> Impact prediction </h3>
+				SnpEff reports putative variant impact in order to make it easier quickly to categorize and prioritize variants.
+				<br>
+				<br>
+				<i class="icon-warning-sign"></i> Impact categories must be used with care, they were created only to help and simplify the filtering process. 
+				Obviously, there is no way to predict whether a <code>HIGH</code> impact or a <code>LOW</code> impact variant is the one producing a phenotype of interest.
+				<br>
+				<br>
+				<center>
+				<table class="table table-striped">
+					<tr> <th> Impact </th><th> Meaning </th> <th> Example </th> </tr> 
+					<tr> <td> HIGH		</td> <td> The variant is assumed to have high (disruptive) impact in the protein, probably causing protein truncation, loss of function or triggering nonsense mediated decay. </td> <td> stop_gained, frameshift_variant </td></tr> 
+					<tr> <td> MODERATE	</td> <td> A non-disruptive variant that might change protein effectiveness. </td> <td> missense_variant, inframe_deletion </td></tr> 
+					<tr> <td> LOW		</td> <td> Assumed to be mostly harmless or unlikely to change protein behavior. </td> <td> synonymous_variant </td></tr> 
+					<tr> <td> MODIFIER	</td> <td> Usually non-coding variants or variants affecting non-coding genes, where predictions are difficult or there is no evidence of impact. </td> <td> exon_variant, downstream_gene_variant </td></tr> 
+				</table>
+				</center>
+				<br>
+				<h3> Loss of function (LOF) and nonsense-mediated decay (NMD) predictions </h3>
+				Loss of function ('LOF') and nonsense-mediated decay ('NMD') predictions can be activated by using <code>-lof</code> command line option.
+				Some details on how these variants work, can be found in <a class="body" href="snpEff_lof_nmd.pdf">these slides </a>
+				<br>
+				<br>
+				<i class="icon-hand-right"></i> Starting from version 4.0, this optin is activated by default.
+				<br>
+				<br>
+				Analyze if a set of effects are can create a "Loss Of Function" and "Nonsense mediated decays" effects.
+				<br>
+				Needless to say, this is a prediction based on analysis of groups of "putative effects". Proper wet-lab validation is required to infer "real" LOF. 
+				<br>
+				<br>
+				<b>References:</b> I used the LOF definition used in the following paper <a href="http://www.sciencemag.org/content/335/6070/823.abstract">"A Systematic Survey of Loss-of-Function Variants in Human Protein-Coding Genes"</a>.
+				<br>
+				<br>
+				From the paper: <i>
+						We adopted a definition for LoF variants
+						expected to correlate with complete loss of function 
+						of the affected transcripts: stop codon-introducing 
+						(nonsense) or splice site-disrupting single-nucleotide 
+						variants (SNVs), insertion/deletion (indel) variants 
+						predicted to disrupt a transcript's reading frame, or 
+						larger deletions removing either the first exon or more 
+						than 50% of the protein-coding sequence of the affected 
+						transcript.
+
+						Both nonsense SNVs and frameshift indels are enriched toward the 3' end
+						of the affected gene, consistent with a greater tolerance to truncation 
+						close to the end of the coding sequence; putative LoF variants
+						identified in the last 5% of the coding region were thus systematically 
+						removed from our high-confidence set.
+						</i>
+				<br>
+				<br>
+				Other parameters used for LOF/NMD calculations:
+				<ul>
+					<li> Number of bases before last exon-exon junction that nonsense mediated decay is supposed to occur: 50
+					<li> It is assumed that even with a protein coding change at the last 5% of the protein, the protein could still be functional.
+					<li> It is assumed that even with a protein coding change at the first 5% of the protein: "..suggesting some disrupted transcripts are rescued by transcriptional reinitiation at an alternative start codon."
+					<li> Larger deletions removing either the first exon or more than 50% of the protein-coding sequence of the affected transcript
+				</ul>
+
+				<br>
+				<br>
+				Usage example:
+<pre>
+# Note: Form version 4.0 onwards, the '-lof' command line option is not needed
+java –Xmx4g -jar snpEff.jar –v \
+	-lof \
+	GRCh37.68 \
+	file.vcf.gz > file.eff.vcf
+</pre>
+
+				SnpEff adds 'LOF' and 'NMD' tags to INFO fields (column 8 in VCF format).  LOF and NMD tags have the following format:
+<pre>
+Gene | ID | num_transcripts | percent_affected
+</pre>
+				Where:
+				<table class="table table-striped">
+					<tr> <th> Field            </th><th> Description </th> </tr>
+					<tr> <td> Gene             </td><td> Gene name </td> </tr>
+					<tr> <td> ID               </td><td> Gene ID (usually ENSEMBL) </td> </tr>
+					<tr> <td> Num_transcripts  </td><td> Number of transcripts in this gene </td> </tr>
+					<tr> <td> percent_affected </td><td> Percentage of transcripts affected by this variant. </td> </tr>
+				</table>
+
+				<br>
+				Example: If we have this effect
+<pre>
+EFF=…, SPLICE_SITE_DONOR(HIGH||||639|ILDR2|protein_coding|CODING|ENST00000271417|1)
+</pre>
+
+				and the corresponding LOF tag is
+<pre>
+LOF=ILDR2|ENSG00000143195|7|1.00
+</pre>
+
+				The meaning of the LOF tag is:
+				<table class="table table-striped">
+					<tr> <th> Field            </th><th> Description </th> </tr>
+					<tr> <td> Gene             </td><td> ILDR2 </td> </tr>
+					<tr> <td> ID               </td><td> ENSG00000143195 </td> </tr>
+					<tr> <td> Num_transcripts  </td><td> There are 7 transcripts in this gene </td> </tr>
+					<tr> <td> percent_affected </td><td> 100% of transcripts are affected by this variant. </td> </tr>
+				</table>
+				<br>
+				<h3>Errors and Warnings </h3>
+				<br>
+				As mentioned int the previous section, the last sub-field in EFF field shows errors or warnings (if any).
+				Here is a description of the errors and warnings:
+				<center>
+				<table class="table table-striped">
+					<tr> <th>  Error </th> <th>  Meaning and possible solutions</th> </tr>
+					<tr> <td> ERROR_CHROMOSOME_NOT_FOUND </td> 
+						<td>
+							Chromosome does not exits in reference database. 
+							Typically this means that there is a mismatch between the chromosome names in your input file and the chromosome names used in the reference genome to build SnpEff's database. 
+							<br>
+							<br>
+							<b>Warning:</b> This could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment.
+							Obviously doing this makes no sense and the annotation information you'll get will be garbage.
+							That's why SnpEff shows you an error message.
+							<br>
+							<br>
+							<b>Possible solution:</b> Sometime SnpEff database matches the reference genome for your organism, and it's just that the chromosome names are changed.
+							You can fix this by changing the input file.
+							<br>
+							You can see chromosome names used by SnpEff by using <code>-v</code> (verbose) option. 
+							SnpEff will show a line like this one:
+							<pre># Chromosomes names [sizes]  : '1' [249250621] '2' [243199373] ...</pre>
+							Then you can modify your input file chromosome names to match the database (e.g. using <code>sed</code> unix command).
+						</td> 
+					</tr>
+					<tr> <td> ERROR_OUT_OF_CHROMOSOME_RANGE </td> 
+						<td> 
+							This means that the position is higher than chromosome's length. 
+							Probably an indicator that your data is not from this reference genome. 
+						</td> 
+					</tr>
+					<tr> <td> ERROR_OUT_OF_EXON </td> <td> Exonic information not matching the coordinates. Indicates a problem (or even a bug?) in the database </td> </tr>
+					<tr> <td> ERROR_MISSING_CDS_SEQUENCE </td> <td> Transcript has no CDS info. Indicates a problem (or even a bug?) in the database </td> </tr>
+				</table>
+
+				<table class="table table-striped">
+					<tr> <th>  Warning </th> <th>  Meaning and possible solutions</th> </tr>
+					<tr> <td> WARNING_REF_DOES_NOT_MATCH_GENOME </td> 
+						<td> 
+						This means that the REF field does not match the reference genome.
+						<br> 
+						<br> 
+						<i class="icon-warning-sign"></i> This warning probably indicated there is something really wrong with your data!
+						<br> 
+						<br> 
+						This happens when your data was aligned to a different reference genome than the one used to create SnpEff's database.
+						If there are many of these warnings, it's a strong indicator that the data doesn't match and all the annotations will be garbage (because you are using the wrong database).
+						<br> 
+						<br> 
+						<b>Solution:</b> Use the right database to annotate!
+						<br> 
+						<br> 
+						<i class="icon-hand-right"></i> Due to performance and memory optimizations, SnpEff only checks reference sequence on Exons.
+						</td> 
+					</tr>
+					<tr> <td> WARNING_SEQUENCE_NOT_AVAILABLE </td> <td> For some reason the exon sequence is not available, so we cannot calculate effects.</td> </tr>
+					<tr> <td> WARNING_TRANSCRIPT_INCOMPLETE</td> 
+						<td> 
+						A protein coding transcript whose length is non-multiple of 3. 
+						This means that information is missing for one or more amino acids.
+						<br>
+						This is usually due to errors in the genomic information (e.g. the genomic databases provided by UCSC or ENSEMBL).
+						Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.
+						</td> 
+					</tr>
+					<tr> <td> WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS </td> 
+						<td> 
+						A protein coding transcript has two or more STOP codons in the middle of the coding sequence (CDS).
+						This should not happen and it usually means the genomic information may have an error in this transcript.
+						<br>
+						This is usually due to errors in the genomic information (e.g. the genomic databases provided by UCSC or ENSEMBL).
+						Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.
+						</td> 
+					</tr>
+					<tr> <td> WARNING_TRANSCRIPT_NO_START_CODON </td>
+						<td> 
+						A protein coding transcript does not have a proper START codon.
+						It is rare that a real transcript does not have a START codon, so this probably indicates errors in genomic information for this transcript (e.g. the genomic databases provided by UCSC or ENSEMBL).
+						<br>
+						Genomic information databases are constantly being improved and are getting more accurate, but some errors still remain.
+						</td> 
+					</tr>
+				</table>
+				</center>
+				</p>
+				
+				<p><h3>BED files</h3>
+				In an enrichment experiment, such as ChIP-Seq, the results are enrichment regions, usually called "peaks".
+				It is common for "peak callers" (algorithms that detect enrichment), write the results in a BED file.
+				SnpEff can annotate BED files in order to facilitate interpretation of enrichment experiments.
+				<br>
+				<br>
+				<i class="icon-warning-sign"></i> Column fifth onwards are ignored when using BED file format and they will be lost in the output file.
+				<br>
+				<br>
+				SnpEff can annotate BED files in order to facilitate interpretation of enrichment experiments.
+				Annotations are added to the fourth column of the BED file.
+				<br>
+				E.g.: 
+<pre>
+$ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed 
+
+# SnpEff version 3.3 (build 2013-05-15), by Pablo Cingolani
+# Command line: SnpEff  -i bed BDGP5.69 /home/pcingola/fly_pvuseq/chipSeq/Sample_w1118_IP_w_5hmC/w1118_IP_w_5hmC_peaks.bed 
+# Chromo  Start     End       Name;Effect|Gene|BioType        Score
+2L        189463    190154    MACS_peak_1;Exon|exon_6_12_RETAINED|FBtr0078122|protein_coding|spen|protein_coding;Exon|exon_5_10_RETAINED|FBtr0078123|protein_coding|spen|protein_coding;Exon|exon_7_13_RETAINED|FBtr0306341|protein_coding|spen|protein_coding;Exon|exon_6_11_RETAINED|FBtr0078121|protein_coding|spen|protein_coding 245.41
+2L        195607    196120    MACS_peak_2;Exon|exon_6_12_RETAINED|FBtr0078122|protein_coding|spen|protein_coding;Exon|exon_5_10_RETAINED|FBtr0078123|protein_coding|spen|protein_coding;Exon|exon_7_13_RETAINED|FBtr0306341|protein_coding|spen|protein_coding;Exon|exon_6_11_RETAINED|FBtr0078121|protein_coding|spen|protein_coding 51.22
+2L        527253    527972    MACS_peak_3;Intron|intron_2_RETAINED-RETAINED|FBtr0078063|protein_coding|ush|protein_coding     55.97
+2L        711439    711764    MACS_peak_4;Intron|intron_1_RETAINED-RETAINED|FBtr0078045|protein_coding|ds|protein_coding      61.16
+2L        1365255   1365556   MACS_peak_5;Upstream|FBtr0077927|protein_coding|CG14346|protein_coding;Upstream|FBtr0077926|protein_coding|CG14346|protein_coding;Intergenic|NLaz...CG14346;Upstream|FBtr0077942|protein_coding|NLaz|protein_coding     62.78
+2L        1970199   1970405   MACS_peak_6;Upstream|FBtr0077813|protein_coding|Der-1|protein_coding;Intergenic|tRNA:CR31942...Der-1;Downstream|FBtr0077812|tRNA|tRNA:CR31942|tRNA      110.34
+2L        3345637   3346152   MACS_peak_7;Intron|intron_2_ALTTENATIVE_3SS-ALTTENATIVE_3SS|FBtr0089979|protein_coding|E23|protein_coding;Intron|intron_3_ALTTENATIVE_3SS-ALTTENATIVE_3SS|FBtr0089981|protein_coding|E23|protein_coding 65.49
+2L        4154734   4155027   MACS_peak_8;Intergenic|CG2955...Or24a;Downstream|FBtr0077468|protein_coding|CG2955|protein_coding       76.92
+2L        4643232   4643531   MACS_peak_9;Downstream|FBtr0110769|protein_coding|BG642163|protein_coding;Exon|exon_2_2_RETAINED|FBtr0300354|protein_coding|CG15635|protein_coding      76.92
+
+</pre>
+
+				When a peak intersects multiple transcripts or even multiple genes, each annotation is separated by a semicolon.
+				So if you look into the previous results in more detail, the fisrt line looks like this (format editted for readibility pourposes):
+<pre>
+2L  189463  190154  MACS_peak_1;Exon|exon_6_12_RETAINED|FBtr0078122|protein_coding|spen|protein_coding
+                               ;Exon|exon_5_10_RETAINED|FBtr0078123|protein_coding|spen|protein_coding
+                               ;Exon|exon_7_13_RETAINED|FBtr0306341|protein_coding|spen|protein_coding
+                               ;Exon|exon_6_11_RETAINED|FBtr0078121|protein_coding|spen|protein_coding
+</pre>
+				This peak is hitting four transcripts (FBtr0078122, FBtr0078123, FBtr0306341, FBtr0078121) in gene 'spen'.
+				</p>
+				<br>
+
+				<p><h3>Exon naming convention</h3>
+				The format for the exon identifier is <code>exon_Rank_Total_Type</code>, where:
+				<ul>
+					<li> <code>rank</code> is the exon rank in the transcript (position in the transcript)
+					<li> <code>total</code> is the total number of exons in that transcript
+					<li> <code>type</code> is the exon splice type.
+				</ul>
+				<br>
+				For instance <code>exon_5_10_RETAINED</code> would be the fifth exon in a 10 exon transcript. 
+				This exon is type "RETAINED", which means it is not spliced out.
+				<br>
+				<br>
+				Exons are categorized by splicing as follows:
+				<ul>
+					<li> <code>NONE</code> : Not spliced
+					<li> <code>RETAINED</code> : All transcripts have this exon
+					<li> <code>SKIPPED</code> : Some transcripts skip it
+					<li> <code>ALTTENATIVE_3SS</code> : Some transcripts have and alternative 3' exon start 
+					<li> <code>ALTTENATIVE_5SS</code> : Some transcripts have and alternative 5' exon end
+					<li> <code>MUTUALLY_EXCLUSIVE</code> : Mutually exclusive (respect to other exon)
+					<li> <code>ALTTENATIVE_PROMOMOTER</code> : The first exon is different in some transcripts.
+					<li> <code>ALTTENATIVE_POLY_A</code> : The last exon.
+				</ul>
+				See <a href="http://en.wikipedia.org/wiki/Alternative_splicing#Modes"> this Wikipedia</a> entry for more information on exon splice types.
+				</p>
+
+				<p><h3>Intron naming convention</h3>
+				Similarly to exons, introns are named as<code>intron_Rank_ExonTypeBefore-ExonTypeAfter</code>, where:
+				<ul>
+					<li> <code>Rank</code> :  the rank number for this inton in the transcript
+					<li> <code>ExonTypeBefore</code> :  the splicing type of the exon preceding this intron (see exon naming convention for details).
+					<li> <code>ExonTypeAfter</code> :  the splicing type of the after this intron (see exon naming convention for details).
+				</ul>
+				For instance <code>intron_9_SKIPPED-RETAINED</code> would be the ninth intron of the transcript. 
+				The intron is preceded by a <code>SKIPPED</code> exon and followed by a <code>RETAINED</code> exon.
+				
+				</p>
+        </section>
 
         <!-- Cancer
         ================================================== -->
         <section id="cancer">
           <div class="page-header">
-            <h1>12. Cancer samples </h1>
+            <h1>5. Cancer samples </h1>
           </div>
 				<p class="lead">
 				Here we describe details about annotating cancer samples.
@@ -1829,32 +1469,76 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 </pre>
 				</p>
         </section>
-				
-		<!-- Advanced annotations
-		================================================== -->
-		<section id="advann">
-			<h1>Advanced annotations</h1>
-			<p class="lead">
-			SnpEff can annotate using many different 'third party' databases, such as ENCODE, Epigenome Roadmap, NextProt, etc.
-			</p>
 
-			<h3>ENCODE </h3>
-			<p class="lead">
-			ENCODE project's goal is to find all functional elements in the human genome.
-			You can perform annotations using ENCODE's data.
-			</p>
-			<p>
-			<a href="http://genome.ucsc.edu/ENCODE/">ENCODE</a> project has produced huge amounts of data (see also <a href="http://www.nature.com/encode">Nature's</a> portal).
-			This information is available for download and can be used to annotate genomic variants or regions.
-			An overview of all the data available from ENCODE is shown as an <a href="http://genome.ucsc.edu/ENCODE/dataMatrix/encodeDataMatrixHuman.html">experimental data matrix</a>.
-			The download site is <a href="http://genome.ucsc.edu/ENCODE/downloads.html">here</a>.
-			<br>
-			<br>
-			Data is available in "BigBed" format, which can be feed into SnpEff using <code>-interval</code> command line option (you can add many <code>-interval</code> options).
-			<br>
-			Here is a simple example:
-			<br>
-			<br>
+        <!-- Non-coding
+        ================================================== -->
+        <section id="effNc">
+          <div class="page-header">
+            <h1>6. Additional annotations</h1>
+          </div>
+				<p class="lead">
+				SnpEff can also provide non-coding and regulatory annotations.
+				Here we show how to annotate them.
+				</p>
+				<h3>Regulatory annotations </h3>
+				<i class="icon-warning-sign"></i> Non-coding and regulatory annotations databases are available only for a few organisms (e.g. human, mouse, etc.).
+				We intend to incorporate more non-coding annotations as soon as public databases are available, but your organism of choice might not have a non-coding/regulatory database available.
+				</p>
+				<p>
+				First of all, you need to see if your organism has a regulatory database.
+				You can just look into the database directory to see if <code>regulation_*.bin</code> files are there.
+				For instance, for human genome:
+<pre>
+$ cd ~/snpEff
+$ cd data/GRCh37.70/
+$ ls -al
+total 2399156
+drwxr-xr-x    2 pcingola pcingola       4096 Feb 11 22:01 .
+drwxr-xr-x 2472 pcingola pcingola     122880 Feb 11 19:55 ..
+-rw-r--r--    1 pcingola pcingola    6292802 Feb 11 22:01 regulation_CD4.bin
+-rw-r--r--    1 pcingola pcingola    2474396 Feb 11 22:01 regulation_GM06990.bin
+-rw-r--r--    1 pcingola pcingola    7924641 Feb 11 22:00 regulation_GM12878.bin
+-rw-r--r--    1 pcingola pcingola    6212489 Feb 11 22:01 regulation_H1ESC.bin
+-rw-r--r--    1 pcingola pcingola    5152384 Feb 11 22:00 regulation_HeLa-S3.bin
+-rw-r--r--    1 pcingola pcingola    7392256 Feb 11 22:01 regulation_HepG2.bin
+-rw-r--r--    1 pcingola pcingola    3991817 Feb 11 22:01 regulation_HMEC.bin
+-rw-r--r--    1 pcingola pcingola    4562241 Feb 11 22:01 regulation_HSMM.bin
+-rw-r--r--    1 pcingola pcingola    5550176 Feb 11 22:01 regulation_HUVEC.bin
+-rw-r--r--    1 pcingola pcingola    5528240 Feb 11 22:01 regulation_IMR90.bin
+-rw-r--r--    1 pcingola pcingola     534786 Feb 11 22:01 regulation_K562b.bin
+-rw-r--r--    1 pcingola pcingola    8371354 Feb 11 22:01 regulation_K562.bin
+-rw-r--r--    1 pcingola pcingola    3063189 Feb 11 22:01 regulation_NH-A.bin
+-rw-r--r--    1 pcingola pcingola    5621629 Feb 11 22:00 regulation_NHEK.bin
+-rw-r--r--    1 pcingola pcingola   89937614 Feb 11 21:57 snpEffectPredictor.bin
+</pre>
+
+				So we can annotate using any of those tracks.
+				<br>
+				E.g. To use 'HeLa-S3' and 'NHEK' tracks, you can run:
+<pre>
+java -Xmx4g -jar snpEff.jar eff -reg HeLa-S3 -reg NHEK GRCh37.70 in.vcf > out.vcf
+</pre>
+				<br>
+				<i class="icon-hand-right"></i> You can use <code>-onlyReg</code> command line option to perform only regulatory annotations (i.e. coding annotations will be omitted).
+				</p>
+
+				<h3>ENCODE </h3>
+				<p class="lead">
+				ENCODE project's goal is to find all functional elements in the human genome.
+				You can perform annotations using ENCODE's data.
+				</p>
+				<p>
+				<a href="http://genome.ucsc.edu/ENCODE/">ENCODE</a> project has produced huge amounts of data (see also <a href="http://www.nature.com/encode">Nature's</a> portal).
+				This information is available for download and can be used to annotate genomic variants or regions.
+				An overview of all the data available from ENCODE is shown as an <a href="http://genome.ucsc.edu/ENCODE/dataMatrix/encodeDataMatrixHuman.html">experimental data matrix</a>.
+				The download site is <a href="http://genome.ucsc.edu/ENCODE/downloads.html">here</a>.
+				<br>
+				<br>
+				Data is available in "BigBed" format, which can be feed into SnpEff using <code>-interval</code> command line option (you can add many <code>-interval</code> options).
+				<br>
+				Here is a simple example:
+				<br>
+				<br>
 <pre>
 # Create a directory for ENCODE files
 mkdir -p db/encode
@@ -1874,33 +1558,30 @@ $ grep CUSTOM test.eff.vcf
 ...
 </pre>
 
-
-			</p>
-
-			<h3>Epigenome </h3>
-			<p class="lead">
-			Epigenome Roadmap Project has produced large amounts of information that can be used by SnpEff.
-			</p>
-			<p>
-			<a href="http://www.roadmapepigenomics.org"> Epigenome Roadmap Project</a> goal is 
-			"to map DNA methylation, histone modifications, chromatin accessibility and small RNA transcripts 
-			in stem cells and primary ex vivo tissues selected to represent the normal counterparts of tissues 
-			and organ systems frequently involved in human disease".
-			A <a href="http://www.roadmapepigenomics.org/data"> data matrix </a> shows the experimental set ups 
-			currently available.
-			<br>
-			<br>
-			Unfortunately the project is not (currently) providing results files that can be used directly by annotation software, such as SnpEff.
-			They will be available later in the project. 
-			So, for the time being, data has to be downloaded an pre-processed.
-			We'll be processing these information and making it available (as SnpEff databases) as soon as we can.
-			<br>
-			<br>
-			The latest Epigenome project processed information, can be found <a href="http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz/download">here</a>.
-			This includes genomic intervals for high confidence peaks in form of <code>BED</code> files.
-			<br>
-			<br>
-			To annotate you can do:
+				<h3>Epigenome </h3>
+				<p class="lead">
+				Epigenome Roadmap Project has produced large amounts of information that can be used by SnpEff.
+				</p>
+				<p>
+				<a href="http://www.roadmapepigenomics.org"> Epigenome Roadmap Project</a> goal is 
+				"to map DNA methylation, histone modifications, chromatin accessibility and small RNA transcripts 
+				in stem cells and primary ex vivo tissues selected to represent the normal counterparts of tissues 
+				and organ systems frequently involved in human disease".
+				A <a href="http://www.roadmapepigenomics.org/data"> data matrix </a> shows the experimental set ups 
+				currently available.
+				<br>
+				<br>
+				Unfortunately the project is not (currently) providing results files that can be used directly by annotation software, such as SnpEff.
+				They will be available later in the project. 
+				So, for the time being, data has to be downloaded an pre-processed.
+				We'll be processing these information and making it available (as SnpEff databases) as soon as we can.
+				<br>
+				<br>
+				The latest Epigenome project processed information, can be found <a href="http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz/download">here</a>.
+				This includes genomic intervals for high confidence peaks in form of <code>BED</code> files.
+				<br>
+				<br>
+				To annotate you can do:
 <pre>
 # Download Epigenome project database (pre-processed as BED files)
 wget http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz/download
@@ -1918,21 +1599,17 @@ $ grep CUSTOM test.eff.vcf
 1	948921	.	T	C	.	PASS	AC=904;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_9||||1),UPSTREAM(MODIFIER|||||RP11-54O7.11|antisense|NON_CODING|ENST00000458555||1),UTR_5_PRIME(MODIFIER||||165|ISG15|protein_coding|CODING|ENST00000379389|1|1)
 1	1099342	.	A	C	.	PASS	AC=831;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_10||||1),INTERGENIC(MODIFIER||||||||||1),UPSTREAM(MODIFIER|||||MIR200A|miRNA|NON_CODING|ENST00000384875||1),UPSTREAM(MODIFIER|||||MIR200B|miRNA|NON_CODING|ENST00000384997||1)
 </pre>
-
-
-			</p>
-
-			<h3>NextProt </h3>
-			<p class="lead">
-			NextProt has useful proteomic annotations than can help to identify variants causing reduced protein functionality or even loss of function.
-			</p>
-			<p>
-			<a href="http://www.nextprot.org/">Nextprot</a> project provides proteomic information that can be used for genomic annotations.
-			NextProt povides only human data.
-			<br>
-			<br>
-			This data is available by default in GRCh37 databases (latest version).
-			You only need to add the <code>-nextprot</code> command line option to get this information.
+				<h3>NextProt </h3>
+				<p class="lead">
+				NextProt has useful proteomic annotations than can help to identify variants causing reduced protein functionality or even loss of function.
+				</p>
+				<p>
+				<a href="http://www.nextprot.org/">Nextprot</a> project provides proteomic information that can be used for genomic annotations.
+				NextProt povides only human data.
+				<br>
+				<br>
+				This data is available by default in GRCh37 databases (latest version).
+				You only need to add the <code>-nextprot</code> command line option to get this information.
 <pre>
 $ java -Xmx4g -jar snpEff.jar -v -nextprot GRCh37.71 test.vcf > test.eff.vcf
 
@@ -1953,19 +1630,18 @@ $ grep glycosylation_site test.eff.vcf
                                        ,NEXT_PROT[topological_domain:Extracellular](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|5|1)
                                        ,NEXT_PROT[topological_domain:Extracellular](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|6|1)
 </pre>
-			This example shows a <code>glycosylation_site</code> marked as <code>MODERATE</code> impact, since a modification of such a site might impair protein function.
-			</p>
-
-			<h3> Motif </h3>
-			<p class="lead">
-			Motif annotations provided by ENSEMBL and Jaspar can be added to the standard annotations.
-			</p>
-			<p>
-			ENSEMBL provides trancription factor binding sites prediction, for human and mouse genomes, using <a href="http://jaspar.genereg.net/">Jaspar</a> motif database.
-			<br>
-			Using <code>-motif</code> command line option, you can add TFBS prediction to your annotations:
-			<br>
-			<br>
+				This example shows a <code>glycosylation_site</code> marked as <code>MODERATE</code> impact, since a modification of such a site might impair protein function.
+				</p>
+				<h3> Motif </h3>
+				<p class="lead">
+				Motif annotations provided by ENSEMBL and Jaspar can be added to the standard annotations.
+				</p>
+				<p>
+				ENSEMBL provides trancription factor binding sites prediction, for human and mouse genomes, using <a href="http://jaspar.genereg.net/">Jaspar</a> motif database.
+				<br>
+				Using <code>-motif</code> command line option, you can add TFBS prediction to your annotations:
+				<br>
+				<br>
 <pre>
 $ java -Xmx4g -jar snpEff.jar -v -motif GRCh37.71 test.vcf > test.eff.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'
@@ -1988,16 +1664,322 @@ $ grep MOTIF test.eff.vcf
 1	2480337	.	G	A	.	PASS	AC=16;EFF=MOTIF[MA0058.1:Max](MODIFIER||||||||||1),MOTIF[MA0059.1:Cmyc](MODIFIER||||||||||1),MOTIF[MA0093.1:USF1](MODIFIER||||||||||1),MOTIF[MA0147.1:Cmyc](LOW||||||||||1),MOTIF[PB0043.1:Max](MODIFIER||||||||||1),MOTIF[PL0007.1:Max](MODIFIER||||||||||1),MOTIF[PL0014.1:mxl-1](MODIFIER||||||||||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000416860||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000432521||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000443892||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000448624||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000449660||1),INTERGENIC(MODIFIER||||||||||1)
 
 </pre>
-			<br>
-			So, for instance, the first MOTIF annotation is <code>MOTIF[PB0134.1:HNF4A]</code> corresponding to motif <a href="http://jaspar.genereg.net/cgi-bin/jaspar_db.pl?ID=PB0134.1&rm=present&collection=CORE">PB0134.1</a>, which you can look up in Jaspar.
-			</p>
+				<br>
+				So, for instance, the first MOTIF annotation is <code>MOTIF[PB0134.1:HNF4A]</code> corresponding to motif <a href="http://jaspar.genereg.net/cgi-bin/jaspar_db.pl?ID=PB0134.1&rm=present&collection=CORE">PB0134.1</a>, which you can look up in Jaspar.
+				</p>
         </section>
+
+
+        <!-- Output Summary
+        ================================================== -->
+        <section id="outputSummary">
+          <div class="page-header">
+            <h1>7. Output summary files </h1>
+          </div>
+				<p class="lead"> 
+				SnpEff creates an additional output file showing overall statistics.
+				This "stats" file is an HTML file which can be opened using a web browser.
+				You can find an example of a 'stats' file <a href="1kg.html"> here</a>.
+				</p>
+				<p>
+				The program performs some statistics and saves them to the file 'snpEff_summary.html' on the 
+				directory where snpEff is being executed. You can see the file, by opening it in your browser.
+				<br>
+				<br>
+				<i class="icon-hand-right"></i>You can change the default location by using the '-stats' command line option. This also changes the location of the TXT summary file.
+				<br>
+				<br>
+				<i class="icon-hand-right"></i> Summary can be create in CSV format using command line option <code>-csvStats</code>. This allows easy downstream processing.
+				<br>
+				<br>
+				E.g.: In the stats file, you can see coverage histogram plots like this one <img src="http://chart.apis.google.com/chart?cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chg=11.0,40.0,3,2&chxp=1,50.0|3,50.0&chtt=Coverage+histogram&chxr=0,1.0,409.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Count|2:|1||||||||||11||||||||||21||||||||||31||||||||||41||||||||||51||||||||||61||||||||||76||||||||||3:|Coverage&chd=e:DNBSEfGaI9MKRSWZfXnrlwmZuE1wvW630e6O..638y3r7g8JsKxRlHgAkeZmY9XCR7PXRSOuOFMzNcIUJmHrHrFIFIFxEfCkDNDNBSBSB7BSB7BSApApApBSBSApAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+				</p>
+
+				<br>
+				<p> <b> "Effects by type" vs "Effects by region" </b>
+				<br>
+				<br>
+				SnpEff annotates variants. 
+				Variants produce effect of difference "types" (e.g. NON_SYNONYMOUS_CODING, STOP_GAINED). 
+				These variants affect regions of the genome (e.g. EXON, INTRON). 
+				The two tables count how many effects for each type and for each region exists.
+				<br>
+				E.g.: In an EXON region, you can have all the following effect types:	NON_SYNONYMOUS_CODING, SYNONYMOUS_CODING, FRAME_SHIFT, STOP_GAINED, etc.
+				<br>
+				<br>
+				The complicated part is that some effect types affect a region that has the same name (yes, I know, this is confusing).
+				<br>
+				E.g.: In a UTR_5_PRIME region you can have UTR_5_PRIME and START_GAINED effect type. <br>
+				<br>
+				<br>
+				This means that the number of both tables are not exactly the same, because the labels don't mean the same.
+				See the next figure as an example
+				<br>
+				<img width=700 src="images/type_vs_region.png">
+				<br>
+				So the number of effects that affect a UTR_5_PRIME <i>region</i> is 206. Of those, 57 are effects <i>type</i> START_GAINED and 149 are effects <i>type</i> UTR_5_PRIME.
+				<br>
+				How exactly are effect <i>type</i> and effect <i>region</i> related? See the following table<p>
+				<center>
+				<table class="table table-striped">
+					<tr> <th> Effect Type </th><th> Region </th> </tr> 
+					 <tr>
+						<td>
+						NONE<br>
+						CHROMOSOME<br>
+						CUSTOM<br>
+						CDS<br>
+						</td>
+						<td>NONE</td>
+					</tr>
+					<tr>
+						<td>
+						INTERGENIC<br>
+						INTERGENIC_CONSERVED<br>
+						</td>
+						<td>INTERGENIC</td>
+					</tr>
+					<tr>
+						<td>
+						UPSTREAM<br>
+						</td>
+						<td>UPSTREAM</td>
+					</tr>
+					<tr>
+						<td>
+						UTR_5_PRIME<br>
+						UTR_5_DELETED<br>
+						START_GAINED<br>
+						</td>
+						<td>UTR_5_PRIME</td>
+					</tr>
+					<tr>
+						<td>
+						SPLICE_SITE_ACCEPTOR<br>
+						</td>
+						<td>SPLICE_SITE_ACCEPTOR</td>
+					</tr>
+					<tr>
+						<td>
+						SPLICE_SITE_DONOR<br>
+						</td>
+						<td>SPLICE_SITE_DONOR</td>
+					</tr>
+					<tr>
+						<td>
+						SPLICE_SITE_REGION<br>
+						</td>
+						<td>SPLICE_SITE_REGION</td>
+					</tr>
+					<tr>
+						<td>
+						INTRAGENIC<br>
+						START_LOST<br>
+						SYNONYMOUS_START<br>
+						NON_SYNONYMOUS_START<br>
+						GENE<br>
+						TRANSCRIPT<br>
+						</td>
+						<td>EXON or NONE</td>
+					</tr>
+					<tr>
+						<td>
+						EXON<br>
+						EXON_DELETED<br>
+						NON_SYNONYMOUS_CODING<br>
+						SYNONYMOUS_CODING<br>
+						FRAME_SHIFT<br>
+						CODON_CHANGE<br>
+						CODON_INSERTION<br>
+						CODON_CHANGE_PLUS_CODON_INSERTION<br>
+						CODON_DELETION<br>
+						CODON_CHANGE_PLUS_CODON_DELETION<br>
+						STOP_GAINED<br>
+						SYNONYMOUS_STOP<br>
+						STOP_LOST<br>
+						RARE_AMINO_ACID<br>
+						</td>
+						<td>EXON</td>
+					</tr>
+					<tr>
+						<td>
+						INTRON<br>
+						INTRON_CONSERVED<br>
+						</td>
+						<td>INTRON</td>
+					</tr>
+					<tr>
+						<td>
+						UTR_3_PRIME<br>
+						UTR_3_DELETED<br>
+						</td>
+						<td>UTR_3_PRIME</td>
+					</tr>
+					<tr>
+						<td>
+						DOWNSTREAM<br>
+						</td>
+						<td>DOWNSTREAM</td>
+					</tr>
+					<tr>
+						<td>
+						REGULATION<br>
+						</td>
+						<td>REGULATION</td>
+					</tr>
+				</table>
+				</center>
+				</p>
+        </section>
+
+        <!-- Troubleshooting
+        ================================================== -->
+        <section id="trouble">
+          <div class="page-header">
+            <h1>8. Troubleshooting </h1>
+          </div>
+				<p class="lead"> 
+				Some common problems
+				</p>
+				<p> <b> Chromosome not found </b>
+				<br>
+				<br>
+				<i class="icon-warning-sign"></i> This is by far the most common problem. 
+				It means that the input VCF file has chromosome names that do not match SnpEff's database and don't match reference genome either, since SnpEff's database are created using reference genome chromosome names.
+				<br>
+				<br>
+				The solution is simple: fix your VCF file to use standard chromosome names.
+				You can see which chromosome names are used by SnpEff simply by using the <code>-v</code> (verbose) command line option.
+				This shows all chromosome names and their respective lengths. Notice the last line ("Chromosomes names [sizes]"):
+<pre>
+$ java -Xmx4g eff -v GRCh37.70 test.1K.vcf 
+00:00:00.000    Reading configuration file 'snpEff.config'
+00:00:00.176    done
+00:00:00.176    Reading database for genome version 'GRCh37.70' from file '/home/pcingola//snpEff/data/GRCh37.70/snpEffectPredictor.bin' (this might take a 
+00:01:13.513    done
+00:01:13.555    Setting '-treatAllAsProteinCoding' to 'false'
+00:01:13.556    Building interval forest
+00:01:32.642    done.
+00:01:38.280    Genome stats :
+# Genome name                : 'Homo_sapiens'
+# Genome version             : 'GRCh37.70'
+# Has protein coding info    : true
+# Genes                      : 62069
+# Protein coding genes       : 22643
+# Transcripts                : 206046
+# Avg. transcripts per gene  : 3.32
+# Protein coding transcripts : 85685
+# Cds                        : 756629
+# Exons                      : 1262644
+# Exons with sequence        : 1262644
+# Exons without sequence     : 0
+# Avg. exons per transcript  : 6.13
+# Number of chromosomes      : 275
+# Chromosomes names [sizes]  : '1' [249250621] '2' [243199373] '3' [198022430] '4' [191154276] '5' [180915260] '6' [171115067] '7' [159138663] 'X' [155270560] '8' [146364022] '9' [141213431] '10' [135534747] '11' [135006516] '12' [133851895] '13' [115169878] '14' [107349540] '15' [102531392] '16' [90354753] '17' [81195210] '18' [78077248] '20' [63025520] 'Y' [59373566] '19' [59128983] '22' [51304566] '21' [48129895] 'HG1287_PATCH' [249889652]  'HG1292_PATCH' [249822337]  'HG1473_PATCH' [249272860]  'HG1471_PATCH' [249269426] ...
+...
+</pre>
+				</p>
+
+				<p> <b> Apparent inconsistencies when using UCSC genome browser </b>
+				<br>
+				<br>
+				<i class="icon-warning-sign"></i> <b>WARNING:</b> Usage of hg19 genome is deprecated and discouraged, you should use GRChXX.YY instead (e.g. the latest version at the time of writing is GRCh37.70)
+				<br>
+				<br>
+				Reference sequence and annotations are made for an organism version and sub-version. 
+				For examples human genome, version 37, sub-version 70 would be called (GRCh37.70).
+				<br>
+				UCSC doesn't specify sub-version. 
+				They just say hg19.
+				This annoying sub-version problem appeared often and, having reproducibility of results in mind, I dropped UCSC annotations in favor of ENSEMBL ones (they have clear versioning).
+				</p>
+
+				<p> <b> SnpEff reporting an effect that doesn't match ENSEMBL's web page </b>
+				<br>
+				<br>
+				Please remember that databases are updated often (e.g. by ENSEMBL), so if you are using an old database, you might get different effects.<br>
+				<br>
+				For example, this transcript ENST00000487462 changed from protein_coding in GRCh37.63 
+<pre>
+1       protein_coding  exon    1655388 1655458 .       -       .        gene_id "ENSG00000008128"; transcript_id "ENST00000487462"; exon_number "1"; gene_name "CDK11A"; transcript_name "CDK11A-013";
+1       protein_coding  exon    1653905 1654270 .       -       .        gene_id "ENSG00000008128"; transcript_id "ENST00000487462"; exon_number "2"; gene_name "CDK11A"; transcript_name "CDK11A-013";
+</pre>
+...to processed_transcript in GRCh37.64:
+<pre>
+1       processed_transcript    exon    1655388 1655458 .       -       .        gene_id "ENSG00000008128"; transcript_id "ENST00000487462"; exon_number "1"; gene_name "CDK11A"; gene_biotype "protein_coding"; transcript_name "CDK11A-013";
+1       processed_transcript    exon    1653905 1654270 .       -       .        gene_id "ENSG00000008128"; transcript_id "ENST00000487462"; exon_number "2"; gene_name "CDK11A"; gene_biotype "protein_coding"; transcript_name "CDK11A-013";
+</pre>
+
+				This means that you'll get different results for this transcript using sub-version 63 or 64. I assume that latest versions are improved, so I always encourage to upgrade.
+				<br>
+				Sometimes it might even be the case that latest released database and the one shown on the web interface may be out of sync.
+				<br>
+				</p>
+
+				<p> <b> SnpEff reports a SYNONYMOUS and a NON_SYNONYMOUS effect on the same gene </b>
+				<br>
+				<br>
+				This is not a bug.
+				It is not uncommon for a gene to have more than one transcript (e.g. in human most genes have multiple transcripts). 
+				A variant (e.g. a SNP) might affect different transcripts in different ways, as a result of different reading frames.
+				<br>
+				For instance: 
+<pre>
+chr5 137622242 . C T . . EFF=NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Gaa/Aaa|E/K|CDC25C|protein_coding|CODING|ENST00000514017|exon_5_137622186_137622319),
+                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000323760|exon_5_137622186_137622319),
+                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000348983|exon_5_137622186_137622319),
+                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000356505|exon_5_137622186_137622319),
+                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000357274|exon_5_137622186_137622319),
+                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000415130|exon_5_137622186_137622319),
+                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000513970|exon_5_137622186_137622319),
+                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000514555|exon_5_137622186_137622319),
+                             SYNONYMOUS_CODING(LOW|SILENT|caG/caA|Q|CDC25C|protein_coding|CODING|ENST00000534892|exon_5_137622186_137622319)
+</pre>
+
+				in this example (it was divided into multiple lines for legibility), the first transcript ENST0000051401 has a NON_SYNONYMOUS effect, but all other transcripts have a SYNONYMOUS effect.
+				</p>
+        </section>
+
+
+				<br>
+				<p> <b> Counting total number of effects of a given type </b>
+				<br>
+				<br>
+				Some people try to count the number of effects in a file by doing (assuming we want to count how many MODIFIER effects we have): 
+				<br>
+				<pre> grep -o MODIFIER output.eff.vcf | wc -l </pre>
+				<br>
+				This is incorrect because a VCF line can have multiple effects (e.g. when there are multiple transcripts in a gene).
+				A proper way to count effects would be:
+
+<pre>
+cat output.eff.vcf \
+	| cut -f 8 \
+	| tr ";" "\n" \
+	| grep ^EFF= \
+	| cut -f 2 -d = \
+	| tr "," "\n" \
+	| grep MODIFIER \
+	| wc -l
+</pre>
+
+				Brief explanation:
+				<table class="table table-striped">
+					<tr> <td> <tt>cut -f 8 </tt> </td> <td>  Extract INFO fields </td> </tr>
+					<tr> <td> <tt>tr ";" "\n" </tt> </td> <td>  Expand each field into one line </td> </tr>
+					<tr> <td> <tt>grep ^EFF= </tt> </td> <td>  Only keep 'EFF' fields </td> </tr>
+					<tr> <td> <tt>cut -f 2 -d = </tt> </td> <td>  Keep only the effect data (drop the 'EFF=' part) </td> </tr>
+					<tr> <td> <tt>tr "," "\n" </tt> </td> <td>  Expand effects to multiple lines </td> </tr>
+					<tr> <td> <tt>grep MODIFIER | wc -l </tt> </td> <td>  Count the ones you want (in this example 'MODIFIER')</td> </tr>
+				</table>
+				</p>
+				<br> 
 
         <!-- Databases
         ================================================== -->
         <section id="databases">
           <div class="page-header">
-            <h1>Building databases </h1>
+            <h1>9. Building databases </h1>
           </div>
 				<p class="lead">
 				SnpEff needs a database to perform genomic annotations. 
@@ -2457,7 +2439,7 @@ java -jar snpEff.jar dump myGenome | less
         ================================================== -->
         <section id="databasesNc">
           <div class="page-header">
-            <h1>18. Building databases: Regulatory and Non-coding </h1>
+            <h1>10. Building databases: Regulatory and Non-coding </h1>
           </div>
 				<p class="lead">
 				SnpEff supports regulatory and non-coding annotations.
@@ -2588,13 +2570,15 @@ Finishing up
 
 		<!-- Integration
 		================================================== -->
-		<section id="gatk">
+		<section id="integrate">
 		  <div class="page-header">
-			<h1>19. Integration: GATK </h1>
+			<h1>11. Integration </h1>
 		  </div>
 				<p class="lead">
-				SnpEff is integrated with Broad Institute's Genome Analysis Toolkit (<a href="http://www.broadinstitute.org/gatk/">GATK</a>).
-				</p>
+				SnpEff is integrated with Broad Institute's Genome Analysis Toolkit (<a href="http://www.broadinstitute.org/gatk/">GATK</a>) and <a href="http://galaxyproject.org/">Galaxy</a> projects.
+				</p> 
+
+			<h3>Integration: GATK </h3>
 				In order to make sure SnpEff and GATK understand each other, you must activate GATK compatibility in SnpEff by using the <code>-o gatk</code> command line option.
 				The reason for using '-o gatk' is that, even though both GATK and SnpEff use VCF format, SnpEff has recently updated the <code>EFF</code> sub-field format and this might cause some trouble (since GATK still uses the original version).
 				<br>
@@ -2753,15 +2737,7 @@ INFO  11:23:49,953 GATKRunReport - Uploaded run statistics report to AWS S3
 				<br>
         </section>
 
-		<!-- IntegrationL Galaxy
-		================================================== -->
-		<section id="galaxy">
-		  <div class="page-header">
-			<h1>20. Integration: Galaxy </h1>
-		  </div>
-				<p class="lead">
-				SnpEff provides integrations with <a href="http://galaxyproject.org/">Galaxy</a> project.
-				</p>
+			<h3>Integration: Galaxy </h3>
 				In order to install SnpEff in your own Galaxy server, you can use the <code>galaxy/*.xml</code> files provided in the main distribution. 
 				<br>
 				<br>
@@ -2830,7 +2806,7 @@ vi tool_conf.xml
 		================================================== -->
 		<section id="utils">
 		  <div class="page-header">
-			<h1>21. Commands and utilities </h1>
+			<h1>12. Commands and utilities </h1>
 		  </div>
 				<p class="lead">
 				SnpEff provides several other commands and utilities that can be useful for genomic data analysis.

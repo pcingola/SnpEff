@@ -491,7 +491,7 @@ cat protocols/ex1.eff.cc.clinvar.vcf \
         ================================================== -->
         <section id="int">
           <div class="page-header">
-            <h1>2. Software Integration (Optional) </h1>
+            <h1>3. Software Integration (Optional) </h1>
           </div>
 				<br>
 				Software Integration (Optional): Sequence analysis software is often run in high performance computers combining several programs into processing pipelines. 
@@ -558,7 +558,7 @@ java -Xmx4g -jar $HOME/tools/gatk/GenomeAnalysisTK.jar \
         ================================================== -->
         <section id="ex2">
           <div class="page-header">
-            <h1>3. Example: Non-Coding variants</h1>
+            <h1>4. Example: Non-Coding variants</h1>
           </div>
 				<p class="lead"> We show how to use SnpEff & SnpSitf to annotate, prioritize and filter non-coding variants.<p>
 
@@ -649,6 +649,131 @@ cat protocols/ex2.eff.cons.vcf \
 				The principles illustrated in our example for a small set of SNVs can be applied to millions of variants from whole genome sequencing experiments. Similarly, although we filtered the SNVs using "custom" ChIP-seq data that provided in the original study, regulatory information from public Encode or Epigenome Roadmap datasets could be used in a first line investigation before generating our own Chip-seq or RNA-seq data using disease-relevant cells and tissues.
 				<br>
 				<br>
+        </section>
+
+        <!-- Example 3: Sequence data analysis
+        ================================================== -->
+        <section id="seqData">
+          <div class="page-header">
+            <h1>5. Example: Sequence data analysis</h1>
+          </div>
+				<p class="lead"> Here we show an example on how to get from Sequencing data to an annotated variants file </p>
+
+				<p><h3>Sequencing data example</h3>
+				<i class="icon-warning-sign"></i> This is an extremely simplified version on how to analyze the data from scratch
+				This is not meant to be a tutorial on sequencing analysis as it would be way beyond the scope of this handbook.
+				<br>
+				Let's assume you have sequence data in FASTQ format (file "s.fastq") and your reference genome is dm5.34 (fly genome)
+<pre>
+# Download the genome, uncompress and rename file
+wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/dmel_r5.34_FB2011_02/fasta/dmel-all-chromosome-r5.34.fasta.gz
+gunzip dmel-all-chromosome-r5.34.fasta.gz
+mv dmel-all-chromosome-r5.34.fasta dm5.34.fasta
+
+# Create a genome index (we assume you installed BWA http://bio-bwa.sourceforge.net/)
+bwa index -bwtsw dm5.34.fasta
+
+# Map sequences to the genome: Create SAI file
+bwa aln -bwtsw dm5.34.fasta s.fastq > s.sai
+
+# Map sequences to the genome: Create SAM file
+bwa samse dm5.34.fasta s.sai s.fastq > s.sam
+
+# Create BAM file (we assume you installed SamTools http://samtools.sourceforge.net/)
+samtools view -S -b s.sam > s.bam
+
+# Sort BAM file (will create s_sort.bam)
+samtools sort s.bam s_sort
+
+# Create VCF file (BcfTools is part of samtools distribution)
+samtools mpileup -uf dm5.34.fasta s_sort.bam | bcftools view -vcg - > s.vcf
+
+# Analyze variants using snpEff
+java -Xmx4g -jar snpEff.jar dm5.34 s.vcf > s.eff.vcf
+</pre>
+
+				This highly simplified sequencing data analysis pipeline, has the common basic steps
+				<ul>
+					<li> Index the reference genome (bwa)
+					<li> Map reads to reference genome (bwa)
+					<li> Call variants (bcftools)
+					<li> Annotate variants (SnpEff)
+				</ul>
+				</p>
+        </section>
+
+        <!-- Example 3: Sequence data analysis
+        ================================================== -->
+        <section id="seqData">
+          <div class="page-header">
+			<h1>6. Advanced example: Filter out SNPs from dbSnp </h1>
+          </div>
+				<p class="lead"> Here we show an example on how to get from Sequencing data to an annotated variants file </p>
+
+				These are slightly more advanced examples. 
+				Here we'll try to show how to perform specific tasks.
+
+				If you want to filter out SNPs from dbSnp, you can do it using SnpSift.
+				You can download SnpSift from the "Downloads" page.
+				<p>
+				You can download the file for this example <a class="body" href="examples/file.vcf">here</a>.<br>
+				Here is how to do it:
+				<p>
+				<ol>
+					<li> Annotate ID fields using <code>SnpSif annotate</code> and DbSnp<br>
+						<i class="icon-hand-right"></i> We annotate using dbSnp before using SnpEff in order to 
+								have 'known' and 'unknown' statistics in SnpEff's summary page.
+								Those stats are based on the presence of an ID field. If the ID 
+								is non-empty, then it is assumed to be a 'known variant'.
+<pre>
+# Annotate ID field using dbSnp
+# Note: SnpSift will automatically download and uncompress dbSnp database if not locally available.
+java -jar SnpSif.jar annotate -dbsnp file.vcf > file.dbSnp.vcf
+</pre>
+
+					<li> Annotate using SnpEff:
+<pre>
+java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 file.dbSnp.vcf > file.eff.vcf
+</pre>
+
+					<li> Filter out variants that have a non-empty ID field. 
+					These variants are the ones that are NOT in dbSnp, since we annotated the ID field using rs-numbers from dbSnp in step 1.
+<pre>
+java -jar SnpSift.jar filter -f file.eff.vcf "! exists ID" > file.eff.not_in_dbSnp.vcf
+</pre>
+					<i class="icon-hand-right"></i>The expression using to filter the file is "! exists ID".
+					This means that the ID field does not exists (i.e. the value is empty) which is represented as a dot (".") in a VCF file.
+				</ol>
+				
+				<b>Pipes</b>
+				Obviously you can perform the three previous commands, pipeling the out from one command to the next, thus avoiding the creation of intermediate files (for very large projects, this can be a significant amount of time).
+				<br>
+				<br>
+				<i class="icon-hand-right"></i>In SnpEff &amp; SnpSift the STDIN is denoted by file name <code>"-"</code>
+				<br>
+				<br>
+				So the previous commands would be
+<pre>
+java -jar SnpSif.jar annotate -dbsnp file.vcf \
+	| java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 - \
+	| java -jar SnpSift.jar filter "! exists ID" \
+	> file.eff.not_in_dbSnp.vcf
+</pre>
+
+				Here is an example of some entries in the annotated output file. 
+				You can see the 'EFF' field was added, predicting STOP_GAINED protein changes:
+
+<pre>
+$ cat demo.1kg.snpeff.vcf | grep STOP_
+1    889455    .    G    A    100.0    PASS    ...;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q236*...
+1    897062    .    C    T    100.0    PASS    ...;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*...
+1    900375    .    G    A    100.0    PASS    ...;EFF=STOP_GAINED(HIGH|NONSENSE|tGg/tAg|W578*...
+</pre>
+				Note: The real output was edited for readibility reasons.
+				</p>
+
+        </section>
+				
       </div>
     </div>
 
