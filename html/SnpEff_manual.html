@@ -74,8 +74,6 @@
       <div class="span3 bs-docs-sidebar">
         <ul class="nav nav-list bs-docs-sidenav">
           <li><a href="#intro"><i class="icon-chevron-right"></i> Introduction</a></li>
-          <li><a href="#examples"><i class="icon-chevron-right"></i>Usage examples (for the impatient) </a></li>
-          <li><a href="#install"><i class="icon-chevron-right"></i> Download & Install</a></li>
           <li><a href="#run"><i class="icon-chevron-right"></i> Running SnpEff </a></li>
           <li><a href="#seqData"><i class="icon-chevron-right"></i> Sequence data analysis </a></li>
           <li><a href="#input"><i class="icon-chevron-right"></i> Input files </a></li>
@@ -110,10 +108,11 @@
 				It annotates and predicts the effects of genetic variants (such as amino acid changes).
 				</p>
 
-				<p> <h3> License </h3>
-				SnpEff is open source. It is released as "LGPLv3". <br>
-
-				<p> <h3>Summary</h3>
+            	<h3>Download &amp; Install</h3>
+				<p class="lead"> Download and installing SnpEff it pretty easy, take a look at the <a href="download.html">download page</a>.
+				</p>
+				
+				<p> <h3>SnpEff Summary</h3>
 				A typical SnpEff use case would be:
 				<ul>
 					<li> Input:
@@ -128,29 +127,30 @@
 				</ul>
 				</p>
 
-				<p> <h3> Variants </h3>
+				<p> <b> Variants </b>
 				By genetic variant we mean difference between a genome and a "reference" genome.
 				As an example, imagine we are sequencing a "sample".
 				Here "sample" can mean anything that you are interested in studying, from a cell culture, to a mouse or a cancer patient.
 				<br>
 				It is a standard procedure to compare your sample sequences against the corresponding "reference genome".
-				For instance you may compare the cancer patient genome against the current "reference genome" (at the time of this writing, it is 'hg19').
+				For instance you may compare the cancer patient genome against the "reference genome".
 				<p>
 				In a typical sequencing experiment, you will find many places in the genome where your sample differs from the reference genome.
 				These are called "genomic variants" or just "variants".
 				<br>
 				Typically, variants are categorized as follows:
 				<table class="table table-striped">
-					<tr> <th> Name  </th> <th> What is means                    </th> <th> Example </th> </tr>
+					<tr> <th> Type  </th> <th> What is means                    </th> <th> Example </th> </tr>
 					<tr> <td> SNP   </td> <td> Single-Nucleotide Polymorphism   </td> <td> Reference = 'A', Sample = 'C' </td> </tr>
 					<tr> <td> Ins   </td> <td> Insertion                        </td> <td> Reference = 'A', Sample = 'AGT' </td> </tr>
 					<tr> <td> Del   </td> <td> Deletion                         </td> <td> Reference = 'AC', Sample = 'C' </td> </tr>
 					<tr> <td> MNP   </td> <td> Multiple-nucleotide polymorphism </td> <td> Reference = 'ATA', Sample = 'GTC' </td> </tr>
+					<tr> <td> MIXED </td> <td> Multiple-nucleotide and an InDel </td> <td> Reference = 'ATA', Sample = 'GTCAGT' </td> </tr>
 				</table>
 				This is not a comprehensive list, it is just to give you an idea.
 				</p>
 
-				<p> <h3>Annotations</h3>
+				<p> <b>Annotations</b>
 				So, you have a huge file describing all the differences between your sample and the reference genome.
 				But you want to know more about these variants than just their genetic coordinates. 
 				E.g.: Are they in a gene? In an exon? Do they change protein coding? Do they cause premature stop codons?
@@ -160,16 +160,14 @@
 				<br>
 				SnpEff provides several degrees of annotations, from simple (e.g. which gene is each variant affecting) to extremely complex annotations (e.g. will this non-coding variant affect the expression of a gene?).
 				It should be noted that the more complex the annotations, the more it relies in computational predictions.
-				Such computational predictions are sometimes incorrect. 
-				<br>
-				<i class="icon-warning-sign"></i> Results cannot be trusted blindly. SnpEff results may have to analyzed and independently validated.
+				Such computational predictions can be incorrect, so results from SnpEff (or any prediction algorithm) cannot be trusted blindly, they must be analyzed and independently validated by corresponding wet-lab experiments.
 				</p>
 
 				<p> <h3>Citing</h3>
 				If you are using SnpEff or SnpSift, please cite our work as shown <a href="SnpEff.html#citing">here</a>. Thank you!
 				</p>
 
-				<p> <h3>Features</h3>
+				<p> <h3>SnpEff Features</h3>
 				The following table shows the main SnpEff features:
 				<table class="table table-striped">
 					<tr> <th> Feature </th> <th> Comment</th> </tr>
@@ -290,10 +288,20 @@ NCBIM37.66                                                  	Mus_musculus       
 				<br>
 				<b>Unsupported reference genomes:</b> If your reference genome of interest is not supported yet (i.e. there is no database avaialble), you can build a database yourself (see "Building dataases" section). If you have problems adding you own organism, send me an email and I'll do my best to help you out.
 				<p>
+        </section>
 
-			<h3>Usage examples (for the impatient)</h3>
-				<p class="lead">
-				Here we'll show a few examples that should be enough to get you started.
+        <!-- Running SnpEff
+        ================================================== -->
+        <section id="run">
+          <div class="page-header">
+            <h1>Running SnpEff</h1>
+          </div>
+				<p class="lead"> We show some basic examples how to use SnpEff.</p>
+
+				<p><h3>Command line vs Web interface</h3>
+				In order to run SnpEff you need to be comfortable running command from a command line terminal.
+				If you are not, then it is probably a good idea to ask you systems administrator to install a <a class="body"class="body" href="http://usegalaxy.org">Galaxy</a> server and use the web interface.
+				You can also use the open Galaxy server, but functionality may be limited and SnpEff versions may not be updated frequently.
 				</p>
 
 				<h3> Basic example: Installing SnpEff </h3>
@@ -304,22 +312,10 @@ NCBIM37.66                                                  	Mus_musculus       
 				In Windows systems, you can just double click and copy the contents of the ZIP file to wherever you want the program installed.
 				If you have a Unix or a Mac system, the command line would be:
 <pre>
-unzip snpEff_latest_core.zip 
+$ curl -L http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip > snpEff_latest_core.zip
+$ unzip snpEff_latest_core.zip 
 </pre>
 
-				<p>
-				<i class="icon-hand-right"></i> By default SnpEff stores all the databases in <code>$HOME/snpeff/data</code> (where <code>$HOME</code> is your home directory).
-				If you want to change this, you can edit the config file and change the <code>data_dir</code> entry:
-				<p>
-<pre>
-#---
-# Databases are stored here
-# E.g.: Information for 'hg19' is stored in data_dir/hg19/
-#
-# Note: Since version 2.1 you can use tilde ('~') as first character to refer to your home directory
-#---
-data_dir = ~/snpEff/data/
-</pre>
 				</p>
 
 				<h3> Basic example: Annotate using SnpEff </h3>
@@ -403,87 +399,6 @@ java -jar SnpSift.jar filter -f file.eff.vcf "! exists ID" > file.eff.not_in_dbS
 					This means that the ID field does not exists (i.e. the value is empty) which is represented as a dot (".") in a VCF file.
 				</ol>
 				</p>
-        <!-- Download
-        ================================================== -->
-        <section id="install">
-          <div class="page-header">
-            <h1>3. Download &amp; Install</h1>
-          </div>
-				<p class="lead"> Download and installing SnpEff it pretty easy. 
-				</p>
-				
-				<p> <h3>System requirements </h3>
-				SnpEff requires that you have Java v1.7 or later installed (any modern operating system has it). <br>
-				You'll probably need at least 2Gb of memory. 
-				The amount of memory used can vary significantly depending on genome size and data analysis type you are doing.
-
-				<p> <h3>Downloading and Installing</h3>
-				In order to download and install the program, you can follow the directions <a href="download.html">here</a>.
-
-				<p> <h3>Configuration</h3>
-				The only configuration file is <code>snpEff.config</code>.
-				Most configuration parameters, are explained in the comments in the same config file, so I won't repeat the explanation here :-)
-				<br>
-				Usually you will only need to change the <code>data_dir</code> parameter.
-				This parameter points to the <code>data</code> directory where you installed the tool (i.e. in unix systems, this is <code>$HOME/snpEff/data</code>).<p>
-
-				<p> <h3>Source code </h3>
-				The source code is in GitHub (although we keep the binary distribution is at SourceForge). 
-				<br>
-				<br>
-				<b> Getting the souce:</b> Here is the <code>git</code> command to check out the development version of the code:
-				<br>
-				<br>
-<pre>
-git clone https://github.com/pcingola/SnpEff.git
-
-# If you want to SnpSift as well
-git clone https://github.com/pcingola/SnpSift.git
-</pre>
-				<br>
-				<b>Install required libraries:</b> 
-				Most libraries should be install using Maven, so you just need to run <code>mvn</code> command.
-				<br>
-				<br>
-				<b>Intalling test cases:</b>
-				Test cases require special "test cases databases and genome", you can find them here:
-				<br>
-				<br>
-<pre>
-# Install test databases in SnpEff's development directory (not the soruce code dir!)
-cd $HOME/snpEff
-
-# Download dtabases and genome for test cases
-wget http://sourceforge.net/projects/snpeff/files/databases/test_cases.tgz
-
-# Uncompress
-tar -xvzf test_cases.tgz
-
-# Go to Eclipse's workspace directory (where the source code is)
-cd $HOME/workspace/SnpEff
-
-# Create a link to the 'data' dir, so that we can run test cases within Eclipse
-ln -s $HOME/snpEff/data
-
-# Add data dir to 'gitignore'
-echo "/data" >> .gitignore
-</pre>
-        </section>
-
-        <!-- Running SnpEff
-        ================================================== -->
-        <section id="run">
-          <div class="page-header">
-            <h1>4. Running SnpEff</h1>
-          </div>
-				<p class="lead"> We show some basic examples how to use SnpEff.</p>
-
-				<p><h3>Command line vs Web interface</h3>
-				In order to run SnpEff you need to be comfortable running command from a command line terminal.
-				If you are not, then it is probably a good idea to ask you systems administrator to install a <a class="body"class="body" href="http://usegalaxy.org">Galaxy</a> server and use the web interface.
-				You can also use the open Galaxy server, but functionality may be limited and SnpEff versions may not be updated frequently.
-				</p>
-
 				<p><h3>Usage example</h3>
 				In this example, we will annotate a variants file using the human reference genome.<br>
 

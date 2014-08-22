@@ -14,7 +14,7 @@ rm -rvf $DIR snpEff
 mkdir $DIR
 
 # Copy core files
-cp -rvfL snpEff.config snpEff.jar SnpSift.jar snpeff demo.1kg.vcf galaxy scripts $DIR
+cp -rvfL snpEff.config snpEff.jar SnpSift.jar examples galaxy scripts $DIR
 
 # Change name to 'snpEff' (so that config file can be used out of the box)
 mv $DIR snpEff

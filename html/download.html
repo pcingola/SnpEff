@@ -77,6 +77,7 @@
           <li><a href="#install"><i class="icon-chevron-right"></i> Installing SnpEff </a></li>
           <li><a href="#databases"><i class="icon-chevron-right"></i> Downloading SnpEff databases </a></li>
           <li><a href="#dbs"><i class="icon-chevron-right"></i> Available databases </a></li>
+          <li><a href="#source"><i class="icon-chevron-right"></i> Source code </a></li>
         </ul>
       </div>
       <div class="span9">
@@ -86,41 +87,45 @@
         ================================================== -->
         <section id="download">
           <div class="page-header">
-            <h1>1. Downloading SnpEff &amp SnpSift</h1>
+            <h1>Downloading SnpEff &amp SnpSift</h1>
           </div>
 				<p class="lead">
-						SnpEff and SnpSift are bundled toghether
+					SnpEff and SnpSift are bundled toghether
 				</p>
 
 			 	<div class="span9">
 					<div class="hero-unit">
-						<p> <a href="http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip" class="btn btn-primary btn-large">Download</a> </p>
-						<p>SnpEff requires genomic databases<br>(see next section)</p>
+						<p> <a href="http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip" class="btn btn-primary btn-large">Download</a> <p>
+						Old versions <a href="https://sourceforge.net/projects/snpeff/files/" title="Download">here</a>.
+						</p>
 					</div>
 				</div>
+			<br> 
+			<br> 
+			<h3> License </h3>
+			SnpEff is open source, released as "LGPLv3".
+			<br> 
+			<br> 
+			<h3> System requirements </h3>
+			SnpEff requires that you have Java v1.7 or later installed (any modern operating system has it). <br>
+			The amount of memory used can vary significantly depending on genome size and data analysis type you are doing.
+			For large genomes, such as the human genome, you'll probably need at least 4Gb of memory. 
 
-			Old SnpEff, SnpSift and database versions can be found <a href="https://sourceforge.net/projects/snpeff/files/" title="Download">here</a>.<p>
-				
 		</section>
 
         <!-- Install
         ================================================== -->
         <section id="install">
           <div class="page-header">
-            <h1>2. Installing SnpEff </h1>
+            <h1>Installing SnpEff </h1>
           </div>
 				<p class="lead"> Installing SnpEff is very easy, you just have to uncompress the ZIP file </p>
 
-				<p> 
-				It is prefered that you install SnpEff in <code>snpEff</code> directory in your home directory.
-				You may want to change the <code>data_dir</code> parameter in your <code>snpEff.config</code> file.
-				</p>
-
-				How to install:
-				<ul>
-					<li> Unix &amp; OS.X: You can open a terminal and run the following commands
+				<b>How to install using command line (unix systems):</b>
+				<p>
+				It is better if you install SnpEff in <code>snpEff</code> directory in your home directory (<code>$HOME/snpEff</code> in unix systems).
 <pre>
-# Got o home dir
+# Go to home dir
 cd
 
 # Download latest version
@@ -129,20 +134,46 @@ wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
 # Unzip file
 unzip snpEff_latest_core.zip
 </pre>
+				<br>
+				<h3>Configuration</h3>
+				In most cases you <b>DO NOT</b> need to configure anything.
+				<br>
+				<br>
+				The only configuration file is <code>snpEff.config</code>.
+				Most configuration parameters, are explained in the comments in the same config file, so I won't repeat the explanation here :-)
+				<br>
+				<br>
+				Usually you do NOT need to change the configuration.
+				Some peoeple may need to change the location of the databases (<code>data.dir</code> parameter).
+				By default, this parameter points to the <code>data</code> directory where you installed the tool (i.e. in unix systems, this is <code>./data</code>).
+				If you want to change this, you can edit the <code>snpEff.config</code> file and change the <code>data_dir</code> entry:
+<pre>
+#---
+# Databases are stored here
+# E.g.: Information for 'hg19' is stored in data_dir/hg19/
+#
+# You can use tilde ('~') as first character to refer to your home directory. 
+# Also, a non-absolute path will be relative to config's file dir
+# 
+#---
+data.dir = ./data/
+</pre>
 
-					<li> Windows: Double click on the snpEff_latest_core.zip and copy the contents to the directory of your choice. 
-				</ul>
+				<p>
 		</section>
 		
         <!-- Database
         ================================================== -->
         <section id="databases">
           <div class="page-header">
-            <h1>3. Downloading SnpEff databases</h1>
+            <h1>Downloading SnpEff databases</h1>
           </div>
 				<p class="lead">
 				In order to perform annotations, SnpEff automatically downloads and installs genomic database.
 				</p>
+				<i class="icon-warning-sign"></i> By default SnpEff automatically downloads and installs the database for you, so you don't need to do it manually.
+				<br>
+				<br>
 				Databases can be downloaded in three different ways:
 				<ul>
 					<li> The easiest way is to let SnpEff download and install databases automatically
@@ -162,13 +193,59 @@ unzip snpEff_latest_core.zip
         ================================================== -->
         <section id="dbs">
           <div class="page-header">
-            <h1>4. Available databases </h1>
+            <h1>Available databases </h1>
           </div>
 				<p class="lead"> There are over 20,000 databases available.  </p>
 				<p> A list of databases is available in snpEff.config file. </p>
 				<p> You can also see all available databases by running the following command (once SnpEff has been installed): </p>
 				<pre>java -jar snpEff.jar databases</pre>
 		</section>
+
+        <!-- Source code
+        ================================================== -->
+        <section id="source">
+          <div class="page-header">
+            <h1>Source code </h1>
+          </div>
+				<b> Getting the souce:</b> 
+				The source code is in GitHub (although we keep the binary distribution is at SourceForge). 
+				Here is the <code>git</code> command to check out the development version of the code:
+				<br>
+				<br>
+<pre>
+git clone https://github.com/pcingola/SnpEff.git
+
+# If you want to SnpSift as well
+git clone https://github.com/pcingola/SnpSift.git
+</pre>
+				<br>
+				<b>Install required libraries:</b> 
+				Most libraries should be install using Maven, so you just need to run <code>mvn</code> command.
+				<br>
+				<br>
+				<b>Intalling test cases:</b>
+				Test cases require special "test cases databases and genome", you can find them here:
+				<br>
+				<br>
+<pre>
+# Install test databases in SnpEff's development directory (not the soruce code dir!)
+cd $HOME/snpEff
+
+# Download dtabases and genome for test cases
+wget http://sourceforge.net/projects/snpeff/files/databases/test_cases.tgz
+
+# Uncompress
+tar -xvzf test_cases.tgz
+
+# Go to Eclipse's workspace directory (where the source code is)
+cd $HOME/workspace/SnpEff
+
+# Create a link to the 'data' dir, so that we can run test cases within Eclipse
+ln -s $HOME/snpEff/data
+
+# Add data dir to 'gitignore'
+echo "/data" >> .gitignore
+</pre>
     </div>
 
   </div>
