@@ -343,7 +343,7 @@ java -Xmx4g -jar snpEff.jar eff <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37
 				<p><h3>Running from another directory</h3>
 				When you run SnpEff from a different directory than your install directory, you have to specify where the config file is located using the '-c' command line option.
 <pre>
-java -Xmx2g path/to/snpEff/snpEff.jar -c path/to/snpEff/snpEff.config GRCh37.70 path/to/snps.vcf
+java -Xmx4g path/to/snpEff/snpEff.jar -c path/to/snpEff/snpEff.config GRCh37.75 path/to/snps.vcf
 </pre>
 
 				<p><h3>Java memory options</h3>
@@ -659,7 +659,7 @@ Database options:
 				<i class="icon-warning-sign"></i>Although this seems to be the standard definitions of "canonical transcript", there is no warranties that what SnpEff considers a canonical transcript will match exactly what UCSC or ENSEMBL consider a canonical transcript.
 				</p>
 				Example on how to use canonical transcripts annotations:
-<pre> java -Xmx4G -jar snpEff.jar -canon GRCh37.70 file.vcf > file.snpeff.canon.vcf</pre>
+<pre> java -Xmx4G -jar snpEff.jar -canon GRCh37.75 file.vcf > file.snpeff.canon.vcf</pre>
 				<br>
 				In order to get only changes that match your intervals, you can use the command:
 <pre> java -Xmx4G -jar snpEff.jar -fi intervals.bed dm5.30 file.vcf </pre>
@@ -693,7 +693,7 @@ $ java -Xmx4G -jar snpEff.jar eff -d -v -canon GRCh37.66 test.vcf
 				<p>
 				SnpEff allows you to provide a list of transcripts to use for annotations by using the <code>-onlyTr file.txt</code> and providing a file with one transcript ID per line.
 				Any other transcript will be ignored.
-				<pre> java -Xmx4G -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.70 file.vcf > file.snpeff.vcf</pre>
+				<pre> java -Xmx4G -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 file.vcf > file.snpeff.vcf</pre>
 				</p>
 
 				<h3>Upstream and downstream</h3>
@@ -703,7 +703,7 @@ $ java -Xmx4G -jar snpEff.jar eff -d -v -canon GRCh37.66 test.vcf
 				<br>
 				<br>
 				Example: Make upstream and downstream size zero (i.e. do not report any upstream or downstream effect).
-				<pre> java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.70 file.vcf > file.snpeff.vcf</pre>
+				<pre> java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.75 file.vcf > file.snpeff.vcf</pre>
 				</p>
 
 				<h3>Splice site size</h3>
@@ -712,7 +712,7 @@ $ java -Xmx4G -jar snpEff.jar eff -d -v -canon GRCh37.66 test.vcf
 				<br>
 				<br>
 				Example: Make splice sites four bases long
-				<pre> java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.70 file.vcf > file.snpeff.vcf</pre>
+				<pre> java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 file.vcf > file.snpeff.vcf</pre>
 				</p>
 
 				<h3>Adding your own annotations</h3>
@@ -1074,7 +1074,7 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 # Note: Form version 4.0 onwards, the '-lof' command line option is not needed
 java –Xmx4g -jar snpEff.jar –v \
 	-lof \
-	GRCh37.68 \
+	GRCh37.75 \
 	file.vcf.gz > file.eff.vcf
 </pre>
 
@@ -1349,7 +1349,7 @@ Patient_04_Germline	Patient_04_Somatic
 				<br>
 				E.g. In our example, the file name is 'samples_cancer.txt', so the command line would look like this:
 <pre>
-java -Xmx4g -jar snpEff.jar eff -v -cancer -canceSample samples_cancer.txt GRCh37.70 cancer.vcf > cancer.snpeff.vcf 
+java -Xmx4g -jar snpEff.jar eff -v -cancer -canceSample samples_cancer.txt GRCh37.75 cancer.vcf > cancer.snpeff.vcf 
 </pre>
 				<br>
 				<br>
@@ -1382,7 +1382,7 @@ java -Xmx4g -jar snpEff.jar eff -v -cancer -canceSample samples_cancer.txt GRCh3
 				By default SnpEff does not perform them because they computationally intensive. 
 				So your command line would be:
 
-				<pre> java -Xmx4g -jar snpEff.jar eff -v -cancer GRCh37.70 cancer.vcf > cancer.snpeff.vcf </pre>
+				<pre> java -Xmx4g -jar snpEff.jar eff -v -cancer GRCh37.75 cancer.vcf > cancer.snpeff.vcf </pre>
 
 				<br>
 				<i class="icon-hand-right"></i> HGVS notations seems to be preferred in the clinical and cancer community. 
@@ -1490,7 +1490,7 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				For instance, for human genome:
 <pre>
 $ cd ~/snpEff
-$ cd data/GRCh37.70/
+$ cd data/GRCh37.75/
 $ ls -al
 total 2399156
 drwxr-xr-x    2 pcingola pcingola       4096 Feb 11 22:01 .
@@ -1516,7 +1516,7 @@ drwxr-xr-x 2472 pcingola pcingola     122880 Feb 11 19:55 ..
 				<br>
 				E.g. To use 'HeLa-S3' and 'NHEK' tracks, you can run:
 <pre>
-java -Xmx4g -jar snpEff.jar eff -reg HeLa-S3 -reg NHEK GRCh37.70 in.vcf > out.vcf
+java -Xmx4g -jar snpEff.jar eff -reg HeLa-S3 -reg NHEK GRCh37.75 in.vcf > out.vcf
 </pre>
 				<br>
 				<i class="icon-hand-right"></i> You can use <code>-onlyReg</code> command line option to perform only regulatory annotations (i.e. coding annotations will be omitted).
@@ -1590,7 +1590,7 @@ wget http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz
 tar -xvzf epigenome_latest.tgz
 
 # Annotate using SnpEff and "-interval" command line
-java -Xmx4g -jar snpEff.jar eff -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.71 test.vcf > test.eff.vcf 
+java -Xmx4g -jar snpEff.jar eff -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.eff.vcf 
 
 # See the data represented as "CUSTOM" EFF fields
 $ grep CUSTOM test.eff.vcf 
