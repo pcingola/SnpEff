@@ -55,8 +55,8 @@ do
 	short=`../scripts/file2GenomeName.pl $gtf | cut -f 5`
 	echo ANNOTATIONS: $short
 
-	echo mkdir -p data/$short
-	echo cp $gtf data/$short/genes.gtf.gz
+	mkdir -p data/$short
+	cp $gtf data/$short/genes.gtf.gz
 done
  
 # Reference genomes files
