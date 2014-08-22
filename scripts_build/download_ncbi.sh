@@ -33,7 +33,7 @@ do
 
 	# Collapse all fine into one 
 	cd $dir
-	cat *.gbk > genes.gb
+	cat *.gbk > genes.gbk
 	cd - > /dev/null
 done
 
