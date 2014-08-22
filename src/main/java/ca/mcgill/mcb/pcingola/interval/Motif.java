@@ -20,7 +20,8 @@ public class Motif extends Marker {
 	public static final double SCORE_THRESHOLD = 0.010;
 	public static final boolean debug = false;
 
-	String pwmId, pwmName;
+	String pwmId;
+	String pwmName;
 	Pwm pwm;
 
 	public Motif() {
@@ -98,7 +99,6 @@ public class Motif extends Marker {
 
 	/**
 	 * Create a string to serialize to a file
-	 * @return
 	 */
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {

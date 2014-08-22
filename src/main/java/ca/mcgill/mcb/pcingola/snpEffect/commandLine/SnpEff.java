@@ -468,7 +468,7 @@ public class SnpEff implements CommandLine {
 					motif.setPwm(pwm);
 					snpEffectPredictor.add(motif);
 					countAddded++;
-				} else Timer.showStdErr("Cannot find PWM for motif '" + motif.getId() + "'");
+				} else if (verbose) Timer.showStdErr("Cannot find PWM for motif '" + motif.getPwmId() + "'");
 			}
 
 		if (verbose) Timer.showStdErr("\tMotif database: " + countAddded + " markers loaded.");
