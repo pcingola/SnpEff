@@ -61,7 +61,7 @@
 <header class="jumbotron subhead" id="overview">
   <div class="container">
     <h1>SnpEff</h1>
-    <p class="lead">Usage (protocol) examples.</p>
+    <p class="lead">Usage examples.</p>
   </div>
 </header>
 
@@ -74,9 +74,11 @@
       <div class="span3 bs-docs-sidebar">
         <ul class="nav nav-list bs-docs-sidenav">
           <li><a href="#intro"><i class="icon-chevron-right"></i> Materials</a></li>
-          <li><a href="#ex1"><i class="icon-chevron-right"></i> Example 1: Coding variants</a></li>
-          <li><a href="#int"><i class="icon-chevron-right"></i> Software Integration </a></li>
-          <li><a href="#ex2"><i class="icon-chevron-right"></i> Example 2: Non-Coding variants</a></li>
+          <li><a href="#exCoding"><i class="icon-chevron-right"></i> Example 1: Coding variants</a></li>
+          <li><a href="#exIntegr"><i class="icon-chevron-right"></i> Example 2:Software Integration </a></li>
+          <li><a href="#exNonCoding"><i class="icon-chevron-right"></i> Example 3: Non-Coding variants</a></li>
+          <li><a href="#exSeqData"><i class="icon-chevron-right"></i> Example 4: Sequencing data analysis</a></li>
+          <li><a href="#exFilter"><i class="icon-chevron-right"></i> Example 5: Filter variants (dbSnp)</a></li>
         </ul>
       </div>
       <div class="span9">
@@ -86,7 +88,7 @@
         ================================================== -->
         <section id="intro">
           <div class="page-header">
-            <h1>1. Materials</h1>
+            <h1>Materials</h1>
           </div>
 				<p class="lead">
 				In this protocol we show how to analyze genomic variants using the SnpEff pipeline.
@@ -143,11 +145,11 @@ java -jar snpEff.jar databases
 				</p>
         </section>
 
-        <!-- Example 1
+        <!-- Example : Coding
         ================================================== -->
-        <section id="ex1">
+        <section id="exCoding">
           <div class="page-header">
-            <h1>2. Example: Coding variants</h1>
+            <h1>Example 1: Coding variants</h1>
           </div>
 				<p class="lead"> We show how to use SnpEff & SnpSitf to annotate, prioritize and filter coding variants.<p>
 
@@ -487,11 +489,11 @@ cat protocols/ex1.eff.cc.clinvar.vcf \
 				<br>
 				</p>
 
-        <!-- Integration
+        <!-- Example: Integration
         ================================================== -->
-        <section id="int">
+        <section id="exIntegr">
           <div class="page-header">
-            <h1>3. Software Integration (Optional) </h1>
+            <h1>Example 2: Software Integration (GATK &amp; Galaxy) </h1>
           </div>
 				<br>
 				Software Integration (Optional): Sequence analysis software is often run in high performance computers combining several programs into processing pipelines. 
@@ -554,11 +556,11 @@ java -Xmx4g -jar $HOME/tools/gatk/GenomeAnalysisTK.jar \
 			</p>
         </section>
 
-        <!-- Example 2
+        <!-- Example: Non-Coding
         ================================================== -->
-        <section id="ex2">
+        <section id="exNonCoding">
           <div class="page-header">
-            <h1>4. Example: Non-Coding variants</h1>
+            <h1>Example 3: Non-Coding variants</h1>
           </div>
 				<p class="lead"> We show how to use SnpEff & SnpSitf to annotate, prioritize and filter non-coding variants.<p>
 
@@ -651,11 +653,11 @@ cat protocols/ex2.eff.cons.vcf \
 				<br>
         </section>
 
-        <!-- Example 3: Sequence data analysis
+        <!-- Example: Sequencing data analysis
         ================================================== -->
-        <section id="seqData">
+        <section id="exSeqData">
           <div class="page-header">
-            <h1>5. Example: Sequence data analysis</h1>
+            <h1>Example 4: Sequencing data analysis</h1>
           </div>
 				<p class="lead"> Here we show an example on how to get from Sequencing data to an annotated variants file </p>
 
@@ -702,11 +704,11 @@ java -Xmx4g -jar snpEff.jar dm5.34 s.vcf > s.eff.vcf
 				</p>
         </section>
 
-        <!-- Example 3: Sequence data analysis
+        <!-- Example: Filter out SNPs from dbSnp
         ================================================== -->
-        <section id="seqData">
+        <section id="exFilter">
           <div class="page-header">
-			<h1>6. Advanced example: Filter out SNPs from dbSnp </h1>
+			<h1>Example 5: Filter out variants (dbSnp) </h1>
           </div>
 				<p class="lead"> Here we show an example on how to get from Sequencing data to an annotated variants file </p>
 
