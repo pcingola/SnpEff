@@ -695,13 +695,13 @@ samtools mpileup -uf dm5.34.fasta s_sort.bam | bcftools view -vcg - > s.vcf
 java -Xmx4g -jar snpEff.jar dm5.34 s.vcf > s.eff.vcf
 </pre>
 
-				This highly simplified sequencing data analysis pipeline, has these basic steps
-				<ol>
+				This highly simplified sequencing data analysis pipeline, has the common basic steps
+				<ul>
 					<li> Index the reference genome (bwa)
 					<li> Map reads to reference genome (bwa)
 					<li> Call variants (bcftools)
 					<li> Annotate variants (SnpEff)
-				</ol>
+				</ul>
 				</p>
         </section>
 
