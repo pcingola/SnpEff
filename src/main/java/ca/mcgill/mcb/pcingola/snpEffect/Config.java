@@ -190,7 +190,7 @@ public class Config implements Serializable, Iterable<String> {
 			if (urlsb.charAt(urlRoot.length() - 1) != '/') urlsb.append("/");
 
 			// It is in a bundle?
-			String bundleName = bundleByGenome.get(genomeVer);
+			String bundleName = getBundleName(genomeVer);
 			if (bundleName != null) urlsb.append("v" + version + "/snpEff_v" + version + "_" + bundleName + ".zip");
 			else urlsb.append("v" + version + "/snpEff_v" + version + "_" + genomeVer + ".zip");
 
@@ -226,6 +226,13 @@ public class Config implements Serializable, Iterable<String> {
 	 */
 	public String getBaseFileNameRegulation() {
 		return getDirDataVersion() + "/regulation";
+	}
+
+	/**
+	 * Is this genome packed in a bundle?
+	 */
+	public String getBundleName(String genomeVer) {
+		return bundleByGenome.get(genomeVer);
 	}
 
 	/**

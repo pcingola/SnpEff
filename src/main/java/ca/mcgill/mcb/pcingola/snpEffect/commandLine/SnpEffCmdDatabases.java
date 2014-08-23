@@ -8,10 +8,10 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Show all databases configures in snpEff.config
- * 
+ *
  * Create an HTML 'download' table based on the config file
  * Also creates a list of genome for Galaxy menu
- * 
+ *
  * @author pablocingolani
  */
 public class SnpEffCmdDatabases extends SnpEff {
@@ -162,22 +162,26 @@ public class SnpEffCmdDatabases extends SnpEff {
 	 * Create TXT table
 	 */
 	void txtTable() {
-		System.out.println(String.format("%-60s\t%-60s\t%-10s\t%s", "Genome", "Organism", "Status", "Database download link"));
-		System.out.println(String.format("%-60s\t%-60s\t%-10s\t%s", "------", "--------", "------", "----------------------"));
+		System.out.println(String.format("%-60s\t%-60s\t%-10s%-30s\t%s", "Genome", "Organism", "Status", "Bundle", "Database download link"));
+		System.out.println(String.format("%-60s\t%-60s\t%-10s%-30s\t%s", "------", "--------", "------", "------", "----------------------"));
 
 		for (String genomeVer : genVerSorted) {
 			String name = nameByGenomeVer.get(genomeVer);
 
 			// Download link
 			String url = config.downloadUrl(genomeVer).toString();
-			// "http://sourceforge.net/projects/snpeff/files/databases/v" + SnpEff.VERSION_MAJOR + "/snpEff_v" + SnpEff.VERSION_MAJOR + "_" + name + ".zip";
 
+			// Bundle name
+			String bundle = config.getBundleName(genomeVer);
+			if (bundle == null) bundle = "";
+
+			// Check database file
 			String database = config.getDirData() + "/" + genomeVer + "/snpEffectPredictor.bin";
 			String status = "";
 			if (Gpr.canRead(database)) status = "OK";
 
 			// Show
-			System.out.println(String.format("%-60s\t%-60s\t%-10s\t%s", genomeVer, name, status, url));
+			System.out.println(String.format("%-60s\t%-60s\t%-10s%-30s\t%s", genomeVer, name, status, bundle, url));
 		}
 	}
 
