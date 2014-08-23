@@ -18,7 +18,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
  * This class creates a random set of chromosomes, genes, transcripts and exons
- * 
+ *
  * @author pcingola
  */
 public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
@@ -70,9 +70,6 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 
 	/**
 	 * Create a transcript
-	 * @param gene
-	 * @param trId
-	 * @return
 	 */
 	Transcript createTranscript(Gene gene, String trId) {
 		int start = gene.getStart(), end = gene.getEnd();

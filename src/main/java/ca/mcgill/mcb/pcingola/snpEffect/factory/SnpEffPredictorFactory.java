@@ -278,7 +278,8 @@ public abstract class SnpEffPredictorFactory {
 		for (Gene gene : genome.getGenes())
 			for (Transcript tr : gene) {
 				if (tr.getCds() != null && !tr.getCds().isEmpty()) {
-					if (!tr.isProteinCoding()) {
+					// If transcript doesn't have protein coding flag set (and doesn't have biotype information), use CDS as a proxy for 'protein coding'
+					if (!tr.isProteinCoding() && (tr.getBioType() == null || tr.getBioType().isEmpty())) {
 						tr.setProteinCoding(true);
 						i++;
 						if (debug) System.err.println("\t\tMarking as protein coding transcript " + tr.getId());

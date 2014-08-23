@@ -146,20 +146,20 @@ th a:active, th a:hover {
 <table class="toc"><tr><td>
 	<center><b>Contents</b></center>
 	<a href="#summary">Summary</a><br>
-	<a href="#changeRateChr"> Change rate by chromosome</a><br>
+	<a href="#changeRateChr"> Variant rate by chromosome</a><br>
 	<a href="#changesByType">Variants by type</a><br>
 	<a href="#effectsImpact"> Number of variants by impact </a><br>
 	<a href="#effectsImpact"> Number of variants by functional class </a><br>
 	<a href="#effects"> Number of variants by effect </a><br>
 	<a href="#quality">Quality histogram</a><br>
 	<a href="#indels">InDel length histogram</a><br>
-	<a href="#baseChages">Base change table</a><br>
+	<a href="#baseChages">Base variant table</a><br>
 	<a href="#tstv">Transition vs transversions (ts/tv)</a><br>
 	<a href="#alleleFreq"> Allele frequency </a><br>
 	<a href="#alleleCount"> Allele Count </a><br>
 	<a href="#codonChanges"> Codon change table </a><br>
 	<a href="#aaChanges"> Amino acid change table </a><br>
-	<a href="#chrChanges"> Chromosome change plots </a><br>
+	<a href="#chrChanges"> Chromosome variants plots </a><br>
 	<a href="${genesFile}"> Details by gene </a><br>
 </tr></td></table>
 </div>
@@ -245,25 +245,25 @@ th a:active, th a:hover {
 		<td> ${variantStats.genomeLenEffective} </td>
 	</tr>
 	<tr bgcolor=ffffff>
-		<td valign=top> <b> Change rate </b> </td>
-		<td> 1 change every ${variantStats.rateOfChange} bases </td>
+		<td valign=top> <b> Variant rate </b> </td>
+		<td> 1 variant every ${variantStats.rateOfChange} bases </td>
 	</tr>
 </table>
 <p>
 </center>
 
 <!--==========================================================================
-	Change rate by chromosome
+	Variant rate by chromosome
 	========================================================================== -->
 
 <hr> 
 <a name="changeRateChr"> 
 
 <center>
-<b> Change rate details </b><p>
+<b> Variants rate details </b><p>
 
 <table border=1>
-	<tr><th> Chromosome </th><th> Length </th><th> Changes </th><th> Change rate </th></tr> 
+	<tr><th> Chromosome </th><th> Length </th><th> Variants </th><th> Variants rate </th></tr> 
 	<#list variantStats.chromosomeNamesEffective as chr> 
 		<tr>
 			<td> ${chr} </td>
@@ -282,13 +282,13 @@ th a:active, th a:hover {
 </center>
 
 <!--==========================================================================
-	Changes by type
+	Variantss by type
 	========================================================================== -->
 
 <hr> 
 <a name="changesByType"> 
 <center>
-<b> Number changes by type</b><p>
+<b> Number variantss by type</b><p>
 
 <table border=1>
 	<thead>
@@ -585,20 +585,20 @@ Missense / Silent ratio: </th><td class="numeric"> ${changeStats.silentRatio?str
 </center>
 
 <!--==========================================================================
-	Chromosome change table
+	Chromosome variants table
 	========================================================================== -->
 
 <#if chromoPlots>
 <hr> 
 <a name="chrChanges">
 <center>
-<b> Changes by chromosome</b><p> 
+<b> Variants by chromosome</b><p> 
 
 <center>
 <#list variantStats.chromosomeNamesEffective as chr> 
 	<#assign chrStats = variantStats.getChrPosStats(chr)>
 	<pre>
-		<img src="${chrStats.toStringHistoPlot("Changes histogram: " + chr, "Position", "Changes")}"><br>
+		<img src="${chrStats.toStringHistoPlot("Variants histogram: " + chr, "Position", "Variants")}"><br>
 		${chrStats}
 	</pre>
 </#list>
@@ -606,7 +606,7 @@ Missense / Silent ratio: </th><td class="numeric"> ${changeStats.silentRatio?str
 </#if>
 
 <!--==========================================================================
-	Changes by gene 
+	Variants by gene 
 	========================================================================== -->
 
 <center>

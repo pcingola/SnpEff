@@ -19,9 +19,9 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * This class creates a SnpEffectPredictor from a GTF 2.2 file
- * 
+ *
  * References: http://mblab.wustl.edu/GTF22.html
- * 
+ *
  * @author pcingola
  */
 public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
@@ -37,14 +37,6 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 
 	/**
 	 * Add a new interval to SnpEffect predictor
-	 * @param id
-	 * @param type
-	 * @param chromo
-	 * @param start
-	 * @param end
-	 * @param strandMinus
-	 * @param name
-	 * @param parent
 	 */
 	void addInterval(String id, String type, String chromo, int start, int end, boolean strandMinus, String geneId, String geneName, String transcriptId, boolean proteinCoding, String geneBioType, String trBioType, int frame) {
 		// Get chromosome
@@ -200,8 +192,6 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 
 	/**
 	 * Parse attributes
-	 * @param attrs
-	 * @return
 	 */
 	HashMap<String, String> parseAttributes(String attrStr) {
 		HashMap<String, String> keyValues = new HashMap<String, String>();
