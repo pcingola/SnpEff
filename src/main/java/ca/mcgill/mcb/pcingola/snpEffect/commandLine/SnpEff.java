@@ -29,7 +29,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
- * Command line program
+ * SnpEff's main command line program
  *
  * @author pcingola
  */
