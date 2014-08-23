@@ -44,10 +44,10 @@ string{} built
 #-------------------------------------------------------------------------------
 # Add a build command
 #-------------------------------------------------------------------------------
-bool addBuild(string type, string genome) {
+bool addBuild(string genome) {
 	string dir = "$dirData/$genome"
 	string db = "$dir/snpEffectPredictor.bin"
-	string[] geneFiles = dir.dir("genes.*") 
+	string[] geneFiles = dir.dirPath(".*/genes.*") 
 
 	# No 'genes' file? Error
 	if( geneFiles.isEmpty() ) {
@@ -59,10 +59,10 @@ bool addBuild(string type, string genome) {
 	if( built.hasKey(genome) ) {
 		print("INFO : Genome $genome already built\n")
 	} else if( db <- geneFile ) {
-		print("BUILD:\t$type\t$genome\n")
-		task $snpeffBuild -$type $genome 2>&1 | tee $dirBuild/build.$genome.out
+		print("BUILD:\t$genome\tgeneFile: $geneFile\tdb: $db\n")
+		task $snpeffBuild $genome 2>&1 | tee $dirBuild/build.$genome.out
 	} else {
-		print("OK  :\t$type\t$genome\n")
+		print("OK  :\t$genome\tgeneFile: $geneFile\tdb: $db\n")
 	}
 
 	# Mark as built
@@ -78,43 +78,15 @@ bool buildDbAll() {
 	print("Build: Start\n")
 	dirBuild.mkdir()	# Make sure build dir exists
 	
-	# Special cases
-	addBuild("refseq", "hg19")
-	addBuild("knowngenes", "hg19kg")
-	addBuild("gff2", "amel2")
-
 	# Look into all directories
 	print("Available databases:\n")
-	string dbids = sys $snpeff databases | cut -f 1 | tail -n +3
+	string dbids = sys $snpeff databases | cut -f 1 | tail -n +3 
 
 	print("Building:\n")
 	for(string genome : dbids.lines()  ) {
-
-		# Get genome name and genes file
 		genome = genome.trim().baseName()
-		string dir = "$dirData/$genome"
-		string[] geneFiles = dir.dir("genes.*")
-
-		if( ! geneFiles.isEmpty() ) {
-			# Find genes' file type
-			string geneFile = geneFiles.head()
-			geneFile = geneFile.baseName(".gz")
-
-			# Get type from gene's file extention
-			string type = geneFile.extName()
-
-			# Convert type names
-			if( type == "gtf" )			{ type = "gtf22" }
-			else if( type == "gff" )	{ type = "gff3" }
-			else if( type == "gb" )		{ type = "genbank" }
-
-			# Build
-			addBuild(type, genome)
-		} else {
-			warning("No genes file found for '$genome', dir '$dir'\n")
-		}
+		addBuild(genome)
 	}
-
 	wait
 
 	# Create build summary
