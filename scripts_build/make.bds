@@ -23,14 +23,14 @@ dirDarned			:="$dirDb/darned/"
 pwmsBin				:="$dirDb/jaspar/pwms.bin"
 
 # Program parameters and switches
-buildDb				:= false		# Build databases
-buildTests 			:= false		# Build databases used in test cases
+bundleLists			:= false		# Create bundle lists and config entries
+config				:= false		# Create config file
+db					:= false		# Build databases
 distro	 			:= false		# Create distribution files
 download 			:= false		# Download files
 make	 			:= false		# Make (build JAR files)
-makeBundleLists		:= false		# Create bundle lists and config entries
-makeConfig			:= false		# Create config file
 test	 			:= false		# Run test cases
+testDb				:= false		# Build databases used in test cases
 upload	 			:= false		# Upload for distribution
 
 # Genome bundles
@@ -75,6 +75,68 @@ bool addBuild(string genome) {
 	# Mark as built
 	built{genome} = genome
 	return( true )
+}
+
+#-------------------------------------------------------------------------------
+# Build JAR files (compile)
+#-------------------------------------------------------------------------------
+
+void build() {
+	buildConfig()
+	sys ./scripts_build/make.sh
+}
+
+#-------------------------------------------------------------------------------
+# Build bundle lists
+#-------------------------------------------------------------------------------
+
+void buildBundleLists() {
+	println "Make bundle lists:"
+
+	# Remove old bundle definitions
+	sys rm -vf config/snpEff.bundles.*.config
+
+	for( string bundle : bundles ) {
+		println "Creating bundles '$bundle'"
+		sys cat config/snpEff.$bundle.config | cut -f 1 -d : | grep ".genome" | sed "s/.genome\s*//" | tr -d " " > snpEff.bundles.$bundle.genomes.txt
+		sys ./scripts_build/createBundles.pl snpEff.bundles.$bundle.genomes.txt $bundle > config/snpEff.bundles.$bundle.config
+	}
+
+	# We must rebuild config file
+	buildConfig()
+}
+
+#-------------------------------------------------------------------------------
+# Build configuration file (snpEff.config)
+#-------------------------------------------------------------------------------
+
+void buildConfig() {
+	sys cat config/snpEff.core.config \
+			config/snpEff.dbs.config \
+			config/snpEff.test.config \
+			config/snpEff.ENSEMBL_70.config \
+			config/snpEff.ENSEMBL_71.config \
+			config/snpEff.ENSEMBL_72.config \
+			config/snpEff.ENSEMBL_73.config \
+			config/snpEff.ENSEMBL_74.config \
+			config/snpEff.ENSEMBL_75.config \
+			config/snpEff.ENSEMBL_76.config \
+			config/snpEff.ENSEMBL_BFMPP_21.config \
+			config/snpEff.ENSEMBL_BFMPP_22.config \
+			config/snpEff.NCBI_bacterial.config \
+			config/snpEff.etc.config \
+			config/snpEff.bundles.*.config \
+			> snpEff.config
+}
+
+#-------------------------------------------------------------------------------
+# Build all databases
+#-------------------------------------------------------------------------------
+
+void buildDb() {
+	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
+	buildDbAll()
+	buildDbSpecial()
 }
 
 #-------------------------------------------------------------------------------
@@ -204,34 +266,18 @@ void downloadAll() {
 }
 
 #-------------------------------------------------------------------------------
-# Main
+# Create distribution files
 #-------------------------------------------------------------------------------
 
-print("Building...\n")
-
-# Create JAR files
-if( make ) {
-	sys ./scripts_build/make_config.sh
-	sys ./scripts_build/make.sh
+void makeDistro() {
+	sys ./scripts_build/distro.sh
 }
 
-# Perform downloads
-if( download ) downloadAll()
+#-------------------------------------------------------------------------------
+# RUn test cases
+#-------------------------------------------------------------------------------
 
-# Build genomes
-if( buildDb ) {
-	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
-	buildDbAll()
-	buildDbSpecial()
-}
-
-# Build databases used in test cases
-if( buildTests ) {
-	buildDbTest()
-}
-
-# Run test cases 
-if( test ) {
+void runTests() {
 	# Run SnpSift test cases
 	sys cd $HOME/workspace/SnpSift/ ; \
 		java -Xmx4g \
@@ -251,48 +297,29 @@ if( test ) {
 			| tee $dirSnpeff/testCases.snpeff.txt
 }
 
-# Create bundle list and config files
-if( makeBundleLists ) {
-	println "Make bundle lists:"
+#-------------------------------------------------------------------------------
+# Upload binary files
+#-------------------------------------------------------------------------------
 
-	# Remove old bundle definitions
-	sys rm -vf config/snpEff.bundles.*.config
-
-	for( string bundle : bundles ) {
-		println "Creating bundles '$bundle'"
-		sys cat config/snpEff.$bundle.config | cut -f 1 -d : | grep ".genome" | sed "s/.genome\s*//" | tr -d " " > snpEff.bundles.$bundle.genomes.txt
-		sys ./scripts_build/createBundles.pl snpEff.bundles.$bundle.genomes.txt $bundle > config/snpEff.bundles.$bundle.config
-	}
-
-	# We need to rebuild config file
-	makeConfig = true
+void uploadSf() {
+	sys ./scripts_build/uploadSourceForge.sh
 }
 
-# Create config file
-if( makeConfig ) {
-	sys cat config/snpEff.core.config \
-			config/snpEff.dbs.config \
-			config/snpEff.test.config \
-			config/snpEff.ENSEMBL_70.config \
-			config/snpEff.ENSEMBL_71.config \
-			config/snpEff.ENSEMBL_72.config \
-			config/snpEff.ENSEMBL_73.config \
-			config/snpEff.ENSEMBL_74.config \
-			config/snpEff.ENSEMBL_75.config \
-			config/snpEff.ENSEMBL_76.config \
-			config/snpEff.ENSEMBL_BFMPP_21.config \
-			config/snpEff.ENSEMBL_BFMPP_22.config \
-			config/snpEff.NCBI_bacterial.config \
-			config/snpEff.etc.config \
-			config/snpEff.bundles.*.config \
-			> snpEff.config
-}
+#-------------------------------------------------------------------------------
+# Main
+#-------------------------------------------------------------------------------
 
-# Create distribution files
-if( distro ) sys ./scripts_build/distro.sh
+print("Building\n")
 
-# Upload files
-if( upload ) sys ./scripts_build/uploadSourceForge.sh
+if( make )			build()					# Create JAR files
+if( download )		downloadAll()			# Perform downloads
+if( db )			buildDb()				# Build genomes
+if( testDb )		buildDbTest()			# Build databases used in test cases
+if( test )			runTests()				# Run test cases 
+if( bundleLists )	buildBundleLists()		# Create bundle list and config files
+if( config )		buildConfig()			# Create config file
+if( distro )		makeDistro()			# Create distribution files
+if( upload )		uploadSf()				# Upload files
 
 wait
-print("Done!\n")
+print("Done\n")
