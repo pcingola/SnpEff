@@ -36,14 +36,10 @@ upload	 			:= false		# Upload for distribution
 # Configuration parameters
 version				:= "4.0"
 subversion			:= ""
-versionUnd			:= version
-
-
-# HUman and mouse versions
-GRCH=GRCh38
-GRCM=GRCm38
+versionUnd			:= version.replace("\.","_")
 bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22"]
 
+# Wget parameters
 wget_wait			:= 1								# Wait a few moments between file downloads (to avoid saturating the server)
 wget				:= "wget --wait=$wget_wait -r -nc "	# Wget command line
 
@@ -330,14 +326,14 @@ void zipBundles() {
 
 		string[] bins
 		for( string gen : bfields[1].split(' ') ) {
-			bins.add( "$dirSnpeff/$gen/snpEffectPredictor.bin" )
+			bins.add( "$dirData/$gen/snpEffectPredictor.bin" )
 		}
 
+		# Zip files
 		zipList := bins.join(' ')
 		zipName := "snpEff_v" + version + "_" + bname + ".zip"
-		task $bname.bundle.zip
+		task zip $zipName $zipList
 	}
-
 }
 
 #-------------------------------------------------------------------------------
