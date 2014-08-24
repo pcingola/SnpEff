@@ -267,7 +267,8 @@ void downloadAll() {
 
 void makeDistro() {
 	zipCore()
-	#zipBundles()
+	zipDbs()
+	zipBundles()
 }
 
 #-------------------------------------------------------------------------------
@@ -354,6 +355,24 @@ void zipCore() {
 #-------------------------------------------------------------------------------
 
 void zipDbs() {
+	println "Create database ZIP files"
+	dbs := sys $snpeff databases | cut -f 1,4
+
+	for( string db : dbs.lines() ) {
+		fields := db.split('\t')
+		gen := fields[0].trim()
+		bundle := fields[1].trim()
+
+		if( bundle.isEmpty() ) {
+			bin := "data/$gen/snpEffectPredictor.bin"
+
+			if( bin.exists() ) {
+				zip := "snpEff_v" + versionUnd + "_$gen.zip"
+				println "\tCreate ZIP '$zip'"
+				task zip -r $zip data/$gen/*.bin
+			}
+		}
+	}
 }
 
 #-------------------------------------------------------------------------------
