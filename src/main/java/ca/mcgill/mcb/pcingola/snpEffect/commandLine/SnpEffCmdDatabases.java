@@ -162,8 +162,8 @@ public class SnpEffCmdDatabases extends SnpEff {
 	 * Create TXT table
 	 */
 	void txtTable() {
-		System.out.println(String.format("%-60s\t%-60s\t%-10s%-30s\t%s", "Genome", "Organism", "Status", "Bundle", "Database download link"));
-		System.out.println(String.format("%-60s\t%-60s\t%-10s%-30s\t%s", "------", "--------", "------", "------", "----------------------"));
+		System.out.println(String.format("%-60s\t%-60s\t%-10s\t%-30s\t%s", "Genome", "Organism", "Status", "Bundle", "Database download link"));
+		System.out.println(String.format("%-60s\t%-60s\t%-10s\t%-30s\t%s", "------", "--------", "------", "------", "----------------------"));
 
 		for (String genomeVer : genVerSorted) {
 			String name = nameByGenomeVer.get(genomeVer);
@@ -181,7 +181,7 @@ public class SnpEffCmdDatabases extends SnpEff {
 			if (Gpr.canRead(database)) status = "OK";
 
 			// Show
-			System.out.println(String.format("%-60s\t%-60s\t%-10s%-30s\t%s", genomeVer, name, status, bundle, url));
+			System.out.println(String.format("%-60s\t%-60s\t%-10s\t%-30s\t%s", genomeVer, name, status, bundle, url));
 		}
 	}
 
