@@ -33,18 +33,19 @@ while( $gen = <GEN> ) {
 	$bin = "$dataDir/$gen/snpEffectPredictor.bin";
 
 	# Calculate 'bin' file size (in MB)
-	my($du) = `du -m $bin`;
+	my($du) = `du -m $bin 2> /dev/null`;
 	if( $du =~ /(\d+)\s+(.*)/ ) {
 		$size = $1;
 		print "bundles{$bundleName}\t|$gen|\t|$bin|\t|$size|\t$sum\n" if $debug;
 	} else { 
 		$size = $avgSize;
-		print STDERR "No match for genome '$gen'";
+		print STDERR "No match for genome '$gen'" if $debug;
 	}
 
 	# Add to bundle
 	if( $sum > $bundleSize ) {
 		# Create bundle
+		print STDERR "\tCreating $bundleName.bundle\n";
 		print "$bundleName.bundle : $bundles{$bundleName}\n";
 
 		# Prepare for new bundle
@@ -64,4 +65,5 @@ while( $gen = <GEN> ) {
 }
 
 # Create last bundle
+print STDERR "\tCreating $bundleName.bundle\n";
 print "$bundleName.bundle : $bundles{$bundleName}\n";

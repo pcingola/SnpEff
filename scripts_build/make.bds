@@ -6,40 +6,41 @@
 #
 #-------------------------------------------------------------------------------
 
+
 # Commands
-snpeff					:= "java -Xmx10G -jar snpEff.jar "
-snpeffXl				:= "java -Xmx50G -jar snpEff.jar "
-snpeffBuild				:= "$snpeff build -v"
+snpeff				:= "java -Xmx10G -jar snpEff.jar "
+snpeffXl			:= "java -Xmx50G -jar snpEff.jar "
+snpeffBuild			:= "$snpeff build -v"
 
 # Directories
-dirSnpeff				:="$HOME/snpEff"
-dirData					:="$dirSnpeff/data"
-dirDownload				:="$dirSnpeff/download"
-dirZip					:="$dirSnpeff/zip"
-dirBuild				:="$dirSnpeff/build"
-dirDb					:="$dirSnpeff/db"
-dirDarned				:="$dirDb/darned/"
-pwmsBin					:="$dirDb/jaspar/pwms.bin"
+dirSnpeff			:="$HOME/snpEff"
+dirData				:="$dirSnpeff/data"
+dirDownload			:="$dirSnpeff/download"
+dirZip				:="$dirSnpeff/zip"
+dirBuild			:="$dirSnpeff/build"
+dirDb				:="$dirSnpeff/db"
+dirDarned			:="$dirDb/darned/"
+pwmsBin				:="$dirDb/jaspar/pwms.bin"
 
 # Program parameters and switches
-buildDb					:= false		# Build databases
-buildTests 				:= false		# Build databases used in test cases
-distro	 				:= false		# Create distribution files
-download 				:= false		# Download files
-make	 				:= false		# Make (build JAR files)
-makeBundleLists			:= false		# Create bundle lists and config entries
-makeConfig				:= false		# Create config file
-test	 				:= false		# Run test cases
-upload	 				:= false		# Upload for distribution
+buildDb				:= false		# Build databases
+buildTests 			:= false		# Build databases used in test cases
+distro	 			:= false		# Create distribution files
+download 			:= false		# Download files
+make	 			:= false		# Make (build JAR files)
+makeBundleLists		:= false		# Create bundle lists and config entries
+makeConfig			:= false		# Create config file
+test	 			:= false		# Run test cases
+upload	 			:= false		# Upload for distribution
 
 # Genome bundles
-bundles					:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22"]
+bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22"]
 
-int	wget_wait			:= 1								# Wait a few moments between file downloads (to avoid saturating the server)
-string wget				:= "wget --wait=$wget_wait -r -nc "	# Wget command line
+wget_wait			:= 1								# Wait a few moments between file downloads (to avoid saturating the server)
+wget				:= "wget --wait=$wget_wait -r -nc "	# Wget command line
 
 # Output files
-string buildSummary		:= "build.out"
+buildSummary		:= "build.out"
 
 #-------------------------------------------------------------------------------
 # Variables
@@ -231,33 +232,36 @@ if( buildTests ) {
 
 # Run test cases 
 if( test ) {
-
 	# Run SnpSift test cases
 	sys cd $HOME/workspace/SnpSift/ ; \
 		java -Xmx4g \
-			-cp $DIR/SnpSift.jar \
+			-cp $dirSnpeff/SnpSift.jar \
 			org.junit.runner.JUnitCore \
 			ca.mcgill.mcb.pcingola.snpSift.testCases.TestSuiteAll \
 			2>&1 \
-			| tee $DIR/testCases.snpsift.txt
+			| tee $dirSnpeff/testCases.snpsift.txt
 
 	# Run SnpEff test cases
 	sys cd $HOME/workspace/SnpEff/ ; \
 		java -Xmx4g \
-			-cp $DIR/snpEff.jar \
+			-cp $dirSnpeff/snpEff.jar \
 			org.junit.runner.JUnitCore \
 			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteAll \
 			2>&1 \
-			| tee $DIR/testCases.snpeff.txt
+			| tee $dirSnpeff/testCases.snpeff.txt
 }
 
 # Create bundle list and config files
 if( makeBundleLists ) {
+	println "Make bundle lists:"
+
+	# Remove old bundle definitions
+	sys rm -vf config/snpEff.bundles.*.config
+
 	for( string bundle : bundles ) {
-		println "Creating bundle '$bundle'"
-		sys rm -vf config/snpEff.bundles.*.config
-		sys cat config/snpEff.$bundle.config | grep "\.genome" | cut -f 1 -d : | sed "s/.genome\s*$//" > snpEff.bundles.$bundle.genomes.txt
-		sys ./scripts_build/createBundles.pl $bundle.genomes.txt $bundle | tee config/snpEff.bundles.$bundle.config
+		println "Creating bundles '$bundle'"
+		sys cat config/snpEff.$bundle.config | cut -f 1 -d : | grep ".genome" | sed "s/.genome\s*//" | tr -d " " > snpEff.bundles.$bundle.genomes.txt
+		sys ./scripts_build/createBundles.pl snpEff.bundles.$bundle.genomes.txt $bundle > config/snpEff.bundles.$bundle.config
 	}
 
 	# We need to rebuild config file
