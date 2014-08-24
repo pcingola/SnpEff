@@ -251,16 +251,8 @@ void downloadAll() {
 	sys ./scripts_build/download_Pwms_Jaspar.sh
 	sys ./scripts_build/download_gwasCatalog.sh 
 	sys ./scripts_build/download_epigenome.sh	# This might take a few days
-	#sys ./scripts_build/download_ncbi.sh		# NCBI downloads do not seem to be working OK
+	sys ./scripts_build/download_ncbi.sh		# NCBI downloads do not seem to be working OK
 	#sys ./scripts_build/download_darned.sh		# Darned not working
-
-	# Uncompress and re-compress downloaded files (avoid block compress problem with Java library)
-	fid := sys find $dirDownload/data -iname "*.gz"
-	for( string gz : fid.stdout().lines() ) {
-		f := gz.removeExt()
-		print("Recompress $gz <-> $f\n")
-		task gunzip -v $gz; gzip -v $f
-	}
 
 	# Move downloaded data to 'data' dir
 	sys mv $dirDownload/data/genomes/* data/genomes/ 
@@ -274,8 +266,8 @@ void downloadAll() {
 #-------------------------------------------------------------------------------
 
 void makeDistro() {
-	# sys ./scripts_build/distro.sh
-	zipBundles()
+	zipCore()
+	#zipBundles()
 }
 
 #-------------------------------------------------------------------------------
@@ -334,6 +326,34 @@ void zipBundles() {
 		zipName := "snpEff_v" + version + "_" + bname + ".zip"
 		task zip $zipName $zipList
 	}
+}
+
+#-------------------------------------------------------------------------------
+# Create SnpEff core Zip file
+#-------------------------------------------------------------------------------
+
+void zipCore() {
+	dir := "snpEff_$versionUnd"
+	sys rm -rvf $dir snpEff
+	sys mkdir $dir
+
+	# Copy core files
+	sys cp -rvfL snpEff.config snpEff.jar SnpSift.jar examples galaxy scripts $dir
+
+	# Change name to 'snpEff' (so that config file can be used out of the box)
+	sys mv $dir snpEff
+
+	# Create 'core' zip file
+	zip := "snpEff_v" + versionUnd + "_core.zip"
+	sys rm -f $zip 2> /dev/null
+	task zip -r $zip snpEff
+}
+
+#-------------------------------------------------------------------------------
+# Create databases (non-bundled) Zip files
+#-------------------------------------------------------------------------------
+
+void zipDbs() {
 }
 
 #-------------------------------------------------------------------------------
