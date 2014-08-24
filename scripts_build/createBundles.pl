@@ -10,50 +10,58 @@
 use strict;
 
 
-my($version) = @ARGV[0];							# Package version
-die "Usage: ./createBundles.pl versionNumber" if $version eq '';
+my($fileList) = @ARGV[0];							# Package version
+my($bundleBaseName) = @ARGV[1];						# Base name for bundles
+
+die "Usage: ./createBundles.pl genomes_list.txt bundleBaseName" if $bundleBaseName eq '';
 
 my($debug) = 0;										# Debug mode?
-my($bundleBaseName) = "ENSEMBL_BFMPP_$version";		# Base name for bundles
 my($bundleSize) = 150;								# Maximum bundle size in MB
+my($dataDir) = "$ENV{'HOME'}/snpEff/data";			# Data dir
 my($bundleNum) = 1;									# Bundle number
+my($avgSize) = 2;									# Assume this 'average size when 'snpEffectPredictor.bin' is missing
 
 # Read file sizes
-open DU, "du -sm GCA*$version/snpEffectPredictor.bin |";
+open GEN, $fileList;
 my($sum) = 0;
 my($ziplist) = "";
-my($l, $bundleName, %bundles);
-while( $l = <DU> ) {
-	chomp $l;
-	if( $l =~ /(\d+)\s+(.*?)\/(.*)/ ) {
-		my($size, $genome, $bin) = ($1, $2, $3);
-		
+my($gen, $bundleName, $size, $bin, %bundles);
+while( $gen = <GEN> ) {
+	print "GEN: $gen" if $debug;
+	chomp $gen;
 
-		if( $sum > $bundleSize ) {
-			# New bundle
-			$bundleNum++;
-			$sum = 0;
+	$bin = "$dataDir/$gen/snpEffectPredictor.bin";
 
-			# Create bundle
-			print "$bundleName.bundle : $bundles{$bundleName}\n";
-			`zip $bundleName.zip $ziplist`;
-		} 
-		$sum += $size;
-		$ziplist .= " $genome/$bin";
-
-		# Bundle name
-		$bundleName = "$bundleBaseName\_$bundleNum";
-
-		# Append file to bundle
-		if( $bundles{$bundleName} ne '' )	{ $bundles{$bundleName} .= " "; }
-		$bundles{$bundleName} .= $genome;
-
-		print "bundles{$bundleName}\t|$genome|\t|$bin|\t|$size|\t$sum\n" if $debug;
-	} else {
-		die "No match!";
+	# Calculate 'bin' file size (in MB)
+	my($du) = `du -m $bin`;
+	if( $du =~ /(\d+)\s+(.*)/ ) {
+		$size = $1;
+		print "bundles{$bundleName}\t|$gen|\t|$bin|\t|$size|\t$sum\n" if $debug;
+	} else { 
+		$size = $avgSize;
+		print STDERR "No match for genome '$gen'";
 	}
+
+	# Add to bundle
+	if( $sum > $bundleSize ) {
+		# Create bundle
+		print "$bundleName.bundle : $bundles{$bundleName}\n";
+
+		# Prepare for new bundle
+		$bundleNum++;
+		$sum = 0;
+		$ziplist="";
+	} 
+	$sum += $size;
+	$ziplist .= " $bin";
+
+	# Bundle name
+	$bundleName = "$bundleBaseName\_$bundleNum";
+
+	# Append genome to bundle
+	if( $bundles{$bundleName} ne '' )	{ $bundles{$bundleName} .= " "; }
+	$bundles{$bundleName} .= $gen;
 }
 
 # Create last bundle
 print "$bundleName.bundle : $bundles{$bundleName}\n";
-`zip $bundleName.zip $ziplist`;
