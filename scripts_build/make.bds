@@ -33,7 +33,15 @@ test	 			:= false		# Run test cases
 testDb				:= false		# Build databases used in test cases
 upload	 			:= false		# Upload for distribution
 
-# Genome bundles
+# Configuration parameters
+version				:= "4.0"
+subversion			:= ""
+versionUnd			:= version
+
+
+# HUman and mouse versions
+GRCH=GRCh38
+GRCM=GRCm38
 bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22"]
 
 wget_wait			:= 1								# Wait a few moments between file downloads (to avoid saturating the server)
@@ -270,7 +278,8 @@ void downloadAll() {
 #-------------------------------------------------------------------------------
 
 void makeDistro() {
-	sys ./scripts_build/distro.sh
+	# sys ./scripts_build/distro.sh
+	zipBundles()
 }
 
 #-------------------------------------------------------------------------------
@@ -303,6 +312,32 @@ void runTests() {
 
 void uploadSf() {
 	sys ./scripts_build/uploadSourceForge.sh
+}
+
+#-------------------------------------------------------------------------------
+# Create bundle's ZIP files
+#-------------------------------------------------------------------------------
+
+void zipBundles() {
+	bundleLines := sys cat $dirSnpeff/snpEff.config | grep .bundle.
+
+	for( string bline : bundleLines.lines() ) {
+		bfields := bline.split(':')
+
+		# Bundle name
+		bname := bfields[0].trim().removeExt('.bundle')
+		println "\tBundle: $bname"
+
+		string[] bins
+		for( string gen : bfields[1].split(' ') ) {
+			bins.add( "$dirSnpeff/$gen/snpEffectPredictor.bin" )
+		}
+
+		zipList := bins.join(' ')
+		zipName := "snpEff_v" + version + "_" + bname + ".zip"
+		task $bname.bundle.zip
+	}
+
 }
 
 #-------------------------------------------------------------------------------
