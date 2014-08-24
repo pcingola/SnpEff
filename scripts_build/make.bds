@@ -254,6 +254,7 @@ if( test ) {
 # Create bundle list and config files
 if( makeBundleLists ) {
 	for( string bundle : bundles ) {
+		println "Creating bundle '$bundle'"
 		sys rm -vf config/snpEff.bundles.*.config
 		sys cat config/snpEff.$bundle.config | grep "\.genome" | cut -f 1 -d : | sed "s/.genome\s*$//" > snpEff.bundles.$bundle.genomes.txt
 		sys ./scripts_build/createBundles.pl $bundle.genomes.txt $bundle | tee config/snpEff.bundles.$bundle.config
