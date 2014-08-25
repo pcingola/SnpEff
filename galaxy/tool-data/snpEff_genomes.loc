@@ -12034,6 +12034,8 @@ GRCh37.GTEX 	 Homo_sapiens,   GRCh37.GTEX
 GRCh38.76 	 Homo_sapiens   GRCh38.76
 hg19 	 Homo_sapiens   hg19
 hg19kg 	 Homo_sapiens   hg19kg
+hg38 	 Homo_sapiens   hg38
+hg38kg 	 Homo_sapiens   hg38kg
 030312v2.21 	 Hordeum_vulgare   030312v2.21
 GCA_000271305.1.21 	 Hydrocarboniphaga_effusa_ap103   GCA_000271305.1.21
 GCA_000271305.1.22 	 Hydrocarboniphaga_effusa_ap103   GCA_000271305.1.22
