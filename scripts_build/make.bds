@@ -328,7 +328,7 @@ void zipBundles() {
 		# Zip files
 		zipList := bins.join(' ')
 		zipName := "$dirZip/snpEff_v" + version + "_" + bname + ".zip"
-		task( zip <- bins ) {
+		task( zipName <- bins ) {
 			sys zip $zipName $zipList
 		}
 	}
