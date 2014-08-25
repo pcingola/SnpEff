@@ -329,7 +329,7 @@ void zipBundles() {
 		zipList := bins.join(' ')
 		zipName := "$dirZip/snpEff_v" + version + "_" + bname + ".zip"
 		task( zip <- bins ) {
-			zip $zipName $zipList
+			sys zip $zipName $zipList
 		}
 	}
 }
@@ -375,7 +375,7 @@ void zipDbs() {
 				zip := "$dirZip/snpEff_v" + versionUnd + "_$gen.zip"
 				println "\tZIP '$zip'"
 				task( zip <- bin ) {
-					zip -r $zip data/$gen/*.bin
+					sys zip -r $zip data/$gen/*.bin
 				}
 			}
 		}
