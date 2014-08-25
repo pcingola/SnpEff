@@ -266,6 +266,9 @@ void downloadAll() {
 #-------------------------------------------------------------------------------
 
 void makeDistro() {
+	# Make sure zip dir exists
+	$dirZip.mkdir()
+
 	zipCore()
 	zipDbs()
 	zipBundles()
@@ -324,8 +327,10 @@ void zipBundles() {
 
 		# Zip files
 		zipList := bins.join(' ')
-		zipName := "snpEff_v" + version + "_" + bname + ".zip"
-		task zip $zipName $zipList
+		zipName := "$dirZip/snpEff_v" + version + "_" + bname + ".zip"
+		task( zip <- bins ) {
+			zip $zipName $zipList
+		}
 	}
 }
 
@@ -345,7 +350,7 @@ void zipCore() {
 	sys mv $dir snpEff
 
 	# Create 'core' zip file
-	zip := "snpEff_v" + versionUnd + "_core.zip"
+	zip := "$dirZip/snpEff_v" + versionUnd + "_core.zip"
 	sys rm -f $zip 2> /dev/null
 	task zip -r $zip snpEff
 }
@@ -367,9 +372,11 @@ void zipDbs() {
 			bin := "data/$gen/snpEffectPredictor.bin"
 
 			if( bin.exists() ) {
-				zip := "snpEff_v" + versionUnd + "_$gen.zip"
-				println "\tCreate ZIP '$zip'"
-				task zip -r $zip data/$gen/*.bin
+				zip := "$dirZip/snpEff_v" + versionUnd + "_$gen.zip"
+				println "\tZIP '$zip'"
+				task( zip <- bin ) {
+					zip -r $zip data/$gen/*.bin
+				}
 			}
 		}
 	}
