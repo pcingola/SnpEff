@@ -7,12 +7,13 @@ import java.util.List;
 
 import ca.mcgill.mcb.pcingola.fileIterator.LineFileIterator;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.Tuple;
 
 /**
  * A class representing a set of features
- * 
+ *
  * References: http://www.ebi.ac.uk/embl/Documentation/FT_definitions/feature_table.html
- * 
+ *
  * @author pablocingolani
  */
 public abstract class Features implements Iterable<Feature> {
@@ -22,6 +23,7 @@ public abstract class Features implements Iterable<Feature> {
 	public static final int MAX_LEN_TO_SHOW = 200;
 	public static final String COMPLEMENT = "complement";
 	public static final String JOIN = "join";
+	public static final String ORDER = "order";
 
 	String locusName, moleculeType, shape, division, date;
 	int sequenceLength;
@@ -39,7 +41,6 @@ public abstract class Features implements Iterable<Feature> {
 
 	/**
 	 * Create features from a file
-	 * @param fileName
 	 */
 	public Features(LineFileIterator lineFileIterator) {
 		references = new ArrayList<StringBuffer>();
@@ -52,7 +53,6 @@ public abstract class Features implements Iterable<Feature> {
 
 	/**
 	 * Create features from a file
-	 * @param fileName
 	 */
 	public Features(String fileName) {
 		references = new ArrayList<StringBuffer>();
@@ -65,8 +65,6 @@ public abstract class Features implements Iterable<Feature> {
 
 	/**
 	 * Create and add a feature
-	 * @param name
-	 * @param values
 	 */
 	void addFeature(String typeStr, StringBuilder values, int lineNum) {
 		Feature.Type type = Feature.Type.parse(typeStr);
@@ -86,10 +84,6 @@ public abstract class Features implements Iterable<Feature> {
 
 	/**
 	 * Create features from a 'type' and 'values'
-	 * 
-	 * @param typeStr
-	 * @param values
-	 * @return
 	 */
 	Feature featureFactory(Feature.Type type, String def, int lineNum) {
 		boolean complement = false;
@@ -100,18 +94,9 @@ public abstract class Features implements Iterable<Feature> {
 		String locStr = (firstLine >= 0) ? def.substring(0, firstLine) : def;
 
 		// Get rid of 'join' and 'complement' strings
-		String locStrPrev = "";
-		while (!locStr.equals(locStrPrev)) {
-			locStrPrev = locStr;
-
-			// Is it a complement?
-			if (locStr.startsWith(COMPLEMENT)) {
-				complement = true;
-				locStr = removeStartStr(locStr, COMPLEMENT);
-			}
-
-			locStr = removeStartStr(locStr, JOIN); // Remove 'join', if any
-		}
+		Tuple<String, Boolean> stripped = strip(locStr);
+		locStr = stripped.first;
+		complement = stripped.second;
 
 		// Split multiple locations?
 		String locs[] = locStr.split(",");
@@ -119,18 +104,9 @@ public abstract class Features implements Iterable<Feature> {
 		int startMin = Integer.MAX_VALUE, endMax = 0;
 		for (String loc : locs) {
 			// Get rid of 'join' and 'complement' strings
-			String locPrev = "";
-			while (!loc.equals(locPrev)) {
-				locPrev = loc;
-
-				// Is it a complement?
-				if (loc.startsWith(COMPLEMENT)) {
-					complement = true;
-					loc = removeStartStr(loc, COMPLEMENT);
-				}
-
-				loc = removeStartStr(loc, JOIN); // Remove 'join', if any
-			}
+			stripped = strip(loc);
+			loc = stripped.first;
+			complement = stripped.second;
 
 			// Remove other characters
 			loc = loc.replaceAll("[<>()]", "");
@@ -232,8 +208,6 @@ public abstract class Features implements Iterable<Feature> {
 
 	/**
 	 * Is there a new feature in this line?
-	 * @param line
-	 * @return
 	 */
 	protected abstract boolean isNewFeature(String line);
 
@@ -244,7 +218,6 @@ public abstract class Features implements Iterable<Feature> {
 
 	/**
 	 * Open a file
-	 * @param fileName
 	 */
 	protected void open(String fileName) {
 		if (!Gpr.canRead(fileName)) throw new RuntimeException("Cannot read file '" + fileName + "'");
@@ -302,13 +275,33 @@ public abstract class Features implements Iterable<Feature> {
 
 	/**
 	 * Remove start string
-	 * @param str
-	 * @param startStr
-	 * @return
 	 */
 	String removeStartStr(String str, String startStr) {
 		if (str.startsWith(startStr)) return str.substring(startStr.length() + 1, str.length());
 		return str;
+	}
+
+	/**
+	 * Remove strings until we only have numbers
+	 */
+	Tuple<String, Boolean> strip(String loc) {
+		String locPrev = "";
+		boolean complement = false;
+
+		while (!loc.equals(locPrev)) {
+			locPrev = loc;
+
+			// Is it a complement?
+			if (loc.startsWith(COMPLEMENT)) {
+				complement = true;
+				loc = removeStartStr(loc, COMPLEMENT);
+			}
+
+			loc = removeStartStr(loc, JOIN); // Remove 'join'
+			loc = removeStartStr(loc, ORDER); // Remove 'order'
+		}
+
+		return new Tuple<String, Boolean>(loc, complement);
 	}
 
 	@Override
