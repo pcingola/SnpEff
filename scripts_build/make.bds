@@ -267,7 +267,7 @@ void downloadAll() {
 
 void makeDistro() {
 	# Make sure zip dir exists
-	$dirZip.mkdir()
+	dirZip.mkdir()
 
 	zipCore()
 	zipDbs()
