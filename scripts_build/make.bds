@@ -179,6 +179,26 @@ void buildDbSpecial() {
 }
 
 #-------------------------------------------------------------------------------
+# Build databases used in test cases
+#-------------------------------------------------------------------------------
+
+void buildDbTest() {
+	dirs := "$dirSnpeff/data/".dir("test.*")
+
+	# This one needs PWMs
+	sys cp db/jaspar/pwms.bin data/testHg3770Chr22/
+
+	# Build all test genomes
+	for( string gen : dirs ) {
+		db := "$dirSnpeff/data/$gen/snpEffectPredictor.bin"
+		if( ! db.exists() )	{
+			println "Genome: $gen\tdb: '$db'"
+			task $snpeff build -v $gen
+		}
+	}
+}
+
+#-------------------------------------------------------------------------------
 # Build special databases
 #-------------------------------------------------------------------------------
 
@@ -200,26 +220,6 @@ void buildNextProt() {
 			sys $snpeffXl buildNextProt -v $hg db/nextProt/
 		} else {
 			print("NextProt ($hg): OK\n")
-		}
-	}
-}
-
-#-------------------------------------------------------------------------------
-# Build databases used in test cases
-#-------------------------------------------------------------------------------
-
-void buildDbTest() {
-	dirs := "$dirSnpeff/data/".dir("test.*")
-
-	# This one needs PWMs
-	sys cp db/jaspar/pwms.bin data/testHg3770Chr22/
-
-	# Build all test genomes
-	for( string gen : dirs ) {
-		db := "$dirSnpeff/data/$gen/snpEffectPredictor.bin"
-		if( ! db.exists() )	{
-			println "Genome: $gen\tdb: '$db'"
-			task $snpeff build -v $gen
 		}
 	}
 }
