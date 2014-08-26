@@ -91,6 +91,7 @@ public class SnpEff implements CommandLine {
 	protected boolean nextProt = false; // Annotate using NextProt database
 	protected boolean nextProtKeepAllTrs = false; // Keep all nextprot entries, even if the transcript doesn't exist
 	protected boolean noGenome = false; // Do not load genome database
+	protected boolean onlyProtein = false; // Only use protein coding transcripts
 	protected boolean onlyRegulation = false; // Only build regulation tracks
 	protected boolean quiet; // Be quiet
 	protected boolean strict = false; // Only use transcript that have been validated
@@ -166,7 +167,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-				);
+						);
 			}
 		}
 	}
@@ -243,7 +244,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+					);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -367,6 +368,14 @@ public class SnpEff implements CommandLine {
 			// Remove transcripts
 			if (verbose) Timer.showStdErr("Filtering out transcripts in file '" + onlyTranscriptsFile + "'. Total " + trIds.size() + " transcript IDs.");
 			int removed = config.getSnpEffectPredictor().retainAllTranscripts(trIds);
+			if (verbose) Timer.showStdErr("Done: " + removed + " transcripts removed.");
+		}
+
+		// Use protein coding transcripts
+		if (onlyProtein) {
+			// Remove transcripts
+			if (verbose) Timer.showStdErr("Filtering out non-protein coding transcripts.");
+			int removed = config.getSnpEffectPredictor().retainTranscriptsProtein();
 			if (verbose) Timer.showStdErr("Done: " + removed + " transcripts removed.");
 		}
 
@@ -623,7 +632,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
-		) {
+				) {
 			command = args[argNum++].toLowerCase();
 		} else {
 			command = "eff"; // Default command is 'eff'
@@ -659,6 +668,7 @@ public class SnpEff implements CommandLine {
 				else if (arg.equalsIgnoreCase("-noLog")) log = false;
 				else if (arg.equalsIgnoreCase("-noOut")) suppressOutput = true; // Undocumented option (only used for development & debugging)
 				else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
+				else if (arg.equalsIgnoreCase("-onlyProtein")) onlyProtein = true;
 				else if (arg.equalsIgnoreCase("-onlyTr")) {
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
 				} else if (arg.equals("-q") || arg.equalsIgnoreCase("-quiet")) {
@@ -909,6 +919,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database).");
 		System.err.println("\t-nextProt                    : Annotate using NextProt (requires NextProt database).");
 		System.err.println("\t-onlyReg                     : Only use regulation tracks.");
+		System.err.println("\t-onlyProtein                 : Only use protein coding transcripts. Default: " + onlyProtein);
 		System.err.println("\t-onlyTr <file.txt>           : Only use the transcripts in this file. Format: One transcript ID per line.");
 		System.err.println("\t-reg <name>                  : Regulation track to use (this option can be used add several times).");
 		System.err.println("\t-ss , -spliceSiteSize <int>  : Set size for splice sites (donor and acceptor) in bases. Default: " + spliceSiteSize);

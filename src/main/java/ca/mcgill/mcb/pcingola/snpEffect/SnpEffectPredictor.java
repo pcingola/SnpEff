@@ -89,7 +89,7 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-			) snpEffectPredictor.add(m);
+					) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}
@@ -488,6 +488,17 @@ public class SnpEffectPredictor implements Serializable {
 		int total = 0;
 		for (Gene g : genome.getGenes())
 			total += g.keepTranscripts(trIds);
+		return total;
+	}
+
+	/**
+	 * Remove all transcripts that are NOT in the list
+	 * @return : Number of transcripts removed
+	 */
+	public int retainTranscriptsProtein() {
+		int total = 0;
+		for (Gene g : genome.getGenes())
+			total += g.keepTranscriptsProtein();
 		return total;
 	}
 

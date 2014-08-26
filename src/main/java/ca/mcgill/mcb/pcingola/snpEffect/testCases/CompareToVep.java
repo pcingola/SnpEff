@@ -24,6 +24,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class CompareToVep {
 
 	boolean strict = false;
+	boolean onlyProtein = false;
 	boolean compareEffect = true;
 	boolean compareHgvsDna = false;
 	boolean compareHgvsProt = false;
@@ -61,6 +62,7 @@ public class CompareToVep {
 		args.add("-noStats");
 		args.add("-noLog");
 		if (strict) args.add("-strict");
+		if (onlyProtein) args.add("-onlyProtein");
 		args.add(genomeName);
 		args.add(vcf);
 

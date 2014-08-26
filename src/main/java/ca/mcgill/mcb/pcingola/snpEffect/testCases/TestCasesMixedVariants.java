@@ -27,7 +27,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesMixedVariants extends TestCase {
 
 	boolean debug = false;
-	boolean verbose = false || debug;
+	boolean verbose = true || debug;
 
 	Random rand;
 	Config config;
@@ -44,18 +44,14 @@ public class TestCasesMixedVariants extends TestCase {
 		init();
 	}
 
-	public void compareVep(String genome, String vcf) {
-		compareVep(genome, vcf, false);
-
-	}
-
 	/**
 	 * Compare with results from ENSEMBL's VEP to SnpEff
 	 * Use VCF having VEP's results
 	 */
-	public void compareVep(String genome, String vcf, boolean compareHgsv) {
+	public void compareVep(String genome, String vcf, boolean compareHgsv, boolean strict) {
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		if (compareHgsv) comp.setCompareHgvs();
+		comp.setStrict(strict);
 		comp.compareVep(vcf);
 		System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
@@ -121,37 +117,37 @@ public class TestCasesMixedVariants extends TestCase {
 
 	public void test_02_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
+		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf", false, false);
 	}
 
 	public void test_03_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf");
+		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf", false, false);
 	}
 
 	public void test_04_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr12", "tests/mixed_chr12.vcf");
+		compareVep("testHg3775Chr12", "tests/mixed_chr12.vcf", false, true);
 	}
 
 	public void test_05_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
+		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf", false, false);
 	}
 
 	public void test_06_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr7", "tests/mixed_chr7.vcf");
+		compareVep("testHg3775Chr7", "tests/mixed_chr7.vcf", false, false);
 	}
 
 	public void test_07_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr6", "tests/mixed_chr6.vcf");
+		compareVep("testHg3775Chr6", "tests/mixed_chr6.vcf", false, false);
 	}
 
 	public void test_08_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr1", "tests/mixed_chr1.vcf");
+		compareVep("testHg3775Chr1", "tests/mixed_chr1.vcf", false, false);
 	}
 
 	public void test_09_MixedVep() {
