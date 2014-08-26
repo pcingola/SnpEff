@@ -1,2 +1,2 @@
-SNPEFF	3.6	2014-04-21	http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
-SNPSIFT	3.6	2014-04-21	http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+SNPEFF	4.0	2014-08-25	http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+SNPSIFT	4.0	2014-08-25	http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip

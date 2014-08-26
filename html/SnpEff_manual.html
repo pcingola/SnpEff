@@ -249,7 +249,7 @@
 				<br>
 				<br>
 <pre>
-java -jar snpEff.jar databases
+$ java -jar snpEff.jar databases | less
 </pre>
 				<br>
 				This command shows the database name, genome name and source data (where was the genome reference data obtained from).
@@ -299,7 +299,13 @@ NCBIM37.66                                                  	Mus_musculus       
 				In Windows systems, you can just double click and copy the contents of the ZIP file to wherever you want the program installed.
 				If you have a Unix or a Mac system, the command line would be:
 <pre>
-$ curl -L http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip > snpEff_latest_core.zip
+# Download using wget
+$ wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+
+# If you prefer to use 'curl' instead of 'wget', you can type:
+#     curl -L http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip > snpEff_latest_core.zip
+
+# Install
 $ unzip snpEff_latest_core.zip 
 </pre>
 
@@ -307,13 +313,13 @@ $ unzip snpEff_latest_core.zip
 
 				<h3> Basic example: Annotate using SnpEff </h3>
 				Let's assume you have a VCF file and you want to annotate the variants in that file.
-				An example file is provided in <code>exmaples/file.vcf</code> (this data is from the 1000 Genomes project, so the reference genome is the human genome GRCh37).
+				An example file is provided in <code>examples/file.vcf</code> (this data is from the 1000 Genomes project, so the reference genome is the human genome GRCh37).
 				<p>
 				As an input, we will use a <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41"> Variant Call Format (VCF) </a> file.
 				You can annotate the file by running:
 
 <p><pre>
-java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 exmaples/file.vcf > file.eff.vcf
+java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 examples/file.vcf > file.eff.vcf
 </pre><p>
 
 				Notice how SnpEff automatically downloads and installs the database.
