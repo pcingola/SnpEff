@@ -167,7 +167,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-						);
+				);
 			}
 		}
 	}
@@ -239,7 +239,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-					);
+			);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -472,7 +472,7 @@ public class SnpEff implements CommandLine {
 					motif.setPwm(pwm);
 					snpEffectPredictor.add(motif);
 					countAddded++;
-				} else if (verbose) Timer.showStdErr("Cannot find PWM for motif '" + motif.getPwmId() + "'");
+				} else if (debug) Timer.showStdErr("Cannot find PWM for motif '" + motif.getPwmId() + "'");
 			}
 
 		if (verbose) Timer.showStdErr("\tMotif database: " + countAddded + " markers loaded.");
@@ -480,7 +480,6 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Read regulation track and update SnpEffectPredictor
-	 * @param regTrack
 	 */
 	void loadNextProt() {
 		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
@@ -626,7 +625,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
-				) {
+		) {
 			command = args[argNum++].toLowerCase();
 		} else {
 			command = "eff"; // Default command is 'eff'
