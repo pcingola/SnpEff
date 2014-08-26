@@ -110,10 +110,12 @@ public class Download {
 
 			// Create local directory if it doesn't exists
 			File file = new File(localFile);
-			File path = new File(file.getParent());
-			if (!path.exists()) {
-				if (verbose) Timer.showStdErr("Local path '" + path + "' doesn't exist, creating.");
-				path.mkdirs();
+			if (file != null && file.getParent() != null) {
+				File path = new File(file.getParent());
+				if (!path.exists()) {
+					if (verbose) Timer.showStdErr("Local path '" + path + "' doesn't exist, creating.");
+					path.mkdirs();
+				}
 			}
 
 			FileOutputStream os = null;
