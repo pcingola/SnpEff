@@ -142,6 +142,7 @@ public class CompareToVep {
 		if (effSo.equals("disruptive_inframe_deletion") && csqSo.equals("inframe_deletion")) return true;
 		if (effSo.equals("disruptive_inframe_deletion") && csqSo.equals("feature_truncation")) return true;
 		if (effSo.equals("synonymous_variant") && csqSo.equals("coding_sequence_variant")) return true;
+		if (effSo.equals("non_coding_exon_variant") && csqSo.equals("NMD_transcript_variant")) return true;
 		return false;
 	}
 
@@ -335,6 +336,10 @@ public class CompareToVep {
 
 	public void setCompareHgvsProt(boolean compareHgvsProt) {
 		this.compareHgvsProt = compareHgvsProt;
+	}
+
+	public void setOnlyProtein(boolean onlyProtein) {
+		this.onlyProtein = onlyProtein;
 	}
 
 	public void setStrict(boolean strict) {

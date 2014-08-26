@@ -174,9 +174,6 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * 	Command line argument list (try to fit it into COMMAND_LINE_WIDTH)
-	 *
-	 * @param splitLines
-	 * @return
 	 */
 	String commandLineStr(boolean splitLines) {
 		StringBuilder argsList = new StringBuilder();
@@ -229,8 +226,6 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Is this a command line option (e.g. "-tfam" is a command line option, but "-" means STDIN)
-	 * @param arg
-	 * @return
 	 */
 	protected boolean isOpt(String arg) {
 		return arg.startsWith("-") && (arg.length() > 1);
@@ -568,7 +563,6 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Read regulation track and update SnpEffectPredictor
-	 * @param regTrack
 	 */
 	@SuppressWarnings("unchecked")
 	void loadRegulationTrack(String regTrack) {
@@ -714,7 +708,6 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Additional values to be reported
-	 * @return
 	 */
 	public HashMap<String, String> reportValues() {
 		HashMap<String, String> reportValues = new HashMap<String, String>();
@@ -846,6 +839,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.multiThreaded = multiThreaded;
 		snpEffCmd.nextProt = nextProt;
 		snpEffCmd.numWorkers = numWorkers;
+		snpEffCmd.onlyProtein = onlyProtein;
 		snpEffCmd.onlyRegulation = onlyRegulation;
 		snpEffCmd.onlyTranscriptsFile = onlyTranscriptsFile;
 		snpEffCmd.quiet = quiet;

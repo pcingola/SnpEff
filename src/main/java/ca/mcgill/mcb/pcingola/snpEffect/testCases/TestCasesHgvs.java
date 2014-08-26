@@ -419,6 +419,7 @@ public class TestCasesHgvs extends TestCase {
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.setStrict(true);
+		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
 		System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
@@ -431,6 +432,7 @@ public class TestCasesHgvs extends TestCase {
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.setStrict(true);
+		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
 		System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
@@ -443,6 +445,7 @@ public class TestCasesHgvs extends TestCase {
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.setStrict(true);
+		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
 		System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
@@ -455,6 +458,7 @@ public class TestCasesHgvs extends TestCase {
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.setStrict(true);
+		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
 		System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
@@ -466,6 +470,7 @@ public class TestCasesHgvs extends TestCase {
 		String vcf = "tests/mixed_10_hgvs.vep.vcf";
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		comp.setCompareHgvs();
+		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
 		System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
