@@ -331,7 +331,7 @@ void zipBundles() {
 
 		# Zip files
 		zipList := bins.join(' ')
-		zipName := "$dirZip/snpEff_v" + version + "_" + bname + ".zip"
+		zipName := "$dirZip/snpEff_v" + versionUnd + "_" + bname + ".zip"
 		if( zipName <- bins ) {
 			println "\tZIP Bundle: $zipName"
 			task zip $zipName $zipList
