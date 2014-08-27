@@ -319,7 +319,7 @@ $ unzip snpEff_latest_core.zip
 				You can annotate the file by running (since we are activating the "verbose" mode <code>-v</code>, SnpEff shows a lot of information, the output is edited for brevity):
 
 <p><pre>
-$ java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.434	done
 00:00:00.434	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -441,7 +441,7 @@ WARNING_TRANSCRIPT_NO_START_CODON	3483
 				<i class="icon-hand-right"></i> If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
 				This is done using the '-c' command line option:
 <p><pre>
-java -Xmx4g -jar snpEff.jar eff <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 file.vcf > file.eff.vcf
+java -Xmx4g -jar snpEff.jar <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 file.vcf > file.eff.vcf
 </pre><p>
 
 				<h3> Detailed examples </h3>
@@ -601,7 +601,7 @@ Database options:
 				<b>Help (command specific):</b> In order to see a help message for a paricular command, you can run the command without any arguments or use <code>-help</code> command line option:
 <pre>
 # This will show a 'help' message for command 'eff'
-$ java -jar snpEff.jar eff
+$ java -jar snpEff.jar
 
 Command line :	SnpEff  
 
@@ -772,7 +772,7 @@ Database options:
 				<br>
 				In order to get a list of canonical transcipts, you can use the <code>-d</code> (debug) command line option. E.g.:
 <pre>
-$ java -Xmx4G -jar snpEff.jar eff -d -v -canon GRCh37.66 test.vcf
+$ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.66 test.vcf
 00:00:00.000    Reading configuration file 'snpEff.config'
 00:00:00.173    done
 00:00:00.173    Reading database for genome version 'GRCh37.66'
@@ -808,7 +808,7 @@ $ java -Xmx4G -jar snpEff.jar eff -d -v -canon GRCh37.66 test.vcf
 				<br>
 				<br>
 				Example: Make upstream and downstream size zero (i.e. do not report any upstream or downstream effect).
-				<pre> java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.75 file.vcf > file.eff.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.75 file.vcf > file.eff.vcf</pre>
 				</p>
 
 				<h3>Splice site size</h3>
@@ -817,13 +817,13 @@ $ java -Xmx4G -jar snpEff.jar eff -d -v -canon GRCh37.66 test.vcf
 				<br>
 				<br>
 				Example: Make splice sites four bases long
-				<pre> java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 file.vcf > file.eff.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 file.vcf > file.eff.vcf</pre>
 				</p>
 
 				<h3>Adding your own annotations</h3>
 				<p>
 				SnpEff allows user defined intervals to be annotated.
-				This is achieved using the <code>-interval file.bed</code> command line option, which can be used multiple times in the same command line.
+				This is achieved using the <code>-interval file.bed</code> command line option, which can be used multiple times in the same command line (it accepts files in TXT, BED, BigBed, VCF, GFF formats).
 				Any variant that intersects an interval defined in those files, will be annotated using the "name" field (fourth column) in the input bed file.
 				<br>
 				<br>
@@ -835,7 +835,7 @@ $ cat my_annotations.bed
 $ cat test.vcf 
 1	10469	.	C	G	365.78	PASS	AC=30;AF=0.0732
 
-$ java -Xmx4g -jar snpEff.jar eff -interval my_annotations.bed GRCh37.66 test.vcf
+$ java -Xmx4g -jar snpEff.jar -interval my_annotations.bed GRCh37.66 test.vcf
 1	10469	.	C	G	365.78	PASS	AC=30;AF=0.0732;EFF=CUSTOM(MODIFIER||||||MY_ANNOTATION||||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000423562||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000438504||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000488147||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000538476||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000541675||1),INTERGENIC(MODIFIER||||||||||1),UPSTREAM(MODIFIER|||||DDX11L1|processed_transcript|NON_CODING|ENST00000456328||1),UPSTREAM(MODIFIER|||||DDX11L1|transcribed_unprocessed_pseudogene|NON_CODING|ENST00000450305||1),UPSTREAM(MODIFIER|||||DDX11L1|transcribed_unprocessed_pseudogene|NON_CODING|ENST00000515242||1),UPSTREAM(MODIFIER|||||DDX11L1|transcribed_unprocessed_pseudogene|NON_CODING|ENST00000518655||1)
 </pre>
 				Notice that the variant was annotated using "MY_ANNOTATION" in the EFF field.
@@ -854,18 +854,24 @@ $ java -Xmx4g -jar snpEff.jar -geneId GRCh37.66 test.vcf
 				Note: The gene 'PLEKHN1' was annotated as 'ENSG00000187583'.
 
 				</p>
-        </section>
 
-        <!-- Input & Output files
-        ================================================== -->
-        <section id="input">
-          <div class="page-header">
-            <h1>4. Input &amp; Output files </h1>
-          </div>
-				<p class="lead"> 
-				Files used as input to SnpEff must comply with standard formats.
-				Here we describe supported input data formats.
-				</p>
+				<p><h3>Compressed files</h3>
+				SnpEff will automatically open gzip compresssed files, even if you don't specify the '.gz' extension.
+				<br>
+				<br>
+				Example
+				<br>
+<pre>
+# Create compressed version of the examples files
+cp examples/file.vcf my.vcf
+
+# Compress it
+gzip my.vcf 
+
+# Annotate (note the it doesn't require the ending '.gz')
+java -Xmx4g -jar snpEff.jar GRCh37.75 my.vcf > my.eff.vcf
+</pre>
+				<br>
 
 				<p><h3>Streaming files</h3>
 				<i class="icon-hand-right"></i> You can use "-" as input file name to spedicfy <b>STDIN</b>. As of version 4.0 onwards STDIN is the default, so using no name at all, also means 'STDIN'.
@@ -886,6 +892,19 @@ cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 - > file.eff.vcf
 java -Xmx4g -jar snpEff.jar hg19 file.vcf > file.eff.vcf
 
 </pre>
+
+        </section>
+
+        <!-- Input & Output files
+        ================================================== -->
+        <section id="input">
+          <div class="page-header">
+            <h1>4. Input &amp; Output files </h1>
+          </div>
+				<p class="lead"> 
+				Files used as input to SnpEff must comply with standard formats.
+				Here we describe supported input data formats.
+				</p>
 
 				<p><h3>VCF files</h3>
 				As we mentioned before, <a class="body"class="body" href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">Variant Call Format (VCF)</a> is the recomended format for input files.
@@ -928,7 +947,6 @@ java -Xmx4g -jar snpEff.jar hg19 file.vcf > file.eff.vcf
 				VCF file before annotations
 <pre>
 #CHROM POS     ID        REF    ALT     QUAL FILTER INFO                    
-:w
 1	889455	.	G	A	100.0	PASS	AF=0.0005
 1	897062	.	C	T	100.0	PASS	AF=0.0005
 </pre>
@@ -1130,11 +1148,12 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				</center>
 				<br>
 				<h3> Loss of function (LOF) and nonsense-mediated decay (NMD) predictions </h3>
-				Loss of function ('LOF') and nonsense-mediated decay ('NMD') predictions can be activated by using <code>-lof</code> command line option.
+				Loss of function ('LOF') and nonsense-mediated decay ('NMD') predictions.
+				In older versions, this prediction was activated using command line option <code>-lof</code>, but as of version 4.0, it is activated by default.
 				Some details on how these variants work, can be found in <a class="body" href="snpEff_lof_nmd.pdf">these slides </a>
 				<br>
 				<br>
-				<i class="icon-hand-right"></i> Starting from version 4.0, this optin is activated by default.
+				<i class="icon-hand-right"></i> Starting from version 4.0, this option is activated by default.
 				<br>
 				<br>
 				Analyze if a set of effects are can create a "Loss Of Function" and "Nonsense mediated decays" effects.
@@ -1176,11 +1195,11 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				<br>
 				Usage example:
 <pre>
-# Note: Form version 4.0 onwards, the '-lof' command line option is not needed
+# Note: Form version 4.0 onwards, the '-lof' command line option is not required
 java –Xmx4g -jar snpEff.jar –v \
 	-lof \
 	GRCh37.75 \
-	file.vcf.gz > file.eff.vcf
+	file.vcf > file.eff.vcf
 </pre>
 
 				SnpEff adds 'LOF' and 'NMD' tags to INFO fields (column 8 in VCF format).  LOF and NMD tags have the following format:
@@ -1199,21 +1218,21 @@ Gene | ID | num_transcripts | percent_affected
 				<br>
 				Example: If we have this effect
 <pre>
-EFF=…, SPLICE_SITE_DONOR(HIGH||||639|ILDR2|protein_coding|CODING|ENST00000271417|1)
+EFF=stop_gained(LOW|NONSENSE|Gga/Tga|p.Gly163*/c.487G>T|574|GAB4|protein_coding|CODING|ENST00000400588|3|1),...
 </pre>
 
-				and the corresponding LOF tag is
+				and the corresponding LOF and NMD tags are
 <pre>
-LOF=ILDR2|ENSG00000143195|7|1.00
+LOF=(GAB4|ENSG00000215568|4|0.25);NMD=(GAB4|ENSG00000215568|4|0.25)
 </pre>
 
 				The meaning of the LOF tag is:
 				<table class="table table-striped">
 					<tr> <th> Field            </th><th> Description </th> </tr>
-					<tr> <td> Gene             </td><td> ILDR2 </td> </tr>
-					<tr> <td> ID               </td><td> ENSG00000143195 </td> </tr>
-					<tr> <td> Num_transcripts  </td><td> There are 7 transcripts in this gene </td> </tr>
-					<tr> <td> percent_affected </td><td> 100% of transcripts are affected by this variant. </td> </tr>
+					<tr> <td> Gene             </td><td> GAB4 </td> </tr>
+					<tr> <td> ID               </td><td> ENSG00000215568 </td> </tr>
+					<tr> <td> Num_transcripts  </td><td> There are 4 transcripts in this gene </td> </tr>
+					<tr> <td> percent_affected </td><td> 25% of transcripts are affected by this variant. </td> </tr>
 				</table>
 				<br>
 				<h3>Errors and Warnings </h3>
@@ -1318,7 +1337,7 @@ LOF=ILDR2|ENSG00000143195|7|1.00
 				<br>
 				E.g.: 
 <pre>
-$ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed 
+$ java -Xmx4g -jar snpEff.jar -i bed BDGP5.69 chipSeq_peaks.bed 
 
 # SnpEff version 3.3 (build 2013-05-15), by Pablo Cingolani
 # Command line: SnpEff  -i bed BDGP5.69 /home/pcingola/fly_pvuseq/chipSeq/Sample_w1118_IP_w_5hmC/w1118_IP_w_5hmC_peaks.bed 
@@ -1396,6 +1415,15 @@ $ java -Xmx4g -jar snpEff.jar eff -i bed BDGP5.69 chipSeq_peaks.bed
 				Here we describe details about annotating cancer samples.
 				</p>
 
+				<h3>Running in cancer analysis mode</h3>
+				Using the <code>-cancer</code> command line option, you can compare somatic vs germline samples. 
+				<br>
+				So an example command line would be:
+				<br>
+				<br>
+<pre>$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.eff.vcf </pre>
+
+				<br>
 				<h3>Representing cancer data</h3>
 				<p>
 				In a typical cancer sequencing experiment, we want to measure and annotate differences between germline (healthy) and somatic (cancer) tissue samples from the same patient.
@@ -1454,7 +1482,12 @@ Patient_04_Germline	Patient_04_Somatic
 				<br>
 				E.g. In our example, the file name is 'samples_cancer.txt', so the command line would look like this:
 <pre>
-java -Xmx4g -jar snpEff.jar eff -v -cancer -canceSample samples_cancer.txt GRCh37.75 cancer.vcf > cancer.eff.vcf 
+$ java -Xmx4g -jar snpEff.jar -v \
+		-cancer \
+		-canceSample samples_cancer.txt \
+		GRCh37.75 \
+		cancer.vcf \
+		> cancer.eff.vcf 
 </pre>
 				<br>
 				<br>
@@ -1481,20 +1514,6 @@ java -Xmx4g -jar snpEff.jar eff -v -cancer -canceSample samples_cancer.txt GRCh3
 
 				<br>
 				<br>
-
-				<h3>Running in cancer analysis mode</h3>
-				We added '-cancer'  command line option for somatic vs germline comparisons. 
-				By default SnpEff does not perform them because they computationally intensive. 
-				So your command line would be:
-
-				<pre> java -Xmx4g -jar snpEff.jar eff -v -cancer GRCh37.75 cancer.vcf > cancer.eff.vcf </pre>
-
-				<br>
-				<i class="icon-hand-right"></i> HGVS notations seems to be preferred in the clinical and cancer community. 
-				You can activate it by using <code>-hgvs</code> to provide HGVS notation in AA sub-field. 
-				<br>
-				<br>
-
 				<h3>Interpreting Cancer effects</h3>
 				Interpretation of EFF field cancer sample relies heavily on 'Genotype' sub-field.
 				Just as a reminder, EFF field has the following format:
@@ -1597,31 +1616,54 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 $ cd ~/snpEff
 $ cd data/GRCh37.75/
 $ ls -al
-total 2399156
-drwxr-xr-x    2 pcingola pcingola       4096 Feb 11 22:01 .
-drwxr-xr-x 2472 pcingola pcingola     122880 Feb 11 19:55 ..
--rw-r--r--    1 pcingola pcingola    6292802 Feb 11 22:01 regulation_CD4.bin
--rw-r--r--    1 pcingola pcingola    2474396 Feb 11 22:01 regulation_GM06990.bin
--rw-r--r--    1 pcingola pcingola    7924641 Feb 11 22:00 regulation_GM12878.bin
--rw-r--r--    1 pcingola pcingola    6212489 Feb 11 22:01 regulation_H1ESC.bin
--rw-r--r--    1 pcingola pcingola    5152384 Feb 11 22:00 regulation_HeLa-S3.bin
--rw-r--r--    1 pcingola pcingola    7392256 Feb 11 22:01 regulation_HepG2.bin
--rw-r--r--    1 pcingola pcingola    3991817 Feb 11 22:01 regulation_HMEC.bin
--rw-r--r--    1 pcingola pcingola    4562241 Feb 11 22:01 regulation_HSMM.bin
--rw-r--r--    1 pcingola pcingola    5550176 Feb 11 22:01 regulation_HUVEC.bin
--rw-r--r--    1 pcingola pcingola    5528240 Feb 11 22:01 regulation_IMR90.bin
--rw-r--r--    1 pcingola pcingola     534786 Feb 11 22:01 regulation_K562b.bin
--rw-r--r--    1 pcingola pcingola    8371354 Feb 11 22:01 regulation_K562.bin
--rw-r--r--    1 pcingola pcingola    3063189 Feb 11 22:01 regulation_NH-A.bin
--rw-r--r--    1 pcingola pcingola    5621629 Feb 11 22:00 regulation_NHEK.bin
--rw-r--r--    1 pcingola pcingola   89937614 Feb 11 21:57 snpEffectPredictor.bin
+drwxrwxr-x 2 pcingola pcingola     4096 Aug 26 19:51 .
+drwxrwxr-x 3 pcingola pcingola     4096 Aug 26 19:51 ..
+-rw-rw-r-- 1 pcingola pcingola  5068097 Aug 26 19:51 motif.bin
+-rw-rw-r-- 1 pcingola pcingola  5469036 Aug 26 19:51 nextProt.bin
+-rw-rw-r-- 1 pcingola pcingola    38000 Aug 26 19:51 pwms.bin
+-rw-rw-r-- 1 pcingola pcingola  6399582 Aug 26 19:51 regulation_CD4.bin
+-rw-rw-r-- 1 pcingola pcingola  2516472 Aug 26 19:51 regulation_GM06990.bin
+-rw-rw-r-- 1 pcingola pcingola  8064939 Aug 26 19:51 regulation_GM12878.bin
+-rw-rw-r-- 1 pcingola pcingola  6309932 Aug 26 19:51 regulation_H1ESC.bin
+-rw-rw-r-- 1 pcingola pcingola  5247586 Aug 26 19:51 regulation_HeLa-S3.bin
+-rw-rw-r-- 1 pcingola pcingola  7506893 Aug 26 19:51 regulation_HepG2.bin
+-rw-rw-r-- 1 pcingola pcingola  4064952 Aug 26 19:51 regulation_HMEC.bin
+-rw-rw-r-- 1 pcingola pcingola  4644239 Aug 26 19:51 regulation_HSMM.bin
+-rw-rw-r-- 1 pcingola pcingola  5641615 Aug 26 19:51 regulation_HUVEC.bin
+-rw-rw-r-- 1 pcingola pcingola  5617233 Aug 26 19:51 regulation_IMR90.bin
+-rw-rw-r-- 1 pcingola pcingola   546871 Aug 26 19:51 regulation_K562b.bin
+-rw-rw-r-- 1 pcingola pcingola  8542718 Aug 26 19:51 regulation_K562.bin
+-rw-rw-r-- 1 pcingola pcingola  3119671 Aug 26 19:51 regulation_NH-A.bin
+-rw-rw-r-- 1 pcingola pcingola  5721741 Aug 26 19:51 regulation_NHEK.bin
+-rw-rw-r-- 1 pcingola pcingola 94345546 Aug 26 19:51 snpEffectPredictor.bin
 </pre>
 
 				So we can annotate using any of those tracks.
 				<br>
+				<br>
 				E.g. To use 'HeLa-S3' and 'NHEK' tracks, you can run:
 <pre>
-java -Xmx4g -jar snpEff.jar eff -reg HeLa-S3 -reg NHEK GRCh37.75 in.vcf > out.vcf
+$ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/file.vcf > file.eff.vcf
+00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
+00:00:00.377	done
+00:00:00.377	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
+00:00:25.845	done
+00:00:25.878	Reading regulation track 'NHEK'
+00:00:30.137	Reading regulation track 'HeLa-S3'
+...
+
+
+# Show one example of "regulatory_region" (output edited for readability)
+$ grep -i regulatory_region file.eff.vcf | head -n 1 | ./scripts/vcfInfoOnePerLine.pl 
+22	17565932	.	T	C	.	.
+							EFF	regulatory_region_variant[PolII](MODIFIER||||||HeLa-S3||||1)
+							EFF	regulatory_region_variant[DNase1](MODIFIER||||||NHEK||||1)
+							EFF	regulatory_region_variant[DNase1](MODIFIER||||||HeLa-S3||||1)
+							EFF	regulatory_region_variant[H3K9ac](MODIFIER||||||NHEK||||1)
+							EFF	regulatory_region_variant[H3K9ac](MODIFIER||||||HeLa-S3||||1)
+							EFF	regulatory_region_variant[H3K4me3](MODIFIER||||||HeLa-S3||||1)
+							EFF	regulatory_region_variant[H3K27ac](MODIFIER||||||HeLa-S3||||1)
+							EFF	non_coding_exon_variant(MODIFIER|||n.89T>C||IL17RA|processed_transcript|CODING|ENST00000477874|1|1)
 </pre>
 				<br>
 				<i class="icon-hand-right"></i> You can use <code>-onlyReg</code> command line option to perform only regulatory annotations (i.e. coding annotations will be omitted).
@@ -1653,7 +1695,7 @@ cd db/encode
 wget "http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/fdrPeaks/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb"
 
 # Annotate using ENCODE's data:
-java -Xmx4g -jar snpEff.jar eff -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.71 test.vcf > test.eff.vcf
+java -Xmx4g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.71 test.vcf > test.eff.vcf
 
 # Annotations are added as "CUSTOM" intervals:
 $ grep CUSTOM test.eff.vcf 
@@ -1695,7 +1737,7 @@ wget http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz
 tar -xvzf epigenome_latest.tgz
 
 # Annotate using SnpEff and "-interval" command line
-java -Xmx4g -jar snpEff.jar eff -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.eff.vcf 
+java -Xmx4g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.eff.vcf 
 
 # See the data represented as "CUSTOM" EFF fields
 $ grep CUSTOM test.eff.vcf 
@@ -1713,29 +1755,34 @@ $ grep CUSTOM test.eff.vcf
 				NextProt povides only human data.
 				<br>
 				<br>
-				This data is available by default in GRCh37 databases (latest version).
-				You only need to add the <code>-nextprot</code> command line option to get this information.
+				Starting from SnpEff version 4.0, these annotaions are automatically added if the database is available for the genome version you are using (in older SnpEff versions the <code>-nextprot</code> command line option was used).
+				NextProt databases are available by for in some GRCh37 genomes (e.g. file <code>data/GRCh37.75/nextProt.bin</code>).
+				<br>
+				<br>
+				Annotations example:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v -nextprot GRCh37.71 test.vcf > test.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
+00:00:00.374	done
+00:00:00.374	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
+00:00:25.880	done
+00:00:25.913	Reading NextProt database from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/nextProt.bin'
+...
 
-# Show results (edited for readibility)
-$ cat test.eff.vcf
-$ grep glycosylation_site test.eff.vcf 
-1  1147655  .  G  A  .  PASS  AC=7;EFF=DOWNSTREAM(MODIFIER||||348|SDF4|protein_coding|CODING|ENST00000263741||1)
-                                       ,DOWNSTREAM(MODIFIER|||||SDF4|retained_intron|CODING|ENST00000494748||1)
-                                       ,INTRON(MODIFIER|||||TNFRSF4|retained_intron|CODING|ENST00000497869|3|1)
-                                       ,NEXT_PROT[glycosylation_site:N-linked__GlcNAc..._](MODERATE||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|4|1)
-                                       ,NEXT_PROT[glycosylation_site:N-linked__GlcNAc..._](MODERATE||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|5|1)
-                                       ,NEXT_PROT[repeat:TNFR-Cys_4](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|4|1)
-                                       ,NEXT_PROT[repeat:TNFR-Cys_4](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|5|1)
-                                       ,NEXT_PROT[topological_domain:Extracellular](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|1|1)
-                                       ,NEXT_PROT[topological_domain:Extracellular](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|2|1)
-                                       ,NEXT_PROT[topological_domain:Extracellular](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|3|1)
-                                       ,NEXT_PROT[topological_domain:Extracellular](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|4|1)
-                                       ,NEXT_PROT[topological_domain:Extracellular](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|5|1)
-                                       ,NEXT_PROT[topological_domain:Extracellular](LOW||||277|TNFRSF4|protein_coding|CODING|ENST00000379236|6|1)
+# Show some results (edited for readibility)
+$ grep sequence_feature file.eff.vcf | head | ./scripts/vcfInfoOnePerLine.pl 
+
+22  17280941  .  T  C  .  .
+                            EFF  sequence_feature[transmembrane_region:Transmembrane_region](LOW|||c.336T>C|459|XKR3|protein_coding|CODING|ENST00000331428|2|1)
+...
+22  17472785  .  G  A  .  .
+                            EFF  sequence_feature[domain:PH](LOW|||c.456G>A|574|GAB4|protein_coding|CODING|ENST00000400588|2|1)
+...
+22	50722408	.	T	C	.	.
+                            EFF  sequence_feature[glycosylation_site:N-linked__GlcNAc..._](MODERATE|||c.2275T>C|1838|PLXNB2|protein_coding|CODING|ENST00000359337|14|1)
+
 </pre>
-				This example shows a <code>glycosylation_site</code> marked as <code>MODERATE</code> impact, since a modification of such a site might impair protein function.
+				The last line in the example shows a <code>glycosylation_site</code> marked as <code>MODERATE</code> impact, since a modification of such a site might impair protein function.
 				</p>
 				<h3> Motif </h3>
 				<p class="lead">
@@ -1744,33 +1791,45 @@ $ grep glycosylation_site test.eff.vcf
 				<p>
 				ENSEMBL provides trancription factor binding sites prediction, for human and mouse genomes, using <a href="http://jaspar.genereg.net/">Jaspar</a> motif database.
 				<br>
-				Using <code>-motif</code> command line option, you can add TFBS prediction to your annotations:
+				As of SnpEff version 4.0, these annotations are added automatically, if the datbase is avialble for the genome version you are using (files <code>motif.bin</code> and <code>pwms.bin</code>).
+				Older versions requires using the <code>-motif</code> command line option.
 				<br>
 				<br>
+				Example of trancription factor binding sites prediction predictions:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v -motif GRCh37.71 test.vcf > test.eff.vcf
-00:00:00.000	Reading configuration file 'snpEff.config'
-00:00:00.228	done
-00:00:00.228	Reading database for genome version 'GRCh37.71' from file '/Users/pablocingolani//snpEff/data/GRCh37.71/snpEffectPredictor.bin' (this might take a while)
-00:00:23.506	done
-00:00:23.552	Loading Motifs and PWMs
-00:00:23.552		Loading PWMs from : /Users/pablocingolani//snpEff/data/GRCh37.71/pwms.bin
-00:00:23.699		Loading Motifs from file '/Users/pablocingolani//snpEff/data/GRCh37.71/motif.bin'
-00:00:24.811		Motif database: 393522 markers loaded.
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
+00:00:00.393	done
+00:00:00.394	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
+00:00:26.214	done
+00:00:26.248	Reading NextProt database from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/nextProt.bin'
+00:00:27.386	NextProt database: 523361 markers loaded.
+00:00:27.387	Adding transcript info to NextProt markers.
+00:00:28.072	NextProt database: 706289 markers added.
+00:00:28.072	Loading Motifs and PWMs
+00:00:28.072		Loading PWMs from : /home/pcingola/snpEff_v4_0/./data/GRCh37.75/pwms.bin
+00:00:28.103		Loading Motifs from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/motif.bin'
+00:00:28.862		Motif database: 284122 markers loaded.
 ...
 
-$ grep MOTIF test.eff.vcf 
-1	1060235	.	G	A	.	PASS	AC=16;EFF=MOTIF[PB0134.1:HNF4A](MODIFIER||||||||||1),INTERGENIC(MODIFIER||||||||||1)
-1	1250957	.	G	A	.	PASS	AC=9;EFF=MOTIF[MA0058.1:Max](LOW||||||||||1),MOTIF[MA0093.1:USF1](LOW||||||||||1),MOTIF[PB0043.1:Max](MODIFIER||||||||||1),MOTIF[PL0007.1:Max](MODIFIER||||||||||1),MOTIF[PL0014.1:mxl-1](MODIFIER||||||||||1),START_GAINED(LOW||||342|CPSF3L|protein_coding|CODING|ENST00000421495|2|1),SYNONYMOUS_CODING(LOW|SILENT|caC/caT|H128|571|CPSF3L|protein_coding|CODING|ENST00000545578|6|1),SYNONYMOUS_CODING(LOW|SILENT|caC/caT|H157|600|CPSF3L|protein_coding|CODING|ENST00000435064|5|1),SYNONYMOUS_CODING(LOW|SILENT|caC/caT|H163|208|CPSF3L|protein_coding|CODING|ENST00000527719|6|1|WARNING_TRANSCRIPT_INCOMPLETE),SYNONYMOUS_CODING(LOW|SILENT|caC/caT|H163|606|CPSF3L|protein_coding|CODING|ENST00000540437|7|1),SYNONYMOUS_CODING(LOW|SILENT|caC/caT|H204|248|CPSF3L|protein_coding|CODING|ENST00000530031|6|1|WARNING_TRANSCRIPT_INCOMPLETE),SYNONYMOUS_CODING(LOW|SILENT|caC/caT|H33|108|CPSF3L|protein_coding|CODING|ENST00000526332|3|1),SYNONYMOUS_CODING(LOW|SILENT|caC/caT|H56|499|CPSF3L|protein_coding|CODING|ENST00000419704|3|1),SYNONYMOUS_CODING(LOW|SILENT|caC/caT|H59|502|CPSF3L|protein_coding|CODING|ENST00000411962|3|1),UPSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000461514||1),UPSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000470030||1),UPSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000478641||1),UPSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000485710||1),UPSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000497304||1),UPSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000525164||1),UPSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000525769||1),UPSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000531020||1),UPSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000531292||1),UTR_3_PRIME(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000430786|7|1),UTR_3_PRIME(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000458452|7|1),UTR_3_PRIME(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000526797|5|1),UTR_3_PRIME(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000527098|6|1),DOWNSTREAM(MODIFIER||||124|PUSL1|protein_coding|CODING|ENST00000467712||1),DOWNSTREAM(MODIFIER||||139|CPSF3L|protein_coding|CODING|ENST00000534345||1),DOWNSTREAM(MODIFIER||||166|CPSF3L|protein_coding|CODING|ENST00000498476||1),DOWNSTREAM(MODIFIER||||303|PUSL1|protein_coding|CODING|ENST00000379031||1),DOWNSTREAM(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000470679||1),DOWNSTREAM(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000525285||1),DOWNSTREAM(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000531019||1),DOWNSTREAM(MODIFIER|||||CPSF3L|processed_transcript|CODING|ENST00000490853||1),DOWNSTREAM(MODIFIER|||||CPSF3L|processed_transcript|CODING|ENST00000493534||1),DOWNSTREAM(MODIFIER|||||CPSF3L|processed_transcript|CODING|ENST00000532952||1),DOWNSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000429572||1),DOWNSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000496353||1),DOWNSTREAM(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000498173||1),DOWNSTREAM(MODIFIER|||||PUSL1|processed_transcript|CODING|ENST00000470520||1),DOWNSTREAM(MODIFIER|||||PUSL1|retained_intron|CODING|ENST00000493657||1),DOWNSTREAM(MODIFIER|||||RP5-890O3.9|processed_transcript|NON_CODING|ENST00000444968||1),EXON(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000527383|1|1),EXON(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000528879|5|1),EXON(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000531377|2|1),EXON(MODIFIER|||||CPSF3L|processed_transcript|CODING|ENST00000462432|2|1),EXON(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000323275|4|1),EXON(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000467408|1|1),EXON(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000488042|5|1),EXON(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000525603|3|1),EXON(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000526113|2|1),EXON(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000526904|2|1),EXON(MODIFIER|||||CPSF3L|retained_intron|CODING|ENST00000533916|1|1),INTRON(MODIFIER||||343|CPSF3L|protein_coding|CODING|ENST00000434694|4|1),INTRON(MODIFIER||||578|CPSF3L|protein_coding|CODING|ENST00000450926|4|1),INTRON(MODIFIER|||||CPSF3L|nonsense_mediated_decay|CODING|ENST00000532772|2|1)
-1	1310924	.	T	C	.	PASS	AC=948;EFF=MOTIF[PB0020.1:Gabp](MODIFIER||||||||||1),UPSTREAM(MODIFIER||||199|AURKAIP1|protein_coding|CODING|ENST00000321751||1),UPSTREAM(MODIFIER||||199|AURKAIP1|protein_coding|CODING|ENST00000338338||1),UPSTREAM(MODIFIER||||199|AURKAIP1|protein_coding|CODING|ENST00000338370||1),UPSTREAM(MODIFIER||||199|AURKAIP1|protein_coding|CODING|ENST00000378853||1),UPSTREAM(MODIFIER|||||AURKAIP1|processed_transcript|CODING|ENST00000489799||1),UPSTREAM(MODIFIER|||||AURKAIP1|processed_transcript|CODING|ENST00000496905||1),UPSTREAM(MODIFIER|||||RP5-890O3.3|processed_pseudogene|NON_CODING|ENST00000435351||1),INTERGENIC(MODIFIER||||||||||1)
-1	1368599	.	A	C	.	PASS	AC=920;EFF=MOTIF[MA0065.1:PPARG](MODIFIER||||||||||1),MOTIF[MA0065.2:PPARG](MODIFIER||||||||||1),MOTIF[MA0114.1:HNF4A](MODIFIER||||||||||1),MOTIF[MA0115.1:RNR1H2](MODIFIER||||||||||1),UPSTREAM(MODIFIER||||147|VWA1|protein_coding|CODING|ENST00000471398||1),UPSTREAM(MODIFIER||||166|VWA1|protein_coding|CODING|ENST00000495558||1),UPSTREAM(MODIFIER||||233|VWA1|protein_coding|CODING|ENST00000404702||1),UPSTREAM(MODIFIER||||445|VWA1|protein_coding|CODING|ENST00000476993||1),UPSTREAM(MODIFIER||||64|VWA1|protein_coding|CODING|ENST00000338660||1),UPSTREAM(MODIFIER|||||RP4-758J18.10|lincRNA|NON_CODING|ENST00000434150||1),INTRON(MODIFIER|||||RP4-758J18.10|lincRNA|NON_CODING|ENST00000417917|1|1),INTRON(MODIFIER|||||RP4-758J18.10|lincRNA|NON_CODING|ENST00000430109|1|1),INTRON(MODIFIER|||||RP4-758J18.10|lincRNA|NON_CODING|ENST00000454562|1|1)
-1	2182470	.	G	A	.	PASS	AC=743;EFF=MOTIF[PB0134.1:HNF4A](MODIFIER||||||||||1),INTRON(MODIFIER||||728|SKI|protein_coding|CODING|ENST00000378536|1|1),INTRON(MODIFIER|||||SKI|processed_transcript|CODING|ENST00000478223|1|1),INTRON(MODIFIER|||||SKI|processed_transcript|CODING|ENST00000508416|1|1)
-1	2466633	.	A	G	.	PASS	AC=770;EFF=MOTIF[PB0191.1:Ap2gamma](MODIFIER||||||||||1),UPSTREAM(MODIFIER||||166|HES5|protein_coding|CODING|ENST00000378453||1),INTERGENIC(MODIFIER||||||||||1)
-1	2480337	.	G	A	.	PASS	AC=16;EFF=MOTIF[MA0058.1:Max](MODIFIER||||||||||1),MOTIF[MA0059.1:Cmyc](MODIFIER||||||||||1),MOTIF[MA0093.1:USF1](MODIFIER||||||||||1),MOTIF[MA0147.1:Cmyc](LOW||||||||||1),MOTIF[PB0043.1:Max](MODIFIER||||||||||1),MOTIF[PL0007.1:Max](MODIFIER||||||||||1),MOTIF[PL0014.1:mxl-1](MODIFIER||||||||||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000416860||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000432521||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000443892||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000448624||1),DOWNSTREAM(MODIFIER|||||RP3-395M20.8|processed_transcript|NON_CODING|ENST00000449660||1),INTERGENIC(MODIFIER||||||||||1)
+# Show some examples (output edited for readability)
+$ grep -i TF_bind file.eff.vcf | ./scripts/vcfInfoOnePerLine.pl 
 
+22      18301084        .       G       A       .       .
+                                                        EFF     TF_binding_site_variant[MA0138.2:Nrsf](MODIFIER||||||||||1)
+                                                        EFF     TF_binding_site_variant[MA0138.1:Nrsf](MODIFIER||||||||||1)
+
+22      23523309        .       C       T       .       .
+                                                        EFF     TF_binding_site_variant[MA0062.2:Gabp](LOW||||||||||1)
+
+22      36629223        .       G       C       .       .
+                                                        EFF     TF_binding_site_variant[MA0079.1:SP1](LOW||||||||||1)
+
+...
 </pre>
 				<br>
-				So, for instance, the first MOTIF annotation is <code>MOTIF[PB0134.1:HNF4A]</code> corresponding to motif <a href="http://jaspar.genereg.net/cgi-bin/jaspar_db.pl?ID=PB0134.1&rm=present&collection=CORE">PB0134.1</a>, which you can look up in Jaspar.
+				So, for instance, the last annotation shown in the example is <code>TF_binding_site_variant[MA0079.1:SP1]</code> corresponding to motif 
+				<a href="http://jaspar.genereg.net/cgi-bin/jaspar_db.pl?ID=MA0079.1&rm=present&collection=CORE">MA0079.1</a>, which you can look up in Jaspar.
 				</p>
         </section>
 
@@ -1957,30 +2016,30 @@ $ grep MOTIF test.eff.vcf
 				You can see which chromosome names are used by SnpEff simply by using the <code>-v</code> (verbose) command line option.
 				This shows all chromosome names and their respective lengths. Notice the last line ("Chromosomes names [sizes]"):
 <pre>
-$ java -Xmx4g eff -v GRCh37.70 test.1K.vcf 
-00:00:00.000    Reading configuration file 'snpEff.config'
-00:00:00.176    done
-00:00:00.176    Reading database for genome version 'GRCh37.70' from file '/home/pcingola//snpEff/data/GRCh37.70/snpEffectPredictor.bin' (this might take a 
-00:01:13.513    done
-00:01:13.555    Setting '-treatAllAsProteinCoding' to 'false'
-00:01:13.556    Building interval forest
-00:01:32.642    done.
-00:01:38.280    Genome stats :
-# Genome name                : 'Homo_sapiens'
-# Genome version             : 'GRCh37.70'
-# Has protein coding info    : true
-# Genes                      : 62069
-# Protein coding genes       : 22643
-# Transcripts                : 206046
-# Avg. transcripts per gene  : 3.32
-# Protein coding transcripts : 85685
-# Cds                        : 756629
-# Exons                      : 1262644
-# Exons with sequence        : 1262644
-# Exons without sequence     : 0
-# Avg. exons per transcript  : 6.13
-# Number of chromosomes      : 275
-# Chromosomes names [sizes]  : '1' [249250621] '2' [243199373] '3' [198022430] '4' [191154276] '5' [180915260] '6' [171115067] '7' [159138663] 'X' [155270560] '8' [146364022] '9' [141213431] '10' [135534747] '11' [135006516] '12' [133851895] '13' [115169878] '14' [107349540] '15' [102531392] '16' [90354753] '17' [81195210] '18' [78077248] '20' [63025520] 'Y' [59373566] '19' [59128983] '22' [51304566] '21' [48129895] 'HG1287_PATCH' [249889652]  'HG1292_PATCH' [249822337]  'HG1473_PATCH' [249272860]  'HG1471_PATCH' [249269426] ...
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
+...
+# Number of chromosomes      : 297
+# Chromosomes names [sizes]  :
+#		'HG1292_PATCH' [250051446]
+#		'HG1287_PATCH' [249964560]
+#		'HG1473_PATCH' [249272860]
+#		'HG1471_PATCH' [249269426]
+#		'HSCHR1_1_CTG31' [249267852]
+#		'HSCHR1_2_CTG31' [249266025]
+#		'HSCHR1_3_CTG31' [249262108]
+#		'HG999_2_PATCH' [249259300]
+#		'HG989_PATCH' [249257867]
+#		'HG999_1_PATCH' [249257505]
+#		'HG1472_PATCH' [249251918]
+#		'1' [249250621]
+#		'2' [243199373]
+#		'3' [198022430]
+#		'4' [191154276]
+#		'5' [180915260]
+#		'6' [171115067]
+#		'7' [159138663]
+#		'X' [155270560]
 ...
 </pre>
 				</p>
@@ -2095,7 +2154,7 @@ cat output.eff.vcf \
 				<p>
 				<i class="icon-hand-right"></i>You can know which genomes are supported by running the following command:
 <pre>
-java -jar snpEff.jar databases
+$ java -jar snpEff.jar databases
 </pre>
 				<br>
 				<i class="icon-warning-sign"></i> Most people do NOT need to build a database, and can safely use a pre-built one. 
@@ -2119,13 +2178,13 @@ java -jar snpEff.jar databases
 				The easiest way to download and install a pre-built SnpEff database manually, is using the "download" command.
 				E.g. if you want to install the SnpEff database for the human genome, you can run the following command:
 <pre>
-java -jar snpEff.jar download -v GRCh37.66
+$ java -jar snpEff.jar download -v GRCh37.75
 </pre>
 				<p>
 				<i class="icon-hand-right"></i> If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
 				This is done using the '-c' command line option:
 <p><pre>
-java -Xmx4g -jar snpEff.jar download <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.66 
+$ java -Xmx4g -jar snpEff.jar download <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 
 </pre><p>
 
 				<h3>Building a database</h3>
