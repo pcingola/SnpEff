@@ -311,25 +311,30 @@ void uploadSf() {
 #-------------------------------------------------------------------------------
 
 void zipBundles() {
-	bundleLines := sys cat $dirSnpeff/snpEff.config | grep .bundle.
+	println "Create bundles ZIP files"
 
-	for( string bline : bundleLines.lines() ) {
+	bundleList := "bundles.txt"
+	bundleLines := sys cat $dirSnpeff/snpEff.config | grep .bundle. > $bundleList
+	bundleList.rmOnExit()
+
+	for( string bline : bundleList.read().lines() ) {
 		bfields := bline.split(':')
 
 		# Bundle name
 		bname := bfields[0].trim().removeExt('.bundle')
-		println "\tBundle: $bname"
 
 		string[] bins
 		for( string gen : bfields[1].split(' ') ) {
-			bins.add( "$dirData/$gen/snpEffectPredictor.bin" )
+			bin := "$dirData/$gen/snpEffectPredictor.bin"
+			if( bin.exists() ) bins.add( bin )
 		}
 
 		# Zip files
 		zipList := bins.join(' ')
 		zipName := "$dirZip/snpEff_v" + version + "_" + bname + ".zip"
-		task( zipName <- bins ) {
-			sys zip $zipName $zipList
+		if( zipName <- bins ) {
+			println "\tZIP Bundle: $zipName"
+			task zip $zipName $zipList
 		}
 	}
 }
@@ -350,9 +355,13 @@ void zipCore() {
 	sys mv $dir snpEff
 
 	# Create 'core' zip file
-	zip := "$dirZip/snpEff_v" + versionUnd + "_core.zip"
+	zip := "snpEff_v" + versionUnd + "_core.zip"
+	zipLatest := "snpEff_latest_core.zip"
 	sys rm -f $zip 2> /dev/null
-	task zip -r $zip snpEff
+	task { 
+		sys zip -r $zip snpEff
+		sys cp $zip $zipLatest
+	}
 }
 
 #-------------------------------------------------------------------------------
@@ -361,9 +370,11 @@ void zipCore() {
 
 void zipDbs() {
 	println "Create database ZIP files"
-	dbs := sys $snpeff databases | cut -f 1,4
+	dbList := "databases.txt"
+	dbs := sys $snpeff databases | cut -f 1,4 > $dbList
+	dbList.rmOnExit()
 
-	for( string db : dbs.lines() ) {
+	for( string db : dbList.read().lines() ) {
 		fields := db.split('\t')
 		gen := fields[0].trim()
 		bundle := fields[1].trim()
@@ -373,9 +384,9 @@ void zipDbs() {
 
 			if( bin.exists() ) {
 				zip := "$dirZip/snpEff_v" + versionUnd + "_$gen.zip"
-				println "\tZIP '$zip'"
-				task( zip <- bin ) {
-					sys zip -r $zip data/$gen/*.bin
+				if( zip <- bin ) {
+					println "\tZIP '$zip'"
+					task zip -r $zip data/$gen/*.bin
 				}
 			}
 		}
