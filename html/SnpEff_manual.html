@@ -764,7 +764,9 @@ Database options:
 				<i class="icon-warning-sign"></i>Although this seems to be the standard definitions of "canonical transcript", there is no warranties that what SnpEff considers a canonical transcript will match exactly what UCSC or ENSEMBL consider a canonical transcript.
 				</p>
 				Example on how to use canonical transcripts annotations:
-<pre> java -Xmx4G -jar snpEff.jar -canon GRCh37.75 file.vcf > file.snpeff.canon.vcf</pre>
+<pre> 
+$ java -Xmx4G -jar snpEff.jar -v -canon GRCh37.75 examples/file.vcf > file.eff.canon.vcf
+</pre>
 				<br>
 				In order to get only changes that match your intervals, you can use the command:
 <pre> java -Xmx4G -jar snpEff.jar -fi intervals.bed dm5.30 file.vcf </pre>
