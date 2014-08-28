@@ -141,30 +141,30 @@ th a:active, th a:hover {
 <table border=0>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Genome </b> </td>
-		<td> testHg3775Chr22 </td>
+		<td> myco_m129 </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Date </b> </td>
-		<td> 2014-08-28 08:25 </td>
+		<td> 2014-08-28 08:53 </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> SnpEff version </b> </td>
-		<td> <pre>SnpEff 4.0 (build 2014-08-26), by Pablo Cingolani</pre> </td>
+		<td> <pre>SnpEff 4.0a (build 2014-08-28), by Pablo Cingolani</pre> </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Command line arguments </b> </td>
-		<td> <pre>SnpEff  testHg3775Chr22 -i bed tests/test_lof_02.bed 
+		<td> <pre>SnpEff  myco_m129 /home/pcingola/snpEff/z.vcf 
 </pre> </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Warnings </b> </td>
-		   
-		<td bgcolor="#ffff00"> 4 </td>
+		 
+		<td bgcolor="#ffffff"> 0 </td>
 	</tr>	
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Errors </b> </td>
-		 
-		<td bgcolor="#dddddd"> 0 </td>
+		   
+		<td bgcolor="#ff0000"> 10 </td>
 	</tr>	
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of lines (input file) </b> </td>
@@ -176,17 +176,17 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of not variants <br>(i.e. reference equals alternative) </b> </td>
-		<td> 10 </td>
+		<td> 0 </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants processed <br> (i.e. after filter and non-variants) </b> </td>
-		<td> 0 </td>
+		<td> 10 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of known variants <br>(i.e. non-empty ID) </b> </td>
 		<td> 
-		0
-		( 0% ) 
+		8
+		( 80% ) 
 		</td>
 	</tr>
 	<tr bgcolor=ffffff>
@@ -197,15 +197,15 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of effects </b> </td>
-		<td> 87 </td>
+		<td> 10 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome total length </b> </td>
-		<td> 3,095,693,983 </td>
+		<td> 816,395 </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Genome effective length </b> </td>
-		<td> 0 </td>
+		<td> 1 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Variant rate </b> </td>
@@ -227,10 +227,16 @@ th a:active, th a:hover {
 
 <table border=1>
 	<tr><th> Chromosome </th><th> Length </th><th> Variants </th><th> Variants rate </th></tr> 
+		<tr>
+			<td> 22 </td>
+			<td class="numeric"> 1 </td>
+			<td class="numeric"> 0 </td>
+			<td class="numeric"> 0 </td>
+		</tr> 
 	<tr>
 		<th> Total </th>
-		<th class="numeric"> 0 </th>
-		<th class="numeric"> 0 </th>
+		<th class="numeric"> 1 </th>
+		<th class="numeric"> 10 </th>
 		<th class="numeric"> 0 </th>
 	</tr> 
 </table> 
@@ -255,7 +261,7 @@ th a:active, th a:hover {
     <tbody>
 	    <tr>
 	    	<td> <b> SNP </b> </td>
-	    	<td class="numeric" bgcolor="ffffff"> 0 </td>
+	    	<td class="numeric" bgcolor="ffffff"> 10 </td>
 	    </tr>
 	    <tr>
 	    	<td> <b> MNP </b> </td>
@@ -281,7 +287,7 @@ th a:active, th a:hover {
     <tfoot>
 	    <tr>
 	    	<th><b>Total </b> </th>
-	    	<th class="numeric"> 0 </th>
+	    	<th class="numeric"> 10 </th>
 	    </tr>
     </tfoot>
 </table>
@@ -308,7 +314,7 @@ th a:active, th a:hover {
 		<tr> 
 			<td> <b> MODIFIER </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="ffffff"> 87 </td> 
+			<td class="numeric" bgcolor="ffffff"> 10 </td> 
 			<td class="numeric" bgcolor="ffffff"> 100% </td>
 		</tr>
 </table><br>
@@ -365,40 +371,10 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 		</tr>
 	</thead>
 		<tr> 
-			<td> <b> 3_prime_UTR_variant </b> </td> 
+			<td> <b>  </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#0af400"> 4 </td> 
-			<td class="numeric" bgcolor="#0af400"> 4.598% </td>
-		</tr>
-		<tr> 
-			<td> <b> 5_prime_UTR_variant </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#00ff00"> 2 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 2.299% </td>
-		</tr>
-		<tr> 
-			<td> <b> downstream_gene_variant </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#24da00"> 9 </td> 
-			<td class="numeric" bgcolor="#24da00"> 10.345% </td>
-		</tr>
-		<tr> 
-			<td> <b> intron_variant </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#43bb00"> 15 </td> 
-			<td class="numeric" bgcolor="#43bb00"> 17.241% </td>
-		</tr>
-		<tr> 
-			<td> <b> non_coding_exon_variant </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#ff0000"> 51 </td> 
-			<td class="numeric" bgcolor="#ff0000"> 58.621% </td>
-		</tr>
-		<tr> 
-			<td> <b> upstream_gene_variant </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#14ea00"> 6 </td> 
-			<td class="numeric" bgcolor="#14ea00"> 6.897% </td>
+			<td class="numeric" bgcolor="ffffff"> 10 </td> 
+			<td class="numeric" bgcolor="ffffff"> 100% </td>
 		</tr>
 </table><br>
  </td>
@@ -412,40 +388,10 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 		</tr>
 	</thead>
 		<tr> 
-			<td> <b> DOWNSTREAM </b> </td> 
+			<td> <b> NONE </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#24da00"> 9 </td> 
-			<td class="numeric" bgcolor="#24da00"> 10.345% </td>
-		</tr>
-		<tr> 
-			<td> <b> EXON </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#ff0000"> 51 </td> 
-			<td class="numeric" bgcolor="#ff0000"> 58.621% </td>
-		</tr>
-		<tr> 
-			<td> <b> INTRON </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#43bb00"> 15 </td> 
-			<td class="numeric" bgcolor="#43bb00"> 17.241% </td>
-		</tr>
-		<tr> 
-			<td> <b> UPSTREAM </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#14ea00"> 6 </td> 
-			<td class="numeric" bgcolor="#14ea00"> 6.897% </td>
-		</tr>
-		<tr> 
-			<td> <b> UTR_3_PRIME </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#0af400"> 4 </td> 
-			<td class="numeric" bgcolor="#0af400"> 4.598% </td>
-		</tr>
-		<tr> 
-			<td> <b> UTR_5_PRIME </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#00ff00"> 2 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 2.299% </td>
+			<td class="numeric" bgcolor="ffffff"> 10 </td> 
+			<td class="numeric" bgcolor="ffffff"> 100% </td>
 		</tr>
 </table><br>
  </td>
@@ -453,7 +399,7 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 </table>
 <p>
 
-<img src="http://chart.apis.google.com/chart?cht=bvs&chs=800x300&chbh=50,4,8&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,58.620689655172406|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AAHiAAAAAAAAAAAAAAAAAA,AAAAChAAAAAAAAAAAAAAAA,AAAAAA..AAAAAA..AAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAS0AAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAFBAAAA,AAAAAAAAAAAAAAAAAALTAA,AAAAAAAAAAAAAAAAAAAAAA" border=1><p>
+<img src="http://chart.apis.google.com/chart?cht=bvs&chs=800x300&chbh=50,4,8&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AA__AAAAAAAAAAAAAAAAAA,AAAA__AAAAAAAAAAAAAAAA,AAAAAA__AAAAAA__AAAAAA,AAAAAAAA__AAAAAAAAAAAA,AAAAAAAAAA__AAAAAAAAAA,AAAAAAAAAAAA__AAAAAAAA,AAAAAAAAAAAAAAAA__AAAA,AAAAAAAAAAAAAAAAAA__AA,__AAAAAAAAAAAAAAAAAA__" border=1><p>
 
 </center>
 
@@ -466,7 +412,17 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <b> Quality:</b> 
 <p>
 <pre>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Quality+histogram&chxl=1:|Count|3:|Quality&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<table class="histo">
+		<tr> <th width=15%>Min</th><td>0</td> </tr>
+		<tr> <th>Max</th><td>0</td> </tr>
+		<tr> <th>Mean</th><td>0</td> </tr>
+		<tr> <th>Median</th><td>0</td> </tr>
+		<tr> <th>Standard deviation</th><td>0</td> </tr>
+		<tr> <th>Values</th><td>0</td> </tr>
+		<tr> <th>Count</th><td>10</td> </tr>
+		</tr>
+	</table>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Quality+histogram&chxl=1:|Count|2:|0|3:|Quality&chxr=0,0.0,10.0|1,0.0,100.0|3,0.0,100.0"><br>
 </pre>
 
 <!--==========================================================================
@@ -494,10 +450,10 @@ Missense / Silent ratio: </th><td class="numeric"> ?
     <tr>
     	<td> &nbsp; </td>  <th> <b> A </b> </th> <th> <b> C </b> </th> <th> <b> G </b> </th> <th> <b> T </b> </th>
     </tr>
-	    <tr> <th> <b> A </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
-	    <tr> <th> <b> C </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
-	    <tr> <th> <b> G </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
-	    <tr> <th> <b> T </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
+	    <tr> <th> <b> A </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="#ff0000"> 3 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
+	    <tr> <th> <b> C </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="#00ff00"> 1 </td> </tr>
+	    <tr> <th> <b> G </b> </th><td class="numeric" bgcolor="#ff0000"> 3 </td><td class="numeric" bgcolor="#00ff00"> 1 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="#00ff00"> 1 </td> </tr>
+	    <tr> <th> <b> T </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="#00ff00"> 1 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
 </table>
 </center>
 
@@ -519,18 +475,26 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 
 <center>
 <table border=1>
-	<tr> <th> Transitions </th><td class="numeric"> 0 </td> </tr>
-	<tr> <th> Transversions </th><td class="numeric"> 0 </td> </tr>
-	<tr> <th> Ts/Tv ratio </th><td class="numeric"> 0 </td> </tr>
+	<tr> <th> Transitions </th><td class="numeric"> 8 </td> </tr>
+	<tr> <th> Transversions </th><td class="numeric"> 2 </td> </tr>
+	<tr> <th> Ts/Tv ratio </th><td class="numeric"> 4 </td> </tr>
 </table>
 </center>
 <p>
 
 	<b>All variants:</b>
-	<pre>No results available (empty input?)</pre>
+	<pre>Sample ,Total
+Transitions ,8,8
+Transversions ,2,2
+Ts/Tv ,4.000,4.000
+</pre>
 	<p>
 	<b>Only known variants</b> (i.e. the ones having a non-empty ID field):
-	<pre>No results available (empty input?)</pre>
+	<pre>Sample ,Total
+Transitions ,6,6
+Transversions ,2,2
+Ts/Tv ,3.000,3.000
+</pre>
 <p>
 
 <!--==========================================================================
@@ -551,7 +515,17 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <hr> 
 <a name="alleleCount">
 <center> <b> Allele Count </b> <p> </center>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|3:|Allele+Count&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|1|3:|Allele+Count&chxr=0,0.0,10.0|1,0.0,100.0|3,0.0,100.0"><br>
+	<table class="histo">
+		<tr> <th width=15%>Min</th><td>1</td> </tr>
+		<tr> <th>Max</th><td>1</td> </tr>
+		<tr> <th>Mean</th><td>1</td> </tr>
+		<tr> <th>Median</th><td>1</td> </tr>
+		<tr> <th>Standard deviation</th><td>0</td> </tr>
+		<tr> <th>Values</th><td>1</td> </tr>
+		<tr> <th>Count</th><td>10</td> </tr>
+		</tr>
+	</table>
 <p>
 
 
@@ -562,11 +536,16 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <hr> 
 <a name="homHet">
 <center> <b> Hom/Het per sample </b> <p> </center>
-	<img src=""><br>
-	<img src=""><br>
-	<img src=""><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Heterozygous+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Heterozygous+count|2:|0|3:|Sample+number"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Homozygous+%28ALT%29+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Homozygous+count|2:|0|3:|Sample+number"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Missing+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Missing+count|2:|0|3:|Sample+number"><br>
 	
-	<pre></pre>
+	<pre>Sample_names , No_sample_name_found
+Reference , 0
+Het , 0
+Hom , 0
+Missing , 0
+</pre>
 <p>
 
 <!--==========================================================================
@@ -636,6 +615,12 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <b> Variants by chromosome</b><p> 
 
 <center>
+	<pre>
+		<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AAAA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Variants+histogram%3A+22&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Variants%2F1b|2:|0|1|3:|Position"><br>
+		22, Position,0,1
+22,Count,0,0
+
+	</pre>
 </center>
 
 <!--==========================================================================

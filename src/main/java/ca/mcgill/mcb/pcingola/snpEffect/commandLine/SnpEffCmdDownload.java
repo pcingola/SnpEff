@@ -22,6 +22,23 @@ public class SnpEffCmdDownload extends SnpEff {
 		super();
 	}
 
+	void downloadAndInstall(URL url, String localFile) {
+		// Download and UnZIP
+		Download download = new Download();
+		download.setVerbose(verbose);
+		download.setDebug(debug);
+		download.setUpdate(update);
+		if (download.download(url, localFile)) {
+			if (download.unzip(localFile, config.getDirMain(), config.getDirData())) {
+				if (verbose) Timer.showStdErr("Unzip: OK");
+				if ((new File(localFile)).delete()) {
+					if (verbose) Timer.showStdErr("Deleted local file '" + localFile + "'");
+				}
+			}
+		}
+
+	}
+
 	/**
 	 * Parse command line arguments
 	 */
@@ -65,15 +82,7 @@ public class SnpEffCmdDownload extends SnpEff {
 
 		URL url = config.downloadUrl(genomeVer);
 		String localFile = Download.urlBaseName(url.toString());
-
-		// Download and UnZIP
-		Download download = new Download();
-		download.setVerbose(verbose);
-		download.setDebug(debug);
-		download.setUpdate(update);
-		if (download.download(url, localFile)) {
-			if (download.unzip(localFile, config.getDirMain(), config.getDirData()) && verbose) Timer.showStdErr("Unzip: OK");
-		}
+		downloadAndInstall(url, localFile);
 
 		if (verbose) Timer.showStdErr("Done");
 		return true;
@@ -95,7 +104,7 @@ public class SnpEffCmdDownload extends SnpEff {
 					+ "\n\tNew version  : " + versionCheck.getLatestVersion() //
 					+ "\n\tRelease date : " + versionCheck.getLatestReleaseDate() //
 					+ "\n\tDownload URL : " + versionCheck.getLatestUrl() //
-			);
+					);
 		} else {
 			// Already updated?
 			Timer.showStdErr("No new version found. This seems to be the latest version (" + versionCheck.getLatestVersion() + ") or server could not be contacted. Nothing done.");
@@ -112,20 +121,7 @@ public class SnpEffCmdDownload extends SnpEff {
 			throw new RuntimeException(e);
 		}
 		String localFile = Gpr.baseName(url.toString());
-
-		// Download and unzip
-		Download download = new Download();
-		download.setVerbose(verbose);
-		download.setDebug(debug);
-		download.setUpdate(update);
-		if (download.download(url, localFile)) {
-			if (download.unzip(localFile, config.getDirMain(), config.getDirData())) {
-				if (verbose) Timer.showStdErr("Unzip: OK");
-				if ((new File(localFile)).delete()) {
-					if (verbose) Timer.showStdErr("Deleted local file '" + localFile + "'");
-				}
-			}
-		}
+		downloadAndInstall(url, localFile); // Download and unzip
 
 		if (verbose) Timer.showStdErr("Done");
 		return true;
@@ -133,7 +129,6 @@ public class SnpEffCmdDownload extends SnpEff {
 
 	/**
 	 * Show 'usage;' message and exit with an error code '-1'
-	 * @param message
 	 */
 	@Override
 	public void usage(String message) {
