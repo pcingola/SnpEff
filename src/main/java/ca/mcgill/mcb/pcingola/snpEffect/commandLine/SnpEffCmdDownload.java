@@ -63,7 +63,7 @@ public class SnpEffCmdDownload extends SnpEff {
 		if (verbose) Timer.showStdErr("Downloading database for '" + genomeVer + "'");
 
 		URL url = config.downloadUrl(genomeVer);
-		String localFile = Download.urlBaseName(url.toString());
+		String localFile = System.getProperty("java.io.tmpdir") + "/" + Download.urlBaseName(url.toString());
 
 		// Download and UnZIP
 		Download download = new Download();
