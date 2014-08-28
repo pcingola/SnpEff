@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.util.GprHtml;
@@ -49,8 +50,6 @@ public class CountByType implements Serializable {
 
 	/**
 	 * How many counts of this type?
-	 * @param type
-	 * @return
 	 */
 	public long get(String type) {
 		return getCount(countByType, type);
@@ -91,8 +90,6 @@ public class CountByType implements Serializable {
 
 	/**
 	 * Count for this type
-	 * @param type
-	 * @return
 	 */
 	public long getCount(String type) {
 		Long score = countByType.get(type);
@@ -144,7 +141,6 @@ public class CountByType implements Serializable {
 
 	/**
 	 * Increment counter for a given type
-	 * @param type
 	 */
 	public long inc(String type, int increment) {
 		return inc(countByType, type, increment);
@@ -159,6 +155,22 @@ public class CountByType implements Serializable {
 
 	public Set<String> keySet() {
 		return countByType.keySet();
+	}
+
+	/**
+	 * List all types (sorted by count)
+	 */
+	public List<String> keysRanked(final boolean reverse) {
+		ArrayList<String> keys = new ArrayList<String>();
+		keys.addAll(countByType.keySet());
+		Collections.sort(keys, new Comparator<String>() {
+
+			@Override
+			public int compare(String arg0, String arg1) {
+				return (int) (reverse ? get(arg1) - get(arg0) : get(arg1) - get(arg0));
+			}
+		});
+		return keys;
 	}
 
 	/**
@@ -196,7 +208,6 @@ public class CountByType implements Serializable {
 
 	/**
 	 * Percentage by type
-	 * @param type
 	 */
 	public double percent(String type) {
 		long total = get(TOTAL_TYPE);
@@ -205,8 +216,21 @@ public class CountByType implements Serializable {
 	}
 
 	/**
+	 * A map: key -> rank(counts)
+	 */
+	public Map<String, Integer> ranks(boolean reverse) {
+		List<String> keys = keysRanked(reverse);
+		HashMap<String, Integer> rank = new HashMap<>(keys.size());
+
+		int rankNum = 0;
+		for (String key : keys)
+			rank.put(key, rankNum++);
+
+		return rank;
+	}
+
+	/**
 	 * Remove this entry type
-	 * @param type
 	 */
 	public void remove(String type) {
 		countByType.remove(type);
@@ -219,7 +243,6 @@ public class CountByType implements Serializable {
 
 	/**
 	 * Sum all counts.
-	 * @return
 	 */
 	public long sum() {
 		return get(TOTAL_TYPE);
@@ -275,15 +298,7 @@ public class CountByType implements Serializable {
 	}
 
 	public String toStringTop(int n) {
-		ArrayList<String> keys = new ArrayList<String>();
-		keys.addAll(countByType.keySet());
-		Collections.sort(keys, new Comparator<String>() {
-
-			@Override
-			public int compare(String arg0, String arg1) {
-				return (int) (get(arg1) - get(arg0));
-			}
-		});
+		List<String> keys = keysRanked(true);
 
 		StringBuffer out = new StringBuffer();
 		int i = 0;
