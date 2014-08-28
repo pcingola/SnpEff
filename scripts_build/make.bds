@@ -27,6 +27,7 @@ bundleLists			:= false		# Create bundle lists and config entries
 config				:= false		# Create config file
 db					:= false		# Build databases
 distro	 			:= false		# Create distribution files
+distroCore 			:= false		# Create distribution files (only 'core')
 download 			:= false		# Download files
 make	 			:= false		# Make (build JAR files)
 test	 			:= false		# Run test cases
@@ -266,9 +267,7 @@ void downloadAll() {
 #-------------------------------------------------------------------------------
 
 void makeDistro() {
-	# Make sure zip dir exists
-	dirZip.mkdir()
-
+	dirZip.mkdir()	# Make sure zip dir exists
 	zipCore()
 	zipDbs()
 	zipBundles()
@@ -399,14 +398,15 @@ void zipDbs() {
 
 print("Building\n")
 
-if( make )			build()					# Create JAR files
-if( download )		downloadAll()			# Perform downloads
-if( db )			buildDb()				# Build genomes
-if( testDb )		buildDbTest()			# Build databases used in test cases
-if( test )			runTests()				# Run test cases 
 if( bundleLists )	buildBundleLists()		# Create bundle list and config files
 if( config )		buildConfig()			# Create config file
+if( db )			buildDb()				# Build genomes
 if( distro )		makeDistro()			# Create distribution files
+if( distroCore )	zipCore()				# Create distribution files (core 'zip')
+if( download )		downloadAll()			# Perform downloads
+if( make )			build()					# Create JAR files
+if( test )			runTests()				# Run test cases 
+if( testDb )		buildDbTest()			# Build databases used in test cases
 if( upload )		uploadSf()				# Upload files
 
 wait
