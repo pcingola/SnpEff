@@ -81,7 +81,7 @@ public class SnpEffCmdDownload extends SnpEff {
 		if (verbose) Timer.showStdErr("Downloading database for '" + genomeVer + "'");
 
 		URL url = config.downloadUrl(genomeVer);
-		String localFile = Download.urlBaseName(url.toString());
+		String localFile = System.getProperty("java.io.tmpdir") + "/" + Download.urlBaseName(url.toString());
 		downloadAndInstall(url, localFile);
 
 		if (verbose) Timer.showStdErr("Done");
@@ -104,7 +104,7 @@ public class SnpEffCmdDownload extends SnpEff {
 					+ "\n\tNew version  : " + versionCheck.getLatestVersion() //
 					+ "\n\tRelease date : " + versionCheck.getLatestReleaseDate() //
 					+ "\n\tDownload URL : " + versionCheck.getLatestUrl() //
-					);
+			);
 		} else {
 			// Already updated?
 			Timer.showStdErr("No new version found. This seems to be the latest version (" + versionCheck.getLatestVersion() + ") or server could not be contacted. Nothing done.");
@@ -120,7 +120,7 @@ public class SnpEffCmdDownload extends SnpEff {
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
-		String localFile = Gpr.baseName(url.toString());
+		String localFile = System.getProperty("java.io.tmpdir") + "/" + Gpr.baseName(url.toString());
 		downloadAndInstall(url, localFile); // Download and unzip
 
 		if (verbose) Timer.showStdErr("Done");
