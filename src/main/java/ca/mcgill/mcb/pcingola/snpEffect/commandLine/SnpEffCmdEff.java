@@ -107,9 +107,6 @@ public class SnpEffCmdEff extends SnpEff {
 
 	/**
 	 * Analyze which comparisons to make in cancer genomes
-	 * @param vcfEntry
-	 * @param pedigree
-	 * @return
 	 */
 	Set<Tuple<Integer, Integer>> compareCancerGenotypes(VcfEntry vcfEntry, List<PedigreeEnrty> pedigree) {
 		HashSet<Tuple<Integer, Integer>> comparisons = new HashSet<Tuple<Integer, Integer>>();
@@ -483,8 +480,10 @@ public class SnpEffCmdEff extends SnpEff {
 						// if (outFor.equals("TXT")) outputFormat = OutputFormat.TXT;
 						if (outFor.equals("VCF")) outputFormat = OutputFormat.VCF;
 						else if (outFor.equals("GATK")) outputFormat = OutputFormat.GATK;
-						else if (outFor.equals("BED")) outputFormat = OutputFormat.BED;
-						else if (outFor.equals("BEDANN")) outputFormat = OutputFormat.BEDANN;
+						else if (outFor.equals("BED")) {
+							outputFormat = OutputFormat.BED;
+							lossOfFunction = false;
+						} else if (outFor.equals("BEDANN")) outputFormat = OutputFormat.BEDANN;
 						else usage("Unknown output file format '" + outFor + "'");
 					}
 				} else if ((arg.equals("-s") || arg.equalsIgnoreCase("-stats"))) {
@@ -533,6 +532,7 @@ public class SnpEffCmdEff extends SnpEff {
 						} else if (inFor.equals("BED")) {
 							inputFormat = InputFormat.BED;
 							outputFormat = OutputFormat.BED;
+							lossOfFunction = false;
 						} else usage("Unknown input file format '" + inFor + "'");
 					} else usage("Missing input format in command line option '-i'");
 				}
@@ -740,7 +740,6 @@ public class SnpEffCmdEff extends SnpEff {
 
 	/**
 	 * Calculate the effect of variants and show results
-	 * @param snpEffFile
 	 */
 	public boolean runAnalysis(String inputFile, String outputFile) {
 		boolean ok = true;

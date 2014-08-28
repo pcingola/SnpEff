@@ -1,5 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -118,7 +119,12 @@ public class SnpEffCmdDownload extends SnpEff {
 		download.setDebug(debug);
 		download.setUpdate(update);
 		if (download.download(url, localFile)) {
-			if (download.unzip(localFile, config.getDirMain(), config.getDirData()) && verbose) Timer.showStdErr("Unzip: OK");
+			if (download.unzip(localFile, config.getDirMain(), config.getDirData())) {
+				if (verbose) Timer.showStdErr("Unzip: OK");
+				if ((new File(localFile)).delete()) {
+					if (verbose) Timer.showStdErr("Deleted local file '" + localFile + "'");
+				}
+			}
 		}
 
 		if (verbose) Timer.showStdErr("Done");
