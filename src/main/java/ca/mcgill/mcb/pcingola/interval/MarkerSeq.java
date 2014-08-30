@@ -38,38 +38,38 @@ public class MarkerSeq extends Marker {
 	@Override
 	public MarkerSeq apply(Variant variant) {
 		// Create new exon with updated coordinates
-		MarkerSeq ex = (MarkerSeq) super.apply(variant);
+		MarkerSeq ms = (MarkerSeq) super.apply(variant);
 
 		// Exon eliminated?
-		if (ex == null) return null;
+		if (ms == null) return null;
 
-		// Sometimes 'apply' method return 'this'. Since we don't want to update the original exon, we have to create a clone
-		if (ex == this) ex = (MarkerSeq) clone();
+		// Sometimes 'apply' method return 'this'. Since we don't want to update the original marker, we have to create a clone
+		if (ms == this) ms = (MarkerSeq) clone();
 
 		if (variant.intersects(this)) {
 			switch (variant.getVariantType()) {
 			case SNP:
-				applySnp(variant, ex);
+				applySnp(variant, ms);
 				break;
 
 			case INS:
-				applyIns(variant, ex);
+				applyIns(variant, ms);
 				break;
 
 			case DEL:
-				applyDel(variant, ex);
+				applyDel(variant, ms);
 				break;
 
 			case MNP:
-				applyMnp(variant, ex);
+				applyMnp(variant, ms);
 				break;
 
 			default:
 				throw new RuntimeException("Unimplemented method for variant change type " + variant.getVariantType() + "\n\tVariant: " + variant);
 			}
-		} else ex.setSequence(getSequence());
+		} else ms.setSequence(getSequence());
 
-		return ex;
+		return ms;
 	}
 
 	/**
