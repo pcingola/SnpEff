@@ -116,6 +116,11 @@ public class GprSeq {
 		return codes;
 	}
 
+	public static int aaCodePairCode(byte aa1, byte aa2) {
+		if (aa1 < 0 || aa2 < 0) return -1;
+		return aa1 * GprSeq.AMINO_ACIDS.length + aa2;
+	}
+
 	/**
 	 * Code an AA-pair
 	 */
@@ -186,6 +191,34 @@ public class GprSeq {
 	public static char code2aa(byte aacode) {
 		if (aacode < 0) return '-';
 		return CODE_TO_AA[aacode];
+	}
+
+	/**
+	 * Convert from AA_code to AA letter
+	 */
+	public static String code2aa(byte aacodes[]) {
+		char c[] = new char[aacodes.length];
+
+		for (int i = 0; i < aacodes.length; i++) {
+			if (aacodes[i] < 0) c[i] = '-';
+			else c[i] = CODE_TO_AA[aacodes[i]];
+		}
+
+		return new String(c);
+	}
+
+	/**
+	 * Convert from AA_code to AA letter
+	 */
+	public static String code2aa(int aacodes[]) {
+		char c[] = new char[aacodes.length];
+
+		for (int i = 0; i < aacodes.length; i++) {
+			if (aacodes[i] < 0) c[i] = '-';
+			else c[i] = CODE_TO_AA[aacodes[i]];
+		}
+
+		return new String(c);
 	}
 
 	public static String code2aaPair(int code) {
