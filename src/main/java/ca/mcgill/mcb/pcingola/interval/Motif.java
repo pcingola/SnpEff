@@ -43,7 +43,6 @@ public class Motif extends Marker {
 	 * It would be better to use the real reference sequence, but at this moment, we do not have it.
 	 */
 	EffectImpact effectImpact(Variant variant) {
-		if (pwm == null) return EffectImpact.MODIFIER;
 
 		EffectImpact effectImpact = EffectImpact.MODIFIER;
 
@@ -55,7 +54,7 @@ public class Motif extends Marker {
 			MarkerSeq mseq = new MarkerSeq((Marker) parent, start, end, false, id); // Notice: We use positive strand
 			String seqBest = pwm.getBestSequenceStr();
 			mseq.setSequence(isStrandPlus() ? seqBest : GprSeq.reverseWc(seqBest));
-			if (variant.isStrandMinus()) throw new RuntimeException("variant in minus strand not supported!\n\t" + variant);
+			if (variant.isStrandMinus()) throw new RuntimeException("Variants in minus strand are not supported!\n\t" + variant);
 
 			// Step 2:
 			//     Calculate new sequence, by 'applying' variant to mseq.

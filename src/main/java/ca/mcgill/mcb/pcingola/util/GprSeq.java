@@ -391,8 +391,6 @@ public class GprSeq {
 
 	/**
 	 * Reverse Watson-Cricks complement
-	 * @param seq
-	 * @return
 	 */
 	public static String reverseWc(String seq) {
 		char rwc[] = new char[seq.length()];
@@ -406,9 +404,6 @@ public class GprSeq {
 
 	/**
 	 * Transform into a FASTA formatted string
-	 * @param name
-	 * @param sequence
-	 * @return
 	 */
 	public static String string2fasta(String name, String sequence) {
 		StringBuffer sb = new StringBuffer();
@@ -425,28 +420,36 @@ public class GprSeq {
 
 	/**
 	 * Watson-Cricks complement
-	 * @param sequenceBits
-	 * @return
 	 */
 	public static char wc(char base) {
 		switch (base) {
 		case 'A':
-		case 'a':
 			return 'T';
+		case 'a':
+			return 't';
+
 		case 'C':
-		case 'c':
 			return 'G';
+		case 'c':
+			return 'g';
+
 		case 'G':
-		case 'g':
 			return 'C';
+		case 'g':
+			return 'c';
+
 		case 'T':
-		case 't':
 		case 'U':
-		case 'u':
 			return 'A';
-		case 'n':
+		case 't':
+		case 'u':
+			return 'a';
+
 		case 'N':
 			return 'N';
+		case 'n':
+			return 'n';
+
 		default:
 			return base;
 		}
@@ -454,8 +457,6 @@ public class GprSeq {
 
 	/**
 	 * Watson-Cricks complement
-	 * @param seq
-	 * @return
 	 */
 	public static String wc(String seq) {
 		char rwc[] = new char[seq.length()];

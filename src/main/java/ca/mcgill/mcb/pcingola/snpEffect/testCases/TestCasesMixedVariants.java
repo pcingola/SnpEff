@@ -162,4 +162,16 @@ public class TestCasesMixedVariants extends TestCase {
 		}
 	}
 
+	public void test_10_MixedVep_HGVS() {
+		Gpr.debug("Test");
+		String genome = "testHg19Hgvs";
+		String vcf = "tests/hgvs_counsyl.vcf";
+		CompareToVep comp = new CompareToVep(genome, verbose);
+		comp.setCompareHgvs();
+		comp.setCompareHgvsProt(false);
+		comp.compareVep(vcf);
+		System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+	}
+
 }

@@ -75,7 +75,7 @@ public class MarkerSeq extends Marker {
 	/**
 	 * Apply a change type deletion
 	 */
-	protected void applyDel(Variant variant, MarkerSeq ex) {
+	protected void applyDel(Variant variant, MarkerSeq markerSeq) {
 		// Update sequence
 		if ((sequence != null) && (!sequence.isEmpty())) {
 
@@ -84,7 +84,7 @@ public class MarkerSeq extends Marker {
 
 			// Apply change to sequence
 			int idxStart = variant.getStart() - start;
-			int idxEnd = variant.getStart() - start + variant.size();
+			int idxEnd = idxStart + variant.size();
 
 			StringBuilder newSeq = new StringBuilder();
 			if (idxStart >= 0) newSeq.append(seq.substring(0, idxStart));
@@ -92,14 +92,14 @@ public class MarkerSeq extends Marker {
 
 			// Update sequence
 			seq = newSeq.toString();
-			ex.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+			markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
 		}
 	}
 
 	/**
 	 * Apply a change type insertion
 	 */
-	protected void applyIns(Variant variant, MarkerSeq ex) {
+	protected void applyIns(Variant variant, MarkerSeq markerSeq) {
 		// Update sequence
 		if ((sequence != null) && (!sequence.isEmpty())) {
 
@@ -113,32 +113,41 @@ public class MarkerSeq extends Marker {
 			else seq = netChange + seq;
 
 			// Update sequence
-			ex.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+			markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
 		}
 	}
 
 	/**
 	 * Apply a change type MNP
 	 */
-	protected void applyMnp(Variant variant, MarkerSeq ex) {
+	protected void applyMnp(Variant variant, MarkerSeq markerSeq) {
 		// Update sequence
 		if ((sequence != null) && (!sequence.isEmpty())) {
-			// Get sequence in positive strand direction
-			String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
 
-			// Apply change to sequence
+			// Calculate indexes
 			int idxStart = variant.getStart() - start;
-			int changeSize = variant.intersectSize(this);
-			int idxEnd = variant.getStart() - start + changeSize;
+			int idxAlt = 0;
 
+			// Variant starts before this marker (e.g. motif with sequence)
+			if (idxStart < 0) {
+				idxAlt = -idxStart; // Remove first 'idxStart' bases from ALT sequence
+				idxStart = 0;
+			}
+
+			int changeSize = variant.intersectSize(this);
+			int idxEnd = idxStart + changeSize;
+
+			// Apply variant to sequence
+			String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence(); // Get sequence in positive strand direction
 			StringBuilder seqsb = new StringBuilder();
-			seqsb.append(seq.substring(0, idxStart));
-			seqsb.append(variant.getAlt().substring(0, changeSize));
-			seqsb.append(seq.substring(idxEnd));
+			seqsb.append(seq.substring(0, idxStart).toLowerCase());
+			String seqAlt = variant.getAlt().substring(idxAlt, idxAlt + changeSize).toUpperCase();
+			seqsb.append(seqAlt);
+			seqsb.append(seq.substring(idxEnd).toLowerCase());
 
 			// Update sequence
 			seq = seqsb.toString();
-			ex.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+			markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
 		}
 	}
 
