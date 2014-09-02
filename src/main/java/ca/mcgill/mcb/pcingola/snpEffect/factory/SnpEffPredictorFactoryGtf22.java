@@ -42,10 +42,18 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		// Get chromosome
 		Chromosome chromosome = getOrCreateChromosome(chromo);
 
+		Gene gene = null;
+		Transcript tr = null;
+
 		// Get (or create) gene
-		Gene gene = findGene(geneId);
+		if (!geneId.isEmpty()) gene = findGene(geneId);
+		else {
+			tr = findTranscript(transcriptId);
+			gene = (Gene) tr.getParent();
+		}
+
+		// Gene not found? => Create new gene
 		if (gene == null) {
-			// Create and add  gene
 			if (geneName == null) geneName = geneId;
 			if ((geneBioType == null) || (geneBioType.isEmpty())) geneBioType = "mRNA"; // No bioType? Create a default one
 			gene = new Gene(chromosome, start, end, strandMinus, geneId, geneName, geneBioType);
@@ -59,7 +67,6 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		if (transcriptId.isEmpty()) return;
 
 		// Get (or create) transcript
-		Transcript tr = null;
 		tr = findTranscript(transcriptId);
 		if (tr == null) {
 			tr = new Transcript(gene, start, end, strandMinus, transcriptId);
@@ -184,8 +191,9 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		transcriptId = transcriptId.trim();
 
 		String id = type + "_" + chromo + "_" + (start + 1) + "_" + (end + 1); // Create ID
-		if (geneId.isEmpty()) warning("Empty gene_id. This should never happen (see norm");
-		else addInterval(id, type, chromo, start, end, strandMinus, geneId, geneName, transcriptId, proteinCoding, geneBioType, trBioType, frame); // Add interval
+		if (transcriptId.isEmpty() && geneId.isEmpty()) {
+			warning("Empty gene_id and transcript_id. This should never happen (see GTF norm)");
+		} else addInterval(id, type, chromo, start, end, strandMinus, geneId, geneName, transcriptId, proteinCoding, geneBioType, trBioType, frame); // Add interval
 
 		return true;
 	}
