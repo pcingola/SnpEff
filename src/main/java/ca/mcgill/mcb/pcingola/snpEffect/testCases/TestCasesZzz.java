@@ -5,8 +5,6 @@ import junit.framework.TestCase;
 /**
  *
  * Test case
- *
- * @author pcingola
  */
 public class TestCasesZzz extends TestCase {
 
