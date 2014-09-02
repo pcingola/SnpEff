@@ -77,7 +77,7 @@ public enum EffectType {
 		try {
 			return EffectType.valueOf(str);
 		} catch (Exception e) {
-			// OK, the value does not exits.
+			// OK, the value does not exits. Try Sequence ontology
 		}
 
 		// Try an SO term
@@ -93,7 +93,9 @@ public enum EffectType {
 	static void so2efftype() {
 		for (EffectType efftype : EffectType.values()) {
 			String so = efftype.toSequenceOntology();
-			so2efftype.put(so, efftype);
+
+			for (String soSingle : so.split("\\+"))
+				if (!so2efftype.containsKey(soSingle)) so2efftype.put(soSingle, efftype);
 		}
 	}
 

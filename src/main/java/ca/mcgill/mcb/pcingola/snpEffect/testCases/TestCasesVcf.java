@@ -459,4 +459,18 @@ public class TestCasesVcf extends TestCase {
 		Assert.assertTrue(errorFound);
 	}
 
+	/**
+	 * Parsing effect that created an exception (going from SO -> Classic)
+	 */
+	public void test_24_VcfEffect_parse_SO() {
+		String vcfFileName = "tests/test_rasmus.vcf";
+
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		for (VcfEntry ve : vcf) {
+			if (verbose) System.out.println(ve);
+			for (VcfEffect veff : ve.parseEffects())
+				if (verbose) System.out.println("\t\t" + veff);
+		}
+	}
+
 }

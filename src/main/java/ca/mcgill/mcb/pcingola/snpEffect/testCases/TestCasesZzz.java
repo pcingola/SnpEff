@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 public class TestCasesZzz extends TestCase {
 
 	boolean debug = false;
-	boolean verbose = false || debug;
+	boolean verbose = true || debug;
 
 	public TestCasesZzz() {
 		super();
