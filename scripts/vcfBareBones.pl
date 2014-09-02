@@ -10,7 +10,7 @@ while( $l = <STDIN> ) {
 		$t[2] = ".";	# ID
 		$t[5] = ".";	# QUALITY
 		$t[6] = ".";	# FILTER
-		$t[7] = ".";	# FILTER
+		$t[7] = ".";	# INFO
 
 		# Cut INFO and GENOTYPES
 		for( $i=0 ; $i <= $#t ; $i++ ) {
