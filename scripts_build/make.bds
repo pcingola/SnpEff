@@ -21,6 +21,7 @@ dirBuild			:="$dirSnpeff/build"
 dirDb				:="$dirSnpeff/db"
 dirDarned			:="$dirDb/darned/"
 pwmsBin				:="$dirDb/jaspar/pwms.bin"
+zipGenome			:=""
 
 # Program parameters and switches
 bundleLists			:= false		# Create bundle lists and config entries
@@ -367,6 +368,21 @@ void zipCore() {
 # Create databases (non-bundled) Zip files
 #-------------------------------------------------------------------------------
 
+void zipDb(string gen) {
+	bin := "data/$gen/snpEffectPredictor.bin"
+
+	# Do not create ZIP file unless database exists
+	if( bin.exists() ) {
+		zip := "$dirZip/snpEff_v" + versionUnd + "_$gen.zip"
+		println "\tZIP '$zip'"
+		task( zip <- bin )	sys zip -r $zip data/$gen/*.bin
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Create databases (non-bundled) Zip files
+#-------------------------------------------------------------------------------
+
 void zipDbs() {
 	println "Create database ZIP files"
 	dbList := "databases.txt"
@@ -378,17 +394,8 @@ void zipDbs() {
 		gen := fields[0].trim()
 		bundle := fields[1].trim()
 
-		if( bundle.isEmpty() ) {
-			bin := "data/$gen/snpEffectPredictor.bin"
-
-			if( bin.exists() ) {
-				zip := "$dirZip/snpEff_v" + versionUnd + "_$gen.zip"
-				if( zip <- bin ) {
-					println "\tZIP '$zip'"
-					task zip -r $zip data/$gen/*.bin
-				}
-			}
-		}
+		# Do not zip bundled databases
+		if( bundle.isEmpty() )	zipDb(gen)
 	}
 }
 
@@ -408,6 +415,7 @@ if( make )			build()					# Create JAR files
 if( test )			runTests()				# Run test cases 
 if( testDb )		buildDbTest()			# Build databases used in test cases
 if( upload )		uploadSf()				# Upload files
+if( zipGenome != '' )	zipDb(zipGenome)	# Zip only this database
 
 wait
 print("Done\n")
