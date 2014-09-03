@@ -37,8 +37,9 @@ download 			:= false		# Download files
 make	 			:= false		# Make (build JAR files)
 test	 			:= false		# Run test cases
 testDb				:= false		# Build databases used in test cases
-uploadDbs			:= false		# Upload all databases in 'zip' directory
 uploadCore			:= false		# Upload 'core' package
+uploadDbs			:= false		# Upload all databases in 'zip' directory
+uploadDev			:= false		# Upload 'development' version
 uploadHtml 			:= false		# Upload weh pages
 
 # Configuration parameters
@@ -463,6 +464,7 @@ if( test )				runTests()				# Run test cases
 if( testDb )			buildDbTest()			# Build databases used in test cases
 if( uploadCore )		uploadCore2Sf()			# Upload 'core' files
 if( uploadDbs )			uploadDbs2Sf()			# Upload all database files in 'zip' dir
+if( uploadDev )			uploadDev2Sf()			# Upload 'development' version
 if( uploadHtml )		uploadHtml2Sf()			# Upload html pages
 if( zipGenome != '' )	zipDb(zipGenome)		# Zip only 'zipGenome' database
 
