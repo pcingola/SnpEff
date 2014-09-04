@@ -8,6 +8,9 @@
 #																Pablo Cingolani
 #-------------------------------------------------------------------------------
 
+# Default genome
+genome		:= 'GRCh37.75'
+
 # Integration test dir
 intTestDir	:= "$HOME/workspace/SnpEff/tests/integration"
 
@@ -19,7 +22,6 @@ snpeffDir	:= "$HOME/snpEff"
 #-------------------------------------------------------------------------------
 # Prepare FASTA reference to be used with GATK
 #-------------------------------------------------------------------------------
-
 void prepareRefGatk(string ref) {
 	dict := ref.swapExt('.fa', '.dict')
 	if( dict <- ref ) {
@@ -37,10 +39,8 @@ void prepareRefGatk(string ref) {
 #-------------------------------------------------------------------------------
 # Integration test: GATK's VariantAnnotator
 #-------------------------------------------------------------------------------
-
 void test_Gatk_VariantAnnotator() {
 	refFasta	:= "$snpeffDir/data/genomes/hs37d5.fa"	# URL http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/phase2_reference_assembly_sequence/hs37d5.fa.gz
-	genome		:= 'GRCh37.71'
 
 	# VCF files
 	base		:= "$intTestDir/test_gatk"
@@ -67,25 +67,50 @@ void test_Gatk_VariantAnnotator() {
 }
 
 #-------------------------------------------------------------------------------
+# Integration test: Annotate Effect
+#-------------------------------------------------------------------------------
+void test_Annotate_Eff() {
+	println "Annotating"
+	base := "$intTestDir/integration_1"
+	vcf	:= "$base.vcf"
+	out := "$base.eff.vcf"
+	out.rmOnExit()
+
+	sys java -Xmx4g -jar $snpeffDir/snpEff.jar -v $genome $vcf > $out 
+}
+#-------------------------------------------------------------------------------
+# Integration test: Annotate using ClinVar
+#-------------------------------------------------------------------------------
+void test_Annotate_ClinVar() {
+	println "Annotating with ClinVar"
+	base := "$intTestDir/test_clinvar"
+	vcf	:= "$base.vcf"
+	out := "$base.dnsnp.vcf"
+	out.rmOnExit()
+
+	sys java -Xmx4g -jar $snpeffDir/SnpSift.jar annotate -v -clinvar $vcf > $out 
+}
+
+#-------------------------------------------------------------------------------
 # Integration test: Annotate using dbSnp
 #-------------------------------------------------------------------------------
+void test_Annotate_dbSnp() {
+	println "Annotating with dbSNP"
+	base := "$intTestDir/test_dbSnp"
+	vcf	:= "$base.vcf"
+	out := "$base.dnsnp.vcf"
+	out.rmOnExit()
 
+	sys java -Xmx4g -jar $snpeffDir/SnpSift.jar annotate -v -dbsnp $vcf > $out 
+}
 
-println "Annotating with dbSNP"
-vcf	:= "$intTestDir/integration_1.vcf"
-out := "$intTestDir/integration_1.dnsnp.vcf"
+#-------------------------------------------------------------------------------
+# Main
+#-------------------------------------------------------------------------------
 
-sys java -Xmx4g -jar $snpeffDir/SnpSift.jar annotate -dbsnp $vcf > $out 
+# Run tests
+test_Annotate_Eff()
+test_Annotate_ClinVar()
+test_Annotate_dbSnp()
+test_Gatk_VariantAnnotator()
 
-###############################################################################
-# INTEGRATION TEST 
-###############################################################################
-
-# echo "Annotating with ClinVar"
-# java -Xmx4g -jar SnpSift.jar annotate -clinvar integration_1.dnsnp.vcf > integration_1.clinvar.vcf
-# 
-# echo "Annotating with dnNSFP"
-# java -Xmx4g -jar SnpSift.jar dbNSFP integration_1.clinvar.vcf > integration_1.dbnsfp.vcf
-# 
-# echo "Annotating genomic effects"
-# java -Xmx4g -jar snpEff.jar -v -lof -motif -nextProt GRCh37.75 integration_1.dbnsfp.vcf > integration_1.eff.vcf
