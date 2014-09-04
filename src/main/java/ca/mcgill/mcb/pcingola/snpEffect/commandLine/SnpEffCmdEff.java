@@ -130,7 +130,7 @@ public class SnpEffCmdEff extends SnpEff {
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
-						) {
+								) {
 							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
@@ -145,7 +145,7 @@ public class SnpEffCmdEff extends SnpEff {
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
-							) {
+									) {
 								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
@@ -168,8 +168,6 @@ public class SnpEffCmdEff extends SnpEff {
 	/**
 	 * Iterate on all inputs and calculate effects.
 	 * Note: This is used for all input formats except VCF, which has a different iteration modality
-	 *
-	 * @param outputFormatter
 	 */
 	void iteratevariant(String inputFile, OutputFormatter outputFormatter) {
 		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
@@ -228,8 +226,6 @@ public class SnpEffCmdEff extends SnpEff {
 	 *
 	 * TODO: Effect analysis should be in a separate class, so we can easily reuse it for single or mutli-threaded modes.
 	 *       SnpEffCmdEff should only parse command line, and then invoke the other class (now everything is here, it's a mess)
-	 *
-	 * @param outputFormatter
 	 */
 	void iterateVcf(String inputFile, OutputFormatter outputFormatter) {
 		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
@@ -374,8 +370,6 @@ public class SnpEffCmdEff extends SnpEff {
 	/**
 	 * Multi-threaded iteration on VCF inputs and calculates effects.
 	 * Note: This is used only on input format VCF, which has a different iteration modality
-	 *
-	 * @param outputFormatter
 	 */
 	void iterateVcfMulti(String inputFile, final OutputFormatter outputFormatter) {
 		if (verbose) Timer.showStdErr("Running multi-threaded mode (numThreads=" + numWorkers + ").");
@@ -410,8 +404,6 @@ public class SnpEffCmdEff extends SnpEff {
 
 	/**
 	 * Create a suitable output file name
-	 * @param inputFile
-	 * @return
 	 */
 	String outputFile(String inputFile) {
 		// Remove GZ extension
@@ -454,7 +446,6 @@ public class SnpEffCmdEff extends SnpEff {
 
 	/**
 	 * Parse command line arguments
-	 * @param args
 	 */
 	@Override
 	public void parseArgs(String[] args) {
@@ -479,8 +470,13 @@ public class SnpEffCmdEff extends SnpEff {
 
 						// if (outFor.equals("TXT")) outputFormat = OutputFormat.TXT;
 						if (outFor.equals("VCF")) outputFormat = OutputFormat.VCF;
-						else if (outFor.equals("GATK")) outputFormat = OutputFormat.GATK;
-						else if (outFor.equals("BED")) {
+						else if (outFor.equals("GATK")) {
+							outputFormat = OutputFormat.GATK;
+							useSequenceOntology = false;
+							useHgvs = false;
+							nextProt = false;
+							motif = false;
+						} else if (outFor.equals("BED")) {
 							outputFormat = OutputFormat.BED;
 							lossOfFunction = false;
 						} else if (outFor.equals("BEDANN")) outputFormat = OutputFormat.BEDANN;
@@ -601,8 +597,6 @@ public class SnpEffCmdEff extends SnpEff {
 
 	/**
 	 * Read a file after checking for some common error conditions
-	 * @param fileName
-	 * @return
 	 */
 	String readFile(String fileName) {
 		File file = new File(fileName);
@@ -613,7 +607,6 @@ public class SnpEffCmdEff extends SnpEff {
 
 	/**
 	 * Read a filter custom interval file
-	 * @param intFile
 	 */
 	int readFilterIntFile(String intFile) {
 		Markers markers = loadMarkers(intFile);
@@ -624,9 +617,6 @@ public class SnpEffCmdEff extends SnpEff {
 
 	/**
 	 * Read pedigree either from VCF header or from cancerSample file
-	 *
-	 * @param vcfFile
-	 * @return
 	 */
 	List<PedigreeEnrty> readPedigree(VcfFileIterator vcfFile) {
 		List<PedigreeEnrty> pedigree = null;
@@ -727,7 +717,7 @@ public class SnpEffCmdEff extends SnpEff {
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-				);
+						);
 				ok &= runAnalysis(inputFile, outputFile);
 			}
 		}

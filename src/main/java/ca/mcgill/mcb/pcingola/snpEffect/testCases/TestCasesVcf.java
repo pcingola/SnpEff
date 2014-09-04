@@ -473,4 +473,17 @@ public class TestCasesVcf extends TestCase {
 		}
 	}
 
+	/**
+	 * Parsing Genomic VCFs
+	 * http://www.broadinstitute.org/gatk/guide/article?id=4017
+	 */
+	public void test_25_Genomic_VCF() {
+		String vcfFileName = "tests/genomic_vcf.gvcf";
+
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		for (VcfEntry ve : vcf) {
+			if (verbose) System.out.println(ve);
+		}
+	}
+
 }

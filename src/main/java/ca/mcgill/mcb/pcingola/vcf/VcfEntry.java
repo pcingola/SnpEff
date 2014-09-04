@@ -58,7 +58,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Check that this value can be added to an INFO field
-	 * @param value
 	 * @return true if OK, false if invalid value
 	 */
 	public static boolean isValidInfoValue(String value) {
@@ -1195,7 +1194,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				char change[] = new char[size];
 				for (int i = 0; i < change.length; i++)
 					change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-				ch = new String(change);
+					ch = new String(change);
 			}
 
 			// Create SeqChange

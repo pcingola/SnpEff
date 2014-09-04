@@ -84,9 +84,9 @@ public class SnpEff implements CommandLine {
 	protected boolean download = true; // Download genome, if not available
 	protected boolean help; // Show command help and exit
 	protected boolean log; // Log to server (statistics)
-	protected boolean motif = false; // Annotate using motifs
+	protected boolean motif = true; // Annotate using motifs
 	protected boolean multiThreaded = false; // Use multiple threads
-	protected boolean nextProt = false; // Annotate using NextProt database
+	protected boolean nextProt = true; // Annotate using NextProt database
 	protected boolean nextProtKeepAllTrs = false; // Keep all nextprot entries, even if the transcript doesn't exist
 	protected boolean noGenome = false; // Do not load genome database
 	protected boolean onlyProtein = false; // Only use protein coding transcripts
@@ -372,9 +372,11 @@ public class SnpEff implements CommandLine {
 			if (verbose) Timer.showStdErr("Done: " + removed + " transcripts removed.");
 		}
 
-		// Try to load NextProt ad motif databases
-		loadNextProt();
-		loadMotif();
+		// Load NextProt database
+		if (nextProt) loadNextProt();
+
+		// Load Motif databases
+		if (motif) loadMotif();
 
 		// Build tree
 		if (verbose) Timer.showStdErr("Building interval forest");
@@ -427,12 +429,6 @@ public class SnpEff implements CommandLine {
 		String motifBinFileName = config.getBaseFileNameMotif() + ".bin";
 
 		if (!Gpr.exists(pwmsFileName) || !Gpr.exists(motifBinFileName)) {
-			// We explicitly requested this annotations, if files are not there, it's an error
-			if (motif) {
-				if (!Gpr.exists(pwmsFileName)) fatalError("Warning: Cannot open PWMs file " + pwmsFileName);
-				if (!Gpr.exists(motifBinFileName)) fatalError("Warning: Cannot open Motifs file " + motifBinFileName);
-			}
-
 			// OK, we don't have motif annotations, no problem
 			if (debug) {
 				if (!Gpr.exists(pwmsFileName)) warning("Warning: Cannot open PWMs file ", pwmsFileName);
@@ -487,7 +483,6 @@ public class SnpEff implements CommandLine {
 		//---
 		String nextProtBinFile = config.getDirDataVersion() + "/nextProt.bin";
 		if (!Gpr.canRead(nextProtBinFile)) {
-			if (nextProt) fatalError("NextProt database '" + nextProtBinFile + "' doesn't exist");
 			if (debug) Timer.showStdErr("NextProt database '" + nextProtBinFile + "' doesn't exist. Ignoring.");
 			return;
 		}
@@ -654,8 +649,10 @@ public class SnpEff implements CommandLine {
 					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
 					else usage("Option '-interval' without config interval_file argument");
 				} else if (arg.equalsIgnoreCase("-motif")) motif = true; // Use motif database
+				else if (arg.equalsIgnoreCase("-noMotif")) motif = false; // Disable use of motif database
 				else if (arg.equalsIgnoreCase("-nextProt")) nextProt = true; // Use NextProt database
-				else if (arg.equalsIgnoreCase("-nodownload")) download = false; // Do not download genome
+				else if (arg.equalsIgnoreCase("-noNextProt")) nextProt = false; // Disable use of NextProt database
+				else if (arg.equalsIgnoreCase("-noDownload")) download = false; // Do not download genome
 				else if (arg.equalsIgnoreCase("-noLog")) log = false;
 				else if (arg.equalsIgnoreCase("-noOut")) suppressOutput = true; // Undocumented option (only used for development & debugging)
 				else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
@@ -908,6 +905,8 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
 		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database).");
 		System.err.println("\t-nextProt                    : Annotate using NextProt (requires NextProt database).");
+		System.err.println("\t-noMotif                     : Disable motif annotations.");
+		System.err.println("\t-noNextProt                  : Disable NextProt annotations.");
 		System.err.println("\t-onlyReg                     : Only use regulation tracks.");
 		System.err.println("\t-onlyProtein                 : Only use protein coding transcripts. Default: " + onlyProtein);
 		System.err.println("\t-onlyTr <file.txt>           : Only use the transcripts in this file. Format: One transcript ID per line.");

@@ -1,0 +1,91 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+# Integration tests
+#
+# Some test to make sure SnpEff & SnpSift co-exists woth other tools
+#
+#																Pablo Cingolani
+#-------------------------------------------------------------------------------
+
+# Integration test dir
+intTestDir	:= "$HOME/workspace/SnpEff/tests/integration"
+
+# Programs
+picardDir	:= "$HOME/tools/picard"
+gatkDir		:= "$HOME/tools/gatk"
+snpeffDir	:= "$HOME/snpEff"
+
+#-------------------------------------------------------------------------------
+# Prepare FASTA reference to be used with GATK
+#-------------------------------------------------------------------------------
+
+void prepareRefGatk(string ref) {
+	dict := ref.swapExt('.fa', '.dict')
+	if( dict <- ref ) {
+		println "Creating dictionary file '$dict'"
+		sys java -jar $picardDir/CreateSequenceDictionary.jar R= $ref O= $dict
+	}
+
+	fai := "$ref.fai"
+	if( fai <- ref ) {
+		println "Indexing reference '$ref'"
+		sys samtools faidx $ref
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Integration test: GATK's VariantAnnotator
+#-------------------------------------------------------------------------------
+
+void test_Gatk_VariantAnnotator() {
+	refFasta	:= "$snpeffDir/data/genomes/hs37d5.fa"	# URL http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/phase2_reference_assembly_sequence/hs37d5.fa.gz
+	genome		:= 'GRCh37.71'
+
+	# VCF files
+	base		:= "$intTestDir/test_gatk"
+	vcf			:= "$base.vcf"
+	effVcf		:= "$base.eff.vcf"
+	effGatk		:= "$base.eff.gatk.vcf"
+
+	# Prepare FASTA file to b used in GATK
+	prepareRefGatk( refFasta )
+
+	# Annotate
+	println "Annotating file '$vcf'"
+	sys java -Xmx4G -jar $snpeffDir/snpEff.jar -v -o gatk $genome $vcf > $effVcf
+
+	# Run GATK
+	sys java -Xmx4G -jar $gatkDir/GenomeAnalysisTK.jar \
+		-T VariantAnnotator \
+		-R $refFasta \
+		-A  SnpEff \
+		--variant $vcf \
+		--snpEffFile $effVcf  \
+		-L $vcf \
+		-o $effGatk 
+}
+
+#-------------------------------------------------------------------------------
+# Integration test: Annotate using dbSnp
+#-------------------------------------------------------------------------------
+
+
+println "Annotating with dbSNP"
+vcf	:= "$intTestDir/integration_1.vcf"
+out := "$intTestDir/integration_1.dnsnp.vcf"
+
+sys java -Xmx4g -jar $snpeffDir/SnpSift.jar annotate -dbsnp $vcf > $out 
+
+###############################################################################
+# INTEGRATION TEST 
+###############################################################################
+
+# echo "Annotating with ClinVar"
+# java -Xmx4g -jar SnpSift.jar annotate -clinvar integration_1.dnsnp.vcf > integration_1.clinvar.vcf
+# 
+# echo "Annotating with dnNSFP"
+# java -Xmx4g -jar SnpSift.jar dbNSFP integration_1.clinvar.vcf > integration_1.dbnsfp.vcf
+# 
+# echo "Annotating genomic effects"
+# java -Xmx4g -jar snpEff.jar -v -lof -motif -nextProt GRCh37.75 integration_1.dbnsfp.vcf > integration_1.eff.vcf
