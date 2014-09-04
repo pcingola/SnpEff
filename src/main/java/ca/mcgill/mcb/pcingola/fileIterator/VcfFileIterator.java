@@ -80,7 +80,6 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 	/**
 	 * Get sample names
-	 * @return
 	 */
 	public List<String> getSampleNames() {
 		return header.getSampleNames();
@@ -88,7 +87,6 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 	/**
 	 * Get all VcfInfo entries
-	 * @return
 	 */
 	public VcfHeader getVcfHeader() {
 		return header;
@@ -209,7 +207,6 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 	/**
 	 * Should we parse vcfEntries later? (lazy parsing)
-	 * @param parseNow
 	 */
 	public void setParseNow(boolean parseNow) {
 		this.parseNow = parseNow;

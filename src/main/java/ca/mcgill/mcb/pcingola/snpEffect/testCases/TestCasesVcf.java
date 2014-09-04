@@ -481,8 +481,19 @@ public class TestCasesVcf extends TestCase {
 		String vcfFileName = "tests/genomic_vcf.gvcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		int start = -1;
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (start < 0) start = ve.getStart();
+
+			// Check
+			if (start != ve.getStart()) throw new RuntimeException("Start position should be " + start + " instead of " + ve.getStart() + "\n" + ve);
+			if (!ve.getVariantType().toString().equals(ve.getInfo("Type"))) throw new RuntimeException("Variant type should be '" + ve.getInfo("Type") + "' instead of '" + ve.getVariantType() + "'\n" + ve);
+
+			if (verbose) {
+				System.out.println(ve + "\n\t\tSize   : " + ve.size() + "\n\t\tVariant: " + ve.isVariant() + "\n\t\tType   : " + ve.getVariantType() + "\n");
+			}
+
+			start += ve.size();
 		}
 	}
 

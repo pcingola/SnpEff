@@ -28,8 +28,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		Common, LowFrequency, Rare
 	}
 
+	public static final String[] EMPTY_STRING_ARRAY = new String[0];
+
 	public static final double ALLELE_FEQUENCY_COMMON = 0.05;
 	public static final double ALLELE_FEQUENCY_LOW = 0.01;
+
+	public static final String VCF_INFO_END = "END"; // Imprecise variants
+	public static final String VCF_ALT_NON_REF = "<NON_REF>"; // NON_REF tag for ALT field (only in gVCF fiels)
 
 	public static final String VCF_INFO_HOMS = "HO";
 	public static final String VCF_INFO_HETS = "HE";
@@ -82,6 +87,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		this.infoStr = infoStr;
 		parseInfo();
 		this.format = format;
+		parseEnd(altsStr);
 	}
 
 	/**
@@ -313,7 +319,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Create a comma separated ALTS string
-	 * @return
 	 */
 	public String getAltsStr() {
 		if (alts == null) return "";
@@ -418,8 +423,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Does the entry exists?
-	 * @param key
-	 * @return
 	 */
 	public boolean getInfoFlag(String key) {
 		if (info == null) parseInfo();
@@ -511,8 +514,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Get VcfInfo type for a given ID
-	 * @param id
-	 * @return VcfInfoType
 	 */
 	public VcfInfo getVcfInfo(String id) {
 		return vcfFileIterator.getVcfHeader().getVcfInfo(id);
@@ -520,8 +521,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Get Info number for a given ID
-	 * @param id
-	 * @return VcfInfoType
 	 */
 	public VcfInfoType getVcfInfoNumber(String id) {
 		VcfInfo vcfInfo = vcfFileIterator.getVcfHeader().getVcfInfo(id);
@@ -549,8 +548,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Is this bi-allelic (based ONLY on the number of ALTs)
 	 * WARINIG: You should use 'calcHetero()' method for a more precise calculation.
-	 *
-	 * @return
 	 */
 	public boolean isBiAllelic() {
 		if (alts == null) return false;
@@ -559,7 +556,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Do we have compressed genotypes in "HO,HE,NA" INFO fields?
-	 * @return
 	 */
 	public boolean isCompressedGenotypes() {
 		return !hasGenotypes() && (getNumberOfSamples() > 0) && (hasInfo(VCF_INFO_HOMS) || hasInfo(VCF_INFO_HETS) || hasInfo(VCF_INFO_NAS));
@@ -596,8 +592,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Is this multi-allelic (based ONLY on the number of ALTs)
 	 * WARINIG: You should use 'calcHetero()' method for a more precise calculation.
-	 *
-	 * @return
 	 */
 	public boolean isMultiallelic() {
 		if (alts == null) return false;
@@ -611,8 +605,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Is this variant a singleton (appears only in one genotype)
-	 * @param ve
-	 * @return
 	 */
 	public boolean isSingleton() {
 		int count = 0;
@@ -629,13 +621,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Is this a change or are the ALTs actually the same as the reference
-	 * @return
 	 */
 	public boolean isVariant() {
 		if (alts == null) return false;
 
 		for (String alt : alts)
 			if (!alt.isEmpty() && !alt.equals(".") && !ref.equals(alt)) return true; // Any change option is different? => true
+
 		return false;
 	}
 
@@ -646,8 +638,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Calculate Minor allele count
-	 * @param ve
-	 * @return
 	 */
 	public int mac() {
 		long ac = -1;
@@ -678,8 +668,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Calculate Minor allele frequency
-	 * @param ve
-	 * @return
 	 */
 	public double maf() {
 		double maf = -1;
@@ -759,6 +747,70 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Parse ALT field
 	 */
 	void parseAlts(String altsStr) {
+
+		//---
+		// Parse altsStr
+		//---
+		if (altsStr.length() == 1 || altsStr.indexOf(',') < 0) {
+			// SNP or single field (no commas)
+			alts = parseAltSingle(altsStr);
+			if (alts == null) alts = new String[0];
+		} else {
+			// Multiple fields (comma separated)
+			List<String> altsList = new ArrayList<>();
+
+			// Parse each one
+			String altsSplit[] = altsStr.split(",");
+			for (String altSingle : altsSplit) {
+				String altsTmp[] = parseAltSingle(altSingle);
+
+				// Append all to list
+				if (altsTmp != null) {
+					for (String alt : altsTmp)
+						altsList.add(alt);
+				}
+			}
+
+			alts = altsList.toArray(EMPTY_STRING_ARRAY);
+		}
+
+		//---
+		// What type of variant do we have?
+		//---
+		int maxAltLen = Integer.MIN_VALUE, minAltLen = Integer.MAX_VALUE;
+
+		for (String alt : alts) {
+			maxAltLen = Math.max(maxAltLen, alt.length());
+			minAltLen = Math.min(minAltLen, alt.length());
+
+			if (alt.startsWith("<DEL")) variantType = VariantType.DEL;
+		}
+
+		// Infer change type
+		if (variantType == null) {
+			if (alts == null // No alts
+					|| (alts.length == 0) // Zero ALTs
+					|| (alts.length == 1 && (alts[0].isEmpty() || alts[0].equals("."))) // One ALT, but it's empty
+			) {
+				variantType = VariantType.INTERVAL;
+			} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
+				if (ref.length() == 1) variantType = VariantType.SNP;
+				else variantType = VariantType.MNP;
+			} else if (ref.length() > minAltLen) variantType = VariantType.DEL;
+			else if (ref.length() < maxAltLen) variantType = VariantType.INS;
+			else variantType = VariantType.MIXED;
+		}
+	}
+
+	/**
+	 * Parse single ALT record, return parsed ALTS
+	 */
+	String[] parseAltSingle(String altsStr) {
+		String alts[];
+
+		// If ALT is '<NON_REF>', it means that there are no alts
+		if (altsStr.equals(VCF_ALT_NON_REF)) return null;
+
 		if (altsStr.length() == 1) {
 			if (altsStr.equals("A") || altsStr.equals("C") || altsStr.equals("G") || altsStr.equals("T") || altsStr.equals(".")) {
 				alts = new String[1];
@@ -819,24 +871,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			} else {
 				throw new RuntimeException("WARNING: Unkown IUB code for SNP '" + altsStr + "'");
 			}
-		} else alts = altsStr.split(",");
-
-		// What type of change do we have?
-		int maxAltLen = Integer.MIN_VALUE, minAltLen = Integer.MAX_VALUE;
-		for (int i = 0; i < alts.length; i++) {
-			maxAltLen = Math.max(maxAltLen, alts[i].length());
-			minAltLen = Math.min(minAltLen, alts[i].length());
+		} else {
+			alts = new String[1];
+			alts[0] = altsStr;
 		}
 
-		// Infer change type
-		if (altsStr.startsWith("<DEL")) {
-			variantType = VariantType.DEL;
-		} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
-			if (ref.length() == 1) variantType = VariantType.SNP;
-			else variantType = VariantType.MNP;
-		} else if (ref.length() > minAltLen) variantType = VariantType.DEL;
-		else if (ref.length() < maxAltLen) variantType = VariantType.INS;
-		else variantType = VariantType.MIXED;
+		return alts;
 	}
 
 	public List<VcfEffect> parseEffects() {
@@ -868,11 +908,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	void parseEnd(String altStr) {
 		end = start + ref.length() - 1;
 
-		if (altStr.startsWith("<DEL")) {
+		// Imprecise variants are indicated by an angle brackets '<...>'
+		if (altStr.indexOf('<') >= 0) {
 			// If there is an 'END' tag, we should use it
-			if ((getInfo("END") != null)) {
+			if ((getInfo(VCF_INFO_END) != null)) {
 				// Get 'END' field and do some sanity check
-				end = (int) getInfoInt("END");
+				end = (int) getInfoInt("END") - 1;
 				if (end < start) throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start);
 			}
 		}
@@ -915,7 +956,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Parse LOF from VcfEntry
-	 * @param vcfEntry
 	 */
 	public List<VcfLof> parseLof() {
 		String lofStr = getInfo(LossOfFunction.VCF_INFO_LOF_NAME);
