@@ -109,7 +109,7 @@ public class TestCasesMnp extends TestCase {
 						&& (ce.getEffectType() != EffectType.SPLICE_SITE_DONOR) //
 						&& (ce.getEffectType() != EffectType.INTRON) //
 						&& (ce.getEffectType() != EffectType.INTERGENIC) //
-				) //
+						) //
 					effect = ce;
 			}
 		} else effect = effects.get();
@@ -121,7 +121,7 @@ public class TestCasesMnp extends TestCase {
 				String codonsExp[] = codons.split("/");
 
 				boolean error = (!codonsExp[0].toUpperCase().equals(effect.getCodonsOld().toUpperCase()) //
-				|| !codonsExp[1].toUpperCase().equals(effect.getCodonsNew().toUpperCase()));
+						|| !codonsExp[1].toUpperCase().equals(effect.getCodonsNew().toUpperCase()));
 
 				if (error || debug) {
 					Gpr.debug("Fatal error:"//
@@ -133,7 +133,7 @@ public class TestCasesMnp extends TestCase {
 							+ "\n\tEffect (pred) : " + effect //
 							+ "\n\tGene          : " + gene//
 							+ "\n\tChromo        : " + chromoSequence//
-					);
+							);
 				}
 
 				/**
@@ -315,22 +315,6 @@ public class TestCasesMnp extends TestCase {
 
 			if (aanum <= 0) throw new RuntimeException("Missing AA number!");
 		}
-	}
-
-	/**
-	 * MNP outside Motif: Should not throw any exception
-	 */
-	public void test_03_Motif() {
-		Gpr.debug("Test");
-		String genome = "testHg3775Chr11";
-		String vcf = "tests/craig_chr11.vcf";
-
-		String args[] = { "-noLog", genome, vcf };
-		SnpEff snpEff = new SnpEff(args);
-		snpEff.setVerbose(verbose);
-		snpEff.setSupressOutput(!verbose);
-		snpEff.setDebug(debug);
-		snpEff.run();
 	}
 
 }

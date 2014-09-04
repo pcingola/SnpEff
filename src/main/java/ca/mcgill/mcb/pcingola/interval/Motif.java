@@ -104,7 +104,7 @@ public class Motif extends Marker {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + pwmId //
 				+ "\t" + pwmName //
-		;
+				;
 	}
 
 	public void setPwm(Pwm pwm) {

@@ -9,7 +9,7 @@ import ca.mcgill.mcb.pcingola.motif.Jaspar;
 
 /**
  * Opens a regulation file and create Motif elements.
- * 
+ *
  * @author pcingola
  */
 public class MotifFileIterator extends MarkerFileIterator<Motif> {
@@ -61,7 +61,7 @@ public class MotifFileIterator extends MarkerFileIterator<Motif> {
 								String attr = nameValue[0].trim();
 								String val = nameValue[1].trim();
 
-								// Is name 'Name'? 
+								// Is name 'Name'?
 								if (attr.equals("Name")) {
 									name = val;
 									String names[] = name.split(":");

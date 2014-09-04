@@ -1,5 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval;
 
+import java.util.Arrays;
+
 import ca.mcgill.mcb.pcingola.binseq.DnaNSequence;
 import ca.mcgill.mcb.pcingola.binseq.DnaSequence;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
@@ -154,7 +156,7 @@ public class MarkerSeq extends Marker {
 	/**
 	 * Apply a change type SNP
 	 */
-	protected void applySnp(Variant variant, MarkerSeq ex) {
+	protected void applySnp(Variant variant, MarkerSeq markerSeq) {
 		// Update sequence
 		if ((sequence != null) && (!sequence.isEmpty())) {
 			// Get sequence in positive strand direction
@@ -165,7 +167,7 @@ public class MarkerSeq extends Marker {
 			seq = seq.substring(0, idx) + variant.getAlt() + seq.substring(idx + 1);
 
 			// Update sequence
-			ex.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+			markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
 		}
 	}
 
@@ -183,8 +185,6 @@ public class MarkerSeq extends Marker {
 
 	/**
 	 * Base at position 'pos' (genomic coordinates)
-	 * @param pos : Genomic coordinates
-	 * @param len : Number of bases
 	 */
 	public String basesAtPos(int pos, int len) {
 		int index = pos - start;
@@ -221,6 +221,20 @@ public class MarkerSeq extends Marker {
 	 */
 	public void setSequence(String sequence) {
 		if ((sequence == null) || (sequence.length() <= 0)) this.sequence = DnaSequence.empty();
+
+		// Sometimes sequence length doesn't match interval length
+		if (sequence.length() != size()) {
+
+			if (sequence.length() > size()) {
+				// Sequence is longer? => Trim sequence
+				sequence = sequence.substring(0, size());
+			} else {
+				// Sequence is shorter? Pad with 'N'
+				char ns[] = new char[size() - sequence.length()];
+				Arrays.fill(ns, 'N');
+				sequence = sequence + new String(ns);
+			}
+		}
 
 		if (GprSeq.isAmbiguous(sequence)) this.sequence = new DnaNSequence(sequence); // Use DnaNSequence which supports ambiguous sequences
 		else this.sequence = new DnaSequence(sequence); // Use DnaSequence

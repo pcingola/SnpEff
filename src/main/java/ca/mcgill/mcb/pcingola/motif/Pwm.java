@@ -4,9 +4,9 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Create a DNA motif count matrix
- * 
+ *
  * Refrence http://en.wikipedia.org/wiki/Position-specific_scoring_matrix
- * 
+ *
  * @author pcingola
  */
 public class Pwm {
@@ -48,8 +48,6 @@ public class Pwm {
 
 	/**
 	 * Transform a base into a code
-	 * @param base
-	 * @return
 	 */
 	int base2int(char base) {
 		switch (base) {
@@ -131,9 +129,6 @@ public class Pwm {
 
 	/**
 	 * Get counts for a given position
-	 * @param base
-	 * @param position
-	 * @return
 	 */
 	public int getCount(char base, int position) {
 		return countMatrix[base2int(base)][position];
@@ -145,7 +140,7 @@ public class Pwm {
 
 	public double getLogOdds(char base, int position) {
 		int baseIdx = base2int(base);
-		if (baseIdx < 0) return 0; // Unknown base
+		if (baseIdx < 0 || position >= size()) return 0; // Unknown base
 		return logOdds[baseIdx][position];
 	}
 
@@ -159,8 +154,6 @@ public class Pwm {
 
 	/**
 	 * Is position 'pos' conserved (only one base has non-zero counts)
-	 * @param pos
-	 * @return
 	 */
 	public boolean isConserved(int pos) {
 		int countNonZero = 0;
@@ -176,8 +169,6 @@ public class Pwm {
 
 	/**
 	 * Calculate PWM score for a string
-	 * @param dna
-	 * @return
 	 */
 	public double score(String dna) {
 		if (logOdds == null) calcLogOddsWeight();
@@ -188,13 +179,10 @@ public class Pwm {
 			score += getLogOdds(bases[i], i);
 
 		return score / length;
-		// return ((double) score) / (length * SCALE);
 	}
 
 	/**
 	 * Set PWM as a perfect match to a dna sequence
-	 * @param dna
-	 * @param weight
 	 */
 	public void set(String dna) {
 		char bases[] = dna.toCharArray();
@@ -209,8 +197,6 @@ public class Pwm {
 
 	/**
 	 * Set counts for one base
-	 * @param base
-	 * @param counts
 	 */
 	public void setCounts(char base, int counts[]) {
 		int rowIdx = base2int(base);
@@ -228,7 +214,6 @@ public class Pwm {
 
 	/**
 	 * Matrix size
-	 * @return
 	 */
 	int size() {
 		return countMatrix[0].length;
@@ -289,7 +274,6 @@ public class Pwm {
 
 	/**
 	 * Update counts matrix.
-	 * @param dna
 	 */
 	public void updateCounts(String dna, int inc) {
 		totalCount += inc;

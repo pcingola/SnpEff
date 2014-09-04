@@ -69,8 +69,8 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "c";
-	public static final String BUILD = "2014-09-03";
+	public static final String REVISION = "d";
+	public static final String BUILD = "2014-09-04";
 	public static final String VERSION_MAJOR = "4.0";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -165,7 +165,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-						);
+				);
 			}
 		}
 	}
@@ -237,7 +237,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-					);
+			);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -623,7 +623,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
-				) {
+		) {
 			command = args[argNum++].toLowerCase();
 		} else {
 			command = "eff"; // Default command is 'eff'

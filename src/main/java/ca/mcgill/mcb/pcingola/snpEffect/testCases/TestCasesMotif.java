@@ -69,4 +69,37 @@ public class TestCasesMotif extends TestCase {
 		checkMotif("testHg3770Chr22", "tests/test_motif_03.vcf", "MA0099.2:AP1", EffectImpact.LOW);
 	}
 
+	/**
+	 * MNP outside Motif: Should not throw any exception
+	 */
+	public void test_04() {
+		Gpr.debug("Test");
+		String genome = "testHg3775Chr11";
+		String vcf = "tests/craig_chr11.vcf";
+
+		String args[] = { "-noLog", genome, vcf };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		snpEff.setDebug(debug);
+		snpEff.run();
+	}
+
+	/**
+	 * Motif has 9 bases but ENSEMBL file marks it as a 10 base interval
+	 * SNP affect last base (as marked by ENSEMBL), since there is no sequence for that base position, an exception is thrown.
+	 */
+	public void test_05() {
+		Gpr.debug("Test");
+		String genome = "testHg3775Chr14";
+		String vcf = "tests/craig_chr14.vcf";
+
+		String args[] = { "-noLog", genome, vcf };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		snpEff.setDebug(debug);
+		snpEff.run();
+	}
+
 }
