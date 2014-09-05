@@ -168,7 +168,7 @@ public class TestCasesApply extends TestCase {
 										+ "\n\t\tOriginal            : " + ex //
 										+ "\n\t\tSequence (expected) : " + newSeq + "'" //
 										+ "\n\t\tSequence            : " + exNew.getSequence() + "'" //
-								;
+										;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}

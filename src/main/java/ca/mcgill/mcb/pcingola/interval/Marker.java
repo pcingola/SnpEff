@@ -74,8 +74,8 @@ public class Marker extends Interval implements TxtSerializable {
 		// SeqChange after this marker: No effect
 		if (end < variant.getStart()) return this;
 
-		// Negative strand changes are a pain. We will eventually get rid of them...(they do not make sense any more)
-		if (variant.isStrandMinus()) throw new RuntimeException("Only seqChenges in postive strand are accepted!\n\tSeqChange : " + variant);
+		// Negative strand variants are a pain. We will eventually get rid of them...(they do not make sense any more)
+		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are accepted!\n\tVariant : " + variant);
 
 		int lenChange = variant.lengthChange();
 		if (lenChange == 0) return this;
@@ -131,7 +131,7 @@ public class Marker extends Interval implements TxtSerializable {
 
 			// Deletion before the marker
 			if (variant.getStart() < start) {
-				// Update cooredinates shifting the marker to the left
+				// Update coordinates shifting the marker to the left
 				int delta = start - variant.getStart();
 				m.start -= delta;
 				m.end -= delta;
@@ -147,7 +147,7 @@ public class Marker extends Interval implements TxtSerializable {
 	public Marker applyIns(Variant variant, int lenChange) {
 		Marker m = clone();
 
-		if (variant.getStart() <= start) {
+		if (variant.getStart() < start) {
 			// Insertion point before marker start? => Adjust both coordinates
 			m.start += lenChange;
 			m.end += lenChange;
@@ -561,7 +561,7 @@ public class Marker extends Interval implements TxtSerializable {
 				+ "\t" + end //
 				+ "\t" + id //
 				+ "\t" + strandMinus //
-		;
+				;
 	}
 
 	/**
