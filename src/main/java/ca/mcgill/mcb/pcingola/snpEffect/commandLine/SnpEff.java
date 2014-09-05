@@ -70,7 +70,7 @@ public class SnpEff implements CommandLine {
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
 	public static final String REVISION = "d";
-	public static final String BUILD = "2014-09-04";
+	public static final String BUILD = "2014-09-05";
 	public static final String VERSION_MAJOR = "4.0";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -179,7 +179,7 @@ public class SnpEff implements CommandLine {
 		int size = argsList.length();
 
 		for (String arg : args) {
-			argsList.append(arg);
+			argsList.append(arg.trim());
 			size += arg.length();
 			if (splitLines && (size > COMMAND_LINE_WIDTH)) {
 				argsList.append(" \n");
@@ -619,7 +619,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
 		) {
-			command = args[argNum++].toLowerCase();
+			command = args[argNum++].trim().toLowerCase();
 		} else {
 			command = "eff"; // Default command is 'eff'
 		}
@@ -799,7 +799,7 @@ public class SnpEff implements CommandLine {
 		SnpEff snpEffCmd = null;
 
 		// All commands are lower-case
-		command = command.toLowerCase();
+		command = command.trim().toLowerCase();
 		if (command.equalsIgnoreCase("build")) snpEffCmd = new SnpEffCmdBuild();
 		else if (command.equalsIgnoreCase("buildNextProt")) snpEffCmd = new SnpEffCmdBuildNextProt();
 		else if (command.equalsIgnoreCase("dump")) snpEffCmd = new SnpEffCmdDump();
