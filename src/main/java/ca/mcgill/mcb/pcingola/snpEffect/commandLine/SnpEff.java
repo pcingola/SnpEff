@@ -233,6 +233,8 @@ public class SnpEff implements CommandLine {
 	 * Read config file
 	 */
 	protected void loadConfig() {
+		if (config != null) return; // Already loaded?
+
 		// Read config file
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
@@ -265,6 +267,8 @@ public class SnpEff implements CommandLine {
 	 * Load database
 	 */
 	public void loadDb() {
+		if (config.getSnpEffectPredictor() != null) return; // Already loaded?
+
 		// Read database (or create a new one)
 		if (noGenome) {
 			if (verbose) Timer.showStdErr("Creating empty database (no genome).");

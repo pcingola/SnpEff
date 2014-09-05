@@ -14,10 +14,10 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Command line: Calculate coding sequences from a file and compare them to the ones calculated from our data structures
- * 
- * Note: This is done in order to see potential incompatibility 
+ *
+ * Note: This is done in order to see potential incompatibility
  *       errors between genome sequence and annotation.
- * 
+ *
  * @author pcingola
  */
 public class SnpEffCmdCds extends SnpEff {
@@ -112,16 +112,16 @@ public class SnpEffCmdCds extends SnpEff {
 				} else if ((mRna.length() < cdsReference.length()) // CDS longer than mRNA? May be it is actually an mRNA + poly-A tail (instead of a CDS)
 						&& cdsReference.substring(mRna.length()).replace('A', ' ').trim().isEmpty() // May be it is an mRNA and it has a ploy-A tail added
 						&& cdsReference.substring(0, mRna.length()).equals(mRna) // Compare cutting poly-A tail
-				) {
+						) {
 					// OK, it was a mRNA +  polyA
 					totalOk++;
 					ok = true;
 
 					if (verbose) System.out.print('+');
-				} else if ((mRna.length() > cdsReference.length()) // PolyA in the reference? 
-						&& mRna.substring(cdsReference.length()).replace('A', ' ').trim().isEmpty() // 
-						&& mRna.substring(0, cdsReference.length()).equals(mRna) // 
-				) {
+				} else if ((mRna.length() > cdsReference.length()) // PolyA in the reference?
+						&& mRna.substring(cdsReference.length()).replace('A', ' ').trim().isEmpty() //
+						&& mRna.substring(0, cdsReference.length()).equals(mRna) //
+						) {
 					// OK, it was a mRNA +  polyA
 					totalOk++;
 					ok = true;
@@ -151,7 +151,7 @@ public class SnpEffCmdCds extends SnpEff {
 								+ "\tMax. possible score: " + maxScore //
 								+ "\tDiff: " + (maxScore - score) //
 								+ "\n" + sw //
-						);
+								);
 						System.err.println("Transcript details:\n" + tr);
 
 						if (onlyOneError) {
@@ -221,7 +221,7 @@ public class SnpEffCmdCds extends SnpEff {
 		for (String seq : ffi) {
 			String trId = ffi.getName();
 
-			// Repeated transcript Id? => Check that CDS is the same 
+			// Repeated transcript Id? => Check that CDS is the same
 			if ((cdsByTrId.get(trId) != null) && (!cdsByTrId.get(trId).equals(seq))) System.err.println("ERROR: Different CDS for the same transcript ID. This should never happen!!!\n\tLine number: " + ffi.getLineNum() + "\n\tTranscript ID:\t" + trId + "\n\tCDS:\t\t" + cdsByTrId.get(trId) + "\n\tCDS (new):\t" + seq);
 
 			cdsByTrId.put(trId, seq); // Add it to the hash
@@ -249,7 +249,7 @@ public class SnpEffCmdCds extends SnpEff {
 				String seq = field[1].trim();
 				String trId = field[0].trim();
 
-				// Repeated transcript Id? => Check that CDS is the same 
+				// Repeated transcript Id? => Check that CDS is the same
 				if ((cdsByTrId.get(trId) != null) && (!cdsByTrId.get(trId).equals(seq))) System.err.println("ERROR: Different CDS for the same transcript ID. This should never happen!!!\n\tLine number: " + lineNum + "\n\tTranscript ID:\t" + trId + "\n\tCDS:\t\t" + cdsByTrId.get(trId) + "\n\tCDS (new):\t" + seq);
 
 				cdsByTrId.put(trId, seq); // Add it to the hash
@@ -275,11 +275,7 @@ public class SnpEffCmdCds extends SnpEff {
 		if (verbose) Timer.showStdErr("done (" + cdsByTrId.size() + " CDSs).");
 
 		// Load predictor
-		if (config.getSnpEffectPredictor() == null) {
-			if (verbose) Timer.showStdErr("Reading database...");
-			config.loadSnpEffectPredictor(); // Read snpEffect predictor
-			if (verbose) Timer.showStdErr("done");
-		}
+		if (config.getSnpEffectPredictor() == null) loadDb();
 
 		// Compare CDS
 		if (verbose) Timer.showStdErr("Comparing CDS...");

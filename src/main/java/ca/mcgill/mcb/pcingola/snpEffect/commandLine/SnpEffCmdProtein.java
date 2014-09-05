@@ -29,6 +29,16 @@ public class SnpEffCmdProtein extends SnpEff {
 	public static boolean onlyOneError = false; // This is used in some test-cases
 	public static double maxErrorPercentage = 0.01; // Maximum allowed error is 1% (otherwise test fails)
 
+	int totalErrors = 0;
+
+	int totalOk = 0;
+
+	int totalWarnings = 0;
+	int totalNotFound = 0;
+	String configFile = Config.DEFAULT_CONFIG_FILE;
+	String proteinFile = "";
+	HashMap<String, String> proteinByTrId;
+
 	/**
 	 * Count number of differences between strings
 	 */
@@ -57,16 +67,6 @@ public class SnpEffCmdProtein extends SnpEff {
 		return new String(diff);
 	}
 
-	int totalErrors = 0;
-	int totalOk = 0;
-	int totalWarnings = 0;
-	int totalNotFound = 0;
-	String configFile = Config.DEFAULT_CONFIG_FILE;
-
-	String proteinFile = "";
-
-	HashMap<String, String> proteinByTrId;
-
 	public SnpEffCmdProtein() {
 	}
 
@@ -94,7 +94,7 @@ public class SnpEffCmdProtein extends SnpEff {
 					+ "\n\tTranscript ID : '" + trId + "'"//
 					+ "\n\tProtein       : " + proteinByTrId.get(trId) //
 					+ "\n\tProtein (new) : " + seq //
-					);
+			);
 
 		// Pick the first space separated string
 		if (trId.indexOf(' ') > 0) trId = trId.split("\\s")[0];
@@ -215,7 +215,7 @@ public class SnpEffCmdProtein extends SnpEff {
 								+ "\tMax. possible score: " + maxScore //
 								+ "\tDiff: " + (maxScore - score) //
 								+ "\n" + sw //
-								);
+						);
 						System.err.println("Transcript details:\n" + tr);
 
 					} else if (verbose) System.out.print('*');
@@ -352,7 +352,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		if (verbose) Timer.showStdErr("Checking database using protein sequences");
 
 		// Load config
-		if (config == null) loadConfig();
+		loadConfig();
 
 		// Read proteins
 		if (verbose) Timer.showStdErr("Reading proteins from file '" + proteinFile + "'...");
@@ -360,11 +360,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		if (verbose) Timer.showStdErr("done (" + proteinByTrId.size() + " Proteins).");
 
 		// Load predictor
-		if (config.getSnpEffectPredictor() == null) {
-			if (verbose) Timer.showStdErr("Reading database...");
-			config.loadSnpEffectPredictor(); // Read snpEffect predictor
-			if (verbose) Timer.showStdErr("done");
-		}
+		loadDb();
 
 		// Compare proteins
 		if (verbose) Timer.showStdErr("Comparing Proteins...");

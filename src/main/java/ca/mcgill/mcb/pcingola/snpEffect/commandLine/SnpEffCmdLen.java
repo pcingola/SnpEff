@@ -5,7 +5,6 @@ import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.stats.ReadsOnMarkersModel;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -13,8 +12,8 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Calculate the maximum interval length by type, for all markers in a genome
- * 
- * 
+ *
+ *
  * @author pcingola
  */
 public class SnpEffCmdLen extends SnpEff {
@@ -49,7 +48,7 @@ public class SnpEffCmdLen extends SnpEff {
 							+ "\t" + (gene.getEnd() + 1) //
 							+ "\t" + efflen //
 							+ "\t" + maxcds //
-					);
+							);
 
 					// Sanity check
 					if (maxcds > efflen) throw new RuntimeException("CDS length is greter then effective length. This should never happen!");
@@ -137,18 +136,13 @@ public class SnpEffCmdLen extends SnpEff {
 
 	/**
 	 * Run
-	 * @return 
+	 * @return
 	 */
 	@Override
 	public boolean run() {
-		//---
-		// Initialize 
-		//---
-		if (verbose) Timer.showStdErr("Loading config");
-		config = new Config(genomeVer);
-
-		if (verbose) Timer.showStdErr("Loading predictor");
-		snpEffectPredictor = config.loadSnpEffectPredictor();
+		// Initialize
+		loadConfig();
+		loadDb();
 
 		if (verbose) Timer.showStdErr("Building interval forest");
 		snpEffectPredictor.buildForest();
@@ -162,7 +156,7 @@ public class SnpEffCmdLen extends SnpEff {
 		readsOnMarkersModel.setVerbose(verbose);
 
 		if (verbose) Timer.showStdErr("Counting bases");
-		readsOnMarkersModel.run(); // Count 
+		readsOnMarkersModel.run(); // Count
 		if (!quiet) System.out.println(readsOnMarkersModel);
 
 		// Perform some random sampling

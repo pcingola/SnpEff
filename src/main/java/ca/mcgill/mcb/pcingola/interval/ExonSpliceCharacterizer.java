@@ -11,9 +11,9 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Characterize exons based on alternative splicing
- * 
+ *
  * References: "Alternative splicing and evolution - diversification, exon definition and function"  (see Box 1)
- * 
+ *
  * @author pablocingolani
  */
 public class ExonSpliceCharacterizer {
@@ -48,7 +48,6 @@ public class ExonSpliceCharacterizer {
 
 	/**
 	 * Count number of exons
-	 * @return
 	 */
 	int countExons() {
 		int count = 0;
@@ -126,7 +125,7 @@ public class ExonSpliceCharacterizer {
 		if (gene.numChilds() <= 1) return false;
 
 		//---
-		// Make a list of all unique exons 
+		// Make a list of all unique exons
 		//---
 		String exonKey = key(exon);
 		HashMap<String, Exon> uniqEx = new HashMap<String, Exon>();
@@ -199,7 +198,7 @@ public class ExonSpliceCharacterizer {
 					String eKey = key(e);
 					int countEx = (int) count.get(eKey);
 
-					// Is this exon maintained in all transcripts? 
+					// Is this exon maintained in all transcripts?
 					if (countEx == countTr) type(e, Exon.ExonSpliceType.RETAINED);
 					else {
 						if (isAlt3ss(e, g)) type(e, Exon.ExonSpliceType.ALTTENATIVE_3SS);

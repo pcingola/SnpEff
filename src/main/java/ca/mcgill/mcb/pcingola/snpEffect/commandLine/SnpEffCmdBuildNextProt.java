@@ -26,7 +26,6 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.stats.CountByType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
@@ -47,11 +46,11 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 
 	// We don't care about these categories
 	public static final String CATAGORY_BLACK_LIST_STR[] = { "" //
-			, "sequence variant" //
-			, "sequence conflict" //
-			, "mature protein" //
-			, "mutagenesis site" //
-			, "retained intron" //
+		, "sequence variant" //
+		, "sequence conflict" //
+		, "mature protein" //
+		, "mutagenesis site" //
+		, "retained intron" //
 	};
 
 	public static final String NODE_NAME_PROTEIN = "protein";
@@ -116,7 +115,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 				+ "\n\tAA sequence length  : " + 1 //
 				+ "\n\tMin AA count        : " + HIGHLY_CONSERVED_AA_COUNT //
 				+ "\n\tMin AA conservation : " + HIGHLY_CONSERVED_AA_PERCENT //
-		);
+				);
 
 		ArrayList<String> keys = new ArrayList<String>();
 		keys.addAll(countAaSequenceByType.keySet());
@@ -175,11 +174,11 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 			// Show line
 			if (verbose) System.out.println( //
 					"\t" + total //
-							+ "\t" + maxCount //
-							+ "\t" + avgLen //
-							+ "\t" + (highlyConservedAaSequence ? "High" : "") //
-							+ "\t" + key //
-							+ "\t" + sb //
+					+ "\t" + maxCount //
+					+ "\t" + avgLen //
+					+ "\t" + (highlyConservedAaSequence ? "High" : "") //
+					+ "\t" + key //
+					+ "\t" + sb //
 					);
 
 			// Mark highly conserved
@@ -243,13 +242,13 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 								&& ((nodeValue == null) || ((value != null) && value.equals(nodeValue))) //
 								&& ((attrName == null) || ((aname != null) && attrName.equals(aname))) //
 								&& ((attrValue == null) || ((aval != null) && attrValue.equals(aval))) //
-						) found = true;
+								) found = true;
 					}
 				}
 			} else {
 				if (((nodeName == null) || ((name != null) && name.equals(nodeName))) //
 						&& ((nodeValue == null) || ((value != null) && value.equals(nodeValue))) //
-				) {
+						) {
 					found = true;
 				}
 			}
@@ -519,7 +518,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 						+ "\t" + subSeq //
 						+ "\t" + trData.codon //
 						+ "\t" + trData.aa//
-				);
+						);
 
 				// Create marker
 				String id = key(category, contrVoc, description);
@@ -602,14 +601,13 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 	public boolean run() {
 		// Initialzie
 		loadConfig(); // Read config file
+		loadDb();
 
-		if (verbose) Timer.showStdErr("Reading database for genome version '" + genomeVer + "' from file '" + config.getFileSnpEffectPredictor() + "' (this might take a while)");
-		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
 		genome = config.getGenome();
 		if (verbose) Timer.showStdErr("done");
 
 		// Build transcript map
-		for (Gene gene : snpEffectPredictor.getGenome().getGenes())
+		for (Gene gene : config.getSnpEffectPredictor().getGenome().getGenes())
 			for (Transcript tr : gene)
 				trById.put(tr.getId(), tr);
 
@@ -631,7 +629,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 				+ "\n\tMatch       : " + proteinOk.size() //
 				+ "\n\tDifferences : " + proteinDifferences.size() //
 				+ "\n\tAA errros   : " + aaErrors //
-		);
+				);
 
 		analyzeSequenceConservation();
 

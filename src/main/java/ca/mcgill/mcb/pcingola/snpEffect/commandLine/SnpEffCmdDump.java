@@ -13,7 +13,7 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Command line program: Build database
- * 
+ *
  * @author pcingola
  */
 public class SnpEffCmdDump extends SnpEff {
@@ -112,7 +112,7 @@ public class SnpEffCmdDump extends SnpEff {
 	 */
 	void printBed(Marker marker) {
 		String chr = chrStr + marker.getChromosome().getId();
-		int start = marker.getStart(); // The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0. 
+		int start = marker.getStart(); // The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0.
 		int end = marker.getEnd() + 1; // The ending position of the feature in the chromosome or scaffold. The chromEnd base is not included in the display of the feature.
 		String name = marker.getClass().getSimpleName() + "_" + marker.getId();
 		System.out.println(chr + "\t" + start + "\t" + end + "\t" + name);
@@ -124,7 +124,7 @@ public class SnpEffCmdDump extends SnpEff {
 	 */
 	void printTxt(Marker marker) {
 		String chr = chrStr + marker.getChromosome().getId();
-		int start = marker.getStart(); // The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0. 
+		int start = marker.getStart(); // The starting position of the feature in the chromosome or scaffold. The first base in a chromosome is numbered 0.
 		int end = marker.getEnd() + 1; // The ending position of the feature in the chromosome or scaffold. The chromEnd base is not included in the display of the feature.
 
 		StringBuilder info = new StringBuilder();
@@ -146,10 +146,10 @@ public class SnpEffCmdDump extends SnpEff {
 					+ "\t" + gene.getId() //
 					+ "\t" + gene.numChilds() //
 					+ "\t" + (canonical == null ? 0 : canonical.cds().length()) //
-			);
+					);
 		} else info.append("\t\t\t\t");
 
-		// Add transcript info		
+		// Add transcript info
 		Transcript tr = null;
 		if (marker instanceof Transcript) tr = (Transcript) marker;
 		else if (marker != null) tr = (Transcript) marker.findParent(Transcript.class);
@@ -157,7 +157,7 @@ public class SnpEffCmdDump extends SnpEff {
 		if (tr != null) info.append("\t" + tr.getId() //
 				+ "\t" + tr.cds().length() //
 				+ "\t" + tr.numChilds() //
-		);
+				);
 		else info.append("\t\t\t");
 
 		// Add exon info
@@ -167,7 +167,7 @@ public class SnpEffCmdDump extends SnpEff {
 
 		if (exon != null) info.append("\t" + exon.getRank() //
 				+ "\t" + exon.getSpliceType() //
-		);
+				);
 		else info.append("\t\t");
 
 		System.out.println(info);
@@ -182,11 +182,7 @@ public class SnpEffCmdDump extends SnpEff {
 		// Dump database
 		//---
 		loadConfig(); // Read config file
-
-		// Read database
-		if (verbose) Timer.showStdErr("Reading database for genome '" + genomeVer + "' (this might take a while)");
-		config.loadSnpEffectPredictor(); // Read snpEffect predictor
-		if (verbose) Timer.showStdErr("done");
+		loadDb();
 
 		// Build forest
 		if (verbose) Timer.showStdErr("Building interval forest");

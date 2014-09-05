@@ -58,7 +58,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 				// Use only protein coding genes
 				onlyProteinCoding = true;
 			} else if (args[i].equals("-ud")) {
-				// Expand upstream & downstream 
+				// Expand upstream & downstream
 				if ((i + 1) < args.length) expandUpstreamDownstream = Gpr.parseIntSafe(args[++i]);
 				else usage("Option '-ud' without file argument");
 			} else if ((genomeVer == null) || genomeVer.isEmpty()) {
@@ -79,11 +79,10 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 
 		// Load config & database
 		loadConfig(); // Read config file
-		if (verbose) Timer.showStdErr("Loading database " + genomeVer);
-		config.loadSnpEffectPredictor();
-		Genome genome = config.getGenome();
+		loadDb();
 
 		// Find genes
+		Genome genome = config.getGenome();
 		if (verbose) Timer.showStdErr("Finding genes.");
 		int found = 0, filtered = 0;
 		System.out.println("#chr\tstart\tend\tgeneName;geneId");
