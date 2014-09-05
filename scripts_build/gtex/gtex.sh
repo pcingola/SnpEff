@@ -6,6 +6,6 @@
 # #	| grep -e ^Name -e ^ENS \
 # #	> gtex.txt
 
-zcat GTEx_Analysis_RNA-seq_RNA-SeQCv1.1.8_gene_rpkm__Pilot_2013_01_31.gct.gz \
+cat GTEx_Analysis_2014-01-17_RNA-seq_RNA-SeQCv1.1.8_gene_rpkm.gct \
 	| grep -e ^Name -e ^ENS \
 	> gtex.txt

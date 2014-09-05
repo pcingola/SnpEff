@@ -32,7 +32,7 @@ colExpNames = as.vector( sapply(colnames(gt), mainName) )
 expNames = unique( sort( colExpNames[3:ncol(gt)] ) )
 
 # Plot histogram
-# plot(0, 0, xlim = c(-15,15), ylim = c(0, 0.15) )
+plot(0, 0, xlim = c(-15,15), ylim = c(0, 0.15) )
 
 #---
 # Perform
@@ -60,7 +60,7 @@ for( idx in minCol:ncol(gt) ) {
 #---
 cat("Step 2:\n");
 lmu = rowMeans(L, na.rm = TRUE)
-# plot( density( lmu[k] ) , xlim = c(-15,15) )
+plot( density( lmu[k] ) , xlim = c(-15,15) )
 for( idx in 1:ncol(L) ) {
 	l = L[, idx] - lmu
 
@@ -68,7 +68,7 @@ for( idx in 1:ncol(L) ) {
 	mu = mean(l , na.rm = TRUE )
 	l = (l - mu) / sd(l,  na.rm = TRUE)
 
-	# lines( density( l[k] ), col=idx )
+	lines( density( l[k] ), col=idx )
 
 	L[,idx] = l
 

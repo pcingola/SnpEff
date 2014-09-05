@@ -165,7 +165,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-						);
+				);
 			}
 		}
 	}
@@ -239,7 +239,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-					);
+			);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -622,7 +622,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
-				) {
+		) {
 			command = args[argNum++].trim().toLowerCase();
 		} else {
 			command = "eff"; // Default command is 'eff'
@@ -638,7 +638,6 @@ public class SnpEff implements CommandLine {
 			// These options are available for allow all commands
 			// Is it a command line option?
 			if (isOpt(arg)) {
-
 				if ((arg.equals("-c") || arg.equalsIgnoreCase("-config"))) {
 					if ((i + 1) < args.length) configFile = args[++i];
 					else usage("Option '-c' without config file argument");
