@@ -312,7 +312,7 @@ void runTests() {
 void uploadCore2Sf() {
 	zip := "snpEff_v" + versionUnd + "_core.zip"
 	zipLatest := "snpEff_latest_core.zip"
-	sys scp $zip $zipLatest pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$versionUnd
+	sys scp -v $zip $zipLatest pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/
 }
 
 #-------------------------------------------------------------------------------
@@ -320,7 +320,7 @@ void uploadCore2Sf() {
 #-------------------------------------------------------------------------------
 
 void uploadDbs2Sf() {
-	sys scp $dirZip/snpEff_v$versionUnd.*.zip pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$versionUnd/
+	sys scp -v $dirZip/snpEff_v$versionUnd.*.zip pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$versionUnd/
 }
 
 #-------------------------------------------------------------------------------
@@ -329,7 +329,7 @@ void uploadDbs2Sf() {
 
 void uploadDev2Sf() {
 	zipDev    := "snpEff_development.zip"
-	sys scp $zipDev pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$versionUnd
+	sys scp -v $zipDev pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/
 }
 
 #-------------------------------------------------------------------------------
