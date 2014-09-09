@@ -106,4 +106,21 @@ public class TestCasesExonFrame extends TestCase {
 		}
 	}
 
+	/**
+	 * Build genome (no exceptions should be thrown)
+	 */
+	public void test_02() {
+		Gpr.debug("Test");
+		//---
+		// Build database
+		//---
+		String genomeName = "testMacuminata";
+		String args[] = { "build", "-noLog", genomeName };
+
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		boolean ok = snpEff.run();
+		Assert.assertTrue(ok);
+	}
 }

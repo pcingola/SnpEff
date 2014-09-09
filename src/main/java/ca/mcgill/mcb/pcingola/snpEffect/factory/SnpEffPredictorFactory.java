@@ -244,8 +244,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Get (or create) a chromosome and set it's length
-	 * @param chromoName
-	 * @param len
 	 */
 	void chromoLen(String chromoName, int len) {
 		Chromosome chromo = getOrCreateChromosome(chromoName);
@@ -364,7 +362,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Error: Throw a runtime exception (show some details)
-	 * @param msg
 	 */
 	void error(String msg) {
 		throw new RuntimeException("FATAL ERROR: " + msg + ". File '" + fileName + "' line " + lineNum + "\n\t'" + line + "'\n");
@@ -372,7 +369,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Error: Throw a runtime exception (show some details)
-	 * @param msg
 	 */
 	void error(String msg, Throwable t) {
 		throw new RuntimeException("FATAL ERROR: " + msg + ". File '" + fileName + "' line " + lineNum + "\n\t'" + line + "'\n", t);

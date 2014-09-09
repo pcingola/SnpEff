@@ -854,11 +854,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Exon exon : exons) {
 			String seq = "";
 			int utrOverlap = 0;
+			boolean utrIncluded = false;
 
 			// Check if exon overlaps UTR
 			if (utr5 != null && utr5.includes(exon)) {
 				// The whole exon is included => No sequence change
 				seq = "";
+				utrIncluded = true;
 			} else {
 				// Add sequence
 				seq = exon.getSequence();
@@ -875,7 +877,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			// Frame check
 			//---
 			if (exon.getFrame() < 0) {
-				// Nothing to do (assume current frame is right
+				// Nothing to do (assume current frame is right)
+			} else if (utrIncluded) {
+				// Exon does not code, frame information is meaningless
+				if (exon.getFrame() >= 0) exon.setFrame(-1);
 			} else {
 				// Calculate frame
 				// References: http://mblab.wustl.edu/GTF22.html
