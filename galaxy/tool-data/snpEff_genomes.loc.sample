@@ -16366,7 +16366,6 @@ Pf3D7v72 	 Plasmodium_falciparum   Pf3D7v72
 Pf3D7v90 	 Plasmodium_falciparum   Pf3D7v90
 Pf3D7v91 	 Plasmodium_falciparum   Pf3D7v91
 plasmo72 	 Plasmodium_falciparum   plasmo72
-pberghei 	 Plasmodium   pberghei
 Plautia_stali_symbiont_uid65033 	 Plautia_stali_symbiont_uid65033   Plautia_stali_symbiont_uid65033
 GCA_000170895.1.21 	 Plesiocystis_pacifica_sir_1   GCA_000170895.1.21
 GCA_000170895.1.22 	 Plesiocystis_pacifica_sir_1   GCA_000170895.1.22
@@ -22838,6 +22837,7 @@ testEgrandis 	 Test   testEgrandis
 testENST00000268124 	 Test   testENST00000268124
 testENST00000398332 	 Test   testENST00000398332
 testENST00000529892 	 Test   testENST00000529892
+testMacuminata 	 Test   testMacuminata
 testMaizeZmB73 	 Test   testMaizeZmB73
 GCA_000283615.1.21 	 Tetragenococcus_halophilus_nbrc_12172   GCA_000283615.1.21
 GCA_000283615.1.22 	 Tetragenococcus_halophilus_nbrc_12172   GCA_000283615.1.22
@@ -24379,3 +24379,4 @@ GCA_000218875.1.22 	 Zymomonas_mobilis_subsp_pomaceae_atcc_29192   GCA_000218875
 Zymomonas_mobilis_ZM4_uid58095 	 Zymomonas_mobilis_ZM4_uid58095   Zymomonas_mobilis_ZM4_uid58095
 MG2.21 	 Zymoseptoria_tritici   MG2.21
 MG2.22 	 Zymoseptoria_tritici   MG2.22
+zzz 	 Zzz   zzz
