@@ -15,7 +15,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
  * Compare our CDS (from transcript sequences) to sequences downloaded from database
- * 
+ *
  * @author pcingola
  */
 public class TestCompareCds {
@@ -25,6 +25,13 @@ public class TestCompareCds {
 	public static boolean verbose = false | debug;
 	public static boolean onlyOneError = false;
 	public static double maxErrorPercentage = 0.01; // Maximum allowed error is 1% (otherwise test fails)
+
+	Config config;
+	Map<String, String> cdsByTrId;
+	int totalErrors = 0;
+	int totalOk = 0;
+	int totalWarnings = 0;
+	int totalNotFound = 0;
 
 	/**
 	 * @param args
@@ -59,8 +66,6 @@ public class TestCompareCds {
 
 	/**
 	 * Execute a test for a given genome version
-	 * @param genomeVersion
-	 * @param maxErrorPercentage
 	 */
 	public static void test(String genomeVersion, String configFile) {
 		if (!quiet) System.out.println("CDS test for " + genomeVersion);
@@ -69,16 +74,6 @@ public class TestCompareCds {
 		double perc = testCompareCds.cdsCompare();
 		if (perc > maxErrorPercentage) throw new RuntimeException("Too many errors. Percentaje : " + (100 * perc) + "%");
 	}
-
-	Config config;
-	Map<String, String> cdsByTrId;
-	int totalErrors = 0;
-
-	int totalOk = 0;
-
-	int totalWarnings = 0;
-
-	int totalNotFound = 0;
 
 	public TestCompareCds(String genomeVersion, String configFile) {
 		config = new Config(genomeVersion, configFile);
@@ -154,7 +149,7 @@ public class TestCompareCds {
 	}
 
 	/**
-	 * Read a file with all CDS. 
+	 * Read a file with all CDS.
 	 * Format : Fasta
 	 * @param cdsFileName
 	 */
@@ -167,7 +162,7 @@ public class TestCompareCds {
 			// Transcript ID
 			String trid = GprSeq.readId(ffi.getHeader());
 
-			// Repeated transcript Id? => Check that CDS is the same 
+			// Repeated transcript Id? => Check that CDS is the same
 			if ((cdsByTrId.get(trid) != null) && (!cdsByTrId.get(trid).equals(cds))) System.err.println("ERROR: Different CDS for the same transcript ID. This should never happen!!!\n\tLine number: " + lineNum + "\n\tTranscript ID:\t" + trid + "\n\tCDS:\t\t" + cdsByTrId.get(trid) + "\n\tCDS (new):\t" + cds);
 
 			cdsByTrId.put(trid, cds);
@@ -193,12 +188,12 @@ public class TestCompareCds {
 			return;
 		}
 
-		// Error! 
+		// Error!
 		throw new RuntimeException("Neither '" + cdsFileName + "' nor '" + cdsFastaFileName + "' file exists!");
 	}
 
 	/**
-	 * Read a file with all CDS. 
+	 * Read a file with all CDS.
 	 * Format : "transcriptID \t cdsSequence \n"
 	 * @param cdsFileName
 	 */
@@ -212,7 +207,7 @@ public class TestCompareCds {
 			String trid = records[0].trim();
 			String cds = records[1].trim().toUpperCase();
 
-			// Repeated transcript Id? => Check that CDS is the same 
+			// Repeated transcript Id? => Check that CDS is the same
 			if ((cdsByTrId.get(trid) != null) && (!cdsByTrId.get(trid).equals(cds))) System.err.println("ERROR: Different CDS for the same transcript ID. This should never happen!!!\n\tLine number: " + lineNum + "\n\tTranscript ID:\t" + trid + "\n\tCDS:\t\t" + cdsByTrId.get(trid) + "\n\tCDS (new):\t" + cds);
 
 			cdsByTrId.put(trid, cds);

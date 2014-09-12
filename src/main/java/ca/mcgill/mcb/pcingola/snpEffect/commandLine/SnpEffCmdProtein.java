@@ -2,6 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 
 import java.util.HashMap;
 
+import ca.mcgill.mcb.pcingola.codons.CodonTable;
+import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.SmithWaterman;
 import ca.mcgill.mcb.pcingola.genBank.Feature;
@@ -27,12 +29,10 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 public class SnpEffCmdProtein extends SnpEff {
 
 	public static boolean onlyOneError = false; // This is used in some test-cases
-	public static double maxErrorPercentage = 0.01; // Maximum allowed error is 1% (otherwise test fails)
+	public static double MAX_ERROR_RATE = 0.05; // Maximum allowed error is 1% (otherwise test fails)
 
 	int totalErrors = 0;
-
 	int totalOk = 0;
-
 	int totalWarnings = 0;
 	int totalNotFound = 0;
 	String configFile = Config.DEFAULT_CONFIG_FILE;
@@ -104,11 +104,29 @@ public class SnpEffCmdProtein extends SnpEff {
 	}
 
 	/**
+	 * Check proteins
+	 */
+	void checkProteins() {
+		double err = proteinCompare(); // Compare proteins
+
+		if (err > MAX_ERROR_RATE) {
+			HashMap<String, Double> errRates = new HashMap<String, Double>();
+			for (CodonTable codonTable : CodonTables.getInstance()) {
+				System.out.println(codonTable.getName());
+				err = proteinCompare();
+
+				config.getGenome().codonTable();
+				errRates.put(codonTable.getName(), err);
+			}
+
+			for (String ct : errRates.keySet())
+				System.out.println(ct + "\t\t" + errRates.get(ct));
+		}
+
+	}
+
+	/**
 	 * Compare two protein sequences
-	 *
-	 * @param protein
-	 * @param proteinRef
-	 * @return
 	 */
 	boolean equals(String protein, String proteinRef) {
 		if (protein.isEmpty() && proteinRef.isEmpty()) return true;
@@ -175,6 +193,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	 * Compare all Protein
 	 */
 	double proteinCompare() {
+		if (verbose) Timer.showStdErr("Comparing Proteins...");
 		int i = 1;
 		if (verbose) System.out.print('\t');
 
@@ -234,15 +253,23 @@ public class SnpEffCmdProtein extends SnpEff {
 			}
 		}
 
-		double perc = ((double) totalErrors) / ((double) (totalErrors + totalOk));
-		System.out.println("\n\tProtein check:\t" + config.getGenome().getVersion() + "\tOK: " + totalOk + "\tWarnings: " + totalWarnings + "\tNot found: " + totalNotFound + "\tErrors: " + totalErrors + "\tError percentage: " + (100 * perc) + "%");
-		return perc;
+		// Relative error rate
+		double errorRate = ((double) totalErrors) / ((double) (totalErrors + totalOk));
+		System.out.println("\n\tProtein check:" //
+				+ "\t" + config.getGenome().getVersion() //
+				+ "\tOK: " + totalOk //
+				+ "\tWarnings: " + totalWarnings //
+				+ "\tNot found: " + totalNotFound //
+				+ "\tErrors: " + totalErrors //
+				+ "\tError percentage: " + (100 * errorRate) + "%" //
+		);
+
+		if (verbose) Timer.showStdErr("done");
+		return errorRate;
 	}
 
 	/**
 	 * Format proteins to make them easier to compare
-	 * @param protein
-	 * @return
 	 */
 	String proteinFormat(String protein) {
 		if (protein.isEmpty()) return "";
@@ -268,10 +295,14 @@ public class SnpEffCmdProtein extends SnpEff {
 	 * Read a file that has all proteins in fasta format
 	 */
 	void readProteinFile() {
+		if (verbose) Timer.showStdErr("Reading proteins from file '" + proteinFile + "'...");
 		proteinByTrId = new HashMap<String, String>();
+
 		if (proteinFile.endsWith("txt") || proteinFile.endsWith("txt.gz")) readProteinFileTxt();
 		else if (proteinFile.endsWith(SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK)) readProteinFileGenBank();
 		else readProteinFileFasta();
+
+		if (verbose) Timer.showStdErr("done (" + proteinByTrId.size() + " Proteins).");
 	}
 
 	/**
@@ -351,21 +382,10 @@ public class SnpEffCmdProtein extends SnpEff {
 	public boolean run() {
 		if (verbose) Timer.showStdErr("Checking database using protein sequences");
 
-		// Load config
-		loadConfig();
-
-		// Read proteins
-		if (verbose) Timer.showStdErr("Reading proteins from file '" + proteinFile + "'...");
-		readProteinFile(); // Load Protein
-		if (verbose) Timer.showStdErr("done (" + proteinByTrId.size() + " Proteins).");
-
-		// Load predictor
-		loadDb();
-
-		// Compare proteins
-		if (verbose) Timer.showStdErr("Comparing Proteins...");
-		proteinCompare();
-		if (verbose) Timer.showStdErr("done");
+		loadConfig(); // Load config
+		readProteinFile(); // Read proteins
+		loadDb(); // Load database
+		checkProteins(); // Compare proteins
 
 		return true;
 	}
