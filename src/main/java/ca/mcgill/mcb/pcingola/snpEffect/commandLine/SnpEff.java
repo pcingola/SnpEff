@@ -106,6 +106,7 @@ public class SnpEff implements CommandLine {
 	protected String onlyTranscriptsFile = null; // Only use the transcripts in this file (Format: One transcript ID per line)
 	protected StringBuilder output = new StringBuilder();
 	protected Config config; // Configuration
+	protected Genome genome;
 	protected SnpEff snpEffCmd; // Real command to run
 	protected ArrayList<String> customIntervalFiles; // Custom interval files (bed)
 	protected ArrayList<String> filterIntervalFiles;// Files used for filter intervals
@@ -267,7 +268,10 @@ public class SnpEff implements CommandLine {
 	 * Load database
 	 */
 	public void loadDb() {
-		if (config.getSnpEffectPredictor() != null) return; // Already loaded?
+		if (config.getSnpEffectPredictor() != null) {
+			genome = config.getSnpEffectPredictor().getGenome();
+			return; // Already loaded?
+		}
 
 		// Read database (or create a new one)
 		if (noGenome) {
@@ -392,6 +396,8 @@ public class SnpEff implements CommandLine {
 			Timer.showStdErr("Genome stats :");
 			System.err.println(config.getGenome());
 		}
+
+		genome = config.getSnpEffectPredictor().getGenome();
 	}
 
 	/**
@@ -424,8 +430,6 @@ public class SnpEff implements CommandLine {
 	 * Read regulation motif files
 	 */
 	void loadMotif() {
-		if (verbose) Timer.showStdErr("Loading Motifs and PWMs");
-
 		//---
 		// Sanity checks
 		//---
@@ -433,6 +437,8 @@ public class SnpEff implements CommandLine {
 		String motifBinFileName = config.getBaseFileNameMotif() + ".bin";
 
 		if (!Gpr.exists(pwmsFileName) || !Gpr.exists(motifBinFileName)) {
+			if (verbose) Timer.showStdErr("Loading Motifs and PWMs");
+
 			// OK, we don't have motif annotations, no problem
 			if (debug) {
 				if (!Gpr.exists(pwmsFileName)) warning("Warning: Cannot open PWMs file ", pwmsFileName);

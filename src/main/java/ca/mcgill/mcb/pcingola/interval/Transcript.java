@@ -1330,13 +1330,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Intron m : introns())
 			if (m.intersects(marker)) markers.add(m);
 
-		// Note: Upstram and Downstream are technically NOT in the
-		// transcript. So we should not be returning them
-		//
-		//		// Add upstream & downstream
-		//		if (upstream.intersects(marker)) markers.add(upstream);
-		//		if (downstream.intersects(marker)) markers.add(downstream);
-
 		return markers;
 	}
 
@@ -1384,6 +1377,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		firstCodingExon = null;
 		cds = null;
 		cds2pos = null;
+		protein = null;
 	}
 
 	/**

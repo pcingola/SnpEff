@@ -37,7 +37,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 				+ "\n\tID           : " + id //
 				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
 				+ "\n\tParent       : " + parent //
-				);
+		);
 
 		if (start < 0) throw new RuntimeException("Interval has negative coordinates." //
 				+ "\n\tClass        : " + getClass().getSimpleName() //
@@ -46,7 +46,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 				+ "\n\tID           : " + id //
 				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
 				+ "\n\tParent       : " + parent //
-				);
+		);
 
 		this.start = start;
 		this.end = end;
@@ -119,14 +119,14 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 	}
 
 	/**
-	 * @return  true if this intersects '[iStart, iEnd]'
+	 * Return true if this intersects '[iStart, iEnd]'
 	 */
 	public boolean intersects(int iStart, int iEnd) {
 		return (iEnd >= start) && (iStart <= end);
 	}
 
 	/**
-	 * @return  return true if this intersects 'interval'
+	 * Return true if this intersects 'interval'
 	 */
 	public boolean intersects(Interval interval) {
 		return (interval.getEnd() >= start) && (interval.getStart() <= end);
@@ -190,8 +190,6 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 
 	/**
 	 * Show it as an ASCII art
-	 * @param maxLen
-	 * @return
 	 */
 	public String toStringAsciiArt(int maxLen) {
 		StringBuilder sb = new StringBuilder();

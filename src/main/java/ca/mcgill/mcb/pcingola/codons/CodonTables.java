@@ -51,15 +51,6 @@ public class CodonTables implements Iterable<CodonTable> {
 	}
 
 	/**
-	 * Add a codon table for a given genome & chromosome
-	 */
-	public void add(Genome genome, Chromosome chr, CodonTable codonTable) {
-		add(codonTable); // Just in case it's not already added
-		String key = genome.getId() + KEY_SEPARATOR + chr.getId();
-		genChr2codonTable.put(key, codonTable);
-	}
-
-	/**
 	 * Translate an amino acid into a codon for a given genome+chromosome
 	 */
 	public String codon(String aa, Genome genome, String chromosome) {
@@ -87,5 +78,14 @@ public class CodonTables implements Iterable<CodonTable> {
 	@Override
 	public Iterator<CodonTable> iterator() {
 		return codonTableByName.values().iterator();
+	}
+
+	/**
+	 * Set a codon table for a given genome & chromosome
+	 */
+	public void set(Genome genome, Chromosome chr, CodonTable codonTable) {
+		add(codonTable); // Just in case it's not already added
+		String key = genome.getId() + KEY_SEPARATOR + chr.getId();
+		genChr2codonTable.put(key, codonTable);
 	}
 }

@@ -164,7 +164,7 @@ public class Config implements Serializable, Iterable<String> {
 				}
 
 				// Everything seems to be OK, go on
-				CodonTables.getInstance().add(genomeByVersion.get(genomeVersion), chr, codonTable);
+				CodonTables.getInstance().set(genomeByVersion.get(genomeVersion), chr, codonTable);
 			}
 		}
 	}
