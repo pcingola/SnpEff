@@ -88,6 +88,9 @@ public abstract class Features implements Iterable<Feature> {
 	Feature featureFactory(Feature.Type type, String def, int lineNum) {
 		boolean complement = false;
 
+		if (def.indexOf("NP_216202.1") > 0) //
+			Gpr.debug("DEBUG");
+
 		// Get first line (location)
 		int firstLine = def.indexOf("\n");
 
@@ -106,7 +109,7 @@ public abstract class Features implements Iterable<Feature> {
 			// Get rid of 'join' and 'complement' strings
 			stripped = strip(loc);
 			loc = stripped.first;
-			complement = stripped.second;
+			complement |= stripped.second;
 
 			// Remove other characters
 			loc = loc.replaceAll("[<>()]", "");

@@ -37,9 +37,6 @@ public class VariantStats implements SamplingStats<Variant> {
 
 	/**
 	 * How to code an 'item' change (e.g. codon change, AA change, etc.)
-	 * @param oldItem
-	 * @param newItem
-	 * @return
 	 */
 	private String changeKey(String oldItem, String newItem) {
 		return oldItem + CHANGE_SEPARATOR + newItem;
@@ -67,9 +64,6 @@ public class VariantStats implements SamplingStats<Variant> {
 
 	/**
 	 * Background color used for base change table
-	 * @param oldBase
-	 * @param newBase
-	 * @return
 	 */
 	public String getBasesChangesColor(String oldBase, String newBase) {
 		return baseChangesCount.getColorHtml(changeKey(oldBase, newBase));

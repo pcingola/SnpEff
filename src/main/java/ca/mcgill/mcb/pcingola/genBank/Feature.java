@@ -89,9 +89,6 @@ public class Feature implements Iterable<FeatureCoordinates> {
 
 	/**
 	 * Get a qualifier by name
-	 *
-	 * @param name
-	 * @return
 	 */
 	public String get(String name) {
 		return qualifiers.get(name);
@@ -99,7 +96,6 @@ public class Feature implements Iterable<FeatureCoordinates> {
 
 	/**
 	 * Get translated amino acid sequence
-	 * @return
 	 */
 	public String getAasequence() {
 		return get("translation");
@@ -185,7 +181,6 @@ public class Feature implements Iterable<FeatureCoordinates> {
 
 	/**
 	 * Parse definition
-	 * @param def
 	 */
 	void parse(String def) {
 		int firstLine = def.indexOf("\n");
@@ -217,7 +212,6 @@ public class Feature implements Iterable<FeatureCoordinates> {
 
 	/**
 	 * Parse location
-	 * @param loc
 	 */
 	void parseLocation(String loc) {
 		loc = loc.replaceAll("[<>()]", "");
@@ -235,8 +229,6 @@ public class Feature implements Iterable<FeatureCoordinates> {
 
 	/**
 	 * Remove surrounding quotes from a string
-	 * @param s
-	 * @return
 	 */
 	String removeQuotes(String s) {
 		if (s.startsWith("\"")) s = s.substring(1);

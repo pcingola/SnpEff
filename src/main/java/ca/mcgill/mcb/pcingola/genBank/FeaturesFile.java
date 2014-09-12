@@ -40,7 +40,6 @@ public abstract class FeaturesFile implements Iterable<Features>, Iterator<Featu
 
 	/**
 	 * Open a file
-	 * @param fileName
 	 */
 	protected void open(String fileName) {
 		if (!Gpr.canRead(fileName)) throw new RuntimeException("Cannot read file '" + fileName + "'");

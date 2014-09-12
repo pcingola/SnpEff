@@ -166,8 +166,6 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 	/**
 	 * Find or create a chromosome name for a feature
-	 * @param sourceFeature
-	 * @return
 	 */
 	String chromoName(Features features, Feature sourceFeature) {
 		// Try 'chromosome' from SOURCE feature
@@ -237,8 +235,6 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 	/**
 	 * Try to get geneIDs
-	 * @param f
-	 * @return
 	 */
 	protected String geneId(Feature f, int start, int end) {
 		// Try 'locus'...
@@ -250,10 +246,6 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 	/**
 	 * Get gene name from feature
-	 * @param f
-	 * @param start
-	 * @param end
-	 * @return
 	 */
 	protected String geneName(Feature f, int start, int end) {
 		// Try 'gene'...
@@ -265,8 +257,6 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 	/**
 	 * Get sequence either from features or from FASTA file
-	 * @param features
-	 * @return
 	 */
 	String sequence(Features features) {
 		String seq = features.getSequence();
