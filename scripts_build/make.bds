@@ -31,8 +31,9 @@ snpeffDownload		:= "http://sourceforge.net/projects/snpeff/files/snpEff_latest_c
 bundleLists			:= false		# Create bundle lists and config entries
 config				:= false		# Create config file
 db					:= false		# Build databases
-distro	 			:= false		# Create distribution files
-distroCore 			:= false		# Create distribution files (only 'core')
+distro	 			:= false		# Create distribution files (zip)
+distroBundles		:= false		# Create bundle files (zip)
+distroCore 			:= false		# Create distribution files (zip only 'core')
 download 			:= false		# Download files
 make	 			:= false		# Make (build JAR files)
 test	 			:= false		# Run test cases
@@ -458,6 +459,7 @@ if( config )			buildConfig()			# Create config file
 if( db )				buildDb()				# Build genomes
 if( distro )			makeDistro()			# Create distribution files
 if( distroCore )		zipCore()				# Create distribution files (core 'zip')
+if( distroBundles )		zipBundles()			# Create 'bundle' distribution files
 if( download )			downloadAll()			# Perform downloads
 if( make )				build()					# Create JAR files
 if( test )				runTests()				# Run test cases 
