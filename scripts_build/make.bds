@@ -321,7 +321,7 @@ void uploadCore2Sf() {
 #-------------------------------------------------------------------------------
 
 void uploadDbs2Sf() {
-	sys scp -v $dirZip/snpEff_v$versionUnd.*.zip pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$versionUnd/
+	sys scp -v $dirZip/snpEff_v$versionUnd*.zip pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$versionUnd/
 }
 
 #-------------------------------------------------------------------------------
