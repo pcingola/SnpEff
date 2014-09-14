@@ -139,7 +139,7 @@
 ##contig=<ID=NC_007605,length=171823>
 ##contig=<ID=hs37d5,length=35477943>
 ##reference=file:///ifs/e63data/offitlab/Human_Decoy_REF/hs37d5.fa
-##SnpEffVersion="4.0d (build 2014-09-04), by Pablo Cingolani"
+##SnpEffVersion="4.0e (build 2014-09-13), by Pablo Cingolani"
 ##SnpEffCmd="SnpEff  -o gatk GRCh37.75 /home/pcingola/workspace/SnpEff/tests/integration/test_gatk.vcf "
 ##INFO=<ID=EFF,Number=.,Type=String,Description="Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' ">
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	CGRBG2432_TGACCA
