@@ -776,4 +776,32 @@ public class Gpr {
 		}
 	}
 
+	public static String toString(double vals[]) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[ ");
+
+		for (int i = 0; i < vals.length; i++) {
+			if (i > 0) sb.append(", ");
+			sb.append(toString(vals[i]));
+		}
+
+		sb.append(" ]");
+		return sb.toString();
+	}
+
+	public static String toString(double val) {
+		double aval = Math.abs(val);
+		if (aval < 1000000 && aval >= 100000.0) return String.format("% 6.2f", val);
+		if (aval < 100000 && aval >= 10000.0) return String.format("% 5.2f ", val);
+		if (aval < 10000 && aval >= 1000.0) return String.format("% 4.2f  ", val);
+		if (aval < 1000 && aval >= 100.0) return String.format("% 3.2f   ", val);
+		if (aval < 100 && aval >= 10.0) return String.format("% 2.2f    ", val);
+		if (aval < 10 && aval >= 1.0) return String.format("% 1.3f    ", val);
+		if (aval < 1.0 && aval >= 0.01) return String.format("% 1.3f    ", val);
+		if (aval < 1.0 && aval >= 0.001) return String.format("% 1.4f   ", val);
+		if (aval < 1.0 && aval >= 0.000001) return String.format("% 1.6f ", val);
+		if (aval < 1.0 && aval >= 0.0000001) return String.format("% 1.7f", val);
+		if (val == 0.0) return String.format(" 0        ", val);
+		return String.format("% 1.3e", val);
+	}
 }
