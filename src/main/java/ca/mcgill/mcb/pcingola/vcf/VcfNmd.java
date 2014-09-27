@@ -11,9 +11,6 @@ public class VcfNmd extends VcfLof {
 
 	/**
 	 * Convert from field name to field number
-	 * @param name
-	 * @param formatVersion
-	 * @return
 	 */
 	public static int fieldNum(String name) {
 		int fieldNum = 0;

@@ -1,6 +1,7 @@
 # SnpEff databases
 # List created using command: java -jar snpEff.jar databases
 # Version    Description
+Hevea 	    Hevea
 Acaryochloris_marina_MBIC11017_uid58167 	 Acaryochloris_marina_MBIC11017_uid58167   Acaryochloris_marina_MBIC11017_uid58167
 GCA_000018105.1.21 	 Acaryochloris_marina_mbic11017   GCA_000018105.1.21
 GCA_000018105.1.22 	 Acaryochloris_marina_mbic11017   GCA_000018105.1.22

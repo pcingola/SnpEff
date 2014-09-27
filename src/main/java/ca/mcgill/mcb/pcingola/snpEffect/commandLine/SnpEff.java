@@ -199,14 +199,14 @@ public class SnpEff implements CommandLine {
 	 */
 	public void error(Throwable e, String message) {
 		if (verbose && (e != null)) e.printStackTrace();
-		if (!quiet) System.err.println(message);
+		if (!quiet) System.err.println("Error: " + message);
 	}
 
 	/**
 	 * Show an error message and exit
 	 */
 	public void fatalError(String message) {
-		System.err.println(message);
+		System.err.println("Fatal error: " + message);
 		System.exit(-1);
 	}
 

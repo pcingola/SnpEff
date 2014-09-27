@@ -28,6 +28,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 public class TestCasesVcf extends TestCase {
 
 	boolean verbose = false;
+	boolean debug = false;
 	boolean createOutputFile = false;
 	Random rand;
 	Config config;
@@ -343,7 +344,7 @@ public class TestCasesVcf extends TestCase {
 		String testIn[] = { "Hi ", "Hi how;", "Hi how;are|", "Hi how;are|you,", "Hi how;are|you,doing=", "Hi how;are|you,doing=today(.)" };
 		String testOut[] = { "Hi_", "Hi_how_", "Hi_how_are_", "Hi_how_are_you_", "Hi_how_are_you_doing_", "Hi_how_are_you_doing_today_._" };
 		for (int i = 0; i < testIn.length; i++) {
-			String safe = vof.vcfInfoSafeString(testIn[i]);
+			String safe = VcfOutputFormatter.vcfInfoSafeString(testIn[i]);
 			if (verbose) System.out.println("'" + testIn[i] + "'\t'" + safe + "'\t'" + testOut[i] + "'");
 			Assert.assertEquals(testOut[i], safe);
 		}
@@ -495,6 +496,24 @@ public class TestCasesVcf extends TestCase {
 
 			start += ve.size();
 		}
+	}
+
+	/**
+	 * Annotating LOF / NMD using a geneName that contains spaces triggers
+	 * an Exception (it shouldn't happen)
+	 */
+	public void test_26_Annotating_LOF_Spaces() {
+		String vcfFileName = "tests/vcf_genes_spaces.vcf";
+		String genomeName = "test_ENSG00000158062_spaces";
+
+		// Prepare a command line
+		String args[] = { "-noLog", genomeName, vcfFileName };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setDebug(debug);
+
+		// This should run OK
+		snpEff.run();
 	}
 
 }

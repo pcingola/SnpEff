@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.vcf;
 
 import ca.mcgill.mcb.pcingola.interval.Gene;
+import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -17,9 +18,6 @@ public class VcfLof {
 
 	/**
 	 * Convert from field name to field number
-	 * @param name
-	 * @param formatVersion
-	 * @return
 	 */
 	public static int fieldNum(String name) {
 		int fieldNum = 0;
@@ -105,6 +103,11 @@ public class VcfLof {
 
 	@Override
 	public String toString() {
-		return String.format("(%s|%s|%d|%.2f)", geneName, geneId, numTranscripts, percentAffected);
+		return String.format("(%s|%s|%d|%.2f)" //
+				, VcfOutputFormatter.vcfInfoSafeString(geneName) //
+				, VcfOutputFormatter.vcfInfoSafeString(geneId) //
+				, numTranscripts //
+				, percentAffected //
+				);
 	}
 }

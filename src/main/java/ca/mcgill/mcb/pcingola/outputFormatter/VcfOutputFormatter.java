@@ -32,7 +32,6 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class VcfOutputFormatter extends OutputFormatter {
 
 	public static final boolean debug = false;
-
 	public static final String VCF_INFO_OICR_NAME = "OICR";
 
 	boolean needAddInfo = false;
@@ -41,6 +40,15 @@ public class VcfOutputFormatter extends OutputFormatter {
 	boolean gatk;
 	FormatVersion formatVersion = VcfEffect.FormatVersion.FORMAT_SNPEFF_4;
 	List<VcfEntry> vcfEntries;
+
+	/**
+	 * Create a string that is safe (i.e. valid) to add in an INFO field
+	 */
+	public static String vcfInfoSafeString(String value) {
+		if (value == null) return value;
+		value = value.replaceAll("[ ,;|=()]", "_");
+		return value;
+	}
 
 	public VcfOutputFormatter() {
 		super();
@@ -241,12 +249,12 @@ public class VcfOutputFormatter extends OutputFormatter {
 				//---
 				if (useOicr && (tr != null)) {
 					StringBuilder sb = new StringBuilder();
-					Variant seqChange = variantEffect.getVariant();
+					Variant variant = variantEffect.getVariant();
 
 					// Get cDNA position
-					int pos = tr.isStrandMinus() ? seqChange.getStart() : seqChange.getEnd(); // First base in cDNA
+					int pos = tr.isStrandMinus() ? variant.getStart() : variant.getEnd(); // First base in cDNA
 					int cdnaIdx = tr.baseNumberPreMRna(pos) + 1; // Which cDNA base number?
-					if (cdnaIdx > 0) sb.append("(" + tr.getId() + "|" + cdnaIdx + ")");
+					if (cdnaIdx > 0) sb.append("(" + vcfInfoSafeString(tr.getId()) + "|" + cdnaIdx + ")");
 
 					oicr.add(sb.toString());
 				}
@@ -415,15 +423,6 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 		if (sb.length() > 0) sb.deleteCharAt(sb.length() - 1); // Remove last comma
 		return sb.toString();
-	}
-
-	/**
-	 * Create a string that is safe (i.e. valid) to add in an INFO field
-	 */
-	public String vcfInfoSafeString(String value) {
-		if (value == null) return value;
-		value = value.replaceAll("[ ,;|=()]", "_");
-		return value;
 	}
 
 }

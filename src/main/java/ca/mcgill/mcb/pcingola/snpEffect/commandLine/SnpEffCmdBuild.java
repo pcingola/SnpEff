@@ -85,6 +85,7 @@ public class SnpEffCmdBuild extends SnpEff {
 	 */
 	SnpEffectPredictor createSnpEffPredictor() {
 		if (geneDatabaseFormat == null) geneDatabaseFormat = guessGenesFormat();
+		if (geneDatabaseFormat == null) fatalError("Cannot guess database format.");
 
 		// Create factory
 		SnpEffPredictorFactory factory = null;

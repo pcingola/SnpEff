@@ -18,7 +18,7 @@ public class TestCasesFasta extends TestCase {
 	}
 
 	/**
-	 * Fasta file iterator should not crash if first line is empty
+	 * Bug: Fasta file iterator should not crash if first line is empty
 	 */
 	public void test_01() {
 		Gpr.debug("Test");
