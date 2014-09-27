@@ -703,6 +703,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
+	 * Return an Intron overlapoing position 'pos'
+	 */
+	public Intron findIntron(int pos) {
+		// Is 'pos' in intron?
+		for (Intron intron : introns())
+			if (intron.intersects(pos)) return intron;
+		return null;
+	}
+
+	/**
 	 * Find a CDS that matches exactly the exon
 	 */
 	public Cds findMatchingCds(Exon exon) {
@@ -716,7 +726,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * @return An UTR intersecting 'pos' (null if not found)
 	 */
 	public Utr findUtr(int pos) {
-		// Is it in UTR instead of CDS?
+		// Is it in UTR?
 		for (Utr utr : utrs)
 			if (utr.intersects(pos)) return utr;
 		return null;

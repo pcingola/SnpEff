@@ -80,8 +80,19 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		size = size - 1;
 		if (size < 0) return null;
 
-		if (isStrandPlus()) spliceSiteAcceptor = new SpliceSiteAcceptor(this, start - 1 - size, start - 1, strandMinus, id);
-		else spliceSiteAcceptor = new SpliceSiteAcceptor(this, end + 1, end + 1 + size, strandMinus, id);
+		int ssstart, ssend;
+		if (isStrandPlus()) {
+			ssstart = start - 1 - size;
+			ssend = start - 1;
+		} else {
+			ssstart = end + 1;
+			ssend = end + 1 + size;
+		}
+
+		Intron intron = ((Transcript) parent).findIntron(ssstart);
+		if (intron == null) return null;
+
+		spliceSiteAcceptor = new SpliceSiteAcceptor(intron, ssstart, ssend, strandMinus, id);
 
 		return spliceSiteAcceptor;
 	}
@@ -95,8 +106,19 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		size = size - 1;
 		if (size < 0) return null;
 
-		if (isStrandPlus()) spliceSiteDonor = new SpliceSiteDonor(this, end + 1, end + 1 + size, strandMinus, id);
-		else spliceSiteDonor = new SpliceSiteDonor(this, start - 1 - size, start - 1, strandMinus, id);
+		int ssstart, ssend;
+		if (isStrandPlus()) {
+			ssstart = end + 1;
+			ssend = end + 1 + size;
+		} else {
+			ssstart = start - 1 - size;
+			ssend = start - 1;
+		}
+
+		Intron intron = ((Transcript) parent).findIntron(ssstart);
+		if (intron == null) return null;
+
+		spliceSiteDonor = new SpliceSiteDonor(intron, ssstart, ssend, strandMinus, id);
 
 		return spliceSiteDonor;
 	}
@@ -274,7 +296,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 				+ "\t" + ssdId //
 				+ "\t" + ssaId //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
-		;
+				;
 	}
 
 	/**

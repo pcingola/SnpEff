@@ -1,6 +1,8 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
 import ca.mcgill.mcb.pcingola.interval.Intron;
+import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
@@ -73,7 +75,7 @@ public class HgvsDna extends Hgvs {
 	 */
 	protected String pos() {
 		// Intron
-		if (variantEffect.isIntron()) {
+		if (variantEffect.isIntron() || variantEffect.isSpliceSiteCore()) {
 			int start, end;
 
 			switch (variant.getVariantType()) {
@@ -165,8 +167,14 @@ public class HgvsDna extends Hgvs {
 	 * Intronic position
 	 */
 	protected String posIntron(int pos) {
-		Intron intron = (Intron) variantEffect.getMarker();
-		if (intron == null) return null;
+		Marker marker = variantEffect.getMarker();
+		Intron intron = (Intron) marker.findParent(Intron.class);
+		if (intron == null) {
+			Gpr.debug("variantEffect: " + variantEffect //
+					+ "\n\tMarker: " + variantEffect.getMarker() //
+			);
+			return null;
+		}
 
 		// Jump to closest exon position
 		// Ref:
