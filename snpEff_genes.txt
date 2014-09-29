@@ -1,4 +1,0 @@
-# The following table is formatted as tab separated values. 
-#GeneId	GeneName	BioType	Bases affected (GENE)	Total score (GENE)	Length (GENE)	Bases affected (INTRON)	Total score (INTRON)	Length (INTRON)	Bases affected (SPLICE_SITE_DONOR)	Total score (SPLICE_SITE_DONOR)	Length (SPLICE_SITE_DONOR)	Count (intron_variant)	Count (splice_donor_variant)
-ENSG00000012048	BRCA1	protein_coding	0	0	81189	0	0	72911	0	0	426	0	0
-ENSG00000139618	BRCA2	protein_coding	1	0	84195	1	0	72926	1	0	439	1	1
