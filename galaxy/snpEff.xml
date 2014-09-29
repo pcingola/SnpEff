@@ -18,13 +18,11 @@ $motif
 
 		<param name="inputFormat" type="select" label="Input format">
 			<option value="vcf" selected="true">VCF</option>
-			<option value="txt">Tabular</option>
 			<option value="bed">BED</option>
 		</param>
 
 		<param name="outputFormat" type="select" label="Output format">
 			<option value="vcf" selected="true">VCF</option>
-			<option value="txt">Tabular</option>
 			<option value="bed">BED</option>
 			<option value="bedAnn">BED Annotations</option>
 			<option value="gatk">VCF (GATK compatible)</option>
@@ -57,7 +55,6 @@ $motif
 	<outputs>
 		<data format="tabular" name="snpeff_output" >
 			<change_format>
-				<when input="outputFormat" value="txt" format="tabular" />
 				<when input="outputFormat" value="vcf" format="vcf" />
 				<when input="outputFormat" value="bed" format="bed" />
 				<when input="outputFormat" value="bedAnn" format="bed" />
