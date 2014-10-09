@@ -166,7 +166,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-						);
+				);
 			}
 		}
 	}
@@ -240,7 +240,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-					);
+			);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -628,14 +628,12 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
-				) {
+		) {
 			command = args[argNum++].trim().toLowerCase();
-		} else {
-			command = "eff"; // Default command is 'eff'
 		}
 
 		//---
-		// Copy and parse args, except initial 'command'
+		// Copy and parse arguments, except initial 'command'
 		//---
 		ArrayList<String> argsList = new ArrayList<String>();
 		for (int i = argNum; i < args.length; i++) {
@@ -653,8 +651,10 @@ public class SnpEff implements CommandLine {
 					if ((i + 1) < args.length) dataDir = args[++i];
 					else usage("Option '-dataDir' without data_dir argument");
 				} else if (arg.equalsIgnoreCase("-download")) download = true; // Download genome if not locally available
-				else if (arg.equals("-h") || arg.equalsIgnoreCase("-help")) help = true;
-				else if (arg.equalsIgnoreCase("-interval")) {
+				else if (arg.equals("-h") || arg.equalsIgnoreCase("-help")) {
+					help = true;
+					if (command.isEmpty()) usage(null); // Help was invoked without a specific command: Show generic help
+				} else if (arg.equalsIgnoreCase("-interval")) {
 					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
 					else usage("Option '-interval' without config interval_file argument");
 				} else if (arg.equalsIgnoreCase("-motif")) motif = true; // Use motif database
@@ -699,6 +699,8 @@ public class SnpEff implements CommandLine {
 		}
 
 		shiftArgs = argsList.toArray(new String[0]);
+
+		if (command.isEmpty()) command = "eff"; // Default command is 'eff'
 	}
 
 	/**
