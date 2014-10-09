@@ -166,6 +166,18 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		comp = getEffectType().compareTo(variantEffect.getEffectType());
 		if (comp != 0) return comp;
 
+		// Canonical transcript first
+		Transcript trThis = getTranscript();
+		Transcript trOther = variantEffect.getTranscript();
+		if (trThis != null && trOther != null && !(trThis.isCanonical() && trOther.isCanonical())) {
+			// Both transcript are canonical? (e.g. different genes) 
+			// => Cannot compare		
+		} else {
+			// Canonical transcript first
+			if (trThis != null && trThis.isCanonical()) return -1;
+			if (trOther != null && trOther.isCanonical()) return +1;
+		}
+
 		// Sort by genomic coordinate of affected 'marker'
 		if ((getMarker() != null) && (variantEffect.getMarker() != null)) return getMarker().compareTo(variantEffect.getMarker());
 
@@ -474,7 +486,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -525,13 +537,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
-				;
+		;
 	}
 
 	public boolean isSpliceSiteCore() {
 		return hasEffectType(EffectType.SPLICE_SITE_DONOR) //
 				|| hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
-				;
+		;
 	}
 
 	public boolean isUtr3() {
@@ -686,7 +698,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-				;
+		;
 	}
 
 	/**

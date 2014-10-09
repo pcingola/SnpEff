@@ -36,9 +36,11 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	private static final long serialVersionUID = -2665025617916107311L;
 
 	boolean proteinCoding; // Is this a protein-coding transcript?
+	boolean canonical; // Is this a canonical transcript?
 	int cdsStart, cdsEnd;
 	String bioType = ""; // Transcript biotype
 	String cds; // Coding sequence
+	String mRna; // mRna sequence (includes 5'UTR and 3'UTR)
 	String protein; // Protein sequence
 	ArrayList<SpliceSiteBranch> spliceBranchSites; // Branch splice sites
 	ArrayList<Utr> utrs; // UTRs
@@ -904,7 +906,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
@@ -1065,7 +1067,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
@@ -1129,6 +1131,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	@Override
 	protected boolean isAdjustIfParentDoesNotInclude(Marker parent) {
 		return true;
+	}
+
+	public boolean isCanonical() {
+		return canonical;
 	}
 
 	/**
@@ -1288,7 +1294,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Retrieve coding sequence AND the UTRs (mRNA = 5'UTR + CDS + 3'UTR)
 	 * I.e. Concatenate all exon sequences
 	 */
-	public String mRna() {
+	public synchronized String mRna() {
+		if (mRna != null) return mRna;
+
 		List<Exon> exons = sortedStrand();
 
 		// Concatenate all exons
@@ -1296,7 +1304,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Exon ex : exons)
 			sequence.append(ex.getSequence());
 
-		return sequence.toString();
+		mRna = sequence.toString();
+		return mRna;
 	}
 
 	/**
@@ -1443,7 +1452,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
 				+ "\t" + markerSerializer.save((Iterable) spliceBranchSites)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1452,6 +1461,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	public void setBioType(String bioType) {
 		this.bioType = bioType;
+	}
+
+	public void setCanonical(boolean canonical) {
+		this.canonical = canonical;
 	}
 
 	public void setDnaCheck(boolean dnaCheck) {

@@ -1015,18 +1015,52 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				<br>
 				There are several reasons for this:
 				<ul>
-					<li> A variant can affect multiple genes. E.g a variant can be DOWNSTREAM from one gene and UPSTREAM from another gene.
-					<li> In complex organisms, genes usually have multiple transcripts. So SnpEff reports the effect of a variant on each transcript.
+					<li> A variant can affect multiple genes. E.g a variant can be DOWNSTREAM from one gene and UPSTREAM from another gene. E.g.:
+					<li> In complex organisms, genes usually have multiple transcripts. So SnpEff reports the effect of a variant on each transcript.<br>
+						E.g.: 
+<pre>
+#CHROM  POS       ID   REF  ALT    QUAL  FILTER  INFO                    
+1       889455    .    G    A      .     .       .
+</pre>
+						In this case SnpEff will report the effect of each variant on each gene and each transcript (output edited for readibility):
+<pre>
+#CHROM  POS     ID   REF  ALT  QUAL FILTER   INFO
+1       889455  .    G    A    .    .        EFF=stop_gained(HIGH|NONSENSE|Cag/Tag|p.Gln236*/c.706C>T|749|NOC2L|protein_coding|CODING|ENST00000327044|7|1)
+                                                 ,downstream_gene_variant(MODIFIER||351|||NOC2L|processed_transcript|CODING|ENST00000487214||1)
+                                                 ,downstream_gene_variant(MODIFIER||4171|||NOC2L|retained_intron|CODING|ENST00000469563||1)
+                                                 ,non_coding_exon_variant(MODIFIER|||n.2153C>T||NOC2L|retained_intron|CODING|ENST00000477976|5|1)
+</pre>
 					<li> A VCF line can have more then one variant. 
-						 For instance if reference genome is 'G', but the sample has either 'A' or 'T', then this will be reported as one line, having multiple alternative variants. 
-						 E.g.: 
+						 E.g. If reference genome is 'G', but the sample has either 'A' or 'T' (non-biallelic variant), then this will be reported as one VCF line, having multiple alternative variants (notice that there are two ALTs): 
 <pre>
 #CHROM  POS       ID   REF  ALT      QUAL  FILTER  INFO                    
-1       889455    .    G    A,T      .     .       AF=0.0005
+1       889455    .    G    A,T      .     .       .
 </pre>
-						In this case SnpEff will report the effect of each variant on each gene and each transcript.
+						In this case SnpEff will report the effect of each ALT on each gene and each transcript. 
+						Notice that ENST00000327044 has a <code>stop_gained</code> variant (ALT = 'A') and a <code>missense_variant</code> (ALT = 'T')
+<pre>
+#CHROM  POS      ID    REF  ALT    QUAL FILTER    INFO
+1       889455   .     G    A,T    .    .         EFF=stop_gained(HIGH|NONSENSE|Cag/Tag|p.Gln236*/c.706C>T|749|NOC2L|protein_coding|CODING|ENST00000327044|7|1)
+                                                      ,missense_variant(MODERATE|MISSENSE|Cag/Aag|p.Gln236Lys/c.706C>A|749|NOC2L|protein_coding|CODING|ENST00000327044|7|2)
+                                                      ,downstream_gene_variant(MODIFIER||351|||NOC2L|processed_transcript|CODING|ENST00000487214||1)
+                                                      ,downstream_gene_variant(MODIFIER||351|||NOC2L|processed_transcript|CODING|ENST00000487214||2)
+                                                      ,downstream_gene_variant(MODIFIER||4171|||NOC2L|retained_intron|CODING|ENST00000469563||1)
+                                                      ,downstream_gene_variant(MODIFIER||4171|||NOC2L|retained_intron|CODING|ENST00000469563||2)
+                                                      ,non_coding_exon_variant(MODIFIER|||n.2153C>T||NOC2L|retained_intron|CODING|ENST00000477976|5|1)
+                                                      ,non_coding_exon_variant(MODIFIER|||n.2153C>A||NOC2L|retained_intron|CODING|ENST00000477976|5|2)
+</pre>
+
+
 				</ul>
 				</p>
+
+				<b>Effect sort order</b>. When multiple effects are reported, SnpEff sorts the effects the following way:
+				<ol>
+					<li> Putative impact: Effects having higher putative impact are first.
+					<li> Effect type: Effects assumed to be more deleterious effects first.
+					<li> Canonical trancript before non-canonical.
+					<li> Marker genomic coordinates (e.g. genes starting before first).
+				</ol>
 
             	<h3>Effect prediction details</h3>
 				<p class="lead">

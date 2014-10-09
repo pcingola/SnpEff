@@ -99,16 +99,30 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 */
 	public Transcript canonical() {
 		Transcript canonical = null;
+		int canonicalLen = 0;
 
 		if (isProteinCoding()) {
 			// Find canonical transcript (longest CDS)
-			for (Transcript t : this)
-				if (t.isProteinCoding() && ((canonical == null) || (canonical.cds().length() < t.cds().length()))) canonical = t;
+			for (Transcript t : this) {
+				int tlen = t.cds().length();
+				if (t.isProteinCoding() && (canonicalLen < tlen)) {
+					canonical = t;
+					canonicalLen = tlen;
+				}
+			}
 		} else {
-			// Find canonical transcript (longest cDNA)
-			for (Transcript t : this)
-				if ((canonical == null) || (canonical.cds().length() < t.cds().length())) canonical = t;
+			// Find canonical transcript (longest mRNA)
+			for (Transcript t : this) {
+				int tlen = t.mRna().length();
+				if (canonicalLen < tlen) {
+					canonical = t;
+					canonicalLen = tlen;
+				}
+			}
 		}
+
+		// Found canonincal transcript? Set canonical flag
+		if (canonical != null) canonical.setCanonical(true);
 
 		return canonical;
 	}
