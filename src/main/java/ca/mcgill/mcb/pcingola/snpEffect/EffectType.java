@@ -345,10 +345,10 @@ public enum EffectType {
 			return "splice_region_variant";
 
 		case SPLICE_SITE_BRANCH:
-			return "splice_region_variant";
+			return "splice_branch_variant";
 
 		case SPLICE_SITE_BRANCH_U12:
-			return "splice_region_variant";
+			return "splice_branch_variant";
 
 		case START_LOST:
 			return "start_lost";

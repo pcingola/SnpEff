@@ -3,7 +3,6 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
@@ -47,20 +46,22 @@ public class TestCasesZzz extends TestCase {
 		return list;
 	}
 
-	/**
-	 * Test output order: Canonical first
-	 */
-	public void test_01_canonical() {
+	public void test_03() {
 		Gpr.debug("Test");
-		List<VcfEntry> vcfEntries = snpEffect("testHg3775Chr8", "tests/eff_sort_canon.vcf", null);
+		String genomeName = "testHg3775Chr1";
+		String vcf = "tests/gatk_NO_splice_regions.vcf";
+		String args[] = { "eff", "-noLog", "-o", "gatk" };
+		List<VcfEntry> vcfEntries = snpEffect(genomeName, vcf, args);
 
-		// Only one entry in this file
-		Assert.assertEquals(1, vcfEntries.size());
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve);
 
-		VcfEntry ve = vcfEntries.get(0);
-		VcfEffect veff = ve.parseEffects().get(0);
+			for (VcfEffect veff : ve.parseEffects()) {
+				if (verbose) System.out.println("\t'" + veff.getEffectsStr() + "'\t" + veff);
+				if (veff.getEffectsStr().indexOf("SPLICE_SITE_REGION") >= 0) throw new RuntimeException("Splice region effects should not present in GATK compatible mode");
+			}
+		}
 
-		Assert.assertEquals("ENST00000456015", veff.getTranscriptId());
 	}
 
 }

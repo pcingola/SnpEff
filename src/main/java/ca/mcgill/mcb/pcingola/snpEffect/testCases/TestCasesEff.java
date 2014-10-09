@@ -119,4 +119,26 @@ public class TestCasesEff extends TestCase {
 		String args[] = { "-csvStats" };
 		snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
 	}
+
+	/**
+	 * GATK mode should not have SPLICE_REGION (it is currently not supported)
+	 */
+	public void test_05() {
+		Gpr.debug("Test");
+		String genomeName = "testHg3775Chr1";
+		String vcf = "tests/gatk_NO_splice_regions.vcf";
+		String args[] = { "eff", "-noLog", "-o", "gatk" };
+		List<VcfEntry> vcfEntries = snpEffect(genomeName, vcf, args);
+
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve);
+
+			for (VcfEffect veff : ve.parseEffects()) {
+				if (verbose) System.out.println("\t'" + veff.getEffectsStr() + "'\t" + veff);
+				if (veff.getEffectsStr().indexOf("SPLICE_SITE_REGION") >= 0) throw new RuntimeException("Splice region effects should not present in GATK compatible mode");
+			}
+		}
+
+	}
+
 }
