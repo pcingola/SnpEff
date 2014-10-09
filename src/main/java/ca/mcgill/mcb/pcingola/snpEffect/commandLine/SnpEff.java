@@ -99,6 +99,9 @@ public class SnpEff implements CommandLine {
 	protected Boolean treatAllAsProteinCoding = null; // Only use coding genes. Default is 'null' which means 'auto'
 	protected int numWorkers = Gpr.NUM_CORES; // Max number of threads (if multi-threaded version is available)
 	protected int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE; // Splice site size default: 2 bases (canonical splice site)
+	protected int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
+	protected int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
+	protected int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
 	protected int upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH; // Upstream & downstream interval length
 	protected String configFile; // Config file
 	protected String dataDir; // Override data_dir in config file
@@ -166,7 +169,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-				);
+						);
 			}
 		}
 	}
@@ -240,7 +243,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+					);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -329,8 +332,11 @@ public class SnpEff implements CommandLine {
 		// Set upstream-downstream interval length
 		config.getSnpEffectPredictor().setUpDownStreamLength(upDownStreamLength);
 
-		// Set splice site size
+		// Set splice site/region sizes
 		config.getSnpEffectPredictor().setSpliceSiteSize(spliceSiteSize);
+		config.getSnpEffectPredictor().setSpliceRegionExonSize(spliceRegionExonSize);
+		config.getSnpEffectPredictor().setSpliceRegionIntronMin(spliceRegionIntronMin);
+		config.getSnpEffectPredictor().setSpliceRegionIntronMax(spliceRegionIntronMax);
 
 		// Filter canonical transcripts
 		if (canonical) {
@@ -628,7 +634,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
-		) {
+				) {
 			command = args[argNum++].trim().toLowerCase();
 		}
 

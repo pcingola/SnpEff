@@ -476,6 +476,10 @@ public class SnpEffCmdEff extends SnpEff {
 							useHgvs = false;
 							nextProt = false;
 							motif = false;
+
+							// GATK doesn't support SPLICE_REGION at the moment.
+							// Set parameters to zero so that splcie regions are not created.
+							spliceRegionExonSize = spliceRegionIntronMin = spliceRegionIntronMax = 0;
 						} else if (outFor.equals("BED")) {
 							outputFormat = OutputFormat.BED;
 							lossOfFunction = false;

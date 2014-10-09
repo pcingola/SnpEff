@@ -298,36 +298,36 @@ public class TestCasesIns extends TestCase {
 		}
 	}
 
-	//	/**
-	//	 * Insertion on minus strand
-	//	 */
-	//	public void test_02_InsOffByOne() {
-	//		Gpr.debug("Test");
-	//		String args[] = { "-classic", "testENST00000268124", "tests/ins_off_by_one.vcf" };
-	//
-	//		SnpEff cmd = new SnpEff(args);
-	//		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
-	//		snpeff.setVerbose(verbose);
-	//
-	//		List<VcfEntry> vcfEnties = snpeff.run(true);
-	//		for (VcfEntry ve : vcfEnties) {
-	//
-	//			// Get first effect (there should be only one)
-	//			List<VcfEffect> veffs = ve.parseEffects();
-	//			VcfEffect veff = veffs.get(0);
-	//
-	//			Assert.assertEquals("Q53QQ", veff.getAa());
-	//		}
-	//	}
-	//
-	//	public void test_03_InsVep() {
-	//		Gpr.debug("Test");
-	//		compareVep("testENST00000268124", "tests/testENST00000268124_ins_vep.vcf", "ENST00000268124");
-	//	}
-	//
-	//	public void test_04_InsVep() {
-	//		Gpr.debug("Test");
-	//		compareVep("testHg3770Chr22", "tests/testENST00000445220_ins_vep.vcf", "ENST00000445220");
-	//	}
+	/**
+	 * Insertion on minus strand
+	 */
+	public void test_02_InsOffByOne() {
+		Gpr.debug("Test");
+		String args[] = { "-classic", "testENST00000268124", "tests/ins_off_by_one.vcf" };
+
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		snpeff.setVerbose(verbose);
+
+		List<VcfEntry> vcfEnties = snpeff.run(true);
+		for (VcfEntry ve : vcfEnties) {
+
+			// Get first effect (there should be only one)
+			List<VcfEffect> veffs = ve.parseEffects();
+			VcfEffect veff = veffs.get(0);
+
+			Assert.assertEquals("Q53QQ", veff.getAa());
+		}
+	}
+
+	public void test_03_InsVep() {
+		Gpr.debug("Test");
+		compareVep("testENST00000268124", "tests/testENST00000268124_ins_vep.vcf", "ENST00000268124");
+	}
+
+	public void test_04_InsVep() {
+		Gpr.debug("Test");
+		compareVep("testHg3770Chr22", "tests/testENST00000445220_ins_vep.vcf", "ENST00000445220");
+	}
 
 }
