@@ -166,10 +166,10 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		comp = getEffectType().compareTo(variantEffect.getEffectType());
 		if (comp != 0) return comp;
 
-		// Canonical transcript first
+		// Sort by canonical transcript
 		Transcript trThis = getTranscript();
 		Transcript trOther = variantEffect.getTranscript();
-		if (trThis != null && trOther != null && !(trThis.isCanonical() && trOther.isCanonical())) {
+		if (trThis != null && trOther != null && trThis.isCanonical() && trOther.isCanonical()) {
 			// Both transcript are canonical? (e.g. different genes) 
 			// => Cannot compare		
 		} else {

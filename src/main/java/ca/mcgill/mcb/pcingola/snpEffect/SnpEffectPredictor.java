@@ -89,7 +89,7 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-			) snpEffectPredictor.add(m);
+					) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}
@@ -118,7 +118,6 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Add a set of markers
-	 * @param markersToAdd
 	 */
 	public void addAll(Markers markersToAdd) {
 		for (Marker marker : markersToAdd)
@@ -146,11 +145,22 @@ public class SnpEffectPredictor implements Serializable {
 		//---
 		markers.add(createGenomicRegions());
 
+		// Mark canonical transcripts
+		canonical();
+
 		// Add all 'markers' to forest (includes custom intervals)
 		intervalForest.add(markers);
 
 		// Build interval forest
 		intervalForest.build();
+	}
+
+	/**
+	 * Make sure all genes have canonical transcripts
+	 */
+	void canonical() {
+		for (Gene g : genome.getGenes())
+			g.canonical();
 	}
 
 	/**

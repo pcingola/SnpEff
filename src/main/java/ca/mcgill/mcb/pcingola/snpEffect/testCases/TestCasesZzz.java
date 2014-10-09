@@ -1,11 +1,11 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
-
-import org.junit.Assert;
-
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -17,7 +17,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesZzz extends TestCase {
 
-	boolean debug = false;
+	boolean debug = true;
 	boolean verbose = false || debug;
 
 	public TestCasesZzz() {
@@ -25,36 +25,42 @@ public class TestCasesZzz extends TestCase {
 	}
 
 	/**
-	 * Using non-standard splice size (15 instead of 2)
-	 * may cause some HGVS annotations issues
+	 * Calculate snp effect for an input VCF file
 	 */
-	public void test_12_BRCA_Splice_15_Hgvs() {
-		Gpr.debug("Test");
-		int spliceSize = 15;
-		String genome = "test_BRCA";
-		String vcf = "tests/test_BRCA_splice_15.vcf";
+	public List<VcfEntry> snpEffect(String genome, String vcfFile, String otherArgs[]) {
+		// Arguments
+		ArrayList<String> args = new ArrayList<String>();
+		if (otherArgs != null) {
+			for (String a : otherArgs)
+				args.add(a);
+		}
+		args.add(genome);
+		args.add(vcfFile);
 
-		// Create SnpEff
-		String args[] = { genome, vcf };
-		SnpEffCmdEff snpeff = new SnpEffCmdEff();
-		snpeff.parseArgs(args);
-		snpeff.setDebug(debug);
-		snpeff.setVerbose(verbose);
-		snpeff.setSupressOutput(!verbose);
+		SnpEff cmd = new SnpEff(args.toArray(new String[0]));
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 
-		// The problem appears when splice site is large (in this example)
-		snpeff.setSpliceSiteSize(spliceSize);
-		snpeff.setUpDownStreamLength(0);
-
-		// Run & get result (single line)
-		List<VcfEntry> results = snpeff.run(true);
-		VcfEntry ve = results.get(0);
-
-		// Make sure the spleice site is annotatted as "c.1909+12delT" (instead of "c.1910delT")
-		boolean ok = false;
-		for (VcfEffect veff : ve.parseEffects())
-			ok |= veff.getTranscriptId().equals("ENST00000544455") && veff.getHgvsDna().equals("c.1909+12delT");
-
-		Assert.assertTrue(ok);
+		// Run command
+		List<VcfEntry> list = cmdEff.run(true);
+		return list;
 	}
+
+	/**
+	 * Test output order: Canonical first
+	 */
+	public void test_01_canonical() {
+		Gpr.debug("Test");
+		List<VcfEntry> vcfEntries = snpEffect("testHg3775Chr8", "tests/eff_sort_canon.vcf", null);
+
+		// Only one entry in this file
+		Assert.assertEquals(1, vcfEntries.size());
+
+		VcfEntry ve = vcfEntries.get(0);
+		VcfEffect veff = ve.parseEffects().get(0);
+
+		Assert.assertEquals("ENST00000456015", veff.getTranscriptId());
+	}
+
 }

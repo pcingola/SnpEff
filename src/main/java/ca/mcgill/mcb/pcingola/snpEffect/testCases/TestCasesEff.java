@@ -72,6 +72,22 @@ public class TestCasesEff extends TestCase {
 	}
 
 	/**
+	 * Test output order: Canonical first
+	 */
+	public void test_01_canonical() {
+		Gpr.debug("Test");
+		List<VcfEntry> vcfEntries = snpEffect("testHg3775Chr8", "tests/eff_sort_canon.vcf", null);
+
+		// Only one entry in this file
+		Assert.assertEquals(1, vcfEntries.size());
+
+		VcfEntry ve = vcfEntries.get(0);
+		VcfEffect veff = ve.parseEffects().get(0);
+
+		Assert.assertEquals("ENST00000456015", veff.getTranscriptId());
+	}
+
+	/**
 	 * Test GATK option: At most one effect per VCF entry
 	 */
 	public void test_02() {
