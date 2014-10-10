@@ -396,7 +396,7 @@ void zipCore() {
 	sys mkdir $dir
 
 	# Copy core files
-	sys cp -rvfL snpEff.config snpEff.jar SnpSift.jar examples galaxy scripts $dir
+	sys cp -RvfL snpEff.config snpEff.jar SnpSift.jar examples galaxy scripts $dir
 
 	# Change name to 'snpEff' (so that config file can be used out of the box)
 	sys mv $dir snpEff

@@ -1,7 +1,6 @@
 # SnpEff databases
 # List created using command: java -jar snpEff.jar databases
 # Version    Description
-chlamydomonas 	    chlamydomonas
 Acaryochloris_marina_MBIC11017_uid58167 	 Acaryochloris_marina_MBIC11017_uid58167   Acaryochloris_marina_MBIC11017_uid58167
 GCA_000018105.1.21 	 Acaryochloris_marina_mbic11017   GCA_000018105.1.21
 GCA_000018105.1.22 	 Acaryochloris_marina_mbic11017   GCA_000018105.1.22
@@ -12014,7 +12013,6 @@ hg38 	 Homo_sapiens   hg38
 hg38kg 	 Homo_sapiens   hg38kg
 GRCh37.GTEX 	 Homo_sapiens,   GRCh37.GTEX
 030312v2.21 	 Hordeum_vulgare   030312v2.21
-NC_009333.1 	 Human_herpesvirus_8_Kaposi_Sarooma_Herpes_Virus   NC_009333.1
 GCA_000271305.1.21 	 Hydrocarboniphaga_effusa_ap103   GCA_000271305.1.21
 GCA_000271305.1.22 	 Hydrocarboniphaga_effusa_ap103   GCA_000271305.1.22
 GCA_000171895.1.21 	 Hydrogenivirga_sp_128_5_r1_1   GCA_000171895.1.21
@@ -22806,6 +22804,7 @@ testHg3775Chr2 	 TestCase   testHg3775Chr2
 testHg3775Chr22 	 TestCase   testHg3775Chr22
 testHg3775Chr6 	 TestCase   testHg3775Chr6
 testHg3775Chr7 	 TestCase   testHg3775Chr7
+testHg3775Chr8 	 TestCase   testHg3775Chr8
 test_ENSG00000158062 	 TestCase   test_ENSG00000158062
 test_ENSG00000158062_spaces 	 TestCase   test_ENSG00000158062_spaces
 test_BRCA 	 TestCase_BRCA1_and_2   test_BRCA
@@ -24379,6 +24378,7 @@ cyanobacterium_UCYN_A_uid43697 	 cyanobacterium_UCYN_A_uid43697   cyanobacterium
 delta_proteobacterium_BABL1_uid230716 	 delta_proteobacterium_BABL1_uid230716   delta_proteobacterium_BABL1_uid230716
 gamma_proteobacterium_HdN1_uid51635 	 gamma_proteobacterium_HdN1_uid51635   gamma_proteobacterium_HdN1_uid51635
 halophilic_archaeon_DL31_uid72619 	 halophilic_archaeon_DL31_uid72619   halophilic_archaeon_DL31_uid72619
+puccinia_striiformis_pst-78 	 puccinia_striiformis_pst-78   puccinia_striiformis_pst-78
 secondary_endosymbiont_of_Ctenarytaina_eucalypti_uid172737 	 secondary_endosymbiont_of_Ctenarytaina_eucalypti_uid172737   secondary_endosymbiont_of_Ctenarytaina_eucalypti_uid172737
 secondary_endosymbiont_of_Heteropsylla_cubana_Thao2000_uid172738 	 secondary_endosymbiont_of_Heteropsylla_cubana_Thao2000_uid172738   secondary_endosymbiont_of_Heteropsylla_cubana_Thao2000_uid172738
 30c2c903 	 snpeff   30c2c903
