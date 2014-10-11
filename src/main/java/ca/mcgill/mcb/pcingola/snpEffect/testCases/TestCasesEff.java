@@ -152,4 +152,16 @@ public class TestCasesEff extends TestCase {
 		Assert.assertFalse(list.get(0).getInfoStr().isEmpty());
 	}
 
+	/**
+	 * Test an MNP at the end of the transcript: We should be able to annotate without throwing any error
+	 */
+	public void test_07() {
+		Gpr.debug("Test");
+		String args[] = {};
+		List<VcfEntry> list = snpEffect("testHg3775Chr10", "tests/mnp_deletion.vcf", args);
+
+		// We should be able to annotate this entry (if INFO is empty, something went wrong)
+		Assert.assertFalse(list.get(0).getInfoStr().isEmpty());
+	}
+
 }

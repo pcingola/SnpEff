@@ -18,7 +18,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesZzz extends TestCase {
 
-	boolean debug = false;
+	boolean debug = true;
 	boolean verbose = false || debug;
 
 	public TestCasesZzz() {
@@ -54,7 +54,7 @@ public class TestCasesZzz extends TestCase {
 	public void test_04() {
 		Gpr.debug("Test");
 		String args[] = {};
-		List<VcfEntry> list = snpEffect("testHg3775Chr15", "tests/mnp_insertion_at_transcript_end.vcf", args);
+		List<VcfEntry> list = snpEffect("testHg3775Chr10", "tests/mnp_deletion.vcf", args);
 
 		// We should be able to annotate this entry (if INFO is empty, something went wrong)
 		Assert.assertFalse(list.get(0).getInfoStr().isEmpty());

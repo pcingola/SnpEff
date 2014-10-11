@@ -105,10 +105,12 @@ public class CodonChangeDel extends CodonChange {
 		if (netCdsChange.isEmpty()) return "";
 
 		int after = netCdsChange.length() + codonStartIndex;
-		String codonsNew = codonsRef.substring(0, codonStartIndex) //
-				+ (codonsRef.length() > after ? codonsRef.substring(after) : "");
 
-		return codonsNew;
+		String prefix = codonsRef.length() >= codonStartIndex ? codonsRef.substring(0, codonStartIndex) : codonsRef;
+		String suffix = codonsRef.length() > after ? codonsRef.substring(after) : "";
+
+		String codonsAlt = prefix + suffix;
+		return codonsAlt;
 	}
 
 	/**

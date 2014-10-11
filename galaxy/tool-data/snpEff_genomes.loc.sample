@@ -22780,6 +22780,7 @@ testENST00000529892 	 Test   testENST00000529892
 testEgrandis 	 Test   testEgrandis
 testMacuminata 	 Test   testMacuminata
 testMaizeZmB73 	 Test   testMaizeZmB73
+test_ENST00000597499 	 Test   test_ENST00000597499
 test 	 TestCase   test
 testCase 	 TestCase   testCase
 testHg19Chr1 	 TestCase   testHg19Chr1
@@ -22800,6 +22801,7 @@ testHg3775Chr1 	 TestCase   testHg3775Chr1
 testHg3775Chr11 	 TestCase   testHg3775Chr11
 testHg3775Chr12 	 TestCase   testHg3775Chr12
 testHg3775Chr14 	 TestCase   testHg3775Chr14
+testHg3775Chr15 	 TestCase   testHg3775Chr15
 testHg3775Chr2 	 TestCase   testHg3775Chr2
 testHg3775Chr22 	 TestCase   testHg3775Chr22
 testHg3775Chr6 	 TestCase   testHg3775Chr6
