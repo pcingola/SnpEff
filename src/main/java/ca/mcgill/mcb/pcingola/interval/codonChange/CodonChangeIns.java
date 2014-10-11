@@ -25,8 +25,8 @@ public class CodonChangeIns extends CodonChange {
 	protected boolean codonChangeSingle(Exon exon) {
 		String netChange = variant.netChange(transcript.isStrandMinus());
 
-		codonsOld = codonsOld();
-		codonsNew = codonsNew();
+		codonsRef = codonsRef();
+		codonsAlt = codonsAlt();
 
 		EffectType effType = null;
 
@@ -56,7 +56,7 @@ public class CodonChangeIns extends CodonChange {
 			 * 		Insert 'TTT' pos 1:	ATT TAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Insert 'TTT' pos 2:	AAT TTA CCC GGG AAA CCC GGG AAA CCC GGG
 			 */
-			if (codonsNew.toUpperCase().startsWith(codonsOld.toUpperCase())) {
+			if (codonsAlt.toUpperCase().startsWith(codonsRef.toUpperCase())) {
 				/**
 				 *  May be the inserted base are equal to the old ones.
 				 *  E.g.
@@ -69,7 +69,7 @@ public class CodonChangeIns extends CodonChange {
 			}
 		}
 
-		effect(exon, effType, "", codonsOld, codonsNew, codonStartNum, codonStartIndex, false);
+		effect(exon, effType, "", codonsRef, codonsAlt, codonStartNum, codonStartIndex, false);
 
 		return true;
 	}
@@ -78,17 +78,19 @@ public class CodonChangeIns extends CodonChange {
 	 * Get new (modified) codons
 	 */
 	@Override
-	public String codonsNew() {
+	public String codonsAlt() {
 		// Inserts BEFORE base:
 		//		- In positive strand that is BEFORE pos
 		//		- In negative strand, that is AFTER pos
 		int idx = codonStartIndex + (transcript.isStrandMinus() ? 1 : 0);
 
 		// Insertion: Concatenate...
-		String codonsNew = codonsOld.substring(0, idx) // the first part of the codon
-				+ variant.netChange(transcript.isStrandMinus()) // insertion
-				+ codonsOld.substring(idx) // the last part of the codon
-		;
+		String prefix = codonsRef.length() >= idx ? codonsRef.substring(0, idx) : codonsRef; // First part of the codon
+		String netChange = variant.netChange(transcript.isStrandMinus()); // Insertion
+		String suffix = codonsRef.length() >= idx ? codonsRef.substring(idx) : ""; // last part of the codon
+
+		// New codon
+		String codonsNew = prefix + netChange + suffix;
 
 		return codonsNew;
 	}

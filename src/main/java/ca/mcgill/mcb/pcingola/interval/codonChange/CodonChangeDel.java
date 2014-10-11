@@ -36,8 +36,8 @@ public class CodonChangeDel extends CodonChange {
 			/**
 			 * An exon has been entirely removed
 			 */
-			codonsOld = "";
-			codonsNew = "";
+			codonsRef = "";
+			codonsAlt = "";
 			codonStartNum = codonStartIndex = -1;
 			effType = EffectType.EXON_DELETED;
 		} else if (netCdsChange.length() % CodonChange.CODON_SIZE != 0) {
@@ -49,8 +49,8 @@ public class CodonChangeDel extends CodonChange {
 			 * 		Delete 'AA' pos 1:	ACC CGG GAA ACC CGG GAA ACC CGG G
 			 * 		Delete 'AC' pos 2:	AAC CGG GAA ACC CGG GAA ACC CGG G
 			 */
-			codonsOld = codonsOld();
-			codonsNew = "";
+			codonsRef = codonsRef();
+			codonsAlt = "";
 			effType = EffectType.FRAME_SHIFT;
 		} else if (codonStartIndex == 0) {
 			/**
@@ -59,8 +59,8 @@ public class CodonChangeDel extends CodonChange {
 			 * 		Original:			AAA CCC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Delete 'AAA' pos 0:	CCC GGG AAA CCC GGG AAA CCC GGG
 			 */
-			codonsOld = codonsOld();
-			codonsNew = "";
+			codonsRef = codonsRef();
+			codonsAlt = "";
 			effType = EffectType.CODON_DELETION;
 		} else {
 			/**
@@ -70,10 +70,10 @@ public class CodonChangeDel extends CodonChange {
 			 * 		Delete 'AAC' pos 1:	ACC GGG AAA CCC GGG AAA CCC GGG
 			 * 		Delete 'ACC' pos 2:	AAC GGG AAA CCC GGG AAA CCC GGG
 			 */
-			codonsOld = codonsOld();
-			codonsNew = codonsNew();
+			codonsRef = codonsRef();
+			codonsAlt = codonsAlt();
 
-			if (codonsNew.isEmpty() || codonsOld.startsWith(codonsNew)) {
+			if (codonsAlt.isEmpty() || codonsRef.startsWith(codonsAlt)) {
 				/**
 				 * Note: It might happen that the last codon of the exon was deleted.
 				 *       In this case there is no 'CODON_CHANGE'
@@ -92,7 +92,7 @@ public class CodonChangeDel extends CodonChange {
 			}
 		}
 
-		effect(exon, effType, "", codonsOld, codonsNew, codonStartNum, codonStartIndex, false);
+		effect(exon, effType, "", codonsRef, codonsAlt, codonStartNum, codonStartIndex, false);
 
 		return true;
 	}
@@ -101,12 +101,12 @@ public class CodonChangeDel extends CodonChange {
 	 * Get new (modified) codons
 	 */
 	@Override
-	public String codonsNew() {
+	public String codonsAlt() {
 		if (netCdsChange.isEmpty()) return "";
 
 		int after = netCdsChange.length() + codonStartIndex;
-		String codonsNew = codonsOld.substring(0, codonStartIndex) //
-				+ (codonsOld.length() > after ? codonsOld.substring(after) : "");
+		String codonsNew = codonsRef.substring(0, codonStartIndex) //
+				+ (codonsRef.length() > after ? codonsRef.substring(after) : "");
 
 		return codonsNew;
 	}
@@ -115,7 +115,7 @@ public class CodonChangeDel extends CodonChange {
 	 * Get original codons in CDS
 	 */
 	@Override
-	public String codonsOld() {
+	public String codonsRef() {
 		if (netCdsChange.isEmpty()) return "";
 
 		int min = variant.getStart();

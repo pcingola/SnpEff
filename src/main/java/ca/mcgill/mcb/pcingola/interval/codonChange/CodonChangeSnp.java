@@ -25,11 +25,11 @@ public class CodonChangeSnp extends CodonChange {
 	@Override
 	protected boolean codonChangeSingle(Exon exon) {
 		// Get old and new codons
-		codonsOld = codonsOld();
-		codonsNew = codonsNew();
-		effect(exon, EffectType.CODON_CHANGE, "", codonsOld, codonsNew, codonStartNum, codonStartIndex, true);// Use a generic low priority variant, this allows 'setCodons' to override it
+		codonsRef = codonsRef();
+		codonsAlt = codonsAlt();
+		effect(exon, EffectType.CODON_CHANGE, "", codonsRef, codonsAlt, codonStartNum, codonStartIndex, true);// Use a generic low priority variant, this allows 'setCodons' to override it
 
-		if (codonsOld.isEmpty()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
+		if (codonsRef.isEmpty()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
 
 		return true;
 	}
@@ -38,11 +38,11 @@ public class CodonChangeSnp extends CodonChange {
 	 * Get new (modified) codons
 	 */
 	@Override
-	public String codonsNew() {
+	public String codonsAlt() {
 		// Was there a problem getting 'codonsOld'? => We cannot do anything
-		if (codonsOld.isEmpty()) return "";
+		if (codonsRef.isEmpty()) return "";
 
-		char codonChars[] = codonsOld.toLowerCase().toCharArray();
+		char codonChars[] = codonsRef.toLowerCase().toCharArray();
 		char snpBase = variant.netChange(transcript.isStrandMinus()).charAt(0);
 		codonChars[codonStartIndex] = Character.toUpperCase(snpBase);
 
@@ -54,7 +54,7 @@ public class CodonChangeSnp extends CodonChange {
 	 * Get original codons in CDS
 	 */
 	@Override
-	public String codonsOld() {
+	public String codonsRef() {
 		int numCodons = 1;
 
 		// Get CDS

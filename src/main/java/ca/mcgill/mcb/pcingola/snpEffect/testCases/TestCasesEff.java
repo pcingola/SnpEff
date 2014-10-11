@@ -14,7 +14,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  *
- * Test cases for cancer effect (difference between somatic an germline tissue)
+ * Test cases for other 'effect' issues
  *
  * @author pcingola
  */
@@ -138,7 +138,18 @@ public class TestCasesEff extends TestCase {
 				if (veff.getEffectsStr().indexOf("SPLICE_SITE_REGION") >= 0) throw new RuntimeException("Splice region effects should not present in GATK compatible mode");
 			}
 		}
+	}
 
+	/**
+	 * Test an MNP at the end of the transcript: We should be able to annotate without throwing any error
+	 */
+	public void test_06() {
+		Gpr.debug("Test");
+		String args[] = {};
+		List<VcfEntry> list = snpEffect("testHg3775Chr15", "tests/mnp_insertion_at_transcript_end.vcf", args);
+
+		// We should be able to annotate this entry (if INFO is empty, something went wrong)
+		Assert.assertFalse(list.get(0).getInfoStr().isEmpty());
 	}
 
 }

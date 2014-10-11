@@ -29,8 +29,8 @@ public class CodonChange {
 	VariantEffects variantEffects;
 	int codonStartNum = -1;
 	int codonStartIndex = -1;
-	String codonsOld = ""; // Old codons (before change)
-	String codonsNew = ""; // New codons (after change)
+	String codonsRef = ""; // REF codons (without variant)
+	String codonsAlt = ""; // ALT codons (after variant is applied)
 	String netCdsChange = "";
 
 	/**
@@ -144,7 +144,7 @@ public class CodonChange {
 		// We may have to calculate 'netCdsChange', which is the effect on the CDS
 		netCdsChange = netCdsChange();
 		if (requireNetCdsChange && netCdsChange.isEmpty()) { // This can happen on mixed changes where the 'InDel' part lies outside the transcript's exons
-			codonsOld = codonsNew = "";
+			codonsRef = codonsAlt = "";
 			return;
 		}
 
@@ -202,21 +202,21 @@ public class CodonChange {
 	/**
 	 * Calculate new codons
 	 */
-	public String codonsNew() {
+	public String codonsAlt() {
 		throw new RuntimeException("Unimplemented method for this thype of CodonChange: " + this.getClass().getSimpleName());
 	}
 
 	/**
-	 * Calculate old codons
+	 * Calculate 'reference' codons
 	 */
-	public String codonsOld() {
-		return codonsOld(1);
+	public String codonsRef() {
+		return codonsRef(1);
 	}
 
 	/**
-	 * Calculate old codons
+	 * Calculate 'reference' codons
 	 */
-	protected String codonsOld(int numCodons) {
+	protected String codonsRef(int numCodons) {
 		String cds = transcript.cds();
 		String codon = "";
 
@@ -283,7 +283,7 @@ public class CodonChange {
 
 		sb.append("Transcript : " + transcript.getId() + "\n");
 		sb.append("Variant    : " + variant + "\n");
-		sb.append("Codonss    : " + codonsOld + "/" + codonsNew + "\tnum: " + codonStartNum + "\tidx: " + codonStartIndex + "\n");
+		sb.append("Codonss    : " + codonsRef + "/" + codonsAlt + "\tnum: " + codonStartNum + "\tidx: " + codonStartIndex + "\n");
 		sb.append("Effects    :\n");
 		for (VariantEffect veff : variantEffects)
 			sb.append("\t" + veff.getEffectTypeString(false) + "\t" + veff.getCodonsOld() + "/" + veff.getCodonsNew() + "\t" + veff.getAaOld() + "/" + veff.getAaNew() + "\n");
