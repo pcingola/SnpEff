@@ -22798,6 +22798,7 @@ testHg3770Chr22 	 TestCase   testHg3770Chr22
 testHg3771Chr1 	 TestCase   testHg3771Chr1
 testHg3773Chr3 	 TestCase   testHg3773Chr3
 testHg3775Chr1 	 TestCase   testHg3775Chr1
+testHg3775Chr10 	 TestCase   testHg3775Chr10
 testHg3775Chr11 	 TestCase   testHg3775Chr11
 testHg3775Chr12 	 TestCase   testHg3775Chr12
 testHg3775Chr14 	 TestCase   testHg3775Chr14

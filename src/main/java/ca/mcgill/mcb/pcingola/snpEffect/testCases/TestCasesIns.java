@@ -99,6 +99,7 @@ public class TestCasesIns extends TestCase {
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setSupressOutput(!verbose);
 
 		List<VcfEntry> vcfEnties = cmdEff.run(true);
 		for (VcfEntry ve : vcfEnties) {
@@ -109,7 +110,7 @@ public class TestCasesIns extends TestCase {
 			boolean ok = false;
 			for (VcfEffect veff : ve.parseEffects()) {
 				// Find transcript
-				if (veff.getTranscriptId().equals(trId)) {
+				if (veff.getTranscriptId() != null && veff.getTranscriptId().equals(trId)) {
 					// Check that reported effect is the same
 					String vep = ve.getInfo("EFF_V");
 					String eff = veff.getEffectType().toString();
@@ -307,6 +308,7 @@ public class TestCasesIns extends TestCase {
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		snpeff.setSupressOutput(!verbose);
 		snpeff.setVerbose(verbose);
 
 		List<VcfEntry> vcfEnties = snpeff.run(true);
