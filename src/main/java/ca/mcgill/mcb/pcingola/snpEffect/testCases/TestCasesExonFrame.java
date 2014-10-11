@@ -111,16 +111,16 @@ public class TestCasesExonFrame extends TestCase {
 	 */
 	public void test_02() {
 		Gpr.debug("Test");
-		//---
+
 		// Build database
-		//---
 		String genomeName = "testMacuminata";
 		String args[] = { "build", "-noLog", genomeName };
 
-		SnpEff snpEff = new SnpEff(args);
-		snpEff.setVerbose(verbose);
-		snpEff.setSupressOutput(!verbose);
-		boolean ok = snpEff.run();
-		Assert.assertTrue(ok);
+		throw new RuntimeException("Test commented out: Restore 'testMacuminata' data!");
+		//		SnpEff snpEff = new SnpEff(args);
+		//		snpEff.setVerbose(verbose);
+		//		snpEff.setSupressOutput(!verbose);
+		//		boolean ok = snpEff.run();
+		//		Assert.assertTrue(ok);
 	}
 }
