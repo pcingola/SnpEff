@@ -490,9 +490,7 @@ public class TestCasesVcf extends TestCase {
 			if (start != ve.getStart()) throw new RuntimeException("Start position should be " + start + " instead of " + ve.getStart() + "\n" + ve);
 			if (!ve.getVariantType().toString().equals(ve.getInfo("Type"))) throw new RuntimeException("Variant type should be '" + ve.getInfo("Type") + "' instead of '" + ve.getVariantType() + "'\n" + ve);
 
-			if (verbose) {
-				System.out.println(ve + "\n\t\tSize   : " + ve.size() + "\n\t\tVariant: " + ve.isVariant() + "\n\t\tType   : " + ve.getVariantType() + "\n");
-			}
+			if (verbose) System.out.println(ve + "\n\t\tSize   : " + ve.size() + "\n\t\tVariant: " + ve.isVariant() + "\n\t\tType   : " + ve.getVariantType() + "\n");
 
 			start += ve.size();
 		}
@@ -509,6 +507,7 @@ public class TestCasesVcf extends TestCase {
 		// Prepare a command line
 		String args[] = { "-noLog", genomeName, vcfFileName };
 		SnpEff snpEff = new SnpEff(args);
+		snpEff.setSupressOutput(!verbose);
 		snpEff.setVerbose(verbose);
 		snpEff.setDebug(debug);
 
