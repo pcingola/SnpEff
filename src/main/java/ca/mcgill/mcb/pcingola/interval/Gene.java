@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.stats.ObservedOverExpectedCpG;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Interval for a gene, as well as transcripts
@@ -232,16 +234,26 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	/**
 	 * Remove unverified or corrected transcripts
+	 * @return : True if ALL transcripts have been removed
 	 */
-	public void removeUnverified() {
+	public boolean removeUnverified() {
 		// Mark unchecked transcripts for deletion
 		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
+
+		int countRemoved = 0;
 		for (Transcript t : this)
-			if (!t.isChecked() || t.isCorrected()) toDelete.add(t);
+			if (!t.isChecked() || t.isCorrected()) {
+				toDelete.add(t);
+				countRemoved++;
+			}
+
+		if (Config.get().isDebug()) Gpr.debug("Gene '', removing " + countRemoved + " / " + numChilds() + " unchecked transcript.");
 
 		// Remove
 		for (Transcript t : toDelete)
 			remove(t);
+
+		return numChilds() <= 0;
 	}
 
 	/**

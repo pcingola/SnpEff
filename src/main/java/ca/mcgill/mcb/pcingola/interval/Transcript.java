@@ -1110,19 +1110,19 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return introns;
 	}
 
-	/**
-	 * Return the intron size for intron number 'intronNum'
-	 *
-	 * Note: Intron number 'N' is the intron between exon number N and exon number N+1
-	 * Note: Numbering is zero-based (not to be confused with exon 'ranking', which is one-based)
-	 */
-	public int intronSize(int intronNum) {
-		if (intronNum >= (numChilds() - 1)) return -1;
-		ArrayList<Exon> exons = (ArrayList<Exon>) sortedStrand();
-		Exon exon = exons.get(intronNum);
-		Exon next = exons.get(intronNum + 1);
-		return (isStrandPlus() ? (next.getStart() - exon.getEnd()) : (exon.getStart() - next.getEnd())) - 1;
-	}
+	//	/**
+	//	 * Return the intron size for intron number 'intronNum'
+	//	 *
+	//	 * Note: Intron number 'N' is the intron between exon number N and exon number N+1
+	//	 * Note: Numbering is zero-based (not to be confused with exon 'ranking', which is one-based)
+	//	 */
+	//	public int intronSize(int intronNum) {
+	//		if (intronNum >= (numChilds() - 1)) return -1;
+	//		ArrayList<Exon> exons = (ArrayList<Exon>) sortedStrand();
+	//		Exon exon = exons.get(intronNum);
+	//		Exon next = exons.get(intronNum + 1);
+	//		return (isStrandPlus() ? (next.getStart() - exon.getEnd()) : (exon.getStart() - next.getEnd())) - 1;
+	//	}
 
 	public boolean isAaCheck() {
 		return aaCheck;

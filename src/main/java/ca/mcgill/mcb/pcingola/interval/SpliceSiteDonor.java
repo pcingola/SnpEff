@@ -4,10 +4,10 @@ import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 
 /**
  * Interval for a splice site donnor
- * 
- * Note: Splice sites donnor are defined as the first 2 bases of an intron 
+ *
+ * Note: Splice sites donnor are defined as the first 2 bases of an intron
  * Reference: http://en.wikipedia.org/wiki/RNA_splicing
- * 
+ *
  * @author pcingola
  *
  */

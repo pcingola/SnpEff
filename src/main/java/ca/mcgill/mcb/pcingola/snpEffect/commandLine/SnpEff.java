@@ -360,7 +360,9 @@ public class SnpEff implements CommandLine {
 		// Filter verified transcripts
 		if (strict) {
 			if (verbose) Timer.showStdErr("Filtering out non-verified transcripts.");
-			config.getSnpEffectPredictor().removeUnverified();
+			if (config.getSnpEffectPredictor().removeUnverified()) {
+				fatalError("All transcripts have been removed form every single gene!\nUsing strickt on this database leaves no information.");
+			}
 			if (verbose) Timer.showStdErr("done.");
 		}
 

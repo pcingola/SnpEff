@@ -484,10 +484,17 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Remove all unverified transcripts
+	 *
+	 * @return true if ALL genes had ALL transcripts removed (i.e. something
+	 * went wrong, like in cases where no transcript was checked during the
+	 * building process)
 	 */
-	public void removeUnverified() {
+	public boolean removeUnverified() {
+		boolean allRemoved = true;
 		for (Gene g : genome.getGenes())
-			g.removeUnverified();
+			allRemoved &= g.removeUnverified();
+
+		return allRemoved;
 	}
 
 	/**
