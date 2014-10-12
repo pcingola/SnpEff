@@ -116,7 +116,6 @@ public class TestCasesExonFrame extends TestCase {
 		String genomeName = "testMacuminata";
 		String args[] = { "build", "-noLog", genomeName };
 
-		throw new RuntimeException("Test commented out: Restore 'testMacuminata' data!");
 		//		SnpEff snpEff = new SnpEff(args);
 		//		snpEff.setVerbose(verbose);
 		//		snpEff.setSupressOutput(!verbose);
