@@ -79,7 +79,7 @@
           <li><a href="#input"><i class="icon-chevron-right"></i> Input &amp; output files </a></li>
           <li><a href="#cancer"><i class="icon-chevron-right"></i> Cancer samples </a></li>
           <li><a href="#effNc"><i class="icon-chevron-right"></i> Additional annotations </a></li>
-          <li><a href="#outputSummary"><i class="icon-chevron-right"></i> Output Summary file </a></li>
+          <li><a href="#outputSummary"><i class="icon-chevron-right"></i> Output Summary files </a></li>
           <li><a href="#trouble"><i class="icon-chevron-right"></i> Torubleshooting </a></li>
           <li><a href="#databases"><i class="icon-chevron-right"></i> Building databases</a></li>
           <li><a href="#databasesNc"><i class="icon-chevron-right"></i> Building databases: Regulatory and Non-coding</a></li>
@@ -1448,6 +1448,14 @@ $ java -Xmx4g -jar snpEff.jar -i bed BDGP5.69 chipSeq_peaks.bed
 				<p class="lead">
 				Here we describe details about annotating cancer samples.
 				</p>
+				<br>
+				<b>Single multi-sample VCF vs. multiple VCF files.</b> 
+				<br>
+				It is common practice, to have all samples in a single "multi-sample VCF file" (having two or more separate VCF files is highly discouraged). 
+				This is also the "gold standard" in cancer analysis standard, so all samples (both somatic and germline) should be in one VCF file.
+				<br>
+				SnpEff requires that you follow gold standard practices, thus requires a single multi-sample VCF (it is not possible to run cancer analysis using multiple VCF files).
+				<br>
 
 				<h3>Running in cancer analysis mode</h3>
 				Using the <code>-cancer</code> command line option, you can compare somatic vs germline samples. 
@@ -1458,6 +1466,7 @@ $ java -Xmx4g -jar snpEff.jar -i bed BDGP5.69 chipSeq_peaks.bed
 <pre>$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.eff.vcf </pre>
 
 				<br>
+
 				<h3>Representing cancer data</h3>
 				<p>
 				In a typical cancer sequencing experiment, we want to measure and annotate differences between germline (healthy) and somatic (cancer) tissue samples from the same patient.
@@ -1879,6 +1888,7 @@ $ grep -i TF_bind file.eff.vcf | ./scripts/vcfInfoOnePerLine.pl
 				This "stats" file is an HTML file which can be opened using a web browser.
 				You can find an example of a 'stats' file <a href="1kg.html"> here</a>.
 				</p>
+				<h3> HTML summary </h3>
 				<p>
 				The program performs some statistics and saves them to the file 'snpEff_summary.html' on the 
 				directory where snpEff is being executed. You can see the file, by opening it in your browser.
@@ -2028,6 +2038,8 @@ $ grep -i TF_bind file.eff.vcf | ./scripts/vcfInfoOnePerLine.pl
 				</table>
 				</center>
 				</p>
+
+				<h3> Gene counts summary </h3>
         </section>
 
         <!-- Troubleshooting
