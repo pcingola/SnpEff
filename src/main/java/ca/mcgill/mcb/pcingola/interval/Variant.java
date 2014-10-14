@@ -36,12 +36,11 @@ public class Variant extends Marker {
 
 	private static final long serialVersionUID = -2928105165111400441L;
 
-	VariantType variantType;
-
+	VariantType variantType; // Variant type
 	String ref; // Reference (i.e. original bases in the genome)
 	String alt; // Changed bases
-	boolean imprecise = false; // Imprecise variant: coordinates are not exact (E.g. see section "Encoding Structural Variants in VCF" from VCF spec. 4.1)
 	String genotype; // Genotype order number (in case there are multiple changes per entry (e.g. A VCF entry may encode multiple ALTs). Note: Genotype differences are coded as "2-1" meaning genotype 1 is used as reference and genotype 2 is used as ALT (e.g. somatic vs germline samples)
+	boolean imprecise = false; // Imprecise variant: coordinates are not exact (E.g. see section "Encoding Structural Variants in VCF" from VCF spec. 4.1)
 
 	/**
 	 * Create variants from ALT (which can be multiple values)

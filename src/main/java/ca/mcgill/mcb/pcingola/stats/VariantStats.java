@@ -249,8 +249,8 @@ public class VariantStats implements SamplingStats<Variant> {
 		if ((variant.getId() != null) && !variant.getId().isEmpty()) countNonEmptyId++;
 
 		// Count by change type
-		String changeType = variant.getVariantType().toString();
-		countByChangeType.inc(changeType); // Each type of changes
+		String variantType = variant.getVariantType().toString();
+		countByChangeType.inc(variantType); // Each type of changes
 
 		// SNP stats or InDel stats
 		if (variant.isVariant()) {
