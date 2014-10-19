@@ -906,7 +906,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-								);
+						);
 					} else {
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
@@ -1067,7 +1067,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-				;
+		;
 	}
 
 	/**
@@ -1175,8 +1175,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	public boolean isErrorProteinLength() {
 		if (!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) return false;
-		cds();
-		return (cds.length() % 3) != 0;
+		return (cds().length() % 3) != 0;
 	}
 
 	/**
@@ -1452,7 +1451,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
 				+ "\t" + markerSerializer.save((Iterable) spliceBranchSites)//
-				;
+		;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
