@@ -789,6 +789,20 @@ public class Gpr {
 		return sb.toString();
 	}
 
+	public static String toString(double vals[][]) {
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < vals.length; i++) {
+			sb.append("|");
+			for (int j = 0; j < vals[i].length; j++)
+				sb.append(" " + toString(vals[i][j]));
+
+			sb.append(" |\n");
+		}
+
+		return sb.toString();
+	}
+
 	public static String toString(double val) {
 		double aval = Math.abs(val);
 		if (aval < 1000000 && aval >= 100000.0) return String.format("% 6.2f", val);
