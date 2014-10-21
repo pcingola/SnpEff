@@ -293,6 +293,16 @@ public class Gpr {
 		return paints;
 	}
 
+	public static String head(Object o) {
+		StringBuilder sb = new StringBuilder();
+
+		String lines[] = o.toString().split("\n");
+		for (int i = 0; i < 10; i++)
+			sb.append(lines[i] + "\n");
+
+		return sb.toString();
+	}
+
 	public static StringBuffer inputStream2StringBuffer(InputStream inputStream) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -701,6 +711,16 @@ public class Gpr {
 		return t;
 	}
 
+	public static String tail(Object o) {
+		StringBuilder sb = new StringBuilder();
+
+		String lines[] = o.toString().split("\n");
+		for (int i = lines.length - 10; i < lines.length; i++)
+			sb.append(lines[i] + "\n");
+
+		return sb.toString();
+	}
+
 	/**
 	 * Write an object to a file
 	 * @param fileName: File to write
@@ -817,5 +837,23 @@ public class Gpr {
 		if (aval < 1.0 && aval >= 0.0000001) return String.format("% 1.7f", val);
 		if (val == 0.0) return String.format(" 0        ", val);
 		return String.format("% 1.3e", val);
+	}
+
+	public static String toStringHead(double vals[]) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[ ");
+
+		for (int i = 0; i < 10 && i < vals.length; i++) {
+			if (i > 0) sb.append(", ");
+			sb.append(toString(vals[i]));
+		}
+
+		double sum = 0;
+		for (int i = 0; i < vals.length; i++)
+			sum += vals[i];
+		sb.append("\tsum: " + sum);
+
+		sb.append(" ]");
+		return sb.toString();
 	}
 }
