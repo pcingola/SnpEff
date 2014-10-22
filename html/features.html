@@ -87,9 +87,8 @@
           </div>
 				<p class="lead"> Major features planned:
 				<ul>
-					<li> <b>Mixed variants:</b> Full support for MIXED variants: E.g. Some variants maybe a combination of Insertions, Deletions, SNPs or MNPs.
-					<li> <b>BCF</b>: Add support for BCF files (binary VCF)
-					<li> <b>Gene set enrichment analysis</b>: Algorithms for gene set enrichment analyss of sequencing variants (particularly for case control studies).
+					<li> <b>Standard VCF tags </b>: Create a standard annotation INFO tag for VCF files.
+					<li> <b>Unique VCF INFO fields</b>: INFO fields should be replaced instead of added (VCF spec. changed).
 				</ul>
 				</p>
         </section>
@@ -102,6 +101,47 @@
           </div>
 				<p class="lead"> Features by version</p>
 
+                <p class="lead"> <b> Version: 4.0 (2014-11).</b></p>
+                <ul>
+					<li> Consistent 'help' screen when using command line option <code>-h</code>
+                    <li> Effects sorted canonical transcripts first (for same level of effect / impact)
+					<li> Corrected problem on LOF annotations for gene names having spaces.
+				</ul>
+
+                <p class="lead"> <b> Version: 4.0 (2014-07).</b></p>
+                <ul>
+                    <li> HGVS notations (now is default)
+                    <li> Sequence Ontology terms (now by default)
+                    <li> SnpEff downloads databases automatically
+                    <li> Automatic third party databases downloads
+                    <li> Support for new genome versions (such as GRCh38 / hg38)
+                    <li> NextProt, Loss of function (LOF) and Nonsense mediated decay (MND) annotations by default
+                    <li> Improved protein coding transcript detection (when building databases)
+					<li> Full support for MIXED variants: E.g. Some variants maybe a combination of Insertions, Deletions, SNPs or MNPs.
+					<li> Major code refactoring
+					<li> SnpSift <code> annotate </code>: Improved annotate support.
+					<li> SnpSift <code> dbNsfp </code>: Several improvements on annotation methods.
+					<li> Added support for gVCF files
+                </ul>
+
+				<p class="lead"> <b> Version: 3.6 (2013-05-23).</b></p>
+                <ul>
+					<li> Improved support for MIXED variants: E.g. Some variants maybe a combination of Insertions, Deletions, SNPs or MNPs.
+                    <li> Improved HGVS notation
+					<li> SnpSift: <code>concordance</code>: Calculate concordance statistics between two VCF files (e.g. a sequencing and a chip-genotyping experiment)
+					<li> SnpSift: <code>vcfCheck</code> command (check VCF for seferal "common" problems)
+					<li> Moved to Java 7. mostly due to several problems in Java 6 libraries when reading bgzip files.
+                </ul>
+
+				<p class="lead"> <b> Version: 3.5 (2013-03-23).</b></p>
+                <ul>
+					<li> Improvements in cancer sample annotations
+					<li> Added <code>SPLICE_REGION</code> annotation
+					<li> SnpSift <code>private</code>: Annotate if a variant is "private" to a familly (or cohort)
+					<li> SnpSift: <code>ccs</code>: Case / control summary statistics (of annotated files).
+					<li> SnpSift <code> annotate </code>: Added tabix indexed files support. Automatic detection.
+                </ul>
+
 				<p class="lead"> <b> Version: 3.4 (2013-11-23).</b></p>
                 <ul>
                     <li> Automatic database download ("-download" option)
@@ -113,7 +153,6 @@
                     <li> Galaxy support: Improvements and bug fixes
                     <li> SnpSift: Better support for dbNSFP (v2.1)
                 </ul>
-              </p>
 
 				<p class="lead"> <b> Version: 3.3 (2013-06-12).</b></p>
                 <ul>
@@ -124,7 +163,6 @@
                     <li> SnpSift: GeneSet annotations
                     <li> SnpEff count: Genomic region statistics counting reads, variants, intervals, etc.
                 </ul>
-              </p>
 
 				<p class="lead"> <b> Version: 3.2 (2013-14-01).</b></p>
                 <ul>
