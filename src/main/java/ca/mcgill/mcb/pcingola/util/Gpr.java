@@ -809,6 +809,19 @@ public class Gpr {
 		return sb.toString();
 	}
 
+	public static String toString(boolean vals[]) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[ ");
+
+		for (int i = 0; i < vals.length; i++) {
+			if (i > 0) sb.append(", ");
+			sb.append(vals[i] ? '1' : '0');
+		}
+
+		sb.append(" ]");
+		return sb.toString();
+	}
+
 	public static String toString(double vals[][]) {
 		StringBuilder sb = new StringBuilder();
 
