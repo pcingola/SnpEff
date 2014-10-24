@@ -146,8 +146,10 @@
 				</address>
 				</p>
 				<br>
-				<p>
-				<b>Important:</b> A bug report should include the following information (in order to try to reproduce and fix the bug)
+				<p class="lead">
+				<b>Important:</b> In order to assess and fix the issue, I must be able to reproduce exactly the error condition. 
+									This means that I need the following information:
+				</p>
 				<table class="table table-striped">
 					<tr> <th> Item </th><th> Explanation </th><th> Example </th> </tr>
 					<tr> <td>What?</td><td> A clear explanation of the bug condition.<br>Please copy the full stack trace if one is available.</td><td> "a RuntimeException occurss when trying to annotate..." </td> </tr>
@@ -162,20 +164,19 @@
 				<br>
 				<b>Important tips:</b> 
 				<ul>
-					<li> Make sure you <b>attached</b> a minimal dataset to reproduce the error condition. For instance, a few VCF lines showing the problem are enough (sometimes one VCF line is enough), I don't need your full VCF file.
+					<li> Make sure you <b>attached</b> a minimal dataset to reproduce the error condition. 
+							For instance, a few VCF lines showing the problem are enough (sometimes one VCF line is enough), I don't need your full VCF file.
+
 					<li> Always send the data <b>attached</b>, even if it's only one VCF line. There are two reasons for this: 
 						i) many times the problem is a malformed line, which I can only asses if the data is attached, and 
 						ii) I receive many emails, so reformatting copied &amp; pasted lines is a waste of time.
-					<li> If you have to send large files, as sometimes happens with genome references, try uploading them to a server (e.g. Google Drive) and sending me a link. Also remember to compress them.
+
+					<li> If you have to send large files, as sometimes happens with genome references, try uploading them to a server (e.g. Google Drive) and sending me a link. 
+						Also remember to compress them.
+
+					<li> <b>Try SnpEff's latest version. </b>
+							SnpEff is updated often, may be the bug has already been corrected (e.g you are using version 3.1A, but I've already fixed it in version 3.1B). 
 				</ul>
-				<br>
-				<br>
-				<p> <b>Note:</b> Try SnpEff's latest version. SnpEff is updated often, may be the bug has already been corrected (e.g you are using version 3.1A, but I've already fixed it in version 3.1B). 
-					I know this may sound obvious, but I get many emails saying something like:
-					<p>
-					<blockquote><i>"...I'm using version 2.0.5 and I noticed the features implemented in version 3.6 don't work..." </i></blockquote>
-					</p>
-				</p>
 
         </section>
 
@@ -186,8 +187,6 @@
             <h1>4. Asking for help </h1>
           </div>
 				<p class="lead">
-				I always try to help people, but sometimes I'm too busy and I won't be able to answer your emails in due time and manner.
-				Apologies in advanced.<br>
 				Contact information:
 				<address>
 				  <strong><a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a>.</strong><br>
@@ -195,8 +194,10 @@
 				</address>
 				</p>
 				<br>
-				<p>
-				<b>Important:</b> A request for help, should include at least the following items:
+				<p class="lead">
+				<b>Important:</b> In order to assess and your problem precisely, I must be able to reproduce your example.
+									A request for help should include at least the following items:
+				</p>
 				<table class="table table-striped">
 					<tr> <th> Item </th><th> Explanation </th><th> Example </th> </tr>
 					<tr> <td>What?</td><td> A clear explanation of what you are trying to achieve </td><td> "I want to annotate variants... and then filter them to obtain..." </td> </tr>
@@ -213,18 +214,30 @@
 				<p>
 				<b>Note:</b> A few guidelines when asking for help...
 				<ul>
-					<li> <b>Read the documentation first.</b> Please make sure you've read the documentation before asking fo help. I know this is obvious, but a lot of people ask for questions in that are shown as examples in the documentation.
-							<p>
-							</p>
-					<li> <b>Use the latest version.</b> This may sound obvious, but there are a lot of requests that boil down to
-							<p>
-							<blockquote><i> "I'm using an obsolete verision and for some reason your latest feature is not there..." </i></blockquote>
-							</p>
+					<li> <b>Use the latest version.</b> SnpEff is updated often, may be the issue has already been corrected (e.g you are using version 3.1A, but I've already fixed it in version 3.1B). 
+
+					<li> <b>Read the documentation first.</b> Please make sure you've read the documentation before asking fo help. 
+							I know this is obvious, but a lot of people ask for questions in that are answered or shown as examples in the documentation.
+
+					<li> <b>If the documentation did not help.</b> I'm aware that the documentation is not always "easy reading" and I'm not Shakespeare. 
+							So let me know which part of the manual is cofusing, outdated or plain wrong.
+							I'm always trying to update and improve the docs.
+
 					<li> <b>Be polite.</b> Again, it may be obvious, but you cannot imagine the number of emails I get saying something like 
 							<blockquote><i> "I'm doing [something very wrong] and it doesn't work, so it' your fault because your program must have a bug!" </i></blockquote>
 							or sometimes
 							<blockquote><i>"You must drop everything you are doing and do my job for me right now!" </i></blockquote>
-					<li> <b>If I don't get back to you...</b> Do remind me if I don't get back to you within a few days. Sometimes I'm swamped with work or just out of town, a polite reminder helps.
+
+					<li> <b> Sometimes I'm too busy.</b> I always try to help people, but sometimes I'm too busy and I won't be able to answer your emails in due time and manner.
+							Apologies in advanced.<br>
+
+					<li> <b>If I don't get back to you...</b> Do remind me if I don't get back to you within a few days. 
+							Sometimes I'm swamped with work or just out of town, a polite reminder helps.
+							Keep in mind that this is not an invitation for you to spam me every single day because I didn't have time to answer your first email.
+
+					<li> <b> Don't ask for too much advice.</b> I don’t mind helping, I’ve been doing it forever.
+							However if you write me every day (or even many times a day) and need me to hold your hand for every step of your problem solving process, it is an abuse.
+							I can provide some pointers, but you cannot expect me to put my life on hold to help you solve your problem (and do it for free, obviously).
 				</ul>
 				</p>
         </section>
