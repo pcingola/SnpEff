@@ -187,7 +187,7 @@ public class MarkerSeq extends Marker {
 	 * Base at position 'pos' (genomic coordinates)
 	 */
 	public String basesAtPos(int pos, int len) {
-		int index = pos - start;
+		int index = isStrandPlus() ? pos - start : end - pos;
 		if (index < 0) return "";
 		return basesAt(index, len);
 	}
