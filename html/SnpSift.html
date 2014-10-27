@@ -1082,13 +1082,19 @@ $ java -jar SnpSift.jar gwasCat gwascatalog.txt test.vcf | tee test.gwas.vcf
 				The dbNSFP is an integrated database of functional predictions from multiple algorithms (SIFT, Polyphen2, LRT and MutationTaster, PhyloP and GERP++, etc.).
 				</p>
 				One of the main advantages is that you can annotate using multiple prediction tools with just one command.
-				<a href="https://sites.google.com/site/jpopgen/dbNSFP">Here</a> is the link to dbNSFP database website.
+				This allows for faster annotations.
+				<a href="https://sites.google.com/site/jpopgen/dbNSFP">Here</a> is the link to dbNSFP database website for more details.
 				<p>
 				<br>
 				<b>Database:</b> In order to annotate using dbNSFP, you need to download the dbNSFP database and the index file. 
-				dbNSFP is large (several GB) so it might take a while to download it.
-				As of SnpSift version 3.5, the dbNSFP file has to be <a href="http://samtools.sourceforge.net/tabix.shtml">tabix</a> indexed (i.e. block-gzipped + tabix). 
-				This allows for faster annotations.
+				dbNSFP is large (several GB) so it might take a while to download it. 
+				The database is compressed (block-gzip) and <a href="http://samtools.sourceforge.net/tabix.shtml">tabix</a> indexed, so two files are required (the data *.gz file and the *.gz.tbi index file).
+				<br>
+				<br>
+				<b>Automatic database download:</b> As of SnpSift version 4.0, the dbNSFP databse will be downloaded and stored the first time you use <code>SnpSift dbNSFP</code>.
+				You can also download it manually and specify the path to the dbNSFP files using the <code>-db</code> command line option.
+				<br>
+				<br>
 				You can download the files from SnpEff's site:
 				<ul>
 					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz"> here </a>
@@ -1101,13 +1107,9 @@ $ java -jar SnpSift.jar gwasCat gwascatalog.txt test.vcf | tee test.gwas.vcf
 				<br>
 				<br>
 <pre>
-# Donload database and tabix index files (you need to do this only once):
-# WARNING: The database file is large (over 5Gb)
-wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz
-wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi
-
 # Annotate using dbNSFP
-java -jar SnpSift.jar dbnsfp -v dbNSFP2.4.txt.gz myFile.vcf > myFile.annotated.vcf
+# Note that the fisr time you run the command, it will attempt to download the dbNSFP database.
+java -jar SnpSift.jar dbnsfp -v myFile.vcf > myFile.annotated.vcf
 </pre>
 
 				<br>
@@ -1133,6 +1135,31 @@ java -jar SnpSift.jar dbnsfp -v dbNSFP2.4.txt.gz myFile.vcf > myFile.annotated.v
 					<li> ESP6500_EA_AF
 				</ul>
 				</p>
+				<h3> dbNSFP manual download </h3> 
+				If you prefer to manually download dbNSFP (e.g. because you want to pre-install the database).
+				You can download the files from SnpEff's site:
+				<ul>
+					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz"> here </a>
+					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi"> here </a>
+				</ul>
+				</p>
+				<p>
+				Here is a command line example:
+				<br>
+				<br>
+<pre>
+# Donload database and tabix index files (you need to do this only once):
+# WARNING: The database file is large (over 5Gb)
+wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz
+wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi
+</pre>
+				<br>
+				Now when you annotate, remember to specify the path where you downloaded the dbNSFP file:
+				<br>
+<pre>
+# Annotate using dbNSFP
+java -jar SnpSift.jar dbnsfp -v -db path/to/my/dbNSFP2.4.txt.gz myFile.vcf > myFile.annotated.vcf
+</pre>
 				<p>
 				<h3> Building dbNSFP (for developers) </h3> 
 				<i class="icon-warning-sign"></i> Users do <b>NOT</b> need to do this, since a pre-indexed database can be downloaded from SnpSift's site (see previous sub-section).

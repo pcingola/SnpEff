@@ -66,8 +66,6 @@ public class FileIndexChrPos {
 
 	/**
 	 * Get chromosome info
-	 * @param line
-	 * @return
 	 */
 	String chromo(String line) {
 		if (line.startsWith("#")) return null;
