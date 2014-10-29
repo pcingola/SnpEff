@@ -648,10 +648,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		else {
 			// No annotations, we have to calculate
 			ac = 0;
-			for (VcfGenotype gen : this) {
-				int genCode = gen.getGenotypeCode();
-				if (genCode > 0) ac += genCode;
-			}
+			for (byte genCode : getGenotypesScores())
+				if (genCode > 0) ac += genCode; // Don't count '-1' (i.e. missing genotypes)
 		}
 
 		// How many samples (alleles) do we have?
@@ -791,7 +789,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (alts == null // No alts
 					|| (alts.length == 0) // Zero ALTs
 					|| (alts.length == 1 && (alts[0].isEmpty() || alts[0].equals("."))) // One ALT, but it's empty
-			) {
+					) {
 				variantType = VariantType.INTERVAL;
 			} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
 				if (ref.length() == 1) variantType = VariantType.SNP;
