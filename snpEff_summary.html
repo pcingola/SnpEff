@@ -145,7 +145,7 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Date </b> </td>
-		<td> 2014-10-29 18:25 </td>
+		<td> 2014-10-29 18:28 </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> SnpEff version </b> </td>
@@ -168,11 +168,11 @@ th a:active, th a:hover {
 	</tr>	
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of lines (input file) </b> </td>
-		<td> 1 </td>
+		<td> 2 </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants (before filter) </b> </td>
-		<td> 1 </td>
+		<td> 2 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of not variants <br>(i.e. reference equals alternative) </b> </td>
@@ -180,7 +180,7 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants processed <br> (i.e. after filter and non-variants) </b> </td>
-		<td> 1 </td>
+		<td> 2 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of known variants <br>(i.e. non-empty ID) </b> </td>
@@ -197,7 +197,7 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of effects </b> </td>
-		<td> 5 </td>
+		<td> 9 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome total length </b> </td>
@@ -209,7 +209,7 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Variant rate </b> </td>
-		<td> 1 variant every 51,304,566 bases </td>
+		<td> 1 variant every 25,652,283 bases </td>
 	</tr>
 </table>
 <p>
@@ -230,14 +230,14 @@ th a:active, th a:hover {
 		<tr>
 			<td> 22 </td>
 			<td class="numeric"> 51,304,566 </td>
-			<td class="numeric"> 1 </td>
-			<td class="numeric"> 51,304,566 </td>
+			<td class="numeric"> 2 </td>
+			<td class="numeric"> 25,652,283 </td>
 		</tr> 
 	<tr>
 		<th> Total </th>
 		<th class="numeric"> 51,304,566 </th>
-		<th class="numeric"> 1 </th>
-		<th class="numeric"> 51,304,566 </th>
+		<th class="numeric"> 2 </th>
+		<th class="numeric"> 25,652,283 </th>
 	</tr> 
 </table> 
 </center>
@@ -277,7 +277,7 @@ th a:active, th a:hover {
 	    </tr>
 	    <tr>
 	    	<td> <b> MIXED </b> </td>
-	    	<td class="numeric" bgcolor="ffffff"> 0 </td>
+	    	<td class="numeric" bgcolor="ffffff"> 1 </td>
 	    </tr>
 	    <tr>
 	    	<td> <b> INTERVAL </b> </td>
@@ -287,7 +287,7 @@ th a:active, th a:hover {
     <tfoot>
 	    <tr>
 	    	<th><b>Total </b> </th>
-	    	<th class="numeric"> 1 </th>
+	    	<th class="numeric"> 2 </th>
 	    </tr>
     </tfoot>
 </table>
@@ -314,20 +314,20 @@ th a:active, th a:hover {
 		<tr> 
 			<td> <b> HIGH </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 20% </td>
+			<td class="numeric" bgcolor="#00ff00"> 2 </td> 
+			<td class="numeric" bgcolor="#00ff00"> 22.222% </td>
 		</tr>
 		<tr> 
 			<td> <b> LOW </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#ff0000"> 2 </td> 
-			<td class="numeric" bgcolor="#ff0000"> 40% </td>
+			<td class="numeric" bgcolor="#ff0000"> 4 </td> 
+			<td class="numeric" bgcolor="#ff0000"> 44.444% </td>
 		</tr>
 		<tr> 
 			<td> <b> MODIFIER </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#ff0000"> 2 </td> 
-			<td class="numeric" bgcolor="#ff0000"> 40% </td>
+			<td class="numeric" bgcolor="#7f7f00"> 3 </td> 
+			<td class="numeric" bgcolor="#7f7f00"> 33.333% </td>
 		</tr>
 </table><br>
 <p>
@@ -383,28 +383,34 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 		</tr>
 	</thead>
 		<tr> 
-			<td> <b> non_coding_exon_variant </b> </td> 
+			<td> <b> frameshift_variant+missense_variant </b> </td> 
 			<th> &nbsp; </th>
 			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 20% </td>
+			<td class="numeric" bgcolor="#00ff00"> 11.111% </td>
+		</tr>
+		<tr> 
+			<td> <b> non_coding_exon_variant </b> </td> 
+			<th> &nbsp; </th>
+			<td class="numeric" bgcolor="#55aa00"> 2 </td> 
+			<td class="numeric" bgcolor="#55aa00"> 22.222% </td>
 		</tr>
 		<tr> 
 			<td> <b> splice_region_variant </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#ff0000"> 2 </td> 
-			<td class="numeric" bgcolor="#ff0000"> 40% </td>
+			<td class="numeric" bgcolor="#ff0000"> 4 </td> 
+			<td class="numeric" bgcolor="#ff0000"> 44.444% </td>
 		</tr>
 		<tr> 
 			<td> <b> start_lost+inframe_deletion </b> </td> 
 			<th> &nbsp; </th>
 			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 20% </td>
+			<td class="numeric" bgcolor="#00ff00"> 11.111% </td>
 		</tr>
 		<tr> 
 			<td> <b> upstream_gene_variant </b> </td> 
 			<th> &nbsp; </th>
 			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 20% </td>
+			<td class="numeric" bgcolor="#00ff00"> 11.111% </td>
 		</tr>
 </table><br>
  </td>
@@ -420,26 +426,26 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 		<tr> 
 			<td> <b> EXON </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 20% </td>
+			<td class="numeric" bgcolor="#aa5500"> 3 </td> 
+			<td class="numeric" bgcolor="#aa5500"> 33.333% </td>
 		</tr>
 		<tr> 
 			<td> <b> SPLICE_SITE_REGION </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="#ff0000"> 2 </td> 
-			<td class="numeric" bgcolor="#ff0000"> 40% </td>
+			<td class="numeric" bgcolor="#ff0000"> 4 </td> 
+			<td class="numeric" bgcolor="#ff0000"> 44.444% </td>
 		</tr>
 		<tr> 
 			<td> <b> TRANSCRIPT </b> </td> 
 			<th> &nbsp; </th>
 			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 20% </td>
+			<td class="numeric" bgcolor="#00ff00"> 11.111% </td>
 		</tr>
 		<tr> 
 			<td> <b> UPSTREAM </b> </td> 
 			<th> &nbsp; </th>
 			<td class="numeric" bgcolor="#00ff00"> 1 </td> 
-			<td class="numeric" bgcolor="#00ff00"> 20% </td>
+			<td class="numeric" bgcolor="#00ff00"> 11.111% </td>
 		</tr>
 </table><br>
  </td>
@@ -447,7 +453,7 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 </table>
 <p>
 
-<img src="http://chart.apis.google.com/chart?cht=bvs&chbh=50,4,8&chs=800x300&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,20.0|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AA..AAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAA..AAAAAA..AAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA" border=1><p>
+<img src="http://chart.apis.google.com/chart?cht=bvs&chs=800x300&chbh=50,4,8&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,33.33333333333333|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AAVVAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAA..AAAAAA..AAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA" border=1><p>
 
 </center>
 
@@ -555,15 +561,15 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <hr> 
 <a name="alleleCount">
 <center> <b> Allele Count </b> <p> </center>
-	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|1|3:|Allele+Count&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|1|3:|Allele+Count&chxr=0,0.0,2.0|1,0.0,100.0|3,0.0,100.0"><br>
 	<table class="histo">
 		<tr> <th width=15%>Min</th><td>1</td> </tr>
 		<tr> <th>Max</th><td>1</td> </tr>
 		<tr> <th>Mean</th><td>1</td> </tr>
-		<tr> <th>Median</th><td>0.5</td> </tr>
+		<tr> <th>Median</th><td>1</td> </tr>
 		<tr> <th>Standard deviation</th><td>0</td> </tr>
 		<tr> <th>Values</th><td>1</td> </tr>
-		<tr> <th>Count</th><td>1</td> </tr>
+		<tr> <th>Count</th><td>2</td> </tr>
 		</tr>
 	</table>
 <p>
@@ -611,13 +617,108 @@ Missing
 	<thead>
 		<tr> 
 			<th> &nbsp; </th>
-			 <th> - </th>  <th> AAA </th>  <th> AAC </th>  <th> AAG </th>  <th> ACA </th>  <th> ACT </th>  <th> AGA </th>  <th> AGC </th>  <th> AGG </th>  <th> ATC </th>  <th> ATG </th>  <th> CAA </th>  <th> CAC </th>  <th> CCA </th>  <th> CCC </th>  <th> CCG </th>  <th> CCT </th>  <th> CGA </th>  <th> CGC </th>  <th> CGT </th>  <th> CTC </th>  <th> CTG </th>  <th> GAA </th>  <th> GAC </th>  <th> GAG </th>  <th> GAT </th>  <th> GCC </th>  <th> GCT </th>  <th> GGA </th>  <th> GGC </th>  <th> GGG </th>  <th> GGT </th>  <th> GTC </th>  <th> GTG </th>  <th> TAC </th>  <th> TCA </th>  <th> TCC </th>  <th> TCT </th>  <th> TGC </th>  <th> TGG </th>  <th> TTC </th>  <th> TTT </th> 
+			 <th> - </th>  <th> >VN </th>  <th> AAA </th>  <th> AAC </th>  <th> AAG </th>  <th> ACA </th>  <th> ACT </th>  <th> AGA </th>  <th> AGC </th>  <th> AGG </th>  <th> ATC </th>  <th> ATG </th>  <th> CAA </th>  <th> CAC </th>  <th> CCA </th>  <th> CCC </th>  <th> CCG </th>  <th> CCT </th>  <th> CGA </th>  <th> CGC </th>  <th> CGT </th>  <th> CTC </th>  <th> CTG </th>  <th> GAA </th>  <th> GAC </th>  <th> GAG </th>  <th> GAT </th>  <th> GCC </th>  <th> GCT </th>  <th> GGA </th>  <th> GGC </th>  <th> GGG </th>  <th> GGT </th>  <th> GTC </th>  <th> GTG </th>  <th> I<G </th>  <th> TAC </th>  <th> TCA </th>  <th> TCC </th>  <th> TCT </th>  <th> TGC </th>  <th> TGG </th>  <th> TTC </th>  <th> TTT </th> 
 		</tr>
 	</thead>
 			<tr> 
 				<th> - </th>
 					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> >VN </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -706,7 +807,11 @@ Missing
 					
 						<td class="numeric" bgcolor="#0bf300"> 2 </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -795,7 +900,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -884,7 +993,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -973,7 +1086,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1062,7 +1179,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1151,7 +1272,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1240,7 +1365,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1315,6 +1444,8 @@ Missing
 					
 						<td class="numeric" bgcolor="#4db100"> 8 </td>
 					
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -1330,6 +1461,8 @@ Missing
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1418,7 +1551,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1507,7 +1644,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1596,7 +1737,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1685,7 +1830,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1774,7 +1923,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1863,7 +2016,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -1952,7 +2109,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2041,7 +2202,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2130,7 +2295,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2219,7 +2388,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2308,7 +2481,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2397,7 +2574,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2486,7 +2667,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2575,7 +2760,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2664,7 +2853,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2753,7 +2946,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2842,7 +3039,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -2931,7 +3132,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -3020,7 +3225,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -3109,7 +3318,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -3198,7 +3411,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -3287,7 +3504,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -3376,7 +3597,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -3465,7 +3690,11 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -3554,6 +3783,101 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> I<G </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -3576,6 +3900,10 @@ Missing
 				<th> TAC </th>
 					
 						<td class="numeric" bgcolor="#0bf300"> 2 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -3732,6 +4060,10 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -3750,6 +4082,10 @@ Missing
 				<th> TCC </th>
 					
 						<td class="numeric" bgcolor="#00ff00"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -3910,6 +4246,10 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -3924,6 +4264,10 @@ Missing
 				<th> TGC </th>
 					
 						<td class="numeric" bgcolor="#b14d00"> 17 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -4088,6 +4432,10 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -4098,6 +4446,10 @@ Missing
 				<th> TTC </th>
 					
 						<td class="numeric" bgcolor="#2cd200"> 5 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -4266,6 +4618,10 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 			</tr>
 </table>
@@ -4293,11 +4649,60 @@ Missing
 	<thead>
 		<tr> 
 			<th> &nbsp; </th>
-			 <th> - </th>  <th> A </th>  <th> C </th>  <th> D </th>  <th> E </th>  <th> F </th>  <th> G </th>  <th> H </th>  <th> I </th>  <th> K </th>  <th> L </th>  <th> M </th>  <th> N </th>  <th> P </th>  <th> Q </th>  <th> R </th>  <th> S </th>  <th> T </th>  <th> V </th>  <th> W </th>  <th> Y </th> 
+			 <th> - </th>  <th> ? </th>  <th> A </th>  <th> C </th>  <th> D </th>  <th> E </th>  <th> F </th>  <th> G </th>  <th> H </th>  <th> I </th>  <th> K </th>  <th> L </th>  <th> M </th>  <th> N </th>  <th> P </th>  <th> Q </th>  <th> R </th>  <th> S </th>  <th> T </th>  <th> V </th>  <th> W </th>  <th> Y </th> 
 		</tr>
 	</thead>
 			<tr> 
 				<th> - </th>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="#0af400"> 2 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> ? </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<th class="numeric"> &nbsp </th>
 					
@@ -4346,6 +4751,8 @@ Missing
 					
 						<td class="numeric" bgcolor="#669900"> 11 </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -4393,6 +4800,8 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -4435,6 +4844,8 @@ Missing
 				<th> D </th>
 					
 						<td class="numeric" bgcolor="#ad5100"> 18 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -4487,6 +4898,8 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -4525,6 +4938,8 @@ Missing
 				<th> F </th>
 					
 						<td class="numeric" bgcolor="#33cc00"> 6 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -4581,6 +4996,8 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -4615,6 +5032,8 @@ Missing
 				<th> H </th>
 					
 						<td class="numeric" bgcolor="#51ad00"> 9 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -4675,6 +5094,8 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -4705,6 +5126,8 @@ Missing
 				<th> K </th>
 					
 						<td class="numeric" bgcolor="#ff0000"> 26 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -4769,6 +5192,8 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -4795,6 +5220,8 @@ Missing
 				<th> M </th>
 					
 						<td class="numeric" bgcolor="#708e00"> 12 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -4863,6 +5290,8 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -4885,6 +5314,8 @@ Missing
 				<th> P </th>
 					
 						<td class="numeric" bgcolor="#47b700"> 8 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -4957,6 +5388,8 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -4975,6 +5408,8 @@ Missing
 				<th> R </th>
 					
 						<td class="numeric" bgcolor="#847a00"> 14 </td>
+					
+						<td class="numeric" bgcolor="#00ff00"> 1 </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -5051,6 +5486,8 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -5065,6 +5502,8 @@ Missing
 				<th> T </th>
 					
 						<td class="numeric" bgcolor="#3dc100"> 7 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -5145,6 +5584,8 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
@@ -5155,6 +5596,8 @@ Missing
 				<th> W </th>
 					
 						<td class="numeric" bgcolor="#51ad00"> 9 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
@@ -5239,6 +5682,8 @@ Missing
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
 						<th class="numeric"> &nbsp </th>
 			</tr>
 </table>
@@ -5255,9 +5700,9 @@ Missing
 
 <center>
 	<pre>
-		<img src="http://chart.apis.google.com/chart?cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Variants+histogram%3A+22&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chd=e:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA..AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&chxl=1:|Variants%2F1000Kb|2:|0||||||||||10000000||||||||||20000000||||||||||30000000||||||||||40000000||||||||||50000000|51000000|3:|Position"><br>
+		<img src="http://chart.apis.google.com/chart?cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Variants+histogram%3A+22&chxr=0,0.0,2.0|1,0.0,100.0|3,0.0,100.0&chd=e:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA..AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&chxl=1:|Variants%2F1000Kb|2:|0||||||||||10000000||||||||||20000000||||||||||30000000||||||||||40000000||||||||||50000000|51000000|3:|Position"><br>
 		22, Position,0,1000000,2000000,3000000,4000000,5000000,6000000,7000000,8000000,9000000,10000000,11000000,12000000,13000000,14000000,15000000,16000000,17000000,18000000,19000000,20000000,21000000,22000000,23000000,24000000,25000000,26000000,27000000,28000000,29000000,30000000,31000000,32000000,33000000,34000000,35000000,36000000,37000000,38000000,39000000,40000000,41000000,42000000,43000000,44000000,45000000,46000000,47000000,48000000,49000000,50000000,51000000
-22,Count,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+22,Count,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 	</pre>
 </center>
