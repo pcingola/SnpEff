@@ -481,6 +481,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Collapses exons having gaps of zero (i.e. exons that followed by other exons).
 	 * Does the same for CDSs.
 	   Does the same for UTRs.
+	   @return true of any exon in the transcript was 'collapsed'
 	 */
 	public boolean collapseZeroGap() {
 		if (ribosomalSlippage) return false; // Overlapping exons are representing ribosomal slippage, so they are not annotations errors and must not be corrected.
@@ -499,9 +500,15 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Marker exon : collapse.keySet()) {
 			Exon collapsedExon = (Exon) collapse.get(exon);
 
-			// Is this exon to be replaced?
-			if (exon != collapsedExon) {
+			// Is this exon to be replaced? (i.e. collapseZeroGap returns different coordinates)
+			if (exon.size() != collapsedExon.size() //
+					|| exon.getStart() != collapsedExon.getStart() //
+					|| exon.getEnd() != collapsedExon.getEnd() //
+			) {
 				ret = true;
+
+				// Show debugging information
+				if (Config.get().isDebug()) System.err.println("\t\t\tTranscript " + getId() + ": Collapsing exon " + exon.getId() + "\t[ " + exon.getStart() + " - " + exon.getEnd() + " ]\t=>\t[ " + collapsedExon.getStart() + " - " + collapsedExon.getEnd() + " ]");
 
 				// Replace exon
 				remove((Exon) exon);
