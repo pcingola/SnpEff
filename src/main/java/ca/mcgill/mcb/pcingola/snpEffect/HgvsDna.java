@@ -54,6 +54,7 @@ public class HgvsDna extends Hgvs {
 
 		case INS:
 		case DEL:
+			if (variant.size() > MAX_SEQUENCE_LEN_HGVS) return "";
 			String netChange = variant.netChange(false);
 			if (marker == null || marker.isStrandPlus()) return netChange;
 			return GprSeq.reverseWc(netChange);
@@ -172,7 +173,7 @@ public class HgvsDna extends Hgvs {
 		if (intron == null) {
 			Gpr.debug("variantEffect: " + variantEffect //
 					+ "\n\tMarker: " + variantEffect.getMarker() //
-			);
+					);
 			return null;
 		}
 

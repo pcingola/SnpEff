@@ -135,7 +135,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 				effBuff.append("|");
 
 				// Codon change
-				String codonChange = variantEffect.getCodonChange();
+				String codonChange = variantEffect.getCodonChangeMax();
 				if (!codonChange.isEmpty()) effBuff.append(codonChange);
 				else if (variantEffect.getDistance() >= 0) effBuff.append(variantEffect.getDistance());
 				effBuff.append("|");

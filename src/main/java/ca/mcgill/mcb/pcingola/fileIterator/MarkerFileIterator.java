@@ -196,7 +196,7 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	public boolean seek(String chr, int pos) {
 		nextLine = null;
 		next = null;
-		tabixIterator = tabixReader.query(chr + ":" + pos);
+		tabixIterator = tabixReader.query(chr + ":" + (pos + 1));
 		return tabixIterator != null;
 	}
 

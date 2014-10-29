@@ -64,6 +64,9 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		NONE, SILENT, MISSENSE, NONSENSE
 	}
 
+	// Don't show codon change sequences that are too long
+	public static final int MAX_CODON_SEQUENCE_LEN = 100;
+
 	static final boolean COMPATIBLE_v1_8 = true; // Activate this in order to get the same out as version 1.8. This is only for testing & debugging
 
 	Variant variant = null;
@@ -170,8 +173,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		Transcript trThis = getTranscript();
 		Transcript trOther = variantEffect.getTranscript();
 		if (trThis != null && trOther != null && trThis.isCanonical() && trOther.isCanonical()) {
-			// Both transcript are canonical? (e.g. different genes) 
-			// => Cannot compare		
+			// Both transcript are canonical? (e.g. different genes)
+			// => Cannot compare
 		} else {
 			// Canonical transcript first
 			if (trThis != null && trThis.isCanonical()) return -1;
@@ -285,6 +288,15 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Codon change string
 	 */
 	public String getCodonChange() {
+		if (codonsOld.isEmpty() && codonsNew.isEmpty()) return "";
+		return codonsOld + "/" + codonsNew;
+	}
+
+	/**
+	 * Codon change string (if it's not too long)
+	 */
+	public String getCodonChangeMax() {
+		if (variant.size() > MAX_CODON_SEQUENCE_LEN) return ""; // Cap length in order not to make VCF files grow too much
 		if (codonsOld.isEmpty() && codonsNew.isEmpty()) return "";
 		return codonsOld + "/" + codonsNew;
 	}
