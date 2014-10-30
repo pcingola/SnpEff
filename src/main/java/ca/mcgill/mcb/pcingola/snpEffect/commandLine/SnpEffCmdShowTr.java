@@ -78,9 +78,15 @@ public class SnpEffCmdShowTr extends SnpEff {
 				sb.append(tr + "\n");
 				sb.append(tr.toStringAsciiArt() + "\n\n");
 			}
+
+			// Save output (for debugging)
+			if (debug) {
+				String fileName = "showTr." + genomeVer + "." + trById + ".txt";
+				System.err.println("Saving output to file '" + fileName + "'");
+				Gpr.toFile("showtr.txt", sb.toString());
+			}
 		}
 
-		Gpr.toFile(Gpr.HOME + "/showtr.txt", sb.toString());
 		return true;
 	}
 
