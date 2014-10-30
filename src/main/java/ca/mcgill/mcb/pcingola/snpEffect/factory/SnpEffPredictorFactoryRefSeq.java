@@ -8,6 +8,7 @@ import ca.mcgill.mcb.pcingola.collections.MultivalueHashMap;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
@@ -94,6 +95,9 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 		biotypeById.put("YP", "Protein");
 		biotypeById.put("ZP", "Protein");
 		biotypeById.put("NS", "Genomic");
+
+		frameType = FrameType.UCSC;
+		frameCorrection = true;
 	}
 
 	/**

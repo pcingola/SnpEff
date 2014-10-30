@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.IntergenicConserved;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -84,6 +85,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		fileName = config.getBaseFileNameGenes() + ".gff";
 
 		frameCorrection = true;
+		frameType = FrameType.GFF;
 	}
 
 	@Override
@@ -160,7 +162,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				|| biotype.equals("TR_D_gene") //
 				|| biotype.equals("TR_J_gene") //
 				|| biotype.equals("TR_V_gene") //
-		;
+				;
 	}
 
 	/**

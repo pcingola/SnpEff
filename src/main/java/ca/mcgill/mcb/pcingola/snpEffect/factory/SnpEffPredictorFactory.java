@@ -10,6 +10,7 @@ import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.IntervalComparatorByEnd;
@@ -46,6 +47,7 @@ public abstract class SnpEffPredictorFactory {
 	Config config;
 	Genome genome;
 	SnpEffectPredictor snpEffectPredictor;
+	FrameType frameType;
 	HashMap<String, Integer> exonsByChromo;
 	HashMap<String, Marker> markersById;
 	HashMap<String, Gene> genesById;
@@ -64,6 +66,7 @@ public abstract class SnpEffPredictorFactory {
 		transcriptsById = new HashMap<String, Transcript>();
 
 		frameCorrection = false;
+		frameType = FrameType.UNKNOWN;
 	}
 
 	protected void add(Cds cds) {
@@ -533,7 +536,7 @@ public abstract class SnpEffPredictorFactory {
 		int i = 1;
 		for (Gene gene : genome.getGenes())
 			for (Transcript tr : gene) {
-				boolean corrected = tr.frameCorrection();
+				boolean corrected = tr.frameCorrection(frameType);
 
 				if (corrected) {
 					if (debug) System.err.println("\tTranscript " + tr.getId() + " corrected using frame (exons: " + tr.numChilds() + ").");

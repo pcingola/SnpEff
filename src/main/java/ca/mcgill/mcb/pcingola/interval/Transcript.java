@@ -780,7 +780,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 *    i) First exon is corrected by adding a fake 5'UTR
 	 *    ii) Other exons are corrected by changing the start (or end) coordinates.
 	 */
-	public synchronized boolean frameCorrection() {
+	public synchronized boolean frameCorrection(FrameType frameType) {
 		// Copy frame information form CDSs to Exons (if missing)
 		frameFromCds();
 
@@ -790,7 +790,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Other exons are corrected by changing the start (or end) coordinates.
 		// boolean changedNonFirst = false;
 		// Gpr.debug("UNCOMMENT!");
-		boolean changedNonFirst = frameCorrectionNonFirstCodingExon();
+		boolean changedNonFirst = frameCorrectionNonFirstCodingExon(frameType);
 
 		boolean changed = changedFirst || changedNonFirst;
 
@@ -847,7 +847,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	/**
 	 * Correct exons according to frame information
 	 */
-	synchronized boolean frameCorrectionNonFirstCodingExon() {
+	synchronized boolean frameCorrectionNonFirstCodingExon(FrameType frameType) {
 		boolean corrected = false;
 
 		// Concatenate all exons to create a CDS
@@ -903,7 +903,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			} else {
 				// Calculate frame
 				// References: http://mblab.wustl.edu/GTF22.html
-				int frameReal = GprSeq.frameFromLength(sequence.length());
+				int frameReal = frameType.frameFromLength(sequence.length());
 
 				// Does calculated frame match?
 				if (frameReal != exon.getFrame()) {
@@ -915,6 +915,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\t" + this //
 								);
 					} else {
+						if (Config.get().isDebug()) System.err.println("\t\tFrame correction (type " + frameType + "): Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
 
