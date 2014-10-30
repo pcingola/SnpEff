@@ -36,6 +36,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	public static double MAX_ERROR_RATE = 0.05; // Maximum allowed error is 1% (otherwise test fails)
 
 	boolean codonTables;
+	boolean storeAlignments; // Store alignments (used for some test cases)
 	int totalErrors = 0;
 	int totalOk = 0;
 	int totalWarnings = 0;
@@ -44,6 +45,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	String proteinFile = "";
 	HashMap<String, String> proteinByTrId;
 	AutoHashMap<String, List<Transcript>> trByChromo;
+	HashMap<String, SmithWaterman> alignmentByTrId = new HashMap<String, SmithWaterman>();
 
 	/**
 	 * Count number of differences between strings
@@ -196,6 +198,10 @@ public class SnpEffCmdProtein extends SnpEff {
 		return false;
 	}
 
+	public HashMap<String, SmithWaterman> getAlignmentByTrId() {
+		return alignmentByTrId;
+	}
+
 	public int getTotalErrors() {
 		return totalErrors;
 	}
@@ -264,28 +270,33 @@ public class SnpEffCmdProtein extends SnpEff {
 				if (addTotals) tr.setAaCheck(true);
 				if (verbose) System.out.print('+');
 			} else {
-				if (debug || onlyOneError) {
+				if (debug || storeAlignments || onlyOneError) {
 					protein = proteinFormat(protein);
 					proteinReference = proteinFormat(proteinReference);
 
 					SmithWaterman sw = new SmithWaterman(protein, proteinReference);
 					if (Math.max(protein.length(), proteinReference.length()) < SnpEffCmdCds.MAX_ALIGN_LENGTH) sw.align();
 
+					if (storeAlignments) alignmentByTrId.put(tr.getId(), sw);
+
 					int maxScore = Math.min(protein.length(), proteinReference.length());
-					int score = sw.getAligmentScore();
-					System.err.println("\nERROR: Proteins do not match for transcript " + tr.getId() //
-							+ "\tStrand:" + (tr.isStrandPlus() ? 1 : -1) //
-							+ "\tExons: " + tr.numChilds() //
-							+ "\n" //
-							+ String.format("\tSnpEff protein     (%6d) : '%s'\n", protein.length(), protein) //
-							+ String.format("\tReference protein  (%6d) : '%s'\n", proteinReference.length(), proteinReference) //
-							+ "\tAlignment (Snpeff protein vs Reference protein)." //
-							+ "\tScore: " + score //
-							+ "\tMax. possible score: " + maxScore //
-							+ "\tDiff: " + (maxScore - score) //
-							+ "\n" + sw //
-					);
-					System.err.println("Transcript details:\n" + tr);
+					int score = sw.getAlignmentScore();
+
+					if (debug || onlyOneError) {
+						System.err.println("\nERROR: Proteins do not match for transcript " + tr.getId() //
+								+ "\tStrand:" + (tr.isStrandPlus() ? 1 : -1) //
+								+ "\tExons: " + tr.numChilds() //
+								+ "\n" //
+								+ String.format("\tSnpEff protein     (%6d) : '%s'\n", protein.length(), protein) //
+								+ String.format("\tReference protein  (%6d) : '%s'\n", proteinReference.length(), proteinReference) //
+								+ "\tAlignment (Snpeff protein vs Reference protein)." //
+								+ "\tScore: " + score //
+								+ "\tMax. possible score: " + maxScore //
+								+ "\tDiff: " + (maxScore - score) //
+								+ "\n" + sw //
+						);
+						System.err.println("Transcript details:\n" + tr);
+					}
 
 				} else if (verbose) System.out.print('*');
 
@@ -458,6 +469,10 @@ public class SnpEffCmdProtein extends SnpEff {
 		// Reset all protein translations for this chromosome
 		for (Transcript tr : trByChromo.get(chromo.getId()))
 			tr.resetCdsCache();
+	}
+
+	public void setStoreAlignments(boolean storeAlignments) {
+		this.storeAlignments = storeAlignments;
 	}
 
 	/**

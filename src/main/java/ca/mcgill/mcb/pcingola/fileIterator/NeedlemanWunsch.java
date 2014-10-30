@@ -2,7 +2,7 @@ package ca.mcgill.mcb.pcingola.fileIterator;
 
 /**
  * Needleman-Wunsch (global sequence alignment) algorithm for sequence  alignment (short strings, since it's not memory optimized)
- * 
+ *
  * @author pcingola
  */
 public class NeedlemanWunsch {
@@ -115,12 +115,12 @@ public class NeedlemanWunsch {
 
 	}
 
-	public int getAligmentScore() {
-		return bestScore;
-	}
-
 	public String getAlignment() {
 		return alignment;
+	}
+
+	public int getAlignmentScore() {
+		return bestScore;
 	}
 
 	public int getOffset() {

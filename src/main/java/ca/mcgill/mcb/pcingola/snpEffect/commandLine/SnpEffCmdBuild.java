@@ -35,8 +35,11 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 public class SnpEffCmdBuild extends SnpEff {
 
 	GeneDatabaseFormat geneDatabaseFormat; // Database format (only used if 'buildDb' is active)
+	boolean storeAlignments; // Store alignments (used for some test cases)
 	boolean onlyRegulation = false; // Only build regulation tracks
 	String cellType = null;
+	SnpEffCmdProtein snpEffCmdProtein;
+	SnpEffCmdCds snpEffCmdCds;
 
 	public SnpEffCmdBuild() {
 		super();
@@ -54,9 +57,10 @@ public class SnpEffCmdBuild extends SnpEff {
 		if (Gpr.canRead(cdsFile)) {
 			// Use FASTA format
 			if (verbose) Timer.showStdErr("CDS check (FASTA file): '" + cdsFile + "'\n");
-			SnpEffCmdCds snpEffCmdCds = new SnpEffCmdCds(config);
+			snpEffCmdCds = new SnpEffCmdCds(config);
 			snpEffCmdCds.setVerbose(verbose);
 			snpEffCmdCds.setDebug(debug);
+			snpEffCmdCds.setStoreAlignments(storeAlignments);
 			snpEffCmdCds.run();
 		} else if (debug) Timer.showStdErr("\tOptional file '" + cdsFile + "' not found, nothing done.");
 
@@ -66,16 +70,18 @@ public class SnpEffCmdBuild extends SnpEff {
 		String protFile = config.getFileNameProteins();
 		if (Gpr.canRead(protFile)) {
 			if (verbose) Timer.showStdErr("Protein check (FASTA file): '" + protFile + "'\n");
-			SnpEffCmdProtein snpEffCmdProtein = new SnpEffCmdProtein(config);
+			snpEffCmdProtein = new SnpEffCmdProtein(config);
 			snpEffCmdProtein.setVerbose(verbose);
 			snpEffCmdProtein.setDebug(debug);
+			snpEffCmdProtein.setStoreAlignments(storeAlignments);
 			snpEffCmdProtein.run();
 		} else if (geneDatabaseFormat == GeneDatabaseFormat.GENBANK) {
 			// GenBank format
 			String gbFile = config.getBaseFileNameGenes() + SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK;
 			if (verbose) Timer.showStdErr("Protein check (GenBank file): '" + gbFile + "'\n");
-			SnpEffCmdProtein snpEffCmdProtein = new SnpEffCmdProtein(config, gbFile);
+			snpEffCmdProtein = new SnpEffCmdProtein(config, gbFile);
 			snpEffCmdProtein.setVerbose(verbose);
+			snpEffCmdProtein.setStoreAlignments(storeAlignments);
 			snpEffCmdProtein.run();
 		} else if (debug) Timer.showStdErr("\tOptional file '" + protFile + "' not found, nothing done.");
 	}
@@ -110,6 +116,14 @@ public class SnpEffCmdBuild extends SnpEff {
 	 */
 	protected boolean fileExists(String path) {
 		return Gpr.exists(path) || Gpr.exists(path + ".gz");
+	}
+
+	public SnpEffCmdCds getSnpEffCmdCds() {
+		return snpEffCmdCds;
+	}
+
+	public SnpEffCmdProtein getSnpEffCmdProtein() {
+		return snpEffCmdProtein;
 	}
 
 	/**
@@ -309,6 +323,10 @@ public class SnpEffCmdBuild extends SnpEff {
 		if (verbose) Timer.showStdErr("Done");
 
 		return true;
+	}
+
+	public void setStoreAlignments(boolean storeAlignments) {
+		this.storeAlignments = storeAlignments;
 	}
 
 	/**
