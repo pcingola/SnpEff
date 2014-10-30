@@ -504,7 +504,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-					) {
+			) {
 				ret = true;
 
 				// Show debugging information
@@ -913,7 +913,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-								);
+						);
 					} else {
 						if (Config.get().isDebug()) System.err.println("\t\tFrame correction (type " + frameType + "): Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
@@ -1075,7 +1075,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-				;
+		;
 	}
 
 	/**
@@ -1410,9 +1410,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Perfom some baseic chekcs, return error type, if any
 	 */
 	public ErrorWarningType sanityCheck(Variant variant) {
+		if (isErrorStopCodonsInCds()) return ErrorWarningType.WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS;
 		if (isErrorProteinLength()) return ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE;
-		else if (isErrorStopCodonsInCds()) return ErrorWarningType.WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS;
-		else if (isErrorStartCodon()) return ErrorWarningType.WARNING_TRANSCRIPT_NO_START_CODON;
+		if (isErrorStartCodon()) return ErrorWarningType.WARNING_TRANSCRIPT_NO_START_CODON;
+		if (isWarningStopCodon()) return ErrorWarningType.WARNING_TRANSCRIPT_NO_STOP_CODON;
 		return null;
 	}
 
@@ -1459,7 +1460,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
 				+ "\t" + markerSerializer.save((Iterable) spliceBranchSites)//
-				;
+		;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
