@@ -247,6 +247,8 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 							int exFrame = Gpr.parseIntSafe(exFrameStr[i]);
 							String exId = trId + ".ex." + (i + 1);
 							Exon ex = new Exon(tr, exStart, exEnd, strandMinus, exId, i);
+
+							exFrame = frameType.convertFrame(exFrame);
 							ex.setFrame(exFrame);
 							add(ex);
 

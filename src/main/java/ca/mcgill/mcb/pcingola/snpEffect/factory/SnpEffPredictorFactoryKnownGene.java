@@ -19,7 +19,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * This class creates a SnpEffectPredictor from a TXT file dumped using UCSC table browser
  *
  * Fields in this table
- * 
+ *
  * Field        Example               SQL type            Info     Description
  * -----        -------               --------            ----     -----------
  * name         uc001aaa.3            varchar(255)        values   Name of gene
@@ -34,7 +34,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * exonEnds     12227,12721,14409,    longblob                     Exon end positions
  * proteinID                          varchar(40)         values   UniProt display ID for Known Genes, UniProt accession or RefSeq protein ID for UCSC Genes
  * alignID      uc001aaa.3            varchar(255)        values   Unique identifier for each (known gene, alignment position) pair
- * 
+ *
  * @author pcingola
  */
 public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
@@ -80,13 +80,6 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 
 	/**
 	 * Find (or create) a gene for this transcript
-	 * @param geneName
-	 * @param trId
-	 * @param chromo
-	 * @param start
-	 * @param end
-	 * @param strandMinus
-	 * @return
 	 */
 	Gene findOrCreateGene(String geneName, String trId, Chromosome chromo, int start, int end, boolean strandMinus, boolean isCoding) {
 		Marker tr = new Marker(chromo, start, end, strandMinus, trId);
@@ -116,9 +109,7 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 	}
 
 	/**
-	 * Read and parse GFF file
-	 * @param vcfFileName
-	 * @throws Exception
+	 * Read and parse genes file
 	 */
 	protected void readRefSeqFile() {
 		try {

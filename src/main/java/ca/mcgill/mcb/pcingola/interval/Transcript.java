@@ -504,7 +504,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-			) {
+					) {
 				ret = true;
 
 				// Show debugging information
@@ -780,7 +780,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 *    i) First exon is corrected by adding a fake 5'UTR
 	 *    ii) Other exons are corrected by changing the start (or end) coordinates.
 	 */
-	public synchronized boolean frameCorrection(FrameType frameType) {
+	public synchronized boolean frameCorrection() {
 		// Copy frame information form CDSs to Exons (if missing)
 		frameFromCds();
 
@@ -790,7 +790,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Other exons are corrected by changing the start (or end) coordinates.
 		// boolean changedNonFirst = false;
 		// Gpr.debug("UNCOMMENT!");
-		boolean changedNonFirst = frameCorrectionNonFirstCodingExon(frameType);
+		boolean changedNonFirst = frameCorrectionNonFirstCodingExon();
 
 		boolean changed = changedFirst || changedNonFirst;
 
@@ -847,7 +847,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	/**
 	 * Correct exons according to frame information
 	 */
-	synchronized boolean frameCorrectionNonFirstCodingExon(FrameType frameType) {
+	synchronized boolean frameCorrectionNonFirstCodingExon() {
 		boolean corrected = false;
 
 		// Concatenate all exons to create a CDS
@@ -902,8 +902,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				if (exon.getFrame() >= 0) exon.setFrame(-1);
 			} else {
 				// Calculate frame
+				// We use GFF style frame calculation
 				// References: http://mblab.wustl.edu/GTF22.html
-				int frameReal = frameType.frameFromLength(sequence.length());
+				int frameReal = FrameType.GFF.frameFromLength(sequence.length());
 
 				// Does calculated frame match?
 				if (frameReal != exon.getFrame()) {
@@ -913,9 +914,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
-						if (Config.get().isDebug()) System.err.println("\t\tFrame correction (type " + frameType + "): Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
+						if (Config.get().isDebug()) System.err.println("\t\tFrame correction: Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
 
@@ -1075,7 +1076,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
@@ -1460,7 +1461,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
 				+ "\t" + markerSerializer.save((Iterable) spliceBranchSites)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {

@@ -536,7 +536,7 @@ public abstract class SnpEffPredictorFactory {
 		int i = 1;
 		for (Gene gene : genome.getGenes())
 			for (Transcript tr : gene) {
-				boolean corrected = tr.frameCorrection(frameType);
+				boolean corrected = tr.frameCorrection();
 
 				if (corrected) {
 					if (debug) System.err.println("\tTranscript " + tr.getId() + " corrected using frame (exons: " + tr.numChilds() + ").");

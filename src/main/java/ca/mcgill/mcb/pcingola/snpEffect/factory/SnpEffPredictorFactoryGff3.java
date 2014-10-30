@@ -203,6 +203,8 @@ public class SnpEffPredictorFactoryGff3 extends SnpEffPredictorFactoryGff {
 		boolean strandMinus = fields[6].equals("-");
 
 		int frame = (fields[7].equals(".") ? -1 : Gpr.parseIntSafe(fields[7]));
+		frame = frameType.convertFrame(frame);
+
 		String name = null;
 		String parent = "";
 		String id = null;

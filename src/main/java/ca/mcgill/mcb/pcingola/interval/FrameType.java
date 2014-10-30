@@ -2,26 +2,42 @@ package ca.mcgill.mcb.pcingola.interval;
 
 /**
  * Type of frame calculations
+ * Internally, we use GFF style frame calculation for Exon / Transcript
  */
 public enum FrameType {
 
 	GFF, UCSC, UNKNOWN;
 
+	public int convertFrame(int frame) {
+		// If this is a GFF frame type, no conversion is required
+		if (this == GFF) return frame;
+
+		// Convert UCSC frame numbers to GFF frame numbers
+		if (this == UCSC) {
+			switch (frame) {
+			case 0:
+				return 0;
+
+			case 1:
+				return 2;
+
+			case 2:
+				return 1;
+
+			default:
+				return -1;
+			}
+		}
+
+		// Other frame type?
+		throw new RuntimeException("Unknown frame type '" + this + "'");
+	}
+
 	/**
 	 * Calculate frame from cds length
 	 */
 	public int frameFromLength(int length) {
-		switch (this) {
-
-		case GFF:
-			return frameFromLengthGff(length);
-
-		case UCSC:
-			return frameFromLengthUcsc(length);
-
-		default:
-			throw new RuntimeException("Unknown frame type '" + this + "'");
-		}
+		return frameFromLengthGff(length);
 	}
 
 	/**

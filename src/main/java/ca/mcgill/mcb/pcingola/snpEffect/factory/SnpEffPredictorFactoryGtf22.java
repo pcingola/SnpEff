@@ -155,6 +155,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		int end = parsePosition(fields[4]);
 		boolean strandMinus = fields[6].equals("-");
 		int frame = (fields[7].equals(".") ? -1 : Gpr.parseIntSafe(fields[7]));
+		frame = frameType.convertFrame(frame);
 		String geneId = "", transcriptId = "";
 		String geneName = null;
 
