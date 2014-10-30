@@ -636,6 +636,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
+				|| args[0].equalsIgnoreCase("showtr") //
 		) {
 			command = args[argNum++].trim().toLowerCase();
 		}
@@ -842,6 +843,7 @@ public class SnpEff implements CommandLine {
 		else if (command.equalsIgnoreCase("len")) snpEffCmd = new SnpEffCmdLen();
 		else if (command.equalsIgnoreCase("gsa")) snpEffCmd = new SnpEffCmdGsa();
 		else if (command.equalsIgnoreCase("acat")) snpEffCmd = new SnpEffCmdAcat();
+		else if (command.equalsIgnoreCase("showtr")) snpEffCmd = new SnpEffCmdShowTr();
 		else throw new RuntimeException("Unknown command '" + command + "'");
 
 		// Copy values to specific command

@@ -1523,6 +1523,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Show a transcript as an ASCII Art
 	 */
 	public String toStringAsciiArt() {
+
+		// ASCII art for transcript
 		char art[] = new char[size()];
 		for (int i = start, j = 0; i <= end; i++, j++) {
 			Utr utr = findUtr(i);
@@ -1534,7 +1536,42 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			}
 		}
 
-		return new String(art);
+		// Sequence
+		StringBuilder seq = new StringBuilder();
+		for (int i = start; i <= end; i++) {
+			Exon exon = findExon(i);
+			if (exon != null) {
+				String s = exon.getSequence().toLowerCase();
+				if (exon.isStrandMinus()) s = GprSeq.reverseWc(s);
+
+				seq.append(s);
+				i += s.length() - 1;
+			} else seq.append('.');
+		}
+
+		// AA Sequence
+		StringBuilder aa = new StringBuilder();
+		char codon[] = new char[3];
+		int step = isStrandPlus() ? 1 : -1;
+		for (int i = (isStrandPlus() ? 0 : art.length - 1), j = 0; (i >= 0) && (i < art.length); i += step) {
+			if (art[i] == '3' || art[i] == '5') aa.append(' ');
+			else {
+				char b = seq.charAt(i);
+				if (b == 'a' || b == 'c' || b == 'g' || b == 't') {
+					codon[j++] = b;
+					if (j >= 3) {
+						j = 0;
+						String cod = new String(codon);
+						if (isStrandMinus()) cod = GprSeq.wc(cod); // Bases are already reversed, we only need WC complement
+						aa.append(" " + codonTable().aa(cod) + " ");
+					}
+				} else aa.append(' ');
+			}
+		}
+
+		String aaStr = isStrandPlus() ? aa.toString() : aa.reverse().toString();
+
+		return new String(art) + "\n" + seq + "\n" + aaStr;
 	}
 
 	/**
