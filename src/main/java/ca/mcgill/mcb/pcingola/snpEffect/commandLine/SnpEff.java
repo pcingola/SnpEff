@@ -169,7 +169,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-						);
+				);
 			}
 		}
 	}
@@ -243,7 +243,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-					);
+			);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -281,6 +281,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) Timer.showStdErr("Creating empty database (no genome).");
 			SnpEffectPredictor snpEffectPredictor = new SnpEffectPredictor(new Genome());
 			config.setSnpEffectPredictor(snpEffectPredictor);
+			config.setErrorOnMissingChromo(false); // All chromosome will be missing (no genome)
 			config.setErrorChromoHit(false); // We don't have chromosomes, so we de-activate this error.
 		} else if (onlyRegulation) {
 			// Create predictor
@@ -637,7 +638,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("showtr") //
-				) {
+		) {
 			command = args[argNum++].trim().toLowerCase();
 		}
 
@@ -861,6 +862,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.motif = motif;
 		snpEffCmd.multiThreaded = multiThreaded;
 		snpEffCmd.nextProt = nextProt;
+		snpEffCmd.noGenome = noGenome;
 		snpEffCmd.numWorkers = numWorkers;
 		snpEffCmd.onlyProtein = onlyProtein;
 		snpEffCmd.onlyRegulation = onlyRegulation;

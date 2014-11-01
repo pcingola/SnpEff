@@ -598,10 +598,14 @@ public class SnpEffectPredictor implements Serializable {
 		if (variant.isDel()) {
 			String chromoName = variant.getChromosomeName();
 			Chromosome chr = genome.getChromosome(chromoName);
-			double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
-			if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
-				variantEffects.addEffect(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
-				return variantEffects;
+
+			// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
+			if (chr != null) {
+				double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
+				if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
+					variantEffects.addEffect(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
+					return variantEffects;
+				}
 			}
 		}
 

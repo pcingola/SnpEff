@@ -389,9 +389,11 @@ public enum EffectType {
 		case UTR_5_DELETED:
 			return "5_prime_UTR_truncation+exon_loss_variant";
 
+		case CUSTOM:
+			return "custom";
+
 		case NONE:
 		case GENOME:
-		case CUSTOM:
 			return "";
 
 		default:
