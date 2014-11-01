@@ -667,6 +667,7 @@ public class SnpEff implements CommandLine {
 					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
 					else usage("Option '-interval' without config interval_file argument");
 				} else if (arg.equalsIgnoreCase("-motif")) motif = true; // Use motif database
+				else if (arg.equalsIgnoreCase("-nogenome")) noGenome = true; // Do not load genome
 				else if (arg.equalsIgnoreCase("-noMotif")) motif = false; // Disable use of motif database
 				else if (arg.equalsIgnoreCase("-nextProt")) nextProt = true; // Use NextProt database
 				else if (arg.equalsIgnoreCase("-noNextProt")) nextProt = false; // Disable use of NextProt database
@@ -934,6 +935,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
 		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database).");
 		System.err.println("\t-nextProt                    : Annotate using NextProt (requires NextProt database).");
+		System.err.println("\t-noGenome                    : Do not load any genomic database (e.g. annotate using custom files).");
 		System.err.println("\t-noMotif                     : Disable motif annotations.");
 		System.err.println("\t-noNextProt                  : Disable NextProt annotations.");
 		System.err.println("\t-onlyReg                     : Only use regulation tracks.");
