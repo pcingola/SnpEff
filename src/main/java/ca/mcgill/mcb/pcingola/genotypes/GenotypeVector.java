@@ -37,8 +37,6 @@ public class GenotypeVector implements Serializable {
 
 	/**
 	 * Bit number to use
-	 * @param pos
-	 * @return
 	 */
 	int pos2bit(int pos) {
 		return (pos & 0x03) << 1;
@@ -46,8 +44,6 @@ public class GenotypeVector implements Serializable {
 
 	/**
 	 * Bit mask
-	 * @param pos
-	 * @return
 	 */
 	int pos2bitMask(int pos) {
 		return mask[(pos & 0x03)];
@@ -55,8 +51,6 @@ public class GenotypeVector implements Serializable {
 
 	/**
 	 * Convert position to byte number
-	 * @param pos
-	 * @return
 	 */
 	int pos2byte(int pos) {
 		return pos / 4;
