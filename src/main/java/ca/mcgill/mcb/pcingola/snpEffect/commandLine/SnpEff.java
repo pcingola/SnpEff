@@ -712,6 +712,12 @@ public class SnpEff implements CommandLine {
 		shiftArgs = argsList.toArray(new String[0]);
 
 		if (command.isEmpty()) command = "eff"; // Default command is 'eff'
+
+		// Show version and command
+		if (!help && (verbose || debug)) {
+			Timer.showStdErr("SnpEff version " + VERSION);
+			Timer.showStdErr("Command: '" + command + "'");
+		}
 	}
 
 	/**
@@ -894,7 +900,7 @@ public class SnpEff implements CommandLine {
 	@Override
 	public void usage(String message) {
 		if (message != null) System.err.println("Error: " + message + "\n");
-		System.err.println("snpEff version " + VERSION);
+		System.err.println("SnpEff version " + VERSION);
 		System.err.println("Usage: snpEff [command] [options] [files]");
 		System.err.println("\nRun 'java -jar snpEff.jar command' for help on each specific command");
 		System.err.println("\nAvailable commands: ");
