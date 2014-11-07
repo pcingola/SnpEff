@@ -90,13 +90,24 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		int codonBase = 0;
 		for (Exon exon : sortedStrand()) {
 			int min = isStrandPlus() ? exon.getStart() : exon.getEnd();
-			for (int pos = min; exon.intersects(pos) && aaBaseNum < aa2pos.length; pos += step)
+
+			int aaIdxStart = -1, aaIdxEnd = -1;
+
+			for (int pos = min; exon.intersects(pos) && aaBaseNum < aa2pos.length; pos += step) {
 				// Is this within a CDS?
 				if ((cdsMin <= pos) && (pos <= cdsMax)) {
+					// Update AA indexes for this exon
+					if (aaIdxStart < 0) aaIdxStart = aaBaseNum;
+					aaIdxEnd = aaBaseNum;
+
 					// First codon base? Add to map
 					if (codonBase == 0) aa2pos[aaBaseNum++] = pos;
 					codonBase = (codonBase + 1) % 3;
 				}
+			}
+
+			// Update exons' AA indexes
+			if (aaIdxStart >= 0) exon.setAaIdx(aaIdxStart, aaIdxEnd);
 		}
 
 		return aa2pos;
@@ -708,6 +719,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public Exon findExon(int pos) {
 		for (Exon exon : this)
 			if (exon.intersects(pos)) return exon;
+		return null;
+	}
+
+	/**
+	 * Return the Exon that hits 'marker'
+	 * @return An exon intersecting 'pos' (null if not found)
+	 */
+	public Exon findExon(Marker marker) {
+		for (Exon exon : this)
+			if (exon.intersects(marker)) return exon;
 		return null;
 	}
 

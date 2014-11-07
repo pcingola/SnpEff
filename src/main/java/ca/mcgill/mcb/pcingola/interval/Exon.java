@@ -34,6 +34,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 	byte frame = -1; // Frame can be {-1, 0, 1, 2}, where '-1' means unknown
 	int rank; // Exon rank in transcript
+	int aaIdxStart = -1, aaIdxEnd = -1; // First and last AA indexes that intersect with this exon
 	SpliceSiteAcceptor spliceSiteAcceptor;
 	SpliceSiteDonor spliceSiteDonor;
 	SpliceSiteRegion spliceSiteRegionStart, spliceSiteRegionEnd;
@@ -183,6 +184,14 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		return true;
 	}
 
+	public int getAaIdxEnd() {
+		return aaIdxEnd;
+	}
+
+	public int getAaIdxStart() {
+		return aaIdxStart;
+	}
+
 	@Override
 	public int getFrame() {
 		return frame;
@@ -296,7 +305,12 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 				+ "\t" + ssdId //
 				+ "\t" + ssaId //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
-		;
+				;
+	}
+
+	public void setAaIdx(int aaIdxStart, int aaIdxEnd) {
+		this.aaIdxStart = aaIdxStart;
+		this.aaIdxEnd = aaIdxEnd;
 	}
 
 	/**
