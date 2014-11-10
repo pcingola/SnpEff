@@ -11,8 +11,8 @@
 # Main
 #-------------------------------------------------------------------------------
 
-show = FALSE	# Used for production
 show = TRUE		# Used for debugging
+show = FALSE	# Used for production
 
 pvalCoefThreshold = 10^-12	# Adjust only if linearmodel p-value is less than this
 
