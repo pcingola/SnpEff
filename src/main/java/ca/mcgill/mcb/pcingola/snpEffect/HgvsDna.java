@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.interval.SpliceSiteRegion;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
@@ -76,7 +77,10 @@ public class HgvsDna extends Hgvs {
 	 */
 	protected String pos() {
 		// Intron
-		if (variantEffect.isIntron() || variantEffect.isSpliceSiteCore()) {
+		if (variantEffect.isIntron() //
+				|| variantEffect.isSpliceSiteCore() //
+				|| (variantEffect.isSpliceRegion() && ((SpliceSiteRegion) variantEffect.getMarker()).isIntronPart()) //
+		) {
 			int start, end;
 
 			switch (variant.getVariantType()) {
@@ -173,7 +177,7 @@ public class HgvsDna extends Hgvs {
 		if (intron == null) {
 			Gpr.debug("variantEffect: " + variantEffect //
 					+ "\n\tMarker: " + variantEffect.getMarker() //
-					);
+			);
 			return null;
 		}
 

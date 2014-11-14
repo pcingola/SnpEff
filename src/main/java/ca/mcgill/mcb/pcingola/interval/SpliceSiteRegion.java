@@ -34,4 +34,12 @@ public class SpliceSiteRegion extends SpliceSite {
 	public boolean intersectsCoreSpliceSite(Marker marker) {
 		return false;
 	}
+
+	public boolean isExonPart() {
+		return parent instanceof Exon;
+	}
+
+	public boolean isIntronPart() {
+		return parent instanceof Intron;
+	}
 }
