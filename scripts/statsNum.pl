@@ -18,6 +18,6 @@ for( $count = $lines = 0 ; $l = <STDIN> ; $lines++ ) {
 	}
 }
 
-$avg = 0
+$avg = 0;
 $avg = $sum / $count if $count > 0;
 print "lines: $lines\tnumber of values: $count\tmin: $min\tmax: $max\tsum: $sum\tavg: $avg\n";
