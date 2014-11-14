@@ -28,10 +28,10 @@ public class TestCasesZzz extends TestCase {
 	 * Using non-standard splice size (15 instead of 2)
 	 * may cause some HGVS annotations issues
 	 */
-	public void test_14_splice_region_Hgvs() {
+	public void test_15_walk_and_roll_1() {
 		Gpr.debug("Test");
-		String genome = "testHg19Chr1";
-		String vcf = "tests/hgvs_splice_region.vcf";
+		String genome = "testHg19Chr17";
+		String vcf = "tests/hgvs_walk_and_roll.1.vcf";
 
 		// Create SnpEff
 		String args[] = { genome, vcf };
