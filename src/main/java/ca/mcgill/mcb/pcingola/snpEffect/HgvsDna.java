@@ -79,7 +79,7 @@ public class HgvsDna extends Hgvs {
 		// Intron
 		if (variantEffect.isIntron() //
 				|| variantEffect.isSpliceSiteCore() //
-				|| (variantEffect.isSpliceRegion() && ((SpliceSiteRegion) variantEffect.getMarker()).isIntronPart()) //
+				|| (variantEffect.isSpliceSiteRegion() && ((SpliceSiteRegion) variantEffect.getMarker()).isIntronPart()) //
 		) {
 			int start, end;
 
