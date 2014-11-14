@@ -55,7 +55,11 @@ public class TestCasesZzz extends TestCase {
 			System.out.println("\tHGVS_P: " + ve.getInfo("HGVS_P"));
 
 			for (VcfEffect veff : ve.parseEffects()) {
-				if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna() + "\t" + veff.getHgvsProt() + "\t");
+				if (verbose) System.out.println("\t" + veff //
+						+ "\n\tEFF    : " + veff.getEffectsStr() //
+						+ "\n\tHGVS_C : " + veff.getHgvsDna() //
+						+ "\n\tHGVS_P : " + veff.getHgvsProt() //
+						+ "\n");
 			}
 		}
 
