@@ -18,7 +18,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesZzz extends TestCase {
 
 	boolean debug = false;
-	boolean verbose = false || debug;
+	boolean verbose = true || debug;
 
 	public TestCasesZzz() {
 		super();
@@ -46,15 +46,17 @@ public class TestCasesZzz extends TestCase {
 
 		// Run & get result (single line)
 		List<VcfEntry> results = snpeff.run(true);
-		VcfEntry ve = results.get(0);
 
 		// Make sure the spleice site is annotatted as "c.1909+12delT" (instead of "c.1910delT")
 		boolean ok = false;
-		for (VcfEffect veff : ve.parseEffects()) {
-			if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
-			ok |= veff.getEffectsStr().equals("SPLICE_SITE_REGION") //
-					&& veff.getTranscriptId().equals("NM_001232.3") //
-					&& veff.getHgvsDna().equals("c.420+6T>C");
+		for (VcfEntry ve : results) {
+			System.out.println(ve);
+			System.out.println("\tHGVS_C: " + ve.getInfo("HGVS_C"));
+			System.out.println("\tHGVS_P: " + ve.getInfo("HGVS_P"));
+
+			for (VcfEffect veff : ve.parseEffects()) {
+				if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna() + "\t" + veff.getHgvsProt() + "\t");
+			}
 		}
 
 		Assert.assertTrue(ok);
