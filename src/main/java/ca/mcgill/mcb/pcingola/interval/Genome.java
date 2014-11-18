@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
@@ -37,6 +38,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	HashMap<String, Chromosome> chromosomes;
 	Genes genes; // All genes, transcripts, exons, UTRs, CDS, etc.
 	Boolean codingInfo = null; // Do we have coding info from genes?
+	GenomicSequences genomicSequences; // Store all genomic sequences here
 
 	/**
 	 * Create a genome from a faidx file.
@@ -71,6 +73,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		chromosomeNames = new ArrayList<String>();
 		chromosomes = new HashMap<String, Chromosome>();
 		genes = new Genes(this);
+		genomicSequences = new GenomicSequences(this);
 	}
 
 	public Genome(String version) {
@@ -80,6 +83,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		chromosomeNames = new ArrayList<String>();
 		chromosomes = new HashMap<String, Chromosome>();
 		genes = new Genes(this);
+		genomicSequences = new GenomicSequences(this);
 	}
 
 	public Genome(String version, Properties properties) {
@@ -87,6 +91,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		this.version = version;
 		type = EffectType.GENOME;
 		genes = new Genes(this);
+		genomicSequences = new GenomicSequences(this);
 
 		species = properties.getProperty(version + ".genome");
 		if (species == null) throw new RuntimeException("Property: '" + version + ".genome' not found");
@@ -107,15 +112,16 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	}
 
-	public Genome(String species, String version) {
-		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, false, version);
-		this.species = species;
-		this.version = version;
-		type = EffectType.GENOME;
-		chromosomeNames = new ArrayList<String>();
-		chromoFastaFiles = new String[0];
-		chromosomes = new HashMap<String, Chromosome>();
-	}
+	//	public Genome(String species, String version) {
+	//		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, false, version);
+	//		this.species = species;
+	//		this.version = version;
+	//		type = EffectType.GENOME;
+	//		chromosomeNames = new ArrayList<String>();
+	//		chromoFastaFiles = new String[0];
+	//		chromosomes = new HashMap<String, Chromosome>();
+	//		genomicSequences = new GenomicSequences(this);
+	//	}
 
 	/**
 	 * Add a chromosome
@@ -384,7 +390,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				+ "\t" + version //
 				+ "\t" + species //
 				+ "\t" + markerSerializer.save((Iterable) chromosomes.values()) //
-		;
+				;
 	}
 
 	/**

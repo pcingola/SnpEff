@@ -132,9 +132,23 @@ public abstract class SnpEffPredictorFactory {
 	}
 
 	/**
-	 * Add sequences to exon intervals
+	 * Add a marker to the collection
+	 * @param marker
 	 */
-	protected void addExonSequences(String chr, String chrSeq) {
+	protected void addMarker(Marker marker, boolean unique) {
+		String key = marker.getId();
+		if (unique && markersById.containsKey(key)) throw new RuntimeException("Marker '" + key + "' already exists");
+		markersById.put(key, marker);
+	}
+
+	/**
+	 * Add genomic reference sequences
+	 */
+	protected void addSequences(String chr, String chrSeq) {
+		// Update chromosome length
+		chromoLen(chr, chrSeq.length());
+
+		// Add sequences for each exon
 		int seqsAdded = 0, seqsIgnored = 0;
 		if (verbose) System.out.print("\t\tAdding genomic sequences to exons: ");
 
@@ -169,16 +183,6 @@ public abstract class SnpEffPredictorFactory {
 		if (verbose) System.out.println("\tDone (" + seqsAdded + " sequences added, " + seqsIgnored + " ignored).");
 		totalSeqsAdded += seqsAdded;
 		totalSeqsIgnored += seqsIgnored;
-	}
-
-	/**
-	 * Add a marker to the collection
-	 * @param marker
-	 */
-	protected void addMarker(Marker marker, boolean unique) {
-		String key = marker.getId();
-		if (unique && markersById.containsKey(key)) throw new RuntimeException("Marker '" + key + "' already exists");
-		markersById.put(key, marker);
 	}
 
 	/**
@@ -627,9 +631,7 @@ public abstract class SnpEffPredictorFactory {
 				for (String seq : ffi) {
 					String chromo = ffi.getName();
 					if (verbose) System.out.println("\t\tReading sequence '" + chromo + "', length: " + seq.length());
-					Chromosome chromoInt = getOrCreateChromosome(chromo);
-					chromoInt.setLength(seq.length()); // Set chromosome length
-					addExonSequences(chromo, seq); // Add all sequences
+					addSequences(chromo, seq); // Add all sequences
 				}
 				return;
 			} else if (verbose) System.out.println("\tFASTA file: '" + file + "' not found.");

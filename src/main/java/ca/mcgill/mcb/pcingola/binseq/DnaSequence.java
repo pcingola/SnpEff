@@ -31,7 +31,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Empty sequence singleton
-	 * @return
 	 */
 	public static DnaSequence empty() {
 		if (EMPTY == null) EMPTY = new DnaSequence("");
@@ -64,7 +63,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Create a new sequence
-	 * @return
 	 */
 	protected DnaSequence factory() {
 		return new DnaSequence(null);
@@ -89,9 +87,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Get a few bases from this sequence
-	 * @param index
-	 * @param len
-	 * @return
 	 */
 	public String getBases(int index, int len) {
 		char bases[] = new char[len];
@@ -110,8 +105,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Return the base at position 'index'
-	 * @param index
-	 * @return
 	 */
 	@Override
 	public int getCode(int index) {
@@ -232,8 +225,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Read data in binary format 
-	 * @param dataOutStream
-	 * @throws IOException
 	 */
 	@Override
 	public BinarySequence read(DataInputStream dataInStream) throws IOException {
@@ -248,8 +239,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Read data in binary format 
-	 * @param dataOutStream
-	 * @throws IOException
 	 */
 	@Override
 	protected void readDataStream(DataInputStream dataInStream) throws IOException {
@@ -300,7 +289,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Set sequence
-	 * @param seqStr
 	 */
 	@Override
 	public void set(String seqStr) {
@@ -362,8 +350,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Write data in binary format 
-	 * @param dataOutStream
-	 * @throws IOException
 	 */
 	@Override
 	public void write(DataOutputStream dataOutStream) throws IOException {

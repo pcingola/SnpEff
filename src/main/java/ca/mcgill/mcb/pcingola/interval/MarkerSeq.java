@@ -10,7 +10,6 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  * Marker with a DNA sequence
  *
  * @author pcingola
- *
  */
 public class MarkerSeq extends Marker {
 

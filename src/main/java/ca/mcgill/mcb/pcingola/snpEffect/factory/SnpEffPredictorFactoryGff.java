@@ -202,10 +202,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				line = reader.readLine();
 				if (line.startsWith(">")) { // New fasta sequence
 					// Set chromosome sequences and length (create it if it doesn't exist)
-					if (chromoName != null) {
-						chromoLen(chromoName, chromoSb.length());
-						addExonSequences(chromoName, chromoSb.toString()); // Add all sequences
-					}
+					if (chromoName != null) addSequences(chromoName, chromoSb.toString()); // Add all sequences
 
 					// Get sequence name
 					int idxSpace = line.indexOf(' ');
@@ -222,7 +219,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// Set chromosome sequneces and length (create it if it doesn't exist)
 			if (chromoName != null) {
 				chromoLen(chromoName, chromoSb.length());
-				addExonSequences(chromoName, chromoSb.toString()); // Add all sequences
+				addSequences(chromoName, chromoSb.toString()); // Add all sequences
 			} else warning("Ignoring sequences for '" + chromoName + "'. Cannot find chromosome"); // Chromosome not found
 
 			reader.close();
