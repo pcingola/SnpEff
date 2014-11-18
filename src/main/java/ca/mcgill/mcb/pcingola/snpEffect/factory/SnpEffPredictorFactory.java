@@ -148,8 +148,11 @@ public abstract class SnpEffPredictorFactory {
 		// Update chromosome length
 		chromoLen(chr, chrSeq.length());
 
-		// Add sequences for each exon
+		// Add sequences for each gene
 		int seqsAdded = 0, seqsIgnored = 0;
+		if (verbose) System.out.print("\t\tAdding genomic sequences to genes: ");
+		genome.getGenomicSequences().addGeneSequences(chr, chrSeq);
+
 		if (verbose) System.out.print("\t\tAdding genomic sequences to exons: ");
 
 		// Find and add sequences for all exons in this chromosome

@@ -63,6 +63,7 @@ public enum EffectType {
 	, EXON //
 	, TRANSCRIPT //
 	, GENE //
+	, SEQUENCE //
 	, CHROMOSOME //
 	, GENOME //
 	, NONE //

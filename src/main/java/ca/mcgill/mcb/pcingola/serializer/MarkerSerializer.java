@@ -14,6 +14,7 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.MarkerParentId;
+import ca.mcgill.mcb.pcingola.interval.MarkerSeq;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
@@ -69,6 +70,9 @@ public class MarkerSerializer {
 
 		for (Chromosome chr : genome)
 			markers.add(chr);
+
+		for (MarkerSeq ms : genome.getGenomicSequences())
+			markers.add(ms);
 
 		for (Gene g : genome.getGenes())
 			markers.add(g);
@@ -241,8 +245,6 @@ public class MarkerSerializer {
 
 	/**
 	 * Save all markers
-	 * @param markersCollection
-	 * @return
 	 */
 	public String save(Iterable<Marker> markersCollection) {
 		StringBuilder idStr = new StringBuilder();
@@ -256,7 +258,6 @@ public class MarkerSerializer {
 
 	/**
 	 * Save a marker
-	 * @param m
 	 */
 	public int save(Marker m) {
 		if (m == null) return -1;

@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import ca.mcgill.mcb.pcingola.binseq.DnaNSequence;
 import ca.mcgill.mcb.pcingola.binseq.DnaSequence;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
@@ -19,12 +20,14 @@ public class MarkerSeq extends Marker {
 
 	public MarkerSeq() {
 		super();
+		type = EffectType.SEQUENCE;
 		strandMinus = false;
 		sequence = DnaSequence.empty();
 	}
 
 	public MarkerSeq(Marker parent, int start, int end, boolean strandMinus, String id) {
 		super(parent, start, end, strandMinus, id);
+		type = EffectType.SEQUENCE;
 		this.strandMinus = strandMinus;
 		sequence = DnaSequence.empty();
 	}

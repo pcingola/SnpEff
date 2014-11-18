@@ -38,7 +38,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	HashMap<String, Chromosome> chromosomes;
 	Genes genes; // All genes, transcripts, exons, UTRs, CDS, etc.
 	Boolean codingInfo = null; // Do we have coding info from genes?
-	GenomicSequences genomicSequences; // Store all genomic sequences here
+	GenomicSequences genomicSequences; // Store all genomic sequences (of interest) here
 
 	/**
 	 * Create a genome from a faidx file.
@@ -112,6 +112,14 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	}
 
+	/**
+	 * Add a chromosome
+	 */
+	public synchronized void add(Chromosome chromo) {
+		chromosomeNames.add(chromo.getId());
+		chromosomes.put(chromo.getId(), chromo);
+	}
+
 	//	public Genome(String species, String version) {
 	//		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, false, version);
 	//		this.species = species;
@@ -122,14 +130,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	//		chromosomes = new HashMap<String, Chromosome>();
 	//		genomicSequences = new GenomicSequences(this);
 	//	}
-
-	/**
-	 * Add a chromosome
-	 */
-	public synchronized void add(Chromosome chromo) {
-		chromosomeNames.add(chromo.getId());
-		chromosomes.put(chromo.getId(), chromo);
-	}
 
 	/**
 	 * Get a sorted list of chromosomes
@@ -235,6 +235,10 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		genesSorted.addAll(genes.values());
 		Collections.sort(genesSorted);
 		return genesSorted;
+	}
+
+	public GenomicSequences getGenomicSequences() {
+		return genomicSequences;
 	}
 
 	/**

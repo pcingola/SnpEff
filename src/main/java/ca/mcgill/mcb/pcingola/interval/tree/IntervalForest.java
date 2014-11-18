@@ -18,6 +18,10 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 @SuppressWarnings("serial")
 public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 	HashMap<String, IntervalTree> forest;
 
 	public IntervalForest() {
@@ -76,6 +80,10 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 		}
 
 		return intervalTree;
+	}
+
+	public Collection<String> getTreeNames() {
+		return forest.keySet();
 	}
 
 	/**
@@ -174,8 +182,6 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	/**
 	 * Obtain all intervals that intersect with 'marker.start'
-	 * @param interval
-	 * @return
 	 */
 	public Markers stab(Marker marker) {
 		return stab(marker.getChromosomeName(), marker.getStart());
@@ -183,8 +189,6 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	/**
 	 * Obtain all intervals that intersect with 'point'
-	 * @param interval
-	 * @return
 	 */
 	public Markers stab(String chromo, int point) {
 		return getTree(chromo).stab(point);
