@@ -137,7 +137,6 @@ public class TestCasesZzz extends TestCase {
 						+ "\n");
 			}
 		}
-
 		Assert.assertTrue(ok);
 	}
 

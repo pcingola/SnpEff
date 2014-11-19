@@ -130,7 +130,7 @@ public class MarkerSerializer {
 				// First line should be 'header' showing version number
 				String fields[] = line.split("\t");
 				if (fields.length > 1) {
-					String soft = fields[1];
+					String soft = fields[0];
 					String versionNumber = fields[1];
 
 					// Check for compatibility
@@ -139,7 +139,7 @@ public class MarkerSerializer {
 							+ "\n\tDatabase version : '" + versionNumber + "'"//
 							+ "\n\tProgram version  : '" + SnpEff.VERSION_MAJOR + "'" //
 							+ "\nTry installing the appropriate database." //
-							);
+					);
 				}
 			} else {
 				parsedField = 0;
@@ -288,7 +288,7 @@ public class MarkerSerializer {
 			outFile = new PrintStream(new GZIPOutputStream(new FileOutputStream(fileName)));
 
 			// Write header first
-			outFile.print(SnpEff.SOFTWARE_NAME + "\t" + SnpEff.VERSION_SHORT);
+			outFile.print(SnpEff.SOFTWARE_NAME + "\t" + SnpEff.VERSION_MAJOR + "\n");
 
 			// Serialize all markers
 			for (Marker m : markers)
