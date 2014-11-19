@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import ca.mcgill.mcb.pcingola.binseq.DnaNSequence;
 import ca.mcgill.mcb.pcingola.binseq.DnaSequence;
+import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
@@ -212,6 +213,26 @@ public class MarkerSeq extends Marker {
 	public boolean hasSequence() {
 		if (size() <= 0) return true; // This interval has zero length, so sequence should be empty anyway (it is OK if its empty)
 		return (sequence != null) && (!sequence.isEmpty());
+	}
+
+	/**
+	 * Parse a line from a serialized file
+	 */
+	@Override
+	public void serializeParse(MarkerSerializer markerSerializer) {
+		super.serializeParse(markerSerializer);
+		setSequence(markerSerializer.getNextField());
+	}
+
+	/**
+	 * Create a string to serialize to a file
+	 * @return
+	 */
+	@Override
+	public String serializeSave(MarkerSerializer markerSerializer) {
+		return super.serializeSave(markerSerializer) //
+				+ "\t" + sequence.getSequence() //
+				;
 	}
 
 	/**

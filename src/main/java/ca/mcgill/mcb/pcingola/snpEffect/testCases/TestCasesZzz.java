@@ -24,47 +24,47 @@ public class TestCasesZzz extends TestCase {
 		super();
 	}
 
-	/**
-	 * Using non-standard splice size (15 instead of 2)
-	 * may cause some HGVS annotations issues
-	 */
-	public void test_15_walk_and_roll_1() {
-		Gpr.debug("Test");
-		String genome = "testHg19Chr17";
-		String vcf = "tests/hgvs_walk_and_roll.1.vcf";
-
-		// Create SnpEff
-		String args[] = { genome, vcf };
-		SnpEffCmdEff snpeff = new SnpEffCmdEff();
-		snpeff.parseArgs(args);
-		snpeff.setDebug(debug);
-		snpeff.setVerbose(verbose);
-		snpeff.setSupressOutput(!verbose);
-
-		// The problem appears when splice site is large (in this example)
-		snpeff.setUpDownStreamLength(0);
-
-		// Run & get result (single line)
-		List<VcfEntry> results = snpeff.run(true);
-
-		// Make sure the spleice site is annotatted as "c.1909+12delT" (instead of "c.1910delT")
-		boolean ok = false;
-		for (VcfEntry ve : results) {
-			System.out.println(ve);
-			System.out.println("\tHGVS_C: " + ve.getInfo("HGVS_C"));
-			System.out.println("\tHGVS_P: " + ve.getInfo("HGVS_P"));
-
-			for (VcfEffect veff : ve.parseEffects()) {
-				if (verbose) System.out.println("\t" + veff //
-						+ "\n\tEFF    : " + veff.getEffectsStr() //
-						+ "\n\tHGVS_C : " + veff.getHgvsDna() //
-						+ "\n\tHGVS_P : " + veff.getHgvsProt() //
-						+ "\n");
-			}
-		}
-
-		Assert.assertTrue(ok);
-	}
+	//	/**
+	//	 * Using non-standard splice size (15 instead of 2)
+	//	 * may cause some HGVS annotations issues
+	//	 */
+	//	public void test_15_walk_and_roll_1() {
+	//		Gpr.debug("Test");
+	//		String genome = "testHg19Chr17";
+	//		String vcf = "tests/hgvs_walk_and_roll.1.vcf";
+	//
+	//		// Create SnpEff
+	//		String args[] = { genome, vcf };
+	//		SnpEffCmdEff snpeff = new SnpEffCmdEff();
+	//		snpeff.parseArgs(args);
+	//		snpeff.setDebug(debug);
+	//		snpeff.setVerbose(verbose);
+	//		snpeff.setSupressOutput(!verbose);
+	//
+	//		// The problem appears when splice site is large (in this example)
+	//		snpeff.setUpDownStreamLength(0);
+	//
+	//		// Run & get result (single line)
+	//		List<VcfEntry> results = snpeff.run(true);
+	//
+	//		// Make sure the spleice site is annotatted as "c.1909+12delT" (instead of "c.1910delT")
+	//		boolean ok = false;
+	//		for (VcfEntry ve : results) {
+	//			System.out.println(ve);
+	//			System.out.println("\tHGVS_C: " + ve.getInfo("HGVS_C"));
+	//			System.out.println("\tHGVS_P: " + ve.getInfo("HGVS_P"));
+	//
+	//			for (VcfEffect veff : ve.parseEffects()) {
+	//				if (verbose) System.out.println("\t" + veff //
+	//						+ "\n\tEFF    : " + veff.getEffectsStr() //
+	//						+ "\n\tHGVS_C : " + veff.getHgvsDna() //
+	//						+ "\n\tHGVS_P : " + veff.getHgvsProt() //
+	//						+ "\n");
+	//			}
+	//		}
+	//
+	//		Assert.assertTrue(ok);
+	//	}
 
 	//	/**
 	//	 * Compare to SAVANT's case (poster on BRCA2 mutations)
@@ -100,4 +100,47 @@ public class TestCasesZzz extends TestCase {
 	//
 	//		Assert.assertTrue(ok);
 	//	}
+
+	/**
+	 * Using non-standard splice size (15 instead of 2)
+	 * may cause some HGVS annotations issues
+	 */
+	public void test_zzz() {
+		Gpr.debug("Test");
+		String genome = "zzz";
+		String vcf = "tests/zzz.vcf";
+
+		// Create SnpEff
+		String args[] = { genome, vcf };
+		SnpEffCmdEff snpeff = new SnpEffCmdEff();
+		snpeff.parseArgs(args);
+		snpeff.setDebug(debug);
+		snpeff.setVerbose(verbose);
+		snpeff.setSupressOutput(!verbose);
+
+		// The problem appears when splice site is large (in this example)
+		snpeff.setUpDownStreamLength(0);
+
+		// Run & get result (single line)
+		List<VcfEntry> results = snpeff.run(true);
+
+		// Make sure the spleice site is annotatted as "c.1909+12delT" (instead of "c.1910delT")
+		boolean ok = false;
+		for (VcfEntry ve : results) {
+			System.out.println(ve);
+			System.out.println("\tHGVS_C: " + ve.getInfo("HGVS_C"));
+			System.out.println("\tHGVS_P: " + ve.getInfo("HGVS_P"));
+
+			for (VcfEffect veff : ve.parseEffects()) {
+				if (verbose) System.out.println("\t" + veff //
+						+ "\n\tEFF    : " + veff.getEffectsStr() //
+						+ "\n\tHGVS_C : " + veff.getHgvsDna() //
+						+ "\n\tHGVS_P : " + veff.getHgvsProt() //
+						+ "\n");
+			}
+		}
+
+		Assert.assertTrue(ok);
+	}
+
 }

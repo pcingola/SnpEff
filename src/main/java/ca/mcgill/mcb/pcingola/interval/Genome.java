@@ -370,9 +370,25 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	}
 
 	/**
+	 * Save genome to file
+	 */
+	public void save(String fileName) {
+		// Create a list of 'markers' to save
+		Markers markers = new Markers();
+		markers.add(this);
+
+		for (Chromosome chr : this)
+			markers.add(chr);
+
+		for (Gene g : this.getGenes())
+			markers.add(g);
+
+		// Save markers to file
+		markers.save(fileName);
+	}
+
+	/**
 	 * Parse a line from a serialized file
-	 * @param line
-	 * @return
 	 */
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {
@@ -394,7 +410,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				+ "\t" + version //
 				+ "\t" + species //
 				+ "\t" + markerSerializer.save((Iterable) chromosomes.values()) //
-				;
+		;
 	}
 
 	/**

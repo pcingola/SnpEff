@@ -38,6 +38,7 @@ public abstract class SnpEffPredictorFactory {
 	boolean readSequences = true; // Do not read sequences from GFF file (this is only used for debugging)
 	boolean createRandSequences = false; // If sequences are not read frmo a file, create random sequences
 	boolean frameCorrection;
+	boolean storeSequences = false; // Store full gene sequences (in separate 'sequence.chr*.bin' files)
 	int lineNum;
 	int inOffset; // This amount is subtracted to all position coordinates
 	int totalSeqsAdded = 0, totalSeqsIgnored = 0; // Number of sequences added and ignored
@@ -150,8 +151,11 @@ public abstract class SnpEffPredictorFactory {
 
 		// Add sequences for each gene
 		int seqsAdded = 0, seqsIgnored = 0;
-		if (verbose) System.out.print("\t\tAdding genomic sequences to genes: ");
-		genome.getGenomicSequences().addGeneSequences(chr, chrSeq);
+
+		if (storeSequences) {
+			if (verbose) System.out.print("\t\tAdding genomic sequences to genes: ");
+			genome.getGenomicSequences().addGeneSequences(chr, chrSeq);
+		}
 
 		if (verbose) System.out.print("\t\tAdding genomic sequences to exons: ");
 
@@ -690,6 +694,10 @@ public abstract class SnpEffPredictorFactory {
 	 */
 	public void setReadSequences(boolean readSequences) {
 		this.readSequences = readSequences;
+	}
+
+	public void setStoreSequences(boolean storeSequences) {
+		this.storeSequences = storeSequences;
 	}
 
 	public void setVerbose(boolean verbose) {

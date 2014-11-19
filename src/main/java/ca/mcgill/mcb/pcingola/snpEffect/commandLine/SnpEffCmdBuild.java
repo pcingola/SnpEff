@@ -37,6 +37,7 @@ public class SnpEffCmdBuild extends SnpEff {
 	GeneDatabaseFormat geneDatabaseFormat; // Database format (only used if 'buildDb' is active)
 	boolean storeAlignments; // Store alignments (used for some test cases)
 	boolean onlyRegulation = false; // Only build regulation tracks
+	boolean storeSequences = false; // Store full sequences
 	String cellType = null;
 	SnpEffCmdProtein snpEffCmdProtein;
 	SnpEffCmdCds snpEffCmdCds;
@@ -108,6 +109,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		// Create SnpEffPredictor
 		factory.setVerbose(verbose);
 		factory.setDebug(debug);
+		factory.setStoreSequences(storeSequences);
 		return factory.create();
 	}
 
@@ -152,23 +154,26 @@ public class SnpEffCmdBuild extends SnpEff {
 		this.args = args;
 		for (int i = 0; i < args.length; i++) {
 
+			String arg = args[i];
+
 			// Argument starts with '-'?
-			if (args[i].startsWith("-")) {
-				if (args[i].equalsIgnoreCase("-gff3")) geneDatabaseFormat = GeneDatabaseFormat.GFF3;
-				else if (args[i].equalsIgnoreCase("-gff2")) geneDatabaseFormat = GeneDatabaseFormat.GFF2;
-				else if (args[i].equalsIgnoreCase("-gtf22")) geneDatabaseFormat = GeneDatabaseFormat.GTF22;
-				else if (args[i].equalsIgnoreCase("-refseq")) geneDatabaseFormat = GeneDatabaseFormat.REFSEQ;
-				else if (args[i].equalsIgnoreCase("-genbank")) geneDatabaseFormat = GeneDatabaseFormat.GENBANK;
-				else if (args[i].equalsIgnoreCase("-knowngenes")) geneDatabaseFormat = GeneDatabaseFormat.KNOWN_GENES;
-				else if (args[i].equalsIgnoreCase("-embl")) geneDatabaseFormat = GeneDatabaseFormat.EMBL;
-				else if (args[i].equalsIgnoreCase("-txt")) geneDatabaseFormat = GeneDatabaseFormat.BIOMART;
-				else if (args[i].equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
-				else if (args[i].equalsIgnoreCase("-cellType")) {
+			if (arg.startsWith("-")) {
+				if (arg.equalsIgnoreCase("-gff3")) geneDatabaseFormat = GeneDatabaseFormat.GFF3;
+				else if (arg.equalsIgnoreCase("-gff2")) geneDatabaseFormat = GeneDatabaseFormat.GFF2;
+				else if (arg.equalsIgnoreCase("-gtf22")) geneDatabaseFormat = GeneDatabaseFormat.GTF22;
+				else if (arg.equalsIgnoreCase("-refseq")) geneDatabaseFormat = GeneDatabaseFormat.REFSEQ;
+				else if (arg.equalsIgnoreCase("-genbank")) geneDatabaseFormat = GeneDatabaseFormat.GENBANK;
+				else if (arg.equalsIgnoreCase("-knowngenes")) geneDatabaseFormat = GeneDatabaseFormat.KNOWN_GENES;
+				else if (arg.equalsIgnoreCase("-embl")) geneDatabaseFormat = GeneDatabaseFormat.EMBL;
+				else if (arg.equalsIgnoreCase("-txt")) geneDatabaseFormat = GeneDatabaseFormat.BIOMART;
+				else if (arg.equalsIgnoreCase("-storeSeqs")) storeSequences = true;
+				else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
+				else if (arg.equalsIgnoreCase("-cellType")) {
 					if ((i + 1) < args.length) cellType = args[++i];
 					else usage("Missing 'cellType' argument");
-				} else usage("Unknow option '" + args[i] + "'");
-			} else if (genomeVer.length() <= 0) genomeVer = args[i];
-			else usage("Unknow parameter '" + args[i] + "'");
+				} else usage("Unknow option '" + arg + "'");
+			} else if (genomeVer.length() <= 0) genomeVer = arg;
+			else usage("Unknow parameter '" + arg + "'");
 		}
 
 		// Check: Do we have all required parameters?
@@ -345,8 +350,9 @@ public class SnpEffCmdBuild extends SnpEff {
 		System.err.println("\t-gtf22                  : Use GTF 2.2 format. It implies '-1'. Default");
 		System.err.println("\t-knowngenes             : Use KnownGenes table from UCSC. It implies '-0'.");
 		System.err.println("\t-refseq                 : Use RefSeq table from UCSC. It implies '-0'.");
-		System.err.println("\t-txt                    : Use TXT format (obsolete).");
 		System.err.println("\t-onlyReg                : Only build regulation tracks.");
+		System.err.println("\t-storeSeqs              : Store sequence in binary files. Default: " + storeSequences);
+		System.err.println("\t-txt                    : Use TXT format (obsolete).");
 		System.err.println("\t-cellType <type>        : Only build regulation tracks for cellType <type>.");
 		System.err.println("\nGeneric options:");
 		System.err.println("\t-0                      : File positions are zero-based (same as '-inOffset 0 -outOffset 0')");

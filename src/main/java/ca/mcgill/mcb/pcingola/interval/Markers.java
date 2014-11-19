@@ -68,7 +68,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Add an interval to the collection
-	 * @param marker
 	 */
 	@Override
 	public boolean add(Marker marker) {
@@ -77,7 +76,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Add all intervals
-	 * @param markersToAdd
 	 */
 	public Markers add(Markers markersToAdd) {
 		markers.addAll(markersToAdd.markers);
@@ -86,7 +84,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Add all markers in this collection
-	 * @param intervalsMarkerIntervaloAdd
 	 */
 	@Override
 	public boolean addAll(Collection<? extends Marker> mm) {
@@ -113,8 +110,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Are all intervals equal?
-	 * @param intervals
-	 * @return
 	 */
 	public boolean equals(Markers intervals) {
 		if (intervals == null) return false;
@@ -196,7 +191,7 @@ public class Markers implements Serializable, Collection<Marker> {
 		// Intervals sorted by start
 		Markers intsSorted = new Markers();
 		intsSorted.add(this);
-		intsSorted.sort(false, false);
+		intsSorted.sort();
 
 		// Merge intervals
 		Markers intsMerged = new Markers();
@@ -329,7 +324,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Save to a file using a serializer
-	 * @param fileName
 	 */
 	public void save(String fileName) {
 		// Nothing to save

@@ -534,7 +534,8 @@ public class SnpEffCmdEff extends SnpEff {
 							inputFormat = InputFormat.BED;
 							outputFormat = OutputFormat.BED;
 							lossOfFunction = false;
-						} else usage("Unknown input file format '" + inFor + "'");
+						} else if (inFor.equals("TXT")) usage("Input format 'TXT' has been deprecated. Please use 'VCF' instead.");
+						else usage("Unknown input file format '" + inFor + "'");
 					} else usage("Missing input format in command line option '-i'");
 				}
 				//---
@@ -902,9 +903,9 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\t-chr <string>                   : Prepend 'string' to chromosome name (e.g. 'chr1' instead of '1'). Only on TXT output.");
 		System.err.println("\t-classic                        : Use old style annotaions instead of Sequence Ontology and Hgvs.");
 		System.err.println("\t-download                       : Download reference genome if not available. Default: " + download);
-		System.err.println("\t-i <format>                     : Input format [ vcf, txt, pileup, bed ]. Default: VCF.");
+		System.err.println("\t-i <format>                     : Input format [ vcf, bed ]. Default: VCF.");
 		System.err.println("\t-fileList                       : Input actually contains a list of files to process.");
-		System.err.println("\t-o <format>                     : Ouput format [ txt, vcf, gatk, bed, bedAnn ]. Default: VCF.");
+		System.err.println("\t-o <format>                     : Ouput format [ vcf, gatk, bed, bedAnn ]. Default: VCF.");
 		System.err.println("\t-s , -stats                     : Name of stats file (summary). Default is '" + DEFAULT_SUMMARY_FILE + "'");
 		System.err.println("\t-noStats                        : Do not create stats (summary) file");
 		System.err.println("\t-csvStats                       : Create CSV summary file instead of HTML");

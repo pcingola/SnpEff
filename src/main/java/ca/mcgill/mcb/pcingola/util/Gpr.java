@@ -597,8 +597,6 @@ public class Gpr {
 
 	/**
 	 * Remove extension from a file (if matches one of 'fileExtensions[]')
-	 * @param file
-	 * @return
 	 */
 	public static String removeExt(String file, String fileExtensions[]) {
 		for (String ext : fileExtensions)

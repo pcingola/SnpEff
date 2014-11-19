@@ -523,9 +523,33 @@ public class SnpEffectPredictor implements Serializable {
 	 * Save predictor to a binary file (specified by the configuration)
 	 */
 	public void save(Config config) {
+		// Save genome and markers
 		String databaseFile = config.getFileSnpEffectPredictor();
-		MarkerSerializer markerSerializer = new MarkerSerializer();
-		markerSerializer.save(databaseFile, this);
+		save(databaseFile);
+
+		// Save genomic sequences
+		genome.getGenomicSequences().setVerbose(config.isVerbose());
+		genome.getGenomicSequences().save(config.getBaseFileSequence());
+	}
+
+	/**
+	 * Save predictor to a binary file
+	 */
+	public void save(String fileName) {
+		// Add al markers
+		Markers markersToSave = new Markers();
+		markersToSave.add(genome);
+
+		for (Chromosome chr : genome)
+			markersToSave.add(chr);
+
+		for (Gene g : genome.getGenes())
+			markersToSave.add(g);
+
+		markersToSave.add(getMarkers());
+
+		// Save markers to file
+		markersToSave.save(fileName);
 	}
 
 	public void setSpliceRegionExonSize(int spliceRegionExonSize) {

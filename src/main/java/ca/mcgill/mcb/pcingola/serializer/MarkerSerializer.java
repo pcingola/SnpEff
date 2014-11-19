@@ -14,7 +14,6 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.MarkerParentId;
-import ca.mcgill.mcb.pcingola.interval.MarkerSeq;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
@@ -27,7 +26,6 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Utr3prime;
 import ca.mcgill.mcb.pcingola.interval.Utr5prime;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -58,24 +56,6 @@ public class MarkerSerializer {
 	public MarkerSerializer() {
 		byId = new HashMap<Integer, TxtSerializable>();
 		byMarker = new HashMap<TxtSerializable, Integer>();
-	}
-
-	/**
-	 * Add all data from 'genome' to markres
-	 * @param markers
-	 * @param genome
-	 */
-	protected void add(Markers markers, Genome genome) {
-		markers.add(genome);
-
-		for (Chromosome chr : genome)
-			markers.add(chr);
-
-		for (MarkerSeq ms : genome.getGenomicSequences())
-			markers.add(ms);
-
-		for (Gene g : genome.getGenes())
-			markers.add(g);
 	}
 
 	protected TxtSerializable getById(int id) {
@@ -133,8 +113,6 @@ public class MarkerSerializer {
 
 	/**
 	 * Load data from file
-	 *
-	 * @param fileName
 	 */
 	public Markers load(String fileName) {
 		//---
@@ -276,19 +254,7 @@ public class MarkerSerializer {
 	}
 
 	/**
-	 * Save a genome
-	 * @param fileName
-	 * @param genome
-	 */
-	public void save(String fileName, Genome genome) {
-		Markers markers = new Markers();
-		add(markers, genome);
-		save(fileName, markers); // Write
-	}
-
-	/**
 	 * Save data to file
-	 * @param fileName
 	 */
 	public void save(String fileName, Markers markers) {
 		try {
@@ -303,15 +269,4 @@ public class MarkerSerializer {
 		}
 	}
 
-	/**
-	 * Save all markers in snpEffectPredictor
-	 * @param fileName
-	 * @param genome
-	 */
-	public void save(String fileName, SnpEffectPredictor snpEffectPredictor) {
-		Markers markers = new Markers();
-		add(markers, snpEffectPredictor.getGenome());
-		markers.add(snpEffectPredictor.getMarkers());
-		save(fileName, markers);
-	}
 }
