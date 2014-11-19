@@ -395,6 +395,7 @@ public enum EffectType {
 
 		case NONE:
 		case GENOME:
+		case SEQUENCE:
 			return "";
 
 		default:
