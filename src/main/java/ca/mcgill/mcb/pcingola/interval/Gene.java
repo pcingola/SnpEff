@@ -430,6 +430,12 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
 
+		// TODO:
+		// If (using HGVS) AND (Gene on positive strand) {
+		//  	we must create a new version of the variants (both of them)
+		// }
+		// Then we can use the new variant for annotations
+		Gpr.debug("WALK & ROLL");
 		getGenome().getGenomicSequences().getSequence(this);
 
 		// Find effect for each transcript
