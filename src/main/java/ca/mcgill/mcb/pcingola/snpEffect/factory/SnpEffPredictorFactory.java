@@ -154,7 +154,8 @@ public abstract class SnpEffPredictorFactory {
 
 		if (storeSequences) {
 			if (verbose) System.out.print("\t\tAdding genomic sequences to genes: ");
-			genome.getGenomicSequences().addGeneSequences(chr, chrSeq);
+			int count = genome.getGenomicSequences().addGeneSequences(chr, chrSeq);
+			if (verbose) System.out.println("\tDone (" + count + " sequences added).");
 		}
 
 		if (verbose) System.out.print("\t\tAdding genomic sequences to exons: ");

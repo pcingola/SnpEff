@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.sf.samtools.util.RuntimeEOFException;
+import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -89,7 +90,7 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-					) snpEffectPredictor.add(m);
+			) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}
@@ -528,8 +529,9 @@ public class SnpEffectPredictor implements Serializable {
 		save(databaseFile);
 
 		// Save genomic sequences
-		genome.getGenomicSequences().setVerbose(config.isVerbose());
-		genome.getGenomicSequences().save();
+		GenomicSequences gs = genome.getGenomicSequences();
+		gs.setVerbose(config.isVerbose());
+		gs.save(config);
 	}
 
 	/**

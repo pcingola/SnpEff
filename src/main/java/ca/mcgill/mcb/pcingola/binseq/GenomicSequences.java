@@ -54,10 +54,8 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		// Get all genes in this chromosome
 		Markers markers = genesMarkers(chr, chrSeq.length());
 
-		// Collapse overlapping markers
-		Gpr.debug("Size before merge: " + markers.size());
+		// Merge (collapse) overlapping markers
 		markers = markers.merge();
-		Gpr.debug("Size after merge: " + markers.size());
 
 		// Find and add sequences for all markers
 		for (Marker genes : markers) {
@@ -83,8 +81,6 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 				}
 			}
 		}
-
-		Gpr.debug(this);
 
 		return seqsAdded;
 	}
@@ -203,8 +199,9 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	/**
 	 * Save genomic sequence into separate files (per chromosome)
 	 */
-	public void save() {
+	public void save(Config config) {
 		if (isEmpty()) return; // Nothing to do
+		if (config != null) this.config = config;
 
 		ArrayList<String> chrNames = new ArrayList<String>();
 		chrNames.addAll(intervalForest.getTreeNames());

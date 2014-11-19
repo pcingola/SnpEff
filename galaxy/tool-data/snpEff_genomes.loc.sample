@@ -22778,6 +22778,8 @@ testENST00000268124 	 Test   testENST00000268124
 testENST00000398332 	 Test   testENST00000398332
 testENST00000529892 	 Test   testENST00000529892
 testEgrandis 	 Test   testEgrandis
+testHg19Chr13 	 Test   testHg19Chr13
+testHg19Chr17 	 Test   testHg19Chr17
 testMacuminata 	 Test   testMacuminata
 testMaizeZmB73 	 Test   testMaizeZmB73
 testNM_015296 	 Test   testNM_015296
