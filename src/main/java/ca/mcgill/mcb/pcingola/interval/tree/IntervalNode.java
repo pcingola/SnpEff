@@ -16,7 +16,7 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 
 /**
  * The Node class contains the interval tree information for one single node
- * 
+ *
  * Adapted from Kevin Dolan's implementation
  */
 public class IntervalNode implements Serializable, Iterable<Marker> {

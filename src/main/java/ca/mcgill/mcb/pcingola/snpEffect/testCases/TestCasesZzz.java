@@ -2,10 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
 import java.util.List;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;

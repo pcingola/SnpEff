@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -136,7 +137,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		// Get first marker (ideally, there should be only one that fully includes 'marker')
 		MarkerSeq ms = null;
 		for (Marker m : res) {
-			if (m.includes(marker)) {
+			if (m.includes(marker) && !(m instanceof Chromosome)) {
 				ms = (MarkerSeq) m;
 				break;
 			}
@@ -180,9 +181,10 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	/**
 	 * Load sequences from genomic sequence file
 	 */
-	public void load(String chr) {
+	public synchronized void load(String chr) {
 		String fileName = config.getFileNameSequence(chr);
 		IntervalTree tree = intervalForest.getTree(chr);
+		if (!tree.isEmpty()) return; // Already loaded
 
 		// F=No 'sequences' file? Cannot load...
 		if (!Gpr.exists(fileName)) {
@@ -192,7 +194,10 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 
 		// Load markers
 		if (verbose) Timer.show("Loading sequences for chromosome '" + chr + "' from file '" + fileName + "'");
-		tree.getIntervals().load(fileName);
+		tree.load(fileName);
+		if (verbose) Timer.show("Building sequence tree for chromosome '" + chr + "'");
+		tree.build();
+		if (verbose) Timer.show("Done. Loaded " + tree.getIntervals().size() + " sequences.");
 	}
 
 	/**

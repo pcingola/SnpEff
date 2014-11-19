@@ -120,6 +120,8 @@ public class TestSuiteAll {
 		// Other SnpEff 'eff' tests
 		suite.addTestSuite(TestCasesEff.class);
 
+		// Genomic sequences
+		suite.addTestSuite(TestCasesGenomicSequences.class);
 		return suite;
 	}
 }

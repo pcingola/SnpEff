@@ -81,21 +81,26 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 		return intervals;
 	}
 
+	public boolean isEmpty() {
+		return intervals.isEmpty();
+	}
+
 	/**
 	 * Determine whether this interval tree is currently a reflection of all intervals in the interval list
 	 * @return true if no changes have been made since the last build
 	 */
-	public boolean inSync() {
+	public boolean isInSync() {
 		return inSync;
-	}
-
-	public boolean isEmpty() {
-		return intervals.isEmpty();
 	}
 
 	@Override
 	public Iterator<Marker> iterator() {
 		return head.iterator();
+	}
+
+	public void load(String fileName) {
+		intervals.load(fileName);
+		inSync = false;
 	}
 
 	private String nodeString(IntervalNode node, int level) {

@@ -682,11 +682,8 @@ public class SnpEffCmdEff extends SnpEff {
 
 		filterIntervals = null;
 
-		// Read config file
-		loadConfig();
-
-		// Load database
-		loadDb();
+		loadConfig(); // Read config file
+		loadDb(); // Load database
 
 		// Check if we can open the input file (no need to check if it is STDIN)
 		if (!Gpr.canRead(inputFile)) usage("Cannot open input file '" + inputFile + "'");
