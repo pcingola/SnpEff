@@ -430,6 +430,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
 
+		getGenome().getGenomicSequences().getSequence(this);
+
+		// Find effect for each transcript
 		boolean hitTranscript = false;
 		for (Transcript tr : this) {
 			// Apply sequence change to create new 'reference'?

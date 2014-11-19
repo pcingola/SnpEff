@@ -18,7 +18,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * A collection of markers
- * 
+ *
  * @author pcingola
  */
 public class Markers implements Serializable, Collection<Marker> {
@@ -141,10 +141,10 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Perform the intersection of all overlapping intervals
-	 * 
+	 *
 	 * For each marker, calculate all overlapping markers and create a new marker that contains them all.
 	 * Return a set of those new markers.
-	 * 
+	 *
 	 * @param markerIntervals
 	 * @return
 	 */
@@ -185,6 +185,12 @@ public class Markers implements Serializable, Collection<Marker> {
 	@Override
 	public Iterator<Marker> iterator() {
 		return markers.iterator();
+	}
+
+	public void load(String fileName) {
+		MarkerSerializer markerSerializer = new MarkerSerializer();
+		Markers markers = markerSerializer.load(fileName);
+		add(markers);
 	}
 
 	public Markers merge() {
@@ -281,9 +287,9 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Returns the result of this set minus 'intervals'
-	 * 
+	 *
 	 * WARNING: This method should only be used for debugging (or in very small collections) since it is extremely inefficient.
-	 * 
+	 *
 	 * @param interval
 	 * @return
 	 */
@@ -437,10 +443,10 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Perform the union of all overlapping intervals
-	 * 
+	 *
 	 * For each marker, calculate all overlapping markers and create a new marker that contains them all.
 	 * Return a set of those new markers.
-	 * 
+	 *
 	 * @param markerIntervals
 	 * @return
 	 */
@@ -471,7 +477,7 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Remove duplicated markers
-	 * @return this object 
+	 * @return this object
 	 */
 	public Markers unique() {
 		HashSet<Marker> set = new HashSet<Marker>();

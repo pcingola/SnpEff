@@ -14,6 +14,7 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.MarkerParentId;
+import ca.mcgill.mcb.pcingola.interval.MarkerSeq;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
@@ -140,6 +141,9 @@ public class MarkerSerializer {
 				break;
 			case CHROMOSOME:
 				m = new Chromosome();
+				break;
+			case SEQUENCE:
+				m = new MarkerSeq();
 				break;
 			case GENE:
 				m = new Gene();

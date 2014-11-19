@@ -407,6 +407,7 @@ public class SnpEff implements CommandLine {
 		}
 
 		genome = config.getSnpEffectPredictor().getGenome();
+		genome.getGenomicSequences().setVerbose(verbose);
 	}
 
 	/**

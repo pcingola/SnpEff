@@ -228,6 +228,10 @@ public class Config implements Serializable, Iterable<String> {
 		return getDirDataVersion() + "/regulation";
 	}
 
+	public String getBaseFileNameSequence() {
+		return getDirData() + "/" + genome.getVersion() + "/sequence";
+	}
+
 	/**
 	 * Is this genome packed in a bundle?
 	 */
@@ -333,8 +337,10 @@ public class Config implements Serializable, Iterable<String> {
 		return getDirDataVersion() + "/protein.fa";
 	}
 
-	public String getBaseFileSequence() {
-		return getDirData() + "/" + genome.getVersion() + "/sequence";
+	public String getFileNameSequence(String chr) {
+		String chrNameSafe = Gpr.sanityzeFileName(chr);
+		return getBaseFileNameSequence() + "." + chrNameSafe + ".bin";
+
 	}
 
 	public String getFileSnpEffectPredictor() {

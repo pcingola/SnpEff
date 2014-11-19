@@ -89,6 +89,10 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 		return inSync;
 	}
 
+	public boolean isEmpty() {
+		return intervals.isEmpty();
+	}
+
 	@Override
 	public Iterator<Marker> iterator() {
 		return head.iterator();

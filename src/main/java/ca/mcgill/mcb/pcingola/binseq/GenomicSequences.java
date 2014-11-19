@@ -11,7 +11,9 @@ import ca.mcgill.mcb.pcingola.interval.MarkerSeq;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalTree;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.GprSeq;
 import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
@@ -30,10 +32,16 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	boolean verbose = false;
 	Genome genome; // Reference genome
 	IntervalForest intervalForest; // This is an interval forest of 'MarkerSeq' (genomic markers that have sequences)
+	Config config;
+
+	public GenomicSequences(Config config, Genome genome) {
+		this.genome = genome;
+		this.config = config;
+		intervalForest = new IntervalForest();
+	}
 
 	public GenomicSequences(Genome genome) {
-		this.genome = genome;
-		intervalForest = new IntervalForest();
+		this(Config.get(), genome);
 	}
 
 	/**
@@ -108,6 +116,49 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		return markers;
 	}
 
+	/**
+	 * Get sequence for a marker
+	 */
+	public String getSequence(Marker marker) {
+		String chr = marker.getChromosomeName();
+
+		// Get or load interval tree
+		if (!intervalForest.hasTree(chr)) load(chr);
+		IntervalTree tree = intervalForest.getTree(chr);
+
+		// Nothing available
+		if (tree.isEmpty()) return null;
+
+		// Find marker sequence
+		Markers res = tree.query(marker);
+		if (res.isEmpty()) return null;
+
+		// Get first marker (ideally, there should be only one that fully includes 'marker')
+		MarkerSeq ms = null;
+		for (Marker m : res) {
+			if (m.includes(marker)) {
+				ms = (MarkerSeq) m;
+				break;
+			}
+		}
+
+		if (ms == null) {
+			// Nothing found? Ideally, this should not happen
+			Gpr.debug("No MarkerSeq found for '" + marker.toStr() + "'. This should never happen!");
+			return null;
+		}
+
+		// Calculate start and end coordiantes
+		int sstart = marker.getStart() - ms.getStart();
+		int ssend = marker.size() + sstart;
+		String seq = ms.getSequence().substring(sstart, ssend);
+
+		// Return sequence in same direction as 'marker'
+		if (marker.isStrandMinus()) seq = GprSeq.reverseWc(seq);
+		return seq;
+
+	}
+
 	public boolean isEmpty() {
 		for (IntervalTree tree : intervalForest)
 			if (!tree.getIntervals().isEmpty()) return false;
@@ -127,9 +178,27 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	}
 
 	/**
+	 * Load sequences from genomic sequence file
+	 */
+	public void load(String chr) {
+		String fileName = config.getFileNameSequence(chr);
+		IntervalTree tree = intervalForest.getTree(chr);
+
+		// F=No 'sequences' file? Cannot load...
+		if (!Gpr.exists(fileName)) {
+			if (config.isDebug()) Timer.show("Attempting to load sequences for chromosome '" + chr + "' from file '" + fileName + "' failed, nothing done.");
+			return;
+		}
+
+		// Load markers
+		if (verbose) Timer.show("Loading sequences for chromosome '" + chr + "' from file '" + fileName + "'");
+		tree.getIntervals().load(fileName);
+	}
+
+	/**
 	 * Save genomic sequence into separate files (per chromosome)
 	 */
-	public void save(String baseFileName) {
+	public void save() {
 		if (isEmpty()) return; // Nothing to do
 
 		ArrayList<String> chrNames = new ArrayList<String>();
@@ -137,13 +206,13 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		Collections.sort(chrNames);
 
 		for (String chr : chrNames)
-			save(baseFileName, chr);
+			save(chr);
 	}
 
 	/**
 	 * Save sequences from chromosome 'chr' to a binary file
 	 */
-	void save(String baseFileName, String chr) {
+	void save(String chr) {
 		IntervalTree tree = intervalForest.getTree(chr);
 
 		if (tree == null) {
@@ -157,8 +226,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		}
 
 		// OK, there is something to save => Save markers to file
-		String chrNameSafe = Gpr.sanityzeFileName(chr);
-		String fileName = baseFileName + "." + chrNameSafe + ".bin";
+		String fileName = config.getFileNameSequence(chr);
 		if (verbose) Timer.showStdErr("Saving sequences for chromosome '" + chr + "' to file '" + fileName + "'");
 		tree.getIntervals().save(fileName);
 	}
