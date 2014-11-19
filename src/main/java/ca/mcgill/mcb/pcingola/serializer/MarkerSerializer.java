@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.zip.GZIPOutputStream;
 
+import net.sf.samtools.util.RuntimeEOFException;
 import ca.mcgill.mcb.pcingola.fileIterator.LineFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -27,6 +28,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Utr3prime;
 import ca.mcgill.mcb.pcingola.interval.Utr5prime;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -123,82 +125,101 @@ public class MarkerSerializer {
 		int lineNum = 0;
 		for (String l : lfi) {
 			line = l;
-			parsedField = 0;
-			fields = line.split("\t", -1);
 
-			// Parse field type
-			String typeStr = fields[0];
-			EffectType type = EffectType.valueOf(typeStr);
+			if (lineNum == 0) {
+				// First line should be 'header' showing version number
+				String fields[] = line.split("\t");
+				if (fields.length > 1) {
+					String soft = fields[1];
+					String versionNumber = fields[1];
 
-			// Parse serialization id
-			String idStr = fields[1];
-			int id = Gpr.parseIntSafe(idStr);
+					// Check for compatibility
+					if (!soft.equals(SnpEff.SOFTWARE_NAME)) throw new RuntimeEOFException("Database file '" + fileName + "' is not compatible with this program version. Try installing the appropriate database.");
+					if (!versionNumber.equals(SnpEff.VERSION_MAJOR)) throw new RuntimeEOFException("Database file '" + fileName + "' is not compatible with this program version:"//
+							+ "\n\tDatabase version : '" + versionNumber + "'"//
+							+ "\n\tProgram version  : '" + SnpEff.VERSION_MAJOR + "'" //
+							+ "\nTry installing the appropriate database." //
+							);
+				}
+			} else {
+				parsedField = 0;
+				fields = line.split("\t", -1);
 
-			Marker m = null;
-			switch (type) {
-			case GENOME:
-				m = new Genome();
-				break;
-			case CHROMOSOME:
-				m = new Chromosome();
-				break;
-			case SEQUENCE:
-				m = new MarkerSeq();
-				break;
-			case GENE:
-				m = new Gene();
-				break;
-			case TRANSCRIPT:
-				m = new Transcript();
-				break;
-			case CDS:
-				m = new Cds();
-				break;
-			case EXON:
-				m = new Exon();
-				break;
-			case UTR_3_PRIME:
-				m = new Utr3prime();
-				break;
-			case UTR_5_PRIME:
-				m = new Utr5prime();
-				break;
-			case RARE_AMINO_ACID:
-				m = new RareAminoAcid();
-				break;
-			case SPLICE_SITE_ACCEPTOR:
-				m = new SpliceSiteAcceptor();
-				break;
-			case SPLICE_SITE_BRANCH:
-				m = new SpliceSiteBranch();
-				break;
-			case SPLICE_SITE_BRANCH_U12:
-				m = new SpliceSiteBranchU12();
-				break;
-			case SPLICE_SITE_DONOR:
-				m = new SpliceSiteDonor();
-				break;
-			case NEXT_PROT:
-				m = new NextProt();
-				break;
-			case MOTIF:
-				m = new Motif();
-				break;
+				// Parse field type
+				String typeStr = fields[0];
+				EffectType type = EffectType.valueOf(typeStr);
 
-			default:
-				throw new RuntimeException("Unimplemented for type '" + type + "'");
+				// Parse serialization id
+				String idStr = fields[1];
+				int id = Gpr.parseIntSafe(idStr);
+
+				Marker m = null;
+				switch (type) {
+				case GENOME:
+					m = new Genome();
+					break;
+				case CHROMOSOME:
+					m = new Chromosome();
+					break;
+				case SEQUENCE:
+					m = new MarkerSeq();
+					break;
+				case GENE:
+					m = new Gene();
+					break;
+				case TRANSCRIPT:
+					m = new Transcript();
+					break;
+				case CDS:
+					m = new Cds();
+					break;
+				case EXON:
+					m = new Exon();
+					break;
+				case UTR_3_PRIME:
+					m = new Utr3prime();
+					break;
+				case UTR_5_PRIME:
+					m = new Utr5prime();
+					break;
+				case RARE_AMINO_ACID:
+					m = new RareAminoAcid();
+					break;
+				case SPLICE_SITE_ACCEPTOR:
+					m = new SpliceSiteAcceptor();
+					break;
+				case SPLICE_SITE_BRANCH:
+					m = new SpliceSiteBranch();
+					break;
+				case SPLICE_SITE_BRANCH_U12:
+					m = new SpliceSiteBranchU12();
+					break;
+				case SPLICE_SITE_DONOR:
+					m = new SpliceSiteDonor();
+					break;
+				case NEXT_PROT:
+					m = new NextProt();
+					break;
+				case MOTIF:
+					m = new Motif();
+					break;
+
+				default:
+					throw new RuntimeException("Unimplemented for type '" + type + "'");
+				}
+
+				try {
+					// Parse line
+					m.serializeParse(this);
+				} catch (Throwable t) {
+					t.printStackTrace();
+					throw new RuntimeException("Error parsing line " + (lineNum + 1) + " from file '" + fileName + "'\n\t" + line + "\n\tField [" + parsedField + "] : '" + (parsedField < fields.length ? fields[parsedField] : "-") + "'", t);
+				}
+
+				// Add to hash
+				byId.put(id, m);
 			}
 
-			try {
-				// Parse line
-				m.serializeParse(this);
-			} catch (Throwable t) {
-				t.printStackTrace();
-				throw new RuntimeException("Error parsing line " + (lineNum + 1) + " from file '" + fileName + "'\n\t" + line + "\n\tField [" + parsedField + "] : '" + (parsedField < fields.length ? fields[parsedField] : "-") + "'", t);
-			}
-
-			// Add to hash
-			byId.put(id, m);
 			lineNum++;
 		}
 
@@ -265,8 +286,14 @@ public class MarkerSerializer {
 			lineNum = 0;
 			currId = 0;
 			outFile = new PrintStream(new GZIPOutputStream(new FileOutputStream(fileName)));
+
+			// Write header first
+			outFile.print(SnpEff.SOFTWARE_NAME + "\t" + SnpEff.VERSION_SHORT);
+
+			// Serialize all markers
 			for (Marker m : markers)
 				save(m);
+
 			outFile.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
