@@ -76,6 +76,7 @@ public class SnpEffCmdEff extends SnpEff {
 	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
 	boolean useOicr = false; // Use OICR tag
 	boolean useSequenceOntology = true; // Use Sequence Ontology terms
+	boolean shiftHgvs = true; // Shift variants according to HGVS notation (towards the most 3prime possible coordinate)
 	int totalErrs = 0;
 	long countInputLines = 0, countVariants = 0, countEffects = 0; // , countVariantsFilteredOut = 0;
 	String cancerSamples = null;
@@ -130,7 +131,7 @@ public class SnpEffCmdEff extends SnpEff {
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
-						) {
+								) {
 							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
@@ -145,7 +146,7 @@ public class SnpEffCmdEff extends SnpEff {
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
-							) {
+									) {
 								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
@@ -509,7 +510,9 @@ public class SnpEffCmdEff extends SnpEff {
 					if ((i + 1) < args.length) cancerSamples = args[++i]; // Read cancer samples from TXT files
 					else usage("Missing -cancerSamples argument");
 				} else if (arg.equalsIgnoreCase("-lof")) lossOfFunction = true; // Add LOF tag
+				else if (arg.equalsIgnoreCase("-noLof")) lossOfFunction = false; // Do not add LOF tag
 				else if (arg.equalsIgnoreCase("-hgvs")) useHgvs = true; // Use HGVS notation
+				else if (arg.equalsIgnoreCase("-noHgvs")) useHgvs = false; // Do not use HGVS notation
 				else if (arg.equalsIgnoreCase("-geneId")) useGeneId = true; // Use gene ID instead of gene name
 				else if (arg.equalsIgnoreCase("-sequenceOntology")) useSequenceOntology = true; // Use SO temrs
 				else if (arg.equalsIgnoreCase("-classic")) {
@@ -685,6 +688,9 @@ public class SnpEffCmdEff extends SnpEff {
 		loadConfig(); // Read config file
 		loadDb(); // Load database
 
+		// Set some configuraion options
+		config.setShiftHgvs(useHgvs && shiftHgvs);
+
 		// Check if we can open the input file (no need to check if it is STDIN)
 		if (!Gpr.canRead(inputFile)) usage("Cannot open input file '" + inputFile + "'");
 
@@ -720,7 +726,7 @@ public class SnpEffCmdEff extends SnpEff {
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-				);
+						);
 				ok &= runAnalysis(inputFile, outputFile);
 			}
 		}
@@ -920,8 +926,11 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
 		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + useHgvs);
 		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");
+		System.err.println("\t-noHgvs                         : Do not add HGVS annotations.");
+		System.err.println("\t-noLof                          : Do not add LOF and NMD annotations.");
+		System.err.println("\t-noShiftHgvs                    : Do not shift variants according to HGVS notation (most 3prime end).");
 		System.err.println("\t-oicr                           : Add OICR tag in VCF file. Default: " + useOicr);
-		System.err.println("\t-sequenceOntology                : Use Sequence Ontology terms. Default: " + useSequenceOntology);
+		System.err.println("\t-sequenceOntology               : Use Sequence Ontology terms. Default: " + useSequenceOntology);
 
 		usageGenericAndDb();
 

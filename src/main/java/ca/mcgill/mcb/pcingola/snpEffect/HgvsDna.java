@@ -1,5 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
+import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.SpliceSiteRegion;
@@ -73,6 +74,46 @@ public class HgvsDna extends Hgvs {
 	}
 
 	/**
+	 * Is this a duplication?
+	 */
+	protected boolean isDuplication() {
+		// Only insertion cause duplications
+		// Reference: Here is a discussion of a possible new term ('los') as an analogous
+		//            to 'dup' for deletions:
+		//                http://www.hgvs.org/mutnomen/disc.html#loss
+		//            So, it's still not decided if there is an analogous 'dup' term
+		//            for deletions.
+		if (!variant.isIns()) return false;
+
+		// Extract sequence from genomic coordinates before variant
+		String seq = null;
+		Exon ex = variantEffect.getExon();
+		if (ex != null) {
+			// Get sequence at the 3'end of the variant
+			int sstart, send;
+			int len = variant.getAlt().length();
+
+			if (ex.isStrandPlus()) {
+				sstart = variant.getStart() - len;
+				send = variant.getStart() - 1;
+			} else {
+				sstart = variant.getStart() - 1;
+				send = sstart + (len - 1);
+			}
+
+			Marker m = new Marker(variant.getParent(), sstart, send, false, "");
+			Gpr.debug("variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (ex.isStrandPlus() ? "+" : "-"));
+			seq = ex.getSequence(m);
+			if (ex.isStrandMinus()) seq = GprSeq.reverseWc(seq);
+			Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'");
+		}
+
+		// Compare to ALT sequence
+		if (seq == null) return false; // Cannot compare
+		return seq.equalsIgnoreCase(variant.getAlt());
+	}
+
+	/**
 	 * Calculate position
 	 */
 	protected String pos() {
@@ -80,42 +121,15 @@ public class HgvsDna extends Hgvs {
 		if (variantEffect.isIntron() //
 				|| variantEffect.isSpliceSiteCore() //
 				|| (variantEffect.isSpliceSiteRegion() && ((SpliceSiteRegion) variantEffect.getMarker()).isIntronPart()) //
-		) {
-			int start, end;
+		) return posIntron();
 
-			switch (variant.getVariantType()) {
-			case SNP:
-			case MNP:
-				return posIntron(variant.getStart());
+		return posExon();
+	}
 
-			case INS:
-				start = variant.getStart();
-				end = variant.getStart() + (marker.isStrandPlus() ? 1 : -1);
-				break;
-
-			case DEL:
-			case MIXED:
-				start = variant.getStart();
-				end = variant.getEnd();
-				break;
-
-			case INTERVAL:
-				return "";
-
-			default:
-				throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
-			}
-
-			// Calculate positions and create string
-			String posStart = posIntron(start);
-			if (posStart == null) return null;
-			String posEnd = posIntron(end);
-			if (posEnd == null) return null;
-
-			if (posStart.equals(posEnd)) return posStart;
-			return tr.isStrandPlus() ? posStart + "_" + posEnd : posEnd + "_" + posStart;
-		}
-
+	/**
+	 * Genomic position for exonic variants
+	 */
+	protected String posExon() {
 		if (tr == null) return null;
 		String posPrepend = "";
 
@@ -148,7 +162,19 @@ public class HgvsDna extends Hgvs {
 			return posPrepend + posStart;
 
 		case INS:
-			posEnd = posStart + 1;
+			if (duplication && variant.getAlt().length() == 1) {
+				// One base duplications do not require end positions:
+				// Reference: http://www.hgvs.org/mutnomen/disc.html#dupins
+				// Example: c.7dupT (or c.7dup) denotes the duplication (insertion) of a T at position 7 in the sequence ACTTACTGCC to ACTTACTTGCC
+				posEnd = posStart;
+			} else {
+				// Other insertions must list both positions:
+				// Reference: http://www.hgvs.org/mutnomen/disc.html#ins
+				//            ...to prevent confusion, both flanking residues have to be listed.
+				// Example: c.6_7dup (or c.6_7dupTG) denotes a TG duplication (TG insertion) in the sequence ACATGTGCC to ACATGTGTGCC
+				posEnd = posStart + 1;
+			}
+
 			break;
 
 		case DEL:
@@ -166,6 +192,59 @@ public class HgvsDna extends Hgvs {
 		if (posStart == posEnd) return posPrepend + posStart;
 		return posPrepend + posStart + "_" + posPrepend + posEnd;
 
+	}
+
+	/**
+	 * Genomic position for intronic variants
+	 */
+	protected String posIntron() {
+		int start, end;
+
+		switch (variant.getVariantType()) {
+		case SNP:
+		case MNP:
+			return posIntron(variant.getStart());
+
+		case INS:
+			start = variant.getStart();
+
+			if (duplication && variant.getAlt().length() == 1) {
+				// One base duplications do not require end positions:
+				// Reference: http://www.hgvs.org/mutnomen/disc.html#dupins
+				// Example: c.7dupT (or c.7dup) denotes the duplication (insertion) of a T at position 7 in the sequence ACTTACTGCC to ACTTACTTGCC
+				end = variant.getStart();
+			} else {
+				// Other insertions must list both positions:
+				// Reference: http://www.hgvs.org/mutnomen/disc.html#ins
+				//            ...to prevent confusion, both flanking residues have to be listed.
+				// Example: c.6_7dup (or c.6_7dupTG) denotes a TG duplication (TG insertion) in the sequence ACATGTGCC to ACATGTGTGCC
+				end = variant.getStart() + (marker.isStrandPlus() ? 1 : -1);
+			}
+
+			break;
+
+		case DEL:
+		case MIXED:
+			start = variant.getStart();
+			end = variant.getEnd();
+			break;
+
+		case INTERVAL:
+			return "";
+
+		default:
+			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
+		}
+
+		// Calculate positions and create string
+		String posStart = posIntron(start);
+		if (posStart == null) return null;
+
+		String posEnd = posIntron(end);
+		if (posEnd == null) return null;
+
+		if (posStart.equals(posEnd)) return posStart;
+		return tr.isStrandPlus() ? posStart + "_" + posEnd : posEnd + "_" + posStart;
 	}
 
 	/**
@@ -234,13 +313,16 @@ public class HgvsDna extends Hgvs {
 	public String toString() {
 		if (variant == null) return null;
 
+		// Is this a duplication?
+		if (variant.isIns()) duplication = isDuplication();
+
 		String pos = pos();
 		if (pos == null) return null;
 
 		String type = "";
 		switch (variant.getVariantType()) {
 		case INS:
-			type = "ins";
+			type = duplication ? "dup" : "ins";
 			break;
 
 		case DEL:

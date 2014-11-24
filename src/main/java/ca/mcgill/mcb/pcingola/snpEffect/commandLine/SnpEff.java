@@ -278,7 +278,7 @@ public class SnpEff implements CommandLine {
 	public void loadDb() {
 		if (config.getSnpEffectPredictor() != null) {
 			genome = config.getSnpEffectPredictor().getGenome();
-			return; // Already loaded?
+			return; // Already loaded
 		}
 
 		// Read database (or create a new one)
@@ -632,6 +632,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("dump") //
 				|| args[0].equalsIgnoreCase("cds") //
 				|| args[0].equalsIgnoreCase("eff") //
+				|| args[0].equalsIgnoreCase("ann") // Annotate: just another way to say 'eff'
 				|| args[0].equalsIgnoreCase("download") //
 				|| args[0].equalsIgnoreCase("protein") //
 				|| args[0].equalsIgnoreCase("closest") //
@@ -847,7 +848,7 @@ public class SnpEff implements CommandLine {
 		else if (command.equalsIgnoreCase("dump")) snpEffCmd = new SnpEffCmdDump();
 		else if (command.equalsIgnoreCase("download")) snpEffCmd = new SnpEffCmdDownload();
 		else if (command.equalsIgnoreCase("cds")) snpEffCmd = new SnpEffCmdCds();
-		else if (command.equalsIgnoreCase("eff")) snpEffCmd = new SnpEffCmdEff();
+		else if (command.equalsIgnoreCase("eff") || command.equalsIgnoreCase("ann")) snpEffCmd = new SnpEffCmdEff();
 		else if (command.equalsIgnoreCase("protein")) snpEffCmd = new SnpEffCmdProtein();
 		else if (command.equalsIgnoreCase("closest")) snpEffCmd = new SnpEffCmdClosest();
 		else if (command.equalsIgnoreCase("databases")) snpEffCmd = new SnpEffCmdDatabases();
@@ -910,7 +911,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("Usage: snpEff [command] [options] [files]");
 		System.err.println("\nRun 'java -jar snpEff.jar command' for help on each specific command");
 		System.err.println("\nAvailable commands: ");
-		System.err.println("\t[eff]                        : Calculate effect of variants. Default: eff (no command or 'eff').");
+		System.err.println("\t[eff|ann]                    : Annotate variants / calculate effects (you can use either 'ann' or 'eff', they mean the same). Default: ann (no command or 'ann').");
 		System.err.println("\tbuild                        : Build a SnpEff database.");
 		System.err.println("\tbuildNextProt                : Build a SnpEff for NextProt (using NextProt's XML files).");
 		System.err.println("\tcds                          : Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");

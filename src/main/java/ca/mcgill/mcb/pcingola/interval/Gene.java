@@ -430,13 +430,14 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
 
-		// TODO:
-		// If (using HGVS) AND (Gene on positive strand) {
-		//  	we must create a new version of the variants (both of them)
-		// }
-		// Then we can use the new variant for annotations
-		Gpr.debug("WALK & ROLL");
-		getGenome().getGenomicSequences().getSequence(this);
+		// Do we need to 'walk and roll'? I.e. alignt the variant towards the most 3-prime 
+		// end of the transcript? Note that VCF request variants to be aligned towards 
+		// the 'leftmost' coordinate, so this re-alignment is only required for variants 
+		// within transcripts on the positive strand.
+		if (variant.isInDel() && Config.get().isShiftHgvs() && isStrandPlus()) {
+			// Get sequence information. Might have to load sequences from database			
+			// getGenome().getGenomicSequences().getSequence(this);
+		}
 
 		// Find effect for each transcript
 		boolean hitTranscript = false;

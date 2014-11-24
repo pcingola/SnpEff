@@ -5,18 +5,18 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Class used to encode & decode sequences into binary and vice-versa
- * 
+ *
  * Note:This is a singleton class.
- * 
+ *
  * It stores DNA bases into 2 bits {a,c,g,t} <-> {0,1,2,3}
- * 
+ *
  * @author pcingola
  *
  */
 public class DnaCoder extends Coder {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	public static boolean debug = false;
@@ -46,12 +46,12 @@ public class DnaCoder extends Coder {
 		MASK_HIGH = new long[Coder.BITS_PER_LONGWORD + 1];
 
 		// Initialize masks
-		for( int i = 0; i < MASK_BASE.length; i++ )
+		for (int i = 0; i < MASK_BASE.length; i++)
 			MASK_BASE[i] = MASK_FIRST_BASE << (BITS_PER_BASE * i);
 
 		long low = 1L, high = 1L << 63;
 		MASK_LOW[0] = MASK_HIGH[0] = 0;
-		for( int i = 1; i < MASK_LOW.length; i++ ) {
+		for (int i = 1; i < MASK_LOW.length; i++) {
 			int j = i - 1;
 			MASK_LOW[i] = low = (1L << j) | low;
 			MASK_HIGH[i] = high >> j; // Note: signed rotation
@@ -60,10 +60,10 @@ public class DnaCoder extends Coder {
 		// Count diffs
 		int countDiffLen = 16; // 16 bits
 		COUNT_DIFFS = new int[1 << (countDiffLen - 1) + 1];
-		for( int i = 1; i < COUNT_DIFFS.length; i++ ) {
+		for (int i = 1; i < COUNT_DIFFS.length; i++) {
 			int count = 0;
-			for( int j = 0; j <= countDiffLen; j += 2 ) {
-				if( ((i >> j) & 0x3) != 0 ) count++;
+			for (int j = 0; j <= countDiffLen; j += 2) {
+				if (((i >> j) & 0x3) != 0) count++;
 			}
 			COUNT_DIFFS[i] = count;
 		}
@@ -85,24 +85,24 @@ public class DnaCoder extends Coder {
 	}
 
 	public int baseToBits(char c, boolean ignoreErrors) {
-		switch(c) {
-			case 'a':
-			case 'A':
-				return 0;
-			case 'c':
-			case 'C':
-				return 1;
-			case 'g':
-			case 'G':
-				return 2;
-			case 't':
-			case 'T':
-			case 'u':
-			case 'U':
-				return 3;
-			default:
-				if( ignoreErrors ) return 0;
-				throw new RuntimeException("Unknown base '" + c + "'");
+		switch (c) {
+		case 'a':
+		case 'A':
+			return 0;
+		case 'c':
+		case 'C':
+			return 1;
+		case 'g':
+		case 'G':
+			return 2;
+		case 't':
+		case 'T':
+		case 'u':
+		case 'U':
+			return 3;
+		default:
+			if (ignoreErrors) return 0;
+			throw new RuntimeException("Unknown base '" + c + "'");
 		}
 	}
 
@@ -140,29 +140,29 @@ public class DnaCoder extends Coder {
 
 		// Copy words from src[] to dst[]
 		long srcL = 0, srcH = 0, s, mask;
-		for( int i = startWord, j = startWordDst, k = 0; k < length; i++, j++, k += 32 ) {
+		for (int i = startWord, j = startWordDst, k = 0; k < length; i++, j++, k += 32) {
 			//---
 			// Get a 'long' from src[] (64 bits)
 			//---
 			srcL = (src[i] & startMask) << rolLsrc; // Get some bits from this word
-			if( (startBase != 0) && ((i + 1) < src.length) ) srcH = src[i + 1] >>> rorHsrc; // Do I need more bits from the next word? Is there a next word?
+			if ((startBase != 0) && ((i + 1) < src.length)) srcH = src[i + 1] >>> rorHsrc; // Do I need more bits from the next word? Is there a next word?
 			else srcH = 0;
 			s = srcH | srcL; // Store the 64 bits in one long
 
 			//---
 			// Set bits in dst[]
 			//---
-			if( j < dst.length ) {
+			if (j < dst.length) {
 				// Mask: Which bits of 'dst' are kept
-				if( j == endWordDst ) mask = ~startMaskDst | ~endMaskDst;
+				if (j == endWordDst) mask = ~startMaskDst | ~endMaskDst;
 				else mask = ~startMaskDst;
 
 				// Set lower bits in dst[j]
 				dst[j] = (dst[j] & mask) | ((s >>> rorLdst) & ~mask);
 
 				// Do we need to set higher bits in dst[j+1] ?
-				if( (j + 1) <= endWordDst ) {
-					if( (j + 1) == endWordDst ) mask = startMaskDst | ~endMaskDst;
+				if ((j + 1) <= endWordDst) {
+					if ((j + 1) == endWordDst) mask = startMaskDst | ~endMaskDst;
 					else mask = startMaskDst;
 
 					dst[j + 1] = (dst[j + 1] & mask) | ((s << rorHdst) & ~mask); // Set higher bits in dst[j+1]
@@ -190,11 +190,11 @@ public class DnaCoder extends Coder {
 		long startMask = MASK_LOW[BITS_PER_LONGWORD - startBase * BITS_PER_BASE];
 		long endMask = MASK_HIGH[endBase * BITS_PER_BASE];
 
-		if( len == 0 ) {
+		if (len == 0) {
 			// Only one word to copy (start=end)
 			long dstMaskedOut = dst[startWord] & (~(startMask & endMask)); // We have to keep the rest of the sequence intact
 			dst[startWord] = dstMaskedOut | (src[startWord] & startMask & endMask);
-		} else if( len == 1 ) {
+		} else if (len == 1) {
 			// Only two words to copy (start and end)
 			long dstMaskedOut = dst[startWord] & (~startMask);// We have to keep the rest of the sequence intact
 			dst[startWord] = dstMaskedOut | (src[startWord] & startMask);
@@ -291,7 +291,7 @@ public class DnaCoder extends Coder {
 	 */
 	public long reverseBases(long code) {
 		long reversedCode = 0;
-		for( int pos = 0; pos < basesPerWord(); pos++ ) {
+		for (int pos = 0; pos < basesPerWord(); pos++) {
 			int c = decodeWord(code, pos);
 			reversedCode = reversedCode << BITS_PER_BASE | c;
 		}
@@ -299,15 +299,15 @@ public class DnaCoder extends Coder {
 	}
 
 	/**
-	 * Calculate a 'score' for a sequence (dst) and a sub-sequence (src). 
+	 * Calculate a 'score' for a sequence (dst) and a sub-sequence (src).
 	 * The score is the number of equal bases (or zero if they differ)
-	 * 
+	 *
 	 * @param dst : Destination sequence codes[]
 	 * @param src : Source sequence codes[]
 	 * @param srcStart : Source sub-sequence start
 	 * @param length : Number of bases to compare
 	 * @param threshold: Number of bases allowed to differ
-	 * 
+	 *
 	 * @return
 	 */
 	public int score(long dst[], long src[], int srcStart, int length, int threshold) {
@@ -328,31 +328,31 @@ public class DnaCoder extends Coder {
 		// Copy words from src[] to dst[]
 		long srcL = 0, srcH = 0, s, mask;
 		int diffBases = 0;
-		for( int i = startWord, j = 0, k = 0; k < length; i++, j++, k += 32 ) {
+		for (int i = startWord, j = 0, k = 0; k < length; i++, j++, k += 32) {
 			//---
 			// Get a 'long' from src[] (64 bits)
 			//---
 			srcL = (src[i] & startMask) << rolLsrc; // Get some bits from this word
-			if( (startBase != 0) && ((i + 1) < src.length) ) srcH = src[i + 1] >>> rorHsrc; // Do I need more bits from the next word? Is there a next word?
+			if ((startBase != 0) && ((i + 1) < src.length)) srcH = src[i + 1] >>> rorHsrc; // Do I need more bits from the next word? Is there a next word?
 			else srcH = 0;
 			s = srcH | srcL; // Store the 64 bits in one long
 
 			//---
 			// Compare bits in dst[]
 			//---
-			if( j < dst.length ) {
+			if (j < dst.length) {
 				// Mask: Which bits of 'dst' are not compared
-				if( j == endWordDst ) mask = endMaskDst;
+				if (j == endWordDst) mask = endMaskDst;
 				else mask = MASK_ALL_WORD;
 
 				// Compare lower bits in dst[j]
 				long compare = (dst[j] ^ s) & mask;
-				if( compare != 0 ) { // Any differences?
+				if (compare != 0) { // Any differences?
 					// Should we continue?
-					if( threshold == 0 ) return 0;
+					if (threshold == 0) return 0;
 					else {
 						diffBases += countDiffBases(compare);
-						if( diffBases > threshold ) return 0;
+						if (diffBases > threshold) return 0;
 					}
 				}
 			}
@@ -363,8 +363,6 @@ public class DnaCoder extends Coder {
 
 	/**
 	 * Decode a base using 2 bits
-	 * @param c
-	 * @return
 	 */
 	@Override
 	public char toBase(int code) {

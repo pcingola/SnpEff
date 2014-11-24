@@ -196,7 +196,7 @@ public class MarkerSeq extends Marker {
 	}
 
 	/**
-	 * Get  sequence
+	 * Get sequence
 	 *
 	 * WARNING: Sequence is always according to coding
 	 * strand. E.g. if the strand is negative, the sequence
@@ -205,6 +205,23 @@ public class MarkerSeq extends Marker {
 	 */
 	public String getSequence() {
 		return sequence.toString();
+	}
+
+	/**
+	 * Get sequence intersecting 'marker'
+	 *
+	 *
+	 * WARNING: Sequence is always according to coding
+	 * strand. E.g. if the strand is negative, the sequence
+	 * returned by this method is the reverse-WC that you see
+	 * in the reference genome
+	 */
+	public String getSequence(Marker marker) {
+		if (!includes(marker)) return null; // Cannot provide full sequence for this marker, since it's not fully included in this MarkerSeq
+		if (marker.isStrandMinus()) throw new RuntimeException("marker on negative strand not supported");
+
+		if (isStrandPlus()) return basesAtPos(marker.getStart(), marker.size());
+		return basesAtPos(marker.getEnd(), marker.size());
 	}
 
 	/**
@@ -232,7 +249,7 @@ public class MarkerSeq extends Marker {
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + sequence.getSequence() //
-				;
+		;
 	}
 
 	/**

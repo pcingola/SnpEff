@@ -35,8 +35,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesHgvs extends TestCase {
 
-	boolean debug = false;
-	boolean verbose = false || debug;
+	boolean debug = true;
+	boolean verbose = true || debug;
 	boolean skipLong = false;
 
 	Random rand;

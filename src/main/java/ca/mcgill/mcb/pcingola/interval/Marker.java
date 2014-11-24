@@ -408,21 +408,20 @@ public class Marker extends Interval implements TxtSerializable {
 	 * Is 'interval' completely included in 'this'?
 	 * @return  return true if 'this' includes 'interval'
 	 */
-	public boolean includes(Marker interval) {
-		if (!interval.getChromosomeName().equals(getChromosomeName())) return false;
-		return (start <= interval.start) && (interval.end <= end);
+	public boolean includes(Marker marker) {
+		if (!marker.getChromosomeName().equals(getChromosomeName())) return false;
+		return (start <= marker.start) && (marker.end <= end);
 	}
 
 	/**
 	 * Intersect of two markers
-	 * @param m
 	 * @return A new marker which is the intersect of the two
 	 */
-	public Marker intersect(Marker m) {
-		if (!getChromosomeName().equals(m.getChromosomeName())) return null;
+	public Marker intersect(Marker marker) {
+		if (!getChromosomeName().equals(marker.getChromosomeName())) return null;
 
-		int istart = Math.max(start, m.getStart());
-		int iend = Math.min(end, m.getEnd());
+		int istart = Math.max(start, marker.getStart());
+		int iend = Math.min(end, marker.getEnd());
 		if (iend < istart) return null;
 		return new Marker(getParent(), istart, iend, strandMinus, "");
 	}

@@ -53,6 +53,7 @@ public class Config implements Serializable, Iterable<String> {
 	boolean onlyRegulation; // Only use regulation features
 	boolean errorOnMissingChromo; // Error if chromosome is missing
 	boolean errorChromoHit; // Error if chromosome is not hit in a query
+	boolean shiftHgvs = true; // Shift variants according to HGVS notation (towards the most 3prime possible coordinate)
 	double lofIgnoreProteinCodingAfter;
 	double lofIgnoreProteinCodingBefore;
 	double lofDeleteProteinCodingBases;
@@ -440,6 +441,10 @@ public class Config implements Serializable, Iterable<String> {
 		return onlyRegulation;
 	}
 
+	public boolean isShiftHgvs() {
+		return shiftHgvs;
+	}
+
 	public boolean isTreatAllAsProteinCoding() {
 		return treatAllAsProteinCoding;
 	}
@@ -639,6 +644,10 @@ public class Config implements Serializable, Iterable<String> {
 
 	public void setOnlyRegulation(boolean onlyRegulation) {
 		this.onlyRegulation = onlyRegulation;
+	}
+
+	public void setShiftHgvs(boolean shiftHgvs) {
+		this.shiftHgvs = shiftHgvs;
 	}
 
 	public void setSnpEffectPredictor(SnpEffectPredictor snpEffectPredictor) {

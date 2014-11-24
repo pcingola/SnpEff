@@ -17,9 +17,22 @@ public class Hgvs {
 	public static final int MAX_SEQUENCE_LEN_HGVS = 100;
 
 	protected VariantEffect variantEffect;
-	Variant variant;
-	Marker marker;
-	Transcript tr;
+	protected Variant variant;
+	protected Marker marker;
+	protected Transcript tr;
+	protected boolean duplication;
+
+	public static String parseTranscript(String hgvs) {
+		int idxTr = hgvs.indexOf(':');
+		if (idxTr < 0) return null;
+		return hgvs.substring(0, idxTr);
+	}
+
+	public static String removeTranscript(String hgvs) {
+		int idxTr = hgvs.indexOf(':');
+		if (idxTr < 0) return hgvs;
+		return hgvs.substring(idxTr + 1);
+	}
 
 	public Hgvs(VariantEffect changeEffect) {
 		variantEffect = changeEffect;
