@@ -128,14 +128,26 @@ public class HgvsProtein extends Hgvs {
 		String protein = tr.protein();
 		if (protein == null) return false; // Cannot calculate duplication
 
-		int sstart = variantEffect.getCodonNum();
-		int send = sstart + variantEffect.getAaChange().length();
+		// Calculate net amino acid change
+		String aaAlt = variantEffect.getAaAlt().toUpperCase();
+		String aaRef = variantEffect.getAaRef().toUpperCase();
+		if (aaAlt.startsWith(aaRef)) aaAlt = aaAlt.substring(aaRef.length());
+		if (aaAlt.endsWith(aaRef)) aaAlt = aaAlt.substring(0, aaAlt.length() - aaRef.length());
+
+		// Get previous AA sequence
+		int send = variantEffect.getCodonNum();
+		int sstart = send - aaAlt.length();
+		if (sstart < 0 || send > protein.length()) return false;
 		String seq = protein.substring(sstart, send);
 
 		// Compare to ALT sequence
-		if (seq == null) return false; // Cannot compare
-		if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'\tAa change: '" + variantEffect.getAaAlt() + "'\tis dup? " + seq.equalsIgnoreCase(variantEffect.getAaChange()));
-		return seq.equalsIgnoreCase(variantEffect.getAaChange());
+		boolean dup = seq.equalsIgnoreCase(aaAlt);
+		if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'" //
+				+ "\n\tAA Ref       : '" + variantEffect.getAaRef() + "'" //
+				+ "\n\tAA Alt       : '" + variantEffect.getAaAlt() + "'" //
+				+ "\n\tAA Alt (net) : '" + aaAlt + "'" //
+				+ "\n\tDup?         : " + dup);
+		return dup;
 	}
 
 	/**
