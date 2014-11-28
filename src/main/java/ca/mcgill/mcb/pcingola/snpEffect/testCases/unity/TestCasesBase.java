@@ -4,6 +4,7 @@ import java.util.Random;
 
 import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
+import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
@@ -75,6 +76,13 @@ public class TestCasesBase extends TestCase {
 		genome = config.getGenome();
 		gene = genome.getGenes().iterator().next();
 		transcript = gene.iterator().next();
+	}
+
+	protected void prependSequenceToFirstExon(String prepend) {
+		Exon firstEx = transcript.sortedStrand().get(0);
+		String seq = firstEx.getSequence();
+		firstEx.setSequence(prepend + seq);
+		transcript.resetCdsCache();
 	}
 
 	@Override

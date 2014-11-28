@@ -1,7 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
 import junit.framework.Assert;
-import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
@@ -101,12 +100,6 @@ public class TestCasesZzz extends TestCasesBase {
 	//			}
 	//		}
 	//	}
-
-	void prependSequenceToFirstExon(String prepend) {
-		Exon firstEx = transcript.sortedStrand().get(0);
-		String seq = firstEx.getSequence();
-		firstEx.setSequence(prepend + seq);
-	}
 
 	//	public void test_01() {
 	//		Gpr.debug("Test");

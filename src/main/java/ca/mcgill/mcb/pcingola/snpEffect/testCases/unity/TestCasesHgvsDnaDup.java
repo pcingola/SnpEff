@@ -1,7 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import junit.framework.Assert;
-import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
@@ -18,13 +17,6 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		super();
 	}
 
-	void prependSequenceToFirstExon(String prepend) {
-		Exon firstEx = transcript.sortedStrand().get(0);
-		String seq = firstEx.getSequence();
-		firstEx.setSequence(prepend + seq);
-		transcript.resetCdsCache();
-	}
-
 	public void test_01() {
 		Gpr.debug("Test");
 
@@ -39,8 +31,8 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Calculate HGVS
 		VariantEffect eff = effs.get();
-		HgvsDna hgsvDna = new HgvsDna(eff);
-		String hgvsDna = hgsvDna.toString();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
 
 		// Check result
 		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
@@ -60,8 +52,8 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Calculate HGVS
 		VariantEffect eff = effs.get();
-		HgvsDna hgsvDna = new HgvsDna(eff);
-		String hgvsDna = hgsvDna.toString();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
 
 		// Check result
 		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
@@ -89,8 +81,8 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Calculate HGVS
 		VariantEffect eff = effs.get();
-		HgvsDna hgsvDna = new HgvsDna(eff);
-		String hgvsDna = hgsvDna.toString();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
 
 		// Check result
 		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
@@ -118,8 +110,8 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Calculate HGVS
 		VariantEffect eff = effs.get();
-		HgvsDna hgsvDna = new HgvsDna(eff);
-		String hgvsDna = hgsvDna.toString();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
 
 		// Check result
 		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
@@ -147,8 +139,8 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Calculate HGVS
 		VariantEffect eff = effs.get();
-		HgvsDna hgsvDna = new HgvsDna(eff);
-		String hgvsDna = hgsvDna.toString();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
 
 		// Check result
 		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
@@ -171,8 +163,8 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// Calculate HGVS
 		VariantEffect eff = effs.get();
-		HgvsDna hgsvDna = new HgvsDna(eff);
-		String hgvsDna = hgsvDna.toString();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
 
 		// Check result
 		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");

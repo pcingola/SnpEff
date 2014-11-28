@@ -50,6 +50,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFisherExactTest
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesGenePvalueList;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesGenotypeVector;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDup;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsProtDup;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHypergeometric;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntStats;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervals;
@@ -160,6 +161,7 @@ public class TestSuiteAll {
 		// HGSV notation
 		suite.addTestSuite(TestCasesHgvs.class);
 		suite.addTestSuite(TestCasesHgvsDnaDup.class);
+		suite.addTestSuite(TestCasesHgvsProtDup.class);
 
 		// Nextprot
 		suite.addTestSuite(TestCasesNextProt.class);

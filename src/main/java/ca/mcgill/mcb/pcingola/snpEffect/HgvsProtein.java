@@ -10,6 +10,8 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 
 public class HgvsProtein extends Hgvs {
 
+	public static boolean debug = true;
+
 	int codonNum, aaPos;
 	String aaNew3, aaOld3;
 
@@ -112,6 +114,28 @@ public class HgvsProtein extends Hgvs {
 		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return "fs";
 
 		return "ins" + aaNew3;
+	}
+
+	/**
+	 * Is this variant a duplication
+	 */
+	protected boolean isDuplication() {
+		// Only in-frame insertion may cause duplications
+		if (!variant.isIns() || !variantEffect.hasEffectType(EffectType.CODON_INSERTION)) return false;
+
+		// Extract sequence from genomic coordinates before variant
+		String cds = tr.cds();
+		if (cds == null) return false; // Cannot calculate duplication
+
+		//		int sstart = variantEffect.getA
+		//			String seq = cds.substring();
+		//			if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'");
+		//
+		//		// Compare to ALT sequence
+		//		if (seq == null) return false; // Cannot compare
+		//		return seq.equalsIgnoreCase(variant.getAlt());
+
+		return false;
 	}
 
 	/**
@@ -273,6 +297,8 @@ public class HgvsProtein extends Hgvs {
 	@Override
 	public String toString() {
 		if (variant == null || marker == null) return null;
+
+		if (variant.isIns()) duplication = isDuplication();
 
 		String protChange = "";
 		switch (variant.getVariantType()) {
