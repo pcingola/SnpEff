@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.Random;
 

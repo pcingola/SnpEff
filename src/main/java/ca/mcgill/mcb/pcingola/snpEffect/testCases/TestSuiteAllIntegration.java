@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesApply;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCancer;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCodingTag;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCutsomIntervals;
@@ -51,6 +52,7 @@ public class TestSuiteAllIntegration {
 	public static Test suite() {
 		TestSuite suite = new TestSuite();
 
+		suite.addTestSuite(TestCasesApply.class);
 		suite.addTestSuite(TestCasesCancer.class);
 		suite.addTestSuite(TestCasesCodingTag.class);
 		suite.addTestSuite(TestCasesCutsomIntervals.class);

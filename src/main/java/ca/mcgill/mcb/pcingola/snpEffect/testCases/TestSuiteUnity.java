@@ -3,7 +3,6 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesAlign;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApply;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBinomial;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesChiSquare;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesCochranArmitage;
@@ -43,7 +42,6 @@ public class TestSuiteUnity {
 		TestSuite suite = new TestSuite();
 
 		suite.addTestSuite(TestCasesAlign.class);
-		suite.addTestSuite(TestCasesApply.class);
 		suite.addTestSuite(TestCasesBinomial.class);
 		suite.addTestSuite(TestCasesChiSquare.class);
 		suite.addTestSuite(TestCasesCochranArmitage.class);
