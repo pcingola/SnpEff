@@ -32,6 +32,8 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 public class HgvsDna extends Hgvs {
 
+	public static boolean debug = false;
+
 	public HgvsDna(VariantEffect variantEffect) {
 		super(variantEffect);
 	}
@@ -102,10 +104,10 @@ public class HgvsDna extends Hgvs {
 			}
 
 			Marker m = new Marker(variant.getParent(), sstart, send, false, "");
-			Gpr.debug("variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (ex.isStrandPlus() ? "+" : "-"));
+			if (debug) Gpr.debug("variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (ex.isStrandPlus() ? "+" : "-"));
 			seq = ex.getSequence(m);
 			if (ex.isStrandMinus()) seq = GprSeq.reverseWc(seq);
-			Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'");
+			if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'");
 		}
 
 		// Compare to ALT sequence
@@ -121,7 +123,7 @@ public class HgvsDna extends Hgvs {
 		if (variantEffect.isIntron() //
 				|| variantEffect.isSpliceSiteCore() //
 				|| (variantEffect.isSpliceSiteRegion() && ((SpliceSiteRegion) variantEffect.getMarker()).isIntronPart()) //
-		) return posIntron();
+				) return posIntron();
 
 		return posExon();
 	}
@@ -162,11 +164,19 @@ public class HgvsDna extends Hgvs {
 			return posPrepend + posStart;
 
 		case INS:
-			if (duplication && variant.getAlt().length() == 1) {
-				// One base duplications do not require end positions:
-				// Reference: http://www.hgvs.org/mutnomen/disc.html#dupins
-				// Example: c.7dupT (or c.7dup) denotes the duplication (insertion) of a T at position 7 in the sequence ACTTACTGCC to ACTTACTTGCC
-				posEnd = posStart;
+			if (duplication) {
+				// Duplication coordinates
+				if (variant.getAlt().length() == 1) {
+					// One base duplications do not require end positions:
+					// Reference: http://www.hgvs.org/mutnomen/disc.html#dupins
+					// Example: c.7dupT (or c.7dup) denotes the duplication (insertion) of a T at position 7 in the sequence ACTTACTGCC to ACTTACTTGCC
+					posStart--; // The 'previous base' is duplicated, we have to decrement the position
+					posEnd = posStart;
+				} else {
+					// Duplication coordinates
+					posEnd = posStart - 1;
+					posStart -= variant.getAlt().length();
+				}
 			} else {
 				// Other insertions must list both positions:
 				// Reference: http://www.hgvs.org/mutnomen/disc.html#ins
@@ -256,7 +266,7 @@ public class HgvsDna extends Hgvs {
 		if (intron == null) {
 			Gpr.debug("variantEffect: " + variantEffect //
 					+ "\n\tMarker: " + variantEffect.getMarker() //
-			);
+					);
 			return null;
 		}
 

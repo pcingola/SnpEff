@@ -43,7 +43,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVcf;
  *
  * @author pcingola
  */
-public class TestSuiteAllIntegration {
+public class TestSuiteIntegration {
 
 	public static void main(String args[]) {
 		junit.textui.TestRunner.run(suite());
