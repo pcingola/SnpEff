@@ -332,9 +332,9 @@ public class TestCasesDel extends TestCase {
 						msg.append("\n\t\tEffect expected  : " + effectExpected);
 						msg.append("\n\t\tEffect           : " + effStr + "\t" + effFullStr);
 						msg.append("\n\t\tAA expected      : '" + aaOld + "' / '" + aaNew + "'\t" + aaExpected);
-						msg.append("\n\t\tAA               : '" + effect.getAaOld() + "' / '" + effect.getAaNew() + "'");
+						msg.append("\n\t\tAA               : '" + effect.getAaRef() + "' / '" + effect.getAaNew() + "'");
 						msg.append("\n\t\tCodon expected   : '" + codonsOld + "' / '" + codonsNew + "'");
-						msg.append("\n\t\tCodons           : '" + effect.getCodonsOld().toUpperCase() + "' / '" + effect.getCodonsNew().toUpperCase() + "'");
+						msg.append("\n\t\tCodons           : '" + effect.getCodonsRef().toUpperCase() + "' / '" + effect.getCodonsAlt().toUpperCase() + "'");
 						msg.append("\n\nTranscript:\n" + transcriptStr + "\n");
 						msg.append(line + "\n");
 
@@ -352,10 +352,10 @@ public class TestCasesDel extends TestCase {
 								) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
-									String codonsNewEff = effect.getCodonsNew().toUpperCase();
+									String codonsNewEff = effect.getCodonsAlt().toUpperCase();
 									if (codonsNewEff.equals("-")) codonsNewEff = "";
 
-									Assert.assertTrue(msg.toString(), codonsOld.equals(effect.getCodonsOld().toUpperCase())); // Check codons old
+									Assert.assertTrue(msg.toString(), codonsOld.equals(effect.getCodonsRef().toUpperCase())); // Check codons old
 									Assert.assertTrue(msg.toString(), codonsNew.equals(codonsNewEff)); // Check codons new
 								}
 							}
@@ -422,8 +422,8 @@ public class TestCasesDel extends TestCase {
 		VariantEffects effectsAll = snpEffectPredictor.variantEffect(var);
 		for (VariantEffect eff : effectsAll) {
 			if (eff.getEffectType() == EffectType.CODON_CHANGE_PLUS_CODON_DELETION) {
-				if (verbose) System.out.println("\t" + eff.getEffectTypeString(false) + "\t" + eff.getCodonsOld() + "\t" + eff.getCodonsNew());
-				Assert.assertEquals("TCT", eff.getCodonsNew().toUpperCase());
+				if (verbose) System.out.println("\t" + eff.getEffectTypeString(false) + "\t" + eff.getCodonsRef() + "\t" + eff.getCodonsAlt());
+				Assert.assertEquals("TCT", eff.getCodonsAlt().toUpperCase());
 			}
 		}
 	}

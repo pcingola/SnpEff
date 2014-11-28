@@ -208,10 +208,10 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 		//---
 		// Count codon changes
 		//---
-		if ((variantEffect.getCodonsOld() != null) && (variantEffect.getCodonsOld().length() > 0)) {
+		if ((variantEffect.getCodonsRef() != null) && (variantEffect.getCodonsRef().length() > 0)) {
 			// Note: There might be many codons changing
-			String oldCodons[] = split(variantEffect.getCodonsOld(), 3);
-			String newCodons[] = split(variantEffect.getCodonsNew(), 3);
+			String oldCodons[] = split(variantEffect.getCodonsRef(), 3);
+			String newCodons[] = split(variantEffect.getCodonsAlt(), 3);
 			int max = Math.max(oldCodons.length, newCodons.length);
 
 			for (int i = 0; i < max; i++) {
@@ -230,9 +230,9 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 		//---
 		// Count amino acid changes
 		//---
-		if ((variantEffect.getAaOld() != null) && (variantEffect.getAaOld().length() > 0)) {
+		if ((variantEffect.getAaRef() != null) && (variantEffect.getAaRef().length() > 0)) {
 			// Note: There might be many AAs changing
-			String oldAas[] = split(variantEffect.getAaOld(), 1);
+			String oldAas[] = split(variantEffect.getAaRef(), 1);
 			String newAas[] = split(variantEffect.getAaNew(), 1);
 			int max = Math.max(oldAas.length, newAas.length);
 

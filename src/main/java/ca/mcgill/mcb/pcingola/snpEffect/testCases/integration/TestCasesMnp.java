@@ -120,15 +120,15 @@ public class TestCasesMnp extends TestCase {
 			if (codons.length() > 1) {
 				String codonsExp[] = codons.split("/");
 
-				boolean error = (!codonsExp[0].toUpperCase().equals(effect.getCodonsOld().toUpperCase()) //
-						|| !codonsExp[1].toUpperCase().equals(effect.getCodonsNew().toUpperCase()));
+				boolean error = (!codonsExp[0].toUpperCase().equals(effect.getCodonsRef().toUpperCase()) //
+						|| !codonsExp[1].toUpperCase().equals(effect.getCodonsAlt().toUpperCase()));
 
 				if (error || debug) {
 					Gpr.debug("Fatal error:"//
 							+ "\n\tPos           : " + pos //
 							+ "\n\tSeqChange     : " + seqChange + (seqChange.isStrandPlus() ? "+" : "-") //
 							+ "\n\tCodon (exp)   : " + codons//
-							+ "\n\tCodon (pred)  : " + effect.getCodonsOld().toUpperCase() + "/" + effect.getCodonsNew().toUpperCase() //
+							+ "\n\tCodon (pred)  : " + effect.getCodonsRef().toUpperCase() + "/" + effect.getCodonsAlt().toUpperCase() //
 							+ "\n\tEffect (pred) : " + effStr //
 							+ "\n\tEffect (pred) : " + effect //
 							+ "\n\tGene          : " + gene//

@@ -74,12 +74,12 @@ public class CompareToEnsembl {
 	String change2str(VariantEffect change) {
 		String str = effTranslate(change.getEffectType());
 
-		if (change.getCodonsOld().isEmpty() && change.getCodonsNew().isEmpty()) str += " -";
-		else str += " " + change.getCodonsOld() + "/" + change.getCodonsNew();
+		if (change.getCodonsRef().isEmpty() && change.getCodonsAlt().isEmpty()) str += " -";
+		else str += " " + change.getCodonsRef() + "/" + change.getCodonsAlt();
 
-		if (change.getAaOld().isEmpty() && change.getAaNew().isEmpty()) str += " -";
-		else if (change.getAaOld().equals(change.getAaNew())) str += " " + change.getAaNew();
-		else str += " " + change.getAaOld() + "/" + change.getAaNew();
+		if (change.getAaRef().isEmpty() && change.getAaNew().isEmpty()) str += " -";
+		else if (change.getAaRef().equals(change.getAaNew())) str += " " + change.getAaNew();
+		else str += " " + change.getAaRef() + "/" + change.getAaNew();
 
 		return str;
 	}

@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Coding change in HGVS notation (amino acid changes)
@@ -36,7 +37,7 @@ public class HgvsProtein extends Hgvs {
 			CodonTable codonTable = marker.codonTable();
 
 			String aaNew = variantEffect.getAaNew();
-			String aaOld = variantEffect.getAaOld();
+			String aaOld = variantEffect.getAaRef();
 
 			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew3 = "";
 			else aaNew3 = codonTable.aaThreeLetterCode(aaNew);
@@ -124,18 +125,17 @@ public class HgvsProtein extends Hgvs {
 		if (!variant.isIns() || !variantEffect.hasEffectType(EffectType.CODON_INSERTION)) return false;
 
 		// Extract sequence from genomic coordinates before variant
-		String cds = tr.cds();
-		if (cds == null) return false; // Cannot calculate duplication
+		String protein = tr.protein();
+		if (protein == null) return false; // Cannot calculate duplication
 
-		//		int sstart = variantEffect.getA
-		//			String seq = cds.substring();
-		//			if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'");
-		//
-		//		// Compare to ALT sequence
-		//		if (seq == null) return false; // Cannot compare
-		//		return seq.equalsIgnoreCase(variant.getAlt());
+		int sstart = variantEffect.getCodonNum();
+		int send = sstart + variantEffect.getAaChange().length();
+		String seq = protein.substring(sstart, send);
 
-		return false;
+		// Compare to ALT sequence
+		if (seq == null) return false; // Cannot compare
+		if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'\tAa change: '" + variantEffect.getAaNew() + "'\tis dup? " + seq.equalsIgnoreCase(variantEffect.getAaChange()));
+		return seq.equalsIgnoreCase(variantEffect.getAaChange());
 	}
 
 	/**
@@ -246,7 +246,7 @@ public class HgvsProtein extends Hgvs {
 	 */
 	protected String snpOrMnp() {
 		// No codon change information? only codon number?
-		if (variantEffect.getAaOld().isEmpty() && variantEffect.getAaNew().isEmpty()) {
+		if (variantEffect.getAaRef().isEmpty() && variantEffect.getAaNew().isEmpty()) {
 			if (codonNum >= 0) return "" + (codonNum + 1);
 			return null;
 		}

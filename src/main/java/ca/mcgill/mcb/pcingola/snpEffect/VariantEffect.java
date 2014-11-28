@@ -78,13 +78,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	EffectImpact effectImpact = null;
 	Marker marker = null;
 	String error = "", warning = "", message = ""; // Any message, warning or error?
-	String codonsOld = "", codonsNew = ""; // Codon change information
+	String codonsRef = "", codonsAlt = ""; // Codon change information
 	String codonsAroundOld = "", codonsAroundNew = ""; // Codons around
 	int distance = -1; // Distance metric
 	int codonNum = -1; // Codon number (negative number mens 'information not available')
 	int codonIndex = -1; // Index within a codon (negative number mens 'information not available')
 	int codonDegeneracy = -1; // Codon degeneracy (negative number mens 'information not available')
-	String aaOld = "", aaNew = ""; // Amino acid changes
+	String aaRef = "", aaAlt = ""; // Amino acid changes
 	String aasAroundOld = "", aasAroundNew = ""; // Amino acids around
 
 	public VariantEffect(Variant variant) {
@@ -222,22 +222,22 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Amino acid change string (HGVS style)
 	 */
 	public String getAaChange() {
-		if (aaOld.isEmpty() && aaNew.isEmpty()) {
+		if (aaRef.isEmpty() && aaAlt.isEmpty()) {
 			if (codonNum >= 0) return "" + (codonNum + 1);
 			return "";
 		}
 
-		if (aaOld.equals(aaNew)) return aaNew + (codonNum + 1);
-		return aaOld + (codonNum + 1) + aaNew;
+		if (aaRef.equals(aaAlt)) return aaAlt + (codonNum + 1);
+		return aaRef + (codonNum + 1) + aaAlt;
 	}
 
 	/**
 	 * Amino acid change string (old style)
 	 */
 	public String getAaChangeOld() {
-		if (aaOld.isEmpty() && aaNew.isEmpty()) return "";
-		if (aaOld.equals(aaNew)) return aaNew;
-		return (aaOld.isEmpty() ? "-" : aaOld) + "/" + (aaNew.isEmpty() ? "-" : aaNew);
+		if (aaRef.isEmpty() && aaAlt.isEmpty()) return "";
+		if (aaRef.equals(aaAlt)) return aaAlt;
+		return (aaRef.isEmpty() ? "-" : aaRef) + "/" + (aaAlt.isEmpty() ? "-" : aaAlt);
 	}
 
 	/**
@@ -253,11 +253,11 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public String getAaNew() {
-		return aaNew;
+		return aaAlt;
 	}
 
-	public String getAaOld() {
-		return aaOld;
+	public String getAaRef() {
+		return aaRef;
 	}
 
 	/**
@@ -276,7 +276,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	/**
 	 * CDS length (negative if there is none)
-	 * @return
 	 */
 	public int getCdsLength() {
 		// CDS size info
@@ -289,8 +288,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Codon change string
 	 */
 	public String getCodonChange() {
-		if (codonsOld.isEmpty() && codonsNew.isEmpty()) return "";
-		return codonsOld + "/" + codonsNew;
+		if (codonsRef.isEmpty() && codonsAlt.isEmpty()) return "";
+		return codonsRef + "/" + codonsAlt;
 	}
 
 	/**
@@ -298,8 +297,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 */
 	public String getCodonChangeMax() {
 		if (variant.size() > MAX_CODON_SEQUENCE_LEN) return ""; // Cap length in order not to make VCF files grow too much
-		if (codonsOld.isEmpty() && codonsNew.isEmpty()) return "";
-		return codonsOld + "/" + codonsNew;
+		if (codonsRef.isEmpty() && codonsAlt.isEmpty()) return "";
+		return codonsRef + "/" + codonsAlt;
 	}
 
 	public int getCodonIndex() {
@@ -310,12 +309,12 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return codonNum;
 	}
 
-	public String getCodonsNew() {
-		return codonsNew;
+	public String getCodonsAlt() {
+		return codonsAlt;
 	}
 
-	public String getCodonsOld() {
-		return codonsOld;
+	public String getCodonsRef() {
+		return codonsRef;
 	}
 
 	public int getDistance() {
@@ -401,13 +400,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 */
 	public FunctionalClass getFunctionalClass() {
 		if (variant.isSnp()) {
-			if (!aaNew.equals(aaOld)) {
+			if (!aaAlt.equals(aaRef)) {
 				CodonTable codonTable = marker.codonTable();
-				if (codonTable.isStop(codonsNew)) return FunctionalClass.NONSENSE;
+				if (codonTable.isStop(codonsAlt)) return FunctionalClass.NONSENSE;
 
 				return FunctionalClass.MISSENSE;
 			}
-			if (!codonsNew.equals(codonsOld)) return FunctionalClass.SILENT;
+			if (!codonsAlt.equals(codonsRef)) return FunctionalClass.SILENT;
 		}
 
 		return FunctionalClass.NONE;
@@ -582,37 +581,37 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Set codon change. Calculate effect type based on codon changes (for SNPs ans MNPs)
 	 */
 	public void setCodons(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
-		this.codonsOld = codonsOld;
-		this.codonsNew = codonsNew;
+		codonsRef = codonsOld;
+		codonsAlt = codonsNew;
 		this.codonNum = codonNum;
 		this.codonIndex = codonIndex;
 
 		CodonTable codonTable = marker.codonTable();
 
 		// Calculate amino acids
-		if (codonsOld.isEmpty()) aaOld = "";
+		if (codonsOld.isEmpty()) aaRef = "";
 		else {
-			aaOld = codonTable.aa(codonsOld);
+			aaRef = codonTable.aa(codonsOld);
 			codonDegeneracy = codonTable.degenerate(codonsOld, codonIndex); // Calculate codon degeneracy
 		}
 
-		if (codonsNew.isEmpty()) aaNew = "";
-		else aaNew = codonTable.aa(codonsNew);
+		if (codonsNew.isEmpty()) aaAlt = "";
+		else aaAlt = codonTable.aa(codonsNew);
 	}
 
 	/**
 	 * Set values for codons around change.
 	 */
 	public void setCodonsAround(String codonsLeft, String codonsRight) {
-		codonsAroundOld = codonsLeft.toLowerCase() + codonsOld.toUpperCase() + codonsRight.toLowerCase();
-		codonsAroundNew = codonsLeft.toLowerCase() + codonsNew.toUpperCase() + codonsRight.toLowerCase();
+		codonsAroundOld = codonsLeft.toLowerCase() + codonsRef.toUpperCase() + codonsRight.toLowerCase();
+		codonsAroundNew = codonsLeft.toLowerCase() + codonsAlt.toUpperCase() + codonsRight.toLowerCase();
 
 		// Amino acids surrounding the ones changed
 		CodonTable codonTable = marker.codonTable();
 		String aasLeft = codonTable.aa(codonsLeft);
 		String aasRigt = codonTable.aa(codonsRight);
-		aasAroundOld = aasLeft.toLowerCase() + aaOld.toUpperCase() + aasRigt.toLowerCase();
-		aasAroundNew = aasLeft.toLowerCase() + aaNew.toUpperCase() + aasRigt.toLowerCase();
+		aasAroundOld = aasLeft.toLowerCase() + aaRef.toUpperCase() + aasRigt.toLowerCase();
+		aasAroundNew = aasLeft.toLowerCase() + aaAlt.toUpperCase() + aasRigt.toLowerCase();
 	}
 
 	public void setDistance(int distance) {
@@ -697,7 +696,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 		String aaChange = "";
 		if (useHgvs) aaChange = getHgvs();
-		else aaChange = ((aaOld.length() + aaNew.length()) > 0 ? aaOld + "/" + aaNew : "");
+		else aaChange = ((aaRef.length() + aaAlt.length()) > 0 ? aaRef + "/" + aaAlt : "");
 
 		return errWarn //
 				+ "\t" + geneId //
@@ -708,7 +707,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (exonRank >= 0 ? exonRank : "") //
 				+ "\t" + effect(false, false, false, useSeqOntology) //
 				+ "\t" + aaChange //
-				+ "\t" + ((codonsOld.length() + codonsNew.length()) > 0 ? codonsOld + "/" + codonsNew : "") //
+				+ "\t" + ((codonsRef.length() + codonsAlt.length()) > 0 ? codonsRef + "/" + codonsAlt : "") //
 				+ "\t" + (codonNum >= 0 ? (codonNum + 1) : "") //
 				+ "\t" + (codonDegeneracy >= 0 ? codonDegeneracy + "" : "") //
 				+ "\t" + (cdsSize >= 0 ? cdsSize : "") //
