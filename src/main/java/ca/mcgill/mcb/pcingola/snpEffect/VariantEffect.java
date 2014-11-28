@@ -256,6 +256,28 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return lenNoStop / 3;
 	}
 
+	/**
+	 * Net AA change (only for InDels)
+	 */
+	public String getAaNetChange() {
+		String aaLong, aaShort;
+
+		if (variant.isIns()) {
+			aaLong = getAaAlt().toUpperCase();
+			aaShort = getAaRef().toUpperCase();
+		} else if (variant.isDel()) {
+			aaLong = getAaRef().toUpperCase();
+			aaShort = getAaAlt().toUpperCase();
+		} else {
+			return null;
+		}
+
+		if (aaLong.startsWith(aaShort)) aaLong = aaLong.substring(aaShort.length());
+		if (aaLong.endsWith(aaShort)) aaLong = aaLong.substring(0, aaLong.length() - aaShort.length());
+
+		return aaLong;
+	}
+
 	public String getAaRef() {
 		return aaRef;
 	}
@@ -498,7 +520,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -549,13 +571,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
-				;
+		;
 	}
 
 	public boolean isSpliceSiteCore() {
 		return hasEffectType(EffectType.SPLICE_SITE_DONOR) //
 				|| hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
-				;
+		;
 	}
 
 	public boolean isSpliceSiteRegion() {
@@ -714,7 +736,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-				;
+		;
 	}
 
 	/**

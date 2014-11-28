@@ -11,7 +11,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 public class HgvsProtein extends Hgvs {
 
-	public static boolean debug = true;
+	public static boolean debug = false;
 
 	int codonNum, aaPos;
 	String aaNew3, aaOld3;
@@ -113,7 +113,7 @@ public class HgvsProtein extends Hgvs {
 	protected String ins() {
 		// We cannot write frame shifts this way
 		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return "fs";
-
+		if (duplication) return "dup";
 		return "ins" + aaNew3;
 	}
 
@@ -129,10 +129,7 @@ public class HgvsProtein extends Hgvs {
 		if (protein == null) return false; // Cannot calculate duplication
 
 		// Calculate net amino acid change
-		String aaAlt = variantEffect.getAaAlt().toUpperCase();
-		String aaRef = variantEffect.getAaRef().toUpperCase();
-		if (aaAlt.startsWith(aaRef)) aaAlt = aaAlt.substring(aaRef.length());
-		if (aaAlt.endsWith(aaRef)) aaAlt = aaAlt.substring(0, aaAlt.length() - aaRef.length());
+		String aaAlt = variantEffect.getAaNetChange();
 
 		// Get previous AA sequence
 		int send = variantEffect.getCodonNum();
@@ -186,15 +183,25 @@ public class HgvsProtein extends Hgvs {
 	 * Protein coding position
 	 */
 	protected String pos() {
+		int start, end;
+
 		switch (variant.getVariantType()) {
 		case SNP:
 		case MNP:
 			return pos(codonNum);
 
 		case INS:
-			String posStart = pos(codonNum);
+			if (duplication) {
+				start = codonNum - variantEffect.getAaNetChange().length();
+				end = codonNum - 1;
+			} else {
+				start = codonNum;
+				end = codonNum + 1;
+			}
+
+			String posStart = pos(start);
 			if (posStart == null) return null;
-			String posEnd = pos(codonNum + 1);
+			String posEnd = pos(end);
 			if (posEnd == null) return null;
 			return posStart + "_" + posEnd;
 
@@ -209,7 +216,7 @@ public class HgvsProtein extends Hgvs {
 			if (aaOld3 == null || aaOld3.isEmpty() || aaOld3.equals("-")) return null;
 			if (aaOld3.length() == 3) return posStart; // Single AA deleted
 
-			int end = codonNum + (aaOld3.length() / 3) - 1;
+			end = codonNum + (aaOld3.length() / 3) - 1;
 			posEnd = pos(end);
 			if (posEnd == null) return null;
 
