@@ -332,7 +332,7 @@ public class TestCasesDel extends TestCase {
 						msg.append("\n\t\tEffect expected  : " + effectExpected);
 						msg.append("\n\t\tEffect           : " + effStr + "\t" + effFullStr);
 						msg.append("\n\t\tAA expected      : '" + aaOld + "' / '" + aaNew + "'\t" + aaExpected);
-						msg.append("\n\t\tAA               : '" + effect.getAaRef() + "' / '" + effect.getAaNew() + "'");
+						msg.append("\n\t\tAA               : '" + effect.getAaRef() + "' / '" + effect.getAaAlt() + "'");
 						msg.append("\n\t\tCodon expected   : '" + codonsOld + "' / '" + codonsNew + "'");
 						msg.append("\n\t\tCodons           : '" + effect.getCodonsRef().toUpperCase() + "' / '" + effect.getCodonsAlt().toUpperCase() + "'");
 						msg.append("\n\nTranscript:\n" + transcriptStr + "\n");

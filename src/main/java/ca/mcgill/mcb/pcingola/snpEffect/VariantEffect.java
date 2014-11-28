@@ -218,6 +218,10 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return e;
 	}
 
+	public String getAaAlt() {
+		return aaAlt;
+	}
+
 	/**
 	 * Amino acid change string (HGVS style)
 	 */
@@ -250,10 +254,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 		int lenNoStop = Math.max(0, cdsLen - 3); // Do not include the STOP codon
 		return lenNoStop / 3;
-	}
-
-	public String getAaNew() {
-		return aaAlt;
 	}
 
 	public String getAaRef() {

@@ -77,9 +77,9 @@ public class CompareToEnsembl {
 		if (change.getCodonsRef().isEmpty() && change.getCodonsAlt().isEmpty()) str += " -";
 		else str += " " + change.getCodonsRef() + "/" + change.getCodonsAlt();
 
-		if (change.getAaRef().isEmpty() && change.getAaNew().isEmpty()) str += " -";
-		else if (change.getAaRef().equals(change.getAaNew())) str += " " + change.getAaNew();
-		else str += " " + change.getAaRef() + "/" + change.getAaNew();
+		if (change.getAaRef().isEmpty() && change.getAaAlt().isEmpty()) str += " -";
+		else if (change.getAaRef().equals(change.getAaAlt())) str += " " + change.getAaAlt();
+		else str += " " + change.getAaRef() + "/" + change.getAaAlt();
 
 		return str;
 	}

@@ -246,7 +246,7 @@ public class CodonChange {
 		variantEffects.addEffect(varEff);
 
 		// Are there any additional effects? Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
-		EffectType addEffType = additionalEffect(codonsOld, codonsNew, codonNum, codonIndex, varEff.getAaRef(), varEff.getAaNew());
+		EffectType addEffType = additionalEffect(codonsOld, codonsNew, codonNum, codonIndex, varEff.getAaRef(), varEff.getAaAlt());
 		if (addEffType != null && addEffType != effectType) {
 			if (allowReplace && addEffType.compareTo(effectType) < 0) {
 				varEff.setEffectType(addEffType); // Replace main effect
@@ -286,7 +286,7 @@ public class CodonChange {
 		sb.append("Codonss    : " + codonsRef + "/" + codonsAlt + "\tnum: " + codonStartNum + "\tidx: " + codonStartIndex + "\n");
 		sb.append("Effects    :\n");
 		for (VariantEffect veff : variantEffects)
-			sb.append("\t" + veff.getEffectTypeString(false) + "\t" + veff.getCodonsRef() + "/" + veff.getCodonsAlt() + "\t" + veff.getAaRef() + "/" + veff.getAaNew() + "\n");
+			sb.append("\t" + veff.getEffectTypeString(false) + "\t" + veff.getCodonsRef() + "/" + veff.getCodonsAlt() + "\t" + veff.getAaRef() + "/" + veff.getAaAlt() + "\n");
 
 		return sb.toString();
 	}

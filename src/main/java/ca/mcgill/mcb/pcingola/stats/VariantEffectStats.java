@@ -233,7 +233,7 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 		if ((variantEffect.getAaRef() != null) && (variantEffect.getAaRef().length() > 0)) {
 			// Note: There might be many AAs changing
 			String oldAas[] = split(variantEffect.getAaRef(), 1);
-			String newAas[] = split(variantEffect.getAaNew(), 1);
+			String newAas[] = split(variantEffect.getAaAlt(), 1);
 			int max = Math.max(oldAas.length, newAas.length);
 
 			for (int i = 0; i < max; i++) {

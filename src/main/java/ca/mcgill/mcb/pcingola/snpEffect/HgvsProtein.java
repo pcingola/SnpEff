@@ -36,7 +36,7 @@ public class HgvsProtein extends Hgvs {
 			// 		 termination codon; for clarity we this page describes changes using the three-letter amino acid
 			CodonTable codonTable = marker.codonTable();
 
-			String aaNew = variantEffect.getAaNew();
+			String aaNew = variantEffect.getAaAlt();
 			String aaOld = variantEffect.getAaRef();
 
 			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew3 = "";
@@ -134,7 +134,7 @@ public class HgvsProtein extends Hgvs {
 
 		// Compare to ALT sequence
 		if (seq == null) return false; // Cannot compare
-		if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'\tAa change: '" + variantEffect.getAaNew() + "'\tis dup? " + seq.equalsIgnoreCase(variantEffect.getAaChange()));
+		if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'\tAa change: '" + variantEffect.getAaAlt() + "'\tis dup? " + seq.equalsIgnoreCase(variantEffect.getAaChange()));
 		return seq.equalsIgnoreCase(variantEffect.getAaChange());
 	}
 
@@ -246,7 +246,7 @@ public class HgvsProtein extends Hgvs {
 	 */
 	protected String snpOrMnp() {
 		// No codon change information? only codon number?
-		if (variantEffect.getAaRef().isEmpty() && variantEffect.getAaNew().isEmpty()) {
+		if (variantEffect.getAaRef().isEmpty() && variantEffect.getAaAlt().isEmpty()) {
 			if (codonNum >= 0) return "" + (codonNum + 1);
 			return null;
 		}
