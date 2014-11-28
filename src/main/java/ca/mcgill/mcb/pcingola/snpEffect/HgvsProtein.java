@@ -300,7 +300,7 @@ public class HgvsProtein extends Hgvs {
 		if (variantEffect.hasEffectType(EffectType.START_LOST) //
 				|| variantEffect.hasEffectType(EffectType.SYNONYMOUS_START) //
 				|| variantEffect.hasEffectType(EffectType.NON_SYNONYMOUS_START) //
-				) return "p." + aaOld3 + "1?";
+		) return "p." + aaOld3 + "1?";
 
 		// Synonymous changes
 		// Description of so called "silent" changes in the format p.Leu54Leu (or p.L54L) is not allowed; descriptions
@@ -308,7 +308,7 @@ public class HgvsProtein extends Hgvs {
 		// at DNA level which may underlie p.Leu54Leu);  correct description has the format c.162C>G.
 		if ((variantEffect.hasEffectType(EffectType.SYNONYMOUS_CODING)) //
 				|| (variantEffect.hasEffectType(EffectType.SYNONYMOUS_STOP)) //
-				) return "p." + aaOld3 + aaPos + aaNew3;
+		) return "p." + aaOld3 + aaPos + aaNew3;
 
 		return "p." + aaOld3 + aaPos + aaNew3;
 	}

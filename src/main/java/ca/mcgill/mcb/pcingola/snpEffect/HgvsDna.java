@@ -123,7 +123,7 @@ public class HgvsDna extends Hgvs {
 		if (variantEffect.isIntron() //
 				|| variantEffect.isSpliceSiteCore() //
 				|| (variantEffect.isSpliceSiteRegion() && ((SpliceSiteRegion) variantEffect.getMarker()).isIntronPart()) //
-				) return posIntron();
+		) return posIntron();
 
 		return posExon();
 	}
@@ -266,7 +266,7 @@ public class HgvsDna extends Hgvs {
 		if (intron == null) {
 			Gpr.debug("variantEffect: " + variantEffect //
 					+ "\n\tMarker: " + variantEffect.getMarker() //
-					);
+			);
 			return null;
 		}
 
