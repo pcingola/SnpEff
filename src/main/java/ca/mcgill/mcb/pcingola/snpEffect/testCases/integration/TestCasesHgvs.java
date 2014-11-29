@@ -413,7 +413,7 @@ public class TestCasesHgvs extends TestCase {
 		comp.setCompareHgvs();
 		//		comp.setStrict(true);
 		comp.compareVep(vcf);
-		System.out.println(comp);
+		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -426,7 +426,7 @@ public class TestCasesHgvs extends TestCase {
 		comp.setStrict(true);
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
-		System.out.println(comp);
+		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -439,7 +439,7 @@ public class TestCasesHgvs extends TestCase {
 		comp.setStrict(true);
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
-		System.out.println(comp);
+		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -452,7 +452,7 @@ public class TestCasesHgvs extends TestCase {
 		comp.setStrict(true);
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
-		System.out.println(comp);
+		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -465,7 +465,7 @@ public class TestCasesHgvs extends TestCase {
 		comp.setStrict(true);
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
-		System.out.println(comp);
+		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -477,7 +477,7 @@ public class TestCasesHgvs extends TestCase {
 		comp.setCompareHgvs();
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
-		System.out.println(comp);
+		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -489,7 +489,7 @@ public class TestCasesHgvs extends TestCase {
 		comp.setCompareHgvs();
 		comp.setCompareHgvsProt(false);
 		comp.compareVep(vcf);
-		System.out.println(comp);
+		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -550,12 +550,12 @@ public class TestCasesHgvs extends TestCase {
 
 		// Make sure HGVS string is not so long
 		for (VcfEffect veff : ve.parseEffects()) {
-			System.out.println(veff);
+			if (verbose) System.out.println(veff);
 
-			System.out.println("\tAA change    : " + veff.getAa());
+			if (verbose) System.out.println("\tAA change    : " + veff.getAa());
 			Assert.assertTrue(veff.getAa() == null || veff.getAa().length() < 100);
 
-			System.out.println("\tCodon change : " + veff.getCodon());
+			if (verbose) System.out.println("\tCodon change : " + veff.getCodon());
 			Assert.assertTrue(veff.getCodon() == null || veff.getCodon().length() < 100);
 
 		}
