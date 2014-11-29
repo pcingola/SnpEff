@@ -1,12 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import junit.framework.Assert;
-import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  *
@@ -100,72 +94,5 @@ public class TestCasesZzz extends TestCasesBase {
 	//			}
 	//		}
 	//	}
-
-	//	public void test_01() {
-	//		Gpr.debug("Test");
-	//
-	//		if (verbose) Gpr.debug(transcript);
-	//
-	//		// Create variant
-	//		Variant variant = new Variant(chromosome, 881, "", "T", "");
-	//		if (verbose) Gpr.debug("Variant: " + variant);
-	//
-	//		// Analyze variant
-	//		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
-	//
-	//		// Calculate HGVS
-	//		VariantEffect eff = effs.get();
-	//		HgvsDna hgsvDna = new HgvsDna(eff);
-	//		String hgvsDna = hgsvDna.toString();
-	//
-	//		// Check result
-	//		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
-	//		Assert.assertEquals("c.1dupT", hgvsDna);
-	//	}
-	//
-	//	public void test_02() {
-	//		Gpr.debug("Test");
-	//		if (verbose) Gpr.debug(transcript);
-	//
-	//		// Create variant
-	//		Variant variant = new Variant(chromosome, 883, "", "A", "");
-	//		if (verbose) Gpr.debug("Variant: " + variant);
-	//
-	//		// Analyze variant
-	//		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
-	//
-	//		// Calculate HGVS
-	//		VariantEffect eff = effs.get();
-	//		HgvsDna hgsvDna = new HgvsDna(eff);
-	//		String hgvsDna = hgsvDna.toString();
-	//
-	//		// Check result
-	//		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
-	//		Assert.assertEquals("c.3dupA", hgvsDna);
-	//	}
-
-	public void test_03() {
-		Gpr.debug("Test");
-		String prepend = "ACTCTGTGCC";
-
-		prependSequenceToFirstExon(prepend);
-		if (verbose) Gpr.debug(transcript);
-
-		// Create variant
-		Variant variant = new Variant(chromosome, 883, "", "TAA", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
-
-		// Analyze variant
-		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
-
-		// Calculate HGVS
-		VariantEffect eff = effs.get();
-		HgvsDna hgsvDna = new HgvsDna(eff);
-		String hgvsDna = hgsvDna.toString();
-
-		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.3dupA", hgvsDna);
-	}
 
 }
