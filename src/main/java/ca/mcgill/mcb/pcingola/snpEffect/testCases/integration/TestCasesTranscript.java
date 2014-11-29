@@ -26,7 +26,7 @@ public class TestCasesTranscript extends TestCase {
 
 	public static int N = 1000;
 	boolean debug = false;
-	boolean verbose = false;
+	boolean verbose = false || debug;
 
 	Random rand;
 	Config config;
@@ -90,8 +90,8 @@ public class TestCasesTranscript extends TestCase {
 		// 		- Cal
 		for (int iter = 0; iter < N; iter++) {
 			initSnpEffPredictor();
-			if (debug) System.out.println("Test CDS pos iteration: " + iter + "\n" + transcript);
-			else if (verbose) System.out.println("Test CDS pos iteration: " + iter + "\t" + transcript.getStrand() + "\t" + transcript.cds());
+			if (debug) System.err.println("Test CDS pos iteration: " + iter + "\n" + transcript);
+			else if (verbose) System.err.println("Test CDS pos iteration: " + iter + "\t" + transcript.getStrand() + "\t" + transcript.cds());
 			else Gpr.showMark(iter + 1, 1);
 
 			int cdsBaseNum = 0;
@@ -102,6 +102,7 @@ public class TestCasesTranscript extends TestCase {
 				// Iterate on each base and compare CDS positon with calculated one
 				int min = transcript.isStrandPlus() ? exon.getStart() : exon.getEnd();
 				int step = transcript.isStrandPlus() ? 1 : -1;
+
 				for (int pos = min; exon.intersects(pos); pos += step, cdsBaseNum++) {
 					int cdsBaseNumCalc = transcript.baseNumberCds(pos, true);
 
@@ -111,6 +112,7 @@ public class TestCasesTranscript extends TestCase {
 				}
 			}
 		}
+		System.err.println("");
 	}
 
 	/**
