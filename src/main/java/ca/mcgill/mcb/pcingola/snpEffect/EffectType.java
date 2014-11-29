@@ -152,6 +152,7 @@ public enum EffectType {
 		case MICRO_RNA:
 		case NONE:
 		case REGULATION:
+		case SEQUENCE:
 		case TRANSCRIPT:
 		case UPSTREAM:
 		case UTR_3_PRIME:
