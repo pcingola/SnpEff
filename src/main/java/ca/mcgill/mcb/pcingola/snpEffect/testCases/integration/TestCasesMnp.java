@@ -109,7 +109,7 @@ public class TestCasesMnp extends TestCase {
 						&& (ce.getEffectType() != EffectType.SPLICE_SITE_DONOR) //
 						&& (ce.getEffectType() != EffectType.INTRON) //
 						&& (ce.getEffectType() != EffectType.INTERGENIC) //
-						) //
+				) //
 					effect = ce;
 			}
 		} else effect = effects.get();
@@ -121,7 +121,7 @@ public class TestCasesMnp extends TestCase {
 				String codonsExp[] = codons.split("/");
 
 				boolean error = (!codonsExp[0].toUpperCase().equals(effect.getCodonsRef().toUpperCase()) //
-						|| !codonsExp[1].toUpperCase().equals(effect.getCodonsAlt().toUpperCase()));
+				|| !codonsExp[1].toUpperCase().equals(effect.getCodonsAlt().toUpperCase()));
 
 				if (error || debug) {
 					Gpr.debug("Fatal error:"//
@@ -133,7 +133,7 @@ public class TestCasesMnp extends TestCase {
 							+ "\n\tEffect (pred) : " + effect //
 							+ "\n\tGene          : " + gene//
 							+ "\n\tChromo        : " + chromoSequence//
-							);
+					);
 				}
 
 				/**
@@ -218,7 +218,7 @@ public class TestCasesMnp extends TestCase {
 
 	void initSnpEffPredictorRand(String genomeVer) {
 		// Create a config and force out snpPredictor for hg37 chromosome Y
-		config = new Config(genomeVer, Config.DEFAULT_CONFIG_FILE);
+		if (config == null) config = new Config(genomeVer, Config.DEFAULT_CONFIG_FILE);
 
 		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
 
@@ -290,6 +290,8 @@ public class TestCasesMnp extends TestCase {
 				analyze(i, pos, ref, mnp);
 			}
 		}
+
+		System.err.println("");
 	}
 
 	public void test_02() {

@@ -106,7 +106,7 @@ public class HgvsDna extends Hgvs {
 			Marker m = new Marker(variant.getParent(), sstart, send, false, "");
 			if (debug) Gpr.debug("variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (ex.isStrandPlus() ? "+" : "-"));
 			seq = ex.getSequence(m);
-			if (ex.isStrandMinus()) seq = GprSeq.reverseWc(seq);
+			if (seq != null && ex.isStrandMinus()) seq = GprSeq.reverseWc(seq);
 			if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'");
 		}
 

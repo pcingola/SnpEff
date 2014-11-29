@@ -86,7 +86,7 @@ public class TestCasesVcf extends TestCase {
 
 	void initSnpEffPredictor(String genomeName) {
 		// Create a config and force out snpPredictor for hg37 chromosome Y
-		config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
+		if (config == null) config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 		genome = config.getGenome();
 		config.getSnpEffectPredictor().buildForest();
@@ -512,7 +512,8 @@ public class TestCasesVcf extends TestCase {
 		snpEff.setDebug(debug);
 
 		// This should run OK
-		snpEff.run();
+		boolean ok = snpEff.run();
+		Assert.assertTrue("SnpEff run failed!", ok);
 	}
 
 }

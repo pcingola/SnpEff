@@ -57,7 +57,7 @@ public class TestCasesIntervalVariant extends TestCase {
 
 	void initSnpEffPredictor() {
 		// Create a config and force out snpPredictor for hg37 chromosome Y
-		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
+		if (config == null) config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 
 		// Create factory
 		int maxGeneLen = 1000;
@@ -170,7 +170,7 @@ public class TestCasesIntervalVariant extends TestCase {
 							+ "\nExpected Effect :\t" + expectedEffect //
 							+ "\nEffects         :\t" + effSb //
 							+ "\n--------------------------------------------------------------\n" //
-							);
+					);
 				Assert.assertEquals(true, isExpectedOK);
 			}
 		}

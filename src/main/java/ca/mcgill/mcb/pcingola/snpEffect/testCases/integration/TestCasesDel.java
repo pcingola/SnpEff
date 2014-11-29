@@ -138,7 +138,7 @@ public class TestCasesDel extends TestCase {
 
 	void initSnpEffPredictor() {
 		// Create a config and force out snpPredictor for hg37 chromosome Y
-		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
+		if (config == null) config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 
 		// Create factory
 		int maxGeneLen = 1000;
@@ -349,7 +349,7 @@ public class TestCasesDel extends TestCase {
 										&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
 										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
 										&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
-								) {
+										) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
 									String codonsNewEff = effect.getCodonsAlt().toUpperCase();
@@ -365,6 +365,8 @@ public class TestCasesDel extends TestCase {
 				}
 			}
 		}
+
+		System.err.println("");
 	}
 
 	public void test_02() {

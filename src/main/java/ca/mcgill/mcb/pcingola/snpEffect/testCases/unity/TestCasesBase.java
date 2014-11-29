@@ -22,6 +22,7 @@ public class TestCasesBase extends TestCase {
 	protected boolean debug = false;
 	protected boolean verbose = false || debug;
 
+	protected String genomeName = "testCase";
 	protected Random rand;
 	protected Config config;
 	protected Genome genome;
@@ -42,8 +43,9 @@ public class TestCasesBase extends TestCase {
 	 * Create a predictor
 	 */
 	void initSnpEffPredictor() {
-		// Create a config and force out snpPredictor for hg37 chromosome Y
-		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
+		// Create a config and force out snpPredictor
+		if (config == null || config.getGenome() == null || config.getGenome().getGenomeName().equals(genomeName)) //
+			config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
 
 		// Initialize factory
 		int maxGeneLen = 1000;
