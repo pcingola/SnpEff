@@ -54,7 +54,7 @@ public class TestCasesTranscript extends TestCase {
 
 	void initSnpEffPredictor() {
 		// Create a config and force out snpPredictor for hg37 chromosome Y
-		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
+		if (config == null) config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 
 		// Create factory
 		int maxGeneLen = 1000;
