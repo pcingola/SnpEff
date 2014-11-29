@@ -51,7 +51,7 @@ public class TestCasesMixedVariants extends TestCase {
 	public void compareVep(String genome, String vcf) {
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		comp.compareVep(vcf);
-		System.out.println(comp);
+		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -170,7 +170,7 @@ public class TestCasesMixedVariants extends TestCase {
 		comp.setCompareHgvs();
 		comp.setCompareHgvsProt(false);
 		comp.compareVep(vcf);
-		System.out.println(comp);
+		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
