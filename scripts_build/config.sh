@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export VERSION_SNPEFF=4.0
+export VERSION_SNPEFF=4.1
 export SUBVERSION_SNPEFF=""
 export VERSION_SNPSIFT=$VERSION_SNPEFF
 
