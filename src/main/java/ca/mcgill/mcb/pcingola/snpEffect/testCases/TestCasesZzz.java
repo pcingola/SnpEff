@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  *
@@ -10,6 +11,7 @@ public class TestCasesZzz extends TestCasesBase {
 
 	public TestCasesZzz() {
 		super();
+		minExons = 2;
 	}
 
 	//	public void test_hgvs_walk_and_roll_2() {
@@ -94,5 +96,27 @@ public class TestCasesZzz extends TestCasesBase {
 	//			}
 	//		}
 	//	}
+
+	public void test_01() {
+		Gpr.debug("Test");
+
+		if (verbose) Gpr.debug(transcript);
+
+		//		// Create variant
+		//		Variant variant = new Variant(chromosome, 881, "", "T", "");
+		//		if (verbose) Gpr.debug("Variant: " + variant);
+		//
+		//		// Analyze variant
+		//		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+		//
+		//		// Calculate HGVS
+		//		VariantEffect eff = effs.get();
+		//		HgvsDna hgvsc = new HgvsDna(eff);
+		//		String hgvsDna = hgvsc.toString();
+		//
+		//		// Check result
+		//		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		//		Assert.assertEquals("c.1dupT", hgvsDna);
+	}
 
 }

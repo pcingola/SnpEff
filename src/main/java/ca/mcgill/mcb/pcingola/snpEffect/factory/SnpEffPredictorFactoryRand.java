@@ -27,6 +27,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 	Random random;
 	int maxTranscripts;
 	int maxExons;
+	int minExons = 1;
 	int maxGeneLen;
 	int minGeneSize = 100;
 	String chromoSequence = "";
@@ -78,7 +79,8 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		add(tr);
 
 		// Add exons
-		int numEx = Math.max(random.nextInt(maxExons), 1);
+		int numEx = Math.max(random.nextInt(maxExons), minExons);
+
 		for (int ne = 0; ne < numEx; ne++) {
 			// Non-overlapping exons
 			int size = tr.size() / numEx;
@@ -193,5 +195,9 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 
 	public void setForcePositive(boolean forcePositive) {
 		this.forcePositive = forcePositive;
+	}
+
+	public void setMinExons(int minExons) {
+		this.minExons = minExons;
 	}
 }

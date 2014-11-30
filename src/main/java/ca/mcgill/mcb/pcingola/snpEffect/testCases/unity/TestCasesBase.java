@@ -22,7 +22,16 @@ public class TestCasesBase extends TestCase {
 	protected boolean debug = false;
 	protected boolean verbose = false || debug;
 
+	// Parameters for creating fake genome
+	protected int randSeed = 20141128;
 	protected String genomeName = "testCase";
+	protected boolean addUtrs = false;
+	protected boolean onlyPlusStrand = true;
+	protected int maxGeneLen = 1000;
+	protected int maxTranscripts = 1;
+	protected int maxExons = 5;
+	protected int minExons = 1;
+
 	protected Random rand;
 	protected Config config;
 	protected Genome genome;
@@ -32,11 +41,9 @@ public class TestCasesBase extends TestCase {
 	protected SnpEffectPredictor snpEffectPredictor;
 	protected String chromoSequence = "";
 	protected char chromoBases[];
-	protected boolean addUtrs = false;
-	protected boolean onlyPlusStrand = true;
 
 	void initRand() {
-		rand = new Random(20141128);
+		rand = new Random(randSeed);
 	}
 
 	/**
@@ -48,12 +55,10 @@ public class TestCasesBase extends TestCase {
 			config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
 
 		// Initialize factory
-		int maxGeneLen = 1000;
-		int maxTranscripts = 1;
-		int maxExons = 5;
 		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
 		sepf.setForcePositive(onlyPlusStrand); // WARNING: We only use positive strand here (the purpose is to check HGSV notation, not to check annotations)
 		sepf.setAddUtrs(addUtrs);
+		sepf.setMinExons(minExons);
 
 		// Create predictor
 		snpEffectPredictor = sepf.create();

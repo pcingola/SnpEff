@@ -172,14 +172,17 @@ public class TestCasesTranscript extends TestCase {
 		String genome = "testHg3766Chr1";
 		Config config = new Config(genome);
 
-		if (verbose) Timer.showStdErr("Loading genome");
+		verbose = true;
+		if (verbose) Timer.showStdErr("Loading genome " + genome);
 		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
 		if (verbose) Timer.showStdErr("Building interval forest");
 		sep.buildForest();
 		if (verbose) Timer.showStdErr("Done");
 
+		int count = 1;
 		for (Gene gene : sep.getGenome().getGenes()) {
 			for (Transcript tr : gene) {
+
 				if (!tr.isProteinCoding()) continue;
 				if (!tr.hasErrorOrWarning()) continue;
 
@@ -189,6 +192,8 @@ public class TestCasesTranscript extends TestCase {
 				// Get UTR sequence
 				List<Utr5prime> utrs5 = tr.get5primeUtrs();
 				if (utrs5.size() <= 0) continue;
+
+				Gpr.showMark(count++, 1);
 
 				Utr5prime utr5 = utrs5.get(0);
 				String utr5Str = utr5.getSequence().toLowerCase();
