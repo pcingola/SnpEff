@@ -1,21 +1,11 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
-import java.util.Random;
-
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
-import ca.mcgill.mcb.pcingola.interval.Chromosome;
-import ca.mcgill.mcb.pcingola.interval.Gene;
-import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
-import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -29,33 +19,6 @@ public class TestCasesMixedVariants {
 	boolean debug = false;
 	boolean verbose = false || debug;
 
-	Random rand;
-	Config config;
-	Genome genome;
-	Chromosome chromosome;
-	Gene gene;
-	Transcript transcript;
-	SnpEffectPredictor snpEffectPredictor;
-	String chromoSequence = "";
-	char chromoBases[];
-
-	public TestCasesMixedVariants() {
-		super();
-		init();
-	}
-
-	@After
-	public void after() {
-		config = null;
-		genome = null;
-		chromosome = null;
-		gene = null;
-		transcript = null;
-		snpEffectPredictor = null;
-		chromoBases = null;
-		chromoSequence = null;
-	}
-
 	/**
 	 * Compare with results from ENSEMBL's VEP to SnpEff
 	 * Use VCF having VEP's results
@@ -65,48 +28,6 @@ public class TestCasesMixedVariants {
 		comp.compareVep(vcf);
 		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
-	}
-
-	void init() {
-		initRand();
-		initSnpEffPredictor();
-	}
-
-	void initRand() {
-		rand = new Random(20140808);
-	}
-
-	void initSnpEffPredictor() {
-		// Create a config and force out snpPredictor for hg37 chromosome Y
-		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
-
-		// Create factory
-		int maxGeneLen = 1000;
-		int maxTranscripts = 1;
-		int maxExons = 5;
-		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
-
-		// Chromosome sequence
-		chromoSequence = sepf.getChromoSequence();
-		chromoBases = chromoSequence.toCharArray();
-
-		// Create predictor
-		snpEffectPredictor = sepf.create();
-		config.setSnpEffectPredictor(snpEffectPredictor);
-
-		// No upstream or downstream
-		config.getSnpEffectPredictor().setUpDownStreamLength(0);
-		config.getSnpEffectPredictor().setSpliceRegionExonSize(0);
-		config.getSnpEffectPredictor().setSpliceRegionIntronMin(0);
-		config.getSnpEffectPredictor().setSpliceRegionIntronMax(0);
-
-		// Build forest
-		config.getSnpEffectPredictor().buildForest();
-
-		chromosome = sepf.getChromo();
-		genome = config.getGenome();
-		gene = genome.getGenes().iterator().next();
-		transcript = gene.iterator().next();
 	}
 
 	/**

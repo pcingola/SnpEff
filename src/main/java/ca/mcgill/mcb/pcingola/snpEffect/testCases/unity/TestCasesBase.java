@@ -5,6 +5,7 @@ import java.util.Random;
 import org.junit.After;
 import org.junit.Before;
 
+import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -25,14 +26,14 @@ public class TestCasesBase {
 	protected boolean verbose = false || debug;
 
 	// Parameters for creating fake genome
-	protected int randSeed = 20141128;
-	protected String genomeName = "testCase";
-	protected boolean addUtrs = false;
-	protected boolean onlyPlusStrand = true;
-	protected int maxGeneLen = 1000;
-	protected int maxTranscripts = 1;
-	protected int maxExons = 5;
-	protected int minExons = 1;
+	protected int randSeed;
+	protected String genomeName;
+	protected boolean addUtrs;
+	protected boolean onlyPlusStrand;
+	protected int maxGeneLen;
+	protected int maxTranscripts;
+	protected int maxExons;
+	protected int minExons;
 
 	protected Random rand;
 	protected Config config;
@@ -43,16 +44,12 @@ public class TestCasesBase {
 	protected SnpEffectPredictor snpEffectPredictor;
 	protected String chromoSequence = "";
 	protected char chromoBases[];
-
-	@Before
-	public void before() {
-		initRand();
-		initSnpEffPredictor();
-	}
+	protected CodonTable codonTable;
 
 	@After
 	public void after() {
 		config = null;
+		codonTable = null;
 		genome = null;
 		chromosome = null;
 		gene = null;
@@ -62,6 +59,25 @@ public class TestCasesBase {
 		chromoSequence = null;
 	}
 
+	@Before
+	public void before() {
+		init();
+		initSnpEffPredictor();
+	}
+
+	protected void init() {
+		randSeed = 20141128;
+		genomeName = "testCase";
+		addUtrs = false;
+		onlyPlusStrand = true;
+		maxGeneLen = 1000;
+		maxTranscripts = 1;
+		maxExons = 5;
+		minExons = 1;
+
+		initRand();
+	}
+
 	void initRand() {
 		rand = new Random(randSeed);
 	}
@@ -69,10 +85,11 @@ public class TestCasesBase {
 	/**
 	 * Create a predictor
 	 */
-	void initSnpEffPredictor() {
+	protected void initSnpEffPredictor() {
 		// Create a config and force out snpPredictor
-		if (config == null || config.getGenome() == null || config.getGenome().getGenomeName().equals(genomeName)) //
+		if (config == null || config.getGenome() == null || !config.getGenome().getGenomeName().equals(genomeName)) {
 			config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
+		}
 
 		// Initialize factory
 		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
@@ -101,6 +118,7 @@ public class TestCasesBase {
 
 		chromosome = sepf.getChromo();
 		genome = config.getGenome();
+		codonTable = genome.codonTable();
 		gene = genome.getGenes().iterator().next();
 		transcript = gene.iterator().next();
 	}

@@ -8,7 +8,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesApply;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCancer;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCodingTag;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCutsomIntervals;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesDels;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesEff;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesEmbl;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesExonFrame;
@@ -21,12 +20,10 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsExon;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntron;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsLarge;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHugeDeletions;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIns;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesInsEtc;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesInsVep;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationSnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationSnpEffMultiThread;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntervalVariant;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesLof;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesMissenseSilentRatio;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesMixedVariants;
@@ -55,7 +52,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVcf;
 		TestCasesCancer.class, //
 		TestCasesCodingTag.class, //
 		TestCasesCutsomIntervals.class, //
-		TestCasesDels.class, //
 		TestCasesEff.class, //
 		TestCasesEmbl.class, //
 		TestCasesExonFrame.class, //
@@ -68,10 +64,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVcf;
 		TestCasesHgvs.class, //
 		TestCasesHgvsLarge.class, //
 		TestCasesHugeDeletions.class, //
-		TestCasesIns.class, //
 		TestCasesInsEtc.class, //
 		TestCasesInsVep.class, //
-		TestCasesIntervalVariant.class, //
 		TestCasesLof.class, //
 		TestCasesMissenseSilentRatio.class, //
 		TestCasesMixedVariants.class, //

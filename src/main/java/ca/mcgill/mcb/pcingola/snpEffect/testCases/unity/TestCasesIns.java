@@ -1,24 +1,13 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import java.io.IOException;
-import java.util.Random;
-
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
-import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.Gene;
-import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
@@ -27,116 +16,18 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  *
  * @author pcingola
  */
-public class TestCasesIns {
+public class TestCasesIns extends TestCasesBase {
 
 	public static int N = 1000;
-
-	public static boolean debug = false;
-	public static boolean verbose = false || debug;
-
-	Random rand;
-	Config config;
-	Genome genome;
-	Chromosome chromosome;
-	Gene gene;
-	Transcript transcript;
-	SnpEffectPredictor snpEffectPredictor;
-	String chromoSequence = "";
-	char chromoBases[];
-
-	public static void create_ENST00000268124_file() throws IOException {
-		Config config = new Config("testENST00000268124", Gpr.HOME + "/snpEff/" + Config.DEFAULT_CONFIG_FILE);
-		config.loadSnpEffectPredictor();
-
-		Random rand = new Random(20140129);
-		StringBuilder out = new StringBuilder();
-
-		int count = 0;
-		for (Gene g : config.getGenome().getGenes()) {
-			for (Transcript tr : g) {
-				for (Exon e : tr) {
-					for (int i = e.getStart(); i < e.getEnd(); i++) {
-						if (rand.nextDouble() < 0.15) {
-
-							// Insertion length
-							int insLen = rand.nextInt(10) + 1;
-							if (i + insLen > e.getEnd()) insLen = e.getEnd() - i;
-
-							int idx = i - e.getStart();
-
-							String ref = e.basesAt(idx, 1);
-							String alt = ref + GprSeq.randSequence(rand, insLen);
-
-							String line = e.getChromosomeName() + "\t" + i + "\t.\t" + ref + "\t" + alt + "\t.\t.\tAC=1\tGT\t0/1";
-							System.out.println(line);
-							out.append(line + "\n");
-							count++;
-						}
-					}
-				}
-			}
-		}
-
-		System.err.println("Count:" + count);
-		Gpr.toFile(Gpr.HOME + "/snpEff/testENST00000268124.vcf", out);
-	}
 
 	public TestCasesIns() {
 		init();
 	}
 
-	@After
-	public void after() {
-		config = null;
-		genome = null;
-		chromosome = null;
-		gene = null;
-		transcript = null;
-		snpEffectPredictor = null;
-		chromoBases = null;
-		chromoSequence = null;
-	}
-
-	void init() {
-		initRand();
-		initSnpEffPredictor();
-	}
-
-	void initRand() {
-		rand = new Random(20100629);
-	}
-
-	void initSnpEffPredictor() {
-		// Create a config and force out snpPredictor for hg37 chromosome Y
-		if (config == null) config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
-
-		// Create factory
-		int maxGeneLen = 1000;
-		int maxTranscripts = 1;
-		int maxExons = 5;
-		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
-
-		// Chromosome sequence
-		chromoSequence = sepf.getChromoSequence();
-		chromoBases = chromoSequence.toCharArray();
-
-		// Create predictor
-		snpEffectPredictor = sepf.create();
-		config.setSnpEffectPredictor(snpEffectPredictor);
-
-		// No upstream or downstream
-		config.getSnpEffectPredictor().setUpDownStreamLength(0);
-		config.getSnpEffectPredictor().setSpliceRegionExonSize(0);
-		config.getSnpEffectPredictor().setSpliceRegionIntronMin(0);
-		config.getSnpEffectPredictor().setSpliceRegionIntronMax(0);
-
-		// Build forest
-		config.getSnpEffectPredictor().buildForest();
-
-		chromosome = sepf.getChromo();
-		genome = config.getGenome();
-		gene = genome.getGenes().iterator().next();
-		transcript = gene.iterator().next();
+	@Override
+	protected void init() {
+		super.init();
+		randSeed = 20100629;
 	}
 
 	@Test
@@ -250,7 +141,7 @@ public class TestCasesIns {
 									+ "\n\t\tEffect expected : '" + effectExpected + "'" //
 									+ "\n\t\tAA              : '" + aaStr + "'" //
 									+ "\n\t\tAA expected     : '" + aaExpected + "'" //
-							);
+									);
 
 							// Check that there is a match
 							for (String e : effStr.split("\\+"))

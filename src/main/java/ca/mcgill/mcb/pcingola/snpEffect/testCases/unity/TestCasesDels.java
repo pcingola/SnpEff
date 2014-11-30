@@ -1,25 +1,15 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
-
-import java.util.Random;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
-import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.Gene;
-import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
@@ -28,39 +18,14 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  *
  * @author pcingola
  */
-public class TestCasesDels {
+public class TestCasesDels extends TestCasesBase {
 
 	public static int N = 1000;
 
-	boolean debug = false;
 	boolean forcePositive = false || debug; // Force positive strand (used for debugging)
-	boolean verbose = false || debug;
-
-	Random rand;
-	Config config;
-	Genome genome;
-	Chromosome chromosome;
-	Gene gene;
-	Transcript transcript;
-	SnpEffectPredictor snpEffectPredictor;
-	String chromoSequence = "";
-	char chromoBases[];
-
-	@After
-	public void after() {
-		config = null;
-		genome = null;
-		chromosome = null;
-		gene = null;
-		transcript = null;
-		snpEffectPredictor = null;
-		chromoBases = null;
-		chromoSequence = null;
-	}
 
 	public TestCasesDels() {
 		super();
-		init();
 	}
 
 	/**
@@ -141,44 +106,10 @@ public class TestCasesDels {
 		return removeWhiteSpaces(codonsOld);
 	}
 
-	void init() {
-		initRand();
-		initSnpEffPredictor();
-	}
-
-	void initRand() {
-		rand = new Random(20100629);
-	}
-
-	void initSnpEffPredictor() {
-		// Create a config and force out snpPredictor for hg37 chromosome Y
-		if (config == null) config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
-
-		// Create factory
-		int maxGeneLen = 1000;
-		int maxTranscripts = 1;
-		int maxExons = 5;
-		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
-		sepf.setForcePositive(forcePositive);
-		if (forcePositive) Gpr.debug("WARNING: Positive strand only tests!");
-
-		// Create predictor
-		snpEffectPredictor = sepf.create();
-		config.setSnpEffectPredictor(snpEffectPredictor);
-
-		// No upstream or downstream
-		config.getSnpEffectPredictor().setUpDownStreamLength(0);
-
-		// Build forest
-		config.getSnpEffectPredictor().buildForest();
-
-		// Data
-		chromoSequence = sepf.getChromoSequence();
-		chromoBases = chromoSequence.toCharArray();
-		chromosome = sepf.getChromo();
-		genome = config.getGenome();
-		gene = genome.getGenes().iterator().next();
-		transcript = gene.iterator().next();
+	@Override
+	protected void init() {
+		super.init();
+		randSeed = 20100629;
 	}
 
 	/**
@@ -364,7 +295,7 @@ public class TestCasesDels {
 										&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
 										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
 										&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
-								) {
+										) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
 									String codonsNewEff = effect.getCodonsAlt().toUpperCase();
