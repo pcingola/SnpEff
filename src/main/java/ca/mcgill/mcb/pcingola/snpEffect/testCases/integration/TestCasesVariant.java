@@ -239,11 +239,9 @@ public class TestCasesVariant extends TestCase {
 
 	public void test_25_exon_bases() {
 		Gpr.debug("Test");
-		System.out.println("Loading config file");
 		Config config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 
-		System.out.println("Loading fasta file");
 		String fastaFile = "tests/testCase.fa";
 		String seq = GprSeq.fastaSimpleRead(fastaFile);
 
@@ -271,7 +269,7 @@ public class TestCasesVariant extends TestCase {
 			}
 		}
 
-		System.out.println("Count OK: " + countOk + "\tCount Err: " + countErr);
+		if (verbose) System.out.println("Count OK: " + countOk + "\tCount Err: " + countErr);
 	}
 
 	/**
@@ -393,7 +391,7 @@ public class TestCasesVariant extends TestCase {
 		Variant var = new Variant(chr, 1, "A", "C");
 		var.setVariantType(VariantType.SNP);
 
-		System.out.println(var);
+		if (verbose) System.out.println(var);
 		for (EffectType eff : EffectType.values()) {
 			VariantEffect varEff = new VariantEffect(var);
 			varEff.setEffectType(eff);
