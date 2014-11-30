@@ -6,12 +6,13 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.binseq.coder.DnaCoder;
 import ca.mcgill.mcb.pcingola.nmer.Nmer;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
-public class TestCasesNmers extends TestCase {
+public class TestCasesNmers {
 
 	public static boolean verbose = false;
 
@@ -31,6 +32,7 @@ public class TestCasesNmers extends TestCase {
 		return sb.toString();
 	}
 
+	@Test
 	public void test_03_Nmers() {
 		Gpr.debug("Test");
 		long seed = 20100615;
@@ -49,6 +51,7 @@ public class TestCasesNmers extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_20_Nmers_read_write() {
 		Gpr.debug("Test");
 		String testFile = "/tmp/nmer_test.bin";

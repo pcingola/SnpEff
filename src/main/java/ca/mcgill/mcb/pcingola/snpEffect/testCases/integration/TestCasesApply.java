@@ -2,8 +2,6 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.Random;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,7 +20,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  *
  * @author pcingola
  */
-public class TestCasesApply extends TestCase {
+public class TestCasesApply {
 
 	public static boolean debug = false;
 	public static boolean verbose = false || debug;
@@ -168,7 +166,7 @@ public class TestCasesApply extends TestCase {
 										+ "\n\t\tOriginal            : " + ex //
 										+ "\n\t\tSequence (expected) : " + newSeq + "'" //
 										+ "\n\t\tSequence            : " + exNew.getSequence() + "'" //
-										;
+								;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}

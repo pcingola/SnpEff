@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.reactome.Entity;
 import ca.mcgill.mcb.pcingola.reactome.Entity.TransferFunction;
 import ca.mcgill.mcb.pcingola.reactome.events.Reaction;
@@ -13,7 +15,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * 
  * @author pcingola
  */
-public class TestCasesReactome extends TestCase {
+public class TestCasesReactome {
 
 	public static boolean debug = false;
 	public static boolean verbose = true;
@@ -26,6 +28,7 @@ public class TestCasesReactome extends TestCase {
 	/**
 	 * Reaction with two molecules
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		int id = 1;
@@ -50,6 +53,7 @@ public class TestCasesReactome extends TestCase {
 	/**
 	 * Reaction with a catalyst
 	 */
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		int id = 1;
@@ -81,6 +85,7 @@ public class TestCasesReactome extends TestCase {
 	/**
 	 * Reaction with positive regulation
 	 */
+	@Test
 	public void test_03() {
 		Gpr.debug("Test");
 		int id = 1;
@@ -110,6 +115,7 @@ public class TestCasesReactome extends TestCase {
 	/**
 	 * Reaction with negative regulation
 	 */
+	@Test
 	public void test_04() {
 		Gpr.debug("Test");
 		int id = 1;
@@ -139,6 +145,7 @@ public class TestCasesReactome extends TestCase {
 	/**
 	 * Reaction with requirement
 	 */
+	@Test
 	public void test_05() {
 		Gpr.debug("Test");
 		int id = 1;

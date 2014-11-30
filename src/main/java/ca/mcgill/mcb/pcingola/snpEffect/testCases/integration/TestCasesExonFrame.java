@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
@@ -19,7 +21,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesExonFrame extends TestCase {
+public class TestCasesExonFrame {
 
 	boolean verbose = false;
 
@@ -30,6 +32,7 @@ public class TestCasesExonFrame extends TestCase {
 	/**
 	 * Test database: Build, check and annotate
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		//---
@@ -98,7 +101,7 @@ public class TestCasesExonFrame extends TestCase {
 				if (expectedEffect.equals(eff) //
 						&& ((veff.getAa() == null) || expectedAa.equals(veff.getAa())) //
 						&& ((veff.getCodon() == null) || expectedCodon.equals(veff.getCodon())) //
-						) //
+				) //
 					found = true;
 			}
 
@@ -109,6 +112,7 @@ public class TestCasesExonFrame extends TestCase {
 	/**
 	 * Build genome (no exceptions should be thrown)
 	 */
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 

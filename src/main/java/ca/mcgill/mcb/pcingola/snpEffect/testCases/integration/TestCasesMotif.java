@@ -2,9 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
@@ -19,7 +18,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesMotif extends TestCase {
+public class TestCasesMotif {
 
 	public static boolean debug = false;
 	public static boolean verbose = false || debug;
@@ -54,16 +53,19 @@ public class TestCasesMotif extends TestCase {
 		Assert.assertEquals(1, numNextProt);
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		checkMotif("testHg3770Chr22", "tests/test_motif_01.vcf", "MA0099.2:AP1", EffectImpact.LOW);
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		checkMotif("testHg3770Chr22", "tests/test_motif_02.vcf", "MA0099.2:AP1", EffectImpact.MODIFIER);
 	}
 
+	@Test
 	public void test_03() {
 		Gpr.debug("Test");
 		checkMotif("testHg3770Chr22", "tests/test_motif_03.vcf", "MA0099.2:AP1", EffectImpact.LOW);
@@ -72,6 +74,7 @@ public class TestCasesMotif extends TestCase {
 	/**
 	 * MNP outside Motif: Should not throw any exception
 	 */
+	@Test
 	public void test_04() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr11";
@@ -89,6 +92,7 @@ public class TestCasesMotif extends TestCase {
 	 * Motif has 9 bases but ENSEMBL file marks it as a 10 base interval
 	 * SNP affect last base (as marked by ENSEMBL), since there is no sequence for that base position, an exception is thrown.
 	 */
+	@Test
 	public void test_05() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr14";

@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -47,7 +46,7 @@ class Save implements Serializable {
  *
  * @author pcingola
  */
-public class TestCasesMnp extends TestCase {
+public class TestCasesMnp {
 
 	public static int N = 1000;
 
@@ -258,6 +257,7 @@ public class TestCasesMnp extends TestCase {
 		return snp;
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 
@@ -294,6 +294,7 @@ public class TestCasesMnp extends TestCase {
 		System.err.println("");
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		// Run

@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
@@ -16,7 +18,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesCutsomIntervals extends TestCase {
+public class TestCasesCutsomIntervals {
 
 	public static boolean debug = false;
 	public static boolean verbose = false || debug;
@@ -29,6 +31,7 @@ public class TestCasesCutsomIntervals extends TestCase {
 		super();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		// Load database

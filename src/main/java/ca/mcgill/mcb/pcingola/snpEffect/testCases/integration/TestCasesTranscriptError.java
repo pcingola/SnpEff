@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -17,7 +19,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesTranscriptError extends TestCase {
+public class TestCasesTranscriptError {
 
 	boolean verbose = false;
 
@@ -25,12 +27,14 @@ public class TestCasesTranscriptError extends TestCase {
 		super();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		String args[] = { "-classic", "testHg3763Chr20", "./tests/short_codon_bug.vcf" };
 		transcriptError(args, ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE);
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		String args[] = { "-classic", "testHg3763Chr20", "./tests/incorrect_ref.vcf" };

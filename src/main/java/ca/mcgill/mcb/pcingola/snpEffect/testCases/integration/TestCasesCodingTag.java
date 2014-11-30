@@ -2,9 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -20,7 +19,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesCodingTag extends TestCase {
+public class TestCasesCodingTag {
 
 	boolean verbose = false;
 
@@ -28,6 +27,7 @@ public class TestCasesCodingTag extends TestCase {
 		super();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		String args[] = { "-classic", "-ud", "0", "-noOut", "testHg19Chr1", "./tests/missing_coding_tr_tag.vcf" };

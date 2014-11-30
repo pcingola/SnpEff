@@ -2,7 +2,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.probablility.Binomial;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -12,7 +14,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * @author pcingola
  *
  */
-public class TestCasesBinomial extends TestCase {
+public class TestCasesBinomial {
 
 	boolean verbose = true;
 	double threshold = 0.01;
@@ -92,6 +94,7 @@ public class TestCasesBinomial extends TestCase {
 		rand = new Random(20130323);
 	}
 
+	@Ignore
 	public void test_00() {
 		Gpr.debug("Test");
 		//		generate_test();
@@ -99,6 +102,7 @@ public class TestCasesBinomial extends TestCase {
 		//		generate_test();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		compare(0.2880550055924883, 220, 254, 2.27799916244268e-82);
@@ -203,6 +207,7 @@ public class TestCasesBinomial extends TestCase {
 		compare(0.30647238081939765, 65, 579, 9.08728110815288e-29);
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		compareCdf(0.5, 10, 20, 0.588098526000976);
@@ -310,6 +315,7 @@ public class TestCasesBinomial extends TestCase {
 		compareCdf(0.7647269362192434, 83, 535, 1.76845388058446e-195);
 	}
 
+	@Test
 	public void test_03() {
 		Gpr.debug("Test");
 		compareCdfUp(0.5, 10, 20, 0.411901473999024);

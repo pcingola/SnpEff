@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.binseq.DnaSequence;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
@@ -20,7 +22,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
-public class TestCasesIntervals extends TestCase {
+public class TestCasesIntervals {
 
 	int maxLen = 100;
 	boolean verbose = false;
@@ -146,6 +148,7 @@ public class TestCasesIntervals extends TestCase {
 		return ints;
 	}
 
+	@Test
 	public void test_00() {
 		Gpr.debug("Test");
 		initRand();
@@ -157,6 +160,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Read file
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		initRand();
@@ -167,6 +171,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Sort test
 	 */
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		initRand();
@@ -178,6 +183,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Sort (by end) test
 	 */
+	@Test
 	public void test_03() {
 		Gpr.debug("Test");
 		initRand();
@@ -189,6 +195,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Merge intervals
 	 */
+	@Test
 	public void test_04() {
 		Gpr.debug("Test");
 		initRand();
@@ -201,6 +208,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Adding intervals
 	 */
+	@Test
 	public void test_05() {
 		Gpr.debug("Test");
 		initRand();
@@ -231,6 +239,7 @@ public class TestCasesIntervals extends TestCase {
 	 * Intersect of 2 intervals
 	 * We have 2 implementation (brute force and interval trees), so we can compare them.
 	 */
+	@Test
 	public void test_06() {
 		Gpr.debug("Test");
 
@@ -270,6 +279,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Minus operation for intervals
 	 */
+	@Test
 	public void test_07_01() {
 		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
@@ -282,7 +292,7 @@ public class TestCasesIntervals extends TestCase {
 		intervals2.add(new Marker(chr, 10, 90, false, ""));
 
 		Markers minus = intervals.minus(intervals2);
-		assertEquals(0, minus.size());
+		Assert.assertEquals(0, minus.size());
 
 		if (verbose) System.out.println(minus.toStringAsciiArt(maxLen));
 	}
@@ -290,6 +300,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Minus operation for intervals
 	 */
+	@Test
 	public void test_07_02() {
 		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
@@ -302,7 +313,7 @@ public class TestCasesIntervals extends TestCase {
 		intervals2.add(new Marker(chr, 9, 91, false, ""));
 
 		Markers minus = intervals.minus(intervals2);
-		assertEquals(0, minus.size());
+		Assert.assertEquals(0, minus.size());
 
 		if (verbose) System.out.println(minus.toStringAsciiArt(maxLen));
 	}
@@ -310,6 +321,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Minus operation for intervals
 	 */
+	@Test
 	public void test_07_03() {
 		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
@@ -322,10 +334,10 @@ public class TestCasesIntervals extends TestCase {
 		intervals2.add(new Marker(chr, 9, 50, false, ""));
 
 		Markers minus = intervals.minus(intervals2);
-		assertEquals(1, minus.size());
+		Assert.assertEquals(1, minus.size());
 		Marker minusInt = minus.iterator().next();
-		assertEquals(51, minusInt.getStart());
-		assertEquals(90, minusInt.getEnd());
+		Assert.assertEquals(51, minusInt.getStart());
+		Assert.assertEquals(90, minusInt.getEnd());
 
 		if (verbose) System.out.println(minus.toStringAsciiArt(maxLen));
 	}
@@ -333,6 +345,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Minus operation for intervals
 	 */
+	@Test
 	public void test_07_04() {
 		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
@@ -348,15 +361,16 @@ public class TestCasesIntervals extends TestCase {
 
 		if (verbose) System.out.println(minus.toStringAsciiArt(maxLen));
 
-		assertEquals(1, minus.size());
+		Assert.assertEquals(1, minus.size());
 		Marker minusInt = minus.iterator().next();
-		assertEquals(10, minusInt.getStart());
-		assertEquals(50, minusInt.getEnd());
+		Assert.assertEquals(10, minusInt.getStart());
+		Assert.assertEquals(50, minusInt.getEnd());
 	}
 
 	/**
 	 * Minus operation for intervals
 	 */
+	@Test
 	public void test_07_05() {
 		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
@@ -372,20 +386,21 @@ public class TestCasesIntervals extends TestCase {
 
 		if (verbose) System.out.println(minus.toStringAsciiArt(maxLen));
 
-		assertEquals(2, minus.size());
+		Assert.assertEquals(2, minus.size());
 		Iterator<Marker> it = minus.iterator();
 		Marker minusInt = it.next();
-		assertEquals(10, minusInt.getStart());
-		assertEquals(39, minusInt.getEnd());
+		Assert.assertEquals(10, minusInt.getStart());
+		Assert.assertEquals(39, minusInt.getEnd());
 
 		minusInt = it.next();
-		assertEquals(61, minusInt.getStart());
-		assertEquals(90, minusInt.getEnd());
+		Assert.assertEquals(61, minusInt.getStart());
+		Assert.assertEquals(90, minusInt.getEnd());
 	}
 
 	/**
 	 * Test distance (in bases) from a list of markers
 	 */
+	@Test
 	public void test_08() {
 		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
@@ -406,6 +421,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Test distance (in bases) from a list of markers
 	 */
+	@Test
 	public void test_08_02() {
 		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
@@ -430,6 +446,7 @@ public class TestCasesIntervals extends TestCase {
 	/**
 	 * Test distance (in bases) from a list of markers
 	 */
+	@Test
 	public void test_08_03() {
 		Gpr.debug("Test");
 		Chromosome chr = genome.getChromosome("1");
@@ -451,6 +468,7 @@ public class TestCasesIntervals extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_09_chrOrder() {
 		Gpr.debug("Test");
 		Genome genome = new Genome("test");
@@ -465,6 +483,7 @@ public class TestCasesIntervals extends TestCase {
 		Assert.assertTrue(chrB.compareTo(chrC) < 0);
 	}
 
+	@Test
 	public void test_10_chrOrder() {
 		Gpr.debug("Test");
 		Genome genome = new Genome("test");

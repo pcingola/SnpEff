@@ -4,7 +4,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -13,7 +14,7 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Tuple;
 
-public class TestCasesMarkerUtils extends TestCase {
+public class TestCasesMarkerUtils {
 
 	int maxLen = 100;
 	int minLen = 1;
@@ -110,6 +111,7 @@ public class TestCasesMarkerUtils extends TestCase {
 	/**
 	 * Test for collapsing markers with zero gaps 
 	 */
+	@Test
 	public void test_collapseZeroGap() {
 		Gpr.debug("Test");
 		initRand();

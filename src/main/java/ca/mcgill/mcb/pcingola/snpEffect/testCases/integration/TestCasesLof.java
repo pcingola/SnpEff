@@ -4,8 +4,10 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 import net.sf.samtools.util.RuntimeEOFException;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Intron;
@@ -27,7 +29,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesLof extends TestCase {
+public class TestCasesLof {
 
 	public static boolean debug = false;
 	public static boolean verbose = false;
@@ -296,7 +298,7 @@ public class TestCasesLof extends TestCase {
 					+ ", class: " + (markerFilter != null ? markerFilter.getClass().getSimpleName() : "") //
 					+ "\t\tFound: '" + m.getType() + "', mfilter: " + (mfilter != null ? mfilter.getId() : "NULL") //
 					+ ", parent: " + m.getParent().getClass().getSimpleName() //
-					);
+			);
 
 			if ((m.getType() == effectType) && (mfilter != null) && (mtr != null)) {
 				if (markerFilter != null) {
@@ -312,6 +314,7 @@ public class TestCasesLof extends TestCase {
 		throw new RuntimeEOFException("Cannot find '" + effectType + "' " + (markerFilter != null ? "for exon " + markerFilter.getId() : "") + ", seqChange: " + variant);
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 
@@ -336,6 +339,7 @@ public class TestCasesLof extends TestCase {
 	/**
 	 * We should be able to annotate a BED file
 	 */
+	@Test
 	public void test_02() {
 		String args[] = { "testHg3775Chr22", "-noLog", "-i", "bed", "tests/test_lof_02.bed" };
 		SnpEff snpeff = new SnpEff(args);

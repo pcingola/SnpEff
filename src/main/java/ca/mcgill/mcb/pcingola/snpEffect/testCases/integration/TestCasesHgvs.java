@@ -4,9 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -33,7 +32,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesHgvs extends TestCase {
+public class TestCasesHgvs {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
@@ -221,6 +220,7 @@ public class TestCasesHgvs extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_01_coding() {
 		Gpr.debug("Test");
 		int N = 250;
@@ -329,6 +329,7 @@ public class TestCasesHgvs extends TestCase {
 		System.err.println("");
 	}
 
+	@Test
 	public void test_01_intron() {
 		Gpr.debug("Test");
 		int N = 250;
@@ -405,6 +406,7 @@ public class TestCasesHgvs extends TestCase {
 		System.err.println("");
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
@@ -417,6 +419,7 @@ public class TestCasesHgvs extends TestCase {
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
+	@Test
 	public void test_03() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
@@ -430,6 +433,7 @@ public class TestCasesHgvs extends TestCase {
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
+	@Test
 	public void test_04() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
@@ -443,6 +447,7 @@ public class TestCasesHgvs extends TestCase {
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
+	@Test
 	public void test_05() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
@@ -456,6 +461,7 @@ public class TestCasesHgvs extends TestCase {
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
+	@Test
 	public void test_06() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
@@ -469,6 +475,7 @@ public class TestCasesHgvs extends TestCase {
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
+	@Test
 	public void test_10_MixedVep_HGVS() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr1";
@@ -481,6 +488,7 @@ public class TestCasesHgvs extends TestCase {
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
+	@Test
 	public void test_11_Hg19Hgvs() {
 		Gpr.debug("Test");
 		String genome = "testHg19Hgvs";
@@ -497,6 +505,7 @@ public class TestCasesHgvs extends TestCase {
 	 * Using non-standard splice size (15 instead of 2)
 	 * may cause some HGVS annotations issues
 	 */
+	@Test
 	public void test_12_BRCA_Splice_15_Hgvs() {
 		Gpr.debug("Test");
 		int spliceSize = 15;
@@ -531,6 +540,7 @@ public class TestCasesHgvs extends TestCase {
 	 * Using non-standard splice size (15 instead of 2)
 	 * may cause some HGVS annotations issues
 	 */
+	@Test
 	public void test_13_large_Del_Hgvs() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr22";
@@ -565,6 +575,7 @@ public class TestCasesHgvs extends TestCase {
 	 * Using non-standard splice size (15 instead of 2)
 	 * may cause some HGVS annotations issues
 	 */
+	@Test
 	public void test_14_splice_region_Hgvs() {
 		Gpr.debug("Test");
 		String genome = "testHg19Chr1";

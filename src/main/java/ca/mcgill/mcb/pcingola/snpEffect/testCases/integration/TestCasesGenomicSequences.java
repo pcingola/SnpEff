@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -13,7 +15,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * Test case for genomic sequences
  */
-public class TestCasesGenomicSequences extends TestCase {
+public class TestCasesGenomicSequences {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
@@ -25,6 +27,7 @@ public class TestCasesGenomicSequences extends TestCase {
 	/**
 	 * Check that we can recover sequences from all exons using GneomicSequence class
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		String genome = "zzz";

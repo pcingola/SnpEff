@@ -3,7 +3,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.fileIterator.VariantFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.VariantTxtFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -50,7 +51,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  *
  * @author pcingola
  */
-public class TestCasesVariant extends TestCase {
+public class TestCasesVariant {
 
 	boolean verbose = false;
 	long randSeed = 20100629;
@@ -64,6 +65,7 @@ public class TestCasesVariant extends TestCase {
 	 * CDS test (CDS = CoDing Sequences)
 	 * Build CDS form exon sequences
 	 */
+	@Test
 	public void test_08() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
@@ -101,6 +103,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor for a transcript
 	 */
+	@Test
 	public void test_09() {
 		String trId = "ENST00000250823";
 		Gpr.debug("Test");
@@ -112,6 +115,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor: Test UTR distances, Up/Downstream distances
 	 */
+	@Test
 	public void test_11() {
 		String trId = "ENST00000250823";
 		Gpr.debug("Test");
@@ -123,6 +127,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor: Test Splice sites
 	 */
+	@Test
 	public void test_12() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
@@ -132,6 +137,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor: Test Splice sites (make sure they are only 2 bases long)
 	 */
+	@Test
 	public void test_12_2() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
@@ -141,6 +147,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor: Test start codon gained
 	 */
+	@Test
 	public void test_19() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
@@ -151,6 +158,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor: Test start codon gained (reverse strand)
 	 */
+	@Test
 	public void test_20() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
@@ -161,6 +169,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor for a transcript (Insertions)
 	 */
+	@Test
 	public void test_21() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
@@ -171,6 +180,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor for a transcript (Insertions)
 	 */
+	@Test
 	public void test_21_2() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
@@ -181,6 +191,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor for a transcript (Insertions)
 	 */
+	@Test
 	public void test_21_3() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
@@ -192,6 +203,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Read file test: Should throw an exception (chromosome not found)
 	 */
+	@Test
 	public void test_22() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
@@ -220,6 +232,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor for a transcript (Insertions)
 	 */
+	@Test
 	public void test_23_MNP_on_exon_edge() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
@@ -231,12 +244,14 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor for a transcript (Insertions)
 	 */
+	@Test
 	public void test_24_delete_exon_utr() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect("tests/delete_exon_utr.txt", null, true);
 	}
 
+	@Test
 	public void test_25_exon_bases() {
 		Gpr.debug("Test");
 		Config config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
@@ -275,6 +290,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test SNP effect predictor for a transcript (Insertions)
 	 */
+	@Test
 	public void test_26_chr15_78909452() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3761Chr15";
@@ -285,6 +301,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Splice site: Bug reported by Wang, Xusheng
 	 */
+	@Test
 	public void test_28_Splice_mm37_ENSMUSG00000005763() {
 		Gpr.debug("Test");
 		//---
@@ -315,6 +332,7 @@ public class TestCasesVariant extends TestCase {
 	 * Test effect when hits a gene, but not any transcript within a gene.
 	 * This is an extremely weird case, might be an annotation problem.
 	 */
+	@Test
 	public void test_29_Intergenic_in_Gene() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3763Chr20";
@@ -325,6 +343,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Rare Amino acid
 	 */
+	@Test
 	public void test_30_RareAa() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3765Chr22";
@@ -335,6 +354,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * MT chromo
 	 */
+	@Test
 	public void test_31_CodonTable() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3767Chr21Mt";
@@ -345,6 +365,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Start gained
 	 */
+	@Test
 	public void test_32_StartGained() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3769Chr12";
@@ -355,6 +376,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Not start gained
 	 */
+	@Test
 	public void test_33_StartGained_NOT() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3769Chr12";
@@ -365,6 +387,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Start gained
 	 */
+	@Test
 	public void test_34_StartGained() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3766Chr1";
@@ -375,6 +398,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Not start gained
 	 */
+	@Test
 	public void test_35_StartGained_NOT() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3766Chr1";
@@ -385,6 +409,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Make sure all variant effects have appropriate impacts
 	 */
+	@Test
 	public void test_36_EffectImpact() {
 		Gpr.debug("Test");
 		Chromosome chr = new Chromosome(null, 0, 1, "1");
@@ -402,6 +427,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Make sure all effect_tpyes have appropriate impacts, regions, etc.
 	 */
+	@Test
 	public void test_37_EffectType() {
 		for (EffectType eff : EffectType.values()) {
 			if (verbose) System.out.println("\t" + eff);
@@ -416,6 +442,7 @@ public class TestCasesVariant extends TestCase {
 	/**
 	 * Test
 	 */
+	@Test
 	public void test_zzz() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);

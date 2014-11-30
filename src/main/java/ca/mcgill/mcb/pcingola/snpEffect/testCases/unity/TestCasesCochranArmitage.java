@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.probablility.CochranArmitageTest;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -10,8 +12,9 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesCochranArmitage extends TestCase {
+public class TestCasesCochranArmitage {
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		int N1[] = { 20, 20, 20 };
@@ -21,6 +24,7 @@ public class TestCasesCochranArmitage extends TestCase {
 		Assert.assertEquals(1.851, test, 0.001);
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		int N1[] = { 20, 20, 20 };
@@ -29,6 +33,7 @@ public class TestCasesCochranArmitage extends TestCase {
 		Assert.assertEquals(-2.108, test, 0.001);
 	}
 
+	@Test
 	public void test_03() {
 		Gpr.debug("Test");
 		int N1[] = { 20, 20, 20 };
@@ -37,6 +42,7 @@ public class TestCasesCochranArmitage extends TestCase {
 		Assert.assertEquals(-2.284, test, 0.001);
 	}
 
+	@Test
 	public void test_04() {
 		Gpr.debug("Test");
 		int n1[] = { 17066, 14464, 788, 126, 37 };
@@ -47,6 +53,7 @@ public class TestCasesCochranArmitage extends TestCase {
 		Assert.assertEquals(0.088, p, 0.001);
 	}
 
+	@Test
 	public void test_05() {
 		Gpr.debug("Test");
 		int n1[] = { 17066, 14464, 788, 126, 37 };

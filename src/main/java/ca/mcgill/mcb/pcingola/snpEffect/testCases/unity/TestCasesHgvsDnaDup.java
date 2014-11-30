@@ -1,6 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import junit.framework.Assert;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
@@ -17,6 +20,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		super();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 
@@ -39,6 +43,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		Assert.assertEquals("c.1dupT", hgvsDna);
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		if (verbose) Gpr.debug(transcript);
@@ -65,6 +70,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 * 		g.5dupT (or g.5dup, not g.5_6insT) denotes a duplication ("insertion") of the T nucleotide
 	 *      at position 5 in the genomic reference sequence changing ACTCTGTGCC to ACTCTTGTGCC
 	 */
+	@Test
 	public void test_03() {
 		Gpr.debug("Test");
 		String prepend = "ACTCTGTGCC";
@@ -94,6 +100,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 * 		g.7dupT (or g.7dup, not g.5dupT, not g.7_8insT) denotes a duplication ("insertion") of
 	 * 		the T nucleotide at position 7 in the genomic reference sequence changing AGACTTTGTGCC to AGACTTTTGTGCC
 	 */
+	@Test
 	public void test_04() {
 		Gpr.debug("Test");
 		String prepend = "AGACTTTGTGCC";
@@ -123,6 +130,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 * 		g.7_8dup (or g.7_8dupTG, not g.5_6dup, not g.8_9insTG) denotes a TG duplication
 	 * 		in the TG-tandem repeat sequence changing ACTTTGTGCC to ACTTTGTGTGCC
 	 */
+	@Test
 	public void test_05() {
 		Gpr.debug("Test");
 		String prepend = "ACTTTGTGCC";
@@ -147,6 +155,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		Assert.assertEquals("c.7_8dupTG", hgvsDna);
 	}
 
+	@Test
 	public void test_06() {
 		Gpr.debug("Test");
 		String prepend = "ACTTTGTGCC";

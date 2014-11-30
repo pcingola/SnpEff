@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -32,7 +31,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesIns extends TestCase {
+public class TestCasesIns {
 
 	public static int N = 1000;
 
@@ -174,6 +173,7 @@ public class TestCasesIns extends TestCase {
 		transcript = gene.iterator().next();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		CodonTable codonTable = genome.codonTable();
@@ -304,6 +304,7 @@ public class TestCasesIns extends TestCase {
 	/**
 	 * Insertion on minus strand
 	 */
+	@Test
 	public void test_02_InsOffByOne() {
 		Gpr.debug("Test");
 		String args[] = { "-classic", "testENST00000268124", "tests/ins_off_by_one.vcf" };
@@ -324,11 +325,13 @@ public class TestCasesIns extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_03_InsVep() {
 		Gpr.debug("Test");
 		compareVep("testENST00000268124", "tests/testENST00000268124_ins_vep.vcf", "ENST00000268124");
 	}
 
+	@Test
 	public void test_04_InsVep() {
 		Gpr.debug("Test");
 		compareVep("testHg3770Chr22", "tests/testENST00000445220_ins_vep.vcf", "ENST00000445220");

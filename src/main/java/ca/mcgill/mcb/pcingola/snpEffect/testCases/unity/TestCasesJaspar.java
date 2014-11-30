@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.motif.Jaspar;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -10,12 +12,13 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesJaspar extends TestCase {
+public class TestCasesJaspar {
 
 	public TestCasesJaspar() {
 		super();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		Jaspar jaspar = new Jaspar();
@@ -49,6 +52,7 @@ public class TestCasesJaspar extends TestCase {
 		Assert.assertEquals(expected, actual);
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		Jaspar jaspar = new Jaspar();

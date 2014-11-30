@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.probablility.FisherExactTest;
 import ca.mcgill.mcb.pcingola.probablility.Hypergeometric;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -14,7 +16,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * @author pcingola
  *
  */
-public class TestCasesFisherExactTest extends TestCase {
+public class TestCasesFisherExactTest {
 
 	public static double MAX_DIFF = 0.00000000001;
 
@@ -102,11 +104,13 @@ public class TestCasesFisherExactTest extends TestCase {
 		rand = new Random(20110124);
 	}
 
+	@Test
 	public void test_0() {
 		Gpr.debug("Test");
 		// generate_test();
 	}
 
+	@Test
 	public void test_03_fisher() {
 		Gpr.debug("Test");
 		compareFisherUp(59, 545, 136, 95, 8.28958173422445e-18);
@@ -211,6 +215,7 @@ public class TestCasesFisherExactTest extends TestCase {
 		compareFisherUp(194, 683, 500, 204, 1.56219065349161e-20);
 	}
 
+	@Test
 	public void test_04_fisher() {
 		Gpr.debug("Test");
 		compareFisherDown(57, 470, 141, 281, 6.6866974987128e-09);
@@ -315,6 +320,7 @@ public class TestCasesFisherExactTest extends TestCase {
 		compareFisherDown(179, 775, 414, 507, 6.06818418807189e-49);
 	}
 
+	@Test
 	public void test_05_fisher() {
 		Gpr.debug("Test");
 		compareFisherDown(1, 100, 50, 0, 1);
@@ -353,6 +359,7 @@ public class TestCasesFisherExactTest extends TestCase {
 		odds ratio
 		  4.859427
 	 */
+	@Test
 	public void test_06_fisher_vs_chi2() {
 		Gpr.debug("Test");
 		int n11 = 25, n12 = 5;

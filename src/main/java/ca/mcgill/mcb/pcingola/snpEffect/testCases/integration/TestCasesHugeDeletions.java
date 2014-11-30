@@ -2,9 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -18,7 +17,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesHugeDeletions extends TestCase {
+public class TestCasesHugeDeletions {
 
 	boolean verbose = false;
 
@@ -26,6 +25,7 @@ public class TestCasesHugeDeletions extends TestCase {
 		super();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion_DEL.vcf" };
@@ -51,6 +51,7 @@ public class TestCasesHugeDeletions extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion.vcf.gz" };

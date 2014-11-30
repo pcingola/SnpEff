@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -22,7 +24,7 @@ import ca.mcgill.mcb.pcingola.util.Timer;
  *
  * @author pcingola
  */
-public class TestCasesTranscript extends TestCase {
+public class TestCasesTranscript {
 
 	public static int N = 1000;
 	boolean debug = false;
@@ -82,6 +84,7 @@ public class TestCasesTranscript extends TestCase {
 		transcript = gene.iterator().next();
 	}
 
+	@Test
 	public void test_CdsPos() {
 		Gpr.debug("Test");
 
@@ -118,6 +121,7 @@ public class TestCasesTranscript extends TestCase {
 	/**
 	 * Simple CDS start & CSD end case
 	 */
+	@Test
 	public void test_cdsStartEnd_1() {
 		Gpr.debug("Test");
 		Gene g = new Gene(chromosome, 0, 100, false, "g1", "g1", "");
@@ -140,6 +144,7 @@ public class TestCasesTranscript extends TestCase {
 	/**
 	 * CDS start & CSD end case where transcript is ALL UTR (nothing codes, presumably because of a database annotation error)
 	 */
+	@Test
 	public void test_cdsStartEnd_2() {
 		Gpr.debug("Test");
 		Gene g = new Gene(chromosome, 10, 100, false, "g1", "g1", "");
@@ -167,6 +172,7 @@ public class TestCasesTranscript extends TestCase {
 		if (verbose) System.out.println("CDS.start: " + tr.getCdsStart() + "\tCDS.end: " + tr.getCdsEnd());
 	}
 
+	@Test
 	public void test_mRnaSequence() {
 		Gpr.debug("Test");
 		String genome = "testHg3766Chr1";

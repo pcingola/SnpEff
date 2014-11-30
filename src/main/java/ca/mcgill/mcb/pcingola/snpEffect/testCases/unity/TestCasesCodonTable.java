@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -11,7 +13,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesCodonTable extends TestCase {
+public class TestCasesCodonTable {
 
 	public static boolean debug = false;
 
@@ -20,6 +22,7 @@ public class TestCasesCodonTable extends TestCase {
 	 * References: http://en.wikipedia.org/wiki/Genetic_code#Degeneracy
 	 *
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		CodonTable codonTable = CodonTables.getInstance().getTable(CodonTables.STANDARD_TABLE_NAME);

@@ -289,7 +289,7 @@ void makeDistro() {
 
 void runTests() {
 	# Run SnpSift test cases
-	sys cd $HOME/workspace/SnpSift/ ; \
+	task cd $HOME/workspace/SnpSift/ ; \
 		java -Xmx4g \
 			-cp $dirSnpeff/SnpSift.jar \
 			org.junit.runner.JUnitCore \
@@ -297,14 +297,23 @@ void runTests() {
 			2>&1 \
 			| tee $dirSnpeff/testCases.snpsift.txt
 
-	# Run SnpEff test cases
-	sys cd $HOME/workspace/SnpEff/ ; \
+	# Run SnpEff test cases: Unity
+	task cd $HOME/workspace/SnpEff/ ; \
 		java -Xmx4g \
 			-cp $dirSnpeff/snpEff.jar \
 			org.junit.runner.JUnitCore \
-			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteAll \
+			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteUnity \
 			2>&1 \
-			| tee $dirSnpeff/testCases.snpeff.txt
+			| tee $dirSnpeff/testCases.snpeff.unity.txt
+
+	# Run SnpEff test cases: Integration
+	task cd $HOME/workspace/SnpEff/ ; \
+		java -Xmx4g \
+			-cp $dirSnpeff/snpEff.jar \
+			org.junit.runner.JUnitCore \
+			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteIntegration \
+			2>&1 \
+			| tee $dirSnpeff/testCases.snpeff.integration.txt
 }
 
 #-------------------------------------------------------------------------------

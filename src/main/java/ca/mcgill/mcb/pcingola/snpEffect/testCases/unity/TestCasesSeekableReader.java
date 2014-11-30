@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.fileIterator.SeekableBufferedReader;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -15,7 +17,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesSeekableReader extends TestCase {
+public class TestCasesSeekableReader {
 
 	/**
 	 * Calculate a simple hash using SeekableBufferedReader
@@ -52,6 +54,7 @@ public class TestCasesSeekableReader extends TestCase {
 		return hash;
 	}
 
+	@Test
 	public void test_00() throws IOException {
 		Gpr.debug("Test");
 		String fileName = "tests/testLukas.vcf";
@@ -66,6 +69,7 @@ public class TestCasesSeekableReader extends TestCase {
 	 * Basic parsing
 	 * @throws IOException
 	 */
+	@Test
 	public void test_01() throws IOException {
 		Gpr.debug("Test");
 		String dirName = "./tests/";

@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesAlign;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBinomial;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesChiSquare;
@@ -34,42 +36,34 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSequenceIndexer
  *
  * @author pcingola
  */
+@RunWith(Suite.class)
+@SuiteClasses({ TestCasesAlign.class, //
+	TestCasesBinomial.class, //
+	TestCasesChiSquare.class, //
+	TestCasesCochranArmitage.class, //
+	TestCasesCodonTable.class, //
+	TestCasesDnaNSequence.class, //
+	TestCasesDnaOverlap.class, //
+	TestCasesDnaSequenceByte.class, //
+	TestCasesDnaSequence.class, //
+	TestCasesFasta.class, //
+	TestCasesFileIndexChrPos.class, //
+	TestCasesFisherExactTest.class, //
+	TestCasesGenePvalueList.class, //
+	TestCasesGenotypeVector.class, //
+	TestCasesHgvsDnaDup.class, //
+	TestCasesHgvsProtDup.class, //
+	TestCasesHypergeometric.class, //
+	TestCasesIntervals.class, //
+	TestCasesIntStats.class, //
+	TestCasesJaspar.class, //
+	TestCasesMarkerUtils.class, //
+	TestCasesNmers.class, //
+	TestCasesOverlap.class, //
+	TestCasesReactome.class, //
+	TestCasesSeekableReader.class, //
+	TestCasesSequenceIndexer.class //
+})
 public class TestSuiteUnity {
 
-	public static void main(String args[]) {
-		junit.textui.TestRunner.run(suite());
-	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite();
-
-		suite.addTestSuite(TestCasesAlign.class);
-		suite.addTestSuite(TestCasesBinomial.class);
-		suite.addTestSuite(TestCasesChiSquare.class);
-		suite.addTestSuite(TestCasesCochranArmitage.class);
-		suite.addTestSuite(TestCasesCodonTable.class);
-		suite.addTestSuite(TestCasesDnaNSequence.class);
-		suite.addTestSuite(TestCasesDnaOverlap.class);
-		suite.addTestSuite(TestCasesDnaSequenceByte.class);
-		suite.addTestSuite(TestCasesDnaSequence.class);
-		suite.addTestSuite(TestCasesFasta.class);
-		suite.addTestSuite(TestCasesFileIndexChrPos.class);
-		suite.addTestSuite(TestCasesFisherExactTest.class);
-		suite.addTestSuite(TestCasesGenePvalueList.class);
-		suite.addTestSuite(TestCasesGenotypeVector.class);
-		suite.addTestSuite(TestCasesHgvsDnaDup.class);
-		suite.addTestSuite(TestCasesHgvsProtDup.class);
-		suite.addTestSuite(TestCasesHypergeometric.class);
-		suite.addTestSuite(TestCasesIntervals.class);
-		suite.addTestSuite(TestCasesIntStats.class);
-		suite.addTestSuite(TestCasesJaspar.class);
-		suite.addTestSuite(TestCasesMarkerUtils.class);
-		suite.addTestSuite(TestCasesNmers.class);
-		suite.addTestSuite(TestCasesOverlap.class);
-		suite.addTestSuite(TestCasesReactome.class);
-		suite.addTestSuite(TestCasesSeekableReader.class);
-		suite.addTestSuite(TestCasesSequenceIndexer.class);
-
-		return suite;
-	}
 }

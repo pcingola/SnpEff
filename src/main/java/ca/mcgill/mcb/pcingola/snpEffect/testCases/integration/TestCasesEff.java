@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
@@ -18,7 +20,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesEff extends TestCase {
+public class TestCasesEff {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
@@ -53,6 +55,7 @@ public class TestCasesEff extends TestCase {
 	/**
 	 * Test output order
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", null);
@@ -74,6 +77,7 @@ public class TestCasesEff extends TestCase {
 	/**
 	 * Test output order: Canonical first
 	 */
+	@Test
 	public void test_01_canonical() {
 		Gpr.debug("Test");
 		List<VcfEntry> vcfEntries = snpEffect("testHg3775Chr8", "tests/eff_sort_canon.vcf", null);
@@ -90,6 +94,7 @@ public class TestCasesEff extends TestCase {
 	/**
 	 * Test GATK option: At most one effect per VCF entry
 	 */
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		String args[] = { "-o", "gatk" };
@@ -105,6 +110,7 @@ public class TestCasesEff extends TestCase {
 	/**
 	 * Make sure that empty VCF does not trigger an exception when creating the summary
 	 */
+	@Test
 	public void test_03_EmptyVcf() {
 		Gpr.debug("Test");
 		String args[] = { "eff", "-noLog" };
@@ -114,6 +120,7 @@ public class TestCasesEff extends TestCase {
 	/**
 	 * Test that CSV summary does not throw any error
 	 */
+	@Test
 	public void test_04() {
 		Gpr.debug("Test");
 		String args[] = { "-csvStats" };
@@ -123,6 +130,7 @@ public class TestCasesEff extends TestCase {
 	/**
 	 * GATK mode should not have SPLICE_REGION (it is currently not supported)
 	 */
+	@Test
 	public void test_05() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
@@ -143,6 +151,7 @@ public class TestCasesEff extends TestCase {
 	/**
 	 * Test an MNP at the end of the transcript: We should be able to annotate without throwing any error
 	 */
+	@Test
 	public void test_06() {
 		Gpr.debug("Test");
 		String args[] = {};
@@ -155,6 +164,7 @@ public class TestCasesEff extends TestCase {
 	/**
 	 * Test an MNP at the end of the transcript: We should be able to annotate without throwing any error
 	 */
+	@Test
 	public void test_07() {
 		Gpr.debug("Test");
 		String args[] = {};

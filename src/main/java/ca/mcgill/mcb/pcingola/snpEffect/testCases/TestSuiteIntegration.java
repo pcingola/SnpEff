@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesApply;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCancer;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCodingTag;
@@ -43,60 +45,42 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVcf;
  *
  * @author pcingola
  */
+@RunWith(Suite.class)
+@SuiteClasses({ TestCasesApply.class, //
+	TestCasesCancer.class, //
+	TestCasesCodingTag.class, //
+	TestCasesCutsomIntervals.class, //
+	TestCasesDel.class, //
+	TestCasesEff.class, //
+	TestCasesEmbl.class, //
+	TestCasesExonFrame.class, //
+	TestCasesFilterTranscripts.class, //
+	TestCasesGenomicSequences.class, //
+	TestCasesGff3.class, //
+	TestCasesGtf22.class, //
+	TestCasesHgvs.class, //
+	TestCasesHugeDeletions.class, //
+	TestCasesIns.class, //
+	TestCasesIntervalVariant.class, //
+	TestCasesLof.class, //
+	TestCasesMissenseSilentRatio.class, //
+	TestCasesMixedVariants.class, //
+	TestCasesMnp.class, //
+	TestCasesMotif.class, //
+	TestCasesNextProt.class, //
+	TestCasesNmd.class, //
+	TestCasesNoChange.class, //
+	TestCasesProtein.class, //
+	TestCasesRefSeq.class, //
+	TestCasesSequenceOntology.class, //
+	TestCasesSnpEnsembl.class, //
+	TestCasesSnp.class, //
+	TestCasesTranscriptError.class, //
+	TestCasesTranscript.class, //
+	TestCasesVariant.class, //
+	TestCasesVcf.class, //
+	TestCasesIntegrationSnpEff.class, //
+	TestCasesIntegrationSnpEffMultiThread.class //
+})
 public class TestSuiteIntegration {
-
-	public static void main(String args[]) {
-		junit.textui.TestRunner.run(suite());
-	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite();
-
-		suite.addTestSuite(TestCasesApply.class);
-		suite.addTestSuite(TestCasesCancer.class);
-		suite.addTestSuite(TestCasesCodingTag.class);
-		suite.addTestSuite(TestCasesCutsomIntervals.class);
-		suite.addTestSuite(TestCasesDel.class);
-		suite.addTestSuite(TestCasesEff.class);
-		suite.addTestSuite(TestCasesEmbl.class);
-		suite.addTestSuite(TestCasesExonFrame.class);
-		suite.addTestSuite(TestCasesFilterTranscripts.class);
-		suite.addTestSuite(TestCasesGenomicSequences.class);
-		suite.addTestSuite(TestCasesGff3.class);
-		suite.addTestSuite(TestCasesGtf22.class);
-		suite.addTestSuite(TestCasesHgvs.class);
-		suite.addTestSuite(TestCasesHugeDeletions.class);
-		suite.addTestSuite(TestCasesIns.class);
-		suite.addTestSuite(TestCasesIntervalVariant.class);
-		suite.addTestSuite(TestCasesLof.class);
-		suite.addTestSuite(TestCasesMissenseSilentRatio.class);
-		suite.addTestSuite(TestCasesMixedVariants.class);
-		suite.addTestSuite(TestCasesMnp.class);
-		suite.addTestSuite(TestCasesMotif.class);
-		suite.addTestSuite(TestCasesNextProt.class);
-		suite.addTestSuite(TestCasesNmd.class);
-		suite.addTestSuite(TestCasesNoChange.class);
-		suite.addTestSuite(TestCasesProtein.class);
-		suite.addTestSuite(TestCasesRefSeq.class);
-		suite.addTestSuite(TestCasesSequenceOntology.class);
-		suite.addTestSuite(TestCasesSnpEnsembl.class);
-		suite.addTestSuite(TestCasesSnp.class);
-		suite.addTestSuite(TestCasesTranscriptError.class);
-		suite.addTestSuite(TestCasesTranscript.class);
-		suite.addTestSuite(TestCasesVariant.class);
-		suite.addTestSuite(TestCasesVcf.class);
-
-		// Integration tets
-		//		VCF header + 1 line => Should be OK after printing (check output formatter)
-		//
-		// 		Multi-threaded version should have exactly the same output as single threaded
-		//				- test using 1 line file
-		//				- test using 1M lines file
-		//
-		//		Broad test dataset using all genome version should be roughly the same
-		suite.addTestSuite(TestCasesIntegrationSnpEff.class);
-		suite.addTestSuite(TestCasesIntegrationSnpEffMultiThread.class);
-
-		return suite;
-	}
 }

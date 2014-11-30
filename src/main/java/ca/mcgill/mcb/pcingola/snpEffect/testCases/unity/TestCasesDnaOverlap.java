@@ -3,7 +3,10 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 import java.util.HashSet;
 import java.util.Random;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.binseq.BinarySequence;
 import ca.mcgill.mcb.pcingola.binseq.DnaAndQualitySequence;
 import ca.mcgill.mcb.pcingola.binseq.DnaSequence;
@@ -13,7 +16,7 @@ import ca.mcgill.mcb.pcingola.binseq.comparator.DnaSubsequenceComparator;
 import ca.mcgill.mcb.pcingola.fastq.FastqVariant;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
-public class TestCasesDnaOverlap extends TestCase {
+public class TestCasesDnaOverlap {
 
 	public static boolean verbose = false;
 
@@ -27,14 +30,14 @@ public class TestCasesDnaOverlap extends TestCase {
 		HashSet<Integer> changedPos = new HashSet<Integer>();
 		char chars[] = sequence.toCharArray();
 
-		for( int i = 0; i < numChanges; ) {
+		for (int i = 0; i < numChanges;) {
 			int pos = rand.nextInt(chars.length);
 
-			if( !changedPos.contains(pos) ) { // Already changed?
+			if (!changedPos.contains(pos)) { // Already changed?
 				int newCode = rand.nextInt() & 0x03;
 				char newBase = DnaCoder.get().toBase(newCode);
 
-				if( chars[pos] != newBase ) { // Base is different?
+				if (chars[pos] != newBase) { // Base is different?
 					chars[pos] = newBase;
 					changedPos.add(pos);
 					i++;
@@ -78,9 +81,9 @@ public class TestCasesDnaOverlap extends TestCase {
 		String dstBefore2 = dst.getSequence().substring(0, dstStart);
 		String dstAfter2 = dst.getSequence().substring(dstStart + len);
 
-		if( !subStr.equals(subStrDst) ) { throw new RuntimeException("Substrings do not match! signature=" + Long.toHexString(signature) + " \n\t" + subStr + "\n\t" + subStrDst); }
-		if( !dstBefore2.equals(dstBefore) ) { throw new RuntimeException("Substrings 'before' do not match! signature=" + Long.toHexString(signature) + "\n\tdstBefore:\t" + dstBefore + "\n\tdstBefore2:\t" + dstBefore2); }
-		if( !dstAfter2.equals(dstAfter) ) { throw new RuntimeException("Substrings 'after' do not match! signature=" + Long.toHexString(signature) + "\n\tdstAfter:\t" + dstAfter + "\n\tdstAfter2:\t" + dstAfter2); }
+		if (!subStr.equals(subStrDst)) { throw new RuntimeException("Substrings do not match! signature=" + Long.toHexString(signature) + " \n\t" + subStr + "\n\t" + subStrDst); }
+		if (!dstBefore2.equals(dstBefore)) { throw new RuntimeException("Substrings 'before' do not match! signature=" + Long.toHexString(signature) + "\n\tdstBefore:\t" + dstBefore + "\n\tdstBefore2:\t" + dstBefore2); }
+		if (!dstAfter2.equals(dstAfter)) { throw new RuntimeException("Substrings 'after' do not match! signature=" + Long.toHexString(signature) + "\n\tdstAfter:\t" + dstAfter + "\n\tdstAfter2:\t" + dstAfter2); }
 	}
 
 	/**
@@ -104,8 +107,8 @@ public class TestCasesDnaOverlap extends TestCase {
 		DnaAndQualitySequence s2 = new DnaAndQualitySequence(seq2, q(seq2.length(), 3), FastqVariant.FASTQ_SANGER);
 		DnaAndQualitySequence s3 = s1.overlap(s2, start);
 
-		assertEquals(result, s3.getSequence());
-		if( resultQ != null ) assertEquals(resultQ, s3.getQuality());
+		Assert.assertEquals(result, s3.getSequence());
+		if (resultQ != null) Assert.assertEquals(resultQ, s3.getQuality());
 	}
 
 	/**
@@ -116,7 +119,7 @@ public class TestCasesDnaOverlap extends TestCase {
 		DnaSequence s1 = new DnaSequence(seq1);
 		DnaSequence s2 = new DnaSequence(seq2);
 		BinarySequence s3 = s1.overlap(s2, start);
-		assertEquals(result, s3.getSequence());
+		Assert.assertEquals(result, s3.getSequence());
 	}
 
 	/**
@@ -135,7 +138,7 @@ public class TestCasesDnaOverlap extends TestCase {
 		int start = over;
 		String overlap = "", nonOverlap = "", seq2 = "", result = "";
 		int len2 = rand.nextInt(maxLen - over);
-		if( rand.nextBoolean() ) {
+		if (rand.nextBoolean()) {
 			// Second sequence (overlapping at the end of the first one)
 			overlap = seq1.substring(over);
 			nonOverlap = randSeq(len2, rand);
@@ -162,7 +165,7 @@ public class TestCasesDnaOverlap extends TestCase {
 
 	String q(int len, int quality) {
 		char q[] = new char[len];
-		for( int i = 0; i < len; i++ )
+		for (int i = 0; i < len; i++)
 			q[i] = (char) ('!' + quality);
 		return new String(q);
 	}
@@ -176,7 +179,7 @@ public class TestCasesDnaOverlap extends TestCase {
 	String randSeq(int len, Random rand) {
 		StringBuilder sb = new StringBuilder();
 		// Create a random sequence
-		for( int i = 0; i < len; i++ ) {
+		for (int i = 0; i < len; i++) {
 			int r = rand.nextInt() & 0x03;
 			sb.append(DnaCoder.get().toBase(r));
 		}
@@ -198,7 +201,7 @@ public class TestCasesDnaOverlap extends TestCase {
 		int idx2 = (start >= 0 ? 0 : -start);
 		int score = compartor.score(s1, idx1, s2, idx2);
 
-		assertEquals(result, score);
+		Assert.assertEquals(result, score);
 	}
 
 	void scoreDnaSequence(String seq1, String seq2, int start, int threshold, int result) {
@@ -211,7 +214,7 @@ public class TestCasesDnaOverlap extends TestCase {
 		int idx2 = (start >= 0 ? 0 : -start);
 		int score = compartor.score(s1, idx1, s2, idx2);
 
-		assertEquals(result, score);
+		Assert.assertEquals(result, score);
 	}
 
 	/**
@@ -233,7 +236,7 @@ public class TestCasesDnaOverlap extends TestCase {
 		int start = over;
 		String overlap = "", nonOverlap = "", seq2 = "";
 		int len2 = rand.nextInt(maxLen - over);
-		if( rand.nextBoolean() ) {
+		if (rand.nextBoolean()) {
 			// Second sequence (overlapping at the end of the first one)
 			overlap = seq1.substring(over);
 			nonOverlap = randSeq(len2, rand);
@@ -251,9 +254,9 @@ public class TestCasesDnaOverlap extends TestCase {
 		DnaSequence s2 = new DnaSequence(seq2);
 		int threshold = 0;
 		boolean found = !(over > 0); // false, except if overlap is empty
-		for( int i = 0; (i < 10) || (!found); i++ ) { // Iterate until we find a non-zero score (but not less than 10 iterations)
+		for (int i = 0; (i < 10) || (!found); i++) { // Iterate until we find a non-zero score (but not less than 10 iterations)
 			int score1 = 0, score2 = 0, len = 0, starti;
-			if( start > 0 ) {
+			if (start > 0) {
 				starti = rand.nextInt(s1.length());
 				len = Math.min(seq2.length(), seq1.length() - starti);
 				score1 = dnaCoder.score(s2.getCodes(), s1.getCodes(), starti, len, threshold);
@@ -265,8 +268,8 @@ public class TestCasesDnaOverlap extends TestCase {
 				score2 = comparator.scoreSlow(s1, 0, s2, starti);
 			}
 
-			if( score1 != score2 ) throw new RuntimeException("Scores do not match!\n\tscore1: " + score1 + "\n\tscore2: " + score2 + "\n\tstarti: " + starti + "\n\tstart: " + start + "\n\tlen: " + len);
-			if( score1 > 0 ) found = true;
+			if (score1 != score2) throw new RuntimeException("Scores do not match!\n\tscore1: " + score1 + "\n\tscore2: " + score2 + "\n\tstarti: " + starti + "\n\tstart: " + start + "\n\tlen: " + len);
+			if (score1 > 0) found = true;
 		}
 	}
 
@@ -280,7 +283,7 @@ public class TestCasesDnaOverlap extends TestCase {
 		// First sequence
 		int len1 = rand.nextInt(maxLen) + minLen;
 		String seq1 = randSeq(len1, rand);
-		if( verbose ) System.out.println("\nseq1:\t" + seq1);
+		if (verbose) System.out.println("\nseq1:\t" + seq1);
 
 		// Second sequence
 		int over = rand.nextInt(len1 - minLen + 1);
@@ -288,12 +291,12 @@ public class TestCasesDnaOverlap extends TestCase {
 		String overlap = "", nonOverlap = "", seq2 = "";
 		int expectedScore = 0;
 		int len2 = rand.nextInt(maxLen - over);
-		if( rand.nextBoolean() ) {
+		if (rand.nextBoolean()) {
 			// Second sequence (overlapping at the end of the first one)
 			overlap = seq1.substring(over);
 			overlapChanges = Math.min(overlapChanges, overlap.length());
 			overlap = change(overlap, overlapChanges, rand);
-			if( verbose ) System.out.println("over:\t" + overlap);
+			if (verbose) System.out.println("over:\t" + overlap);
 			nonOverlap = randSeq(len2, rand);
 			seq2 = overlap + nonOverlap;
 		} else {
@@ -301,97 +304,105 @@ public class TestCasesDnaOverlap extends TestCase {
 			overlap = seq1.substring(0, over);
 			overlapChanges = Math.min(overlapChanges, overlap.length());
 			overlap = change(overlap, overlapChanges, rand);
-			if( verbose ) System.out.println("over:\t" + overlap);
+			if (verbose) System.out.println("over:\t" + overlap);
 			nonOverlap = randSeq(len2, rand);
 			seq2 = nonOverlap + overlap;
 			start = -nonOverlap.length();
 		}
-		if( verbose ) System.out.println("seq2:\t" + seq2);
+		if (verbose) System.out.println("seq2:\t" + seq2);
 
 		// Expected result
 		expectedScore = overlapChanges <= threshold ? overlap.length() - overlapChanges : 0;
-		if( verbose ) System.out.println("start:\t" + start + "\tthreshold: " + threshold + "\toverlapChanges: " + overlapChanges + "\tscore: " + expectedScore);
+		if (verbose) System.out.println("start:\t" + start + "\tthreshold: " + threshold + "\toverlapChanges: " + overlapChanges + "\tscore: " + expectedScore);
 
 		// Caclualte
 		score(seq1, seq2, start, threshold, expectedScore);
 	}
 
+	@Test
 	public void test_07_overlap() {
 		Gpr.debug("Test");
 		overlap(//
 		"catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg"// First sequence
 		, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" // Second sequence 
-		, -47 // Start
-		, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg" // Expected result
-		, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#################################################################");
+				, -47 // Start
+				, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg" // Expected result
+				, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#################################################################");
 	}
 
+	@Test
 	public void test_08_overlap() {
 		Gpr.debug("Test");
 		overlap(//
 		"tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" // First sequence 
 		, "catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg"// Second sequence
-		, 47 // Start
-		, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg" // Expected result
-		, "###############################################&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" //
+				, 47 // Start
+				, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg" // Expected result
+				, "###############################################&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" //
 		);
 	}
 
+	@Test
 	public void test_09_overlap() {
 		Gpr.debug("Test");
 		overlap(//
 		"tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" // First sequence 
 		, "catagaaaccaacagccatataactggtagctttaagcggctc"// Second sequence
-		, 47 // Start
-		, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" // Expected result
-		, "###############################################&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" //
+				, 47 // Start
+				, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" // Expected result
+				, "###############################################&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" //
 		);
 	}
 
+	@Test
 	public void test_10_overlap() {
 		Gpr.debug("Test");
 		overlap(//
 		"catagaaaccaacagccatataactggtagctttaagcggctc"// 
 		, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" //  
-		, -47 // Start
-		, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" // Expected result
-		, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" //
+				, -47 // Start
+				, "tttagcagcaaggtccatatctgactttttgttaacgtatttagccacatagaaaccaacagccatataactggtagctttaagcggctc" // Expected result
+				, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" //
 		);
 	}
 
+	@Test
 	public void test_11_overlap() {
 		Gpr.debug("Test");
 		overlap(//
 		"catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg"// 
 		, "catagaaaccaacagccatataactggtagctttaagcggctc" // 
-		, 0 // Start
-		, "catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg" // Expected result
-		, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#################################################################" //
+				, 0 // Start
+				, "catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg" // Expected result
+				, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&#################################################################" //
 		);
 	}
 
+	@Test
 	public void test_12_overlap() {
 		Gpr.debug("Test");
 		overlap(//
 		"catagaaaccaacagccatataactggtagctttaagcggctc" //  
 		, "catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg"// 
-		, 0 // Start
-		, "catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg" // Expected result
-		, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" //
+				, 0 // Start
+				, "catagaaaccaacagccatataactggtagctttaagcggctcacctttagcatcaacaggccacaaccaaccagaacgtgaaaaagcgtcctgcgtgtagcgaactg" // Expected result
+				, "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" //
 		);
 	}
 
+	@Test
 	public void test_13_overlap() {
 		Gpr.debug("Test");
 		overlap(//
 		"caggagcaggaaagcgagggtatcctacaaagtccagcgtaccataaacgcaagcctcaacgcagcgacgagcacgagagcggtcagtagcaatccaaac" //  
 		, "aaagtccagcgtaccataaacgcaagcctcaacgcagcgacgagcacgagagcggtcagtagcaatccaa"// 
-		, 28 // Start
-		, "caggagcaggaaagcgagggtatcctacaaagtccagcgtaccataaacgcaagcctcaacgcagcgacgagcacgagagcggtcagtagcaatccaaac" // Expected result
-		, "############################&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&##" //
+				, 28 // Start
+				, "caggagcaggaaagcgagggtatcctacaaagtccagcgtaccataaacgcaagcctcaacgcagcgacgagcacgagagcggtcagtagcaatccaaac" // Expected result
+				, "############################&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&##" //
 		);
 	}
 
+	@Test
 	public void test_15_DnaCoder_copy_1() {
 		Gpr.debug("Test");
 		DnaCoder dnaCoder = DnaCoder.get();
@@ -402,7 +413,7 @@ public class TestCasesDnaOverlap extends TestCase {
 
 		int numTests = 10000;
 		int maxLen = 1000;
-		for( int i = 1; i < numTests; i++ ) {
+		for (int i = 1; i < numTests; i++) {
 			int seqlen = rand.nextInt(maxLen) + 10;
 			String srcStr = randSeq(seqlen, rand);
 			String dstStr = randSeq(seqlen, rand);
@@ -421,7 +432,7 @@ public class TestCasesDnaOverlap extends TestCase {
 			String dstBefore = dst.getSequence().substring(0, dstStart);
 			String dstAfter = dst.getSequence().substring(dstStart + len);
 
-			if( verbose ) {
+			if (verbose) {
 				System.out.println("\n-----------------------------------------------------------------------------------------------");
 				System.out.println("src:\t" + src);
 				System.out.println("dst:\t" + dst);
@@ -437,18 +448,19 @@ public class TestCasesDnaOverlap extends TestCase {
 			String dstBefore2 = dst.getSequence().substring(0, dstStart);
 			String dstAfter2 = dst.getSequence().substring(dstStart + len);
 
-			if( verbose ) {
+			if (verbose) {
 				System.out.println("\ndst:\t" + dst);
 				System.out.println("sub:\t" + subStrDst);
 			}
 
-			if( !subStr.equals(subStrDst) ) { throw new RuntimeException("Substrings do not match!"); }
-			if( !dstBefore2.equals(dstBefore) ) { throw new RuntimeException("Substrings 'before' do not match!\n\tdstBefore:\t" + dstBefore + "\n\tdstBefore2:\t" + dstBefore2); }
-			if( !dstAfter2.equals(dstAfter) ) { throw new RuntimeException("Substrings 'after' do not match!"); }
+			if (!subStr.equals(subStrDst)) { throw new RuntimeException("Substrings do not match!"); }
+			if (!dstBefore2.equals(dstBefore)) { throw new RuntimeException("Substrings 'before' do not match!\n\tdstBefore:\t" + dstBefore + "\n\tdstBefore2:\t" + dstBefore2); }
+			if (!dstAfter2.equals(dstAfter)) { throw new RuntimeException("Substrings 'after' do not match!"); }
 			Gpr.showMarkStderr(i, 1000);
 		}
 	}
 
+	@Test
 	public void test_16_DnaCoder_copy_2() {
 		Gpr.debug("Test");
 		long seed = 20100812;
@@ -458,9 +470,9 @@ public class TestCasesDnaOverlap extends TestCase {
 		int maxLen, minLen = 10;
 
 		System.err.print("\nDnaCoder.copyBases test:");
-		for( int numWords = 1; numWords < 10; numWords++ ) {
+		for (int numWords = 1; numWords < 10; numWords++) {
 			System.err.print("\n\tMax words: " + numWords + "\t");
-			for( int i = 1; i < numTests; i++ ) {
+			for (int i = 1; i < numTests; i++) {
 				maxLen = 32 * numWords;
 				int seqlensrc = Math.max(rand.nextInt(maxLen), minLen);
 				int seqlendst = Math.max(rand.nextInt(maxLen), minLen);
@@ -472,20 +484,22 @@ public class TestCasesDnaOverlap extends TestCase {
 		System.err.print("\nDone.\n");
 	}
 
+	@Test
 	public void test_17_overlap_rand() {
 		Gpr.debug("Test");
 		int numTests = 10;
 		int minLen = 10;
 		System.err.print("\nOverlap random test:\n");
 		Random rand = new Random(20100812);
-		for( int maxlen = 10, i = 1; maxlen < 10000; maxlen += 10, i++ ) {
-			for( int it = 0; it < numTests; it++ )
+		for (int maxlen = 10, i = 1; maxlen < 10000; maxlen += 10, i++) {
+			for (int it = 0; it < numTests; it++)
 				overlapRandTest(maxlen, minLen, rand);
 			Gpr.showMarkStderr(i, 1);
 		}
 		System.err.print("\nDone.\n");
 	}
 
+	@Test
 	public void test_18_DnaCoder_score_rand() {
 		Gpr.debug("Test");
 		int numTests = 10;
@@ -496,14 +510,15 @@ public class TestCasesDnaOverlap extends TestCase {
 		DnaSubsequenceComparator<DnaSequence> comparator = new DnaSubsequenceComparator<DnaSequence>(true);
 
 		Random rand = new Random(20100812);
-		for( int maxlen = 10, i = 1; maxlen < 10000; maxlen += 10, i++ ) {
-			for( int it = 0; it < numTests; it++ )
+		for (int maxlen = 10, i = 1; maxlen < 10000; maxlen += 10, i++) {
+			for (int it = 0; it < numTests; it++)
 				scoreRandTest(maxlen, minLen, rand, dnaCoder, comparator);
 			Gpr.showMarkStderr(i, 1);
 		}
 		System.err.println("Done.");
 	}
 
+	@Test
 	public void test_19_score_threshold_rand() {
 		Gpr.debug("Test");
 		int thresholdMax = 5;
@@ -512,9 +527,9 @@ public class TestCasesDnaOverlap extends TestCase {
 
 		System.err.print("\nScore (threshold) random test:\n");
 		Random rand = new Random(20100821);
-		for( int maxLen = 10, i = 1; maxLen < 10000; maxLen += 10, i++ ) {
-			for( int threshold = 0; threshold < thresholdMax; threshold++ ) {
-				for( int changes = 0; changes < changesMax; changes++ ) {
+		for (int maxLen = 10, i = 1; maxLen < 10000; maxLen += 10, i++) {
+			for (int threshold = 0; threshold < thresholdMax; threshold++) {
+				for (int changes = 0; changes < changesMax; changes++) {
 					scoreRandTestThreshold(maxLen, minLen, rand, threshold, changes);
 				}
 			}

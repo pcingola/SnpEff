@@ -1,6 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import junit.framework.Assert;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsProtein;
@@ -24,6 +27,7 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 	 *
 	 * Reference: http://www.hgvs.org/mutnomen/recs-prot.html#dup
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 
@@ -62,6 +66,7 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 	 * described as a duplication, e.g. a duplicating HQ insertion in the HQ-tandem repeat
 	 * sequence of MKMGHQHQCC to MKMGHQHQHQCC is described as p.His7_Gln8dup (not p.Gln8_Cys9insHisGln)
 	 */
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 

@@ -2,9 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.Random;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -24,7 +23,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesMixedVariants extends TestCase {
+public class TestCasesMixedVariants {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
@@ -100,6 +99,7 @@ public class TestCasesMixedVariants extends TestCase {
 	/**
 	 * Make sure we can read VCF and parse variants without producing any exception
 	 */
+	@Test
 	public void test_01_MixedVep() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/mixed_01.vcf";
@@ -113,41 +113,49 @@ public class TestCasesMixedVariants extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_02_MixedVep() {
 		Gpr.debug("Test");
 		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
 	}
 
+	@Test
 	public void test_03_MixedVep() {
 		Gpr.debug("Test");
 		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf");
 	}
 
+	@Test
 	public void test_04_MixedVep() {
 		Gpr.debug("Test");
 		compareVep("testHg3775Chr12", "tests/mixed_chr12.vcf");
 	}
 
+	@Test
 	public void test_05_MixedVep() {
 		Gpr.debug("Test");
 		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
 	}
 
+	@Test
 	public void test_06_MixedVep() {
 		Gpr.debug("Test");
 		compareVep("testHg3775Chr7", "tests/mixed_chr7.vcf");
 	}
 
+	@Test
 	public void test_07_MixedVep() {
 		Gpr.debug("Test");
 		compareVep("testHg3775Chr6", "tests/mixed_chr6.vcf");
 	}
 
+	@Test
 	public void test_08_MixedVep() {
 		Gpr.debug("Test");
 		compareVep("testHg3775Chr1", "tests/mixed_chr1.vcf");
 	}
 
+	@Test
 	public void test_09_MixedVep() {
 		Gpr.debug("Test");
 
@@ -162,6 +170,7 @@ public class TestCasesMixedVariants extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_10_MixedVep_HGVS() {
 		Gpr.debug("Test");
 		String genome = "testHg19Hgvs";

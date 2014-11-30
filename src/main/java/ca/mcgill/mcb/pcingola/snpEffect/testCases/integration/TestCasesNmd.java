@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
@@ -20,7 +22,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesNmd extends TestCase {
+public class TestCasesNmd {
 
 	public static boolean debug = false;
 	public static boolean verbose = false;
@@ -107,6 +109,7 @@ public class TestCasesNmd extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		// Load database

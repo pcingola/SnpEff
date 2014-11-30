@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.CommandLine;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -13,7 +12,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * 
  * @author pcingola
  */
-public class IntegrationTest extends TestCase {
+public class IntegrationTest {
 
 	public final int BUFFER_SIZE = 1024 * 1024;
 	public static final int MAX_LINES_DIFF = 10;

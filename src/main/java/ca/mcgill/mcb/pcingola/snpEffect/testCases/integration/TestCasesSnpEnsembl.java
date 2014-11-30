@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -8,12 +9,13 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesSnpEnsembl extends TestCase {
+public class TestCasesSnpEnsembl {
 
 	public TestCasesSnpEnsembl() {
 		super();
 	}
 
+	@Test
 	public void test_01_ENST00000369219() {
 		Gpr.debug("Test");
 		String trName = "ENST00000369219";
@@ -23,6 +25,7 @@ public class TestCasesSnpEnsembl extends TestCase {
 		compareToEnsembl.compareEnsembl(ensemblFile, trName);
 	}
 
+	@Test
 	public void test_01_ENST00000369368() {
 		Gpr.debug("Test");
 		String trName = "ENST00000369368";
@@ -32,6 +35,7 @@ public class TestCasesSnpEnsembl extends TestCase {
 		compareToEnsembl.compareEnsembl(ensemblFile, trName);
 	}
 
+	@Test
 	public void test_01_ENST00000415551() {
 		Gpr.debug("Test");
 		String ensemblFile = "./tests/ENST00000415551_ensembl.txt";
@@ -41,6 +45,7 @@ public class TestCasesSnpEnsembl extends TestCase {
 		compareToEnsembl.compareEnsembl(ensemblFile, trName);
 	}
 
+	@Test
 	public void test_01_ENST00000434489() {
 		Gpr.debug("Test");
 		String trName = "ENST00000434489";
@@ -50,6 +55,7 @@ public class TestCasesSnpEnsembl extends TestCase {
 		compareToEnsembl.compareEnsembl(ensemblFile, trName);
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		String ensemblFile = "./tests/ENST00000430575_ensembl.txt";
@@ -59,6 +65,7 @@ public class TestCasesSnpEnsembl extends TestCase {
 		compareToEnsembl.compareEnsembl(ensemblFile, trName);
 	}
 
+	@Test
 	public void test_03() {
 		Gpr.debug("Test");
 		String ensemblFile = "./tests/ENST00000382896_ensembl.txt";

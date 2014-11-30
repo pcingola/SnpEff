@@ -1,5 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -97,6 +99,7 @@ public class TestCasesZzz extends TestCasesBase {
 	//		}
 	//	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 

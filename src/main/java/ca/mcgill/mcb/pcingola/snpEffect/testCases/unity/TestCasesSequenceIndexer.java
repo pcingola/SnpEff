@@ -3,7 +3,10 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import junit.framework.TestCase;
+import junit.framework.Assert;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.binseq.DnaAndQualitySequence;
 import ca.mcgill.mcb.pcingola.binseq.DnaSequence;
 import ca.mcgill.mcb.pcingola.binseq.comparator.DnaQualSubsequenceComparator;
@@ -17,7 +20,7 @@ import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
 import ca.mcgill.mcb.pcingola.fileIterator.FastqFileIterator;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
-public class TestCasesSequenceIndexer extends TestCase {
+public class TestCasesSequenceIndexer {
 
 	public static final int NMER_SIZE = 15;
 
@@ -62,6 +65,7 @@ public class TestCasesSequenceIndexer extends TestCase {
 	/**
 	 * Sequence comparison test
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		readFile("tests/indexer_test_01.fastq");
@@ -91,6 +95,7 @@ public class TestCasesSequenceIndexer extends TestCase {
 	/**
 	 * Sequence ordering test
 	 */
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		readFile("tests/indexer_test_01.fastq");
@@ -114,6 +119,7 @@ public class TestCasesSequenceIndexer extends TestCase {
 	/**
 	 * Sequence indexer test (add sequences)
 	 */
+	@Test
 	public void test_03() {
 		Gpr.debug("Test");
 		String fastqFileName = "tests/short.fastq";
@@ -140,6 +146,7 @@ public class TestCasesSequenceIndexer extends TestCase {
 	/**
 	 * Sequence indexer test (overlap sequences)
 	 */
+	@Test
 	public void test_04() {
 		Gpr.debug("Test");
 		String fastqFileName = "tests/short.fastq";
@@ -169,6 +176,7 @@ public class TestCasesSequenceIndexer extends TestCase {
 	/**
 	 * Sequence indexer test (trivial assembly)
 	 */
+	@Test
 	public void test_05() {
 		Gpr.debug("Test");
 		String fileName = "tests/a_thaliana_test/assembly_test.fa";
@@ -186,13 +194,14 @@ public class TestCasesSequenceIndexer extends TestCase {
 
 		// There should be only one sequence in the index (for this test case)
 		DnaAndQualitySequence bseq = seqIndex.get(1);
-		assertEquals(result.trim().toUpperCase(), bseq.getSequence().trim().toUpperCase());
+		Assert.assertEquals(result.trim().toUpperCase(), bseq.getSequence().trim().toUpperCase());
 	}
 
 	/**
 	 * 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' bug
 	 * Sequences with nmers '0' were not being indexed
 	 */
+	@Test
 	public void test_06() {
 		Gpr.debug("Test");
 		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }; // Two almost equal sequences (first one is longer)
@@ -203,13 +212,14 @@ public class TestCasesSequenceIndexer extends TestCase {
 			if (!seqIndex.overlap(bseq)) seqIndex.add(bseq); // Add or overlap
 		}
 
-		assertEquals(seqStr[0], seqIndex.get(1).getSequence());
+		Assert.assertEquals(seqStr[0], seqIndex.get(1).getSequence());
 	}
 
 	/**
 	 * Sequence length = Nmer size (bug)
 	 * Sequences with same length as nmers were not being indexed properly
 	 */
+	@Test
 	public void test_07() {
 		Gpr.debug("Test");
 		int nmerSize = 32;
@@ -225,12 +235,13 @@ public class TestCasesSequenceIndexer extends TestCase {
 			if (!seqIndex.overlap(bseq)) seqIndex.add(bseq); // Add or overlap
 		}
 
-		assertEquals("caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac", seqIndex.get(1).getSequence());
+		Assert.assertEquals("caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac", seqIndex.get(1).getSequence());
 	}
 
 	/**
 	 * Sequence "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac"
 	 */
+	@Test
 	public void test_08() {
 		Gpr.debug("Test");
 		int nmerSize = 32;
@@ -244,12 +255,13 @@ public class TestCasesSequenceIndexer extends TestCase {
 			if (!seqIndex.overlap(bseq)) seqIndex.add(bseq); // Add or overlap
 		}
 
-		assertEquals("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac", seqIndex.get(1).getSequence());
+		Assert.assertEquals("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac", seqIndex.get(1).getSequence());
 	}
 
 	/**
 	 * Sequence "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + "caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	 */
+	@Test
 	public void test_09() {
 		Gpr.debug("Test");
 		int nmerSize = 32;
@@ -263,12 +275,13 @@ public class TestCasesSequenceIndexer extends TestCase {
 			if (!seqIndex.overlap(bseq)) seqIndex.add(bseq); // Add or overlap
 		}
 
-		assertEquals("caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", seqIndex.get(1).getSequence());
+		Assert.assertEquals("caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", seqIndex.get(1).getSequence());
 	}
 
 	/**
 	 * Sequence "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + "caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaag"
 	 */
+	@Test
 	public void test_10() {
 		Gpr.debug("Test");
 		int nmerSize = 32;
@@ -282,7 +295,7 @@ public class TestCasesSequenceIndexer extends TestCase {
 			if (!seqIndex.overlap(bseq)) seqIndex.add(bseq); // Add or overlap
 		}
 
-		assertEquals("caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaag", seqIndex.get(1).getSequence());
+		Assert.assertEquals("caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaag", seqIndex.get(1).getSequence());
 	}
 
 }

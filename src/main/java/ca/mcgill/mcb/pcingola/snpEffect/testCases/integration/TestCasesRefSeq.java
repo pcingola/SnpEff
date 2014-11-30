@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.fileIterator.SmithWaterman;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -27,7 +29,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesRefSeq extends TestCase {
+public class TestCasesRefSeq {
 
 	boolean debug = false;
 	boolean verbose = false;
@@ -94,6 +96,7 @@ public class TestCasesRefSeq extends TestCase {
 		return sb.toString();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		/// Build SnpEffectPredictor using a RefSeq file
@@ -117,6 +120,7 @@ public class TestCasesRefSeq extends TestCase {
 	/**
 	 * Test improved exon frame correction in UCSC references
 	 */
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 

@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -9,7 +10,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesFasta extends TestCase {
+public class TestCasesFasta {
 
 	boolean verbose = false;
 
@@ -20,6 +21,7 @@ public class TestCasesFasta extends TestCase {
 	/**
 	 * Bug: Fasta file iterator should not crash if first line is empty
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		String fastaFileName = "tests/emptyLine.fa";

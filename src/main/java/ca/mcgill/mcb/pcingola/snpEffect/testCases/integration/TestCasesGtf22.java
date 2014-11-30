@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.util.ArrayList;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -19,7 +21,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesGtf22 extends TestCase {
+public class TestCasesGtf22 {
 
 	boolean verbose = false;
 
@@ -83,6 +85,7 @@ public class TestCasesGtf22 extends TestCase {
 		return sb.toString();
 	}
 
+	@Test
 	public void testCaseHg37_61_ENST00000250838() {
 		Gpr.debug("Test");
 		String genome = "testHg37.61";
@@ -92,6 +95,7 @@ public class TestCasesGtf22 extends TestCase {
 		buildAndCompare(genome, gtfFile, fastaFile, resultFile);
 	}
 
+	@Test
 	public void testCaseHg37_61_ENST00000331397() {
 		Gpr.debug("Test");
 		String genome = "testHg37.61";
@@ -101,6 +105,7 @@ public class TestCasesGtf22 extends TestCase {
 		buildAndCompare(genome, gtfFile, fastaFile, resultFile);
 	}
 
+	@Test
 	public void testCaseMm37_61_ENSMUSG00000051951() {
 		Gpr.debug("Test");
 		String genome = "testMm37.61";
@@ -109,6 +114,7 @@ public class TestCasesGtf22 extends TestCase {
 		buildAndCompare(genome, gtfFile, null, resultFile);
 	}
 
+	@Test
 	public void testCaseMm37_61_ENSMUST00000070533() {
 		Gpr.debug("Test");
 		String genome = "testMm37.61";

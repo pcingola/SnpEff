@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.io.IOException;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdProtein;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -12,8 +14,9 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesProtein extends TestCase {
+public class TestCasesProtein {
 
+	@Test
 	public void test_01() throws IOException {
 		Gpr.debug("Test");
 		String args[] = { "testHg3763ChrY", "./tests/proteins_testHg3763ChrY.txt" };

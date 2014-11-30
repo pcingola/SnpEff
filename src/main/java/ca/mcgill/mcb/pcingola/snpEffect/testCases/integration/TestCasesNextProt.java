@@ -2,9 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
@@ -20,7 +19,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesNextProt extends TestCase {
+public class TestCasesNextProt {
 
 	public static boolean debug = false;
 	public static boolean verbose = false;
@@ -68,6 +67,7 @@ public class TestCasesNextProt extends TestCase {
 		Assert.assertEquals(1, numNextProt);
 	}
 
+	@Test
 	public void test_01_build() {
 		Gpr.debug("Test");
 		String args[] = { "buildNextProt", "testHg3770Chr22", "tests/nextProt" };
@@ -78,18 +78,21 @@ public class TestCasesNextProt extends TestCase {
 		Assert.assertEquals(true, ok);
 	}
 
+	@Test
 	public void test_02_eff() {
 		Gpr.debug("Test");
 		// Note: Normally this EffectImpact should be 'HIGH' impact, but since the database we build in test_01_build is small, there are not enough stats.
 		checkNextProt("testHg3770Chr22", "tests/test_nextProt_02.vcf", "amino_acid_modification:N-acetylglycine", EffectImpact.LOW);
 	}
 
+	@Test
 	public void test_03_eff() {
 		Gpr.debug("Test");
 		// Note: Normally this EffectImpact should be 'MODERATE' impact, but since the database we build in test_01_build is small, there are not enough stats.
 		checkNextProt("testHg3770Chr22", "tests/test_nextProt_03.vcf", "amino_acid_modification:Phosphoserine", EffectImpact.MODERATE);
 	}
 
+	@Test
 	public void test_04_parse() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/test.nextProt_paren.vcf";

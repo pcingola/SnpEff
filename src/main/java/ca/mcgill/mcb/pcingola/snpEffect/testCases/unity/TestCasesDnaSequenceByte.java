@@ -2,15 +2,17 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.binseq.DnaSequenceByte;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
-public class TestCasesDnaSequenceByte extends TestCase {
+public class TestCasesDnaSequenceByte {
 
 	public static boolean verbose = false;
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		Random random = new Random(20120907);

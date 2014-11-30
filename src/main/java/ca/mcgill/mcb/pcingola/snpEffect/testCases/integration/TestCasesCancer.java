@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -16,7 +18,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesCancer extends TestCase {
+public class TestCasesCancer {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
@@ -61,6 +63,7 @@ public class TestCasesCancer extends TestCase {
 	/**
 	 * Test Somatic vs Germline
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		String file = "tests/test.cancer.snp.01.vcf";
@@ -70,6 +73,7 @@ public class TestCasesCancer extends TestCase {
 	/**
 	 * Test Somatic vs Germline (using TXT file)
 	 */
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		String fileVcf = "tests/test.cancer_no_ped.vcf";

@@ -2,7 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.probablility.FisherExactTest;
 import ca.mcgill.mcb.pcingola.probablility.Hypergeometric;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -13,7 +14,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * @author pcingola
  *
  */
-public class TestCasesHypergeometric extends TestCase {
+public class TestCasesHypergeometric {
 
 	public static double MAX_DIFF = 0.00000000001;
 
@@ -71,11 +72,13 @@ public class TestCasesHypergeometric extends TestCase {
 		rand = new Random(20110124);
 	}
 
+	@Test
 	public void test_0() {
 		Gpr.debug("Test");
 		// generate_test();
 	}
 
+	@Test
 	public void test_01_hyper() {
 		Gpr.debug("Test");
 		// Compare to values calculated using other programs (R)
@@ -194,6 +197,7 @@ public class TestCasesHypergeometric extends TestCase {
 		compareHypergeometric(1, 40, 21, 18, 3.167218e-08);
 	}
 
+	@Test
 	public void test_02_hyper() {
 		Gpr.debug("Test");
 		// Compare to values calculated using other programs (R)

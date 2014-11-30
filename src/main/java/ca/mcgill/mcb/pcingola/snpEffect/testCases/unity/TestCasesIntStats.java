@@ -3,11 +3,13 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.stats.IntStats;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
-public class TestCasesIntStats extends TestCase {
+public class TestCasesIntStats {
 
 	public static double EPSILON = 0.000001;
 	boolean verbose = false;
@@ -25,13 +27,14 @@ public class TestCasesIntStats extends TestCase {
 	/**
 	 * Calculate statistics, compare results with other programs' results
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		String fileName = "tests/intStats_test_01.txt";
 		String file = Gpr.readFile(fileName);
 		String lines[] = file.split("\n");
 
-		for( String line : lines ) {
+		for (String line : lines) {
 			String recs[] = line.split("\t");
 
 			// Get stats results
@@ -43,7 +46,7 @@ public class TestCasesIntStats extends TestCase {
 
 			// Perform stats using the rest of the data
 			IntStats intStats = new IntStats();
-			for( int i = 5; i < recs.length; i++ ) {
+			for (int i = 5; i < recs.length; i++) {
 				int value = Gpr.parseIntSafe(recs[i]);
 				intStats.sample(value);
 			}

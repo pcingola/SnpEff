@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -24,7 +26,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesIntervalVariant extends TestCase {
+public class TestCasesIntervalVariant {
 
 	public static int N = 1000;
 
@@ -84,6 +86,7 @@ public class TestCasesIntervalVariant extends TestCase {
 		transcript = gene.iterator().next();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 

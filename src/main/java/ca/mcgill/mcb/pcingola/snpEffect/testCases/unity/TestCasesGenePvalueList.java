@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.gsa.ScoreList;
 import ca.mcgill.mcb.pcingola.gsa.ScoreList.ScoreSummary;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -14,11 +16,12 @@ import flanagan.analysis.Stat;
  *
  * @author pcingola
  */
-public class TestCasesGenePvalueList extends TestCase {
+public class TestCasesGenePvalueList {
 
 	/**
 	 * Combined p-value : MIN
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		double pvals[] = { 0.01, 0.2, 0.3 };
@@ -36,6 +39,7 @@ public class TestCasesGenePvalueList extends TestCase {
 	/**
 	 * Combined p-value : AVG
 	 */
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		double pvals[] = { 0.01, 0.2, 0.3 };
@@ -53,6 +57,7 @@ public class TestCasesGenePvalueList extends TestCase {
 	/**
 	 * Combined p-value : AVG10
 	 */
+	@Test
 	public void test_03() {
 		Gpr.debug("Test");
 		double pvals[] = { 0.01, 0.9, 0.2, 0.9, 0.3, 0.9, 0.01, 0.9, 0.2, 0.9, 0.3, 0.9, 0.01, 0.9, 0.2, 0.9, 0.3, 0.9, 0.17, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9 };
@@ -71,6 +76,7 @@ public class TestCasesGenePvalueList extends TestCase {
 	 * Complementary CDF for Chi^2 distribution
 	 *
 	 */
+	@Test
 	public void test_04() {
 		Gpr.debug("Test");
 		Random rand = new Random(20130609);
@@ -99,6 +105,7 @@ public class TestCasesGenePvalueList extends TestCase {
 	/**
 	 * Combined p-value : FISHER_CHI_SQUARE
 	 */
+	@Test
 	public void test_05() {
 		Gpr.debug("Test");
 		double pvals[] = { 0.01, 0.2, 0.3 };
@@ -116,6 +123,7 @@ public class TestCasesGenePvalueList extends TestCase {
 	/**
 	 * Combined p-value : Z_SCORES
 	 */
+	@Test
 	public void test_06() {
 		Gpr.debug("Test");
 		double pvals[] = { 0.01, 0.2, 0.3 };
@@ -141,6 +149,7 @@ public class TestCasesGenePvalueList extends TestCase {
 	 * 		p <- 2*pnorm(sort(-abs(x)))
 	 * 		p.adjust(p, "fdr")
 	 */
+	@Test
 	public void test_07() {
 		Gpr.debug("Test");
 
@@ -172,6 +181,7 @@ public class TestCasesGenePvalueList extends TestCase {
 	/**
 	 * Test quantile
 	 */
+	@Test
 	public void test_08() {
 		Gpr.debug("Test");
 		// Create pvalues
@@ -193,6 +203,7 @@ public class TestCasesGenePvalueList extends TestCase {
 	/**
 	 * Test CDF (cumulative distribution function)
 	 */
+	@Test
 	public void test_09() {
 		Gpr.debug("Test");
 		// Create pvalues

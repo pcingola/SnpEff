@@ -1,5 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 
 /**
@@ -11,6 +13,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
  */
 public class TestCasesIntegrationSnpEffMultiThread extends IntegrationTest {
 
+	@Test
 	public void test() {
 		String expectedOutputFile = "tests/test.chr1.out.multi-thread.vcf.gz";
 		String args[] = { "eff", "-v", "-t", "-noStats", "testHg3763Chr1", "tests/test.chr1.vcf" };

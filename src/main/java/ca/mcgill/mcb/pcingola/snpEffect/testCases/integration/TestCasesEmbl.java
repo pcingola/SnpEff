@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
@@ -15,7 +17,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesEmbl extends TestCase {
+public class TestCasesEmbl {
 
 	public static boolean debug = false;
 
@@ -36,6 +38,7 @@ public class TestCasesEmbl extends TestCase {
 		return sep;
 	}
 
+	@Test
 	public void testCase_Exon_Simple() {
 		Gpr.debug("Test");
 		// Create SnpEff predictor

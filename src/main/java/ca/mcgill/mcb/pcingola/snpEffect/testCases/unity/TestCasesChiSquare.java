@@ -1,8 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.probablility.FisherExactTest;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -13,7 +12,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * @author pcingola
  *
  */
-public class TestCasesChiSquare extends TestCase {
+public class TestCasesChiSquare {
 
 	public static double MAX_DIFF = 1e-6;
 
@@ -23,6 +22,7 @@ public class TestCasesChiSquare extends TestCase {
 		super();
 	}
 
+	@Test
 	public void test_1() {
 		Gpr.debug("Test");
 		// Data calculated using R:

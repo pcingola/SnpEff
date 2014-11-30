@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -31,7 +33,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesSnp extends TestCase {
+public class TestCasesSnp {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
@@ -103,6 +105,7 @@ public class TestCasesSnp extends TestCase {
 		transcript = gene.iterator().next();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		CodonTable codonTable = genome.codonTable();
@@ -208,6 +211,7 @@ public class TestCasesSnp extends TestCase {
 	/**
 	 * Stop gained should have 'HIGH' impact
 	 */
+	@Test
 	public void test_02_StopGained_HighImpact() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr2";

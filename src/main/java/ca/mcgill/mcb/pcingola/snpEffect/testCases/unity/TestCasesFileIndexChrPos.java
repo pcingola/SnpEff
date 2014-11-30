@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.FileIndexChrPos;
@@ -18,7 +20,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesFileIndexChrPos extends TestCase {
+public class TestCasesFileIndexChrPos {
 
 	boolean verbose = false;
 	boolean debug = false;
@@ -67,6 +69,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test getting random lines from a file
 	 * @throws IOException
 	 */
+	@Test
 	public void test_00_long_file() throws IOException {
 		Gpr.debug("Test");
 		readLinesCheck("tests/test.chr1.vcf", 1000);
@@ -76,6 +79,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test getting random lines from a file
 	 * @throws IOException
 	 */
+	@Test
 	public void test_00_short_file() throws IOException {
 		Gpr.debug("Test");
 		readLinesCheck("tests/test_filter_transcripts_001.ori.vcf", 1000);
@@ -85,6 +89,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find beginning of a chromosome
 	 * @throws IOException
 	 */
+	@Test
 	public void test_01() throws IOException {
 		Gpr.debug("Test");
 		String vcf = "tests/test.chr1.vcf";
@@ -106,6 +111,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find a line
 	 * @throws IOException
 	 */
+	@Test
 	public void test_02() throws IOException {
 		Gpr.debug("Test");
 		String vcf = "tests/test.chr1.vcf";
@@ -128,6 +134,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find a chr:pos
 	 * @throws IOException
 	 */
+	@Test
 	public void test_03() throws IOException {
 		Gpr.debug("Test");
 		String vcf = "tests/test.chr1.vcf";
@@ -155,6 +162,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find a chr:pos
 	 * @throws IOException
 	 */
+	@Test
 	public void test_04() throws IOException {
 		Gpr.debug("Test");
 		String vcf = "tests/test.chr1.vcf";
@@ -183,6 +191,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find a chr:pos that does not exists
 	 * @throws IOException
 	 */
+	@Test
 	public void test_05() throws IOException {
 		Gpr.debug("Test");
 		String vcf = "tests/test.chr1.vcf";
@@ -211,6 +220,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find a chr:pos that does not exists
 	 * @throws IOException
 	 */
+	@Test
 	public void test_06() throws IOException {
 		Gpr.debug("Test");
 		String vcf = "tests/test.chr1.vcf";
@@ -239,6 +249,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find a chr:pos that does not exists
 	 * @throws IOException
 	 */
+	@Test
 	public void test_07() throws IOException {
 		Gpr.debug("Test");
 		String vcf = "tests/test.chr1.vcf";
@@ -263,6 +274,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 		idx.close();
 	}
 
+	@Test
 	public void test_10() throws IOException {
 		Gpr.debug("Test");
 		String vcfFileName = "tests/test.chr1.vcf";
@@ -296,6 +308,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find a chr:pos that does not exists
 	 * @throws IOException
 	 */
+	@Test
 	public void test_11() throws IOException {
 		Gpr.debug("Test");
 		String vcfFileName = "tests/test.chr1.vcf";
@@ -343,6 +356,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find a chr:pos that does not exists
 	 * @throws IOException
 	 */
+	@Test
 	public void test_20() throws IOException {
 		Gpr.debug("Test");
 		String vcf = "tests/test.chr1.vcf";
@@ -365,6 +379,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find a chr:pos that does not exists
 	 * @throws IOException
 	 */
+	@Test
 	public void test_21() throws IOException {
 		Gpr.debug("Test");
 		String vcf = "tests/test.chr1.vcf";
@@ -387,6 +402,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Find a chr:pos that does not exists
 	 * @throws IOException
 	 */
+	@Test
 	public void test_22() throws IOException {
 		Gpr.debug("Test");
 		String vcf = "tests/test.chr1.vcf";
@@ -409,6 +425,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Dump small portions of a file
 	 * @throws IOException
 	 */
+	@Test
 	public void test_23() throws IOException {
 		Gpr.debug("Test");
 		String vcfFileName = "tests/test.chr1.vcf";
@@ -473,6 +490,7 @@ public class TestCasesFileIndexChrPos extends TestCase {
 	 * Test : Dump large portions of a file
 	 * @throws IOException
 	 */
+	@Test
 	public void test_24() throws IOException {
 		Gpr.debug("Test");
 		int MAX_TEST = 100;

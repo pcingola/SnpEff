@@ -2,7 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -17,7 +18,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
  *
  * @author pcingola
  */
-public class TestCasesBase extends TestCase {
+public class TestCasesBase {
 
 	protected boolean debug = false;
 	protected boolean verbose = false || debug;
@@ -41,6 +42,12 @@ public class TestCasesBase extends TestCase {
 	protected SnpEffectPredictor snpEffectPredictor;
 	protected String chromoSequence = "";
 	protected char chromoBases[];
+
+	@Before
+	public void before() {
+		initRand();
+		initSnpEffPredictor();
+	}
 
 	void initRand() {
 		rand = new Random(randSeed);
@@ -90,12 +97,6 @@ public class TestCasesBase extends TestCase {
 		String seq = firstEx.getSequence();
 		firstEx.setSequence(prepend + seq);
 		transcript.resetCdsCache();
-	}
-
-	@Override
-	protected void setUp() {
-		initRand();
-		initSnpEffPredictor();
 	}
 
 }

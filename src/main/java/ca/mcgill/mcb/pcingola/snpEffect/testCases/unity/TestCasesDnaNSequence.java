@@ -4,13 +4,15 @@ import java.util.HashSet;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.binseq.DnaNSequence;
 import ca.mcgill.mcb.pcingola.binseq.coder.DnaCoder;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
-public class TestCasesDnaNSequence extends TestCase {
+public class TestCasesDnaNSequence {
 
 	public static boolean verbose = false;
 
@@ -187,6 +189,7 @@ public class TestCasesDnaNSequence extends TestCase {
 		return sb.toString();
 	}
 
+	@Test
 	public void test_01_short() {
 		Gpr.debug("Test");
 		long seed = 20100615;
@@ -195,6 +198,7 @@ public class TestCasesDnaNSequence extends TestCase {
 		randDnaSeqTest(numTests, lenMask, seed);
 	}
 
+	@Test
 	public void test_01_short_getBase() {
 		Gpr.debug("Test");
 		long seed = 20110217;
@@ -204,6 +208,7 @@ public class TestCasesDnaNSequence extends TestCase {
 		randDnaSeqGetBaseTest(numTests, numTestsPerSeq, lenMask, seed);
 	}
 
+	@Test
 	public void test_01_short_getBases() {
 		Gpr.debug("Test");
 		long seed = 20110218;
@@ -213,6 +218,7 @@ public class TestCasesDnaNSequence extends TestCase {
 		randDnaSeqGetBasesTest(numTests, numTestsPerSeq, lenMask, seed);
 	}
 
+	@Test
 	public void test_01_short_replaceBase() {
 		Gpr.debug("Test");
 		long seed = 20110218;
@@ -222,6 +228,7 @@ public class TestCasesDnaNSequence extends TestCase {
 		randReplaceBaseTest(numTests, numTestsPerSeq, lenMask, seed);
 	}
 
+	@Test
 	public void test_02_long() {
 		Gpr.debug("Test");
 		long seed = 20100614;
@@ -230,6 +237,7 @@ public class TestCasesDnaNSequence extends TestCase {
 		randDnaSeqTest(numTests, lenMask, seed);
 	}
 
+	@Test
 	public void test_02_long_getBase() {
 		Gpr.debug("Test");
 		long seed = 20110217;
@@ -239,6 +247,7 @@ public class TestCasesDnaNSequence extends TestCase {
 		randDnaSeqGetBaseTest(numTests, numTestsPerSeq, lenMask, seed);
 	}
 
+	@Test
 	public void test_02_long_getBases() {
 		Gpr.debug("Test");
 		long seed = 20110218;
@@ -248,6 +257,7 @@ public class TestCasesDnaNSequence extends TestCase {
 		randDnaSeqGetBasesTest(numTests, numTestsPerSeq, lenMask, seed);
 	}
 
+	@Test
 	public void test_02_long_replaceBase() {
 		Gpr.debug("Test");
 		long seed = 20110217;
@@ -257,6 +267,7 @@ public class TestCasesDnaNSequence extends TestCase {
 		randReplaceBaseTest(numTests, numTestsPerSeq, lenMask, seed);
 	}
 
+	@Test
 	public void test_13_reverseWc() {
 		Gpr.debug("Test");
 		long seed = 20100615;
@@ -273,7 +284,7 @@ public class TestCasesDnaNSequence extends TestCase {
 			DnaNSequence bseq = new DnaNSequence(seq);
 			DnaNSequence rwc = (DnaNSequence) bseq.reverseWc();
 
-			assertEquals(seqRwc.toUpperCase(), rwc.getSequence().toUpperCase());
+			Assert.assertEquals(seqRwc.toUpperCase(), rwc.getSequence().toUpperCase());
 		}
 	}
 

@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
@@ -16,7 +18,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesNoChange extends TestCase {
+public class TestCasesNoChange {
 
 	boolean verbose = false;
 
@@ -24,12 +26,14 @@ public class TestCasesNoChange extends TestCase {
 		super();
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		String args[] = { "-classic", "testHg3766Chr1", "./tests/test.no_change.vcf" };
 		vcfNoChange(args);
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		String args[] = { "-classic", "testHg3766Chr1", "./tests/test.no_change_02.vcf" };

@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.fileIterator.NeedlemanWunsch;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfRefAltAlign;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -11,10 +13,11 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesAlign extends TestCase {
+public class TestCasesAlign {
 
 	boolean verbose = false;
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		String as[] = { "TTT", "TTTGTT", "GCG", "G" };
@@ -35,6 +38,7 @@ public class TestCasesAlign extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		String as[] = { "TTT", "TTTGTT", "GCG", "G" };

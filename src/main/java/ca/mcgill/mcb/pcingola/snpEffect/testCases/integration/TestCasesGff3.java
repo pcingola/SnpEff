@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -24,7 +26,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesGff3 extends TestCase {
+public class TestCasesGff3 {
 
 	boolean verbose = false;
 
@@ -87,6 +89,7 @@ public class TestCasesGff3 extends TestCase {
 		return sb.toString();
 	}
 
+	@Test
 	public void testCase_01_Exon_Simple() {
 		Gpr.debug("Test");
 		String genome = "testCase";
@@ -95,6 +98,7 @@ public class TestCasesGff3 extends TestCase {
 		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
+	@Test
 	public void testCase_02_ExonIn() {
 		Gpr.debug("Test");
 		String genome = "testCase";
@@ -103,6 +107,7 @@ public class TestCasesGff3 extends TestCase {
 		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
+	@Test
 	public void testCase_03_ExonOut() {
 		Gpr.debug("Test");
 		String genome = "testCase";
@@ -111,6 +116,7 @@ public class TestCasesGff3 extends TestCase {
 		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
+	@Test
 	public void testCase_04_AthalianaTair10_AT5G66790() {
 		Gpr.debug("Test");
 		String genome = "athalianaTair10";
@@ -119,6 +125,7 @@ public class TestCasesGff3 extends TestCase {
 		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
+	@Test
 	public void testCase_05_PaeruPA14muccA() {
 		Gpr.debug("Test");
 		String genome = "paeru.PA14";
@@ -133,6 +140,7 @@ public class TestCasesGff3 extends TestCase {
 		Assert.assertEquals(0, spliceSites.size());
 	}
 
+	@Test
 	public void testCase_06_Ppersica() {
 		Gpr.debug("Test");
 		String genome = "ppersica139";
@@ -141,6 +149,7 @@ public class TestCasesGff3 extends TestCase {
 		buildAndCompare(genome, gff3File, resultFile, false, false);
 	}
 
+	@Test
 	public void testCase_07_Rice5() {
 		Gpr.debug("Test");
 		String genome = "testRice5";
@@ -149,6 +158,7 @@ public class TestCasesGff3 extends TestCase {
 		buildAndCompare(genome, gff3File, resultFile, false, false);
 	}
 
+	@Test
 	public void testCase_08_Vibrio() {
 		Gpr.debug("Test");
 		String genome = "vibrio";
@@ -157,6 +167,7 @@ public class TestCasesGff3 extends TestCase {
 		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
+	@Test
 	public void testCase_09() {
 		Gpr.debug("Test");
 		String genome = "testAP";
@@ -165,6 +176,7 @@ public class TestCasesGff3 extends TestCase {
 		buildAndCompare(genome, gff3File, resultFile, true, false);
 	}
 
+	@Test
 	public void testCase_09_AP() {
 		Gpr.debug("Test");
 		String genome = "testAP";
@@ -191,6 +203,7 @@ public class TestCasesGff3 extends TestCase {
 		Assert.assertTrue(myErr.toString().indexOf("WARNING: All frames are zero!") >= 0);
 	}
 
+	@Test
 	public void testCase_10_MaizeZmB73() {
 		Gpr.debug("Test");
 		String genome = "testMaizeZmB73";

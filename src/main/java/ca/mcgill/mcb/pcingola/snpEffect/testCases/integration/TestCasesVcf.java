@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Variant;
@@ -25,7 +27,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
  *
  * @author pcingola
  */
-public class TestCasesVcf extends TestCase {
+public class TestCasesVcf {
 
 	boolean verbose = false;
 	boolean debug = false;
@@ -98,6 +100,7 @@ public class TestCasesVcf extends TestCase {
 	 * Louis Letourneau discovered this horrendous bug. This is
 	 * my first attempt to fix it....
 	 */
+	@Test
 	public void test_00() {
 		Gpr.debug("Test");
 		String fileName = "./tests/1kg_head.vcf";
@@ -111,6 +114,7 @@ public class TestCasesVcf extends TestCase {
 	/**
 	 * Basic parsing
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		initSnpEffPredictor("testCase");
@@ -130,6 +134,7 @@ public class TestCasesVcf extends TestCase {
 	/**
 	 * Deletions
 	 */
+	@Test
 	public void test_04_del() {
 		Gpr.debug("Test");
 		initSnpEffPredictor("testCase");
@@ -147,6 +152,7 @@ public class TestCasesVcf extends TestCase {
 	/**
 	 * Problems parsing
 	 */
+	@Test
 	public void test_05_choking_on_dot_slash_dot() {
 		Gpr.debug("Test");
 		initSnpEffPredictor("testCase");
@@ -180,6 +186,7 @@ public class TestCasesVcf extends TestCase {
 	 *          => CG / TG  (MNP)
 	 *
 	 */
+	@Test
 	public void test_06_mixed_change() {
 		// WARNING: This test is expected to fail, because this functionality is unimplemented
 		Gpr.debug("Test");
@@ -204,6 +211,7 @@ public class TestCasesVcf extends TestCase {
 	/**
 	 * Extremely weird long lines in a VCF file (thousands of bases long)
 	 */
+	@Test
 	public void test_07_long_lines() {
 		Gpr.debug("Test");
 		initSnpEffPredictor("testCase");
@@ -230,6 +238,7 @@ public class TestCasesVcf extends TestCase {
 	/**
 	 * Test for "<DEL>" in ALT field
 	 */
+	@Test
 	public void test_08_alt_del() {
 		Gpr.debug("Test");
 		initSnpEffPredictor("testCase");
@@ -256,6 +265,7 @@ public class TestCasesVcf extends TestCase {
 	/**
 	 * Empty ALT: Not a variant
 	 */
+	@Test
 	public void test_09_empty_ALT() {
 		Gpr.debug("Test");
 		String file = "./tests/empty.vcf";
@@ -270,6 +280,7 @@ public class TestCasesVcf extends TestCase {
 	/**
 	 * Empty Quality: Not a variant
 	 */
+	@Test
 	public void test_10_empty_QUAL() {
 		Gpr.debug("Test");
 		String file = "./tests/empty.vcf";
@@ -284,6 +295,7 @@ public class TestCasesVcf extends TestCase {
 	/**
 	 * Empty fields should show '.' when printed
 	 */
+	@Test
 	public void test_11_empty() {
 		Gpr.debug("Test");
 		String file = "./tests/empty.vcf";
@@ -295,6 +307,7 @@ public class TestCasesVcf extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_12_readHeader() {
 		Gpr.debug("Test");
 		String file = "./tests/test.chr1.1line.vcf";
@@ -314,6 +327,7 @@ public class TestCasesVcf extends TestCase {
 	/**
 	 * Header should NOT have a trailing '\n'
 	 */
+	@Test
 	public void test_12_readHeader_NL() {
 		Gpr.debug("Test");
 		String file = "./tests/test.chr1.1line.vcf";
@@ -324,6 +338,7 @@ public class TestCasesVcf extends TestCase {
 		Assert.assertEquals(false, header.charAt(header.length() - 1) == '\n');
 	}
 
+	@Test
 	public void test_13_chrOri() {
 		Gpr.debug("Test");
 		String file = "./tests/test.chr1.1line.vcf";
@@ -338,6 +353,7 @@ public class TestCasesVcf extends TestCase {
 		Assert.assertEquals("chr1", chr);
 	}
 
+	@Test
 	public void test_14_OutputFormatter_AddInfo() {
 		Gpr.debug("Test");
 		VcfOutputFormatter vof = new VcfOutputFormatter((List<VcfEntry>) null);
@@ -350,6 +366,7 @@ public class TestCasesVcf extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_15_Eff_format_version_guess() {
 		Gpr.debug("Test");
 		String vcfFileName = "./tests/test.EFF_V2.vcf";
@@ -362,6 +379,7 @@ public class TestCasesVcf extends TestCase {
 
 	}
 
+	@Test
 	public void test_16_indels() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/1kg.indels.vcf";
@@ -388,6 +406,7 @@ public class TestCasesVcf extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_17_vcf_bed_filter() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/test_vcf_filter.vcf";
@@ -411,6 +430,7 @@ public class TestCasesVcf extends TestCase {
 			System.out.println(ve);
 	}
 
+	@Test
 	public void test_18_vcf_tabix() {
 		Gpr.debug("Test");
 		VcfFileIterator vcf = new VcfFileIterator("./tests/test_tabix.vcf.gz");
@@ -425,6 +445,7 @@ public class TestCasesVcf extends TestCase {
 		Assert.assertEquals("1:249211906 2:41612", chrpos.trim());
 	}
 
+	@Test
 	public void test_22_huge_headers() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/huge_header_slow.vcf.gz";
@@ -440,6 +461,7 @@ public class TestCasesVcf extends TestCase {
 		Assert.assertTrue(timer.elapsed() < 1000); // We should be able to iterate the whole file in less than a second
 	}
 
+	@Test
 	public void test_23_VcfUnsorted() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/out_of_order.vcf";
@@ -463,6 +485,7 @@ public class TestCasesVcf extends TestCase {
 	/**
 	 * Parsing effect that created an exception (going from SO -> Classic)
 	 */
+	@Test
 	public void test_24_VcfEffect_parse_SO() {
 		String vcfFileName = "tests/test_rasmus.vcf";
 
@@ -478,6 +501,7 @@ public class TestCasesVcf extends TestCase {
 	 * Parsing Genomic VCFs
 	 * http://www.broadinstitute.org/gatk/guide/article?id=4017
 	 */
+	@Test
 	public void test_25_Genomic_VCF() {
 		String vcfFileName = "tests/genomic_vcf.gvcf";
 
@@ -500,6 +524,7 @@ public class TestCasesVcf extends TestCase {
 	 * Annotating LOF / NMD using a geneName that contains spaces triggers
 	 * an Exception (it shouldn't happen)
 	 */
+	@Test
 	public void test_26_Annotating_LOF_Spaces() {
 		String vcfFileName = "tests/vcf_genes_spaces.vcf";
 		String genomeName = "test_ENSG00000158062_spaces";

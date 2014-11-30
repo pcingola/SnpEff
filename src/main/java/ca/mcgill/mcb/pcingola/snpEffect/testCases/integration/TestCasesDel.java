@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -26,7 +28,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  *
  * @author pcingola
  */
-public class TestCasesDel extends TestCase {
+public class TestCasesDel {
 
 	public static int N = 1000;
 
@@ -181,6 +183,7 @@ public class TestCasesDel extends TestCase {
 		return strNoWs;
 	}
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		CodonTable codonTable = genome.codonTable();
@@ -349,7 +352,7 @@ public class TestCasesDel extends TestCase {
 										&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
 										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
 										&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
-										) {
+								) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
 									String codonsNewEff = effect.getCodonsAlt().toUpperCase();
@@ -369,6 +372,7 @@ public class TestCasesDel extends TestCase {
 		System.err.println("");
 	}
 
+	@Test
 	public void test_02() {
 		//---
 		// Create a transcript

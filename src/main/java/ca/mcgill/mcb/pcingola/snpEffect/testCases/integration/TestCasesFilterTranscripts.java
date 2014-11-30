@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -16,7 +18,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesFilterTranscripts extends TestCase {
+public class TestCasesFilterTranscripts {
 
 	boolean verbose = false;
 
@@ -27,6 +29,7 @@ public class TestCasesFilterTranscripts extends TestCase {
 	/**
 	 * Filter transcripts from a file
 	 */
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		String args[] = { //
@@ -61,6 +64,7 @@ public class TestCasesFilterTranscripts extends TestCase {
 	/**
 	 * Filter transcripts from a file
 	 */
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		String args[] = { //

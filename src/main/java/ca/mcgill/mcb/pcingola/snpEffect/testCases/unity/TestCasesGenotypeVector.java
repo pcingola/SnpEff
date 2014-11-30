@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 import java.util.Random;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.genotypes.GenotypeVector;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -12,10 +14,11 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesGenotypeVector extends TestCase {
+public class TestCasesGenotypeVector {
 
 	boolean verbose = false;
 
+	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		// Show masks (just to check they are OK)
@@ -40,6 +43,7 @@ public class TestCasesGenotypeVector extends TestCase {
 		}
 	}
 
+	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 		Random rand = new Random(20121221);
