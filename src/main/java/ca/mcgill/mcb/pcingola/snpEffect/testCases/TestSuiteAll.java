@@ -118,7 +118,6 @@ public class TestSuiteAll {
 		suite.addTestSuite(TestCasesMissenseSilentRatio.class);
 		suite.addTestSuite(TestCasesNoChange.class);
 		suite.addTestSuite(TestCasesTranscriptError.class);
-		suite.addTestSuite(TestCasesHugeDeletions.class);
 		suite.addTestSuite(TestCasesCodingTag.class);
 
 		// Filter transcripts
@@ -183,6 +182,11 @@ public class TestSuiteAll {
 
 		// Genomic sequences
 		suite.addTestSuite(TestCasesGenomicSequences.class);
+
+		// Huge deletions. 
+		// Note: This test case may run out of memory, so we run it last
+		suite.addTestSuite(TestCasesHugeDeletions.class);
+
 		return suite;
 	}
 }
