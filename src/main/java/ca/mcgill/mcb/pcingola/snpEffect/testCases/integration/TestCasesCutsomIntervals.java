@@ -1,13 +1,11 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
-import java.util.Random;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -23,9 +21,6 @@ public class TestCasesCutsomIntervals {
 	public static boolean debug = false;
 	public static boolean verbose = false || debug;
 	public static final int NUM_DEL_TEST = 10; // number of random test per transcript
-
-	Config config;
-	Random random = new Random(20131220);
 
 	public TestCasesCutsomIntervals() {
 		super();

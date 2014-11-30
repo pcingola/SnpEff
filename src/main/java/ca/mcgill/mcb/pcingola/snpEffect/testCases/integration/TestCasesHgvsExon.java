@@ -19,10 +19,6 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesHgvsExon extends TestCasesHgvsBase {
 
-	public TestCasesHgvsExon() {
-		super();
-	}
-
 	@Test
 	public void test_01_coding() {
 		Gpr.debug("Test");

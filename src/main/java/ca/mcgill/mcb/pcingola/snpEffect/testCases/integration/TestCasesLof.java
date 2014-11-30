@@ -6,6 +6,7 @@ import java.util.Random;
 import junit.framework.Assert;
 import net.sf.samtools.util.RuntimeEOFException;
 
+import org.junit.After;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -40,6 +41,11 @@ public class TestCasesLof {
 
 	public TestCasesLof() {
 		super();
+	}
+
+	@After
+	public void after() {
+		config = null;
 	}
 
 	Marker cdsMarker(Transcript tr) {
@@ -298,7 +304,7 @@ public class TestCasesLof {
 					+ ", class: " + (markerFilter != null ? markerFilter.getClass().getSimpleName() : "") //
 					+ "\t\tFound: '" + m.getType() + "', mfilter: " + (mfilter != null ? mfilter.getId() : "NULL") //
 					+ ", parent: " + m.getParent().getClass().getSimpleName() //
-			);
+					);
 
 			if ((m.getType() == effectType) && (mfilter != null) && (mtr != null)) {
 				if (markerFilter != null) {

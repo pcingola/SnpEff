@@ -1,9 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,13 +18,9 @@ import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
-import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Test random SNP changes
@@ -86,49 +82,19 @@ public class TestCasesIns {
 	}
 
 	public TestCasesIns() {
-		super();
 		init();
 	}
 
-	/**
-	 * Compare with results from ENSEMBL's VEP on transcript ENST00000268124
-	 */
-	public void compareVep(String genome, String vcf, String trId) {
-		String args[] = { "-classic", genome, vcf };
-
-		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
-		cmdEff.setSupressOutput(!verbose);
-
-		List<VcfEntry> vcfEnties = cmdEff.run(true);
-		for (VcfEntry ve : vcfEnties) {
-
-			StringBuilder msg = new StringBuilder();
-
-			// Check effects
-			boolean ok = false;
-			for (VcfEffect veff : ve.parseEffects()) {
-				// Find transcript
-				if (veff.getTranscriptId() != null && veff.getTranscriptId().equals(trId)) {
-					// Check that reported effect is the same
-					String vep = ve.getInfo("EFF_V");
-					String eff = veff.getEffectType().toString();
-
-					if (vep.equals(eff)) ok = true;
-					else {
-						if (vep.equals("CODON_INSERTION") && eff.equals("CODON_CHANGE_PLUS_CODON_INSERTION")) ok = true; // OK. I consider these the same
-						else if (vep.equals("STOP_GAINED,CODON_INSERTION") && eff.equals("STOP_GAINED")) ok = true; // OK. I consider these the same
-						else if (eff.equals("SPLICE_SITE_REGION")) ok = true; // OK. I'm not checking these
-						else {
-							String line = "\n" + ve + "\n\tSnpEff:" + veff + "\n\tVEP   :" + ve.getInfo("EFF_V") + "\t" + ve.getInfo("AA") + "\t" + ve.getInfo("CODON") + "\n";
-							msg.append(line);
-						}
-					}
-				}
-			}
-
-			if (!ok) throw new RuntimeException(msg.toString());
-		}
+	@After
+	public void after() {
+		config = null;
+		genome = null;
+		chromosome = null;
+		gene = null;
+		transcript = null;
+		snpEffectPredictor = null;
+		chromoBases = null;
+		chromoSequence = null;
 	}
 
 	void init() {
@@ -176,7 +142,6 @@ public class TestCasesIns {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		CodonTable codonTable = genome.codonTable();
 
 		// Test N times
 		//	- Create a random gene transcript, exons
@@ -184,6 +149,7 @@ public class TestCasesIns {
 		//	- Calculate effect
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor();
+			CodonTable codonTable = genome.codonTable();
 			if (debug) System.out.println("INS Test iteration: " + i + "\n" + transcript);
 			else if (verbose) System.out.println("INS Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
 			else Gpr.showMark(i + 1, 1);
@@ -300,41 +266,4 @@ public class TestCasesIns {
 
 		System.err.println("");
 	}
-
-	/**
-	 * Insertion on minus strand
-	 */
-	@Test
-	public void test_02_InsOffByOne() {
-		Gpr.debug("Test");
-		String args[] = { "-classic", "testENST00000268124", "tests/ins_off_by_one.vcf" };
-
-		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
-		snpeff.setSupressOutput(!verbose);
-		snpeff.setVerbose(verbose);
-
-		List<VcfEntry> vcfEnties = snpeff.run(true);
-		for (VcfEntry ve : vcfEnties) {
-
-			// Get first effect (there should be only one)
-			List<VcfEffect> veffs = ve.parseEffects();
-			VcfEffect veff = veffs.get(0);
-
-			Assert.assertEquals("Q53QQ", veff.getAa());
-		}
-	}
-
-	@Test
-	public void test_03_InsVep() {
-		Gpr.debug("Test");
-		compareVep("testENST00000268124", "tests/testENST00000268124_ins_vep.vcf", "ENST00000268124");
-	}
-
-	@Test
-	public void test_04_InsVep() {
-		Gpr.debug("Test");
-		compareVep("testHg3770Chr22", "tests/testENST00000445220_ins_vep.vcf", "ENST00000445220");
-	}
-
 }

@@ -74,15 +74,6 @@ public class Config implements Serializable, Iterable<String> {
 		return configInstance;
 	}
 
-	public Config() {
-		genome = new Genome();
-		treatAllAsProteinCoding = false;
-		onlyRegulation = false;
-		errorOnMissingChromo = false;
-		errorChromoHit = false;
-		configInstance = this; // Make this instance globally available
-	}
-
 	/**
 	 * Create a config (uses DEFAULT_CONFIG_FILE)
 	 */
@@ -199,16 +190,6 @@ public class Config implements Serializable, Iterable<String> {
 		} catch (MalformedURLException e) {
 			return null;
 		}
-	}
-
-	/**
-	 * Find the genome string in a 'codonTable' key string
-	 */
-	String findGenome(String codonKeyStr) {
-		for (String genVer : genomeByVersion.keySet()) {
-			if (codonKeyStr.startsWith(genVer + ".")) return genVer;
-		}
-		return null;
 	}
 
 	/**

@@ -5,6 +5,7 @@ import java.util.Random;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -43,6 +44,18 @@ public class TestCasesTranscript {
 	public TestCasesTranscript() {
 		super();
 		init();
+	}
+
+	@After
+	public void after() {
+		config = null;
+		genome = null;
+		chromosome = null;
+		gene = null;
+		transcript = null;
+		snpEffectPredictor = null;
+		chromoBases = null;
+		chromoSequence = null;
 	}
 
 	void init() {

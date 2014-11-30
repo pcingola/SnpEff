@@ -16,10 +16,6 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class TestCasesHgvsIntron extends TestCasesHgvsBase {
 
-	public TestCasesHgvsIntron() {
-		super();
-	}
-
 	@Test
 	public void test_01_intron() {
 		Gpr.debug("Test");

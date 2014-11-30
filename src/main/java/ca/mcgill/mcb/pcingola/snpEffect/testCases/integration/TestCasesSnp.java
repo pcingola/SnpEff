@@ -5,6 +5,7 @@ import java.util.Random;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
@@ -53,6 +54,18 @@ public class TestCasesSnp {
 	public TestCasesSnp() {
 		super();
 		init();
+	}
+
+	@After
+	public void after() {
+		config = null;
+		genome = null;
+		chromosome = null;
+		gene = null;
+		transcript = null;
+		snpEffectPredictor = null;
+		chromoBases = null;
+		chromoSequence = null;
 	}
 
 	String effectStr(VariantEffect effect) {

@@ -27,7 +27,6 @@ public class TestCasesHgvs {
 		String vcf = "tests/hgvs_1.vep.vcf";
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
-		//		comp.setStrict(true);
 		comp.compareVep(vcf);
 		if (verbose) System.out.println(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());

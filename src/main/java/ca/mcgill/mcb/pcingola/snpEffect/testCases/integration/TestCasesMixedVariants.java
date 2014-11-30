@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.Random;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -41,6 +42,18 @@ public class TestCasesMixedVariants {
 	public TestCasesMixedVariants() {
 		super();
 		init();
+	}
+
+	@After
+	public void after() {
+		config = null;
+		genome = null;
+		chromosome = null;
+		gene = null;
+		transcript = null;
+		snpEffectPredictor = null;
+		chromoBases = null;
+		chromoSequence = null;
 	}
 
 	/**

@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import java.util.Random;
 
+import org.junit.After;
 import org.junit.Before;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -47,6 +48,18 @@ public class TestCasesBase {
 	public void before() {
 		initRand();
 		initSnpEffPredictor();
+	}
+
+	@After
+	public void after() {
+		config = null;
+		genome = null;
+		chromosome = null;
+		gene = null;
+		transcript = null;
+		snpEffectPredictor = null;
+		chromoBases = null;
+		chromoSequence = null;
 	}
 
 	void initRand() {

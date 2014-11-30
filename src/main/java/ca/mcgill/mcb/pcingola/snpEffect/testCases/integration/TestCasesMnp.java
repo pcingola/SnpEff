@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -88,11 +89,22 @@ public class TestCasesMnp {
 		}
 	}
 
+	@After
+	public void after() {
+		config = null;
+		genome = null;
+		codonTable = null;
+		chromosome = null;
+		gene = null;
+		transcript = null;
+		snpEffectPredictor = null;
+		chromoBases = null;
+		chromoSequence = null;
+	}
+
 	void analyze(int i, int pos, String ref, String mnp) {
 		String codons = codons();
 
-		// Create a SeqChange
-		int seqChangeStrand = +1;
 		Variant seqChange = new Variant(chromosome, pos, ref + "", mnp + "", "");
 
 		//---
@@ -108,7 +120,7 @@ public class TestCasesMnp {
 						&& (ce.getEffectType() != EffectType.SPLICE_SITE_DONOR) //
 						&& (ce.getEffectType() != EffectType.INTRON) //
 						&& (ce.getEffectType() != EffectType.INTERGENIC) //
-				) //
+						) //
 					effect = ce;
 			}
 		} else effect = effects.get();
@@ -120,7 +132,7 @@ public class TestCasesMnp {
 				String codonsExp[] = codons.split("/");
 
 				boolean error = (!codonsExp[0].toUpperCase().equals(effect.getCodonsRef().toUpperCase()) //
-				|| !codonsExp[1].toUpperCase().equals(effect.getCodonsAlt().toUpperCase()));
+						|| !codonsExp[1].toUpperCase().equals(effect.getCodonsAlt().toUpperCase()));
 
 				if (error || debug) {
 					Gpr.debug("Fatal error:"//
@@ -132,7 +144,7 @@ public class TestCasesMnp {
 							+ "\n\tEffect (pred) : " + effect //
 							+ "\n\tGene          : " + gene//
 							+ "\n\tChromo        : " + chromoSequence//
-					);
+							);
 				}
 
 				/**

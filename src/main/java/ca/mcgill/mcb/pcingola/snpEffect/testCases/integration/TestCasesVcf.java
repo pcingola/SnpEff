@@ -6,6 +6,7 @@ import java.util.Random;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
@@ -65,6 +66,12 @@ public class TestCasesVcf {
 		super();
 		initRand();
 		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
+	}
+
+	@After
+	public void after() {
+		config = null;
+		genome = null;
 	}
 
 	/**
@@ -356,7 +363,7 @@ public class TestCasesVcf {
 	@Test
 	public void test_14_OutputFormatter_AddInfo() {
 		Gpr.debug("Test");
-		VcfOutputFormatter vof = new VcfOutputFormatter((List<VcfEntry>) null);
+		new VcfOutputFormatter((List<VcfEntry>) null);
 		String testIn[] = { "Hi ", "Hi how;", "Hi how;are|", "Hi how;are|you,", "Hi how;are|you,doing=", "Hi how;are|you,doing=today(.)" };
 		String testOut[] = { "Hi_", "Hi_how_", "Hi_how_are_", "Hi_how_are_you_", "Hi_how_are_you_doing_", "Hi_how_are_you_doing_today_._" };
 		for (int i = 0; i < testIn.length; i++) {

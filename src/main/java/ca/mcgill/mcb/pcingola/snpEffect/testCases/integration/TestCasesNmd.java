@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -33,6 +34,11 @@ public class TestCasesNmd {
 
 	public TestCasesNmd() {
 		super();
+	}
+
+	@After
+	public void after() {
+		config = null;
 	}
 
 	/**
