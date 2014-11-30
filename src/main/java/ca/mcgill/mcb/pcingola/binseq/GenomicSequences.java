@@ -33,16 +33,10 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	boolean verbose = false;
 	Genome genome; // Reference genome
 	IntervalForest intervalForest; // This is an interval forest of 'MarkerSeq' (genomic markers that have sequences)
-	Config config;
-
-	public GenomicSequences(Config config, Genome genome) {
-		this.genome = genome;
-		this.config = config;
-		intervalForest = new IntervalForest();
-	}
 
 	public GenomicSequences(Genome genome) {
-		this(Config.get(), genome);
+		this.genome = genome;
+		intervalForest = new IntervalForest();
 	}
 
 	/**
@@ -178,13 +172,13 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	 * Load sequences from genomic sequence file
 	 */
 	public synchronized void load(String chr) {
-		String fileName = config.getFileNameSequence(chr);
+		String fileName = Config.get().getFileNameSequence(chr);
 		IntervalTree tree = intervalForest.getTree(chr);
 		if (!tree.isEmpty()) return; // Already loaded
 
 		// F=No 'sequences' file? Cannot load...
 		if (!Gpr.exists(fileName)) {
-			if (config.isDebug()) Timer.show("Attempting to load sequences for chromosome '" + chr + "' from file '" + fileName + "' failed, nothing done.");
+			if (Config.get().isDebug()) Timer.show("Attempting to load sequences for chromosome '" + chr + "' from file '" + fileName + "' failed, nothing done.");
 			return;
 		}
 
@@ -201,7 +195,6 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	 */
 	public void save(Config config) {
 		if (isEmpty()) return; // Nothing to do
-		if (config != null) this.config = config;
 
 		ArrayList<String> chrNames = new ArrayList<String>();
 		chrNames.addAll(intervalForest.getTreeNames());
@@ -228,7 +221,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		}
 
 		// OK, there is something to save => Save markers to file
-		String fileName = config.getFileNameSequence(chr);
+		String fileName = Config.get().getFileNameSequence(chr);
 		if (verbose) Timer.showStdErr("Saving sequences for chromosome '" + chr + "' to file '" + fileName + "'");
 		tree.getIntervals().save(fileName);
 	}
