@@ -8,14 +8,14 @@ import ca.mcgill.mcb.pcingola.snpEffect.commandLine.CommandLine;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
- * Base class for integration tests 
- * 
+ * Base class for integration tests
+ *
  * @author pcingola
  */
 public class IntegrationTest {
 
 	public final int BUFFER_SIZE = 1024 * 1024;
-	public static final int MAX_LINES_DIFF = 10;
+	public static final int MAX_LINES_DIFF = 100;
 
 	boolean verbose = false;
 
@@ -55,23 +55,22 @@ public class IntegrationTest {
 
 	/**
 	 * Run a command and compare to an expected output (form a file)
-	 * @param command
-	 * @param args
-	 * @param expectedOutputFile
 	 */
 	public void command(CommandLine command, String expectedOutputFile) {
-		System.err.println("Executing command '" + showCommand(command) + "'");
+		if (verbose) System.err.println("Executing command '" + showCommand(command) + "'");
 		String actualOutput = command(command);
+		actualOutput = removeVcfHeader(actualOutput);
 
-		System.err.println("Reading results file '" + expectedOutputFile + "'");
+		if (verbose) System.err.println("Reading results file '" + expectedOutputFile + "'");
 		String expectedOutput = Gpr.readFile(expectedOutputFile);
+		expectedOutput = removeVcfHeader(expectedOutput);
 
 		// Count lines
 		int expectedOutputCountLines = expectedOutput.split("\n").length;
 		int actualOutputCountLines = actualOutput.split("\n").length;
 
 		// Show differences (if any)
-		System.err.println("Comparing outputs\t\tExpected size: " + expectedOutput.length() + " (" + expectedOutputCountLines + " lines)\t\tActual size: " + actualOutput.length() + " (" + actualOutputCountLines + " lines)");
+		if (verbose) System.err.println("Comparing outputs\t\tExpected size: " + expectedOutput.length() + " (" + expectedOutputCountLines + " lines)\t\tActual size: " + actualOutput.length() + " (" + actualOutputCountLines + " lines)");
 		int maxSize = Math.max(expectedOutput.length(), actualOutput.length());
 		if (maxSize < BUFFER_SIZE) Assert.assertEquals(expectedOutput, actualOutput);
 		else {
@@ -82,6 +81,16 @@ public class IntegrationTest {
 				throw new RuntimeException(msg);
 			}
 		}
+	}
+
+	String removeVcfHeader(String lines) {
+		StringBuilder sb = new StringBuilder();
+
+		for (String l : lines.split("\n"))
+			if (!l.startsWith("#")) sb.append(l + "\n");
+
+		return sb.toString();
+
 	}
 
 	/**
@@ -100,9 +109,6 @@ public class IntegrationTest {
 
 	/**
 	 * Show the difference between who string (multi-line strings)
-	 * @param s1
-	 * @param s2
-	 * @return
 	 */
 	public String showDiff(String s1, String s2) {
 		StringBuilder diff = new StringBuilder();
@@ -131,9 +137,6 @@ public class IntegrationTest {
 
 	/**
 	 * Show difference between two lines
-	 * @param l1
-	 * @param l2
-	 * @return
 	 */
 	public String showDiffLine(String l1, String l2) {
 		int max = Math.max(l1.length(), l2.length());

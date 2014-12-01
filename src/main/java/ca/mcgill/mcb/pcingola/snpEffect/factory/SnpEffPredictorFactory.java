@@ -689,6 +689,10 @@ public abstract class SnpEffPredictorFactory {
 		this.fileName = fileName;
 	}
 
+	public void setRandom(Random random) {
+		this.random = random;
+	}
+
 	/**
 	 * Read sequences?
 	 * Note: This is only used for debugging and testing

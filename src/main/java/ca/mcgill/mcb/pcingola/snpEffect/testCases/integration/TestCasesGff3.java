@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import junit.framework.Assert;
 
@@ -48,11 +49,13 @@ public class TestCasesGff3 {
 		fgff3.setFileName(gff3File);
 		fgff3.setReadSequences(readSeqs);
 		fgff3.setCreateRandSequences(createRandSequences);
+		fgff3.setRandom(new Random(20140410)); // Note: we want consistent results in our test cases, so we always initialize the random generator in the same way
+
 		SnpEffectPredictor sep = fgff3.create();
 
 		// Compare result
 		String result = show(sep.getGenome()).trim();
-		if (verbose) System.out.println("Result:\n----------\n" + result + "\n----------\n");
+		if (verbose || !Gpr.noSpaces(expectedResult).equals(Gpr.noSpaces(result))) System.out.println("Result:\n----------\n" + result + "\n----------\n");
 		Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 
 		return sep;
@@ -203,6 +206,9 @@ public class TestCasesGff3 {
 		Assert.assertTrue(myErr.toString().indexOf("WARNING: All frames are zero!") >= 0);
 	}
 
+	/**
+	 * Exon.frameCorrection: Exon too short (size: 1), cannot correct frame!
+	 */
 	@Test
 	public void testCase_10_MaizeZmB73() {
 		Gpr.debug("Test");

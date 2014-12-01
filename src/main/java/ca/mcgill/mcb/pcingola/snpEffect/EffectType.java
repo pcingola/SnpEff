@@ -177,6 +177,7 @@ public enum EffectType {
 		case CHROMOSOME_LARGE_DELETION:
 		case CUSTOM:
 		case CDS:
+		case SEQUENCE:
 			return EffectType.NONE;
 
 		case INTERGENIC:

@@ -443,10 +443,10 @@ public class TestCasesVariant {
 	 * Test
 	 */
 	@Test
-	public void test_zzz() {
+	public void test_38_NON_SYNONYMOUS_START() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/z.out", "ENST00000250823", true);
+		comp.snpEffect("tests/nonSynStart.out", "ENST00000250823", true);
 	}
 
 }
