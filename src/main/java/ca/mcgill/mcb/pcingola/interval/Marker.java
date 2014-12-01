@@ -178,6 +178,20 @@ public class Marker extends Interval implements TxtSerializable {
 	 */
 	@Override
 	public int compareTo(Interval i2) {
+		int comp = compareToPos(i2);
+		if (comp != 0) return comp;
+
+		// Compare by ID
+		if ((id == null) && (i2.getId() == null)) return 0;
+		if ((id != null) && (i2.getId() == null)) return -1;
+		if ((id == null) && (i2.getId() != null)) return 1;
+		return id.compareTo(i2.getId());
+	}
+
+	/**
+	 * Compare genomic coordinates
+	 */
+	public int compareToPos(Interval i2) {
 		// Compare chromosome names
 		Marker m2 = (Marker) i2;
 
@@ -199,11 +213,7 @@ public class Marker extends Interval implements TxtSerializable {
 		if (end > i2.end) return 1;
 		if (end < i2.end) return -1;
 
-		// Compare by ID
-		if ((id == null) && (i2.getId() == null)) return 0;
-		if ((id != null) && (i2.getId() == null)) return -1;
-		if ((id == null) && (i2.getId() != null)) return 1;
-		return id.compareTo(i2.getId());
+		return 0;
 	}
 
 	/**
@@ -560,7 +570,7 @@ public class Marker extends Interval implements TxtSerializable {
 				+ "\t" + end //
 				+ "\t" + id //
 				+ "\t" + strandMinus //
-				;
+		;
 	}
 
 	/**

@@ -36,12 +36,12 @@ public class TestCasesIntegrationSnpEff extends IntegrationTest {
 		command(new SnpEff(args), expectedOutputFile);
 	}
 
-	@Test
-	public void test_03_multi_thread() {
-		Gpr.debug("Test");
-		String expectedOutputFile = "tests/test.chr1.eff.vcf";
-		String args[] = { "eff", "-v", "-t", "-classic", "-noStats", "testHg3763Chr1", "tests/test.chr1.vcf.gz" };
-		command(new SnpEff(args), expectedOutputFile);
-	}
+	//	@Test
+	//	public void test_03_multi_thread() {
+	//		Gpr.debug("Test");
+	//		String expectedOutputFile = "tests/test.chr1.eff.vcf";
+	//		String args[] = { "eff", "-v", "-t", "-classic", "-noStats", "testHg3763Chr1", "tests/test.chr1.vcf.gz" };
+	//		command(new SnpEff(args), expectedOutputFile);
+	//	}
 
 }

@@ -170,6 +170,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		comp = getEffectType().compareTo(variantEffect.getEffectType());
 		if (comp != 0) return comp;
 
+		// TODO: Add sort by TSL (transcript level support) if available
+
 		// Sort by canonical transcript
 		Transcript trThis = getTranscript();
 		Transcript trOther = variantEffect.getTranscript();
@@ -183,7 +185,16 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		}
 
 		// Sort by genomic coordinate of affected 'marker'
-		if ((getMarker() != null) && (variantEffect.getMarker() != null)) return getMarker().compareTo(variantEffect.getMarker());
+		if ((trThis != null) && (trOther != null)) comp = trThis.compareToPos(trOther);
+		if (comp != 0) return comp;
+
+		// Compare IDs
+		if ((trThis != null) && (trOther != null)) comp = trThis.getId().compareTo(trOther.getId());
+		if (comp != 0) return comp;
+
+		// Compare by marker
+		if ((getMarker() != null) && (variantEffect.getMarker() != null)) comp = getMarker().compareToPos(variantEffect.getMarker());
+		if (comp != 0) return comp;
 
 		// Sort by variant (most of the time this is equal)
 		return variant.compareTo(variantEffect.getVariant());
@@ -520,7 +531,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -571,13 +582,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
+				;
 	}
 
 	public boolean isSpliceSiteCore() {
 		return hasEffectType(EffectType.SPLICE_SITE_DONOR) //
 				|| hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
-		;
+				;
 	}
 
 	public boolean isSpliceSiteRegion() {
@@ -736,7 +747,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**
