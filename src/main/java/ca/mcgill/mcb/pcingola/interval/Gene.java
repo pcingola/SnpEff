@@ -122,7 +122,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			for (Transcript t : this) {
 				int tlen = t.mRna().length();
 
-				if (canonicalLen < tlen //
+				if (canonicalLen <= tlen //
 						&& (canonical == null || t.getId().compareTo(canonical.getId()) < 0) //
 				) {
 					canonical = t;
