@@ -107,7 +107,12 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			// Find canonical transcript (longest CDS)
 			for (Transcript t : this) {
 				int tlen = t.cds().length();
-				if (t.isProteinCoding() && (canonicalLen < tlen)) {
+
+				// Compare coding length. If both lengths are equal, compare IDs
+				if (t.isProteinCoding() //
+						&& (canonicalLen <= tlen) //
+						&& (canonical == null || t.getId().compareTo(canonical.getId()) < 0) //
+				) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -116,7 +121,10 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			// Find canonical transcript (longest mRNA)
 			for (Transcript t : this) {
 				int tlen = t.mRna().length();
-				if (canonicalLen < tlen) {
+
+				if (canonicalLen < tlen //
+						&& (canonical == null || t.getId().compareTo(canonical.getId()) < 0) //
+				) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
