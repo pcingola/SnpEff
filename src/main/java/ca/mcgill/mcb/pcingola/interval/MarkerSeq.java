@@ -249,7 +249,7 @@ public class MarkerSeq extends Marker {
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + sequence.getSequence() //
-				;
+		;
 	}
 
 	/**

@@ -1,6 +1,15 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import junit.framework.Assert;
+
+import org.junit.Test;
+
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  *
@@ -104,5 +113,29 @@ public class TestCasesZzz extends TestCasesBase {
 	//			}
 	//		}
 	//	}
+
+	@Test
+	public void test_01() {
+		Gpr.debug("Test");
+
+		verbose = true;
+		if (verbose) Gpr.debug(transcript);
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 881, "", "T", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
+
+		// Analyze variant
+		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+
+		// Calculate HGVS
+		VariantEffect eff = effs.get();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
+
+		// Check result
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		Assert.assertEquals("c.1dupT", hgvsDna);
+	}
 
 }
