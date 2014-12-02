@@ -37,6 +37,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesReactome;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSeekableReader;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSequenceIndexer;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSnps;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVariantShift;
 
 /**
  * Invoke all test cases for SnpEff
@@ -76,7 +77,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSnps;
 		TestCasesReactome.class, //
 		TestCasesSeekableReader.class, //
 		TestCasesSequenceIndexer.class, //
-		TestCasesSnps.class //
+		TestCasesSnps.class, //
+		TestCasesVariantShift.class //
 })
 public class TestSuiteUnity {
 

@@ -47,7 +47,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 	public void add(Marker interval) {
 		if (interval == null) return;
 		String chName = Chromosome.simpleName(interval.getChromosomeName());
-		getTree(chName).add(interval); // Add interval to tree
+		getOrCreateTree(chName).add(interval); // Add interval to tree
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 	/**
 	 * Get (or create) an interval tree
 	 */
-	public IntervalTree getTree(String chromo) {
+	public IntervalTree getOrCreateTree(String chromo) {
 		chromo = Chromosome.simpleName(chromo);
 
 		// Retrieve (or create) interval tree
@@ -82,6 +82,13 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 		return intervalTree;
 	}
 
+	/**
+	 * Get an interval tree
+	 */
+	public IntervalTree getTree(String chromo) {
+		return forest.get(Chromosome.simpleName(chromo));
+	}
+
 	public Collection<String> getTreeNames() {
 		return forest.keySet();
 	}
@@ -89,10 +96,8 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 	/**
 	 * Is the tree 'chromo' available?
 	 */
-	public boolean hasTree(String chromoOri) {
-		String chromo = Chromosome.simpleName(chromoOri);
-		IntervalTree intervalTree = forest.get(chromo);
-		return intervalTree != null;
+	public boolean hasTree(String chromo) {
+		return getTree(chromo) != null;
 	}
 
 	/**
@@ -133,7 +138,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 	 * Query all intervals that intersect with 'interval'
 	 */
 	public Markers query(Marker marker) {
-		return getTree(marker.getChromosomeName()).query(marker);
+		return getOrCreateTree(marker.getChromosomeName()).query(marker);
 	}
 
 	/**
@@ -191,7 +196,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 	 * Obtain all intervals that intersect with 'point'
 	 */
 	public Markers stab(String chromo, int point) {
-		return getTree(chromo).stab(point);
+		return getOrCreateTree(chromo).stab(point);
 	}
 
 	@Override
@@ -199,7 +204,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 		StringBuilder sb = new StringBuilder();
 
 		for (String chromo : forest.keySet()) {
-			IntervalTree tree = getTree(chromo);
+			IntervalTree tree = getOrCreateTree(chromo);
 			sb.append("chr" + chromo + ":\n" + tree + "\n");
 		}
 

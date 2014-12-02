@@ -10,6 +10,7 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.MarkerSeq;
 import ca.mcgill.mcb.pcingola.interval.Markers;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalTree;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
@@ -29,6 +30,8 @@ import ca.mcgill.mcb.pcingola.util.Timer;
  * @author pcingola
  */
 public class GenomicSequences implements Iterable<MarkerSeq> {
+
+	public static final int MAX_ITERATIONS = 1000000;
 
 	boolean verbose = false;
 	Genome genome; // Reference genome
@@ -118,7 +121,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		IntervalTree tree = intervalForest.getTree(chr);
 
 		// Nothing available
-		if (tree.isEmpty()) return null;
+		if (tree == null || tree.isEmpty()) return null;
 
 		// Find marker sequence
 		Markers res = tree.query(marker);
@@ -169,25 +172,41 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	}
 
 	/**
+	 * Do we have sequence information for this chromosome?
+	 */
+	public boolean hasChromosome(String chr) {
+		if (!intervalForest.hasTree(chr)) return false;
+
+		// Tried to load tree and it's empty?
+		IntervalTree tree = intervalForest.getTree(chr);
+		if (tree != null && tree.isEmpty()) return false; // Tree is empty, means we could not load any sequence from 'database'
+
+		return true;
+	}
+
+	/**
 	 * Load sequences from genomic sequence file
 	 */
-	public synchronized void load(String chr) {
-		String fileName = Config.get().getFileNameSequence(chr);
-		IntervalTree tree = intervalForest.getTree(chr);
-		if (!tree.isEmpty()) return; // Already loaded
+	public synchronized boolean load(String chr) {
+		// Already loaded?
+		if (hasChromosome(chr)) return true;
 
-		// F=No 'sequences' file? Cannot load...
+		// File does not exists?  Cannot load...
+		String fileName = Config.get().getFileNameSequence(chr);
 		if (!Gpr.exists(fileName)) {
 			if (Config.get().isDebug()) Timer.show("Attempting to load sequences for chromosome '" + chr + "' from file '" + fileName + "' failed, nothing done.");
-			return;
+			return false;
 		}
 
 		// Load markers
 		if (verbose) Timer.show("Loading sequences for chromosome '" + chr + "' from file '" + fileName + "'");
+		IntervalTree tree = intervalForest.getOrCreateTree(chr);
 		tree.load(fileName);
 		if (verbose) Timer.show("Building sequence tree for chromosome '" + chr + "'");
 		tree.build();
 		if (verbose) Timer.show("Done. Loaded " + tree.getIntervals().size() + " sequences.");
+
+		return !tree.isEmpty();
 	}
 
 	/**
@@ -208,19 +227,13 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	 * Save sequences from chromosome 'chr' to a binary file
 	 */
 	void save(String chr) {
-		IntervalTree tree = intervalForest.getTree(chr);
-
-		if (tree == null) {
+		if (!intervalForest.hasTree(chr)) {
 			if (verbose) Timer.showStdErr("No tree found for chromosome '" + chr + "'");
 			return;
 		}
 
-		if (tree.getIntervals().isEmpty()) {
-			if (verbose) Timer.showStdErr("No sequences found for chromosome '" + chr + "'");
-			return;
-		}
-
 		// OK, there is something to save => Save markers to file
+		IntervalTree tree = intervalForest.getTree(chr);
 		String fileName = Config.get().getFileNameSequence(chr);
 		if (verbose) Timer.showStdErr("Saving sequences for chromosome '" + chr + "' to file '" + fileName + "'");
 		tree.getIntervals().save(fileName);
@@ -228,6 +241,38 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
+	}
+
+	/**
+	 * How many bases can a variant be shifted to the left?
+	 * Note: This may trigger loading database sequences
+	 * @return Positive number, if a shift can be performed, zero if there is no shift, negative number on error
+	 */
+	public int shiftLeft(Variant variant) {
+		if (!variant.isIns()) return 0; // Only insertions
+
+		// Load sequence if we don't have them
+		String chr = variant.getChromosomeName();
+		if (!hasChromosome(chr) && !load(chr)) return -1; // Error: Cannot load chromosme sequences
+
+		// Shift variant
+
+		String alt = variant.getAlt();
+		int len = alt.length();
+		if (len == 0) return 0;
+
+		int start = variant.getStart();
+		int newStart = start;
+		String seq = "";
+		for (int i = 0; i < MAX_ITERATIONS; newStart += len, i++) {
+			int end = newStart + (len - 1);
+			Marker m = new Marker(variant.getChromosome(), newStart, end, false, "");
+			seq = getSequence(m);
+			Gpr.debug("SHIFT:\talt='" + alt + "'\tseq='" + seq + "'\tstart:" + start + "\tnewStart: " + newStart);
+			if (seq == null || !seq.equalsIgnoreCase(alt)) break;
+		}
+
+		return newStart - start;
 	}
 
 	@Override
@@ -255,5 +300,4 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 
 		return sb.toString();
 	}
-
 }

@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import java.util.LinkedList;
 
+import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
@@ -211,6 +212,11 @@ public class Variant extends Marker {
 		return isStrandPlus() ? alt : GprSeq.reverseWc(alt);
 	}
 
+	@Override
+	public Variant clone() {
+		return (Variant) super.clone();
+	}
+
 	public String getAlt() {
 		return alt;
 	}
@@ -410,6 +416,25 @@ public class Variant extends Marker {
 		this.variantType = variantType;
 	}
 
+	/**
+	 * Create a new variant shifting it towards the leftmost position
+	 */
+	public Variant shiftLeft() {
+		GenomicSequences gs = getGenome().getGenomicSequences();
+		if (gs == null) return this;
+
+		// Can we shift?
+		int shift = gs.shiftLeft(this);
+		if (shift <= 0) return this;
+
+		// OK, create a cloned variant with a shifted position
+		Variant vnew = clone();
+		vnew.start += shift;
+		vnew.end += shift;
+
+		return vnew;
+	}
+
 	@Override
 	public String toString() {
 		if (variantType == VariantType.INTERVAL) return "chr" + getChromosomeName() + ":" + start + "-" + end;
@@ -436,12 +461,5 @@ public class Variant extends Marker {
 		if (isIns()) return getChromosomeName() + ":" + getStart() + "_*" + "/+" + getAlt();
 		else if (isDel()) return getChromosomeName() + ":" + getStart() + "_*" + "/-" + getReference();
 		return getChromosomeName() + ":" + getStart() + "_" + getReference() + "/" + getAlt();
-	}
-
-	/**
-	 * Create a new variant shifting it towards the leftmost position
-	 */
-	public Variant shiftLeft() {
-		return this;
 	}
 }

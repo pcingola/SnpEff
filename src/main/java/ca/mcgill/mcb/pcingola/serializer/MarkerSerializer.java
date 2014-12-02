@@ -138,7 +138,7 @@ public class MarkerSerializer {
 							+ "\n\tDatabase version : '" + versionNumber + "'"//
 							+ "\n\tProgram version  : '" + SnpEff.VERSION_MAJOR + "'" //
 							+ "\nTry installing the appropriate database." //
-					);
+							);
 				}
 			} else {
 				parsedField = 0;

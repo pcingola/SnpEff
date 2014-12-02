@@ -458,8 +458,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			Gpr.debug("SHIFT USING HGVS");
 			// Get sequence information. Might have to load sequences from database
 			variant = variant.shiftLeft();
-			variantRef = variantRef.shiftLeft();
+			if (variantRef != null) variantRef = variantRef.shiftLeft();
 			shifted3prime = (variant != variantOri); // Created a new variant? => It was shifted towards the left (i.e. 3-prime)
+			Gpr.debug("shifted3prime:" + shifted3prime);
 		}
 
 		// Find effect for each transcript
@@ -478,7 +479,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			return true;
 		}
 
-		// Add INFO_SHIFT_3_PRIME warning message
+		// Do we need to add INFO_SHIFT_3_PRIME warning message?
 		if (shifted3prime) {
 			for (VariantEffect ve : variantEffects) {
 				if (ve.getVariant() == variant) { // Is this effect using the shifted variant?

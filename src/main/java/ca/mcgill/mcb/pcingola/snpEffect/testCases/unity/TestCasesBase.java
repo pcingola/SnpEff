@@ -121,6 +121,9 @@ public class TestCasesBase {
 		codonTable = genome.codonTable();
 		gene = genome.getGenes().iterator().next();
 		transcript = gene.iterator().next();
+
+		// Create genomic sequences
+		genome.getGenomicSequences().addGeneSequences(chromosome.getId(), chromoSequence);
 	}
 
 	/**
