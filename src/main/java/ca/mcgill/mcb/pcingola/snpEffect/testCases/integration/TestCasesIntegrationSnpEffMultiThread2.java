@@ -12,13 +12,13 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * 
  * @author pcingola
  */
-public class TestCasesIntegrationSnpEffMultiThread extends IntegrationTest {
+public class TestCasesIntegrationSnpEffMultiThread2 extends IntegrationTest {
 
 	@Test
-	public void test_01_multi_thread() {
+	public void test_02_multi_thread() {
 		Gpr.debug("Test");
-		String expectedOutputFile = "tests/test.chr1.1line.out.classic.vcf";
-		String args[] = { "eff", "-t", "-classic", "-noStats", "-noLog", "-noLof", "testHg3763Chr1", "tests/test.chr1.1line.vcf" };
+		String expectedOutputFile = "tests/test.chr1.eff.vcf.gz";
+		String args[] = { "eff", "-t", "-classic", "-noStats", "-noLog", "-noLof", "testHg3763Chr1", "tests/test.chr1.vcf.gz" };
 		command(new SnpEff(args), expectedOutputFile);
 	}
 
