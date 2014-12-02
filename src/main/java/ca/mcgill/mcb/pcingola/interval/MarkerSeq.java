@@ -249,7 +249,7 @@ public class MarkerSeq extends Marker {
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + sequence.getSequence() //
-		;
+				;
 	}
 
 	/**
@@ -285,6 +285,42 @@ public class MarkerSeq extends Marker {
 		return getChromosomeName() + ":" + start + "-" + end //
 				+ ((id != null) && (id.length() > 0) ? " '" + id + "'" : "") //
 				+ (sequence != null ? ", sequence: " + sequence : "");
+	}
+
+	/**
+	 * Union of two markers
+	 * @return A new marker which is the union of the two
+	 */
+	public MarkerSeq union(MarkerSeq m) {
+		if (!getChromosomeName().equals(m.getChromosomeName())) return null;
+
+		int ustart = Math.min(start, m.getStart());
+		int uend = Math.max(end, m.getEnd());
+
+		// Merge sequence (only of the union overlaps)
+		String seq = null;
+		if (includes(m)) {
+			seq = getSequence();
+		} else if (m.includes(this)) {
+			seq = m.getSequence();
+		} else if (intersects(m)) {
+			// This interval is first
+			if (start < m.start) {
+				int overlap = end - m.start;
+				seq = getSequence() + m.getSequence().substring(overlap);
+			} else {
+				int overlap = m.end - start;
+				seq = m.getSequence() + getSequence().substring(overlap);
+			}
+		}
+
+		// Create new marker using new coordinates
+		MarkerSeq ms = (MarkerSeq) this.clone();
+		ms.start = ustart;
+		ms.end = uend;
+		if (seq != null) ms.setSequence(seq);
+
+		return ms;
 	}
 
 }

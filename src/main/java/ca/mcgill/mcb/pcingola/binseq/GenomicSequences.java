@@ -5,11 +5,13 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
+import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.MarkerSeq;
 import ca.mcgill.mcb.pcingola.interval.Markers;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalTree;
@@ -33,6 +35,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 
 	public static final int MAX_ITERATIONS = 1000000;
 
+	boolean debug = false;
 	boolean verbose = false;
 	Genome genome; // Reference genome
 	IntervalForest intervalForest; // This is an interval forest of 'MarkerSeq' (genomic markers that have sequences)
@@ -83,6 +86,48 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	}
 
 	/**
+	 * Create sequences from exons
+	 */
+	boolean createFromExons(String chr) {
+		if (verbose) Timer.show("Creating sequences from exon information '" + chr + "'");
+		IntervalTree tree = intervalForest.getOrCreateTree(chr);
+
+		// Add all exon sequences. Collapse them if possible
+		Markers exonMarkers = exonMarkers(chr);
+		if (debug) Gpr.debug("Before union: " + exonMarkers.size());
+		exonMarkers.union();
+		if (debug) Gpr.debug("After union: " + exonMarkers.size());
+
+		// Build tree
+		if (verbose) Timer.show("Building sequence tree for chromosome '" + chr + "'");
+		tree.build();
+		if (verbose) Timer.show("Done. Loaded " + tree.getIntervals().size() + " sequences.");
+
+		return !tree.isEmpty();
+	}
+
+	/**
+	 * List of all exons
+	 */
+	Markers exonMarkers(String chr) {
+		Markers markers = new Markers();
+
+		// Add exons sequences
+		for (Gene g : genome.getGenes()) {
+			if (genome.getChromosomeName().equals(chr)) {
+				for (Transcript tr : g)
+					for (Exon ex : tr) {
+						// Only add exons that have full sequences
+						String seq = ex.getSequence();
+						if (seq != null && seq.length() >= ex.size()) markers.add(ex);
+					}
+			}
+		}
+
+		return markers;
+	}
+
+	/**
 	 * Create a list of markers
 	 */
 	Markers genesMarkers(String chr, int chrLen) {
@@ -117,7 +162,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		String chr = marker.getChromosomeName();
 
 		// Get or load interval tree
-		if (!intervalForest.hasTree(chr)) load(chr);
+		if (!intervalForest.hasTree(chr)) loadOrCreateFromGenome(chr);
 		IntervalTree tree = intervalForest.getTree(chr);
 
 		// Nothing available
@@ -153,6 +198,19 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 
 	}
 
+	/**
+	 * Do we have sequence information for this chromosome?
+	 */
+	public boolean hasChromosome(String chr) {
+		if (!intervalForest.hasTree(chr)) return false;
+
+		// Tried to load tree and it's empty?
+		IntervalTree tree = intervalForest.getTree(chr);
+		if (tree != null && tree.isEmpty()) return false; // Tree is empty, means we could not load any sequence from 'database'
+
+		return true;
+	}
+
 	public boolean isEmpty() {
 		for (IntervalTree tree : intervalForest)
 			if (!tree.getIntervals().isEmpty()) return false;
@@ -172,20 +230,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	}
 
 	/**
-	 * Do we have sequence information for this chromosome?
-	 */
-	public boolean hasChromosome(String chr) {
-		if (!intervalForest.hasTree(chr)) return false;
-
-		// Tried to load tree and it's empty?
-		IntervalTree tree = intervalForest.getTree(chr);
-		if (tree != null && tree.isEmpty()) return false; // Tree is empty, means we could not load any sequence from 'database'
-
-		return true;
-	}
-
-	/**
-	 * Load sequences from genomic sequence file
+	 * Load sequences from databases
 	 */
 	public synchronized boolean load(String chr) {
 		// Already loaded?
@@ -207,6 +252,15 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		if (verbose) Timer.show("Done. Loaded " + tree.getIntervals().size() + " sequences.");
 
 		return !tree.isEmpty();
+	}
+
+	/**
+	 * Load sequences from genomic sequence file or (if not file is available) generate some sequences from exons.
+	 */
+	public synchronized boolean loadOrCreateFromGenome(String chr) {
+		if (hasChromosome(chr)) return true;
+		if (load(chr)) return true;
+		return createFromExons(chr);
 	}
 
 	/**
@@ -253,7 +307,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 
 		// Load sequence if we don't have them
 		String chr = variant.getChromosomeName();
-		if (!hasChromosome(chr) && !load(chr)) return -1; // Error: Cannot load chromosme sequences
+		if (!hasChromosome(chr) && !loadOrCreateFromGenome(chr)) return -1; // Error: Cannot load chromosme sequences
 
 		// Shift variant
 

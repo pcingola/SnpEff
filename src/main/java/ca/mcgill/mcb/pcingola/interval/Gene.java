@@ -445,6 +445,11 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	public boolean variantEffect(Variant variant, Variant variantRef, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
 
+		//---
+		// Shift variant towards the most 3-prime end
+		// This is done in order to comply with HGVS notation
+		//---
+
 		// Keep track of the original variants, just in case it is changed
 		Variant variantOri = variant;
 		Variant variantRefOri = variantRef;
@@ -453,15 +458,21 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		// end of the transcript? Note that VCF request variants to be aligned towards
 		// the 'leftmost' coordinate, so this re-alignment is only required for variants
 		// within transcripts on the positive strand.
+		//---
 		boolean shifted3prime = false;
 		if (variant.isInDel() && Config.get().isShiftHgvs() && isStrandPlus()) {
-			Gpr.debug("SHIFT USING HGVS");
 			// Get sequence information. Might have to load sequences from database
 			variant = variant.shiftLeft();
 			if (variantRef != null) variantRef = variantRef.shiftLeft();
-			shifted3prime = (variant != variantOri); // Created a new variant? => It was shifted towards the left (i.e. 3-prime)
+
+			// Created a new variant? => It was shifted towards the left (i.e. 3-prime)
+			shifted3prime = (variant != variantOri);
 			Gpr.debug("shifted3prime:" + shifted3prime);
 		}
+
+		//---
+		// Calculate effects
+		//---
 
 		// Find effect for each transcript
 		boolean hitTranscript = false;
@@ -479,7 +490,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			return true;
 		}
 
+		//---
 		// Do we need to add INFO_SHIFT_3_PRIME warning message?
+		//---
 		if (shifted3prime) {
 			for (VariantEffect ve : variantEffects) {
 				if (ve.getVariant() == variant) { // Is this effect using the shifted variant?

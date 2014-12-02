@@ -193,6 +193,10 @@ public class Markers implements Serializable, Collection<Marker> {
 		add(markers);
 	}
 
+	/**
+	 * Merge overlapping intervals
+	 * This is the same as 'union()' method, but the algorithm is more efficient
+	 */
 	public Markers merge() {
 		// Intervals sorted by start
 		Markers intsSorted = new Markers();
@@ -225,13 +229,14 @@ public class Markers implements Serializable, Collection<Marker> {
 			// Previous interval finished? => add it to list
 			if (i.start > end) {
 				if ((start >= 0) && (end >= 0)) {
-					if (end < start) {
-						Gpr.debug("WTF!?\tstart: " + start + "\tend:" + end);
+					if (end < start) { // Sanity check
+						Gpr.debug("This should never happen!\tstart: " + start + "\tend:" + end);
 						for (Marker m : this)
-							System.out.println("\t" + m);
+							System.err.println("\t" + m);
+					} else {
+						Marker im = new Marker(chromo, start, end, false, tag);
+						intsMerged.add(im);
 					}
-					Marker im = new Marker(chromo, start, end, false, tag);
-					intsMerged.add(im);
 				}
 				start = end = -1;
 				tag = "";
@@ -452,7 +457,9 @@ public class Markers implements Serializable, Collection<Marker> {
 	 */
 	public Markers union() {
 		Markers unionOfOverlaps = new Markers();
+
 		IntervalForest forest = new IntervalForest(this);
+		forest.build();
 
 		HashSet<Marker> done = new HashSet<Marker>();
 		for (Marker mi : this) {
