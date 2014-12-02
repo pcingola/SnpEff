@@ -266,6 +266,8 @@ public enum EffectType {
 			return "coding_sequence_variant";
 
 		case CHROMOSOME_LARGE_DELETION:
+			return "chromosome_number_variation";
+
 		case CHROMOSOME:
 			return "chromosome";
 

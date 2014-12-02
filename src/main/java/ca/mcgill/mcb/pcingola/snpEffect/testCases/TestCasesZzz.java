@@ -1,7 +1,13 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -13,7 +19,16 @@ public class TestCasesZzz extends TestCasesBase {
 
 	public TestCasesZzz() {
 		super();
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+
 		minExons = 2;
+
+		randSeed = 20141128;
+		initRand();
 	}
 
 	//	public void test_hgvs_walk_and_roll_2() {
@@ -103,23 +118,25 @@ public class TestCasesZzz extends TestCasesBase {
 	public void test_01() {
 		Gpr.debug("Test");
 
+		// Change exon's sequence
+		verbose = true;
+		prependSequenceToFirstExon("aaaccc");
 		if (verbose) Gpr.debug(transcript);
 
-		//		// Create variant
-		//		Variant variant = new Variant(chromosome, 881, "", "T", "");
-		//		if (verbose) Gpr.debug("Variant: " + variant);
-		//
-		//		// Analyze variant
-		//		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
-		//
-		//		// Calculate HGVS
-		//		VariantEffect eff = effs.get();
-		//		HgvsDna hgvsc = new HgvsDna(eff);
-		//		String hgvsDna = hgvsc.toString();
-		//
-		//		// Check result
-		//		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
-		//		Assert.assertEquals("c.1dupT", hgvsDna);
-	}
+		// Create variant
+		Variant variant = new Variant(chromosome, 751, "", "A", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
 
+		// Analyze variant
+		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+
+		// Calculate HGVS
+		VariantEffect eff = effs.get();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
+
+		// Check result
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		Assert.assertEquals("c.3dupA", hgvsDna);
+	}
 }

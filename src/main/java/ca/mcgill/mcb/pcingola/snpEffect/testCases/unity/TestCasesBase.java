@@ -78,7 +78,7 @@ public class TestCasesBase {
 		initRand();
 	}
 
-	void initRand() {
+	protected void initRand() {
 		rand = new Random(randSeed);
 	}
 
@@ -123,6 +123,9 @@ public class TestCasesBase {
 		transcript = gene.iterator().next();
 	}
 
+	/**
+	 * Prepend first's exons sequence with a given one 
+	 */
 	protected void prependSequenceToFirstExon(String prepend) {
 		Exon firstEx = transcript.sortedStrand().get(0);
 		String seq = firstEx.getSequence();

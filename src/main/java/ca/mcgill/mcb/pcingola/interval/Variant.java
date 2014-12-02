@@ -438,4 +438,10 @@ public class Variant extends Marker {
 		return getChromosomeName() + ":" + getStart() + "_" + getReference() + "/" + getAlt();
 	}
 
+	/**
+	 * Create a new variant shifting it towards the leftmost position
+	 */
+	public Variant shiftLeft() {
+		return this;
+	}
 }

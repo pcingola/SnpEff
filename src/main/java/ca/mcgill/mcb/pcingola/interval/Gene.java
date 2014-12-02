@@ -7,6 +7,8 @@ import java.util.Set;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.stats.ObservedOverExpectedCpG;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -112,9 +114,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 				if (t.isProteinCoding() //
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
-								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-								) //
-						) {
+						|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+						) //
+				) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -127,9 +129,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 				if (canonicalLen <= tlen //
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
-								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-								) //
-						) {
+						|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+						) //
+				) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -440,23 +442,31 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 * Get some details about the effect on this gene
 	 */
 	@Override
-	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
+	public boolean variantEffect(Variant variant, Variant variantRef, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
+
+		// Keep track of the original variants, just in case it is changed
+		Variant variantOri = variant;
+		Variant variantRefOri = variantRef;
 
 		// Do we need to 'walk and roll'? I.e. alignt the variant towards the most 3-prime
 		// end of the transcript? Note that VCF request variants to be aligned towards
 		// the 'leftmost' coordinate, so this re-alignment is only required for variants
 		// within transcripts on the positive strand.
+		boolean shifted3prime = false;
 		if (variant.isInDel() && Config.get().isShiftHgvs() && isStrandPlus()) {
+			Gpr.debug("SHIFT USING HGVS");
 			// Get sequence information. Might have to load sequences from database
-			// getGenome().getGenomicSequences().getSequence(this);
+			variant = variant.shiftLeft();
+			variantRef = variantRef.shiftLeft();
+			shifted3prime = (variant != variantOri); // Created a new variant? => It was shifted towards the left (i.e. 3-prime)
 		}
 
 		// Find effect for each transcript
 		boolean hitTranscript = false;
 		for (Transcript tr : this) {
 			// Apply sequence change to create new 'reference'?
-			if (variantrRef != null) tr = tr.apply(variantrRef);
+			if (variantRef != null) tr = tr.apply(variantRef);
 
 			// Calculate effects
 			hitTranscript |= tr.variantEffect(variant, variantEffects);
@@ -468,7 +478,15 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			return true;
 		}
 
+		// Add INFO_SHIFT_3_PRIME warning message
+		if (shifted3prime) {
+			for (VariantEffect ve : variantEffects) {
+				if (ve.getVariant() == variant) { // Is this effect using the shifted variant?
+					ve.addErrorWarningInfo(ErrorWarningType.INFO_REALIGN_3_PRIME); // Mark as shifted
+				}
+			}
+		}
+
 		return true;
 	}
-
 }

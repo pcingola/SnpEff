@@ -55,7 +55,7 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	}
 
 	public void addErrorWarning(ErrorWarningType errwarn) {
-		get().addErrorWarning(errwarn);
+		get().addErrorWarningInfo(errwarn);
 	}
 
 	/**
