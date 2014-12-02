@@ -104,27 +104,32 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		int canonicalLen = 0;
 
 		if (isProteinCoding()) {
-			// Find canonical transcript (longest CDS)
+			// Find canonical transcript in protein coding gene (longest CDS)
 			for (Transcript t : this) {
 				int tlen = t.cds().length();
 
 				// Compare coding length. If both lengths are equal, compare IDs
 				if (t.isProteinCoding() //
-						&& (canonicalLen <= tlen) //
-						&& (canonical == null || t.getId().compareTo(canonical.getId()) < 0) //
-				) {
+						&& ((canonical == null) // No canonical selected so far? => Select this one
+								|| (canonicalLen < tlen) // Longer? => Update
+								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+								) //
+						) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
 			}
 		} else {
-			// Find canonical transcript (longest mRNA)
+			// Find canonical transcript in non-protein coding gene (longest mRNA)
 			for (Transcript t : this) {
 				int tlen = t.mRna().length();
 
 				if (canonicalLen <= tlen //
-						&& (canonical == null || t.getId().compareTo(canonical.getId()) < 0) //
-				) {
+						&& ((canonical == null) // No canonical selected so far? => Select this one
+								|| (canonicalLen < tlen) // Longer? => Update
+								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+								) //
+						) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -438,12 +443,12 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
 
-		// Do we need to 'walk and roll'? I.e. alignt the variant towards the most 3-prime 
-		// end of the transcript? Note that VCF request variants to be aligned towards 
-		// the 'leftmost' coordinate, so this re-alignment is only required for variants 
+		// Do we need to 'walk and roll'? I.e. alignt the variant towards the most 3-prime
+		// end of the transcript? Note that VCF request variants to be aligned towards
+		// the 'leftmost' coordinate, so this re-alignment is only required for variants
 		// within transcripts on the positive strand.
 		if (variant.isInDel() && Config.get().isShiftHgvs() && isStrandPlus()) {
-			// Get sequence information. Might have to load sequences from database			
+			// Get sequence information. Might have to load sequences from database
 			// getGenome().getGenomicSequences().getSequence(this);
 		}
 

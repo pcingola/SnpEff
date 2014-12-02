@@ -16,32 +16,32 @@ public class TestCasesIntegrationSnpEff extends IntegrationTest {
 	//	public void test_01() {
 	//		Gpr.debug("Test");
 	//		String expectedOutputFile = "tests/test.chr1.1line.out.classic.vcf";
-	//		String args[] = { "eff", "-classic", "-noStats", "-noLog", "testHg3763Chr1", "tests/test.chr1.1line.vcf" };
+	//		String args[] = { "eff", "-classic", "-noStats", "-noLog", "-noLof", "testHg3763Chr1", "tests/test.chr1.1line.vcf" };
 	//		command(new SnpEff(args), expectedOutputFile);
 	//	}
-
+	//
 	//	@Test
 	//	public void test_01_multi_thread() {
 	//		Gpr.debug("Test");
 	//		String expectedOutputFile = "tests/test.chr1.1line.out.classic.vcf";
-	//		String args[] = { "eff", "-t", "-classic", "-noStats", "-noLog", "testHg3763Chr1", "tests/test.chr1.1line.vcf" };
+	//		String args[] = { "eff", "-t", "-classic", "-noStats", "-noLog", "-noLof", "testHg3763Chr1", "tests/test.chr1.1line.vcf" };
+	//		command(new SnpEff(args), expectedOutputFile);
+	//	}
+	//
+	//	@Test
+	//	public void test_03() {
+	//		Gpr.debug("Test");
+	//		String expectedOutputFile = "tests/test.chr1.eff.vcf.gz";
+	//		String args[] = { "eff", "-classic", "-noStats", "-noLog", "-noLof", "testHg3763Chr1", "tests/test.chr1.vcf.gz" };
 	//		command(new SnpEff(args), expectedOutputFile);
 	//	}
 
 	@Test
-	public void test_03() {
+	public void test_03_multi_thread() {
 		Gpr.debug("Test");
-		String expectedOutputFile = "tests/test.chr1.eff.vcf";
-		String args[] = { "eff", "-v", "-classic", "-noStats", "-noLog", "testHg3763Chr1", "tests/test.chr1.vcf.gz" };
+		String expectedOutputFile = "tests/test.chr1.eff.vcf.gz";
+		String args[] = { "eff", "-v", "-t", "-classic", "-noStats", "-noLog", "testHg3763Chr1", "tests/test.chr1.vcf.gz" };
 		command(new SnpEff(args), expectedOutputFile);
 	}
-
-	//	@Test
-	//	public void test_03_multi_thread() {
-	//		Gpr.debug("Test");
-	//		String expectedOutputFile = "tests/test.chr1.eff.vcf";
-	//		String args[] = { "eff", "-v", "-t", "-classic", "-noStats", "-noLog", "testHg3763Chr1", "tests/test.chr1.vcf.gz" };
-	//		command(new SnpEff(args), expectedOutputFile);
-	//	}
 
 }

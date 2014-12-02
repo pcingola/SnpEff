@@ -15,7 +15,6 @@ import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
@@ -163,20 +162,12 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	@Override
 	public int compareTo(VariantEffect varEffOther) {
-		boolean debug = false;
-		if (variant.getStart() == 881511) {
-			Gpr.debug("DEBUG:\n\t" + this + "\n\t" + varEffOther);
-			debug = true;
-		}
-
 		// Sort by impact
 		int comp = getEffectImpact().compareTo(varEffOther.getEffectImpact());
-		if (debug) System.err.println("\tcompare impact: " + comp + "\t" + getEffectImpact() + "\t" + varEffOther.getEffectImpact());
 		if (comp != 0) return comp;
 
 		// Sort by effect
 		comp = getEffectType().compareTo(varEffOther.getEffectType());
-		if (debug) System.err.println("\tcompare effect: " + comp + "\t" + getEffectType() + "\t" + varEffOther.getEffectType());
 		if (comp != 0) return comp;
 
 		// TODO: Add sort by TSL (transcript level support) if available
@@ -187,17 +178,14 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		if (trThis != null && trOther != null) {
 			comp = (trOther.isCanonical() ? 1 : 0) - (trThis.isCanonical() ? 1 : 0);
 		}
-		if (debug) System.err.println("\tcompare canonical: " + comp + "\t" + trThis.getId() + ": " + trThis.isCanonical() + "\t" + trOther.getId() + ": " + trOther.isCanonical());
 		if (comp != 0) return comp;
 
 		// Sort by genomic coordinate of affected 'marker'
 		if ((trThis != null) && (trOther != null)) comp = trThis.compareToPos(trOther);
-		if (debug) System.err.println("\tcompare pos: " + comp + "\t" + trThis.toStr() + "\t" + trOther.toStr());
 		if (comp != 0) return comp;
 
 		// Compare IDs
 		if ((trThis != null) && (trOther != null)) comp = trThis.getId().compareTo(trOther.getId());
-		if (debug) System.err.println("\tcompare pos: " + comp + "\t" + trThis.getId() + "\t" + trOther.getId());
 		if (comp != 0) return comp;
 
 		// Compare by marker
@@ -539,7 +527,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
+				;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -590,13 +578,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
-		;
+				;
 	}
 
 	public boolean isSpliceSiteCore() {
 		return hasEffectType(EffectType.SPLICE_SITE_DONOR) //
 				|| hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
-		;
+				;
 	}
 
 	public boolean isSpliceSiteRegion() {
@@ -755,7 +743,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-		;
+				;
 	}
 
 	/**
