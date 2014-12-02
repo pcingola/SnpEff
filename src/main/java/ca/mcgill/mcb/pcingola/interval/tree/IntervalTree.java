@@ -56,6 +56,15 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 	}
 
 	/**
+	 * Add all intervals to interval tree's list
+	 * Will not rebuild the tree until the next query or call to build
+	 */
+	public void add(Markers markers) {
+		intervals.add(markers);
+		inSync = false;
+	}
+
+	/**
 	 * Build the interval tree to reflect the list of intervals,
 	 * Will not run if this is currently in sync
 	 *

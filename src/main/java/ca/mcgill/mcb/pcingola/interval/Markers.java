@@ -467,7 +467,8 @@ public class Markers implements Serializable, Collection<Marker> {
 				Markers query = forest.query(mi);
 
 				// Get union
-				Marker union = new Marker(mi.getParent(), mi.getStart(), mi.getEnd(), mi.isStrandMinus(), "");
+				// Marker union = new Marker(mi.getParent(), mi.getStart(), mi.getEnd(), mi.isStrandMinus(), "");
+				Marker union = mi.clone();
 				done.add(mi);
 				for (Marker m : query) {
 					if ((union != null) && (union.getStart() > m.getStart()) || (union.getEnd() < m.getEnd())) union = union.union(m);

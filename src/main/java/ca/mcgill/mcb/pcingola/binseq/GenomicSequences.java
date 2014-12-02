@@ -35,14 +35,38 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 
 	public static final int MAX_ITERATIONS = 1000000;
 
-	boolean debug = false;
-	boolean verbose = false;
+	public static boolean debug = false;
+	public static boolean verbose = false;
+
+	boolean disableLoad = false; // Do not load sequences from disk. Used minly for test cases
 	Genome genome; // Reference genome
 	IntervalForest intervalForest; // This is an interval forest of 'MarkerSeq' (genomic markers that have sequences)
 
 	public GenomicSequences(Genome genome) {
 		this.genome = genome;
 		intervalForest = new IntervalForest();
+	}
+
+	/**
+	 * Add sequences from genome's exons
+	 */
+	boolean addExonSequences(String chr) {
+		if (verbose) Timer.show("Creating sequences from exon information '" + chr + "'");
+		IntervalTree tree = intervalForest.getOrCreateTree(chr);
+
+		// Add all exon sequences. Collapse them if possible
+		Markers exonMarkers = exonMarkers(chr);
+		if (debug) Gpr.debug("Before union: " + exonMarkers.size());
+		exonMarkers = exonMarkers.union();
+		if (debug) Gpr.debug("After union: " + exonMarkers.size());
+		tree.add(exonMarkers);
+
+		// Build tree
+		if (verbose) Timer.show("Building sequence tree for chromosome '" + chr + "'");
+		tree.build();
+		if (verbose) Timer.show("Done. Loaded " + tree.getIntervals().size() + " sequences.");
+
+		return !tree.isEmpty();
 	}
 
 	/**
@@ -86,27 +110,6 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	}
 
 	/**
-	 * Create sequences from exons
-	 */
-	boolean createFromExons(String chr) {
-		if (verbose) Timer.show("Creating sequences from exon information '" + chr + "'");
-		IntervalTree tree = intervalForest.getOrCreateTree(chr);
-
-		// Add all exon sequences. Collapse them if possible
-		Markers exonMarkers = exonMarkers(chr);
-		if (debug) Gpr.debug("Before union: " + exonMarkers.size());
-		exonMarkers.union();
-		if (debug) Gpr.debug("After union: " + exonMarkers.size());
-
-		// Build tree
-		if (verbose) Timer.show("Building sequence tree for chromosome '" + chr + "'");
-		tree.build();
-		if (verbose) Timer.show("Done. Loaded " + tree.getIntervals().size() + " sequences.");
-
-		return !tree.isEmpty();
-	}
-
-	/**
 	 * List of all exons
 	 */
 	Markers exonMarkers(String chr) {
@@ -114,12 +117,23 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 
 		// Add exons sequences
 		for (Gene g : genome.getGenes()) {
-			if (genome.getChromosomeName().equals(chr)) {
+			if (g.getChromosomeName().equals(chr)) {
 				for (Transcript tr : g)
 					for (Exon ex : tr) {
-						// Only add exons that have full sequences
 						String seq = ex.getSequence();
-						if (seq != null && seq.length() >= ex.size()) markers.add(ex);
+
+						// Only add exons that have full sequences
+						if (seq != null && seq.length() >= ex.size()) {
+
+							if (ex.isStrandPlus()) {
+								markers.add(ex);
+							} else {
+								// We must reverse complement the sequence, since it's on the other strand
+								Exon exRwc = (Exon) ex.clone();
+								exRwc.setSequence(GprSeq.reverseWc(ex.getSequence()));
+								markers.add(exRwc);
+							}
+						}
 					}
 			}
 		}
@@ -235,6 +249,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	public synchronized boolean load(String chr) {
 		// Already loaded?
 		if (hasChromosome(chr)) return true;
+		if (disableLoad) return false; // Loading form database disabled?
 
 		// File does not exists?  Cannot load...
 		String fileName = Config.get().getFileNameSequence(chr);
@@ -260,7 +275,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	public synchronized boolean loadOrCreateFromGenome(String chr) {
 		if (hasChromosome(chr)) return true;
 		if (load(chr)) return true;
-		return createFromExons(chr);
+		return addExonSequences(chr);
 	}
 
 	/**
@@ -293,8 +308,12 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		tree.getIntervals().save(fileName);
 	}
 
+	public void setDisableLoad(boolean disableLoad) {
+		this.disableLoad = disableLoad;
+	}
+
 	public void setVerbose(boolean verbose) {
-		this.verbose = verbose;
+		GenomicSequences.verbose = verbose;
 	}
 
 	/**

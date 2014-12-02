@@ -30,7 +30,7 @@ public class TestCasesGenomicSequences {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String genome = "zzz";
+		String genome = "testHg3775Chr1";
 
 		// Create SnpEff
 		String args[] = { genome };
@@ -57,7 +57,45 @@ public class TestCasesGenomicSequences {
 				}
 			}
 		}
+	}
 
+	/**
+	 * Check that we can recover sequences from all exons using GenomicSequences
+	 * class, WITHOUT loading sequence form databases
+	 */
+	@Test
+	public void test_02() {
+		Gpr.debug("Test");
+		String genome = "testHg3775Chr22";
+
+		// Create SnpEff
+		String args[] = { genome };
+		SnpEffCmdEff snpeff = new SnpEffCmdEff();
+		snpeff.parseArgs(args);
+		snpeff.setDebug(debug);
+		snpeff.setVerbose(verbose);
+		snpeff.setSupressOutput(!verbose);
+
+		// Load genome
+		snpeff.load();
+
+		// Disable loading
+		GenomicSequences genomicSequences = snpeff.getConfig().getGenome().getGenomicSequences();
+		genomicSequences.setDisableLoad(true);
+
+		for (Gene g : snpeff.getConfig().getGenome().getGenes()) {
+			for (Transcript tr : g) {
+				for (Exon ex : tr) {
+
+					String seq = genomicSequences.getSequence(ex);
+					if (verbose) System.out.println(g.getGeneName() + "\t" + tr.getId() + "\t" + ex.getId() + "\n\t" + ex.getSequence() + "\n\t" + seq);
+
+					// Sanity checks
+					Assert.assertNotNull(seq == null);
+					Assert.assertEquals(seq, ex.getSequence());
+				}
+			}
+		}
 	}
 
 }

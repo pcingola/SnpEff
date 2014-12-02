@@ -291,8 +291,10 @@ public class MarkerSeq extends Marker {
 	 * Union of two markers
 	 * @return A new marker which is the union of the two
 	 */
-	public MarkerSeq union(MarkerSeq m) {
+	@Override
+	public Marker union(Marker m) {
 		if (!getChromosomeName().equals(m.getChromosomeName())) return null;
+		MarkerSeq ms = (MarkerSeq) m;
 
 		int ustart = Math.min(start, m.getStart());
 		int uend = Math.max(end, m.getEnd());
@@ -302,25 +304,25 @@ public class MarkerSeq extends Marker {
 		if (includes(m)) {
 			seq = getSequence();
 		} else if (m.includes(this)) {
-			seq = m.getSequence();
+			seq = ms.getSequence();
 		} else if (intersects(m)) {
 			// This interval is first
 			if (start < m.start) {
-				int overlap = end - m.start;
-				seq = getSequence() + m.getSequence().substring(overlap);
+				int overlap = end - m.start + 1;
+				seq = getSequence() + ms.getSequence().substring(overlap);
 			} else {
-				int overlap = m.end - start;
-				seq = m.getSequence() + getSequence().substring(overlap);
+				int overlap = m.end - start + 1;
+				seq = ms.getSequence() + getSequence().substring(overlap);
 			}
 		}
 
 		// Create new marker using new coordinates
-		MarkerSeq ms = (MarkerSeq) this.clone();
-		ms.start = ustart;
-		ms.end = uend;
-		if (seq != null) ms.setSequence(seq);
+		MarkerSeq msNew = (MarkerSeq) this.clone();
+		msNew.start = ustart;
+		msNew.end = uend;
+		if (seq != null) msNew.setSequence(seq);
 
-		return ms;
+		return msNew;
 	}
 
 }
