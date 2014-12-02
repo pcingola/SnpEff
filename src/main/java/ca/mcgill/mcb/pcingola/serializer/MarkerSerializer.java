@@ -6,7 +6,6 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.zip.GZIPOutputStream;
 
-import net.sf.samtools.util.RuntimeEOFException;
 import ca.mcgill.mcb.pcingola.fileIterator.LineFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -134,8 +133,8 @@ public class MarkerSerializer {
 					String versionNumber = fields[1];
 
 					// Check for compatibility
-					if (!soft.equals(SnpEff.SOFTWARE_NAME)) throw new RuntimeEOFException("Database file '" + fileName + "' is not compatible with this program version. Try installing the appropriate database.");
-					if (!versionNumber.equals(SnpEff.VERSION_MAJOR)) throw new RuntimeEOFException("Database file '" + fileName + "' is not compatible with this program version:"//
+					if (!soft.equals(SnpEff.SOFTWARE_NAME)) throw new RuntimeException("Database file '" + fileName + "' is not compatible with this program version. Try installing the appropriate database.");
+					if (!versionNumber.equals(SnpEff.VERSION_MAJOR)) throw new RuntimeException("Database file '" + fileName + "' is not compatible with this program version:"//
 							+ "\n\tDatabase version : '" + versionNumber + "'"//
 							+ "\n\tProgram version  : '" + SnpEff.VERSION_MAJOR + "'" //
 							+ "\nTry installing the appropriate database." //
