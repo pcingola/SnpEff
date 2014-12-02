@@ -24,6 +24,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesInsEtc;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesInsVep;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationSnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationSnpEffMultiThread;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationSnpEffMultiThread2;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesLof;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesMissenseSilentRatio;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesMixedVariants;
@@ -84,7 +85,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVcf;
 		TestCasesVariant.class, //
 		TestCasesVcf.class, //
 		TestCasesIntegrationSnpEff.class, //
-		TestCasesIntegrationSnpEffMultiThread.class //
+		TestCasesIntegrationSnpEffMultiThread.class, //
+		TestCasesIntegrationSnpEffMultiThread2.class //
 })
 public class TestSuiteIntegration {
 }
