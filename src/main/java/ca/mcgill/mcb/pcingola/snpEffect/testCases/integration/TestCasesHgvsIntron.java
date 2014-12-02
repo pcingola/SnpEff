@@ -19,12 +19,10 @@ public class TestCasesHgvsIntron extends TestCasesHgvsBase {
 	@Test
 	public void test_01_intron() {
 		Gpr.debug("Test");
-		int N = 250;
+		int N = 1000;
 
 		int testIter = -1;
 		int testPos = -1;
-
-		if (skipLong) throw new RuntimeException("Test skipped!");
 
 		// Test N times
 		//	- Create a random gene transcript, exons

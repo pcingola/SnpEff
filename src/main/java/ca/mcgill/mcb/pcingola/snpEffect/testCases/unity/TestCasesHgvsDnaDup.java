@@ -180,4 +180,56 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		Assert.assertEquals("c.6_8dupGTG", hgvsDna);
 	}
 
+	/**
+	 * Duplication with variant shifted towards 3-prime
+	 */
+	@Test
+	public void test_07() {
+		Gpr.debug("Test");
+
+		if (verbose) Gpr.debug(transcript);
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 882, "", "A", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
+
+		// Analyze variant
+		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+
+		// Calculate HGVS
+		VariantEffect eff = effs.get();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
+
+		// Check result
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		Assert.assertEquals("c.3dupA", hgvsDna);
+	}
+
+	/**
+	 * Duplication with variant shifted towards 3-prime
+	 */
+	@Test
+	public void test_08() {
+		Gpr.debug("Test");
+
+		if (verbose) Gpr.debug(transcript);
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 884, "", "C", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
+
+		// Analyze variant
+		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+
+		// Calculate HGVS
+		VariantEffect eff = effs.get();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
+
+		// Check result
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		Assert.assertEquals("c.7dupC", hgvsDna);
+	}
+
 }

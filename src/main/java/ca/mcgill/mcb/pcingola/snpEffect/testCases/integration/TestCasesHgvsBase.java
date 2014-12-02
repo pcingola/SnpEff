@@ -26,7 +26,6 @@ public class TestCasesHgvsBase {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
-	boolean skipLong = false;
 
 	Random rand;
 	Config config;
