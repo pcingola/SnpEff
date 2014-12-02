@@ -164,7 +164,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	@Override
 	public int compareTo(VariantEffect varEffOther) {
 		boolean debug = false;
-		if (variant.getStart() == 7911025) {
+		if (variant.getStart() == 881511) {
 			Gpr.debug("DEBUG:\n\t" + this + "\n\t" + varEffOther);
 			debug = true;
 		}
