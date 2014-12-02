@@ -35,7 +35,6 @@ public class TestCasesVariantShift extends TestCasesBase {
 		Gpr.debug("Test");
 
 		// Change exon's sequence
-		verbose = true;
 		if (verbose) Gpr.debug(transcript);
 
 		// Create variant
@@ -62,7 +61,6 @@ public class TestCasesVariantShift extends TestCasesBase {
 		Gpr.debug("Test");
 
 		// Change exon's sequence
-		verbose = true;
 		if (verbose) Gpr.debug(transcript);
 
 		// Create variant
@@ -86,7 +84,6 @@ public class TestCasesVariantShift extends TestCasesBase {
 		Gpr.debug("Test");
 
 		// Change exon's sequence
-		verbose = true;
 		if (verbose) Gpr.debug(transcript);
 
 		// Create variant
@@ -103,6 +100,30 @@ public class TestCasesVariantShift extends TestCasesBase {
 		Assert.assertEquals(1030, variantShifted.getStart());
 		Assert.assertEquals("", variantShifted.getReference());
 		Assert.assertEquals("G", variantShifted.getAlt());
+	}
+
+	/**
+	 * Shift by one position in an intron
+	 */
+	@Test
+	public void test_04_Intron() {
+		Gpr.debug("Test");
+
+		// Change exon's sequence
+		if (verbose) Gpr.debug(transcript);
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 920, "", "C", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
+
+		// Shift variant
+		if (verbose) Gpr.debug("Variant (before): " + variant);
+		Variant variantShifted = variant.shiftLeft();
+		if (verbose) Gpr.debug("Variant (after): " + variantShifted);
+
+		// Check that shifted variant is oK
+		Assert.assertFalse(variant == variantShifted);
+		Assert.assertEquals(925, variantShifted.getStart());
 	}
 
 }

@@ -268,7 +268,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 			int end = newStart + (len - 1);
 			Marker m = new Marker(variant.getChromosome(), newStart, end, false, "");
 			seq = getSequence(m);
-			Gpr.debug("SHIFT:\talt='" + alt + "'\tseq='" + seq + "'\tstart:" + start + "\tnewStart: " + newStart);
+			// Gpr.debug("SHIFT:\talt='" + alt + "'\tseq='" + seq + "'\tstart:" + start + "\tnewStart: " + newStart);
 			if (seq == null || !seq.equalsIgnoreCase(alt)) break;
 		}
 
