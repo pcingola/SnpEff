@@ -33,12 +33,14 @@ public class TestCasesHgvsDnaDupNegative extends TestCasesBase {
 		Gpr.debug("Test");
 
 		verbose = true;
-		Exon exFirst = transcript.sorted().get(0);
-		String exFirstSeq = exFirst.isStrandPlus() ? exFirst.getSequence() : GprSeq.reverseWc(exFirst.getSequence());
-		if (verbose) Gpr.debug(transcript + "\n\tSequence: " + exFirstSeq);
+		if (verbose) {
+			Exon exFirst = transcript.sorted().get(0);
+			String exFirstSeq = exFirst.isStrandPlus() ? exFirst.getSequence() : GprSeq.reverseWc(exFirst.getSequence());
+			Gpr.debug(transcript + "\n\tSequence: " + exFirstSeq);
+		}
 
 		// Create variant
-		Variant variant = new Variant(chromosome, 881, "", "T", "");
+		Variant variant = new Variant(chromosome, 1001, "", "C", "");
 		if (verbose) Gpr.debug("Variant: " + variant);
 
 		// Analyze variant
@@ -51,7 +53,7 @@ public class TestCasesHgvsDnaDupNegative extends TestCasesBase {
 
 		// Check result
 		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
-		Assert.assertEquals("c.1dupT", hgvsDna);
+		Assert.assertEquals("c.1dupG", hgvsDna);
 	}
 
 	//	@Test
