@@ -26,6 +26,7 @@ public class TestCasesHgvsDnaDupNegative extends TestCasesBase {
 		super.init();
 		onlyMinusStrand = true;
 		onlyPlusStrand = false;
+		shiftHgvs = true;
 	}
 
 	@Test

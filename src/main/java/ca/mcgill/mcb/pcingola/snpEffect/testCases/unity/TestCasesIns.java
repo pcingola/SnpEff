@@ -149,7 +149,7 @@ public class TestCasesIns extends TestCasesBase {
 						}
 
 						// Check effect
-						Assert.assertTrue(ok);
+						Assert.assertTrue("Could not find effect '" + effectExpected + "' and AA '" + aaExpected + "'", ok);
 					}
 				}
 			}

@@ -20,6 +20,12 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		super();
 	}
 
+	@Override
+	protected void init() {
+		super.init();
+		shiftHgvs = true;
+	}
+
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");

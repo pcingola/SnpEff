@@ -31,6 +31,8 @@ public class TestCasesBase {
 	protected boolean addUtrs;
 	protected boolean onlyPlusStrand;
 	protected boolean onlyMinusStrand;
+	protected boolean shiftHgvs; // Do or do not shift variants according to HGVS notation (for test cases that were created before the feature was implemented)
+
 	protected int maxGeneLen;
 	protected int maxTranscripts;
 	protected int maxExons;
@@ -76,6 +78,7 @@ public class TestCasesBase {
 		maxTranscripts = 1;
 		maxExons = 5;
 		minExons = 1;
+		shiftHgvs = false;
 
 		initRand();
 	}
@@ -105,19 +108,20 @@ public class TestCasesBase {
 
 		// Update config
 		config.setSnpEffectPredictor(snpEffectPredictor);
-		config.getSnpEffectPredictor().setSpliceRegionExonSize(0);
-		config.getSnpEffectPredictor().setSpliceRegionIntronMin(0);
-		config.getSnpEffectPredictor().setSpliceRegionIntronMax(0);
+		config.setShiftHgvs(shiftHgvs);
+
+		// Set predictor parameters
+		snpEffectPredictor.setSpliceRegionExonSize(0);
+		snpEffectPredictor.setSpliceRegionIntronMin(0);
+		snpEffectPredictor.setSpliceRegionIntronMax(0);
+		snpEffectPredictor.setUpDownStreamLength(0);
 
 		// Chromosome sequence
 		chromoSequence = sepf.getChromoSequence();
 		chromoBases = chromoSequence.toCharArray();
 
-		// No upstream or downstream
-		config.getSnpEffectPredictor().setUpDownStreamLength(0);
-
 		// Build forest
-		config.getSnpEffectPredictor().buildForest();
+		snpEffectPredictor.buildForest();
 
 		chromosome = sepf.getChromo();
 		genome = config.getGenome();
