@@ -171,8 +171,13 @@ public class HgvsDna extends Hgvs {
 
 		case DEL:
 		case MIXED:
-			posStart = variantPosStart;
-			posEnd = posStart + variant.size() - 1;
+			if (strandPlus) {
+				posStart = variant.getStart();
+				posEnd = variant.getEnd();
+			} else {
+				posStart = variant.getEnd();
+				posEnd = variant.getStart();
+			}
 			break;
 
 		case INTERVAL:
