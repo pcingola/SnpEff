@@ -30,6 +30,7 @@ public class TestCasesBase {
 	protected String genomeName;
 	protected boolean addUtrs;
 	protected boolean onlyPlusStrand;
+	protected boolean onlyMinusStrand;
 	protected int maxGeneLen;
 	protected int maxTranscripts;
 	protected int maxExons;
@@ -70,6 +71,7 @@ public class TestCasesBase {
 		genomeName = "testCase";
 		addUtrs = false;
 		onlyPlusStrand = true;
+		onlyMinusStrand = false;
 		maxGeneLen = 1000;
 		maxTranscripts = 1;
 		maxExons = 5;
@@ -93,7 +95,8 @@ public class TestCasesBase {
 
 		// Initialize factory
 		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
-		sepf.setForcePositive(onlyPlusStrand); // WARNING: We only use positive strand here (the purpose is to check HGSV notation, not to check annotations)
+		sepf.setForcePositiveStrand(onlyPlusStrand);
+		sepf.setForceNegativeStrand(onlyMinusStrand);
 		sepf.setAddUtrs(addUtrs);
 		sepf.setMinExons(minExons);
 
@@ -127,7 +130,7 @@ public class TestCasesBase {
 	}
 
 	/**
-	 * Prepend first's exons sequence with a given one 
+	 * Prepend first's exons sequence with a given one
 	 */
 	protected void prependSequenceToFirstExon(String prepend) {
 		Exon firstEx = transcript.sortedStrand().get(0);

@@ -22,6 +22,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFisherExactTest
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesGenePvalueList;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesGenotypeVector;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDup;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDupNegative;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsProtDup;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHypergeometric;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIns;
@@ -63,6 +64,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVariantShift;
 		TestCasesGenePvalueList.class, //
 		TestCasesGenotypeVector.class, //
 		TestCasesHgvsDnaDup.class, //
+		TestCasesHgvsDnaDupNegative.class, //
 		TestCasesHgvsProtDup.class, //
 		TestCasesHypergeometric.class, //
 		TestCasesIntervals.class, //

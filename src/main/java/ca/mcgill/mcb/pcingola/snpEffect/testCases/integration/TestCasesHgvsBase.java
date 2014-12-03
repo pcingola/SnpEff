@@ -79,7 +79,7 @@ public class TestCasesHgvsBase {
 		int maxTranscripts = 1;
 		int maxExons = 5;
 		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
-		sepf.setForcePositive(onlyPlusStrand); // WARNING: We only use positive strand here (the purpose is to check HGSV notation, not to check annotations)
+		sepf.setForcePositiveStrand(onlyPlusStrand); // WARNING: We only use positive strand here (the purpose is to check HGSV notation, not to check annotations)
 		sepf.setAddUtrs(addUtrs);
 
 		// Create predictor
