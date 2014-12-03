@@ -133,6 +133,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	@Test
 	public void test_05() {
 		Gpr.debug("Test");
+
 		String prepend = "ACTTTGTGCC";
 
 		prependSequenceToFirstExon(prepend);

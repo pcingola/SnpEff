@@ -106,7 +106,7 @@ public class HgvsDna extends Hgvs {
 			Marker m = new Marker(variant.getParent(), sstart, send, false, "");
 			if (debug) Gpr.debug("variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (strandPlus ? "+" : "-"));
 			seq = ex.getSequence(m);
-			if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'");
+			if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'\tsequence (+ strand): " + (ex.isStrandPlus() ? ex.getSequence() : GprSeq.reverseWc(ex.getSequence())));
 		}
 
 		// Compare to ALT sequence
@@ -165,7 +165,8 @@ public class HgvsDna extends Hgvs {
 		case INS:
 			if (duplication) {
 				// Duplication coordinates
-				if (variant.getAlt().length() == 1) {
+				int lenAlt = variant.getAlt().length();
+				if (lenAlt == 1) {
 					// One base duplications do not require end positions:
 					// Reference: http://www.hgvs.org/mutnomen/disc.html#dupins
 					// Example: c.7dupT (or c.7dup) denotes the duplication (insertion) of a T at position 7 in the sequence ACTTACTGCC to ACTTACTTGCC
@@ -173,12 +174,12 @@ public class HgvsDna extends Hgvs {
 					posEnd = posStart;
 				} else {
 					// Duplication coordinates
-					int len = variant.getAlt().length();
 					if (strandPlus) {
 						posEnd = posStart - 1;
-						posStart -= -len;
+						posStart -= lenAlt;
 					} else {
-						posEnd = posStart + len - 1; // Start position does not change
+						//						posStart--;
+						posEnd = posStart + lenAlt - 1;
 					}
 				}
 			} else {
