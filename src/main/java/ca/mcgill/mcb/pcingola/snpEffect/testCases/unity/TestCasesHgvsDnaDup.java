@@ -239,100 +239,94 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		Assert.assertEquals("c.7dupC", hgvsDna);
 	}
 
-	//	/**
-	//	 * Dup in intron 
-	//	 */
-	//	@Test
-	//	public void test_09() {
-	//		Gpr.debug("Test");
-	//
-	//		// We need at least 2 exons for this test case
-	//		minExons = 2;
-	//		initSnpEffPredictor();
-	//
-	//		verbose = true;
-	//		HgvsDna.debug = true;
-	//		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
-	//
-	//		// Create variant
-	//		Variant variant = new Variant(chromosome, 485, "", "TA", "");
-	//		if (verbose) Gpr.debug("Variant: " + variant);
-	//
-	//		// Analyze variant
-	//		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
-	//
-	//		// Calculate HGVS
-	//		VariantEffect eff = effs.get();
-	//		HgvsDna hgvsc = new HgvsDna(eff);
-	//		String hgvsDna = hgvsc.toString();
-	//
-	//		// Check result
-	//		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
-	//		Assert.assertEquals("c.49+3_49+4dupTA", hgvsDna);
-	//	}
-	//
-	//	/**
-	//	 * Dup in exon-intron boundary 
-	//	 */
-	//	@Test
-	//	public void test_10() {
-	//		Gpr.debug("Test");
-	//
-	//		// We need at least 2 exons for this test case
-	//		minExons = 2;
-	//		initSnpEffPredictor();
-	//
-	//		verbose = true;
-	//		HgvsDna.debug = true;
-	//		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
-	//
-	//		// Create variant
-	//		Variant variant = new Variant(chromosome, 483, "", "TATA", "");
-	//		if (verbose) Gpr.debug("Variant: " + variant);
-	//
-	//		// Analyze variant
-	//		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
-	//
-	//		// Calculate HGVS
-	//		VariantEffect eff = effs.get();
-	//		HgvsDna hgvsc = new HgvsDna(eff);
-	//		String hgvsDna = hgvsc.toString();
-	//
-	//		// Check result
-	//		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
-	//		Assert.assertEquals("c.????", hgvsDna);
-	//	}
-	//
-	//	/**
-	//	 * Dup in intron-exon boundary 
-	//	 */
-	//	@Test
-	//	public void test_11() {
-	//		Gpr.debug("Test");
-	//
-	//		// We need at least 2 exons for this test case
-	//		minExons = 2;
-	//		initSnpEffPredictor();
-	//
-	//		verbose = true;
-	//		HgvsDna.debug = true;
-	//		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
-	//
-	//		// Create variant
-	//		Variant variant = new Variant(chromosome, 739, "", "AAAGT", "");
-	//		if (verbose) Gpr.debug("Variant: " + variant);
-	//
-	//		// Analyze variant
-	//		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
-	//
-	//		// Calculate HGVS
-	//		VariantEffect eff = effs.get();
-	//		HgvsDna hgvsc = new HgvsDna(eff);
-	//		String hgvsDna = hgvsc.toString();
-	//
-	//		// Check result
-	//		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
-	//		Assert.assertEquals("c.?????", hgvsDna);
-	//	}
+	/**
+	 * Dup in intron
+	 */
+	@Test
+	public void test_09() {
+		Gpr.debug("Test");
+
+		// We need at least 2 exons for this test case
+		minExons = 2;
+		initSnpEffPredictor();
+
+		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 485, "", "TA", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
+
+		// Analyze variant
+		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+
+		// Calculate HGVS
+		VariantEffect eff = effs.get();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
+
+		// Check result
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		Assert.assertEquals("c.49+3_49+4dupTA", hgvsDna);
+	}
+
+	/**
+	 * Dup in exon-intron boundary
+	 */
+	@Test
+	public void test_10() {
+		Gpr.debug("Test");
+
+		// We need at least 2 exons for this test case
+		minExons = 2;
+		initSnpEffPredictor();
+
+		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 483, "", "TATA", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
+
+		// Analyze variant
+		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+
+		// Calculate HGVS
+		VariantEffect eff = effs.get();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
+
+		// Check result
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		Assert.assertEquals("c.48_49+2dupTATA", hgvsDna);
+	}
+
+	/**
+	 * Dup in intron-exon boundary
+	 */
+	@Test
+	public void test_11() {
+		Gpr.debug("Test");
+
+		// We need at least 2 exons for this test case
+		minExons = 2;
+		initSnpEffPredictor();
+
+		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 739, "", "AAAG", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
+
+		// Analyze variant
+		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+
+		// Calculate HGVS
+		VariantEffect eff = effs.get();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
+
+		// Check result
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		Assert.assertEquals("c.50-2_51dupAAAG", hgvsDna);
+	}
 
 }

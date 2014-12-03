@@ -105,4 +105,8 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 		Assert.assertEquals("p.His7_Gln8dup", hgvsProt);
 	}
 
+	@Test
+	public void test_03() {
+		throw new RuntimeException("TODO: Add same 2 tests on negative strand!");
+	}
 }

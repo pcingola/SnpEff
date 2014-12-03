@@ -194,17 +194,24 @@ public class HgvsDna extends Hgvs {
 		if (tr == null) return null;
 
 		// Are we in an exon?
-		if (tr.findExon(pos) != null) return posExon(pos);
-		return posIntron(pos);
+		// Note: This may come from an intron-exon boundary variant (intron side, walked in a duplication).
+		//       In that case, the exon marker won't be available from 'variantEffect.marker'.
+		Exon ex = tr.findExon(pos);
+		if (ex != null) return posExon(pos, ex);
+
+		Intron intron = tr.findIntron(pos);
+		if (intron != null) return posIntron(pos, intron);
+
+		// Sanity check
+		throw new RuntimeException("HGVS (DNA): Neither exon nor intron found. This should never happen!");
 	}
 
 	/**
 	 * Convert genomic position to HGVS compatible (DNA) position
 	 */
-	protected String posExon(int pos) {
+	protected String posExon(int pos, Exon ex) {
 
 		// Initialize
-		Exon ex = variantEffect.getExon();
 		String idxPrepend = "";
 		int idx = -1;
 
@@ -227,6 +234,7 @@ public class HgvsDna extends Hgvs {
 			// Coding Exon: just use CDS position
 			idx = tr.baseNumberCds(pos, false) + 1;
 		} else {
+			throw new RuntimeException("Uncovered case in HGVS exon coordiante. This should never happen!");
 		}
 
 		// Could not find dna position in transcript?
@@ -238,16 +246,7 @@ public class HgvsDna extends Hgvs {
 	/**
 	 * Intronic position
 	 */
-	protected String posIntron(int pos) {
-		Marker marker = variantEffect.getMarker();
-		Intron intron = (Intron) marker.findParent(Intron.class);
-		if (intron == null) {
-			Gpr.debug("variantEffect: " + variantEffect //
-					+ "\n\tMarker: " + variantEffect.getMarker() //
-					);
-			return null;
-		}
-
+	protected String posIntron(int pos, Intron intron) {
 		// Jump to closest exon position
 		// Ref:
 		//		beginning of the intron; the number of the last nucleotide of the preceding exon, a plus sign and the position in the intron, like c.77+1G, c.77+2T, etc.
