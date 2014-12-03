@@ -170,7 +170,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-						);
+				);
 			}
 		}
 	}
@@ -249,7 +249,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-					);
+			);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -649,7 +649,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("showtr") //
-				) {
+		) {
 			command = args[argNum++].trim().toLowerCase();
 		}
 
@@ -686,6 +686,7 @@ public class SnpEff implements CommandLine {
 				else if (arg.equalsIgnoreCase("-noDownload")) download = false; // Do not download genome
 				else if (arg.equalsIgnoreCase("-noLog")) log = false;
 				else if (arg.equalsIgnoreCase("-noOut")) suppressOutput = true; // Undocumented option (only used for development & debugging)
+				else if (arg.equalsIgnoreCase("-noShiftHgvs") || arg.equalsIgnoreCase("-no_shift_hgvs")) shiftHgvs = false;
 				else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
 				else if (arg.equalsIgnoreCase("-onlyProtein")) onlyProtein = true;
 				else if (arg.equalsIgnoreCase("-onlyTr")) {
@@ -948,6 +949,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-dataDir <path>              : Override data_dir parameter from config file.");
 		System.err.println("\t-download                    : Download a SnpEff database, if not available locally. Default: " + download);
 		System.err.println("\t-nodownload                  : Do not download a SnpEff database, if not available locally.");
+		System.err.println("\t-noShiftHgvs                 : Do not shift variants towards most 3-prime position (as required by HGVS).");
 		System.err.println("\t-h , -help                   : Show this help and exit");
 		System.err.println("\t-noLog                       : Do not report usage statistics to server");
 		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
