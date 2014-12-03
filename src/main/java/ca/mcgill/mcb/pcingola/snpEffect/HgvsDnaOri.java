@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.interval.SpliceSiteRegion;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
@@ -29,11 +30,11 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  * 		- for all descriptions the most 3' position possible is arbitrarily assigned to have been changed (see Exception)
  */
 
-public class HgvsDna extends Hgvs {
+public class HgvsDnaOri extends Hgvs {
 
 	public static boolean debug = false;
 
-	public HgvsDna(VariantEffect variantEffect) {
+	public HgvsDnaOri(VariantEffect variantEffect) {
 		super(variantEffect);
 	}
 
@@ -125,21 +126,54 @@ public class HgvsDna extends Hgvs {
 	}
 
 	/**
-	 * Genomic position for exonic variants
+	 * Calculate position
 	 */
 	protected String pos() {
+		// Intron
+		if (variantEffect.isIntron() //
+				|| variantEffect.isSpliceSiteCore() //
+				|| (variantEffect.isSpliceSiteRegion() && ((SpliceSiteRegion) variantEffect.getMarker()).isIntronPart()) //
+		) return posIntron();
+
+		return posExon();
+	}
+
+	/**
+	 * Genomic position for exonic variants
+	 */
+	protected String posExon() {
+		if (tr == null) return null;
+		String posPrepend = "";
+
+		// Exon position
 		int posStart = -1, posEnd = -1;
 
-		int variantPosStart = strandPlus ? variant.getStart() : variant.getEnd();
+		int variantPos = strandPlus ? variant.getStart() : variant.getEnd();
+		if (variantEffect.isUtr3()) {
+			// We are after stop codon, coordinates must be '*1', '*2', etc.
+			int pos = tr.baseNumberPreMRna(variantPos);
+			int posStop = tr.baseNumberPreMRna(tr.getCdsEnd());
+			posStart = Math.abs(pos - posStop);
+			posPrepend = "*";
+		} else if (variantEffect.isUtr5()) {
+			// We are before TSS, coordinates must be '-1', '-2', etc.
+			int pos = tr.baseNumberPreMRna(variantPos);
+			int posTss = tr.baseNumberPreMRna(tr.getCdsStart());
+			posStart = Math.abs(pos - posTss);
+			posPrepend = "-";
+		} else {
+			posStart = tr.baseNumberCds(variantPos, false) + 1;
+		}
+
+		// Could not find dna position in transcript?
+		if (posStart <= 0) return null;
 
 		switch (variant.getVariantType()) {
 		case SNP:
 		case MNP:
-			posStart = posEnd = variantPosStart;
-			break;
+			return posPrepend + posStart;
 
 		case INS:
-			posStart = variantPosStart;
 			if (duplication) {
 				// Duplication coordinates
 				int lenAlt = variant.getAlt().length();
@@ -157,7 +191,7 @@ public class HgvsDna extends Hgvs {
 					} else {
 						// Insert is 'before' variant position, so we must shift one base (compared to plus strand)
 						posEnd = posStart;
-						posStart += lenAlt - 1;
+						posStart -= lenAlt - 1;
 					}
 				}
 			} else {
@@ -165,13 +199,13 @@ public class HgvsDna extends Hgvs {
 				// Reference: http://www.hgvs.org/mutnomen/disc.html#ins
 				//            ...to prevent confusion, both flanking residues have to be listed.
 				// Example: c.6_7dup (or c.6_7dupTG) denotes a TG duplication (TG insertion) in the sequence ACATGTGCC to ACATGTGTGCC
-				posEnd = posStart + 1; //  TODO: Should this be (strandPlus ? 1 : -1)?
+				posEnd = posStart + 1;
 			}
+
 			break;
 
 		case DEL:
 		case MIXED:
-			posStart = variantPosStart;
 			posEnd = posStart + variant.size() - 1;
 			break;
 
@@ -182,57 +216,62 @@ public class HgvsDna extends Hgvs {
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
 
-		if (posStart == posEnd) return pos(posStart);
-		return pos(posStart) + "_" + pos(posEnd);
+		if (posStart == posEnd) return posPrepend + posStart;
+		return posPrepend + posStart + "_" + posPrepend + posEnd;
+
 	}
 
 	/**
-	 * HGVS position base on genomic coordinates (chr is assumed to be the same as in transcript/marker).
+	 * Genomic position for intronic variants
 	 */
-	protected String pos(int pos) {
-		// Cannot do much if there is no transcript
-		if (tr == null) return null;
+	protected String posIntron() {
+		int start, end;
 
-		// Are we in an exon?
-		if (tr.findExon(pos) != null) return posExon(pos);
-		return posIntron(pos);
-	}
+		switch (variant.getVariantType()) {
+		case SNP:
+		case MNP:
+			return posIntron(variant.getStart());
 
-	/**
-	 * Convert genomic position to HGVS compatible (DNA) position
-	 */
-	protected String posExon(int pos) {
+		case INS:
+			start = variant.getStart();
 
-		// Initialize
-		Exon ex = variantEffect.getExon();
-		String idxPrepend = "";
-		int idx = -1;
+			if (duplication && variant.getAlt().length() == 1) {
+				// One base duplications do not require end positions:
+				// Reference: http://www.hgvs.org/mutnomen/disc.html#dupins
+				// Example: c.7dupT (or c.7dup) denotes the duplication (insertion) of a T at position 7 in the sequence ACTTACTGCC to ACTTACTTGCC
+				end = variant.getStart();
+			} else {
+				// Other insertions must list both positions:
+				// Reference: http://www.hgvs.org/mutnomen/disc.html#ins
+				//            ...to prevent confusion, both flanking residues have to be listed.
+				// Example: c.6_7dup (or c.6_7dupTG) denotes a TG duplication (TG insertion) in the sequence ACATGTGCC to ACATGTGTGCC
+				end = variant.getStart() + (strandPlus ? 1 : -1);
+			}
 
-		//---
-		// Different regions of the transcript have different ways of showing positions
-		//---
-		if (tr.isUtr3(pos)) {
-			// 3'UTR: We are after stop codon, coordinates must be '*1', '*2', etc.
-			int baseNum = tr.baseNumberPreMRna(pos);
-			int baseNumCdsEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
-			idx = Math.abs(baseNum - baseNumCdsEnd);
-			idxPrepend = "*";
-		} else if (tr.isUtr5(pos)) {
-			// 5'UTR: We are before TSS, coordinates must be '-1', '-2', etc.
-			int baseNum = tr.baseNumberPreMRna(pos);
-			int baseNumTss = tr.baseNumberPreMRna(tr.getCdsStart());
-			idx = Math.abs(baseNum - baseNumTss);
-			idxPrepend = "-";
-		} else if (ex != null && ex.intersects(pos)) {
-			// Coding Exon: just use CDS position
-			idx = tr.baseNumberCds(pos, false) + 1;
-		} else {
+			break;
+
+		case DEL:
+		case MIXED:
+			start = variant.getStart();
+			end = variant.getEnd();
+			break;
+
+		case INTERVAL:
+			return "";
+
+		default:
+			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
 
-		// Could not find dna position in transcript?
-		if (idx <= 0) return null;
+		// Calculate positions and create string
+		String posStart = posIntron(start);
+		if (posStart == null) return null;
 
-		return idxPrepend + idx;
+		String posEnd = posIntron(end);
+		if (posEnd == null) return null;
+
+		if (posStart.equals(posEnd)) return posStart;
+		return strandPlus ? posStart + "_" + posEnd : posEnd + "_" + posStart;
 	}
 
 	/**
@@ -244,7 +283,7 @@ public class HgvsDna extends Hgvs {
 		if (intron == null) {
 			Gpr.debug("variantEffect: " + variantEffect //
 					+ "\n\tMarker: " + variantEffect.getMarker() //
-					);
+			);
 			return null;
 		}
 

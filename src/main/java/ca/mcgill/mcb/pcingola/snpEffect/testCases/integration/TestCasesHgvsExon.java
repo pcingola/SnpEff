@@ -22,6 +22,7 @@ public class TestCasesHgvsExon extends TestCasesHgvsBase {
 	@Test
 	public void test_01_coding() {
 		Gpr.debug("Test");
+
 		int N = 1000;
 		CodonTable codonTable = genome.codonTable();
 

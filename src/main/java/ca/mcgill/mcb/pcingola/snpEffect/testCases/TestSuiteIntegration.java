@@ -16,8 +16,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesGenomicSe
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesGff3;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesGtf22;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvs;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsExon;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntron;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsLarge;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHugeDeletions;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesInsEtc;
@@ -61,8 +59,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesMarkerSeq;
 		TestCasesGenomicSequences.class, //
 		TestCasesGff3.class, //
 		TestCasesGtf22.class, //
-		TestCasesHgvsExon.class, //
-		TestCasesHgvsIntron.class, //
 		TestCasesHgvs.class, //
 		TestCasesHgvsLarge.class, //
 		TestCasesHugeDeletions.class, //
