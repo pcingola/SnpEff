@@ -303,7 +303,7 @@ public class HgvsDna extends Hgvs {
 
 	@Override
 	public String toString() {
-		if (variant == null) return null;
+		if (variant == null || genome == null) return null;
 
 		// Is this a duplication?
 		if (variant.isIns()) duplication = isDuplication();

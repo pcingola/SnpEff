@@ -43,7 +43,7 @@ public class Hgvs {
 		variant = variantEffect.getVariant();
 		marker = variantEffect.getMarker();
 		tr = variantEffect.getTranscript();
-		genome = variantEffect.getMarker().getGenome();
+		genome = marker.getGenome();
 		initStrand();
 	}
 

@@ -322,16 +322,15 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	 * @return Positive number, if a shift can be performed, zero if there is no shift, negative number on error
 	 */
 	public int shiftLeft(Variant variant) {
-		if (!variant.isIns()) return 0; // Only insertions
+		if (!variant.isInDel()) return 0; // Only InDels
 
 		// Load sequence if we don't have them
 		String chr = variant.getChromosomeName();
 		if (!hasChromosome(chr) && !loadOrCreateFromGenome(chr)) return -1; // Error: Cannot load chromosme sequences
 
 		// Shift variant
-
-		String alt = variant.getAlt();
-		int len = alt.length();
+		String change = variant.isIns() ? variant.getAlt() : variant.getReference();
+		int len = change.length();
 		if (len == 0) return 0;
 
 		int start = variant.getStart();
@@ -341,11 +340,18 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 			int end = newStart + (len - 1);
 			Marker m = new Marker(variant.getChromosome(), newStart, end, false, "");
 			seq = getSequence(m);
-			// Gpr.debug("SHIFT:\talt='" + alt + "'\tseq='" + seq + "'\tstart:" + start + "\tnewStart: " + newStart);
-			if (seq == null || !seq.equalsIgnoreCase(alt)) break;
+			//			Gpr.debug("SHIFT:\talt='" + change + "'\tseq='" + seq + "'\tstart:" + start + "\tnewStart: " + newStart);
+			if (seq == null || !seq.equalsIgnoreCase(change)) break;
 		}
 
-		return newStart - start;
+		// Calculate shift positions (ins and dels) are different 
+		int diff = newStart - start;
+		if (variant.isDel()) {
+			if (diff > len) return diff - len; // Deletion will always match one time
+			return 0;
+		}
+
+		return diff;
 	}
 
 	@Override

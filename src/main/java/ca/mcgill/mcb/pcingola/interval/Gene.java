@@ -452,7 +452,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 		// Keep track of the original variants, just in case it is changed
 		Variant variantOri = variant;
-		// Do we need to 'walk and roll'? I.e. alignt the variant towards the most 3-prime
+		// Do we need to 'walk and roll'? I.e. align variant towards the most 3-prime
 		// end of the transcript? Note that VCF request variants to be aligned towards
 		// the 'leftmost' coordinate, so this re-alignment is only required for variants
 		// within transcripts on the positive strand.
@@ -465,6 +465,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 			// Created a new variant? => It was shifted towards the left (i.e. 3-prime)
 			shifted3prime = (variant != variantOri);
+			Gpr.debug("Shifted: " + shifted3prime + "\t" + variant);
 		}
 
 		//---
