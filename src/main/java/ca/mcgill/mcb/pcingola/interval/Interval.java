@@ -37,7 +37,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 				+ "\n\tID           : " + id //
 				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
 				+ "\n\tParent       : " + parent //
-				);
+		);
 
 		if (start < 0) throw new RuntimeException("Interval has negative coordinates." //
 				+ "\n\tClass        : " + getClass().getSimpleName() //
@@ -46,7 +46,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 				+ "\n\tID           : " + id //
 				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
 				+ "\n\tParent       : " + parent //
-				);
+		);
 
 		this.start = start;
 		this.end = end;

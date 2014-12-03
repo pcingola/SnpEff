@@ -21,6 +21,7 @@ public class Hgvs {
 	protected Marker marker;
 	protected Transcript tr;
 	protected boolean duplication;
+	protected boolean strandPlus, strandMinus;
 
 	public static String parseTranscript(String hgvs) {
 		int idxTr = hgvs.indexOf(':');
@@ -39,6 +40,15 @@ public class Hgvs {
 		variant = changeEffect.getVariant();
 		marker = changeEffect.getMarker();
 		tr = changeEffect.getTranscript();
+		initStrand();
+	}
+
+	protected void initStrand() {
+		// Strand information
+		if (tr != null) strandMinus = tr.isStrandMinus();
+		else if (marker != null) strandMinus = marker.isStrandMinus();
+
+		strandPlus = !strandMinus;
 	}
 
 }

@@ -53,18 +53,18 @@ public class HgvsDna extends Hgvs {
 		switch (variant.getVariantType()) {
 		case SNP:
 		case MNP:
-			if (marker == null || marker.isStrandPlus()) return variant.getReference() + ">" + variant.getAlt();
+			if (strandPlus) return variant.getReference() + ">" + variant.getAlt();
 			return GprSeq.reverseWc(variant.getReference()) + ">" + GprSeq.reverseWc(variant.getAlt());
 
 		case INS:
 		case DEL:
 			if (variant.size() > MAX_SEQUENCE_LEN_HGVS) return "";
 			String netChange = variant.netChange(false);
-			if (marker == null || marker.isStrandPlus()) return netChange;
+			if (strandPlus) return netChange;
 			return GprSeq.reverseWc(netChange);
 
 		case MIXED:
-			if (marker == null || marker.isStrandPlus()) return "del" + variant.getReference() + "ins" + variant.getAlt();
+			if (strandPlus) return "del" + variant.getReference() + "ins" + variant.getAlt();
 			return "del" + GprSeq.reverseWc(variant.getReference()) + "ins" + GprSeq.reverseWc(variant.getAlt());
 
 		case INTERVAL:
@@ -95,18 +95,17 @@ public class HgvsDna extends Hgvs {
 			int sstart, send;
 			int len = variant.getAlt().length();
 
-			if (ex.isStrandPlus()) {
+			if (strandPlus) {
 				sstart = variant.getStart() - len;
 				send = variant.getStart() - 1;
 			} else {
-				sstart = variant.getStart() - 1;
+				sstart = variant.getStart();
 				send = sstart + (len - 1);
 			}
 
 			Marker m = new Marker(variant.getParent(), sstart, send, false, "");
-			if (debug) Gpr.debug("variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (ex.isStrandPlus() ? "+" : "-"));
+			if (debug) Gpr.debug("variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (strandPlus ? "+" : "-"));
 			seq = ex.getSequence(m);
-			if (seq != null && ex.isStrandMinus()) seq = GprSeq.reverseWc(seq);
 			if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'");
 		}
 
@@ -138,7 +137,7 @@ public class HgvsDna extends Hgvs {
 		// Exon position
 		int posStart = -1, posEnd = -1;
 
-		int variantPos = tr.isStrandPlus() ? variant.getStart() : variant.getEnd();
+		int variantPos = strandPlus ? variant.getStart() : variant.getEnd();
 		if (variantEffect.isUtr3()) {
 			// We are after stop codon, coordinates must be '*1', '*2', etc.
 			int pos = tr.baseNumberPreMRna(variantPos);
@@ -170,12 +169,17 @@ public class HgvsDna extends Hgvs {
 					// One base duplications do not require end positions:
 					// Reference: http://www.hgvs.org/mutnomen/disc.html#dupins
 					// Example: c.7dupT (or c.7dup) denotes the duplication (insertion) of a T at position 7 in the sequence ACTTACTGCC to ACTTACTTGCC
-					posStart--; // The 'previous base' is duplicated, we have to decrement the position
+					posStart += strandPlus ? -1 : 0; // The 'previous base' is duplicated, we have to decrement the position
 					posEnd = posStart;
 				} else {
 					// Duplication coordinates
-					posEnd = posStart - 1;
-					posStart -= variant.getAlt().length();
+					int len = variant.getAlt().length();
+					if (strandPlus) {
+						posEnd = posStart - 1;
+						posStart -= -len;
+					} else {
+						posEnd = posStart + len - 1; // Start position does not change
+					}
 				}
 			} else {
 				// Other insertions must list both positions:
@@ -228,7 +232,7 @@ public class HgvsDna extends Hgvs {
 				// Reference: http://www.hgvs.org/mutnomen/disc.html#ins
 				//            ...to prevent confusion, both flanking residues have to be listed.
 				// Example: c.6_7dup (or c.6_7dupTG) denotes a TG duplication (TG insertion) in the sequence ACATGTGCC to ACATGTGTGCC
-				end = variant.getStart() + (marker.isStrandPlus() ? 1 : -1);
+				end = variant.getStart() + (strandPlus ? 1 : -1);
 			}
 
 			break;
@@ -254,7 +258,7 @@ public class HgvsDna extends Hgvs {
 		if (posEnd == null) return null;
 
 		if (posStart.equals(posEnd)) return posStart;
-		return tr.isStrandPlus() ? posStart + "_" + posEnd : posEnd + "_" + posStart;
+		return strandPlus ? posStart + "_" + posEnd : posEnd + "_" + posStart;
 	}
 
 	/**
@@ -288,7 +292,7 @@ public class HgvsDna extends Hgvs {
 			// Reference: in the middle of the intron, numbering changes from "c.77+.." to "c.78-.."; for introns with an uneven number of nucleotides the central nucleotide is the last described with a "+"
 			posExonStr = "+";
 
-			if (tr.isStrandPlus()) posExon = intron.getStart() - 1;
+			if (strandPlus) posExon = intron.getStart() - 1;
 			else posExon = intron.getEnd() + 1;
 		}
 
@@ -308,14 +312,14 @@ public class HgvsDna extends Hgvs {
 		if (posExon < cdsLeft) {
 			int cdnaStart = tr.baseNumberPreMRna(cdsLeft); // tr.getCdsStart());
 			int utrDistance = Math.abs(cdnaStart - cdnaPos);
-			String utrStr = tr.isStrandPlus() ? "-" : "*";
+			String utrStr = strandPlus ? "-" : "*";
 			return utrStr + utrDistance + (exonDistance > 0 ? posExonStr + exonDistance : "");
 		}
 
 		// Right side of coding part
 		int cdnaEnd = tr.baseNumberPreMRna(cdsRight); // tr.getCdsEnd());
 		int utrDistance = Math.abs(cdnaEnd - cdnaPos);
-		String utrStr = tr.isStrandPlus() ? "*" : "-";
+		String utrStr = strandPlus ? "*" : "-";
 		return utrStr + utrDistance + (exonDistance > 0 ? posExonStr + exonDistance : "");
 	}
 
