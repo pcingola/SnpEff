@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
 
@@ -17,50 +17,24 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * Test case
  */
-public class TestCasesZzz extends TestCasesBase {
+public class TestCasesHgvsDnaDupIntegration extends TestCasesBase {
 
-	public TestCasesZzz() {
+	public TestCasesHgvsDnaDupIntegration() {
 		super();
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-
 		minExons = 1;
-
 		randSeed = 20141128;
 		initRand();
 	}
 
-	//	public void test_hgvs_walk_and_roll_2() {
-	//		throw new RuntimeException("ADD TEST CASE FOR 'tests/hgvs_jeremy_1.vcf'");
-	//	}
-	//
-	//	public void test_hgvs_walk_and_roll_1() {
-	//		throw new RuntimeException("ADD TEST CASE FOR 'tests/hgvs_walk_and_roll.1.vcf'");
-	//	}
-	//
-	//	public void test_hgvs_walk_and_roll_3() {
-	//		throw new RuntimeException("ADD TEST CASE FOR 'tests/hgvs_savant.vcf'");
-	//	}
-	//
-	//	public void test_hgvs_md() {
-	//		throw new RuntimeException("ADD TEST CASE FOR 'hgvs_md.chr1.vcf'");
-	//	}
-	//
-	//	public void test_hgvs_md_2() {
-	//		throw new RuntimeException("ADD TEST CASE FOR 'hgvs_md.chr13.vcf'");
-	//	}
-	//
-	//	public void test_hgvs_md_3() {
-	//		throw new RuntimeException("ADD TEST CASE FOR 'hgvs_md.chr17.vcf'");
-	//	}
-
 	/**
 	 */
 	@Test
-	public void test_zzz() {
+	public void test_01_dup() {
 		Gpr.debug("Test");
 
 		String genome = "testHg19Chr17";
