@@ -42,6 +42,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesTranscrip
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesTranscriptError;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVariant;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVcf;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesMarkerSeq;
 
 /**
  * Invoke all integration test cases
@@ -68,6 +69,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVcf;
 		TestCasesInsEtc.class, //
 		TestCasesInsVep.class, //
 		TestCasesLof.class, //
+		TestCasesMarkerSeq.class, // 
 		TestCasesMissenseSilentRatio.class, //
 		TestCasesMixedVariants.class, //
 		TestCasesMnp.class, //

@@ -107,7 +107,7 @@ public class HgvsDna extends Hgvs {
 			if (debug) Gpr.debug("variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (ex.isStrandPlus() ? "+" : "-"));
 			seq = ex.getSequence(m);
 			if (seq != null && ex.isStrandMinus()) seq = GprSeq.reverseWc(seq);
-			if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'");
+			if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'");
 		}
 
 		// Compare to ALT sequence

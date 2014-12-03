@@ -190,7 +190,8 @@ public class MarkerSeq extends Marker {
 	 * Base at position 'pos' (genomic coordinates)
 	 */
 	public String basesAtPos(int pos, int len) {
-		int index = isStrandPlus() ? pos - start : end - pos;
+		// int index = isStrandPlus() ? pos - start : end - pos;
+		int index = pos - start;
 		if (index < 0) return "";
 		return basesAt(index, len);
 	}
@@ -220,8 +221,9 @@ public class MarkerSeq extends Marker {
 		if (!includes(marker)) return null; // Cannot provide full sequence for this marker, since it's not fully included in this MarkerSeq
 		if (marker.isStrandMinus()) throw new RuntimeException("marker on negative strand not supported");
 
-		if (isStrandPlus()) return basesAtPos(marker.getStart(), marker.size());
-		return basesAtPos(marker.getEnd(), marker.size());
+		return basesAtPos(marker.getStart(), marker.size());
+		//		if (isStrandPlus()) return basesAtPos(marker.getStart(), marker.size());
+		//		return basesAtPos(marker.getEnd(), marker.size());
 	}
 
 	/**
