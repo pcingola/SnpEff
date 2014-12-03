@@ -4,6 +4,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvs;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsDnaDupIntegration;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsExon;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntron;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDup;
@@ -21,6 +23,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsProtDup;
 		TestCasesHgvsDnaDup.class, //
 		TestCasesHgvsDnaDupNegative.class, //
 		TestCasesHgvsProtDup.class, //
+		TestCasesHgvs.class, //
+		TestCasesHgvsDnaDupIntegration.class //
 })
 public class TestSuiteUnityHgvs {
 

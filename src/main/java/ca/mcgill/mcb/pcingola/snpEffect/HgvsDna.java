@@ -41,7 +41,7 @@ public class HgvsDna extends Hgvs {
 	 * Prefix for coding or non-coding sequences
 	 */
 	protected String codingPrefix() {
-		return (tr.isProteinCoding() ? "c." : "n.");
+		return (tr != null && tr.isProteinCoding() ? "c." : "n.");
 	}
 
 	/**
@@ -202,8 +202,8 @@ public class HgvsDna extends Hgvs {
 		Intron intron = tr.findIntron(pos);
 		if (intron != null) return posIntron(pos, intron);
 
-		// Sanity check
-		throw new RuntimeException("HGVS (DNA): Neither exon nor intron found. This should never happen!");
+		// Upstream or downstream
+		return posExon(pos, null);
 	}
 
 	/**
@@ -218,13 +218,13 @@ public class HgvsDna extends Hgvs {
 		//---
 		// Different regions of the transcript have different ways of showing positions
 		//---
-		if (tr.isUtr3(pos)) {
+		if (tr.isUtr3(pos) || tr.isDownstream(pos)) {
 			// 3'UTR: We are after stop codon, coordinates must be '*1', '*2', etc.
 			int baseNum = tr.baseNumberPreMRna(pos);
 			int baseNumCdsEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
 			idx = Math.abs(baseNum - baseNumCdsEnd);
 			idxPrepend = "*";
-		} else if (tr.isUtr5(pos)) {
+		} else if (tr.isUtr5(pos) || tr.isUpstream(pos)) {
 			// 5'UTR: We are before TSS, coordinates must be '-1', '-2', etc.
 			int baseNum = tr.baseNumberPreMRna(pos);
 			int baseNumTss = tr.baseNumberPreMRna(tr.getCdsStart());

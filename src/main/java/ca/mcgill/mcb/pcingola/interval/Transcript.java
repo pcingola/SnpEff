@@ -1199,6 +1199,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return dnaCheck;
 	}
 
+	public boolean isDownstream(int pos) {
+		return downstream != null && downstream.intersects(pos);
+	}
+
 	/**
 	 * Check if coding length is multiple of 3 in protein coding transcripts
 	 * @return true on Error
@@ -1261,9 +1265,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return ribosomalSlippage;
 	}
 
-	/**
-	 * Does this 'pos' hit a UTR?
-	 */
+	public boolean isUpstream(int pos) {
+		return upstream != null && upstream.intersects(pos);
+	}
+
 	public boolean isUtr(int pos) {
 		return findUtr(pos) != null;
 	}
