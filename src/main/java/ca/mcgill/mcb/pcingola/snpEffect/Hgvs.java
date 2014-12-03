@@ -1,5 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
+import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
@@ -20,6 +21,8 @@ public class Hgvs {
 	protected Variant variant;
 	protected Marker marker;
 	protected Transcript tr;
+	protected Genome genome;
+
 	protected boolean duplication;
 	protected boolean strandPlus, strandMinus;
 
@@ -35,11 +38,12 @@ public class Hgvs {
 		return hgvs.substring(idxTr + 1);
 	}
 
-	public Hgvs(VariantEffect changeEffect) {
-		variantEffect = changeEffect;
-		variant = changeEffect.getVariant();
-		marker = changeEffect.getMarker();
-		tr = changeEffect.getTranscript();
+	public Hgvs(VariantEffect variantEffect) {
+		this.variantEffect = variantEffect;
+		variant = variantEffect.getVariant();
+		marker = variantEffect.getMarker();
+		tr = variantEffect.getTranscript();
+		genome = variantEffect.getMarker().getGenome();
 		initStrand();
 	}
 

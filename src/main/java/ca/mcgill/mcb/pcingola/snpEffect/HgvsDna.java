@@ -89,28 +89,39 @@ public class HgvsDna extends Hgvs {
 
 		// Extract sequence from genomic coordinates before variant
 		String seq = null;
+
+		// Get sequence at the 3'end of the variant
+		int sstart, send;
+		int len = variant.getAlt().length();
+
+		if (strandPlus) {
+			sstart = variant.getStart() - len;
+			send = variant.getStart() - 1;
+		} else {
+			sstart = variant.getStart();
+			send = sstart + (len - 1);
+		}
+
+		// Maybe we can just use exonic sequences (it's faster)
+		// Create a marker and check that is comprised within exon boundaries
+		Marker m = new Marker(variant.getParent(), sstart, send, false, "");
+
 		Exon ex = variantEffect.getExon();
-		if (ex != null) {
-			// Get sequence at the 3'end of the variant
-			int sstart, send;
-			int len = variant.getAlt().length();
-
-			if (strandPlus) {
-				sstart = variant.getStart() - len;
-				send = variant.getStart() - 1;
-			} else {
-				sstart = variant.getStart();
-				send = sstart + (len - 1);
-			}
-
-			Marker m = new Marker(variant.getParent(), sstart, send, false, "");
-			if (debug) Gpr.debug("variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (strandPlus ? "+" : "-"));
+		if (ex != null && ex.includes(m)) {
+			if (debug) Gpr.debug("Variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (strandPlus ? "+" : "-"));
 			seq = ex.getSequence(m);
-			if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'\tsequence (+ strand): " + (ex.isStrandPlus() ? ex.getSequence() : GprSeq.reverseWc(ex.getSequence())));
+			if (debug) Gpr.debug("Sequence (Exon)  [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'\tsequence (+ strand): " + (ex.isStrandPlus() ? ex.getSequence() : GprSeq.reverseWc(ex.getSequence())));
+		}
+
+		// May be it is not completely in the exon. Use genomic sequences
+		if (seq == null) {
+			seq = genome.getGenomicSequences().getSequence(m);
+			if (debug) Gpr.debug("Sequence (Genome) [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'\tsequence (+ strand): " + seq);
 		}
 
 		// Compare to ALT sequence
 		if (seq == null) return false; // Cannot compare
+
 		return seq.equalsIgnoreCase(variant.getAlt());
 	}
 
