@@ -32,7 +32,6 @@ public class TestCasesHgvsDnaDupNegative extends TestCasesBase {
 	public void test_01() {
 		Gpr.debug("Test");
 
-		verbose = true;
 		if (verbose) {
 			Exon exFirst = transcript.sorted().get(0);
 			String exFirstSeq = exFirst.isStrandPlus() ? exFirst.getSequence() : GprSeq.reverseWc(exFirst.getSequence());
@@ -56,58 +55,64 @@ public class TestCasesHgvsDnaDupNegative extends TestCasesBase {
 		Assert.assertEquals("c.1dupG", hgvsDna);
 	}
 
-	//	@Test
-	//	public void test_02() {
-	//		Gpr.debug("Test");
-	//		if (verbose) Gpr.debug(transcript);
-	//
-	//		// Create variant
-	//		Variant variant = new Variant(chromosome, 883, "", "A", "");
-	//		if (verbose) Gpr.debug("Variant: " + variant);
-	//
-	//		// Analyze variant
-	//		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
-	//
-	//		// Calculate HGVS
-	//		VariantEffect eff = effs.get();
-	//		HgvsDna hgvsc = new HgvsDna(eff);
-	//		String hgvsDna = hgvsc.toString();
-	//
-	//		// Check result
-	//		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
-	//		Assert.assertEquals("c.3dupA", hgvsDna);
-	//	}
-	//
-	//	/**
-	//	 * Test case from http://www.hgvs.org/mutnomen/recs-DNA.html
-	//	 * 		g.5dupT (or g.5dup, not g.5_6insT) denotes a duplication ("insertion") of the T nucleotide
-	//	 *      at position 5 in the genomic reference sequence changing ACTCTGTGCC to ACTCTTGTGCC
-	//	 */
-	//	@Test
-	//	public void test_03() {
-	//		Gpr.debug("Test");
-	//		String prepend = "ACTCTGTGCC";
-	//
-	//		prependSequenceToFirstExon(prepend);
-	//		if (verbose) Gpr.debug(transcript);
-	//
-	//		// Create variant
-	//		Variant variant = new Variant(chromosome, 885, "", "T", "");
-	//		if (verbose) Gpr.debug("Variant: " + variant);
-	//
-	//		// Analyze variant
-	//		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
-	//
-	//		// Calculate HGVS
-	//		VariantEffect eff = effs.get();
-	//		HgvsDna hgvsc = new HgvsDna(eff);
-	//		String hgvsDna = hgvsc.toString();
-	//
-	//		// Check result
-	//		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
-	//		Assert.assertEquals("c.5dupT", hgvsDna);
-	//	}
-	//
+	@Test
+	public void test_02() {
+		Gpr.debug("Test");
+
+		if (verbose) {
+			Exon exFirst = transcript.sorted().get(0);
+			String exFirstSeq = exFirst.isStrandPlus() ? exFirst.getSequence() : GprSeq.reverseWc(exFirst.getSequence());
+			Gpr.debug(transcript + "\n\tSequence: " + exFirstSeq);
+		}
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 997, "", "G", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
+
+		// Analyze variant
+		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+
+		// Calculate HGVS
+		VariantEffect eff = effs.get();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
+
+		// Check result
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		Assert.assertEquals("c.5dupC", hgvsDna);
+	}
+
+	/**
+	 * Dup on the reverse strand: More than one base
+	 */
+	@Test
+	public void test_03() {
+		Gpr.debug("Test");
+		if (verbose) Gpr.debug(transcript);
+
+		if (verbose) {
+			Exon exFirst = transcript.sorted().get(0);
+			String exFirstSeq = exFirst.isStrandPlus() ? exFirst.getSequence() : GprSeq.reverseWc(exFirst.getSequence());
+			Gpr.debug(transcript + "\n\tSequence: " + exFirstSeq);
+		}
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 996, "", "CG", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
+
+		// Analyze variant
+		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+
+		// Calculate HGVS
+		VariantEffect eff = effs.get();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
+
+		// Check result
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		Assert.assertEquals("c.5_6dupCG", hgvsDna);
+	}
+
 	//	/**
 	//	 * Test case from http://www.hgvs.org/mutnomen/recs-DNA.html
 	//	 * 		g.7dupT (or g.7dup, not g.5dupT, not g.7_8insT) denotes a duplication ("insertion") of

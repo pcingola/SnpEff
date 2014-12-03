@@ -122,7 +122,7 @@ public class HgvsDna extends Hgvs {
 		if (variantEffect.isIntron() //
 				|| variantEffect.isSpliceSiteCore() //
 				|| (variantEffect.isSpliceSiteRegion() && ((SpliceSiteRegion) variantEffect.getMarker()).isIntronPart()) //
-				) return posIntron();
+		) return posIntron();
 
 		return posExon();
 	}
@@ -178,8 +178,9 @@ public class HgvsDna extends Hgvs {
 						posEnd = posStart - 1;
 						posStart -= lenAlt;
 					} else {
-						//						posStart--;
-						posEnd = posStart + lenAlt - 1;
+						// Insert is 'before' variant position, so we must shift one base (compared to plus strand)
+						posEnd = posStart;
+						posStart -= lenAlt - 1;
 					}
 				}
 			} else {
@@ -271,7 +272,7 @@ public class HgvsDna extends Hgvs {
 		if (intron == null) {
 			Gpr.debug("variantEffect: " + variantEffect //
 					+ "\n\tMarker: " + variantEffect.getMarker() //
-					);
+			);
 			return null;
 		}
 
