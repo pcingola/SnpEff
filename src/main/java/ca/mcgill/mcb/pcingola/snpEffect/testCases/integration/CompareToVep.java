@@ -8,7 +8,6 @@ import org.junit.Assert;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
@@ -221,7 +220,7 @@ public class CompareToVep {
 					+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'\t" + (compareHgvsDna(eff, csq) ? "OK" : "BAD") //
 					+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'\t" + (compareHgvsProt(eff, csq) ? "OK" : "BAD") //
 					+ "\n" //
-			);
+					);
 		}
 
 		return (!compareHgvsDna || compareHgvsDna(eff, csq)) //
@@ -324,7 +323,7 @@ public class CompareToVep {
 		cmdEff.setDebug(debug);
 		cmdEff.setShiftHgvs(shiftHgvs);
 
-		Config config = cmdEff.getConfig();
+		cmdEff.getConfig();
 
 		List<VcfEntry> vcfEnties = cmdEff.run(true);
 		return vcfEnties;

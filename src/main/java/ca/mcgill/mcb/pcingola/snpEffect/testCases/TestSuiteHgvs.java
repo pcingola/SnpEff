@@ -8,6 +8,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvs;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsDnaDupIntegration;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsExon;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntron;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsLarge;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDup;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDupNegative;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsProtDup;
@@ -24,8 +25,9 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsProtDup;
 		TestCasesHgvsDnaDupNegative.class, //
 		TestCasesHgvsProtDup.class, //
 		TestCasesHgvs.class, //
-		TestCasesHgvsDnaDupIntegration.class //
+		TestCasesHgvsDnaDupIntegration.class, //
+		TestCasesHgvsLarge.class //
 })
-public class TestSuiteUnityHgvs {
+public class TestSuiteHgvs {
 
 }
