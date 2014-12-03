@@ -8,6 +8,7 @@ import org.junit.Assert;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
@@ -31,6 +32,7 @@ public class CompareToVep {
 	boolean debug = false;
 	boolean verbose = false;
 	boolean throwException = true;
+	boolean shiftHgvs = false;
 	String genomeName;
 	String addArgs[];
 	VcfConsequenceHeader vcfCsqHeader;
@@ -320,6 +322,9 @@ public class CompareToVep {
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		cmdEff.setDebug(debug);
+		cmdEff.setShiftHgvs(shiftHgvs);
+
+		Config config = cmdEff.getConfig();
 
 		List<VcfEntry> vcfEnties = cmdEff.run(true);
 		return vcfEnties;

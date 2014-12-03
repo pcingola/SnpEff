@@ -88,6 +88,7 @@ public class TestCasesHgvs {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr1";
 		String vcf = "tests/mixed_10_hgvs.vep.vcf";
+		verbose = true;
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		comp.setCompareHgvs();
 		comp.setOnlyProtein(true);

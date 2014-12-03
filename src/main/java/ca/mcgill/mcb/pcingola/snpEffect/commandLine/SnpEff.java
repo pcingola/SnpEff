@@ -92,6 +92,7 @@ public class SnpEff implements CommandLine {
 	protected boolean onlyProtein = false; // Only use protein coding transcripts
 	protected boolean onlyRegulation = false; // Only build regulation tracks
 	protected boolean quiet; // Be quiet
+	protected boolean shiftHgvs = true; // Shift variants towards the 3-prime end of the transcript
 	protected boolean strict = false; // Only use transcript that have been validated
 	protected boolean saveOutput = false; // Save output to buffer (instead of printing it to STDOUT)
 	protected boolean suppressOutput = false; // Only used for debugging purposes
@@ -169,7 +170,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-				);
+						);
 			}
 		}
 	}
@@ -248,7 +249,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+					);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -343,6 +344,9 @@ public class SnpEff implements CommandLine {
 		config.getSnpEffectPredictor().setSpliceRegionExonSize(spliceRegionExonSize);
 		config.getSnpEffectPredictor().setSpliceRegionIntronMin(spliceRegionIntronMin);
 		config.getSnpEffectPredictor().setSpliceRegionIntronMax(spliceRegionIntronMax);
+
+		// Set upstream-downstream interval length
+		config.setShiftHgvs(shiftHgvs);
 
 		// Filter canonical transcripts
 		if (canonical) {
@@ -645,7 +649,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("showtr") //
-		) {
+				) {
 			command = args[argNum++].trim().toLowerCase();
 		}
 
@@ -813,6 +817,10 @@ public class SnpEff implements CommandLine {
 
 	public void setNextProtKeepAllTrs(boolean nextProtKeepAllTrs) {
 		this.nextProtKeepAllTrs = nextProtKeepAllTrs;
+	}
+
+	public void setShiftHgvs(boolean shiftHgvs) {
+		this.shiftHgvs = shiftHgvs;
 	}
 
 	public void setSpliceSiteSize(int spliceSiteSize) {
