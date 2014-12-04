@@ -89,6 +89,13 @@ public class TestCasesBase {
 
 	/**
 	 * Create a predictor
+	 * For the default parameters the first predictor 
+	 * created has only one transcript:
+	 * 		1:880-1001, strand: +, id:transcript_0, Protein
+	 * 		Exons:
+	 * 			1:880-1001 'exon_0_0', rank: 1, frame: ., sequence: taaccccatatgattagtacggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgatgaccgatttatttgattccccacatttatttcatcggga
+	 * 			CDS     :   taaccccatatgattagtacggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgatgaccgatttatttgattccccacatttatttcatcgggac
+	 * 			Protein :   *PHMISTVEEKHLTPIEQDLFRNTLYR*PIYLIPHIYFIG?
 	 */
 	protected void initSnpEffPredictor() {
 		// Create a config and force out snpPredictor

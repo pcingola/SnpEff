@@ -28,6 +28,10 @@ public class Marker extends Interval implements TxtSerializable {
 		type = EffectType.NONE;
 	}
 
+	public Marker(Marker parent, int start, int end) {
+		this(parent, start, end, false, "");
+	}
+
 	public Marker(Marker parent, int start, int end, boolean strandMinus, String id) {
 		super(parent, start, end, strandMinus, id);
 
@@ -570,7 +574,7 @@ public class Marker extends Interval implements TxtSerializable {
 				+ "\t" + end //
 				+ "\t" + id //
 				+ "\t" + strandMinus //
-		;
+				;
 	}
 
 	/**

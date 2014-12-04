@@ -458,10 +458,11 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		// within transcripts on the positive strand.
 		//---
 		boolean shifted3prime = false;
-		if (variant.isInDel() && Config.get().isShiftHgvs() && isStrandPlus()) {
+		if (!variant.isSnp() && Config.get().isShiftHgvs() && isStrandPlus()) {
+
 			// Get sequence information. Might have to load sequences from database
-			variant = variant.shiftLeft();
-			if (variantRef != null) variantRef = variantRef.shiftLeft();
+			variant = variant.realignLeft();
+			if (variantRef != null) variantRef = variantRef.realignLeft();
 
 			// Created a new variant? => It was shifted towards the left (i.e. 3-prime)
 			shifted3prime = (variant != variantOri);

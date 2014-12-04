@@ -398,6 +398,25 @@ public class Variant extends Marker {
 	}
 
 	/**
+	 * Create a new variant realigning it towards the leftmost position
+	 */
+	public Variant realignLeft() {
+		GenomicSequences gs = getGenome().getGenomicSequences();
+		if (gs == null) return this;
+
+		// Can we shift?
+		int shift = gs.realignLeft(this);
+		if (shift <= 0) return this;
+
+		// OK, create a cloned variant with a shifted position
+		Variant vnew = clone();
+		vnew.start += shift;
+		vnew.end += shift;
+
+		return vnew;
+	}
+
+	/**
 	 * Return the reference (always in positive strand)
 	 */
 	public String reference() {
@@ -414,25 +433,6 @@ public class Variant extends Marker {
 
 	public void setVariantType(VariantType variantType) {
 		this.variantType = variantType;
-	}
-
-	/**
-	 * Create a new variant shifting it towards the leftmost position
-	 */
-	public Variant shiftLeft() {
-		GenomicSequences gs = getGenome().getGenomicSequences();
-		if (gs == null) return this;
-
-		// Can we shift?
-		int shift = gs.shiftLeft(this);
-		if (shift <= 0) return this;
-
-		// OK, create a cloned variant with a shifted position
-		Variant vnew = clone();
-		vnew.start += shift;
-		vnew.end += shift;
-
-		return vnew;
 	}
 
 	@Override
