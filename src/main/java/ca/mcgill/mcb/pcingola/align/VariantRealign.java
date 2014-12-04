@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.align;
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Re-align a variant towards the leftmost (rightmost) position
@@ -13,6 +14,8 @@ public class VariantRealign {
 
 	public static final int MIN_BASES_EXTRA = 10;
 	public static final int BASES_EXTRA_MULTIPLIER = 5;
+
+	public static boolean debug = false;
 
 	boolean alignLeft = true; // By default, align to the left
 	boolean warningReachedEndOfSequence; // Did we reached the end of the sequence (i.e. GenomicSequences could not provide sequences to continue realignment)
@@ -82,7 +85,7 @@ public class VariantRealign {
 			if (!seqVar.startsWith(vref)) throw new RuntimeException("Variant not found in reference sequence. This should never happen!" //
 					+ "\n\tSeq: '" + seqVar //
 					+ "'\n\tVariant's ref: '" + vref + "'" //
-			);
+					);
 
 			seqVar = seqVar.substring(vref.length()); // Remove 'ref' part
 		}
@@ -152,6 +155,7 @@ public class VariantRealign {
 
 		// Create new variant
 		boolean ok = createRealignedVariant();
+		if (debug) Gpr.debug(this);
 		return ok;
 	}
 

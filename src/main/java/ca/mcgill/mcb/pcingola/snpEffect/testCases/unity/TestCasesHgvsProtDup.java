@@ -21,12 +21,6 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 		super();
 	}
 
-	@Override
-	protected void init() {
-		super.init();
-		shiftHgvs = true;
-	}
-
 	/**
 	 * Test case: p.Gly4_Gln6dup in the sequence MKMGHQQQCC denotes a duplication
 	 * of amino acids Glycine-4 (Gly, G) to Glutamine-6 (Gln, Q) (i.e. MKMGHQGHQQQCC)
@@ -107,6 +101,7 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 
 	@Test
 	public void test_03() {
+		Gpr.debug("Test: unimplemented!");
 		throw new RuntimeException("TODO: Add same 2 tests on negative strand!");
 	}
 }
