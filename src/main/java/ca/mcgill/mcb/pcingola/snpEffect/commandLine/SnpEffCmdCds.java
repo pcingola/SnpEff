@@ -2,10 +2,10 @@ package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 
 import java.util.HashMap;
 
+import ca.mcgill.mcb.pcingola.align.SmithWaterman;
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
-import ca.mcgill.mcb.pcingola.fileIterator.SmithWaterman;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;

@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.fileIterator;
+package ca.mcgill.mcb.pcingola.align;
 
 /**
  * Needleman-Wunsch (global sequence alignment) algorithm for sequence  alignment (short strings, since it's not memory optimized)

@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.fileIterator;
+package ca.mcgill.mcb.pcingola.align;
 
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 

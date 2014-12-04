@@ -33,6 +33,11 @@ public class MarkerSeq extends Marker {
 		sequence = DnaSequence.empty();
 	}
 
+	public MarkerSeq(Marker parent, int start, int end, String seq) {
+		this(parent, start, end, false, "");
+		if (seq != null && !seq.isEmpty()) setSequence(seq);
+	}
+
 	/**
 	 * Apply variant to exon
 	 *
@@ -251,7 +256,7 @@ public class MarkerSeq extends Marker {
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + sequence.getSequence() //
-				;
+		;
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.fileIterator;
+package ca.mcgill.mcb.pcingola.align;
 
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -142,7 +142,6 @@ public class VariantRealign {
 		if (basesLeft < 0 || basesRight < 0) return false;
 
 		// Calculate new 'ref' and 'alt'
-		Gpr.debug(this);
 		refRealign = trimedSequence(sequenceRef);
 		altRealign = trimedSequence(sequenceAlt);
 

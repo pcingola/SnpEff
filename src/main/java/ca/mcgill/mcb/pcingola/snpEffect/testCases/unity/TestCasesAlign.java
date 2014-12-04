@@ -4,8 +4,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.fileIterator.NeedlemanWunsch;
-import ca.mcgill.mcb.pcingola.fileIterator.VcfRefAltAlign;
+import ca.mcgill.mcb.pcingola.align.NeedlemanWunsch;
+import ca.mcgill.mcb.pcingola.align.VcfRefAltAlign;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**

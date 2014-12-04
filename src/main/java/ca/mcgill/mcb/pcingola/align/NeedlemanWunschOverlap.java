@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.fileIterator;
+package ca.mcgill.mcb.pcingola.align;
 
 /**
  * Needleman-Wunsch algorithm for string alignment (short strings, since it's not memory optimized)

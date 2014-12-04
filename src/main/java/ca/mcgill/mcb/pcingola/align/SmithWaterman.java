@@ -1,4 +1,5 @@
-package ca.mcgill.mcb.pcingola.fileIterator;
+package ca.mcgill.mcb.pcingola.align;
+
 
 /**
  * Smith-Waterman (local sequence alignment) algorithm for sequence alignment (short strings, since it's not memory optimized)

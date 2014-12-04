@@ -48,6 +48,14 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	}
 
 	/**
+	 * Create a sequence for the whole chromsome (mostly used in test cases)
+	 */
+	public void addChromosomeSequence(String chr, String chrSeq) {
+		MarkerSeq ms = new MarkerSeq(genome.getOrCreateChromosome(chr), 0, chrSeq.length() - 1, chrSeq);
+		intervalForest.add(ms);
+	}
+
+	/**
 	 * Add sequences from genome's exons
 	 */
 	boolean addExonSequences(String chr) {
