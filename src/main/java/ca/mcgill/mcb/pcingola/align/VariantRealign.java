@@ -19,7 +19,8 @@ public class VariantRealign {
 	boolean warningReachedEndOfSequence; // Did we reached the end of the sequence (i.e. GenomicSequences could not provide sequences to continue realignment)
 	boolean realigned; // Was the variant realigned?
 	char basesRef[], basesAlt[];
-	int basesLeft, basesRight;
+	int basesTrimLeft, basesTrimRight;
+	int basesAddedLeft, basesAddedRight; // Add some bases to add context to variant's sequence
 	String sequenceRef, sequenceAlt;
 	String refRealign, altRealign; // Ref and Alt after realignment
 	GenomicSequences genSeqs; // Provides sequences
@@ -50,42 +51,56 @@ public class VariantRealign {
 	 */
 	int basesRight() {
 		int bases = 0;
-		for (int refIdx = basesRef.length - 1, altIdx = basesAlt.length - 1; refIdx >= basesLeft && altIdx >= basesLeft; refIdx--, altIdx--, bases++) {
-			Gpr.debug("bases: " + bases + "\t" + basesRef[refIdx] + "\t" + basesAlt[altIdx]);
+		for (int refIdx = basesRef.length - 1, altIdx = basesAlt.length - 1; refIdx >= basesTrimLeft && altIdx >= basesTrimLeft; refIdx--, altIdx--, bases++)
 			if (basesRef[refIdx] != basesAlt[altIdx]) return bases;
-		}
 
 		return bases;
 	}
 
 	/**
+	 * Calculate how many bases to add on each side of the sequence in order to 
+	 * give some 'anchor' or 'context' to the variant
+	 */
+	void basesToAdd() {
+		int maxVarLen = BASES_EXTRA_MULTIPLIER * Math.max(variant.getReference().length(), variant.getAlt().length());
+		int addBases = Math.min(maxVarLen, MIN_BASES_EXTRA);
+		basesAddedLeft = variant.getStart() - Math.max(0, variant.getStart() - addBases);
+		basesAddedRight = Math.min(variant.getChromosome().size() - 1, variant.getEnd() + addBases) - variant.getEnd();
+	}
+
+	/**
 	 * Create alt sequence
 	 */
-	boolean createAltSeq(int addBases) {
+	boolean createAltSeq() {
 		// First sequence base is variant.start
-		String seqPre = sequenceRef.substring(0, addBases); // These bases do not change
-		String seqVar = sequenceRef.substring(addBases); // This is where the variant is
+		String seqPre = sequenceRef.substring(0, basesAddedLeft); // These bases do not change
+		String seqVar = sequenceRef.substring(basesAddedLeft); // This is where the variant is
 
 		// Remove 'ref' part
-		String vref = variant.getReference();
+		String vref = variant.getReference().toLowerCase();
 		if (!vref.isEmpty()) {
-			// Saniti check
-			if (!sequenceRef.startsWith(vref)) throw new RuntimeException("Variant not founr in reference sequence. This should never happen!");
+			// Sanity check
+			if (!seqVar.startsWith(vref)) throw new RuntimeException("Variant not found in reference sequence. This should never happen!" //
+					+ "\n\tSeq: '" + seqVar //
+					+ "'\n\tVariant's ref: '" + vref + "'" //
+			);
 
-			seqVar = seqVar.substring(vref.length() - 1); // Remove 'ref' part
+			seqVar = seqVar.substring(vref.length()); // Remove 'ref' part
 		}
 
 		// Combine 'alt' part
 		sequenceAlt = seqPre + variant.getAlt() + seqVar;
+		Gpr.debug("Sequence alt: " + sequenceAlt);
 		return true;
 	}
 
 	/**
 	 * Create reference sequence
 	 */
-	boolean createRefSeq(int addBases) {
-		Marker m = new Marker(variant.getChromosome(), variant.getStart() - addBases, variant.getEnd() + addBases);
+	boolean createRefSeq() {
+		Marker m = new Marker(variant.getChromosome(), variant.getStart() - basesAddedLeft, variant.getEnd() + basesAddedRight);
 		sequenceRef = genSeqs.getSequence(m);
+		Gpr.debug("start: " + basesAddedLeft + "\tend:" + basesAddedRight + "\tseq: " + sequenceRef);
 		return sequenceRef != null;
 	}
 
@@ -108,11 +123,11 @@ public class VariantRealign {
 	 * 			there was an error
 	 */
 	public boolean realign() {
-		int maxVarLen = BASES_EXTRA_MULTIPLIER * Math.max(variant.getReference().length(), variant.getAlt().length());
-		int addBases = Math.min(maxVarLen, MIN_BASES_EXTRA);
+		// Calculate how many bases we can add in order to add context to the alignment
+		basesToAdd();
 
-		if (!createRefSeq(addBases)) return false;
-		if (!createAltSeq(addBases)) return false;
+		if (!createRefSeq()) return false;
+		if (!createAltSeq()) return false;
 
 		realigned = realignSeqs();
 
@@ -124,7 +139,7 @@ public class VariantRealign {
 	 */
 	public boolean realignSeqs() {
 		// Initialize
-		basesLeft = basesRight = 0;
+		basesTrimLeft = basesTrimRight = 0;
 
 		// Create ref and alt bases
 		basesRef = sequenceRef.toCharArray();
@@ -132,18 +147,18 @@ public class VariantRealign {
 
 		// Calculate how many bases to remove form each end
 		if (alignLeft) {
-			basesLeft = basesLeft();
-			basesRight = basesRight();
+			basesTrimLeft = basesLeft();
+			basesTrimRight = basesRight();
 		} else {
-			basesRight = basesRight();
-			basesLeft = basesLeft();
+			basesTrimRight = basesRight();
+			basesTrimLeft = basesLeft();
 		}
 
-		if (basesLeft < 0 || basesRight < 0) return false;
+		if (basesTrimLeft < 0 || basesTrimRight < 0) return false;
 
 		// Calculate new 'ref' and 'alt'
-		refRealign = trimedSequence(sequenceRef);
-		altRealign = trimedSequence(sequenceAlt);
+		refRealign = trimedSequence(sequenceRef).toUpperCase();
+		altRealign = trimedSequence(sequenceAlt).toUpperCase();
 
 		return false;
 	}
@@ -172,7 +187,8 @@ public class VariantRealign {
 		sb.append("\tVariant (nrealinged) : " + variantRealigned + "\n");
 		sb.append("\tReference sequence   : '" + sequenceRef + "'\n");
 		sb.append("\tAlternative sequence : '" + sequenceAlt + "'\n");
-		sb.append("\tIndexes              : left: " + basesLeft + ", right: " + basesRight + "\n");
+		sb.append("\tBases added          : left: " + basesAddedLeft + ", right: " + basesAddedRight + "\n");
+		sb.append("\tIndexes              : left: " + basesTrimLeft + ", right: " + basesTrimRight + "\n");
 		sb.append("\tRef (after realign)  : '" + refRealign + "'\n");
 		sb.append("\tAlt (after realign)  : '" + altRealign + "'\n");
 		if (warningReachedEndOfSequence) sb.append("\tWARNING: End of genomic sequences. Unable to realign further.\n");
@@ -180,8 +196,8 @@ public class VariantRealign {
 	}
 
 	String trimedSequence(String seq) {
-		int end = seq.length() - basesRight;
-		if (basesLeft <= end) return seq.substring(basesLeft, end);
+		int end = seq.length() - basesTrimRight;
+		if (basesTrimLeft <= end) return seq.substring(basesTrimLeft, end);
 		return "";
 	}
 }

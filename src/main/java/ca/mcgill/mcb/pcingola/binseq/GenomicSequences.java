@@ -117,6 +117,10 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		return seqsAdded;
 	}
 
+	public void build() {
+		intervalForest.build();
+	}
+
 	/**
 	 * List of all exons
 	 */
@@ -203,11 +207,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 			}
 		}
 
-		if (ms == null) {
-			// Nothing found? Ideally, this should not happen
-			Gpr.debug("No MarkerSeq found for '" + marker.toStr() + "'. This should never happen!");
-			return null;
-		}
+		if (ms == null) return null;
 
 		// Calculate start and end coordiantes
 		int sstart = marker.getStart() - ms.getStart();

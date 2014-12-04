@@ -139,7 +139,6 @@ public class Chromosome extends Marker {
 	public void setSequence(String sequenceStr) {
 		sequence = new DnaSequence(sequenceStr, true);
 		setLength(sequenceStr.length()); // Update chromosome length
-
 	}
 
 }

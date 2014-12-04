@@ -128,44 +128,44 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	//		Assert.assertEquals(925, variantShifted.getStart());
 	//	}
 
-	//	/**
-	//	 * Test case from Savant's poster 
-	//	 * http://www.well.ox.ac.uk/savant
-	//	 * (Márton Münz, Elise Ruark, Nazneen Rahman, Gerton Lunter)
-	//	 */
-	//	@Test
-	//	public void test_05() {
-	//		Gpr.debug("Test");
-	//		String seqRef = "AAACTGTATTT";
-	//		String seqAlt = "AAACTATTT";
-	//
-	//		VariantRealign vr = new VariantRealign();
-	//		vr.setSequenceRef(seqRef);
-	//		vr.setSequenceAlt(seqAlt);
-	//		vr.realignSeqs();
-	//		if (verbose) Gpr.debug(vr);
-	//
-	//		// Check resutls
-	//		Assert.assertEquals("GT", vr.getRefRealign());
-	//		Assert.assertEquals("", vr.getAltRealign());
-	//	}
-	//
-	//	@Test
-	//	public void test_05_opposite() {
-	//		Gpr.debug("Test");
-	//		String seqRef = "AAACTATTT";
-	//		String seqAlt = "AAACTGTATTT";
-	//
-	//		VariantRealign vr = new VariantRealign();
-	//		vr.setSequenceRef(seqRef);
-	//		vr.setSequenceAlt(seqAlt);
-	//		vr.realignSeqs();
-	//		if (verbose) Gpr.debug(vr);
-	//
-	//		// Check resutls
-	//		Assert.assertEquals("", vr.getRefRealign());
-	//		Assert.assertEquals("GT", vr.getAltRealign());
-	//	}
+	/**
+	 * Test case from Savant's poster 
+	 * http://www.well.ox.ac.uk/savant
+	 * (Márton Münz, Elise Ruark, Nazneen Rahman, Gerton Lunter)
+	 */
+	@Test
+	public void test_05() {
+		Gpr.debug("Test");
+		String seqRef = "AAACTGTATTT";
+		String seqAlt = "AAACTATTT";
+
+		VariantRealign vr = new VariantRealign();
+		vr.setSequenceRef(seqRef);
+		vr.setSequenceAlt(seqAlt);
+		vr.realignSeqs();
+		if (verbose) Gpr.debug(vr);
+
+		// Check resutls
+		Assert.assertEquals("GT", vr.getRefRealign());
+		Assert.assertEquals("", vr.getAltRealign());
+	}
+
+	@Test
+	public void test_05_opposite() {
+		Gpr.debug("Test");
+		String seqRef = "AAACTATTT";
+		String seqAlt = "AAACTGTATTT";
+
+		VariantRealign vr = new VariantRealign();
+		vr.setSequenceRef(seqRef);
+		vr.setSequenceAlt(seqAlt);
+		vr.realignSeqs();
+		if (verbose) Gpr.debug(vr);
+
+		// Check resutls
+		Assert.assertEquals("", vr.getRefRealign());
+		Assert.assertEquals("GT", vr.getAltRealign());
+	}
 
 	/**
 	 * Same as test Savant's test case, but using variant and GenomicSequences
@@ -173,19 +173,25 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	@Test
 	public void test_06() {
 		Gpr.debug("Test");
+		//		verbose = true;
+		String chr = "1";
 		String seqRef = "AAACTGTATTT";
 
-		// Create genome and sequence
+		// Create genome & chromosome 
 		Genome genome = new Genome("zzz");
+		genome.getOrCreateChromosome(chr).setSequence(seqRef);
+
+		// Create genomicSequences
 		GenomicSequences gs = genome.getGenomicSequences();
-		gs.addGeneSequences("1", seqRef);
+		gs.addChromosomeSequence(chr, seqRef);
+		gs.build();
 
 		// Create variant
-		Variant variant = new Variant(genome.getOrCreateChromosome("1"), 3, "TG", "");
+		Variant variant = new Variant(genome.getOrCreateChromosome("1"), 4, "TG", "");
 
 		// Realign variant
 		VariantRealign vr = new VariantRealign(gs, variant);
-		vr.realignSeqs();
+		vr.realign();
 		if (verbose) Gpr.debug(vr);
 
 		// Check results
