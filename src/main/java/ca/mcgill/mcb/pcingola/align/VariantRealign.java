@@ -88,7 +88,7 @@ public class VariantRealign {
 		}
 
 		// Combine 'alt' part
-		sequenceAlt = seqPre + variant.getAlt() + seqVar;
+		sequenceAlt = seqPre + variant.getAlt().toLowerCase() + seqVar;
 		return true;
 	}
 

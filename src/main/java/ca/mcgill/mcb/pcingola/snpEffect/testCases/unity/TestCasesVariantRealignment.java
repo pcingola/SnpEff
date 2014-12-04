@@ -134,7 +134,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 * (Márton Münz, Elise Ruark, Nazneen Rahman, Gerton Lunter)
 	 */
 	@Test
-	public void test_05() {
+	public void test_05_savant() {
 		Gpr.debug("Test");
 		String seqRef = "AAACTGTATTT";
 		String seqAlt = "AAACTATTT";
@@ -151,7 +151,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	}
 
 	@Test
-	public void test_05_opposite() {
+	public void test_05_savant_opposite() {
 		Gpr.debug("Test");
 		String seqRef = "AAACTATTT";
 		String seqAlt = "AAACTGTATTT";
@@ -171,7 +171,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 * Same as test Savant's test case, but using variant and GenomicSequences
 	 */
 	@Test
-	public void test_06() {
+	public void test_06_savant() {
 		Gpr.debug("Test");
 		String chr = "1";
 		String seqRef = "AAACTGTATTT";
@@ -198,5 +198,38 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 		Assert.assertEquals("", vr.getAltRealign());
 		Assert.assertEquals("chr1:4_TG/", variant.toString());
 		Assert.assertEquals("chr1:5_GT/", vr.getVariantRealigned().toString());
+	}
+
+	/**
+	 * Another test case fmor Savant's poster
+	 */
+	@Test
+	public void test_07_savant() {
+		Gpr.debug("Test");
+		String chr = "1";
+		String seqRef = "TATGTTTAGGTTTATTGCATTCT";
+
+		// Create genome & chromosome 
+		Genome genome = new Genome("zzz");
+		genome.getOrCreateChromosome(chr).setSequence(seqRef);
+
+		// Create genomicSequences
+		GenomicSequences gs = genome.getGenomicSequences();
+		gs.addChromosomeSequence(chr, seqRef);
+		gs.build();
+
+		// Create variant
+		Variant variant = new Variant(genome.getOrCreateChromosome("1"), 8, "", "GGG");
+
+		// Realign variant
+		VariantRealign vr = new VariantRealign(gs, variant);
+		vr.realign();
+		if (verbose) Gpr.debug(vr);
+
+		// Check results
+		Assert.assertEquals("", vr.getRefRealign());
+		Assert.assertEquals("GGG", vr.getAltRealign());
+		Assert.assertEquals("chr1:8_/GGG", variant.toString());
+		Assert.assertEquals("chr1:10_/GGG", vr.getVariantRealigned().toString());
 	}
 }
