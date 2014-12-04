@@ -198,9 +198,6 @@ public class Variant extends Marker {
 		this(parent, position, referenceStr, altStr, "");
 	}
 
-	/**
-	 * Create a variant
-	 */
 	public Variant(Marker parent, int position, String referenceStr, String altStr, String id) {
 		super(parent, position, position, false, id);
 		init(parent, position, referenceStr, altStr, null, id);
@@ -330,6 +327,10 @@ public class Variant extends Marker {
 
 	public boolean isMnp() {
 		return variantType == VariantType.MNP;
+	}
+
+	public boolean isNonRef() {
+		return false;
 	}
 
 	@Override

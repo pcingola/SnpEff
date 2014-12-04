@@ -1647,7 +1647,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Get some details about the effect on this transcript
 	 */
 	@Override
-	public boolean variantEffect(Variant variant, VariantEffects variantsEffect) {
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
 
 		//---
@@ -1657,7 +1657,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Utr utr : utrs)
 			if (utr.intersects(variant)) {
 				// Calculate the effect
-				utr.variantEffect(variant, variantsEffect);
+				utr.variantEffect(variant, variantEffects);
 				included |= utr.includes(variant); // Is this variant fully included in the UTR?
 			}
 		if (included) return true; // SeqChange fully included in the UTR? => We are done.
@@ -1669,7 +1669,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (SpliceSiteBranch ssbranch : spliceBranchSites)
 			if (ssbranch.intersects(variant)) {
 				// Calculate the effect
-				ssbranch.variantEffect(variant, variantsEffect);
+				ssbranch.variantEffect(variant, variantEffects);
 				included |= ssbranch.includes(variant); // Is this variant fully included branch site?
 			}
 		if (included) return true; // SeqChange fully included in the Branch site? => We are done.
@@ -1677,7 +1677,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Does it hit an intron?
 		for (Intron intron : introns())
 			if (intron.intersects(variant)) {
-				variantsEffect.addEffect(intron, EffectType.INTRON, "");
+				variantEffects.addEffect(intron, EffectType.INTRON, "");
 				included |= intron.includes(variant); // Is this variant fully included in this intron?
 			}
 		if (included) return true; // SeqChange fully included? => We are done.
@@ -1690,8 +1690,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (!subintervals().isEmpty()) {
 				// Add all exons
 				for (Exon exon : this)
-					if (exon.intersects(variant)) variantsEffect.addEffect(exon, EffectType.EXON, "");
-			} else variantsEffect.addEffect(this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
+					if (exon.intersects(variant)) variantEffects.addEffect(exon, EffectType.EXON, "");
+			} else variantEffects.addEffect(this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
 
 			// Ok, we are done
 			return true;
@@ -1703,7 +1703,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		//---
 		if (isCds(variant)) {
 			// Get codon change effect
-			CodonChange codonChange = CodonChange.factory(variant, this, variantsEffect);
+			CodonChange codonChange = CodonChange.factory(variant, this, variantEffects);
 			codonChange.codonChange();
 			return true;
 		}

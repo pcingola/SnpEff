@@ -442,7 +442,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 * Get some details about the effect on this gene
 	 */
 	@Override
-	public boolean variantEffect(Variant variant, Variant variantRef, VariantEffects variantEffects) {
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
 
 		//---
@@ -459,10 +459,8 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		//---
 		boolean shifted3prime = false;
 		if (!variant.isSnp() && Config.get().isShiftHgvs() && isStrandPlus()) {
-
 			// Get sequence information. Might have to load sequences from database
 			variant = variant.realignLeft();
-			if (variantRef != null) variantRef = variantRef.realignLeft();
 
 			// Created a new variant? => It was shifted towards the left (i.e. 3-prime)
 			shifted3prime = (variant != variantOri);
@@ -476,7 +474,10 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		boolean hitTranscript = false;
 		for (Transcript tr : this) {
 			// Apply sequence change to create new 'reference'?
-			if (variantRef != null) tr = tr.apply(variantRef);
+			if (variant.isNonRef()) {
+				Variant vref = ((VariantNonRef) variant).getVariantRef();
+				tr = tr.apply(vref);
+			}
 
 			// Calculate effects
 			hitTranscript |= tr.variantEffect(variant, variantEffects);
