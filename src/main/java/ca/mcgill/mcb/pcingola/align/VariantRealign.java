@@ -3,7 +3,6 @@ package ca.mcgill.mcb.pcingola.align;
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Re-align a variant towards the leftmost (rightmost) position
@@ -58,7 +57,7 @@ public class VariantRealign {
 	}
 
 	/**
-	 * Calculate how many bases to add on each side of the sequence in order to 
+	 * Calculate how many bases to add on each side of the sequence in order to
 	 * give some 'anchor' or 'context' to the variant
 	 */
 	void basesToAdd() {
@@ -90,7 +89,25 @@ public class VariantRealign {
 
 		// Combine 'alt' part
 		sequenceAlt = seqPre + variant.getAlt() + seqVar;
-		Gpr.debug("Sequence alt: " + sequenceAlt);
+		return true;
+	}
+
+	/**
+	 * Create a new variant reflecting the realignment
+	 * @return true if a new variant is created
+	 */
+	boolean createRealignedVariant() {
+		// Calculate new coordinates
+		int start = variant.getStart() - basesAddedLeft + basesTrimLeft;
+		int end = variant.getEnd() + basesAddedRight - basesTrimRight;
+		if (end < start) end = start;
+
+		// Do we need to create a new variant?
+		if (start == variant.getStart() && end == variant.getEnd()) return false;
+
+		// Create new variant
+		variantRealigned = new Variant(variant.getParent(), start, refRealign, altRealign, variant.getId());
+
 		return true;
 	}
 
@@ -100,7 +117,6 @@ public class VariantRealign {
 	boolean createRefSeq() {
 		Marker m = new Marker(variant.getChromosome(), variant.getStart() - basesAddedLeft, variant.getEnd() + basesAddedRight);
 		sequenceRef = genSeqs.getSequence(m);
-		Gpr.debug("start: " + basesAddedLeft + "\tend:" + basesAddedRight + "\tseq: " + sequenceRef);
 		return sequenceRef != null;
 	}
 
@@ -126,12 +142,16 @@ public class VariantRealign {
 		// Calculate how many bases we can add in order to add context to the alignment
 		basesToAdd();
 
+		// Create ref and alt sequences
 		if (!createRefSeq()) return false;
 		if (!createAltSeq()) return false;
 
+		// Realign
 		realigned = realignSeqs();
+		if (!realigned) return false;
 
-		return realigned;
+		// Create new variant
+		return createRealignedVariant();
 	}
 
 	/**
@@ -160,7 +180,7 @@ public class VariantRealign {
 		refRealign = trimedSequence(sequenceRef).toUpperCase();
 		altRealign = trimedSequence(sequenceAlt).toUpperCase();
 
-		return false;
+		return true;
 	}
 
 	public void setAlignLeft() {
@@ -184,7 +204,7 @@ public class VariantRealign {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Realigned: " + (realigned ? "Yes" : "No") + "\n");
 		sb.append("\tVariant (original)   : " + variant + "\n");
-		sb.append("\tVariant (nrealinged) : " + variantRealigned + "\n");
+		sb.append("\tVariant (realinged)  : " + variantRealigned + "\n");
 		sb.append("\tReference sequence   : '" + sequenceRef + "'\n");
 		sb.append("\tAlternative sequence : '" + sequenceAlt + "'\n");
 		sb.append("\tBases added          : left: " + basesAddedLeft + ", right: " + basesAddedRight + "\n");

@@ -173,7 +173,6 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	@Test
 	public void test_06() {
 		Gpr.debug("Test");
-		//		verbose = true;
 		String chr = "1";
 		String seqRef = "AAACTGTATTT";
 
@@ -197,5 +196,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 		// Check results
 		Assert.assertEquals("GT", vr.getRefRealign());
 		Assert.assertEquals("", vr.getAltRealign());
+		Assert.assertEquals("chr1:4_TG/", variant.toString());
+		Assert.assertEquals("chr1:5_GT/", vr.getVariantRealigned().toString());
 	}
 }
