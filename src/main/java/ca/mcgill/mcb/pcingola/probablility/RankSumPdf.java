@@ -4,7 +4,6 @@ import org.apfloat.Apcomplex;
 import org.apfloat.Apfloat;
 
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import flanagan.analysis.Stat;
 
 /**
  * 
@@ -191,7 +190,7 @@ public class RankSumPdf {
 
 		for( double x = 0.0; x > -100; x -= 1.0 ) {
 			Apfloat cdf = NormalDistribution.cdf(x, 0.0, 1.0);
-			Gpr.debug("x: " + x + "\tcdf: " + cdf + "\tcdfOri: " + DistLib.normal.cumulative(x, 0.0, 1.0) + "\t" + Stat.normalPDF(0.0, 1.0, x));
+			Gpr.debug("x: " + x + "\tcdf: " + cdf + "\tcdfOri: " + DistLib.normal.cumulative(x, 0.0, 1.0) + "\t" + new org.apache.commons.math3.distribution.NormalDistribution(0.0, 1.0).density(x));
 		}
 
 		System.out.println("End: RankSumPdf");

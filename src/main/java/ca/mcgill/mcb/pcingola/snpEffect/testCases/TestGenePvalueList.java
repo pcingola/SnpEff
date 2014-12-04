@@ -4,10 +4,12 @@ import java.util.Random;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.apache.commons.math3.distribution.ChiSquaredDistribution;
+
 import ca.mcgill.mcb.pcingola.gsa.ScoreList;
 import ca.mcgill.mcb.pcingola.gsa.ScoreList.ScoreSummary;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import flanagan.analysis.Stat;
 
 /**
  * GenePvalueList statistics test case
@@ -89,7 +91,7 @@ public class TestGenePvalueList extends TestCase {
 
 			// Calculate complementary probabilities
 			double pval = ScoreList.chiSquareCDFComplementary(chi2, degOfFreedom);
-			double prob = Stat.chiSquareCDF(chi2, degOfFreedom);
+			double prob = new ChiSquaredDistribution(degOfFreedom).cumulativeProbability(chi2);
 
 			// Assert that statistics add to 1.0
 			Assert.assertEquals(1.0, pval + prob);
