@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import java.util.LinkedList;
 
+import ca.mcgill.mcb.pcingola.align.VariantRealign;
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
@@ -397,6 +398,25 @@ public class Variant extends Marker {
 		return netChange;
 	}
 
+	//	/**
+	//	 * Create a new variant realigning it towards the leftmost position
+	//	 */
+	//	public Variant realignLeft() {
+	//		GenomicSequences gs = getGenome().getGenomicSequences();
+	//		if (gs == null) return this;
+	//
+	//		// Can we shift?
+	//		int shift = gs.realignLeft(this);
+	//		if (shift <= 0) return this;
+	//
+	//		// OK, create a cloned variant with a shifted position
+	//		Variant vnew = clone();
+	//		vnew.start += shift;
+	//		vnew.end += shift;
+	//
+	//		return vnew;
+	//	}
+
 	/**
 	 * Create a new variant realigning it towards the leftmost position
 	 */
@@ -404,16 +424,9 @@ public class Variant extends Marker {
 		GenomicSequences gs = getGenome().getGenomicSequences();
 		if (gs == null) return this;
 
-		// Can we shift?
-		int shift = gs.realignLeft(this);
-		if (shift <= 0) return this;
-
-		// OK, create a cloned variant with a shifted position
-		Variant vnew = clone();
-		vnew.start += shift;
-		vnew.end += shift;
-
-		return vnew;
+		VariantRealign vr = new VariantRealign(gs, this);
+		if (!vr.realign()) return this;
+		return vr.getVariantRealigned();
 	}
 
 	/**
