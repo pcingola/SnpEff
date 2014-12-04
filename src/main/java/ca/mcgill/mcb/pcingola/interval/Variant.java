@@ -398,25 +398,6 @@ public class Variant extends Marker {
 		return netChange;
 	}
 
-	//	/**
-	//	 * Create a new variant realigning it towards the leftmost position
-	//	 */
-	//	public Variant realignLeft() {
-	//		GenomicSequences gs = getGenome().getGenomicSequences();
-	//		if (gs == null) return this;
-	//
-	//		// Can we shift?
-	//		int shift = gs.realignLeft(this);
-	//		if (shift <= 0) return this;
-	//
-	//		// OK, create a cloned variant with a shifted position
-	//		Variant vnew = clone();
-	//		vnew.start += shift;
-	//		vnew.end += shift;
-	//
-	//		return vnew;
-	//	}
-
 	/**
 	 * Create a new variant realigning it towards the leftmost position
 	 */

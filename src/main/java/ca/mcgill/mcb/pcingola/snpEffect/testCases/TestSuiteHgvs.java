@@ -12,6 +12,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsLarge
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDup;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDupNegative;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsProtDup;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVariantRealignment;
 
 /**
  * Invoke all test cases for SnpEff
@@ -19,7 +20,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsProtDup;
  * @author pcingola
  */
 @RunWith(Suite.class)
-@SuiteClasses({ TestCasesHgvsExon.class, //
+@SuiteClasses({ TestCasesVariantRealignment.class, //
+		TestCasesHgvsExon.class, //
 		TestCasesHgvsIntron.class, //
 		TestCasesHgvsDnaDup.class, //
 		TestCasesHgvsDnaDupNegative.class, //

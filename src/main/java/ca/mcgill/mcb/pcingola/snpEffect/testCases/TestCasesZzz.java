@@ -6,8 +6,13 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
+import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Hgvs;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -32,9 +37,8 @@ public class TestCasesZzz extends TestCasesBase {
 		snpeff.setDebug(debug);
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);
-
-		// The problem appears when splice site is large (in this example)
 		snpeff.setUpDownStreamLength(0);
+		snpeff.setShiftHgvs(shiftHgvs);
 
 		// Run & get result (single line)
 		List<VcfEntry> results = snpeff.run(true);
@@ -93,6 +97,12 @@ public class TestCasesZzz extends TestCasesBase {
 		}
 
 		System.out.println("Count OKs:\tHGVS (DNA): " + countOkC + "\tHGVS (Protein): " + countOkP);
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+		shiftHgvs = true;
 	}
 
 	//	/**
@@ -163,14 +173,59 @@ public class TestCasesZzz extends TestCasesBase {
 	//		compareHgvs(genome, vcf, true);
 	//	}
 
+	//	@Test
+	//	public void test_zzz() {
+	//		Gpr.debug("Test");
+	//		verbose = true;
+	//		HgvsDna.debug = true;
+	//		String genome = "testHg19Chr13";
+	//		String vcf = "tests/zzz.vcf";
+	//		compareHgvs(genome, vcf, true);
+	//	}
+
+	/**
+	 * Test case from http://www.hgvs.org/mutnomen/recs-DNA.html
+	 * 		g.7_8dup (or g.7_8dupTG, not g.5_6dup, not g.8_9insTG) denotes a TG duplication
+	 * 		in the TG-tandem repeat sequence changing ACTTTGTGCC to ACTTTGTGTGCC
+	 */
 	@Test
-	public void test_zzz() {
+	public void test_05() {
 		Gpr.debug("Test");
+
+		String prepend = "ACTTTGTGCC";
+
 		verbose = true;
-		HgvsDna.debug = true;
-		String genome = "testHg19Chr13";
-		String vcf = "tests/zzz.vcf";
-		compareHgvs(genome, vcf, true);
+
+		GenomicSequences gs = genome.getGenomicSequences();
+		Exon ex = transcript.sorted().get(0);
+		String seq = gs.getSequence(ex);
+		System.out.println("Seq (before): " + seq //
+				+ "\nExon seq    : " + ex.getSequence() //
+		);
+
+		prependSequenceToFirstExon(prepend);
+		if (verbose) Gpr.debug(transcript);
+
+		seq = gs.getSequence(ex);
+		System.out.println("Seq (after) : " + seq //
+				+ "\nExon seq    : " + ex.getSequence() //
+		);
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 888, "", "TG", "");
+		if (verbose) Gpr.debug("Variant: " + variant);
+
+		// Analyze variant
+		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
+
+		// Calculate HGVS
+		VariantEffect eff = effs.get();
+		HgvsDna hgvsc = new HgvsDna(eff);
+		String hgvsDna = hgvsc.toString();
+
+		// Check result
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		Assert.assertEquals("c.7_8dupTG", hgvsDna);
 	}
 
 }

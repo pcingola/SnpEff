@@ -5,6 +5,7 @@ import java.util.Random;
 import org.junit.After;
 import org.junit.Before;
 
+import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -89,7 +90,7 @@ public class TestCasesBase {
 
 	/**
 	 * Create a predictor
-	 * For the default parameters the first predictor 
+	 * For the default parameters the first predictor
 	 * created has only one transcript:
 	 * 		1:880-1001, strand: +, id:transcript_0, Protein
 	 * 		Exons:
@@ -144,10 +145,22 @@ public class TestCasesBase {
 	 * Prepend first's exons sequence with a given one
 	 */
 	protected void prependSequenceToFirstExon(String prepend) {
-		Exon firstEx = transcript.sortedStrand().get(0);
-		String seq = firstEx.getSequence();
-		firstEx.setSequence(prepend + seq);
+		// Change coding sequence
+		Exon ex = transcript.sortedStrand().get(0);
+		String seq = ex.getSequence();
+		ex.setSequence(prepend + seq);
+
+		// Reset transcript
 		transcript.resetCdsCache();
+
+		// Change chromosome sequence
+		chromoSequence = chromoSequence.substring(0, ex.getStart()) + ex.getSequence() + chromoSequence.substring(ex.getEnd() + 1);
+
+		// Rebuild genomicSequences
+		GenomicSequences gs = genome.getGenomicSequences();
+		gs.reset();
+		gs.addGeneSequences(chromosome.getId(), chromoSequence);
+		gs.build();
 	}
 
 }

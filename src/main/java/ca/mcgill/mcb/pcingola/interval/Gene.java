@@ -466,7 +466,6 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 			// Created a new variant? => It was shifted towards the left (i.e. 3-prime)
 			shifted3prime = (variant != variantOri);
-			Gpr.debug("Shifted: " + shifted3prime + "\t" + variant);
 		}
 
 		//---

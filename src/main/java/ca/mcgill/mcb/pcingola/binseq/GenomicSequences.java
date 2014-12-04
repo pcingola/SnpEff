@@ -285,51 +285,9 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		return addExonSequences(chr);
 	}
 
-	//	/**
-	//	 * How many bases can a variant be shifted to the left?
-	//	 * Note: This may trigger loading database sequences
-	//	 * @return Positive number, if a shift can be performed, zero if there is no shift, negative number on error
-	//	 */
-	//	public int realignLeft(Variant variant) {
-	//		if (!variant.isInDel()) return 0; // Only InDels
-	//
-	//		// TODO:
-	//		// This should be like alignment algorithm
-	//		// May be we should use VCF's alignment (see VcfRefAltAlign.simpleAlign)
-	//		//
-	//		// i) Get sequence => 's1'
-	//		// ii) Apply variant to sequence => 's2'
-	//		// iii) Trim common bases form the ends of s1 and s2
-	//		// iv) Variant hits the end => we needed more bases in the trainling sequences (if we don't have any more -end of gene-, just use this)
-	//
-	//		// Load sequence if we don't have them
-	//		String chr = variant.getChromosomeName();
-	//		if (!hasChromosome(chr) && !loadOrCreateFromGenome(chr)) return -1; // Error: Cannot load chromosme sequences
-	//
-	//		// Shift variant
-	//		String change = variant.isIns() ? variant.getAlt() : variant.getReference();
-	//		int len = change.length();
-	//		if (len == 0) return 0;
-	//
-	//		int start = variant.getStart();
-	//		int newStart = start;
-	//		String seq = "";
-	//		for (int i = 0; i < MAX_ITERATIONS; newStart += len, i++) {
-	//			int end = newStart + (len - 1);
-	//			Marker m = new Marker(variant.getChromosome(), newStart, end, false, "");
-	//			seq = getSequence(m);
-	//			if (seq == null || !seq.equalsIgnoreCase(change)) break;
-	//		}
-	//
-	//		// Calculate shift positions (ins and dels) are different
-	//		int diff = newStart - start;
-	//		if (variant.isDel()) {
-	//			if (diff > len) return diff - len; // Deletion will always match one time
-	//			return 0;
-	//		}
-	//
-	//		return diff;
-	//	}
+	public void reset() {
+		intervalForest = new IntervalForest();
+	}
 
 	/**
 	 * Save genomic sequence into separate files (per chromosome)

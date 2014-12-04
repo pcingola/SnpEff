@@ -151,7 +151,8 @@ public class VariantRealign {
 		if (!realigned) return false;
 
 		// Create new variant
-		return createRealignedVariant();
+		boolean ok = createRealignedVariant();
+		return ok;
 	}
 
 	/**

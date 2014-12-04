@@ -128,7 +128,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	}
 
 	/**
-	 * Test case from Savant's poster 
+	 * Test case from Savant's poster
 	 * http://www.well.ox.ac.uk/savant
 	 * (Márton Münz, Elise Ruark, Nazneen Rahman, Gerton Lunter)
 	 */
@@ -175,7 +175,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 		String chr = "1";
 		String seqRef = "AAACTGTATTT";
 
-		// Create genome & chromosome 
+		// Create genome & chromosome
 		Genome genome = new Genome("zzz");
 		genome.getOrCreateChromosome(chr).setSequence(seqRef);
 
@@ -208,7 +208,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 		String chr = "1";
 		String seqRef = "TATGTTTAGGTTTATTGCATTCT";
 
-		// Create genome & chromosome 
+		// Create genome & chromosome
 		Genome genome = new Genome("zzz");
 		genome.getOrCreateChromosome(chr).setSequence(seqRef);
 
