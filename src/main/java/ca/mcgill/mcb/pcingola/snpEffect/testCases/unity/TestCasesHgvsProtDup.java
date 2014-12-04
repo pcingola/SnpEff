@@ -98,10 +98,4 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 		Assert.assertEquals("c.19_24dupCATCAG", hgvsDna);
 		Assert.assertEquals("p.His7_Gln8dup", hgvsProt);
 	}
-
-	@Test
-	public void test_03() {
-		Gpr.debug("Test: unimplemented!");
-		throw new RuntimeException("TODO: Add same 2 tests on negative strand!");
-	}
 }
