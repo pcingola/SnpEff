@@ -117,7 +117,7 @@ public class TestCasesGenePvalueList {
 
 		// Check pvalues
 		double pvalue = gpl.score(ScoreSummary.FISHER_CHI_SQUARE);
-		Assert.assertEquals(0.02156175132483462, pvalue);
+		Assert.assertEquals(0.021561751324834642, pvalue);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class TestCasesGenePvalueList {
 
 		// Check pvalues
 		double pvalue = gpl.score(ScoreSummary.Z_SCORES);
-		Assert.assertEquals(0.01651203252368999, pvalue);
+		Assert.assertEquals(0.01651203260896289, pvalue);
 	}
 
 	/**
