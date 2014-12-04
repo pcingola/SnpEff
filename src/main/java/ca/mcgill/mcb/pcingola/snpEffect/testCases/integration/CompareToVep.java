@@ -23,15 +23,17 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class CompareToVep {
 
-	boolean strict = false;
-	boolean onlyProtein = false;
+	boolean debug = false;
+	boolean verbose = false;
+
 	boolean compareEffect = true;
 	boolean compareHgvsDna = false;
 	boolean compareHgvsProt = false;
-	boolean debug = false;
-	boolean verbose = false;
-	boolean throwException = true;
+	boolean onlyProtein = false;
 	boolean shiftHgvs = false;
+	boolean strict = false;
+	boolean throwException = true;
+
 	String genomeName;
 	String addArgs[];
 	VcfConsequenceHeader vcfCsqHeader;
@@ -64,6 +66,7 @@ public class CompareToVep {
 		args.add("-noLog");
 		if (strict) args.add("-strict");
 		if (onlyProtein) args.add("-onlyProtein");
+		if (!shiftHgvs) args.add("-noShiftHgvs");
 		args.add(genomeName);
 		args.add(vcf);
 
@@ -220,7 +223,7 @@ public class CompareToVep {
 					+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'\t" + (compareHgvsDna(eff, csq) ? "OK" : "BAD") //
 					+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'\t" + (compareHgvsProt(eff, csq) ? "OK" : "BAD") //
 					+ "\n" //
-					);
+			);
 		}
 
 		return (!compareHgvsDna || compareHgvsDna(eff, csq)) //
@@ -321,7 +324,7 @@ public class CompareToVep {
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		cmdEff.setDebug(debug);
-		cmdEff.setShiftHgvs(shiftHgvs);
+		//		cmdEff.setShiftHgvs(shiftHgvs);
 
 		cmdEff.getConfig();
 
