@@ -1,1 +1,18 @@
-15	89877904	.	C	T	.	.	AC=1;SO=splice_region_variant,5_prime_UTR_variant;AA=-;CODON=-;HGVSc=ENST00000268124.5:c.-160G>A
+# This file is based on Counsyl's HGVS project
+# Reference https://github.com/counsyl/hgvs
+# Source    https://github.com/counsyl/hgvs/blob/master/hgvs/tests/test_hgvs_names.py
+#
+# Note: Several discrepancies (errros?) where corrected
+# Entries removed (I think there are errors) 
+#	chr1	76199214	.	AGGTCTT	A	.	.	CSQ=NM_000016.4|NM_000016.4:c.291_296delTCTTGG|
+#	chr1	76199232	.	T	TG	.	.	CSQ=NM_000016.4|NM_000016.4:c.306_307insG|
+#	chr1	76198564	.	C	CT	.	.	CSQ=NM_000016.4|NM_000016.4:c.244dupT|
+#	chr1	76227049	.	C	CT	.	.	CSQ=NM_000016.4|NM_000016.4:c.1189dupT|
+#	chr1	76199232	.	T	TG	.	.	CSQ=NM_000016.4|NM_000016.4:c.306_307insG|
+#	chr7	117180210	.	CCTT	C	.	.	CSQ=NM_000492.3|NM_000492.3:c.935_937delTCT|
+#	chr7	117182104	.	A	AAT	.	.	CSQ=NM_000492.3|NM_000492.3:c.1155_1156insAT|
+#	chr7	117292905	.	A	AT	.	.	CSQ=NM_000492.3|NM_000492.3:c.3889dupT|
+#
+##INFO=<ID=CSQ,Number=.,Type=String,Description="Format: Feature|HGVSc|HGVSp">
+#CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO|
+chr1	76199309	.	TG	T	.	.	CSQ=NM_000016.4|NM_000016.4:c.384delG|
