@@ -174,9 +174,12 @@ public class SnpEffectPredictor implements Serializable {
 		for (Marker upDownStream : genome.getGenes().createUpDownStream(upDownStreamLength))
 			markers.add(upDownStream);
 
+		//		// Add splice site intervals
+		//		for (Marker spliceSite : genome.getGenes().createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax))
+		//			markers.add(spliceSite);
+
 		// Add splice site intervals
-		for (Marker spliceSite : genome.getGenes().createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax))
-			markers.add(spliceSite);
+		genome.getGenes().createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax);
 
 		// Intergenic markers
 		for (Intergenic intergenic : genome.getGenes().createIntergenic())

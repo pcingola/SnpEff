@@ -360,33 +360,36 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			// Add all exons
 			for (Transcript tr : this)
 				for (Exon ex : tr)
-					if (ex.getSpliceSiteAcceptor() != null) all.add(ex.getSpliceSiteAcceptor());
+					for (SpliceSite ss : ex.getSpliceSites())
+						if (ss instanceof SpliceSiteAcceptor) all.add(ss);
 			break;
 
 		case SPLICE_SITE_BRANCH:
 			// Add all exons
 			for (Transcript tr : this)
-				for (SpliceSiteBranch ssb : tr.getSpliceBranchSites())
-					all.add(ssb);
+				for (SpliceSite ss : tr.spliceSites())
+					if (ss instanceof SpliceSiteBranch) all.add(ss);
 			break;
 
 		case SPLICE_SITE_DONOR:
 			// Add all exons
 			for (Transcript tr : this)
 				for (Exon ex : tr)
-					if (ex.getSpliceSiteDonor() != null) all.add(ex.getSpliceSiteDonor());
+					for (SpliceSite ss : ex.getSpliceSites())
+						if (ss instanceof SpliceSiteDonor) all.add(ss);
 			break;
 
 		case SPLICE_SITE_REGION:
 			// Add all exons
 			for (Transcript tr : this) {
 				for (Exon ex : tr) {
-					if (ex.getSpliceSiteRegionStart() != null) all.add(ex.getSpliceSiteRegionStart());
-					if (ex.getSpliceSiteRegionEnd() != null) all.add(ex.getSpliceSiteRegionEnd());
+					for (SpliceSite ss : ex.getSpliceSites())
+						if (ss instanceof SpliceSiteRegion) all.add(ss);
 				}
+
 				for (Intron intron : tr.introns()) {
-					if (intron.getSpliceSiteRegionStart() != null) all.add(intron.getSpliceSiteRegionStart());
-					if (intron.getSpliceSiteRegionEnd() != null) all.add(intron.getSpliceSiteRegionEnd());
+					for (SpliceSite ss : intron.getSpliceSites())
+						if (ss instanceof SpliceSiteRegion) all.add(ss);
 				}
 			}
 

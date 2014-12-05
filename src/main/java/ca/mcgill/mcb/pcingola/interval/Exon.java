@@ -1,5 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval;
 
+import java.util.ArrayList;
+
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
@@ -35,15 +37,17 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	byte frame = -1; // Frame can be {-1, 0, 1, 2}, where '-1' means unknown
 	int rank; // Exon rank in transcript
 	int aaIdxStart = -1, aaIdxEnd = -1; // First and last AA indexes that intersect with this exon
-	SpliceSiteAcceptor spliceSiteAcceptor;
-	SpliceSiteDonor spliceSiteDonor;
-	SpliceSiteRegion spliceSiteRegionStart, spliceSiteRegionEnd;
+	//	SpliceSiteAcceptor spliceSiteAcceptor;
+	//	SpliceSiteDonor spliceSiteDonor;
+	//	SpliceSiteRegion spliceSiteRegionStart, spliceSiteRegionEnd;
+	ArrayList<SpliceSite> spliceSites;
 	ExonSpliceType spliceType = ExonSpliceType.NONE;
 
 	public Exon() {
 		super();
 		rank = 0;
 		type = EffectType.EXON;
+		spliceSites = new ArrayList<SpliceSite>();
 	}
 
 	public Exon(Transcript parent, int start, int end, boolean strandMinus, String id, int rank) {
@@ -51,6 +55,14 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		this.strandMinus = strandMinus;
 		this.rank = rank;
 		type = EffectType.EXON;
+		spliceSites = new ArrayList<SpliceSite>();
+	}
+
+	/**
+	 * Add a splice site to the collection
+	 */
+	public void add(SpliceSite ss) {
+		spliceSites.add(ss);
 	}
 
 	/**
@@ -65,9 +77,9 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		// Create new exon with updated coordinates
 		Exon ex = (Exon) super.apply(variant);
 
-		// Update sites
-		if (spliceSiteAcceptor != null) ex.spliceSiteAcceptor = (SpliceSiteAcceptor) spliceSiteAcceptor.apply(variant);
-		if (spliceSiteDonor != null) ex.spliceSiteDonor = (SpliceSiteDonor) spliceSiteDonor.apply(variant);
+		// Update splice sites
+		for (SpliceSite ss : spliceSites)
+			ex.add((SpliceSite) ss.apply(variant));
 
 		return ex;
 	}
@@ -76,8 +88,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 * Create a splice site acceptor of 'maxSize' length
 	 */
 	public SpliceSiteAcceptor createSpliceSiteAcceptor(int size) {
-		if (spliceSiteAcceptor != null) return spliceSiteAcceptor;
-
 		size = size - 1;
 		if (size < 0) return null;
 
@@ -93,7 +103,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		Intron intron = ((Transcript) parent).findIntron(ssstart);
 		if (intron == null) return null;
 
-		spliceSiteAcceptor = new SpliceSiteAcceptor(intron, ssstart, ssend, strandMinus, id);
+		SpliceSiteAcceptor spliceSiteAcceptor = new SpliceSiteAcceptor(intron, ssstart, ssend, strandMinus, id);
+		add(spliceSiteAcceptor);
 
 		return spliceSiteAcceptor;
 	}
@@ -102,8 +113,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 * Create a splice site donor of 'maxSize' length
 	 */
 	public SpliceSiteDonor createSpliceSiteDonor(int size) {
-		if (spliceSiteDonor != null) return spliceSiteDonor;
-
 		size = size - 1;
 		if (size < 0) return null;
 
@@ -119,7 +128,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		Intron intron = ((Transcript) parent).findIntron(ssstart);
 		if (intron == null) return null;
 
-		spliceSiteDonor = new SpliceSiteDonor(intron, ssstart, ssend, strandMinus, id);
+		SpliceSiteDonor spliceSiteDonor = new SpliceSiteDonor(intron, ssstart, ssend, strandMinus, id);
+		add(spliceSiteDonor);
 
 		return spliceSiteDonor;
 	}
@@ -128,13 +138,14 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 * Create splice site regions
 	 */
 	public SpliceSiteRegion createSpliceSiteRegionEnd(int size) {
-		if (spliceSiteRegionEnd != null) return spliceSiteRegionEnd;
-
 		if (size > size()) size = size(); // Cannot be larger than this marker
 		if (size <= 0) return null;
 
+		SpliceSiteRegion spliceSiteRegionEnd = null;
 		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (size - 1), end, strandMinus, id);
 		else spliceSiteRegionEnd = new SpliceSiteRegion(this, start, start + (size - 1), strandMinus, id);
+
+		if (spliceSiteRegionEnd != null) add(spliceSiteRegionEnd);
 
 		return spliceSiteRegionEnd;
 	}
@@ -143,13 +154,14 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 * Create splice site regions
 	 */
 	public SpliceSiteRegion createSpliceSiteRegionStart(int size) {
-		if (spliceSiteRegionStart != null) return spliceSiteRegionStart;
-
 		if (size > size()) size = size(); // Cannot be larger than this marker
 		if (size <= 0) return null;
 
+		SpliceSiteRegion spliceSiteRegionStart = null;
 		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start, start + (size - 1), strandMinus, id);
 		else spliceSiteRegionStart = new SpliceSiteRegion(this, end - (size - 1), end, strandMinus, id);
+
+		if (spliceSiteRegionStart != null) add(spliceSiteRegionStart);
 
 		return spliceSiteRegionStart;
 	}
@@ -201,21 +213,25 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		return rank;
 	}
 
-	public SpliceSiteAcceptor getSpliceSiteAcceptor() {
-		return spliceSiteAcceptor;
+	public ArrayList<SpliceSite> getSpliceSites() {
+		return spliceSites;
 	}
 
-	public SpliceSiteDonor getSpliceSiteDonor() {
-		return spliceSiteDonor;
-	}
-
-	public SpliceSiteRegion getSpliceSiteRegionEnd() {
-		return spliceSiteRegionEnd;
-	}
-
-	public SpliceSiteRegion getSpliceSiteRegionStart() {
-		return spliceSiteRegionStart;
-	}
+	//	public SpliceSiteAcceptor getSpliceSiteAcceptor() {
+	//		return spliceSiteAcceptor;
+	//	}
+	//
+	//	public SpliceSiteDonor getSpliceSiteDonor() {
+	//		return spliceSiteDonor;
+	//	}
+	//
+	//	public SpliceSiteRegion getSpliceSiteRegionEnd() {
+	//		return spliceSiteRegionEnd;
+	//	}
+	//
+	//	public SpliceSiteRegion getSpliceSiteRegionStart() {
+	//		return spliceSiteRegionStart;
+	//	}
 
 	public ExonSpliceType getSpliceType() {
 		return spliceType;
@@ -232,8 +248,10 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	@Override
 	public Markers query(Marker marker) {
 		Markers markers = new Markers();
-		if ((spliceSiteAcceptor != null) && marker.intersects(spliceSiteAcceptor)) markers.add(spliceSiteAcceptor);
-		if ((spliceSiteDonor != null) && marker.intersects(spliceSiteDonor)) markers.add(spliceSiteDonor);
+
+		for (SpliceSite ss : spliceSites)
+			if (ss.intersects(marker)) markers.add(ss);
+
 		return markers;
 	}
 
@@ -282,8 +300,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		frame = (byte) markerSerializer.getNextFieldInt();
 		rank = markerSerializer.getNextFieldInt();
 		setSequence(markerSerializer.getNextField());
-		spliceSiteDonor = (SpliceSiteDonor) markerSerializer.getNextFieldMarker();
-		spliceSiteAcceptor = (SpliceSiteAcceptor) markerSerializer.getNextFieldMarker();
+		//		spliceSiteDonor = (SpliceSiteDonor) markerSerializer.getNextFieldMarker();
+		//		spliceSiteAcceptor = (SpliceSiteAcceptor) markerSerializer.getNextFieldMarker();
 
 		String exType = markerSerializer.getNextField();
 		if ((exType != null) && !exType.isEmpty()) spliceType = ExonSpliceType.valueOf(exType);
@@ -291,19 +309,19 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 	/**
 	 * Create a string to serialize to a file
-	 * @return
 	 */
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
-		int ssdId = markerSerializer.save(spliceSiteDonor);
-		int ssaId = markerSerializer.save(spliceSiteAcceptor);
+		// Note: We do not save splice sites any more, since they can be created "on demand"
+		//		int ssdId = markerSerializer.save(spliceSiteDonor);
+		//		int ssaId = markerSerializer.save(spliceSiteAcceptor);
 
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + frame //
 				+ "\t" + rank //
 				+ "\t" + sequence //
-				+ "\t" + ssdId //
-				+ "\t" + ssaId //
+				//				+ "\t" + ssdId //
+				//				+ "\t" + ssaId //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
 				;
 	}

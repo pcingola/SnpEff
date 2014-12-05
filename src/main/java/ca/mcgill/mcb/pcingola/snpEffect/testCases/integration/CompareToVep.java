@@ -223,7 +223,7 @@ public class CompareToVep {
 					+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'\t" + (compareHgvsDna(eff, csq) ? "OK" : "BAD") //
 					+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'\t" + (compareHgvsProt(eff, csq) ? "OK" : "BAD") //
 					+ "\n" //
-			);
+					);
 		}
 
 		return (!compareHgvsDna || compareHgvsDna(eff, csq)) //
@@ -324,7 +324,6 @@ public class CompareToVep {
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		cmdEff.setDebug(debug);
-		//		cmdEff.setShiftHgvs(shiftHgvs);
 
 		cmdEff.getConfig();
 

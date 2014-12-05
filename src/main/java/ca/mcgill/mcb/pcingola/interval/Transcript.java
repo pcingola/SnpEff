@@ -2,9 +2,11 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
@@ -42,7 +44,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	String cds; // Coding sequence
 	String mRna; // mRna sequence (includes 5'UTR and 3'UTR)
 	String protein; // Protein sequence
-	ArrayList<SpliceSiteBranch> spliceBranchSites; // Branch splice sites
+	//	ArrayList<SpliceSite> spliceSites; // Splice sites
 	ArrayList<Utr> utrs; // UTRs
 	ArrayList<Cds> cdss; // CDS information
 	ArrayList<Intron> introns; // Intron markers
@@ -56,7 +58,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	public Transcript() {
 		super();
-		spliceBranchSites = new ArrayList<SpliceSiteBranch>();
+		//		spliceSites = new ArrayList<SpliceSite>();
 		utrs = new ArrayList<Utr>();
 		cdss = new ArrayList<Cds>();
 		type = EffectType.TRANSCRIPT;
@@ -122,10 +124,26 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Add a SpliceSiteBranchU12
+	 * Add an intron
 	 */
-	public void add(SpliceSiteBranchU12 branchU12) {
-		spliceBranchSites.add(branchU12);
+	public void add(Intron intron) {
+		if (introns == null) introns = new ArrayList<Intron>();
+		introns.add(intron);
+
+		// Introns should be sorted by strand
+		if (isStrandPlus()) Collections.sort(introns);
+		else Collections.sort(introns, Collections.reverseOrder());
+	}
+
+	/**
+	 * Add a SpliceSite
+	 */
+	public void add(SpliceSite spliceSite) {
+		for (Exon ex : this)
+			if (ex.intersects(spliceSite)) ex.add(spliceSite);
+
+		for (Intron intr : introns())
+			if (intr.intersects(spliceSite)) intr.add(spliceSite);
 	}
 
 	/**
@@ -265,10 +283,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		if (upstream != null) tr.upstream = (Upstream) upstream.apply(variant);
 		if (downstream != null) tr.downstream = (Downstream) downstream.apply(variant);
 
-		// Splice branch
-		for (SpliceSiteBranch sbr : spliceBranchSites) {
-			SpliceSiteBranch newSbs = (SpliceSiteBranch) sbr.apply(variant);
-			if (newSbs != null) tr.spliceBranchSites.add(newSbs);
+		// Introns
+		for (Intron intr : introns()) {
+			Intron newIntron = (Intron) intr.apply(variant);
+			if (newIntron != null) tr.add(newIntron);
 		}
 
 		return tr;
@@ -1060,8 +1078,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return firstCodingExon;
 	}
 
-	public ArrayList<SpliceSiteBranch> getSpliceBranchSites() {
-		return spliceBranchSites;
+	public List<SpliceSite> spliceSites() {
+		List<SpliceSite> sslist = new ArrayList<SpliceSite>();
+
+		for (Exon ex : this)
+			sslist.addAll(ex.getSpliceSites());
+
+		for (Intron intr : introns())
+			sslist.addAll(intr.getSpliceSites());
+
+		return sslist;
 	}
 
 	/**
@@ -1140,6 +1166,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return introns;
 	}
 
+	public boolean isAaCheck() {
+		return aaCheck;
+	}
+
 	//	/**
 	//	 * Return the intron size for intron number 'intronNum'
 	//	 *
@@ -1153,10 +1183,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	//		Exon next = exons.get(intronNum + 1);
 	//		return (isStrandPlus() ? (next.getStart() - exon.getEnd()) : (exon.getStart() - next.getEnd())) - 1;
 	//	}
-
-	public boolean isAaCheck() {
-		return aaCheck;
-	}
 
 	@Override
 	protected boolean isAdjustIfParentDoesNotInclude(Marker parent) {
@@ -1329,7 +1355,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public Markers markers() {
 		Markers markers = new Markers();
 		markers.addAll(subIntervals.values());
-		markers.addAll(spliceBranchSites);
+		//		markers.addAll(spliceSites);
 		markers.addAll(utrs);
 		markers.addAll(cdss);
 		markers.add(upstream);
@@ -1372,30 +1398,34 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	@Override
 	public Markers query(Marker marker) {
-		Markers markers = new Markers();
+
+		Set<Marker> results = new HashSet<Marker>();
 
 		// Add exons
-		for (Exon e : this)
-			if (e.intersects(marker)) {
-				markers.add(e);
-				markers.add(e.query(marker));
+		for (Exon ex : this)
+			if (ex.intersects(marker)) {
+				results.add(ex);
+				for (Marker ee : ex.query(marker))
+					results.add(ee);
 			}
-
-		// Ad splice sites
-		for (SpliceSiteBranch sb : spliceBranchSites)
-			if (sb.intersects(marker)) markers.add(sb);
 
 		// Ad UTRs
 		for (Utr u : utrs)
-			if (u.intersects(marker)) markers.add(u);
+			if (u.intersects(marker)) results.add(u);
 
 		// Add CDSs
 		for (Cds m : cdss)
-			if (m.intersects(marker)) markers.add(m);
+			if (m.intersects(marker)) results.add(m);
 
 		// Add introns
-		for (Intron m : introns())
-			if (m.intersects(marker)) markers.add(m);
+		for (Intron intr : introns())
+			if (intr.intersects(marker)) {
+				for (Marker ee : intr.query(marker))
+					results.add(ee);
+			}
+
+		Markers markers = new Markers();
+		markers.addAll(results);
 
 		return markers;
 	}
@@ -1429,7 +1459,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public void reset() {
 		super.reset();
 		sorted = null;
-		spliceBranchSites = new ArrayList<SpliceSiteBranch>();
+		//		spliceSites = new ArrayList<SpliceSite>();
 		utrs = new ArrayList<Utr>();
 		cdss = new ArrayList<Cds>();
 		introns = null;
@@ -1479,8 +1509,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Marker m : markerSerializer.getNextFieldMarkers())
 			cdss.add((Cds) m);
 
-		for (Marker m : markerSerializer.getNextFieldMarkers())
-			spliceBranchSites.add((SpliceSiteBranchU12) m);
+		//		for (Marker m : markerSerializer.getNextFieldMarkers())
+		//			spliceSites.add((SpliceSiteBranchU12) m);
 	}
 
 	/**
@@ -1500,7 +1530,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-				+ "\t" + markerSerializer.save((Iterable) spliceBranchSites)//
+		//				+ "\t" + markerSerializer.save((Iterable) spliceSites)//
 		;
 	}
 
@@ -1527,6 +1557,14 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public void setRibosomalSlippage(boolean ribosomalSlippage) {
 		this.ribosomalSlippage = ribosomalSlippage;
 	}
+
+	//	/**
+	//	 * Add splice sites form exons
+	//	 */
+	//	void spliceSitesFromExons() {
+	//		spliceSites = new ArrayList<SpliceSite>();
+	//
+	//	}
 
 	@Override
 	public String toString() {
@@ -1662,17 +1700,14 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			}
 		if (included) return true; // SeqChange fully included in the UTR? => We are done.
 
-		//---
-		// Hits a SpliceSiteBranch region?
-		//---
-		included = false;
-		for (SpliceSiteBranch ssbranch : spliceBranchSites)
-			if (ssbranch.intersects(variant)) {
-				// Calculate the effect
-				ssbranch.variantEffect(variant, variantEffects);
-				included |= ssbranch.includes(variant); // Is this variant fully included branch site?
-			}
-		if (included) return true; // SeqChange fully included in the Branch site? => We are done.
+		//		//---
+		//		// Hits a SpliceSiteBranch region?
+		//		//---
+		//		for (SpliceSite ss : spliceSites)
+		//			if (ss.intersects(variant)) {
+		//				// Calculate the effect
+		//				ss.variantEffect(variant, variantEffects);
+		//			}
 
 		// Does it hit an intron?
 		for (Intron intron : introns())
