@@ -1,9 +1,14 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.codons.CodonTable;
-import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.Intron;
+import ca.mcgill.mcb.pcingola.interval.SpliceSite;
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -23,29 +28,56 @@ public class TestCasesSplice extends TestCasesBase {
 	protected void init() {
 		super.init();
 		randSeed = 20141205;
+		minExons = 2;
+	}
+
+	void checkEffect(Variant variant, String effectExpected) {
+		// Calculate effects
+		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
+
+		boolean found = false;
+		for (VariantEffect effect : effects) {
+			String effStr = effect.getEffectTypeString(false);
+
+			// Check effect
+			if (verbose) System.out.println(effect + "\n\tEffect type: '" + effStr + "'\tExpected: '" + effectExpected + "'");
+			found |= effectExpected.equals(effStr);
+		}
+
+		Assert.assertTrue("Effect not found: '" + effectExpected + "'", found);
 	}
 
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		CodonTable codonTable = genome.codonTable();
 
 		// Test N times
 		//	- Create a random gene transcript, exons
-		//	- Change each base in the exon
-		//	- Calculate effect
+		//	- Change each base in the exon's splice sites
+		//	- Calculate effect and check
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor();
 			if (debug) System.out.println("Splice Test iteration: " + i + "\n" + transcript);
 			else if (verbose) System.out.println("Splice Test iteration: " + i + "\t" + transcript.getStrand() + "\t" + transcript.cds());
 			else Gpr.showMark(i + 1, 1);
 
-			for (Exon exon : transcript.sortedStrand()) {
-				throw new RuntimeException("UnImplemented!");
+			for (Intron intron : transcript.introns()) {
+				int ssBases = Math.min(SpliceSite.CORE_SPLICE_SITE_SIZE - 1, intron.size());
+
+				// Splice site donor
+				for (int pos = intron.getStart(); pos <= intron.getStart() + ssBases; pos++) {
+					Variant variant = new Variant(chromosome, pos, "A", "T");
+					checkEffect(variant, "SPLICE_SITE_DONOR");
+				}
+
+				// Splice site acceptor
+				for (int pos = intron.getEnd() - ssBases; pos <= intron.getEnd(); pos++) {
+					Variant variant = new Variant(chromosome, pos, "A", "T");
+					checkEffect(variant, "SPLICE_SITE_ACCEPTOR");
+				}
 			}
 		}
 
 		System.err.println("");
 	}
-
 }

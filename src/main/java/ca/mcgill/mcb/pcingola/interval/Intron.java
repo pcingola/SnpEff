@@ -51,16 +51,17 @@ public class Intron extends Marker {
 	 * Create a splice site acceptor of 'size' length
 	 * Acceptor site: 3' end of the intron
 	 */
-	public SpliceSiteAcceptor createSpliceSiteAcceptor(int size) {
-		if (size <= 0) return null;
+	public SpliceSiteAcceptor createSpliceSiteAcceptor(int maxSpliceSiteSize) {
+		maxSpliceSiteSize = Math.max(maxSpliceSiteSize, size()); // Cannot be larger than this intron
+		if (maxSpliceSiteSize <= 0) return null;
 
 		int ssstart, ssend;
 		if (isStrandPlus()) {
-			ssstart = end - (size - 1);
+			ssstart = end - (maxSpliceSiteSize - 1);
 			ssend = end;
 		} else {
 			ssstart = start;
-			ssend = start + (size - 1);
+			ssend = start + (maxSpliceSiteSize - 1);
 		}
 
 		SpliceSiteAcceptor spliceSiteAcceptor = new SpliceSiteAcceptor(this, ssstart, ssend, strandMinus, id);
@@ -73,15 +74,16 @@ public class Intron extends Marker {
 	 * Create a splice site donor of 'maxSize' length
 	 * Donor site: 5' end of the intron
 	 */
-	public SpliceSiteDonor createSpliceSiteDonor(int size) {
-		if (size <= 0) return null;
+	public SpliceSiteDonor createSpliceSiteDonor(int maxSpliceSiteSize) {
+		maxSpliceSiteSize = Math.max(maxSpliceSiteSize, size()); // Cannot be larger than this intron
+		if (maxSpliceSiteSize <= 0) return null;
 
 		int ssstart, ssend;
 		if (isStrandPlus()) {
 			ssstart = start;
-			ssend = start + (size - 1);
+			ssend = start + (maxSpliceSiteSize - 1);
 		} else {
-			ssstart = end - (size - 1);
+			ssstart = end - (maxSpliceSiteSize - 1);
 			ssend = end;
 		}
 
@@ -96,8 +98,8 @@ public class Intron extends Marker {
 	 */
 	public SpliceSiteRegion createSpliceSiteRegionEnd(int sizeMin, int sizeMax) {
 		if (sizeMin < 0) return null;
-		if (sizeMax > size()) sizeMax = size(); // Cannot be larger than this marker
-		if (sizeMax <= sizeMin) return null; // Cannot be less than one base long
+		if (sizeMax > size()) sizeMax = size(); // Cannot be larger than this intron
+		if (sizeMax <= sizeMin) return null; // Cannot be less than 'sizeMin' bases long
 
 		SpliceSiteRegion spliceSiteRegionEnd = null;
 		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (sizeMax - 1), end - (sizeMin - 1), strandMinus, id);
@@ -113,8 +115,8 @@ public class Intron extends Marker {
 	 */
 	public SpliceSiteRegion createSpliceSiteRegionStart(int sizeMin, int sizeMax) {
 		if (sizeMin < 0) return null;
-		if (sizeMax > size()) sizeMax = size(); // Cannot be larger than this marker
-		if (sizeMax <= sizeMin) return null; // Cannot be less than one base long
+		if (sizeMax > size()) sizeMax = size(); // Cannot be larger than this intron
+		if (sizeMax <= sizeMin) return null; // Cannot be less than 'sizeMin' bases long
 
 		SpliceSiteRegion spliceSiteRegionStart = null;
 		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start + (sizeMin - 1), start + (sizeMax - 1), strandMinus, id);
