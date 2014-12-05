@@ -40,10 +40,6 @@ public abstract class SpliceSite extends Marker {
 		super(parent, start, end, strandMinus, id);
 	}
 
-	//	public SpliceSite(Transcript parent, int start, int end, boolean strandMinus, String id) {
-	//		super(parent, start, end, strandMinus, id);
-	//	}
-
 	/**
 	 * Core splice sites are defined as CORE_SPLICE_SITE_SIZE bases after exon end
 	 * or before exon begins. Usually CORE_SPLICE_SITE_SIZE is 2 bases.
@@ -60,9 +56,9 @@ public abstract class SpliceSite extends Marker {
 	}
 
 	@Override
-	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
-		if (!intersects(seqChange)) return false; // Sanity check
-		changeEffects.addEffect(this, type, "");
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false; // Sanity check
+		variantEffects.addEffect(variant, this, type, "");
 		return true;
 	}
 }

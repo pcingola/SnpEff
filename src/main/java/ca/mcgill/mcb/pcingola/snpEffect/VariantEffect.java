@@ -15,6 +15,7 @@ import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.VariantNonRef;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
@@ -72,7 +73,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	static final boolean COMPATIBLE_v1_8 = true; // Activate this in order to get the same out as version 1.8. This is only for testing & debugging
 
 	Variant variant = null;
-	Variant variantRef = null;
+	//	Variant variantRef = null;
 	List<EffectType> effectTypes;
 	EffectType effectType;
 	List<EffectImpact> effectImpacts;
@@ -90,26 +91,34 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	public VariantEffect(Variant variant) {
 		this.variant = variant;
-		variantRef = null;
+		//		variantRef = null;
 		effectTypes = new ArrayList<EffectType>();
 		effectImpacts = new ArrayList<EffectImpact>();
 	}
 
-	public VariantEffect(Variant variant, Variant variantRef) {
-		this.variant = variant;
-		this.variantRef = variantRef;
-		effectTypes = new ArrayList<EffectType>();
-		effectImpacts = new ArrayList<EffectImpact>();
-	}
+	//	public VariantEffect(Variant variant, Variant variantRef) {
+	//		this.variant = variant;
+	//		this.variantRef = variantRef;
+	//		effectTypes = new ArrayList<EffectType>();
+	//		effectImpacts = new ArrayList<EffectImpact>();
+	//	}
 
-	public VariantEffect(Variant variant, Variant variantRef, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
+	public VariantEffect(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
 		this.variant = variant;
-		this.variantRef = variantRef;
 		effectTypes = new ArrayList<EffectType>();
 		effectImpacts = new ArrayList<EffectImpact>();
 		set(marker, effectType, effectImpact, message);
 		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 	}
+
+	//	public VariantEffect(Variant variant, Variant variantRef, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
+	//		this.variant = variant;
+	//		this.variantRef = variantRef;
+	//		effectTypes = new ArrayList<EffectType>();
+	//		effectImpacts = new ArrayList<EffectImpact>();
+	//		set(marker, effectType, effectImpact, message);
+	//		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+	//	}
 
 	public void addEffectImpact(EffectImpact effectImpact) {
 		effectImpacts.add(effectImpact);
@@ -477,7 +486,10 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 */
 	public String getGenotype() {
 		if (variant == null) return "";
-		if (variantRef != null) return variant.getGenotype() + "-" + variantRef.getGenotype();
+		if (variant.isNonRef()) {
+			Variant vref = ((VariantNonRef) variant).getVariantRef();
+			return variant.getGenotype() + "-" + vref.getGenotype();
+		}
 		return variant.getGenotype();
 	}
 

@@ -595,18 +595,11 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Predict the effect of a variant
-	 */
-	public VariantEffects variantEffect(Variant variant) {
-		return variantEffect(variant, null);
-	}
-
-	/**
-	 * Predict the effect of a variant
 	 * @param variant : Sequence change
 	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
 	 */
-	public VariantEffects variantEffect(Variant variant, Variant variantRef) {
-		VariantEffects variantEffects = new VariantEffects(variant, variantRef);
+	public VariantEffects variantEffect(Variant variant) {
+		VariantEffects variantEffects = new VariantEffects(variant);
 
 		//---
 		// Chromosome missing?
@@ -629,7 +622,7 @@ public class SnpEffectPredictor implements Serializable {
 			if (chr != null) {
 				double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
 				if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
-					variantEffects.addEffect(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
+					variantEffects.addEffect(variant, chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
 					return variantEffects;
 				}
 			}
@@ -647,7 +640,9 @@ public class SnpEffectPredictor implements Serializable {
 				if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
 				else {
 					// Analyze all markers
-					marker.variantEffect(variant, variantRef, variantEffects);
+					if (variant.isNonRef()) marker.variantEffectNonRef(variant, variantEffects);
+					else marker.variantEffect(variant, variantEffects);
+
 					hitSomething = true;
 				}
 			}
@@ -658,9 +653,9 @@ public class SnpEffectPredictor implements Serializable {
 			if (Config.get().isErrorChromoHit()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
 		} else if (!hitSomething) {
 			if (Config.get().isOnlyRegulation()) {
-				variantEffects.addEffect(null, EffectType.NONE, "");
+				variantEffects.addEffect(variant, null, EffectType.NONE, "");
 			} else {
-				variantEffects.addEffect(null, EffectType.INTERGENIC, "");
+				variantEffects.addEffect(variant, null, EffectType.INTERGENIC, "");
 			}
 		}
 

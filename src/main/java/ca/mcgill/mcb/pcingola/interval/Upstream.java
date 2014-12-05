@@ -38,11 +38,11 @@ public class Upstream extends Marker {
 	}
 
 	@Override
-	public boolean variantEffect(Variant variants, VariantEffects variantEffects) {
-		if (!intersects(variants)) return false; // Sanity check
-		int distance = distanceToTr(variants);
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false; // Sanity check
+		int distance = distanceToTr(variant);
 
-		VariantEffect variantEffect = variantEffects.newVariantEffect();
+		VariantEffect variantEffect = new VariantEffect(variant);
 		variantEffect.set(this, type, type.effectImpact(), distance + " bases");
 		variantEffect.setDistance(distance);
 		variantEffects.addEffect(variantEffect);

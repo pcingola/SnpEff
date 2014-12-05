@@ -69,7 +69,7 @@ public class Marker extends Interval implements TxtSerializable {
 	 * 		newMarker = marker.apply( variant )
 	 *
 	 * such that
-	 *		variant = Diff( newMarker , marker )		// Differences in seuquence
+	 *		variant = Diff( newMarker , marker )		// Differences in sequence
 	 *
 	 * @param variant
 	 * @return A new marker after applying variant
@@ -79,7 +79,7 @@ public class Marker extends Interval implements TxtSerializable {
 		if (end < variant.getStart()) return this;
 
 		// Negative strand variants are a pain. We will eventually get rid of them...(they do not make sense any more)
-		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are accepted!\n\tVariant : " + variant);
+		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are suported!\n\tVariant : " + variant);
 
 		int lenChange = variant.lengthChange();
 		if (lenChange == 0) return this;
@@ -92,7 +92,7 @@ public class Marker extends Interval implements TxtSerializable {
 		if (variant.isDel()) return applyDel(variant, lenChange);
 
 		// TODO : Mixed changes are not supported
-		throw new RuntimeException("Seqchange type not supported: " + variant.getVariantType() + "\n\t" + variant);
+		throw new RuntimeException("Variant type not supported: " + variant.getVariantType() + "\n\t" + variant);
 	}
 
 	/**
@@ -574,12 +574,11 @@ public class Marker extends Interval implements TxtSerializable {
 				+ "\t" + end //
 				+ "\t" + id //
 				+ "\t" + strandMinus //
-				;
+		;
 	}
 
 	/**
 	 * To string as a simple "chr:start-end" format
-	 * @return
 	 */
 	public String toStr() {
 		return getClass().getSimpleName() + "_" + getChromosomeName() + ":" + (start + 1) + "-" + (end + 1);
@@ -606,13 +605,23 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Calculate the effect of this variant
+	 */
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false;
+		variantEffects.addEffect(variant, this, type, "");
+		return true;
+	}
+
+	/**
+	 * Calculate the effect of this variant
 	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
 	 */
-	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
-		if (!intersects(variant)) return false;// Sanity check
+	public boolean variantEffectNonRef(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false; // Sanity check
 
-		if (variantrRef != null) {
-			Marker m = apply(variantrRef);
+		if (variant.isNonRef()) {
+			Variant variantRef = ((VariantNonRef) variant).getVariantRef();
+			Marker m = apply(variantRef);
 
 			// Has the marker been deleted?
 			// Then there is no effect over this marker (it does not exist any more)
@@ -622,15 +631,6 @@ public class Marker extends Interval implements TxtSerializable {
 		}
 
 		return variantEffect(variant, variantEffects);
-	}
-
-	/**
-	 * Calculate the effect of this variant
-	 */
-	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
-		if (!intersects(variant)) return false;
-		variantEffects.addEffect(this, type, "");
-		return true;
 	}
 
 }

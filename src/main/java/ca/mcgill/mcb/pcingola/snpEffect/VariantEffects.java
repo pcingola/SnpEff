@@ -9,6 +9,7 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * A sorted collection of variant effects
@@ -17,25 +18,17 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
  */
 public class VariantEffects implements Iterable<VariantEffect> {
 
-	Variant variant, variantRef;
 	List<VariantEffect> effects;
 
 	public VariantEffects(Variant variant) {
 		effects = new ArrayList<VariantEffect>();
-		this.variant = variant;
-	}
-
-	public VariantEffects(Variant variant, Variant variantRef) {
-		effects = new ArrayList<VariantEffect>();
-		this.variant = variant;
-		this.variantRef = variantRef;
 	}
 
 	/**
 	 * Add an effect
 	 */
-	public void addEffect(Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
-		VariantEffect effNew = new VariantEffect(variant, variantRef);
+	public void addEffect(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
+		VariantEffect effNew = new VariantEffect(variant);
 		effNew.set(marker, effectType, effectImpact, message);
 		effects.add(effNew);
 	}
@@ -43,8 +36,8 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	/**
 	 * Add an effect
 	 */
-	public void addEffect(Marker marker, EffectType effectType, String message) {
-		addEffect(marker, effectType, effectType.effectImpact(), message);
+	public void addEffect(Variant variant, Marker marker, EffectType effectType, String message) {
+		addEffect(variant, marker, effectType, effectType.effectImpact(), message);
 	}
 
 	/**
@@ -55,27 +48,21 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	}
 
 	public void addErrorWarning(ErrorWarningType errwarn) {
-		get().addErrorWarningInfo(errwarn);
+		VariantEffect veff = get();
+		if (veff != null) veff.addErrorWarningInfo(errwarn);
+		else Gpr.debug("Could not get latest VariantEffect");
 	}
 
 	/**
 	 * Get (or create) the latest ChangeEffect
 	 */
 	public VariantEffect get() {
-		if (effects.isEmpty()) effects.add(new VariantEffect(variant, variantRef));
+		if (effects.isEmpty()) return null;
 		return effects.get(effects.size() - 1);
 	}
 
 	public VariantEffect get(int index) {
 		return effects.get(index);
-	}
-
-	public Variant getVariant() {
-		return variant;
-	}
-
-	public Variant getVariantRef() {
-		return variantRef;
 	}
 
 	public boolean isEmpty() {
@@ -87,15 +74,10 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		return effects.iterator();
 	}
 
-	/**
-	 * Get (or create) the latest ChangeEffect
-	 */
-	public VariantEffect newVariantEffect() {
-		return new VariantEffect(variant, variantRef);
-	}
-
 	public void setMarker(Marker marker) {
-		get().setMarker(marker);
+		VariantEffect veff = get();
+		if (veff != null) veff.setMarker(marker);
+		else Gpr.debug("Could not get latest VariantEffect");
 	}
 
 	public int size() {

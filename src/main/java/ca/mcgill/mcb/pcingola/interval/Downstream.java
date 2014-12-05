@@ -42,7 +42,7 @@ public class Downstream extends Marker {
 		if (!intersects(variant)) return false; // Sanity check
 		int distance = distanceToTr(variant);
 
-		VariantEffect variantEffect = variantEffects.newVariantEffect();
+		VariantEffect variantEffect = new VariantEffect(variant);
 		variantEffect.set(this, type, type.effectImpact(), distance + " bases");
 		variantEffect.setDistance(distance);
 		variantEffects.addEffect(variantEffect);

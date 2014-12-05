@@ -61,7 +61,7 @@ public class NextProt extends Marker {
 		if (isHighlyConservedAaSequence()) effectImpact = EffectImpact.MODERATE;
 		else effectImpact = EffectImpact.LOW;
 
-		variantEffects.addEffect(this, type, effectImpact, "");
+		variantEffects.addEffect(variant, this, type, effectImpact, "");
 		return true;
 	}
 

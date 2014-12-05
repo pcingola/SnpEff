@@ -38,22 +38,17 @@ public class Regulation extends Marker {
 
 	/**
 	 * Calculate the effect of this seqChange
-	 * @param seqChange
-	 * @param changeEffects
-	 * @return
 	 */
 	@Override
-	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
-		if (!intersects(seqChange)) return false; // Sanity check
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false; // Sanity check
 		EffectType effType = EffectType.REGULATION;
-		changeEffects.addEffect(this, effType, "");
+		variantEffects.addEffect(variant, this, effType, "");
 		return true;
 	}
 
 	/**
 	 * Parse a line from a serialized file
-	 * @param line
-	 * @return
 	 */
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {

@@ -242,7 +242,7 @@ public class CodonChange {
 	 */
 	protected VariantEffect effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
 		// Create and add variant affect
-		VariantEffect varEff = new VariantEffect(variant, variantEffects.getVariantRef(), marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex);
+		VariantEffect varEff = new VariantEffect(variant, marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex);
 		variantEffects.addEffect(varEff);
 
 		// Are there any additional effects? Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)

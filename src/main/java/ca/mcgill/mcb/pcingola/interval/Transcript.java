@@ -1677,7 +1677,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Does it hit an intron?
 		for (Intron intron : introns())
 			if (intron.intersects(variant)) {
-				variantEffects.addEffect(intron, EffectType.INTRON, "");
+				variantEffects.addEffect(variant, intron, EffectType.INTRON, "");
 				included |= intron.includes(variant); // Is this variant fully included in this intron?
 			}
 		if (included) return true; // SeqChange fully included? => We are done.
@@ -1690,8 +1690,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (!subintervals().isEmpty()) {
 				// Add all exons
 				for (Exon exon : this)
-					if (exon.intersects(variant)) variantEffects.addEffect(exon, EffectType.EXON, "");
-			} else variantEffects.addEffect(this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
+					if (exon.intersects(variant)) variantEffects.addEffect(variant, exon, EffectType.EXON, "");
+			} else variantEffects.addEffect(variant, this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
 
 			// Ok, we are done
 			return true;

@@ -23,6 +23,7 @@ import ca.mcgill.mcb.pcingola.filter.VariantEffectFilter;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.VariantNonRef;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedAnnotationOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedOutputFormatter;
@@ -327,9 +328,10 @@ public class SnpEffCmdEff extends SnpEff {
 
 						Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
 						Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
+						VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
 
 						// Calculate effects
-						VariantEffects variantEffects = snpEffectPredictor.variantEffect(variantAlt, variantRef);
+						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
 
 						// Create new 'section'
 						outputFormatter.startSection(variantAlt);

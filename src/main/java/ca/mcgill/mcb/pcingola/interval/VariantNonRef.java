@@ -10,13 +10,8 @@ public class VariantNonRef extends Variant {
 	private static final long serialVersionUID = 1L;
 	Variant variantRef;
 
-	public VariantNonRef(Marker parent, int position, String referenceStr, String altStr, String id, Variant variantRef) {
-		super(parent, position, referenceStr, altStr, id);
-		this.variantRef = variantRef;
-	}
-
-	public VariantNonRef(Marker parent, int position, String referenceStr, String altStr, Variant variantRef) {
-		super(parent, position, referenceStr, altStr);
+	public VariantNonRef(Variant variant, Variant variantRef) {
+		super(variant.getParent(), variant.getStart(), variant.getReference(), variant.getAlt(), variant.getId());
 		this.variantRef = variantRef;
 	}
 
@@ -33,7 +28,7 @@ public class VariantNonRef extends Variant {
 	public Variant realignLeft() {
 		// Realigning in cancer samples is not trivial: What happens if one realigns and the other doesn't?
 		// TODO: In depth analysis of all border cases.
-		//       For now, do not realign
+		// For now, do not realign
 		return this;
 	}
 
