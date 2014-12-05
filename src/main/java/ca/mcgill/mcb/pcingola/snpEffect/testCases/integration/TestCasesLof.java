@@ -333,7 +333,7 @@ public class TestCasesLof {
 		// For each gene, transcript, check that NMD works
 		int i = 1;
 		for (Gene gene : config.getGenome().getGenes()) {
-			Gpr.showMark(i++, 1);
+			Gpr.showMark(i++, 10);
 			for (Transcript tr : gene) {
 				if (verbose) System.err.println(tr);
 				checkLof(tr);
