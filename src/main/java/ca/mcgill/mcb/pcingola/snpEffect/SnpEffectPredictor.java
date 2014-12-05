@@ -89,7 +89,7 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-			) snpEffectPredictor.add(m);
+					) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}

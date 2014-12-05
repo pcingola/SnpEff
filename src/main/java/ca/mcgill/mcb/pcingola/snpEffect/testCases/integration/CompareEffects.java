@@ -28,6 +28,7 @@ public class CompareEffects {
 
 	boolean createOutputFile = false;
 	boolean useAaNoNum = false;
+	boolean shiftHgvs = false;
 	Config config;
 	Genome genome;
 	Random rand;
@@ -106,21 +107,6 @@ public class CompareEffects {
 		return eff.substring(aaStartIdx + 1, aaStopIdx);
 	}
 
-	//	String findAaNoNum(String eff) {
-	//		String aa = findAa(eff);
-	//
-	//		StringBuilder sb = new StringBuilder();
-	//		boolean slash = false;
-	//		for (char ch : aa.toCharArray()) {
-	//			if (Character.isDigit(ch)) {
-	//				if (!slash) sb.append('/');
-	//				slash = true;
-	//			} else sb.append(ch);
-	//		}
-	//
-	//		return sb.toString();
-	//	}
-
 	String[] findEffTypes(String eff) {
 		int aaidx = eff.indexOf('(');
 		if (aaidx < 0) return eff.split("\\+");
@@ -144,6 +130,7 @@ public class CompareEffects {
 		}
 
 		config.setTreatAllAsProteinCoding(true); // For historical reasons we set this one to 'true'....
+		config.setShiftHgvs(shiftHgvs);
 		config.getSnpEffectPredictor().buildForest();
 	}
 
@@ -200,7 +187,7 @@ public class CompareEffects {
 								+ "\t" + sc.getAlt() //
 								+ "\t+\t0\t0" //
 								+ "\t" + res.effect(true, true, true, false) //
-						);
+								);
 					}
 				} else {
 					Gpr.debug(msg);

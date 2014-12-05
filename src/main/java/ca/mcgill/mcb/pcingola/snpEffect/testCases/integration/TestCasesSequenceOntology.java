@@ -27,7 +27,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesSequenceOntology {
 
 	public static boolean debug = false;
-	public static boolean verbose = false;
+	public static boolean verbose = false || debug;
 
 	public static void createDelFile(String genomeName, String outFile, double prob) throws IOException {
 		Config config = new Config(genomeName, Gpr.HOME + "/snpEff/" + Config.DEFAULT_CONFIG_FILE);
@@ -254,9 +254,7 @@ public class TestCasesSequenceOntology {
 			}
 
 			// Make sure both sets are equal
-			boolean error = false;
-			if (debug) error = !(effSos.containsAll(vepSos) && vepSos.containsAll(effSos));
-			else error = !effSos.containsAll(vepSos);
+			boolean error = !effSos.containsAll(vepSos);
 
 			if (error) {
 				String msg = "\n" + ve;
@@ -270,7 +268,7 @@ public class TestCasesSequenceOntology {
 
 				msg += "\n\tMarker    : " + ve.getChromosomeName() + ":" + ve.getStart() + "-" + ve.getEnd();
 				Gpr.debug(msg);
-				if (!debug) throw new RuntimeException(msg);
+				throw new RuntimeException(msg);
 			}
 
 		}

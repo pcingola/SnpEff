@@ -531,7 +531,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-			) {
+					) {
 				ret = true;
 
 				// Show debugging information
@@ -908,7 +908,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
 						if (Config.get().isDebug()) System.err.println("\t\tFrame correction: Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
@@ -1066,7 +1066,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
@@ -1462,7 +1462,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1624,6 +1624,14 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		if (!intersects(variant)) return false; // Sanity check
 
 		//---
+		// Does it hit an exon?
+		// Note: This only adds spliceSites effects, for detailed codon
+		//       changes effects we use 'CodonChange' class
+		//---
+		for (Exon ex : this)
+			if (ex.intersects(variant)) ex.variantEffect(variant, variantEffects);
+
+		//---
 		// Hits a UTR region?
 		//---
 		boolean included = false;
@@ -1634,14 +1642,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				included |= utr.includes(variant); // Is this variant fully included in the UTR?
 			}
 		if (included) return true; // SeqChange fully included in the UTR? => We are done.
-
-		//---
-		// Does it hit an exon?
-		// Note: This only adds spliceSites effects, for detailed codon
-		//       changes effects we use 'CodonChange' class
-		//---
-		for (Exon ex : this)
-			if (ex.intersects(variant)) ex.variantEffect(variant, variantEffects);
 
 		//---
 		// Does it hit an intron?
