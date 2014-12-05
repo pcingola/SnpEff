@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sf.samtools.util.RuntimeEOFException;
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -90,7 +89,7 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-					) snpEffectPredictor.add(m);
+			) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}
@@ -343,11 +342,9 @@ public class SnpEffectPredictor implements Serializable {
 	/**
 	 * Return a collection of intervals that intersect 'marker'
 	 * Query resulting genes, transcripts and exons to get ALL types of intervals possible
-	 *
-	 * @return
 	 */
 	public Markers queryDeep(Marker marker) {
-		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(marker)) throw new RuntimeEOFException("Chromosome missing for marker: " + marker);
+		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(marker)) throw new RuntimeException("Chromosome missing for marker: " + marker);
 
 		boolean hitChromo = false;
 		Markers hits = new Markers();
@@ -389,7 +386,7 @@ public class SnpEffectPredictor implements Serializable {
 	 * @return
 	 */
 	public Set<String> regions(Marker marker, boolean showGeneDetails, boolean compareTemplate, String id) {
-		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(marker)) throw new RuntimeEOFException("Chromosome missing for marker: " + marker);
+		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(marker)) throw new RuntimeException("Chromosome missing for marker: " + marker);
 
 		boolean hitChromo = false;
 		HashSet<String> hits = new HashSet<String>();

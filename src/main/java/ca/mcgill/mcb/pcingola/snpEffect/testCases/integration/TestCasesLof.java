@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import junit.framework.Assert;
-import net.sf.samtools.util.RuntimeEOFException;
 
 import org.junit.After;
 import org.junit.Test;
@@ -33,7 +32,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 public class TestCasesLof {
 
 	public static boolean debug = false;
-	public static boolean verbose = false;
+	public static boolean verbose = false || debug;
 	public static final int NUM_DEL_TEST = 10; // number of random test per transcript
 
 	Config config;
@@ -210,7 +209,7 @@ public class TestCasesLof {
 		Exon exon = null;
 		for (Exon ex : tr)
 			if (ex.intersects(pos)) exon = ex;
-		if (exon == null) throw new RuntimeEOFException("Cannot find first exon for transcript " + tr.getId());
+		if (exon == null) throw new RuntimeException("Cannot find first exon for transcript " + tr.getId());
 
 		// Create a LOF object and analyze the effect
 		LinkedList<VariantEffect> changeEffects = changeEffects(seqChange, EffectType.START_LOST, exon);
@@ -233,7 +232,7 @@ public class TestCasesLof {
 			int maxSize = Math.min(intron.size(), SpliceSite.CORE_SPLICE_SITE_SIZE);
 			posDonor -= step * (maxSize - 1);
 			if (verbose) Gpr.debug("Intron size: " + intron.size());
-			if (maxSize <= 0) throw new RuntimeEOFException("Max splice size is " + maxSize);
+			if (maxSize <= 0) throw new RuntimeException("Max splice size is " + maxSize);
 
 			//---
 			// For all position on splice site donor positions, make sure it is LOF
@@ -266,14 +265,14 @@ public class TestCasesLof {
 
 			// Splice site size
 			int maxSize = Math.min(intron.size(), SpliceSite.CORE_SPLICE_SITE_SIZE);
-			if (verbose) Gpr.debug("Intron size: " + intron.size());
-			if (maxSize <= 0) throw new RuntimeEOFException("Max splice size is " + maxSize);
+			if (verbose) Gpr.debug("Intron size: " + intron.size() + "\tmaxSize: " + maxSize);
+			if (maxSize <= 0) throw new RuntimeException("Max splice size is non-positive: " + maxSize);
 
 			//---
 			// For all position on splice site donor positions, make sure it is LOF
 			//---
 			for (int pos = posDonor, i = 0; i < maxSize; i++, pos += step) {
-				if (verbose) Gpr.debug("Position: " + tr.getChromosome() + ":" + posDonor);
+				if (verbose) Gpr.debug("Position: " + tr.getChromosome().getId() + ":" + posDonor);
 				Variant variant = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a seqChange
 				Marker marker = findMarker(variant, EffectType.SPLICE_SITE_DONOR, null, intron);
 				LinkedList<VariantEffect> changeEffects = changeEffects(variant, EffectType.SPLICE_SITE_DONOR, marker); // Create a SPLICE_DONOR effect
@@ -292,7 +291,7 @@ public class TestCasesLof {
 	 * Find a marker that intersects variant
 	 */
 	Marker findMarker(Variant variant, EffectType effectType, Transcript tr, Marker markerFilter) {
-		Markers markers = config.getSnpEffectPredictor().query(variant);
+		Markers markers = config.getSnpEffectPredictor().queryDeep(variant);
 
 		for (Marker m : markers) {
 			Marker mfilter = null;
@@ -300,15 +299,15 @@ public class TestCasesLof {
 
 			Transcript mtr = (Transcript) m.findParent(Transcript.class);
 
-			if (debug) Gpr.debug("\tLooking for '" + effectType + "' in " + (markerFilter != null ? markerFilter.getId() : "NULL") //
-					+ ", class: " + (markerFilter != null ? markerFilter.getClass().getSimpleName() : "") //
+			if (debug) Gpr.debug("\tLooking for '" + effectType + "' in '" + (markerFilter != null ? markerFilter.getId() : "NULL") //
+					+ "', class: " + (markerFilter != null ? markerFilter.getClass().getSimpleName() : "") //
 					+ "\t\tFound: '" + m.getType() + "', mfilter: " + (mfilter != null ? mfilter.getId() : "NULL") //
 					+ ", parent: " + m.getParent().getClass().getSimpleName() //
-					);
+			);
 
 			if ((m.getType() == effectType) && (mfilter != null) && (mtr != null)) {
 				if (markerFilter != null) {
-					// Exon filter?
+					// Id filter?
 					if (mfilter.getId().equals(markerFilter.getId())) return m;
 				} else if (tr != null) {
 					// Transcript filter?
@@ -317,7 +316,7 @@ public class TestCasesLof {
 			}
 		}
 
-		throw new RuntimeEOFException("Cannot find '" + effectType + "' " + (markerFilter != null ? "for exon " + markerFilter.getId() : "") + ", seqChange: " + variant);
+		throw new RuntimeException("Cannot find '" + effectType + "' " + (markerFilter != null ? "for exon " + markerFilter.getId() : "") + ", seqChange: " + variant);
 	}
 
 	@Test

@@ -1334,6 +1334,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Exon ex : this)
 			if (ex.intersects(marker)) {
 				results.add(ex);
+
+				// Query deeper
 				for (Marker ee : ex.query(marker))
 					results.add(ee);
 			}
@@ -1349,10 +1351,14 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Add introns
 		for (Intron intr : introns())
 			if (intr.intersects(marker)) {
+				results.add(intr);
+
+				// Query deeper
 				for (Marker ee : intr.query(marker))
 					results.add(ee);
 			}
 
+		// Get results into markers
 		Markers markers = new Markers();
 		markers.addAll(results);
 
