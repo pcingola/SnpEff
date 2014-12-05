@@ -278,6 +278,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// We need at least 2 exons for this test case
 		minExons = 2;
+		shiftHgvs = false;
 		initSnpEffPredictor();
 
 		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
