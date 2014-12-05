@@ -48,6 +48,50 @@ public class Intron extends Marker {
 	}
 
 	/**
+	 * Create a splice site acceptor of 'size' length
+	 * Acceptor site: 3' end of the intron
+	 */
+	public SpliceSiteAcceptor createSpliceSiteAcceptor(int size) {
+		if (size <= 0) return null;
+
+		int ssstart, ssend;
+		if (isStrandPlus()) {
+			ssstart = end - (size - 1);
+			ssend = end;
+		} else {
+			ssstart = start;
+			ssend = start + (size - 1);
+		}
+
+		SpliceSiteAcceptor spliceSiteAcceptor = new SpliceSiteAcceptor(this, ssstart, ssend, strandMinus, id);
+		add(spliceSiteAcceptor);
+
+		return spliceSiteAcceptor;
+	}
+
+	/**
+	 * Create a splice site donor of 'maxSize' length
+	 * Donor site: 5' end of the intron
+	 */
+	public SpliceSiteDonor createSpliceSiteDonor(int size) {
+		if (size <= 0) return null;
+
+		int ssstart, ssend;
+		if (isStrandPlus()) {
+			ssstart = start;
+			ssend = start + (size - 1);
+		} else {
+			ssstart = end - (size - 1);
+			ssend = end;
+		}
+
+		SpliceSiteDonor spliceSiteDonor = new SpliceSiteDonor(this, ssstart, ssend, strandMinus, id);
+		add(spliceSiteDonor);
+
+		return spliceSiteDonor;
+	}
+
+	/**
 	 * Create splice site region
 	 */
 	public SpliceSiteRegion createSpliceSiteRegionEnd(int sizeMin, int sizeMax) {

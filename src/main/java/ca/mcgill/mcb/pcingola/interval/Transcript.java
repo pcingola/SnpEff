@@ -531,7 +531,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-					) {
+			) {
 				ret = true;
 
 				// Show debugging information
@@ -599,29 +599,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				Exon prev = (i >= 1 ? exons.get(i - 1) : null);
 				Exon next = (i < exons.size() - 1 ? exons.get(i + 1) : null);
 
-				//---
-				// Distance to previous exon
-				//---
-				if (prev != null) {
-					int dist = 0;
-					if (isStrandPlus()) dist = exon.getStart() - prev.getEnd() - 1;
-					else dist = prev.getStart() - exon.getEnd() - 1;
-
-					exon.createSpliceSiteAcceptor(Math.min(spliceSiteSize, dist)); // Acceptor splice site: before exon start, but not before first exon
-					exon.createSpliceSiteRegionStart(spliceRegionExonSize); // Splice site region at the end
-				}
-
-				//---
-				// Distance to next exon
-				//---
-				if (next != null) {
-					int dist = 0;
-					if (isStrandPlus()) dist = next.getStart() - exon.getEnd() - 1;
-					else dist = exon.getStart() - next.getEnd() - 1;
-
-					exon.createSpliceSiteDonor(Math.min(spliceSiteSize, dist)); // Donor splice site: after exon end, but not after last exon
-					exon.createSpliceSiteRegionEnd(spliceRegionExonSize); // Splice site region at the end
-				}
+				if (prev != null) exon.createSpliceSiteRegionStart(spliceRegionExonSize); // Splice site region at the start
+				if (next != null) exon.createSpliceSiteRegionEnd(spliceRegionExonSize); // Splice site region at the end
 
 				// Sanity check
 				int rank = i + 1;
@@ -639,6 +618,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				Intron intron = introns.get(i);
 				if (i > 0) intron.createSpliceSiteRegionStart(spliceRegionIntronMin, spliceRegionIntronMax);
 				if (i < (introns.size() - 1)) intron.createSpliceSiteRegionEnd(spliceRegionIntronMin, spliceRegionIntronMax);
+
+				intron.createSpliceSiteAcceptor(spliceSiteSize); // Acceptor splice site
+				intron.createSpliceSiteDonor(spliceSiteSize); // Acceptor splice site
 			}
 
 		}
@@ -926,7 +908,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-								);
+						);
 					} else {
 						if (Config.get().isDebug()) System.err.println("\t\tFrame correction: Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
@@ -1084,7 +1066,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-				;
+		;
 	}
 
 	/**
@@ -1474,7 +1456,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-				;
+		;
 	}
 
 	public void setAaCheck(boolean aaCheck) {

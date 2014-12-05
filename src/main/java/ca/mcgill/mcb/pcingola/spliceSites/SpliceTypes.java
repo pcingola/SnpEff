@@ -282,33 +282,20 @@ public class SpliceTypes {
 		if (verbose) Timer.showStdErr("\tCreating splice sites.");
 
 		int count = 0;
-		for (Transcript tr : transcriptSet) {
-			Exon exPrev = null;
-			for (Exon ex : tr.sortedStrand()) {
-				if (exPrev != null) { // Not for first exon (it has no 'previous' intron)
-					int start, end;
-					if (tr.isStrandPlus()) {
-						start = exPrev.getEnd();
-						end = ex.getStart();
-					} else {
-						start = ex.getEnd();
-						end = exPrev.getStart();
-					}
+		for (Transcript tr : transcriptSet)
+			for (Intron intron : tr.introns())
+				createSpliceSites(intron);
 
-					count += createSpliceSites(ex, exPrev, start, end);
-				}
-
-				exPrev = ex;
-			}
-		}
 		if (verbose) Timer.showStdErr("\tCreated : " + count + " splice sites.");
 	}
 
 	/**
 	 * Create splice sites
 	 */
-	int createSpliceSites(Exon ex, Exon exPrev, int start, int end) {
-		String key = ex.getChromosomeName() + ":" + start + "-" + end;
+	int createSpliceSites(Intron intron) {
+		int start = intron.getStart();
+		int end = intron.getEnd();
+		String key = intron.getChromosomeName() + ":" + start + "-" + end;
 		String donor = donorsByIntron.get(key);
 		String acc = acceptorsByIntron.get(key);
 
@@ -325,12 +312,12 @@ public class SpliceTypes {
 			if (debug) System.err.println("\tCreating splice sites:\t" + donor + "-" + acc + "\tConserved:\t" + donorConserved + "-" + accConserved);
 
 			if (donorConserved.length() > SpliceSite.CORE_SPLICE_SITE_SIZE) {
-				exPrev.createSpliceSiteDonor(Math.min(donorConserved.length(), dist));
+				intron.createSpliceSiteDonor(Math.min(donorConserved.length(), dist));
 				count++;
 			}
 
 			if (accConserved.length() > SpliceSite.CORE_SPLICE_SITE_SIZE) {
-				ex.createSpliceSiteAcceptor(Math.min(accConserved.length(), dist));
+				intron.createSpliceSiteAcceptor(Math.min(accConserved.length(), dist));
 				count++;
 			}
 		}

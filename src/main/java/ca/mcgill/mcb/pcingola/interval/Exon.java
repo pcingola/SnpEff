@@ -82,56 +82,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	}
 
 	/**
-	 * Create a splice site acceptor of 'maxSize' length
-	 */
-	public SpliceSiteAcceptor createSpliceSiteAcceptor(int size) {
-		size = size - 1;
-		if (size < 0) return null;
-
-		int ssstart, ssend;
-		if (isStrandPlus()) {
-			ssstart = start - 1 - size;
-			ssend = start - 1;
-		} else {
-			ssstart = end + 1;
-			ssend = end + 1 + size;
-		}
-
-		Intron intron = ((Transcript) parent).findIntron(ssstart);
-		if (intron == null) return null;
-
-		SpliceSiteAcceptor spliceSiteAcceptor = new SpliceSiteAcceptor(intron, ssstart, ssend, strandMinus, id);
-		add(spliceSiteAcceptor);
-
-		return spliceSiteAcceptor;
-	}
-
-	/**
-	 * Create a splice site donor of 'maxSize' length
-	 */
-	public SpliceSiteDonor createSpliceSiteDonor(int size) {
-		size = size - 1;
-		if (size < 0) return null;
-
-		int ssstart, ssend;
-		if (isStrandPlus()) {
-			ssstart = end + 1;
-			ssend = end + 1 + size;
-		} else {
-			ssstart = start - 1 - size;
-			ssend = start - 1;
-		}
-
-		Intron intron = ((Transcript) parent).findIntron(ssstart);
-		if (intron == null) return null;
-
-		SpliceSiteDonor spliceSiteDonor = new SpliceSiteDonor(intron, ssstart, ssend, strandMinus, id);
-		add(spliceSiteDonor);
-
-		return spliceSiteDonor;
-	}
-
-	/**
 	 * Create splice site regions
 	 */
 	public SpliceSiteRegion createSpliceSiteRegionEnd(int size) {
@@ -296,7 +246,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 				+ "\t" + rank //
 				+ "\t" + sequence //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
-		;
+				;
 	}
 
 	public void setAaIdx(int aaIdxStart, int aaIdxEnd) {
