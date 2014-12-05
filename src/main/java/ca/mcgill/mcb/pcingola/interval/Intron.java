@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * Intron
@@ -34,6 +35,18 @@ public class Intron extends Marker {
 	 */
 	public void add(SpliceSite ss) {
 		spliceSites.add(ss);
+	}
+
+	@Override
+	public Intron apply(Variant variant) {
+		// Create new exon with updated coordinates
+		Intron intr = (Intron) super.apply(variant);
+
+		// Update splice sites
+		for (SpliceSite ss : spliceSites)
+			intr.add((SpliceSite) ss.apply(variant));
+
+		return intr;
 	}
 
 	/**
@@ -98,7 +111,7 @@ public class Intron extends Marker {
 		return (exonBefore != null ? exonBefore.getSpliceType() : "") //
 				+ "-" //
 				+ (exonAfter != null ? exonAfter.getSpliceType() : "") //
-				;
+		;
 	}
 
 	/**
@@ -131,6 +144,17 @@ public class Intron extends Marker {
 
 	public void setRank(int rank) {
 		this.rank = rank;
+	}
+
+	@Override
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		for (SpliceSite ss : spliceSites)
+			if (ss.intersects(variant)) ss.variantEffect(variant, variantEffects);
+
+		// Add intron part
+		variantEffects.addEffect(variant, this, EffectType.INTRON, "");
+
+		return true;
 	}
 
 }

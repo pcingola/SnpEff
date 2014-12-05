@@ -285,7 +285,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Introns
 		for (Intron intr : introns()) {
-			Intron newIntron = (Intron) intr.apply(variant);
+			Intron newIntron = intr.apply(variant);
 			if (newIntron != null) tr.add(newIntron);
 		}
 
@@ -1709,10 +1709,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		//				ss.variantEffect(variant, variantEffects);
 		//			}
 
+		// Does it hit an exon?
+		// Note: This only adds spliceSites effects, for detailed codon 
+		//       changes effects we use 'CodonChange' class
+		for (Exon ex : this)
+			if (ex.intersects(variant)) ex.variantEffect(variant, variantEffects);
+
 		// Does it hit an intron?
 		for (Intron intron : introns())
 			if (intron.intersects(variant)) {
-				variantEffects.addEffect(variant, intron, EffectType.INTRON, "");
+				intron.variantEffect(variant, variantEffects);
 				included |= intron.includes(variant); // Is this variant fully included in this intron?
 			}
 		if (included) return true; // SeqChange fully included? => We are done.

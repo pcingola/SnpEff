@@ -6,6 +6,7 @@ import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -364,6 +365,19 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		default:
 			throw new RuntimeException("Unknown format version: " + ToStringVersion);
 		}
+	}
+
+	/**
+	 * Note: This only adds spliceSites effects, for detailed
+	 *       codon changes effects we use 'CodonChange' class
+	 */
+	@Override
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+
+		for (SpliceSite ss : spliceSites)
+			if (ss.intersects(variant)) ss.variantEffect(variant, variantEffects);
+
+		return true;
 	}
 
 }
