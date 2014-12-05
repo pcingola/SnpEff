@@ -2,6 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import java.util.Random;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 
@@ -12,8 +14,11 @@ import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 
 /**
@@ -38,6 +43,9 @@ public class TestCasesBase {
 	protected int maxTranscripts;
 	protected int maxExons;
 	protected int minExons;
+	protected int spliceRegionExonSize = 0;
+	protected int spliceRegionIntronMin = 0;
+	protected int spliceRegionIntronMax = 0;
 
 	protected Random rand;
 	protected Config config;
@@ -67,6 +75,29 @@ public class TestCasesBase {
 	public void before() {
 		init();
 		initSnpEffPredictor();
+	}
+
+	protected void checkEffect(Variant variant, String effectExpected) {
+		checkEffect(variant, effectExpected, null);
+	}
+
+	protected void checkEffect(Variant variant, String effectExpected, String effectNotExpected) {
+		// Calculate effects
+		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
+
+		boolean found = false;
+		for (VariantEffect effect : effects) {
+			String effStr = effect.getEffectTypeString(false);
+
+			// Check effect
+			if (verbose) System.out.println(effect.toStringSimple(true) + "\n\tEffect type: '" + effStr + "'\tExpected: '" + effectExpected + "'");
+			found |= effectExpected.equals(effStr);
+
+			// Check that 'effectNotExpected' is not present
+			if (effectNotExpected != null && effectNotExpected.equals(effStr)) throw new RuntimeException("Effect '" + effectNotExpected + "' should not be here");
+		}
+
+		Assert.assertTrue("Effect not found: '" + effectExpected + "' in variant " + variant, found);
 	}
 
 	protected void init() {
@@ -119,9 +150,9 @@ public class TestCasesBase {
 		config.setShiftHgvs(shiftHgvs);
 
 		// Set predictor parameters
-		snpEffectPredictor.setSpliceRegionExonSize(0);
-		snpEffectPredictor.setSpliceRegionIntronMin(0);
-		snpEffectPredictor.setSpliceRegionIntronMax(0);
+		snpEffectPredictor.setSpliceRegionExonSize(spliceRegionExonSize);
+		snpEffectPredictor.setSpliceRegionIntronMin(spliceRegionIntronMin);
+		snpEffectPredictor.setSpliceRegionIntronMax(spliceRegionIntronMax);
 		snpEffectPredictor.setUpDownStreamLength(0);
 
 		// Chromosome sequence

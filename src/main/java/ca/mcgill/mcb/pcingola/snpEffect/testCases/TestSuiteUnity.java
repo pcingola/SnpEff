@@ -41,7 +41,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesReactome;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSeekableReader;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSequenceIndexer;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSnps;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSplice;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSpliceSite;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSpliceRegion;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVariantRealignment;
 
 /**
@@ -87,7 +88,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVariantRealignm
 		TestCasesSeekableReader.class, //
 		TestCasesSequenceIndexer.class, //
 		TestCasesSnps.class, //
-		TestCasesSplice.class, //
+		TestCasesSpliceSite.class, //
+		TestCasesSpliceRegion.class, //
 		TestCasesVariantRealignment.class //
 })
 public class TestSuiteUnity {

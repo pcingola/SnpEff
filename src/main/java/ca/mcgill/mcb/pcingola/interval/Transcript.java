@@ -592,15 +592,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public void createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
 		// For each gene, transcript and exon
 		ArrayList<Exon> exons = (ArrayList<Exon>) sortedStrand();
-
 		if (exons.size() > 0) {
 			for (int i = 0; i < exons.size(); i++) {
 				Exon exon = exons.get(i);
-				Exon prev = (i >= 1 ? exons.get(i - 1) : null);
-				Exon next = (i < exons.size() - 1 ? exons.get(i + 1) : null);
 
-				if (prev != null) exon.createSpliceSiteRegionStart(spliceRegionExonSize); // Splice site region at the start
-				if (next != null) exon.createSpliceSiteRegionEnd(spliceRegionExonSize); // Splice site region at the end
+				if (i > 0) exon.createSpliceSiteRegionStart(spliceRegionExonSize); // Splice site region at the start
+				if (i < (exon.size() - 1)) exon.createSpliceSiteRegionEnd(spliceRegionExonSize); // Splice site region at the end
 
 				// Sanity check
 				int rank = i + 1;
@@ -612,15 +609,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		}
 
 		// Add splice site regions (Introns)
-		introns(); // Make sure introns are available
+		List<Intron> introns = introns();
 		if (introns != null) {
 			for (int i = 0; i < introns.size(); i++) {
 				Intron intron = introns.get(i);
-				if (i > 0) intron.createSpliceSiteRegionStart(spliceRegionIntronMin, spliceRegionIntronMax);
-				if (i < (introns.size() - 1)) intron.createSpliceSiteRegionEnd(spliceRegionIntronMin, spliceRegionIntronMax);
-
 				intron.createSpliceSiteAcceptor(spliceSiteSize); // Acceptor splice site
 				intron.createSpliceSiteDonor(spliceSiteSize); // Acceptor splice site
+
+				// Splice region
+				intron.createSpliceSiteRegionStart(spliceRegionIntronMin, spliceRegionIntronMax);
+				intron.createSpliceSiteRegionEnd(spliceRegionIntronMin, spliceRegionIntronMax);
 			}
 
 		}
@@ -1072,7 +1070,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	/**
 	 * Get all introns (lazy init)
 	 */
-	public synchronized ArrayList<Intron> introns() {
+	public synchronized List<Intron> introns() {
 		if (introns == null) {
 			introns = new ArrayList<Intron>();
 

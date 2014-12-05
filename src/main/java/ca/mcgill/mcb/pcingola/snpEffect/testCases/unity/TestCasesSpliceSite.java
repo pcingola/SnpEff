@@ -1,14 +1,10 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -16,11 +12,11 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesSplice extends TestCasesBase {
+public class TestCasesSpliceSite extends TestCasesBase {
 
 	public static int N = 1000;
 
-	public TestCasesSplice() {
+	public TestCasesSpliceSite() {
 		super();
 	}
 
@@ -29,25 +25,6 @@ public class TestCasesSplice extends TestCasesBase {
 		super.init();
 		randSeed = 20141205;
 		minExons = 2;
-	}
-
-	void checkEffect(Variant variant, String effectExpected, String effectNotExpected) {
-		// Calculate effects
-		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
-
-		boolean found = false;
-		for (VariantEffect effect : effects) {
-			String effStr = effect.getEffectTypeString(false);
-
-			// Check effect
-			if (verbose) System.out.println(effect.toStringSimple(true) + "\n\tEffect type: '" + effStr + "'\tExpected: '" + effectExpected + "'");
-			found |= effectExpected.equals(effStr);
-
-			// Check that 'effectNotExpected' is not present
-			if (effectNotExpected != null && effectNotExpected.equals(effStr)) throw new RuntimeException("Effect '" + effectNotExpected + "' should not be here");
-		}
-
-		Assert.assertTrue("Effect not found: '" + effectExpected + "'", found);
 	}
 
 	@Test
