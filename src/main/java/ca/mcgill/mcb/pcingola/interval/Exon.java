@@ -38,9 +38,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	byte frame = -1; // Frame can be {-1, 0, 1, 2}, where '-1' means unknown
 	int rank; // Exon rank in transcript
 	int aaIdxStart = -1, aaIdxEnd = -1; // First and last AA indexes that intersect with this exon
-	//	SpliceSiteAcceptor spliceSiteAcceptor;
-	//	SpliceSiteDonor spliceSiteDonor;
-	//	SpliceSiteRegion spliceSiteRegionStart, spliceSiteRegionEnd;
 	ArrayList<SpliceSite> spliceSites;
 	ExonSpliceType spliceType = ExonSpliceType.NONE;
 
@@ -71,7 +68,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 *
 	 * WARNING: There might be conditions which change the exon type (e.g. an intron is deleted)
 	 * 			Nevertheless ExonSpliceType s not updated since it reflects the exon type before a sequence change.
-	 *
 	 */
 	@Override
 	public Exon apply(Variant variant) {
@@ -218,22 +214,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		return spliceSites;
 	}
 
-	//	public SpliceSiteAcceptor getSpliceSiteAcceptor() {
-	//		return spliceSiteAcceptor;
-	//	}
-	//
-	//	public SpliceSiteDonor getSpliceSiteDonor() {
-	//		return spliceSiteDonor;
-	//	}
-	//
-	//	public SpliceSiteRegion getSpliceSiteRegionEnd() {
-	//		return spliceSiteRegionEnd;
-	//	}
-	//
-	//	public SpliceSiteRegion getSpliceSiteRegionStart() {
-	//		return spliceSiteRegionStart;
-	//	}
-
 	public ExonSpliceType getSpliceType() {
 		return spliceType;
 	}
@@ -301,9 +281,6 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		frame = (byte) markerSerializer.getNextFieldInt();
 		rank = markerSerializer.getNextFieldInt();
 		setSequence(markerSerializer.getNextField());
-		//		spliceSiteDonor = (SpliceSiteDonor) markerSerializer.getNextFieldMarker();
-		//		spliceSiteAcceptor = (SpliceSiteAcceptor) markerSerializer.getNextFieldMarker();
-
 		String exType = markerSerializer.getNextField();
 		if ((exType != null) && !exType.isEmpty()) spliceType = ExonSpliceType.valueOf(exType);
 	}
@@ -314,15 +291,10 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		// Note: We do not save splice sites any more, since they can be created "on demand"
-		//		int ssdId = markerSerializer.save(spliceSiteDonor);
-		//		int ssaId = markerSerializer.save(spliceSiteAcceptor);
-
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + frame //
 				+ "\t" + rank //
 				+ "\t" + sequence //
-				//				+ "\t" + ssdId //
-				//				+ "\t" + ssaId //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
 		;
 	}

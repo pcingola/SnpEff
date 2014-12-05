@@ -90,7 +90,7 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-			) snpEffectPredictor.add(m);
+					) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}
@@ -173,10 +173,6 @@ public class SnpEffectPredictor implements Serializable {
 		// Add up-down stream intervals
 		for (Marker upDownStream : genome.getGenes().createUpDownStream(upDownStreamLength))
 			markers.add(upDownStream);
-
-		//		// Add splice site intervals
-		//		for (Marker spliceSite : genome.getGenes().createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax))
-		//			markers.add(spliceSite);
 
 		// Add splice site intervals
 		genome.getGenes().createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax);

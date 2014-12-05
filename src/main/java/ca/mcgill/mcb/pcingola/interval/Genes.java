@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * A collection of genes (marker intervals)
  * Note: It is assumed that all genes belong to the same genome
- * 
+ *
  * @author pcingola
  */
 public class Genes implements Iterable<Gene>, Serializable {
@@ -36,7 +36,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 	}
 
 	/**
-	 * Creates a list of Intergenic regions 
+	 * Creates a list of Intergenic regions
 	 */
 	public List<Intergenic> createIntergenic() {
 		ArrayList<Intergenic> intergenics = new ArrayList<Intergenic>(genesById.size());
@@ -77,29 +77,24 @@ public class Genes implements Iterable<Gene>, Serializable {
 
 	/**
 	 * Create splice sites.
-	 * 
+	 *
 	 * @param createIfMissing : If true, create canonical splice sites if they are missing.
-	 * 
+	 *
 	 * For a definition of splice site, see comments at the beginning of SpliceSite.java
 	 */
-	public Collection<Marker> createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
-		ArrayList<Marker> spliceSites = new ArrayList<Marker>();
-
+	public void createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
 		// For each gene, transcript
-		for (Gene gene : this) {
+		for (Gene gene : this)
 			for (Transcript tr : gene) {
-				List<SpliceSite> slist = tr.createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax); // Find (or create) splice sites
-				spliceSites.addAll(slist); // Store all markers 
+				// Create splice sites
+				tr.createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax);
 			}
-		}
-
-		return spliceSites;
 	}
 
 	/**
 	 * Creates a list of UP/DOWN stream regions (for each transcript)
 	 * Upstream (downstream) stream is defined as upDownLength before (after) transcript
-	 * 
+	 *
 	 * Note: If upDownLength <=0 no interval is created
 	 */
 	public List<Marker> createUpDownStream(int upDownLength) {

@@ -18,8 +18,6 @@ public class Intron extends Marker {
 	int rank; // Exon rank in transcript
 	Exon exonBefore; // Exon before this intron
 	Exon exonAfter; // Exon after this intron
-	//	SpliceSiteRegion spliceSiteRegionStart;
-	//	SpliceSiteRegion spliceSiteRegionEnd;
 	ArrayList<SpliceSite> spliceSites;
 
 	public Intron(Transcript parent, int start, int end, boolean strandMinus, String id, Exon exonBefore, Exon exonAfter) {
@@ -99,19 +97,11 @@ public class Intron extends Marker {
 		return spliceSites;
 	}
 
-	//	public SpliceSiteRegion getSpliceSiteRegionEnd() {
-	//		return spliceSiteRegionEnd;
-	//	}
-	//
-	//	public SpliceSiteRegion getSpliceSiteRegionStart() {
-	//		return spliceSiteRegionStart;
-	//	}
-
 	public String getSpliceType() {
 		return (exonBefore != null ? exonBefore.getSpliceType() : "") //
 				+ "-" //
 				+ (exonAfter != null ? exonAfter.getSpliceType() : "") //
-				;
+		;
 	}
 
 	/**

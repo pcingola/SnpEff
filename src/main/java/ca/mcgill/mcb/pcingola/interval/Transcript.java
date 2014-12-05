@@ -44,7 +44,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	String cds; // Coding sequence
 	String mRna; // mRna sequence (includes 5'UTR and 3'UTR)
 	String protein; // Protein sequence
-	//	ArrayList<SpliceSite> spliceSites; // Splice sites
 	ArrayList<Utr> utrs; // UTRs
 	ArrayList<Cds> cdss; // CDS information
 	ArrayList<Intron> introns; // Intron markers
@@ -58,7 +57,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	public Transcript() {
 		super();
-		//		spliceSites = new ArrayList<SpliceSite>();
 		utrs = new ArrayList<Utr>();
 		cdss = new ArrayList<Cds>();
 		type = EffectType.TRANSCRIPT;
@@ -533,7 +531,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-			) {
+					) {
 				ret = true;
 
 				// Show debugging information
@@ -590,12 +588,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Find all splice sites.
-	 *
-	 * @param createIfMissing : If true, create canonical splice sites if they are missing.
 	 */
-	public List<SpliceSite> createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
-		List<SpliceSite> list = new LinkedList<SpliceSite>();
-
+	public void createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
 		// For each gene, transcript and exon
 		ArrayList<Exon> exons = (ArrayList<Exon>) sortedStrand();
 
@@ -613,13 +607,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					if (isStrandPlus()) dist = exon.getStart() - prev.getEnd() - 1;
 					else dist = prev.getStart() - exon.getEnd() - 1;
 
-					// Acceptor splice site: before exon start, but not before first exon
-					SpliceSite ss = exon.createSpliceSiteAcceptor(Math.min(spliceSiteSize, dist));
-					if (ss != null) list.add(ss);
-
-					// Splice site region at the end
-					SpliceSiteRegion ssr = exon.createSpliceSiteRegionStart(spliceRegionExonSize);
-					if (ssr != null) list.add(ssr);
+					exon.createSpliceSiteAcceptor(Math.min(spliceSiteSize, dist)); // Acceptor splice site: before exon start, but not before first exon
+					exon.createSpliceSiteRegionStart(spliceRegionExonSize); // Splice site region at the end
 				}
 
 				//---
@@ -630,13 +619,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					if (isStrandPlus()) dist = next.getStart() - exon.getEnd() - 1;
 					else dist = exon.getStart() - next.getEnd() - 1;
 
-					// Donor splice site: after exon end, but not after last exon
-					SpliceSite ss = exon.createSpliceSiteDonor(Math.min(spliceSiteSize, dist));
-					if (ss != null) list.add(ss);
-
-					// Splice site region at the end
-					SpliceSiteRegion ssr = exon.createSpliceSiteRegionEnd(spliceRegionExonSize);
-					if (ssr != null) list.add(ssr);
+					exon.createSpliceSiteDonor(Math.min(spliceSiteSize, dist)); // Donor splice site: after exon end, but not after last exon
+					exon.createSpliceSiteRegionEnd(spliceRegionExonSize); // Splice site region at the end
 				}
 
 				// Sanity check
@@ -653,22 +637,11 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		if (introns != null) {
 			for (int i = 0; i < introns.size(); i++) {
 				Intron intron = introns.get(i);
-
-				if (i > 0) {
-					SpliceSiteRegion ssrs = intron.createSpliceSiteRegionStart(spliceRegionIntronMin, spliceRegionIntronMax);
-					if (ssrs != null) list.add(ssrs);
-				}
-
-				if (i < (introns.size() - 1)) {
-					SpliceSiteRegion ssre = intron.createSpliceSiteRegionEnd(spliceRegionIntronMin, spliceRegionIntronMax);
-					if (ssre != null) list.add(ssre);
-				}
-
+				if (i > 0) intron.createSpliceSiteRegionStart(spliceRegionIntronMin, spliceRegionIntronMax);
+				if (i < (introns.size() - 1)) intron.createSpliceSiteRegionEnd(spliceRegionIntronMin, spliceRegionIntronMax);
 			}
 
 		}
-
-		return list;
 	}
 
 	/**
@@ -953,7 +926,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
 						if (Config.get().isDebug()) System.err.println("\t\tFrame correction: Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
@@ -1078,18 +1051,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return firstCodingExon;
 	}
 
-	public List<SpliceSite> spliceSites() {
-		List<SpliceSite> sslist = new ArrayList<SpliceSite>();
-
-		for (Exon ex : this)
-			sslist.addAll(ex.getSpliceSites());
-
-		for (Intron intr : introns())
-			sslist.addAll(intr.getSpliceSites());
-
-		return sslist;
-	}
-
 	/**
 	 * Create a TSS marker
 	 */
@@ -1123,7 +1084,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
@@ -1169,20 +1130,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean isAaCheck() {
 		return aaCheck;
 	}
-
-	//	/**
-	//	 * Return the intron size for intron number 'intronNum'
-	//	 *
-	//	 * Note: Intron number 'N' is the intron between exon number N and exon number N+1
-	//	 * Note: Numbering is zero-based (not to be confused with exon 'ranking', which is one-based)
-	//	 */
-	//	public int intronSize(int intronNum) {
-	//		if (intronNum >= (numChilds() - 1)) return -1;
-	//		ArrayList<Exon> exons = (ArrayList<Exon>) sortedStrand();
-	//		Exon exon = exons.get(intronNum);
-	//		Exon next = exons.get(intronNum + 1);
-	//		return (isStrandPlus() ? (next.getStart() - exon.getEnd()) : (exon.getStart() - next.getEnd())) - 1;
-	//	}
 
 	@Override
 	protected boolean isAdjustIfParentDoesNotInclude(Marker parent) {
@@ -1508,9 +1455,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		for (Marker m : markerSerializer.getNextFieldMarkers())
 			cdss.add((Cds) m);
-
-		//		for (Marker m : markerSerializer.getNextFieldMarkers())
-		//			spliceSites.add((SpliceSiteBranchU12) m);
 	}
 
 	/**
@@ -1530,8 +1474,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-		//				+ "\t" + markerSerializer.save((Iterable) spliceSites)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1558,13 +1501,17 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		this.ribosomalSlippage = ribosomalSlippage;
 	}
 
-	//	/**
-	//	 * Add splice sites form exons
-	//	 */
-	//	void spliceSitesFromExons() {
-	//		spliceSites = new ArrayList<SpliceSite>();
-	//
-	//	}
+	public List<SpliceSite> spliceSites() {
+		List<SpliceSite> sslist = new ArrayList<SpliceSite>();
+
+		for (Exon ex : this)
+			sslist.addAll(ex.getSpliceSites());
+
+		for (Intron intr : introns())
+			sslist.addAll(intr.getSpliceSites());
+
+		return sslist;
+	}
 
 	@Override
 	public String toString() {
@@ -1700,22 +1647,17 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			}
 		if (included) return true; // SeqChange fully included in the UTR? => We are done.
 
-		//		//---
-		//		// Hits a SpliceSiteBranch region?
-		//		//---
-		//		for (SpliceSite ss : spliceSites)
-		//			if (ss.intersects(variant)) {
-		//				// Calculate the effect
-		//				ss.variantEffect(variant, variantEffects);
-		//			}
-
+		//---
 		// Does it hit an exon?
-		// Note: This only adds spliceSites effects, for detailed codon 
+		// Note: This only adds spliceSites effects, for detailed codon
 		//       changes effects we use 'CodonChange' class
+		//---
 		for (Exon ex : this)
 			if (ex.intersects(variant)) ex.variantEffect(variant, variantEffects);
 
+		//---
 		// Does it hit an intron?
+		//---
 		for (Intron intron : introns())
 			if (intron.intersects(variant)) {
 				intron.variantEffect(variant, variantEffects);
