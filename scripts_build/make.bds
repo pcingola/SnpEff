@@ -295,7 +295,7 @@ void runTests() {
 			org.junit.runner.JUnitCore \
 			ca.mcgill.mcb.pcingola.snpSift.testCases.TestSuiteAll \
 			2>&1 \
-			| tee $dirSnpeff/testCases.snpsift.txt
+			| tee $dirSnpeff/testcases.snpsift.txt
 
 	# Run SnpEff test cases: Unity
 	task cd $HOME/workspace/SnpEff/ ; \
@@ -304,7 +304,7 @@ void runTests() {
 			org.junit.runner.JUnitCore \
 			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteUnity \
 			2>&1 \
-			| tee $dirSnpeff/testCases.snpeff.unity.txt
+			| tee $dirSnpeff/testcases.snpeff.unity.txt
 
 	# Run SnpEff test cases: Integration
 	task cd $HOME/workspace/SnpEff/ ; \
@@ -313,7 +313,7 @@ void runTests() {
 			org.junit.runner.JUnitCore \
 			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteIntegration \
 			2>&1 \
-			| tee $dirSnpeff/testCases.snpeff.integration.txt
+			| tee $dirSnpeff/testcases.snpeff.integration.txt
 }
 
 #-------------------------------------------------------------------------------
