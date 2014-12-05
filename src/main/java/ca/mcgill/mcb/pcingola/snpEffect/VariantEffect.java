@@ -15,7 +15,6 @@ import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.interval.VariantNonRef;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
@@ -486,10 +485,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 */
 	public String getGenotype() {
 		if (variant == null) return "";
-		if (variant.isNonRef()) {
-			Variant vref = ((VariantNonRef) variant).getVariantRef();
-			return variant.getGenotype() + "-" + vref.getGenotype();
-		}
 		return variant.getGenotype();
 	}
 

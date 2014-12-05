@@ -131,7 +131,7 @@ public class SnpEffCmdEff extends SnpEff {
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
-						) {
+								) {
 							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
@@ -146,7 +146,7 @@ public class SnpEffCmdEff extends SnpEff {
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
-							) {
+									) {
 								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
@@ -333,14 +333,14 @@ public class SnpEffCmdEff extends SnpEff {
 						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
 
 						// Create new 'section'
-						outputFormatter.startSection(variantAlt);
+						outputFormatter.startSection(varNonRef);
 
 						// Show results (note, we don't add these to the statistics)
 						for (VariantEffect variantEffect : variantEffects)
 							outputFormatter.add(variantEffect);
 
 						// Finish up this section
-						outputFormatter.printSection(variantAlt);
+						outputFormatter.printSection(varNonRef);
 					}
 				}
 
@@ -727,7 +727,7 @@ public class SnpEffCmdEff extends SnpEff {
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-				);
+						);
 				ok &= runAnalysis(inputFile, outputFile);
 			}
 		}

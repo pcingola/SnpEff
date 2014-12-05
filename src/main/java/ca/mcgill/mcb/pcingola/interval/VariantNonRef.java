@@ -12,7 +12,13 @@ public class VariantNonRef extends Variant {
 
 	public VariantNonRef(Variant variant, Variant variantRef) {
 		super(variant.getParent(), variant.getStart(), variant.getReference(), variant.getAlt(), variant.getId());
+		genotype = variant.getGenotype();
 		this.variantRef = variantRef;
+	}
+
+	@Override
+	public String getGenotype() {
+		return genotype + "-" + variantRef.getGenotype();
 	}
 
 	public Variant getVariantRef() {
@@ -36,4 +42,10 @@ public class VariantNonRef extends Variant {
 		this.variantRef = variantRef;
 	}
 
+	@Override
+	public String toString() {
+		String valt = super.toString();
+		String vref = variantRef.toString();
+		return valt + "-" + vref;
+	}
 }

@@ -47,9 +47,10 @@ public class TestCasesCancer {
 		// Find AA change for a genotype
 		boolean found = false;
 		for (VcfEntry vcfEntry : list) {
+			if (debug) System.err.println(vcfEntry);
 			for (VcfEffect eff : vcfEntry.parseEffects()) {
+				if (debug) System.err.println("\t" + eff + "\n\t\tAA : " + eff.getAa() + "\n\t\tGenotype: " + eff.getGenotype());
 				if (genotype.equals(eff.getGenotype())) {
-					if (debug) Gpr.debug("AA: " + eff.getAa() + "\t" + eff.getGenotype() + "\t" + eff);
 					Assert.assertEquals(aaHgsv, eff.getAa());
 					found = true;
 				}
