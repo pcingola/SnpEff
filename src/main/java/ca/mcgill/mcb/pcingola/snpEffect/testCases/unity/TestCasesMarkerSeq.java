@@ -37,7 +37,7 @@ public class TestCasesMarkerSeq {
 	 * Compare to trivial implementation
 	 */
 	@Test
-	public void test_zzz() {
+	public void test_01() {
 		Gpr.debug("Test");
 		initRand();
 		int maxSize = 20; // Max subsequence size to test

@@ -348,6 +348,10 @@ public class CompareToVep {
 		this.onlyProtein = onlyProtein;
 	}
 
+	public void setShiftHgvs(boolean shiftHgvs) {
+		this.shiftHgvs = shiftHgvs;
+	}
+
 	public void setStrict(boolean strict) {
 		this.strict = strict;
 	}
