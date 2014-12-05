@@ -686,8 +686,9 @@ public class SnpEff implements CommandLine {
 				else if (arg.equalsIgnoreCase("-noDownload")) download = false; // Do not download genome
 				else if (arg.equalsIgnoreCase("-noLog")) log = false;
 				else if (arg.equalsIgnoreCase("-noOut")) suppressOutput = true; // Undocumented option (only used for development & debugging)
-				else if (arg.equalsIgnoreCase("-noShiftHgvs") || arg.equalsIgnoreCase("-no_shift_hgvs")) shiftHgvs = false;
-				else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
+				else if (arg.equalsIgnoreCase("-noShiftHgvs") || arg.equalsIgnoreCase("-no_shift_hgvs")) {
+					shiftHgvs = false;
+				} else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
 				else if (arg.equalsIgnoreCase("-onlyProtein")) onlyProtein = true;
 				else if (arg.equalsIgnoreCase("-onlyTr")) {
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
@@ -897,6 +898,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
 		snpEffCmd.upDownStreamLength = upDownStreamLength;
 		snpEffCmd.verbose = verbose;
+		snpEffCmd.shiftHgvs = shiftHgvs;
 
 		// Help requested?
 		if (help) {

@@ -10,6 +10,7 @@ import ca.mcgill.mcb.pcingola.align.VariantRealign;
 import ca.mcgill.mcb.pcingola.snpEffect.Hgvs;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.CompareToVep;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -168,15 +169,45 @@ public class TestCasesZzz extends TestCasesBase {
 	//		compareHgvs(genome, vcf, true);
 	//	}
 
+	//	@Test
+	//	public void test_zzz() {
+	//		Gpr.debug("Test");
+	//
+	//		verbose = HgvsDna.debug = VariantRealign.debug = true;
+	//
+	//		String genome = "testHg19Chr13";
+	//		String vcf = "tests/zzz.vcf";
+	//		compareHgvs(genome, vcf, true);
+	//	}
+
 	@Test
-	public void test_zzz() {
+	public void test_10_MixedVep_HGVS() {
 		Gpr.debug("Test");
 
 		verbose = HgvsDna.debug = VariantRealign.debug = true;
 
-		String genome = "testHg19Chr13";
+		String genome = "testHg3775Chr1";
 		String vcf = "tests/zzz.vcf";
-		compareHgvs(genome, vcf, true);
+		CompareToVep comp = new CompareToVep(genome, verbose);
+		comp.setCompareHgvs();
+		comp.setOnlyProtein(true);
+		comp.compareVep(vcf);
+		if (verbose) System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
+
+	//	@Test
+	//	public void test_11_Hg19Hgvs() {
+	//		Gpr.debug("Test");
+	//
+	//		String genome = "testHg19Hgvs";
+	//		String vcf = "tests/hgvs_counsyl.vcf";
+	//		CompareToVep comp = new CompareToVep(genome, verbose);
+	//		comp.setCompareHgvs();
+	//		comp.setCompareHgvsProt(false);
+	//		comp.compareVep(vcf);
+	//		if (verbose) System.out.println(comp);
+	//		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+	//	}
 
 }
