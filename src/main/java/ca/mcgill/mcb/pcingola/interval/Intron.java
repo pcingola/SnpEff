@@ -52,7 +52,7 @@ public class Intron extends Marker {
 	 * Acceptor site: 3' end of the intron
 	 */
 	public SpliceSiteAcceptor createSpliceSiteAcceptor(int maxSpliceSiteSize) {
-		maxSpliceSiteSize = Math.max(maxSpliceSiteSize, size()); // Cannot be larger than this intron
+		maxSpliceSiteSize = Math.min(maxSpliceSiteSize, size()); // Cannot be larger than this intron
 		if (maxSpliceSiteSize <= 0) return null;
 
 		int ssstart, ssend;
@@ -75,7 +75,7 @@ public class Intron extends Marker {
 	 * Donor site: 5' end of the intron
 	 */
 	public SpliceSiteDonor createSpliceSiteDonor(int maxSpliceSiteSize) {
-		maxSpliceSiteSize = Math.max(maxSpliceSiteSize, size()); // Cannot be larger than this intron
+		maxSpliceSiteSize = Math.min(maxSpliceSiteSize, size()); // Cannot be larger than this intron
 		if (maxSpliceSiteSize <= 0) return null;
 
 		int ssstart, ssend;

@@ -31,7 +31,7 @@ public class TestCasesSplice extends TestCasesBase {
 		minExons = 2;
 	}
 
-	void checkEffect(Variant variant, String effectExpected) {
+	void checkEffect(Variant variant, String effectExpected, String effectNotExpected) {
 		// Calculate effects
 		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
 
@@ -40,8 +40,11 @@ public class TestCasesSplice extends TestCasesBase {
 			String effStr = effect.getEffectTypeString(false);
 
 			// Check effect
-			if (verbose) System.out.println(effect + "\n\tEffect type: '" + effStr + "'\tExpected: '" + effectExpected + "'");
+			if (verbose) System.out.println(effect.toStringSimple(true) + "\n\tEffect type: '" + effStr + "'\tExpected: '" + effectExpected + "'");
 			found |= effectExpected.equals(effStr);
+
+			// Check that 'effectNotExpected' is not present
+			if (effectNotExpected != null && effectNotExpected.equals(effStr)) throw new RuntimeException("Effect '" + effectNotExpected + "' should not be here");
 		}
 
 		Assert.assertTrue("Effect not found: '" + effectExpected + "'", found);
@@ -57,23 +60,24 @@ public class TestCasesSplice extends TestCasesBase {
 		//	- Calculate effect and check
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor();
-			if (debug) System.out.println("Splice Test iteration: " + i + "\n" + transcript);
-			else if (verbose) System.out.println("Splice Test iteration: " + i + "\t" + transcript.getStrand() + "\t" + transcript.cds());
+			if (verbose) System.out.println("Splice Test iteration: " + i + "\n" + transcript);
 			else Gpr.showMark(i + 1, 1);
 
 			for (Intron intron : transcript.introns()) {
 				int ssBases = Math.min(SpliceSite.CORE_SPLICE_SITE_SIZE - 1, intron.size());
 
 				// Splice site donor
+				String effectNotExpected = (intron.size() > 2 * SpliceSite.CORE_SPLICE_SITE_SIZE ? "SPLICE_SITE_ACCEPTOR" : null);
 				for (int pos = intron.getStart(); pos <= intron.getStart() + ssBases; pos++) {
 					Variant variant = new Variant(chromosome, pos, "A", "T");
-					checkEffect(variant, "SPLICE_SITE_DONOR");
+					checkEffect(variant, "SPLICE_SITE_DONOR", effectNotExpected);
 				}
 
 				// Splice site acceptor
+				effectNotExpected = (intron.size() > 2 * SpliceSite.CORE_SPLICE_SITE_SIZE ? "SPLICE_SITE_DONOR" : null);
 				for (int pos = intron.getEnd() - ssBases; pos <= intron.getEnd(); pos++) {
 					Variant variant = new Variant(chromosome, pos, "A", "T");
-					checkEffect(variant, "SPLICE_SITE_ACCEPTOR");
+					checkEffect(variant, "SPLICE_SITE_ACCEPTOR", effectNotExpected);
 				}
 			}
 		}

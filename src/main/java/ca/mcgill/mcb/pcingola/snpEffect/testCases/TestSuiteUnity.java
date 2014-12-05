@@ -18,6 +18,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaNSequence;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaOverlap;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaSequence;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaSequenceByte;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesEffectCollapse;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFasta;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFileIndexChrPos;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFisherExactTest;
@@ -61,6 +62,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVariantRealignm
 		TestCasesDnaOverlap.class, //
 		TestCasesDnaSequenceByte.class, //
 		TestCasesDnaSequence.class, //
+		TestCasesEffectCollapse.class, //
 		TestCasesFasta.class, //
 		TestCasesFileIndexChrPos.class, //
 		TestCasesFisherExactTest.class, //

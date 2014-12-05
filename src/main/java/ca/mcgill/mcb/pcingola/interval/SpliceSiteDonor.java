@@ -20,11 +20,6 @@ public class SpliceSiteDonor extends SpliceSite {
 		type = EffectType.SPLICE_SITE_DONOR;
 	}
 
-	//	public SpliceSiteDonor(Exon parent, int start, int end, boolean strandMinus, String id) {
-	//		super(parent, start, end, strandMinus, id);
-	//		type = EffectType.SPLICE_SITE_DONOR;
-	//	}
-
 	public SpliceSiteDonor(Intron parent, int start, int end, boolean strandMinus, String id) {
 		super(parent, start, end, strandMinus, id);
 		type = EffectType.SPLICE_SITE_DONOR;
