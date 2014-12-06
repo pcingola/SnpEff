@@ -114,7 +114,7 @@ public class HgvsDna extends Hgvs {
 
 		// May be it is not completely in the exon. Use genomic sequences
 		if (seq == null) {
-			seq = genome.getGenomicSequences().getSequence(m);
+			seq = genome.getGenomicSequences().querySequence(m);
 			if (debug) Gpr.debug("Sequence (Genome) [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'\tsequence (+ strand): " + seq);
 		}
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
@@ -181,45 +180,6 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	}
 
 	/**
-	 * Get sequence for a marker
-	 */
-	public String getSequence(Marker marker) {
-		String chr = marker.getChromosomeName();
-
-		// Get or load interval tree
-		if (!intervalForest.hasTree(chr)) loadOrCreateFromGenome(chr);
-		IntervalTree tree = intervalForest.getTree(chr);
-
-		// Nothing available
-		if (tree == null || tree.isEmpty()) return null;
-
-		// Find marker sequence
-		Markers res = tree.query(marker);
-		if (res.isEmpty()) return null;
-
-		// Get first marker (ideally, there should be only one that fully includes 'marker')
-		MarkerSeq ms = null;
-		for (Marker m : res) {
-			if (m.includes(marker) && !(m instanceof Chromosome)) {
-				ms = (MarkerSeq) m;
-				break;
-			}
-		}
-
-		if (ms == null) return null;
-
-		// Calculate start and end coordiantes
-		int sstart = marker.getStart() - ms.getStart();
-		int ssend = marker.size() + sstart;
-		String seq = ms.getSequence().substring(sstart, ssend);
-
-		// Return sequence in same direction as 'marker'
-		if (marker.isStrandMinus()) seq = GprSeq.reverseWc(seq);
-		return seq;
-
-	}
-
-	/**
 	 * Do we have sequence information for this chromosome?
 	 */
 	public boolean hasChromosome(String chr) {
@@ -283,6 +243,55 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		if (hasChromosome(chr)) return true;
 		if (load(chr)) return true;
 		return addExonSequences(chr);
+	}
+
+	/**
+	 * Find a marker (with sequence) containing query 'marker'
+	 * Could trigger loading sequences form database
+	 *
+	 * @return A markerSeq containing 'marker' or null if nothing is found
+	 */
+	public MarkerSeq queryMarkerSequence(Marker marker) {
+		String chr = marker.getChromosomeName();
+
+		// Get or load interval tree
+		if (!intervalForest.hasTree(chr)) loadOrCreateFromGenome(chr);
+		IntervalTree tree = intervalForest.getTree(chr);
+
+		// Nothing available
+		if (tree == null || tree.isEmpty()) return null;
+
+		// Find marker sequence
+		Markers res = tree.query(marker);
+		if (res.isEmpty()) return null;
+
+		// Return the first markerSeq containing 'marker'
+		// Note: We should look for the 'best'. But the sequences are
+		//       be maximal by construction (when the database is built).
+		//       So we can just return the first one (and only one) we
+		//       find. The loop is necessary to filter out 'Chromosome'.
+		for (Marker m : res)
+			if (m.includes(marker) && (m instanceof MarkerSeq)) //
+				return (MarkerSeq) m;
+
+		return null;
+	}
+
+	/**
+	 * Get sequence for a marker
+	 */
+	public String querySequence(Marker marker) {
+		MarkerSeq ms = queryMarkerSequence(marker);
+		if (ms == null) return null;
+
+		// Calculate start and end coordiantes
+		int sstart = marker.getStart() - ms.getStart();
+		int ssend = marker.size() + sstart;
+		String seq = ms.getSequence().substring(sstart, ssend);
+
+		// Return sequence in same direction as 'marker'
+		if (marker.isStrandMinus()) seq = GprSeq.reverseWc(seq);
+		return seq;
 	}
 
 	public void reset() {

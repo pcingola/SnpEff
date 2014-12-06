@@ -141,11 +141,11 @@ th a:active, th a:hover {
 <table border=0>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Genome </b> </td>
-		<td> testHg19Chr13 </td>
+		<td> testHg19Chr17 </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Date </b> </td>
-		<td> 2014-12-06 11:16 </td>
+		<td> 2014-12-06 11:24 </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> SnpEff version </b> </td>
@@ -153,13 +153,13 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Command line arguments </b> </td>
-		<td> <pre>SnpEff  testHg19Chr13 tests/hgvs_savant.vcf 
+		<td> <pre>SnpEff  testHg19Chr17 tests/hgvs_walk_and_roll.1.vcf 
 </pre> </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Warnings </b> </td>
 		   
-		<td bgcolor="#ffff00"> 2 </td>
+		<td bgcolor="#ffff00"> 1 </td>
 	</tr>	
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Errors </b> </td>
@@ -168,11 +168,11 @@ th a:active, th a:hover {
 	</tr>	
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of lines (input file) </b> </td>
-		<td> 2 </td>
+		<td> 1 </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants (before filter) </b> </td>
-		<td> 2 </td>
+		<td> 1 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of not variants <br>(i.e. reference equals alternative) </b> </td>
@@ -180,7 +180,7 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants processed <br> (i.e. after filter and non-variants) </b> </td>
-		<td> 2 </td>
+		<td> 1 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of known variants <br>(i.e. non-empty ID) </b> </td>
@@ -197,19 +197,19 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of effects </b> </td>
-		<td> 2 </td>
+		<td> 1 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome total length </b> </td>
-		<td> 3,095,693,983 </td>
+		<td> 3,097,388,554 </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Genome effective length </b> </td>
-		<td> 115,169,878 </td>
+		<td> 81,195,210 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Variant rate </b> </td>
-		<td> 1 variant every 57,584,939 bases </td>
+		<td> 1 variant every 81,195,210 bases </td>
 	</tr>
 </table>
 <p>
@@ -228,16 +228,16 @@ th a:active, th a:hover {
 <table border=1>
 	<tr><th> Chromosome </th><th> Length </th><th> Variants </th><th> Variants rate </th></tr> 
 		<tr>
-			<td> 13 </td>
-			<td class="numeric"> 115,169,878 </td>
-			<td class="numeric"> 2 </td>
-			<td class="numeric"> 57,584,939 </td>
+			<td> 17 </td>
+			<td class="numeric"> 81,195,210 </td>
+			<td class="numeric"> 1 </td>
+			<td class="numeric"> 81,195,210 </td>
 		</tr> 
 	<tr>
 		<th> Total </th>
-		<th class="numeric"> 115,169,878 </th>
-		<th class="numeric"> 2 </th>
-		<th class="numeric"> 57,584,939 </th>
+		<th class="numeric"> 81,195,210 </th>
+		<th class="numeric"> 1 </th>
+		<th class="numeric"> 81,195,210 </th>
 	</tr> 
 </table> 
 </center>
@@ -269,7 +269,7 @@ th a:active, th a:hover {
 	    </tr>
 	    <tr>
 	    	<td> <b> INS </b> </td>
-	    	<td class="numeric" bgcolor="ffffff"> 1 </td>
+	    	<td class="numeric" bgcolor="ffffff"> 0 </td>
 	    </tr>
 	    <tr>
 	    	<td> <b> DEL </b> </td>
@@ -287,7 +287,7 @@ th a:active, th a:hover {
     <tfoot>
 	    <tr>
 	    	<th><b>Total </b> </th>
-	    	<th class="numeric"> 2 </th>
+	    	<th class="numeric"> 1 </th>
 	    </tr>
     </tfoot>
 </table>
@@ -312,16 +312,10 @@ th a:active, th a:hover {
 		</tr>
 	</thead>
 		<tr> 
-			<td> <b> HIGH </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="ffffff"> 1 </td> 
-			<td class="numeric" bgcolor="ffffff"> 50% </td>
-		</tr>
-		<tr> 
 			<td> <b> MODERATE </b> </td> 
 			<th> &nbsp; </th>
 			<td class="numeric" bgcolor="ffffff"> 1 </td> 
-			<td class="numeric" bgcolor="ffffff"> 50% </td>
+			<td class="numeric" bgcolor="ffffff"> 100% </td>
 		</tr>
 </table><br>
 <p>
@@ -377,16 +371,10 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 		</tr>
 	</thead>
 		<tr> 
-			<td> <b> disruptive_inframe_insertion&splice_region_variant </b> </td> 
+			<td> <b> inframe_deletion </b> </td> 
 			<th> &nbsp; </th>
 			<td class="numeric" bgcolor="ffffff"> 1 </td> 
-			<td class="numeric" bgcolor="ffffff"> 50% </td>
-		</tr>
-		<tr> 
-			<td> <b> frameshift_variant </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="ffffff"> 1 </td> 
-			<td class="numeric" bgcolor="ffffff"> 50% </td>
+			<td class="numeric" bgcolor="ffffff"> 100% </td>
 		</tr>
 </table><br>
  </td>
@@ -402,7 +390,7 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 		<tr> 
 			<td> <b> EXON </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="ffffff"> 2 </td> 
+			<td class="numeric" bgcolor="ffffff"> 1 </td> 
 			<td class="numeric" bgcolor="ffffff"> 100% </td>
 		</tr>
 </table><br>
@@ -438,15 +426,15 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <pre>
 	<table class="histo">
 		<tr> <th width=15%>Min</th><td>1</td> </tr>
-		<tr> <th>Max</th><td>2</td> </tr>
-		<tr> <th>Mean</th><td>1.5</td> </tr>
-		<tr> <th>Median</th><td>1.5</td> </tr>
-		<tr> <th>Standard deviation</th><td>0.707</td> </tr>
-		<tr> <th>Values</th><td>1,2</td> </tr>
-		<tr> <th>Count</th><td>1,1</td> </tr>
+		<tr> <th>Max</th><td>1</td> </tr>
+		<tr> <th>Mean</th><td>1</td> </tr>
+		<tr> <th>Median</th><td>0.5</td> </tr>
+		<tr> <th>Standard deviation</th><td>0</td> </tr>
+		<tr> <th>Values</th><td>1</td> </tr>
+		<tr> <th>Count</th><td>1</td> </tr>
 		</tr>
 	</table>
-	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:....&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|1|2|3:|Length&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chtt=Insertion+deletion+length+histogram"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|1|3:|Length&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chtt=Insertion+deletion+length+histogram"><br>
 </pre>
 
 <!--==========================================================================
@@ -519,15 +507,15 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <hr> 
 <a name="alleleCount">
 <center> <b> Allele Count </b> <p> </center>
-	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|1|3:|Allele+Count&chxr=0,0.0,2.0|1,0.0,100.0|3,0.0,100.0"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|1|3:|Allele+Count&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0"><br>
 	<table class="histo">
 		<tr> <th width=15%>Min</th><td>1</td> </tr>
 		<tr> <th>Max</th><td>1</td> </tr>
 		<tr> <th>Mean</th><td>1</td> </tr>
-		<tr> <th>Median</th><td>1</td> </tr>
+		<tr> <th>Median</th><td>0.5</td> </tr>
 		<tr> <th>Standard deviation</th><td>0</td> </tr>
 		<tr> <th>Values</th><td>1</td> </tr>
-		<tr> <th>Count</th><td>2</td> </tr>
+		<tr> <th>Count</th><td>1</td> </tr>
 		</tr>
 	</table>
 <p>
@@ -540,15 +528,15 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <hr> 
 <a name="homHet">
 <center> <b> Hom/Het per sample </b> <p> </center>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Heterozygous+genotypes&chxl=1:|Heterozygous+count|3:|Sample+number&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Homozygous+%28ALT%29+genotypes&chxl=1:|Homozygous+count|3:|Sample+number&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Missing+genotypes&chxl=1:|Missing+count|3:|Sample+number&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Heterozygous+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Heterozygous+count|2:|0|3:|Sample+number"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Homozygous+%28ALT%29+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Homozygous+count|2:|0|3:|Sample+number"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Missing+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Missing+count|2:|0|3:|Sample+number"><br>
 	
-	<pre>Sample_names 
-Reference 
-Het 
-Hom 
-Missing 
+	<pre>Sample_names , No_sample_name_found
+Reference , 0
+Het , 0
+Hom , 0
+Missing , 0
 </pre>
 <p>
 
@@ -575,7 +563,7 @@ Missing
 	<thead>
 		<tr> 
 			<th> &nbsp; </th>
-			 <th> - </th>  <th> GGG </th>  <th> GGT </th>  <th> GTA </th> 
+			 <th> - </th>  <th> CAG </th> 
 		</tr>
 	</thead>
 			<tr> 
@@ -584,43 +572,13 @@ Missing
 						<th class="numeric"> &nbsp </th>
 					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> CAG </th>
 					
 						<td class="numeric" bgcolor="ffffff"> 1 </td>
 					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-			</tr>
-			<tr> 
-				<th> GGG </th>
-					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-					
-						<th class="numeric"> &nbsp </th>
-					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-			</tr>
-			<tr> 
-				<th> GGT </th>
-					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-					
-						<td class="numeric" bgcolor="ffffff"> 1 </td>
-					
-						<th class="numeric"> &nbsp </th>
-					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-			</tr>
-			<tr> 
-				<th> GTA </th>
-					
-						<td class="numeric" bgcolor="ffffff"> 1 </td>
-					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-					
-						<th class="numeric"> &nbsp </th>
+						<th class="numeric"> 1 </th>
 			</tr>
 </table>
 </center>
@@ -647,7 +605,7 @@ Missing
 	<thead>
 		<tr> 
 			<th> &nbsp; </th>
-			 <th> - </th>  <th> G </th>  <th> V </th> 
+			 <th> - </th>  <th> Q </th> 
 		</tr>
 	</thead>
 			<tr> 
@@ -655,27 +613,14 @@ Missing
 					
 						<th class="numeric"> &nbsp </th>
 					
-						<td class="numeric" bgcolor="ffffff"> 1 </td>
-					
 						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
 			</tr>
 			<tr> 
-				<th> G </th>
+				<th> Q </th>
 					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+						<td class="numeric" bgcolor="ffffff"> 1 </td>
 					
 						<th class="numeric"> 1 </th>
-					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-			</tr>
-			<tr> 
-				<th> V </th>
-					
-						<td class="numeric" bgcolor="ffffff"> 1 </td>
-					
-						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
-					
-						<th class="numeric"> &nbsp </th>
 			</tr>
 </table>
 </center>
@@ -691,9 +636,9 @@ Missing
 
 <center>
 	<pre>
-		<img src="http://chart.apis.google.com/chart?cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Variants+histogram%3A+13&chxr=0,0.0,2.0|1,0.0,100.0|3,0.0,100.0&chd=e:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA..AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&chxl=1:|Variants%2F1000Kb|2:|0|||||||||||11000000|||||||||||22000000|||||||||||33000000|||||||||||44000000|||||||||||55000000|||||||||||66000000|||||||||||77000000|||||||||||88000000|||||||||||99000000|||||||||||110000000|||||115000000|3:|Position"><br>
-		13, Position,0,1000000,2000000,3000000,4000000,5000000,6000000,7000000,8000000,9000000,10000000,11000000,12000000,13000000,14000000,15000000,16000000,17000000,18000000,19000000,20000000,21000000,22000000,23000000,24000000,25000000,26000000,27000000,28000000,29000000,30000000,31000000,32000000,33000000,34000000,35000000,36000000,37000000,38000000,39000000,40000000,41000000,42000000,43000000,44000000,45000000,46000000,47000000,48000000,49000000,50000000,51000000,52000000,53000000,54000000,55000000,56000000,57000000,58000000,59000000,60000000,61000000,62000000,63000000,64000000,65000000,66000000,67000000,68000000,69000000,70000000,71000000,72000000,73000000,74000000,75000000,76000000,77000000,78000000,79000000,80000000,81000000,82000000,83000000,84000000,85000000,86000000,87000000,88000000,89000000,90000000,91000000,92000000,93000000,94000000,95000000,96000000,97000000,98000000,99000000,100000000,101000000,102000000,103000000,104000000,105000000,106000000,107000000,108000000,109000000,110000000,111000000,112000000,113000000,114000000,115000000
-13,Count,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		<img src="http://chart.apis.google.com/chart?cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Variants+histogram%3A+17&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chd=e:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA..AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&chxl=1:|Variants%2F1000Kb|2:|0||||||||||10000000||||||||||20000000||||||||||30000000||||||||||40000000||||||||||50000000||||||||||60000000||||||||||70000000||||||||||80000000|81000000|3:|Position"><br>
+		17, Position,0,1000000,2000000,3000000,4000000,5000000,6000000,7000000,8000000,9000000,10000000,11000000,12000000,13000000,14000000,15000000,16000000,17000000,18000000,19000000,20000000,21000000,22000000,23000000,24000000,25000000,26000000,27000000,28000000,29000000,30000000,31000000,32000000,33000000,34000000,35000000,36000000,37000000,38000000,39000000,40000000,41000000,42000000,43000000,44000000,45000000,46000000,47000000,48000000,49000000,50000000,51000000,52000000,53000000,54000000,55000000,56000000,57000000,58000000,59000000,60000000,61000000,62000000,63000000,64000000,65000000,66000000,67000000,68000000,69000000,70000000,71000000,72000000,73000000,74000000,75000000,76000000,77000000,78000000,79000000,80000000,81000000
+17,Count,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 	</pre>
 </center>

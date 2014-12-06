@@ -50,7 +50,7 @@ public class TestCasesGenomicSequences {
 				for (Exon ex : tr) {
 					Gpr.showMark(i++, 100);
 
-					String seq = genomicSequences.getSequence(ex);
+					String seq = genomicSequences.querySequence(ex);
 					if (verbose) System.out.println(g.getGeneName() + "\t" + tr.getId() + "\t" + ex.getId() + "\n\t" + ex.getSequence() + "\n\t" + seq);
 
 					// Sanity checks
@@ -92,7 +92,7 @@ public class TestCasesGenomicSequences {
 			for (Transcript tr : g) {
 				for (Exon ex : tr) {
 					Gpr.showMark(i++, 100);
-					String seq = genomicSequences.getSequence(ex);
+					String seq = genomicSequences.querySequence(ex);
 					if (verbose) System.out.println(g.getGeneName() + "\t" + tr.getId() + "\t" + ex.getId() + "\n\t" + ex.getSequence() + "\n\t" + seq);
 
 					// Sanity checks

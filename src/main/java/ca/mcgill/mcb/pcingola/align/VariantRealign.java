@@ -2,27 +2,36 @@ package ca.mcgill.mcb.pcingola.align;
 
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.interval.MarkerSeq;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Re-align a variant towards the leftmost (rightmost) position
  *
+ * Note: We perform a 'progressive' realignment, asking for more reference sequence as we need it
+ *
  * @author pcingola
  */
 public class VariantRealign {
 
-	public static final int MIN_BASES_EXTRA = 10;
-	public static final int BASES_EXTRA_MULTIPLIER = 5;
+	public static final int INITIAL_BASES_MULTIPLIER = 3;
+	public static final int INITIAL_BASES_EXTRA = 10;
+
+	public static final int PROGRESSIVE_BASES_MULTIPLIER = 2;
+	public static final int PROGRESSIVE_BASES_EXTRA = 1;
+
+	public static final int MAX_ITERATIONS = 100;
 
 	public static boolean debug = false;
 
 	boolean alignLeft = true; // By default, align to the left
-	boolean warningReachedEndOfSequence; // Did we reached the end of the sequence (i.e. GenomicSequences could not provide sequences to continue realignment)
 	boolean realigned; // Was the variant realigned?
+	boolean needMoreBasesLeft, needMoreBasesRight; // Do we need more bases to the left / right to improve current aligment?
 	char basesRef[], basesAlt[];
 	int basesTrimLeft, basesTrimRight;
 	int basesAddedLeft, basesAddedRight; // Add some bases to add context to variant's sequence
+	int maxBasesLeft, maxBasesRight; // Maximum number of bases we can add on each side before running out of sequence
 	String sequenceRef, sequenceAlt;
 	String refRealign, altRealign; // Ref and Alt after realignment
 	GenomicSequences genSeqs; // Provides sequences
@@ -38,36 +47,26 @@ public class VariantRealign {
 	}
 
 	/**
-	 * Calculate 'left' indexes by removing identical bases from the left end
-	 */
-	int basesLeft() {
-		int bases = 0;
-		for (int refIdx = 0, altIdx = 0; refIdx < sequenceRef.length() && altIdx < sequenceAlt.length(); refIdx++, altIdx++, bases++)
-			if (basesRef[refIdx] != basesAlt[altIdx]) return bases;
-
-		return bases;
-	}
-
-	/**
-	 * Calculate 'right' indexes by removing identical bases from the right end
-	 */
-	int basesRight() {
-		int bases = 0;
-		for (int refIdx = basesRef.length - 1, altIdx = basesAlt.length - 1; refIdx >= basesTrimLeft && altIdx >= basesTrimLeft; refIdx--, altIdx--, bases++)
-			if (basesRef[refIdx] != basesAlt[altIdx]) return bases;
-
-		return bases;
-	}
-
-	/**
 	 * Calculate how many bases to add on each side of the sequence in order to
 	 * give some 'anchor' or 'context' to the variant
 	 */
-	void basesToAdd() {
-		int maxVarLen = BASES_EXTRA_MULTIPLIER * Math.max(variant.getReference().length(), variant.getAlt().length());
-		int addBases = Math.min(maxVarLen, MIN_BASES_EXTRA);
-		basesAddedLeft = variant.getStart() - Math.max(0, variant.getStart() - addBases);
-		basesAddedRight = Math.min(variant.getChromosome().size() - 1, variant.getEnd() + addBases) - variant.getEnd();
+	boolean basesToAdd(int addBasesLeft, int addBasesRight) {
+		MarkerSeq ms = genSeqs.queryMarkerSequence(variant);
+		if (ms == null) return false;
+
+		// Minimum and maximum base number to request (we only have sequence within these positions)
+		maxBasesLeft = variant.getStart() - ms.getStart();
+		maxBasesRight = ms.getEnd() - variant.getEnd();
+
+		// Calculate bases to left & right
+		basesAddedLeft = variant.getStart() - (variant.getStart() - addBasesLeft);
+		basesAddedRight = (variant.getEnd() + addBasesRight) - variant.getEnd();
+
+		// Make sure we don't go over limit
+		basesAddedLeft = Math.min(basesAddedLeft, maxBasesLeft);
+		basesAddedRight = Math.min(basesAddedRight, maxBasesRight);
+
+		return true;
 	}
 
 	/**
@@ -82,10 +81,13 @@ public class VariantRealign {
 		String vref = variant.getReference().toLowerCase();
 		if (!vref.isEmpty()) {
 			// Sanity check
-			if (!seqVar.startsWith(vref)) throw new RuntimeException("Variant not found in reference sequence. This should never happen!" //
-					+ "\n\tSeq: '" + seqVar //
-					+ "'\n\tVariant's ref: '" + vref + "'" //
-					);
+			if (!seqVar.startsWith(vref)) {
+				Gpr.debug("Variant not found in reference sequence. This should never happen!" //
+						+ "\n\tSeq: '" + seqVar //
+						+ "'\n\tVariant's ref: '" + vref + "'" //
+				);
+				return false;
+			}
 
 			seqVar = seqVar.substring(vref.length()); // Remove 'ref' part
 		}
@@ -119,7 +121,7 @@ public class VariantRealign {
 	 */
 	boolean createRefSeq() {
 		Marker m = new Marker(variant.getChromosome(), variant.getStart() - basesAddedLeft, variant.getEnd() + basesAddedRight);
-		sequenceRef = genSeqs.getSequence(m);
+		sequenceRef = genSeqs.querySequence(m);
 		return sequenceRef != null;
 	}
 
@@ -136,21 +138,67 @@ public class VariantRealign {
 	}
 
 	/**
+	 * Do we need more bases to the left or right?
+	 * Sets 'needMoreBasesRight' to indicate that it might have trimmed more bases (we run out of sequence).
+	 * Sets 'needMoreBasesLeft' to indicate that it might have trimmed more bases (we run out of sequence).
+	 */
+	boolean needMoreBases() {
+		needMoreBasesLeft = (basesTrimLeft == 0);
+		needMoreBasesRight = (basesTrimRight == 0);
+		return needMoreBasesLeft || needMoreBasesRight;
+	}
+
+	/**
 	 * Realign variant
+	 *
 	 * @return	true if variant was realigned and a new variant (different than
 	 * 			the original one) was created. false if it wasn't realigned or
 	 * 			there was an error
 	 */
 	public boolean realign() {
-		// Calculate how many bases we can add in order to add context to the alignment
-		basesToAdd();
+		int basesAddedLeftPrev = 0, basesAddedRightPrev = 0;
 
-		// Create ref and alt sequences
-		if (!createRefSeq()) return false;
-		if (!createAltSeq()) return false;
+		// Progressive realignment
+		// Require more bases to the right or left if needed
+		boolean needMoreBases = true;
+		for (int i = 0; (i < MAX_ITERATIONS) && needMoreBases; i++) {
+			//---
+			// Calculate how many bases to add
+			//---
+			if (i == 0) {
+				// First iteration? Initialize using a 'guess' and let basesToAdd() method make a proper calculation
+				int maxVarLen = INITIAL_BASES_MULTIPLIER * Math.max(variant.getReference().length(), variant.getAlt().length());
+				basesAddedLeft = basesAddedRight = Math.max(maxVarLen, INITIAL_BASES_EXTRA);
+			} else {
+				// Increment values
+				basesAddedLeft = PROGRESSIVE_BASES_MULTIPLIER * basesAddedLeft + PROGRESSIVE_BASES_EXTRA;
+				basesAddedRight = PROGRESSIVE_BASES_MULTIPLIER * basesAddedRight + PROGRESSIVE_BASES_EXTRA;
+			}
 
-		// Realign
-		realigned = realignSeqs();
+			if (debug) Gpr.debug("Bases to left / right: " + basesAddedLeft + "\t" + basesAddedRight);
+			// Can we add those many bases?
+			if (!basesToAdd(basesAddedLeft, basesAddedRight)) return false;
+
+			// Did we add more bases since last iteration? Otherwise we are not making any progress
+			if (needMoreBasesLeft && basesAddedLeftPrev == basesAddedLeft) break;
+			if (needMoreBasesRight && basesAddedRightPrev == basesAddedRight) break;
+
+			//---
+			// Align
+			//---
+			// Create ref and alt sequences
+			if (!createRefSeq()) return false;
+			if (!createAltSeq()) return false;
+
+			// Realign
+			realigned = realignSeqs();
+
+			// Prepare for next iteration
+			needMoreBases = needMoreBases();
+			basesAddedLeftPrev = basesAddedLeft;
+			basesAddedRightPrev = basesAddedRight;
+		}
+
 		if (!realigned) return false;
 
 		// Create new variant
@@ -172,14 +220,12 @@ public class VariantRealign {
 
 		// Calculate how many bases to remove form each end
 		if (alignLeft) {
-			basesTrimLeft = basesLeft();
-			basesTrimRight = basesRight();
+			basesTrimLeft = trimBasesLeft();
+			basesTrimRight = trimBasesRight();
 		} else {
-			basesTrimRight = basesRight();
-			basesTrimLeft = basesLeft();
+			basesTrimRight = trimBasesRight();
+			basesTrimLeft = trimBasesLeft();
 		}
-
-		if (basesTrimLeft < 0 || basesTrimRight < 0) return false;
 
 		// Calculate new 'ref' and 'alt'
 		refRealign = trimedSequence(sequenceRef).toUpperCase();
@@ -210,14 +256,39 @@ public class VariantRealign {
 		sb.append("Realigned: " + (realigned ? "Yes" : "No") + "\n");
 		sb.append("\tVariant (original)   : " + variant + "\n");
 		sb.append("\tVariant (realinged)  : " + variantRealigned + "\n");
-		sb.append("\tReference sequence   : '" + sequenceRef + "'\n");
-		sb.append("\tAlternative sequence : '" + sequenceAlt + "'\n");
-		sb.append("\tBases added          : left: " + basesAddedLeft + ", right: " + basesAddedRight + "\n");
-		sb.append("\tIndexes              : left: " + basesTrimLeft + ", right: " + basesTrimRight + "\n");
+		sb.append("\tReference sequence   : '" + sequenceRef + "'\tlen: " + sequenceRef.length() + "\n");
+		sb.append("\tAlternative sequence : '" + sequenceAlt + "'\tlen: " + sequenceAlt.length() + "\n");
 		sb.append("\tRef (after realign)  : '" + refRealign + "'\n");
 		sb.append("\tAlt (after realign)  : '" + altRealign + "'\n");
-		if (warningReachedEndOfSequence) sb.append("\tWARNING: End of genomic sequences. Unable to realign further.\n");
+		sb.append("\tBases added          : left: " + basesAddedLeft + ", right: " + basesAddedRight + "\n");
+		sb.append("\tIndexes              : left: " + basesTrimLeft + ", right: " + basesTrimRight + "\n");
+		if (needMoreBasesLeft) sb.append("\tWARNING: Needs more bases to the left.\n");
+		if (needMoreBasesRight) sb.append("\tWARNING: Needs more bases to the right.\n");
 		return sb.toString();
+	}
+
+	/**
+	 * Calculate 'left' indexes by removing identical bases from the left end
+	 *
+	 * @return	Positive number to indicate the number of bases trimmed.
+	 */
+	int trimBasesLeft() {
+		int bases = 0;
+		for (int refIdx = 0, altIdx = 0; refIdx < sequenceRef.length() && altIdx < sequenceAlt.length(); refIdx++, altIdx++, bases++)
+			if (basesRef[refIdx] != basesAlt[altIdx]) return bases;
+		return bases;
+	}
+
+	/**
+	 * Calculate 'right' indexes by removing identical bases from the right end
+	 *
+	 * @return	Positive number to indicate the number of bases trimmed.
+	 */
+	int trimBasesRight() {
+		int bases = 0;
+		for (int refIdx = basesRef.length - 1, altIdx = basesAlt.length - 1; refIdx >= basesTrimLeft && altIdx >= basesTrimLeft; refIdx--, altIdx--, bases++)
+			if (basesRef[refIdx] != basesAlt[altIdx]) return bases;
+		return bases;
 	}
 
 	String trimedSequence(String seq) {

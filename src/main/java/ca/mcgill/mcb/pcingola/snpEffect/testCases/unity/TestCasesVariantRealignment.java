@@ -20,6 +20,28 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 		super();
 	}
 
+	void checkRealign(String chrName, String chrSequence, int pos, String ref, String alt, String expectedVariantRealign) {
+		// Create genome & chromosome
+		Genome genome = new Genome("zzz");
+		genome.getOrCreateChromosome(chrName).setSequence(chrSequence);
+
+		// Create genomicSequences
+		GenomicSequences gs = genome.getGenomicSequences();
+		gs.addChromosomeSequence(chrName, chrSequence);
+		gs.build();
+
+		// Create variant
+		Variant variant = new Variant(genome.getOrCreateChromosome(chrName), pos, ref, alt);
+
+		// Realign variant
+		VariantRealign vr = new VariantRealign(gs, variant);
+		vr.realign();
+		if (verbose) Gpr.debug("Realigned variant: " + vr);
+
+		// Check results
+		Assert.assertEquals(expectedVariantRealign, vr.getVariantRealigned().toString());
+	}
+
 	@Override
 	protected void init() {
 		super.init();
@@ -172,31 +194,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	@Test
 	public void test_06_savant() {
 		Gpr.debug("Test");
-		String chr = "1";
-		String seqRef = "AAACTGTATTT";
-
-		// Create genome & chromosome
-		Genome genome = new Genome("zzz");
-		genome.getOrCreateChromosome(chr).setSequence(seqRef);
-
-		// Create genomicSequences
-		GenomicSequences gs = genome.getGenomicSequences();
-		gs.addChromosomeSequence(chr, seqRef);
-		gs.build();
-
-		// Create variant
-		Variant variant = new Variant(genome.getOrCreateChromosome("1"), 4, "TG", "");
-
-		// Realign variant
-		VariantRealign vr = new VariantRealign(gs, variant);
-		vr.realign();
-		if (verbose) Gpr.debug(vr);
-
-		// Check results
-		Assert.assertEquals("GT", vr.getRefRealign());
-		Assert.assertEquals("", vr.getAltRealign());
-		Assert.assertEquals("chr1:4_TG/", variant.toString());
-		Assert.assertEquals("chr1:5_GT/", vr.getVariantRealigned().toString());
+		checkRealign("1", "AAACTGTATTT", 4, "TG", "", "chr1:5_GT/");
 	}
 
 	/**
@@ -205,30 +203,30 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	@Test
 	public void test_07_savant() {
 		Gpr.debug("Test");
-		String chr = "1";
-		String seqRef = "TATGTTTAGGTTTATTGCATTCT";
-
-		// Create genome & chromosome
-		Genome genome = new Genome("zzz");
-		genome.getOrCreateChromosome(chr).setSequence(seqRef);
-
-		// Create genomicSequences
-		GenomicSequences gs = genome.getGenomicSequences();
-		gs.addChromosomeSequence(chr, seqRef);
-		gs.build();
-
-		// Create variant
-		Variant variant = new Variant(genome.getOrCreateChromosome("1"), 8, "", "GGG");
-
-		// Realign variant
-		VariantRealign vr = new VariantRealign(gs, variant);
-		vr.realign();
-		if (verbose) Gpr.debug(vr);
-
-		// Check results
-		Assert.assertEquals("", vr.getRefRealign());
-		Assert.assertEquals("GGG", vr.getAltRealign());
-		Assert.assertEquals("chr1:8_/GGG", variant.toString());
-		Assert.assertEquals("chr1:10_/GGG", vr.getVariantRealigned().toString());
+		checkRealign("1", "TATGTTTAGGTTTATTGCATTCT", 8, "", "GGG", "chr1:10_/GGG");
 	}
+
+	/**
+	 * This test should trigger progressive realignment. I.e. requiring more 
+	 * bases to the right in order to make a good alignment.
+	 */
+	@Test
+	public void test_08_reallyLongRealign() {
+		Gpr.debug("Test");
+		checkRealign("1", "tatgaccagcagcagcagcagcagcagcagcagcagcagcagcagcaagcccttcagag", 6, "CAG", "", "chr1:44_GCA/");
+	}
+
+	/**
+	 * This test should trigger (AND fail) to make a progressive realignment. 
+	 * I.e. requiring more bases to the right in order to make a good 
+	 * alignment, but there are no more bases available from GenomicSequences.
+	 */
+	@Test
+	public void test_09_reallyLongRealign() {
+		Gpr.debug("Test");
+
+		verbose = VariantRealign.debug = true;
+		checkRealign("1", "tatgaccagcagcagcagcagcagcagcagcagcagcagcagcagcaagcccttcagag", 6, "CAG", "", "chr1:44_GCA/");
+	}
+
 }
