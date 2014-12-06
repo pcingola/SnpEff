@@ -224,9 +224,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	@Test
 	public void test_09_reallyLongRealign() {
 		Gpr.debug("Test");
-
-		verbose = VariantRealign.debug = true;
-		checkRealign("1", "tatgaccagcagcagcagcagcagcagcagcagcagcagcagcagcaagcccttcagag", 6, "CAG", "", "chr1:44_GCA/");
+		checkRealign("1", "tatgaccagcagcagcagcagcagcagcagcagcag", 6, "CAG", "", "chr1:33_CAG/");
 	}
 
 }

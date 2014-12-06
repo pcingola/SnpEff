@@ -175,7 +175,7 @@ public class VariantRealign {
 				basesAddedRight = PROGRESSIVE_BASES_MULTIPLIER * basesAddedRight + PROGRESSIVE_BASES_EXTRA;
 			}
 
-			if (debug) Gpr.debug("Bases to left / right: " + basesAddedLeft + "\t" + basesAddedRight);
+			if (debug) Gpr.debug("Bases\tleft: " + basesAddedLeft + (needMoreBasesLeft ? " [more]" : "") + "\tright: " + basesAddedRight + (needMoreBasesRight ? " [more]" : ""));
 			// Can we add those many bases?
 			if (!basesToAdd(basesAddedLeft, basesAddedRight)) return false;
 
