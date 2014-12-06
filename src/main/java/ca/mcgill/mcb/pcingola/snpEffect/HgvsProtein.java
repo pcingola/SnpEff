@@ -16,8 +16,6 @@ public class HgvsProtein extends Hgvs {
 	int codonNum, aaPos;
 	String aaNew3, aaOld3;
 
-	// EffectType effectType;
-
 	public HgvsProtein(VariantEffect variantEffect) {
 		super(variantEffect);
 

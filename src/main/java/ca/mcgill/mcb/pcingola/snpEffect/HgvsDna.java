@@ -165,7 +165,8 @@ public class HgvsDna extends Hgvs {
 				// Reference: http://www.hgvs.org/mutnomen/disc.html#ins
 				//            ...to prevent confusion, both flanking residues have to be listed.
 				// Example: c.6_7dup (or c.6_7dupTG) denotes a TG duplication (TG insertion) in the sequence ACATGTGCC to ACATGTGTGCC
-				posEnd = posStart + 1; //  TODO: Should this be (strandPlus ? 1 : -1)?
+				posEnd = posStart; // Insert before current posStart
+				posStart--;
 			}
 			break;
 
@@ -215,7 +216,6 @@ public class HgvsDna extends Hgvs {
 	 * Convert genomic position to HGVS compatible (DNA) position
 	 */
 	protected String posExon(int pos, Exon ex) {
-
 		// Initialize
 		String idxPrepend = "";
 		int idx = -1;
