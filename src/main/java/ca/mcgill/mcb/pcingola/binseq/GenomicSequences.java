@@ -57,7 +57,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	 * Add sequences from genome's exons
 	 */
 	boolean addExonSequences(String chr) {
-		if (verbose) Timer.show("Creating sequences from exon information '" + chr + "'");
+		if (verbose) Timer.showStdErr("Creating sequences from exon information '" + chr + "'");
 		IntervalTree tree = intervalForest.getOrCreateTree(chr);
 
 		// Add all exon sequences. Collapse them if possible
@@ -68,9 +68,9 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		tree.add(exonMarkers);
 
 		// Build tree
-		if (verbose) Timer.show("Building sequence tree for chromosome '" + chr + "'");
+		if (verbose) Timer.showStdErr("Building sequence tree for chromosome '" + chr + "'");
 		tree.build();
-		if (verbose) Timer.show("Done. Loaded " + tree.getIntervals().size() + " sequences.");
+		if (verbose) Timer.showStdErr("Done. Loaded " + tree.getIntervals().size() + " sequences.");
 
 		return !tree.isEmpty();
 	}
@@ -221,17 +221,17 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		// File does not exists?  Cannot load...
 		String fileName = Config.get().getFileNameSequence(chr);
 		if (!Gpr.exists(fileName)) {
-			if (Config.get().isDebug()) Timer.show("Attempting to load sequences for chromosome '" + chr + "' from file '" + fileName + "' failed, nothing done.");
+			if (Config.get().isDebug()) Timer.showStdErr("Attempting to load sequences for chromosome '" + chr + "' from file '" + fileName + "' failed, nothing done.");
 			return false;
 		}
 
 		// Load markers
-		if (verbose) Timer.show("Loading sequences for chromosome '" + chr + "' from file '" + fileName + "'");
+		if (verbose) Timer.showStdErr("Loading sequences for chromosome '" + chr + "' from file '" + fileName + "'");
 		IntervalTree tree = intervalForest.getOrCreateTree(chr);
 		tree.load(fileName);
-		if (verbose) Timer.show("Building sequence tree for chromosome '" + chr + "'");
+		if (verbose) Timer.showStdErr("Building sequence tree for chromosome '" + chr + "'");
 		tree.build();
-		if (verbose) Timer.show("Done. Loaded " + tree.getIntervals().size() + " sequences.");
+		if (verbose) Timer.showStdErr("Done. Loaded " + tree.getIntervals().size() + " sequences.");
 
 		return !tree.isEmpty();
 	}

@@ -23,6 +23,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.Hgvs;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
@@ -87,10 +88,10 @@ public class TestCasesBase {
 	}
 
 	protected void checkEffect(Variant variant, EffectType effectExpected) {
-		checkEffect(variant, effectExpected, null);
+		checkEffect(variant, effectExpected, null, null);
 	}
 
-	protected void checkEffect(Variant variant, EffectType effectExpected, EffectType effectNotExpected) {
+	protected void checkEffect(Variant variant, EffectType effectExpected, EffectType effectNotExpected, EffectImpact impact) {
 		// Calculate effects
 		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
 
@@ -104,6 +105,9 @@ public class TestCasesBase {
 
 			// Check that 'effectNotExpected' is not present
 			if (effectNotExpected != null && effect.hasEffectType(effectNotExpected)) throw new RuntimeException("Effect '" + effectNotExpected + "' should not be here");
+
+			// Check impact
+			if (impact != null && effect.getEffectImpact() != impact) throw new RuntimeException("Effect '" + effectExpected + "' should have impact '" + impact + "', but impct was '" + effect.getEffectImpact() + "'.");
 		}
 
 		Assert.assertTrue("Effect not found: '" + effectExpected + "' in variant " + variant, found);

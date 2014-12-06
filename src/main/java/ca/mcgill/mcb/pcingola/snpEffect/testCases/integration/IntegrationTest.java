@@ -3,7 +3,6 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import junit.framework.Assert;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.CommandLine;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -14,10 +13,10 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class IntegrationTest {
 
-	public final int BUFFER_SIZE = 1024 * 1024;
-	public static final int MAX_LINES_DIFF = 100;
+	public final int BUFFER_SIZE = 10 * 1024 * 1024;
+	public static final int MAX_LINES_DIFF = 20;
 
-	boolean verbose = false;
+	protected boolean verbose = false;
 
 	public IntegrationTest() {
 		super();
@@ -25,9 +24,6 @@ public class IntegrationTest {
 
 	/**
 	 * Run a 'command' and return everything printed to stdout
-	 * @param command
-	 * @param args
-	 * @return
 	 */
 	public String command(CommandLine command) {
 		PrintStream oldOut = System.out;
@@ -72,14 +68,11 @@ public class IntegrationTest {
 		// Show differences (if any)
 		if (verbose) System.err.println("Comparing outputs\t\tExpected size: " + expectedOutput.length() + " (" + expectedOutputCountLines + " lines)\t\tActual size: " + actualOutput.length() + " (" + actualOutputCountLines + " lines)");
 		int maxSize = Math.max(expectedOutput.length(), actualOutput.length());
-		if (maxSize < BUFFER_SIZE) Assert.assertEquals(expectedOutput, actualOutput);
-		else {
-			if (!expectedOutput.equals(actualOutput)) {
-				String msg = "Outputs differ!\n\tFile    : '" + expectedOutputFile + "'\n\tCommand : '" + showCommand(command) + "'";
-				System.err.println(msg);
-				System.err.println(showDiff(expectedOutput, actualOutput));
-				throw new RuntimeException(msg);
-			}
+		if (!expectedOutput.equals(actualOutput)) {
+			String msg = "Outputs differ!\n\tFile    : '" + expectedOutputFile + "'\n\tCommand : '" + showCommand(command) + "'";
+			System.err.println(msg);
+			System.err.println(showDiff(expectedOutput, actualOutput));
+			throw new RuntimeException(msg);
 		}
 	}
 

@@ -256,11 +256,9 @@ public class HgvsDna extends Hgvs {
 			int baseNumTss = tr.baseNumberPreMRna(tr.getCdsStart());
 			idx = Math.abs(baseNum - baseNumTss);
 			idxPrepend = "-";
-		} else if (ex != null && ex.intersects(pos)) {
+		} else {
 			// Coding Exon: just use CDS position
 			idx = tr.baseNumberCds(pos, false) + 1;
-		} else {
-			throw new RuntimeException("Uncovered case in HGVS exon coordiante. This should never happen!");
 		}
 
 		// Could not find dna position in transcript?
