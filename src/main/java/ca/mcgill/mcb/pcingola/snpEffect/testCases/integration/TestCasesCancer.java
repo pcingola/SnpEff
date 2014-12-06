@@ -67,7 +67,7 @@ public class TestCasesCancer {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		verbose = true;
+		verbose = debug = true;
 		String file = "tests/test.cancer.snp.01.vcf";
 		snpEffect(file, null, "p.Leu1?/c.1A>G", "2-1");
 	}

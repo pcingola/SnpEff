@@ -386,11 +386,9 @@ public class VcfEffect {
 			for (String es : eff.split("\\" + VariantEffect.EFFECT_TYPE_SEPARATOR_OLD))
 				effs.add(EffectType.parse(es));
 		} else {
-			// More recent versions
-			if (eff.indexOf(VariantEffect.EFFECT_TYPE_SEPARATOR) >= 0) {
-				for (String es : eff.split(VariantEffect.EFFECT_TYPE_SEPARATOR))
-					effs.add(EffectType.parse(es));
-			}
+			// Split effect strings
+			for (String es : eff.split(VariantEffect.EFFECT_TYPE_SEPARATOR))
+				effs.add(EffectType.parse(es));
 		}
 
 		return effs;
