@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
@@ -47,10 +48,42 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		effects.add(variantEffect);
 	}
 
+	/**
+	 * Add: If possible, only add an effect type (otherwise add the full effect)
+	 */
+	public void addEffectType(Variant variant, Marker marker, EffectType effectType) {
+		if (canAddType(variant, marker)) {
+			get().addEffect(effectType);
+		} else add(variant, marker, effectType, effectType.effectImpact(), "");
+	}
+
 	public void addErrorWarning(ErrorWarningType errwarn) {
 		VariantEffect veff = get();
 		if (veff != null) veff.addErrorWarningInfo(errwarn);
 		else Gpr.debug("Could not get latest " + VariantEffect.class.getSimpleName());
+	}
+
+	/**
+	 * Can we add an effectType to the previous variatnEffect?
+	 * @return true if transcript IDs and variant's genotypes match (i.e. we can add effectType)
+	 */
+	boolean canAddType(Variant variant, Marker marker) {
+		VariantEffect veff = get();
+		if (veff == null || veff.getVariant() == null) return false;
+
+		// Do genotypes match?
+		String gt = veff.getVariant().getGenotype();
+		String vgt = variant.getGenotype();
+		if (((vgt != null) ^ (gt != null)) // One null and one non-null?
+				|| ((vgt != null) && (gt != null) && !variant.getGenotype().equals(variant.getGenotype())) // Both non-null, but different?
+		) return false;
+
+		// Do transcripts match?
+		Transcript trMarker = (Transcript) marker.findParent(Transcript.class);
+		Transcript tr = veff.getTranscript();
+		if (tr == null || trMarker == null) return false;
+
+		return tr.getId().equals(trMarker.getId());
 	}
 
 	/**

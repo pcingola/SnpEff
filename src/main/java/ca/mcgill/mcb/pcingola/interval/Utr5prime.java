@@ -109,18 +109,14 @@ public class Utr5prime extends Utr {
 
 	/**
 	 * Calculate distance from the end of 5'UTRs
-	 *
-	 * @param seqChange
-	 * @param utr
-	 * @return
 	 */
 	@Override
-	int utrDistance(Variant seqChange, Transcript tr) {
+	int utrDistance(Variant variant, Transcript tr) {
 		int cdsStart = tr.getCdsStart();
 		if (cdsStart < 0) return -1;
 
-		if (isStrandPlus()) return cdsStart - seqChange.getEnd();
-		return seqChange.getStart() - cdsStart;
+		if (isStrandPlus()) return cdsStart - variant.getEnd();
+		return variant.getStart() - cdsStart;
 	}
 
 	@Override

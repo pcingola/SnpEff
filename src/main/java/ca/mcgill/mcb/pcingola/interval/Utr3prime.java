@@ -52,7 +52,7 @@ public class Utr3prime extends Utr {
 		if (!intersects(variant)) return false;
 
 		if (variant.includes(this) && (variant.getVariantType() == VariantType.DEL)) {
-			variantEffects.add(variant, this, EffectType.UTR_3_DELETED, ""); // A UTR was removed entirely
+			variantEffects.addEffectType(variant, this, EffectType.UTR_3_DELETED); // A UTR was removed entirely
 			return true;
 		}
 

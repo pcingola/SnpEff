@@ -249,11 +249,11 @@ public class CodonChange {
 		EffectType addEffType = additionalEffect(codonsOld, codonsNew, codonNum, codonIndex, varEff.getAaRef(), varEff.getAaAlt());
 		if (addEffType != null && addEffType != effectType) {
 			if (allowReplace && addEffType.compareTo(effectType) < 0) {
-				varEff.setEffectType(addEffType); // Replace main effect
-				varEff.setEffectImpact(addEffType.effectImpact()); // Replace main impact
+				// Replace main effect (using default impact)
+				varEff.setEffect(addEffType);
 			} else {
-				varEff.addEffectType(addEffType); // Add to list
-				varEff.addEffectImpact(addEffType.effectImpact()); // Add impact to list
+				// Add effect to list (using default impact)
+				varEff.addEffect(addEffType);
 			}
 		}
 

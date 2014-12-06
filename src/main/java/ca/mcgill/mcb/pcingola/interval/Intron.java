@@ -190,7 +190,7 @@ public class Intron extends Marker {
 			if (ss.intersects(variant)) ss.variantEffect(variant, variantEffects);
 
 		// Add intron part
-		variantEffects.add(variant, this, EffectType.INTRON, "");
+		variantEffects.addEffectType(variant, this, EffectType.INTRON);
 
 		return true;
 	}

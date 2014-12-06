@@ -21,11 +21,9 @@ public class Upstream extends Marker {
 
 	/**
 	 * Distance to transcript
-	 * @param seqChange
-	 * @return
 	 */
-	public int distanceToTr(Variant seqChange) {
-		int dist = (parent.isStrandPlus() ? end - seqChange.getStart() : seqChange.getStart() - start) + 1;
+	public int distanceToTr(Variant variant) {
+		int dist = (parent.isStrandPlus() ? end - variant.getStart() : variant.getStart() - start) + 1;
 		return Math.max(0, dist);
 	}
 

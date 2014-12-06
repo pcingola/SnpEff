@@ -82,7 +82,7 @@ public class CodonChangeMixed extends CodonChangeMnp {
 			List<EffectType> effTypes = variantEffects.get(i).getEffectTypes();
 			for (int j = 0; j < effTypes.size(); j++) {
 				EffectType effType = effTypes.get(j);
-				if (!varEff.hasEffectType(effType)) varEff.addEffectType(effType);
+				if (!varEff.hasEffectType(effType)) varEff.addEffect(effType);
 			}
 		}
 

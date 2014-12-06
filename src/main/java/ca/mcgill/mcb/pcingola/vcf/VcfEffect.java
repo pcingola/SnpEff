@@ -380,8 +380,18 @@ public class VcfEffect {
 		List<EffectType> effs = new LinkedList<EffectType>();
 		if (eff.isEmpty()) return effs;
 
-		for (String es : eff.split("\\+"))
-			effs.add(EffectType.parse(es));
+		// Split multiple effectTypes
+		if (eff.indexOf(VariantEffect.EFFECT_TYPE_SEPARATOR_OLD) >= 0) {
+			// Old version
+			for (String es : eff.split("\\" + VariantEffect.EFFECT_TYPE_SEPARATOR_OLD))
+				effs.add(EffectType.parse(es));
+		} else {
+			// More recent versions
+			if (eff.indexOf(VariantEffect.EFFECT_TYPE_SEPARATOR) >= 0) {
+				for (String es : eff.split("" + VariantEffect.EFFECT_TYPE_SEPARATOR))
+					effs.add(EffectType.parse(es));
+			}
+		}
 
 		return effs;
 	}
