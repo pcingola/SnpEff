@@ -251,7 +251,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 	 *
 	 * @return A markerSeq containing 'marker' or null if nothing is found
 	 */
-	public MarkerSeq queryMarkerSequence(Marker marker) {
+	public synchronized MarkerSeq queryMarkerSequence(Marker marker) {
 		String chr = marker.getChromosomeName();
 
 		// Get or load interval tree
