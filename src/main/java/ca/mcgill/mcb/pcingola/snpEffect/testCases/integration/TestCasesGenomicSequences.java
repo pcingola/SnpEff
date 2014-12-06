@@ -44,9 +44,11 @@ public class TestCasesGenomicSequences {
 		snpeff.load();
 
 		GenomicSequences genomicSequences = snpeff.getConfig().getGenome().getGenomicSequences();
+		int i = 1;
 		for (Gene g : snpeff.getConfig().getGenome().getGenes()) {
 			for (Transcript tr : g) {
 				for (Exon ex : tr) {
+					Gpr.showMark(i++, 100);
 
 					String seq = genomicSequences.getSequence(ex);
 					if (verbose) System.out.println(g.getGeneName() + "\t" + tr.getId() + "\t" + ex.getId() + "\n\t" + ex.getSequence() + "\n\t" + seq);
@@ -57,6 +59,8 @@ public class TestCasesGenomicSequences {
 				}
 			}
 		}
+
+		System.err.println("\n");
 	}
 
 	/**
@@ -83,10 +87,11 @@ public class TestCasesGenomicSequences {
 		GenomicSequences genomicSequences = snpeff.getConfig().getGenome().getGenomicSequences();
 		genomicSequences.setDisableLoad(true);
 
+		int i = 1;
 		for (Gene g : snpeff.getConfig().getGenome().getGenes()) {
 			for (Transcript tr : g) {
 				for (Exon ex : tr) {
-
+					Gpr.showMark(i++, 100);
 					String seq = genomicSequences.getSequence(ex);
 					if (verbose) System.out.println(g.getGeneName() + "\t" + tr.getId() + "\t" + ex.getId() + "\n\t" + ex.getSequence() + "\n\t" + seq);
 
@@ -96,6 +101,8 @@ public class TestCasesGenomicSequences {
 				}
 			}
 		}
+
+		System.err.println("\n");
 	}
 
 }
