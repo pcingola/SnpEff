@@ -18,7 +18,7 @@ public class TestCasesIntegrationSnpEffMultiThread2 extends IntegrationTest {
 	public void test_02_multi_thread() {
 		Gpr.debug("Test");
 		String expectedOutputFile = "tests/test.chr1.eff.vcf.gz";
-		String args[] = { "eff", "-t", "-noStats", "-noLog", "-noLof", "testHg3763Chr1", "tests/test.chr1.vcf.gz" };
+		String args[] = { "eff", "-t", "-noStats", "-noLog", "-noLof", "testHg3763Chr1", "tests/test.chr1.vcf" };
 		command(new SnpEff(args), expectedOutputFile);
 	}
 
