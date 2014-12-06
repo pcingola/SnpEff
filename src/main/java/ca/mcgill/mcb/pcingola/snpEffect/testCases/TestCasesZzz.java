@@ -3,15 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.util.List;
 
 import junit.framework.Assert;
-
-import org.junit.Test;
-
-import ca.mcgill.mcb.pcingola.align.VariantRealign;
 import ca.mcgill.mcb.pcingola.snpEffect.Hgvs;
-import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -55,8 +49,8 @@ public class TestCasesZzz extends TestCasesBase {
 			String trIdP = "";
 			if (compareProt) {
 				hgvsPexp = ve.getInfo("HGVS_P") != null ? ve.getInfo("HGVS_P") : "";
-				hgvsPexp = Hgvs.removeTranscript(hgvsPexp);
 				trIdP = Hgvs.parseTranscript(hgvsPexp);
+				hgvsPexp = Hgvs.removeTranscript(hgvsPexp);
 			}
 
 			if (verbose) {
@@ -173,15 +167,15 @@ public class TestCasesZzz extends TestCasesBase {
 	//		compareHgvs(genome, vcf, true);
 	//	}
 
-	@Test
-	public void test_zzz() {
-		Gpr.debug("Test");
-
-		verbose = HgvsDna.debug = VariantRealign.debug = true;
-
-		String genome = "testHg19Chr13";
-		String vcf = "tests/zzz.vcf";
-		compareHgvs(genome, vcf, false);
-	}
+	//	@Test
+	//	public void test_zzz() {
+	//		Gpr.debug("Test");
+	//
+	//		verbose = HgvsDna.debug = VariantRealign.debug = true;
+	//
+	//		String genome = "testHg19Chr13";
+	//		String vcf = "tests/zzz.vcf";
+	//		compareHgvs(genome, vcf, true);
+	//	}
 
 }

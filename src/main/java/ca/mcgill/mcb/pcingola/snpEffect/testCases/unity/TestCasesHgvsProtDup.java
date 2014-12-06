@@ -31,6 +31,8 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 	public void test_01() {
 		Gpr.debug("Test");
 
+		verbose = HgvsProtein.debug = true;
+
 		prependSequenceToFirstExon("atgaaaatgggccatcagcagcagtgctgc"); // This is 'MKMGHQQQCC' as a DNA sequence
 
 		if (verbose) Gpr.debug(transcript);

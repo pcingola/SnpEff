@@ -120,28 +120,43 @@ public class HgvsProtein extends Hgvs {
 	 */
 	protected boolean isDuplication() {
 		// Only in-frame insertion may cause duplications
-		if (!variant.isIns() || !variantEffect.hasEffectType(EffectType.CODON_INSERTION)) return false;
+		if (!variant.isIns() || variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return false;
+
+		//---
+		// Simple duplications can be obtained by looking into AA.Ref / AA.Alt
+		//---
+		String aaRef = variantEffect.getAaRef().toUpperCase();
+		String aaAlt = variantEffect.getAaAlt().toUpperCase();
+
+		// Compare to ALT sequence
+		if (debug) Gpr.debug("AA.Ref: '" + aaRef + "'\tAA.Alt: '" + aaAlt);
+		if (aaAlt.startsWith(aaRef)) return true;
+
+		//---
+		// More complex duplications need to look into the protein sequence
+		//---
 
 		// Extract sequence from genomic coordinates before variant
 		String protein = tr.protein();
 		if (protein == null) return false; // Cannot calculate duplication
 
 		// Calculate net amino acid change
-		String aaAlt = variantEffect.getAaNetChange();
+		String aaNet = variantEffect.getAaNetChange();
 
 		// Get previous AA sequence
 		int send = variantEffect.getCodonNum();
-		int sstart = send - aaAlt.length();
+		int sstart = send - aaNet.length();
 		if (sstart < 0 || send > protein.length()) return false;
 		String seq = protein.substring(sstart, send);
 
 		// Compare to ALT sequence
-		boolean dup = seq.equalsIgnoreCase(aaAlt);
+		boolean dup = seq.equalsIgnoreCase(aaNet);
 		if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'" //
 				+ "\n\tAA Ref       : '" + variantEffect.getAaRef() + "'" //
 				+ "\n\tAA Alt       : '" + variantEffect.getAaAlt() + "'" //
-				+ "\n\tAA Alt (net) : '" + aaAlt + "'" //
+				+ "\n\tAA Alt (net) : '" + aaNet + "'" //
 				+ "\n\tDup?         : " + dup);
+
 		return dup;
 	}
 
@@ -190,15 +205,21 @@ public class HgvsProtein extends Hgvs {
 
 		case INS:
 			if (duplication) {
-				start = codonNum - variantEffect.getAaNetChange().length();
-				end = codonNum - 1;
+				if (variantEffect.getAaNetChange().length() == 1) {
+					start = end = codonNum;
+				} else {
+					end = codonNum;
+					start = end - variantEffect.getAaNetChange().length();
+				}
 			} else {
-				start = codonNum;
-				end = codonNum + 1;
+				start = codonNum - 1;
+				end = codonNum;
 			}
 
 			String posStart = pos(start);
 			if (posStart == null) return null;
+			if (start == end) return posStart;
+
 			String posEnd = pos(end);
 			if (posEnd == null) return null;
 			return posStart + "_" + posEnd;
