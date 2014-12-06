@@ -1,9 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import org.junit.Test;
-
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  *
@@ -37,13 +34,5 @@ public class TestCasesZzz extends TestCasesBase {
 	//		String vcf = "tests/hgvs_md.chr13.vcf";
 	//		compareHgvs(genome, vcf);
 	//	}
-
-	@Test
-	public void test_hgvs_md_3() {
-		Gpr.debug("Test");
-		String genome = "testHg19Chr17";
-		String vcf = "tests/hgvs_md.chr17.vcf";
-		compareHgvs(genome, vcf, false);
-	}
 
 }
