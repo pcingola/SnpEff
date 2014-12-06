@@ -1662,33 +1662,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			return true;
 		}
 
-		//		//---
-		//		// Analyze non-coding transcripts (or 'interval' variants)
-		//		//---
-		//		boolean coding = isProteinCoding() || Config.get().isTreatAllAsProteinCoding();
-		//		if (!coding || variant.isInterval() || !variant.isVariant()) {
-		//			// Do we have exon information for this transcript?
-		//			if (!subintervals().isEmpty()) {
-		//				// Add all exons
-		//				for (Exon exon : this)
-		//					if (exon.intersects(variant)) variantEffects.add(variant, exon, EffectType.EXON, "");
-		//			} else variantEffects.add(variant, this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
-		//
-		//			// Ok, we are done
-		//			return true;
-		//		}
-		//
-		//		//---
-		//		// This is a protein coding transcript.
-		//		// We analyze codon replacement effect
-		//		//---
-		//		if (isCds(variant)) {
-		//			// Get codon change effect
-		//			CodonChange codonChange = CodonChange.factory(variant, this, variantEffects);
-		//			codonChange.codonChange();
-		//			return true;
-		//		}
-
 		return exonAnnotated;
 	}
 

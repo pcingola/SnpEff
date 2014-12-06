@@ -39,7 +39,6 @@ public class TestCasesIntervalVariant extends TestCasesBase {
 		//	- Create a random gene transcript, exons
 		//	- Create a random Insert at each position
 		//	- Calculate effect
-		if (verbose) System.out.println("INTERVAL (Variant) Test iteration:\n");
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor();
 			if (debug) System.out.println("INTERVAL (Variant) Test iteration: " + i + "\n" + transcript);
@@ -65,34 +64,27 @@ public class TestCasesIntervalVariant extends TestCasesBase {
 				//---
 				// Expected Effect
 				//---
-				String expectedEffect = null;
+				EffectType expectedEffect = null;
 				if (transcript.intersects(variant)) {
 					// Does it intersect any exon?
 					for (Exon ex : transcript)
-						if (ex.intersects(variant)) expectedEffect = "EXON";
+						if (ex.intersects(variant)) expectedEffect = EffectType.EXON;
 
 					for (Intron intron : transcript.introns())
-						if (intron.intersects(variant)) expectedEffect = "INTRON";
+						if (intron.intersects(variant)) expectedEffect = EffectType.INTRON;
 				} else if (gene.intersects(variant)) {
 					// Gene intersects but transcript doesn't?
-					if (expectedEffect == null) expectedEffect = "INTRAGENIC";
-				} else expectedEffect = "INTERGENIC";
+					if (expectedEffect == null) expectedEffect = EffectType.INTRAGENIC;
+				} else expectedEffect = EffectType.INTERGENIC;
 
 				//---
-				// Calculate effects
+				// Calculate Effect
 				//---
-				// Copy only some effect (other effects are not tested)
-				VariantEffects effectsAll = snpEffectPredictor.variantEffect(variant);
-				VariantEffects effects = new VariantEffects(variant);
-				for (VariantEffect eff : effectsAll) {
-					boolean copy = true;
+				VariantEffects effects = snpEffectPredictor.variantEffect(variant);
 
-					if (eff.getEffectType() == EffectType.SPLICE_SITE_ACCEPTOR) copy = false;
-					if (eff.getEffectType() == EffectType.SPLICE_SITE_DONOR) copy = false;
-
-					if (copy) effects.add(variant, eff.getMarker(), eff.getEffectType(), "");
-				}
-
+				//---
+				// Check effect
+				//---
 				// There should be only one effect in most cases
 				Assert.assertEquals(false, effects.isEmpty()); // There should be at least one effect
 				if (debug && (effects.size() > 1)) {
@@ -101,24 +93,22 @@ public class TestCasesIntervalVariant extends TestCasesBase {
 						System.out.println("\t" + eff);
 				}
 
-				//---
-				// Check effect
-				//---
 				boolean isExpectedOK = false;
 				StringBuilder effSb = new StringBuilder();
 				for (VariantEffect effect : effects) {
 					String effstr = effect.effect(true, true, true, false);
-					isExpectedOK |= effstr.equals(expectedEffect);
+
+					isExpectedOK |= effect.hasEffectType(expectedEffect);
 					effSb.append(effstr + " ");
 
 				}
 
 				if (debug || !isExpectedOK) //
-					System.out.println("SeqChange       : " + variant //
-							+ "\nExpected Effect :\t" + expectedEffect //
-							+ "\nEffects         :\t" + effSb //
+					System.out.println("\nVariant         : " + variant //
+							+ "\nExpected Effect : '" + expectedEffect + "'" //
+							+ "\nEffects         : '" + effSb + "'" //
 							+ "\n--------------------------------------------------------------\n" //
-					);
+							);
 				Assert.assertEquals(true, isExpectedOK);
 			}
 		}

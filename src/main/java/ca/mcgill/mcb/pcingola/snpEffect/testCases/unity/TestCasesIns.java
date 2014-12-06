@@ -6,6 +6,7 @@ import org.junit.Test;
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -88,33 +89,33 @@ public class TestCasesIns extends TestCasesBase {
 						aaNew = codonTable.aa(codonNew);
 
 						// Expected Effect
-						String effectExpected = "";
+						EffectType effectExpected = null;
 						String aaExpected = "";
 						if (insLen % 3 != 0) {
-							effectExpected = "FRAME_SHIFT";
+							effectExpected = EffectType.FRAME_SHIFT;
 							aaExpected = aaOld + "/" + aaNew;
 						} else {
 							if (cdsCodonPos == 0) {
-								effectExpected = "CODON_INSERTION";
+								effectExpected = EffectType.CODON_INSERTION;
 								aaExpected = aaOld + "/" + aaNew;
 							} else {
 								if (codonNew.startsWith(codonOld)) {
-									effectExpected = "CODON_INSERTION";
+									effectExpected = EffectType.CODON_INSERTION;
 									aaExpected = aaOld + "/" + aaNew;
 								} else {
-									effectExpected = "CODON_CHANGE_PLUS_CODON_INSERTION";
+									effectExpected = EffectType.CODON_CHANGE_PLUS_CODON_INSERTION;
 									aaExpected = aaOld + "/" + aaNew;
 								}
 							}
 
 							if ((cdsCodonNum == 0) && codonTable.isStartFirst(codonOld) && !codonTable.isStartFirst(codonNew)) {
-								effectExpected = "START_LOST";
+								effectExpected = EffectType.START_LOST;
 								aaExpected = aaOld + "/" + aaNew;
 							} else if ((aaOld.indexOf('*') >= 0) && (aaNew.indexOf('*') < 0)) {
-								effectExpected = "STOP_LOST";
+								effectExpected = EffectType.STOP_LOST;
 								aaExpected = aaOld + "/" + aaNew;
 							} else if ((aaNew.indexOf('*') >= 0) && (aaOld.indexOf('*') < 0)) {
-								effectExpected = "STOP_GAINED";
+								effectExpected = EffectType.STOP_GAINED;
 								aaExpected = aaOld + "/" + aaNew;
 							}
 						}
@@ -141,11 +142,10 @@ public class TestCasesIns extends TestCasesBase {
 									+ "\n\t\tEffect expected : '" + effectExpected + "'" //
 									+ "\n\t\tAA              : '" + aaStr + "'" //
 									+ "\n\t\tAA expected     : '" + aaExpected + "'" //
-									);
+							);
 
 							// Check that there is a match
-							for (String e : effStr.split("\\+"))
-								if (e.equals(effectExpected) && aaStr.equals(aaExpected)) ok = true;
+							ok |= effect.hasEffectType(effectExpected);
 						}
 
 						// Check effect
