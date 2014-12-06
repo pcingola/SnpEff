@@ -207,7 +207,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	}
 
 	/**
-	 * This test should trigger progressive realignment. I.e. requiring more 
+	 * This test should trigger progressive realignment. I.e. requiring more
 	 * bases to the right in order to make a good alignment.
 	 */
 	@Test
@@ -217,8 +217,8 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	}
 
 	/**
-	 * This test should trigger (AND fail) to make a progressive realignment. 
-	 * I.e. requiring more bases to the right in order to make a good 
+	 * This test should trigger (AND fail) to make a progressive realignment.
+	 * I.e. requiring more bases to the right in order to make a good
 	 * alignment, but there are no more bases available from GenomicSequences.
 	 */
 	@Test

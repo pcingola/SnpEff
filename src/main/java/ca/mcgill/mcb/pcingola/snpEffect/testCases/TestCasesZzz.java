@@ -6,9 +6,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.align.VariantRealign;
 import ca.mcgill.mcb.pcingola.snpEffect.Hgvs;
-import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -143,8 +141,6 @@ public class TestCasesZzz extends TestCasesBase {
 	@Test
 	public void test_hgvs_walk_and_roll_2() {
 		Gpr.debug("Test");
-
-		verbose = VariantRealign.debug = HgvsDna.debug = true;
 
 		String genome = "testHg19Chr17";
 		String vcf = "tests/hgvs_walk_and_roll.1.vcf";
