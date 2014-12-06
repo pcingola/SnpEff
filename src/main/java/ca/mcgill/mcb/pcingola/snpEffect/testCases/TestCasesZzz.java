@@ -1,6 +1,12 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import junit.framework.Assert;
+
+import org.junit.Test;
+
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.CompareToVep;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  *
@@ -34,5 +40,22 @@ public class TestCasesZzz extends TestCasesBase {
 	//		String vcf = "tests/hgvs_md.chr13.vcf";
 	//		compareHgvs(genome, vcf);
 	//	}
+
+	@Test
+	public void test_11_Hg19Hgvs() {
+		Gpr.debug("Test");
+
+		verbose = true;
+
+		String genome = "testHg19Hgvs";
+		String vcf = "tests/hgvs_counsyl.noShift.vcf";
+		CompareToVep comp = new CompareToVep(genome, verbose);
+		comp.setCompareHgvs();
+		comp.setCompareHgvsProt(false);
+		comp.setShiftHgvs(false);
+		comp.compareVep(vcf);
+		if (verbose) System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+	}
 
 }
