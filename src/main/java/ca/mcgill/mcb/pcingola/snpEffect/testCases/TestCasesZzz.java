@@ -1,6 +1,8 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -18,6 +20,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  * Test case
  */
 public class TestCasesZzz extends TestCasesBase {
+
+	boolean ignoreErrors = false;
 
 	public TestCasesZzz() {
 		super();
@@ -40,9 +44,10 @@ public class TestCasesZzz extends TestCasesBase {
 
 		// Run & get result (single line)
 		List<VcfEntry> results = snpeff.run(true);
+		Set<String> trNotFoundSet = new HashSet<String>();
 
 		// Make sure entries are annotated as expected
-		int countOkC = 0, countOkP = 0;
+		int countOkC = 0, countErrC = 0, countOkP = 0, countErrP = 0, countTrFound = 0;
 		for (VcfEntry ve : results) {
 			// Extract expected HGVS values
 			String hgvsCexp = ve.getInfo("HGVS_C") != null ? ve.getInfo("HGVS_C") : "";
@@ -64,7 +69,7 @@ public class TestCasesZzz extends TestCasesBase {
 			}
 
 			// Check all effects
-			boolean okC = false, okP = false;
+			boolean okC = false, okP = false, trFound = false;
 			for (VcfEffect veff : ve.parseEffects()) {
 				// Parse calculated HGVS values
 				String trId = veff.getTranscriptId();
@@ -72,29 +77,55 @@ public class TestCasesZzz extends TestCasesBase {
 				String hgvsPactual = veff.getHgvsProt() != null ? veff.getHgvsProt() : "";
 				if (verbose) System.out.println("\t" + veff //
 						+ "\n\t\tEFF    : " + veff.getEffectsStr() //
-						+ "\n\t\tHGVS_C : " + hgvsCactual + "\t\tExpected: " + hgvsCexp //
-						+ (compareProt ? "\n\t\tHGVS_P : " + hgvsPactual + "\t\tExpected: " + hgvsPexp : "") //
+						+ "\n\t\tHGVS_C : " + trId + ":" + hgvsCactual + "\t\tExpected: " + trIdC + ":" + hgvsCexp //
+						+ (compareProt ? "\n\t\tHGVS_P : " + trId + ":" + hgvsPactual + "\t\tExpected: " + trIdP + ":" + hgvsPexp : "") //
 						+ "\n");
 
-				// Compare results
+				// Compare results for HGVS_DNA
 				if (trId != null && trId.equals(trIdC)) {
-					Assert.assertEquals(hgvsCexp, hgvsCactual);
-					okC = true;
-					countOkC++;
+					trFound = true;
+					if (!hgvsCexp.equals(hgvsCactual)) {
+						if (!ignoreErrors) Assert.assertEquals(hgvsCexp, hgvsCactual);
+						countErrC++;
+					} else {
+						okC = true;
+						countOkC++;
+					}
 				}
 
+				// Compare results for HGVS_PROT
 				if (compareProt && trId != null && trId.equals(trIdP)) {
-					Assert.assertEquals(hgvsPexp, hgvsPactual);
-					okP = true;
-					countOkP++;
+					if (!hgvsPexp.equals(hgvsPactual)) {
+						if (!ignoreErrors) Assert.assertEquals(hgvsPexp, hgvsPactual);
+						countErrP++;
+					} else {
+						okP = true;
+						countOkP++;
+					}
 				}
 			}
 
-			Assert.assertTrue("HGVS (DNA) not found: '" + hgvsCexp + "'", okC);
-			if (!hgvsPexp.isEmpty()) Assert.assertTrue("HGVS (Protein) not found: '" + hgvsPexp + "'", okP);
+			if (!trFound) {
+				System.out.println("Transcript '" + trIdC + "' not found.");
+				countTrFound++;
+				trNotFoundSet.add(trIdC);
+			}
+
+			if (!ignoreErrors) {
+				Assert.assertTrue("HGVS (DNA) not found: '" + hgvsCexp + "'", okC);
+				if (!hgvsPexp.isEmpty()) Assert.assertTrue("HGVS (Protein) not found: '" + hgvsPexp + "'", okP);
+			} else {
+				// Show errors
+				if (!okC) System.err.println("HGVS (DNA) not found : '" + hgvsCexp + "', vcf entry:\t" + ve);
+				if (compareProt && !okP) System.err.println("HGVS (Prot) not found: '" + hgvsPexp + "', vcf entry:\t" + ve);
+			}
 		}
 
-		if (verbose) System.out.println("Count OKs:\tHGVS (DNA): " + countOkC + "\tHGVS (Protein): " + countOkP);
+		if (verbose || ignoreErrors) {
+			System.out.println("Count OKs   :\tHGVS (DNA): " + countOkC + "\tHGVS (Protein): " + countOkP);
+			System.out.println("Count Errors:\tHGVS (DNA): " + countErrC + "\tHGVS (Protein): " + countErrP);
+			System.out.println("Transcripts not found:\t" + countTrFound + ", unique: " + trNotFoundSet.size() + "\n" + trNotFoundSet);
+		}
 	}
 
 	@Override
@@ -123,19 +154,23 @@ public class TestCasesZzz extends TestCasesBase {
 	//	@Test
 	//	public void test_hgvs_md_3() {
 	//		Gpr.debug("Test");
-	//		String genome = "testHg19Chr13";
+	//
+	//		ignoreErrors = true;
+	//
+	//		String genome = "testHg19Chr17";
 	//		String vcf = "tests/hgvs_md.chr17.vcf";
-	//		compareHgvs(genome, vcf);
+	//		compareHgvs(genome, vcf, false);
 	//	}
 
 	@Test
-	public void test_hgvs_walk_and_roll_1() {
+	public void test_zzz() {
 		Gpr.debug("Test");
 
-		String genome = "testHg19Chr1";
-		String vcf = "tests/hgvs_jeremy_1.vcf";
+		ignoreErrors = true;
 
-		compareHgvs(genome, vcf);
+		String genome = "testHg19Chr17";
+		String vcf = "tests/zzz.vcf";
+		compareHgvs(genome, vcf, false);
 	}
 
 }
