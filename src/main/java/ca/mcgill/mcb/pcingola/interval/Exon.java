@@ -76,7 +76,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		// Create new exon with updated coordinates
 		Exon ex = (Exon) super.apply(variant);
 
-		// Update splice sites
+		// Apply to each splice sites
+		ex.spliceSites = new ArrayList<SpliceSite>();
 		for (SpliceSite ss : spliceSites)
 			ex.add((SpliceSite) ss.apply(variant));
 
@@ -248,7 +249,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 				+ "\t" + rank //
 				+ "\t" + sequence //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
-				;
+		;
 	}
 
 	public void setAaIdx(int aaIdxStart, int aaIdxEnd) {

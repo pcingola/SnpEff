@@ -9,6 +9,7 @@ import org.junit.Assert;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfConsequence;
@@ -160,7 +161,7 @@ public class CompareToVep {
 		boolean foundTranscript = false;
 
 		// Split all effects
-		for (String et : effStr.split("\\+")) {
+		for (String et : effStr.split(VariantEffect.EFFECT_TYPE_SEPARATOR)) {
 			if (verbose) System.out.println("\t\t" + et + "\t" + eff.getTranscriptId());
 
 			// Match all consequences
@@ -192,7 +193,7 @@ public class CompareToVep {
 	 * Compare a single effect to CSQ
 	 */
 	boolean compareEffect(VcfEffect eff, VcfConsequence csq) {
-		String effectTypes[] = eff.getEffectTypesStr().split("\\+");
+		String effectTypes[] = eff.getEffectTypesStr().split(VariantEffect.EFFECT_TYPE_SEPARATOR);
 		String consecuences[] = csq.getConsequence().split("&");
 
 		for (String et : effectTypes) {
@@ -223,7 +224,7 @@ public class CompareToVep {
 					+ "\n\t\t\thgsv.c  : '" + effHgsvDna + "'\t'" + csq.getHgvsDna() + "'\t" + (compareHgvsDna(eff, csq) ? "OK" : "BAD") //
 					+ "\n\t\t\thgsv.p  : '" + effHgsvProt + "'\t'" + csq.getHgvsProt() + "'\t" + (compareHgvsProt(eff, csq) ? "OK" : "BAD") //
 					+ "\n" //
-					);
+			);
 		}
 
 		return (!compareHgvsDna || compareHgvsDna(eff, csq)) //
