@@ -27,30 +27,30 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	/**
 	 * Add an effect
 	 */
-	public void addEffect(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
+	public void add(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
 		VariantEffect effNew = new VariantEffect(variant);
 		effNew.set(marker, effectType, effectImpact, message);
-		effects.add(effNew);
+		add(effNew);
 	}
 
 	/**
 	 * Add an effect
 	 */
-	public void addEffect(Variant variant, Marker marker, EffectType effectType, String message) {
-		addEffect(variant, marker, effectType, effectType.effectImpact(), message);
+	public void add(Variant variant, Marker marker, EffectType effectType, String message) {
+		add(variant, marker, effectType, effectType.effectImpact(), message);
 	}
 
 	/**
 	 * Add an effect
 	 */
-	public void addEffect(VariantEffect variantEffect) {
+	public void add(VariantEffect variantEffect) {
 		effects.add(variantEffect);
 	}
 
 	public void addErrorWarning(ErrorWarningType errwarn) {
 		VariantEffect veff = get();
 		if (veff != null) veff.addErrorWarningInfo(errwarn);
-		else Gpr.debug("Could not get latest VariantEffect");
+		else Gpr.debug("Could not get latest " + VariantEffect.class.getSimpleName());
 	}
 
 	/**

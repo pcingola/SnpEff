@@ -58,7 +58,7 @@ public abstract class SpliceSite extends Marker {
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
-		variantEffects.addEffect(variant, this, type, "");
+		variantEffects.add(variant, this, type, "");
 		return true;
 	}
 }

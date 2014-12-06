@@ -114,9 +114,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 				if (t.isProteinCoding() //
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
-						|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-						) //
-				) {
+								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+								) //
+						) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -129,9 +129,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 				if (canonicalLen <= tlen //
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
-						|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-						) //
-				) {
+								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+								) //
+						) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -483,12 +483,13 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			}
 
 			// Calculate effects
-			hitTranscript |= tr.variantEffect(variant, variantEffects);
+			hitTranscript |= tr.intersects(variant);
+			tr.variantEffect(variant, variantEffects);
 		}
 
 		// May be none of the transcripts are actually hit
 		if (!hitTranscript) {
-			variantEffects.addEffect(variant, this, EffectType.INTRAGENIC, "");
+			variantEffects.add(variant, this, EffectType.INTRAGENIC, "");
 			return true;
 		}
 

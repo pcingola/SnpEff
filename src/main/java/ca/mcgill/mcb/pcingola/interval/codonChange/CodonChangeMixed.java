@@ -86,7 +86,7 @@ public class CodonChangeMixed extends CodonChangeMnp {
 			}
 		}
 
-		variantEffectsOri.addEffect(varEff);
+		variantEffectsOri.add(varEff);
 	}
 
 	void codonNum() {

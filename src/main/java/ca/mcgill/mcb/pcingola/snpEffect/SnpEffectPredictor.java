@@ -618,7 +618,7 @@ public class SnpEffectPredictor implements Serializable {
 			if (chr != null) {
 				double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
 				if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
-					variantEffects.addEffect(variant, chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
+					variantEffects.add(variant, chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
 					return variantEffects;
 				}
 			}
@@ -649,9 +649,9 @@ public class SnpEffectPredictor implements Serializable {
 			if (Config.get().isErrorChromoHit()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
 		} else if (!hitSomething) {
 			if (Config.get().isOnlyRegulation()) {
-				variantEffects.addEffect(variant, null, EffectType.NONE, "");
+				variantEffects.add(variant, null, EffectType.NONE, "");
 			} else {
-				variantEffects.addEffect(variant, null, EffectType.INTERGENIC, "");
+				variantEffects.add(variant, null, EffectType.INTERGENIC, "");
 			}
 		}
 

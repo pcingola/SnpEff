@@ -147,7 +147,7 @@ public class Intron extends Marker {
 		return (exonBefore != null ? exonBefore.getSpliceType() : "") //
 				+ "-" //
 				+ (exonAfter != null ? exonAfter.getSpliceType() : "") //
-				;
+		;
 	}
 
 	/**
@@ -184,11 +184,13 @@ public class Intron extends Marker {
 
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false;
+
 		for (SpliceSite ss : spliceSites)
 			if (ss.intersects(variant)) ss.variantEffect(variant, variantEffects);
 
 		// Add intron part
-		variantEffects.addEffect(variant, this, EffectType.INTRON, "");
+		variantEffects.add(variant, this, EffectType.INTRON, "");
 
 		return true;
 	}

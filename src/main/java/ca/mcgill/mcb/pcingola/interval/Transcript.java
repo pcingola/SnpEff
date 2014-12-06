@@ -531,7 +531,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-			) {
+					) {
 				ret = true;
 
 				// Show debugging information
@@ -906,7 +906,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
 						if (Config.get().isDebug()) System.err.println("\t\tFrame correction: Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
@@ -1064,7 +1064,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
@@ -1460,7 +1460,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1626,8 +1626,11 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Note: This only adds spliceSites effects, for detailed codon
 		//       changes effects we use 'CodonChange' class
 		//---
+		boolean exonAnnotated = false;
 		for (Exon ex : this)
-			if (ex.intersects(variant)) ex.variantEffect(variant, variantEffects);
+			if (ex.intersects(variant)) {
+				exonAnnotated |= ex.variantEffect(variant, variantEffects);
+			}
 
 		//---
 		// Hits a UTR region?
@@ -1652,32 +1655,41 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		if (included) return true; // SeqChange fully included? => We are done.
 
 		//---
-		// Analyze non-coding transcripts (or 'interval' variants)
+		// No annotations from eoxns? => Add transcript
 		//---
-		if ((!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) || variant.isInterval() || !variant.isVariant()) {
-			// Do we have exon information for this transcript?
-			if (!subintervals().isEmpty()) {
-				// Add all exons
-				for (Exon exon : this)
-					if (exon.intersects(variant)) variantEffects.addEffect(variant, exon, EffectType.EXON, "");
-			} else variantEffects.addEffect(variant, this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
-
-			// Ok, we are done
+		if (!exonAnnotated) {
+			variantEffects.add(variant, this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
 			return true;
 		}
 
-		//---
-		// This is a protein coding transcript.
-		// We analyze codon replacement effect
-		//---
-		if (isCds(variant)) {
-			// Get codon change effect
-			CodonChange codonChange = CodonChange.factory(variant, this, variantEffects);
-			codonChange.codonChange();
-			return true;
-		}
+		//		//---
+		//		// Analyze non-coding transcripts (or 'interval' variants)
+		//		//---
+		//		boolean coding = isProteinCoding() || Config.get().isTreatAllAsProteinCoding();
+		//		if (!coding || variant.isInterval() || !variant.isVariant()) {
+		//			// Do we have exon information for this transcript?
+		//			if (!subintervals().isEmpty()) {
+		//				// Add all exons
+		//				for (Exon exon : this)
+		//					if (exon.intersects(variant)) variantEffects.add(variant, exon, EffectType.EXON, "");
+		//			} else variantEffects.add(variant, this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
+		//
+		//			// Ok, we are done
+		//			return true;
+		//		}
+		//
+		//		//---
+		//		// This is a protein coding transcript.
+		//		// We analyze codon replacement effect
+		//		//---
+		//		if (isCds(variant)) {
+		//			// Get codon change effect
+		//			CodonChange codonChange = CodonChange.factory(variant, this, variantEffects);
+		//			codonChange.codonChange();
+		//			return true;
+		//		}
 
-		return false;
+		return exonAnnotated;
 	}
 
 }

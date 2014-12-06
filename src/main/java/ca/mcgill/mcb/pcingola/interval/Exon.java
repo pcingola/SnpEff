@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.interval;
 import java.util.ArrayList;
 
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
+import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
@@ -295,11 +297,30 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 */
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false;
 
+		Transcript tr = (Transcript) parent;
+		boolean coding = tr.isProteinCoding() || Config.get().isTreatAllAsProteinCoding();
+
+		// Different analysis for coding or non-coding
+		boolean exonAnnotated = false;
+		if (!coding || variant.isInterval() || !variant.isVariant()) {
+			// Non-coding? Just annotate as 'exon'
+			variantEffects.add(variant, this, EffectType.EXON, "");
+			exonAnnotated = true;
+		} else if (tr.isCds(variant)) {
+			// Is it a coding transcript and the variant is within the CDS?
+			// => We need codon analysis
+			CodonChange codonChange = CodonChange.factory(variant, tr, variantEffects);
+			codonChange.codonChange();
+			exonAnnotated = true;
+		}
+
+		// Any splice site effect to add?
 		for (SpliceSite ss : spliceSites)
 			if (ss.intersects(variant)) ss.variantEffect(variant, variantEffects);
 
-		return true;
+		return exonAnnotated;
 	}
 
 }

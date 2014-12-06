@@ -247,7 +247,7 @@ public class TestCasesDels extends TestCasesBase {
 						if (eff.getEffectType() == EffectType.SPLICE_SITE_DONOR) copy = false;
 						if (eff.getEffectType() == EffectType.INTRON) copy = false;
 
-						if (copy) effects.addEffect(eff);
+						if (copy) effects.add(eff);
 					}
 
 					// There should be only one effect in most cases

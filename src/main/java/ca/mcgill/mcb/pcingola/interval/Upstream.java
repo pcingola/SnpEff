@@ -45,7 +45,7 @@ public class Upstream extends Marker {
 		VariantEffect variantEffect = new VariantEffect(variant);
 		variantEffect.set(this, type, type.effectImpact(), distance + " bases");
 		variantEffect.setDistance(distance);
-		variantEffects.addEffect(variantEffect);
+		variantEffects.add(variantEffect);
 
 		return true;
 	}

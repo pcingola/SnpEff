@@ -47,6 +47,7 @@ public class TestCasesEffectCollapse extends TestCasesBase {
 		// Check that there is only one effect
 		if (verbose) {
 			System.err.println("Variant: " + variant);
+			System.err.println("Effects: " + veffs.size());
 			for (VariantEffect veff : veffs)
 				System.err.println("\tEff: " + veff.effect(false, true, true, false));
 		}

@@ -41,6 +41,7 @@ public class TestCasesSnps extends TestCasesBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
+
 		CodonTable codonTable = genome.codonTable();
 
 		// Test N times
@@ -115,24 +116,22 @@ public class TestCasesSnps extends TestCasesBase {
 						// Calculate effects
 						VariantEffects effects = snpEffectPredictor.variantEffect(variant);
 
-						// There should be only one effect
+						// Checknumber of results
+						Assert.assertEquals(true, effects.size() == 1);
 						if (debug) System.out.println(effects);
-						Assert.assertEquals(true, effects.size() <= 1);
 
-						// Show
-						if (effects.size() == 1) {
-							VariantEffect effect = effects.get();
-							String effStr = effectStr(effect);
-							if (debug) System.out.println("\tPos: " + pos //
-									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-									+ "\t" + variant + (variant.isStrandPlus() ? "+" : "-") //
-									+ "\tCodon: " + codon + " -> " + newCodon //
-									+ "\tAA: " + aa + " -> " + newAa //
-									+ "\tEffect: " + effStr);
+						// Check effect
+						VariantEffect effect = effects.get();
+						String effStr = effectStr(effect);
+						if (debug) System.out.println("\tPos: " + pos //
+								+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
+								+ "\t" + variant + (variant.isStrandPlus() ? "+" : "-") //
+								+ "\tCodon: " + codon + " -> " + newCodon //
+								+ "\tAA: " + aa + " -> " + newAa //
+								+ "\tEffect: " + effStr);
 
-							// Check effect
-							Assert.assertEquals(effectExpected, effStr);
-						}
+						// Check effect
+						Assert.assertEquals(effectExpected, effStr);
 					}
 				}
 			}

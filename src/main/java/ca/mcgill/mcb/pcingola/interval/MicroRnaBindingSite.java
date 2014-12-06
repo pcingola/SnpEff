@@ -23,7 +23,7 @@ public class MicroRnaBindingSite extends Marker {
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects changeEffects) {
 		if (!intersects(variant)) return false; // Sanity check
-		changeEffects.addEffect(variant, this, EffectType.MICRO_RNA, "" + pValue);
+		changeEffects.add(variant, this, EffectType.MICRO_RNA, "" + pValue);
 		return true;
 	}
 

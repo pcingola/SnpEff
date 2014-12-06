@@ -90,17 +90,9 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	public VariantEffect(Variant variant) {
 		this.variant = variant;
-		//		variantRef = null;
 		effectTypes = new ArrayList<EffectType>();
 		effectImpacts = new ArrayList<EffectImpact>();
 	}
-
-	//	public VariantEffect(Variant variant, Variant variantRef) {
-	//		this.variant = variant;
-	//		this.variantRef = variantRef;
-	//		effectTypes = new ArrayList<EffectType>();
-	//		effectImpacts = new ArrayList<EffectImpact>();
-	//	}
 
 	public VariantEffect(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
 		this.variant = variant;
@@ -109,15 +101,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		set(marker, effectType, effectImpact, message);
 		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 	}
-
-	//	public VariantEffect(Variant variant, Variant variantRef, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
-	//		this.variant = variant;
-	//		this.variantRef = variantRef;
-	//		effectTypes = new ArrayList<EffectType>();
-	//		effectImpacts = new ArrayList<EffectImpact>();
-	//		set(marker, effectType, effectImpact, message);
-	//		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
-	//	}
 
 	public void addEffectImpact(EffectImpact effectImpact) {
 		effectImpacts.add(effectImpact);
@@ -547,7 +530,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -598,13 +581,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
-				;
+		;
 	}
 
 	public boolean isSpliceSiteCore() {
 		return hasEffectType(EffectType.SPLICE_SITE_DONOR) //
 				|| hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
-				;
+		;
 	}
 
 	public boolean isSpliceSiteRegion() {
@@ -763,7 +746,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-				;
+		;
 	}
 
 	/**
