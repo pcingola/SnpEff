@@ -157,11 +157,13 @@ public class TestCasesBase {
 				String trId = veff.getTranscriptId();
 				String hgvsCactual = veff.getHgvsDna() != null ? veff.getHgvsDna() : "";
 				String hgvsPactual = veff.getHgvsProt() != null ? veff.getHgvsProt() : "";
-				if (verbose) System.out.println("\t" + veff //
-						+ "\n\t\tEFF    : " + veff.getEffectsStr() //
-						+ "\n\t\tHGVS_C : " + trId + ":" + hgvsCactual + "\t\tExpected: " + trIdC + ":" + hgvsCexp //
-						+ (compareProt ? "\n\t\tHGVS_P : " + trId + ":" + hgvsPactual + "\t\tExpected: " + trIdP + ":" + hgvsPexp : "") //
-						+ "\n");
+				if (verbose) {
+					System.out.println("\t" + veff //
+							+ "\n\t\tEFF    : " + veff.getEffectsStr() //
+							+ "\n\t\tHGVS_C : " + trId + ":" + hgvsCactual + "\t\tExpected: " + trIdC + ":" + hgvsCexp //
+							+ (compareProt ? "\n\t\tHGVS_P : " + trId + ":" + hgvsPactual + "\t\tExpected: " + trIdP + ":" + hgvsPexp : "") //
+							+ "\n");
+				}
 
 				// Compare results for HGVS_DNA
 				if (trId != null && trId.equals(trIdC)) {

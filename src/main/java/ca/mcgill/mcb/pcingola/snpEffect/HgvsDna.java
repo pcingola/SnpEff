@@ -180,8 +180,14 @@ public class HgvsDna extends Hgvs {
 				// Reference: http://www.hgvs.org/mutnomen/disc.html#ins
 				//            ...to prevent confusion, both flanking residues have to be listed.
 				// Example: c.6_7dup (or c.6_7dupTG) denotes a TG duplication (TG insertion) in the sequence ACATGTGCC to ACATGTGTGCC
-				posEnd = posStart; // Insert before current posStart
-				posStart--;
+				if (strandPlus) {
+					// Insert before current posStart
+					posEnd = posStart;
+					posStart -= 1;
+				} else {
+					// Insert before current posStart (negative strand)
+					posEnd = posStart - 1;
+				}
 			}
 			break;
 
