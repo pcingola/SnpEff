@@ -5,6 +5,7 @@ import org.junit.Test;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -44,17 +45,17 @@ public class TestCasesSpliceSite extends TestCasesBase {
 				int ssBases = Math.min(SpliceSite.CORE_SPLICE_SITE_SIZE - 1, intron.size());
 
 				// Splice site donor
-				String effectNotExpected = (intron.size() > 2 * SpliceSite.CORE_SPLICE_SITE_SIZE ? "SPLICE_SITE_ACCEPTOR" : null);
+				EffectType effectNotExpected = (intron.size() > 2 * SpliceSite.CORE_SPLICE_SITE_SIZE ? EffectType.SPLICE_SITE_ACCEPTOR : null);
 				for (int pos = intron.getStart(); pos <= intron.getStart() + ssBases; pos++) {
 					Variant variant = new Variant(chromosome, pos, "A", "T");
-					checkEffect(variant, "SPLICE_SITE_DONOR", effectNotExpected);
+					checkEffect(variant, EffectType.SPLICE_SITE_DONOR, effectNotExpected);
 				}
 
 				// Splice site acceptor
-				effectNotExpected = (intron.size() > 2 * SpliceSite.CORE_SPLICE_SITE_SIZE ? "SPLICE_SITE_DONOR" : null);
+				effectNotExpected = (intron.size() > 2 * SpliceSite.CORE_SPLICE_SITE_SIZE ? EffectType.SPLICE_SITE_DONOR : null);
 				for (int pos = intron.getEnd() - ssBases; pos <= intron.getEnd(); pos++) {
 					Variant variant = new Variant(chromosome, pos, "A", "T");
-					checkEffect(variant, "SPLICE_SITE_ACCEPTOR", effectNotExpected);
+					checkEffect(variant, EffectType.SPLICE_SITE_ACCEPTOR, effectNotExpected);
 				}
 			}
 		}

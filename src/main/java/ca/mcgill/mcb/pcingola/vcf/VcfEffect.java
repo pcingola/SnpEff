@@ -388,7 +388,7 @@ public class VcfEffect {
 		} else {
 			// More recent versions
 			if (eff.indexOf(VariantEffect.EFFECT_TYPE_SEPARATOR) >= 0) {
-				for (String es : eff.split("" + VariantEffect.EFFECT_TYPE_SEPARATOR))
+				for (String es : eff.split(VariantEffect.EFFECT_TYPE_SEPARATOR))
 					effs.add(EffectType.parse(es));
 			}
 		}

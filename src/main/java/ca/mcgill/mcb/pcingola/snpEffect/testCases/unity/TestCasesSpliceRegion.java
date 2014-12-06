@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -45,7 +46,7 @@ public class TestCasesSpliceRegion extends TestCasesBase {
 		for (int pos : spliceRegionPos) {
 			Gpr.showMark(i, 1);
 			Variant variant = new Variant(chromosome, pos, "A", "T");
-			checkEffect(variant, "SPLICE_SITE_REGION");
+			checkEffect(variant, EffectType.SPLICE_SITE_REGION);
 		}
 	}
 }

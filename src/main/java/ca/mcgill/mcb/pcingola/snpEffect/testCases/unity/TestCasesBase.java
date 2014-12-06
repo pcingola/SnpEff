@@ -16,6 +16,7 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
@@ -77,11 +78,11 @@ public class TestCasesBase {
 		initSnpEffPredictor();
 	}
 
-	protected void checkEffect(Variant variant, String effectExpected) {
+	protected void checkEffect(Variant variant, EffectType effectExpected) {
 		checkEffect(variant, effectExpected, null);
 	}
 
-	protected void checkEffect(Variant variant, String effectExpected, String effectNotExpected) {
+	protected void checkEffect(Variant variant, EffectType effectExpected, EffectType effectNotExpected) {
 		// Calculate effects
 		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
 
@@ -91,13 +92,23 @@ public class TestCasesBase {
 
 			// Check effect
 			if (verbose) System.out.println(effect.toStringSimple(true) + "\n\tEffect type: '" + effStr + "'\tExpected: '" + effectExpected + "'");
-			found |= effectExpected.equals(effStr);
+			found |= effect.hasEffectType(effectExpected);
 
 			// Check that 'effectNotExpected' is not present
-			if (effectNotExpected != null && effectNotExpected.equals(effStr)) throw new RuntimeException("Effect '" + effectNotExpected + "' should not be here");
+			if (effectNotExpected != null && effect.hasEffectType(effectNotExpected)) throw new RuntimeException("Effect '" + effectNotExpected + "' should not be here");
 		}
 
 		Assert.assertTrue("Effect not found: '" + effectExpected + "' in variant " + variant, found);
+	}
+
+	/**
+	 * Is effectExpected included in effStr (many effects delimited by '&'
+	 */
+	protected boolean hasEffect(String effectExpected, String effStr) {
+		for (String eff : effStr.split(VariantEffect.EFFECT_TYPE_SEPARATOR))
+			if (eff.equals(effectExpected)) return true;
+
+		return false;
 	}
 
 	protected void init() {

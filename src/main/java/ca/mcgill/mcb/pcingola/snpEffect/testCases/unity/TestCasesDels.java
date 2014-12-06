@@ -236,22 +236,18 @@ public class TestCasesDels extends TestCasesBase {
 					}
 
 					//---
-					// Filter out some effects
+					// Calculate effects
 					//---
-					VariantEffects effectsAll = snpEffectPredictor.variantEffect(variant);
-					VariantEffects effects = new VariantEffects(variant);
-					for (VariantEffect eff : effectsAll) {
-						boolean copy = true;
+					VariantEffects effects = snpEffectPredictor.variantEffect(variant);
 
-						if (eff.getEffectType() == EffectType.SPLICE_SITE_ACCEPTOR) copy = false;
-						if (eff.getEffectType() == EffectType.SPLICE_SITE_DONOR) copy = false;
-						if (eff.getEffectType() == EffectType.INTRON) copy = false;
-
-						if (copy) effects.add(eff);
-					}
+					//---
+					// Check number of effects
+					//---
 
 					// There should be only one effect in most cases
+					if (effects.isEmpty()) System.err.println("No effects for variant: " + variant + ", expecting '" + effectExpected + "'");
 					Assert.assertEquals(false, effects.isEmpty()); // There should be at least one effect
+
 					if (debug && (effects.size() > 1)) {
 						System.out.println("Found more than one effect: " + effects.size() + "\n" + transcript);
 						System.out.println("\tEffects: ");
@@ -287,7 +283,7 @@ public class TestCasesDels extends TestCasesBase {
 						if (debug) System.out.println(msg);
 						else if (verbose) System.out.println(line);
 
-						for (String e : effStr.split("\\+")) {
+						for (String e : effStr.split(VariantEffect.EFFECT_TYPE_SEPARATOR)) {
 							if (effectExpected.equals(e)) {
 								ok = true;
 								// Check codons
@@ -295,7 +291,7 @@ public class TestCasesDels extends TestCasesBase {
 										&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
 										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
 										&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
-										) {
+								) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
 									String codonsNewEff = effect.getCodonsAlt().toUpperCase();
@@ -307,6 +303,11 @@ public class TestCasesDels extends TestCasesBase {
 							}
 						}
 					}
+
+					if (!ok) {
+						System.err.println("Cannot find '" + effectExpected + "'");
+					}
+
 					Assert.assertEquals(true, ok);
 				}
 			}
