@@ -127,25 +127,15 @@ public class TestCasesZzz extends TestCasesBase {
 	//		String vcf = "tests/hgvs_md.chr17.vcf";
 	//		compareHgvs(genome, vcf);
 	//	}
-	//
-	//	@Test
-	//	public void test_hgvs_walk_and_roll_1() {
-	//		Gpr.debug("Test");
-	//
-	//		String genome = "testHg19Chr1";
-	//		String vcf = "tests/hgvs_jeremy_1.vcf";
-	//
-	//		compareHgvs(genome, vcf);
-	//	}
 
 	@Test
-	public void test_hgvs_walk_and_roll_2() {
+	public void test_hgvs_walk_and_roll_1() {
 		Gpr.debug("Test");
 
-		String genome = "testHg19Chr17";
-		String vcf = "tests/hgvs_walk_and_roll.1.vcf";
+		String genome = "testHg19Chr1";
+		String vcf = "tests/hgvs_jeremy_1.vcf";
 
-		compareHgvs(genome, vcf, true);
+		compareHgvs(genome, vcf);
 	}
 
 }
