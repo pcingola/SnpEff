@@ -63,7 +63,7 @@ public class Marker extends Interval implements TxtSerializable {
 	}
 
 	/**
-	 * Apply a SeqChange to a marker.
+	 * Apply a variant to a marker.
 	 *
 	 * Create a new marker
 	 * 		newMarker = marker.apply( variant )
@@ -75,7 +75,7 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @return A new marker after applying variant
 	 */
 	public Marker apply(Variant variant) {
-		// SeqChange after this marker: No effect
+		// Variant after this marker: No effect
 		if (end < variant.getStart()) return this;
 
 		// Negative strand variants are a pain. We will eventually get rid of them...(they do not make sense any more)
@@ -84,7 +84,7 @@ public class Marker extends Interval implements TxtSerializable {
 		int lenChange = variant.lengthChange();
 		if (lenChange == 0) return this;
 
-		// SeqChange after marker end: Nothing to do
+		// Variant after marker end: Nothing to do
 		if (end < variant.getStart()) return this;
 
 		// We are not ready for mixed changes

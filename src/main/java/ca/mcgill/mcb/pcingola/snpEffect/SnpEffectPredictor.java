@@ -89,7 +89,7 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-			) snpEffectPredictor.add(m);
+					) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}
@@ -595,7 +595,7 @@ public class SnpEffectPredictor implements Serializable {
 	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
 	 */
 	public VariantEffects variantEffect(Variant variant) {
-		VariantEffects variantEffects = new VariantEffects(variant);
+		VariantEffects variantEffects = new VariantEffects();
 
 		//---
 		// Chromosome missing?

@@ -21,7 +21,7 @@ public class VariantEffects implements Iterable<VariantEffect> {
 
 	List<VariantEffect> effects;
 
-	public VariantEffects(Variant variant) {
+	public VariantEffects() {
 		effects = new ArrayList<VariantEffect>();
 	}
 

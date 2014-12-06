@@ -258,33 +258,60 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// SeqChange after this marker: No effect
 		if (end < variant.getStart()) return this;
 
+		//---
 		// Create new transcript
+		//---
 		Transcript tr = (Transcript) super.apply(variant);
 
 		// We will change information, so we need a clone
 		if (tr == this) tr = (Transcript) clone();
 		tr.reset(); // Reset all parameters (we only wanted the coordinate changes)
 
-		// Add changed exons
+		//---
+		// Apply to exons
+		//---
 		for (Exon ex : this) {
 			Exon newExon = ex.apply(variant);
-			if (newExon != null) tr.add(newExon);
+			if (newExon != null) {
+				newExon.setParent(tr);
+				tr.add(newExon);
+			}
 		}
 
+		//---
 		// Add changed UTRs
+		//---
 		for (Utr utr : utrs) {
 			Utr newUtr = (Utr) utr.apply(variant);
-			if (newUtr != null) tr.utrs.add(newUtr);
+			if (newUtr != null) {
+				newUtr.setParent(tr);
+				tr.utrs.add(newUtr);
+			}
 		}
 
+		//---
 		// Up & Down stream
-		if (upstream != null) tr.upstream = (Upstream) upstream.apply(variant);
-		if (downstream != null) tr.downstream = (Downstream) downstream.apply(variant);
+		//---
+		if (upstream != null) {
+			Upstream newUp = (Upstream) upstream.apply(variant);
+			newUp.setParent(tr);
+			tr.upstream = newUp;
+		}
+		if (downstream != null) {
+			Downstream newDown = (Downstream) downstream.apply(variant);
+			newDown.setParent(tr);
+			tr.downstream = newDown;
+		}
 
+		//---
 		// Introns
+		//---
 		for (Intron intr : introns()) {
 			Intron newIntron = intr.apply(variant);
-			if (newIntron != null) tr.add(newIntron);
+			if (newIntron != null) {
+				newIntron.setParent(tr);
+				tr.add(newIntron);
+			}
 		}
 
 		return tr;
@@ -531,7 +558,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-					) {
+			) {
 				ret = true;
 
 				// Show debugging information
@@ -906,7 +933,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-								);
+						);
 					} else {
 						if (Config.get().isDebug()) System.err.println("\t\tFrame correction: Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
@@ -1064,7 +1091,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-				;
+		;
 	}
 
 	/**
@@ -1460,7 +1487,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-				;
+		;
 	}
 
 	public void setAaCheck(boolean aaCheck) {

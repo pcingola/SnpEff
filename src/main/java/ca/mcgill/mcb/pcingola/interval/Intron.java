@@ -38,13 +38,16 @@ public class Intron extends Marker {
 	@Override
 	public Intron apply(Variant variant) {
 		// Create new exon with updated coordinates
-		Intron intr = (Intron) super.apply(variant);
+		Intron newIntron = (Intron) super.apply(variant);
 
 		// Update splice sites
-		for (SpliceSite ss : spliceSites)
-			intr.add((SpliceSite) ss.apply(variant));
+		for (SpliceSite ss : spliceSites) {
+			SpliceSite newSs = (SpliceSite) ss.apply(variant);
+			newSs.setParent(newIntron);
+			newIntron.add(newSs);
+		}
 
-		return intr;
+		return newIntron;
 	}
 
 	/**
@@ -147,7 +150,7 @@ public class Intron extends Marker {
 		return (exonBefore != null ? exonBefore.getSpliceType() : "") //
 				+ "-" //
 				+ (exonAfter != null ? exonAfter.getSpliceType() : "") //
-		;
+				;
 	}
 
 	/**

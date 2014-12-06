@@ -50,7 +50,7 @@ public class CodonChangeMixed extends CodonChangeMnp {
 
 		// Create codon changes
 		variantEffectsOri = variantEffects;
-		this.variantEffects = new VariantEffects(variant);
+		this.variantEffects = new VariantEffects();
 		codonChangeMnp = CodonChange.factory(mnp, transcript, this.variantEffects);
 		codonChangeIndel = CodonChange.factory(indel, transcript, this.variantEffects);
 	}

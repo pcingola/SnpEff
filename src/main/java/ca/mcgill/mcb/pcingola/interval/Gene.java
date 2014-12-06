@@ -114,9 +114,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 				if (t.isProteinCoding() //
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
-								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-								) //
-						) {
+						|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+						) //
+				) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -129,9 +129,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 				if (canonicalLen <= tlen //
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
-								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-								) //
-						) {
+						|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+						) //
+				) {
 					canonical = t;
 					canonicalLen = tlen;
 				}

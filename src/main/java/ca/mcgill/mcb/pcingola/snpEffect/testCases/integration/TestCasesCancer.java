@@ -67,20 +67,19 @@ public class TestCasesCancer {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		verbose = debug = true;
 		String file = "tests/test.cancer.snp.01.vcf";
 		snpEffect(file, null, "p.Leu1?/c.1A>G", "2-1");
 	}
 
-	//	/**
-	//	 * Test Somatic vs Germline (using TXT file)
-	//	 */
-	//	@Test
-	//	public void test_02() {
-	//		Gpr.debug("Test");
-	//		String fileVcf = "tests/test.cancer_no_ped.vcf";
-	//		String fileTxt = "tests/test.cancer_no_ped.txt";
-	//		snpEffect(fileVcf, fileTxt, "p.Leu1?/c.1A>G", "2-1");
-	//	}
+	/**
+	 * Test Somatic vs Germline (using TXT file)
+	 */
+	@Test
+	public void test_02() {
+		Gpr.debug("Test");
+		String fileVcf = "tests/test.cancer_no_ped.vcf";
+		String fileTxt = "tests/test.cancer_no_ped.txt";
+		snpEffect(fileVcf, fileTxt, "p.Leu1?/c.1A>G", "2-1");
+	}
 
 }

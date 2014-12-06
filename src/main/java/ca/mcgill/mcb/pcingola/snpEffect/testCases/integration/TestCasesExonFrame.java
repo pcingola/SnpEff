@@ -9,6 +9,7 @@ import org.junit.Test;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
@@ -82,7 +83,7 @@ public class TestCasesExonFrame {
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve.toStringNoGt());
 
-			String expectedEffect = ve.getInfo("EXP_EFF");
+			EffectType expectedEffect = EffectType.valueOf(ve.getInfo("EXP_EFF"));
 			String expectedAa = ve.getInfo("EXP_AA");
 			String expectedCodon = ve.getInfo("EXP_CODON");
 
@@ -98,10 +99,10 @@ public class TestCasesExonFrame {
 				}
 
 				// Effect matches expected?
-				if (expectedEffect.equals(eff) //
+				if (veff.hasEffectType(expectedEffect) //
 						&& ((veff.getAa() == null) || expectedAa.equals(veff.getAa())) //
 						&& ((veff.getCodon() == null) || expectedCodon.equals(veff.getCodon())) //
-				) //
+						) //
 					found = true;
 			}
 

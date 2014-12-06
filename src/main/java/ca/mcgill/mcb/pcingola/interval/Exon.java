@@ -74,14 +74,18 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	@Override
 	public Exon apply(Variant variant) {
 		// Create new exon with updated coordinates
-		Exon ex = (Exon) super.apply(variant);
+		Exon newEx = (Exon) super.apply(variant);
+		if (newEx == null) return null;
 
 		// Apply to each splice sites
-		ex.spliceSites = new ArrayList<SpliceSite>();
-		for (SpliceSite ss : spliceSites)
-			ex.add((SpliceSite) ss.apply(variant));
+		newEx.spliceSites = new ArrayList<SpliceSite>();
+		for (SpliceSite ss : spliceSites) {
+			SpliceSite newSs = (SpliceSite) ss.apply(variant);
+			newSs.setParent(newEx);
+			newEx.add(newSs);
+		}
 
-		return ex;
+		return newEx;
 	}
 
 	/**
@@ -249,7 +253,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 				+ "\t" + rank //
 				+ "\t" + sequence //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
-		;
+				;
 	}
 
 	public void setAaIdx(int aaIdxStart, int aaIdxEnd) {
