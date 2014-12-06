@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
 
@@ -17,9 +17,9 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  *
  * Test case
  */
-public class TestCasesZzz extends TestCasesBase {
+public class TestCasesHgvsHard extends TestCasesBase {
 
-	public TestCasesZzz() {
+	public TestCasesHgvsHard() {
 		super();
 	}
 
@@ -124,7 +124,7 @@ public class TestCasesZzz extends TestCasesBase {
 	//		String vcf = "tests/hgvs_md.chr1.vcf";
 	//		compareHgvs(genome, vcf, false);
 	//	}
-
+	//
 	//	@Test
 	//	public void test_hgvs_md_2() {
 	//		Gpr.debug("Test");
@@ -169,16 +169,5 @@ public class TestCasesZzz extends TestCasesBase {
 		String vcf = "tests/hgvs_savant.vcf";
 		compareHgvs(genome, vcf, true);
 	}
-
-	//	@Test
-	//	public void test_zzz() {
-	//		Gpr.debug("Test");
-	//
-	//		verbose = HgvsDna.debug = VariantRealign.debug = true;
-	//
-	//		String genome = "testHg19Chr13";
-	//		String vcf = "tests/zzz.vcf";
-	//		compareHgvs(genome, vcf, true);
-	//	}
 
 }

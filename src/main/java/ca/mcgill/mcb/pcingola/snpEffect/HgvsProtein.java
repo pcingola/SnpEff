@@ -208,8 +208,8 @@ public class HgvsProtein extends Hgvs {
 				if (variantEffect.getAaNetChange().length() == 1) {
 					start = end = codonNum;
 				} else {
-					end = codonNum;
-					start = end - variantEffect.getAaNetChange().length();
+					start = codonNum - variantEffect.getAaNetChange().length();
+					end = codonNum - 1;
 				}
 			} else {
 				start = codonNum - 1;
