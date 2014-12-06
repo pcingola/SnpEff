@@ -51,9 +51,20 @@ public class HgvsDna extends Hgvs {
 
 		switch (variant.getVariantType()) {
 		case SNP:
-		case MNP:
 			if (strandPlus) return variant.getReference() + ">" + variant.getAlt();
 			return GprSeq.reverseWc(variant.getReference()) + ">" + GprSeq.reverseWc(variant.getAlt());
+
+		case MNP:
+			String ref,
+			alt;
+			if (strandPlus) {
+				ref = variant.getReference();
+				alt = variant.getAlt();
+			} else {
+				ref = GprSeq.reverseWc(variant.getReference());
+				alt = GprSeq.reverseWc(variant.getAlt());
+			}
+			return "del" + ref + "ins" + alt;
 
 		case INS:
 		case DEL:
@@ -134,8 +145,12 @@ public class HgvsDna extends Hgvs {
 
 		switch (variant.getVariantType()) {
 		case SNP:
-		case MNP:
 			posStart = posEnd = variantPosStart;
+			break;
+
+		case MNP:
+			posStart = variantPosStart;
+			posEnd = posStart + (strandPlus ? 1 : -1) * (variant.size() - 1);
 			break;
 
 		case INS:
@@ -322,6 +337,9 @@ public class HgvsDna extends Hgvs {
 			break;
 
 		case MNP:
+			type = "";
+			break;
+
 		case SNP:
 		case MIXED:
 		case INTERVAL:
