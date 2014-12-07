@@ -33,7 +33,7 @@ public class TestCasesFilterTranscripts {
 	public void test_01() {
 		Gpr.debug("Test");
 		String args[] = { //
-		"-noStats" //
+				"-noStats" //
 				, "-i", "vcf" //
 				, "-o", "vcf" //
 				, "-classic" //
@@ -51,11 +51,8 @@ public class TestCasesFilterTranscripts {
 			if (verbose) System.out.println(ve);
 
 			// Get effect string
-			String effs = ve.getInfo(VcfEffect.VCF_INFO_EFF_NAME);
-			for (String effStr : effs.split(",")) {
-				VcfEffect veff = new VcfEffect(effStr);
+			for (VcfEffect veff : ve.parseEffects()) {
 				if (verbose) System.out.println("\ttrId:" + veff.getTranscriptId() + "\t" + veff);
-
 				Assert.assertEquals("ENST00000400573", veff.getTranscriptId());
 			}
 		}
@@ -68,7 +65,7 @@ public class TestCasesFilterTranscripts {
 	public void test_02() {
 		Gpr.debug("Test");
 		String args[] = { //
-		"-noStats" //
+				"-noStats" //
 				, "-i", "vcf" //
 				, "-o", "vcf" //
 				, "-classic" //
@@ -87,9 +84,7 @@ public class TestCasesFilterTranscripts {
 			if (verbose) System.out.println(ve);
 
 			// Get effect string
-			String effs = ve.getInfo(VcfEffect.VCF_INFO_EFF_NAME);
-			for (String effStr : effs.split(",")) {
-				VcfEffect veff = new VcfEffect(effStr);
+			for (VcfEffect veff : ve.parseEffects()) {
 				if (verbose) System.out.println("\ttrId:" + veff.getTranscriptId() + "\t" + veff);
 
 				if (veff.getTranscriptId().equals("ENST00000400573") || veff.getTranscriptId().equals("ENST00000262608")) {

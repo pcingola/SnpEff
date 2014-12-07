@@ -1,21 +1,14 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
-import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -33,45 +26,9 @@ public class TestCasesVcf {
 	boolean verbose = false;
 	boolean debug = false;
 	boolean createOutputFile = false;
-	Random rand;
-	Config config;
-	Genome genome;
-
-	/**
-	 * Creates a test file
-	 */
-	public static void create1kgFile() throws IOException {
-		String vcfFile = Gpr.HOME + "/snpEff/1kg.indels.vcf";
-		String vcfOutFile = Gpr.HOME + "/workspace/SnpEff/tests/1kg.indels.vcf";
-
-		StringBuilder outvcf = new StringBuilder();
-
-		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
-		for (VcfEntry ve : vcf) {
-			StringBuilder sb = new StringBuilder();
-
-			for (Variant sc : ve.variants()) {
-				if (sb.length() > 0) sb.append(",");
-				sb.append(sc.getReference() + "/" + sc.getAlt());
-			}
-
-			ve.addInfo("variant", sb.toString());
-			outvcf.append(ve + "\n");
-		}
-
-		Gpr.toFile(vcfOutFile, outvcf);
-	}
 
 	public TestCasesVcf() {
 		super();
-		initRand();
-		config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
-	}
-
-	@After
-	public void after() {
-		config = null;
-		genome = null;
 	}
 
 	/**
@@ -83,22 +40,6 @@ public class TestCasesVcf {
 		List<VcfEffect> effs = ve.parseEffects();
 		VcfEffect eff = effs.get(0);
 		return eff.formatVersion();
-	}
-
-	void initRand() {
-		rand = new Random(20100629);
-	}
-
-	void initSnpEffPredictor() {
-		initSnpEffPredictor("testCase");
-	}
-
-	void initSnpEffPredictor(String genomeName) {
-		// Create a config and force out snpPredictor for hg37 chromosome Y
-		if (config == null) config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
-		config.loadSnpEffectPredictor();
-		genome = config.getGenome();
-		config.getSnpEffectPredictor().buildForest();
 	}
 
 	/**
@@ -124,10 +65,8 @@ public class TestCasesVcf {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		initSnpEffPredictor("testCase");
-
 		String fileName = "./tests/vcf.vcf";
-		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
+		VcfFileIterator vcf = new VcfFileIterator(fileName);
 		vcf.setCreateChromos(true);
 		for (VcfEntry vcfEntry : vcf) {
 			for (Variant variant : vcfEntry.variants()) {
@@ -144,10 +83,8 @@ public class TestCasesVcf {
 	@Test
 	public void test_04_del() {
 		Gpr.debug("Test");
-		initSnpEffPredictor("testCase");
-
 		String fileName = "./tests/vcf_04_del.vcf";
-		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
+		VcfFileIterator vcf = new VcfFileIterator(fileName);
 		vcf.setCreateChromos(true);
 		for (VcfEntry vcfEntry : vcf) {
 			for (Variant variant : vcfEntry.variants()) {
@@ -162,10 +99,8 @@ public class TestCasesVcf {
 	@Test
 	public void test_05_choking_on_dot_slash_dot() {
 		Gpr.debug("Test");
-		initSnpEffPredictor("testCase");
-
 		String fileName = "./tests/choking_on_dot_slash_dot.vcf";
-		VcfFileIterator vcf = new VcfFileIterator(fileName, genome);
+		VcfFileIterator vcf = new VcfFileIterator(fileName);
 		vcf.setCreateChromos(true);
 		for (VcfEntry vcfEntry : vcf) {
 			for (VcfGenotype gen : vcfEntry) {
@@ -197,8 +132,6 @@ public class TestCasesVcf {
 	public void test_06_mixed_change() {
 		// WARNING: This test is expected to fail, because this functionality is unimplemented
 		Gpr.debug("Test");
-		initSnpEffPredictor("testCase");
-
 		String file = "./tests/array_out_of_bounds.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(file);
@@ -221,7 +154,6 @@ public class TestCasesVcf {
 	@Test
 	public void test_07_long_lines() {
 		Gpr.debug("Test");
-		initSnpEffPredictor("testCase");
 
 		String file = "./tests/long.vcf";
 
@@ -248,7 +180,6 @@ public class TestCasesVcf {
 	@Test
 	public void test_08_alt_del() {
 		Gpr.debug("Test");
-		initSnpEffPredictor("testCase");
 
 		String file = "./tests/alt_del.vcf";
 
@@ -378,12 +309,11 @@ public class TestCasesVcf {
 		Gpr.debug("Test");
 		String vcfFileName = "./tests/test.EFF_V2.vcf";
 		FormatVersion formatVersion = formatVersion(vcfFileName);
-		Assert.assertEquals(FormatVersion.FORMAT_SNPEFF_2, formatVersion);
+		Assert.assertEquals(FormatVersion.FORMAT_EFF_2, formatVersion);
 
 		vcfFileName = "./tests/test.EFF_V3.vcf";
 		formatVersion = formatVersion(vcfFileName);
-		Assert.assertEquals(FormatVersion.FORMAT_SNPEFF_3, formatVersion);
-
+		Assert.assertEquals(FormatVersion.FORMAT_EFF_3, formatVersion);
 	}
 
 	@Test
@@ -411,30 +341,6 @@ public class TestCasesVcf {
 
 			Assert.assertEquals(variantExpected, variantResult.toString());
 		}
-	}
-
-	@Test
-	public void test_17_vcf_bed_filter() {
-		Gpr.debug("Test");
-		String vcfFile = "tests/test_vcf_filter.vcf";
-		String bedFile = "tests/test_vcf_filter.bed";
-
-		String args[] = { "-classic", "-v", "-filterinterval", bedFile, "testHg3771Chr1", vcfFile };
-		SnpEff snpeff = new SnpEff(args);
-
-		// Create command and run
-		SnpEffCmdEff effcmd = (SnpEffCmdEff) snpeff.snpEffCmd();
-		effcmd.setVerbose(verbose);
-		effcmd.setSupressOutput(!verbose);
-		List<VcfEntry> vcfEntries = effcmd.run(true);
-
-		// All VCF entries should be filtered out
-		Gpr.debug("Vcf entries: " + vcfEntries.size());
-		Assert.assertEquals(0, vcfEntries.size());
-
-		// Nothing should be printed
-		for (VcfEntry ve : vcfEntries)
-			System.out.println(ve);
 	}
 
 	@Test
@@ -525,27 +431,6 @@ public class TestCasesVcf {
 
 			start += ve.size();
 		}
-	}
-
-	/**
-	 * Annotating LOF / NMD using a geneName that contains spaces triggers
-	 * an Exception (it shouldn't happen)
-	 */
-	@Test
-	public void test_26_Annotating_LOF_Spaces() {
-		String vcfFileName = "tests/vcf_genes_spaces.vcf";
-		String genomeName = "test_ENSG00000158062_spaces";
-
-		// Prepare a command line
-		String args[] = { "-noLog", genomeName, vcfFileName };
-		SnpEff snpEff = new SnpEff(args);
-		snpEff.setSupressOutput(!verbose);
-		snpEff.setVerbose(verbose);
-		snpEff.setDebug(debug);
-
-		// This should run OK
-		boolean ok = snpEff.run();
-		Assert.assertTrue("SnpEff run failed!", ok);
 	}
 
 }

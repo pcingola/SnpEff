@@ -38,7 +38,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 	boolean needAddHeader = true;
 	boolean lossOfFunction;
 	boolean gatk;
-	FormatVersion formatVersion = VcfEffect.FormatVersion.FORMAT_SNPEFF_4;
+	FormatVersion formatVersion = VcfEffect.FormatVersion.FORMAT_EFF_4;
 	List<VcfEntry> vcfEntries;
 
 	/**
@@ -146,7 +146,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 				effBuff.append("|");
 
 				// Add amino acid length
-				if (formatVersion != FormatVersion.FORMAT_SNPEFF_2) { // This field is not in format version 2
+				if (formatVersion != FormatVersion.FORMAT_EFF_2) { // This field is not in format version 2
 					int aalen = variantEffect.getAaLength();
 					effBuff.append(aalen >= 0 ? aalen : "");
 					effBuff.append("|");
@@ -197,7 +197,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 				effBuff.append(rank >= 0 ? rank : "");
 
 				// Add genotype (or genotype difference) for this effect
-				if (formatVersion == FormatVersion.FORMAT_SNPEFF_4) {
+				if (formatVersion == FormatVersion.FORMAT_EFF_4) {
 					effBuff.append("|");
 					effBuff.append(variantEffect.getGenotype());
 				}
@@ -347,8 +347,8 @@ public class VcfOutputFormatter extends OutputFormatter {
 		newLines.add("##SnpEffCmd=\"" + commandLineStr + "\"");
 
 		// Fields changed in different format versions
-		if (formatVersion == FormatVersion.FORMAT_SNPEFF_2) newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' \">");
-		else if (formatVersion == FormatVersion.FORMAT_SNPEFF_3) newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Amino_Acid_length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' \">");
+		if (formatVersion == FormatVersion.FORMAT_EFF_2) newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' \">");
+		else if (formatVersion == FormatVersion.FORMAT_EFF_3) newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Amino_Acid_length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' \">");
 		else newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )' \">");
 
 		if (lossOfFunction) {
@@ -373,7 +373,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 	public void setGatk(boolean gatk) {
 		this.gatk = gatk;
-		if (gatk) formatVersion = VcfEffect.FormatVersion.FORMAT_SNPEFF_2;
+		if (gatk) formatVersion = VcfEffect.FormatVersion.FORMAT_EFF_2;
 	}
 
 	public void setLossOfFunction(boolean lossOfFunction) {

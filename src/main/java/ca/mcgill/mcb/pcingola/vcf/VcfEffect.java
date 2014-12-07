@@ -8,7 +8,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
- * An 'EFF' entry in a vcf line
+ * An 'ANN' or 'EFF' entry in a VCF INFO field
+ * Note: 'EFF' is the old version that has been replaced by the standardized 'ANN' field (2014-12)
  *
  * @author pablocingolani
  */
@@ -18,10 +19,14 @@ public class VcfEffect {
 	 * VcfFields in SnpEff version 2.X have a different format than 3.X
 	 */
 	public enum FormatVersion {
-		FORMAT_SNPEFF_2, FORMAT_SNPEFF_3, FORMAT_SNPEFF_4
+		FORMAT_EFF_2 //
+		, FORMAT_EFF_3 // Added: AA_length
+		, FORMAT_EFF_4 // Added: Exon/Intron rank and 'genotype' (Cancer samples)
+		, FORMAT_ANN_5 // Standard annotation format (2014-12)
 	}
 
-	public static final String VCF_INFO_EFF_NAME = "EFF";
+	public static final String VCF_INFO_EFF_NAME_EFF = "EFF";
+	public static final String VCF_INFO_EFF_NAME = "ANN";
 
 	String effectString;
 	String effectStrings[];
@@ -50,6 +55,8 @@ public class VcfEffect {
 	public static int fieldNum(String name, FormatVersion formatVersion) {
 		int fieldNum = 0;
 
+		// TODO: ("Implement this as a hash!");
+
 		if (name.equals("EFF.EFFECT")) return fieldNum;
 		fieldNum++;
 
@@ -66,7 +73,7 @@ public class VcfEffect {
 		if (name.equals("EFF.AA") || name.equals("EFF.HGVS")) return fieldNum;
 		fieldNum++;
 
-		if (formatVersion != FormatVersion.FORMAT_SNPEFF_2) {
+		if (formatVersion != FormatVersion.FORMAT_EFF_2) {
 			if (name.equals("EFF.AA_LEN")) return fieldNum;
 			fieldNum++;
 		}
@@ -86,7 +93,7 @@ public class VcfEffect {
 		if (name.equals("EFF.RANK") || name.equals("EFF.EXID")) return fieldNum; // This one used to be called exonID, now it is used for exon OR intron rank
 		fieldNum++;
 
-		if (formatVersion == FormatVersion.FORMAT_SNPEFF_4) {
+		if (formatVersion == FormatVersion.FORMAT_EFF_4) {
 			if (name.equals("EFF.GT") || name.equals("EFF.GENOTYPE_NUMBER") || name.equals("EFF.GENOTYPE")) return fieldNum;
 			fieldNum++;
 		}
@@ -122,6 +129,8 @@ public class VcfEffect {
 	 * Return a string safe to be used in an 'EFF' info field (VCF file)
 	 */
 	public static String vcfEffSafe(String str) {
+		// TODO: ("Parenthesis and square brakets are no longer needed!");
+
 		return str.replaceAll("(\\s|\\(|\\)|\\[|\\]|;|,|\\|)+", "_");
 	}
 
@@ -158,6 +167,8 @@ public class VcfEffect {
 		if (formatVersion != null) return formatVersion;
 
 		// OK, guess format version
+		// TODO: ("Branch ro ANN/EFF");
+
 		if (effectStrings == null) effectStrings = split(effectString);
 		int len = effectStrings.length;
 
@@ -166,10 +177,10 @@ public class VcfEffect {
 		if (lastField.startsWith("ERROR") || lastField.startsWith("WARNING")) len--;
 
 		// Guess format
-		if (len <= 11) return FormatVersion.FORMAT_SNPEFF_2;
-		if (len <= 12) return FormatVersion.FORMAT_SNPEFF_3;
+		if (len <= 11) return FormatVersion.FORMAT_EFF_2;
+		if (len <= 12) return FormatVersion.FORMAT_EFF_3;
 
-		return FormatVersion.FORMAT_SNPEFF_4;
+		return FormatVersion.FORMAT_EFF_4;
 	}
 
 	/**
@@ -201,10 +212,12 @@ public class VcfEffect {
 	}
 
 	public String getEffectDetails() {
+		// TODO: ("How do we introduce this data in 'ANN'?");
 		return effectDetails;
 	}
 
 	public String getEffectsStr() {
+		// TODO: ("Rename to getAnn?");
 		StringBuilder sb = new StringBuilder();
 		for (EffectType et : effectTypes) {
 			if (sb.length() > 0) sb.append("+");
@@ -214,6 +227,7 @@ public class VcfEffect {
 	}
 
 	public String getEffectsStrSo() {
+		// TODO: ("Rename to getAnn?");
 		StringBuilder sb = new StringBuilder();
 		for (EffectType et : effectTypes) {
 			if (sb.length() > 0) sb.append("+");
@@ -223,10 +237,12 @@ public class VcfEffect {
 	}
 
 	public String getEffectString() {
+		// TODO: ("Rename to getAnn?");
 		return effectString;
 	}
 
 	public EffectType getEffectType() {
+		// TODO: ("Rename to getAnn?");
 		if (effectType != null) return effectType;
 		if (effectTypes == null || effectTypes.isEmpty()) return EffectType.NONE;
 
@@ -239,6 +255,7 @@ public class VcfEffect {
 	}
 
 	public List<EffectType> getEffectTypes() {
+		// TODO: ("Rename to getAnn?");
 		return effectTypes;
 	}
 
@@ -316,6 +333,8 @@ public class VcfEffect {
 			// Parse each sub field
 			int index = 0;
 
+			// TODO: ("Branch for ANN / EFF?");
+
 			// Effect
 			effString = effectStrings[index];
 			effectTypesStr = effectStrings[index];
@@ -335,7 +354,7 @@ public class VcfEffect {
 			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) aa = effectStrings[index];
 			index++;
 
-			if (formatVersion != FormatVersion.FORMAT_SNPEFF_2) {
+			if (formatVersion != FormatVersion.FORMAT_EFF_2) {
 				if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) aaLen = Gpr.parseIntSafe(effectStrings[index]);
 				else aaLen = 0;
 				index++;
@@ -356,7 +375,7 @@ public class VcfEffect {
 			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) exonId = effectStrings[index];
 			index++;
 
-			if (formatVersion == FormatVersion.FORMAT_SNPEFF_4) {
+			if (formatVersion == FormatVersion.FORMAT_EFF_4) {
 				if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) genotype = effectStrings[index];
 				else genotype = "";
 				index++;
@@ -399,6 +418,8 @@ public class VcfEffect {
 	 * E.g. NEXT_PROT[amino_acid_modification:Phosphoserine]  returns "amino_acid_modification:Phosphoserine"
 	 */
 	String parseEffectDetails(String eff) {
+		// TODO: ("Check that nextprot doesn't include '&' in the names");
+
 		int idx = eff.indexOf('[');
 		if (idx < 0) return "";
 		return eff.substring(idx + 1, eff.length() - 1);
@@ -461,6 +482,8 @@ public class VcfEffect {
 			if (sb.length() > 0) sb.append("+");
 			sb.append(et);
 		}
+
+		// TODO: ("Branch ANN/EFF");
 
 		if ((effectDetails != null) && !effectDetails.isEmpty()) sb.append("[" + effectDetails + "]");
 		sb.append("(");

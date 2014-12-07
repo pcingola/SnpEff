@@ -42,7 +42,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesSnpEnsemb
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesTranscript;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesTranscriptError;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVariant;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVcf;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesVcfs;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesMarkerSeq;
 
 /**
@@ -87,7 +87,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesMarkerSeq;
 		TestCasesTranscriptError.class, //
 		TestCasesTranscript.class, //
 		TestCasesVariant.class, //
-		TestCasesVcf.class, //
+		TestCasesVcfs.class, //
 		TestCasesIntegrationSnpEff.class, //
 		TestCasesIntegrationSnpEffMultiThread.class, //
 		TestCasesIntegrationSnpEffMultiThread2.class //
