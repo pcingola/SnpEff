@@ -122,40 +122,51 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		vcfGenotypes.add(new VcfGenotype(this, format, vcfGenotypeStr));
 	}
 
-	/**
-	 * Append a 'raw' INFO string (format is not checked)
-	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
-	 */
-	public void addInfo(String addInfoStr) {
-		addInfo(addInfoStr, true);
-	}
+	//	/**
+	//	 * Append a 'raw' INFO string (format is not checked)
+	//	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
+	//	 */
+	//	public void addInfo(String addInfoStr) {
+	//		addInfo(addInfoStr, true);
+	//	}
+	//
+	//	/**
+	//	 * Append a 'raw' INFO string (format is not checked)
+	//	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
+	//	 */
+	//	protected void addInfo(String addInfoStr, boolean invalidateCache) {
+	//		if ((infoStr == null) || infoStr.isEmpty()) infoStr = addInfoStr;
+	//		else {
+	//			if (!infoStr.endsWith(";")) infoStr += ";"; // Do we need to add a semicolon?
+	//			infoStr += addInfoStr; // Add info string
+	//		}
+	//
+	//		if (invalidateCache) info = null; // Invalidate cache
+	//	}
 
 	/**
-	 * Append a 'raw' INFO string (format is not checked)
-	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
+	 * Add a "key=value" tuple the info field
+	 *
+	 * @param name : INFO key name
+	 * @param value : Can be null if it is a boolean field.
 	 */
-	protected void addInfo(String addInfoStr, boolean invalidateCache) {
+	public void addInfo(String name, String value) {
+		if (!isValidInfoValue(name) || !isValidInfoValue(value)) throw new RuntimeException("No white-space, semi-colons, or equals-signs are permitted in INFO field. Name:\"" + name + "\" Value:\"" + value + "\"");
+
+		// Remove previous 'key' for INFO field?
+		removeInfo(name);
+
+		// Add to info hash (if available)
+		if (info != null) info.put(name, value);
+
+		// Append value to infoStr
+		String addInfoStr = name + (value != null ? "=" + value : ""); // String to append
 		if ((infoStr == null) || infoStr.isEmpty()) infoStr = addInfoStr;
 		else {
 			if (!infoStr.endsWith(";")) infoStr += ";"; // Do we need to add a semicolon?
 			infoStr += addInfoStr; // Add info string
 		}
 
-		if (invalidateCache) info = null; // Invalidate cache
-	}
-
-	/**
-	 * Add a "key=value" tuple the info field
-	 *
-	 * @param name
-	 * @param value : Can be null if it is a boolean field.
-	 */
-	public void addInfo(String name, String value) {
-		if (!isValidInfoValue(name) || !isValidInfoValue(value)) throw new RuntimeException("No white-space, semi-colons, or equals-signs are permitted in INFO field. Name:\"" + name + "\" Value:\"" + value + "\"");
-
-		String addInfoStr = name + (value != null ? "=" + value : "");
-		if (info != null) info.put(name, value); // Add to info hash (if available)
-		addInfo(addInfoStr, false);
 	}
 
 	/**
@@ -308,7 +319,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (nas.length() > 0) addInfo(VCF_INFO_NAS, nas.toString());
 
 		// Nothing added? Add 'NAS' (as an indicator that it was compressed
-		if ((homs.length() == 0) && (hets.length() == 0) && (nas.length() == 0)) addInfo(VCF_INFO_NAS);
+		if ((homs.length() == 0) && (hets.length() == 0) && (nas.length() == 0)) addInfo(VCF_INFO_NAS, null);
 
 		return true;
 	}
@@ -701,10 +712,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (fields.length >= 4) {
 			// Chromosome and position. VCF files are one-base, so inOffset should be 1.
 			chromosomeName = fields[0].trim();
+
+			// Chromosome
 			Chromosome chromo = vcfFileIterator.getChromosome(chromosomeName);
 			parent = chromo;
 			vcfFileIterator.sanityCheckChromo(chromosomeName, chromo); // Sanity check
 
+			// Start
 			start = vcfFileIterator.parsePosition(vcfFileIterator.readField(fields, 1));
 
 			// ID (e.g. might indicate dbSnp)
@@ -712,9 +726,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 			// REF and ALT
 			ref = vcfFileIterator.readField(fields, 3).toUpperCase(); // Reference and change
-
-			// Strand is always positive (defined in VCF spec.)
-			strandMinus = false;
+			strandMinus = false; // Strand is always positive (defined in VCF spec.)
 			String altsStr = vcfFileIterator.readField(fields, 4).toUpperCase();
 			parseAlts(altsStr);
 
@@ -723,6 +735,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (!qStr.isEmpty()) quality = Gpr.parseDoubleSafe(qStr);
 			else quality = null;
 
+			// Filter
 			filterPass = vcfFileIterator.readField(fields, 6); // Filter parameters
 
 			// INFO fields
@@ -946,8 +959,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Parse info entries
 		info = new HashMap<String, String>();
 		for (String inf : infoStr.split(";")) {
-			String vp[] = inf.split("=");
-			if (vp.length > 1) info.put(vp[0], vp[1]);
+			String vp[] = inf.split("=", 2);
+
+			if (vp.length > 1) info.put(vp[0], vp[1]); // Key = Value pair
 			else info.put(vp[0], "true"); // A property that is present, but has no value (e.g. "INDEL")
 		}
 	}
@@ -1002,6 +1016,31 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			gt[i] = value;
 		}
 
+	}
+
+	/**
+	 * Remove INFO field
+	 */
+	public void removeInfo(String key) {
+		// Not in info field? => Nothing to do
+		if (!infoStr.contains(key)) return;
+
+		StringBuilder infoStrNew = new StringBuilder();
+		for (String infoEntry : infoStr.split(";")) {
+			String keyValuePair[] = infoEntry.split("=", 2);
+
+			// Not the key we want to remove? => Add it
+			if (!keyValuePair[0].equals(key)) {
+				if (infoStrNew.length() > 0) infoStrNew.append(';');
+				infoStrNew.append(infoEntry);
+			}
+		}
+
+		// Create new string
+		infoStr = infoStrNew.toString();
+
+		// Update info hash
+		if (info != null) info.remove(key);
 	}
 
 	/**
@@ -1087,7 +1126,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Show only first eight fields (no genotype entries)
-	 * @return
 	 */
 	public String toStringNoGt() {
 		// Use original chromosome name or named from chromosome object

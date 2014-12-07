@@ -7,9 +7,6 @@ import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
-import ca.mcgill.mcb.pcingola.vcf.VcfHeaderInfo;
-import ca.mcgill.mcb.pcingola.vcf.VcfHeaderInfo.VcfInfoNumber;
-import ca.mcgill.mcb.pcingola.vcf.VcfInfoType;
 
 /**
  * Test case
@@ -24,43 +21,35 @@ public class TestCasesZzz extends TestCasesBase {
 	 * Add and replace an INFO header
 	 */
 	@Test
-	public void test_vcfInfoHeaderReplace() {
+	public void test_28_vcfInfoReplace() {
 		Gpr.debug("Test");
 
-		String infoFieldName = "NEW_INFO";
+		verbose = true;
 		String vcfFileName = "tests/example_42.vcf";
 
-		// Add this header
-		VcfHeaderInfo vhInfo = new VcfHeaderInfo(infoFieldName, VcfInfoType.Integer, VcfInfoNumber.UNLIMITED.toString(), "An arbitrary set of integer random numbers");
-		String expectedHeader = "##INFO=<ID=" + infoFieldName + ", Number=., Type=Integer, Description=\"An arbitrary set of integer random numbers\">";
-
-		// Replace using this header
-		VcfHeaderInfo vhInfo2 = new VcfHeaderInfo(infoFieldName, VcfInfoType.Float, "1", "One float random number");
-		String expectedHeader2 = "##INFO=<ID=" + infoFieldName + ", Number=1, Type=Float, Description=\"One float random number\">";
+		// Replace all 'DP' fields using this value
+		String infoKey = "DP";
+		String infoValue = "42";
 
 		// Open VCF file
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
-			if (vcf.isHeadeSection()) {
-				// Add INFO field to header
-				vcf.getVcfHeader().add(vhInfo);
-				if (verbose) System.out.println(vcf.getVcfHeader());
-				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader));
+			String infoValuePrev = ve.getInfo(infoKey);
 
-				// Add second INFO field to header (should replace first one)
-				vcf.getVcfHeader().add(vhInfo2);
-				if (verbose) System.out.println(vcf.getVcfHeader());
-				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader2)); // New header 
-				Assert.assertTrue(!vcf.getVcfHeader().toString().contains(expectedHeader)); // Old header should be gone
-			}
+			// Check that 'key=value' is in INFO
+			String keyValPrev = infoKey + "=" + infoValuePrev;
+			Assert.assertTrue("Old key=valu is not present", ve.getInfoStr().contains(keyValPrev));
 
-			// Add INFO field values
-			String value = "" + ((int) (1000 * Math.random()));
-			ve.addInfo(infoFieldName, value);
+			// Replace value
+			ve.addInfo(infoKey, infoValue);
 			if (verbose) System.out.println(ve);
 
-			// Check that 'info=value' is there
-			Assert.assertTrue(ve.toString().contains(infoFieldName + "=" + value));
+			// Check that new 'key=value' is there
+			String keyVal = infoKey + "=" + infoValue;
+			Assert.assertTrue("New key=value is present", ve.toString().contains(keyVal));
+
+			// Check that previous 'key=value' is no longer there
+			Assert.assertTrue("Old key=value is still in INOF field", !ve.getInfoStr().contains(keyValPrev));
 		}
 	}
 }

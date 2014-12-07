@@ -228,10 +228,9 @@ public class SnpEffCmdAcat extends SnpEff {
 
 	/**
 	 * Annotate if this variant exclusive from T2D_GENES (i.e. not in dbSnp, 1000 Genomes or ESP)
-	 * @param ve
 	 */
 	void t2dGenes(VcfEntry ve) {
-		if ((ve.getId() == null) || ve.getId().isEmpty()) ve.addInfo(T2D_GENES);
+		if ((ve.getId() == null) || ve.getId().isEmpty()) ve.addInfo(T2D_GENES, null);
 	}
 
 	/**

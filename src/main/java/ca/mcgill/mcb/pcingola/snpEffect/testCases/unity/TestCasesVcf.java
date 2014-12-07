@@ -499,7 +499,7 @@ public class TestCasesVcf {
 				// Add second INFO field to header (should replace first one)
 				vcf.getVcfHeader().add(vhInfo2);
 				if (verbose) System.out.println(vcf.getVcfHeader());
-				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader2)); // New header 
+				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader2)); // New header
 				Assert.assertTrue(!vcf.getVcfHeader().toString().contains(expectedHeader)); // Old header should be gone
 			}
 
@@ -510,6 +510,41 @@ public class TestCasesVcf {
 
 			// Check that 'info=value' is there
 			Assert.assertTrue(ve.toString().contains(infoFieldName + "=" + value));
+		}
+	}
+
+	/**
+	 * Add and replace an INFO header
+	 */
+	@Test
+	public void test_28_vcfInfoReplace() {
+		Gpr.debug("Test");
+
+		String vcfFileName = "tests/example_42.vcf";
+
+		// Replace all 'DP' fields using this value
+		String infoKey = "DP";
+		String infoValue = "42";
+
+		// Open VCF file
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		for (VcfEntry ve : vcf) {
+			String infoValuePrev = ve.getInfo(infoKey);
+
+			// Check that 'key=value' is in INFO
+			String keyValPrev = infoKey + "=" + infoValuePrev;
+			Assert.assertTrue("Old key=valu is not present", ve.getInfoStr().contains(keyValPrev));
+
+			// Replace value
+			ve.addInfo(infoKey, infoValue);
+			if (verbose) System.out.println(ve);
+
+			// Check that new 'key=value' is there
+			String keyVal = infoKey + "=" + infoValue;
+			Assert.assertTrue("New key=value is present", ve.toString().contains(keyVal));
+
+			// Check that previous 'key=value' is no longer there
+			Assert.assertTrue("Old key=value is still in INOF field", !ve.getInfoStr().contains(keyValPrev));
 		}
 	}
 
