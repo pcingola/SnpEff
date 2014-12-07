@@ -26,7 +26,7 @@ public class VcfEffect {
 	}
 
 	public static final String VCF_INFO_EFF_NAME_EFF = "EFF";
-	public static final String VCF_INFO_EFF_NAME = "ANN";
+	public static final String VCF_INFO_EFF_NAME = "EFF"; // TODO: Change to 'ANN'
 
 	String effectString;
 	String effectStrings[];

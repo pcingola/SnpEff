@@ -108,7 +108,7 @@ public class TestCasesVcf {
 				if (verbose) System.out.println("\t" + var + "\t" + gen);
 			}
 		}
-		System.out.println("");
+		if (verbose) System.out.println("");
 	}
 
 	/**
