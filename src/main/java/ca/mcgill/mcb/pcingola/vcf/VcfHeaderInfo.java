@@ -83,7 +83,7 @@ public class VcfHeaderInfo {
 	String description;
 
 	public static VcfHeaderInfo factory(String line) {
-		if (line.startsWith("##FORMAT=")) return new VcfInfoGenotype(line);
+		if (line.startsWith("##FORMAT=")) return new VcfHeaderInfoGenotype(line);
 		return new VcfHeaderInfo(line);
 	}
 
@@ -216,7 +216,8 @@ public class VcfHeaderInfo {
 	public String toString() {
 		if (line != null) return line;
 
-		return "##INFO=<ID=" + id//
+		return VcfHeader.INFO_PREFIX //
+				+ "<ID=" + id//
 				+ ", Number=" + (number >= 0 ? number : vcfInfoNumber) //
 				+ ", Type=" + vcfInfoType //
 				+ ", Description=\"" + description + "\"" //

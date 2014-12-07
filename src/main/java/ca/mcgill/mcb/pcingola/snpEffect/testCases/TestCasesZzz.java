@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfHeaderInfo;
 import ca.mcgill.mcb.pcingola.vcf.VcfHeaderInfo.VcfInfoNumber;
@@ -24,18 +25,18 @@ public class TestCasesZzz extends TestCasesBase {
 	 */
 	@Test
 	public void test_vcfInfoHeaderReplace() {
+		Gpr.debug("Test");
+
 		String infoFieldName = "NEW_INFO";
 		String vcfFileName = "tests/example_42.vcf";
-
-		verbose = true;
 
 		// Add this header
 		VcfHeaderInfo vhInfo = new VcfHeaderInfo(infoFieldName, VcfInfoType.Integer, VcfInfoNumber.UNLIMITED.toString(), "An arbitrary set of integer random numbers");
 		String expectedHeader = "##INFO=<ID=" + infoFieldName + ", Number=., Type=Integer, Description=\"An arbitrary set of integer random numbers\">";
 
 		// Replace using this header
-		VcfHeaderInfo vhInfo2 = new VcfHeaderInfo(infoFieldName, VcfInfoType.Float, "1", "One float random numbers");
-		String expectedHeader2 = "##INFO=<ID=" + infoFieldName + ", Number=1, Type=Float, Description=\"One float random numbers\">";
+		VcfHeaderInfo vhInfo2 = new VcfHeaderInfo(infoFieldName, VcfInfoType.Float, "1", "One float random number");
+		String expectedHeader2 = "##INFO=<ID=" + infoFieldName + ", Number=1, Type=Float, Description=\"One float random number\">";
 
 		// Open VCF file
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);

@@ -15,10 +15,15 @@ import java.util.List;
  */
 public class VcfHeader {
 
+	public static final String INFO_PREFIX = "##INFO=";
+	public static final String FORMAT_PREFIX = "##FORMAT=";
+	public static final String PEDIGREE_PREFIX = "##PEDIGREE=";
+	public static final String CHROM_PREFIX = "#CHROM\t";
+
 	int numberOfSamples = -1;
 	StringBuffer header;
 	HashMap<String, VcfHeaderInfo> vcfInfoById;
-	HashMap<String, VcfInfoGenotype> vcfInfoGenotypeById;
+	HashMap<String, VcfHeaderInfoGenotype> vcfInfoGenotypeById;
 	ArrayList<String> sampleNames;
 	boolean chromLine = false;
 
@@ -32,17 +37,19 @@ public class VcfHeader {
 	public void add(VcfHeaderInfo vcfInfo) {
 		parseInfoLines();
 
-		// Not already added?
-		if (!vcfInfoById.containsKey(vcfInfo.getId())) {
-			addLine(vcfInfo.toString()); // Add line
-			resetCache(); // Invalidate cache
-		}
+		// Already added? Remove old entry
+		if (vcfInfoById.containsKey(vcfInfo.getId())) removeInfo(vcfInfo.getId());
+
+		// Add line
+		addLine(vcfInfo.toString());
+		resetCache(); // Invalidate cache
+
 	}
 
 	/**
 	 * Add a 'FORMAT' meta info
 	 */
-	public void addFormat(VcfInfoGenotype vcfInfoGenotype) {
+	public void addFormat(VcfHeaderInfoGenotype vcfInfoGenotype) {
 		parseInfoLines();
 
 		// Not already added?
@@ -72,7 +79,7 @@ public class VcfHeader {
 				if (!added) { // Anything to add?
 					if (line.equals(newHeaderLine)) { // Header already added?
 						added = true; // Line already present? => Don't add
-					} else if (line.startsWith("#CHROM")) {
+					} else if (line.startsWith(CHROM_PREFIX)) {
 						header.append(newHeaderLine + "\n"); // Add new header right before title line
 						added = true;
 					}
@@ -84,17 +91,24 @@ public class VcfHeader {
 			// Not added yet? => Add to the end
 			if (!added) header.append(newHeaderLine + "\n"); // Add new header right before title line
 		} else {
-			// Do we need to append a '\n'
-			char lastChar = (header.length() > 0 ? header.charAt(header.length() - 1) : '\n');
-			if (lastChar != '\n' && lastChar != '\r') header.append('\n');
+			appendNewLineToHeader();
 
 			// Append header line
 			header.append(newHeaderLine);
-			chromLine |= newHeaderLine.startsWith("#CHROM\t");
+			chromLine |= newHeaderLine.startsWith(CHROM_PREFIX);
 		}
 
 		// Cache is no longer valid
 		resetCache();
+	}
+
+	/**
+	 * Header should end with a newline
+	 */
+	void appendNewLineToHeader() {
+		// Do we need to append a '\n'
+		char lastChar = (header.length() > 0 ? header.charAt(header.length() - 1) : '\n');
+		if (lastChar != '\n' && lastChar != '\r') header.append('\n');
 	}
 
 	public String[] getLines() {
@@ -121,8 +135,8 @@ public class VcfHeader {
 		List<String> sampleNames = getSampleNames();
 
 		for (String line : getLines()) {
-			if (line.startsWith("##PEDIGREE=")) {
-				String l = line.substring("##PEDIGREE=".length());
+			if (line.startsWith(PEDIGREE_PREFIX)) {
+				String l = line.substring(PEDIGREE_PREFIX.length());
 				l = l.replace('<', ' ');
 				l = l.replace('>', ' ');
 				l = l.trim();
@@ -233,7 +247,7 @@ public class VcfHeader {
 		return vcfInfoById;
 	}
 
-	public VcfInfoGenotype getVcfInfoGenotype(String id) {
+	public VcfHeaderInfoGenotype getVcfInfoGenotype(String id) {
 		parseInfoLines();
 		return vcfInfoGenotypeById.get(id);
 	}
@@ -243,7 +257,7 @@ public class VcfHeader {
 	 */
 	public void parseInfoLines() {
 
-		chromLine = header.indexOf("#CHROM") >= 0;
+		chromLine = header.indexOf(CHROM_PREFIX) >= 0;
 
 		if (vcfInfoById == null) {
 			vcfInfoById = new HashMap<String, VcfHeaderInfo>();
@@ -333,41 +347,82 @@ public class VcfHeader {
 			vcfInfoById.put("NMD.PERC", new VcfHeaderInfo("NMD.PERC", VcfInfoType.Float, ".", "SnpEff NMD percentage of transcripts in this gene that are affected"));
 
 			// Genotype fields
-			vcfInfoGenotypeById = new HashMap<String, VcfInfoGenotype>();
-			vcfInfoGenotypeById.put("DP", new VcfInfoGenotype("DP", VcfInfoType.Integer, "1", "Read depth"));
-			vcfInfoGenotypeById.put("EC", new VcfInfoGenotype("EC", VcfInfoType.Integer, "A", "Expected alternate allele counts"));
-			vcfInfoGenotypeById.put("FT", new VcfInfoGenotype("FT", VcfInfoType.String, "1", "Genotype filter"));
-			vcfInfoGenotypeById.put("GT", new VcfInfoGenotype("GT", VcfInfoType.String, "1", "Genotype"));
-			vcfInfoGenotypeById.put("GP", new VcfInfoGenotype("GP", VcfInfoType.Float, "1", "Genotype phred-scaled genotype posterior probabilities"));
-			vcfInfoGenotypeById.put("GQ", new VcfInfoGenotype("GQ", VcfInfoType.Integer, "1", "Genotype conditional genotype quality, encoded as a phred quality"));
-			vcfInfoGenotypeById.put("HQ", new VcfInfoGenotype("HQ", VcfInfoType.Integer, "2", "Haplotype qualities"));
-			vcfInfoGenotypeById.put("PL", new VcfInfoGenotype("PL", VcfInfoType.String, "G", "Normalized, Phred-scaled likelihoods for genotypes"));
-			vcfInfoGenotypeById.put("PQ", new VcfInfoGenotype("PQ", VcfInfoType.Integer, "1", "Phasing quality"));
-			vcfInfoGenotypeById.put("PS", new VcfInfoGenotype("PS", VcfInfoType.Integer, "1", "Phase set"));
-			vcfInfoGenotypeById.put("MQ", new VcfInfoGenotype("MQ", VcfInfoType.Integer, "1", "RMS mapping quality."));
+			vcfInfoGenotypeById = new HashMap<String, VcfHeaderInfoGenotype>();
+			vcfInfoGenotypeById.put("DP", new VcfHeaderInfoGenotype("DP", VcfInfoType.Integer, "1", "Read depth"));
+			vcfInfoGenotypeById.put("EC", new VcfHeaderInfoGenotype("EC", VcfInfoType.Integer, "A", "Expected alternate allele counts"));
+			vcfInfoGenotypeById.put("FT", new VcfHeaderInfoGenotype("FT", VcfInfoType.String, "1", "Genotype filter"));
+			vcfInfoGenotypeById.put("GT", new VcfHeaderInfoGenotype("GT", VcfInfoType.String, "1", "Genotype"));
+			vcfInfoGenotypeById.put("GP", new VcfHeaderInfoGenotype("GP", VcfInfoType.Float, "1", "Genotype phred-scaled genotype posterior probabilities"));
+			vcfInfoGenotypeById.put("GQ", new VcfHeaderInfoGenotype("GQ", VcfInfoType.Integer, "1", "Genotype conditional genotype quality, encoded as a phred quality"));
+			vcfInfoGenotypeById.put("HQ", new VcfHeaderInfoGenotype("HQ", VcfInfoType.Integer, "2", "Haplotype qualities"));
+			vcfInfoGenotypeById.put("PL", new VcfHeaderInfoGenotype("PL", VcfInfoType.String, "G", "Normalized, Phred-scaled likelihoods for genotypes"));
+			vcfInfoGenotypeById.put("PQ", new VcfHeaderInfoGenotype("PQ", VcfInfoType.Integer, "1", "Phasing quality"));
+			vcfInfoGenotypeById.put("PS", new VcfHeaderInfoGenotype("PS", VcfInfoType.Integer, "1", "Phase set"));
+			vcfInfoGenotypeById.put("MQ", new VcfHeaderInfoGenotype("MQ", VcfInfoType.Integer, "1", "RMS mapping quality."));
 
 			// Set all automatically added fields as "implicit"
 			for (VcfHeaderInfo vcfInfo : vcfInfoById.values())
 				vcfInfo.setImplicit(true);
 
-			for (VcfInfoGenotype vcfInfoGenotype : vcfInfoGenotypeById.values())
+			for (VcfHeaderInfoGenotype vcfInfoGenotype : vcfInfoGenotypeById.values())
 				vcfInfoGenotype.setImplicit(true);
 
 			//---
 			// Add all INFO fields from header
 			//---
 			for (String line : getLines()) {
-				if (line.startsWith("##INFO=") || line.startsWith("##FORMAT=")) {
+				if (line.startsWith(INFO_PREFIX) || line.startsWith(FORMAT_PREFIX)) {
 					VcfHeaderInfo vcfInfo = VcfHeaderInfo.factory(line);
-					if (vcfInfo instanceof VcfInfoGenotype) vcfInfoGenotypeById.put(vcfInfo.getId(), (VcfInfoGenotype) vcfInfo);
+					if (vcfInfo instanceof VcfHeaderInfoGenotype) vcfInfoGenotypeById.put(vcfInfo.getId(), (VcfHeaderInfoGenotype) vcfInfo);
 					else vcfInfoById.put(vcfInfo.getId(), vcfInfo);
 				}
 			}
 		}
 	}
 
+	/**
+	 * Remove header line starting with a prefix
+	 */
+	public void remove(String linePrefix) {
+		// We should insert this line before '#CHROM' line
+		// Split header
+		String headerLines[] = header.toString().split("\n");
+		header = new StringBuffer();
+
+		// Find "#CHROM" line in header (should always be the last one)
+		for (String line : headerLines) {
+			if (line.startsWith(linePrefix)) continue; // Skip this line
+			if (!line.isEmpty()) header.append(line + "\n"); // Add non-empty lines
+		}
+
+		appendNewLineToHeader();
+	}
+
+	/**
+	 * Remove header line matching an INFO field
+	 */
+	public void removeInfo(String infoId) {
+		// We should insert this line before '#CHROM' line
+		// Split header
+		String headerLines[] = header.toString().split("\n");
+		header = new StringBuffer();
+
+		// Find "#CHROM" line in header (should always be the last one)
+		for (String line : headerLines) {
+			if (line.startsWith(INFO_PREFIX) || line.startsWith(FORMAT_PREFIX)) {
+				VcfHeaderInfo vhinfo = VcfHeaderInfo.factory(line); // Parse INFO line
+				if (vhinfo.getId().equals(infoId)) continue; // Skip this line
+			}
+
+			if (!line.isEmpty()) header.append(line + "\n"); // Add non-empty lines
+		}
+
+		appendNewLineToHeader();
+	}
+
 	void resetCache() {
 		vcfInfoById = null;
+		vcfInfoGenotypeById = null;
 	}
 
 	/**

@@ -1,16 +1,16 @@
 package ca.mcgill.mcb.pcingola.vcf;
 
-public class VcfInfoGenotype extends VcfHeaderInfo {
+public class VcfHeaderInfoGenotype extends VcfHeaderInfo {
 
 	/**
-	 * Constructor using a "##INFO" line from a VCF file
+	 * Constructor using a "##FORMAT" line from a VCF file
 	 */
-	public VcfInfoGenotype(String line) {
+	public VcfHeaderInfoGenotype(String line) {
 		super(line);
 		genotype = true;
 	}
 
-	public VcfInfoGenotype(String id, VcfInfoType vcfInfoType, String number, String description) {
+	public VcfHeaderInfoGenotype(String id, VcfInfoType vcfInfoType, String number, String description) {
 		super(id, vcfInfoType, number, description);
 		genotype = true;
 	}
@@ -19,12 +19,13 @@ public class VcfInfoGenotype extends VcfHeaderInfo {
 	public String toString() {
 		if (line != null) return line;
 
-		return "##FORMAT=<ID=" + id//
+		return VcfHeader.FORMAT_PREFIX //
+				+ "<ID=" + id//
 				+ ",Number=" + (number >= 0 ? number : vcfInfoNumber) //
 				+ ",Type=" + vcfInfoType //
 				+ ",Description=\"" + description + "\"" //
 				+ ">" //
-				;
+		;
 	}
 
 }

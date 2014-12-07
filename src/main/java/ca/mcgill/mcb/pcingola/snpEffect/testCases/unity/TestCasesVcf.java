@@ -441,6 +441,7 @@ public class TestCasesVcf {
 	 */
 	@Test
 	public void test_26_vcfInfoHeaderAdd() {
+		Gpr.debug("Test");
 		String vcfFileName = "tests/example_42.vcf";
 
 		// Create a new INFO field
@@ -456,6 +457,50 @@ public class TestCasesVcf {
 				vcf.getVcfHeader().add(vhInfo);
 				if (verbose) System.out.println(vcf.getVcfHeader());
 				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader));
+			}
+
+			// Add INFO field values
+			String value = "" + ((int) (1000 * Math.random()));
+			ve.addInfo(infoFieldName, value);
+			if (verbose) System.out.println(ve);
+
+			// Check that 'info=value' is there
+			Assert.assertTrue(ve.toString().contains(infoFieldName + "=" + value));
+		}
+	}
+
+	/**
+	 * Add and replace an INFO header
+	 */
+	@Test
+	public void test_27_vcfInfoHeaderReplace() {
+		Gpr.debug("Test");
+
+		String infoFieldName = "NEW_INFO";
+		String vcfFileName = "tests/example_42.vcf";
+
+		// Add this header
+		VcfHeaderInfo vhInfo = new VcfHeaderInfo(infoFieldName, VcfInfoType.Integer, VcfInfoNumber.UNLIMITED.toString(), "An arbitrary set of integer random numbers");
+		String expectedHeader = "##INFO=<ID=" + infoFieldName + ", Number=., Type=Integer, Description=\"An arbitrary set of integer random numbers\">";
+
+		// Replace using this header
+		VcfHeaderInfo vhInfo2 = new VcfHeaderInfo(infoFieldName, VcfInfoType.Float, "1", "One float random number");
+		String expectedHeader2 = "##INFO=<ID=" + infoFieldName + ", Number=1, Type=Float, Description=\"One float random number\">";
+
+		// Open VCF file
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		for (VcfEntry ve : vcf) {
+			if (vcf.isHeadeSection()) {
+				// Add INFO field to header
+				vcf.getVcfHeader().add(vhInfo);
+				if (verbose) System.out.println(vcf.getVcfHeader());
+				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader));
+
+				// Add second INFO field to header (should replace first one)
+				vcf.getVcfHeader().add(vhInfo2);
+				if (verbose) System.out.println(vcf.getVcfHeader());
+				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader2)); // New header 
+				Assert.assertTrue(!vcf.getVcfHeader().toString().contains(expectedHeader)); // Old header should be gone
 			}
 
 			// Add INFO field values
