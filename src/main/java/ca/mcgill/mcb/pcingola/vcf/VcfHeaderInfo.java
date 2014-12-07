@@ -221,6 +221,6 @@ public class VcfHeaderInfo {
 				+ ", Type=" + vcfInfoType //
 				+ ", Description=\"" + description + "\"" //
 				+ ">" //
-		;
+				;
 	}
 }

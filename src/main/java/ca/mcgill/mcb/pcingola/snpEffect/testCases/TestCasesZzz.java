@@ -20,17 +20,22 @@ public class TestCasesZzz extends TestCasesBase {
 	}
 
 	/**
-	 * Add a new INFO and the respective header
+	 * Add and replace an INFO header
 	 */
 	@Test
-	public void test_vcfInfoHeaderAdd() {
+	public void test_vcfInfoHeaderReplace() {
+		String infoFieldName = "NEW_INFO";
 		String vcfFileName = "tests/example_42.vcf";
 
 		verbose = true;
-		// Create a new INFO field
-		String infoFieldName = "NEW_INFO";
-		VcfHeaderInfo vhInfo = new VcfHeaderInfo(infoFieldName, VcfInfoType.Integer, VcfInfoNumber.UNLIMITED.toString(), "An arbitrary set of random numbers");
-		String expectedHeader = "##INFO=<ID=" + infoFieldName + ", Number=., Type=Integer, Description=\"An arbitrary set of random numbers\">";
+
+		// Add this header
+		VcfHeaderInfo vhInfo = new VcfHeaderInfo(infoFieldName, VcfInfoType.Integer, VcfInfoNumber.UNLIMITED.toString(), "An arbitrary set of integer random numbers");
+		String expectedHeader = "##INFO=<ID=" + infoFieldName + ", Number=., Type=Integer, Description=\"An arbitrary set of integer random numbers\">";
+
+		// Replace using this header
+		VcfHeaderInfo vhInfo2 = new VcfHeaderInfo(infoFieldName, VcfInfoType.Float, "1", "One float random numbers");
+		String expectedHeader2 = "##INFO=<ID=" + infoFieldName + ", Number=1, Type=Float, Description=\"One float random numbers\">";
 
 		// Open VCF file
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
@@ -40,6 +45,12 @@ public class TestCasesZzz extends TestCasesBase {
 				vcf.getVcfHeader().add(vhInfo);
 				if (verbose) System.out.println(vcf.getVcfHeader());
 				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader));
+
+				// Add second INFO field to header (should replace first one)
+				vcf.getVcfHeader().add(vhInfo2);
+				if (verbose) System.out.println(vcf.getVcfHeader());
+				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader2)); // New header 
+				Assert.assertTrue(!vcf.getVcfHeader().toString().contains(expectedHeader)); // Old header should be gone
 			}
 
 			// Add INFO field values

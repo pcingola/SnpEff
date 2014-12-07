@@ -28,7 +28,6 @@ public class VcfHeader {
 
 	/**
 	 * Add a VCF INFO header definition
-	 * @param vcfInfo
 	 */
 	public void add(VcfHeaderInfo vcfInfo) {
 		parseInfoLines();
@@ -42,7 +41,6 @@ public class VcfHeader {
 
 	/**
 	 * Add a 'FORMAT' meta info
-	 * @param vcfGenotypeStr
 	 */
 	public void addFormat(VcfInfoGenotype vcfInfoGenotype) {
 		parseInfoLines();
@@ -56,7 +54,6 @@ public class VcfHeader {
 
 	/**
 	 * Add line to header (can add many lines)
-	 * @return
 	 */
 	public void addLine(String newHeaderLine) {
 		// Nothing to do?
@@ -106,7 +103,6 @@ public class VcfHeader {
 
 	/**
 	 * Number of samples
-	 * @return
 	 */
 	public int getNumberOfSamples() {
 		if (numberOfSamples < 0) {
@@ -187,7 +183,6 @@ public class VcfHeader {
 
 	/**
 	 * Get sample names
-	 * @return
 	 */
 	public List<String> getSampleNames() {
 		if (sampleNames != null) return sampleNames;
@@ -219,7 +214,6 @@ public class VcfHeader {
 
 	/**
 	 * Get all VcfInfo entries
-	 * @return
 	 */
 	public Collection<VcfHeaderInfo> getVcfInfo() {
 		parseInfoLines();
@@ -228,8 +222,6 @@ public class VcfHeader {
 
 	/**
 	 * Get Info type for a given ID
-	 * @param id
-	 * @return
 	 */
 	public VcfHeaderInfo getVcfInfo(String id) {
 		parseInfoLines();
@@ -380,7 +372,6 @@ public class VcfHeader {
 
 	/**
 	 * Get header information
-	 * @return
 	 */
 	@Override
 	public String toString() {
