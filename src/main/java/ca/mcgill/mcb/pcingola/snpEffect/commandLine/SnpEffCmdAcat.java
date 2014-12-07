@@ -6,7 +6,7 @@ import ca.mcgill.mcb.pcingola.stats.CountByType;
 import ca.mcgill.mcb.pcingola.util.Timer;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
-import ca.mcgill.mcb.pcingola.vcf.VcfInfo;
+import ca.mcgill.mcb.pcingola.vcf.VcfHeaderInfo;
 import ca.mcgill.mcb.pcingola.vcf.VcfInfoType;
 
 /**
@@ -171,16 +171,16 @@ public class SnpEffCmdAcat extends SnpEff {
 	 * @param vcf
 	 */
 	void addHeader(VcfFileIterator vcf) {
-		vcf.getVcfHeader().add(new VcfInfo(ACAT, VcfInfoType.Integer, ".", "Variant coding impact category {1, 2, 3, 4} correspond to {HIGH, MODERATE, LOW, MODIFIER}. Most deleterious effect is selected."));
+		vcf.getVcfHeader().add(new VcfHeaderInfo(ACAT, VcfInfoType.Integer, ".", "Variant coding impact category {1, 2, 3, 4} correspond to {HIGH, MODERATE, LOW, MODIFIER}. Most deleterious effect is selected."));
 
-		vcf.getVcfHeader().add(new VcfInfo(NCCAT, VcfInfoType.Integer, ".", "Variant non-coding impact category {1, 2, 3, 4} correspond to {MOTIF + REGULATORY, MOTIF, REGULATORY, CONSERVED }"));
-		vcf.getVcfHeader().add(new VcfInfo(NCACTIVITY, VcfInfoType.String, ".", "Chromatin state predicted activity. Format is Tissue:Activity (e.g. Liver:Enhancer, Adipose:Insulator, etc.)"));
-		vcf.getVcfHeader().add(new VcfInfo(NCMARK, VcfInfoType.String, ".", "Chromatin mark predicted. Format is Tissue:Mark (e.g. Liver:H3K4me1, Adipose:H3K27me3, etc.)"));
-		vcf.getVcfHeader().add(new VcfInfo(NCFACTOR, VcfInfoType.String, ".", "Transcription factor mark predicted. Format is Tissue:FactorId:FactorName (e.g. Liver:MA0139.1:CTCF, Adipose:MA0003.1:Ap2alpha, etc.)"));
-		vcf.getVcfHeader().add(new VcfInfo(NCELEMENT, VcfInfoType.String, ".", "Types of non-coding elements predicted {STATE, MARK, TFBS, etc.}"));
-		vcf.getVcfHeader().add(new VcfInfo(NCCONS, VcfInfoType.Float, ".", "Conservation score above threshold (threshold is " + CONSERVATION_THRESHOLD + "). Score used: PhastCons."));
+		vcf.getVcfHeader().add(new VcfHeaderInfo(NCCAT, VcfInfoType.Integer, ".", "Variant non-coding impact category {1, 2, 3, 4} correspond to {MOTIF + REGULATORY, MOTIF, REGULATORY, CONSERVED }"));
+		vcf.getVcfHeader().add(new VcfHeaderInfo(NCACTIVITY, VcfInfoType.String, ".", "Chromatin state predicted activity. Format is Tissue:Activity (e.g. Liver:Enhancer, Adipose:Insulator, etc.)"));
+		vcf.getVcfHeader().add(new VcfHeaderInfo(NCMARK, VcfInfoType.String, ".", "Chromatin mark predicted. Format is Tissue:Mark (e.g. Liver:H3K4me1, Adipose:H3K27me3, etc.)"));
+		vcf.getVcfHeader().add(new VcfHeaderInfo(NCFACTOR, VcfInfoType.String, ".", "Transcription factor mark predicted. Format is Tissue:FactorId:FactorName (e.g. Liver:MA0139.1:CTCF, Adipose:MA0003.1:Ap2alpha, etc.)"));
+		vcf.getVcfHeader().add(new VcfHeaderInfo(NCELEMENT, VcfInfoType.String, ".", "Types of non-coding elements predicted {STATE, MARK, TFBS, etc.}"));
+		vcf.getVcfHeader().add(new VcfHeaderInfo(NCCONS, VcfInfoType.Float, ".", "Conservation score above threshold (threshold is " + CONSERVATION_THRESHOLD + "). Score used: PhastCons."));
 
-		vcf.getVcfHeader().add(new VcfInfo(T2D_GENES, VcfInfoType.Flag, ".", "Variant exclusive from T2D_GENES project (i.e. neither in dbSnp, 1000 Genomes nor ESP)"));
+		vcf.getVcfHeader().add(new VcfHeaderInfo(T2D_GENES, VcfInfoType.Flag, ".", "Variant exclusive from T2D_GENES project (i.e. neither in dbSnp, 1000 Genomes nor ESP)"));
 	}
 
 	/**

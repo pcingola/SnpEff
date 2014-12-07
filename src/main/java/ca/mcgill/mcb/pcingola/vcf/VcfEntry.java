@@ -253,7 +253,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	String checkInfo(String infoName) {
 		if (infoName.isEmpty()) return "";
 
-		VcfInfo vcfInfo = getVcfInfo(infoName);
+		VcfHeaderInfo vcfInfo = getVcfInfo(infoName);
 		if (vcfInfo == null) return "Cannot find header for INFO field '" + infoName + "'";
 
 		// Split INFO value and match it to allele
@@ -409,7 +409,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// INFO fields having number type 'R' (all alleles) should have one value for reference as well.
 		// So in those cases we must skip the first value
 		int firstValue = 0;
-		VcfInfo vcfInfo = getVcfInfo(key);
+		VcfHeaderInfo vcfInfo = getVcfInfo(key);
 		if (vcfInfo != null && vcfInfo.isNumberAllAlleles()) firstValue = 1;
 
 		// Split INFO value and match it to allele
@@ -515,7 +515,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Get VcfInfo type for a given ID
 	 */
-	public VcfInfo getVcfInfo(String id) {
+	public VcfHeaderInfo getVcfInfo(String id) {
 		return vcfFileIterator.getVcfHeader().getVcfInfo(id);
 	}
 
@@ -523,7 +523,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Get Info number for a given ID
 	 */
 	public VcfInfoType getVcfInfoNumber(String id) {
-		VcfInfo vcfInfo = vcfFileIterator.getVcfHeader().getVcfInfo(id);
+		VcfHeaderInfo vcfInfo = vcfFileIterator.getVcfHeader().getVcfInfo(id);
 		if (vcfInfo == null) return null;
 		return vcfInfo.getVcfInfoType();
 	}

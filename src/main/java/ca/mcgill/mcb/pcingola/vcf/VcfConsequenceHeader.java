@@ -12,7 +12,7 @@ import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
  */
 public class VcfConsequenceHeader {
 
-	VcfInfo vcfInfoCsq;
+	VcfHeaderInfo vcfInfoCsq;
 	String fieldNames[];
 	Map<String, Integer> fieldNum;
 

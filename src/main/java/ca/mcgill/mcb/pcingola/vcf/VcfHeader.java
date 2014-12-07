@@ -17,7 +17,7 @@ public class VcfHeader {
 
 	int numberOfSamples = -1;
 	StringBuffer header;
-	HashMap<String, VcfInfo> vcfInfoById;
+	HashMap<String, VcfHeaderInfo> vcfInfoById;
 	HashMap<String, VcfInfoGenotype> vcfInfoGenotypeById;
 	ArrayList<String> sampleNames;
 	boolean chromLine = false;
@@ -30,7 +30,7 @@ public class VcfHeader {
 	 * Add a VCF INFO header definition
 	 * @param vcfInfo
 	 */
-	public void add(VcfInfo vcfInfo) {
+	public void add(VcfHeaderInfo vcfInfo) {
 		parseInfoLines();
 
 		// Not already added?
@@ -221,7 +221,7 @@ public class VcfHeader {
 	 * Get all VcfInfo entries
 	 * @return
 	 */
-	public Collection<VcfInfo> getVcfInfo() {
+	public Collection<VcfHeaderInfo> getVcfInfo() {
 		parseInfoLines();
 		return vcfInfoById.values();
 	}
@@ -231,12 +231,12 @@ public class VcfHeader {
 	 * @param id
 	 * @return
 	 */
-	public VcfInfo getVcfInfo(String id) {
+	public VcfHeaderInfo getVcfInfo(String id) {
 		parseInfoLines();
 		return vcfInfoById.get(id);
 	}
 
-	public HashMap<String, VcfInfo> getVcfInfoById() {
+	public HashMap<String, VcfHeaderInfo> getVcfInfoById() {
 		parseInfoLines();
 		return vcfInfoById;
 	}
@@ -254,91 +254,91 @@ public class VcfHeader {
 		chromLine = header.indexOf("#CHROM") >= 0;
 
 		if (vcfInfoById == null) {
-			vcfInfoById = new HashMap<String, VcfInfo>();
+			vcfInfoById = new HashMap<String, VcfHeaderInfo>();
 
 			// Add standard fields
-			vcfInfoById.put("CHROM", new VcfInfo("CHROM", VcfInfoType.String, "1", "Chromosome name"));
-			vcfInfoById.put("POS", new VcfInfo("POS", VcfInfoType.Integer, "1", "Position in chromosome"));
-			vcfInfoById.put("ID", new VcfInfo("ID", VcfInfoType.String, "1", "Variant ID"));
-			vcfInfoById.put("REF", new VcfInfo("REF", VcfInfoType.String, "1", "Reference sequence"));
-			vcfInfoById.put("ALT", new VcfInfo("ALT", VcfInfoType.String, "A", "Alternative sequence/s"));
-			vcfInfoById.put("QUAL", new VcfInfo("QUAL", VcfInfoType.Float, "1", "Mapping quality"));
-			vcfInfoById.put("FILTER", new VcfInfo("FILTER", VcfInfoType.String, "1", "Filter status"));
-			vcfInfoById.put("FORMAT", new VcfInfo("FORMAT", VcfInfoType.String, "1", "Format in genotype fields"));
+			vcfInfoById.put("CHROM", new VcfHeaderInfo("CHROM", VcfInfoType.String, "1", "Chromosome name"));
+			vcfInfoById.put("POS", new VcfHeaderInfo("POS", VcfInfoType.Integer, "1", "Position in chromosome"));
+			vcfInfoById.put("ID", new VcfHeaderInfo("ID", VcfInfoType.String, "1", "Variant ID"));
+			vcfInfoById.put("REF", new VcfHeaderInfo("REF", VcfInfoType.String, "1", "Reference sequence"));
+			vcfInfoById.put("ALT", new VcfHeaderInfo("ALT", VcfInfoType.String, "A", "Alternative sequence/s"));
+			vcfInfoById.put("QUAL", new VcfHeaderInfo("QUAL", VcfInfoType.Float, "1", "Mapping quality"));
+			vcfInfoById.put("FILTER", new VcfHeaderInfo("FILTER", VcfInfoType.String, "1", "Filter status"));
+			vcfInfoById.put("FORMAT", new VcfHeaderInfo("FORMAT", VcfInfoType.String, "1", "Format in genotype fields"));
 
 			// Add well known fields
 			// Reference: http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41
-			vcfInfoById.put("AA", new VcfInfo("AA", VcfInfoType.String, "1", "Ancestral allele"));
-			vcfInfoById.put("AC", new VcfInfo("AC", VcfInfoType.Integer, "A", "Allele Frequency"));
-			vcfInfoById.put("AF", new VcfInfo("AF", VcfInfoType.Float, "1", "Allele Frequency"));
-			vcfInfoById.put("AN", new VcfInfo("AN", VcfInfoType.Integer, "1", "Total number of alleles"));
-			vcfInfoById.put("BQ", new VcfInfo("BQ", VcfInfoType.Float, "1", "RMS base quality"));
-			vcfInfoById.put("CIGAR", new VcfInfo("CIGAR", VcfInfoType.String, "1", "Cigar string describing how to align an alternate allele to the reference allele"));
-			vcfInfoById.put("DB", new VcfInfo("DB", VcfInfoType.Flag, "1", "dbSNP membership"));
-			vcfInfoById.put("DP", new VcfInfo("DP", VcfInfoType.Integer, "1", "Combined depth across samples"));
-			vcfInfoById.put("END", new VcfInfo("END", VcfInfoType.String, "1", "End position of the variant described in this record"));
-			vcfInfoById.put("H2", new VcfInfo("H2", VcfInfoType.Flag, "1", "Membership in hapmap 2"));
-			vcfInfoById.put("H3", new VcfInfo("H3", VcfInfoType.Flag, "1", "Membership in hapmap 3"));
-			vcfInfoById.put("MQ", new VcfInfo("MQ", VcfInfoType.Float, "1", "RMS mapping quality"));
-			vcfInfoById.put("MQ0", new VcfInfo("MQ0", VcfInfoType.Integer, "1", "Number of MAPQ == 0 reads covering this record"));
-			vcfInfoById.put("NS", new VcfInfo("NS", VcfInfoType.Integer, "1", "Number of samples with data"));
-			vcfInfoById.put("SB", new VcfInfo("SB", VcfInfoType.Float, "1", "Strand bias at this position"));
-			vcfInfoById.put("SOMATIC", new VcfInfo("SOMATIC", VcfInfoType.Flag, "1", "Indicates that the record is a somatic mutation, for cancer genomics"));
-			vcfInfoById.put("VALIDATED", new VcfInfo("VALIDATED", VcfInfoType.Flag, "1", "Validated by follow-up experiment"));
-			vcfInfoById.put("1000G", new VcfInfo("1000G", VcfInfoType.Flag, "1", "Membership in 1000 Genomes"));
+			vcfInfoById.put("AA", new VcfHeaderInfo("AA", VcfInfoType.String, "1", "Ancestral allele"));
+			vcfInfoById.put("AC", new VcfHeaderInfo("AC", VcfInfoType.Integer, "A", "Allele Frequency"));
+			vcfInfoById.put("AF", new VcfHeaderInfo("AF", VcfInfoType.Float, "1", "Allele Frequency"));
+			vcfInfoById.put("AN", new VcfHeaderInfo("AN", VcfInfoType.Integer, "1", "Total number of alleles"));
+			vcfInfoById.put("BQ", new VcfHeaderInfo("BQ", VcfInfoType.Float, "1", "RMS base quality"));
+			vcfInfoById.put("CIGAR", new VcfHeaderInfo("CIGAR", VcfInfoType.String, "1", "Cigar string describing how to align an alternate allele to the reference allele"));
+			vcfInfoById.put("DB", new VcfHeaderInfo("DB", VcfInfoType.Flag, "1", "dbSNP membership"));
+			vcfInfoById.put("DP", new VcfHeaderInfo("DP", VcfInfoType.Integer, "1", "Combined depth across samples"));
+			vcfInfoById.put("END", new VcfHeaderInfo("END", VcfInfoType.String, "1", "End position of the variant described in this record"));
+			vcfInfoById.put("H2", new VcfHeaderInfo("H2", VcfInfoType.Flag, "1", "Membership in hapmap 2"));
+			vcfInfoById.put("H3", new VcfHeaderInfo("H3", VcfInfoType.Flag, "1", "Membership in hapmap 3"));
+			vcfInfoById.put("MQ", new VcfHeaderInfo("MQ", VcfInfoType.Float, "1", "RMS mapping quality"));
+			vcfInfoById.put("MQ0", new VcfHeaderInfo("MQ0", VcfInfoType.Integer, "1", "Number of MAPQ == 0 reads covering this record"));
+			vcfInfoById.put("NS", new VcfHeaderInfo("NS", VcfInfoType.Integer, "1", "Number of samples with data"));
+			vcfInfoById.put("SB", new VcfHeaderInfo("SB", VcfInfoType.Float, "1", "Strand bias at this position"));
+			vcfInfoById.put("SOMATIC", new VcfHeaderInfo("SOMATIC", VcfInfoType.Flag, "1", "Indicates that the record is a somatic mutation, for cancer genomics"));
+			vcfInfoById.put("VALIDATED", new VcfHeaderInfo("VALIDATED", VcfInfoType.Flag, "1", "Validated by follow-up experiment"));
+			vcfInfoById.put("1000G", new VcfHeaderInfo("1000G", VcfInfoType.Flag, "1", "Membership in 1000 Genomes"));
 
 			// Structural variants
-			vcfInfoById.put("IMPRECISE", new VcfInfo("IMPRECISE", VcfInfoType.Flag, "0", "Imprecise structural variation"));
-			vcfInfoById.put("NOVEL", new VcfInfo("NOVEL", VcfInfoType.Flag, "0", "Indicates a novel structural variation"));
-			vcfInfoById.put("END", new VcfInfo("END", VcfInfoType.Integer, "1", "End position of the variant described in this record"));
-			vcfInfoById.put("SVTYPE", new VcfInfo("SVTYPE", VcfInfoType.String, "1", "Type of structural variant"));
-			vcfInfoById.put("SVLEN", new VcfInfo("SVLEN", VcfInfoType.Integer, ".", "Difference in length between REF and ALT alleles"));
-			vcfInfoById.put("CIPOS", new VcfInfo("CIPOS", VcfInfoType.Integer, "2", "Confidence interval around POS for imprecise variants"));
-			vcfInfoById.put("CIEND", new VcfInfo("CIEND", VcfInfoType.Integer, "2", "Confidence interval around END for imprecise variants"));
-			vcfInfoById.put("HOMLEN", new VcfInfo("HOMLEN", VcfInfoType.Integer, ".", "Length of base pair identical micro-homology at event breakpoints"));
-			vcfInfoById.put("HOMSEQ", new VcfInfo("HOMSEQ", VcfInfoType.String, ".", "Sequence of base pair identical micro-homology at event breakpoints"));
-			vcfInfoById.put("BKPTID", new VcfInfo("BKPTID", VcfInfoType.String, ".", "ID of the assembled alternate allele in the assembly file"));
-			vcfInfoById.put("MEINFO", new VcfInfo("MEINFO", VcfInfoType.String, "4", "Mobile element info of the form NAME,START,END,POLARITY"));
-			vcfInfoById.put("METRANS", new VcfInfo("METRANS", VcfInfoType.String, "4", "Mobile element transduction info of the form CHR,START,END,POLARITY"));
-			vcfInfoById.put("DGVID", new VcfInfo("DGVID", VcfInfoType.String, "1", "ID of this element in Database of Genomic Variation"));
-			vcfInfoById.put("DBVARID", new VcfInfo("DBVARID", VcfInfoType.String, "1", "ID of this element in DBVAR"));
-			vcfInfoById.put("DBRIPID", new VcfInfo("DBRIPID", VcfInfoType.String, "1", "ID of this element in DBRIP"));
-			vcfInfoById.put("MATEID", new VcfInfo("MATEID", VcfInfoType.String, ".", "ID of mate breakends"));
-			vcfInfoById.put("PARID", new VcfInfo("PARID", VcfInfoType.String, "1", "ID of partner breakend"));
-			vcfInfoById.put("EVENT", new VcfInfo("EVENT", VcfInfoType.String, "1", "ID of event associated to breakend"));
-			vcfInfoById.put("CILEN", new VcfInfo("CILEN", VcfInfoType.Integer, "2", "Confidence interval around the length of the inserted material between breakends"));
-			vcfInfoById.put("DP", new VcfInfo("DP", VcfInfoType.Integer, "1", "Read Depth of segment containing breakend"));
-			vcfInfoById.put("DPADJ", new VcfInfo("DPADJ", VcfInfoType.Integer, ".", "Read Depth of adjacency"));
-			vcfInfoById.put("CN", new VcfInfo("CN", VcfInfoType.Integer, "1", "Copy number of segment containing breakend"));
-			vcfInfoById.put("CNADJ", new VcfInfo("CNADJ", VcfInfoType.Integer, ".", "Copy number of adjacency"));
-			vcfInfoById.put("CICN", new VcfInfo("CICN", VcfInfoType.Integer, "2", "Confidence interval around copy number for the segment"));
-			vcfInfoById.put("CICNADJ", new VcfInfo("CICNADJ", VcfInfoType.Integer, ".", "Confidence interval around copy number for the adjacency"));
+			vcfInfoById.put("IMPRECISE", new VcfHeaderInfo("IMPRECISE", VcfInfoType.Flag, "0", "Imprecise structural variation"));
+			vcfInfoById.put("NOVEL", new VcfHeaderInfo("NOVEL", VcfInfoType.Flag, "0", "Indicates a novel structural variation"));
+			vcfInfoById.put("END", new VcfHeaderInfo("END", VcfInfoType.Integer, "1", "End position of the variant described in this record"));
+			vcfInfoById.put("SVTYPE", new VcfHeaderInfo("SVTYPE", VcfInfoType.String, "1", "Type of structural variant"));
+			vcfInfoById.put("SVLEN", new VcfHeaderInfo("SVLEN", VcfInfoType.Integer, ".", "Difference in length between REF and ALT alleles"));
+			vcfInfoById.put("CIPOS", new VcfHeaderInfo("CIPOS", VcfInfoType.Integer, "2", "Confidence interval around POS for imprecise variants"));
+			vcfInfoById.put("CIEND", new VcfHeaderInfo("CIEND", VcfInfoType.Integer, "2", "Confidence interval around END for imprecise variants"));
+			vcfInfoById.put("HOMLEN", new VcfHeaderInfo("HOMLEN", VcfInfoType.Integer, ".", "Length of base pair identical micro-homology at event breakpoints"));
+			vcfInfoById.put("HOMSEQ", new VcfHeaderInfo("HOMSEQ", VcfInfoType.String, ".", "Sequence of base pair identical micro-homology at event breakpoints"));
+			vcfInfoById.put("BKPTID", new VcfHeaderInfo("BKPTID", VcfInfoType.String, ".", "ID of the assembled alternate allele in the assembly file"));
+			vcfInfoById.put("MEINFO", new VcfHeaderInfo("MEINFO", VcfInfoType.String, "4", "Mobile element info of the form NAME,START,END,POLARITY"));
+			vcfInfoById.put("METRANS", new VcfHeaderInfo("METRANS", VcfInfoType.String, "4", "Mobile element transduction info of the form CHR,START,END,POLARITY"));
+			vcfInfoById.put("DGVID", new VcfHeaderInfo("DGVID", VcfInfoType.String, "1", "ID of this element in Database of Genomic Variation"));
+			vcfInfoById.put("DBVARID", new VcfHeaderInfo("DBVARID", VcfInfoType.String, "1", "ID of this element in DBVAR"));
+			vcfInfoById.put("DBRIPID", new VcfHeaderInfo("DBRIPID", VcfInfoType.String, "1", "ID of this element in DBRIP"));
+			vcfInfoById.put("MATEID", new VcfHeaderInfo("MATEID", VcfInfoType.String, ".", "ID of mate breakends"));
+			vcfInfoById.put("PARID", new VcfHeaderInfo("PARID", VcfInfoType.String, "1", "ID of partner breakend"));
+			vcfInfoById.put("EVENT", new VcfHeaderInfo("EVENT", VcfInfoType.String, "1", "ID of event associated to breakend"));
+			vcfInfoById.put("CILEN", new VcfHeaderInfo("CILEN", VcfInfoType.Integer, "2", "Confidence interval around the length of the inserted material between breakends"));
+			vcfInfoById.put("DP", new VcfHeaderInfo("DP", VcfInfoType.Integer, "1", "Read Depth of segment containing breakend"));
+			vcfInfoById.put("DPADJ", new VcfHeaderInfo("DPADJ", VcfInfoType.Integer, ".", "Read Depth of adjacency"));
+			vcfInfoById.put("CN", new VcfHeaderInfo("CN", VcfInfoType.Integer, "1", "Copy number of segment containing breakend"));
+			vcfInfoById.put("CNADJ", new VcfHeaderInfo("CNADJ", VcfInfoType.Integer, ".", "Copy number of adjacency"));
+			vcfInfoById.put("CICN", new VcfHeaderInfo("CICN", VcfInfoType.Integer, "2", "Confidence interval around copy number for the segment"));
+			vcfInfoById.put("CICNADJ", new VcfHeaderInfo("CICNADJ", VcfInfoType.Integer, ".", "Confidence interval around copy number for the adjacency"));
 
 			// Add SnpEff 'EFF' fields
-			vcfInfoById.put("EFF.EFFECT", new VcfInfo("EFF.EFFECT", VcfInfoType.String, ".", "SnpEff effect"));
-			vcfInfoById.put("EFF.IMPACT", new VcfInfo("EFF.IMPACT", VcfInfoType.String, ".", "SnpEff impact (HIGH, MODERATE, LOW, MODIFIER)"));
-			vcfInfoById.put("EFF.FUNCLASS", new VcfInfo("EFF.FUNCLASS", VcfInfoType.String, ".", "SnpEff functional class (NONE, SILENT, MISSENSE, NONSENSE)"));
-			vcfInfoById.put("EFF.CODON", new VcfInfo("EFF.CODON", VcfInfoType.String, ".", "SnpEff codon change"));
-			vcfInfoById.put("EFF.AA", new VcfInfo("EFF.AA", VcfInfoType.String, ".", "SnpEff amino acid change"));
-			vcfInfoById.put("EFF.AA_LEN", new VcfInfo("EFF.AA_LEN", VcfInfoType.Integer, ".", "Protein length in amino acids"));
-			vcfInfoById.put("EFF.GENE", new VcfInfo("EFF.GENE", VcfInfoType.String, ".", "SnpEff gene name"));
-			vcfInfoById.put("EFF.BIOTYPE", new VcfInfo("EFF.BIOTYPE", VcfInfoType.String, ".", "SnpEff gene bio-type"));
-			vcfInfoById.put("EFF.CODING", new VcfInfo("EFF.CODING", VcfInfoType.String, ".", "SnpEff gene coding (CODING, NON_CODING)"));
-			vcfInfoById.put("EFF.TRID", new VcfInfo("EFF.TRID", VcfInfoType.String, ".", "SnpEff transcript ID"));
-			vcfInfoById.put("EFF.RANK", new VcfInfo("EFF.RANK", VcfInfoType.String, ".", "SnpEff exon/intron rank"));
-			vcfInfoById.put("EFF.EXID", new VcfInfo("EFF.EXID", VcfInfoType.String, ".", "SnpEff exon ID"));
+			vcfInfoById.put("EFF.EFFECT", new VcfHeaderInfo("EFF.EFFECT", VcfInfoType.String, ".", "SnpEff effect"));
+			vcfInfoById.put("EFF.IMPACT", new VcfHeaderInfo("EFF.IMPACT", VcfInfoType.String, ".", "SnpEff impact (HIGH, MODERATE, LOW, MODIFIER)"));
+			vcfInfoById.put("EFF.FUNCLASS", new VcfHeaderInfo("EFF.FUNCLASS", VcfInfoType.String, ".", "SnpEff functional class (NONE, SILENT, MISSENSE, NONSENSE)"));
+			vcfInfoById.put("EFF.CODON", new VcfHeaderInfo("EFF.CODON", VcfInfoType.String, ".", "SnpEff codon change"));
+			vcfInfoById.put("EFF.AA", new VcfHeaderInfo("EFF.AA", VcfInfoType.String, ".", "SnpEff amino acid change"));
+			vcfInfoById.put("EFF.AA_LEN", new VcfHeaderInfo("EFF.AA_LEN", VcfInfoType.Integer, ".", "Protein length in amino acids"));
+			vcfInfoById.put("EFF.GENE", new VcfHeaderInfo("EFF.GENE", VcfInfoType.String, ".", "SnpEff gene name"));
+			vcfInfoById.put("EFF.BIOTYPE", new VcfHeaderInfo("EFF.BIOTYPE", VcfInfoType.String, ".", "SnpEff gene bio-type"));
+			vcfInfoById.put("EFF.CODING", new VcfHeaderInfo("EFF.CODING", VcfInfoType.String, ".", "SnpEff gene coding (CODING, NON_CODING)"));
+			vcfInfoById.put("EFF.TRID", new VcfHeaderInfo("EFF.TRID", VcfInfoType.String, ".", "SnpEff transcript ID"));
+			vcfInfoById.put("EFF.RANK", new VcfHeaderInfo("EFF.RANK", VcfInfoType.String, ".", "SnpEff exon/intron rank"));
+			vcfInfoById.put("EFF.EXID", new VcfHeaderInfo("EFF.EXID", VcfInfoType.String, ".", "SnpEff exon ID"));
 
 			// Add SnpEff 'LOF' fields
-			vcfInfoById.put("LOF.GENE", new VcfInfo("LOF.GENE", VcfInfoType.String, ".", "SnpEff LOF gene name"));
-			vcfInfoById.put("LOF.GENEID", new VcfInfo("LOF.GENEID", VcfInfoType.String, ".", "SnpEff LOF gene ID"));
-			vcfInfoById.put("LOF.NUMTR", new VcfInfo("LOF.NUMTR", VcfInfoType.Integer, ".", "SnpEff LOF number of transcripts in gene"));
-			vcfInfoById.put("LOF.PERC", new VcfInfo("LOF.PERC", VcfInfoType.Float, ".", "SnpEff LOF percentage of transcripts in this gene that are affected"));
+			vcfInfoById.put("LOF.GENE", new VcfHeaderInfo("LOF.GENE", VcfInfoType.String, ".", "SnpEff LOF gene name"));
+			vcfInfoById.put("LOF.GENEID", new VcfHeaderInfo("LOF.GENEID", VcfInfoType.String, ".", "SnpEff LOF gene ID"));
+			vcfInfoById.put("LOF.NUMTR", new VcfHeaderInfo("LOF.NUMTR", VcfInfoType.Integer, ".", "SnpEff LOF number of transcripts in gene"));
+			vcfInfoById.put("LOF.PERC", new VcfHeaderInfo("LOF.PERC", VcfInfoType.Float, ".", "SnpEff LOF percentage of transcripts in this gene that are affected"));
 
 			// Add SnpEff 'NMD' fields
-			vcfInfoById.put("NMD.GENE", new VcfInfo("NMD.GENE", VcfInfoType.String, ".", "SnpEff NMD gene name"));
-			vcfInfoById.put("NMD.GENEID", new VcfInfo("NMD.GENEID", VcfInfoType.String, ".", "SnpEff NMD gene ID"));
-			vcfInfoById.put("NMD.NUMTR", new VcfInfo("NMD.NUMTR", VcfInfoType.Integer, ".", "SnpEff NMD number of transcripts in gene"));
-			vcfInfoById.put("NMD.PERC", new VcfInfo("NMD.PERC", VcfInfoType.Float, ".", "SnpEff NMD percentage of transcripts in this gene that are affected"));
+			vcfInfoById.put("NMD.GENE", new VcfHeaderInfo("NMD.GENE", VcfInfoType.String, ".", "SnpEff NMD gene name"));
+			vcfInfoById.put("NMD.GENEID", new VcfHeaderInfo("NMD.GENEID", VcfInfoType.String, ".", "SnpEff NMD gene ID"));
+			vcfInfoById.put("NMD.NUMTR", new VcfHeaderInfo("NMD.NUMTR", VcfInfoType.Integer, ".", "SnpEff NMD number of transcripts in gene"));
+			vcfInfoById.put("NMD.PERC", new VcfHeaderInfo("NMD.PERC", VcfInfoType.Float, ".", "SnpEff NMD percentage of transcripts in this gene that are affected"));
 
 			// Genotype fields
 			vcfInfoGenotypeById = new HashMap<String, VcfInfoGenotype>();
@@ -355,7 +355,7 @@ public class VcfHeader {
 			vcfInfoGenotypeById.put("MQ", new VcfInfoGenotype("MQ", VcfInfoType.Integer, "1", "RMS mapping quality."));
 
 			// Set all automatically added fields as "implicit"
-			for (VcfInfo vcfInfo : vcfInfoById.values())
+			for (VcfHeaderInfo vcfInfo : vcfInfoById.values())
 				vcfInfo.setImplicit(true);
 
 			for (VcfInfoGenotype vcfInfoGenotype : vcfInfoGenotypeById.values())
@@ -366,7 +366,7 @@ public class VcfHeader {
 			//---
 			for (String line : getLines()) {
 				if (line.startsWith("##INFO=") || line.startsWith("##FORMAT=")) {
-					VcfInfo vcfInfo = VcfInfo.factory(line);
+					VcfHeaderInfo vcfInfo = VcfHeaderInfo.factory(line);
 					if (vcfInfo instanceof VcfInfoGenotype) vcfInfoGenotypeById.put(vcfInfo.getId(), (VcfInfoGenotype) vcfInfo);
 					else vcfInfoById.put(vcfInfo.getId(), vcfInfo);
 				}

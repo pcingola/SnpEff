@@ -15,6 +15,9 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect.FormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
+import ca.mcgill.mcb.pcingola.vcf.VcfHeaderInfo;
+import ca.mcgill.mcb.pcingola.vcf.VcfHeaderInfo.VcfInfoNumber;
+import ca.mcgill.mcb.pcingola.vcf.VcfInfoType;
 
 /**
  * VCF parsing test cases
@@ -430,6 +433,38 @@ public class TestCasesVcf {
 			if (verbose) System.out.println(ve + "\n\t\tSize   : " + ve.size() + "\n\t\tVariant: " + ve.isVariant() + "\n\t\tType   : " + ve.getVariantType() + "\n");
 
 			start += ve.size();
+		}
+	}
+
+	/**
+	 * Add a new INFO and the respective header
+	 */
+	@Test
+	public void test_26_vcfInfoHeaderAdd() {
+		String vcfFileName = "tests/example_42.vcf";
+
+		// Create a new INFO field
+		String infoFieldName = "NEW_INFO";
+		VcfHeaderInfo vhInfo = new VcfHeaderInfo(infoFieldName, VcfInfoType.Integer, VcfInfoNumber.UNLIMITED.toString(), "An arbitrary set of random numbers");
+		String expectedHeader = "##INFO=<ID=" + infoFieldName + ", Number=., Type=Integer, Description=\"An arbitrary set of random numbers\">";
+
+		// Open VCF file
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		for (VcfEntry ve : vcf) {
+			if (vcf.isHeadeSection()) {
+				// Add INFO field to header
+				vcf.getVcfHeader().add(vhInfo);
+				if (verbose) System.out.println(vcf.getVcfHeader());
+				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader));
+			}
+
+			// Add INFO field values
+			String value = "" + ((int) (1000 * Math.random()));
+			ve.addInfo(infoFieldName, value);
+			if (verbose) System.out.println(ve);
+
+			// Check that 'info=value' is there
+			Assert.assertTrue(ve.toString().contains(infoFieldName + "=" + value));
 		}
 	}
 

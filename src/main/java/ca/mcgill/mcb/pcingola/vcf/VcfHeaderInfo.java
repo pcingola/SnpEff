@@ -29,7 +29,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pablocingolani
  */
-public class VcfInfo {
+public class VcfHeaderInfo {
 
 	/**
 	 * Number of values in an INFO field.
@@ -52,40 +52,45 @@ public class VcfInfo {
 		@Override
 		public String toString() {
 			switch (this) {
-			case NUMBER:
-				return "";
 			case ALLELE:
 				return "A";
+
 			case ALL_ALLELES:
 				return "R";
+
 			case GENOTYPE:
 				return "G";
+
+			case NUMBER:
+				return "";
+
+			case UNLIMITED:
+				return ".";
+
 			default:
-				throw new RuntimeException("Unimplemented method for type " + this);
+				throw new RuntimeException("Unimplemented method for type " + this.name());
 			}
 		}
 	}
 
-	String line;;
-
+	String line;
 	String id;
-	VcfInfoNumber vcfInfoNumber;
-	VcfInfoType vcfInfoType;
 	int number;
 	boolean implicit; // Is this field implicit? (Added automatically by VcfHeader class)
 	boolean genotype; // Is this a 'genotype' field?
+	VcfInfoNumber vcfInfoNumber;
+	VcfInfoType vcfInfoType;
 	String description;
 
-	public static VcfInfo factory(String line) {
+	public static VcfHeaderInfo factory(String line) {
 		if (line.startsWith("##FORMAT=")) return new VcfInfoGenotype(line);
-		return new VcfInfo(line);
+		return new VcfHeaderInfo(line);
 	}
 
 	/**
 	 * Constructor using a "##INFO" line from a VCF file
-	 * @param line
 	 */
-	public VcfInfo(String line) {
+	public VcfHeaderInfo(String line) {
 		// Is this an Info line?
 		if (line.startsWith("##INFO=") || line.startsWith("##FORMAT=")) {
 			genotype = line.startsWith("##FORMAT=");
@@ -109,7 +114,7 @@ public class VcfInfo {
 			vcfInfoNumber = VcfInfoNumber.UNLIMITED;
 			pattern = Pattern.compile("Number=([^,]+),");
 			matcher = pattern.matcher(params);
-			if (matcher.find()) parseNumber(matcher.group(1));
+			if (matcher.find()) setNumber(matcher.group(1));
 			else throw new RuntimeException("Cannot find 'Number' in info line: '" + line + "'");
 
 			// Find type
@@ -127,11 +132,11 @@ public class VcfInfo {
 		} else throw new RuntimeException("Line provided is not an INFO definition: '" + line + "'");
 	}
 
-	public VcfInfo(String id, VcfInfoType vcfInfoType, String number, String description) {
+	public VcfHeaderInfo(String id, VcfInfoType vcfInfoType, String number, String description) {
 		this.id = id;
 		this.vcfInfoType = vcfInfoType;
 		this.description = description;
-		parseNumber(number);
+		setNumber(number);
 	}
 
 	public String getDescription() {
@@ -178,18 +183,6 @@ public class VcfInfo {
 		return vcfInfoNumber == VcfInfoNumber.ALLELE || vcfInfoNumber == VcfInfoNumber.ALL_ALLELES;
 	}
 
-	void parseNumber(String number) {
-		// Parse number field
-		if (number.equals("A")) vcfInfoNumber = VcfInfoNumber.ALLELE;
-		else if (number.equals("R")) vcfInfoNumber = VcfInfoNumber.ALL_ALLELES;
-		else if (number.equals("G")) vcfInfoNumber = VcfInfoNumber.GENOTYPE;
-		else if (number.equals(".")) vcfInfoNumber = VcfInfoNumber.UNLIMITED;
-		else {
-			vcfInfoNumber = VcfInfoNumber.NUMBER;
-			this.number = Gpr.parseIntSafe(number);
-		}
-	}
-
 	public void setGenotype(boolean genotype) {
 		this.genotype = genotype;
 	}
@@ -198,14 +191,35 @@ public class VcfInfo {
 		this.implicit = implicit;
 	}
 
+	public void setNumber(int number) {
+		if (number < 0) throw new RuntimeException("Vcf header's INFO field 'number' must be a non-negative integer!");
+		vcfInfoNumber = VcfInfoNumber.NUMBER;
+		this.number = number;
+	}
+
+	public void setNumber(String number) {
+		this.number = -1;
+
+		// Parse number field
+		if (number.equals("A")) vcfInfoNumber = VcfInfoNumber.ALLELE;
+		else if (number.equals("R")) vcfInfoNumber = VcfInfoNumber.ALL_ALLELES;
+		else if (number.equals("G")) vcfInfoNumber = VcfInfoNumber.GENOTYPE;
+		else if (number.equals(".")) vcfInfoNumber = VcfInfoNumber.UNLIMITED;
+		else {
+			int num = Gpr.parseIntSafe(number);
+			if (num < 0) throw new RuntimeException("Vcf header's INFO field 'number' must be a non-negative integer: '" + number + "'");
+			setNumber(num);
+		}
+	}
+
 	@Override
 	public String toString() {
 		if (line != null) return line;
 
 		return "##INFO=<ID=" + id//
-				+ ",Number=" + (number >= 0 ? number : vcfInfoNumber) //
-				+ ",Type=" + vcfInfoType //
-				+ ",Description=\"" + description + "\"" //
+				+ ", Number=" + (number >= 0 ? number : vcfInfoNumber) //
+				+ ", Type=" + vcfInfoType //
+				+ ", Description=\"" + description + "\"" //
 				+ ">" //
 		;
 	}

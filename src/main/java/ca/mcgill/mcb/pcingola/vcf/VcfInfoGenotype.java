@@ -1,6 +1,6 @@
 package ca.mcgill.mcb.pcingola.vcf;
 
-public class VcfInfoGenotype extends VcfInfo {
+public class VcfInfoGenotype extends VcfHeaderInfo {
 
 	/**
 	 * Constructor using a "##INFO" line from a VCF file
