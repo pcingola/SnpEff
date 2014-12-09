@@ -45,7 +45,7 @@ uploadDev			:= false		# Upload 'development' version
 uploadHtml 			:= false		# Upload weh pages
 
 # Configuration parameters
-version				:= "4.0"
+version				:= "4.1"
 subversion			:= ""
 versionUnd			:= version.replace("\.","_")
 bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22"]
