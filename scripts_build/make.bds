@@ -8,6 +8,12 @@
 
 cpus = 4
 
+# Configuration parameters
+version				:= "4.1"
+subversion			:= ""
+versionUnd			:= version.replace("\.","_")
+bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22"]
+
 # Commands
 snpeff				:= "java -Xmx10G -jar snpEff.jar "
 snpeffXl			:= "java -Xmx50G -jar snpEff.jar "
@@ -43,12 +49,6 @@ uploadCore			:= false		# Upload 'core' package
 uploadDbs			:= false		# Upload all databases in 'zip' directory
 uploadDev			:= false		# Upload 'development' version
 uploadHtml 			:= false		# Upload weh pages
-
-# Configuration parameters
-version				:= "4.1"
-subversion			:= ""
-versionUnd			:= version.replace("\.","_")
-bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22"]
 
 # Wget parameters
 wget_wait			:= 1								# Wait a few moments between file downloads (to avoid saturating the server)
