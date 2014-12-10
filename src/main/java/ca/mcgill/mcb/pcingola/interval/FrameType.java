@@ -3,16 +3,31 @@ package ca.mcgill.mcb.pcingola.interval;
 /**
  * Type of frame calculations
  * Internally, we use GFF style frame calculation for Exon / Transcript
+ *
+ * Technically, these are 'frame' and 'phase' which are calculated in different ways
+ *
+ * 		UCSC type: Indicated the coding base number modulo 3. This is the 'classical' definition of frame).
+ *
+ * 		GFF/GTF type: Indicates the number of bases that should be removed from the beginning
+ * 				of this feature to reach the first base of the next codon.
+ * 					0) indicates that the feature begins with a whole codon at the 5' most base.
+ * 					1) means that there is one extra base (the third base of a codon) before the first whole codon and
+ * 					2) means that there are two extra bases (the second and third bases of the codon) before the first codon
+ * 				Sometimes this is called 'phase' instead of frame, to distinguish form
+ * 				the previous definition.
+ *
+ * Valid numbers are {-1, 0, 1, 2}, where -1 indicates 'unknown'
+ *
  */
 public enum FrameType {
 
-	GFF, UCSC, UNKNOWN;
+	GFF, UCSC, PHASE, FRAME, UNKNOWN;
 
 	public int convertFrame(int frame) {
-		// If this is a GFF frame type, no conversion is required
+		// If this is a GFF 'phase', no conversion is required
 		if (this == GFF) return frame;
 
-		// Convert UCSC frame numbers to GFF frame numbers
+		// Convert UCSC frame numbers to GFF phase numbers
 		if (this == UCSC) {
 			switch (frame) {
 			case 0:

@@ -37,7 +37,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 	private static final long serialVersionUID = 5324352193278472543L;
 
-	byte frame = -1; // Frame can be {-1, 0, 1, 2}, where '-1' means unknown
+	byte frame = -1; // Phase can be {-1, 0, 1, 2}, where '-1' means unknown. Phase indicated the number of bases that should be removed from the beginning of this feature to reach the first base of the next codon
 	int rank; // Exon rank in transcript
 	int aaIdxStart = -1, aaIdxEnd = -1; // First and last AA indexes that intersect with this exon
 	ArrayList<SpliceSite> spliceSites;
@@ -253,7 +253,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 				+ "\t" + rank //
 				+ "\t" + sequence //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
-				;
+		;
 	}
 
 	public void setAaIdx(int aaIdxStart, int aaIdxEnd) {

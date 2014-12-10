@@ -85,7 +85,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		int cdsMax = Math.max(cdsStart, cdsEnd);
 
 		// For each exon, add CDS position to array
-		int aaBaseNum = 0;
+		int aaNum = 0;
 		int step = isStrandPlus() ? 1 : -1;
 		int codonBase = 0;
 		for (Exon exon : sortedStrand()) {
@@ -93,15 +93,20 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 			int aaIdxStart = -1, aaIdxEnd = -1;
 
-			for (int pos = min; exon.intersects(pos) && aaBaseNum < aa2pos.length; pos += step) {
+			for (int pos = min; exon.intersects(pos) && aaNum < aa2pos.length; pos += step) {
 				// Is this within a CDS?
 				if ((cdsMin <= pos) && (pos <= cdsMax)) {
 					// Update AA indexes for this exon
-					if (aaIdxStart < 0) aaIdxStart = aaBaseNum;
-					aaIdxEnd = aaBaseNum;
+					if (aaIdxStart < 0) aaIdxStart = aaNum;
+					aaIdxEnd = aaNum;
 
 					// First codon base? Add to map
-					if (codonBase == 0) aa2pos[aaBaseNum++] = pos;
+					if (codonBase == 0) aa2pos[aaNum] = pos;
+
+					// Last codon base? Increment AA number
+					if (codonBase == 2) aaNum++;
+
+					// Update codon base
 					codonBase = (codonBase + 1) % 3;
 				}
 			}
