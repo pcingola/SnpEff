@@ -92,7 +92,6 @@ public class SnpEffCmdBuild extends SnpEff {
 	 */
 	SnpEffectPredictor createSnpEffPredictor() {
 		if (geneDatabaseFormat == null) geneDatabaseFormat = guessGenesFormat();
-		if (geneDatabaseFormat == null) fatalError("Cannot guess database format.");
 
 		// Create factory
 		SnpEffPredictorFactory factory = null;
@@ -142,6 +141,8 @@ public class SnpEffCmdBuild extends SnpEff {
 		if (fileExists(genesBase + ".refseq")) return GeneDatabaseFormat.REFSEQ;
 		if (fileExists(genesBase + ".kg")) return GeneDatabaseFormat.KNOWN_GENES;
 		if (fileExists(genesBase + ".biomart")) return GeneDatabaseFormat.BIOMART;
+
+		if (geneDatabaseFormat == null) fatalError("Cannot guess input database format for genome '" + genomeVer + "'. No genes file found '" + genesBase + ".*'");
 
 		return null;
 	}
