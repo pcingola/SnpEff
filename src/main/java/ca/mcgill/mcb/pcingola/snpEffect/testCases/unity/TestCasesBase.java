@@ -161,22 +161,16 @@ public class TestCasesBase {
 				String trId = veff.getTranscriptId();
 				String hgvsCactual = veff.getHgvsDna() != null ? veff.getHgvsDna() : "";
 				String hgvsPactual = veff.getHgvsProt() != null ? veff.getHgvsProt() : "";
-				if (verbose) {
-					System.out.println("\t" + veff //
-							+ "\n\t\tEFF    : " + veff.getEffectsStr() //
-							+ "\n\t\tHGVS_C : " + trId + ":" + hgvsCactual + "\t\tExpected: " + trIdC + ":" + hgvsCexp //
-							+ (compareProt ? "\n\t\tHGVS_P : " + trId + ":" + hgvsPactual + "\t\tExpected: " + trIdP + ":" + hgvsPexp : "") //
-							+ "\n");
-				}
 
 				// Compare results for HGVS_DNA
+				boolean foundC = false, foundP = false;
 				if (trId != null && trId.equals(trIdC)) {
 					trFound = true;
 					if (!hgvsCexp.equals(hgvsCactual)) {
 						if (!ignoreErrors) Assert.assertEquals(hgvsCexp, hgvsCactual);
 						countErrC++;
 					} else {
-						okC = true;
+						okC = foundC = true;
 						countOkC++;
 					}
 				}
@@ -187,10 +181,19 @@ public class TestCasesBase {
 						if (!ignoreErrors) Assert.assertEquals(hgvsPexp, hgvsPactual);
 						countErrP++;
 					} else {
-						okP = true;
+						okP = foundP = true;
 						countOkP++;
 					}
 				}
+
+				if (verbose) {
+					System.out.println("\t" + veff //
+							+ "\n\t\tEFF    : " + veff.getEffectsStr() //
+							+ "\n\t\tHGVS_C : " + trId + ":" + hgvsCactual + "\t\tExpected: " + trIdC + ":" + hgvsCexp + "\t" + (foundC ? "OK" : "NO") //
+							+ (compareProt ? "\n\t\tHGVS_P : " + trId + ":" + hgvsPactual + "\t\tExpected: " + trIdP + ":" + hgvsPexp + "\t" + (foundP ? "OK" : "NO") : "") //
+							+ "\n");
+				}
+
 			}
 
 			if (!trFound) {

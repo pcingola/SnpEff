@@ -235,7 +235,7 @@ public class HgvsProtein extends Hgvs {
 			if (aaOld3 == null || aaOld3.isEmpty() || aaOld3.equals("-")) return null;
 			if (aaOld3.length() == 3) return posStart; // Single AA deleted
 
-			end = codonNum + (aaOld3.length() / 3) - 1;
+			end = codonNum + (aaOld3.length() - aaNew3.length()) / 3 - 1;
 			posEnd = pos(end);
 			if (posEnd == null) return null;
 

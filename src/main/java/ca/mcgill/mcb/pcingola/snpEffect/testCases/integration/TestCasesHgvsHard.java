@@ -70,4 +70,15 @@ public class TestCasesHgvsHard extends TestCasesBase {
 		compareHgvs(genome, vcf, true);
 	}
 
+	/**
+	 * HGVS (protein) was reporting a wrong deletion length
+	 */
+	@Test
+	public void test_HgvsP_deleteion_length() {
+		Gpr.debug("Test");
+		String genome = "testHg19Chr1";
+		String vcf = "tests/hgvs_protein_deleteion_length.vcf";
+		compareHgvs(genome, vcf);
+	}
+
 }
