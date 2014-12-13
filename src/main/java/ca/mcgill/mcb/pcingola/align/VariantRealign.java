@@ -82,10 +82,10 @@ public class VariantRealign {
 		if (!vref.isEmpty()) {
 			// Sanity check
 			if (!seqVar.startsWith(vref)) {
-				Gpr.debug("Variant not found in reference sequence. This should never happen!" //
+				if (debug) Gpr.debug("Variant not found in reference sequence. This should never happen!" //
 						+ "\n\tSeq: '" + seqVar //
 						+ "'\n\tVariant's ref: '" + vref + "'" //
-						);
+				);
 				return false;
 			}
 
