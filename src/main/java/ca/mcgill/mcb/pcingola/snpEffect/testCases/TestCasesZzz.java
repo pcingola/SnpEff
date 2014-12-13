@@ -1,7 +1,10 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.CompareToVep;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -14,16 +17,29 @@ public class TestCasesZzz extends TestCasesBase {
 		super();
 	}
 
-	/**
-	 * Some difficult HGVS test case
-	 */
 	@Test
-	public void test_HgvsP_deleteion_length() {
+	public void test_10_MixedVep_HGVS() {
 		Gpr.debug("Test");
-		String genome = "testHg19Chr1";
-		String vcf = "tests/hgvs_protein_deleteion_length.vcf";
-		compareHgvs(genome, vcf);
+		String genome = "testHg3775Chr1";
+		String vcf = "tests/mixed_10_hgvs.vep.vcf";
+		CompareToVep comp = new CompareToVep(genome, verbose);
+		comp.setCompareHgvs();
+		comp.setOnlyProtein(true);
+		comp.compareVep(vcf);
+		if (verbose) System.out.println(comp);
+		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
+
+	//	@Test
+	//	public void test_10_MixedVep_HGVS() {
+	//		Gpr.debug("Test");
+	//
+	//		verbose = debug = true;
+	//
+	//		String genome = "testHg3775Chr1";
+	//		String vcf = "tests/hgvs_zzz.vcf";
+	//		compareHgvs(genome, vcf);
+	//	}
 
 	//	public void test_codonInsBug() {
 	//		String vcf = "tests/athaliana_bug.vcf";

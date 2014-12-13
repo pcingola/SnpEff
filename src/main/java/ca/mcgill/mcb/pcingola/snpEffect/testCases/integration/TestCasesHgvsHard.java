@@ -81,4 +81,15 @@ public class TestCasesHgvsHard extends TestCasesBase {
 		compareHgvs(genome, vcf);
 	}
 
+	/**
+	 * Some difficult HGVS test case
+	 */
+	@Test
+	public void test_HgvsP_deleteion_length_2() {
+		Gpr.debug("Test");
+		String genome = "testHg19Chr2";
+		String vcf = "tests/hgvs_protein_deleteion_length_2.vcf";
+		compareHgvs(genome, vcf);
+	}
+
 }

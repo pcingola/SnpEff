@@ -7,7 +7,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 
 /**
  * A Generic ChangeEffect filter
- * 
+ *
  * @author pcingola
  */
 public class VariantEffectFilter implements Filter<VariantEffect> {
@@ -22,7 +22,7 @@ public class VariantEffectFilter implements Filter<VariantEffect> {
 		filterOut.add(effType);
 	}
 
-	/** 
+	/**
 	 * Is any of the options set?
 	 * @return
 	 */
@@ -36,8 +36,9 @@ public class VariantEffectFilter implements Filter<VariantEffect> {
 	 * @return true if it passes the filter
 	 */
 	@Override
-	public boolean filter(VariantEffect changeEffectResut) {
-		return filterOut.contains(changeEffectResut.getEffectType());
+	public boolean filter(VariantEffect variantEffect) {
+		for (EffectType et : filterOut)
+			if (variantEffect.hasEffectType(et)) return true;
+		return false;
 	}
-
 }

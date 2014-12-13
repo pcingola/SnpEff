@@ -144,7 +144,7 @@ public class LossOfFunction {
 				|| (tr == null) // No transcript affected?
 				|| (!gene.isProteinCoding() && !config.isTreatAllAsProteinCoding()) // Not a protein coding gene?
 				|| (!tr.isProteinCoding() && !config.isTreatAllAsProteinCoding()) // Not a protein coding transcript?
-		) return false;
+				) return false;
 
 		//---
 		// Is this variant a LOF?
@@ -152,7 +152,7 @@ public class LossOfFunction {
 		boolean lof = false;
 
 		// Frame shifts
-		if (variantEffect.getEffectType() == EffectType.FRAME_SHIFT) {
+		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) {
 			// It is assumed that even with a protein coding change at the last 5% of the protein, the protein could still be functional.
 			double perc = percentCds(variantEffect);
 			lof |= (ignoreProteinCodingBefore <= perc) && (perc <= ignoreProteinCodingAfter);
@@ -161,30 +161,32 @@ public class LossOfFunction {
 		// Deletion? Is another method to check
 		if (variantEffect.getVariant().isDel()) lof |= isLofDeletion(variantEffect);
 
+		//---
 		// The following effect types can be considered LOF
-		switch (variantEffect.getEffectType()) {
-		case SPLICE_SITE_ACCEPTOR:
-		case SPLICE_SITE_DONOR:
+		//---
+		if (variantEffect.hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
+				|| variantEffect.hasEffectType(EffectType.SPLICE_SITE_DONOR) //
+				) {
 			// Core splice sites are considered LOF
 			if ((variantEffect.getMarker() != null) && (variantEffect.getMarker() instanceof SpliceSite)) {
 				// Get splice site marker and check if it is 'core'
 				SpliceSite spliceSite = (SpliceSite) variantEffect.getMarker();
-				if (spliceSite.intersectsCoreSpliceSite(variantEffect.getVariant())) lof = true; // Does it intersect the CORE splice site?
+
+				// Does it intersect the CORE splice site?
+				if (spliceSite.intersectsCoreSpliceSite(variantEffect.getVariant())) {
+					lof = true;
+				}
 			}
-			break;
-
-		case STOP_GAINED:
+		} else if (variantEffect.hasEffectType(EffectType.STOP_GAINED)) {
 			lof |= isNmd(variantEffect);
-			break;
-
-		case RARE_AMINO_ACID:
-		case START_LOST:
-			// This one is not in the referenced papers, but we assume that RARE AA and START_LOSS changes are damaging.
+		} else if (variantEffect.hasEffectType(EffectType.RARE_AMINO_ACID)) {
+			// This one is not in the referenced papers, but we assume that RARE AA are damaging.
 			lof = true;
-			break;
-
-		default: // All others are not considered LOF
-			break;
+		} else if (variantEffect.hasEffectType(EffectType.START_LOST)) {
+			// This one is not in the referenced papers, but we assume that START_LOSS changes are damaging.
+			lof = true;
+		} else {
+			// All others are not considered LOF
 		}
 
 		// Update sets
@@ -211,7 +213,7 @@ public class LossOfFunction {
 		// Criteria:
 		// 		1) First (coding) exon deleted
 		//---
-		if (changeEffect.getEffectType() == EffectType.EXON_DELETED) {
+		if (changeEffect.hasEffectType(EffectType.EXON_DELETED)) {
 			Variant seqChange = changeEffect.getVariant();
 			if (seqChange == null) throw new RuntimeException("Cannot retrieve 'seqChange' from EXON_DELETED effect!");
 			if (seqChange.includes(tr.getFirstCodingExon())) return true;
@@ -369,7 +371,7 @@ public class LossOfFunction {
 	public String toString() {
 		return (isLof() ? "LOF=" + toStringVcfLof() + " " : "") //
 				+ (isNmd() ? "NMD=" + toStringVcfNmd() : "") //
-		;
+				;
 	}
 
 	/**
