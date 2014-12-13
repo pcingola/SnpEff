@@ -131,7 +131,7 @@ public class SnpEffCmdEff extends SnpEff {
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
-								) {
+						) {
 							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
@@ -146,7 +146,7 @@ public class SnpEffCmdEff extends SnpEff {
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
-									) {
+							) {
 								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
@@ -485,8 +485,10 @@ public class SnpEffCmdEff extends SnpEff {
 						} else if (outFor.equals("BED")) {
 							outputFormat = OutputFormat.BED;
 							lossOfFunction = false;
-						} else if (outFor.equals("BEDANN")) outputFormat = OutputFormat.BEDANN;
-						else if (outFor.equals("TXT")) usage("Output format 'TXT' has been deprecated. Please use 'VCF' instead.\nYou can extract VCF fields to a TXT file using 'SnpSift extractFields' (http://snpeff.sourceforge.net/SnpSift.html#Extract).");
+						} else if (outFor.equals("BEDANN")) {
+							outputFormat = OutputFormat.BEDANN;
+							lossOfFunction = false;
+						} else if (outFor.equals("TXT")) usage("Output format 'TXT' has been deprecated. Please use 'VCF' instead.\nYou can extract VCF fields to a TXT file using 'SnpSift extractFields' (http://snpeff.sourceforge.net/SnpSift.html#Extract).");
 						else usage("Unknown output file format '" + outFor + "'");
 					}
 				} else if ((arg.equals("-s") || arg.equalsIgnoreCase("-stats"))) {
@@ -727,7 +729,7 @@ public class SnpEffCmdEff extends SnpEff {
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-						);
+				);
 				ok &= runAnalysis(inputFile, outputFile);
 			}
 		}
