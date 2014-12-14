@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.gsa;
 
-import flanagan.analysis.Stat;
 import gnu.trove.list.array.TDoubleArrayList;
+
+import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.special.Gamma;
 
 /**
  * A list of scores 
@@ -28,7 +30,7 @@ public class ScoreList {
 	 */
 	public static double chiSquareCDFComplementary(double chiSquare, int nu) {
 		if (nu <= 0) throw new IllegalArgumentException("The degrees of freedom [nu], " + nu + ", must be greater than zero");
-		return Stat.incompleteGammaComplementary(nu / 2.0D, chiSquare / 2.0D);
+		return Gamma.regularizedGammaQ(nu / 2.0D, chiSquare / 2.0D);
 	}
 
 	public ScoreList() {
@@ -299,7 +301,7 @@ public class ScoreList {
 
 			// If pvalue == 0, it produces an error (normal inverse is -Inf)
 			if (pvalue > 0) {
-				double z = Stat.normalInverseCDF(pvalue);
+				double z = new NormalDistribution().inverseCumulativeProbability(pvalue);
 				sum += z;
 
 				count++;
@@ -311,7 +313,7 @@ public class ScoreList {
 
 		// Get new p-value
 		double zsum = sum / Math.sqrt(count);
-		double pValue = Stat.normalCDF(0.0, 1.0, zsum);
+		double pValue = new org.apache.commons.math3.distribution.NormalDistribution(0.0, 1.0).cumulativeProbability(zsum);
 
 		return pValue;
 	}
