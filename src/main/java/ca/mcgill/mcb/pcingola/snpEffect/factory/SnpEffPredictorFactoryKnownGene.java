@@ -55,26 +55,29 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 
 	@Override
 	public SnpEffectPredictor create() {
-		// Read gene intervals from a file
-		if (fileName == null) fileName = config.getBaseFileNameGenes() + ".kg";
+		try {
+			// Read gene intervals from a file
+			if (fileName == null) fileName = config.getBaseFileNameGenes() + ".kg";
 
-		System.out.println("Reading gene intervals file : '" + fileName + "'");
-		readRefSeqFile(); // Read gene info
+			System.out.println("Reading gene intervals file : '" + fileName + "'");
+			readRefSeqFile(); // Read gene info
 
-		beforeExonSequences(); // Some clean-up before readng exon sequences
+			beforeExonSequences(); // Some clean-up before readng exon sequences
 
-		// Read chromosome sequences and set exon sequences
-		if (readSequences) readExonSequences();
-		else if (createRandSequences) createRandSequences();
+			// Read chromosome sequences and set exon sequences
+			if (readSequences) readExonSequences();
+			else if (createRandSequences) createRandSequences();
 
-		finishUp(); // Perform adjustments
+			finishUp(); // Perform adjustments
 
-		// Check that exons have sequences
-		System.out.println(config.getGenome());
-		boolean error = config.getGenome().isMostExonsHaveSequence();
-		System.out.println("# Ignored transcripts        : " + ignoredTr);
-		if (error && readSequences) throw new RuntimeException("Most Exons do not have sequences!");
-
+			if (verbose) {
+				System.out.println(config.getGenome());
+				System.out.println("# Ignored transcripts        : " + ignoredTr);
+			}
+		} catch (Exception e) {
+			if (verbose) e.printStackTrace();
+			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);
+		}
 		return snpEffectPredictor;
 	}
 

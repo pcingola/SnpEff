@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+ver="$1"
+
+# Parse command line parameter
+if [ -z "$ver" ]
+then
+	echo Argument version number missing
+	exit 1
+fi
+
+# Tag and push tags 
+git tag -a "v$ver" -m "Release v$ver"
+git push origin "v$ver"

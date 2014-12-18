@@ -3,8 +3,11 @@ package ca.mcgill.mcb.pcingola.snpEffect.factory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Cds;
@@ -49,10 +52,11 @@ public abstract class SnpEffPredictorFactory {
 	Genome genome;
 	SnpEffectPredictor snpEffectPredictor;
 	FrameType frameType;
-	HashMap<String, Integer> exonsByChromo;
-	HashMap<String, Marker> markersById;
-	HashMap<String, Gene> genesById;
-	HashMap<String, Transcript> transcriptsById;
+	Set<String> chromoNamesReference; // Chromosome names used in reference sequence file (e.g. FASTA)
+	Map<String, Integer> exonsByChromo;
+	Map<String, Marker> markersById;
+	Map<String, Gene> genesById;
+	Map<String, Transcript> transcriptsById;
 	Random random = new Random(20140410); // Note: we want consistent results in our test cases, so we always initialize the random generator in the same way
 
 	public SnpEffPredictorFactory(Config config, int inOffset) {
@@ -65,6 +69,7 @@ public abstract class SnpEffPredictorFactory {
 		markersById = new HashMap<String, Marker>();
 		genesById = new HashMap<String, Gene>();
 		transcriptsById = new HashMap<String, Transcript>();
+		chromoNamesReference = new HashSet<String>();
 
 		frameCorrection = false;
 		frameType = FrameType.UNKNOWN;
@@ -100,7 +105,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Add a Gene
-	 * @param gene
 	 */
 	protected void add(Gene gene) {
 		snpEffectPredictor.add(gene);
@@ -112,7 +116,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Add a generic Marker
-	 * @param marker
 	 */
 	protected void add(Marker marker) {
 		addMarker(marker, false);
@@ -121,7 +124,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Add a transcript
-	 * @param tr
 	 */
 	protected void add(Transcript tr) {
 		Gene gene = (Gene) tr.getParent();
@@ -134,7 +136,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Add a marker to the collection
-	 * @param marker
 	 */
 	protected void addMarker(Marker marker, boolean unique) {
 		String key = marker.getId();
@@ -511,6 +512,10 @@ public abstract class SnpEffPredictorFactory {
 		// Mark as coding if there is a CDS
 		codingFromCds();
 
+		// Check that exons have sequences
+		boolean error = config.getGenome().isMostExonsHaveSequence();
+		if (error) error("Most Exons do not have sequences!\n" + showChromoNamesDifferences() + "\n\n");
+
 		// Done
 		if (verbose) System.out.println("");
 	}
@@ -634,10 +639,12 @@ public abstract class SnpEffPredictorFactory {
 
 			if (Gpr.canRead(file)) {
 				if (verbose) System.out.println("\tReading FASTA file: '" + file + "'");
+
 				// Read fasta sequence
 				FastaFileIterator ffi = new FastaFileIterator(file);
 				for (String seq : ffi) {
 					String chromo = ffi.getName();
+					chromoNamesReference.add(chromo);
 					if (verbose) System.out.println("\t\tReading sequence '" + chromo + "', length: " + seq.length());
 					addSequences(chromo, seq); // Add all sequences
 				}
@@ -707,6 +714,64 @@ public abstract class SnpEffPredictorFactory {
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
+	}
+
+	/**
+	 * Shw differences in chromosome names
+	 */
+	protected String showChromoNamesDifferences() {
+		if (chromoNamesReference.isEmpty()) return "";
+
+		// Get all chromosome names
+		Set<String> chrs = new HashSet<String>();
+		for (Gene g : config.getGenome().getGenes())
+			chrs.add(g.getChromosomeName());
+
+		//---
+		// Show chromosomes not present in reference sequence file
+		//---
+		int counMissinfRef = 0;
+		StringBuilder sbMissingRef = new StringBuilder();
+		ArrayList<String> chrsSorted = new ArrayList<String>();
+		chrsSorted.addAll(chrs);
+		Collections.sort(chrsSorted);
+		for (String chr : chrsSorted) {
+			if (!chromoNamesReference.contains(chr)) {
+				counMissinfRef++;
+				if (sbMissingRef.length() > 0) sbMissingRef.append(", ");
+				sbMissingRef.append("'" + chr + "'");
+			}
+		}
+
+		//---
+		// Show chromosomes not present in genes file
+		//---
+		int counMissinfGenes = 0;
+		StringBuilder sbMissingGenes = new StringBuilder();
+		ArrayList<String> chrsRefSorted = new ArrayList<String>();
+		chrsRefSorted.addAll(chromoNamesReference);
+		Collections.sort(chrsRefSorted);
+		for (String chr : chrsRefSorted) {
+			if (!chrs.contains(chr)) {
+				counMissinfGenes++;
+				if (sbMissingGenes.length() > 0) sbMissingRef.append(", ");
+				sbMissingGenes.append("'" + chr + "'");
+			}
+		}
+
+		// Show differences
+		String msg = "";
+		if (counMissinfRef > 0 && counMissinfGenes > 0) {
+			msg = "There might be differences in the chromosome names used in the genes file " //
+					+ "('" + fileName + "')" //
+					+ "\nand the chromosme names used in the 'reference sequence' file" //
+					+ (fastaFile != null ? " ('" + fastaFile + "')" : "") + "." //
+					+ "\nPlease check that chromosome names in both files match.\n";
+		}
+		return msg //
+				+ (sbMissingRef.length() > 0 ? "\tChromosome names missing in 'reference sequence' file:\t" + sbMissingRef.toString() : "") //
+				+ (sbMissingGenes.length() > 0 ? "\n\tChromosome names missing in 'genes' file             :\t" + sbMissingGenes.toString() : "")//
+		;
 	}
 
 	String unquote(String qstr) {

@@ -201,12 +201,8 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 			// Finish up (fix problems, add missing info, etc.)
 			finishUp();
-
-			// Check that exons have sequences
-			boolean error = config.getGenome().isMostExonsHaveSequence();
-			if (error) throw new RuntimeException("Most Exons do not have sequences!");
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (verbose) e.printStackTrace();
 			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);
 		}
 

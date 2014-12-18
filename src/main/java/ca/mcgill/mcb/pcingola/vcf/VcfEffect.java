@@ -10,13 +10,14 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 /**
  * An 'ANN' or 'EFF' entry in a VCF INFO field
  * Note: 'EFF' is the old version that has been replaced by the standardized 'ANN' field (2014-12)
- *
+ * *
  * @author pablocingolani
  */
 public class VcfEffect {
 
 	/**
 	 * VcfFields in SnpEff version 2.X have a different format than 3.X
+	 * As of version 4.1 we switch to a standard annotation format
 	 */
 	public enum FormatVersion {
 		FORMAT_EFF_2 //
@@ -105,6 +106,8 @@ public class VcfEffect {
 	 * Split a 'effect' string to an array of strings
 	 */
 	public static String[] split(String eff) {
+		// TODO: Parsing should be version dependent and provably implemented on different methods using a dispatcher
+
 		int idxBr = eff.indexOf('[');
 		int idxParen = eff.indexOf('(');
 

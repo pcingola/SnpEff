@@ -125,13 +125,9 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// Finish up (fix problems, add missing info, etc.)
 			finishUp();
 
-			// Check that exons have sequences
 			if (verbose) System.out.println(config.getGenome());
-			boolean error = config.getGenome().isMostExonsHaveSequence();
-			if (error && readSequences) throw new RuntimeException("Most Exons do not have sequences!");
-
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (verbose) e.printStackTrace();
 			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);
 		}
 
@@ -208,6 +204,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 					int idxSpace = line.indexOf(' ');
 					if (idxSpace > 0) line = line.substring(0, idxSpace);
 					chromoName = Chromosome.simpleName(line.substring(1).trim()); // New chromosome name
+					chromoNamesReference.add(chromoName);
 
 					// Initialize buffer
 					chromoSb = new StringBuffer();

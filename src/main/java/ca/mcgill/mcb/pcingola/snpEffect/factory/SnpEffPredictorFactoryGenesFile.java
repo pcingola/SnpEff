@@ -28,26 +28,28 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 
 	@Override
 	public SnpEffectPredictor create() {
-		// Sanity check
-		if ((genome.getChromoFastaFiles().length > 0) && (genome.getChromosomeNames().length != genome.getChromoFastaFiles().length)) throw new RuntimeException("Number of chromosomes does not match number of fasta files (there must be one fasta files per chromosome)\n" + genome);
+		try {
+			// Sanity check
+			if ((genome.getChromoFastaFiles().length > 0) && (genome.getChromosomeNames().length != genome.getChromoFastaFiles().length)) throw new RuntimeException("Number of chromosomes does not match number of fasta files (there must be one fasta files per chromosome)\n" + genome);
 
-		// Read gene annotations from a file
-		fileName = config.getBaseFileNameGenes() + ".biomart";
-		System.out.println("Reading gene intervals file : '" + fileName + "'");
-		readGenesFile(); // Read gene info
+			// Read gene annotations from a file
+			fileName = config.getBaseFileNameGenes() + ".biomart";
+			System.out.println("Reading gene intervals file : '" + fileName + "'");
+			readGenesFile(); // Read gene info
 
-		beforeExonSequences(); // Some clean-up before reading exon sequences
+			beforeExonSequences(); // Some clean-up before reading exon sequences
 
-		// Read chromosome sequences and set exon sequences
-		if (readSequences) readExonSequences();
-		else if (createRandSequences) createRandSequences();
+			// Read chromosome sequences and set exon sequences
+			if (readSequences) readExonSequences();
+			else if (createRandSequences) createRandSequences();
 
-		finishUp(); // Perform adjustments
+			finishUp(); // Perform adjustments
 
-		// Check that exons have sequences
-		System.out.println(config.getGenome());
-		boolean error = config.getGenome().isMostExonsHaveSequence();
-		if (error) throw new RuntimeException("Most Exons do not have sequences!");
+			if (verbose) System.out.println(config.getGenome());
+		} catch (Exception e) {
+			if (verbose) e.printStackTrace();
+			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);
+		}
 
 		return snpEffectPredictor;
 	}

@@ -45,6 +45,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 	 * Create a string that is safe (i.e. valid) to add in an INFO field
 	 */
 	public static String vcfInfoSafeString(String value) {
+		// TODO: This depends on output format version (ANN does not have square brackets)
 		if (value == null) return value;
 		value = value.replaceAll("[ ,;|=()]", "_");
 		return value;
@@ -87,6 +88,8 @@ public class VcfOutputFormatter extends OutputFormatter {
 	protected void addInfo(VcfEntry vcfEntry) {
 		// No effects to show?
 		if (variantEffects.isEmpty()) return;
+
+		// TODO: Move this code to VcfEffect!
 
 		// Do all effects have warnings or errors (this could produce an empty 'EFF' field in GATK mode?
 		boolean allWarnings = false;
@@ -346,6 +349,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		newLines.add("##SnpEffVersion=\"" + version + "\"");
 		newLines.add("##SnpEffCmd=\"" + commandLineStr + "\"");
 
+		// TODO: This code should be in VcfEffect and it should return a list of VcfInfoHeader, instead of a string
 		// Fields changed in different format versions
 		if (formatVersion == FormatVersion.FORMAT_EFF_2) newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' \">");
 		else if (formatVersion == FormatVersion.FORMAT_EFF_3) newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Amino_Acid_length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' \">");
@@ -361,15 +365,16 @@ public class VcfOutputFormatter extends OutputFormatter {
 		return newLines;
 	}
 
-	/**
-	 * Does this
-	 */
-	boolean hasAnnotations(VariantEffect changeEffect) {
-		return changeEffect.getMarker() != null // Do we have a marker?
-				&& (changeEffect.getMarker() instanceof Custom) // Is it 'custom'?
-				&& ((Custom) changeEffect.getMarker()).hasAnnotations() // Does it have additional annotations?
-		;
-	}
+	// TODO: Remove unused code
+	//	/**
+	//	 * 
+	//	 */
+	//	boolean hasAnnotations(VariantEffect changeEffect) {
+	//		return changeEffect.getMarker() != null // Do we have a marker?
+	//				&& (changeEffect.getMarker() instanceof Custom) // Is it 'custom'?
+	//				&& ((Custom) changeEffect.getMarker()).hasAnnotations() // Does it have additional annotations?
+	//		;
+	//	}
 
 	public void setGatk(boolean gatk) {
 		this.gatk = gatk;
