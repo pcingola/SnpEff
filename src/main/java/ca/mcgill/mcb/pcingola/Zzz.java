@@ -1,18 +1,15 @@
 package ca.mcgill.mcb.pcingola;
 
-import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
-import ca.mcgill.mcb.pcingola.util.Timer;
 
 public class Zzz extends SnpEff {
 
 	public static void main(String[] args) {
-		Timer.showStdErr("Start");
+		String emptyStr = "";
+		String[] list = emptyStr.split(" ");
+		System.out.println("list.length: " + list.length);
 
-		for (EffectType et : EffectType.values())
-			System.out.println(et.toSequenceOntology());
-
-		Timer.showStdErr("End");
+		for (int i = 0; i < list.length; i++)
+			System.out.println("\titem " + i + ":\t'" + list[i] + "'");
 	}
-
 }
