@@ -11,8 +11,8 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect.FormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 import ca.mcgill.mcb.pcingola.vcf.VcfHeaderInfo;
@@ -37,7 +37,7 @@ public class TestCasesVcf {
 	/**
 	 * Get file's format version
 	 */
-	FormatVersion formatVersion(String vcfFileName) {
+	EffFormatVersion formatVersion(String vcfFileName) {
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		VcfEntry ve = vcf.next();
 		List<VcfEffect> effs = ve.parseEffects();
@@ -311,12 +311,12 @@ public class TestCasesVcf {
 	public void test_15_Eff_format_version_guess() {
 		Gpr.debug("Test");
 		String vcfFileName = "./tests/test.EFF_V2.vcf";
-		FormatVersion formatVersion = formatVersion(vcfFileName);
-		Assert.assertEquals(FormatVersion.FORMAT_EFF_2, formatVersion);
+		EffFormatVersion formatVersion = formatVersion(vcfFileName);
+		Assert.assertEquals(EffFormatVersion.FORMAT_EFF_2, formatVersion);
 
 		vcfFileName = "./tests/test.EFF_V3.vcf";
 		formatVersion = formatVersion(vcfFileName);
-		Assert.assertEquals(FormatVersion.FORMAT_EFF_3, formatVersion);
+		Assert.assertEquals(EffFormatVersion.FORMAT_EFF_3, formatVersion);
 	}
 
 	@Test

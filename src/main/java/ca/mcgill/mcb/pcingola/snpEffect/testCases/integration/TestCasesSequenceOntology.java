@@ -11,7 +11,6 @@ import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -244,7 +243,7 @@ public class TestCasesSequenceOntology {
 				if (veff.getTranscriptId().equals(trId)) {
 					String effs = veff.getEffString();
 
-					for (String eff : effs.split(VariantEffect.EFFECT_TYPE_SEPARATOR)) {
+					for (String eff : effs.split(VcfEffect.EFFECT_TYPE_SEPARATOR)) {
 						// OK. I consider these the same
 						if (eff.equals("5_prime_UTR_premature_start_codon_gain_variant")) eff = "5_prime_UTR_variant";
 						if (eff.equals("disruptive_inframe_insertion")) eff = "inframe_insertion";

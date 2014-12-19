@@ -12,8 +12,8 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect.FormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
@@ -59,7 +59,7 @@ public class TestCasesVcfs {
 	/**
 	 * Get file's format version
 	 */
-	FormatVersion formatVersion(String vcfFileName) {
+	EffFormatVersion formatVersion(String vcfFileName) {
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		VcfEntry ve = vcf.next();
 		List<VcfEffect> effs = ve.parseEffects();

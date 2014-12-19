@@ -246,14 +246,14 @@ public class HgvsDna extends Hgvs {
 		//---
 		if (tr.isUtr3(pos) || tr.isDownstream(pos)) {
 			// 3'UTR: We are after stop codon, coordinates must be '*1', '*2', etc.
-			int baseNum = tr.baseNumberPreMRna(pos);
-			int baseNumCdsEnd = tr.baseNumberPreMRna(tr.getCdsEnd());
+			int baseNum = tr.baseNumber2MRnaPos(pos);
+			int baseNumCdsEnd = tr.baseNumber2MRnaPos(tr.getCdsEnd());
 			idx = Math.abs(baseNum - baseNumCdsEnd);
 			idxPrepend = "*";
 		} else if (tr.isUtr5(pos) || tr.isUpstream(pos)) {
 			// 5'UTR: We are before TSS, coordinates must be '-1', '-2', etc.
-			int baseNum = tr.baseNumberPreMRna(pos);
-			int baseNumTss = tr.baseNumberPreMRna(tr.getCdsStart());
+			int baseNum = tr.baseNumber2MRnaPos(pos);
+			int baseNumTss = tr.baseNumber2MRnaPos(tr.getCdsStart());
 			idx = Math.abs(baseNum - baseNumTss);
 			idxPrepend = "-";
 		} else {
@@ -305,16 +305,16 @@ public class HgvsDna extends Hgvs {
 		}
 
 		// Left side of coding part
-		int cdnaPos = tr.baseNumberPreMRna(posExon);
+		int cdnaPos = tr.baseNumber2MRnaPos(posExon);
 		if (posExon < cdsLeft) {
-			int cdnaStart = tr.baseNumberPreMRna(cdsLeft); // tr.getCdsStart());
+			int cdnaStart = tr.baseNumber2MRnaPos(cdsLeft); // tr.getCdsStart());
 			int utrDistance = Math.abs(cdnaStart - cdnaPos);
 			String utrStr = strandPlus ? "-" : "*";
 			return utrStr + utrDistance + (exonDistance > 0 ? posExonStr + exonDistance : "");
 		}
 
 		// Right side of coding part
-		int cdnaEnd = tr.baseNumberPreMRna(cdsRight); // tr.getCdsEnd());
+		int cdnaEnd = tr.baseNumber2MRnaPos(cdsRight); // tr.getCdsEnd());
 		int utrDistance = Math.abs(cdnaEnd - cdnaPos);
 		String utrStr = strandPlus ? "*" : "-";
 		return utrStr + utrDistance + (exonDistance > 0 ? posExonStr + exonDistance : "");

@@ -223,7 +223,7 @@ public class TestCasesBase {
 	 * Is effectExpected included in effStr (many effects delimited by '&'
 	 */
 	protected boolean hasEffect(String effectExpected, String effStr) {
-		for (String eff : effStr.split(VariantEffect.EFFECT_TYPE_SEPARATOR))
+		for (String eff : effStr.split(VcfEffect.EFFECT_TYPE_SEPARATOR))
 			if (eff.equals(effectExpected)) return true;
 
 		return false;

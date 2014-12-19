@@ -8,20 +8,15 @@ import java.util.List;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Custom;
-import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.Gene;
-import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.FunctionalClass;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.KeyValue;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect.FormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
@@ -31,21 +26,20 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class VcfOutputFormatter extends OutputFormatter {
 
-	public static final boolean debug = false;
+	public static boolean debug = false;
 	public static final String VCF_INFO_OICR_NAME = "OICR";
 
 	boolean needAddInfo = false;
 	boolean needAddHeader = true;
 	boolean lossOfFunction;
 	boolean gatk;
-	FormatVersion formatVersion = VcfEffect.FormatVersion.FORMAT_EFF_4;
+	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
 	List<VcfEntry> vcfEntries;
 
 	/**
 	 * Create a string that is safe (i.e. valid) to add in an INFO field
 	 */
 	public static String vcfInfoSafeString(String value) {
-		// TODO: This depends on output format version (ANN does not have square brackets)
 		if (value == null) return value;
 		value = value.replaceAll("[ ,;|=()]", "_");
 		return value;
@@ -117,124 +111,28 @@ public class VcfOutputFormatter extends OutputFormatter {
 		HashSet<String> oicr = (useOicr ? new HashSet<String>() : null);
 		boolean addCustomFields = false;
 		for (VariantEffect variantEffect : variantEffects) {
+
 			// In GATK mode, skip changeEffects having errors or warnings (unless ALL effects have warnings)
 			if (gatk && !allWarnings && (variantEffect.hasError() || variantEffect.hasWarning())) continue;
 
 			// If it is not filtered out by changeEffectResutFilter  => Show it
 			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(variantEffect))) {
-				StringBuilder effBuff = new StringBuilder();
-
-				// Add effect
-				effBuff.append(variantEffect.effect(true, false, false, useSequenceOntology));
-				effBuff.append("(");
-
-				// Add effect impact
-				effBuff.append(variantEffect.getEffectImpact());
-				effBuff.append("|");
-
-				// Add functional class
-				FunctionalClass fc = variantEffect.getFunctionalClass();
-				effBuff.append(fc == FunctionalClass.NONE ? "" : fc.toString()); // Show only if it is not empty
-				effBuff.append("|");
-
-				// Codon change
-				String codonChange = variantEffect.getCodonChangeMax();
-				if (!codonChange.isEmpty()) effBuff.append(codonChange);
-				else if (variantEffect.getDistance() >= 0) effBuff.append(variantEffect.getDistance());
-				effBuff.append("|");
-
-				// Add HGVS (amino acid change)
-				if (useHgvs) effBuff.append(variantEffect.getHgvs());
-				else effBuff.append(variantEffect.getAaChange());
-				effBuff.append("|");
-
-				// Add amino acid length
-				if (formatVersion != FormatVersion.FORMAT_EFF_2) { // This field is not in format version 2
-					int aalen = variantEffect.getAaLength();
-					effBuff.append(aalen >= 0 ? aalen : "");
-					effBuff.append("|");
-				}
-
-				// Add gene info
-				Gene gene = variantEffect.getGene();
-				Transcript tr = variantEffect.getTranscript();
-				if (gene != null) {
-					// Gene name
-					effBuff.append(vcfInfoSafeString(useGeneId ? gene.getId() : gene.getGeneName()));
-					effBuff.append("|");
-
-					// Transcript biotype
-					if (tr != null) {
-						if ((tr.getBioType() != null) && !tr.getBioType().isEmpty()) effBuff.append(tr.getBioType());
-						else effBuff.append(tr.isProteinCoding() ? "protein_coding" : ""); // No biotype? Add protein_coding of we know it is.
-					}
-					effBuff.append("|");
-
-					// Protein coding gene?
-					String coding = "";
-					if (gene.getGenome().hasCodingInfo()) coding = (gene.isProteinCoding() ? VariantEffect.Coding.CODING.toString() : VariantEffect.Coding.NON_CODING.toString());
-					effBuff.append(coding);
-					effBuff.append("|");
-				} else if (variantEffect.isRegulation()) {
-					Regulation reg = (Regulation) variantEffect.getMarker();
-					effBuff.append("|" + reg.getCellType() + "||");
-				} else if (variantEffect.isCustom()) {
-					Marker m = variantEffect.getMarker();
-					if (m != null) effBuff.append("|" + VcfEntry.vcfInfoSafe(m.getId()) + "||");
-					else effBuff.append("|||");
-				} else effBuff.append("|||");
-
-				// Add transcript info
-				if (tr != null) effBuff.append(vcfInfoSafeString(tr.getId()));
-				effBuff.append("|");
-
-				// Add exon (or intron) rank info
-				Exon ex = variantEffect.getExon();
-				int rank = -1;
-				if (ex != null) rank = ex.getRank();
-				else {
-					// Do we have an intron?
-					Intron intron = variantEffect.getIntron();
-					if (intron != null) rank = intron.getRank();
-				}
-				effBuff.append(rank >= 0 ? rank : "");
-
-				// Add genotype (or genotype difference) for this effect
-				if (formatVersion == FormatVersion.FORMAT_EFF_4) {
-					effBuff.append("|");
-					effBuff.append(variantEffect.getGenotype());
-				}
-
 				//---
-				// Errors or warnings (this is the last thing in the list)
+				// Create INFO field value as a string
 				//---
-				if (variantEffect.hasError() || variantEffect.hasWarning()) {
-					StringBuilder err = new StringBuilder();
-
-					// Add warnings
-					if (!variantEffect.getWarning().isEmpty()) err.append(variantEffect.getWarning());
-
-					// Add errors
-					if (!variantEffect.getError().isEmpty()) {
-						if (err.length() > 0) err.append("+");
-						err.append(variantEffect.getError());
-					}
-
-					effBuff.append("|");
-					effBuff.append(err);
-				}
-				effBuff.append(")");
+				VcfEffect vcfEffect = new VcfEffect(variantEffect, formatVersion);
+				String effStr = vcfEffect.toString();
 
 				//---
 				// Add effect
 				//---
-				if (!effs.add(effBuff.toString())) {
+				if (!effs.add(effStr)) {
 					if (debug) {
 						// Effect has already been added? Something is wrong, the information should be unique for each effect
 						StringBuilder sb = new StringBuilder();
 						sb.append("--------------------------------------------------------------------------------\n");
 						sb.append("VCF Entry   :\t" + vcfEntry + "\n");
-						sb.append("REPEAT (VCF):\t" + effBuff + "\n");
+						sb.append("REPEAT (VCF):\t" + effStr + "\n");
 						sb.append("REPEAT (TXT):\t" + variantEffect + "\n");
 						sb.append("All    (VCF):\n");
 						for (String ce : effsSorted)
@@ -245,21 +143,26 @@ public class VcfOutputFormatter extends OutputFormatter {
 						sb.append("--------------------------------------------------------------------------------\n");
 						Gpr.debug("WARNING: Repeated effect!\n" + sb);
 					}
-				} else effsSorted.add(effBuff.toString());
+				} else effsSorted.add(effStr);
 
 				//---
 				// Add OICR data
 				//---
-				if (useOicr && (tr != null)) {
-					StringBuilder sb = new StringBuilder();
-					Variant variant = variantEffect.getVariant();
+				if (useOicr) {
+					Transcript tr = variantEffect.getTranscript();
 
-					// Get cDNA position
-					int pos = tr.isStrandMinus() ? variant.getStart() : variant.getEnd(); // First base in cDNA
-					int cdnaIdx = tr.baseNumberPreMRna(pos) + 1; // Which cDNA base number?
-					if (cdnaIdx > 0) sb.append("(" + vcfInfoSafeString(tr.getId()) + "|" + cdnaIdx + ")");
+					if (tr != null) {
 
-					oicr.add(sb.toString());
+						StringBuilder sb = new StringBuilder();
+						Variant variant = variantEffect.getVariant();
+
+						// Get cDNA position
+						int pos = tr.isStrandMinus() ? variant.getStart() : variant.getEnd(); // First base in cDNA
+						int cdnaIdx = tr.baseNumber2MRnaPos(pos) + 1; // Which cDNA base number?
+						if (cdnaIdx > 0) sb.append("(" + vcfInfoSafeString(tr.getId()) + "|" + cdnaIdx + ")");
+
+						oicr.add(sb.toString());
+					}
 				}
 
 				//---
@@ -276,7 +179,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 		// Add 'EFF' info field
 		String effStr = toStringVcfInfo(effsSorted);
-		if (!effStr.isEmpty()) vcfEntry.addInfo(VcfEffect.VCF_INFO_EFF_NAME, effStr);
+		if (!effStr.isEmpty()) vcfEntry.addInfo(VcfEffect.infoFieldName(formatVersion), effStr);
 
 		// Add 'OICR' info field
 		if (useOicr && (oicr.size() > 0)) {
@@ -351,8 +254,8 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 		// TODO: This code should be in VcfEffect and it should return a list of VcfInfoHeader, instead of a string
 		// Fields changed in different format versions
-		if (formatVersion == FormatVersion.FORMAT_EFF_2) newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' \">");
-		else if (formatVersion == FormatVersion.FORMAT_EFF_3) newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Amino_Acid_length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' \">");
+		if (formatVersion == EffFormatVersion.FORMAT_EFF_2) newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' \">");
+		else if (formatVersion == EffFormatVersion.FORMAT_EFF_3) newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Amino_Acid_length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' \">");
 		else newLines.add("##INFO=<ID=EFF,Number=.,Type=String,Description=\"Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )' \">");
 
 		if (lossOfFunction) {
@@ -367,7 +270,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 	// TODO: Remove unused code
 	//	/**
-	//	 * 
+	//	 *
 	//	 */
 	//	boolean hasAnnotations(VariantEffect changeEffect) {
 	//		return changeEffect.getMarker() != null // Do we have a marker?
@@ -378,7 +281,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 	public void setGatk(boolean gatk) {
 		this.gatk = gatk;
-		if (gatk) formatVersion = VcfEffect.FormatVersion.FORMAT_EFF_2;
+		if (gatk) formatVersion = EffFormatVersion.FORMAT_EFF_2;
 	}
 
 	public void setLossOfFunction(boolean lossOfFunction) {

@@ -9,7 +9,6 @@ import org.junit.Assert;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfConsequence;
@@ -161,7 +160,7 @@ public class CompareToVep {
 		boolean foundTranscript = false;
 
 		// Split all effects
-		for (String et : effStr.split(VariantEffect.EFFECT_TYPE_SEPARATOR)) {
+		for (String et : effStr.split(VcfEffect.EFFECT_TYPE_SEPARATOR)) {
 			if (verbose) System.out.println("\t\t" + et + "\t" + eff.getTranscriptId());
 
 			// Match all consequences
@@ -193,7 +192,7 @@ public class CompareToVep {
 	 * Compare a single effect to CSQ
 	 */
 	boolean compareEffect(VcfEffect eff, VcfConsequence csq) {
-		String effectTypes[] = eff.getEffectTypesStr().split(VariantEffect.EFFECT_TYPE_SEPARATOR);
+		String effectTypes[] = eff.getEffectTypesStr().split(VcfEffect.EFFECT_TYPE_SEPARATOR);
 		String consecuences[] = csq.getConsequence().split("&");
 
 		for (String et : effectTypes) {

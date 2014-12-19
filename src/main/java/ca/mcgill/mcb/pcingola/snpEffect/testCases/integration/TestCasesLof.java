@@ -303,7 +303,7 @@ public class TestCasesLof {
 					+ "', class: " + (markerFilter != null ? markerFilter.getClass().getSimpleName() : "") //
 					+ "\t\tFound: '" + m.getType() + "', mfilter: " + (mfilter != null ? mfilter.getId() : "NULL") //
 					+ ", parent: " + m.getParent().getClass().getSimpleName() //
-			);
+					);
 
 			if ((m.getType() == effectType) && (mfilter != null) && (mtr != null)) {
 				if (markerFilter != null) {

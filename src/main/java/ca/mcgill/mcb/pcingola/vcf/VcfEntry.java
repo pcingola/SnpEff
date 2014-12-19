@@ -15,7 +15,6 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect.FormatVersion;
 
 /**
  * A VCF entry (a line) in a VCF file
@@ -41,6 +40,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public static final String VCF_INFO_NAS = "NA";
 
 	public static final String VCF_INFO_PRIVATE = "Private";
+
+	public static boolean useNumericGenotype = false;
 
 	private static final long serialVersionUID = 4226374412681243433L;
 
@@ -802,7 +803,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (alts == null // No alts
 					|| (alts.length == 0) // Zero ALTs
 					|| (alts.length == 1 && (alts[0].isEmpty() || alts[0].equals("."))) // One ALT, but it's empty
-					) {
+			) {
 				variantType = VariantType.INTERVAL;
 			} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
 				if (ref.length() == 1) variantType = VariantType.SNP;
@@ -897,8 +898,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Parse 'EFF' info field and get a list of effects
 	 */
-	public List<VcfEffect> parseEffects(FormatVersion formatVersion) {
-		String effStr = getInfo(VcfEffect.VCF_INFO_EFF_NAME); // Get effect string from INFO field
+	public List<VcfEffect> parseEffects(EffFormatVersion formatVersion) {
+		String effFieldName = VcfEffect.infoFieldName(formatVersion);
+		String effStr = getInfo(effFieldName); // Get effect string from INFO field
 
 		// Create a list of effect
 		ArrayList<VcfEffect> effList = new ArrayList<VcfEffect>();
@@ -1227,17 +1229,22 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (alts == null) {
 			// No ALTs, then it's not a change
 			List<Variant> variants = variants(chr, start, ref, null, id);
+			String alt = ".";
 
-			for (Variant variant : variants)
-				variant.setGenotype(Integer.toString(genotypeNumber));
+			for (Variant variant : variants) {
+				if (useNumericGenotype) variant.setGenotype(Integer.toString(genotypeNumber));
+				else variant.setGenotype(alt);
+			}
 
 			list.addAll(variants);
 		} else {
 			for (String alt : alts) {
 				List<Variant> variants = variants(chr, start, ref, alt, id);
 
-				for (Variant variant : variants)
-					variant.setGenotype(Integer.toString(genotypeNumber));
+				for (Variant variant : variants) {
+					if (useNumericGenotype) variant.setGenotype(Integer.toString(genotypeNumber));
+					else variant.setGenotype(alt);
+				}
 
 				list.addAll(variants);
 				genotypeNumber++;
@@ -1270,7 +1277,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				char change[] = new char[size];
 				for (int i = 0; i < change.length; i++)
 					change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-					ch = new String(change);
+				ch = new String(change);
 			}
 
 			// Create SeqChange

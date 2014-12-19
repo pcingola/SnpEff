@@ -42,6 +42,7 @@ import ca.mcgill.mcb.pcingola.stats.VcfStats;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 import ca.mcgill.mcb.pcingola.util.Tuple;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.PedigreeEnrty;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
@@ -94,6 +95,7 @@ public class SnpEffCmdEff extends SnpEff {
 	VariantEffectStats variantEffectStats;
 	VcfStats vcfStats;
 	List<VcfEntry> vcfEntriesDebug = null; // Use for debugging or testing (in some test-cases)
+	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
 
 	public SnpEffCmdEff() {
 		super();
@@ -131,7 +133,7 @@ public class SnpEffCmdEff extends SnpEff {
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
-						) {
+								) {
 							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
@@ -146,7 +148,7 @@ public class SnpEffCmdEff extends SnpEff {
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
-							) {
+									) {
 								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
@@ -521,6 +523,9 @@ public class SnpEffCmdEff extends SnpEff {
 				else if (arg.equalsIgnoreCase("-classic")) {
 					useSequenceOntology = false;
 					useHgvs = false;
+					formatVersion = EffFormatVersion.FORMAT_EFF_4;
+				} else if (arg.equalsIgnoreCase("-formatEff")) {
+					formatVersion = EffFormatVersion.FORMAT_EFF_4;
 				} else if (arg.equalsIgnoreCase("-oicr")) useOicr = true; // Use OICR tag
 				//---
 				// Input options
@@ -729,7 +734,7 @@ public class SnpEffCmdEff extends SnpEff {
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-				);
+						);
 				ok &= runAnalysis(inputFile, outputFile);
 			}
 		}
@@ -926,6 +931,7 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\nAnnotations options:");
 		System.err.println("\t-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: " + cancer);
 		System.err.println("\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");
+		System.err.println("\t-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').");
 		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
 		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + useHgvs);
 		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");
