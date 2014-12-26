@@ -22775,6 +22775,7 @@ GCA_000179915.2.21 	 Terriglobus_saanensis_sp1pr4   GCA_000179915.2.21
 GCA_000179915.2.22 	 Terriglobus_saanensis_sp1pr4   GCA_000179915.2.22
 testHg19Hgvs 	 Tesg   testHg19Hgvs
 testAP 	 Test   testAP
+testChromoNamesDoNotMatch 	 Test   testChromoNamesDoNotMatch
 testENST00000268124 	 Test   testENST00000268124
 testENST00000398332 	 Test   testENST00000398332
 testENST00000529892 	 Test   testENST00000529892
