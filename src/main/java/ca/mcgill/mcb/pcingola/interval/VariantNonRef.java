@@ -33,7 +33,6 @@ public class VariantNonRef extends Variant {
 	@Override
 	public Variant realignLeft() {
 		// Realigning in cancer samples is not trivial: What happens if one realigns and the other doesn't?
-		// TODO: In depth analysis of all border cases.
 		// For now, do not realign
 		return this;
 	}

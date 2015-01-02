@@ -30,6 +30,7 @@ public class VcfEffect {
 
 	public static final String VCF_INFO_EFF_NAME = "EFF";
 	public static final String VCF_INFO_ANN_NAME = "ANN";
+	public static final String[] VCF_INFO_ANN_NAMES = { VCF_INFO_ANN_NAME, VCF_INFO_EFF_NAME };
 
 	public static final String EFFECT_TYPE_SEPARATOR = "&"; // Separator between mutiple effectTypes
 	public static final String EFFECT_TYPE_SEPARATOR_OLD = "+"; // Old separator between mutiple effectTypes
@@ -69,8 +70,8 @@ public class VcfEffect {
 
 		// Not created yet?
 		if (fieldName2Num == null) {
-			if (formatVersion.isAnn()) f2n = mapAnn2Num(name, formatVersion);
-			else f2n = mapEff2Num(name, formatVersion);
+			if (formatVersion.isAnn()) f2n = mapAnn2Num(formatVersion);
+			else f2n = mapEff2Num(formatVersion);
 
 			fieldName2Num.put(formatVersion, f2n);
 		}
@@ -93,39 +94,57 @@ public class VcfEffect {
 	/**
 	 * Create a hash to map names to field numbers on 'ANN' fields
 	 */
-	static HashMap<String, Integer> mapAnn2Num(String name, EffFormatVersion formatVersion) {
+	static HashMap<String, Integer> mapAnn2Num(EffFormatVersion formatVersion) {
 		HashMap<String, Integer> f2n = new HashMap<String, Integer>();
-		int fieldNum = 0;
 
-		f2n.put("ANN.EFFECT", fieldNum++);
-		f2n.put("ANN.IMPACT", fieldNum++);
-		f2n.put("ANN.FUNCLASS", fieldNum++);
-		f2n.put("ANN.CODON", fieldNum++);
+		// Use both names
+		for (String annFieldName : VCF_INFO_ANN_NAMES) {
+			int fieldNum = 0;
 
-		// This field can be called either AA or HGVS
-		f2n.put("ANN.AA", fieldNum);
-		f2n.put("ANN.HGVS", fieldNum);
-		fieldNum++;
+			f2n.put(annFieldName + ".ALLELE", fieldNum);
+			f2n.put(annFieldName + ".GT", fieldNum);
+			f2n.put(annFieldName + ".GENOTYPE", fieldNum);
+			fieldNum++;
 
-		if (formatVersion != EffFormatVersion.FORMAT_EFF_2) {
-			f2n.put("ANN.AA_LEN", fieldNum++);
-		}
+			f2n.put(annFieldName + ".EFFECT", fieldNum++);
 
-		f2n.put("ANN.GENE", fieldNum++);
-		f2n.put("ANN.BIOTYPE", fieldNum++);
-		f2n.put("ANN.CODING", fieldNum++);
-		f2n.put("ANN.TRID", fieldNum++);
+			f2n.put(annFieldName + ".IMPACT", fieldNum++);
 
-		// This one used to be called exonID, now it is used for exon OR intron rank
-		f2n.put("ANN.RANK", fieldNum);
-		f2n.put("ANN.EXID", fieldNum);
-		fieldNum++;
+			f2n.put(annFieldName + ".GENE", fieldNum++);
 
-		if (formatVersion == EffFormatVersion.FORMAT_EFF_4) {
-			// This one can be called  in different ways
-			f2n.put("ANN.GT", fieldNum);
-			f2n.put("ANN.GENOTYPE_NUMBER", fieldNum);
-			f2n.put("ANN.GENOTYPE", fieldNum);
+			f2n.put(annFieldName + ".GENEID", fieldNum++);
+
+			f2n.put(annFieldName + ".FEATURE", fieldNum++);
+
+			// Feature ID or transcript ID
+			f2n.put(annFieldName + ".FEATUREID", fieldNum);
+			f2n.put(annFieldName + ".TRID", fieldNum);
+			fieldNum++;
+
+			f2n.put(annFieldName + ".BIOTYPE", fieldNum++);
+
+			// This one used to be called exonID, now it is used for exon OR intron rank
+			f2n.put(annFieldName + ".RANK", fieldNum);
+			f2n.put(annFieldName + ".EXID", fieldNum);
+			fieldNum++;
+
+			f2n.put(annFieldName + ".HGVS_C", fieldNum++);
+
+			f2n.put(annFieldName + ".HGVS", fieldNum);
+			f2n.put(annFieldName + ".HGVS_P", fieldNum);
+			fieldNum++;
+
+			f2n.put(annFieldName + ".POS_CDNA", fieldNum++);
+
+			f2n.put(annFieldName + ".POS_CDS", fieldNum++);
+
+			f2n.put(annFieldName + ".POS_AA", fieldNum++);
+
+			f2n.put(annFieldName + ".DISTANCE", fieldNum++);
+
+			f2n.put(annFieldName + ".ERRORS", fieldNum);
+			f2n.put(annFieldName + ".WARNINGS", fieldNum);
+			f2n.put(annFieldName + ".INFO", fieldNum);
 			fieldNum++;
 		}
 
@@ -135,7 +154,7 @@ public class VcfEffect {
 	/**
 	 * Create a hash to map names to field numbers on 'EFF' fields
 	 */
-	static HashMap<String, Integer> mapEff2Num(String name, EffFormatVersion formatVersion) {
+	static HashMap<String, Integer> mapEff2Num(EffFormatVersion formatVersion) {
 		HashMap<String, Integer> f2n = new HashMap<String, Integer>();
 		int fieldNum = 0;
 
@@ -175,37 +194,9 @@ public class VcfEffect {
 	}
 
 	/**
-	 * Split a 'effect' string to an array of strings
-	 */
-	public static String[] split(String eff) {
-		// TODO: Parsing should be version dependent and provably implemented on different methods using a dispatcher
-
-		int idxBr = eff.indexOf('[');
-		int idxParen = eff.indexOf('(');
-
-		String eff0 = null;
-		if ((idxBr >= 0) && (idxBr < idxParen)) {
-			int idxRbr = eff.indexOf(']');
-			eff0 = eff.substring(0, idxRbr + 1);
-			eff = eff.substring(idxRbr);
-		}
-
-		eff = eff.replace('(', '\t'); // Replace all chars by spaces
-		eff = eff.replace('|', '\t');
-		eff = eff.replace(')', '\t');
-		String effs[] = eff.split("\t", -1); // Negative number means "use trailing empty as well"
-
-		if (eff0 != null) effs[0] = eff0;
-
-		return effs;
-	}
-
-	/**
 	 * Return a string safe to be used in an 'EFF' info field (VCF file)
 	 */
 	public static String vcfEffSafe(String str) {
-		// TODO: ("Parenthesis and square brakets are no longer needed!");
-
 		return str.replaceAll("(\\s|\\(|\\)|\\[|\\]|;|,|\\|)+", "_");
 	}
 
@@ -234,17 +225,17 @@ public class VcfEffect {
 		this.variantEffect = variantEffect;
 	}
 
-	public void addEffectType(EffectType effectType) {
-		effectTypes.add(effectType);
-		this.effectType = null;
-	}
-
 	/**
 	 * Add subfield to a buffer
 	 */
 	void add(StringBuilder sb, Object obj) {
 		sb.append(VcfEntry.vcfInfoSafe(obj.toString()));
 		sb.append("|");
+	}
+
+	public void addEffectType(EffectType effectType) {
+		effectTypes.add(effectType);
+		this.effectType = null;
 	}
 
 	/**
@@ -323,90 +314,35 @@ public class VcfEffect {
 			add(effBuff, cdsPos + "/" + variantEffect.getCdsLength());
 		} else effBuff.append("|");
 
-		////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////
-		////////////////////////////////////////////////////////////////
+		// Protein position / protein length
+		if (tr != null) {
+			int aaPos = variantEffect.getCodonNum();
+			add(effBuff, aaPos + "/" + variantEffect.getAaLength());
+		} else effBuff.append("|");
 
-		// Add functional class
-		FunctionalClass fc = variantEffect.getFunctionalClass();
-		effBuff.append(fc == FunctionalClass.NONE ? "" : fc.toString()); // Show only if it is not empty
-		effBuff.append("|");
-
-		// Codon change
-		String codonChange = variantEffect.getCodonChangeMax();
-		if (!codonChange.isEmpty()) effBuff.append(codonChange);
-		else if (variantEffect.getDistance() >= 0) effBuff.append(variantEffect.getDistance());
-		effBuff.append("|");
-
-		// Add HGVS (amino acid change)
-		if (useHgvs) effBuff.append(variantEffect.getHgvs());
-		else effBuff.append(variantEffect.getAaChange());
-		effBuff.append("|");
-
-		// Add amino acid length
-		if (formatVersion != EffFormatVersion.FORMAT_EFF_2) { // This field is not in format version 2
-			int aalen = variantEffect.getAaLength();
-			effBuff.append(aalen >= 0 ? aalen : "");
-			effBuff.append("|");
-		}
-
-		// Add gene info
-		if (gene != null) {
-			// Gene name
-			effBuff.append(VcfOutputFormatter.vcfInfoSafeString(useGeneId ? gene.getId() : gene.getGeneName()));
-			effBuff.append("|");
-
-			// Transcript biotype
-			if (tr != null) {
-				if ((tr.getBioType() != null) && !tr.getBioType().isEmpty()) effBuff.append(tr.getBioType());
-				else effBuff.append(tr.isProteinCoding() ? "protein_coding" : ""); // No biotype? Add protein_coding of we know it is.
-			}
-			effBuff.append("|");
-
-			// Protein coding gene?
-			String coding = "";
-			if (gene.getGenome().hasCodingInfo()) coding = (gene.isProteinCoding() ? VariantEffect.Coding.CODING.toString() : VariantEffect.Coding.NON_CODING.toString());
-			effBuff.append(coding);
-			effBuff.append("|");
-		} else if (variantEffect.isRegulation()) {
-			Regulation reg = (Regulation) variantEffect.getMarker();
-			effBuff.append("|" + reg.getCellType() + "||");
-		} else if (variantEffect.isCustom()) {
-			Marker m = variantEffect.getMarker();
-			if (m != null) effBuff.append("|" + VcfEntry.vcfInfoSafe(m.getId()) + "||");
-			else effBuff.append("|||");
-		} else effBuff.append("|||");
-
-		// Add transcript info
-		if (tr != null) effBuff.append(VcfOutputFormatter.vcfInfoSafeString(tr.getId()));
-		effBuff.append("|");
-
-		// Add genotype (or genotype difference) for this effect
-		if (formatVersion == EffFormatVersion.FORMAT_EFF_4) {
-			effBuff.append("|");
-			effBuff.append(variantEffect.getGenotype());
-		}
+		// Distance: Mostly used for non-coding variants
+		int dist = variantEffect.getDistance();
+		if (dist >= 0) add(effBuff, dist);
+		else effBuff.append("|");
 
 		//---
 		// Errors or warnings (this is the last thing in the list)
 		//---
 		if (variantEffect.hasError() || variantEffect.hasWarning()) {
 			StringBuilder err = new StringBuilder();
-
-			// Add warnings
-			if (!variantEffect.getWarning().isEmpty()) err.append(variantEffect.getWarning());
-
 			// Add errors
 			if (!variantEffect.getError().isEmpty()) {
-				if (err.length() > 0) err.append("+");
 				err.append(variantEffect.getError());
 			}
 
-			effBuff.append("|");
+			// Add warnings
+			if (!variantEffect.getWarning().isEmpty()) {
+				if (err.length() > 0) err.append(EFFECT_TYPE_SEPARATOR);
+				err.append(variantEffect.getWarning());
+			}
+
 			effBuff.append(err);
 		}
-		effBuff.append(")");
 
 		return effBuff.toString();
 
@@ -865,6 +801,41 @@ public class VcfEffect {
 
 	public void setTranscriptId(String transcriptId) {
 		this.transcriptId = transcriptId;
+	}
+
+	/**
+	 * Split a 'effect' string to an array of strings
+	 */
+	public String[] split(String eff) {
+		// ANN format versions
+		if (formatVersion.isAnn()) {
+			// Negative number means "use trailing empty as well"
+			return eff.replace('|', '\t').split("\t", -1);
+		}
+
+		// EFF format version
+		if (formatVersion.isEff()) {
+			int idxBr = eff.indexOf('[');
+			int idxParen = eff.indexOf('(');
+
+			String eff0 = null;
+			if ((idxBr >= 0) && (idxBr < idxParen)) {
+				int idxRbr = eff.indexOf(']');
+				eff0 = eff.substring(0, idxRbr + 1);
+				eff = eff.substring(idxRbr);
+			}
+
+			eff = eff.replace('(', '\t'); // Replace all chars by spaces
+			eff = eff.replace('|', '\t');
+			eff = eff.replace(')', '\t');
+			String effs[] = eff.split("\t", -1); // Negative number means "use trailing empty as well"
+
+			if (eff0 != null) effs[0] = eff0;
+
+			return effs;
+		}
+
+		throw new RuntimeException("Unimplemented format version '" + formatVersion + "'");
 	}
 
 	@Override

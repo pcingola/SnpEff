@@ -125,11 +125,8 @@ public class SnpEffCmdEff extends SnpEff {
 
 				if (genOri.isPhased() && genDer.isPhased()) {
 					// Phased, we only have two possible comparisons
-					// TODO: Check if this is correct for phased genotypes!
 					for (int i = 0; i < 2; i++) {
 						// Add comparisons
-						// TODO: Decide if we want to keep "back to reference" analysis (i.e. gd[d] == 0)
-						// if ((go[i] >= 0) && (gd[i] >= 0) // Both genotypes are non-missing?
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
@@ -143,8 +140,6 @@ public class SnpEffCmdEff extends SnpEff {
 					for (int d = 0; d < gd.length; d++)
 						for (int o = 0; o < go.length; o++) {
 							// Add comparisons
-							// TODO: Decide if we want to keep "back to reference" analysis (i.e. gd[d] == 0)
-							// if ((go[o] >= 0) && (gd[d] >= 0) // Both genotypes are non-missing?
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
@@ -226,9 +221,6 @@ public class SnpEffCmdEff extends SnpEff {
 	/**
 	 * Iterate on all inputs (VCF) and calculate effects.
 	 * Note: This is used only on input format VCF, which has a different iteration modality
-	 *
-	 * TODO: Effect analysis should be in a separate class, so we can easily reuse it for single or mutli-threaded modes.
-	 *       SnpEffCmdEff should only parse command line, and then invoke the other class (now everything is here, it's a mess)
 	 */
 	void iterateVcf(String inputFile, OutputFormatter outputFormatter) {
 		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();

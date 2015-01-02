@@ -135,7 +135,7 @@ public class TestCasesVcf extends TestCasesBase {
 			// Compare variants to what we expect
 			List<Variant> variants = vcfEntry.variants();
 
-			Assert.assertEquals("chr1:223921_GACCACTGGAA/ACATCCATACAT", variants.get(0).toString()); // FIXME: What the hell do I actually expect here?
+			Assert.assertEquals("chr1:223921_GACCACTGGAA/ACATCCATACAT", variants.get(0).toString());
 			Assert.assertEquals("chr1:223919_TC/AT", variants.get(1).toString());
 		}
 	}

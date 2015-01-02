@@ -127,9 +127,9 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		if (errwarn == null) return;
 
 		if (errwarn.isError()) {
-			if (error.indexOf(errwarn.toString()) < 0) error += (error.isEmpty() ? "" : "+") + errwarn;
+			if (error.indexOf(errwarn.toString()) < 0) error += (error.isEmpty() ? "" : VcfEffect.EFFECT_TYPE_SEPARATOR) + errwarn;
 		} else {
-			if (warning.indexOf(errwarn.toString()) < 0) warning += (warning.isEmpty() ? "" : "+") + errwarn;
+			if (warning.indexOf(errwarn.toString()) < 0) warning += (warning.isEmpty() ? "" : VcfEffect.EFFECT_TYPE_SEPARATOR) + errwarn;
 		}
 	}
 
@@ -177,8 +177,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		// Sort by effect
 		comp = getEffectType().compareTo(varEffOther.getEffectType());
 		if (comp != 0) return comp;
-
-		// TODO: Add sort by TSL (transcript level support) if available
 
 		// Sort by: Is canonical transcript?
 		Transcript trThis = getTranscript();

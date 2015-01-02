@@ -20,8 +20,6 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  *       We are also storing much less information fields like quality,
  *       score, coverage, etc. have been removed.
  *
- * TODO: Refactor some functionality into different classes (VariantWithScore and VariantCancer)
- *
  * @author pcingola
  */
 public class Variant extends Marker {

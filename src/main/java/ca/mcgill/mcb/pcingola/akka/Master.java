@@ -28,7 +28,6 @@ public abstract class Master<TI, TO> extends UntypedActor implements Iterable<TI
 	public static final int DEFAULT_SHOW_EVERY = 1000;
 
 	// Default number of entries processed in each work
-	// FIXME: This should be adaptive in order to maximize CPU usage (I'm way too lazy to do it now).
 	public static final int DEFAULT_BATCH_SIZE = 10;
 
 	// Debug mode?

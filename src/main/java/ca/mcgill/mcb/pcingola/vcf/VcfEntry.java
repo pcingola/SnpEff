@@ -1281,7 +1281,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// 2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
 		if (alt.startsWith("<DEL")) {
 			// Create deletion string
-			// TODO: This should be changed. We should be using "imprecise" for these variants
+			// May be we should be using "imprecise" for these variants
 			String ch = ref;
 			int startNew = start;
 

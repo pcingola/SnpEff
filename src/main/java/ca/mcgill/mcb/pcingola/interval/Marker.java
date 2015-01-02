@@ -91,7 +91,6 @@ public class Marker extends Interval implements TxtSerializable {
 		if (variant.isIns()) return applyIns(variant, lenChange);
 		if (variant.isDel()) return applyDel(variant, lenChange);
 
-		// TODO : Mixed changes are not supported
 		throw new RuntimeException("Variant type not supported: " + variant.getVariantType() + "\n\t" + variant);
 	}
 
@@ -106,12 +105,7 @@ public class Marker extends Interval implements TxtSerializable {
 			m.start += lenChange;
 			m.end += lenChange;
 		} else if (variant.includes(this)) {
-			// TODO: Should I create a zero length marker?
-			//       This brings a few problems:
-			//			- We don't have any way to represent a zero length marker (if start=end then length is 1 base)
-			//			- How does a zero length marker behaves in an INSERTION?
-			//			- How does a zero length marker intersect?
-			return null; // SeqChange completely includes this marker => The whole marker deleted
+			return null; // Variant completely includes this marker => The whole marker deleted
 		} else if (includes(variant)) m.end += lenChange; // This marker completely includes variant. But variant does not include marker (i.e. they are not equal). Only 'end' coordinate needs to be updated
 		else {
 			// SeqChange is partially included in this marker.

@@ -1,5 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 
 /**
@@ -11,11 +13,11 @@ public class TestCasesZzz extends TestCasesBase {
 		super();
 	}
 
-	//	@Test
-	//	public void test_01_Allele() {
-	//		throw new RuntimeException("ANN: Check Allele & parsed correctly");
-	//	}
-	//
+	@Test
+	public void test_01_Allele() {
+		throw new RuntimeException("ANN: Check Allele & parsed correctly");
+	}
+
 	//	@Test
 	//	public void test_02_Allele_Cancer() {
 	//		throw new RuntimeException("ANN: Check Allele in cancer sample & parsed correctly");
