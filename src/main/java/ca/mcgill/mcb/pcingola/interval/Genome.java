@@ -300,7 +300,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 					if (e.getSequence().isEmpty()) exonNoSeq++;
 					else exonSeq++;
 
-		return exonSeq < exonNoSeq;
+		return exonNoSeq < exonSeq;
 	}
 
 	@Override
@@ -410,7 +410,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				+ "\t" + version //
 				+ "\t" + species //
 				+ "\t" + markerSerializer.save((Iterable) chromosomes.values()) //
-				;
+		;
 	}
 
 	/**

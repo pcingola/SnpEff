@@ -67,6 +67,7 @@ public class CompareToVep {
 		if (strict) args.add("-strict");
 		if (onlyProtein) args.add("-onlyProtein");
 		if (!shiftHgvs) args.add("-noShiftHgvs");
+		args.add("-formatEff");
 		args.add(genomeName);
 		args.add(vcf);
 

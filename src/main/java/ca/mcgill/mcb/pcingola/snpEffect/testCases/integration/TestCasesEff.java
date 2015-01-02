@@ -11,6 +11,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -46,6 +47,7 @@ public class TestCasesEff {
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
+		cmdEff.setFormatVersion(EffFormatVersion.FORMAT_EFF_4);
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);

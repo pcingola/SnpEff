@@ -119,6 +119,9 @@ public class VcfOutputFormatter extends OutputFormatter {
 				// Create INFO field value as a string
 				//---
 				VcfEffect vcfEffect = new VcfEffect(variantEffect, formatVersion);
+				vcfEffect.setUseGeneId(useGeneId);
+				vcfEffect.setUseHgvs(useHgvs);
+				vcfEffect.setUseSequenceOntology(useSequenceOntology);
 				String effStr = vcfEffect.toString();
 
 				//---
@@ -261,6 +264,10 @@ public class VcfOutputFormatter extends OutputFormatter {
 		if (useOicr) newLines.add("##INFO=<ID=OICR,Number=.,Type=String,Description=\"Format: ( Transcript | Distance from begining cDNA )\">");
 
 		return newLines;
+	}
+
+	public void setFormatVersion(EffFormatVersion formatVersion) {
+		this.formatVersion = formatVersion;
 	}
 
 	public void setGatk(boolean gatk) {

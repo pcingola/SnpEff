@@ -9,6 +9,7 @@ import org.junit.Test;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -151,6 +152,7 @@ public class TestCasesHgvs {
 		snpeff.setDebug(debug);
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);
+		snpeff.setFormatVersion(EffFormatVersion.FORMAT_EFF_4);
 
 		// The problem appears when splice site is large (in this example)
 		snpeff.setSpliceSiteSize(spliceSize);
@@ -188,6 +190,7 @@ public class TestCasesHgvs {
 		snpeff.setDebug(debug);
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);
+		snpeff.setFormatVersion(EffFormatVersion.FORMAT_EFF_4);
 
 		// The problem appears when splice site is large (in this example)
 		snpeff.setUpDownStreamLength(0);

@@ -13,6 +13,10 @@ public class TestCasesZzz extends TestCasesBase {
 		super();
 	}
 
+	void checkAnnotateAndParse(String vcfFile, String field, String expectedValue) {
+
+	}
+
 	@Test
 	public void test_01_Allele() {
 		throw new RuntimeException("ANN: Check Allele & parsed correctly");

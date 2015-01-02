@@ -638,6 +638,13 @@ public class VcfEffect {
 	 * Parse annotations either in 'ANN' or 'EFF' INFO field
 	 */
 	void parse() {
+		// Guess format, if not given
+		if (formatVersion == null || !formatVersion.isFullVersion()) formatVersion = formatVersion();
+
+		// Split strings
+		effectStrings = split(effectString);
+
+		// Parse
 		if (isAnn()) parseAnn();
 		else parseEff();
 	}
@@ -653,16 +660,9 @@ public class VcfEffect {
 	 * Parse 'EFF' field
 	 */
 	void parseEff() {
-		effectStrings = split(effectString);
-
-		// Guess format, if not given
-		if (formatVersion == null || !formatVersion.isFullVersion()) formatVersion = formatVersion();
-
 		try {
 			// Parse each sub field
 			int index = 0;
-
-			// TODO: ("Branch for ANN / EFF?");
 
 			// Effect
 			effString = effectStrings[index];
@@ -787,6 +787,10 @@ public class VcfEffect {
 		this.exonId = exonId;
 	}
 
+	public void setFormatVersion(EffFormatVersion formatVersion) {
+		this.formatVersion = formatVersion;
+	}
+
 	public void setFunClass(VariantEffect.FunctionalClass funClass) {
 		this.funClass = funClass;
 	}
@@ -801,6 +805,18 @@ public class VcfEffect {
 
 	public void setTranscriptId(String transcriptId) {
 		this.transcriptId = transcriptId;
+	}
+
+	public void setUseGeneId(boolean useGeneId) {
+		this.useGeneId = useGeneId;
+	}
+
+	public void setUseHgvs(boolean useHgvs) {
+		this.useHgvs = useHgvs;
+	}
+
+	public void setUseSequenceOntology(boolean useSequenceOntology) {
+		this.useSequenceOntology = useSequenceOntology;
 	}
 
 	/**
@@ -894,4 +910,5 @@ public class VcfEffect {
 
 		return sb.toString();
 	}
+
 }

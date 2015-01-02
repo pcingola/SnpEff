@@ -8,6 +8,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsExon;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntron;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesAlign;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBinomial;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBuild;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesCds;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesChiSquare;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesCochranArmitage;
