@@ -899,8 +899,22 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Parse 'EFF' info field and get a list of effects
 	 */
 	public List<VcfEffect> parseEffects(EffFormatVersion formatVersion) {
-		String effFieldName = VcfEffect.infoFieldName(formatVersion);
-		String effStr = getInfo(effFieldName); // Get effect string from INFO field
+
+		String effStr = null;
+		if (formatVersion == null) {
+			// Guess which INFO field could be
+			effStr = getInfo(VcfEffect.VCF_INFO_ANN_NAME);
+			if (effStr != null) {
+				formatVersion = EffFormatVersion.FORMAT_ANN; // Unspecied 'ANN' version
+			} else {
+				effStr = getInfo(VcfEffect.VCF_INFO_EFF_NAME);
+				if (effStr != null) formatVersion = EffFormatVersion.FORMAT_EFF; // Unspecied 'EFF' version
+			}
+		} else {
+			// Use corresponding INFO field
+			String effFieldName = VcfEffect.infoFieldName(formatVersion);
+			effStr = getInfo(effFieldName); // Get effect string from INFO field
+		}
 
 		// Create a list of effect
 		ArrayList<VcfEffect> effList = new ArrayList<VcfEffect>();

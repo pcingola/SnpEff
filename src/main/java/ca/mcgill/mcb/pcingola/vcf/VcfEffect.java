@@ -535,10 +535,9 @@ public class VcfEffect {
 	 */
 	public EffFormatVersion formatVersion() {
 		// Already set?
-		if (formatVersion != null) return formatVersion;
+		if (formatVersion != null && formatVersion.isFullVersion()) return formatVersion;
 
 		// OK, guess format version
-		// TODO: ("Branch ro ANN/EFF");
 
 		if (effectStrings == null) effectStrings = split(effectString);
 		int len = effectStrings.length;
@@ -548,10 +547,11 @@ public class VcfEffect {
 		if (lastField.startsWith("ERROR") || lastField.startsWith("WARNING")) len--;
 
 		// Guess format
-		if (len <= 11) return EffFormatVersion.FORMAT_EFF_2;
-		if (len <= 12) return EffFormatVersion.FORMAT_EFF_3;
+		if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
+		else if (len <= 12) formatVersion = EffFormatVersion.FORMAT_EFF_3;
+		else formatVersion = EffFormatVersion.FORMAT_EFF_4;
 
-		return EffFormatVersion.FORMAT_EFF_4;
+		return formatVersion;
 	}
 
 	/**
@@ -695,7 +695,7 @@ public class VcfEffect {
 	 * Should we use 'ANN' (or 'EFF')
 	 */
 	public boolean isAnn() {
-		return formatVersion == null || formatVersion == EffFormatVersion.FORMAT_ANN_5;
+		return formatVersion == null || formatVersion == EffFormatVersion.FORMAT_ANN_1;
 	}
 
 	/**
@@ -720,7 +720,7 @@ public class VcfEffect {
 		effectStrings = split(effectString);
 
 		// Guess format, if not given
-		if (formatVersion == null) formatVersion = formatVersion();
+		if (formatVersion == null || !formatVersion.isFullVersion()) formatVersion = formatVersion();
 
 		try {
 			// Parse each sub field

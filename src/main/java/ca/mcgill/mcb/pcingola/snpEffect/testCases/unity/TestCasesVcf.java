@@ -24,7 +24,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfInfoType;
  *
  * @author pcingola
  */
-public class TestCasesVcf {
+public class TestCasesVcf extends TestCasesBase {
 
 	boolean verbose = false;
 	boolean debug = false;
@@ -32,17 +32,6 @@ public class TestCasesVcf {
 
 	public TestCasesVcf() {
 		super();
-	}
-
-	/**
-	 * Get file's format version
-	 */
-	EffFormatVersion formatVersion(String vcfFileName) {
-		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
-		VcfEntry ve = vcf.next();
-		List<VcfEffect> effs = ve.parseEffects();
-		VcfEffect eff = effs.get(0);
-		return eff.formatVersion();
 	}
 
 	/**
