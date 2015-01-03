@@ -221,7 +221,7 @@ public class VcfEffect {
 	}
 
 	public VcfEffect(VariantEffect variantEffect, EffFormatVersion formatVersion) {
-		this.formatVersion = formatVersion; // Force guess
+		this.formatVersion = formatVersion;
 		this.variantEffect = variantEffect;
 	}
 
@@ -462,7 +462,7 @@ public class VcfEffect {
 	 * Create INFO field using either 'ANN' or 'EFF' depending on format version
 	 */
 	String createInfoField() {
-		if (isAnn()) return createAnnField();
+		if (formatVersion == null || formatVersion.isAnn()) return createAnnField();
 		return createEffField();
 	}
 
@@ -473,21 +473,62 @@ public class VcfEffect {
 		// Already set?
 		if (formatVersion != null && formatVersion.isFullVersion()) return formatVersion;
 
-		// OK, guess format version
+		// Try to guess format
+		formatVersion = formatVersion(effectString);
 
+		// Split strings
 		if (effectStrings == null) effectStrings = split(effectString);
-		int len = effectStrings.length;
 
-		// Error or Warning string is not added under normal situations
-		String lastField = effectStrings[len - 2]; // Actually las array item is after the last ')', so we use the previous one
-		if (lastField.startsWith("ERROR") || lastField.startsWith("WARNING")) len--;
+		// Now we can guess specific sub-version within each format
+		if (formatVersion.isAnn()) {
+			// Easy guess: So far there is only one version
+			formatVersion = EffFormatVersion.FORMAT_ANN_1;
+		} else if (formatVersion.isEff()) {
+			// On of the 'EFF' formats
 
-		// Guess format
-		if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
-		else if (len <= 12) formatVersion = EffFormatVersion.FORMAT_EFF_3;
-		else formatVersion = EffFormatVersion.FORMAT_EFF_4;
+			int len = effectStrings.length;
+
+			// Error or Warning string is not added under normal situations
+			String lastField = effectStrings[len - 2]; // Actually last array item is after the last ')', so we use the previous one
+			if (lastField.startsWith("ERROR") //
+					|| lastField.startsWith("WARNING") //
+					|| lastField.startsWith("INFO") //
+			) len--;
+
+			// Guess format
+			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
+			else if (len <= 12) formatVersion = EffFormatVersion.FORMAT_EFF_3;
+			else formatVersion = EffFormatVersion.FORMAT_EFF_4;
+		} else {
+			throw new RuntimeException("Unimplemented formatVersion '" + formatVersion + "'");
+		}
 
 		return formatVersion;
+	}
+
+	/**
+	 * Guess format 'main' version (either 'ANN' of 'EFF') without trying to guess sub-version
+	 */
+	protected EffFormatVersion formatVersion(String effectString) {
+		// Try to guess format
+		if (effectString.indexOf('(') < 0 || effectString.indexOf(')') < 0) {
+			// No parenthesis at all? Definitively 'ANN'
+			return EffFormatVersion.FORMAT_ANN;
+		}
+
+		// Extract string between left and right parenthesis
+		int idxLp = effectString.indexOf('(');
+		int idxRp = effectString.lastIndexOf(')');
+
+		// Probably 'EFF': how many sub fields between parenthesis?
+		if (idxLp < idxRp) {
+			String paren = effectString.substring(idxLp + 1, idxRp);
+			String fields[] = paren.split("\\|");
+			if (fields.length > 10) return EffFormatVersion.FORMAT_EFF;
+		}
+
+		// Too few sub-fields: It cannot be 'EFF'
+		return EffFormatVersion.FORMAT_ANN;
 	}
 
 	/**
@@ -504,6 +545,10 @@ public class VcfEffect {
 
 	public int getAaLen() {
 		return aaLen;
+	}
+
+	public String getAllele() {
+		return genotype;
 	}
 
 	public String getBioType() {
@@ -628,13 +673,6 @@ public class VcfEffect {
 	}
 
 	/**
-	 * Should we use 'ANN' (or 'EFF')
-	 */
-	public boolean isAnn() {
-		return formatVersion == null || formatVersion == EffFormatVersion.FORMAT_ANN_1;
-	}
-
-	/**
 	 * Parse annotations either in 'ANN' or 'EFF' INFO field
 	 */
 	void parse() {
@@ -645,7 +683,7 @@ public class VcfEffect {
 		effectStrings = split(effectString);
 
 		// Parse
-		if (isAnn()) parseAnn();
+		if (formatVersion.isAnn()) parseAnn();
 		else parseEff();
 	}
 
@@ -653,7 +691,17 @@ public class VcfEffect {
 	 * Parse 'ANN' field
 	 */
 	void parseAnn() {
-		throw new RuntimeException("Unimplemented!");
+		int index = 0;
+		genotype = effectStrings[index++];
+
+		effString = effectStrings[index];
+		effectTypesStr = effectStrings[index];
+		effectTypes = parseEffect(effectStrings[index]);
+		index++;
+
+		if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) impact = VariantEffect.EffectImpact.valueOf(effectStrings[index]);
+		index++;
+
 	}
 
 	/**

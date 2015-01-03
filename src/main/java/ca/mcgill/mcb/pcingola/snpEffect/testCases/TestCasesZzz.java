@@ -1,8 +1,16 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
 
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
+import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
+import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Test case
@@ -13,15 +21,42 @@ public class TestCasesZzz extends TestCasesBase {
 		super();
 	}
 
-	void checkAnnotateAndParse(String vcfFile, String field, String expectedValue) {
+	/**
+	 * Annotate a VCF file and check that corresponding annotataion
+	 */
+	List<VcfEntry> annotate(String vcfFile) {
+		String genome = "test_ENSG00000158062";
 
+		String args[] = { "-noLog", "-noStats", genome, vcfFile };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		snpEff.setDebug(debug);
+
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		List<VcfEntry> vcfEntries = seff.run(true);
+
+		Assert.assertTrue("Empty annotataions list!", !vcfEntries.isEmpty());
+		return vcfEntries;
+	}
+
+	VcfEntry annotateFirst(String vcfFile) {
+		List<VcfEntry> vcfEntries = annotate(vcfFile);
+		return vcfEntries.get(0);
 	}
 
 	@Test
 	public void test_01_Allele() {
-		throw new RuntimeException("ANN: Check Allele & parsed correctly");
-	}
+		Gpr.debug("Test");
 
+		String vcfFile = "tests/test_ann_01.vcf";
+		VcfEntry ve = annotateFirst(vcfFile);
+
+		for (VcfEffect veff : ve.parseEffects()) {
+			Assert.assertEquals("A", veff.getAllele());
+		}
+
+	}
 	//	@Test
 	//	public void test_02_Allele_Cancer() {
 	//		throw new RuntimeException("ANN: Check Allele in cancer sample & parsed correctly");
