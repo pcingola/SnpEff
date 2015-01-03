@@ -151,7 +151,7 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 				, 100 * countByGeneRegion.percent("" + EffectType.SPLICE_SITE_ACCEPTOR) //
 				, 100 * countByGeneRegion.percent("" + EffectType.UTR_3_PRIME) //
 				, 100 * countByGeneRegion.percent("" + EffectType.DOWNSTREAM) //
-				);
+		);
 		return gb.toURLString();
 	}
 

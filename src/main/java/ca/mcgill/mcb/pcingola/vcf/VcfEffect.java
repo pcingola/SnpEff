@@ -251,7 +251,7 @@ public class VcfEffect {
 		else add(effBuff, var.getAlt());
 
 		// Add main annotation in Sequence Ontology terms
-		add(effBuff, variantEffect.getEffectTypeString(true));
+		add(effBuff, variantEffect.getEffectTypeString(true, formatVersion.separator()));
 
 		// Add effect impact
 		add(effBuff, variantEffect.getEffectImpact());
@@ -270,7 +270,7 @@ public class VcfEffect {
 		Transcript tr = variantEffect.getTranscript();
 		if (tr != null) add(effBuff, EffectType.TRANSCRIPT.toSequenceOntology());
 		else if (marker != null) {
-			if (marker instanceof Custom) add(effBuff, marker.getType() + VcfEffect.EFFECT_TYPE_SEPARATOR + ((Custom) marker).getLabel()); // Custom
+			if (marker instanceof Custom) add(effBuff, marker.getType() + formatVersion.separator() + ((Custom) marker).getLabel()); // Custom
 			else if (marker instanceof Regulation) add(effBuff, marker.getType() + ":" + ((Regulation) marker).getCellType()); // Regulation includes cell type
 			else add(effBuff, marker.getType().toSequenceOntology()); // Other markers
 		} else effBuff.append("|");
@@ -337,7 +337,7 @@ public class VcfEffect {
 
 			// Add warnings
 			if (!variantEffect.getWarning().isEmpty()) {
-				if (err.length() > 0) err.append(EFFECT_TYPE_SEPARATOR);
+				if (err.length() > 0) err.append(formatVersion.separator());
 				err.append(variantEffect.getWarning());
 			}
 
@@ -729,13 +729,13 @@ public class VcfEffect {
 		if (eff.isEmpty()) return effs;
 
 		// Split multiple effectTypes
-		if (eff.indexOf(VcfEffect.EFFECT_TYPE_SEPARATOR_OLD) >= 0) {
+		if (eff.indexOf(formatVersion.separator()) >= 0) {
 			// Old version
-			for (String es : eff.split("\\" + VcfEffect.EFFECT_TYPE_SEPARATOR_OLD))
+			for (String es : eff.split(formatVersion.separatorSplit()))
 				effs.add(EffectType.parse(es));
 		} else {
 			// Split effect strings
-			for (String es : eff.split(VcfEffect.EFFECT_TYPE_SEPARATOR))
+			for (String es : eff.split(formatVersion.separatorSplit()))
 				effs.add(EffectType.parse(es));
 		}
 
@@ -797,6 +797,10 @@ public class VcfEffect {
 
 	public void setGene(String gene) {
 		this.gene = gene;
+	}
+
+	public void setGenotype(String genotype) {
+		this.genotype = genotype;
 	}
 
 	public void setImpact(VariantEffect.EffectImpact impact) {
@@ -863,11 +867,9 @@ public class VcfEffect {
 		StringBuilder sb = new StringBuilder();
 
 		for (EffectType et : effectTypes) {
-			if (sb.length() > 0) sb.append("+");
+			if (sb.length() > 0) sb.append(formatVersion.separator());
 			sb.append(et);
 		}
-
-		// TODO: ("Branch ANN/EFF");
 
 		if ((effectDetails != null) && !effectDetails.isEmpty()) sb.append("[" + effectDetails + "]");
 		sb.append("(");

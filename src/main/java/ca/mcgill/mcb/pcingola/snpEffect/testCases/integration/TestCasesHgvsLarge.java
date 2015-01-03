@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -37,6 +38,7 @@ public class TestCasesHgvsLarge {
 		snpeff.setDebug(debug);
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);
+		snpeff.setFormatVersion(EffFormatVersion.FORMAT_EFF_4);
 
 		// Run & get result (single line)
 		List<VcfEntry> results = snpeff.run(true);

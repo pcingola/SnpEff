@@ -33,7 +33,7 @@ public class TestCasesSnp {
 		String genome = "testHg3775Chr2";
 		String vcf = "tests/stop_gained_chr2.vcf";
 
-		String args[] = { "-noLog", genome, vcf };
+		String args[] = { "-noLog", "-classic", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
 		snpEff.setVerbose(verbose);
 		snpEff.setSupressOutput(!verbose);

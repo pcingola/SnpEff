@@ -68,7 +68,7 @@ public class TestCasesCancer {
 	public void test_01() {
 		Gpr.debug("Test");
 		String file = "tests/test.cancer.snp.01.vcf";
-		snpEffect(file, null, "p.Leu1?/c.1A>G", "2-1");
+		snpEffect(file, null, "p.Leu1?/c.1A>G", "G-C");
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class TestCasesCancer {
 		Gpr.debug("Test");
 		String fileVcf = "tests/test.cancer_no_ped.vcf";
 		String fileTxt = "tests/test.cancer_no_ped.txt";
-		snpEffect(fileVcf, fileTxt, "p.Leu1?/c.1A>G", "2-1");
+		snpEffect(fileVcf, fileTxt, "p.Leu1?/c.1A>G", "G-C");
 	}
 
 }

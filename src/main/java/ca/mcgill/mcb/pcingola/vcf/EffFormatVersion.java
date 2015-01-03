@@ -96,6 +96,46 @@ public enum EffFormatVersion {
 	}
 
 	/**
+	 * Multiple effect separator
+	 */
+	public String separator() {
+		switch (this) {
+		case FORMAT_ANN_1:
+		case FORMAT_ANN:
+			return "&";
+
+		case FORMAT_EFF:
+		case FORMAT_EFF_4:
+		case FORMAT_EFF_3:
+		case FORMAT_EFF_2:
+			return "+";
+
+		default:
+			throw new RuntimeException("Unknown format: " + this);
+		}
+	}
+
+	/**
+	 * Multiple effect separator: Split regex
+	 */
+	public String separatorSplit() {
+		switch (this) {
+		case FORMAT_ANN_1:
+		case FORMAT_ANN:
+			return "\\&";
+
+		case FORMAT_EFF:
+		case FORMAT_EFF_4:
+		case FORMAT_EFF_3:
+		case FORMAT_EFF_2:
+			return "\\+";
+
+		default:
+			throw new RuntimeException("Unknown format: " + this);
+		}
+	}
+
+	/**
 	 * VCF header for each format type
 	 */
 	public String vcfHeader() {

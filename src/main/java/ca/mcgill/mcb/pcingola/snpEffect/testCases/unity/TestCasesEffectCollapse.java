@@ -67,31 +67,31 @@ public class TestCasesEffectCollapse extends TestCasesBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		check(809, "NON_SYNONYMOUS_CODING&SPLICE_SITE_REGION");
+		check(809, "NON_SYNONYMOUS_CODING+SPLICE_SITE_REGION");
 	}
 
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-		check(811, "SPLICE_SITE_DONOR&INTRON");
+		check(811, "SPLICE_SITE_DONOR+INTRON");
 	}
 
 	@Test
 	public void test_03() {
 		Gpr.debug("Test");
-		check(1010, "SPLICE_SITE_REGION&INTRON");
+		check(1010, "SPLICE_SITE_REGION+INTRON");
 	}
 
 	@Test
 	public void test_04() {
 		Gpr.debug("Test");
-		check(1012, "SPLICE_SITE_ACCEPTOR&INTRON");
+		check(1012, "SPLICE_SITE_ACCEPTOR+INTRON");
 	}
 
 	@Test
 	public void test_05() {
 		Gpr.debug("Test");
-		check(1013, "NON_SYNONYMOUS_CODING&SPLICE_SITE_REGION");
+		check(1013, "NON_SYNONYMOUS_CODING+SPLICE_SITE_REGION");
 	}
 
 }

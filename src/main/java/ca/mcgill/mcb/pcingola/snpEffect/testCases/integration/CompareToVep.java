@@ -161,7 +161,7 @@ public class CompareToVep {
 		boolean foundTranscript = false;
 
 		// Split all effects
-		for (String et : effStr.split(VcfEffect.EFFECT_TYPE_SEPARATOR)) {
+		for (String et : effStr.split("\\" + VcfEffect.EFFECT_TYPE_SEPARATOR_OLD)) {
 			if (verbose) System.out.println("\t\t" + et + "\t" + eff.getTranscriptId());
 
 			// Match all consequences
@@ -193,7 +193,7 @@ public class CompareToVep {
 	 * Compare a single effect to CSQ
 	 */
 	boolean compareEffect(VcfEffect eff, VcfConsequence csq) {
-		String effectTypes[] = eff.getEffectTypesStr().split(VcfEffect.EFFECT_TYPE_SEPARATOR);
+		String effectTypes[] = eff.getEffectTypesStr().split("\\" + VcfEffect.EFFECT_TYPE_SEPARATOR_OLD);
 		String consecuences[] = csq.getConsequence().split("&");
 
 		for (String et : effectTypes) {

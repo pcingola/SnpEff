@@ -399,17 +399,21 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return effectTypes;
 	}
 
+	public String getEffectTypeString(boolean useSeqOntology) {
+		return getEffectTypeString(useSeqOntology, VcfEffect.EFFECT_TYPE_SEPARATOR_OLD);
+	}
+
 	/**
 	 * Get Effect Type as a string
 	 */
-	public String getEffectTypeString(boolean useSeqOntology) {
+	public String getEffectTypeString(boolean useSeqOntology, String separator) {
 		if (effectTypes == null) return "";
 
 		// Show all effects
 		StringBuilder sb = new StringBuilder();
 		Collections.sort(effectTypes);
 		for (EffectType et : effectTypes) {
-			if (sb.length() > 0) sb.append(VcfEffect.EFFECT_TYPE_SEPARATOR);
+			if (sb.length() > 0) sb.append(separator);
 			if (useSeqOntology) sb.append(et.toSequenceOntology());
 			else sb.append(et.toString());
 		}
@@ -550,7 +554,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public boolean hasEffectType(EffectType effectType) {
@@ -601,13 +605,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
-				;
+		;
 	}
 
 	public boolean isSpliceSiteCore() {
 		return hasEffectType(EffectType.SPLICE_SITE_DONOR) //
 				|| hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
-				;
+		;
 	}
 
 	public boolean isSpliceSiteRegion() {
@@ -774,7 +778,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-				;
+		;
 	}
 
 	/**

@@ -129,6 +129,7 @@ public class TestCasesBase {
 		snpeff.setSupressOutput(!verbose);
 		snpeff.setUpDownStreamLength(0);
 		snpeff.setShiftHgvs(shiftHgvs);
+		snpeff.setFormatVersion(EffFormatVersion.FORMAT_EFF_4);
 
 		// Run & get result (single line)
 		List<VcfEntry> results = snpeff.run(true);
