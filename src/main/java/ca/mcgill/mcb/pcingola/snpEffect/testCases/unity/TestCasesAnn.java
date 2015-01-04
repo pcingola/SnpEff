@@ -257,7 +257,6 @@ public class TestCasesAnn extends TestCasesBase {
 	@Test
 	public void test_04_Annotation_Intergenic() {
 		Gpr.debug("Test");
-		verbose = true;
 		String vcfFile = "tests/test_ann_04.vcf";
 
 		// Annotate

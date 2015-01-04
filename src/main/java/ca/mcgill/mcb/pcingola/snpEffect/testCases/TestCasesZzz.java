@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
@@ -67,24 +68,9 @@ public class TestCasesZzz extends TestCasesBase {
 		throw new RuntimeException("Transcript '" + trId + "' not found");
 	}
 
-	//	@Test
-	//	public void test_03_GeneName_Intergenic() {
-	//		throw new RuntimeException("ANN: Check that closest gene name is correctly added & parsed correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_05_FeatureType() {
-	//		throw new RuntimeException("ANN: Check feature type 'custom' & parsed correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_06_FeatureType() {
-	//		throw new RuntimeException("ANN: Check feature type 'regulation', check that 'cell_type' is added & parsed correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_10_GATK() {
-	//		throw new RuntimeException("ANN: Check -o GATK works OK and no '&' are added into effect field");
-	//	}
+	@Test
+	public void test_10_GATK() {
+		throw new RuntimeException("ANN: Check -o GATK works OK and no '&' are added into effect field");
+	}
 
 }
