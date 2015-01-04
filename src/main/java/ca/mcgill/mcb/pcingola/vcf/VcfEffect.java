@@ -224,9 +224,10 @@ public class VcfEffect {
 		parse();
 	}
 
-	public VcfEffect(VariantEffect variantEffect, EffFormatVersion formatVersion) {
+	public VcfEffect(VariantEffect variantEffect, EffFormatVersion formatVersion, boolean useSequenceOntology) {
 		this.formatVersion = formatVersion;
 		this.variantEffect = variantEffect;
+		this.useSequenceOntology = useSequenceOntology;
 		init();
 		set(variantEffect);
 	}
@@ -440,7 +441,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-					) len--;
+			) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
@@ -1092,10 +1093,6 @@ public class VcfEffect {
 
 	public void setUseHgvs(boolean useHgvs) {
 		this.useHgvs = useHgvs;
-	}
-
-	public void setUseSequenceOntology(boolean useSequenceOntology) {
-		this.useSequenceOntology = useSequenceOntology;
 	}
 
 	/**
