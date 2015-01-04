@@ -58,18 +58,18 @@ public class TestCasesAnn extends TestCasesBase {
 						+ "\n\t\tveff.getEffectsStrSo() : " + veff.getEffectsStrSo() //
 						+ "\n\t\tveff.getEffectType()   : " + veff.getEffectType() //
 						+ "\n\t\tveff.getEffectTypes()  : " + veff.getEffectTypes() //
-						);
+				);
 			}
 
 			// Check for a specific transcript
-			if (veff.getTranscriptId().equals(trId)) return veff;
+			if (trId == null || veff.getTranscriptId().equals(trId)) return veff;
 		}
 
-		throw new RuntimeException("Transcriot '" + trId + "' not found");
+		throw new RuntimeException("Transcript '" + trId + "' not found");
 	}
 
 	@Test
-	public void test_01_Annotation() {
+	public void test_01_Annotation_Stop() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/test_ann_01.vcf";
 
@@ -131,7 +131,7 @@ public class TestCasesAnn extends TestCasesBase {
 	}
 
 	@Test
-	public void test_02_Annotation() {
+	public void test_02_Annotation_SpliceRegion() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/test_ann_02.vcf";
 
@@ -193,7 +193,7 @@ public class TestCasesAnn extends TestCasesBase {
 	}
 
 	@Test
-	public void test_03_Annotation() {
+	public void test_03_Annotation_NonSyn() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/test_ann_03.vcf";
 
@@ -252,6 +252,69 @@ public class TestCasesAnn extends TestCasesBase {
 
 		// Warning
 		Assert.assertEquals("WARNING_REF_DOES_NOT_MATCH_GENOME", veff.getErrorsWarning());
+	}
+
+	@Test
+	public void test_04_Annotation_Intergenic() {
+		Gpr.debug("Test");
+		verbose = true;
+		String vcfFile = "tests/test_ann_04.vcf";
+
+		// Annotate
+		VcfEffect veff = annotateFirst(vcfFile, null);
+
+		if (verbose) Gpr.debug(veff);
+
+		//---
+		// Check results
+		//---
+
+		// Allele
+		Assert.assertEquals("A", veff.getAllele());
+
+		// Annotataion
+		Assert.assertEquals("intergenic_region", veff.getEffectsStrSo());
+		Assert.assertEquals("INTERGENIC", veff.getEffectsStr());
+
+		// Impact
+		Assert.assertEquals("MODIFIER", veff.getImpact().toString());
+
+		// Gene name / ID
+		Assert.assertEquals("UBXN11", veff.getGeneName());
+		Assert.assertEquals("ENSG00000158062", veff.getGeneId());
+
+		// Feature type		
+		Assert.assertEquals("intergenic_region", veff.getFeatureType());
+
+		// FeatureId / transcriptId
+		Assert.assertEquals("ENSG00000158062", veff.getFeatureId());
+		Assert.assertEquals("", veff.getTranscriptId());
+
+		// Biotype
+		Assert.assertEquals("", veff.getBioType());
+
+		// Rank
+		Assert.assertEquals("-1", "" + veff.getRank());
+		Assert.assertEquals("-1", "" + veff.getRankMax());
+
+		// HGVS
+		Assert.assertEquals("", veff.getHgvsDna());
+		Assert.assertEquals("", veff.getHgvsProt());
+
+		// cDNA position
+		Assert.assertEquals("-1", "" + veff.getcDnaPos());
+		Assert.assertEquals("-1", "" + veff.getcDnaLen());
+
+		// CDS position
+		Assert.assertEquals("-1", "" + veff.getCdsPos());
+		Assert.assertEquals("-1", "" + veff.getCdsLen());
+
+		// AA position
+		Assert.assertEquals("-1", "" + veff.getAaPos());
+		Assert.assertEquals("-1", "" + veff.getAaLen());
+
+		// Warning
+		Assert.assertEquals("", veff.getErrorsWarning());
 	}
 
 }

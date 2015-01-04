@@ -7,6 +7,7 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.interval.Custom;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
+import ca.mcgill.mcb.pcingola.interval.Intergenic;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
@@ -439,7 +440,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-					) len--;
+			) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
@@ -884,6 +885,9 @@ public class VcfEffect {
 	void set(VariantEffect variantEffect) {
 		// Allele
 		Variant var = variantEffect.getVariant();
+		Gene g = variantEffect.getGene();
+		Marker marker = variantEffect.getMarker();
+		Transcript tr = variantEffect.getTranscript();
 
 		// Genotype
 		if (!var.isVariant()) genotype = "";
@@ -907,17 +911,17 @@ public class VcfEffect {
 		funClass = variantEffect.getFunctionalClass();
 
 		// Gene
-		Gene g = variantEffect.getGene();
 		if (g != null) {
 			geneName = g.getGeneName();
 			geneId = g.getId();
+		} else if (marker instanceof Intergenic) {
+			geneName = ((Intergenic) marker).getName();
+			geneId = marker.getId();
 		} else {
 			geneName = geneId = "";
 		}
 
 		// Feature type & ID
-		Marker marker = variantEffect.getMarker();
-		Transcript tr = variantEffect.getTranscript();
 		if (tr != null) {
 			featureType = "transcript";
 			featureId = tr.getId();
