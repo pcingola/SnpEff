@@ -75,7 +75,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Return a string safe to be used in an 'INFO' field (VCF file)
 	 */
 	public static String vcfInfoSafe(String str) {
-		return str.replaceAll("(\\s|;|,)+", "_");
+		//			return str.replaceAll("(\\s|;|,)+", "_");
+		if (str == null) return str;
+		return str.replaceAll("[ ,;|=()]", "_");
 	}
 
 	public VcfEntry(VcfFileIterator vcfFileIterator, Marker parent, String chromosomeName, int start, String id, String ref, String altsStr, double quality, String filterPass, String infoStr, String format) {
@@ -803,7 +805,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (alts == null // No alts
 					|| (alts.length == 0) // Zero ALTs
 					|| (alts.length == 1 && (alts[0].isEmpty() || alts[0].equals("."))) // One ALT, but it's empty
-			) {
+					) {
 				variantType = VariantType.INTERVAL;
 			} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
 				if (ref.length() == 1) variantType = VariantType.SNP;
@@ -1291,7 +1293,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				char change[] = new char[size];
 				for (int i = 0; i < change.length; i++)
 					change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-				ch = new String(change);
+					ch = new String(change);
 			}
 
 			// Create SeqChange

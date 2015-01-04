@@ -54,7 +54,7 @@ public class TestCasesZzz extends TestCasesBase {
 		for (VcfEffect veff : ve.parseEffects()) {
 			if (verbose) {
 				System.out.println("\t" + veff //
-						+ "\n\t\tveff.getEffectString() : " + veff.getEffectString() //
+						+ "\n\t\tveff.getEffectString() : " + veff.getVcfFieldString() //
 						+ "\n\t\tveff.getEffectsStr()   : " + veff.getEffectsStr() //
 						+ "\n\t\tveff.getEffectsStrSo() : " + veff.getEffectsStrSo() //
 						+ "\n\t\tveff.getEffectType()   : " + veff.getEffectType() //
@@ -70,28 +70,33 @@ public class TestCasesZzz extends TestCasesBase {
 	}
 
 	@Test
-	public void test_01_Allele() {
-		Gpr.debug("Test");
-
-		String vcfFile = "tests/test_ann_01.vcf";
-		VcfEntry ve = annotateFirst(vcfFile);
-
-		for (VcfEffect veff : ve.parseEffects()) {
-			Assert.assertEquals("A", veff.getAllele());
-		}
-	}
-
-	@Test
-	public void test_02_Annotation() {
+	public void test_01_Annotation() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/test_ann_01.vcf";
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, "ENST00000472155");
 
+		//---
 		// Check results
+		//---
+
+		// Allele
+		Assert.assertEquals("A", veff.getAllele());
+
+		// Annotataion
 		Assert.assertEquals("stop_gained", veff.getEffectsStrSo());
 		Assert.assertEquals("STOP_GAINED", veff.getEffectsStr());
+
+		// Impact
+		Assert.assertEquals("HIGH", veff.getImpact().toString());
+
+		// Gene name / ID
+		Assert.assertEquals("UBXN11", veff.getGeneName());
+		Assert.assertEquals("ENSG00000158062", veff.getGeneId());
+
+		// Feature type
+
 	}
 
 	//	@Test

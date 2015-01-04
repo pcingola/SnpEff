@@ -20,6 +20,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 /**
  * Effect of a variant.
  *
+ * TODO: Remove all code related to formatting (e.g. VCF output formatting should be done elsewhere).
+ * 
  * @author pcingola
  */
 public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
@@ -488,14 +490,14 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		String hgvsDna = getHgvsDna();
 
 		// Build output
-		StringBuilder hgsv = new StringBuilder();
-		if (hgvsProt != null) hgsv.append(hgvsProt);
+		StringBuilder hgvs = new StringBuilder();
+		if (hgvsProt != null) hgvs.append(hgvsProt);
 		if (hgvsDna != null) {
-			if (hgsv.length() > 0) hgsv.append('/');
-			hgsv.append(hgvsDna);
+			if (hgvs.length() > 0) hgvs.append('/');
+			hgvs.append(hgvsDna);
 		}
 
-		return hgsv.toString();
+		return hgvs.toString();
 	}
 
 	/**

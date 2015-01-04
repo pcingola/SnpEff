@@ -36,14 +36,14 @@ public class VcfOutputFormatter extends OutputFormatter {
 	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
 	List<VcfEntry> vcfEntries;
 
-	/**
-	 * Create a string that is safe (i.e. valid) to add in an INFO field
-	 */
-	public static String vcfInfoSafeString(String value) {
-		if (value == null) return value;
-		value = value.replaceAll("[ ,;|=()]", "_");
-		return value;
-	}
+	//	/**
+	//	 * Create a string that is safe (i.e. valid) to add in an INFO field
+	//	 */
+	//	public static String vcfInfoSafeString(String value) {
+	//		if (value == null) return value;
+	//		value = value.replaceAll("[ ,;|=()]", "_");
+	//		return value;
+	//	}
 
 	public VcfOutputFormatter() {
 		super();
@@ -160,7 +160,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 						// Get cDNA position
 						int pos = tr.isStrandMinus() ? variant.getStart() : variant.getEnd(); // First base in cDNA
 						int cdnaIdx = tr.baseNumber2MRnaPos(pos) + 1; // Which cDNA base number?
-						if (cdnaIdx > 0) sb.append("(" + vcfInfoSafeString(tr.getId()) + "|" + cdnaIdx + ")");
+						if (cdnaIdx > 0) sb.append("(" + VcfEntry.vcfInfoSafe(tr.getId()) + "|" + cdnaIdx + ")");
 
 						oicr.add(sb.toString());
 					}

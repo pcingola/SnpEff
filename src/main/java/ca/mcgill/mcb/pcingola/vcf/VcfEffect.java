@@ -12,7 +12,6 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.FunctionalClass;
@@ -37,26 +36,27 @@ public class VcfEffect {
 
 	private static HashMap<EffFormatVersion, HashMap<String, Integer>> fieldName2Num;
 
-	String effectString;
-	String effectStrings[];
 	EffFormatVersion formatVersion;
+	String vcfFieldString; // Original 'raw' string from VCF Info field
+	String vcfFieldStrings[]; // Original 'raw' strings from VCF info field: effectString.split()
 	String effString;
 	EffectType effectType;
 	String effectTypesStr;
 	List<EffectType> effectTypes;
 	String effectDetails;
+	int aaLen, aaPos;
+	int cdsLen, cdsPos;
+	int cDnaLen, cDnaPos;
+	int distance;
+	int rank;
+	String bioType;
+	String codon, aa, hgvsC, hgvsP;
+	VariantEffect.Coding coding;
+	String genotype;
+	String errorsWarnings;
+	String geneName, geneId, featureType, featureId, transcriptId, exonId;
 	VariantEffect.EffectImpact impact;
 	VariantEffect.FunctionalClass funClass;
-	String codon;
-	String aa;
-	int aaLen;
-	String gene, geneId;
-	String bioType;
-	VariantEffect.Coding coding;
-	String transcriptId;
-	String exonId;
-	String genotype;
-	String errorsOrWarning;
 	VariantEffect variantEffect;
 	boolean useSequenceOntology = true, useHgvs = true, useGeneId = false;
 
@@ -205,7 +205,8 @@ public class VcfEffect {
 	 */
 	public VcfEffect(String effectString) {
 		formatVersion = null; // Force guess
-		this.effectString = effectString;
+		vcfFieldString = effectString;
+		init();
 		parse();
 	}
 
@@ -216,13 +217,16 @@ public class VcfEffect {
 	 */
 	public VcfEffect(String effectString, EffFormatVersion formatVersion) {
 		this.formatVersion = formatVersion;
-		this.effectString = effectString;
+		init();
+		vcfFieldString = effectString;
 		parse();
 	}
 
 	public VcfEffect(VariantEffect variantEffect, EffFormatVersion formatVersion) {
 		this.formatVersion = formatVersion;
 		this.variantEffect = variantEffect;
+		init();
+		set(variantEffect);
 	}
 
 	/**
@@ -245,104 +249,58 @@ public class VcfEffect {
 		StringBuilder effBuff = new StringBuilder();
 
 		// Allele
-		Variant var = variantEffect.getVariant();
-		if (!var.isVariant()) add(effBuff, ".");
-		else if (var.isNonRef()) add(effBuff, var.getGenotype());
-		else add(effBuff, var.getAlt());
+		add(effBuff, genotype);
 
 		// Add main annotation in Sequence Ontology terms
-		add(effBuff, variantEffect.getEffectTypeString(true, formatVersion.separator()));
+		add(effBuff, effectTypesStr);
 
 		// Add effect impact
-		add(effBuff, variantEffect.getEffectImpact());
+		add(effBuff, impact);
 
 		// Gene name
-		Gene gene = variantEffect.getGene();
-		if (gene != null) add(effBuff, VcfOutputFormatter.vcfInfoSafeString(gene.getGeneName()));
-		else effBuff.append("|");
+		add(effBuff, geneName);
 
 		// Gene ID
-		if (gene != null) add(effBuff, VcfOutputFormatter.vcfInfoSafeString(gene.getId()));
-		else effBuff.append("|");
+		add(effBuff, geneId);
 
 		// Feature type
-		Marker marker = variantEffect.getMarker();
-		Transcript tr = variantEffect.getTranscript();
-		if (tr != null) add(effBuff, EffectType.TRANSCRIPT.toSequenceOntology());
-		else if (marker != null) {
-			if (marker instanceof Custom) add(effBuff, marker.getType() + formatVersion.separator() + ((Custom) marker).getLabel()); // Custom
-			else if (marker instanceof Regulation) add(effBuff, marker.getType() + ":" + ((Regulation) marker).getCellType()); // Regulation includes cell type
-			else add(effBuff, marker.getType().toSequenceOntology()); // Other markers
-		} else effBuff.append("|");
+		add(effBuff, featureType);
 
 		// Feature ID
-		if (tr != null) add(effBuff, VcfEntry.vcfInfoSafe(tr.getId()));
-		else if (marker != null) add(effBuff, VcfEntry.vcfInfoSafe(marker.getId()));
-		else effBuff.append("|");
+		add(effBuff, featureId);
 
 		// Transcript biotype
-		if (tr != null) {
-			if ((tr.getBioType() != null) && !tr.getBioType().isEmpty()) add(effBuff, tr.getBioType());
-			else add(effBuff, tr.isProteinCoding() ? "Coding" : "Noncoding"); // No biotype? Add protein_coding of we know it is.
-		} else effBuff.append("|");
+		add(effBuff, bioType);
 
 		// Add exon (or intron) rank info
-		Exon ex = variantEffect.getExon();
-		int rank = -1;
-		if (ex != null) rank = ex.getRank();
-		else {
-			// Do we have an intron?
-			Intron intron = variantEffect.getIntron();
-			if (intron != null) rank = intron.getRank();
-		}
 		if (rank >= 0) add(effBuff, rank);
 		else effBuff.append("|");
 
 		// HGVS
-		add(effBuff, variantEffect.getHgvsDna());
-		add(effBuff, variantEffect.getHgvsProt());
+		add(effBuff, hgvsC);
+		add(effBuff, hgvsP);
 
 		// cDNA position / length
-		if (tr != null) {
-			int cDnaPos = variantEffect.getCodonNum() * 3 + variantEffect.getCodonIndex();
-			add(effBuff, cDnaPos + "/" + variantEffect.getCdsLength());
+		if (cdsPos >= 0) {
+			add(effBuff, cDnaPos + "/" + cDnaLen);
 		} else effBuff.append("|");
 
 		// CDS position / length
-		if (tr != null) {
-			int cdsPos = variantEffect.getCodonNum() * 3 + variantEffect.getCodonIndex();
-			add(effBuff, cdsPos + "/" + variantEffect.getCdsLength());
+		if (cdsPos >= 0) {
+			add(effBuff, cdsPos + "/" + cdsLen);
 		} else effBuff.append("|");
 
 		// Protein position / protein length
-		if (tr != null) {
-			int aaPos = variantEffect.getCodonNum();
-			add(effBuff, aaPos + "/" + variantEffect.getAaLength());
+		if (aaPos >= 0) {
+			add(effBuff, aaPos + "/" + aaLen);
 		} else effBuff.append("|");
 
 		// Distance: Mostly used for non-coding variants
-		int dist = variantEffect.getDistance();
-		if (dist >= 0) add(effBuff, dist);
+		if (distance >= 0) add(effBuff, distance);
 		else effBuff.append("|");
 
-		//---
 		// Errors or warnings (this is the last thing in the list)
-		//---
-		if (variantEffect.hasError() || variantEffect.hasWarning()) {
-			StringBuilder err = new StringBuilder();
-			// Add errors
-			if (!variantEffect.getError().isEmpty()) {
-				err.append(variantEffect.getError());
-			}
-
-			// Add warnings
-			if (!variantEffect.getWarning().isEmpty()) {
-				if (err.length() > 0) err.append(formatVersion.separator());
-				err.append(variantEffect.getWarning());
-			}
-
-			effBuff.append(err);
-		}
+		effBuff.append(errorsWarnings);
 
 		return effBuff.toString();
 
@@ -355,42 +313,48 @@ public class VcfEffect {
 		StringBuilder effBuff = new StringBuilder();
 
 		// Add effect
-		effBuff.append(variantEffect.effect(true, false, false, useSequenceOntology));
+		effBuff.append(effectTypesStr);
 		effBuff.append("(");
 
 		// Add effect impact
-		effBuff.append(variantEffect.getEffectImpact());
+		effBuff.append(impact);
 		effBuff.append("|");
 
 		// Add functional class
-		FunctionalClass fc = variantEffect.getFunctionalClass();
-		effBuff.append(fc == FunctionalClass.NONE ? "" : fc.toString()); // Show only if it is not empty
+		effBuff.append(funClass == FunctionalClass.NONE ? "" : funClass.toString()); // Show only if it is not empty
 		effBuff.append("|");
 
 		// Codon change
-		String codonChange = variantEffect.getCodonChangeMax();
-		if (!codonChange.isEmpty()) effBuff.append(codonChange);
-		else if (variantEffect.getDistance() >= 0) effBuff.append(variantEffect.getDistance());
+		if (!codon.isEmpty()) effBuff.append(codon);
+		else if (distance >= 0) effBuff.append(distance);
 		effBuff.append("|");
 
 		// Add HGVS (amino acid change)
-		if (useHgvs) effBuff.append(variantEffect.getHgvs());
-		else effBuff.append(variantEffect.getAaChange());
+		if (useHgvs) {
+			StringBuilder hgvs = new StringBuilder();
+			if (hgvsP != null) hgvs.append(hgvsP);
+			if (hgvsC != null) {
+				if (hgvs.length() > 0) hgvs.append('/');
+				hgvs.append(hgvsC);
+			}
+
+			effBuff.append(hgvs.toString());
+		} else effBuff.append(aa);
 		effBuff.append("|");
 
 		// Add amino acid length
 		if (formatVersion != EffFormatVersion.FORMAT_EFF_2) { // This field is not in format version 2
-			int aalen = variantEffect.getAaLength();
-			effBuff.append(aalen >= 0 ? aalen : "");
+			effBuff.append(aaLen >= 0 ? aaLen : "");
 			effBuff.append("|");
 		}
 
 		// Add gene info
+		// TODO: Code here should not be using 'variantEffect'
 		Gene gene = variantEffect.getGene();
 		Transcript tr = variantEffect.getTranscript();
 		if (gene != null) {
 			// Gene name
-			effBuff.append(VcfOutputFormatter.vcfInfoSafeString(useGeneId ? gene.getId() : gene.getGeneName()));
+			effBuff.append(VcfEntry.vcfInfoSafe(useGeneId ? geneId : geneName));
 			effBuff.append("|");
 
 			// Transcript biotype
@@ -415,43 +379,24 @@ public class VcfEffect {
 		} else effBuff.append("|||");
 
 		// Add transcript info
-		if (tr != null) effBuff.append(VcfOutputFormatter.vcfInfoSafeString(tr.getId()));
+		effBuff.append(VcfEntry.vcfInfoSafe(transcriptId));
 		effBuff.append("|");
 
 		// Add exon (or intron) rank info
-		Exon ex = variantEffect.getExon();
-		int rank = -1;
-		if (ex != null) rank = ex.getRank();
-		else {
-			// Do we have an intron?
-			Intron intron = variantEffect.getIntron();
-			if (intron != null) rank = intron.getRank();
-		}
 		effBuff.append(rank >= 0 ? rank : "");
 
 		// Add genotype (or genotype difference) for this effect
 		if (formatVersion == EffFormatVersion.FORMAT_EFF_4) {
 			effBuff.append("|");
-			effBuff.append(variantEffect.getGenotype());
+			effBuff.append(genotype);
 		}
 
 		//---
 		// Errors or warnings (this is the last thing in the list)
 		//---
-		if (variantEffect.hasError() || variantEffect.hasWarning()) {
-			StringBuilder err = new StringBuilder();
-
-			// Add warnings
-			if (!variantEffect.getWarning().isEmpty()) err.append(variantEffect.getWarning());
-
-			// Add errors
-			if (!variantEffect.getError().isEmpty()) {
-				if (err.length() > 0) err.append("+");
-				err.append(variantEffect.getError());
-			}
-
+		if (!errorsWarnings.isEmpty()) {
 			effBuff.append("|");
-			effBuff.append(err);
+			effBuff.append(errorsWarnings);
 		}
 		effBuff.append(")");
 
@@ -474,10 +419,10 @@ public class VcfEffect {
 		if (formatVersion != null && formatVersion.isFullVersion()) return formatVersion;
 
 		// Try to guess format
-		formatVersion = formatVersion(effectString);
+		if (formatVersion == null) formatVersion = formatVersion(vcfFieldString);
 
 		// Split strings
-		if (effectStrings == null) effectStrings = split(effectString);
+		if (vcfFieldStrings == null) vcfFieldStrings = split(vcfFieldString);
 
 		// Now we can guess specific sub-version within each format
 		if (formatVersion.isAnn()) {
@@ -486,10 +431,10 @@ public class VcfEffect {
 		} else if (formatVersion.isEff()) {
 			// On of the 'EFF' formats
 
-			int len = effectStrings.length;
+			int len = vcfFieldStrings.length;
 
 			// Error or Warning string is not added under normal situations
-			String lastField = effectStrings[len - 2]; // Actually last array item is after the last ')', so we use the previous one
+			String lastField = vcfFieldStrings[len - 2]; // Actually last array item is after the last ')', so we use the previous one
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
@@ -510,33 +455,22 @@ public class VcfEffect {
 	 * Guess format 'main' version (either 'ANN' of 'EFF') without trying to guess sub-version
 	 */
 	protected EffFormatVersion formatVersion(String effectString) {
-		// Try to guess format
-		if (effectString.indexOf('(') < 0 || effectString.indexOf(')') < 0) {
-			// No parenthesis at all? Definitively 'ANN'
-			return EffFormatVersion.FORMAT_ANN;
-		}
-
 		// Extract string between left and right parenthesis
 		int idxLp = effectString.indexOf('(');
-		int idxRp = effectString.lastIndexOf(')');
+
+		// No parenthesis at all? Definitively 'ANN'
+		if (idxLp < 0) return EffFormatVersion.FORMAT_ANN;
 
 		// Probably 'EFF': how many sub fields between parenthesis?
+		int idxRp = effectString.lastIndexOf(')');
 		if (idxLp < idxRp) {
 			String paren = effectString.substring(idxLp + 1, idxRp);
-			String fields[] = paren.split("\\|");
-			if (fields.length > 10) return EffFormatVersion.FORMAT_EFF;
+			String fields[] = paren.split("\\|", -1);
+			if (fields.length >= 9) return EffFormatVersion.FORMAT_EFF;
 		}
 
 		// Too few sub-fields: It cannot be 'EFF'
 		return EffFormatVersion.FORMAT_ANN;
-	}
-
-	/**
-	 * Get a subfield as an index
-	 */
-	public String get(int index) {
-		if (index >= effectStrings.length) return null;
-		return effectStrings[index];
 	}
 
 	public String getAa() {
@@ -585,11 +519,6 @@ public class VcfEffect {
 		return sb.toString();
 	}
 
-	public String getEffectString() {
-		// TODO: ("Rename to getAnn?");
-		return effectString;
-	}
-
 	public EffectType getEffectType() {
 		// TODO: ("Rename to getAnn?");
 		if (effectType != null) return effectType;
@@ -604,7 +533,6 @@ public class VcfEffect {
 	}
 
 	public List<EffectType> getEffectTypes() {
-		// TODO: ("Rename to getAnn?");
 		return effectTypes;
 	}
 
@@ -617,19 +545,27 @@ public class VcfEffect {
 	}
 
 	public String getErrorsOrWarning() {
-		return errorsOrWarning;
+		return errorsWarnings;
 	}
 
 	public String getExonId() {
 		return exonId;
 	}
 
+	public EffFormatVersion getFormatVersion() {
+		return formatVersion;
+	}
+
 	public VariantEffect.FunctionalClass getFunClass() {
 		return funClass;
 	}
 
-	public String getGene() {
-		return gene;
+	public String getGeneId() {
+		return geneId;
+	}
+
+	public String getGeneName() {
+		return geneName;
 	}
 
 	public String getGenotype() {
@@ -664,12 +600,34 @@ public class VcfEffect {
 		return transcriptId;
 	}
 
+	/**
+	 * String from VCF file (original, unparsed, string)
+	 */
+	public String getVcfFieldString() {
+		return vcfFieldString;
+	}
+
+	/**
+	 * Get a subfield as an index
+	 */
+	public String getVcfFieldString(int index) {
+		if (index >= vcfFieldStrings.length) return null;
+		return vcfFieldStrings[index];
+	}
+
 	public boolean hasEffectType(EffectType effType) {
 		if (effectTypes == null) return false;
 		for (EffectType et : effectTypes)
 			if (et == effType) return true;
 		return false;
 
+	}
+
+	void init() {
+		aaLen = aaPos = cdsLen = cdsPos = cDnaLen = cDnaPos = distance = rank = -1;
+		vcfFieldString = effString = effectTypesStr = effectDetails = bioType = codon = aa = hgvsC = hgvsP = genotype = errorsWarnings = geneName = geneId = featureType = featureId = transcriptId = exonId = errorsWarnings = "";
+		impact = null;
+		funClass = FunctionalClass.NONE;
 	}
 
 	/**
@@ -680,7 +638,7 @@ public class VcfEffect {
 		if (formatVersion == null || !formatVersion.isFullVersion()) formatVersion = formatVersion();
 
 		// Split strings
-		effectStrings = split(effectString);
+		vcfFieldStrings = split(vcfFieldString);
 
 		// Parse
 		if (formatVersion.isAnn()) parseAnn();
@@ -694,30 +652,30 @@ public class VcfEffect {
 		int index = 0;
 
 		// Gentype
-		genotype = effectStrings[index++];
+		genotype = vcfFieldStrings[index++];
 
 		// Annotation
-		effString = effectStrings[index];
-		effectTypesStr = effectStrings[index];
-		effectTypes = parseEffect(effectStrings[index]);
+		effString = vcfFieldStrings[index];
+		effectTypesStr = vcfFieldStrings[index];
+		effectTypes = parseEffect(vcfFieldStrings[index]);
 		index++;
 
 		// Impact
-		if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) impact = VariantEffect.EffectImpact.valueOf(effectStrings[index]);
+		if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) impact = VariantEffect.EffectImpact.valueOf(vcfFieldStrings[index]);
 		index++;
 
 		// Gene name
-		if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) gene = effectStrings[index];
+		if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) geneName = vcfFieldStrings[index];
 		index++;
 
 		// Gene ID
-		if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) geneId = effectStrings[index];
+		if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) geneId = vcfFieldStrings[index];
 		index++;
 
 		// Feature type
 		index++;
 
-		if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) transcriptId = effectStrings[index];
+		if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) transcriptId = vcfFieldStrings[index];
 		index++;
 	}
 
@@ -730,59 +688,59 @@ public class VcfEffect {
 			int index = 0;
 
 			// Effect
-			effString = effectStrings[index];
-			effectTypesStr = effectStrings[index];
-			effectTypes = parseEffect(effectStrings[index]);
-			effectDetails = parseEffectDetails(effectStrings[index]); // Effect details: everything between '['  and ']' (e.g. Regulation, Custom, Motif, etc.)
+			effString = vcfFieldStrings[index];
+			effectTypesStr = vcfFieldStrings[index];
+			effectTypes = parseEffect(vcfFieldStrings[index]);
+			effectDetails = parseEffectDetails(vcfFieldStrings[index]); // Effect details: everything between '['  and ']' (e.g. Regulation, Custom, Motif, etc.)
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) impact = VariantEffect.EffectImpact.valueOf(effectStrings[index]);
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) impact = VariantEffect.EffectImpact.valueOf(vcfFieldStrings[index]);
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) funClass = VariantEffect.FunctionalClass.valueOf(effectStrings[index]);
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) funClass = VariantEffect.FunctionalClass.valueOf(vcfFieldStrings[index]);
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) codon = effectStrings[index];
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) codon = vcfFieldStrings[index];
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) aa = effectStrings[index];
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) aa = vcfFieldStrings[index];
 			index++;
 
 			if (formatVersion != EffFormatVersion.FORMAT_EFF_2) {
-				if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) aaLen = Gpr.parseIntSafe(effectStrings[index]);
+				if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) aaLen = Gpr.parseIntSafe(vcfFieldStrings[index]);
 				else aaLen = 0;
 				index++;
 			}
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) gene = effectStrings[index];
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) geneName = vcfFieldStrings[index];
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) bioType = effectStrings[index];
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) bioType = vcfFieldStrings[index];
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) coding = VariantEffect.Coding.valueOf(effectStrings[index]);
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) coding = VariantEffect.Coding.valueOf(vcfFieldStrings[index]);
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) transcriptId = effectStrings[index];
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) transcriptId = vcfFieldStrings[index];
 			index++;
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) exonId = effectStrings[index];
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) exonId = vcfFieldStrings[index];
 			index++;
 
 			if (formatVersion == EffFormatVersion.FORMAT_EFF_4) {
-				if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) genotype = effectStrings[index];
+				if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) genotype = vcfFieldStrings[index];
 				else genotype = "";
 				index++;
 			}
 
-			if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) errorsOrWarning = effectStrings[index];
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) errorsWarnings = vcfFieldStrings[index];
 			index++;
 
 		} catch (Exception e) {
 			String fields = "";
-			for (int i = 0; i < effectStrings.length; i++)
-				fields += "\t" + i + " : '" + effectStrings[i] + "'\n";
-			throw new RuntimeException("Error parsing:\n\t'" + effectString + "'\n\t EFF formatVersion : " + formatVersion + "\n" + fields, e);
+			for (int i = 0; i < vcfFieldStrings.length; i++)
+				fields += "\t" + i + " : '" + vcfFieldStrings[i] + "'\n";
+			throw new RuntimeException("Error parsing:\n\t'" + vcfFieldString + "'\n\t EFF formatVersion : " + formatVersion + "\n" + fields, e);
 		}
 	}
 
@@ -817,6 +775,142 @@ public class VcfEffect {
 		int idx = eff.indexOf('[');
 		if (idx < 0) return "";
 		return eff.substring(idx + 1, eff.length() - 1);
+	}
+
+	/**
+	 * Set all fields form 'variantEffect'
+	 */
+	void set(VariantEffect variantEffect) {
+		// Allele
+		Variant var = variantEffect.getVariant();
+
+		// Genotype
+		if (!var.isVariant()) genotype = "";
+		else if (var.isNonRef()) genotype = var.getGenotype();
+		else genotype = var.getAlt();
+
+		// Effect
+		effectType = variantEffect.getEffectType();
+		effectTypes = variantEffect.getEffectTypes();
+
+		if (formatVersion.isAnn()) {
+			effectTypesStr = variantEffect.getEffectTypeString(true, formatVersion.separator());
+		} else {
+			effectTypesStr = variantEffect.effect(true, false, false, useSequenceOntology);
+		}
+
+		// Impact
+		impact = variantEffect.getEffectImpact();
+
+		// Functional class
+		funClass = variantEffect.getFunctionalClass();
+
+		// Gene
+		Gene g = variantEffect.getGene();
+		if (g != null) {
+			geneName = g.getGeneName();
+			geneId = g.getId();
+		} else {
+			geneName = geneId = "";
+		}
+
+		// Feature type & ID
+		Marker marker = variantEffect.getMarker();
+		Transcript tr = variantEffect.getTranscript();
+		if (tr != null) {
+			featureType = "transcript";
+			featureId = tr.getId();
+		} else if (marker != null) {
+			if (marker instanceof Custom) {
+				// Custom
+				featureType = marker.getType() + formatVersion.separator() + ((Custom) marker).getLabel();
+			} else if (marker instanceof Regulation) {
+				// Regulation includes cell type
+				featureType = marker.getType() + ":" + ((Regulation) marker).getCellType();
+			} else {
+				featureType = marker.getType().toSequenceOntology();
+			}
+
+			featureId = marker.getId();
+		} else {
+			featureType = featureId = "";
+		}
+
+		// Biotype
+		if (tr != null) {
+			if ((tr.getBioType() != null) && !tr.getBioType().isEmpty()) {
+				bioType = tr.getBioType();
+			} else {
+				// No biotype? Add protein_coding of we know it is.
+				bioType = tr.isProteinCoding() ? "Coding" : "Noncoding";
+			}
+		} else {
+			bioType = "";
+		}
+
+		// Rank
+		Exon ex = variantEffect.getExon();
+		rank = -1;
+		if (ex != null) rank = ex.getRank();
+		else {
+			// Do we have an intron?
+			Intron intron = variantEffect.getIntron();
+			if (intron != null) rank = intron.getRank();
+		}
+
+		// Codon change
+		codon = variantEffect.getCodonChangeMax();
+
+		// AA change
+		aa = variantEffect.getAaChange();
+
+		// HGVS notation
+		hgvsC = variantEffect.getHgvsDna();
+		hgvsP = variantEffect.getHgvsProt();
+
+		// CDS position & len
+		if (tr != null) {
+			cDnaPos = variantEffect.getCodonNum() * 3 + variantEffect.getCodonIndex();
+			cDnaLen = variantEffect.getCdsLength();
+		} else {
+			cDnaPos = cDnaLen = -1;
+		}
+
+		// CDS position / length
+		if (tr != null) {
+			cdsPos = variantEffect.getCodonNum() * 3 + variantEffect.getCodonIndex();
+			cdsLen = variantEffect.getCdsLength();
+		} else {
+			cdsPos = cdsLen = -1;
+		}
+
+		// Protein position / protein length
+		if (tr != null) {
+			aaPos = variantEffect.getCodonNum();
+			aaLen = variantEffect.getAaLength();
+		} else {
+			aaPos = aaLen = -1;
+		}
+
+		// Distance: Mostly used for non-coding variants
+		distance = variantEffect.getDistance();
+
+		if (variantEffect.hasError() || variantEffect.hasWarning()) {
+			StringBuilder err = new StringBuilder();
+			// Add errors
+			if (!variantEffect.getError().isEmpty()) {
+				err.append(variantEffect.getError());
+			}
+
+			// Add warnings
+			if (!variantEffect.getWarning().isEmpty()) {
+				if (err.length() > 0) err.append(formatVersion.separator());
+				err.append(variantEffect.getWarning());
+			}
+
+			errorsWarnings = err.toString();
+		}
+
 	}
 
 	public void setAa(String aa) {
@@ -860,8 +954,12 @@ public class VcfEffect {
 		this.funClass = funClass;
 	}
 
-	public void setGene(String gene) {
-		this.gene = gene;
+	public void setGeneId(String geneId) {
+		this.geneId = geneId;
+	}
+
+	public void setGeneName(String geneName) {
+		this.geneName = geneName;
 	}
 
 	public void setGenotype(String genotype) {
@@ -954,7 +1052,7 @@ public class VcfEffect {
 		if (aaLen > 0) sb.append(aaLen);
 		sb.append("|");
 
-		if (gene != null) sb.append(gene);
+		if (geneName != null) sb.append(geneName);
 		sb.append("|");
 
 		if (bioType != null) sb.append(bioType);
@@ -971,7 +1069,7 @@ public class VcfEffect {
 
 		if (genotype != null) sb.append(genotype);
 
-		if (errorsOrWarning != null) sb.append("|" + errorsOrWarning);
+		if (errorsWarnings != null) sb.append("|" + errorsWarnings);
 
 		sb.append(")");
 
