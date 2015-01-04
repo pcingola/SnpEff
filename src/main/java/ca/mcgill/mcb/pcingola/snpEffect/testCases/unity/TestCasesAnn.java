@@ -130,4 +130,128 @@ public class TestCasesAnn extends TestCasesBase {
 		Assert.assertEquals("WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS", veff.getErrorsWarning());
 	}
 
+	@Test
+	public void test_02_Annotation() {
+		Gpr.debug("Test");
+		String vcfFile = "tests/test_ann_02.vcf";
+
+		// Annotate
+		VcfEffect veff = annotateFirst(vcfFile, "ENST00000374221");
+
+		if (verbose) Gpr.debug(veff);
+
+		//---
+		// Check results
+		//---
+
+		// Allele
+		Assert.assertEquals("A", veff.getAllele());
+
+		// Annotataion
+		Assert.assertEquals("splice_region_variant&intron_variant", veff.getEffectsStrSo());
+		Assert.assertEquals("SPLICE_SITE_REGION&INTRON", veff.getEffectsStr());
+
+		// Impact
+		Assert.assertEquals("LOW", veff.getImpact().toString());
+
+		// Gene name / ID
+		Assert.assertEquals("UBXN11", veff.getGeneName());
+		Assert.assertEquals("ENSG00000158062", veff.getGeneId());
+
+		// Feature type
+		Assert.assertEquals("transcript", veff.getFeatureType());
+
+		// FeatureId / transcriptId
+		Assert.assertEquals("ENST00000374221", veff.getFeatureId());
+		Assert.assertEquals("ENST00000374221", veff.getTranscriptId());
+
+		// Biotype
+		Assert.assertEquals("protein_coding", veff.getBioType());
+
+		// Rank
+		Assert.assertEquals("11", "" + veff.getRank());
+		Assert.assertEquals("15", "" + veff.getRankMax());
+
+		// HGVS
+		Assert.assertEquals("c.853-3C>T", veff.getHgvsDna());
+		Assert.assertEquals("", veff.getHgvsProt());
+
+		// cDNA position
+		Assert.assertEquals("-1", "" + veff.getcDnaPos());
+		Assert.assertEquals("-1", "" + veff.getcDnaLen());
+
+		// CDS position
+		Assert.assertEquals("-1", "" + veff.getCdsPos());
+		Assert.assertEquals("-1", "" + veff.getCdsLen());
+
+		// AA position
+		Assert.assertEquals("-1", "" + veff.getAaPos());
+		Assert.assertEquals("-1", "" + veff.getAaLen());
+
+		// Warning
+		Assert.assertEquals("", veff.getErrorsWarning());
+	}
+
+	@Test
+	public void test_03_Annotation() {
+		Gpr.debug("Test");
+		String vcfFile = "tests/test_ann_03.vcf";
+
+		// Annotate
+		VcfEffect veff = annotateFirst(vcfFile, "ENST00000374221");
+
+		if (verbose) Gpr.debug(veff);
+
+		//---
+		// Check results
+		//---
+
+		// Allele
+		Assert.assertEquals("A", veff.getAllele());
+
+		// Annotataion
+		Assert.assertEquals("missense_variant&splice_region_variant", veff.getEffectsStrSo());
+		Assert.assertEquals("NON_SYNONYMOUS_CODING&SPLICE_SITE_REGION", veff.getEffectsStr());
+
+		// Impact
+		Assert.assertEquals("MODERATE", veff.getImpact().toString());
+
+		// Gene name / ID
+		Assert.assertEquals("UBXN11", veff.getGeneName());
+		Assert.assertEquals("ENSG00000158062", veff.getGeneId());
+
+		// Feature type
+		Assert.assertEquals("transcript", veff.getFeatureType());
+
+		// FeatureId / transcriptId
+		Assert.assertEquals("ENST00000374221", veff.getFeatureId());
+		Assert.assertEquals("ENST00000374221", veff.getTranscriptId());
+
+		// Biotype
+		Assert.assertEquals("protein_coding", veff.getBioType());
+
+		// Rank
+		Assert.assertEquals("12", "" + veff.getRank());
+		Assert.assertEquals("16", "" + veff.getRankMax());
+
+		// HGVS
+		Assert.assertEquals("c.853C>T", veff.getHgvsDna());
+		Assert.assertEquals("p.Val285Leu", veff.getHgvsProt());
+
+		// cDNA position
+		Assert.assertEquals("1067", "" + veff.getcDnaPos());
+		Assert.assertEquals("1792", "" + veff.getcDnaLen());
+
+		// CDS position
+		Assert.assertEquals("853", "" + veff.getCdsPos());
+		Assert.assertEquals("1563", "" + veff.getCdsLen());
+
+		// AA position
+		Assert.assertEquals("285", "" + veff.getAaPos());
+		Assert.assertEquals("520", "" + veff.getAaLen());
+
+		// Warning
+		Assert.assertEquals("WARNING_REF_DOES_NOT_MATCH_GENOME", veff.getErrorsWarning());
+	}
+
 }

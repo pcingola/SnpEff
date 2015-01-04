@@ -70,9 +70,9 @@ public class TestCasesZzz extends TestCasesBase {
 	}
 
 	@Test
-	public void test_02_Annotation() {
+	public void test_03_Annotation() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/test_ann_01.vcf";
+		String vcfFile = "tests/test_ann_03.vcf";
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, "ENST00000374221");
@@ -87,11 +87,11 @@ public class TestCasesZzz extends TestCasesBase {
 		Assert.assertEquals("A", veff.getAllele());
 
 		// Annotataion
-		Assert.assertEquals("splice_region_variant&intron_variant", veff.getEffectsStrSo());
-		Assert.assertEquals("SPLICE_SITE_REGION&INTRON", veff.getEffectsStr());
+		Assert.assertEquals("missense_variant&splice_region_variant", veff.getEffectsStrSo());
+		Assert.assertEquals("NON_SYNONYMOUS_CODING&SPLICE_SITE_REGION", veff.getEffectsStr());
 
 		// Impact
-		Assert.assertEquals("LOW", veff.getImpact().toString());
+		Assert.assertEquals("MODERATE", veff.getImpact().toString());
 
 		// Gene name / ID
 		Assert.assertEquals("UBXN11", veff.getGeneName());
@@ -108,36 +108,28 @@ public class TestCasesZzz extends TestCasesBase {
 		Assert.assertEquals("protein_coding", veff.getBioType());
 
 		// Rank
-		Assert.assertEquals("11", "" + veff.getRank());
-		Assert.assertEquals("15", "" + veff.getRankMax());
+		Assert.assertEquals("12", "" + veff.getRank());
+		Assert.assertEquals("16", "" + veff.getRankMax());
 
 		// HGVS
-		Assert.assertEquals("c.853-3C>T", veff.getHgvsDna());
-		Assert.assertEquals("", veff.getHgvsProt());
+		Assert.assertEquals("c.853C>T", veff.getHgvsDna());
+		Assert.assertEquals("p.Val285Leu", veff.getHgvsProt());
 
 		// cDNA position
-		Assert.assertEquals("-1", "" + veff.getcDnaPos());
-		Assert.assertEquals("-1", "" + veff.getcDnaLen());
+		Assert.assertEquals("1067", "" + veff.getcDnaPos());
+		Assert.assertEquals("1792", "" + veff.getcDnaLen());
 
 		// CDS position
-		Assert.assertEquals("-1", "" + veff.getCdsPos());
-		Assert.assertEquals("-1", "" + veff.getCdsLen());
+		Assert.assertEquals("853", "" + veff.getCdsPos());
+		Assert.assertEquals("1563", "" + veff.getCdsLen());
 
 		// AA position
-		Assert.assertEquals("-1", "" + veff.getAaPos());
-		Assert.assertEquals("-1", "" + veff.getAaLen());
+		Assert.assertEquals("285", "" + veff.getAaPos());
+		Assert.assertEquals("520", "" + veff.getAaLen());
 
 		// Warning
-		Assert.assertEquals("", veff.getErrorsWarning());
+		Assert.assertEquals("WARNING_REF_DOES_NOT_MATCH_GENOME", veff.getErrorsWarning());
 	}
-
-	//	// cDNA position
-	//	Assert.assertEquals("1915", "" + veff.getcDnaPos());
-	//	Assert.assertEquals("2646", "" + veff.getcDnaLen());
-	//
-	//	// CDS position
-	//	Assert.assertEquals("1915", "" + veff.getCdsPos());
-	//	Assert.assertEquals("2646", "" + veff.getCdsLen());
 
 	//	@Test
 	//	public void test_02_Allele_Cancer() {
@@ -147,11 +139,6 @@ public class TestCasesZzz extends TestCasesBase {
 	//	@Test
 	//	public void test_03_GeneName_Intergenic() {
 	//		throw new RuntimeException("ANN: Check that closest gene name is correctly added & parsed correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_04_FeatureType() {
-	//		throw new RuntimeException("ANN: Check feature type 'transcript' & parsed correctly");
 	//	}
 	//
 	//	@Test
@@ -165,22 +152,7 @@ public class TestCasesZzz extends TestCasesBase {
 	//	}
 	//
 	//	@Test
-	//	public void test_07_cDnaPos_cDnaLen() {
-	//		throw new RuntimeException("ANN: Check that cDna pos / len are added & parse correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_08_CDS_CdsLen() {
-	//		throw new RuntimeException("ANN: Check that CDS pos / len are added & parse correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_09_ProteinPos_ProteinLen() {
-	//		throw new RuntimeException("ANN: Check that protein pos / len are added & parse correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_10_ProteinPos_ProteinLen() {
+	//	public void test_10_GATK() {
 	//		throw new RuntimeException("ANN: Check -o GATK works OK and no '&' are added into effect field");
 	//	}
 
