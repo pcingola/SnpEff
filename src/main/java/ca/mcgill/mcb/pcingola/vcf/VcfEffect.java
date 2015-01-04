@@ -438,7 +438,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-					) len--;
+			) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
@@ -552,6 +552,14 @@ public class VcfEffect {
 		return exonId;
 	}
 
+	public String getFeatureId() {
+		return featureId;
+	}
+
+	public String getFeatureType() {
+		return featureType;
+	}
+
 	public EffFormatVersion getFormatVersion() {
 		return formatVersion;
 	}
@@ -572,6 +580,10 @@ public class VcfEffect {
 		return genotype;
 	}
 
+	public String getHgvsC() {
+		return hgvsC;
+	}
+
 	public String getHgvsDna() {
 		if (aa == null) return null;
 		if (aa.indexOf('/') > 0) {
@@ -580,6 +592,10 @@ public class VcfEffect {
 		} else if (aa.startsWith("c.") || aa.startsWith("n.")) return aa;
 
 		return null;
+	}
+
+	public String getHgvsP() {
+		return hgvsP;
 	}
 
 	public String getHgvsProt() {
@@ -661,21 +677,23 @@ public class VcfEffect {
 		index++;
 
 		// Impact
-		if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) impact = VariantEffect.EffectImpact.valueOf(vcfFieldStrings[index]);
+		impact = VariantEffect.EffectImpact.valueOf(vcfFieldStrings[index]);
 		index++;
 
 		// Gene name
-		if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) geneName = vcfFieldStrings[index];
+		geneName = vcfFieldStrings[index];
 		index++;
 
 		// Gene ID
-		if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) geneId = vcfFieldStrings[index];
+		geneId = vcfFieldStrings[index];
 		index++;
 
 		// Feature type
+		featureType = vcfFieldStrings[index];
 		index++;
 
-		if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) transcriptId = vcfFieldStrings[index];
+		featureId = vcfFieldStrings[index];
+		if (featureType.equals("transcript")) transcriptId = featureId;
 		index++;
 	}
 

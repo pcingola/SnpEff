@@ -72,10 +72,13 @@ public class TestCasesZzz extends TestCasesBase {
 	@Test
 	public void test_01_Annotation() {
 		Gpr.debug("Test");
+		verbose = true;
 		String vcfFile = "tests/test_ann_01.vcf";
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, "ENST00000472155");
+
+		if (verbose) Gpr.debug(veff);
 
 		//---
 		// Check results
@@ -95,7 +98,10 @@ public class TestCasesZzz extends TestCasesBase {
 		Assert.assertEquals("UBXN11", veff.getGeneName());
 		Assert.assertEquals("ENSG00000158062", veff.getGeneId());
 
-		// Feature type
+		// Feature type		
+		Assert.assertEquals("transcript", veff.getFeatureType());
+		Assert.assertEquals("ENST00000472155", veff.getFeatureId());
+		Assert.assertEquals("ENST00000472155", veff.getTranscriptId());
 
 	}
 
