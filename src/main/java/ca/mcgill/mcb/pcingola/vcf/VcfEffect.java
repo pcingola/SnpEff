@@ -282,7 +282,7 @@ public class VcfEffect {
 		add(effBuff, hgvsP);
 
 		// cDNA position / length
-		if (cdsPos >= 0) {
+		if (cDnaPos >= 0) {
 			add(effBuff, cDnaPos + "/" + cDnaLen);
 		} else effBuff.append("|");
 
@@ -977,7 +977,7 @@ public class VcfEffect {
 		// cDna position & len (cDNA is the DNA version of mRNA)
 		if (tr != null) {
 			cDnaPos = variantEffect.getcDnaPos();
-			if (formatVersion.isAnn()) cDnaPos++; // 1-based position;
+			if (cDnaPos >= 0 && formatVersion.isAnn()) cDnaPos++; // 1-based position;
 			cDnaLen = tr.mRna().length();
 		} else {
 			cDnaPos = cDnaLen = -1;
@@ -986,7 +986,7 @@ public class VcfEffect {
 		// CDS position / length
 		if (tr != null) {
 			cdsPos = variantEffect.getCodonNum() * 3 + variantEffect.getCodonIndex();
-			if (formatVersion.isAnn()) cdsPos++; // 1-based position;
+			if (cdsPos >= 0 && formatVersion.isAnn()) cdsPos++; // 1-based position;
 			cdsLen = variantEffect.getCdsLength();
 		} else {
 			cdsPos = cdsLen = -1;
@@ -995,7 +995,7 @@ public class VcfEffect {
 		// Protein position / protein length
 		if (tr != null) {
 			aaPos = variantEffect.getCodonNum();
-			if (formatVersion.isAnn()) aaPos++; // 1-based position;
+			if (aaPos >= 0 && formatVersion.isAnn()) aaPos++; // 1-based position;
 			aaLen = variantEffect.getAaLength();
 		} else {
 			aaPos = aaLen = -1;

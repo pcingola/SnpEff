@@ -112,23 +112,23 @@ public class TestCasesZzz extends TestCasesBase {
 		Assert.assertEquals("15", "" + veff.getRankMax());
 
 		// HGVS
-		Assert.assertEquals("c.1915C>T", veff.getHgvsDna());
-		Assert.assertEquals("p.Gln639*", veff.getHgvsProt());
+		Assert.assertEquals("c.853-3C>T", veff.getHgvsDna());
+		Assert.assertEquals("", veff.getHgvsProt());
 
 		// cDNA position
-		Assert.assertEquals("1915", "" + veff.getcDnaPos());
-		Assert.assertEquals("2646", "" + veff.getcDnaLen());
+		Assert.assertEquals("-1", "" + veff.getcDnaPos());
+		Assert.assertEquals("-1", "" + veff.getcDnaLen());
 
 		// CDS position
-		Assert.assertEquals("1915", "" + veff.getCdsPos());
-		Assert.assertEquals("2646", "" + veff.getCdsLen());
+		Assert.assertEquals("-1", "" + veff.getCdsPos());
+		Assert.assertEquals("-1", "" + veff.getCdsLen());
 
 		// AA position
-		Assert.assertEquals("639", "" + veff.getAaPos());
-		Assert.assertEquals("881", "" + veff.getAaLen());
+		Assert.assertEquals("-1", "" + veff.getAaPos());
+		Assert.assertEquals("-1", "" + veff.getAaLen());
 
 		// Warning
-		Assert.assertEquals("WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS", veff.getErrorsWarning());
+		Assert.assertEquals("", veff.getErrorsWarning());
 	}
 
 	//	// cDNA position
