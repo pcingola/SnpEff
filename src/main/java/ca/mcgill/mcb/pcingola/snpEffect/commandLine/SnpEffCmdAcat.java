@@ -71,7 +71,7 @@ public class SnpEffCmdAcat extends SnpEff {
 			}
 
 			// Do not process is there are errors or warnings
-			if (veff.getErrorsOrWarning() != null) continue;
+			if (veff.getErrorsWarning() != null) continue;
 
 			// Impact andACAT score
 			EffectImpact impact = veff.getImpact();

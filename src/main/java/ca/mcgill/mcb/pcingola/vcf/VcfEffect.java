@@ -16,6 +16,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.FunctionalClass;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.Tuple;
 
 /**
  * An 'ANN' or 'EFF' entry in a VCF INFO field
@@ -48,7 +49,7 @@ public class VcfEffect {
 	int cdsLen, cdsPos;
 	int cDnaLen, cDnaPos;
 	int distance;
-	int rank;
+	int rank, rankMax;
 	String bioType;
 	String codon, aa, hgvsC, hgvsP;
 	VariantEffect.Coding coding;
@@ -273,7 +274,7 @@ public class VcfEffect {
 		add(effBuff, bioType);
 
 		// Add exon (or intron) rank info
-		if (rank >= 0) add(effBuff, rank);
+		if (rank >= 0) add(effBuff, rank + "/" + rankMax);
 		else effBuff.append("|");
 
 		// HGVS
@@ -481,12 +482,32 @@ public class VcfEffect {
 		return aaLen;
 	}
 
+	public int getAaPos() {
+		return aaPos;
+	}
+
 	public String getAllele() {
 		return genotype;
 	}
 
 	public String getBioType() {
 		return bioType;
+	}
+
+	public int getcDnaLen() {
+		return cDnaLen;
+	}
+
+	public int getcDnaPos() {
+		return cDnaPos;
+	}
+
+	public int getCdsLen() {
+		return cdsLen;
+	}
+
+	public int getCdsPos() {
+		return cdsPos;
 	}
 
 	public VariantEffect.Coding getCoding() {
@@ -497,6 +518,10 @@ public class VcfEffect {
 		return codon;
 	}
 
+	public int getDistance() {
+		return distance;
+	}
+
 	public String getEffectDetails() {
 		return effectDetails;
 	}
@@ -504,7 +529,7 @@ public class VcfEffect {
 	public String getEffectsStr() {
 		StringBuilder sb = new StringBuilder();
 		for (EffectType et : effectTypes) {
-			if (sb.length() > 0) sb.append("+");
+			if (sb.length() > 0) sb.append(formatVersion.separator());
 			sb.append(et);
 		}
 		return sb.toString();
@@ -513,14 +538,13 @@ public class VcfEffect {
 	public String getEffectsStrSo() {
 		StringBuilder sb = new StringBuilder();
 		for (EffectType et : effectTypes) {
-			if (sb.length() > 0) sb.append("+");
+			if (sb.length() > 0) sb.append(formatVersion.separator());
 			sb.append(et.toSequenceOntology());
 		}
 		return sb.toString();
 	}
 
 	public EffectType getEffectType() {
-		// TODO: ("Rename to getAnn?");
 		if (effectType != null) return effectType;
 		if (effectTypes == null || effectTypes.isEmpty()) return EffectType.NONE;
 
@@ -544,7 +568,7 @@ public class VcfEffect {
 		return effString;
 	}
 
-	public String getErrorsOrWarning() {
+	public String getErrorsWarning() {
 		return errorsWarnings;
 	}
 
@@ -585,13 +609,7 @@ public class VcfEffect {
 	}
 
 	public String getHgvsDna() {
-		if (aa == null) return null;
-		if (aa.indexOf('/') > 0) {
-			String f[] = aa.split("/");
-			if (f.length > 1 && (f[1].startsWith("c.") || f[1].startsWith("n."))) return f[1];
-		} else if (aa.startsWith("c.") || aa.startsWith("n.")) return aa;
-
-		return null;
+		return hgvsC;
 	}
 
 	public String getHgvsP() {
@@ -599,17 +617,19 @@ public class VcfEffect {
 	}
 
 	public String getHgvsProt() {
-		if (aa == null) return null;
-		if (aa.indexOf('/') > 0) {
-			String f[] = aa.split("/");
-			if (f.length > 0 && f[0].startsWith("p.")) return f[0];
-		} else if (aa.startsWith("p.")) return aa;
-
-		return null;
+		return hgvsP;
 	}
 
 	public VariantEffect.EffectImpact getImpact() {
 		return impact;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public int getRankMax() {
+		return rankMax;
 	}
 
 	public String getTranscriptId() {
@@ -640,7 +660,7 @@ public class VcfEffect {
 	}
 
 	void init() {
-		aaLen = aaPos = cdsLen = cdsPos = cDnaLen = cDnaPos = distance = rank = -1;
+		aaLen = aaPos = cdsLen = cdsPos = cDnaLen = cDnaPos = distance = rank = rankMax = -1;
 		vcfFieldString = effString = effectTypesStr = effectDetails = bioType = codon = aa = hgvsC = hgvsP = genotype = errorsWarnings = geneName = geneId = featureType = featureId = transcriptId = exonId = errorsWarnings = "";
 		impact = null;
 		funClass = FunctionalClass.NONE;
@@ -677,24 +697,53 @@ public class VcfEffect {
 		index++;
 
 		// Impact
-		impact = VariantEffect.EffectImpact.valueOf(vcfFieldStrings[index]);
-		index++;
+		impact = VariantEffect.EffectImpact.valueOf(vcfFieldStrings[index++]);
 
 		// Gene name
-		geneName = vcfFieldStrings[index];
-		index++;
+		geneName = vcfFieldStrings[index++];
 
 		// Gene ID
-		geneId = vcfFieldStrings[index];
-		index++;
+		geneId = vcfFieldStrings[index++];
 
 		// Feature type
-		featureType = vcfFieldStrings[index];
-		index++;
+		featureType = vcfFieldStrings[index++];
 
-		featureId = vcfFieldStrings[index];
+		// Feature ID
+		featureId = vcfFieldStrings[index++];
 		if (featureType.equals("transcript")) transcriptId = featureId;
-		index++;
+
+		// Biotype
+		bioType = vcfFieldStrings[index++];
+
+		// Rank '/' rankMax
+		Tuple<Integer, Integer> ints = parseSlash(vcfFieldStrings[index++]);
+		rank = ints.first;
+		rankMax = ints.second;
+
+		// HGVS
+		hgvsC = vcfFieldStrings[index++];
+		hgvsP = vcfFieldStrings[index++];
+
+		// cDna: 'pos / len'
+		ints = parseSlash(vcfFieldStrings[index++]);
+		cDnaPos = ints.first;
+		cDnaLen = ints.second;
+
+		// CDS: 'pos / len'
+		ints = parseSlash(vcfFieldStrings[index++]);
+		cdsPos = ints.first;
+		cdsLen = ints.second;
+
+		// AA: 'pos / len'
+		ints = parseSlash(vcfFieldStrings[index++]);
+		aaPos = ints.first;
+		aaLen = ints.second;
+
+		// Distance
+		distance = Gpr.parseIntSafe(vcfFieldStrings[index++]);
+
+		// Errors , warnings, info
+		errorsWarnings = vcfFieldStrings[index++];
 	}
 
 	/**
@@ -721,7 +770,19 @@ public class VcfEffect {
 			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) codon = vcfFieldStrings[index];
 			index++;
 
+			// Parse 'AA' and HGVS
 			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) aa = vcfFieldStrings[index];
+			if (aa.indexOf('/') > 0) {
+				String f[] = aa.split("/");
+
+				// HGVS Protein
+				if (f.length > 0 && f[0].startsWith("p.")) hgvsP = f[0];
+
+				// HGVS DNA
+				if (f.length > 1) {
+					if (f[1].startsWith("c.") || f[1].startsWith("n.")) hgvsC = f[1];
+				} else if (aa.startsWith("c.") || aa.startsWith("n.")) hgvsC = aa;
+			}
 			index++;
 
 			if (formatVersion != EffFormatVersion.FORMAT_EFF_2) {
@@ -793,6 +854,28 @@ public class VcfEffect {
 		int idx = eff.indexOf('[');
 		if (idx < 0) return "";
 		return eff.substring(idx + 1, eff.length() - 1);
+	}
+
+	/**
+	 * Parse two integers separated by a slash
+	 */
+	Tuple<Integer, Integer> parseSlash(String str) {
+		int i1 = -1, i2 = -1;
+
+		if (str != null && !str.isEmpty()) {
+			String fields[] = str.split("/");
+
+			if (fields.length >= 2) {
+				// Two numbers separated by a slash
+				i1 = Gpr.parseIntSafe(fields[0]);
+				i2 = Gpr.parseIntSafe(fields[1]);
+			} else {
+				// Only one number?
+				i1 = Gpr.parseIntSafe(fields[0]);
+			}
+		}
+
+		return new Tuple<Integer, Integer>(i1, i2);
 	}
 
 	/**
@@ -869,11 +952,16 @@ public class VcfEffect {
 		// Rank
 		Exon ex = variantEffect.getExon();
 		rank = -1;
-		if (ex != null) rank = ex.getRank();
-		else {
+		if (ex != null) {
+			rank = ex.getRank();
+			rankMax = tr.numChilds();
+		} else {
 			// Do we have an intron?
 			Intron intron = variantEffect.getIntron();
-			if (intron != null) rank = intron.getRank();
+			if (intron != null) {
+				rank = intron.getRank();
+				rankMax = Math.max(0, tr.numChilds() - 1);
+			}
 		}
 
 		// Codon change
@@ -886,10 +974,11 @@ public class VcfEffect {
 		hgvsC = variantEffect.getHgvsDna();
 		hgvsP = variantEffect.getHgvsProt();
 
-		// CDS position & len
+		// cDna position & len (cDNA is the DNA version of mRNA)
 		if (tr != null) {
-			cDnaPos = variantEffect.getCodonNum() * 3 + variantEffect.getCodonIndex();
-			cDnaLen = variantEffect.getCdsLength();
+			cDnaPos = variantEffect.getcDnaPos();
+			if (formatVersion.isAnn()) cDnaPos++; // 1-based position;
+			cDnaLen = tr.mRna().length();
 		} else {
 			cDnaPos = cDnaLen = -1;
 		}
@@ -897,6 +986,7 @@ public class VcfEffect {
 		// CDS position / length
 		if (tr != null) {
 			cdsPos = variantEffect.getCodonNum() * 3 + variantEffect.getCodonIndex();
+			if (formatVersion.isAnn()) cdsPos++; // 1-based position;
 			cdsLen = variantEffect.getCdsLength();
 		} else {
 			cdsPos = cdsLen = -1;
@@ -905,6 +995,7 @@ public class VcfEffect {
 		// Protein position / protein length
 		if (tr != null) {
 			aaPos = variantEffect.getCodonNum();
+			if (formatVersion.isAnn()) aaPos++; // 1-based position;
 			aaLen = variantEffect.getAaLength();
 		} else {
 			aaPos = aaLen = -1;

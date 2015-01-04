@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import java.util.List;
 
@@ -7,17 +7,16 @@ import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
- * Test case
+ * Test cases for 'ANN' format
  */
-public class TestCasesZzz extends TestCasesBase {
+public class TestCasesAnn extends TestCasesBase {
 
-	public TestCasesZzz() {
+	public TestCasesAnn() {
 		super();
 	}
 
@@ -59,7 +58,7 @@ public class TestCasesZzz extends TestCasesBase {
 						+ "\n\t\tveff.getEffectsStrSo() : " + veff.getEffectsStrSo() //
 						+ "\n\t\tveff.getEffectType()   : " + veff.getEffectType() //
 						+ "\n\t\tveff.getEffectTypes()  : " + veff.getEffectTypes() //
-				);
+						);
 			}
 
 			// Check for a specific transcript
@@ -70,12 +69,12 @@ public class TestCasesZzz extends TestCasesBase {
 	}
 
 	@Test
-	public void test_02_Annotation() {
+	public void test_01_Annotation() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/test_ann_01.vcf";
 
 		// Annotate
-		VcfEffect veff = annotateFirst(vcfFile, "ENST00000374221");
+		VcfEffect veff = annotateFirst(vcfFile, "ENST00000472155");
 
 		if (verbose) Gpr.debug(veff);
 
@@ -87,29 +86,29 @@ public class TestCasesZzz extends TestCasesBase {
 		Assert.assertEquals("A", veff.getAllele());
 
 		// Annotataion
-		Assert.assertEquals("splice_region_variant&intron_variant", veff.getEffectsStrSo());
-		Assert.assertEquals("SPLICE_SITE_REGION&INTRON", veff.getEffectsStr());
+		Assert.assertEquals("stop_gained", veff.getEffectsStrSo());
+		Assert.assertEquals("STOP_GAINED", veff.getEffectsStr());
 
 		// Impact
-		Assert.assertEquals("LOW", veff.getImpact().toString());
+		Assert.assertEquals("HIGH", veff.getImpact().toString());
 
 		// Gene name / ID
 		Assert.assertEquals("UBXN11", veff.getGeneName());
 		Assert.assertEquals("ENSG00000158062", veff.getGeneId());
 
-		// Feature type		
+		// Feature type
 		Assert.assertEquals("transcript", veff.getFeatureType());
 
 		// FeatureId / transcriptId
-		Assert.assertEquals("ENST00000374221", veff.getFeatureId());
-		Assert.assertEquals("ENST00000374221", veff.getTranscriptId());
+		Assert.assertEquals("ENST00000472155", veff.getFeatureId());
+		Assert.assertEquals("ENST00000472155", veff.getTranscriptId());
 
 		// Biotype
 		Assert.assertEquals("protein_coding", veff.getBioType());
 
 		// Rank
-		Assert.assertEquals("11", "" + veff.getRank());
-		Assert.assertEquals("15", "" + veff.getRankMax());
+		Assert.assertEquals("10", "" + veff.getRank());
+		Assert.assertEquals("14", "" + veff.getRankMax());
 
 		// HGVS
 		Assert.assertEquals("c.1915C>T", veff.getHgvsDna());
@@ -130,58 +129,5 @@ public class TestCasesZzz extends TestCasesBase {
 		// Warning
 		Assert.assertEquals("WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS", veff.getErrorsWarning());
 	}
-
-	//	// cDNA position
-	//	Assert.assertEquals("1915", "" + veff.getcDnaPos());
-	//	Assert.assertEquals("2646", "" + veff.getcDnaLen());
-	//
-	//	// CDS position
-	//	Assert.assertEquals("1915", "" + veff.getCdsPos());
-	//	Assert.assertEquals("2646", "" + veff.getCdsLen());
-
-	//	@Test
-	//	public void test_02_Allele_Cancer() {
-	//		throw new RuntimeException("ANN: Check Allele in cancer sample & parsed correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_03_GeneName_Intergenic() {
-	//		throw new RuntimeException("ANN: Check that closest gene name is correctly added & parsed correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_04_FeatureType() {
-	//		throw new RuntimeException("ANN: Check feature type 'transcript' & parsed correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_05_FeatureType() {
-	//		throw new RuntimeException("ANN: Check feature type 'custom' & parsed correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_06_FeatureType() {
-	//		throw new RuntimeException("ANN: Check feature type 'regulation', check that 'cell_type' is added & parsed correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_07_cDnaPos_cDnaLen() {
-	//		throw new RuntimeException("ANN: Check that cDna pos / len are added & parse correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_08_CDS_CdsLen() {
-	//		throw new RuntimeException("ANN: Check that CDS pos / len are added & parse correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_09_ProteinPos_ProteinLen() {
-	//		throw new RuntimeException("ANN: Check that protein pos / len are added & parse correctly");
-	//	}
-	//
-	//	@Test
-	//	public void test_10_ProteinPos_ProteinLen() {
-	//		throw new RuntimeException("ANN: Check -o GATK works OK and no '&' are added into effect field");
-	//	}
 
 }
