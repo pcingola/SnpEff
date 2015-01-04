@@ -780,10 +780,9 @@ public class VcfEffect {
 				if (f.length > 0 && f[0].startsWith("p.")) hgvsP = f[0];
 
 				// HGVS DNA
-				if (f.length > 1) {
-					if (f[1].startsWith("c.") || f[1].startsWith("n.")) hgvsC = f[1];
-				} else if (aa.startsWith("c.") || aa.startsWith("n.")) hgvsC = aa;
-			}
+				if ((f.length > 1) && (f[1].startsWith("c.") || f[1].startsWith("n."))) hgvsC = f[1];
+			} else if (aa.startsWith("c.") || aa.startsWith("n.")) hgvsC = aa; // Only HGVS DNA
+
 			index++;
 
 			if (formatVersion != EffFormatVersion.FORMAT_EFF_2) {
@@ -924,7 +923,7 @@ public class VcfEffect {
 		// Feature type & ID
 		if (tr != null) {
 			featureType = "transcript";
-			featureId = tr.getId();
+			featureId = transcriptId = tr.getId();
 		} else if (marker != null) {
 			if (marker instanceof Custom) {
 				// Custom
