@@ -67,7 +67,6 @@ public class IntegrationTest {
 
 		// Show differences (if any)
 		if (verbose) System.err.println("Comparing outputs\t\tExpected size: " + expectedOutput.length() + " (" + expectedOutputCountLines + " lines)\t\tActual size: " + actualOutput.length() + " (" + actualOutputCountLines + " lines)");
-		Math.max(expectedOutput.length(), actualOutput.length());
 		if (!expectedOutput.equals(actualOutput)) {
 			String msg = "Outputs differ!\n\tFile    : '" + expectedOutputFile + "'\n\tCommand : '" + showCommand(command) + "'";
 			System.err.println(msg);
