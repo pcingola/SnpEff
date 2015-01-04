@@ -50,7 +50,7 @@ public class VcfEffect {
 	String codon;
 	String aa;
 	int aaLen;
-	String gene;
+	String gene, geneId;
 	String bioType;
 	VariantEffect.Coding coding;
 	String transcriptId;
@@ -493,7 +493,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-			) len--;
+					) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
@@ -692,16 +692,33 @@ public class VcfEffect {
 	 */
 	void parseAnn() {
 		int index = 0;
+
+		// Gentype
 		genotype = effectStrings[index++];
 
+		// Annotation
 		effString = effectStrings[index];
 		effectTypesStr = effectStrings[index];
 		effectTypes = parseEffect(effectStrings[index]);
 		index++;
 
+		// Impact
 		if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) impact = VariantEffect.EffectImpact.valueOf(effectStrings[index]);
 		index++;
 
+		// Gene name
+		if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) gene = effectStrings[index];
+		index++;
+
+		// Gene ID
+		if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) geneId = effectStrings[index];
+		index++;
+
+		// Feature type
+		index++;
+
+		if ((effectStrings.length > index) && !effectStrings[index].isEmpty()) transcriptId = effectStrings[index];
+		index++;
 	}
 
 	/**
