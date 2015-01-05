@@ -114,7 +114,7 @@ public class VcfHeaderInfo {
 			vcfInfoNumber = VcfInfoNumber.UNLIMITED;
 			pattern = Pattern.compile("Number=([^,]+),");
 			matcher = pattern.matcher(params);
-			if (matcher.find()) setNumber(matcher.group(1));
+			if (matcher.find()) setNumber(matcher.group(1), id);
 			else throw new RuntimeException("Cannot find 'Number' in info line: '" + line + "'");
 
 			// Find type
@@ -136,7 +136,7 @@ public class VcfHeaderInfo {
 		this.id = id;
 		this.vcfInfoType = vcfInfoType;
 		this.description = description;
-		setNumber(number);
+		setNumber(number, id);
 	}
 
 	public String getDescription() {
@@ -197,7 +197,7 @@ public class VcfHeaderInfo {
 		this.number = number;
 	}
 
-	public void setNumber(String number) {
+	public void setNumber(String number, String id) {
 		this.number = -1;
 
 		// Parse number field
@@ -207,8 +207,10 @@ public class VcfHeaderInfo {
 		else if (number.equals(".")) vcfInfoNumber = VcfInfoNumber.UNLIMITED;
 		else {
 			int num = Gpr.parseIntSafe(number);
-			if (num < 0) throw new RuntimeException("Vcf header's INFO field 'number' must be a non-negative integer: '" + number + "'");
-			setNumber(num);
+			if (num < 0) {
+				Gpr.debug("Vcf header's INFO field '" + id + "' should be a non-negative integer 'Number' parameter (value: '" + number + "').");
+				vcfInfoNumber = VcfInfoNumber.UNLIMITED; // Try to overcome the error by setting it no 'UNLIMITED'
+			} else setNumber(num);
 		}
 	}
 
@@ -222,6 +224,6 @@ public class VcfHeaderInfo {
 				+ ", Type=" + vcfInfoType //
 				+ ", Description=\"" + description + "\"" //
 				+ ">" //
-				;
+		;
 	}
 }

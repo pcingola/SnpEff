@@ -36,7 +36,7 @@ public class VcfEffect {
 	public static final String EFFECT_TYPE_SEPARATOR = "&"; // Separator between mutiple effectTypes
 	public static final String EFFECT_TYPE_SEPARATOR_OLD = "+"; // Old separator between mutiple effectTypes
 
-	private static HashMap<EffFormatVersion, HashMap<String, Integer>> fieldName2Num;
+	private static HashMap<EffFormatVersion, HashMap<String, Integer>> fieldName2Num = new HashMap<EffFormatVersion, HashMap<String, Integer>>();
 
 	EffFormatVersion formatVersion;
 	String vcfFieldString; // Original 'raw' string from VCF Info field
@@ -71,7 +71,7 @@ public class VcfEffect {
 		HashMap<String, Integer> f2n = fieldName2Num.get(formatVersion);
 
 		// Not created yet?
-		if (fieldName2Num == null) {
+		if (f2n == null) {
 			if (formatVersion.isAnn()) f2n = mapAnn2Num(formatVersion);
 			else f2n = mapEff2Num(formatVersion);
 
@@ -441,7 +441,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-			) len--;
+					) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
