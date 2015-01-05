@@ -36,6 +36,7 @@ public class TestCasesExonFrame {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
+
 		//---
 		// Build database
 		//---
@@ -100,9 +101,9 @@ public class TestCasesExonFrame {
 
 				// Effect matches expected?
 				if (veff.hasEffectType(expectedEffect) //
-						&& ((veff.getAa() == null) || expectedAa.equals(veff.getAa())) //
-						&& ((veff.getCodon() == null) || expectedCodon.equals(veff.getCodon())) //
-						) //
+						&& ((veff.getAa() == null) || veff.getAa().isEmpty() || expectedAa.equals(veff.getAa())) //
+						&& ((veff.getCodon() == null) || veff.getCodon().isEmpty() || expectedCodon.equals(veff.getCodon())) //
+				) //
 					found = true;
 			}
 

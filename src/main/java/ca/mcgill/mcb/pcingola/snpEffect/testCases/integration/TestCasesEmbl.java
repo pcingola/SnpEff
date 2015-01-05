@@ -2,6 +2,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import junit.framework.Assert;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -20,9 +22,20 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 public class TestCasesEmbl {
 
 	public static boolean debug = false;
+	int exonToStringVersionOri;
 
 	public TestCasesEmbl() {
 		super();
+	}
+
+	@After
+	public void after() {
+		Exon.ToStringVersion = exonToStringVersionOri;
+	}
+
+	@Before
+	public void before() {
+		exonToStringVersionOri = Exon.ToStringVersion;
 		Exon.ToStringVersion = 1; // Set "toString()" version
 	}
 

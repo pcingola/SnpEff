@@ -9,7 +9,6 @@ import org.junit.Assert;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfConsequence;
@@ -68,6 +67,7 @@ public class CompareToVep {
 		if (strict) args.add("-strict");
 		if (onlyProtein) args.add("-onlyProtein");
 		if (!shiftHgvs) args.add("-noShiftHgvs");
+		args.add("-formatEff");
 		args.add(genomeName);
 		args.add(vcf);
 
@@ -161,7 +161,7 @@ public class CompareToVep {
 		boolean foundTranscript = false;
 
 		// Split all effects
-		for (String et : effStr.split(VariantEffect.EFFECT_TYPE_SEPARATOR)) {
+		for (String et : effStr.split("\\" + VcfEffect.EFFECT_TYPE_SEPARATOR_OLD)) {
 			if (verbose) System.out.println("\t\t" + et + "\t" + eff.getTranscriptId());
 
 			// Match all consequences
@@ -193,7 +193,7 @@ public class CompareToVep {
 	 * Compare a single effect to CSQ
 	 */
 	boolean compareEffect(VcfEffect eff, VcfConsequence csq) {
-		String effectTypes[] = eff.getEffectTypesStr().split(VariantEffect.EFFECT_TYPE_SEPARATOR);
+		String effectTypes[] = eff.getEffectTypesStr().split("\\" + VcfEffect.EFFECT_TYPE_SEPARATOR_OLD);
 		String consecuences[] = csq.getConsequence().split("&");
 
 		for (String et : effectTypes) {
@@ -238,13 +238,14 @@ public class CompareToVep {
 	boolean compareHgvsDna(VcfEffect eff, VcfConsequence csq) {
 		String effHgsv = eff.getHgvsDna();
 		String csqHgvs = csq.getHgvsDna();
-		if (csqHgvs.isEmpty() && effHgsv == null) return true;
-		if (!csqHgvs.isEmpty() && effHgsv == null) return false;
-		if (csqHgvs.isEmpty() && effHgsv != null) return false;
+		if (csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return true;
+		if (!csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return false;
+		if (csqHgvs.isEmpty() && (effHgsv != null || !effHgsv.isEmpty())) return false;
 
 		csqHgvs = csqHgvs.substring(csqHgvs.indexOf(':') + 1);
 		boolean eq = csqHgvs.equals(effHgsv);
 		if (eq) countHgvsDna++;
+
 		return eq;
 	}
 
@@ -256,9 +257,9 @@ public class CompareToVep {
 		String effHgsv = eff.getHgvsProt();
 		String csqHgvs = csq.getHgvsProt();
 
-		if (csqHgvs.isEmpty() && effHgsv == null) return true;
-		if (!csqHgvs.isEmpty() && effHgsv == null) return false;
-		if (csqHgvs.isEmpty() && effHgsv != null) return false;
+		if (csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return true;
+		if (!csqHgvs.isEmpty() && (effHgsv == null || effHgsv.isEmpty())) return false;
+		if (csqHgvs.isEmpty() && (effHgsv != null || !effHgsv.isEmpty())) return false;
 
 		// This seems to be a bug in ENSEMBL's VEP
 		// E.g.: 'ENST00000241356.4:c.945G>A(p.%3D)'

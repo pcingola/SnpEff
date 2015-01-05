@@ -91,7 +91,7 @@ public class Utr5prime extends Utr {
 	 * @return A new start codon (if gained)
 	 */
 	String startGained(Variant seqChange, Transcript tr) {
-		if (!seqChange.isSnp()) return ""; // FIXME: Only SNPs supported!
+		if (!seqChange.isSnp()) return ""; // Only SNPs supported.
 
 		// Calculate SNP position relative to UTRs
 		int pos = seqChange.distanceBases(get5primeUtrs(), isStrandMinus());

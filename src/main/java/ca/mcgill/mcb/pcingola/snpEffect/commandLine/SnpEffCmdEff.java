@@ -42,6 +42,7 @@ import ca.mcgill.mcb.pcingola.stats.VcfStats;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 import ca.mcgill.mcb.pcingola.util.Tuple;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.PedigreeEnrty;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
@@ -94,6 +95,7 @@ public class SnpEffCmdEff extends SnpEff {
 	VariantEffectStats variantEffectStats;
 	VcfStats vcfStats;
 	List<VcfEntry> vcfEntriesDebug = null; // Use for debugging or testing (in some test-cases)
+	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
 
 	public SnpEffCmdEff() {
 		super();
@@ -123,11 +125,8 @@ public class SnpEffCmdEff extends SnpEff {
 
 				if (genOri.isPhased() && genDer.isPhased()) {
 					// Phased, we only have two possible comparisons
-					// TODO: Check if this is correct for phased genotypes!
 					for (int i = 0; i < 2; i++) {
 						// Add comparisons
-						// TODO: Decide if we want to keep "back to reference" analysis (i.e. gd[d] == 0)
-						// if ((go[i] >= 0) && (gd[i] >= 0) // Both genotypes are non-missing?
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
@@ -141,8 +140,6 @@ public class SnpEffCmdEff extends SnpEff {
 					for (int d = 0; d < gd.length; d++)
 						for (int o = 0; o < go.length; o++) {
 							// Add comparisons
-							// TODO: Decide if we want to keep "back to reference" analysis (i.e. gd[d] == 0)
-							// if ((go[o] >= 0) && (gd[d] >= 0) // Both genotypes are non-missing?
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
@@ -224,9 +221,6 @@ public class SnpEffCmdEff extends SnpEff {
 	/**
 	 * Iterate on all inputs (VCF) and calculate effects.
 	 * Note: This is used only on input format VCF, which has a different iteration modality
-	 *
-	 * TODO: Effect analysis should be in a separate class, so we can easily reuse it for single or mutli-threaded modes.
-	 *       SnpEffCmdEff should only parse command line, and then invoke the other class (now everything is here, it's a mess)
 	 */
 	void iterateVcf(String inputFile, OutputFormatter outputFormatter) {
 		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
@@ -521,6 +515,9 @@ public class SnpEffCmdEff extends SnpEff {
 				else if (arg.equalsIgnoreCase("-classic")) {
 					useSequenceOntology = false;
 					useHgvs = false;
+					formatVersion = EffFormatVersion.FORMAT_EFF_4;
+				} else if (arg.equalsIgnoreCase("-formatEff")) {
+					formatVersion = EffFormatVersion.FORMAT_EFF_4;
 				} else if (arg.equalsIgnoreCase("-oicr")) useOicr = true; // Use OICR tag
 				//---
 				// Input options
@@ -765,6 +762,7 @@ public class SnpEffCmdEff extends SnpEff {
 		switch (outputFormat) {
 		case VCF:
 			VcfOutputFormatter vof = new VcfOutputFormatter(vcfEntriesDebug);
+			vof.setFormatVersion(formatVersion);
 			vof.setLossOfFunction(lossOfFunction);
 			vof.setConfig(config);
 			outputFormatter = vof;
@@ -823,6 +821,10 @@ public class SnpEffCmdEff extends SnpEff {
 
 		if (totalErrs > 0) System.err.println(totalErrs + " errors.");
 		return ok;
+	}
+
+	public void setFormatVersion(EffFormatVersion formatVersion) {
+		this.formatVersion = formatVersion;
 	}
 
 	/**
@@ -926,6 +928,7 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\nAnnotations options:");
 		System.err.println("\t-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: " + cancer);
 		System.err.println("\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");
+		System.err.println("\t-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').");
 		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
 		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + useHgvs);
 		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");

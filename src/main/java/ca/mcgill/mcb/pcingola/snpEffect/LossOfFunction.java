@@ -17,13 +17,6 @@ import ca.mcgill.mcb.pcingola.vcf.VcfNmd;
  * Analyze if a set of effects are can create a "Loss Of Function"
  * and "Nonsense mediated decays" effects.
  *
- * TODO: Add branch points? (We have to analyze correlation with expression)
- *
- * TODO: Other NextProt markers? (We have to analyze correlation with expression)
- *
- * TODO: What are we supposed to do in cases like UTR_5_DELETED or UTR_3_DELETED?
- *       So far we are considering them as moderate impact.
- *
  * Of course, this is a prediction based on analysis
  * of groups of "putative effects". Proper wet-lab
  * validation is required to infer "real" LOF.
@@ -144,7 +137,7 @@ public class LossOfFunction {
 				|| (tr == null) // No transcript affected?
 				|| (!gene.isProteinCoding() && !config.isTreatAllAsProteinCoding()) // Not a protein coding gene?
 				|| (!tr.isProteinCoding() && !config.isTreatAllAsProteinCoding()) // Not a protein coding transcript?
-				) return false;
+		) return false;
 
 		//---
 		// Is this variant a LOF?
@@ -166,7 +159,7 @@ public class LossOfFunction {
 		//---
 		if (variantEffect.hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
 				|| variantEffect.hasEffectType(EffectType.SPLICE_SITE_DONOR) //
-				) {
+		) {
 			// Core splice sites are considered LOF
 			if ((variantEffect.getMarker() != null) && (variantEffect.getMarker() instanceof SpliceSite)) {
 				// Get splice site marker and check if it is 'core'
@@ -371,7 +364,7 @@ public class LossOfFunction {
 	public String toString() {
 		return (isLof() ? "LOF=" + toStringVcfLof() + " " : "") //
 				+ (isNmd() ? "NMD=" + toStringVcfNmd() : "") //
-				;
+		;
 	}
 
 	/**

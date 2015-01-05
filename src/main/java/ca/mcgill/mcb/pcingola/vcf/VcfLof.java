@@ -1,7 +1,6 @@
 package ca.mcgill.mcb.pcingola.vcf;
 
 import ca.mcgill.mcb.pcingola.interval.Gene;
-import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -104,8 +103,8 @@ public class VcfLof {
 	@Override
 	public String toString() {
 		return String.format("(%s|%s|%d|%.2f)" //
-				, VcfOutputFormatter.vcfInfoSafeString(geneName) //
-				, VcfOutputFormatter.vcfInfoSafeString(geneId) //
+				, VcfEntry.vcfInfoSafe(geneName) //
+				, VcfEntry.vcfInfoSafe(geneId) //
 				, numTranscripts //
 				, percentAffected //
 				);

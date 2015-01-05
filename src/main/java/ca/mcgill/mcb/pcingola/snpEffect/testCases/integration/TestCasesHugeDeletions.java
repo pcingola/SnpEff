@@ -65,6 +65,7 @@ public class TestCasesHugeDeletions {
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
+			System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
 			Assert.assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
 		}
 	}

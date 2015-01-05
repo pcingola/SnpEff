@@ -71,7 +71,7 @@ public class SnpEffCmdAcat extends SnpEff {
 			}
 
 			// Do not process is there are errors or warnings
-			if (veff.getErrorsOrWarning() != null) continue;
+			if (veff.getErrorsWarning() != null) continue;
 
 			// Impact andACAT score
 			EffectImpact impact = veff.getImpact();
@@ -94,7 +94,7 @@ public class SnpEffCmdAcat extends SnpEff {
 					minAcatScore = acatScore;
 
 					// Add as ACAT format
-					String gene = veff.getGene() != null ? veff.getGene() : "";
+					String gene = veff.getGeneName() != null ? veff.getGeneName() : "";
 					String trId = veff.getTranscriptId() != null ? veff.getTranscriptId() : "";
 					if (acat.length() > 0) acat.append(",");
 					acat.append(gene + ":" + trId + ":" + acatScore);

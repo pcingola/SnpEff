@@ -376,8 +376,11 @@ public enum EffectType {
 		case SYNONYMOUS_START:
 			return "initiator_codon_variant+non_canonical_start_codon";
 
+			//		case TRANSCRIPT:
+			//			return "nc_transcript_variant";
+
 		case TRANSCRIPT:
-			return "nc_transcript_variant";
+			return "transcript";
 
 		case UPSTREAM:
 			return "upstream_gene_variant";

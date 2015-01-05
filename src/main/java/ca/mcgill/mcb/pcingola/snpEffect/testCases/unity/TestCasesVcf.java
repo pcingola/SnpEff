@@ -11,8 +11,8 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect.FormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 import ca.mcgill.mcb.pcingola.vcf.VcfHeaderInfo;
@@ -24,7 +24,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfInfoType;
  *
  * @author pcingola
  */
-public class TestCasesVcf {
+public class TestCasesVcf extends TestCasesBase {
 
 	boolean verbose = false;
 	boolean debug = false;
@@ -32,17 +32,6 @@ public class TestCasesVcf {
 
 	public TestCasesVcf() {
 		super();
-	}
-
-	/**
-	 * Get file's format version
-	 */
-	FormatVersion formatVersion(String vcfFileName) {
-		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
-		VcfEntry ve = vcf.next();
-		List<VcfEffect> effs = ve.parseEffects();
-		VcfEffect eff = effs.get(0);
-		return eff.formatVersion();
 	}
 
 	/**
@@ -146,7 +135,7 @@ public class TestCasesVcf {
 			// Compare variants to what we expect
 			List<Variant> variants = vcfEntry.variants();
 
-			Assert.assertEquals("chr1:223921_GACCACTGGAA/ACATCCATACAT", variants.get(0).toString()); // FIXME: What the hell do I actually expect here?
+			Assert.assertEquals("chr1:223921_GACCACTGGAA/ACATCCATACAT", variants.get(0).toString());
 			Assert.assertEquals("chr1:223919_TC/AT", variants.get(1).toString());
 		}
 	}
@@ -301,7 +290,7 @@ public class TestCasesVcf {
 		String testIn[] = { "Hi ", "Hi how;", "Hi how;are|", "Hi how;are|you,", "Hi how;are|you,doing=", "Hi how;are|you,doing=today(.)" };
 		String testOut[] = { "Hi_", "Hi_how_", "Hi_how_are_", "Hi_how_are_you_", "Hi_how_are_you_doing_", "Hi_how_are_you_doing_today_._" };
 		for (int i = 0; i < testIn.length; i++) {
-			String safe = VcfOutputFormatter.vcfInfoSafeString(testIn[i]);
+			String safe = VcfEntry.vcfInfoSafe(testIn[i]);
 			if (verbose) System.out.println("'" + testIn[i] + "'\t'" + safe + "'\t'" + testOut[i] + "'");
 			Assert.assertEquals(testOut[i], safe);
 		}
@@ -311,12 +300,12 @@ public class TestCasesVcf {
 	public void test_15_Eff_format_version_guess() {
 		Gpr.debug("Test");
 		String vcfFileName = "./tests/test.EFF_V2.vcf";
-		FormatVersion formatVersion = formatVersion(vcfFileName);
-		Assert.assertEquals(FormatVersion.FORMAT_EFF_2, formatVersion);
+		EffFormatVersion formatVersion = formatVersion(vcfFileName);
+		Assert.assertEquals(EffFormatVersion.FORMAT_EFF_2, formatVersion);
 
 		vcfFileName = "./tests/test.EFF_V3.vcf";
 		formatVersion = formatVersion(vcfFileName);
-		Assert.assertEquals(FormatVersion.FORMAT_EFF_3, formatVersion);
+		Assert.assertEquals(EffFormatVersion.FORMAT_EFF_3, formatVersion);
 	}
 
 	@Test

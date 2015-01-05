@@ -61,7 +61,7 @@ public class TestCasesTranscriptError {
 				if (verbose) System.out.println("\t" + imp + "\t" + veff);
 
 				// Check if the warning type we expect is there
-				if (veff.getErrorsOrWarning() != null) hasWarning |= veff.getErrorsOrWarning().indexOf(warningType.toString()) >= 0;
+				if (veff.getErrorsWarning() != null) hasWarning |= veff.getErrorsWarning().indexOf(warningType.toString()) >= 0;
 			}
 		}
 

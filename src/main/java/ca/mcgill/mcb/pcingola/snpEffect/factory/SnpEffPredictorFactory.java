@@ -513,8 +513,10 @@ public abstract class SnpEffPredictorFactory {
 		codingFromCds();
 
 		// Check that exons have sequences
-		boolean error = config.getGenome().isMostExonsHaveSequence();
-		if (error) error("Most Exons do not have sequences!\n" + showChromoNamesDifferences() + "\n\n");
+		if (readSequences) { // Note: In some test cases we ignore sequences
+			boolean error = !config.getGenome().isMostExonsHaveSequence();
+			if (error) error("Most Exons do not have sequences!\n" + showChromoNamesDifferences() + "\n\n");
+		}
 
 		// Done
 		if (verbose) System.out.println("");

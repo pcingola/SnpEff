@@ -28,12 +28,12 @@ class BaseSize implements Comparable<BaseSize> {
 
 /**
  * Create a DNA logo for a PWM
- * 
- * References: 
+ *
+ * References:
  * 	- See WebLogo http://weblogo.berkeley.edu/
  * 	- "WebLogo: A Sequence Logo Generator"
- * 
- * 
+ *
+ *
  * @author pcingola
  */
 public class MotifLogo {
@@ -106,9 +106,6 @@ public class MotifLogo {
 
 	/**
 	 * Return an HTML string that represents the motif.
-	 * TODO: I have to re-do this using freeMarker instead! This is quick and dirty, ugly and bad coding style, 
-	 * @param size
-	 * @return
 	 */
 	public String toStringHtml(int width, int maxHeight) {
 		StringBuffer sb = new StringBuffer();

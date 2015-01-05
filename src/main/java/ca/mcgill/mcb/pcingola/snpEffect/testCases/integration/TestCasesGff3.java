@@ -9,6 +9,8 @@ import java.util.Random;
 
 import junit.framework.Assert;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -30,9 +32,20 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 public class TestCasesGff3 {
 
 	boolean verbose = false;
+	int exonToStringVersionOri;
 
 	public TestCasesGff3() {
 		super();
+	}
+
+	@After
+	public void after() {
+		Exon.ToStringVersion = exonToStringVersionOri;
+	}
+
+	@Before
+	public void before() {
+		exonToStringVersionOri = Exon.ToStringVersion;
 		Exon.ToStringVersion = 1; // Set "toString()" version
 	}
 

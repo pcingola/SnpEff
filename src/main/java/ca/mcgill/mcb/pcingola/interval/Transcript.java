@@ -323,6 +323,30 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
+	 * Calculate distance from transcript start to a position
+	 * mRNA is roughly the same than cDNA. Strictly speaking there is mRNA has poly-A tail and 5'cap)
+	 */
+	public synchronized int baseNumber2MRnaPos(int pos) {
+		int count = 0;
+		for (Exon eint : sortedStrand()) {
+			if (eint.intersects(pos)) {
+				// Intersect this exon? Calculate the number of bases from the beginning
+				int dist = 0;
+				if (isStrandPlus()) dist = pos - eint.getStart();
+				else dist = eint.getEnd() - pos;
+
+				// Sanity check
+				if (dist < 0) throw new RuntimeException("Negative distance for position " + pos + ". This should never happen!\n" + this);
+
+				return count + dist;
+			}
+
+			count += eint.size();
+		}
+		return -1;
+	}
+
+	/**
 	 * Calculate base number in a CDS where 'pos' maps
 	 *
 	 * @param usePrevBaseIntron: When 'pos' is intronic this method returns:
@@ -406,40 +430,17 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return cds2pos;
 	}
 
-	/**
-	 * Calculate distance from transcript start to a position
-	 */
-	public synchronized int baseNumberPreMRna(int pos) {
-		int count = 0;
-		for (Exon eint : sortedStrand()) {
-			if (eint.intersects(pos)) {
-				// Intersect this exon? Calculate the number of bases from the beginning
-				int dist = 0;
-				if (isStrandPlus()) dist = pos - eint.getStart();
-				else dist = eint.getEnd() - pos;
-
-				// Sanity check
-				if (dist < 0) throw new RuntimeException("Negative distance for position " + pos + ". This should never happen!\n" + this);
-
-				return count + dist;
-			}
-
-			count += eint.size();
-		}
-		return -1;
-	}
-
-	/**
-	 * Convert a 'cDNA' base number to a genomic coordinate
-	 */
-	public synchronized int baseNumberPreMRna2Pos(int baseNum) {
-		for (Exon eint : sortedStrand()) {
-			if (eint.size() >= baseNum) return eint.getStart() + baseNum;
-			baseNum -= eint.size();
-		}
-
-		return -1;
-	}
+	//	/**
+	//	 * Convert a 'cDNA' base number to a genomic coordinate
+	//	 */
+	//	public synchronized int baseNumberPreMRna2Pos(int baseNum) {
+	//		for (Exon eint : sortedStrand()) {
+	//			if (eint.size() >= baseNum) return eint.getStart() + baseNum;
+	//			baseNum -= eint.size();
+	//		}
+	//
+	//		return -1;
+	//	}
 
 	/**
 	 * Calculate CDS start and CDS end
@@ -563,7 +564,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-			) {
+					) {
 				ret = true;
 
 				// Show debugging information
@@ -938,7 +939,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
 						if (Config.get().isDebug()) System.err.println("\t\tFrame correction: Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
@@ -1096,7 +1097,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
@@ -1492,7 +1493,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {

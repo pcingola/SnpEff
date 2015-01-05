@@ -251,7 +251,6 @@ public class DnaSequence extends BinarySequence {
 
 	@Override
 	public BinarySequence reverseWc() {
-		// TODO: Optimize this method! Use a cache in DnaCoder to speed up
 		DnaSequence rwc = factory();
 		rwc.codes = new long[codes.length];
 		rwc.length = length;

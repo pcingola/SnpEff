@@ -158,7 +158,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				|| biotype.equals("TR_D_gene") //
 				|| biotype.equals("TR_J_gene") //
 				|| biotype.equals("TR_V_gene") //
-				;
+		;
 	}
 
 	/**

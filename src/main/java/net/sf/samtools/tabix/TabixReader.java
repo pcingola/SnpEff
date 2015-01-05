@@ -295,7 +295,8 @@ public class TabixReader implements Iterable<String> {
 				else --intv.beg;
 				if (intv.beg < 0) intv.beg = 0;
 				if (intv.end < 1) intv.end = 1;
-			} else { // FIXME: SAM supports are not tested yet
+			} else {
+				// SAM supports are not tested yet
 				if ((mPreset & 0xffff) == 0) { // generic
 					if (col == mEc) intv.end = Integer.parseInt(s.substring(beg, end));
 				} else if ((mPreset & 0xffff) == 1) { // SAM
@@ -310,7 +311,8 @@ public class TabixReader implements Iterable<String> {
 						}
 						intv.end = intv.beg + l;
 					}
-				} else if ((mPreset & 0xffff) == 2) { // VCF
+				} else if ((mPreset & 0xffff) == 2) {
+					// VCF
 					String alt;
 					alt = end >= 0 ? s.substring(beg, end) : s.substring(beg);
 					if (col == 4) { // REF
@@ -355,7 +357,7 @@ public class TabixReader implements Iterable<String> {
 	 * @return An array where the three elements are sequence_id,
 	 *         region_begin and region_end. On failure, sequence_id==-1.
 	 */
-	public int[] parseReg(final String reg) { // FIXME: NOT working when the sequence name contains : or -.
+	public int[] parseReg(final String reg) {
 		String chr;
 		int colon, hyphen;
 		int[] ret = new int[3];

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import junit.framework.Assert;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -24,10 +26,21 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 public class TestCasesGtf22 {
 
 	boolean verbose = false;
+	int exonToStringVersionOri;
 
 	public TestCasesGtf22() {
 		super();
-		Exon.ToStringVersion = 1; // Show using old format
+	}
+
+	@After
+	public void after() {
+		Exon.ToStringVersion = exonToStringVersionOri;
+	}
+
+	@Before
+	public void before() {
+		exonToStringVersionOri = Exon.ToStringVersion;
+		Exon.ToStringVersion = 1; // Set "toString()" version
 	}
 
 	/**

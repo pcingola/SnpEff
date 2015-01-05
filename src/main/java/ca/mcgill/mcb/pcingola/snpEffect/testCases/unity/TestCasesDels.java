@@ -12,6 +12,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
+import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
  * Test random DEL changes
@@ -283,7 +284,7 @@ public class TestCasesDels extends TestCasesBase {
 						if (debug) System.out.println(msg);
 						else if (verbose) System.out.println(line);
 
-						for (String e : effStr.split(VariantEffect.EFFECT_TYPE_SEPARATOR)) {
+						for (String e : effStr.split("\\" + VcfEffect.EFFECT_TYPE_SEPARATOR_OLD)) {
 							if (effectExpected.equals(e)) {
 								ok = true;
 								// Check codons

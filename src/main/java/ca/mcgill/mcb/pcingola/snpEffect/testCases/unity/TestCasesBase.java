@@ -12,6 +12,7 @@ import org.junit.Before;
 
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -27,6 +28,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -127,6 +129,7 @@ public class TestCasesBase {
 		snpeff.setSupressOutput(!verbose);
 		snpeff.setUpDownStreamLength(0);
 		snpeff.setShiftHgvs(shiftHgvs);
+		snpeff.setFormatVersion(EffFormatVersion.FORMAT_EFF_4);
 
 		// Run & get result (single line)
 		List<VcfEntry> results = snpeff.run(true);
@@ -220,10 +223,24 @@ public class TestCasesBase {
 	}
 
 	/**
+	 * Get file's format version
+	 */
+	protected EffFormatVersion formatVersion(String vcfFileName) {
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		VcfEntry ve = vcf.next();
+
+		List<VcfEffect> effs = ve.parseEffects();
+		if (effs.isEmpty()) throw new RuntimeException("Empty list of effects. Tis should never happen!");
+
+		VcfEffect eff = effs.get(0);
+		return eff.formatVersion();
+	}
+
+	/**
 	 * Is effectExpected included in effStr (many effects delimited by '&'
 	 */
 	protected boolean hasEffect(String effectExpected, String effStr) {
-		for (String eff : effStr.split(VariantEffect.EFFECT_TYPE_SEPARATOR))
+		for (String eff : effStr.split(VcfEffect.EFFECT_TYPE_SEPARATOR))
 			if (eff.equals(effectExpected)) return true;
 
 		return false;

@@ -10,13 +10,6 @@ import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 /**
  * Calculate statistics on genotype
  *
- * TODO:
- * 		- Allele count
- * 		- Allele frequency: Rare, LowFreq, Common (per sample)
- * 		- Missing per sample
- * 		- Hom / Het per sample
- *
- *
  * @author pablocingolani
  */
 public class GenotypeStats implements SamplingStats<VcfEntry> {
