@@ -5,7 +5,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * An 'LOF' entry in a vcf line
- * 
+ *
  * @author pablocingolani
  */
 public class VcfLof {

@@ -4,7 +4,7 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 
 /**
  * An 'NMD' entry in a vcf line
- * 
+ *
  * @author pablocingolani
  */
 public class VcfNmd extends VcfLof {

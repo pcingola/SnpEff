@@ -158,38 +158,41 @@ public class VcfEffect {
 	 */
 	static HashMap<String, Integer> mapEff2Num(EffFormatVersion formatVersion) {
 		HashMap<String, Integer> f2n = new HashMap<String, Integer>();
-		int fieldNum = 0;
 
-		f2n.put("EFF.EFFECT", fieldNum++);
-		f2n.put("EFF.IMPACT", fieldNum++);
-		f2n.put("EFF.FUNCLASS", fieldNum++);
-		f2n.put("EFF.CODON", fieldNum++);
+		for (String annFieldName : VCF_INFO_ANN_NAMES) {
+			int fieldNum = 0;
 
-		// This field can be called either AA or HGVS
-		f2n.put("EFF.AA", fieldNum);
-		f2n.put("EFF.HGVS", fieldNum);
-		fieldNum++;
+			f2n.put(annFieldName + ".EFFECT", fieldNum++);
+			f2n.put(annFieldName + ".IMPACT", fieldNum++);
+			f2n.put(annFieldName + ".FUNCLASS", fieldNum++);
+			f2n.put(annFieldName + ".CODON", fieldNum++);
 
-		if (formatVersion != EffFormatVersion.FORMAT_EFF_2) {
-			f2n.put("EFF.AA_LEN", fieldNum++);
-		}
-
-		f2n.put("EFF.GENE", fieldNum++);
-		f2n.put("EFF.BIOTYPE", fieldNum++);
-		f2n.put("EFF.CODING", fieldNum++);
-		f2n.put("EFF.TRID", fieldNum++);
-
-		// This one used to be called exonID, now it is used for exon OR intron rank
-		f2n.put("EFF.RANK", fieldNum);
-		f2n.put("EFF.EXID", fieldNum);
-		fieldNum++;
-
-		if (formatVersion == EffFormatVersion.FORMAT_EFF_4) {
-			// This one can be called  in different ways
-			f2n.put("EFF.GT", fieldNum);
-			f2n.put("EFF.GENOTYPE_NUMBER", fieldNum);
-			f2n.put("EFF.GENOTYPE", fieldNum);
+			// This field can be called either AA or HGVS
+			f2n.put(annFieldName + ".AA", fieldNum);
+			f2n.put(annFieldName + ".HGVS", fieldNum);
 			fieldNum++;
+
+			if (formatVersion != EffFormatVersion.FORMAT_EFF_2) {
+				f2n.put(annFieldName + ".AA_LEN", fieldNum++);
+			}
+
+			f2n.put(annFieldName + ".GENE", fieldNum++);
+			f2n.put(annFieldName + ".BIOTYPE", fieldNum++);
+			f2n.put(annFieldName + ".CODING", fieldNum++);
+			f2n.put(annFieldName + ".TRID", fieldNum++);
+
+			// This one used to be called exonID, now it is used for exon OR intron rank
+			f2n.put(annFieldName + ".RANK", fieldNum);
+			f2n.put(annFieldName + ".EXID", fieldNum);
+			fieldNum++;
+
+			if (formatVersion == EffFormatVersion.FORMAT_EFF_4) {
+				// This one can be called  in different ways
+				f2n.put(annFieldName + ".GT", fieldNum);
+				f2n.put(annFieldName + ".GENOTYPE_NUMBER", fieldNum);
+				f2n.put(annFieldName + ".GENOTYPE", fieldNum);
+				fieldNum++;
+			}
 		}
 
 		return f2n;
@@ -441,7 +444,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-					) len--;
+			) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;

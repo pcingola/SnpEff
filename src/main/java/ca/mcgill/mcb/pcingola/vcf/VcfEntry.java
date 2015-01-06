@@ -761,7 +761,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Parse ALT field
 	 */
 	void parseAlts(String altsStr) {
-
 		//---
 		// Parse altsStr
 		//---
@@ -901,7 +900,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Parse 'EFF' info field and get a list of effects
 	 */
 	public List<VcfEffect> parseEffects(EffFormatVersion formatVersion) {
-
 		String effStr = null;
 		if (formatVersion == null) {
 			// Guess which INFO field could be
@@ -1005,15 +1003,15 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Parse NMD from VcfEntry
 	 */
 	public List<VcfNmd> parseNmd() {
-		String nmdStr = getInfo(LossOfFunction.VCF_INFO_LOF_NAME);
+		String nmdStr = getInfo(LossOfFunction.VCF_INFO_NMD_NAME);
 
 		ArrayList<VcfNmd> nmdList = new ArrayList<VcfNmd>();
 		if (nmdStr == null || nmdStr.isEmpty()) return nmdList;
 
 		// Split comma separated list
-		String lofs[] = nmdStr.split(",");
-		for (String lof : lofs)
-			nmdList.add(new VcfNmd(lof));
+		String nmds[] = nmdStr.split(",");
+		for (String nmd : nmds)
+			nmdList.add(new VcfNmd(nmd));
 
 		return nmdList;
 	}

@@ -321,18 +321,20 @@ public class VcfHeader {
 			vcfInfoById.put("CICNADJ", new VcfHeaderInfo("CICNADJ", VcfInfoType.Integer, ".", "Confidence interval around copy number for the adjacency"));
 
 			// Add SnpEff 'EFF' fields
-			vcfInfoById.put("EFF.EFFECT", new VcfHeaderInfo("EFF.EFFECT", VcfInfoType.String, ".", "SnpEff effect"));
-			vcfInfoById.put("EFF.IMPACT", new VcfHeaderInfo("EFF.IMPACT", VcfInfoType.String, ".", "SnpEff impact (HIGH, MODERATE, LOW, MODIFIER)"));
-			vcfInfoById.put("EFF.FUNCLASS", new VcfHeaderInfo("EFF.FUNCLASS", VcfInfoType.String, ".", "SnpEff functional class (NONE, SILENT, MISSENSE, NONSENSE)"));
-			vcfInfoById.put("EFF.CODON", new VcfHeaderInfo("EFF.CODON", VcfInfoType.String, ".", "SnpEff codon change"));
-			vcfInfoById.put("EFF.AA", new VcfHeaderInfo("EFF.AA", VcfInfoType.String, ".", "SnpEff amino acid change"));
-			vcfInfoById.put("EFF.AA_LEN", new VcfHeaderInfo("EFF.AA_LEN", VcfInfoType.Integer, ".", "Protein length in amino acids"));
-			vcfInfoById.put("EFF.GENE", new VcfHeaderInfo("EFF.GENE", VcfInfoType.String, ".", "SnpEff gene name"));
-			vcfInfoById.put("EFF.BIOTYPE", new VcfHeaderInfo("EFF.BIOTYPE", VcfInfoType.String, ".", "SnpEff gene bio-type"));
-			vcfInfoById.put("EFF.CODING", new VcfHeaderInfo("EFF.CODING", VcfInfoType.String, ".", "SnpEff gene coding (CODING, NON_CODING)"));
-			vcfInfoById.put("EFF.TRID", new VcfHeaderInfo("EFF.TRID", VcfInfoType.String, ".", "SnpEff transcript ID"));
-			vcfInfoById.put("EFF.RANK", new VcfHeaderInfo("EFF.RANK", VcfInfoType.String, ".", "SnpEff exon/intron rank"));
-			vcfInfoById.put("EFF.EXID", new VcfHeaderInfo("EFF.EXID", VcfInfoType.String, ".", "SnpEff exon ID"));
+			for (String ann : VcfEffect.VCF_INFO_ANN_NAMES) {
+				vcfInfoById.put(ann + ".EFFECT", new VcfHeaderInfo(ann + ".EFFECT", VcfInfoType.String, ".", "SnpEff effect"));
+				vcfInfoById.put(ann + ".IMPACT", new VcfHeaderInfo(ann + ".IMPACT", VcfInfoType.String, ".", "SnpEff impact (HIGH, MODERATE, LOW, MODIFIER)"));
+				vcfInfoById.put(ann + ".FUNCLASS", new VcfHeaderInfo(ann + ".FUNCLASS", VcfInfoType.String, ".", "SnpEff functional class (NONE, SILENT, MISSENSE, NONSENSE)"));
+				vcfInfoById.put(ann + ".CODON", new VcfHeaderInfo(ann + ".CODON", VcfInfoType.String, ".", "SnpEff codon change"));
+				vcfInfoById.put(ann + ".AA", new VcfHeaderInfo(ann + ".AA", VcfInfoType.String, ".", "SnpEff amino acid change"));
+				vcfInfoById.put(ann + ".AA_LEN", new VcfHeaderInfo(ann + ".AA_LEN", VcfInfoType.Integer, ".", "Protein length in amino acids"));
+				vcfInfoById.put(ann + ".GENE", new VcfHeaderInfo(ann + ".GENE", VcfInfoType.String, ".", "SnpEff gene name"));
+				vcfInfoById.put(ann + ".BIOTYPE", new VcfHeaderInfo(ann + ".BIOTYPE", VcfInfoType.String, ".", "SnpEff gene bio-type"));
+				vcfInfoById.put(ann + ".CODING", new VcfHeaderInfo(ann + ".CODING", VcfInfoType.String, ".", "SnpEff gene coding (CODING, NON_CODING)"));
+				vcfInfoById.put(ann + ".TRID", new VcfHeaderInfo(ann + ".TRID", VcfInfoType.String, ".", "SnpEff transcript ID"));
+				vcfInfoById.put(ann + ".RANK", new VcfHeaderInfo(ann + ".RANK", VcfInfoType.String, ".", "SnpEff exon/intron rank"));
+				vcfInfoById.put(ann + ".EXID", new VcfHeaderInfo(ann + ".EXID", VcfInfoType.String, ".", "SnpEff exon ID"));
+			}
 
 			// Add SnpEff 'LOF' fields
 			vcfInfoById.put("LOF.GENE", new VcfHeaderInfo("LOF.GENE", VcfInfoType.String, ".", "SnpEff LOF gene name"));
