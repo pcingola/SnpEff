@@ -9,21 +9,21 @@ cd download
 # Download from ENSEMBL
 #---
 
-#  # Download GTF files (annotations)
-#  wget -r -A "*gtf.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/gtf/"
-#  
-#  # Download FASTA files (reference genomes)
-#  wget -r -A "*dna.toplevel.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/fasta/"
-#  
-#  # Download CDS sequences
-#  wget -r -A "*cdna.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/fasta/"
-#  
-#  # Download PROTEIN sequences
-#  wget -r -A "*.pep.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/fasta/"
-#  
-#  # Download regulation tracks
-#  wget -r -A "*AnnotatedFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/regulation/"
-#  wget -r -A "*MotifFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/regulation/"
+# Download GTF files (annotations)
+wget -r -A "*gtf.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/gtf/"
+
+# Download FASTA files (reference genomes)
+wget -r -A "*dna.toplevel.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/fasta/"
+
+# Download CDS sequences
+wget -r -A "*cdna.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/fasta/"
+
+# Download PROTEIN sequences
+wget -r -A "*.pep.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/fasta/"
+
+# Download regulation tracks
+wget -r -A "*AnnotatedFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/regulation/"
+wget -r -A "*MotifFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ENSEMBL_RELEASE/regulation/"
 
 #---
 # Create directory structure
