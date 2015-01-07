@@ -9,7 +9,7 @@ cd download/ncbi
 # Download from NCBI (Bacterial genoms)
 #---
 
-$wget -A "gbk" "http://ftp.ncbi.nih.gov/genomes/Bacteria/"
+$wget -A "gbk" "ftp://ftp.ncbi.nih.gov/genomes/Bacteria/"
 
 #---
 # Create directory structure
