@@ -344,11 +344,33 @@ $ unzip snpEff_latest_core.zip
 				Let's assume you have a VCF file and you want to annotate the variants in that file.
 				An example file is provided in <code>examples/file.vcf</code> (this data is from the 1000 Genomes project, so the reference genome is the human genome GRCh37).
 				<p>
-				As an input, we will use a <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41"> Variant Call Format (VCF) </a> file available in the exmaples directory.
-				You can annotate the file by running (since we are activating the "verbose" mode <code>-v</code>, SnpEff shows a lot of information, the output is edited for brevity):
+				You can annotate the file by running the following command (as an input, we use a <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41"> Variant Call Format (VCF) </a> file available in SnpEff's <code>examples</code> directory).
 
 <p><pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.ann.vcf
+$ java -Xmx4g -jar snpEff.jar GRCh37.75 examples/file.vcf > file.ann.vcf
+
+# Here is how the output looks like
+$ head examples/file.ann.vcf 
+##SnpEffVersion="4.1 (build 2015-01-07), by Pablo Cingolani"
+##SnpEffCmd="SnpEff  GRCh37.75 examples/file.vcf "
+##INFO=<ID=ANN,Number=.,Type=String,Description="Functional annotations: 'Allele | Annotation | Annotation_Impact | Gene_Name | Gene_ID | Feature_Type | Feature_ID | Transcript_BioType | Rank | HGVS.c | HGVS.p | cDNA.pos / cDNA.length | CDS.pos / CDS.length | AA.pos / AA.length | Distance | ERRORS / WARNINGS / INFO' ">
+##INFO=<ID=LOF,Number=.,Type=String,Description="Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' ">
+##INFO=<ID=NMD,Number=.,Type=String,Description="Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' ">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+22	17071756	.	T	C	.	.	<b>ANN=</b>C|3_prime_UTR_variant|MODIFIER|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.*11A>G|||||11|,C|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397A>G|||||4223|
+22	17072035	.	C	T	.	.	<b>ANN=</b>T|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1406G>A|p.Gly469Glu|1666/2034|1406/1674|469/557||,T|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G>A|||||3944|
+22	17072258	.	C	A	.	.	<b>ANN=</b>A|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1183G>T|p.Gly395Cys|1443/2034|1183/1674|395/557||,A|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G>T|||||3721|
+22	17072674	.	G	A	.	.	<b>ANN=</b>A|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.767C>T|p.Pro256Leu|1027/2034|767/1674|256/557||,A|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397C>T|||||3305|
+</pre>
+				As you can see, SnpEff added functional annotations in the <code>ANN</code> info field (eigth column in the VCF output file).<br>
+				Details about the 'ANN' field format can be found in the <a href="#ann">ANN Field</a> section.<br>
+				Note: Older SnpEff version used 'EFF' field (details about the 'EFF' field format can be found in the <a href="#eff">EFF Field</a> section).
+				<br>
+				<br>
+				You can also annotate using the "verbose" mode (command line option <code>-v</code>), this makes SnpEff to show a lot of information which can be usefull for debugging. <br>
+				Here output is edited for brevity:
+<p><pre>
+$ java -Xmx4g -jar snpEff.jar <b>-v</b> GRCh37.75 examples/file.vcf > file.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.434	done
 00:00:00.434	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -794,7 +816,9 @@ Database options:
 2L	18000	18999 </pre>
 				<br>
 				In order to get only variants matching your intervals, you can use the command:
-<pre>$ java -Xmx4G -jar snpEff.jar -fi intervals.bed GRCh38.76 file.vcf </pre>
+<pre>
+$ java -Xmx4G -jar snpEff.jar -fi intervals.bed GRCh38.76 file.vcf 
+</pre>
 
 				</p>
 
@@ -814,7 +838,7 @@ Database options:
 				<br>
 				In order to get a list of canonical transcipts, you can use the <code>-d</code> (debug) command line option. E.g.:
 <pre>
-$ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.66 test.vcf
+$ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.75 test.vcf
 00:00:00.000    Reading configuration file 'snpEff.config'
 00:00:00.173    done
 00:00:00.173    Reading database for genome version 'GRCh37.66'
@@ -877,16 +901,22 @@ $ cat my_annotations.bed
 $ cat test.vcf 
 1	10469	.	C	G	365.78	PASS	AC=30;AF=0.0732
 
+# Annotate (output edited for readibility)
 $ java -Xmx4g -jar snpEff.jar -interval my_annotations.bed GRCh37.66 test.vcf
-1	10469	.	C	G	365.78	PASS	AC=30;AF=0.0732;EFF=CUSTOM(MODIFIER||||||MY_ANNOTATION||||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000423562||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000438504||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000488147||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000538476||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000541675||1),INTERGENIC(MODIFIER||||||||||1),UPSTREAM(MODIFIER|||||DDX11L1|processed_transcript|NON_CODING|ENST00000456328||1),UPSTREAM(MODIFIER|||||DDX11L1|transcribed_unprocessed_pseudogene|NON_CODING|ENST00000450305||1),UPSTREAM(MODIFIER|||||DDX11L1|transcribed_unprocessed_pseudogene|NON_CODING|ENST00000515242||1),UPSTREAM(MODIFIER|||||DDX11L1|transcribed_unprocessed_pseudogene|NON_CODING|ENST00000518655||1)
+1    10469    .    C    G    365.78    PASS    AC=30;AF=0.0732;
+                                               ANN=G|upstream_gene_variant|MODIFIER|DDX11L1|ENSG00000223972|transcript|ENST00000456328|processed_transcript||n.-1C>G|||||1400|
+                                               ...
+                                               <b>G|custom|MODIFIER|||CUSTOM&my_annotations|MY_ANNOTATION|||||||||</b>
+
 </pre>
-				Notice that the variant was annotated using "MY_ANNOTATION" in the EFF field.
+				Notice that the variant was annotated using "MY_ANNOTATION" in the <code>ANN</code> field.
 				</p>
 
 				<h3>Gene ID instead of gene names</h3>
 				<p>
 				<br>
 				You can obtain gene IDs instead of gene names by using the command line option <code>-geneId</code>.
+				Note: This is only for the old 'EFF' field ('ANN' field always shows both gene name and gene ID).
 				<br>
 				Example:
 <pre>
@@ -1015,9 +1045,134 @@ java -Xmx4g -jar snpEff.jar hg19 file.vcf > file.ann.vcf
 </pre>
 				</p>
 
+				<a id="ann"> </a>
+				<h3>ANN field (VCF output files)</h3>
+				Functional annotations information is added to the INFO field using an <code>ANN</code> tag.
 
+				The annotation 'ANN' field looks like this (the full annotataion standard specification can be found <a href="VCFannotationformat_v1.0.pdf">here</a>).
+
+<pre>
+ANN=T|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1406G>A|p.Gly469Glu|1666/2034|1406/1674|469/557||,T|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G>A|||||3944|
+</pre>
+
+				A variant can have (and ususally has) more than one annotaion. 
+				Multiple annotations are separated by commas.
+				In the previous example there were two annotations corresponding to different genes (CCT8L2 and FABP5P11).
+				<br>
+				<br>
+				Each annotation consists of multiple sub-fields separated by the pipe character "|" (fields 15 and 16 are empty in this example):
+<pre>
+Annotation   : T<b>|</b>missense_variant<b>|</b>MODERATE<b>|</b>CCT8L2<b>|</b>ENSG00000198445<b>|</b>transcript<b>|</b>ENST00000359963<b>|</b>protein_coding<b>|</b>1/1<b>|</b>c.1406G>A<b>|</b>p.Gly469Glu<b>|</b>1666/2034<b>|</b>1406/1674<b>|</b>469/557<b>|</b>  <b>|</b>
+Field number : 1<b>|</b>       2        <b>|</b>    3   <b>|</b>  4   <b>|</b>       5       <b>|</b>    6     <b>|</b>      7        <b>|</b>      8       <b>|</b> 9 <b>|</b>    10   <b>|</b>    11     <b>|</b>   12    <b>|</b>   13    <b>|</b>   14  <b>|</b>15<b>|</b> 16
+</pre>
+				<br>
+				Here is a description of the meaning of each sub-field
+				<ol>
+					<li> <b>Allele (or ALT):</b> In case of multiple ALT fields, this helps to identify which ALT we are referring to. 
+					E.g.:
+<pre>
+#CHROM  POS     ID  REF  ALT    QUAL  FILTER  INFO     
+chr1    123456  .   C    A      .     .       ANN=<b>A</b>|...
+chr1    234567  .   A    G,T    .     .       ANN=<b>G</b>|... , <b>T</b>|...
+</pre>
+
+					In case of cancer sample, when comparing somatic versus germline using a non-standard reference (e.g. one of the ALTs is the reference) the format should be ALT-REFERENCE. E.g.:
+<pre>
+#CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO
+chr1    123456  .   A    C,G  .     .       ANN=<b>G-C</b>|...
+</pre>
+
+					Compound variants: two or more variants affecting the annotations (e.g. two consecutive SNPs conforming a MNP, two consecutive frame_shift variants that “recover” the frame). 
+					In this case, the Allele field should include a reference to the other variant/s included in the annotation:
+<pre>
+#CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO     
+chr1    123456  .   A    T    .     .       ANN=<b>T</b>|...
+chr1    123457  .   C    G    .     .       ANN=<b>C-chr1:123456_A>T</b>|...
+</pre>
+
+					<li> <b>Annotation (a.k.a. effect):</b> Annotated using Sequence Ontology terms. Multiple effects can be concatenated using ‘&’.
+<pre>
+#CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO     
+chr1    123456  .   C    A    .     .      ANN=A|<b>intron_variant&nc_transcript_variant</b>|...
+</pre>
+
+					<li> <b>Putative_impact:</b> A simple estimation of putative impact / deleteriousness : {HIGH, MODERATE, LOW, MODIFIER}
+
+					<li> <b>Gene Name:</b> Common gene name (HGNC). Optional: use closest gene when the variant is “intergenic”.
+
+					<li> <b>Gene ID:</b> Gene ID
+
+					<li> <b>Feature type:</b> Which type of feature is in the next field (e.g. transcript, motif, miRNA, etc.). It is preferred to use Sequence Ontology (SO) terms, but ‘custom’ (user defined) are allowed.
+ANN=A|stop_gained|HIGH|||transcript|...
+
+Tissue specific features may include cell type / tissue information separated by semicolon e.g.:
+ANN=A|histone_binding_site|LOW|||H3K4me3:HeLa-S3|...
+
+					<li> <b>Feature ID:</b> Depending on the annotation, this may be: Transcript ID (preferably using version number), Motif ID, miRNA, ChipSeq peak, Histone mark, etc.
+Note: Some features may not have ID (e.g. histone marks from custom Chip-Seq experiments may not have a unique ID).
+
+					<li> <b>Transcript biotype:</b> The bare minimum is at least a description on whether the transcript is {“Coding”, “Noncoding”}. Whenever possible, use ENSEMBL biotypes.
+
+					<li> <b>Rank / total:</b> Exon or Intron rank / total number of exons or introns.
+
+					<li> <b>HGVS.c:</b> Variant using HGVS notation (DNA level)
+
+					<li> <b>HGVS.p:</b> If variant is coding, this field describes the variant using HGVS notation (Protein level). Since transcript ID is already mentioned in ‘feature ID’, it may be omitted here.
+
+					<li> <b>cDNA_position / cDNA_len:</b> Position in cDNA and trancript’s cDNA length (one based).
+
+					<li> <b>CDS_position / CDS_len:</b> Position and number of coding bases (one based includes START and STOP codons).
+
+					<li> <b>Protein_position / Protein_len:</b> Position and number of AA (one based, including START, but not STOP).
+
+					<li> <b>Distance to feature:</b> All items in this field are options, so the field could be empty. 
+Up/Downstream: Distance to first / last codon
+Intergenic: Distance to closest gene
+Distance to closest Intron boundary in exon (+/- up/downstream). If same, use positive number.
+Distance to closest exon boundary in Intron (+/- up/downstream)
+Distance to first base in MOTIF
+Distance to first base in miRNA
+Distance to exon-intron boundary in splice_site or splice _region 
+ChipSeq peak: Distance to summit (or peak center)
+Histone mark / Histone state: Distance to summit (or peak center)
+
+					<li> <b>Errors, Warnings or Information messages:</b> Add errors, warnings or informative message that can affect annotation accuracy. It can be added using either ‘codes’ (as shown in column 1, e.g. W1) or ‘message types’ (as shown in column 2, e.g. WARNING_REF_DOES_NOT_MATCH_GENOME). All these errors, warnings or information messages messages are optional.
+						<br>
+						<br>
+						<table class="table table-striped">
+							<tr> <th>Code</th> <th>Message type</th> <th>Description / Notes</th> </tr>
+							<tr> <td>E1</td> <td>ERROR_CHROMOSOME_NOT_FOUND</td> <td>Chromosome does not exists in reference genome database. Typically indicates a mismatch between the chromosome names in the input file and the chromosome names used in the reference genome. </td> </tr>
+							<tr> <td>E2</td> <td>ERROR_OUT_OF_CHROMOSOME_RANGE</td> <td>The variant’s genomic coordinate is greater than chromosome's length.</td> </tr>
+							<tr> <td>W1</td> <td>WARNING_REF_DOES_NOT_MATCH_GENOME</td> <td>This means that the ‘REF’ field in the input VCF file does not match the reference genome. This warning may indicate a conflict between input data and data from reference genome (for instance is the input VCF was aligned to a different reference genome). </td> </tr>
+							<tr> <td>W2</td> <td>WARNING_SEQUENCE_NOT_AVAILABLE</td> <td>Reference sequence is not available, thus no inference could be performed.</td> </tr>
+							<tr> <td>W3</td> <td>WARNING_TRANSCRIPT_INCOMPLETE</td> <td>A protein coding transcript having a non-multiple of 3 length. It indicates that the reference genome has missing information about this particular transcript.</td> </tr>
+							<tr> <td>W4</td> <td>WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS</td> <td>A protein coding transcript has two or more STOP codons in the middle of the coding sequence (CDS). This should not happen and it usually means the reference genome may have an error in this transcript. </td> </tr>
+							<tr> <td>W5</td> <td>WARNING_TRANSCRIPT_NO_START_CODON</td> <td>A protein coding transcript does not have a proper START codon. It is rare that a real transcript does not have a START codon, so this probably indicates an error or missing information in the reference genome.</td> </tr>
+							<tr> <td>I1</td> <td>INFO_REALIGN_3_PRIME</td> <td>Variant has been realigned to the most 3-prime position within the transcript. This is usually done to to comply with HGVS specification to always report the most 3-prime annotation.</td> </tr>
+							<tr> <td>I2</td> <td>INFO_COMPOUND_ANNOTATION</td> <td>This effect is a result of combining more than one variants (e.g. two consecutive SNPs that conform an MNP, or two consecutive frame_shift variants that compensate frame).</td> </tr>
+							<tr> <td>I3</td> <td>INFO_NON_REFERENCE_ANNOTATION</td> <td>An alternative reference sequence was used to calculate this annotation (e.g. cancer sample comparing somatic vs. germline).</td> </tr>
+						</table>
+
+				<br>
+				<br>
+				<p>
+				<b>Consistency between HGVS and functional annotations:</b>
+				In some cases there might be inconsistent reporting between ‘annotation’ and HGVS. 
+				This is due to the fact that VCF recommends aligning to the leftmost coordinate, whereas HGSV recommends aligning to the "most 3-prime coordinate".
+				For instance, an InDel on the edge of an exon, which has an ‘intronic’ annotation according to VCF alignment recommendation, can lead to a ‘stop_gained’ when aligned using HGVS’s recommendation (using the most 3-prime possible alignment). 
+				So the 'annotation' sub-field will report 'intron' whereas HGVS sub-field will report a 'stop_gained'. 
+				This is obviously inconsistent and must be avoided.
+				In order to report annotations that are consistent with HGVS notation, variants must be re-aligned according to each transcript’s strand (i.e. align the variant according to the transcript’s most 3-prime coordinate). 
+				Then annotations are calculated, thus the reported annotations will be consistent with HGVS notation. 
+				Annotation software should have a command line option to override this behaviour (e.g. ‘-no_shift_hgvs’)
+
+				<a id="eff"> </a>
 				<h3>EFF field (VCF output files)</h3>
 				Effects information is added to the INFO field using an 'EFF' tag. 
+				<br>
+				<br>
+				<b>Important:</b> This section refers the old annotation format using the 'EFF' tag which can be activated using the <code>-formatEff</code> command line option.
+				As of version 4.1 SnpEff uses the 'ANN' field by default.
 				<br>
 				<br>
 				Notes:
