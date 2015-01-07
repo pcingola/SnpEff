@@ -637,7 +637,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 		if (cancerSamples != null) {
 			// Read from TXT file
-			if (verbose) Timer.show("Reading cancer samples pedigree from file '" + cancerSamples + "'.");
+			if (verbose) Timer.showStdErr("Reading cancer samples pedigree from file '" + cancerSamples + "'.");
 
 			List<String> sampleNames = vcfFile.getVcfHeader().getSampleNames();
 			pedigree = new ArrayList<PedigreeEnrty>();
@@ -654,11 +654,11 @@ public class SnpEffCmdEff extends SnpEff {
 			}
 		} else {
 			// Read from VCF header
-			if (verbose) Timer.show("Reading cancer samples pedigree from VCF header.");
+			if (verbose) Timer.showStdErr("Reading cancer samples pedigree from VCF header.");
 			pedigree = vcfFile.getVcfHeader().getPedigree();
 		}
 
-		if (verbose && ((pedigree == null) || pedigree.isEmpty())) Timer.show("Warngin: No cancer sample pedigree found.");
+		if (verbose && ((pedigree == null) || pedigree.isEmpty())) Timer.showStdErr("WARNING: No cancer sample pedigree found.");
 		return pedigree;
 	}
 
