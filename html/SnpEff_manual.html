@@ -348,7 +348,7 @@ $ unzip snpEff_latest_core.zip
 				You can annotate the file by running (since we are activating the "verbose" mode <code>-v</code>, SnpEff shows a lot of information, the output is edited for brevity):
 
 <p><pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.434	done
 00:00:00.434	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -456,7 +456,7 @@ WARNING_TRANSCRIPT_NO_START_CODON	3483
 				Next time SnpEff will use the local version, so the instalation step is only done once.
 				<br>
 				<br>
-				The annotated variants will be in the new file "file.eff.vcf".<p>
+				The annotated variants will be in the new file "file.ann.vcf".<p>
 				<p>
 				<i class="icon-warning-sign"></i> SnpEff creates a file called "snpEff_summary.html" showing basic statistics about the analyzed variants. 
 				Take a quick look at it.
@@ -470,7 +470,7 @@ WARNING_TRANSCRIPT_NO_START_CODON	3483
 				<i class="icon-hand-right"></i> If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
 				This is done using the '-c' command line option:
 <p><pre>
-java -Xmx4g -jar snpEff.jar <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 file.vcf > file.eff.vcf
+java -Xmx4g -jar snpEff.jar <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 file.vcf > file.ann.vcf
 </pre><p>
 
 				<h3> Detailed examples </h3>
@@ -827,7 +827,7 @@ $ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.66 test.vcf
 				<p>
 				SnpEff allows you to provide a list of transcripts to use for annotations by using the <code>-onlyTr file.txt</code> and providing a file with one transcript ID per line.
 				Any other transcript will be ignored.
-<pre>$ java -Xmx4G -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 file.vcf > file.eff.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 file.vcf > file.ann.vcf</pre>
 				</p>
 
 				<h3>Upstream and downstream</h3>
@@ -837,7 +837,7 @@ $ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.66 test.vcf
 				<br>
 				<br>
 				Example: Make upstream and downstream size zero (i.e. do not report any upstream or downstream effect).
-<pre>$ java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.75 file.vcf > file.eff.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.75 file.vcf > file.ann.vcf</pre>
 				</p>
 
 				<h3>Splice site size</h3>
@@ -846,7 +846,7 @@ $ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.66 test.vcf
 				<br>
 				<br>
 				Example: Make splice sites four bases long
-<pre>$ java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 file.vcf > file.eff.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 file.vcf > file.ann.vcf</pre>
 				</p>
 
 				<h3>Adding your own annotations</h3>
@@ -898,7 +898,7 @@ cp examples/file.vcf my.vcf
 gzip my.vcf 
 
 # Annotate (note the it doesn't require the ending '.gz')
-java -Xmx4g -jar snpEff.jar GRCh37.75 my.vcf > my.eff.vcf
+java -Xmx4g -jar snpEff.jar GRCh37.75 my.vcf > my.ann.vcf
 </pre>
 				<br>
 
@@ -912,13 +912,13 @@ java -Xmx4g -jar snpEff.jar GRCh37.75 my.vcf > my.eff.vcf
 # These three commands are the same
 
 # Using STDIN (pipe), implicit (no input file name)
-cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 > file.eff.vcf
+cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 > file.ann.vcf
 
 # Using STDIN (pipe), exlicit '-' input file name
-cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 - > file.eff.vcf
+cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 - > file.ann.vcf
 
 # Using explicid file name
-java -Xmx4g -jar snpEff.jar hg19 file.vcf > file.eff.vcf
+java -Xmx4g -jar snpEff.jar hg19 file.vcf > file.ann.vcf
 
 </pre>
 
@@ -1262,7 +1262,7 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 java –Xmx4g -jar snpEff.jar –v \
 	-lof \
 	GRCh37.75 \
-	file.vcf > file.eff.vcf
+	file.vcf > file.ann.vcf
 </pre>
 
 				SnpEff adds 'LOF' and 'NMD' tags to INFO fields (column 8 in VCF format).  LOF and NMD tags have the following format:
@@ -1492,7 +1492,7 @@ $ java -Xmx4g -jar snpEff.jar -i bed BDGP5.69 chipSeq_peaks.bed
 				So an example command line would be:
 				<br>
 				<br>
-<pre>$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.eff.vcf </pre>
+<pre>$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.ann.vcf </pre>
 
 				<br>
 
@@ -1559,7 +1559,7 @@ $ java -Xmx4g -jar snpEff.jar -v \
 		-canceSample samples_cancer.txt \
 		GRCh37.75 \
 		cancer.vcf \
-		> cancer.eff.vcf 
+		> cancer.ann.vcf 
 </pre>
 				<br>
 				<br>
@@ -1715,7 +1715,7 @@ drwxrwxr-x 3 pcingola pcingola     4096 Aug 26 19:51 ..
 				<br>
 				E.g. To use 'HeLa-S3' and 'NHEK' tracks, you can run:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/file.vcf > file.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.377	done
 00:00:00.377	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -1726,7 +1726,7 @@ $ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/file.
 
 
 # Show one example of "regulatory_region" (output edited for readability)
-$ grep -i regulatory_region file.eff.vcf | head -n 1 | ./scripts/vcfInfoOnePerLine.pl 
+$ grep -i regulatory_region file.ann.vcf | head -n 1 | ./scripts/vcfInfoOnePerLine.pl 
 22	17565932	.	T	C	.	.
 							EFF	regulatory_region_variant[PolII](MODIFIER||||||HeLa-S3||||1)
 							EFF	regulatory_region_variant[DNase1](MODIFIER||||||NHEK||||1)
@@ -1767,10 +1767,10 @@ cd db/encode
 wget "http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/fdrPeaks/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb"
 
 # Annotate using ENCODE's data:
-java -Xmx4g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.71 test.vcf > test.eff.vcf
+java -Xmx4g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.71 test.vcf > test.ann.vcf
 
 # Annotations are added as "CUSTOM" intervals:
-$ grep CUSTOM test.eff.vcf 
+$ grep CUSTOM test.ann.vcf 
 1	799463	.	T	C	.	PASS	AC=958;EFF=CUSTOM[wgEncodeDukeDnase8988T](MODIFIER||||||wgEncodeDukeDnase8988T:799426_799575||||1),DOWNSTREAM(MODIFIER|||||FAM41C|lincRNA|NON_CODING|ENST00000427857||1),DOWNSTREAM(MODIFIER|||||FAM41C|lincRNA|NON_CODING|ENST00000432963||1),DOWNSTREAM(MODIFIER|||||FAM41C|lincRNA|NON_CODING|ENST00000446136||1),DOWNSTREAM(MODIFIER|||||RP11-206L10.11|lincRNA|NON_CODING|ENST00000445118||1),INTERGENIC(MODIFIER||||||||||1)
 1	902128	.	C	T	.	PASS	AC=80;EFF=CUSTOM[wgEncodeDukeDnase8988T](MODIFIER||||||wgEncodeDukeDnase8988T:902066_902215||||1),DOWNSTREAM(MODIFIER||||642|KLHL17|protein_coding|CODING|ENST00000338591||1),DOWNSTREAM(MODIFIER|||||KLHL17|nonsense_mediated_decay|CODING|ENST00000466300||1),DOWNSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000463212||1),DOWNSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000481067||1),NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|gCt/gTt|A43V|576|PLEKHN1|protein_coding|CODING|ENST00000379407|2|1),NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|gCt/gTt|A43V|611|PLEKHN1|protein_coding|CODING|ENST00000379410|2|1),NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|gCt/gTt|A43V|663|PLEKHN1|protein_coding|CODING|ENST00000379409|2|1),UPSTREAM(MODIFIER|||||PLEKHN1|retained_intron|CODING|ENST00000480267||1)
 1	948921	.	T	C	.	PASS	AC=904;EFF=CUSTOM[wgEncodeDukeDnase8988T](MODIFIER||||||wgEncodeDukeDnase8988T:948786_948935||||1),UPSTREAM(MODIFIER|||||RP11-54O7.11|antisense|NON_CODING|ENST00000458555||1),UTR_5_PRIME(MODIFIER||||165|ISG15|protein_coding|CODING|ENST00000379389|1|1)
@@ -1809,10 +1809,10 @@ wget http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz
 tar -xvzf epigenome_latest.tgz
 
 # Annotate using SnpEff and "-interval" command line
-java -Xmx4g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.eff.vcf 
+java -Xmx4g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.ann.vcf 
 
 # See the data represented as "CUSTOM" EFF fields
-$ grep CUSTOM test.eff.vcf 
+$ grep CUSTOM test.ann.vcf 
 1	894573	.	G	A	.	PASS	AC=725;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_8||||1),INTRON(MODIFIER||||749|NOC2L|protein_coding|CODING|ENST00000327044|1|1),INTRON(MODIFIER|||||NOC2L|processed_transcript|CODING|ENST00000487214|1|1),INTRON(MODIFIER|||||NOC2L|retained_intron|CODING|ENST00000469563|1|1),UPSTREAM(MODIFIER||||642|KLHL17|protein_coding|CODING|ENST00000338591||1),UPSTREAM(MODIFIER|||||KLHL17|nonsense_mediated_decay|CODING|ENST00000466300||1),UPSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000463212||1),UPSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000481067||1),UPSTREAM(MODIFIER|||||NOC2L|retained_intron|CODING|ENST00000477976||1)
 1	948692	.	G	A	.	PASS	AC=896;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_9||||1),INTERGENIC(MODIFIER||||||||||1),UPSTREAM(MODIFIER||||165|ISG15|protein_coding|CODING|ENST00000379389||1),UPSTREAM(MODIFIER|||||RP11-54O7.11|antisense|NON_CODING|ENST00000458555||1)
 1	948921	.	T	C	.	PASS	AC=904;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_9||||1),UPSTREAM(MODIFIER|||||RP11-54O7.11|antisense|NON_CODING|ENST00000458555||1),UTR_5_PRIME(MODIFIER||||165|ISG15|protein_coding|CODING|ENST00000379389|1|1)
@@ -1833,7 +1833,7 @@ $ grep CUSTOM test.eff.vcf
 				<br>
 				Annotations example:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.374	done
 00:00:00.374	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -1842,7 +1842,7 @@ $ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
 ...
 
 # Show some results (edited for readibility)
-$ grep sequence_feature file.eff.vcf | head | ./scripts/vcfInfoOnePerLine.pl 
+$ grep sequence_feature file.ann.vcf | head | ./scripts/vcfInfoOnePerLine.pl 
 
 22  17280941  .  T  C  .  .
                             EFF  sequence_feature[transmembrane_region:Transmembrane_region](LOW|||c.336T>C|459|XKR3|protein_coding|CODING|ENST00000331428|2|1)
@@ -1869,7 +1869,7 @@ $ grep sequence_feature file.eff.vcf | head | ./scripts/vcfInfoOnePerLine.pl
 				<br>
 				Example of trancription factor binding sites prediction predictions:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.393	done
 00:00:00.394	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -1885,7 +1885,7 @@ $ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
 ...
 
 # Show some examples (output edited for readability)
-$ grep -i TF_bind file.eff.vcf | ./scripts/vcfInfoOnePerLine.pl 
+$ grep -i TF_bind file.ann.vcf | ./scripts/vcfInfoOnePerLine.pl 
 
 22      18301084        .       G       A       .       .
                                                         EFF     TF_binding_site_variant[MA0138.2:Nrsf](MODIFIER||||||||||1)
@@ -2130,7 +2130,7 @@ AC002472.13	ENSG00000187905	ENST00000442047	protein_coding	0	1	6	1	0	0	0	0	1	6	0
 				You can see which chromosome names are used by SnpEff simply by using the <code>-v</code> (verbose) command line option.
 				This shows all chromosome names and their respective lengths. Notice the last line ("Chromosomes names [sizes]"):
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 ...
 # Number of chromosomes      : 297
@@ -2225,13 +2225,13 @@ chr5 137622242 . C T . . EFF=NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Gaa/Aaa|E/K
 				<br>
 				Some people try to count the number of effects in a file by doing (assuming we want to count how many MODIFIER effects we have): 
 				<br>
-				<pre> grep -o MODIFIER output.eff.vcf | wc -l </pre>
+				<pre> grep -o MODIFIER output.ann.vcf | wc -l </pre>
 				<br>
 				This is incorrect because a VCF line can have multiple effects (e.g. when there are multiple transcripts in a gene).
 				A proper way to count effects would be:
 
 <pre>
-cat output.eff.vcf \
+cat output.ann.vcf \
 	| cut -f 8 \
 	| tr ";" "\n" \
 	| grep ^EFF= \
@@ -2876,7 +2876,7 @@ Finishing up
 #-------------------------------------------------------------------------------
 
 in=$1                                                   # Input VCF file
-eff=`dirname $in`/`basename $in .vcf`.eff.vcf        # SnpEff annotated VCF file
+eff=`dirname $in`/`basename $in .vcf`.ann.vcf        # SnpEff annotated VCF file
 out=`dirname $in`/`basename $in .vcf`.gatk.vcf          # Output VCF file (annotated by GATK)
 
 ref=$HOME/snpEff/data/genomes/hg19.fa                   # Reference genome file
@@ -2950,7 +2950,7 @@ Exception in thread "main" net.sf.picard.PicardException: /home/pcingola/snpEff/
 
 Annotate using SnpEff
     Input file  : zzz.vcf
-    Output file : ./zzz.eff.vcf
+    Output file : ./zzz.ann.vcf
 00:00:00.000	Reading configuration file '/home/pcingola/snpEff/snpEff.config'
 00:00:00.173	done
 00:00:00.173	Reading database for genome version 'hg19' from file '/home/pcingola//snpEff/data/hg19/snpEffectPredictor.bin' (this might take a while)
@@ -2988,19 +2988,19 @@ INFO  11:23:41,343 HelpFormatter - ---------------------------------------------
 INFO  11:23:41,344 HelpFormatter - The Genome Analysis Toolkit (GATK) v2.4-9-g532efad, Compiled 2013/03/19 07:35:36 
 INFO  11:23:41,344 HelpFormatter - Copyright (c) 2010 The Broad Institute 
 INFO  11:23:41,344 HelpFormatter - For support and documentation go to http://www.broadinstitute.org/gatk 
-INFO  11:23:41,347 HelpFormatter - Program Args: -T VariantAnnotator -R /home/pcingola/snpEff/data/genomes/hg19.fa -A SnpEff --variant zzz.vcf --snpEffFile ./zzz.eff.vcf -L zzz.vcf -o ./zzz.gatk.vcf 
+INFO  11:23:41,347 HelpFormatter - Program Args: -T VariantAnnotator -R /home/pcingola/snpEff/data/genomes/hg19.fa -A SnpEff --variant zzz.vcf --snpEffFile ./zzz.ann.vcf -L zzz.vcf -o ./zzz.gatk.vcf 
 INFO  11:23:41,347 HelpFormatter - Date/Time: 2013/04/12 11:23:41 
 INFO  11:23:41,348 HelpFormatter - -------------------------------------------------------------------------------- 
 INFO  11:23:41,348 HelpFormatter - -------------------------------------------------------------------------------- 
 INFO  11:23:41,353 ArgumentTypeDescriptor - Dynamically determined type of zzz.vcf to be VCF 
-INFO  11:23:41,356 ArgumentTypeDescriptor - Dynamically determined type of ./zzz.eff.vcf to be VCF 
+INFO  11:23:41,356 ArgumentTypeDescriptor - Dynamically determined type of ./zzz.ann.vcf to be VCF 
 INFO  11:23:41,399 GenomeAnalysisEngine - Strictness is SILENT 
 INFO  11:23:41,466 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 1000 
 INFO  11:23:41,480 RMDTrackBuilder - Loading Tribble index from disk for file zzz.vcf 
-INFO  11:23:41,503 RMDTrackBuilder - Loading Tribble index from disk for file ./zzz.eff.vcf 
-WARN  11:23:41,505 RMDTrackBuilder - Index file /data/pcingola/Documents/projects/snpEff/gatk_test/./zzz.eff.vcf.idx is out of date (index older than input file), deleting and updating the index file 
-INFO  11:23:41,506 RMDTrackBuilder - Creating Tribble index in memory for file ./zzz.eff.vcf 
-INFO  11:23:41,914 RMDTrackBuilder - Writing Tribble index to disk for file /data/pcingola/Documents/projects/snpEff/gatk_test/./zzz.eff.vcf.idx 
+INFO  11:23:41,503 RMDTrackBuilder - Loading Tribble index from disk for file ./zzz.ann.vcf 
+WARN  11:23:41,505 RMDTrackBuilder - Index file /data/pcingola/Documents/projects/snpEff/gatk_test/./zzz.ann.vcf.idx is out of date (index older than input file), deleting and updating the index file 
+INFO  11:23:41,506 RMDTrackBuilder - Creating Tribble index in memory for file ./zzz.ann.vcf 
+INFO  11:23:41,914 RMDTrackBuilder - Writing Tribble index to disk for file /data/pcingola/Documents/projects/snpEff/gatk_test/./zzz.ann.vcf.idx 
 INFO  11:23:42,076 IntervalUtils - Processing 33411 bp from intervals 
 INFO  11:23:42,125 GenomeAnalysisEngine - Creating shard strategy for 0 BAM files 
 INFO  11:23:42,134 GenomeAnalysisEngine - Done creating shard strategy 

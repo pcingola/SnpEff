@@ -6,7 +6,7 @@
 #
 #-------------------------------------------------------------------------------
 
-cpus = 2
+cpus = 4
 
 # Configuration parameters
 version				:= "4.1"
@@ -82,7 +82,11 @@ bool addBuild(string genome) {
 		print("INFO : Genome $genome already built\n")
 	} else if( db <- geneFile ) {
 		print("BUILD:\t$genome\tgeneFile: $geneFile\tdb: $db\n")
-		task $snpeffBuild $genome 2>&1 | tee $dirBuild/build.$genome.out
+
+		# Use 'storeSeqs' for human and mouse genome
+		opt := ( genome.startsWith('GRC') ? "-storeSeqs" : "" )
+
+		task $snpeffBuild $opt $genome 2>&1 | tee $dirBuild/build.$genome.out
 	} else {
 		print("OK  :\t$genome\tgeneFile: $geneFile\tdb: $db\n")
 	}

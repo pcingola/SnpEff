@@ -943,7 +943,7 @@ $ java -jar SnpSift.jar extractFields file.vcf CHROM" "POS" "ID" "THETA" "GEN[0]
 				You can use command line option <code>-s</code> to specify multiple field separator and <code>-e</code> to specify how to represent empty fields.
 				<br>
 <pre>
-$ java -jar SnpSift.jar extractFields -s "," -e "." test.chr22.eff.vcf CHROM POS REF ALT "EFF[*].EFFECT" "EFF[*].AA" 
+$ java -jar SnpSift.jar extractFields -s "," -e "." test.chr22.ann.vcf CHROM POS REF ALT "EFF[*].EFFECT" "EFF[*].AA" 
 </pre>
 				<br>
 				Notice how we separate same fields using "," instead of the default tab using the option <code>-s ","</code>, and we use "." for empty fiels (option <code>-e "."</code>).
@@ -1639,12 +1639,12 @@ $ java -jar SnpSift.jar rmInfo test.snpeff.vcf EFF
 				<br>
 				Usage example:
 <pre>
-$ java -jar SnpSift.jar geneSets -v db/msigDb/msigdb.v3.1.symbols.gmt test.eff.vcf > test.eff.geneSets.vcf
+$ java -jar SnpSift.jar geneSets -v db/msigDb/msigdb.v3.1.symbols.gmt test.ann.vcf > test.eff.geneSets.vcf
 00:00:00.000	Reading MSigDb from file: 'db/msigDb/msigdb.v3.1.symbols.gmt'
 00:00:01.168	Done. Total:
 	8513 gene sets
 	31847 genes
-00:00:01.168	Annotating variants from: 'test.eff.vcf'
+00:00:01.168	Annotating variants from: 'test.ann.vcf'
 00:00:01.298	Done.
 # Summary
 #	gene_set	gene_set_size	variants
