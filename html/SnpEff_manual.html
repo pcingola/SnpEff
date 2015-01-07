@@ -960,7 +960,7 @@ cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 > file.ann.vcf
 # Using STDIN (pipe), exlicit '-' input file name
 cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 - > file.ann.vcf
 
-# Using explicid file name
+# Using explict file name
 java -Xmx4g -jar snpEff.jar hg19 file.vcf > file.ann.vcf
 
 </pre>
@@ -1722,11 +1722,14 @@ Patient_04_Germline	Patient_04_Somatic
 				<br>
 				E.g. In our example, the file name is 'samples_cancer.txt', so the command line would look like this:
 <pre>
+$ cat examples/samples_cancer_one.txt
+Patient_01_Germline    Patient_01_Somatic
+
 $ java -Xmx4g -jar snpEff.jar -v \
 		-cancer \
-		-canceSample samples_cancer.txt \
+		-cancerSamples examples/samples_cancer_one.txt \
 		GRCh37.75 \
-		cancer.vcf \
+		examples/cancer.vcf \
 		> cancer.ann.vcf 
 </pre>
 				<br>
