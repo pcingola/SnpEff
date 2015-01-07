@@ -90,6 +90,33 @@
       <div class="span9">
 
 
+        <!-- Important changes
+        ================================================== -->
+        <section id="intro">
+          <div class="page-header">
+            <h1>0. Importatn changes: 'ANN' field</h1>
+          </div>
+				<p class="lead">
+				This SnpEff version implements the <a href="VCFannotationformat_v1.0.pdf"><b>new VCF annotation standard 'ANN' field</b></a>.
+				</p>
+
+				<p>
+				This new format specification has been created by the developers of the most widely used variant annotation programs (SnpEff, ANNOVAR and ENSEMBL's VEP)
+				and attempts to: <br>
+					<ol>
+					<li> provide a common framework for variant annotation, <br>
+					<li> make pipeline development easier, <br>
+					<li> facilitate benchmarking, and <br>
+					<li> improve some known problems in variant annotations.<br>
+					</ol>
+
+				<br>
+				Obviously this new 'ANN' field introduces changes respect to the previous 'EFF' field that break compatibility with previous SnpEff versions.<br>
+				In order to use the old 'EFF' field, you can use the <code>-formatEff</code> command line option.
+				</p>
+
+        </section>
+
         <!-- Introduction
         ================================================== -->
         <section id="intro">
@@ -100,6 +127,8 @@
 				SnpEff is a variant annotation and effect prediction tool.
 				It annotates and predicts the effects of genetic variants (such as amino acid changes).
 				</p>
+
+				For older version of this page, see: <a href="SnpEff_manual.version_4_0.html">Manual page for SnpEff version 4.0</a><p>
 
             	<h3>Download &amp; Install</h3>
 				<p class="lead"> Download and installing SnpEff it pretty easy, take a look at the <a href="download.html">download page</a>.
