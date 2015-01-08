@@ -29,7 +29,7 @@ public class CodonChangeSnp extends CodonChange {
 		codonsAlt = codonsAlt();
 		effect(exon, EffectType.CODON_CHANGE, "", codonsRef, codonsAlt, codonStartNum, codonStartIndex, true);// Use a generic low priority variant, this allows 'setCodons' to override it
 
-		if (codonsRef.isEmpty()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
+		if (codonsRef.isEmpty()) variantEffects.addErrorWarning(variant, ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
 
 		return true;
 	}
@@ -72,7 +72,7 @@ public class CodonChangeSnp extends CodonChange {
 		// Sanity checks
 		if (cdsStr.isEmpty() // Empty CDS => Cannot get codon (e.g. one or more exons are missing their sequences
 				|| (cdsLen <= minBase) // Codon past CDS sequence => Cannot get codon
-		) return "";
+				) return "";
 
 		// Create codon sequence
 		char codonChars[] = cdsStr.substring(minBase, maxBase).toLowerCase().toCharArray();

@@ -170,7 +170,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-				);
+						);
 			}
 		}
 	}
@@ -249,7 +249,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+					);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -649,7 +649,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("showtr") //
-		) {
+				) {
 			command = args[argNum++].trim().toLowerCase();
 		}
 

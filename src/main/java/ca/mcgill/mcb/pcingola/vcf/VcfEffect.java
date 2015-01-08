@@ -444,7 +444,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-			) len--;
+					) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;

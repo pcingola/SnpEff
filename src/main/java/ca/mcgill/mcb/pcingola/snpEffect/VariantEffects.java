@@ -19,6 +19,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class VariantEffects implements Iterable<VariantEffect> {
 
+	public static boolean debug = false;
 	List<VariantEffect> effects;
 
 	public VariantEffects() {
@@ -57,10 +58,15 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		} else add(variant, marker, effectType, effectType.effectImpact(), "");
 	}
 
-	public void addErrorWarning(ErrorWarningType errwarn) {
+	public void addErrorWarning(Variant variant, ErrorWarningType errwarn) {
 		VariantEffect veff = get();
 		if (veff != null) veff.addErrorWarningInfo(errwarn);
-		else Gpr.debug("Could not get latest " + VariantEffect.class.getSimpleName());
+		else {
+			if (debug) Gpr.debug("Could not get latest " + VariantEffect.class.getSimpleName());
+			veff = new VariantEffect(variant);
+			veff.addErrorMessage(errwarn);
+			add(veff);
+		}
 	}
 
 	/**
@@ -76,7 +82,7 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		String vgt = variant.getGenotype();
 		if (((vgt != null) ^ (gt != null)) // One null and one non-null?
 				|| ((vgt != null) && (gt != null) && !variant.getGenotype().equals(variant.getGenotype())) // Both non-null, but different?
-		) return false;
+				) return false;
 
 		// Do transcripts match?
 		Transcript trMarker = (Transcript) marker.findParent(Transcript.class);

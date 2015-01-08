@@ -601,7 +601,7 @@ public class SnpEffectPredictor implements Serializable {
 		// Chromosome missing?
 		//---
 		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(variant)) {
-			variantEffects.addErrorWarning(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND);
+			variantEffects.addErrorWarning(variant, ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND);
 			return variantEffects;
 		}
 
@@ -646,7 +646,7 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Any errors or intergenic (i.e. did not hit any gene)
 		if (!hitChromo) {
-			if (Config.get().isErrorChromoHit()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
+			if (Config.get().isErrorChromoHit()) variantEffects.addErrorWarning(variant, ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
 		} else if (!hitSomething) {
 			if (Config.get().isOnlyRegulation()) {
 				variantEffects.add(variant, null, EffectType.NONE, "");
