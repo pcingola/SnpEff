@@ -13,5 +13,7 @@ java -Xmx4g -jar snpEff.jar testHg3775Chr1 examples/variants_2.vcf > examples/va
 # Cancer
 java -Xmx4g -jar snpEff.jar -v -cancer -cancerSamples examples/samples_cancer_one.txt testHg3775Chr1 examples/cancer.vcf > examples/cancer.ann.vcf
 
+java -Xmx4g -jar snpEff.jar -v -classic -cancer -cancerSamples examples/samples_cancer_one.txt testHg3775Chr1 examples/cancer.vcf > examples/cancer.eff.vcf
+
 java -Xmx4g -jar snpEff.jar -v -cancer testHg3775Chr1 examples/cancer_pedigree.vcf > examples/cancer_pedigree.ann.vcf
 

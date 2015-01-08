@@ -1746,46 +1746,49 @@ $ java -Xmx4g -jar snpEff.jar -v \
 				<br>
 				E.g.: Pedigree information in a VCF file would look like this
 <pre>
+$ cat examples/cancer_pedigree.vcf
 ##PEDIGREE=&lt;Derived=Patient_01_Somatic,Original=Patient_01_Germline>
 #CHROM  POS ID  REF ALT QUAL    FILTER  INFO        FORMAT  Patient_01_Germline Patient_01_Somatic
 1   69091   .   A   C,G .       PASS    AF=0.1122   GT      1/0                 2/1
 1   69849   .   G   A,C .       PASS    AF=0.1122   GT      1/0                 2/1
 1   69511   .   A   C,G .       PASS    AF=0.3580   GT      1/1                 2/2
+
+
+$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 examples/cancer_pedigree.vcf > examples/cancer_pedigree.ann.vcf
 </pre>
 				Here we say that the sample called <code>Patient_01_Somatic</code> is derived from the sample called <code>Patient_01_Germline</code>. 
 				In this context, this means that cancer sample is derived from the healthy tissue. 
 
 				<br>
 				<br>
-				<h3>Interpreting Cancer effects</h3>
-				Interpretation of EFF field cancer sample relies heavily on 'Genotype' sub-field.
-				Just as a reminder, EFF field has the following format:
+				<h3>Interpreting Cancer annotations</h3>
+				Interpretation of <code>ANN</code> field cancer sample relies on 'Allele' sub-field.
+				Just as a reminder, <code>ANN</code> field has the following format:
 
 <pre>
+ANN = Allele | Annotation | Annotation_Impact | Gene_Name | Gene_ID | Feature_Type | Feature_ID | Transcript_BioType | Rank | HGVS.c | HGVS.p | cDNA.pos / cDNA.length | CDS.pos / CDS.length | AA.pos / AA.length | Distance | ERRORS_WARNINGS_INFO
 </pre>
-
-<pre>
-EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_Length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )
-</pre>
-				The <code>GenotypeNum</code> field tells you which effect relates to which genotype. 
+				The <code>Allele</code> field tells you which effect relates to which genotype. 
 				More importantly, genotype difference between Somatic and Germline. 
 				<br>
 				Example: when there are multiple ALTs (e.g. REF='A' ALT='C,G') and the genotype field says:
 				<ul>
-					<li> GenotypeNum = "1": it means is the effect related to the first ALT ('C')
-					<li> GenotypeNum = "2" if it's the effect related to the second ALT ('G') 
-					<li> GenotypeNum = "2-1" means that this is the effect of having the second ALT as variant while using the first ALT as reference ("C -&gt; G").
+					<li> Allele = "C": it means is the effect related to the first ALT ('C')
+					<li> Allele = "G" if it's the effect related to the second ALT ('G') 
+					<li> Allele = "G-C" means that this is the effect of having the second ALT as variant while using the first ALT as reference ("C -&gt; G").
 				</ul>
 				It is important that you understand the meaning of the last one, because you'll use it often for your cancer analysis.
 				<br>
 				<br>
 				Example: Sample output for the previously mentioned VCF example would be (the output has been edited for readability reasons)
 				<br>
-				For the first line:
+				For the first line we get (edited for readibility):
 <pre>
+$ java -Xmx4g -jar snpEff.jar -v -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf > examples/cancer.eff.vcf
+
 1   69091   .   A   C,G .   PASS    AF=0.1122;
 	ANN=G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Met1?|1/918|1/918|1/305||
-       ,G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Leu1?|1/918|1/918|1/305||WARNING_REF_DOES_NOT_MATCH_GENOME
+       ,G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Leu1?|1/918|1/918|1/305||
        ,C|initiator_codon_variant|LOW|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>C|p.Met1?|1/918|1/918|1/305||
     GT  1/0 2/1 
 </pre>
@@ -1793,7 +1796,7 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				<ol>
 				   <li> In this case, we have two ALTs = 'C' and 'G'. 
 				   <li> Germline sample is heterozygous 'C/A' (GT = '1/0') 
-				   <li> Soamtic tissue is heterozygous 'G/C' (GT = '2/1')
+				   <li> Somatic tissue is heterozygous 'G/C' (GT = '2/1')
 				   <li> Change A -&gt; C and A -&gt; G are always calculated by SnpEff (this is the "default mode"). 
 						<ul>
 						 <li> A -&gt; C produces this effect
@@ -1808,10 +1811,10 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 					<li> Finally, this is what you were expecting for, the cancer comparisons. Since both germline and somatic 
 						are heterozygous (GT are '1/0' and '2/1'), there are 4 possible comparisons to make:  
 						<ul>
-							<li> 2 vs 1 : This is the Somatic vs Germline we are interested in. SnpEff reports this one
-							<li> 2 vs 0 : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
-							<li> 1 vs 1 : This is not a variant, since both og them ar '1'. SnpEff skips this one.
-							<li> 1 vs 0 : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
+							<li> G vs C : This is the Somatic vs Germline we are interested in. SnpEff reports this one
+							<li> G vs A : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
+							<li> C vs C : This is not a variant, since both og them ar '1'. SnpEff skips this one.
+							<li> C vs A : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
 						</ul>
 						I know is confusing, but the bottom line is that only the first comparison one makes sense, and is the one SnpEff reports.
 						So 'C -&gt; G' produces the following effect:
@@ -1821,6 +1824,33 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 						<i class="icon-warning-sign"></i> Notice the genotype field is "G-C" meaning the we produce a new reference on the fly using ALT 1 ('C') and then used ALT 2 ('G') as the variant.
 						So we comapre 'G' (ALT) to 'C' (REF).
 				</ol>
+
+				<h4>Cancer annotations using 'EFF' field:</h4>
+
+				Interpretation of <code>EFF</code> field cancer sample relies on 'Genotype' sub-field.
+				Just as a reminder, <code>EFF</code> field has the following format:
+<pre>
+EFF = Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_Length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )
+</pre>
+
+				For the previous example, we get (edited for readibility):
+<pre>
+$ java -Xmx4g -jar snpEff.jar -v -classic -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf > examples/cancer.eff.vcf
+
+1	69091	.	A	C,G	.	PASS	AC=1;
+                            EFF=START_LOST(HIGH|MISSENSE|Atg/Gtg|M1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G)
+                               ,START_LOST(HIGH|MISSENSE|Ctg/Gtg|L1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G-C)
+                               ,NON_SYNONYMOUS_START(LOW|MISSENSE|Atg/Ctg|M1L|305|OR4F5|protein_coding|CODING|ENST00000335137|1|C)
+</pre>
+				The <code>GenotypeNum</code> field tells you which effect relates to which genotype. 
+				More importantly, genotype difference between Somatic and Germline. 
+				<br>
+				Example: when there are multiple ALTs (e.g. REF='A' ALT='C,G') and the genotype field says:
+				<ul>
+					<li> GenotypeNum = "1": it means is the effect related to the first ALT ('C')
+					<li> GenotypeNum = "2" if it's the effect related to the second ALT ('G') 
+					<li> GenotypeNum = "2-1" means that this is the effect of having the second ALT as variant while using the first ALT as reference ("C -&gt; G").
+				</ul>
 				</p>
         </section>
 
