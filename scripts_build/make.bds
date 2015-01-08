@@ -140,8 +140,11 @@ void buildConfig() {
 			config/snpEff.ENSEMBL_74.config \
 			config/snpEff.ENSEMBL_75.config \
 			config/snpEff.ENSEMBL_76.config \
+			config/snpEff.ENSEMBL_77.config \
+			config/snpEff.ENSEMBL_78.config \
 			config/snpEff.ENSEMBL_BFMPP_21.config \
 			config/snpEff.ENSEMBL_BFMPP_22.config \
+			config/snpEff.ENSEMBL_BFMPP_24.config \
 			config/snpEff.NCBI_bacterial.config \
 			config/snpEff.etc.config \
 			config/snpEff.bundles.*.config \
