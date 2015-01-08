@@ -1062,8 +1062,8 @@ ANN=T|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST0000035996
 				<br>
 				Each annotation consists of multiple sub-fields separated by the pipe character "|" (fields 15 and 16 are empty in this example):
 <pre>
-Annotation   : T<b>|</b>missense_variant<b>|</b>MODERATE<b>|</b>CCT8L2<b>|</b>ENSG00000198445<b>|</b>transcript<b>|</b>ENST00000359963<b>|</b>protein_coding<b>|</b>1/1<b>|</b>c.1406G>A<b>|</b>p.Gly469Glu<b>|</b>1666/2034<b>|</b>1406/1674<b>|</b>469/557<b>|</b>  <b>|</b>
-Field number : 1<b>|</b>       2        <b>|</b>    3   <b>|</b>  4   <b>|</b>       5       <b>|</b>    6     <b>|</b>      7        <b>|</b>      8       <b>|</b> 9 <b>|</b>    10   <b>|</b>    11     <b>|</b>   12    <b>|</b>   13    <b>|</b>   14  <b>|</b>15<b>|</b> 16
+Annotation      : T<b>|</b>missense_variant<b>|</b>MODERATE<b>|</b>CCT8L2<b>|</b>ENSG00000198445<b>|</b>transcript<b>|</b>ENST00000359963<b>|</b>protein_coding<b>|</b>1/1<b>|</b>c.1406G>A<b>|</b>p.Gly469Glu<b>|</b>1666/2034<b>|</b>1406/1674<b>|</b>469/557<b>|</b>  <b>|</b>
+SubField number : 1<b>|</b>       2        <b>|</b>    3   <b>|</b>  4   <b>|</b>       5       <b>|</b>    6     <b>|</b>      7        <b>|</b>      8       <b>|</b> 9 <b>|</b>    10   <b>|</b>    11     <b>|</b>   12    <b>|</b>   13    <b>|</b>   14  <b>|</b>15<b>|</b> 16
 </pre>
 				<br>
 				Here is a description of the meaning of each sub-field
@@ -1207,8 +1207,8 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				</table>
 				</center>
 				<br> 
-				<h3>Multiple effects per VCF line</h3>
-				Usually there is more than one effect reported in each EFF field.
+				<h3>Multiple annotations per VCF line</h3>
+				Usually there is more than one annotation reported in each <code>ANN</code> (or <code>EFF</code>) field.
 				<br>
 				There are several reasons for this:
 				<ul>
@@ -1222,10 +1222,10 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 						In this case SnpEff will report the effect of each variant on each gene and each transcript (output edited for readibility):
 <pre>
 #CHROM  POS     ID   REF  ALT  QUAL FILTER   INFO
-1       889455  .    G    A    .    .        EFF=stop_gained(HIGH|NONSENSE|Cag/Tag|p.Gln236*/c.706C>T|749|NOC2L|protein_coding|CODING|ENST00000327044|7|1)
-                                                 ,downstream_gene_variant(MODIFIER||351|||NOC2L|processed_transcript|CODING|ENST00000487214||1)
-                                                 ,downstream_gene_variant(MODIFIER||4171|||NOC2L|retained_intron|CODING|ENST00000469563||1)
-                                                 ,non_coding_exon_variant(MODIFIER|||n.2153C>T||NOC2L|retained_intron|CODING|ENST00000477976|5|1)
+1       889455  .    G    A    .    .        ANN=A|stop_gained|HIGH|NOC2L|ENSG00000188976|transcript|ENST00000327044|protein_coding|7/19|c.706C>T|p.Gln236*|756/2790|706/2250|236/749||
+                                                ,A|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000487214|processed_transcript||n.*865C>T|||||351|
+                                                ,A|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000469563|retained_intron||n.*878C>T|||||4171|
+                                                ,A|non_coding_exon_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000477976|retained_intron|5/17|n.2153C>T||||||;LOF=(NOC2L|ENSG00000188976|6|0.17);NMD=(NOC2L|ENSG00000188976|6|0.17)
 </pre>
 					<li> A VCF line can have more then one variant. 
 						 E.g. If reference genome is 'G', but the sample has either 'A' or 'T' (non-biallelic variant), then this will be reported as one VCF line, having multiple alternative variants (notice that there are two ALTs): 
@@ -1237,14 +1237,14 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 						Notice that ENST00000327044 has a <code>stop_gained</code> variant (ALT = 'A') and a <code>missense_variant</code> (ALT = 'T')
 <pre>
 #CHROM  POS      ID    REF  ALT    QUAL FILTER    INFO
-1       889455   .     G    A,T    .    .         EFF=stop_gained(HIGH|NONSENSE|Cag/Tag|p.Gln236*/c.706C>T|749|NOC2L|protein_coding|CODING|ENST00000327044|7|1)
-                                                      ,missense_variant(MODERATE|MISSENSE|Cag/Aag|p.Gln236Lys/c.706C>A|749|NOC2L|protein_coding|CODING|ENST00000327044|7|2)
-                                                      ,downstream_gene_variant(MODIFIER||351|||NOC2L|processed_transcript|CODING|ENST00000487214||1)
-                                                      ,downstream_gene_variant(MODIFIER||351|||NOC2L|processed_transcript|CODING|ENST00000487214||2)
-                                                      ,downstream_gene_variant(MODIFIER||4171|||NOC2L|retained_intron|CODING|ENST00000469563||1)
-                                                      ,downstream_gene_variant(MODIFIER||4171|||NOC2L|retained_intron|CODING|ENST00000469563||2)
-                                                      ,non_coding_exon_variant(MODIFIER|||n.2153C>T||NOC2L|retained_intron|CODING|ENST00000477976|5|1)
-                                                      ,non_coding_exon_variant(MODIFIER|||n.2153C>A||NOC2L|retained_intron|CODING|ENST00000477976|5|2)
+1       889455   .     G    A,T    .    .         ANN=A|stop_gained|HIGH|NOC2L|ENSG00000188976|transcript|ENST00000327044|protein_coding|7/19|c.706C>T|p.Gln236*|756/2790|706/2250|236/749||
+                                                     ,T|missense_variant|MODERATE|NOC2L|ENSG00000188976|transcript|ENST00000327044|protein_coding|7/19|c.706C>A|p.Gln236Lys|756/2790|706/2250|236/749||
+                                                     ,A|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000487214|processed_transcript||n.*865C>T|||||351|
+                                                     ,T|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000487214|processed_transcript||n.*865C>A|||||351|
+                                                     ,A|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000469563|retained_intron||n.*878C>T|||||4171|
+                                                     ,T|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000469563|retained_intron||n.*878C>A|||||4171|
+                                                     ,A|non_coding_exon_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000477976|retained_intron|5/17|n.2153C>T||||||
+                                                     ,T|non_coding_exon_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000477976|retained_intron|5/17|n.2153C>A||||||;LOF=(NOC2L|ENSG00000188976|6|0.17);NMD=(NOC2L|ENSG00000188976|6|0.17)
 </pre>
 
 
@@ -1783,10 +1783,10 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				<br>
 				For the first line:
 <pre>
-1   69091   .   A   C,G .   PASS    AF=0.1122
-    ;EFF=NON_SYNONYMOUS_START(LOW|MISSENSE|Atg/Ctg|M1L|305|OR4F5|protein_coding|CODING|ENST00000335137|1|1)
-        ,START_LOST(HIGH|MISSENSE|Atg/Gtg|M1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2)
-        ,START_LOST(HIGH|MISSENSE|Ctg/Gtg|L1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2-1)
+1   69091   .   A   C,G .   PASS    AF=0.1122;
+	ANN=G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Met1?|1/918|1/918|1/305||
+       ,G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Leu1?|1/918|1/918|1/305||WARNING_REF_DOES_NOT_MATCH_GENOME
+       ,C|initiator_codon_variant|LOW|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>C|p.Met1?|1/918|1/918|1/305||
     GT  1/0 2/1 
 </pre>
 				What does it mean: 
@@ -1797,12 +1797,12 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				   <li> Change A -&gt; C and A -&gt; G are always calculated by SnpEff (this is the "default mode"). 
 						<ul>
 						 <li> A -&gt; C produces this effect
-						 <code>NON_SYNONYMOUS_START(LOW|MISSENSE|Atg/Ctg|p.Met1Leu|305|OR4F5|protein_coding|CODING|ENST00000335137|1)</code>
-						 Note that the last field (genotype field) is '1' indicating this is produced by the first ALT (C)
+						 <pre>C|initiator_codon_variant|LOW|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>C|p.Met1?|1/918|1/918|1/305||</pre>
+						 Note that the last field (genotype field) is 'C' indicating this is produced by the first ALT
 
 						 <li> A -&gt; G produces this effect
-						 <code>START_LOST(HIGH|MISSENSE|Atg/Gtg|p.Met1Val|305|OR4F5|protein_coding|CODING|ENST00000335137|2)</code>
-						 Note that the last field (genotype field) is '2' indicating this is produced by the first ALT (G)
+						 <pre>G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Met1?|1/918|1/918|1/305||</pre>
+						 Note that the last field (genotype field) is 'G' indicating this is produced by the second ALT
 						</ul>
 
 					<li> Finally, this is what you were expecting for, the cancer comparisons. Since both germline and somatic 
@@ -1816,27 +1816,11 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 						I know is confusing, but the bottom line is that only the first comparison one makes sense, and is the one SnpEff reports.
 						So 'C -&gt; G' produces the following effect:
 						<br>
-						<code>'START_LOST(HIGH|MISSENSE|Ctg/Gtg|p.Leu1Val|305|OR4F5|protein_coding|CODING|ENST00000335137|2-1)</code>
+						<pre>G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Leu1?|1/918|1/918|1/305||</pre>
 						<br>
-						<br>
-						<i class="icon-warning-sign"></i> Notice the genotype field is "2-1" meaning the we produce a new reference on the fly using ALT 1 ('C') and then used ALT 2 ('G') as the change.
+						<i class="icon-warning-sign"></i> Notice the genotype field is "G-C" meaning the we produce a new reference on the fly using ALT 1 ('C') and then used ALT 2 ('G') as the variant.
+						So we comapre 'G' (ALT) to 'C' (REF).
 				</ol>
-				<br>
-				If your brain hasn't exploded yet and want to have some more fun, the other lines produced in the above example are (again, lines edited for the sake of brevity):
-<pre>
-1   69849   .   G   A,C .   PASS    AF=0.1122
-    ;EFF=STOP_GAINED(HIGH|NONSENSE|tgG/tgA|W253*|305|OR4F5|protein_coding|CODING|ENST00000335137|1|1)
-        ,NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|tgG/tgC|W253C|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2)
-        ,STOP_LOST(HIGH|MISSENSE|tgA/tgC|*253C|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2-1)
-    GT  1/0 2/1 
-
-
-1   69511   .   A   C,G .   PASS    AF=0.3580
-    ;EFF=NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Aca/Cca|T141P|305|OR4F5|protein_coding|CODING|ENST00000335137|1|1)
-        ,NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Aca/Gca|T141A|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2)
-        ,NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Cca/Gca|P141A|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2-1)
-    GT  1/1 2/2 
-</pre>
 				</p>
         </section>
 
