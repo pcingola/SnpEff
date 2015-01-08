@@ -69,7 +69,7 @@ string{} built
 bool addBuild(string genome) {
 	dir := "$dirData/$genome"
 	db := "$dir/snpEffectPredictor.bin"
-	geneFiles := dir.dirPath(".*/genes.*") 
+	geneFiles := dir.dirPath("genes.*") 
 
 	# No 'genes' file? Error
 	if( geneFiles.isEmpty() ) {
@@ -198,7 +198,7 @@ void buildDbSpecial() {
 #-------------------------------------------------------------------------------
 
 void buildDbTest() {
-	dirs := "$dirSnpeff/data/".dir("test.*")
+	dirs := "$dirSnpeff/data/".dir("test*")
 
 	# This one needs PWMs
 	sys cp db/jaspar/pwms.bin data/testHg3770Chr22/
@@ -224,10 +224,10 @@ void buildNextProt() {
 
 	# XML files used to build NextProt
 	dirNextProt := "$dirSnpeff/db/nextProt/"
-	xmlFiles := dirNextProt.dirPath(".*.xml")
+	xmlFiles := dirNextProt.dirPath("*.xml")
 
 	# Check each genome version
-	for( string hg : dirData.dir("GRCh37.7.*") ) {
+	for( string hg : dirData.dir("GRCh37.*") ) {
 		npfile := "$dirData/$hg/nextProt.bin"
 
 		if( !npfile.exists() ) {
@@ -243,7 +243,7 @@ void buildNextProt() {
 # Copy pwms.bin to every human dir
 #-------------------------------------------------------------------------------
 void copyPwm() {
-	humanDirs := dirData.dirPath(".*/GRCh.*")
+	humanDirs := dirData.dirPath("GRCh*")
 	print("Copying $pwmsBin to human genomes\n")
 	for( string hg : humanDirs ) {
 		print("\t$hg\n")
