@@ -656,6 +656,7 @@ public class SnpEffCmdEff extends SnpEff {
 			// Read from VCF header
 			if (verbose) Timer.showStdErr("Reading cancer samples pedigree from VCF header.");
 			pedigree = vcfFile.getVcfHeader().getPedigree();
+			if (verbose) Timer.showStdErr("Pedigree: " + pedigree);
 		}
 
 		if (verbose && ((pedigree == null) || pedigree.isEmpty())) Timer.showStdErr("WARNING: No cancer sample pedigree found.");

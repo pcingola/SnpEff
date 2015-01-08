@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import ca.mcgill.mcb.pcingola.util.Gpr;
+
 /**
  * Represents the header of a vcf file.
  *
@@ -133,7 +135,10 @@ public class VcfHeader {
 		ArrayList<PedigreeEnrty> list = new ArrayList<PedigreeEnrty>();
 
 		List<String> sampleNames = getSampleNames();
-
+		if (sampleNames.isEmpty()) {
+			Gpr.debug("Error: Could not get sample names");
+			return list;
+		}
 		for (String line : getLines()) {
 			if (line.startsWith(PEDIGREE_PREFIX)) {
 				String l = line.substring(PEDIGREE_PREFIX.length());
