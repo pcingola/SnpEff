@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.fileIterator.RegulationFileIterator;
+import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Create a regulation consensus from a regulation file.
- * 
+ *
  * @author pcingola
  */
 public class RegulationFileConsensus {
@@ -86,13 +86,10 @@ public class RegulationFileConsensus {
 
 	/**
 	 * Get regulation list by cell type (or create a new list)
-	 * @param cellType
-	 * @return
 	 */
 	public ArrayList<Regulation> getRegulationList(String cellType) {
 		ArrayList<Regulation> regs = regByCell.get(cellType);
 		if (regs == null) {
-			Gpr.debug("ADDING LIST: " + cellType);
 			regs = new ArrayList<Regulation>();
 			regByCell.put(cellType, regs);
 		}
@@ -100,8 +97,7 @@ public class RegulationFileConsensus {
 	}
 
 	/**
-	 * Read a file and add all regulation intervals 
-	 * @param regulationFileIterator
+	 * Read a file and add all regulation intervals
 	 */
 	public void readFile(RegulationFileIterator regulationFileIterator) {
 		String chromo = "";
@@ -141,20 +137,18 @@ public class RegulationFileConsensus {
 
 	/**
 	 * Save databases (one file per cellType)
-	 * @param outputDir
 	 */
 	public void save(String outputDir) {
-
 		for (String cellType : regByCell.keySet()) {
-			Gpr.debug("To save: " + cellType + "\tsize:" + regByCell.get(cellType).size());
-		}
-
-		for (String cellType : regByCell.keySet()) {
-			Gpr.debug("Saving: " + cellType);
-
 			String fileName = outputDir + "/regulation_" + cellType + ".bin";
 			Timer.showStdErr("Saving database '" + cellType + "' in file '" + fileName + "'");
-			Gpr.toFileSerializeGz(fileName, regByCell.get(cellType));
+
+			// Save markers to file
+			Markers markersToSave = new Markers();
+			markersToSave.addAll(regByCell.get(cellType));
+			markersToSave.save(fileName);
+
+			// Gpr.toFileSerializeGz(fileName, regByCell.get(cellType));
 		}
 	}
 
