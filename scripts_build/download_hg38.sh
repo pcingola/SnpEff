@@ -13,6 +13,8 @@ REF=hg38
 mkdir -p data/$REF || true
 cd data/$REF/
 
+mkdir ORI || true
+
 #---
 # Download latest datasets
 #---
@@ -23,6 +25,7 @@ mv $REF.fa.gz ../genomes/
 
 # CDS sequences
 wget -nc http://hgdownload.cse.ucsc.edu/goldenPath/hg38/bigZips/refMrna.fa.gz
+mv refMrna.fa.gz ORI/
 
 #---
 # Download Gene information
@@ -62,6 +65,6 @@ gzip -f genes.refseq
 #---
 
 # CDS fasta
-zcat refMrna.fa.gz | tr " " "." > cds.fa
+zcat ORI/refMrna.fa.gz | tr " " "." > cds.fa
 gzip -f cds.fa
 

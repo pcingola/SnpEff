@@ -84,7 +84,7 @@ bool addBuild(string genome) {
 		print("BUILD:\t$genome\tgeneFile: $geneFile\tdb: $db\n")
 
 		# Use 'storeSeqs' for human and mouse genome
-		opt := ( genome.startsWith('GRC') ? "-storeSeqs" : "" )
+		opt := ( genome.startsWith('GRC') || genome.startsWith('hg') ? "-storeSeqs" : "" )
 
 		task $snpeffBuild $opt $genome 2>&1 | tee $dirBuild/build.$genome.out
 	} else {
