@@ -342,17 +342,17 @@ $ unzip snpEff_latest_core.zip
 
 				<h3> Basic example: Annotate using SnpEff </h3>
 				Let's assume you have a VCF file and you want to annotate the variants in that file.
-				An example file is provided in <code>examples/file.vcf</code> (this data is from the 1000 Genomes project, so the reference genome is the human genome GRCh37).
+				An example file is provided in <code>examples/test.chr22.vcf</code> (this data is from the 1000 Genomes project, so the reference genome is the human genome GRCh37).
 				<p>
 				You can annotate the file by running the following command (as an input, we use a <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41"> Variant Call Format (VCF) </a> file available in SnpEff's <code>examples</code> directory).
 
 <p><pre>
-$ java -Xmx4g -jar snpEff.jar GRCh37.75 examples/file.vcf > file.ann.vcf
+$ java -Xmx4g -jar snpEff.jar GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 
 # Here is how the output looks like
-$ head examples/file.ann.vcf 
+$ head examples/test.chr22.ann.vcf 
 ##SnpEffVersion="4.1 (build 2015-01-07), by Pablo Cingolani"
-##SnpEffCmd="SnpEff  GRCh37.75 examples/file.vcf "
+##SnpEffCmd="SnpEff  GRCh37.75 examples/test.chr22.vcf "
 ##INFO=<ID=ANN,Number=.,Type=String,Description="Functional annotations: 'Allele | Annotation | Annotation_Impact | Gene_Name | Gene_ID | Feature_Type | Feature_ID | Transcript_BioType | Rank | HGVS.c | HGVS.p | cDNA.pos / cDNA.length | CDS.pos / CDS.length | AA.pos / AA.length | Distance | ERRORS / WARNINGS / INFO' ">
 ##INFO=<ID=LOF,Number=.,Type=String,Description="Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' ">
 ##INFO=<ID=NMD,Number=.,Type=String,Description="Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' ">
@@ -370,7 +370,7 @@ $ head examples/file.ann.vcf
 				You can also annotate using the "verbose" mode (command line option <code>-v</code>), this makes SnpEff to show a lot of information which can be usefull for debugging. <br>
 				Here output is edited for brevity:
 <p><pre>
-$ java -Xmx4g -jar snpEff.jar <b>-v</b> GRCh37.75 examples/file.vcf > file.ann.vcf
+$ java -Xmx4g -jar snpEff.jar <b>-v</b> GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.434	done
 00:00:00.434	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -478,7 +478,7 @@ WARNING_TRANSCRIPT_NO_START_CODON	3483
 				Next time SnpEff will use the local version, so the instalation step is only done once.
 				<br>
 				<br>
-				The annotated variants will be in the new file "file.ann.vcf".<p>
+				The annotated variants will be in the new file "test.chr22.ann.vcf".<p>
 				<p>
 				<i class="icon-warning-sign"></i> SnpEff creates a file called "snpEff_summary.html" showing basic statistics about the analyzed variants. 
 				Take a quick look at it.
@@ -492,7 +492,7 @@ WARNING_TRANSCRIPT_NO_START_CODON	3483
 				<i class="icon-hand-right"></i> If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
 				This is done using the '-c' command line option:
 <p><pre>
-java -Xmx4g -jar snpEff.jar <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 file.vcf > file.ann.vcf
+java -Xmx4g -jar snpEff.jar <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
 </pre><p>
 
 				<h3> Detailed examples </h3>
@@ -817,7 +817,7 @@ Database options:
 				<br>
 				In order to get only variants matching your intervals, you can use the command:
 <pre>
-$ java -Xmx4G -jar snpEff.jar -fi intervals.bed GRCh38.76 file.vcf 
+$ java -Xmx4G -jar snpEff.jar -fi intervals.bed GRCh38.76 test.chr22.vcf 
 </pre>
 
 				</p>
@@ -834,7 +834,7 @@ $ java -Xmx4G -jar snpEff.jar -fi intervals.bed GRCh38.76 file.vcf
 				<i class="icon-warning-sign"></i>Although this seems to be the standard definitions of "canonical transcript", there is no warranties that what SnpEff considers a canonical transcript will match exactly what UCSC or ENSEMBL consider a canonical transcript.
 				</p>
 				Example on how to use canonical transcripts annotations:
-<pre>$ java -Xmx4G -jar snpEff.jar -v -canon GRCh37.75 examples/file.vcf > file.ann.canon.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -v -canon GRCh37.75 examples/test.chr22.vcf > file.ann.canon.vcf</pre>
 				<br>
 				In order to get a list of canonical transcipts, you can use the <code>-d</code> (debug) command line option. E.g.:
 <pre>
@@ -864,7 +864,7 @@ $ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.75 test.vcf
 				<p>
 				SnpEff allows you to provide a list of transcripts to use for annotations by using the <code>-onlyTr file.txt</code> and providing a file with one transcript ID per line.
 				Any other transcript will be ignored.
-<pre>$ java -Xmx4G -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 file.vcf > file.ann.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf</pre>
 				</p>
 
 				<h3>Upstream and downstream</h3>
@@ -874,7 +874,7 @@ $ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.75 test.vcf
 				<br>
 				<br>
 				Example: Make upstream and downstream size zero (i.e. do not report any upstream or downstream effect).
-<pre>$ java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.75 file.vcf > file.ann.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf</pre>
 				</p>
 
 				<h3>Splice site size</h3>
@@ -883,7 +883,7 @@ $ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.75 test.vcf
 				<br>
 				<br>
 				Example: Make splice sites four bases long
-<pre>$ java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 file.vcf > file.ann.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf</pre>
 				</p>
 
 				<h3>Adding your own annotations</h3>
@@ -935,7 +935,7 @@ $ java -Xmx4g -jar snpEff.jar -geneId GRCh37.66 test.vcf
 				<br>
 <pre>
 # Create compressed version of the examples files
-cp examples/file.vcf my.vcf
+cp examples/test.chr22.vcf my.vcf
 
 # Compress it
 gzip my.vcf 
@@ -955,13 +955,13 @@ java -Xmx4g -jar snpEff.jar GRCh37.75 my.vcf > my.ann.vcf
 # These three commands are the same
 
 # Using STDIN (pipe), implicit (no input file name)
-cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 > file.ann.vcf
+cat test.chr22.vcf | java -Xmx4g -jar snpEff.jar hg19 > test.chr22.ann.vcf
 
 # Using STDIN (pipe), exlicit '-' input file name
-cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 - > file.ann.vcf
+cat test.chr22.vcf | java -Xmx4g -jar snpEff.jar hg19 - > test.chr22.ann.vcf
 
 # Using explict file name
-java -Xmx4g -jar snpEff.jar hg19 file.vcf > file.ann.vcf
+java -Xmx4g -jar snpEff.jar hg19 test.chr22.vcf > test.chr22.ann.vcf
 
 </pre>
 
@@ -1430,7 +1430,7 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 java –Xmx4g -jar snpEff.jar –v \
 	-lof \
 	GRCh37.75 \
-	file.vcf > file.ann.vcf
+	test.chr22.vcf > test.chr22.ann.vcf
 </pre>
 
 				SnpEff adds 'LOF' and 'NMD' tags to INFO fields (column 8 in VCF format).  LOF and NMD tags have the following format:
@@ -1903,7 +1903,7 @@ drwxrwxr-x 3 pcingola pcingola     4096 Aug 26 19:51 ..
 				<br>
 				E.g. To use 'HeLa-S3' and 'NHEK' tracks, you can run:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/file.vcf > file.ann.vcf
+$ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/test.1KG.vcf > test.1KG.ann_reg.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.377	done
 00:00:00.377	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -1914,19 +1914,23 @@ $ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/file.
 
 
 # Show one example of "regulatory_region" (output edited for readability)
-$ grep -i regulatory_region file.ann.vcf | head -n 1 | ./scripts/vcfInfoOnePerLine.pl 
-22	17565932	.	T	C	.	.
-							EFF	regulatory_region_variant[PolII](MODIFIER||||||HeLa-S3||||1)
-							EFF	regulatory_region_variant[DNase1](MODIFIER||||||NHEK||||1)
-							EFF	regulatory_region_variant[DNase1](MODIFIER||||||HeLa-S3||||1)
-							EFF	regulatory_region_variant[H3K9ac](MODIFIER||||||NHEK||||1)
-							EFF	regulatory_region_variant[H3K9ac](MODIFIER||||||HeLa-S3||||1)
-							EFF	regulatory_region_variant[H3K4me3](MODIFIER||||||HeLa-S3||||1)
-							EFF	regulatory_region_variant[H3K27ac](MODIFIER||||||HeLa-S3||||1)
-							EFF	non_coding_exon_variant(MODIFIER|||n.89T>C||IL17RA|processed_transcript|CODING|ENST00000477874|1|1)
+$ grep -i regulatory_region test.1KG.ann_reg.vcf | head -n 1 | ./scripts/vcfInfoOnePerLine.pl
+1    10291    .    C    T    2373.79    .    ANN=T|regulatory_region_variant|MODIFIER|||REGULATION&H3K36me3:NHEK|NHEK_H3K36me3_5|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&H3K27me3:NHEK|NHEK_H3K27me3_4|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&Max:HeLa-S3|HeLa-S3_Max_26|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&Cfos:HeLa-S3|HeLa-S3_Cfos_30|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&FAIRE:HeLa-S3|HeLa-S3_FAIRE_49|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&H3K27ac:HeLa-S3|HeLa-S3_H3K27ac_88|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&PolII:NHEK|NHEK_PolII_59|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&CTCF:NHEK|NHEK_CTCF_42|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&Cmyc:HeLa-S3|HeLa-S3_Cmyc_16|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&H4K20me1:NHEK|NHEK_H4K20me1_122|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&H3K4me3:NHEK|NHEK_H3K4me3_133|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&DNase1:HeLa-S3|HeLa-S3_DNase1_108|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&DNase1:NHEK|NHEK_DNase1_63|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&FAIRE:NHEK|NHEK_FAIRE_149||||||||| 
 </pre>
 				<br>
-				<i class="icon-hand-right"></i> You can use <code>-onlyReg</code> command line option to perform only regulatory annotations (i.e. coding annotations will be omitted).
 				</p>
 
 				<h3>ENCODE </h3>
@@ -1955,14 +1959,16 @@ cd db/encode
 wget "http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/fdrPeaks/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb"
 
 # Annotate using ENCODE's data:
-java -Xmx4g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.71 test.vcf > test.ann.vcf
+java -Xmx4g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.75 examples/test.1KG.vcf > test.1KG.ann_encode.vcf
 
 # Annotations are added as "CUSTOM" intervals:
-$ grep CUSTOM test.ann.vcf 
-1	799463	.	T	C	.	PASS	AC=958;EFF=CUSTOM[wgEncodeDukeDnase8988T](MODIFIER||||||wgEncodeDukeDnase8988T:799426_799575||||1),DOWNSTREAM(MODIFIER|||||FAM41C|lincRNA|NON_CODING|ENST00000427857||1),DOWNSTREAM(MODIFIER|||||FAM41C|lincRNA|NON_CODING|ENST00000432963||1),DOWNSTREAM(MODIFIER|||||FAM41C|lincRNA|NON_CODING|ENST00000446136||1),DOWNSTREAM(MODIFIER|||||RP11-206L10.11|lincRNA|NON_CODING|ENST00000445118||1),INTERGENIC(MODIFIER||||||||||1)
-1	902128	.	C	T	.	PASS	AC=80;EFF=CUSTOM[wgEncodeDukeDnase8988T](MODIFIER||||||wgEncodeDukeDnase8988T:902066_902215||||1),DOWNSTREAM(MODIFIER||||642|KLHL17|protein_coding|CODING|ENST00000338591||1),DOWNSTREAM(MODIFIER|||||KLHL17|nonsense_mediated_decay|CODING|ENST00000466300||1),DOWNSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000463212||1),DOWNSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000481067||1),NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|gCt/gTt|A43V|576|PLEKHN1|protein_coding|CODING|ENST00000379407|2|1),NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|gCt/gTt|A43V|611|PLEKHN1|protein_coding|CODING|ENST00000379410|2|1),NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|gCt/gTt|A43V|663|PLEKHN1|protein_coding|CODING|ENST00000379409|2|1),UPSTREAM(MODIFIER|||||PLEKHN1|retained_intron|CODING|ENST00000480267||1)
-1	948921	.	T	C	.	PASS	AC=904;EFF=CUSTOM[wgEncodeDukeDnase8988T](MODIFIER||||||wgEncodeDukeDnase8988T:948786_948935||||1),UPSTREAM(MODIFIER|||||RP11-54O7.11|antisense|NON_CODING|ENST00000458555||1),UTR_5_PRIME(MODIFIER||||165|ISG15|protein_coding|CODING|ENST00000379389|1|1)
+$ grep CUSTOM test.1KG.ann_encode.vcf | head
+1    564672    .    A    C    812.29    .    ANN=|custom|MODIFIER|||CUSTOM&wgEncodeDukeDnase8988T|wgEncodeDukeDnase8988T:564666_564815|||||||||
+1    564687    .    C    T    308.21    .    ANN=T|custom|MODIFIER|||CUSTOM&wgEncodeDukeDnase8988T|wgEncodeDukeDnase8988T:564666_564815|||||||||
 ...
+1    956676    .    G    A    120.88    .    ANN=A|custom|MODIFIER|||CUSTOM&wgEncodeDukeDnase8988T|wgEncodeDukeDnase8988T:956646_956795|||||||||
+...
+
 </pre>
 
 				<h3>Epigenome </h3>
@@ -2021,7 +2027,7 @@ $ grep CUSTOM test.ann.vcf
 				<br>
 				Annotations example:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.ann.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.374	done
 00:00:00.374	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -2030,7 +2036,7 @@ $ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.ann.vcf
 ...
 
 # Show some results (edited for readibility)
-$ grep sequence_feature file.ann.vcf | head | ./scripts/vcfInfoOnePerLine.pl 
+$ grep sequence_feature test.chr22.ann.vcf | head | ./scripts/vcfInfoOnePerLine.pl 
 
 22  17280941  .  T  C  .  .
                             EFF  sequence_feature[transmembrane_region:Transmembrane_region](LOW|||c.336T>C|459|XKR3|protein_coding|CODING|ENST00000331428|2|1)
@@ -2057,7 +2063,7 @@ $ grep sequence_feature file.ann.vcf | head | ./scripts/vcfInfoOnePerLine.pl
 				<br>
 				Example of trancription factor binding sites prediction predictions:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.ann.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.393	done
 00:00:00.394	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -2073,7 +2079,7 @@ $ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.ann.vcf
 ...
 
 # Show some examples (output edited for readability)
-$ grep -i TF_bind file.ann.vcf | ./scripts/vcfInfoOnePerLine.pl 
+$ grep -i TF_bind test.chr22.ann.vcf | ./scripts/vcfInfoOnePerLine.pl 
 
 22      18301084        .       G       A       .       .
                                                         EFF     TF_binding_site_variant[MA0138.2:Nrsf](MODIFIER||||||||||1)
@@ -2318,7 +2324,7 @@ AC002472.13	ENSG00000187905	ENST00000442047	protein_coding	0	1	6	1	0	0	0	0	1	6	0
 				You can see which chromosome names are used by SnpEff simply by using the <code>-v</code> (verbose) command line option.
 				This shows all chromosome names and their respective lengths. Notice the last line ("Chromosomes names [sizes]"):
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.ann.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 ...
 # Number of chromosomes      : 297
