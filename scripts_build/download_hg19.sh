@@ -21,18 +21,22 @@ REF=hg19
 mkdir -p data/$REF || true
 cd data/$REF/
 
+mkdir ORI || true
+cd ORI
+
 #---
 # Download latest datasets
 #---
 
+echo Downloading files
 # Genome sequence
 wget -nc http://hgdownload.cse.ucsc.edu/goldenPath/$REF/bigZips/chromFa.tar.gz
 
-# Protein sequences
-wget -nc ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.protein.faa.gz
+# Protein sequences (old link ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.protein.faa.gz)
+wget -nc ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/protein/protein.fa.gz
 
-# CDS sequences
-wget -nc ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.rna.fna.gz
+# CDS sequences (old link: ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.rna.fna.gz)
+wget -nc http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/refMrna.fa.gz
 
 # RefLink
 wget -nc http://hgdownload.cse.ucsc.edu/goldenPath/$REF/database/refLink.txt.gz
@@ -41,6 +45,8 @@ gunzip -f refLink.txt.gz
 #---
 # Create FASTA file
 #---
+
+echo Creating reference FASTA
 rm -rvf chr
 mkdir chr 
 cd chr
@@ -64,8 +70,10 @@ cp hg19.fa.gz $HOME/snpEff/data/genomes/
 # Download Gene information
 #---
 
-echo "Query MySql database"
+# Move up form 'ORI' directory
+cd ..
 
+echo Querying database for RefSeq genes
 (
 echo "use hg19;"
 echo "select rg.bin as '#bin'"
@@ -94,17 +102,25 @@ echo ";"
 gzip -f genes.refseq
 
 #---
-# Create CDS and protein files
+# Create protein FASTA
+# Scripts:
+#    - hg19_proteinFasta2NM.pl: Converts from ProteinIDs to TranscriptID
+#    - hg19_proteinFastaReplaceName.pl : Adds TranscriptID version to TranscriptID
 #---
 
-# Protein fasta
-zcat human.protein.faa.gz \
-	| ../../scripts_build/hg19_proteinFasta2NM.pl refLink.txt \
+echo Creating proteins FASTA
+zcat ORI/protein.fa.gz \
+	| ../../scripts_build/hg19_proteinFasta2NM.pl ORI/refLink.txt \
 	| ../../scripts_build/hg19_proteinFastaReplaceName.pl genes.refseq.gz \
 	> protein.fa
 gzip -f protein.fa
 
-# CDS fasta
-zcat human.rna.fna.gz | sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" > cds.fa 
+#---
+# Create CDS FASTA
+# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" 
+#---
+
+echo Creating CDS FASTA
+zcat ORI/refMrna.fa.gz | tr " " "." > cds.fa 
 gzip -f cds.fa
 

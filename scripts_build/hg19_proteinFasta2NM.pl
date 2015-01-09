@@ -14,6 +14,7 @@ $refLink = $ARGV[0];
 die "Usage: cat file.fasta | ./proteinFasta2NM.pl refLink.txt > protein_NM.fasta" if $refLink eq '';
 
 # Read refLink file
+print STDERR "Loading $refLink file\n";
 open RL, $refLink or die "Cannot opne file '$refLink'\n";
 while( <RL> ) {
 	chomp;
@@ -27,12 +28,13 @@ while( <RL> ) {
 }
 
 # Read fasta file
-while( <STDIN> ) {
-	chomp;
+print STDERR "Reading FASTA from STDIN\n";
+while( $l = <STDIN> ) {
+	chomp $l;
 
-	if( /^>(.*)/ ) {	# Header? => change form protein NP_XXX to transcript NM_XXXX
+	if( $l =~ /^>(.*)/ ) {	# Header? => change form protein NP_XXX to transcript NM_XXXX
 		# Get NM_ field
-		@t = split /\|/;
+		@t = split /\|/, $l;
 		$np = $t[3];
 
 		# Remove anything after the dot
@@ -40,7 +42,7 @@ while( <STDIN> ) {
 
 		# Found a transcript ID? 
 		if( $trId{$np} ne '' )	{ print ">$trId{$np}\n"; }
-		else					{ print "$l\n"; }
-	} else { print "$_\n"; }	# Show line
+		else					{ print ">$np\n"; }
+	} else { print "$l\n"; }	# Show line
 }
 
