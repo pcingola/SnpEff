@@ -36,7 +36,6 @@ public class SnpEffCmdBuild extends SnpEff {
 
 	GeneDatabaseFormat geneDatabaseFormat; // Database format (only used if 'buildDb' is active)
 	boolean storeAlignments; // Store alignments (used for some test cases)
-	boolean onlyRegulation = false; // Only build regulation tracks
 	boolean storeSequences = false; // Store full sequences
 	String cellType = null;
 	SnpEffCmdProtein snpEffCmdProtein;
@@ -251,7 +250,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			regulationGffConsensus.save(config.getDirDataVersion()); // Save database
 			if (verbose) Timer.showStdErr("Done.");
 		} catch (Throwable t) {
-			if (debug) t.printStackTrace();
+			t.printStackTrace();
 		}
 	}
 

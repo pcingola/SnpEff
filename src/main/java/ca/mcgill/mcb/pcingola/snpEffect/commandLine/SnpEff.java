@@ -69,7 +69,7 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "";
+	public static final String REVISION = "a";
 	public static final String BUILD = "2015-01-07";
 	public static final String VERSION_MAJOR = "4.1";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
@@ -170,7 +170,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-						);
+				);
 			}
 		}
 	}
@@ -249,7 +249,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-					);
+			);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -649,7 +649,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("showtr") //
-				) {
+		) {
 			command = args[argNum++].trim().toLowerCase();
 		}
 
@@ -699,6 +699,12 @@ public class SnpEff implements CommandLine {
 					if ((i + 1) < args.length) regulationTracks.add(args[++i]); // Add this track to the list
 				} else if ((arg.equals("-ss") || arg.equalsIgnoreCase("-spliceSiteSize"))) {
 					if ((i + 1) < args.length) spliceSiteSize = Gpr.parseIntSafe(args[++i]);
+				} else if (arg.equalsIgnoreCase("-spliceRegionExonSize")) {
+					if ((i + 1) < args.length) spliceRegionExonSize = Gpr.parseIntSafe(args[++i]);
+				} else if (arg.equalsIgnoreCase("-spliceRegionIntronMin")) {
+					if ((i + 1) < args.length) spliceRegionIntronMin = Gpr.parseIntSafe(args[++i]);
+				} else if (arg.equalsIgnoreCase("-spliceRegionIntronMax")) {
+					if ((i + 1) < args.length) spliceRegionIntronMax = Gpr.parseIntSafe(args[++i]);
 				} else if (arg.equalsIgnoreCase("-strict")) strict = true;
 				else if (arg.equals("-t")) multiThreaded = true;
 				else if (arg.equalsIgnoreCase("-treatAllAsProteinCoding")) {
@@ -893,6 +899,9 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.quiet = quiet;
 		snpEffCmd.regulationTracks = regulationTracks;
 		snpEffCmd.spliceSiteSize = spliceSiteSize;
+		snpEffCmd.spliceRegionExonSize = spliceRegionExonSize;
+		snpEffCmd.spliceRegionIntronMax = spliceRegionIntronMax;
+		snpEffCmd.spliceRegionIntronMin = spliceRegionIntronMin;
 		snpEffCmd.strict = strict;
 		snpEffCmd.suppressOutput = suppressOutput;
 		snpEffCmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
@@ -970,6 +979,9 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-onlyTr <file.txt>           : Only use the transcripts in this file. Format: One transcript ID per line.");
 		System.err.println("\t-reg <name>                  : Regulation track to use (this option can be used add several times).");
 		System.err.println("\t-ss , -spliceSiteSize <int>  : Set size for splice sites (donor and acceptor) in bases. Default: " + spliceSiteSize);
+		System.err.println("\t-spliceRegionExonSize <int>  : Set size for splice site region within exons. Default: " + spliceRegionExonSize + " bases");
+		System.err.println("\t-spliceRegionIntronMin <int> : Set minimum number of bases for splice site region within intron. Default: " + spliceRegionIntronMin + " bases");
+		System.err.println("\t-spliceRegionIntronMax <int> : Set maximum number of bases for splice site region within intron. Default: " + spliceRegionIntronMax + " bases");
 		System.err.println("\t-strict                      : Only use 'validated' transcripts (i.e. sequence has been checked). Default: " + strict);
 		System.err.println("\t-ud , -upDownStreamLen <int> : Set upstream downstream interval length (in bases)");
 	}

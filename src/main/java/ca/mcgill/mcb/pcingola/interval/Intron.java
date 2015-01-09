@@ -150,7 +150,7 @@ public class Intron extends Marker {
 		return (exonBefore != null ? exonBefore.getSpliceType() : "") //
 				+ "-" //
 				+ (exonAfter != null ? exonAfter.getSpliceType() : "") //
-				;
+		;
 	}
 
 	/**

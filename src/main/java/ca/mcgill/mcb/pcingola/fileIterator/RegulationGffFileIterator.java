@@ -70,13 +70,17 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 
 								// Is name 'Name'? 
 								if (attr.equals("Name")) name = val;
-								else if (attr.equals("Alias")) cellType = val.split("_")[0]; // Cell type is in 'Alias'
+								else if (attr.equals("Cell_type")) {
+									cellType = val; // Cell type 
+								} else if (attr.equals("Alias") && cellType.isEmpty()) {
+									cellType = val.split("_")[0]; // Cell type is in 'Alias'
+								}
 							}
 						}
 
 						// Create seqChange
-						Regulation seqChange = new Regulation(chromo, start, end, strandMinus, id, name, cellType);
-						return seqChange;
+						Regulation reg = new Regulation(chromo, start, end, strandMinus, id, name, cellType);
+						return reg;
 					}
 				}
 			}

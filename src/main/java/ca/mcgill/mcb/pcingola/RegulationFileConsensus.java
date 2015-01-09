@@ -64,7 +64,6 @@ public class RegulationFileConsensus {
 
 	/**
 	 * Add to consensus
-	 * @param reg
 	 */
 	public void consensus(Regulation reg) {
 		String name = reg.getName();
@@ -93,6 +92,7 @@ public class RegulationFileConsensus {
 	public ArrayList<Regulation> getRegulationList(String cellType) {
 		ArrayList<Regulation> regs = regByCell.get(cellType);
 		if (regs == null) {
+			Gpr.debug("ADDING LIST: " + cellType);
 			regs = new ArrayList<Regulation>();
 			regByCell.put(cellType, regs);
 		}
@@ -144,7 +144,14 @@ public class RegulationFileConsensus {
 	 * @param outputDir
 	 */
 	public void save(String outputDir) {
+
 		for (String cellType : regByCell.keySet()) {
+			Gpr.debug("To save: " + cellType + "\tsize:" + regByCell.get(cellType).size());
+		}
+
+		for (String cellType : regByCell.keySet()) {
+			Gpr.debug("Saving: " + cellType);
+
 			String fileName = outputDir + "/regulation_" + cellType + ".bin";
 			Timer.showStdErr("Saving database '" + cellType + "' in file '" + fileName + "'");
 			Gpr.toFileSerializeGz(fileName, regByCell.get(cellType));

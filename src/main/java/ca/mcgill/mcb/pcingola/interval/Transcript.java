@@ -623,7 +623,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Find all splice sites.
 	 */
 	public void createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
-		// For each gene, transcript and exon
+
+		// Create spliceSiteRegion on the Exon side
 		ArrayList<Exon> exons = (ArrayList<Exon>) sortedStrand();
 		if (exons.size() > 0) {
 			for (int i = 0; i < exons.size(); i++) {
@@ -641,7 +642,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			}
 		}
 
-		// Add splice site regions (Introns)
+		// Create spliceSite (donor/acceptor) and spliceSiteRegion on the Intron side
 		List<Intron> introns = introns();
 		if (introns != null) {
 			for (int i = 0; i < introns.size(); i++) {
