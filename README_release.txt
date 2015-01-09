@@ -59,10 +59,11 @@
 		
 	g) Download NCBI Human genomes
 
-		./scripts_build/download_hg19kg.sh
 		./scripts_build/download_hg19.sh
-		./scripts_build/download_hg38kg.sh
+		./scripts_build/download_hg19kg.sh
+
 		./scripts_build/download_hg38.sh
+		./scripts_build/download_hg38kg.sh
 
 			
 5) Upload files to sourceForge

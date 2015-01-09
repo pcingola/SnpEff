@@ -974,6 +974,8 @@ ailMel1.73 	 Ailuropoda_melanoleuca   ailMel1.73
 ailMel1.74 	 Ailuropoda_melanoleuca   ailMel1.74
 ailMel1.75 	 Ailuropoda_melanoleuca   ailMel1.75
 ailMel1.76 	 Ailuropoda_melanoleuca   ailMel1.76
+ailMel1.77 	 Ailuropoda_melanoleuca   ailMel1.77
+ailMel1.78 	 Ailuropoda_melanoleuca   ailMel1.78
 ailmel1.61 	 Ailuropoda_melanoleuca   ailmel1.61
 Akkermansia_muciniphila_ATCC_BAA_835_uid58985 	 Akkermansia_muciniphila_ATCC_BAA_835_uid58985   Akkermansia_muciniphila_ATCC_BAA_835_uid58985
 GCA_000020225.1.21 	 Akkermansia_muciniphila_atcc_baa_835   GCA_000020225.1.21
@@ -1233,6 +1235,8 @@ BGI_duck_1.0.73 	 Anas_platyrhynchos   BGI_duck_1.0.73
 BGI_duck_1.0.74 	 Anas_platyrhynchos   BGI_duck_1.0.74
 BGI_duck_1.0.75 	 Anas_platyrhynchos   BGI_duck_1.0.75
 BGI_duck_1.0.76 	 Anas_platyrhynchos   BGI_duck_1.0.76
+BGI_duck_1.0.77 	 Anas_platyrhynchos   BGI_duck_1.0.77
+BGI_duck_1.0.78 	 Anas_platyrhynchos   BGI_duck_1.0.78
 GCA_000466385.1.22 	 Aneurinibacillus_aneurinilyticus_atcc_12856   GCA_000466385.1.22
 AnoCar2.0.70 	 Anolis_carolinensis   AnoCar2.0.70
 AnoCar2.0.71 	 Anolis_carolinensis   AnoCar2.0.71
@@ -1241,6 +1245,8 @@ AnoCar2.0.73 	 Anolis_carolinensis   AnoCar2.0.73
 AnoCar2.0.74 	 Anolis_carolinensis   AnoCar2.0.74
 AnoCar2.0.75 	 Anolis_carolinensis   AnoCar2.0.75
 AnoCar2.0.76 	 Anolis_carolinensis   AnoCar2.0.76
+AnoCar2.0.77 	 Anolis_carolinensis   AnoCar2.0.77
+AnoCar2.0.78 	 Anolis_carolinensis   AnoCar2.0.78
 AdarC1.21 	 Anopheles_darlingi   AdarC1.21
 AdarC1.22 	 Anopheles_darlingi   AdarC1.22
 AgamP3.21 	 Anopheles_gambiae   AgamP3.21
@@ -1372,6 +1378,8 @@ GCA_000175215.2.22 	 Asticcacaulis_excentricus_cb_48   GCA_000175215.2.22
 AstMex102.74 	 Astyanax_mexicanus   AstMex102.74
 AstMex102.75 	 Astyanax_mexicanus   AstMex102.75
 AstMex102.76 	 Astyanax_mexicanus   AstMex102.76
+AstMex102.77 	 Astyanax_mexicanus   AstMex102.77
+AstMex102.78 	 Astyanax_mexicanus   AstMex102.78
 GCA_000364325.1.21 	 Atopobium_minutum_10063974   GCA_000364325.1.21
 GCA_000364325.1.22 	 Atopobium_minutum_10063974   GCA_000364325.1.22
 Atopobium_parvulum_DSM_20469_uid59195 	 Atopobium_parvulum_DSM_20469_uid59195   Atopobium_parvulum_DSM_20469_uid59195
@@ -2691,6 +2699,8 @@ UMD3.1.73 	 Bos_taurus   UMD3.1.73
 UMD3.1.74 	 Bos_taurus   UMD3.1.74
 UMD3.1.75 	 Bos_taurus   UMD3.1.75
 UMD3.1.76 	 Bos_taurus   UMD3.1.76
+UMD3.1.77 	 Bos_taurus   UMD3.1.77
+UMD3.1.78 	 Bos_taurus   UMD3.1.78
 UMD3_1 	 Bos_taurus   UMD3_1
 B05.10_v2.21 	 Botryotinia_fuckeliana   B05.10_v2.21
 B05.10_v2.22 	 Botryotinia_fuckeliana   B05.10_v2.22
@@ -3578,6 +3588,8 @@ WBcel235.73 	 Caenorhabditis_elegans   WBcel235.73
 WBcel235.74 	 Caenorhabditis_elegans   WBcel235.74
 WBcel235.75 	 Caenorhabditis_elegans   WBcel235.75
 WBcel235.76 	 Caenorhabditis_elegans   WBcel235.76
+WBcel235.77 	 Caenorhabditis_elegans   WBcel235.77
+WBcel235.78 	 Caenorhabditis_elegans   WBcel235.78
 C_japonica-7.0.1.21 	 Caenorhabditis_japonica   C_japonica-7.0.1.21
 C_japonica-7.0.1.22 	 Caenorhabditis_japonica   C_japonica-7.0.1.22
 C_remanei-15.0.1.21 	 Caenorhabditis_remanei   C_remanei-15.0.1.21
@@ -3632,6 +3644,8 @@ C_jacchus3.2.1.73 	 Callithrix_jacchus   C_jacchus3.2.1.73
 C_jacchus3.2.1.74 	 Callithrix_jacchus   C_jacchus3.2.1.74
 C_jacchus3.2.1.75 	 Callithrix_jacchus   C_jacchus3.2.1.75
 C_jacchus3.2.1.76 	 Callithrix_jacchus   C_jacchus3.2.1.76
+C_jacchus3.2.1.77 	 Callithrix_jacchus   C_jacchus3.2.1.77
+C_jacchus3.2.1.78 	 Callithrix_jacchus   C_jacchus3.2.1.78
 GCA_000297115.1.21 	 Caloramator_australicus_rc3   GCA_000297115.1.21
 GCA_000297115.1.22 	 Caloramator_australicus_rc3   GCA_000297115.1.22
 Calothrix_PCC_6303_uid183109 	 Calothrix_PCC_6303_uid183109   Calothrix_PCC_6303_uid183109
@@ -4235,6 +4249,8 @@ CanFam3.1.73 	 Canis_familiaris   CanFam3.1.73
 CanFam3.1.74 	 Canis_familiaris   CanFam3.1.74
 CanFam3.1.75 	 Canis_familiaris   CanFam3.1.75
 CanFam3.1.76 	 Canis_familiaris   CanFam3.1.76
+CanFam3.1.77 	 Canis_familiaris   CanFam3.1.77
+CanFam3.1.78 	 Canis_familiaris   CanFam3.1.78
 canFam3.1 	 Canis_familiaris   canFam3.1
 canFam3.103 	 Canis_familiaris   canFam3.103
 GCA_000328365.1.21 	 Capitella_teleta   GCA_000328365.1.21
@@ -4331,6 +4347,8 @@ cavPor3.73 	 Cavia_porcellus   cavPor3.73
 cavPor3.74 	 Cavia_porcellus   cavPor3.74
 cavPor3.75 	 Cavia_porcellus   cavPor3.75
 cavPor3.76 	 Cavia_porcellus   cavPor3.76
+cavPor3.77 	 Cavia_porcellus   cavPor3.77
+cavPor3.78 	 Cavia_porcellus   cavPor3.78
 GCA_000298295.1.21 	 Cecembia_lonarensis_lw9   GCA_000298295.1.21
 GCA_000298295.1.22 	 Cecembia_lonarensis_lw9   GCA_000298295.1.22
 GCA_000412335.1.21 	 Cedecea_davisae_dsm_4568   GCA_000412335.1.21
@@ -4755,6 +4773,8 @@ GCA_000016085.1.22 	 Chlorobium_phaeovibrioides_dsm_265   GCA_000016085.1.22
 Chlorobium_tepidum_TLS_uid57897 	 Chlorobium_tepidum_TLS_uid57897   Chlorobium_tepidum_TLS_uid57897
 GCA_000006985.1.21 	 Chlorobium_tepidum_tls   GCA_000006985.1.21
 GCA_000006985.1.22 	 Chlorobium_tepidum_tls   GCA_000006985.1.22
+ChlSab1.1.77 	 Chlorocebus_sabaeus   ChlSab1.1.77
+ChlSab1.1.78 	 Chlorocebus_sabaeus   ChlSab1.1.78
 Chloroflexus_Y_400_fl_uid59085 	 Chloroflexus_Y_400_fl_uid59085   Chloroflexus_Y_400_fl_uid59085
 Chloroflexus_aggregans_DSM_9485_uid58621 	 Chloroflexus_aggregans_DSM_9485_uid58621   Chloroflexus_aggregans_DSM_9485_uid58621
 GCA_000021945.1.21 	 Chloroflexus_aggregans_dsm_9485   GCA_000021945.1.21
@@ -4774,6 +4794,8 @@ choHof1.73 	 Choloepus_hoffmanni   choHof1.73
 choHof1.74 	 Choloepus_hoffmanni   choHof1.74
 choHof1.75 	 Choloepus_hoffmanni   choHof1.75
 choHof1.76 	 Choloepus_hoffmanni   choHof1.76
+choHof1.77 	 Choloepus_hoffmanni   choHof1.77
+choHof1.78 	 Choloepus_hoffmanni   choHof1.78
 Chromobacterium_violaceum_ATCC_12472_uid58001 	 Chromobacterium_violaceum_ATCC_12472_uid58001   Chromobacterium_violaceum_ATCC_12472_uid58001
 GCA_000007705.1.21 	 Chromobacterium_violaceum_atcc_12472   GCA_000007705.1.21
 GCA_000007705.1.22 	 Chromobacterium_violaceum_atcc_12472   GCA_000007705.1.22
@@ -4799,6 +4821,8 @@ KH.73 	 Ciona_intestinalis   KH.73
 KH.74 	 Ciona_intestinalis   KH.74
 KH.75 	 Ciona_intestinalis   KH.75
 KH.76 	 Ciona_intestinalis   KH.76
+KH.77 	 Ciona_intestinalis   KH.77
+KH.78 	 Ciona_intestinalis   KH.78
 CSAV2.0.70 	 Ciona_savignyi   CSAV2.0.70
 CSAV2.0.71 	 Ciona_savignyi   CSAV2.0.71
 CSAV2.0.72 	 Ciona_savignyi   CSAV2.0.72
@@ -4806,6 +4830,8 @@ CSAV2.0.73 	 Ciona_savignyi   CSAV2.0.73
 CSAV2.0.74 	 Ciona_savignyi   CSAV2.0.74
 CSAV2.0.75 	 Ciona_savignyi   CSAV2.0.75
 CSAV2.0.76 	 Ciona_savignyi   CSAV2.0.76
+CSAV2.0.77 	 Ciona_savignyi   CSAV2.0.77
+CSAV2.0.78 	 Ciona_savignyi   CSAV2.0.78
 GCA_000259095.1.21 	 Citreicella_sp_357   GCA_000259095.1.21
 GCA_000259095.1.22 	 Citreicella_sp_357   GCA_000259095.1.22
 GCA_000161755.1.21 	 Citreicella_sp_se45   GCA_000161755.1.21
@@ -6012,11 +6038,15 @@ Zv9.73 	 Danio_rerio   Zv9.73
 Zv9.74 	 Danio_rerio   Zv9.74
 Zv9.75 	 Danio_rerio   Zv9.75
 Zv9.76 	 Danio_rerio   Zv9.76
+Zv9.77 	 Danio_rerio   Zv9.77
+Zv9.78 	 Danio_rerio   Zv9.78
 Dappu1.21 	 Daphnia_pulex   Dappu1.21
 GCA_000187875.1.22 	 Daphnia_pulex   GCA_000187875.1.22
 Dasnov3.0.74 	 Dasypus_novemcinctus   Dasnov3.0.74
 Dasnov3.0.75 	 Dasypus_novemcinctus   Dasnov3.0.75
 Dasnov3.0.76 	 Dasypus_novemcinctus   Dasnov3.0.76
+Dasnov3.0.77 	 Dasypus_novemcinctus   Dasnov3.0.77
+Dasnov3.0.78 	 Dasypus_novemcinctus   Dasnov3.0.78
 dasNov2.70 	 Dasypus_novemcinctus   dasNov2.70
 dasNov2.71 	 Dasypus_novemcinctus   dasNov2.71
 dasNov2.72 	 Dasypus_novemcinctus   dasNov2.72
@@ -6332,6 +6362,8 @@ dipOrd1.73 	 Dipodomys_ordii   dipOrd1.73
 dipOrd1.74 	 Dipodomys_ordii   dipOrd1.74
 dipOrd1.75 	 Dipodomys_ordii   dipOrd1.75
 dipOrd1.76 	 Dipodomys_ordii   dipOrd1.76
+dipOrd1.77 	 Dipodomys_ordii   dipOrd1.77
+dipOrd1.78 	 Dipodomys_ordii   dipOrd1.78
 GCA_000152925.1.21 	 Dokdonia_donghaensis_med134   GCA_000152925.1.21
 GCA_000152925.2.22 	 Dokdonia_donghaensis_med134   GCA_000152925.2.22
 GCA_000245815.1.21 	 Dolosigranulum_pigrum_atcc_51524   GCA_000245815.1.21
@@ -6359,6 +6391,8 @@ BDGP5.73 	 Drosophila_melanogaster   BDGP5.73
 BDGP5.74 	 Drosophila_melanogaster   BDGP5.74
 BDGP5.75 	 Drosophila_melanogaster   BDGP5.75
 BDGP5.76 	 Drosophila_melanogaster   BDGP5.76
+BDGP5.77 	 Drosophila_melanogaster   BDGP5.77
+BDGP5.78 	 Drosophila_melanogaster   BDGP5.78
 dm5.42 	 Drosophila_melanogaster   dm5.42
 dm5.48 	 Drosophila_melanogaster   dm5.48
 dmoj_caf1.21 	 Drosophila_mojavensis   dmoj_caf1.21
@@ -6396,6 +6430,8 @@ TENREC.73 	 Echinops_telfairi   TENREC.73
 TENREC.74 	 Echinops_telfairi   TENREC.74
 TENREC.75 	 Echinops_telfairi   TENREC.75
 TENREC.76 	 Echinops_telfairi   TENREC.76
+TENREC.77 	 Echinops_telfairi   TENREC.77
+TENREC.78 	 Echinops_telfairi   TENREC.78
 GCA_000225005.2.21 	 Ectothiorhodospira_sp_phs_1   GCA_000225005.2.21
 GCA_000225005.2.22 	 Ectothiorhodospira_sp_phs_1   GCA_000225005.2.22
 Ectothiorhodospiraceae_bacterium_M19_40_uid199898 	 Ectothiorhodospiraceae_bacterium_M19_40_uid199898   Ectothiorhodospiraceae_bacterium_M19_40_uid199898
@@ -7738,6 +7774,8 @@ EquCab2.73 	 Equus_caballus   EquCab2.73
 EquCab2.74 	 Equus_caballus   EquCab2.74
 EquCab2.75 	 Equus_caballus   EquCab2.75
 EquCab2.76 	 Equus_caballus   EquCab2.76
+EquCab2.77 	 Equus_caballus   EquCab2.77
+EquCab2.78 	 Equus_caballus   EquCab2.78
 GCA_000183205.2.21 	 Eremococcus_coleocola_acs_139_v_col8   GCA_000183205.2.21
 GCA_000183205.2.22 	 Eremococcus_coleocola_acs_139_v_col8   GCA_000183205.2.22
 HEDGEHOG.70 	 Erinaceus_europaeus   HEDGEHOG.70
@@ -7747,6 +7785,8 @@ HEDGEHOG.73 	 Erinaceus_europaeus   HEDGEHOG.73
 HEDGEHOG.74 	 Erinaceus_europaeus   HEDGEHOG.74
 HEDGEHOG.75 	 Erinaceus_europaeus   HEDGEHOG.75
 HEDGEHOG.76 	 Erinaceus_europaeus   HEDGEHOG.76
+HEDGEHOG.77 	 Erinaceus_europaeus   HEDGEHOG.77
+HEDGEHOG.78 	 Erinaceus_europaeus   HEDGEHOG.78
 Erwinia_Ejp617_uid159955 	 Erwinia_Ejp617_uid159955   Erwinia_Ejp617_uid159955
 GCA_000367605.2.21 	 Erwinia_amylovora_01sfr_bo   GCA_000367605.2.21
 GCA_000367605.2.22 	 Erwinia_amylovora_01sfr_bo   GCA_000367605.2.22
@@ -10368,6 +10408,8 @@ Felis_catus_6.2.73 	 Felis_catus   Felis_catus_6.2.73
 Felis_catus_6.2.74 	 Felis_catus   Felis_catus_6.2.74
 Felis_catus_6.2.75 	 Felis_catus   Felis_catus_6.2.75
 Felis_catus_6.2.76 	 Felis_catus   Felis_catus_6.2.76
+Felis_catus_6.2.77 	 Felis_catus   Felis_catus_6.2.77
+Felis_catus_6.2.78 	 Felis_catus   Felis_catus_6.2.78
 Ferrimonas_balearica_DSM_9799_uid53371 	 Ferrimonas_balearica_DSM_9799_uid53371   Ferrimonas_balearica_DSM_9799_uid53371
 GCA_000148645.1.21 	 Ferrimonas_balearica_dsm_9799   GCA_000148645.1.21
 GCA_000148645.1.22 	 Ferrimonas_balearica_dsm_9799   GCA_000148645.1.22
@@ -10401,6 +10443,8 @@ FicAlb_1.4.73 	 Ficedula_albicollis   FicAlb_1.4.73
 FicAlb_1.4.74 	 Ficedula_albicollis   FicAlb_1.4.74
 FicAlb_1.4.75 	 Ficedula_albicollis   FicAlb_1.4.75
 FicAlb_1.4.76 	 Ficedula_albicollis   FicAlb_1.4.76
+FicAlb_1.4.77 	 Ficedula_albicollis   FicAlb_1.4.77
+FicAlb_1.4.78 	 Ficedula_albicollis   FicAlb_1.4.78
 Filifactor_alocis_ATCC_35896_uid46625 	 Filifactor_alocis_ATCC_35896_uid46625   Filifactor_alocis_ATCC_35896_uid46625
 GCA_000163895.2.21 	 Filifactor_alocis_atcc_35896   GCA_000163895.2.21
 GCA_000163895.2.22 	 Filifactor_alocis_atcc_35896   GCA_000163895.2.22
@@ -10679,6 +10723,8 @@ gadMor1.73 	 Gadus_morhua   gadMor1.73
 gadMor1.74 	 Gadus_morhua   gadMor1.74
 gadMor1.75 	 Gadus_morhua   gadMor1.75
 gadMor1.76 	 Gadus_morhua   gadMor1.76
+gadMor1.77 	 Gadus_morhua   gadMor1.77
+gadMor1.78 	 Gadus_morhua   gadMor1.78
 Gae_graminis_V2.21 	 Gaeumannomyces_graminis   Gae_graminis_V2.21
 Gae_graminis_V2.22 	 Gaeumannomyces_graminis   Gae_graminis_V2.22
 GCA_000300875.1.22 	 Galbibacter_marinus   GCA_000300875.1.22
@@ -10698,6 +10744,8 @@ Galgal4.73 	 Gallus_gallus   Galgal4.73
 Galgal4.74 	 Gallus_gallus   Galgal4.74
 Galgal4.75 	 Gallus_gallus   Galgal4.75
 Galgal4.76 	 Gallus_gallus   Galgal4.76
+Galgal4.77 	 Gallus_gallus   Galgal4.77
+Galgal4.78 	 Gallus_gallus   Galgal4.78
 WASHUC2.70 	 Gallus_gallus   WASHUC2.70
 GCA_000259575.1.21 	 Gamma_proteobacterium_bdw918   GCA_000259575.1.21
 GCA_000259575.1.22 	 Gamma_proteobacterium_bdw918   GCA_000259575.1.22
@@ -10792,6 +10840,8 @@ BROADS1.73 	 Gasterosteus_aculeatus   BROADS1.73
 BROADS1.74 	 Gasterosteus_aculeatus   BROADS1.74
 BROADS1.75 	 Gasterosteus_aculeatus   BROADS1.75
 BROADS1.76 	 Gasterosteus_aculeatus   BROADS1.76
+BROADS1.77 	 Gasterosteus_aculeatus   BROADS1.77
+BROADS1.78 	 Gasterosteus_aculeatus   BROADS1.78
 Geitlerinema_PCC_7407_uid183007 	 Geitlerinema_PCC_7407_uid183007   Geitlerinema_PCC_7407_uid183007
 GCA_000317045.1.21 	 Geitlerinema_sp_pcc_7407   GCA_000317045.1.21
 GCA_000317045.1.22 	 Geitlerinema_sp_pcc_7407   GCA_000317045.1.22
@@ -11012,6 +11062,8 @@ gorGor3.1.73 	 Gorilla_gorilla   gorGor3.1.73
 gorGor3.1.74 	 Gorilla_gorilla   gorGor3.1.74
 gorGor3.1.75 	 Gorilla_gorilla   gorGor3.1.75
 gorGor3.1.76 	 Gorilla_gorilla   gorGor3.1.76
+gorGor3.1.77 	 Gorilla_gorilla   gorGor3.1.77
+gorGor3.1.78 	 Gorilla_gorilla   gorGor3.1.78
 GCA_000359605.1.21 	 Gracilibacillus_halophilus_yim_c55_5   GCA_000359605.1.21
 GCA_000359605.1.22 	 Gracilibacillus_halophilus_yim_c55_5   GCA_000359605.1.22
 Gramella_forsetii_KT0803_uid58881 	 Gramella_forsetii_KT0803_uid58881   Gramella_forsetii_KT0803_uid58881
@@ -12008,6 +12060,8 @@ GRCh37.73 	 Homo_sapiens   GRCh37.73
 GRCh37.74 	 Homo_sapiens   GRCh37.74
 GRCh37.75 	 Homo_sapiens   GRCh37.75
 GRCh38.76 	 Homo_sapiens   GRCh38.76
+GRCh38.77 	 Homo_sapiens   GRCh38.77
+GRCh38.78 	 Homo_sapiens   GRCh38.78
 hg19 	 Homo_sapiens   hg19
 hg19kg 	 Homo_sapiens   hg19kg
 hg38 	 Homo_sapiens   hg38
@@ -12061,6 +12115,8 @@ spetri2.73 	 Ictidomys_tridecemlineatus   spetri2.73
 spetri2.74 	 Ictidomys_tridecemlineatus   spetri2.74
 spetri2.75 	 Ictidomys_tridecemlineatus   spetri2.75
 spetri2.76 	 Ictidomys_tridecemlineatus   spetri2.76
+spetri2.77 	 Ictidomys_tridecemlineatus   spetri2.77
+spetri2.78 	 Ictidomys_tridecemlineatus   spetri2.78
 GCA_000152885.1.21 	 Idiomarina_baltica_os145   GCA_000152885.1.21
 GCA_000152885.1.22 	 Idiomarina_baltica_os145   GCA_000152885.1.22
 Idiomarina_loihiensis_GSL_199_uid205256 	 Idiomarina_loihiensis_GSL_199_uid205256   Idiomarina_loihiensis_GSL_199_uid205256
@@ -13090,6 +13146,8 @@ LatCha1.73 	 Latimeria_chalumnae   LatCha1.73
 LatCha1.74 	 Latimeria_chalumnae   LatCha1.74
 LatCha1.75 	 Latimeria_chalumnae   LatCha1.75
 LatCha1.76 	 Latimeria_chalumnae   LatCha1.76
+LatCha1.77 	 Latimeria_chalumnae   LatCha1.77
+LatCha1.78 	 Latimeria_chalumnae   LatCha1.78
 GCA_000186425.1.21 	 Lautropia_mirabilis_atcc_51599   GCA_000186425.1.21
 GCA_000186425.1.22 	 Lautropia_mirabilis_atcc_51599   GCA_000186425.1.22
 Lawsonia_intracellularis_N343_uid186598 	 Lawsonia_intracellularis_N343_uid186598   Lawsonia_intracellularis_N343_uid186598
@@ -13159,6 +13217,8 @@ GCA_000170755.1.22 	 Lentisphaera_araneosa_htcc2155   GCA_000170755.1.22
 LepOcu1.74 	 Lepisosteus_oculatus   LepOcu1.74
 LepOcu1.75 	 Lepisosteus_oculatus   LepOcu1.75
 LepOcu1.76 	 Lepisosteus_oculatus   LepOcu1.76
+LepOcu1.77 	 Lepisosteus_oculatus   LepOcu1.77
+LepOcu1.78 	 Lepisosteus_oculatus   LepOcu1.78
 Leptolyngbya_PCC_7376_uid182928 	 Leptolyngbya_PCC_7376_uid182928   Leptolyngbya_PCC_7376_uid182928
 GCA_000482245.1.22 	 Leptolyngbya_sp_heron_island_j   GCA_000482245.1.22
 GCA_000332095.1.21 	 Leptolyngbya_sp_pcc_6406   GCA_000332095.1.21
@@ -13738,6 +13798,8 @@ loxAfr3.73 	 Loxodonta_africana   loxAfr3.73
 loxAfr3.74 	 Loxodonta_africana   loxAfr3.74
 loxAfr3.75 	 Loxodonta_africana   loxAfr3.75
 loxAfr3.76 	 Loxodonta_africana   loxAfr3.76
+loxAfr3.77 	 Loxodonta_africana   loxAfr3.77
+loxAfr3.78 	 Loxodonta_africana   loxAfr3.78
 testLukas 	 Lukas_Schrader   testLukas
 GCA_000158175.1.21 	 Luminiphilus_syltensis_nor5_1b   GCA_000158175.1.21
 GCA_000158175.1.22 	 Luminiphilus_syltensis_nor5_1b   GCA_000158175.1.22
@@ -13761,6 +13823,8 @@ MMUL_1.73 	 Macaca_mulatta   MMUL_1.73
 MMUL_1.74 	 Macaca_mulatta   MMUL_1.74
 MMUL_1.75 	 Macaca_mulatta   MMUL_1.75
 MMUL_1.76 	 Macaca_mulatta   MMUL_1.76
+MMUL_1.77 	 Macaca_mulatta   MMUL_1.77
+MMUL_1.78 	 Macaca_mulatta   MMUL_1.78
 Macrococcus_caseolyticus_JCSC5402_uid59003 	 Macrococcus_caseolyticus_JCSC5402_uid59003   Macrococcus_caseolyticus_JCSC5402_uid59003
 GCA_000010585.1.21 	 Macrococcus_caseolyticus_jcsc5402   GCA_000010585.1.21
 GCA_000010585.1.22 	 Macrococcus_caseolyticus_jcsc5402   GCA_000010585.1.22
@@ -13771,6 +13835,8 @@ Meug_1.0.73 	 Macropus_eugenii   Meug_1.0.73
 Meug_1.0.74 	 Macropus_eugenii   Meug_1.0.74
 Meug_1.0.75 	 Macropus_eugenii   Meug_1.0.75
 Meug_1.0.76 	 Macropus_eugenii   Meug_1.0.76
+Meug_1.0.77 	 Macropus_eugenii   Meug_1.0.77
+Meug_1.0.78 	 Macropus_eugenii   Meug_1.0.78
 MG8.21 	 Magnaporthe_oryzae   MG8.21
 MG8.22 	 Magnaporthe_oryzae   MG8.22
 Mag_poae_ATCC_64411_V1.21 	 Magnaporthe_poae   Mag_poae_ATCC_64411_V1.21
@@ -13945,6 +14011,8 @@ UMD2.73 	 Meleagris_gallopavo   UMD2.73
 UMD2.74 	 Meleagris_gallopavo   UMD2.74
 UMD2.75 	 Meleagris_gallopavo   UMD2.75
 UMD2.76 	 Meleagris_gallopavo   UMD2.76
+UMD2.77 	 Meleagris_gallopavo   UMD2.77
+UMD2.78 	 Meleagris_gallopavo   UMD2.78
 turkey.UMD2.61 	 Meleagris_gallopavo   turkey.UMD2.61
 Melioribacter_roseus_P3M_uid170941 	 Melioribacter_roseus_P3M_uid170941   Melioribacter_roseus_P3M_uid170941
 GCA_000279145.1.21 	 Melioribacter_roseus_p3m_2   GCA_000279145.1.21
@@ -14274,6 +14342,8 @@ micMur1.73 	 Microcebus_murinus   micMur1.73
 micMur1.74 	 Microcebus_murinus   micMur1.74
 micMur1.75 	 Microcebus_murinus   micMur1.75
 micMur1.76 	 Microcebus_murinus   micMur1.76
+micMur1.77 	 Microcebus_murinus   micMur1.77
+micMur1.78 	 Microcebus_murinus   micMur1.78
 Micrococcus_luteus_NCTC_2665_uid59033 	 Micrococcus_luteus_NCTC_2665_uid59033   Micrococcus_luteus_NCTC_2665_uid59033
 GCA_000023205.1.21 	 Micrococcus_luteus_nctc_2665   GCA_000023205.1.21
 GCA_000023205.1.22 	 Micrococcus_luteus_nctc_2665   GCA_000023205.1.22
@@ -14364,6 +14434,8 @@ BROADO5.73 	 Monodelphis_domestica   BROADO5.73
 BROADO5.74 	 Monodelphis_domestica   BROADO5.74
 BROADO5.75 	 Monodelphis_domestica   BROADO5.75
 BROADO5.76 	 Monodelphis_domestica   BROADO5.76
+BROADO5.77 	 Monodelphis_domestica   BROADO5.77
+BROADO5.78 	 Monodelphis_domestica   BROADO5.78
 GCA_000211815.1.21 	 Moorea_producens_3l   GCA_000211815.1.21
 GCA_000211815.1.22 	 Moorea_producens_3l   GCA_000211815.1.22
 Moorella_thermoacetica_ATCC_39073_uid58051 	 Moorella_thermoacetica_ATCC_39073_uid58051   Moorella_thermoacetica_ATCC_39073_uid58051
@@ -14417,6 +14489,8 @@ GRCm38.73 	 Mus_musculus   GRCm38.73
 GRCm38.74 	 Mus_musculus   GRCm38.74
 GRCm38.75 	 Mus_musculus   GRCm38.75
 GRCm38.76 	 Mus_musculus   GRCm38.76
+GRCm38.77 	 Mus_musculus   GRCm38.77
+GRCm38.78 	 Mus_musculus   GRCm38.78
 testMm37.61 	 Mus_musculus   testMm37.61
 MA1.21 	 Musa_acuminata   MA1.21
 MusPutFur1.0.70 	 Mustela_putorius_furo   MusPutFur1.0.70
@@ -14426,6 +14500,8 @@ MusPutFur1.0.73 	 Mustela_putorius_furo   MusPutFur1.0.73
 MusPutFur1.0.74 	 Mustela_putorius_furo   MusPutFur1.0.74
 MusPutFur1.0.75 	 Mustela_putorius_furo   MusPutFur1.0.75
 MusPutFur1.0.76 	 Mustela_putorius_furo   MusPutFur1.0.76
+MusPutFur1.0.77 	 Mustela_putorius_furo   MusPutFur1.0.77
+MusPutFur1.0.78 	 Mustela_putorius_furo   MusPutFur1.0.78
 Mycobacterium_JDM601_uid67369 	 Mycobacterium_JDM601_uid67369   Mycobacterium_JDM601_uid67369
 Mycobacterium_JLS_uid58489 	 Mycobacterium_JLS_uid58489   Mycobacterium_JLS_uid58489
 Mycobacterium_KMS_uid58491 	 Mycobacterium_KMS_uid58491   Mycobacterium_KMS_uid58491
@@ -15055,6 +15131,8 @@ Myoluc2.0.73 	 Myotis_lucifugus   Myoluc2.0.73
 Myoluc2.0.74 	 Myotis_lucifugus   Myoluc2.0.74
 Myoluc2.0.75 	 Myotis_lucifugus   Myoluc2.0.75
 Myoluc2.0.76 	 Myotis_lucifugus   Myoluc2.0.76
+Myoluc2.0.77 	 Myotis_lucifugus   Myoluc2.0.77
+Myoluc2.0.78 	 Myotis_lucifugus   Myoluc2.0.78
 GCA_000242075.2.21 	 Myroides_odoratimimus_ccug_10230   GCA_000242075.2.21
 GCA_000242075.2.22 	 Myroides_odoratimimus_ccug_10230   GCA_000242075.2.22
 GCA_000413415.1.21 	 Myroides_odoratimimus_ccug_12700   GCA_000413415.1.21
@@ -15694,6 +15772,8 @@ Nleu1.0.73 	 Nomascus_leucogenys   Nleu1.0.73
 Nleu1.0.74 	 Nomascus_leucogenys   Nleu1.0.74
 Nleu1.0.75 	 Nomascus_leucogenys   Nleu1.0.75
 Nleu1.0.76 	 Nomascus_leucogenys   Nleu1.0.76
+Nleu1.0.77 	 Nomascus_leucogenys   Nleu1.0.77
+Nleu1.0.78 	 Nomascus_leucogenys   Nleu1.0.78
 GCA_000332115.1.21 	 Nonlabens_dokdonensis_dsw_6   GCA_000332115.1.21
 GCA_000332115.1.22 	 Nonlabens_dokdonensis_dsw_6   GCA_000332115.1.22
 Nostoc_PCC_7107_uid182932 	 Nostoc_PCC_7107_uid182932   Nostoc_PCC_7107_uid182932
@@ -15753,6 +15833,8 @@ pika.73 	 Ochotona_princeps   pika.73
 pika.74 	 Ochotona_princeps   pika.74
 pika.75 	 Ochotona_princeps   pika.75
 pika.76 	 Ochotona_princeps   pika.76
+pika.77 	 Ochotona_princeps   pika.77
+pika.78 	 Ochotona_princeps   pika.78
 Ochrobactrum_anthropi_ATCC_49188_uid58921 	 Ochrobactrum_anthropi_ATCC_49188_uid58921   Ochrobactrum_anthropi_ATCC_49188_uid58921
 GCA_000017405.1.21 	 Ochrobactrum_anthropi_atcc_49188   GCA_000017405.1.21
 GCA_000017405.1.22 	 Ochrobactrum_anthropi_atcc_49188   GCA_000017405.1.22
@@ -15833,6 +15915,8 @@ Orenil1.0.73 	 Oreochromis_niloticus   Orenil1.0.73
 Orenil1.0.74 	 Oreochromis_niloticus   Orenil1.0.74
 Orenil1.0.75 	 Oreochromis_niloticus   Orenil1.0.75
 Orenil1.0.76 	 Oreochromis_niloticus   Orenil1.0.76
+Orenil1.0.77 	 Oreochromis_niloticus   Orenil1.0.77
+Orenil1.0.78 	 Oreochromis_niloticus   Orenil1.0.78
 GCA_000160635.1.21 	 Oribacterium_sinus_f0268   GCA_000160635.1.21
 GCA_000160635.1.22 	 Oribacterium_sinus_f0268   GCA_000160635.1.22
 GCA_000238055.2.21 	 Oribacterium_sp_acb1   GCA_000238055.2.21
@@ -15862,10 +15946,14 @@ OANA5.73 	 Ornithorhynchus_anatinus   OANA5.73
 OANA5.74 	 Ornithorhynchus_anatinus   OANA5.74
 OANA5.75 	 Ornithorhynchus_anatinus   OANA5.75
 OANA5.76 	 Ornithorhynchus_anatinus   OANA5.76
+OANA5.77 	 Ornithorhynchus_anatinus   OANA5.77
+OANA5.78 	 Ornithorhynchus_anatinus   OANA5.78
 OryCun2.0.73 	 Oryctolagus_cuniculus   OryCun2.0.73
 OryCun2.0.74 	 Oryctolagus_cuniculus   OryCun2.0.74
 OryCun2.0.75 	 Oryctolagus_cuniculus   OryCun2.0.75
 OryCun2.0.76 	 Oryctolagus_cuniculus   OryCun2.0.76
+OryCun2.0.77 	 Oryctolagus_cuniculus   OryCun2.0.77
+OryCun2.0.78 	 Oryctolagus_cuniculus   OryCun2.0.78
 oryCun2.70 	 Oryctolagus_cuniculus   oryCun2.70
 oryCun2.71 	 Oryctolagus_cuniculus   oryCun2.71
 oryCun2.72 	 Oryctolagus_cuniculus   oryCun2.72
@@ -15880,6 +15968,8 @@ MEDAKA1.73 	 Oryzias_latipes   MEDAKA1.73
 MEDAKA1.74 	 Oryzias_latipes   MEDAKA1.74
 MEDAKA1.75 	 Oryzias_latipes   MEDAKA1.75
 MEDAKA1.76 	 Oryzias_latipes   MEDAKA1.76
+MEDAKA1.77 	 Oryzias_latipes   MEDAKA1.77
+MEDAKA1.78 	 Oryzias_latipes   MEDAKA1.78
 Oscillatoria_PCC_7112_uid183110 	 Oscillatoria_PCC_7112_uid183110   Oscillatoria_PCC_7112_uid183110
 Oscillatoria_acuminata_PCC_6304_uid183003 	 Oscillatoria_acuminata_PCC_6304_uid183003   Oscillatoria_acuminata_PCC_6304_uid183003
 GCA_000317105.1.21 	 Oscillatoria_acuminata_pcc_6304   GCA_000317105.1.21
@@ -15907,9 +15997,13 @@ OtoGar3.73 	 Otolemur_garnettii   OtoGar3.73
 OtoGar3.74 	 Otolemur_garnettii   OtoGar3.74
 OtoGar3.75 	 Otolemur_garnettii   OtoGar3.75
 OtoGar3.76 	 Otolemur_garnettii   OtoGar3.76
+OtoGar3.77 	 Otolemur_garnettii   OtoGar3.77
+OtoGar3.78 	 Otolemur_garnettii   OtoGar3.78
 Oar_v3.1.74 	 Ovis_aries   Oar_v3.1.74
 Oar_v3.1.75 	 Ovis_aries   Oar_v3.1.75
 Oar_v3.1.76 	 Ovis_aries   Oar_v3.1.76
+Oar_v3.1.77 	 Ovis_aries   Oar_v3.1.77
+Oar_v3.1.78 	 Ovis_aries   Oar_v3.1.78
 Owenweeksia_hongkongensis_DSM_17368_uid82951 	 Owenweeksia_hongkongensis_DSM_17368_uid82951   Owenweeksia_hongkongensis_DSM_17368_uid82951
 GCA_000236705.1.21 	 Owenweeksia_hongkongensis_dsm_17368   GCA_000236705.1.21
 GCA_000236705.1.22 	 Owenweeksia_hongkongensis_dsm_17368   GCA_000236705.1.22
@@ -15989,6 +16083,8 @@ CHIMP2.1.4.73 	 Pan_troglodytes   CHIMP2.1.4.73
 CHIMP2.1.4.74 	 Pan_troglodytes   CHIMP2.1.4.74
 CHIMP2.1.4.75 	 Pan_troglodytes   CHIMP2.1.4.75
 CHIMP2.1.4.76 	 Pan_troglodytes   CHIMP2.1.4.76
+CHIMP2.1.4.77 	 Pan_troglodytes   CHIMP2.1.4.77
+CHIMP2.1.4.78 	 Pan_troglodytes   CHIMP2.1.4.78
 Pandoraea_RB_44_uid231151 	 Pandoraea_RB_44_uid231151   Pandoraea_RB_44_uid231151
 Pandoraea_pnomenusa_3kgm_uid229878 	 Pandoraea_pnomenusa_3kgm_uid229878   Pandoraea_pnomenusa_3kgm_uid229878
 GCA_000389825.1.21 	 Pandoraea_sp_sd6_2   GCA_000389825.1.21
@@ -16026,6 +16122,8 @@ Pantoea_vagans_C9_1_uid49871 	 Pantoea_vagans_C9_1_uid49871   Pantoea_vagans_C9_
 GCA_000148935.1.21 	 Pantoea_vagans_c9_1   GCA_000148935.1.21
 GCA_000148935.1.22 	 Pantoea_vagans_c9_1   GCA_000148935.1.22
 PapAnu2.0.76 	 Papio_anubis   PapAnu2.0.76
+PapAnu2.0.77 	 Papio_anubis   PapAnu2.0.77
+PapAnu2.0.78 	 Papio_anubis   PapAnu2.0.78
 Parabacteroides_distasonis_ATCC_8503_uid58301 	 Parabacteroides_distasonis_ATCC_8503_uid58301   Parabacteroides_distasonis_ATCC_8503_uid58301
 GCA_000012845.1.21 	 Parabacteroides_distasonis_atcc_8503   GCA_000012845.1.21
 GCA_000012845.1.22 	 Parabacteroides_distasonis_atcc_8503   GCA_000012845.1.22
@@ -16209,6 +16307,8 @@ PelSin_1.0.73 	 Pelodiscus_sinensis   PelSin_1.0.73
 PelSin_1.0.74 	 Pelodiscus_sinensis   PelSin_1.0.74
 PelSin_1.0.75 	 Pelodiscus_sinensis   PelSin_1.0.75
 PelSin_1.0.76 	 Pelodiscus_sinensis   PelSin_1.0.76
+PelSin_1.0.77 	 Pelodiscus_sinensis   PelSin_1.0.77
+PelSin_1.0.78 	 Pelodiscus_sinensis   PelSin_1.0.78
 GCA_000271545.1.21 	 Pelosinus_fermentans_a11   GCA_000271545.1.21
 GCA_000271545.1.22 	 Pelosinus_fermentans_a11   GCA_000271545.1.22
 GCA_000271525.1.21 	 Pelosinus_fermentans_a12   GCA_000271525.1.21
@@ -16258,6 +16358,8 @@ Pmarinus_7.0.73 	 Petromyzon_marinus   Pmarinus_7.0.73
 Pmarinus_7.0.74 	 Petromyzon_marinus   Pmarinus_7.0.74
 Pmarinus_7.0.75 	 Petromyzon_marinus   Pmarinus_7.0.75
 Pmarinus_7.0.76 	 Petromyzon_marinus   Pmarinus_7.0.76
+Pmarinus_7.0.77 	 Petromyzon_marinus   Pmarinus_7.0.77
+Pmarinus_7.0.78 	 Petromyzon_marinus   Pmarinus_7.0.78
 Petrotoga_mobilis_SJ95_uid58747 	 Petrotoga_mobilis_SJ95_uid58747   Petrotoga_mobilis_SJ95_uid58747
 GCA_000018605.1.21 	 Petrotoga_mobilis_sj95   GCA_000018605.1.21
 GCA_000018605.1.22 	 Petrotoga_mobilis_sj95   GCA_000018605.1.22
@@ -16349,6 +16451,8 @@ Pleurocapsa_PCC_7327_uid183006 	 Pleurocapsa_PCC_7327_uid183006   Pleurocapsa_PC
 GCA_000317025.1.21 	 Pleurocapsa_sp_pcc_7327   GCA_000317025.1.21
 GCA_000317025.1.22 	 Pleurocapsa_sp_pcc_7327   GCA_000317025.1.22
 PoeFor_5.1.2.76 	 Poecilia_formosa   PoeFor_5.1.2.76
+PoeFor_5.1.2.77 	 Poecilia_formosa   PoeFor_5.1.2.77
+PoeFor_5.1.2.78 	 Poecilia_formosa   PoeFor_5.1.2.78
 Polaribacter_MED152_uid54207 	 Polaribacter_MED152_uid54207   Polaribacter_MED152_uid54207
 GCA_000153225.1.21 	 Polaribacter_irgensii_23_p   GCA_000153225.1.21
 GCA_000153225.1.22 	 Polaribacter_irgensii_23_p   GCA_000153225.1.22
@@ -16378,6 +16482,8 @@ PPYG2.73 	 Pongo_abelii   PPYG2.73
 PPYG2.74 	 Pongo_abelii   PPYG2.74
 PPYG2.75 	 Pongo_abelii   PPYG2.75
 PPYG2.76 	 Pongo_abelii   PPYG2.76
+PPYG2.77 	 Pongo_abelii   PPYG2.77
+PPYG2.78 	 Pongo_abelii   PPYG2.78
 GCA_000277005.1.21 	 Pontibacter_sp_bab1700   GCA_000277005.1.21
 GCA_000277005.1.22 	 Pontibacter_sp_bab1700   GCA_000277005.1.22
 JGI2.0.21 	 Populus_trichocarpa   JGI2.0.21
@@ -16532,6 +16638,8 @@ proCap1.73 	 Procavia_capensis   proCap1.73
 proCap1.74 	 Procavia_capensis   proCap1.74
 proCap1.75 	 Procavia_capensis   proCap1.75
 proCap1.76 	 Procavia_capensis   proCap1.76
+proCap1.77 	 Procavia_capensis   proCap1.77
+proCap1.78 	 Procavia_capensis   proCap1.78
 Prochlorococcus_marinus_AS9601_uid58307 	 Prochlorococcus_marinus_AS9601_uid58307   Prochlorococcus_marinus_AS9601_uid58307
 Prochlorococcus_marinus_CCMP1375_uid57995 	 Prochlorococcus_marinus_CCMP1375_uid57995   Prochlorococcus_marinus_CCMP1375_uid57995
 Prochlorococcus_marinus_MIT_9211_uid58309 	 Prochlorococcus_marinus_MIT_9211_uid58309   Prochlorococcus_marinus_MIT_9211_uid58309
@@ -17363,6 +17471,8 @@ pteVam1.73 	 Pteropus_vampyrus   pteVam1.73
 pteVam1.74 	 Pteropus_vampyrus   pteVam1.74
 pteVam1.75 	 Pteropus_vampyrus   pteVam1.75
 pteVam1.76 	 Pteropus_vampyrus   pteVam1.76
+pteVam1.77 	 Pteropus_vampyrus   pteVam1.77
+pteVam1.78 	 Pteropus_vampyrus   pteVam1.78
 ASM14992v1.21 	 Puccinia_graminis   ASM14992v1.21
 ASM14992v1.22 	 Puccinia_graminis   ASM14992v1.22
 ASM15152v1.21 	 Puccinia_triticina   ASM15152v1.21
@@ -17495,6 +17605,8 @@ Rnor_5.0.73 	 Rattus_norvegicus   Rnor_5.0.73
 Rnor_5.0.74 	 Rattus_norvegicus   Rnor_5.0.74
 Rnor_5.0.75 	 Rattus_norvegicus   Rnor_5.0.75
 Rnor_5.0.76 	 Rattus_norvegicus   Rnor_5.0.76
+Rnor_5.0.77 	 Rattus_norvegicus   Rnor_5.0.77
+Rnor_5.0.78 	 Rattus_norvegicus   Rnor_5.0.78
 GCA_000153185.1.21 	 Reinekea_blandensis_med297   GCA_000153185.1.21
 GCA_000153185.1.22 	 Reinekea_blandensis_med297   GCA_000153185.1.22
 Renibacterium_salmoninarum_ATCC_33209_uid58899 	 Renibacterium_salmoninarum_ATCC_33209_uid58899   Renibacterium_salmoninarum_ATCC_33209_uid58899
@@ -18027,6 +18139,8 @@ EF4.74 	 Saccharomyces_cerevisiae   EF4.74
 R64-1-1.22 	 Saccharomyces_cerevisiae   R64-1-1.22
 R64-1-1.75 	 Saccharomyces_cerevisiae   R64-1-1.75
 R64-1-1.76 	 Saccharomyces_cerevisiae   R64-1-1.76
+R64-1-1.77 	 Saccharomyces_cerevisiae   R64-1-1.77
+R64-1-1.78 	 Saccharomyces_cerevisiae   R64-1-1.78
 SacCer_Apr2011.21 	 Saccharomyces_cerevisiae   SacCer_Apr2011.21
 GCA_000013665.1.21 	 Saccharophagus_degradans_2_40   GCA_000013665.1.21
 GCA_000013665.1.22 	 Saccharophagus_degradans_2_40   GCA_000013665.1.22
@@ -19017,6 +19131,8 @@ DEVIL7.0.73 	 Sarcophilus_harrisii   DEVIL7.0.73
 DEVIL7.0.74 	 Sarcophilus_harrisii   DEVIL7.0.74
 DEVIL7.0.75 	 Sarcophilus_harrisii   DEVIL7.0.75
 DEVIL7.0.76 	 Sarcophilus_harrisii   DEVIL7.0.76
+DEVIL7.0.77 	 Sarcophilus_harrisii   DEVIL7.0.77
+DEVIL7.0.78 	 Sarcophilus_harrisii   DEVIL7.0.78
 GCA_000163755.1.21 	 Scardovia_inopinata_f0304   GCA_000163755.1.21
 GCA_000275805.1.21 	 Scardovia_wiggsiae_f0424   GCA_000275805.1.21
 GCA_000275805.1.22 	 Scardovia_wiggsiae_f0424   GCA_000275805.1.22
@@ -19403,6 +19519,8 @@ COMMON_SHREW1.73 	 Sorex_araneus   COMMON_SHREW1.73
 COMMON_SHREW1.74 	 Sorex_araneus   COMMON_SHREW1.74
 COMMON_SHREW1.75 	 Sorex_araneus   COMMON_SHREW1.75
 COMMON_SHREW1.76 	 Sorex_araneus   COMMON_SHREW1.76
+COMMON_SHREW1.77 	 Sorex_araneus   COMMON_SHREW1.77
+COMMON_SHREW1.78 	 Sorex_araneus   COMMON_SHREW1.78
 Sorbi1.21 	 Sorghum_bicolor   Sorbi1.21
 Sphaerobacter_thermophilus_DSM_20745_uid41997 	 Sphaerobacter_thermophilus_DSM_20745_uid41997   Sphaerobacter_thermophilus_DSM_20745_uid41997
 GCA_000024985.1.21 	 Sphaerobacter_thermophilus_dsm_20745   GCA_000024985.1.21
@@ -22612,6 +22730,8 @@ Sscrofa10.2.73 	 Sus_scrofa   Sscrofa10.2.73
 Sscrofa10.2.74 	 Sus_scrofa   Sscrofa10.2.74
 Sscrofa10.2.75 	 Sus_scrofa   Sscrofa10.2.75
 Sscrofa10.2.76 	 Sus_scrofa   Sscrofa10.2.76
+Sscrofa10.2.77 	 Sus_scrofa   Sscrofa10.2.77
+Sscrofa10.2.78 	 Sus_scrofa   Sscrofa10.2.78
 GCA_000250875.1.21 	 Sutterella_parvirubra_yit_11816   GCA_000250875.1.21
 GCA_000250875.1.22 	 Sutterella_parvirubra_yit_11816   GCA_000250875.1.22
 GCA_000297775.1.21 	 Sutterella_wadsworthensis_2_1_59bfaa   GCA_000297775.1.21
@@ -22725,6 +22845,8 @@ taeGut3.2.4.73 	 Taeniopygia_guttata   taeGut3.2.4.73
 taeGut3.2.4.74 	 Taeniopygia_guttata   taeGut3.2.4.74
 taeGut3.2.4.75 	 Taeniopygia_guttata   taeGut3.2.4.75
 taeGut3.2.4.76 	 Taeniopygia_guttata   taeGut3.2.4.76
+taeGut3.2.4.77 	 Taeniopygia_guttata   taeGut3.2.4.77
+taeGut3.2.4.78 	 Taeniopygia_guttata   taeGut3.2.4.78
 FUGU4.70 	 Takifugu_rubripes   FUGU4.70
 FUGU4.71 	 Takifugu_rubripes   FUGU4.71
 FUGU4.72 	 Takifugu_rubripes   FUGU4.72
@@ -22732,6 +22854,8 @@ FUGU4.73 	 Takifugu_rubripes   FUGU4.73
 FUGU4.74 	 Takifugu_rubripes   FUGU4.74
 FUGU4.75 	 Takifugu_rubripes   FUGU4.75
 FUGU4.76 	 Takifugu_rubripes   FUGU4.76
+FUGU4.77 	 Takifugu_rubripes   FUGU4.77
+FUGU4.78 	 Takifugu_rubripes   FUGU4.78
 Tannerella_forsythia_ATCC_43037_uid83157 	 Tannerella_forsythia_ATCC_43037_uid83157   Tannerella_forsythia_ATCC_43037_uid83157
 GCA_000238215.1.21 	 Tannerella_forsythia_atcc_43037   GCA_000238215.1.21
 GCA_000238215.1.22 	 Tannerella_forsythia_atcc_43037   GCA_000238215.1.22
@@ -22744,6 +22868,8 @@ tarSyr1.73 	 Tarsius_syrichta   tarSyr1.73
 tarSyr1.74 	 Tarsius_syrichta   tarSyr1.74
 tarSyr1.75 	 Tarsius_syrichta   tarSyr1.75
 tarSyr1.76 	 Tarsius_syrichta   tarSyr1.76
+tarSyr1.77 	 Tarsius_syrichta   tarSyr1.77
+tarSyr1.78 	 Tarsius_syrichta   tarSyr1.78
 GCA_000367225.1.21 	 Taylorella_asinigenitalis_14_45   GCA_000367225.1.21
 GCA_000367225.1.22 	 Taylorella_asinigenitalis_14_45   GCA_000367225.1.22
 Taylorella_asinigenitalis_14_45_uid197194 	 Taylorella_asinigenitalis_14_45_uid197194   Taylorella_asinigenitalis_14_45_uid197194
@@ -22830,6 +22956,8 @@ TETRAODON8.73 	 Tetraodon_nigroviridis   TETRAODON8.73
 TETRAODON8.74 	 Tetraodon_nigroviridis   TETRAODON8.74
 TETRAODON8.75 	 Tetraodon_nigroviridis   TETRAODON8.75
 TETRAODON8.76 	 Tetraodon_nigroviridis   TETRAODON8.76
+TETRAODON8.77 	 Tetraodon_nigroviridis   TETRAODON8.77
+TETRAODON8.78 	 Tetraodon_nigroviridis   TETRAODON8.78
 GCA_000367525.1.21 	 Tetrasphaera_elongata_lp2   GCA_000367525.1.21
 GCA_000367525.2.22 	 Tetrasphaera_elongata_lp2   GCA_000367525.2.22
 GCA_000161835.1.21 	 Thalassiobium_sp_r2a62   GCA_000161835.1.21
@@ -23301,6 +23429,8 @@ TREESHREW.73 	 Tupaia_belangeri   TREESHREW.73
 TREESHREW.74 	 Tupaia_belangeri   TREESHREW.74
 TREESHREW.75 	 Tupaia_belangeri   TREESHREW.75
 TREESHREW.76 	 Tupaia_belangeri   TREESHREW.76
+TREESHREW.77 	 Tupaia_belangeri   TREESHREW.77
+TREESHREW.78 	 Tupaia_belangeri   TREESHREW.78
 GCA_000297795.2.21 	 Turicella_otitidis_atcc_51513_asm29779v2   GCA_000297795.2.21
 GCA_000297795.2.22 	 Turicella_otitidis_atcc_51513_asm29779v2   GCA_000297795.2.22
 GCA_000296405.1.21 	 Turicella_otitidis_atcc_51513_turi_otit_atcc_51513_v1   GCA_000296405.1.21
@@ -23319,6 +23449,8 @@ turTru1.73 	 Tursiops_truncatus   turTru1.73
 turTru1.74 	 Tursiops_truncatus   turTru1.74
 turTru1.75 	 Tursiops_truncatus   turTru1.75
 turTru1.76 	 Tursiops_truncatus   turTru1.76
+turTru1.77 	 Tursiops_truncatus   turTru1.77
+turTru1.78 	 Tursiops_truncatus   turTru1.78
 GCA_000171355.1.21 	 Ureaplasma_parvum_serovar_14_str_atcc_33697   GCA_000171355.1.21
 GCA_000171355.1.22 	 Ureaplasma_parvum_serovar_14_str_atcc_33697   GCA_000171355.1.22
 GCA_000171375.1.21 	 Ureaplasma_parvum_serovar_1_str_atcc_27813   GCA_000171375.1.21
@@ -23893,6 +24025,8 @@ vicPac1.73 	 Vicugna_pacos   vicPac1.73
 vicPac1.74 	 Vicugna_pacos   vicPac1.74
 vicPac1.75 	 Vicugna_pacos   vicPac1.75
 vicPac1.76 	 Vicugna_pacos   vicPac1.76
+vicPac1.77 	 Vicugna_pacos   vicPac1.77
+vicPac1.78 	 Vicugna_pacos   vicPac1.78
 GCA_000445495.1.21 	 Virgibacillus_sp_cm_4   GCA_000445495.1.21
 GCA_000445495.1.22 	 Virgibacillus_sp_cm_4   GCA_000445495.1.22
 vvinifera 	 Vitis   vvinifera
@@ -24046,6 +24180,8 @@ JGI_4.2.73 	 Xenopus_tropicalis   JGI_4.2.73
 JGI_4.2.74 	 Xenopus_tropicalis   JGI_4.2.74
 JGI_4.2.75 	 Xenopus_tropicalis   JGI_4.2.75
 JGI_4.2.76 	 Xenopus_tropicalis   JGI_4.2.76
+JGI_4.2.77 	 Xenopus_tropicalis   JGI_4.2.77
+JGI_4.2.78 	 Xenopus_tropicalis   JGI_4.2.78
 xtrop7.1 	 Xenopus_tropicalis   xtrop7.1
 Xenorhabdus_bovienii_SS_2004_uid46345 	 Xenorhabdus_bovienii_SS_2004_uid46345   Xenorhabdus_bovienii_SS_2004_uid46345
 GCA_000027225.1.21 	 Xenorhabdus_bovienii_ss_2004   GCA_000027225.1.21
@@ -24062,6 +24198,8 @@ Xipmac4.4.2.73 	 Xiphophorus_maculatus   Xipmac4.4.2.73
 Xipmac4.4.2.74 	 Xiphophorus_maculatus   Xipmac4.4.2.74
 Xipmac4.4.2.75 	 Xiphophorus_maculatus   Xipmac4.4.2.75
 Xipmac4.4.2.76 	 Xiphophorus_maculatus   Xipmac4.4.2.76
+Xipmac4.4.2.77 	 Xiphophorus_maculatus   Xipmac4.4.2.77
+Xipmac4.4.2.78 	 Xiphophorus_maculatus   Xipmac4.4.2.78
 xmac.69 	 Xiphophorus_maculatus   xmac.69
 Xylanimonas_cellulosilytica_DSM_15894_uid41935 	 Xylanimonas_cellulosilytica_DSM_15894_uid41935   Xylanimonas_cellulosilytica_DSM_15894_uid41935
 GCA_000024965.1.21 	 Xylanimonas_cellulosilytica_dsm_15894   GCA_000024965.1.21
