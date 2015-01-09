@@ -242,16 +242,12 @@ public class SnpEffCmdBuild extends SnpEff {
 			return;
 		}
 
-		try {
-			// Open the regulation file and create a consensus
-			RegulationFileIterator regulationFileIterator = new RegulationGffFileIterator(regulationFileName);
-			RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus(verbose);
-			regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
-			regulationGffConsensus.save(config.getDirDataVersion()); // Save database
-			if (verbose) Timer.showStdErr("Done.");
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
+		// Open the regulation file and create a consensus
+		RegulationFileIterator regulationFileIterator = new RegulationGffFileIterator(regulationFileName);
+		RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus(verbose);
+		regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
+		regulationGffConsensus.save(config.getDirDataVersion()); // Save database
+		if (verbose) Timer.showStdErr("Done.");
 	}
 
 	/**

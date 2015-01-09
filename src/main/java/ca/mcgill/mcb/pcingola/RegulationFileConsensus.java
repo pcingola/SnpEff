@@ -17,8 +17,12 @@ import ca.mcgill.mcb.pcingola.util.Timer;
  */
 public class RegulationFileConsensus {
 
+	/**
+	 * This class collapses adjacent intervals that appear
+	 * consecutively within a regulatopn file
+	 * @author pcingola
+	 */
 	class RegulationConsensus {
-
 		int count = 1;
 		Regulation consensus = null;
 
@@ -126,13 +130,15 @@ public class RegulationFileConsensus {
 			regCons.flush();
 
 		// Show stats
-		Timer.showStdErr("Done");
-		double perc = (100.0 * totalCount / totalLineNum);
-		System.err.println("\tTotal lines                 : " + lineNum);
-		System.err.println("\tTotal annotation count      : " + totalCount);
-		System.err.println("\tPercent                     : " + String.format("%.1f%%", perc));
-		System.err.println("\tTotal annotated length      : " + totalLength);
-		System.err.println("\tNumber of cell/annotations  : " + regConsByName.size());
+		if (verbose) {
+			Timer.showStdErr("Done");
+			double perc = (100.0 * totalCount / totalLineNum);
+			System.err.println("\tTotal lines                 : " + lineNum);
+			System.err.println("\tTotal annotation count      : " + totalCount);
+			System.err.println("\tPercent                     : " + String.format("%.1f%%", perc));
+			System.err.println("\tTotal annotated length      : " + totalLength);
+			System.err.println("\tNumber of cell/annotations  : " + regConsByName.size());
+		}
 	}
 
 	/**
@@ -141,14 +147,12 @@ public class RegulationFileConsensus {
 	public void save(String outputDir) {
 		for (String cellType : regByCell.keySet()) {
 			String fileName = outputDir + "/regulation_" + cellType + ".bin";
-			Timer.showStdErr("Saving database '" + cellType + "' in file '" + fileName + "'");
+			if (verbose) Timer.showStdErr("Saving database '" + cellType + "' in file '" + fileName + "'");
 
 			// Save markers to file
 			Markers markersToSave = new Markers();
 			markersToSave.addAll(regByCell.get(cellType));
 			markersToSave.save(fileName);
-
-			// Gpr.toFileSerializeGz(fileName, regByCell.get(cellType));
 		}
 	}
 

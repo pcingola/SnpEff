@@ -19,6 +19,7 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.RareAminoAcid;
+import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.SpliceSiteAcceptor;
 import ca.mcgill.mcb.pcingola.interval.SpliceSiteBranch;
 import ca.mcgill.mcb.pcingola.interval.SpliceSiteBranchU12;
@@ -201,6 +202,9 @@ public class MarkerSerializer {
 					break;
 				case MOTIF:
 					m = new Motif();
+					break;
+				case REGULATION:
+					m = new Regulation();
 					break;
 
 				default:

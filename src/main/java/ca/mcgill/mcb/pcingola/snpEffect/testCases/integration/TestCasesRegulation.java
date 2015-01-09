@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.io.File;
 import java.util.List;
@@ -15,12 +15,12 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 /**
  * Test case
  */
-public class TestCasesZzz {
+public class TestCasesRegulation {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
 
-	public TestCasesZzz() {
+	public TestCasesRegulation() {
 		super();
 	}
 

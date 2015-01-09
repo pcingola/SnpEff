@@ -14,7 +14,6 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
-import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.logStatsServer.LogStats;
@@ -156,6 +155,10 @@ public class SnpEff implements CommandLine {
 		this.args = args;
 	}
 
+	public void addRegulationTrack(String cellType) {
+		regulationTracks.add(cellType);
+	}
+
 	/**
 	 * Check if there is a new version of the program
 	 */
@@ -170,7 +173,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-				);
+						);
 			}
 		}
 	}
@@ -249,7 +252,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+					);
 
 		config = new Config(genomeVer, configFile, dataDir); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -585,37 +588,35 @@ public class SnpEff implements CommandLine {
 	/**
 	 * Read regulation track and update SnpEffectPredictor
 	 */
-	@SuppressWarnings("unchecked")
 	void loadRegulationTrack(String regTrack) {
 		//---
 		// Read file
 		//---
 		if (verbose) Timer.showStdErr("Reading regulation track '" + regTrack + "'");
 		String regFile = config.getDirDataVersion() + "/regulation_" + regTrack + ".bin";
-		ArrayList<Regulation> regulation = (ArrayList<Regulation>) Gpr.readFileSerializedGz(regFile);
+		Markers regulation = new Markers();
+		regulation.load(regFile);
 
 		//---
 		// Are all chromosomes available?
 		//---
 		Genome genome = config.getGenome();
 		HashMap<String, Integer> chrs = new HashMap<String, Integer>();
-		for (Regulation r : regulation) {
+		for (Marker r : regulation) {
 			String chr = r.getChromosomeName();
 			int max = chrs.containsKey(chr) ? chrs.get(chr) : 0;
 			max = Math.max(max, r.getEnd());
 			chrs.put(chr, max);
 		}
 
-		// Add all chromos
+		// Add all chromosomes
 		for (String chr : chrs.keySet())
 			if (genome.getChromosome(chr) == null) genome.add(new Chromosome(genome, 0, chrs.get(chr), chr));
 
 		//---
 		// Add all markers to predictor
 		//---
-		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
-		for (Regulation r : regulation)
-			snpEffectPredictor.add(r);
+		config.getSnpEffectPredictor().addAll(regulation);
 	}
 
 	/**
@@ -649,7 +650,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("showtr") //
-		) {
+				) {
 			command = args[argNum++].trim().toLowerCase();
 		}
 
@@ -696,7 +697,7 @@ public class SnpEff implements CommandLine {
 					quiet = true;
 					verbose = false;
 				} else if (arg.equals("-reg")) {
-					if ((i + 1) < args.length) regulationTracks.add(args[++i]); // Add this track to the list
+					if ((i + 1) < args.length) addRegulationTrack(args[++i]); // Add this track to the list
 				} else if ((arg.equals("-ss") || arg.equalsIgnoreCase("-spliceSiteSize"))) {
 					if ((i + 1) < args.length) spliceSiteSize = Gpr.parseIntSafe(args[++i]);
 				} else if (arg.equalsIgnoreCase("-spliceRegionExonSize")) {

@@ -934,7 +934,8 @@ public class VcfEffect {
 				featureType = marker.getType() + formatVersion.separator() + ((Custom) marker).getLabel();
 			} else if (marker instanceof Regulation) {
 				// Regulation includes cell type
-				featureType = marker.getType() + ":" + ((Regulation) marker).getCellType();
+				Regulation reg = (Regulation) marker;
+				featureType = reg.getType() + formatVersion.separator() + reg.getName() + ":" + ((Regulation) marker).getCellType();
 			} else {
 				featureType = marker.getType().toSequenceOntology();
 			}

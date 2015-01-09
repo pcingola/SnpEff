@@ -51,7 +51,6 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 
 						int start = parsePosition(fields[3]);
 						int end = parsePosition(fields[4]); // The chromEnd base is not included
-						String id = "line_" + lineNum; // ID must be unique
 
 						// Strand
 						String strandStr = fields[6];
@@ -77,6 +76,9 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 								}
 							}
 						}
+
+						// Create unique ID
+						String id = cellType + "_" + name + "_" + lineNum;
 
 						// Create seqChange
 						Regulation reg = new Regulation(chromo, start, end, strandMinus, id, name, cellType);

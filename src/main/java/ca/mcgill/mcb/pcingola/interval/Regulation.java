@@ -6,7 +6,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * Regulatory elements
- * 
+ *
  * @author pablocingolani
  */
 public class Regulation extends Marker {
@@ -37,17 +37,6 @@ public class Regulation extends Marker {
 	}
 
 	/**
-	 * Calculate the effect of this seqChange
-	 */
-	@Override
-	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
-		if (!intersects(variant)) return false; // Sanity check
-		EffectType effType = EffectType.REGULATION;
-		variantEffects.add(variant, this, effType, "");
-		return true;
-	}
-
-	/**
 	 * Parse a line from a serialized file
 	 */
 	@Override
@@ -66,7 +55,7 @@ public class Regulation extends Marker {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + cellType //
 				+ "\t" + name //
-		;
+				;
 	}
 
 	@Override
@@ -74,6 +63,17 @@ public class Regulation extends Marker {
 		return getChromosomeName() + "\t" + start + "-" + end //
 				+ " " //
 				+ type + ((name != null) && (!name.isEmpty()) ? " '" + name + "'" : "");
+	}
+
+	/**
+	 * Calculate the effect of this seqChange
+	 */
+	@Override
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false; // Sanity check
+		EffectType effType = EffectType.REGULATION;
+		variantEffects.add(variant, this, effType, "");
+		return true;
 	}
 
 }
