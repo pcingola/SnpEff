@@ -192,7 +192,7 @@ bool buildDbAll() {
 #-------------------------------------------------------------------------------
 
 void buildDbSpecial() {
-	buildNextProt()
+	buildDbNextProt()
 }
 
 #-------------------------------------------------------------------------------
@@ -219,10 +219,10 @@ void buildDbTest() {
 # Build special databases
 #-------------------------------------------------------------------------------
 
-void buildNextProt() {
+void buildDbNextProt() {
 	# Note: This takes a huge amount of memory, don't run multiple of these process because the server will crash
 	# TODO: Add amount of memory to the taks and remove the constraint
-	print("Build special.\n\tFIXME: Create a 'task' instead of a 'sys'\n")
+	print("Build special.\n")
 
 	# XML files used to build NextProt
 	dirNextProt := "$dirSnpeff/db/nextProt/"
@@ -230,13 +230,14 @@ void buildNextProt() {
 
 	# Check each genome version
 	for( string hg : dirData.dir("GRCh37.*") ) {
+		hg = hg.baseName()
 		npfile := "$dirData/$hg/nextProt.bin"
 
 		if( !npfile.exists() ) {
-			print("NextProt ($hg): Build\n")
+			print("NextProt ($hg): Build\t\tNextProt db file: '$npfile'\n")
 			sys $snpeffXl buildNextProt -v $hg db/nextProt/
 		} else {
-			print("NextProt ($hg): OK\n")
+			print("NextProt ($hg): OK\t\tNextProt db file: '$npfile'\n")
 		}
 	}
 }
