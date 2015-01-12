@@ -26,16 +26,16 @@ wget="wget --wait=$wget_wait -r -nc "
 for org in bacteria fungi metazoa misc_data plants protists
 do
 	# Download GTF files (annotations)
-	$wget -A "*gtf.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/gtf/" &
+	$wget -nc -A "*gtf.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/gtf/" &
 	 
 	# Download FASTA files (reference genomes)
-	$wget -A "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
+	$wget -nc -A "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
 
 	# Download CDS sequences
-	$wget -A "*cdna.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
+	$wget -nc -A "*cdna.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
 
 	# Download PROTEIN sequences
-	$wget -A "*.pep.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
+	$wget -nc -A "*.pep.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
 
 done
 wait
