@@ -52,7 +52,7 @@ done
 # Gene annotations files
 for gtf in *.gtf.gz
 do
-	short=`../scripts/file2GenomeName.pl $gtf | cut -f 5`
+	short=`../scripts_build/file2GenomeName.pl $gtf | cut -f 5`
 	echo ANNOTATIONS: $short
 
 	mkdir -p data/$short
@@ -63,7 +63,7 @@ done
 mkdir -p data/genomes
 for fasta in *.dna.toplevel.fa.gz
 do
-	genome=`../scripts/file2GenomeName.pl $fasta | cut -f 5`
+	genome=`../scripts_build/file2GenomeName.pl $fasta | cut -f 5`
 	echo REFERENCE: $genome
 
 	mkdir -p data/$genome
@@ -73,7 +73,7 @@ done
 # CDS genomes files
 for fasta in *.cdna.all.fa.gz
 do
-	genome=`../scripts/file2GenomeName.pl $fasta | cut -f 5`
+	genome=`../scripts_build/file2GenomeName.pl $fasta | cut -f 5`
 	echo CDS: $genome $fasta
 
 	mkdir -p data/$genome
@@ -83,7 +83,7 @@ done
 # Protein seuqence files
 for pep in *.pep.all.fa.gz
 do
-	short=`../scripts/file2GenomeName.pl $pep | cut -f 5`
+	short=`../scripts_build/file2GenomeName.pl $pep | cut -f 5`
 	echo PROTEIN: $short
 
 	mkdir -p data/$short
@@ -97,8 +97,8 @@ done
 (
 for fasta in *.cdna.all.fa.gz
 do
-	genome=`../scripts/file2GenomeName.pl $fasta | cut -f 4`
-	short=`../scripts/file2GenomeName.pl $fasta | cut -f 5`
+	genome=`../scripts_build/file2GenomeName.pl $fasta | cut -f 4`
+	short=`../scripts_build/file2GenomeName.pl $fasta | cut -f 5`
 
 	# Individual genome entry
 	echo -e "$short.genome : $genome"
