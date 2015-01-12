@@ -1100,8 +1100,8 @@ $ java -jar SnpSift.jar gwasCat gwascatalog.txt test.vcf | tee test.gwas.vcf
 				<br>
 				You can download the files from SnpEff's site:
 				<ul>
-					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz"> here </a>
-					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi"> here </a>
+					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz"> here </a>
+					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz.tbi"> here </a>
 				</ul>
 				</p>
 				<h3> dbNSFP Annotation example</h3> 
@@ -1142,8 +1142,8 @@ java -jar SnpSift.jar dbnsfp -v myFile.vcf > myFile.annotated.vcf
 				If you prefer to manually download dbNSFP (e.g. because you want to pre-install the database).
 				You can download the files from SnpEff's site:
 				<ul>
-					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz"> here </a>
-					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi"> here </a>
+					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz"> here </a>
+					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz.tbi"> here </a>
 				</ul>
 				</p>
 				<p>
@@ -1153,15 +1153,15 @@ java -jar SnpSift.jar dbnsfp -v myFile.vcf > myFile.annotated.vcf
 <pre>
 # Donload database and tabix index files (you need to do this only once):
 # WARNING: The database file is large (over 5Gb)
-wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz
-wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi
+wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz
+wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz.tbi
 </pre>
 				<br>
 				Now when you annotate, remember to specify the path where you downloaded the dbNSFP file:
 				<br>
 <pre>
 # Annotate using dbNSFP
-java -jar SnpSift.jar dbnsfp -v -db path/to/my/dbNSFP2.4.txt.gz myFile.vcf > myFile.annotated.vcf
+java -jar SnpSift.jar dbnsfp -v -db path/to/my/dbNSFP2.8.txt.gz myFile.vcf > myFile.annotated.vcf
 </pre>
 				<p>
 				<h3> Building dbNSFP (for developers) </h3> 
@@ -1179,19 +1179,19 @@ java -jar SnpSift.jar dbnsfp -v -db path/to/my/dbNSFP2.4.txt.gz myFile.vcf > myF
 				Creating a file that SnpSift can use is simple, just follow this guideline:
 <pre>
 # Download dbNSFP database
-$ wget http://dbnsfp.houstonbioinformatics.org/dbNSFPzip/dbNSFP2.4.zip
+$ wget http://dbnsfp.houstonbioinformatics.org/dbNSFPzip/dbNSFP2.8.zip
 
 # Uncompress
-$ unzip dbNSFP2.4.zip
+$ unzip dbNSFP2.8.zip
 
 # Create a single file version
-$ (head -n 1 dbNSFP2.4_variant.chr1 ; cat dbNSFP2.4_variant.chr* | grep -v "^#" ) > dbNSFP2.4.txt
+$ (head -n 1 dbNSFP2.8_variant.chr1 ; cat dbNSFP2.8_variant.chr* | grep -v "^#" ) > dbNSFP2.8.txt
 
 # Compress using block-gzip algorithm
-bgzip dbNSFP2.4.txt
+bgzip dbNSFP2.8.txt
 
 # Create tabix index
-tabix -s 1 -b 2 -e 2 dbNSFP2.4.txt.gz
+tabix -s 1 -b 2 -e 2 dbNSFP2.8.txt.gz
 </pre>
 				</ul>
 				</p>

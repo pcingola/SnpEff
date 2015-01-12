@@ -237,6 +237,7 @@ public class SnpEffectPredictor implements Serializable {
 		String chrName = marker.getChromosomeName();
 		Chromosome chr = genome.getChromosome(chrName);
 		if (chr == null) return true;
+		Gpr.debug("Chromo '" + chrName + "': " + chr.getStart() + "-" + chr.getEnd());
 
 		// Chromosome length is 1 or less?
 		if (chr.size() < 1) return true;
@@ -627,20 +628,20 @@ public class SnpEffectPredictor implements Serializable {
 		//---
 		// Query interval tree: Which intervals does variant intersect?
 		//---
+		Gpr.debug("Variant: " + variant.getStart() + "-" + variant.getEnd());
 		Markers intersects = query(variant);
 
 		// Show all results
 		boolean hitChromo = false, hitSomething = false;
-		if (intersects.size() > 0) {
-			for (Marker marker : intersects) {
-				if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
-				else {
-					// Analyze all markers
-					if (variant.isNonRef()) marker.variantEffectNonRef(variant, variantEffects);
-					else marker.variantEffect(variant, variantEffects);
+		for (Marker marker : intersects) {
+			Gpr.debug("Marker: " + marker.toStr());
+			if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
+			else {
+				// Analyze all markers
+				if (variant.isNonRef()) marker.variantEffectNonRef(variant, variantEffects);
+				else marker.variantEffect(variant, variantEffects);
 
-					hitSomething = true;
-				}
+				hitSomething = true;
 			}
 		}
 
