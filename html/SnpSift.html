@@ -466,6 +466,24 @@ $cat test.snpeff.vcf | java -Xmx1G -jar SnpSift.jar filter "(exists LOF[*].PERC)
 					</tr>
 				</table>
 				</center>
+				<br>
+				<h3> Using sample names instead of sample numbers </h3>
+				As of version 4.1A, SnpSift allows to use sample names instead of sample numbers.
+				This allows to create more readable expressions.
+				<br>
+				<br>
+				Example:
+
+<pre>
+$ cat cancer.vcf | java -jar SnpSift.jar filter "GEN[Somatic].GT = '2/1'"
+#CHROM  POS    ID   REF  ALT    QUAL  FILTER    INFO    FORMAT    Germline    Somatic
+1       69091  .    A    C,G    .     PASS      AC=1    GT        1/0         2/1
+</pre>
+
+				Note that we used <code>GEN[Somatic]</code> instead of <code>GEN[1]</code>. 
+				<br>
+				<br>
+
         </section>
 
         <!-- Annotate

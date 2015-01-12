@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -24,9 +25,10 @@ public class VcfHeader {
 
 	int numberOfSamples = -1;
 	StringBuffer header;
-	HashMap<String, VcfHeaderInfo> vcfInfoById;
-	HashMap<String, VcfHeaderInfoGenotype> vcfInfoGenotypeById;
+	Map<String, VcfHeaderInfo> vcfInfoById;
+	Map<String, VcfHeaderInfoGenotype> vcfInfoGenotypeById;
 	ArrayList<String> sampleNames;
+	Map<String, Integer> sampleName2Num;
 	boolean chromLine = false;
 
 	public VcfHeader() {
@@ -232,6 +234,26 @@ public class VcfHeader {
 	}
 
 	/**
+	 * Sample number (position in "#CHROM" line)
+	 * @return -1 if not found
+	 */
+	public int getSampleNum(String sameplName) {
+		if (sampleName2Num == null) {
+			sampleName2Num = new HashMap<>();
+
+			// Create mapping
+			int count = 0;
+			for (String name : getSampleNames()) {
+				sampleName2Num.put(name, count++);
+			}
+		}
+
+		// Get sample number
+		Integer num = sampleName2Num.get(sameplName);
+		return num != null ? num : -1;
+	}
+
+	/**
 	 * Get all VcfInfo entries
 	 */
 	public Collection<VcfHeaderInfo> getVcfInfo() {
@@ -247,7 +269,7 @@ public class VcfHeader {
 		return vcfInfoById.get(id);
 	}
 
-	public HashMap<String, VcfHeaderInfo> getVcfInfoById() {
+	public Map<String, VcfHeaderInfo> getVcfInfoById() {
 		parseInfoLines();
 		return vcfInfoById;
 	}
