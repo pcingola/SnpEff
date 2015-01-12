@@ -243,8 +243,10 @@ public class VcfHeader {
 
 			// Create mapping
 			int count = 0;
-			for (String name : getSampleNames()) {
-				sampleName2Num.put(name, count++);
+			if (getSampleNames() != null) {
+				for (String name : getSampleNames()) {
+					sampleName2Num.put(name, count++);
+				}
 			}
 		}
 
