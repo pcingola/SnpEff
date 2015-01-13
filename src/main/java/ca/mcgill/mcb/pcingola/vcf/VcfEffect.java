@@ -130,17 +130,34 @@ public class VcfEffect {
 			f2n.put(annFieldName + ".EXID", fieldNum);
 			fieldNum++;
 
-			f2n.put(annFieldName + ".HGVS_C", fieldNum++);
+			f2n.put(annFieldName + ".HGVS_C", fieldNum);
+			f2n.put(annFieldName + ".HGVS_DNA", fieldNum);
+			f2n.put(annFieldName + ".CODON", fieldNum);
+			fieldNum++;
 
 			f2n.put(annFieldName + ".HGVS", fieldNum);
 			f2n.put(annFieldName + ".HGVS_P", fieldNum);
+			f2n.put(annFieldName + ".HGVS_PROT", fieldNum);
+			f2n.put(annFieldName + ".AA", fieldNum);
 			fieldNum++;
 
-			f2n.put(annFieldName + ".POS_CDNA", fieldNum++);
+			f2n.put(annFieldName + ".POS_CDNA", fieldNum);
+			f2n.put(annFieldName + ".CDNA_POS", fieldNum);
+			f2n.put(annFieldName + ".LEN_CDNA", fieldNum);
+			f2n.put(annFieldName + ".CDNA_LEN", fieldNum);
+			fieldNum++;
 
-			f2n.put(annFieldName + ".POS_CDS", fieldNum++);
+			f2n.put(annFieldName + ".POS_CDS", fieldNum);
+			f2n.put(annFieldName + ".CDS_POS", fieldNum);
+			f2n.put(annFieldName + ".LEN_CDS", fieldNum);
+			f2n.put(annFieldName + ".CDS_LEN", fieldNum);
+			fieldNum++;
 
-			f2n.put(annFieldName + ".POS_AA", fieldNum++);
+			f2n.put(annFieldName + ".POS_AA", fieldNum);
+			f2n.put(annFieldName + ".AA_POS", fieldNum);
+			f2n.put(annFieldName + ".LEN_AA", fieldNum);
+			f2n.put(annFieldName + ".AA_LEN", fieldNum);
+			fieldNum++;
 
 			f2n.put(annFieldName + ".DISTANCE", fieldNum++);
 
