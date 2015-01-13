@@ -96,7 +96,7 @@ public class VcfEffect {
 	/**
 	 * Create a hash to map names to field numbers on 'ANN' fields
 	 */
-	static HashMap<String, Integer> mapAnn2Num(EffFormatVersion formatVersion) {
+	public static HashMap<String, Integer> mapAnn2Num(EffFormatVersion formatVersion) {
 		HashMap<String, Integer> f2n = new HashMap<String, Integer>();
 
 		// Use both names
@@ -108,7 +108,9 @@ public class VcfEffect {
 			f2n.put(annFieldName + ".GENOTYPE", fieldNum);
 			fieldNum++;
 
-			f2n.put(annFieldName + ".EFFECT", fieldNum++);
+			f2n.put(annFieldName + ".EFFECT", fieldNum);
+			f2n.put(annFieldName + ".ANNOTATION", fieldNum);
+			fieldNum++;
 
 			f2n.put(annFieldName + ".IMPACT", fieldNum++);
 
@@ -173,7 +175,7 @@ public class VcfEffect {
 	/**
 	 * Create a hash to map names to field numbers on 'EFF' fields
 	 */
-	static HashMap<String, Integer> mapEff2Num(EffFormatVersion formatVersion) {
+	public static HashMap<String, Integer> mapEff2Num(EffFormatVersion formatVersion) {
 		HashMap<String, Integer> f2n = new HashMap<String, Integer>();
 
 		for (String annFieldName : VCF_INFO_ANN_NAMES) {
@@ -210,6 +212,11 @@ public class VcfEffect {
 				f2n.put(annFieldName + ".GENOTYPE", fieldNum);
 				fieldNum++;
 			}
+
+			f2n.put(annFieldName + ".ERRORS", fieldNum);
+			f2n.put(annFieldName + ".WARNINGS", fieldNum);
+			f2n.put(annFieldName + ".INFO", fieldNum);
+			fieldNum++;
 		}
 
 		return f2n;
@@ -461,7 +468,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-					) len--;
+			) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;

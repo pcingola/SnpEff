@@ -731,7 +731,7 @@ public class SnpEff implements CommandLine {
 
 		shiftArgs = argsList.toArray(new String[0]);
 
-		if (command.isEmpty()) command = "eff"; // Default command is 'eff'
+		if (command.isEmpty()) command = "ann"; // Default command is 'ann'
 
 		// Show version and command
 		if (!help && (verbose || debug)) {
