@@ -29,8 +29,11 @@ public class TestCasesNextProt {
 		super();
 	}
 
-	void checkNextProt(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact) {
+	void checkNextProt(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact, boolean useAnn) {
 		String args[] = { "-classic", "-nextProt", genomeVer, vcfFile };
+		String argsAnn[] = { genomeVer, vcfFile };
+		if (useAnn) args = argsAnn;
+
 		SnpEff cmd = new SnpEff(args);
 		cmd.setVerbose(verbose);
 		cmd.setSupressOutput(!verbose);
@@ -45,12 +48,19 @@ public class TestCasesNextProt {
 			for (VcfEffect veff : ve.parseEffects()) {
 
 				if ((veff.hasEffectType(EffectType.NEXT_PROT)) // Is it nextProt?
-						&& effectDetails.equals(veff.getEffectDetails()) // Are details OK?
 						&& (impact == veff.getImpact())) // Is impact OK?
-					numNextProt++;
+				{
+					// Are details OK?
+					boolean match = false;
+					if (!useAnn && effectDetails.equals(veff.getEffectDetails())) match = true;
+					if (useAnn && effectDetails.equals(veff.getFeatureType())) match = true;
+
+					if (match) numNextProt++;
+				}
 
 				if (verbose) //
 					System.out.println("\t" + veff //
+							+ "\n\t\tEffect            : " + veff.getVcfFieldString() //
 							+ "\n\t\tEffect type       : " + veff.getEffectType() //
 							+ "\n\t\tEffect details    : '" + veff.getEffectDetails() + "'" //
 							+ "\n\t\tEffect impact     : '" + veff.getImpact() + "'" //
@@ -60,7 +70,7 @@ public class TestCasesNextProt {
 							+ "\thasEffectType : " + veff.hasEffectType(EffectType.NEXT_PROT) //
 							+ "\tmatch details : " + effectDetails.equals(veff.getEffectDetails()) //
 							+ "\tmatch impact: " + (impact == veff.getImpact()) //
-					);
+							);
 			}
 		}
 
@@ -82,14 +92,21 @@ public class TestCasesNextProt {
 	public void test_02_eff() {
 		Gpr.debug("Test");
 		// Note: Normally this EffectImpact should be 'HIGH' impact, but since the database we build in test_01_build is small, there are not enough stats.
-		checkNextProt("testHg3770Chr22", "tests/test_nextProt_02.vcf", "amino_acid_modification:N-acetylglycine", EffectImpact.LOW);
+		checkNextProt("testHg3770Chr22", "tests/test_nextProt_02.vcf", "amino_acid_modification:N-acetylglycine", EffectImpact.LOW, false);
+	}
+
+	@Test
+	public void test_03_ann() {
+		Gpr.debug("Test");
+		// Note: Normally this EffectImpact should be 'MODERATE' impact, but since the database we build in test_01_build is small, there are not enough stats.
+		checkNextProt("testHg3770Chr22", "tests/test_nextProt_03.vcf", "amino_acid_modification:Phosphoserine", EffectImpact.MODERATE, true);
 	}
 
 	@Test
 	public void test_03_eff() {
 		Gpr.debug("Test");
 		// Note: Normally this EffectImpact should be 'MODERATE' impact, but since the database we build in test_01_build is small, there are not enough stats.
-		checkNextProt("testHg3770Chr22", "tests/test_nextProt_03.vcf", "amino_acid_modification:Phosphoserine", EffectImpact.MODERATE);
+		checkNextProt("testHg3770Chr22", "tests/test_nextProt_03.vcf", "amino_acid_modification:Phosphoserine", EffectImpact.MODERATE, false);
 	}
 
 	@Test
