@@ -10,6 +10,7 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Intergenic;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
@@ -949,24 +950,27 @@ public class VcfEffect {
 		}
 
 		// Feature type & ID
-		if (tr != null) {
-			featureType = "transcript";
-			featureId = transcriptId = tr.getId();
-		} else if (marker != null) {
+		featureType = featureId = "";
+		if (marker != null) {
 			if (marker instanceof Custom) {
 				// Custom
 				featureType = marker.getType() + formatVersion.separator() + ((Custom) marker).getLabel();
+				featureId = marker.getId();
 			} else if (marker instanceof Regulation) {
 				// Regulation includes cell type
 				Regulation reg = (Regulation) marker;
-				featureType = reg.getType() + formatVersion.separator() + reg.getName() + ":" + ((Regulation) marker).getCellType();
+				featureType = reg.getType() + formatVersion.separator() + reg.getName() + ":" + reg.getCellType();
+				featureId = marker.getId();
+			} else if (marker instanceof NextProt) {
+				featureType = marker.getId();
+				featureId = ((NextProt) marker).getTranscriptId();
+			} else if (tr != null) {
+				featureType = "transcript";
+				featureId = transcriptId = tr.getId();
 			} else {
 				featureType = marker.getType().toSequenceOntology();
+				featureId = marker.getId();
 			}
-
-			featureId = marker.getId();
-		} else {
-			featureType = featureId = "";
 		}
 
 		// Biotype

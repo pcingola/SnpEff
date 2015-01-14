@@ -55,5 +55,6 @@ genome22="testHg3775Chr22"		# Note: Sometimes we can use testHg3775Chr22 instead
 # Annotation example
 #---
 
-java -Xmx4g -jar snpEff.jar -v $genome22 examples/test.chr22.vcf > examples/test.chr22.ann.vcf
+#java -Xmx4g -jar snpEff.jar -v $genome22 examples/test.chr22.vcf > examples/test.chr22.ann.vcf
+java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > examples/test.chr22.ann.vcf
 
