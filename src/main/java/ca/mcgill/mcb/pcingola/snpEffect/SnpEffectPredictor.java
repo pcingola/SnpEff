@@ -631,16 +631,14 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Show all results
 		boolean hitChromo = false, hitSomething = false;
-		if (intersects.size() > 0) {
-			for (Marker marker : intersects) {
-				if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
-				else {
-					// Analyze all markers
-					if (variant.isNonRef()) marker.variantEffectNonRef(variant, variantEffects);
-					else marker.variantEffect(variant, variantEffects);
+		for (Marker marker : intersects) {
+			if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
+			else {
+				// Analyze all markers
+				if (variant.isNonRef()) marker.variantEffectNonRef(variant, variantEffects);
+				else marker.variantEffect(variant, variantEffects);
 
-					hitSomething = true;
-				}
+				hitSomething = true;
 			}
 		}
 

@@ -96,7 +96,7 @@ public class VcfEffect {
 	/**
 	 * Create a hash to map names to field numbers on 'ANN' fields
 	 */
-	static HashMap<String, Integer> mapAnn2Num(EffFormatVersion formatVersion) {
+	public static HashMap<String, Integer> mapAnn2Num(EffFormatVersion formatVersion) {
 		HashMap<String, Integer> f2n = new HashMap<String, Integer>();
 
 		// Use both names
@@ -108,7 +108,9 @@ public class VcfEffect {
 			f2n.put(annFieldName + ".GENOTYPE", fieldNum);
 			fieldNum++;
 
-			f2n.put(annFieldName + ".EFFECT", fieldNum++);
+			f2n.put(annFieldName + ".EFFECT", fieldNum);
+			f2n.put(annFieldName + ".ANNOTATION", fieldNum);
+			fieldNum++;
 
 			f2n.put(annFieldName + ".IMPACT", fieldNum++);
 
@@ -130,17 +132,34 @@ public class VcfEffect {
 			f2n.put(annFieldName + ".EXID", fieldNum);
 			fieldNum++;
 
-			f2n.put(annFieldName + ".HGVS_C", fieldNum++);
+			f2n.put(annFieldName + ".HGVS_C", fieldNum);
+			f2n.put(annFieldName + ".HGVS_DNA", fieldNum);
+			f2n.put(annFieldName + ".CODON", fieldNum);
+			fieldNum++;
 
 			f2n.put(annFieldName + ".HGVS", fieldNum);
 			f2n.put(annFieldName + ".HGVS_P", fieldNum);
+			f2n.put(annFieldName + ".HGVS_PROT", fieldNum);
+			f2n.put(annFieldName + ".AA", fieldNum);
 			fieldNum++;
 
-			f2n.put(annFieldName + ".POS_CDNA", fieldNum++);
+			f2n.put(annFieldName + ".POS_CDNA", fieldNum);
+			f2n.put(annFieldName + ".CDNA_POS", fieldNum);
+			f2n.put(annFieldName + ".LEN_CDNA", fieldNum);
+			f2n.put(annFieldName + ".CDNA_LEN", fieldNum);
+			fieldNum++;
 
-			f2n.put(annFieldName + ".POS_CDS", fieldNum++);
+			f2n.put(annFieldName + ".POS_CDS", fieldNum);
+			f2n.put(annFieldName + ".CDS_POS", fieldNum);
+			f2n.put(annFieldName + ".LEN_CDS", fieldNum);
+			f2n.put(annFieldName + ".CDS_LEN", fieldNum);
+			fieldNum++;
 
-			f2n.put(annFieldName + ".POS_AA", fieldNum++);
+			f2n.put(annFieldName + ".POS_AA", fieldNum);
+			f2n.put(annFieldName + ".AA_POS", fieldNum);
+			f2n.put(annFieldName + ".LEN_AA", fieldNum);
+			f2n.put(annFieldName + ".AA_LEN", fieldNum);
+			fieldNum++;
 
 			f2n.put(annFieldName + ".DISTANCE", fieldNum++);
 
@@ -156,7 +175,7 @@ public class VcfEffect {
 	/**
 	 * Create a hash to map names to field numbers on 'EFF' fields
 	 */
-	static HashMap<String, Integer> mapEff2Num(EffFormatVersion formatVersion) {
+	public static HashMap<String, Integer> mapEff2Num(EffFormatVersion formatVersion) {
 		HashMap<String, Integer> f2n = new HashMap<String, Integer>();
 
 		for (String annFieldName : VCF_INFO_ANN_NAMES) {
@@ -193,6 +212,11 @@ public class VcfEffect {
 				f2n.put(annFieldName + ".GENOTYPE", fieldNum);
 				fieldNum++;
 			}
+
+			f2n.put(annFieldName + ".ERRORS", fieldNum);
+			f2n.put(annFieldName + ".WARNINGS", fieldNum);
+			f2n.put(annFieldName + ".INFO", fieldNum);
+			fieldNum++;
 		}
 
 		return f2n;
@@ -444,7 +468,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-					) len--;
+			) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;

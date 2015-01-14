@@ -466,6 +466,24 @@ $cat test.snpeff.vcf | java -Xmx1G -jar SnpSift.jar filter "(exists LOF[*].PERC)
 					</tr>
 				</table>
 				</center>
+				<br>
+				<h3> Using sample names instead of sample numbers </h3>
+				As of version 4.1A, SnpSift allows to use sample names instead of sample numbers.
+				This allows to create more readable expressions.
+				<br>
+				<br>
+				Example:
+
+<pre>
+$ cat cancer.vcf | java -jar SnpSift.jar filter "GEN[Somatic].GT = '2/1'"
+#CHROM  POS    ID   REF  ALT    QUAL  FILTER    INFO    FORMAT    Germline    Somatic
+1       69091  .    A    C,G    .     PASS      AC=1    GT        1/0         2/1
+</pre>
+
+				Note that we used <code>GEN[Somatic]</code> instead of <code>GEN[1]</code>. 
+				<br>
+				<br>
+
         </section>
 
         <!-- Annotate
@@ -1100,8 +1118,8 @@ $ java -jar SnpSift.jar gwasCat gwascatalog.txt test.vcf | tee test.gwas.vcf
 				<br>
 				You can download the files from SnpEff's site:
 				<ul>
-					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz"> here </a>
-					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi"> here </a>
+					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz"> here </a>
+					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz.tbi"> here </a>
 				</ul>
 				</p>
 				<h3> dbNSFP Annotation example</h3> 
@@ -1142,8 +1160,8 @@ java -jar SnpSift.jar dbnsfp -v myFile.vcf > myFile.annotated.vcf
 				If you prefer to manually download dbNSFP (e.g. because you want to pre-install the database).
 				You can download the files from SnpEff's site:
 				<ul>
-					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz"> here </a>
-					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi"> here </a>
+					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz"> here </a>
+					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz.tbi"> here </a>
 				</ul>
 				</p>
 				<p>
@@ -1153,15 +1171,15 @@ java -jar SnpSift.jar dbnsfp -v myFile.vcf > myFile.annotated.vcf
 <pre>
 # Donload database and tabix index files (you need to do this only once):
 # WARNING: The database file is large (over 5Gb)
-wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz
-wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.4.txt.gz.tbi
+wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz
+wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.8.txt.gz.tbi
 </pre>
 				<br>
 				Now when you annotate, remember to specify the path where you downloaded the dbNSFP file:
 				<br>
 <pre>
 # Annotate using dbNSFP
-java -jar SnpSift.jar dbnsfp -v -db path/to/my/dbNSFP2.4.txt.gz myFile.vcf > myFile.annotated.vcf
+java -jar SnpSift.jar dbnsfp -v -db path/to/my/dbNSFP2.8.txt.gz myFile.vcf > myFile.annotated.vcf
 </pre>
 				<p>
 				<h3> Building dbNSFP (for developers) </h3> 
@@ -1179,19 +1197,19 @@ java -jar SnpSift.jar dbnsfp -v -db path/to/my/dbNSFP2.4.txt.gz myFile.vcf > myF
 				Creating a file that SnpSift can use is simple, just follow this guideline:
 <pre>
 # Download dbNSFP database
-$ wget http://dbnsfp.houstonbioinformatics.org/dbNSFPzip/dbNSFP2.4.zip
+$ wget http://dbnsfp.houstonbioinformatics.org/dbNSFPzip/dbNSFP2.8.zip
 
 # Uncompress
-$ unzip dbNSFP2.4.zip
+$ unzip dbNSFP2.8.zip
 
 # Create a single file version
-$ (head -n 1 dbNSFP2.4_variant.chr1 ; cat dbNSFP2.4_variant.chr* | grep -v "^#" ) > dbNSFP2.4.txt
+$ (head -n 1 dbNSFP2.8_variant.chr1 ; cat dbNSFP2.8_variant.chr* | grep -v "^#" ) > dbNSFP2.8.txt
 
 # Compress using block-gzip algorithm
-bgzip dbNSFP2.4.txt
+bgzip dbNSFP2.8.txt
 
 # Create tabix index
-tabix -s 1 -b 2 -e 2 dbNSFP2.4.txt.gz
+tabix -s 1 -b 2 -e 2 dbNSFP2.8.txt.gz
 </pre>
 				</ul>
 				</p>
@@ -1264,31 +1282,31 @@ mkdir -p db/phastCons/
 
 # Download all PhastCons files
 cd db/phastCons/
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr1.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr2.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr3.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr4.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr5.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr6.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr7.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr8.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr9.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr10.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr11.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr12.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr13.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr14.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr15.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr16.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr17.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr18.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr19.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr20.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr21.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chr22.phastCons100way.wigFix.gz                 
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chrM.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chrX.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/vertebrate/chrY.phastCons100way.wigFix.gz 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr1.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr2.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr3.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr4.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr5.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr6.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr7.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr8.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr9.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr10.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr11.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr12.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr13.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr14.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr15.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr16.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr17.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr18.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr19.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr20.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr21.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr22.phastCons100way.wigFix.gz                 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chrM.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chrX.phastCons100way.wigFix.gz                  
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chrY.phastCons100way.wigFix.gz 
 
 # Create a chromosome size file and name it "genome.fai"
 samtools faidx path/to/genome/hg19.fa.gz

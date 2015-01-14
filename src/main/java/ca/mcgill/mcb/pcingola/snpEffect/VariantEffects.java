@@ -82,7 +82,7 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		String vgt = variant.getGenotype();
 		if (((vgt != null) ^ (gt != null)) // One null and one non-null?
 				|| ((vgt != null) && (gt != null) && !variant.getGenotype().equals(variant.getGenotype())) // Both non-null, but different?
-				) return false;
+		) return false;
 
 		// Do transcripts match?
 		Transcript trMarker = (Transcript) marker.findParent(Transcript.class);

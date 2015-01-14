@@ -141,11 +141,11 @@ th a:active, th a:hover {
 <table border=0>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Genome </b> </td>
-		<td> testHg3775Chr22 </td>
+		<td> IRGSP-1.0.21 </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Date </b> </td>
-		<td> 2015-01-09 09:03 </td>
+		<td> 2015-01-12 15:39 </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> SnpEff version </b> </td>
@@ -153,7 +153,7 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Command line arguments </b> </td>
-		<td> <pre>SnpEff  testHg3775Chr22 tests/test_regulatory_01.vcf 
+		<td> <pre>SnpEff  IRGSP-1.0.21 /home/pcingola/snpEff/guannan.vcf 
 </pre> </td>
 	</tr>
 	<tr bgcolor=ffffff> 
@@ -163,8 +163,8 @@ th a:active, th a:hover {
 	</tr>	
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Errors </b> </td>
-		 
-		<td bgcolor="#dddddd"> 0 </td>
+		   
+		<td bgcolor="#ff0000"> 1 </td>
 	</tr>	
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of lines (input file) </b> </td>
@@ -197,19 +197,19 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of effects </b> </td>
-		<td> 2 </td>
+		<td> 1 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome total length </b> </td>
-		<td> 948,210,335 </td>
+		<td> 374,424,240 </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Genome effective length </b> </td>
-		<td> 51,304,566 </td>
+		<td> 11,522 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Variant rate </b> </td>
-		<td> 1 variant every 51,304,566 bases </td>
+		<td> 1 variant every 11,522 bases </td>
 	</tr>
 </table>
 <p>
@@ -228,16 +228,16 @@ th a:active, th a:hover {
 <table border=1>
 	<tr><th> Chromosome </th><th> Length </th><th> Variants </th><th> Variants rate </th></tr> 
 		<tr>
-			<td> 22 </td>
-			<td class="numeric"> 51,304,566 </td>
+			<td> Syng_TIGR_027 </td>
+			<td class="numeric"> 11,522 </td>
 			<td class="numeric"> 1 </td>
-			<td class="numeric"> 51,304,566 </td>
+			<td class="numeric"> 11,522 </td>
 		</tr> 
 	<tr>
 		<th> Total </th>
-		<th class="numeric"> 51,304,566 </th>
+		<th class="numeric"> 11,522 </th>
 		<th class="numeric"> 1 </th>
-		<th class="numeric"> 51,304,566 </th>
+		<th class="numeric"> 11,522 </th>
 	</tr> 
 </table> 
 </center>
@@ -261,7 +261,7 @@ th a:active, th a:hover {
     <tbody>
 	    <tr>
 	    	<td> <b> SNP </b> </td>
-	    	<td class="numeric" bgcolor="ffffff"> 1 </td>
+	    	<td class="numeric" bgcolor="ffffff"> 0 </td>
 	    </tr>
 	    <tr>
 	    	<td> <b> MNP </b> </td>
@@ -269,7 +269,7 @@ th a:active, th a:hover {
 	    </tr>
 	    <tr>
 	    	<td> <b> INS </b> </td>
-	    	<td class="numeric" bgcolor="ffffff"> 0 </td>
+	    	<td class="numeric" bgcolor="ffffff"> 1 </td>
 	    </tr>
 	    <tr>
 	    	<td> <b> DEL </b> </td>
@@ -314,7 +314,7 @@ th a:active, th a:hover {
 		<tr> 
 			<td> <b> MODIFIER </b> </td> 
 			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="ffffff"> 2 </td> 
+			<td class="numeric" bgcolor="ffffff"> 1 </td> 
 			<td class="numeric" bgcolor="ffffff"> 100% </td>
 		</tr>
 </table><br>
@@ -371,16 +371,10 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 		</tr>
 	</thead>
 		<tr> 
-			<td> <b> intergenic_region </b> </td> 
+			<td> <b>  </b> </td> 
 			<th> &nbsp; </th>
 			<td class="numeric" bgcolor="ffffff"> 1 </td> 
-			<td class="numeric" bgcolor="ffffff"> 50% </td>
-		</tr>
-		<tr> 
-			<td> <b> regulatory_region_variant </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="ffffff"> 1 </td> 
-			<td class="numeric" bgcolor="ffffff"> 50% </td>
+			<td class="numeric" bgcolor="ffffff"> 100% </td>
 		</tr>
 </table><br>
  </td>
@@ -394,16 +388,10 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 		</tr>
 	</thead>
 		<tr> 
-			<td> <b> INTERGENIC </b> </td> 
+			<td> <b> NONE </b> </td> 
 			<th> &nbsp; </th>
 			<td class="numeric" bgcolor="ffffff"> 1 </td> 
-			<td class="numeric" bgcolor="ffffff"> 50% </td>
-		</tr>
-		<tr> 
-			<td> <b> REGULATION </b> </td> 
-			<th> &nbsp; </th>
-			<td class="numeric" bgcolor="ffffff"> 1 </td> 
-			<td class="numeric" bgcolor="ffffff"> 50% </td>
+			<td class="numeric" bgcolor="ffffff"> 100% </td>
 		</tr>
 </table><br>
  </td>
@@ -411,7 +399,7 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 </table>
 <p>
 
-<img src="http://chart.apis.google.com/chart?cht=bvs&chbh=50,4,8&chs=800x300&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,50.0|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,..AAAAAAAAAAAAAAAAAA.." border=1><p>
+<img src="http://chart.apis.google.com/chart?cht=bvs&chs=800x300&chbh=50,4,8&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AA__AAAAAAAAAAAAAAAAAA,AAAA__AAAAAAAAAAAAAAAA,AAAAAA__AAAAAA__AAAAAA,AAAAAAAA__AAAAAAAAAAAA,AAAAAAAAAA__AAAAAAAAAA,AAAAAAAAAAAA__AAAAAAAA,AAAAAAAAAAAAAAAA__AAAA,AAAAAAAAAAAAAAAAAA__AA,__AAAAAAAAAAAAAAAAAA__" border=1><p>
 
 </center>
 
@@ -436,7 +424,17 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <b> Insertions and deletions length:</b> 
 <p>
 <pre>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chxl=1:|Count|3:|Length&chtt=Insertion+deletion+length+histogram&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<table class="histo">
+		<tr> <th width=15%>Min</th><td>4</td> </tr>
+		<tr> <th>Max</th><td>4</td> </tr>
+		<tr> <th>Mean</th><td>4</td> </tr>
+		<tr> <th>Median</th><td>2</td> </tr>
+		<tr> <th>Standard deviation</th><td>0</td> </tr>
+		<tr> <th>Values</th><td>4</td> </tr>
+		<tr> <th>Count</th><td>1</td> </tr>
+		</tr>
+	</table>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|4|3:|Length&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chtt=Insertion+deletion+length+histogram"><br>
 </pre>
 
 <!--==========================================================================
@@ -455,7 +453,7 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 	    <tr> <th> <b> A </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
 	    <tr> <th> <b> C </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
 	    <tr> <th> <b> G </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
-	    <tr> <th> <b> T </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 1 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
+	    <tr> <th> <b> T </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
 </table>
 </center>
 
@@ -478,18 +476,14 @@ Missense / Silent ratio: </th><td class="numeric"> ?
 <center>
 <table border=1>
 	<tr> <th> Transitions </th><td class="numeric"> 0 </td> </tr>
-	<tr> <th> Transversions </th><td class="numeric"> 1 </td> </tr>
+	<tr> <th> Transversions </th><td class="numeric"> 0 </td> </tr>
 	<tr> <th> Ts/Tv ratio </th><td class="numeric"> 0 </td> </tr>
 </table>
 </center>
 <p>
 
 	<b>All variants:</b>
-	<pre>Sample ,Total
-Transitions ,0,0
-Transversions ,1,1
-Ts/Tv ,0.000,0.000
-</pre>
+	<pre>No results available (empty input?)</pre>
 	<p>
 	<b>Only known variants</b> (i.e. the ones having a non-empty ID field):
 	<pre>No results available (empty input?)</pre>
@@ -614,9 +608,9 @@ Missing , 0
 
 <center>
 	<pre>
-		<img src="http://chart.apis.google.com/chart?cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Variants+histogram%3A+22&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chd=e:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA..AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&chxl=1:|Variants%2F1000Kb|2:|0||||||||||10000000||||||||||20000000||||||||||30000000||||||||||40000000||||||||||50000000|51000000|3:|Position"><br>
-		22, Position,0,1000000,2000000,3000000,4000000,5000000,6000000,7000000,8000000,9000000,10000000,11000000,12000000,13000000,14000000,15000000,16000000,17000000,18000000,19000000,20000000,21000000,22000000,23000000,24000000,25000000,26000000,27000000,28000000,29000000,30000000,31000000,32000000,33000000,34000000,35000000,36000000,37000000,38000000,39000000,40000000,41000000,42000000,43000000,44000000,45000000,46000000,47000000,48000000,49000000,50000000,51000000
-22,Count,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		<img src="http://chart.apis.google.com/chart?cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chtt=Variants+histogram%3A+Syng_TIGR_027&chxl=1:|Variants%2F100b|2:|0|||||||||||1100|||||||||||2200|||||||||||3300|||||||||||4400|||||||||||5500|||||||||||6600|||||||||||7700|||||||||||8800|||||||||||9900|||||||||||11000|||||11500|3:|Position&chd=e:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA.."><br>
+		Syng_TIGR_027, Position,0,100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,3100,3200,3300,3400,3500,3600,3700,3800,3900,4000,4100,4200,4300,4400,4500,4600,4700,4800,4900,5000,5100,5200,5300,5400,5500,5600,5700,5800,5900,6000,6100,6200,6300,6400,6500,6600,6700,6800,6900,7000,7100,7200,7300,7400,7500,7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,9800,9900,10000,10100,10200,10300,10400,10500,10600,10700,10800,10900,11000,11100,11200,11300,11400,11500
+Syng_TIGR_027,Count,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
 
 	</pre>
 </center>
