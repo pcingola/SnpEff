@@ -2075,22 +2075,17 @@ $ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.
 ...
 
 # Show some examples (output edited for readability)
-$ grep -i TF_bind test.chr22.ann.vcf | ./scripts/vcfInfoOnePerLine.pl 
-
-22      18301084        .       G       A       .       .
-                                                        EFF     TF_binding_site_variant[MA0138.2:Nrsf](MODIFIER||||||||||1)
-                                                        EFF     TF_binding_site_variant[MA0138.1:Nrsf](MODIFIER||||||||||1)
-
-22      23523309        .       C       T       .       .
-                                                        EFF     TF_binding_site_variant[MA0062.2:Gabp](LOW||||||||||1)
-
-22      36629223        .       G       C       .       .
-                                                        EFF     TF_binding_site_variant[MA0079.1:SP1](LOW||||||||||1)
-
+$ cat test.chr22.ann.vcf
+...
+22  18301084  .  G  A  .  .  ANN=A|TF_binding_site_variant|MODIFIER|||Nrsf|MA0138.2|||||||||,A|TF_binding_site_variant|MODIFIER|||Nrsf|MA0138.1|||||||||,...
+...
+22  23523309  .  C  T  .  .  ANN=T|TF_binding_site_variant|LOW|||Gabp|MA0062.2|||||||||,...
+...
+22  36629223  .  G  C  .  .  ANN=C|TF_binding_site_variant|LOW|||SP1|MA0079.1|||||||||,...
 ...
 </pre>
 				<br>
-				So, for instance, the last annotation shown in the example is <code>TF_binding_site_variant[MA0079.1:SP1]</code> corresponding to motif 
+				So, for instance, the last annotation shown in the example is <code>TF_binding_site_variant|LOW|||SP1|MA0079.1</code> corresponding to motif 
 				<a href="http://jaspar.genereg.net/cgi-bin/jaspar_db.pl?ID=MA0079.1&rm=present&collection=CORE">MA0079.1</a>, which you can look up in Jaspar.
 				</p>
         </section>
