@@ -10,6 +10,7 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Intergenic;
 import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
@@ -469,7 +470,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-			) len--;
+					) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
@@ -964,6 +965,10 @@ public class VcfEffect {
 			} else if (marker instanceof NextProt) {
 				featureType = marker.getId();
 				featureId = ((NextProt) marker).getTranscriptId();
+			} else if (marker instanceof Motif) {
+				Motif motif = (Motif) marker;
+				featureType = motif.getPwmName();
+				featureId = motif.getPwmId();
 			} else if (tr != null) {
 				featureType = "transcript";
 				featureId = transcriptId = tr.getId();

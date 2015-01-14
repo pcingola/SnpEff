@@ -89,6 +89,13 @@ public class TestCasesNextProt {
 	}
 
 	@Test
+	public void test_02_ann() {
+		Gpr.debug("Test");
+		// Note: Normally this EffectImpact should be 'HIGH' impact, but since the database we build in test_01_build is small, there are not enough stats.
+		checkNextProt("testHg3770Chr22", "tests/test_nextProt_02.vcf", "amino_acid_modification:N-acetylglycine", EffectImpact.LOW, true);
+	}
+
+	@Test
 	public void test_02_eff() {
 		Gpr.debug("Test");
 		// Note: Normally this EffectImpact should be 'HIGH' impact, but since the database we build in test_01_build is small, there are not enough stats.

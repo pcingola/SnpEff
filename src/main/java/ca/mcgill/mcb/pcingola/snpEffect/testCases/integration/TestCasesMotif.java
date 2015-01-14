@@ -28,8 +28,11 @@ public class TestCasesMotif {
 		super();
 	}
 
-	void checkMotif(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact) {
+	void checkMotif(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact, boolean useAnn) {
 		String args[] = { "-classic", "-motif", "-ud", "0", genomeVer, vcfFile };
+		String argsAnn[] = { "-ud", "0", genomeVer, vcfFile };
+		if (useAnn) args = argsAnn;
+
 		SnpEff cmd = new SnpEff(args);
 
 		// Run
@@ -42,11 +45,22 @@ public class TestCasesMotif {
 		int numNextProt = 0;
 		for (VcfEntry ve : vcfEntries) {
 			for (VcfEffect veff : ve.parseEffects()) {
-				if (verbose) System.out.println("\t" + veff);
-				if ((veff.getEffectType() == EffectType.MOTIF) // Is it motif?
-						&& effectDetails.equals(veff.getEffectDetails()) // Are details OK?
-						&& (impact == veff.getImpact())) // Is impact OK?
-					numNextProt++;
+				if (verbose) System.out.println("\t" + veff.getVcfFieldString());
+
+				// Is it motif?
+				if (veff.getEffectType() == EffectType.MOTIF) {
+
+					boolean ok = false;
+					if (useAnn) {
+						// Motif ID and impact match?
+						ok = effectDetails.equals(veff.getFeatureId()) && (impact == veff.getImpact());
+					} else {
+						// Motif ID and impact match?
+						ok = effectDetails.equals(veff.getEffectDetails()) && (impact == veff.getImpact());
+					}
+
+					if (ok) numNextProt++;
+				}
 			}
 		}
 
@@ -56,19 +70,37 @@ public class TestCasesMotif {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		checkMotif("testHg3770Chr22", "tests/test_motif_01.vcf", "MA0099.2:AP1", EffectImpact.LOW);
+		checkMotif("testHg3770Chr22", "tests/test_motif_01.vcf", "MA0099.2:AP1", EffectImpact.LOW, false);
+	}
+
+	@Test
+	public void test_01_ann() {
+		Gpr.debug("Test");
+		checkMotif("testHg3770Chr22", "tests/test_motif_01.vcf", "MA0099.2", EffectImpact.LOW, true);
 	}
 
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-		checkMotif("testHg3770Chr22", "tests/test_motif_02.vcf", "MA0099.2:AP1", EffectImpact.MODIFIER);
+		checkMotif("testHg3770Chr22", "tests/test_motif_02.vcf", "MA0099.2:AP1", EffectImpact.MODIFIER, false);
+	}
+
+	@Test
+	public void test_02_ann() {
+		Gpr.debug("Test");
+		checkMotif("testHg3770Chr22", "tests/test_motif_02.vcf", "MA0099.2", EffectImpact.MODIFIER, true);
 	}
 
 	@Test
 	public void test_03() {
 		Gpr.debug("Test");
-		checkMotif("testHg3770Chr22", "tests/test_motif_03.vcf", "MA0099.2:AP1", EffectImpact.LOW);
+		checkMotif("testHg3770Chr22", "tests/test_motif_03.vcf", "MA0099.2:AP1", EffectImpact.LOW, false);
+	}
+
+	@Test
+	public void test_03_ann() {
+		Gpr.debug("Test");
+		checkMotif("testHg3770Chr22", "tests/test_motif_03.vcf", "MA0099.2", EffectImpact.LOW, true);
 	}
 
 	/**
