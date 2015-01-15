@@ -34,8 +34,15 @@ while( $l = <STDIN> ) {
 		$infStr = "";
 		foreach $inf ( @infos ) {
 			# Is this the EFF field? => Find it and split it
-			if( $inf =~/^EFF=(.*)/ ) { @effs = split /,/, $1; }
-			else { $infStr .= ( $infStr eq '' ? '' : ';' ) . $inf; }
+			if( $inf =~/^EFF=(.*)/ ) { 
+				@effs = split /,/, $1; 
+				$fieldName = "EFF";
+			} elsif( $inf =~/^ANN=(.*)/ ) { 
+				@effs = split /,/, $1; 
+				$fieldName = "ANN";
+			} else { 
+				$infStr .= ( $infStr eq '' ? '' : ';' ) . $inf; 
+			}
 		}	
 
 		# Print VCF line
@@ -47,7 +54,7 @@ while( $l = <STDIN> ) {
 			$post = "";
 			for( $i=$INFO_FIELD_NUM+1 ; $i <= $#t ; $i++ ) { $post .= "\t$t[$i]"; }
 
-			foreach $eff ( @effs ) { print $pre . "\t" . $infStr . ( $infStr eq '' ? '' : ';' ) . "EFF=$eff" . $post . "\n" ; }
+			foreach $eff ( @effs ) { print $pre . "\t" . $infStr . ( $infStr eq '' ? '' : ';' ) . "$fieldName=$eff" . $post . "\n" ; }
 		}
 	}
 }
