@@ -69,7 +69,7 @@ public class SnpEff implements CommandLine {
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
 	public static final String REVISION = "a";
-	public static final String BUILD = "2015-01-14";
+	public static final String BUILD = "2015-01-17";
 	public static final String VERSION_MAJOR = "4.1";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -719,6 +719,10 @@ public class SnpEff implements CommandLine {
 				} else if (arg.equals("-v") || arg.equalsIgnoreCase("-verbose")) {
 					verbose = true;
 					quiet = false;
+				} else if (arg.equalsIgnoreCase("-version")) {
+					// Show version number and exit
+					System.out.println(VERSION_SHORT);
+					System.exit(0);
 				} else {
 					// Unrecognized option? may be it's command specific. Let command parse it
 					argsList.add(arg);
@@ -965,8 +969,9 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-h , -help                   : Show this help and exit");
 		System.err.println("\t-noLog                       : Do not report usage statistics to server");
 		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
-		System.err.println("\t-q ,  -quiet                 : Quiet mode (do not show any messages or errors)");
+		System.err.println("\t-q , -quiet                  : Quiet mode (do not show any messages or errors)");
 		System.err.println("\t-v , -verbose                : Verbose mode");
+		System.err.println("\t-version                     : Show version number and exit");
 		System.err.println("\nDatabase options:");
 		System.err.println("\t-canon                       : Only use canonical transcripts.");
 		System.err.println("\t-interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");

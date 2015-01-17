@@ -9,9 +9,6 @@
 cpus = 1
 
 # Configuration parameters
-version				:= "4.1"
-subversion			:= ""
-versionUnd			:= version.replace("\.","_")
 bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22"]
 
 # Commands
@@ -328,7 +325,7 @@ void runTests() {
 #-------------------------------------------------------------------------------
 
 void uploadCore2Sf() {
-	zip := "snpEff_v" + versionUnd + "_core.zip"
+	zip := "snpEff_v" + versionUnd() + "_core.zip"
 	zipLatest := "snpEff_latest_core.zip"
 	sys scp -v $zip $zipLatest pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/
 }
@@ -338,7 +335,8 @@ void uploadCore2Sf() {
 #-------------------------------------------------------------------------------
 
 void uploadDbs2Sf() {
-	sys scp -v $dirZip/snpEff_v$versionUnd*.zip pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$versionUnd/
+	ver := versionUnd()
+	sys scp -v $dirZip/snpEff_v$ver*.zip pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$ver/
 }
 
 #-------------------------------------------------------------------------------
@@ -371,6 +369,24 @@ void uploadHtml2Sf() {
 }
 
 #-------------------------------------------------------------------------------
+# SnpEff's version using underscores instead of '.'
+#-------------------------------------------------------------------------------
+
+string versionUnd() {
+	ver := sys $snpeff -version
+	return ver.replace("\.","_").replaceAll("[a-zA-Z]", "").trim() # Remove sub-version letter
+}
+
+#-------------------------------------------------------------------------------
+# SnpEff's version using underscores instead of '.'
+#-------------------------------------------------------------------------------
+
+string versionSubUnd() {
+	ver := sys $snpeff -version
+	return ver.replace("\.","_").trim()
+}
+
+#-------------------------------------------------------------------------------
 # Create bundle's ZIP files
 #-------------------------------------------------------------------------------
 
@@ -395,7 +411,7 @@ void zipBundles() {
 
 		# Zip files
 		zipList := bins.join(' ')
-		zipName := "$dirZip/snpEff_v" + versionUnd + "_" + bname + ".zip"
+		zipName := "$dirZip/snpEff_v" + versionUnd() + "_" + bname + ".zip"
 		if( zipName <- bins ) {
 			println "\tZIP Bundle: $zipName"
 			task zip $zipName $zipList
@@ -408,7 +424,8 @@ void zipBundles() {
 #-------------------------------------------------------------------------------
 
 void zipCore() {
-	dir := "snpEff_$versionUnd"
+	ver := versionSubUnd()
+	dir := "snpEff_$ver"
 	sys rm -rvf $dir snpEff
 	sys mkdir $dir
 
@@ -419,7 +436,7 @@ void zipCore() {
 	sys mv $dir snpEff
 
 	# Create 'core' zip file
-	zip := "snpEff_v" + versionUnd + "_core.zip"
+	zip := "snpEff_v" + ver + "_core.zip"
 	zipLatest := "snpEff_latest_core.zip"
 	zipDev    := "snpEff_development.zip"
 	sys rm -f $zip 2> /dev/null
@@ -439,7 +456,7 @@ void zipDb(string gen) {
 
 	# Do not create ZIP file unless database exists
 	if( bin.exists() ) {
-		zip := "$dirZip/snpEff_v" + versionUnd + "_$gen.zip"
+		zip := "$dirZip/snpEff_v" + versionUnd() + "_$gen.zip"
 		println "\tZIP '$zip'"
 		task( zip <- bin )	sys zip -r $zip data/$gen/*.bin
 	}
