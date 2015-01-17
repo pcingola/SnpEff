@@ -15,6 +15,7 @@ import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
@@ -416,7 +417,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		Collections.sort(effectTypes);
 		for (EffectType et : effectTypes) {
 			if (sb.length() > 0) sb.append(separator);
-			if (useSeqOntology) sb.append(et.toSequenceOntology());
+			if (useSeqOntology) sb.append(et.toSequenceOntology(EffFormatVersion.FORMAT_EFF_4));
 			else sb.append(et.toString());
 		}
 

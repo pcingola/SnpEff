@@ -570,7 +570,7 @@ public class VcfEffect {
 		StringBuilder sb = new StringBuilder();
 		for (EffectType et : effectTypes) {
 			if (sb.length() > 0) sb.append(formatVersion.separator());
-			sb.append(et.toSequenceOntology());
+			sb.append(et.toSequenceOntology(formatVersion));
 		}
 		return sb.toString();
 	}
@@ -864,11 +864,11 @@ public class VcfEffect {
 		if (eff.indexOf(formatVersion.separator()) >= 0) {
 			// Old version
 			for (String es : eff.split(formatVersion.separatorSplit()))
-				effs.add(EffectType.parse(es));
+				effs.add(EffectType.parse(formatVersion, es));
 		} else {
 			// Split effect strings
 			for (String es : eff.split(formatVersion.separatorSplit()))
-				effs.add(EffectType.parse(es));
+				effs.add(EffectType.parse(formatVersion, es));
 		}
 
 		return effs;
@@ -973,7 +973,7 @@ public class VcfEffect {
 				featureType = "transcript";
 				featureId = transcriptId = tr.getId();
 			} else {
-				featureType = marker.getType().toSequenceOntology();
+				featureType = marker.getType().toSequenceOntology(formatVersion);
 				featureId = marker.getId();
 			}
 		}

@@ -20,6 +20,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryGtf22;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 
 /**
  *
@@ -435,7 +436,10 @@ public class TestCasesVariant {
 			// None of these should throw an exception
 			eff.effectImpact();
 			eff.getGeneRegion();
-			eff.toSequenceOntology();
+
+			for (EffFormatVersion formatVersion : EffFormatVersion.values()) {
+				eff.toSequenceOntology(formatVersion);
+			}
 		}
 	}
 

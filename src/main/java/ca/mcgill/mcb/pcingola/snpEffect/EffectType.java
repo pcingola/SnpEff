@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 import java.util.HashMap;
 
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 
 /**
  * Effect type:
@@ -74,7 +75,7 @@ public enum EffectType {
 	/**
 	 * Parse a string to an EffectType
 	 */
-	public static EffectType parse(String str) {
+	public static EffectType parse(EffFormatVersion formatVersion, String str) {
 		try {
 			return EffectType.valueOf(str);
 		} catch (Exception e) {
@@ -82,7 +83,7 @@ public enum EffectType {
 		}
 
 		// Try an SO term
-		if (so2efftype.isEmpty()) so2efftype();
+		if (so2efftype.isEmpty()) so2efftype(formatVersion);
 		if (so2efftype.containsKey(str)) return so2efftype.get(str);
 
 		throw new RuntimeException("Cannot parse EffectType '" + str + "'");
@@ -91,11 +92,11 @@ public enum EffectType {
 	/**
 	 * Create a map between SO terms and EffectType
 	 */
-	static void so2efftype() {
+	static void so2efftype(EffFormatVersion formatVersion) {
 		for (EffectType efftype : EffectType.values()) {
-			String so = efftype.toSequenceOntology();
+			String so = efftype.toSequenceOntology(formatVersion);
 
-			for (String soSingle : so.split("\\+"))
+			for (String soSingle : so.split(formatVersion.separatorSplit()))
 				if (!so2efftype.containsKey(soSingle)) so2efftype.put(soSingle, efftype);
 		}
 	}
@@ -259,7 +260,7 @@ public enum EffectType {
 		}
 	}
 
-	public String toSequenceOntology() {
+	public String toSequenceOntology(EffFormatVersion formatVersion) {
 		switch (this) {
 
 		case CDS:
@@ -374,7 +375,7 @@ public enum EffectType {
 			return "stop_retained_variant";
 
 		case SYNONYMOUS_START:
-			return "initiator_codon_variant+non_canonical_start_codon";
+			return "initiator_codon_variant" + formatVersion.separator() + "non_canonical_start_codon";
 
 			//		case TRANSCRIPT:
 			//			return "nc_transcript_variant";
@@ -389,13 +390,13 @@ public enum EffectType {
 			return "3_prime_UTR_variant";
 
 		case UTR_3_DELETED:
-			return "3_prime_UTR_truncation+exon_loss";
+			return "3_prime_UTR_truncation" + formatVersion.separator() + "exon_loss";
 
 		case UTR_5_PRIME:
 			return "5_prime_UTR_variant";
 
 		case UTR_5_DELETED:
-			return "5_prime_UTR_truncation+exon_loss_variant";
+			return "5_prime_UTR_truncation" + formatVersion.separator() + "exon_loss_variant";
 
 		case CUSTOM:
 			return "custom";
