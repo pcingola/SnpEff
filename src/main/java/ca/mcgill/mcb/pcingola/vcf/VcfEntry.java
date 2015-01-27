@@ -125,28 +125,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		vcfGenotypes.add(new VcfGenotype(this, format, vcfGenotypeStr));
 	}
 
-	//	/**
-	//	 * Append a 'raw' INFO string (format is not checked)
-	//	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
-	//	 */
-	//	public void addInfo(String addInfoStr) {
-	//		addInfo(addInfoStr, true);
-	//	}
-	//
-	//	/**
-	//	 * Append a 'raw' INFO string (format is not checked)
-	//	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
-	//	 */
-	//	protected void addInfo(String addInfoStr, boolean invalidateCache) {
-	//		if ((infoStr == null) || infoStr.isEmpty()) infoStr = addInfoStr;
-	//		else {
-	//			if (!infoStr.endsWith(";")) infoStr += ";"; // Do we need to add a semicolon?
-	//			infoStr += addInfoStr; // Add info string
-	//		}
-	//
-	//		if (invalidateCache) info = null; // Invalidate cache
-	//	}
-
 	/**
 	 * Add a "key=value" tuple the info field
 	 *
