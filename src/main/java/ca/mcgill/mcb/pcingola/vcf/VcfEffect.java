@@ -62,7 +62,9 @@ public class VcfEffect {
 	VariantEffect.EffectImpact impact;
 	VariantEffect.FunctionalClass funClass;
 	VariantEffect variantEffect;
-	boolean useSequenceOntology = true, useHgvs = true, useGeneId = false;
+	boolean useSequenceOntology;
+	boolean useHgvs;
+	boolean useGeneId;
 
 	/**
 	 * Convert from field name to field number
@@ -235,9 +237,9 @@ public class VcfEffect {
 	 * Constructor: Guess format version
 	 */
 	public VcfEffect(String effectString) {
+		init();
 		formatVersion = null; // Force guess
 		vcfFieldString = effectString;
-		init();
 		parse();
 	}
 
@@ -247,17 +249,21 @@ public class VcfEffect {
 	 * @param formatVersion : If null, will try to guess it
 	 */
 	public VcfEffect(String effectString, EffFormatVersion formatVersion) {
-		this.formatVersion = formatVersion;
 		init();
+		this.formatVersion = formatVersion;
 		vcfFieldString = effectString;
 		parse();
 	}
 
+	public VcfEffect(VariantEffect variantEffect, EffFormatVersion formatVersion) {
+		this(variantEffect, formatVersion, true);
+	}
+
 	public VcfEffect(VariantEffect variantEffect, EffFormatVersion formatVersion, boolean useSequenceOntology) {
+		init();
 		this.formatVersion = formatVersion;
 		this.variantEffect = variantEffect;
 		this.useSequenceOntology = useSequenceOntology;
-		init();
 		set(variantEffect);
 	}
 
@@ -470,7 +476,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-			) len--;
+					) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
@@ -695,6 +701,9 @@ public class VcfEffect {
 		vcfFieldString = effString = effectTypesStr = effectDetails = bioType = codon = aa = hgvsC = hgvsP = genotype = errorsWarnings = geneName = geneId = featureType = featureId = transcriptId = exonId = errorsWarnings = "";
 		impact = null;
 		funClass = FunctionalClass.NONE;
+		useSequenceOntology = true;
+		useHgvs = true;
+		useGeneId = false;
 	}
 
 	/**
@@ -1169,57 +1178,60 @@ public class VcfEffect {
 
 	@Override
 	public String toString() {
-		// Create from variant?
-		if (variantEffect != null) return createInfoField();
+		if (formatVersion == null || formatVersion.isAnn()) return createAnnField();
+		return createEffField();
 
-		// Create from parsed fields
-		StringBuilder sb = new StringBuilder();
-
-		for (EffectType et : effectTypes) {
-			if (sb.length() > 0) sb.append(formatVersion.separator());
-			sb.append(et);
-		}
-
-		if ((effectDetails != null) && !effectDetails.isEmpty()) sb.append("[" + effectDetails + "]");
-		sb.append("(");
-
-		if (impact != null) sb.append(impact);
-		sb.append("|");
-
-		if (funClass != null) sb.append(funClass);
-		sb.append("|");
-
-		if (codon != null) sb.append(codon);
-		sb.append("|");
-
-		if (aa != null) sb.append(aa);
-		sb.append("|");
-
-		if (aaLen > 0) sb.append(aaLen);
-		sb.append("|");
-
-		if (geneName != null) sb.append(geneName);
-		sb.append("|");
-
-		if (bioType != null) sb.append(bioType);
-		sb.append("|");
-
-		if (coding != null) sb.append(coding);
-		sb.append("|");
-
-		if (transcriptId != null) sb.append(transcriptId);
-		sb.append("|");
-
-		if (exonId != null) sb.append(exonId);
-		sb.append("|");
-
-		if (genotype != null) sb.append(genotype);
-
-		if (errorsWarnings != null) sb.append("|" + errorsWarnings);
-
-		sb.append(")");
-
-		return sb.toString();
+		//		// Create from variant?
+		//		if (variantEffect != null) return createInfoField();
+		//
+		//		// Create from parsed fields
+		//		StringBuilder sb = new StringBuilder();
+		//
+		//		for (EffectType et : effectTypes) {
+		//			if (sb.length() > 0) sb.append(formatVersion.separator());
+		//			sb.append(et);
+		//		}
+		//
+		//		if ((effectDetails != null) && !effectDetails.isEmpty()) sb.append("[" + effectDetails + "]");
+		//		sb.append("(");
+		//
+		//		if (impact != null) sb.append(impact);
+		//		sb.append("|");
+		//
+		//		if (funClass != null) sb.append(funClass);
+		//		sb.append("|");
+		//
+		//		if (codon != null) sb.append(codon);
+		//		sb.append("|");
+		//
+		//		if (aa != null) sb.append(aa);
+		//		sb.append("|");
+		//
+		//		if (aaLen > 0) sb.append(aaLen);
+		//		sb.append("|");
+		//
+		//		if (geneName != null) sb.append(geneName);
+		//		sb.append("|");
+		//
+		//		if (bioType != null) sb.append(bioType);
+		//		sb.append("|");
+		//
+		//		if (coding != null) sb.append(coding);
+		//		sb.append("|");
+		//
+		//		if (transcriptId != null) sb.append(transcriptId);
+		//		sb.append("|");
+		//
+		//		if (exonId != null) sb.append(exonId);
+		//		sb.append("|");
+		//
+		//		if (genotype != null) sb.append(genotype);
+		//
+		//		if (errorsWarnings != null) sb.append("|" + errorsWarnings);
+		//
+		//		sb.append(")");
+		//
+		//		return sb.toString();
 	}
 
 }
