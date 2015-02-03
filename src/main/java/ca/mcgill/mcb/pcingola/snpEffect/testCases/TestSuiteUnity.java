@@ -21,6 +21,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaOverlap;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaSequence;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaSequenceByte;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesEffectCollapse;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesEffectCollapse2;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFasta;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFileIndexChrPos;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFisherExactTest;
@@ -55,48 +56,49 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesAlign.class, //
-		TestCasesAnn.class, //
-		TestCasesBinomial.class, //
-		TestCasesBuild.class, //
-		TestCasesChiSquare.class, //
-		TestCasesCds.class, //
-		TestCasesCochranArmitage.class, //
-		TestCasesCodonTable.class, //
-		TestCasesDels.class, //
-		TestCasesDel.class, //
-		TestCasesDnaNSequence.class, //
-		TestCasesDnaOverlap.class, //
-		TestCasesDnaSequenceByte.class, //
-		TestCasesDnaSequence.class, //
-		TestCasesEffectCollapse.class, //
-		TestCasesFasta.class, //
-		TestCasesFileIndexChrPos.class, //
-		TestCasesFisherExactTest.class, //
-		TestCasesGenePvalueList.class, //
-		TestCasesGenotypeVector.class, //
-		TestCasesHgvsExon.class, //
-		TestCasesHgvsIntron.class, //
-		TestCasesHgvsDnaDup.class, //
-		TestCasesHgvsDnaDupNegative.class, //
-		TestCasesHgvsProtDup.class, //
-		TestCasesHypergeometric.class, //
-		TestCasesIntervals.class, //
-		TestCasesIntervalVariant.class, //
-		TestCasesIns.class, //
-		TestCasesIntStats.class, //
-		TestCasesJaspar.class, //
-		TestCasesMarkerUtils.class, //
-		TestCasesMnps.class, //
-		TestCasesNmers.class, //
-		TestCasesOverlap.class, //
-		TestCasesReactome.class, //
-		TestCasesSeekableReader.class, //
-		TestCasesSequenceIndexer.class, //
-		TestCasesSnps.class, //
-		TestCasesSpliceSite.class, //
-		TestCasesSpliceRegion.class, //
-		TestCasesVariantRealignment.class, //
-		TestCasesVcf.class //
+	TestCasesAnn.class, //
+	TestCasesBinomial.class, //
+	TestCasesBuild.class, //
+	TestCasesChiSquare.class, //
+	TestCasesCds.class, //
+	TestCasesCochranArmitage.class, //
+	TestCasesCodonTable.class, //
+	TestCasesDels.class, //
+	TestCasesDel.class, //
+	TestCasesDnaNSequence.class, //
+	TestCasesDnaOverlap.class, //
+	TestCasesDnaSequenceByte.class, //
+	TestCasesDnaSequence.class, //
+	TestCasesEffectCollapse.class, //
+	TestCasesEffectCollapse2.class, //
+	TestCasesFasta.class, //
+	TestCasesFileIndexChrPos.class, //
+	TestCasesFisherExactTest.class, //
+	TestCasesGenePvalueList.class, //
+	TestCasesGenotypeVector.class, //
+	TestCasesHgvsExon.class, //
+	TestCasesHgvsIntron.class, //
+	TestCasesHgvsDnaDup.class, //
+	TestCasesHgvsDnaDupNegative.class, //
+	TestCasesHgvsProtDup.class, //
+	TestCasesHypergeometric.class, //
+	TestCasesIntervals.class, //
+	TestCasesIntervalVariant.class, //
+	TestCasesIns.class, //
+	TestCasesIntStats.class, //
+	TestCasesJaspar.class, //
+	TestCasesMarkerUtils.class, //
+	TestCasesMnps.class, //
+	TestCasesNmers.class, //
+	TestCasesOverlap.class, //
+	TestCasesReactome.class, //
+	TestCasesSeekableReader.class, //
+	TestCasesSequenceIndexer.class, //
+	TestCasesSnps.class, //
+	TestCasesSpliceSite.class, //
+	TestCasesSpliceRegion.class, //
+	TestCasesVariantRealignment.class, //
+	TestCasesVcf.class //
 
 })
 public class TestSuiteUnity {

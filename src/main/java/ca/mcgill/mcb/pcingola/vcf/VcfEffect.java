@@ -937,7 +937,7 @@ public class VcfEffect {
 		effectTypes = variantEffect.getEffectTypes();
 
 		if (formatVersion.isAnn()) {
-			effectTypesStr = variantEffect.getEffectTypeString(true, formatVersion.separator());
+			effectTypesStr = variantEffect.getEffectTypeString(true, formatVersion);
 		} else {
 			effectTypesStr = variantEffect.effect(true, false, false, useSequenceOntology);
 		}

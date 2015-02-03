@@ -403,21 +403,21 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public String getEffectTypeString(boolean useSeqOntology) {
-		return getEffectTypeString(useSeqOntology, VcfEffect.EFFECT_TYPE_SEPARATOR_OLD);
+		return getEffectTypeString(useSeqOntology, EffFormatVersion.FORMAT_EFF_4);
 	}
 
 	/**
 	 * Get Effect Type as a string
 	 */
-	public String getEffectTypeString(boolean useSeqOntology, String separator) {
+	public String getEffectTypeString(boolean useSeqOntology, EffFormatVersion formatVersion) {
 		if (effectTypes == null) return "";
 
 		// Show all effects
 		StringBuilder sb = new StringBuilder();
 		Collections.sort(effectTypes);
 		for (EffectType et : effectTypes) {
-			if (sb.length() > 0) sb.append(separator);
-			if (useSeqOntology) sb.append(et.toSequenceOntology(EffFormatVersion.FORMAT_EFF_4));
+			if (sb.length() > 0) sb.append(formatVersion.separator());
+			if (useSeqOntology) sb.append(et.toSequenceOntology(formatVersion));
 			else sb.append(et.toString());
 		}
 

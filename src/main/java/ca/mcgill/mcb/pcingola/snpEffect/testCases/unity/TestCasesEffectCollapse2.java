@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +9,6 @@ import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -17,9 +16,9 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 /**
  * Test case
  */
-public class TestCasesZzz extends TestCasesBase {
+public class TestCasesEffectCollapse2 extends TestCasesBase {
 
-	public TestCasesZzz() {
+	public TestCasesEffectCollapse2() {
 		super();
 	}
 
@@ -37,10 +36,8 @@ public class TestCasesZzz extends TestCasesBase {
 	}
 
 	@Test
-	public void test_06() {
+	public void test_01() {
 		Gpr.debug("Test");
-
-		//		verbose = true;
 
 		// Show gene(s)
 		Genome genome = snpEffectPredictor.getGenome();
@@ -71,7 +68,6 @@ public class TestCasesZzz extends TestCasesBase {
 		// Annotation found?
 		Assert.assertTrue("Annotation (SO) '" + expectedAnn + "' not found", foundSo);
 		Assert.assertTrue("Annotation '" + expectedAnn + "' not found in 'ANN' field", foundAnn);
-
 	}
 
 }
