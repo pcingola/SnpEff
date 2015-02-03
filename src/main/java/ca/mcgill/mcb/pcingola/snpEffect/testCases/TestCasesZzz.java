@@ -1,15 +1,14 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
+import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryGenBank;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -17,61 +16,49 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 /**
  * Test case
  */
-public class TestCasesZzz extends TestCasesBase {
+public class TestCasesZzz {
+
+	boolean verbose = false;
 
 	public TestCasesZzz() {
 		super();
 	}
 
-	@Override
-	protected void init() {
-		super.init();
-		randSeed = 20150202;
-		spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
-		spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
-		spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
-		maxExons = 10;
-		minExons = 5;
-		addUtrs = true;
-		onlyPlusStrand = true;
+	/**
+	 * Build a genome from a genbank file and compare results to 'expected' results
+	 */
+	public SnpEffectPredictor build(String genome, String genBankFile) {
+		// Build
+		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
+		SnpEffPredictorFactoryGenBank sepfg = new SnpEffPredictorFactoryGenBank(config, genBankFile);
+		sepfg.setVerbose(verbose);
+
+		// Build
+		SnpEffectPredictor sep = sepfg.create();
+		return sep;
 	}
 
 	@Test
-	public void test_06() {
+	public void testCase_01_CircularGenome() {
 		Gpr.debug("Test");
 
-		//		verbose = true;
-
-		// Show gene(s)
-		Genome genome = snpEffectPredictor.getGenome();
-		if (verbose) {
-			for (Gene g : genome.getGenes())
-				System.out.println(g);
-		}
+		// Create database & build interval forest
+		String genomeName = "testCase";
+		String genBankFile = "tests/genes_circular.gbk";
+		SnpEffectPredictor sep = build(genomeName, genBankFile);
+		sep.buildForest();
 
 		// Create variant
-		Variant variant = new Variant(genome.getChromosome("1"), 695, "ACGTACGTACGTACGT", "");
-		if (verbose) System.out.println(variant.getVariantType() + "\t" + variant.getStart() + "-" + variant.getEnd() + "\t" + variant);
+		Genome genome = sep.getGenome();
+		Variant var = new Variant(genome.getChromosome("chr"), 2, "", "TATTTTTCAG", "");
 
 		// Calculate effect
-		VariantEffects veffs = snpEffectPredictor.variantEffect(variant);
-
-		// Look for expected annotations
-		String expectedAnn = "5_prime_UTR_truncation&exon_loss_variant";
-		boolean foundSo = false;
-		boolean foundAnn = false;
-		for (VariantEffect veff : veffs) {
-			VcfEffect vcfEff = new VcfEffect(veff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println(vcfEff.getEffectsStrSo() + "\t" + vcfEff);
-
-			foundSo |= vcfEff.getEffectsStrSo().equalsIgnoreCase(expectedAnn);
-			foundAnn |= vcfEff.toString().indexOf(expectedAnn) >= 0;
+		// This should NOT throw an exception ("Interval has negative coordinates.")
+		VariantEffects varEffs = sep.variantEffect(var);
+		for (VariantEffect varEff : varEffs) {
+			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
+			if (verbose) System.out.println("\t" + vcfEff);
 		}
-
-		// Annotation found?
-		Assert.assertTrue("Annotation (SO) '" + expectedAnn + "' not found", foundSo);
-		Assert.assertTrue("Annotation '" + expectedAnn + "' not found in 'ANN' field", foundAnn);
-
 	}
 
 }

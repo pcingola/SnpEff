@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesApply;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCancer;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCircularGenome;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCodingTag;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesCutsomIntervals;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesEff;
@@ -54,47 +55,48 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesMarkerSeq;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesApply.class, //
-		TestCasesCancer.class, //
-		TestCasesCodingTag.class, //
-		TestCasesCutsomIntervals.class, //
-		TestCasesEff.class, //
-		TestCasesEmbl.class, //
-		TestCasesExonFrame.class, //
-		TestCasesErrors.class, //
-		TestCasesFilterTranscripts.class, //
-		TestCasesGenomicSequences.class, //
-		TestCasesGff3.class, //
-		TestCasesGtf22.class, //
-		TestCasesHgvs.class, //
-		TestCasesHgvsDnaDupIntegration.class, //
-		TestCasesHgvsHard.class, //
-		TestCasesHgvsLarge.class, //
-		TestCasesHgvsMnps.class, //
-		TestCasesHugeDeletions.class, //
-		TestCasesInsEtc.class, //
-		TestCasesInsVep.class, //
-		TestCasesLof.class, //
-		TestCasesMarkerSeq.class, //
-		TestCasesMissenseSilentRatio.class, //
-		TestCasesMixedVariants.class, //
-		TestCasesMnp.class, //
-		TestCasesMotif.class, //
-		TestCasesNextProt.class, //
-		TestCasesNmd.class, //
-		TestCasesNoChange.class, //
-		TestCasesProtein.class, //
-		TestCasesRefSeq.class, //
-		TestCasesRegulation.class, //
-		TestCasesSequenceOntology.class, //
-		TestCasesSnpEnsembl.class, //
-		TestCasesSnp.class, //
-		TestCasesTranscriptError.class, //
-		TestCasesTranscript.class, //
-		TestCasesVariant.class, //
-		TestCasesVcfs.class, //
-		TestCasesIntegrationSnpEff.class, //
-		TestCasesIntegrationSnpEffMultiThread.class, //
-		TestCasesIntegrationSnpEffMultiThread2.class //
+	TestCasesCancer.class, //
+	TestCasesCircularGenome.class, //
+	TestCasesCodingTag.class, //
+	TestCasesCutsomIntervals.class, //
+	TestCasesEff.class, //
+	TestCasesEmbl.class, //
+	TestCasesExonFrame.class, //
+	TestCasesErrors.class, //
+	TestCasesFilterTranscripts.class, //
+	TestCasesGenomicSequences.class, //
+	TestCasesGff3.class, //
+	TestCasesGtf22.class, //
+	TestCasesHgvs.class, //
+	TestCasesHgvsDnaDupIntegration.class, //
+	TestCasesHgvsHard.class, //
+	TestCasesHgvsLarge.class, //
+	TestCasesHgvsMnps.class, //
+	TestCasesHugeDeletions.class, //
+	TestCasesInsEtc.class, //
+	TestCasesInsVep.class, //
+	TestCasesLof.class, //
+	TestCasesMarkerSeq.class, //
+	TestCasesMissenseSilentRatio.class, //
+	TestCasesMixedVariants.class, //
+	TestCasesMnp.class, //
+	TestCasesMotif.class, //
+	TestCasesNextProt.class, //
+	TestCasesNmd.class, //
+	TestCasesNoChange.class, //
+	TestCasesProtein.class, //
+	TestCasesRefSeq.class, //
+	TestCasesRegulation.class, //
+	TestCasesSequenceOntology.class, //
+	TestCasesSnpEnsembl.class, //
+	TestCasesSnp.class, //
+	TestCasesTranscriptError.class, //
+	TestCasesTranscript.class, //
+	TestCasesVariant.class, //
+	TestCasesVcfs.class, //
+	TestCasesIntegrationSnpEff.class, //
+	TestCasesIntegrationSnpEffMultiThread.class, //
+	TestCasesIntegrationSnpEffMultiThread2.class //
 })
 public class TestSuiteIntegration {
 }

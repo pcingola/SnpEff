@@ -105,7 +105,7 @@ public class HgvsDna extends Hgvs {
 		int len = variant.getAlt().length();
 
 		if (strandPlus) {
-			sstart = variant.getStart() - len;
+			sstart = Math.max(0, variant.getStart() - len);
 			send = variant.getStart() - 1;
 		} else {
 			sstart = variant.getStart();
