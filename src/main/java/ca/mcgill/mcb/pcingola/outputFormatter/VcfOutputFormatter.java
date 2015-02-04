@@ -36,15 +36,6 @@ public class VcfOutputFormatter extends OutputFormatter {
 	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
 	List<VcfEntry> vcfEntries;
 
-	//	/**
-	//	 * Create a string that is safe (i.e. valid) to add in an INFO field
-	//	 */
-	//	public static String vcfInfoSafeString(String value) {
-	//		if (value == null) return value;
-	//		value = value.replaceAll("[ ,;|=()]", "_");
-	//		return value;
-	//	}
-
 	public VcfOutputFormatter() {
 		super();
 	}

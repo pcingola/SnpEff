@@ -1233,6 +1233,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			for (String alt : alts) {
 				List<Variant> variants = variants(chr, start, ref, alt, id);
 
+				// Set corresponding genotype
 				for (Variant variant : variants) {
 					if (useNumericGenotype) variant.setGenotype(Integer.toString(genotypeNumber));
 					else variant.setGenotype(alt);

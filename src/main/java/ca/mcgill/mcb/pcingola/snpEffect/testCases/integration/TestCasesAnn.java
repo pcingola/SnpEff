@@ -1,8 +1,10 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -16,9 +18,9 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 /**
  * Test case
  */
-public class TestCasesZzz extends TestCasesBase {
+public class TestCasesAnn extends TestCasesBase {
 
-	public TestCasesZzz() {
+	public TestCasesAnn() {
 		super();
 	}
 
@@ -30,7 +32,7 @@ public class TestCasesZzz extends TestCasesBase {
 		Gpr.debug("Test");
 
 		// Create command
-		String args[] = { "testHg3775Chr1", "tests/z.vcf" };
+		String args[] = { "testHg3775Chr1", "tests/test_ann_01.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
@@ -41,16 +43,28 @@ public class TestCasesZzz extends TestCasesBase {
 		List<VcfEntry> list = cmdEff.run(true);
 
 		// Expected results
-		Set<String> expected = new HashSet<String>();
-		expected.add("");
+		Set<String> allelesExpected = new HashSet<String>();
+		allelesExpected.add("AACACACACACACACACACACACACACACACACACACAC");
+		allelesExpected.add("AACACACACACACACACACACACACACACACACACACACAC");
+		allelesExpected.add("AACACACACACACACACACACACACACAC");
+		allelesExpected.add("AACACACACACACACACACACACACACACACACACACACACAC");
+		allelesExpected.add("AACACACACACACACACACACACACACACACACACAC");
 
 		// Find AA change for a genotype
+		Set<String> allelesReal = new HashSet<String>();
 		for (VcfEntry vcfEntry : list) {
 			if (debug) System.err.println(vcfEntry);
+
 			for (VcfEffect eff : vcfEntry.parseEffects()) {
-				System.err.println("\t" + eff + "\n\t\tAllele: " + eff.getAllele());
+				String allele = eff.getAllele();
+				if (verbose) System.err.println("\t" + eff + "\n\t\tAllele: " + allele);
+
+				Assert.assertTrue("Unexpected allele '" + allele + "'", allelesExpected.contains(allele));
+				allelesReal.add(allele);
 			}
 		}
+
+		Assert.assertEquals(allelesExpected, allelesReal);
 	}
 
 }

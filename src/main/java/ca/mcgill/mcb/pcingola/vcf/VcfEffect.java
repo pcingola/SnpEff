@@ -476,7 +476,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-					) len--;
+			) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
@@ -928,9 +928,10 @@ public class VcfEffect {
 		Transcript tr = variantEffect.getTranscript();
 
 		// Genotype
-		if (!var.isVariant()) genotype = "";
-		else if (var.isNonRef()) genotype = var.getGenotype();
+		if (var.getGenotype() != null) genotype = var.getGenotype();
+		else if (!var.isVariant()) genotype = var.getReference();
 		else genotype = var.getAlt();
+		// else if (var.isNonRef()) genotype = var.getGenotype();
 
 		// Effect
 		effectType = variantEffect.getEffectType();
