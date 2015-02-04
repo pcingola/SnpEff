@@ -65,6 +65,7 @@ public enum EffectType {
 	, TRANSCRIPT //
 	, GENE //
 	, SEQUENCE //
+	, CHROMOSOME_ELONGATION //
 	, CHROMOSOME //
 	, GENOME //
 	, NONE //
@@ -140,6 +141,7 @@ public enum EffectType {
 
 		case CDS:
 		case CHROMOSOME:
+		case CHROMOSOME_ELONGATION:
 		case CUSTOM:
 		case DOWNSTREAM:
 		case EXON:
@@ -176,6 +178,7 @@ public enum EffectType {
 		case NONE:
 		case CHROMOSOME:
 		case CHROMOSOME_LARGE_DELETION:
+		case CHROMOSOME_ELONGATION:
 		case CUSTOM:
 		case CDS:
 		case SEQUENCE:
@@ -271,6 +274,9 @@ public enum EffectType {
 
 		case CHROMOSOME:
 			return "chromosome";
+
+		case CHROMOSOME_ELONGATION:
+			return "feature_elongation";
 
 		case CODON_CHANGE:
 			return "coding_sequence_variant";
@@ -376,9 +382,6 @@ public enum EffectType {
 
 		case SYNONYMOUS_START:
 			return "initiator_codon_variant" + formatVersion.separator() + "non_canonical_start_codon";
-
-			//		case TRANSCRIPT:
-			//			return "nc_transcript_variant";
 
 		case TRANSCRIPT:
 			return "transcript";

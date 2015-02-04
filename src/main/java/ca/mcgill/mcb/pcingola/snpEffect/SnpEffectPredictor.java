@@ -89,7 +89,7 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-			) snpEffectPredictor.add(m);
+					) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}
@@ -644,7 +644,14 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Any errors or intergenic (i.e. did not hit any gene)
 		if (!hitChromo) {
-			if (Config.get().isErrorChromoHit()) variantEffects.addErrorWarning(variant, ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
+			// Special case: Insertion right after chromosome's last base
+			Chromosome chr = genome.getChromosome(variant.getChromosomeName());
+			if (variant.isIns() && variant.getStart() == (chr.getEnd() + 1)) {
+				// OK: This is just a chromosome extension
+				variantEffects.add(variant, null, EffectType.CHROMOSOME_ELONGATION, "");
+			} else if (Config.get().isErrorChromoHit()) {
+				variantEffects.addErrorWarning(variant, ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
+			}
 		} else if (!hitSomething) {
 			if (Config.get().isOnlyRegulation()) {
 				variantEffects.add(variant, null, EffectType.NONE, "");

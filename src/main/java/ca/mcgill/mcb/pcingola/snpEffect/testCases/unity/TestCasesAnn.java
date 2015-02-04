@@ -5,6 +5,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -282,7 +286,7 @@ public class TestCasesAnn extends TestCasesBase {
 		Assert.assertEquals("UBXN11", veff.getGeneName());
 		Assert.assertEquals("ENSG00000158062", veff.getGeneId());
 
-		// Feature type		
+		// Feature type
 		Assert.assertEquals("intergenic_region", veff.getFeatureType());
 
 		// FeatureId / transcriptId
@@ -314,6 +318,23 @@ public class TestCasesAnn extends TestCasesBase {
 
 		// Warning
 		Assert.assertEquals("", veff.getErrorsWarning());
+	}
+
+	@Test
+	public void test_05_Annotation_EndOfChromosome() {
+		Gpr.debug("Test");
+
+		// Create a variant: Insertion after last chromosome base
+		Variant variant = new Variant(genome.getChromosome("1"), 2001, "", "TTT", "");
+		VariantEffects veffs = snpEffectPredictor.variantEffect(variant);
+
+		// Check output
+		if (verbose) System.out.println("Number of effects: " + veffs.size());
+		Assert.assertEquals(1, veffs.size());
+
+		VariantEffect veff = veffs.get(0);
+		if (verbose) System.out.println("Effect type : " + veff.getEffectType());
+		Assert.assertEquals(EffectType.CHROMOSOME_ELONGATION, veff.getEffectType());
 	}
 
 }

@@ -1,64 +1,41 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.Config;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryGenBank;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
  * Test case
  */
-public class TestCasesZzz {
-
-	boolean verbose = false;
+public class TestCasesZzz extends TestCasesBase {
 
 	public TestCasesZzz() {
 		super();
 	}
 
-	/**
-	 * Build a genome from a genbank file and compare results to 'expected' results
-	 */
-	public SnpEffectPredictor build(String genome, String genBankFile) {
-		// Build
-		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
-		SnpEffPredictorFactoryGenBank sepfg = new SnpEffPredictorFactoryGenBank(config, genBankFile);
-		sepfg.setVerbose(verbose);
-
-		// Build
-		SnpEffectPredictor sep = sepfg.create();
-		return sep;
-	}
-
 	@Test
-	public void testCase_01_CircularGenome() {
+	public void test_05_Annotation_EndOfChromosome() {
 		Gpr.debug("Test");
 
-		// Create database & build interval forest
-		String genomeName = "testCase";
-		String genBankFile = "tests/genes_circular.gbk";
-		SnpEffectPredictor sep = build(genomeName, genBankFile);
-		sep.buildForest();
+		verbose = true;
 
-		// Create variant
-		Genome genome = sep.getGenome();
-		Variant var = new Variant(genome.getChromosome("chr"), 2, "", "TATTTTTCAG", "");
+		// Create a variant: Insertion after last chromosome base
+		Variant variant = new Variant(genome.getChromosome("1"), 2001, "", "TTT", "");
+		VariantEffects veffs = snpEffectPredictor.variantEffect(variant);
 
-		// Calculate effect
-		// This should NOT throw an exception ("Interval has negative coordinates.")
-		VariantEffects varEffs = sep.variantEffect(var);
-		for (VariantEffect varEff : varEffs) {
-			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println("\t" + vcfEff);
-		}
+		// Check output
+		if (verbose) System.out.println("Number of effects: " + veffs.size());
+		Assert.assertEquals(1, veffs.size());
+
+		VariantEffect veff = veffs.get(0);
+		if (verbose) System.out.println("Effect type : " + veff.getEffectType() + "\t" + veff.getEffectTypeString(true));
+		Assert.assertEquals(EffectType.CHROMOSOME_ELONGATION, veff.getEffectType());
 	}
 
 }
