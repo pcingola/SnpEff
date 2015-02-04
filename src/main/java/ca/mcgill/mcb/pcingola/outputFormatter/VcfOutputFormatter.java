@@ -76,11 +76,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 		// Do all effects have warnings or errors (this could produce an empty 'EFF' field in GATK mode?
 		boolean allWarnings = false;
-		if (gatk) {
-			allWarnings = variantEffects.size() > 0;
-			for (VariantEffect varEff : variantEffects)
-				allWarnings &= (varEff.hasError() || varEff.hasWarning());
-		}
+		if (gatk) allWarnings = allWarnings();
 
 		// Sort change effects by impact
 		Collections.sort(variantEffects);
@@ -201,6 +197,18 @@ public class VcfOutputFormatter extends OutputFormatter {
 		}
 
 		needAddInfo = false; // Don't add info twice
+	}
+
+	/**
+	 * Are all varaint effects having some sort of warning or error?
+	 */
+	boolean allWarnings() {
+		if (variantEffects.size() <= 0) return false; // Emtpy
+
+		for (VariantEffect varEff : variantEffects)
+			if (!(varEff.hasError() || varEff.hasWarning())) return false;
+
+		return true;
 	}
 
 	@Override
