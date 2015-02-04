@@ -32,7 +32,7 @@ public class TestCasesAnn extends TestCasesBase {
 		Gpr.debug("Test");
 
 		// Create command
-		String args[] = { "testHg3775Chr1", "tests/test_ann_01.vcf" };
+		String args[] = { "testHg3775Chr1", "tests/test_ann_integration_01.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
