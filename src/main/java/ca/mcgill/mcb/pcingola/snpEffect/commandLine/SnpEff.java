@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import ca.mcgill.mcb.pcingola.Pcingola;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -114,6 +115,7 @@ public class SnpEff implements CommandLine {
 	protected ArrayList<String> customIntervalFiles; // Custom interval files (bed)
 	protected ArrayList<String> filterIntervalFiles;// Files used for filter intervals
 	protected HashSet<String> regulationTracks = new HashSet<String>();
+	protected Map<String, String> configOverride = new HashMap<>();
 
 	/**
 	 * Main
@@ -254,7 +256,7 @@ public class SnpEff implements CommandLine {
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
 			);
 
-		config = new Config(genomeVer, configFile, dataDir); // Read configuration
+		config = new Config(genomeVer, configFile, dataDir, configOverride); // Read configuration
 		if (verbose) Timer.showStdErr("done");
 
 		// Set some parameters
@@ -667,6 +669,13 @@ public class SnpEff implements CommandLine {
 				if ((arg.equals("-c") || arg.equalsIgnoreCase("-config"))) {
 					if ((i + 1) < args.length) configFile = args[++i];
 					else usage("Option '-c' without config file argument");
+				} else if (arg.equalsIgnoreCase("-configOption")) {
+					if ((i + 1) < args.length) {
+						String nameValue = args[++i];
+						String nv[] = nameValue.split("=", 2);
+						if (nv.length > 0) configOverride.put(nv[0], nv[1]);
+						else usage("Cannot parse config option (expected format 'name=value'): " + nameValue);
+					} else usage("Option '-configOption' without argument");
 				} else if (arg.equalsIgnoreCase("-canon")) canonical = true; // Use canonical transcripts
 				else if (arg.equals("-d") || arg.equalsIgnoreCase("-debug")) debug = verbose = true;
 				else if (arg.equalsIgnoreCase("-dataDir")) {
@@ -780,6 +789,9 @@ public class SnpEff implements CommandLine {
 			if (err != null) err.append(t.getMessage());
 			t.printStackTrace();
 		}
+
+		// Update config if needed
+		if (config == null) config = snpEffCmd.getConfig();
 
 		// Report to server (usage statistics)
 		if (log) {
@@ -913,6 +925,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.upDownStreamLength = upDownStreamLength;
 		snpEffCmd.verbose = verbose;
 		snpEffCmd.shiftHgvs = shiftHgvs;
+		snpEffCmd.configOverride = configOverride;
 
 		// Help requested?
 		if (help) {
@@ -961,6 +974,7 @@ public class SnpEff implements CommandLine {
 	protected void usageGenericAndDb() {
 		System.err.println("\nGeneric options:");
 		System.err.println("\t-c , -config                 : Specify config file");
+		System.err.println("\t-configOption name=value     : Override a config file option");
 		System.err.println("\t-d , -debug                  : Debug mode (very verbose).");
 		System.err.println("\t-dataDir <path>              : Override data_dir parameter from config file.");
 		System.err.println("\t-download                    : Download a SnpEff database, if not available locally. Default: " + download);

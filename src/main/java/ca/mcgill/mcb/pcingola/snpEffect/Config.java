@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
@@ -78,21 +79,21 @@ public class Config implements Serializable, Iterable<String> {
 	 * Create a config (uses DEFAULT_CONFIG_FILE)
 	 */
 	public Config(String genomeVersion) {
-		init(genomeVersion, DEFAULT_CONFIG_FILE, null);
+		init(genomeVersion, DEFAULT_CONFIG_FILE, null, null);
 	}
 
 	/**
 	 * Create a configuration from 'configFileName'
 	 */
 	public Config(String genomeVersion, String configFileName) {
-		init(genomeVersion, configFileName, null);
+		init(genomeVersion, configFileName, null, null);
 	}
 
 	/**
 	 * Create a configuration from 'configFileName'
 	 */
-	public Config(String genomeVersion, String configFileName, String dataDir) {
-		init(genomeVersion, configFileName, dataDir);
+	public Config(String genomeVersion, String configFileName, String dataDir, Map<String, String> override) {
+		init(genomeVersion, configFileName, dataDir, override);
 	}
 
 	/**
@@ -393,14 +394,14 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Create a configuration from 'configFileName'
 	 */
-	void init(String genomeVersion, String configFileName, String dataDir) {
+	void init(String genomeVersion, String configFileName, String dataDir, Map<String, String> override) {
 		treatAllAsProteinCoding = false;
 		onlyRegulation = false;
 		errorOnMissingChromo = true;
 		errorChromoHit = true;
 		this.dataDir = dataDir;
 
-		readConfig(genomeVersion, configFileName); // Read config file and get a genome
+		readConfig(genomeVersion, configFileName, override); // Read config file and get a genome
 		genome = genomeByVersion.get(genomeVersion); // Set a genome
 		if (!genomeVersion.isEmpty() && (genome == null)) throw new RuntimeException("No such genome '" + genomeVersion + "'");
 		configInstance = this;
@@ -452,11 +453,11 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Read configuration file and create all 'genomes'
 	 */
-	private void readConfig(String genomeVersion, String configFileName) {
+	private void readConfig(String genomeVersion, String configFileName, Map<String, String> override) {
 		//---
 		// Read properties file
 		//---
-		configFileName = readProperties(configFileName);
+		configFileName = readProperties(configFileName, override);
 
 		// Get config file directory
 		configDirPath = "";
@@ -599,6 +600,18 @@ public class Config implements Serializable, Iterable<String> {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	String readProperties(String configFileName, Map<String, String> override) {
+		String configFile = readProperties(configFileName);
+
+		if (override != null) {
+			for (String key : override.keySet()) {
+				properties.setProperty(key, override.get(key));
+			}
+		}
+
+		return configFile;
 	}
 
 	public void setDebug(boolean debug) {

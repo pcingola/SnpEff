@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import junit.framework.Assert;
 
@@ -6,17 +6,15 @@ import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Test case
  */
-public class TestCasesZzz extends TestCasesBase {
+public class TestCasesConfig {
 
-	public TestCasesZzz() {
-		super();
-	}
+	boolean debug = false;
+	boolean verbose = false;
 
 	/**
 	 * Check that config file can be overriden by command line options
@@ -28,7 +26,7 @@ public class TestCasesZzz extends TestCasesBase {
 		// Create command
 		String repo = "http://nonsense.url/test/zzz";
 		String args[] = { //
-		"-configOption" //
+				"-configOption" //
 				, Config.KEY_DATABASE_REPOSITORY + "=" + repo //
 				, "testHg3775Chr22" //
 				, "tests/test_ann_01.vcf" //
