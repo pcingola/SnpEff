@@ -387,34 +387,43 @@ public class VcfEffect {
 		}
 
 		// Add gene info
-		// TODO: Code here should not be using 'variantEffect'
-		Gene gene = variantEffect.getGene();
-		Transcript tr = variantEffect.getTranscript();
-		if (gene != null) {
-			// Gene name
+		if (variantEffect != null) {
+			Gene gene = variantEffect.getGene();
+			Transcript tr = variantEffect.getTranscript();
+			if (gene != null) {
+				// Gene name
+				effBuff.append(VcfEntry.vcfInfoSafe(useGeneId ? geneId : geneName));
+				effBuff.append("|");
+
+				// Transcript biotype
+				if (tr != null) {
+					if ((tr.getBioType() != null) && !tr.getBioType().isEmpty()) effBuff.append(tr.getBioType());
+					else effBuff.append(tr.isProteinCoding() ? "protein_coding" : ""); // No biotype? Add protein_coding of we know it is.
+				}
+				effBuff.append("|");
+
+				// Protein coding gene?
+				String coding = "";
+				if (gene.getGenome().hasCodingInfo()) coding = (gene.isProteinCoding() ? VariantEffect.Coding.CODING.toString() : VariantEffect.Coding.NON_CODING.toString());
+				effBuff.append(coding);
+				effBuff.append("|");
+			} else if (variantEffect.isRegulation()) {
+				Regulation reg = (Regulation) variantEffect.getMarker();
+				effBuff.append("|" + reg.getCellType() + "||");
+			} else if (variantEffect.isCustom()) {
+				Marker m = variantEffect.getMarker();
+				if (m != null) effBuff.append("|" + VcfEntry.vcfInfoSafe(m.getId()) + "||");
+				else effBuff.append("|||");
+			} else effBuff.append("|||");
+		} else {
+			// No variantEffect? Use parsed information
 			effBuff.append(VcfEntry.vcfInfoSafe(useGeneId ? geneId : geneName));
 			effBuff.append("|");
-
-			// Transcript biotype
-			if (tr != null) {
-				if ((tr.getBioType() != null) && !tr.getBioType().isEmpty()) effBuff.append(tr.getBioType());
-				else effBuff.append(tr.isProteinCoding() ? "protein_coding" : ""); // No biotype? Add protein_coding of we know it is.
-			}
+			effBuff.append(bioType);
 			effBuff.append("|");
-
-			// Protein coding gene?
-			String coding = "";
-			if (gene.getGenome().hasCodingInfo()) coding = (gene.isProteinCoding() ? VariantEffect.Coding.CODING.toString() : VariantEffect.Coding.NON_CODING.toString());
 			effBuff.append(coding);
 			effBuff.append("|");
-		} else if (variantEffect.isRegulation()) {
-			Regulation reg = (Regulation) variantEffect.getMarker();
-			effBuff.append("|" + reg.getCellType() + "||");
-		} else if (variantEffect.isCustom()) {
-			Marker m = variantEffect.getMarker();
-			if (m != null) effBuff.append("|" + VcfEntry.vcfInfoSafe(m.getId()) + "||");
-			else effBuff.append("|||");
-		} else effBuff.append("|||");
+		}
 
 		// Add transcript info
 		effBuff.append(VcfEntry.vcfInfoSafe(transcriptId));
@@ -476,7 +485,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-			) len--;
+					) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;

@@ -556,7 +556,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		sb.append("# Number of chromosomes      : " + getChromosomes().size() + "\n");
 		sb.append("# Chromosomes names [sizes]  :\n");
 		for (Chromosome chr : getChromosomesSortedSize())
-			sb.append("#\t\t'" + chr.getId() + "' [" + chr.size() + "]\n");
+			sb.append("#\t\t'" + chr.getId() + "' [" + chr.size() + "]\t" + chr.getCodonTable().getName() + "\n");
 
 		if (countTranscriptsProteinCoding <= 0) sb.append("\nWARNING! : No protein coding transcripts found.\n");
 

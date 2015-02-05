@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import ca.mcgill.mcb.pcingola.filter.VariantEffectFilter;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -36,7 +37,7 @@ public abstract class OutputFormatter {
 	BufferedWriter out;
 	Marker section;
 	VariantEffectFilter variantEffectResutFilter = null; // Filter prediction results
-	ArrayList<VariantEffect> variantEffects;
+	List<VariantEffect> variantEffects;
 	Config config;
 
 	public OutputFormatter() {
@@ -145,7 +146,7 @@ public abstract class OutputFormatter {
 	}
 
 	public void setChangeEffectResutFilter(VariantEffectFilter changeEffectResutFilter) {
-		this.variantEffectResutFilter = changeEffectResutFilter;
+		variantEffectResutFilter = changeEffectResutFilter;
 	}
 
 	public void setChrStr(String chrStr) {

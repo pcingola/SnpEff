@@ -64,8 +64,6 @@ public class CodonTable {
 
 	/**
 	 * Translate codons to an amino acid sequence
-	 * @param codons
-	 * @return
 	 */
 	public String aa(String codons) {
 		if (codons.isEmpty()) return "";
@@ -100,7 +98,7 @@ public class CodonTable {
 	 *
 	 * Reference: http://www.hgvs.org/mutnomen/standards.html#aalist
 	 *
-	 * @param aa in three letter code
+	 * @param Amino acid in three letter code
 	 */
 	public String aaThreeLetterCode(String aa) {
 		// Single character?
@@ -150,8 +148,6 @@ public class CodonTable {
 
 	/**
 	 * Translate an amino acid into a codon
-	 * @param codon
-	 * @return
 	 */
 	public String codon(String aa) {
 		String codon = aa2codon.get(aa.toUpperCase());
@@ -191,8 +187,6 @@ public class CodonTable {
 
 	/**
 	 * Is 'codon' a start codon in this table?
-	 * @param codon
-	 * @return
 	 */
 	public boolean isStart(String codon) {
 		if (codon.length() == 3) return startCodons.contains(codon.toUpperCase());
@@ -208,8 +202,6 @@ public class CodonTable {
 
 	/**
 	 * Is the first codon a 'start' codon?
-	 * @param codon
-	 * @return
 	 */
 	public boolean isStartFirst(String codon) {
 		if (codon.length() < 3) return false;
@@ -218,8 +210,6 @@ public class CodonTable {
 
 	/**
 	 * Is 'codon' a stop codon in this table?
-	 * @param codon
-	 * @return
 	 */
 	public boolean isStop(String codon) {
 		if (codon.length() == 3) return stopCodons.contains(codon.toUpperCase());
@@ -235,8 +225,6 @@ public class CodonTable {
 
 	/**
 	 * Is there a stop codon in this amino acid sequence
-	 * @param aas
-	 * @return
 	 */
 	public boolean isStopAa(String aas) {
 		return aas.indexOf('*') >= 0;

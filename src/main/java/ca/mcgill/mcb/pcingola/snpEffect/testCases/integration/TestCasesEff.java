@@ -176,4 +176,30 @@ public class TestCasesEff {
 		Assert.assertFalse(list.get(0).getInfoStr().isEmpty());
 	}
 
+	/**
+	 * Fixing bug: GATK does not annotate all VCF entries
+	 */
+	@Test
+	public void test_08_gatk_missing_annotations() {
+		Gpr.debug("Test");
+
+		String genomeName = "testMycobacterium_tuberculosis_CCDC5079_uid203790";
+		String vcf = "tests/test_gatk_no_annotations.vcf";
+		String args[] = { "-noLog", "-o", "gatk" };
+		List<VcfEntry> vcfEntries = snpEffect(genomeName, vcf, args);
+
+		for (VcfEntry ve : vcfEntries) {
+			int count = 0;
+			if (verbose) System.out.println(ve);
+
+			for (VcfEffect veff : ve.parseEffects()) {
+				if (verbose) System.out.println("\t'" + veff.getEffectsStr() + "'\t" + veff);
+				count++;
+			}
+
+			// Check that there is one and only one annotation
+			Assert.assertEquals(1, count);
+		}
+	}
+
 }

@@ -74,19 +74,11 @@ public class VcfOutputFormatter extends OutputFormatter {
 		// No effects to show?
 		if (variantEffects.isEmpty()) return;
 
-		// Do all effects have warnings or errors (this could produce an empty 'EFF' field in GATK mode?
-		boolean allWarnings = false;
-		if (gatk) allWarnings = allWarnings();
-
 		// Sort change effects by impact
 		Collections.sort(variantEffects);
 
-		// GATK only picks the first (i.e. highest impact) effect
-		if (gatk && variantEffects.size() > 1) {
-			ArrayList<VariantEffect> varEffsGatk = new ArrayList<VariantEffect>();
-			varEffsGatk.add(variantEffects.get(0));
-			variantEffects = varEffsGatk;
-		}
+		// GATK mode: Picks the first (i.e. highest impact) effect
+		if (gatk) variantEffects = variantEffectsGatk();
 
 		//---
 		// Calculate all effects and genes
@@ -96,9 +88,6 @@ public class VcfOutputFormatter extends OutputFormatter {
 		HashSet<String> oicr = (useOicr ? new HashSet<String>() : null);
 		boolean addCustomFields = false;
 		for (VariantEffect variantEffect : variantEffects) {
-
-			// In GATK mode, skip changeEffects having errors or warnings (unless ALL effects have warnings)
-			if (gatk && !allWarnings && (variantEffect.hasError() || variantEffect.hasWarning())) continue;
 
 			// If it is not filtered out by changeEffectResutFilter  => Show it
 			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(variantEffect))) {
@@ -203,7 +192,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 	 * Are all varaint effects having some sort of warning or error?
 	 */
 	boolean allWarnings() {
-		if (variantEffects.size() <= 0) return false; // Emtpy
+		if (variantEffects.size() <= 0) return false; // Emtpy => No warnings
 
 		for (VariantEffect varEff : variantEffects)
 			if (!(varEff.hasError() || varEff.hasWarning())) return false;
@@ -320,6 +309,36 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 		if (sb.length() > 0) sb.deleteCharAt(sb.length() - 1); // Remove last comma
 		return sb.toString();
+	}
+
+	/**
+	 * GATK mode: Pick the first (i.e. highest impact) effect that has
+	 * no error/warning. If all variant effects have warnings or errors, just
+	 * pick the first (to avoid having an empty annotation)
+	 */
+	List<VariantEffect> variantEffectsGatk() {
+		if (variantEffects.size() <= 1) return variantEffects;
+
+		// Create a new list of variant effects
+		ArrayList<VariantEffect> varEffsGatk = new ArrayList<VariantEffect>();
+
+		// In GATK mode, skip varianrEffects having errors or warnings (unless ALL effects have warnings)
+		if (allWarnings()) {
+			// Do all effects have warnings or errors?
+			// We avoid producing an empty 'EFF' field in GATK mode by just picking the first
+			varEffsGatk.add(variantEffects.get(0));
+		} else {
+			// Pick the first variantEffect that has no error or warning
+			for (VariantEffect variantEffect : variantEffects) {
+				if (!variantEffect.hasError() && !variantEffect.hasWarning()) {
+					varEffsGatk.add(variantEffect);
+					return varEffsGatk;
+				}
+			}
+		}
+
+		// Note: This list will always have at most one element
+		return varEffsGatk;
 	}
 
 }
