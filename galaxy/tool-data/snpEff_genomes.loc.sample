@@ -1320,6 +1320,7 @@ Aromatoleum_aromaticum_EbN1_uid58231 	 Aromatoleum_aromaticum_EbN1_uid58231   Ar
 GCA_000025965.1.21 	 Aromatoleum_aromaticum_ebn1   GCA_000025965.1.21
 GCA_000025965.1.22 	 Aromatoleum_aromaticum_ebn1   GCA_000025965.1.22
 Arthrobacter_FB24_uid58141 	 Arthrobacter_FB24_uid58141   Arthrobacter_FB24_uid58141
+Arthrobacter_Rue61a_uid174511 	 Arthrobacter_Rue61a_uid174511   Arthrobacter_Rue61a_uid174511
 Arthrobacter_arilaitensis_Re117_uid53509 	 Arthrobacter_arilaitensis_Re117_uid53509   Arthrobacter_arilaitensis_Re117_uid53509
 GCA_000197735.1.21 	 Arthrobacter_arilaitensis_re117   GCA_000197735.1.21
 GCA_000197735.1.22 	 Arthrobacter_arilaitensis_re117   GCA_000197735.1.22
@@ -3571,6 +3572,7 @@ Butyrivibrio_proteoclasticus_B316_uid51489 	 Butyrivibrio_proteoclasticus_B316_u
 GCA_000145035.1.21 	 Butyrivibrio_proteoclasticus_b316   GCA_000145035.1.21
 GCA_000145035.1.22 	 Butyrivibrio_proteoclasticus_b316   GCA_000145035.1.22
 WS241 	 C.   WS241
+CLUSTERS 	 CLUSTERS   CLUSTERS
 GCA_000315795.1.21 	 Caenispirillum_salinarum_ak4   GCA_000315795.1.21
 GCA_000315795.1.22 	 Caenispirillum_salinarum_ak4   GCA_000315795.1.22
 C_brenneri-6.0.1b.21 	 Caenorhabditis_brenneri   C_brenneri-6.0.1b.21
@@ -4381,6 +4383,7 @@ GCA_000348925.1.21 	 Cesiribacter_andamanensis_amv16   GCA_000348925.1.21
 GCA_000348925.1.22 	 Cesiribacter_andamanensis_amv16   GCA_000348925.1.22
 GCA_000479045.1.22 	 Cetobacterium_somerae_atcc_baa_474   GCA_000479045.1.22
 Chamaesiphon_PCC_6605_uid183005 	 Chamaesiphon_PCC_6605_uid183005   Chamaesiphon_PCC_6605_uid183005
+Chamaesiphon_minutus_PCC_6605_uid183005 	 Chamaesiphon_minutus_PCC_6605_uid183005   Chamaesiphon_minutus_PCC_6605_uid183005
 GCA_000317145.1.21 	 Chamaesiphon_minutus_pcc_6605   GCA_000317145.1.21
 GCA_000317145.1.22 	 Chamaesiphon_minutus_pcc_6605   GCA_000317145.1.22
 Chelativorans_BNC1_uid58069 	 Chelativorans_BNC1_uid58069   Chelativorans_BNC1_uid58069
@@ -4463,9 +4466,11 @@ GCA_000417845.1.21 	 Chlamydia_psittaci_84_8471_1   GCA_000417845.1.21
 GCA_000417845.1.22 	 Chlamydia_psittaci_84_8471_1   GCA_000417845.1.22
 GCA_000415785.1.21 	 Chlamydia_psittaci_99dc5   GCA_000415785.1.21
 GCA_000415785.1.22 	 Chlamydia_psittaci_99dc5   GCA_000415785.1.22
+Chlamydia_psittaci_CP3_uid175578 	 Chlamydia_psittaci_CP3_uid175578   Chlamydia_psittaci_CP3_uid175578
 Chlamydia_psittaci_GR9_uid175572 	 Chlamydia_psittaci_GR9_uid175572   Chlamydia_psittaci_GR9_uid175572
 Chlamydia_psittaci_M56_uid175576 	 Chlamydia_psittaci_M56_uid175576   Chlamydia_psittaci_M56_uid175576
 Chlamydia_psittaci_MN_uid175573 	 Chlamydia_psittaci_MN_uid175573   Chlamydia_psittaci_MN_uid175573
+Chlamydia_psittaci_NJ1_uid175579 	 Chlamydia_psittaci_NJ1_uid175579   Chlamydia_psittaci_NJ1_uid175579
 Chlamydia_psittaci_VS225_uid175574 	 Chlamydia_psittaci_VS225_uid175574   Chlamydia_psittaci_VS225_uid175574
 Chlamydia_psittaci_WC_uid175577 	 Chlamydia_psittaci_WC_uid175577   Chlamydia_psittaci_WC_uid175577
 Chlamydia_psittaci_WS_RT_E30_uid175575 	 Chlamydia_psittaci_WS_RT_E30_uid175575   Chlamydia_psittaci_WS_RT_E30_uid175575
@@ -4523,6 +4528,7 @@ Chlamydia_trachomatis_E_150_uid161403 	 Chlamydia_trachomatis_E_150_uid161403   
 Chlamydia_trachomatis_E_Bour_uid196775 	 Chlamydia_trachomatis_E_Bour_uid196775   Chlamydia_trachomatis_E_Bour_uid196775
 Chlamydia_trachomatis_E_C599_uid222812 	 Chlamydia_trachomatis_E_C599_uid222812   Chlamydia_trachomatis_E_C599_uid222812
 Chlamydia_trachomatis_E_SW3_uid167483 	 Chlamydia_trachomatis_E_SW3_uid167483   Chlamydia_trachomatis_E_SW3_uid167483
+Chlamydia_trachomatis_E_SotonE4_uid196776 	 Chlamydia_trachomatis_E_SotonE4_uid196776   Chlamydia_trachomatis_E_SotonE4_uid196776
 Chlamydia_trachomatis_E_SotonE8_uid196777 	 Chlamydia_trachomatis_E_SotonE8_uid196777   Chlamydia_trachomatis_E_SotonE8_uid196777
 Chlamydia_trachomatis_F_SW4_uid167484 	 Chlamydia_trachomatis_F_SW4_uid167484   Chlamydia_trachomatis_F_SW4_uid167484
 Chlamydia_trachomatis_F_SW5_uid167485 	 Chlamydia_trachomatis_F_SW5_uid167485   Chlamydia_trachomatis_F_SW5_uid167485
@@ -4553,6 +4559,7 @@ Chlamydia_trachomatis_L2b_Ams5_uid196796 	 Chlamydia_trachomatis_L2b_Ams5_uid196
 Chlamydia_trachomatis_L2b_CV204_uid196790 	 Chlamydia_trachomatis_L2b_CV204_uid196790   Chlamydia_trachomatis_L2b_CV204_uid196790
 Chlamydia_trachomatis_L2b_Canada1_uid196798 	 Chlamydia_trachomatis_L2b_Canada1_uid196798   Chlamydia_trachomatis_L2b_Canada1_uid196798
 Chlamydia_trachomatis_L2b_Canada2_uid196799 	 Chlamydia_trachomatis_L2b_Canada2_uid196799   Chlamydia_trachomatis_L2b_Canada2_uid196799
+Chlamydia_trachomatis_L2b_LST_uid196789 	 Chlamydia_trachomatis_L2b_LST_uid196789   Chlamydia_trachomatis_L2b_LST_uid196789
 Chlamydia_trachomatis_L2b_UCH_1_proctitis_uid61635 	 Chlamydia_trachomatis_L2b_UCH_1_proctitis_uid61635   Chlamydia_trachomatis_L2b_UCH_1_proctitis_uid61635
 Chlamydia_trachomatis_L2b_UCH_2_uid196788 	 Chlamydia_trachomatis_L2b_UCH_2_uid196788   Chlamydia_trachomatis_L2b_UCH_2_uid196788
 Chlamydia_trachomatis_L2c_uid68843 	 Chlamydia_trachomatis_L2c_uid68843   Chlamydia_trachomatis_L2c_uid68843
@@ -5968,6 +5975,7 @@ GCA_000069785.1.21 	 Cupriavidus_taiwanensis_lmg_19424   GCA_000069785.1.21
 GCA_000069785.1.22 	 Cupriavidus_taiwanensis_lmg_19424   GCA_000069785.1.22
 ASM9120v1.21 	 Cyanidioschyzon_merolae   ASM9120v1.21
 Cyanobacterium_PCC_10605_uid183340 	 Cyanobacterium_PCC_10605_uid183340   Cyanobacterium_PCC_10605_uid183340
+Cyanobacterium_aponinum_PCC_10605_uid183340 	 Cyanobacterium_aponinum_PCC_10605_uid183340   Cyanobacterium_aponinum_PCC_10605_uid183340
 GCA_000317675.1.21 	 Cyanobacterium_aponinum_pcc_10605   GCA_000317675.1.21
 GCA_000317675.1.22 	 Cyanobacterium_aponinum_pcc_10605   GCA_000317675.1.22
 Cyanobacterium_stanieri_PCC_7202_uid183337 	 Cyanobacterium_stanieri_PCC_7202_uid183337   Cyanobacterium_stanieri_PCC_7202_uid183337
@@ -12310,6 +12318,7 @@ GCA_000492835.1.22 	 Klebsiella_pneumoniae_mgh_40   GCA_000492835.1.22
 GCA_000492795.1.22 	 Klebsiella_pneumoniae_mgh_44   GCA_000492795.1.22
 GCA_000492775.1.22 	 Klebsiella_pneumoniae_mgh_46   GCA_000492775.1.22
 GCA_000492755.1.22 	 Klebsiella_pneumoniae_mgh_48   GCA_000492755.1.22
+Klebsiella_pneumoniae_rhinoscleromatis_SB3432_uid203334 	 Klebsiella_pneumoniae_rhinoscleromatis_SB3432_uid203334   Klebsiella_pneumoniae_rhinoscleromatis_SB3432_uid203334
 GCA_000346145.1.21 	 Klebsiella_pneumoniae_ryc492   GCA_000346145.1.21
 GCA_000346145.1.22 	 Klebsiella_pneumoniae_ryc492   GCA_000346145.1.22
 GCA_000294365.1.21 	 Klebsiella_pneumoniae_subsp_pneumoniae_1084   GCA_000294365.1.21
@@ -13175,6 +13184,7 @@ Legionella_pneumophila_Corby_uid58733 	 Legionella_pneumophila_Corby_uid58733   
 Legionella_pneumophila_HL06041035_uid170534 	 Legionella_pneumophila_HL06041035_uid170534   Legionella_pneumophila_HL06041035_uid170534
 Legionella_pneumophila_Hextuple_2q_uid197191 	 Legionella_pneumophila_Hextuple_2q_uid197191   Legionella_pneumophila_Hextuple_2q_uid197191
 Legionella_pneumophila_Hextuple_3a_uid197192 	 Legionella_pneumophila_Hextuple_3a_uid197192   Legionella_pneumophila_Hextuple_3a_uid197192
+Legionella_pneumophila_LPE509_uid193710 	 Legionella_pneumophila_LPE509_uid193710   Legionella_pneumophila_LPE509_uid193710
 Legionella_pneumophila_Lens_uid58209 	 Legionella_pneumophila_Lens_uid58209   Legionella_pneumophila_Lens_uid58209
 Legionella_pneumophila_Lorraine_uid170535 	 Legionella_pneumophila_Lorraine_uid170535   Legionella_pneumophila_Lorraine_uid170535
 Legionella_pneumophila_Paris_uid58211 	 Legionella_pneumophila_Paris_uid58211   Legionella_pneumophila_Paris_uid58211
@@ -13733,6 +13743,7 @@ GCA_000167135.1.21 	 Listeria_monocytogenes_serotype_1_2a_str_f6854   GCA_000167
 GCA_000167135.1.22 	 Listeria_monocytogenes_serotype_1_2a_str_f6854   GCA_000167135.1.22
 Listeria_monocytogenes_serotype_1_2b_SLCC2755_uid52455 	 Listeria_monocytogenes_serotype_1_2b_SLCC2755_uid52455   Listeria_monocytogenes_serotype_1_2b_SLCC2755_uid52455
 GCA_000197755.2.21 	 Listeria_monocytogenes_serotype_1_2b_str_slcc2755   GCA_000197755.2.21
+Listeria_monocytogenes_serotype_1_2c_SLCC2372_uid174872 	 Listeria_monocytogenes_serotype_1_2c_SLCC2372_uid174872   Listeria_monocytogenes_serotype_1_2c_SLCC2372_uid174872
 Listeria_monocytogenes_serotype_4a_L99_uid161953 	 Listeria_monocytogenes_serotype_4a_L99_uid161953   Listeria_monocytogenes_serotype_4a_L99_uid161953
 Listeria_monocytogenes_serotype_4b_F2365_uid57689 	 Listeria_monocytogenes_serotype_4b_F2365_uid57689   Listeria_monocytogenes_serotype_4b_F2365_uid57689
 Listeria_monocytogenes_serotype_4b_LL195_uid182103 	 Listeria_monocytogenes_serotype_4b_LL195_uid182103   Listeria_monocytogenes_serotype_4b_LL195_uid182103
@@ -22911,6 +22922,7 @@ testHg19Chr13 	 Test   testHg19Chr13
 testHg19Chr17 	 Test   testHg19Chr17
 testMacuminata 	 Test   testMacuminata
 testMaizeZmB73 	 Test   testMaizeZmB73
+testMycobacterium_tuberculosis_CCDC5079_uid203790 	 Test   testMycobacterium_tuberculosis_CCDC5079_uid203790
 testNM_015296 	 Test   testNM_015296
 test_ENST00000597499 	 Test   test_ENST00000597499
 test 	 TestCase   test

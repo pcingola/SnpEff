@@ -102,7 +102,7 @@ public class SnpEffCmdProtein extends SnpEff {
 					+ "\n\tTranscript ID : '" + trId + "'"//
 					+ "\n\tProtein       : " + proteinByTrId.get(trId) //
 					+ "\n\tProtein (new) : " + seq //
-			);
+					);
 
 		// Pick the first space separated string
 		if (trId.indexOf(' ') > 0) trId = trId.split("\\s")[0];
@@ -141,9 +141,7 @@ public class SnpEffCmdProtein extends SnpEff {
 
 		if (codonTables) {
 			// Compare proteins using ALL codon tables
-
 			checkCodonTables();
-
 		} else {
 			// Compare proteins
 			proteinCompare(null, true);
@@ -294,7 +292,7 @@ public class SnpEffCmdProtein extends SnpEff {
 								+ "\tMax. possible score: " + maxScore //
 								+ "\tDiff: " + (maxScore - score) //
 								+ "\n" + sw //
-						);
+								);
 						System.err.println("Transcript details:\n" + tr);
 					}
 
@@ -319,13 +317,13 @@ public class SnpEffCmdProtein extends SnpEff {
 		System.out.println("\tProtein check:" //
 				+ "\t" + genome.getVersion() //
 				+ (chr != null ? "\tChromosome: " + chr : "") //
-				+ "\tCodon table: " + CodonTables.getInstance().getTable(genome, chr).getName() //
+				+ (chr != null ? "\tCodon table: " + CodonTables.getInstance().getTable(genome, chr).getName() : "") //
 				+ "\tOK: " + countOk //
 				+ "\tWarnings: " + countWarnings //
 				+ "\tNot found: " + countNotFound //
 				+ "\tErrors: " + countErrors //
 				+ "\tError percentage: " + (100 * errorRate) + "%" //
-		);
+				);
 
 		// Add to totals
 		if (addTotals) {

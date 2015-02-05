@@ -114,7 +114,7 @@ public class SnpEffCmdCds extends SnpEff {
 				} else if ((mRna.length() < cdsReference.length()) // CDS longer than mRNA? May be it is actually an mRNA + poly-A tail (instead of a CDS)
 						&& cdsReference.substring(mRna.length()).replace('A', ' ').trim().isEmpty() // May be it is an mRNA and it has a ploy-A tail added
 						&& cdsReference.substring(0, mRna.length()).equals(mRna) // Compare cutting poly-A tail
-				) {
+						) {
 					// OK, it was a mRNA +  polyA
 					totalOk++;
 					ok = true;
@@ -123,7 +123,7 @@ public class SnpEffCmdCds extends SnpEff {
 				} else if ((mRna.length() > cdsReference.length()) // PolyA in the reference?
 						&& mRna.substring(cdsReference.length()).replace('A', ' ').trim().isEmpty() //
 						&& mRna.substring(0, cdsReference.length()).equals(mRna) //
-				) {
+						) {
 					// OK, it was a mRNA +  polyA
 					totalOk++;
 					ok = true;
@@ -155,7 +155,7 @@ public class SnpEffCmdCds extends SnpEff {
 									+ "\tMax. possible score: " + maxScore //
 									+ "\tDiff: " + (maxScore - score) //
 									+ "\n" + sw //
-							);
+									);
 							System.err.println("Transcript details:\n" + tr);
 						}
 						if (onlyOneError) {
@@ -176,7 +176,15 @@ public class SnpEffCmdCds extends SnpEff {
 			}
 
 		double perc = ((double) totalErrors) / ((double) (totalErrors + totalOk));
-		System.out.println("\n\tCDS check:\t" + config.getGenome().getVersion() + "\tOK: " + totalOk + "\tWarnings: " + totalWarnings + "\tNot found: " + totalNotFound + "\tErrors: " + totalErrors + "\tError percentage: " + (100 * perc) + "%");
+		System.out.println("\n\tCDS check:\t" //
+				+ config.getGenome().getVersion() //
+				+ "\tOK: " + totalOk //
+				+ "\tWarnings: " + totalWarnings //
+				+ "\tNot found: " + totalNotFound //
+				+ "\tErrors: " + totalErrors //
+				+ "\tError percentage: " + (100 * perc) + "%" //
+				);
+
 		return perc;
 	}
 
