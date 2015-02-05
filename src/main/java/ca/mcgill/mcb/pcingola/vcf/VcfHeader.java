@@ -368,7 +368,7 @@ public class VcfHeader {
 			vcfInfoById.put(eff + ".GENOTYPE_NUMBER", new VcfHeaderInfo(eff + ".GENOTYPE_NUMBER", VcfInfoType.String, ".", "SnpEff genotype"));
 			vcfInfoById.put(eff + ".ERRORS", new VcfHeaderInfo(eff + ".ERRORS", VcfInfoType.String, ".", "Errors, Warnings or additional Information"));
 			vcfInfoById.put(eff + ".WARNINGS", new VcfHeaderInfo(eff + ".WARNINGS", VcfInfoType.String, ".", "Errors, Warnings or additional Information"));
-			vcfInfoById.put(eff + ".INFO", new VcfHeaderInfo(eff + ".INFO", VcfInfoType.String, ".", "Errors, Warnings or additional Information"));
+			vcfInfoById.put(eff + ".INFOS", new VcfHeaderInfo(eff + ".INFO", VcfInfoType.String, ".", "Errors, Warnings or additional Information"));
 
 			for (String ann : VcfEffect.VCF_INFO_ANN_NAMES) {
 				vcfInfoById.put(ann + ".ALLELE", new VcfHeaderInfo(ann + ".ALLELE", VcfInfoType.String, ".", "SnpEff genotype"));
@@ -407,7 +407,7 @@ public class VcfHeader {
 				vcfInfoById.put(ann + ".DISTANCE", new VcfHeaderInfo(ann + ".DISTANCE", VcfInfoType.Integer, ".", "Distance"));
 				vcfInfoById.put(ann + ".ERRORS", new VcfHeaderInfo(ann + ".ERRORS", VcfInfoType.String, ".", "Errors, Warnings or additional Information"));
 				vcfInfoById.put(ann + ".WARNINGS", new VcfHeaderInfo(ann + ".WARNINGS", VcfInfoType.String, ".", "Errors, Warnings or additional Information"));
-				vcfInfoById.put(ann + ".INFO", new VcfHeaderInfo(ann + ".INFO", VcfInfoType.String, ".", "Errors, Warnings or additional Information"));
+				vcfInfoById.put(ann + ".INFOS", new VcfHeaderInfo(ann + ".INFO", VcfInfoType.String, ".", "Errors, Warnings or additional Information"));
 			}
 
 			// Add SnpEff 'LOF' fields

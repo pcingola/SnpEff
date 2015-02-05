@@ -398,16 +398,22 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		String infoStr = info.get(key);
 		if (infoStr == null) return null;
 
-		// INFO fields having number type 'R' (all alleles) should have one value for reference as well.
-		// So in those cases we must skip the first value
-		int firstValue = 0;
-		VcfHeaderInfo vcfInfo = getVcfInfo(key);
-		if (vcfInfo != null && vcfInfo.isNumberAllAlleles()) firstValue = 1;
-
 		// Split INFO value and match it to allele
 		String infos[] = infoStr.split(",");
 
-		for (int i = 0, j = firstValue; (i < alts.length) && (j < infos.length); i++, j++)
+		// INFO fields having number type 'R' (all alleles) should have one value for reference as well.
+		// So in those cases we must skip the first value
+		int firstAltIndex = 0;
+		VcfHeaderInfo vcfInfo = getVcfInfo(key);
+		if (vcfInfo != null && vcfInfo.isNumberAllAlleles()) {
+			firstAltIndex = 1;
+
+			// Are we looking for 'REF' information?
+			if (ref.equalsIgnoreCase(allele)) return infos[0];
+		}
+
+		// Find ALT matching allele
+		for (int i = 0, j = firstAltIndex; (i < alts.length) && (j < infos.length); i++, j++)
 			if (alts[i].equalsIgnoreCase(allele)) return infos[j];
 
 		return null;
