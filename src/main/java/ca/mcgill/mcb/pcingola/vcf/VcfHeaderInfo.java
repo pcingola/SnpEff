@@ -114,7 +114,7 @@ public class VcfHeaderInfo {
 			vcfInfoNumber = VcfInfoNumber.UNLIMITED;
 			pattern = Pattern.compile("Number=([^,]+),");
 			matcher = pattern.matcher(params);
-			if (matcher.find()) setNumber(matcher.group(1), id);
+			if (matcher.find()) setNumber(matcher.group(1));
 			else throw new RuntimeException("Cannot find 'Number' in info line: '" + line + "'");
 
 			// Find type
@@ -136,7 +136,18 @@ public class VcfHeaderInfo {
 		this.id = id;
 		this.vcfInfoType = vcfInfoType;
 		this.description = description;
-		setNumber(number, id);
+		setNumber(number);
+	}
+
+	public VcfHeaderInfo(VcfHeaderInfo header) {
+		line = null;
+		id = header.id;
+		number = header.number;
+		implicit = header.implicit;
+		genotype = header.genotype;
+		vcfInfoNumber = header.vcfInfoNumber;
+		vcfInfoType = header.vcfInfoType;
+		description = header.description;
 	}
 
 	public String getDescription() {
@@ -149,6 +160,10 @@ public class VcfHeaderInfo {
 
 	public int getNumber() {
 		return number;
+	}
+
+	public VcfInfoNumber getVcfInfoNumber() {
+		return vcfInfoNumber;
 	}
 
 	public VcfInfoType getVcfInfoType() {
@@ -187,6 +202,10 @@ public class VcfHeaderInfo {
 		this.genotype = genotype;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public void setImplicit(boolean implicit) {
 		this.implicit = implicit;
 	}
@@ -197,7 +216,7 @@ public class VcfHeaderInfo {
 		this.number = number;
 	}
 
-	public void setNumber(String number, String id) {
+	public void setNumber(String number) {
 		this.number = -1;
 
 		// Parse number field
@@ -212,6 +231,14 @@ public class VcfHeaderInfo {
 				vcfInfoNumber = VcfInfoNumber.UNLIMITED; // Try to overcome the error by setting it no 'UNLIMITED'
 			} else setNumber(num);
 		}
+	}
+
+	public void setVcfInfoNumber(VcfInfoNumber vcfInfoNumber) {
+		this.vcfInfoNumber = vcfInfoNumber;
+	}
+
+	public void setVcfInfoType(VcfInfoType vcfInfoType) {
+		this.vcfInfoType = vcfInfoType;
 	}
 
 	@Override
