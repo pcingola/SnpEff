@@ -44,7 +44,7 @@ public class CodonChangeSnp extends CodonChange {
 
 		char codonChars[] = codonsRef.toLowerCase().toCharArray();
 		char snpBase = variant.netChange(transcript.isStrandMinus()).charAt(0);
-		codonChars[codonStartIndex] = Character.toUpperCase(snpBase);
+		if (codonStartIndex < codonChars.length) codonChars[codonStartIndex] = Character.toUpperCase(snpBase);
 
 		String codonsNew = new String(codonChars);
 		return codonsNew;
@@ -72,11 +72,12 @@ public class CodonChangeSnp extends CodonChange {
 		// Sanity checks
 		if (cdsStr.isEmpty() // Empty CDS => Cannot get codon (e.g. one or more exons are missing their sequences
 				|| (cdsLen <= minBase) // Codon past CDS sequence => Cannot get codon
-				) return "";
+		) return "";
 
 		// Create codon sequence
 		char codonChars[] = cdsStr.substring(minBase, maxBase).toLowerCase().toCharArray();
-		codonChars[codonStartIndex] = Character.toUpperCase(codonChars[codonStartIndex]);
+		// Capitatlize changed base
+		if (codonStartIndex < codonChars.length) codonChars[codonStartIndex] = Character.toUpperCase(codonChars[codonStartIndex]);
 		String codon = new String(codonChars);
 		return codon;
 	}
