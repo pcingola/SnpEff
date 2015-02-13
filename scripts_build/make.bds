@@ -325,7 +325,7 @@ void runTests() {
 #-------------------------------------------------------------------------------
 
 void uploadCore2Sf() {
-	zip := "snpEff_v" + versionUnd() + "_core.zip"
+	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
 	zipLatest := "snpEff_latest_core.zip"
 	sys scp -v $zip $zipLatest pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/
 }
