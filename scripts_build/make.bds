@@ -6,6 +6,24 @@
 #
 #-------------------------------------------------------------------------------
 
+# Command line options
+bundleLists			:= false		help Create bundle lists and config entries
+config				:= false		help Create config file
+db					:= false		help Build databases
+distro	 			:= false		help Create distribution files (zip)
+distroBundles		:= false		help Create bundle files (zip)
+distroCore 			:= false		help Create distribution files (zip only 'core')
+download 			:= false		help Download files
+make	 			:= false		help Make (build JAR files)
+test	 			:= false		help Run test cases
+testDb				:= false		help Build databases used in test cases
+uploadCore			:= false		help Upload 'core' package
+uploadDbs			:= false		help Upload all databases in 'zip' directory
+uploadDev			:= false		help Upload 'development' version
+uploadHtml 			:= false		help Upload weh pages
+zipGenome			:= ""			help Zip a specific genome
+
+# Process us one CPU
 cpus = 1
 
 # Configuration parameters
@@ -26,26 +44,9 @@ dirBuild			:="$dirSnpeff/build"
 dirDb				:="$dirSnpeff/db"
 dirDarned			:="$dirDb/darned/"
 pwmsBin				:="$dirDb/jaspar/pwms.bin"
-zipGenome			:=""
 
 # URLs
 snpeffDownload		:= "http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip"
-
-# Command line options
-bundleLists			:= false		# Create bundle lists and config entries
-config				:= false		# Create config file
-db					:= false		# Build databases
-distro	 			:= false		# Create distribution files (zip)
-distroBundles		:= false		# Create bundle files (zip)
-distroCore 			:= false		# Create distribution files (zip only 'core')
-download 			:= false		# Download files
-make	 			:= false		# Make (build JAR files)
-test	 			:= false		# Run test cases
-testDb				:= false		# Build databases used in test cases
-uploadCore			:= false		# Upload 'core' package
-uploadDbs			:= false		# Upload all databases in 'zip' directory
-uploadDev			:= false		# Upload 'development' version
-uploadHtml 			:= false		# Upload weh pages
 
 # Wget parameters
 wget_wait			:= 1								# Wait a few moments between file downloads (to avoid saturating the server)
