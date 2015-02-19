@@ -11,8 +11,10 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class AlleleCountStats implements SamplingStats<VcfEntry> {
 
+	public static final int MAX_MAC = 1000;
+
 	List<String> sampleNames;
-	long counters[][];
+	int counters[][];
 
 	public AlleleCountStats() {
 	}
@@ -32,9 +34,11 @@ public class AlleleCountStats implements SamplingStats<VcfEntry> {
 
 			// Initialize counters
 			int size = sampleNames.size();
-			counters = new long[size][size];
+			int sizeMac = Math.min(MAX_MAC, size);
 
-			for (int i = 0; i < size; i++)
+			counters = new int[sizeMac][size];
+
+			for (int i = 0; i < counters.length; i++)
 				for (int j = 0; j < size; j++)
 					counters[i][j] = 0;
 		}
@@ -50,15 +54,13 @@ public class AlleleCountStats implements SamplingStats<VcfEntry> {
 		int mac = vcfEntry.mac();
 
 		// Ignore negative MAC out of range
-		if ((mac >= 0) && (mac < sampleNames.size())) {
-			long count[] = counters[mac];
+		if ((mac >= 0) && (mac < counters.length)) {
+			int count[] = counters[mac];
 
 			// For each sample count if this sample has the MAC
 			for (int i = 0; i < gt.length; i++) {
 				if (gt[i] > 0) count[i]++;
 			}
-		} else {
-			System.err.println("WARNING: Entry '" + vcfEntry.toStr() + "' has minor allele count out of range (MAC=" + mac + ")");
 		}
 	}
 
@@ -92,7 +94,7 @@ public class AlleleCountStats implements SamplingStats<VcfEntry> {
 	/**
 	 * Format an array into a string
 	 */
-	String toStringArray(String title, long count[]) {
+	String toStringArray(String title, int count[]) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(title + ",");
 

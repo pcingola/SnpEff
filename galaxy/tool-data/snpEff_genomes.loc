@@ -16025,6 +16025,7 @@ GCA_000158495.1.21 	 Oxalobacter_formigenes_oxcc13   GCA_000158495.1.21
 GCA_000158495.1.22 	 Oxalobacter_formigenes_oxcc13   GCA_000158495.1.22
 GCA_000195205.2.21 	 Oxalobacteraceae_bacterium_imcc9480   GCA_000195205.2.21
 GCA_000195205.2.22 	 Oxalobacteraceae_bacterium_imcc9480   GCA_000195205.2.22
+P_aeruginosa_FC10 	 P_aeruginosa_FC10   P_aeruginosa_FC10
 Paenibacillus_JDR_2_uid59021 	 Paenibacillus_JDR_2_uid59021   Paenibacillus_JDR_2_uid59021
 Paenibacillus_Y412MC10_uid41127 	 Paenibacillus_Y412MC10_uid41127   Paenibacillus_Y412MC10_uid41127
 GCA_000442535.1.21 	 Paenibacillus_alvei_a6_6i_x   GCA_000442535.1.21
@@ -24539,6 +24540,7 @@ delta_proteobacterium_BABL1_uid230716 	 delta_proteobacterium_BABL1_uid230716   
 felCat5 	 felCat5   felCat5
 gamma_proteobacterium_HdN1_uid51635 	 gamma_proteobacterium_HdN1_uid51635   gamma_proteobacterium_HdN1_uid51635
 halophilic_archaeon_DL31_uid72619 	 halophilic_archaeon_DL31_uid72619   halophilic_archaeon_DL31_uid72619
+listeria 	 listeria_monocytogenes   listeria
 puccinia_striiformis_pst-78 	 puccinia_striiformis_pst-78   puccinia_striiformis_pst-78
 secondary_endosymbiont_of_Ctenarytaina_eucalypti_uid172737 	 secondary_endosymbiont_of_Ctenarytaina_eucalypti_uid172737   secondary_endosymbiont_of_Ctenarytaina_eucalypti_uid172737
 secondary_endosymbiont_of_Heteropsylla_cubana_Thao2000_uid172738 	 secondary_endosymbiont_of_Heteropsylla_cubana_Thao2000_uid172738   secondary_endosymbiont_of_Heteropsylla_cubana_Thao2000_uid172738
