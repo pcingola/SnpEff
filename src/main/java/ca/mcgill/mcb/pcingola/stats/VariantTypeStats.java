@@ -2,26 +2,54 @@ package ca.mcgill.mcb.pcingola.stats;
 
 import java.util.List;
 
+import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
- * Count singletons and other allele counts per sample
+ * Count variant types (SNP, MNP, INS, DEL)
  *
  * @author pablocingolani
  */
-public class AlleleCountStats implements SamplingStats<VcfEntry> {
+public class VariantTypeStats implements SamplingStats<VcfEntry> {
 
 	public static final int MAX_MAC = 1000;
 
 	List<String> sampleNames;
-	int counters[][];
+	int counterSnp[];
+	int counterMnp[];
+	int counterIns[];
+	int counterDel[];
+	int counterComplex[];
+	int counterMultiallelic[];
 
-	public AlleleCountStats() {
+	public VariantTypeStats() {
+	}
+
+	int[] getCounter(VariantType vt) {
+		switch (vt) {
+		case SNP:
+			return counterSnp;
+
+		case MNP:
+			return counterMnp;
+
+		case INS:
+			return counterIns;
+
+		case DEL:
+			return counterDel;
+
+		case MIXED:
+			return counterComplex;
+
+		default:
+			return null;
+		}
 	}
 
 	@Override
 	public boolean hasData() {
-		return counters != null;
+		return counterSnp != null;
 	}
 
 	/**
@@ -34,13 +62,12 @@ public class AlleleCountStats implements SamplingStats<VcfEntry> {
 
 			// Initialize counters
 			int size = sampleNames.size();
-			int sizeMac = Math.min(MAX_MAC, size);
-
-			counters = new int[sizeMac][size];
-
-			for (int i = 0; i < counters.length; i++)
-				for (int j = 0; j < size; j++)
-					counters[i][j] = 0;
+			counterSnp = new int[size];
+			counterMnp = new int[size];
+			counterIns = new int[size];
+			counterDel = new int[size];
+			counterComplex = new int[size];
+			counterMultiallelic = new int[size];
 		}
 
 		// Is this a variant? (i.e. not the same as reference)
@@ -50,16 +77,16 @@ public class AlleleCountStats implements SamplingStats<VcfEntry> {
 		byte gt[] = vcfEntry.getGenotypesScores();
 		if (gt == null || gt.length < 1) return;
 
-		// Get minor allele count
-		int mac = vcfEntry.mac();
+		// Get counter for this variant type
+		int count[] = getCounter(vcfEntry.getVariantType());
 
-		// Ignore negative MAC out of range
-		if ((mac >= 0) && (mac < counters.length)) {
-			int count[] = counters[mac];
+		boolean isMultiallelic = vcfEntry.isMultiallelic();
 
-			// For each sample count if this sample has the MAC
+		// For each sample count if this sample has the MAC
+		if (count != null) {
 			for (int i = 0; i < gt.length; i++) {
 				if (gt[i] > 0) count[i]++;
+				if (isMultiallelic && gt[i] > 0) counterMultiallelic[i]++;
 			}
 		}
 	}
@@ -83,9 +110,11 @@ public class AlleleCountStats implements SamplingStats<VcfEntry> {
 			sb.append("Total");
 			sb.append("\n");
 
-			// Show transitions
-			for (int i = 0; i < counters.length; i++)
-				sb.append(toStringArray("MAC=" + i, counters[i]));
+			// Show Counters
+			for (VariantType vt : VariantType.values())
+				sb.append(toStringArray(vt.toString(), getCounter(vt)));
+
+			sb.append(toStringArray("Multiallelic", counterMultiallelic));
 		}
 
 		return sb.toString();
@@ -95,6 +124,8 @@ public class AlleleCountStats implements SamplingStats<VcfEntry> {
 	 * Format an array into a string
 	 */
 	String toStringArray(String title, int count[]) {
+		if (count == null) return "";
+
 		StringBuilder sb = new StringBuilder();
 		sb.append(title + ",");
 
