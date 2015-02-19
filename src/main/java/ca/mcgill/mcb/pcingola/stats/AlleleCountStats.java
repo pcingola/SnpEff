@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.stats;
 
 import java.util.List;
 
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
@@ -55,6 +56,10 @@ public class AlleleCountStats implements SamplingStats<VcfEntry> {
 
 		// Ignore negative MAC out of range
 		if ((mac >= 0) && (mac < counters.length)) {
+			if (mac == 0) {
+				Gpr.debug("MAC=" + mac);
+				vcfEntry.mac();
+			}
 			int count[] = counters[mac];
 
 			// For each sample count if this sample has the MAC

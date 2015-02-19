@@ -643,8 +643,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Do we have it annotated as AF or MAF?
 		if (hasField("MAC")) return (int) getInfoInt("MAC");
 		else if (hasField("AC")) ac = getInfoInt("AC");
-		else {
-			// No annotations, we have to calculate
+
+		// AC not found (or doesn't make sense)
+		if (ac <= 0) {
+			// We have to calculate
 			ac = 0;
 			for (byte genCode : getGenotypesScores())
 				if (genCode > 0) ac += genCode; // Don't count '-1' (i.e. missing genotypes)
