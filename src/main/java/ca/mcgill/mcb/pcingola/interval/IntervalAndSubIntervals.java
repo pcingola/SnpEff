@@ -154,7 +154,9 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
-		return super.serializeSave(markerSerializer) + "\t" + markerSerializer.save((Collection<Marker>) subIntervals.values());
+		return super.serializeSave(markerSerializer) //
+				+ "\t" + markerSerializer.save((Collection<Marker>) subIntervals.values()) //
+		;
 	}
 
 	@Override
