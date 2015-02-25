@@ -237,6 +237,7 @@ public class SnpEffCmdEff extends SnpEff {
 		List<PedigreeEnrty> pedigree = null;
 		CountByType errByType = new CountByType(), warnByType = new CountByType();
 
+		// Iterate over VCF entries
 		int countVcfEntries = 0;
 		for (VcfEntry vcfEntry : vcfFile) {
 			boolean printed = false;

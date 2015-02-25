@@ -498,11 +498,16 @@ java -Xmx4g -jar snpEff.jar <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 
 				<h3> Detailed examples </h3>
 				Take a look at several detailed examples in our <a href="protocol.html">examples page</a>.
 
-				<p><h3>Running from another directory</h3>
-				When you run SnpEff from a different directory than your install directory, you have to specify where the config file is located using the '-c' command line option.
+				<p><h3>Specify a configuration file </h3>
+				Seomtimes you need to specify the path to the config file.
+				For instance, when you run SnpEff from a different directory than your install directory, you have to 
+				specify where the config file is located using the '-c' command line option.
 <pre>
 java -Xmx4g path/to/snpEff/snpEff.jar -c path/to/snpEff/snpEff.config GRCh37.75 path/to/snps.vcf
 </pre>
+
+				<p>
+				<i class="icon-hand-right"></i> Since version 4.1B, you can use the <code>-configOption</code> command line option to override any value in the config file
 
 				<p><h3>Java memory options</h3>
 				By default the amount of memory set by a java process is set too low.
@@ -765,29 +770,7 @@ Database options:
 				Logging can be deactivated by using the <code>-noLog</code> command line option.
 				</p>
 
-				<h3>Input filters</h3>
-				<p>
-				SnpEff supports filter on input files by using combinations of the following command line options:
-				<br>
-				<br>
-				<i class="icon-warning-sign"></i> Input filters can be implemented using <code>SnpSift filter</code>, which allows to create more flexible and complex filters.
-				<br>
-				<br>
-				<table class="table table-striped">
-					<tr> <th>	Command line option     </th><th> Meaning </th></tr>
-					<tr> <td>	-del                    </td><td> Analyze deletions only </td></tr>
-					<tr> <td>	-ins                    </td><td> Analyze insertions only </td></tr>
-					<tr> <td>	-hom                    </td><td> Analyze homozygous variants only </td></tr>
-					<tr> <td>	-het                    </td><td> Analyze heterozygous variants only </td></tr>
-					<tr> <td>	-minQ X, -minQuality X  </td><td> Filter out variants with quality lower than X </td></tr>
-					<tr> <td>	-maxQ X, -maxQuality X  </td><td> Filter out variants with quality higher than X </td></tr>
-					<tr> <td>	-minC X, -minCoverage X </td><td> Filter out variants with coverage lower than X </td></tr>
-					<tr> <td>	-maxC X, -maxCoverage X </td><td> Filter out variants with coverage higher than X </td></tr>
-					<tr> <td>	-mnp                    </td><td> Only MNPs (multiple nucleotide polymorphisms) </td></tr>
-					<tr> <td>	-snp                    </td><td> Only SNPs (single nucleotide polymorphisms) </td></tr>
-				</table>
-
-				<h3>Output filters</h3>
+				<h3>Filters</h3>
 				<p>
 				SnpEff supports filter of output results by using combinations of the following command line options:
 				<br>
