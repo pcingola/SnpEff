@@ -38,6 +38,42 @@ public class VcfEffect {
 	public static final String EFFECT_TYPE_SEPARATOR = "&"; // Separator between mutiple effectTypes
 	public static final String EFFECT_TYPE_SEPARATOR_OLD = "+"; // Old separator between mutiple effectTypes
 
+	public static String ANN_FIELD_NAMES[] = { //
+		"ALLELE", "GT", "GENOTYPE", //
+		"EFFECT", "ANNOTATION", //
+		"IMPACT", //
+		"GENE", //
+		"GENEID", //
+		"FEATURE", //
+		"FEATUREID", "TRID", //
+		"BIOTYPE", //
+		"RANK", "EXID", //
+		"HGVS_C", "HGVS_DNA", "CODON", //
+		"HGVS", "HGVS_P", "HGVS_PROT", "AA", //
+		"POS_CDNA", "CDNA_POS", //
+		"LEN_CDNA", "CDNA_LEN", //
+		"POS_CDS", "CDS_POS", //
+		"LEN_CDS", "CDS_LEN", //
+		"POS_AA", "AA_POS", //
+		"LEN_AA", "AA_LEN", //
+		"DISTANCE", //
+		"ERRORS", "WARNINGS", "INFOS", //
+	};
+
+	public static String EFF_FIELD_NAMES[] = { //
+		"EFFECT", "IMPACT", "FUNCLASS", "CODON", //
+		"AA", //
+		"HGVS", //
+		"AA_LEN", //
+		"GENE", //
+		"BIOTYPE", //
+		"CODING", //
+		"TRID", //
+		"RANK", "EXID", //
+		"GT", "GENOTYPE_NUMBER", "GENOTYPE", //
+		"ERRORS", "WARNINGS", "INFOS", //
+	};
+
 	private static HashMap<EffFormatVersion, HashMap<String, Integer>> fieldName2Num = new HashMap<EffFormatVersion, HashMap<String, Integer>>();
 
 	EffFormatVersion formatVersion;
@@ -67,163 +103,11 @@ public class VcfEffect {
 	boolean useGeneId;
 
 	/**
-	 * Convert from field name to field number
-	 */
-	public static int fieldNum(String name, EffFormatVersion formatVersion) {
-		if (formatVersion == null) formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
-
-		HashMap<String, Integer> f2n = fieldName2Num.get(formatVersion);
-
-		// Not created yet?
-		if (f2n == null) {
-			if (formatVersion.isAnn()) f2n = mapAnn2Num(formatVersion);
-			else f2n = mapEff2Num(formatVersion);
-
-			fieldName2Num.put(formatVersion, f2n);
-		}
-
-		// Query by name
-		Integer num = f2n.get(name);
-		if (num == null) return -1; // Not found?
-
-		return num;
-	}
-
-	/**
 	 * Get info field name based on format version
 	 */
 	public static String infoFieldName(EffFormatVersion formatVersion) {
 		if (formatVersion == null) return VCF_INFO_ANN_NAME;
 		return formatVersion.infoFieldName();
-	}
-
-	/**
-	 * Create a hash to map names to field numbers on 'ANN' fields
-	 */
-	public static HashMap<String, Integer> mapAnn2Num(EffFormatVersion formatVersion) {
-		HashMap<String, Integer> f2n = new HashMap<String, Integer>();
-
-		// Use both names
-		for (String annFieldName : VCF_INFO_ANN_NAMES) {
-			int fieldNum = 0;
-
-			f2n.put(annFieldName + ".ALLELE", fieldNum);
-			f2n.put(annFieldName + ".GT", fieldNum);
-			f2n.put(annFieldName + ".GENOTYPE", fieldNum);
-			fieldNum++;
-
-			f2n.put(annFieldName + ".EFFECT", fieldNum);
-			f2n.put(annFieldName + ".ANNOTATION", fieldNum);
-			fieldNum++;
-
-			f2n.put(annFieldName + ".IMPACT", fieldNum++);
-
-			f2n.put(annFieldName + ".GENE", fieldNum++);
-
-			f2n.put(annFieldName + ".GENEID", fieldNum++);
-
-			f2n.put(annFieldName + ".FEATURE", fieldNum++);
-
-			// Feature ID or transcript ID
-			f2n.put(annFieldName + ".FEATUREID", fieldNum);
-			f2n.put(annFieldName + ".TRID", fieldNum);
-			fieldNum++;
-
-			f2n.put(annFieldName + ".BIOTYPE", fieldNum++);
-
-			// This one used to be called exonID, now it is used for exon OR intron rank
-			f2n.put(annFieldName + ".RANK", fieldNum);
-			f2n.put(annFieldName + ".EXID", fieldNum);
-			fieldNum++;
-
-			f2n.put(annFieldName + ".HGVS_C", fieldNum);
-			f2n.put(annFieldName + ".HGVS_DNA", fieldNum);
-			f2n.put(annFieldName + ".CODON", fieldNum);
-			fieldNum++;
-
-			f2n.put(annFieldName + ".HGVS", fieldNum);
-			f2n.put(annFieldName + ".HGVS_P", fieldNum);
-			f2n.put(annFieldName + ".HGVS_PROT", fieldNum);
-			f2n.put(annFieldName + ".AA", fieldNum);
-			fieldNum++;
-
-			f2n.put(annFieldName + ".POS_CDNA", fieldNum);
-			f2n.put(annFieldName + ".CDNA_POS", fieldNum);
-			f2n.put(annFieldName + ".LEN_CDNA", fieldNum);
-			f2n.put(annFieldName + ".CDNA_LEN", fieldNum);
-			fieldNum++;
-
-			f2n.put(annFieldName + ".POS_CDS", fieldNum);
-			f2n.put(annFieldName + ".CDS_POS", fieldNum);
-			f2n.put(annFieldName + ".LEN_CDS", fieldNum);
-			f2n.put(annFieldName + ".CDS_LEN", fieldNum);
-			fieldNum++;
-
-			f2n.put(annFieldName + ".POS_AA", fieldNum);
-			f2n.put(annFieldName + ".AA_POS", fieldNum);
-			f2n.put(annFieldName + ".LEN_AA", fieldNum);
-			f2n.put(annFieldName + ".AA_LEN", fieldNum);
-			fieldNum++;
-
-			f2n.put(annFieldName + ".DISTANCE", fieldNum++);
-
-			f2n.put(annFieldName + ".ERRORS", fieldNum);
-			f2n.put(annFieldName + ".WARNINGS", fieldNum);
-			f2n.put(annFieldName + ".INFOS", fieldNum);
-			fieldNum++;
-		}
-
-		return f2n;
-	}
-
-	/**
-	 * Create a hash to map names to field numbers on 'EFF' fields
-	 */
-	public static HashMap<String, Integer> mapEff2Num(EffFormatVersion formatVersion) {
-		HashMap<String, Integer> f2n = new HashMap<String, Integer>();
-
-		for (String annFieldName : VCF_INFO_ANN_NAMES) {
-			int fieldNum = 0;
-
-			f2n.put(annFieldName + ".EFFECT", fieldNum++);
-			f2n.put(annFieldName + ".IMPACT", fieldNum++);
-			f2n.put(annFieldName + ".FUNCLASS", fieldNum++);
-			f2n.put(annFieldName + ".CODON", fieldNum++);
-
-			// This field can be called either AA or HGVS
-			f2n.put(annFieldName + ".AA", fieldNum);
-			f2n.put(annFieldName + ".HGVS", fieldNum);
-			fieldNum++;
-
-			if (formatVersion != EffFormatVersion.FORMAT_EFF_2) {
-				f2n.put(annFieldName + ".AA_LEN", fieldNum++);
-			}
-
-			f2n.put(annFieldName + ".GENE", fieldNum++);
-			f2n.put(annFieldName + ".BIOTYPE", fieldNum++);
-			f2n.put(annFieldName + ".CODING", fieldNum++);
-			f2n.put(annFieldName + ".TRID", fieldNum++);
-
-			// This one used to be called exonID, now it is used for exon OR intron rank
-			f2n.put(annFieldName + ".RANK", fieldNum);
-			f2n.put(annFieldName + ".EXID", fieldNum);
-			fieldNum++;
-
-			if (formatVersion == EffFormatVersion.FORMAT_EFF_4) {
-				// This one can be called  in different ways
-				f2n.put(annFieldName + ".GT", fieldNum);
-				f2n.put(annFieldName + ".GENOTYPE_NUMBER", fieldNum);
-				f2n.put(annFieldName + ".GENOTYPE", fieldNum);
-				fieldNum++;
-			}
-
-			f2n.put(annFieldName + ".ERRORS", fieldNum);
-			f2n.put(annFieldName + ".WARNINGS", fieldNum);
-			f2n.put(annFieldName + ".INFO", fieldNum);
-			fieldNum++;
-		}
-
-		return f2n;
 	}
 
 	/**
@@ -630,6 +514,110 @@ public class VcfEffect {
 		return featureType;
 	}
 
+	/**
+	 * Get a subfield by name
+	 */
+	public String getFieldByName(String fieldName) {
+		switch (fieldName) {
+
+		case "ALLELE":
+		case "GT":
+		case "GENOTYPE":
+		case "GENOTYPE_NUMBER":
+			return genotype;
+
+		case "EFFECT":
+		case "ANNOTATION":
+			return effString;
+
+		case "IMPACT":
+			return impact != null ? impact.toString() : "";
+
+		case "FUNCLASS":
+			return funClass != null ? funClass.toString() : "";
+
+		case "GENE":
+			return geneName;
+
+		case "GENEID":
+			return geneId;
+
+		case "FEATURE":
+			return featureType;
+
+		case "FEATUREID":
+			return featureId;
+
+		case "TRID":
+			return transcriptId;
+
+		case "BIOTYPE":
+			return bioType;
+
+		case "RANK":
+			return Integer.toString(rank);
+
+		case "EXID":
+			return exonId;
+
+		case "RANK_MAX":
+			return Integer.toString(rankMax);
+
+		case "HGVS_C":
+		case "HGVS_DNA":
+			return hgvsC;
+
+		case "CODON":
+			return codon;
+
+		case "HGVS":
+		case "HGVS_P":
+		case "HGVS_PROT":
+			return hgvsP;
+
+		case "AA":
+			return aa;
+
+		case "POS_CDNA":
+		case "CDNA_POS":
+			return Integer.toString(cDnaPos);
+
+		case "LEN_CDNA":
+		case "CDNA_LEN":
+			return Integer.toString(cDnaLen);
+
+		case "POS_CDS":
+		case "CDS_POS":
+			return Integer.toString(cdsPos);
+
+		case "LEN_CDS":
+		case "CDS_LEN":
+			return Integer.toString(cdsLen);
+
+		case "POS_AA":
+		case "AA_POS":
+			return Integer.toString(aaPos);
+
+		case "LEN_AA":
+		case "AA_LEN":
+			return Integer.toString(aaLen);
+
+		case "CODING":
+			return coding != null ? coding.toString() : "";
+
+		case "DISTANCE":
+			return Integer.toString(distance);
+
+		case "ERRORS":
+		case "WARNINGS":
+		case "INFOS":
+			return errorsWarnings;
+
+		default:
+			throw new RuntimeException("Field '" + fieldName + "' not found.");
+		}
+	}
+
 	public EffFormatVersion getFormatVersion() {
 		return formatVersion;
 	}
@@ -697,6 +685,9 @@ public class VcfEffect {
 		return vcfFieldStrings[index];
 	}
 
+	/**
+	 * Does it have 'effType' ?
+	 */
 	public boolean hasEffectType(EffectType effType) {
 		if (effectTypes == null) return false;
 		for (EffectType et : effectTypes)
@@ -771,7 +762,10 @@ public class VcfEffect {
 
 		// HGVS
 		hgvsC = vcfFieldStrings[index++];
+		codon = hgvsC;
+
 		hgvsP = vcfFieldStrings[index++];
+		aa = hgvsP;
 
 		// cDna: 'pos / len'
 		ints = parseSlash(vcfFieldStrings[index++]);
@@ -1190,58 +1184,6 @@ public class VcfEffect {
 	public String toString() {
 		if (formatVersion == null || formatVersion.isAnn()) return createAnnField();
 		return createEffField();
-
-		//		// Create from variant?
-		//		if (variantEffect != null) return createInfoField();
-		//
-		//		// Create from parsed fields
-		//		StringBuilder sb = new StringBuilder();
-		//
-		//		for (EffectType et : effectTypes) {
-		//			if (sb.length() > 0) sb.append(formatVersion.separator());
-		//			sb.append(et);
-		//		}
-		//
-		//		if ((effectDetails != null) && !effectDetails.isEmpty()) sb.append("[" + effectDetails + "]");
-		//		sb.append("(");
-		//
-		//		if (impact != null) sb.append(impact);
-		//		sb.append("|");
-		//
-		//		if (funClass != null) sb.append(funClass);
-		//		sb.append("|");
-		//
-		//		if (codon != null) sb.append(codon);
-		//		sb.append("|");
-		//
-		//		if (aa != null) sb.append(aa);
-		//		sb.append("|");
-		//
-		//		if (aaLen > 0) sb.append(aaLen);
-		//		sb.append("|");
-		//
-		//		if (geneName != null) sb.append(geneName);
-		//		sb.append("|");
-		//
-		//		if (bioType != null) sb.append(bioType);
-		//		sb.append("|");
-		//
-		//		if (coding != null) sb.append(coding);
-		//		sb.append("|");
-		//
-		//		if (transcriptId != null) sb.append(transcriptId);
-		//		sb.append("|");
-		//
-		//		if (exonId != null) sb.append(exonId);
-		//		sb.append("|");
-		//
-		//		if (genotype != null) sb.append(genotype);
-		//
-		//		if (errorsWarnings != null) sb.append("|" + errorsWarnings);
-		//
-		//		sb.append(")");
-		//
-		//		return sb.toString();
 	}
 
 }
