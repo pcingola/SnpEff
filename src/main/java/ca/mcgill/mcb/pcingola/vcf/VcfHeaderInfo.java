@@ -247,10 +247,10 @@ public class VcfHeaderInfo {
 
 		return VcfHeader.INFO_PREFIX //
 				+ "<ID=" + id//
-				+ ", Number=" + (number >= 0 ? number : vcfInfoNumber) //
-				+ ", Type=" + vcfInfoType //
-				+ ", Description=\"" + description + "\"" //
+				+ ",Number=" + (number >= 0 ? number : vcfInfoNumber) //
+				+ ",Type=" + vcfInfoType //
+				+ ",Description=\"" + description + "\"" //
 				+ ">" //
-				;
+		;
 	}
 }
