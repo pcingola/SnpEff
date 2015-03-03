@@ -436,7 +436,7 @@ public class TestCasesVcf extends TestCasesBase {
 		// Create a new INFO field
 		String infoFieldName = "NEW_INFO";
 		VcfHeaderInfo vhInfo = new VcfHeaderInfo(infoFieldName, VcfInfoType.Integer, VcfInfoNumber.UNLIMITED.toString(), "An arbitrary set of random numbers");
-		String expectedHeader = "##INFO=<ID=" + infoFieldName + ", Number=., Type=Integer, Description=\"An arbitrary set of random numbers\">";
+		String expectedHeader = "##INFO=<ID=" + infoFieldName + ",Number=.,Type=Integer,Description=\"An arbitrary set of random numbers\">";
 
 		// Open VCF file
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
@@ -470,11 +470,11 @@ public class TestCasesVcf extends TestCasesBase {
 
 		// Add this header
 		VcfHeaderInfo vhInfo = new VcfHeaderInfo(infoFieldName, VcfInfoType.Integer, VcfInfoNumber.UNLIMITED.toString(), "An arbitrary set of integer random numbers");
-		String expectedHeader = "##INFO=<ID=" + infoFieldName + ", Number=., Type=Integer, Description=\"An arbitrary set of integer random numbers\">";
+		String expectedHeader = "##INFO=<ID=" + infoFieldName + ",Number=.,Type=Integer,Description=\"An arbitrary set of integer random numbers\">";
 
 		// Replace using this header
 		VcfHeaderInfo vhInfo2 = new VcfHeaderInfo(infoFieldName, VcfInfoType.Float, "1", "One float random number");
-		String expectedHeader2 = "##INFO=<ID=" + infoFieldName + ", Number=1, Type=Float, Description=\"One float random number\">";
+		String expectedHeader2 = "##INFO=<ID=" + infoFieldName + ",Number=1,Type=Float,Description=\"One float random number\">";
 
 		// Open VCF file
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
