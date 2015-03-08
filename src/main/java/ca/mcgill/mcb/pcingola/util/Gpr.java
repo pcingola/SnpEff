@@ -23,6 +23,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -603,6 +604,17 @@ public class Gpr {
 			if (file.toLowerCase().endsWith(ext)) return file.substring(0, file.length() - ext.length());
 
 		return file;
+	}
+
+	/**
+	 * Create a string of n time 'c'
+	 */
+	public static String repeat(char c, int n) {
+		if (n <= 0) return "";
+
+		char str[] = new char[n];
+		Arrays.fill(str, c);
+		return new String(str);
 	}
 
 	public static String sanityzeFileName(String fileName) {

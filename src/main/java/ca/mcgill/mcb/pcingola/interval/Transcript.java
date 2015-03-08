@@ -564,7 +564,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-					) {
+			) {
 				ret = true;
 
 				// Show debugging information
@@ -940,7 +940,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-								);
+						);
 					} else {
 						if (Config.get().isDebug()) System.err.println("\t\tFrame correction: Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
@@ -1098,7 +1098,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-				;
+		;
 	}
 
 	/**
@@ -1494,7 +1494,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-				;
+		;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1535,6 +1535,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	@Override
 	public String toString() {
+		return toString(false);
+	}
+
+	public String toString(boolean full) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(getChromosomeName() + ":" + start + "-" + end);
@@ -1564,6 +1568,20 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			}
 		}
 
+		if (full) {
+			// Show errors or warnings
+			String warn = "";
+			if (isErrorStopCodonsInCds()) warn += ErrorWarningType.WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS + " ";
+			if (isErrorProteinLength()) warn += ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE + " ";
+			if (isErrorStartCodon()) warn += ErrorWarningType.WARNING_TRANSCRIPT_NO_START_CODON + " ";
+			if (isWarningStopCodon()) warn += ErrorWarningType.WARNING_TRANSCRIPT_NO_STOP_CODON + " ";
+			if (!warn.isEmpty()) sb.append("\tWarnings  :" + warn);
+
+			// Sequence checks
+			sb.append("\t\tCDS check : " + (isDnaCheck() ? "OK" : "Failed (or missing)") + "\n");
+			sb.append("\t\tAA check  : " + (isAaCheck() ? "OK" : "Failed (or missing)") + "\n");
+		}
+
 		return sb.toString();
 	}
 
@@ -1572,19 +1590,24 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	public String toStringAsciiArt() {
 
-		// ASCII art for transcript
+		//---
+		// ASCII art for transcript 
+		//---
 		char art[] = new char[size()];
 		for (int i = start, j = 0; i <= end; i++, j++) {
 			Utr utr = findUtr(i);
 			if (utr != null) art[j] = utr.isUtr5prime() ? '5' : '3';
 			else {
 				Exon exon = findExon(i);
-				if (exon != null) art[j] = exon.isStrandPlus() ? '>' : '<';
-				else art[j] = '-';
+				if (exon != null) {
+					art[j] = exon.isStrandPlus() ? '>' : '<';
+				} else art[j] = '-';
 			}
 		}
 
-		// Sequence
+		//---
+		// DNA Sequence
+		//---
 		StringBuilder seq = new StringBuilder();
 		for (int i = start; i <= end; i++) {
 			Exon exon = findExon(i);
@@ -1597,15 +1620,23 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			} else seq.append('.');
 		}
 
-		// AA Sequence
+		//---
+		// AA Sequence and frame
+		//---
 		StringBuilder aa = new StringBuilder();
+		StringBuilder frameSb = new StringBuilder();
 		char codon[] = new char[3];
 		int step = isStrandPlus() ? 1 : -1;
+		int frame = 0;
 		for (int i = (isStrandPlus() ? 0 : art.length - 1), j = 0; (i >= 0) && (i < art.length); i += step) {
-			if (art[i] == '3' || art[i] == '5') aa.append(' ');
-			else {
+			if (art[i] == '3' || art[i] == '5') {
+				// 5'UTR or 3'UTR
+				aa.append(' ');
+				frameSb.append(' ');
+			} else {
 				char b = seq.charAt(i);
 				if (b == 'a' || b == 'c' || b == 'g' || b == 't') {
+					// Coding sequence
 					codon[j++] = b;
 					if (j >= 3) {
 						j = 0;
@@ -1613,13 +1644,57 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 						if (isStrandMinus()) cod = GprSeq.wc(cod); // Bases are already reversed, we only need WC complement
 						aa.append(" " + codonTable().aa(cod) + " ");
 					}
-				} else aa.append(' ');
+
+					// Update frame
+					frameSb.append(frame);
+					frame = (frame + 1) % 3;
+
+				} else {
+					// Intron					
+					aa.append(' ');
+					frameSb.append(' ');
+				}
 			}
 		}
 
 		String aaStr = isStrandPlus() ? aa.toString() : aa.reverse().toString();
+		String frameStr = isStrandPlus() ? frameSb.toString() : frameSb.reverse().toString();
 
-		return new String(art) + "\n" + seq + "\n" + aaStr;
+		//---
+		// Coordinates
+		//---
+
+		// Create 'vertical lines'
+		StringBuilder lines = new StringBuilder();
+		int prev = start;
+		for (Exon ex : this.sorted()) {
+			lines.append(Gpr.repeat(' ', ex.getStart() - prev - 1) + "|");
+			prev = ex.getStart();
+
+			lines.append(Gpr.repeat(' ', ex.getEnd() - prev - 1) + "|");
+			prev = ex.getEnd();
+		}
+
+		StringBuilder coords = new StringBuilder();
+		coords.append(lines + "\n");
+		for (Exon ex : this.sortedStrand()) {
+			// First coordinate
+			int n = isStrandPlus() ? ex.getStart() : ex.getEnd();
+			int len = n - start - 1;
+			coords.append((len > 0 ? lines.subSequence(0, n - start) : "") + "^" + n + "\n");
+
+			// Second coordinate
+			n = isStrandPlus() ? ex.getEnd() : ex.getStart();
+			len = n - start - 1;
+			coords.append((len > 0 ? lines.subSequence(0, n - start) : "") + "^" + n + "\n");
+		}
+
+		// Result
+		return "" + seq //
+				+ "\n" + aaStr //
+				+ "\n" + frameStr // 
+				+ "\n" + new String(art) //
+				+ "\n" + coords;
 	}
 
 	/**

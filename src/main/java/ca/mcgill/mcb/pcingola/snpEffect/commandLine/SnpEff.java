@@ -70,7 +70,7 @@ public class SnpEff implements CommandLine {
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
 	public static final String REVISION = "c";
-	public static final String BUILD = "2015-03-02";
+	public static final String BUILD = "2015-03-08";
 	public static final String VERSION_MAJOR = "4.1";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -961,6 +961,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\tgenes2bed                    : Create a bed file from a genes list.");
 		System.err.println("\tlen                          : Calculate total genomic length for each marker type.");
 		System.err.println("\tprotein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
+		System.err.println("\tshowTr                       : Show transcript's coordiantes, DNA sequence and protein sequence.");
 		System.err.println("\tspliceAnalysis               : Perform an analysis of splice sites. Experimental feature.");
 
 		usageGenericAndDb();
