@@ -218,8 +218,9 @@ public class Download {
 					String dirName = Gpr.dirName(localEntryName);
 					File dir = new File(dirName);
 					if (!dir.exists()) {
+						// Create local dir
 						if (verbose) Timer.showStdErr("Creating local directory: '" + dir + "'");
-						dir.mkdirs(); // Create local dir
+						if (!dir.mkdirs()) throw new RuntimeException("Cannot create directory '" + dir.getCanonicalPath() + "'");
 					}
 
 					//---
@@ -237,8 +238,9 @@ public class Download {
 					dest.close();
 				} else if (entry.isDirectory()) {
 					String dir = parseEntryPath(entry.getName(), mainDir, dataDir);
+					// Create local dir
 					if (verbose) Timer.showStdErr("Creating local directory: '" + dir + "'");
-					new File(dir).mkdirs(); // Create local dir
+					if (!(new File(dir)).mkdirs()) throw new RuntimeException("Cannot create directory '" + dir + "'");
 				}
 			}
 
@@ -255,5 +257,4 @@ public class Download {
 
 		return true;
 	}
-
 }
