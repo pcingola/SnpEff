@@ -564,7 +564,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-			) {
+					) {
 				ret = true;
 
 				// Show debugging information
@@ -940,7 +940,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
 						if (Config.get().isDebug()) System.err.println("\t\tFrame correction: Transcript '" + getId() + "'\tExon rank " + exon.getRank() + "\tExpected frame: " + frameReal + "\tExon frame: " + exon.getFrame() + "\tSequence len: " + sequence.length());
 						// Find matching CDS
@@ -1098,7 +1098,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
@@ -1494,7 +1494,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1588,10 +1588,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	/**
 	 * Show a transcript as an ASCII Art
 	 */
-	public String toStringAsciiArt() {
+	public String toStringAsciiArt(boolean full) {
 
 		//---
-		// ASCII art for transcript 
+		// ASCII art for transcript
 		//---
 		char art[] = new char[size()];
 		for (int i = start, j = 0; i <= end; i++, j++) {
@@ -1604,6 +1604,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				} else art[j] = '-';
 			}
 		}
+
+		// Only 'basic' ASCII art?
+		if (!full) return new String(art);
 
 		//---
 		// DNA Sequence
@@ -1650,7 +1653,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					frame = (frame + 1) % 3;
 
 				} else {
-					// Intron					
+					// Intron
 					aa.append(' ');
 					frameSb.append(' ');
 				}
@@ -1692,9 +1695,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Result
 		return "" + seq //
 				+ "\n" + aaStr //
-				+ "\n" + frameStr // 
+				+ "\n" + frameStr //
 				+ "\n" + new String(art) //
-				+ "\n" + coords;
+		+ "\n" + coords;
 	}
 
 	/**

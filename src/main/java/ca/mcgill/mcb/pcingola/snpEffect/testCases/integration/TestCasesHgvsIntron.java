@@ -42,7 +42,7 @@ public class TestCasesHgvsIntron extends TestCasesHgvsBase {
 			if (transcript.introns().size() < 1) continue;
 
 			// Character representation
-			String trstr = transcript.toStringAsciiArt();
+			String trstr = transcript.toStringAsciiArt(false);
 			char bases[] = trstr.toCharArray();
 
 			// Show data

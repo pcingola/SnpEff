@@ -71,12 +71,14 @@ public class SnpEffCmdShowTr extends SnpEff {
 
 			if (tr == null) System.err.println("Transcript '" + trid + "' not found.");
 			else {
-				System.out.println(tr.toString(true));
-				System.out.println(tr.toStringAsciiArt());
-				System.out.println("");
+				String trStr = tr.toString(true);
+				String art = tr.toStringAsciiArt(true);
 
-				sb.append(tr.toString(true) + "\n");
-				sb.append(tr.toStringAsciiArt() + "\n\n");
+				System.out.println(trStr);
+				System.out.println(art + "\n");
+
+				sb.append(trStr + "\n");
+				sb.append(art + "\n\n");
 			}
 
 			// Save output (for debugging)

@@ -144,7 +144,7 @@ public class TestCasesDels extends TestCasesBase {
 			else Gpr.showMark(i + 1, 1);
 			int cdsBaseNum = 0;
 
-			String transcriptStr = transcript.toString() + "\n" + transcript.toStringAsciiArt();
+			String transcriptStr = transcript.toString() + "\n" + transcript.toStringAsciiArt(false);
 
 			// For each exon...
 			for (Exon exon : transcript.sortedStrand()) {
