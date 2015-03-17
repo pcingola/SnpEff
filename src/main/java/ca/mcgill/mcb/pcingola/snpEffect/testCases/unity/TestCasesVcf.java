@@ -9,6 +9,7 @@ import org.junit.Test;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.outputFormatter.VcfOutputFormatter;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
@@ -534,6 +535,28 @@ public class TestCasesVcf extends TestCasesBase {
 
 			// Check that previous 'key=value' is no longer there
 			Assert.assertTrue("Old key=value is still in INOF field", !ve.getInfoStr().contains(keyValPrev));
+		}
+	}
+
+	/**
+	 * Test old effect separator '+' instead of '&'
+	 */
+	@Test
+	public void test_29() {
+		Gpr.debug("Test");
+		String fileName = "./tests/test_vcf_ann_plus_sign.vcf";
+		VcfFileIterator vcf = new VcfFileIterator(fileName);
+
+		for (VcfEntry ve : vcf) {
+			if (verbose) System.out.println(ve);
+
+			for (VcfEffect veff : ve.parseEffects()) {
+				if (verbose) System.out.println("\t" + veff);
+
+				// Check
+				Assert.assertEquals(EffectType.UTR_5_DELETED.toString(), veff.getEffectTypes().get(0).toString());
+				Assert.assertEquals(EffectType.EXON_DELETED.toString(), veff.getEffectTypes().get(1).toString());
+			}
 		}
 	}
 

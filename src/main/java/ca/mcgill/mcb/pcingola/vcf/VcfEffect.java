@@ -1,6 +1,5 @@
 package ca.mcgill.mcb.pcingola.vcf;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,50 +30,43 @@ public class VcfEffect {
 
 	public static boolean debug = false;
 
-	public static final String VCF_INFO_EFF_NAME = "EFF";
-	public static final String VCF_INFO_ANN_NAME = "ANN";
-	public static final String[] VCF_INFO_ANN_NAMES = { VCF_INFO_ANN_NAME, VCF_INFO_EFF_NAME };
-
-	public static final String EFFECT_TYPE_SEPARATOR = "&"; // Separator between mutiple effectTypes
-	public static final String EFFECT_TYPE_SEPARATOR_OLD = "+"; // Old separator between mutiple effectTypes
-
 	public static String ANN_FIELD_NAMES[] = { //
-	"ALLELE", "GT", "GENOTYPE", //
-			"EFFECT", "ANNOTATION", //
-			"IMPACT", //
-			"GENE", //
-			"GENEID", //
-			"FEATURE", //
-			"FEATUREID", "TRID", //
-			"BIOTYPE", //
-			"RANK", "EXID", //
-			"HGVS_C", "HGVS_DNA", "CODON", //
-			"HGVS", "HGVS_P", "HGVS_PROT", "AA", //
-			"POS_CDNA", "CDNA_POS", //
-			"LEN_CDNA", "CDNA_LEN", //
-			"POS_CDS", "CDS_POS", //
-			"LEN_CDS", "CDS_LEN", //
-			"POS_AA", "AA_POS", //
-			"LEN_AA", "AA_LEN", //
-			"DISTANCE", //
-			"ERRORS", "WARNINGS", "INFOS", //
+		"ALLELE", "GT", "GENOTYPE", //
+		"EFFECT", "ANNOTATION", //
+		"IMPACT", //
+		"GENE", //
+		"GENEID", //
+		"FEATURE", //
+		"FEATUREID", "TRID", //
+		"BIOTYPE", //
+		"RANK", "EXID", //
+		"HGVS_C", "HGVS_DNA", "CODON", //
+		"HGVS", "HGVS_P", "HGVS_PROT", "AA", //
+		"POS_CDNA", "CDNA_POS", //
+		"LEN_CDNA", "CDNA_LEN", //
+		"POS_CDS", "CDS_POS", //
+		"LEN_CDS", "CDS_LEN", //
+		"POS_AA", "AA_POS", //
+		"LEN_AA", "AA_LEN", //
+		"DISTANCE", //
+		"ERRORS", "WARNINGS", "INFOS", //
 	};
 
 	public static String EFF_FIELD_NAMES[] = { //
-	"EFFECT", "IMPACT", "FUNCLASS", "CODON", //
-			"AA", //
-			"HGVS", //
-			"AA_LEN", //
-			"GENE", //
-			"BIOTYPE", //
-			"CODING", //
-			"TRID", //
-			"RANK", "EXID", //
-			"GT", "GENOTYPE_NUMBER", "GENOTYPE", //
-			"ERRORS", "WARNINGS", "INFOS", //
+		"EFFECT", "IMPACT", "FUNCLASS", "CODON", //
+		"AA", //
+		"HGVS", //
+		"AA_LEN", //
+		"GENE", //
+		"BIOTYPE", //
+		"CODING", //
+		"TRID", //
+		"RANK", "EXID", //
+		"GT", "GENOTYPE_NUMBER", "GENOTYPE", //
+		"ERRORS", "WARNINGS", "INFOS", //
 	};
 
-	private static HashMap<EffFormatVersion, HashMap<String, Integer>> fieldName2Num = new HashMap<EffFormatVersion, HashMap<String, Integer>>();
+	//	private static HashMap<EffFormatVersion, HashMap<String, Integer>> fieldName2Num = new HashMap<EffFormatVersion, HashMap<String, Integer>>();
 
 	EffFormatVersion formatVersion;
 	String vcfFieldString; // Original 'raw' string from VCF Info field
@@ -106,7 +98,7 @@ public class VcfEffect {
 	 * Get info field name based on format version
 	 */
 	public static String infoFieldName(EffFormatVersion formatVersion) {
-		if (formatVersion == null) return VCF_INFO_ANN_NAME;
+		if (formatVersion == null) return EffFormatVersion.VCF_INFO_ANN_NAME;
 		return formatVersion.infoFieldName();
 	}
 
@@ -369,7 +361,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-			) len--;
+					) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;
@@ -866,6 +858,9 @@ public class VcfEffect {
 		}
 	}
 
+	/**
+	 * Parse effect sub-field
+	 */
 	List<EffectType> parseEffect(String eff) {
 		int idx = eff.indexOf('[');
 		if (idx > 0) eff = eff.substring(0, idx);
@@ -874,9 +869,10 @@ public class VcfEffect {
 		if (eff.isEmpty()) return effs;
 
 		// Split multiple effectTypes
-		if (eff.indexOf(formatVersion.separator()) >= 0) {
+		//		if (eff.indexOf(formatVersion.separator()) >= 0) {
+		if (eff.indexOf(EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD) >= 0) {
 			// Old version
-			for (String es : eff.split(formatVersion.separatorSplit()))
+			for (String es : eff.split("\\" + EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD))
 				effs.add(EffectType.parse(formatVersion, es));
 		} else {
 			// Split effect strings

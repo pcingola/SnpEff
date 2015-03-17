@@ -350,7 +350,7 @@ public class VcfHeader {
 			vcfInfoById.put("CICNADJ", new VcfHeaderInfo("CICNADJ", VcfInfoType.Integer, ".", "Confidence interval around copy number for the adjacency"));
 
 			// Add SnpEff 'EFF' fields
-			String eff = VcfEffect.VCF_INFO_EFF_NAME;
+			String eff = EffFormatVersion.VCF_INFO_EFF_NAME;
 			vcfInfoById.put(eff + ".EFFECT", new VcfHeaderInfo(eff + ".EFFECT", VcfInfoType.String, ".", "SnpEff effect"));
 			vcfInfoById.put(eff + ".IMPACT", new VcfHeaderInfo(eff + ".IMPACT", VcfInfoType.String, ".", "SnpEff impact (HIGH, MODERATE, LOW, MODIFIER)"));
 			vcfInfoById.put(eff + ".FUNCLASS", new VcfHeaderInfo(eff + ".FUNCLASS", VcfInfoType.String, ".", "SnpEff functional class (NONE, SILENT, MISSENSE, NONSENSE)"));
@@ -370,7 +370,7 @@ public class VcfHeader {
 			vcfInfoById.put(eff + ".WARNINGS", new VcfHeaderInfo(eff + ".WARNINGS", VcfInfoType.String, ".", "Errors, Warnings or additional Information"));
 			vcfInfoById.put(eff + ".INFOS", new VcfHeaderInfo(eff + ".INFO", VcfInfoType.String, ".", "Errors, Warnings or additional Information"));
 
-			for (String ann : VcfEffect.VCF_INFO_ANN_NAMES) {
+			for (String ann : EffFormatVersion.VCF_INFO_ANN_NAMES) {
 				vcfInfoById.put(ann + ".ALLELE", new VcfHeaderInfo(ann + ".ALLELE", VcfInfoType.String, ".", "SnpEff genotype"));
 				vcfInfoById.put(ann + ".GENOTYPE", new VcfHeaderInfo(ann + ".GENOTYPE", VcfInfoType.String, ".", "SnpEff genotype"));
 				vcfInfoById.put(ann + ".GT", new VcfHeaderInfo(ann + ".GT", VcfInfoType.String, ".", "SnpEff genotype"));

@@ -15,6 +15,13 @@ public enum EffFormatVersion {
 
 	public static final EffFormatVersion DEFAULT_FORMAT_VERSION = FORMAT_ANN_1;
 
+	public static final String VCF_INFO_EFF_NAME = "EFF";
+	public static final String VCF_INFO_ANN_NAME = "ANN";
+	public static final String[] VCF_INFO_ANN_NAMES = { VCF_INFO_ANN_NAME, VCF_INFO_EFF_NAME };
+
+	public static final String EFFECT_TYPE_SEPARATOR = "&"; // Separator between mutiple effectTypes
+	public static final String EFFECT_TYPE_SEPARATOR_OLD = "+"; // Old separator between mutiple effectTypes
+
 	/**
 	 * Get INF field name for corresponding format
 	 */
@@ -22,13 +29,13 @@ public enum EffFormatVersion {
 		switch (this) {
 		case FORMAT_ANN:
 		case FORMAT_ANN_1:
-			return VcfEffect.VCF_INFO_ANN_NAME;
+			return VCF_INFO_ANN_NAME;
 
 		case FORMAT_EFF:
 		case FORMAT_EFF_4:
 		case FORMAT_EFF_3:
 		case FORMAT_EFF_2:
-			return VcfEffect.VCF_INFO_EFF_NAME;
+			return VCF_INFO_EFF_NAME;
 
 		default:
 			throw new RuntimeException("Unknown format: " + this);

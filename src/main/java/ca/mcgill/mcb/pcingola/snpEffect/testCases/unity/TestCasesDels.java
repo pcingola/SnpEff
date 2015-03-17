@@ -12,7 +12,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 
 /**
  * Test random DEL changes
@@ -284,7 +284,7 @@ public class TestCasesDels extends TestCasesBase {
 						if (debug) System.out.println(msg);
 						else if (verbose) System.out.println(line);
 
-						for (String e : effStr.split("\\" + VcfEffect.EFFECT_TYPE_SEPARATOR_OLD)) {
+						for (String e : effStr.split("\\" + EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD)) {
 							if (effectExpected.equals(e)) {
 								ok = true;
 								// Check codons
@@ -292,7 +292,7 @@ public class TestCasesDels extends TestCasesBase {
 										&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
 										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
 										&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
-								) {
+										) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
 									String codonsNewEff = effect.getCodonsAlt().toUpperCase();
