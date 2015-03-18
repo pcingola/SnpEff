@@ -322,9 +322,15 @@ $ java -jar SnpSift.jar filter "( GEN[HG00096].DS > 0.2 ) & ( GEN[HG00097].DS > 
 					<li> ERRORS (alias WARNING, INFOS)
 				</ul>
 
-				For example, you may want only the lines where the <b>first</b> annotation to be a <code>missense_variant</code> variant:
+				For example, you may want only the lines where the <b>first</b> annotation has <code>missense_variant</code> variant:
+				<br>
+				<br>
+				<b>Important</b> According to the specification, there can be more than one EFFECT separated by &amp; (e.g. 'missense_variant&amp;splice_region_variant', thus using <code>has</code> operator is better than using equality operator (<code>=</code>). 
+				For instance <code>'missense_variant&amp;splice_region_variant' = 'missense_variant'</code> is false, whereas  <code>'missense_variant&amp;splice_region_variant' has 'missense_variant'</code> is true.
+				<br>
+
 <pre>
-$ java -jar SnpSift.jar filter "ANN[0].EFFECT = 'missense_variant'" examples/test.chr22.ann.vcf > test.chr22.ann.filter_missense_first.vcf
+$ java -jar SnpSift.jar filter "ANN[0].EFFECT has 'missense_variant'" examples/test.chr22.ann.vcf > test.chr22.ann.filter_missense_first.vcf
 
 # Output example (edited for readibility)
 $ cat test.chr22.ann.filter_missense_first.vcf
@@ -338,7 +344,7 @@ $ cat test.chr22.ann.filter_missense_first.vcf
 
 				...but this probably doesn't make much sense. What you may really want are lines where <b>ANY</b> effect to be <code>missense_variant</code>:
 <pre>
-$ java -jar SnpSift.jar filter "ANN[*].EFFECT = 'missense_variant'" examples/test.chr22.ann.vcf > test.chr22.ann.filter_missense_any.vcf
+$ java -jar SnpSift.jar filter "ANN[*].EFFECT has 'missense_variant'" examples/test.chr22.ann.vcf > test.chr22.ann.filter_missense_any.vcf
 
 # Output example (edited for readibility)
 $ cat test.chr22.ann.filter_missense_any.vcf
@@ -353,7 +359,7 @@ $ cat test.chr22.ann.filter_missense_any.vcf
 
 				May be you want only the ones that affect <b>gene 'TRMT2A'</b>
 <pre>
-$ java -jar SnpSift.jar filter "(ANN[*].EFFECT = 'missense_variant') && (ANN[*].GENE = 'TRMT2A')" examples/test.chr22.ann.vcf > test.chr22.ann.filter_missense_any_TRMT2A.vcf
+$ java -jar SnpSift.jar filter "(ANN[*].EFFECT has 'missense_variant') && (ANN[*].GENE = 'TRMT2A')" examples/test.chr22.ann.vcf > test.chr22.ann.filter_missense_any_TRMT2A.vcf
 
 $ cat test.chr22.ann.filter_missense_any_TRMT2A.vcf
 22    20103915    .    C    T    .    .    ANN=T|stop_gained|HIGH|RANBP1|ENSG00000099901|transcript|ENST00000432879|protein_coding|1/3|c.208C>T|p.Arg70*|455/744|208/497|70/164||WARNING_TRANSCRIPT_INCOMPLETE
@@ -493,6 +499,16 @@ $cat test.snpeff.vcf | java -Xmx1G -jar SnpSift.jar filter "(exists LOF[*].PERC)
 						<td> The variable exists (not missing)</td> 
 						<td> Any </td>
 						<td style="white-space: nowrap"> (<b>exists</b> INDEL) </td>
+					</tr>
+					<tr> 
+						<td> has </td> 
+						<td> The right hand side expression is equalt to any of the items in a list consisting of separating the left hand side expression using delimiters: '&amp;', '+', ';', ',', ':', '(', ')' ,'[', ']'<p> 
+							 Example: If the expression is: ANN[*].EFFECT <b>has</b> 'missense_variant'<br>
+							 If left hand side (ANN[*].EFFECT) has value 'missense_variant&splice_region_variant', then it is transformed to a list: ['missense_variant', 'splice_region_variant']<br>
+							 Since the right hand side ('missense_variant') is in the list, the expression evaulates to 'true'
+						</td> 
+						<td> Any </td>
+						<td style="white-space: nowrap"> (ANN[*].EFFECT <b>has</b> 'missense_variant') </td>
 					</tr>
 					<tr> <th> Function </th> <th> Description </th> <th> Data type </th> <th> Example </th> </tr>
 					<tr> 
