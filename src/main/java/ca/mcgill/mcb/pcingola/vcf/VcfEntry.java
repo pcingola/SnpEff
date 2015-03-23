@@ -790,7 +790,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (alts == null // No alts
 					|| (alts.length == 0) // Zero ALTs
 					|| (alts.length == 1 && (alts[0].isEmpty() || alts[0].equals("."))) // One ALT, but it's empty
-			) {
+					) {
 				variantType = VariantType.INTERVAL;
 			} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
 				if (ref.length() == 1) variantType = VariantType.SNP;
@@ -1243,7 +1243,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 				// Set corresponding genotype
 				for (Variant variant : variants) {
-					Gpr.debug(variant);
 					if (useNumericGenotype) variant.setGenotype(Integer.toString(genotypeNumber));
 					else variant.setGenotype(alt);
 				}
@@ -1279,7 +1278,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				char change[] = new char[size];
 				for (int i = 0; i < change.length; i++)
 					change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-				ch = new String(change);
+					ch = new String(change);
 			}
 
 			// Create SeqChange

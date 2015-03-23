@@ -39,7 +39,7 @@ public class Variant extends Marker {
 	VariantType variantType; // Variant type
 	String ref; // Reference (i.e. original bases in the genome)
 	String alt; // Changed bases
-	String genotype; // Genotype order number (in case there are multiple changes per entry (e.g. A VCF entry may encode multiple ALTs). Note: Genotype differences are coded as "2-1" meaning genotype 1 is used as reference and genotype 2 is used as ALT (e.g. somatic vs germline samples)
+	String genotype; // Genotype 'ALT' (e.g. A VCF entry may encode multiple ALTs).
 	boolean imprecise = false; // Imprecise variant: coordinates are not exact (E.g. see section "Encoding Structural Variants in VCF" from VCF spec. 4.1)
 
 	/**
@@ -440,8 +440,7 @@ public class Variant extends Marker {
 	}
 
 	/**
-	 * Show it required by ENSEMBL's SnpEffectPredictor
-	 * @return
+	 * Show variant in ENSEMBL's VEP format
 	 */
 	public String toStringEnsembl() {
 		return getChromosomeName() + "\t" + start + "\t" + end + "\t" + ref + "/" + alt + "\t+";

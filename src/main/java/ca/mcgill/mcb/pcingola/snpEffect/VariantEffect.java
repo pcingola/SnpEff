@@ -803,12 +803,4 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 		return "NO EFFECT";
 	}
-
-	/**
-	 * Return a string safe enough to be used in a VCF file
-	 */
-	String vcfSafe(String str) {
-		return str;
-	}
-
 }

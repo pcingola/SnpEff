@@ -85,7 +85,7 @@ public class VariantRealign {
 				if (debug) Gpr.debug("Variant not found in reference sequence. This should never happen!" //
 						+ "\n\tSeq: '" + seqVar //
 						+ "'\n\tVariant's ref: '" + vref + "'" //
-				);
+						);
 				return false;
 			}
 
@@ -112,6 +112,7 @@ public class VariantRealign {
 
 		// Create new variant
 		variantRealigned = new Variant(variant.getParent(), start, refRealign, altRealign, variant.getId());
+		variantRealigned.setGenotype(variant.getGenotype());
 
 		return true;
 	}

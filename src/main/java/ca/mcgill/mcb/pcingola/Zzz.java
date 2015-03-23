@@ -1,13 +1,21 @@
 package ca.mcgill.mcb.pcingola;
 
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
+import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 public class Zzz extends SnpEff {
 
 	public static void main(String[] args) {
-		String z = "aaa&bbb+ccc|ddd,eee,fff;ggg(hhh)iii[jjj]kkk+&;,zzz";
-		String zs[] = z.split("[\\&\\+\\|,;:\\(\\)\\[\\]]+");
-		for (String s : zs)
-			System.out.println("'" + s + "'");
+		String vcfFile = Gpr.HOME + "/snpEff/z.vcf";
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		for (VcfEntry ve : vcf) {
+			System.out.println(ve);
+			for (Variant var : ve.variants()) {
+				System.out.println("\t" + var);
+			}
+		}
 	}
 }
