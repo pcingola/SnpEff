@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import java.util.HashMap;
 
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 
@@ -84,7 +85,7 @@ public enum EffectType {
 		}
 
 		// Try an SO term
-		if (so2efftype.isEmpty()) so2efftype(formatVersion);
+		if (so2efftype.isEmpty()) so2efftype(formatVersion, null);
 		if (so2efftype.containsKey(str)) return so2efftype.get(str);
 
 		throw new RuntimeException("Cannot parse EffectType '" + str + "'");
@@ -93,9 +94,9 @@ public enum EffectType {
 	/**
 	 * Create a map between SO terms and EffectType
 	 */
-	static void so2efftype(EffFormatVersion formatVersion) {
+	static void so2efftype(EffFormatVersion formatVersion, Variant variant) {
 		for (EffectType efftype : EffectType.values()) {
-			String so = efftype.toSequenceOntology(formatVersion);
+			String so = efftype.toSequenceOntology(formatVersion, variant);
 
 			for (String soSingle : so.split(formatVersion.separatorSplit()))
 				if (!so2efftype.containsKey(soSingle)) so2efftype.put(soSingle, efftype);
@@ -263,7 +264,7 @@ public enum EffectType {
 		}
 	}
 
-	public String toSequenceOntology(EffFormatVersion formatVersion) {
+	public String toSequenceOntology(EffFormatVersion formatVersion, Variant variant) {
 		switch (this) {
 
 		case CDS:
@@ -297,6 +298,7 @@ public enum EffectType {
 			return "downstream_gene_variant";
 
 		case EXON:
+			if (variant != null && (!variant.isVariant() || variant.isInterval())) return "exon_region";
 			return "non_coding_exon_variant";
 
 		case EXON_DELETED:

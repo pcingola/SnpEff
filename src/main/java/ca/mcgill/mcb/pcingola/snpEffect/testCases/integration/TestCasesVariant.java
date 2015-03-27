@@ -438,7 +438,7 @@ public class TestCasesVariant {
 			eff.getGeneRegion();
 
 			for (EffFormatVersion formatVersion : EffFormatVersion.values()) {
-				eff.toSequenceOntology(formatVersion);
+				eff.toSequenceOntology(formatVersion, null);
 			}
 		}
 	}
