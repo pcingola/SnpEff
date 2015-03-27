@@ -33,7 +33,7 @@ public class SnpEffCmdShowTr extends SnpEff {
 
 			// Argument starts with '-'?
 			if (isOpt(arg)) {
-				usage("Unknow option '" + arg + "'");
+				usage("Unknown option '" + arg + "'");
 			} else if (genomeVer.length() <= 0) genomeVer = arg;
 			else transcriptIds.add(arg);
 		}

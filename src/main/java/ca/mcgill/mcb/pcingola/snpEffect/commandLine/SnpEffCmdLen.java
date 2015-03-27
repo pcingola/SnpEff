@@ -51,7 +51,7 @@ public class SnpEffCmdLen extends SnpEff {
 							+ "\t" + (gene.getEnd() + 1) //
 							+ "\t" + efflen //
 							+ "\t" + maxcds //
-							);
+					);
 
 					// Sanity check
 					if (maxcds > efflen) throw new RuntimeException("CDS length is greter then effective length. This should never happen!");
@@ -137,7 +137,7 @@ public class SnpEffCmdLen extends SnpEff {
 				else usage("Missing value for parameter '-r'");
 
 			} else if (genomeVer.isEmpty()) genomeVer = args[i];
-			else usage("Unknow parameter '" + args[i] + "'");
+			else usage("Unknown parameter '" + args[i] + "'");
 		}
 
 		// Check: Do we have all required parameters?

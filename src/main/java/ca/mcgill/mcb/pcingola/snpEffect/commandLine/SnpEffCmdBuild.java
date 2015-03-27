@@ -171,9 +171,9 @@ public class SnpEffCmdBuild extends SnpEff {
 				else if (arg.equalsIgnoreCase("-cellType")) {
 					if ((i + 1) < args.length) cellType = args[++i];
 					else usage("Missing 'cellType' argument");
-				} else usage("Unknow option '" + arg + "'");
+				} else usage("Unknown option '" + arg + "'");
 			} else if (genomeVer.length() <= 0) genomeVer = arg;
-			else usage("Unknow parameter '" + arg + "'");
+			else usage("Unknown parameter '" + arg + "'");
 		}
 
 		// Check: Do we have all required parameters?

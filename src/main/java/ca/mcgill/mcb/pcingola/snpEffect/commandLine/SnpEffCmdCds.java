@@ -114,7 +114,7 @@ public class SnpEffCmdCds extends SnpEff {
 				} else if ((mRna.length() < cdsReference.length()) // CDS longer than mRNA? May be it is actually an mRNA + poly-A tail (instead of a CDS)
 						&& cdsReference.substring(mRna.length()).replace('A', ' ').trim().isEmpty() // May be it is an mRNA and it has a ploy-A tail added
 						&& cdsReference.substring(0, mRna.length()).equals(mRna) // Compare cutting poly-A tail
-						) {
+				) {
 					// OK, it was a mRNA +  polyA
 					totalOk++;
 					ok = true;
@@ -123,7 +123,7 @@ public class SnpEffCmdCds extends SnpEff {
 				} else if ((mRna.length() > cdsReference.length()) // PolyA in the reference?
 						&& mRna.substring(cdsReference.length()).replace('A', ' ').trim().isEmpty() //
 						&& mRna.substring(0, cdsReference.length()).equals(mRna) //
-						) {
+				) {
 					// OK, it was a mRNA +  polyA
 					totalOk++;
 					ok = true;
@@ -155,7 +155,7 @@ public class SnpEffCmdCds extends SnpEff {
 									+ "\tMax. possible score: " + maxScore //
 									+ "\tDiff: " + (maxScore - score) //
 									+ "\n" + sw //
-									);
+							);
 							System.err.println("Transcript details:\n" + tr);
 						}
 						if (onlyOneError) {
@@ -183,7 +183,7 @@ public class SnpEffCmdCds extends SnpEff {
 				+ "\tNot found: " + totalNotFound //
 				+ "\tErrors: " + totalErrors //
 				+ "\tError percentage: " + (100 * perc) + "%" //
-				);
+		);
 
 		return perc;
 	}
@@ -206,10 +206,10 @@ public class SnpEffCmdCds extends SnpEff {
 					else usage("Option '-c' without config file argument");
 				} else if (args[i].equals("-v") || args[i].equalsIgnoreCase("-debug")) {
 					debug = true;
-				} else usage("Unknow option '" + args[i] + "'");
+				} else usage("Unknown option '" + args[i] + "'");
 			} else if (genomeVer.isEmpty()) genomeVer = args[i];
 			else if (cdsFile.isEmpty()) cdsFile = args[i];
-			else usage("Unknow parameter '" + args[i] + "'");
+			else usage("Unknown parameter '" + args[i] + "'");
 		}
 
 		// Check: Do we have all required parameters?

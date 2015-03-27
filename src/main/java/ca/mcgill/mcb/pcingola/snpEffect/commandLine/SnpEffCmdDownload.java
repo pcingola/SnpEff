@@ -48,9 +48,9 @@ public class SnpEffCmdDownload extends SnpEff {
 		for (int i = 0; i < args.length; i++) {
 
 			// Argument starts with '-'?
-			if (args[i].startsWith("-")) usage("Unknow option '" + args[i] + "'"); // Options (config, verbose, etc.) are parsed at SnpEff level
+			if (isOpt(args[i])) usage("Unknown option '" + args[i] + "'"); // Options (config, verbose, etc.) are parsed at SnpEff level
 			else if (genomeVer.length() <= 0) genomeVer = args[i];
-			else usage("Unknow parameter '" + args[i] + "'");
+			else usage("Unknown parameter '" + args[i] + "'");
 		}
 
 		// Check: Do we have all required parameters?

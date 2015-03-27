@@ -573,10 +573,10 @@ public class SnpEffCmdEff extends SnpEff {
 						} else if (filterStr.equalsIgnoreCase("None")) ; // OK, nothing to do
 						else variantEffectResutFilter.add(EffectType.valueOf(filterStr.toUpperCase()));
 					}
-				} else usage("Unknow option '" + arg + "'");
+				} else usage("Unknown option '" + arg + "'");
 			} else if (genomeVer.isEmpty()) genomeVer = arg;
 			else if (inputFile.isEmpty()) inputFile = arg;
-			else usage("Unknow parameter '" + arg + "'");
+			else usage("Unknown parameter '" + arg + "'");
 		}
 
 		//---
@@ -916,7 +916,7 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\n");
 		System.err.println("\nOptions:");
 		System.err.println("\t-chr <string>                   : Prepend 'string' to chromosome name (e.g. 'chr1' instead of '1'). Only on TXT output.");
-		System.err.println("\t-classic                        : Use old style annotaions instead of Sequence Ontology and Hgvs.");
+		System.err.println("\t-classic                        : Use old style annotations instead of Sequence Ontology and Hgvs.");
 		System.err.println("\t-download                       : Download reference genome if not available. Default: " + download);
 		System.err.println("\t-i <format>                     : Input format [ vcf, bed ]. Default: VCF.");
 		System.err.println("\t-fileList                       : Input actually contains a list of files to process.");

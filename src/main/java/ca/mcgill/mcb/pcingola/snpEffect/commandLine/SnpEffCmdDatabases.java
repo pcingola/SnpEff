@@ -116,7 +116,7 @@ public class SnpEffCmdDatabases extends SnpEff {
 			String arg = args[i];
 
 			if (isOpt(arg)) {
-				usage("Unknow option '" + arg + "'");
+				usage("Unknown option '" + arg + "'");
 			} else {
 				// Command line
 				if (arg.equals("galaxy")) {

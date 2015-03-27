@@ -47,9 +47,9 @@ public class SnpEffCmdDump extends SnpEff {
 				} else if (args[i].equals("-txt")) {
 					dumpFormat = DumpFormat.TXT;
 					// inOffset = outOffset = 1;
-				} else usage("Unknow option '" + args[i] + "'");
+				} else usage("Unknown option '" + args[i] + "'");
 			} else if (genomeVer.length() <= 0) genomeVer = args[i];
-			else usage("Unknow parameter '" + args[i] + "'");
+			else usage("Unknown parameter '" + args[i] + "'");
 		}
 
 		// Check: Do we have all required parameters?
@@ -146,7 +146,7 @@ public class SnpEffCmdDump extends SnpEff {
 					+ "\t" + gene.getId() //
 					+ "\t" + gene.numChilds() //
 					+ "\t" + (canonical == null ? 0 : canonical.cds().length()) //
-					);
+			);
 		} else info.append("\t\t\t\t");
 
 		// Add transcript info
@@ -157,7 +157,7 @@ public class SnpEffCmdDump extends SnpEff {
 		if (tr != null) info.append("\t" + tr.getId() //
 				+ "\t" + tr.cds().length() //
 				+ "\t" + tr.numChilds() //
-				);
+		);
 		else info.append("\t\t\t");
 
 		// Add exon info
@@ -167,7 +167,7 @@ public class SnpEffCmdDump extends SnpEff {
 
 		if (exon != null) info.append("\t" + exon.getRank() //
 				+ "\t" + exon.getSpliceType() //
-				);
+		);
 		else info.append("\t\t");
 
 		System.out.println(info);
