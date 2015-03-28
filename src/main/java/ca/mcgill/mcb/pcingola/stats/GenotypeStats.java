@@ -62,7 +62,7 @@ public class GenotypeStats implements SamplingStats<VcfEntry> {
 	}
 
 	public String getHomBySampleUrl() {
-		return countBySampleBarChartUrl(countMissing, "Homozygous (ALT) genotypes", "Sample number", "Homozygous count");
+		return countBySampleBarChartUrl(countHom, "Homozygous (ALT) genotypes", "Sample number", "Homozygous count");
 	}
 
 	public String getHomHetTable() {
