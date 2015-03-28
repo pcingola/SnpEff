@@ -24,6 +24,9 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  */
 public class Variant extends Marker {
 
+	// Not a variant (ref=alt)
+	public static final Variant NO_VARIANT = new Variant(null, 0, 0, "");
+
 	public enum VariantType {
 		SNP// Single nucleotide polymorphism (i.e. 1 base is changed)
 		, MNP // Multiple nucleotide polymorphism (i.e. several bases are changed)

@@ -85,7 +85,13 @@ public enum EffectType {
 		}
 
 		// Try an SO term
-		if (so2efftype.isEmpty()) so2efftype(formatVersion, null);
+		if (so2efftype.isEmpty()) {
+			// In some cases a 'non-variant' has different effect (e.g. 'exon_region'), so we need to call this twice
+			so2efftype(formatVersion, null);
+			so2efftype(formatVersion, Variant.NO_VARIANT);
+		}
+
+		// Look up S.O. term
 		if (so2efftype.containsKey(str)) return so2efftype.get(str);
 
 		throw new RuntimeException("Cannot parse EffectType '" + str + "'");
