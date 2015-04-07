@@ -65,6 +65,6 @@ gzip -f genes.refseq
 #---
 
 # CDS fasta
-zcat ORI/refMrna.fa.gz | tr " " "." > cds.fa
+gunzip -c ORI/refMrna.fa.gz | tr " " "." > cds.fa
 gzip -f cds.fa
 
