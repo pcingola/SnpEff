@@ -12117,7 +12117,6 @@ GCA_000253295.1.22 	 Hyphomicrobium_sp_mc1   GCA_000253295.1.22
 Hyphomonas_neptunium_ATCC_15444_uid58433 	 Hyphomonas_neptunium_ATCC_15444_uid58433   Hyphomonas_neptunium_ATCC_15444_uid58433
 GCA_000013025.1.21 	 Hyphomonas_neptunium_atcc_15444   GCA_000013025.1.21
 GCA_000013025.1.22 	 Hyphomonas_neptunium_atcc_15444   GCA_000013025.1.22
-ibdv_isolate_edgar 	 IBDV   ibdv_isolate_edgar
 spetri2.70 	 Ictidomys_tridecemlineatus   spetri2.70
 spetri2.71 	 Ictidomys_tridecemlineatus   spetri2.71
 spetri2.72 	 Ictidomys_tridecemlineatus   spetri2.72
@@ -14489,6 +14488,7 @@ GCA_000286435.2.21 	 Morganella_morganii_subsp_morganii_kt   GCA_000286435.2.21
 GCA_000286435.2.22 	 Morganella_morganii_subsp_morganii_kt   GCA_000286435.2.22
 GCA_000170855.1.21 	 Moritella_sp_pe36   GCA_000170855.1.21
 GCA_000170855.1.22 	 Moritella_sp_pe36   GCA_000170855.1.22
+mm10 	 Mouse   mm10
 GCA_000166195.3.21 	 Mucilaginibacter_paludis_dsm_18603   GCA_000166195.3.21
 GCA_000166195.3.22 	 Mucilaginibacter_paludis_dsm_18603   GCA_000166195.3.22
 GCA_000487995.1.22 	 Mucispirillum_schaedleri_asf457   GCA_000487995.1.22
