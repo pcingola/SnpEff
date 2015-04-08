@@ -46,6 +46,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		addTypeMap("gene", GENE);
 		addTypeMap("pseudogene", TRANSCRIPT);
 
+		addTypeMap("transcript", TRANSCRIPT);
 		addTypeMap("mRNA", TRANSCRIPT);
 		addTypeMap("tRNA", TRANSCRIPT);
 		addTypeMap("snoRNA", TRANSCRIPT);
