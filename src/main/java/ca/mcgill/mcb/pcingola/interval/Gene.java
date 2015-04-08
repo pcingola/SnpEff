@@ -81,17 +81,19 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			changed = true;
 		}
 
-		// Change start?
-		if (start != newStart) {
-			start = newStart;
-			changed = true;
-		}
+		if (newStart < newEnd) {
+			// Change start?
+			if (start != newStart) {
+				start = newStart;
+				changed = true;
+			}
 
-		// Change end?
-		if (end != newEnd) {
-			end = newEnd;
-			changed = true;
-		}
+			// Change end?
+			if (end != newEnd) {
+				end = newEnd;
+				changed = true;
+			}
+		} else Gpr.debug("Gene '" + id + "' (name:'" + geneName + "') not adjusted: " + this);
 
 		return changed;
 	}
