@@ -131,10 +131,10 @@ unzip snpEff_latest_core.zip
 				</ul>
 				<br>
 				<br>
-				Once SnpEff is installed, we will enter the following commands to download the pre-built human database (GRCh37.71) that will be used to annotate our data.
+				Once SnpEff is installed, we will enter the following commands to download the pre-built human database (GRCh37.75) that will be used to annotate our data.
 <pre>
 cd snpEff
-java -jar snpEff.jar download -v GRCh37.71
+java -jar snpEff.jar download -v GRCh37.75
 </pre>
 
 				A list of pre-built databases for all other species is available by running the following command: 
@@ -190,29 +190,17 @@ unzip protocols.zip
 				By default, SnpEff adds primary annotations and basic impact assessment for coding and non-coding variants as described above. 
 				SnpEff has several command line options that can be used in this annotation stage and which are described in detail in the <a href="http://snpeff.sourceforge.net/SnpEff_manual.html"> online manual </a>.
 				<br>
-				In this example, we annotate: 
+				In this example, we annotate (all these annotations are activated by default when using SnpEff): 
 				<ul>
-					<li> loss of function and nonsense mediated decay predictions (by adding the "-lof" command line option); 
-					<li> protein domain annotations from the curated NextProt database (option "-nextProt"); as well as 
-					<li> putative transcription factor binding sites from the ENSEMBL 'Regulatory Build' and Jaspar database (option "-motif"). 
-				</ul>
-				<br>
-				We also instruct the program to: 
-				<ul>
-					<li> use HGVS notation for amino acid changes (option "-hgvs"); and 
-					<li> to create a web page summarizing the annotation results in "ex1.html" (option "-stats"):
+					<li> loss of function and nonsense mediated decay predictions;
+					<li> protein domain annotations from the curated NextProt database; 
+					<li> putative transcription factor binding sites from the ENSEMBL 'Regulatory Build' and Jaspar database;
+					<li> use HGVS notation for amino acid changes; and 
+					<li> to create a web page summarizing the annotation results in "ex1.html" (option <code>-stats</code>):
 				</ul>
 
 <pre>
-java -Xmx4g -jar snpEff.jar \
-  -v \
-  -lof \
-  -motif \
-  -hgvs \
-  -nextProt \
-  GRCh37.71 \
-  protocols/ex1.vcf \
-  > protocols/ex1.eff.vcf
+java -Xmx4g -jar snpEff.jar -v -stats ex1.html GRCh37.75 protocols/ex1.vcf > protocols/ex1.ann.vcf
 </pre>
 				<br>
 				SnpEff produces three output files :
@@ -255,131 +243,134 @@ java -Xmx1g -jar SnpSift.jar \
   caseControl \
   -v \
   -tfam protocols/pedigree.tfam \
-  protocols/ex1.eff.vcf \
-  > protocols/ex1.eff.cc.vcf
+  protocols/ex1.ann.vcf \
+  > protocols/ex1.ann.cc.vcf
 </pre>
 
 				<br>
-				This analysis creates an output VCF file ("ex1.eff.cc.vcf") by adding new information to the INFO field for each variant: this includes information such as "Cases=1,1,3" and "Controls=8,6,22", which correspond to the number of homozygous non-reference, heterozygous and total allele counts in cases and controls for each variant. 
+				This analysis creates an output VCF file ("ex1.ann.cc.vcf") by adding new information to the INFO field for each variant: this includes information such as <code>Cases=1,1,3</code> and <code>Controls=8,6,22</code> which correspond to the number of homozygous non-reference, heterozygous and total allele counts in cases and controls for each variant. 
 				The program also calculates basic statistics for each variant based on the allele frequencies in the two groups using different models, which can be useful as a starting point for more in-depth statistical analysis.
 				<br>
 				<br>
 				<h3> Step 3: Filtering variants. </h3>
-				We can use the "SnpSift filter" command to reduce the number of candidate loci base on alleles in cases and controls. 
-				SnpSift "filter" allows users to create powerful filters that select variants using Boolean expressions containing data from the VCF fields. 
-				The expression we use to filter the VCF file "ex1.eff.vcf" is developed as follows.
+				We can use the <code>SnpSift filter</code> command to reduce the number of candidate loci base on alleles in cases and controls. 
+				SnpSift filter allows users to create powerful filters that select variants using Boolean expressions containing data from the VCF fields. 
+				The expression we use to filter the VCF file "ex1.ann.vcf" is developed as follows.
 				<br>
 				<br>
 				We expect all the three cases and none of the controls to be homozygous for the mutation. 
-				This is expressed using the following filter: "(Cases[0] = 3) & (Controls[0] = 0)". 
+				This is expressed using the following filter: <code>Cases[0] = 3) & (Controls[0] = 0)</code> 
 				The full command line is:
 				<br>
 				<br>
 
 <pre>
-cat protocols/ex1.eff.cc.vcf | java -jar SnpSift.jar filter \
+cat protocols/ex1.ann.cc.vcf | java -jar SnpSift.jar filter \
     "(Cases[0] = 3) & (Controls[0] = 0)" \
   > protocols/ex1.filtered.hom.vcf
 </pre>
 
 				The filtered output file, filtered.hom_cases.vcf, contains over 400 variants satisfying our criteria. 
 				This is still too large to analyze by hand, so can we can add another filter to see if any of these variants is expected to have a high impact. 
-				To identify variants where any of these impacts is classified as either "HIGH" or "MODERATE", we add the condition "EFF[*].IMPACT = 'HIGH') | (EFF[*].IMPACT = 'MODERATE')". 
+				To identify variants where any of these impacts is classified as either <code>HIGH</code> or <code>MODERATE</code> we add the condition <code>ANN[*].IMPACT = 'HIGH') | (ANN[*].IMPACT = 'MODERATE')</code> 
 				The new filtering commands become:
 				<br>
 				<br>
 
 <pre>
-cat protocols/ex1.eff.cc.vcf \
+cat protocols/ex1.ann.cc.vcf \
   | java -jar SnpSift.jar filter \
-    "(Cases[0] = 3) & (Controls[0] = 0) & ((EFF[*].IMPACT = 'HIGH') | (EFF[*].IMPACT = 'MODERATE'))" \
+    "(Cases[0] = 3) & (Controls[0] = 0) & ((ANN[*].IMPACT = 'HIGH') | (ANN[*].IMPACT = 'MODERATE'))" \
   > protocols/ex1.filtered.vcf
 </pre>
 				<br>
-				After filtering, only two variants satisfy our criteria, one of them is a STOP_GAINED loss of function variant, whereas the other one is a NON_SYNONYMOUS amino acid change. 
+				After filtering, only two variants satisfy our criteria, one of them is a <code>stop_gained</code> loss of function variant
+				, whereas the other one is a <code>missense_variant</code> amino acid change. 
 				The first one is a known Cystic fibrosis variant.
 				<br>
 				<br>
-
-
 <pre>
 $ cat protocols/ex1.filtered.vcf     | ./scripts/vcfInfoOnePerLine.pl
-7	117227832	.	G	T	.	.
-							AC	14
-							AN	22
-							EFF	DOWNSTREAM(MODIFIER||29|||CFTR|processed_transcript|CODING|ENST00000472848||1)
-							EFF	NEXT_PROT[beta_strand](LOW||||1419|CFTR|protein_coding|CODING|ENST00000454343|11|1)
-							EFF	NEXT_PROT[beta_strand](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
-							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|10|1)
-							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|11|1)
-							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
-							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|13|1)
-							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|14|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|10|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|11|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|13|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|14|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|15|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|8|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|9|1)
-							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly481*/c.1441G>T|1419|CFTR|protein_coding|CODING|ENST00000454343|11|1)
-							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly512*/c.1534G>T|1437|CFTR|protein_coding|CODING|ENST00000426809|11|1|WARNING_TRANSCRIPT_INCOMPLETE)
-							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly542*/c.1624G>T|1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
-							EFF	UPSTREAM(MODIFIER||1362|||AC000111.5|processed_pseudogene|NON_CODING|ENST00000448200||1)
-							LOF	(CFTR|ENSG00000001626|9|0.33)
-							NMD	(CFTR|ENSG00000001626|9|0.33)
-							Cases	3
-							Cases	0
-							Cases	6
-							Controls	0
-							Controls	8
-							Controls	8
-							CC_GENO	4.556e-04
-							CC_ALL	4.025e-02
-							CC_DOM	6.061e-03
-							CC_REC	1.000e+00
-17	39135205	.	ACA	GCA,GCG	.	.
-							AC	16
-							AC	8
-							AN	31
-							EFF	DOWNSTREAM(MODIFIER||3027|||AC004231.2|antisense|NON_CODING|ENST00000418393||1)
-							EFF	DOWNSTREAM(MODIFIER||3027|||AC004231.2|antisense|NON_CODING|ENST00000418393||2)
-							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|6|1)
-							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|6|2)
-							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|7|1)
-							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|7|2)
-							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|8|1)
-							EFF	NEXT_PROT[region_of_interest:Coil_2](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|8|2)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|3|1)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|3|2)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|4|1)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|4|2)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|5|1)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|5|2)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|6|1)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|6|2)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|7|1)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|7|2)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|8|1)
-							EFF	NEXT_PROT[region_of_interest:Rod](LOW||||431|KRT40|protein_coding|CODING|ENST00000398486|8|2)
-							EFF	NON_SYNONYMOUS_CODING(MODERATE||tgt/CGC|p.Cys349Arg/c.1045ACA>GCG|431|KRT40|protein_coding|CODING|ENST00000377755||2)
-							EFF	NON_SYNONYMOUS_CODING(MODERATE||tgt/CGC|p.Cys349Arg/c.1045ACA>GCG|431|KRT40|protein_coding|CODING|ENST00000398486||2)
-							EFF	SYNONYMOUS_CODING(LOW||tgt/TGC|p.Cys349Cys/c.1045ACA>GCA|431|KRT40|protein_coding|CODING|ENST00000377755||1)
-							EFF	SYNONYMOUS_CODING(LOW||tgt/TGC|p.Cys349Cys/c.1045ACA>GCA|431|KRT40|protein_coding|CODING|ENST00000398486||1)
-							EFF	UTR_3_PRIME(MODIFIER|||||KRT40|nonsense_mediated_decay|CODING|ENST00000461923|8|1)
-							EFF	UTR_3_PRIME(MODIFIER|||||KRT40|nonsense_mediated_decay|CODING|ENST00000461923|8|2)
-							Cases	3
-							Cases	0
-							Cases	6
-							Controls	0
-							Controls	12
-							Controls	18
-							CC_GENO	3.504e-02
-							CC_ALL	1.700e-01
-							CC_DOM	1.231e-01
-							CC_REC	1.000e+00
+7   117227832   .   G    T    .    .
+                              AC      14
+                              AN      22
+                              ANN     T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000003084|protein_coding|12/27|c.1624G>T|p.Gly542*|1756/6128|1624/4443|542/1480||
+                              ANN     T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000454343|protein_coding|11/26|c.1441G>T|p.Gly481*|1573/5949|1441/4260|481/1419||
+                              ANN     T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000426809|protein_coding|11/26|c.1534G>T|p.Gly512*|1534/4316|1534/4316|512/1437||WARNING_TRANSCRIPT_INCOMPLETE
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|14/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|13/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|8/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|12/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|10/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|9/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|15/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|11/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding|14/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding|13/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding|12/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding|10/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding|11/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|beta_strand|ENST00000003084|protein_coding|12/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|beta_strand|ENST00000454343|protein_coding|11/26|c.1441G>T||||||
+                              ANN     T|upstream_gene_variant|MODIFIER|AC000111.5|ENSG00000234001|transcript|ENST00000448200|processed_pseudogene||n.-1C>A|||||1362|
+                              ANN     T|downstream_gene_variant|MODIFIER|CFTR|ENSG00000001626|transcript|ENST00000472848|processed_transcript||n.*148G>T|||||29|
+                              LOF     (CFTR|ENSG00000001626|11|0.27)
+                              NMD     (CFTR|ENSG00000001626|11|0.27)
+                              Cases   3
+                              Cases   0
+                              Cases   6
+                              Controls        0
+                              Controls        8
+                              Controls        8
+                              CC_TREND        9.111e-04
+                              CC_GENO NaN
+                              CC_ALL  4.025e-02
+                              CC_DOM  6.061e-03
+                              CC_REC  1.000e+00
 
+17    39135205   .    ACA    GCA,GCG .       .
+                              AC      16
+                              AC      8
+                              AN      31
+                              ANN     GCG|missense_variant|MODERATE|KRT40|ENSG00000204889|transcript|ENST00000377755|protein_coding||c.1045_1047delTGTinsCGC|p.Cys349Arg|1082/1812|1045/1296|349/431||
+                              ANN     GCG|missense_variant|MODERATE|KRT40|ENSG00000204889|transcript|ENST00000398486|protein_coding||c.1045_1047delTGTinsCGC|p.Cys349Arg|1208/1772|1045/1296|349/431||
+                              ANN     GCA|synonymous_variant|LOW|KRT40|ENSG00000204889|transcript|ENST00000377755|protein_coding|6/7|c.1047T>C|p.Cys349Cys|1082/1812|1047/1296|349/431||
+                              ANN     GCA|synonymous_variant|LOW|KRT40|ENSG00000204889|transcript|ENST00000398486|protein_coding|8/9|c.1047T>C|p.Cys349Cys|1208/1772|1047/1296|349/431||
+                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|6/9|c.1047T>C||||||
+                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|8/9|c.1047T>C||||||
+                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|7/9|c.1047T>C||||||
+                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|6/9|c.1045_1047delTGTinsCGC||||||
+                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|8/9|c.1045_1047delTGTinsCGC||||||
+                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|7/9|c.1045_1047delTGTinsCGC||||||
+                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|3/9|c.1047T>C||||||
+                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|6/9|c.1047T>C||||||
+                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|8/9|c.1047T>C||||||
+                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|7/9|c.1047T>C||||||
+                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|4/9|c.1047T>C||||||
+                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|5/9|c.1047T>C||||||
+                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|3/9|c.1045_1047delTGTinsCGC||||||
+                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|6/9|c.1045_1047delTGTinsCGC||||||
+                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|8/9|c.1045_1047delTGTinsCGC||||||
+                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|7/9|c.1045_1047delTGTinsCGC||||||
+                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|4/9|c.1045_1047delTGTinsCGC||||||
+                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|5/9|c.1045_1047delTGTinsCGC||||||
+                              ANN     GCA|3_prime_UTR_variant|MODIFIER|KRT40|ENSG00000204889|transcript|ENST00000461923|nonsense_mediated_decay|8/9|n.*509T>C|||||2348|
+                              ANN     GCG|3_prime_UTR_variant|MODIFIER|KRT40|ENSG00000204889|transcript|ENST00000461923|nonsense_mediated_decay|8/9|n.*507_*509delTGTinsCGC|||||2346|
+                              ANN     GCA|downstream_gene_variant|MODIFIER|AC004231.2|ENSG00000234477|transcript|ENST00000418393|antisense||n.*815A>G|||||3027|
+                              ANN     GCG|downstream_gene_variant|MODIFIER|AC004231.2|ENSG00000234477|transcript|ENST00000418393|antisense||n.*815_*815delACAinsGCG|||||3027|
+                              ANN     GCA|non_coding_exon_variant|MODIFIER|KRT40|ENSG00000204889|transcript|ENST00000461923|nonsense_mediated_decay|8/9|n.*509T>C||||||
+                              ANN     GCG|non_coding_exon_variant|MODIFIER|KRT40|ENSG00000204889|transcript|ENST00000461923|nonsense_mediated_decay|8/9|n.*507_*509delTGTinsCGC||||||
+                              Cases   3
+                              Cases   0
+                              Cases   6
+                              Controls        0
+                              Controls        12
+                              Controls        18
+                              CC_TREND        7.008e-02
+                              CC_GENO NaN
+                              CC_ALL  1.700e-01
+                              CC_DOM  1.231e-01
+                              CC_REC  1.000e+00
 </pre>
 				<br>
 				<br>
@@ -407,8 +398,8 @@ java -Xmx1g -jar SnpSift.jar \
     annotate \
     -v \
     protocols/db/clinvar_00-latest.vcf \
-    protocols/ex1.eff.cc.vcf \
-    > protocols/ex1.eff.cc.clinvar.vcf
+    protocols/ex1.ann.cc.vcf \
+    > protocols/ex1.ann.cc.clinvar.vcf
 </pre>
 			<br>
 
@@ -416,9 +407,9 @@ java -Xmx1g -jar SnpSift.jar \
 			<br>
 			<br>
 <pre>
-cat protocols/ex1.eff.cc.clinvar.vcf \
+cat protocols/ex1.ann.cc.clinvar.vcf \
      | java -jar SnpSift.jar filter \
-     "(exists CLNDBN) & (EFF[*].EFFECT = 'STOP_GAINED') & (EFF[*].GENE = 'CFTR')" \
+     "(exists CLNDBN) & (ANN[*].EFFECT has 'stop_gained') & (ANN[*].GENE = 'CFTR')" \
 	| ./scripts/vcfInfoOnePerLine.pl 
 7	117227832	rs113993959	G	T	.	.
 							AC	14
@@ -522,9 +513,9 @@ cat protocols/ex1.eff.cc.clinvar.vcf \
 java -Xmx4g -jar snpEff.jar \
   -v \
   -o gatk \
-  GRCh37.71 \
+  GRCh37.75 \
   protocols/ex1.vcf \
-  > protocols/ex1.eff.gatk.vcf
+  > protocols/ex1.ann.gatk.vcf
 </pre>
 				<br>
 
@@ -535,16 +526,16 @@ java -Xmx4g -jar snpEff.jar \
 <pre>
 java -Xmx4g -jar $HOME/tools/gatk/GenomeAnalysisTK.jar \
     -T VariantAnnotator \
-    -R $HOME/genomes/GRCh37.71.fa \
+    -R $HOME/genomes/GRCh37.75.fa \
     -A SnpEff \
     --variant protocols/ex1.vcf \
-    --snpEffFile protocols/ex1.eff.gatk.vcf \
+    --snpEffFile protocols/ex1.ann.gatk.vcf \
     -L protocols/ex1.vcf \
     -o protocols/ex1.gatk.vcf
 </pre>
 				<br>
 
-				Note: We assumed GATK is installed in "$HOME/tools/gatk/" and the reference genome is contained in "$HOME/genomes/GRCh37.71.fa" These file locations should be adapted to the actual path in your computer.
+				Note: We assumed GATK is installed in "$HOME/tools/gatk/" and the reference genome is contained in "$HOME/genomes/GRCh37.75.fa" These file locations should be adapted to the actual path in your computer.
 
 				<h3> Galaxy </h3>
 				Anther popular tool in bioinformatics is Galaxy 3, which allows pipelines to be created in a web environment using graphical interface, making it flexible and straightforward to use. 
@@ -586,9 +577,9 @@ java -Xmx4g -jar $HOME/tools/gatk/GenomeAnalysisTK.jar \
 java -Xmx4g -jar snpEff.jar \
     -v \
     -motif \
-    GRCh37.71 \
+    GRCh37.75 \
     protocols/ex2.vcf \
-    > protocols/ex2.eff.basic.vcf
+    > protocols/ex2.ann.basic.vcf
 </pre>
 				<br>
 
@@ -607,9 +598,9 @@ java -Xmx4g -jar snpEff.jar \
     -v \
     -motif \    
     -interval protocols/ex2_regulatory.bed \
-    GRCh37.71 \ 
+    GRCh37.75 \ 
     protocols/ex2.vcf \ 
-    > protocols/ex2.eff.vcf 
+    > protocols/ex2.ann.vcf 
 </pre>
 				<br>
 				In the output VCF file, variants intersecting genomic regions from the "-interval" command line option are annotated as "CUSTOM[ex2_regulatory]" :  the name in brackets identifies the file name provided to distinguish multiple annotation files.
@@ -627,8 +618,8 @@ java -Xmx1g -jar SnpSift.jar \
     phastCons \
     -v \
     protocols/phastcons \
-    protocols/ex2.eff.vcf \
-    > protocols/ex2.eff.cons.vcf
+    protocols/ex2.ann.vcf \
+    > protocols/ex2.ann.cons.vcf
 </pre>
 				<br>
 				Now we can filter our results looking for a highly conserved SNP in the regulatory region. 
@@ -636,9 +627,9 @@ java -Xmx1g -jar SnpSift.jar \
 				<br>
 				<br>
 <pre>
-cat protocols/ex2.eff.cons.vcf \
+cat protocols/ex2.ann.cons.vcf \
   | java -jar SnpSift.jar filter \
-    "(EFF[*].EFFECT = 'CUSTOM[ex2_regulatory]') & (exists PhastCons) & (PhastCons > 0.9)" \
+    "(ANN[*].EFFECT = 'CUSTOM[ex2_regulatory]') & (exists PhastCons) & (PhastCons > 0.9)" \
   > protocols/ex2.filtered.vcf
 </pre>
 				<br>
@@ -692,7 +683,7 @@ samtools sort s.bam s_sort
 samtools mpileup -uf dm5.34.fasta s_sort.bam | bcftools view -vcg - > s.vcf
 
 # Analyze variants using snpEff
-java -Xmx4g -jar snpEff.jar dm5.34 s.vcf > s.eff.vcf
+java -Xmx4g -jar snpEff.jar dm5.34 s.vcf > s.ann.vcf
 </pre>
 
 				This highly simplified sequencing data analysis pipeline, has these basic steps
@@ -736,13 +727,13 @@ java -jar SnpSif.jar annotate -dbsnp file.vcf > file.dbSnp.vcf
 
 					<li> Annotate using SnpEff:
 <pre>
-java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 file.dbSnp.vcf > file.eff.vcf
+java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 file.dbSnp.vcf > file.ann.vcf
 </pre>
 
 					<li> Filter out variants that have a non-empty ID field. 
 					These variants are the ones that are NOT in dbSnp, since we annotated the ID field using rs-numbers from dbSnp in step 1.
 <pre>
-java -jar SnpSift.jar filter -f file.eff.vcf "! exists ID" > file.eff.not_in_dbSnp.vcf
+java -jar SnpSift.jar filter -f file.ann.vcf "! exists ID" > file.ann.not_in_dbSnp.vcf
 </pre>
 					<i class="icon-hand-right"></i>The expression using to filter the file is "! exists ID".
 					This means that the ID field does not exists (i.e. the value is empty) which is represented as a dot (".") in a VCF file.
@@ -760,7 +751,7 @@ java -jar SnpSift.jar filter -f file.eff.vcf "! exists ID" > file.eff.not_in_dbS
 java -jar SnpSif.jar annotate -dbsnp file.vcf \
 	| java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 - \
 	| java -jar SnpSift.jar filter "! exists ID" \
-	> file.eff.not_in_dbSnp.vcf
+	> file.ann.not_in_dbSnp.vcf
 </pre>
 
 				Here is an example of some entries in the annotated output file. 
@@ -863,12 +854,12 @@ $ head -n 22994 data/sacCer/genes.gff \
 # Create a fake VCF file (one line), this is just an example to show that it works
 $ echo -e "chrI\t700\t.\tA\tT\t.\t.\t." > my.vcf
 
-$ java -jar snpEff.jar -interval sacCer_features.gff sacCer my.vcf > my.eff.vcf
+$ java -jar snpEff.jar -interval sacCer_features.gff sacCer my.vcf > my.ann.vcf
 </pre>
 
 				If we take a look at the results, we can see that the "ARS" feature is annotates (see last line)
 <pre>
-$ cat my.eff.vcf | grep -v "^#" | cut -f 8 | tr ",;" "\n\n"
+$ cat my.ann.vcf | grep -v "^#" | cut -f 8 | tr ",;" "\n\n"
 EFF=missense_variant(LOW|MISSENSE|Cca/Tca|p.Pro55Ser/c.163A>T|84|YAL068W-A|protein_coding|CODING|YAL068W-A_mRNA|1|1|WARNING_REF_DOES_NOT_MATCH_GENOME)
 upstream_gene_variant(MODIFIER||1780||75|YAL067W-A|protein_coding|CODING|YAL067W-A_mRNA||1)
 downstream_gene_variant(MODIFIER||1107||120|YAL068C|protein_coding|CODING|YAL068C_mRNA||1)
