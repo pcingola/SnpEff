@@ -8,7 +8,6 @@ import java.util.Map;
 import ca.mcgill.mcb.pcingola.Pcingola;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Custom;
-import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -69,8 +68,8 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "c";
-	public static final String BUILD = "2015-03-29";
+	public static final String REVISION = "d";
+	public static final String BUILD = "2015-04-08";
 	public static final String VERSION_MAJOR = "4.1";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -551,29 +550,40 @@ public class SnpEff implements CommandLine {
 				snpEffectPredictor.add(np);
 		} else {
 			// Find the corresponding transcript for each nextProt marker
-			// WARNING: The transcripts might be filtered out by the user (e.g. '-cannon' command line option or user defined sets).
-			//          We only keep nextProt markers associated to found transcripts. All others are discarded (the user doesn't want that info).
+			// WARNING: The transcripts might be filtered out by the user
+			//          (e.g. '-cannon' command line option or user defined
+			//          sets). We only keep nextProt markers associated to found
+			//          transcripts. All others are discarded (the user doesn't
+			//          want that info).
 			ArrayList<NextProt> nextProtsToAdd = new ArrayList<NextProt>();
 			for (NextProt np : nextProts) {
 				Transcript tr = trs.get(np.getTranscriptId());
 
 				// Found transcript, now try to find an exon
 				if (tr != null) {
-					boolean assignedToExon = false;
-					for (Exon ex : tr) {
-						if (ex.intersects(np)) {
-							NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon
-							npEx.setParent(ex);
-							nextProtsToAdd.add(npEx);
-							assignedToExon = true;
-						}
-					}
+					np.setParent(tr); // Set this transcript as parent
+					nextProtsToAdd.add(np);
 
-					// Not assigned to an exon? Add transcript info
-					if (!assignedToExon) {
-						np.setParent(tr); // Set this transcript as parent
-						nextProtsToAdd.add(np);
-					}
+					//---
+					// We used to assign nextProt to all exons, we don't do this
+					// any more, it inflates the out with useless information
+					//---
+
+					//					boolean assignedToExon = false;
+					//					for (Exon ex : tr) {
+					//						if (ex.intersects(np)) {
+					//							NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon
+					//							npEx.setParent(ex);
+					//							nextProtsToAdd.add(npEx);
+					//							assignedToExon = true;
+					//						}
+					//					}
+					//
+					//					// Not assigned to an exon? Add transcript info
+					//					if (!assignedToExon) {
+					//					np.setParent(tr); // Set this transcript as parent
+					//					nextProtsToAdd.add(np);
+					//					}
 				}
 			}
 
