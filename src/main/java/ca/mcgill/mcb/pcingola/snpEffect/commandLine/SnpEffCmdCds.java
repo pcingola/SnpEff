@@ -33,7 +33,6 @@ public class SnpEffCmdCds extends SnpEff {
 	int totalNotFound = 0;
 	String cdsFile = "";
 	HashMap<String, String> cdsByTrId;
-	HashMap<String, SmithWaterman> alignmentByTrId = new HashMap<String, SmithWaterman>();
 
 	public SnpEffCmdCds() {
 	}
@@ -186,10 +185,6 @@ public class SnpEffCmdCds extends SnpEff {
 		);
 
 		return perc;
-	}
-
-	public HashMap<String, SmithWaterman> getAlignmentByTrId() {
-		return alignmentByTrId;
 	}
 
 	/**
