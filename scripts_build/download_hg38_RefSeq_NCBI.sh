@@ -5,6 +5,9 @@ GFF_ALT="alt_CHM1_1.1_top_level.gff3.gz"
 CHR_IDS="chromosomes.txt"
 CHR_IDS_2_NAME="chromosomes2name.txt"
 
+# Path to scripts
+SCRIPTS_DIR="$HOME/snpEff/scripts_build"
+
 #---
 # Download GFF data
 #---
@@ -13,7 +16,8 @@ echo "Download GFF files"
 # wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/GFF/$GFF_ALT
 
 echo "Build genes.gff file"
-# zcat $GFF_REF $GFF_ALT > genes.ORI.gff
+# gunzip -c $GFF_REF $GFF_ALT > genes.ORI.gff
+# gzip genes.ORI.gff
 
 #---
 # Download chromosome IDs file
@@ -30,8 +34,6 @@ echo "Create a file mapping chromosome IDs to names: $CHR_IDS_2_NAME"
 #---
 # Process files
 #---
-cat genes.ORI.gff | ./x.pl chromosomes2name.txt > genes.gff 
+gunzip -c genes.ORI.gff.gz | $SCRIPTS_DIR/hg38_RefSeq_NCBI_fix_GFF.pl chromosomes2name.txt > genes.gff 
+gzip genes.gff
 
-#---
-# Build database
-#---
