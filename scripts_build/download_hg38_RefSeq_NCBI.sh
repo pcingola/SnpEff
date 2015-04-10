@@ -13,11 +13,11 @@ SCRIPTS_DIR="$HOME/snpEff/scripts_build"
 #---
 
 # for chr in CHR_01 CHR_02 CHR_03 CHR_04 CHR_05 CHR_06 CHR_07 CHR_10 CHR_11 CHR_12 CHR_13 CHR_14 CHR_15 CHR_16 CHR_17 CHR_20 CHR_21 CHR_22 CHR_MT CHR_Un CHR_X CHR_Y
-# do
-# 	chrLower=`echo $chr | sed "s/CHR_0/chr/" | sed "s/CHR_/chr/"`
-# 	echo Downloading chromosome $chr $chrLower
-# 	wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/$chr/hs_ref_GRCh38.p2_$chrLower.fa.gz
-# done
+for chr in alts unlocalized unplaced chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr20 chr21 chr22 chrMT chrUn chrX chrY
+do
+	echo Downloading chromosome $chr
+	wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38.p2_$chr.fa.gz
+done
 
 #---
 # Download GFF data
