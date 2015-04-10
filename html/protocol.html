@@ -297,19 +297,8 @@ $ cat protocols/ex1.filtered.vcf     | ./scripts/vcfInfoOnePerLine.pl
                               ANN     T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000003084|protein_coding|12/27|c.1624G>T|p.Gly542*|1756/6128|1624/4443|542/1480||
                               ANN     T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000454343|protein_coding|11/26|c.1441G>T|p.Gly481*|1573/5949|1441/4260|481/1419||
                               ANN     T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000426809|protein_coding|11/26|c.1534G>T|p.Gly512*|1534/4316|1534/4316|512/1437||WARNING_TRANSCRIPT_INCOMPLETE
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|14/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|13/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|8/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|12/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|10/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|9/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|15/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding|11/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding|14/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding|13/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding|12/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding|10/27|c.1624G>T||||||
-                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding|11/27|c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding||c.1624G>T||||||
+                              ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding||c.1624G>T||||||
                               ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|beta_strand|ENST00000003084|protein_coding|12/27|c.1624G>T||||||
                               ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|beta_strand|ENST00000454343|protein_coding|11/26|c.1441G>T||||||
                               ANN     T|upstream_gene_variant|MODIFIER|AC000111.5|ENSG00000234001|transcript|ENST00000448200|processed_pseudogene||n.-1C>A|||||1362|
@@ -337,23 +326,9 @@ $ cat protocols/ex1.filtered.vcf     | ./scripts/vcfInfoOnePerLine.pl
                               ANN     GCA|synonymous_variant|LOW|KRT40|ENSG00000204889|transcript|ENST00000377755|protein_coding|6/7|c.1047T>C|p.Cys349Cys|1082/1812|1047/1296|349/431||
                               ANN     GCA|synonymous_variant|LOW|KRT40|ENSG00000204889|transcript|ENST00000398486|protein_coding|8/9|c.1047T>C|p.Cys349Cys|1208/1772|1047/1296|349/431||
                               ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|6/9|c.1047T>C||||||
-                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|8/9|c.1047T>C||||||
-                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|7/9|c.1047T>C||||||
-                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|6/9|c.1045_1047delTGTinsCGC||||||
-                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|8/9|c.1045_1047delTGTinsCGC||||||
                               ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|7/9|c.1045_1047delTGTinsCGC||||||
                               ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|3/9|c.1047T>C||||||
-                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|6/9|c.1047T>C||||||
-                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|8/9|c.1047T>C||||||
-                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|7/9|c.1047T>C||||||
-                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|4/9|c.1047T>C||||||
-                              ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|5/9|c.1047T>C||||||
                               ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|3/9|c.1045_1047delTGTinsCGC||||||
-                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|6/9|c.1045_1047delTGTinsCGC||||||
-                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|8/9|c.1045_1047delTGTinsCGC||||||
-                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|7/9|c.1045_1047delTGTinsCGC||||||
-                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|4/9|c.1045_1047delTGTinsCGC||||||
-                              ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|5/9|c.1045_1047delTGTinsCGC||||||
                               ANN     GCA|3_prime_UTR_variant|MODIFIER|KRT40|ENSG00000204889|transcript|ENST00000461923|nonsense_mediated_decay|8/9|n.*509T>C|||||2348|
                               ANN     GCG|3_prime_UTR_variant|MODIFIER|KRT40|ENSG00000204889|transcript|ENST00000461923|nonsense_mediated_decay|8/9|n.*507_*509delTGTinsCGC|||||2346|
                               ANN     GCA|downstream_gene_variant|MODIFIER|AC004231.2|ENSG00000234477|transcript|ENST00000418393|antisense||n.*815A>G|||||3027|
@@ -403,7 +378,7 @@ java -Xmx1g -jar SnpSift.jar \
 </pre>
 			<br>
 
-			Our variant of interest is then annotated as "Cystic Fibrosis"  (to find the variant, we filter for variants having ClinVar annotation "CLNDBN" that are in CFTR gene and have a STOP_CODON annotation):
+			Our variant of interest is then annotated as "Cystic Fibrosis"  (to find the variant, we filter for variants having ClinVar annotation "CLNDBN" that are in CFTR gene and have a <code>stop_gained</code> annotation):
 			<br>
 			<br>
 <pre>
@@ -714,7 +689,7 @@ java -Xmx4g -jar snpEff.jar dm5.34 s.vcf > s.ann.vcf
 <pre>
 # Annotate ID field using dbSnp
 # Note: SnpSift will automatically download and uncompress dbSnp database if not locally available.
-java -jar SnpSif.jar annotate -dbsnp file.vcf > file.dbSnp.vcf
+java -jar SnpSift.jar annotate -dbsnp file.vcf > file.dbSnp.vcf
 </pre>
 
 					<li> Annotate using SnpEff:
@@ -747,13 +722,13 @@ java -jar SnpSif.jar annotate -dbsnp file.vcf \
 </pre>
 
 				Here is an example of some entries in the annotated output file. 
-				You can see the 'EFF' field was added, predicting STOP_GAINED protein changes:
+				You can see the 'ANN' field was added, predicting STOP_GAINED protein changes:
 
 <pre>
-$ cat demo.1kg.snpeff.vcf | grep STOP_
-1    889455    .    G    A    100.0    PASS    ...;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q236*...
-1    897062    .    C    T    100.0    PASS    ...;EFF=STOP_GAINED(HIGH|NONSENSE|Cag/Tag|Q141*...
-1    900375    .    G    A    100.0    PASS    ...;EFF=STOP_GAINED(HIGH|NONSENSE|tGg/tAg|W578*...
+$ cat demo.1kg.snpeff.vcf | grep stop_gained
+1    889455    .    G    A    100.0    PASS    ...;ANN=A|stop_gained|HIGH|...
+1    897062    .    C    T    100.0    PASS    ...;ANN=T|stop_gained|HIGH|...
+1    900375    .    G    A    100.0    PASS    ...;ANN=A|stop_gained|HIGH|...
 </pre>
 				Note: The real output was edited for readibility reasons.
 				</p>
