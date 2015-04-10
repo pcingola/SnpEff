@@ -407,74 +407,66 @@ java -Xmx1g -jar SnpSift.jar \
 			<br>
 			<br>
 <pre>
-cat protocols/ex1.ann.cc.clinvar.vcf \
+$ cat protocols/ex1.ann.cc.clinvar.vcf \
      | java -jar SnpSift.jar filter \
      "(exists CLNDBN) & (ANN[*].EFFECT has 'stop_gained') & (ANN[*].GENE = 'CFTR')" \
-	| ./scripts/vcfInfoOnePerLine.pl 
-7	117227832	rs113993959	G	T	.	.
-							AC	14
-							AN	22
-							EFF	DOWNSTREAM(MODIFIER||29|||CFTR|processed_transcript|CODING|ENST00000472848||1)
-							EFF	NEXT_PROT[beta_strand](LOW||||1419|CFTR|protein_coding|CODING|ENST00000454343|11|1)
-							EFF	NEXT_PROT[beta_strand](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
-							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|10|1)
-							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|11|1)
-							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
-							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|13|1)
-							EFF	NEXT_PROT[domain:ABC_transporter_1](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|14|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|10|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|11|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|13|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|14|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|15|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|8|1)
-							EFF	NEXT_PROT[topological_domain:Cytoplasmic](LOW||||1480|CFTR|protein_coding|CODING|ENST00000003084|9|1)
-							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly481*/c.1441G>T|1419|CFTR|protein_coding|CODING|ENST00000454343|11|1)
-							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly512*/c.1534G>T|1437|CFTR|protein_coding|CODING|ENST00000426809|11|1|WARNING_TRANSCRIPT_INCOMPLETE)
-							EFF	STOP_GAINED(HIGH|NONSENSE|Gga/Tga|p.Gly542*/c.1624G>T|1480|CFTR|protein_coding|CODING|ENST00000003084|12|1)
-							EFF	UPSTREAM(MODIFIER||1362|||AC000111.5|processed_pseudogene|NON_CODING|ENST00000448200||1)
-							LOF	(CFTR|ENSG00000001626|9|0.33)
-							NMD	(CFTR|ENSG00000001626|9|0.33)
-							Cases	3
-							Cases	0
-							Cases	6
-							Controls	0
-							Controls	8
-							Controls	8
-							CC_GENO	4.556e-04
-							CC_ALL	4.025e-02
-							CC_DOM	6.061e-03
-							CC_REC	1.000e+00
-							RS	113993959
-							RSPOS	117227832
-							dbSNPBuildID	132
-							SSR	0
-							SAO	1
-							VP	0x050268000601040002110100
-							GENEINFO	CFTR:1080
-							WGT	1
-							VC	SNV
-							PM
-							PMC
-							S3D
-							NSN
-							REF
-							VLD
-							OTHERKG
-							LSD
-							OM
-							CLNALLE	1
-							CLNHGVS	NC_000007.13:g.117227832G>T
-							CLNSRC	GTR|OMIM Allelic Variant|OMIM Allelic Variant
-							CLNORIGIN	1
-							CLNSRCID	GTR000500233|602421.0009|602421.0095
-							CLNSIG	5
-							CLNDSDB	GeneReviews:NCBI:OMIM:Orphanet:SNOMED CT
-							CLNDSDBID	NBK1250:C0010674:219700:586:190905008
-							CLNDBN	Cystic fibrosis
-							CLNACC	RCV000007535.1
+	> protocols/ex1.ann.cc.clinvar.filtered.vcf
 
+$ cat protocols/ex1.ann.cc.clinvar.filtered.vcf | ./scripts/vcfInfoOnePerLine.pl 
+7    117227832    rs113993959      G    T    .    .
+                            AC              14
+                            AN              22
+                            ANN             T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000003084|protein_coding|12/27|c.1624G>T|p.Gly542*|1756/6128|1624/4443|542/1480||
+                            ANN             T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000454343|protein_coding|11/26|c.1441G>T|p.Gly481*|1573/5949|1441/4260|481/1419||
+                            ANN             T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000426809|protein_coding|11/26|c.1534G>T|p.Gly512*|1534/4316|1534/4316|512/1437||WARNING_TRANSCRIPT_INCOMPLETE
+                            ANN             T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding||c.1624G>T||||||
+                            ANN             T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding||c.1624G>T||||||
+                            ANN             T|sequence_feature|LOW|CFTR|ENSG00000001626|beta_strand|ENST00000003084|protein_coding||c.1624G>T||||||
+                            ANN             T|sequence_feature|LOW|CFTR|ENSG00000001626|beta_strand|ENST00000454343|protein_coding||c.1441G>T||||||
+                            ANN             T|upstream_gene_variant|MODIFIER|AC000111.5|ENSG00000234001|transcript|ENST00000448200|processed_pseudogene||n.-1C>A|||||1362|
+                            ANN             T|downstream_gene_variant|MODIFIER|CFTR|ENSG00000001626|transcript|ENST00000472848|processed_transcript||n.*148G>T|||||29|
+                            LOF             (CFTR|ENSG00000001626|11|0.27)
+                            NMD             (CFTR|ENSG00000001626|11|0.27)
+                            Cases           3
+                            Cases           0
+                            Cases           6
+                            Controls        0
+                            Controls        8
+                            Controls        8
+                            CC_TREND        9.111e-04
+                            CC_GENO         NaN
+                            CC_ALL          4.025e-02
+                            CC_DOM          6.061e-03
+                            CC_REC          1.000e+00
+                            ASP             true
+                            CLNACC          RCV000007535.6|RCV000058931.3|RCV000119041.1
+                            CLNALLE         1
+                            CLNDBN          Cystic_fibrosis|not_provided|Hereditary_pancreatitis
+                            CLNDSDB         GeneReviews:MedGen:OMIM:Orphanet:SNOMED_CT|MedGen|GeneReviews:MedGen:OMIM:Orphanet:SNOMED_CT
+                            CLNDSDBID       NBK1250:C0010674:219700:ORPHA586:190905008|CN221809|NBK84399:C0238339:167800:ORPHA676:68072000
+                            CLNHGVS         NC_000007.13:g.117227832G>T
+                            CLNORIGIN       1
+                            CLNREVSTAT      prof|single|single
+                            CLNSIG          5|5|5
+                            CLNSRC          CFTR2|HGMD|OMIM_Allelic_Variant|OMIM_Allelic_Variant
+                            CLNSRCID        G542X|CM900049|602421.0009|602421.0095
+                            GENEINFO        CFTR:1080
+                            LSD             true
+                            NSN             true
+                            OM              true
+                            PM              true
+                            PMC             true
+                            REF             true
+                            RS              113993959
+                            RSPOS           117227832
+                            S3D             true
+                            SAO             1
+                            SSR             0
+                            VC              SNV
+                            VLD             true
+                            VP              0x050268000605040002110100
+                            WGT             1
+                            dbSNPBuildID    132
 </pre>
 
 				<br>

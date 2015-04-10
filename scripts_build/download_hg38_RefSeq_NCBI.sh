@@ -12,12 +12,12 @@ SCRIPTS_DIR="$HOME/snpEff/scripts_build"
 # Download FASTA files
 #---
 
-for chr in CHR_01 CHR_02 CHR_03 CHR_04 CHR_05 CHR_06 CHR_07 CHR_10 CHR_11 CHR_12 CHR_13 CHR_14 CHR_15 CHR_16 CHR_17 CHR_20 CHR_21 CHR_22 CHR_MT CHR_UN CHR_X CHR_Y
-do
-	chrLower=`echo $chr | sed "s/CHR_0/chr/" | sed "s/CHR_/chr/"`
-	echo Downloading chromosome $chr $chrLower
-	wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/$chr/hs_ref_GRCh38.p2_$chrLower.fa.gz
-done
+# for chr in CHR_01 CHR_02 CHR_03 CHR_04 CHR_05 CHR_06 CHR_07 CHR_10 CHR_11 CHR_12 CHR_13 CHR_14 CHR_15 CHR_16 CHR_17 CHR_20 CHR_21 CHR_22 CHR_MT CHR_Un CHR_X CHR_Y
+# do
+# 	chrLower=`echo $chr | sed "s/CHR_0/chr/" | sed "s/CHR_/chr/"`
+# 	echo Downloading chromosome $chr $chrLower
+# 	wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/$chr/hs_ref_GRCh38.p2_$chrLower.fa.gz
+# done
 
 #---
 # Download GFF data
