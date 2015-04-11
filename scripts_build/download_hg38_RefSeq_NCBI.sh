@@ -40,6 +40,7 @@ SCRIPTS_BUILD_DIR="$SNPEFF_DIR/scripts_build/data/GRCh38.p2.RefSeq"
 # 
 # echo "Copying genes.ORI.gff file"
 # cp $GFF_REF genes.ORI.gff.gz
+# gunzip genes.ORI.gff.gz
 # 
 # #---
 # # Download chromosome IDs file
@@ -59,8 +60,7 @@ SCRIPTS_BUILD_DIR="$SNPEFF_DIR/scripts_build/data/GRCh38.p2.RefSeq"
 #---
 
 echo "Processing GFF file"
-cat genes.ORI.gff | $SCRIPTS_BUILD_DIR/hg38_RefSeq_NCBI_fix_GFF.pl chromosomes2name.txt > genes.gff 
-gunzip -c genes.ORI.gff.gz | $SCRIPTS_BUILD_DIR/hg38_RefSeq_NCBI_fix_GFF.pl chromosomes2name.txt > genes.gff 
+$SCRIPTS_BUILD_DIR/hg38_RefSeq_NCBI_fix_GFF.pl genes.ORI.gff chromosomes2name.txt > genes.gff 
 gzip genes.gff
 
 # echo "Processing reference FASTA files"
@@ -92,5 +92,5 @@ echo "Copying data to snpEff/data/$GENOME/"
 mkdir $SNPEFF_DIR/data/$GENOME || true
 cp -v genes.gff.gz cds.fa.gz protein.fa.gz $SNPEFF_DIR/data/$GENOME
 cp -v $GENOME.fa.gz $SNPEFF_DIR/data/genomes/
-# 
-# echo "Done."
+
+echo "Done."
