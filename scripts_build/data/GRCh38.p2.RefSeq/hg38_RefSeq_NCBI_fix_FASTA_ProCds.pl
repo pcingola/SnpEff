@@ -17,6 +17,7 @@ $debug = 0;
 sub show($$) {
 	my($seq, $ids)  = @_;
 	my(@t) = split /\t/, $ids;
+	if( $debug && $#t > 1 ) { print STDERR "Duplicated name ($#t): $ids\n"; }
 	foreach $id ( @t ) { print ">$id\n$seq"; }
 }
 

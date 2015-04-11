@@ -114,7 +114,6 @@ my($idsToChange) = {
 my($chr, $chrid, $source, $type, $start, $end, $score, $strand, $phase, $attr);	# GFF parsed values
 my(%name2id);	# Map name to IDs
 my(%idOld2New);	# Map old ID to new ID
-my(%trid);		# Map transcript ID to name
 my(%prot);		# Map protein ID to transcript ID
 my($l, $id, $key, $value, $name, $paren, $newParent);
 
@@ -203,8 +202,3 @@ open IDS, "> $mapFile";
 foreach $key ( sort keys %prot ) { print IDS "$key\t$prot{$key}\n"; }
 close IDS;
 
-$mapFile = "transcript_id.map.txt";
-print STDERR "Creating transcript IDs map file '$mapFile'\n";
-open IDS, "> $mapFile";
-foreach $key ( sort keys %trid ) { print IDS "$key\t$trid{$key}\n"; }
-close IDS;
