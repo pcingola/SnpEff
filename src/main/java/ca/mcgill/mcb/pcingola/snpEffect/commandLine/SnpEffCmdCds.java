@@ -24,7 +24,7 @@ public class SnpEffCmdCds extends SnpEff {
 
 	public static boolean onlyOneError = false; // This is used in some test-cases
 	public static double maxErrorPercentage = 0.01; // Maximum allowed error is 1% (otherwise test fails)
-	public static int MAX_ALIGN_LENGTH = 30000;
+	public static int MAX_ALIGN_LENGTH = 33000;
 
 	boolean storeAlignments; // Store alignments (used for some test cases)
 	int totalErrors = 0;
