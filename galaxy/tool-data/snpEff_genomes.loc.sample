@@ -12077,6 +12077,7 @@ hg38 	 Homo_sapiens   hg38
 hg38kg 	 Homo_sapiens   hg38kg
 GRCh37.GTEX 	 Homo_sapiens,   GRCh37.GTEX
 030312v2.21 	 Hordeum_vulgare   030312v2.21
+GRCh38.p2.RefSeq 	 Human   GRCh38.p2.RefSeq
 GCA_000271305.1.21 	 Hydrocarboniphaga_effusa_ap103   GCA_000271305.1.21
 GCA_000271305.1.22 	 Hydrocarboniphaga_effusa_ap103   GCA_000271305.1.22
 GCA_000171895.1.21 	 Hydrogenivirga_sp_128_5_r1_1   GCA_000171895.1.21
