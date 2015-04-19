@@ -13,6 +13,7 @@ export SNPSIFT_VERSION=`echo $VERSION_SNPSIFT | tr "." "_"`
 
 export SNPEFF_VERSION_REV=$SNPEFF_VERSION"$SUBVERSION_SNPEFF"
 
-# HUman and mouse versions
+# Human and mouse versions
 GRCH=GRCh38
 GRCM=GRCm38
+
