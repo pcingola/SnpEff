@@ -4,8 +4,8 @@ export VERSION_SNPEFF=4.1
 export SUBVERSION_SNPEFF=""
 export VERSION_SNPSIFT=$VERSION_SNPEFF
 
-export ENSEMBL_RELEASE=78
-export ENSEMBL_BFMPP_RELEASE=24
+export ENSEMBL_RELEASE=79
+export ENSEMBL_BFMPP_RELEASE=26
 
 # Version values using underscores ('3_2' instead of '3.2')
 export SNPEFF_VERSION=`echo $VERSION_SNPEFF | tr "." "_"`
