@@ -9,16 +9,19 @@
 #
 #																Pablo Cingolani
 #-------------------------------------------------------------------------------
+
 source `dirname $0`/config.sh
 
-#mkdir download
+
+mkdir download || true
 cd download
 
 site="ftp://ftp.ensemblgenomes.org"
 
 #wget_wait=1
 #wget="wget --wait=$wget_wait -r -nc "
-wget="wget -r -nc "
+#wget="wget -r -nc "
+wget="wget -r -N -A"
 
 #---
 # Download from ENSEMBL
