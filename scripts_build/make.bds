@@ -131,7 +131,6 @@ void buildConfig() {
 	sys cat config/snpEff.core.config \
 			config/snpEff.dbs.config \
 			config/snpEff.test.config \
-			config/snpEff.ENSEMBL_70.config \
 			config/snpEff.ENSEMBL_71.config \
 			config/snpEff.ENSEMBL_72.config \
 			config/snpEff.ENSEMBL_73.config \
@@ -140,8 +139,9 @@ void buildConfig() {
 			config/snpEff.ENSEMBL_76.config \
 			config/snpEff.ENSEMBL_77.config \
 			config/snpEff.ENSEMBL_78.config \
-			config/snpEff.ENSEMBL_BFMPP_21.config \
+			config/snpEff.ENSEMBL_79.config \
 			config/snpEff.ENSEMBL_BFMPP_22.config \
+			config/snpEff.ENSEMBL_BFMPP_26.config \
 			config/snpEff.NCBI_bacterial.config \
 			config/snpEff.etc.config \
 			config/snpEff.bundles.*.config \

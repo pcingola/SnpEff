@@ -12,7 +12,6 @@
 
 source `dirname $0`/config.sh
 
-
 mkdir download || true
 cd download
 
@@ -27,35 +26,37 @@ wget="wget -r -N -A"
 # Download from ENSEMBL
 #---
 
-for org in bacteria fungi metazoa misc_data plants protists
-do
-	# Download GTF files (annotations)
-	$wget -nc -A "*gtf.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/gtf/" &
-	 
-	# Download FASTA files (reference genomes)
-	$wget -nc -A "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
-
-	# Download CDS sequences
-	$wget -nc -A "*cdna.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
-
-	# Download PROTEIN sequences
-	$wget -nc -A "*.pep.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
-
-done
-wait
-echo "Finished downloading"
+# for org in bacteria fungi metazoa misc_data plants protists
+# do
+# 	# Download GTF files (annotations)
+# 	$wget -nc -A "*gtf.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/gtf/" &
+# 	 
+# 	# Download FASTA files (reference genomes)
+# 	$wget -nc -A "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
+# 
+# 	# Download CDS sequences
+# 	$wget -nc -A "*cdna.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
+# 
+# 	# Download PROTEIN sequences
+# 	$wget -nc -A "*.pep.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/" &
+# 
+# done
+# wait
+# echo "Finished downloading"
 
 #---
 # Create directory structure
 #---
 
 # Move all downloaded file to this directory
+echo "Copying files to base dir"
 for f in `find ftp.ensemblgenomes.org -type f`
 do
 	cp -v "$f" .
 done
 
 # Gene annotations files
+echo "Moving GTF files to data dir"
 for gtf in *.gtf.gz
 do
 	short=`../scripts_build/file2GenomeName.pl $gtf | cut -f 5`
@@ -66,6 +67,7 @@ do
 done
  
 # Reference genomes files
+echo "Moving FASTA files to data/genomes dir"
 mkdir -p data/genomes
 for fasta in *.dna.toplevel.fa.gz
 do
@@ -77,6 +79,7 @@ do
 done
 
 # CDS genomes files
+echo "Moving CDS files to data dir"
 for fasta in *.cdna.all.fa.gz
 do
 	genome=`../scripts_build/file2GenomeName.pl $fasta | cut -f 5`
@@ -87,6 +90,7 @@ do
 done
 
 # Protein seuqence files
+echo "Moving PROTEIN files to data dir"
 for pep in *.pep.all.fa.gz
 do
 	short=`../scripts_build/file2GenomeName.pl $pep | cut -f 5`
@@ -100,6 +104,7 @@ done
 # Config file entries
 #---
 
+echo "Creating config file"
 (
 for fasta in *.cdna.all.fa.gz
 do
