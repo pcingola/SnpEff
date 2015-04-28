@@ -1,8 +1,20 @@
-#!/bin/sh
+#!/bin/sh -e
 
-base="dbNSFP2.4"
-db="$base.txt"
+# These variables need to be updated with every version
+base="dbNSFP2.9"                                # Database version
+dbZip="$base.zip"                               # Zip file name
+db="$base.txt"                                  # Output file
 
+# Check dbNSFP
+if [ ! -e "$dbZip" ]
+then
+	echo "ERROR: Expected dbNSFP zip file '$dbZip' not found"
+	exit 1
+fi
+
+#---
+# Create DB
+#---
 echo Create file $db
 head -n 1 $base\_variant.chr1 > $db
 

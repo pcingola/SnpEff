@@ -66,7 +66,7 @@ public class SnpEffCmdEff extends SnpEff {
 	public static final String DEFAULT_SUMMARY_CSV_FILE = "snpEff_summary.csv";
 	public static final String DEFAULT_SUMMARY_GENES_FILE = "snpEff_genes.txt";
 
-	public static final int SHOW_EVERY = 100000;
+	public static final int SHOW_EVERY = 10 * 1000;
 
 	boolean cancer = false; // Perform cancer comparisons
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
@@ -239,6 +239,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 		// Iterate over VCF entries
 		int countVcfEntries = 0;
+		Timer annotateTimer = new Timer();
 		for (VcfEntry vcfEntry : vcfFile) {
 			boolean printed = false;
 			boolean filteredOut = false;
@@ -281,7 +282,11 @@ public class SnpEffCmdEff extends SnpEff {
 				List<Variant> variants = vcfEntry.variants();
 				for (Variant variant : variants) {
 					countVariants++;
-					if (verbose && (countVariants % SHOW_EVERY == 0)) Timer.showStdErr("\t" + countVariants + " variants");
+					if (verbose && (countVariants % SHOW_EVERY == 0)) {
+						int secs = (int) (annotateTimer.elapsed() / 1000);
+						int varsPerSec = (int) (countVariants / secs);
+						Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
+					}
 
 					// Perform basic statistics about this variant
 					if (createSummary) variantStats.sample(variant);

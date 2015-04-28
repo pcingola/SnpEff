@@ -218,6 +218,8 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		if (hasChromosome(chr)) return true;
 		if (disableLoad) return false; // Loading form database disabled?
 
+		if (verbose) Timer.showStdErr("Sequences BEFORE:\n" + this);
+
 		// File does not exists?  Cannot load...
 		String fileName = Config.get().getFileNameSequence(chr);
 		if (!Gpr.exists(fileName)) {
@@ -232,7 +234,7 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		if (verbose) Timer.showStdErr("Building sequence tree for chromosome '" + chr + "'");
 		tree.build();
 		if (verbose) Timer.showStdErr("Done. Loaded " + tree.getIntervals().size() + " sequences.");
-
+		if (verbose) Timer.showStdErr("Sequences AFTER:\n" + this);
 		return !tree.isEmpty();
 	}
 

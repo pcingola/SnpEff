@@ -30,6 +30,9 @@ public class Timer {
 		start = new Date();
 	}
 
+	/**
+	 * Elapsed time in milliseconds
+	 */
 	public long elapsed() {
 		if (end != null) return end.getTime() - start.getTime();
 		Date now = new Date();
