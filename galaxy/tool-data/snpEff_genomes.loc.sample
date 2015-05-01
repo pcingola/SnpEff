@@ -26236,6 +26236,7 @@ Serratia_symbiotica__Cinara_cedri__uid82363 	 Serratia_symbiotica__Cinara_cedri_
 GCA_000238975.1.22 	 Serratia_symbiotica_str_cinara_cedri_   GCA_000238975.1.22
 GCA_000238975.1.26 	 Serratia_symbiotica_str_cinara_cedri_   GCA_000238975.1.26
 GCA_000186485.2.26 	 Serratia_symbiotica_str_tucson   GCA_000186485.2.26
+Sitalica_164_v2.1 	 Setaria   Sitalica_164_v2.1
 JGIv2.0.26 	 Setaria_italica   JGIv2.0.26
 Shewanella_ANA_3_uid58347 	 Shewanella_ANA_3_uid58347   Shewanella_ANA_3_uid58347
 Shewanella_MR_4_uid58345 	 Shewanella_MR_4_uid58345   Shewanella_MR_4_uid58345
@@ -33915,6 +33916,7 @@ GCA_000276685.1.22 	 Taylorella_equigenitalis_atcc_35865   GCA_000276685.1.22
 GCA_000276685.1.26 	 Taylorella_equigenitalis_atcc_35865   GCA_000276685.1.26
 GCA_000185745.1.22 	 Taylorella_equigenitalis_mce9   GCA_000185745.1.22
 GCA_000185745.1.26 	 Taylorella_equigenitalis_mce9   GCA_000185745.1.26
+TcruziCLBrener_8.1 	 TcruziCLBrener_8.1   TcruziCLBrener_8.1
 Tepidanaerobacter_Re1_uid66873 	 Tepidanaerobacter_Re1_uid66873   Tepidanaerobacter_Re1_uid66873
 Tepidanaerobacter_acetatoxydans_Re1_uid184827 	 Tepidanaerobacter_acetatoxydans_Re1_uid184827   Tepidanaerobacter_acetatoxydans_Re1_uid184827
 GCA_000213235.1.22 	 Tepidanaerobacter_acetatoxydans_re1_asm21323v1   GCA_000213235.1.22
@@ -35887,7 +35889,19 @@ butyrate_producing_bacterium_SSC_2_uid197181 	 butyrate_producing_bacterium_SSC_
 candidate_division_SR1_bacterium_RAAC1_SR1_1_uid230714 	 candidate_division_SR1_bacterium_RAAC1_SR1_1_uid230714   candidate_division_SR1_bacterium_RAAC1_SR1_1_uid230714
 candidate_division_WWE3_bacterium_RAAC2_WWE3_1_uid230713 	 candidate_division_WWE3_bacterium_RAAC2_WWE3_1_uid230713   candidate_division_WWE3_bacterium_RAAC2_WWE3_1_uid230713
 cyanobacterium_UCYN_A_uid43697 	 cyanobacterium_UCYN_A_uid43697   cyanobacterium_UCYN_A_uid43697
+dana_r1.04 	 dana_r1.04   dana_r1.04
 delta_proteobacterium_BABL1_uid230716 	 delta_proteobacterium_BABL1_uid230716   delta_proteobacterium_BABL1_uid230716
+dere_r1.04 	 dere_r1.04   dere_r1.04
+dgri_r1.3 	 dgri_r1.3   dgri_r1.3
+dmel_r6.04 	 dmel_r6.04   dmel_r6.04
+dmoj_r1.3 	 dmoj_r1.3   dmoj_r1.3
+dper_r1.3 	 dper_r1.3   dper_r1.3
+dpse_r3.03 	 dpse_r3.03   dpse_r3.03
+dsec_r1.3 	 dsec_r1.3   dsec_r1.3
+dsim_r2.01 	 dsim_r2.01   dsim_r2.01
+dvir_r1.2 	 dvir_r1.2   dvir_r1.2
+dwil_r1.3 	 dwil_r1.3   dwil_r1.3
+dyak_r1.04 	 dyak_r1.04   dyak_r1.04
 felCat5 	 felCat5   felCat5
 gamma_proteobacterium_HdN1_uid51635 	 gamma_proteobacterium_HdN1_uid51635   gamma_proteobacterium_HdN1_uid51635
 halophilic_archaeon_DL31_uid72619 	 halophilic_archaeon_DL31_uid72619   halophilic_archaeon_DL31_uid72619

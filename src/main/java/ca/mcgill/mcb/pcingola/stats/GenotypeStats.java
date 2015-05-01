@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.stats.plot.GoogleHistogram;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 
@@ -139,18 +140,22 @@ public class GenotypeStats implements SamplingStats<VcfEntry> {
 			int ac = 0, totalAc = 0; // Allele count
 			int gtNum = 0;
 			for (VcfGenotype vcfGenotype : vcfEntry) {
-				int code = vcfGenotype.getGenotypeCode();
-
-				if (code > 0) {
-					ac += code;
-					totalAc += 2;
-					if (code == 1) countHet[gtNum]++;
-					else if (code == 2) countHom[gtNum]++;
-				} else if (code == 0) {
-					totalAc += 2;
-					countRef[gtNum]++; // Reference genotype
+				if (gtNum >= countHet.length) {
+					Gpr.debug("WARNING: VCF entry has more genotype fields than expected (expected: " + countHet.length + ", number of genotypes: " + gtNum + ").\n" + vcfEntry);
 				} else {
-					countMissing[gtNum]++; // Negative code means missing
+					int code = vcfGenotype.getGenotypeCode();
+
+					if (code > 0) {
+						ac += code;
+						totalAc += 2;
+						if (code == 1) countHet[gtNum]++;
+						else if (code == 2) countHom[gtNum]++;
+					} else if (code == 0) {
+						totalAc += 2;
+						countRef[gtNum]++; // Reference genotype
+					} else {
+						countMissing[gtNum]++; // Negative code means missing
+					}
 				}
 
 				gtNum++;
