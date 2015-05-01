@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.interval.tree;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Interval;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
@@ -107,8 +108,8 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 		return head.iterator();
 	}
 
-	public void load(String fileName) {
-		intervals.load(fileName);
+	public void load(String fileName, Genome genome) {
+		intervals.load(fileName, genome);
 		inSync = false;
 	}
 

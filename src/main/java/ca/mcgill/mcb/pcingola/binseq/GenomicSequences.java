@@ -218,8 +218,6 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		if (hasChromosome(chr)) return true;
 		if (disableLoad) return false; // Loading form database disabled?
 
-		if (verbose) Timer.showStdErr("Sequences BEFORE:\n" + this);
-
 		// File does not exists?  Cannot load...
 		String fileName = Config.get().getFileNameSequence(chr);
 		if (!Gpr.exists(fileName)) {
@@ -230,11 +228,10 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		// Load markers
 		if (verbose) Timer.showStdErr("Loading sequences for chromosome '" + chr + "' from file '" + fileName + "'");
 		IntervalTree tree = intervalForest.getOrCreateTree(chr);
-		tree.load(fileName);
+		tree.load(fileName, genome);
 		if (verbose) Timer.showStdErr("Building sequence tree for chromosome '" + chr + "'");
 		tree.build();
 		if (verbose) Timer.showStdErr("Done. Loaded " + tree.getIntervals().size() + " sequences.");
-		if (verbose) Timer.showStdErr("Sequences AFTER:\n" + this);
 		return !tree.isEmpty();
 	}
 
@@ -343,13 +340,13 @@ public class GenomicSequences implements Iterable<MarkerSeq> {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Genomic sequences '" + genome.getId() + "'\n");
 
-		int sumMarkers = 0;
+		long sumMarkers = 0;
 		long sumLen = 0;
 		for (String chr : intervalForest.getTreeNames()) {
 			IntervalTree tree = intervalForest.getTree(chr);
 
 			// Calculate total sequence length stored
-			int len = 0;
+			long len = 0;
 			for (Marker m : tree.getIntervals()) {
 				len += m.size();
 				sumLen += m.size();

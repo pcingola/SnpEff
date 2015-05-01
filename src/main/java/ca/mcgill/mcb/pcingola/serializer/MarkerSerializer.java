@@ -53,10 +53,12 @@ public class MarkerSerializer {
 	int parsedField;
 	String fields[];
 	int currId = 0;
+	Genome genome;
 	HashMap<Integer, TxtSerializable> byId;
 	HashMap<TxtSerializable, Integer> byMarker;
 
-	public MarkerSerializer() {
+	public MarkerSerializer(Genome genome) {
+		this.genome = genome;
 		byId = new HashMap<Integer, TxtSerializable>();
 		byMarker = new HashMap<TxtSerializable, Integer>();
 	}
@@ -139,7 +141,7 @@ public class MarkerSerializer {
 							+ "\n\tDatabase version : '" + versionNumber + "'"//
 							+ "\n\tProgram version  : '" + SnpEff.VERSION_MAJOR + "'" //
 							+ "\nTry installing the appropriate database." //
-							);
+					);
 				}
 			} else {
 				parsedField = 0;
@@ -156,7 +158,8 @@ public class MarkerSerializer {
 				Marker m = null;
 				switch (type) {
 				case GENOME:
-					m = new Genome();
+					if (genome == null) m = new Genome();
+					else m = genome;
 					break;
 				case CHROMOSOME:
 					m = new Chromosome();

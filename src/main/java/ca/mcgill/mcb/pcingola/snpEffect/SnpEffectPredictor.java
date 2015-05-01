@@ -60,7 +60,7 @@ public class SnpEffectPredictor implements Serializable {
 		if (!Gpr.canRead(snpEffPredFile)) throw new RuntimeException("\tERROR: Cannot read file '" + snpEffPredFile + "'.\n\tYou can try to download the database by running the following command:\n\t\tjava -jar snpEff.jar download " + config.getGenome().getVersion() + "\n");
 
 		// Load markers from file
-		MarkerSerializer ms = new MarkerSerializer();
+		MarkerSerializer ms = new MarkerSerializer(config.getGenome());
 		Markers markers = ms.load(snpEffPredFile);
 
 		// Find genome
@@ -89,7 +89,7 @@ public class SnpEffectPredictor implements Serializable {
 					&& !(m instanceof Cds) //
 					&& !(m instanceof Utr) //
 					&& !(m instanceof SpliceSite) //
-					) snpEffectPredictor.add(m);
+			) snpEffectPredictor.add(m);
 
 		return snpEffectPredictor;
 	}

@@ -187,8 +187,8 @@ public class Markers implements Serializable, Collection<Marker> {
 		return markers.iterator();
 	}
 
-	public void load(String fileName) {
-		MarkerSerializer markerSerializer = new MarkerSerializer();
+	public void load(String fileName, Genome genome) {
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
 		Markers markers = markerSerializer.load(fileName);
 		add(markers);
 	}
@@ -363,7 +363,7 @@ public class Markers implements Serializable, Collection<Marker> {
 			markersToSave.add(m);
 
 		// Save
-		MarkerSerializer markerSerializer = new MarkerSerializer();
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
 		markerSerializer.save(fileName, markersToSave);
 	}
 

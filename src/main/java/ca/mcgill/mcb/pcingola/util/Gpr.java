@@ -201,8 +201,6 @@ public class Gpr {
 
 	/**
 	 * Prits a debug message (prints class name, method and line number)
-	 * @param obj					Object to print
-	 * @param offset				Offset N lines from stacktrace
 	 */
 	public static void debug(Object obj) {
 		debug(obj, 1, true);

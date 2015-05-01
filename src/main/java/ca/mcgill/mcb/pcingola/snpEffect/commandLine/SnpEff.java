@@ -316,6 +316,7 @@ public class SnpEff implements CommandLine {
 			}
 
 			config.loadSnpEffectPredictor(); // Read snpEffect predictor
+			genome = config.getSnpEffectPredictor().getGenome();
 			if (verbose) Timer.showStdErr("done");
 		}
 
@@ -482,7 +483,7 @@ public class SnpEff implements CommandLine {
 		//---
 		if (verbose) Timer.showStdErr("\tLoading Motifs from file '" + motifBinFileName + "'");
 
-		MarkerSerializer markerSerializer = new MarkerSerializer();
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
 		Markers motifsDb = markerSerializer.load(motifBinFileName);
 
 		// Add (only) motif markers. The original motifs has to be serialized with Chromosomes, Genomes and other markers (otherwise it could have not been saved)
@@ -521,7 +522,7 @@ public class SnpEff implements CommandLine {
 		}
 		if (verbose) Timer.showStdErr("Reading NextProt database from file '" + nextProtBinFile + "'");
 
-		MarkerSerializer markerSerializer = new MarkerSerializer();
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
 		Markers nextProtDb = markerSerializer.load(nextProtBinFile);
 
 		// Create a collection of (only) NextProt markers. The original nextProtDb has Chromosomes, Genomes and other markers (otherwise it could have not been saved)
@@ -607,7 +608,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) Timer.showStdErr("Reading regulation track '" + regTrack + "'");
 		String regFile = config.getDirDataVersion() + "/regulation_" + regTrack + ".bin";
 		Markers regulation = new Markers();
-		regulation.load(regFile);
+		regulation.load(regFile, genome);
 
 		//---
 		// Are all chromosomes available?
