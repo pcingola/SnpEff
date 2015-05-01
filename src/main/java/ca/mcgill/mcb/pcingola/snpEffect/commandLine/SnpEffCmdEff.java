@@ -288,28 +288,30 @@ public class SnpEffCmdEff extends SnpEff {
 						Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
 					}
 
-					// Perform basic statistics about this variant
-					if (createSummary) variantStats.sample(variant);
+					// Calculate effects: By default do not annotate non-variant sites
+					if (variant.isVariant()) {
+						// Perform basic statistics about this variant
+						if (createSummary) variantStats.sample(variant);
 
-					// Calculate effects
-					VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
+						VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
 
-					// Create new 'section'
-					outputFormatter.startSection(variant);
+						// Create new 'section'
+						outputFormatter.startSection(variant);
 
-					// Show results
-					for (VariantEffect variantEffect : variantEffects) {
-						if (createSummary) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
+						// Show results
+						for (VariantEffect variantEffect : variantEffects) {
+							if (createSummary) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
 
-						// Any errors or warnings?
-						if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
-						if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
+							// Any errors or warnings?
+							if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
+							if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
 
-						// Does this entry have an impact (other than MODIFIER)?
-						impact |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
+							// Does this entry have an impact (other than MODIFIER)?
+							impact |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
 
-						outputFormatter.add(variantEffect);
-						countEffects++;
+							outputFormatter.add(variantEffect);
+							countEffects++;
+						}
 					}
 
 					// Finish up this section

@@ -12,6 +12,7 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
@@ -55,7 +56,7 @@ public class TestCasesVcfs {
 	}
 
 	@Test
-	public void test_17_vcf_bed_filter() {
+	public void test_01_vcf_bed_filter() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/test_vcf_filter.vcf";
 		String bedFile = "tests/test_vcf_filter.bed";
@@ -83,7 +84,7 @@ public class TestCasesVcfs {
 	 * an Exception (it shouldn't happen)
 	 */
 	@Test
-	public void test_26_Annotating_LOF_Spaces() {
+	public void test_02_Annotating_LOF_Spaces() {
 		String vcfFileName = "tests/vcf_genes_spaces.vcf";
 		String genomeName = "test_ENSG00000158062_spaces";
 
@@ -97,6 +98,36 @@ public class TestCasesVcfs {
 		// This should run OK
 		boolean ok = snpEff.run();
 		Assert.assertTrue("SnpEff run failed!", ok);
+	}
+
+	/**
+	 * Non-variant VCF entries should be skipped (i.e. no annotation should be added)
+	 */
+	@Test
+	public void test_03_do_not_annotate_non_variants() {
+		String vcfFileName = "tests/test_non_variants.vcf";
+		String genomeName = "testHg3775Chr1";
+
+		// Prepare a command line
+		String args[] = { "-noLog", genomeName, vcfFileName };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setSupressOutput(!verbose);
+		snpEff.setVerbose(verbose);
+		snpEff.setDebug(debug);
+
+		// Run command
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		List<VcfEntry> vcfEntries = seff.run(true);
+		Assert.assertFalse("SnpEff run failed, returned an empty list", vcfEntries.isEmpty());
+
+		// Check output
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve);
+
+			if (ve.hasInfo(EffFormatVersion.VCF_INFO_ANN_NAME) || ve.hasInfo(EffFormatVersion.VCF_INFO_EFF_NAME)) //
+				throw new RuntimeException("Effect field should not be annotated on non-variant entries!\n" + ve);
+
+		}
 	}
 
 }
