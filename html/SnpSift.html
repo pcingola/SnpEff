@@ -589,24 +589,25 @@ $ cat cancer.vcf | java -jar SnpSift.jar filter "GEN[Somatic].GT = '2/1'"
             <h1>3. SnpSift Annotate & AnnMEM </h1>
           </div>
 				<p class="lead">
-				Annotate using fields from another VCF file (e.g. dbSnp or 1000 genomes projects).
+				Annotate using fields from another VCF file (e.g. dbSnp, 1000 Genomes projects, ClinVar, ExAC, etc.).
 				</p>
 
 				This is typically used to annotate IDs and INFO fields from a 'database' VCF file (e.g. dbSnp). 
 				Here is an example:
 				<pre> java -jar SnpSift.jar annotate dbSnp132.vcf variants.vcf > variants_annotated.vcf </pre>
 				<p>
-				Important:
-					<ul>
-						<li> <code>SnpSift annotate</code> command assumes that both the database and the input VCF files are sorted by position.  Chromosome sort order can differ between files.
-						<li> <code>SnpSift annotateMem</code> command allows unsorted VCF files, but it loads the entire 'database' VCF file into memory (which may not be practical for large 'database' VCF files). 
-					</ul>
+				Important: <code>SnpSift annotate</code> command has different strategies depending on the input VCF file:
+				<ul>
+					<li> <b>Uncomressed VCF</b> If the file is not compressed, it created an index in memory to optimize search. This assumes that both the database and the input VCF files are sorted by position, since it is required by the VCF standard (chromosome sort order can differ between files).
+					<li> <b> Compressed, Tabix indexed</b> It uses the tabix index to speed up annotations.
+					<li> <b> Compressed, NOT Tabix indexed</b> It loads the entire 'database' VCF file into memory, which may be slow or even impractical for large 'database' VCF files.  This allows to annotate using unsorted VCF files. 
 				<p>
 				Note:
 					<ul>
 						<li> By default it adds ALL database INFO fields. 
-						<li> You can use the '-info' command line option if you only want select only a subset of fields from db.vcf file.
-						<li> You can use the '-id' command line option if you only want to add ID fields (no INFO fields will be added).
+						<li> You can use the <code>-info</code> command line option if you only want select only a subset of fields from db.vcf file.
+						<li> You can use the <code>-id</code> command line option if you only want to add ID fields (no INFO fields will be added).
+						<li> Using the <code>-exists</code> command line option, you can annotate entries that exists in the 'database' file.
 					</ul>
 				<br>
 				<i class="icon-hand-right"></i> DbSnp in VCF format can download <a href="ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606/VCF/00-All.vcf.gz"> here </a><p>
