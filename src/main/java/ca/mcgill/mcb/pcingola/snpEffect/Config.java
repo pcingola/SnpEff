@@ -75,6 +75,10 @@ public class Config implements Serializable, Iterable<String> {
 		return configInstance;
 	}
 
+	public static Config reset() {
+		return configInstance = null;
+	}
+
 	/**
 	 * Create a config (uses DEFAULT_CONFIG_FILE)
 	 */

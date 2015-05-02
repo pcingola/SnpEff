@@ -28,9 +28,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	private static final long serialVersionUID = -330362012383572257L;
 
-	/** Unique ID per run */
-	private static int genomeId;
-
 	long length = -1;
 	String species;
 	String version;
@@ -69,14 +66,9 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	}
 
-	private static String getGenomeId() {
-		return "" + (genomeId++);
-	}
-
 	public Genome() {
 		super();
-		id = getGenomeId();
-		version = "";
+		id = version = "";
 		type = EffectType.GENOME;
 		chromosomeNames = new ArrayList<String>();
 		chromosomes = new HashMap<String, Chromosome>();
@@ -86,7 +78,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	public Genome(String version) {
 		super(null, 0, Integer.MAX_VALUE, false, version);
-		id = getGenomeId();
 		this.version = version;
 		type = EffectType.GENOME;
 		chromosomeNames = new ArrayList<String>();
@@ -97,7 +88,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	public Genome(String version, Properties properties) {
 		super(null, 0, Integer.MAX_VALUE, false, version);
-		id = getGenomeId();
 		this.version = version;
 		type = EffectType.GENOME;
 		genes = new Genes(this);

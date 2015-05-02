@@ -45,6 +45,7 @@ public class VariantStats implements SamplingStats<Variant> {
 	void chromoStats(Variant variant) {
 		String chrName = variant.getChromosomeName();
 		ChrPosStats chrPosStats = chrPosStatsbyName.get(chrName);
+
 		// No stats? => Create a new one
 		if (chrPosStats == null) {
 			Chromosome chr = genome.getChromosome(chrName);
@@ -55,7 +56,7 @@ public class VariantStats implements SamplingStats<Variant> {
 		}
 
 		// Perform stats
-		chrPosStats.sample(variant.getStart());
+		if (chrPosStats != null) chrPosStats.sample(variant.getStart());
 	}
 
 	public char[] getBases() {
