@@ -28,6 +28,9 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	private static final long serialVersionUID = -330362012383572257L;
 
+	private static int genomeIdCounter = 0;
+
+	int genomeId;
 	long length = -1;
 	String species;
 	String version;
@@ -74,6 +77,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		chromosomes = new HashMap<String, Chromosome>();
 		genes = new Genes(this);
 		genomicSequences = new GenomicSequences(this);
+		setGenomeId();
 	}
 
 	public Genome(String version) {
@@ -84,6 +88,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		chromosomes = new HashMap<String, Chromosome>();
 		genes = new Genes(this);
 		genomicSequences = new GenomicSequences(this);
+		setGenomeId();
 	}
 
 	public Genome(String version, Properties properties) {
@@ -110,6 +115,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		for (String chName : chromosomeNames)
 			add(new Chromosome(this, 0, 0, chName));
 
+		setGenomeId();
 	}
 
 	/**
@@ -118,6 +124,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	public synchronized void add(Chromosome chromo) {
 		chromosomeNames.add(chromo.getId());
 		chromosomes.put(chromo.getId(), chromo);
+		chromo.setParent(this);
 	}
 
 	/**
@@ -224,6 +231,10 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		genesSorted.addAll(genes.values());
 		Collections.sort(genesSorted);
 		return genesSorted;
+	}
+
+	public String getGenomeId() {
+		return id + "[" + genomeId + "]";
 	}
 
 	public GenomicSequences getGenomicSequences() {
@@ -387,6 +398,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 		for (Marker m : markerSerializer.getNextFieldMarkers())
 			add((Chromosome) m);
+
 	}
 
 	/**
@@ -399,7 +411,11 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				+ "\t" + version //
 				+ "\t" + species //
 				+ "\t" + markerSerializer.save((Iterable) chromosomes.values()) //
-		;
+				;
+	}
+
+	private void setGenomeId() {
+		genomeId = genomeIdCounter++;
 	}
 
 	/**

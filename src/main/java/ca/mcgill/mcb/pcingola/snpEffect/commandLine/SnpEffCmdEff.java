@@ -312,10 +312,10 @@ public class SnpEffCmdEff extends SnpEff {
 							outputFormatter.add(variantEffect);
 							countEffects++;
 						}
-					}
 
-					// Finish up this section
-					outputFormatter.printSection(variant);
+						// Finish up this section
+						outputFormatter.printSection(variant);
+					}
 				}
 
 				//---
@@ -407,7 +407,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 		// Create and run queue
 		int batchSize = 10;
-		VcfWorkQueue vcfWorkQueue = new VcfWorkQueue(inputFile, batchSize, -1, props);
+		VcfWorkQueue vcfWorkQueue = new VcfWorkQueue(inputFile, config, batchSize, -1, props);
 		vcfWorkQueue.run(true);
 	}
 

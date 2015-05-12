@@ -24,9 +24,6 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  */
 public class Variant extends Marker {
 
-	// Not a variant (ref=alt)
-	public static final Variant NO_VARIANT = new Variant(null, 0, 0, "");
-
 	public enum VariantType {
 		SNP// Single nucleotide polymorphism (i.e. 1 base is changed)
 		, MNP // Multiple nucleotide polymorphism (i.e. several bases are changed)
@@ -36,6 +33,9 @@ public class Variant extends Marker {
 		, INTERVAL
 		// Just analyze interval hits. Not a variant (e.g. BED input format)
 	}
+
+	// Not a variant (ref=alt)
+	public static final Variant NO_VARIANT = new Variant(null, 0, 0, "");
 
 	private static final long serialVersionUID = -2928105165111400441L;
 

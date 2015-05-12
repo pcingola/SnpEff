@@ -4,6 +4,7 @@ import akka.actor.Actor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 
 /**
  * A work queue that processes a VCF file
@@ -18,19 +19,14 @@ public class VcfWorkQueue {
 	int batchSize, showEvery;
 	Class<? extends Actor> masterClazz;
 	Props masterProps;
+	Config config;
 
-	public VcfWorkQueue(String fileName, int batchSize, int showEvery, Class<? extends Actor> masterClazz) {
-		this.fileName = fileName;
-		this.batchSize = batchSize;
-		this.showEvery = showEvery;
-		this.masterClazz = masterClazz;
-	}
-
-	public VcfWorkQueue(String fileName, int batchSize, int showEvery, Props masterProps) {
+	public VcfWorkQueue(String fileName, Config config, int batchSize, int showEvery, Props masterProps) {
 		this.fileName = fileName;
 		this.batchSize = batchSize;
 		this.showEvery = showEvery;
 		this.masterProps = masterProps;
+		this.config = config;
 	}
 
 	public void run(boolean wait) {
@@ -43,7 +39,7 @@ public class VcfWorkQueue {
 		else master = workQueue.actorOf(masterProps, "masterVcf");
 
 		// Start processing
-		master.tell(new StartMasterVcf(fileName, batchSize, showEvery));
+		master.tell(new StartMasterVcf(fileName, config, batchSize, showEvery));
 
 		// Wait until completion
 		if (wait) workQueue.awaitTermination();

@@ -47,8 +47,6 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 
 	/**
 	 * Find chromosome 'chromoName'. If it does not exists and 'createChromos' is true, the chromosome is created
-	 * @param chromoName
-	 * @return
 	 */
 	public Chromosome getChromosome(String chromoName) {
 		if (createChromos) return genome.getOrCreateChromosome(chromoName);
@@ -75,7 +73,6 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	/**
 	 * Initialize
 	 * @param fileName : Can be null (no file is opened)
-	 * @param inOffset
 	 */
 	@Override
 	protected void init(String fileName, int inOffset) {

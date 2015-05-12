@@ -48,7 +48,7 @@ public class MasterVcf<T> extends Master<VcfEntry, T> {
 		try {
 			super.startMaster(startMaster);
 			StartMasterVcf startMasterVcf = (StartMasterVcf) startMaster;
-			vcfFileIterator = new VcfFileIterator(startMasterVcf.vcfFileName);
+			vcfFileIterator = new VcfFileIterator(startMasterVcf.vcfFileName, startMasterVcf.config.getGenome());
 			vcfFileIterator.setParseNow(parseNow);
 
 			// Show header

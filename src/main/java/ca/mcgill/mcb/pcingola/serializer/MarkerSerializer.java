@@ -141,7 +141,7 @@ public class MarkerSerializer {
 							+ "\n\tDatabase version : '" + versionNumber + "'"//
 							+ "\n\tProgram version  : '" + SnpEff.VERSION_MAJOR + "'" //
 							+ "\nTry installing the appropriate database." //
-					);
+							);
 				}
 			} else {
 				parsedField = 0;
@@ -236,13 +236,17 @@ public class MarkerSerializer {
 		for (TxtSerializable tm : byId.values()) {
 			if (tm instanceof Marker) {
 				Marker m = (Marker) tm;
-				// Find parent ID
-				MarkerParentId mpid = (MarkerParentId) m.getParent();
-				int parentId = mpid.getParentId();
 
-				// Find and set parent
-				Marker parent = getMarkerById(parentId);
-				m.setParent(parent);
+				// Do we need to replace parent?
+				if (m.getParent() instanceof MarkerParentId) {
+					// Find parent ID
+					MarkerParentId mpid = (MarkerParentId) m.getParent();
+					int parentId = mpid.getParentId();
+
+					// Find and set parent
+					Marker parent = getMarkerById(parentId);
+					m.setParent(parent);
+				}
 
 				// Add to markers
 				markers.add(m);
