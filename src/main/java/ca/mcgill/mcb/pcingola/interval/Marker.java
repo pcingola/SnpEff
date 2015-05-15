@@ -568,7 +568,7 @@ public class Marker extends Interval implements TxtSerializable {
 				+ "\t" + end //
 				+ "\t" + id //
 				+ "\t" + strandMinus //
-		;
+				;
 	}
 
 	/**

@@ -136,6 +136,11 @@ public class SnpEffectPredictor implements Serializable {
 				intervalForest.add(chr);
 		}
 
+		// In a circular genome, a gene can have negative coordinates or crosses
+		// over chromosome end. These genes are mirrored to the opposite end of
+		// the chromosome so that they can be referenced by both circular coordinates.
+		genome.getGenes().createCircularGenes();
+
 		// Add all genes to forest
 		for (Gene gene : genome.getGenes())
 			intervalForest.add(gene);

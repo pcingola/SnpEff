@@ -60,6 +60,21 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 		invalidateSorted();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public IntervalAndSubIntervals<T> clone() {
+		IntervalAndSubIntervals<T> copy = (IntervalAndSubIntervals<T>) super.clone();
+		copy.reset();
+
+		for (T m : this) {
+			T mcopy = (T) m.clone();
+			mcopy.setParent(copy);
+			copy.add(mcopy);
+		}
+
+		return copy;
+	}
+
 	/**
 	 * Is 'id' in the subintervals?
 	 */
@@ -156,7 +171,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + markerSerializer.save((Collection<Marker>) subIntervals.values()) //
-		;
+				;
 	}
 
 	@Override
@@ -168,6 +183,14 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 			t.setStrandMinus(strandMinus);
 
 		invalidateSorted(); // These are no longer correct
+	}
+
+	@Override
+	public void shiftCoordinates(int shift) {
+		super.shiftCoordinates(shift);
+
+		for (T m : subIntervals.values())
+			m.shiftCoordinates(shift);
 	}
 
 	/**
@@ -203,4 +226,5 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	public Collection<T> subintervals() {
 		return subIntervals.values();
 	}
+
 }

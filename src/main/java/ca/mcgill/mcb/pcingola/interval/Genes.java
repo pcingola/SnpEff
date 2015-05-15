@@ -6,7 +6,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * A collection of genes (marker intervals)
@@ -17,6 +20,7 @@ import java.util.List;
 public class Genes implements Iterable<Gene>, Serializable {
 
 	private static final long serialVersionUID = 9022385501946879197L;
+	public static final String CIRCULAR_GENE_ID = "_circ";
 
 	public boolean debug = false;
 	Genome genome;
@@ -29,10 +33,62 @@ public class Genes implements Iterable<Gene>, Serializable {
 
 	/**
 	 * Add a gene interval to this collection
-	 * @param gene
 	 */
 	public void add(Gene gene) {
 		genesById.put(gene.getId(), gene);
+	}
+
+	/** In a circular genome, a gene can have negative coordinates or crosses
+		over chromosome end. These genes are mirrored to the opposite end of
+		the chromosome so that they can be referenced by both circular coordinates.
+	 */
+	public void createCircularGenes() {
+		List<Gene> newGenes = new LinkedList<Gene>();
+
+		// Check if any gene spans across chromosome limits
+		for (Gene g : genome.getGenes()) {
+			Chromosome chr = g.getChromosome();
+
+			Gene newGene = null;
+
+			if ((g.getStart() < 0) || (g.getEnd() > chr.getEnd())) {
+				newGene = (Gene) g.clone();
+
+				// Change IDs
+				newGene.setId(g.getId() + CIRCULAR_GENE_ID);
+				for (Transcript tr : newGene) {
+					tr.setId(tr.getId() + CIRCULAR_GENE_ID);
+					for (Exon ex : tr)
+						ex.setId(ex.getId() + CIRCULAR_GENE_ID);
+				}
+
+				// Shift coordinates
+				int shift = 0;
+				if (g.getStart() < 0) {
+					shift = chr.size();
+				} else if (g.getEnd() > chr.getEnd()) {
+					shift = -chr.size();
+				}
+
+				newGene.shiftCoordinates(shift);
+				Gpr.debug("Gene '" + g.getId() + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
+						+ "\n\tGene        :" + g //
+						+ "\n\tNew gene    :" + newGene //
+						+ "\n\tChrsomosome :" + chr.toStr() //
+						);
+
+				// Add them to genes
+				newGenes.add(newGene);
+			}
+		}
+
+		// Add all newly created genes
+		if (!newGenes.isEmpty()) {
+			for (Gene g : newGenes)
+				genome.getGenes().add(g);
+			Gpr.debug("Total: " + newGenes.size() + " added as circular mirrored genes (appended '" + CIRCULAR_GENE_ID + "' to IDs).");
+		}
+
 	}
 
 	/**
@@ -115,8 +171,6 @@ public class Genes implements Iterable<Gene>, Serializable {
 
 	/**
 	 * Obtain a gene interval
-	 * @param geneId
-	 * @return
 	 */
 	public Gene get(String geneId) {
 		return genesById.get(geneId);

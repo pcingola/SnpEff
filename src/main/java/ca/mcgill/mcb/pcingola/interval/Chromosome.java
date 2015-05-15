@@ -104,7 +104,7 @@ public class Chromosome extends Marker {
 		return iduc.equals("M") //
 				|| iduc.startsWith("MT") //
 				|| (iduc.indexOf("MITO") >= 0) //
-		;
+				;
 	}
 
 	@Override
