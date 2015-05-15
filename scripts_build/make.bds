@@ -27,7 +27,7 @@ zipGenome			:= ""			help Zip a specific genome
 cpus = 1
 
 # Configuration parameters
-bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22"]
+bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22", "ENSEMBL_BFMPP_26"]
 
 # Commands
 snpeff				:= "java -Xmx10G -jar snpEff.jar "
@@ -110,13 +110,16 @@ void build() {
 void buildBundleLists() {
 	println "Make bundle lists:"
 
-	# Remove old bundle definitions
-	sys rm -vf config/snpEff.bundles.*.config
-
 	for( string bundle : bundles ) {
-		println "Creating bundles '$bundle'"
-		sys cat config/snpEff.$bundle.config | cut -f 1 -d : | grep ".genome" | sed "s/.genome\s*//" | tr -d " " > snpEff.bundles.$bundle.genomes.txt
-		sys ./scripts_build/createBundles.pl snpEff.bundles.$bundle.genomes.txt $bundle > config/snpEff.bundles.$bundle.config
+		conf := "config/snpEff.bundles.$bundle.config"
+
+		if( conf.exists() ) {
+			print "Config file '$conf' exists, nothing done\n"
+		} else {
+			println "Creating bundles '$bundle' -> '$conf'"
+			sys cat config/snpEff.$bundle.config | cut -f 1 -d : | grep ".genome" | sed "s/.genome\s*//" | tr -d " " > snpEff.bundles.$bundle.genomes.txt
+			sys ./scripts_build/createBundles.pl snpEff.bundles.$bundle.genomes.txt $bundle > $conf
+		}
 	}
 
 	# We must rebuild config file
