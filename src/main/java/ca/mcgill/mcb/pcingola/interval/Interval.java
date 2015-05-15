@@ -37,16 +37,16 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 				+ "\n\tID           : " + id //
 				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
 				+ "\n\tParent       : " + parent //
-		);
+				);
 
-		if (start < 0) throw new RuntimeException("Interval has negative coordinates." //
-				+ "\n\tClass        : " + getClass().getSimpleName() //
-				+ "\n\tStart        : " + start //
-				+ "\n\tEnd          : " + end //
-				+ "\n\tID           : " + id //
-				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
-				+ "\n\tParent       : " + parent //
-		);
+		//		if (start < 0) throw new RuntimeException("Interval has negative coordinates." //
+		//				+ "\n\tClass        : " + getClass().getSimpleName() //
+		//				+ "\n\tStart        : " + start //
+		//				+ "\n\tEnd          : " + end //
+		//				+ "\n\tID           : " + id //
+		//				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
+		//				+ "\n\tParent       : " + parent //
+		//		);
 
 		this.start = start;
 		this.end = end;
@@ -147,8 +147,12 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		return !strandMinus;
 	}
 
+	//	public boolean isValid() {
+	//		return (start >= 0) && (start <= end);
+	//	}
+
 	public boolean isValid() {
-		return (start >= 0) && (start <= end);
+		return start <= end;
 	}
 
 	public void setChromosomeNameOri(String chromosomeNameOri) {

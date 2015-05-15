@@ -673,12 +673,17 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		int chrMin = chr.getStart(), chrMax = chr.getEnd();
 
 		// Create up/down stream intervals and add them to the list
+		int beforeStart = Math.max(start - upDownLength, chrMin);
+		int beforeEnd = Math.max(start - 1, chrMin);
+		int afterStart = Math.min(end + 1, chrMax);
+		int afterEnd = Math.min(end + upDownLength, chrMax);
+
 		if (isStrandPlus()) {
-			upstream = new Upstream(this, Math.max(start - upDownLength, chrMin), Math.max(start - 1, chrMin), false, id);
-			downstream = new Downstream(this, Math.min(end + 1, chrMax), Math.min(end + upDownLength, chrMax), false, id);
+			if (beforeStart < beforeEnd) upstream = new Upstream(this, beforeStart, beforeEnd, false, id);
+			if (afterStart < afterEnd) downstream = new Downstream(this, afterStart, afterEnd, false, id);
 		} else {
-			upstream = new Upstream(this, Math.min(end + 1, chrMax), Math.min(end + upDownLength, chrMax), false, id);
-			downstream = new Downstream(this, Math.max(start - upDownLength, chrMin), Math.max(start - 1, chrMin), false, id);
+			if (afterStart < afterEnd) upstream = new Upstream(this, afterStart, afterEnd, false, id);
+			if (beforeStart < beforeEnd) downstream = new Downstream(this, beforeStart, beforeEnd, false, id);
 		}
 	}
 

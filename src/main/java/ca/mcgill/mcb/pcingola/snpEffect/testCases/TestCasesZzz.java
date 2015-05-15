@@ -1,17 +1,19 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import java.util.List;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.interval.Genome;
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdBuild;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
-import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Test case
@@ -19,38 +21,78 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesZzz {
 
 	boolean debug = false;
-	boolean verbose = false || debug;
+	boolean verbose = true || debug;
 
 	public TestCasesZzz() {
 		super();
 	}
 
+	public SnpEffectPredictor buildGtf(String genome) {
+		// Build
+		String args[] = { "build", genome };
+
+		SnpEff snpeff = new SnpEff(args);
+		snpeff.setVerbose(verbose);
+
+		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.snpEffCmd();
+		snpeffBuild.run();
+		return snpeffBuild.getConfig().getSnpEffectPredictor();
+	}
+
 	@Test
-	public void test_01_ERROR_CHROMOSOME_NOT_FOUND() {
+	public void testCase_02_CircularGenome() {
 		Gpr.debug("Test");
-		String genome = "testHg3775Chr1";
-		String vcf = "tests/missing_chromo.vcf";
 
-		String args[] = { "-noLog", genome, vcf };
-		SnpEff snpEff = new SnpEff(args);
-		snpEff.setVerbose(verbose);
-		snpEff.setSupressOutput(!verbose);
-		snpEff.setDebug(debug);
+		//---
+		// Create database & build interval forest
+		//---
+		String genomeName = "test_circular_GCA_000210475.1.22";
+		SnpEffectPredictor sep = buildGtf(genomeName);
+		// sep.setUpDownStreamLength(0);
+		sep.buildForest();
 
-		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
-		List<VcfEntry> vcfEntries = seff.run(true);
-		int count = 0;
-		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+		//---
+		// Check variant:1 
+		//---
+		Genome genome = sep.getGenome();
+		Variant var = new Variant(genome.getChromosome("p948"), 0, "T", "A", "");
+		VariantEffects varEffs = sep.variantEffect(var);
+		for (VariantEffect varEff : varEffs) {
+			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
+			if (verbose) System.out.println("\t" + vcfEff);
 
-			for (VcfEffect veff : ve.parseEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
-				Assert.assertEquals(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND.toString(), veff.getErrorsWarning());
-				count++;
-			}
-
+			Assert.assertEquals("p.Phe297Ile", vcfEff.getHgvsProt());
+			Assert.assertEquals("c.889T>A", vcfEff.getHgvsDna());
+			Assert.assertEquals("missense_variant", vcfEff.getEffectsStrSo());
 		}
 
-		Assert.assertEquals(9, count);
+		//---
+		// Check variant: 2
+		//---
+		var = new Variant(genome.getChromosome("p948"), -3, "T", "A", "");
+		varEffs = sep.variantEffect(var);
+		for (VariantEffect varEff : varEffs) {
+			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
+			if (verbose) System.out.println("\t" + vcfEff);
+
+			Assert.assertEquals("p.Trp296Arg", vcfEff.getHgvsProt());
+			Assert.assertEquals("c.886T>A", vcfEff.getHgvsDna());
+			Assert.assertEquals("missense_variant", vcfEff.getEffectsStrSo());
+		}
+
+		//---
+		// Check variant: 3
+		//---
+		var = new Variant(genome.getChromosome("p948"), -885, "G", "T", "");
+		varEffs = sep.variantEffect(var);
+		for (VariantEffect varEff : varEffs) {
+			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
+			if (verbose) System.out.println("\t" + vcfEff);
+
+			Assert.assertEquals("p.Asp2Tyr", vcfEff.getHgvsProt());
+			Assert.assertEquals("c.4G>T", vcfEff.getHgvsDna());
+			Assert.assertEquals("missense_variant", vcfEff.getEffectsStrSo());
+		}
 	}
+
 }

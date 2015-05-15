@@ -34,6 +34,7 @@ public abstract class SnpEffPredictorFactory {
 
 	// Show a mark every
 	public static final int MARK = 100;
+	public static final int MIN_TOTAL_FRAME_COUNT = 10;
 
 	// Debug mode?
 	boolean debug = false;
@@ -169,20 +170,47 @@ public abstract class SnpEffPredictorFactory {
 						int ssStart = exon.getStart();
 						int ssEnd = exon.getEnd() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
 
-						if ((ssStart < 0) || (ssEnd > chrSeq.length())) {
-							warning("Ignoring exon outside chromosome range (chromo length: " + chrSeq.length() + "). Exon: " + exon);
-							seqsIgnored++;
-						} else {
+						String seq = null;
+						if ((ssStart >= 0) && (ssEnd <= chrSeq.length())) {
+							// Regular coordinates
 							try {
-								String seq = chrSeq.substring(ssStart, ssEnd).toUpperCase();
-								// Reverse strand? => reverse complement of the sequence
-								if (exon.isStrandMinus()) seq = GprSeq.reverseWc(seq);
-								exon.setSequence(seq);
-								seqsAdded++;
+								seq = chrSeq.substring(ssStart, ssEnd).toUpperCase();
 							} catch (Throwable t) {
 								t.printStackTrace();
 								throw new RuntimeException("Error trying to add sequence to exon:\n\tChromosome sequence length: " + chrSeq.length() + "\n\tExon: " + exon);
 							}
+						} else if ((ssStart < 0) && (ssEnd > 0)) {
+							// Negative start coordinates? This is probably a circular genome
+							// Convert to 2 intervals:
+							//     i) Interval before zero: This gets mapped to the end of the chromosome
+							//     ii) Interval after zero: This are "normal" coordinates
+							// Then we concatenate both sequences
+							int len = chrSeq.length();
+							ssStart += len;
+							seq = chrSeq.substring(ssStart, len) + chrSeq.substring(0, ssEnd + 1);
+						} else if ((ssStart >= 0) && (ssEnd >= chrSeq.length())) {
+							// Coordinates outside chromosome length? This is probably a circular genome
+							// Convert to 2 intervals:
+							//     i) Interval before chr.end: This are "normal" coordinates
+							//     ii) Interval after chr.end: This gets mapped to the beginning of the chromosome
+							// Then we concatenate both sequences
+							int len = chrSeq.length();
+							ssEnd -= len;
+							seq = chrSeq.substring(ssStart, len) + chrSeq.substring(0, ssEnd + 1);
+						} else {
+							warning("Ignoring exon outside chromosome range (chromo length: " + chrSeq.length() + "). Exon: " + exon);
+							seqsIgnored++;
+						}
+
+						if (seq != null) {
+							// Sanity check
+							if (seq.length() != exon.size()) warning("Exon sequence length does not match exon.size()\n" + exon);
+
+							// Reverse strand? => reverse complement of the sequence
+							if (exon.isStrandMinus()) seq = GprSeq.reverseWc(seq);
+							exon.setSequence(seq);
+							seqsAdded++;
+
 						}
 					}
 				}
@@ -547,7 +575,7 @@ public abstract class SnpEffPredictorFactory {
 
 		int countByFrameTotal = countByFrame[0] + countByFrame[1] + countByFrame[2];
 		int countByFrameNonZero = countByFrame[1] + countByFrame[2];
-		if ((countByFrameTotal > 0) && (countByFrameNonZero <= 0)) System.err.println("WARNING: All frames are zero! This seems rather odd, please check that 'frame' information in your 'genes' file is accurate.");
+		if ((countByFrameTotal >= MIN_TOTAL_FRAME_COUNT) && (countByFrameNonZero <= 0)) System.err.println("WARNING: All frames are zero! This seems rather odd, please check that 'frame' information in your 'genes' file is accurate.");
 
 		//---
 		// Perform exon frame adjustment
@@ -773,7 +801,7 @@ public abstract class SnpEffPredictorFactory {
 		return msg //
 				+ (sbMissingRef.length() > 0 ? "\tChromosome names missing in 'reference sequence' file:\t" + sbMissingRef.toString() : "") //
 				+ (sbMissingGenes.length() > 0 ? "\n\tChromosome names missing in 'genes' file             :\t" + sbMissingGenes.toString() : "")//
-		;
+				;
 	}
 
 	String unquote(String qstr) {
