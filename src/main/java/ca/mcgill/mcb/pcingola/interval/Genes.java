@@ -72,10 +72,10 @@ public class Genes implements Iterable<Gene>, Serializable {
 
 				newGene.shiftCoordinates(shift);
 				Gpr.debug("Gene '" + g.getId() + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
-						+ "\n\tGene        :" + g //
-						+ "\n\tNew gene    :" + newGene //
+						+ "\n\tGene        :" + g.toStr() //
+						+ "\n\tNew gene    :" + newGene.toStr() //
 						+ "\n\tChrsomosome :" + chr.toStr() //
-						);
+				);
 
 				// Add them to genes
 				newGenes.add(newGene);
