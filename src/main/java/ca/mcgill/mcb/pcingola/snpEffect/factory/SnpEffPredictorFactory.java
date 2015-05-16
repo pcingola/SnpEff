@@ -243,8 +243,10 @@ public abstract class SnpEffPredictorFactory {
 			Chromosome chr = config.getGenome().getChromosome(chrName);
 			int newEnd = lenByChr.get(chrName);
 			if (chr.getEnd() < newEnd) {
-				chr.setEnd(lenByChr.get(chrName));
-				mark(adjusted++);
+				if (chr.size() <= 0) {
+					chr.setEnd(lenByChr.get(chrName));
+					mark(adjusted++);
+				} else if (verbose) System.out.println("\t\tChromosome '" + chr.getId() + "' has length of " + chr.size() + ", but genes end at " + lenByChr.get(chrName) + ". Assuming circular genome, not adjusting");
 			}
 		}
 	}

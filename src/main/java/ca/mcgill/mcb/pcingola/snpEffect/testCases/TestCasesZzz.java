@@ -22,7 +22,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 public class TestCasesZzz {
 
 	boolean debug = false;
-	boolean verbose = false || debug;
+	boolean verbose = true || debug;
 
 	public TestCasesZzz() {
 		super();
@@ -55,13 +55,13 @@ public class TestCasesZzz {
 	}
 
 	@Test
-	public void testCase_02_CircularGenome() {
+	public void testCase_02_CircularGenome_end() {
 		Gpr.debug("Test");
 
 		//---
 		// Create database & build interval forest
 		//---
-		String genomeName = "test_circular_GCA_000210475.1.22";
+		String genomeName = "test_circular_GCA_000210475.1.22_end";
 		SnpEffectPredictor sep = buildGtf(genomeName);
 		sep.buildForest();
 

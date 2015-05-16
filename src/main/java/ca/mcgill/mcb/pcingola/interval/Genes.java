@@ -76,7 +76,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 						+ "\n\tGene        :" + g.toStr() //
 						+ "\n\tNew gene    :" + newGene.toStr() //
 						+ "\n\tChrsomosome :" + chr.toStr() //
-				);
+						);
 
 				// Add them to genes
 				newGenes.add(newGene);

@@ -124,4 +124,36 @@ public class TestCasesCircularGenome {
 		checkAnnotations(sep, "p948", 93912, "G", "T", "p.Asp2Tyr", "c.4G>T", "missense_variant");
 	}
 
+	@Test
+	public void testCase_02_CircularGenome_end() {
+		Gpr.debug("Test");
+
+		//---
+		// Create database & build interval forest
+		//---
+		String genomeName = "test_circular_GCA_000210475.1.22_end";
+		SnpEffectPredictor sep = buildGtf(genomeName);
+		sep.buildForest();
+
+		if (verbose) {
+			Genome genome = sep.getGenome();
+			for (Chromosome chr : genome.getChromosomes())
+				System.out.println(chr);
+		}
+
+		//---
+		// Check variants in zero or negative coordiantes
+		//---
+		checkAnnotations(sep, "p948", 0, "T", "A", "p.Phe297Ile", "c.889T>A", "missense_variant");
+		checkAnnotations(sep, "p948", -3, "T", "A", "p.Trp296Arg", "c.886T>A", "missense_variant");
+		checkAnnotations(sep, "p948", -885, "G", "T", "p.Asp2Tyr", "c.4G>T", "missense_variant");
+
+		//---
+		// Check variant after chromosome end (same variants as before)
+		//---
+		checkAnnotations(sep, "p948", 94797, "T", "A", "p.Phe297Ile", "c.889T>A", "missense_variant");
+		checkAnnotations(sep, "p948", 94794, "T", "A", "p.Trp296Arg", "c.886T>A", "missense_variant");
+		checkAnnotations(sep, "p948", 93912, "G", "T", "p.Asp2Tyr", "c.4G>T", "missense_variant");
+	}
+
 }
