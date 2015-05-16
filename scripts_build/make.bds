@@ -48,10 +48,6 @@ pwmsBin				:="$dirDb/jaspar/pwms.bin"
 # URLs
 snpeffDownload		:= "http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip"
 
-# Wget parameters
-wget_wait			:= 1								# Wait a few moments between file downloads (to avoid saturating the server)
-wget				:= "wget --wait=$wget_wait -r -nc "	# Wget command line
-
 # Output files
 buildSummary		:= "build.out"
 
@@ -60,6 +56,9 @@ buildSummary		:= "build.out"
 #-------------------------------------------------------------------------------
 
 string{} built
+
+# SnpEff version
+snpEffVersion := ""
 
 #-------------------------------------------------------------------------------
 # Add a build command
@@ -374,11 +373,21 @@ void uploadHtml2Sf() {
 }
 
 #-------------------------------------------------------------------------------
+# SnpEff's version 
+#-------------------------------------------------------------------------------
+string version() {
+	if( snpEffVersion == '' ) {
+		snpEffVersion = sys $snpeff -version
+	}
+	return snpEffVersion;
+}
+
+#-------------------------------------------------------------------------------
 # SnpEff's version using underscores instead of '.'
 #-------------------------------------------------------------------------------
 
 string versionUnd() {
-	ver := sys $snpeff -version
+	ver := version()
 	return ver.replace("\.","_").replaceAll("[a-zA-Z]", "").trim() # Remove sub-version letter
 }
 
@@ -387,7 +396,7 @@ string versionUnd() {
 #-------------------------------------------------------------------------------
 
 string versionSubUnd() {
-	ver := sys $snpeff -version
+	ver := version()
 	return ver.replace("\.","_").trim()
 }
 

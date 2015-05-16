@@ -339,7 +339,7 @@ th a:active, th a:hover {
 <@countByType changeStats.countByFunctionalClass />
 <p>
 
-Missense / Silent ratio: </th><td class="numeric"> ${changeStats.silentRatio?string("0.####")}
+Missense / Silent ratio: ${changeStats.silentRatio?string("0.####")}
 
 </center>
 

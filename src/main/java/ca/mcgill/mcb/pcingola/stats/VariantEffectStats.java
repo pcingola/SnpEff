@@ -158,6 +158,7 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 	public double getSilentRatio() {
 		long mis = countByFunctionalClass.get(FunctionalClass.MISSENSE.toString());
 		long silent = countByFunctionalClass.get(FunctionalClass.SILENT.toString());
+		if (silent == 0) return 0.0;
 		return ((double) mis) / ((double) silent);
 	}
 
