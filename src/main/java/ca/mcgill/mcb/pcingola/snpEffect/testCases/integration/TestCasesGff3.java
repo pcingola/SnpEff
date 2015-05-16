@@ -21,6 +21,7 @@ import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactory;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryGff3;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -207,6 +208,7 @@ public class TestCasesGff3 {
 
 		// Test
 		try {
+			SnpEffPredictorFactory.MIN_TOTAL_FRAME_COUNT = 1; // Force warning even for one gene
 			buildAndCompare(genome, gff3File, resultFile, true, false);
 		} catch (Throwable t) {
 			t.printStackTrace();

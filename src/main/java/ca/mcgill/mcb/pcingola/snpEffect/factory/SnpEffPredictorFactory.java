@@ -34,7 +34,7 @@ public abstract class SnpEffPredictorFactory {
 
 	// Show a mark every
 	public static final int MARK = 100;
-	public static final int MIN_TOTAL_FRAME_COUNT = 10;
+	public static int MIN_TOTAL_FRAME_COUNT = 10;
 
 	// Debug mode?
 	boolean debug = false;
