@@ -9,7 +9,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * A collection of genes (marker intervals)
@@ -71,7 +72,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 				}
 
 				newGene.shiftCoordinates(shift);
-				Gpr.debug("Gene '" + g.getId() + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
+				if (Config.get().isVerbose()) Timer.showStdErr("Gene '" + g.getId() + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
 						+ "\n\tGene        :" + g.toStr() //
 						+ "\n\tNew gene    :" + newGene.toStr() //
 						+ "\n\tChrsomosome :" + chr.toStr() //
@@ -86,7 +87,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 		if (!newGenes.isEmpty()) {
 			for (Gene g : newGenes)
 				genome.getGenes().add(g);
-			Gpr.debug("Total: " + newGenes.size() + " added as circular mirrored genes (appended '" + CIRCULAR_GENE_ID + "' to IDs).");
+			if (Config.get().isVerbose()) Timer.showStdErr("Total: " + newGenes.size() + " added as circular mirrored genes (appended '" + CIRCULAR_GENE_ID + "' to IDs).");
 		}
 
 	}

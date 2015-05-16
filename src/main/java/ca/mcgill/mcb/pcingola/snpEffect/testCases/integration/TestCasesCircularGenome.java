@@ -55,6 +55,20 @@ public class TestCasesCircularGenome {
 		return snpeffBuild.getConfig().getSnpEffectPredictor();
 	}
 
+	void checkAnnotations(SnpEffectPredictor sep, String chr, int pos, String ref, String alt, String hgvsP, String hgvsC, String eff) {
+		Genome genome = sep.getGenome();
+		Variant var = new Variant(genome.getChromosome(chr), pos, ref, alt, "");
+		VariantEffects varEffs = sep.variantEffect(var);
+		for (VariantEffect varEff : varEffs) {
+			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
+			if (verbose) System.out.println("\t" + vcfEff);
+
+			Assert.assertEquals(hgvsP, vcfEff.getHgvsProt());
+			Assert.assertEquals(hgvsC, vcfEff.getHgvsDna());
+			Assert.assertEquals(eff, vcfEff.getEffectsStrSo());
+		}
+	}
+
 	@Test
 	public void testCase_01_CircularGenome() {
 		Gpr.debug("Test");
@@ -87,96 +101,27 @@ public class TestCasesCircularGenome {
 		//---
 		String genomeName = "test_circular_GCA_000210475.1.22";
 		SnpEffectPredictor sep = buildGtf(genomeName);
-		// sep.setUpDownStreamLength(0);
 		sep.buildForest();
 
-		//---
-		// Check variant:1
-		//---
-		Genome genome = sep.getGenome();
-		for (Chromosome chr : genome.getChromosomes())
-			System.out.println(chr);
-
-		Variant var = new Variant(genome.getChromosome("p948"), 0, "T", "A", "");
-		VariantEffects varEffs = sep.variantEffect(var);
-		for (VariantEffect varEff : varEffs) {
-			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println("\t" + vcfEff);
-
-			Assert.assertEquals("p.Phe297Ile", vcfEff.getHgvsProt());
-			Assert.assertEquals("c.889T>A", vcfEff.getHgvsDna());
-			Assert.assertEquals("missense_variant", vcfEff.getEffectsStrSo());
+		if (verbose) {
+			Genome genome = sep.getGenome();
+			for (Chromosome chr : genome.getChromosomes())
+				System.out.println(chr);
 		}
 
 		//---
-		// Check variant: 2
+		// Check variants in zero or negative coordiantes
 		//---
-		var = new Variant(genome.getChromosome("p948"), -3, "T", "A", "");
-		varEffs = sep.variantEffect(var);
-		for (VariantEffect varEff : varEffs) {
-			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println("\t" + vcfEff);
-
-			Assert.assertEquals("p.Trp296Arg", vcfEff.getHgvsProt());
-			Assert.assertEquals("c.886T>A", vcfEff.getHgvsDna());
-			Assert.assertEquals("missense_variant", vcfEff.getEffectsStrSo());
-		}
+		checkAnnotations(sep, "p948", 0, "T", "A", "p.Phe297Ile", "c.889T>A", "missense_variant");
+		checkAnnotations(sep, "p948", -3, "T", "A", "p.Trp296Arg", "c.886T>A", "missense_variant");
+		checkAnnotations(sep, "p948", -885, "G", "T", "p.Asp2Tyr", "c.4G>T", "missense_variant");
 
 		//---
-		// Check variant: 3
+		// Check variant after chromosome end (same variants as before)
 		//---
-		var = new Variant(genome.getChromosome("p948"), -885, "G", "T", "");
-		varEffs = sep.variantEffect(var);
-		for (VariantEffect varEff : varEffs) {
-			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println("\t" + vcfEff);
-
-			Assert.assertEquals("p.Asp2Tyr", vcfEff.getHgvsProt());
-			Assert.assertEquals("c.4G>T", vcfEff.getHgvsDna());
-			Assert.assertEquals("missense_variant", vcfEff.getEffectsStrSo());
-		}
-
-		//---
-		// Check variant: 4 (same as variant 1)
-		//---
-		var = new Variant(genome.getChromosome("p948"), 94797, "T", "A", "");
-		varEffs = sep.variantEffect(var);
-		for (VariantEffect varEff : varEffs) {
-			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println("\t" + vcfEff);
-
-			Assert.assertEquals("p.Phe297Ile", vcfEff.getHgvsProt());
-			Assert.assertEquals("c.889T>A", vcfEff.getHgvsDna());
-			Assert.assertEquals("missense_variant", vcfEff.getEffectsStrSo());
-		}
-
-		//---
-		// Check variant: 5 (same as variant 2)
-		//---
-		var = new Variant(genome.getChromosome("p948"), 94794, "T", "A", "");
-		varEffs = sep.variantEffect(var);
-		for (VariantEffect varEff : varEffs) {
-			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println("\t" + vcfEff);
-
-			Assert.assertEquals("p.Trp296Arg", vcfEff.getHgvsProt());
-			Assert.assertEquals("c.886T>A", vcfEff.getHgvsDna());
-			Assert.assertEquals("missense_variant", vcfEff.getEffectsStrSo());
-		}
-
-		//---
-		// Check variant: 4 (same as variant 3)
-		//---
-		var = new Variant(genome.getChromosome("p948"), 93912, "G", "T", "");
-		varEffs = sep.variantEffect(var);
-		for (VariantEffect varEff : varEffs) {
-			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println("\t" + vcfEff);
-
-			Assert.assertEquals("p.Asp2Tyr", vcfEff.getHgvsProt());
-			Assert.assertEquals("c.4G>T", vcfEff.getHgvsDna());
-			Assert.assertEquals("missense_variant", vcfEff.getEffectsStrSo());
-		}
+		checkAnnotations(sep, "p948", 94797, "T", "A", "p.Phe297Ile", "c.889T>A", "missense_variant");
+		checkAnnotations(sep, "p948", 94794, "T", "A", "p.Trp296Arg", "c.886T>A", "missense_variant");
+		checkAnnotations(sep, "p948", 93912, "G", "T", "p.Asp2Tyr", "c.4G>T", "missense_variant");
 	}
 
 }
