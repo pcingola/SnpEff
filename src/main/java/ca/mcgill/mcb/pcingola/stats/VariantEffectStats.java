@@ -151,7 +151,7 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 				, 100 * countByGeneRegion.percent("" + EffectType.SPLICE_SITE_ACCEPTOR) //
 				, 100 * countByGeneRegion.percent("" + EffectType.UTR_3_PRIME) //
 				, 100 * countByGeneRegion.percent("" + EffectType.DOWNSTREAM) //
-		);
+				);
 		return gb.toURLString();
 	}
 
@@ -175,6 +175,8 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 
 		// Count by effect
 		String effect = variantEffect.getEffectTypeString(useSequenceOntology);
+		if (effect == null || effect.isEmpty()) return; // No effect? Nothing to do
+
 		countByEffect.inc(effect);
 
 		// Count by gene region

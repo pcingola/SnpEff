@@ -4950,7 +4950,6 @@ Butyrivibrio_proteoclasticus_B316_uid51489 	 Butyrivibrio_proteoclasticus_B316_u
 GCA_000145035.1.22 	 Butyrivibrio_proteoclasticus_b316   GCA_000145035.1.22
 WS241 	 C.   WS241
 CLUSTERS 	 CLUSTERS   CLUSTERS
-CP010315 	 CP010315   CP010315
 GCA_000315795.1.22 	 Caenispirillum_salinarum_ak4   GCA_000315795.1.22
 GCA_000315795.1.26 	 Caenispirillum_salinarum_ak4   GCA_000315795.1.26
 C_brenneri-6.0.1b.22 	 Caenorhabditis_brenneri   C_brenneri-6.0.1b.22
@@ -33917,7 +33916,6 @@ GCA_000276685.1.22 	 Taylorella_equigenitalis_atcc_35865   GCA_000276685.1.22
 GCA_000276685.1.26 	 Taylorella_equigenitalis_atcc_35865   GCA_000276685.1.26
 GCA_000185745.1.22 	 Taylorella_equigenitalis_mce9   GCA_000185745.1.22
 GCA_000185745.1.26 	 Taylorella_equigenitalis_mce9   GCA_000185745.1.26
-TcruziCLBrener_8.1 	 TcruziCLBrener_8.1   TcruziCLBrener_8.1
 Tepidanaerobacter_Re1_uid66873 	 Tepidanaerobacter_Re1_uid66873   Tepidanaerobacter_Re1_uid66873
 Tepidanaerobacter_acetatoxydans_Re1_uid184827 	 Tepidanaerobacter_acetatoxydans_Re1_uid184827   Tepidanaerobacter_acetatoxydans_Re1_uid184827
 GCA_000213235.1.22 	 Tepidanaerobacter_acetatoxydans_re1_asm21323v1   GCA_000213235.1.22
@@ -34483,6 +34481,7 @@ GCA_000092425.1.22 	 Truepera_radiovictrix_dsm_17093   GCA_000092425.1.22
 GCA_000092425.1.26 	 Truepera_radiovictrix_dsm_17093   GCA_000092425.1.26
 GCA_000612055.1.26 	 Trueperella_pyogenes   GCA_000612055.1.26
 GCA_000816065.1.26 	 Trueperella_pyogenes_tp8   GCA_000816065.1.26
+TcruziCLBrener_8.1 	 Trypanosoma   TcruziCLBrener_8.1
 Tsukamurella_paurometabola_DSM_20162_uid48829 	 Tsukamurella_paurometabola_DSM_20162_uid48829   Tsukamurella_paurometabola_DSM_20162_uid48829
 GCA_000092225.1.22 	 Tsukamurella_paurometabola_dsm_20162   GCA_000092225.1.22
 GCA_000092225.1.26 	 Tsukamurella_paurometabola_dsm_20162   GCA_000092225.1.26
@@ -35912,5 +35911,7 @@ secondary_endosymbiont_of_Ctenarytaina_eucalypti_uid172737 	 secondary_endosymbi
 secondary_endosymbiont_of_Heteropsylla_cubana_Thao2000_uid172738 	 secondary_endosymbiont_of_Heteropsylla_cubana_Thao2000_uid172738   secondary_endosymbiont_of_Heteropsylla_cubana_Thao2000_uid172738
 30c2c903 	 snpeff   30c2c903
 syncytium_symbiont_of_Diaphorina_citri_uid213384 	 syncytium_symbiont_of_Diaphorina_citri_uid213384   syncytium_symbiont_of_Diaphorina_citri_uid213384
+test_circular_GCA_000210475.1.22 	 test_circular_GCA_000210475.1.22   test_circular_GCA_000210475.1.22
+test_circular_GCA_000210475.1.22_end 	 test_circular_GCA_000210475.1.22_end   test_circular_GCA_000210475.1.22_end
 uncultured_Sulfuricurvum_RIFRC_1_uid193658 	 uncultured_Sulfuricurvum_RIFRC_1_uid193658   uncultured_Sulfuricurvum_RIFRC_1_uid193658
 uncultured_Termite_group_1_bacterium_phylotype_Rs_D17_uid59059 	 uncultured_Termite_group_1_bacterium_phylotype_Rs_D17_uid59059   uncultured_Termite_group_1_bacterium_phylotype_Rs_D17_uid59059
