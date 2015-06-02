@@ -1,5 +1,6 @@
 package ca.mcgill.mcb.pcingola.binseq;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -29,9 +30,11 @@ import ca.mcgill.mcb.pcingola.util.Timer;
  *
  * @author pcingola
  */
-public class GenomicSequences implements Iterable<MarkerSeq> {
+public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 
-	public static final int MAX_ITERATIONS = 1000000;
+    	private static final long serialVersionUID = 2339867422366567569L;
+
+    	public static final int MAX_ITERATIONS = 1000000;
 
 	public static boolean debug = false;
 	public static boolean verbose = false;
