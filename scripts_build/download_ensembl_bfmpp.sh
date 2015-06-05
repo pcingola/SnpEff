@@ -116,5 +116,5 @@ do
 	echo -e "$short.reference : ftp://ftp.ensembl.org/pub/release-$ENSEMBL_BFMPP_RELEASE/gtf/"
 	echo
 done
-) | tee ../config/snpEff.ENSEMBL_BFMPP_$ENSEMBL_BFMPP_RELEASE.config
+) | tee ../snpEff.ENSEMBL_BFMPP_$ENSEMBL_BFMPP_RELEASE.config
 
