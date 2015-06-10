@@ -41,10 +41,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	public static final String VCF_INFO_PRIVATE = "Private";
 
-	public static boolean useNumericGenotype = false;
-
 	private static final long serialVersionUID = 4226374412681243433L;
 
+	protected boolean useNumericGenotype;
 	protected String line; // Line from VCF file
 	protected int lineNum; // Line number
 	protected VcfFileIterator vcfFileIterator; // Iterator where this entry was red from
@@ -617,6 +616,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return variantType == VariantType.SNP;
 	}
 
+	public boolean isUseNumericGenotype() {
+		return useNumericGenotype;
+	}
+
 	/**
 	 * Is this a change or are the ALTs actually the same as the reference
 	 */
@@ -1090,6 +1093,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	public void setLineNum(int lineNum) {
 		this.lineNum = lineNum;
+	}
+
+	public void setUseNumericGenotype(boolean useNumericGenotype) {
+		this.useNumericGenotype = useNumericGenotype;
 	}
 
 	/**
