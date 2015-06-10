@@ -6,6 +6,7 @@ import ca.mcgill.mcb.pcingola.align.VariantRealign;
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
+import ca.mcgill.mcb.pcingola.util.IubString;
 
 /**
  * A variant represents a change in a reference sequence
@@ -72,130 +73,42 @@ public class Variant extends Marker {
 
 		// Add each alt
 		for (String alt : alts) {
+			boolean refIub = IubString.hasIUB(ref);
+			boolean altIub = IubString.hasIUB(alt);
 
-			// Is it a SNP?
-			if (ref.length() == 1 && alt.length() == 1) {
-				// May be IUB code, so we have to translate into multiple SNPs
-				String altsIub[] = snpIUB(alt);
-
-				// Add all SNPs
-				for (String altIub : altsIub) {
-					Variant var = new Variant(chromo, start, ref, altIub, id);
-					list.add(var);
-				}
-
-			} else {
+			// Expand all possible REF / ALT combinations
+			if (!refIub && !altIub) {
+				// Non-IUB expansion needed
 				Variant var = new Variant(chromo, start, ref, alt, id);
 				list.add(var);
+			} else if (altIub && !refIub) {
+				// ALT has IUB characters
+				IubString iubsAlt = new IubString(alt);
+				for (String seqAlt : iubsAlt) {
+					Variant var = new Variant(chromo, start, ref, seqAlt, id);
+					list.add(var);
+				}
+			} else if (!altIub && refIub) {
+				// REF has IUB characters
+				IubString iubsRef = new IubString(alt);
+				for (String seqRef : iubsRef) {
+					Variant var = new Variant(chromo, start, seqRef, alt, id);
+					list.add(var);
+				}
+			} else if (altIub && refIub) {
+				// Both REF and ALT have IUB characters
+				IubString iubsRef = new IubString(alt);
+				for (String seqRef : iubsRef) {
+					IubString iubsAlt = new IubString(alt);
+					for (String seqAlt : iubsAlt) {
+						Variant var = new Variant(chromo, start, seqRef, seqAlt, id);
+						list.add(var);
+					}
+				}
 			}
 		}
 
 		return list;
-	}
-
-	public static boolean hasIUB(String str) {
-		String iubs = str.toUpperCase().replaceAll("ACGT", "");
-		return iubs.length() > 0;
-	}
-
-	public static String[] iub(String str) {
-		if (!hasIUB(str)) return null;
-		if (str.length() == 1) return snpIUB(str);
-
-		return null;
-	}
-
-	/**
-	 *  Reference http://sourceforge.net/apps/mediawiki/samtools/index.php?title=SAM_FAQ#I_do_not_understand_the_columns_in_the_pileup_output.
-	 *  IUB codes: M=A/C, R=A/G, W=A/T, S=C/G, Y=C/T, K=G/T and N=A/C/G/T
-	 */
-	public static String[] snpIUB(String alt) {
-		String[] alts;
-
-		// Regular base
-		if (alt.equals("A") || alt.equals("C") || alt.equals("G") || alt.equals("T")) {
-			alts = new String[1];
-			alts[0] = alt;
-		} else {
-			switch (alt.charAt(0)) {
-			case 'N': // aNy base
-				alts = new String[4];
-				alts[0] = "A";
-				alts[1] = "C";
-				alts[2] = "G";
-				alts[3] = "T";
-				break;
-
-			case 'B': // B: not A
-				alts = new String[3];
-				alts[0] = "C";
-				alts[1] = "G";
-				alts[2] = "T";
-				break;
-
-			case 'D': // D: not C
-				alts = new String[3];
-				alts[0] = "A";
-				alts[1] = "G";
-				alts[2] = "T";
-				break;
-
-			case 'H': // H: not G
-				alts = new String[3];
-				alts[0] = "A";
-				alts[1] = "C";
-				alts[2] = "T";
-				break;
-
-			case 'V': // V: not T
-				alts = new String[3];
-				alts[0] = "A";
-				alts[1] = "C";
-				alts[2] = "G";
-				break;
-
-			case 'M':
-				alts = new String[2];
-				alts[0] = "A";
-				alts[1] = "C";
-				break;
-
-			case 'R':
-				alts = new String[2];
-				alts[0] = "A";
-				alts[1] = "G";
-				break;
-
-			case 'W': // Weak
-				alts = new String[2];
-				alts[0] = "A";
-				alts[1] = "T";
-				break;
-
-			case 'S': // Strong
-				alts = new String[2];
-				alts[0] = "C";
-				alts[1] = "G";
-				break;
-
-			case 'Y':
-				alts = new String[2];
-				alts[0] = "C";
-				alts[1] = "T";
-				break;
-
-			case 'K':
-				alts = new String[2];
-				alts[0] = "G";
-				alts[1] = "T";
-				break;
-
-			default:
-				throw new RuntimeException("WARNING: Unkown IUB code for SNP '" + alt + "'");
-			}
-		}
-
-		return alts;
 	}
 
 	/**
