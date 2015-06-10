@@ -55,7 +55,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Adjust [start,end] to include child
-	 * @param child
 	 */
 	protected void adjust(Marker child) {
 		start = Math.min(start, child.getStart());
@@ -270,56 +269,6 @@ public class Marker extends Interval implements TxtSerializable {
 		return len - 1 + (start - latest);
 	}
 
-	/**
-	 * Go up (parent) until we find an instance of 'clazz'
-	 */
-	@SuppressWarnings("rawtypes")
-	public Interval findParent(Class clazz) {
-		if (this.getClass().equals(clazz)) return this;
-		if ((parent != null) && (parent instanceof Marker)) return ((Marker) parent).findParent(clazz);
-		return null;
-	}
-
-	public Chromosome getChromosome() {
-		return (Chromosome) findParent(Chromosome.class);
-	}
-
-	/**
-	 * Find chromosome name
-	 */
-	public String getChromosomeName() {
-		Chromosome chromo = (Chromosome) findParent(Chromosome.class);
-		if (chromo != null) return chromo.getId();
-		return "";
-	}
-
-	/**
-	 * Find chromosome and return it's number
-	 *
-	 * @return Chromosome number if found, -1 otherwise
-	 */
-	public double getChromosomeNum() {
-		Chromosome chromo = (Chromosome) findParent(Chromosome.class);
-		if (chromo != null) return chromo.chromosomeNum;
-		return -1;
-	}
-
-	/**
-	 * Find genome
-	 */
-	public Genome getGenome() {
-		return (Genome) findParent(Genome.class);
-	}
-
-	/**
-	 * Find genome name
-	 */
-	public String getGenomeName() {
-		Genome genome = (Genome) findParent(Genome.class);
-		if (genome != null) return genome.getId();
-		return "";
-	}
-
 	@Override
 	public Marker getParent() {
 		return (Marker) parent;
@@ -327,16 +276,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	public EffectType getType() {
 		return type;
-	}
-
-	@Override
-	public int hashCode() {
-		int hashCode = getChromosomeName().hashCode();
-		hashCode = hashCode * 31 + start;
-		hashCode = hashCode * 31 + end;
-		hashCode = hashCode * 31 + (strandMinus ? -1 : 1);
-		if (id != null) hashCode = hashCode * 31 + id.hashCode();
-		return hashCode;
 	}
 
 	public String idChain() {
@@ -435,31 +374,7 @@ public class Marker extends Interval implements TxtSerializable {
 	}
 
 	/**
-	 * Do the intervals intersect?
-	 * @return  return true if this intersects 'interval'
-	 */
-	public boolean intersects(Marker interval) {
-		if (!interval.getChromosomeName().equals(getChromosomeName())) return false;
-		return (interval.getEnd() >= start) && (interval.getStart() <= end);
-	}
-
-	/**
-	 * How much do intervals intersect?
-	 * @return  number of bases these intervals intersect
-	 */
-	public int intersectSize(Marker interval) {
-		if (!interval.getChromosomeName().equals(getChromosomeName())) return 0;
-
-		int start = Math.max(this.start, interval.getStart());
-		int end = Math.min(this.end, interval.getEnd());
-
-		if (end < start) return 0;
-		return (end - start) + 1;
-	}
-
-	/**
 	 * Adjust parent if it does not include child?
-	 * @return
 	 */
 	protected boolean isAdjustIfParentDoesNotInclude(Marker parent) {
 		return false;
@@ -467,7 +382,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Show an error if parent does not include child?
-	 * @return
 	 */
 	protected boolean isShowWarningIfParentDoesNotInclude() {
 		return false;
@@ -541,8 +455,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Parse a line from a serialized file
-	 * @param line
-	 * @return
 	 */
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {
@@ -557,7 +469,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Create a string to serialize to a file
-	 * @return
 	 */
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
