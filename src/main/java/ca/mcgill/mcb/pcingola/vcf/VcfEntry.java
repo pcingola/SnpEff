@@ -50,6 +50,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	protected String chromosomeName; // Original chromosome name
 	protected String ref;
 	protected String[] alts;
+	protected String altStr;
 	protected Double quality;
 	protected String filterPass;
 	protected String infoStr = "";
@@ -312,12 +313,19 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Create a comma separated ALTS string
 	 */
 	public String getAltsStr() {
+		if (altStr != null) {
+			if (altStr.isEmpty()) return ".";
+			return altStr;
+		}
+
 		if (alts == null) return "";
 
-		String altsStr = "";
+		StringBuilder sb = new StringBuilder();
 		for (String alt : alts)
-			altsStr += alt + " ";
-		return altsStr.trim().replace(' ', ',');
+			sb.append(alt + " ");
+		altStr = sb.toString().trim().replace(' ', ',');
+
+		return altStr;
 	}
 
 	/**
@@ -716,11 +724,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			// ID (e.g. might indicate dbSnp)
 			id = vcfFileIterator.readField(fields, 2);
 
-			// REF and ALT
+			// REF 
 			ref = vcfFileIterator.readField(fields, 3).toUpperCase(); // Reference and change
 			strandMinus = false; // Strand is always positive (defined in VCF spec.)
-			String altsStr = vcfFileIterator.readField(fields, 4).toUpperCase();
-			parseAlts(altsStr);
+
+			// ALT
+			altStr = vcfFileIterator.readField(fields, 4).toUpperCase();
+			parseAlts(altStr);
 
 			// Quality
 			String qStr = vcfFileIterator.readField(fields, 5);
@@ -735,7 +745,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			info = null;
 
 			// Start & End coordinates are anchored to the reference genome, thus based on REF field (ALT is not taken into account)
-			parseEnd(altsStr);
+			parseEnd(altStr);
 
 			// Genotype format
 			format = null;
@@ -793,7 +803,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (alts == null // No alts
 					|| (alts.length == 0) // Zero ALTs
 					|| (alts.length == 1 && (alts[0].isEmpty() || alts[0].equals("."))) // One ALT, but it's empty
-					) {
+			) {
 				variantType = VariantType.INTERVAL;
 			} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
 				if (ref.length() == 1) variantType = VariantType.SNP;
@@ -1147,17 +1157,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		StringBuilder sb = new StringBuilder(chr //
 				+ "\t" + (start + 1) //
 				+ "\t" + (id.isEmpty() ? "." : id) //
-				+ "\t" + ref //
-				+ "\t");
+		);
 
-		// ALTs
-		if (alts != null) {
-			for (int i = 0; i < alts.length; i++) {
-				String altStr = (alts[i].isEmpty() ? "." : alts[i]);
-				sb.append(altStr + ",");
-			}
-			sb.deleteCharAt(sb.length() - 1); // Delete last colon
-		}
+		// REF and ALT
+		String refStr = (ref == null || ref.isEmpty() ? "." : ref);
+		sb.append("\t" + refStr);
+		sb.append("\t" + getAltsStr());
 
 		// Quality, filter, info, format...
 		sb.append("\t" + (quality != null ? quality + "" : "."));
@@ -1285,7 +1290,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				char change[] = new char[size];
 				for (int i = 0; i < change.length; i++)
 					change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-					ch = new String(change);
+				ch = new String(change);
 			}
 
 			// Create SeqChange
