@@ -724,7 +724,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			// ID (e.g. might indicate dbSnp)
 			id = vcfFileIterator.readField(fields, 2);
 
-			// REF 
+			// REF
 			ref = vcfFileIterator.readField(fields, 3).toUpperCase(); // Reference and change
 			strandMinus = false; // Strand is always positive (defined in VCF spec.)
 
@@ -1357,5 +1357,4 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			throw new RuntimeException("Unsupported VCF change type '" + align.getVariantType() + "'\n\tRef: " + reference + "'\n\tAlt: '" + alt + "'\n\tVcfEntry: " + this);
 		}
 	}
-
 }
