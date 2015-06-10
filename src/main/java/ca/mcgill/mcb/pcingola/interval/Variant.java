@@ -93,6 +93,18 @@ public class Variant extends Marker {
 		return list;
 	}
 
+	public static boolean hasIUB(String str) {
+		String iubs = str.toUpperCase().replaceAll("ACGT", "");
+		return iubs.length() > 0;
+	}
+
+	public static String[] iub(String str) {
+		if (!hasIUB(str)) return null;
+		if (str.length() == 1) return snpIUB(str);
+
+		return null;
+	}
+
 	/**
 	 *  Reference http://sourceforge.net/apps/mediawiki/samtools/index.php?title=SAM_FAQ#I_do_not_understand_the_columns_in_the_pileup_output.
 	 *  IUB codes: M=A/C, R=A/G, W=A/T, S=C/G, Y=C/T, K=G/T and N=A/C/G/T
