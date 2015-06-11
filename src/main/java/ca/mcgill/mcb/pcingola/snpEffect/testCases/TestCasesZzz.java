@@ -1,10 +1,13 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -14,24 +17,27 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesZzz {
 
 	boolean debug = false;
-	boolean verbose = true || debug;
+	boolean verbose = false || debug;
 
 	public TestCasesZzz() {
 		super();
 	}
 
-	/**
-	 * Empty fields should show '.' when printed
-	 */
 	@Test
-	public void test_11_empty() {
+	public void test_02() {
 		Gpr.debug("Test");
-		String file = "./tests/empty.vcf";
+		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion.vcf.gz" };
 
-		VcfFileIterator vcf = new VcfFileIterator(file);
-		for (VcfEntry vcfEntry : vcf) {
-			if (verbose) System.out.println(vcfEntry);
-			Assert.assertEquals("1\t11169327\t.\tT\t.\t.\tPASS\tAC=0;AF=0.00;AN=176;DP=7756;MQ0=0;set=ReferenceInAll\tGT:DP\t0/0:115", vcfEntry.toString());
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
+		List<VcfEntry> vcfEntries = cmdEff.run(true);
+
+		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
+			Assert.assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
 		}
 	}
 

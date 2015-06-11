@@ -9,12 +9,31 @@ import java.util.Iterator;
  */
 public class IubString implements Iterable<String>, Iterator<String> {
 
+	// Maximum number of IUB bases allowed
+	public static final int MAX_IUB_BASES = 10;
+
 	int idx2BaseNum[];
 	char bases[];
 	char iubCodesByIndex[][];
 
 	CombinatorialIterator combIt;
 
+	/**
+	 * How many IUB bases are in this string?
+	 */
+	public static int countIUB(String str) {
+		char bases[] = str.toCharArray();
+
+		int count = 0;
+		for (int i = 0; i < bases.length; i++)
+			if (isUIB(bases[i])) return count++;
+
+		return count;
+	}
+
+	/**
+	 * Does the string have ANY IUB base?
+	 */
 	public static boolean hasIUB(String str) {
 		char bases[] = str.toCharArray();
 
@@ -22,6 +41,15 @@ public class IubString implements Iterable<String>, Iterator<String> {
 			if (isUIB(bases[i])) return true;
 
 		return false;
+	}
+
+	/**
+	 * Does the string have at most 'MAX_IUB_BASES' IUB bases?
+	 */
+	public static boolean hasIUBMax(String str) {
+		if (str.length() < MAX_IUB_BASES) return hasIUB(str);
+		int count = countIUB(str);
+		return (count > 0) && (count <= MAX_IUB_BASES);
 	}
 
 	public static boolean isUIB(char base) {

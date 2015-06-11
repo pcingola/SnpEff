@@ -803,7 +803,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (alts == null // No alts
 					|| (alts.length == 0) // Zero ALTs
 					|| (alts.length == 1 && (alts[0].isEmpty() || alts[0].equals("."))) // One ALT, but it's empty
-			) {
+					) {
 				variantType = VariantType.INTERVAL;
 			} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
 				if (ref.length() == 1) variantType = VariantType.SNP;
@@ -1157,7 +1157,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		StringBuilder sb = new StringBuilder(chr //
 				+ "\t" + (start + 1) //
 				+ "\t" + (id.isEmpty() ? "." : id) //
-		);
+				);
 
 		// REF and ALT
 		String refStr = (ref == null || ref.isEmpty() ? "." : ref);
@@ -1272,7 +1272,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 */
 	List<Variant> variants(Chromosome chromo, int start, String reference, String alt, String id) {
 		// No change?
-		if (alt == null || alt.isEmpty() || alt.equals(reference)) return Variant.factory(chromo, start, reference, null, id);
+		if (alt == null || alt.isEmpty() || alt.equals(reference)) return Variant.factory(chromo, start, reference, null, id, false);
 
 		alt = alt.toUpperCase();
 
@@ -1290,11 +1290,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				char change[] = new char[size];
 				for (int i = 0; i < change.length; i++)
 					change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-				ch = new String(change);
+					ch = new String(change);
 			}
 
 			// Create SeqChange
-			return Variant.factory(chromo, startNew, ch, "", id);
+			return Variant.factory(chromo, startNew, ch, "", id, false);
 		}
 
 		// Case: SNP, MNP
@@ -1302,7 +1302,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// 20     3 .         TC     AT      .   PASS  DP=100
 		if (reference.length() == alt.length()) {
 			// SNPs
-			if (reference.length() == 1) return Variant.factory(chromo, start, reference, alt, id);
+			if (reference.length() == 1) return Variant.factory(chromo, start, reference, alt, id, true);
 
 			// MNPs
 			// Sometimes the first bases are the same and we can trim them
@@ -1318,7 +1318,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 			String newRef = reference.substring(startDiff, endDiff + 1);
 			String newAlt = alt.substring(startDiff, endDiff + 1);
-			return Variant.factory(chromo, start + startDiff, newRef, newAlt, id);
+			return Variant.factory(chromo, start + startDiff, newRef, newAlt, id, true);
 		}
 
 		//---
@@ -1336,7 +1336,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			String ref = "";
 			String ch = align.getAlignment();
 			if (!ch.startsWith("-")) throw new RuntimeException("Deletion '" + ch + "' does not start with '-'. This should never happen!");
-			return Variant.factory(chromo, start + startDiff, ref, ch, id);
+			return Variant.factory(chromo, start + startDiff, ref, ch, id, true);
 
 		case INS:
 			// Case: Insertion of A { tC ; tCA } tC is the reference allele
@@ -1344,13 +1344,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			ch = align.getAlignment();
 			ref = "";
 			if (!ch.startsWith("+")) throw new RuntimeException("Insertion '" + ch + "' does not start with '+'. This should never happen!");
-			return Variant.factory(chromo, start + startDiff, ref, ch, id);
+			return Variant.factory(chromo, start + startDiff, ref, ch, id, true);
 
 		case MIXED:
 			// Case: Mixed variant (substitution)
 			reference = reference.substring(startDiff);
 			alt = alt.substring(startDiff);
-			return Variant.factory(chromo, start + startDiff, reference, alt, id);
+			return Variant.factory(chromo, start + startDiff, reference, alt, id, true);
 
 		default:
 			// Other change type?

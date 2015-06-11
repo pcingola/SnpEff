@@ -49,7 +49,7 @@ public class Variant extends Marker {
 	/**
 	 * Create variants from ALT (which can be multiple values)
 	 */
-	public static LinkedList<Variant> factory(Chromosome chromo, int start, String ref, String altStr, String id) {
+	public static LinkedList<Variant> factory(Chromosome chromo, int start, String ref, String altStr, String id, boolean expand) {
 		LinkedList<Variant> list = new LinkedList<Variant>();
 
 		// No alt? It's an interval
@@ -73,8 +73,11 @@ public class Variant extends Marker {
 
 		// Add each alt
 		for (String alt : alts) {
-			boolean refIub = IubString.hasIUB(ref);
-			boolean altIub = IubString.hasIUB(alt);
+			// Note: We use 'hasIUBMax()' instead of 'hasIUB()' because large InDels may 
+			// have tons of 'N' bases. In such cases, it is impractical (and useless) to 
+			// produce all possible combinations
+			boolean refIub = expand && IubString.hasIUBMax(ref);
+			boolean altIub = expand && IubString.hasIUBMax(alt);
 
 			// Expand all possible REF / ALT combinations
 			if (!refIub && !altIub) {
