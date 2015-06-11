@@ -638,7 +638,7 @@ public class SnpEff implements CommandLine {
 	 */
 	@Override
 	public void parseArgs(String[] args) {
-		if (args.length <= 0) usage("Missing command");
+		if (args.length <= 0) usage(null);
 
 		int argNum = 0;
 
