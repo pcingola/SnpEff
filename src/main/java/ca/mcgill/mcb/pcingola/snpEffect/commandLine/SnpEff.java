@@ -184,6 +184,8 @@ public class SnpEff implements CommandLine {
 	 * 	Command line argument list (try to fit it into COMMAND_LINE_WIDTH)
 	 */
 	String commandLineStr(boolean splitLines) {
+		if (args == null) return "";
+
 		StringBuilder argsList = new StringBuilder();
 		argsList.append("SnpEff " + command + " ");
 		int size = argsList.length();

@@ -34,6 +34,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.VcfAnnotator;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.eff.MasterEff;
 import ca.mcgill.mcb.pcingola.stats.CountByType;
 import ca.mcgill.mcb.pcingola.stats.VariantEffectStats;
@@ -56,7 +57,7 @@ import freemarker.template.TemplateException;
  *
  * @author Pablo Cingolani
  */
-public class SnpEffCmdEff extends SnpEff {
+public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 	public static final String SUMMARY_TEMPLATE = "snpEff_summary.ftl"; // Summary template file name
 	public static final String SUMMARY_CSV_TEMPLATE = "snpEff_csv_summary.ftl"; // Summary template file name
@@ -101,6 +102,7 @@ public class SnpEffCmdEff extends SnpEff {
 	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
 	List<PedigreeEnrty> pedigree;
 	CountByType errByType, warnByType;
+	OutputFormatter outputFormatter = null;
 	Timer annotateTimer;
 
 	public SnpEffCmdEff() {
@@ -109,15 +111,45 @@ public class SnpEffCmdEff extends SnpEff {
 		inputFile = ""; // variant input file
 		variantEffectResutFilter = new VariantEffectFilter(); // Filter prediction results
 		filterIntervalFiles = new ArrayList<String>(); // Files used for filter intervals
-		filterIntervals = new IntervalForest(); // Filter only variants that match these intervals
 		summaryFile = DEFAULT_SUMMARY_FILE;
 		summaryGenesFile = DEFAULT_SUMMARY_GENES_FILE;
+	}
+
+	@Override
+	public boolean addHeaders(VcfFileIterator vcfFile) {
+		// This is done by VcfOutputFormatter, so there is nothing to do here.
+		return false;
+	}
+
+	/**
+	 * Annotate: Calculate the effect of variants and show results
+	 */
+	public boolean annotate(String inputFile, String outputFile) {
+		// Initialize
+		annotateInit(outputFile);
+
+		// Iterate over input files
+		switch (inputFormat) {
+		case VCF:
+			if (multiThreaded) annotateVcfMulti(inputFile, outputFormatter);
+			else annotateVcf(inputFile);
+			break;
+		default:
+			annotateVariant(inputFile, outputFormatter);
+		}
+		outputFormatter.close();
+
+		// Create reports and finish up
+		boolean err = annotateFinish();
+
+		return !err;
 	}
 
 	/**
 	 * Annotate a VCF entry
 	 */
-	void annotate(VcfEntry vcfEntry, OutputFormatter outputFormatter) {
+	@Override
+	public void annotate(VcfEntry vcfEntry) {
 		boolean printed = false;
 		boolean filteredOut = false;
 		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
@@ -242,70 +274,94 @@ public class SnpEffCmdEff extends SnpEff {
 	}
 
 	/**
-	 * Analyze which comparisons to make in cancer genomes
+	 * Finish annotations and create reports
 	 */
-	Set<Tuple<Integer, Integer>> compareCancerGenotypes(VcfEntry vcfEntry, List<PedigreeEnrty> pedigree) {
-		HashSet<Tuple<Integer, Integer>> comparisons = new HashSet<Tuple<Integer, Integer>>();
+	@Override
+	public boolean annotateFinish() {
+		boolean ok = true;
+		if (createSummary && (summaryFile != null)) {
+			// Creates a summary output file
+			if (verbose) Timer.showStdErr("Creating summary file: " + summaryFile);
+			if (createCsvSummary) ok &= summary(SUMMARY_CSV_TEMPLATE, summaryFile, true);
+			else ok &= summary(SUMMARY_TEMPLATE, summaryFile, false);
 
-		// Find out which comparisons have to be analyzed
-		for (PedigreeEnrty pe : pedigree) {
-			if (pe.isDerived()) {
-				int numOri = pe.getOriginalNum();
-				int numDer = pe.getDerivedNum();
-				VcfGenotype genOri = vcfEntry.getVcfGenotype(numOri);
-				VcfGenotype genDer = vcfEntry.getVcfGenotype(numDer);
-
-				int gd[] = genDer.getGenotype(); // Derived genotype
-				int go[] = genOri.getGenotype(); // Original genotype
-
-				// Skip if one of the genotypes is missing
-				if (gd == null || go == null) continue;
-
-				if (genOri.isPhased() && genDer.isPhased()) {
-					// Phased, we only have two possible comparisons
-					for (int i = 0; i < 2; i++) {
-						// Add comparisons
-						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
-								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
-								&& (gd[i] != go[i]) // Both genotypes are different?
-						) {
-							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
-							comparisons.add(compare);
-						}
-					}
-				} else {
-					// Phased, we only have two possible comparisons
-					for (int d = 0; d < gd.length; d++)
-						for (int o = 0; o < go.length; o++) {
-							// Add comparisons
-							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
-									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
-									&& (gd[d] != go[o]) // Both genotypes are different?
-							) {
-								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
-								comparisons.add(compare);
-							}
-						}
-				}
-			}
+			// Creates genes output file
+			if (verbose) Timer.showStdErr("Creating genes file: " + summaryGenesFile);
+			ok &= summary(SUMMARY_GENES_TEMPLATE, summaryGenesFile, true);
 		}
 
-		return comparisons;
+		if (totalErrs > 0) System.err.println(totalErrs + " errors.");
+		return !ok;
 	}
 
-	public VariantEffectStats getChangeEffectResutStats() {
-		return variantEffectStats;
+	/**
+	 * Calculate the effect of variants and show results
+	 */
+	protected void annotateInit(String outputFile) {
+		snpEffectPredictor = config.getSnpEffectPredictor();
+
+		// Reset all counters
+		totalErrs = 0;
+		countInputLines = countVariants = countEffects = 0; // = countVariantsFilteredOut = 0;
+
+		// Create 'stats' objects
+		variantStats = new VariantStats(config.getGenome());
+		variantEffectStats = new VariantEffectStats(config.getGenome());
+		variantEffectStats.setUseSequenceOntology(useSequenceOntology);
+		vcfStats = new VcfStats();
+
+		//---
+		// Create output formatter
+		//---
+		outputFormatter = null;
+		switch (outputFormat) {
+		case VCF:
+			VcfOutputFormatter vof = new VcfOutputFormatter(vcfEntriesDebug);
+			vof.setFormatVersion(formatVersion);
+			vof.setLossOfFunction(lossOfFunction);
+			vof.setConfig(config);
+			outputFormatter = vof;
+			break;
+		case GATK:
+			outputFormatter = new VcfOutputFormatter(vcfEntriesDebug);
+			((VcfOutputFormatter) outputFormatter).setGatk(true);
+			break;
+		case BED:
+			outputFormatter = new BedOutputFormatter();
+			break;
+		case BEDANN:
+			outputFormatter = new BedAnnotationOutputFormatter();
+			break;
+		default:
+			throw new RuntimeException("Unknown output format '" + outputFormat + "'");
+		}
+
+		outputFormatter.setVersion(VERSION_NO_NAME);
+		outputFormatter.setCommandLineStr(commandLineStr(false));
+		outputFormatter.setChangeEffectResutFilter(variantEffectResutFilter);
+		outputFormatter.setSupressOutput(suppressOutput);
+		outputFormatter.setChrStr(chrStr);
+		outputFormatter.setUseSequenceOntology(useSequenceOntology);
+		outputFormatter.setUseOicr(useOicr);
+		outputFormatter.setUseHgvs(useHgvs);
+		outputFormatter.setUseGeneId(useGeneId);
+		outputFormatter.setOutputFile(outputFile);
 	}
 
-	public VariantStats getvariantStats() {
-		return variantStats;
+	@Override
+	public boolean annotateInit(VcfFileIterator vcfFile) {
+		if (inputFormat != InputFormat.VCF || outputFormat != OutputFormat.VCF) throw new RuntimeException();
+
+		annotateInit((String) null);
+
+		return false;
 	}
 
 	/**
 	 * Iterate on all inputs and calculate effects.
 	 * Note: This is used for all input formats except VCF, which has a different iteration modality
 	 */
-	void iteratevariant(String inputFile, OutputFormatter outputFormatter) {
+	void annotateVariant(String inputFile, OutputFormatter outputFormatter) {
 		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
 
 		// Create an input file iterator
@@ -360,9 +416,7 @@ public class SnpEffCmdEff extends SnpEff {
 	 * Iterate on all inputs (VCF) and calculate effects.
 	 * Note: This is used only on input format VCF, which has a different iteration modality
 	 */
-	void iterateVcf(String inputFile, OutputFormatter outputFormatter) {
-		snpEffectPredictor = config.getSnpEffectPredictor();
-
+	void annotateVcf(String inputFile) {
 		// Open VCF file
 		VcfFileIterator vcfFile = new VcfFileIterator(inputFile, config.getGenome());
 		vcfFile.setDebug(debug);
@@ -375,128 +429,7 @@ public class SnpEffCmdEff extends SnpEff {
 		countVcfEntries = 0;
 		annotateTimer = new Timer();
 		for (VcfEntry vcfEntry : vcfFile) {
-			annotate(vcfEntry, outputFormatter);
-
-			//			boolean printed = false;
-			//			boolean filteredOut = false;
-			//
-			//			try {
-			//				countInputLines++;
-			//				countVcfEntries++;
-			//
-			//				// Find if there is a pedigree and if it has any 'derived' entry
-			//				if (vcfFile.isHeadeSection()) {
-			//					if (cancer) {
-			//						pedigree = readPedigree(vcfFile);
-			//
-			//						// Any 'derived' entry in this pedigree?
-			//						if (pedigree != null) {
-			//							for (PedigreeEnrty pe : pedigree)
-			//								anyCancerSample |= pe.isDerived();
-			//						}
-			//					}
-			//				}
-			//
-			//				// Sample vcf entry
-			//				if (createSummary) vcfStats.sample(vcfEntry);
-			//
-			//				// Skip if there are filter intervals and they are not matched
-			//				if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) {
-			//					filteredOut = true;
-			//					continue;
-			//				}
-			//
-			//				// Create new 'section'
-			//				outputFormatter.startSection(vcfEntry);
-			//
-			//				//---
-			//				// Analyze all changes in this VCF entry
-			//				// Note, this is the standard analysis.
-			//				// Next section deals with cancer: Somatic vs Germline comparisons
-			//				//---
-			//				boolean impact = false; // Does this entry have an impact (other than MODIFIER)?
-			//				List<Variant> variants = vcfEntry.variants();
-			//				for (Variant variant : variants) {
-			//					countVariants++;
-			//					if (verbose && (countVariants % SHOW_EVERY == 0)) {
-			//						int secs = (int) (annotateTimer.elapsed() / 1000);
-			//						int varsPerSec = (int) (countVariants / secs);
-			//						Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
-			//					}
-			//
-			//					// Calculate effects: By default do not annotate non-variant sites
-			//					if (variant.isVariant()) {
-			//						// Perform basic statistics about this variant
-			//						if (createSummary) variantStats.sample(variant);
-			//
-			//						VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
-			//
-			//						// Create new 'section'
-			//						outputFormatter.startSection(variant);
-			//
-			//						// Show results
-			//						for (VariantEffect variantEffect : variantEffects) {
-			//							if (createSummary) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
-			//
-			//							// Any errors or warnings?
-			//							if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
-			//							if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
-			//
-			//							// Does this entry have an impact (other than MODIFIER)?
-			//							impact |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
-			//
-			//							outputFormatter.add(variantEffect);
-			//							countEffects++;
-			//						}
-			//
-			//						// Finish up this section
-			//						outputFormatter.printSection(variant);
-			//					}
-			//				}
-			//
-			//				//---
-			//				// Do we analyze cancer samples?
-			//				// Here we deal with Somatic vs Germline comparisons
-			//				//---
-			//				if (anyCancerSample && impact && vcfEntry.isMultiallelic()) {
-			//					// Calculate all required comparisons
-			//					Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
-			//
-			//					// Analyze each comparison
-			//					for (Tuple<Integer, Integer> comp : comparisons) {
-			//						// We have to compare comp.first vs comp.second
-			//						int altGtNum = comp.first; // comp.first is 'derived' (our new ALT)
-			//						int refGtNum = comp.second; // comp.second is 'original' (our new REF)
-			//
-			//						Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
-			//						Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
-			//						VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
-			//
-			//						// Calculate effects
-			//						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
-			//
-			//						// Create new 'section'
-			//						outputFormatter.startSection(varNonRef);
-			//
-			//						// Show results (note, we don't add these to the statistics)
-			//						for (VariantEffect variantEffect : variantEffects)
-			//							outputFormatter.add(variantEffect);
-			//
-			//						// Finish up this section
-			//						outputFormatter.printSection(varNonRef);
-			//					}
-			//				}
-			//
-			//				// Finish up this section
-			//				outputFormatter.printSection(vcfEntry);
-			//
-			//				printed = true;
-			//			} catch (Throwable t) {
-			//				totalErrs++;
-			//				error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
-			//			} finally {
-			//				if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
-			//			}
+			annotate(vcfEntry);
 		}
 
 		// Empty file? Show at least the header
@@ -516,7 +449,7 @@ public class SnpEffCmdEff extends SnpEff {
 	 * Multi-threaded iteration on VCF inputs and calculates effects.
 	 * Note: This is used only on input format VCF, which has a different iteration modality
 	 */
-	void iterateVcfMulti(String inputFile, final OutputFormatter outputFormatter) {
+	void annotateVcfMulti(String inputFile, final OutputFormatter outputFormatter) {
 		if (verbose) Timer.showStdErr("Running multi-threaded mode (numThreads=" + numWorkers + ").");
 
 		outputFormatter.setShowHeader(false); // Master process takes care of the header (instead of outputFormatter). Otherwise you get the header printed one time per worker.
@@ -545,6 +478,66 @@ public class SnpEffCmdEff extends SnpEff {
 		int batchSize = 10;
 		VcfWorkQueue vcfWorkQueue = new VcfWorkQueue(inputFile, config, batchSize, -1, props);
 		vcfWorkQueue.run(true);
+	}
+
+	/**
+	 * Analyze which comparisons to make in cancer genomes
+	 */
+	Set<Tuple<Integer, Integer>> compareCancerGenotypes(VcfEntry vcfEntry, List<PedigreeEnrty> pedigree) {
+		HashSet<Tuple<Integer, Integer>> comparisons = new HashSet<Tuple<Integer, Integer>>();
+
+		// Find out which comparisons have to be analyzed
+		for (PedigreeEnrty pe : pedigree) {
+			if (pe.isDerived()) {
+				int numOri = pe.getOriginalNum();
+				int numDer = pe.getDerivedNum();
+				VcfGenotype genOri = vcfEntry.getVcfGenotype(numOri);
+				VcfGenotype genDer = vcfEntry.getVcfGenotype(numDer);
+
+				int gd[] = genDer.getGenotype(); // Derived genotype
+				int go[] = genOri.getGenotype(); // Original genotype
+
+				// Skip if one of the genotypes is missing
+				if (gd == null || go == null) continue;
+
+				if (genOri.isPhased() && genDer.isPhased()) {
+					// Phased, we only have two possible comparisons
+					for (int i = 0; i < 2; i++) {
+						// Add comparisons
+						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
+								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
+								&& (gd[i] != go[i]) // Both genotypes are different?
+								) {
+							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
+							comparisons.add(compare);
+						}
+					}
+				} else {
+					// Phased, we only have two possible comparisons
+					for (int d = 0; d < gd.length; d++)
+						for (int o = 0; o < go.length; o++) {
+							// Add comparisons
+							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
+									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
+									&& (gd[d] != go[o]) // Both genotypes are different?
+									) {
+								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
+								comparisons.add(compare);
+							}
+						}
+				}
+			}
+		}
+
+		return comparisons;
+	}
+
+	public VariantEffectStats getChangeEffectResutStats() {
+		return variantEffectStats;
+	}
+
+	public VariantStats getvariantStats() {
+		return variantStats;
 	}
 
 	/**
@@ -770,8 +763,11 @@ public class SnpEffCmdEff extends SnpEff {
 	 */
 	int readFilterIntFile(String intFile) {
 		Markers markers = loadMarkers(intFile);
+
+		if (filterIntervals == null) filterIntervals = new IntervalForest();
 		for (Marker filterInterval : markers)
 			filterIntervals.add(filterInterval);
+
 		return markers.size();
 	}
 
@@ -868,18 +864,18 @@ public class SnpEffCmdEff extends SnpEff {
 		boolean ok = true;
 		if (verbose) Timer.showStdErr("Predicting variants");
 		if (inputFiles == null) {
-			// Single input file (normal operations)
-			ok = runAnalysis(inputFile, null);
+			// Single input file, output to STDOUT (typical usage)
+			ok = annotate(inputFile, null);
 		} else {
-			// Multiple input files
+			// Multiple input and output files
 			for (String inputFile : inputFiles) {
 				String outputFile = outputFile(inputFile);
 				if (verbose) Timer.showStdErr("Analyzing file" //
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-				);
-				ok &= runAnalysis(inputFile, outputFile);
+						);
+				ok &= annotate(inputFile, outputFile);
 			}
 		}
 		if (verbose) Timer.showStdErr("done.");
@@ -887,92 +883,6 @@ public class SnpEffCmdEff extends SnpEff {
 		if (!ok) return null;
 		if (vcfEntriesDebug == null) return new ArrayList<VcfEntry>();
 		return vcfEntriesDebug;
-	}
-
-	/**
-	 * Calculate the effect of variants and show results
-	 */
-	public boolean runAnalysis(String inputFile, String outputFile) {
-		boolean ok = true;
-
-		// Reset all counters
-		totalErrs = 0;
-		countInputLines = countVariants = countEffects = 0; // = countVariantsFilteredOut = 0;
-
-		// Create 'stats' objects
-		variantStats = new VariantStats(config.getGenome());
-		variantEffectStats = new VariantEffectStats(config.getGenome());
-		variantEffectStats.setUseSequenceOntology(useSequenceOntology);
-		vcfStats = new VcfStats();
-
-		int totalErrs = 0;
-
-		//---
-		// Create output formatter
-		//---
-		OutputFormatter outputFormatter = null;
-		switch (outputFormat) {
-		case VCF:
-			VcfOutputFormatter vof = new VcfOutputFormatter(vcfEntriesDebug);
-			vof.setFormatVersion(formatVersion);
-			vof.setLossOfFunction(lossOfFunction);
-			vof.setConfig(config);
-			outputFormatter = vof;
-			break;
-		case GATK:
-			outputFormatter = new VcfOutputFormatter(vcfEntriesDebug);
-			((VcfOutputFormatter) outputFormatter).setGatk(true);
-			break;
-		case BED:
-			outputFormatter = new BedOutputFormatter();
-			break;
-		case BEDANN:
-			outputFormatter = new BedAnnotationOutputFormatter();
-			break;
-		default:
-			throw new RuntimeException("Unknown output format '" + outputFormat + "'");
-		}
-
-		outputFormatter.setVersion(VERSION_NO_NAME);
-		outputFormatter.setCommandLineStr(commandLineStr(false));
-		outputFormatter.setChangeEffectResutFilter(variantEffectResutFilter);
-		outputFormatter.setSupressOutput(suppressOutput);
-		outputFormatter.setChrStr(chrStr);
-		outputFormatter.setUseSequenceOntology(useSequenceOntology);
-		outputFormatter.setUseOicr(useOicr);
-		outputFormatter.setUseHgvs(useHgvs);
-		outputFormatter.setUseGeneId(useGeneId);
-		outputFormatter.setOutputFile(outputFile);
-
-		//---
-		// Iterate over all changes
-		//---
-		switch (inputFormat) {
-		case VCF:
-			if (multiThreaded) iterateVcfMulti(inputFile, outputFormatter);
-			else iterateVcf(inputFile, outputFormatter);
-			break;
-		default:
-			iteratevariant(inputFile, outputFormatter);
-		}
-		outputFormatter.close();
-
-		//---
-		// Create reports
-		//---
-		if (createSummary && (summaryFile != null)) {
-			// Creates a summary output file
-			if (verbose) Timer.showStdErr("Creating summary file: " + summaryFile);
-			if (createCsvSummary) ok &= summary(SUMMARY_CSV_TEMPLATE, summaryFile, true);
-			else ok &= summary(SUMMARY_TEMPLATE, summaryFile, false);
-
-			// Creates genes output file
-			if (verbose) Timer.showStdErr("Creating genes file: " + summaryGenesFile);
-			ok &= summary(SUMMARY_GENES_TEMPLATE, summaryGenesFile, true);
-		}
-
-		if (totalErrs > 0) System.err.println(totalErrs + " errors.");
-		return ok;
 	}
 
 	public void setFormatVersion(EffFormatVersion formatVersion) {

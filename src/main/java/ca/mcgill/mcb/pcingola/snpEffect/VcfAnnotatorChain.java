@@ -5,17 +5,16 @@ import java.util.List;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
-import ca.mcgill.mcb.pcingola.vcf.VcfHeader;
 
 /**
  * Maintains a list of VcfAnnotators and applies them one by one
  * in the specified order
  */
-public class VcfChainAnnotator implements VcfAnnotator {
+public class VcfAnnotatorChain implements VcfAnnotator {
 
 	List<VcfAnnotator> annotators;
 
-	public VcfChainAnnotator() {
+	public VcfAnnotatorChain() {
 		annotators = new LinkedList<>();
 	}
 
@@ -27,31 +26,39 @@ public class VcfChainAnnotator implements VcfAnnotator {
 	}
 
 	@Override
+	public boolean addHeaders(VcfFileIterator vcfFile) {
+		boolean error = false;
+
+		for (VcfAnnotator vcfAnnotator : annotators)
+			error |= vcfAnnotator.addHeaders(vcfFile);
+
+		return error;
+	}
+
+	@Override
 	public void annotate(VcfEntry vcfEntry) {
 		for (VcfAnnotator vcfAnnotator : annotators)
 			vcfAnnotator.annotate(vcfEntry);
 	}
 
 	@Override
-	public void finishAnnotate() {
+	public boolean annotateFinish() {
+		boolean error = false;
+
 		for (VcfAnnotator vcfAnnotator : annotators)
-			vcfAnnotator.finishAnnotate();
+			error |= vcfAnnotator.annotateFinish();
+
+		return error;
 	}
 
 	@Override
-	public List<VcfHeader> header() {
-		List<VcfHeader> headers = new LinkedList<>();
+	public boolean annotateInit(VcfFileIterator vcfFile) {
+		boolean error = false;
 
 		for (VcfAnnotator vcfAnnotator : annotators)
-			headers.addAll(vcfAnnotator.header());
+			error |= vcfAnnotator.annotateInit(vcfFile);
 
-		return headers;
-	}
-
-	@Override
-	public void initAnnotate(VcfFileIterator vcfFile) {
-		for (VcfAnnotator vcfAnnotator : annotators)
-			vcfAnnotator.initAnnotate(vcfFile);
+		return error;
 	}
 
 }

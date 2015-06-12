@@ -1,10 +1,7 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
-import java.util.List;
-
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
-import ca.mcgill.mcb.pcingola.vcf.VcfHeader;
 
 /**
  * Annotate a VCF file: E.g. add information to INFO column
@@ -13,7 +10,16 @@ import ca.mcgill.mcb.pcingola.vcf.VcfHeader;
 public interface VcfAnnotator {
 
 	/**
+	 * Add annotation headers to VCF file
+	 *
+	 * @return true if OK, false on error
+	 */
+	public boolean addHeaders(VcfFileIterator vcfFile);
+
+	/**
 	 * Annotate a VCF file entry
+	 *
+	 * @return true if OK, false on error
 	 */
 	public void annotate(VcfEntry vcfEntry);
 
@@ -21,20 +27,19 @@ public interface VcfAnnotator {
 	 * This method is called after all annotations have been performed.
 	 * The vcfFile might have already been closed by this time
 	 * (i.e. the VcfFileIterator reached the end).
+	 *
+	 * @return true if OK, false on error
 	 */
-	public void finishAnnotate();
-
-	/**
-	 * Provide a list of header lines to be added to annotated VCF header
-	 */
-	public List<VcfHeader> header();
+	public boolean annotateFinish();
 
 	/**
 	 * Initialize annotator: This method is called after vcfFile
 	 * is opened, but before the header is output.
 	 * The first vcfEntry might have (and often has) already been
 	 * read from the file.
+	 *
+	 * @return true if OK, false on error
 	 */
-	public void initAnnotate(VcfFileIterator vcfFile);
+	public boolean annotateInit(VcfFileIterator vcfFile);
 
 }
