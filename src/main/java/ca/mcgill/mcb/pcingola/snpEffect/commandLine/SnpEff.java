@@ -64,6 +64,7 @@ public class SnpEff implements CommandLine {
 		VCF, BED, BEDANN, GATK
 	}
 
+	public static final String DEFAULT_COMMAND = "ann";
 	public static final int COMMAND_LINE_WIDTH = 40;
 
 	// Version info
@@ -225,6 +226,10 @@ public class SnpEff implements CommandLine {
 
 	public Config getConfig() {
 		return config;
+	}
+
+	public String getConfigFile() {
+		return configFile;
 	}
 
 	public String getOutput() {
@@ -638,6 +643,11 @@ public class SnpEff implements CommandLine {
 	 */
 	@Override
 	public void parseArgs(String[] args) {
+		if (args == null) {
+			command = DEFAULT_COMMAND;
+			return;
+		}
+
 		if (args.length <= 0) usage(null);
 
 		int argNum = 0;
@@ -755,7 +765,7 @@ public class SnpEff implements CommandLine {
 
 		shiftArgs = argsList.toArray(new String[0]);
 
-		if (command.isEmpty()) command = "ann"; // Default command is 'ann'
+		if (command.isEmpty()) command = DEFAULT_COMMAND; // Default command is 'ann'
 
 		// Show version and command
 		if (!help && (verbose || debug)) {
@@ -841,6 +851,10 @@ public class SnpEff implements CommandLine {
 
 	public void setConfig(Config config) {
 		this.config = config;
+	}
+
+	public void setConfigFile(String configFile) {
+		this.configFile = configFile;
 	}
 
 	public void setDebug(boolean debug) {

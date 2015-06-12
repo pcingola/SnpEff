@@ -68,6 +68,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 	public static final int SHOW_EVERY = 10 * 1000;
 
+	boolean anyCancerSample;
 	boolean cancer = false; // Perform cancer comparisons
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
 	boolean createCsvSummary = false; // Use a CSV as output summary
@@ -79,6 +80,7 @@ public class SnpEffCmdEff extends SnpEff {
 	boolean useOicr = false; // Use OICR tag
 	boolean useSequenceOntology = true; // Use Sequence Ontology terms
 	int totalErrs = 0;
+	int countVcfEntries = 0;
 	long countInputLines = 0, countVariants = 0, countEffects = 0; // , countVariantsFilteredOut = 0;
 	String cancerSamples = null;
 	String chrStr = "";
@@ -93,9 +95,13 @@ public class SnpEffCmdEff extends SnpEff {
 	IntervalForest filterIntervals; // Filter only variants that match these intervals
 	VariantStats variantStats;
 	VariantEffectStats variantEffectStats;
+	SnpEffectPredictor snpEffectPredictor;
 	VcfStats vcfStats;
 	List<VcfEntry> vcfEntriesDebug = null; // Use for debugging or testing (in some test-cases)
 	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
+	List<PedigreeEnrty> pedigree;
+	CountByType errByType, warnByType;
+	Timer annotateTimer;
 
 	public SnpEffCmdEff() {
 		super();
@@ -106,6 +112,133 @@ public class SnpEffCmdEff extends SnpEff {
 		filterIntervals = new IntervalForest(); // Filter only variants that match these intervals
 		summaryFile = DEFAULT_SUMMARY_FILE;
 		summaryGenesFile = DEFAULT_SUMMARY_GENES_FILE;
+	}
+
+	/**
+	 * Annotate a VCF entry
+	 */
+	void annotate(VcfEntry vcfEntry, OutputFormatter outputFormatter) {
+		boolean printed = false;
+		boolean filteredOut = false;
+		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
+
+		try {
+			countInputLines++;
+			countVcfEntries++;
+
+			// Find if there is a pedigree and if it has any 'derived' entry
+			if (vcfFile.isHeadeSection()) {
+				if (cancer) {
+					pedigree = readPedigree(vcfFile);
+
+					// Any 'derived' entry in this pedigree?
+					if (pedigree != null) {
+						for (PedigreeEnrty pe : pedigree)
+							anyCancerSample |= pe.isDerived();
+					}
+				}
+			}
+
+			// Sample vcf entry
+			if (createSummary) vcfStats.sample(vcfEntry);
+
+			// Skip if there are filter intervals and they are not matched
+			if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) {
+				filteredOut = true;
+				return;
+			}
+
+			// Create new 'section'
+			outputFormatter.startSection(vcfEntry);
+
+			//---
+			// Analyze all changes in this VCF entry
+			// Note, this is the standard analysis.
+			// Next section deals with cancer: Somatic vs Germline comparisons
+			//---
+			boolean impact = false; // Does this entry have an impact (other than MODIFIER)?
+			List<Variant> variants = vcfEntry.variants();
+			for (Variant variant : variants) {
+				countVariants++;
+				if (verbose && (countVariants % SHOW_EVERY == 0)) {
+					int secs = (int) (annotateTimer.elapsed() / 1000);
+					int varsPerSec = (int) (countVariants / secs);
+					Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
+				}
+
+				// Calculate effects: By default do not annotate non-variant sites
+				if (variant.isVariant()) {
+					// Perform basic statistics about this variant
+					if (createSummary) variantStats.sample(variant);
+
+					VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
+
+					// Create new 'section'
+					outputFormatter.startSection(variant);
+
+					// Show results
+					for (VariantEffect variantEffect : variantEffects) {
+						if (createSummary) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
+
+						// Any errors or warnings?
+						if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
+						if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
+
+						// Does this entry have an impact (other than MODIFIER)?
+						impact |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
+
+						outputFormatter.add(variantEffect);
+						countEffects++;
+					}
+
+					// Finish up this section
+					outputFormatter.printSection(variant);
+				}
+			}
+
+			//---
+			// Do we analyze cancer samples?
+			// Here we deal with Somatic vs Germline comparisons
+			//---
+			if (anyCancerSample && impact && vcfEntry.isMultiallelic()) {
+				// Calculate all required comparisons
+				Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
+
+				// Analyze each comparison
+				for (Tuple<Integer, Integer> comp : comparisons) {
+					// We have to compare comp.first vs comp.second
+					int altGtNum = comp.first; // comp.first is 'derived' (our new ALT)
+					int refGtNum = comp.second; // comp.second is 'original' (our new REF)
+
+					Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
+					Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
+					VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
+
+					// Calculate effects
+					VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
+
+					// Create new 'section'
+					outputFormatter.startSection(varNonRef);
+
+					// Show results (note, we don't add these to the statistics)
+					for (VariantEffect variantEffect : variantEffects)
+						outputFormatter.add(variantEffect);
+
+					// Finish up this section
+					outputFormatter.printSection(varNonRef);
+				}
+			}
+
+			// Finish up this section
+			outputFormatter.printSection(vcfEntry);
+
+			printed = true;
+		} catch (Throwable t) {
+			totalErrs++;
+			error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
+		} finally {
+			if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
+		}
 	}
 
 	/**
@@ -135,7 +268,7 @@ public class SnpEffCmdEff extends SnpEff {
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
-								) {
+						) {
 							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
@@ -148,7 +281,7 @@ public class SnpEffCmdEff extends SnpEff {
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
-									) {
+							) {
 								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
@@ -228,139 +361,142 @@ public class SnpEffCmdEff extends SnpEff {
 	 * Note: This is used only on input format VCF, which has a different iteration modality
 	 */
 	void iterateVcf(String inputFile, OutputFormatter outputFormatter) {
-		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
+		snpEffectPredictor = config.getSnpEffectPredictor();
 
 		// Open VCF file
 		VcfFileIterator vcfFile = new VcfFileIterator(inputFile, config.getGenome());
 		vcfFile.setDebug(debug);
-		boolean anyCancerSample = false;
-		List<PedigreeEnrty> pedigree = null;
-		CountByType errByType = new CountByType(), warnByType = new CountByType();
+		anyCancerSample = false;
+		pedigree = null;
+		errByType = new CountByType();
+		warnByType = new CountByType();
 
 		// Iterate over VCF entries
-		int countVcfEntries = 0;
-		Timer annotateTimer = new Timer();
+		countVcfEntries = 0;
+		annotateTimer = new Timer();
 		for (VcfEntry vcfEntry : vcfFile) {
-			boolean printed = false;
-			boolean filteredOut = false;
+			annotate(vcfEntry, outputFormatter);
 
-			try {
-				countInputLines++;
-				countVcfEntries++;
-
-				// Find if there is a pedigree and if it has any 'derived' entry
-				if (vcfFile.isHeadeSection()) {
-					if (cancer) {
-						pedigree = readPedigree(vcfFile);
-
-						// Any 'derived' entry in this pedigree?
-						if (pedigree != null) {
-							for (PedigreeEnrty pe : pedigree)
-								anyCancerSample |= pe.isDerived();
-						}
-					}
-				}
-
-				// Sample vcf entry
-				if (createSummary) vcfStats.sample(vcfEntry);
-
-				// Skip if there are filter intervals and they are not matched
-				if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) {
-					filteredOut = true;
-					continue;
-				}
-
-				// Create new 'section'
-				outputFormatter.startSection(vcfEntry);
-
-				//---
-				// Analyze all changes in this VCF entry
-				// Note, this is the standard analysis.
-				// Next section deals with cancer: Somatic vs Germline comparisons
-				//---
-				boolean impact = false; // Does this entry have an impact (other than MODIFIER)?
-				List<Variant> variants = vcfEntry.variants();
-				for (Variant variant : variants) {
-					countVariants++;
-					if (verbose && (countVariants % SHOW_EVERY == 0)) {
-						int secs = (int) (annotateTimer.elapsed() / 1000);
-						int varsPerSec = (int) (countVariants / secs);
-						Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
-					}
-
-					// Calculate effects: By default do not annotate non-variant sites
-					if (variant.isVariant()) {
-						// Perform basic statistics about this variant
-						if (createSummary) variantStats.sample(variant);
-
-						VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
-
-						// Create new 'section'
-						outputFormatter.startSection(variant);
-
-						// Show results
-						for (VariantEffect variantEffect : variantEffects) {
-							if (createSummary) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
-
-							// Any errors or warnings?
-							if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
-							if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
-
-							// Does this entry have an impact (other than MODIFIER)?
-							impact |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
-
-							outputFormatter.add(variantEffect);
-							countEffects++;
-						}
-
-						// Finish up this section
-						outputFormatter.printSection(variant);
-					}
-				}
-
-				//---
-				// Do we analyze cancer samples?
-				// Here we deal with Somatic vs Germline comparisons
-				//---
-				if (anyCancerSample && impact && vcfEntry.isMultiallelic()) {
-					// Calculate all required comparisons
-					Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
-
-					// Analyze each comparison
-					for (Tuple<Integer, Integer> comp : comparisons) {
-						// We have to compare comp.first vs comp.second
-						int altGtNum = comp.first; // comp.first is 'derived' (our new ALT)
-						int refGtNum = comp.second; // comp.second is 'original' (our new REF)
-
-						Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
-						Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
-						VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
-
-						// Calculate effects
-						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
-
-						// Create new 'section'
-						outputFormatter.startSection(varNonRef);
-
-						// Show results (note, we don't add these to the statistics)
-						for (VariantEffect variantEffect : variantEffects)
-							outputFormatter.add(variantEffect);
-
-						// Finish up this section
-						outputFormatter.printSection(varNonRef);
-					}
-				}
-
-				// Finish up this section
-				outputFormatter.printSection(vcfEntry);
-
-				printed = true;
-			} catch (Throwable t) {
-				totalErrs++;
-				error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
-			} finally {
-				if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
-			}
+			//			boolean printed = false;
+			//			boolean filteredOut = false;
+			//
+			//			try {
+			//				countInputLines++;
+			//				countVcfEntries++;
+			//
+			//				// Find if there is a pedigree and if it has any 'derived' entry
+			//				if (vcfFile.isHeadeSection()) {
+			//					if (cancer) {
+			//						pedigree = readPedigree(vcfFile);
+			//
+			//						// Any 'derived' entry in this pedigree?
+			//						if (pedigree != null) {
+			//							for (PedigreeEnrty pe : pedigree)
+			//								anyCancerSample |= pe.isDerived();
+			//						}
+			//					}
+			//				}
+			//
+			//				// Sample vcf entry
+			//				if (createSummary) vcfStats.sample(vcfEntry);
+			//
+			//				// Skip if there are filter intervals and they are not matched
+			//				if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) {
+			//					filteredOut = true;
+			//					continue;
+			//				}
+			//
+			//				// Create new 'section'
+			//				outputFormatter.startSection(vcfEntry);
+			//
+			//				//---
+			//				// Analyze all changes in this VCF entry
+			//				// Note, this is the standard analysis.
+			//				// Next section deals with cancer: Somatic vs Germline comparisons
+			//				//---
+			//				boolean impact = false; // Does this entry have an impact (other than MODIFIER)?
+			//				List<Variant> variants = vcfEntry.variants();
+			//				for (Variant variant : variants) {
+			//					countVariants++;
+			//					if (verbose && (countVariants % SHOW_EVERY == 0)) {
+			//						int secs = (int) (annotateTimer.elapsed() / 1000);
+			//						int varsPerSec = (int) (countVariants / secs);
+			//						Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
+			//					}
+			//
+			//					// Calculate effects: By default do not annotate non-variant sites
+			//					if (variant.isVariant()) {
+			//						// Perform basic statistics about this variant
+			//						if (createSummary) variantStats.sample(variant);
+			//
+			//						VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
+			//
+			//						// Create new 'section'
+			//						outputFormatter.startSection(variant);
+			//
+			//						// Show results
+			//						for (VariantEffect variantEffect : variantEffects) {
+			//							if (createSummary) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
+			//
+			//							// Any errors or warnings?
+			//							if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
+			//							if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
+			//
+			//							// Does this entry have an impact (other than MODIFIER)?
+			//							impact |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
+			//
+			//							outputFormatter.add(variantEffect);
+			//							countEffects++;
+			//						}
+			//
+			//						// Finish up this section
+			//						outputFormatter.printSection(variant);
+			//					}
+			//				}
+			//
+			//				//---
+			//				// Do we analyze cancer samples?
+			//				// Here we deal with Somatic vs Germline comparisons
+			//				//---
+			//				if (anyCancerSample && impact && vcfEntry.isMultiallelic()) {
+			//					// Calculate all required comparisons
+			//					Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
+			//
+			//					// Analyze each comparison
+			//					for (Tuple<Integer, Integer> comp : comparisons) {
+			//						// We have to compare comp.first vs comp.second
+			//						int altGtNum = comp.first; // comp.first is 'derived' (our new ALT)
+			//						int refGtNum = comp.second; // comp.second is 'original' (our new REF)
+			//
+			//						Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
+			//						Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
+			//						VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
+			//
+			//						// Calculate effects
+			//						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
+			//
+			//						// Create new 'section'
+			//						outputFormatter.startSection(varNonRef);
+			//
+			//						// Show results (note, we don't add these to the statistics)
+			//						for (VariantEffect variantEffect : variantEffects)
+			//							outputFormatter.add(variantEffect);
+			//
+			//						// Finish up this section
+			//						outputFormatter.printSection(varNonRef);
+			//					}
+			//				}
+			//
+			//				// Finish up this section
+			//				outputFormatter.printSection(vcfEntry);
+			//
+			//				printed = true;
+			//			} catch (Throwable t) {
+			//				totalErrs++;
+			//				error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
+			//			} finally {
+			//				if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
+			//			}
 		}
 
 		// Empty file? Show at least the header
@@ -458,6 +594,8 @@ public class SnpEffCmdEff extends SnpEff {
 	 */
 	@Override
 	public void parseArgs(String[] args) {
+		if (args == null) return;
+
 		boolean isFileList = false;
 		this.args = args;
 
@@ -702,7 +840,7 @@ public class SnpEffCmdEff extends SnpEff {
 		loadConfig(); // Read config file
 		loadDb(); // Load database
 
-		// Set some configuraion options
+		// Set some configuration options
 		config.setShiftHgvs(useHgvs && shiftHgvs);
 
 		// Check if we can open the input file (no need to check if it is STDIN)
@@ -740,7 +878,7 @@ public class SnpEffCmdEff extends SnpEff {
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
 						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-						);
+				);
 				ok &= runAnalysis(inputFile, outputFile);
 			}
 		}
