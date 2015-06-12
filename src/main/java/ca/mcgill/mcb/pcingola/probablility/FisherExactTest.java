@@ -2,8 +2,6 @@ package ca.mcgill.mcb.pcingola.probablility;
 
 import org.apache.commons.math3.special.Gamma;
 
-import flanagan.analysis.Stat;
-
 /**
  *
  * Calculate Fisher's exact test (based on hypergeometric distribution)
@@ -120,7 +118,7 @@ public class FisherExactTest {
 	 */
 	public double chiSquareCDF(double chiSquare, int nu) {
 		if (nu <= 0) throw new IllegalArgumentException("The degrees of freedom [nu], " + nu + ", must be greater than zero");
-		return Stat.incompleteGamma(nu / 2.0D, chiSquare / 2.0D);
+		return Gamma.regularizedGammaP(nu / 2.0D, chiSquare / 2.0D);
 	}
 
 	/**
