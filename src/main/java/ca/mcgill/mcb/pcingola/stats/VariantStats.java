@@ -45,6 +45,7 @@ public class VariantStats implements SamplingStats<Variant> {
 	void chromoStats(Variant variant) {
 		String chrName = variant.getChromosomeName();
 		ChrPosStats chrPosStats = chrPosStatsbyName.get(chrName);
+
 		// No stats? => Create a new one
 		if (chrPosStats == null) {
 			Chromosome chr = genome.getChromosome(chrName);
@@ -55,7 +56,7 @@ public class VariantStats implements SamplingStats<Variant> {
 		}
 
 		// Perform stats
-		chrPosStats.sample(variant.getStart());
+		if (chrPosStats != null) chrPosStats.sample(variant.getStart());
 	}
 
 	public char[] getBases() {
@@ -249,8 +250,8 @@ public class VariantStats implements SamplingStats<Variant> {
 		if ((variant.getId() != null) && !variant.getId().isEmpty()) countNonEmptyId++;
 
 		// Count by change type
-		String changeType = variant.getVariantType().toString();
-		countByChangeType.inc(changeType); // Each type of changes
+		String variantType = variant.getVariantType().toString();
+		countByChangeType.inc(variantType); // Each type of changes
 
 		// SNP stats or InDel stats
 		if (variant.isVariant()) {

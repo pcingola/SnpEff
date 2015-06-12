@@ -3,18 +3,17 @@ package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import ca.mcgill.mcb.pcingola.Pcingola;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Custom;
-import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
-import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.logStatsServer.LogStats;
@@ -69,9 +68,9 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "e";
-	public static final String BUILD = "2014-09-13";
-	public static final String VERSION_MAJOR = "4.0";
+	public static final String REVISION = "h";
+	public static final String BUILD = "2015-06-11";
+	public static final String VERSION_MAJOR = "4.1";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
 	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_NO_NAME;
@@ -92,6 +91,7 @@ public class SnpEff implements CommandLine {
 	protected boolean onlyProtein = false; // Only use protein coding transcripts
 	protected boolean onlyRegulation = false; // Only build regulation tracks
 	protected boolean quiet; // Be quiet
+	protected boolean shiftHgvs = true; // Shift variants towards the 3-prime end of the transcript
 	protected boolean strict = false; // Only use transcript that have been validated
 	protected boolean saveOutput = false; // Save output to buffer (instead of printing it to STDOUT)
 	protected boolean suppressOutput = false; // Only used for debugging purposes
@@ -99,6 +99,9 @@ public class SnpEff implements CommandLine {
 	protected Boolean treatAllAsProteinCoding = null; // Only use coding genes. Default is 'null' which means 'auto'
 	protected int numWorkers = Gpr.NUM_CORES; // Max number of threads (if multi-threaded version is available)
 	protected int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE; // Splice site size default: 2 bases (canonical splice site)
+	protected int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
+	protected int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
+	protected int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
 	protected int upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH; // Upstream & downstream interval length
 	protected String configFile; // Config file
 	protected String dataDir; // Override data_dir in config file
@@ -111,6 +114,7 @@ public class SnpEff implements CommandLine {
 	protected ArrayList<String> customIntervalFiles; // Custom interval files (bed)
 	protected ArrayList<String> filterIntervalFiles;// Files used for filter intervals
 	protected HashSet<String> regulationTracks = new HashSet<String>();
+	protected Map<String, String> configOverride = new HashMap<>();
 
 	/**
 	 * Main
@@ -150,6 +154,10 @@ public class SnpEff implements CommandLine {
 		customIntervalFiles = new ArrayList<String>(); // Custom interval files
 
 		this.args = args;
+	}
+
+	public void addRegulationTrack(String cellType) {
+		regulationTracks.add(cellType);
 	}
 
 	/**
@@ -199,14 +207,14 @@ public class SnpEff implements CommandLine {
 	 */
 	public void error(Throwable e, String message) {
 		if (verbose && (e != null)) e.printStackTrace();
-		if (!quiet) System.err.println(message);
+		if (!quiet) System.err.println("Error: " + message);
 	}
 
 	/**
 	 * Show an error message and exit
 	 */
 	public void fatalError(String message) {
-		System.err.println(message);
+		System.err.println("Fatal error: " + message);
 		System.exit(-1);
 	}
 
@@ -230,6 +238,11 @@ public class SnpEff implements CommandLine {
 		return arg.startsWith("-") && (arg.length() > 1);
 	}
 
+	public void load() {
+		loadConfig(); // Read config file
+		loadDb(); // Load database
+	}
+
 	/**
 	 * Read config file
 	 */
@@ -242,7 +255,7 @@ public class SnpEff implements CommandLine {
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
 			);
 
-		config = new Config(genomeVer, configFile, dataDir); // Read configuration
+		config = new Config(genomeVer, configFile, dataDir, configOverride); // Read configuration
 		if (verbose) Timer.showStdErr("done");
 
 		// Set some parameters
@@ -270,7 +283,7 @@ public class SnpEff implements CommandLine {
 	public void loadDb() {
 		if (config.getSnpEffectPredictor() != null) {
 			genome = config.getSnpEffectPredictor().getGenome();
-			return; // Already loaded?
+			return; // Already loaded
 		}
 
 		// Read database (or create a new one)
@@ -278,6 +291,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) Timer.showStdErr("Creating empty database (no genome).");
 			SnpEffectPredictor snpEffectPredictor = new SnpEffectPredictor(new Genome());
 			config.setSnpEffectPredictor(snpEffectPredictor);
+			config.setErrorOnMissingChromo(false); // All chromosome will be missing (no genome)
 			config.setErrorChromoHit(false); // We don't have chromosomes, so we de-activate this error.
 		} else if (onlyRegulation) {
 			// Create predictor
@@ -302,6 +316,7 @@ public class SnpEff implements CommandLine {
 			}
 
 			config.loadSnpEffectPredictor(); // Read snpEffect predictor
+			genome = config.getSnpEffectPredictor().getGenome();
 			if (verbose) Timer.showStdErr("done");
 		}
 
@@ -329,8 +344,14 @@ public class SnpEff implements CommandLine {
 		// Set upstream-downstream interval length
 		config.getSnpEffectPredictor().setUpDownStreamLength(upDownStreamLength);
 
-		// Set splice site size
+		// Set splice site/region sizes
 		config.getSnpEffectPredictor().setSpliceSiteSize(spliceSiteSize);
+		config.getSnpEffectPredictor().setSpliceRegionExonSize(spliceRegionExonSize);
+		config.getSnpEffectPredictor().setSpliceRegionIntronMin(spliceRegionIntronMin);
+		config.getSnpEffectPredictor().setSpliceRegionIntronMax(spliceRegionIntronMax);
+
+		// Set upstream-downstream interval length
+		config.setShiftHgvs(shiftHgvs);
 
 		// Filter canonical transcripts
 		if (canonical) {
@@ -354,7 +375,9 @@ public class SnpEff implements CommandLine {
 		// Filter verified transcripts
 		if (strict) {
 			if (verbose) Timer.showStdErr("Filtering out non-verified transcripts.");
-			config.getSnpEffectPredictor().removeUnverified();
+			if (config.getSnpEffectPredictor().removeUnverified()) {
+				fatalError("All transcripts have been removed form every single gene!\nUsing strickt on this database leaves no information.");
+			}
 			if (verbose) Timer.showStdErr("done.");
 		}
 
@@ -398,6 +421,7 @@ public class SnpEff implements CommandLine {
 		}
 
 		genome = config.getSnpEffectPredictor().getGenome();
+		genome.getGenomicSequences().setVerbose(verbose);
 	}
 
 	/**
@@ -459,7 +483,7 @@ public class SnpEff implements CommandLine {
 		//---
 		if (verbose) Timer.showStdErr("\tLoading Motifs from file '" + motifBinFileName + "'");
 
-		MarkerSerializer markerSerializer = new MarkerSerializer();
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
 		Markers motifsDb = markerSerializer.load(motifBinFileName);
 
 		// Add (only) motif markers. The original motifs has to be serialized with Chromosomes, Genomes and other markers (otherwise it could have not been saved)
@@ -498,7 +522,7 @@ public class SnpEff implements CommandLine {
 		}
 		if (verbose) Timer.showStdErr("Reading NextProt database from file '" + nextProtBinFile + "'");
 
-		MarkerSerializer markerSerializer = new MarkerSerializer();
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
 		Markers nextProtDb = markerSerializer.load(nextProtBinFile);
 
 		// Create a collection of (only) NextProt markers. The original nextProtDb has Chromosomes, Genomes and other markers (otherwise it could have not been saved)
@@ -527,29 +551,40 @@ public class SnpEff implements CommandLine {
 				snpEffectPredictor.add(np);
 		} else {
 			// Find the corresponding transcript for each nextProt marker
-			// WARNING: The transcripts might be filtered out by the user (e.g. '-cannon' command line option or user defined sets).
-			//          We only keep nextProt markers associated to found transcripts. All others are discarded (the user doesn't want that info).
+			// WARNING: The transcripts might be filtered out by the user
+			//          (e.g. '-cannon' command line option or user defined
+			//          sets). We only keep nextProt markers associated to found
+			//          transcripts. All others are discarded (the user doesn't
+			//          want that info).
 			ArrayList<NextProt> nextProtsToAdd = new ArrayList<NextProt>();
 			for (NextProt np : nextProts) {
 				Transcript tr = trs.get(np.getTranscriptId());
 
 				// Found transcript, now try to find an exon
 				if (tr != null) {
-					boolean assignedToExon = false;
-					for (Exon ex : tr) {
-						if (ex.intersects(np)) {
-							NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon
-							npEx.setParent(ex);
-							nextProtsToAdd.add(npEx);
-							assignedToExon = true;
-						}
-					}
+					np.setParent(tr); // Set this transcript as parent
+					nextProtsToAdd.add(np);
 
-					// Not assigned to an exon? Add transcript info
-					if (!assignedToExon) {
-						np.setParent(tr); // Set this transcript as parent
-						nextProtsToAdd.add(np);
-					}
+					//---
+					// We used to assign nextProt to all exons, we don't do this
+					// any more, it inflates the out with useless information
+					//---
+
+					//					boolean assignedToExon = false;
+					//					for (Exon ex : tr) {
+					//						if (ex.intersects(np)) {
+					//							NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon
+					//							npEx.setParent(ex);
+					//							nextProtsToAdd.add(npEx);
+					//							assignedToExon = true;
+					//						}
+					//					}
+					//
+					//					// Not assigned to an exon? Add transcript info
+					//					if (!assignedToExon) {
+					//					np.setParent(tr); // Set this transcript as parent
+					//					nextProtsToAdd.add(np);
+					//					}
 				}
 			}
 
@@ -566,37 +601,35 @@ public class SnpEff implements CommandLine {
 	/**
 	 * Read regulation track and update SnpEffectPredictor
 	 */
-	@SuppressWarnings("unchecked")
 	void loadRegulationTrack(String regTrack) {
 		//---
 		// Read file
 		//---
 		if (verbose) Timer.showStdErr("Reading regulation track '" + regTrack + "'");
 		String regFile = config.getDirDataVersion() + "/regulation_" + regTrack + ".bin";
-		ArrayList<Regulation> regulation = (ArrayList<Regulation>) Gpr.readFileSerializedGz(regFile);
+		Markers regulation = new Markers();
+		regulation.load(regFile, genome);
 
 		//---
 		// Are all chromosomes available?
 		//---
 		Genome genome = config.getGenome();
 		HashMap<String, Integer> chrs = new HashMap<String, Integer>();
-		for (Regulation r : regulation) {
+		for (Marker r : regulation) {
 			String chr = r.getChromosomeName();
 			int max = chrs.containsKey(chr) ? chrs.get(chr) : 0;
 			max = Math.max(max, r.getEnd());
 			chrs.put(chr, max);
 		}
 
-		// Add all chromos
+		// Add all chromosomes
 		for (String chr : chrs.keySet())
 			if (genome.getChromosome(chr) == null) genome.add(new Chromosome(genome, 0, chrs.get(chr), chr));
 
 		//---
 		// Add all markers to predictor
 		//---
-		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
-		for (Regulation r : regulation)
-			snpEffectPredictor.add(r);
+		config.getSnpEffectPredictor().addAll(regulation);
 	}
 
 	/**
@@ -605,7 +638,7 @@ public class SnpEff implements CommandLine {
 	 */
 	@Override
 	public void parseArgs(String[] args) {
-		if (args.length <= 0) usage("Missing command");
+		if (args.length <= 0) usage(null);
 
 		int argNum = 0;
 
@@ -617,6 +650,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("dump") //
 				|| args[0].equalsIgnoreCase("cds") //
 				|| args[0].equalsIgnoreCase("eff") //
+				|| args[0].equalsIgnoreCase("ann") // Annotate: just another way to say 'eff'
 				|| args[0].equalsIgnoreCase("download") //
 				|| args[0].equalsIgnoreCase("protein") //
 				|| args[0].equalsIgnoreCase("closest") //
@@ -628,14 +662,13 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
+				|| args[0].equalsIgnoreCase("showtr") //
 		) {
 			command = args[argNum++].trim().toLowerCase();
-		} else {
-			command = "eff"; // Default command is 'eff'
 		}
 
 		//---
-		// Copy and parse args, except initial 'command'
+		// Copy and parse arguments, except initial 'command'
 		//---
 		ArrayList<String> argsList = new ArrayList<String>();
 		for (int i = argNum; i < args.length; i++) {
@@ -647,24 +680,36 @@ public class SnpEff implements CommandLine {
 				if ((arg.equals("-c") || arg.equalsIgnoreCase("-config"))) {
 					if ((i + 1) < args.length) configFile = args[++i];
 					else usage("Option '-c' without config file argument");
+				} else if (arg.equalsIgnoreCase("-configOption")) {
+					if ((i + 1) < args.length) {
+						String nameValue = args[++i];
+						String nv[] = nameValue.split("=", 2);
+						if (nv.length > 0) configOverride.put(nv[0], nv[1]);
+						else usage("Cannot parse config option (expected format 'name=value'): " + nameValue);
+					} else usage("Option '-configOption' without argument");
 				} else if (arg.equalsIgnoreCase("-canon")) canonical = true; // Use canonical transcripts
 				else if (arg.equals("-d") || arg.equalsIgnoreCase("-debug")) debug = verbose = true;
 				else if (arg.equalsIgnoreCase("-dataDir")) {
 					if ((i + 1) < args.length) dataDir = args[++i];
 					else usage("Option '-dataDir' without data_dir argument");
 				} else if (arg.equalsIgnoreCase("-download")) download = true; // Download genome if not locally available
-				else if (arg.equals("-h") || arg.equalsIgnoreCase("-help")) help = true;
-				else if (arg.equalsIgnoreCase("-interval")) {
+				else if (arg.equals("-h") || arg.equalsIgnoreCase("-help")) {
+					help = true;
+					if (command.isEmpty()) usage(null); // Help was invoked without a specific command: Show generic help
+				} else if (arg.equalsIgnoreCase("-interval")) {
 					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
 					else usage("Option '-interval' without config interval_file argument");
 				} else if (arg.equalsIgnoreCase("-motif")) motif = true; // Use motif database
+				else if (arg.equalsIgnoreCase("-nogenome")) noGenome = true; // Do not load genome
 				else if (arg.equalsIgnoreCase("-noMotif")) motif = false; // Disable use of motif database
 				else if (arg.equalsIgnoreCase("-nextProt")) nextProt = true; // Use NextProt database
 				else if (arg.equalsIgnoreCase("-noNextProt")) nextProt = false; // Disable use of NextProt database
 				else if (arg.equalsIgnoreCase("-noDownload")) download = false; // Do not download genome
 				else if (arg.equalsIgnoreCase("-noLog")) log = false;
 				else if (arg.equalsIgnoreCase("-noOut")) suppressOutput = true; // Undocumented option (only used for development & debugging)
-				else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
+				else if (arg.equalsIgnoreCase("-noShiftHgvs") || arg.equalsIgnoreCase("-no_shift_hgvs")) {
+					shiftHgvs = false;
+				} else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
 				else if (arg.equalsIgnoreCase("-onlyProtein")) onlyProtein = true;
 				else if (arg.equalsIgnoreCase("-onlyTr")) {
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
@@ -672,9 +717,15 @@ public class SnpEff implements CommandLine {
 					quiet = true;
 					verbose = false;
 				} else if (arg.equals("-reg")) {
-					if ((i + 1) < args.length) regulationTracks.add(args[++i]); // Add this track to the list
+					if ((i + 1) < args.length) addRegulationTrack(args[++i]); // Add this track to the list
 				} else if ((arg.equals("-ss") || arg.equalsIgnoreCase("-spliceSiteSize"))) {
 					if ((i + 1) < args.length) spliceSiteSize = Gpr.parseIntSafe(args[++i]);
+				} else if (arg.equalsIgnoreCase("-spliceRegionExonSize")) {
+					if ((i + 1) < args.length) spliceRegionExonSize = Gpr.parseIntSafe(args[++i]);
+				} else if (arg.equalsIgnoreCase("-spliceRegionIntronMin")) {
+					if ((i + 1) < args.length) spliceRegionIntronMin = Gpr.parseIntSafe(args[++i]);
+				} else if (arg.equalsIgnoreCase("-spliceRegionIntronMax")) {
+					if ((i + 1) < args.length) spliceRegionIntronMax = Gpr.parseIntSafe(args[++i]);
 				} else if (arg.equalsIgnoreCase("-strict")) strict = true;
 				else if (arg.equals("-t")) multiThreaded = true;
 				else if (arg.equalsIgnoreCase("-treatAllAsProteinCoding")) {
@@ -688,6 +739,10 @@ public class SnpEff implements CommandLine {
 				} else if (arg.equals("-v") || arg.equalsIgnoreCase("-verbose")) {
 					verbose = true;
 					quiet = false;
+				} else if (arg.equalsIgnoreCase("-version")) {
+					// Show version number and exit
+					System.out.println(VERSION_SHORT);
+					System.exit(0);
 				} else {
 					// Unrecognized option? may be it's command specific. Let command parse it
 					argsList.add(arg);
@@ -699,6 +754,14 @@ public class SnpEff implements CommandLine {
 		}
 
 		shiftArgs = argsList.toArray(new String[0]);
+
+		if (command.isEmpty()) command = "ann"; // Default command is 'ann'
+
+		// Show version and command
+		if (!help && (verbose || debug)) {
+			Timer.showStdErr("SnpEff version " + VERSION);
+			Timer.showStdErr("Command: '" + command + "'");
+		}
 	}
 
 	/**
@@ -737,6 +800,9 @@ public class SnpEff implements CommandLine {
 			if (err != null) err.append(t.getMessage());
 			t.printStackTrace();
 		}
+
+		// Update config if needed
+		if (config == null) config = snpEffCmd.getConfig();
 
 		// Report to server (usage statistics)
 		if (log) {
@@ -789,8 +855,20 @@ public class SnpEff implements CommandLine {
 		this.nextProtKeepAllTrs = nextProtKeepAllTrs;
 	}
 
+	public void setShiftHgvs(boolean shiftHgvs) {
+		this.shiftHgvs = shiftHgvs;
+	}
+
+	public void setSpliceSiteSize(int spliceSiteSize) {
+		this.spliceSiteSize = spliceSiteSize;
+	}
+
 	public void setSupressOutput(boolean suppressOutput) {
 		this.suppressOutput = suppressOutput;
+	}
+
+	public void setUpDownStreamLength(int upDownStreamLength) {
+		this.upDownStreamLength = upDownStreamLength;
 	}
 
 	public void setVerbose(boolean verbose) {
@@ -814,7 +892,7 @@ public class SnpEff implements CommandLine {
 		else if (command.equalsIgnoreCase("dump")) snpEffCmd = new SnpEffCmdDump();
 		else if (command.equalsIgnoreCase("download")) snpEffCmd = new SnpEffCmdDownload();
 		else if (command.equalsIgnoreCase("cds")) snpEffCmd = new SnpEffCmdCds();
-		else if (command.equalsIgnoreCase("eff")) snpEffCmd = new SnpEffCmdEff();
+		else if (command.equalsIgnoreCase("eff") || command.equalsIgnoreCase("ann")) snpEffCmd = new SnpEffCmdEff();
 		else if (command.equalsIgnoreCase("protein")) snpEffCmd = new SnpEffCmdProtein();
 		else if (command.equalsIgnoreCase("closest")) snpEffCmd = new SnpEffCmdClosest();
 		else if (command.equalsIgnoreCase("databases")) snpEffCmd = new SnpEffCmdDatabases();
@@ -824,6 +902,7 @@ public class SnpEff implements CommandLine {
 		else if (command.equalsIgnoreCase("len")) snpEffCmd = new SnpEffCmdLen();
 		else if (command.equalsIgnoreCase("gsa")) snpEffCmd = new SnpEffCmdGsa();
 		else if (command.equalsIgnoreCase("acat")) snpEffCmd = new SnpEffCmdAcat();
+		else if (command.equalsIgnoreCase("showtr")) snpEffCmd = new SnpEffCmdShowTr();
 		else throw new RuntimeException("Unknown command '" + command + "'");
 
 		// Copy values to specific command
@@ -840,6 +919,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.motif = motif;
 		snpEffCmd.multiThreaded = multiThreaded;
 		snpEffCmd.nextProt = nextProt;
+		snpEffCmd.noGenome = noGenome;
 		snpEffCmd.numWorkers = numWorkers;
 		snpEffCmd.onlyProtein = onlyProtein;
 		snpEffCmd.onlyRegulation = onlyRegulation;
@@ -847,11 +927,16 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.quiet = quiet;
 		snpEffCmd.regulationTracks = regulationTracks;
 		snpEffCmd.spliceSiteSize = spliceSiteSize;
+		snpEffCmd.spliceRegionExonSize = spliceRegionExonSize;
+		snpEffCmd.spliceRegionIntronMax = spliceRegionIntronMax;
+		snpEffCmd.spliceRegionIntronMin = spliceRegionIntronMin;
 		snpEffCmd.strict = strict;
 		snpEffCmd.suppressOutput = suppressOutput;
 		snpEffCmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
 		snpEffCmd.upDownStreamLength = upDownStreamLength;
 		snpEffCmd.verbose = verbose;
+		snpEffCmd.shiftHgvs = shiftHgvs;
+		snpEffCmd.configOverride = configOverride;
 
 		// Help requested?
 		if (help) {
@@ -871,11 +956,11 @@ public class SnpEff implements CommandLine {
 	@Override
 	public void usage(String message) {
 		if (message != null) System.err.println("Error: " + message + "\n");
-		System.err.println("snpEff version " + VERSION);
+		System.err.println("SnpEff version " + VERSION);
 		System.err.println("Usage: snpEff [command] [options] [files]");
 		System.err.println("\nRun 'java -jar snpEff.jar command' for help on each specific command");
 		System.err.println("\nAvailable commands: ");
-		System.err.println("\t[eff]                        : Calculate effect of variants. Default: eff (no command or 'eff').");
+		System.err.println("\t[eff|ann]                    : Annotate variants / calculate effects (you can use either 'ann' or 'eff', they mean the same). Default: ann (no command or 'ann').");
 		System.err.println("\tbuild                        : Build a SnpEff database.");
 		System.err.println("\tbuildNextProt                : Build a SnpEff for NextProt (using NextProt's XML files).");
 		System.err.println("\tcds                          : Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
@@ -887,6 +972,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\tgenes2bed                    : Create a bed file from a genes list.");
 		System.err.println("\tlen                          : Calculate total genomic length for each marker type.");
 		System.err.println("\tprotein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
+		System.err.println("\tshowTr                       : Show transcript's coordiantes, DNA sequence and protein sequence.");
 		System.err.println("\tspliceAnalysis               : Perform an analysis of splice sites. Experimental feature.");
 
 		usageGenericAndDb();
@@ -900,20 +986,24 @@ public class SnpEff implements CommandLine {
 	protected void usageGenericAndDb() {
 		System.err.println("\nGeneric options:");
 		System.err.println("\t-c , -config                 : Specify config file");
+		System.err.println("\t-configOption name=value     : Override a config file option");
 		System.err.println("\t-d , -debug                  : Debug mode (very verbose).");
 		System.err.println("\t-dataDir <path>              : Override data_dir parameter from config file.");
 		System.err.println("\t-download                    : Download a SnpEff database, if not available locally. Default: " + download);
 		System.err.println("\t-nodownload                  : Do not download a SnpEff database, if not available locally.");
+		System.err.println("\t-noShiftHgvs                 : Do not shift variants towards most 3-prime position (as required by HGVS).");
 		System.err.println("\t-h , -help                   : Show this help and exit");
 		System.err.println("\t-noLog                       : Do not report usage statistics to server");
 		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
-		System.err.println("\t-q ,  -quiet                 : Quiet mode (do not show any messages or errors)");
+		System.err.println("\t-q , -quiet                  : Quiet mode (do not show any messages or errors)");
 		System.err.println("\t-v , -verbose                : Verbose mode");
+		System.err.println("\t-version                     : Show version number and exit");
 		System.err.println("\nDatabase options:");
 		System.err.println("\t-canon                       : Only use canonical transcripts.");
-		System.err.println("\t-interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
+		System.err.println("\t-interval <file>             : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
 		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database).");
 		System.err.println("\t-nextProt                    : Annotate using NextProt (requires NextProt database).");
+		System.err.println("\t-noGenome                    : Do not load any genomic database (e.g. annotate using custom files).");
 		System.err.println("\t-noMotif                     : Disable motif annotations.");
 		System.err.println("\t-noNextProt                  : Disable NextProt annotations.");
 		System.err.println("\t-onlyReg                     : Only use regulation tracks.");
@@ -921,6 +1011,9 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-onlyTr <file.txt>           : Only use the transcripts in this file. Format: One transcript ID per line.");
 		System.err.println("\t-reg <name>                  : Regulation track to use (this option can be used add several times).");
 		System.err.println("\t-ss , -spliceSiteSize <int>  : Set size for splice sites (donor and acceptor) in bases. Default: " + spliceSiteSize);
+		System.err.println("\t-spliceRegionExonSize <int>  : Set size for splice site region within exons. Default: " + spliceRegionExonSize + " bases");
+		System.err.println("\t-spliceRegionIntronMin <int> : Set minimum number of bases for splice site region within intron. Default: " + spliceRegionIntronMin + " bases");
+		System.err.println("\t-spliceRegionIntronMax <int> : Set maximum number of bases for splice site region within intron. Default: " + spliceRegionIntronMax + " bases");
 		System.err.println("\t-strict                      : Only use 'validated' transcripts (i.e. sequence has been checked). Default: " + strict);
 		System.err.println("\t-ud , -upDownStreamLen <int> : Set upstream downstream interval length (in bases)");
 	}

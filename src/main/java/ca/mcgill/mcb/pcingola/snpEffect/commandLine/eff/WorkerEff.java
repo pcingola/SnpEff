@@ -4,9 +4,9 @@ import ca.mcgill.mcb.pcingola.akka.vcfStr.WorkerVcfStr;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.outputFormatter.OutputFormatter;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -21,8 +21,6 @@ public class WorkerEff extends WorkerVcfStr {
 	SnpEffectPredictor snpEffectPredictor; // Predictor
 	OutputFormatter outputFormatter; // Output format
 	IntervalForest filterIntervals; // Filter only seqChanges that match these intervals
-
-	//	SeqChangeFilter seqChangeFilter; // Filter each seqChange
 
 	public WorkerEff(SnpEffCmdEff snpEffCmdEff, SnpEffectPredictor snpEffectPredictor, OutputFormatter outputFormatter, IntervalForest filterIntervals) {
 		super();
@@ -47,19 +45,21 @@ public class WorkerEff extends WorkerVcfStr {
 			// Create new 'section'
 			outputFormatter.startSection(vcfEntry);
 
-			for (Variant seqChange : vcfEntry.variants()) {
-				// Calculate effects
-				VariantEffects changeEffects = snpEffectPredictor.variantEffect(seqChange);
+			for (Variant variant : vcfEntry.variants()) {
+				if (variant.isVariant()) {
+					// Calculate effects
+					VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
 
-				// Create new 'section'
-				outputFormatter.startSection(seqChange);
+					// Create new 'section'
+					outputFormatter.startSection(variant);
 
-				// Show results
-				for (VariantEffect changeEffect : changeEffects)
-					outputFormatter.add(changeEffect);
+					// Show results
+					for (VariantEffect changeEffect : variantEffects)
+						outputFormatter.add(changeEffect);
 
-				// Finish up this section
-				outputFormatter.endSection(seqChange);
+					// Finish up this section
+					outputFormatter.endSection(variant);
+				}
 			}
 
 			// Finish up this section

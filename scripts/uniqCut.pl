@@ -3,7 +3,7 @@
 use strict;
 
 # Debug mode?
-my($debug) = 0;
+my($debug) = 1;
 
 # Parameters
 my($showDups, $showAllDups, $showCount, $showKey) = (0, 0, 0, 0);

@@ -1,0 +1,7 @@
+##SnpEffVersion="4.1 (build 2015-01-07), by Pablo Cingolani"
+##SnpEffCmd="SnpEff  -classic -cancer -cancerSamples examples/samples_cancer_one.txt testHg3775Chr1 examples/cancer.vcf "
+##INFO=<ID=EFF,Number=.,Type=String,Description="Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )' ">
+##INFO=<ID=LOF,Number=.,Type=String,Description="Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' ">
+##INFO=<ID=NMD,Number=.,Type=String,Description="Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' ">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Patient_01_Germline	Patient_01_Somatic
+1	69091	.	A	C,G	.	PASS	AC=1;EFF=START_LOST(HIGH|MISSENSE|Atg/Gtg|M1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G),START_LOST(HIGH|MISSENSE|Ctg/Gtg|L1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G-C|WARNING_REF_DOES_NOT_MATCH_GENOME),NON_SYNONYMOUS_START(LOW|MISSENSE|Atg/Ctg|M1L|305|OR4F5|protein_coding|CODING|ENST00000335137|1|C);LOF=(OR4F5|ENSG00000186092|1|1.00)	GT	1/0	2/1

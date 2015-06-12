@@ -7,15 +7,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import ca.mcgill.mcb.pcingola.align.VcfRefAltAlign;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
-import ca.mcgill.mcb.pcingola.fileIterator.VcfRefAltAlign;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.LossOfFunction;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect.FormatVersion;
 
 /**
  * A VCF entry (a line) in a VCF file
@@ -44,12 +43,14 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	private static final long serialVersionUID = 4226374412681243433L;
 
+	protected boolean useNumericGenotype;
 	protected String line; // Line from VCF file
 	protected int lineNum; // Line number
 	protected VcfFileIterator vcfFileIterator; // Iterator where this entry was red from
 	protected String chromosomeName; // Original chromosome name
 	protected String ref;
 	protected String[] alts;
+	protected String altStr;
 	protected Double quality;
 	protected String filterPass;
 	protected String infoStr = "";
@@ -74,7 +75,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Return a string safe to be used in an 'INFO' field (VCF file)
 	 */
 	public static String vcfInfoSafe(String str) {
-		return str.replaceAll("(\\s|;|,)+", "_");
+		//			return str.replaceAll("(\\s|;|,)+", "_");
+		if (str == null) return str;
+		return str.replaceAll("[ ,;|=()]", "_");
 	}
 
 	public VcfEntry(VcfFileIterator vcfFileIterator, Marker parent, String chromosomeName, int start, String id, String ref, String altsStr, double quality, String filterPass, String infoStr, String format) {
@@ -123,39 +126,28 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
-	 * Append a 'raw' INFO string (format is not checked)
-	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
+	 * Add a "key=value" tuple the info field
+	 *
+	 * @param name : INFO key name
+	 * @param value : Can be null if it is a boolean field.
 	 */
-	public void addInfo(String addInfoStr) {
-		addInfo(addInfoStr, true);
-	}
+	public void addInfo(String name, String value) {
+		if (!isValidInfoValue(name) || !isValidInfoValue(value)) throw new RuntimeException("No white-space, semi-colons, or equals-signs are permitted in INFO field. Name:\"" + name + "\" Value:\"" + value + "\"");
 
-	/**
-	 * Append a 'raw' INFO string (format is not checked)
-	 * WARNING: Info fields are NOT added to the hash, so trying to retrieve them using 'getInfo(name)' will fail!
-	 */
-	protected void addInfo(String addInfoStr, boolean invalidateCache) {
+		// Remove previous 'key' for INFO field?
+		removeInfo(name);
+
+		// Add to info hash (if available)
+		if (info != null) info.put(name, value);
+
+		// Append value to infoStr
+		String addInfoStr = name + (value != null ? "=" + value : ""); // String to append
 		if ((infoStr == null) || infoStr.isEmpty()) infoStr = addInfoStr;
 		else {
 			if (!infoStr.endsWith(";")) infoStr += ";"; // Do we need to add a semicolon?
 			infoStr += addInfoStr; // Add info string
 		}
 
-		if (invalidateCache) info = null; // Invalidate cache
-	}
-
-	/**
-	 * Add a "key=value" tuple the info field
-	 *
-	 * @param name
-	 * @param value : Can be null if it is a boolean field.
-	 */
-	public void addInfo(String name, String value) {
-		if (!isValidInfoValue(name) || !isValidInfoValue(value)) throw new RuntimeException("No white-space, semi-colons, or equals-signs are permitted in INFO field. Name:\"" + name + "\" Value:\"" + value + "\"");
-
-		String addInfoStr = name + (value != null ? "=" + value : "");
-		if (info != null) info.put(name, value); // Add to info hash (if available)
-		addInfo(addInfoStr, false);
 	}
 
 	/**
@@ -253,7 +245,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	String checkInfo(String infoName) {
 		if (infoName.isEmpty()) return "";
 
-		VcfInfo vcfInfo = getVcfInfo(infoName);
+		VcfHeaderInfo vcfInfo = getVcfInfo(infoName);
 		if (vcfInfo == null) return "Cannot find header for INFO field '" + infoName + "'";
 
 		// Split INFO value and match it to allele
@@ -308,7 +300,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (nas.length() > 0) addInfo(VCF_INFO_NAS, nas.toString());
 
 		// Nothing added? Add 'NAS' (as an indicator that it was compressed
-		if ((homs.length() == 0) && (hets.length() == 0) && (nas.length() == 0)) addInfo(VCF_INFO_NAS);
+		if ((homs.length() == 0) && (hets.length() == 0) && (nas.length() == 0)) addInfo(VCF_INFO_NAS, null);
 
 		return true;
 	}
@@ -321,12 +313,19 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Create a comma separated ALTS string
 	 */
 	public String getAltsStr() {
+		if (altStr != null) {
+			if (altStr.isEmpty()) return ".";
+			return altStr;
+		}
+
 		if (alts == null) return "";
 
-		String altsStr = "";
+		StringBuilder sb = new StringBuilder();
 		for (String alt : alts)
-			altsStr += alt + " ";
-		return altsStr.trim().replace(' ', ',');
+			sb.append(alt + " ");
+		altStr = sb.toString().trim().replace(' ', ',');
+
+		return altStr;
 	}
 
 	/**
@@ -406,16 +405,22 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		String infoStr = info.get(key);
 		if (infoStr == null) return null;
 
-		// INFO fields having number type 'R' (all alleles) should have one value for reference as well.
-		// So in those cases we must skip the first value
-		int firstValue = 0;
-		VcfInfo vcfInfo = getVcfInfo(key);
-		if (vcfInfo != null && vcfInfo.isNumberAllAlleles()) firstValue = 1;
-
 		// Split INFO value and match it to allele
 		String infos[] = infoStr.split(",");
 
-		for (int i = 0, j = firstValue; (i < alts.length) && (j < infos.length); i++, j++)
+		// INFO fields having number type 'R' (all alleles) should have one value for reference as well.
+		// So in those cases we must skip the first value
+		int firstAltIndex = 0;
+		VcfHeaderInfo vcfInfo = getVcfInfo(key);
+		if (vcfInfo != null && vcfInfo.isNumberAllAlleles()) {
+			firstAltIndex = 1;
+
+			// Are we looking for 'REF' information?
+			if (ref.equalsIgnoreCase(allele)) return infos[0];
+		}
+
+		// Find ALT matching allele
+		for (int i = 0, j = firstAltIndex; (i < alts.length) && (j < infos.length); i++, j++)
 			if (alts[i].equalsIgnoreCase(allele)) return infos[j];
 
 		return null;
@@ -515,7 +520,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Get VcfInfo type for a given ID
 	 */
-	public VcfInfo getVcfInfo(String id) {
+	public VcfHeaderInfo getVcfInfo(String id) {
 		return vcfFileIterator.getVcfHeader().getVcfInfo(id);
 	}
 
@@ -523,7 +528,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Get Info number for a given ID
 	 */
 	public VcfInfoType getVcfInfoNumber(String id) {
-		VcfInfo vcfInfo = vcfFileIterator.getVcfHeader().getVcfInfo(id);
+		VcfHeaderInfo vcfInfo = vcfFileIterator.getVcfHeader().getVcfInfo(id);
 		if (vcfInfo == null) return null;
 		return vcfInfo.getVcfInfoType();
 	}
@@ -619,6 +624,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return variantType == VariantType.SNP;
 	}
 
+	public boolean isUseNumericGenotype() {
+		return useNumericGenotype;
+	}
+
 	/**
 	 * Is this a change or are the ALTs actually the same as the reference
 	 */
@@ -645,13 +654,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Do we have it annotated as AF or MAF?
 		if (hasField("MAC")) return (int) getInfoInt("MAC");
 		else if (hasField("AC")) ac = getInfoInt("AC");
-		else {
-			// No annotations, we have to calculate
+
+		// AC not found (or doesn't make sense)
+		if (ac <= 0) {
+			// We have to calculate
 			ac = 0;
-			for (VcfGenotype gen : this) {
-				int genCode = gen.getGenotypeCode();
-				if (genCode > 0) ac += genCode;
-			}
+			for (byte genCode : getGenotypesScores())
+				if (genCode > 0) ac += genCode; // Don't count '-1' (i.e. missing genotypes)
 		}
 
 		// How many samples (alleles) do we have?
@@ -703,28 +712,32 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (fields.length >= 4) {
 			// Chromosome and position. VCF files are one-base, so inOffset should be 1.
 			chromosomeName = fields[0].trim();
+
+			// Chromosome
 			Chromosome chromo = vcfFileIterator.getChromosome(chromosomeName);
 			parent = chromo;
 			vcfFileIterator.sanityCheckChromo(chromosomeName, chromo); // Sanity check
 
+			// Start
 			start = vcfFileIterator.parsePosition(vcfFileIterator.readField(fields, 1));
 
 			// ID (e.g. might indicate dbSnp)
 			id = vcfFileIterator.readField(fields, 2);
 
-			// REF and ALT
+			// REF
 			ref = vcfFileIterator.readField(fields, 3).toUpperCase(); // Reference and change
+			strandMinus = false; // Strand is always positive (defined in VCF spec.)
 
-			// Strand is always positive (defined in VCF spec.)
-			strandMinus = false;
-			String altsStr = vcfFileIterator.readField(fields, 4).toUpperCase();
-			parseAlts(altsStr);
+			// ALT
+			altStr = vcfFileIterator.readField(fields, 4).toUpperCase();
+			parseAlts(altStr);
 
 			// Quality
 			String qStr = vcfFileIterator.readField(fields, 5);
 			if (!qStr.isEmpty()) quality = Gpr.parseDoubleSafe(qStr);
 			else quality = null;
 
+			// Filter
 			filterPass = vcfFileIterator.readField(fields, 6); // Filter parameters
 
 			// INFO fields
@@ -732,7 +745,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			info = null;
 
 			// Start & End coordinates are anchored to the reference genome, thus based on REF field (ALT is not taken into account)
-			parseEnd(altsStr);
+			parseEnd(altStr);
 
 			// Genotype format
 			format = null;
@@ -747,7 +760,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Parse ALT field
 	 */
 	void parseAlts(String altsStr) {
-
 		//---
 		// Parse altsStr
 		//---
@@ -791,7 +803,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (alts == null // No alts
 					|| (alts.length == 0) // Zero ALTs
 					|| (alts.length == 1 && (alts[0].isEmpty() || alts[0].equals("."))) // One ALT, but it's empty
-			) {
+					) {
 				variantType = VariantType.INTERVAL;
 			} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
 				if (ref.length() == 1) variantType = VariantType.SNP;
@@ -886,8 +898,22 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Parse 'EFF' info field and get a list of effects
 	 */
-	public List<VcfEffect> parseEffects(FormatVersion formatVersion) {
-		String effStr = getInfo(VcfEffect.VCF_INFO_EFF_NAME); // Get effect string from INFO field
+	public List<VcfEffect> parseEffects(EffFormatVersion formatVersion) {
+		String effStr = null;
+		if (formatVersion == null) {
+			// Guess which INFO field could be
+			effStr = getInfo(EffFormatVersion.VCF_INFO_ANN_NAME);
+			if (effStr != null) {
+				formatVersion = EffFormatVersion.FORMAT_ANN; // Unspecied 'ANN' version
+			} else {
+				effStr = getInfo(EffFormatVersion.VCF_INFO_EFF_NAME);
+				if (effStr != null) formatVersion = EffFormatVersion.FORMAT_EFF; // Unspecied 'EFF' version
+			}
+		} else {
+			// Use corresponding INFO field
+			String effFieldName = VcfEffect.infoFieldName(formatVersion);
+			effStr = getInfo(effFieldName); // Get effect string from INFO field
+		}
 
 		// Create a list of effect
 		ArrayList<VcfEffect> effList = new ArrayList<VcfEffect>();
@@ -948,8 +974,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Parse info entries
 		info = new HashMap<String, String>();
 		for (String inf : infoStr.split(";")) {
-			String vp[] = inf.split("=");
-			if (vp.length > 1) info.put(vp[0], vp[1]);
+			String vp[] = inf.split("=", 2);
+
+			if (vp.length > 1) info.put(vp[0], vp[1]); // Key = Value pair
 			else info.put(vp[0], "true"); // A property that is present, but has no value (e.g. "INDEL")
 		}
 	}
@@ -975,15 +1002,15 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Parse NMD from VcfEntry
 	 */
 	public List<VcfNmd> parseNmd() {
-		String nmdStr = getInfo(LossOfFunction.VCF_INFO_LOF_NAME);
+		String nmdStr = getInfo(LossOfFunction.VCF_INFO_NMD_NAME);
 
 		ArrayList<VcfNmd> nmdList = new ArrayList<VcfNmd>();
 		if (nmdStr == null || nmdStr.isEmpty()) return nmdList;
 
 		// Split comma separated list
-		String lofs[] = nmdStr.split(",");
-		for (String lof : lofs)
-			nmdList.add(new VcfNmd(lof));
+		String nmds[] = nmdStr.split(",");
+		for (String nmd : nmds)
+			nmdList.add(new VcfNmd(nmd));
 
 		return nmdList;
 	}
@@ -1004,6 +1031,31 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			gt[i] = value;
 		}
 
+	}
+
+	/**
+	 * Remove INFO field
+	 */
+	public void removeInfo(String key) {
+		// Not in info field? => Nothing to do
+		if (!infoStr.contains(key)) return;
+
+		StringBuilder infoStrNew = new StringBuilder();
+		for (String infoEntry : infoStr.split(";")) {
+			String keyValuePair[] = infoEntry.split("=", 2);
+
+			// Not the key we want to remove? => Add it
+			if (!keyValuePair[0].equals(key)) {
+				if (infoStrNew.length() > 0) infoStrNew.append(';');
+				infoStrNew.append(infoEntry);
+			}
+		}
+
+		// Create new string
+		infoStr = infoStrNew.toString();
+
+		// Update info hash
+		if (info != null) info.remove(key);
 	}
 
 	/**
@@ -1053,6 +1105,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		this.lineNum = lineNum;
 	}
 
+	public void setUseNumericGenotype(boolean useNumericGenotype) {
+		this.useNumericGenotype = useNumericGenotype;
+	}
+
 	/**
 	 * To string as a simple "chr:start-end" format
 	 */
@@ -1089,7 +1145,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Show only first eight fields (no genotype entries)
-	 * @return
 	 */
 	public String toStringNoGt() {
 		// Use original chromosome name or named from chromosome object
@@ -1102,17 +1157,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		StringBuilder sb = new StringBuilder(chr //
 				+ "\t" + (start + 1) //
 				+ "\t" + (id.isEmpty() ? "." : id) //
-				+ "\t" + ref //
-				+ "\t");
+				);
 
-		// ALTs
-		if (alts != null) {
-			for (int i = 0; i < alts.length; i++) {
-				String altStr = (alts[i].isEmpty() ? "." : alts[i]);
-				sb.append(altStr + ",");
-			}
-			sb.deleteCharAt(sb.length() - 1); // Delete last colon
-		}
+		// REF and ALT
+		String refStr = (ref == null || ref.isEmpty() ? "." : ref);
+		sb.append("\t" + refStr);
+		sb.append("\t" + getAltsStr());
 
 		// Quality, filter, info, format...
 		sb.append("\t" + (quality != null ? quality + "" : "."));
@@ -1189,19 +1239,25 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		Chromosome chr = (Chromosome) parent;
 		int genotypeNumber = 1;
 		if (alts == null) {
-			// No ALTs, then it's not a change
+			// No ALTs, then it's not a variant
 			List<Variant> variants = variants(chr, start, ref, null, id);
+			String alt = ".";
 
-			for (Variant variant : variants)
-				variant.setGenotype(Integer.toString(genotypeNumber));
+			for (Variant variant : variants) {
+				if (useNumericGenotype) variant.setGenotype(Integer.toString(genotypeNumber));
+				else variant.setGenotype(alt);
+			}
 
 			list.addAll(variants);
 		} else {
 			for (String alt : alts) {
 				List<Variant> variants = variants(chr, start, ref, alt, id);
 
-				for (Variant variant : variants)
-					variant.setGenotype(Integer.toString(genotypeNumber));
+				// Set corresponding genotype
+				for (Variant variant : variants) {
+					if (useNumericGenotype) variant.setGenotype(Integer.toString(genotypeNumber));
+					else variant.setGenotype(alt);
+				}
 
 				list.addAll(variants);
 				genotypeNumber++;
@@ -1216,7 +1272,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 */
 	List<Variant> variants(Chromosome chromo, int start, String reference, String alt, String id) {
 		// No change?
-		if (alt == null || alt.isEmpty() || alt.equals(reference)) return Variant.factory(chromo, start, reference, null, id);
+		if (alt == null || alt.isEmpty() || alt.equals(reference)) return Variant.factory(chromo, start, reference, null, id, false);
 
 		alt = alt.toUpperCase();
 
@@ -1224,7 +1280,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// 2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
 		if (alt.startsWith("<DEL")) {
 			// Create deletion string
-			// TODO: This should be changed. We should be using "imprecise" for these variants
+			// May be we should be using "imprecise" for these variants
 			String ch = ref;
 			int startNew = start;
 
@@ -1238,7 +1294,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			}
 
 			// Create SeqChange
-			return Variant.factory(chromo, startNew, ch, "", id);
+			return Variant.factory(chromo, startNew, ch, "", id, false);
 		}
 
 		// Case: SNP, MNP
@@ -1246,7 +1302,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// 20     3 .         TC     AT      .   PASS  DP=100
 		if (reference.length() == alt.length()) {
 			// SNPs
-			if (reference.length() == 1) return Variant.factory(chromo, start, reference, alt, id);
+			if (reference.length() == 1) return Variant.factory(chromo, start, reference, alt, id, true);
 
 			// MNPs
 			// Sometimes the first bases are the same and we can trim them
@@ -1262,7 +1318,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 			String newRef = reference.substring(startDiff, endDiff + 1);
 			String newAlt = alt.substring(startDiff, endDiff + 1);
-			return Variant.factory(chromo, start + startDiff, newRef, newAlt, id);
+			return Variant.factory(chromo, start + startDiff, newRef, newAlt, id, true);
 		}
 
 		//---
@@ -1280,7 +1336,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			String ref = "";
 			String ch = align.getAlignment();
 			if (!ch.startsWith("-")) throw new RuntimeException("Deletion '" + ch + "' does not start with '-'. This should never happen!");
-			return Variant.factory(chromo, start + startDiff, ref, ch, id);
+			return Variant.factory(chromo, start + startDiff, ref, ch, id, true);
 
 		case INS:
 			// Case: Insertion of A { tC ; tCA } tC is the reference allele
@@ -1288,18 +1344,17 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			ch = align.getAlignment();
 			ref = "";
 			if (!ch.startsWith("+")) throw new RuntimeException("Insertion '" + ch + "' does not start with '+'. This should never happen!");
-			return Variant.factory(chromo, start + startDiff, ref, ch, id);
+			return Variant.factory(chromo, start + startDiff, ref, ch, id, true);
 
 		case MIXED:
 			// Case: Mixed variant (substitution)
 			reference = reference.substring(startDiff);
 			alt = alt.substring(startDiff);
-			return Variant.factory(chromo, start + startDiff, reference, alt, id);
+			return Variant.factory(chromo, start + startDiff, reference, alt, id, true);
 
 		default:
 			// Other change type?
 			throw new RuntimeException("Unsupported VCF change type '" + align.getVariantType() + "'\n\tRef: " + reference + "'\n\tAlt: '" + alt + "'\n\tVcfEntry: " + this);
 		}
 	}
-
 }

@@ -1,6 +1,8 @@
 package ca.mcgill.mcb.pcingola.interval;
 
 import ca.mcgill.mcb.pcingola.binseq.DnaSequence;
+import ca.mcgill.mcb.pcingola.codons.CodonTable;
+import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -15,6 +17,10 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 public class Chromosome extends Marker {
 
 	private static final long serialVersionUID = 1636197649250882952L;
+
+	double chromosomeNum;
+
+	DnaSequence sequence = null;
 
 	/**
 	 * Compare chromosome names
@@ -44,10 +50,6 @@ public class Chromosome extends Marker {
 	public static String simpleName(String chrName) {
 		return ChromosomeSimpleName.get(chrName);
 	}
-
-	double chromosomeNum;
-
-	DnaSequence sequence = null;
 
 	public Chromosome() {
 		super();
@@ -81,6 +83,10 @@ public class Chromosome extends Marker {
 		return 0;
 	}
 
+	public CodonTable getCodonTable() {
+		return CodonTables.getInstance().getTable(getGenome(), getId());
+	}
+
 	public DnaSequence getDnaSequence() {
 		return sequence;
 	}
@@ -98,7 +104,7 @@ public class Chromosome extends Marker {
 		return iduc.equals("M") //
 				|| iduc.startsWith("MT") //
 				|| (iduc.indexOf("MITO") >= 0) //
-		;
+				;
 	}
 
 	@Override
@@ -108,8 +114,6 @@ public class Chromosome extends Marker {
 
 	/**
 	 * Parse a line from a serialized file
-	 * @param line
-	 * @return
 	 */
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {
@@ -139,7 +143,6 @@ public class Chromosome extends Marker {
 	public void setSequence(String sequenceStr) {
 		sequence = new DnaSequence(sequenceStr, true);
 		setLength(sequenceStr.length()); // Update chromosome length
-
 	}
 
 }

@@ -1,9 +1,14 @@
 package ca.mcgill.mcb.pcingola.interval;
 
+import java.util.ArrayList;
+
 import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
+import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -32,17 +37,17 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 	private static final long serialVersionUID = 5324352193278472543L;
 
-	byte frame = -1; // Frame can be {-1, 0, 1, 2}, where '-1' means unknown
+	byte frame = -1; // Phase can be {-1, 0, 1, 2}, where '-1' means unknown. Phase indicated the number of bases that should be removed from the beginning of this feature to reach the first base of the next codon
 	int rank; // Exon rank in transcript
-	SpliceSiteAcceptor spliceSiteAcceptor;
-	SpliceSiteDonor spliceSiteDonor;
-	SpliceSiteRegion spliceSiteRegionStart, spliceSiteRegionEnd;
+	int aaIdxStart = -1, aaIdxEnd = -1; // First and last AA indexes that intersect with this exon
+	ArrayList<SpliceSite> spliceSites;
 	ExonSpliceType spliceType = ExonSpliceType.NONE;
 
 	public Exon() {
 		super();
 		rank = 0;
 		type = EffectType.EXON;
+		spliceSites = new ArrayList<SpliceSite>();
 	}
 
 	public Exon(Transcript parent, int start, int end, boolean strandMinus, String id, int rank) {
@@ -50,6 +55,14 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		this.strandMinus = strandMinus;
 		this.rank = rank;
 		type = EffectType.EXON;
+		spliceSites = new ArrayList<SpliceSite>();
+	}
+
+	/**
+	 * Add a splice site to the collection
+	 */
+	public void add(SpliceSite ss) {
+		spliceSites.add(ss);
 	}
 
 	/**
@@ -57,61 +70,36 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 *
 	 * WARNING: There might be conditions which change the exon type (e.g. an intron is deleted)
 	 * 			Nevertheless ExonSpliceType s not updated since it reflects the exon type before a sequence change.
-	 *
 	 */
 	@Override
 	public Exon apply(Variant variant) {
 		// Create new exon with updated coordinates
-		Exon ex = (Exon) super.apply(variant);
+		Exon newEx = (Exon) super.apply(variant);
+		if (newEx == null) return null;
 
-		// Update sites
-		if (spliceSiteAcceptor != null) ex.spliceSiteAcceptor = (SpliceSiteAcceptor) spliceSiteAcceptor.apply(variant);
-		if (spliceSiteDonor != null) ex.spliceSiteDonor = (SpliceSiteDonor) spliceSiteDonor.apply(variant);
+		// Apply to each splice sites
+		newEx.spliceSites = new ArrayList<SpliceSite>();
+		for (SpliceSite ss : spliceSites) {
+			SpliceSite newSs = (SpliceSite) ss.apply(variant);
+			newSs.setParent(newEx);
+			newEx.add(newSs);
+		}
 
-		return ex;
-	}
-
-	/**
-	 * Create a splice site acceptor of 'maxSize' length
-	 */
-	public SpliceSiteAcceptor createSpliceSiteAcceptor(int size) {
-		if (spliceSiteAcceptor != null) return spliceSiteAcceptor;
-
-		size = size - 1;
-		if (size < 0) return null;
-
-		if (isStrandPlus()) spliceSiteAcceptor = new SpliceSiteAcceptor(this, start - 1 - size, start - 1, strandMinus, id);
-		else spliceSiteAcceptor = new SpliceSiteAcceptor(this, end + 1, end + 1 + size, strandMinus, id);
-
-		return spliceSiteAcceptor;
-	}
-
-	/**
-	 * Create a splice site donor of 'maxSize' length
-	 */
-	public SpliceSiteDonor createSpliceSiteDonor(int size) {
-		if (spliceSiteDonor != null) return spliceSiteDonor;
-
-		size = size - 1;
-		if (size < 0) return null;
-
-		if (isStrandPlus()) spliceSiteDonor = new SpliceSiteDonor(this, end + 1, end + 1 + size, strandMinus, id);
-		else spliceSiteDonor = new SpliceSiteDonor(this, start - 1 - size, start - 1, strandMinus, id);
-
-		return spliceSiteDonor;
+		return newEx;
 	}
 
 	/**
 	 * Create splice site regions
 	 */
 	public SpliceSiteRegion createSpliceSiteRegionEnd(int size) {
-		if (spliceSiteRegionEnd != null) return spliceSiteRegionEnd;
-
 		if (size > size()) size = size(); // Cannot be larger than this marker
 		if (size <= 0) return null;
 
+		SpliceSiteRegion spliceSiteRegionEnd = null;
 		if (isStrandPlus()) spliceSiteRegionEnd = new SpliceSiteRegion(this, end - (size - 1), end, strandMinus, id);
 		else spliceSiteRegionEnd = new SpliceSiteRegion(this, start, start + (size - 1), strandMinus, id);
+
+		if (spliceSiteRegionEnd != null) add(spliceSiteRegionEnd);
 
 		return spliceSiteRegionEnd;
 	}
@@ -120,13 +108,14 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 * Create splice site regions
 	 */
 	public SpliceSiteRegion createSpliceSiteRegionStart(int size) {
-		if (spliceSiteRegionStart != null) return spliceSiteRegionStart;
-
 		if (size > size()) size = size(); // Cannot be larger than this marker
 		if (size <= 0) return null;
 
+		SpliceSiteRegion spliceSiteRegionStart = null;
 		if (isStrandPlus()) spliceSiteRegionStart = new SpliceSiteRegion(this, start, start + (size - 1), strandMinus, id);
 		else spliceSiteRegionStart = new SpliceSiteRegion(this, end - (size - 1), end, strandMinus, id);
+
+		if (spliceSiteRegionStart != null) add(spliceSiteRegionStart);
 
 		return spliceSiteRegionStart;
 	}
@@ -161,6 +150,14 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		return true;
 	}
 
+	public int getAaIdxEnd() {
+		return aaIdxEnd;
+	}
+
+	public int getAaIdxStart() {
+		return aaIdxStart;
+	}
+
 	@Override
 	public int getFrame() {
 		return frame;
@@ -170,20 +167,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		return rank;
 	}
 
-	public SpliceSiteAcceptor getSpliceSiteAcceptor() {
-		return spliceSiteAcceptor;
-	}
-
-	public SpliceSiteDonor getSpliceSiteDonor() {
-		return spliceSiteDonor;
-	}
-
-	public SpliceSiteRegion getSpliceSiteRegionEnd() {
-		return spliceSiteRegionEnd;
-	}
-
-	public SpliceSiteRegion getSpliceSiteRegionStart() {
-		return spliceSiteRegionStart;
+	public ArrayList<SpliceSite> getSpliceSites() {
+		return spliceSites;
 	}
 
 	public ExonSpliceType getSpliceType() {
@@ -201,8 +186,10 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	@Override
 	public Markers query(Marker marker) {
 		Markers markers = new Markers();
-		if ((spliceSiteAcceptor != null) && marker.intersects(spliceSiteAcceptor)) markers.add(spliceSiteAcceptor);
-		if ((spliceSiteDonor != null) && marker.intersects(spliceSiteDonor)) markers.add(spliceSiteDonor);
+
+		for (SpliceSite ss : spliceSites)
+			if (ss.intersects(marker)) markers.add(ss);
+
 		return markers;
 	}
 
@@ -251,30 +238,27 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		frame = (byte) markerSerializer.getNextFieldInt();
 		rank = markerSerializer.getNextFieldInt();
 		setSequence(markerSerializer.getNextField());
-		spliceSiteDonor = (SpliceSiteDonor) markerSerializer.getNextFieldMarker();
-		spliceSiteAcceptor = (SpliceSiteAcceptor) markerSerializer.getNextFieldMarker();
-
 		String exType = markerSerializer.getNextField();
 		if ((exType != null) && !exType.isEmpty()) spliceType = ExonSpliceType.valueOf(exType);
 	}
 
 	/**
 	 * Create a string to serialize to a file
-	 * @return
 	 */
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
-		int ssdId = markerSerializer.save(spliceSiteDonor);
-		int ssaId = markerSerializer.save(spliceSiteAcceptor);
-
+		// Note: We do not save splice sites any more, since they can be created "on demand"
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + frame //
 				+ "\t" + rank //
 				+ "\t" + sequence //
-				+ "\t" + ssdId //
-				+ "\t" + ssaId //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
 		;
+	}
+
+	public void setAaIdx(int aaIdxStart, int aaIdxEnd) {
+		this.aaIdxStart = aaIdxStart;
+		this.aaIdxEnd = aaIdxEnd;
 	}
 
 	/**
@@ -310,6 +294,38 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		default:
 			throw new RuntimeException("Unknown format version: " + ToStringVersion);
 		}
+	}
+
+	/**
+	 * Note: This only adds spliceSites effects, for detailed
+	 *       codon changes effects we use 'CodonChange' class
+	 */
+	@Override
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false;
+
+		Transcript tr = (Transcript) parent;
+		boolean coding = tr.isProteinCoding() || Config.get().isTreatAllAsProteinCoding();
+
+		// Different analysis for coding or non-coding
+		boolean exonAnnotated = false;
+		if (!coding || variant.isInterval() || !variant.isVariant()) {
+			// Non-coding? Just annotate as 'exon'
+			variantEffects.add(variant, this, EffectType.EXON, "");
+			exonAnnotated = true;
+		} else if (tr.isCds(variant)) {
+			// Is it a coding transcript and the variant is within the CDS?
+			// => We need codon analysis
+			CodonChange codonChange = CodonChange.factory(variant, tr, variantEffects);
+			codonChange.codonChange();
+			exonAnnotated = true;
+		}
+
+		// Any splice site effect to add?
+		for (SpliceSite ss : spliceSites)
+			if (ss.intersects(variant)) ss.variantEffect(variant, variantEffects);
+
+		return exonAnnotated;
 	}
 
 }

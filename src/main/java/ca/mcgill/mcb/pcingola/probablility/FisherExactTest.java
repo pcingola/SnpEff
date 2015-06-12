@@ -134,7 +134,6 @@ public class FisherExactTest {
 	public double chiSquareCDFComplementary(double chiSquare, int nu) {
 		if (nu <= 0) throw new IllegalArgumentException("The degrees of freedom [nu], " + nu + ", must be greater than zero");
 		return Gamma.regularizedGammaQ(nu / 2.0D, chiSquare / 2.0D);
-		// 		return Stat.incompleteGammaComplementary(nu / 2.0D, chiSquare / 2.0D); // This one doesn't work for p-values less than 10^-23
 	}
 
 	/**

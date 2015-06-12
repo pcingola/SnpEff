@@ -1,6 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect;
 
+import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Intron;
+import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
@@ -28,6 +31,8 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 public class HgvsDna extends Hgvs {
 
+	public static boolean debug = false;
+
 	public HgvsDna(VariantEffect variantEffect) {
 		super(variantEffect);
 	}
@@ -36,7 +41,7 @@ public class HgvsDna extends Hgvs {
 	 * Prefix for coding or non-coding sequences
 	 */
 	protected String codingPrefix() {
-		return (tr.isProteinCoding() ? "c." : "n.");
+		return (tr != null && tr.isProteinCoding() ? "c." : "n.");
 	}
 
 	/**
@@ -46,18 +51,30 @@ public class HgvsDna extends Hgvs {
 
 		switch (variant.getVariantType()) {
 		case SNP:
-		case MNP:
-			if (marker == null || marker.isStrandPlus()) return variant.getReference() + ">" + variant.getAlt();
+			if (strandPlus) return variant.getReference() + ">" + variant.getAlt();
 			return GprSeq.reverseWc(variant.getReference()) + ">" + GprSeq.reverseWc(variant.getAlt());
+
+		case MNP:
+			String ref,
+			alt;
+			if (strandPlus) {
+				ref = variant.getReference();
+				alt = variant.getAlt();
+			} else {
+				ref = GprSeq.reverseWc(variant.getReference());
+				alt = GprSeq.reverseWc(variant.getAlt());
+			}
+			return "del" + ref + "ins" + alt;
 
 		case INS:
 		case DEL:
+			if (variant.size() > MAX_SEQUENCE_LEN_HGVS) return "";
 			String netChange = variant.netChange(false);
-			if (marker == null || marker.isStrandPlus()) return netChange;
+			if (strandPlus) return netChange;
 			return GprSeq.reverseWc(netChange);
 
 		case MIXED:
-			if (marker == null || marker.isStrandPlus()) return "del" + variant.getReference() + "ins" + variant.getAlt();
+			if (strandPlus) return "del" + variant.getReference() + "ins" + variant.getAlt();
 			return "del" + GprSeq.reverseWc(variant.getReference()) + "ins" + GprSeq.reverseWc(variant.getAlt());
 
 		case INTERVAL:
@@ -69,84 +86,120 @@ public class HgvsDna extends Hgvs {
 	}
 
 	/**
-	 * Calculate position
+	 * Is this a duplication?
+	 */
+	protected boolean isDuplication() {
+		// Only insertion cause duplications
+		// Reference: Here is a discussion of a possible new term ('los') as an analogous
+		//            to 'dup' for deletions:
+		//                http://www.hgvs.org/mutnomen/disc.html#loss
+		//            So, it's still not decided if there is an analogous 'dup' term
+		//            for deletions.
+		if (!variant.isIns()) return false;
+
+		// Extract sequence from genomic coordinates before variant
+		String seq = null;
+
+		// Get sequence at the 3'end of the variant
+		int sstart, send;
+		int len = variant.getAlt().length();
+
+		if (strandPlus) {
+			sstart = Math.max(0, variant.getStart() - len);
+			send = variant.getStart() - 1;
+		} else {
+			sstart = variant.getStart();
+			send = sstart + (len - 1);
+		}
+
+		// Maybe we can just use exonic sequences (it's faster)
+		// Create a marker and check that is comprised within exon boundaries
+		Marker m = new Marker(variant.getParent(), sstart, send, false, "");
+
+		Exon ex = variantEffect.getExon();
+		if (ex != null && ex.includes(m)) {
+			if (debug) Gpr.debug("Variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (strandPlus ? "+" : "-"));
+			seq = ex.getSequence(m);
+			if (debug) Gpr.debug("Sequence (Exon)  [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'\tsequence (+ strand): " + (ex.isStrandPlus() ? ex.getSequence() : GprSeq.reverseWc(ex.getSequence())));
+		}
+
+		// May be it is not completely in the exon. Use genomic sequences
+		if (seq == null) {
+			seq = genome.getGenomicSequences().querySequence(m);
+			if (debug) Gpr.debug("Sequence (Genome) [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'\tsequence (+ strand): " + seq);
+		}
+
+		// Compare to ALT sequence
+		if (seq == null) return false; // Cannot compare
+
+		return seq.equalsIgnoreCase(variant.getAlt());
+	}
+
+	/**
+	 * Genomic position for exonic variants
 	 */
 	protected String pos() {
-		// Intron
-		if (variantEffect.isIntron()) {
-			int start, end;
-
-			switch (variant.getVariantType()) {
-			case SNP:
-			case MNP:
-				return posIntron(variant.getStart());
-
-			case INS:
-				start = variant.getStart();
-				end = variant.getStart() + (marker.isStrandPlus() ? 1 : -1);
-				break;
-
-			case DEL:
-			case MIXED:
-				start = variant.getStart();
-				end = variant.getEnd();
-				break;
-
-			case INTERVAL:
-				return "";
-
-			default:
-				throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
-			}
-
-			// Calculate positions and create string
-			String posStart = posIntron(start);
-			if (posStart == null) return null;
-			String posEnd = posIntron(end);
-			if (posEnd == null) return null;
-
-			if (posStart.equals(posEnd)) return posStart;
-			return tr.isStrandPlus() ? posStart + "_" + posEnd : posEnd + "_" + posStart;
-		}
-
-		if (tr == null) return null;
-		String posPrepend = "";
-
-		// Exon position
 		int posStart = -1, posEnd = -1;
 
-		int variantPos = tr.isStrandPlus() ? variant.getStart() : variant.getEnd();
-		if (variantEffect.isUtr3()) {
-			// We are after stop codon, coordinates must be '*1', '*2', etc.
-			int pos = tr.baseNumberPreMRna(variantPos);
-			int posStop = tr.baseNumberPreMRna(tr.getCdsEnd());
-			posStart = Math.abs(pos - posStop);
-			posPrepend = "*";
-		} else if (variantEffect.isUtr5()) {
-			// We are before TSS, coordinates must be '-1', '-2', etc.
-			int pos = tr.baseNumberPreMRna(variantPos);
-			int posTss = tr.baseNumberPreMRna(tr.getCdsStart());
-			posStart = Math.abs(pos - posTss);
-			posPrepend = "-";
-		} else {
-			posStart = tr.baseNumberCds(variantPos, false) + 1;
-		}
-
-		// Could not find dna position in transcript?
-		if (posStart <= 0) return null;
+		int variantPosStart = strandPlus ? variant.getStart() : variant.getEnd();
 
 		switch (variant.getVariantType()) {
 		case SNP:
+			posStart = posEnd = variantPosStart;
+			break;
+
 		case MNP:
-			return posPrepend + posStart;
+			posStart = variantPosStart;
+			posEnd = posStart + (strandPlus ? 1 : -1) * (variant.size() - 1);
+			break;
 
 		case INS:
-			posEnd = posStart + 1;
+			posStart = variantPosStart;
+			if (duplication) {
+				// Duplication coordinates
+				int lenAlt = variant.getAlt().length();
+				if (lenAlt == 1) {
+					// One base duplications do not require end positions:
+					// Reference: http://www.hgvs.org/mutnomen/disc.html#dupins
+					// Example: c.7dupT (or c.7dup) denotes the duplication (insertion) of a T at position 7 in the sequence ACTTACTGCC to ACTTACTTGCC
+					posStart += strandPlus ? -1 : 0; // The 'previous base' is duplicated, we have to decrement the position
+					posEnd = posStart;
+				} else {
+					// Duplication coordinates
+					if (strandPlus) {
+						posEnd = posStart - 1;
+						posStart -= lenAlt;
+					} else {
+						// Insert is 'before' variant position, so we must shift one base (compared to plus strand)
+						posEnd = posStart;
+						posStart += lenAlt - 1;
+					}
+				}
+			} else {
+				// Other insertions must list both positions:
+				// Reference: http://www.hgvs.org/mutnomen/disc.html#ins
+				//            ...to prevent confusion, both flanking residues have to be listed.
+				// Example: c.6_7dup (or c.6_7dupTG) denotes a TG duplication (TG insertion) in the sequence ACATGTGCC to ACATGTGTGCC
+				if (strandPlus) {
+					// Insert before current posStart
+					posEnd = posStart;
+					posStart -= 1;
+				} else {
+					// Insert before current posStart (negative strand)
+					posEnd = posStart - 1;
+				}
+			}
 			break;
 
 		case DEL:
 		case MIXED:
-			posEnd = posStart + variant.size() - 1;
+			if (strandPlus) {
+				posStart = variant.getStart();
+				posEnd = variant.getEnd();
+			} else {
+				posStart = variant.getEnd();
+				posEnd = variant.getStart();
+			}
 			break;
 
 		case INTERVAL:
@@ -156,18 +209,68 @@ public class HgvsDna extends Hgvs {
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
 
-		if (posStart == posEnd) return posPrepend + posStart;
-		return posPrepend + posStart + "_" + posPrepend + posEnd;
+		if (posStart == posEnd) return pos(posStart);
+		return pos(posStart) + "_" + pos(posEnd);
+	}
 
+	/**
+	 * HGVS position base on genomic coordinates (chr is assumed to be the same as in transcript/marker).
+	 */
+	protected String pos(int pos) {
+		// Cannot do much if there is no transcript
+		if (tr == null) return null;
+
+		// Are we in an exon?
+		// Note: This may come from an intron-exon boundary variant (intron side, walked in a duplication).
+		//       In that case, the exon marker won't be available from 'variantEffect.marker'.
+		Exon ex = tr.findExon(pos);
+		if (ex != null) return posExon(pos, ex);
+
+		Intron intron = tr.findIntron(pos);
+		if (intron != null) return posIntron(pos, intron);
+
+		// Upstream or downstream
+		return posExon(pos, null);
+	}
+
+	/**
+	 * Convert genomic position to HGVS compatible (DNA) position
+	 */
+	protected String posExon(int pos, Exon ex) {
+		// Initialize
+		String idxPrepend = "";
+		int idx = -1;
+
+		//---
+		// Different regions of the transcript have different ways of showing positions
+		//---
+		if (tr.isUtr3(pos) || tr.isDownstream(pos)) {
+			// 3'UTR: We are after stop codon, coordinates must be '*1', '*2', etc.
+			int baseNum = tr.baseNumber2MRnaPos(pos);
+			int baseNumCdsEnd = tr.baseNumber2MRnaPos(tr.getCdsEnd());
+			idx = Math.abs(baseNum - baseNumCdsEnd);
+			idxPrepend = "*";
+		} else if (tr.isUtr5(pos) || tr.isUpstream(pos)) {
+			// 5'UTR: We are before TSS, coordinates must be '-1', '-2', etc.
+			int baseNum = tr.baseNumber2MRnaPos(pos);
+			int baseNumTss = tr.baseNumber2MRnaPos(tr.getCdsStart());
+			idx = Math.abs(baseNum - baseNumTss);
+			idxPrepend = "-";
+		} else {
+			// Coding Exon: just use CDS position
+			idx = tr.baseNumberCds(pos, false) + 1;
+		}
+
+		// Could not find dna position in transcript?
+		if (idx <= 0) return null;
+
+		return idxPrepend + idx;
 	}
 
 	/**
 	 * Intronic position
 	 */
-	protected String posIntron(int pos) {
-		Intron intron = (Intron) variantEffect.getMarker();
-		if (intron == null) return null;
-
+	protected String posIntron(int pos, Intron intron) {
 		// Jump to closest exon position
 		// Ref:
 		//		beginning of the intron; the number of the last nucleotide of the preceding exon, a plus sign and the position in the intron, like c.77+1G, c.77+2T, etc.
@@ -186,7 +289,7 @@ public class HgvsDna extends Hgvs {
 			// Reference: in the middle of the intron, numbering changes from "c.77+.." to "c.78-.."; for introns with an uneven number of nucleotides the central nucleotide is the last described with a "+"
 			posExonStr = "+";
 
-			if (tr.isStrandPlus()) posExon = intron.getStart() - 1;
+			if (strandPlus) posExon = intron.getStart() - 1;
 			else posExon = intron.getEnd() + 1;
 		}
 
@@ -202,24 +305,27 @@ public class HgvsDna extends Hgvs {
 		}
 
 		// Left side of coding part
-		int cdnaPos = tr.baseNumberPreMRna(posExon);
+		int cdnaPos = tr.baseNumber2MRnaPos(posExon);
 		if (posExon < cdsLeft) {
-			int cdnaStart = tr.baseNumberPreMRna(cdsLeft); // tr.getCdsStart());
+			int cdnaStart = tr.baseNumber2MRnaPos(cdsLeft); // tr.getCdsStart());
 			int utrDistance = Math.abs(cdnaStart - cdnaPos);
-			String utrStr = tr.isStrandPlus() ? "-" : "*";
+			String utrStr = strandPlus ? "-" : "*";
 			return utrStr + utrDistance + (exonDistance > 0 ? posExonStr + exonDistance : "");
 		}
 
 		// Right side of coding part
-		int cdnaEnd = tr.baseNumberPreMRna(cdsRight); // tr.getCdsEnd());
+		int cdnaEnd = tr.baseNumber2MRnaPos(cdsRight); // tr.getCdsEnd());
 		int utrDistance = Math.abs(cdnaEnd - cdnaPos);
-		String utrStr = tr.isStrandPlus() ? "*" : "-";
+		String utrStr = strandPlus ? "*" : "-";
 		return utrStr + utrDistance + (exonDistance > 0 ? posExonStr + exonDistance : "");
 	}
 
 	@Override
 	public String toString() {
-		if (variant == null) return null;
+		if (variant == null || genome == null) return null;
+
+		// Is this a duplication?
+		if (variant.isIns()) duplication = isDuplication();
 
 		String pos = pos();
 		if (pos == null) return null;
@@ -227,7 +333,7 @@ public class HgvsDna extends Hgvs {
 		String type = "";
 		switch (variant.getVariantType()) {
 		case INS:
-			type = "ins";
+			type = duplication ? "dup" : "ins";
 			break;
 
 		case DEL:
@@ -235,6 +341,9 @@ public class HgvsDna extends Hgvs {
 			break;
 
 		case MNP:
+			type = "";
+			break;
+
 		case SNP:
 		case MIXED:
 		case INTERVAL:

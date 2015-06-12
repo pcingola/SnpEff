@@ -29,7 +29,6 @@ public class FastaFileIterator extends FileIterator<String> {
 
 	/**
 	 * Current sequence header
-	 * @return
 	 */
 	public String getHeader() {
 		return header;
@@ -40,8 +39,6 @@ public class FastaFileIterator extends FileIterator<String> {
 	 *
 	 * It extracts the characters after the leading '>' and before the first space, then
 	 * removes leading 'chr', 'chr:', etc.
-	 *
-	 * @return
 	 */
 	public String getName() {
 		if (header == null) return "";
@@ -54,9 +51,6 @@ public class FastaFileIterator extends FileIterator<String> {
 	 *
 	 * Format example:
 	 *     '>ENSP00000356130 pep:known chromosome:GRCh37:1:205111633:205180694:-1 gene:ENSG00000133059 transcript:ENST00000367162'
-	 *
-	 * @param ffi
-	 * @return
 	 */
 	public String getTranscriptId() {
 		Matcher mmatcher = transcriptPattern.matcher(getHeader());
@@ -68,7 +62,6 @@ public class FastaFileIterator extends FileIterator<String> {
 
 	/**
 	 * Handle header
-	 * @param line
 	 */
 	void header(String line) {
 		if (header == null) header = line.substring(1).trim();
@@ -78,7 +71,6 @@ public class FastaFileIterator extends FileIterator<String> {
 
 	/**
 	 * Read a sequence from the file
-	 * @return
 	 */
 	@Override
 	protected String readNext() {

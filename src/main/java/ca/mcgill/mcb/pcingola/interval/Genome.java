@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
@@ -27,6 +28,9 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	private static final long serialVersionUID = -330362012383572257L;
 
+	private static int genomeIdCounter = 0;
+
+	int genomeId;
 	long length = -1;
 	String species;
 	String version;
@@ -37,6 +41,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	HashMap<String, Chromosome> chromosomes;
 	Genes genes; // All genes, transcripts, exons, UTRs, CDS, etc.
 	Boolean codingInfo = null; // Do we have coding info from genes?
+	GenomicSequences genomicSequences; // Store all genomic sequences (of interest) here
 
 	/**
 	 * Create a genome from a faidx file.
@@ -66,11 +71,13 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	public Genome() {
 		super();
-		version = "";
+		id = version = "";
 		type = EffectType.GENOME;
 		chromosomeNames = new ArrayList<String>();
 		chromosomes = new HashMap<String, Chromosome>();
 		genes = new Genes(this);
+		genomicSequences = new GenomicSequences(this);
+		setGenomeId();
 	}
 
 	public Genome(String version) {
@@ -80,6 +87,8 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		chromosomeNames = new ArrayList<String>();
 		chromosomes = new HashMap<String, Chromosome>();
 		genes = new Genes(this);
+		genomicSequences = new GenomicSequences(this);
+		setGenomeId();
 	}
 
 	public Genome(String version, Properties properties) {
@@ -87,6 +96,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		this.version = version;
 		type = EffectType.GENOME;
 		genes = new Genes(this);
+		genomicSequences = new GenomicSequences(this);
 
 		species = properties.getProperty(version + ".genome");
 		if (species == null) throw new RuntimeException("Property: '" + version + ".genome' not found");
@@ -105,16 +115,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		for (String chName : chromosomeNames)
 			add(new Chromosome(this, 0, 0, chName));
 
-	}
-
-	public Genome(String species, String version) {
-		super(null, Integer.MIN_VALUE, Integer.MAX_VALUE, false, version);
-		this.species = species;
-		this.version = version;
-		type = EffectType.GENOME;
-		chromosomeNames = new ArrayList<String>();
-		chromoFastaFiles = new String[0];
-		chromosomes = new HashMap<String, Chromosome>();
+		setGenomeId();
 	}
 
 	/**
@@ -123,6 +124,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	public synchronized void add(Chromosome chromo) {
 		chromosomeNames.add(chromo.getId());
 		chromosomes.put(chromo.getId(), chromo);
+		chromo.setParent(this);
 	}
 
 	/**
@@ -231,6 +233,14 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		return genesSorted;
 	}
 
+	public String getGenomeId() {
+		return id + "[" + genomeId + "]";
+	}
+
+	public GenomicSequences getGenomicSequences() {
+		return genomicSequences;
+	}
+
 	/**
 	 * Get or create a chromosome
 	 */
@@ -290,7 +300,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 					if (e.getSequence().isEmpty()) exonNoSeq++;
 					else exonSeq++;
 
-		return exonSeq < exonNoSeq;
+		return exonNoSeq < exonSeq;
 	}
 
 	@Override
@@ -360,9 +370,25 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	}
 
 	/**
+	 * Save genome to file
+	 */
+	public void save(String fileName) {
+		// Create a list of 'markers' to save
+		Markers markers = new Markers();
+		markers.add(this);
+
+		for (Chromosome chr : this)
+			markers.add(chr);
+
+		for (Gene g : this.getGenes())
+			markers.add(g);
+
+		// Save markers to file
+		markers.save(fileName);
+	}
+
+	/**
 	 * Parse a line from a serialized file
-	 * @param line
-	 * @return
 	 */
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {
@@ -372,6 +398,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 		for (Marker m : markerSerializer.getNextFieldMarkers())
 			add((Chromosome) m);
+
 	}
 
 	/**
@@ -384,7 +411,11 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				+ "\t" + version //
 				+ "\t" + species //
 				+ "\t" + markerSerializer.save((Iterable) chromosomes.values()) //
-		;
+				;
+	}
+
+	private void setGenomeId() {
+		genomeId = genomeIdCounter++;
 	}
 
 	/**
@@ -528,11 +559,11 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		// Chromosomes
 		sb.append("#-----------------------------------------------\n");
 		sb.append("# Number of chromosomes      : " + getChromosomes().size() + "\n");
-		sb.append("# Chromosomes names [sizes]  :\n");
+		sb.append("# Chromosomes                : Format 'chromo_name size codon_table'\n");
 		for (Chromosome chr : getChromosomesSortedSize())
-			sb.append("#\t\t'" + chr.getId() + "' [" + chr.size() + "]\n");
+			sb.append("#\t\t'" + chr.getId() + "'\t" + chr.size() + "\t" + chr.getCodonTable().getName() + "\n");
 
-		if (countTranscriptsProteinCoding <= 0) sb.append("\nWARNING! : No protein coding transcripts found.\n");
+		if (countTranscriptsProteinCoding <= 0) sb.append("\n# WARNING! : No protein coding transcripts found.\n");
 
 		// Done
 		sb.append("#-----------------------------------------------\n");

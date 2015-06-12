@@ -21,11 +21,9 @@ public class Upstream extends Marker {
 
 	/**
 	 * Distance to transcript
-	 * @param seqChange
-	 * @return
 	 */
-	public int distanceToTr(Variant seqChange) {
-		int dist = (parent.isStrandPlus() ? end - seqChange.getStart() : seqChange.getStart() - start) + 1;
+	public int distanceToTr(Variant variant) {
+		int dist = (parent.isStrandPlus() ? end - variant.getStart() : variant.getStart() - start) + 1;
 		return Math.max(0, dist);
 	}
 
@@ -38,14 +36,14 @@ public class Upstream extends Marker {
 	}
 
 	@Override
-	public boolean variantEffect(Variant variants, VariantEffects variantEffects) {
-		if (!intersects(variants)) return false; // Sanity check
-		int distance = distanceToTr(variants);
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false; // Sanity check
+		int distance = distanceToTr(variant);
 
-		VariantEffect variantEffect = variantEffects.newVariantEffect();
+		VariantEffect variantEffect = new VariantEffect(variant);
 		variantEffect.set(this, type, type.effectImpact(), distance + " bases");
 		variantEffect.setDistance(distance);
-		variantEffects.addEffect(variantEffect);
+		variantEffects.add(variantEffect);
 
 		return true;
 	}

@@ -5,9 +5,6 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 /**
  * VCF statistics: This are usually multi-sample statistics
  *
- * TODO:
- * 		- Coverage stats
- *
  * @author pcingola
  */
 public class VcfStats implements SamplingStats<VcfEntry> {

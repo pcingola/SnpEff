@@ -74,10 +74,6 @@ public class Embl extends Features {
 		     bb - (blanks) sequence data     (>=1 per entry)
 		     // - termination line           (ends each entry; 1 per entry)
 	 * 
-	 * 
-	 * @param fkey
-	 * @param value
-	 * @param fieldLineNum
 	 */
 	protected void parseFieldLine(String fkey, String valueOri) {
 		String value = valueOri.trim();
@@ -85,7 +81,6 @@ public class Embl extends Features {
 		if (fkey.equals("XX")) {
 			// Nothing to do
 		} else if (fkey.equals("ID")) {
-			// TODO: Needs better parsing here.
 			String subfields[] = value.split("[;\\s]");
 			locusName = subfields[0];
 			if (subfields.length > 1) shape = subfields[1];

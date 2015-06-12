@@ -57,7 +57,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	boolean useClosestGene = false; // Map to 'any' closest gene?
 	boolean useGeneId = false; // Use geneId instead of geneName
 	boolean usePvalues = true;
-	boolean removeUnusedSets = false; // TODO: Add a command line option?
+	boolean removeUnusedSets = false;
 	boolean orderDescending = false; // If 'true', high scores are better (sort descending and get the first values)
 	int upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH;
 	int minGeneSetSize = 0;
@@ -206,7 +206,7 @@ public class SnpEffCmdGsa extends SnpEff {
 			Timer.showStdErr("Intereting genes from file" //
 					+ "\n\tIntereting genes in file  : " + genesInteresting.size() //
 					+ "\n\tFound genes               : " + hasGene //
-					);
+			);
 		}
 	}
 
@@ -232,7 +232,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 			if ((orderDescending && (geneScore.get(geneId) >= scoreThreshold)) //
 					|| (!orderDescending && (geneScore.get(geneId) <= scoreThreshold)) //
-					) {
+			) {
 				if (geneSets.addInteresting(geneId)) countAdded++; // Count added genes
 				count++;
 			}
@@ -247,7 +247,7 @@ public class SnpEffCmdGsa extends SnpEff {
 					+ "\n\tThreshold                : %f"//
 					+ "\n\tInteresting genes        : %d  (%.2f%%)" //
 					+ "\n\tInteresting genes added  : %d  (%.2f%%)" //
-					, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
+			, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
 		}
 	}
 
@@ -391,7 +391,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		if (verbose) Timer.showStdErr("Done." //
 				+ "\n\t\tGene sets added : " + geneSets.getGeneSetCount() //
 				+ "\n\t\tGenes added     : " + geneSets.getGeneCount() //
-				);
+		);
 	}
 
 	/**
@@ -433,7 +433,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				+ "\n\tNumber of scores         : " + chrPosScoreList.size() //
 				+ "\n\tUnmapped                 : " + unmapped //
 				+ "\n\tMapped to multiple genes : " + mappedMultiple //
-				);
+		);
 
 		if (debug) {
 			System.err.println("Mapping Gene to Score:");
@@ -633,7 +633,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				+ "\n\tScores added        : " + geneScore.size() //
 				+ "\n\tMin score (p-value) : " + minp //
 				+ "\n\tMax score (p-value) : " + maxp //
-				);
+		);
 	}
 
 	/**
@@ -651,9 +651,9 @@ public class SnpEffCmdGsa extends SnpEff {
 			chrPosScoreList = readInputBed();
 			break;
 
-			//		case TXT:
-			//			chrPosScoreList = readInputTxt();
-			//			break;
+		//		case TXT:
+		//			chrPosScoreList = readInputTxt();
+		//			break;
 
 		default:
 			fatalError("Input format '" + inputFormat + "' not supported!");
@@ -715,7 +715,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				System.err.println("Warning: Ignoring line number " + lfi.getLineNum() + "." //
 						+ " Exepcting format 'chr \t pos \t score \n'.\n" //
 						+ "\tLine:\t'" + line + "'" //
-						);
+				);
 				continue;
 			}
 

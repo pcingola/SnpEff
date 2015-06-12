@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.IntergenicConserved;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -45,6 +46,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		addTypeMap("gene", GENE);
 		addTypeMap("pseudogene", TRANSCRIPT);
 
+		addTypeMap("transcript", TRANSCRIPT);
 		addTypeMap("mRNA", TRANSCRIPT);
 		addTypeMap("tRNA", TRANSCRIPT);
 		addTypeMap("snoRNA", TRANSCRIPT);
@@ -84,6 +86,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		fileName = config.getBaseFileNameGenes() + ".gff";
 
 		frameCorrection = true;
+		frameType = FrameType.GFF;
 	}
 
 	@Override
@@ -123,13 +126,9 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// Finish up (fix problems, add missing info, etc.)
 			finishUp();
 
-			// Check that exons have sequences
 			if (verbose) System.out.println(config.getGenome());
-			boolean error = config.getGenome().isMostExonsHaveSequence();
-			if (error && readSequences) throw new RuntimeException("Most Exons do not have sequences!");
-
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (verbose) e.printStackTrace();
 			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);
 		}
 
@@ -200,15 +199,13 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				line = reader.readLine();
 				if (line.startsWith(">")) { // New fasta sequence
 					// Set chromosome sequences and length (create it if it doesn't exist)
-					if (chromoName != null) {
-						chromoLen(chromoName, chromoSb.length());
-						addExonSequences(chromoName, chromoSb.toString()); // Add all sequences
-					}
+					if (chromoName != null) addSequences(chromoName, chromoSb.toString()); // Add all sequences
 
 					// Get sequence name
 					int idxSpace = line.indexOf(' ');
 					if (idxSpace > 0) line = line.substring(0, idxSpace);
 					chromoName = Chromosome.simpleName(line.substring(1).trim()); // New chromosome name
+					chromoNamesReference.add(chromoName);
 
 					// Initialize buffer
 					chromoSb = new StringBuffer();
@@ -220,7 +217,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// Set chromosome sequneces and length (create it if it doesn't exist)
 			if (chromoName != null) {
 				chromoLen(chromoName, chromoSb.length());
-				addExonSequences(chromoName, chromoSb.toString()); // Add all sequences
+				addSequences(chromoName, chromoSb.toString()); // Add all sequences
 			} else warning("Ignoring sequences for '" + chromoName + "'. Cannot find chromosome"); // Chromosome not found
 
 			reader.close();

@@ -117,7 +117,7 @@ public class Motif extends Marker {
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false;// Sanity check
-		variantEffects.addEffect(this, type, effectImpact(variant), "");
+		variantEffects.add(variant, this, type, effectImpact(variant), "");
 		return true;
 	}
 

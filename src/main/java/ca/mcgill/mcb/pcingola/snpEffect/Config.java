@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
@@ -53,6 +54,7 @@ public class Config implements Serializable, Iterable<String> {
 	boolean onlyRegulation; // Only use regulation features
 	boolean errorOnMissingChromo; // Error if chromosome is missing
 	boolean errorChromoHit; // Error if chromosome is not hit in a query
+	boolean shiftHgvs = true; // Shift variants according to HGVS notation (towards the most 3prime possible coordinate)
 	double lofIgnoreProteinCodingAfter;
 	double lofIgnoreProteinCodingBefore;
 	double lofDeleteProteinCodingBases;
@@ -73,34 +75,29 @@ public class Config implements Serializable, Iterable<String> {
 		return configInstance;
 	}
 
-	public Config() {
-		genome = new Genome();
-		treatAllAsProteinCoding = false;
-		onlyRegulation = false;
-		errorOnMissingChromo = false;
-		errorChromoHit = false;
-		configInstance = this; // Make this instance globally available
+	public static Config reset() {
+		return configInstance = null;
 	}
 
 	/**
 	 * Create a config (uses DEFAULT_CONFIG_FILE)
 	 */
 	public Config(String genomeVersion) {
-		init(genomeVersion, DEFAULT_CONFIG_FILE, null);
+		init(genomeVersion, DEFAULT_CONFIG_FILE, null, null);
 	}
 
 	/**
 	 * Create a configuration from 'configFileName'
 	 */
 	public Config(String genomeVersion, String configFileName) {
-		init(genomeVersion, configFileName, null);
+		init(genomeVersion, configFileName, null, null);
 	}
 
 	/**
 	 * Create a configuration from 'configFileName'
 	 */
-	public Config(String genomeVersion, String configFileName, String dataDir) {
-		init(genomeVersion, configFileName, dataDir);
+	public Config(String genomeVersion, String configFileName, String dataDir, Map<String, String> override) {
+		init(genomeVersion, configFileName, dataDir, override);
 	}
 
 	/**
@@ -201,16 +198,6 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	/**
-	 * Find the genome string in a 'codonTable' key string
-	 */
-	String findGenome(String codonKeyStr) {
-		for (String genVer : genomeByVersion.keySet()) {
-			if (codonKeyStr.startsWith(genVer + ".")) return genVer;
-		}
-		return null;
-	}
-
-	/**
 	 * Genes file path (no extension)
 	 */
 	public String getBaseFileNameGenes() {
@@ -226,6 +213,10 @@ public class Config implements Serializable, Iterable<String> {
 	 */
 	public String getBaseFileNameRegulation() {
 		return getDirDataVersion() + "/regulation";
+	}
+
+	public String getBaseFileNameSequence() {
+		return getDirData() + "/" + genome.getVersion() + "/sequence";
 	}
 
 	/**
@@ -333,6 +324,12 @@ public class Config implements Serializable, Iterable<String> {
 		return getDirDataVersion() + "/protein.fa";
 	}
 
+	public String getFileNameSequence(String chr) {
+		String chrNameSafe = Gpr.sanityzeFileName(chr);
+		return getBaseFileNameSequence() + "." + chrNameSafe + ".bin";
+
+	}
+
 	public String getFileSnpEffectPredictor() {
 		return getDirData() + "/" + genome.getVersion() + "/snpEffectPredictor.bin";
 	}
@@ -401,14 +398,14 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Create a configuration from 'configFileName'
 	 */
-	void init(String genomeVersion, String configFileName, String dataDir) {
+	void init(String genomeVersion, String configFileName, String dataDir, Map<String, String> override) {
 		treatAllAsProteinCoding = false;
 		onlyRegulation = false;
 		errorOnMissingChromo = true;
 		errorChromoHit = true;
 		this.dataDir = dataDir;
 
-		readConfig(genomeVersion, configFileName); // Read config file and get a genome
+		readConfig(genomeVersion, configFileName, override); // Read config file and get a genome
 		genome = genomeByVersion.get(genomeVersion); // Set a genome
 		if (!genomeVersion.isEmpty() && (genome == null)) throw new RuntimeException("No such genome '" + genomeVersion + "'");
 		configInstance = this;
@@ -428,6 +425,10 @@ public class Config implements Serializable, Iterable<String> {
 
 	public boolean isOnlyRegulation() {
 		return onlyRegulation;
+	}
+
+	public boolean isShiftHgvs() {
+		return shiftHgvs;
 	}
 
 	public boolean isTreatAllAsProteinCoding() {
@@ -456,11 +457,11 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Read configuration file and create all 'genomes'
 	 */
-	private void readConfig(String genomeVersion, String configFileName) {
+	private void readConfig(String genomeVersion, String configFileName, Map<String, String> override) {
 		//---
 		// Read properties file
 		//---
-		configFileName = readProperties(configFileName);
+		configFileName = readProperties(configFileName, override);
 
 		// Get config file directory
 		configDirPath = "";
@@ -605,6 +606,18 @@ public class Config implements Serializable, Iterable<String> {
 		}
 	}
 
+	String readProperties(String configFileName, Map<String, String> override) {
+		String configFile = readProperties(configFileName);
+
+		if (override != null) {
+			for (String key : override.keySet()) {
+				properties.setProperty(key, override.get(key));
+			}
+		}
+
+		return configFile;
+	}
+
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
@@ -629,6 +642,10 @@ public class Config implements Serializable, Iterable<String> {
 
 	public void setOnlyRegulation(boolean onlyRegulation) {
 		this.onlyRegulation = onlyRegulation;
+	}
+
+	public void setShiftHgvs(boolean shiftHgvs) {
+		this.shiftHgvs = shiftHgvs;
 	}
 
 	public void setSnpEffectPredictor(SnpEffectPredictor snpEffectPredictor) {

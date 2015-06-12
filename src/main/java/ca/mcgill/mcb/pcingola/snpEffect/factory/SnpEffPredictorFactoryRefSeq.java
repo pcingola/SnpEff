@@ -8,6 +8,7 @@ import ca.mcgill.mcb.pcingola.collections.MultivalueHashMap;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
@@ -94,6 +95,9 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 		biotypeById.put("YP", "Protein");
 		biotypeById.put("ZP", "Protein");
 		biotypeById.put("NS", "Genomic");
+
+		frameType = FrameType.UCSC;
+		frameCorrection = true;
 	}
 
 	/**
@@ -111,24 +115,26 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 
 	@Override
 	public SnpEffectPredictor create() {
-		// Read gene intervals from a file
-		if (fileName == null) fileName = config.getBaseFileNameGenes() + ".refseq";
+		try {
+			// Read gene intervals from a file
+			if (fileName == null) fileName = config.getBaseFileNameGenes() + ".refseq";
 
-		if (verbose) System.out.print("Reading gene intervals file : '" + fileName + "'\n\t\t");
-		readRefSeqFile(); // Read gene info
+			if (verbose) System.out.print("Reading gene intervals file : '" + fileName + "'\n\t\t");
+			readRefSeqFile(); // Read gene info
 
-		beforeExonSequences(); // Some clean-up before readng exon sequences
+			beforeExonSequences(); // Some clean-up before readng exon sequences
 
-		// Read chromosome sequences and set exon sequences
-		if (readSequences) readExonSequences();
-		else if (createRandSequences) createRandSequences();
+			// Read chromosome sequences and set exon sequences
+			if (readSequences) readExonSequences();
+			else if (createRandSequences) createRandSequences();
 
-		finishUp(); // Perform adjustments
+			finishUp(); // Perform adjustments
 
-		// Check that exons have sequences
-		if (verbose) System.out.println(config.getGenome());
-		boolean error = config.getGenome().isMostExonsHaveSequence();
-		if (error && readSequences) throw new RuntimeException("Most Exons do not have sequences!");
+			if (verbose) System.out.println(config.getGenome());
+		} catch (Exception e) {
+			if (verbose) e.printStackTrace();
+			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);
+		}
 
 		return snpEffectPredictor;
 	}
@@ -243,6 +249,8 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 							int exFrame = Gpr.parseIntSafe(exFrameStr[i]);
 							String exId = trId + ".ex." + (i + 1);
 							Exon ex = new Exon(tr, exStart, exEnd, strandMinus, exId, i);
+
+							exFrame = frameType.convertFrame(exFrame);
 							ex.setFrame(exFrame);
 							add(ex);
 

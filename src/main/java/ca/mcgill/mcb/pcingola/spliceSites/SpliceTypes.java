@@ -11,6 +11,7 @@ import ca.mcgill.mcb.pcingola.collections.AutoHashMap;
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.SpliceSiteBranchU12;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
@@ -23,7 +24,7 @@ import ca.mcgill.mcb.pcingola.util.Tuple;
 
 /**
  * Analyze sequences from splice sites
- * 
+ *
  * @author pcingola
  */
 public class SpliceTypes {
@@ -97,18 +98,17 @@ public class SpliceTypes {
 	/**
 	 * Calculate the best U12 score.
 	 * If the score is higher than 'thresholdU12Score' then add the chr:pos data to a list
-	 * 
-	 * @param seq
+	 *
 	 * @return A Tuple<Double, Integer> having the best score and best position
 	 */
 	public Tuple<Double, Integer> addBestU12Score(Transcript tr, String chrSeq, String donorAcceptor, int intronStart, int intronEnd) {
 		// Get branch site string: SIZE_BRANCH bases before intron ends.
 		String branchStr = seqBranch(tr, chrSeq, intronStart, intronEnd);
 
-		// Calculate best score and position (position in 'branchStr') 
+		// Calculate best score and position (position in 'branchStr')
 		Tuple<Double, Integer> bestU12 = bestU12Score(branchStr);
 
-		// Calculate chomosome position 
+		// Calculate chomosome position
 		int bestU12Start = bestU12.second, bestU12End;
 		if (tr.isStrandPlus()) {
 			bestU12Start = intronEnd - SpliceTypes.SIZE_BRANCH + bestU12Start;
@@ -119,7 +119,8 @@ public class SpliceTypes {
 		}
 
 		// Add to a collection
-		SpliceSiteBranchU12 ssu12 = new SpliceSiteBranchU12(tr, bestU12Start, bestU12End, tr.isStrandMinus(), "");
+		Intron intron = tr.findIntron(bestU12Start);
+		SpliceSiteBranchU12 ssu12 = new SpliceSiteBranchU12(intron, bestU12Start, bestU12End, tr.isStrandMinus(), "");
 		addBranchU12(donorAcceptor, ssu12);
 
 		return bestU12;
@@ -195,8 +196,8 @@ public class SpliceTypes {
 	}
 
 	/**
-	 * Calculate threshold of U12 PWM scores  
-	 * Pick the score that gives a 'thresholdU12Percentile'. 
+	 * Calculate threshold of U12 PWM scores
+	 * Pick the score that gives a 'thresholdU12Percentile'.
 	 * E.g. branchU12Threshold(0.95) gives the 95% percentile threshold
 	 */
 	public double branchU12Threshold(double thresholdU12Percentile) {
@@ -218,7 +219,7 @@ public class SpliceTypes {
 	}
 
 	/**
-	 * Count how many entries that have both 'donor' and 'acceptor' 
+	 * Count how many entries that have both 'donor' and 'acceptor'
 	 * @param donor
 	 * @param acceptor
 	 * @return
@@ -249,7 +250,7 @@ public class SpliceTypes {
 	}
 
 	/**
-	 * Count branch motifs in entries that have both 'donor' and 'acceptor' 
+	 * Count branch motifs in entries that have both 'donor' and 'acceptor'
 	 * @param donor
 	 * @param acceptor
 	 * @return
@@ -269,7 +270,7 @@ public class SpliceTypes {
 			}
 		}
 
-		// Write fasta file 
+		// Write fasta file
 		if (verbose) Timer.showStdErr("\tWriting fasta sequences to file: " + fastaFile);
 		Gpr.toFile(fastaFile, fasta);
 	}
@@ -281,37 +282,20 @@ public class SpliceTypes {
 		if (verbose) Timer.showStdErr("\tCreating splice sites.");
 
 		int count = 0;
-		for (Transcript tr : transcriptSet) {
-			Exon exPrev = null;
-			for (Exon ex : tr.sortedStrand()) {
-				if (exPrev != null) { // Not for first exon (it has no 'previous' intron)
-					int start, end;
-					if (tr.isStrandPlus()) {
-						start = exPrev.getEnd();
-						end = ex.getStart();
-					} else {
-						start = ex.getEnd();
-						end = exPrev.getStart();
-					}
+		for (Transcript tr : transcriptSet)
+			for (Intron intron : tr.introns())
+				createSpliceSites(intron);
 
-					count += createSpliceSites(ex, exPrev, start, end);
-				}
-
-				exPrev = ex;
-			}
-		}
 		if (verbose) Timer.showStdErr("\tCreated : " + count + " splice sites.");
 	}
 
 	/**
 	 * Create splice sites
-	 * @param ex
-	 * @param exPrev
-	 * @param start
-	 * @param end
 	 */
-	int createSpliceSites(Exon ex, Exon exPrev, int start, int end) {
-		String key = ex.getChromosomeName() + ":" + start + "-" + end;
+	int createSpliceSites(Intron intron) {
+		int start = intron.getStart();
+		int end = intron.getEnd();
+		String key = intron.getChromosomeName() + ":" + start + "-" + end;
 		String donor = donorsByIntron.get(key);
 		String acc = acceptorsByIntron.get(key);
 
@@ -328,12 +312,12 @@ public class SpliceTypes {
 			if (debug) System.err.println("\tCreating splice sites:\t" + donor + "-" + acc + "\tConserved:\t" + donorConserved + "-" + accConserved);
 
 			if (donorConserved.length() > SpliceSite.CORE_SPLICE_SITE_SIZE) {
-				exPrev.createSpliceSiteDonor(Math.min(donorConserved.length(), dist));
+				intron.createSpliceSiteDonor(Math.min(donorConserved.length(), dist));
 				count++;
 			}
 
 			if (accConserved.length() > SpliceSite.CORE_SPLICE_SITE_SIZE) {
-				ex.createSpliceSiteAcceptor(Math.min(accConserved.length(), dist));
+				intron.createSpliceSiteAcceptor(Math.min(accConserved.length(), dist));
 				count++;
 			}
 		}

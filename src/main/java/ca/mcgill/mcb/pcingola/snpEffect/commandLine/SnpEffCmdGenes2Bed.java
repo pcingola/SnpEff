@@ -29,7 +29,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		geneIds = new HashSet<String>();
 	}
 
-	void load() {
+	void loadGenes() {
 		// Parse file
 		if (fileName != null) {
 			if (verbose) Timer.showStdErr("Loading genes list from file '" + fileName + "'");
@@ -71,14 +71,14 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	@Override
 	public boolean run() {
 		boolean isEmpty = (geneIds.size() <= 0);
-		load();
+		loadGenes();
 		if (verbose) {
 			Timer.showStdErr("Number of gene IDs to look up: " + geneIds.size());
 			if (isEmpty) Timer.showStdErr("Empty list of IDs. Using all genes.");
 		}
 
 		// Load config & database
-		loadConfig(); // Read config file
+		loadConfig();
 		loadDb();
 
 		// Find genes
@@ -107,7 +107,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		if (verbose) {
 			Timer.showStdErr("Done\n\tFound      : " + found + " / " + geneIds.size() //
 					+ (filtered > 0 ? "\n\tFiltered out : " + filtered + " / " + found : "") //
-			);
+					);
 		}
 
 		return true;

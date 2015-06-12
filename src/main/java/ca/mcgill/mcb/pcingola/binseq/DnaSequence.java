@@ -10,13 +10,13 @@ import ca.mcgill.mcb.pcingola.binseq.coder.DnaCoder;
 
 /**
  * Binary packed DNA sequence
- * 
+ *
  * Notes:
  * 		- This is designed for short sequences (such as "short reads")
  * 		- Every base is encoded in 2 bits {a, c, g, t} <=> {0, 1, 2, 3}
  * 		- All bits are stored in an array of 'words' (integers)
  * 		- Most significant bits are the first bases in the sequence (makes comparison easier)
- * 
+ *
  * @author pcingola
  *
  */
@@ -31,7 +31,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Empty sequence singleton
-	 * @return
 	 */
 	public static DnaSequence empty() {
 		if (EMPTY == null) EMPTY = new DnaSequence("");
@@ -64,7 +63,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Create a new sequence
-	 * @return
 	 */
 	protected DnaSequence factory() {
 		return new DnaSequence(null);
@@ -89,9 +87,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Get a few bases from this sequence
-	 * @param index
-	 * @param len
-	 * @return
 	 */
 	public String getBases(int index, int len) {
 		char bases[] = new char[len];
@@ -110,8 +105,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Return the base at position 'index'
-	 * @param index
-	 * @return
 	 */
 	@Override
 	public int getCode(int index) {
@@ -163,33 +156,33 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Creates a new sequence by overlapping 'this' and 'sequence'
-	 * 
+	 *
 	 * E.g.
 	 * this.sequence  :  |xxxxxxxxxxxxxxxxxxxxOOOOOOOOOOOOOOOOOOOOOOOO                 |
 	 * other.sequence :  |                    OOOOOOOOOOOOOOOOOOOOOOOOyyyyyyyyyyyyyyyyy|
 	 *                   |                    |start=20                                |
 	 * result         :  |xxxxxxxxxxxxxxxxxxxxOOOOOOOOOOOOOOOOOOOOOOOOyyyyyyyyyyyyyyyyy|
-	 *                   
+	 *
 	 * this.sequence  :  |                        OOOOOOOOOOOOOOOOOOOOOOOOxxxxxxxxxxxxxxxxxxxx|
 	 * other.sequence :  |yyyyyyyyyyyyyyyyyyyyyyyyOOOOOOOOOOOOOOOOOOOOOOOO                    |
 	 *                   |start=-20                                                           |
 	 * result         :  |yyyyyyyyyyyyyyyyyyyyyyyyOOOOOOOOOOOOOOOOOOOOOOOOxxxxxxxxxxxxxxxxxxxx|
-	 * 
-	 * Another case is when a sequence is fully included in the other sequence. In this case the result is just a 
-	 * copy of the longest sequence (with the quality updated) 
-	 *  
+	 *
+	 * Another case is when a sequence is fully included in the other sequence. In this case the result is just a
+	 * copy of the longest sequence (with the quality updated)
+	 *
 	 * E.g.
 	 * this.sequence  :  |xxxxxxxxxxxxxxxxxxxxOOOOOOOOOOOOOOOzzzzzzzzz|
 	 * other.sequence :  |                    OOOOOOOOOOOOOOO         |
 	 *                   |                    |start=20               |
 	 * result         :  |xxxxxxxxxxxxxxxxxxxxOOOOOOOOOOOOOOOzzzzzzzzz|
-	 *                   
+	 *
 	 * this.sequence  :  |                        OOOOOOOOOOO             |
 	 * other.sequence :  |yyyyyyyyyyyyyyyyyyyyyyyyOOOOOOOOOOOzzzzzzzzzzzzz|
 	 *                   |start=-20                                       |
 	 * result         :  |yyyyyyyyyyyyyyyyyyyyyyyyOOOOOOOOOOOzzzzzzzzzzzzz|
-	 * 
-	 * 
+	 *
+	 *
 	 * @param start
 	 * @return A new sequence
 	 */
@@ -231,9 +224,7 @@ public class DnaSequence extends BinarySequence {
 	}
 
 	/**
-	 * Read data in binary format 
-	 * @param dataOutStream
-	 * @throws IOException
+	 * Read data in binary format
 	 */
 	@Override
 	public BinarySequence read(DataInputStream dataInStream) throws IOException {
@@ -247,9 +238,7 @@ public class DnaSequence extends BinarySequence {
 	}
 
 	/**
-	 * Read data in binary format 
-	 * @param dataOutStream
-	 * @throws IOException
+	 * Read data in binary format
 	 */
 	@Override
 	protected void readDataStream(DataInputStream dataInStream) throws IOException {
@@ -262,12 +251,11 @@ public class DnaSequence extends BinarySequence {
 
 	@Override
 	public BinarySequence reverseWc() {
-		// TODO: Optimize this method! Use a cache in DnaCoder to speed up
 		DnaSequence rwc = factory();
 		rwc.codes = new long[codes.length];
 		rwc.length = length;
 
-		// Reverse all words and perform WC 
+		// Reverse all words and perform WC
 		int j = 0, k = 0;
 		long s = 0;
 		for (int index = length - 1; index >= 0; index--) {
@@ -300,7 +288,6 @@ public class DnaSequence extends BinarySequence {
 
 	/**
 	 * Set sequence
-	 * @param seqStr
 	 */
 	@Override
 	public void set(String seqStr) {
@@ -361,9 +348,7 @@ public class DnaSequence extends BinarySequence {
 	}
 
 	/**
-	 * Write data in binary format 
-	 * @param dataOutStream
-	 * @throws IOException
+	 * Write data in binary format
 	 */
 	@Override
 	public void write(DataOutputStream dataOutStream) throws IOException {

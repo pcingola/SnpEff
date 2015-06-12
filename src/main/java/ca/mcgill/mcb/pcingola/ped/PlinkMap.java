@@ -16,7 +16,7 @@ public class PlinkMap {
 
 	public static boolean debug = false;
 
-	HashMap<String, Integer> id2LineNumber; // TODO: This should NOT be called genotypeNames!!!
+	HashMap<String, Integer> id2LineNumber;
 	String chrNames[];
 	int positions[];
 	String ids[];

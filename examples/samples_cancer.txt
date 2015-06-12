@@ -1,0 +1,4 @@
+Patient_01_Germline	Patient_01_Somatic
+Patient_02_Germline	Patient_02_Somatic
+Patient_03_Germline	Patient_03_Somatic
+Patient_04_Germline	Patient_04_Somatic

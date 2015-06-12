@@ -155,6 +155,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		int end = parsePosition(fields[4]);
 		boolean strandMinus = fields[6].equals("-");
 		int frame = (fields[7].equals(".") ? -1 : Gpr.parseIntSafe(fields[7]));
+		frame = frameType.convertFrame(frame);
 		String geneId = "", transcriptId = "";
 		String geneName = null;
 
@@ -175,10 +176,12 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 			if (geneBioType == null) geneBioType = attrMap.get("gene_type"); // Note: This is GENCODE specific
 			if (geneBioType == null) geneBioType = attrMap.get("biotype"); // Try using 'biotype' field
 
-			trBioType = attrMap.get("transcript_type"); // Note: This is GENCODE specific
+			trBioType = attrMap.get("transcript_biotype"); // Transcript biotype
+			if (trBioType == null) trBioType = attrMap.get("transcript_type"); // Note: This is GENCODE specific
+
 		}
 
-		// Use 'source' as bioType (ENSEMBL uses this field)
+		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
 		if ((trBioType == null) || trBioType.isEmpty()) trBioType = source;
 		boolean proteinCoding = isProteingCoding(trBioType);
 

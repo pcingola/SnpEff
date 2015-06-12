@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.interval.tree;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Interval;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
@@ -11,7 +12,7 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
  * An Interval Tree is essentially a map from intervals to objects, which
  * can be queried for all data associated with a particular interval of
  * point
- * 
+ *
  * Adapted from Kevin Dolan's implementation
  */
 public class IntervalTree implements Serializable, Iterable<Marker> {
@@ -56,11 +57,20 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 	}
 
 	/**
+	 * Add all intervals to interval tree's list
+	 * Will not rebuild the tree until the next query or call to build
+	 */
+	public void add(Markers markers) {
+		intervals.add(markers);
+		inSync = false;
+	}
+
+	/**
 	 * Build the interval tree to reflect the list of intervals,
 	 * Will not run if this is currently in sync
-	 * 
-	 * WARNING: This method is not thread safe 
-	 * 
+	 *
+	 * WARNING: This method is not thread safe
+	 *
 	 */
 	public void build() {
 		if (!inSync) {
@@ -77,17 +87,30 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 		return size;
 	}
 
+	public Markers getIntervals() {
+		return intervals;
+	}
+
+	public boolean isEmpty() {
+		return intervals.isEmpty();
+	}
+
 	/**
 	 * Determine whether this interval tree is currently a reflection of all intervals in the interval list
 	 * @return true if no changes have been made since the last build
 	 */
-	public boolean inSync() {
+	public boolean isInSync() {
 		return inSync;
 	}
 
 	@Override
 	public Iterator<Marker> iterator() {
 		return head.iterator();
+	}
+
+	public void load(String fileName, Genome genome) {
+		intervals.load(fileName, genome);
+		inSync = false;
 	}
 
 	private String nodeString(IntervalNode node, int level) {
@@ -105,9 +128,9 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 	/**
 	 * Perform an interval query, returning the intervals that intersect with 'interval'
 	 * Will rebuild the tree if out of sync
-	 * 
+	 *
 	 * WARNING: This method is not thread safe if the interval tree is not fully built
-	 * 
+	 *
 	 * @return All intervals that intersect 'interval'
 	 */
 	public Markers query(Interval interval) {
@@ -125,9 +148,9 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 	/**
 	 * Perform a stabbing query, returning the interval objects
 	 * Will rebuild the tree if out of sync
-	 * 
+	 *
 	 * WARNING: This method is not thread safe if the interval tree is not fully built
-	 * 
+	 *
 	 * @param point the time to stab
 	 * @return	   all intervals that contain time
 	 */

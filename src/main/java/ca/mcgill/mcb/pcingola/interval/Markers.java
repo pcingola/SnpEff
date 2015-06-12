@@ -18,7 +18,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * A collection of markers
- * 
+ *
  * @author pcingola
  */
 public class Markers implements Serializable, Collection<Marker> {
@@ -68,7 +68,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Add an interval to the collection
-	 * @param marker
 	 */
 	@Override
 	public boolean add(Marker marker) {
@@ -77,7 +76,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Add all intervals
-	 * @param markersToAdd
 	 */
 	public Markers add(Markers markersToAdd) {
 		markers.addAll(markersToAdd.markers);
@@ -86,7 +84,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Add all markers in this collection
-	 * @param intervalsMarkerIntervaloAdd
 	 */
 	@Override
 	public boolean addAll(Collection<? extends Marker> mm) {
@@ -113,8 +110,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Are all intervals equal?
-	 * @param intervals
-	 * @return
 	 */
 	public boolean equals(Markers intervals) {
 		if (intervals == null) return false;
@@ -146,10 +141,10 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Perform the intersection of all overlapping intervals
-	 * 
+	 *
 	 * For each marker, calculate all overlapping markers and create a new marker that contains them all.
 	 * Return a set of those new markers.
-	 * 
+	 *
 	 * @param markerIntervals
 	 * @return
 	 */
@@ -192,11 +187,21 @@ public class Markers implements Serializable, Collection<Marker> {
 		return markers.iterator();
 	}
 
+	public void load(String fileName, Genome genome) {
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
+		Markers markers = markerSerializer.load(fileName);
+		add(markers);
+	}
+
+	/**
+	 * Merge overlapping intervals
+	 * This is the same as 'union()' method, but the algorithm is more efficient
+	 */
 	public Markers merge() {
 		// Intervals sorted by start
 		Markers intsSorted = new Markers();
 		intsSorted.add(this);
-		intsSorted.sort(false, false);
+		intsSorted.sort();
 
 		// Merge intervals
 		Markers intsMerged = new Markers();
@@ -224,13 +229,14 @@ public class Markers implements Serializable, Collection<Marker> {
 			// Previous interval finished? => add it to list
 			if (i.start > end) {
 				if ((start >= 0) && (end >= 0)) {
-					if (end < start) {
-						Gpr.debug("WTF!?\tstart: " + start + "\tend:" + end);
+					if (end < start) { // Sanity check
+						Gpr.debug("This should never happen!\tstart: " + start + "\tend:" + end);
 						for (Marker m : this)
-							System.out.println("\t" + m);
+							System.err.println("\t" + m);
+					} else {
+						Marker im = new Marker(chromo, start, end, false, tag);
+						intsMerged.add(im);
 					}
-					Marker im = new Marker(chromo, start, end, false, tag);
-					intsMerged.add(im);
 				}
 				start = end = -1;
 				tag = "";
@@ -286,9 +292,9 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Returns the result of this set minus 'intervals'
-	 * 
+	 *
 	 * WARNING: This method should only be used for debugging (or in very small collections) since it is extremely inefficient.
-	 * 
+	 *
 	 * @param interval
 	 * @return
 	 */
@@ -329,7 +335,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Save to a file using a serializer
-	 * @param fileName
 	 */
 	public void save(String fileName) {
 		// Nothing to save
@@ -358,7 +363,7 @@ public class Markers implements Serializable, Collection<Marker> {
 			markersToSave.add(m);
 
 		// Save
-		MarkerSerializer markerSerializer = new MarkerSerializer();
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
 		markerSerializer.save(fileName, markersToSave);
 	}
 
@@ -443,16 +448,18 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Perform the union of all overlapping intervals
-	 * 
+	 *
 	 * For each marker, calculate all overlapping markers and create a new marker that contains them all.
 	 * Return a set of those new markers.
-	 * 
+	 *
 	 * @param markerIntervals
 	 * @return
 	 */
 	public Markers union() {
 		Markers unionOfOverlaps = new Markers();
+
 		IntervalForest forest = new IntervalForest(this);
+		forest.build();
 
 		HashSet<Marker> done = new HashSet<Marker>();
 		for (Marker mi : this) {
@@ -460,7 +467,8 @@ public class Markers implements Serializable, Collection<Marker> {
 				Markers query = forest.query(mi);
 
 				// Get union
-				Marker union = new Marker(mi.getParent(), mi.getStart(), mi.getEnd(), mi.isStrandMinus(), "");
+				// Marker union = new Marker(mi.getParent(), mi.getStart(), mi.getEnd(), mi.isStrandMinus(), "");
+				Marker union = mi.clone();
 				done.add(mi);
 				for (Marker m : query) {
 					if ((union != null) && (union.getStart() > m.getStart()) || (union.getEnd() < m.getEnd())) union = union.union(m);
@@ -477,7 +485,7 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Remove duplicated markers
-	 * @return this object 
+	 * @return this object
 	 */
 	public Markers unique() {
 		HashSet<Marker> set = new HashSet<Marker>();

@@ -2,10 +2,10 @@ package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 
 import java.util.HashMap;
 
+import ca.mcgill.mcb.pcingola.align.SmithWaterman;
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
-import ca.mcgill.mcb.pcingola.fileIterator.SmithWaterman;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
@@ -24,8 +24,9 @@ public class SnpEffCmdCds extends SnpEff {
 
 	public static boolean onlyOneError = false; // This is used in some test-cases
 	public static double maxErrorPercentage = 0.01; // Maximum allowed error is 1% (otherwise test fails)
-	public static int MAX_ALIGN_LENGTH = 10000;
+	public static int MAX_ALIGN_LENGTH = 33000;
 
+	boolean storeAlignments; // Store alignments (used for some test cases)
 	int totalErrors = 0;
 	int totalOk = 0;
 	int totalWarnings = 0;
@@ -112,7 +113,7 @@ public class SnpEffCmdCds extends SnpEff {
 				} else if ((mRna.length() < cdsReference.length()) // CDS longer than mRNA? May be it is actually an mRNA + poly-A tail (instead of a CDS)
 						&& cdsReference.substring(mRna.length()).replace('A', ' ').trim().isEmpty() // May be it is an mRNA and it has a ploy-A tail added
 						&& cdsReference.substring(0, mRna.length()).equals(mRna) // Compare cutting poly-A tail
-						) {
+				) {
 					// OK, it was a mRNA +  polyA
 					totalOk++;
 					ok = true;
@@ -121,7 +122,7 @@ public class SnpEffCmdCds extends SnpEff {
 				} else if ((mRna.length() > cdsReference.length()) // PolyA in the reference?
 						&& mRna.substring(cdsReference.length()).replace('A', ' ').trim().isEmpty() //
 						&& mRna.substring(0, cdsReference.length()).equals(mRna) //
-						) {
+				) {
 					// OK, it was a mRNA +  polyA
 					totalOk++;
 					ok = true;
@@ -133,27 +134,29 @@ public class SnpEffCmdCds extends SnpEff {
 
 					if (verbose) System.out.print('+');
 				} else {
-					if (debug || onlyOneError) {
+					if (debug || storeAlignments || onlyOneError) {
 						// Create a string indicating differences
 						SmithWaterman sw = new SmithWaterman(cds, cdsReference);
 						if (Math.max(cds.length(), cdsReference.length()) < MAX_ALIGN_LENGTH) sw.align();
 
 						int maxScore = Math.min(cds.length(), cdsReference.length());
-						int score = sw.getAligmentScore();
-						System.err.println("\nERROR: CDSs do not match for transcript " + tr.getId() //
-								+ "\tStrand:" + tr.isStrandMinus()//
-								+ "\tExons: " + tr.numChilds() //
-								+ "\n" //
-								+ String.format("\tSnpEff CDS  (%6d) : '%s'\n", cds.length(), cds.toLowerCase()) //
-								+ String.format("\tReference   (%6d) : '%s'\n", cdsReference.length(), cdsReference.toLowerCase()) //
-								+ "\tAlignment (Snpeff CDS vs Reference CDS)." //
-								+ "\tScore: " + score //
-								+ "\tMax. possible score: " + maxScore //
-								+ "\tDiff: " + (maxScore - score) //
-								+ "\n" + sw //
-								);
-						System.err.println("Transcript details:\n" + tr);
+						int score = sw.getAlignmentScore();
 
+						if (debug || onlyOneError) {
+							System.err.println("\nERROR: CDSs do not match for transcript " + tr.getId() //
+									+ "\tStrand:" + tr.isStrandMinus()//
+									+ "\tExons: " + tr.numChilds() //
+									+ "\n" //
+									+ String.format("\tSnpEff CDS  (%6d) : '%s'\n", cds.length(), cds.toLowerCase()) //
+									+ String.format("\tReference   (%6d) : '%s'\n", cdsReference.length(), cdsReference.toLowerCase()) //
+									+ "\tAlignment (Snpeff CDS vs Reference CDS)." //
+									+ "\tScore: " + score //
+									+ "\tMax. possible score: " + maxScore //
+									+ "\tDiff: " + (maxScore - score) //
+									+ "\n" + sw //
+							);
+							System.err.println("Transcript details:\n" + tr);
+						}
 						if (onlyOneError) {
 							System.err.println("Transcript details:\n" + tr);
 							throw new RuntimeException("Showing only one error!");
@@ -172,7 +175,15 @@ public class SnpEffCmdCds extends SnpEff {
 			}
 
 		double perc = ((double) totalErrors) / ((double) (totalErrors + totalOk));
-		System.out.println("\n\tCDS check:\t" + config.getGenome().getVersion() + "\tOK: " + totalOk + "\tWarnings: " + totalWarnings + "\tNot found: " + totalNotFound + "\tErrors: " + totalErrors + "\tError percentage: " + (100 * perc) + "%");
+		System.out.println("\n\tCDS check:\t" //
+				+ config.getGenome().getVersion() //
+				+ "\tOK: " + totalOk //
+				+ "\tWarnings: " + totalWarnings //
+				+ "\tNot found: " + totalNotFound //
+				+ "\tErrors: " + totalErrors //
+				+ "\tError percentage: " + (100 * perc) + "%" //
+		);
+
 		return perc;
 	}
 
@@ -190,10 +201,10 @@ public class SnpEffCmdCds extends SnpEff {
 					else usage("Option '-c' without config file argument");
 				} else if (args[i].equals("-v") || args[i].equalsIgnoreCase("-debug")) {
 					debug = true;
-				} else usage("Unknow option '" + args[i] + "'");
+				} else usage("Unknown option '" + args[i] + "'");
 			} else if (genomeVer.isEmpty()) genomeVer = args[i];
 			else if (cdsFile.isEmpty()) cdsFile = args[i];
-			else usage("Unknow parameter '" + args[i] + "'");
+			else usage("Unknown parameter '" + args[i] + "'");
 		}
 
 		// Check: Do we have all required parameters?
@@ -283,6 +294,10 @@ public class SnpEffCmdCds extends SnpEff {
 		if (verbose) Timer.showStdErr("done");
 
 		return true;
+	}
+
+	public void setStoreAlignments(boolean storeAlignments) {
+		this.storeAlignments = storeAlignments;
 	}
 
 	/**

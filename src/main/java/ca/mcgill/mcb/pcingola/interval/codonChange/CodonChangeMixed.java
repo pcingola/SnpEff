@@ -50,7 +50,7 @@ public class CodonChangeMixed extends CodonChangeMnp {
 
 		// Create codon changes
 		variantEffectsOri = variantEffects;
-		this.variantEffects = new VariantEffects(variant);
+		this.variantEffects = new VariantEffects();
 		codonChangeMnp = CodonChange.factory(mnp, transcript, this.variantEffects);
 		codonChangeIndel = CodonChange.factory(indel, transcript, this.variantEffects);
 	}
@@ -75,18 +75,18 @@ public class CodonChangeMixed extends CodonChangeMnp {
 		}
 
 		// Add main effect
-		varEff = effect(varEff.getMarker(), varEff.getEffectType(), "", codonsOld, codonsNew, codonStartNum, codonStartIndex, false);
+		varEff = effect(varEff.getMarker(), varEff.getEffectType(), "", codonsRef, codonsAlt, codonStartNum, codonStartIndex, false);
 
 		// Add 'additional' effects
 		for (int i = 0; i < variantEffects.size(); i++) {
 			List<EffectType> effTypes = variantEffects.get(i).getEffectTypes();
 			for (int j = 0; j < effTypes.size(); j++) {
 				EffectType effType = effTypes.get(j);
-				if (!varEff.hasEffectType(effType)) varEff.addEffectType(effType);
+				if (!varEff.hasEffectType(effType)) varEff.addEffect(effType);
 			}
 		}
 
-		variantEffectsOri.addEffect(varEff);
+		variantEffectsOri.add(varEff);
 	}
 
 	void codonNum() {

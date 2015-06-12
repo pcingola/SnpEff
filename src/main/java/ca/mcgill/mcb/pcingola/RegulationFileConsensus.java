@@ -6,19 +6,23 @@ import java.util.HashMap;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.fileIterator.RegulationFileIterator;
+import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * Create a regulation consensus from a regulation file.
- * 
+ *
  * @author pcingola
  */
 public class RegulationFileConsensus {
 
+	/**
+	 * This class collapses adjacent intervals that appear
+	 * consecutively within a regulatopn file
+	 * @author pcingola
+	 */
 	class RegulationConsensus {
-
 		int count = 1;
 		Regulation consensus = null;
 
@@ -64,7 +68,6 @@ public class RegulationFileConsensus {
 
 	/**
 	 * Add to consensus
-	 * @param reg
 	 */
 	public void consensus(Regulation reg) {
 		String name = reg.getName();
@@ -87,8 +90,6 @@ public class RegulationFileConsensus {
 
 	/**
 	 * Get regulation list by cell type (or create a new list)
-	 * @param cellType
-	 * @return
 	 */
 	public ArrayList<Regulation> getRegulationList(String cellType) {
 		ArrayList<Regulation> regs = regByCell.get(cellType);
@@ -100,8 +101,7 @@ public class RegulationFileConsensus {
 	}
 
 	/**
-	 * Read a file and add all regulation intervals 
-	 * @param regulationFileIterator
+	 * Read a file and add all regulation intervals
 	 */
 	public void readFile(RegulationFileIterator regulationFileIterator) {
 		String chromo = "";
@@ -130,24 +130,29 @@ public class RegulationFileConsensus {
 			regCons.flush();
 
 		// Show stats
-		Timer.showStdErr("Done");
-		double perc = (100.0 * totalCount / totalLineNum);
-		System.err.println("\tTotal lines                 : " + lineNum);
-		System.err.println("\tTotal annotation count      : " + totalCount);
-		System.err.println("\tPercent                     : " + String.format("%.1f%%", perc));
-		System.err.println("\tTotal annotated length      : " + totalLength);
-		System.err.println("\tNumber of cell/annotations  : " + regConsByName.size());
+		if (verbose) {
+			Timer.showStdErr("Done");
+			double perc = (100.0 * totalCount / totalLineNum);
+			System.err.println("\tTotal lines                 : " + lineNum);
+			System.err.println("\tTotal annotation count      : " + totalCount);
+			System.err.println("\tPercent                     : " + String.format("%.1f%%", perc));
+			System.err.println("\tTotal annotated length      : " + totalLength);
+			System.err.println("\tNumber of cell/annotations  : " + regConsByName.size());
+		}
 	}
 
 	/**
 	 * Save databases (one file per cellType)
-	 * @param outputDir
 	 */
 	public void save(String outputDir) {
 		for (String cellType : regByCell.keySet()) {
 			String fileName = outputDir + "/regulation_" + cellType + ".bin";
-			Timer.showStdErr("Saving database '" + cellType + "' in file '" + fileName + "'");
-			Gpr.toFileSerializeGz(fileName, regByCell.get(cellType));
+			if (verbose) Timer.showStdErr("Saving database '" + cellType + "' in file '" + fileName + "'");
+
+			// Save markers to file
+			Markers markersToSave = new Markers();
+			markersToSave.addAll(regByCell.get(cellType));
+			markersToSave.save(fileName);
 		}
 	}
 

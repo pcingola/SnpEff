@@ -31,19 +31,14 @@ public class Worker<TI, TO> extends UntypedActor {
 
 	/**
 	 * Perform main calculation
-	 * You must override this method to peroform whatever calculation you want to implement
-	 * 
-	 * @param data
-	 * @return
+	 * You must override this method to perform whatever calculation you want to implement
 	 */
 	public TO calculate(TI data) {
 		throw new RuntimeException("Method calculate() not implemented in class " + this.getClass().getSimpleName());
 	}
 
 	/**
-	 * Perform some usefull action
-	 * @param message
-	 * @return
+	 * Perform some useful action
 	 */
 	@SuppressWarnings("unchecked")
 	public Result<TO> calculate(Work<TI> work) {

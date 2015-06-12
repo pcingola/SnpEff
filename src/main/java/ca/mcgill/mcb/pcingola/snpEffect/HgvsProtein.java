@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Coding change in HGVS notation (amino acid changes)
@@ -10,10 +11,10 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 
 public class HgvsProtein extends Hgvs {
 
+	public static boolean debug = false;
+
 	int codonNum, aaPos;
 	String aaNew3, aaOld3;
-
-	// EffectType effectType;
 
 	public HgvsProtein(VariantEffect variantEffect) {
 		super(variantEffect);
@@ -33,8 +34,8 @@ public class HgvsProtein extends Hgvs {
 			// 		 termination codon; for clarity we this page describes changes using the three-letter amino acid
 			CodonTable codonTable = marker.codonTable();
 
-			String aaNew = variantEffect.getAaNew();
-			String aaOld = variantEffect.getAaOld();
+			String aaNew = variantEffect.getAaAlt();
+			String aaOld = variantEffect.getAaRef();
 
 			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew3 = "";
 			else aaNew3 = codonTable.aaThreeLetterCode(aaNew);
@@ -80,16 +81,44 @@ public class HgvsProtein extends Hgvs {
 	 * 		p.(Trp26Ter) indicates RNA nor protein was analysed but amino acid Tryptophan26 (Trp, W) is predicted to change to a stop codon (Ter) (alternatively p.(W26*) or p.(Trp26*))
 	 */
 	protected String del() {
-		/**
-		 * Frame shifts are a special type of amino acid deletion/insertion affecting an amino acid
-		 * between the first (initiation, ATG) and last codon (termination, stop), replacing the
-		 * normal C-terminal sequence with one encoded by another reading frame (specified 2013-10-11).
-		 * A frame shift is described using "fs" after the first amino acid affected by the change.
-		 * Descriptions either use a short ("fs") or long ("fsTer#") description
-		 */
-		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return "fs";
-
 		return "del";
+	}
+
+	/**
+	 * Mixed variants
+	 * Deletion/insertions (indels) replace one or more amino acid residues with one or more other
+	 * amino acid residues. Deletion/insertions are described using "delins" as a deletion followed
+	 * by an insertion after an indication of the amino acid(s) flanking the site of the
+	 * deletion/insertion separated by a "_" (underscore, see Discussion). Frame shifts are a special
+	 * type of amino acid deletion/insertion affecting an amino acid between the first (initiation, ATG)
+	 * and last codon (termination, stop), replacing the normal C-terminal sequence with one encoded
+	 * by another reading frame (specified 2013-10-11). A frame shift is described using "fs" after
+	 * the first amino acid affected by the change. Descriptions either use a short ("fs") or long
+	 * ("fsTer#") description. The description of frame shifts does not include the deletion at
+	 * protein level from the site of the frame shift to the natural end of the protein (stop codon).
+	 * The inserted amino acid residues are not described, only the total length of the new shifted
+	 * frame is given (i.e. including the first amino acid changed).
+	 */
+	protected String delins() {
+		return "delins" + aaNew3;
+	}
+
+	/**
+	 * Duplications
+	 */
+	protected String dup() {
+		return "dup";
+	}
+
+	/**
+	 * Frame shifts are a special type of amino acid deletion/insertion affecting an amino acid
+	 * between the first (initiation, ATG) and last codon (termination, stop), replacing the
+	 * normal C-terminal sequence with one encoded by another reading frame (specified 2013-10-11).
+	 * A frame shift is described using "fs" after the first amino acid affected by the change.
+	 * Descriptions either use a short ("fs") or long ("fsTer#") description
+	 */
+	protected String fs() {
+		return "fs";
 	}
 
 	/**
@@ -108,98 +137,76 @@ public class HgvsProtein extends Hgvs {
 	 * NOTE: it must be possible to deduce the 17 inserted amino acids from the description given at DNA or RNA level
 	 */
 	protected String ins() {
-		// We cannot write frame shifts this way
-		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return "fs";
-
 		return "ins" + aaNew3;
 	}
 
 	/**
-	 * Mixed variants
-	 * Deletion/insertions (indels) replace one or more amino acid residues with one or more other
-	 * amino acid residues. Deletion/insertions are described using "delins" as a deletion followed
-	 * by an insertion after an indication of the amino acid(s) flanking the site of the
-	 * deletion/insertion separated by a "_" (underscore, see Discussion). Frame shifts are a special
-	 * type of amino acid deletion/insertion affecting an amino acid between the first (initiation, ATG)
-	 * and last codon (termination, stop), replacing the normal C-terminal sequence with one encoded
-	 * by another reading frame (specified 2013-10-11). A frame shift is described using "fs" after
-	 * the first amino acid affected by the change. Descriptions either use a short ("fs") or long
-	 * ("fsTer#") description. The description of frame shifts does not include the deletion at
-	 * protein level from the site of the frame shift to the natural end of the protein (stop codon).
-	 * The inserted amino acid residues are not described, only the total length of the new shifted
-	 * frame is given (i.e. including the first amino acid changed).
+	 * Is this a 'pure' deletion?
+	 * E.g.:
+	 * 		- A 'CODON_DELETION' is a pure deletion (form HGVS' perspective)
+	 * 		- A 'CODON_CHANGE_PLUS_CODON_DELETION' is not a 'pure' deletion for HGVS (it's a 'delins')
 	 */
-	protected String mixed() {
-		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return "fs";
-
-		// Can we simplify AAs?
-		while (!aaOld3.isEmpty() && !aaNew3.isEmpty()) {
-			String ao3 = aaOld3.substring(0, 3);
-			String an3 = aaNew3.substring(0, 3);
-			if (ao3.equals(an3)) {
-				aaOld3 = aaOld3.substring(3);
-				aaNew3 = aaNew3.substring(3);
-				codonNum++;
-			} else break;
-		}
-
-		return "delins" + aaNew3;
+	boolean isDel() {
+		return !aaOld3.isEmpty() && aaNew3.isEmpty();
 	}
 
 	/**
-	 * Protein coding position
+	 * Is this variant a duplication
 	 */
-	protected String pos() {
-		switch (variant.getVariantType()) {
-		case SNP:
-		case MNP:
-			return pos(codonNum);
+	protected boolean isDuplication() {
+		//---
+		// Simple duplications can be obtained by looking into AA.Ref / AA.Alt
+		//---
+		String aaRef = variantEffect.getAaRef().toUpperCase();
+		String aaAlt = variantEffect.getAaAlt().toUpperCase();
 
-		case INS:
-			String posStart = pos(codonNum);
-			if (posStart == null) return null;
-			String posEnd = pos(codonNum + 1);
-			if (posEnd == null) return null;
-			return posStart + "_" + posEnd;
+		// Compare to ALT sequence
+		if (debug) Gpr.debug("AA.Ref: '" + aaRef + "'\tAA.Alt: '" + aaAlt);
+		if (aaAlt.startsWith(aaRef)) return true;
 
-		case DEL:
-			posStart = pos(codonNum);
-			if (posStart == null) return null;
+		//---
+		// More complex duplications need to look into the protein sequence
+		//---
 
-			// Frame shifts ....are described using ... the change of the first amino acid affected
-			// ... the description does not include a description of the deletion from the site of the change
-			if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return posStart;
+		// Extract sequence from genomic coordinates before variant
+		String protein = tr.protein();
+		if (protein == null) return false; // Cannot calculate duplication
 
-			if (aaOld3 == null || aaOld3.isEmpty() || aaOld3.equals("-")) return null;
-			if (aaOld3.length() == 3) return posStart; // Single AA deleted
+		// Calculate net amino acid change
+		String aaNet = variantEffect.getAaNetChange();
 
-			int end = codonNum + (aaOld3.length() / 3) - 1;
-			posEnd = pos(end);
-			if (posEnd == null) return null;
+		// Get previous AA sequence
+		int send = variantEffect.getCodonNum();
+		int sstart = send - aaNet.length();
+		if (sstart < 0 || send > protein.length()) return false;
+		String seq = protein.substring(sstart, send);
 
-			return posStart + "_" + posEnd;
+		// Compare to ALT sequence
+		boolean dup = seq.equalsIgnoreCase(aaNet);
+		if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'" //
+				+ "\n\tAA Ref       : '" + variantEffect.getAaRef() + "'" //
+				+ "\n\tAA Alt       : '" + variantEffect.getAaAlt() + "'" //
+				+ "\n\tAA Alt (net) : '" + aaNet + "'" //
+				+ "\n\tDup?         : " + dup);
 
-		case MIXED:
-			posStart = pos(codonNum);
-			if (posStart == null) return null;
+		return dup;
+	}
 
-			// Frame shifts ....are described using ... the change of the first amino acid affected
-			// ... the description does not include a description of the deletion from the site of the change
-			if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return posStart;
+	/**
+	 * Is this a frameShift variant?
+	 */
+	boolean isFs() {
+		return variantEffect.hasEffectType(EffectType.FRAME_SHIFT);
+	}
 
-			if (aaOld3 == null || aaOld3.isEmpty() || aaOld3.equals("-")) aaOld3 = "";
-			if (aaOld3.length() == 3) return posStart; // Single AA deleted
-			end = codonNum + (aaOld3.length() / 3) - 1;
-			posEnd = pos(end);
-			if (posEnd == null) return null;
-			return posStart + "_" + posEnd;
-
-		case INTERVAL:
-			return "";
-
-		default:
-			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
-		}
+	/**
+	 * Is this a 'pure' insertion?
+	 * E.g.:
+	 * 		- A 'CODON_INSERTION' is a pure insertion (form HGVS' perspective)
+	 * 		- A 'CODON_CHANGE_PLUS_CODON_INSERTION' is not a 'pure' insertion for HGVS (it's a 'delins')
+	 */
+	boolean isIns() {
+		return aaOld3.isEmpty() && !aaNew3.isEmpty();
 	}
 
 	/**
@@ -217,12 +224,151 @@ public class HgvsProtein extends Hgvs {
 		return codonTable.aaThreeLetterCode(protSeq.charAt(codonNum)) + (codonNum + 1);
 	}
 
+	String pos(int start, int end) {
+		// Only one position needed?
+		String posStart = pos(start);
+		if (posStart == null) return null;
+		if (start == end) return posStart;
+
+		// Both position needed
+		String posEnd = pos(end);
+		if (posEnd == null) return null;
+		return posStart + "_" + posEnd;
+	}
+
+	/**
+	 * Position for deletions
+	 */
+	protected String posDel() {
+		String posStart = pos(codonNum);
+		if (posStart == null) return null;
+
+		if (aaOld3 == null || aaOld3.isEmpty() || aaOld3.equals("-")) return null;
+		if (aaOld3.length() == 3) return posStart; // Single AA deleted
+
+		int end = codonNum + (aaOld3.length() - aaNew3.length()) / 3 - 1;
+		String posEnd = pos(end);
+		if (posEnd == null) return null;
+
+		return posStart + "_" + posEnd;
+	}
+
+	/**
+	 * Position for 'delins'
+	 */
+	protected String posDelIns() {
+		String posStart = pos(codonNum);
+		if (posStart == null) return null;
+
+		// Frame shifts ....are described using ... the change of the first amino acid affected
+		// ... the description does not include a description of the deletion from the site of the change
+		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return posStart;
+
+		if (aaOld3 == null || aaOld3.isEmpty() || aaOld3.equals("-")) aaOld3 = "";
+		if (aaOld3.length() == 3) return posStart; // Single AA deleted
+		int end = codonNum + (aaOld3.length() / 3) - 1;
+
+		String posEnd = pos(end);
+		if (posEnd == null) return null;
+		return posStart + "_" + posEnd;
+	}
+
+	/**
+	 * Position for 'duplications' (a special kind of insertion)
+	 */
+	protected String posDup() {
+		int start, end;
+
+		int netLen = aaNew3.length() / 3;
+		if (netLen == 1) {
+			start = end = codonNum - 1;
+		} else {
+			end = codonNum - 1;
+			start = end - (netLen - 1);
+		}
+
+		return pos(start, end);
+	}
+
+	/**
+	 * Frame shifts ....are described using ... the change of the first amino acid affected
+	 * ... the description does not include a description of the deletion from the site of the change
+	 */
+	protected String posFs() {
+		String posStart = pos(codonNum);
+		return posStart;
+	}
+
+	/**
+	 * Position for insertions
+	 */
+	protected String posIns() {
+		int start = codonNum - 1;
+		int end = codonNum;
+		return pos(start, end);
+	}
+
+	/**
+	 * Position: SNP or NMP
+	 */
+	protected String posSnpOrMnp() {
+		return pos(codonNum);
+	}
+
+	/**
+	 * Can we simplify AAs?
+	 */
+	void simplifyAminoAcids() {
+		simplifyAminoAcidsLeft();
+		simplifyAminoAcidsRight();
+	}
+
+	/**
+	 * Remove same AA from left side
+	 */
+	void simplifyAminoAcidsLeft() {
+		// Can we simplify AAs?
+		while (!aaOld3.isEmpty() && !aaNew3.isEmpty()) {
+			// Get the first AA
+			String ao3 = aaOld3.substring(0, 3);
+			String an3 = aaNew3.substring(0, 3);
+
+			// Both share the same AA? => Remove it
+			if (ao3.equals(an3)) {
+				aaOld3 = aaOld3.substring(3);
+				aaNew3 = aaNew3.substring(3);
+				codonNum++;
+			} else return;
+		}
+	}
+
+	/**
+	 * Remove same AA form right side
+	 */
+	void simplifyAminoAcidsRight() {
+		// Can we simplify AAs?
+		while (!aaOld3.isEmpty() && !aaNew3.isEmpty()) {
+			// Get the last AA
+			int lastAaOldIdx = aaOld3.length() - 3;
+			String ao3 = aaOld3.substring(lastAaOldIdx);
+
+			int lastAaNewIdx = aaNew3.length() - 3;
+			String an3 = aaNew3.substring(lastAaNewIdx);
+
+			// Both share the same AA? => Remove it
+			if (ao3.equals(an3)) {
+				aaOld3 = aaOld3.substring(0, lastAaOldIdx);
+				aaNew3 = aaNew3.substring(0, lastAaNewIdx);
+			} else return;
+		}
+	}
+
 	/**
 	 * SNP or MNP changes
 	 */
 	protected String snpOrMnp() {
 		// No codon change information? only codon number?
-		if (variantEffect.getAaOld().isEmpty() && variantEffect.getAaNew().isEmpty()) {
+		if (variantEffect.getAaRef().isEmpty() && variantEffect.getAaAlt().isEmpty()) {
 			if (codonNum >= 0) return "" + (codonNum + 1);
 			return null;
 		}
@@ -232,7 +378,7 @@ public class HgvsProtein extends Hgvs {
 		// Nonsense variant are a special type of amino acid deletion removing the entire C-terminal part of a
 		// protein starting at the site of the variant. A nonsense change is described using the format
 		// p.Trp26Ter (alternatively p.Trp26*).
-		if (variantEffect.hasEffectType(EffectType.STOP_GAINED)) return "p." + aaOld3 + aaPos + "*";
+		if (variantEffect.hasEffectType(EffectType.STOP_GAINED)) return aaOld3 + aaPos + "*";
 
 		// Stop codon mutations
 		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#extp
@@ -243,7 +389,7 @@ public class HgvsProtein extends Hgvs {
 		// 		p.*327Argext*? (alternatively p.Ter327ArgextTer? or p.*327Rext*?) describes a variant in the stop
 		//		codon (Ter/*) at position 327, changing it to a codon for Arginine (Arg, R) and adding a tail of
 		//		new amino acids of unknown length since the shifted frame does not contain a new stop codon.
-		if (variantEffect.hasEffectType(EffectType.STOP_LOST)) return "p." + aaOld3 + aaPos + aaNew3 + "ext*?";
+		if (variantEffect.hasEffectType(EffectType.STOP_LOST)) return aaOld3 + aaPos + aaNew3 + "ext*?";
 
 		// Start codon lost
 		// Reference : http://www.hgvs.org/mutnomen/disc.html#Met
@@ -257,7 +403,7 @@ public class HgvsProtein extends Hgvs {
 		if (variantEffect.hasEffectType(EffectType.START_LOST) //
 				|| variantEffect.hasEffectType(EffectType.SYNONYMOUS_START) //
 				|| variantEffect.hasEffectType(EffectType.NON_SYNONYMOUS_START) //
-				) return "p." + aaOld3 + "1?";
+		) return aaOld3 + "1?";
 
 		// Synonymous changes
 		// Description of so called "silent" changes in the format p.Leu54Leu (or p.L54L) is not allowed; descriptions
@@ -265,42 +411,52 @@ public class HgvsProtein extends Hgvs {
 		// at DNA level which may underlie p.Leu54Leu);  correct description has the format c.162C>G.
 		if ((variantEffect.hasEffectType(EffectType.SYNONYMOUS_CODING)) //
 				|| (variantEffect.hasEffectType(EffectType.SYNONYMOUS_STOP)) //
-				) return "p." + aaOld3 + aaPos + aaNew3;
+		) return aaOld3 + aaPos + aaNew3;
 
-		return "p." + aaOld3 + aaPos + aaNew3;
+		return aaOld3 + aaPos + aaNew3;
 	}
 
 	@Override
 	public String toString() {
 		if (variant == null || marker == null) return null;
 
-		String protChange = "";
-		switch (variant.getVariantType()) {
-		case SNP:
-		case MNP:
-			return snpOrMnp();
+		// Can we simplify amino acids in aaNew/aaOld?
+		if (!variant.isSnp() && !variant.isMnp()) simplifyAminoAcids();
 
-		case INS:
-			protChange = ins();
-			break;
-
-		case DEL:
-			protChange = del();
-			break;
-
-		case MIXED:
-			protChange = mixed();
-			break;
-
-		case INTERVAL:
+		String pos = "", protChange = "";
+		if (!variant.isVariant()) {
+			// Not a variant? Nothing to do
 			return "";
+		} else if (variant.isSnp() || variant.isMnp()) {
+			// SNP or MNP
+			protChange = snpOrMnp();
+			pos = "";
+		} else if (isFs()) {
+			// Frame shifts
+			protChange = fs();
+			pos = posFs();
+		} else if (isIns()) {
+			// This is a 'pure' insertion
+			duplication = isDuplication(); // Is it a duplication?
 
-		default:
-			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
+			if (duplication) {
+				protChange = dup();
+				pos = posDup();
+			} else {
+				protChange = ins();
+				pos = posIns();
+			}
+		} else if (isDel()) {
+			// A deletion
+			protChange = del();
+			pos = posDel();
+		} else {
+			// A mixture of insertion and deletion
+			protChange = delins();
+			pos = posDelIns();
 		}
 
-		String pos = pos();
-		if (pos == null) return null;
+		if (protChange == null || pos == null) return null;
 		return "p." + pos + protChange;
 	}
 }

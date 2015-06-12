@@ -8,6 +8,7 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.FunctionalClass;
@@ -29,6 +30,7 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 	int countWarnings = 0;
 	int countErrors = 0;
 	GeneCountByTypeTable geneCountByRegionTable;
+	GeneCountByTypeTable geneCountByImpactTable;
 	GeneCountByTypeTable geneCountByEffectTable;
 
 	public VariantEffectStats(Genome genome) {
@@ -44,13 +46,11 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 		geneSet = new HashSet<String>();
 		geneCountByRegionTable = new GeneCountByTypeTable();
 		geneCountByEffectTable = new GeneCountByTypeTable();
+		geneCountByImpactTable = new GeneCountByTypeTable();
 	}
 
 	/**
 	 * How to code an 'item' change (e.g. codon change, AA change, etc.)
-	 * @param oldItem
-	 * @param newItem
-	 * @return
 	 */
 	private String changeKey(String oldItem, String newItem) {
 		return oldItem + CHANGE_SEPARATOR + newItem;
@@ -58,9 +58,6 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 
 	/**
 	 * Background color used for AA change table
-	 * @param oldAa
-	 * @param newAa
-	 * @return
 	 */
 	public String getAaChangeColor(String oldAa, String newAa) {
 		return countByAa.getColorHtml(changeKey(oldAa, newAa));
@@ -68,8 +65,6 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 
 	/**
 	 * How many changes from oldAa to newAa do we have?
-	 * @param effect
-	 * @return
 	 */
 	public long getAaChangeCount(String oldAa, String newAa) {
 		return countByAa.get(changeKey(oldAa, newAa));
@@ -77,7 +72,6 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 
 	/**
 	 * Get list of all amino acisd involved
-	 * @return
 	 */
 	public List<String> getAaList() {
 		ArrayList<String> aas = new ArrayList<String>();
@@ -92,8 +86,6 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 
 	/**
 	 * How many changes from oldCodo to newCodon do we have?
-	 * @param effect
-	 * @return
 	 */
 	public long getCodonChangeCount(String oldCodon, String newCodon) {
 		return countByCodon.get(changeKey(oldCodon, newCodon));
@@ -101,7 +93,6 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 
 	/**
 	 * Get a list of all codons involved
-	 * @return
 	 */
 	public List<String> getCodonList() {
 		ArrayList<String> codons = new ArrayList<String>();
@@ -138,13 +129,16 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 		return geneCountByEffectTable;
 	}
 
+	public GeneCountByTypeTable getGeneCountByImpactTable() {
+		return geneCountByImpactTable;
+	}
+
 	public GeneCountByTypeTable getGeneCountByRegionTable() {
 		return geneCountByRegionTable;
 	}
 
 	/**
 	 * Barplot of different gene regions
-	 * @return
 	 */
 	public String getPlotGene() {
 		GoogleGenePercentBar gb = new GoogleGenePercentBar("Variations", "", "%" //
@@ -157,13 +151,14 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 				, 100 * countByGeneRegion.percent("" + EffectType.SPLICE_SITE_ACCEPTOR) //
 				, 100 * countByGeneRegion.percent("" + EffectType.UTR_3_PRIME) //
 				, 100 * countByGeneRegion.percent("" + EffectType.DOWNSTREAM) //
-		);
+				);
 		return gb.toURLString();
 	}
 
 	public double getSilentRatio() {
 		long mis = countByFunctionalClass.get(FunctionalClass.MISSENSE.toString());
 		long silent = countByFunctionalClass.get(FunctionalClass.SILENT.toString());
+		if (silent == 0) return 0.0;
 		return ((double) mis) / ((double) silent);
 	}
 
@@ -173,48 +168,53 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 	}
 
 	@Override
-	public void sample(VariantEffect changeEffect) {
+	public void sample(VariantEffect variantEffect) {
 		// Any warnings?
-		if (changeEffect.hasWarning()) countWarnings++;
-		if (changeEffect.hasError()) countErrors++;
+		if (variantEffect.hasWarning()) countWarnings++;
+		if (variantEffect.hasError()) countErrors++;
 
 		// Count by effect
-		String effect = changeEffect.getEffectTypeString(useSequenceOntology); // changeEffect.effect(true, false, false, useSequenceOntology);
+		String effect = variantEffect.getEffectTypeString(useSequenceOntology);
+		if (effect == null || effect.isEmpty()) return; // No effect? Nothing to do
+
 		countByEffect.inc(effect);
 
 		// Count by gene region
-		String geneRegion = changeEffect.getGeneRegion();
+		String geneRegion = variantEffect.getGeneRegion();
 		countByGeneRegion.inc(geneRegion);
 
 		// Count by impact
-		String impact = changeEffect.getEffectImpact().toString();
+		String impact = variantEffect.getEffectImpact().toString();
 		countByImpact.inc(impact);
 
 		// Count by functional class
-		FunctionalClass fc = changeEffect.getFunctionalClass();
+		FunctionalClass fc = variantEffect.getFunctionalClass();
 		if (fc != FunctionalClass.NONE) countByFunctionalClass.inc(fc.toString());
 
 		// Count gene and gene region
-		Marker marker = changeEffect.getMarker();
+		Marker marker = variantEffect.getMarker();
 		if (marker != null) { // E.g. Intergenic is not associated with a marker
-			Gene gene = changeEffect.getGene();
-			if (gene != null) {
-				// Count by region by gene
-				geneCountByRegionTable.sample(gene, marker, geneRegion, changeEffect);
-				geneCountByRegionTable.sample(gene, gene, EffectType.GENE.toString(), changeEffect); // Also count 'gene' marker
-
+			Gene gene = variantEffect.getGene();
+			Transcript tr = variantEffect.getTranscript();
+			if (tr != null && gene != null) {
 				// Count by effect by gene
-				geneCountByEffectTable.sample(gene, marker, effect, changeEffect);
+				geneCountByEffectTable.sample(gene, tr, effect, variantEffect);
+
+				// Count by region by gene
+				geneCountByRegionTable.sample(gene, tr, geneRegion, variantEffect);
+
+				// Count by impact
+				geneCountByImpactTable.sample(gene, tr, variantEffect.getEffectImpact().toString(), variantEffect); // Also count 'gene' marker
 			}
 		}
 
 		//---
 		// Count codon changes
 		//---
-		if ((changeEffect.getCodonsOld() != null) && (changeEffect.getCodonsOld().length() > 0)) {
+		if ((variantEffect.getCodonsRef() != null) && (variantEffect.getCodonsRef().length() > 0)) {
 			// Note: There might be many codons changing
-			String oldCodons[] = split(changeEffect.getCodonsOld(), 3);
-			String newCodons[] = split(changeEffect.getCodonsNew(), 3);
+			String oldCodons[] = split(variantEffect.getCodonsRef(), 3);
+			String newCodons[] = split(variantEffect.getCodonsAlt(), 3);
 			int max = Math.max(oldCodons.length, newCodons.length);
 
 			for (int i = 0; i < max; i++) {
@@ -233,10 +233,10 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 		//---
 		// Count amino acid changes
 		//---
-		if ((changeEffect.getAaOld() != null) && (changeEffect.getAaOld().length() > 0)) {
+		if ((variantEffect.getAaRef() != null) && (variantEffect.getAaRef().length() > 0)) {
 			// Note: There might be many AAs changing
-			String oldAas[] = split(changeEffect.getAaOld(), 1);
-			String newAas[] = split(changeEffect.getAaNew(), 1);
+			String oldAas[] = split(variantEffect.getAaRef(), 1);
+			String newAas[] = split(variantEffect.getAaAlt(), 1);
 			int max = Math.max(oldAas.length, newAas.length);
 
 			for (int i = 0; i < max; i++) {
@@ -259,9 +259,6 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 
 	/**
 	 * Split a string into fixed size parts
-	 * @param str
-	 * @param size
-	 * @return
 	 */
 	String[] split(String str, int size) {
 		int numStr = str.length() / size;

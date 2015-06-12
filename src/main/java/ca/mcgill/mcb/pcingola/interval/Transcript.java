@@ -2,9 +2,11 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.interval.codonChange.CodonChange;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
@@ -36,11 +38,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	private static final long serialVersionUID = -2665025617916107311L;
 
 	boolean proteinCoding; // Is this a protein-coding transcript?
+	boolean canonical; // Is this a canonical transcript?
 	int cdsStart, cdsEnd;
 	String bioType = ""; // Transcript biotype
 	String cds; // Coding sequence
+	String mRna; // mRna sequence (includes 5'UTR and 3'UTR)
 	String protein; // Protein sequence
-	ArrayList<SpliceSiteBranch> spliceBranchSites; // Branch splice sites
 	ArrayList<Utr> utrs; // UTRs
 	ArrayList<Cds> cdss; // CDS information
 	ArrayList<Intron> introns; // Intron markers
@@ -54,7 +57,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	public Transcript() {
 		super();
-		spliceBranchSites = new ArrayList<SpliceSiteBranch>();
 		utrs = new ArrayList<Utr>();
 		cdss = new ArrayList<Cds>();
 		type = EffectType.TRANSCRIPT;
@@ -83,18 +85,34 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		int cdsMax = Math.max(cdsStart, cdsEnd);
 
 		// For each exon, add CDS position to array
-		int aaBaseNum = 0;
+		int aaNum = 0;
 		int step = isStrandPlus() ? 1 : -1;
 		int codonBase = 0;
 		for (Exon exon : sortedStrand()) {
 			int min = isStrandPlus() ? exon.getStart() : exon.getEnd();
-			for (int pos = min; exon.intersects(pos) && aaBaseNum < aa2pos.length; pos += step)
+
+			int aaIdxStart = -1, aaIdxEnd = -1;
+
+			for (int pos = min; exon.intersects(pos) && aaNum < aa2pos.length; pos += step) {
 				// Is this within a CDS?
 				if ((cdsMin <= pos) && (pos <= cdsMax)) {
+					// Update AA indexes for this exon
+					if (aaIdxStart < 0) aaIdxStart = aaNum;
+					aaIdxEnd = aaNum;
+
 					// First codon base? Add to map
-					if (codonBase == 0) aa2pos[aaBaseNum++] = pos;
+					if (codonBase == 0) aa2pos[aaNum] = pos;
+
+					// Last codon base? Increment AA number
+					if (codonBase == 2) aaNum++;
+
+					// Update codon base
 					codonBase = (codonBase + 1) % 3;
 				}
+			}
+
+			// Update exons' AA indexes
+			if (aaIdxStart >= 0) exon.setAaIdx(aaIdxStart, aaIdxEnd);
 		}
 
 		return aa2pos;
@@ -109,10 +127,26 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Add a SpliceSiteBranchU12
+	 * Add an intron
 	 */
-	public void add(SpliceSiteBranchU12 branchU12) {
-		spliceBranchSites.add(branchU12);
+	public void add(Intron intron) {
+		if (introns == null) introns = new ArrayList<Intron>();
+		introns.add(intron);
+
+		// Introns should be sorted by strand
+		if (isStrandPlus()) Collections.sort(introns);
+		else Collections.sort(introns, Collections.reverseOrder());
+	}
+
+	/**
+	 * Add a SpliceSite
+	 */
+	public void add(SpliceSite spliceSite) {
+		for (Exon ex : this)
+			if (ex.intersects(spliceSite)) ex.add(spliceSite);
+
+		for (Intron intr : introns())
+			if (intr.intersects(spliceSite)) intr.add(spliceSite);
 	}
 
 	/**
@@ -137,7 +171,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			maxCds = Math.max(maxCds, c.getEnd());
 		}
 
-		if (verbose) System.out.println("Transcript '" + id + "' has missing UTRs. Strand: " + strandMinus + " (minCds: " + minCds + " , maxCds: " + maxCds + "):");
+		if (verbose) {
+			System.out.println("Transcript '" + id + "' has missing UTRs." //
+					+ " Strand: " + (strandMinus ? "-" : "+") //
+					+ " (minCds: " + minCds //
+					+ " , maxCds: " + maxCds + "):" //
+					);
+		}
 
 		// Add intervals
 		boolean retVal = false;
@@ -229,36 +269,87 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// SeqChange after this marker: No effect
 		if (end < variant.getStart()) return this;
 
+		//---
 		// Create new transcript
+		//---
 		Transcript tr = (Transcript) super.apply(variant);
 
 		// We will change information, so we need a clone
 		if (tr == this) tr = (Transcript) clone();
 		tr.reset(); // Reset all parameters (we only wanted the coordinate changes)
 
-		// Add changed exons
+		//---
+		// Apply to exons
+		//---
 		for (Exon ex : this) {
 			Exon newExon = ex.apply(variant);
-			if (newExon != null) tr.add(newExon);
+			if (newExon != null) {
+				newExon.setParent(tr);
+				tr.add(newExon);
+			}
 		}
 
+		//---
 		// Add changed UTRs
+		//---
 		for (Utr utr : utrs) {
 			Utr newUtr = (Utr) utr.apply(variant);
-			if (newUtr != null) tr.utrs.add(newUtr);
+			if (newUtr != null) {
+				newUtr.setParent(tr);
+				tr.utrs.add(newUtr);
+			}
 		}
 
+		//---
 		// Up & Down stream
-		if (upstream != null) tr.upstream = (Upstream) upstream.apply(variant);
-		if (downstream != null) tr.downstream = (Downstream) downstream.apply(variant);
+		//---
+		if (upstream != null) {
+			Upstream newUp = (Upstream) upstream.apply(variant);
+			newUp.setParent(tr);
+			tr.upstream = newUp;
+		}
+		if (downstream != null) {
+			Downstream newDown = (Downstream) downstream.apply(variant);
+			newDown.setParent(tr);
+			tr.downstream = newDown;
+		}
 
-		// Splice branch
-		for (SpliceSiteBranch sbr : spliceBranchSites) {
-			SpliceSiteBranch newSbs = (SpliceSiteBranch) sbr.apply(variant);
-			if (newSbs != null) tr.spliceBranchSites.add(newSbs);
+		//---
+		// Introns
+		//---
+		for (Intron intr : introns()) {
+			Intron newIntron = intr.apply(variant);
+			if (newIntron != null) {
+				newIntron.setParent(tr);
+				tr.add(newIntron);
+			}
 		}
 
 		return tr;
+	}
+
+	/**
+	 * Calculate distance from transcript start to a position
+	 * mRNA is roughly the same than cDNA. Strictly speaking there is mRNA has poly-A tail and 5'cap)
+	 */
+	public synchronized int baseNumber2MRnaPos(int pos) {
+		int count = 0;
+		for (Exon eint : sortedStrand()) {
+			if (eint.intersects(pos)) {
+				// Intersect this exon? Calculate the number of bases from the beginning
+				int dist = 0;
+				if (isStrandPlus()) dist = pos - eint.getStart();
+				else dist = eint.getEnd() - pos;
+
+				// Sanity check
+				if (dist < 0) throw new RuntimeException("Negative distance for position " + pos + ". This should never happen!\n" + this);
+
+				return count + dist;
+			}
+
+			count += eint.size();
+		}
+		return -1;
 	}
 
 	/**
@@ -343,41 +434,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		}
 
 		return cds2pos;
-	}
-
-	/**
-	 * Calculate distance from transcript start to a position
-	 */
-	public synchronized int baseNumberPreMRna(int pos) {
-		int count = 0;
-		for (Exon eint : sortedStrand()) {
-			if (eint.intersects(pos)) {
-				// Intersect this exon? Calculate the number of bases from the beginning
-				int dist = 0;
-				if (isStrandPlus()) dist = pos - eint.getStart();
-				else dist = eint.getEnd() - pos;
-
-				// Sanity check
-				if (dist < 0) throw new RuntimeException("Negative distance for position " + pos + ". This should never happen!\n" + this);
-
-				return count + dist;
-			}
-
-			count += eint.size();
-		}
-		return -1;
-	}
-
-	/**
-	 * Convert a 'cDNA' base number to a genomic coordinate
-	 */
-	public synchronized int baseNumberPreMRna2Pos(int baseNum) {
-		for (Exon eint : sortedStrand()) {
-			if (eint.size() >= baseNum) return eint.getStart() + baseNum;
-			baseNum -= eint.size();
-		}
-
-		return -1;
 	}
 
 	/**
@@ -479,6 +535,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Collapses exons having gaps of zero (i.e. exons that followed by other exons).
 	 * Does the same for CDSs.
 	   Does the same for UTRs.
+	   @return true of any exon in the transcript was 'collapsed'
 	 */
 	public boolean collapseZeroGap() {
 		if (ribosomalSlippage) return false; // Overlapping exons are representing ribosomal slippage, so they are not annotations errors and must not be corrected.
@@ -497,9 +554,15 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Marker exon : collapse.keySet()) {
 			Exon collapsedExon = (Exon) collapse.get(exon);
 
-			// Is this exon to be replaced?
-			if (exon != collapsedExon) {
+			// Is this exon to be replaced? (i.e. collapseZeroGap returns different coordinates)
+			if (exon.size() != collapsedExon.size() //
+					|| exon.getStart() != collapsedExon.getStart() //
+					|| exon.getEnd() != collapsedExon.getEnd() //
+					) {
 				ret = true;
+
+				// Show debugging information
+				if (Config.get().isDebug()) System.err.println("\t\t\tTranscript " + getId() + ": Collapsing exon " + exon.getId() + "\t[ " + exon.getStart() + " - " + exon.getEnd() + " ]\t=>\t[ " + collapsedExon.getStart() + " - " + collapsedExon.getEnd() + " ]");
 
 				// Replace exon
 				remove((Exon) exon);
@@ -552,54 +615,17 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Find all splice sites.
-	 *
-	 * @param createIfMissing : If true, create canonical splice sites if they are missing.
 	 */
-	public List<SpliceSite> createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
-		List<SpliceSite> list = new LinkedList<SpliceSite>();
+	public void createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
 
-		// For each gene, transcript and exon
+		// Create spliceSiteRegion on the Exon side
 		ArrayList<Exon> exons = (ArrayList<Exon>) sortedStrand();
-
 		if (exons.size() > 0) {
 			for (int i = 0; i < exons.size(); i++) {
 				Exon exon = exons.get(i);
-				Exon prev = (i >= 1 ? exons.get(i - 1) : null);
-				Exon next = (i < exons.size() - 1 ? exons.get(i + 1) : null);
 
-				//---
-				// Distance to previous exon
-				//---
-				if (prev != null) {
-					int dist = 0;
-					if (isStrandPlus()) dist = exon.getStart() - prev.getEnd() - 1;
-					else dist = prev.getStart() - exon.getEnd() - 1;
-
-					// Acceptor splice site: before exon start, but not before first exon
-					SpliceSite ss = exon.createSpliceSiteAcceptor(Math.min(spliceSiteSize, dist));
-					if (ss != null) list.add(ss);
-
-					// Splice site region at the end
-					SpliceSiteRegion ssr = exon.createSpliceSiteRegionStart(spliceRegionExonSize);
-					if (ssr != null) list.add(ssr);
-				}
-
-				//---
-				// Distance to next exon
-				//---
-				if (next != null) {
-					int dist = 0;
-					if (isStrandPlus()) dist = next.getStart() - exon.getEnd() - 1;
-					else dist = exon.getStart() - next.getEnd() - 1;
-
-					// Donor splice site: after exon end, but not after last exon
-					SpliceSite ss = exon.createSpliceSiteDonor(Math.min(spliceSiteSize, dist));
-					if (ss != null) list.add(ss);
-
-					// Splice site region at the end
-					SpliceSiteRegion ssr = exon.createSpliceSiteRegionEnd(spliceRegionExonSize);
-					if (ssr != null) list.add(ssr);
-				}
+				if (i > 0) exon.createSpliceSiteRegionStart(spliceRegionExonSize); // Splice site region at the start
+				if (i < (exon.size() - 1)) exon.createSpliceSiteRegionEnd(spliceRegionExonSize); // Splice site region at the end
 
 				// Sanity check
 				int rank = i + 1;
@@ -610,27 +636,20 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			}
 		}
 
-		// Add splice site regions (Introns)
-		introns();
+		// Create spliceSite (donor/acceptor) and spliceSiteRegion on the Intron side
+		List<Intron> introns = introns();
 		if (introns != null) {
 			for (int i = 0; i < introns.size(); i++) {
 				Intron intron = introns.get(i);
+				intron.createSpliceSiteAcceptor(spliceSiteSize); // Acceptor splice site
+				intron.createSpliceSiteDonor(spliceSiteSize); // Acceptor splice site
 
-				if (i > 0) {
-					SpliceSiteRegion ssrs = intron.createSpliceSiteRegionStart(spliceRegionIntronMin, spliceRegionIntronMax);
-					if (ssrs != null) list.add(ssrs);
-				}
-
-				if (i < (introns.size() - 1)) {
-					SpliceSiteRegion ssre = intron.createSpliceSiteRegionEnd(spliceRegionIntronMin, spliceRegionIntronMax);
-					if (ssre != null) list.add(ssre);
-				}
-
+				// Splice region
+				intron.createSpliceSiteRegionStart(spliceRegionIntronMin, spliceRegionIntronMax);
+				intron.createSpliceSiteRegionEnd(spliceRegionIntronMin, spliceRegionIntronMax);
 			}
 
 		}
-
-		return list;
 	}
 
 	/**
@@ -642,12 +661,17 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		int chrMin = chr.getStart(), chrMax = chr.getEnd();
 
 		// Create up/down stream intervals and add them to the list
+		int beforeStart = Math.max(start - upDownLength, chrMin);
+		int beforeEnd = Math.max(start - 1, chrMin);
+		int afterStart = Math.min(end + 1, chrMax);
+		int afterEnd = Math.min(end + upDownLength, chrMax);
+
 		if (isStrandPlus()) {
-			upstream = new Upstream(this, Math.max(start - upDownLength, chrMin), Math.max(start - 1, chrMin), false, id);
-			downstream = new Downstream(this, Math.min(end + 1, chrMax), Math.min(end + upDownLength, chrMax), false, id);
+			if (beforeStart < beforeEnd) upstream = new Upstream(this, beforeStart, beforeEnd, false, id);
+			if (afterStart < afterEnd) downstream = new Downstream(this, afterStart, afterEnd, false, id);
 		} else {
-			upstream = new Upstream(this, Math.min(end + 1, chrMax), Math.min(end + upDownLength, chrMax), false, id);
-			downstream = new Downstream(this, Math.max(start - upDownLength, chrMin), Math.max(start - 1, chrMin), false, id);
+			if (afterStart < afterEnd) upstream = new Upstream(this, afterStart, afterEnd, false, id);
+			if (beforeStart < beforeEnd) downstream = new Downstream(this, beforeStart, beforeEnd, false, id);
 		}
 	}
 
@@ -703,6 +727,26 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
+	 * Return the Exon that hits 'marker'
+	 * @return An exon intersecting 'pos' (null if not found)
+	 */
+	public Exon findExon(Marker marker) {
+		for (Exon exon : this)
+			if (exon.intersects(marker)) return exon;
+		return null;
+	}
+
+	/**
+	 * Return an Intron overlapoing position 'pos'
+	 */
+	public Intron findIntron(int pos) {
+		// Is 'pos' in intron?
+		for (Intron intron : introns())
+			if (intron.intersects(pos)) return intron;
+		return null;
+	}
+
+	/**
 	 * Find a CDS that matches exactly the exon
 	 */
 	public Cds findMatchingCds(Exon exon) {
@@ -716,7 +760,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * @return An UTR intersecting 'pos' (null if not found)
 	 */
 	public Utr findUtr(int pos) {
-		// Is it in UTR instead of CDS?
+		// Is it in UTR?
 		for (Utr utr : utrs)
 			if (utr.intersects(pos)) return utr;
 		return null;
@@ -883,8 +927,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				if (exon.getFrame() >= 0) exon.setFrame(-1);
 			} else {
 				// Calculate frame
+				// We use GFF style frame calculation
 				// References: http://mblab.wustl.edu/GTF22.html
-				int frameReal = GprSeq.frameFromLength(sequence.length());
+				int frameReal = FrameType.GFF.frameFromLength(sequence.length());
 
 				// Does calculated frame match?
 				if (frameReal != exon.getFrame()) {
@@ -894,8 +939,18 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
+						if (Config.get().isDebug()) {
+							System.err.println("\t\tFrame correction: " //
+									+ "Position " + toStr() //
+									+ "Transcript '" + getId() + "'" //
+									+ "\tExon rank " + exon.getRank() //
+									+ "\tExpected frame: " + frameReal //
+									+ "\tExon frame: " + exon.getFrame() //
+									+ "\tSequence len: " + sequence.length() //
+									);
+						}
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
 
@@ -1018,10 +1073,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return firstCodingExon;
 	}
 
-	public ArrayList<SpliceSiteBranch> getSpliceBranchSites() {
-		return spliceBranchSites;
-	}
-
 	/**
 	 * Create a TSS marker
 	 */
@@ -1055,13 +1106,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
 	 * Get all introns (lazy init)
 	 */
-	public synchronized ArrayList<Intron> introns() {
+	public synchronized List<Intron> introns() {
 		if (introns == null) {
 			introns = new ArrayList<Intron>();
 
@@ -1098,20 +1149,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return introns;
 	}
 
-	/**
-	 * Return the intron size for intron number 'intronNum'
-	 *
-	 * Note: Intron number 'N' is the intron between exon number N and exon number N+1
-	 * Note: Numbering is zero-based (not to be confused with exon 'ranking', which is one-based)
-	 */
-	public int intronSize(int intronNum) {
-		if (intronNum >= (numChilds() - 1)) return -1;
-		ArrayList<Exon> exons = (ArrayList<Exon>) sortedStrand();
-		Exon exon = exons.get(intronNum);
-		Exon next = exons.get(intronNum + 1);
-		return (isStrandPlus() ? (next.getStart() - exon.getEnd()) : (exon.getStart() - next.getEnd())) - 1;
-	}
-
 	public boolean isAaCheck() {
 		return aaCheck;
 	}
@@ -1119,6 +1156,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	@Override
 	protected boolean isAdjustIfParentDoesNotInclude(Marker parent) {
 		return true;
+	}
+
+	public boolean isCanonical() {
+		return canonical;
 	}
 
 	/**
@@ -1153,14 +1194,17 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return dnaCheck;
 	}
 
+	public boolean isDownstream(int pos) {
+		return downstream != null && downstream.intersects(pos);
+	}
+
 	/**
 	 * Check if coding length is multiple of 3 in protein coding transcripts
 	 * @return true on Error
 	 */
 	public boolean isErrorProteinLength() {
 		if (!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) return false;
-		cds();
-		return (cds.length() % 3) != 0;
+		return (cds().length() % 3) != 0;
 	}
 
 	/**
@@ -1204,6 +1248,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return false;
 	}
 
+	public boolean isIntron(int pos) {
+		return findIntron(pos) != null;
+	}
+
 	public boolean isProteinCoding() {
 		return proteinCoding;
 	}
@@ -1212,15 +1260,26 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return ribosomalSlippage;
 	}
 
-	/**
-	 * Does this 'pos' hit a UTR?
-	 */
+	public boolean isUpstream(int pos) {
+		return upstream != null && upstream.intersects(pos);
+	}
+
 	public boolean isUtr(int pos) {
 		return findUtr(pos) != null;
 	}
 
 	public boolean isUtr(Marker marker) {
 		return findUtrs(marker) != null;
+	}
+
+	public boolean isUtr3(int pos) {
+		Utr utr = findUtr(pos);
+		return utr != null && utr instanceof Utr3prime;
+	}
+
+	public boolean isUtr5(int pos) {
+		Utr utr = findUtr(pos);
+		return utr != null && utr instanceof Utr5prime;
 	}
 
 	/**
@@ -1265,7 +1324,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public Markers markers() {
 		Markers markers = new Markers();
 		markers.addAll(subIntervals.values());
-		markers.addAll(spliceBranchSites);
+		//		markers.addAll(spliceSites);
 		markers.addAll(utrs);
 		markers.addAll(cdss);
 		markers.add(upstream);
@@ -1278,7 +1337,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Retrieve coding sequence AND the UTRs (mRNA = 5'UTR + CDS + 3'UTR)
 	 * I.e. Concatenate all exon sequences
 	 */
-	public String mRna() {
+	public synchronized String mRna() {
+		if (mRna != null) return mRna;
+
 		List<Exon> exons = sortedStrand();
 
 		// Concatenate all exons
@@ -1286,7 +1347,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Exon ex : exons)
 			sequence.append(ex.getSequence());
 
-		return sequence.toString();
+		mRna = sequence.toString();
+		return mRna;
 	}
 
 	/**
@@ -1294,7 +1356,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	public String protein() {
 		if (protein == null) {
-			if (!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) protein = "";
+			if (!(Config.get() != null && Config.get().isTreatAllAsProteinCoding()) && !isProteinCoding()) protein = "";
 			else protein = codonTable().aa(cds());
 		}
 		return protein;
@@ -1305,30 +1367,40 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	@Override
 	public Markers query(Marker marker) {
-		Markers markers = new Markers();
+
+		Set<Marker> results = new HashSet<Marker>();
 
 		// Add exons
-		for (Exon e : this)
-			if (e.intersects(marker)) {
-				markers.add(e);
-				markers.add(e.query(marker));
-			}
+		for (Exon ex : this)
+			if (ex.intersects(marker)) {
+				results.add(ex);
 
-		// Ad splice sites
-		for (SpliceSiteBranch sb : spliceBranchSites)
-			if (sb.intersects(marker)) markers.add(sb);
+				// Query deeper
+				for (Marker ee : ex.query(marker))
+					results.add(ee);
+			}
 
 		// Ad UTRs
 		for (Utr u : utrs)
-			if (u.intersects(marker)) markers.add(u);
+			if (u.intersects(marker)) results.add(u);
 
 		// Add CDSs
 		for (Cds m : cdss)
-			if (m.intersects(marker)) markers.add(m);
+			if (m.intersects(marker)) results.add(m);
 
 		// Add introns
-		for (Intron m : introns())
-			if (m.intersects(marker)) markers.add(m);
+		for (Intron intr : introns())
+			if (intr.intersects(marker)) {
+				results.add(intr);
+
+				// Query deeper
+				for (Marker ee : intr.query(marker))
+					results.add(ee);
+			}
+
+		// Get results into markers
+		Markers markers = new Markers();
+		markers.addAll(results);
 
 		return markers;
 	}
@@ -1362,7 +1434,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public void reset() {
 		super.reset();
 		sorted = null;
-		spliceBranchSites = new ArrayList<SpliceSiteBranch>();
 		utrs = new ArrayList<Utr>();
 		cdss = new ArrayList<Cds>();
 		introns = null;
@@ -1384,9 +1455,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Perfom some baseic chekcs, return error type, if any
 	 */
 	public ErrorWarningType sanityCheck(Variant variant) {
+		if (isErrorStopCodonsInCds()) return ErrorWarningType.WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS;
 		if (isErrorProteinLength()) return ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE;
-		else if (isErrorStopCodonsInCds()) return ErrorWarningType.WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS;
-		else if (isErrorStartCodon()) return ErrorWarningType.WARNING_TRANSCRIPT_NO_START_CODON;
+		if (isErrorStartCodon()) return ErrorWarningType.WARNING_TRANSCRIPT_NO_START_CODON;
+		if (isWarningStopCodon()) return ErrorWarningType.WARNING_TRANSCRIPT_NO_STOP_CODON;
 		return null;
 	}
 
@@ -1410,9 +1482,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		for (Marker m : markerSerializer.getNextFieldMarkers())
 			cdss.add((Cds) m);
-
-		for (Marker m : markerSerializer.getNextFieldMarkers())
-			spliceBranchSites.add((SpliceSiteBranchU12) m);
 	}
 
 	/**
@@ -1432,8 +1501,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-				+ "\t" + markerSerializer.save((Iterable) spliceBranchSites)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1442,6 +1510,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	public void setBioType(String bioType) {
 		this.bioType = bioType;
+	}
+
+	public void setCanonical(boolean canonical) {
+		this.canonical = canonical;
 	}
 
 	public void setDnaCheck(boolean dnaCheck) {
@@ -1456,8 +1528,24 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		this.ribosomalSlippage = ribosomalSlippage;
 	}
 
+	public List<SpliceSite> spliceSites() {
+		List<SpliceSite> sslist = new ArrayList<SpliceSite>();
+
+		for (Exon ex : this)
+			sslist.addAll(ex.getSpliceSites());
+
+		for (Intron intr : introns())
+			sslist.addAll(intr.getSpliceSites());
+
+		return sslist;
+	}
+
 	@Override
 	public String toString() {
+		return toString(false);
+	}
+
+	public String toString(boolean full) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(getChromosomeName() + ":" + start + "-" + end);
@@ -1487,25 +1575,136 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			}
 		}
 
+		if (full) {
+			// Show errors or warnings
+			String warn = "";
+			if (isErrorStopCodonsInCds()) warn += ErrorWarningType.WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS + " ";
+			if (isErrorProteinLength()) warn += ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE + " ";
+			if (isErrorStartCodon()) warn += ErrorWarningType.WARNING_TRANSCRIPT_NO_START_CODON + " ";
+			if (isWarningStopCodon()) warn += ErrorWarningType.WARNING_TRANSCRIPT_NO_STOP_CODON + " ";
+			if (!warn.isEmpty()) sb.append("\tWarnings  :" + warn);
+
+			// Sequence checks
+			sb.append("\t\tCDS check : " + (isDnaCheck() ? "OK" : "Failed (or missing)") + "\n");
+			sb.append("\t\tAA check  : " + (isAaCheck() ? "OK" : "Failed (or missing)") + "\n");
+		}
+
 		return sb.toString();
 	}
 
 	/**
 	 * Show a transcript as an ASCII Art
 	 */
-	public String toStringAsciiArt() {
+	public String toStringAsciiArt(boolean full) {
+
+		//---
+		// ASCII art for transcript
+		//---
 		char art[] = new char[size()];
 		for (int i = start, j = 0; i <= end; i++, j++) {
 			Utr utr = findUtr(i);
 			if (utr != null) art[j] = utr.isUtr5prime() ? '5' : '3';
 			else {
 				Exon exon = findExon(i);
-				if (exon != null) art[j] = exon.isStrandPlus() ? '>' : '<';
-				else art[j] = '-';
+				if (exon != null) {
+					art[j] = exon.isStrandPlus() ? '>' : '<';
+				} else art[j] = '-';
 			}
 		}
 
-		return new String(art);
+		// Only 'basic' ASCII art?
+		if (!full) return new String(art);
+
+		//---
+		// DNA Sequence
+		//---
+		StringBuilder seq = new StringBuilder();
+		for (int i = start; i <= end; i++) {
+			Exon exon = findExon(i);
+			if (exon != null) {
+				String s = exon.getSequence().toLowerCase();
+				if (exon.isStrandMinus()) s = GprSeq.reverseWc(s);
+
+				seq.append(s);
+				i += s.length() - 1;
+			} else seq.append('.');
+		}
+
+		//---
+		// AA Sequence and frame
+		//---
+		StringBuilder aa = new StringBuilder();
+		StringBuilder frameSb = new StringBuilder();
+		char codon[] = new char[3];
+		int step = isStrandPlus() ? 1 : -1;
+		int frame = 0;
+		for (int i = (isStrandPlus() ? 0 : art.length - 1), j = 0; (i >= 0) && (i < art.length); i += step) {
+			if (art[i] == '3' || art[i] == '5') {
+				// 5'UTR or 3'UTR
+				aa.append(' ');
+				frameSb.append(' ');
+			} else {
+				char b = seq.charAt(i);
+				if (b == 'a' || b == 'c' || b == 'g' || b == 't') {
+					// Coding sequence
+					codon[j++] = b;
+					if (j >= 3) {
+						j = 0;
+						String cod = new String(codon);
+						if (isStrandMinus()) cod = GprSeq.wc(cod); // Bases are already reversed, we only need WC complement
+						aa.append(" " + codonTable().aa(cod) + " ");
+					}
+
+					// Update frame
+					frameSb.append(frame);
+					frame = (frame + 1) % 3;
+
+				} else {
+					// Intron
+					aa.append(' ');
+					frameSb.append(' ');
+				}
+			}
+		}
+
+		String aaStr = isStrandPlus() ? aa.toString() : aa.reverse().toString();
+		String frameStr = isStrandPlus() ? frameSb.toString() : frameSb.reverse().toString();
+
+		//---
+		// Coordinates
+		//---
+
+		// Create 'vertical lines'
+		StringBuilder lines = new StringBuilder();
+		int prev = start;
+		for (Exon ex : this.sorted()) {
+			lines.append(Gpr.repeat(' ', ex.getStart() - prev - 1) + "|");
+			prev = ex.getStart();
+
+			lines.append(Gpr.repeat(' ', ex.getEnd() - prev - 1) + "|");
+			prev = ex.getEnd();
+		}
+
+		StringBuilder coords = new StringBuilder();
+		coords.append(lines + "\n");
+		for (Exon ex : this.sortedStrand()) {
+			// First coordinate
+			int n = isStrandPlus() ? ex.getStart() : ex.getEnd();
+			int len = n - start - 1;
+			coords.append((len > 0 ? lines.subSequence(0, n - start) : "") + "^" + n + "\n");
+
+			// Second coordinate
+			n = isStrandPlus() ? ex.getEnd() : ex.getStart();
+			len = n - start - 1;
+			coords.append((len > 0 ? lines.subSequence(0, n - start) : "") + "^" + n + "\n");
+		}
+
+		// Result
+		return "" + seq //
+				+ "\n" + aaStr //
+				+ "\n" + frameStr //
+				+ "\n" + new String(art) //
+		+ "\n" + coords;
 	}
 
 	/**
@@ -1538,8 +1737,19 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Get some details about the effect on this transcript
 	 */
 	@Override
-	public boolean variantEffect(Variant variant, VariantEffects variantsEffect) {
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
+
+		//---
+		// Does it hit an exon?
+		// Note: This only adds spliceSites effects, for detailed codon
+		//       changes effects we use 'CodonChange' class
+		//---
+		boolean exonAnnotated = false;
+		for (Exon ex : this)
+			if (ex.intersects(variant)) {
+				exonAnnotated |= ex.variantEffect(variant, variantEffects);
+			}
 
 		//---
 		// Hits a UTR region?
@@ -1548,58 +1758,30 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Utr utr : utrs)
 			if (utr.intersects(variant)) {
 				// Calculate the effect
-				utr.variantEffect(variant, variantsEffect);
+				utr.variantEffect(variant, variantEffects);
 				included |= utr.includes(variant); // Is this variant fully included in the UTR?
 			}
 		if (included) return true; // SeqChange fully included in the UTR? => We are done.
 
 		//---
-		// Hits a SpliceSiteBranch region?
-		//---
-		included = false;
-		for (SpliceSiteBranch ssbranch : spliceBranchSites)
-			if (ssbranch.intersects(variant)) {
-				// Calculate the effect
-				ssbranch.variantEffect(variant, variantsEffect);
-				included |= ssbranch.includes(variant); // Is this variant fully included branch site?
-			}
-		if (included) return true; // SeqChange fully included in the Branch site? => We are done.
-
 		// Does it hit an intron?
+		//---
 		for (Intron intron : introns())
 			if (intron.intersects(variant)) {
-				variantsEffect.addEffect(intron, EffectType.INTRON, "");
+				intron.variantEffect(variant, variantEffects);
 				included |= intron.includes(variant); // Is this variant fully included in this intron?
 			}
 		if (included) return true; // SeqChange fully included? => We are done.
 
 		//---
-		// Analyze non-coding transcripts (or 'interval' variants)
+		// No annotations from eoxns? => Add transcript
 		//---
-		if ((!Config.get().isTreatAllAsProteinCoding() && !isProteinCoding()) || variant.isInterval() || !variant.isVariant()) {
-			// Do we have exon information for this transcript?
-			if (!subintervals().isEmpty()) {
-				// Add all exons
-				for (Exon exon : this)
-					if (exon.intersects(variant)) variantsEffect.addEffect(exon, EffectType.EXON, "");
-			} else variantsEffect.addEffect(this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
-
-			// Ok, we are done
+		if (!exonAnnotated) {
+			variantEffects.add(variant, this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
 			return true;
 		}
 
-		//---
-		// This is a protein coding transcript.
-		// We analyze codon replacement effect
-		//---
-		if (isCds(variant)) {
-			// Get codon change effect
-			CodonChange codonChange = CodonChange.factory(variant, this, variantsEffect);
-			codonChange.codonChange();
-			return true;
-		}
-
-		return false;
+		return exonAnnotated;
 	}
 
 }

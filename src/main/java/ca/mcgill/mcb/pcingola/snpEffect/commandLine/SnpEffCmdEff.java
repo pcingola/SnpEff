@@ -23,6 +23,7 @@ import ca.mcgill.mcb.pcingola.filter.VariantEffectFilter;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.VariantNonRef;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedAnnotationOutputFormatter;
 import ca.mcgill.mcb.pcingola.outputFormatter.BedOutputFormatter;
@@ -41,6 +42,7 @@ import ca.mcgill.mcb.pcingola.stats.VcfStats;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
 import ca.mcgill.mcb.pcingola.util.Tuple;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.PedigreeEnrty;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
@@ -64,7 +66,7 @@ public class SnpEffCmdEff extends SnpEff {
 	public static final String DEFAULT_SUMMARY_CSV_FILE = "snpEff_summary.csv";
 	public static final String DEFAULT_SUMMARY_GENES_FILE = "snpEff_genes.txt";
 
-	public static final int SHOW_EVERY = 100000;
+	public static final int SHOW_EVERY = 10 * 1000;
 
 	boolean cancer = false; // Perform cancer comparisons
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
@@ -93,6 +95,7 @@ public class SnpEffCmdEff extends SnpEff {
 	VariantEffectStats variantEffectStats;
 	VcfStats vcfStats;
 	List<VcfEntry> vcfEntriesDebug = null; // Use for debugging or testing (in some test-cases)
+	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
 
 	public SnpEffCmdEff() {
 		super();
@@ -114,19 +117,21 @@ public class SnpEffCmdEff extends SnpEff {
 		// Find out which comparisons have to be analyzed
 		for (PedigreeEnrty pe : pedigree) {
 			if (pe.isDerived()) {
-				VcfGenotype genOri = vcfEntry.getVcfGenotype(pe.getOriginalNum());
-				VcfGenotype genDer = vcfEntry.getVcfGenotype(pe.getDerivedNum());
+				int numOri = pe.getOriginalNum();
+				int numDer = pe.getDerivedNum();
+				VcfGenotype genOri = vcfEntry.getVcfGenotype(numOri);
+				VcfGenotype genDer = vcfEntry.getVcfGenotype(numDer);
 
 				int gd[] = genDer.getGenotype(); // Derived genotype
 				int go[] = genOri.getGenotype(); // Original genotype
 
+				// Skip if one of the genotypes is missing
+				if (gd == null || go == null) continue;
+
 				if (genOri.isPhased() && genDer.isPhased()) {
 					// Phased, we only have two possible comparisons
-					// TODO: Check if this is correct for phased genotypes!
 					for (int i = 0; i < 2; i++) {
 						// Add comparisons
-						// TODO: Decide if we want to keep "back to reference" analysis (i.e. gd[d] == 0)
-						// if ((go[i] >= 0) && (gd[i] >= 0) // Both genotypes are non-missing?
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
@@ -140,8 +145,6 @@ public class SnpEffCmdEff extends SnpEff {
 					for (int d = 0; d < gd.length; d++)
 						for (int o = 0; o < go.length; o++) {
 							// Add comparisons
-							// TODO: Decide if we want to keep "back to reference" analysis (i.e. gd[d] == 0)
-							// if ((go[o] >= 0) && (gd[d] >= 0) // Both genotypes are non-missing?
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
@@ -223,9 +226,6 @@ public class SnpEffCmdEff extends SnpEff {
 	/**
 	 * Iterate on all inputs (VCF) and calculate effects.
 	 * Note: This is used only on input format VCF, which has a different iteration modality
-	 *
-	 * TODO: Effect analysis should be in a separate class, so we can easily reuse it for single or mutli-threaded modes.
-	 *       SnpEffCmdEff should only parse command line, and then invoke the other class (now everything is here, it's a mess)
 	 */
 	void iterateVcf(String inputFile, OutputFormatter outputFormatter) {
 		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
@@ -237,7 +237,9 @@ public class SnpEffCmdEff extends SnpEff {
 		List<PedigreeEnrty> pedigree = null;
 		CountByType errByType = new CountByType(), warnByType = new CountByType();
 
+		// Iterate over VCF entries
 		int countVcfEntries = 0;
+		Timer annotateTimer = new Timer();
 		for (VcfEntry vcfEntry : vcfFile) {
 			boolean printed = false;
 			boolean filteredOut = false;
@@ -280,34 +282,40 @@ public class SnpEffCmdEff extends SnpEff {
 				List<Variant> variants = vcfEntry.variants();
 				for (Variant variant : variants) {
 					countVariants++;
-					if (verbose && (countVariants % SHOW_EVERY == 0)) Timer.showStdErr("\t" + countVariants + " variants");
-
-					// Perform basic statistics about this variant
-					if (createSummary) variantStats.sample(variant);
-
-					// Calculate effects
-					VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
-
-					// Create new 'section'
-					outputFormatter.startSection(variant);
-
-					// Show results
-					for (VariantEffect variantEffect : variantEffects) {
-						if (createSummary) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
-
-						// Any errors or warnings?
-						if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
-						if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
-
-						// Does this entry have an impact (other than MODIFIER)?
-						impact |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
-
-						outputFormatter.add(variantEffect);
-						countEffects++;
+					if (verbose && (countVariants % SHOW_EVERY == 0)) {
+						int secs = (int) (annotateTimer.elapsed() / 1000);
+						int varsPerSec = (int) (countVariants / secs);
+						Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
 					}
 
-					// Finish up this section
-					outputFormatter.printSection(variant);
+					// Calculate effects: By default do not annotate non-variant sites
+					if (variant.isVariant()) {
+						// Perform basic statistics about this variant
+						if (createSummary) variantStats.sample(variant);
+
+						VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
+
+						// Create new 'section'
+						outputFormatter.startSection(variant);
+
+						// Show results
+						for (VariantEffect variantEffect : variantEffects) {
+							if (createSummary) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
+
+							// Any errors or warnings?
+							if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
+							if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
+
+							// Does this entry have an impact (other than MODIFIER)?
+							impact |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
+
+							outputFormatter.add(variantEffect);
+							countEffects++;
+						}
+
+						// Finish up this section
+						outputFormatter.printSection(variant);
+					}
 				}
 
 				//---
@@ -326,19 +334,20 @@ public class SnpEffCmdEff extends SnpEff {
 
 						Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
 						Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
+						VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
 
 						// Calculate effects
-						VariantEffects variantEffects = snpEffectPredictor.variantEffect(variantAlt, variantRef);
+						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
 
 						// Create new 'section'
-						outputFormatter.startSection(variantAlt);
+						outputFormatter.startSection(varNonRef);
 
 						// Show results (note, we don't add these to the statistics)
 						for (VariantEffect variantEffect : variantEffects)
 							outputFormatter.add(variantEffect);
 
 						// Finish up this section
-						outputFormatter.printSection(variantAlt);
+						outputFormatter.printSection(varNonRef);
 					}
 				}
 
@@ -398,7 +407,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 		// Create and run queue
 		int batchSize = 10;
-		VcfWorkQueue vcfWorkQueue = new VcfWorkQueue(inputFile, batchSize, -1, props);
+		VcfWorkQueue vcfWorkQueue = new VcfWorkQueue(inputFile, config, batchSize, -1, props);
 		vcfWorkQueue.run(true);
 	}
 
@@ -476,10 +485,17 @@ public class SnpEffCmdEff extends SnpEff {
 							useHgvs = false;
 							nextProt = false;
 							motif = false;
+
+							// GATK doesn't support SPLICE_REGION at the moment.
+							// Set parameters to zero so that splcie regions are not created.
+							spliceRegionExonSize = spliceRegionIntronMin = spliceRegionIntronMax = 0;
 						} else if (outFor.equals("BED")) {
 							outputFormat = OutputFormat.BED;
 							lossOfFunction = false;
-						} else if (outFor.equals("BEDANN")) outputFormat = OutputFormat.BEDANN;
+						} else if (outFor.equals("BEDANN")) {
+							outputFormat = OutputFormat.BEDANN;
+							lossOfFunction = false;
+						} else if (outFor.equals("TXT")) usage("Output format 'TXT' has been deprecated. Please use 'VCF' instead.\nYou can extract VCF fields to a TXT file using 'SnpSift extractFields' (http://snpeff.sourceforge.net/SnpSift.html#Extract).");
 						else usage("Unknown output file format '" + outFor + "'");
 					}
 				} else if ((arg.equals("-s") || arg.equalsIgnoreCase("-stats"))) {
@@ -504,12 +520,17 @@ public class SnpEffCmdEff extends SnpEff {
 					if ((i + 1) < args.length) cancerSamples = args[++i]; // Read cancer samples from TXT files
 					else usage("Missing -cancerSamples argument");
 				} else if (arg.equalsIgnoreCase("-lof")) lossOfFunction = true; // Add LOF tag
+				else if (arg.equalsIgnoreCase("-noLof")) lossOfFunction = false; // Do not add LOF tag
 				else if (arg.equalsIgnoreCase("-hgvs")) useHgvs = true; // Use HGVS notation
+				else if (arg.equalsIgnoreCase("-noHgvs")) useHgvs = false; // Do not use HGVS notation
 				else if (arg.equalsIgnoreCase("-geneId")) useGeneId = true; // Use gene ID instead of gene name
 				else if (arg.equalsIgnoreCase("-sequenceOntology")) useSequenceOntology = true; // Use SO temrs
 				else if (arg.equalsIgnoreCase("-classic")) {
 					useSequenceOntology = false;
 					useHgvs = false;
+					formatVersion = EffFormatVersion.FORMAT_EFF_4;
+				} else if (arg.equalsIgnoreCase("-formatEff")) {
+					formatVersion = EffFormatVersion.FORMAT_EFF_4;
 				} else if (arg.equalsIgnoreCase("-oicr")) useOicr = true; // Use OICR tag
 				//---
 				// Input options
@@ -529,7 +550,8 @@ public class SnpEffCmdEff extends SnpEff {
 							inputFormat = InputFormat.BED;
 							outputFormat = OutputFormat.BED;
 							lossOfFunction = false;
-						} else usage("Unknown input file format '" + inFor + "'");
+						} else if (inFor.equals("TXT")) usage("Input format 'TXT' has been deprecated. Please use 'VCF' instead.");
+						else usage("Unknown input file format '" + inFor + "'");
 					} else usage("Missing input format in command line option '-i'");
 				}
 				//---
@@ -558,10 +580,10 @@ public class SnpEffCmdEff extends SnpEff {
 						} else if (filterStr.equalsIgnoreCase("None")) ; // OK, nothing to do
 						else variantEffectResutFilter.add(EffectType.valueOf(filterStr.toUpperCase()));
 					}
-				} else usage("Unknow option '" + arg + "'");
+				} else usage("Unknown option '" + arg + "'");
 			} else if (genomeVer.isEmpty()) genomeVer = arg;
 			else if (inputFile.isEmpty()) inputFile = arg;
-			else usage("Unknow parameter '" + arg + "'");
+			else usage("Unknown parameter '" + arg + "'");
 		}
 
 		//---
@@ -623,7 +645,7 @@ public class SnpEffCmdEff extends SnpEff {
 
 		if (cancerSamples != null) {
 			// Read from TXT file
-			if (verbose) Timer.show("Reading cancer samples pedigree from file '" + cancerSamples + "'.");
+			if (verbose) Timer.showStdErr("Reading cancer samples pedigree from file '" + cancerSamples + "'.");
 
 			List<String> sampleNames = vcfFile.getVcfHeader().getSampleNames();
 			pedigree = new ArrayList<PedigreeEnrty>();
@@ -640,11 +662,12 @@ public class SnpEffCmdEff extends SnpEff {
 			}
 		} else {
 			// Read from VCF header
-			if (verbose) Timer.show("Reading cancer samples pedigree from VCF header.");
+			if (verbose) Timer.showStdErr("Reading cancer samples pedigree from VCF header.");
 			pedigree = vcfFile.getVcfHeader().getPedigree();
+			if (verbose) Timer.showStdErr("Pedigree: " + pedigree);
 		}
 
-		if (verbose && ((pedigree == null) || pedigree.isEmpty())) Timer.show("Warngin: No cancer sample pedigree found.");
+		if (verbose && ((pedigree == null) || pedigree.isEmpty())) Timer.showStdErr("WARNING: No cancer sample pedigree found.");
 		return pedigree;
 	}
 
@@ -676,11 +699,11 @@ public class SnpEffCmdEff extends SnpEff {
 
 		filterIntervals = null;
 
-		// Read config file
-		loadConfig();
+		loadConfig(); // Read config file
+		loadDb(); // Load database
 
-		// Load database
-		loadDb();
+		// Set some configuraion options
+		config.setShiftHgvs(useHgvs && shiftHgvs);
 
 		// Check if we can open the input file (no need to check if it is STDIN)
 		if (!Gpr.canRead(inputFile)) usage("Cannot open input file '" + inputFile + "'");
@@ -753,6 +776,7 @@ public class SnpEffCmdEff extends SnpEff {
 		switch (outputFormat) {
 		case VCF:
 			VcfOutputFormatter vof = new VcfOutputFormatter(vcfEntriesDebug);
+			vof.setFormatVersion(formatVersion);
 			vof.setLossOfFunction(lossOfFunction);
 			vof.setConfig(config);
 			outputFormatter = vof;
@@ -811,6 +835,10 @@ public class SnpEffCmdEff extends SnpEff {
 
 		if (totalErrs > 0) System.err.println(totalErrs + " errors.");
 		return ok;
+	}
+
+	public void setFormatVersion(EffFormatVersion formatVersion) {
+		this.formatVersion = formatVersion;
 	}
 
 	/**
@@ -895,11 +923,11 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\n");
 		System.err.println("\nOptions:");
 		System.err.println("\t-chr <string>                   : Prepend 'string' to chromosome name (e.g. 'chr1' instead of '1'). Only on TXT output.");
-		System.err.println("\t-classic                        : Use old style annotaions instead of Sequence Ontology and Hgvs.");
+		System.err.println("\t-classic                        : Use old style annotations instead of Sequence Ontology and Hgvs.");
 		System.err.println("\t-download                       : Download reference genome if not available. Default: " + download);
-		System.err.println("\t-i <format>                     : Input format [ vcf, txt, pileup, bed ]. Default: VCF.");
+		System.err.println("\t-i <format>                     : Input format [ vcf, bed ]. Default: VCF.");
 		System.err.println("\t-fileList                       : Input actually contains a list of files to process.");
-		System.err.println("\t-o <format>                     : Ouput format [ txt, vcf, gatk, bed, bedAnn ]. Default: VCF.");
+		System.err.println("\t-o <format>                     : Ouput format [ vcf, gatk, bed, bedAnn ]. Default: VCF.");
 		System.err.println("\t-s , -stats                     : Name of stats file (summary). Default is '" + DEFAULT_SUMMARY_FILE + "'");
 		System.err.println("\t-noStats                        : Do not create stats (summary) file");
 		System.err.println("\t-csvStats                       : Create CSV summary file instead of HTML");
@@ -914,11 +942,15 @@ public class SnpEffCmdEff extends SnpEff {
 		System.err.println("\nAnnotations options:");
 		System.err.println("\t-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: " + cancer);
 		System.err.println("\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");
+		System.err.println("\t-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').");
 		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
 		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + useHgvs);
 		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");
+		System.err.println("\t-noHgvs                         : Do not add HGVS annotations.");
+		System.err.println("\t-noLof                          : Do not add LOF and NMD annotations.");
+		System.err.println("\t-noShiftHgvs                    : Do not shift variants according to HGVS notation (most 3prime end).");
 		System.err.println("\t-oicr                           : Add OICR tag in VCF file. Default: " + useOicr);
-		System.err.println("\t-sequenceOntology                : Use Sequence Ontology terms. Default: " + useSequenceOntology);
+		System.err.println("\t-sequenceOntology               : Use Sequence Ontology terms. Default: " + useSequenceOntology);
 
 		usageGenericAndDb();
 

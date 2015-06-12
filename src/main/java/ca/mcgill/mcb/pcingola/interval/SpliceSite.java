@@ -4,18 +4,18 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
  * Interval for a splice site
- * 
+ *
  * Reference: http://en.wikipedia.org/wiki/RNA_splicing
- * 
- * Spliceosomal introns often reside in eukaryotic protein-coding genes. Within the 
- * intron, a 3' splice site, 5' splice site, and branch site are required for splicing. 
- * The 5' splice site or splice donor site includes an almost invariant sequence GU 
- * at the 5' end of the intron, within a larger, less highly conserved consensus region. 
- * The 3' splice site or splice acceptor site terminates the intron with an almost 
- * invariant AG sequence. Upstream (5'-ward) from the AG there is a region high in 
- * pyrimidines (C and U), or polypyrimidine tract. Upstream from the polypyrimidine 
+ *
+ * Spliceosomal introns often reside in eukaryotic protein-coding genes. Within the
+ * intron, a 3' splice site, 5' splice site, and branch site are required for splicing.
+ * The 5' splice site or splice donor site includes an almost invariant sequence GU
+ * at the 5' end of the intron, within a larger, less highly conserved consensus region.
+ * The 3' splice site or splice acceptor site terminates the intron with an almost
+ * invariant AG sequence. Upstream (5'-ward) from the AG there is a region high in
+ * pyrimidines (C and U), or polypyrimidine tract. Upstream from the polypyrimidine
  * tract is the branch point, which includes an adenine nucleotide.
- * 
+ *
  * @author pcingola
  *
  */
@@ -40,16 +40,10 @@ public abstract class SpliceSite extends Marker {
 		super(parent, start, end, strandMinus, id);
 	}
 
-	public SpliceSite(Transcript parent, int start, int end, boolean strandMinus, String id) {
-		super(parent, start, end, strandMinus, id);
-	}
-
 	/**
-	 * Core splice sites are defined as CORE_SPLICE_SITE_SIZE bases after exon end 
+	 * Core splice sites are defined as CORE_SPLICE_SITE_SIZE bases after exon end
 	 * or before exon begins. Usually CORE_SPLICE_SITE_SIZE is 2 bases.
 	 * Other spice sites are considered "non-core".
-	 * 
-	 * @return
 	 */
 	public abstract boolean intersectsCoreSpliceSite(Marker marker);
 
@@ -62,9 +56,9 @@ public abstract class SpliceSite extends Marker {
 	}
 
 	@Override
-	public boolean variantEffect(Variant seqChange, VariantEffects changeEffects) {
-		if (!intersects(seqChange)) return false; // Sanity check
-		changeEffects.addEffect(this, type, "");
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false; // Sanity check
+		variantEffects.addEffectType(variant, this, type);
 		return true;
 	}
 }

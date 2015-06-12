@@ -4,13 +4,14 @@ import java.util.Arrays;
 
 import ca.mcgill.mcb.pcingola.binseq.DnaNSequence;
 import ca.mcgill.mcb.pcingola.binseq.DnaSequence;
+import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
 /**
  * Marker with a DNA sequence
  *
  * @author pcingola
- *
  */
 public class MarkerSeq extends Marker {
 
@@ -20,14 +21,21 @@ public class MarkerSeq extends Marker {
 
 	public MarkerSeq() {
 		super();
+		type = EffectType.SEQUENCE;
 		strandMinus = false;
 		sequence = DnaSequence.empty();
 	}
 
 	public MarkerSeq(Marker parent, int start, int end, boolean strandMinus, String id) {
 		super(parent, start, end, strandMinus, id);
+		type = EffectType.SEQUENCE;
 		this.strandMinus = strandMinus;
 		sequence = DnaSequence.empty();
+	}
+
+	public MarkerSeq(Marker parent, int start, int end, String seq) {
+		this(parent, start, end, false, "");
+		if (seq != null && !seq.isEmpty()) setSequence(seq);
 	}
 
 	/**
@@ -187,13 +195,14 @@ public class MarkerSeq extends Marker {
 	 * Base at position 'pos' (genomic coordinates)
 	 */
 	public String basesAtPos(int pos, int len) {
+		// int index = isStrandPlus() ? pos - start : end - pos;
 		int index = pos - start;
 		if (index < 0) return "";
 		return basesAt(index, len);
 	}
 
 	/**
-	 * Get  sequence
+	 * Get sequence
 	 *
 	 * WARNING: Sequence is always according to coding
 	 * strand. E.g. if the strand is negative, the sequence
@@ -205,11 +214,49 @@ public class MarkerSeq extends Marker {
 	}
 
 	/**
+	 * Get sequence intersecting 'marker'
+	 *
+	 *
+	 * WARNING: Sequence is always according to coding
+	 * strand. E.g. if the strand is negative, the sequence
+	 * returned by this method is the reverse-WC that you see
+	 * in the reference genome
+	 */
+	public String getSequence(Marker marker) {
+		if (!includes(marker)) return null; // Cannot provide full sequence for this marker, since it's not fully included in this MarkerSeq
+		if (marker.isStrandMinus()) throw new RuntimeException("marker on negative strand not supported");
+
+		return basesAtPos(marker.getStart(), marker.size());
+		//		if (isStrandPlus()) return basesAtPos(marker.getStart(), marker.size());
+		//		return basesAtPos(marker.getEnd(), marker.size());
+	}
+
+	/**
 	 * Do we have a sequence for this exon?
 	 */
 	public boolean hasSequence() {
 		if (size() <= 0) return true; // This interval has zero length, so sequence should be empty anyway (it is OK if its empty)
 		return (sequence != null) && (!sequence.isEmpty());
+	}
+
+	/**
+	 * Parse a line from a serialized file
+	 */
+	@Override
+	public void serializeParse(MarkerSerializer markerSerializer) {
+		super.serializeParse(markerSerializer);
+		setSequence(markerSerializer.getNextField());
+	}
+
+	/**
+	 * Create a string to serialize to a file
+	 * @return
+	 */
+	@Override
+	public String serializeSave(MarkerSerializer markerSerializer) {
+		return super.serializeSave(markerSerializer) //
+				+ "\t" + sequence.getSequence() //
+				;
 	}
 
 	/**
@@ -245,6 +292,44 @@ public class MarkerSeq extends Marker {
 		return getChromosomeName() + ":" + start + "-" + end //
 				+ ((id != null) && (id.length() > 0) ? " '" + id + "'" : "") //
 				+ (sequence != null ? ", sequence: " + sequence : "");
+	}
+
+	/**
+	 * Union of two markers
+	 * @return A new marker which is the union of the two
+	 */
+	@Override
+	public Marker union(Marker m) {
+		if (!getChromosomeName().equals(m.getChromosomeName())) return null;
+		MarkerSeq ms = (MarkerSeq) m;
+
+		int ustart = Math.min(start, m.getStart());
+		int uend = Math.max(end, m.getEnd());
+
+		// Merge sequence (only of the union overlaps)
+		String seq = null;
+		if (includes(m)) {
+			seq = getSequence();
+		} else if (m.includes(this)) {
+			seq = ms.getSequence();
+		} else if (intersects(m)) {
+			// This interval is first
+			if (start < m.start) {
+				int overlap = end - m.start + 1;
+				seq = getSequence() + ms.getSequence().substring(overlap);
+			} else {
+				int overlap = m.end - start + 1;
+				seq = ms.getSequence() + getSequence().substring(overlap);
+			}
+		}
+
+		// Create new marker using new coordinates
+		MarkerSeq msNew = (MarkerSeq) this.clone();
+		msNew.start = ustart;
+		msNew.end = uend;
+		if (seq != null) msNew.setSequence(seq);
+
+		return msNew;
 	}
 
 }

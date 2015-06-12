@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.stats.ObservedOverExpectedCpG;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Interval for a gene, as well as transcripts
@@ -77,17 +81,19 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			changed = true;
 		}
 
-		// Change start?
-		if (start != newStart) {
-			start = newStart;
-			changed = true;
-		}
+		if (newStart < newEnd) {
+			// Change start?
+			if (start != newStart) {
+				start = newStart;
+				changed = true;
+			}
 
-		// Change end?
-		if (end != newEnd) {
-			end = newEnd;
-			changed = true;
-		}
+			// Change end?
+			if (end != newEnd) {
+				end = newEnd;
+				changed = true;
+			}
+		} else Gpr.debug("Gene '" + id + "' (name:'" + geneName + "') not adjusted: " + this);
 
 		return changed;
 	}
@@ -99,16 +105,43 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 */
 	public Transcript canonical() {
 		Transcript canonical = null;
+		int canonicalLen = 0;
 
 		if (isProteinCoding()) {
-			// Find canonical transcript (longest CDS)
-			for (Transcript t : this)
-				if (t.isProteinCoding() && ((canonical == null) || (canonical.cds().length() < t.cds().length()))) canonical = t;
+			// Find canonical transcript in protein coding gene (longest CDS)
+			for (Transcript t : this) {
+				int tlen = t.cds().length();
+
+				// Compare coding length. If both lengths are equal, compare IDs
+				if (t.isProteinCoding() //
+						&& ((canonical == null) // No canonical selected so far? => Select this one
+								|| (canonicalLen < tlen) // Longer? => Update
+						|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+						) //
+				) {
+					canonical = t;
+					canonicalLen = tlen;
+				}
+			}
 		} else {
-			// Find canonical transcript (longest cDNA)
-			for (Transcript t : this)
-				if ((canonical == null) || (canonical.cds().length() < t.cds().length())) canonical = t;
+			// Find canonical transcript in non-protein coding gene (longest mRNA)
+			for (Transcript t : this) {
+				int tlen = t.mRna().length();
+
+				if (canonicalLen <= tlen //
+						&& ((canonical == null) // No canonical selected so far? => Select this one
+								|| (canonicalLen < tlen) // Longer? => Update
+						|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+						) //
+				) {
+					canonical = t;
+					canonicalLen = tlen;
+				}
+			}
 		}
+
+		// Found canonincal transcript? Set canonical flag
+		if (canonical != null) canonical.setCanonical(true);
 
 		return canonical;
 	}
@@ -218,16 +251,26 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	/**
 	 * Remove unverified or corrected transcripts
+	 * @return : True if ALL transcripts have been removed
 	 */
-	public void removeUnverified() {
+	public boolean removeUnverified() {
 		// Mark unchecked transcripts for deletion
 		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
+
+		int countRemoved = 0;
 		for (Transcript t : this)
-			if (!t.isChecked() || t.isCorrected()) toDelete.add(t);
+			if (!t.isChecked() || t.isCorrected()) {
+				toDelete.add(t);
+				countRemoved++;
+			}
+
+		if (Config.get().isDebug()) Gpr.debug("Gene '', removing " + countRemoved + " / " + numChilds() + " unchecked transcript.");
 
 		// Remove
 		for (Transcript t : toDelete)
 			remove(t);
+
+		return numChilds() <= 0;
 	}
 
 	/**
@@ -319,33 +362,36 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			// Add all exons
 			for (Transcript tr : this)
 				for (Exon ex : tr)
-					if (ex.getSpliceSiteAcceptor() != null) all.add(ex.getSpliceSiteAcceptor());
+					for (SpliceSite ss : ex.getSpliceSites())
+						if (ss instanceof SpliceSiteAcceptor) all.add(ss);
 			break;
 
 		case SPLICE_SITE_BRANCH:
 			// Add all exons
 			for (Transcript tr : this)
-				for (SpliceSiteBranch ssb : tr.getSpliceBranchSites())
-					all.add(ssb);
+				for (SpliceSite ss : tr.spliceSites())
+					if (ss instanceof SpliceSiteBranch) all.add(ss);
 			break;
 
 		case SPLICE_SITE_DONOR:
 			// Add all exons
 			for (Transcript tr : this)
 				for (Exon ex : tr)
-					if (ex.getSpliceSiteDonor() != null) all.add(ex.getSpliceSiteDonor());
+					for (SpliceSite ss : ex.getSpliceSites())
+						if (ss instanceof SpliceSiteDonor) all.add(ss);
 			break;
 
 		case SPLICE_SITE_REGION:
 			// Add all exons
 			for (Transcript tr : this) {
 				for (Exon ex : tr) {
-					if (ex.getSpliceSiteRegionStart() != null) all.add(ex.getSpliceSiteRegionStart());
-					if (ex.getSpliceSiteRegionEnd() != null) all.add(ex.getSpliceSiteRegionEnd());
+					for (SpliceSite ss : ex.getSpliceSites())
+						if (ss instanceof SpliceSiteRegion) all.add(ss);
 				}
+
 				for (Intron intron : tr.introns()) {
-					if (intron.getSpliceSiteRegionStart() != null) all.add(intron.getSpliceSiteRegionStart());
-					if (intron.getSpliceSiteRegionEnd() != null) all.add(intron.getSpliceSiteRegionEnd());
+					for (SpliceSite ss : intron.getSpliceSites())
+						if (ss instanceof SpliceSiteRegion) all.add(ss);
 				}
 			}
 
@@ -401,25 +447,65 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	 * Get some details about the effect on this gene
 	 */
 	@Override
-	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
 
+		//---
+		// Shift variant towards the most 3-prime end
+		// This is done in order to comply with HGVS notation
+		//---
+
+		// Keep track of the original variants, just in case it is changed
+		Variant variantOri = variant;
+		// Do we need to 'walk and roll'? I.e. align variant towards the most 3-prime
+		// end of the transcript? Note that VCF request variants to be aligned towards
+		// the 'leftmost' coordinate, so this re-alignment is only required for variants
+		// within transcripts on the positive strand.
+		//---
+		boolean shifted3prime = false;
+		if (!variant.isSnp() && Config.get().isShiftHgvs() && isStrandPlus()) {
+			// Get sequence information. Might have to load sequences from database
+			variant = variant.realignLeft();
+
+			// Created a new variant? => It was shifted towards the left (i.e. 3-prime)
+			shifted3prime = (variant != variantOri);
+		}
+
+		//---
+		// Calculate effects
+		//---
+
+		// Find effect for each transcript
 		boolean hitTranscript = false;
 		for (Transcript tr : this) {
 			// Apply sequence change to create new 'reference'?
-			if (variantrRef != null) tr = tr.apply(variantrRef);
+			if (variant.isNonRef()) {
+				Variant vref = ((VariantNonRef) variant).getVariantRef();
+				tr = tr.apply(vref);
+			}
 
 			// Calculate effects
-			hitTranscript |= tr.variantEffect(variant, variantEffects);
+			hitTranscript |= tr.intersects(variant);
+			tr.variantEffect(variant, variantEffects);
 		}
 
 		// May be none of the transcripts are actually hit
 		if (!hitTranscript) {
-			variantEffects.addEffect(this, EffectType.INTRAGENIC, "");
+			variantEffects.add(variant, this, EffectType.INTRAGENIC, "");
 			return true;
+		}
+
+		//---
+		// Do we need to add INFO_SHIFT_3_PRIME warning message?
+		//---
+		if (shifted3prime) {
+			for (VariantEffect ve : variantEffects) {
+				if (ve.getVariant() == variant) { // Is this effect using the shifted variant?
+					ve.addErrorWarningInfo(ErrorWarningType.INFO_REALIGN_3_PRIME); // Mark as shifted
+				}
+			}
 		}
 
 		return true;
 	}
-
 }

@@ -28,6 +28,10 @@ public class Marker extends Interval implements TxtSerializable {
 		type = EffectType.NONE;
 	}
 
+	public Marker(Marker parent, int start, int end) {
+		this(parent, start, end, false, "");
+	}
+
 	public Marker(Marker parent, int start, int end, boolean strandMinus, String id) {
 		super(parent, start, end, strandMinus, id);
 
@@ -51,7 +55,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Adjust [start,end] to include child
-	 * @param child
 	 */
 	protected void adjust(Marker child) {
 		start = Math.min(start, child.getStart());
@@ -59,36 +62,35 @@ public class Marker extends Interval implements TxtSerializable {
 	}
 
 	/**
-	 * Apply a SeqChange to a marker.
+	 * Apply a variant to a marker.
 	 *
 	 * Create a new marker
 	 * 		newMarker = marker.apply( variant )
 	 *
 	 * such that
-	 *		variant = Diff( newMarker , marker )		// Differences in seuquence
+	 *		variant = Diff( newMarker , marker )		// Differences in sequence
 	 *
 	 * @param variant
 	 * @return A new marker after applying variant
 	 */
 	public Marker apply(Variant variant) {
-		// SeqChange after this marker: No effect
+		// Variant after this marker: No effect
 		if (end < variant.getStart()) return this;
 
 		// Negative strand variants are a pain. We will eventually get rid of them...(they do not make sense any more)
-		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are accepted!\n\tVariant : " + variant);
+		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are suported!\n\tVariant : " + variant);
 
 		int lenChange = variant.lengthChange();
 		if (lenChange == 0) return this;
 
-		// SeqChange after marker end: Nothing to do
+		// Variant after marker end: Nothing to do
 		if (end < variant.getStart()) return this;
 
 		// We are not ready for mixed changes
 		if (variant.isIns()) return applyIns(variant, lenChange);
 		if (variant.isDel()) return applyDel(variant, lenChange);
 
-		// TODO : Mixed changes are not supported
-		throw new RuntimeException("Seqchange type not supported: " + variant.getVariantType() + "\n\t" + variant);
+		throw new RuntimeException("Variant type not supported: " + variant.getVariantType() + "\n\t" + variant);
 	}
 
 	/**
@@ -102,12 +104,7 @@ public class Marker extends Interval implements TxtSerializable {
 			m.start += lenChange;
 			m.end += lenChange;
 		} else if (variant.includes(this)) {
-			// TODO: Should I create a zero length marker?
-			//       This brings a few problems:
-			//			- We don't have any way to represent a zero length marker (if start=end then length is 1 base)
-			//			- How does a zero length marker behaves in an INSERTION?
-			//			- How does a zero length marker intersect?
-			return null; // SeqChange completely includes this marker => The whole marker deleted
+			return null; // Variant completely includes this marker => The whole marker deleted
 		} else if (includes(variant)) m.end += lenChange; // This marker completely includes variant. But variant does not include marker (i.e. they are not equal). Only 'end' coordinate needs to be updated
 		else {
 			// SeqChange is partially included in this marker.
@@ -178,6 +175,20 @@ public class Marker extends Interval implements TxtSerializable {
 	 */
 	@Override
 	public int compareTo(Interval i2) {
+		int comp = compareToPos(i2);
+		if (comp != 0) return comp;
+
+		// Compare by ID
+		if ((id == null) && (i2.getId() == null)) return 0;
+		if ((id != null) && (i2.getId() == null)) return -1;
+		if ((id == null) && (i2.getId() != null)) return 1;
+		return id.compareTo(i2.getId());
+	}
+
+	/**
+	 * Compare genomic coordinates
+	 */
+	public int compareToPos(Interval i2) {
 		// Compare chromosome names
 		Marker m2 = (Marker) i2;
 
@@ -199,11 +210,7 @@ public class Marker extends Interval implements TxtSerializable {
 		if (end > i2.end) return 1;
 		if (end < i2.end) return -1;
 
-		// Compare by ID
-		if ((id == null) && (i2.getId() == null)) return 0;
-		if ((id != null) && (i2.getId() == null)) return -1;
-		if ((id == null) && (i2.getId() != null)) return 1;
-		return id.compareTo(i2.getId());
+		return 0;
 	}
 
 	/**
@@ -262,56 +269,6 @@ public class Marker extends Interval implements TxtSerializable {
 		return len - 1 + (start - latest);
 	}
 
-	/**
-	 * Go up (parent) until we find an instance of 'clazz'
-	 */
-	@SuppressWarnings("rawtypes")
-	public Interval findParent(Class clazz) {
-		if (this.getClass().equals(clazz)) return this;
-		if ((parent != null) && (parent instanceof Marker)) return ((Marker) parent).findParent(clazz);
-		return null;
-	}
-
-	public Chromosome getChromosome() {
-		return (Chromosome) findParent(Chromosome.class);
-	}
-
-	/**
-	 * Find chromosome name
-	 */
-	public String getChromosomeName() {
-		Chromosome chromo = (Chromosome) findParent(Chromosome.class);
-		if (chromo != null) return chromo.getId();
-		return "";
-	}
-
-	/**
-	 * Find chromosome and return it's number
-	 *
-	 * @return Chromosome number if found, -1 otherwise
-	 */
-	public double getChromosomeNum() {
-		Chromosome chromo = (Chromosome) findParent(Chromosome.class);
-		if (chromo != null) return chromo.chromosomeNum;
-		return -1;
-	}
-
-	/**
-	 * Find genome
-	 */
-	public Genome getGenome() {
-		return (Genome) findParent(Genome.class);
-	}
-
-	/**
-	 * Find genome name
-	 */
-	public String getGenomeName() {
-		Genome genome = (Genome) findParent(Genome.class);
-		if (genome != null) return genome.getId();
-		return "";
-	}
-
 	@Override
 	public Marker getParent() {
 		return (Marker) parent;
@@ -319,16 +276,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	public EffectType getType() {
 		return type;
-	}
-
-	@Override
-	public int hashCode() {
-		int hashCode = getChromosomeName().hashCode();
-		hashCode = hashCode * 31 + start;
-		hashCode = hashCode * 31 + end;
-		hashCode = hashCode * 31 + (strandMinus ? -1 : 1);
-		if (id != null) hashCode = hashCode * 31 + id.hashCode();
-		return hashCode;
 	}
 
 	public String idChain() {
@@ -408,51 +355,26 @@ public class Marker extends Interval implements TxtSerializable {
 	 * Is 'interval' completely included in 'this'?
 	 * @return  return true if 'this' includes 'interval'
 	 */
-	public boolean includes(Marker interval) {
-		if (!interval.getChromosomeName().equals(getChromosomeName())) return false;
-		return (start <= interval.start) && (interval.end <= end);
+	public boolean includes(Marker marker) {
+		if (!marker.getChromosomeName().equals(getChromosomeName())) return false;
+		return (start <= marker.start) && (marker.end <= end);
 	}
 
 	/**
 	 * Intersect of two markers
-	 * @param m
 	 * @return A new marker which is the intersect of the two
 	 */
-	public Marker intersect(Marker m) {
-		if (!getChromosomeName().equals(m.getChromosomeName())) return null;
+	public Marker intersect(Marker marker) {
+		if (!getChromosomeName().equals(marker.getChromosomeName())) return null;
 
-		int istart = Math.max(start, m.getStart());
-		int iend = Math.min(end, m.getEnd());
+		int istart = Math.max(start, marker.getStart());
+		int iend = Math.min(end, marker.getEnd());
 		if (iend < istart) return null;
 		return new Marker(getParent(), istart, iend, strandMinus, "");
 	}
 
 	/**
-	 * Do the intervals intersect?
-	 * @return  return true if this intersects 'interval'
-	 */
-	public boolean intersects(Marker interval) {
-		if (!interval.getChromosomeName().equals(getChromosomeName())) return false;
-		return (interval.getEnd() >= start) && (interval.getStart() <= end);
-	}
-
-	/**
-	 * How much do intervals intersect?
-	 * @return  number of bases these intervals intersect
-	 */
-	public int intersectSize(Marker interval) {
-		if (!interval.getChromosomeName().equals(getChromosomeName())) return 0;
-
-		int start = Math.max(this.start, interval.getStart());
-		int end = Math.min(this.end, interval.getEnd());
-
-		if (end < start) return 0;
-		return (end - start) + 1;
-	}
-
-	/**
 	 * Adjust parent if it does not include child?
-	 * @return
 	 */
 	protected boolean isAdjustIfParentDoesNotInclude(Marker parent) {
 		return false;
@@ -460,7 +382,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Show an error if parent does not include child?
-	 * @return
 	 */
 	protected boolean isShowWarningIfParentDoesNotInclude() {
 		return false;
@@ -534,8 +455,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Parse a line from a serialized file
-	 * @param line
-	 * @return
 	 */
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {
@@ -550,7 +469,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Create a string to serialize to a file
-	 * @return
 	 */
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
@@ -566,7 +484,6 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * To string as a simple "chr:start-end" format
-	 * @return
 	 */
 	public String toStr() {
 		return getClass().getSimpleName() + "_" + getChromosomeName() + ":" + (start + 1) + "-" + (end + 1);
@@ -593,13 +510,23 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Calculate the effect of this variant
+	 */
+	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false;
+		variantEffects.add(variant, this, type, "");
+		return true;
+	}
+
+	/**
+	 * Calculate the effect of this variant
 	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
 	 */
-	public boolean variantEffect(Variant variant, Variant variantrRef, VariantEffects variantEffects) {
-		if (!intersects(variant)) return false;// Sanity check
+	public boolean variantEffectNonRef(Variant variant, VariantEffects variantEffects) {
+		if (!intersects(variant)) return false; // Sanity check
 
-		if (variantrRef != null) {
-			Marker m = apply(variantrRef);
+		if (variant.isNonRef()) {
+			Variant variantRef = ((VariantNonRef) variant).getVariantRef();
+			Marker m = apply(variantRef);
 
 			// Has the marker been deleted?
 			// Then there is no effect over this marker (it does not exist any more)
@@ -609,15 +536,6 @@ public class Marker extends Interval implements TxtSerializable {
 		}
 
 		return variantEffect(variant, variantEffects);
-	}
-
-	/**
-	 * Calculate the effect of this variant
-	 */
-	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
-		if (!intersects(variant)) return false;
-		variantEffects.addEffect(this, type, "");
-		return true;
 	}
 
 }

@@ -3,13 +3,17 @@ package ca.mcgill.mcb.pcingola.snpEffect.factory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.IntervalComparatorByEnd;
@@ -30,6 +34,7 @@ public abstract class SnpEffPredictorFactory {
 
 	// Show a mark every
 	public static final int MARK = 100;
+	public static int MIN_TOTAL_FRAME_COUNT = 10;
 
 	// Debug mode?
 	boolean debug = false;
@@ -37,6 +42,7 @@ public abstract class SnpEffPredictorFactory {
 	boolean readSequences = true; // Do not read sequences from GFF file (this is only used for debugging)
 	boolean createRandSequences = false; // If sequences are not read frmo a file, create random sequences
 	boolean frameCorrection;
+	boolean storeSequences = false; // Store full gene sequences (in separate 'sequence.chr*.bin' files)
 	int lineNum;
 	int inOffset; // This amount is subtracted to all position coordinates
 	int totalSeqsAdded = 0, totalSeqsIgnored = 0; // Number of sequences added and ignored
@@ -46,10 +52,12 @@ public abstract class SnpEffPredictorFactory {
 	Config config;
 	Genome genome;
 	SnpEffectPredictor snpEffectPredictor;
-	HashMap<String, Integer> exonsByChromo;
-	HashMap<String, Marker> markersById;
-	HashMap<String, Gene> genesById;
-	HashMap<String, Transcript> transcriptsById;
+	FrameType frameType;
+	Set<String> chromoNamesReference; // Chromosome names used in reference sequence file (e.g. FASTA)
+	Map<String, Integer> exonsByChromo;
+	Map<String, Marker> markersById;
+	Map<String, Gene> genesById;
+	Map<String, Transcript> transcriptsById;
 	Random random = new Random(20140410); // Note: we want consistent results in our test cases, so we always initialize the random generator in the same way
 
 	public SnpEffPredictorFactory(Config config, int inOffset) {
@@ -62,8 +70,10 @@ public abstract class SnpEffPredictorFactory {
 		markersById = new HashMap<String, Marker>();
 		genesById = new HashMap<String, Gene>();
 		transcriptsById = new HashMap<String, Transcript>();
+		chromoNamesReference = new HashSet<String>();
 
 		frameCorrection = false;
+		frameType = FrameType.UNKNOWN;
 	}
 
 	protected void add(Cds cds) {
@@ -96,7 +106,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Add a Gene
-	 * @param gene
 	 */
 	protected void add(Gene gene) {
 		snpEffectPredictor.add(gene);
@@ -108,7 +117,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Add a generic Marker
-	 * @param marker
 	 */
 	protected void add(Marker marker) {
 		addMarker(marker, false);
@@ -117,7 +125,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Add a transcript
-	 * @param tr
 	 */
 	protected void add(Transcript tr) {
 		Gene gene = (Gene) tr.getParent();
@@ -129,10 +136,30 @@ public abstract class SnpEffPredictorFactory {
 	}
 
 	/**
-	 * Add sequences to exon intervals
+	 * Add a marker to the collection
 	 */
-	protected void addExonSequences(String chr, String chrSeq) {
+	protected void addMarker(Marker marker, boolean unique) {
+		String key = marker.getId();
+		if (unique && markersById.containsKey(key)) throw new RuntimeException("Marker '" + key + "' already exists");
+		markersById.put(key, marker);
+	}
+
+	/**
+	 * Add genomic reference sequences
+	 */
+	protected void addSequences(String chr, String chrSeq) {
+		// Update chromosome length
+		chromoLen(chr, chrSeq.length());
+
+		// Add sequences for each gene
 		int seqsAdded = 0, seqsIgnored = 0;
+
+		if (storeSequences) {
+			if (verbose) System.out.print("\t\tAdding genomic sequences to genes: ");
+			int count = genome.getGenomicSequences().addGeneSequences(chr, chrSeq);
+			if (verbose) System.out.println("\tDone (" + count + " sequences added).");
+		}
+
 		if (verbose) System.out.print("\t\tAdding genomic sequences to exons: ");
 
 		// Find and add sequences for all exons in this chromosome
@@ -143,20 +170,47 @@ public abstract class SnpEffPredictorFactory {
 						int ssStart = exon.getStart();
 						int ssEnd = exon.getEnd() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
 
-						if ((ssStart < 0) || (ssEnd > chrSeq.length())) {
-							warning("Ignoring exon outside chromosome range (chromo length: " + chrSeq.length() + "). Exon: " + exon);
-							seqsIgnored++;
-						} else {
+						String seq = null;
+						if ((ssStart >= 0) && (ssEnd <= chrSeq.length())) {
+							// Regular coordinates
 							try {
-								String seq = chrSeq.substring(ssStart, ssEnd).toUpperCase();
-								// Reverse strand? => reverse complement of the sequence
-								if (exon.isStrandMinus()) seq = GprSeq.reverseWc(seq);
-								exon.setSequence(seq);
-								seqsAdded++;
+								seq = chrSeq.substring(ssStart, ssEnd).toUpperCase();
 							} catch (Throwable t) {
 								t.printStackTrace();
 								throw new RuntimeException("Error trying to add sequence to exon:\n\tChromosome sequence length: " + chrSeq.length() + "\n\tExon: " + exon);
 							}
+						} else if ((ssStart < 0) && (ssEnd > 0)) {
+							// Negative start coordinates? This is probably a circular genome
+							// Convert to 2 intervals:
+							//     i) Interval before zero: This gets mapped to the end of the chromosome
+							//     ii) Interval after zero: This are "normal" coordinates
+							// Then we concatenate both sequences
+							int len = chrSeq.length();
+							ssStart += len;
+							seq = chrSeq.substring(ssStart, len) + chrSeq.substring(0, ssEnd + 1);
+						} else if ((ssStart >= 0) && (ssEnd >= chrSeq.length())) {
+							// Coordinates outside chromosome length? This is probably a circular genome
+							// Convert to 2 intervals:
+							//     i) Interval before chr.end: This are "normal" coordinates
+							//     ii) Interval after chr.end: This gets mapped to the beginning of the chromosome
+							// Then we concatenate both sequences
+							int len = chrSeq.length();
+							ssEnd -= len;
+							seq = chrSeq.substring(ssStart, len) + chrSeq.substring(0, ssEnd + 1);
+						} else {
+							warning("Ignoring exon outside chromosome range (chromo length: " + chrSeq.length() + "). Exon: " + exon);
+							seqsIgnored++;
+						}
+
+						if (seq != null) {
+							// Sanity check
+							if (seq.length() != exon.size()) warning("Exon sequence length does not match exon.size()\n" + exon);
+
+							// Reverse strand? => reverse complement of the sequence
+							if (exon.isStrandMinus()) seq = GprSeq.reverseWc(seq);
+							exon.setSequence(seq);
+							seqsAdded++;
+
 						}
 					}
 				}
@@ -166,16 +220,6 @@ public abstract class SnpEffPredictorFactory {
 		if (verbose) System.out.println("\tDone (" + seqsAdded + " sequences added, " + seqsIgnored + " ignored).");
 		totalSeqsAdded += seqsAdded;
 		totalSeqsIgnored += seqsIgnored;
-	}
-
-	/**
-	 * Add a marker to the collection
-	 * @param marker
-	 */
-	protected void addMarker(Marker marker, boolean unique) {
-		String key = marker.getId();
-		if (unique && markersById.containsKey(key)) throw new RuntimeException("Marker '" + key + "' already exists");
-		markersById.put(key, marker);
 	}
 
 	/**
@@ -199,8 +243,10 @@ public abstract class SnpEffPredictorFactory {
 			Chromosome chr = config.getGenome().getChromosome(chrName);
 			int newEnd = lenByChr.get(chrName);
 			if (chr.getEnd() < newEnd) {
-				chr.setEnd(lenByChr.get(chrName));
-				mark(adjusted++);
+				if (chr.size() <= 1) { // If start = end = 0, then size() is 1
+					chr.setEnd(lenByChr.get(chrName));
+					mark(adjusted++);
+				} else if (verbose) System.out.println("\t\tChromosome '" + chr.getId() + "' has length of " + chr.size() + ", but genes end at " + lenByChr.get(chrName) + ". Assuming circular genome, not adjusting");
 			}
 		}
 	}
@@ -496,6 +542,12 @@ public abstract class SnpEffPredictorFactory {
 		// Mark as coding if there is a CDS
 		codingFromCds();
 
+		// Check that exons have sequences
+		if (readSequences) { // Note: In some test cases we ignore sequences
+			boolean error = !config.getGenome().isMostExonsHaveSequence();
+			if (error) error("Most Exons do not have sequences!\n" + showChromoNamesDifferences() + "\n\n");
+		}
+
 		// Done
 		if (verbose) System.out.println("");
 	}
@@ -525,7 +577,7 @@ public abstract class SnpEffPredictorFactory {
 
 		int countByFrameTotal = countByFrame[0] + countByFrame[1] + countByFrame[2];
 		int countByFrameNonZero = countByFrame[1] + countByFrame[2];
-		if ((countByFrameTotal > 0) && (countByFrameNonZero <= 0)) System.err.println("WARNING: All frames are zero! This seems rather odd, please check that 'frame' information in your 'genes' file is accurate.");
+		if ((countByFrameTotal >= MIN_TOTAL_FRAME_COUNT) && (countByFrameNonZero <= 0)) System.err.println("WARNING: All frames are zero! This seems rather odd, please check that 'frame' information in your 'genes' file is accurate.");
 
 		//---
 		// Perform exon frame adjustment
@@ -619,14 +671,14 @@ public abstract class SnpEffPredictorFactory {
 
 			if (Gpr.canRead(file)) {
 				if (verbose) System.out.println("\tReading FASTA file: '" + file + "'");
+
 				// Read fasta sequence
 				FastaFileIterator ffi = new FastaFileIterator(file);
 				for (String seq : ffi) {
 					String chromo = ffi.getName();
+					chromoNamesReference.add(chromo);
 					if (verbose) System.out.println("\t\tReading sequence '" + chromo + "', length: " + seq.length());
-					Chromosome chromoInt = getOrCreateChromosome(chromo);
-					chromoInt.setLength(seq.length()); // Set chromosome length
-					addExonSequences(chromo, seq); // Add all sequences
+					addSequences(chromo, seq); // Add all sequences
 				}
 				return;
 			} else if (verbose) System.out.println("\tFASTA file: '" + file + "' not found.");
@@ -676,6 +728,10 @@ public abstract class SnpEffPredictorFactory {
 		this.fileName = fileName;
 	}
 
+	public void setRandom(Random random) {
+		this.random = random;
+	}
+
 	/**
 	 * Read sequences?
 	 * Note: This is only used for debugging and testing
@@ -684,8 +740,70 @@ public abstract class SnpEffPredictorFactory {
 		this.readSequences = readSequences;
 	}
 
+	public void setStoreSequences(boolean storeSequences) {
+		this.storeSequences = storeSequences;
+	}
+
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
+	}
+
+	/**
+	 * Shw differences in chromosome names
+	 */
+	protected String showChromoNamesDifferences() {
+		if (chromoNamesReference.isEmpty()) return "";
+
+		// Get all chromosome names
+		Set<String> chrs = new HashSet<String>();
+		for (Gene g : config.getGenome().getGenes())
+			chrs.add(g.getChromosomeName());
+
+		//---
+		// Show chromosomes not present in reference sequence file
+		//---
+		int counMissinfRef = 0;
+		StringBuilder sbMissingRef = new StringBuilder();
+		ArrayList<String> chrsSorted = new ArrayList<String>();
+		chrsSorted.addAll(chrs);
+		Collections.sort(chrsSorted);
+		for (String chr : chrsSorted) {
+			if (!chromoNamesReference.contains(chr)) {
+				counMissinfRef++;
+				if (sbMissingRef.length() > 0) sbMissingRef.append(", ");
+				sbMissingRef.append("'" + chr + "'");
+			}
+		}
+
+		//---
+		// Show chromosomes not present in genes file
+		//---
+		int counMissinfGenes = 0;
+		StringBuilder sbMissingGenes = new StringBuilder();
+		ArrayList<String> chrsRefSorted = new ArrayList<String>();
+		chrsRefSorted.addAll(chromoNamesReference);
+		Collections.sort(chrsRefSorted);
+		for (String chr : chrsRefSorted) {
+			if (!chrs.contains(chr)) {
+				counMissinfGenes++;
+				if (sbMissingGenes.length() > 0) sbMissingRef.append(", ");
+				sbMissingGenes.append("'" + chr + "'");
+			}
+		}
+
+		// Show differences
+		String msg = "";
+		if (counMissinfRef > 0 && counMissinfGenes > 0) {
+			msg = "There might be differences in the chromosome names used in the genes file " //
+					+ "('" + fileName + "')" //
+					+ "\nand the chromosme names used in the 'reference sequence' file" //
+					+ (fastaFile != null ? " ('" + fastaFile + "')" : "") + "." //
+					+ "\nPlease check that chromosome names in both files match.\n";
+		}
+		return msg //
+				+ (sbMissingRef.length() > 0 ? "\tChromosome names missing in 'reference sequence' file:\t" + sbMissingRef.toString() : "") //
+				+ (sbMissingGenes.length() > 0 ? "\n\tChromosome names missing in 'genes' file             :\t" + sbMissingGenes.toString() : "")//
+				;
 	}
 
 	String unquote(String qstr) {

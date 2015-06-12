@@ -13,9 +13,9 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Index a file that has "chr \t pos" as the beginning of a line (e.g. VCF)
- * 
+ *
  * WARNING: It is assumed that the file is ordered by position (chromosome order does not matter)
- * 
+ *
  * @author pcingola
  */
 public class FileIndexChrPos {
@@ -66,8 +66,6 @@ public class FileIndexChrPos {
 
 	/**
 	 * Get chromosome info
-	 * @param line
-	 * @return
 	 */
 	String chromo(String line) {
 		if (line.startsWith("#")) return null;
@@ -89,12 +87,12 @@ public class FileIndexChrPos {
 
 	/**
 	 * Dump a region of the file to STDOUT
-	 * 
-	 * @param posStart : Start file coordinate 
-	 * @param posEnd   : End file coordinate 
+	 *
+	 * @param posStart : Start file coordinate
+	 * @param posEnd   : End file coordinate
 	 * @param toString : Return a sting with file contents?
-	 * 
-	 * @return If toString is 'true', return a string with file's content between those coordinates (this is used only for test cases and debugging) 
+	 *
+	 * @return If toString is 'true', return a string with file's content between those coordinates (this is used only for test cases and debugging)
 	 */
 	String dump(long start, long end, boolean toString) {
 		if (verbose) System.err.println("\tDumping file '" + fileName + "' interval [ " + start + " , " + end + " ]");
@@ -127,13 +125,13 @@ public class FileIndexChrPos {
 
 	/**
 	 * Dump all lines in the interval chr:posStart-posEnd
-	 * 
+	 *
 	 * @param chr      : Chromosome
 	 * @param posStart : Start coordinate in chromosome (zero-based)
 	 * @param posEnd   : End coordinate in chromosome (zero-based)
 	 * @param toString : Return a sting with file contents?
-	 * 
-	 * @return If toString is 'true', return a string with file's content between those coordinates (this is used only for test cases and debugging) 
+	 *
+	 * @return If toString is 'true', return a string with file's content between those coordinates (this is used only for test cases and debugging)
 	 */
 	public String dump(String chr, int posStart, int posEnd, boolean toString) {
 		long fileStart = find(chr, posStart, false);
@@ -229,9 +227,9 @@ public class FileIndexChrPos {
 	}
 
 	/**
-	 * Read 'len' bytes after 'bytePosition' or until a '\n' is reached. 
+	 * Read 'len' bytes after 'bytePosition' or until a '\n' is reached.
 	 * If len is negative, read 'abs(len)' bytes before bytePosition or until '\n' is reached
-	 * 
+	 *
 	 * @param bytePosition
 	 * @param len
 	 * @return An array of 'len' bytes. null if either end of file (len > 0) or beginning of file (len < 0)
@@ -345,7 +343,7 @@ public class FileIndexChrPos {
 
 	/**
 	 * Get the line where 'pos' hits
-	 * 
+	 *
 	 * @param pos
 	 * @return A string with the line that 'pos' hits, null if it's out of boundaries
 	 */
@@ -433,13 +431,15 @@ public class FileIndexChrPos {
 	}
 
 	/**
-	 * Index chromosomes in the whole file 
+	 * Index chromosomes in the whole file
 	 */
 	public void index() {
 		if (file == null) throw new RuntimeException("File error (forgot to open the file?).");
 
 		// Last line (minus '\n' character, minus one)
 		long end = size() - 1;
+		if (end < 0) return; // Empty database file
+
 		String lineEnd = getLine(end).line;
 		String chrEnd = chromo(lineEnd);
 
@@ -488,13 +488,13 @@ public class FileIndexChrPos {
 		if (chrStart == null) throw new RuntimeException("Cannot extract chromosome data from line:"//
 				+ "\n\tPosition : " + start + " (byte position in file) "//
 				+ "\n\tLine     : " + lineStart//
-		);
+				);
 
 		String chrEnd = chromo(lineEnd);
 		if (chrEnd == null) throw new RuntimeException("Cannot extract chromosome data from line:"//
 				+ "\n\tPosition : " + end + " (byte position in file) "//
 				+ "\n\tLine     : " + lineEnd//
-		);
+				);
 
 		if (chrStart.equals(chrEnd)) {
 			if (debug) Gpr.debug("Chromo:\tlineStart: " + chrStart + "\tlineEnd: " + chrEnd + "\t==> Back!");
@@ -545,9 +545,9 @@ public class FileIndexChrPos {
 
 	/**
 	 * The position argument of a line (second column in tab-separated format). Negative if not found
-	 * 
+	 *
 	 * @param line
-	 * @return The position argument of a line. Negative if not found 
+	 * @return The position argument of a line. Negative if not found
 	 */
 	public int pos(String line) {
 		if (line.startsWith("#")) return -1; // In VCF, positions are one-based, so zero denotes an error

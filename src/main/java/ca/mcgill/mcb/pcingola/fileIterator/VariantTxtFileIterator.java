@@ -93,7 +93,7 @@ public class VariantTxtFileIterator extends VariantFileIterator {
 						String id = "";
 						if (fields.length >= 8) id = fields[7];
 
-						fifo = Variant.factory(chromo, start, reference, change, id);
+						fifo = Variant.factory(chromo, start, reference, change, id, true);
 						return fifo.removeFirst();
 					} else throw new RuntimeException("Error reading file '" + fileName + "' line " + lineNum + " (number of fields is " + fields.length + "):\t" + line);
 				}

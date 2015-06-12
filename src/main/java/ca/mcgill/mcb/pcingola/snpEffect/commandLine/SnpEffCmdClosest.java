@@ -203,10 +203,10 @@ public class SnpEffCmdClosest extends SnpEff {
 			if (isOpt(args[i])) {
 				if (args[i].equals("-bed")) bedFormat = true;
 				else if (args[i].equals("-tss")) tss = true;
-				else usage("Unknow option '" + args[i] + "'");
+				else usage("Unknown option '" + args[i] + "'");
 			} else if (genomeVer.isEmpty()) genomeVer = args[i];
 			else if (inFile == null) inFile = args[i];
-			else usage("Unknow parameter '" + args[i] + "'");
+			else usage("Unknown parameter '" + args[i] + "'");
 		}
 
 		// Check: Do we have all required parameters?

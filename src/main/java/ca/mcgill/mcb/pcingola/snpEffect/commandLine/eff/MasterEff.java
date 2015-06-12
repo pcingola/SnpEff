@@ -11,7 +11,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 
 /**
  * Master agent for SnpEff 'eff' command
- * 
+ *
  * @author pablocingolani
  */
 public class MasterEff extends MasterVcf<String> {
@@ -20,6 +20,8 @@ public class MasterEff extends MasterVcf<String> {
 		super(new Props( //
 				// Create a factory
 				new UntypedActorFactory() {
+
+					private static final long serialVersionUID = 1L;
 
 					@Override
 					public Actor create() {

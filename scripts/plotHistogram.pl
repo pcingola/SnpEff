@@ -57,7 +57,6 @@ histDens <- function( x, title, q=1.0, breaks = 50 ) {
     abline( v=median(x), col='green', lty=2, lwd=2);
 
 	legend("topright",c("Mean","Median"),lty=c(1,1),col=c("blue","green"))
-
 }
 
 png('$pngFile', width = 1024, height = 1024);
@@ -70,6 +69,7 @@ histDens( x, "Histogram: All data", 1.0 );
 histDens( x, "Histogram: Quantile [2% - 98%]", 0.98 );
 
 print( summary( x ) )
+cat('std:', sd(x), '\\n')
 
 dev.off();
 quit( save='no' )

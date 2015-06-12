@@ -15,10 +15,13 @@ import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
  * Effect of a variant.
+ *
+ * TODO: Remove all code related to formatting (e.g. VCF output formatting should be done elsewhere).
  *
  * @author pcingola
  */
@@ -37,15 +40,17 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 *
 	 */
 	public enum ErrorWarningType {
-		WARNING_SEQUENCE_NOT_AVAILABLE //
-		, WARNING_REF_DOES_NOT_MATCH_GENOME //
-		, WARNING_TRANSCRIPT_INCOMPLETE //
-		, WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS //
-		, WARNING_TRANSCRIPT_NO_START_CODON //
-		, ERROR_CHROMOSOME_NOT_FOUND //
-		, ERROR_OUT_OF_CHROMOSOME_RANGE //
+		INFO_REALIGN_3_PRIME // 		Variant has been realigned to the most 3-prime position within the transcript. This is usually done to to comply with HGVS specification to always report the most 3-prime annotation.
+		, WARNING_SEQUENCE_NOT_AVAILABLE // The exon does not have reference sequence information
+		, WARNING_REF_DOES_NOT_MATCH_GENOME // Sequence reference does not match variant's reference (alignment problem?)
+		, WARNING_TRANSCRIPT_INCOMPLETE // Number of coding bases is NOT multiple of 3, so there is missing information for at least one codon.
+		, WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS // Multiple STOP codons found in a CDS (usually indicates frame errors un one or more exons)
+		, WARNING_TRANSCRIPT_NO_START_CODON // Start codon does not match any 'start' codon in the CodonTable
+		, WARNING_TRANSCRIPT_NO_STOP_CODON // Stop codon does not match any 'stop' codon in the CodonTable
+		, ERROR_CHROMOSOME_NOT_FOUND // Chromosome name not found. Typically due to mismatch in chromosome naming conventions between variants file and database, but can be a more severa problem (different reference genome)
+		, ERROR_OUT_OF_CHROMOSOME_RANGE // Variant is outside chromosome
 		, ERROR_OUT_OF_EXON //
-		, ERROR_MISSING_CDS_SEQUENCE //
+		, ERROR_MISSING_CDS_SEQUENCE // Missing coding sequence information
 		;
 
 		public boolean isError() {
@@ -64,46 +69,44 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		NONE, SILENT, MISSENSE, NONSENSE
 	}
 
-	static final boolean COMPATIBLE_v1_8 = true; // Activate this in order to get the same out as version 1.8. This is only for testing & debugging
+	// Don't show codon change sequences that are too long
+	public static final int MAX_CODON_SEQUENCE_LEN = 100;
 
 	Variant variant = null;
-	Variant variantRef = null;
 	List<EffectType> effectTypes;
 	EffectType effectType;
 	List<EffectImpact> effectImpacts;
 	EffectImpact effectImpact = null;
 	Marker marker = null;
 	String error = "", warning = "", message = ""; // Any message, warning or error?
-	String codonsOld = "", codonsNew = ""; // Codon change information
+	String codonsRef = "", codonsAlt = ""; // Codon change information
 	String codonsAroundOld = "", codonsAroundNew = ""; // Codons around
 	int distance = -1; // Distance metric
+	int cDnaPos = -1; // Position in cDNA
 	int codonNum = -1; // Codon number (negative number mens 'information not available')
 	int codonIndex = -1; // Index within a codon (negative number mens 'information not available')
 	int codonDegeneracy = -1; // Codon degeneracy (negative number mens 'information not available')
-	String aaOld = "", aaNew = ""; // Amino acid changes
+	String aaRef = "", aaAlt = ""; // Amino acid changes
 	String aasAroundOld = "", aasAroundNew = ""; // Amino acids around
 
 	public VariantEffect(Variant variant) {
 		this.variant = variant;
-		variantRef = null;
 		effectTypes = new ArrayList<EffectType>();
 		effectImpacts = new ArrayList<EffectImpact>();
 	}
 
-	public VariantEffect(Variant variant, Variant variantRef) {
+	public VariantEffect(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, int cDnaPos) {
 		this.variant = variant;
-		this.variantRef = variantRef;
-		effectTypes = new ArrayList<EffectType>();
-		effectImpacts = new ArrayList<EffectImpact>();
-	}
-
-	public VariantEffect(Variant variant, Variant variantRef, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex) {
-		this.variant = variant;
-		this.variantRef = variantRef;
 		effectTypes = new ArrayList<EffectType>();
 		effectImpacts = new ArrayList<EffectImpact>();
 		set(marker, effectType, effectImpact, message);
 		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
+		this.cDnaPos = cDnaPos;
+	}
+
+	public void addEffect(EffectType effectType) {
+		addEffectType(effectType);
+		addEffectImpact(effectType.effectImpact());
 	}
 
 	public void addEffectImpact(EffectImpact effectImpact) {
@@ -116,17 +119,29 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		this.effectType = null;
 	}
 
+	public void addErrorMessage(ErrorWarningType errmsg) {
+		addErrorWarningInfo(errmsg);
+	}
+
 	/**
 	 * Add an error or warning
 	 */
-	public void addErrorWarning(ErrorWarningType errwarn) {
+	public void addErrorWarningInfo(ErrorWarningType errwarn) {
 		if (errwarn == null) return;
 
 		if (errwarn.isError()) {
-			if (error.indexOf(errwarn.toString()) < 0) error += (error.isEmpty() ? "" : "+") + errwarn;
+			if (error.indexOf(errwarn.toString()) < 0) error += (error.isEmpty() ? "" : EffFormatVersion.EFFECT_TYPE_SEPARATOR) + errwarn;
 		} else {
-			if (warning.indexOf(errwarn.toString()) < 0) warning += (warning.isEmpty() ? "" : "+") + errwarn;
+			if (warning.indexOf(errwarn.toString()) < 0) warning += (warning.isEmpty() ? "" : EffFormatVersion.EFFECT_TYPE_SEPARATOR) + errwarn;
 		}
+	}
+
+	public void addInfoMessage(ErrorWarningType infomsg) {
+		addErrorWarningInfo(infomsg);
+	}
+
+	public void addWarningMessge(ErrorWarningType warnmsg) {
+		addErrorWarningInfo(warnmsg);
 	}
 
 	@Override
@@ -157,20 +172,37 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	@Override
-	public int compareTo(VariantEffect variantEffect) {
+	public int compareTo(VariantEffect varEffOther) {
 		// Sort by impact
-		int comp = getEffectImpact().compareTo(variantEffect.getEffectImpact());
+		int comp = getEffectImpact().compareTo(varEffOther.getEffectImpact());
 		if (comp != 0) return comp;
 
 		// Sort by effect
-		comp = getEffectType().compareTo(variantEffect.getEffectType());
+		comp = getEffectType().compareTo(varEffOther.getEffectType());
+		if (comp != 0) return comp;
+
+		// Sort by: Is canonical transcript?
+		Transcript trThis = getTranscript();
+		Transcript trOther = varEffOther.getTranscript();
+		if (trThis != null && trOther != null) {
+			comp = (trOther.isCanonical() ? 1 : 0) - (trThis.isCanonical() ? 1 : 0);
+		}
 		if (comp != 0) return comp;
 
 		// Sort by genomic coordinate of affected 'marker'
-		if ((getMarker() != null) && (variantEffect.getMarker() != null)) return getMarker().compareTo(variantEffect.getMarker());
+		if ((trThis != null) && (trOther != null)) comp = trThis.compareToPos(trOther);
+		if (comp != 0) return comp;
+
+		// Compare IDs
+		if ((trThis != null) && (trOther != null)) comp = trThis.getId().compareTo(trOther.getId());
+		if (comp != 0) return comp;
+
+		// Compare by marker
+		if ((getMarker() != null) && (varEffOther.getMarker() != null)) comp = getMarker().compareToPos(varEffOther.getMarker());
+		if (comp != 0) return comp;
 
 		// Sort by variant (most of the time this is equal)
-		return variant.compareTo(variantEffect.getVariant());
+		return variant.compareTo(varEffOther.getVariant());
 	}
 
 	/**
@@ -189,7 +221,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 			// Custom interval
 			String label = ((Custom) marker).getLabel();
 			double score = ((Custom) marker).getScore();
-			if (Double.isNaN(score)) label = label + ":" + score;
+			if (!Double.isNaN(score)) label = label + ":" + score;
 			if (!label.isEmpty()) label = "[" + label + "]";
 			return getEffectTypeString(useSeqOntology) + label;
 		} else if (isIntergenic() || isIntron() || isSpliceSite()) e = getEffectTypeString(useSeqOntology);
@@ -202,26 +234,30 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return e;
 	}
 
+	public String getAaAlt() {
+		return aaAlt;
+	}
+
 	/**
 	 * Amino acid change string (HGVS style)
 	 */
 	public String getAaChange() {
-		if (aaOld.isEmpty() && aaNew.isEmpty()) {
+		if (aaRef.isEmpty() && aaAlt.isEmpty()) {
 			if (codonNum >= 0) return "" + (codonNum + 1);
 			return "";
 		}
 
-		if (aaOld.equals(aaNew)) return aaNew + (codonNum + 1);
-		return aaOld + (codonNum + 1) + aaNew;
+		if (aaRef.equals(aaAlt)) return aaAlt + (codonNum + 1);
+		return aaRef + (codonNum + 1) + aaAlt;
 	}
 
 	/**
 	 * Amino acid change string (old style)
 	 */
 	public String getAaChangeOld() {
-		if (aaOld.isEmpty() && aaNew.isEmpty()) return "";
-		if (aaOld.equals(aaNew)) return aaNew;
-		return (aaOld.isEmpty() ? "-" : aaOld) + "/" + (aaNew.isEmpty() ? "-" : aaNew);
+		if (aaRef.isEmpty() && aaAlt.isEmpty()) return "";
+		if (aaRef.equals(aaAlt)) return aaAlt;
+		return (aaRef.isEmpty() ? "-" : aaRef) + "/" + (aaAlt.isEmpty() ? "-" : aaAlt);
 	}
 
 	/**
@@ -236,12 +272,28 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return lenNoStop / 3;
 	}
 
-	public String getAaNew() {
-		return aaNew;
+	/**
+	 * Net AA change (only for InDels)
+	 */
+	public String getAaNetChange() {
+		String aaLong = "", aaShort = "";
+
+		if (variant.isIns()) {
+			aaShort = getAaRef().toUpperCase();
+			aaLong = getAaAlt().toUpperCase();
+		} else if (variant.isDel()) {
+			aaLong = getAaRef().toUpperCase();
+			aaShort = getAaAlt().toUpperCase();
+		}
+
+		if (aaLong.startsWith(aaShort)) return aaLong.substring(aaShort.length());
+		if (aaLong.endsWith(aaLong)) return aaLong.substring(0, aaLong.length() - aaShort.length());
+
+		return aaLong;
 	}
 
-	public String getAaOld() {
-		return aaOld;
+	public String getAaRef() {
+		return aaRef;
 	}
 
 	/**
@@ -258,9 +310,12 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return "";
 	}
 
+	public int getcDnaPos() {
+		return cDnaPos;
+	}
+
 	/**
 	 * CDS length (negative if there is none)
-	 * @return
 	 */
 	public int getCdsLength() {
 		// CDS size info
@@ -273,8 +328,17 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Codon change string
 	 */
 	public String getCodonChange() {
-		if (codonsOld.isEmpty() && codonsNew.isEmpty()) return "";
-		return codonsOld + "/" + codonsNew;
+		if (codonsRef.isEmpty() && codonsAlt.isEmpty()) return "";
+		return codonsRef + "/" + codonsAlt;
+	}
+
+	/**
+	 * Codon change string (if it's not too long)
+	 */
+	public String getCodonChangeMax() {
+		if (variant.size() > MAX_CODON_SEQUENCE_LEN) return ""; // Cap length in order not to make VCF files grow too much
+		if (codonsRef.isEmpty() && codonsAlt.isEmpty()) return "";
+		return codonsRef + "/" + codonsAlt;
 	}
 
 	public int getCodonIndex() {
@@ -285,12 +349,12 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return codonNum;
 	}
 
-	public String getCodonsNew() {
-		return codonsNew;
+	public String getCodonsAlt() {
+		return codonsAlt;
 	}
 
-	public String getCodonsOld() {
-		return codonsOld;
+	public String getCodonsRef() {
+		return codonsRef;
 	}
 
 	public int getDistance() {
@@ -338,18 +402,22 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return effectTypes;
 	}
 
+	public String getEffectTypeString(boolean useSeqOntology) {
+		return getEffectTypeString(useSeqOntology, EffFormatVersion.FORMAT_EFF_4);
+	}
+
 	/**
 	 * Get Effect Type as a string
 	 */
-	public String getEffectTypeString(boolean useSeqOntology) {
+	public String getEffectTypeString(boolean useSeqOntology, EffFormatVersion formatVersion) {
 		if (effectTypes == null) return "";
 
 		// Show all effects
 		StringBuilder sb = new StringBuilder();
 		Collections.sort(effectTypes);
 		for (EffectType et : effectTypes) {
-			if (sb.length() > 0) sb.append('+');
-			if (useSeqOntology) sb.append(et.toSequenceOntology());
+			if (sb.length() > 0) sb.append(formatVersion.separator());
+			if (useSeqOntology) sb.append(et.toSequenceOntology(formatVersion, variant));
 			else sb.append(et.toString());
 		}
 
@@ -376,13 +444,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 */
 	public FunctionalClass getFunctionalClass() {
 		if (variant.isSnp()) {
-			if (!aaNew.equals(aaOld)) {
+			if (!aaAlt.equals(aaRef)) {
 				CodonTable codonTable = marker.codonTable();
-				if (codonTable.isStop(codonsNew)) return FunctionalClass.NONSENSE;
+				if (codonTable.isStop(codonsAlt)) return FunctionalClass.NONSENSE;
 
 				return FunctionalClass.MISSENSE;
 			}
-			if (!codonsNew.equals(codonsOld)) return FunctionalClass.SILENT;
+			if (!codonsAlt.equals(codonsRef)) return FunctionalClass.SILENT;
 		}
 
 		return FunctionalClass.NONE;
@@ -411,7 +479,6 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 */
 	public String getGenotype() {
 		if (variant == null) return "";
-		if (variantRef != null) return variant.getGenotype() + "-" + variantRef.getGenotype();
 		return variant.getGenotype();
 	}
 
@@ -420,20 +487,36 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 */
 	public String getHgvs() {
 		// Calculate protein level and dna level changes
-		HgvsProtein hgsvProtein = new HgvsProtein(this);
-		HgvsDna hgsvDna = new HgvsDna(this);
-		String hgvsProt = hgsvProtein.toString();
-		String hgvsDna = hgsvDna.toString();
+		String hgvsProt = getHgvsProt();
+		String hgvsDna = getHgvsDna();
 
 		// Build output
-		StringBuilder hgsv = new StringBuilder();
-		if (hgvsProt != null) hgsv.append(hgsvProtein);
+		StringBuilder hgvs = new StringBuilder();
+		if (hgvsProt != null) hgvs.append(hgvsProt);
 		if (hgvsDna != null) {
-			if (hgsv.length() > 0) hgsv.append('/');
-			hgsv.append(hgvsDna);
+			if (hgvs.length() > 0) hgvs.append('/');
+			hgvs.append(hgvsDna);
 		}
 
-		return hgsv.toString();
+		return hgvs.toString();
+	}
+
+	/**
+	 * Change in HGVS (Dna) notation
+	 */
+	public String getHgvsDna() {
+		HgvsDna hgvsDna = new HgvsDna(this);
+		String hgvs = hgvsDna.toString();
+		return hgvs != null ? hgvs : "";
+	}
+
+	/**
+	 * Change in HGVS (Protein) notation
+	 */
+	public String getHgvsProt() {
+		HgvsProtein hgvsProtein = new HgvsProtein(this);
+		String hgvs = hgvsProtein.toString();
+		return hgvs != null ? hgvs : "";
 	}
 
 	/**
@@ -528,6 +611,16 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		;
 	}
 
+	public boolean isSpliceSiteCore() {
+		return hasEffectType(EffectType.SPLICE_SITE_DONOR) //
+				|| hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
+		;
+	}
+
+	public boolean isSpliceSiteRegion() {
+		return hasEffectType(EffectType.SPLICE_SITE_REGION);
+	}
+
 	public boolean isUtr3() {
 		return hasEffectType(EffectType.UTR_3_PRIME) || hasEffectType(EffectType.UTR_3_DELETED);
 	}
@@ -544,44 +637,52 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	/**
-	 * Set codon change. Calculate effect type based on codon changes (for SNPs ans MNPs)
+	 * Set codon change. Calculate effect type based on codon changes (for SNPs & MNPs)
 	 */
 	public void setCodons(String codonsOld, String codonsNew, int codonNum, int codonIndex) {
-		this.codonsOld = codonsOld;
-		this.codonsNew = codonsNew;
+		codonsRef = codonsOld;
+		codonsAlt = codonsNew;
 		this.codonNum = codonNum;
 		this.codonIndex = codonIndex;
 
 		CodonTable codonTable = marker.codonTable();
 
 		// Calculate amino acids
-		if (codonsOld.isEmpty()) aaOld = "";
+		if (codonsOld.isEmpty()) aaRef = "";
 		else {
-			aaOld = codonTable.aa(codonsOld);
+			aaRef = codonTable.aa(codonsOld);
 			codonDegeneracy = codonTable.degenerate(codonsOld, codonIndex); // Calculate codon degeneracy
 		}
 
-		if (codonsNew.isEmpty()) aaNew = "";
-		else aaNew = codonTable.aa(codonsNew);
+		if (codonsNew.isEmpty()) aaAlt = "";
+		else aaAlt = codonTable.aa(codonsNew);
 	}
 
 	/**
 	 * Set values for codons around change.
 	 */
 	public void setCodonsAround(String codonsLeft, String codonsRight) {
-		codonsAroundOld = codonsLeft.toLowerCase() + codonsOld.toUpperCase() + codonsRight.toLowerCase();
-		codonsAroundNew = codonsLeft.toLowerCase() + codonsNew.toUpperCase() + codonsRight.toLowerCase();
+		codonsAroundOld = codonsLeft.toLowerCase() + codonsRef.toUpperCase() + codonsRight.toLowerCase();
+		codonsAroundNew = codonsLeft.toLowerCase() + codonsAlt.toUpperCase() + codonsRight.toLowerCase();
 
 		// Amino acids surrounding the ones changed
 		CodonTable codonTable = marker.codonTable();
 		String aasLeft = codonTable.aa(codonsLeft);
 		String aasRigt = codonTable.aa(codonsRight);
-		aasAroundOld = aasLeft.toLowerCase() + aaOld.toUpperCase() + aasRigt.toLowerCase();
-		aasAroundNew = aasLeft.toLowerCase() + aaNew.toUpperCase() + aasRigt.toLowerCase();
+		aasAroundOld = aasLeft.toLowerCase() + aaRef.toUpperCase() + aasRigt.toLowerCase();
+		aasAroundNew = aasLeft.toLowerCase() + aaAlt.toUpperCase() + aasRigt.toLowerCase();
 	}
 
 	public void setDistance(int distance) {
 		this.distance = distance;
+	}
+
+	/**
+	 * Set effect using default impact
+	 */
+	public void setEffect(EffectType effectType) {
+		setEffectType(effectType);
+		setEffectImpact(effectType.effectImpact());
 	}
 
 	public void setEffectImpact(EffectImpact effectImpact) {
@@ -605,11 +706,11 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		Transcript transcript = getTranscript();
 		if (transcript != null) {
 			// Transcript level errors or warnings
-			addErrorWarning(transcript.sanityCheck(variant));
+			addErrorWarningInfo(transcript.sanityCheck(variant));
 
 			// Exon level errors or warnings
 			Exon exon = getExon();
-			if (exon != null) addErrorWarning(exon.sanityCheck(variant));
+			if (exon != null) addErrorWarningInfo(exon.sanityCheck(variant));
 		}
 	}
 
@@ -662,7 +763,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 		String aaChange = "";
 		if (useHgvs) aaChange = getHgvs();
-		else aaChange = ((aaOld.length() + aaNew.length()) > 0 ? aaOld + "/" + aaNew : "");
+		else aaChange = ((aaRef.length() + aaAlt.length()) > 0 ? aaRef + "/" + aaAlt : "");
 
 		return errWarn //
 				+ "\t" + geneId //
@@ -673,7 +774,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (exonRank >= 0 ? exonRank : "") //
 				+ "\t" + effect(false, false, false, useSeqOntology) //
 				+ "\t" + aaChange //
-				+ "\t" + ((codonsOld.length() + codonsNew.length()) > 0 ? codonsOld + "/" + codonsNew : "") //
+				+ "\t" + ((codonsRef.length() + codonsAlt.length()) > 0 ? codonsRef + "/" + codonsAlt : "") //
 				+ "\t" + (codonNum >= 0 ? (codonNum + 1) : "") //
 				+ "\t" + (codonDegeneracy >= 0 ? codonDegeneracy + "" : "") //
 				+ "\t" + (cdsSize >= 0 ? cdsSize : "") //
@@ -702,12 +803,4 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 		return "NO EFFECT";
 	}
-
-	/**
-	 * Return a string safe enough to be used in a VCF file
-	 */
-	String vcfSafe(String str) {
-		return str;
-	}
-
 }

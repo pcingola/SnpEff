@@ -43,7 +43,7 @@ public class CochranArmitageTest {
 
 	public double p(int N1[], int N2[], double weight[]) {
 		double t = test(N1, N2, weight);
-		if (t > 0) t = -t; // FIXME Is this really OK? Should we be using a two tail CDF?
+		if (t > 0) t = -t;
 		double p = new org.apache.commons.math3.distribution.NormalDistribution(0, 1).cumulativeProbability(t);
 		return p;
 	}

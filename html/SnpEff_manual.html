@@ -79,8 +79,8 @@
           <li><a href="#input"><i class="icon-chevron-right"></i> Input &amp; output files </a></li>
           <li><a href="#cancer"><i class="icon-chevron-right"></i> Cancer samples </a></li>
           <li><a href="#effNc"><i class="icon-chevron-right"></i> Additional annotations </a></li>
-          <li><a href="#outputSummary"><i class="icon-chevron-right"></i> Output Summary file </a></li>
-          <li><a href="#trouble"><i class="icon-chevron-right"></i> Torubleshooting </a></li>
+          <li><a href="#outputSummary"><i class="icon-chevron-right"></i> Output Summary files </a></li>
+          <li><a href="#trouble"><i class="icon-chevron-right"></i> Troubleshooting </a></li>
           <li><a href="#databases"><i class="icon-chevron-right"></i> Building databases</a></li>
           <li><a href="#databasesNc"><i class="icon-chevron-right"></i> Building databases: Regulatory and Non-coding</a></li>
           <li><a href="#integrate"><i class="icon-chevron-right"></i> Integration: GATK and Galaxy</a></li>
@@ -89,6 +89,33 @@
       </div>
       <div class="span9">
 
+
+        <!-- Important changes
+        ================================================== -->
+        <section id="intro">
+          <div class="page-header">
+            <h1>0. Important changes: 'ANN' field</h1>
+          </div>
+				<p class="lead">
+				This SnpEff version implements the <a href="VCFannotationformat_v1.0.pdf"><b>new VCF annotation standard 'ANN' field</b></a>.
+				</p>
+
+				<p>
+				This new format specification has been created by the developers of the most widely used variant annotation programs (SnpEff, ANNOVAR and ENSEMBL's VEP)
+				and attempts to: <br>
+					<ol>
+					<li> provide a common framework for variant annotation, <br>
+					<li> make pipeline development easier, <br>
+					<li> facilitate benchmarking, and <br>
+					<li> improve some known problems in variant annotations.<br>
+					</ol>
+
+				<br>
+				Obviously this new 'ANN' field introduces changes respect to the previous 'EFF' field that break compatibility with previous SnpEff versions.<br>
+				In order to use the old 'EFF' field, you can use the <code>-formatEff</code> command line option.
+				</p>
+
+        </section>
 
         <!-- Introduction
         ================================================== -->
@@ -100,6 +127,8 @@
 				SnpEff is a variant annotation and effect prediction tool.
 				It annotates and predicts the effects of genetic variants (such as amino acid changes).
 				</p>
+
+				For older version of this page, see: <a href="SnpEff_manual.version_4_0.html">Manual page for SnpEff version 4.0</a><p>
 
             	<h3>Download &amp; Install</h3>
 				<p class="lead"> Download and installing SnpEff it pretty easy, take a look at the <a href="download.html">download page</a>.
@@ -313,13 +342,35 @@ $ unzip snpEff_latest_core.zip
 
 				<h3> Basic example: Annotate using SnpEff </h3>
 				Let's assume you have a VCF file and you want to annotate the variants in that file.
-				An example file is provided in <code>examples/file.vcf</code> (this data is from the 1000 Genomes project, so the reference genome is the human genome GRCh37).
+				An example file is provided in <code>examples/test.chr22.vcf</code> (this data is from the 1000 Genomes project, so the reference genome is the human genome GRCh37).
 				<p>
-				As an input, we will use a <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41"> Variant Call Format (VCF) </a> file available in the exmaples directory.
-				You can annotate the file by running (since we are activating the "verbose" mode <code>-v</code>, SnpEff shows a lot of information, the output is edited for brevity):
+				You can annotate the file by running the following command (as an input, we use a <a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41"> Variant Call Format (VCF) </a> file available in SnpEff's <code>examples</code> directory).
 
 <p><pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
+
+# Here is how the output looks like
+$ head examples/test.chr22.ann.vcf 
+##SnpEffVersion="4.1 (build 2015-01-07), by Pablo Cingolani"
+##SnpEffCmd="SnpEff  GRCh37.75 examples/test.chr22.vcf "
+##INFO=<ID=ANN,Number=.,Type=String,Description="Functional annotations: 'Allele | Annotation | Annotation_Impact | Gene_Name | Gene_ID | Feature_Type | Feature_ID | Transcript_BioType | Rank | HGVS.c | HGVS.p | cDNA.pos / cDNA.length | CDS.pos / CDS.length | AA.pos / AA.length | Distance | ERRORS / WARNINGS / INFO' ">
+##INFO=<ID=LOF,Number=.,Type=String,Description="Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' ">
+##INFO=<ID=NMD,Number=.,Type=String,Description="Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' ">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+22	17071756	.	T	C	.	.	<b>ANN=</b>C|3_prime_UTR_variant|MODIFIER|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.*11A>G|||||11|,C|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397A>G|||||4223|
+22	17072035	.	C	T	.	.	<b>ANN=</b>T|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1406G>A|p.Gly469Glu|1666/2034|1406/1674|469/557||,T|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G>A|||||3944|
+22	17072258	.	C	A	.	.	<b>ANN=</b>A|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1183G>T|p.Gly395Cys|1443/2034|1183/1674|395/557||,A|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G>T|||||3721|
+22	17072674	.	G	A	.	.	<b>ANN=</b>A|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.767C>T|p.Pro256Leu|1027/2034|767/1674|256/557||,A|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397C>T|||||3305|
+</pre>
+				As you can see, SnpEff added functional annotations in the <code>ANN</code> info field (eigth column in the VCF output file).<br>
+				Details about the 'ANN' field format can be found in the <a href="#ann">ANN Field</a> section.<br>
+				Note: Older SnpEff version used 'EFF' field (details about the 'EFF' field format can be found in the <a href="#eff">EFF Field</a> section).
+				<br>
+				<br>
+				You can also annotate using the "verbose" mode (command line option <code>-v</code>), this makes SnpEff to show a lot of information which can be usefull for debugging. <br>
+				Here output is edited for brevity:
+<p><pre>
+$ java -Xmx4g -jar snpEff.jar <b>-v</b> GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.434	done
 00:00:00.434	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -427,7 +478,7 @@ WARNING_TRANSCRIPT_NO_START_CODON	3483
 				Next time SnpEff will use the local version, so the instalation step is only done once.
 				<br>
 				<br>
-				The annotated variants will be in the new file "file.eff.vcf".<p>
+				The annotated variants will be in the new file "test.chr22.ann.vcf".<p>
 				<p>
 				<i class="icon-warning-sign"></i> SnpEff creates a file called "snpEff_summary.html" showing basic statistics about the analyzed variants. 
 				Take a quick look at it.
@@ -441,17 +492,22 @@ WARNING_TRANSCRIPT_NO_START_CODON	3483
 				<i class="icon-hand-right"></i> If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
 				This is done using the '-c' command line option:
 <p><pre>
-java -Xmx4g -jar snpEff.jar <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 file.vcf > file.eff.vcf
+java -Xmx4g -jar snpEff.jar <b>-c path/to/snpEff/snpEff.config</b> -v GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
 </pre><p>
 
 				<h3> Detailed examples </h3>
 				Take a look at several detailed examples in our <a href="protocol.html">examples page</a>.
 
-				<p><h3>Running from another directory</h3>
-				When you run SnpEff from a different directory than your install directory, you have to specify where the config file is located using the '-c' command line option.
+				<p><h3>Specify a configuration file </h3>
+				Seomtimes you need to specify the path to the config file.
+				For instance, when you run SnpEff from a different directory than your install directory, you have to 
+				specify where the config file is located using the '-c' command line option.
 <pre>
 java -Xmx4g path/to/snpEff/snpEff.jar -c path/to/snpEff/snpEff.config GRCh37.75 path/to/snps.vcf
 </pre>
+
+				<p>
+				<i class="icon-hand-right"></i> Since version 4.1B, you can use the <code>-configOption</code> command line option to override any value in the config file
 
 				<p><h3>Java memory options</h3>
 				By default the amount of memory set by a java process is set too low.
@@ -532,7 +588,7 @@ java -jar snpEff.jar
 				<center>
 				<table class="table table-striped">
 					<tr> <th>  Command      </th>	<th>  Meaning </th> </tr>
-					<tr> <td> [eff]         </td>	<td> This is the default command. It is used for annotating variant filed (e.g. VCF files). </td> </tr>
+					<tr> <td> [eff|ann]     </td>	<td> This is the default command. It is used for annotating variant filed (e.g. VCF files). </td> </tr>
 					<tr> <td> build         </td>	<td> Build a SnpEff database from reference genome files (FASTA, GTF, etc.). </td> </tr>
 					<tr> <td> buildNextProt </td>	<td> Build NextProt database using XML files </td> </tr>
 					<tr> <td> cds           </td>	<td> Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness (invoked automatically when building a database). </td> </tr>
@@ -551,13 +607,13 @@ java -jar snpEff.jar
 				<b> Common options </b> The general help shows some options that are available to all commands. For instace, at the time of writing, the common options are under "Generic options" and "Database options" are these:
 <pre>
 $ java -jar snpEff.jar
-snpEff version SnpEff 4.0 (build 2014-08-22), by Pablo Cingolani
+SnpEff version SnpEff 4.1 (build 2015-01-07), by Pablo Cingolani
 Usage: snpEff [command] [options] [files]
 
 Run 'java -jar snpEff.jar command' for help on each specific command
 
 Available commands: 
-	[eff]                        : Calculate effect of variants. Default: eff (no command or 'eff').
+	[eff|ann]                    : Annotate variants / calculate effects (you can use either 'ann' or 'eff', they mean the same). Default: ann (no command or 'ann').
 	build                        : Build a SnpEff database.
 	buildNextProt                : Build a SnpEff for NextProt (using NextProt's XML files).
 	cds                          : Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.
@@ -574,9 +630,10 @@ Available commands:
 Generic options:
 	-c , -config                 : Specify config file
 	-d , -debug                  : Debug mode (very verbose).
-	-dataDir [path]              : Override data_dir parameter from config file.
+	-dataDir <path>              : Override data_dir parameter from config file.
 	-download                    : Download a SnpEff database, if not available locally. Default: true
 	-nodownload                  : Do not download a SnpEff database, if not available locally.
+	-noShiftHgvs                 : Do not shift variants towards most 3-prime position (as required by HGVS).
 	-h , -help                   : Show this help and exit
 	-noLog                       : Do not report usage statistics to server
 	-t                           : Use multiple threads (implies '-noStats'). Default 'off'
@@ -588,41 +645,43 @@ Database options:
 	-interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)
 	-motif                       : Annotate using motifs (requires Motif database).
 	-nextProt                    : Annotate using NextProt (requires NextProt database).
-	-onlyProtein                 : Only use protein coding transcripts. Default: false
+	-noGenome                    : Do not load any genomic database (e.g. annotate using custom files).
+	-noMotif                     : Disable motif annotations.
+	-noNextProt                  : Disable NextProt annotations.
 	-onlyReg                     : Only use regulation tracks.
-	-onlyTr [file.txt]           : Only use the transcripts in this file. Format: One transcript ID per line.
-	-reg [name]                  : Regulation track to use (this option can be used add several times).
-	-ss , -spliceSiteSize [int]  : Set size for splice sites (donor and acceptor) in bases. Default: 2
+	-onlyProtein                 : Only use protein coding transcripts. Default: false
+	-onlyTr <file.txt>           : Only use the transcripts in this file. Format: One transcript ID per line.
+	-reg <name>                  : Regulation track to use (this option can be used add several times).
+	-ss , -spliceSiteSize <int>  : Set size for splice sites (donor and acceptor) in bases. Default: 2
 	-strict                      : Only use 'validated' transcripts (i.e. sequence has been checked). Default: false
-	-ud , -upDownStreamLen [int] : Set upstream downstream interval length (in bases)
-
 </pre>
 		
 				<b>Help (command specific):</b> In order to see a help message for a paricular command, you can run the command without any arguments or use <code>-help</code> command line option:
 <pre>
-# This will show a 'help' message for command 'eff'
-$ java -jar snpEff.jar
+# This will show a 'help' message for the 'ann' (aka 'eff') command
+$ java -jar snpEff.jar ann
 
-Command line :	SnpEff  
-
-snpEff version SnpEff 4.0 (build 2014-08-22), by Pablo Cingolani
+snpEff version SnpEff 4.1 (build 2015-01-07), by Pablo Cingolani
 Usage: snpEff [eff] [options] genome_version [input_file]
+
 
 	variants_file                   : Default is STDIN
 
+
+
 Options:
-	-chr [string]                   : Prepend 'string' to chromosome name (e.g. 'chr1' instead of '1'). Only on TXT output.
+	-chr <string>                   : Prepend 'string' to chromosome name (e.g. 'chr1' instead of '1'). Only on TXT output.
 	-classic                        : Use old style annotaions instead of Sequence Ontology and Hgvs.
 	-download                       : Download reference genome if not available. Default: true
-	-i [format]                     : Input format [ vcf, txt, pileup, bed ]. Default: VCF.
+	-i <format>                     : Input format [ vcf, bed ]. Default: VCF.
 	-fileList                       : Input actually contains a list of files to process.
-	-o [format]                     : Ouput format [ txt, vcf, gatk, bed, bedAnn ]. Default: VCF.
+	-o <format>                     : Ouput format [ vcf, gatk, bed, bedAnn ]. Default: VCF.
 	-s , -stats                     : Name of stats file (summary). Default is 'snpEff_summary.html'
 	-noStats                        : Do not create stats (summary) file
 	-csvStats                       : Create CSV summary file instead of HTML
 
 Results filter options:
-	-fi , -filterInterval  [file]   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)
+	-fi , -filterInterval  <file>   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)
 	-no-downstream                  : Do not show DOWNSTREAM changes
 	-no-intergenic                  : Do not show INTERGENIC changes
 	-no-intron                      : Do not show INTRON changes
@@ -632,19 +691,24 @@ Results filter options:
 
 Annotations options:
 	-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: false
-	-cancerSamples [file]           : Two column TXT file defining 'oringinal \t derived' samples.
+	-cancerSamples <file>           : Two column TXT file defining 'oringinal \t derived' samples.
+	-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').
 	-geneId                         : Use gene ID instead of gene name (VCF output). Default: false
 	-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: true
 	-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.
+	-noHgvs                         : Do not add HGVS annotations.
+	-noLof                          : Do not add LOF and NMD annotations.
+	-noShiftHgvs                    : Do not shift variants according to HGVS notation (most 3prime end).
 	-oicr                           : Add OICR tag in VCF file. Default: false
-	-sequenceOntology                : Use Sequence Ontology terms. Default: true
+	-sequenceOntology               : Use Sequence Ontology terms. Default: true
 
 Generic options:
 	-c , -config                 : Specify config file
 	-d , -debug                  : Debug mode (very verbose).
-	-dataDir [path]              : Override data_dir parameter from config file.
+	-dataDir <path>              : Override data_dir parameter from config file.
 	-download                    : Download a SnpEff database, if not available locally. Default: true
 	-nodownload                  : Do not download a SnpEff database, if not available locally.
+	-noShiftHgvs                 : Do not shift variants towards most 3-prime position (as required by HGVS).
 	-h , -help                   : Show this help and exit
 	-noLog                       : Do not report usage statistics to server
 	-t                           : Use multiple threads (implies '-noStats'). Default 'off'
@@ -656,12 +720,17 @@ Database options:
 	-interval                    : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)
 	-motif                       : Annotate using motifs (requires Motif database).
 	-nextProt                    : Annotate using NextProt (requires NextProt database).
+	-noGenome                    : Do not load any genomic database (e.g. annotate using custom files).
+	-noMotif                     : Disable motif annotations.
+	-noNextProt                  : Disable NextProt annotations.
 	-onlyReg                     : Only use regulation tracks.
-	-onlyTr [file.txt]           : Only use the transcripts in this file. Format: One transcript ID per line.
-	-reg [name]                  : Regulation track to use (this option can be used add several times).
-	-ss , -spliceSiteSize [int]  : Set size for splice sites (donor and acceptor) in bases. Default: 2
+	-onlyProtein                 : Only use protein coding transcripts. Default: false
+	-onlyTr <file.txt>           : Only use the transcripts in this file. Format: One transcript ID per line.
+	-reg <name>                  : Regulation track to use (this option can be used add several times).
+	-ss , -spliceSiteSize <int>  : Set size for splice sites (donor and acceptor) in bases. Default: 2
 	-strict                      : Only use 'validated' transcripts (i.e. sequence has been checked). Default: false
-	-ud , -upDownStreamLen [int] : Set upstream downstream interval length (in bases)
+	-ud , -upDownStreamLen <int> : Set upstream downstream interval length (in bases)
+
 </pre>
 
 				<h3>Speed up options: Multithreaded &amp; No statistics </h3>
@@ -701,29 +770,7 @@ Database options:
 				Logging can be deactivated by using the <code>-noLog</code> command line option.
 				</p>
 
-				<h3>Input filters</h3>
-				<p>
-				SnpEff supports filter on input files by using combinations of the following command line options:
-				<br>
-				<br>
-				<i class="icon-warning-sign"></i> Input filters can be implemented using <code>SnpSift filter</code>, which allows to create more flexible and complex filters.
-				<br>
-				<br>
-				<table class="table table-striped">
-					<tr> <th>	Command line option     </th><th> Meaning </th></tr>
-					<tr> <td>	-del                    </td><td> Analyze deletions only </td></tr>
-					<tr> <td>	-ins                    </td><td> Analyze insertions only </td></tr>
-					<tr> <td>	-hom                    </td><td> Analyze homozygous variants only </td></tr>
-					<tr> <td>	-het                    </td><td> Analyze heterozygous variants only </td></tr>
-					<tr> <td>	-minQ X, -minQuality X  </td><td> Filter out variants with quality lower than X </td></tr>
-					<tr> <td>	-maxQ X, -maxQuality X  </td><td> Filter out variants with quality higher than X </td></tr>
-					<tr> <td>	-minC X, -minCoverage X </td><td> Filter out variants with coverage lower than X </td></tr>
-					<tr> <td>	-maxC X, -maxCoverage X </td><td> Filter out variants with coverage higher than X </td></tr>
-					<tr> <td>	-mnp                    </td><td> Only MNPs (multiple nucleotide polymorphisms) </td></tr>
-					<tr> <td>	-snp                    </td><td> Only SNPs (single nucleotide polymorphisms) </td></tr>
-				</table>
-
-				<h3>Output filters</h3>
+				<h3>Filters</h3>
 				<p>
 				SnpEff supports filter of output results by using combinations of the following command line options:
 				<br>
@@ -752,7 +799,9 @@ Database options:
 2L	18000	18999 </pre>
 				<br>
 				In order to get only variants matching your intervals, you can use the command:
-<pre>$ java -Xmx4G -jar snpEff.jar -fi intervals.bed GRCh38.76 file.vcf </pre>
+<pre>
+$ java -Xmx4G -jar snpEff.jar -fi intervals.bed GRCh38.76 test.chr22.vcf 
+</pre>
 
 				</p>
 
@@ -768,11 +817,11 @@ Database options:
 				<i class="icon-warning-sign"></i>Although this seems to be the standard definitions of "canonical transcript", there is no warranties that what SnpEff considers a canonical transcript will match exactly what UCSC or ENSEMBL consider a canonical transcript.
 				</p>
 				Example on how to use canonical transcripts annotations:
-<pre>$ java -Xmx4G -jar snpEff.jar -v -canon GRCh37.75 examples/file.vcf > file.eff.canon.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -v -canon GRCh37.75 examples/test.chr22.vcf > file.ann.canon.vcf</pre>
 				<br>
 				In order to get a list of canonical transcipts, you can use the <code>-d</code> (debug) command line option. E.g.:
 <pre>
-$ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.66 test.vcf
+$ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.75 test.vcf
 00:00:00.000    Reading configuration file 'snpEff.config'
 00:00:00.173    done
 00:00:00.173    Reading database for genome version 'GRCh37.66'
@@ -798,7 +847,7 @@ $ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.66 test.vcf
 				<p>
 				SnpEff allows you to provide a list of transcripts to use for annotations by using the <code>-onlyTr file.txt</code> and providing a file with one transcript ID per line.
 				Any other transcript will be ignored.
-<pre>$ java -Xmx4G -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 file.vcf > file.eff.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf</pre>
 				</p>
 
 				<h3>Upstream and downstream</h3>
@@ -808,7 +857,7 @@ $ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.66 test.vcf
 				<br>
 				<br>
 				Example: Make upstream and downstream size zero (i.e. do not report any upstream or downstream effect).
-<pre>$ java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.75 file.vcf > file.eff.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf</pre>
 				</p>
 
 				<h3>Splice site size</h3>
@@ -817,7 +866,7 @@ $ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.66 test.vcf
 				<br>
 				<br>
 				Example: Make splice sites four bases long
-<pre>$ java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 file.vcf > file.eff.vcf</pre>
+<pre>$ java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf</pre>
 				</p>
 
 				<h3>Adding your own annotations</h3>
@@ -835,16 +884,22 @@ $ cat my_annotations.bed
 $ cat test.vcf 
 1	10469	.	C	G	365.78	PASS	AC=30;AF=0.0732
 
+# Annotate (output edited for readibility)
 $ java -Xmx4g -jar snpEff.jar -interval my_annotations.bed GRCh37.66 test.vcf
-1	10469	.	C	G	365.78	PASS	AC=30;AF=0.0732;EFF=CUSTOM(MODIFIER||||||MY_ANNOTATION||||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000423562||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000438504||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000488147||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000538476||1),DOWNSTREAM(MODIFIER|||||WASH7P|unprocessed_pseudogene|NON_CODING|ENST00000541675||1),INTERGENIC(MODIFIER||||||||||1),UPSTREAM(MODIFIER|||||DDX11L1|processed_transcript|NON_CODING|ENST00000456328||1),UPSTREAM(MODIFIER|||||DDX11L1|transcribed_unprocessed_pseudogene|NON_CODING|ENST00000450305||1),UPSTREAM(MODIFIER|||||DDX11L1|transcribed_unprocessed_pseudogene|NON_CODING|ENST00000515242||1),UPSTREAM(MODIFIER|||||DDX11L1|transcribed_unprocessed_pseudogene|NON_CODING|ENST00000518655||1)
+1    10469    .    C    G    365.78    PASS    AC=30;AF=0.0732;
+                                               ANN=G|upstream_gene_variant|MODIFIER|DDX11L1|ENSG00000223972|transcript|ENST00000456328|processed_transcript||n.-1C>G|||||1400|
+                                               ...
+                                               <b>G|custom|MODIFIER|||CUSTOM&my_annotations|MY_ANNOTATION|||||||||</b>
+
 </pre>
-				Notice that the variant was annotated using "MY_ANNOTATION" in the EFF field.
+				Notice that the variant was annotated using "MY_ANNOTATION" in the <code>ANN</code> field.
 				</p>
 
 				<h3>Gene ID instead of gene names</h3>
 				<p>
 				<br>
 				You can obtain gene IDs instead of gene names by using the command line option <code>-geneId</code>.
+				Note: This is only for the old 'EFF' field ('ANN' field always shows both gene name and gene ID).
 				<br>
 				Example:
 <pre>
@@ -863,13 +918,13 @@ $ java -Xmx4g -jar snpEff.jar -geneId GRCh37.66 test.vcf
 				<br>
 <pre>
 # Create compressed version of the examples files
-cp examples/file.vcf my.vcf
+cp examples/test.chr22.vcf my.vcf
 
 # Compress it
 gzip my.vcf 
 
 # Annotate (note the it doesn't require the ending '.gz')
-java -Xmx4g -jar snpEff.jar GRCh37.75 my.vcf > my.eff.vcf
+java -Xmx4g -jar snpEff.jar GRCh37.75 my.vcf > my.ann.vcf
 </pre>
 				<br>
 
@@ -883,13 +938,13 @@ java -Xmx4g -jar snpEff.jar GRCh37.75 my.vcf > my.eff.vcf
 # These three commands are the same
 
 # Using STDIN (pipe), implicit (no input file name)
-cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 > file.eff.vcf
+cat test.chr22.vcf | java -Xmx4g -jar snpEff.jar hg19 > test.chr22.ann.vcf
 
 # Using STDIN (pipe), exlicit '-' input file name
-cat file.vcf | java -Xmx4g -jar snpEff.jar hg19 - > file.eff.vcf
+cat test.chr22.vcf | java -Xmx4g -jar snpEff.jar hg19 - > test.chr22.ann.vcf
 
-# Using explicid file name
-java -Xmx4g -jar snpEff.jar hg19 file.vcf > file.eff.vcf
+# Using explict file name
+java -Xmx4g -jar snpEff.jar hg19 test.chr22.vcf > test.chr22.ann.vcf
 
 </pre>
 
@@ -973,9 +1028,134 @@ java -Xmx4g -jar snpEff.jar hg19 file.vcf > file.eff.vcf
 </pre>
 				</p>
 
+				<a id="ann"> </a>
+				<h3>ANN field (VCF output files)</h3>
+				Functional annotations information is added to the INFO field using an <code>ANN</code> tag.
 
+				The annotation 'ANN' field looks like this (the full annotataion standard specification can be found <a href="VCFannotationformat_v1.0.pdf">here</a>).
+
+<pre>
+ANN=T|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1406G>A|p.Gly469Glu|1666/2034|1406/1674|469/557||,T|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G>A|||||3944|
+</pre>
+
+				A variant can have (and ususally has) more than one annotaion. 
+				Multiple annotations are separated by commas.
+				In the previous example there were two annotations corresponding to different genes (CCT8L2 and FABP5P11).
+				<br>
+				<br>
+				Each annotation consists of multiple sub-fields separated by the pipe character "|" (fields 15 and 16 are empty in this example):
+<pre>
+Annotation      : T<b>|</b>missense_variant<b>|</b>MODERATE<b>|</b>CCT8L2<b>|</b>ENSG00000198445<b>|</b>transcript<b>|</b>ENST00000359963<b>|</b>protein_coding<b>|</b>1/1<b>|</b>c.1406G>A<b>|</b>p.Gly469Glu<b>|</b>1666/2034<b>|</b>1406/1674<b>|</b>469/557<b>|</b>  <b>|</b>
+SubField number : 1<b>|</b>       2        <b>|</b>    3   <b>|</b>  4   <b>|</b>       5       <b>|</b>    6     <b>|</b>      7        <b>|</b>      8       <b>|</b> 9 <b>|</b>    10   <b>|</b>    11     <b>|</b>   12    <b>|</b>   13    <b>|</b>   14  <b>|</b>15<b>|</b> 16
+</pre>
+				<br>
+				Here is a description of the meaning of each sub-field
+				<ol>
+					<li> <b>Allele (or ALT):</b> In case of multiple ALT fields, this helps to identify which ALT we are referring to. 
+					E.g.:
+<pre>
+#CHROM  POS     ID  REF  ALT    QUAL  FILTER  INFO     
+chr1    123456  .   C    A      .     .       ANN=<b>A</b>|...
+chr1    234567  .   A    G,T    .     .       ANN=<b>G</b>|... , <b>T</b>|...
+</pre>
+
+					In case of cancer sample, when comparing somatic versus germline using a non-standard reference (e.g. one of the ALTs is the reference) the format should be ALT-REFERENCE. E.g.:
+<pre>
+#CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO
+chr1    123456  .   A    C,G  .     .       ANN=<b>G-C</b>|...
+</pre>
+
+					Compound variants: two or more variants affecting the annotations (e.g. two consecutive SNPs conforming a MNP, two consecutive frame_shift variants that “recover” the frame). 
+					In this case, the Allele field should include a reference to the other variant/s included in the annotation:
+<pre>
+#CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO     
+chr1    123456  .   A    T    .     .       ANN=<b>T</b>|...
+chr1    123457  .   C    G    .     .       ANN=<b>C-chr1:123456_A>T</b>|...
+</pre>
+
+					<li> <b>Annotation (a.k.a. effect):</b> Annotated using Sequence Ontology terms. Multiple effects can be concatenated using ‘&’.
+<pre>
+#CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO     
+chr1    123456  .   C    A    .     .      ANN=A|<b>intron_variant&nc_transcript_variant</b>|...
+</pre>
+
+					<li> <b>Putative_impact:</b> A simple estimation of putative impact / deleteriousness : {HIGH, MODERATE, LOW, MODIFIER}
+
+					<li> <b>Gene Name:</b> Common gene name (HGNC). Optional: use closest gene when the variant is “intergenic”.
+
+					<li> <b>Gene ID:</b> Gene ID
+
+					<li> <b>Feature type:</b> Which type of feature is in the next field (e.g. transcript, motif, miRNA, etc.). It is preferred to use Sequence Ontology (SO) terms, but ‘custom’ (user defined) are allowed.
+ANN=A|stop_gained|HIGH|||transcript|...
+
+Tissue specific features may include cell type / tissue information separated by semicolon e.g.:
+ANN=A|histone_binding_site|LOW|||H3K4me3:HeLa-S3|...
+
+					<li> <b>Feature ID:</b> Depending on the annotation, this may be: Transcript ID (preferably using version number), Motif ID, miRNA, ChipSeq peak, Histone mark, etc.
+Note: Some features may not have ID (e.g. histone marks from custom Chip-Seq experiments may not have a unique ID).
+
+					<li> <b>Transcript biotype:</b> The bare minimum is at least a description on whether the transcript is {“Coding”, “Noncoding”}. Whenever possible, use ENSEMBL biotypes.
+
+					<li> <b>Rank / total:</b> Exon or Intron rank / total number of exons or introns.
+
+					<li> <b>HGVS.c:</b> Variant using HGVS notation (DNA level)
+
+					<li> <b>HGVS.p:</b> If variant is coding, this field describes the variant using HGVS notation (Protein level). Since transcript ID is already mentioned in ‘feature ID’, it may be omitted here.
+
+					<li> <b>cDNA_position / cDNA_len:</b> Position in cDNA and trancript’s cDNA length (one based).
+
+					<li> <b>CDS_position / CDS_len:</b> Position and number of coding bases (one based includes START and STOP codons).
+
+					<li> <b>Protein_position / Protein_len:</b> Position and number of AA (one based, including START, but not STOP).
+
+					<li> <b>Distance to feature:</b> All items in this field are options, so the field could be empty. 
+Up/Downstream: Distance to first / last codon
+Intergenic: Distance to closest gene
+Distance to closest Intron boundary in exon (+/- up/downstream). If same, use positive number.
+Distance to closest exon boundary in Intron (+/- up/downstream)
+Distance to first base in MOTIF
+Distance to first base in miRNA
+Distance to exon-intron boundary in splice_site or splice _region 
+ChipSeq peak: Distance to summit (or peak center)
+Histone mark / Histone state: Distance to summit (or peak center)
+
+					<li> <b>Errors, Warnings or Information messages:</b> Add errors, warnings or informative message that can affect annotation accuracy. It can be added using either ‘codes’ (as shown in column 1, e.g. W1) or ‘message types’ (as shown in column 2, e.g. WARNING_REF_DOES_NOT_MATCH_GENOME). All these errors, warnings or information messages messages are optional.
+						<br>
+						<br>
+						<table class="table table-striped">
+							<tr> <th>Code</th> <th>Message type</th> <th>Description / Notes</th> </tr>
+							<tr> <td>E1</td> <td>ERROR_CHROMOSOME_NOT_FOUND</td> <td>Chromosome does not exists in reference genome database. Typically indicates a mismatch between the chromosome names in the input file and the chromosome names used in the reference genome. </td> </tr>
+							<tr> <td>E2</td> <td>ERROR_OUT_OF_CHROMOSOME_RANGE</td> <td>The variant’s genomic coordinate is greater than chromosome's length.</td> </tr>
+							<tr> <td>W1</td> <td>WARNING_REF_DOES_NOT_MATCH_GENOME</td> <td>This means that the ‘REF’ field in the input VCF file does not match the reference genome. This warning may indicate a conflict between input data and data from reference genome (for instance is the input VCF was aligned to a different reference genome). </td> </tr>
+							<tr> <td>W2</td> <td>WARNING_SEQUENCE_NOT_AVAILABLE</td> <td>Reference sequence is not available, thus no inference could be performed.</td> </tr>
+							<tr> <td>W3</td> <td>WARNING_TRANSCRIPT_INCOMPLETE</td> <td>A protein coding transcript having a non-multiple of 3 length. It indicates that the reference genome has missing information about this particular transcript.</td> </tr>
+							<tr> <td>W4</td> <td>WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS</td> <td>A protein coding transcript has two or more STOP codons in the middle of the coding sequence (CDS). This should not happen and it usually means the reference genome may have an error in this transcript. </td> </tr>
+							<tr> <td>W5</td> <td>WARNING_TRANSCRIPT_NO_START_CODON</td> <td>A protein coding transcript does not have a proper START codon. It is rare that a real transcript does not have a START codon, so this probably indicates an error or missing information in the reference genome.</td> </tr>
+							<tr> <td>I1</td> <td>INFO_REALIGN_3_PRIME</td> <td>Variant has been realigned to the most 3-prime position within the transcript. This is usually done to to comply with HGVS specification to always report the most 3-prime annotation.</td> </tr>
+							<tr> <td>I2</td> <td>INFO_COMPOUND_ANNOTATION</td> <td>This effect is a result of combining more than one variants (e.g. two consecutive SNPs that conform an MNP, or two consecutive frame_shift variants that compensate frame).</td> </tr>
+							<tr> <td>I3</td> <td>INFO_NON_REFERENCE_ANNOTATION</td> <td>An alternative reference sequence was used to calculate this annotation (e.g. cancer sample comparing somatic vs. germline).</td> </tr>
+						</table>
+
+				<br>
+				<br>
+				<p>
+				<b>Consistency between HGVS and functional annotations:</b>
+				In some cases there might be inconsistent reporting between ‘annotation’ and HGVS. 
+				This is due to the fact that VCF recommends aligning to the leftmost coordinate, whereas HGSV recommends aligning to the "most 3-prime coordinate".
+				For instance, an InDel on the edge of an exon, which has an ‘intronic’ annotation according to VCF alignment recommendation, can lead to a ‘stop_gained’ when aligned using HGVS’s recommendation (using the most 3-prime possible alignment). 
+				So the 'annotation' sub-field will report 'intron' whereas HGVS sub-field will report a 'stop_gained'. 
+				This is obviously inconsistent and must be avoided.
+				In order to report annotations that are consistent with HGVS notation, variants must be re-aligned according to each transcript’s strand (i.e. align the variant according to the transcript’s most 3-prime coordinate). 
+				Then annotations are calculated, thus the reported annotations will be consistent with HGVS notation. 
+				Annotation software should have a command line option to override this behaviour (e.g. ‘-no_shift_hgvs’)
+
+				<a id="eff"> </a>
 				<h3>EFF field (VCF output files)</h3>
 				Effects information is added to the INFO field using an 'EFF' tag. 
+				<br>
+				<br>
+				<b>Important:</b> This section refers the old annotation format using the 'EFF' tag which can be activated using the <code>-formatEff</code> command line option.
+				As of version 4.1 SnpEff uses the 'ANN' field by default.
 				<br>
 				<br>
 				Notes:
@@ -1010,23 +1190,57 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				</table>
 				</center>
 				<br> 
-				<h3>Multiple effects per VCF line</h3>
-				Usually there is more than one effect reported in each EFF field.
+				<h3>Multiple annotations per VCF line</h3>
+				Usually there is more than one annotation reported in each <code>ANN</code> (or <code>EFF</code>) field.
 				<br>
 				There are several reasons for this:
 				<ul>
-					<li> A variant can affect multiple genes. E.g a variant can be DOWNSTREAM from one gene and UPSTREAM from another gene.
-					<li> In complex organisms, genes usually have multiple transcripts. So SnpEff reports the effect of a variant on each transcript.
+					<li> A variant can affect multiple genes. E.g a variant can be DOWNSTREAM from one gene and UPSTREAM from another gene. E.g.:
+					<li> In complex organisms, genes usually have multiple transcripts. So SnpEff reports the effect of a variant on each transcript.<br>
+						E.g.: 
+<pre>
+#CHROM  POS       ID   REF  ALT    QUAL  FILTER  INFO                    
+1       889455    .    G    A      .     .       .
+</pre>
+						In this case SnpEff will report the effect of each variant on each gene and each transcript (output edited for readibility):
+<pre>
+#CHROM  POS     ID   REF  ALT  QUAL FILTER   INFO
+1       889455  .    G    A    .    .        ANN=A|stop_gained|HIGH|NOC2L|ENSG00000188976|transcript|ENST00000327044|protein_coding|7/19|c.706C>T|p.Gln236*|756/2790|706/2250|236/749||
+                                                ,A|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000487214|processed_transcript||n.*865C>T|||||351|
+                                                ,A|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000469563|retained_intron||n.*878C>T|||||4171|
+                                                ,A|non_coding_exon_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000477976|retained_intron|5/17|n.2153C>T||||||;LOF=(NOC2L|ENSG00000188976|6|0.17);NMD=(NOC2L|ENSG00000188976|6|0.17)
+</pre>
 					<li> A VCF line can have more then one variant. 
-						 For instance if reference genome is 'G', but the sample has either 'A' or 'T', then this will be reported as one line, having multiple alternative variants. 
-						 E.g.: 
+						 E.g. If reference genome is 'G', but the sample has either 'A' or 'T' (non-biallelic variant), then this will be reported as one VCF line, having multiple alternative variants (notice that there are two ALTs): 
 <pre>
 #CHROM  POS       ID   REF  ALT      QUAL  FILTER  INFO                    
-1       889455    .    G    A,T      .     .       AF=0.0005
+1       889455    .    G    A,T      .     .       .
 </pre>
-						In this case SnpEff will report the effect of each variant on each gene and each transcript.
+						In this case SnpEff will report the effect of each ALT on each gene and each transcript. 
+						Notice that ENST00000327044 has a <code>stop_gained</code> variant (ALT = 'A') and a <code>missense_variant</code> (ALT = 'T')
+<pre>
+#CHROM  POS      ID    REF  ALT    QUAL FILTER    INFO
+1       889455   .     G    A,T    .    .         ANN=A|stop_gained|HIGH|NOC2L|ENSG00000188976|transcript|ENST00000327044|protein_coding|7/19|c.706C>T|p.Gln236*|756/2790|706/2250|236/749||
+                                                     ,T|missense_variant|MODERATE|NOC2L|ENSG00000188976|transcript|ENST00000327044|protein_coding|7/19|c.706C>A|p.Gln236Lys|756/2790|706/2250|236/749||
+                                                     ,A|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000487214|processed_transcript||n.*865C>T|||||351|
+                                                     ,T|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000487214|processed_transcript||n.*865C>A|||||351|
+                                                     ,A|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000469563|retained_intron||n.*878C>T|||||4171|
+                                                     ,T|downstream_gene_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000469563|retained_intron||n.*878C>A|||||4171|
+                                                     ,A|non_coding_exon_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000477976|retained_intron|5/17|n.2153C>T||||||
+                                                     ,T|non_coding_exon_variant|MODIFIER|NOC2L|ENSG00000188976|transcript|ENST00000477976|retained_intron|5/17|n.2153C>A||||||;LOF=(NOC2L|ENSG00000188976|6|0.17);NMD=(NOC2L|ENSG00000188976|6|0.17)
+</pre>
+
+
 				</ul>
 				</p>
+
+				<b>Effect sort order</b>. When multiple effects are reported, SnpEff sorts the effects the following way:
+				<ol>
+					<li> Putative impact: Effects having higher putative impact are first.
+					<li> Effect type: Effects assumed to be more deleterious effects first.
+					<li> Canonical trancript before non-canonical.
+					<li> Marker genomic coordinates (e.g. genes starting before first).
+				</ol>
 
             	<h3>Effect prediction details</h3>
 				<p class="lead">
@@ -1066,7 +1280,7 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001822"> inframe_deletion </a>  </td><td> CODON_DELETION  </td><td> One or many codons are deleted <br>e.g.:  A deletion multiple of three at codon boundary </td> <td> MODERATE </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001826"> disruptive_inframe_deletion </a>  </td><td> CODON_CHANGE_PLUS CODON_DELETION  </td><td> One codon is changed and one or more codons are deleted <br>e.g.:  A deletion of size multiple of three, not at codon boundary </td> <td> MODERATE </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001632"> downstream_gene_variant </a>  </td><td> DOWNSTREAM  </td><td> Downstream of a gene (default length: 5K bases) </td> <td> MODIFIER </td></tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001791"> exon_variant </a>  </td><td> EXON  </td><td> The vairant hits an exon. </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001791"> exon_variant </a>  </td><td> EXON  </td><td> The variant hits an exon (from a non-coding transcript) or a retained intron. </td> <td> MODIFIER </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572"> exon_loss_variant </a>  </td><td> EXON_DELETED  </td><td> A deletion removes the whole exon. </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001589"> frameshift_variant </a>  </td><td> FRAME_SHIFT  </td><td> Insertion or deletion causes a frame shift <br>e.g.:  An indel size is not multple of 3 </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001564"> gene_variant </a>  </td><td> GENE  </td><td> The variant hits a gene. </td> <td> MODIFIER </td></tr> 
@@ -1079,7 +1293,7 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001583"> missense_variant </a>  </td><td> NON_SYNONYMOUS_CODING  </td><td> Variant causes a codon that produces a different amino acid <br>e.g.:  Tgg/Cgg, W/R </td> <td> MODERATE </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001582"> initiator_codon_variant </a>  </td><td> NON_SYNONYMOUS_START  </td><td> Variant causes start codon to be mutated into another start codon (the new codon produces a different AA). <br>e.g.: Atg/Ctg, M/L (ATG and CTG can be START codons) </td> <td> LOW </td> </tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001567"> stop_retained_variant </a>  </td><td> NON_SYNONYMOUS_STOP  </td><td> Variant causes stop codon to be mutated into another stop codon (the new codon produces a different AA). <br>e.g.: Atg/Ctg, M/L (ATG and CTG can be START codons) </td> <td> LOW </td> </tr> 
-					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002008">rare_amino_acid_variant</a> </td><td> RARE_AMINO_ACID </td><td> The variant hits a rare amino acid thus is likely to produce protein loss of function </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002008"> rare_amino_acid_variant</a> </td><td> RARE_AMINO_ACID </td><td> The variant hits a rare amino acid thus is likely to produce protein loss of function </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001574"> splice_acceptor_variant </a>  </td><td> SPLICE_SITE_ACCEPTOR  </td><td> The variant hits a splice acceptor site (defined as two bases before exon start, except for the first exon). </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001575"> splice_donor_variant </a>  </td><td> SPLICE_SITE_DONOR  </td><td> The variant hits a Splice donor site (defined as two bases after coding exon end, except for the last exon). </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001630"> splice_region_variant </a>  </td><td> SPLICE_SITE_REGION  </td><td> A sequence variant in which a change has occurred within the region of the splice site, either within 1-3 bases of the exon or 3-8 bases of the intron.</td> <td> LOW </td> </tr> 
@@ -1099,6 +1313,7 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002015"> 3_prime_UTR_truncation</a> + <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572"> exon_loss </a>  </td><td> UTR_3_DELETED  </td><td> The variant deletes an exon which is in the 3'UTR of the transcript </td> <td> MODERATE </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001623"> 5_prime_UTR_variant </a>  </td><td> UTR_5_PRIME  </td><td> Variant hits 5'UTR region </td> <td> MODIFIER </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002013"> 5_prime_UTR_truncation</a> + <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572">exon_loss_variant</a> </td><td> UTR_5_DELETED  </td><td> The variant deletes an exon which is in the 5'UTR of the transcript </td> <td> MODERATE </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002013"> sequence_feature </a> + <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572">exon_loss_variant</a> </td><td> NEXT_PROT  </td><td> A 'NextProt' based annotation. Details are provided in the 'feature type' sub-field (ANN), or in the effect details (EFF). </td> <td> MODERATE </td></tr> 
 				</table> 
 				</center>
 
@@ -1199,7 +1414,7 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 java –Xmx4g -jar snpEff.jar –v \
 	-lof \
 	GRCh37.75 \
-	file.vcf > file.eff.vcf
+	test.chr22.vcf > test.chr22.ann.vcf
 </pre>
 
 				SnpEff adds 'LOF' and 'NMD' tags to INFO fields (column 8 in VCF format).  LOF and NMD tags have the following format:
@@ -1414,6 +1629,14 @@ $ java -Xmx4g -jar snpEff.jar -i bed BDGP5.69 chipSeq_peaks.bed
 				<p class="lead">
 				Here we describe details about annotating cancer samples.
 				</p>
+				<br>
+				<b>Single multi-sample VCF vs. multiple VCF files.</b> 
+				<br>
+				It is common practice, to have all samples in a single "multi-sample VCF file" (having two or more separate VCF files is highly discouraged). 
+				This is also the "gold standard" in cancer analysis standard, so all samples (both somatic and germline) should be in one VCF file.
+				<br>
+				SnpEff requires that you follow gold standard practices, thus requires a single multi-sample VCF (it is not possible to run cancer analysis using multiple VCF files).
+				<br>
 
 				<h3>Running in cancer analysis mode</h3>
 				Using the <code>-cancer</code> command line option, you can compare somatic vs germline samples. 
@@ -1421,15 +1644,16 @@ $ java -Xmx4g -jar snpEff.jar -i bed BDGP5.69 chipSeq_peaks.bed
 				So an example command line would be:
 				<br>
 				<br>
-<pre>$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.eff.vcf </pre>
+<pre>$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.ann.vcf </pre>
 
 				<br>
+
 				<h3>Representing cancer data</h3>
 				<p>
 				In a typical cancer sequencing experiment, we want to measure and annotate differences between germline (healthy) and somatic (cancer) tissue samples from the same patient.
 				The complication is that germline is not always the same as the reference genome, so a typical annotation does not work.
 				<br>
-				For instance, let's assume that at a given genomic position (e.g. chr1:69091), reference genome is 'A', germline is 'C' and somatic is 'C'.
+				For instance, let's assume that at a given genomic position (e.g. chr1:69091), reference genome is 'A', germline is 'C' and somatic is 'G'.
 				This should be represented in a VCF file as:
 <pre>
 #CHROM  POS    ID  REF  ALT    QUAL  FILTER  INFO  FORMAT  Patient_01_Germline  Patient_01_Somatic
@@ -1482,12 +1706,15 @@ Patient_04_Germline	Patient_04_Somatic
 				<br>
 				E.g. In our example, the file name is 'samples_cancer.txt', so the command line would look like this:
 <pre>
+$ cat examples/samples_cancer_one.txt
+Patient_01_Germline    Patient_01_Somatic
+
 $ java -Xmx4g -jar snpEff.jar -v \
 		-cancer \
-		-canceSample samples_cancer.txt \
+		-cancerSamples examples/samples_cancer_one.txt \
 		GRCh37.75 \
-		cancer.vcf \
-		> cancer.eff.vcf 
+		examples/cancer.vcf \
+		> cancer.ann.vcf 
 </pre>
 				<br>
 				<br>
@@ -1503,23 +1730,101 @@ $ java -Xmx4g -jar snpEff.jar -v \
 				<br>
 				E.g.: Pedigree information in a VCF file would look like this
 <pre>
+$ cat examples/cancer_pedigree.vcf
 ##PEDIGREE=&lt;Derived=Patient_01_Somatic,Original=Patient_01_Germline>
 #CHROM  POS ID  REF ALT QUAL    FILTER  INFO        FORMAT  Patient_01_Germline Patient_01_Somatic
 1   69091   .   A   C,G .       PASS    AF=0.1122   GT      1/0                 2/1
 1   69849   .   G   A,C .       PASS    AF=0.1122   GT      1/0                 2/1
 1   69511   .   A   C,G .       PASS    AF=0.3580   GT      1/1                 2/2
+
+
+$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 examples/cancer_pedigree.vcf > examples/cancer_pedigree.ann.vcf
 </pre>
 				Here we say that the sample called <code>Patient_01_Somatic</code> is derived from the sample called <code>Patient_01_Germline</code>. 
 				In this context, this means that cancer sample is derived from the healthy tissue. 
 
 				<br>
 				<br>
-				<h3>Interpreting Cancer effects</h3>
-				Interpretation of EFF field cancer sample relies heavily on 'Genotype' sub-field.
-				Just as a reminder, EFF field has the following format:
+				<h3>Interpreting Cancer annotations</h3>
+				Interpretation of <code>ANN</code> field cancer sample relies on 'Allele' sub-field.
+				Just as a reminder, <code>ANN</code> field has the following format:
 
 <pre>
-EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_Length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )
+ANN = Allele | Annotation | Annotation_Impact | Gene_Name | Gene_ID | Feature_Type | Feature_ID | Transcript_BioType | Rank | HGVS.c | HGVS.p | cDNA.pos / cDNA.length | CDS.pos / CDS.length | AA.pos / AA.length | Distance | ERRORS_WARNINGS_INFO
+</pre>
+				The <code>Allele</code> field tells you which effect relates to which genotype. 
+				More importantly, genotype difference between Somatic and Germline. 
+				<br>
+				Example: when there are multiple ALTs (e.g. REF='A' ALT='C,G') and the genotype field says:
+				<ul>
+					<li> Allele = "C": it means is the effect related to the first ALT ('C')
+					<li> Allele = "G" if it's the effect related to the second ALT ('G') 
+					<li> Allele = "G-C" means that this is the effect of having the second ALT as variant while using the first ALT as reference ("C -&gt; G").
+				</ul>
+				It is important that you understand the meaning of the last one, because you'll use it often for your cancer analysis.
+				<br>
+				<br>
+				Example: Sample output for the previously mentioned VCF example would be (the output has been edited for readability reasons)
+				<br>
+				For the first line we get (edited for readibility):
+<pre>
+$ java -Xmx4g -jar snpEff.jar -v -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf > examples/cancer.eff.vcf
+
+1   69091   .   A   C,G .   PASS    AF=0.1122;
+	ANN=G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Met1?|1/918|1/918|1/305||
+       ,G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Leu1?|1/918|1/918|1/305||
+       ,C|initiator_codon_variant|LOW|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>C|p.Met1?|1/918|1/918|1/305||
+    GT  1/0 2/1 
+</pre>
+				What does it mean: 
+				<ol>
+				   <li> In this case, we have two ALTs = 'C' and 'G'. 
+				   <li> Germline sample is heterozygous 'C/A' (GT = '1/0') 
+				   <li> Somatic tissue is heterozygous 'G/C' (GT = '2/1')
+				   <li> Change A -&gt; C and A -&gt; G are always calculated by SnpEff (this is the "default mode"). 
+						<ul>
+						 <li> A -&gt; C produces this effect
+						 <pre>C|initiator_codon_variant|LOW|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>C|p.Met1?|1/918|1/918|1/305||</pre>
+						 Note that the last field (genotype field) is 'C' indicating this is produced by the first ALT
+
+						 <li> A -&gt; G produces this effect
+						 <pre>G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Met1?|1/918|1/918|1/305||</pre>
+						 Note that the last field (genotype field) is 'G' indicating this is produced by the second ALT
+						</ul>
+
+					<li> Finally, this is what you were expecting for, the cancer comparisons. Since both germline and somatic 
+						are heterozygous (GT are '1/0' and '2/1'), there are 4 possible comparisons to make:  
+						<ul>
+							<li> G vs C : This is the Somatic vs Germline we are interested in. SnpEff reports this one
+							<li> G vs A : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
+							<li> C vs C : This is not a variant, since both og them ar '1'. SnpEff skips this one.
+							<li> C vs A : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
+						</ul>
+						I know is confusing, but the bottom line is that only the first comparison one makes sense, and is the one SnpEff reports.
+						So 'C -&gt; G' produces the following effect:
+						<br>
+						<pre>G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Leu1?|1/918|1/918|1/305||</pre>
+						<br>
+						<i class="icon-warning-sign"></i> Notice the genotype field is "G-C" meaning the we produce a new reference on the fly using ALT 1 ('C') and then used ALT 2 ('G') as the variant.
+						So we comapre 'G' (ALT) to 'C' (REF).
+				</ol>
+
+				<h4>Cancer annotations using 'EFF' field:</h4>
+
+				Interpretation of <code>EFF</code> field cancer sample relies on 'Genotype' sub-field.
+				Just as a reminder, <code>EFF</code> field has the following format:
+<pre>
+EFF = Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_Length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )
+</pre>
+
+				For the previous example, we get (edited for readibility):
+<pre>
+$ java -Xmx4g -jar snpEff.jar -v -classic -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf > examples/cancer.eff.vcf
+
+1	69091	.	A	C,G	.	PASS	AC=1;
+                            EFF=START_LOST(HIGH|MISSENSE|Atg/Gtg|M1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G)
+                               ,START_LOST(HIGH|MISSENSE|Ctg/Gtg|L1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G-C)
+                               ,NON_SYNONYMOUS_START(LOW|MISSENSE|Atg/Ctg|M1L|305|OR4F5|protein_coding|CODING|ENST00000335137|1|C)
 </pre>
 				The <code>GenotypeNum</code> field tells you which effect relates to which genotype. 
 				More importantly, genotype difference between Somatic and Germline. 
@@ -1530,67 +1835,6 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 					<li> GenotypeNum = "2" if it's the effect related to the second ALT ('G') 
 					<li> GenotypeNum = "2-1" means that this is the effect of having the second ALT as variant while using the first ALT as reference ("C -&gt; G").
 				</ul>
-				It is important that you understand the meaning of the last one, because you'll use it often for your cancer analysis.
-				<br>
-				<br>
-				Example: Sample output for the previously mentioned VCF example would be (the output has been edited for readability reasons)
-				<br>
-				For the first line:
-<pre>
-1   69091   .   A   C,G .   PASS    AF=0.1122
-    ;EFF=NON_SYNONYMOUS_START(LOW|MISSENSE|Atg/Ctg|M1L|305|OR4F5|protein_coding|CODING|ENST00000335137|1|1)
-        ,START_LOST(HIGH|MISSENSE|Atg/Gtg|M1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2)
-        ,START_LOST(HIGH|MISSENSE|Ctg/Gtg|L1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2-1)
-    GT  1/0 2/1 
-</pre>
-				What does it mean: 
-				<ol>
-				   <li> In this case, we have two ALTs = 'C' and 'G'. 
-				   <li> Germline sample is heterozygous 'C/A' (GT = '1/0') 
-				   <li> Soamtic tissue is heterozygous 'G/C' (GT = '2/1')
-				   <li> Change A -&gt; C and A -&gt; G are always calculated by SnpEff (this is the "default mode"). 
-						<ul>
-						 <li> A -&gt; C produces this effect
-						 <code>NON_SYNONYMOUS_START(LOW|MISSENSE|Atg/Ctg|p.Met1Leu|305|OR4F5|protein_coding|CODING|ENST00000335137|1)</code>
-						 Note that the last field (genotype field) is '1' indicating this is produced by the first ALT (C)
-
-						 <li> A -&gt; G produces this effect
-						 <code>START_LOST(HIGH|MISSENSE|Atg/Gtg|p.Met1Val|305|OR4F5|protein_coding|CODING|ENST00000335137|2)</code>
-						 Note that the last field (genotype field) is '2' indicating this is produced by the first ALT (G)
-						</ul>
-
-					<li> Finally, this is what you were expecting for, the cancer comparisons. Since both germline and somatic 
-						are heterozygous (GT are '1/0' and '2/1'), there are 4 possible comparisons to make:  
-						<ul>
-							<li> 2 vs 1 : This is the Somatic vs Germline we are interested in. SnpEff reports this one
-							<li> 2 vs 0 : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
-							<li> 1 vs 1 : This is not a variant, since both og them ar '1'. SnpEff skips this one.
-							<li> 1 vs 0 : This compares ALT to REF, so it was already reported in "default mode". SnpEff doesn't report this one again.
-						</ul>
-						I know is confusing, but the bottom line is that only the first comparison one makes sense, and is the one SnpEff reports.
-						So 'C -&gt; G' produces the following effect:
-						<br>
-						<code>'START_LOST(HIGH|MISSENSE|Ctg/Gtg|p.Leu1Val|305|OR4F5|protein_coding|CODING|ENST00000335137|2-1)</code>
-						<br>
-						<br>
-						<i class="icon-warning-sign"></i> Notice the genotype field is "2-1" meaning the we produce a new reference on the fly using ALT 1 ('C') and then used ALT 2 ('G') as the change.
-				</ol>
-				<br>
-				If your brain hasn't exploded yet and want to have some more fun, the other lines produced in the above example are (again, lines edited for the sake of brevity):
-<pre>
-1   69849   .   G   A,C .   PASS    AF=0.1122
-    ;EFF=STOP_GAINED(HIGH|NONSENSE|tgG/tgA|W253*|305|OR4F5|protein_coding|CODING|ENST00000335137|1|1)
-        ,NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|tgG/tgC|W253C|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2)
-        ,STOP_LOST(HIGH|MISSENSE|tgA/tgC|*253C|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2-1)
-    GT  1/0 2/1 
-
-
-1   69511   .   A   C,G .   PASS    AF=0.3580
-    ;EFF=NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Aca/Cca|T141P|305|OR4F5|protein_coding|CODING|ENST00000335137|1|1)
-        ,NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Aca/Gca|T141A|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2)
-        ,NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Cca/Gca|P141A|305|OR4F5|protein_coding|CODING|ENST00000335137|1|2-1)
-    GT  1/1 2/2 
-</pre>
 				</p>
         </section>
 
@@ -1643,7 +1887,7 @@ drwxrwxr-x 3 pcingola pcingola     4096 Aug 26 19:51 ..
 				<br>
 				E.g. To use 'HeLa-S3' and 'NHEK' tracks, you can run:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/test.1KG.vcf > test.1KG.ann_reg.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.377	done
 00:00:00.377	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -1654,19 +1898,23 @@ $ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/file.
 
 
 # Show one example of "regulatory_region" (output edited for readability)
-$ grep -i regulatory_region file.eff.vcf | head -n 1 | ./scripts/vcfInfoOnePerLine.pl 
-22	17565932	.	T	C	.	.
-							EFF	regulatory_region_variant[PolII](MODIFIER||||||HeLa-S3||||1)
-							EFF	regulatory_region_variant[DNase1](MODIFIER||||||NHEK||||1)
-							EFF	regulatory_region_variant[DNase1](MODIFIER||||||HeLa-S3||||1)
-							EFF	regulatory_region_variant[H3K9ac](MODIFIER||||||NHEK||||1)
-							EFF	regulatory_region_variant[H3K9ac](MODIFIER||||||HeLa-S3||||1)
-							EFF	regulatory_region_variant[H3K4me3](MODIFIER||||||HeLa-S3||||1)
-							EFF	regulatory_region_variant[H3K27ac](MODIFIER||||||HeLa-S3||||1)
-							EFF	non_coding_exon_variant(MODIFIER|||n.89T>C||IL17RA|processed_transcript|CODING|ENST00000477874|1|1)
+$ grep -i regulatory_region test.1KG.ann_reg.vcf | head -n 1 | ./scripts/vcfInfoOnePerLine.pl
+1    10291    .    C    T    2373.79    .    ANN=T|regulatory_region_variant|MODIFIER|||REGULATION&H3K36me3:NHEK|NHEK_H3K36me3_5|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&H3K27me3:NHEK|NHEK_H3K27me3_4|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&Max:HeLa-S3|HeLa-S3_Max_26|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&Cfos:HeLa-S3|HeLa-S3_Cfos_30|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&FAIRE:HeLa-S3|HeLa-S3_FAIRE_49|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&H3K27ac:HeLa-S3|HeLa-S3_H3K27ac_88|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&PolII:NHEK|NHEK_PolII_59|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&CTCF:NHEK|NHEK_CTCF_42|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&Cmyc:HeLa-S3|HeLa-S3_Cmyc_16|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&H4K20me1:NHEK|NHEK_H4K20me1_122|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&H3K4me3:NHEK|NHEK_H3K4me3_133|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&DNase1:HeLa-S3|HeLa-S3_DNase1_108|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&DNase1:NHEK|NHEK_DNase1_63|||||||||
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&FAIRE:NHEK|NHEK_FAIRE_149||||||||| 
 </pre>
 				<br>
-				<i class="icon-hand-right"></i> You can use <code>-onlyReg</code> command line option to perform only regulatory annotations (i.e. coding annotations will be omitted).
 				</p>
 
 				<h3>ENCODE </h3>
@@ -1695,14 +1943,16 @@ cd db/encode
 wget "http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/fdrPeaks/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb"
 
 # Annotate using ENCODE's data:
-java -Xmx4g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.71 test.vcf > test.eff.vcf
+java -Xmx4g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.75 examples/test.1KG.vcf > test.1KG.ann_encode.vcf
 
 # Annotations are added as "CUSTOM" intervals:
-$ grep CUSTOM test.eff.vcf 
-1	799463	.	T	C	.	PASS	AC=958;EFF=CUSTOM[wgEncodeDukeDnase8988T](MODIFIER||||||wgEncodeDukeDnase8988T:799426_799575||||1),DOWNSTREAM(MODIFIER|||||FAM41C|lincRNA|NON_CODING|ENST00000427857||1),DOWNSTREAM(MODIFIER|||||FAM41C|lincRNA|NON_CODING|ENST00000432963||1),DOWNSTREAM(MODIFIER|||||FAM41C|lincRNA|NON_CODING|ENST00000446136||1),DOWNSTREAM(MODIFIER|||||RP11-206L10.11|lincRNA|NON_CODING|ENST00000445118||1),INTERGENIC(MODIFIER||||||||||1)
-1	902128	.	C	T	.	PASS	AC=80;EFF=CUSTOM[wgEncodeDukeDnase8988T](MODIFIER||||||wgEncodeDukeDnase8988T:902066_902215||||1),DOWNSTREAM(MODIFIER||||642|KLHL17|protein_coding|CODING|ENST00000338591||1),DOWNSTREAM(MODIFIER|||||KLHL17|nonsense_mediated_decay|CODING|ENST00000466300||1),DOWNSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000463212||1),DOWNSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000481067||1),NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|gCt/gTt|A43V|576|PLEKHN1|protein_coding|CODING|ENST00000379407|2|1),NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|gCt/gTt|A43V|611|PLEKHN1|protein_coding|CODING|ENST00000379410|2|1),NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|gCt/gTt|A43V|663|PLEKHN1|protein_coding|CODING|ENST00000379409|2|1),UPSTREAM(MODIFIER|||||PLEKHN1|retained_intron|CODING|ENST00000480267||1)
-1	948921	.	T	C	.	PASS	AC=904;EFF=CUSTOM[wgEncodeDukeDnase8988T](MODIFIER||||||wgEncodeDukeDnase8988T:948786_948935||||1),UPSTREAM(MODIFIER|||||RP11-54O7.11|antisense|NON_CODING|ENST00000458555||1),UTR_5_PRIME(MODIFIER||||165|ISG15|protein_coding|CODING|ENST00000379389|1|1)
+$ grep CUSTOM test.1KG.ann_encode.vcf | head
+1    564672    .    A    C    812.29    .    ANN=|custom|MODIFIER|||CUSTOM&wgEncodeDukeDnase8988T|wgEncodeDukeDnase8988T:564666_564815|||||||||
+1    564687    .    C    T    308.21    .    ANN=T|custom|MODIFIER|||CUSTOM&wgEncodeDukeDnase8988T|wgEncodeDukeDnase8988T:564666_564815|||||||||
 ...
+1    956676    .    G    A    120.88    .    ANN=A|custom|MODIFIER|||CUSTOM&wgEncodeDukeDnase8988T|wgEncodeDukeDnase8988T:956646_956795|||||||||
+...
+
 </pre>
 
 				<h3>Epigenome </h3>
@@ -1737,10 +1987,10 @@ wget http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz
 tar -xvzf epigenome_latest.tgz
 
 # Annotate using SnpEff and "-interval" command line
-java -Xmx4g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.eff.vcf 
+java -Xmx4g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.ann.vcf 
 
 # See the data represented as "CUSTOM" EFF fields
-$ grep CUSTOM test.eff.vcf 
+$ grep CUSTOM test.ann.vcf 
 1	894573	.	G	A	.	PASS	AC=725;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_8||||1),INTRON(MODIFIER||||749|NOC2L|protein_coding|CODING|ENST00000327044|1|1),INTRON(MODIFIER|||||NOC2L|processed_transcript|CODING|ENST00000487214|1|1),INTRON(MODIFIER|||||NOC2L|retained_intron|CODING|ENST00000469563|1|1),UPSTREAM(MODIFIER||||642|KLHL17|protein_coding|CODING|ENST00000338591||1),UPSTREAM(MODIFIER|||||KLHL17|nonsense_mediated_decay|CODING|ENST00000466300||1),UPSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000463212||1),UPSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000481067||1),UPSTREAM(MODIFIER|||||NOC2L|retained_intron|CODING|ENST00000477976||1)
 1	948692	.	G	A	.	PASS	AC=896;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_9||||1),INTERGENIC(MODIFIER||||||||||1),UPSTREAM(MODIFIER||||165|ISG15|protein_coding|CODING|ENST00000379389||1),UPSTREAM(MODIFIER|||||RP11-54O7.11|antisense|NON_CODING|ENST00000458555||1)
 1	948921	.	T	C	.	PASS	AC=904;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_9||||1),UPSTREAM(MODIFIER|||||RP11-54O7.11|antisense|NON_CODING|ENST00000458555||1),UTR_5_PRIME(MODIFIER||||165|ISG15|protein_coding|CODING|ENST00000379389|1|1)
@@ -1761,7 +2011,7 @@ $ grep CUSTOM test.eff.vcf
 				<br>
 				Annotations example:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.374	done
 00:00:00.374	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -1770,17 +2020,13 @@ $ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
 ...
 
 # Show some results (edited for readibility)
-$ grep sequence_feature file.eff.vcf | head | ./scripts/vcfInfoOnePerLine.pl 
-
-22  17280941  .  T  C  .  .
-                            EFF  sequence_feature[transmembrane_region:Transmembrane_region](LOW|||c.336T>C|459|XKR3|protein_coding|CODING|ENST00000331428|2|1)
+$ cat test.chr22.ann.vcf
 ...
-22  17472785  .  G  A  .  .
-                            EFF  sequence_feature[domain:PH](LOW|||c.456G>A|574|GAB4|protein_coding|CODING|ENST00000400588|2|1)
+22  17280941  .  T  C  .  .  ANN=C|sequence_feature|LOW|XKR3|ENSG00000172967|transmembrane_region:Transmembrane_region|ENST00000331428|protein_coding|2/4|c.336-27A>G||||||,C|sequence_feature|LOW|XKR3|ENSG00000172967|transmembrane_region:Transmembrane_region|ENST00000331428|protein_coding|3/4|c.336-27A>G||||||,C|intron_variant|MODIFIER|XKR3|ENSG00000172967|transcript|ENST00000331428|protein_coding|2/3|c.336-27A>G||||||
 ...
-22	50722408	.	T	C	.	.
-                            EFF  sequence_feature[glycosylation_site:N-linked__GlcNAc..._](MODERATE|||c.2275T>C|1838|PLXNB2|protein_coding|CODING|ENST00000359337|14|1)
-
+22  17472785  .  G  A  .  .  ANN=A|sequence_feature|LOW|GAB4|ENSG00000215568|domain:PH|ENST00000400588|protein_coding|2/10|c.456C>T||||||,A|sequence_feature|LOW|GAB4|ENSG00000215568|domain:PH|ENST00000400588|protein_coding|1/10|c.456C>T||||||,A|non_coding_exon_variant|MODIFIER|GAB4|ENSG00000215568|transcript|ENST00000465611|nonsense_mediated_decay|2/9|n.339C>T||||||,A|non_coding_exon_variant|MODIFIER|GAB4|ENSG00000215568|transcript|ENST00000523144|processed_transcript|2/4|n.341C>T||||||
+...
+22  50722408  .  T  C  .  .  ANN=C|sequence_feature|MODERATE|PLXNB2|ENSG00000196576|glycosylation_site:N-linked__GlcNAc..._|ENST00000359337|protein_coding|14/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|22/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|8/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|21/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|16/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|15/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|17/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|11/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|14/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|19/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|18/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|9/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|20/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|6/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|3/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|12/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|7/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|10/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|4/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|5/37|c.2275A>G||||||,C|sequence_feature|LOW|PLXNB2|ENSG00000196576|topological_domain:Extracellular|ENST00000359337|protein_coding|13/37|c.2275A>G||||||,C|upstream_gene_variant|MODIFIER|PLXNB2|ENSG00000196576|transcript|ENST00000479701|retained_intron||n.-1A>G|||||1417|,C|upstream_gene_variant|MODIFIER|PLXNB2|ENSG00000196576|transcript|ENST00000463165|retained_intron||n.-1A>G|||||2045|,C|upstream_gene_variant|MODIFIER|PLXNB2|ENSG00000196576|transcript|ENST00000492578|retained_intron||n.-1A>G|||||1973|,C|upstream_gene_variant|MODIFIER|PLXNB2|ENSG00000196576|transcript|ENST00000427829|protein_coding||c.-3A>G|||||1099|WARNING_TRANSCRIPT_INCOMPLETE,C|downstream_gene_variant|MODIFIER|PLXNB2|ENSG00000196576|transcript|ENST00000434732|protein_coding||c.*253A>G|||||188|WARNING_TRANSCRIPT_INCOMPLETE,C|downstream_gene_variant|MODIFIER|PLXNB2|ENSG00000196576|transcript|ENST00000432455|protein_coding||c.*1620A>G|||||4008|WARNING_TRANSCRIPT_NO_STOP_CODON,C|intron_variant|MODIFIER|PLXNB2|ENSG00000196576|transcript|ENST00000411680|protein_coding|2/5|c.202+5007A>G||||||WARNING_TRANSCRIPT_INCOMPLETE,C|non_coding_exon_variant|MODIFIER|PLXNB2|ENSG00000196576|transcript|ENST00000496720|processed_transcript|6/8|n.510A>G||||||
 </pre>
 				The last line in the example shows a <code>glycosylation_site</code> marked as <code>MODERATE</code> impact, since a modification of such a site might impair protein function.
 				</p>
@@ -1797,7 +2043,7 @@ $ grep sequence_feature file.eff.vcf | head | ./scripts/vcfInfoOnePerLine.pl
 				<br>
 				Example of trancription factor binding sites prediction predictions:
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.393	done
 00:00:00.394	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -1813,22 +2059,17 @@ $ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
 ...
 
 # Show some examples (output edited for readability)
-$ grep -i TF_bind file.eff.vcf | ./scripts/vcfInfoOnePerLine.pl 
-
-22      18301084        .       G       A       .       .
-                                                        EFF     TF_binding_site_variant[MA0138.2:Nrsf](MODIFIER||||||||||1)
-                                                        EFF     TF_binding_site_variant[MA0138.1:Nrsf](MODIFIER||||||||||1)
-
-22      23523309        .       C       T       .       .
-                                                        EFF     TF_binding_site_variant[MA0062.2:Gabp](LOW||||||||||1)
-
-22      36629223        .       G       C       .       .
-                                                        EFF     TF_binding_site_variant[MA0079.1:SP1](LOW||||||||||1)
-
+$ cat test.chr22.ann.vcf
+...
+22  18301084  .  G  A  .  .  ANN=A|TF_binding_site_variant|MODIFIER|||Nrsf|MA0138.2|||||||||,A|TF_binding_site_variant|MODIFIER|||Nrsf|MA0138.1|||||||||,...
+...
+22  23523309  .  C  T  .  .  ANN=T|TF_binding_site_variant|LOW|||Gabp|MA0062.2|||||||||,...
+...
+22  36629223  .  G  C  .  .  ANN=C|TF_binding_site_variant|LOW|||SP1|MA0079.1|||||||||,...
 ...
 </pre>
 				<br>
-				So, for instance, the last annotation shown in the example is <code>TF_binding_site_variant[MA0079.1:SP1]</code> corresponding to motif 
+				So, for instance, the last annotation shown in the example is <code>TF_binding_site_variant|LOW|||SP1|MA0079.1</code> corresponding to motif 
 				<a href="http://jaspar.genereg.net/cgi-bin/jaspar_db.pl?ID=MA0079.1&rm=present&collection=CORE">MA0079.1</a>, which you can look up in Jaspar.
 				</p>
         </section>
@@ -1845,6 +2086,7 @@ $ grep -i TF_bind file.eff.vcf | ./scripts/vcfInfoOnePerLine.pl
 				This "stats" file is an HTML file which can be opened using a web browser.
 				You can find an example of a 'stats' file <a href="1kg.html"> here</a>.
 				</p>
+				<h3> HTML summary (snpEff_summary.html)</h3>
 				<p>
 				The program performs some statistics and saves them to the file 'snpEff_summary.html' on the 
 				directory where snpEff is being executed. You can see the file, by opening it in your browser.
@@ -1994,6 +2236,47 @@ $ grep -i TF_bind file.eff.vcf | ./scripts/vcfInfoOnePerLine.pl
 				</table>
 				</center>
 				</p>
+
+				<h3> Gene counts summary (snpEff_genes.txt)</h3>
+				<p>
+				SnpEff alse generates a TXT (tab separated) file having counts of number of variants affecting each transcript and gene.
+				By default, the file name is <code>snpEff_genes.txt</code>, but it can be changed using the <code>-stats</code> command line option.
+				<br>
+				Here is an example of this file:
+<pre>
+$ head snpEff_genes.txt 
+# The following table is formatted as tab separated values. 
+#GeneName	GeneId	TranscriptId	BioType	variants_impact_HIGH	variants_impact_LOW	variants_impact_MODERATE	variants_impact_MODIFIER	variants_effect_3_prime_UTR_variant	variants_effect_5_prime_UTR_premature_start_codon_gain_variant	variants_effect_5_prime_UTR_variant	variants_effect_downstream_gene_variant	variants_effect_intron_variant	variants_effect_missense_variant	variants_effect_non_coding_exon_variant	variants_effect_splice_acceptor_variant	variants_effect_splice_donor_variant	variants_effect_splice_region_variant	variants_effect_start_lost	variants_effect_stop_gained	variants_effect_stop_lost	variants_effect_synonymous_variant	variants_effect_upstream_gene_variant	bases_affected_DOWNSTREAM	total_score_DOWNSTREAM	length_DOWNSTREAM	bases_affected_EXON	total_score_EXON	length_EXON	bases_affected_INTRON	total_score_INTRON	length_INTRON	bases_affected_SPLICE_SITE_ACCEPTOR	total_score_SPLICE_SITE_ACCEPTOR	length_SPLICE_SITE_ACCEPTOR	bases_affected_SPLICE_SITE_DONOR	total_score_SPLICE_SITE_DONOR	length_SPLICE_SITE_DONOR	bases_affected_SPLICE_SITE_REGION	total_score_SPLICE_SITE_REGION	length_SPLICE_SITE_REGION	bases_affected_TRANSCRIPT	total_score_TRANSCRIPT	length_TRANSCRIPT	bases_affected_UPSTREAM	total_score_UPSTREAM	length_UPSTREAM	bases_affected_UTR_3_PRIME	total_score_UTR_3_PRIME	length_UTR_3_PRIME	bases_affected_UTR_5_PRIME	total_score_UTR_5_PRIME	length_UTR_5_PRIME
+AC000029.1	ENSG00000221069	ENST00000408142	miRNA	0	0	0	2	0	0	0	2	0	0	0	0	0	0	0	0	5000	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+AC000068.5	ENSG00000185065	ENST00000431090	antisense	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	5000	0	0	0	0	0	0
+AC000081.2	ENSG00000230194	ENST00000433141	processed_pseudogene	0	0	0	8	0	0	0	3	0	0	0	0	0	0	5000	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	5	0	5000	0	0
+AC000089.3	ENSG00000235776	ENST00000424559	processed_pseudogene	0	0	0	1	0	0	0	0	0	0	0	0	0	0	5000	0	0	0	0	0	0
+AC002472.1	ENSG00000269103	ENST00000547793	protein_coding	0	0	0	6	0	0	0	5	0	0	0	0	0	0	0	5000	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	5000	0	0
+AC002472.11	ENSG00000226872	ENST00000450652	antisense	0	0	0	13	0	0	0	5	2	0	0	0	0	0	0	5000	0	0	0	2	0	11199	0	0	0	0	0	0	0	0	0	0	0	0	6	0	5000	0	0
+AC002472.13	ENSG00000187905	ENST00000342608	protein_coding	0	1	6	1	0	0	0	0	1	6	0	0	0	1	0	116	1	0	934	0	0	0	0	0	0	1	0	3	0	0	0	0	0	0	0	0	0	0	0
+AC002472.13	ENSG00000187905	ENST00000442047	protein_coding	0	1	6	1	0	0	0	0	1	6	0	0	0	1	0	116	1	0	934	0	0	0	0	0	0	1	0	3	0	0	0	0	0	0	0	0	0	0	0
+</pre>
+				<br>
+				<br>
+				The columns in this table are:
+				<table class="table table-striped">
+					<tr> <th> Column name </th> <th> Meaning </th> </tr>
+					<tr> <td> GeneName </td> <td> Gene name (usually HUGO) </td> </tr>
+					<tr> <td> GeneId </td> <td> Gene's ID </td> </tr>
+					<tr> <td> TranscriptId </td> <td> Transcript's ID </td> </tr>
+					<tr> <td> BioType </td> <td> Transcript's bio-type (if avaialble) </td> </tr>
+					<tr> <td>  </td> <th> The following column is repeated for each impact {HIGH, MODERATE, LOW, MODIFIER} </th> </tr>
+					<tr> <td> variants_impact_* </td> <td> Count number of variants for each impact category </td> </tr>
+					<tr> <td>  </td> <th> The following column is repeated for each annotated effect (e.g. missense_variant, synonymous_variant, stop_lost, etc.) </th> </tr>
+					<tr> <td> variants_effect_* </td> <td> Count number of variants for each effect type </td> </tr>
+					<tr> <td>  </td> <th> The following columns are repeated for several genomic regions (DOWNSTREAM, EXON, INTRON, UPSTREAM, etc.) </th> </tr>
+					<tr> <td> bases_affected_* </td> <td> Number of bases that variants overlap genomic region </td> </tr>
+					<tr> <td> total_score_* </td> <td> Sum of scores overlapping this genomic region. Note: Scores are only available when input files are type 'BED' (e.g. when annotating ChipSeq experiments) </td> </tr>
+					<tr> <td> length_* </td> <td> Genomic region length </td> </tr>
+				</table>
+
+
+
         </section>
 
         <!-- Troubleshooting
@@ -2016,7 +2299,7 @@ $ grep -i TF_bind file.eff.vcf | ./scripts/vcfInfoOnePerLine.pl
 				You can see which chromosome names are used by SnpEff simply by using the <code>-v</code> (verbose) command line option.
 				This shows all chromosome names and their respective lengths. Notice the last line ("Chromosomes names [sizes]"):
 <pre>
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/file.vcf > file.eff.vcf
+$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 ...
 # Number of chromosomes      : 297
@@ -2111,13 +2394,13 @@ chr5 137622242 . C T . . EFF=NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|Gaa/Aaa|E/K
 				<br>
 				Some people try to count the number of effects in a file by doing (assuming we want to count how many MODIFIER effects we have): 
 				<br>
-				<pre> grep -o MODIFIER output.eff.vcf | wc -l </pre>
+				<pre> grep -o MODIFIER output.ann.vcf | wc -l </pre>
 				<br>
 				This is incorrect because a VCF line can have multiple effects (e.g. when there are multiple transcripts in a gene).
 				A proper way to count effects would be:
 
 <pre>
-cat output.eff.vcf \
+cat output.ann.vcf \
 	| cut -f 8 \
 	| tr ";" "\n" \
 	| grep ^EFF= \
@@ -2762,7 +3045,7 @@ Finishing up
 #-------------------------------------------------------------------------------
 
 in=$1                                                   # Input VCF file
-eff=`dirname $in`/`basename $in .vcf`.eff.vcf        # SnpEff annotated VCF file
+eff=`dirname $in`/`basename $in .vcf`.ann.vcf        # SnpEff annotated VCF file
 out=`dirname $in`/`basename $in .vcf`.gatk.vcf          # Output VCF file (annotated by GATK)
 
 ref=$HOME/snpEff/data/genomes/hg19.fa                   # Reference genome file
@@ -2836,7 +3119,7 @@ Exception in thread "main" net.sf.picard.PicardException: /home/pcingola/snpEff/
 
 Annotate using SnpEff
     Input file  : zzz.vcf
-    Output file : ./zzz.eff.vcf
+    Output file : ./zzz.ann.vcf
 00:00:00.000	Reading configuration file '/home/pcingola/snpEff/snpEff.config'
 00:00:00.173	done
 00:00:00.173	Reading database for genome version 'hg19' from file '/home/pcingola//snpEff/data/hg19/snpEffectPredictor.bin' (this might take a while)
@@ -2874,19 +3157,19 @@ INFO  11:23:41,343 HelpFormatter - ---------------------------------------------
 INFO  11:23:41,344 HelpFormatter - The Genome Analysis Toolkit (GATK) v2.4-9-g532efad, Compiled 2013/03/19 07:35:36 
 INFO  11:23:41,344 HelpFormatter - Copyright (c) 2010 The Broad Institute 
 INFO  11:23:41,344 HelpFormatter - For support and documentation go to http://www.broadinstitute.org/gatk 
-INFO  11:23:41,347 HelpFormatter - Program Args: -T VariantAnnotator -R /home/pcingola/snpEff/data/genomes/hg19.fa -A SnpEff --variant zzz.vcf --snpEffFile ./zzz.eff.vcf -L zzz.vcf -o ./zzz.gatk.vcf 
+INFO  11:23:41,347 HelpFormatter - Program Args: -T VariantAnnotator -R /home/pcingola/snpEff/data/genomes/hg19.fa -A SnpEff --variant zzz.vcf --snpEffFile ./zzz.ann.vcf -L zzz.vcf -o ./zzz.gatk.vcf 
 INFO  11:23:41,347 HelpFormatter - Date/Time: 2013/04/12 11:23:41 
 INFO  11:23:41,348 HelpFormatter - -------------------------------------------------------------------------------- 
 INFO  11:23:41,348 HelpFormatter - -------------------------------------------------------------------------------- 
 INFO  11:23:41,353 ArgumentTypeDescriptor - Dynamically determined type of zzz.vcf to be VCF 
-INFO  11:23:41,356 ArgumentTypeDescriptor - Dynamically determined type of ./zzz.eff.vcf to be VCF 
+INFO  11:23:41,356 ArgumentTypeDescriptor - Dynamically determined type of ./zzz.ann.vcf to be VCF 
 INFO  11:23:41,399 GenomeAnalysisEngine - Strictness is SILENT 
 INFO  11:23:41,466 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 1000 
 INFO  11:23:41,480 RMDTrackBuilder - Loading Tribble index from disk for file zzz.vcf 
-INFO  11:23:41,503 RMDTrackBuilder - Loading Tribble index from disk for file ./zzz.eff.vcf 
-WARN  11:23:41,505 RMDTrackBuilder - Index file /data/pcingola/Documents/projects/snpEff/gatk_test/./zzz.eff.vcf.idx is out of date (index older than input file), deleting and updating the index file 
-INFO  11:23:41,506 RMDTrackBuilder - Creating Tribble index in memory for file ./zzz.eff.vcf 
-INFO  11:23:41,914 RMDTrackBuilder - Writing Tribble index to disk for file /data/pcingola/Documents/projects/snpEff/gatk_test/./zzz.eff.vcf.idx 
+INFO  11:23:41,503 RMDTrackBuilder - Loading Tribble index from disk for file ./zzz.ann.vcf 
+WARN  11:23:41,505 RMDTrackBuilder - Index file /data/pcingola/Documents/projects/snpEff/gatk_test/./zzz.ann.vcf.idx is out of date (index older than input file), deleting and updating the index file 
+INFO  11:23:41,506 RMDTrackBuilder - Creating Tribble index in memory for file ./zzz.ann.vcf 
+INFO  11:23:41,914 RMDTrackBuilder - Writing Tribble index to disk for file /data/pcingola/Documents/projects/snpEff/gatk_test/./zzz.ann.vcf.idx 
 INFO  11:23:42,076 IntervalUtils - Processing 33411 bp from intervals 
 INFO  11:23:42,125 GenomeAnalysisEngine - Creating shard strategy for 0 BAM files 
 INFO  11:23:42,134 GenomeAnalysisEngine - Done creating shard strategy 
@@ -3471,7 +3754,7 @@ $ cat test.stop.vcf | ./scripts/vcfEffOnePerLine.pl
     <!-- Footer
     ================================================== -->
       <footer>
-        <p class="text-center">&copy; <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani 2014</a></p>
+        <p class="text-center">&copy; <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a></p>
       </footer>
 
 

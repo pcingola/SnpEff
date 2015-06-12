@@ -2,8 +2,11 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import java.util.LinkedList;
 
+import ca.mcgill.mcb.pcingola.align.VariantRealign;
+import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
+import ca.mcgill.mcb.pcingola.util.IubString;
 
 /**
  * A variant represents a change in a reference sequence
@@ -17,8 +20,6 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  *
  *       We are also storing much less information fields like quality,
  *       score, coverage, etc. have been removed.
- *
- * TODO: Refactor some functionality into different classes (VariantWithScore and VariantCancer)
  *
  * @author pcingola
  */
@@ -34,19 +35,21 @@ public class Variant extends Marker {
 		// Just analyze interval hits. Not a variant (e.g. BED input format)
 	}
 
+	// Not a variant (ref=alt)
+	public static final Variant NO_VARIANT = new Variant(null, 0, 0, "");
+
 	private static final long serialVersionUID = -2928105165111400441L;
 
-	VariantType variantType;
-
+	VariantType variantType; // Variant type
 	String ref; // Reference (i.e. original bases in the genome)
 	String alt; // Changed bases
+	String genotype; // Genotype 'ALT' (e.g. A VCF entry may encode multiple ALTs).
 	boolean imprecise = false; // Imprecise variant: coordinates are not exact (E.g. see section "Encoding Structural Variants in VCF" from VCF spec. 4.1)
-	String genotype; // Genotype order number (in case there are multiple changes per entry (e.g. A VCF entry may encode multiple ALTs). Note: Genotype differences are coded as "2-1" meaning genotype 1 is used as reference and genotype 2 is used as ALT (e.g. somatic vs germline samples)
 
 	/**
 	 * Create variants from ALT (which can be multiple values)
 	 */
-	public static LinkedList<Variant> factory(Chromosome chromo, int start, String ref, String altStr, String id) {
+	public static LinkedList<Variant> factory(Chromosome chromo, int start, String ref, String altStr, String id, boolean expand) {
 		LinkedList<Variant> list = new LinkedList<Variant>();
 
 		// No alt? It's an interval
@@ -70,118 +73,45 @@ public class Variant extends Marker {
 
 		// Add each alt
 		for (String alt : alts) {
+			// Note: We use 'hasIUBMax()' instead of 'hasIUB()' because large InDels may 
+			// have tons of 'N' bases. In such cases, it is impractical (and useless) to 
+			// produce all possible combinations
+			boolean refIub = expand && IubString.hasIUBMax(ref);
+			boolean altIub = expand && IubString.hasIUBMax(alt);
 
-			// Is it a SNP?
-			if (ref.length() == 1 && alt.length() == 1) {
-				// May be IUB code, so we have to translate into multiple SNPs
-				String altsIub[] = snpIUB(alt);
-
-				// Add all SNPs
-				for (String altIub : altsIub) {
-					Variant var = new Variant(chromo, start, ref, altIub, id);
-					list.add(var);
-				}
-
-			} else {
+			// Expand all possible REF / ALT combinations
+			if (!refIub && !altIub) {
+				// Non-IUB expansion needed
 				Variant var = new Variant(chromo, start, ref, alt, id);
 				list.add(var);
+			} else if (altIub && !refIub) {
+				// ALT has IUB characters
+				IubString iubsAlt = new IubString(alt);
+				for (String seqAlt : iubsAlt) {
+					Variant var = new Variant(chromo, start, ref, seqAlt, id);
+					list.add(var);
+				}
+			} else if (!altIub && refIub) {
+				// REF has IUB characters
+				IubString iubsRef = new IubString(alt);
+				for (String seqRef : iubsRef) {
+					Variant var = new Variant(chromo, start, seqRef, alt, id);
+					list.add(var);
+				}
+			} else if (altIub && refIub) {
+				// Both REF and ALT have IUB characters
+				IubString iubsRef = new IubString(alt);
+				for (String seqRef : iubsRef) {
+					IubString iubsAlt = new IubString(alt);
+					for (String seqAlt : iubsAlt) {
+						Variant var = new Variant(chromo, start, seqRef, seqAlt, id);
+						list.add(var);
+					}
+				}
 			}
 		}
 
 		return list;
-	}
-
-	/**
-	 *  Reference http://sourceforge.net/apps/mediawiki/samtools/index.php?title=SAM_FAQ#I_do_not_understand_the_columns_in_the_pileup_output.
-	 *  IUB codes: M=A/C, R=A/G, W=A/T, S=C/G, Y=C/T, K=G/T and N=A/C/G/T
-	 */
-	public static String[] snpIUB(String alt) {
-		String[] alts;
-
-		// Regular base
-		if (alt.equals("A") || alt.equals("C") || alt.equals("G") || alt.equals("T")) {
-			alts = new String[1];
-			alts[0] = alt;
-		} else {
-			switch (alt.charAt(0)) {
-			case 'N': // aNy base
-				alts = new String[4];
-				alts[0] = "A";
-				alts[1] = "C";
-				alts[2] = "G";
-				alts[3] = "T";
-				break;
-
-			case 'B': // B: not A
-				alts = new String[3];
-				alts[0] = "C";
-				alts[1] = "G";
-				alts[2] = "T";
-				break;
-
-			case 'D': // D: not C
-				alts = new String[3];
-				alts[0] = "A";
-				alts[1] = "G";
-				alts[2] = "T";
-				break;
-
-			case 'H': // H: not G
-				alts = new String[3];
-				alts[0] = "A";
-				alts[1] = "C";
-				alts[2] = "T";
-				break;
-
-			case 'V': // V: not T
-				alts = new String[3];
-				alts[0] = "A";
-				alts[1] = "C";
-				alts[2] = "G";
-				break;
-
-			case 'M':
-				alts = new String[2];
-				alts[0] = "A";
-				alts[1] = "C";
-				break;
-
-			case 'R':
-				alts = new String[2];
-				alts[0] = "A";
-				alts[1] = "G";
-				break;
-
-			case 'W': // Weak
-				alts = new String[2];
-				alts[0] = "A";
-				alts[1] = "T";
-				break;
-
-			case 'S': // Strong
-				alts = new String[2];
-				alts[0] = "C";
-				alts[1] = "G";
-				break;
-
-			case 'Y':
-				alts = new String[2];
-				alts[0] = "C";
-				alts[1] = "T";
-				break;
-
-			case 'K':
-				alts = new String[2];
-				alts[0] = "G";
-				alts[1] = "T";
-				break;
-
-			default:
-				throw new RuntimeException("WARNING: Unkown IUB code for SNP '" + alt + "'");
-			}
-		}
-
-		return alts;
 	}
 
 	/**
@@ -197,9 +127,6 @@ public class Variant extends Marker {
 		this(parent, position, referenceStr, altStr, "");
 	}
 
-	/**
-	 * Create a variant
-	 */
 	public Variant(Marker parent, int position, String referenceStr, String altStr, String id) {
 		super(parent, position, position, false, id);
 		init(parent, position, referenceStr, altStr, null, id);
@@ -210,6 +137,11 @@ public class Variant extends Marker {
 	 */
 	public String change() {
 		return isStrandPlus() ? alt : GprSeq.reverseWc(alt);
+	}
+
+	@Override
+	public Variant clone() {
+		return (Variant) super.clone();
 	}
 
 	public String getAlt() {
@@ -326,6 +258,10 @@ public class Variant extends Marker {
 		return variantType == VariantType.MNP;
 	}
 
+	public boolean isNonRef() {
+		return false;
+	}
+
 	@Override
 	protected boolean isShowWarningIfParentDoesNotInclude() {
 		return false;
@@ -393,6 +329,18 @@ public class Variant extends Marker {
 	}
 
 	/**
+	 * Create a new variant realigning it towards the leftmost position
+	 */
+	public Variant realignLeft() {
+		GenomicSequences gs = getGenome().getGenomicSequences();
+		if (gs == null) return this;
+
+		VariantRealign vr = new VariantRealign(gs, this);
+		if (!vr.realign()) return this;
+		return vr.getVariantRealigned();
+	}
+
+	/**
 	 * Return the reference (always in positive strand)
 	 */
 	public String reference() {
@@ -423,8 +371,7 @@ public class Variant extends Marker {
 	}
 
 	/**
-	 * Show it required by ENSEMBL's SnpEffectPredictor
-	 * @return
+	 * Show variant in ENSEMBL's VEP format
 	 */
 	public String toStringEnsembl() {
 		return getChromosomeName() + "\t" + start + "\t" + end + "\t" + ref + "/" + alt + "\t+";
@@ -438,5 +385,4 @@ public class Variant extends Marker {
 		else if (isDel()) return getChromosomeName() + ":" + getStart() + "_*" + "/-" + getReference();
 		return getChromosomeName() + ":" + getStart() + "_" + getReference() + "/" + getAlt();
 	}
-
 }

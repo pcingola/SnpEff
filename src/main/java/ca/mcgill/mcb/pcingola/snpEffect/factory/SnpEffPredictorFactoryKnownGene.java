@@ -7,6 +7,7 @@ import ca.mcgill.mcb.pcingola.collections.MultivalueHashMap;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
@@ -18,7 +19,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * This class creates a SnpEffectPredictor from a TXT file dumped using UCSC table browser
  *
  * Fields in this table
- * 
+ *
  * Field        Example               SQL type            Info     Description
  * -----        -------               --------            ----     -----------
  * name         uc001aaa.3            varchar(255)        values   Name of gene
@@ -33,7 +34,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * exonEnds     12227,12721,14409,    longblob                     Exon end positions
  * proteinID                          varchar(40)         values   UniProt display ID for Known Genes, UniProt accession or RefSeq protein ID for UCSC Genes
  * alignID      uc001aaa.3            varchar(255)        values   Unique identifier for each (known gene, alignment position) pair
- * 
+ *
  * @author pcingola
  */
 public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
@@ -45,43 +46,43 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 
 	public SnpEffPredictorFactoryKnownGene(Config config) {
 		super(config, 0); // Zero values coordinates
+
 		genesByName = new MultivalueHashMap<String, Gene>();
+
+		frameType = FrameType.UCSC;
+		frameCorrection = true;
 	}
 
 	@Override
 	public SnpEffectPredictor create() {
-		// Read gene intervals from a file
-		if (fileName == null) fileName = config.getBaseFileNameGenes() + ".kg";
+		try {
+			// Read gene intervals from a file
+			if (fileName == null) fileName = config.getBaseFileNameGenes() + ".kg";
 
-		System.out.println("Reading gene intervals file : '" + fileName + "'");
-		readRefSeqFile(); // Read gene info
+			System.out.println("Reading gene intervals file : '" + fileName + "'");
+			readRefSeqFile(); // Read gene info
 
-		beforeExonSequences(); // Some clean-up before readng exon sequences
+			beforeExonSequences(); // Some clean-up before readng exon sequences
 
-		// Read chromosome sequences and set exon sequences
-		if (readSequences) readExonSequences();
-		else if (createRandSequences) createRandSequences();
+			// Read chromosome sequences and set exon sequences
+			if (readSequences) readExonSequences();
+			else if (createRandSequences) createRandSequences();
 
-		finishUp(); // Perform adjustments
+			finishUp(); // Perform adjustments
 
-		// Check that exons have sequences
-		System.out.println(config.getGenome());
-		boolean error = config.getGenome().isMostExonsHaveSequence();
-		System.out.println("# Ignored transcripts        : " + ignoredTr);
-		if (error && readSequences) throw new RuntimeException("Most Exons do not have sequences!");
-
+			if (verbose) {
+				System.out.println(config.getGenome());
+				System.out.println("# Ignored transcripts        : " + ignoredTr);
+			}
+		} catch (Exception e) {
+			if (verbose) e.printStackTrace();
+			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);
+		}
 		return snpEffectPredictor;
 	}
 
 	/**
 	 * Find (or create) a gene for this transcript
-	 * @param geneName
-	 * @param trId
-	 * @param chromo
-	 * @param start
-	 * @param end
-	 * @param strandMinus
-	 * @return
 	 */
 	Gene findOrCreateGene(String geneName, String trId, Chromosome chromo, int start, int end, boolean strandMinus, boolean isCoding) {
 		Marker tr = new Marker(chromo, start, end, strandMinus, trId);
@@ -111,9 +112,7 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 	}
 
 	/**
-	 * Read and parse GFF file
-	 * @param vcfFileName
-	 * @throws Exception
+	 * Read and parse genes file
 	 */
 	protected void readRefSeqFile() {
 		try {

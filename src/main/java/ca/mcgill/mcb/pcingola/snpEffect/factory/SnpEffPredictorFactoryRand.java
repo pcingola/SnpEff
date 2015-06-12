@@ -27,11 +27,13 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 	Random random;
 	int maxTranscripts;
 	int maxExons;
+	int minExons = 1;
 	int maxGeneLen;
 	int minGeneSize = 100;
 	String chromoSequence = "";
 	Chromosome chromo;
-	boolean forcePositive = false; // Force positive strand (used for debugging)
+	boolean forcePositiveStrand = false; // Force positive strand (used for debugging & test cases)
+	boolean forceNegativeStrand = false; // Force negative strand (used for debugging & test cases)
 
 	public SnpEffPredictorFactoryRand(Config config, Random random, int maxGeneLen, int maxTranscripts, int maxExons) {
 		super(config);
@@ -55,8 +57,13 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		// Create gene
 		int start = random.nextInt(maxGeneLen);
 		int end = start + Math.max(minGeneSize, random.nextInt(maxGeneLen));
+
+		// Strand
 		boolean strandMinus = !random.nextBoolean();
-		if (forcePositive) strandMinus = false;
+		if (forcePositiveStrand && forceNegativeStrand) throw new RuntimeException("Cannot force both positive and negative strands!");
+		if (forcePositiveStrand) strandMinus = false;
+		if (forceNegativeStrand) strandMinus = true;
+
 		Gene gene = new Gene(chromo, start, end, strandMinus, "gene1", "gene1", "gene");
 		add(gene);
 
@@ -78,7 +85,8 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		add(tr);
 
 		// Add exons
-		int numEx = Math.max(random.nextInt(maxExons), 1);
+		int numEx = Math.max(random.nextInt(maxExons), minExons);
+
 		for (int ne = 0; ne < numEx; ne++) {
 			// Non-overlapping exons
 			int size = tr.size() / numEx;
@@ -191,7 +199,15 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		this.chromo = chromo;
 	}
 
-	public void setForcePositive(boolean forcePositive) {
-		this.forcePositive = forcePositive;
+	public void setForceNegativeStrand(boolean forceNegativeStrand) {
+		this.forceNegativeStrand = forceNegativeStrand;
+	}
+
+	public void setForcePositiveStrand(boolean forcePositive) {
+		forcePositiveStrand = forcePositive;
+	}
+
+	public void setMinExons(int minExons) {
+		this.minExons = minExons;
 	}
 }

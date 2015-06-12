@@ -91,7 +91,7 @@ public class Utr5prime extends Utr {
 	 * @return A new start codon (if gained)
 	 */
 	String startGained(Variant seqChange, Transcript tr) {
-		if (!seqChange.isSnp()) return ""; // FIXME: Only SNPs supported!
+		if (!seqChange.isSnp()) return ""; // Only SNPs supported.
 
 		// Calculate SNP position relative to UTRs
 		int pos = seqChange.distanceBases(get5primeUtrs(), isStrandMinus());
@@ -109,39 +109,35 @@ public class Utr5prime extends Utr {
 
 	/**
 	 * Calculate distance from the end of 5'UTRs
-	 *
-	 * @param seqChange
-	 * @param utr
-	 * @return
 	 */
 	@Override
-	int utrDistance(Variant seqChange, Transcript tr) {
+	int utrDistance(Variant variant, Transcript tr) {
 		int cdsStart = tr.getCdsStart();
 		if (cdsStart < 0) return -1;
 
-		if (isStrandPlus()) return cdsStart - seqChange.getEnd();
-		return seqChange.getStart() - cdsStart;
+		if (isStrandPlus()) return cdsStart - variant.getEnd();
+		return variant.getStart() - cdsStart;
 	}
 
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		// Has the whole UTR been deleted?
 		if (variant.includes(this) && (variant.getVariantType() == VariantType.DEL)) {
-			variantEffects.addEffect(this, EffectType.UTR_5_DELETED, ""); // A UTR was removed entirely
+			variantEffects.add(variant, this, EffectType.UTR_5_DELETED, ""); // A UTR was removed entirely
 			return true;
 		}
 
 		// Add distance
 		Transcript tr = (Transcript) findParent(Transcript.class);
 		int distance = utrDistance(variant, tr);
-		VariantEffect variantEffect = variantEffects.newVariantEffect();
+		VariantEffect variantEffect = new VariantEffect(variant);
 		variantEffect.set(this, type, type.effectImpact(), distance >= 0 ? distance + " bases from TSS" : "");
 		variantEffect.setDistance(distance);
-		variantEffects.addEffect(variantEffect);
+		variantEffects.add(variantEffect);
 
 		// Start gained?
 		String gained = startGained(variant, tr);
-		if (!gained.isEmpty()) variantEffects.addEffect(this, EffectType.START_GAINED, gained);
+		if (!gained.isEmpty()) variantEffects.add(variant, this, EffectType.START_GAINED, gained);
 
 		return true;
 	}

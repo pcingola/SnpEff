@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sf.samtools.util.RuntimeEOFException;
+import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -60,7 +60,7 @@ public class SnpEffectPredictor implements Serializable {
 		if (!Gpr.canRead(snpEffPredFile)) throw new RuntimeException("\tERROR: Cannot read file '" + snpEffPredFile + "'.\n\tYou can try to download the database by running the following command:\n\t\tjava -jar snpEff.jar download " + config.getGenome().getVersion() + "\n");
 
 		// Load markers from file
-		MarkerSerializer ms = new MarkerSerializer();
+		MarkerSerializer ms = new MarkerSerializer(config.getGenome());
 		Markers markers = ms.load(snpEffPredFile);
 
 		// Find genome
@@ -118,7 +118,6 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Add a set of markers
-	 * @param markersToAdd
 	 */
 	public void addAll(Markers markersToAdd) {
 		for (Marker marker : markersToAdd)
@@ -137,6 +136,11 @@ public class SnpEffectPredictor implements Serializable {
 				intervalForest.add(chr);
 		}
 
+		// In a circular genome, a gene can have negative coordinates or crosses
+		// over chromosome end. These genes are mirrored to the opposite end of
+		// the chromosome so that they can be referenced by both circular coordinates.
+		genome.getGenes().createCircularGenes();
+
 		// Add all genes to forest
 		for (Gene gene : genome.getGenes())
 			intervalForest.add(gene);
@@ -146,11 +150,22 @@ public class SnpEffectPredictor implements Serializable {
 		//---
 		markers.add(createGenomicRegions());
 
+		// Mark canonical transcripts
+		canonical();
+
 		// Add all 'markers' to forest (includes custom intervals)
 		intervalForest.add(markers);
 
 		// Build interval forest
 		intervalForest.build();
+	}
+
+	/**
+	 * Make sure all genes have canonical transcripts
+	 */
+	void canonical() {
+		for (Gene g : genome.getGenes())
+			g.canonical();
 	}
 
 	/**
@@ -164,8 +179,7 @@ public class SnpEffectPredictor implements Serializable {
 			markers.add(upDownStream);
 
 		// Add splice site intervals
-		for (Marker spliceSite : genome.getGenes().createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax))
-			markers.add(spliceSite);
+		genome.getGenes().createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax);
 
 		// Intergenic markers
 		for (Intergenic intergenic : genome.getGenes().createIntergenic())
@@ -333,11 +347,9 @@ public class SnpEffectPredictor implements Serializable {
 	/**
 	 * Return a collection of intervals that intersect 'marker'
 	 * Query resulting genes, transcripts and exons to get ALL types of intervals possible
-	 *
-	 * @return
 	 */
 	public Markers queryDeep(Marker marker) {
-		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(marker)) throw new RuntimeEOFException("Chromosome missing for marker: " + marker);
+		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(marker)) throw new RuntimeException("Chromosome missing for marker: " + marker);
 
 		boolean hitChromo = false;
 		Markers hits = new Markers();
@@ -379,7 +391,7 @@ public class SnpEffectPredictor implements Serializable {
 	 * @return
 	 */
 	public Set<String> regions(Marker marker, boolean showGeneDetails, boolean compareTemplate, String id) {
-		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(marker)) throw new RuntimeEOFException("Chromosome missing for marker: " + marker);
+		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(marker)) throw new RuntimeException("Chromosome missing for marker: " + marker);
 
 		boolean hitChromo = false;
 		HashSet<String> hits = new HashSet<String>();
@@ -474,10 +486,17 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Remove all unverified transcripts
+	 *
+	 * @return true if ALL genes had ALL transcripts removed (i.e. something
+	 * went wrong, like in cases where no transcript was checked during the
+	 * building process)
 	 */
-	public void removeUnverified() {
+	public boolean removeUnverified() {
+		boolean allRemoved = true;
 		for (Gene g : genome.getGenes())
-			g.removeUnverified();
+			allRemoved &= g.removeUnverified();
+
+		return allRemoved;
 	}
 
 	/**
@@ -506,9 +525,34 @@ public class SnpEffectPredictor implements Serializable {
 	 * Save predictor to a binary file (specified by the configuration)
 	 */
 	public void save(Config config) {
+		// Save genome and markers
 		String databaseFile = config.getFileSnpEffectPredictor();
-		MarkerSerializer markerSerializer = new MarkerSerializer();
-		markerSerializer.save(databaseFile, this);
+		save(databaseFile);
+
+		// Save genomic sequences
+		GenomicSequences gs = genome.getGenomicSequences();
+		gs.setVerbose(config.isVerbose());
+		gs.save(config);
+	}
+
+	/**
+	 * Save predictor to a binary file
+	 */
+	public void save(String fileName) {
+		// Add al markers
+		Markers markersToSave = new Markers();
+		markersToSave.add(genome);
+
+		for (Chromosome chr : genome)
+			markersToSave.add(chr);
+
+		for (Gene g : genome.getGenes())
+			markersToSave.add(g);
+
+		markersToSave.add(getMarkers());
+
+		// Save markers to file
+		markersToSave.save(fileName);
 	}
 
 	public void setSpliceRegionExonSize(int spliceRegionExonSize) {
@@ -552,24 +596,17 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Predict the effect of a variant
-	 */
-	public VariantEffects variantEffect(Variant variant) {
-		return variantEffect(variant, null);
-	}
-
-	/**
-	 * Predict the effect of a variant
 	 * @param variant : Sequence change
 	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
 	 */
-	public VariantEffects variantEffect(Variant variant, Variant variantRef) {
-		VariantEffects variantEffects = new VariantEffects(variant, variantRef);
+	public VariantEffects variantEffect(Variant variant) {
+		VariantEffects variantEffects = new VariantEffects();
 
 		//---
 		// Chromosome missing?
 		//---
 		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(variant)) {
-			variantEffects.addErrorWarning(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND);
+			variantEffects.addErrorWarning(variant, ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND);
 			return variantEffects;
 		}
 
@@ -581,10 +618,14 @@ public class SnpEffectPredictor implements Serializable {
 		if (variant.isDel()) {
 			String chromoName = variant.getChromosomeName();
 			Chromosome chr = genome.getChromosome(chromoName);
-			double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
-			if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
-				variantEffects.addEffect(chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
-				return variantEffects;
+
+			// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
+			if (chr != null) {
+				double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
+				if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
+					variantEffects.add(variant, chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
+					return variantEffects;
+				}
 			}
 		}
 
@@ -595,24 +636,32 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Show all results
 		boolean hitChromo = false, hitSomething = false;
-		if (intersects.size() > 0) {
-			for (Marker marker : intersects) {
-				if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
-				else { // Analyze all markers
-					marker.variantEffect(variant, variantRef, variantEffects);
-					hitSomething = true;
-				}
+		for (Marker marker : intersects) {
+			if (marker instanceof Chromosome) hitChromo = true; // Do we hit any chromosome?
+			else {
+				// Analyze all markers
+				if (variant.isNonRef()) marker.variantEffectNonRef(variant, variantEffects);
+				else marker.variantEffect(variant, variantEffects);
+
+				hitSomething = true;
 			}
 		}
 
 		// Any errors or intergenic (i.e. did not hit any gene)
 		if (!hitChromo) {
-			if (Config.get().isErrorChromoHit()) variantEffects.addErrorWarning(ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
+			// Special case: Insertion right after chromosome's last base
+			Chromosome chr = genome.getChromosome(variant.getChromosomeName());
+			if (variant.isIns() && variant.getStart() == (chr.getEnd() + 1)) {
+				// OK: This is just a chromosome extension
+				variantEffects.add(variant, null, EffectType.CHROMOSOME_ELONGATION, "");
+			} else if (Config.get().isErrorChromoHit()) {
+				variantEffects.addErrorWarning(variant, ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
+			}
 		} else if (!hitSomething) {
 			if (Config.get().isOnlyRegulation()) {
-				variantEffects.addEffect(null, EffectType.NONE, "");
+				variantEffects.add(variant, null, EffectType.NONE, "");
 			} else {
-				variantEffects.addEffect(null, EffectType.INTERGENIC, "");
+				variantEffects.add(variant, null, EffectType.INTERGENIC, "");
 			}
 		}
 

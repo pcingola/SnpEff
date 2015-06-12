@@ -49,3 +49,5 @@ cd -
 # Update galaxy databases
 #---
 ./scripts_build/galaxy.sh
+
+echo "Build done!"

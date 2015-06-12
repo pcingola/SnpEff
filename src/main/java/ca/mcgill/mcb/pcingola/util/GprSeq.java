@@ -282,37 +282,6 @@ public class GprSeq {
 	}
 
 	/**
-	 * Calculate frame (as specified in GTF / GFF) using sequence length
-	 * References: http://mblab.wustl.edu/GTF22.html
-	 *
-	 * What frame means:
-	 * 		'0' indicates that the specified region is in frame, i.e. that
-	 * 			its first base corresponds to the first base of a codon.
-	 *
-	 * 		'1' indicates that there is one extra base, i.e. that the
-	 * 			second base of the region corresponds to the first base of a codon
-	 *
-	 * 		'2' means that the third base of the region is the first base of a
-	 * 			codon.
-	 *
-	 * If the strand is '-', then the first base of the region is value of 'end', because
-	 * the corresponding coding region will run from <end> to <start> on the reverse strand.
-	 *
-	 * Frame is calculated as (3 - ((length-frame) mod 3)) mod 3:
-	 * Here is why:
-	 * 		(length-frame) is the length of the previous feature starting at the first whole codon (and thus the frame subtracted out).
-	 * 		(length-frame) mod 3 is the number of bases on the 3' end beyond the last whole codon of the previous feature.
-	 * 		3-((length-frame) mod 3) is the number of bases left in the codon after removing those that are represented at the 3' end of the feature.
-	 * 		(3-((length-frame) mod 3)) mod 3 changes a 3 to a 0, since three bases makes a whole codon, and 1 and 2 are left unchanged.
-	 *
-	 * @param length
-	 * @return
-	 */
-	public static int frameFromLength(int length) {
-		return (3 - (length % 3)) % 3;
-	}
-
-	/**
 	 * Are there any ambiguous bases in this sequence?
 	 * @param sequence
 	 * @return
@@ -328,7 +297,6 @@ public class GprSeq {
 
 	/**
 	 * Random base
-	 * @return
 	 */
 	public static char randBase(Random random) {
 		switch (random.nextInt(4)) {
@@ -347,8 +315,6 @@ public class GprSeq {
 
 	/**
 	 * Random sequence
-	 * @param len
-	 * @return
 	 */
 	public static String randSequence(Random random, int len) {
 		char bases[] = new char[len];
@@ -360,9 +326,6 @@ public class GprSeq {
 	/**
 	 * Create an ID: Remove everything after the first space char.
 	 * Remove trailing '/1' or '/2' (if any)
-	 *
-	 * @param line
-	 * @return
 	 */
 	public static String readId(String line) {
 		String id = line.split("\\s")[0]; // Remove everything after the first space character

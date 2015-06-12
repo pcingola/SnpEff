@@ -5,7 +5,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * An 'LOF' entry in a vcf line
- * 
+ *
  * @author pablocingolani
  */
 public class VcfLof {
@@ -17,9 +17,6 @@ public class VcfLof {
 
 	/**
 	 * Convert from field name to field number
-	 * @param name
-	 * @param formatVersion
-	 * @return
 	 */
 	public static int fieldNum(String name) {
 		int fieldNum = 0;
@@ -105,6 +102,11 @@ public class VcfLof {
 
 	@Override
 	public String toString() {
-		return String.format("(%s|%s|%d|%.2f)", geneName, geneId, numTranscripts, percentAffected);
+		return String.format("(%s|%s|%d|%.2f)" //
+				, VcfEntry.vcfInfoSafe(geneName) //
+				, VcfEntry.vcfInfoSafe(geneId) //
+				, numTranscripts //
+				, percentAffected //
+				);
 	}
 }

@@ -11,8 +11,10 @@
 # Main
 #-------------------------------------------------------------------------------
 
-show = FALSE
- show = TRUE		# Used for debugging
+show = TRUE		# Used for debugging
+show = FALSE	# Used for production
+
+pvalCoefThreshold = 10^-12	# Adjust only if linearmodel p-value is less than this
 
 #---
 # Parse command line arguments
@@ -79,7 +81,7 @@ if( show ) {
 #---
 # Decide whether to use corrected scores or not
 #---
-if( pvalCoef < 10^-12 ) { 
+if( pvalCoef < pvalCoefThreshold ) { 
 	so = padj		# Significant? Then use correction
 	so[ c <= minScoreCount ] = p[ c <= minScoreCount ]
 } else {

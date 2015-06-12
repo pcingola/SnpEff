@@ -52,17 +52,17 @@ public class Utr3prime extends Utr {
 		if (!intersects(variant)) return false;
 
 		if (variant.includes(this) && (variant.getVariantType() == VariantType.DEL)) {
-			variantEffects.addEffect(this, EffectType.UTR_3_DELETED, ""); // A UTR was removed entirely
+			variantEffects.addEffectType(variant, this, EffectType.UTR_3_DELETED); // A UTR was removed entirely
 			return true;
 		}
 
 		Transcript tr = (Transcript) findParent(Transcript.class);
 		int distance = utrDistance(variant, tr);
 
-		VariantEffect variantEffect = variantEffects.newVariantEffect();
+		VariantEffect variantEffect = new VariantEffect(variant);
 		variantEffect.set(this, type, type.effectImpact(), distance >= 0 ? distance + " bases from CDS" : "");
 		variantEffect.setDistance(distance);
-		variantEffects.addEffect(variantEffect);
+		variantEffects.add(variantEffect);
 
 		return true;
 	}

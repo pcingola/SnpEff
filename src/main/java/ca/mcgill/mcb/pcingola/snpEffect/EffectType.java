@@ -2,7 +2,9 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import java.util.HashMap;
 
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 
 /**
  * Effect type:
@@ -63,6 +65,8 @@ public enum EffectType {
 	, EXON //
 	, TRANSCRIPT //
 	, GENE //
+	, SEQUENCE //
+	, CHROMOSOME_ELONGATION //
 	, CHROMOSOME //
 	, GENOME //
 	, NONE //
@@ -73,7 +77,7 @@ public enum EffectType {
 	/**
 	 * Parse a string to an EffectType
 	 */
-	public static EffectType parse(String str) {
+	public static EffectType parse(EffFormatVersion formatVersion, String str) {
 		try {
 			return EffectType.valueOf(str);
 		} catch (Exception e) {
@@ -81,7 +85,13 @@ public enum EffectType {
 		}
 
 		// Try an SO term
-		if (so2efftype.isEmpty()) so2efftype();
+		if (so2efftype.isEmpty()) {
+			// In some cases a 'non-variant' has different effect (e.g. 'exon_region'), so we need to call this twice
+			so2efftype(formatVersion, null);
+			so2efftype(formatVersion, Variant.NO_VARIANT);
+		}
+
+		// Look up S.O. term
 		if (so2efftype.containsKey(str)) return so2efftype.get(str);
 
 		throw new RuntimeException("Cannot parse EffectType '" + str + "'");
@@ -90,11 +100,11 @@ public enum EffectType {
 	/**
 	 * Create a map between SO terms and EffectType
 	 */
-	static void so2efftype() {
+	static void so2efftype(EffFormatVersion formatVersion, Variant variant) {
 		for (EffectType efftype : EffectType.values()) {
-			String so = efftype.toSequenceOntology();
+			String so = efftype.toSequenceOntology(formatVersion, variant);
 
-			for (String soSingle : so.split("\\+"))
+			for (String soSingle : so.split(formatVersion.separatorSplit()))
 				if (!so2efftype.containsKey(soSingle)) so2efftype.put(soSingle, efftype);
 		}
 	}
@@ -138,6 +148,7 @@ public enum EffectType {
 
 		case CDS:
 		case CHROMOSOME:
+		case CHROMOSOME_ELONGATION:
 		case CUSTOM:
 		case DOWNSTREAM:
 		case EXON:
@@ -151,6 +162,7 @@ public enum EffectType {
 		case MICRO_RNA:
 		case NONE:
 		case REGULATION:
+		case SEQUENCE:
 		case TRANSCRIPT:
 		case UPSTREAM:
 		case UTR_3_PRIME:
@@ -173,8 +185,10 @@ public enum EffectType {
 		case NONE:
 		case CHROMOSOME:
 		case CHROMOSOME_LARGE_DELETION:
+		case CHROMOSOME_ELONGATION:
 		case CUSTOM:
 		case CDS:
+		case SEQUENCE:
 			return EffectType.NONE;
 
 		case INTERGENIC:
@@ -256,15 +270,20 @@ public enum EffectType {
 		}
 	}
 
-	public String toSequenceOntology() {
+	public String toSequenceOntology(EffFormatVersion formatVersion, Variant variant) {
 		switch (this) {
 
 		case CDS:
 			return "coding_sequence_variant";
 
 		case CHROMOSOME_LARGE_DELETION:
+			return "chromosome_number_variation";
+
 		case CHROMOSOME:
 			return "chromosome";
+
+		case CHROMOSOME_ELONGATION:
+			return "feature_elongation";
 
 		case CODON_CHANGE:
 			return "coding_sequence_variant";
@@ -285,6 +304,7 @@ public enum EffectType {
 			return "downstream_gene_variant";
 
 		case EXON:
+			if (variant != null && (!variant.isVariant() || variant.isInterval())) return "exon_region";
 			return "non_coding_exon_variant";
 
 		case EXON_DELETED:
@@ -345,10 +365,10 @@ public enum EffectType {
 			return "splice_region_variant";
 
 		case SPLICE_SITE_BRANCH:
-			return "splice_region_variant";
+			return "splice_branch_variant";
 
 		case SPLICE_SITE_BRANCH_U12:
-			return "splice_region_variant";
+			return "splice_branch_variant";
 
 		case START_LOST:
 			return "start_lost";
@@ -369,10 +389,10 @@ public enum EffectType {
 			return "stop_retained_variant";
 
 		case SYNONYMOUS_START:
-			return "initiator_codon_variant+non_canonical_start_codon";
+			return "initiator_codon_variant" + formatVersion.separator() + "non_canonical_start_codon";
 
 		case TRANSCRIPT:
-			return "nc_transcript_variant";
+			return "transcript";
 
 		case UPSTREAM:
 			return "upstream_gene_variant";
@@ -381,17 +401,20 @@ public enum EffectType {
 			return "3_prime_UTR_variant";
 
 		case UTR_3_DELETED:
-			return "3_prime_UTR_truncation+exon_loss";
+			return "3_prime_UTR_truncation" + formatVersion.separator() + "exon_loss";
 
 		case UTR_5_PRIME:
 			return "5_prime_UTR_variant";
 
 		case UTR_5_DELETED:
-			return "5_prime_UTR_truncation+exon_loss_variant";
+			return "5_prime_UTR_truncation" + formatVersion.separator() + "exon_loss_variant";
+
+		case CUSTOM:
+			return "custom";
 
 		case NONE:
 		case GENOME:
-		case CUSTOM:
+		case SEQUENCE:
 			return "";
 
 		default:

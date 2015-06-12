@@ -35,8 +35,11 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 public class SnpEffCmdBuild extends SnpEff {
 
 	GeneDatabaseFormat geneDatabaseFormat; // Database format (only used if 'buildDb' is active)
-	boolean onlyRegulation = false; // Only build regulation tracks
+	boolean storeAlignments; // Store alignments (used for some test cases)
+	boolean storeSequences = false; // Store full sequences
 	String cellType = null;
+	SnpEffCmdProtein snpEffCmdProtein;
+	SnpEffCmdCds snpEffCmdCds;
 
 	public SnpEffCmdBuild() {
 		super();
@@ -54,9 +57,10 @@ public class SnpEffCmdBuild extends SnpEff {
 		if (Gpr.canRead(cdsFile)) {
 			// Use FASTA format
 			if (verbose) Timer.showStdErr("CDS check (FASTA file): '" + cdsFile + "'\n");
-			SnpEffCmdCds snpEffCmdCds = new SnpEffCmdCds(config);
+			snpEffCmdCds = new SnpEffCmdCds(config);
 			snpEffCmdCds.setVerbose(verbose);
 			snpEffCmdCds.setDebug(debug);
+			snpEffCmdCds.setStoreAlignments(storeAlignments);
 			snpEffCmdCds.run();
 		} else if (debug) Timer.showStdErr("\tOptional file '" + cdsFile + "' not found, nothing done.");
 
@@ -66,16 +70,18 @@ public class SnpEffCmdBuild extends SnpEff {
 		String protFile = config.getFileNameProteins();
 		if (Gpr.canRead(protFile)) {
 			if (verbose) Timer.showStdErr("Protein check (FASTA file): '" + protFile + "'\n");
-			SnpEffCmdProtein snpEffCmdProtein = new SnpEffCmdProtein(config);
+			snpEffCmdProtein = new SnpEffCmdProtein(config);
 			snpEffCmdProtein.setVerbose(verbose);
 			snpEffCmdProtein.setDebug(debug);
+			snpEffCmdProtein.setStoreAlignments(storeAlignments);
 			snpEffCmdProtein.run();
 		} else if (geneDatabaseFormat == GeneDatabaseFormat.GENBANK) {
 			// GenBank format
 			String gbFile = config.getBaseFileNameGenes() + SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK;
 			if (verbose) Timer.showStdErr("Protein check (GenBank file): '" + gbFile + "'\n");
-			SnpEffCmdProtein snpEffCmdProtein = new SnpEffCmdProtein(config, gbFile);
+			snpEffCmdProtein = new SnpEffCmdProtein(config, gbFile);
 			snpEffCmdProtein.setVerbose(verbose);
+			snpEffCmdProtein.setStoreAlignments(storeAlignments);
 			snpEffCmdProtein.run();
 		} else if (debug) Timer.showStdErr("\tOptional file '" + protFile + "' not found, nothing done.");
 	}
@@ -101,6 +107,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		// Create SnpEffPredictor
 		factory.setVerbose(verbose);
 		factory.setDebug(debug);
+		factory.setStoreSequences(storeSequences);
 		return factory.create();
 	}
 
@@ -109,6 +116,14 @@ public class SnpEffCmdBuild extends SnpEff {
 	 */
 	protected boolean fileExists(String path) {
 		return Gpr.exists(path) || Gpr.exists(path + ".gz");
+	}
+
+	public SnpEffCmdCds getSnpEffCmdCds() {
+		return snpEffCmdCds;
+	}
+
+	public SnpEffCmdProtein getSnpEffCmdProtein() {
+		return snpEffCmdProtein;
 	}
 
 	/**
@@ -126,6 +141,8 @@ public class SnpEffCmdBuild extends SnpEff {
 		if (fileExists(genesBase + ".kg")) return GeneDatabaseFormat.KNOWN_GENES;
 		if (fileExists(genesBase + ".biomart")) return GeneDatabaseFormat.BIOMART;
 
+		if (geneDatabaseFormat == null) fatalError("Cannot guess input database format for genome '" + genomeVer + "'. No genes file found '" + genesBase + ".*'");
+
 		return null;
 	}
 
@@ -137,23 +154,26 @@ public class SnpEffCmdBuild extends SnpEff {
 		this.args = args;
 		for (int i = 0; i < args.length; i++) {
 
+			String arg = args[i];
+
 			// Argument starts with '-'?
-			if (args[i].startsWith("-")) {
-				if (args[i].equalsIgnoreCase("-gff3")) geneDatabaseFormat = GeneDatabaseFormat.GFF3;
-				else if (args[i].equalsIgnoreCase("-gff2")) geneDatabaseFormat = GeneDatabaseFormat.GFF2;
-				else if (args[i].equalsIgnoreCase("-gtf22")) geneDatabaseFormat = GeneDatabaseFormat.GTF22;
-				else if (args[i].equalsIgnoreCase("-refseq")) geneDatabaseFormat = GeneDatabaseFormat.REFSEQ;
-				else if (args[i].equalsIgnoreCase("-genbank")) geneDatabaseFormat = GeneDatabaseFormat.GENBANK;
-				else if (args[i].equalsIgnoreCase("-knowngenes")) geneDatabaseFormat = GeneDatabaseFormat.KNOWN_GENES;
-				else if (args[i].equalsIgnoreCase("-embl")) geneDatabaseFormat = GeneDatabaseFormat.EMBL;
-				else if (args[i].equalsIgnoreCase("-txt")) geneDatabaseFormat = GeneDatabaseFormat.BIOMART;
-				else if (args[i].equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
-				else if (args[i].equalsIgnoreCase("-cellType")) {
+			if (arg.startsWith("-")) {
+				if (arg.equalsIgnoreCase("-gff3")) geneDatabaseFormat = GeneDatabaseFormat.GFF3;
+				else if (arg.equalsIgnoreCase("-gff2")) geneDatabaseFormat = GeneDatabaseFormat.GFF2;
+				else if (arg.equalsIgnoreCase("-gtf22")) geneDatabaseFormat = GeneDatabaseFormat.GTF22;
+				else if (arg.equalsIgnoreCase("-refseq")) geneDatabaseFormat = GeneDatabaseFormat.REFSEQ;
+				else if (arg.equalsIgnoreCase("-genbank")) geneDatabaseFormat = GeneDatabaseFormat.GENBANK;
+				else if (arg.equalsIgnoreCase("-knowngenes")) geneDatabaseFormat = GeneDatabaseFormat.KNOWN_GENES;
+				else if (arg.equalsIgnoreCase("-embl")) geneDatabaseFormat = GeneDatabaseFormat.EMBL;
+				else if (arg.equalsIgnoreCase("-txt")) geneDatabaseFormat = GeneDatabaseFormat.BIOMART;
+				else if (arg.equalsIgnoreCase("-storeSeqs")) storeSequences = true;
+				else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
+				else if (arg.equalsIgnoreCase("-cellType")) {
 					if ((i + 1) < args.length) cellType = args[++i];
 					else usage("Missing 'cellType' argument");
-				} else usage("Unknow option '" + args[i] + "'");
-			} else if (genomeVer.length() <= 0) genomeVer = args[i];
-			else usage("Unknow parameter '" + args[i] + "'");
+				} else usage("Unknown option '" + arg + "'");
+			} else if (genomeVer.length() <= 0) genomeVer = arg;
+			else usage("Unknown parameter '" + arg + "'");
 		}
 
 		// Check: Do we have all required parameters?
@@ -222,16 +242,12 @@ public class SnpEffCmdBuild extends SnpEff {
 			return;
 		}
 
-		try {
-			// Open the regulation file and create a consensus
-			RegulationFileIterator regulationFileIterator = new RegulationGffFileIterator(regulationFileName);
-			RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus(verbose);
-			regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
-			regulationGffConsensus.save(config.getDirDataVersion()); // Save database
-			if (verbose) Timer.showStdErr("Done.");
-		} catch (Throwable t) {
-			if (debug) t.printStackTrace();
-		}
+		// Open the regulation file and create a consensus
+		RegulationFileIterator regulationFileIterator = new RegulationGffFileIterator(regulationFileName);
+		RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus(verbose);
+		regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
+		regulationGffConsensus.save(config.getDirDataVersion()); // Save database
+		if (verbose) Timer.showStdErr("Done.");
 	}
 
 	/**
@@ -310,6 +326,10 @@ public class SnpEffCmdBuild extends SnpEff {
 		return true;
 	}
 
+	public void setStoreAlignments(boolean storeAlignments) {
+		this.storeAlignments = storeAlignments;
+	}
+
 	/**
 	 * Show 'usage;' message and exit with an error code '-1'
 	 */
@@ -326,8 +346,9 @@ public class SnpEffCmdBuild extends SnpEff {
 		System.err.println("\t-gtf22                  : Use GTF 2.2 format. It implies '-1'. Default");
 		System.err.println("\t-knowngenes             : Use KnownGenes table from UCSC. It implies '-0'.");
 		System.err.println("\t-refseq                 : Use RefSeq table from UCSC. It implies '-0'.");
-		System.err.println("\t-txt                    : Use TXT format (obsolete).");
 		System.err.println("\t-onlyReg                : Only build regulation tracks.");
+		System.err.println("\t-storeSeqs              : Store sequence in binary files. Default: " + storeSequences);
+		System.err.println("\t-txt                    : Use TXT format (obsolete).");
 		System.err.println("\t-cellType <type>        : Only build regulation tracks for cellType <type>.");
 		System.err.println("\nGeneric options:");
 		System.err.println("\t-0                      : File positions are zero-based (same as '-inOffset 0 -outOffset 0')");

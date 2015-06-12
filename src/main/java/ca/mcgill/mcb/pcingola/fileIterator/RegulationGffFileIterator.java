@@ -51,7 +51,6 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 
 						int start = parsePosition(fields[3]);
 						int end = parsePosition(fields[4]); // The chromEnd base is not included
-						String id = "line_" + lineNum; // ID must be unique
 
 						// Strand
 						String strandStr = fields[6];
@@ -70,13 +69,20 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 
 								// Is name 'Name'? 
 								if (attr.equals("Name")) name = val;
-								else if (attr.equals("Alias")) cellType = val.split("_")[0]; // Cell type is in 'Alias'
+								else if (attr.equals("Cell_type")) {
+									cellType = val; // Cell type 
+								} else if (attr.equals("Alias") && cellType.isEmpty()) {
+									cellType = val.split("_")[0]; // Cell type is in 'Alias'
+								}
 							}
 						}
 
+						// Create unique ID
+						String id = cellType + "_" + name + "_" + lineNum;
+
 						// Create seqChange
-						Regulation seqChange = new Regulation(chromo, start, end, strandMinus, id, name, cellType);
-						return seqChange;
+						Regulation reg = new Regulation(chromo, start, end, strandMinus, id, name, cellType);
+						return reg;
 					}
 				}
 			}

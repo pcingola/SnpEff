@@ -1,0 +1,4 @@
+chr1	protein_coding	gene	1655	1747	.	+	1	ID=gene_1
+chr1	protein_coding	mRNA	1655	1747	.	+	1	ID=mRNA_1;Parent=gene_1
+chr1	protein_coding	exon	1655	1747	.	+	1	Parent=mRNA_1
+chr1	protein_coding	CDS	1655	1747	.	+	1	Parent=mRNA_1

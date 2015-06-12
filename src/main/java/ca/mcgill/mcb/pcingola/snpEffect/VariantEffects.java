@@ -6,9 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.interval.Marker;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * A sorted collection of variant effects
@@ -17,65 +19,89 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
  */
 public class VariantEffects implements Iterable<VariantEffect> {
 
-	Variant variant, variantRef;
+	public static boolean debug = false;
 	List<VariantEffect> effects;
 
-	public VariantEffects(Variant variant) {
+	public VariantEffects() {
 		effects = new ArrayList<VariantEffect>();
-		this.variant = variant;
-	}
-
-	public VariantEffects(Variant variant, Variant variantRef) {
-		effects = new ArrayList<VariantEffect>();
-		this.variant = variant;
-		this.variantRef = variantRef;
 	}
 
 	/**
 	 * Add an effect
 	 */
-	public void addEffect(Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
-		VariantEffect effNew = new VariantEffect(variant, variantRef);
+	public void add(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String message) {
+		VariantEffect effNew = new VariantEffect(variant);
 		effNew.set(marker, effectType, effectImpact, message);
-		effects.add(effNew);
+		add(effNew);
 	}
 
 	/**
 	 * Add an effect
 	 */
-	public void addEffect(Marker marker, EffectType effectType, String message) {
-		addEffect(marker, effectType, effectType.effectImpact(), message);
+	public void add(Variant variant, Marker marker, EffectType effectType, String message) {
+		add(variant, marker, effectType, effectType.effectImpact(), message);
 	}
 
 	/**
 	 * Add an effect
 	 */
-	public void addEffect(VariantEffect variantEffect) {
+	public void add(VariantEffect variantEffect) {
 		effects.add(variantEffect);
 	}
 
-	public void addErrorWarning(ErrorWarningType errwarn) {
-		get().addErrorWarning(errwarn);
+	/**
+	 * Add: If possible, only add an effect type (otherwise add the full effect)
+	 */
+	public void addEffectType(Variant variant, Marker marker, EffectType effectType) {
+		if (canAddType(variant, marker)) {
+			get().addEffect(effectType);
+		} else add(variant, marker, effectType, effectType.effectImpact(), "");
+	}
+
+	public void addErrorWarning(Variant variant, ErrorWarningType errwarn) {
+		VariantEffect veff = get();
+		if (veff != null) veff.addErrorWarningInfo(errwarn);
+		else {
+			if (debug) Gpr.debug("Could not get latest " + VariantEffect.class.getSimpleName());
+			veff = new VariantEffect(variant);
+			veff.addErrorMessage(errwarn);
+			add(veff);
+		}
+	}
+
+	/**
+	 * Can we add an effectType to the previous variatnEffect?
+	 * @return true if transcript IDs and variant's genotypes match (i.e. we can add effectType)
+	 */
+	boolean canAddType(Variant variant, Marker marker) {
+		VariantEffect veff = get();
+		if (veff == null || veff.getVariant() == null) return false;
+
+		// Do genotypes match?
+		String gt = veff.getVariant().getGenotype();
+		String vgt = variant.getGenotype();
+		if (((vgt != null) ^ (gt != null)) // One null and one non-null?
+				|| ((vgt != null) && (gt != null) && !variant.getGenotype().equals(variant.getGenotype())) // Both non-null, but different?
+		) return false;
+
+		// Do transcripts match?
+		Transcript trMarker = (Transcript) marker.findParent(Transcript.class);
+		Transcript tr = veff.getTranscript();
+		if (tr == null || trMarker == null) return false;
+
+		return tr.getId().equals(trMarker.getId());
 	}
 
 	/**
 	 * Get (or create) the latest ChangeEffect
 	 */
 	public VariantEffect get() {
-		if (effects.isEmpty()) effects.add(new VariantEffect(variant, variantRef));
+		if (effects.isEmpty()) return null;
 		return effects.get(effects.size() - 1);
 	}
 
 	public VariantEffect get(int index) {
 		return effects.get(index);
-	}
-
-	public Variant getVariant() {
-		return variant;
-	}
-
-	public Variant getVariantRef() {
-		return variantRef;
 	}
 
 	public boolean isEmpty() {
@@ -87,15 +113,10 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		return effects.iterator();
 	}
 
-	/**
-	 * Get (or create) the latest ChangeEffect
-	 */
-	public VariantEffect newVariantEffect() {
-		return new VariantEffect(variant, variantRef);
-	}
-
 	public void setMarker(Marker marker) {
-		get().setMarker(marker);
+		VariantEffect veff = get();
+		if (veff != null) veff.setMarker(marker);
+		else Gpr.debug("Could not get latest VariantEffect");
 	}
 
 	public int size() {

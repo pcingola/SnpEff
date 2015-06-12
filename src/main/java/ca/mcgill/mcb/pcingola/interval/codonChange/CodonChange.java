@@ -29,8 +29,8 @@ public class CodonChange {
 	VariantEffects variantEffects;
 	int codonStartNum = -1;
 	int codonStartIndex = -1;
-	String codonsOld = ""; // Old codons (before change)
-	String codonsNew = ""; // New codons (after change)
+	String codonsRef = ""; // REF codons (without variant)
+	String codonsAlt = ""; // ALT codons (after variant is applied)
 	String netCdsChange = "";
 
 	/**
@@ -144,7 +144,7 @@ public class CodonChange {
 		// We may have to calculate 'netCdsChange', which is the effect on the CDS
 		netCdsChange = netCdsChange();
 		if (requireNetCdsChange && netCdsChange.isEmpty()) { // This can happen on mixed changes where the 'InDel' part lies outside the transcript's exons
-			codonsOld = codonsNew = "";
+			codonsRef = codonsAlt = "";
 			return;
 		}
 
@@ -202,21 +202,21 @@ public class CodonChange {
 	/**
 	 * Calculate new codons
 	 */
-	public String codonsNew() {
+	public String codonsAlt() {
 		throw new RuntimeException("Unimplemented method for this thype of CodonChange: " + this.getClass().getSimpleName());
 	}
 
 	/**
-	 * Calculate old codons
+	 * Calculate 'reference' codons
 	 */
-	public String codonsOld() {
-		return codonsOld(1);
+	public String codonsRef() {
+		return codonsRef(1);
 	}
 
 	/**
-	 * Calculate old codons
+	 * Calculate 'reference' codons
 	 */
-	protected String codonsOld(int numCodons) {
+	protected String codonsRef(int numCodons) {
 		String cds = transcript.cds();
 		String codon = "";
 
@@ -242,18 +242,19 @@ public class CodonChange {
 	 */
 	protected VariantEffect effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
 		// Create and add variant affect
-		VariantEffect varEff = new VariantEffect(variant, variantEffects.getVariantRef(), marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex);
-		variantEffects.addEffect(varEff);
+		int cDnaPos = transcript.baseNumber2MRnaPos(variant.getStart());
+		VariantEffect varEff = new VariantEffect(variant, marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex, cDnaPos);
+		variantEffects.add(varEff);
 
-		// Are there any additional effects? Sometime a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
-		EffectType addEffType = additionalEffect(codonsOld, codonsNew, codonNum, codonIndex, varEff.getAaOld(), varEff.getAaNew());
+		// Are there any additional effects? Sometimes a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
+		EffectType addEffType = additionalEffect(codonsOld, codonsNew, codonNum, codonIndex, varEff.getAaRef(), varEff.getAaAlt());
 		if (addEffType != null && addEffType != effectType) {
 			if (allowReplace && addEffType.compareTo(effectType) < 0) {
-				varEff.setEffectType(addEffType); // Replace main effect
-				varEff.setEffectImpact(addEffType.effectImpact()); // Replace main impact
+				// Replace main effect (using default impact)
+				varEff.setEffect(addEffType);
 			} else {
-				varEff.addEffectType(addEffType); // Add to list
-				varEff.addEffectImpact(addEffType.effectImpact()); // Add impact to list
+				// Add effect to list (using default impact)
+				varEff.addEffect(addEffType);
 			}
 		}
 
@@ -283,10 +284,10 @@ public class CodonChange {
 
 		sb.append("Transcript : " + transcript.getId() + "\n");
 		sb.append("Variant    : " + variant + "\n");
-		sb.append("Codonss    : " + codonsOld + "/" + codonsNew + "\tnum: " + codonStartNum + "\tidx: " + codonStartIndex + "\n");
+		sb.append("Codonss    : " + codonsRef + "/" + codonsAlt + "\tnum: " + codonStartNum + "\tidx: " + codonStartIndex + "\n");
 		sb.append("Effects    :\n");
 		for (VariantEffect veff : variantEffects)
-			sb.append("\t" + veff.getEffectTypeString(false) + "\t" + veff.getCodonsOld() + "/" + veff.getCodonsNew() + "\t" + veff.getAaOld() + "/" + veff.getAaNew() + "\n");
+			sb.append("\t" + veff.getEffectTypeString(false) + "\t" + veff.getCodonsRef() + "/" + veff.getCodonsAlt() + "\t" + veff.getAaRef() + "/" + veff.getAaAlt() + "\n");
 
 		return sb.toString();
 	}

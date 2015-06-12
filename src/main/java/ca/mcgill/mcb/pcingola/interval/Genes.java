@@ -6,17 +6,22 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.util.Timer;
 
 /**
  * A collection of genes (marker intervals)
  * Note: It is assumed that all genes belong to the same genome
- * 
+ *
  * @author pcingola
  */
 public class Genes implements Iterable<Gene>, Serializable {
 
 	private static final long serialVersionUID = 9022385501946879197L;
+	public static final String CIRCULAR_GENE_ID = "_circ";
 
 	public boolean debug = false;
 	Genome genome;
@@ -29,14 +34,66 @@ public class Genes implements Iterable<Gene>, Serializable {
 
 	/**
 	 * Add a gene interval to this collection
-	 * @param gene
 	 */
 	public void add(Gene gene) {
 		genesById.put(gene.getId(), gene);
 	}
 
+	/** In a circular genome, a gene can have negative coordinates or crosses
+		over chromosome end. These genes are mirrored to the opposite end of
+		the chromosome so that they can be referenced by both circular coordinates.
+	 */
+	public void createCircularGenes() {
+		List<Gene> newGenes = new LinkedList<Gene>();
+
+		// Check if any gene spans across chromosome limits
+		for (Gene g : genome.getGenes()) {
+			Chromosome chr = g.getChromosome();
+
+			Gene newGene = null;
+
+			if ((g.getStart() < 0) || (g.getEnd() > chr.getEnd())) {
+				newGene = (Gene) g.clone();
+
+				// Change IDs
+				newGene.setId(g.getId() + CIRCULAR_GENE_ID);
+				for (Transcript tr : newGene) {
+					tr.setId(tr.getId() + CIRCULAR_GENE_ID);
+					for (Exon ex : tr)
+						ex.setId(ex.getId() + CIRCULAR_GENE_ID);
+				}
+
+				// Shift coordinates
+				int shift = 0;
+				if (g.getStart() < 0) {
+					shift = chr.size();
+				} else if (g.getEnd() > chr.getEnd()) {
+					shift = -chr.size();
+				}
+
+				newGene.shiftCoordinates(shift);
+				if (Config.get().isVerbose()) Timer.showStdErr("Gene '" + g.getId() + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
+						+ "\n\tGene        :" + g.toStr() //
+						+ "\n\tNew gene    :" + newGene.toStr() //
+						+ "\n\tChrsomosome :" + chr.toStr() //
+						);
+
+				// Add them to genes
+				newGenes.add(newGene);
+			}
+		}
+
+		// Add all newly created genes
+		if (!newGenes.isEmpty()) {
+			for (Gene g : newGenes)
+				genome.getGenes().add(g);
+			if (Config.get().isVerbose()) Timer.showStdErr("Total: " + newGenes.size() + " added as circular mirrored genes (appended '" + CIRCULAR_GENE_ID + "' to IDs).");
+		}
+
+	}
+
 	/**
-	 * Creates a list of Intergenic regions 
+	 * Creates a list of Intergenic regions
 	 */
 	public List<Intergenic> createIntergenic() {
 		ArrayList<Intergenic> intergenics = new ArrayList<Intergenic>(genesById.size());
@@ -60,8 +117,9 @@ public class Genes implements Iterable<Gene>, Serializable {
 
 			// Valid intergenic region?
 			if (start < end) {
-				String id = (genePrev != null ? genePrev.getGeneName() + "..." : "") + gene.getGeneName();
-				Intergenic intergenic = new Intergenic(gene.getChromosome(), start, end, false, id);
+				String name = (genePrev != null ? genePrev.getGeneName() + "-" : "") + gene.getGeneName();
+				String id = (genePrev != null ? genePrev.getId() + "-" : "") + gene.getId();
+				Intergenic intergenic = new Intergenic(gene.getChromosome(), start, end, false, id, name);
 				intergenics.add(intergenic);
 			}
 
@@ -77,29 +135,24 @@ public class Genes implements Iterable<Gene>, Serializable {
 
 	/**
 	 * Create splice sites.
-	 * 
+	 *
 	 * @param createIfMissing : If true, create canonical splice sites if they are missing.
-	 * 
+	 *
 	 * For a definition of splice site, see comments at the beginning of SpliceSite.java
 	 */
-	public Collection<Marker> createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
-		ArrayList<Marker> spliceSites = new ArrayList<Marker>();
-
+	public void createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
 		// For each gene, transcript
-		for (Gene gene : this) {
+		for (Gene gene : this)
 			for (Transcript tr : gene) {
-				List<SpliceSite> slist = tr.createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax); // Find (or create) splice sites
-				spliceSites.addAll(slist); // Store all markers 
+				// Create splice sites
+				tr.createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax);
 			}
-		}
-
-		return spliceSites;
 	}
 
 	/**
 	 * Creates a list of UP/DOWN stream regions (for each transcript)
 	 * Upstream (downstream) stream is defined as upDownLength before (after) transcript
-	 * 
+	 *
 	 * Note: If upDownLength <=0 no interval is created
 	 */
 	public List<Marker> createUpDownStream(int upDownLength) {
@@ -119,8 +172,6 @@ public class Genes implements Iterable<Gene>, Serializable {
 
 	/**
 	 * Obtain a gene interval
-	 * @param geneId
-	 * @return
 	 */
 	public Gene get(String geneId) {
 		return genesById.get(geneId);

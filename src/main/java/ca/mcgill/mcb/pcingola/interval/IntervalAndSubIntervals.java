@@ -11,7 +11,7 @@ import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 
 /**
  * Interval that contains sub intervals.
- * 
+ *
  * @author pcingola
  *
  */
@@ -34,7 +34,6 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 	/**
 	 * Add a subinterval
-	 * @param t
 	 */
 	public void add(T t) {
 		if (subIntervals.put(t.getId(), t) != null) throw new RuntimeException(t.getClass().getSimpleName() + " '" + t.getId() + "' is already in " + this.getClass().getSimpleName() + " '" + id + "'");
@@ -43,7 +42,6 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 	/**
 	 * Add all intervals
-	 * @param ts
 	 */
 	public void addAll(Iterable<T> ts) {
 		for (T t : ts)
@@ -62,10 +60,23 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 		invalidateSorted();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public IntervalAndSubIntervals<T> clone() {
+		IntervalAndSubIntervals<T> copy = (IntervalAndSubIntervals<T>) super.clone();
+		copy.reset();
+
+		for (T m : this) {
+			T mcopy = (T) m.clone();
+			mcopy.setParent(copy);
+			copy.add(mcopy);
+		}
+
+		return copy;
+	}
+
 	/**
 	 * Is 'id' in the subintervals?
-	 * @param id
-	 * @return
 	 */
 	public boolean containsId(String id) {
 		return subIntervals.containsKey(id);
@@ -73,8 +84,6 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 	/**
 	 * Obtain a subinterval
-	 * @param id
-	 * @return
 	 */
 	public T get(String id) {
 		return subIntervals.get(id);
@@ -94,7 +103,6 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 	/**
 	 * A list of all markers in this transcript
-	 * @return
 	 */
 	public Markers markers() {
 		Markers markers = new Markers();
@@ -127,7 +135,6 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 	/**
 	 * Remove a subinterval
-	 * @param t
 	 */
 	public void remove(T t) {
 		subIntervals.remove(t.getId());
@@ -144,8 +151,6 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 	/**
 	 * Parse a line from a serialized file
-	 * @param line
-	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -164,7 +169,9 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
-		return super.serializeSave(markerSerializer) + "\t" + markerSerializer.save((Collection<Marker>) subIntervals.values());
+		return super.serializeSave(markerSerializer) //
+				+ "\t" + markerSerializer.save((Collection<Marker>) subIntervals.values()) //
+				;
 	}
 
 	@Override
@@ -178,9 +185,16 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 		invalidateSorted(); // These are no longer correct
 	}
 
+	@Override
+	public void shiftCoordinates(int shift) {
+		super.shiftCoordinates(shift);
+
+		for (T m : subIntervals.values())
+			m.shiftCoordinates(shift);
+	}
+
 	/**
 	 * Return a collection of sub intervals sorted by natural order
-	 * @return
 	 */
 	public synchronized List<T> sorted() {
 		if (sorted != null) return sorted;
@@ -191,9 +205,8 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	}
 
 	/**
-	 * Return a collection of sub intervals sorted by start position (if strand is >= 0) or 
-	 * by reverse end position (if strans < 0) 
-	 * @return
+	 * Return a collection of sub intervals sorted by start position (if strand is >= 0) or
+	 * by reverse end position (if strans < 0)
 	 */
 	public synchronized List<T> sortedStrand() {
 		if (sortedStrand != null) return sortedStrand;
@@ -201,17 +214,17 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 		sortedStrand = new ArrayList<T>();
 		sortedStrand.addAll(subIntervals.values());
 
-		if (isStrandPlus()) Collections.sort(sortedStrand, new IntervalComparatorByStart()); // Sort by start position 
-		else Collections.sort(sortedStrand, new IntervalComparatorByEnd(true)); // Sort by end position (reversed) 
+		if (isStrandPlus()) Collections.sort(sortedStrand, new IntervalComparatorByStart()); // Sort by start position
+		else Collections.sort(sortedStrand, new IntervalComparatorByEnd(true)); // Sort by end position (reversed)
 
 		return sortedStrand;
 	}
 
 	/**
 	 * Return a collection of sub intervals
-	 * @return
 	 */
 	public Collection<T> subintervals() {
 		return subIntervals.values();
 	}
+
 }

@@ -17,13 +17,6 @@ import ca.mcgill.mcb.pcingola.vcf.VcfNmd;
  * Analyze if a set of effects are can create a "Loss Of Function"
  * and "Nonsense mediated decays" effects.
  *
- * TODO: Add branch points? (We have to analyze correlation with expression)
- *
- * TODO: Other NextProt markers? (We have to analyze correlation with expression)
- *
- * TODO: What are we supposed to do in cases like UTR_5_DELETED or UTR_3_DELETED?
- *       So far we are considering them as moderate impact.
- *
  * Of course, this is a prediction based on analysis
  * of groups of "putative effects". Proper wet-lab
  * validation is required to infer "real" LOF.
@@ -152,7 +145,7 @@ public class LossOfFunction {
 		boolean lof = false;
 
 		// Frame shifts
-		if (variantEffect.getEffectType() == EffectType.FRAME_SHIFT) {
+		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) {
 			// It is assumed that even with a protein coding change at the last 5% of the protein, the protein could still be functional.
 			double perc = percentCds(variantEffect);
 			lof |= (ignoreProteinCodingBefore <= perc) && (perc <= ignoreProteinCodingAfter);
@@ -161,30 +154,32 @@ public class LossOfFunction {
 		// Deletion? Is another method to check
 		if (variantEffect.getVariant().isDel()) lof |= isLofDeletion(variantEffect);
 
+		//---
 		// The following effect types can be considered LOF
-		switch (variantEffect.getEffectType()) {
-		case SPLICE_SITE_ACCEPTOR:
-		case SPLICE_SITE_DONOR:
+		//---
+		if (variantEffect.hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
+				|| variantEffect.hasEffectType(EffectType.SPLICE_SITE_DONOR) //
+		) {
 			// Core splice sites are considered LOF
 			if ((variantEffect.getMarker() != null) && (variantEffect.getMarker() instanceof SpliceSite)) {
 				// Get splice site marker and check if it is 'core'
 				SpliceSite spliceSite = (SpliceSite) variantEffect.getMarker();
-				if (spliceSite.intersectsCoreSpliceSite(variantEffect.getVariant())) lof = true; // Does it intersect the CORE splice site?
+
+				// Does it intersect the CORE splice site?
+				if (spliceSite.intersectsCoreSpliceSite(variantEffect.getVariant())) {
+					lof = true;
+				}
 			}
-			break;
-
-		case STOP_GAINED:
+		} else if (variantEffect.hasEffectType(EffectType.STOP_GAINED)) {
 			lof |= isNmd(variantEffect);
-			break;
-
-		case RARE_AMINO_ACID:
-		case START_LOST:
-			// This one is not in the referenced papers, but we assume that RARE AA and START_LOSS changes are damaging.
+		} else if (variantEffect.hasEffectType(EffectType.RARE_AMINO_ACID)) {
+			// This one is not in the referenced papers, but we assume that RARE AA are damaging.
 			lof = true;
-			break;
-
-		default: // All others are not considered LOF
-			break;
+		} else if (variantEffect.hasEffectType(EffectType.START_LOST)) {
+			// This one is not in the referenced papers, but we assume that START_LOSS changes are damaging.
+			lof = true;
+		} else {
+			// All others are not considered LOF
 		}
 
 		// Update sets
@@ -211,7 +206,7 @@ public class LossOfFunction {
 		// Criteria:
 		// 		1) First (coding) exon deleted
 		//---
-		if (changeEffect.getEffectType() == EffectType.EXON_DELETED) {
+		if (changeEffect.hasEffectType(EffectType.EXON_DELETED)) {
 			Variant seqChange = changeEffect.getVariant();
 			if (seqChange == null) throw new RuntimeException("Cannot retrieve 'seqChange' from EXON_DELETED effect!");
 			if (seqChange.includes(tr.getFirstCodingExon())) return true;

@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.stats;
 
 import java.util.List;
 
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 
@@ -131,7 +132,10 @@ public class TsTvStats implements SamplingStats<VcfEntry> {
 
 			// For each sample (i.e. 'genotype' field)
 			for (VcfGenotype vcfGenotype : vcfEntry) {
-				if (vcfGenotype.isVariant()) {
+
+				if (sampleNum >= countTs.length) {
+					Gpr.debug("WARNING: VCF entry has more genotype fields than expected (expected: " + countTs.length + ", number of genotypes: " + sampleNum + ").\n" + vcfEntry);
+				} else if (vcfGenotype.isVariant()) {
 					String alts[] = vcfEntry.getAlts();
 					int gens[] = vcfGenotype.getGenotype();
 

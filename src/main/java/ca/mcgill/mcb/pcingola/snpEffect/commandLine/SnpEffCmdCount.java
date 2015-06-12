@@ -67,7 +67,6 @@ public class SnpEffCmdCount extends SnpEff {
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-p")) calcProbModel = true;
 			else if (args[i].equals("-n")) outputBaseNames = args[++i];
-			else if (args[i].equalsIgnoreCase("-nogenome")) noGenome = true;
 			else if ((genomeVer == null) || genomeVer.isEmpty()) genomeVer = args[i];
 			else fileNames.add(args[i]);
 		}
@@ -177,7 +176,6 @@ public class SnpEffCmdCount extends SnpEff {
 		System.err.println("snpEff version " + VERSION);
 		System.err.println("Usage: snpEff count [options] genome file_1 file_2 ...  file_N");
 		System.err.println("\t-n name          : Output file base name. ");
-		System.err.println("\t-noGenome        : Do not count genomic intervals, only user provided intervals are used.");
 		System.err.println("\t-p               : Calculate probability model (binomial). Default: " + calcProbModel);
 		System.err.println("\tfile             : A file contianing intervals or reads. Either BAM, SAM, VCF, BED or BigBed format.");
 

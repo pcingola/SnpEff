@@ -74,8 +74,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 	}
 
 	public VcfFileIterator(String fileName, Genome genome) {
-		super(fileName, 1);
-		this.genome = genome;
+		super(fileName, genome, 1);
 	}
 
 	/**

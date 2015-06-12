@@ -3,7 +3,10 @@ package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
+import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
+import ca.mcgill.mcb.pcingola.interval.SpliceSiteAcceptor;
+import ca.mcgill.mcb.pcingola.interval.SpliceSiteDonor;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.stats.ReadsOnMarkersModel;
@@ -48,7 +51,7 @@ public class SnpEffCmdLen extends SnpEff {
 							+ "\t" + (gene.getEnd() + 1) //
 							+ "\t" + efflen //
 							+ "\t" + maxcds //
-							);
+					);
 
 					// Sanity check
 					if (maxcds > efflen) throw new RuntimeException("CDS length is greter then effective length. This should never happen!");
@@ -59,7 +62,6 @@ public class SnpEffCmdLen extends SnpEff {
 
 	/**
 	 * Calculate effective length for a gene
-	 * @param gene
 	 */
 	int effectiveCodingLength(Gene gene) {
 		// Initialize
@@ -76,15 +78,24 @@ public class SnpEffCmdLen extends SnpEff {
 					for (int i = ex.getStart(); i <= ex.getEnd(); i++)
 						coding[i - gene.getStart()] = 1;
 
-					// Mark all bases in SpliceSiteAcceptor as 'used'
-					SpliceSite ss = ex.getSpliceSiteAcceptor();
-					if (ss != null) for (int i = ss.getStart(); i <= ss.getEnd(); i++)
-						coding[i - gene.getStart()] = 1;
+					// Mark bases in SpliceSiteAcceptor/Donnor as 'used'
+					for (SpliceSite ss : ex.getSpliceSites()) {
+						if (ss instanceof SpliceSiteAcceptor || ss instanceof SpliceSiteDonor) {
+							for (int i = ss.getStart(); i <= ss.getEnd(); i++)
+								coding[i - gene.getStart()] = 1;
+						}
+					}
 
-					// Mark all bases in SpliceSiteDonor as 'used'
-					ss = ex.getSpliceSiteDonor();
-					if (ss != null) for (int i = ss.getStart(); i <= ss.getEnd(); i++)
-						coding[i - gene.getStart()] = 1;
+				}
+
+				// Mark bases in SpliceSites as 'used'
+				for (Intron intr : tr.introns()) {
+					for (SpliceSite ss : intr.getSpliceSites()) {
+						if (ss instanceof SpliceSiteAcceptor || ss instanceof SpliceSiteDonor) {
+							for (int i = ss.getStart(); i <= ss.getEnd(); i++)
+								coding[i - gene.getStart()] = 1;
+						}
+					}
 				}
 			}
 		}
@@ -126,7 +137,7 @@ public class SnpEffCmdLen extends SnpEff {
 				else usage("Missing value for parameter '-r'");
 
 			} else if (genomeVer.isEmpty()) genomeVer = args[i];
-			else usage("Unknow parameter '" + args[i] + "'");
+			else usage("Unknown parameter '" + args[i] + "'");
 		}
 
 		// Check: Do we have all required parameters?

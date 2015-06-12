@@ -13,7 +13,7 @@
 # Created by: Brad Chapman
 #---------------------------------------------------------------------------------------------------
 
-jardir="$(cd "$(dirname "$0")" && pwd -P)"
+jardir="$(cd "$(dirname "$0")" && cd ".." && pwd -P)"
 
 java=java
 if [ -e "$JAVA_HOME/bin/java" ]

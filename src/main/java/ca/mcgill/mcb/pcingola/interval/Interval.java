@@ -39,15 +39,6 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 				+ "\n\tParent       : " + parent //
 		);
 
-		if (start < 0) throw new RuntimeException("Interval has negative coordinates." //
-				+ "\n\tClass        : " + getClass().getSimpleName() //
-				+ "\n\tStart        : " + start //
-				+ "\n\tEnd          : " + end //
-				+ "\n\tID           : " + id //
-				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
-				+ "\n\tParent       : " + parent //
-		);
-
 		this.start = start;
 		this.end = end;
 		this.id = id;
@@ -84,12 +75,62 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		return compareTo(interval) == 0;
 	}
 
+	/**
+	 * Go up (parent) until we find an instance of 'clazz'
+	 */
+	@SuppressWarnings("rawtypes")
+	public Interval findParent(Class clazz) {
+		if (this.getClass().equals(clazz)) return this;
+		if ((parent != null) && (parent instanceof Marker)) return ((Marker) parent).findParent(clazz);
+		return null;
+	}
+
+	public Chromosome getChromosome() {
+		return (Chromosome) findParent(Chromosome.class);
+	}
+
+	/**
+	 * Find chromosome name
+	 */
+	public String getChromosomeName() {
+		Chromosome chromo = getChromosome();
+		if (chromo != null) return chromo.getId();
+		return "";
+	}
+
 	public String getChromosomeNameOri() {
 		return chromosomeNameOri;
 	}
 
+	/**
+	 * Find chromosome and return it's number
+	 *
+	 * @return Chromosome number if found, -1 otherwise
+	 */
+	public double getChromosomeNum() {
+		Chromosome chromo = (Chromosome) findParent(Chromosome.class);
+		if (chromo != null) return chromo.chromosomeNum;
+		return -1;
+	}
+
 	public int getEnd() {
 		return end;
+	}
+
+	/**
+	 * Find genome
+	 */
+	public Genome getGenome() {
+		return (Genome) findParent(Genome.class);
+	}
+
+	/**
+	 * Find genome name
+	 */
+	public String getGenomeName() {
+		Genome genome = (Genome) findParent(Genome.class);
+		if (genome != null) return genome.getId();
+		return "";
 	}
 
 	public String getId() {
@@ -110,7 +151,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 
 	@Override
 	public int hashCode() {
-		int hashCode = 0;
+		int hashCode = getChromosomeName().hashCode();
 		hashCode = hashCode * 31 + start;
 		hashCode = hashCode * 31 + end;
 		hashCode = hashCode * 31 + (strandMinus ? -1 : 1);
@@ -139,6 +180,33 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		return (start <= point) && (point <= end);
 	}
 
+	/**
+	 * Do the intervals intersect?
+	 * @return  return true if this intersects 'interval'
+	 */
+	public boolean intersects(Marker interval) {
+		if (!interval.getChromosomeName().equals(getChromosomeName())) return false;
+		return (interval.getEnd() >= start) && (interval.getStart() <= end);
+	}
+
+	/**
+	 * How much do intervals intersect?
+	 * @return  number of bases these intervals intersect
+	 */
+	public int intersectSize(Marker interval) {
+		if (!interval.getChromosomeName().equals(getChromosomeName())) return 0;
+
+		int start = Math.max(this.start, interval.getStart());
+		int end = Math.min(this.end, interval.getEnd());
+
+		if (end < start) return 0;
+		return (end - start) + 1;
+	}
+
+	public boolean isSameChromo(Marker interval) {
+		return interval.getChromosomeName().equals(getChromosomeName());
+	}
+
 	public boolean isStrandMinus() {
 		return strandMinus;
 	}
@@ -148,7 +216,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 	}
 
 	public boolean isValid() {
-		return (start >= 0) && (start <= end);
+		return start <= end;
 	}
 
 	public void setChromosomeNameOri(String chromosomeNameOri) {
@@ -176,6 +244,11 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 
 	public void setStrandMinus(boolean strand) {
 		strandMinus = strand;
+	}
+
+	public void shiftCoordinates(int shift) {
+		start += shift;
+		end += shift;
 	}
 
 	public int size() {

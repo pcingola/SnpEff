@@ -36,7 +36,7 @@ public class CodonChangeMnp extends CodonChange {
 		codonOldNew();
 
 		// Create change effect
-		effect(transcript, EffectType.CODON_CHANGE, "", codonsOld, codonsNew, codonStartNum, codonStartIndex, true); // Use a generic low priority variant, this allows 'setCodons' to override it
+		effect(transcript, EffectType.CODON_CHANGE, "", codonsRef, codonsAlt, codonStartNum, codonStartIndex, true); // Use a generic low priority variant, this allows 'setCodons' to override it
 
 		return;
 	}
@@ -89,31 +89,31 @@ public class CodonChangeMnp extends CodonChange {
 		}
 
 		// Get old codon (reference)
-		codonsOld = transcript.cds().substring(scStart3, scEnd3 + 1);
+		codonsRef = transcript.cds().substring(scStart3, scEnd3 + 1);
 
 		// Get new codon (change)
-		String prepend = codonsOld.substring(0, scStart - scStart3);
+		String prepend = codonsRef.substring(0, scStart - scStart3);
 		String append = "";
-		if (scEnd3 > scEnd) append = codonsOld.substring(codonsOld.length() - (scEnd3 - scEnd));
-		codonsNew = prepend + netCdsChange() + append;
+		if (scEnd3 > scEnd) append = codonsRef.substring(codonsRef.length() - (scEnd3 - scEnd));
+		codonsAlt = prepend + netCdsChange() + append;
 
 		// Pad codons with 'N' if required
-		codonsOld += padN;
-		codonsNew += padN;
+		codonsRef += padN;
+		codonsAlt += padN;
 
 		//---
 		// Can we simplify codons?
 		//---
-		if ((codonsOld != null) && (codonsNew != null)) {
-			while ((codonsOld.length() >= 3) && (codonsNew.length() >= 3)) {
+		if ((codonsRef != null) && (codonsAlt != null)) {
+			while ((codonsRef.length() >= 3) && (codonsAlt.length() >= 3)) {
 				// First codon
-				String cold = codonsOld.substring(0, 3);
-				String cnew = codonsNew.substring(0, 3);
+				String cold = codonsRef.substring(0, 3);
+				String cnew = codonsAlt.substring(0, 3);
 
 				// Are codons equal? => Simplify
 				if (cold.equalsIgnoreCase(cnew)) {
-					codonsOld = codonsOld.substring(3);
-					codonsNew = codonsNew.substring(3);
+					codonsRef = codonsRef.substring(3);
+					codonsAlt = codonsAlt.substring(3);
 					codonStartNum++;
 				} else break;
 			}
@@ -121,16 +121,16 @@ public class CodonChangeMnp extends CodonChange {
 	}
 
 	@Override
-	public String codonsNew() {
-		return codonsNew;
+	public String codonsAlt() {
+		return codonsAlt;
 	}
 
 	/**
 	 * Calculate old codons
 	 */
 	@Override
-	public String codonsOld() {
-		return codonsOld;
+	public String codonsRef() {
+		return codonsRef;
 	}
 
 	/**

@@ -1,0 +1,296 @@
+##fileformat=VCFv4.1
+##FILTER=<ID=Depth_filter,Description="DP<10">
+##FILTER=<ID=FS_filter,Description="FS>60.0">
+##FILTER=<ID=HARD_TO_VALIDATE,Description="MQ0 >= 4 && ((MQ0 / (1.0 * DP)) > 0.1)">
+##FILTER=<ID=LowQual,Description="Low quality">
+##FILTER=<ID=MQ_filter,Description="MQ<20">
+##FILTER=<ID=QD_filter,Description="QD<2.0">
+##FILTER=<ID=ReadPosRankSum_filter,Description="ReadPosRankSum<-8.0">
+##FORMAT=<ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+##GATKCommandLine=<ID=HaplotypeCaller,Version=3.3-0-g37228af,Date="Thu Jan 22 10:03:53 EST 2015",Epoch=1421939033363,CommandLineOptions="analysis_type=HaplotypeCaller input_file=[/local/projects/XSAFI/210_R3/ANALYSIS/GATK_3.3-0/210_R3.realigned.bam] showFullBamList=false read_buffer_size=null phone_home=AWS gatk_key=null tag=NA read_filter=[] intervals=null excludeIntervals=null interval_set_rule=UNION interval_merging=ALL interval_padding=0 reference_sequence=/local/projects/XSAFI/Reference/NC_021251.fasta nonDeterministicRandomSeed=false disableDithering=false maxRuntime=-1 maxRuntimeUnits=MINUTES downsampling_type=BY_SAMPLE downsample_to_fraction=null downsample_to_coverage=250 baq=OFF baqGapOpenPenalty=40.0 refactor_NDN_cigar_string=false fix_misencoded_quality_scores=false allow_potentially_misencoded_quality_scores=false useOriginalQualities=false defaultBaseQualities=-1 performanceLog=null BQSR=null quantize_quals=0 disable_indel_quals=false emit_original_quals=false preserve_qscores_less_than=6 globalQScorePrior=-1.0 validation_strictness=SILENT remove_program_records=false keep_program_records=false sample_rename_mapping_file=null unsafe=null disable_auto_index_creation_and_locking_when_reading_rods=false no_cmdline_in_header=false sites_only=false never_trim_vcf_format_field=false bcf=false bam_compression=null simplifyBAM=false disable_bam_indexing=false generate_md5=false num_threads=1 num_cpu_threads_per_data_thread=1 num_io_threads=0 monitorThreadEfficiency=false num_bam_file_handles=null read_group_black_list=null pedigree=[] pedigreeString=[] pedigreeValidationType=STRICT allow_intervals_with_unindexed_bam=false generateShadowBCF=false variant_index_type=DYNAMIC_SEEK variant_index_parameter=-1 logging_level=INFO log_to_file=null help=false version=false out=org.broadinstitute.gatk.engine.io.stubs.VariantContextWriterStub likelihoodCalculationEngine=PairHMM heterogeneousKmerSizeResolution=COMBO_MIN graphOutput=null bamOutput=null bamWriterType=CALLED_HAPLOTYPES disableOptimizations=false dbsnp=(RodBinding name= source=UNBOUND) dontTrimActiveRegions=false maxDiscARExtension=25 maxGGAARExtension=300 paddingAroundIndels=150 paddingAroundSNPs=20 comp=[] annotation=[AlleleBalance, Coverage] excludeAnnotation=[SpanningDeletions, TandemRepeatAnnotator] debug=false useFilteredReadsForAnnotations=false emitRefConfidence=NONE annotateNDA=false heterozygosity=0.001 indel_heterozygosity=1.25E-4 standard_min_confidence_threshold_for_calling=30.0 standard_min_confidence_threshold_for_emitting=10.0 max_alternate_alleles=6 input_prior=[] sample_ploidy=1 genotyping_mode=DISCOVERY alleles=(RodBinding name= source=UNBOUND) contamination_fraction_to_filter=0.0 contamination_fraction_per_sample_file=null p_nonref_model=null exactcallslog=null output_mode=EMIT_VARIANTS_ONLY allSitePLs=false sample_name=null kmerSize=[10, 25] dontIncreaseKmerSizesForCycles=false allowNonUniqueKmersInRef=false numPruningSamples=1 recoverDanglingHeads=false doNotRecoverDanglingBranches=false minDanglingBranchLength=4 consensus=false GVCFGQBands=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 70, 80, 90, 99] indelSizeToEliminateInRefModel=10 min_base_quality_score=10 minPruning=2 gcpHMM=10 includeUmappedReads=false useAllelesTrigger=false phredScaledGlobalReadMismappingRate=45 maxNumHaplotypesInPopulation=128 mergeVariantsViaLD=false doNotRunPhysicalPhasing=true pair_hmm_implementation=VECTOR_LOGLESS_CACHING keepRG=null justDetermineActiveRegions=false dontGenotype=false errorCorrectKmers=false debugGraphTransformations=false dontUseSoftClippedBases=false captureAssemblyFailureBAM=false allowCyclesInKmerGraphToGeneratePaths=false noFpga=false errorCorrectReads=false kmerLengthForReadErrorCorrection=25 minObservationsForKmerToBeSolid=20 pcr_indel_model=CONSERVATIVE maxReadsInRegionPerSample=1000 minReadsPerAlignmentStart=5 activityProfileOut=null activeRegionOut=null activeRegionIn=null activeRegionExtension=null forceActive=false activeRegionMaxSize=null bandPassSigma=null maxProbPropagationDistance=50 activeProbabilityThreshold=0.002 min_mapping_quality_score=20 filter_reads_with_N_cigar=false filter_mismatching_base_and_quals=false filter_bases_not_stored=false">
+##GATKCommandLine=<ID=SelectVariants,Version=3.3-0-g37228af,Date="Thu Jan 22 10:12:08 EST 2015",Epoch=1421939528233,CommandLineOptions="analysis_type=SelectVariants input_file=[] showFullBamList=false read_buffer_size=null phone_home=AWS gatk_key=null tag=NA read_filter=[] intervals=null excludeIntervals=null interval_set_rule=UNION interval_merging=ALL interval_padding=0 reference_sequence=/local/projects/XSAFI/Reference/NC_021251.fasta nonDeterministicRandomSeed=false disableDithering=false maxRuntime=-1 maxRuntimeUnits=MINUTES downsampling_type=BY_SAMPLE downsample_to_fraction=null downsample_to_coverage=1000 baq=OFF baqGapOpenPenalty=40.0 refactor_NDN_cigar_string=false fix_misencoded_quality_scores=false allow_potentially_misencoded_quality_scores=false useOriginalQualities=false defaultBaseQualities=-1 performanceLog=null BQSR=null quantize_quals=0 disable_indel_quals=false emit_original_quals=false preserve_qscores_less_than=6 globalQScorePrior=-1.0 validation_strictness=SILENT remove_program_records=false keep_program_records=false sample_rename_mapping_file=null unsafe=null disable_auto_index_creation_and_locking_when_reading_rods=false no_cmdline_in_header=false sites_only=false never_trim_vcf_format_field=false bcf=false bam_compression=null simplifyBAM=false disable_bam_indexing=false generate_md5=false num_threads=1 num_cpu_threads_per_data_thread=1 num_io_threads=0 monitorThreadEfficiency=false num_bam_file_handles=null read_group_black_list=null pedigree=[] pedigreeString=[] pedigreeValidationType=STRICT allow_intervals_with_unindexed_bam=false generateShadowBCF=false variant_index_type=DYNAMIC_SEEK variant_index_parameter=-1 logging_level=INFO log_to_file=null help=false version=false variant=(RodBinding name=variant source=/local/projects/XSAFI/210_R3/ANALYSIS/GATK_3.3-0/210_R3.raw_variants.vcf) discordance=(RodBinding name= source=UNBOUND) concordance=(RodBinding name= source=UNBOUND) out=org.broadinstitute.gatk.engine.io.stubs.VariantContextWriterStub sample_name=[] sample_expressions=null sample_file=null exclude_sample_name=[] exclude_sample_file=[] select_expressions=[] excludeNonVariants=false excludeFiltered=false restrictAllelesTo=ALL keepOriginalAC=false mendelianViolation=false mendelianViolationQualThreshold=0.0 select_random_fraction=0.0 remove_fraction_genotypes=0.0 selectTypeToInclude=[SNP] keepIDs=null fullyDecode=false forceGenotypesDecode=false justRead=false maxIndelSize=2147483647 ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES=false filter_reads_with_N_cigar=false filter_mismatching_base_and_quals=false filter_bases_not_stored=false">
+##GATKCommandLine=<ID=VariantFiltration,Version=3.3-0-g37228af,Date="Thu Jan 22 10:12:17 EST 2015",Epoch=1421939537432,CommandLineOptions="analysis_type=VariantFiltration input_file=[] showFullBamList=false read_buffer_size=null phone_home=AWS gatk_key=null tag=NA read_filter=[] intervals=null excludeIntervals=null interval_set_rule=UNION interval_merging=ALL interval_padding=0 reference_sequence=/local/projects/XSAFI/Reference/NC_021251.fasta nonDeterministicRandomSeed=false disableDithering=false maxRuntime=-1 maxRuntimeUnits=MINUTES downsampling_type=BY_SAMPLE downsample_to_fraction=null downsample_to_coverage=1000 baq=OFF baqGapOpenPenalty=40.0 refactor_NDN_cigar_string=false fix_misencoded_quality_scores=false allow_potentially_misencoded_quality_scores=false useOriginalQualities=false defaultBaseQualities=-1 performanceLog=null BQSR=null quantize_quals=0 disable_indel_quals=false emit_original_quals=false preserve_qscores_less_than=6 globalQScorePrior=-1.0 validation_strictness=SILENT remove_program_records=false keep_program_records=false sample_rename_mapping_file=null unsafe=null disable_auto_index_creation_and_locking_when_reading_rods=false no_cmdline_in_header=false sites_only=false never_trim_vcf_format_field=false bcf=false bam_compression=null simplifyBAM=false disable_bam_indexing=false generate_md5=false num_threads=1 num_cpu_threads_per_data_thread=1 num_io_threads=0 monitorThreadEfficiency=false num_bam_file_handles=null read_group_black_list=null pedigree=[] pedigreeString=[] pedigreeValidationType=STRICT allow_intervals_with_unindexed_bam=false generateShadowBCF=false variant_index_type=DYNAMIC_SEEK variant_index_parameter=-1 logging_level=INFO log_to_file=null help=false version=false variant=(RodBinding name=variant source=/local/projects/XSAFI/210_R3/ANALYSIS/GATK_3.3-0/210_R3.raw_snp.vcf) mask=(RodBinding name= source=UNBOUND) out=org.broadinstitute.gatk.engine.io.stubs.VariantContextWriterStub filterExpression=[MQ<20, DP<10, QD<2.0, FS>60.0, ReadPosRankSum<-8.0, MQ0 >= 4 && ((MQ0 / (1.0 * DP)) > 0.1)] filterName=[MQ_filter, Depth_filter, QD_filter, FS_filter, ReadPosRankSum_filter, HARD_TO_VALIDATE] genotypeFilterExpression=[] genotypeFilterName=[] clusterSize=3 clusterWindowSize=0 maskExtension=0 maskName=Mask filterNotInMask=false missingValuesInExpressionsShouldEvaluateAsFailing=false invalidatePreviousFilters=false filter_reads_with_N_cigar=false filter_mismatching_base_and_quals=false filter_bases_not_stored=false">
+##INFO=<ID=ABHet,Number=1,Type=Float,Description="Allele Balance for heterozygous calls (ref/(ref+alt))">
+##INFO=<ID=ABHom,Number=1,Type=Float,Description="Allele Balance for homozygous calls (A/(A+O)) where A is the allele (ref or alt) and O is anything other">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed">
+##INFO=<ID=AF,Number=A,Type=Float,Description="Allele Frequency, for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=BaseQRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt Vs. Ref base qualities">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth
+##INFO=<ID=DS,Number=0,Type=Flag,Description="Were any of the samples downsampled?">
+##INFO=<ID=FS,Number=1,Type=Float,Description="Phred-scaled p-value using Fisher's exact test to detect strand bias">
+##INFO=<ID=HaplotypeScore,Number=1,Type=Float,Description="Consistency of the site with at most two segregating haplotypes">
+##INFO=<ID=InbreedingCoeff,Number=1,Type=Float,Description="Inbreeding coefficient as estimated from the genotype likelihoods per-sample when compared against the Hardy-Weinberg expectation">
+##INFO=<ID=MLEAC,Number=A,Type=Integer,Description="Maximum likelihood expectation (MLE) for the allele counts (not necessarily the same as the AC), for each ALT allele, in the same order as listed">
+##INFO=<ID=MLEAF,Number=A,Type=Float,Description="Maximum likelihood expectation (MLE) for the allele frequency (not necessarily the same as the AF), for each ALT allele, in the same order as listed">
+##INFO=<ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality">
+##INFO=<ID=MQ0,Number=1,Type=Integer,Description="Total Mapping Quality Zero Reads">
+##INFO=<ID=MQRankSum,Number=1,Type=Float,Description="Z-score From Wilcoxon rank sum test of Alt vs. Ref read mapping qualities">
+##INFO=<ID=OND,Number=1,Type=Float,Description="Overall non-diploid ratio (alleles/(alleles+non-alleles))">
+##INFO=<ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth">
+##INFO=<ID=ReadPosRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt vs. Ref read position bias">
+##INFO=<ID=SOR,Number=1,Type=Float,Description="Symmetric Odds Ratio of 2x2 contingency table to detect strand bias">
+##contig=<ID=NC_021251,length=4414325>
+##reference=file:///local/projects/XSAFI/Reference/NC_021251.fasta
+##source=SelectVariants
+##SnpEffVersion="4.1a (build 2015-01-14), by Pablo Cingolani"
+##SnpEffCmd="SnpEff  -i vcf -o gatk Mycobacterium_tuberculosis_CCDC5079_uid203790 210_R3.filtered_snps.vcf "
+##INFO=<ID=EFF,Number=.,Type=String,Description="Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_change| Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon [ | ERRORS | WARNINGS ] )' ">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	210_R3
+NC_021251	16445	.	C	G	12073.0	PASS	AC=1
+NC_021251	18947	.	G	C	8974.0	PASS	AC=1
+NC_021251	28917	.	T	C	10568.0	PASS	AC=1
+NC_021251	29618	.	C	T	10216.0	PASS	AC=1
+NC_021251	37167	.	G	A	10889.0	PASS	AC=1
+NC_021251	40473	.	G	A	2638.0	PASS	AC=1
+NC_021251	40760	.	C	G	11719.0	PASS	AC=1
+NC_021251	52531	.	C	G	11392.0	PASS	AC=1
+NC_021251	68328	.	C	T	10037.0	PASS	AC=1
+NC_021251	99794	.	G	A	10695.0	PASS	AC=1
+NC_021251	164827	.	G	A	11648.0	PASS	AC=1
+NC_021251	177837	.	C	G	11540.0	PASS	AC=1
+NC_021251	189464	.	A	G	11057.0	PASS	AC=1
+NC_021251	204116	.	G	C	12441.0	PASS	AC=1
+NC_021251	206854	.	C	A	13255.0	PASS	AC=1
+NC_021251	279624	.	T	G	12093.0	PASS	AC=1
+NC_021251	310157	.	T	C	8222.0	PASS	AC=1
+NC_021251	323074	.	C	T	12613.0	PASS	AC=1
+NC_021251	399713	.	A	G	859.0	PASS	AC=1
+NC_021251	411357	.	T	C	11155.0	PASS	AC=1
+NC_021251	453616	.	A	C	12643.0	PASS	AC=1
+NC_021251	481138	.	C	T	13115.0	PASS	AC=1
+NC_021251	482154	.	T	C	12283.0	PASS	AC=1
+NC_021251	482342	.	T	G	12998.0	PASS	AC=1
+NC_021251	489949	.	T	C	11304.0	PASS	AC=1
+NC_021251	517932	.	A	G	10899.0	PASS	AC=1
+NC_021251	526609	.	A	G	12431.0	PASS	AC=1
+NC_021251	528684	.	G	C	11520.0	PASS	AC=1
+NC_021251	566643	.	G	A	12606.0	PASS	AC=1
+NC_021251	598993	.	G	T	12102.0	PASS	AC=1
+NC_021251	604821	.	C	A	14599.0	PASS	AC=1
+NC_021251	636835	.	G	A	11520.0	PASS	AC=1
+NC_021251	659394	.	T	G	12405.0	PASS	AC=1
+NC_021251	673652	.	A	G	284.0	Depth_filter	AC=1
+NC_021251	673656	.	G	A	284.0	Depth_filter	AC=1
+NC_021251	673658	.	C	A	284.0	Depth_filter	AC=1
+NC_021251	729508	.	A	G	13143.0	PASS	AC=1
+NC_021251	729543	.	G	T	13012.0	PASS	AC=1
+NC_021251	737227	.	G	T	10963.0	PASS	AC=1
+NC_021251	760063	.	A	G	9915.0	PASS	AC=1
+NC_021251	781168	.	T	C	10609.0	PASS	AC=1
+NC_021251	793591	.	C	T	10735.0	PASS	AC=1
+NC_021251	814322	.	A	G	12551.0	PASS	AC=1
+NC_021251	818963	.	C	T	9756.0	PASS	AC=1
+NC_021251	827789	.	T	G	8920.0	PASS	AC=1
+NC_021251	859828	.	G	A	9735.0	PASS	AC=1
+NC_021251	867512	.	G	A	11729.0	PASS	AC=1
+NC_021251	874431	.	C	T	11466.0	PASS	AC=1
+NC_021251	891122	.	A	G	12387.0	PASS	AC=1
+NC_021251	918716	.	A	G	11496.0	PASS	AC=1
+NC_021251	922444	.	G	T	11692.0	PASS	AC=1
+NC_021251	935720	.	C	T	13464.0	PASS	AC=1
+NC_021251	940278	.	G	T	10973.0	PASS	AC=1
+NC_021251	968823	.	C	T	12129.0	PASS	AC=1
+NC_021251	987175	.	G	C	12225.0	PASS	AC=1
+NC_021251	1002752	.	C	T	9387.0	PASS	AC=1
+NC_021251	1003027	.	C	T	10699.0	PASS	AC=1
+NC_021251	1019514	.	G	T	6789.0	PASS	AC=1
+NC_021251	1040683	.	C	T	11007.0	PASS	AC=1
+NC_021251	1066213	.	T	G	9573.0	PASS	AC=1
+NC_021251	1093039	.	A	G	5860.0	PASS	AC=1
+NC_021251	1093105	.	G	T	9388.0	PASS	AC=1
+NC_021251	1093137	.	T	C	12740.0	PASS	AC=1
+NC_021251	1093139	.	C	G	13190.0	PASS	AC=1
+NC_021251	1093142	.	C	T	13493.0	PASS	AC=1
+NC_021251	1093143	.	C	T	13313.0	PASS	AC=1
+NC_021251	1105405	.	G	C	12261.0	PASS	AC=1
+NC_021251	1146842	.	C	T	7928.0	PASS	AC=1
+NC_021251	1149871	.	A	C	11994.0	PASS	AC=1
+NC_021251	1217916	.	G	A	10502.0	PASS	AC=1
+NC_021251	1252872	.	G	T	10068.0	PASS	AC=1
+NC_021251	1265654	.	T	C	11638.0	PASS	AC=1
+NC_021251	1280055	.	G	C	12335.0	PASS	AC=1
+NC_021251	1339488	.	C	T	9198.0	PASS	AC=1
+NC_021251	1339830	.	C	G	3328.0	PASS	AC=1
+NC_021251	1339863	.	C	G	1387.0	PASS	AC=1
+NC_021251	1340262	.	C	T	1437.0	PASS	AC=1
+NC_021251	1340272	.	C	G	2034.0	PASS	AC=1
+NC_021251	1341384	.	G	A	12133.0	PASS	AC=1
+NC_021251	1346565	.	T	C	9276.0	PASS	AC=1
+NC_021251	1353033	.	T	C	11429.0	PASS	AC=1
+NC_021251	1374777	.	C	G	12733.0	PASS	AC=1
+NC_021251	1379761	.	A	G	12863.0	PASS	AC=1
+NC_021251	1406338	.	T	C	11333.0	PASS	AC=1
+NC_021251	1440190	.	A	C	10052.0	PASS	AC=1
+NC_021251	1445519	.	C	T	9317.0	PASS	AC=1
+NC_021251	1446784	.	A	G	11017.0	PASS	AC=1
+NC_021251	1451456	.	G	A	11268.0	PASS	AC=1
+NC_021251	1479025	.	C	T	9945.0	PASS	AC=1
+NC_021251	1482948	.	G	A	2672.0	PASS	AC=1
+NC_021251	1498927	.	C	T	9737.0	PASS	AC=1
+NC_021251	1503307	.	C	T	8476.0	PASS	AC=1
+NC_021251	1525391	.	T	C	11353.0	PASS	AC=1
+NC_021251	1534952	.	G	C	10398.0	PASS	AC=1
+NC_021251	1535005	.	G	A	6680.0	PASS	AC=1
+NC_021251	1536700	.	T	G	11452.0	PASS	AC=1
+NC_021251	1568780	.	C	G	11040.0	PASS	AC=1
+NC_021251	1583526	.	A	G	12496.0	PASS	AC=1
+NC_021251	1599501	.	G	T	10604.0	PASS	AC=1
+NC_021251	1599968	.	T	C	8072.0	PASS	AC=1
+NC_021251	1655745	.	A	G	12288.0	PASS	AC=1
+NC_021251	1686155	.	C	T	8620.0	PASS	AC=1
+NC_021251	1687235	.	A	G	11273.0	PASS	AC=1
+NC_021251	1695396	.	A	G	10754.0	PASS	AC=1
+NC_021251	1696836	.	C	T	13176.0	PASS	AC=1
+NC_021251	1696855	.	A	G	13200.0	PASS	AC=1
+NC_021251	1836335	.	C	T	12937.0	PASS	AC=1
+NC_021251	1845859	.	A	G	11906.0	PASS	AC=1
+NC_021251	1854490	.	T	C	10100.0	PASS	AC=1
+NC_021251	1888478	.	C	G	9790.0	PASS	AC=1
+NC_021251	1894003	.	C	T	11357.0	PASS	AC=1
+NC_021251	1954329	.	T	C	11087.0	PASS	AC=1
+NC_021251	1959407	.	C	T	10531.0	PASS	AC=1
+NC_021251	1998204	.	A	G	5749.0	PASS	AC=1
+NC_021251	2009980	.	C	G	1741.0	PASS	AC=1
+NC_021251	2009997	.	A	G	1610.0	PASS	AC=1
+NC_021251	2010005	.	G	A	1734.0	PASS	AC=1
+NC_021251	2029786	.	G	T	11682.0	PASS	AC=1
+NC_021251	2038890	.	G	A	8708.0	PASS	AC=1
+NC_021251	2038891	.	C	T	8708.0	PASS	AC=1
+NC_021251	2048382	.	C	A	12076.0	PASS	AC=1
+NC_021251	2070786	.	T	C	11567.0	PASS	AC=1
+NC_021251	2117612	.	C	T	11167.0	PASS	AC=1
+NC_021251	2151648	.	A	G	4548.0	PASS	AC=1
+NC_021251	2171160	.	A	G	12428.0	PASS	AC=1
+NC_021251	2173579	.	T	C	10136.0	PASS	AC=1
+NC_021251	2174973	.	A	G	13353.0	PASS	AC=1
+NC_021251	2208257	.	T	C	11570.0	PASS	AC=1
+NC_021251	2251768	.	T	G	11409.0	PASS	AC=1
+NC_021251	2285119	.	G	A	11121.0	PASS	AC=1
+NC_021251	2288888	.	C	T	10877.0	PASS	AC=1
+NC_021251	2330002	.	T	C	10170.0	PASS	AC=1
+NC_021251	2344915	.	A	G	11045.0	PASS	AC=1
+NC_021251	2377474	.	A	G	11788.0	PASS	AC=1
+NC_021251	2384114	.	A	C	12417.0	PASS	AC=1
+NC_021251	2461436	.	T	G	9438.0	PASS	AC=1
+NC_021251	2461437	.	T	A	7919.0	PASS	AC=1
+NC_021251	2462919	.	G	C	7958.0	PASS	AC=1
+NC_021251	2471195	.	G	A	12953.0	PASS	AC=1
+NC_021251	2498906	.	G	C	10952.0	PASS	AC=1
+NC_021251	2513630	.	A	G	10778.0	PASS	AC=1
+NC_021251	2531744	.	G	A	12171.0	PASS	AC=1
+NC_021251	2532550	.	G	A	10667.0	PASS	AC=1
+NC_021251	2555852	.	A	C	9634.0	PASS	AC=1
+NC_021251	2557020	.	C	T	10985.0	PASS	AC=1
+NC_021251	2581838	.	C	G	9041.0	PASS	AC=1
+NC_021251	2590177	.	A	G	322.0	QD_filter	AC=1
+NC_021251	2667619	.	T	C	12284.0	PASS	AC=1
+NC_021251	2685752	.	G	T	12053.0	PASS	AC=1
+NC_021251	2690534	.	A	G	12369.0	PASS	AC=1
+NC_021251	2704657	.	A	T	361.0	PASS	AC=1
+NC_021251	2776252	.	A	G	11841.0	PASS	AC=1
+NC_021251	2778344	.	G	A	11731.0	PASS	AC=1
+NC_021251	2791891	.	C	T	13537.0	PASS	AC=1
+NC_021251	2795806	.	C	T	7916.0	PASS	AC=1
+NC_021251	2802261	.	G	A	11750.0	PASS	AC=1
+NC_021251	2820576	.	G	C	12831.0	PASS	AC=1
+NC_021251	2833434	.	G	C	11350.0	PASS	AC=1
+NC_021251	2873084	.	A	G	12579.0	PASS	AC=1
+NC_021251	2917124	.	A	C	1554.0	PASS	AC=1
+NC_021251	2937780	.	A	G	10559.0	PASS	AC=1
+NC_021251	2956342	.	T	C	3800.0	PASS	AC=1
+NC_021251	2977052	.	C	G	7044.0	PASS	AC=1
+NC_021251	3015641	.	G	C	7303.0	PASS	AC=1
+NC_021251	3024382	.	T	G	12342.0	PASS	AC=1
+NC_021251	3042373	.	C	T	8691.0	PASS	AC=1
+NC_021251	3050193	.	T	G	8553.0	PASS	AC=1
+NC_021251	3055129	.	G	A	8860.0	PASS	AC=1
+NC_021251	3073364	.	G	A	10673.0	PASS	AC=1
+NC_021251	3124229	.	G	A	10959.0	PASS	AC=1
+NC_021251	3151315	.	G	A	377.0	PASS	AC=1
+NC_021251	3189548	.	C	T	9524.0	PASS	AC=1
+NC_021251	3206540	.	G	A	12529.0	PASS	AC=1
+NC_021251	3216379	.	C	A	9542.0	PASS	AC=1
+NC_021251	3221338	.	G	A	389.0	PASS	AC=1
+NC_021251	3231081	.	C	T	12728.0	PASS	AC=1
+NC_021251	3236932	.	A	G	10774.0	PASS	AC=1
+NC_021251	3237501	.	A	C	272.0	PASS	AC=1
+NC_021251	3261989	.	T	C	14144.0	PASS	AC=1
+NC_021251	3285963	.	A	G	11657.0	PASS	AC=1
+NC_021251	3299373	.	A	G	9730.0	PASS	AC=1
+NC_021251	3319454	.	T	C	9403.0	PASS	AC=1
+NC_021251	3338543	.	C	A	9470.0	PASS	AC=1
+NC_021251	3367407	.	G	A	6576.0	PASS	AC=1
+NC_021251	3368962	.	T	C	3114.0	PASS	AC=1
+NC_021251	3369628	.	C	T	5767.0	PASS	AC=1
+NC_021251	3388625	.	T	G	11155.0	PASS	AC=1
+NC_021251	3406317	.	T	C	12394.0	PASS	AC=1
+NC_021251	3443062	.	T	C	13163.0	PASS	AC=1
+NC_021251	3502525	.	G	C	11127.0	PASS	AC=1
+NC_021251	3537173	.	A	G	9618.0	PASS	AC=1
+NC_021251	3538461	.	T	C	11052.0	PASS	AC=1
+NC_021251	3597953	.	C	G	8912.0	PASS	AC=1
+NC_021251	3664442	.	C	T	10965.0	PASS	AC=1
+NC_021251	3683597	.	G	A	7718.0	PASS	AC=1
+NC_021251	3706920	.	A	G	2951.0	PASS	AC=1
+NC_021251	3706999	.	A	T	1651.0	PASS	AC=1
+NC_021251	3713618	.	C	G	11123.0	PASS	AC=1
+NC_021251	3728854	.	A	G	10718.0	PASS	AC=1
+NC_021251	3730797	.	G	A	2129.0	PASS	AC=1
+NC_021251	3730805	.	T	A	2255.0	PASS	AC=1
+NC_021251	3730818	.	G	A	2895.0	PASS	AC=1
+NC_021251	3730833	.	G	A	2880.0	PASS	AC=1
+NC_021251	3733090	.	C	T	12368.0	PASS	AC=1
+NC_021251	3777100	.	C	G	10275.0	PASS	AC=1
+NC_021251	3779459	.	G	A	11076.0	PASS	AC=1
+NC_021251	3788336	.	G	T	6066.0	PASS	AC=1
+NC_021251	3791413	.	G	C	10265.0	PASS	AC=1
+NC_021251	3811606	.	T	C	8479.0	PASS	AC=1
+NC_021251	3835367	.	G	A	14551.0	PASS	AC=1
+NC_021251	3837684	.	G	A	11081.0	PASS	AC=1
+NC_021251	3849398	.	T	G	12152.0	PASS	AC=1
+NC_021251	3875712	.	G	A	11587.0	PASS	AC=1
+NC_021251	3886552	.	A	G	6372.0	PASS	AC=1
+NC_021251	3886609	.	C	G	5657.0	PASS	AC=1
+NC_021251	3886612	.	G	T	5817.0	PASS	AC=1
+NC_021251	3886616	.	A	G	5495.0	PASS	AC=1
+NC_021251	3888364	.	C	G	11790.0	PASS	AC=1
+NC_021251	3920517	.	A	C	12541.0	PASS	AC=1
+NC_021251	3932641	.	C	T	5929.0	PASS	AC=1
+NC_021251	3938113	.	A	G	10891.0	PASS	AC=1
+NC_021251	3940348	.	T	C	3764.0	Depth_filter	AC=1
+NC_021251	3940350	.	C	G	285.0	Depth_filter	AC=1
+NC_021251	3947918	.	A	G	4303.0	PASS	AC=1
+NC_021251	3948043	.	A	G	403.0	PASS	AC=1
+NC_021251	3950994	.	C	T	19.06	Depth_filter
+NC_021251	3954609	.	C	T	11968.0	PASS	AC=1
+NC_021251	3962313	.	A	G	9350.0	PASS	AC=1
+NC_021251	3969498	.	G	A	12405.0	PASS	AC=1
+NC_021251	4003962	.	G	T	6929.0	PASS	AC=1
+NC_021251	4015109	.	G	A	10531.0	PASS	AC=1
+NC_021251	4022462	.	T	C	11075.0	PASS	AC=1
+NC_021251	4033460	.	T	C	6422.0	PASS	AC=1
+NC_021251	4038223	.	G	A	10178.0	PASS	AC=1
+NC_021251	4048106	.	T	C	9059.0	PASS	AC=1
+NC_021251	4077743	.	T	C	9604.0	PASS	AC=1
+NC_021251	4104149	.	C	A	3453.0	PASS	AC=1
+NC_021251	4110259	.	G	A	11343.0	PASS	AC=1
+NC_021251	4117087	.	C	A	9714.0	PASS	AC=1
+NC_021251	4183632	.	G	C	11621.0	PASS	AC=1
+NC_021251	4218222	.	T	C	11213.0	PASS	AC=1
+NC_021251	4222008	.	G	A	11411.0	PASS	AC=1
+NC_021251	4251686	.	A	G	11748.0	PASS	AC=1
+NC_021251	4301999	.	T	C	11879.0	PASS	AC=1
+NC_021251	4317632	.	C	T	12457.0	PASS	AC=1
+NC_021251	4335915	.	C	T	12751.0	PASS	AC=1
+NC_021251	4341341	.	C	A	12290.0	PASS	AC=1
+NC_021251	4342680	.	G	A	11859.0	PASS	AC=1
+NC_021251	4368750	.	G	T	11152.0	PASS	AC=1
+NC_021251	4372435	.	G	A	1707.0	PASS	AC=1
+NC_021251	4386914	.	G	A	11862.0	PASS	AC=1
+NC_021251	4407231	.	G	A	10033.0	PASS	AC=1
+NC_021251	4410710	.	T	G	12601.0	PASS	AC=1
