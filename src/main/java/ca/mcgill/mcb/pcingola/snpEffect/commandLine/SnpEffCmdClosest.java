@@ -49,7 +49,10 @@ public class SnpEffCmdClosest extends SnpEff {
 	 */
 	void addHeaderLines(VcfFileIterator vcf) {
 		vcf.getVcfHeader().addLine("##SnpEffVersion=\"" + SnpEff.VERSION + "\"");
-		vcf.getVcfHeader().addLine("##SnpEffCmd=\"" + commandLineStr(false) + "\"");
+
+		String cmdLine = commandLineStr(false);
+		if (!cmdLine.isEmpty()) vcf.getVcfHeader().addLine("##SnpEffCmd=\"" + commandLineStr(false) + "\"");
+
 		vcf.getVcfHeader().addLine(INFO_LINE);
 	}
 
