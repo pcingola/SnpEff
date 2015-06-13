@@ -25,7 +25,7 @@ public class VcfHeaderInfoGenotype extends VcfHeaderInfo {
 				+ ",Type=" + vcfInfoType //
 				+ ",Description=\"" + description + "\"" //
 				+ ">" //
-		;
+				;
 	}
 
 }

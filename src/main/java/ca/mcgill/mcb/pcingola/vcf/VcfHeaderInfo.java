@@ -29,7 +29,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *
  * @author pablocingolani
  */
-public class VcfHeaderInfo {
+public class VcfHeaderInfo extends VcfHeaderEntry {
 
 	/**
 	 * Number of values in an INFO field.
@@ -73,24 +73,19 @@ public class VcfHeaderInfo {
 		}
 	}
 
-	String line;
-	String id;
-	int number;
-	boolean implicit; // Is this field implicit? (Added automatically by VcfHeader class)
-	boolean genotype; // Is this a 'genotype' field?
-	VcfInfoNumber vcfInfoNumber;
-	VcfInfoType vcfInfoType;
-	String description;
-
-	public static VcfHeaderInfo factory(String line) {
-		if (line.startsWith("##FORMAT=")) return new VcfHeaderInfoGenotype(line);
-		return new VcfHeaderInfo(line);
-	}
+	protected int number;
+	protected boolean implicit; // Is this field implicit? (Added automatically by VcfHeader class)
+	protected boolean genotype; // Is this a 'genotype' field?
+	protected VcfInfoNumber vcfInfoNumber;
+	protected VcfInfoType vcfInfoType;
+	protected String description;
 
 	/**
 	 * Constructor using a "##INFO" line from a VCF file
 	 */
 	public VcfHeaderInfo(String line) {
+		super(line);
+
 		// Is this an Info line?
 		if (line.startsWith("##INFO=") || line.startsWith("##FORMAT=")) {
 			genotype = line.startsWith("##FORMAT=");
@@ -133,6 +128,8 @@ public class VcfHeaderInfo {
 	}
 
 	public VcfHeaderInfo(String id, VcfInfoType vcfInfoType, String number, String description) {
+		super(null);
+
 		this.id = id;
 		this.vcfInfoType = vcfInfoType;
 		this.description = description;
@@ -140,7 +137,8 @@ public class VcfHeaderInfo {
 	}
 
 	public VcfHeaderInfo(VcfHeaderInfo header) {
-		line = null;
+		super(null);
+
 		id = header.id;
 		number = header.number;
 		implicit = header.implicit;
@@ -152,10 +150,6 @@ public class VcfHeaderInfo {
 
 	public String getDescription() {
 		return description;
-	}
-
-	public String getId() {
-		return id;
 	}
 
 	public int getNumber() {
@@ -202,10 +196,6 @@ public class VcfHeaderInfo {
 		this.genotype = genotype;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	public void setImplicit(boolean implicit) {
 		this.implicit = implicit;
 	}
@@ -227,7 +217,7 @@ public class VcfHeaderInfo {
 		else {
 			int num = Gpr.parseIntSafe(number);
 			if (num < 0) {
-				Gpr.debug("Vcf header's INFO field '" + id + "' should be a non-negative integer 'Number' parameter (value: '" + number + "').");
+				// Gpr.debug("Vcf header's INFO field '" + id + "' should be a non-negative integer 'Number' parameter (value: '" + number + "').");
 				vcfInfoNumber = VcfInfoNumber.UNLIMITED; // Try to overcome the error by setting it no 'UNLIMITED'
 			} else setNumber(num);
 		}
@@ -251,6 +241,6 @@ public class VcfHeaderInfo {
 				+ ",Type=" + vcfInfoType //
 				+ ",Description=\"" + description + "\"" //
 				+ ">" //
-		;
+				;
 	}
 }

@@ -38,7 +38,7 @@ public class VcfHeader {
 	/**
 	 * Add a VCF INFO header definition
 	 */
-	public void add(VcfHeaderInfo vcfInfo) {
+	public void add(VcfHeaderEntry vcfInfo) {
 		parseInfoLines();
 
 		// Already added? Remove old entry
@@ -448,7 +448,7 @@ public class VcfHeader {
 			//---
 			for (String line : getLines()) {
 				if (line.startsWith(INFO_PREFIX) || line.startsWith(FORMAT_PREFIX)) {
-					VcfHeaderInfo vcfInfo = VcfHeaderInfo.factory(line);
+					VcfHeaderInfo vcfInfo = (VcfHeaderInfo) VcfHeaderEntry.factory(line);
 					if (vcfInfo instanceof VcfHeaderInfoGenotype) vcfInfoGenotypeById.put(vcfInfo.getId(), (VcfHeaderInfoGenotype) vcfInfo);
 					else vcfInfoById.put(vcfInfo.getId(), vcfInfo);
 				}
@@ -486,7 +486,7 @@ public class VcfHeader {
 		// Find "#CHROM" line in header (should always be the last one)
 		for (String line : headerLines) {
 			if (line.startsWith(INFO_PREFIX) || line.startsWith(FORMAT_PREFIX)) {
-				VcfHeaderInfo vhinfo = VcfHeaderInfo.factory(line); // Parse INFO line
+				VcfHeaderInfo vhinfo = (VcfHeaderInfo) VcfHeaderEntry.factory(line); // Parse INFO line
 				if (vhinfo.getId().equals(infoId)) continue; // Skip this line
 			}
 

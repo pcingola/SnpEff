@@ -62,7 +62,7 @@ public class TestCasesAnn extends TestCasesBase {
 						+ "\n\t\tveff.getEffectsStrSo() : " + veff.getEffectsStrSo() //
 						+ "\n\t\tveff.getEffectType()   : " + veff.getEffectType() //
 						+ "\n\t\tveff.getEffectTypes()  : " + veff.getEffectTypes() //
-				);
+						);
 			}
 
 			// Check for a specific transcript
