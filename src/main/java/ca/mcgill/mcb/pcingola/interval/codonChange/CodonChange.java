@@ -179,7 +179,7 @@ public class CodonChange {
 				hasChanged = codonChangeSingle(exon);
 
 				// Any change? => Add change to list
-				if (hasChanged) variantEffects.setMarker(exon); // It is affecting this exon, so we set the marker
+				if (hasChanged && !variantEffects.hasMarker()) variantEffects.setMarker(exon); // It is affecting this exon, so we set the marker
 
 				// Can we return immediately?
 				if (returnNow) return;

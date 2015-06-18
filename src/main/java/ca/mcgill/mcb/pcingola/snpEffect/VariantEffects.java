@@ -104,6 +104,12 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		return effects.get(index);
 	}
 
+	public boolean hasMarker() {
+		VariantEffect veff = get();
+		if (veff == null) return false;
+		return veff.getMarker() != null;
+	}
+
 	public boolean isEmpty() {
 		return effects.isEmpty();
 	}

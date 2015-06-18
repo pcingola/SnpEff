@@ -9,6 +9,7 @@ import org.junit.Test;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
@@ -24,9 +25,11 @@ public class TestCasesZzz {
 	}
 
 	@Test
-	public void test_02() {
+	public void test_missing_exon_number() {
+		verbose = true;
+
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion.vcf.gz" };
+		String args[] = { "testHg3775Chr7", "./tests/missing_exon_number.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
@@ -36,9 +39,20 @@ public class TestCasesZzz {
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
-			Assert.assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
+			if (verbose) System.out.println(ve);
+
+			for (VcfEffect veff : ve.parseEffects()) {
+				String trId = veff.getTranscriptId();
+				if (trId != null && trId.equals("ENST00000288602")) {
+					if (verbose) {
+						System.out.println("\t" + veff);
+						System.out.println("\trank / rank_max: " + veff.getRank() + " / " + veff.getRankMax());
+
+						Assert.assertEquals(15, veff.getRank());
+						Assert.assertEquals(18, veff.getRankMax());
+					}
+				}
+			}
 		}
 	}
-
 }

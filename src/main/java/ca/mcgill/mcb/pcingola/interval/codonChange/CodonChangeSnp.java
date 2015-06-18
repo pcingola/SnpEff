@@ -13,8 +13,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
  */
 public class CodonChangeSnp extends CodonChange {
 
-	public CodonChangeSnp(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
-		super(seqChange, transcript, changeEffects);
+	public CodonChangeSnp(Variant variant, Transcript transcript, VariantEffects variantEffects) {
+		super(variant, transcript, variantEffects);
 		returnNow = true; // A SNP can only affect one exon
 	}
 

@@ -16,8 +16,8 @@ public class CodonChangeMnp extends CodonChange {
 	int cdsStart;
 	int cdsEnd;
 
-	public CodonChangeMnp(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
-		super(seqChange, transcript, changeEffects);
+	public CodonChangeMnp(Variant variant, Transcript transcript, VariantEffects variantEffects) {
+		super(variant, transcript, variantEffects);
 		returnNow = false;
 		requireNetCdsChange = true;
 	}
