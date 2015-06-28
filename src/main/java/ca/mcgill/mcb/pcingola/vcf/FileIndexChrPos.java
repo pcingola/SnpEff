@@ -488,13 +488,13 @@ public class FileIndexChrPos {
 		if (chrStart == null) throw new RuntimeException("Cannot extract chromosome data from line:"//
 				+ "\n\tPosition : " + start + " (byte position in file) "//
 				+ "\n\tLine     : " + lineStart//
-				);
+		);
 
 		String chrEnd = chromo(lineEnd);
 		if (chrEnd == null) throw new RuntimeException("Cannot extract chromosome data from line:"//
 				+ "\n\tPosition : " + end + " (byte position in file) "//
 				+ "\n\tLine     : " + lineEnd//
-				);
+		);
 
 		if (chrStart.equals(chrEnd)) {
 			if (debug) Gpr.debug("Chromo:\tlineStart: " + chrStart + "\tlineEnd: " + chrEnd + "\t==> Back!");

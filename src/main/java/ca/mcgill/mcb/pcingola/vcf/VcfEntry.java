@@ -27,6 +27,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		Common, LowFrequency, Rare
 	}
 
+	public static final String SUB_FIELD_SEP = ";";
+
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
 	public static final double ALLELE_FEQUENCY_COMMON = 0.05;
@@ -144,7 +146,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		String addInfoStr = name + (value != null ? "=" + value : ""); // String to append
 		if ((infoStr == null) || infoStr.isEmpty()) infoStr = addInfoStr;
 		else {
-			if (!infoStr.endsWith(";")) infoStr += ";"; // Do we need to add a semicolon?
+			if (!infoStr.endsWith(SUB_FIELD_SEP)) infoStr += SUB_FIELD_SEP; // Do we need to add a semicolon?
 			infoStr += addInfoStr; // Add info string
 		}
 
@@ -803,7 +805,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (alts == null // No alts
 					|| (alts.length == 0) // Zero ALTs
 					|| (alts.length == 1 && (alts[0].isEmpty() || alts[0].equals("."))) // One ALT, but it's empty
-			) {
+					) {
 				variantType = VariantType.INTERVAL;
 			} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
 				if (ref.length() == 1) variantType = VariantType.SNP;
@@ -973,7 +975,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	void parseInfo() {
 		// Parse info entries
 		info = new HashMap<String, String>();
-		for (String inf : infoStr.split(";")) {
+		for (String inf : infoStr.split(SUB_FIELD_SEP)) {
 			String vp[] = inf.split("=", 2);
 
 			if (vp.length > 1) info.put(vp[0], vp[1]); // Key = Value pair
@@ -1041,7 +1043,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (!infoStr.contains(key)) return;
 
 		StringBuilder infoStrNew = new StringBuilder();
-		for (String infoEntry : infoStr.split(";")) {
+		for (String infoEntry : infoStr.split(SUB_FIELD_SEP)) {
 			String keyValuePair[] = infoEntry.split("=", 2);
 
 			// Not the key we want to remove? => Add it
@@ -1066,14 +1068,14 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		StringBuilder infoSb = new StringBuilder();
 
 		// Parse info entries
-		for (String inf : infoStr.split(";")) {
+		for (String inf : infoStr.split(SUB_FIELD_SEP)) {
 			String vp[] = inf.split("=");
 
 			if (vp[0].equals(info)) {
 				// Delete this field
 				deleted = true;
 			} else {
-				if (infoSb.length() > 0) infoSb.append(";");
+				if (infoSb.length() > 0) infoSb.append(SUB_FIELD_SEP);
 
 				infoSb.append(vp[0]);
 				if (vp.length > 1) { // Flags don't need '=' sign
@@ -1157,7 +1159,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		StringBuilder sb = new StringBuilder(chr //
 				+ "\t" + (start + 1) //
 				+ "\t" + (id.isEmpty() ? "." : id) //
-		);
+				);
 
 		// REF and ALT
 		String refStr = (ref == null || ref.isEmpty() ? "." : ref);
@@ -1290,7 +1292,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				char change[] = new char[size];
 				for (int i = 0; i < change.length; i++)
 					change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-				ch = new String(change);
+					ch = new String(change);
 			}
 
 			// Create SeqChange
