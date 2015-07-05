@@ -139,11 +139,19 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Remove previous 'key' for INFO field?
 		removeInfo(name);
 
+		// Is this a 'flag'?
+		boolean isFlag = false;
+		VcfHeader vcfHeader = vcfFileIterator.getVcfHeader();
+		if (vcfHeader != null) {
+			VcfHeaderInfo vcfHeaderInfo = vcfFileIterator.getVcfHeader().getVcfInfo(name);
+			isFlag = (vcfHeaderInfo != null) && (vcfHeaderInfo.getVcfInfoType() == VcfInfoType.Flag);
+		}
+
 		// Add to info hash (if available)
 		if (info != null) info.put(name, value);
 
 		// Append value to infoStr
-		String addInfoStr = name + (value != null ? "=" + value : ""); // String to append
+		String addInfoStr = name + (value != null && !isFlag ? "=" + value : ""); // String to append
 		if ((infoStr == null) || infoStr.isEmpty()) infoStr = addInfoStr;
 		else {
 			if (!infoStr.endsWith(SUB_FIELD_SEP)) infoStr += SUB_FIELD_SEP; // Do we need to add a semicolon?
