@@ -15,6 +15,17 @@ public class CodonTable {
 
 	private static HashMap<String, String> aa3letter;
 
+	/**
+	 * All start codons are translated as "M".
+	 *
+	 * Reference: https://en.wikipedia.org/wiki/Start_codon
+	 * 		Alternative start codons are different from the standard AUG codon and are found in both
+	 * 		prokaryotes (bacteria) and eukaryotes. Alternate start codons are still translated as Met
+	 * 		when they are at the start of a protein (even if the codon encodes a different amino acid
+	 * 		otherwise). This is because a separate transfer RNA (tRNA) is used for initiation.
+	 */
+	public static final String DEFAULT_START_CODON = "M";
+
 	static {
 		aa3letter = new HashMap<String, String>();
 		aa3letter.put("A", "Ala");
@@ -66,11 +77,16 @@ public class CodonTable {
 	 * Translate codons to an amino acid sequence
 	 */
 	public String aa(String codons) {
+		return aa(codons, false);
+	}
+
+	public String aa(String codons, boolean fullProteinSequence) {
 		if (codons.isEmpty()) return "";
 
 		char bases[] = codons.toCharArray();
 		StringBuilder aas = new StringBuilder();
 
+		int aaNum = 0;
 		for (int i = 0; i < bases.length;) {
 			// Append bases to codon
 			String cod = "";
@@ -79,8 +95,14 @@ public class CodonTable {
 
 			// Translate codon to amino acid
 			String aa = codon2aa.get(cod.toUpperCase());
+
 			if (aa == null) aa = "?";
+
+			// When translating a full protein sequence, start codons are always translated as 'M'
+			if (fullProteinSequence && aaNum == 0 && isStart(cod)) aa = DEFAULT_START_CODON;
+
 			aas.append(aa);
+			aaNum++;
 		}
 
 		return aas.toString();

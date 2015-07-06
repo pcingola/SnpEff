@@ -1357,7 +1357,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public String protein() {
 		if (protein == null) {
 			if (!(Config.get() != null && Config.get().isTreatAllAsProteinCoding()) && !isProteinCoding()) protein = "";
-			else protein = codonTable().aa(cds());
+			else protein = codonTable().aa(cds(), true);
 		}
 		return protein;
 	}
@@ -1653,7 +1653,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 							j = 0;
 							String cod = new String(codon);
 							if (isStrandMinus()) cod = GprSeq.wc(cod); // Bases are already reversed, we only need WC complement
-							aa.append(" " + codonTable().aa(cod) + " ");
+
+							boolean translateStart = (aa.length() <= 0); // First codon? Translate start coddon accordingly
+							aa.append(" " + codonTable().aa(cod, translateStart) + " ");
 						}
 
 						// Update frame

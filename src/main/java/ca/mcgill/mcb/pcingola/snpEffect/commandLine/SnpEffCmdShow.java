@@ -54,6 +54,8 @@ public class SnpEffCmdShow extends SnpEff {
 		loadConfig(); // Read config file
 		loadDb();
 
+		System.out.println("Showing genes and transcripts using zero-based coordinates");
+
 		//---
 		// Map all transcript IDs
 		//---

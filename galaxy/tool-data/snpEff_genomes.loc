@@ -15017,6 +15017,7 @@ hg19 	 Homo_sapiens   hg19
 hg19kg 	 Homo_sapiens   hg19kg
 hg38 	 Homo_sapiens   hg38
 hg38kg 	 Homo_sapiens   hg38kg
+testHg19ChrM 	 Homo_sapiens   testHg19ChrM
 GRCh37.GTEX 	 Homo_sapiens,   GRCh37.GTEX
 082214v1.26 	 Hordeum_vulgare   082214v1.26
 GRCh38.p2.RefSeq 	 Human   GRCh38.p2.RefSeq
