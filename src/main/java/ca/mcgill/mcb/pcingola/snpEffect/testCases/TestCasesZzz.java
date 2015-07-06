@@ -1,16 +1,13 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import java.util.List;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
-import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
-import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import ca.mcgill.mcb.pcingola.interval.Gene;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 
 /**
  * Test case
@@ -25,34 +22,24 @@ public class TestCasesZzz {
 	}
 
 	@Test
-	public void test_missing_exon_number() {
+	public void test_start_codon_translate() {
 		verbose = true;
 
-		Gpr.debug("Test");
-		String args[] = { "testHg3775Chr7", "./tests/missing_exon_number.vcf" };
+		// Initialize
+		String genomeName = "testHg19ChrM";
+		Config config = new Config(genomeName);
+		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
 
-		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
-		cmdEff.setVerbose(verbose);
-		cmdEff.setSupressOutput(!verbose);
-		List<VcfEntry> vcfEntries = cmdEff.run(true);
-
-		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
-		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
-
-			for (VcfEffect veff : ve.parseEffects()) {
-				String trId = veff.getTranscriptId();
-				if (trId != null && trId.equals("ENST00000288602")) {
-					if (verbose) {
-						System.out.println("\t" + veff);
-						System.out.println("\trank / rank_max: " + veff.getRank() + " / " + veff.getRankMax());
-
-						Assert.assertEquals(15, veff.getRank());
-						Assert.assertEquals(18, veff.getRankMax());
-					}
-				}
+		// Find transcript and make sure start codon is 'M'
+		boolean checked = false;
+		for (Gene g : sep.getGenome().getGenes()) {
+			if (g.getId().equals("ENSG00000198763")) {
+				Transcript tr = g.iterator().next();
+				checked = true;
+				Assert.assertEquals("MNPLAQPVIYSTIFAGTLITALSSHWFFTWVGLEMNMLAFIPVLTKKMNPRSTEAAIKYFLTQATASMILLMAILFNNMLSGQWTMTNTTNQYSSLMIMMAMAMKLGMAPFHFWVPEVTQGTPLTSGLLLLTWQKLAPISIMYQISPSLNVSLLLTLSILSIMAGSWGGLNQTQLRKILAYSSITHMGWMMAVLPYNPNMTILNLTIYIILTTTAFLLLNLNSSTTTLLLSRTWNKLTWLTPLIPSTLLSLGGLPPLTGFLPKWAIIEEFTKNNSLIIPTIMATITLLNLYFYLRLIYSTSITLLPMSNNVKMKWQFEHTKPTPFLPTLIALTTLLLPISPFMLMIL?", tr.protein());
 			}
 		}
+
+		Assert.assertEquals(true, checked);
 	}
 }
