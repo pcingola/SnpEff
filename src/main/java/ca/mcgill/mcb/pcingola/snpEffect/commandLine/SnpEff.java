@@ -674,7 +674,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
-				|| args[0].equalsIgnoreCase("showtr") //
+				|| args[0].equalsIgnoreCase("show") //
 		) {
 			command = args[argNum++].trim().toLowerCase();
 		}
@@ -918,7 +918,7 @@ public class SnpEff implements CommandLine {
 		else if (command.equalsIgnoreCase("len")) snpEffCmd = new SnpEffCmdLen();
 		else if (command.equalsIgnoreCase("gsa")) snpEffCmd = new SnpEffCmdGsa();
 		else if (command.equalsIgnoreCase("acat")) snpEffCmd = new SnpEffCmdAcat();
-		else if (command.equalsIgnoreCase("showtr")) snpEffCmd = new SnpEffCmdShowTr();
+		else if (command.equalsIgnoreCase("show")) snpEffCmd = new SnpEffCmdShow();
 		else throw new RuntimeException("Unknown command '" + command + "'");
 
 		// Copy values to specific command
@@ -988,7 +988,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\tgenes2bed                    : Create a bed file from a genes list.");
 		System.err.println("\tlen                          : Calculate total genomic length for each marker type.");
 		System.err.println("\tprotein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
-		System.err.println("\tshowTr                       : Show transcript's coordiantes, DNA sequence and protein sequence.");
+		System.err.println("\tshow                         : Show a gene or a transcript coordiantes, DNA sequence and protein sequence.");
 		System.err.println("\tspliceAnalysis               : Perform an analysis of splice sites. Experimental feature.");
 
 		usageGenericAndDb();

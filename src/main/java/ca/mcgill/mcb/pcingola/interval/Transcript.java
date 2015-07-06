@@ -176,7 +176,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					+ " Strand: " + (strandMinus ? "-" : "+") //
 					+ " (minCds: " + minCds //
 					+ " , maxCds: " + maxCds + "):" //
-					);
+			);
 		}
 
 		// Add intervals
@@ -558,7 +558,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-					) {
+			) {
 				ret = true;
 
 				// Show debugging information
@@ -939,7 +939,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-								);
+						);
 					} else {
 						if (Config.get().isDebug()) {
 							System.err.println("\t\tFrame correction: " //
@@ -949,7 +949,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 									+ "\tExpected frame: " + frameReal //
 									+ "\tExon frame: " + exon.getFrame() //
 									+ "\tSequence len: " + sequence.length() //
-									);
+							);
 						}
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
@@ -1106,7 +1106,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-				;
+		;
 	}
 
 	/**
@@ -1501,7 +1501,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-				;
+		;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1635,34 +1635,36 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		//---
 		StringBuilder aa = new StringBuilder();
 		StringBuilder frameSb = new StringBuilder();
-		char codon[] = new char[3];
-		int step = isStrandPlus() ? 1 : -1;
-		int frame = 0;
-		for (int i = (isStrandPlus() ? 0 : art.length - 1), j = 0; (i >= 0) && (i < art.length); i += step) {
-			if (art[i] == '3' || art[i] == '5') {
-				// 5'UTR or 3'UTR
-				aa.append(' ');
-				frameSb.append(' ');
-			} else {
-				char b = seq.charAt(i);
-				if (b == 'a' || b == 'c' || b == 'g' || b == 't') {
-					// Coding sequence
-					codon[j++] = b;
-					if (j >= 3) {
-						j = 0;
-						String cod = new String(codon);
-						if (isStrandMinus()) cod = GprSeq.wc(cod); // Bases are already reversed, we only need WC complement
-						aa.append(" " + codonTable().aa(cod) + " ");
-					}
-
-					// Update frame
-					frameSb.append(frame);
-					frame = (frame + 1) % 3;
-
-				} else {
-					// Intron
+		if (isProteinCoding()) {
+			char codon[] = new char[3];
+			int step = isStrandPlus() ? 1 : -1;
+			int frame = 0;
+			for (int i = (isStrandPlus() ? 0 : art.length - 1), j = 0; (i >= 0) && (i < art.length); i += step) {
+				if (art[i] == '3' || art[i] == '5') {
+					// 5'UTR or 3'UTR
 					aa.append(' ');
 					frameSb.append(' ');
+				} else {
+					char b = seq.charAt(i);
+					if (b == 'a' || b == 'c' || b == 'g' || b == 't') {
+						// Coding sequence
+						codon[j++] = b;
+						if (j >= 3) {
+							j = 0;
+							String cod = new String(codon);
+							if (isStrandMinus()) cod = GprSeq.wc(cod); // Bases are already reversed, we only need WC complement
+							aa.append(" " + codonTable().aa(cod) + " ");
+						}
+
+						// Update frame
+						frameSb.append(frame);
+						frame = (frame + 1) % 3;
+
+					} else {
+						// Intron
+						aa.append(' ');
+						frameSb.append(' ');
+					}
 				}
 			}
 		}
@@ -1701,10 +1703,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Result
 		return "" + seq //
-				+ "\n" + aaStr //
-				+ "\n" + frameStr //
+				+ (isProteinCoding() ? "\n" + aaStr + "\n" + frameStr : "") //
 				+ "\n" + new String(art) //
-		+ "\n" + coords;
+				+ "\n" + coords;
 	}
 
 	/**

@@ -116,9 +116,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 				if (t.isProteinCoding() //
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
-						|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-						) //
-				) {
+								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+								) //
+						) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -131,9 +131,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 				if (canonicalLen <= tlen //
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
-						|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-						) //
-				) {
+								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
+								) //
+						) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -425,6 +425,10 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	@Override
 	public String toString() {
+		return toString(true);
+	}
+
+	public String toString(boolean showTr) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getChromosomeName() + ":" + start + "-" + end);
 		sb.append(", strand:" + (strandMinus ? "-1" : "1"));
@@ -434,7 +438,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 		sb.append("\n");
 
-		if (numChilds() > 0) {
+		if (showTr && numChilds() > 0) {
 			sb.append("Transcipts:\n");
 			for (Transcript tint : sorted())
 				sb.append("\t" + tint + "\n");

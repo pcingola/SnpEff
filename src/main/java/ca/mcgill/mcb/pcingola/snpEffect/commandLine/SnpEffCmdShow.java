@@ -8,15 +8,15 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
- * Command line program: Show a transcript
+ * Command line program: Show a transcript or a gene
  *
  * @author pcingola
  */
-public class SnpEffCmdShowTr extends SnpEff {
+public class SnpEffCmdShow extends SnpEff {
 
 	ArrayList<String> transcriptIds = new ArrayList<String>();
 
-	public SnpEffCmdShowTr() {
+	public SnpEffCmdShow() {
 		super();
 	}
 
@@ -58,28 +58,26 @@ public class SnpEffCmdShowTr extends SnpEff {
 		// Map all transcript IDs
 		//---
 		HashMap<String, Transcript> trById = new HashMap<String, Transcript>();
-		for (Gene g : config.getGenome().getGenes())
+		HashMap<String, Gene> geneById = new HashMap<String, Gene>();
+		for (Gene g : config.getGenome().getGenes()) {
+			geneById.put(g.getId(), g);
 			for (Transcript tr : g)
 				trById.put(tr.getId(), tr);
+		}
 
 		//---
 		// Show all transcripts
 		//---
 		StringBuilder sb = new StringBuilder();
-		for (String trid : transcriptIds) {
-			Transcript tr = trById.get(trid);
+		for (String id : transcriptIds) {
 
-			if (tr == null) System.err.println("Transcript '" + trid + "' not found.");
-			else {
-				String trStr = tr.toString(true);
-				String art = tr.toStringAsciiArt(true);
+			Gene gene = geneById.get(id);
 
-				System.out.println(trStr);
-				System.out.println(art + "\n");
+			Transcript tr = trById.get(id);
 
-				sb.append(trStr + "\n");
-				sb.append(art + "\n\n");
-			}
+			if (gene != null) showGene(gene, sb);
+			else if (tr != null) showTranscript(tr, sb);
+			else System.err.println("ID '" + id + "' not found.");
 
 			// Save output (for debugging)
 			if (debug) {
@@ -90,6 +88,24 @@ public class SnpEffCmdShowTr extends SnpEff {
 		}
 
 		return true;
+	}
+
+	void showGene(Gene g, StringBuilder sb) {
+		System.out.println("Gene:\t" + g.toString(false));
+
+		for (Transcript tr : g)
+			showTranscript(tr, sb);
+	}
+
+	void showTranscript(Transcript tr, StringBuilder sb) {
+		String trStr = tr.toString(true);
+		String art = tr.toStringAsciiArt(true);
+
+		System.out.println("Transcript:\t" + trStr);
+		System.out.println(Gpr.prependEachLine("\t\t", art) + "\n");
+
+		sb.append(trStr + "\n");
+		sb.append(art + "\n\n");
 	}
 
 	/**
