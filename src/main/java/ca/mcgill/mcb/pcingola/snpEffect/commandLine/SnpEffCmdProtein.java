@@ -102,7 +102,7 @@ public class SnpEffCmdProtein extends SnpEff {
 					+ "\n\tTranscript ID : '" + trId + "'"//
 					+ "\n\tProtein       : " + proteinByTrId.get(trId) //
 					+ "\n\tProtein (new) : " + seq //
-					);
+			);
 
 		// Pick the first space separated string
 		if (trId.indexOf(' ') > 0) trId = trId.split("\\s")[0];
@@ -292,7 +292,7 @@ public class SnpEffCmdProtein extends SnpEff {
 								+ "\tMax. possible score: " + maxScore //
 								+ "\tDiff: " + (maxScore - score) //
 								+ "\n" + sw //
-								);
+						);
 						System.err.println("Transcript details:\n" + tr);
 					}
 
@@ -323,7 +323,7 @@ public class SnpEffCmdProtein extends SnpEff {
 				+ "\tNot found: " + countNotFound //
 				+ "\tErrors: " + countErrors //
 				+ "\tError percentage: " + (100 * errorRate) + "%" //
-				);
+		);
 
 		// Add to totals
 		if (addTotals) {

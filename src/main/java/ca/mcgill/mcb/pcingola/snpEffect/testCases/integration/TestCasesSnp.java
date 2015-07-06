@@ -25,6 +25,38 @@ public class TestCasesSnp {
 	boolean verbose = false || debug;
 
 	/**
+	 * Change of start codon to an alternative start codon
+	 */
+	@Test
+	public void test_02_Start_NonSyn() {
+		Gpr.debug("Test");
+		String genome = "testHg19ChrM";
+		String vcf = "tests/test_chrM_start_codon_nonSyn.vcf";
+
+		String args[] = { "-noLog", "-classic", "-ud", "0", genome, vcf };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		snpEff.setDebug(debug);
+
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		boolean checked = false;
+		List<VcfEntry> vcfEntries = seff.run(true);
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve);
+			for (VcfEffect veff : ve.parseEffects()) {
+				if (verbose) System.out.println("\t\t" + veff);
+				if (veff.getEffectType() == EffectType.NON_SYNONYMOUS_START) {
+					Assert.assertEquals(EffectImpact.LOW, veff.getImpact());
+					checked = true;
+				}
+			}
+		}
+		Assert.assertEquals(true, checked);
+
+	}
+
+	/**
 	 * Stop gained should have 'HIGH' impact
 	 */
 	@Test
@@ -40,14 +72,52 @@ public class TestCasesSnp {
 		snpEff.setDebug(debug);
 
 		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve);
 			for (VcfEffect veff : ve.parseEffects()) {
 				if (verbose) System.out.println("\t\t" + veff);
-				if (veff.getEffectType() == EffectType.STOP_GAINED) Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
+				if (veff.getEffectType() == EffectType.STOP_GAINED) {
+					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
+					checked = true;
+				}
 			}
 		}
+
+		Assert.assertEquals(true, checked);
+	}
+
+	/**
+	 * Change of start codon to an alternative start codon
+	 */
+	@Test
+	public void test_03_Start_Loss() {
+		Gpr.debug("Test");
+		String genome = "testHg19ChrM";
+		String vcf = "tests/test_chrM_start_codon.vcf";
+
+		String args[] = { "-noLog", "-classic", "-ud", "0", genome, vcf };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		snpEff.setDebug(debug);
+
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		boolean checked = false;
+		List<VcfEntry> vcfEntries = seff.run(true);
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve);
+			for (VcfEffect veff : ve.parseEffects()) {
+				if (verbose) System.out.println("\t\t" + veff);
+				if (veff.getEffectType() == EffectType.START_LOST) {
+					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
+					checked = true;
+				}
+			}
+		}
+		Assert.assertEquals(true, checked);
+
 	}
 
 }
