@@ -176,7 +176,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					+ " Strand: " + (strandMinus ? "-" : "+") //
 					+ " (minCds: " + minCds //
 					+ " , maxCds: " + maxCds + "):" //
-			);
+					);
 		}
 
 		// Add intervals
@@ -558,7 +558,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-			) {
+					) {
 				ret = true;
 
 				// Show debugging information
@@ -939,7 +939,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-						);
+								);
 					} else {
 						if (Config.get().isDebug()) {
 							System.err.println("\t\tFrame correction: " //
@@ -949,7 +949,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 									+ "\tExpected frame: " + frameReal //
 									+ "\tExon frame: " + exon.getFrame() //
 									+ "\tSequence len: " + sequence.length() //
-							);
+									);
 						}
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
@@ -1106,7 +1106,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean hasErrorOrWarning() {
 		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
 				|| isWarningStopCodon() // Warnings
-		;
+				;
 	}
 
 	/**
@@ -1501,7 +1501,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1732,7 +1732,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\n" + seq //
 				+ (isProteinCoding() ? "\n" + aaStr + "\n" + frameStr : "") //
 				+ "\n" + new String(art) //
-				+ "\n" + coords //
+		+ "\n" + coords //
 		;
 	}
 
