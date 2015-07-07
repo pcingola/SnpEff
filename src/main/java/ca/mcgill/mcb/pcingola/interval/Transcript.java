@@ -1635,6 +1635,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		//---
 		StringBuilder aa = new StringBuilder();
 		StringBuilder frameSb = new StringBuilder();
+		StringBuilder pos1sb = new StringBuilder();
+		StringBuilder pos10sb = new StringBuilder();
+		StringBuilder pos100sb = new StringBuilder();
+		StringBuilder pos1000sb = new StringBuilder();
+
+		int pos = start;
 		if (isProteinCoding()) {
 			char codon[] = new char[3];
 			int step = isStrandPlus() ? 1 : -1;
@@ -1668,6 +1674,20 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 						frameSb.append(' ');
 					}
 				}
+
+				// Possition
+				pos1sb.append(pos % 10);
+
+				if (pos % 10 == 0) pos10sb.append((pos % 100) / 10);
+				else pos10sb.append(' ');
+
+				if (pos % 100 == 0) pos100sb.append((pos % 1000) / 100);
+				else pos100sb.append(' ');
+
+				if (pos % 1000 == 0) pos1000sb.append((pos % 10000) / 1000);
+				else pos1000sb.append(' ');
+
+				pos++;
 			}
 		}
 
@@ -1704,10 +1724,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		}
 
 		// Result
-		return "" + seq //
+		return "" //
+				+ (pos1000sb.toString().trim().isEmpty() ? "" : "\n" + pos1000sb) //
+				+ (pos100sb.toString().trim().isEmpty() ? "" : "\n" + pos100sb) //
+				+ (pos10sb.toString().trim().isEmpty() ? "" : "\n" + pos10sb) //
+				+ "\n" + pos1sb //
+				+ "\n" + seq //
 				+ (isProteinCoding() ? "\n" + aaStr + "\n" + frameStr : "") //
 				+ "\n" + new String(art) //
-				+ "\n" + coords;
+				+ "\n" + coords //
+		;
 	}
 
 	/**
