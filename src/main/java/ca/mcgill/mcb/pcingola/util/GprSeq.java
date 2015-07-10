@@ -116,15 +116,11 @@ public class GprSeq {
 		return codes;
 	}
 
-	public static int aaCodePairCode(byte aa1, byte aa2) {
-		if (aa1 < 0 || aa2 < 0) return -1;
-		return aa1 * GprSeq.AMINO_ACIDS.length + aa2;
-	}
-
 	/**
 	 * Code an AA-pair
 	 */
 	public static int aaPairCode(byte aaCode1, byte aaCode2) {
+		if (aaCode1 < 0 || aaCode2 < 0) return -1;
 		return aaCode1 * GprSeq.AMINO_ACIDS.length + aaCode2;
 	}
 
@@ -199,10 +195,8 @@ public class GprSeq {
 	public static String code2aa(byte aacodes[]) {
 		char c[] = new char[aacodes.length];
 
-		for (int i = 0; i < aacodes.length; i++) {
-			if (aacodes[i] < 0) c[i] = '-';
-			else c[i] = CODE_TO_AA[aacodes[i]];
-		}
+		for (int i = 0; i < aacodes.length; i++)
+			c[i] = code2aa(aacodes[i]);
 
 		return new String(c);
 	}
@@ -247,8 +241,6 @@ public class GprSeq {
 
 	/**
 	 * Read a fasta file containing one (and only one) sequence
-	 * @param chrName
-	 * @return
 	 */
 	public static String fastaSimpleRead(String fastaFile) {
 		StringBuilder sb = new StringBuilder();
@@ -283,8 +275,6 @@ public class GprSeq {
 
 	/**
 	 * Are there any ambiguous bases in this sequence?
-	 * @param sequence
-	 * @return
 	 */
 	public static boolean isAmbiguous(String sequence) {
 		char seq[] = sequence.toLowerCase().toCharArray();
@@ -340,8 +330,6 @@ public class GprSeq {
 
 	/**
 	 * Reverse of a string (sequence)
-	 * @param seq
-	 * @return
 	 */
 	public static String reverse(String seq) {
 		char reverse[] = new char[seq.length()];
