@@ -1,18 +1,14 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import java.util.List;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 
 /**
  * Test case
@@ -27,67 +23,38 @@ public class TestCasesZzz {
 	}
 
 	/**
-	 * Change of start codon to an alternative start codon
+	 * Non-variant gVCF entries (i.e. ALT=<NON_REF>) 
 	 */
 	@Test
-	public void test_02_Start_NonSyn() {
+	public void test_30_gVCF_NON_REF() {
 		Gpr.debug("Test");
-		String genome = "testHg19ChrM";
-		String vcf = "tests/test_chrM_start_codon_nonSyn.vcf";
 
-		String args[] = { "-noLog", "-classic", "-ud", "0", genome, vcf };
-		SnpEff snpEff = new SnpEff(args);
-		snpEff.setVerbose(verbose);
-		snpEff.setSupressOutput(!verbose);
-		snpEff.setDebug(debug);
+		String vcfFileName = "tests/test_gVCF_NON_REF.vcf";
 
-		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
-		boolean checked = false;
-		List<VcfEntry> vcfEntries = seff.run(true);
-		for (VcfEntry ve : vcfEntries) {
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		for (VcfEntry ve : vcf) {
 			if (verbose) System.out.println(ve);
-			for (VcfEffect veff : ve.parseEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
-				if (veff.getEffectType() == EffectType.NON_SYNONYMOUS_START) {
-					Assert.assertEquals(EffectImpact.LOW, veff.getImpact());
-					checked = true;
-				}
+
+			// Check variants
+			// The last variant is "<NON_REF>" which is interpreted as non-variant (it gives no information)
+			int countNonVariants = 0;
+			for (Variant var : ve.variants()) {
+				if (verbose) System.out.println("\t" + var);
+				if (!var.isVariant()) countNonVariants++;
+			}
+			Assert.assertEquals(1, countNonVariants);
+
+			// Check that we can parse genotypes
+			for (VcfGenotype vgt : ve.getVcfGenotypes()) {
+				if (verbose) System.out.println("\t\tVCF_GT: " + vgt);
+			}
+
+			// Check GT score
+			for (byte gt : ve.getGenotypesScores()) {
+				if (verbose) System.out.println("\t\tGT    : " + gt);
+				Assert.assertEquals(1, gt);
 			}
 		}
-		Assert.assertEquals(true, checked);
-
-	}
-
-	/**
-	 * Change of start codon to an alternative start codon
-	 */
-	@Test
-	public void test_03_Start_Loss() {
-		Gpr.debug("Test");
-		String genome = "testHg19ChrM";
-		String vcf = "tests/test_chrM_start_codon.vcf";
-
-		String args[] = { "-noLog", "-classic", "-ud", "0", genome, vcf };
-		SnpEff snpEff = new SnpEff(args);
-		snpEff.setVerbose(verbose);
-		snpEff.setSupressOutput(!verbose);
-		snpEff.setDebug(debug);
-
-		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
-		boolean checked = false;
-		List<VcfEntry> vcfEntries = seff.run(true);
-		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
-			for (VcfEffect veff : ve.parseEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
-				if (veff.getEffectType() == EffectType.START_LOST) {
-					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
-					checked = true;
-				}
-			}
-		}
-		Assert.assertEquals(true, checked);
-
 	}
 
 }

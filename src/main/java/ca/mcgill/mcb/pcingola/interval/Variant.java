@@ -73,8 +73,8 @@ public class Variant extends Marker {
 
 		// Add each alt
 		for (String alt : alts) {
-			// Note: We use 'hasIUBMax()' instead of 'hasIUB()' because large InDels may 
-			// have tons of 'N' bases. In such cases, it is impractical (and useless) to 
+			// Note: We use 'hasIUBMax()' instead of 'hasIUB()' because large InDels may
+			// have tons of 'N' bases. In such cases, it is impractical (and useless) to
 			// produce all possible combinations
 			boolean refIub = expand && IubString.hasIUBMax(ref);
 			boolean altIub = expand && IubString.hasIUBMax(alt);

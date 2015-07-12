@@ -35,7 +35,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public static final double ALLELE_FEQUENCY_LOW = 0.01;
 
 	public static final String VCF_INFO_END = "END"; // Imprecise variants
-	public static final String VCF_ALT_NON_REF = "<NON_REF>"; // NON_REF tag for ALT field (only in gVCF fiels)
+	public static final String VCF_ALT_NON_REF = "<NON_REF>"; // NON_REF tag for ALT field (only in gVCF fields)
+	public static final String[] VCF_ALT_NON_REF_ARRAY = { VCF_ALT_NON_REF };
 
 	public static final String VCF_INFO_HOMS = "HO";
 	public static final String VCF_INFO_HETS = "HE";
@@ -366,15 +367,15 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Return genotypes parsed as an array of codes
 	 */
 	public byte[] getGenotypesScores() {
-		int numSamples = getVcfFileIterator().getVcfHeader().getSampleNames().size();
-
 		// Not compressed? Parse codes
 		if (!isCompressedGenotypes()) {
+			List<VcfGenotype> vcfGts = getVcfGenotypes();
+			int numSamples = vcfGts.size();
 			byte gt[] = new byte[numSamples];
 
 			int idx = 0;
-			for (VcfGenotype vgt : getVcfGenotypes())
-				gt[idx++] = (byte) vgt.getGenotypeCode();
+			for (VcfGenotype vcfGt : vcfGts)
+				gt[idx++] = (byte) vcfGt.getGenotypeCode();
 
 			return gt;
 		}
@@ -389,6 +390,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		String naStr = getInfo(VCF_INFO_NAS);
 
 		// Parse 'sparse' entries
+		int numSamples = getNumberOfSamples();
 		byte gt[] = new byte[numSamples];
 		parseSparseGt(naStr, gt, -1);
 		parseSparseGt(heStr, gt, 1);
@@ -642,12 +644,25 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Is this a change or are the ALTs actually the same as the reference
 	 */
 	public boolean isVariant() {
-		if (alts == null) return false;
+		if (alts == null || alts.length == 0) return false;
 
+		// Is any ALT is variant?
 		for (String alt : alts)
-			if (!alt.isEmpty() && !alt.equals(".") && !ref.equals(alt)) return true; // Any change option is different? => true
+			if (isVariant(alt)) return true;
 
 		return false;
+	}
+
+	/**
+	 * Is this ALT string a variant?
+	 */
+	public boolean isVariant(String alt) {
+		return alt != null //
+				&& !alt.isEmpty() //
+				&& !alt.equals(VcfFileIterator.MISSING) // Missing ALT (".")?
+				&& !alt.equals(VCF_ALT_NON_REF) //
+				&& !alt.equals(ref) // Is ALT different than REF?
+				;
 	}
 
 	@Override
@@ -770,9 +785,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Parse ALT field
 	 */
 	void parseAlts(String altsStr) {
-		//---
-		// Parse altsStr
-		//---
 		if (altsStr.length() == 1 || altsStr.indexOf(',') < 0) {
 			// SNP or single field (no commas)
 			alts = parseAltSingle(altsStr);
@@ -802,20 +814,17 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		int maxAltLen = Integer.MIN_VALUE, minAltLen = Integer.MAX_VALUE;
 
 		for (String alt : alts) {
+			if (alt.equals(VCF_ALT_NON_REF)) continue;
+			if (alt.startsWith("<DEL")) variantType = VariantType.DEL;
+
 			maxAltLen = Math.max(maxAltLen, alt.length());
 			minAltLen = Math.min(minAltLen, alt.length());
-
-			if (alt.startsWith("<DEL")) variantType = VariantType.DEL;
 		}
 
-		// Infer change type
+		// Infer variant type
 		if (variantType == null) {
-			if (alts == null // No alts
-					|| (alts.length == 0) // Zero ALTs
-					|| (alts.length == 1 && (alts[0].isEmpty() || alts[0].equals("."))) // One ALT, but it's empty
-					) {
-				variantType = VariantType.INTERVAL;
-			} else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
+			if (!isVariant()) variantType = VariantType.INTERVAL;
+			else if ((ref.length() == maxAltLen) && (ref.length() == minAltLen)) {
 				if (ref.length() == 1) variantType = VariantType.SNP;
 				else variantType = VariantType.MNP;
 			} else if (ref.length() > minAltLen) variantType = VariantType.DEL;
@@ -831,7 +840,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		String alts[];
 
 		// If ALT is '<NON_REF>', it means that there are no alts
-		if (altsStr.equals(VCF_ALT_NON_REF)) return null;
+		if (altsStr.equals(VCF_ALT_NON_REF)) { return VCF_ALT_NON_REF_ARRAY; }
 
 		if (altsStr.length() == 1) {
 			if (altsStr.equals("A") || altsStr.equals("C") || altsStr.equals("G") || altsStr.equals("T") || altsStr.equals(".")) {
@@ -1248,8 +1257,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Create one SeqChange for each ALT
 		Chromosome chr = (Chromosome) parent;
 		int genotypeNumber = 1;
-		if (alts == null) {
-			// No ALTs, then it's not a variant
+
+		if (!isVariant()) {
+			// Not a variant?
 			List<Variant> variants = variants(chr, start, ref, null, id);
 			String alt = ".";
 
@@ -1260,7 +1270,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 			list.addAll(variants);
 		} else {
+			// At least one variant
 			for (String alt : alts) {
+				if (alt.equals(VCF_ALT_NON_REF)) alt = null;
+
 				List<Variant> variants = variants(chr, start, ref, alt, id);
 
 				// Set corresponding genotype
