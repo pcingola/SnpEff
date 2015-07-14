@@ -218,7 +218,7 @@ public class HgvsDna extends Hgvs {
 	 */
 	protected String pos(int pos) {
 		// Cannot do much if there is no transcript
-		if (tr == null) return null;
+		if (tr == null) return Integer.toString(pos);
 
 		// Are we in an exon?
 		// Note: This may come from an intron-exon boundary variant (intron side, walked in a duplication).

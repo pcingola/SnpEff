@@ -294,6 +294,8 @@ public class VcfOutputFormatter extends OutputFormatter {
 		if (needAddHeader) addHeader(); // Add header lines
 
 		VcfEntry vcfEntry = (VcfEntry) section;
+		if (vcfEntry == null) return "";
+
 		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
 		return vcfFile.getVcfHeader().toString();
 	}
