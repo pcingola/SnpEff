@@ -211,4 +211,39 @@ public class TestCasesHgvs {
 		Assert.assertTrue(ok);
 	}
 
+	/**
+	 * Using non-standard splice size (15 instead of 2)
+	 * may cause some HGVS annotations issues
+	 */
+	@Test
+	public void test_15_hgvs_INS_intergenic() {
+		Gpr.debug("Test");
+		String genome = "testHg3775Chr22";
+		String vcf = "tests/test_hgvs_INS_intergenic.vcf";
+
+		// Create SnpEff
+		String args[] = { genome, vcf };
+		SnpEffCmdEff snpeff = new SnpEffCmdEff();
+		snpeff.parseArgs(args);
+		snpeff.setDebug(debug);
+		snpeff.setVerbose(verbose);
+		snpeff.setSupressOutput(!verbose);
+		snpeff.setFormatVersion(EffFormatVersion.FORMAT_ANN_1);
+
+		// Run & get result (single line)
+		List<VcfEntry> results = snpeff.run(true);
+		VcfEntry ve = results.get(0);
+
+		// Make sure the HCVGs annotaion is correct
+		boolean ok = false;
+		for (VcfEffect veff : ve.parseEffects()) {
+			if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
+			ok |= veff.hasEffectType(EffectType.INTERGENIC) //
+					&& veff.getHgvsDna().equals("n.15069999_15070000insT") //
+					;
+		}
+
+		Assert.assertTrue("Error in HGVS annotaiton", ok);
+	}
+
 }

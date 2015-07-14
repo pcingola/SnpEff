@@ -1,14 +1,17 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
-import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
+import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
-import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 
 /**
  * Test case
@@ -23,38 +26,38 @@ public class TestCasesZzz {
 	}
 
 	/**
-	 * Non-variant gVCF entries (i.e. ALT=<NON_REF>) 
+	 * Using non-standard splice size (15 instead of 2)
+	 * may cause some HGVS annotations issues
 	 */
 	@Test
-	public void test_30_gVCF_NON_REF() {
+	public void test_hgvs_INS_intergenic() {
 		Gpr.debug("Test");
+		String genome = "testHg3775Chr22";
+		String vcf = "tests/test_hgvs_INS_intergenic.vcf";
 
-		String vcfFileName = "tests/test_gVCF_NON_REF.vcf";
+		// Create SnpEff
+		String args[] = { genome, vcf };
+		SnpEffCmdEff snpeff = new SnpEffCmdEff();
+		snpeff.parseArgs(args);
+		snpeff.setDebug(debug);
+		snpeff.setVerbose(verbose);
+		snpeff.setSupressOutput(!verbose);
+		snpeff.setFormatVersion(EffFormatVersion.FORMAT_ANN_1);
 
-		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
-		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+		// Run & get result (single line)
+		List<VcfEntry> results = snpeff.run(true);
+		VcfEntry ve = results.get(0);
 
-			// Check variants
-			// The last variant is "<NON_REF>" which is interpreted as non-variant (it gives no information)
-			int countNonVariants = 0;
-			for (Variant var : ve.variants()) {
-				if (verbose) System.out.println("\t" + var);
-				if (!var.isVariant()) countNonVariants++;
-			}
-			Assert.assertEquals(1, countNonVariants);
-
-			// Check that we can parse genotypes
-			for (VcfGenotype vgt : ve.getVcfGenotypes()) {
-				if (verbose) System.out.println("\t\tVCF_GT: " + vgt);
-			}
-
-			// Check GT score
-			for (byte gt : ve.getGenotypesScores()) {
-				if (verbose) System.out.println("\t\tGT    : " + gt);
-				Assert.assertEquals(1, gt);
-			}
+		// Make sure the HCVGs annotaion is correct
+		boolean ok = false;
+		for (VcfEffect veff : ve.parseEffects()) {
+			if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
+			ok |= veff.hasEffectType(EffectType.INTERGENIC) //
+					&& veff.getHgvsDna().equals("n.15069999_15070000insT") //
+			;
 		}
+
+		Assert.assertTrue("Error in HGVS annotaiton", ok);
 	}
 
 }
