@@ -595,4 +595,22 @@ public class TestCasesVcf extends TestCasesBase {
 		}
 	}
 
+	@Test
+	public void test_31_MISSING_REF() {
+
+		String vcfFile = "tests/test_missing_ref.vcf";
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+
+		int countVariants = 0;
+		for (VcfEntry ve : vcf) {
+			System.out.println(ve);
+			for (Variant v : ve.variants()) {
+				System.out.println("\t" + v + "\tis Variant: " + v.isVariant());
+				if (v.isVariant()) countVariants++;
+			}
+		}
+
+		Assert.assertEquals(1, countVariants);
+	}
+
 }

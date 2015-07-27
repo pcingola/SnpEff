@@ -35,8 +35,20 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public static final double ALLELE_FEQUENCY_LOW = 0.01;
 
 	public static final String VCF_INFO_END = "END"; // Imprecise variants
-	public static final String VCF_ALT_NON_REF = "<NON_REF>"; // NON_REF tag for ALT field (only in gVCF fields)
+
+	// In order to report sequencing data evidence for both variant and non-variant positions in the genome, the VCF
+	// specification allows to represent blocks of reference-only calls in a single record using the END INFO tag, an idea
+	// originally introduced by the gVCF file format. The convention adopted here is to represent reference evidence as
+	// likelihoods against an unknown alternate allele. Think of this as the likelihood for reference as compared to any
+	// other possible alternate allele (both SNP, indel, or otherwise). A symbolic alternate allele <*> is used to represent
+	// this unspecified alternate allele
+	public static final String VCF_ALT_NON_REF = "<*>"; // See VCF 4.2 section "5.5 Representing unspecified alleles and REF-only blocks (gVCF)"
+	public static final String VCF_ALT_NON_REF_gVCF = "<NON_REF>"; // NON_REF tag for ALT field (only in gVCF fields)
+	public static final String VCF_ALT_MISSING_REF = "*"; // The '*' allele is reserved to indicate that the allele is missing due to a upstream deletion (see VCF 4.3 spec., ALT definition)
+
+	public static final String[] VCF_ALT_NON_REF_gVCF_ARRAY = { VCF_ALT_NON_REF_gVCF };
 	public static final String[] VCF_ALT_NON_REF_ARRAY = { VCF_ALT_NON_REF };
+	public static final String[] VCF_ALT_MISSING_REF_ARRAY = { VCF_ALT_MISSING_REF };
 
 	public static final String VCF_INFO_HOMS = "HO";
 	public static final String VCF_INFO_HETS = "HE";
@@ -660,7 +672,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return alt != null //
 				&& !alt.isEmpty() //
 				&& !alt.equals(VcfFileIterator.MISSING) // Missing ALT (".")?
-				&& !alt.equals(VCF_ALT_NON_REF) //
+				&& !alt.equals(VCF_ALT_NON_REF) // '*'
+				&& !alt.equals(VCF_ALT_NON_REF_gVCF) // '<NON_REF>'
+				&& !alt.equals(VCF_ALT_MISSING_REF) // '<*>'
 				&& !alt.equals(ref) // Is ALT different than REF?
 				;
 	}
@@ -814,7 +828,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		int maxAltLen = Integer.MIN_VALUE, minAltLen = Integer.MAX_VALUE;
 
 		for (String alt : alts) {
-			if (alt.equals(VCF_ALT_NON_REF)) continue;
+			if (!isVariant(alt)) continue;
 			if (alt.startsWith("<DEL")) variantType = VariantType.DEL;
 
 			maxAltLen = Math.max(maxAltLen, alt.length());
@@ -839,8 +853,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	String[] parseAltSingle(String altsStr) {
 		String alts[];
 
-		// If ALT is '<NON_REF>', it means that there are no alts
+		// Not a variant?
 		if (altsStr.equals(VCF_ALT_NON_REF)) { return VCF_ALT_NON_REF_ARRAY; }
+		if (altsStr.equals(VCF_ALT_MISSING_REF)) { return VCF_ALT_MISSING_REF_ARRAY; }
+		if (altsStr.equals(VCF_ALT_NON_REF_gVCF)) { return VCF_ALT_NON_REF_gVCF_ARRAY; }
 
 		if (altsStr.length() == 1) {
 			if (altsStr.equals("A") || altsStr.equals("C") || altsStr.equals("G") || altsStr.equals("T") || altsStr.equals(".")) {
@@ -896,9 +912,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				alts = new String[2];
 				alts[0] = "G";
 				alts[1] = "T";
-			} else if (altsStr.equals(".")) { // No alternative (same as reference)
+			} else if (!isVariant(altsStr)) { // A non-variant, non-ref, etc. (e.g. '*', '<NON_REF>', or '<*>')
 				alts = new String[1];
-				alts[0] = ref;
+				alts[0] = altsStr;
 			} else {
 				throw new RuntimeException("WARNING: Unkown IUB code for SNP '" + altsStr + "'");
 			}
@@ -1272,7 +1288,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		} else {
 			// At least one variant
 			for (String alt : alts) {
-				if (alt.equals(VCF_ALT_NON_REF)) alt = null;
+				if (!isVariant(alt)) alt = null;
 
 				List<Variant> variants = variants(chr, start, ref, alt, id);
 
