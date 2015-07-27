@@ -1,8 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,9 +27,9 @@ public class TestCasesZzz {
 	 * Insertion on minus strand
 	 */
 	@Test
-	public void test_02_InsOffByOne() {
+	public void test_02_del_repeated_effects_gatk() {
 		Gpr.debug("Test");
-		String args[] = { "-ud", "0", "testHg3775Chr1", "tests/ins_multiple_splice_region.vcf" };
+		String args[] = { "-ud", "0", "-o", "gatk", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
@@ -39,7 +37,6 @@ public class TestCasesZzz {
 		snpeff.setVerbose(verbose);
 
 		int countEffs = 0;
-		boolean repeat = false;
 
 		List<VcfEntry> vcfEnties = snpeff.run(true);
 		for (VcfEntry ve : vcfEnties) {
@@ -50,19 +47,17 @@ public class TestCasesZzz {
 			List<VcfEffect> veffs = ve.parseEffects();
 
 			for (VcfEffect veff : veffs) {
-				Set<String> effs = new HashSet<String>();
 				if (verbose) System.out.println("\t" + veff.getEffString());
 
 				// Make sure each effect is unique
-				for (String eff : veff.getEffString().split("\\&")) {
+				countEffs = 0;
+				for (String eff : veff.getEffString().split("\\+")) {
 					if (verbose) System.out.println("\t\t" + eff);
-					if (!effs.add(eff)) repeat = true;
 					countEffs++;
 				}
+
+				Assert.assertEquals(1, countEffs);
 			}
 		}
-
-		Assert.assertTrue("No effect annotated", countEffs > 0);
-		Assert.assertFalse("Duplicated effect", repeat);
 	}
 }

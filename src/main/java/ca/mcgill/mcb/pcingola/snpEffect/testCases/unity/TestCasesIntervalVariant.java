@@ -96,7 +96,7 @@ public class TestCasesIntervalVariant extends TestCasesBase {
 				boolean isExpectedOK = false;
 				StringBuilder effSb = new StringBuilder();
 				for (VariantEffect effect : effects) {
-					String effstr = effect.effect(true, true, true, false);
+					String effstr = effect.effect(true, true, true, false, false);
 
 					isExpectedOK |= effect.hasEffectType(expectedEffect);
 					effSb.append(effstr + " ");
@@ -108,7 +108,7 @@ public class TestCasesIntervalVariant extends TestCasesBase {
 							+ "\nExpected Effect : '" + expectedEffect + "'" //
 							+ "\nEffects         : '" + effSb + "'" //
 							+ "\n--------------------------------------------------------------\n" //
-							);
+					);
 				Assert.assertEquals(true, isExpectedOK);
 			}
 		}

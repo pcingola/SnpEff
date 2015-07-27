@@ -44,13 +44,13 @@ public class TestCasesEffectCollapse extends TestCasesBase {
 			System.err.println("Variant: " + variant);
 			System.err.println("Effects: " + veffs.size());
 			for (VariantEffect veff : veffs)
-				System.err.println("\tEff: '" + veff.effect(false, false, false, false) + "'");
+				System.err.println("\tEff: '" + veff.effect(false, false, false, false, false) + "'");
 		}
 
 		// Check
 		Assert.assertEquals(1, veffs.size());
 
-		String effStr = veffs.get(0).effect(false, false, false, false);
+		String effStr = veffs.get(0).effect(false, false, false, false, false);
 		Assert.assertEquals(effStrExpected, effStr);
 	}
 

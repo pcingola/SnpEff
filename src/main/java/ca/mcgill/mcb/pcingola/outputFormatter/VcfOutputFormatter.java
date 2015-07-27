@@ -94,7 +94,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 				//---
 				// Create INFO field value as a string
 				//---
-				VcfEffect vcfEffect = new VcfEffect(variantEffect, formatVersion, useSequenceOntology);
+				VcfEffect vcfEffect = new VcfEffect(variantEffect, formatVersion, useSequenceOntology, gatk);
 				vcfEffect.setUseGeneId(useGeneId);
 				vcfEffect.setUseHgvs(useHgvs);
 				String effStr = vcfEffect.toString();

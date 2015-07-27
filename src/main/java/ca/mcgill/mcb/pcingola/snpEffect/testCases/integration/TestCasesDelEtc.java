@@ -27,7 +27,7 @@ public class TestCasesDelEtc {
 	 * A deletion having multiple splice_regio effects (should show only one)
 	 */
 	@Test
-	public void test_03_del_repeated_effects() {
+	public void test_01_del_repeated_effects() {
 		Gpr.debug("Test");
 		String args[] = { "-ud", "0", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
 
@@ -62,6 +62,44 @@ public class TestCasesDelEtc {
 
 		Assert.assertTrue("No effect annotated", countEffs > 0);
 		Assert.assertFalse("Duplicated effect", repeat);
+	}
+
+	/**
+	 * Insertion on minus strand
+	 */
+	@Test
+	public void test_02_del_repeated_effects_gatk() {
+		Gpr.debug("Test");
+		String args[] = { "-ud", "0", "-o", "gatk", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
+
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		snpeff.setSupressOutput(!verbose);
+		snpeff.setVerbose(verbose);
+
+		int countEffs = 0;
+
+		List<VcfEntry> vcfEnties = snpeff.run(true);
+		for (VcfEntry ve : vcfEnties) {
+
+			if (verbose) System.out.println(ve);
+
+			// Get first effect (there should be only one)
+			List<VcfEffect> veffs = ve.parseEffects();
+
+			for (VcfEffect veff : veffs) {
+				if (verbose) System.out.println("\t" + veff.getEffString());
+
+				// Make sure each effect is unique
+				countEffs = 0;
+				for (String eff : veff.getEffString().split("\\+")) {
+					if (verbose) System.out.println("\t\t" + eff);
+					countEffs++;
+				}
+
+				Assert.assertEquals(1, countEffs);
+			}
+		}
 	}
 
 }

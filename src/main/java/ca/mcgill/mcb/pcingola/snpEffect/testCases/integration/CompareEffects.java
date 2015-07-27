@@ -94,7 +94,7 @@ public class CompareEffects {
 	}
 
 	boolean compareOK(VariantEffect varEff, String expEffs) {
-		String varEffStr = varEff.effect(false, true, false, false);
+		String varEffStr = varEff.effect(false, true, false, false, false);
 		if (varEffStr.equals(expEffs)) { return true; }
 
 		return compareEff(varEff, expEffs) && compareAa(varEff, expEffs);
@@ -186,8 +186,8 @@ public class CompareEffects {
 								+ "\t" + sc.getReference() //
 								+ "\t" + sc.getAlt() //
 								+ "\t+\t0\t0" //
-								+ "\t" + res.effect(true, true, true, false) //
-								);
+								+ "\t" + res.effect(true, true, true, false, false) //
+						);
 					}
 				} else {
 					Gpr.debug(msg);

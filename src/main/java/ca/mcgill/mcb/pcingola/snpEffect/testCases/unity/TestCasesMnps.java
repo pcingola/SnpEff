@@ -72,19 +72,19 @@ public class TestCasesMnps extends TestCasesBase {
 						&& (ce.getEffectType() != EffectType.SPLICE_SITE_DONOR) //
 						&& (ce.getEffectType() != EffectType.INTRON) //
 						&& (ce.getEffectType() != EffectType.INTERGENIC) //
-						) //
+				) //
 					effect = ce;
 			}
 		} else effect = effects.get();
 
 		if (effect != null) {
-			String effStr = effect.effect(true, true, true, false);
+			String effStr = effect.effect(true, true, true, false, false);
 
 			if (codons.length() > 1) {
 				String codonsExp[] = codons.split("/");
 
 				boolean error = (!codonsExp[0].toUpperCase().equals(effect.getCodonsRef().toUpperCase()) //
-						|| !codonsExp[1].toUpperCase().equals(effect.getCodonsAlt().toUpperCase()));
+				|| !codonsExp[1].toUpperCase().equals(effect.getCodonsAlt().toUpperCase()));
 
 				if (error || debug) {
 					Gpr.debug("Fatal error:"//
@@ -96,7 +96,7 @@ public class TestCasesMnps extends TestCasesBase {
 							+ "\n\tEffect (pred) : " + effect //
 							+ "\n\tGene          : " + gene//
 							+ "\n\tChromo        : " + chromoSequence//
-							);
+					);
 				}
 
 				/**

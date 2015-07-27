@@ -261,8 +261,8 @@ public class TestCasesDels extends TestCasesBase {
 					//---
 					boolean ok = false;
 					for (VariantEffect effect : effects) {
-						String effStr = effect.effect(true, false, true, false);
-						String effFullStr = effect.effect(true, true, true, false);
+						String effStr = effect.effect(true, false, true, false, false);
+						String effFullStr = effect.effect(true, true, true, false, false);
 
 						String line = "\tIteration: " + i + "\tPos: " + pos + "\tExpected: '" + effectExpected + "'\tEffect: '" + effStr + "'";
 						StringBuilder msg = new StringBuilder();
@@ -292,7 +292,7 @@ public class TestCasesDels extends TestCasesBase {
 										&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
 										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
 										&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
-										) {
+								) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
 									String codonsNewEff = effect.getCodonsAlt().toUpperCase();

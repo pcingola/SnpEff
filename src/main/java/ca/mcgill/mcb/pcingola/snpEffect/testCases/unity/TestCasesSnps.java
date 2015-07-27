@@ -26,7 +26,7 @@ public class TestCasesSnps extends TestCasesBase {
 	}
 
 	String effectStr(VariantEffect effect) {
-		String effStr = effect.effect(true, true, true, false);
+		String effStr = effect.effect(true, true, true, false, false);
 		String aaStr = effect.getAaChangeOld();
 		int idx = effStr.indexOf('(');
 		return effStr.substring(0, idx) + "(" + aaStr + ")";

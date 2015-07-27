@@ -129,8 +129,8 @@ public class TestCasesIns extends TestCasesBase {
 						// Show
 						boolean ok = false;
 						for (VariantEffect effect : effects) {
-							String effFullStr = effect.effect(true, true, false, false);
-							String effStr = effect.effect(true, false, false, false);
+							String effFullStr = effect.effect(true, true, false, false, false);
+							String effStr = effect.effect(true, false, false, false, false);
 							String aaStr = effect.getAaChangeOld();
 
 							if (debug) System.out.println("\tPos: " + pos //

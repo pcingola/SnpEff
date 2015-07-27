@@ -159,13 +159,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Create a string for codon effect
 	 * @param showAaChange : If true, include codon change, biotype, etc.
 	 */
-	String codonEffect(boolean showAaChange, boolean showBioType, boolean useSeqOntology) {
+	String codonEffect(boolean showAaChange, boolean showBioType, boolean useSeqOntology, boolean useFirstEffect) {
 		if ((marker == null) || (codonNum < 0)) return "";
 
-		if (!showAaChange) return getEffectTypeString(useSeqOntology);
+		if (!showAaChange) return getEffectTypeString(useSeqOntology, useFirstEffect);
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(getEffectTypeString(useSeqOntology));
+		sb.append(getEffectTypeString(useSeqOntology, useFirstEffect));
 		sb.append("(");
 		sb.append(getAaChange());
 		sb.append(")");
@@ -210,26 +210,26 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	/**
 	 * Show a string with overall effect
 	 */
-	public String effect(boolean shortFormat, boolean showAaChange, boolean showBioType, boolean useSeqOntology) {
+	public String effect(boolean shortFormat, boolean showAaChange, boolean showBioType, boolean useSeqOntology, boolean useFirstEffect) {
 		String e = "";
-		String codonEffect = codonEffect(showAaChange, showBioType, useSeqOntology); // Codon effect
+		String codonEffect = codonEffect(showAaChange, showBioType, useSeqOntology, useFirstEffect); // Codon effect
 
 		// Create effect string
 		if (!codonEffect.isEmpty()) e = codonEffect;
-		else if (isRegulation()) return getEffectTypeString(useSeqOntology) + "[" + ((Regulation) marker).getName() + "]";
-		else if (isNextProt()) return getEffectTypeString(useSeqOntology) + "[" + VcfEffect.vcfEffSafe(((NextProt) marker).getId()) + "]"; // Make sure this 'id' is not dangerous in a VCF 'EFF' field
-		else if (isMotif()) return getEffectTypeString(useSeqOntology) + "[" + ((Motif) marker).getPwmId() + ":" + ((Motif) marker).getPwmName() + "]";
+		else if (isRegulation()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + ((Regulation) marker).getName() + "]";
+		else if (isNextProt()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + VcfEffect.vcfEffSafe(((NextProt) marker).getId()) + "]"; // Make sure this 'id' is not dangerous in a VCF 'EFF' field
+		else if (isMotif()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + ((Motif) marker).getPwmId() + ":" + ((Motif) marker).getPwmName() + "]";
 		else if (isCustom()) {
 			// Custom interval
 			String label = ((Custom) marker).getLabel();
 			double score = ((Custom) marker).getScore();
 			if (!Double.isNaN(score)) label = label + ":" + score;
 			if (!label.isEmpty()) label = "[" + label + "]";
-			return getEffectTypeString(useSeqOntology) + label;
-		} else if (isIntergenic() || isIntron() || isSpliceSite()) e = getEffectTypeString(useSeqOntology);
-		else if (!message.isEmpty()) e = getEffectTypeString(useSeqOntology) + ": " + message;
-		else if (marker == null) e = getEffectTypeString(useSeqOntology); // There are cases when no marker is associated (e.g. "Out of chromosome", "No such chromosome", etc.)
-		else e = getEffectTypeString(useSeqOntology) + ": " + marker.getId();
+			return getEffectTypeString(useSeqOntology, useFirstEffect) + label;
+		} else if (isIntergenic() || isIntron() || isSpliceSite()) e = getEffectTypeString(useSeqOntology, useFirstEffect);
+		else if (!message.isEmpty()) e = getEffectTypeString(useSeqOntology, useFirstEffect) + ": " + message;
+		else if (marker == null) e = getEffectTypeString(useSeqOntology, useFirstEffect); // There are cases when no marker is associated (e.g. "Out of chromosome", "No such chromosome", etc.)
+		else e = getEffectTypeString(useSeqOntology, useFirstEffect) + ": " + marker.getId();
 
 		if (shortFormat) e = e.split(":")[0];
 
@@ -405,13 +405,17 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	public String getEffectTypeString(boolean useSeqOntology) {
-		return getEffectTypeString(useSeqOntology, EffFormatVersion.FORMAT_EFF_4);
+		return getEffectTypeString(useSeqOntology, false, EffFormatVersion.FORMAT_EFF_4);
+	}
+
+	public String getEffectTypeString(boolean useSeqOntology, boolean useFirstEffect) {
+		return getEffectTypeString(useSeqOntology, useFirstEffect, EffFormatVersion.FORMAT_EFF_4);
 	}
 
 	/**
 	 * Get Effect Type as a string
 	 */
-	public String getEffectTypeString(boolean useSeqOntology, EffFormatVersion formatVersion) {
+	public String getEffectTypeString(boolean useSeqOntology, boolean useFirstEffect, EffFormatVersion formatVersion) {
 		if (effectTypes == null) return "";
 
 		// Show all effects
@@ -419,7 +423,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		Collections.sort(effectTypes);
 
 		// More than one effect? Check for repeats
-		Set<String> added = (effectTypes.size() > 1 ? new HashSet<String>() : null);
+		Set<String> added = ((effectTypes.size() > 1) && (!useFirstEffect) ? new HashSet<String>() : null);
 
 		// Create string
 		for (EffectType et : effectTypes) {
@@ -430,6 +434,9 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				if (sb.length() > 0) sb.append(formatVersion.separator());
 				sb.append(eff);
 			}
+
+			// Only use first effect?
+			if (useFirstEffect) return sb.toString();
 		}
 
 		return sb.toString();
@@ -783,7 +790,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + transcriptId //
 				+ "\t" + exonId //
 				+ "\t" + (exonRank >= 0 ? exonRank : "") //
-				+ "\t" + effect(false, false, false, useSeqOntology) //
+				+ "\t" + effect(false, false, false, useSeqOntology, false) //
 				+ "\t" + aaChange //
 				+ "\t" + ((codonsRef.length() + codonsAlt.length()) > 0 ? codonsRef + "/" + codonsAlt : "") //
 				+ "\t" + (codonNum >= 0 ? (codonNum + 1) : "") //
@@ -807,7 +814,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		Exon exon = getExon();
 		if (exon != null) exonId = exon.getId();
 
-		String eff = effect(shortFormat, true, true, false);
+		String eff = effect(shortFormat, true, true, false, false);
 		if (!eff.isEmpty()) return eff;
 		if (!exonId.isEmpty()) return exonId;
 		if (!transcriptId.isEmpty()) return transcriptId;

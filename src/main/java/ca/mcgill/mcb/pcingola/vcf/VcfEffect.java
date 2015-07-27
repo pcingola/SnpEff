@@ -93,6 +93,7 @@ public class VcfEffect {
 	boolean useSequenceOntology;
 	boolean useHgvs;
 	boolean useGeneId;
+	boolean useFirstEffect;
 
 	/**
 	 * Get info field name based on format version
@@ -132,14 +133,15 @@ public class VcfEffect {
 	}
 
 	public VcfEffect(VariantEffect variantEffect, EffFormatVersion formatVersion) {
-		this(variantEffect, formatVersion, true);
+		this(variantEffect, formatVersion, true, false);
 	}
 
-	public VcfEffect(VariantEffect variantEffect, EffFormatVersion formatVersion, boolean useSequenceOntology) {
+	public VcfEffect(VariantEffect variantEffect, EffFormatVersion formatVersion, boolean useSequenceOntology, boolean useFirstEffect) {
 		init();
 		this.formatVersion = formatVersion;
 		this.variantEffect = variantEffect;
 		this.useSequenceOntology = useSequenceOntology;
+		this.useFirstEffect = useFirstEffect;
 		set(variantEffect);
 	}
 
@@ -938,9 +940,9 @@ public class VcfEffect {
 		effectTypes = variantEffect.getEffectTypes();
 
 		if (formatVersion.isAnn()) {
-			effectTypesStr = variantEffect.getEffectTypeString(true, formatVersion);
+			effectTypesStr = variantEffect.getEffectTypeString(true, useFirstEffect, formatVersion);
 		} else {
-			effectTypesStr = variantEffect.effect(true, false, false, useSequenceOntology);
+			effectTypesStr = variantEffect.effect(true, false, false, useSequenceOntology, useFirstEffect);
 		}
 
 		// Impact
@@ -1132,6 +1134,10 @@ public class VcfEffect {
 
 	public void setTranscriptId(String transcriptId) {
 		this.transcriptId = transcriptId;
+	}
+
+	public void setUseFirstEffect(boolean useFirstEffect) {
+		this.useFirstEffect = useFirstEffect;
 	}
 
 	public void setUseGeneId(boolean useGeneId) {
