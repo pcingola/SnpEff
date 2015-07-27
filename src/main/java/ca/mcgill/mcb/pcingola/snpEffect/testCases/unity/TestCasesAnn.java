@@ -62,7 +62,7 @@ public class TestCasesAnn extends TestCasesBase {
 						+ "\n\t\tveff.getEffectsStrSo() : " + veff.getEffectsStrSo() //
 						+ "\n\t\tveff.getEffectType()   : " + veff.getEffectType() //
 						+ "\n\t\tveff.getEffectTypes()  : " + veff.getEffectTypes() //
-						);
+				);
 			}
 
 			// Check for a specific transcript
@@ -301,7 +301,7 @@ public class TestCasesAnn extends TestCasesBase {
 		Assert.assertEquals("-1", "" + veff.getRankMax());
 
 		// HGVS
-		Assert.assertEquals("", veff.getHgvsDna());
+		Assert.assertEquals("n.26600818G>A", veff.getHgvsDna());
 		Assert.assertEquals("", veff.getHgvsProt());
 
 		// cDNA position

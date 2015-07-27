@@ -239,8 +239,8 @@ public class TestCasesHgvs {
 		for (VcfEffect veff : ve.parseEffects()) {
 			if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
 			ok |= veff.hasEffectType(EffectType.INTERGENIC) //
-					&& veff.getHgvsDna().equals("n.15069999_15070000insT") //
-					;
+					&& veff.getHgvsDna().equals("n.15070000_15070001insT") //
+			;
 		}
 
 		Assert.assertTrue("Error in HGVS annotaiton", ok);

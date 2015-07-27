@@ -16,19 +16,26 @@ import ca.mcgill.mcb.pcingola.stats.plot.GoogleGenePercentBar;
 
 /**
  *
- * Variants effet statistics
+ * Variants effect statistics
  */
 public class VariantEffectStats implements SamplingStats<VariantEffect> {
 
 	public static final String CHANGE_SEPARATOR = "\t";
+
 	boolean useSequenceOntology = false; // Use Sequence Ontology terms
-	Genome genome;
-	CountByType countByEffect, countByCodon, countByAa, countByGeneRegion, countByImpact, countByFunctionalClass, countByBioType;
-	HashSet<String> codonSet, aaSet, geneSet;
 	int aaChangeCountMax = Integer.MIN_VALUE;
 	int codonChangeCountMax = Integer.MIN_VALUE;
 	int countWarnings = 0;
 	int countErrors = 0;
+	Genome genome;
+	CountByType countByEffect;
+	CountByType countByCodon;
+	CountByType countByAa;
+	CountByType countByGeneRegion;
+	CountByType countByImpact;
+	CountByType countByFunctionalClass;
+	CountByType countByBioType;
+	HashSet<String> codonSet, aaSet, geneSet;
 	GeneCountByTypeTable geneCountByRegionTable;
 	GeneCountByTypeTable geneCountByImpactTable;
 	GeneCountByTypeTable geneCountByEffectTable;
@@ -151,7 +158,7 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 				, 100 * countByGeneRegion.percent("" + EffectType.SPLICE_SITE_ACCEPTOR) //
 				, 100 * countByGeneRegion.percent("" + EffectType.UTR_3_PRIME) //
 				, 100 * countByGeneRegion.percent("" + EffectType.DOWNSTREAM) //
-				);
+		);
 		return gb.toURLString();
 	}
 
