@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.HashSet;
 import java.util.List;
@@ -14,24 +14,22 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
- * Test case
+ * Test cases on deletions
+ *
+ * @author pcingola
  */
-public class TestCasesZzz {
+public class TestCasesDelEtc {
 
-	boolean debug = false;
-	boolean verbose = true || debug;
-
-	public TestCasesZzz() {
-		super();
-	}
+	public static boolean debug = false;
+	public static boolean verbose = false || debug;
 
 	/**
-	 * Insertion on minus strand
+	 * A deletion having multiple splice_regio effects (should show only one)
 	 */
 	@Test
-	public void test_02_InsOffByOne() {
+	public void test_03_del_repeated_effects() {
 		Gpr.debug("Test");
-		String args[] = { "-ud", "0", "testHg3775Chr1", "tests/ins_multiple_splice_region.vcf" };
+		String args[] = { "-ud", "0", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
@@ -65,4 +63,5 @@ public class TestCasesZzz {
 		Assert.assertTrue("No effect annotated", countEffs > 0);
 		Assert.assertFalse("Duplicated effect", repeat);
 	}
+
 }

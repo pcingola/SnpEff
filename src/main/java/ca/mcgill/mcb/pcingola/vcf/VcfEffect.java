@@ -31,39 +31,39 @@ public class VcfEffect {
 	public static boolean debug = false;
 
 	public static String ANN_FIELD_NAMES[] = { //
-	"ALLELE", "GT", "GENOTYPE", //
-			"EFFECT", "ANNOTATION", //
-			"IMPACT", //
-			"GENE", //
-			"GENEID", //
-			"FEATURE", //
-			"FEATUREID", "TRID", //
-			"BIOTYPE", //
-			"RANK", "EXID", //
-			"HGVS_C", "HGVS_DNA", "CODON", //
-			"HGVS", "HGVS_P", "HGVS_PROT", "AA", //
-			"POS_CDNA", "CDNA_POS", //
-			"LEN_CDNA", "CDNA_LEN", //
-			"POS_CDS", "CDS_POS", //
-			"LEN_CDS", "CDS_LEN", //
-			"POS_AA", "AA_POS", //
-			"LEN_AA", "AA_LEN", //
-			"DISTANCE", //
-			"ERRORS", "WARNINGS", "INFOS", //
+		"ALLELE", "GT", "GENOTYPE", //
+		"EFFECT", "ANNOTATION", //
+		"IMPACT", //
+		"GENE", //
+		"GENEID", //
+		"FEATURE", //
+		"FEATUREID", "TRID", //
+		"BIOTYPE", //
+		"RANK", "EXID", //
+		"HGVS_C", "HGVS_DNA", "CODON", //
+		"HGVS", "HGVS_P", "HGVS_PROT", "AA", //
+		"POS_CDNA", "CDNA_POS", //
+		"LEN_CDNA", "CDNA_LEN", //
+		"POS_CDS", "CDS_POS", //
+		"LEN_CDS", "CDS_LEN", //
+		"POS_AA", "AA_POS", //
+		"LEN_AA", "AA_LEN", //
+		"DISTANCE", //
+		"ERRORS", "WARNINGS", "INFOS", //
 	};
 
 	public static String EFF_FIELD_NAMES[] = { //
-	"EFFECT", "IMPACT", "FUNCLASS", "CODON", //
-			"AA", //
-			"HGVS", //
-			"AA_LEN", //
-			"GENE", //
-			"BIOTYPE", //
-			"CODING", //
-			"TRID", //
-			"RANK", "EXID", //
-			"GT", "GENOTYPE_NUMBER", "GENOTYPE", //
-			"ERRORS", "WARNINGS", "INFOS", //
+		"EFFECT", "IMPACT", "FUNCLASS", "CODON", //
+		"AA", //
+		"HGVS", //
+		"AA_LEN", //
+		"GENE", //
+		"BIOTYPE", //
+		"CODING", //
+		"TRID", //
+		"RANK", "EXID", //
+		"GT", "GENOTYPE_NUMBER", "GENOTYPE", //
+		"ERRORS", "WARNINGS", "INFOS", //
 	};
 
 	//	private static HashMap<EffFormatVersion, HashMap<String, Integer>> fieldName2Num = new HashMap<EffFormatVersion, HashMap<String, Integer>>();
@@ -361,7 +361,7 @@ public class VcfEffect {
 			if (lastField.startsWith("ERROR") //
 					|| lastField.startsWith("WARNING") //
 					|| lastField.startsWith("INFO") //
-			) len--;
+					) len--;
 
 			// Guess format
 			if (len <= 11) formatVersion = EffFormatVersion.FORMAT_EFF_2;

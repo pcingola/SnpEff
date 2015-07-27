@@ -676,7 +676,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				&& !alt.equals(VCF_ALT_NON_REF_gVCF) // '<NON_REF>'
 				&& !alt.equals(VCF_ALT_MISSING_REF) // '<*>'
 				&& !alt.equals(ref) // Is ALT different than REF?
-				;
+		;
 	}
 
 	@Override
@@ -1192,7 +1192,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		StringBuilder sb = new StringBuilder(chr //
 				+ "\t" + (start + 1) //
 				+ "\t" + (id.isEmpty() ? "." : id) //
-				);
+		);
 
 		// REF and ALT
 		String refStr = (ref == null || ref.isEmpty() ? "." : ref);
@@ -1329,7 +1329,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				char change[] = new char[size];
 				for (int i = 0; i < change.length; i++)
 					change[i] = reference.length() > i ? reference.charAt(i) : 'N';
-					ch = new String(change);
+				ch = new String(change);
 			}
 
 			// Create SeqChange

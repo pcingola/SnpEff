@@ -2,7 +2,9 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Custom;
@@ -415,10 +417,19 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		// Show all effects
 		StringBuilder sb = new StringBuilder();
 		Collections.sort(effectTypes);
+
+		// More than one effect? Check for repeats
+		Set<String> added = (effectTypes.size() > 1 ? new HashSet<String>() : null);
+
+		// Create string
 		for (EffectType et : effectTypes) {
-			if (sb.length() > 0) sb.append(formatVersion.separator());
-			if (useSeqOntology) sb.append(et.toSequenceOntology(formatVersion, variant));
-			else sb.append(et.toString());
+			String eff = (useSeqOntology ? et.toSequenceOntology(formatVersion, variant) : et.toString());
+
+			// Make sure we don't add the same effect twice
+			if (added == null || added.add(eff)) {
+				if (sb.length() > 0) sb.append(formatVersion.separator());
+				sb.append(eff);
+			}
 		}
 
 		return sb.toString();
