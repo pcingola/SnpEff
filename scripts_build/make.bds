@@ -23,6 +23,9 @@ uploadDev			:= false		help Upload 'development' version
 uploadHtml 			:= false		help Upload weh pages
 zipGenome			:= ""			help Zip a specific genome
 
+# Genome versions
+ensemblRelease := "80"
+
 # Process us one CPU
 cpus = 1
 
@@ -34,6 +37,7 @@ snpeff				:= "java -Xmx10G -jar snpEff.jar "
 snpeffXl			:= "java -Xmx50G -jar snpEff.jar "
 snpeffBuild			:= "$snpeff build -v"
 snpsift				:= "java -jar SnpSift.jar "
+wget				:= "wget -r -N -A"
 
 # Directories
 dirSnpeff			:="$HOME/snpEff"
@@ -260,24 +264,91 @@ void copyPwm() {
 #-------------------------------------------------------------------------------
 
 void downloadAll() {
-	sys ./scripts_build/download_ensembl_bfmpp.sh
-	sys ./scripts_build/download_ensembl.sh
+	# Ensembl genomes
+	downloadEnsembl()
+#	sys ./scripts_build/download_ensembl.sh
+#	sys ./scripts_build/download_ensembl_bfmpp.sh
+#
+#	# Human specific databases
+#	sys ./scripts_build/download_hg19.sh
+#	sys ./scripts_build/download_hg19kg.sh
+#	sys ./scripts_build/download_nextProt.sh
+#	sys ./scripts_build/download_Pwms_Jaspar.sh
+#	sys ./scripts_build/download_gwasCatalog.sh 
+#	sys ./scripts_build/download_epigenome.sh	# This might take a few days
+#	sys ./scripts_build/download_ncbi.sh		# NCBI downloads do not seem to be working OK
+#	#sys ./scripts_build/download_darned.sh		# Darned not working
+#
+#	# Move downloaded data to 'data' dir
+#	sys mv $dirDownload/data/genomes/* data/genomes/ 
+#	sys rmdir $dirDownload/data/genomes 
+#	sys mv $dirDownload/data/* data/ 
+#	sys rmdir $dirDownload/data/
+}
 
-	# Human specific databases
-	sys ./scripts_build/download_hg19.sh
-	sys ./scripts_build/download_hg19kg.sh
-	sys ./scripts_build/download_nextProt.sh
-	sys ./scripts_build/download_Pwms_Jaspar.sh
-	sys ./scripts_build/download_gwasCatalog.sh 
-	sys ./scripts_build/download_epigenome.sh	# This might take a few days
-	sys ./scripts_build/download_ncbi.sh		# NCBI downloads do not seem to be working OK
-	#sys ./scripts_build/download_darned.sh		# Darned not working
+#-------------------------------------------------------------------------------
+# Download ENSEMBL genomes
+#-------------------------------------------------------------------------------
 
-	# Move downloaded data to 'data' dir
-	sys mv $dirDownload/data/genomes/* data/genomes/ 
-	sys rmdir $dirDownload/data/genomes 
-	sys mv $dirDownload/data/* data/ 
-	sys rmdir $dirDownload/data/
+void downloadEnsembl() {
+
+	dir := dirDownload + "/ensembl_$ensemblRelease"
+	dir.chdir()
+
+	# Download all files
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		# Download GTF files (annotations)
+		task $wget "*gtf.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+
+		# Download FASTA files (reference genomes)
+		task $wget "*dna.toplevel.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
+
+		# Download CDS sequences
+		task $wget "*cdna.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
+
+		# Download PROTEIN sequences
+		task $wget "*.pep.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
+
+		# Download regulation tracks
+		task $wget "*AnnotatedFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/regulation/"
+		task $wget "*MotifFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/regulation/"
+		wait
+
+		# Mark as all downloads OK
+		downloadOk.write("OK");
+	}
+
+	# Move files to propper structure in 'local data' dir
+	#sys mv `find ftp.ensembl.org -type f -iname "*gtf.gz" -or -iname "*.fa.gz"` .
+	"data/genomes".mkdir()
+
+	for( string gtf : ".".dir("*.gtf.gz") ) {
+		base := gtf.baseName('.gtf.gz').removeExt()
+		longName := base.split('\.')
+		#shortName := base.substring(longName.length())
+		fasta := "$base.dna.toplevel.fa.gz"
+		cds := "$base.cdna.all.fa.gz"
+		prot := "$base.pep.all.fa.gz"
+		print "$gtf\t$base\t$longName\n"
+	}
+#	for gtf in *.gtf.gz
+#do
+#    short=`../scripts_build/file2GenomeName.pl $gtf | cut -f 5`
+#    base=`../scripts_build/file2GenomeName.pl $gtf | cut -f 7`
+#    echo ANNOTATIONS: $short
+#
+#    fasta="$base.dna.toplevel.fa.gz"
+#    cds="$base.cdna.all.fa.gz"
+#    prot="$base.pep.all.fa.gz"
+#
+#    mkdir -p data/$short
+#    cp $gtf data/$short/genes.gtf.gz
+#    cp $cds data/$short/cds.fa.gz
+#    cp $prot data/$short/protein.fa.gz
+#    cp $fasta data/genomes/$short.fa.gz
+#done
+
 }
 
 #-------------------------------------------------------------------------------
