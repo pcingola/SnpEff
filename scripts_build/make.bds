@@ -25,6 +25,8 @@ zipGenome			:= ""			help Zip a specific genome
 
 # Genome versions
 ensemblRelease := "80"
+GRCH := "GRCh38"
+GRCM := "GRCm38"
 
 # Process us one CPU
 cpus = 1
@@ -295,7 +297,9 @@ void downloadEnsembl() {
 	dir := dirDownload + "/ensembl_$ensemblRelease"
 	dir.chdir()
 
+	#---
 	# Download all files
+	#---
 	downloadOk := "download.ok"
 	if( ! downloadOk.exists() ) {
 		# Download GTF files (annotations)
@@ -319,36 +323,53 @@ void downloadEnsembl() {
 		downloadOk.write("OK");
 	}
 
+	#---
 	# Move files to propper structure in 'local data' dir
-	#sys mv `find ftp.ensembl.org -type f -iname "*gtf.gz" -or -iname "*.fa.gz"` .
+	#---
+
+	# Move downloaded files to current dir
+	sys mv `find ftp.ensembl.org -type f -iname "*gtf.gz" -or -iname "*.fa.gz"` . || true
+
+	# Create data genomes dir
 	"data/genomes".mkdir()
 
+	# Move files
+	println 'Copying files to data dir'
+	string[] configLines;
 	for( string gtf : ".".dir("*.gtf.gz") ) {
-		base := gtf.baseName('.gtf.gz').removeExt()
-		longName := base.split('\.')
-		#shortName := base.substring(longName.length())
-		fasta := "$base.dna.toplevel.fa.gz"
-		cds := "$base.cdna.all.fa.gz"
-		prot := "$base.pep.all.fa.gz"
-		print "$gtf\t$base\t$longName\n"
-	}
-#	for gtf in *.gtf.gz
-#do
-#    short=`../scripts_build/file2GenomeName.pl $gtf | cut -f 5`
-#    base=`../scripts_build/file2GenomeName.pl $gtf | cut -f 7`
-#    echo ANNOTATIONS: $short
-#
-#    fasta="$base.dna.toplevel.fa.gz"
-#    cds="$base.cdna.all.fa.gz"
-#    prot="$base.pep.all.fa.gz"
-#
-#    mkdir -p data/$short
-#    cp $gtf data/$short/genes.gtf.gz
-#    cp $cds data/$short/cds.fa.gz
-#    cp $prot data/$short/protein.fa.gz
-#    cp $fasta data/genomes/$short.fa.gz
-#done
+		base := gtf.baseName('.gtf.gz')
+		baseNoVer := base.removeExt()
+		longName := base.split('\.').head()
+		shortName := base.split('\.').tail().join('.')
 
+		fasta := "$baseNoVer.dna.toplevel.fa.gz"
+		cds := "$baseNoVer.cdna.all.fa.gz"
+		prot := "$baseNoVer.pep.all.fa.gz"
+		println "\t$shortName"
+
+		# Copy files
+		"data/$shortName".mkdir()
+		if( "data/$shortName/genes.gtf.gz" <- gtf )		sys cp $gtf data/$shortName/genes.gtf.gz
+		if( "data/$shortName/cds.fa.gz" <- cds )		sys cp $cds data/$shortName/cds.fa.gz
+		if( "data/$shortName/protein.fa.gz" <- prot )	sys cp $prot data/$shortName/protein.fa.gz
+		if( "data/genomes/$shortName.fa.gz" <- fasta )	sys cp $fasta data/genomes/$shortName.fa.gz
+
+		# Append config lines
+		configLines += "$shortName.genome : $longName"
+		configLines += "$shortName.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+	}
+
+	# Regulation tracks (human and mouse only)
+	sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/homo_sapiens/AnnotatedFeatures.gff.gz data/$GRCH.$ensemblRelease/regulation.gff.gz
+	sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/homo_sapiens/MotifFeatures.gff.gz data/$GRCH.$ensemblRelease/motif.gff.gz
+
+	sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/mus_musculus/AnnotatedFeatures.gff.gz data/$GRCM.$ensemblRelease/regulation.gff.gz
+	sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/mus_musculus/MotifFeatures.gff.gz data/$GRCM.$ensemblRelease/motif.gff.gz
+
+	# Create config file
+	configFile := "$dirSnpeff/snpEff.ENSEMBL_$ensemblRelease.config"
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
 }
 
 #-------------------------------------------------------------------------------
