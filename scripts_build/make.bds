@@ -295,6 +295,7 @@ void downloadAll() {
 void downloadEnsembl() {
 
 	dir := dirDownload + "/ensembl_$ensemblRelease"
+	dir.mkdir()
 	dir.chdir()
 
 	#---
@@ -328,7 +329,7 @@ void downloadEnsembl() {
 	#---
 
 	# Move downloaded files to current dir
-	sys mv `find ftp.ensembl.org -type f -iname "*gtf.gz" -or -iname "*.fa.gz"` . || true
+	sys cp `find ftp.ensembl.org -type f -iname "*gtf.gz" -or -iname "*.fa.gz"` . || true
 
 	# Create data genomes dir
 	"data/genomes".mkdir()
