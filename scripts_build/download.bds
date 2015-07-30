@@ -1,0 +1,304 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+#
+# Download genome data
+#
+#-------------------------------------------------------------------------------
+
+# Genome versions
+ensemblRelease := "80"
+GRCH := "GRCh38"
+GRCM := "GRCm38"
+
+# Commands
+wget				:= "wget -N "
+wgetA				:= "wget -r -N -A"
+
+#-------------------------------------------------------------------------------
+# Download ENSEMBL genomes
+#-------------------------------------------------------------------------------
+void downloadEnsembl() {
+	dir := dirDownload + "/ensembl_$ensemblRelease"
+	dir.mkdir()
+	dir.chdir()
+
+	#---
+	# Download all files
+	#---
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+ 		# Download GTF files (annotations)
+ 		task $wgetA "*gtf.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+ 
+		# Download FASTA files (reference genomes)
+		task $wgetA "*dna.toplevel.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
+ 
+ 		# Download CDS sequences
+ 		task $wgetA "*cdna.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
+ 
+ 		# Download PROTEIN sequences
+ 		task $wgetA "*.pep.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
+ 
+ 		# Download regulation tracks
+ 		task $wgetA "*AnnotatedFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/regulation/"
+ 		task $wgetA "*MotifFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/regulation/"
+		wait
+
+		# Mark as all downloads OK
+		downloadOk.write("OK");
+	}
+
+	#---
+	# Move files to propper structure in 'local data' dir
+	#---
+
+	# Move downloaded files to current dir
+	sys cp `find ftp.ensembl.org -type f -iname "*gtf.gz" -or -iname "*.fa.gz"` . || true
+
+	# Create data genomes dir
+	"data/genomes".mkdir()
+
+	# Move files
+	println 'Copying files to data dir'
+	string[] configLines;
+	for( string gtf : ".".dir("*.gtf.gz") ) {
+		base := gtf.baseName('.gtf.gz')
+		baseNoVer := base.removeExt()
+		longName := base.split('\.').head()
+		shortName := base.split('\.').tail().join('.')
+
+		fasta := "$baseNoVer.dna.toplevel.fa.gz"
+		cds := "$baseNoVer.cdna.all.fa.gz"
+		prot := "$baseNoVer.pep.all.fa.gz"
+		println "\t$shortName"
+
+		# Copy files
+		"data/$shortName".mkdir()
+		if( "data/$shortName/genes.gtf.gz" <- gtf )		sys cp $gtf data/$shortName/genes.gtf.gz
+		if( "data/$shortName/cds.fa.gz" <- cds )		sys cp $cds data/$shortName/cds.fa.gz
+		if( "data/$shortName/protein.fa.gz" <- prot )	sys cp $prot data/$shortName/protein.fa.gz
+		if( "data/genomes/$shortName.fa.gz" <- fasta )	sys cp $fasta data/genomes/$shortName.fa.gz
+
+		# Append config lines
+		configLines += "$shortName.genome : $longName"
+		configLines += "$shortName.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+	}
+
+	# Regulation tracks (human and mouse only)
+	sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/homo_sapiens/AnnotatedFeatures.gff.gz data/$GRCH.$ensemblRelease/regulation.gff.gz
+	sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/homo_sapiens/MotifFeatures.gff.gz data/$GRCH.$ensemblRelease/motif.gff.gz
+
+	sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/mus_musculus/AnnotatedFeatures.gff.gz data/$GRCM.$ensemblRelease/regulation.gff.gz
+	sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/mus_musculus/MotifFeatures.gff.gz data/$GRCM.$ensemblRelease/motif.gff.gz
+
+	# Create config file
+	configFile := "$dirSnpeff/snpEff.ENSEMBL_$ensemblRelease.config"
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+}
+
+#-------------------------------------------------------------------------------
+# Download GWAS catalog
+#-------------------------------------------------------------------------------
+void downloadGwasCatalog() {
+	dir := "$dirDb/gwasCatalog"
+	dir.mkdir()
+	dir.chrdir()
+	sys wget http://www.genome.gov/admin/gwascatalog.txt
+	sys cat gwascatalog.txt | $dirScriptsBuild/scripts_build/gwascatalog2vcf.pl > gwascatalog.vcf
+# Annotate VCF file
+java -Xmx4g -jar snpEff.jar eff -v GRCh37.71 db/gwasCatalog/gwascatalog.vcf > db/gwasCatalog/gwascatalog.eff.vcf
+
+}
+
+#-------------------------------------------------------------------------------
+# Download Jaspar
+#-------------------------------------------------------------------------------
+void downloadJaspar() {
+	dir := "$dirDb/jaspar"
+	dir.mkdir()
+	dir.chdir()
+	sys $wget "http://jaspar.binf.ku.dk/html/DOWNLOAD/JASPAR_CORE/pfm/redundant/pfm_all.txt"
+	sys gzip pfm_all.txt
+	sys mv pfm_all.txt.gz pwms.bin
+
+	println "Jaspar: File $dir/pwms.bin created"
+}
+
+#-------------------------------------------------------------------------------
+# Download geome from UCSC
+#-------------------------------------------------------------------------------
+void downloadUcscHg19() {
+	ref := 'hg19'
+	dir := dirDownload + "/ucsc_$ref"
+	dir.mkdir()
+	dir.chdir()
+	
+	#---
+	# Download data
+	#---
+	ori := "$dir/ORI"
+	ori.mkdir()
+	ori.chdir()
+
+	sys $wget http://hgdownload.cse.ucsc.edu/goldenPath/$ref/bigZips/chromFa.tar.gz
+	sys $wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/refMrna.fa.gz
+	sys $wget http://hgdownload.cse.ucsc.edu/goldenPath/$ref/database/refLink.txt.gz
+	sys $wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/protein/protein.fa.gz
+
+	#---
+	# Create FASTA file
+	#---
+	println 'Creating reference FASTA'
+	dir.chdir()
+	dirChr := 'chr'
+	dirChr.mkdir()
+	fasta := "$dir/$ref.fa"
+	fastaGz := "$dir/$ref.fa.gz"
+	task( fastaGz <- "$ori/chromFa.tar.gz" ) {
+		sys cd $dirChr
+		sys tar -xvzf $ori/chromFa.tar.gz
+		sys rm -f $fasta
+		sys cat chr[1-9].fa    >> $fasta
+		sys cat chr??.fa       >> $fasta
+		sys cat chr[A-Z].fa    >> $fasta
+		sys cat chr???*.fa     >> $fasta
+		sys gzip $fasta
+	}
+
+	#---
+	# Query database
+	#---
+	queryUcsc(ref, dir)
+
+	#---
+	# Create protein FASTA
+	# Scripts:
+	#    - hg19_proteinFasta2NM.pl: Converts from ProteinIDs to TranscriptID
+	#    - hg19_proteinFastaReplaceName.pl : Adds TranscriptID version to TranscriptID
+	#---
+	println 'Creating proteins FASTA'
+	task( "$ori/refLink.txt" <- "$ori/refLink.txt.gz") sys gunzip -c $ori/refLink.txt.gz > $ori/refLink.txt
+	wait
+	task( "$dir/protein.fa.gz" <- "$ori/protein.fa.gz") {
+		sys gunzip -c $ori/protein.fa.gz \
+		| $dirScriptsBuild/hg19_proteinFasta2NM.pl $ori/refLink.txt \
+		| $dirScriptsBuild/hg19_proteinFastaReplaceName.pl genes.refseq.gz \
+		> $dir/protein.fa
+		sys gzip -f $dir/protein.fa
+	}
+
+	#---
+	# Create CDS FASTA
+	# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" 
+	#---
+	println 'Creating CDS FASTA'
+	task( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
+		sys gunzip -c $ori/refMrna.fa.gz | tr " " "." > $dir/cds.fa
+		sys gzip -f $dir/cds.fa
+	}
+
+	wait
+}
+
+#-------------------------------------------------------------------------------
+# Download geome from UCSC (Known genes)
+#-------------------------------------------------------------------------------
+void downloadUcscHg19Kg() {
+	ref := 'hg19kg'
+	refdb := 'hg19'
+	dir := dirDownload + "/ucsc_$ref"
+	dir.mkdir()
+	dir.chdir()
+	
+	#---
+	# Query database
+	#---
+	queryUcscKg(ref, refdb, dir)
+
+	wait
+}
+
+#-------------------------------------------------------------------------------
+# Download geome from UCSC
+#-------------------------------------------------------------------------------
+void downloadUcscHg38() {
+	ref := 'hg38'
+	dir := dirDownload + "/ucsc_$ref"
+	dir.mkdir()
+	dir.chdir()
+	
+	#---
+	# Download data
+	#---
+	ori := "$dir/ORI"
+	ori.mkdir()
+	ori.chdir()
+
+	sys $wget http://hgdownload.cse.ucsc.edu/goldenPath/$ref/bigZips/$ref.fa.gz
+	sys $wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/refMrna.fa.gz
+
+	#---
+	# Query gene database
+	#---
+	queryUcsc(ref, dir)
+
+	#---
+	# Create CDS FASTA
+	# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" 
+	#---
+	println 'Creating CDS FASTA'
+	task( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
+		sys gunzip -c $ori/refMrna.fa.gz | tr " " "." > $dir/cds.fa
+		sys gzip -f $dir/cds.fa
+	}
+
+	wait
+}
+
+#-------------------------------------------------------------------------------
+# Download geome from UCSC (Known genes)
+#-------------------------------------------------------------------------------
+void downloadUcscHg38Kg() {
+	ref := 'hg38kg'
+	refdb := 'hg38'
+	dir := dirDownload + "/ucsc_$ref"
+	dir.mkdir()
+	dir.chdir()
+	
+	#---
+	# Query database
+	#---
+	queryUcscKg(ref, refdb, dir)
+
+	wait
+}
+
+#-------------------------------------------------------------------------------
+# Query MySql's database (RefSeq)
+#-------------------------------------------------------------------------------
+string queryUcsc(string ref, string dir) {
+	refSeq := "$dir/genes.refseq"
+	refSeqGz := "$dir/genes.refseq.gz"
+	println "Querying database for RefSeq genes: $ref"
+	if( !refSeqGz.exists() ) {
+		sys echo "use $ref; select rg.bin as 'binNum', CONCAT(rg.name,'.',gi.version) as 'name', rg.chrom, rg.strand, rg.txStart, rg.txEnd, rg.cdsStart, rg.cdsEnd, rg.exonCount, rg.exonStarts, rg.exonEnds, rg.score, rg.name2, rg.cdsStartStat, rg.cdsEndStat, rg.exonFrames from refGene rg inner join gbCdnaInfo gi on rg.name=gi.acc ;" | mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A $ref > $refSeq
+		sys gzip -f $refSeq
+	}
+	return refSeqGz
+}
+
+#-------------------------------------------------------------------------------
+# Query MySql's database (KnonwGene)
+#-------------------------------------------------------------------------------
+string queryUcscKg(string ref,string refdb, string dir) {
+	refSeq := "$dir/genes.refseq"
+	refSeqGz := "$dir/genes.refseq.gz"
+	println "Querying database for RefSeq genes: $ref"
+	if( !refSeqGz.exists() ) {
+		sys echo "use $refdb; select  kg.name as '#name' , kg.chrom , kg.strand , kg.txStart , kg.txEnd , kg.cdsStart , kg.cdsEnd , kg.exonCount , kg.exonStarts , kg.exonEnds , kg.proteinID , kg.alignID from knownGene kg;" | mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A $refdb > $refSeq
+		sys gzip -f $refSeq
+	}
+	return refSeqGz
+}
