@@ -117,7 +117,7 @@ void downloadEnsembl() {
 # Download ENSEMBL genomes (BFMPP)
 #-------------------------------------------------------------------------------
 void downloadEnsemblBfmpp() {
-	dir := dirDownload + "/ensembl_bfmpp_$ensemblRelease"
+	dir := dirDownload + "/ensembl_bfmpp_$ensemblBfmppRelease"
 	site := "ftp://ftp.ensemblgenomes.org"
 	dir.mkdir()
 	dir.chdir()
@@ -127,20 +127,21 @@ void downloadEnsemblBfmpp() {
 	#---
 	downloadOk := "download.ok"
 	if( ! downloadOk.exists() ) {
-		println "Downloading ENSEMBL (BFMPP) $ensemblRelease"
+		println "Downloading ENSEMBL (BFMPP) $ensemblBfmppRelease"
 
-		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'misc_data', 'plants', 'protists'] ) {
+		#for(string org : [ 'bacteria', 'fungi', 'metazoa', 'misc_data', 'plants', 'protists'] ) {
+		for(string org : [ 'protists'] ) {
 			# Download GTF files (annotations)
-			task $wgetA "*gtf.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/gtf/"
+			task $wgetA "*gtf.gz" "$site/pub/$org/release-$ensemblBfmppRelease/gtf/"
         
 			# Download FASTA files (reference genomes)
-			task $wgetA "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
+			task $wgetA "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ensemblBfmppRelease/fasta/"
         
 			# Download CDS sequences
-			task $wgetA "*cdna.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
+			task $wgetA "*cdna.all.fa.gz" "$site/pub/$org/release-$ensemblBfmppRelease/fasta/"
         
 			# Download PROTEIN sequences
-			task $wgetA "*.pep.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
+			task $wgetA "*.pep.all.fa.gz" "$site/pub/$org/release-$ensemblBfmppRelease/fasta/"
 		}
 		wait
 
@@ -151,41 +152,40 @@ void downloadEnsemblBfmpp() {
 	#---
 	# Move files to propper structure in 'local data' dir
 	#---
-	files := sys find ftp.ensemblgenomes.org -type f
-	for(string f : files.lines() ) {
-    	sys cp -v "$f" .
-	}
-
-	# Move files
-	println 'Copying files to data dir'
-	string[] configLines;
-	for( string gtf : ".".dir("*.gtf.gz") ) {
-		base := gtf.baseName('.gtf.gz')
-		baseNoVer := base.removeExt()
-		longName := base.split('\.').head()
-		shortName := base.split('\.').tail().join('.')
-
-		fasta := "$baseNoVer.dna.toplevel.fa.gz"
-		cds := "$baseNoVer.cdna.all.fa.gz"
-		prot := "$baseNoVer.pep.all.fa.gz"
-		println "\t$shortName"
-
-		# Copy files
-		"data/$shortName".mkdir()
-		if( "data/$shortName/genes.gtf.gz" <- gtf )		sys cp $gtf data/$shortName/genes.gtf.gz
-		if( "data/$shortName/cds.fa.gz" <- cds )		sys cp $cds data/$shortName/cds.fa.gz
-		if( "data/$shortName/protein.fa.gz" <- prot )	sys cp $prot data/$shortName/protein.fa.gz
-		if( "data/genomes/$shortName.fa.gz" <- fasta )	sys cp $fasta data/genomes/$shortName.fa.gz
-
-		# Append config lines
-		configLines += "$shortName.genome : $longName"
-		configLines += "$shortName.reference : $site"
-	}
-
-	# Create config file
 	configFile := "$dirSnpeff/snpEff.ENSEMBL_BFMPP_$ensemblRelease.config"
-	println "Writing config file $configFile"
-	configFile.write( configLines.join("\n") )
+	if( !configFile.exists() ) {
+		# Copy files to local dir
+		sys find ftp.ensemblgenomes.org -type f | head | xargs -I + cp -v + .
+
+		# Move files
+		println 'Copying files to data dir'
+		string[] configLines;
+		for( string gtf : ".".dir("*.gtf.gz") ) {
+			base := gtf.baseName('.gtf.gz')
+			longName := base.split('\.').head()
+			shortName := base.split('\.').tail().join('.')
+
+			fasta := "$base.dna.toplevel.fa.gz"
+			cds := "$base.cdna.all.fa.gz"
+			prot := "$base.pep.all.fa.gz"
+			println "\t$shortName"
+
+			# Copy files
+			"data/$shortName".mkdir()
+			if( "data/$shortName/genes.gtf.gz" <- gtf )		sys cp $gtf data/$shortName/genes.gtf.gz
+			if( "data/$shortName/cds.fa.gz" <- cds )		sys cp $cds data/$shortName/cds.fa.gz
+			if( "data/$shortName/protein.fa.gz" <- prot )	sys cp $prot data/$shortName/protein.fa.gz
+			if( "data/genomes/$shortName.fa.gz" <- fasta )	sys cp $fasta data/genomes/$shortName.fa.gz
+
+			# Append config lines
+			configLines += "$shortName.genome : $longName"
+			configLines += "$shortName.reference : $site"
+		}
+
+		# Create config file
+		println "Writing config file $configFile"
+		configFile.write( configLines.join("\n") )
+	}
 }
 
 #-------------------------------------------------------------------------------
