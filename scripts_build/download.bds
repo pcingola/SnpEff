@@ -28,7 +28,7 @@ bool fetch(string url) {
 # Download ENSEMBL genomes
 #-------------------------------------------------------------------------------
 void downloadEnsembl() {
-	dir := dirDownload + "/ensembl_$ensemblRelease"
+	dir := "$dirDownload/ensembl_$ensemblRelease"
 	dir.mkdir()
 	dir.chdir()
 
@@ -114,7 +114,7 @@ void downloadEnsembl() {
 # Download ENSEMBL genomes (BFMPP)
 #-------------------------------------------------------------------------------
 void downloadEnsemblBfmpp() {
-	dir := dirDownload + "/ensembl_bfmpp_$ensemblBfmppRelease"
+	dir := "$dirDownload/ensembl_bfmpp_$ensemblBfmppRelease"
 	site := "ftp://ftp.ensemblgenomes.org"
 	dir.mkdir()
 	dir.chdir()
@@ -213,6 +213,7 @@ void downloadFlyBase() {
 			configLines += "$g.genome : $g"
 			configLines += "$g.reference : $url"
 		}
+
 		println "Writing config file $configFile"
 		configFile.write( configLines.join("\n") )
 	}
@@ -246,6 +247,47 @@ void downloadJaspar() {
 }
 
 #-------------------------------------------------------------------------------
+# Download NCBI
+#-------------------------------------------------------------------------------
+void downloadNcbi() {
+	println "Downloading NCBI genomes"
+	dir := "$dirDownload/ncbi"
+	dir.mkdir()
+	dir.chdir()
+
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Downloading ENSEMBL (BFMPP) $ensemblBfmppRelease"
+
+		task $wgetA "gbk" "ftp://ftp.ncbi.nih.gov/genomes/Bacteria/"
+		wait 
+		sys mv "ftp.ncbi.nih.gov/genomes/Bacteria/*" .
+
+		# Mark as all downloads OK
+		downloadOk.write("OK")
+	}
+
+	configFile := "$dirSnpeff/snpEff.NCBI_bacterial.config"
+	if( !configFile.exists() ) {
+		string[] configLines
+
+		genomes := sys find . -mindepth 1 -maxdepth 1 -type d
+		for( string gdir : genomes.lines() ) {
+			gen := gdir.baseName()
+			configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
+
+			# Collapse all geneBank files into one 
+			sys cd $gdir
+			sys rm -f genes.gbk
+			sys cat *.gbk > genes.gbk
+		}
+
+		println "Writing config file $configFile"
+		configFile.write( configLines.join("\n") )
+	}
+}
+
+#-------------------------------------------------------------------------------
 # Download NextProt
 #-------------------------------------------------------------------------------
 void downloadNextProt() {
@@ -266,7 +308,7 @@ void downloadNextProt() {
 void downloadUcscHg19() {
 	println "Downloading hg19 (UCSC)"
 	ref := 'hg19'
-	dir := dirDownload + "/ucsc_$ref"
+	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
 	dir.chdir()
 	
@@ -325,13 +367,12 @@ void downloadUcscHg19Kg() {
 	println "Downloading hg19 (UCSC: Known Genes)"
 	ref := 'hg19kg'
 	refdb := 'hg19'
-	dir := dirDownload + "/ucsc_$ref"
+
+	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
 	dir.chdir()
 	
-	#---
 	# Query database
-	#---
 	queryUcscKg(ref, refdb, dir)
 
 	wait
@@ -343,7 +384,8 @@ void downloadUcscHg19Kg() {
 void downloadUcscHg38() {
 	println "Downloading hg38 (UCSC)"
 	ref := 'hg38'
-	dir := dirDownload + "/ucsc_$ref"
+
+	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
 	dir.chdir()
 	
@@ -357,9 +399,7 @@ void downloadUcscHg38() {
 	fetch("http://hgdownload.cse.ucsc.edu/goldenPath/$ref/bigZips/$ref.fa.gz")
 	fetch("http://hgdownload.soe.ucsc.edu/goldenPath/$ref/bigZips/refMrna.fa.gz")
 
-	#---
 	# Query gene database
-	#---
 	queryUcsc(ref, dir)
 
 	#---
@@ -381,13 +421,12 @@ void downloadUcscHg38Kg() {
 	println "Doanloading hg38 (UCSC Knonwn Genes)"
 	ref := 'hg38kg'
 	refdb := 'hg38'
-	dir := dirDownload + "/ucsc_$ref"
+
+	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
 	dir.chdir()
 	
-	#---
 	# Query database
-	#---
 	queryUcscKg(ref, refdb, dir)
 
 	wait
@@ -399,7 +438,7 @@ void downloadUcscHg38Kg() {
 void downloadUcscMm10() {
 	println "Downloading mm10 (UCSC)"
 	ref := 'mm10'
-	dir := dirDownload + "/ucsc_$ref"
+	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
 	dir.chdir()
 	
@@ -436,7 +475,7 @@ void downloadUcscMm10() {
 #-------------------------------------------------------------------------------
 void downloadPdb() {
 	println "Downloading PDB"
-	dir := dirDownload + "/pdb"
+	dir := "$dirDb/pdb"
 	dir.mkdir()
 	dir.chdir()
 
