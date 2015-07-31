@@ -33,6 +33,7 @@ ensemblBfmppRelease	:= "27"
 flybaseRelease		:= "FB2015_01"
 flybaseGenomes		:= [ 'dana_r1.04', 'dere_r1.04', 'dgri_r1.3', 'dmel_r6.04', 'dmoj_r1.3', 'dper_r1.3', 'dpse_r3.03', 'dsec_r1.3', 'dsim_r2.01', 'dvir_r1.2', 'dwil_r1.3', 'dyak_r1.04' ]
 GRCH				:= "GRCh38"
+humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 GRCM				:= "GRCm38"
 
 # Configuration parameters
@@ -289,17 +290,12 @@ void downloadAll() {
 #	# Other databases
 #	downloadJaspar()
 #	downloadGwasCatalog()
-
-	# Non-human
-	#downloadFlyBase()
-	downloadUcscMm10()
-
-#	sys ./scripts_build/download_ensembl_bfmpp.sh
+#	downloadNextProt()
+	downloadPdb()
 #
-#	# Human specific databases
-#	sys ./scripts_build/download_nextProt.sh
-#	sys ./scripts_build/download_epigenome.sh	# This might take a few days
-#	sys ./scripts_build/download_ncbi.sh		# NCBI downloads do not seem to be working OK
+#	# Non-human
+#	downloadFlyBase()
+#	downloadUcscMm10()
 }
 
 #-------------------------------------------------------------------------------

@@ -246,6 +246,21 @@ void downloadJaspar() {
 }
 
 #-------------------------------------------------------------------------------
+# Download NextProt
+#-------------------------------------------------------------------------------
+void downloadNextProt() {
+	println "Downloading NextProt"
+	dir := "$dirDb/nextProt"
+	dir.mkdir()
+	dir.chdir()
+
+	for( string chr : humanChrs ) {
+		fetch("ftp://ftp.nextprot.org/pub/current_release/xml/nextprot_chromosome_$chr.xml.gz")
+		task gunzip nextprot_chromosome_$chr.xml.gz
+	}
+}
+
+#-------------------------------------------------------------------------------
 # Download geome from UCSC
 #-------------------------------------------------------------------------------
 void downloadUcscHg19() {
@@ -414,6 +429,18 @@ void downloadUcscMm10() {
 	}
 
 	wait
+}
+
+#-------------------------------------------------------------------------------
+# Download PDB
+#-------------------------------------------------------------------------------
+void downloadPdb() {
+	println "Downloading PDB"
+	dir := dirDownload + "/pdb"
+	dir.mkdir()
+	dir.chdir()
+
+	task rsync -rlpt -v -z --delete --port=33444 rsync.wwpdb.org::ftp_data/structures/divided/pdb/ .
 }
 
 #-------------------------------------------------------------------------------
