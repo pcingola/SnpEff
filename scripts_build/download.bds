@@ -8,6 +8,7 @@
 
 # Genome versions
 ensemblRelease := "80"
+ensemblBfmppRelease := "27"
 GRCH := "GRCh38"
 GRCM := "GRCm38"
 
@@ -18,12 +19,14 @@ wgetA				:= "wget -r -N -A"
 #-------------------------------------------------------------------------------
 # Fetch a file
 #-------------------------------------------------------------------------------
-void fetch(string url) {
+bool fetch(string url) {
 	base := url.baseName()
 	if( base <- url ) {
-		println "Downloading '$url'"
+		println "Downloading '$url' to '$base'"
 		sys $wget $url
+		return true
 	}
+	return false
 }
 
 #-------------------------------------------------------------------------------
@@ -65,7 +68,6 @@ void downloadEnsembl() {
 	#---
 	# Move files to propper structure in 'local data' dir
 	#---
-
 	# Move downloaded files to current dir
 	sys cp `find ftp.ensembl.org -type f -iname "*gtf.gz" -or -iname "*.fa.gz"` . || true
 
@@ -112,6 +114,81 @@ void downloadEnsembl() {
 }
 
 #-------------------------------------------------------------------------------
+# Download ENSEMBL genomes (BFMPP)
+#-------------------------------------------------------------------------------
+void downloadEnsemblBfmpp() {
+	dir := dirDownload + "/ensembl_bfmpp_$ensemblRelease"
+	site := "ftp://ftp.ensemblgenomes.org"
+	dir.mkdir()
+	dir.chdir()
+
+	#---
+	# Download all files
+	#---
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Downloading ENSEMBL (BFMPP) $ensemblRelease"
+
+		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'misc_data', 'plants', 'protists'] ) {
+			# Download GTF files (annotations)
+			task $wgetA "*gtf.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/gtf/"
+        
+			# Download FASTA files (reference genomes)
+			task $wgetA "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
+        
+			# Download CDS sequences
+			task $wgetA "*cdna.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
+        
+			# Download PROTEIN sequences
+			task $wgetA "*.pep.all.fa.gz" "$site/pub/$org/release-$ENSEMBL_BFMPP_RELEASE/fasta/"
+		}
+		wait
+
+		# Mark as all downloads OK
+		downloadOk.write("OK");
+	}
+
+	#---
+	# Move files to propper structure in 'local data' dir
+	#---
+	files := sys find ftp.ensemblgenomes.org -type f
+	for(string f : files.lines() ) {
+    	sys cp -v "$f" .
+	}
+
+	# Move files
+	println 'Copying files to data dir'
+	string[] configLines;
+	for( string gtf : ".".dir("*.gtf.gz") ) {
+		base := gtf.baseName('.gtf.gz')
+		baseNoVer := base.removeExt()
+		longName := base.split('\.').head()
+		shortName := base.split('\.').tail().join('.')
+
+		fasta := "$baseNoVer.dna.toplevel.fa.gz"
+		cds := "$baseNoVer.cdna.all.fa.gz"
+		prot := "$baseNoVer.pep.all.fa.gz"
+		println "\t$shortName"
+
+		# Copy files
+		"data/$shortName".mkdir()
+		if( "data/$shortName/genes.gtf.gz" <- gtf )		sys cp $gtf data/$shortName/genes.gtf.gz
+		if( "data/$shortName/cds.fa.gz" <- cds )		sys cp $cds data/$shortName/cds.fa.gz
+		if( "data/$shortName/protein.fa.gz" <- prot )	sys cp $prot data/$shortName/protein.fa.gz
+		if( "data/genomes/$shortName.fa.gz" <- fasta )	sys cp $fasta data/genomes/$shortName.fa.gz
+
+		# Append config lines
+		configLines += "$shortName.genome : $longName"
+		configLines += "$shortName.reference : $site"
+	}
+
+	# Create config file
+	configFile := "$dirSnpeff/snpEff.ENSEMBL_BFMPP_$ensemblRelease.config"
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+}
+
+#-------------------------------------------------------------------------------
 # Download GWAS catalog
 #-------------------------------------------------------------------------------
 void downloadGwasCatalog() {
@@ -119,8 +196,9 @@ void downloadGwasCatalog() {
 	dir := "$dirDb/gwasCatalog"
 	dir.mkdir()
 	dir.chdir()
-	fetch("http://www.genome.gov/admin/gwascatalog.txt")
-	sys cat gwascatalog.txt | $dirScriptsBuild/scripts_build/gwascatalog2vcf.pl > gwascatalog.vcf
+	if( fetch("http://www.genome.gov/admin/gwascatalog.txt") ) {
+		sys cat gwascatalog.txt | $dirScriptsBuild/gwascatalog2vcf.pl > gwascatalog.vcf
+	}
 }
 
 #-------------------------------------------------------------------------------
@@ -131,10 +209,10 @@ void downloadJaspar() {
 	dir := "$dirDb/jaspar"
 	dir.mkdir()
 	dir.chdir()
-	fetch("http://jaspar.binf.ku.dk/html/DOWNLOAD/JASPAR_CORE/pfm/redundant/pfm_all.txt")
-	sys gzip pfm_all.txt
-	sys mv pfm_all.txt.gz pwms.bin
-	println "Jaspar: File $dir/pwms.bin created"
+	if( fetch("http://jaspar.binf.ku.dk/html/DOWNLOAD/JASPAR_CORE/pfm/redundant/pfm_all.txt") ) {
+		sys gzip -c pfm_all.txt > pwms.bin
+		println "Jaspar: File $dir/pwms.bin created"
+	}
 }
 
 #-------------------------------------------------------------------------------

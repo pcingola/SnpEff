@@ -266,34 +266,26 @@ void copyPwm() {
 #-------------------------------------------------------------------------------
 
 void downloadAll() {
-	# Ensembl genomes
-	downloadEnsembl()
+#	# Ensembl genomes
+#	downloadEnsembl()
+	downloadEnsemblBfmpp()
+#
+#	# UCSC genomes
+#	downloadUcscHg19()
+#	downloadUcscHg19Kg()
+#	downloadUcscHg38()
+#	downloadUcscHg38Kg()
+#
+#	# Other databases
+#	downloadJaspar()
+#	downloadGwasCatalog()
 
-	# UCSC genomes
-	downloadUcscHg19()
-	downloadUcscHg19Kg()
-	downloadUcscHg38()
-	downloadUcscHg38Kg()
-
-	# Other databases
-	downloadJaspar()
-
-#	sys ./scripts_build/download_ensembl.sh
 #	sys ./scripts_build/download_ensembl_bfmpp.sh
 #
 #	# Human specific databases
 #	sys ./scripts_build/download_nextProt.sh
-#	sys ./scripts_build/download_Pwms_Jaspar.sh
-#	sys ./scripts_build/download_gwasCatalog.sh 
 #	sys ./scripts_build/download_epigenome.sh	# This might take a few days
 #	sys ./scripts_build/download_ncbi.sh		# NCBI downloads do not seem to be working OK
-#	#sys ./scripts_build/download_darned.sh		# Darned not working
-#
-#	# Move downloaded data to 'data' dir
-#	sys mv $dirDownload/data/genomes/* data/genomes/ 
-#	sys rmdir $dirDownload/data/genomes 
-#	sys mv $dirDownload/data/* data/ 
-#	sys rmdir $dirDownload/data/
 }
 
 #-------------------------------------------------------------------------------
