@@ -1,6 +1,8 @@
 #!/bin/sh -e
 
-. `dirname $0`/config.sh
+# Separate version-subversion by '_'
+# E.g.: '4_1' (instead of '4.1')
+export VERSION=4_1
 
 #---
 # Build SnpEff
@@ -10,14 +12,14 @@ cd $HOME/workspace/SnpEff/
 
 mvn clean compile assembly:assembly
 
-cp target/snpEff-$VERSION_SNPEFF-jar-with-dependencies.jar $HOME/snpEff/snpEff.jar
+cp target/snpEff-$VERSION-jar-with-dependencies.jar $HOME/snpEff/snpEff.jar
 
 # Install JAR file in local Maven repo
 mvn install:install-file \
-	-Dfile=target/snpEff-$VERSION_SNPEFF.jar \
+	-Dfile=target/snpEff-$VERSION.jar \
 	-DgroupId=ca.mcgill.mcb.pcingola \
 	-DartifactId=snpEff \
-	-Dversion=$VERSION_SNPEFF \
+	-Dversion=$VERSION \
 	-Dpackaging=jar \
 	-DgeneratePom=true \
 	--quiet
@@ -31,14 +33,14 @@ cd $HOME/workspace/SnpSift/
 
 mvn clean compile assembly:assembly
 
-cp target/snpSift-$VERSION_SNPSIFT-jar-with-dependencies.jar $HOME/snpEff/SnpSift.jar
+cp target/snpSift-$VERSION-jar-with-dependencies.jar $HOME/snpEff/SnpSift.jar
 
 # Install JAR file in local Maven repo
 mvn install:install-file \
-	-Dfile=target/snpSift-$VERSION_SNPSIFT.jar \
+	-Dfile=target/snpSift-$VERSION.jar \
 	-DgroupId=ca.mcgill.mcb.pcingola \
 	-DartifactId=snpSift \
-	-Dversion=$VERSION_SNPSIFT \
+	-Dversion=$VERSION \
 	-Dpackaging=jar \
 	-DgeneratePom=true \
 	--quiet
