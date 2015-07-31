@@ -16,6 +16,17 @@ wget				:= "wget -N "
 wgetA				:= "wget -r -N -A"
 
 #-------------------------------------------------------------------------------
+# Fetch a file
+#-------------------------------------------------------------------------------
+void fetch(string url) {
+	base := url.baseName()
+	if( base <- url ) {
+		println "Downloading '$url'"
+		sys $wget $url
+	}
+}
+
+#-------------------------------------------------------------------------------
 # Download ENSEMBL genomes
 #-------------------------------------------------------------------------------
 void downloadEnsembl() {
@@ -28,6 +39,8 @@ void downloadEnsembl() {
 	#---
 	downloadOk := "download.ok"
 	if( ! downloadOk.exists() ) {
+		println "Downloading ENSEMBL $ensemblRelease"
+
  		# Download GTF files (annotations)
  		task $wgetA "*gtf.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
  
@@ -102,27 +115,25 @@ void downloadEnsembl() {
 # Download GWAS catalog
 #-------------------------------------------------------------------------------
 void downloadGwasCatalog() {
+	println "Downloading Gwas Catalog"
 	dir := "$dirDb/gwasCatalog"
 	dir.mkdir()
-	dir.chrdir()
-	sys wget http://www.genome.gov/admin/gwascatalog.txt
+	dir.chdir()
+	fetch("http://www.genome.gov/admin/gwascatalog.txt")
 	sys cat gwascatalog.txt | $dirScriptsBuild/scripts_build/gwascatalog2vcf.pl > gwascatalog.vcf
-# Annotate VCF file
-java -Xmx4g -jar snpEff.jar eff -v GRCh37.71 db/gwasCatalog/gwascatalog.vcf > db/gwasCatalog/gwascatalog.eff.vcf
-
 }
 
 #-------------------------------------------------------------------------------
 # Download Jaspar
 #-------------------------------------------------------------------------------
 void downloadJaspar() {
+	println "Downloading Jaspar"
 	dir := "$dirDb/jaspar"
 	dir.mkdir()
 	dir.chdir()
-	sys $wget "http://jaspar.binf.ku.dk/html/DOWNLOAD/JASPAR_CORE/pfm/redundant/pfm_all.txt"
+	fetch("http://jaspar.binf.ku.dk/html/DOWNLOAD/JASPAR_CORE/pfm/redundant/pfm_all.txt")
 	sys gzip pfm_all.txt
 	sys mv pfm_all.txt.gz pwms.bin
-
 	println "Jaspar: File $dir/pwms.bin created"
 }
 
@@ -130,6 +141,7 @@ void downloadJaspar() {
 # Download geome from UCSC
 #-------------------------------------------------------------------------------
 void downloadUcscHg19() {
+	println "Downloading hg19 (UCSC)"
 	ref := 'hg19'
 	dir := dirDownload + "/ucsc_$ref"
 	dir.mkdir()
@@ -142,10 +154,10 @@ void downloadUcscHg19() {
 	ori.mkdir()
 	ori.chdir()
 
-	sys $wget http://hgdownload.cse.ucsc.edu/goldenPath/$ref/bigZips/chromFa.tar.gz
-	sys $wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/refMrna.fa.gz
-	sys $wget http://hgdownload.cse.ucsc.edu/goldenPath/$ref/database/refLink.txt.gz
-	sys $wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/protein/protein.fa.gz
+	fetch("http://hgdownload.cse.ucsc.edu/goldenPath/$ref/bigZips/chromFa.tar.gz")
+	fetch("http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/refMrna.fa.gz")
+	fetch("http://hgdownload.cse.ucsc.edu/goldenPath/$ref/database/refLink.txt.gz")
+	fetch("ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/protein/protein.fa.gz")
 
 	#---
 	# Create FASTA file
@@ -206,6 +218,7 @@ void downloadUcscHg19() {
 # Download geome from UCSC (Known genes)
 #-------------------------------------------------------------------------------
 void downloadUcscHg19Kg() {
+	println "Downloading hg19 (UCSC: Known Genes)"
 	ref := 'hg19kg'
 	refdb := 'hg19'
 	dir := dirDownload + "/ucsc_$ref"
@@ -224,6 +237,7 @@ void downloadUcscHg19Kg() {
 # Download geome from UCSC
 #-------------------------------------------------------------------------------
 void downloadUcscHg38() {
+	println "Downloading hg38 (UCSC)"
 	ref := 'hg38'
 	dir := dirDownload + "/ucsc_$ref"
 	dir.mkdir()
@@ -236,8 +250,8 @@ void downloadUcscHg38() {
 	ori.mkdir()
 	ori.chdir()
 
-	sys $wget http://hgdownload.cse.ucsc.edu/goldenPath/$ref/bigZips/$ref.fa.gz
-	sys $wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/refMrna.fa.gz
+	fetch("http://hgdownload.cse.ucsc.edu/goldenPath/$ref/bigZips/$ref.fa.gz")
+	fetch("http://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/refMrna.fa.gz")
 
 	#---
 	# Query gene database
@@ -261,6 +275,7 @@ void downloadUcscHg38() {
 # Download geome from UCSC (Known genes)
 #-------------------------------------------------------------------------------
 void downloadUcscHg38Kg() {
+	println "Doanloading hg38 (UCSC Knonwn Genes)"
 	ref := 'hg38kg'
 	refdb := 'hg38'
 	dir := dirDownload + "/ucsc_$ref"
@@ -281,8 +296,8 @@ void downloadUcscHg38Kg() {
 string queryUcsc(string ref, string dir) {
 	refSeq := "$dir/genes.refseq"
 	refSeqGz := "$dir/genes.refseq.gz"
-	println "Querying database for RefSeq genes: $ref"
 	if( !refSeqGz.exists() ) {
+		println "Querying database for RefSeq genes: $ref"
 		sys echo "use $ref; select rg.bin as 'binNum', CONCAT(rg.name,'.',gi.version) as 'name', rg.chrom, rg.strand, rg.txStart, rg.txEnd, rg.cdsStart, rg.cdsEnd, rg.exonCount, rg.exonStarts, rg.exonEnds, rg.score, rg.name2, rg.cdsStartStat, rg.cdsEndStat, rg.exonFrames from refGene rg inner join gbCdnaInfo gi on rg.name=gi.acc ;" | mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A $ref > $refSeq
 		sys gzip -f $refSeq
 	}
@@ -295,8 +310,8 @@ string queryUcsc(string ref, string dir) {
 string queryUcscKg(string ref,string refdb, string dir) {
 	refSeq := "$dir/genes.refseq"
 	refSeqGz := "$dir/genes.refseq.gz"
-	println "Querying database for RefSeq genes: $ref"
 	if( !refSeqGz.exists() ) {
+		println "Querying database for KnownGenes genes: $ref"
 		sys echo "use $refdb; select  kg.name as '#name' , kg.chrom , kg.strand , kg.txStart , kg.txEnd , kg.cdsStart , kg.cdsEnd , kg.exonCount , kg.exonStarts , kg.exonEnds , kg.proteinID , kg.alignID from knownGene kg;" | mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A $refdb > $refSeq
 		sys gzip -f $refSeq
 	}

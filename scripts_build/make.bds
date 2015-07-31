@@ -282,8 +282,6 @@ void downloadAll() {
 #	sys ./scripts_build/download_ensembl_bfmpp.sh
 #
 #	# Human specific databases
-#	sys ./scripts_build/download_hg19.sh
-#	sys ./scripts_build/download_hg19kg.sh
 #	sys ./scripts_build/download_nextProt.sh
 #	sys ./scripts_build/download_Pwms_Jaspar.sh
 #	sys ./scripts_build/download_gwasCatalog.sh 
