@@ -27,6 +27,14 @@ zipGenome			:= ""			help Zip a specific genome
 # Process us one CPU
 cpus = 1
 
+# Genome versions
+ensemblRelease		:= "80"
+ensemblBfmppRelease	:= "27"
+flybaseRelease		:= "FB2015_01"
+flybaseGenomes		:= [ 'dana_r1.04', 'dere_r1.04', 'dgri_r1.3', 'dmel_r6.04', 'dmoj_r1.3', 'dper_r1.3', 'dpse_r3.03', 'dsec_r1.3', 'dsim_r2.01', 'dvir_r1.2', 'dwil_r1.3', 'dyak_r1.04' ]
+GRCH				:= "GRCh38"
+GRCM				:= "GRCm38"
+
 # Configuration parameters
 bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22", "ENSEMBL_BFMPP_26"]
 
@@ -35,6 +43,8 @@ snpeff				:= "java -Xmx10G -jar snpEff.jar "
 snpeffXl			:= "java -Xmx50G -jar snpEff.jar "
 snpeffBuild			:= "$snpeff build -v"
 snpsift				:= "java -jar SnpSift.jar "
+wget				:= "wget -N "
+wgetA				:= "wget -r -N -A"
 
 # Directories
 dirSnpeff			:="$HOME/snpEff"
@@ -268,7 +278,7 @@ void copyPwm() {
 void downloadAll() {
 #	# Ensembl genomes
 #	downloadEnsembl()
-	downloadEnsemblBfmpp()
+#	downloadEnsemblBfmpp()
 #
 #	# UCSC genomes
 #	downloadUcscHg19()
@@ -279,6 +289,10 @@ void downloadAll() {
 #	# Other databases
 #	downloadJaspar()
 #	downloadGwasCatalog()
+
+	# Non-human
+	#downloadFlyBase()
+	downloadUcscMm10()
 
 #	sys ./scripts_build/download_ensembl_bfmpp.sh
 #
