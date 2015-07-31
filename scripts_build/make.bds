@@ -277,25 +277,25 @@ void copyPwm() {
 #-------------------------------------------------------------------------------
 
 void downloadAll() {
-#	# Ensembl genomes
-#	downloadEnsembl()
-#	downloadEnsemblBfmpp()
-#
-#	# UCSC genomes
-#	downloadUcscHg19()
-#	downloadUcscHg19Kg()
-#	downloadUcscHg38()
-#	downloadUcscHg38Kg()
-#
-#	# Other databases
-#	downloadJaspar()
-#	downloadGwasCatalog()
-#	downloadNextProt()
+	# Ensembl genomes
+	downloadEnsembl()
+	downloadEnsemblBfmpp()
+
+	# UCSC genomes
+	downloadUcscHg19()
+	downloadUcscHg19Kg()
+	downloadUcscHg38()
+	downloadUcscHg38Kg()
+
+	# Other databases
+	downloadJaspar()
+	downloadGwasCatalog()
+	downloadNextProt()
 	downloadPdb()
-#
-#	# Non-human
-#	downloadFlyBase()
-#	downloadUcscMm10()
+
+	# Non-human
+	downloadFlyBase()
+	downloadUcscMm10()
 }
 
 #-------------------------------------------------------------------------------
