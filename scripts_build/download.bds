@@ -43,17 +43,11 @@ void downloadEnsembl() {
  		task $wgetA "*gtf.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
  
 		# Download FASTA files (reference genomes)
-		task $wgetA "*dna.toplevel.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
- 
- 		# Download CDS sequences
- 		task $wgetA "*cdna.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
- 
- 		# Download PROTEIN sequences
- 		task $wgetA "*.pep.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
- 
+		task $wgetA "*dna.toplevel.fa.gz,*cdna.all.fa.gz,*.pep.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
+
  		# Download regulation tracks
- 		task $wgetA "*AnnotatedFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/regulation/"
- 		task $wgetA "*MotifFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/regulation/"
+ 		task $wgetA "*AnnotatedFeatures.gff.gz,*MotifFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/regulation/"
+
 		wait
 
 		# Mark as all downloads OK
@@ -133,12 +127,6 @@ void downloadEnsemblBfmpp() {
         
 			# Download FASTA files (reference genomes)
 			task $wgetA "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ensemblBfmppRelease/fasta/"
-        
-			# Download CDS sequences
-			task $wgetA "*cdna.all.fa.gz" "$site/pub/$org/release-$ensemblBfmppRelease/fasta/"
-        
-			# Download PROTEIN sequences
-			task $wgetA "*.pep.all.fa.gz" "$site/pub/$org/release-$ensemblBfmppRelease/fasta/"
 		}
 		wait
 
