@@ -46,6 +46,7 @@ snpeffBuild			:= "$snpeff build -v"
 snpsift				:= "java -jar SnpSift.jar "
 wget				:= "wget -N "
 wgetA				:= "wget -r -N -A"
+cp					:= "cp -v -u"
 
 # Directories
 dirSnpeff			:="$HOME/snpEff"

@@ -28,6 +28,7 @@ bool fetch(string url) {
 # Download ENSEMBL genomes
 #-------------------------------------------------------------------------------
 void downloadEnsembl() {
+	println "Download ENSEMBL $ensemblRelease"
 	dir := "$dirDownload/ensembl_$ensemblRelease"
 	dir.mkdir()
 	dir.chdir()
@@ -40,7 +41,7 @@ void downloadEnsembl() {
 		println "Downloading ENSEMBL $ensemblRelease"
 
  		# Download GTF files (annotations)
- 		task $wgetA "*gtf.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+ 		task $wgetA "*.$ensemblRelease.gtf.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
  
 		# Download FASTA files (reference genomes)
 		task $wgetA "*dna.toplevel.fa.gz,*cdna.all.fa.gz,*.pep.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
@@ -60,7 +61,7 @@ void downloadEnsembl() {
 	configFile := "$dirSnpeff/snpEff.ENSEMBL_$ensemblRelease.config"
 	if( !configFile.exists() ) {
 		# Move downloaded files to current dir
-		sys cp `find ftp.ensembl.org -type f -iname "*gtf.gz" -or -iname "*.fa.gz"` . || true
+		sys find ftp.ensembl.org -type f | xargs -I + $cp + .
 
 		# Create data genomes dir
 		"data/genomes".mkdir()
@@ -73,18 +74,18 @@ void downloadEnsembl() {
 			baseNoVer := base.removeExt()
 			longName := base.split('\.').head()
 			shortName := base.split('\.').tail().join('.')
+			println "\t$shortName"
 
 			fasta := "$baseNoVer.dna.toplevel.fa.gz"
 			cds := "$baseNoVer.cdna.all.fa.gz"
 			prot := "$baseNoVer.pep.all.fa.gz"
-			println "\t$shortName"
 
 			# Copy files
 			"data/$shortName".mkdir()
-			if( "data/$shortName/genes.gtf.gz" <- gtf )		sys cp $gtf data/$shortName/genes.gtf.gz
-			if( "data/$shortName/cds.fa.gz" <- cds )		sys cp $cds data/$shortName/cds.fa.gz
-			if( "data/$shortName/protein.fa.gz" <- prot )	sys cp $prot data/$shortName/protein.fa.gz
-			if( "data/genomes/$shortName.fa.gz" <- fasta )	sys cp $fasta data/genomes/$shortName.fa.gz
+			if( "data/$shortName/genes.gtf.gz" <- gtf )		sys $cp $gtf data/$shortName/genes.gtf.gz
+			if( "data/$shortName/cds.fa.gz" <- cds )		sys $cp $cds data/$shortName/cds.fa.gz
+			if( "data/$shortName/protein.fa.gz" <- prot )	sys $cp $prot data/$shortName/protein.fa.gz
+			if( "data/genomes/$shortName.fa.gz" <- fasta )	sys $cp $fasta data/genomes/$shortName.fa.gz
 
 			# Append config lines
 			configLines += "$shortName.genome : $longName"
@@ -92,11 +93,11 @@ void downloadEnsembl() {
 		}
 
 		# Regulation tracks (human and mouse only)
-		sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/homo_sapiens/AnnotatedFeatures.gff.gz data/$GRCH.$ensemblRelease/regulation.gff.gz
-		sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/homo_sapiens/MotifFeatures.gff.gz data/$GRCH.$ensemblRelease/motif.gff.gz
+		sys $cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/homo_sapiens/AnnotatedFeatures.gff.gz data/$GRCH.$ensemblRelease/regulation.gff.gz
+		sys $cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/homo_sapiens/MotifFeatures.gff.gz data/$GRCH.$ensemblRelease/motif.gff.gz
 
-		sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/mus_musculus/AnnotatedFeatures.gff.gz data/$GRCM.$ensemblRelease/regulation.gff.gz
-		sys cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/mus_musculus/MotifFeatures.gff.gz data/$GRCM.$ensemblRelease/motif.gff.gz
+		sys $cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/mus_musculus/AnnotatedFeatures.gff.gz data/$GRCM.$ensemblRelease/regulation.gff.gz
+		sys $cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/mus_musculus/MotifFeatures.gff.gz data/$GRCM.$ensemblRelease/motif.gff.gz
 
 		# Create config file
 		println "Writing config file $configFile"
@@ -108,6 +109,7 @@ void downloadEnsembl() {
 # Download ENSEMBL genomes (BFMPP)
 #-------------------------------------------------------------------------------
 void downloadEnsemblBfmpp() {
+	println "Download ENSEMBL BFMPP $ensemblBfmppRelease"
 	dir := "$dirDownload/ensembl_bfmpp_$ensemblBfmppRelease"
 	site := "ftp://ftp.ensemblgenomes.org"
 	dir.mkdir()
@@ -140,7 +142,7 @@ void downloadEnsemblBfmpp() {
 	configFile := "$dirSnpeff/snpEff.ENSEMBL_BFMPP_$ensemblRelease.config"
 	if( !configFile.exists() ) {
 		# Copy files to local dir
-		sys find ftp.ensemblgenomes.org -type f | head | xargs -I + cp -v + .
+		sys find ftp.ensemblgenomes.org -type f | xargs -I + $cp + .
 
 		# Move files
 		println 'Copying files to data dir'
@@ -157,10 +159,10 @@ void downloadEnsemblBfmpp() {
 
 			# Copy files
 			"data/$shortName".mkdir()
-			if( "data/$shortName/genes.gtf.gz" <- gtf )		sys cp $gtf data/$shortName/genes.gtf.gz
-			if( "data/$shortName/cds.fa.gz" <- cds )		sys cp $cds data/$shortName/cds.fa.gz
-			if( "data/$shortName/protein.fa.gz" <- prot )	sys cp $prot data/$shortName/protein.fa.gz
-			if( "data/genomes/$shortName.fa.gz" <- fasta )	sys cp $fasta data/genomes/$shortName.fa.gz
+			if( "data/$shortName/genes.gtf.gz" <- gtf )		sys $cp $gtf data/$shortName/genes.gtf.gz
+			if( "data/$shortName/cds.fa.gz" <- cds )		sys $cp $cds data/$shortName/cds.fa.gz
+			if( "data/$shortName/protein.fa.gz" <- prot )	sys $cp $prot data/$shortName/protein.fa.gz
+			if( "data/genomes/$shortName.fa.gz" <- fasta )	sys $cp $fasta data/genomes/$shortName.fa.gz
 
 			# Append config lines
 			configLines += "$shortName.genome : $longName"
@@ -177,7 +179,7 @@ void downloadEnsemblBfmpp() {
 # Download FlyBase
 #-------------------------------------------------------------------------------
 void downloadFlyBase() {
-	println "Downloading FlyBase $flybaseRelease"
+	println "Download FlyBase $flybaseRelease"
 	dir := "$dirDb/flybase_$flybaseRelease"
 	dir.mkdir()
 	dir.chdir()
@@ -211,7 +213,7 @@ void downloadFlyBase() {
 # Download GWAS catalog
 #-------------------------------------------------------------------------------
 void downloadGwasCatalog() {
-	println "Downloading Gwas Catalog"
+	println "Download Gwas-Catalog"
 	dir := "$dirDb/gwasCatalog"
 	dir.mkdir()
 	dir.chdir()
@@ -224,7 +226,7 @@ void downloadGwasCatalog() {
 # Download Jaspar
 #-------------------------------------------------------------------------------
 void downloadJaspar() {
-	println "Downloading Jaspar"
+	println "Download Jaspar"
 	dir := "$dirDb/jaspar"
 	dir.mkdir()
 	dir.chdir()
@@ -238,7 +240,7 @@ void downloadJaspar() {
 # Download NCBI
 #-------------------------------------------------------------------------------
 void downloadNcbi() {
-	println "Downloading NCBI genomes"
+	println "Download NCBI bacterial"
 	dir := "$dirDownload/ncbi"
 	dir.mkdir()
 	dir.chdir()
@@ -279,7 +281,7 @@ void downloadNcbi() {
 # Download NextProt
 #-------------------------------------------------------------------------------
 void downloadNextProt() {
-	println "Downloading NextProt"
+	println "Download NextProt"
 	dir := "$dirDb/nextProt"
 	dir.mkdir()
 	dir.chdir()
@@ -294,7 +296,7 @@ void downloadNextProt() {
 # Download geome from UCSC
 #-------------------------------------------------------------------------------
 void downloadUcscHg19() {
-	println "Downloading hg19 (UCSC)"
+	println "Download hg19 (UCSC)"
 	ref := 'hg19'
 	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
@@ -352,7 +354,7 @@ void downloadUcscHg19() {
 # Download geome from UCSC (Known genes)
 #-------------------------------------------------------------------------------
 void downloadUcscHg19Kg() {
-	println "Downloading hg19 (UCSC: Known Genes)"
+	println "Download hg19 (UCSC: Known Genes)"
 	ref := 'hg19kg'
 	refdb := 'hg19'
 
@@ -370,7 +372,7 @@ void downloadUcscHg19Kg() {
 # Download geome from UCSC
 #-------------------------------------------------------------------------------
 void downloadUcscHg38() {
-	println "Downloading hg38 (UCSC)"
+	println "Download hg38 (UCSC)"
 	ref := 'hg38'
 
 	dir := "$dirDownload/ucsc_$ref"
@@ -406,7 +408,7 @@ void downloadUcscHg38() {
 # Download geome from UCSC (Known genes)
 #-------------------------------------------------------------------------------
 void downloadUcscHg38Kg() {
-	println "Doanloading hg38 (UCSC Knonwn Genes)"
+	println "Doanload hg38 (UCSC Knonwn Genes)"
 	ref := 'hg38kg'
 	refdb := 'hg38'
 
@@ -424,7 +426,7 @@ void downloadUcscHg38Kg() {
 # Download geome from UCSC
 #-------------------------------------------------------------------------------
 void downloadUcscMm10() {
-	println "Downloading mm10 (UCSC)"
+	println "Download mm10 (UCSC)"
 	ref := 'mm10'
 	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
@@ -462,7 +464,7 @@ void downloadUcscMm10() {
 # Download PDB
 #-------------------------------------------------------------------------------
 void downloadPdb() {
-	println "Downloading PDB"
+	println "Download PDB"
 	dir := "$dirDb/pdb"
 	dir.mkdir()
 	dir.chdir()
