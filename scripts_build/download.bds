@@ -29,6 +29,8 @@ bool fetch(string url) {
 #-------------------------------------------------------------------------------
 void downloadEnsembl() {
 	println "Download ENSEMBL $ensemblRelease"
+	site := "ftp.ensembl.org"
+
 	dir := "$dirDownload/ensembl_$ensemblRelease"
 	dir.mkdir()
 	dir.chdir()
@@ -40,14 +42,23 @@ void downloadEnsembl() {
 	if( ! downloadOk.exists() ) {
 		println "Downloading ENSEMBL $ensemblRelease"
 
- 		# Download GTF files (annotations)
- 		task $wgetA "*.$ensemblRelease.gtf.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
- 
+		# Download GTF files (annotations) as well as regulation tracks
+		task rsync -av	--include='*$ensemblRelease.gtf.gz' \
+						--include='*AnnotatedFeatures.gff.gz' \
+						--include='*MotifFeatures.gff.gz' \
+						--include='*/' \
+						--exclude='*' \
+						rsync://$site/ensembl/pub/release-$ensemblRelease/gtf/ \
+						.
+    
 		# Download FASTA files (reference genomes)
-		task $wgetA "*dna.toplevel.fa.gz,*cdna.all.fa.gz,*.pep.all.fa.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/fasta/"
-
- 		# Download regulation tracks
- 		task $wgetA "*AnnotatedFeatures.gff.gz,*MotifFeatures.gff.gz" "ftp://ftp.ensembl.org/pub/release-$ensemblRelease/regulation/"
+		task rsync -av	--include='*.dna.toplevel.fa.gz' \
+						--include='*.cdna.all.fa.gz' \
+						--include='*.pep.all.fa.gz' \
+						--include='*/' \
+						--exclude='*' \
+						rsync://$site/ensembl/pub/release-$ensemblRelease/fasta/ \
+						.
 
 		wait
 
@@ -61,7 +72,7 @@ void downloadEnsembl() {
 	configFile := "$dirSnpeff/snpEff.ENSEMBL_$ensemblRelease.config"
 	if( !configFile.exists() ) {
 		# Move downloaded files to current dir
-		sys find ftp.ensembl.org -type f | xargs -I + $cp + .
+		sys find . -mindepth 2 -type f | xargs -I + $cp + .
 
 		# Create data genomes dir
 		"data/genomes".mkdir()
@@ -122,7 +133,7 @@ void downloadEnsemblBfmpp() {
 	if( ! downloadOk.exists() ) {
 		println "Downloading ENSEMBL (BFMPP) $ensemblBfmppRelease"
 
-		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'misc_data', 'plants', 'protists'] ) {
+		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'plants', 'protists'] ) {
 			# Download GTF files (annotations)
 			task rsync -av	--include='*$ensemblBfmppRelease.gtf.gz' \
 							--include='*/' \
@@ -151,7 +162,7 @@ void downloadEnsemblBfmpp() {
 	configFile := "$dirSnpeff/snpEff.ENSEMBL_BFMPP_$ensemblRelease.config"
 	if( !configFile.exists() ) {
 		# Copy files to local dir
-		sys find ftp.ensemblgenomes.org -type f | xargs -I + $cp + .
+		sys find . -mindepth 2 -type f | xargs -I + $cp + .
 
 		# Move files
 		println 'Copying files to data dir'
