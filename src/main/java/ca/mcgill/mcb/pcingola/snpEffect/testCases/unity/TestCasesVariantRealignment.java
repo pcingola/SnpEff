@@ -152,7 +152,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	/**
 	 * Test case from Savant's poster
 	 * http://www.well.ox.ac.uk/savant
-	 * (Márton Münz, Elise Ruark, Nazneen Rahman, Gerton Lunter)
+	 * (Marton Munz, Elise Ruark, Nazneen Rahman, Gerton Lunter)
 	 */
 	@Test
 	public void test_05_savant() {
