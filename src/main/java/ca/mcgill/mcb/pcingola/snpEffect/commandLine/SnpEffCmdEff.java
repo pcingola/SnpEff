@@ -72,8 +72,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	boolean anyCancerSample;
 	boolean cancer = false; // Perform cancer comparisons
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
-	boolean createCsvSummary = false; // Use a CSV as output summary
-	boolean createSummary = true; // Do not create summary output file
+	//boolean createCsvSummary = false; // Use a CSV as output summary
+	boolean createSummary = true; // Create summary output file
+	boolean createSummaryCSV = false;
+	boolean createSummaryHTML = false;
 	boolean lossOfFunction = true; // Create loss of function LOF tag?
 	boolean useGeneId = false; // Use gene ID instead of gene name (VCF output)
 	boolean useHgvs = true; // Use Hgvs notation
@@ -86,7 +88,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	String cancerSamples = null;
 	String chrStr = "";
 	String inputFile = ""; // Input file
-	String summaryFile; // Summary output file
+	//String summaryFile; // Summary output file
+	String summaryFileCSV;
+	String summaryFileHTML;
 	String summaryGenesFile; // Gene table file
 	InputFormat inputFormat = InputFormat.VCF; // Format use in input files
 	OutputFormat outputFormat = OutputFormat.VCF; // Output format
@@ -111,7 +115,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		inputFile = ""; // variant input file
 		variantEffectResutFilter = new VariantEffectFilter(); // Filter prediction results
 		filterIntervalFiles = new ArrayList<String>(); // Files used for filter intervals
-		summaryFile = DEFAULT_SUMMARY_FILE;
+		summaryFileHTML = DEFAULT_SUMMARY_FILE;
+		summaryFileCSV = DEFAULT_SUMMARY_CSV_FILE;
 		summaryGenesFile = DEFAULT_SUMMARY_GENES_FILE;
 	}
 
@@ -279,11 +284,16 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	@Override
 	public boolean annotateFinish() {
 		boolean ok = true;
-		if (createSummary && (summaryFile != null)) {
+		if (createSummary) {
 			// Creates a summary output file
-			if (verbose) Timer.showStdErr("Creating summary file: " + summaryFile);
-			if (createCsvSummary) ok &= summary(SUMMARY_CSV_TEMPLATE, summaryFile, true);
-			else ok &= summary(SUMMARY_TEMPLATE, summaryFile, false);
+			if (verbose) {
+				if (createSummaryCSV && (summaryFileCSV != null))
+					Timer.showStdErr("Creating summary file: " + summaryFileCSV);
+				if (createSummaryHTML && (summaryFileHTML != null))
+					Timer.showStdErr("Creating summary file: " + summaryFileHTML);
+			}
+			if (createSummaryCSV) ok &= summary(SUMMARY_CSV_TEMPLATE, summaryFileCSV, true);
+			if (createSummaryHTML) ok &= summary(SUMMARY_TEMPLATE, summaryFileHTML, false);
 
 			// Creates genes output file
 			if (verbose) Timer.showStdErr("Creating genes file: " + summaryGenesFile);
@@ -576,7 +586,12 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		}
 
 		// Create summary file names
-		summaryFile = Gpr.dirName(inputFile) + "/" + base + (createCsvSummary ? "_summary.csv" : "_summary.html");
+		if (createSummary) {
+			if (createSummaryCSV)
+				summaryFileCSV = Gpr.dirName(inputFile) + "/" + base + "_summary.csv";
+			if (createSummaryHTML)
+				summaryFileHTML = Gpr.dirName(inputFile) + "/" + base +  "_summary.html";
+		}
 		summaryGenesFile = Gpr.dirName(inputFile) + "/" + base + "_genes.txt";
 
 		return outputFile;
@@ -629,17 +644,29 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						} else if (outFor.equals("TXT")) usage("Output format 'TXT' has been deprecated. Please use 'VCF' instead.\nYou can extract VCF fields to a TXT file using 'SnpSift extractFields' (http://snpeff.sourceforge.net/SnpSift.html#Extract).");
 						else usage("Unknown output file format '" + outFor + "'");
 					}
-				} else if ((arg.equals("-s") || arg.equalsIgnoreCase("-stats"))) {
+				} else if (arg.equalsIgnoreCase("-htmlStats")) {
+					createSummaryHTML = true;
 					if ((i + 1) < args.length) {
-						summaryFile = args[++i];
-						String base = Gpr.baseName(Gpr.baseName(summaryFile, ".html"), ".csv"); // Extension can be either HTML or CSV
-						String dir = Gpr.dirName(summaryFile);
-						summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
+						summaryFileHTML = args[++i];
+                        if (summaryGenesFile.equals(DEFAULT_SUMMARY_GENES_FILE)) {
+						    String base = Gpr.baseName(summaryFileHTML, ".html"); 
+						    String dir = Gpr.dirName(summaryFileHTML);
+						    summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
+                        }
 					}
-				} else if (arg.equalsIgnoreCase("-noStats")) createSummary = false; // Do not create summary file. It can be much faster (e.g. when parsing VCF files with many samples)
+				} else if ((arg.equals("-s") || arg.equalsIgnoreCase("-stats"))) { 
+					usage("Input format -s and -stats have been deprecated. Please use -htmlStats or -csvStats instead.");
+				} else if (arg.equalsIgnoreCase("-noStats")) createSummary = false; // Deprecated. Do not create summary file. It can be much faster (e.g. when parsing VCF files with many samples)
 				else if (arg.equalsIgnoreCase("-csvStats")) {
-					createCsvSummary = true; // Create a CSV formatted summary file.
-					if (summaryFile.equals(DEFAULT_SUMMARY_FILE)) summaryFile = DEFAULT_SUMMARY_CSV_FILE;
+					createSummaryCSV = true; // Create a CSV formatted summary file.
+                    if ((i+1) < args.length) {
+                        summaryFileCSV = args[++i];
+					    if (summaryGenesFile.equals(DEFAULT_SUMMARY_GENES_FILE)) {
+                            String base = Gpr.baseName(summaryFileCSV, ".csv"); 
+						    String dir = Gpr.dirName(summaryFileCSV);
+						    summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
+                        }
+                    }
 				} else if (arg.equalsIgnoreCase("-chr")) chrStr = args[++i];
 				else if (arg.equalsIgnoreCase("-useLocalTemplate")) useLocalTemplate = true; // Undocumented option (only used for development & debugging)
 				else if (arg.equalsIgnoreCase("-noChromoPlots")) chromoPlots = false;
@@ -873,8 +900,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 				if (verbose) Timer.showStdErr("Analyzing file" //
 						+ "\n\tInput   : '" + inputFile + "'" //
 						+ "\n\tOutput  : '" + outputFile + "'" //
-						+ (createSummary ? "\n\tSummary : '" + summaryFile + "'" : "") //
-						);
+						+ (createSummaryCSV ? "\n\tSummary : '" + summaryFileCSV + "'" : "") //
+						+ (createSummaryHTML ? "\n\tSummary : '" + summaryFileHTML + "'" : "")
+				);
 				ok &= annotate(inputFile, outputFile);
 			}
 		}
@@ -934,7 +962,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	HashMap<String, Object> summaryCreateHash() {
 		// Create the root hash (where data objects are)
 		HashMap<String, Object> root = new HashMap<String, Object>();
-		root.put("args", commandLineStr(createCsvSummary ? false : true));
+		root.put("args", commandLineStr(createSummaryCSV ? false : true));
 		root.put("changeStats", variantEffectStats);
 		root.put("chromoPlots", chromoPlots);
 		root.put("countEffects", countEffects);
@@ -976,9 +1004,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\t-i <format>                     : Input format [ vcf, bed ]. Default: VCF.");
 		System.err.println("\t-fileList                       : Input actually contains a list of files to process.");
 		System.err.println("\t-o <format>                     : Ouput format [ vcf, gatk, bed, bedAnn ]. Default: VCF.");
-		System.err.println("\t-s , -stats                     : Name of stats file (summary). Default is '" + DEFAULT_SUMMARY_FILE + "'");
+		System.err.println("\t-s , -stats                     : Deprecated.  Please use -htmlStats and/or -csvStats");
+		System.err.println("\t-htmlStats                      : Create HTML summary file. Default is '" + DEFAULT_SUMMARY_FILE + "'");
 		System.err.println("\t-noStats                        : Do not create stats (summary) file");
-		System.err.println("\t-csvStats                       : Create CSV summary file instead of HTML");
+		System.err.println("\t-csvStats                       : Create CSV summary file.");
 		System.err.println("\nResults filter options:");
 		System.err.println("\t-fi , -filterInterval  <file>   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)");
 		System.err.println("\t-no-downstream                  : Do not show DOWNSTREAM changes");
