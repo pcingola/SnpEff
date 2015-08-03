@@ -111,7 +111,7 @@ void downloadEnsembl() {
 void downloadEnsemblBfmpp() {
 	println "Download ENSEMBL BFMPP $ensemblBfmppRelease"
 	dir := "$dirDownload/ensembl_bfmpp_$ensemblBfmppRelease"
-	site := "ftp://ftp.ensemblgenomes.org"
+	site := "ftp.ensemblgenomes.org"
 	dir.mkdir()
 	dir.chdir()
 
@@ -122,13 +122,22 @@ void downloadEnsemblBfmpp() {
 	if( ! downloadOk.exists() ) {
 		println "Downloading ENSEMBL (BFMPP) $ensemblBfmppRelease"
 
-		#for(string org : [ 'bacteria', 'fungi', 'metazoa', 'misc_data', 'plants', 'protists'] ) {
-		for(string org : [ 'protists'] ) {
+		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'misc_data', 'plants', 'protists'] ) {
 			# Download GTF files (annotations)
-			task $wgetA "*gtf.gz" "$site/pub/$org/release-$ensemblBfmppRelease/gtf/"
+			task rsync -av	--include='*$ensemblBfmppRelease.gtf.gz' \
+							--include='*/' \
+							--exclude='*' \
+							rsync://$site/all/pub/$org/release-$ensemblBfmppRelease/gtf/ \
+							.
         
 			# Download FASTA files (reference genomes)
-			task $wgetA "*dna.toplevel.fa.gz" "$site/pub/$org/release-$ensemblBfmppRelease/fasta/"
+			task rsync -av	--include='*$ensemblBfmppRelease.dna.toplevel.fa.gz' \
+							--include='*$ensemblBfmppRelease.cdna.all.fa.gz' \
+							--include='*$ensemblBfmppRelease.pep.all.fa.gz' \
+							--include='*/' \
+							--exclude='*' \
+							rsync://$site/all/pub/$org/release-$ensemblBfmppRelease/fasta/ \
+							.
 		}
 		wait
 
@@ -151,6 +160,7 @@ void downloadEnsemblBfmpp() {
 			base := gtf.baseName('.gtf.gz')
 			longName := base.split('\.').head()
 			shortName := base.split('\.').tail().join('.')
+			println "\t$shortName"
 
 			fasta := "$base.dna.toplevel.fa.gz"
 			cds := "$base.cdna.all.fa.gz"
