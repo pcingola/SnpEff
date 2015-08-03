@@ -22,6 +22,7 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.stats.CountByType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.Timer;
 
 public class Config implements Serializable, Iterable<String> {
 
@@ -97,6 +98,11 @@ public class Config implements Serializable, Iterable<String> {
 	 * Create a configuration from 'configFileName'
 	 */
 	public Config(String genomeVersion, String configFileName, String dataDir, Map<String, String> override) {
+		init(genomeVersion, configFileName, dataDir, override);
+	}
+
+	public Config(String genomeVersion, String configFileName, String dataDir, Map<String, String> override, boolean verbose) {
+		this.verbose = verbose;
 		init(genomeVersion, configFileName, dataDir, override);
 	}
 
@@ -445,6 +451,33 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	/**
+	 * Load properties from configuration file
+	 * @return true if success
+	 */
+	boolean loadProperties(String configFileName) {
+		try {
+			File confFile = new File(configFileName);
+			if (verbose) Timer.showStdErr("Reading config file: " + confFile.getCanonicalPath());
+
+			if (Gpr.canRead(configFileName)) {
+				// Load properties
+				properties.load(new FileReader(confFile));
+
+				// Set config directory
+				configDirPath = confFile.getCanonicalFile().getParent();
+
+				return true;
+			}
+		} catch (Exception e) {
+			properties = null;
+			configDirPath = "";
+			throw new RuntimeException(e);
+		}
+
+		return false;
+	}
+
+	/**
 	 * Load a snpEff predictor
 	 * WARNING: 'genome' object get replaced upon loading a snpEffectPredictor (this is a dangerous side effect)
 	 */
@@ -462,17 +495,6 @@ public class Config implements Serializable, Iterable<String> {
 		// Read properties file
 		//---
 		configFileName = readProperties(configFileName, override);
-
-		// Get config file directory
-		configDirPath = "";
-		try {
-			File configDir = new File(configFileName).getAbsoluteFile().getParentFile();
-			configDirPath = configDir.getCanonicalPath();
-		} catch (Exception e) {
-			// Nothing done
-			configDirPath = "";
-			e.printStackTrace();
-		}
 
 		//---
 		// Set attributes
@@ -575,30 +597,19 @@ public class Config implements Serializable, Iterable<String> {
 	String readProperties(String configFileName) {
 		properties = new Properties();
 		try {
-			// Try to read properties file
-			File confFile = new File(configFileName);
-			if (Gpr.canRead(configFileName)) {
-				properties.load(new FileReader(confFile));
-				return configFileName;
-			}
-
 			// Build error message
-			StringBuilder errMsg = new StringBuilder();
-			errMsg.append("\tConfig file name : '" + configFileName + "'" + "\n\tFull path        : '" + confFile.getCanonicalPath() + "'" + "\n");
+			File confFile = new File(configFileName);
+			if (loadProperties(configFileName)) return configFileName;
 
 			// Absolute path? Nothing else to do...
-			if (confFile.isAbsolute()) throw new RuntimeException("Cannot read config file!\n" + errMsg);
+			if (confFile.isAbsolute()) throw new RuntimeException("Cannot read config file '" + confFile.getCanonicalPath() + "'");
 
-			// Try reading from relative dir
-			configFileName = getRelativeConfigPath() + "/" + configFileName;
-			confFile = new File(configFileName);
-			if (Gpr.canRead(configFileName)) {
-				properties.load(new FileReader(confFile));
-				return configFileName;
-			}
-			errMsg.append("\n\tConfig file name : '" + configFileName + "'" + "\n\tFull path        : '" + confFile.getCanonicalPath() + "'" + "\n");
+			// Try reading from current execution directory
+			String confPath = getRelativeConfigPath() + "/" + configFileName;
+			confFile = new File(confPath);
+			if (loadProperties(confPath)) return confPath;
 
-			throw new RuntimeException("Cannot read config file!\n" + errMsg);
+			throw new RuntimeException("Cannot read config file!\n");
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Cannot find config file '" + configFileName + "'");
 		} catch (IOException e) {
@@ -606,6 +617,9 @@ public class Config implements Serializable, Iterable<String> {
 		}
 	}
 
+	/**
+	 * Read config file
+	 */
 	String readProperties(String configFileName, Map<String, String> override) {
 		String configFile = readProperties(configFileName);
 

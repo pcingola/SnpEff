@@ -262,7 +262,7 @@ public class SnpEff implements CommandLine {
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
 			);
 
-		config = new Config(genomeVer, configFile, dataDir, configOverride); // Read configuration
+		config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 		if (verbose) Timer.showStdErr("done");
 
 		// Set some parameters
