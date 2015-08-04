@@ -175,7 +175,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-				);
+						);
 			}
 		}
 	}
@@ -260,7 +260,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+					);
 
 		config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -439,7 +439,7 @@ public class SnpEff implements CommandLine {
 		Markers markersSeqChange = Markers.readMarkers(fileName);
 		String label = Gpr.removeExt(Gpr.baseName(fileName));
 
-		// Convert 'SeqChange' markers to 'Custom' markers
+		// Convert markers to 'Custom' markers
 		Markers markers = new Markers();
 		for (Marker m : markersSeqChange) {
 			if (m instanceof Custom) {
@@ -448,7 +448,6 @@ public class SnpEff implements CommandLine {
 			} else {
 				// Not a custom interval? Create one
 				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), m.isStrandMinus(), m.getId(), label);
-				// custom.setScore(((Variant) m).getScore());
 				markers.add(custom);
 			}
 		}
@@ -675,7 +674,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("show") //
-		) {
+				) {
 			command = args[argNum++].trim().toLowerCase();
 		}
 
@@ -988,7 +987,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\tgenes2bed                    : Create a bed file from a genes list.");
 		System.err.println("\tlen                          : Calculate total genomic length for each marker type.");
 		System.err.println("\tprotein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
-		System.err.println("\tshow                         : Show a gene or a transcript coordiantes, DNA sequence and protein sequence.");
+		System.err.println("\tshow                         : Show a text representation of genes or transcripts coordiantes, DNA sequence and protein sequence.");
 		System.err.println("\tspliceAnalysis               : Perform an analysis of splice sites. Experimental feature.");
 
 		usageGenericAndDb();

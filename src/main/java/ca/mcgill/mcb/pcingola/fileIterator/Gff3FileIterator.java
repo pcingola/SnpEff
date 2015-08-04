@@ -29,8 +29,6 @@ public class Gff3FileIterator extends MarkerFileIterator<GffMarker> {
 
 	/**
 	 * Parse a line and create a appropriate GFF marker
-	 * @param line
-	 * @return
 	 */
 	GffMarker parse(String line) {
 		// Ignore empty lines and comment lines

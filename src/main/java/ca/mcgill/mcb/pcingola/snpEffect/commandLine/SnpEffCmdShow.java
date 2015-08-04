@@ -118,7 +118,7 @@ public class SnpEffCmdShow extends SnpEff {
 	public void usage(String message) {
 		if (message != null) System.err.println("Error: " + message + "\n");
 		System.err.println("snpEff version " + VERSION);
-		System.err.println("Usage: snpEff showTr genome_version trId_1 ... trId_N");
+		System.err.println("Usage: snpEff showTr genome_version gene_1 ... gene_N ... trId_1 ... trId_N");
 		System.exit(-1);
 	}
 }
