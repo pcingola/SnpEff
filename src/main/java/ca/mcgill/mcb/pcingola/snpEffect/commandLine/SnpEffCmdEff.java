@@ -72,8 +72,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	boolean anyCancerSample;
 	boolean cancer = false; // Perform cancer comparisons
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
-	//boolean createCsvSummary = false; // Use a CSV as output summary
-	//boolean createSummary = true; // Create summary output file
 	boolean createSummaryCSV = false;
 	boolean createSummaryHTML = true;
 	boolean lossOfFunction = true; // Create loss of function LOF tag?
@@ -88,7 +86,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	String cancerSamples = null;
 	String chrStr = "";
 	String inputFile = ""; // Input file
-	//String summaryFile; // Summary output file
 	String summaryFileCSV;
 	String summaryFileHTML;
 	String summaryGenesFile; // Gene table file
