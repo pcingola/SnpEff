@@ -42,10 +42,8 @@ void downloadEnsembl() {
 	if( ! downloadOk.exists() ) {
 		println "Downloading ENSEMBL $ensemblRelease"
 
-		# Download GTF files (annotations) as well as regulation tracks
+		# Download GTF files
 		task rsync -av	--include='*$ensemblRelease.gtf.gz' \
-						--include='*AnnotatedFeatures.gff.gz' \
-						--include='*MotifFeatures.gff.gz' \
 						--include='*/' \
 						--exclude='*' \
 						rsync://$site/ensembl/pub/release-$ensemblRelease/gtf/ \
@@ -60,6 +58,14 @@ void downloadEnsembl() {
 						rsync://$site/ensembl/pub/release-$ensemblRelease/fasta/ \
 						.
 
+		# Download regulation tracks
+		task rsync -av	--include='*AnnotatedFeatures.gff.gz' \
+						--include='*MotifFeatures.gff.gz' \
+						--include='*/' \
+						--exclude='*' \
+						rsync://$site/ensembl/pub/release-$ensemblRelease/gtf/ \
+						.
+
 		wait
 
 		# Mark as all downloads OK
@@ -72,10 +78,7 @@ void downloadEnsembl() {
 	configFile := "$dirSnpeff/snpEff.ENSEMBL_$ensemblRelease.config"
 	if( !configFile.exists() ) {
 		# Move downloaded files to current dir
-		sys find . -mindepth 2 -type f | xargs -I + $cp + .
-
-		# Create data genomes dir
-		"data/genomes".mkdir()
+		sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
 
 		# Move files
 		println 'Copying files to data dir'
@@ -85,30 +88,34 @@ void downloadEnsembl() {
 			baseNoVer := base.removeExt()
 			longName := base.split('\.').head()
 			shortName := base.split('\.').tail().join('.')
-			println "\t$shortName"
 
-			fasta := "$baseNoVer.dna.toplevel.fa.gz"
-			cds := "$baseNoVer.cdna.all.fa.gz"
-			prot := "$baseNoVer.pep.all.fa.gz"
-
-			# Copy files
-			"data/$shortName".mkdir()
-			if( "data/$shortName/genes.gtf.gz" <- gtf )		sys $cp $gtf data/$shortName/genes.gtf.gz
-			if( "data/$shortName/cds.fa.gz" <- cds )		sys $cp $cds data/$shortName/cds.fa.gz
-			if( "data/$shortName/protein.fa.gz" <- prot )	sys $cp $prot data/$shortName/protein.fa.gz
-			if( "data/genomes/$shortName.fa.gz" <- fasta )	sys $cp $fasta data/genomes/$shortName.fa.gz
-
-			# Append config lines
-			configLines += "$shortName.genome : $longName"
-			configLines += "$shortName.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+			if( !shortName.isEmpty() ) {
+				println "\t$shortName"
+            
+				fasta := "$baseNoVer.dna.toplevel.fa.gz"
+				cds := "$baseNoVer.cdna.all.fa.gz"
+				prot := "$baseNoVer.pep.all.fa.gz"
+            
+				# Copy files
+				dataDir := "data/$shortName"
+				dataDir.mkdir()
+				if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz
+				if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz
+				if( "$dataDir/protein.fa.gz" <- prot )		sys $cp $prot  $dataDir/protein.fa.gz
+				if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz
+            
+				# Append config lines
+				configLines += "$shortName.genome : $longName"
+				configLines += "$shortName.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+			}
 		}
 
 		# Regulation tracks (human and mouse only)
-		sys $cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/homo_sapiens/AnnotatedFeatures.gff.gz data/$GRCH.$ensemblRelease/regulation.gff.gz
-		sys $cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/homo_sapiens/MotifFeatures.gff.gz data/$GRCH.$ensemblRelease/motif.gff.gz
+		sys $cp homo_sapiens/AnnotatedFeatures.gff.gz data/$GRCH.$ensemblRelease/regulation.gff.gz
+		sys $cp homo_sapiens/MotifFeatures.gff.gz data/$GRCH.$ensemblRelease/motif.gff.gz
 
-		sys $cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/mus_musculus/AnnotatedFeatures.gff.gz data/$GRCM.$ensemblRelease/regulation.gff.gz
-		sys $cp ftp.ensembl.org/pub/release-$ensemblRelease/regulation/mus_musculus/MotifFeatures.gff.gz data/$GRCM.$ensemblRelease/motif.gff.gz
+		sys $cp mus_musculus/AnnotatedFeatures.gff.gz data/$GRCM.$ensemblRelease/regulation.gff.gz
+		sys $cp mus_musculus/MotifFeatures.gff.gz data/$GRCM.$ensemblRelease/motif.gff.gz
 
 		# Create config file
 		println "Writing config file $configFile"
@@ -162,7 +169,7 @@ void downloadEnsemblBfmpp() {
 	configFile := "$dirSnpeff/snpEff.ENSEMBL_BFMPP_$ensemblRelease.config"
 	if( !configFile.exists() ) {
 		# Copy files to local dir
-		sys find . -mindepth 2 -type f | xargs -I + $cp + .
+		sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
 
 		# Move files
 		println 'Copying files to data dir'
@@ -171,23 +178,27 @@ void downloadEnsemblBfmpp() {
 			base := gtf.baseName('.gtf.gz')
 			longName := base.split('\.').head()
 			shortName := base.split('\.').tail().join('.')
-			println "\t$shortName"
 
-			fasta := "$base.dna.toplevel.fa.gz"
-			cds := "$base.cdna.all.fa.gz"
-			prot := "$base.pep.all.fa.gz"
-			println "\t$shortName"
-
-			# Copy files
-			"data/$shortName".mkdir()
-			if( "data/$shortName/genes.gtf.gz" <- gtf )		sys $cp $gtf data/$shortName/genes.gtf.gz
-			if( "data/$shortName/cds.fa.gz" <- cds )		sys $cp $cds data/$shortName/cds.fa.gz
-			if( "data/$shortName/protein.fa.gz" <- prot )	sys $cp $prot data/$shortName/protein.fa.gz
-			if( "data/genomes/$shortName.fa.gz" <- fasta )	sys $cp $fasta data/genomes/$shortName.fa.gz
-
-			# Append config lines
-			configLines += "$shortName.genome : $longName"
-			configLines += "$shortName.reference : $site"
+			if( !shortName.isEmpty() ) {
+				println "\t$shortName"
+            
+				fasta := "$base.dna.toplevel.fa.gz"
+				cds := "$base.cdna.all.fa.gz"
+				prot := "$base.pep.all.fa.gz"
+				println "\t$shortName"
+            
+				# Copy files
+				dataDir := "data/$shortName"
+				dataDir.mkdir()
+				if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz
+				if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz
+				if( "$dataDir/protein.fa.gz" <- prot )		sys $cp $prot  $dataDir/protein.fa.gz
+				if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz
+            
+				# Append config lines
+				configLines += "$shortName.genome : $longName"
+				configLines += "$shortName.reference : $site"
+			}
 		}
 
 		# Create config file
