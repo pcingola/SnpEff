@@ -160,8 +160,10 @@ void buildConfig() {
 			config/snpEff.ENSEMBL_77.config \
 			config/snpEff.ENSEMBL_78.config \
 			config/snpEff.ENSEMBL_79.config \
+			config/snpEff.ENSEMBL_81.config \
 			config/snpEff.ENSEMBL_BFMPP_22.config \
 			config/snpEff.ENSEMBL_BFMPP_26.config \
+			config/snpEff.ENSEMBL_BFMPP_27.config \
 			config/snpEff.FB2015_01.config \
 			config/snpEff.NCBI_bacterial.config \
 			config/snpEff.etc.config \
@@ -280,7 +282,7 @@ void copyPwm() {
 void downloadAll() {
 	# Ensembl genomes
 	downloadEnsembl()
-#	downloadEnsemblBfmpp()
+	downloadEnsemblBfmpp()
 
 #	# UCSC genomes
 #	downloadUcscHg19()

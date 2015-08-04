@@ -28,6 +28,9 @@ bool fetch(string url) {
 # Download ENSEMBL genomes
 #-------------------------------------------------------------------------------
 void downloadEnsembl() {
+	configFile := "$dirSnpeff/config/snpEff.ENSEMBL_$ensemblRelease.config"
+	if( configFile.exists() ) return
+
 	println "Download ENSEMBL $ensemblRelease"
 	site := "ftp.ensembl.org"
 
@@ -75,7 +78,6 @@ void downloadEnsembl() {
 	#---
 	# Move files to propper structure in 'local data' dir
 	#---
-	configFile := "$dirSnpeff/snpEff.ENSEMBL_$ensemblRelease.config"
 	if( !configFile.exists() ) {
 		# Move downloaded files to current dir
 		sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
@@ -127,9 +129,13 @@ void downloadEnsembl() {
 # Download ENSEMBL genomes (BFMPP)
 #-------------------------------------------------------------------------------
 void downloadEnsemblBfmpp() {
+	configFile := "$dirSnpeff/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config"
+	if( configFile.exists() ) return
+
 	println "Download ENSEMBL BFMPP $ensemblBfmppRelease"
-	dir := "$dirDownload/ensembl_bfmpp_$ensemblBfmppRelease"
 	site := "ftp.ensemblgenomes.org"
+
+	dir := "$dirDownload/ensembl_bfmpp_$ensemblBfmppRelease"
 	dir.mkdir()
 	dir.chdir()
 
@@ -166,7 +172,6 @@ void downloadEnsemblBfmpp() {
 	#---
 	# Move files to propper structure in 'local data' dir
 	#---
-	configFile := "$dirSnpeff/snpEff.ENSEMBL_BFMPP_$ensemblRelease.config"
 	if( !configFile.exists() ) {
 		# Copy files to local dir
 		sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
