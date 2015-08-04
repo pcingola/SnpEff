@@ -35,6 +35,7 @@ flybaseGenomes		:= [ 'dana_r1.04', 'dere_r1.04', 'dgri_r1.3', 'dmel_r6.04', 'dmo
 GRCH				:= "GRCh38"
 humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 GRCM				:= "GRCm38"
+dbNsfpVer			:= '3.0b2a'
 
 # Configuration parameters
 bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22", "ENSEMBL_BFMPP_26"]
@@ -44,7 +45,7 @@ snpeff				:= "java -Xmx10G -jar snpEff.jar "
 snpeffXl			:= "java -Xmx50G -jar snpEff.jar "
 snpeffBuild			:= "$snpeff build -v"
 snpsift				:= "java -jar SnpSift.jar "
-wget				:= "wget -N "
+wget				:= "wget -N --retr-symlinks"
 wgetA				:= "wget -r -N -A"
 cp					:= "cp -v -u"
 
@@ -296,8 +297,11 @@ void downloadAll() {
 	downloadGwasCatalog()
 	downloadNextProt()
 	downloadPdb()
+	downloadDbNsfp()
+	downloadClinvar()
+	downloadDbSnp()
 
-	# Non-human
+   # Non-human
 	downloadNcbi()
 	downloadFlyBase()
 }
