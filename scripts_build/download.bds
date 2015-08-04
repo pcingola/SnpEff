@@ -129,7 +129,7 @@ void downloadEnsembl() {
 # Download ENSEMBL genomes (BFMPP)
 #-------------------------------------------------------------------------------
 void downloadEnsemblBfmpp() {
-	configFile := "$dirSnpeff/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config"
+	configFile := "$dirSnpeff/config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config"
 	if( configFile.exists() ) return
 
 	println "Download ENSEMBL BFMPP $ensemblBfmppRelease"
