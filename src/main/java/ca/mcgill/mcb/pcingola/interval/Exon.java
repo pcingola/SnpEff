@@ -208,6 +208,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		// Only makes sense for SNPs and MNPs
 		if ((variant.getVariantType() != VariantType.SNP) && (variant.getVariantType() != VariantType.MNP)) return null;
 
+		// Calculate reference sequence coordinates
 		int mstart = Math.max(variant.getStart(), start);
 		int idxStart = mstart - start;
 
@@ -219,17 +220,25 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 		String realReference = basesAt(idxStart, len).toUpperCase();
 
-		int chRefStart = mstart - variant.getStart();
-		if (chRefStart < 0) return ErrorWarningType.ERROR_OUT_OF_EXON;
+		// Get variant's reference coordinates
+		int varRefStart = mstart - variant.getStart();
+		if (varRefStart < 0) return ErrorWarningType.ERROR_OUT_OF_EXON;
 
-		int chRefEnd = mend - variant.getStart();
-		String refStr = variant.reference();
-		if (chRefEnd >= refStr.length()) return ErrorWarningType.ERROR_OUT_OF_EXON;
+		int varRefEnd = mend - variant.getStart();
 
-		String changeReference = refStr.substring(chRefStart, chRefEnd + 1);
+		// Variant's reference sequence
+		String refStr;
+		if (variant.isNonRef()) refStr = ((VariantNonRef) variant).getVariantRef().alternative();
+		else refStr = variant.reference();
+
+		if (varRefEnd >= refStr.length()) return ErrorWarningType.ERROR_OUT_OF_EXON;
+
+		String variantReference = refStr.substring(varRefStart, varRefEnd + 1);
 
 		// Reference sequence different than expected?
-		if (!realReference.equals(changeReference)) return ErrorWarningType.WARNING_REF_DOES_NOT_MATCH_GENOME;
+		if (!realReference.equals(variantReference)) { //
+			return ErrorWarningType.WARNING_REF_DOES_NOT_MATCH_GENOME;
+		}
 
 		// OK
 		return null;

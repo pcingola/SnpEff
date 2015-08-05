@@ -133,6 +133,13 @@ public class Variant extends Marker {
 	}
 
 	/**
+	 * Return the alternative sequence (always in positive strand)
+	 */
+	public String alternative() {
+		return isStrandPlus() ? alt : GprSeq.reverseWc(alt);
+	}
+
+	/**
 	 * Return the change (always in positive strand)
 	 */
 	public String change() {
@@ -341,7 +348,7 @@ public class Variant extends Marker {
 	}
 
 	/**
-	 * Return the reference (always in positive strand)
+	 * Return the reference sequence (always in positive strand)
 	 */
 	public String reference() {
 		return isStrandPlus() ? ref : GprSeq.reverseWc(ref);

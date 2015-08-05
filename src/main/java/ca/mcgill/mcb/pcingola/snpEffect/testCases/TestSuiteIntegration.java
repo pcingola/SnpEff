@@ -99,6 +99,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesMarkerSeq;
 		TestCasesTranscript.class, //
 		TestCasesVariant.class, //
 		TestCasesVcfs.class, //
+		// Long test cases
 		TestCasesIntegrationSnpEff.class, //
 		TestCasesIntegrationSnpEffMultiThread.class, //
 })
