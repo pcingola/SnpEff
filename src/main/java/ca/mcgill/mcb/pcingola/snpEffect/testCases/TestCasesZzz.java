@@ -24,23 +24,27 @@ public class TestCasesZzz {
 	}
 
 	/**
-	 * Insertion on minus strand
+	 * Issue on cancer samples
 	 */
 	@Test
-	public void test_02_del_repeated_effects_gatk() {
+	public void test_cancer_concurrent_modification() {
 		Gpr.debug("Test");
-		String args[] = { "-ud", "0", "-o", "gatk", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
+		String args[] = { "-cancer"//	
+				, "-cancerSamples", "tests/test_cancer_concurrent_modification.txt" //
+				, "testHg3775Chr1"//
+				, "tests/test_cancer_concurrent_modification.vcf" //
+		};
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
 		snpeff.setSupressOutput(!verbose);
 		snpeff.setVerbose(verbose);
 
-		int countEffs = 0;
-
 		List<VcfEntry> vcfEnties = snpeff.run(true);
-		for (VcfEntry ve : vcfEnties) {
+		Assert.assertFalse("Annotation finished with errors", snpeff.getTotalErrs() > 0);
 
+		int countEffs = 0;
+		for (VcfEntry ve : vcfEnties) {
 			if (verbose) System.out.println(ve);
 
 			// Get first effect (there should be only one)

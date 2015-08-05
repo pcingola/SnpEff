@@ -77,8 +77,10 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		Exon newEx = (Exon) super.apply(variant);
 		if (newEx == null) return null;
 
-		// Apply to each splice sites
-		newEx.spliceSites = new ArrayList<SpliceSite>();
+		// We will change information, so we need a clone
+		if (newEx == this) newEx = (Exon) clone();
+
+		newEx.reset();
 		for (SpliceSite ss : spliceSites) {
 			SpliceSite newSs = (SpliceSite) ss.apply(variant);
 			newSs.setParent(newEx);
@@ -191,6 +193,10 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 			if (ss.intersects(marker)) markers.add(ss);
 
 		return markers;
+	}
+
+	public void reset() {
+		spliceSites = new ArrayList<SpliceSite>();
 	}
 
 	/**

@@ -74,32 +74,31 @@ public class Marker extends Interval implements TxtSerializable {
 	 * @return A new marker after applying variant
 	 */
 	public Marker apply(Variant variant) {
-		// Variant after this marker: No effect
+		// Variant after this marker: No effect when applying (all coordinates remain the same)
 		if (end < variant.getStart()) return this;
+
+		// Variant does not change length? No effect when applying (all coordinates remain the same)
+		int lenChange = variant.lengthChange();
+		if (lenChange == 0) return this;
 
 		// Negative strand variants are a pain. We will eventually get rid of them...(they do not make sense any more)
 		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are suported!\n\tVariant : " + variant);
 
-		int lenChange = variant.lengthChange();
-		if (lenChange == 0) return this;
-
-		// Variant after marker end: Nothing to do
-		if (end < variant.getStart()) return this;
-
-		// We are not ready for mixed changes
+		// InDels are different
 		if (variant.isIns()) return applyIns(variant, lenChange);
 		if (variant.isDel()) return applyDel(variant, lenChange);
 
+		// We are not ready for mixed changes
 		throw new RuntimeException("Variant type not supported: " + variant.getVariantType() + "\n\t" + variant);
 	}
 
 	/**
-	 * Apply a SeqChange to a marker. SeqChange is a deletion
+	 * Apply a Variant to a marker. Variant is a deletion
 	 */
 	protected Marker applyDel(Variant variant, int lenChange) {
 		Marker m = clone();
 
-		// SeqChange Before start: Adjust coordinates
+		// Variant Before start: Adjust coordinates
 		if (variant.getEnd() < start) {
 			m.start += lenChange;
 			m.end += lenChange;
@@ -107,7 +106,7 @@ public class Marker extends Interval implements TxtSerializable {
 			return null; // Variant completely includes this marker => The whole marker deleted
 		} else if (includes(variant)) m.end += lenChange; // This marker completely includes variant. But variant does not include marker (i.e. they are not equal). Only 'end' coordinate needs to be updated
 		else {
-			// SeqChange is partially included in this marker.
+			// Variant is partially included in this marker.
 			// This is treated as three different type of deletions:
 			//		1- One before the marker
 			//		2- One inside the marker
@@ -139,7 +138,7 @@ public class Marker extends Interval implements TxtSerializable {
 	}
 
 	/**
-	 * Apply a SeqChange to a marker. SeqChange is an insertion
+	 * Apply a Variant to a marker. Variant is an insertion
 	 */
 	public Marker applyIns(Variant variant, int lenChange) {
 		Marker m = clone();
@@ -479,7 +478,7 @@ public class Marker extends Interval implements TxtSerializable {
 				+ "\t" + end //
 				+ "\t" + id //
 				+ "\t" + strandMinus //
-				;
+		;
 	}
 
 	/**

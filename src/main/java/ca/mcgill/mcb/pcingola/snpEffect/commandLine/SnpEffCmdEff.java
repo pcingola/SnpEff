@@ -545,6 +545,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		return variantEffectStats;
 	}
 
+	public int getTotalErrs() {
+		return totalErrs;
+	}
+
 	public VariantStats getvariantStats() {
 		return variantStats;
 	}

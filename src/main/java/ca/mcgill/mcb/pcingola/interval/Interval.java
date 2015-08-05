@@ -37,7 +37,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 				+ "\n\tID           : " + id //
 				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
 				+ "\n\tParent       : " + parent //
-		);
+				);
 
 		this.start = start;
 		this.end = end;

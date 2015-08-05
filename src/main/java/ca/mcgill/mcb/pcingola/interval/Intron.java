@@ -40,7 +40,11 @@ public class Intron extends Marker {
 		// Create new exon with updated coordinates
 		Intron newIntron = (Intron) super.apply(variant);
 
+		// We will change information, so we need a clone
+		if (newIntron == this) newIntron = (Intron) clone();
+
 		// Update splice sites
+		newIntron.reset();
 		for (SpliceSite ss : spliceSites) {
 			SpliceSite newSs = (SpliceSite) ss.apply(variant);
 			newSs.setParent(newIntron);
@@ -150,7 +154,7 @@ public class Intron extends Marker {
 		return (exonBefore != null ? exonBefore.getSpliceType() : "") //
 				+ "-" //
 				+ (exonAfter != null ? exonAfter.getSpliceType() : "") //
-		;
+				;
 	}
 
 	/**
@@ -164,6 +168,10 @@ public class Intron extends Marker {
 			if (ss.intersects(marker)) markers.add(ss);
 
 		return markers;
+	}
+
+	public void reset() {
+		spliceSites = new ArrayList<SpliceSite>();
 	}
 
 	@Override
