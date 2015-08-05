@@ -704,6 +704,27 @@ bool fetch(string url) {
 }
 
 #-------------------------------------------------------------------------------
+# QueryUcsc
+#-------------------------------------------------------------------------------
+void queryUcscAll() {
+	refs:= ['hg19', 'hg38', 'mm10']
+
+	for( string ref : refs ) {
+		dir := "$dirDownload/ucsc_$ref"
+		dir.mkdir()
+		dir.chdir()
+		queryUcsc(ref, dir)
+
+		refdb := ref
+		ref = ref + 'kg'
+		dir = "$dirDownload/ucsc_$ref"
+		dir.mkdir()
+		dir.chdir()
+		queryUcscKg(ref, refdb, dir)
+	}
+}
+
+#-------------------------------------------------------------------------------
 # Query MySql's database (RefSeq)
 #-------------------------------------------------------------------------------
 string queryUcsc(string ref, string dir) {
@@ -721,14 +742,14 @@ string queryUcsc(string ref, string dir) {
 #-------------------------------------------------------------------------------
 # Query MySql's database (KnonwGene)
 #-------------------------------------------------------------------------------
-string queryUcscKg(string ref,string refdb, string dir) {
-	refSeq := "$dir/genes.refseq"
-	refSeqGz := "$dir/genes.refseq.gz"
+string queryUcscKg(string ref, string refdb, string dir) {
+	refSeq := "$dir/genes.kg"
+	refSeqGz := "$dir/genes.kg.gz"
 	if( !refSeqGz.exists() ) {
 		println "Querying database for KnownGenes genes: $ref"
 		query := "use $refdb; select  kg.name as '#name' , kg.chrom , kg.strand , kg.txStart , kg.txEnd , kg.cdsStart , kg.cdsEnd , kg.exonCount , kg.exonStarts , kg.exonEnds , kg.proteinID , kg.alignID from knownGene kg;"
 		mysqlServer := "genome-mysql.cse.ucsc.edu"
-		sys echo "$query" | mysql --user=genome --host=$mysqlServer -A $ref | gzip -c > $refSeq.gz
+		sys echo "$query" | mysql --user=genome --host=$mysqlServer -A $refdb | gzip -c > $refSeq.gz
 	}
 	return refSeqGz
 }

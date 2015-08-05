@@ -16,6 +16,7 @@ distroBundles		:= false		help Create bundle files (zip)
 distroCore 			:= false		help Create distribution files (zip only 'core')
 download 			:= false		help Download files
 make	 			:= false		help Make (build JAR files)
+query	 			:= false		help Run queries against UCSC MySql server
 test	 			:= false		help Run test cases
 testDb				:= false		help Build databases used in test cases
 uploadCore			:= false		help Upload 'core' package
@@ -536,6 +537,7 @@ if( distroCore )		zipCore()				# Create distribution files (core 'zip')
 if( distroBundles )		zipBundles()			# Create 'bundle' distribution files
 if( download )			downloadAll()			# Perform downloads
 if( make )				build()					# Create JAR files
+if( query )				queryUcscAll()			# Query UCSC database
 if( test )				runTests()				# Run test cases 
 if( testDb )			buildDbTest()			# Build databases used in test cases
 if( uploadCore )		uploadCore2Sf()			# Upload 'core' files
