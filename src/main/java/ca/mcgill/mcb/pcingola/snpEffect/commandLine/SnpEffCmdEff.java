@@ -516,7 +516,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
-								) {
+						) {
 							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
@@ -529,7 +529,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
-									) {
+							) {
 								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
@@ -610,124 +610,199 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			//---
 			if (isOpt(arg)) {
 				if (arg.equalsIgnoreCase("-fileList")) isFileList = true;
-				//---
-				// Output options
-				//---
-				else if (arg.equals("-o")) {
-					// Output format
-					if ((i + 1) < args.length) {
-						String outFor = args[++i].toUpperCase();
+				else {
+					arg = arg.toLowerCase();
 
-						// if (outFor.equals("TXT")) outputFormat = OutputFormat.TXT;
-						if (outFor.equals("VCF")) outputFormat = OutputFormat.VCF;
-						else if (outFor.equals("GATK")) {
-							outputFormat = OutputFormat.GATK;
-							useSequenceOntology = false;
-							useHgvs = false;
-							nextProt = false;
-							motif = false;
+					switch (arg) {
+					//---
+					// Output options
+					//---
+					case "-o": // Output format
+						if ((i + 1) < args.length) {
+							String outFor = args[++i].toUpperCase();
 
-							// GATK doesn't support SPLICE_REGION at the moment.
-							// Set parameters to zero so that splcie regions are not created.
-							spliceRegionExonSize = spliceRegionIntronMin = spliceRegionIntronMax = 0;
-						} else if (outFor.equals("BED")) {
-							outputFormat = OutputFormat.BED;
-							lossOfFunction = false;
-						} else if (outFor.equals("BEDANN")) {
-							outputFormat = OutputFormat.BEDANN;
-							lossOfFunction = false;
-						} else if (outFor.equals("TXT")) usage("Output format 'TXT' has been deprecated. Please use 'VCF' instead.\nYou can extract VCF fields to a TXT file using 'SnpSift extractFields' (http://snpeff.sourceforge.net/SnpSift.html#Extract).");
-						else usage("Unknown output file format '" + outFor + "'");
-					}
-				} else if (arg.equals("-s") || arg.equalsIgnoreCase("-stats")) {
-					createSummaryHtml = true;
-					if ((i + 1) < args.length) {
-						summaryFileHtml = args[++i];
-						String base = Gpr.baseName(summaryFileHtml, ".html");
-						String dir = Gpr.dirName(summaryFileHtml);
-						summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
-					}
-				} else if (arg.equalsIgnoreCase("-noStats")) createSummaryHtml = createSummaryCsv = false;
-				else if (arg.equalsIgnoreCase("-csvStats")) {
-					createSummaryCsv = true; // Create a CSV formatted summary file.
-					if ((i + 1) < args.length) {
-						summaryFileCsv = args[++i];
-						String base = Gpr.baseName(summaryFileCsv, ".csv");
-						String dir = Gpr.dirName(summaryFileCsv);
-						summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
-					}
-				} else if (arg.equalsIgnoreCase("-chr")) chrStr = args[++i];
-				else if (arg.equalsIgnoreCase("-useLocalTemplate")) useLocalTemplate = true; // Undocumented option (only used for development & debugging)
-				else if (arg.equalsIgnoreCase("-noChromoPlots")) chromoPlots = false;
-				//---
-				// Annotation options
-				//---
-				else if (arg.equalsIgnoreCase("-cancer")) cancer = true; // Perform cancer comparisons
-				else if (arg.equalsIgnoreCase("-cancerSamples")) {
-					if ((i + 1) < args.length) cancerSamples = args[++i]; // Read cancer samples from TXT files
-					else usage("Missing -cancerSamples argument");
-				} else if (arg.equalsIgnoreCase("-lof")) lossOfFunction = true; // Add LOF tag
-				else if (arg.equalsIgnoreCase("-noLof")) lossOfFunction = false; // Do not add LOF tag
-				else if (arg.equalsIgnoreCase("-hgvs")) useHgvs = true; // Use HGVS notation
-				else if (arg.equalsIgnoreCase("-noHgvs")) useHgvs = false; // Do not use HGVS notation
-				else if (arg.equalsIgnoreCase("-geneId")) useGeneId = true; // Use gene ID instead of gene name
-				else if (arg.equalsIgnoreCase("-sequenceOntology")) useSequenceOntology = true; // Use SO temrs
-				else if (arg.equalsIgnoreCase("-classic")) {
-					useSequenceOntology = false;
-					useHgvs = false;
-					formatVersion = EffFormatVersion.FORMAT_EFF_4;
-				} else if (arg.equalsIgnoreCase("-formatEff")) {
-					formatVersion = EffFormatVersion.FORMAT_EFF_4;
-				} else if (arg.equalsIgnoreCase("-oicr")) useOicr = true; // Use OICR tag
-				//---
-				// Input options
-				//---
-				else if ((arg.equals("-fi") || arg.equalsIgnoreCase("-filterInterval"))) {
-					if ((i + 1) < args.length) filterIntervalFiles.add(args[++i]);
-					else usage("Option '-fi' without config filter_interval_file argument");
-				} else if (arg.equals("-i")) {
-					// Input format
-					if ((i + 1) < args.length) {
-						String inFor = args[++i].toUpperCase();
+							// if (outFor.equals("TXT")) outputFormat = OutputFormat.TXT;
+							if (outFor.equals("VCF")) outputFormat = OutputFormat.VCF;
+							else if (outFor.equals("GATK")) {
+								outputFormat = OutputFormat.GATK;
+								useSequenceOntology = false;
+								useHgvs = false;
+								nextProt = false;
+								motif = false;
 
-						if (inFor.equals("VCF")) {
-							inputFormat = InputFormat.VCF;
-							outputFormat = OutputFormat.VCF;
-						} else if (inFor.equals("BED")) {
-							inputFormat = InputFormat.BED;
-							outputFormat = OutputFormat.BED;
-							lossOfFunction = false;
-						} else if (inFor.equals("TXT")) usage("Input format 'TXT' has been deprecated. Please use 'VCF' instead.");
-						else usage("Unknown input file format '" + inFor + "'");
-					} else usage("Missing input format in command line option '-i'");
+								// GATK doesn't support SPLICE_REGION at the moment.
+								// Set parameters to zero so that splcie regions are not created.
+								spliceRegionExonSize = spliceRegionIntronMin = spliceRegionIntronMax = 0;
+							} else if (outFor.equals("BED")) {
+								outputFormat = OutputFormat.BED;
+								lossOfFunction = false;
+							} else if (outFor.equals("BEDANN")) {
+								outputFormat = OutputFormat.BEDANN;
+								lossOfFunction = false;
+							} else if (outFor.equals("TXT")) usage("Output format 'TXT' has been deprecated. Please use 'VCF' instead.\nYou can extract VCF fields to a TXT file using 'SnpSift extractFields' (http://snpeff.sourceforge.net/SnpSift.html#Extract).");
+							else usage("Unknown output file format '" + outFor + "'");
+						}
+						break;
+
+					case "-s":
+					case "-stats":
+						createSummaryHtml = true;
+						if ((i + 1) < args.length) {
+							summaryFileHtml = args[++i];
+							String base = Gpr.baseName(summaryFileHtml, ".html");
+							String dir = Gpr.dirName(summaryFileHtml);
+							summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
+						}
+						break;
+
+					case "-nostats":
+						createSummaryHtml = createSummaryCsv = false;
+						break;
+
+					case "-csvstats":
+						createSummaryCsv = true; // Create a CSV formatted summary file.
+						if ((i + 1) < args.length) {
+							summaryFileCsv = args[++i];
+							String base = Gpr.baseName(summaryFileCsv, ".csv");
+							String dir = Gpr.dirName(summaryFileCsv);
+							summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
+						}
+						break;
+
+					case "-chr":
+						chrStr = args[++i];
+						break;
+
+					case "-uselocaltemplate": // Undocumented option (only used for development & debugging)
+						useLocalTemplate = true;
+						break;
+
+					case "-nochromoplots":
+						chromoPlots = false;
+						break;
+
+					//---
+					// Annotation options
+					//---
+					case "-cancer":
+						cancer = true; // Perform cancer comparisons
+						break;
+
+					case "-cancersamples":
+						if ((i + 1) < args.length) cancerSamples = args[++i]; // Read cancer samples from TXT files
+						else usage("Missing -cancerSamples argument");
+						break;
+
+					case "-lof":
+						lossOfFunction = true; // Add LOF tag
+						break;
+
+					case "-nolof":
+						lossOfFunction = false; // Do not add LOF tag
+						break;
+
+					case "-hgvs":
+						useHgvs = true; // Use HGVS notation
+						break;
+
+					case "-nohgvs":
+						useHgvs = false; // Do not use HGVS notation
+						break;
+
+					case "-geneid":
+						useGeneId = true; // Use gene ID instead of gene name
+						break;
+
+					case "-sequenceontology":
+						useSequenceOntology = true; // Use SO temrs
+						break;
+
+					case "-classic":
+						useSequenceOntology = false;
+						useHgvs = false;
+						formatVersion = EffFormatVersion.FORMAT_EFF_4;
+						break;
+
+					case "-formateff":
+						formatVersion = EffFormatVersion.FORMAT_EFF_4;
+						break;
+
+					case "-oicr":
+						useOicr = true; // Use OICR tag
+						break;
+
+					//---
+					// Input options
+					//---
+					case "-fi":
+					case "-filterinterval":
+						if ((i + 1) < args.length) filterIntervalFiles.add(args[++i]);
+						else usage("Option '-fi' without config filter_interval_file argument");
+						break;
+
+					case "-i":
+						// Input format
+						if ((i + 1) < args.length) {
+							String inFor = args[++i].toUpperCase();
+
+							if (inFor.equals("VCF")) {
+								inputFormat = InputFormat.VCF;
+								outputFormat = OutputFormat.VCF;
+							} else if (inFor.equals("BED")) {
+								inputFormat = InputFormat.BED;
+								outputFormat = OutputFormat.BED;
+								lossOfFunction = false;
+							} else if (inFor.equals("TXT")) usage("Input format 'TXT' has been deprecated. Please use 'VCF' instead.");
+							else usage("Unknown input file format '" + inFor + "'");
+						} else usage("Missing input format in command line option '-i'");
+						break;
+
+					//---
+					// Filters
+					//---
+					case "-no-downstream":
+						variantEffectResutFilter.add(EffectType.DOWNSTREAM);
+						break;
+
+					case "-no-upstream":
+						variantEffectResutFilter.add(EffectType.UPSTREAM);
+						break;
+
+					case "-no-intergenic":
+						variantEffectResutFilter.add(EffectType.INTERGENIC);
+						break;
+
+					case "-no-intron":
+						variantEffectResutFilter.add(EffectType.INTRON);
+						break;
+
+					case "-no-utr":
+						variantEffectResutFilter.add(EffectType.UTR_3_PRIME);
+						variantEffectResutFilter.add(EffectType.UTR_3_DELETED);
+						variantEffectResutFilter.add(EffectType.UTR_5_PRIME);
+						variantEffectResutFilter.add(EffectType.UTR_5_DELETED);
+						break;
+
+					case "-no":
+						String filterOut = "";
+						if ((i + 1) < args.length) filterOut = args[++i];
+
+						String filterOutArray[] = filterOut.split(",");
+						for (String filterStr : filterOutArray) {
+							if (filterStr.equalsIgnoreCase("utr")) {
+								variantEffectResutFilter.add(EffectType.UTR_3_PRIME);
+								variantEffectResutFilter.add(EffectType.UTR_3_DELETED);
+								variantEffectResutFilter.add(EffectType.UTR_5_PRIME);
+								variantEffectResutFilter.add(EffectType.UTR_5_DELETED);
+							} else if (filterStr.equalsIgnoreCase("None")) ; // OK, nothing to do
+							else variantEffectResutFilter.add(EffectType.valueOf(filterStr.toUpperCase()));
+						}
+						break;
+
+					default:
+						usage("Unknown option '" + arg + "'");
+					}
 				}
-				//---
-				// Filters
-				//---
-				else if (arg.equalsIgnoreCase("-no-downstream")) variantEffectResutFilter.add(EffectType.DOWNSTREAM);
-				else if (arg.equalsIgnoreCase("-no-upstream")) variantEffectResutFilter.add(EffectType.UPSTREAM);
-				else if (arg.equalsIgnoreCase("-no-intergenic")) variantEffectResutFilter.add(EffectType.INTERGENIC);
-				else if (arg.equalsIgnoreCase("-no-intron")) variantEffectResutFilter.add(EffectType.INTRON);
-				else if (arg.equalsIgnoreCase("-no-utr")) {
-					variantEffectResutFilter.add(EffectType.UTR_3_PRIME);
-					variantEffectResutFilter.add(EffectType.UTR_3_DELETED);
-					variantEffectResutFilter.add(EffectType.UTR_5_PRIME);
-					variantEffectResutFilter.add(EffectType.UTR_5_DELETED);
-				} else if (arg.equalsIgnoreCase("-no")) {
-					String filterOut = "";
-					if ((i + 1) < args.length) filterOut = args[++i];
-
-					String filterOutArray[] = filterOut.split(",");
-					for (String filterStr : filterOutArray) {
-						if (filterStr.equalsIgnoreCase("utr")) {
-							variantEffectResutFilter.add(EffectType.UTR_3_PRIME);
-							variantEffectResutFilter.add(EffectType.UTR_3_DELETED);
-							variantEffectResutFilter.add(EffectType.UTR_5_PRIME);
-							variantEffectResutFilter.add(EffectType.UTR_5_DELETED);
-						} else if (filterStr.equalsIgnoreCase("None")) ; // OK, nothing to do
-						else variantEffectResutFilter.add(EffectType.valueOf(filterStr.toUpperCase()));
-					}
-				} else usage("Unknown option '" + arg + "'");
 			} else if (genomeVer.isEmpty()) genomeVer = arg;
 			else if (inputFile.isEmpty()) inputFile = arg;
 			else usage("Unknown parameter '" + arg + "'");
@@ -894,7 +969,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						+ "\n\tOutput        : '" + outputFile + "'" //
 						+ (createSummaryHtml ? "\n\tSummary (HTML): '" + summaryFileHtml + "'" : "") //
 						+ (createSummaryCsv ? "\n\tSummary (CSV) : '" + summaryFileCsv + "'" : "") //
-						);
+				);
 				ok &= annotate(inputFile, outputFile);
 			}
 		}
