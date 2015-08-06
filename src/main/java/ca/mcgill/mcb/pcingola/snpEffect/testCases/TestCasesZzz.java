@@ -1,14 +1,14 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
@@ -17,52 +17,44 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesZzz {
 
 	boolean debug = false;
-	boolean verbose = false || debug;
+	boolean verbose = true || debug;
+
+	/**
+	 * Calculate snp effect for an input VCF file
+	 */
+	public List<VcfEntry> snpEffect(String genome, String vcfFile, String otherArgs[]) {
+		// Arguments
+		ArrayList<String> args = new ArrayList<String>();
+		if (otherArgs != null) {
+			for (String a : otherArgs)
+				args.add(a);
+		}
+		args.add(genome);
+		args.add(vcfFile);
+
+		SnpEff cmd = new SnpEff(args.toArray(new String[0]));
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
+		cmdEff.setFormatVersion(EffFormatVersion.FORMAT_EFF_4);
+
+		// Run command
+		List<VcfEntry> list = cmdEff.run(true);
+		return list;
+	}
 
 	public TestCasesZzz() {
 		super();
 	}
 
 	/**
-	 * Concurrent modification issue on cancer samples (Intron.apply problem)
+	 * Test that CSV summary does not throw any error
 	 */
 	@Test
-	public void test_cancer_concurrent_modification() {
+	public void test_04() {
 		Gpr.debug("Test");
-		String args[] = { "-cancer"//	
-				, "-cancerSamples", "tests/test_cancer_concurrent_modification.txt" //
-				, "-ud", "0" //
-				, "-strict" //
-				, "testHg3775Chr1"//
-				, "tests/test_cancer_concurrent_modification.vcf" //
-		};
-
-		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
-		snpeff.setSupressOutput(!verbose);
-		snpeff.setVerbose(verbose);
-
-		List<VcfEntry> vcfEnties = snpeff.run(true);
-		Assert.assertFalse("Annotation finished with errors", snpeff.getTotalErrs() > 0);
-
-		int countCancer = 0, countCancerWarnings = 0;
-		for (VcfEntry ve : vcfEnties) {
-			if (verbose) System.out.println(ve);
-
-			// Get first effect (there should be only one)
-			List<VcfEffect> veffs = ve.parseEffects();
-
-			for (VcfEffect veff : veffs) {
-				if (verbose) System.out.println("\t" + veff.getAllele() + "\t" + veff);
-				if (veff.getAllele().indexOf('-') > 0) {
-					countCancer++;
-					System.out.println("\t\t" + veff.getErrorsWarning());
-					if ((veff.getErrorsWarning() != null) && (!veff.getErrorsWarning().isEmpty())) countCancerWarnings++;
-				}
-			}
-		}
-
-		Assert.assertTrue("Cancer effects not found", countCancer > 0);
-		Assert.assertTrue("There should be no warnings: countCancerWarnings = " + countCancerWarnings, countCancerWarnings == 0);
+		String args[] = { "-csvStats", "test_04_TestCasesEff.csv" };
+		snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
 	}
+
 }

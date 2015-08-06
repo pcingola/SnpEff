@@ -125,7 +125,7 @@ public class TestCasesEff {
 	@Test
 	public void test_04() {
 		Gpr.debug("Test");
-		String args[] = { "-csvStats" };
+		String args[] = { "-csvStats", "test_04_TestCasesEff.csv" };
 		snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
 	}
 

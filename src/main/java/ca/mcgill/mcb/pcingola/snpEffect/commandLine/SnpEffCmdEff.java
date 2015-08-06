@@ -650,13 +650,14 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 					case "-s":
 					case "-stats":
+					case "-htmlstats":
 						createSummaryHtml = true;
 						if ((i + 1) < args.length) {
 							summaryFileHtml = args[++i];
 							String base = Gpr.baseName(summaryFileHtml, ".html");
 							String dir = Gpr.dirName(summaryFileHtml);
 							summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
-						}
+						} else usage("Missing parameter: HTML stats file name ");
 						break;
 
 					case "-nostats":
@@ -670,7 +671,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 							String base = Gpr.baseName(summaryFileCsv, ".csv");
 							String dir = Gpr.dirName(summaryFileCsv);
 							summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
-						}
+						} else usage("Missing parameter: CSV stats file name ");
 						break;
 
 					case "-chr":
@@ -1071,12 +1072,12 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\nOptions:");
 		System.err.println("\t-chr <string>                   : Prepend 'string' to chromosome name (e.g. 'chr1' instead of '1'). Only on TXT output.");
 		System.err.println("\t-classic                        : Use old style annotations instead of Sequence Ontology and Hgvs.");
+		System.err.println("\t-csvStats <file>                : Create CSV summary file.");
 		System.err.println("\t-download                       : Download reference genome if not available. Default: " + download);
 		System.err.println("\t-i <format>                     : Input format [ vcf, bed ]. Default: VCF.");
 		System.err.println("\t-fileList                       : Input actually contains a list of files to process.");
 		System.err.println("\t-o <format>                     : Ouput format [ vcf, gatk, bed, bedAnn ]. Default: VCF.");
-		System.err.println("\t-s , -stats                     : Create HTML summary file.  Default is '" + DEFAULT_SUMMARY_HTML_FILE + "'");
-		System.err.println("\t-csvStats                       : Create CSV summary file.");
+		System.err.println("\t-s , -stats, -htmlStats         : Create HTML summary file.  Default is '" + DEFAULT_SUMMARY_HTML_FILE + "'");
 		System.err.println("\t-noStats                        : Do not create stats (summary) file");
 		System.err.println("\nResults filter options:");
 		System.err.println("\t-fi , -filterInterval  <file>   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)");

@@ -107,8 +107,6 @@ public class Gpr {
 
 	/**
 	 * Return file's name (without the path)
-	 * @param file
-	 * @return
 	 */
 	public static String baseName(String file) {
 		File f = new File(file);
@@ -117,8 +115,6 @@ public class Gpr {
 
 	/**
 	 * Return file's name (without the path)
-	 * @param file
-	 * @return
 	 */
 	public static String baseName(String file, String ext) {
 		File f = new File(file);
@@ -129,8 +125,6 @@ public class Gpr {
 
 	/**
 	 *  Show a long as a 64 bit binary number
-	 * @param l
-	 * @return
 	 */
 	public static String bin64(long l) {
 		String bl = Long.toBinaryString(l);
@@ -142,8 +136,6 @@ public class Gpr {
 
 	/**
 	 * Can we read this file (either exact name or append a '.gz'
-	 * @param fileName
-	 * @return
 	 */
 	public static boolean canRead(String fileName) {
 		if (fileName.equals("-")) return true; // Assume we can always read STDIN
