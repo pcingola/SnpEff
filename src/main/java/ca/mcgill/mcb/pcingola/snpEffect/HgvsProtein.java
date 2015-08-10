@@ -220,10 +220,28 @@ public class HgvsProtein extends Hgvs {
 		String protSeq = tr.protein();
 		if (codonNum >= protSeq.length()) return null;
 
+		// NOTE: the changes observed should be described on protein level and not try to
+		//       incorporate any knowledge regarding the change at DNA-level.
+		//       Thus, p.His150Hisfs*10 is not correct, but p.Gln151Thrfs*9 is.
+		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#del
 		CodonTable codonTable = marker.codonTable();
+		Transcript newTr = tr.apply(variant);
+		String newProtSeq = newTr.protein();
+
+		// Find the first difference in the protein sequences and use that
+		// one as AA number
+		for (int cn = codonNum; cn < protSeq.length(); cn++) {
+			char prot = protSeq.charAt(cn);
+			char newProt = newProtSeq.charAt(cn);
+			if (prot != newProt) return codonTable.aaThreeLetterCode(prot) + (cn + 1);
+		}
+
 		return codonTable.aaThreeLetterCode(protSeq.charAt(codonNum)) + (codonNum + 1);
 	}
 
+	/**
+	 * Position string given two coordinates
+	 */
 	String pos(int start, int end) {
 		// Only one position needed?
 		String posStart = pos(start);
