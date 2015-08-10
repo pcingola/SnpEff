@@ -176,7 +176,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					+ " Strand: " + (strandMinus ? "-" : "+") //
 					+ " (minCds: " + minCds //
 					+ " , maxCds: " + maxCds + "):" //
-					);
+			);
 		}
 
 		// Add intervals
@@ -330,7 +330,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Calculate distance from transcript start to a position
-	 * mRNA is roughly the same than cDNA. Strictly speaking there is mRNA has poly-A tail and 5'cap)
+	 * mRNA is roughly the same than cDNA. Strictly speaking mRNA
+	 * has a poly-A tail and 5'cap.
 	 */
 	public synchronized int baseNumber2MRnaPos(int pos) {
 		int count = 0;
@@ -558,7 +559,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (exon.size() != collapsedExon.size() //
 					|| exon.getStart() != collapsedExon.getStart() //
 					|| exon.getEnd() != collapsedExon.getEnd() //
-					) {
+			) {
 				ret = true;
 
 				// Show debugging information
@@ -939,7 +940,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tSnpEffPredictorFactory.frameCorrectionFirstCodingExon(), which"//
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
-								);
+						);
 					} else {
 						if (Config.get().isDebug()) {
 							System.err.println("\t\tFrame correction: " //
@@ -949,7 +950,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 									+ "\tExpected frame: " + frameReal //
 									+ "\tExon frame: " + exon.getFrame() //
 									+ "\tSequence len: " + sequence.length() //
-									);
+							);
 						}
 						// Find matching CDS
 						Cds cdsToCorrect = findMatchingCds(exon);
@@ -1675,7 +1676,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					}
 				}
 
-				// Possition
+				// Position
 				pos1sb.append(pos % 10);
 
 				if (pos % 10 == 0) pos10sb.append((pos % 100) / 10);
@@ -1732,8 +1733,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\n" + seq //
 				+ (isProteinCoding() ? "\n" + aaStr + "\n" + frameStr : "") //
 				+ "\n" + new String(art) //
-		+ "\n" + coords //
-		;
+				+ "\n" + coords //
+				;
 	}
 
 	/**

@@ -55,8 +55,7 @@ public class HgvsDna extends Hgvs {
 			return GprSeq.reverseWc(variant.getReference()) + ">" + GprSeq.reverseWc(variant.getAlt());
 
 		case MNP:
-			String ref,
-			alt;
+			String ref, alt;
 			if (strandPlus) {
 				ref = variant.getReference();
 				alt = variant.getAlt();
@@ -83,6 +82,14 @@ public class HgvsDna extends Hgvs {
 		default:
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
+	}
+
+	/**
+	 * Is this position downstream?
+	 */
+	boolean isDownstream(int pos) {
+		if (tr.isStrandPlus()) return tr.getEnd() < pos;
+		return pos < tr.getStart();
 	}
 
 	/**
@@ -133,6 +140,14 @@ public class HgvsDna extends Hgvs {
 		if (seq == null) return false; // Cannot compare
 
 		return seq.equalsIgnoreCase(variant.getAlt());
+	}
+
+	/**
+	 * Is this position upstream?
+	 */
+	boolean isUpstream(int pos) {
+		if (tr.isStrandPlus()) return pos < tr.getStart();
+		return tr.getEnd() < pos;
 	}
 
 	/**
@@ -224,47 +239,39 @@ public class HgvsDna extends Hgvs {
 		// Note: This may come from an intron-exon boundary variant (intron side, walked in a duplication).
 		//       In that case, the exon marker won't be available from 'variantEffect.marker'.
 		Exon ex = tr.findExon(pos);
-		if (ex != null) return posExon(pos, ex);
+		if (ex != null) return posExon(pos);
 
 		Intron intron = tr.findIntron(pos);
 		if (intron != null) return posIntron(pos, intron);
 
-		// Upstream or downstream
-		return posExon(pos, null);
+		if (isDownstream(pos)) return posDownstream(pos);
+		if (isUpstream(pos)) return posUpstream(pos);
+
+		throw new RuntimeException("Unknown HGVS position");
+	}
+
+	/**
+	 * Position downstream of the transcript
+	 */
+	protected String posDownstream(int pos) {
+		int baseNumCdsEnd = tr.getCdsEnd();
+		int idx = Math.abs(pos - baseNumCdsEnd);
+
+		return "*" + idx; // We are after stop codon, coordinates must be '*1', '*2', etc.
 	}
 
 	/**
 	 * Convert genomic position to HGVS compatible (DNA) position
 	 */
-	protected String posExon(int pos, Exon ex) {
-		// Initialize
-		String idxPrepend = "";
-		int idx = -1;
+	protected String posExon(int pos) {
+		if (tr.isUtr3(pos)) return posUtr3(pos);
+		if (tr.isUtr5(pos)) return posUtr5(pos);
 
-		//---
-		// Different regions of the transcript have different ways of showing positions
-		//---
-		if (tr.isUtr3(pos) || tr.isDownstream(pos)) {
-			// 3'UTR: We are after stop codon, coordinates must be '*1', '*2', etc.
-			int baseNum = tr.baseNumber2MRnaPos(pos);
-			int baseNumCdsEnd = tr.baseNumber2MRnaPos(tr.getCdsEnd());
-			idx = Math.abs(baseNum - baseNumCdsEnd);
-			idxPrepend = "*";
-		} else if (tr.isUtr5(pos) || tr.isUpstream(pos)) {
-			// 5'UTR: We are before TSS, coordinates must be '-1', '-2', etc.
-			int baseNum = tr.baseNumber2MRnaPos(pos);
-			int baseNumTss = tr.baseNumber2MRnaPos(tr.getCdsStart());
-			idx = Math.abs(baseNum - baseNumTss);
-			idxPrepend = "-";
-		} else {
-			// Coding Exon: just use CDS position
-			idx = tr.baseNumberCds(pos, false) + 1;
-		}
+		int idx = tr.baseNumberCds(pos, false) + 1; // Coding Exon: just use CDS position
 
 		// Could not find dna position in transcript?
 		if (idx <= 0) return null;
-
-		return idxPrepend + idx;
+		return "" + idx;
 	}
 
 	/**
@@ -318,6 +325,41 @@ public class HgvsDna extends Hgvs {
 		int utrDistance = Math.abs(cdnaEnd - cdnaPos);
 		String utrStr = strandPlus ? "*" : "-";
 		return utrStr + utrDistance + (exonDistance > 0 ? posExonStr + exonDistance : "");
+	}
+
+	/**
+	 * Position upstream of the transcript
+	 */
+	protected String posUpstream(int pos) {
+		int tss = tr.getCdsStart();
+		int idx = Math.abs(pos - tss);
+
+		if (idx <= 0) return null;
+		return "-" + idx; // 5'UTR: We are before TSS, coordinates must be '-1', '-2', etc.
+	}
+
+	/**
+	 * Position within 3'UTR
+	 */
+	protected String posUtr3(int pos) {
+		int baseNum = tr.baseNumber2MRnaPos(pos);
+		int baseNumCdsEnd = tr.baseNumber2MRnaPos(tr.getCdsEnd());
+		int idx = Math.abs(baseNum - baseNumCdsEnd);
+
+		if (idx <= 0) return null;
+		return "*" + idx; // 3'UTR: We are after stop codon, coordinates must be '*1', '*2', etc.
+	}
+
+	/**
+	 * Position within 5'UTR
+	 */
+	protected String posUtr5(int pos) {
+		int baseNum = tr.baseNumber2MRnaPos(pos);
+		int baseNumTss = tr.baseNumber2MRnaPos(tr.getCdsStart());
+		int idx = Math.abs(baseNum - baseNumTss);
+
+		if (idx <= 0) return null;
+		return "-" + idx; // 5'UTR: We are before TSS, coordinates must be '-1', '-2', etc.
 	}
 
 	@Override

@@ -9,7 +9,9 @@ import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
+import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import junit.framework.Assert;
 
 /**
  * Test case
@@ -17,7 +19,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 public class TestCasesZzz {
 
 	boolean debug = false;
-	boolean verbose = true || debug;
+	boolean verbose = false || debug;
 
 	/**
 	 * Calculate snp effect for an input VCF file
@@ -48,13 +50,30 @@ public class TestCasesZzz {
 	}
 
 	/**
-	 * Test that CSV summary does not throw any error
+	 * Test HGVS.C upstream of a variant affecting a transcript on the negative strand 
 	 */
 	@Test
-	public void test_04() {
+	public void test_05_hgvs_downstream_negative_strand() {
 		Gpr.debug("Test");
-		String args[] = { "-csvStats", "test_04_TestCasesEff.csv" };
-		snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
+		List<VcfEntry> list = snpEffect("testHg19Chr17", "tests/hgvs_downstream_negative_strand.vcf", null);
+
+		for (VcfEntry ve : list) {
+			if (verbose) System.out.println(ve);
+
+			for (VcfEffect veff : ve.parseEffects()) {
+				if (veff.getTranscriptId().equals("NM_000199.3")) {
+					if (verbose) {
+						System.out.println("\t" + veff);
+						System.out.println("\t\tHGVS.c: " + veff.getHgvsC());
+					}
+
+					// Compare against expected result
+					String expectedHgvsC = ve.getInfo("HGVSC");
+					String actualHgvsC = veff.getHgvsC();
+					Assert.assertEquals(expectedHgvsC, actualHgvsC);
+				}
+			}
+		}
 	}
 
 }

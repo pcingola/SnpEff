@@ -1,0 +1,7 @@
+17	78183077	.	T	A	.	.	HGVSC=c.*1174A>T;NOTE=second_base_downstream
+17	78183078	.	T	A	.	.	HGVSC=c.*1173A>T;NOTE=first_base_downstream
+17	78183079	.	T	A	.	.	HGVSC=c.*1172A>T;NOTE=last_3_prime_UTR_base
+17	78184248	.	T	A	.	.	HGVSC=c.*3A>T;NOTE=third_3_prime_UTR_base
+17	78184249	.	G	A	.	.	HGVSC=c.*2C>T;NOTE=second_3_prime_UTR_base
+17	78184250	.	G	A	.	.	HGVSC=c.*1C>T;NOTE=first_3_prime_UTR_base
+17	78184251	.	T	A	.	.	HGVSC=c.1509A>T;NOTE=last_coding_base

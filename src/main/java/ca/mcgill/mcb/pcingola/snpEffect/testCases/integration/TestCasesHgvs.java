@@ -2,8 +2,6 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
@@ -12,6 +10,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import junit.framework.Assert;
 
 /**
  * Test random SNP changes
@@ -240,7 +239,7 @@ public class TestCasesHgvs {
 			if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
 			ok |= veff.hasEffectType(EffectType.INTERGENIC) //
 					&& veff.getHgvsDna().equals("n.15070000_15070001insT") //
-			;
+					;
 		}
 
 		Assert.assertTrue("Error in HGVS annotaiton", ok);
