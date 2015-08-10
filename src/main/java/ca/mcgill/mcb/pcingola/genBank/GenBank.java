@@ -20,7 +20,6 @@ public class GenBank extends Features {
 
 	/**
 	 * Create a Genbank record from a 'GB' file
-	 * @param fileName
 	 */
 	public GenBank(String fileName) {
 		super(fileName);
@@ -28,8 +27,6 @@ public class GenBank extends Features {
 
 	/**
 	 * Has this line a new feature?
-	 * @param line
-	 * @return
 	 */
 	@Override
 	protected boolean isNewFeature(String line) {
@@ -49,9 +46,6 @@ public class GenBank extends Features {
 
 	/**
 	 * Parse a feature line
-	 * @param name
-	 * @param value
-	 * @param fieldLineNum
 	 */
 	protected void parseFieldLine(String name, String valueOri, int fieldLineNum) {
 		String value = valueOri.trim();
@@ -92,7 +86,6 @@ public class GenBank extends Features {
 
 	/**
 	 * Load and parse the contents of a data file
-	 * @param fileName
 	 */
 	@Override
 	public void readFile() {

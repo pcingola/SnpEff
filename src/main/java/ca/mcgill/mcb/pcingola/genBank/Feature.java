@@ -144,12 +144,12 @@ public class Feature implements Iterable<FeatureCoordinates> {
 		String trId = get("transcript_id");
 		if (trId != null) return trId;
 
-		// Try 'protein'...
-		trId = get("protein_id");
-		if (trId != null) return trId;
-
 		// Try 'locus'...
 		trId = get("locus_tag");
+		if (trId != null) return trId;
+
+		// Try 'protein'...
+		trId = get("protein_id");
 		if (trId != null) return trId;
 
 		// Try 'db_xref'...
