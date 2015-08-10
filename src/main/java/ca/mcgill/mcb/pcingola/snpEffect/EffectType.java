@@ -392,7 +392,8 @@ public enum EffectType {
 			return "initiator_codon_variant" + formatVersion.separator() + "non_canonical_start_codon";
 
 		case TRANSCRIPT:
-			return "transcript";
+			//	return "transcript";
+			return "non_coding_transcript_variant";
 
 		case UPSTREAM:
 			return "upstream_gene_variant";
@@ -401,7 +402,7 @@ public enum EffectType {
 			return "3_prime_UTR_variant";
 
 		case UTR_3_DELETED:
-			return "3_prime_UTR_truncation" + formatVersion.separator() + "exon_loss";
+			return "3_prime_UTR_truncation" + formatVersion.separator() + "exon_loss_variant";
 
 		case UTR_5_PRIME:
 			return "5_prime_UTR_variant";
