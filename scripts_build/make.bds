@@ -11,14 +11,15 @@
 bundleLists			:= false		help Create bundle lists and config entries
 config				:= false		help Create config file
 db					:= false		help Build databases
+dbTest				:= false		help Build databases used in test cases
 distro	 			:= false		help Create distribution files (zip)
 distroBundles		:= false		help Create bundle files (zip)
 distroCore 			:= false		help Create distribution files (zip only 'core')
 download 			:= false		help Download files
 make	 			:= false		help Make (build JAR files)
 query	 			:= false		help Run queries against UCSC MySql server
-test	 			:= false		help Run test cases
-testDb				:= false		help Build databases used in test cases
+test	 			:= false		help Run SnpEff / SnpSift test cases
+testHgvs 			:= false		help Run SnpEff HGVS test cases
 uploadCore			:= false		help Upload 'core' package
 uploadDbs			:= false		help Upload all databases in 'zip' directory
 uploadDev			:= false		help Upload 'development' version
@@ -319,10 +320,20 @@ void makeDistro() {
 }
 
 #-------------------------------------------------------------------------------
-# RUn test cases
+# Run test cases
 #-------------------------------------------------------------------------------
 
 void runTests() {
+	runTestsSnpSiftAll()
+	runTestsSnpEffIntegration()
+	runTestsSnpEffUnity()
+}
+
+#-------------------------------------------------------------------------------
+# Run test cases
+#-------------------------------------------------------------------------------
+
+void runTestsSnpSiftAll() {
 	# Run SnpSift test cases
 	task cd $HOME/workspace/SnpSift/ ; \
 		java -Xmx4g \
@@ -330,17 +341,29 @@ void runTests() {
 			org.junit.runner.JUnitCore \
 			ca.mcgill.mcb.pcingola.snpSift.testCases.TestSuiteAll \
 			2>&1 \
-			| tee $dirSnpeff/testcases.snpsift.txt
+			| tee $dirSnpeff/testcases.snpsift.all.txt
+}
 
-	# Run SnpEff test cases: Unity
+#-------------------------------------------------------------------------------
+# Run test cases: SnpEff-HGVS
+#-------------------------------------------------------------------------------
+
+void runTestsSnpEffHgvs() {
+	# Run SnpEff test cases: HGVS
 	task cd $HOME/workspace/SnpEff/ ; \
 		java -Xmx4g \
 			-cp $dirSnpeff/snpEff.jar \
 			org.junit.runner.JUnitCore \
-			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteUnity \
+			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteHgvs \
 			2>&1 \
-			| tee $dirSnpeff/testcases.snpeff.unity.txt
+			| tee $dirSnpeff/testcases.snpeff.hgvs.txt
+}
 
+#-------------------------------------------------------------------------------
+# Run test cases: SnpEff-Integration
+#-------------------------------------------------------------------------------
+
+void runTestsSnpEffIntegration() {
 	# Run SnpEff test cases: Integration
 	task cd $HOME/workspace/SnpEff/ ; \
 		java -Xmx4g \
@@ -349,6 +372,21 @@ void runTests() {
 			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteIntegration \
 			2>&1 \
 			| tee $dirSnpeff/testcases.snpeff.integration.txt
+}
+
+#-------------------------------------------------------------------------------
+# Run test cases: SnpEff Unity
+#-------------------------------------------------------------------------------
+
+void runTestsSnpEffUnity() {
+	# Run SnpEff test cases: Unity
+	task cd $HOME/workspace/SnpEff/ ; \
+		java -Xmx4g \
+			-cp $dirSnpeff/snpEff.jar \
+			org.junit.runner.JUnitCore \
+			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteUnity \
+			2>&1 \
+			| tee $dirSnpeff/testcases.snpeff.unity.txt
 }
 
 #-------------------------------------------------------------------------------
@@ -529,17 +567,19 @@ void zipDbs() {
 
 print("Building\n")
 
+if( args.isEmpty() )	build()					# No arguments? Build (create JAR files)
 if( bundleLists )		buildBundleLists()		# Create bundle list and config files
 if( config )			buildConfig()			# Create config file
 if( db )				buildDb()				# Build genomes
+if( dbTest )			buildDbTest()			# Build databases used in test cases
 if( distro )			makeDistro()			# Create distribution files
 if( distroCore )		zipCore()				# Create distribution files (core 'zip')
 if( distroBundles )		zipBundles()			# Create 'bundle' distribution files
 if( download )			downloadAll()			# Perform downloads
-if( make )				build()					# Create JAR files
+if( make )				build()					# Build (create JAR files)
 if( query )				queryUcscAll()			# Query UCSC database
 if( test )				runTests()				# Run test cases 
-if( testDb )			buildDbTest()			# Build databases used in test cases
+if( testHgvs )			runTestsSnpEffHgvs()	# Run test cases (SnpEff HGVS)
 if( uploadCore )		uploadCore2Sf()			# Upload 'core' files
 if( uploadDbs )			uploadDbs2Sf()			# Upload all database files in 'zip' dir
 if( uploadDev )			uploadDev2Sf()			# Upload 'development' version

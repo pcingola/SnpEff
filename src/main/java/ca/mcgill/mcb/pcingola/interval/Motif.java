@@ -36,6 +36,14 @@ public class Motif extends Marker {
 		this.pwmId = pwmId;
 	}
 
+	@Override
+	public Motif cloneShallow() {
+		Motif clone = (Motif) super.cloneShallow();
+		clone.pwmId = pwmId;
+		clone.pwmName = pwmName;
+		return clone;
+	}
+
 	/**
 	 * Calculate effect impact
 	 *
@@ -50,7 +58,7 @@ public class Motif extends Marker {
 		if (pwm != null) {
 
 			// Step 1:
-			//     Create a marker seq (we can 'apply' a change to it and see what the resulting sequence is
+			//     Create a MarkerSeq (we can 'apply' a change to it and see what the resulting sequence is
 			MarkerSeq mseq = new MarkerSeq((Marker) parent, start, end, false, id); // Notice: We use positive strand
 			String seqBest = pwm.getBestSequenceStr();
 			mseq.setSequence(isStrandPlus() ? seqBest : GprSeq.reverseWc(seqBest));

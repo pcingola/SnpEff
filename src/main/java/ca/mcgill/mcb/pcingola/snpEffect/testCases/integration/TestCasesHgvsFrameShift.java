@@ -90,7 +90,7 @@ public class TestCasesHgvsFrameShift {
 	}
 
 	/**
-	 * Test HGVS.P in a synonimous frame shift
+	 * Test HGVS.P in a synonymous frame shift
 	 */
 	@Test
 	public void test_01_hgvs_frameshift() {
@@ -99,7 +99,7 @@ public class TestCasesHgvsFrameShift {
 	}
 
 	/**
-	 * Test HGVS.P in a synonimous frame shift
+	 * Test HGVS.P in a synonymous frame shift
 	 */
 	@Test
 	public void test_02_hgvs_frameshift() {
@@ -108,7 +108,7 @@ public class TestCasesHgvsFrameShift {
 	}
 
 	/**
-	 * Test HGVS.P in a synonimous frame shift
+	 * Test HGVS.P in a synonymous frame shift
 	 */
 	@Test
 	public void test_03_hgvs_frameshift() {
@@ -117,7 +117,7 @@ public class TestCasesHgvsFrameShift {
 	}
 
 	/**
-	 * Test HGVS.P in a synonimous frame shift
+	 * Test HGVS.P in a synonymous frame shift
 	 */
 	@Test
 	public void test_04_hgvs_frameshift() {
@@ -126,7 +126,7 @@ public class TestCasesHgvsFrameShift {
 	}
 
 	/**
-	 * Test HGVS.P in a synonimous frame shift
+	 * Test HGVS.P in a synonymous frame shift
 	 */
 	@Test
 	public void test_05_hgvs_frameshift() {

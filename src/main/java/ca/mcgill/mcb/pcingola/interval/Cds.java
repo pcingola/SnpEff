@@ -27,6 +27,13 @@ public class Cds extends Marker implements MarkerWithFrame {
 		type = EffectType.CDS;
 	}
 
+	@Override
+	public Cds cloneShallow() {
+		Cds clone = (Cds) super.cloneShallow();
+		clone.frame = frame;
+		return clone;
+	}
+
 	/**
 	 * Correct coordinates according to frame differences
 	 * @param frameCorrection
@@ -71,7 +78,7 @@ public class Cds extends Marker implements MarkerWithFrame {
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + frame //
-		;
+				;
 	}
 
 	/**
@@ -91,7 +98,7 @@ public class Cds extends Marker implements MarkerWithFrame {
 				+ type //
 				+ ((id != null) && (id.length() > 0) ? " '" + id + "'" : "") //
 				+ ", frame: " + frame //
-		;
+				;
 	}
 
 }

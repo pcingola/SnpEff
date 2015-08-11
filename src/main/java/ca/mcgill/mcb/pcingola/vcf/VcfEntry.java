@@ -9,6 +9,7 @@ import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.align.VcfRefAltAlign;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Variant;
@@ -290,6 +291,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (vcfInfo.isNumberAllAlleles() && values.length != alts.length) return "INFO filed '" + infoName + "' has 'Number=A' in header, but it contains '" + values.length + "' elements when there are '" + alts.length + "' alleles.";
 
 		return "";
+	}
+
+	@Override
+	public Cds cloneShallow() {
+		throw new RuntimeException("Unimplemented!");
 	}
 
 	/**
@@ -676,7 +682,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				&& !alt.equals(VCF_ALT_NON_REF_gVCF) // '<NON_REF>'
 				&& !alt.equals(VCF_ALT_MISSING_REF) // '<*>'
 				&& !alt.equals(ref) // Is ALT different than REF?
-		;
+				;
 	}
 
 	@Override
@@ -1270,7 +1276,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public List<Variant> variants() {
 		LinkedList<Variant> list = new LinkedList<Variant>();
 
-		// Create one SeqChange for each ALT
+		// Create one Variant for each ALT
 		Chromosome chr = (Chromosome) parent;
 		int genotypeNumber = 1;
 
@@ -1332,7 +1338,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				ch = new String(change);
 			}
 
-			// Create SeqChange
+			// Create variant
 			return Variant.factory(chromo, startNew, ch, "", id, false);
 		}
 

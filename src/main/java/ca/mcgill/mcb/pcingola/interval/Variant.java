@@ -114,6 +114,12 @@ public class Variant extends Marker {
 		return list;
 	}
 
+	public Variant() {
+		super();
+		ref = alt = "";
+		variantType = VariantType.INTERVAL;
+	}
+
 	/**
 	 * This constructor is used when we only have interval data (e.g. when reading a BED file)
 	 */
@@ -149,6 +155,17 @@ public class Variant extends Marker {
 	@Override
 	public Variant clone() {
 		return (Variant) super.clone();
+	}
+
+	@Override
+	public Variant cloneShallow() {
+		Variant clone = (Variant) super.cloneShallow();
+		clone.variantType = variantType;
+		clone.ref = ref;
+		clone.alt = alt;
+		clone.genotype = genotype;
+		clone.imprecise = imprecise;
+		return clone;
 	}
 
 	public String getAlt() {

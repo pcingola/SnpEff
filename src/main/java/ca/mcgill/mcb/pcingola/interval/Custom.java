@@ -9,7 +9,7 @@ import ca.mcgill.mcb.pcingola.util.KeyValue;
 
 /**
  * This is a custom interval (i.e. intervals provided by the user)
- * 
+ *
  * @author pcingola
  */
 public class Custom extends Marker implements Iterable<KeyValue<String, String>> {
@@ -19,12 +19,26 @@ public class Custom extends Marker implements Iterable<KeyValue<String, String>>
 	String label;
 	double score = Double.NaN;
 
+	public Custom() {
+		super();
+		type = EffectType.CUSTOM;
+		label = "";
+	}
+
 	public Custom(Marker parent, int start, int end, boolean strandMinus, String id, String label) {
 		super(parent, start, end, strandMinus, id);
 		type = EffectType.CUSTOM;
 
 		this.label = label;
 		if (label == null || label.isEmpty()) label = id;
+	}
+
+	@Override
+	public Custom cloneShallow() {
+		Custom clone = (Custom) super.cloneShallow();
+		clone.label = label;
+		clone.score = score;
+		return clone;
 	}
 
 	public String getLabel() {
@@ -47,13 +61,6 @@ public class Custom extends Marker implements Iterable<KeyValue<String, String>>
 	public Iterator<KeyValue<String, String>> iterator() {
 		// Nothing to iterate on
 		return Collections.<KeyValue<String, String>> emptySet().iterator();
-	}
-
-	@Override
-	public boolean variantEffect(Variant variant, VariantEffects changeEffecs) {
-		if (!intersects(variant)) return false; // Sanity check
-		changeEffecs.add(variant, this, EffectType.CUSTOM, label);
-		return true;
 	}
 
 	public void setLabel(String label) {
@@ -82,5 +89,12 @@ public class Custom extends Marker implements Iterable<KeyValue<String, String>>
 		}
 
 		return sb.toString();
+	}
+
+	@Override
+	public boolean variantEffect(Variant variant, VariantEffects changeEffecs) {
+		if (!intersects(variant)) return false; // Sanity check
+		changeEffecs.add(variant, this, EffectType.CUSTOM, label);
+		return true;
 	}
 }

@@ -39,47 +39,38 @@ public class MarkerSeq extends Marker {
 	}
 
 	/**
-	 * Apply variant to exon
-	 *
-	 * WARNING: There might be conditions which change the exon type (e.g. an intron is deleted)
-	 * 			Nevertheless ExonSpliceType s not updated since it reflects the exon type before a sequence change.
-	 *
+	 * Apply variant
 	 */
 	@Override
 	public MarkerSeq apply(Variant variant) {
-		// Create new exon with updated coordinates
-		MarkerSeq ms = (MarkerSeq) super.apply(variant);
-
-		// Exon eliminated?
-		if (ms == null) return null;
-
-		// Sometimes 'apply' method return 'this'. Since we don't want to update the original marker, we have to create a clone
-		if (ms == this) ms = (MarkerSeq) clone();
+		// Create new MarkerSeq with updated coordinates
+		MarkerSeq newMarkerSeq = (MarkerSeq) super.apply(variant);
+		if (newMarkerSeq == null) return null;
 
 		if (variant.intersects(this)) {
 			switch (variant.getVariantType()) {
 			case SNP:
-				applySnp(variant, ms);
+				applySnp(variant, newMarkerSeq);
 				break;
 
 			case INS:
-				applyIns(variant, ms);
+				applyIns(variant, newMarkerSeq);
 				break;
 
 			case DEL:
-				applyDel(variant, ms);
+				applyDel(variant, newMarkerSeq);
 				break;
 
 			case MNP:
-				applyMnp(variant, ms);
+				applyMnp(variant, newMarkerSeq);
 				break;
 
 			default:
 				throw new RuntimeException("Unimplemented method for variant change type " + variant.getVariantType() + "\n\tVariant: " + variant);
 			}
-		} else ms.setSequence(getSequence());
+		} else newMarkerSeq.setSequence(getSequence());
 
-		return ms;
+		return newMarkerSeq;
 	}
 
 	/**
@@ -98,7 +89,7 @@ public class MarkerSeq extends Marker {
 
 			StringBuilder newSeq = new StringBuilder();
 			if (idxStart >= 0) newSeq.append(seq.substring(0, idxStart));
-			if (idxEnd >= 0) newSeq.append(seq.substring(idxEnd));
+			if (idxEnd >= 0 && (idxEnd < seq.length())) newSeq.append(seq.substring(idxEnd));
 
 			// Update sequence
 			seq = newSeq.toString();

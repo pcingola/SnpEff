@@ -19,7 +19,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  * @author pcingola
  *
  */
-public class Gene extends IntervalAndSubIntervals<Transcript> implements Serializable {
+public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializable {
 
 	public enum GeneType {
 		CODING, NON_CODING, UNKNOWN
@@ -117,8 +117,8 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
 								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-								) //
-						) {
+				) //
+				) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -132,8 +132,8 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
 								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-								) //
-						) {
+				) //
+				) {
 					canonical = t;
 					canonicalLen = tlen;
 				}
@@ -144,6 +144,16 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		if (canonical != null) canonical.setCanonical(true);
 
 		return canonical;
+	}
+
+	@Override
+	public Gene cloneShallow() {
+		Gene clone = (Gene) super.cloneShallow();
+
+		clone.bioType = bioType;
+		clone.geneName = geneName;
+
+		return clone;
 	}
 
 	/**
@@ -258,11 +268,12 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
 
 		int countRemoved = 0;
-		for (Transcript t : this)
-			if (!t.isChecked() || t.isCorrected()) {
-				toDelete.add(t);
+		for (Transcript tr : this) {
+			if (!tr.isChecked() || tr.isCorrected()) {
+				toDelete.add(tr);
 				countRemoved++;
 			}
+		}
 
 		if (Config.get().isDebug()) Gpr.debug("Gene '', removing " + countRemoved + " / " + numChilds() + " unchecked transcript.");
 
@@ -485,7 +496,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			// Apply sequence change to create new 'reference'?
 			if (variant.isNonRef()) {
 				Variant vref = ((VariantNonRef) variant).getVariantRef();
-				tr = tr.apply(vref);
+				tr = tr.apply(vref); // TODO: We need to check on null transcript (e.g. huge deletion removing the whole transcript)
 			}
 
 			// Calculate effects

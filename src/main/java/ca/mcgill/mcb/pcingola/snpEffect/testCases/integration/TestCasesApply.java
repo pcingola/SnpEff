@@ -166,7 +166,7 @@ public class TestCasesApply {
 										+ "\n\t\tOriginal            : " + ex //
 										+ "\n\t\tSequence (expected) : " + newSeq + "'" //
 										+ "\n\t\tSequence            : " + exNew.getSequence() + "'" //
-								;
+										;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}
@@ -246,7 +246,7 @@ public class TestCasesApply {
 										+ "\n\t\tOriginal  : " + ex //
 										+ "\n\t\tNew       : " + exNew //
 										+ "\n\t\tNew seq   : " + newSeq //
-								;
+										;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}
@@ -344,7 +344,7 @@ public class TestCasesApply {
 										+ "\n\t\tOriginal  : " + ex //
 										+ "\n\t\tNew       : " + exNew //
 										+ "\n\t\tNew seq   : " + newSeq //
-								;
+										;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}

@@ -57,12 +57,12 @@ public class TestCasesMnps extends TestCasesBase {
 	void analyze(int i, int pos, String ref, String mnp) {
 		String codons = codons();
 
-		Variant seqChange = new Variant(chromosome, pos, ref + "", mnp + "", "");
+		Variant variant = new Variant(chromosome, pos, ref + "", mnp + "", "");
 
 		//---
 		// Calculate effects
 		//---
-		VariantEffects effects = snpEffectPredictor.variantEffect(seqChange);
+		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
 
 		// Show
 		VariantEffect effect = null;
@@ -84,12 +84,12 @@ public class TestCasesMnps extends TestCasesBase {
 				String codonsExp[] = codons.split("/");
 
 				boolean error = (!codonsExp[0].toUpperCase().equals(effect.getCodonsRef().toUpperCase()) //
-				|| !codonsExp[1].toUpperCase().equals(effect.getCodonsAlt().toUpperCase()));
+						|| !codonsExp[1].toUpperCase().equals(effect.getCodonsAlt().toUpperCase()));
 
 				if (error || debug) {
 					Gpr.debug("Fatal error:"//
 							+ "\n\tPos           : " + pos //
-							+ "\n\tSeqChange     : " + seqChange + (seqChange.isStrandPlus() ? "+" : "-") //
+							+ "\n\tVariant       : " + variant + (variant.isStrandPlus() ? "+" : "-") //
 							+ "\n\tCodon (exp)   : " + codons//
 							+ "\n\tCodon (pred)  : " + effect.getCodonsRef().toUpperCase() + "/" + effect.getCodonsAlt().toUpperCase() //
 							+ "\n\tEffect (pred) : " + effStr //

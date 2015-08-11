@@ -220,22 +220,7 @@ public class HgvsProtein extends Hgvs {
 		String protSeq = tr.protein();
 		if (codonNum >= protSeq.length()) return null;
 
-		// NOTE: the changes observed should be described on protein level and not try to
-		//       incorporate any knowledge regarding the change at DNA-level.
-		//       Thus, p.His150Hisfs*10 is not correct, but p.Gln151Thrfs*9 is.
-		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#del
 		CodonTable codonTable = marker.codonTable();
-		Transcript newTr = tr.apply(variant);
-		String newProtSeq = newTr.protein();
-
-		// Find the first difference in the protein sequences and use that
-		// one as AA number
-		for (int cn = codonNum; cn < protSeq.length(); cn++) {
-			char prot = protSeq.charAt(cn);
-			char newProt = newProtSeq.charAt(cn);
-			if (prot != newProt) return codonTable.aaThreeLetterCode(prot) + (cn + 1);
-		}
-
 		return codonTable.aaThreeLetterCode(protSeq.charAt(codonNum)) + (codonNum + 1);
 	}
 
@@ -313,8 +298,33 @@ public class HgvsProtein extends Hgvs {
 	 * ... the description does not include a description of the deletion from the site of the change
 	 */
 	protected String posFs() {
-		String posStart = pos(codonNum);
-		return posStart;
+		if (codonNum < 0) return null;
+
+		// Sanity check: Longer than protein?
+		Transcript tr = variantEffect.getTranscript();
+		String protSeq = tr.protein();
+		if (codonNum >= protSeq.length()) return null;
+
+		// NOTE: the changes observed should be described on protein level and not try to
+		//       incorporate any knowledge regarding the change at DNA-level.
+		//       Thus, p.His150Hisfs*10 is not correct, but p.Gln151Thrfs*9 is.
+		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#del
+		CodonTable codonTable = marker.codonTable();
+
+		if (!variant.isMixed()) { // Apply is not supported on MIXED variants at the moment
+			Transcript newTr = tr.apply(variant);
+			String newProtSeq = newTr.protein();
+
+			// Find the first difference in the protein sequences and use that
+			// one as AA number
+			for (int cn = codonNum; cn < protSeq.length(); cn++) {
+				char aa = protSeq.charAt(cn);
+				char newAa = newProtSeq.charAt(cn);
+				if (aa != newAa) return codonTable.aaThreeLetterCode(aa) + (cn + 1);
+			}
+		}
+
+		return codonTable.aaThreeLetterCode(protSeq.charAt(codonNum)) + (codonNum + 1);
 	}
 
 	/**

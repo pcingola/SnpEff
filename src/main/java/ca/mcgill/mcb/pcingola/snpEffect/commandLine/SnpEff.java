@@ -175,7 +175,7 @@ public class SnpEff implements CommandLine {
 						+ "\n\t\tRelease date : " + versionCheck.getLatestReleaseDate() //
 						+ "\n\t\tDownload URL : " + versionCheck.getLatestUrl() //
 						+ "\n" //
-						);
+				);
 			}
 		}
 	}
@@ -260,7 +260,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) //
 			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-					);
+		);
 
 		config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 		if (verbose) Timer.showStdErr("done");
@@ -674,7 +674,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("len") //
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("show") //
-				) {
+		) {
 			command = args[argNum++].trim().toLowerCase();
 		}
 
@@ -688,73 +688,170 @@ public class SnpEff implements CommandLine {
 			// These options are available for allow all commands
 			// Is it a command line option?
 			if (isOpt(arg)) {
-				if ((arg.equals("-c") || arg.equalsIgnoreCase("-config"))) {
+
+				switch (arg.toLowerCase()) {
+				case "-c":
+				case "-config":
 					if ((i + 1) < args.length) configFile = args[++i];
 					else usage("Option '-c' without config file argument");
-				} else if (arg.equalsIgnoreCase("-configOption")) {
+					break;
+
+				case "-configoption":
 					if ((i + 1) < args.length) {
 						String nameValue = args[++i];
 						String nv[] = nameValue.split("=", 2);
 						if (nv.length > 0) configOverride.put(nv[0], nv[1]);
 						else usage("Cannot parse config option (expected format 'name=value'): " + nameValue);
 					} else usage("Option '-configOption' without argument");
-				} else if (arg.equalsIgnoreCase("-canon")) canonical = true; // Use canonical transcripts
-				else if (arg.equals("-d") || arg.equalsIgnoreCase("-debug")) debug = verbose = true;
-				else if (arg.equalsIgnoreCase("-dataDir")) {
+					break;
+
+				case "-canon":
+					canonical = true; // Use canonical transcripts
+					break;
+
+				case "-d":
+				case "-debug":
+					debug = verbose = true;
+					break;
+
+				case "-datadir":
 					if ((i + 1) < args.length) dataDir = args[++i];
 					else usage("Option '-dataDir' without data_dir argument");
-				} else if (arg.equalsIgnoreCase("-download")) download = true; // Download genome if not locally available
-				else if (arg.equals("-h") || arg.equalsIgnoreCase("-help")) {
+					break;
+
+				case "-download":
+					download = true; // Download genome if not locally available
+					break;
+
+				case "-h":
+				case "-help":
 					help = true;
 					if (command.isEmpty()) usage(null); // Help was invoked without a specific command: Show generic help
-				} else if (arg.equalsIgnoreCase("-interval")) {
+					break;
+
+				case "-interval":
 					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
 					else usage("Option '-interval' without config interval_file argument");
-				} else if (arg.equalsIgnoreCase("-motif")) motif = true; // Use motif database
-				else if (arg.equalsIgnoreCase("-nogenome")) noGenome = true; // Do not load genome
-				else if (arg.equalsIgnoreCase("-noMotif")) motif = false; // Disable use of motif database
-				else if (arg.equalsIgnoreCase("-nextProt")) nextProt = true; // Use NextProt database
-				else if (arg.equalsIgnoreCase("-noNextProt")) nextProt = false; // Disable use of NextProt database
-				else if (arg.equalsIgnoreCase("-noDownload")) download = false; // Do not download genome
-				else if (arg.equalsIgnoreCase("-noLog")) log = false;
-				else if (arg.equalsIgnoreCase("-noOut")) suppressOutput = true; // Undocumented option (only used for development & debugging)
-				else if (arg.equalsIgnoreCase("-noShiftHgvs") || arg.equalsIgnoreCase("-no_shift_hgvs")) {
+					break;
+
+				case "-motif":
+					motif = true; // Use motif database
+					break;
+
+				case "-nogenome":
+					noGenome = true; // Do not load genome
+					break;
+
+				case "-nomotif":
+					motif = false; // Disable use of motif database
+					break;
+
+				case "-nextprot":
+					nextProt = true; // Use NextProt database
+					break;
+
+				case "-nonextprot":
+					nextProt = false; // Disable use of NextProt database
+					break;
+
+				case "-nodownload":
+					download = false; // Do not download genome
+					break;
+
+				case "-nolog":
+					log = false;
+					break;
+
+				case "-noout":
+					// Undocumented option (only used for development & debugging)
+					suppressOutput = true;
+					break;
+
+				case "-noshifthgvs":
+				case "-no_shift_hgvs":
 					shiftHgvs = false;
-				} else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
-				else if (arg.equalsIgnoreCase("-onlyProtein")) onlyProtein = true;
-				else if (arg.equalsIgnoreCase("-onlyTr")) {
+					break;
+
+				case "-onlyreg":
+					onlyRegulation = true;
+					break;
+
+				case "-onlyprotein":
+					onlyProtein = true;
+					break;
+
+				case "-onlytr":
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
-				} else if (arg.equals("-q") || arg.equalsIgnoreCase("-quiet")) {
+					else usage("Option '-onltTr' without file argument");
+					break;
+
+				case "-q":
+				case "-quiet":
 					quiet = true;
 					verbose = false;
-				} else if (arg.equals("-reg")) {
+					break;
+
+				case "-reg":
 					if ((i + 1) < args.length) addRegulationTrack(args[++i]); // Add this track to the list
-				} else if ((arg.equals("-ss") || arg.equalsIgnoreCase("-spliceSiteSize"))) {
+					else usage("Option '-reg' without file argument");
+					break;
+
+				case "-ss":
+				case "-splicesitesize":
 					if ((i + 1) < args.length) spliceSiteSize = Gpr.parseIntSafe(args[++i]);
-				} else if (arg.equalsIgnoreCase("-spliceRegionExonSize")) {
+					else usage("Option '-spliceSiteSize' without argument");
+					break;
+
+				case "-spliceregionexonsize":
 					if ((i + 1) < args.length) spliceRegionExonSize = Gpr.parseIntSafe(args[++i]);
-				} else if (arg.equalsIgnoreCase("-spliceRegionIntronMin")) {
+					else usage("Option '-spliceRegionExonSize' without argument");
+					break;
+
+				case "-spliceregionintronmin":
 					if ((i + 1) < args.length) spliceRegionIntronMin = Gpr.parseIntSafe(args[++i]);
-				} else if (arg.equalsIgnoreCase("-spliceRegionIntronMax")) {
+					else usage("Option '-spliceRegionIntronMin' without argument");
+					break;
+
+				case "-spliceregionintronmax":
 					if ((i + 1) < args.length) spliceRegionIntronMax = Gpr.parseIntSafe(args[++i]);
-				} else if (arg.equalsIgnoreCase("-strict")) strict = true;
-				else if (arg.equals("-t")) multiThreaded = true;
-				else if (arg.equalsIgnoreCase("-treatAllAsProteinCoding")) {
+					else usage("Option '-spliceRegionIntronMax' without argument");
+					break;
+
+				case "-strict":
+					strict = true;
+					break;
+
+				case "-t":
+					multiThreaded = true;
+					break;
+
+				case "-treatallasproteincoding":
 					if ((i + 1) < args.length) {
 						i++;
 						if (args[i].equalsIgnoreCase("auto")) treatAllAsProteinCoding = null;
 						else treatAllAsProteinCoding = Gpr.parseBoolSafe(args[i]);
 					}
-				} else if ((arg.equals("-ud") || arg.equalsIgnoreCase("-upDownStreamLen"))) {
+					break;
+
+				case "-ud":
+				case "-updownstreamlen":
 					if ((i + 1) < args.length) upDownStreamLength = Gpr.parseIntSafe(args[++i]);
-				} else if (arg.equals("-v") || arg.equalsIgnoreCase("-verbose")) {
+					else usage("Option '-upDownstreamLen' without argument");
+					break;
+
+				case "-v":
+				case "-verbose":
 					verbose = true;
 					quiet = false;
-				} else if (arg.equalsIgnoreCase("-version")) {
+					break;
+
+				case "-version":
 					// Show version number and exit
 					System.out.println(VERSION_SHORT);
 					System.exit(0);
-				} else {
+					break;
+
+				default:
 					// Unrecognized option? may be it's command specific. Let command parse it
 					argsList.add(arg);
 				}

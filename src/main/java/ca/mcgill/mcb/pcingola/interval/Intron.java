@@ -20,6 +20,13 @@ public class Intron extends Marker {
 	Exon exonAfter; // Exon after this intron
 	ArrayList<SpliceSite> spliceSites;
 
+	public Intron() {
+		super();
+		type = EffectType.INTRON;
+		exonAfter = exonBefore = null;
+		spliceSites = new ArrayList<SpliceSite>();
+	}
+
 	public Intron(Transcript parent, int start, int end, boolean strandMinus, String id, Exon exonBefore, Exon exonAfter) {
 		super(parent, start, end, strandMinus, id);
 		type = EffectType.INTRON;
@@ -39,19 +46,28 @@ public class Intron extends Marker {
 	public Intron apply(Variant variant) {
 		// Create new exon with updated coordinates
 		Intron newIntron = (Intron) super.apply(variant);
-
-		// We will change information, so we need a clone
-		if (newIntron == this) newIntron = (Intron) clone();
+		if (newIntron == null) return null;
+		newIntron.reset();
 
 		// Update splice sites
-		newIntron.reset();
 		for (SpliceSite ss : spliceSites) {
 			SpliceSite newSs = (SpliceSite) ss.apply(variant);
-			newSs.setParent(newIntron);
-			newIntron.add(newSs);
+
+			// Check for null: E.g. if the splice site was removed by a deletion
+			if (newSs != null) {
+				newSs.setParent(newIntron);
+				newIntron.add(newSs);
+			}
 		}
 
 		return newIntron;
+	}
+
+	@Override
+	public Intron cloneShallow() {
+		Intron clone = (Intron) super.cloneShallow();
+		clone.rank = rank;
+		return clone;
 	}
 
 	/**

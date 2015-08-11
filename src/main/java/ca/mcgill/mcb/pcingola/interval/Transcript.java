@@ -266,17 +266,15 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	@Override
 	public Transcript apply(Variant variant) {
-		// SeqChange after this marker: No effect
-		if (end < variant.getStart()) return this;
+		// Variant after this marker: No effect
+		if (!shouldApply(variant)) return this;
 
 		//---
 		// Create new transcript
 		//---
-		Transcript tr = (Transcript) super.apply(variant);
-
-		// We will change information, so we need a clone
-		if (tr == this) tr = (Transcript) clone();
-		tr.reset(); // Reset all parameters (we only wanted the coordinate changes)
+		Transcript newTr = (Transcript) super.apply(variant);
+		if (newTr == null) return null;
+		newTr.reset();
 
 		//---
 		// Apply to exons
@@ -284,8 +282,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Exon ex : this) {
 			Exon newExon = ex.apply(variant);
 			if (newExon != null) {
-				newExon.setParent(tr);
-				tr.add(newExon);
+				newExon.setParent(newTr);
+				newTr.add(newExon);
 			}
 		}
 
@@ -295,8 +293,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Utr utr : utrs) {
 			Utr newUtr = (Utr) utr.apply(variant);
 			if (newUtr != null) {
-				newUtr.setParent(tr);
-				tr.utrs.add(newUtr);
+				newUtr.setParent(newTr);
+				newTr.utrs.add(newUtr);
 			}
 		}
 
@@ -305,13 +303,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		//---
 		if (upstream != null) {
 			Upstream newUp = (Upstream) upstream.apply(variant);
-			newUp.setParent(tr);
-			tr.upstream = newUp;
+			newUp.setParent(newTr);
+			newTr.upstream = newUp;
 		}
 		if (downstream != null) {
 			Downstream newDown = (Downstream) downstream.apply(variant);
-			newDown.setParent(tr);
-			tr.downstream = newDown;
+			newDown.setParent(newTr);
+			newTr.downstream = newDown;
 		}
 
 		//---
@@ -320,12 +318,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Intron intr : introns()) {
 			Intron newIntron = intr.apply(variant);
 			if (newIntron != null) {
-				newIntron.setParent(tr);
-				tr.add(newIntron);
+				newIntron.setParent(newTr);
+				newTr.add(newIntron);
 			}
 		}
 
-		return tr;
+		return newTr;
 	}
 
 	/**
@@ -530,6 +528,21 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		}
 
 		return cds;
+	}
+
+	@Override
+	public Transcript cloneShallow() {
+		Transcript clone = (Transcript) super.cloneShallow();
+
+		clone.proteinCoding = proteinCoding;
+		clone.canonical = canonical;
+		clone.bioType = bioType;
+		clone.aaCheck = aaCheck;
+		clone.dnaCheck = dnaCheck;
+		clone.corrected = corrected;
+		clone.ribosomalSlippage = ribosomalSlippage;
+
+		return clone;
 	}
 
 	/**
@@ -742,8 +755,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	public Intron findIntron(int pos) {
 		// Is 'pos' in intron?
-		for (Intron intron : introns())
+		for (Intron intron : introns()) {
 			if (intron.intersects(pos)) return intron;
+		}
 		return null;
 	}
 
@@ -1105,9 +1119,15 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Does this transcript have any errors?
 	 */
 	public boolean hasErrorOrWarning() {
-		return isErrorProteinLength() || isErrorStartCodon() || isErrorStopCodonsInCds() // Errors
-				|| isWarningStopCodon() // Warnings
-				;
+		return hasError() || hasWarning();
+	}
+
+	/**
+	 * Does this transcript have any errors?
+	 */
+	public boolean hasWarning() {
+		return isWarningStopCodon() // All possible warnings
+		;
 	}
 
 	/**
@@ -1434,6 +1454,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	@Override
 	public void reset() {
 		super.reset();
+
 		sorted = null;
 		utrs = new ArrayList<Utr>();
 		cdss = new ArrayList<Cds>();

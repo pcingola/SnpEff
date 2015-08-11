@@ -1,7 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
@@ -11,6 +9,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
+import junit.framework.Assert;
 
 /**
  * Test random SNP changes
@@ -104,7 +103,7 @@ public class TestCasesSnps extends TestCasesBase {
 							else effectExpected = "NON_SYNONYMOUS_CODING(" + aa + "/" + newAa + ")";
 						}
 
-						// Create a SeqChange
+						// Create a variant
 						if (exon.isStrandMinus()) {
 							snp = GprSeq.wc(snp);
 							refBase = GprSeq.wc(refBase);

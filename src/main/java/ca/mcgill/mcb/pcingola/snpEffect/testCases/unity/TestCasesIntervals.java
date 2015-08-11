@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.binseq.DnaSequence;
@@ -21,6 +19,7 @@ import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
+import junit.framework.Assert;
 
 public class TestCasesIntervals {
 
@@ -29,10 +28,6 @@ public class TestCasesIntervals {
 	boolean compareCdsTestsEnable = false;
 	Random rand;
 	Genome genome;
-
-	// Markers intervals;
-
-	// Config config;
 
 	public TestCasesIntervals() {
 		super();
@@ -49,26 +44,20 @@ public class TestCasesIntervals {
 
 	/**
 	 * Compare each result. If one matches, we consider it OK
-	 * @param transcriptId
-	 * @param seqChange
-	 * @param resultsList
-	 * @param useSimple
-	 * @param resultsSoFar
-	 * @return
 	 */
-	boolean anyResultMatches(String transcriptId, Variant seqChange, List<VariantEffect> resultsList, boolean useSimple, StringBuilder resultsSoFar) {
+	boolean anyResultMatches(String transcriptId, Variant variant, List<VariantEffect> resultsList, boolean useSimple, StringBuilder resultsSoFar) {
 		boolean ok = false;
 		for (VariantEffect chEff : resultsList) {
 			String resStr = chEff.toStringSimple(!useSimple);
-			if (verbose) System.out.println(seqChange + "\t'" + resStr + "'");
+			if (verbose) System.out.println(variant + "\t'" + resStr + "'");
 
 			String effTrId = chEff.getMarker().findParent(Transcript.class).getId();
 			if ((transcriptId == null) || (transcriptId.equals(effTrId))) {
 
-				if (!seqChange.getId().equals(resStr)) {
+				if (!variant.getId().equals(resStr)) {
 					// SNP effect does not match this result
-					if (verbose) Gpr.debug("SeqChange: " + seqChange + "\tResult: '" + chEff + "'");
-					resultsSoFar.append(seqChange + "\t'" + resStr + "'\n");
+					if (verbose) Gpr.debug("SeqChange: " + variant + "\tResult: '" + chEff + "'");
+					resultsSoFar.append(variant + "\t'" + resStr + "'\n");
 				} else {
 					// SNP effect matches one result
 					ok = true;

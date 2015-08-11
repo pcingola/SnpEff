@@ -9,7 +9,7 @@ import ca.mcgill.mcb.pcingola.util.KeyValue;
 
 /**
  * An interval intended as a mark
- * 
+ *
  * @author pcingola
  *
  */
@@ -19,13 +19,16 @@ public class GffMarker extends Custom {
 
 	List<KeyValue<String, String>> keyValues;
 
+	public GffMarker() {
+		super();
+	}
+
 	public GffMarker(Marker parent, int start, int end, boolean strandMinus, String id) {
 		super(parent, start, end, strandMinus, id, "");
 	}
 
 	/**
 	 * Add key value pair
-	 * @param keyValue
 	 */
 	public void add(KeyValue<String, String> keyValue) {
 		if (keyValues == null) keyValues = new LinkedList<KeyValue<String, String>>();
@@ -34,7 +37,6 @@ public class GffMarker extends Custom {
 
 	/**
 	 * Add key value pair
-	 * @param keyValue
 	 */
 	public void add(String key, String value) {
 		KeyValue<String, String> kv = new KeyValue<String, String>(key, value);
@@ -43,7 +45,6 @@ public class GffMarker extends Custom {
 
 	/**
 	 * Do we have additional annotations?
-	 * @return
 	 */
 	@Override
 	public boolean hasAnnotations() {

@@ -88,9 +88,6 @@ public abstract class Features implements Iterable<Feature> {
 	Feature featureFactory(Feature.Type type, String def, int lineNum) {
 		boolean complement = false;
 
-		if (def.indexOf("NP_216202.1") > 0) //
-			Gpr.debug("DEBUG");
-
 		// Get first line (location)
 		int firstLine = def.indexOf("\n");
 

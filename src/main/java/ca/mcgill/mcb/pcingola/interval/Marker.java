@@ -1,5 +1,6 @@
 package ca.mcgill.mcb.pcingola.interval;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,39 +65,80 @@ public class Marker extends Interval implements TxtSerializable {
 	/**
 	 * Apply a variant to a marker.
 	 *
-	 * Create a new marker
+	 * Calculate a the result of a marker, such that
 	 * 		newMarker = marker.apply( variant )
-	 *
-	 * such that
 	 *		variant = Diff( newMarker , marker )		// Differences in sequence
 	 *
-	 * @param variant
-	 * @return A new marker after applying variant
+	 * Note: This method may return:
+	 *    - The same marker (this) when genetic coordinates remain unchanged
+	 *    - 'null' if the whole marker is removed by the variant (e.g. a deletion spanning the whole marker)
+	 *
+	 * For these reasons, the method should never be invoked directly.
+	 * This is why the method is 'private' and 'final'
+	 *
+	 * @return The marker result after applying variant
 	 */
 	public Marker apply(Variant variant) {
-		// Variant after this marker: No effect when applying (all coordinates remain the same)
-		if (end < variant.getStart()) return this;
-
-		// Variant does not change length? No effect when applying (all coordinates remain the same)
-		int lenChange = variant.lengthChange();
-		if (lenChange == 0) return this;
+		if (!shouldApply(variant)) return this;
 
 		// Negative strand variants are a pain. We will eventually get rid of them...(they do not make sense any more)
 		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are suported!\n\tVariant : " + variant);
 
-		// InDels are different
-		if (variant.isIns()) return applyIns(variant, lenChange);
-		if (variant.isDel()) return applyDel(variant, lenChange);
+		Marker newMarker = null;
 
-		// We are not ready for mixed changes
-		throw new RuntimeException("Variant type not supported: " + variant.getVariantType() + "\n\t" + variant);
+		switch (variant.getVariantType()) {
+		case SNP:
+		case MNP:
+			// Variant does not change length?
+			// No effect when applying (all coordinates remain the same)
+			newMarker = this;
+			break;
+
+		case INS:
+			int lenChange = variant.lengthChange();
+			newMarker = applyIns(variant, lenChange);
+			break;
+
+		case DEL:
+			lenChange = variant.lengthChange();
+			newMarker = applyDel(variant, lenChange);
+			break;
+
+		default:
+			// We are not ready for mixed changes
+			throw new RuntimeException("Variant type not supported: " + variant.getVariantType() + "\n\t" + variant);
+		}
+
+		// Always return a copy of the marker (if the variant is applied)
+		if (newMarker == this) return cloneShallow();
+
+		return newMarker;
 	}
+
+	//	private final Marker applyZzz(Variant variant) {
+	//		// Variant after this marker: No effect when applying (all coordinates remain the same)
+	//		if (end < variant.getStart()) return this;
+	//
+	//		// Variant does not change length? No effect when applying (all coordinates remain the same)
+	//		int lenChange = variant.lengthChange();
+	//		if (lenChange == 0) return this;
+	//
+	//		// Negative strand variants are a pain. We will eventually get rid of them...(they do not make sense any more)
+	//		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are suported!\n\tVariant : " + variant);
+	//
+	//		// InDels are different
+	//		if (variant.isIns()) return applyIns(variant, lenChange);
+	//		if (variant.isDel()) return applyDel(variant, lenChange);
+	//
+	//		// We are not ready for mixed changes
+	//		throw new RuntimeException("Variant type not supported: " + variant.getVariantType() + "\n\t" + variant);
+	//	}
 
 	/**
 	 * Apply a Variant to a marker. Variant is a deletion
 	 */
 	protected Marker applyDel(Variant variant, int lenChange) {
-		Marker m = clone();
+		Marker m = cloneShallow();
 
 		// Variant Before start: Adjust coordinates
 		if (variant.getEnd() < start) {
@@ -104,28 +146,31 @@ public class Marker extends Interval implements TxtSerializable {
 			m.end += lenChange;
 		} else if (variant.includes(this)) {
 			return null; // Variant completely includes this marker => The whole marker deleted
-		} else if (includes(variant)) m.end += lenChange; // This marker completely includes variant. But variant does not include marker (i.e. they are not equal). Only 'end' coordinate needs to be updated
-		else {
+		} else if (includes(variant)) {
+			// This marker completely includes variant. But variant does not include
+			// marker (i.e. they are not equal). Only 'end' coordinate needs to be updated
+			m.end += lenChange;
+		} else {
 			// Variant is partially included in this marker.
 			// This is treated as three different type of deletions:
-			//		1- One before the marker
+			//		1- One after the marker
 			//		2- One inside the marker
-			//		3- One after the marker
-			// Note that type 1 and 3 cannot exists at the same time, otherwise the deletion would fully include the marker (previous case)
+			//		3- One before the marker
+			// Note that type 1 and 3 cannot exists at the same time, otherwise the
+			// deletion would fully include the marker (previous case)
 
-			// Deletion after the marker
+			// Part 1: Deletion after the marker
 			if (end < variant.getEnd()) {
 				// Actually this does not affect the coordinates, so we don't care about this part
 			}
 
-			// Deletion matching the marker
+			// Part 2: Deletion matching the marker
 			int istart = Math.max(start, m.getStart());
 			int iend = Math.min(end, m.getEnd());
 			if (iend < istart) throw new RuntimeException("This should never happen!"); // Sanity check
+			m.end -= (iend - istart); // Update end coordinate
 
-			end -= (iend - istart); // Update end coordinate
-
-			// Deletion before the marker
+			// Part 3: Deletion before the marker
 			if (variant.getStart() < start) {
 				// Update coordinates shifting the marker to the left
 				int delta = start - variant.getStart();
@@ -140,8 +185,8 @@ public class Marker extends Interval implements TxtSerializable {
 	/**
 	 * Apply a Variant to a marker. Variant is an insertion
 	 */
-	public Marker applyIns(Variant variant, int lenChange) {
-		Marker m = clone();
+	protected Marker applyIns(Variant variant, int lenChange) {
+		Marker m = cloneShallow();
 
 		if (variant.getStart() < start) {
 			// Insertion point before marker start? => Adjust both coordinates
@@ -160,6 +205,31 @@ public class Marker extends Interval implements TxtSerializable {
 	@Override
 	public Marker clone() {
 		return (Marker) super.clone();
+	}
+
+	/**
+	 * Perform a shallow clone
+	 */
+	@SuppressWarnings("rawtypes")
+	public Marker cloneShallow() {
+		try {
+			// Create new object
+			Constructor ctor = this.getClass().getConstructor();
+			Marker clone = (Marker) ctor.newInstance();
+
+			// Copy fields
+			clone.chromosomeNameOri = chromosomeNameOri;
+			clone.end = end;
+			clone.id = id;
+			clone.parent = parent;
+			clone.start = start;
+			clone.strandMinus = strandMinus;
+			clone.type = type;
+
+			return clone;
+		} catch (Exception e) {
+			throw new RuntimeException("Error performing shallow clone: ", e);
+		}
 	}
 
 	/**
@@ -466,6 +536,14 @@ public class Marker extends Interval implements TxtSerializable {
 		strandMinus = markerSerializer.getNextFieldBoolean();
 	}
 
+	//	/**
+	//	 * Reset marker dependencies (e.g. sub-markers)
+	//	 * Typically called after a 'Marker.apply(Variant)'
+	//	 */
+	//	public void reset() {
+	//		// Default: Do nithing
+	//	}
+
 	/**
 	 * Create a string to serialize to a file
 	 */
@@ -478,7 +556,15 @@ public class Marker extends Interval implements TxtSerializable {
 				+ "\t" + end //
 				+ "\t" + id //
 				+ "\t" + strandMinus //
-		;
+				;
+	}
+
+	/**
+	 * True if the variant should be applied to the marker
+	 */
+	public boolean shouldApply(Variant variant) {
+		// Variant after this marker: No effect when applying (all coordinates remain the same)
+		return variant.getStart() <= end;
 	}
 
 	/**
@@ -525,13 +611,13 @@ public class Marker extends Interval implements TxtSerializable {
 
 		if (variant.isNonRef()) {
 			Variant variantRef = ((VariantNonRef) variant).getVariantRef();
-			Marker m = apply(variantRef);
+			Marker newMarker = apply(variantRef);
 
 			// Has the marker been deleted?
 			// Then there is no effect over this marker (it does not exist any more)
-			if (m == null) return false;
+			if (newMarker == null) return false;
 
-			return m.variantEffect(variant, variantEffects);
+			return newMarker.variantEffect(variant, variantEffects);
 		}
 
 		return variantEffect(variant, variantEffects);

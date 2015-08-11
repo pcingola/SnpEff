@@ -19,7 +19,6 @@ public class Chromosome extends Marker {
 	private static final long serialVersionUID = 1636197649250882952L;
 
 	double chromosomeNum;
-
 	DnaSequence sequence = null;
 
 	/**
@@ -62,10 +61,15 @@ public class Chromosome extends Marker {
 		setChromosomeName(id);
 	}
 
+	@Override
+	public Chromosome cloneShallow() {
+		Chromosome clone = (Chromosome) super.cloneShallow();
+		clone.chromosomeNum = chromosomeNum;
+		return clone;
+	}
+
 	/**
 	 * Compare only chromosome's name
-	 * @param i2
-	 * @return
 	 */
 	public int compareChromoName(Interval interval) {
 		Chromosome i2 = (Chromosome) interval;

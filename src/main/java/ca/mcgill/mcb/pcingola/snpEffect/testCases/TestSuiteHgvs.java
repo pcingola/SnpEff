@@ -7,9 +7,12 @@ import org.junit.runners.Suite.SuiteClasses;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvs;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsDnaDupIntegration;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsExon;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsFrameShift;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsHard;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntron;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsLarge;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsMnps;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsUpDownStream;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDup;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDupNegative;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsProtDup;
@@ -22,15 +25,21 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVariantRealignm
  */
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesVariantRealignment.class, //
+		// TestSuiteUnity		
 		TestCasesHgvsExon.class, //
 		TestCasesHgvsIntron.class, //
 		TestCasesHgvsDnaDup.class, //
 		TestCasesHgvsDnaDupNegative.class, //
 		TestCasesHgvsProtDup.class, //
+		// TestSuiteIntegration
 		TestCasesHgvs.class, //
-		TestCasesHgvsHard.class, //
 		TestCasesHgvsDnaDupIntegration.class, //
-		TestCasesHgvsLarge.class //
+		TestCasesHgvsFrameShift.class, //
+		TestCasesHgvsHard.class, //
+		TestCasesHgvsLarge.class, //
+		TestCasesHgvsMnps.class, //
+		TestCasesHgvsUpDownStream.class, //
+
 })
 public class TestSuiteHgvs {
 

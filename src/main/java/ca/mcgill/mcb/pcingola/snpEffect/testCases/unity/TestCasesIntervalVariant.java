@@ -1,7 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -11,6 +9,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import junit.framework.Assert;
 
 /**
  * Test random Interval Variants (e.g. when reading a BED file)
@@ -55,7 +54,7 @@ public class TestCasesIntervalVariant extends TestCasesBase {
 				int start = pos;
 				int end = Math.min(pos + intLen, chromosome.getEnd());
 
-				// Create a SeqChange
+				// Create a variant
 				Variant variant = new Variant(chromosome, start, end, "");
 
 				// Sanity checks
@@ -108,7 +107,7 @@ public class TestCasesIntervalVariant extends TestCasesBase {
 							+ "\nExpected Effect : '" + expectedEffect + "'" //
 							+ "\nEffects         : '" + effSb + "'" //
 							+ "\n--------------------------------------------------------------\n" //
-					);
+				);
 				Assert.assertEquals(true, isExpectedOK);
 			}
 		}

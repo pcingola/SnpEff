@@ -36,7 +36,16 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	 * Add a subinterval
 	 */
 	public void add(T t) {
-		if (subIntervals.put(t.getId(), t) != null) throw new RuntimeException(t.getClass().getSimpleName() + " '" + t.getId() + "' is already in " + this.getClass().getSimpleName() + " '" + id + "'");
+		if (subIntervals.put(t.getId(), t) != null) {
+			// Keys should be unique
+			throw new RuntimeException(t.getClass().getSimpleName() //
+					+ " '" + t.getId() + "' is already in " //
+					+ this.getClass().getSimpleName() //
+					+ " '" + id + "'" //
+			);
+		}
+
+		// Sort is no longer valid
 		invalidateSorted();
 	}
 
@@ -60,6 +69,27 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 		invalidateSorted();
 	}
 
+	/**
+	 * Apply a variant.
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public IntervalAndSubIntervals<T> apply(Variant variant) {
+		if (!shouldApply(variant)) return this;
+
+		IntervalAndSubIntervals<T> newMarker = (IntervalAndSubIntervals<T>) super.apply(variant);
+		if (newMarker == null) return null;
+		newMarker.reset();
+
+		for (T m : this) {
+			T mcopy = (T) m.apply(variant);
+			mcopy.setParent(newMarker);
+			newMarker.add(mcopy);
+		}
+
+		return newMarker;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public IntervalAndSubIntervals<T> clone() {
@@ -73,6 +103,14 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 		}
 
 		return copy;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public IntervalAndSubIntervals<T> cloneShallow() {
+		IntervalAndSubIntervals<T> clone = (IntervalAndSubIntervals<T>) super.cloneShallow();
+		clone.reset();
+		return clone;
 	}
 
 	/**

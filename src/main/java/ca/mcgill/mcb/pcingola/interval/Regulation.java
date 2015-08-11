@@ -28,6 +28,14 @@ public class Regulation extends Marker {
 		this.cellType = cellType;
 	}
 
+	@Override
+	public Regulation cloneShallow() {
+		Regulation clone = (Regulation) super.cloneShallow();
+		clone.cellType = cellType;
+		clone.name = name;
+		return clone;
+	}
+
 	public String getCellType() {
 		return cellType;
 	}

@@ -28,6 +28,14 @@ public class NextProt extends Marker {
 		transcriptId = transcript.getId();
 	}
 
+	@Override
+	public NextProt cloneShallow() {
+		NextProt clone = (NextProt) super.cloneShallow();
+		clone.transcriptId = transcriptId;
+		clone.highlyConservedAaSequence = highlyConservedAaSequence;
+		return clone;
+	}
+
 	public String getTranscriptId() {
 		return transcriptId;
 	}

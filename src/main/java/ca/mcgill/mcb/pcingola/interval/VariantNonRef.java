@@ -10,6 +10,10 @@ public class VariantNonRef extends Variant {
 	private static final long serialVersionUID = 1L;
 	Variant variantRef;
 
+	public VariantNonRef() {
+		super();
+	}
+
 	public VariantNonRef(Variant variant, Variant variantRef) {
 		super(variant.getParent(), variant.getStart(), variant.getReference(), variant.getAlt(), variant.getId());
 		genotype = variant.getGenotype();

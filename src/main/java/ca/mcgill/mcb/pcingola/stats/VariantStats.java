@@ -21,7 +21,6 @@ public class VariantStats implements SamplingStats<Variant> {
 	Genome genome;
 	IntStats indelLen;
 	HashMap<String, ChrPosStats> chrPosStatsbyName;
-	long countSeqChanges = 0;
 	long countVariants = 0;
 	long countNonVariants;
 	long countNonEmptyId;
@@ -127,7 +126,7 @@ public class VariantStats implements SamplingStats<Variant> {
 	 * @return
 	 */
 	public long getCount() {
-		return countSeqChanges;
+		return countVariants;
 	}
 
 	/**
@@ -193,7 +192,7 @@ public class VariantStats implements SamplingStats<Variant> {
 	 * Ratio of known variants (the one with a non-empty ID) and total variants
 	 */
 	public double getKnownRatio() {
-		double tot = countSeqChanges;
+		double tot = countVariants;
 		double known = countNonEmptyId;
 		return tot > 0 ? known / tot : 0;
 	}
@@ -203,7 +202,7 @@ public class VariantStats implements SamplingStats<Variant> {
 	 * @return
 	 */
 	public long getRateOfChange() {
-		return countSeqChanges > 0 ? getGenomeLenEffective() / countSeqChanges : 0;
+		return countVariants > 0 ? getGenomeLenEffective() / countVariants : 0;
 	}
 
 	/**
@@ -221,7 +220,7 @@ public class VariantStats implements SamplingStats<Variant> {
 
 	@Override
 	public boolean hasData() {
-		return countSeqChanges != 0;
+		return countVariants != 0;
 	}
 
 	/**
@@ -244,7 +243,7 @@ public class VariantStats implements SamplingStats<Variant> {
 			return;
 		}
 
-		countSeqChanges++;
+		countVariants++;
 
 		// Count non-empty IDs
 		if ((variant.getId() != null) && !variant.getId().isEmpty()) countNonEmptyId++;

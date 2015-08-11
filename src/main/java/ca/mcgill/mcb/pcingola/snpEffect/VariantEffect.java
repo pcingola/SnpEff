@@ -132,9 +132,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		if (errwarn == null) return;
 
 		if (errwarn.isError()) {
-			if (error.indexOf(errwarn.toString()) < 0) error += (error.isEmpty() ? "" : EffFormatVersion.EFFECT_TYPE_SEPARATOR) + errwarn;
+			if (error.indexOf(errwarn.toString()) < 0) { // Add only once
+				error += (error.isEmpty() ? "" : EffFormatVersion.EFFECT_TYPE_SEPARATOR) + errwarn;
+			}
 		} else {
-			if (warning.indexOf(errwarn.toString()) < 0) warning += (warning.isEmpty() ? "" : EffFormatVersion.EFFECT_TYPE_SEPARATOR) + errwarn;
+			if (warning.indexOf(errwarn.toString()) < 0) { // Add only once
+				warning += (warning.isEmpty() ? "" : EffFormatVersion.EFFECT_TYPE_SEPARATOR) + errwarn;
+			}
 		}
 	}
 
