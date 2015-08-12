@@ -85,7 +85,7 @@ public class VariantRealign {
 				if (debug) Gpr.debug("Variant not found in reference sequence. This should never happen!" //
 						+ "\n\tSeq: '" + seqVar //
 						+ "'\n\tVariant's ref: '" + vref + "'" //
-						);
+				);
 				return false;
 			}
 

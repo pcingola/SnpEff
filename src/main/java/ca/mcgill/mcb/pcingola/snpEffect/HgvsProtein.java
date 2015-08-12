@@ -152,8 +152,14 @@ public class HgvsProtein extends Hgvs {
 
 	/**
 	 * Is this variant a duplication
+	 *
+	 * Reference: http://www.hgvs.org/mutnomen/disc.html#dupins
+	 * 		...the description "dup" (see Standards) may by definition only be used
+	 * 		when the additional copy is directly 3'-flanking of the original copy (tandem
+	 * 		duplication)
 	 */
 	protected boolean isDuplication() {
+
 		//---
 		// Simple duplications can be obtained by looking into AA.Ref / AA.Alt
 		//---
@@ -161,11 +167,12 @@ public class HgvsProtein extends Hgvs {
 		String aaAlt = variantEffect.getAaAlt().toUpperCase();
 
 		// Compare to ALT sequence
+		String dupAaRef = aaRef + aaRef;
 		if (debug) Gpr.debug("AA.Ref: '" + aaRef + "'\tAA.Alt: '" + aaAlt);
-		if (aaAlt.startsWith(aaRef)) return true;
+		if (aaAlt.equals(dupAaRef)) return true;
 
 		//---
-		// More complex duplications need to look into the protein sequence
+		// Duplications need to look into the protein sequence
 		//---
 
 		// Extract sequence from genomic coordinates before variant
@@ -173,20 +180,20 @@ public class HgvsProtein extends Hgvs {
 		if (protein == null) return false; // Cannot calculate duplication
 
 		// Calculate net amino acid change
-		String aaNet = variantEffect.getAaNetChange();
+		aaAlt = variantEffect.getAaNetChange();
 
 		// Get previous AA sequence
-		int send = variantEffect.getCodonNum();
-		int sstart = send - aaNet.length();
-		if (sstart < 0 || send > protein.length()) return false;
-		String seq = protein.substring(sstart, send);
+		int aaEnd = variantEffect.getCodonNum();
+		int aaStart = aaEnd - aaAlt.length();
+		if (aaStart < 0 || aaEnd > protein.length()) return false;
+		aaRef = protein.substring(aaStart, aaEnd);
 
 		// Compare to ALT sequence
-		boolean dup = seq.equalsIgnoreCase(aaNet);
-		if (debug) Gpr.debug("SEQUENCE [ " + sstart + " , " + send + " ]: '" + seq + "'" //
+		boolean dup = aaRef.equalsIgnoreCase(aaAlt);
+		if (debug) Gpr.debug("SEQUENCE [ " + aaStart + " , " + aaEnd + " ]: '" + aaRef + "'" //
 				+ "\n\tAA Ref       : '" + variantEffect.getAaRef() + "'" //
 				+ "\n\tAA Alt       : '" + variantEffect.getAaAlt() + "'" //
-				+ "\n\tAA Alt (net) : '" + aaNet + "'" //
+				+ "\n\tAA Alt (net) : '" + aaAlt + "'" //
 				+ "\n\tDup?         : " + dup);
 
 		return dup;

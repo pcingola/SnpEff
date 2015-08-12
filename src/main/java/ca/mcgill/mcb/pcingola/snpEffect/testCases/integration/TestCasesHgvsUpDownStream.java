@@ -26,7 +26,7 @@ public class TestCasesHgvsUpDownStream {
 	}
 
 	/**
-	 * Calculate snp effect for an input VCF file
+	 * Calculate annotations for an input VCF file
 	 */
 	public List<VcfEntry> snpEffect(String genome, String vcfFile, String otherArgs[]) {
 		// Arguments
@@ -46,6 +46,10 @@ public class TestCasesHgvsUpDownStream {
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);
+
+		// Check that there were no errors
+		Assert.assertFalse("Annotation finished with errors", cmdEff.getTotalErrs() > 0);
+
 		return list;
 	}
 

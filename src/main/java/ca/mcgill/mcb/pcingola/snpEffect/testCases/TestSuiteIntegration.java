@@ -25,6 +25,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsFrame
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsHard;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsLarge;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsMnps;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsProtDups;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsUpDownStream;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHugeDeletions;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesInsEtc;
@@ -80,6 +81,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesMarkerSeq;
 		TestCasesHgvsHard.class, //
 		TestCasesHgvsLarge.class, //
 		TestCasesHgvsMnps.class, //
+		TestCasesHgvsProtDups.class, //
 		TestCasesHgvsUpDownStream.class, //
 		TestCasesHugeDeletions.class, //
 		TestCasesInsEtc.class, //

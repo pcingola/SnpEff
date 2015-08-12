@@ -16,12 +16,12 @@ import junit.framework.Assert;
 /**
  * Test case
  */
-public class TestCasesHgvsFrameShift {
+public class TestCasesHgvsProtDups {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
 
-	public TestCasesHgvsFrameShift() {
+	public TestCasesHgvsProtDups() {
 		super();
 	}
 
@@ -36,6 +36,7 @@ public class TestCasesHgvsFrameShift {
 			if (verbose) System.out.println(ve);
 
 			String transcriptId = ve.getInfo("TR");
+			if (verbose) System.out.println("\tLooking for transcript '" + transcriptId + "'");
 			for (VcfEffect veff : ve.parseEffects()) {
 
 				if (veff.getTranscriptId().equals(transcriptId)) {
@@ -48,20 +49,21 @@ public class TestCasesHgvsFrameShift {
 					String expectedHgvsC = ve.getInfo("HGVSC");
 					if (expectedHgvsC != null) {
 						String actualHgvsC = veff.getHgvsC();
-						Assert.assertEquals(expectedHgvsC, actualHgvsC);
+						Assert.assertEquals("HGVS.c mismatch", expectedHgvsC, actualHgvsC);
 						countCheck++;
 					}
 
 					String expectedHgvsP = ve.getInfo("HGVSP");
 					if (expectedHgvsP != null) {
 						String actualHgvsP = veff.getHgvsP();
-						Assert.assertEquals(expectedHgvsP, actualHgvsP);
+						Assert.assertEquals("HGVS.p mismatch", expectedHgvsP, actualHgvsP);
 						countCheck++;
 					}
 				}
 			}
 		}
 
+		if (verbose) System.out.println("Total checked: " + countCheck);
 		Assert.assertTrue("Too few variants checked: " + countCheck, countCheck >= minCheck);
 	}
 
@@ -94,48 +96,38 @@ public class TestCasesHgvsFrameShift {
 	}
 
 	/**
-	 * Test HGVS.P in a synonymous frame shift
+	 * Insertion / duplication issues
 	 */
 	@Test
-	public void test_01_hgvs_frameshift() {
+	public void test_02_hgvs_insertions_chr1() {
 		Gpr.debug("Test");
-		checkHgvs("testHg19Chr1", "tests/hgvs_frameshifts_syn_chr1.vcf", 4);
+		checkHgvs("testHg19Chr1", "tests/hgvs_ins_dups_chr1.vcf", 4);
 	}
 
 	/**
-	 * Test HGVS.P in a synonymous frame shift
+	 * Insertion / duplication issues
 	 */
 	@Test
-	public void test_02_hgvs_frameshift() {
+	public void test_03_hgvs_insertions_chr3() {
 		Gpr.debug("Test");
-		checkHgvs("testHg19Chr4", "tests/hgvs_frameshifts_syn_chr4.vcf", 2);
+		checkHgvs("testHg19Chr3", "tests/hgvs_ins_dups_chr3.vcf", 2);
 	}
 
 	/**
-	 * Test HGVS.P in a synonymous frame shift
+	 * Insertion / duplication issues
 	 */
 	@Test
-	public void test_03_hgvs_frameshift() {
+	public void test_04_hgvs_insertions_chr4() {
 		Gpr.debug("Test");
-		checkHgvs("testHg19Chr10", "tests/hgvs_frameshifts_syn_chr10.vcf", 2);
+		checkHgvs("testHg19Chr4", "tests/hgvs_ins_dups_chr4.vcf", 2);
 	}
 
 	/**
-	 * Test HGVS.P in a synonymous frame shift
+	 * Insertion / duplication issues
 	 */
 	@Test
-	public void test_04_hgvs_frameshift() {
+	public void test_05_hgvs_insertions_chr19() {
 		Gpr.debug("Test");
-		checkHgvs("testHg19Chr17", "tests/hgvs_frameshifts_syn_chr17.vcf", 2);
+		checkHgvs("testHg19Chr19", "tests/hgvs_ins_dups_chr19.vcf", 2);
 	}
-
-	/**
-	 * Test HGVS.P in a synonymous frame shift
-	 */
-	@Test
-	public void test_05_hgvs_frameshift() {
-		Gpr.debug("Test");
-		checkHgvs("testHg19Chr19", "tests/hgvs_frameshifts_syn_chr19.vcf", 2);
-	}
-
 }
