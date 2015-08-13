@@ -2,8 +2,6 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -11,6 +9,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import junit.framework.Assert;
 
 /**
  *
@@ -47,6 +46,8 @@ public class TestCasesFilterTranscripts {
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve);
 
@@ -80,6 +81,8 @@ public class TestCasesFilterTranscripts {
 		cmdEff.setSupressOutput(!verbose);
 
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve);
 

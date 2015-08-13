@@ -89,6 +89,7 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 		// Is this an Info line?
 		if (line.startsWith("##INFO=") || line.startsWith("##FORMAT=")) {
 			genotype = line.startsWith("##FORMAT=");
+
 			// Remove all trailing '\n'
 			while (line.endsWith("\n"))
 				line = line.substring(0, line.length() - 1);
@@ -96,6 +97,7 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 
 			int start = line.indexOf('<');
 			int end = line.lastIndexOf('>');
+			if (start < 0 || end < 0) return;
 			String params = line.substring(start + 1, end);
 
 			// Find ID

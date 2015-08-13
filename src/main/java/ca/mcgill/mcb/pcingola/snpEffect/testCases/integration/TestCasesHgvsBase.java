@@ -16,6 +16,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import junit.framework.Assert;
 
 /**
  * Test random SNP changes
@@ -170,6 +171,7 @@ public class TestCasesHgvsBase {
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Find HGVS in any 'EFF' field
 		int entryNum = 1;

@@ -36,6 +36,7 @@ public class TestCasesHugeDeletions {
 		cmdEff.setSupressOutput(!verbose);
 
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {
@@ -61,6 +62,7 @@ public class TestCasesHugeDeletions {
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {

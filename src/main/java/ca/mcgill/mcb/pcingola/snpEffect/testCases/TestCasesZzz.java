@@ -3,8 +3,11 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
+
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
@@ -16,52 +19,10 @@ import junit.framework.Assert;
 public class TestCasesZzz {
 
 	boolean debug = false;
-	boolean verbose = true || debug;
+	boolean verbose = false || debug;
 
 	public TestCasesZzz() {
 		super();
-	}
-
-	/**
-	 * Check HGVS annotations
-	 */
-	public void checkHgvs(String genome, String vcfFile, int minCheck) {
-		List<VcfEntry> list = snpEffect(genome, vcfFile, null);
-
-		int countCheck = 0;
-		for (VcfEntry ve : list) {
-			if (verbose) System.out.println(ve);
-
-			String transcriptId = ve.getInfo("TR");
-			if (verbose) System.out.println("\tLooking for transcript '" + transcriptId + "'");
-			for (VcfEffect veff : ve.parseEffects()) {
-
-				if (veff.getTranscriptId().equals(transcriptId)) {
-					if (verbose) {
-						System.out.println("\t" + veff);
-						System.out.println("\t\tHGVS.p: " + veff.getHgvsP() + "\t\tHGVS.c: " + veff.getHgvsC());
-					}
-
-					// Compare against expected result
-					String expectedHgvsC = ve.getInfo("HGVSC");
-					if (expectedHgvsC != null) {
-						String actualHgvsC = veff.getHgvsC();
-						Assert.assertEquals("HGVS.c mismatch", expectedHgvsC, actualHgvsC);
-						countCheck++;
-					}
-
-					String expectedHgvsP = ve.getInfo("HGVSP");
-					if (expectedHgvsP != null) {
-						String actualHgvsP = veff.getHgvsP();
-						Assert.assertEquals("HGVS.p mismatch", expectedHgvsP, actualHgvsP);
-						countCheck++;
-					}
-				}
-			}
-		}
-
-		if (verbose) System.out.println("Total checked: " + countCheck);
-		Assert.assertTrue("Too few variants checked: " + countCheck, countCheck >= minCheck);
 	}
 
 	/**
@@ -85,20 +46,34 @@ public class TestCasesZzz {
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);
-
-		// Check that there were no errors
-		Assert.assertFalse("Annotation finished with errors", cmdEff.getTotalErrs() > 0);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		return list;
 	}
 
-	//	/**
-	//	 * Insertion / duplication issues
-	//	 */
-	//	@Test
-	//	public void test_06_hgvs_insertions_chr7() {
-	//		Gpr.debug("Test");
-	//		checkHgvs("testHg19Chr7", "tests/hgvs_ins_chr7.vcf", 2);
-	//	}
+	/**
+	 * Fixing bug: GATK does not annotate all VCF entries
+	 */
+	@Test
+	public void test_08_gatk_missing_annotations() {
+		Gpr.debug("Test");
 
+		String genomeName = "testMycobacterium_tuberculosis_CCDC5079_uid203790";
+		String vcf = "tests/test_gatk_no_annotations.vcf";
+		String args[] = { "-noLog", "-o", "gatk" };
+		List<VcfEntry> vcfEntries = snpEffect(genomeName, vcf, args);
+
+		for (VcfEntry ve : vcfEntries) {
+			int count = 0;
+			if (verbose) System.out.println(ve);
+
+			for (VcfEffect veff : ve.parseEffects()) {
+				if (verbose) System.out.println("\t'" + veff.getEffectsStr() + "'\t" + veff);
+				count++;
+			}
+
+			// Check that there is one and only one annotation
+			Assert.assertEquals(1, count);
+		}
+	}
 }

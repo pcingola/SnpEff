@@ -9,6 +9,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import junit.framework.Assert;
 
 /**
  * Test random SNP changes
@@ -31,6 +32,8 @@ public class TestCasesInsVep {
 		cmdEff.setSupressOutput(!verbose);
 
 		List<VcfEntry> vcfEnties = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+
 		for (VcfEntry ve : vcfEnties) {
 
 			StringBuilder msg = new StringBuilder();

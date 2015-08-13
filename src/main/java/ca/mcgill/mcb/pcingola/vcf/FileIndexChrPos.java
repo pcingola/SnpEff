@@ -141,8 +141,8 @@ public class FileIndexChrPos {
 	 * @return If toString is 'true', return a string with file's content between those coordinates (this is used only for test cases and debugging)
 	 */
 	public String dump(String chr, int posStart, int posEnd, boolean toString) {
-		long fileStart = find(chr, posStart, false);
-		long fileEnd = find(chr, posEnd, true);
+		long fileStart = find(chr, posStart, true);
+		long fileEnd = find(chr, posEnd, false);
 
 		return dump(fileStart, fileEnd - 1, toString);
 	}
@@ -171,10 +171,10 @@ public class FileIndexChrPos {
 		if (posEnd == chrPos) return found(end, lineEnd, lessEq); // Is it lineEnd?
 		if (chrPos < posStart) return start; // Before start?
 		if (posEnd < chrPos) return end + lineEnd.length() + 1; // After end?
-		if (start + 1 >= end) { // Only one byte of difference between start an end?
+		if (start + 1 >= end) { // Only one byte of difference between start an end? (i.e. we are at a line boundary)
 			if (chrPos <= posStart) return found(start, lineStart, lessEq);
-			if (lessEq && (chrPos < posEnd)) return found(end, lineEnd, false);
-			return found(end, lineEnd, lessEq);
+			if (chrPos < posEnd) return found(end, lineEnd, true);
+			return found(end, lineEnd, false);
 		}
 
 		if (posStart >= posEnd) throw new RuntimeException("This should never happen! Is the file sorted by position?"); // Sanity check

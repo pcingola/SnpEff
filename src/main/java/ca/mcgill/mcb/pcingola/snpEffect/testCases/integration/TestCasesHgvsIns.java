@@ -88,6 +88,7 @@ public class TestCasesHgvsIns {
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Check that there were no errors
 		Assert.assertFalse("Annotation finished with errors", cmdEff.getTotalErrs() > 0);

@@ -41,6 +41,7 @@ public class TestCasesNextProt {
 		// Run
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Check results
 		int numNextProt = 0;
@@ -70,7 +71,7 @@ public class TestCasesNextProt {
 							+ "\thasEffectType : " + veff.hasEffectType(EffectType.NEXT_PROT) //
 							+ "\tmatch details : " + effectDetails.equals(veff.getEffectDetails()) //
 							+ "\tmatch impact: " + (impact == veff.getImpact()) //
-							);
+				);
 			}
 		}
 

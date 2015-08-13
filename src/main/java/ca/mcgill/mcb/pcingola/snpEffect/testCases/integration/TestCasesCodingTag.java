@@ -38,6 +38,7 @@ public class TestCasesCodingTag {
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Make sure transcript coding tags are there
 		for (VcfEntry ve : vcfEntries) {

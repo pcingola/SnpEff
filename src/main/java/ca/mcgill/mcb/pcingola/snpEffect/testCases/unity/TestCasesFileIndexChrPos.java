@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
@@ -14,6 +12,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.FileIndexChrPos;
 import ca.mcgill.mcb.pcingola.vcf.FileIndexChrPos.LineAndPos;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import junit.framework.Assert;
 
 /**
  * Test cases for file index (chr:pos index on files)
@@ -148,11 +147,11 @@ public class TestCasesFileIndexChrPos {
 		int chrPos = 861275 - 1; // Zero based coordinate of position in first VCF line
 
 		// Beginning of line
-		long pos = idx.find("1", chrPos, false);
+		long pos = idx.find("1", chrPos, true);
 		Assert.assertEquals(82703, pos);
 
 		// End of line
-		pos = idx.find("1", chrPos, true);
+		pos = idx.find("1", chrPos, false);
 		Assert.assertEquals(82774, pos);
 
 		idx.close();
@@ -178,7 +177,7 @@ public class TestCasesFileIndexChrPos {
 		int chrPos = 1019717 - 1; // Zero based coordinate of VCF line
 
 		// Find chr:pos
-		long pos = idx.find("1", chrPos, false);
+		long pos = idx.find("1", chrPos, true);
 		LineAndPos lp = idx.getLine(pos);
 		int chrPosLp = idx.pos(lp.line);
 		Assert.assertEquals(chrPos, chrPosLp);
@@ -204,7 +203,7 @@ public class TestCasesFileIndexChrPos {
 		idx.index();
 
 		// We'll try to find this chr:pos = 1:1019716 (the coordinate that is in the VCF file is 1:1019717)
-		int chrPosReal = 1019717 - 1; // Zero based coordinate of VCF line
+		int chrPosReal = 1019717; // Zero based coordinate of VCF line
 		int chrPos = chrPosReal - 1; // Zero based coordinate of VCF line
 
 		// Find chr:pos
@@ -233,14 +232,14 @@ public class TestCasesFileIndexChrPos {
 		idx.index();
 
 		// We'll try to find this chr:pos = 1:1019716 (the coordinate that is in the VCF file is 1:1019717)
-		int chrPosReal = 1019718 - 1; // Zero based coordinate of VCF line
-		int chrPos = chrPosReal + 1; // Zero based coordinate of VCF line
+		int chrPosReal = 1019717; // Zero based coordinate of VCF line
+		int chrPos = chrPosReal - 1; // Zero based coordinate of VCF line
 
 		// Find chr:pos
-		long pos = idx.find("1", chrPos, false);
+		long pos = idx.find("1", chrPos, true);
 		LineAndPos lp = idx.getLine(pos);
 		int chrPosLp = idx.pos(lp.line);
-		Assert.assertEquals(1019733 - 1, chrPosLp); // We expect to find the next coordinate in VCF file (zero-based)
+		Assert.assertEquals(chrPos, chrPosLp); // We expect to find the next coordinate in VCF file (zero-based)
 
 		idx.close();
 	}
@@ -262,14 +261,14 @@ public class TestCasesFileIndexChrPos {
 		idx.index();
 
 		// We'll try to find this chr:pos = 1:1019716 (the coordinate that is in the VCF file is 1:1019717)
-		int chrPosReal = 865488 - 1; // Zero based coordinate of VCF line
-		int chrPos = 861316 - 1; // Zero based coordinate of VCF line
+		int chrPosReal = 865488; // Zero based coordinate of VCF line
+		int chrPos = chrPosReal - 1; // Zero based coordinate of VCF line
 
 		// Find chr:pos
-		long pos = idx.find("1", chrPos, false);
+		long pos = idx.find("1", chrPos, true);
 		LineAndPos lp = idx.getLine(pos);
 		int chrPosLp = idx.pos(lp.line);
-		Assert.assertEquals(chrPosReal, chrPosLp); // We expect to find the next coordinate in VCF file (zero-based)
+		Assert.assertEquals(chrPos, chrPosLp); // We expect to find the next coordinate in VCF file (zero-based)
 
 		idx.close();
 	}
@@ -295,7 +294,7 @@ public class TestCasesFileIndexChrPos {
 				//System.out.println("\t" + ve);
 				int chrPos = ve.getStart();
 
-				long pos = idx.find("1", chrPos, false);
+				long pos = idx.find("1", chrPos, true);
 				LineAndPos lp = idx.getLine(pos);
 				int chrPosLp = idx.pos(lp.line);
 				Assert.assertEquals(chrPos, chrPosLp); // We expect to find the next coordinate in VCF file (zero-based)
@@ -338,7 +337,7 @@ public class TestCasesFileIndexChrPos {
 				int step = Math.max((chrPos - chrPosPrev) / 10, 1);
 				for (int cp = chrPosPrev; cp <= chrPos; cp += step) {
 					// Find chr:pos
-					long pos = idx.find("1", cp, false);
+					long pos = idx.find("1", cp, true);
 					LineAndPos lp = idx.getLine(pos);
 					int chrPosLp = idx.pos(lp.line);
 					if (debug) Gpr.debug("Find: " + cp + "\t" + lp.line);
