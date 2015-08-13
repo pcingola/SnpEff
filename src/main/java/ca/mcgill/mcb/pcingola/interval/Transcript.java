@@ -1733,16 +1733,22 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		StringBuilder coords = new StringBuilder();
 		coords.append(lines + "\n");
-		for (Exon ex : this.sortedStrand()) {
-			// First coordinate
-			int n = isStrandPlus() ? ex.getStart() : ex.getEnd();
-			int len = n - start - 1;
-			coords.append((len > 0 ? lines.subSequence(0, n - start) : "") + "^" + n + "\n");
 
-			// Second coordinate
-			n = isStrandPlus() ? ex.getEnd() : ex.getStart();
-			len = n - start - 1;
-			coords.append((len > 0 ? lines.subSequence(0, n - start) : "") + "^" + n + "\n");
+		ArrayList<Exon> exons = new ArrayList<>();
+		exons.addAll(subintervals());
+		Collections.sort(exons, new IntervalComparatorByStart(true)); // Sort by reverse position 
+
+		int n, len;
+		for (Exon ex : exons) {
+			// Right-side coordinate
+			n = ex.getEnd();
+			len = n - start;
+			coords.append((len > 0 ? lines.subSequence(0, len) : "") + "^" + n + "\n");
+
+			// Left-side coordinate
+			n = ex.getStart();
+			len = n - start;
+			coords.append((len > 0 ? lines.subSequence(0, len) : "") + "^" + n + "\n");
 		}
 
 		// Result

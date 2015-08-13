@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -22,18 +24,23 @@ public class FileIndexChrPos {
 
 	/**
 	 * A part of a file
-	 * @author pcingola
 	 *
 	 */
 	public class FileRegion {
 		long start, end;
 		String lineStart, lineEnd;
+
+		@Override
+		public String toString() {
+			return start + "\t" + lineStart //
+					+ "\n"//
+					+ end + "\t" + lineEnd //"
+					;
+		}
 	}
 
 	/**
 	 * A line and the position on the file where it begins
-	 * @author pcingola
-	 *
 	 */
 	public class LineAndPos {
 		public String line; // Line
@@ -187,9 +194,6 @@ public class FileIndexChrPos {
 
 	/**
 	 * Find the position in the file for the first character of the first line equal or less than a specific chr:pos
-	 * @param chr
-	 * @param pos
-	 * @return
 	 */
 	public long find(String chr, int pos, boolean lessEq) {
 		chr = Chromosome.simpleName(chr);
@@ -201,10 +205,6 @@ public class FileIndexChrPos {
 
 	/**
 	 * Calculate coordinate of this line or next line
-	 * @param filePos
-	 * @param fileLine
-	 * @param nextLine
-	 * @return
 	 */
 	long found(long filePos, String fileLine, boolean nextLine) {
 		if (nextLine) return filePos + fileLine.length() + 1; // Next line
@@ -213,8 +213,6 @@ public class FileIndexChrPos {
 
 	/**
 	 * Get a byte from a file
-	 * @param bytePosition
-	 * @return
 	 */
 	public byte get(long bytePosition) {
 		try {
@@ -328,8 +326,6 @@ public class FileIndexChrPos {
 
 	/**
 	 * Get file region for a given chrosmome
-	 * @param chr
-	 * @return
 	 */
 	FileRegion getFileRegion(String chr) {
 		chr = Chromosome.simpleName(chr);
@@ -343,8 +339,6 @@ public class FileIndexChrPos {
 
 	/**
 	 * Get the line where 'pos' hits
-	 *
-	 * @param pos
 	 * @return A string with the line that 'pos' hits, null if it's out of boundaries
 	 */
 	public LineAndPos getLine(long pos) {
@@ -545,8 +539,6 @@ public class FileIndexChrPos {
 
 	/**
 	 * The position argument of a line (second column in tab-separated format). Negative if not found
-	 *
-	 * @param line
 	 * @return The position argument of a line. Negative if not found
 	 */
 	public int pos(String line) {
@@ -569,9 +561,22 @@ public class FileIndexChrPos {
 
 	/**
 	 * File size
-	 * @return
 	 */
 	public long size() {
 		return size;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		ArrayList<String> keys = new ArrayList<>();
+		keys.addAll(fileRegions.keySet());
+		Collections.sort(keys);
+
+		for (String key : keys)
+			sb.append(key + ":\n" + Gpr.prependEachLine("\t\t", fileRegions.get(key).toString()) + "\n");
+
+		return sb.toString();
 	}
 }

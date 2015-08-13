@@ -14,14 +14,14 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import junit.framework.Assert;
 
 /**
- * Test case
+ * Test cases for HGVS notation on insertions
  */
-public class TestCasesHgvsProtDups {
+public class TestCasesHgvsIns {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
 
-	public TestCasesHgvsProtDups() {
+	public TestCasesHgvsIns() {
 		super();
 	}
 
@@ -130,4 +130,14 @@ public class TestCasesHgvsProtDups {
 		Gpr.debug("Test");
 		checkHgvs("testHg19Chr19", "tests/hgvs_ins_dups_chr19.vcf", 2);
 	}
+
+	/**
+	 * Insertion / duplication issues
+	 */
+	@Test
+	public void test_06_hgvs_insertions_chr7() {
+		Gpr.debug("Test");
+		checkHgvs("testHg19Chr7", "tests/hgvs_ins_chr7.vcf", 2);
+	}
+
 }
