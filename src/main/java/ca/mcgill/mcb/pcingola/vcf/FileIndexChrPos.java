@@ -156,7 +156,7 @@ public class FileIndexChrPos {
 	 * @param lineEnd : Line at 'end' coordinate
 	 * @return position in file between [start, end] where chrPos can be found
 	 */
-	long find(int chrPos, long start, String lineStart, long end, String lineEnd, boolean isEnd) {
+	long find(int chrPos, long start, String lineStart, long end, String lineEnd, boolean lessEq) {
 		//---
 		// Check break conditions
 		//---
@@ -167,14 +167,14 @@ public class FileIndexChrPos {
 				+ "\n\t\t\t\t" + s(lineEnd) //
 				+ "\n");
 
-		if (chrPos == posStart) return found(start, lineStart, isEnd); // Is it lineStart?
-		if (posEnd == chrPos) return found(end, lineEnd, isEnd); // Is it lineEnd?
+		if (chrPos == posStart) return found(start, lineStart, lessEq); // Is it lineStart?
+		if (posEnd == chrPos) return found(end, lineEnd, lessEq); // Is it lineEnd?
 		if (chrPos < posStart) return start; // Before start?
 		if (posEnd < chrPos) return end + lineEnd.length() + 1; // After end?
 		if (start + 1 >= end) { // Only one byte of difference between start an end?
-			if (chrPos <= posStart) return found(start, lineStart, isEnd);
-			if (isEnd && (chrPos < posEnd)) return found(end, lineEnd, false);
-			return found(end, lineEnd, isEnd);
+			if (chrPos <= posStart) return found(start, lineStart, lessEq);
+			if (lessEq && (chrPos < posEnd)) return found(end, lineEnd, false);
+			return found(end, lineEnd, lessEq);
 		}
 
 		if (posStart >= posEnd) throw new RuntimeException("This should never happen! Is the file sorted by position?"); // Sanity check
@@ -185,11 +185,10 @@ public class FileIndexChrPos {
 		long mid = (start + end) / 2;
 		LineAndPos lpmid = getLine(mid);
 		String lineMid = lpmid.line;
-		// mid = lpmid.position; // Update position where line starts
 		long posMid = pos(lineMid);
 
-		if (chrPos <= posMid) return find(chrPos, start, lineStart, mid, lineMid, isEnd);
-		else return find(chrPos, mid, lineMid, end, lineEnd, isEnd);
+		if (chrPos <= posMid) return find(chrPos, start, lineStart, mid, lineMid, lessEq);
+		else return find(chrPos, mid, lineMid, end, lineEnd, lessEq);
 	}
 
 	/**
@@ -199,16 +198,29 @@ public class FileIndexChrPos {
 		chr = Chromosome.simpleName(chr);
 		FileRegion fr = fileRegions.get(chr);
 		if (fr == null) throw new RuntimeException("No such chromosome: '" + chr + "'");
+
+		// Find position in file
 		long posFound = find(pos, fr.start, fr.lineStart, fr.end, fr.lineEnd, lessEq);
-		return getLine(posFound).position;
+
+		// Get line information
+		LineAndPos linePos = getLine(posFound);
+
+		// Get beginning of line position
+		if (linePos != null) return linePos.position;
+		return -1;
 	}
 
 	/**
 	 * Calculate coordinate of this line or next line
 	 */
-	long found(long filePos, String fileLine, boolean nextLine) {
-		if (nextLine) return filePos + fileLine.length() + 1; // Next line
-		else return filePos; // Begining of 'filePos' line
+	long found(long filePos, String fileLine, boolean lessEq) {
+		if (!lessEq) {
+			long pos = filePos + fileLine.length() + 1; // Next line
+			return (pos < size() ? pos : size());
+		}
+
+		// Beginning of 'filePos' line
+		return filePos;
 	}
 
 	/**
