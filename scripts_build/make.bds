@@ -167,7 +167,8 @@ void buildConfig() {
 			config/snpEff.ENSEMBL_BFMPP_22.config \
 			config/snpEff.ENSEMBL_BFMPP_26.config \
 			config/snpEff.ENSEMBL_BFMPP_27.config \
-			config/snpEff.FB2015_01.config \
+			config/snpEff.FLYBASE_FB2015_01.config \
+			config/snpEff.FLYBASE_FB2015_03.config \
 			config/snpEff.NCBI_bacterial.config \
 			config/snpEff.etc.config \
 			config/snpEff.bundles.*.config \
