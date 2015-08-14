@@ -581,7 +581,7 @@ void downloadUcscHg38() {
 	println 'Creating CDS FASTA'
 	task( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
 		sys gunzip -c $ori/refMrna.fa.gz | tr " " "." > $dir/cds.fa
-		sys gzip $dir/cds.fa
+		sys gzip -f $dir/cds.fa
 	}
 
 	wait
@@ -638,7 +638,7 @@ void downloadUcscMm10() {
 	println 'Creating CDS FASTA'
 	task( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
 		sys gunzip -c $ori/refMrna.fa.gz | tr " " "." > $dir/cds.fa
-		sys gzip $dir/cds.fa
+		sys gzip -f $dir/cds.fa
 	}
 
 	wait
@@ -680,7 +680,7 @@ string fastaFromTar(string ref, string tar) {
 		sys tar -xvzf $tar
 		sys rm -f $fasta
 		sys cat *.fa > $fasta
-		sys gzip $fasta
+		sys gzip -f $fasta
 	}
 
 	return fastaGz
