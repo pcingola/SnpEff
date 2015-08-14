@@ -324,7 +324,8 @@ public class HgvsProtein extends Hgvs {
 
 			// Find the first difference in the protein sequences and use that
 			// one as AA number
-			for (int cn = codonNum; cn < protSeq.length(); cn++) {
+			int len = Math.min(protSeq.length(), newProtSeq.length());
+			for (int cn = codonNum; cn < len; cn++) {
 				char aa = protSeq.charAt(cn);
 				char newAa = newProtSeq.charAt(cn);
 				if (aa != newAa) return codonTable.aaThreeLetterCode(aa) + (cn + 1);

@@ -141,4 +141,17 @@ public class TestCasesHgvsIns {
 		checkHgvs("testHg19Chr7", "tests/hgvs_ins_chr7.vcf", 2);
 	}
 
+	/**
+	 * This frameshift caused an exception while processing HGVS protein notation
+	 */
+	@Test
+	public void test_07_hgvs_insertions1() {
+		Gpr.debug("Test");
+
+		String genomeName = "testHg3775Chr1";
+		String vcf = "tests/hgvs_ins_07.vcf";
+
+		snpEffect(genomeName, vcf, null);
+	}
+
 }

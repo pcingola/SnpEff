@@ -9,7 +9,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import junit.framework.Assert;
 
@@ -19,7 +18,7 @@ import junit.framework.Assert;
 public class TestCasesZzz {
 
 	boolean debug = false;
-	boolean verbose = false || debug;
+	boolean verbose = true || debug;
 
 	public TestCasesZzz() {
 		super();
@@ -52,28 +51,16 @@ public class TestCasesZzz {
 	}
 
 	/**
-	 * Fixing bug: GATK does not annotate all VCF entries
+	 * This frameshift caused an exception while processing HGVS protein notation
 	 */
 	@Test
-	public void test_08_gatk_missing_annotations() {
+	public void test_zzz() {
 		Gpr.debug("Test");
 
-		String genomeName = "testMycobacterium_tuberculosis_CCDC5079_uid203790";
-		String vcf = "tests/test_gatk_no_annotations.vcf";
-		String args[] = { "-noLog", "-o", "gatk" };
-		List<VcfEntry> vcfEntries = snpEffect(genomeName, vcf, args);
+		String genomeName = "testHg3775Chr1";
+		String vcf = Gpr.HOME + "/snpEff/z.vcf";
 
-		for (VcfEntry ve : vcfEntries) {
-			int count = 0;
-			if (verbose) System.out.println(ve);
+		snpEffect(genomeName, vcf, null);
 
-			for (VcfEffect veff : ve.parseEffects()) {
-				if (verbose) System.out.println("\t'" + veff.getEffectsStr() + "'\t" + veff);
-				count++;
-			}
-
-			// Check that there is one and only one annotation
-			Assert.assertEquals(1, count);
-		}
 	}
 }
