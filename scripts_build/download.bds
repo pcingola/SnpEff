@@ -344,7 +344,7 @@ void downloadFlyBase() {
     
 		dirg := "$dir/$g"
 		dirg.mkdir()
-		#fetch(url)
+		fetch(url)
     
 		# Update 'config' file
 		configLines += "$g.genome : $g"
