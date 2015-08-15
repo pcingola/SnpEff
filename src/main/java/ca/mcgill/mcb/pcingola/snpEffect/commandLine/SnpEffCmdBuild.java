@@ -67,23 +67,27 @@ public class SnpEffCmdBuild extends SnpEff {
 		//---
 		// Check using proteins file
 		//---
-		String protFile = config.getFileNameProteins();
+		String protFile = null;
+		if (geneDatabaseFormat == GeneDatabaseFormat.GENBANK) {
+			// GenBank format
+			protFile = config.getBaseFileNameGenes() + SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK;
+		} else if (geneDatabaseFormat == GeneDatabaseFormat.EMBL) {
+			// EMBL format
+			protFile = config.getBaseFileNameGenes() + SnpEffPredictorFactoryEmbl.EXTENSION_EMBL;
+		} else {
+			// Protein fasta file
+			protFile = config.getFileNameProteins();
+		}
+
 		if (Gpr.canRead(protFile)) {
-			if (verbose) Timer.showStdErr("Protein check (FASTA file): '" + protFile + "'\n");
-			snpEffCmdProtein = new SnpEffCmdProtein(config);
+			if (verbose) Timer.showStdErr("Protein check file: '" + protFile + "'\n");
+			snpEffCmdProtein = new SnpEffCmdProtein(config, protFile);
 			snpEffCmdProtein.setVerbose(verbose);
 			snpEffCmdProtein.setDebug(debug);
 			snpEffCmdProtein.setStoreAlignments(storeAlignments);
 			snpEffCmdProtein.run();
-		} else if (geneDatabaseFormat == GeneDatabaseFormat.GENBANK) {
-			// GenBank format
-			String gbFile = config.getBaseFileNameGenes() + SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK;
-			if (verbose) Timer.showStdErr("Protein check (GenBank file): '" + gbFile + "'\n");
-			snpEffCmdProtein = new SnpEffCmdProtein(config, gbFile);
-			snpEffCmdProtein.setVerbose(verbose);
-			snpEffCmdProtein.setStoreAlignments(storeAlignments);
-			snpEffCmdProtein.run();
 		} else if (debug) Timer.showStdErr("\tOptional file '" + protFile + "' not found, nothing done.");
+
 	}
 
 	/**

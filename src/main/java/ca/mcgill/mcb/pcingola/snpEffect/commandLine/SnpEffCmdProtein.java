@@ -9,6 +9,7 @@ import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
 import ca.mcgill.mcb.pcingola.collections.AutoHashMap;
 import ca.mcgill.mcb.pcingola.fileIterator.FastaFileIterator;
+import ca.mcgill.mcb.pcingola.genBank.EmblFile;
 import ca.mcgill.mcb.pcingola.genBank.Feature;
 import ca.mcgill.mcb.pcingola.genBank.Feature.Type;
 import ca.mcgill.mcb.pcingola.genBank.Features;
@@ -18,6 +19,7 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryEmbl;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryGenBank;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
@@ -102,7 +104,7 @@ public class SnpEffCmdProtein extends SnpEff {
 					+ "\n\tTranscript ID : '" + trId + "'"//
 					+ "\n\tProtein       : " + proteinByTrId.get(trId) //
 					+ "\n\tProtein (new) : " + seq //
-			);
+		);
 
 		// Pick the first space separated string
 		if (trId.indexOf(' ') > 0) trId = trId.split("\\s")[0];
@@ -368,9 +370,18 @@ public class SnpEffCmdProtein extends SnpEff {
 
 		if (proteinFile.endsWith("txt") || proteinFile.endsWith("txt.gz")) readProteinFileTxt();
 		else if (proteinFile.endsWith(SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK)) readProteinFileGenBank();
+		else if (proteinFile.endsWith(SnpEffPredictorFactoryEmbl.EXTENSION_EMBL)) readProteinFileEmbl();
 		else readProteinFileFasta();
 
 		if (verbose) Timer.showStdErr("done (" + proteinByTrId.size() + " Proteins).");
+	}
+
+	/**
+	 * Read proteins from EMBL file
+	 */
+	void readProteinFileEmbl() {
+		FeaturesFile featuresFile = new EmblFile(proteinFile);
+		readProteinFileFeatures(featuresFile);
 	}
 
 	/**
@@ -388,10 +399,9 @@ public class SnpEffCmdProtein extends SnpEff {
 	}
 
 	/**
-	 * Read proteins from geneBank file
+	 * Read sequences from features file
 	 */
-	void readProteinFileGenBank() {
-		FeaturesFile featuresFile = new GenBankFile(proteinFile);
+	void readProteinFileFeatures(FeaturesFile featuresFile) {
 		for (Features features : featuresFile) {
 			String trIdPrev = null;
 
@@ -414,6 +424,14 @@ public class SnpEffCmdProtein extends SnpEff {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Read proteins from geneBank file
+	 */
+	void readProteinFileGenBank() {
+		FeaturesFile featuresFile = new GenBankFile(proteinFile);
+		readProteinFileFeatures(featuresFile);
 	}
 
 	/**
