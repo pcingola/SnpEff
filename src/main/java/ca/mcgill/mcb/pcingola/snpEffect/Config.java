@@ -37,6 +37,7 @@ public class Config implements Serializable, Iterable<String> {
 	public static final String KEY_BUNDLE_SUFIX = ".bundle";
 	public static final String KEY_CODON_PREFIX = "codon.";
 	public static final String KEY_CODONTABLE_SUFIX = ".codonTable";
+	public static final String KEY_COORDINATES = "coordinates";
 	public static final String KEY_DATA_DIR = "data.dir";
 	public static final String KEY_DATABASE_LOCAL = "database.local";
 	public static final String KEY_DATABASE_REPOSITORY = "database.repository";
@@ -671,6 +672,10 @@ public class Config implements Serializable, Iterable<String> {
 
 	public void setSnpEffectPredictor(SnpEffectPredictor snpEffectPredictor) {
 		this.snpEffectPredictor = snpEffectPredictor;
+	}
+
+	public void setString(String propertyName, String value) {
+		properties.setProperty(propertyName, value);
 	}
 
 	public void setTreatAllAsProteinCoding(boolean treatAllAsProteinCoding) {
