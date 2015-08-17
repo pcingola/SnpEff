@@ -152,7 +152,9 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	synchronized Chromosome createChromosome(String chromoName) {
 		Chromosome chr = getChromosome(chromoName);
 		if (chr != null) return chr; // Already created => Nothing done (some race condition might get you here)
-		chr = new Chromosome(this, 0, 0, chromoName);
+
+		String ch = Chromosome.simpleName(chromoName);
+		chr = new Chromosome(this, 0, 0, ch);
 		add(chr);
 		return chr;
 	}

@@ -19,9 +19,9 @@ public interface VcfAnnotator {
 	/**
 	 * Annotate a VCF file entry
 	 *
-	 * @return true if OK, false on error
+	 * @return true if the entry was annotated
 	 */
-	public void annotate(VcfEntry vcfEntry);
+	public boolean annotate(VcfEntry vcfEntry);
 
 	/**
 	 * This method is called after all annotations have been performed.
@@ -42,4 +42,18 @@ public interface VcfAnnotator {
 	 */
 	public boolean annotateInit(VcfFileIterator vcfFile);
 
+	/**
+	 * Set configuration
+	 */
+	public void setConfig(Config config);
+
+	/**
+	 * Set debug mode
+	 */
+	public void setDebug(boolean debug);
+
+	/**
+	 * Set verbose mode
+	 */
+	public void setVerbose(boolean verbose);
 }

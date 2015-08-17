@@ -294,7 +294,7 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Get a property as a double
 	 */
-	protected double getDouble(String propertyName, double defaultValue) {
+	public double getDouble(String propertyName, double defaultValue) {
 		String val = getString(propertyName);
 		if (val == null) return defaultValue;
 		return Gpr.parseDoubleSafe(val);
@@ -359,7 +359,7 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Get a property as a long
 	 */
-	protected long getLong(String propertyName, long defaultValue) {
+	public long getLong(String propertyName, long defaultValue) {
 		String val = getString(propertyName);
 		if (val == null) return defaultValue;
 		return Gpr.parseLongSafe(val);
@@ -393,8 +393,15 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Get a property as a string
 	 */
-	protected String getString(String propertyName) {
+	public String getString(String propertyName) {
 		return properties.getProperty(propertyName);
+	}
+
+	/**
+	 * Get a property as a string
+	 */
+	public String getString(String propertyName, String defaultValue) {
+		return properties.getProperty(propertyName, defaultValue);
 	}
 
 	public String getVersionsUrl() {
@@ -609,7 +616,7 @@ public class Config implements Serializable, Iterable<String> {
 			confFile = new File(confPath);
 			if (loadProperties(confPath)) return confPath;
 
-			throw new RuntimeException("Cannot read config file!\n");
+			throw new RuntimeException("Cannot read config file '" + configFileName + "'\n");
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Cannot find config file '" + configFileName + "'");
 		} catch (IOException e) {

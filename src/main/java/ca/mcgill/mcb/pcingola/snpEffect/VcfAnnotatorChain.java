@@ -36,9 +36,12 @@ public class VcfAnnotatorChain implements VcfAnnotator {
 	}
 
 	@Override
-	public void annotate(VcfEntry vcfEntry) {
+	public boolean annotate(VcfEntry vcfEntry) {
+		boolean annotated = false;
 		for (VcfAnnotator vcfAnnotator : annotators)
-			vcfAnnotator.annotate(vcfEntry);
+			annotated |= vcfAnnotator.annotate(vcfEntry);
+
+		return annotated;
 	}
 
 	@Override
@@ -59,6 +62,24 @@ public class VcfAnnotatorChain implements VcfAnnotator {
 			error |= vcfAnnotator.annotateInit(vcfFile);
 
 		return error;
+	}
+
+	@Override
+	public void setConfig(Config config) {
+		for (VcfAnnotator vcfAnnotator : annotators)
+			vcfAnnotator.setConfig(config);
+	}
+
+	@Override
+	public void setDebug(boolean debug) {
+		for (VcfAnnotator vcfAnnotator : annotators)
+			vcfAnnotator.setDebug(debug);
+	}
+
+	@Override
+	public void setVerbose(boolean verbose) {
+		for (VcfAnnotator vcfAnnotator : annotators)
+			vcfAnnotator.setVerbose(verbose);
 	}
 
 }

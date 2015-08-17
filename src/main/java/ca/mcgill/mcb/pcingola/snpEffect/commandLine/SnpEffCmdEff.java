@@ -153,7 +153,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Annotate a VCF entry
 	 */
 	@Override
-	public void annotate(VcfEntry vcfEntry) {
+	public boolean annotate(VcfEntry vcfEntry) {
 		boolean printed = false;
 		boolean filteredOut = false;
 		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
@@ -181,7 +181,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			// Skip if there are filter intervals and they are not matched
 			if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) {
 				filteredOut = true;
-				return;
+				return false;
 			}
 
 			// Create new 'section'
@@ -275,6 +275,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		} finally {
 			if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
 		}
+
+		return true;
 	}
 
 	/**

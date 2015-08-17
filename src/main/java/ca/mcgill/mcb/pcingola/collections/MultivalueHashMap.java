@@ -7,10 +7,8 @@ import java.util.List;
 
 /**
  * A Hash that can hold multiple values for each key
- * @author pcingola
  *
- * @param <K>
- * @param <V>
+ * @author pcingola
  */
 public class MultivalueHashMap<K, V> extends HashMap<K, LinkedList<V>> {
 
@@ -22,8 +20,6 @@ public class MultivalueHashMap<K, V> extends HashMap<K, LinkedList<V>> {
 
 	/**
 	 * Add multiple values
-	 * @param key
-	 * @param values
 	 */
 	public void add(K key, Collection<V> values) {
 		getOrCreate(key).addAll(values); // Add all to the list
@@ -31,8 +27,6 @@ public class MultivalueHashMap<K, V> extends HashMap<K, LinkedList<V>> {
 
 	/**
 	 * Add a single value
-	 * @param key
-	 * @param value
 	 */
 	public void add(K key, V value) {
 		getOrCreate(key).add(value); // Add to the list
@@ -40,8 +34,6 @@ public class MultivalueHashMap<K, V> extends HashMap<K, LinkedList<V>> {
 
 	/**
 	 * Get a list of values (or create it if not available)
-	 * @param key
-	 * @return
 	 */
 	public List<V> getOrCreate(K key) {
 		// Get list

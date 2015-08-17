@@ -18,8 +18,8 @@ while( $l = <STDIN> ) {
 	$vcf .= "$t[11]\t";			# CHR
 	$vcf .= "$t[12]\t";			# POS
 	$vcf .= "$t[21]\t";			# ID
-	$vcf .= "A\t";				# REF (Amzingly, GwasCatalog doen't have REF/ALT fields)
-	$vcf .= "T\t";				# ALT
+	$vcf .= "N\t";				# REF (Amzingly, GwasCatalog doen't have REF/ALT fields)
+	$vcf .= ".\t";				# ALT
 	$vcf .= ".\t";				# QUAL
 	$vcf .= "PASS\t";			# FILTER
 

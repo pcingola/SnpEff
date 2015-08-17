@@ -15,12 +15,8 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
  *
  * @author pcingola
  */
-@SuppressWarnings("serial")
 public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 	HashMap<String, IntervalTree> forest;
 
@@ -28,9 +24,9 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 		forest = new HashMap<String, IntervalTree>();
 	}
 
-	public IntervalForest(Markers intervals) {
+	public IntervalForest(Markers markers) {
 		forest = new HashMap<String, IntervalTree>();
-		add(intervals);
+		add(markers);
 	}
 
 	/**
