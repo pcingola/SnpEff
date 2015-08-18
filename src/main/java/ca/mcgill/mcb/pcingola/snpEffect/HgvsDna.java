@@ -224,8 +224,14 @@ public class HgvsDna extends Hgvs {
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
 
+		// Single base
 		if (posStart == posEnd) return pos(posStart);
-		return pos(posStart) + "_" + pos(posEnd);
+
+		// Base range
+		String ps = pos(posStart);
+		String pe = pos(posEnd);
+		if (ps == null || pe == null) return null;
+		return ps + "_" + pe;
 	}
 
 	/**
@@ -247,7 +253,8 @@ public class HgvsDna extends Hgvs {
 		if (isDownstream(pos)) return posDownstream(pos);
 		if (isUpstream(pos)) return posUpstream(pos);
 
-		throw new RuntimeException("Unknown HGVS position");
+		if (debug) Gpr.debug("Unknown HGVS position " + pos + ", transcript " + tr);
+		return null;
 	}
 
 	/**
