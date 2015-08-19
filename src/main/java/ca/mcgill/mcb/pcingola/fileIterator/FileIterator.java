@@ -16,8 +16,9 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
-	protected boolean debug = false;
-	protected boolean autoClose = true;
+	protected boolean debug;
+	protected boolean verbose;
+	protected boolean autoClose;
 	protected int lineNum;
 	protected T next;
 	protected BufferedReader reader;
@@ -34,6 +35,7 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
 	public FileIterator(String fileName) {
 		init(fileName, 0);
+		autoClose = true;
 	}
 
 	/**
@@ -174,6 +176,10 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
 	}
 
 	@Override
