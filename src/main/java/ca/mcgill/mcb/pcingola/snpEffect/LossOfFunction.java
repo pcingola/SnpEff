@@ -61,8 +61,6 @@ public class LossOfFunction {
 	 * last 5% of the protein, the protein could still be functional.
 	 */
 	public static final double DEFAULT_IGNORE_PROTEIN_CODING_AFTER = 0.95;
-	public double ignoreProteinCodingAfter;
-
 	/**
 	 *  It is assumed that even with a protein coding change at the
 	 *  first 5% of the protein:
@@ -71,13 +69,15 @@ public class LossOfFunction {
 	 *  	alternative start codon."
 	 */
 	public static final double DEFAULT_IGNORE_PROTEIN_CODING_BEFORE = 0.05;
-	public double ignoreProteinCodingBefore;
 
 	/**
 	 * Larger deletions removing either the first exon or more than
 	 * 50% of the protein-coding sequence of the affected transcript
 	 */
 	public static final double DEFAULT_DELETE_PROTEIN_CODING_BASES = 0.50;
+	public double ignoreProteinCodingAfter;
+
+	public double ignoreProteinCodingBefore;
 	public double deleteProteinCodingBases;
 
 	Config config;
@@ -364,7 +364,7 @@ public class LossOfFunction {
 	public String toString() {
 		return (isLof() ? "LOF=" + toStringVcfLof() + " " : "") //
 				+ (isNmd() ? "NMD=" + toStringVcfNmd() : "") //
-		;
+				;
 	}
 
 	/**
