@@ -164,7 +164,7 @@ public class TestCasesHgvs {
 
 		// Make sure the spleice site is annotatted as "c.1909+12delT" (instead of "c.1910delT")
 		boolean ok = false;
-		for (VcfEffect veff : ve.parseEffects()) {
+		for (VcfEffect veff : ve.getVcfEffects()) {
 			if (verbose) Gpr.debug("\t" + veff + "\n\t\ttranscript: " + veff.getTranscriptId() + "\n\t\tHgvs (DNA): " + veff.getHgvsDna());
 			ok |= veff.getTranscriptId().equals("ENST00000544455") && veff.getHgvsDna().equals("c.1909+12delT");
 		}
@@ -200,7 +200,7 @@ public class TestCasesHgvs {
 
 		// Make sure the spleice site is annotatted as "c.1909+12delT" (instead of "c.1910delT")
 		boolean ok = false;
-		for (VcfEffect veff : ve.parseEffects()) {
+		for (VcfEffect veff : ve.getVcfEffects()) {
 			if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
 			ok |= veff.hasEffectType(EffectType.SPLICE_SITE_REGION) //
 					&& veff.getTranscriptId().equals("NM_001232.3") //
@@ -235,7 +235,7 @@ public class TestCasesHgvs {
 
 		// Make sure the HCVGs annotaion is correct
 		boolean ok = false;
-		for (VcfEffect veff : ve.parseEffects()) {
+		for (VcfEffect veff : ve.getVcfEffects()) {
 			if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
 			ok |= veff.hasEffectType(EffectType.INTERGENIC) //
 					&& veff.getHgvsDna().equals("n.15070000_15070001insT") //

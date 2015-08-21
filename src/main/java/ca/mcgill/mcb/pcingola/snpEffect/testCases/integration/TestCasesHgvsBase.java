@@ -191,7 +191,7 @@ public class TestCasesHgvsBase {
 
 			// Find if HGVS predicted by SnpEff matches expected annotations
 			StringBuilder sb = new StringBuilder();
-			for (VcfEffect eff : vcfEntry.parseEffects()) {
+			for (VcfEffect eff : vcfEntry.getVcfEffects()) {
 				if (trId != null && !trId.isEmpty() && trId.equals(eff.getTranscriptId())) {
 					String hgvsReal = eff.getAa();
 					String line = "\tHGVS: " + hgvsExpected.contains(hgvsReal) + "\tExpected: " + hgvsExpected + "\tSnpEFf: " + eff.getAa() + "\t" + eff.getGenotype() + "\t" + eff;

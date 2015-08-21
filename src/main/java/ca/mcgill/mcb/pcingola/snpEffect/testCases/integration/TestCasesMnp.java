@@ -37,7 +37,7 @@ public class TestCasesMnp {
 		Assert.assertEquals(1, results.size());
 		VcfEntry result = results.get(0);
 
-		for (VcfEffect eff : result.parseEffects()) {
+		for (VcfEffect eff : result.getVcfEffects()) {
 			String aa = eff.getAa();
 			String aaNumStr = aa.substring(1, aa.length() - 1);
 			int aanum = Gpr.parseIntSafe(aaNumStr);

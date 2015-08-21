@@ -40,7 +40,7 @@ public class TestCasesInsVep {
 
 			// Check effects
 			boolean ok = false;
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				// Find transcript
 				if (veff.getTranscriptId() != null && veff.getTranscriptId().equals(trId)) {
 					// Check that reported effect is the same

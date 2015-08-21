@@ -45,7 +45,7 @@ public class TestCasesMotif {
 		// Check results
 		int numNextProt = 0;
 		for (VcfEntry ve : vcfEntries) {
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t" + veff.getVcfFieldString());
 
 				// Is it motif?

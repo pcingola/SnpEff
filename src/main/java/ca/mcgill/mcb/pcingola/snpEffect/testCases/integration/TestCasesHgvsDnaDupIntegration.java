@@ -74,7 +74,7 @@ public class TestCasesHgvsDnaDupIntegration extends TestCasesBase {
 
 			// Check all effects
 			boolean okC = false, okP = false;
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				// Parse calculated HGVS values
 				String trId = veff.getTranscriptId();
 				String hgvsCactual = veff.getHgvsDna() != null ? veff.getHgvsDna() : "";

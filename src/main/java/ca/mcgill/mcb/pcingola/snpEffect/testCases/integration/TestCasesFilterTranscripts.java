@@ -52,7 +52,7 @@ public class TestCasesFilterTranscripts {
 			if (verbose) System.out.println(ve);
 
 			// Get effect string
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\ttrId:" + veff.getTranscriptId() + "\t" + veff);
 				Assert.assertEquals("ENST00000400573", veff.getTranscriptId());
 			}
@@ -87,7 +87,7 @@ public class TestCasesFilterTranscripts {
 			if (verbose) System.out.println(ve);
 
 			// Get effect string
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\ttrId:" + veff.getTranscriptId() + "\t" + veff);
 
 				if (veff.getTranscriptId().equals("ENST00000400573") || veff.getTranscriptId().equals("ENST00000262608")) {

@@ -398,7 +398,7 @@ public class TestCasesVcf extends TestCasesBase {
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
 			if (verbose) System.out.println(ve);
-			for (VcfEffect veff : ve.parseEffects())
+			for (VcfEffect veff : ve.getVcfEffects())
 				if (verbose) System.out.println("\t\t" + veff);
 		}
 	}
@@ -550,7 +550,7 @@ public class TestCasesVcf extends TestCasesBase {
 		for (VcfEntry ve : vcf) {
 			if (verbose) System.out.println(ve);
 
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t" + veff);
 
 				// Check

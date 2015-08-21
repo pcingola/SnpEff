@@ -242,7 +242,7 @@ public class TestCasesSequenceOntology {
 
 			// Get effects for transcript 'trId'
 			HashSet<String> effSos = new HashSet<String>();
-			List<VcfEffect> veffs = ve.parseEffects();
+			List<VcfEffect> veffs = ve.getVcfEffects();
 			for (VcfEffect veff : veffs) {
 				if (veff.getTranscriptId().equals(trId)) {
 					String effs = veff.getEffString();

@@ -45,7 +45,7 @@ public class TestCasesDelEtc {
 			if (verbose) System.out.println(ve);
 
 			// Get first effect (there should be only one)
-			List<VcfEffect> veffs = ve.parseEffects();
+			List<VcfEffect> veffs = ve.getVcfEffects();
 
 			for (VcfEffect veff : veffs) {
 				Set<String> effs = new HashSet<String>();
@@ -85,7 +85,7 @@ public class TestCasesDelEtc {
 			if (verbose) System.out.println(ve);
 
 			// Get first effect (there should be only one)
-			List<VcfEffect> veffs = ve.parseEffects();
+			List<VcfEffect> veffs = ve.getVcfEffects();
 
 			for (VcfEffect veff : veffs) {
 				if (verbose) System.out.println("\t" + veff.getEffString());

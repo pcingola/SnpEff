@@ -292,7 +292,7 @@ public class CompareToVep {
 		List<VcfEntry> vcfEnties = runSnpEff(args(genomeName, vcf));
 		for (VcfEntry ve : vcfEnties) {
 			List<VcfConsequence> csqs = VcfConsequence.parse(vcfCsqHeader, ve);
-			List<VcfEffect> effs = ve.parseEffects();
+			List<VcfEffect> effs = ve.getVcfEffects();
 
 			if (verbose) {
 				System.out.println(ve);

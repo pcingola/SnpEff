@@ -43,7 +43,7 @@ public class TestCasesHugeDeletions {
 			if (verbose) System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getEnd() + "\tsize:" + ve.size());
 
 			boolean ok = false;
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println(veff);
 				ok |= (veff.getEffectType() == EffectType.CHROMOSOME_LARGE_DELETION);
 			}

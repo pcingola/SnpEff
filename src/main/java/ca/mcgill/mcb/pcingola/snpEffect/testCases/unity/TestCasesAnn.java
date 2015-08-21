@@ -54,7 +54,7 @@ public class TestCasesAnn extends TestCasesBase {
 
 		// Find annotation for a given transcript
 		VcfEntry ve = vcfEntries.get(0);
-		for (VcfEffect veff : ve.parseEffects()) {
+		for (VcfEffect veff : ve.getVcfEffects()) {
 			if (verbose) {
 				System.out.println("\t" + veff //
 						+ "\n\t\tveff.getEffectString() : " + veff.getVcfFieldString() //

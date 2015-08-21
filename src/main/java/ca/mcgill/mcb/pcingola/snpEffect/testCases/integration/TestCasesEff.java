@@ -67,7 +67,7 @@ public class TestCasesEff {
 			if (verbose) System.out.println(ve);
 
 			EffectImpact impPrev = EffectImpact.HIGH;
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				EffectImpact imp = veff.getImpact();
 
 				if (verbose) System.out.println("\t" + imp + "\t" + impPrev + "\t" + imp.compareTo(impPrev) + "\t" + veff);
@@ -89,7 +89,7 @@ public class TestCasesEff {
 		Assert.assertEquals(1, vcfEntries.size());
 
 		VcfEntry ve = vcfEntries.get(0);
-		VcfEffect veff = ve.parseEffects().get(0);
+		VcfEffect veff = ve.getVcfEffects().get(0);
 
 		Assert.assertEquals("ENST00000456015", veff.getTranscriptId());
 	}
@@ -104,7 +104,7 @@ public class TestCasesEff {
 		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
 
 		for (VcfEntry ve : vcfEntries) {
-			int numEffs = ve.parseEffects().size();
+			int numEffs = ve.getVcfEffects().size();
 			if (verbose) System.out.println("Num effects:" + numEffs + "\t" + ve);
 			Assert.assertTrue(numEffs <= 1);
 		}
@@ -144,7 +144,7 @@ public class TestCasesEff {
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve);
 
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t'" + veff.getEffectsStr() + "'\t" + veff);
 				if (veff.getEffectsStr().indexOf("SPLICE_SITE_REGION") >= 0) throw new RuntimeException("Splice region effects should not present in GATK compatible mode");
 			}
@@ -193,7 +193,7 @@ public class TestCasesEff {
 			int count = 0;
 			if (verbose) System.out.println(ve);
 
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t'" + veff.getEffectsStr() + "'\t" + veff);
 				count++;
 			}

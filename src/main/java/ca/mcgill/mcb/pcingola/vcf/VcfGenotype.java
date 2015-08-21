@@ -301,7 +301,7 @@ public class VcfGenotype {
 					+ "\n\tFormat   : '" + vcfEntry.getFormat() + "'" //
 					+ "\n\tValues   : '" + values + "'" //
 					+ "\n\tVcf line : " + vcfEntry //
-			, e);
+					, e);
 		}
 	}
 

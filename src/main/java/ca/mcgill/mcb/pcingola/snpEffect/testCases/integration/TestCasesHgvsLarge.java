@@ -45,7 +45,7 @@ public class TestCasesHgvsLarge {
 		VcfEntry ve = results.get(0);
 
 		// Make sure HGVS string is not so long
-		for (VcfEffect veff : ve.parseEffects()) {
+		for (VcfEffect veff : ve.getVcfEffects()) {
 			if (verbose) System.out.println(veff);
 
 			if (verbose) System.out.println("\tAA change    : " + veff.getAa());

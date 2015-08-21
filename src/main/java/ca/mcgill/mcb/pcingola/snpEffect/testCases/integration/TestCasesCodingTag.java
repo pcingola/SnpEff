@@ -44,7 +44,7 @@ public class TestCasesCodingTag {
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
 
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getImpact() == EffectImpact.MODERATE) {
 					if (verbose) System.out.println("\t" + veff);
 					Assert.assertFalse(veff.getBioType() == null || veff.getBioType().isEmpty()); // Make sure the biotype field is avaialble

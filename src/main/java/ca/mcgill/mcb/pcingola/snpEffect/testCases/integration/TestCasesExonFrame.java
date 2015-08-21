@@ -89,7 +89,7 @@ public class TestCasesExonFrame {
 			String expectedCodon = ve.getInfo("EXP_CODON");
 
 			boolean found = false;
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				String eff = veff.getEffectType().toString();
 
 				if (verbose) {

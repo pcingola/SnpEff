@@ -44,7 +44,7 @@ public class TestCasesSnp {
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve);
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.NON_SYNONYMOUS_START) {
 					Assert.assertEquals(EffectImpact.LOW, veff.getImpact());
@@ -76,7 +76,7 @@ public class TestCasesSnp {
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve);
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.STOP_GAINED) {
 					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
@@ -108,7 +108,7 @@ public class TestCasesSnp {
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve);
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.START_LOST) {
 					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());

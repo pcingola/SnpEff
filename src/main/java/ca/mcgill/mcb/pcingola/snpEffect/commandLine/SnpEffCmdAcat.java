@@ -62,7 +62,7 @@ public class SnpEffCmdAcat extends SnpEff {
 		if (Double.isNaN(cons)) cons = 0; // Not found?
 
 		// Parse all effects
-		for (VcfEffect veff : ve.parseEffects()) {
+		for (VcfEffect veff : ve.getVcfEffects()) {
 
 			if (verbose) {
 				// Count by effect

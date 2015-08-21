@@ -1,5 +1,8 @@
 package ca.mcgill.mcb.pcingola.vcf;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * VcfFields in SnpEff version 2.X have a different format than 3.X
  * As of version 4.1 we switch to a standard annotation format
@@ -21,6 +24,25 @@ public enum EffFormatVersion {
 
 	public static final String EFFECT_TYPE_SEPARATOR = "&"; // Separator between mutiple effectTypes
 	public static final String EFFECT_TYPE_SEPARATOR_OLD = "+"; // Old separator between mutiple effectTypes
+
+	protected static Set<String> vcfInfoNames;
+
+	/**
+	 * Initialize class
+	 */
+	static {
+		vcfInfoNames = new HashSet<>();
+
+		for (String key : VCF_INFO_ANN_NAMES)
+			vcfInfoNames.add(key);
+	}
+
+	/**
+	 * Is this one of the VCF INFO keys?
+	 */
+	public static boolean isEffectVcfInfoField(String key) {
+		return vcfInfoNames.contains(key);
+	}
 
 	/**
 	 * Get INF field name for corresponding format

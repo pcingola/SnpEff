@@ -65,7 +65,7 @@ public class TestCasesHgvsUpDownStream {
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);
 
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals("NM_000463.2")) {
 					if (verbose) {
 						System.out.println("\t" + veff);
@@ -92,7 +92,7 @@ public class TestCasesHgvsUpDownStream {
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);
 
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals("NM_000463.2")) {
 					if (verbose) {
 						System.out.println("\t" + veff);
@@ -119,7 +119,7 @@ public class TestCasesHgvsUpDownStream {
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);
 
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals("ENST00000404751")) {
 					if (verbose) {
 						System.out.println("\t" + veff);
@@ -146,7 +146,7 @@ public class TestCasesHgvsUpDownStream {
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);
 
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals("NM_000199.3")) {
 					if (verbose) {
 						System.out.println("\t" + veff);
@@ -173,7 +173,7 @@ public class TestCasesHgvsUpDownStream {
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);
 
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals("NM_000199.3")) {
 					if (verbose) {
 						System.out.println("\t" + veff);

@@ -56,7 +56,7 @@ public class TestCasesTranscriptError {
 		boolean hasWarning = false;
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve);
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				EffectImpact imp = veff.getImpact();
 				if (verbose) System.out.println("\t" + imp + "\t" + veff);
 

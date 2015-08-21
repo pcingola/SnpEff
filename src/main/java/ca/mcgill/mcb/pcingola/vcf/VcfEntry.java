@@ -59,24 +59,27 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	private static final long serialVersionUID = 4226374412681243433L;
 
-	protected boolean useNumericGenotype;
-	protected String line; // Line from VCF file
-	protected int lineNum; // Line number
-	protected VcfFileIterator vcfFileIterator; // Iterator where this entry was red from
-	protected String chromosomeName; // Original chromosome name
-	protected String ref;
 	protected String[] alts;
 	protected String altStr;
-	protected Double quality;
+	protected String chromosomeName; // Original chromosome name
 	protected String filterPass;
-	protected String infoStr = "";
-	protected HashMap<String, String> info;
 	protected String format;
 	protected String formatFields[];
-	protected ArrayList<VcfGenotype> vcfGenotypes = null;
-	protected VariantType variantType;
 	protected String genotypeFields[]; // Raw fields from VCF file
 	protected String genotypeFieldsStr; // Raw fields from VCF file (one string, tab separated)
+	protected byte genotypeScores[];
+	protected HashMap<String, String> info;
+	protected String infoStr = "";
+	protected String line; // Line from VCF file
+	protected int lineNum; // Line number
+	protected Double quality;
+	protected String ref;
+	protected boolean useNumericGenotype;
+	protected LinkedList<Variant> variants;
+	protected VariantType variantType;
+	protected List<VcfEffect> vcfEffects;
+	protected VcfFileIterator vcfFileIterator; // Iterator where this entry was red from
+	protected ArrayList<VcfGenotype> vcfGenotypes = null;
 
 	/**
 	 * Check that this value can be added to an INFO field
@@ -139,6 +142,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (vcfGenotypes == null) vcfGenotypes = new ArrayList<VcfGenotype>();
 		if (format == null) format = "";
 		vcfGenotypes.add(new VcfGenotype(this, format, vcfGenotypeStr));
+
+		genotypeScores = null; // Reset or invalidate scores
 	}
 
 	/**
@@ -384,18 +389,20 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Return genotypes parsed as an array of codes
 	 */
-	public byte[] getGenotypesScores() {
+	public synchronized byte[] getGenotypesScores() {
+		if (genotypeScores != null) return genotypeScores;
+
 		// Not compressed? Parse codes
 		if (!isCompressedGenotypes()) {
 			List<VcfGenotype> vcfGts = getVcfGenotypes();
 			int numSamples = vcfGts.size();
-			byte gt[] = new byte[numSamples];
+			genotypeScores = new byte[numSamples];
 
 			int idx = 0;
 			for (VcfGenotype vcfGt : vcfGts)
-				gt[idx++] = (byte) vcfGt.getGenotypeCode();
+				genotypeScores[idx++] = (byte) vcfGt.getGenotypeCode();
 
-			return gt;
+			return genotypeScores;
 		}
 
 		//---
@@ -409,12 +416,12 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		// Parse 'sparse' entries
 		int numSamples = getNumberOfSamples();
-		byte gt[] = new byte[numSamples];
-		parseSparseGt(naStr, gt, -1);
-		parseSparseGt(heStr, gt, 1);
-		parseSparseGt(hoStr, gt, 2);
+		genotypeScores = new byte[numSamples];
+		parseSparseGt(naStr, genotypeScores, -1);
+		parseSparseGt(heStr, genotypeScores, 1);
+		parseSparseGt(hoStr, genotypeScores, 2);
 
-		return gt;
+		return genotypeScores;
 	}
 
 	/**
@@ -532,6 +539,48 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	public VariantType getVariantType() {
 		return variantType;
+	}
+
+	public List<VcfEffect> getVcfEffects() {
+		return getVcfEffects(null);
+	}
+
+	/**
+	 * Parse 'EFF' info field and get a list of effects
+	 */
+	public synchronized List<VcfEffect> getVcfEffects(EffFormatVersion formatVersion) {
+		if (vcfEffects != null) return vcfEffects;
+
+		String effStr = null;
+		if (formatVersion == null) {
+			// Guess which INFO field could be
+			effStr = getInfo(EffFormatVersion.VCF_INFO_ANN_NAME);
+			if (effStr != null) {
+				formatVersion = EffFormatVersion.FORMAT_ANN; // Unspecied 'ANN' version
+			} else {
+				effStr = getInfo(EffFormatVersion.VCF_INFO_EFF_NAME);
+				if (effStr != null) formatVersion = EffFormatVersion.FORMAT_EFF; // Unspecied 'EFF' version
+			}
+		} else {
+			// Use corresponding INFO field
+			String effFieldName = VcfEffect.infoFieldName(formatVersion);
+			effStr = getInfo(effFieldName); // Get effect string from INFO field
+		}
+
+		// Create a list of effect
+		vcfEffects = new ArrayList<VcfEffect>();
+
+		// Note: An empty "EFF" string can be viewed as a FLAG type and transformed to a "true" value
+		if ((effStr == null) || effStr.isEmpty() || effStr.equals("true")) return vcfEffects;
+
+		// Add each effect
+		String effs[] = effStr.split(",");
+		for (String eff : effs) {
+			VcfEffect veff = new VcfEffect(eff, formatVersion); // Create and parse this effect
+			vcfEffects.add(veff);
+		}
+
+		return vcfEffects;
 	}
 
 	public VcfFileIterator getVcfFileIterator() {
@@ -932,43 +981,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return alts;
 	}
 
-	public List<VcfEffect> parseEffects() {
-		return parseEffects(null);
-	}
-
-	/**
-	 * Parse 'EFF' info field and get a list of effects
-	 */
-	public List<VcfEffect> parseEffects(EffFormatVersion formatVersion) {
-		String effStr = null;
-		if (formatVersion == null) {
-			// Guess which INFO field could be
-			effStr = getInfo(EffFormatVersion.VCF_INFO_ANN_NAME);
-			if (effStr != null) {
-				formatVersion = EffFormatVersion.FORMAT_ANN; // Unspecied 'ANN' version
-			} else {
-				effStr = getInfo(EffFormatVersion.VCF_INFO_EFF_NAME);
-				if (effStr != null) formatVersion = EffFormatVersion.FORMAT_EFF; // Unspecied 'EFF' version
-			}
-		} else {
-			// Use corresponding INFO field
-			String effFieldName = VcfEffect.infoFieldName(formatVersion);
-			effStr = getInfo(effFieldName); // Get effect string from INFO field
-		}
-
-		// Create a list of effect
-		ArrayList<VcfEffect> effList = new ArrayList<VcfEffect>();
-		if ((effStr == null) || effStr.isEmpty() || effStr.equals("true")) return effList; // Note: An empty "EFF" string can be viewed as a FLAG type and transformed to a "true" value
-
-		// Add each effect
-		String effs[] = effStr.split(",");
-		for (String eff : effs) {
-			VcfEffect veff = new VcfEffect(eff, formatVersion); // Create and parse this effect
-			effList.add(veff);
-		}
-		return effList;
-	}
-
 	/**
 	 * Parse 'end' coordinate
 	 */
@@ -1097,6 +1109,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		// Update info hash
 		if (info != null) info.remove(key);
+
+		// Is this an 'EFF/ANN' field? Remove parsed effects
+		if (EffFormatVersion.isEffectVcfInfoField(key)) vcfEffects = null; // Reset field
 	}
 
 	/**
@@ -1274,7 +1289,10 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Create a list of variants from this VcfEntry
 	 */
 	public List<Variant> variants() {
-		LinkedList<Variant> list = new LinkedList<Variant>();
+		if (variants != null) return variants;
+
+		// Create list of variants
+		variants = new LinkedList<Variant>();
 
 		// Create one Variant for each ALT
 		Chromosome chr = (Chromosome) parent;
@@ -1282,34 +1300,34 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		if (!isVariant()) {
 			// Not a variant?
-			List<Variant> variants = variants(chr, start, ref, null, id);
+			List<Variant> vars = variants(chr, start, ref, null, id);
 			String alt = ".";
 
-			for (Variant variant : variants) {
+			for (Variant variant : vars) {
 				if (useNumericGenotype) variant.setGenotype(Integer.toString(genotypeNumber));
 				else variant.setGenotype(alt);
 			}
 
-			list.addAll(variants);
+			variants.addAll(vars);
 		} else {
 			// At least one variant
 			for (String alt : alts) {
 				if (!isVariant(alt)) alt = null;
 
-				List<Variant> variants = variants(chr, start, ref, alt, id);
+				List<Variant> vars = variants(chr, start, ref, alt, id);
 
 				// Set corresponding genotype
-				for (Variant variant : variants) {
+				for (Variant variant : vars) {
 					if (useNumericGenotype) variant.setGenotype(Integer.toString(genotypeNumber));
 					else variant.setGenotype(alt);
 				}
 
-				list.addAll(variants);
+				variants.addAll(vars);
 				genotypeNumber++;
 			}
 		}
 
-		return list;
+		return variants;
 	}
 
 	/**

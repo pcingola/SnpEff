@@ -36,7 +36,7 @@ public class TestCasesHgvsFrameShift {
 			if (verbose) System.out.println(ve);
 
 			String transcriptId = ve.getInfo("TR");
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 
 				if (veff.getTranscriptId().equals(transcriptId)) {
 					if (verbose) {

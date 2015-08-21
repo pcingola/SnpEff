@@ -38,7 +38,7 @@ public class TestCasesInsEtc {
 		for (VcfEntry ve : vcfEnties) {
 
 			// Get first effect (there should be only one)
-			List<VcfEffect> veffs = ve.parseEffects();
+			List<VcfEffect> veffs = ve.getVcfEffects();
 			VcfEffect veff = veffs.get(0);
 
 			Assert.assertEquals("Q53QQ", veff.getAa());

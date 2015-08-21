@@ -159,7 +159,7 @@ public class TestCasesBase {
 
 			// Check all effects
 			boolean okC = false, okP = false, trFound = false;
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				// Parse calculated HGVS values
 				String trId = veff.getTranscriptId();
 				String hgvsCactual = veff.getHgvsDna() != null ? veff.getHgvsDna() : "";
@@ -229,7 +229,7 @@ public class TestCasesBase {
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		VcfEntry ve = vcf.next();
 
-		List<VcfEffect> effs = ve.parseEffects();
+		List<VcfEffect> effs = ve.getVcfEffects();
 		if (effs.isEmpty()) throw new RuntimeException("Empty list of effects. Tis should never happen!");
 
 		VcfEffect eff = effs.get(0);

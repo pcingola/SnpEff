@@ -69,7 +69,7 @@ public class TestCasesRegulation {
 		ok = false;
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve);
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t" + veff + "\t\t" + veff.getFeatureType());
 				ok |= veff.getFeatureType().equals("REGULATION&H3K27me3:HepG2");
 			}

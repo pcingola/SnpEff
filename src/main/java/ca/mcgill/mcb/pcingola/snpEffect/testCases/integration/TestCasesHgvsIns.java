@@ -37,7 +37,7 @@ public class TestCasesHgvsIns {
 
 			String transcriptId = ve.getInfo("TR");
 			if (verbose) System.out.println("\tLooking for transcript '" + transcriptId + "'");
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 
 				if (veff.getTranscriptId().equals(transcriptId)) {
 					if (verbose) {

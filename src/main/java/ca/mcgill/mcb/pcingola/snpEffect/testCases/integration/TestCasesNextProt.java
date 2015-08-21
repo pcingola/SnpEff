@@ -46,7 +46,7 @@ public class TestCasesNextProt {
 		// Check results
 		int numNextProt = 0;
 		for (VcfEntry ve : vcfEntries) {
-			for (VcfEffect veff : ve.parseEffects()) {
+			for (VcfEffect veff : ve.getVcfEffects()) {
 
 				if ((veff.hasEffectType(EffectType.NEXT_PROT)) // Is it nextProt?
 						&& (impact == veff.getImpact())) // Is impact OK?
@@ -123,7 +123,7 @@ public class TestCasesNextProt {
 		String vcfFile = "tests/test.nextProt_paren.vcf";
 		int count = 0;
 		for (VcfEntry ve : new VcfFileIterator(vcfFile)) {
-			for (VcfEffect eff : ve.parseEffects()) {
+			for (VcfEffect eff : ve.getVcfEffects()) {
 				if (verbose) System.out.println(eff);
 				if (eff.hasEffectType(EffectType.NEXT_PROT)) count++;
 			}

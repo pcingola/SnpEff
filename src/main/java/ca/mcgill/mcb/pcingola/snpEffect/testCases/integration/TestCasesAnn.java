@@ -55,7 +55,7 @@ public class TestCasesAnn extends TestCasesBase {
 		for (VcfEntry vcfEntry : list) {
 			if (debug) System.err.println(vcfEntry);
 
-			for (VcfEffect eff : vcfEntry.parseEffects()) {
+			for (VcfEffect eff : vcfEntry.getVcfEffects()) {
 				String allele = eff.getAllele();
 				if (verbose) System.err.println("\t" + eff + "\n\t\tAllele: " + allele);
 

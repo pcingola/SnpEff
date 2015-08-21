@@ -48,7 +48,7 @@ public class TestCasesCancer {
 		boolean found = false;
 		for (VcfEntry vcfEntry : list) {
 			if (debug) System.err.println(vcfEntry);
-			for (VcfEffect eff : vcfEntry.parseEffects()) {
+			for (VcfEffect eff : vcfEntry.getVcfEffects()) {
 				if (debug) System.err.println("\t" + eff + "\n\t\tAA : " + eff.getAa() + "\n\t\tGenotype: " + eff.getGenotype());
 				if (genotype.equals(eff.getGenotype())) {
 					Assert.assertEquals(aaHgsv, eff.getAa());
@@ -109,7 +109,7 @@ public class TestCasesCancer {
 			if (verbose) System.out.println(ve);
 
 			// Get first effect (there should be only one)
-			List<VcfEffect> veffs = ve.parseEffects();
+			List<VcfEffect> veffs = ve.getVcfEffects();
 
 			for (VcfEffect veff : veffs) {
 				if (verbose) System.out.println("\t" + veff.getAllele() + "\t" + veff);
