@@ -115,40 +115,22 @@ public class Marker extends Interval implements TxtSerializable {
 		return newMarker;
 	}
 
-	//	private final Marker applyZzz(Variant variant) {
-	//		// Variant after this marker: No effect when applying (all coordinates remain the same)
-	//		if (end < variant.getStart()) return this;
-	//
-	//		// Variant does not change length? No effect when applying (all coordinates remain the same)
-	//		int lenChange = variant.lengthChange();
-	//		if (lenChange == 0) return this;
-	//
-	//		// Negative strand variants are a pain. We will eventually get rid of them...(they do not make sense any more)
-	//		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are suported!\n\tVariant : " + variant);
-	//
-	//		// InDels are different
-	//		if (variant.isIns()) return applyIns(variant, lenChange);
-	//		if (variant.isDel()) return applyDel(variant, lenChange);
-	//
-	//		// We are not ready for mixed changes
-	//		throw new RuntimeException("Variant type not supported: " + variant.getVariantType() + "\n\t" + variant);
-	//	}
-
 	/**
 	 * Apply a Variant to a marker. Variant is a deletion
 	 */
 	protected Marker applyDel(Variant variant, int lenChange) {
 		Marker m = cloneShallow();
 
-		// Variant Before start: Adjust coordinates
 		if (variant.getEnd() < start) {
+			// Deletion before start: Adjust coordinates
 			m.start += lenChange;
 			m.end += lenChange;
 		} else if (variant.includes(this)) {
-			return null; // Variant completely includes this marker => The whole marker deleted
+			// Deletion completely includes this marker => The whole marker deleted
+			return null;
 		} else if (includes(variant)) {
-			// This marker completely includes variant. But variant does not include
-			// marker (i.e. they are not equal). Only 'end' coordinate needs to be updated
+			// This marker completely includes the deletion, but deletion does not include
+			// marker. Marker is shortened (i.e. only 'end' coordinate needs to be updated)
 			m.end += lenChange;
 		} else {
 			// Variant is partially included in this marker.
@@ -164,9 +146,9 @@ public class Marker extends Interval implements TxtSerializable {
 				// Actually this does not affect the coordinates, so we don't care about this part
 			}
 
-			// Part 2: Deletion matching the marker
-			int istart = Math.max(start, m.getStart());
-			int iend = Math.min(end, m.getEnd());
+			// Part 2: Deletion matching the marker (intersection)
+			int istart = Math.max(variant.getStart(), m.getStart());
+			int iend = Math.min(variant.getEnd(), m.getEnd());
 			if (iend < istart) throw new RuntimeException("This should never happen!"); // Sanity check
 			m.end -= (iend - istart); // Update end coordinate
 

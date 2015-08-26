@@ -2,7 +2,7 @@ package ca.mcgill.mcb.pcingola.interval;
 
 /**
  * Interval for a UTR (5 prime UTR and 3 prime UTR
- * 
+ *
  * @author pcingola
  *
  */

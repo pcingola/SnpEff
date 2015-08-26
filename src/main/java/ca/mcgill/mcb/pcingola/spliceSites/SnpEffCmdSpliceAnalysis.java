@@ -35,8 +35,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 
 	/**
 	 * A set of PWMs
-	 * @author pablocingolani
-	 *
 	 */
 	class PwmSet implements Comparable<PwmSet> {
 		int motifMatchedBases = 0;
@@ -77,7 +75,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 
 		/**
 		 * Count U12 ratio = Observed / expected
-		 * @return
 		 */
 		public double countU12ObsExp() {
 			double expected = updates * (1.0 - THRESHOLD_BRANCH_U12_PERCENTILE);
@@ -87,7 +84,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 
 		/**
 		 * Get a sorted, space separated, list of gene names
-		 * @return
 		 */
 		String geneNames() {
 			StringBuilder sb = new StringBuilder();
@@ -130,6 +126,10 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 			return out.toString();
 		}
 
+		/**
+		 * Report p-value per exon types
+		 * Performs a Fisher exact test
+		 */
 		String pExonTypes(String category) {
 			int countBlackDrawn = 0;
 			for (String type : countExonTypes.keysSorted())
@@ -216,7 +216,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 		}
 	}
 
-	public static double P_VALUE_THRESHOLD = 0.001;
+	public static double P_VALUE_THRESHOLD = 0.001; // Note that 0.001 is roughly 0.05 / 36 (number of different intron categories) 
 	public static int SIZE_CONSENSUS_DONOR = 2;
 	public static int SIZE_CONSENSUS_ACCEPTOR = 2;
 	public static final double THRESHOLD_ENTROPY = 0.05;
@@ -351,9 +351,10 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 		loadDb();
 
 		// Create transcript set
-		if (verbose) Timer.showStdErr("Filtering transcripts");
 		transcriptSet = new TranscriptSet(config.getGenome());
-		if (verbose) Timer.showStdErr("done");
+		transcriptSet.setVerbose(verbose);
+		transcriptSet.setDebug(debug);
+		transcriptSet.filter();
 
 		//---
 		// Analysis
@@ -361,6 +362,8 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 		spliceTypes = new SpliceTypes(config);
 		spliceTypes.setVerbose(verbose);
 		spliceTypes.setDebug(debug);
+		spliceTypes.setTranscriptSet(transcriptSet);
+		spliceTypes.setGenomeFasta(genomeFasta);
 
 		// Splice site conservation
 		spliceTypes.analyzeAndCreate();

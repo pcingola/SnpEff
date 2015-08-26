@@ -3,11 +3,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import junit.framework.Assert;
@@ -48,19 +45,5 @@ public class TestCasesZzz {
 		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		return list;
-	}
-
-	/**
-	 * This frameshift caused an exception while processing HGVS protein notation
-	 */
-	@Test
-	public void test_zzz() {
-		Gpr.debug("Test");
-
-		String genomeName = "testHg3775Chr1";
-		String vcf = Gpr.HOME + "/snpEff/z.vcf";
-
-		snpEffect(genomeName, vcf, null);
-
 	}
 }

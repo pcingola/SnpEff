@@ -24,7 +24,7 @@ public class TestCasesDelEtc {
 	public static boolean verbose = false || debug;
 
 	/**
-	 * A deletion having multiple splice_regio effects (should show only one)
+	 * A deletion having multiple splice_region effects (should show only one)
 	 */
 	@Test
 	public void test_01_del_repeated_effects() {

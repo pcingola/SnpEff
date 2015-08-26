@@ -293,8 +293,24 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Utr utr : utrs) {
 			Utr newUtr = (Utr) utr.apply(variant);
 			if (newUtr != null) {
-				newUtr.setParent(newTr);
-				newTr.utrs.add(newUtr);
+				Exon newExon = newTr.findExon(newUtr);
+
+				if (newExon != null) {
+					newUtr.setParent(newExon);
+					newTr.utrs.add(newUtr);
+				} else {
+					throw new RuntimeException("Error applying variant: Could not find 'new' parent exon for 'new' UTR" //
+							+ "\n\t\tVariant           : " + variant //
+							+ "\n" //
+							+ "\n\t\tUTR        (ori) :" + utr //
+							+ "\n" //
+							+ "\n\t\tTranscript (ori) :" + this //
+							+ "\n" //
+							+ "\n\t\tUTR        (new) :" + newUtr //
+							+ "\n" //
+							+ "\n\t\tTranscript (new) :" + newTr //
+					);
+				}
 			}
 		}
 
@@ -1736,7 +1752,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		ArrayList<Exon> exons = new ArrayList<>();
 		exons.addAll(subintervals());
-		Collections.sort(exons, new IntervalComparatorByStart(true)); // Sort by reverse position 
+		Collections.sort(exons, new IntervalComparatorByStart(true)); // Sort by reverse position
 
 		int n, len;
 		for (Exon ex : exons) {

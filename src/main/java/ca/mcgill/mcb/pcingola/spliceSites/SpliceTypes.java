@@ -37,6 +37,7 @@ public class SpliceTypes {
 
 	boolean verbose = false;
 	boolean debug = false;
+	String genomeFasta;
 	Config config;
 	HashMap<String, String> donorsByIntron = new HashMap<String, String>();
 	HashMap<String, String> acceptorsByIntron = new HashMap<String, String>();
@@ -49,7 +50,6 @@ public class SpliceTypes {
 	AcgtTree acgtTreeAcc = new AcgtTree();
 	Pwm pwmU12;
 	TranscriptSet transcriptSet;
-
 	double thresholdPDonor;
 	double thresholdEntropyDonor;
 	double thresholdPAcc;
@@ -86,8 +86,6 @@ public class SpliceTypes {
 
 	/**
 	 * Add a donor-acceptor pair
-	 * @param donor
-	 * @param acceptor
 	 */
 	void add(String donor, String acceptor) {
 		String key = String.format("%-10s\t%10s", donor, acceptor);
@@ -128,8 +126,6 @@ public class SpliceTypes {
 
 	/**
 	 * Add a SpliceSiteBranchU12 for this donor-Acceptor pair
-	 * @param donorAcceptor
-	 * @param ssu12
 	 */
 	void addBranchU12(String donorAcceptor, SpliceSiteBranchU12 ssu12) {
 		branchU12ByDonorAcc.getOrCreate(donorAcceptor).add(ssu12);
@@ -137,7 +133,6 @@ public class SpliceTypes {
 
 	/**
 	 * Analyze and create conserved splice sites donor-acceptor pairs.
-	 * @return
 	 */
 	public boolean analyzeAndCreate() {
 		if (verbose) Timer.showStdErr("Splice site sequence conservation analysis: Start");
@@ -151,7 +146,6 @@ public class SpliceTypes {
 
 	/**
 	 * Find the index of the donor-acceptor pair that best matches these intron sequences.
-	 * @return
 	 */
 	int bestMatchIndex(String intronSeqDonor, String intronSeqAcc) {
 		if ((intronSeqDonor == null) || (intronSeqAcc == null)) return -1;
@@ -220,9 +214,6 @@ public class SpliceTypes {
 
 	/**
 	 * Count how many entries that have both 'donor' and 'acceptor'
-	 * @param donor
-	 * @param acceptor
-	 * @return
 	 */
 	int countDonorAcc(String donor, String acceptor) {
 		int count = 0;
@@ -251,9 +242,6 @@ public class SpliceTypes {
 
 	/**
 	 * Count branch motifs in entries that have both 'donor' and 'acceptor'
-	 * @param donor
-	 * @param acceptor
-	 * @return
 	 */
 	void createSpliceFasta(String fastaFile, String donor, String acceptor) {
 		StringBuilder fasta = new StringBuilder();
@@ -327,7 +315,6 @@ public class SpliceTypes {
 
 	/**
 	 * Find donors for this acceptor
-	 * @param accSeq
 	 */
 	void donor4acc(String accSeq) {
 		// Create a new tree using all these sequences
@@ -347,8 +334,6 @@ public class SpliceTypes {
 
 	/**
 	 * Find an probability threshold using THRESHOLD_P quantile
-	 * @param tree
-	 * @return
 	 */
 	double findEntropyThreshold(AcgtTree tree) {
 		List<Double> values = tree.entropyAll(THRESHOLD_COUNT);
@@ -359,8 +344,6 @@ public class SpliceTypes {
 
 	/**
 	 * Find an probability threshold using THRESHOLD_P quantile
-	 * @param tree
-	 * @return
 	 */
 	double findPthreshold(AcgtTree tree) {
 		List<Double> values = tree.pAll(THRESHOLD_COUNT);
@@ -383,8 +366,6 @@ public class SpliceTypes {
 
 	/**
 	 * Add a SpliceSiteBranchU12 for this donor-Acceptor pair
-	 * @param donorAcceptor
-	 * @param ssu12
 	 */
 	public List<SpliceSiteBranchU12> getBranchU12(String donorAcceptor) {
 		return branchU12ByDonorAcc.getOrCreate(donorAcceptor);
@@ -414,24 +395,24 @@ public class SpliceTypes {
 		if (verbose) Timer.showStdErr("\tLoading U12 PWM form file '" + u12file + "'");
 		pwmU12 = new Pwm(u12file);
 
+		// Load predictor?
 		if (config.getSnpEffectPredictor() == null) {
 			if (verbose) Timer.showStdErr("\tLoading: " + config.getGenome().getGenomeName());
 			config.loadSnpEffectPredictor();
 			if (verbose) Timer.showStdErr("\tdone.");
 		}
 
-		if (verbose) Timer.showStdErr("Filtering transcripts");
-		transcriptSet = new TranscriptSet(config.getGenome());
-		if (verbose) Timer.showStdErr("done");
+		// Create transcript set?
+		if (transcriptSet == null) {
+			transcriptSet = new TranscriptSet(config.getGenome());
+			transcriptSet.setVerbose(verbose);
+			transcriptSet.setDebug(debug);
+			transcriptSet.filter();
+		}
 	}
 
 	/**
 	 * Get acceptor sequence
-	 * @param tr
-	 * @param chrSeq
-	 * @param intronStart
-	 * @param intronEnd
-	 * @return
 	 */
 	String seqAcceptor(Transcript tr, String chrSeq, int intronStart, int intronEnd) {
 		if ((intronEnd - intronStart) < MAX_SPLICE_SIZE) return "";
@@ -450,11 +431,6 @@ public class SpliceTypes {
 
 	/**
 	 * Get branch sequence (a few bases before intron ends)
-	 * @param tr
-	 * @param chrSeq
-	 * @param intronStart
-	 * @param intronEnd
-	 * @return
 	 */
 	String seqBranch(Transcript tr, String chrSeq, int intronStart, int intronEnd) {
 		if ((intronEnd - intronStart) < SIZE_BRANCH) return "";
@@ -473,11 +449,6 @@ public class SpliceTypes {
 
 	/**
 	 * Get donor sequence
-	 * @param tr
-	 * @param chrSeq
-	 * @param intronStart
-	 * @param intronEnd
-	 * @return
 	 */
 	String seqDonor(Transcript tr, String chrSeq, int intronStart, int intronEnd) {
 		if ((intronEnd - intronStart) < MAX_SPLICE_SIZE) return "";
@@ -497,6 +468,14 @@ public class SpliceTypes {
 
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	public void setGenomeFasta(String genomeFasta) {
+		this.genomeFasta = genomeFasta;
+	}
+
+	public void setTranscriptSet(TranscriptSet transcriptSet) {
+		this.transcriptSet = transcriptSet;
 	}
 
 	public void setVerbose(boolean verbose) {
@@ -566,7 +545,7 @@ public class SpliceTypes {
 	 * Find splice sequences for this genome
 	 */
 	void spliceSequences() {
-		String genomeFasta = config.getFileNameGenomeFasta();
+		if (genomeFasta == null) genomeFasta = config.getFileNameGenomeFasta();
 		if (verbose) Timer.showStdErr("\tFinding splice sequences. Reading fasta file: " + genomeFasta);
 
 		// Iterate over all chromosomes
@@ -579,8 +558,6 @@ public class SpliceTypes {
 
 	/**
 	 * Find splice sequences for this chromosome
-	 * @param chrName
-	 * @param chrSeq
 	 */
 	void spliceSequences(String chrName, String chrSeq) {
 		int countEx = 0, countTr = 0;
