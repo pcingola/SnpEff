@@ -62,7 +62,6 @@ public class SpliceTypes {
 
 	/**
 	 * Find acceptors for this donor
-	 * @param donorSeq
 	 */
 	void acc4donor(String donorSeq) {
 		// Create a new tree using all these sequences
@@ -241,20 +240,18 @@ public class SpliceTypes {
 	}
 
 	/**
-	 * Count branch motifs in entries that have both 'donor' and 'acceptor'
+	 * Add entries that have both 'donor' and 'acceptor'
 	 */
 	void createSpliceFasta(String fastaFile, String donor, String acceptor) {
 		StringBuilder fasta = new StringBuilder();
 
-		int fastaId = 0;
 		for (String intronKey : getIntronKeySet()) {
 			String d = getDonorByIntron(intronKey);
 			String a = getAcceptorsByIntron(intronKey);
 
 			if (d.startsWith(donor) && a.endsWith(acceptor)) {
 				String branch = getAcceptorsByIntron(intronKey);
-				fasta.append(">id_" + fastaId + "\n" + branch.subSequence(0, branch.length() - acceptor.length()) + "\n");
-				fastaId++;
+				fasta.append(">" + intronKey + "\n" + d + "-" + a + "\n");
 			}
 		}
 
@@ -587,7 +584,11 @@ public class SpliceTypes {
 			countTr++;
 		}
 
-		if (verbose) Timer.showStdErr("\t\tChromosome: " + chrName + "\tTranscripts: " + countTr + "\tExons: " + countEx + "\tTotal Splice sites: " + donorsByIntron.size());
+		if (verbose) Timer.showStdErr("\t\tChromosome: " + chrName //
+				+ "\tTranscripts: " + countTr //
+				+ "\tExons: " + countEx //
+				+ "\tTotal Splice sites: " + donorsByIntron.size() //
+		);
 	}
 
 	/**

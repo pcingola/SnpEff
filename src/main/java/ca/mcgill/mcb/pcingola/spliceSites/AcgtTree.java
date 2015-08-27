@@ -68,7 +68,6 @@ public class AcgtTree {
 
 	/**
 	 * Calculate the entropy
-	 * @return
 	 */
 	public double entropy() {
 		double entropy = 0;
@@ -92,9 +91,6 @@ public class AcgtTree {
 
 	/**
 	 * Find node names that are within the thresholds
-	 * @param thresholdEntropy
-	 * @param thresholdCount
-	 * @return
 	 */
 	public List<String> findNodeNames(double thresholdEntropy, double thresholdP, int thresholdCount) {
 		ArrayList<String> names = new ArrayList<String>();
@@ -120,8 +116,6 @@ public class AcgtTree {
 
 	/**
 	 * Get a node
-	 * @param base
-	 * @return
 	 */
 	public AcgtTree get(char base) {
 		return nodes[base2index(base)];
@@ -129,8 +123,6 @@ public class AcgtTree {
 
 	/**
 	 * Get node indexed by this string
-	 * @param bases
-	 * @return
 	 */
 	public AcgtTree get(String bases) {
 		if (bases.isEmpty()) return this;
@@ -142,8 +134,6 @@ public class AcgtTree {
 
 	/**
 	 * Get a node (create it if it doesn't exist)
-	 * @param base
-	 * @return
 	 */
 	public AcgtTree getOrCreate(char base) {
 		AcgtTree node = get(base);
@@ -161,7 +151,6 @@ public class AcgtTree {
 
 	/**
 	 * Increment counter for a base
-	 * @param base
 	 */
 	public void inc(char base) {
 		counts[base2index(base)]++;
@@ -218,8 +207,6 @@ public class AcgtTree {
 
 	/**
 	 * Set a node
-	 * @param base
-	 * @param nodes
 	 */
 	public void set(char base, AcgtTree n) {
 		nodes[base2index(base)] = n;

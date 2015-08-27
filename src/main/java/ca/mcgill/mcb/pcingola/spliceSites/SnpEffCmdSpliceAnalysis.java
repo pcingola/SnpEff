@@ -19,6 +19,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.motif.MotifLogo;
 import ca.mcgill.mcb.pcingola.motif.Pwm;
 import ca.mcgill.mcb.pcingola.probablility.FisherExactTest;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.stats.CountByType;
 import ca.mcgill.mcb.pcingola.stats.IntStats;
@@ -28,7 +29,7 @@ import ca.mcgill.mcb.pcingola.util.Tuple;
 
 /**
  * Analyze sequences from splice sites
- * 
+ *
  * @author pcingola
  */
 public class SnpEffCmdSpliceAnalysis extends SnpEff {
@@ -60,7 +61,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 
 		/**
 		 * Add gene to set
-		 * @param gene
 		 */
 		public void addGene(Gene gene) {
 			genes.add(gene);
@@ -147,10 +147,10 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 			String out = "";
 
 			double pDown = FisherExactTest.get().fisherExactTestDown(countWhiteDrawn, countBlack + countWhite, countWhite, countBlackDrawn + countWhiteDrawn);
-			if (pDown < P_VALUE_THRESHOLD) out += "p-value Down (" + category + ") : " + pDown + "\n";
+			if ((pDown > 0.0) && (pDown < P_VALUE_THRESHOLD)) out += String.format("p-value Down (%s) : %.4e\n", category, pDown);
 
 			double pUp = FisherExactTest.get().fisherExactTestUp(countWhiteDrawn, countBlack + countWhite, countWhite, countBlackDrawn + countWhiteDrawn);
-			if (pUp < P_VALUE_THRESHOLD) out += "p-value Up   (" + category + ") : " + pUp + "\n";
+			if ((pUp > 0.0) && (pUp < P_VALUE_THRESHOLD)) out += String.format("p-value Down (%s) : %.4e\n", category, pUp);
 
 			return out;
 		}
@@ -166,7 +166,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 			// Donor motif
 			MotifLogo mlDonor = new MotifLogo(pwmDonor);
 			out.append("\t<td>\n");
-			out.append(mlDonor.toStringHtml(HTML_WIDTH, HTML_HEIGHT));
+			out.append(mlDonor.toStringHtml(HTML_WIDTH, HTML_HEIGHT, EffectType.SPLICE_SITE_DONOR));
 			out.append("\t</td>\n");
 
 			// U12 count
@@ -182,7 +182,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 			// Acceptor motif
 			MotifLogo mlAcc = new MotifLogo(pwmAcc);
 			out.append("\t<td>\n");
-			out.append(mlAcc.toStringHtml(HTML_WIDTH, HTML_HEIGHT));
+			out.append(mlAcc.toStringHtml(HTML_WIDTH, HTML_HEIGHT, EffectType.SPLICE_SITE_ACCEPTOR));
 			out.append("\t</td>\n");
 
 			// Intron length stats
@@ -216,7 +216,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 		}
 	}
 
-	public static double P_VALUE_THRESHOLD = 0.001; // Note that 0.001 is roughly 0.05 / 36 (number of different intron categories) 
+	public static double P_VALUE_THRESHOLD = 0.001; // Note that 0.001 is roughly 0.05 / 36 (number of different intron categories)
 	public static int SIZE_CONSENSUS_DONOR = 2;
 	public static int SIZE_CONSENSUS_ACCEPTOR = 2;
 	public static final double THRESHOLD_ENTROPY = 0.05;
@@ -250,10 +250,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	}
 
 	/**
-	 * Count how many entries that have both 'donor' and 'acceptor' 
-	 * @param donor
-	 * @param acceptor
-	 * @return
+	 * Count how many entries that have both 'donor' and 'acceptor'
 	 */
 	int countDonorAcc(String donor, String acceptor) {
 		int count = 0;
@@ -268,8 +265,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 
 	/**
 	 * Find an probability threshold using THRESHOLD_P quantile
-	 * @param tree
-	 * @return
 	 */
 	double findEntropyThreshold(AcgtTree tree) {
 		List<Double> values = tree.entropyAll(THRESHOLD_COUNT);
@@ -280,8 +275,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 
 	/**
 	 * Find an probability threshold using THRESHOLD_P quantile
-	 * @param tree
-	 * @return
 	 */
 	double findPthreshold(AcgtTree tree) {
 		List<Double> values = tree.pAll(THRESHOLD_COUNT);
@@ -374,7 +367,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 		splicePwmAnalysis();
 
 		//---
-		// Save 
+		// Save
 		//---
 		String outputFile = outputDir + "/" + this.getClass().getSimpleName() + "_" + genomeVer + ".html";
 		if (verbose) Timer.showStdErr("Saving output to: " + outputFile);
@@ -391,7 +384,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	}
 
 	/**
-	 * Run PWM analysis 
+	 * Run PWM analysis
 	 */
 	void splicePwmAnalysis() {
 		if (verbose) Timer.showStdErr("Splice analysis (PWM). Reading fasta file: " + genomeFasta);
@@ -474,8 +467,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 
 	/**
 	 * Run PWM analysis for one chromosome
-	 * @param chrName
-	 * @param chrSeq
 	 */
 	void splicePwmAnalysis(String chrName, String chrSeq) {
 		int countEx = 0, countTr = 0;
@@ -526,9 +517,6 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 
 	/**
 	 * Update PWM
-	 * @param tr
-	 * @param intronStart
-	 * @param intronEnd
 	 */
 	void updatePwm(Transcript tr, String chrSeq, int intronStart, int intronEnd, String intronTypes) {
 		// We don't update if the intron is too short

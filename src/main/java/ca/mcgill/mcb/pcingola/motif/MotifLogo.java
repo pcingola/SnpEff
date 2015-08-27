@@ -3,10 +3,12 @@ package ca.mcgill.mcb.pcingola.motif;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+
 /**
  * Store a base, size and compare them
- * @author pcingola
  *
+ * @author pcingola
  */
 class BaseSize implements Comparable<BaseSize> {
 
@@ -46,8 +48,6 @@ public class MotifLogo {
 
 	/**
 	 * Log base 2
-	 * @param p
-	 * @return
 	 */
 	public static double log2(double p) {
 		return Math.log(p) / LOG2;
@@ -59,9 +59,6 @@ public class MotifLogo {
 
 	/**
 	 * Frequency of a given base and position
-	 * @param base
-	 * @param position
-	 * @return
 	 */
 	double baseFrecuency(char base, int position) {
 		int total = sumCount(position);
@@ -75,8 +72,6 @@ public class MotifLogo {
 
 	/**
 	 * Sequence conservation. Measured as the difference between max entropy and observed entropy
-	 * @param position
-	 * @return
 	 */
 	double seqConserv(int position) {
 		// Max entropy
@@ -94,8 +89,6 @@ public class MotifLogo {
 
 	/**
 	 * Sum all counts at a position
-	 * @param position
-	 * @return
 	 */
 	int sumCount(int position) {
 		int total = 0;
@@ -107,7 +100,7 @@ public class MotifLogo {
 	/**
 	 * Return an HTML string that represents the motif.
 	 */
-	public String toStringHtml(int width, int maxHeight) {
+	public String toStringHtml(int width, int maxHeight, EffectType efectType) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<table border=0>\n\t</tr>\n");
 		for (int pos = 0; pos < pwm.size(); pos++) {
@@ -127,16 +120,23 @@ public class MotifLogo {
 			// Sort by size (biggest first)
 			Collections.sort(bases, Collections.reverseOrder());
 
+			// Color exons as grey
+			int ppos = pos - pwm.size() / 2;
+			String bgcolor = "";
+			if (efectType == EffectType.SPLICE_SITE_DONOR && ppos <= 0) bgcolor = "bgcolor=#cccccc";
+			if (efectType == EffectType.SPLICE_SITE_ACCEPTOR && ppos >= 0) bgcolor = "bgcolor=#cccccc";
+
 			// Show
-			sb.append("\t\t<td valign=bottom>\n\t\t\t<center>\n");
+			sb.append("\t\t<td valign=bottom " + bgcolor + ">\n\t\t\t<center>\n");
 			for (BaseSize baseSize : bases) {
 				int height = (int) (maxHeight * baseSize.size);
 				sb.append("\t\t\t<img border=0 src=\"" + baseSize.base + ".png\" width=" + width + " height=" + height + "\"><br>\n");
 			}
-			sb.append("\t\t\t" + pos + "<br>\n\t\t\t</center>\n");
+			sb.append("\t\t\t" + ppos + "<br>\n\t\t\t</center>\n");
 			sb.append("\t\t</td>\n");
 		}
 		sb.append("\t</tr>\n</table>\n");
 		return sb.toString();
 	}
+
 }
