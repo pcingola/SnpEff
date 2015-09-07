@@ -3,24 +3,21 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import junit.framework.Assert;
 
 /**
- * Test case
+ * Base class: Provides common methods used for testing
  */
-public class TestCasesZzz {
+public class TestCasesBase {
 
-	boolean debug = false;
-	boolean verbose = false || debug;
+	public boolean debug = false;
+	public boolean verbose = false || debug;
 
-	public TestCasesZzz() {
+	public TestCasesBase() {
 		super();
 	}
 
@@ -48,16 +45,6 @@ public class TestCasesZzz {
 		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		return list;
-	}
-
-	/**
-	 * Exon completely removed by a deletion.
-	 * Bug triggers a null pointer: Fixed 
-	 */
-	@Test
-	public void test_apply_05_delete_whole_exon() {
-		Gpr.debug("Test");
-		snpEffect("testHg19Chr1", Gpr.HOME + "/snpEff/test.vcf", null);
 	}
 
 }

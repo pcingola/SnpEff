@@ -12,6 +12,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 
@@ -20,10 +21,8 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  *
  * @author pcingola
  */
-public class TestCasesApply {
+public class TestCasesApply extends TestCasesBase {
 
-	public static boolean debug = false;
-	public static boolean verbose = false || debug;
 	public static int SHOW_EVERY = 10;
 
 	public TestCasesApply() {
@@ -356,6 +355,16 @@ public class TestCasesApply {
 			}
 		}
 		System.err.println("");
-
 	}
+
+	/**
+	 * Exon completely removed by a deletion.
+	 * Bug triggers a null pointer on 'Transcript.apply()': Fixed
+	 */
+	@Test
+	public void test_apply_05_delete_whole_exon() {
+		Gpr.debug("Test");
+		snpEffect("testHg19Chr1", Gpr.HOME + "/snpEff/test.vcf", null);
+	}
+
 }

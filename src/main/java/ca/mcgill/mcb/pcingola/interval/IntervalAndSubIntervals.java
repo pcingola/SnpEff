@@ -60,7 +60,6 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 	/**
 	 * Add all markers
-	 * @param ts
 	 */
 	@SuppressWarnings("unchecked")
 	public void addAll(Markers markers) {
@@ -83,8 +82,12 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 		for (T m : this) {
 			T mcopy = (T) m.apply(variant);
-			mcopy.setParent(newMarker);
-			newMarker.add(mcopy);
+
+			// Do not add if interval is completely removed
+			if (mcopy != null) {
+				mcopy.setParent(newMarker);
+				newMarker.add(mcopy);
+			}
 		}
 
 		return newMarker;
