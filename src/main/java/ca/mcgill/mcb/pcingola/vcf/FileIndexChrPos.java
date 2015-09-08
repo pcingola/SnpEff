@@ -393,8 +393,6 @@ public class FileIndexChrPos {
 
 	/**
 	 * A slow method for getLine
-	 * @param pos
-	 * @return
 	 */
 	public LineAndPos getLineSlow(long pos) {
 		long size = size();

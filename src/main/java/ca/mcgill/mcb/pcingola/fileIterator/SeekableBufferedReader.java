@@ -15,7 +15,7 @@ import java.nio.CharBuffer;
  */
 public class SeekableBufferedReader extends BufferedReader {
 
-	public static int DEFAULT_BUFFER_SIZE = 100 * 1024;
+	public static int DEFAULT_BUFFER_SIZE = 64 * 1024;
 
 	byte buffer[];
 	int next, last;
@@ -67,9 +67,6 @@ public class SeekableBufferedReader extends BufferedReader {
 
 	/**
 	 * Initialize
-	 * @param fileName
-	 * @param bufferSize
-	 * @throws IOException
 	 */
 	void init(String fileName, int bufferSize) throws IOException {
 		this.bufferSize = bufferSize;
@@ -166,8 +163,6 @@ public class SeekableBufferedReader extends BufferedReader {
 
 	/**
 	 * Remove trailing newline characters
-	 * @param sb
-	 * @return
 	 */
 	String removeNewLine(StringBuilder sb) {
 		if (sb == null) return null;
@@ -190,8 +185,6 @@ public class SeekableBufferedReader extends BufferedReader {
 
 	/**
 	 * Seek to a position in the file
-	 * @param pos
-	 * @throws IOException
 	 */
 	public void seek(long pos) throws IOException {
 		raf.seek(pos);
