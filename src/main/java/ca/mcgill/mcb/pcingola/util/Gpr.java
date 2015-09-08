@@ -797,6 +797,8 @@ public class Gpr {
 	}
 
 	public static String toString(boolean vals[]) {
+		if (vals == null) return "null";
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("[ ");
 
@@ -810,6 +812,8 @@ public class Gpr {
 	}
 
 	public static String toString(double vals[]) {
+		if (vals == null) return "null";
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("[ ");
 
@@ -823,6 +827,8 @@ public class Gpr {
 	}
 
 	public static String toString(double vals[][]) {
+		if (vals == null) return "null";
+
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < vals.length; i++) {
@@ -850,6 +856,21 @@ public class Gpr {
 		if (aval < 1.0 && aval >= 0.0000001) return String.format("% 1.7f", val);
 		if (val == 0.0) return String.format(" 0        ", val);
 		return String.format("% 1.3e", val);
+	}
+
+	public static String toString(int vals[]) {
+		if (vals == null) return "null";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("[ ");
+
+		for (int i = 0; i < vals.length; i++) {
+			if (i > 0) sb.append(", ");
+			sb.append(vals[i]);
+		}
+
+		sb.append(" ]");
+		return sb.toString();
 	}
 
 	public static String toStringHead(double vals[]) {
