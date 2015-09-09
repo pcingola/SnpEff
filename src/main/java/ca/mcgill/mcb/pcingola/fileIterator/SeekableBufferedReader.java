@@ -8,9 +8,9 @@ import java.io.RandomAccessFile;
 import java.nio.CharBuffer;
 
 /**
- * A buffered reader for a file. 
+ * A buffered reader for a file.
  * It allows to 'seek' and 'readLine()'
- *  
+ *
  * @author pablocingolani
  */
 public class SeekableBufferedReader extends BufferedReader {
@@ -50,7 +50,7 @@ public class SeekableBufferedReader extends BufferedReader {
 
 	/**
 	 * Find a '\n' in the buffer.
-	 * 
+	 *
 	 * @return Position of '\n' in the buffer or -1 if not found
 	 */
 	int findNl(int next, int last) {
@@ -58,6 +58,10 @@ public class SeekableBufferedReader extends BufferedReader {
 			if (buffer[i] == '\n') return i;
 		}
 		return -1;
+	}
+
+	public long getFilePointer() {
+		return position();
 	}
 
 	@Override
@@ -74,6 +78,10 @@ public class SeekableBufferedReader extends BufferedReader {
 		next = 0;
 		last = 0;
 		open(fileName);
+	}
+
+	public long length() {
+		return size();
 	}
 
 	@Override
@@ -138,7 +146,7 @@ public class SeekableBufferedReader extends BufferedReader {
 				next = 0;
 				last = raf.read(buffer);
 
-				// End of file? 
+				// End of file?
 				if (last < 0) return removeNewLine(sb);
 			}
 
