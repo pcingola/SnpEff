@@ -1,7 +1,6 @@
 package ca.mcgill.mcb.pcingola.fileIterator;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -21,8 +20,8 @@ public class SeekableBufferedReader extends BufferedReader {
 	int next, last;
 	int bufferSize;
 	String fileName;
-	File file;
-	RandomAccessFile raf;
+	RandomAccessFile randomAccFile;
+	long latestpos;
 
 	public SeekableBufferedReader(String fileName) throws IOException {
 		super(new NullReader());
@@ -36,10 +35,11 @@ public class SeekableBufferedReader extends BufferedReader {
 
 	@Override
 	public void close() throws IOException {
-		if (raf != null) {
-			raf.close();
-			raf = null;
-			file = null;
+		if (randomAccFile != null) {
+			randomAccFile.close();
+			randomAccFile = null;
+			latestpos = -1;
+			next = last = 0;
 		}
 	}
 
@@ -61,7 +61,7 @@ public class SeekableBufferedReader extends BufferedReader {
 	}
 
 	public long getFilePointer() {
-		return position();
+		return latestpos + next;
 	}
 
 	@Override
@@ -80,10 +80,6 @@ public class SeekableBufferedReader extends BufferedReader {
 		open(fileName);
 	}
 
-	public long length() {
-		return size();
-	}
-
 	@Override
 	public void mark(int readAheadLimit) throws IOException {
 		throw new IOException("Unimplemented method!");
@@ -97,24 +93,12 @@ public class SeekableBufferedReader extends BufferedReader {
 	public void open(String fileName) throws IOException {
 		this.fileName = fileName;
 		try {
-			file = new File(fileName);
-			raf = new RandomAccessFile(fileName, "r");
+			randomAccFile = new RandomAccessFile(fileName, "r");
+			latestpos = 0;
+			next = last = 0;
 		} catch (FileNotFoundException e) {
 			throw new IOException(e);
 		}
-	}
-
-	/**
-	 * Current file position
-	 * @return File position or -1 on error
-	 */
-	public long position() {
-		long pos = -1;
-		try {
-			pos = raf.getFilePointer() + next;
-		} catch (IOException e) {
-		}
-		return pos;
 	}
 
 	@Override
@@ -144,7 +128,8 @@ public class SeekableBufferedReader extends BufferedReader {
 			if (last <= next) {
 				// Read buffer
 				next = 0;
-				last = raf.read(buffer);
+				latestpos = randomAccFile.getFilePointer();
+				last = randomAccFile.read(buffer);
 
 				// End of file?
 				if (last < 0) return removeNewLine(sb);
@@ -195,12 +180,9 @@ public class SeekableBufferedReader extends BufferedReader {
 	 * Seek to a position in the file
 	 */
 	public void seek(long pos) throws IOException {
-		raf.seek(pos);
+		randomAccFile.seek(pos);
+		latestpos = pos;
 		next = last = 0;
-	}
-
-	public long size() {
-		return file.length();
 	}
 
 	@Override
@@ -210,7 +192,7 @@ public class SeekableBufferedReader extends BufferedReader {
 
 	@Override
 	public String toString() {
-		return fileName + ":" + position();
+		return fileName + ":" + getFilePointer();
 	}
 
 }

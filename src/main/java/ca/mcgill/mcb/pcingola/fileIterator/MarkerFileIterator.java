@@ -3,13 +3,13 @@ package ca.mcgill.mcb.pcingola.fileIterator;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import net.sf.samtools.tabix.TabixReader;
-import net.sf.samtools.tabix.TabixReader.TabixIterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import net.sf.samtools.tabix.TabixReader;
+import net.sf.samtools.tabix.TabixReader.TabixIterator;
 
 /**
  * Opens a Marker file and iterates over all markers

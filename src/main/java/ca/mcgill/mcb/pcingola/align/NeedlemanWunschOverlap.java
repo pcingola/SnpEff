@@ -171,7 +171,7 @@ public class NeedlemanWunschOverlap {
 	/**
 	 * Similarity 'matrix' for bases
 	 * @param a
-	 * @param b
+	 * @param binningIndex
 	 * @return
 	 */
 	int simmilarity(int i, int j) {
