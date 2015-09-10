@@ -19,12 +19,13 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 	protected boolean debug;
 	protected boolean verbose;
 	protected boolean autoClose;
+	protected boolean hasBackslashR;
 	protected int lineNum;
 	protected T next;
 	protected BufferedReader reader;
 	protected String fileName;
-	protected String line;
-	protected String nextLine;
+	protected String line; // Current line being processed
+	protected String nextLine; // Next line to show
 	protected long fileSize = -1;
 
 	public FileIterator(BufferedReader reader) {
@@ -53,6 +54,20 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		next = null;
 	}
 
+	/**
+	 * Get position within file
+	 */
+	public long getFilePointer() {
+		if (!hasSeek()) throw new RuntimeException("Operation not supported"); // Operation not supported
+
+		long pos = ((SeekableBufferedReader) reader).getFilePointer();
+		if (nextLine == null) return pos;
+
+		// Has a line been already loaded? We need to discount
+		// those bytes (they haven't been delivered yet)
+		return pos - nextLine.length() - (hasBackslashR ? 2 : 1);
+	}
+
 	public String getLine() {
 		return line;
 	}
@@ -75,7 +90,6 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
 	/**
 	 * Is 'seek' operation supported?
-	 * @return
 	 */
 	public boolean hasSeek() {
 		return (reader instanceof SeekableBufferedReader);
@@ -101,7 +115,6 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
 	/**
 	 * Load all elements from a file into a list
-	 * @return
 	 */
 	public List<T> load() {
 		LinkedList<T> list = new LinkedList<T>();
@@ -128,16 +141,12 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		if (nextLine != null) {
 			String nl = nextLine;
 			nextLine = null;
-			return nl;
+			return removeBackslashR(nl);
 		}
 
 		nextLine = reader.readLine(); // Read a line (only if needed)
-
-		// Remove trailing '\r'
-		if ((nextLine != null) && (nextLine.length() > 0) && nextLine.charAt(nextLine.length() - 1) == '\r') nextLine = nextLine.substring(0, nextLine.length() - 1);
-
 		if (nextLine != null) lineNum++;
-		return nextLine;
+		return removeBackslashR(nextLine);
 	}
 
 	/**
@@ -158,6 +167,21 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 	@Override
 	public void remove() {
 		throw new RuntimeException("Unimplemented");
+	}
+
+	/**
+	 * Remove trailing '\r'
+	 */
+	protected String removeBackslashR(String line) {
+		if ((line != null) //
+				&& (line.length() > 0) //
+				&& line.charAt(line.length() - 1) == '\r' //
+		) {
+			hasBackslashR = true;
+			line = line.substring(0, line.length() - 1);
+		}
+
+		return line;
 	}
 
 	/**
@@ -187,7 +211,7 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		return this.getClass().getSimpleName() //
 				+ ":'" + fileName + "'" //
 				+ ",autoClose:" + autoClose //
-				+ (hasSeek() ? ",pos:" + ((SeekableBufferedReader) reader).position() : "") //
+				+ (hasSeek() ? ",pos:" + ((SeekableBufferedReader) reader).getFilePointer() : "") //
 				;
 	}
 }

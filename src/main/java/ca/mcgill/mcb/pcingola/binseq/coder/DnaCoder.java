@@ -286,7 +286,7 @@ public class DnaCoder extends Coder {
 
 	/**
 	 * Reverse all bases in 'code'
-	 * @param l
+	 * @param linearIndex
 	 * @return
 	 */
 	public long reverseBases(long code) {

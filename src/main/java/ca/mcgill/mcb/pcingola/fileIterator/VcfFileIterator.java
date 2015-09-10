@@ -165,11 +165,11 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry>implements Pars
 
 				VcfEntry vcfEntry = parseVcfLine(line);
 				if (vcfEntry != null) {
-
+					// Check that lies are sorted by position
 					if (errorIfUnsorted && vcfEntry.getChromosomeName().equals(chrPrev) && vcfEntry.getStart() < posPrev) throw new RuntimeException("VCF file " + (fileName != null ? fileName : "") + "' is not sorted, genomic position " + chrPrev + ":" + (posPrev + 1) + " is before " + chrPrev + ":" + (vcfEntry.getStart() + 1));
 
+					// Debug mode? Perform some sanity checks
 					if (debug) {
-						// Debug mode? Perform some sanity checks
 						String err = vcfEntry.check();
 						// Check that file is sorted
 						if (vcfEntry.getChromosomeName().equals(chrPrev) && vcfEntry.getStart() < posPrev) err += "File is not sorted: Position '" + vcfEntry.getChromosomeName() + ":" + (vcfEntry.getStart() + 1) + "' after position '" + chrPrev + ":" + (posPrev + 1) + "'";
