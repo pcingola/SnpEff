@@ -1,63 +1,64 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import junit.framework.Assert;
 
 /**
  * Test case
  */
-public class TestCasesZzz {
+public class TestCasesZzz extends TestCasesBase {
 
 	boolean debug = false;
-	boolean verbose = false || debug;
+	boolean verbose = true || debug;
 
 	public TestCasesZzz() {
 		super();
 	}
 
 	/**
-	 * Calculate snp effect for an input VCF file
+	 * Apply a variant to a transcript
 	 */
-	public List<VcfEntry> snpEffect(String genome, String vcfFile, String otherArgs[]) {
-		// Arguments
-		ArrayList<String> args = new ArrayList<String>();
-		if (otherArgs != null) {
-			for (String a : otherArgs)
-				args.add(a);
+	public Transcript appyTranscript(String genome, String trId, String vcfFileName) {
+		// Load database
+		SnpEffectPredictor sep = loadSnpEffectPredictorAnd(genome, false);
+
+		// Find transcript
+		Transcript tr = sep.getGenome().getGenes().findTranscript(trId);
+		if (tr == null) throw new RuntimeException("Could not find transcript ID '" + trId + "'");
+
+		// Apply first variant
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		for (VcfEntry ve : vcf) {
+			for (Variant var : ve.variants()) {
+				Transcript trNew = tr.apply(var);
+				if (debug) Gpr.debug(trNew);
+				return trNew;
+			}
 		}
-		args.add(genome);
-		args.add(vcfFile);
 
-		SnpEff cmd = new SnpEff(args.toArray(new String[0]));
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
-		cmdEff.setVerbose(verbose);
-		cmdEff.setSupressOutput(!verbose);
-		cmdEff.setFormatVersion(EffFormatVersion.FORMAT_EFF_4);
+		throw new RuntimeException("Could not apply any variant!");
 
-		// Run command
-		List<VcfEntry> list = cmdEff.run(true);
-		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
-
-		return list;
 	}
 
 	/**
-	 * Exon completely removed by a deletion.
-	 * Bug triggers a null pointer: Fixed 
+	 * Upstream region is completely removed by a deletion.
+	 * Bug triggers a null pointer: Fixed
 	 */
 	@Test
-	public void test_apply_05_delete_whole_exon() {
+	public void test_apply_07_delete_upstream() {
 		Gpr.debug("Test");
-		snpEffect("testHg19Chr1", Gpr.HOME + "/snpEff/test.vcf", null);
+		Transcript trNew = appyTranscript("testHg3775Chr11", "ENST00000379829", "tests/test_apply_07_delete_upstream.vcf");
+
+		// Check expected sequence
+		Assert.assertEquals("ttttttggggctgctgagtgctgcctcctggccaccatggcatatgaccgctacgtggccatctgtgaccccttgcactacccagtcatcatgggccacatatcctgtgcccagctggcagctgcctcttggttctcagggttttcagtggccactgtgcaaaccacatggattttcagtttccctttttgtggccccaacagggtgaaccacttcttctgtgacagccctcctgttattgcactggtctgtgctgacacctctgtgtttgaactggaggctctgacagccactgtcctattcattctctttcctttcttgctgatcctgggatcctatgtccgcatcctctccactatcttcaggatgccgtcagctgaggggaaacatcaggcattctccacctgttccgcccacctcttggttgtctctctcttctatagcactgccatcctcacgtatttccgaccccaatccagtgcctcttctgagagcaagaagctgctgtcactctcttccacagtggtgactcccatgttgaaccccatcatctacagctcaaggaataaagaagtgaaggctgcactgaagcggcttatccacaggaccctgggctctcagaaactatga" //
+				, trNew.cds());
 	}
 
 }

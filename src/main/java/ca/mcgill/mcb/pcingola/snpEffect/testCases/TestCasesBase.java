@@ -3,6 +3,8 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
@@ -19,6 +21,17 @@ public class TestCasesBase {
 
 	public TestCasesBase() {
 		super();
+	}
+
+	/**
+	 * Load predictor and create regions
+	 */
+	public SnpEffectPredictor loadSnpEffectPredictorAnd(String genome, boolean build) {
+		Config config = new Config(genome);
+		SnpEffectPredictor sep = SnpEffectPredictor.load(config);
+		sep.createGenomicRegions();
+		if (build) sep.buildForest();
+		return sep;
 	}
 
 	/**

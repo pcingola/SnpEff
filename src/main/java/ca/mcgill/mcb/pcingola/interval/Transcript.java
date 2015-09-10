@@ -40,6 +40,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	boolean proteinCoding; // Is this a protein-coding transcript?
 	boolean canonical; // Is this a canonical transcript?
 	int cdsStart, cdsEnd;
+	int upDownLength; // Upstream and downstream size
+	int spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax; // Splice sizes
 	String bioType = ""; // Transcript biotype
 	String cds; // Coding sequence
 	String mRna; // mRna sequence (includes 5'UTR and 3'UTR)
@@ -274,18 +276,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		//---
 		Transcript newTr = (Transcript) super.apply(variant);
 		if (newTr == null) return null;
-		newTr.reset();
-
-		//---
-		// Apply to exons
-		//---
-		for (Exon ex : this) {
-			Exon newExon = ex.apply(variant);
-			if (newExon != null) {
-				newExon.setParent(newTr);
-				newTr.add(newExon);
-			}
-		}
 
 		//---
 		// Add changed UTRs
@@ -314,30 +304,17 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			}
 		}
 
-		//---
-		// Up & Down stream
-		//---
-		if (upstream != null) {
-			Upstream newUp = (Upstream) upstream.apply(variant);
-			newUp.setParent(newTr);
-			newTr.upstream = newUp;
-		}
-		if (downstream != null) {
-			Downstream newDown = (Downstream) downstream.apply(variant);
-			newDown.setParent(newTr);
-			newTr.downstream = newDown;
-		}
+		// Rank exons: if a variant deletes one or more exons, ranks will change
+		newTr.rankExons();
 
-		//---
+		// Up & Down stream
+		newTr.createUpDownStream(upDownLength);
+
 		// Introns
-		//---
-		for (Intron intr : introns()) {
-			Intron newIntron = intr.apply(variant);
-			if (newIntron != null) {
-				newIntron.setParent(newTr);
-				newTr.add(newIntron);
-			}
-		}
+		newTr.introns();
+
+		// Splice sites
+		newTr.createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax);
 
 		return newTr;
 	}
@@ -647,6 +624,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Find all splice sites.
 	 */
 	public void createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
+		this.spliceSiteSize = spliceSiteSize;
+		this.spliceRegionExonSize = spliceRegionExonSize;
+		this.spliceRegionIntronMin = spliceRegionIntronMin;
+		this.spliceRegionIntronMax = spliceRegionIntronMax;
 
 		// Create spliceSiteRegion on the Exon side
 		ArrayList<Exon> exons = (ArrayList<Exon>) sortedStrand();
@@ -678,7 +659,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				intron.createSpliceSiteRegionStart(spliceRegionIntronMin, spliceRegionIntronMax);
 				intron.createSpliceSiteRegionEnd(spliceRegionIntronMin, spliceRegionIntronMax);
 			}
-
 		}
 	}
 
@@ -687,6 +667,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Upstream (downstream) stream is defined as upDownLength before (after) transcript
 	 */
 	public void createUpDownStream(int upDownLength) {
+		this.upDownLength = upDownLength;
+
 		Chromosome chr = getChromosome();
 		int chrMin = chr.getStart(), chrMax = chr.getEnd();
 
@@ -852,7 +834,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// We have to reset cached CDS data if anything changed
 		if (changed) {
-			resetCdsCache();
+			resetCache();
 			corrected = true;
 		}
 
@@ -1477,15 +1459,17 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		introns = null;
 		upstream = null;
 		downstream = null;
-		resetCdsCache();
+		resetCache();
 	}
 
-	public void resetCdsCache() {
+	public void resetCache() {
 		cdsStart = -1;
 		cdsEnd = -1;
 		firstCodingExon = null;
 		cds = null;
 		cds2pos = null;
+		aa2pos = null;
+		mRna = null;
 		protein = null;
 	}
 

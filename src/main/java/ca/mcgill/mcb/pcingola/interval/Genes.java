@@ -76,7 +76,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 						+ "\n\tGene        :" + g.toStr() //
 						+ "\n\tNew gene    :" + newGene.toStr() //
 						+ "\n\tChrsomosome :" + chr.toStr() //
-						);
+				);
 
 				// Add them to genes
 				newGenes.add(newGene);
@@ -143,10 +143,8 @@ public class Genes implements Iterable<Gene>, Serializable {
 	public void createSpliceSites(int spliceSiteSize, int spliceRegionExonSize, int spliceRegionIntronMin, int spliceRegionIntronMax) {
 		// For each gene, transcript
 		for (Gene gene : this)
-			for (Transcript tr : gene) {
-				// Create splice sites
+			for (Transcript tr : gene)
 				tr.createSpliceSites(spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax);
-			}
 	}
 
 	/**
@@ -168,6 +166,16 @@ public class Genes implements Iterable<Gene>, Serializable {
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * Find a transcript by ID
+	 */
+	public Transcript findTranscript(String trId) {
+		for (Gene g : this)
+			for (Transcript tr : g)
+				if (tr.getId().equals(trId)) return tr;
+		return null;
 	}
 
 	/**

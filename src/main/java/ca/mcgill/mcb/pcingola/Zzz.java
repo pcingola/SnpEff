@@ -10,7 +10,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 public class Zzz extends SnpEff {
 
 	public static void main(String[] args) {
-		String vcfFileName = Gpr.HOME + "/snpEff/chuck.err.vcf";
+		String genome = "testHg19Chr11";
+		String vcfFileName = Gpr.HOME + "/snpEff/z.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {

@@ -47,18 +47,9 @@ public class Intron extends Marker {
 		// Create new exon with updated coordinates
 		Intron newIntron = (Intron) super.apply(variant);
 		if (newIntron == null) return null;
+
+		// Splice sites should be created using Transcript.createSpliceSites() method
 		newIntron.reset();
-
-		// Update splice sites
-		for (SpliceSite ss : spliceSites) {
-			SpliceSite newSs = (SpliceSite) ss.apply(variant);
-
-			// Check for null: E.g. if the splice site was removed by a deletion
-			if (newSs != null) {
-				newSs.setParent(newIntron);
-				newIntron.add(newSs);
-			}
-		}
 
 		return newIntron;
 	}

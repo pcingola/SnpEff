@@ -76,16 +76,9 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		// Create new exon with updated coordinates
 		Exon newEx = (Exon) super.apply(variant);
 		if (newEx == null) return null;
+
+		// Splice sites should be created using Transcript.createSpliceSites() method
 		newEx.reset();
-
-		for (SpliceSite ss : spliceSites) {
-			SpliceSite newSs = (SpliceSite) ss.apply(variant);
-
-			if (newSs != null) {
-				newSs.setParent(newEx);
-				newEx.add(newSs);
-			}
-		}
 
 		return newEx;
 	}

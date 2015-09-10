@@ -142,20 +142,20 @@ public class Marker extends Interval implements TxtSerializable {
 			// deletion would fully include the marker (previous case)
 
 			// Part 1: Deletion after the marker
-			if (end < variant.getEnd()) {
+			if (m.end < variant.getEnd()) {
 				// Actually this does not affect the coordinates, so we don't care about this part
 			}
 
 			// Part 2: Deletion matching the marker (intersection)
-			int istart = Math.max(variant.getStart(), m.getStart());
-			int iend = Math.min(variant.getEnd(), m.getEnd());
+			int istart = Math.max(variant.getStart(), m.start);
+			int iend = Math.min(variant.getEnd(), m.end);
 			if (iend < istart) throw new RuntimeException("This should never happen!"); // Sanity check
-			m.end -= (iend - istart); // Update end coordinate
+			m.end -= (iend - istart + 1); // Update end coordinate
 
 			// Part 3: Deletion before the marker
 			if (variant.getStart() < start) {
 				// Update coordinates shifting the marker to the left
-				int delta = start - variant.getStart();
+				int delta = m.start - variant.getStart();
 				m.start -= delta;
 				m.end -= delta;
 			}

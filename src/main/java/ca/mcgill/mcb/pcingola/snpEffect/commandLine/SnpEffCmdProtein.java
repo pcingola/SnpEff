@@ -485,7 +485,7 @@ public class SnpEffCmdProtein extends SnpEff {
 
 		// Reset all protein translations for this chromosome
 		for (Transcript tr : trByChromo.get(chromo.getId()))
-			tr.resetCdsCache();
+			tr.resetCache();
 	}
 
 	public void setStoreAlignments(boolean storeAlignments) {

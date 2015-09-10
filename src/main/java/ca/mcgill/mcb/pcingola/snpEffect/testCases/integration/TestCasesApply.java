@@ -5,6 +5,7 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
@@ -15,6 +16,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
+import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Test 'apply' method (apply variant to marker)
@@ -27,6 +29,31 @@ public class TestCasesApply extends TestCasesBase {
 
 	public TestCasesApply() {
 		super();
+	}
+
+	/**
+	 * Apply a variant to a transcript
+	 */
+	public Transcript appyTranscript(String genome, String trId, String vcfFileName) {
+		// Load database
+		SnpEffectPredictor sep = loadSnpEffectPredictorAnd(genome, false);
+
+		// Find transcript
+		Transcript tr = sep.getGenome().getGenes().findTranscript(trId);
+		if (tr == null) throw new RuntimeException("Could not find transcript ID '" + trId + "'");
+
+		// Apply first variant
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		for (VcfEntry ve : vcf) {
+			for (Variant var : ve.variants()) {
+				Transcript trNew = tr.apply(var);
+				if (debug) Gpr.debug(trNew);
+				return trNew;
+			}
+		}
+
+		throw new RuntimeException("Could not apply any variant!");
+
 	}
 
 	/**
@@ -364,7 +391,35 @@ public class TestCasesApply extends TestCasesBase {
 	@Test
 	public void test_apply_05_delete_whole_exon() {
 		Gpr.debug("Test");
-		snpEffect("testHg19Chr1", Gpr.HOME + "/snpEff/test.vcf", null);
+		snpEffect("testHg19Chr1", "tests/test_apply_05_delete_whole_exon.vcf", null);
+	}
+
+	/**
+	 * Upstream region is completely removed by a deletion.
+	 * Bug triggers a null pointer: Fixed
+	 */
+	@Test
+	public void test_apply_06_delete_upstream() {
+		Gpr.debug("Test");
+		Transcript trNew = appyTranscript("testHg19Chr11", "NM_001004460.1", "tests/test_apply_06_delete_upstream.vcf");
+
+		// Check expected sequence
+		Assert.assertEquals("atgagcttctcttccctgcctactgaaatacagtcattactctttctgacatttctaaccatctacctggtcaccctgatgggaaactgcctcatcattctggttaccctagctgaccccatgctacacagccccatgtacttcttcctcagaaacttatctttcctggagattggcttcaacctagtcattgtgcccaaaatgctggggaccctgcttgcccaggacacaaccatctccttccttggctgtgccactcagatgtatttcttcttct" //
+				, trNew.mRna());
+	}
+
+	/**
+	 * Upstream region is completely removed by a deletion.
+	 * Bug triggers a null pointer: Fixed
+	 */
+	@Test
+	public void test_apply_07_delete_upstream() {
+		Gpr.debug("Test");
+		Transcript trNew = appyTranscript("testHg3775Chr11", "ENST00000379829", "tests/test_apply_07_delete_upstream.vcf");
+
+		// Check expected sequence
+		Assert.assertEquals("ttttttggggctgctgagtgctgcctcctggccaccatggcatatgaccgctacgtggccatctgtgaccccttgcactacccagtcatcatgggccacatatcctgtgcccagctggcagctgcctcttggttctcagggttttcagtggccactgtgcaaaccacatggattttcagtttccctttttgtggccccaacagggtgaaccacttcttctgtgacagccctcctgttattgcactggtctgtgctgacacctctgtgtttgaactggaggctctgacagccactgtcctattcattctctttcctttcttgctgatcctgggatcctatgtccgcatcctctccactatcttcaggatgccgtcagctgaggggaaacatcaggcattctccacctgttccgcccacctcttggttgtctctctcttctatagcactgccatcctcacgtatttccgaccccaatccagtgcctcttctgagagcaagaagctgctgtcactctcttccacagtggtgactcccatgttgaaccccatcatctacagctcaaggaataaagaagtgaaggctgcactgaagcggcttatccacaggaccctgggctctcagaaactatga" //
+				, trNew.cds());
 	}
 
 }
