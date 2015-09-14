@@ -52,7 +52,7 @@ public class MarkerSeq extends Marker {
 		MarkerSeq newMarkerSeq = (MarkerSeq) super.apply(variant);
 		if (newMarkerSeq == null) return null;
 
-		if (variant.intersects(this)) {
+		if (variant.intersects(this) && (sequence != null) && (!sequence.isEmpty())) {
 			switch (variant.getVariantType()) {
 			case SNP:
 				applySnp(variant, newMarkerSeq);
@@ -70,6 +70,10 @@ public class MarkerSeq extends Marker {
 				applyMnp(variant, newMarkerSeq);
 				break;
 
+			//			case MIXED:
+			//				applyMixed(variant, newMarkerSeq);
+			//				break;
+
 			default:
 				throw new RuntimeException("Unimplemented method for variant change type " + variant.getVariantType() + "\n\tVariant: " + variant);
 			}
@@ -79,100 +83,106 @@ public class MarkerSeq extends Marker {
 	}
 
 	/**
-	 * Apply a change type deletion
+	 * Apply a change type deletion (update sequence)
 	 */
 	protected void applyDel(Variant variant, MarkerSeq markerSeq) {
+		// Get sequence in positive strand direction
+		String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
+
+		// Apply change to sequence
+		int idxStart = variant.getStart() - start;
+		int idxEnd = idxStart + variant.size();
+
+		StringBuilder newSeq = new StringBuilder();
+		if (idxStart >= 0) newSeq.append(seq.substring(0, idxStart));
+		if (idxEnd >= 0 && (idxEnd < seq.length())) newSeq.append(seq.substring(idxEnd));
+
 		// Update sequence
-		if ((sequence != null) && (!sequence.isEmpty())) {
-
-			// Get sequence in positive strand direction
-			String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
-
-			// Apply change to sequence
-			int idxStart = variant.getStart() - start;
-			int idxEnd = idxStart + variant.size();
-
-			StringBuilder newSeq = new StringBuilder();
-			if (idxStart >= 0) newSeq.append(seq.substring(0, idxStart));
-			if (idxEnd >= 0 && (idxEnd < seq.length())) newSeq.append(seq.substring(idxEnd));
-
-			// Update sequence
-			seq = newSeq.toString();
-			markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
-		}
+		seq = newSeq.toString();
+		markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
 	}
 
 	/**
-	 * Apply a change type insertion
+	 * Apply a change type insertion (update sequence)
 	 */
 	protected void applyIns(Variant variant, MarkerSeq markerSeq) {
+		// Get sequence in positive strand direction
+		String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
+
+		String netChange = variant.netChange(this);
+		// Apply change to sequence
+		int idx = variant.getStart() - start - 1;
+		if (idx >= 0) seq = seq.substring(0, idx + 1) + netChange + seq.substring(idx + 1);
+		else seq = netChange + seq;
+
 		// Update sequence
-		if ((sequence != null) && (!sequence.isEmpty())) {
-
-			// Get sequence in positive strand direction
-			String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
-
-			String netChange = variant.netChange(this);
-			// Apply change to sequence
-			int idx = variant.getStart() - start - 1;
-			if (idx >= 0) seq = seq.substring(0, idx + 1) + netChange + seq.substring(idx + 1);
-			else seq = netChange + seq;
-
-			// Update sequence
-			markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
-		}
+		markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
 	}
 
 	/**
-	 * Apply a change type MNP
+	 * Apply a change type deletion (update sequence)
+	 */
+	protected void applyMixed(Variant variant, MarkerSeq markerSeq) {
+		// Get sequence in positive strand direction
+		String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
+
+		// Apply change to sequence
+		int idxStart = variant.getStart() - start;
+		int idxEnd = idxStart + variant.size();
+
+		StringBuilder newSeq = new StringBuilder();
+		if (idxStart >= 0) newSeq.append(seq.substring(0, idxStart));
+		newSeq.append(variant.getAlt().toLowerCase());
+		if (idxEnd >= 0 && (idxEnd < seq.length())) newSeq.append(seq.substring(idxEnd));
+
+		// Update sequence
+		seq = newSeq.toString();
+		markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+	}
+
+	/**
+	 * Apply a change type MNP (update sequence)
 	 */
 	protected void applyMnp(Variant variant, MarkerSeq markerSeq) {
-		// Update sequence
-		if ((sequence != null) && (!sequence.isEmpty())) {
+		// Calculate indexes
+		int idxStart = variant.getStart() - start;
+		int idxAlt = 0;
 
-			// Calculate indexes
-			int idxStart = variant.getStart() - start;
-			int idxAlt = 0;
-
-			// Variant starts before this marker (e.g. motif with sequence)
-			if (idxStart < 0) {
-				idxAlt = -idxStart; // Remove first 'idxStart' bases from ALT sequence
-				idxStart = 0;
-			}
-
-			int changeSize = variant.intersectSize(this);
-			int idxEnd = idxStart + changeSize;
-
-			// Apply variant to sequence
-			String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence(); // Get sequence in positive strand direction
-			StringBuilder seqsb = new StringBuilder();
-			seqsb.append(seq.substring(0, idxStart).toLowerCase());
-			String seqAlt = variant.getAlt().substring(idxAlt, idxAlt + changeSize).toUpperCase();
-			seqsb.append(seqAlt);
-			seqsb.append(seq.substring(idxEnd).toLowerCase());
-
-			// Update sequence
-			seq = seqsb.toString();
-			markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+		// Variant starts before this marker (e.g. motif with sequence)
+		if (idxStart < 0) {
+			idxAlt = -idxStart; // Remove first 'idxStart' bases from ALT sequence
+			idxStart = 0;
 		}
+
+		int changeSize = variant.intersectSize(this);
+		int idxEnd = idxStart + changeSize;
+
+		// Apply variant to sequence
+		String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence(); // Get sequence in positive strand direction
+		StringBuilder seqsb = new StringBuilder();
+		seqsb.append(seq.substring(0, idxStart).toLowerCase());
+		String seqAlt = variant.getAlt().substring(idxAlt, idxAlt + changeSize).toUpperCase();
+		seqsb.append(seqAlt);
+		seqsb.append(seq.substring(idxEnd).toLowerCase());
+
+		// Update sequence
+		seq = seqsb.toString();
+		markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
 	}
 
 	/**
-	 * Apply a change type SNP
+	 * Apply a change type SNP (update sequence)
 	 */
 	protected void applySnp(Variant variant, MarkerSeq markerSeq) {
+		// Get sequence in positive strand direction
+		String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
+
+		// Apply change to sequence
+		int idx = variant.getStart() - start;
+		seq = seq.substring(0, idx) + variant.getAlt() + seq.substring(idx + 1);
+
 		// Update sequence
-		if ((sequence != null) && (!sequence.isEmpty())) {
-			// Get sequence in positive strand direction
-			String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
-
-			// Apply change to sequence
-			int idx = variant.getStart() - start;
-			seq = seq.substring(0, idx) + variant.getAlt() + seq.substring(idx + 1);
-
-			// Update sequence
-			markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
-		}
+		markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
 	}
 
 	/**

@@ -3,9 +3,11 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 import junit.framework.Assert;
@@ -13,7 +15,7 @@ import junit.framework.Assert;
 /**
  * Test case
  */
-public class TestCasesZzz extends TestCasesBase {
+public class TestCasesZzz extends TestCasesIntegrationBase {
 
 	boolean debug = false;
 	boolean verbose = true || debug;
@@ -29,6 +31,20 @@ public class TestCasesZzz extends TestCasesBase {
 		// Load database
 		SnpEffectPredictor sep = loadSnpEffectPredictorAnd(genome, false);
 
+		int len = Integer.MAX_VALUE;
+		for (Gene g : sep.getGenome().getGenes()) {
+			for (Transcript tr : g) {
+				if (tr.isProteinCoding() //
+						&& tr.isStrandPlus() //
+						&& !tr.hasError() //
+						&& (tr.subintervals().size() == 1) //
+						&& (tr.cds().length() < len) //
+				) {
+					len = tr.cds().length();
+					Gpr.debug(tr);
+				}
+			}
+		}
 		// Find transcript
 		Transcript tr = sep.getGenome().getGenes().findTranscript(trId);
 		if (tr == null) throw new RuntimeException("Could not find transcript ID '" + trId + "'");
@@ -48,17 +64,18 @@ public class TestCasesZzz extends TestCasesBase {
 	}
 
 	/**
-	 * Upstream region is completely removed by a deletion.
-	 * Bug triggers a null pointer: Fixed
+	 * Mixed variants
 	 */
 	@Test
-	public void test_apply_07_delete_upstream() {
+	public void test_apply_11_mixed_variant() {
 		Gpr.debug("Test");
-		Transcript trNew = appyTranscript("testHg3775Chr11", "ENST00000379829", "tests/test_apply_07_delete_upstream.vcf");
+		Transcript trNew = appyTranscript("testHg19Chr22", "NM_005318.3", "tests/test_apply_11_mixed_variant.vcf");
 
 		// Check expected sequence
-		Assert.assertEquals("ttttttggggctgctgagtgctgcctcctggccaccatggcatatgaccgctacgtggccatctgtgaccccttgcactacccagtcatcatgggccacatatcctgtgcccagctggcagctgcctcttggttctcagggttttcagtggccactgtgcaaaccacatggattttcagtttccctttttgtggccccaacagggtgaaccacttcttctgtgacagccctcctgttattgcactggtctgtgctgacacctctgtgtttgaactggaggctctgacagccactgtcctattcattctctttcctttcttgctgatcctgggatcctatgtccgcatcctctccactatcttcaggatgccgtcagctgaggggaaacatcaggcattctccacctgttccgcccacctcttggttgtctctctcttctatagcactgccatcctcacgtatttccgaccccaatccagtgcctcttctgagagcaagaagctgctgtcactctcttccacagtggtgactcccatgttgaaccccatcatctacagctcaaggaataaagaagtgaaggctgcactgaagcggcttatccacaggaccctgggctctcagaaactatga" //
-				, trNew.cds());
+		Assert.assertEquals(
+				"ggaagaaacacagatggcggcggcgcagcgccattccgggccgggagcaggcagccagcagccctgtcctcaccgcggtccgcccgccgccgctaaatacccggatgcgccgcccaagcgccagacgcggagctgggaaaagggaggcagaggaggcggaggcagaggcagaggcagaggcagagcccgagcccggtgccgagaccaagcgacagaccggcggggctgggcctcgcaaagccggctcggcgagctctcccgacacccgagccggggaggaaaagcagcgactcctcgctcgcatccccgggagccgcactccagactggcccggtagtcaggggctcaggagcagatcccgaggcaggctttgctcagcctccgacgagggctggccctttggaaggcgccttcaacagccggaccagacaggccaccatgaccgagaattccacgtccgcccctgcggccaagcccaagcgggccaaggcctccaagaagtccacagaccaccccaagtattcagacatgatcgtggctgccatccaggccgagaagaaccgcgctggctcctcgcgccagtccattcagaagtatatcaagagccactacaaggtgggtgagaacgctgactcgcagatcaagttgtccatcaagcgcctggtcaccaccggtgtcctcaagcagaccaaaggggtgggggcctcggggtccttccggctagccaagagcgacgaacccaagaagtcagtggccttcaagaagaccaagaaggaaatcaagaaggtagccacgccaaagaaggcatccaagcccaagaaggctgcctccaaagccccaaccaagaaacccaaagccaccccggtcaagaaggccaagaagaagctggctgccacgcccaagaaagccaaaaaacccaagactgtcaaagccaagccggtcaaggcatccaagcccaaaaaggccaaaccagtgaaacccaaagcaaagtccagtgccaagagggccggcaagaagaagtgacaatgaagtcttttcttgcggacactccctcctgtctcctattttctgtaaataattttctccttttttctctcttgatgctcaccaccaccttttgcccccttctgttctgactttataagagacaggatttggattcttcagaaattacagaataattcatttttccttaaccagttgtgcaaggacagcaacaaccaatctaatgatgagaatgtacttatattttgttttgctattaacctacttacggggttagggatttgcggggggggcttgtgtgttttgttggcttgtttgccatgaaggtagatgtgggtggggagaagacacaaggcagtttgttctggctagatgagagggaacccaggaattgtgaggttagcaggaatatctttagggtgagtgagttttctttgagttgggcacccgttgtgagagtttcagaacctttggccagcaggagagaggtggtagggagcagccagccggcaaaggaaggagggggaaaaaaaccgccaccgggctgacttccacctcccagtggtgagcagtgggggcccaaacccagtttccttctcatttttgttagtttgcgctttcggcctccctattttcttagggaaggggagtggggtccaagtgacagctggatgggagaagccatagtttctcccagtcagctaggatgtagccattgggggatctttgtggcttcagcaaattctcttgttaaaccggagtgaaaacttcaggggaagggtggggagtcagccaagtgcctcagtgtgccctgttgaaacttaggtttttccacgcaatcgatggattgtgtcctaggaagacttttcttttcctctggatttttgttcctcctgtacaagaggtgtctttgcttggtttggtggggctgcggccacttaaaacctcccgatctctttttgagtcctttattataagtagttgtagctgcgggagggggagggggagtgggcgggcagtggatagtaagacttactgcagtcgatttgggatttgctaagtagttttacagagctagatctgtgtgcatgtgtgtgtttgtgtatatatacatatctagggctagtacttagtttcacacccgggagctgggagaaaaaacctgtacagttgtctttctcttatttttaataaaatagaaaaatcgcgcacttgcgcgtcccccccccacccccttttttaaacaagtgttacttgtgccgggaaaattttgctgtctttgtaattttaaaactttaaaataaattggaaaagggagaaacgcg" //
+				, trNew.mRna());
+
 	}
 
 }

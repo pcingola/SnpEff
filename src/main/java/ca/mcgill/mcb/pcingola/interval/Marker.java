@@ -104,6 +104,11 @@ public class Marker extends Interval implements TxtSerializable {
 			newMarker = applyDel(variant, lenChange);
 			break;
 
+		//		case MIXED:
+		//			lenChange = variant.lengthChange();
+		//			newMarker = applyMixed(variant, lenChange);
+		//			break;
+
 		default:
 			// We are not ready for mixed changes
 			throw new RuntimeException("Variant type not supported: " + variant.getVariantType() + "\n\t" + variant);
@@ -179,6 +184,37 @@ public class Marker extends Interval implements TxtSerializable {
 			m.end += lenChange;
 		} else {
 			// Insertion point after end, no effect on marker coordinates
+		}
+
+		return m;
+	}
+
+	/**
+	 * Apply a mixed variant
+	 * MIXED variant is interpreted as "MNP + InDel" or "InDel + MNP"
+	 */
+	protected Marker applyMixed(Variant variant, int lenChange) {
+		Marker m = cloneShallow();
+
+		if (includes(variant)) {
+			// This marker completely includes the variant.
+			// Marker is shortened (i.e. only 'end' coordinate needs to be updated)
+			m.end += lenChange;
+		} else if (variant.includes(this)) {
+			// Variant completely includes this marker => The whole marker
+			// replaced but coordinates do not change (i.e. MNP + InDel )
+			throw new RuntimeException("Unimplemented");
+			// return m;
+		} else if (variant.getStart() < start) {
+			// Variant before start: Adjust coordinates
+			// In this case we can see the variant as a InDel (at the
+			// start coordinate) followed by a MNP.
+			m.start += lenChange;
+			m.end += lenChange;
+		} else {
+			// This marker includes the variant.
+			// Marker is shortened (i.e. only 'end' coordinate needs to be updated)
+			m.end += lenChange;
 		}
 
 		return m;

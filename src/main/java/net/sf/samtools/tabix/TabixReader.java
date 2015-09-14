@@ -508,7 +508,6 @@ public class TabixReader implements Iterable<String> {
 			int begTad = beg >> TAD_LIDX_SHIFT;
 			if (begTad >= idx.linearIndex.length) minFileOffset = idx.linearIndex[idx.linearIndex.length - 1]; // Pick last position in linear index
 			else minFileOffset = idx.linearIndex[begTad]; // Use linear index
-			Gpr.debug("begTad: " + begTad + "\tidx.linearIndex.length:" + idx.linearIndex.length + "\tmin_off: " + minFileOffset);
 		} else minFileOffset = 0;
 
 		// Add chunk lengths for all blocks within the interval
