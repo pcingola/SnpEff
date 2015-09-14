@@ -22,6 +22,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryRand;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
@@ -81,6 +82,23 @@ public class TestCasesBase {
 	public void before() {
 		init();
 		initSnpEffPredictor();
+	}
+
+	public void checkApply(Variant variant, String expectedCds, String expectedProtein, int expectedExon1Start, int expectedExon1End) {
+		Transcript newTr = transcript.apply(variant);
+
+		if (debug) Gpr.debug("Variant [ " + variant.getStart() + " , " + variant.getEnd() + ", ALT.len: " + variant.getAlt().length() + " ]:" + variant + "\nBefore:\n" + transcript.toStringAsciiArt(true) + "\nAfter:\n" + newTr.toStringAsciiArt(true));
+		else if (verbose) Gpr.debug("Variant [ " + variant.getStart() + " , " + variant.getEnd() + ", ALT.len: " + variant.getAlt().length() + " ]:" + variant + "\nBefore:\n" + Gpr.prependEachLine("\t", transcript) + "\nAfter:\n" + Gpr.prependEachLine("\t", newTr));
+
+		// Check sequences
+		Assert.assertEquals("CDS sequence should not change", expectedCds, newTr.cds());
+		if (expectedProtein != null) Assert.assertEquals("Protein sequence should not change", expectedProtein, newTr.protein());
+
+		// Check exon coordinates
+		Exon newExons[] = newTr.subintervals().toArray(new Exon[0]);
+		Exon newEx1 = newExons[1];
+		Assert.assertEquals("Exon start coordinate", expectedExon1Start, newEx1.getStart());
+		Assert.assertEquals("Exon end coordinate", expectedExon1End, newEx1.getEnd());
 	}
 
 	protected void checkEffect(Variant variant, EffectType effectExpected) {
@@ -225,6 +243,26 @@ public class TestCasesBase {
 		gs.reset();
 		gs.addGeneSequences(chromosome.getId(), chromoSequence);
 		gs.build();
+	}
+
+	/**
+	 * Show a genome in a 'standard' way
+	 */
+	public String showTranscripts(Genome genome) {
+		StringBuilder sb = new StringBuilder();
+
+		// Genome
+		sb.append(genome.getVersion() + "\n");
+
+		// Chromosomes
+		for (Chromosome chr : genome)
+			sb.append(chr + "\n");
+
+		// Show all genes
+		for (Gene gene : genome.getGenes().sorted())
+			sb.append(gene);
+
+		return sb.toString();
 	}
 
 }

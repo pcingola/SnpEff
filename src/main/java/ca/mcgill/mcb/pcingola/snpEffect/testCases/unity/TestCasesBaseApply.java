@@ -1,10 +1,11 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import org.junit.Test;
-
-import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBaseApply;
-import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.interval.Chromosome;
+import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.Gene;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
+import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 
 /**
  * Test case
@@ -36,199 +37,60 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  *                                                                                                    |                                                                                                  |^199
  *                                                                                                    |^100
  */
-public class TestCasesZzz extends TestCasesBaseApply {
+public class TestCasesBaseApply extends TestCasesBase {
 
-	public TestCasesZzz() {
+	public TestCasesBaseApply() {
 		super();
 	}
 
-	/**
-	 * Variant before exon
-	 */
-	@Test
-	public void test_apply_variant_01() {
-		Gpr.debug("Test");
+	@Override
+	protected void initSnpEffPredictor() {
+		// Create a config and force out snpPredictor
+		if (config == null || config.getGenome() == null || !config.getGenome().getGenomeName().equals(genomeName)) {
+			config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
+		}
 
-		Variant variant = new Variant(transcript.getParent(), 290, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
-	}
+		// Create predictor
+		genome = config.getGenome();
+		snpEffectPredictor = new SnpEffectPredictor(genome);
 
-	/**
-	 * Variant before exon
-	 */
-	@Test
-	public void test_apply_variant_02() {
-		Gpr.debug("Test");
+		// Chromosome sequence
+		chromosome = new Chromosome(genome, 0, 1000, "1");
+		chromoSequence = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGATGTCCGCAGGTGAAGGCATACACGCTGCGCGTATACTGATGTTACCTCGATGGATTTTGTCAGAAATATGGTGCCCAGGACGCGAAGGGCATATTATGGTTGCGCGAAGACATCATTTTGGAACTAACTACTAGAACTAATCAGTAAACATCCTACTGGACGGCTTGCCCCGCGATTCAAACCGCTAACTTTATCGTCCTGTTTGGGAATTCACGGGCACGGTTCTGCAGCAAGCTGAATTGGCAGCTCGGCATAAATCCCGACCCCATCGTCACGCACGGATCAATTCATCCTCAACGAAAGGGAGCTAGCGCTGTACGGCCACGGGAGGGTGTGCACCATATTCAACGACTTCTTAACCCGACCTTAAACCAATCTTCTTACGAATGTGCCGTCGAGCGGCACCTTTCAGATTTCAGTGTTGCAACTCTTACCAGTGCACTTAAACACTCCCTCAAATCACAGGCCTTGTTCTATAGCGCTCAGCACGTCGCCAGGATGCTGGTACGCCGGACTGTCCAGATACCGTTAGCACGGCATAGGGAGGATCGCGCAGGCTATACCCGATATCGGTTGGGCATCCTTTAATTCTTTGCGGATGCGAATACCCGTCACCCCTTGCGATTCTGTTTAACGCAGACTCAACCTAACGATTGACCTACATAGTAATGAGTTTTGTTGGTCCGTAAGACTTCGCCCAAAACCGCGCATGGTGGTCGTAGAAACGTACTCACAGGCCACTAAATCCGCTTAGGACATACAGTCTCCTTCGGTCACATTAACCCCATATGATTAGTACGGTAGAGGAAAAGCACCTAACCCCCATTGAGCAGGATCTCTTTCGTAATACTCTGTATCGATTACCGATTTATTTGATTCCCCACATTTATTTCATCGGGA";
+		chromoBases = chromoSequence.toCharArray();
 
-		Variant variant = new Variant(transcript.getParent(), 297, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
-	}
+		codonTable = genome.codonTable();
 
-	/**
-	 * Variant overlapping exon start
-	 */
-	@Test
-	public void test_apply_variant_03() {
-		Gpr.debug("Test");
+		// Create gene, trancript and exons
+		gene = new Gene(chromosome, 0, 999, false, "gene1", "gene1", "protein_coding");
+		transcript = new Transcript(gene, gene.getStart(), gene.getEnd(), gene.isStrandMinus(), "transcript1");
+		transcript.setProteinCoding(true);
 
-		Variant variant = new Variant(transcript.getParent(), 299, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
-	}
+		Exon exons[] = new Exon[3];
+		exons[0] = new Exon(transcript, 100, 199, false, "exon1", 0);
+		exons[1] = new Exon(transcript, 300, 399, false, "exon2", 0);
+		exons[2] = new Exon(transcript, 900, 999, false, "exon3", 0);
 
-	/**
-	 * Variant at exon start
-	 */
-	@Test
-	public void test_apply_variant_04() {
-		Gpr.debug("Test");
+		for (Exon ex : exons) {
+			ex.setSequence(chromoSequence.substring(ex.getStart(), ex.getEnd() + 1));
+			transcript.add(ex);
+		}
 
-		Variant variant = new Variant(transcript.getParent(), 300, "", "ACG");
+		// Create genomic sequences
+		genome.getGenomicSequences().addGeneSequences(chromosome.getId(), chromoSequence);
 
-		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "ACGtgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1]
-				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
+		// Set predictor parameters
+		snpEffectPredictor.setSpliceRegionExonSize(spliceRegionExonSize);
+		snpEffectPredictor.setSpliceRegionIntronMin(spliceRegionIntronMin);
+		snpEffectPredictor.setSpliceRegionIntronMax(spliceRegionIntronMax);
+		snpEffectPredictor.setUpDownStreamLength(0);
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		// Update config
+		config.setSnpEffectPredictor(snpEffectPredictor);
+		config.setShiftHgvs(shiftHgvs);
 
-	}
-
-	/**
-	 * Variant in exon
-	 */
-	@Test
-	public void test_apply_variant_05() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(transcript.getParent(), 310, "", "ACG");
-
-		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "tgtttgggaaACGttcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1]
-				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
-
-		checkApply(variant, expectedCds, null, 300, 402);
-
-	}
-
-	/**
-	 * Variant in exon
-	 */
-	@Test
-	public void test_apply_variant_06() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(transcript.getParent(), 399, "", "ACG");
-
-		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacACGg".toLowerCase() // Exon[1]
-				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
-
-		checkApply(variant, expectedCds, null, 300, 402);
-
-	}
-
-	/**
-	 * Variant overlapping exon end
-	 */
-	@Test
-	public void test_apply_variant_07() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(transcript.getParent(), 399, "", "ACG");
-
-		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacACGg".toLowerCase() // Exon[1]
-				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
-
-		checkApply(variant, expectedCds, null, 300, 402);
-
-	}
-
-	/**
-	 * Variant right after exon end
-	 */
-	@Test
-	public void test_apply_variant_08() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(transcript.getParent(), 400, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 300, 399);
-	}
-
-	/**
-	 * Variant after exon end
-	 */
-	@Test
-	public void test_apply_variant_09() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(transcript.getParent(), 410, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 300, 399);
-	}
-
-	/**
-	 * Variant over exon: variant is larger than exon, starts before exon and overlaps the whole exon
-	 */
-	@Test
-	public void test_apply_variant_10() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(transcript.getParent(), 290, "", "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT");
-		checkApply(variant, transcript.cds(), transcript.protein(), 420, 519);
-	}
-
-	/**
-	 * Variant over exon: variant is larger than exon and starts right at exons start and ends after exon end
-	 */
-	@Test
-	public void test_apply_variant_11() {
-		Gpr.debug("Test");
-
-		String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT";
-		Variant variant = new Variant(transcript.getParent(), 300, "", seq);
-
-		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ seq.toLowerCase() + "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg" // Exon[1]
-				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
-
-		checkApply(variant, expectedCds, null, 300, 519);
-
-	}
-
-	/**
-	 * Variant over exon: variant is larger than exon, starts before exon start and end right at exon end
-	 */
-	@Test
-	public void test_apply_variant_12() {
-		Gpr.debug("Test");
-
-		String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAG";
-		Variant variant = new Variant(transcript.getParent(), 290, "", seq);
-
-		checkApply(variant, transcript.cds(), transcript.protein(), 410, 509);
-
-	}
-
-	/**
-	 * Variant over exon: variant is on the same coordiantes as exon
-	 */
-	@Test
-	public void test_apply_variant_13() {
-		Gpr.debug("Test");
-
-		String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATG";
-		Variant variant = new Variant(transcript.getParent(), 300, "", seq);
-
-		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ seq.toLowerCase() + "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg" // Exon[1]
-				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
-
-		checkApply(variant, expectedCds, null, 300, 499);
+		// Build forest
+		snpEffectPredictor.buildForest();
 	}
 
 }

@@ -63,7 +63,7 @@ public class TestCasesIntegrationBase {
 	 */
 	public Transcript appyTranscript(String genome, String trId, String vcfFileName) {
 		// Load database
-		SnpEffectPredictor sep = loadSnpEffectPredictorAnd(genome, false);
+		SnpEffectPredictor sep = loadSnpEffectPredictor(genome, false);
 
 		// Find transcript
 		Transcript tr = sep.getGenome().getGenes().findTranscript(trId);
@@ -704,9 +704,9 @@ public class TestCasesIntegrationBase {
 	}
 
 	/**
-	 * Load predictor and create regions
+	 * Load predictor and create interval forest
 	 */
-	public SnpEffectPredictor loadSnpEffectPredictorAnd(String genome, boolean build) {
+	public SnpEffectPredictor loadSnpEffectPredictor(String genome, boolean build) {
 		Config config = new Config(genome);
 		SnpEffectPredictor sep = SnpEffectPredictor.load(config);
 		sep.createGenomicRegions();

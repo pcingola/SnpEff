@@ -4,10 +4,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesAnn;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsExon;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntron;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesAlign;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesAnn;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyDel;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyIns;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyMixed;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyMnp;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplySnp;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBinomial;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBuild;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesCds;
@@ -57,6 +62,11 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesAlign.class, //
 		TestCasesAnn.class, //
+		TestCasesApplyIns.class, //
+		TestCasesApplyDel.class, //
+		TestCasesApplyMixed.class, //
+		TestCasesApplyMnp.class, //
+		TestCasesApplySnp.class, //
 		TestCasesBinomial.class, //
 		TestCasesBuild.class, //
 		TestCasesChiSquare.class, //
@@ -102,6 +112,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesVcf.class //
 
 })
+
 public class TestSuiteUnity {
 
 }
