@@ -36,6 +36,7 @@ public class SnpEffCmdProtein extends SnpEff {
 
 	public static boolean onlyOneError = false; // This is used in some test-cases
 	public static double MAX_ERROR_RATE = 0.05; // Maximum allowed error is 1% (otherwise test fails)
+	char TRANSCRIPT_ID_SEPARATORS[] = { ' ', '\t', ':', ';', '=' };
 
 	boolean codonTables;
 	boolean storeAlignments; // Store alignments (used for some test cases)
@@ -107,10 +108,19 @@ public class SnpEffCmdProtein extends SnpEff {
 		);
 
 		// Pick the first space separated string
-		if (trId.indexOf(' ') > 0) trId = trId.split("\\s")[0];
-
 		proteinByTrId.put(trId, seq); // Add it to the hash
 		if (debug) Gpr.debug("Adding proteinByTrId{'" + trId + "'} :\t" + seq);
+
+		// Try using some separator
+		for (char sep : TRANSCRIPT_ID_SEPARATORS) {
+			String newTrId = trId;
+			if (trId.indexOf(sep) > 0) {
+				newTrId = trId.split(sep + "")[0];
+				proteinByTrId.put(newTrId, seq); // Add it to the hash
+				if (debug) Gpr.debug("Adding proteinByTrId{'" + newTrId + "'} :\t" + seq);
+			}
+		}
+
 	}
 
 	/**
