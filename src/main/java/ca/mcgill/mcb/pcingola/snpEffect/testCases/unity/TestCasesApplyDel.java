@@ -13,7 +13,6 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 
 	public TestCasesApplyDel() {
 		super();
-		throw new RuntimeException("Unimplemented!!!!");
 	}
 
 	/**
@@ -23,19 +22,19 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_01() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 290, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
+		Variant variant = new Variant(transcript.getParent(), 290, "TTT", "");
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 297, 396);
 	}
 
 	/**
-	 * Variant before exon
+	 * Variant right before exon start
 	 */
 	@Test
 	public void test_apply_variant_02() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 297, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
+		Variant variant = new Variant(transcript.getParent(), 297, "TCC", "");
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 297, 396);
 	}
 
 	/**
@@ -45,8 +44,14 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_03() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 299, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
+		Variant variant = new Variant(transcript.getParent(), 299, "CTG", "");
+
+		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
+				+ "tttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg" // Exon[1]
+				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
+				;
+
+		checkApply(variant, expectedCds, null, 1, 299, 396);
 	}
 
 	/**
@@ -56,14 +61,14 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_04() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 300, "", "ACG");
+		Variant variant = new Variant(transcript.getParent(), 300, "TGT", "");
 
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "ACGtgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1]
+				+ "ttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 396);
 
 	}
 
@@ -74,32 +79,32 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_05() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 310, "", "ACG");
+		Variant variant = new Variant(transcript.getParent(), 310, "TTC", "");
 
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "tgtttgggaaACGttcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1]
+				+ "tgtttgggaaacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 396);
 
 	}
 
 	/**
-	 * Variant in exon
+	 * Variant right before exon end
 	 */
 	@Test
 	public void test_apply_variant_06() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 399, "", "ACG");
+		Variant variant = new Variant(transcript.getParent(), 397, "ACG", "");
 
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacACGg".toLowerCase() // Exon[1]
+				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctca" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 396);
 
 	}
 
@@ -110,14 +115,14 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_07() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 399, "", "ACG");
+		Variant variant = new Variant(transcript.getParent(), 398, "CGA", "");
 
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacACGg".toLowerCase() // Exon[1]
+				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaa".toLowerCase() // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 397);
 
 	}
 
@@ -128,8 +133,8 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_08() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 400, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 300, 399);
+		Variant variant = new Variant(transcript.getParent(), 400, "AAA", "");
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -139,8 +144,8 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_09() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 410, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 300, 399);
+		Variant variant = new Variant(transcript.getParent(), 410, "ACG", "");
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -150,8 +155,20 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_10() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 290, "", "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT");
-		checkApply(variant, transcript.cds(), transcript.protein(), 420, 519);
+		Variant variant = new Variant(transcript.getParent() //
+		, 290 //
+				, "tttatcgtcctgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacgaaagggagct" //
+				, "" //
+		);
+
+		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
+				+ "" // Exon[1]
+				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
+				;
+
+		// Note: Since the original exon 1 is deleted, we check coordinates 
+		// for exon 2 (that becomes exon 1 in the new transcript)
+		checkApply(variant, expectedCds, null, 1, 780, 879);
 	}
 
 	/**
@@ -161,16 +178,20 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_11() {
 		Gpr.debug("Test");
 
-		String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT";
-		Variant variant = new Variant(transcript.getParent(), 300, "", seq);
+		Variant variant = new Variant(transcript.getParent() //
+		, 300 //
+				, "TGTTTGGGAATTCACGGGCACGGTTCTGCAGCAAGCTGAATTGGCAGCTCGGCATAAATCCCGACCCCATCGTCACGCACGGATCAATTCATCCTCAACGAAAGGGAGCTAGCGCTGTAC" //
+				, "" //
+		);
 
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ seq.toLowerCase() + "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg" // Exon[1]
+				+ "" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 519);
-
+		// Note: Since the original exon 1 is deleted, we check coordinates 
+		// for exon 2 (that becomes exon 1 in the new transcript)
+		checkApply(variant, expectedCds, null, 1, 780, 879);
 	}
 
 	/**
@@ -180,10 +201,20 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_12() {
 		Gpr.debug("Test");
 
-		String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAG";
-		Variant variant = new Variant(transcript.getParent(), 290, "", seq);
+		Variant variant = new Variant(transcript.getParent()//
+		, 280 //
+				, "aaccgctaactttatcgtcctgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toUpperCase() //
+				, "" //
+		);
 
-		checkApply(variant, transcript.cds(), transcript.protein(), 410, 509);
+		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
+				+ "" // Exon[1]
+				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
+				;
+
+		// Note: Since the original exon 1 is deleted, we check coordinates 
+		// for exon 2 (that becomes exon 1 in the new transcript)
+		checkApply(variant, expectedCds, null, 1, 780, 879);
 
 	}
 
@@ -194,15 +225,20 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_13() {
 		Gpr.debug("Test");
 
-		String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATG";
-		Variant variant = new Variant(transcript.getParent(), 300, "", seq);
+		Variant variant = new Variant(transcript.getParent() //
+		, 300 //
+				, "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toUpperCase() //
+				, "" //
+		);
 
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ seq.toLowerCase() + "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg" // Exon[1]
+				+ "" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 499);
+		// Note: Since the original exon 1 is deleted, we check coordinates 
+		// for exon 2 (that becomes exon 1 in the new transcript)
+		checkApply(variant, expectedCds, null, 1, 800, 899);
 	}
 
 }

@@ -13,7 +13,6 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 
 	public TestCasesApplyMnp() {
 		super();
-		throw new RuntimeException("Unimplemented!!!!");
 	}
 
 	/**
@@ -23,19 +22,19 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 	public void test_apply_variant_01() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 290, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
+		Variant variant = new Variant(transcript.getParent(), 290, "TTT", "AAA");
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
-	 * Variant before exon
+	 * Variant right before exon start
 	 */
 	@Test
 	public void test_apply_variant_02() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 297, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
+		Variant variant = new Variant(transcript.getParent(), 297, "TCC", "ACG");
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -45,8 +44,14 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 	public void test_apply_variant_03() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 299, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
+		Variant variant = new Variant(transcript.getParent(), 299, "CTG", "GAC");
+
+		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
+				+ "ACtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1]
+				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
+				;
+
+		checkApply(variant, expectedCds, null, 1, 300, 399);
 	}
 
 	/**
@@ -56,14 +61,14 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 	public void test_apply_variant_04() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 300, "", "ACG");
+		Variant variant = new Variant(transcript.getParent(), 300, "TGT", "ACA");
 
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "ACGtgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1]
+				+ "ACAttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -74,32 +79,32 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 	public void test_apply_variant_05() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 310, "", "ACG");
+		Variant variant = new Variant(transcript.getParent(), 310, "TTC", "AAG");
 
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "tgtttgggaaACGttcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1]
+				+ "tgtttgggaaAAGacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toLowerCase() // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
 	/**
-	 * Variant in exon
+	 * Variant right before exon end
 	 */
 	@Test
 	public void test_apply_variant_06() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 399, "", "ACG");
+		Variant variant = new Variant(transcript.getParent(), 397, "ACG", "TGC");
 
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacACGg".toLowerCase() // Exon[1]
+				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaTGC".toLowerCase() // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -110,14 +115,14 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 	public void test_apply_variant_07() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 399, "", "ACG");
+		Variant variant = new Variant(transcript.getParent(), 398, "CGA", "GCT");
 
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
-				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacACGg".toLowerCase() // Exon[1]
+				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaaGC".toLowerCase() // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -128,8 +133,8 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 	public void test_apply_variant_08() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 400, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 300, 399);
+		Variant variant = new Variant(transcript.getParent(), 400, "AAA", "TTT");
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -139,8 +144,93 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 	public void test_apply_variant_09() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 410, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 300, 399);
+		Variant variant = new Variant(transcript.getParent(), 410, "ACG", "TGC");
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+	}
+
+	/**
+	 * Variant over exon: variant is larger than exon, starts before exon and overlaps the whole exon
+	 */
+	@Test
+	public void test_apply_variant_10() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(transcript.getParent() //
+		, 290 //
+				, "tttatcgtcctgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacgaaagggagct" //
+				, "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT" //
+		);
+
+		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
+				+ "CGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAG".toLowerCase() // Exon[1]
+				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
+				;
+
+		checkApply(variant, expectedCds, null, 1, 300, 399);
+	}
+
+	/**
+	 * Variant over exon: variant is larger than exon and starts right at exons start and ends after exon end
+	 */
+	@Test
+	public void test_apply_variant_11() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(transcript.getParent() //
+		, 300 //
+				, "TGTTTGGGAATTCACGGGCACGGTTCTGCAGCAAGCTGAATTGGCAGCTCGGCATAAATCCCGACCCCATCGTCACGCACGGATCAATTCATCCTCAACGAAAGGGAGCTAGCGCTGTAC" //
+				, "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT" //
+		);
+
+		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
+				+ "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATG".toLowerCase() // Exon[1]
+				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
+				;
+
+		checkApply(variant, expectedCds, null, 1, 300, 399);
+	}
+
+	/**
+	 * Variant over exon: variant is larger than exon, starts before exon start and end right at exon end
+	 */
+	@Test
+	public void test_apply_variant_12() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(transcript.getParent()//
+		, 280 //
+				, "aaccgctaactttatcgtcctgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toUpperCase() //
+				, "attggctcgacgctcattcaCTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT".toUpperCase() //
+		);
+
+		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
+				+ "CTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT".toLowerCase() // Exon[1]
+				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
+				;
+
+		checkApply(variant, expectedCds, null, 1, 300, 399);
+
+	}
+
+	/**
+	 * Variant over exon: variant is on the same coordiantes as exon
+	 */
+	@Test
+	public void test_apply_variant_13() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(transcript.getParent() //
+		, 300 //
+				, "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toUpperCase() //
+				, "CTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT".toUpperCase() //
+		);
+
+		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
+				+ "CTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT".toLowerCase() // Exon[1]
+				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
+				;
+
+		checkApply(variant, expectedCds, null, 1, 300, 399);
 	}
 
 }

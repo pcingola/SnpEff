@@ -84,19 +84,38 @@ public class TestCasesBase {
 		initSnpEffPredictor();
 	}
 
-	public void checkApply(Variant variant, String expectedCds, String expectedProtein, int expectedExon1Start, int expectedExon1End) {
+	/**
+	 * Apply a variant to a transcript and check resulting CDS sequence, protein sequence and exon coordinates
+	 */
+	public void checkApply(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
 		Transcript newTr = transcript.apply(variant);
 
-		if (debug) Gpr.debug("Variant [ " + variant.getStart() + " , " + variant.getEnd() + ", ALT.len: " + variant.getAlt().length() + " ]:" + variant + "\nBefore:\n" + transcript.toStringAsciiArt(true) + "\nAfter:\n" + newTr.toStringAsciiArt(true));
-		else if (verbose) Gpr.debug("Variant [ " + variant.getStart() + " , " + variant.getEnd() + ", ALT.len: " + variant.getAlt().length() + " ]:" + variant + "\nBefore:\n" + Gpr.prependEachLine("\t", transcript) + "\nAfter:\n" + Gpr.prependEachLine("\t", newTr));
+		if (debug) {
+			Gpr.debug("Variant " + variant.getVariantType() //
+					+ " [ " + variant.getStart() + " , " + variant.getEnd() + "]" //
+					+ ", REF len: " + variant.getReference().length() //
+					+ ", ALT len: " + variant.getAlt().length() + ":" //
+					+ variant //
+					+ "\nBefore:\n" + transcript.toStringAsciiArt(true) //
+					+ "\nAfter:\n" + newTr.toStringAsciiArt(true) //
+			);
+		} else if (verbose) {
+			Gpr.debug("Variant " + variant.getVariantType() //
+					+ " [ " + variant.getStart() + " , " + variant.getEnd() + "]" //
+					+ ", REF len: " + variant.getReference().length() //
+					+ ", ALT len: " + variant.getAlt().length() + ":" //
+					+ variant //
+					+ "\nBefore:\n" + Gpr.prependEachLine("\t", transcript) //
+					+ "\nAfter:\n" + Gpr.prependEachLine("\t", newTr) //
+			);
+		}
 
 		// Check sequences
 		Assert.assertEquals("CDS sequence should not change", expectedCds, newTr.cds());
 		if (expectedProtein != null) Assert.assertEquals("Protein sequence should not change", expectedProtein, newTr.protein());
 
 		// Check exon coordinates
-		Exon newExons[] = newTr.subintervals().toArray(new Exon[0]);
-		Exon newEx1 = newExons[1];
+		Exon newEx1 = newTr.sorted().get(1);
 		Assert.assertEquals("Exon start coordinate", expectedExon1Start, newEx1.getStart());
 		Assert.assertEquals("Exon end coordinate", expectedExon1End, newEx1.getEnd());
 	}

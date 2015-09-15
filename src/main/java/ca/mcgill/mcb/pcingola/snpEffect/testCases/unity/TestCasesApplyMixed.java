@@ -24,7 +24,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 290, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 297, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 299, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 303, 402);
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 402);
 
 	}
 
@@ -81,7 +81,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 402);
 
 	}
 
@@ -99,7 +99,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 402);
 
 	}
 
@@ -117,7 +117,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 402);
+		checkApply(variant, expectedCds, null, 1, 300, 402);
 
 	}
 
@@ -129,7 +129,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 400, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 300, 399);
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 410, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 300, 399);
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 290, "", "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT");
-		checkApply(variant, transcript.cds(), transcript.protein(), 420, 519);
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 420, 519);
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 519);
+		checkApply(variant, expectedCds, null, 1, 300, 519);
 
 	}
 
@@ -183,7 +183,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 		String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAG";
 		Variant variant = new Variant(transcript.getParent(), 290, "", seq);
 
-		checkApply(variant, transcript.cds(), transcript.protein(), 410, 509);
+		checkApply(variant, transcript.cds(), transcript.protein(), 1, 410, 509);
 
 	}
 
@@ -202,7 +202,7 @@ public class TestCasesApplyMixed extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 300, 499);
+		checkApply(variant, expectedCds, null, 1, 300, 499);
 	}
 
 }
