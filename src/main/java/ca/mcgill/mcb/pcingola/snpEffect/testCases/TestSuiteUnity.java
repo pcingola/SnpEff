@@ -62,8 +62,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesAlign.class, //
 		TestCasesAnn.class, //
-		TestCasesApplyIns.class, //
 		TestCasesApplyDel.class, //
+		TestCasesApplyIns.class, //
 		TestCasesApplyMixed.class, //
 		TestCasesApplyMnp.class, //
 		TestCasesApplySnp.class, //
