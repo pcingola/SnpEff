@@ -489,7 +489,7 @@ public class SnpEff implements CommandLine {
 		//---
 		if (verbose) Timer.showStdErr("\tLoading Motifs from file '" + motifBinFileName + "'");
 
-		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
+		MarkerSerializer markerSerializer = new MarkerSerializer();
 		Markers motifsDb = markerSerializer.load(motifBinFileName);
 
 		// Add (only) motif markers. The original motifs has to be serialized with Chromosomes, Genomes and other markers (otherwise it could have not been saved)
@@ -528,7 +528,7 @@ public class SnpEff implements CommandLine {
 		}
 		if (verbose) Timer.showStdErr("Reading NextProt database from file '" + nextProtBinFile + "'");
 
-		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
+		MarkerSerializer markerSerializer = new MarkerSerializer();
 		Markers nextProtDb = markerSerializer.load(nextProtBinFile);
 
 		// Create a collection of (only) NextProt markers. The original nextProtDb has Chromosomes, Genomes and other markers (otherwise it could have not been saved)
@@ -570,27 +570,6 @@ public class SnpEff implements CommandLine {
 				if (tr != null) {
 					np.setParent(tr); // Set this transcript as parent
 					nextProtsToAdd.add(np);
-
-					//---
-					// We used to assign nextProt to all exons, we don't do this
-					// any more, it inflates the out with useless information
-					//---
-
-					//					boolean assignedToExon = false;
-					//					for (Exon ex : tr) {
-					//						if (ex.intersects(np)) {
-					//							NextProt npEx = (NextProt) np.clone(); // The nextProt marker might cover more than one Exon
-					//							npEx.setParent(ex);
-					//							nextProtsToAdd.add(npEx);
-					//							assignedToExon = true;
-					//						}
-					//					}
-					//
-					//					// Not assigned to an exon? Add transcript info
-					//					if (!assignedToExon) {
-					//					np.setParent(tr); // Set this transcript as parent
-					//					nextProtsToAdd.add(np);
-					//					}
 				}
 			}
 
@@ -614,12 +593,11 @@ public class SnpEff implements CommandLine {
 		if (verbose) Timer.showStdErr("Reading regulation track '" + regTrack + "'");
 		String regFile = config.getDirDataVersion() + "/regulation_" + regTrack + ".bin";
 		Markers regulation = new Markers();
-		regulation.load(regFile, genome);
+		regulation.load(regFile);
 
 		//---
 		// Are all chromosomes available?
 		//---
-		Genome genome = config.getGenome();
 		HashMap<String, Integer> chrs = new HashMap<String, Integer>();
 		for (Marker r : regulation) {
 			String chr = r.getChromosomeName();

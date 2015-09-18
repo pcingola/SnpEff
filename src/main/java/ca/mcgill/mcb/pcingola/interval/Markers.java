@@ -187,6 +187,10 @@ public class Markers implements Serializable, Collection<Marker> {
 		return markers.iterator();
 	}
 
+	public void load(String fileName) {
+		load(fileName, null);
+	}
+
 	public void load(String fileName, Genome genome) {
 		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
 		Markers markers = markerSerializer.load(fileName);

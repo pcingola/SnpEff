@@ -57,6 +57,10 @@ public class MarkerSerializer {
 	HashMap<Integer, TxtSerializable> byId;
 	HashMap<TxtSerializable, Integer> byMarker;
 
+	public MarkerSerializer() {
+		this(null);
+	}
+
 	public MarkerSerializer(Genome genome) {
 		this.genome = genome;
 		byId = new HashMap<Integer, TxtSerializable>();
@@ -141,7 +145,7 @@ public class MarkerSerializer {
 							+ "\n\tDatabase version : '" + versionNumber + "'"//
 							+ "\n\tProgram version  : '" + SnpEff.VERSION_MAJOR + "'" //
 							+ "\nTry installing the appropriate database." //
-							);
+					);
 				}
 			} else {
 				parsedField = 0;

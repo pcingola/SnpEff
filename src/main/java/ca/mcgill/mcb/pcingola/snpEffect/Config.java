@@ -559,11 +559,8 @@ public class Config implements Serializable, Iterable<String> {
 
 		// Genome specified?
 		if (!genomeVersion.isEmpty()) {
-			// Read configuration file for genome version (if any)
-			readGenomeConfig(genomeVersion, properties);
-
-			// Codon tables
-			createCodonTables(genomeVersion, properties);
+			readGenomeConfig(genomeVersion, properties); // Read configuration file for genome version (if any)
+			createCodonTables(genomeVersion, properties); // Codon tables
 		}
 
 		// Set properties
@@ -594,7 +591,7 @@ public class Config implements Serializable, Iterable<String> {
 			if (debug) System.err.println("File '" + genomePropsFileName + "' not found"); // File does not exists? => OK
 		}
 
-		Genome genome = new Genome(genVer, properties);
+		genome = new Genome(genVer, properties);
 		genomeByVersion.put(genVer, genome);
 	}
 
