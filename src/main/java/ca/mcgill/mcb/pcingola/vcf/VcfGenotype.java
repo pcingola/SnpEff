@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.vcf;
 
 import java.util.HashMap;
 
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
@@ -171,6 +172,25 @@ public class VcfGenotype {
 	}
 
 	/**
+	 * Create a missing genotype string according to organism plodity
+	 */
+	String gtMissing() {
+		// Most cases are covered here
+		int len = plodity();
+		if (len <= 1) return ".";
+		if (len == 2) return "./.";
+
+		// Higher plodity organisms
+		StringBuilder sb = new StringBuilder();
+
+		sb.append('.');
+		for (int i = 1; i < len; i++)
+			sb.append("/.");
+
+		return sb.toString();
+	}
+
+	/**
 	 * Is the most likely genotype heterozygous?
 	 * @return
 	 */
@@ -264,6 +284,7 @@ public class VcfGenotype {
 			// Any genotype is different than REF? => This is a variant
 			for (int i = 0; i < genotype.length; i++)
 				if (genotype[i] > 0) return true;
+
 			return false;
 		}
 
@@ -335,7 +356,6 @@ public class VcfGenotype {
 
 	/**
 	 * Parse PL field
-	 * @param value
 	 */
 	void parsePl(String value) {
 		String plStr[] = value.split(",");
@@ -345,11 +365,22 @@ public class VcfGenotype {
 	}
 
 	/**
+	 * Genotype plodity (i.e. how many copies of the chromosome does it have)
+	 */
+	public int plodity() {
+		int gt[] = getGenotype();
+		return gt == null ? 0 : gt.length;
+	}
+
+	/**
 	 * Set a genotype field value
 	 */
 	public void set(String gtFieldName, String gtValue) {
 		String ffields[] = vcfEntry.getFormatFields();
-		if (ffields.length < 1) return; // No GT field, nothing to do
+		if (ffields.length < 1) return; // No fields, nothing to do
+
+		// Trying to set "missing genotype"? Make sure we got the plodity right
+		if (gtFieldName.equals("GT") && gtValue.equals(VcfFileIterator.MISSING)) gtValue = gtMissing();
 
 		// Rebuild values
 		StringBuilder gtsb = new StringBuilder();
