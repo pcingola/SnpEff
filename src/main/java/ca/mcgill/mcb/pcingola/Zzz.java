@@ -1,30 +1,15 @@
 package ca.mcgill.mcb.pcingola;
 
-import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
-import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
-import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
-import ca.mcgill.mcb.pcingola.vcf.VcfGenotype;
 
 public class Zzz extends SnpEff {
 
 	public static void main(String[] args) {
-		String genome = "testHg19Chr11";
-		String vcfFileName = Gpr.HOME + "/snpEff/z.vcf";
+		String header = ">ENSTTRT00000007616 ensembl_projection:known_by_projection scaffold:turTru1:scaffold_113855:40787:62938:1 gene:ENSTTRG00000007618 gene_biotype:protein_coding transcript_biotype:protein_coding";
 
-		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
-		for (VcfEntry ve : vcf) {
-			System.out.println(ve);
+		String l[] = header.substring(1).split("[ \t:;,]");
+		for (String s : l)
+			System.out.println("'" + s + "'");
 
-			for (Variant var : ve.variants())
-				System.out.println("\t" + var);
-
-			for (VcfGenotype vgt : ve.getVcfGenotypes())
-				System.out.println("\t\tVCF_GT: " + vgt);
-
-			for (byte gt : ve.getGenotypesScores())
-				System.out.println("\t\tGT    : " + gt);
-		}
 	}
 }

@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.align.SmithWaterman;
@@ -36,7 +37,8 @@ public class SnpEffCmdProtein extends SnpEff {
 
 	public static boolean onlyOneError = false; // This is used in some test-cases
 	public static double MAX_ERROR_RATE = 0.05; // Maximum allowed error is 1% (otherwise test fails)
-	char TRANSCRIPT_ID_SEPARATORS[] = { ' ', '\t', ':', ';', '=' };
+	String TRANSCRIPT_ID_SEPARATORS_REGEX = "[ \t:,.=]";
+	char TRANSCRIPT_ID_SEPARATORS[] = TRANSCRIPT_ID_SEPARATORS_REGEX.substring(1, TRANSCRIPT_ID_SEPARATORS_REGEX.length() - 1).toCharArray();
 
 	boolean codonTables;
 	boolean storeAlignments; // Store alignments (used for some test cases)
@@ -97,9 +99,9 @@ public class SnpEffCmdProtein extends SnpEff {
 		this.proteinFile = proteinFile;
 	}
 
-	void add(String trId, String seq, int lineNum) {
+	void add(String trId, String seq, int lineNum, boolean check) {
 		// Repeated transcript Id? => Check that Protein is the same
-		if ((proteinByTrId.get(trId) != null) && (!proteinByTrId.get(trId).equals(seq))) //
+		if (check && (proteinByTrId.get(trId) != null) && (!proteinByTrId.get(trId).equals(seq))) //
 			System.err.println("ERROR: Different protein for the same transcript ID. This should never happen!!!"//
 					+ "\n\tLine number   : " + lineNum //
 					+ "\n\tTranscript ID : '" + trId + "'"//
@@ -107,19 +109,9 @@ public class SnpEffCmdProtein extends SnpEff {
 					+ "\n\tProtein (new) : " + seq //
 		);
 
-		// Pick the first space separated string
+		// Use whole trId
 		proteinByTrId.put(trId, seq); // Add it to the hash
 		if (debug) Gpr.debug("Adding proteinByTrId{'" + trId + "'} :\t" + seq);
-
-		// Try using some separator
-		for (char sep : TRANSCRIPT_ID_SEPARATORS) {
-			String newTrId = trId;
-			if (trId.indexOf(sep) > 0) {
-				newTrId = trId.split(sep + "")[0];
-				proteinByTrId.put(newTrId, seq); // Add it to the hash
-				if (debug) Gpr.debug("Adding proteinByTrId{'" + newTrId + "'} :\t" + seq);
-			}
-		}
 
 	}
 
@@ -206,6 +198,29 @@ public class SnpEffCmdProtein extends SnpEff {
 		if (proteinNoStartU.equals(refNoStart)) return true;
 
 		return false;
+	}
+
+	/**
+	 * Try to parse IDs from a fasta header
+	 */
+	List<String> fastaHeader2Ids(String fastaHeaderLine) {
+		if (debug) Gpr.debug("Parsing IDs from line:\t" + fastaHeaderLine);
+
+		List<String> list = new LinkedList<>();
+
+		// Try using some separators individually
+		for (char sep : TRANSCRIPT_ID_SEPARATORS) {
+			String ids[] = fastaHeaderLine.split(sep + "");
+			for (String id : ids)
+				list.add(id);
+		}
+
+		// Try using some separators toghether
+		String ids[] = fastaHeaderLine.split(TRANSCRIPT_ID_SEPARATORS_REGEX);
+		for (String id : ids)
+			list.add(id);
+
+		return list;
 	}
 
 	public HashMap<String, SmithWaterman> getAlignmentByTrId() {
@@ -402,9 +417,16 @@ public class SnpEffCmdProtein extends SnpEff {
 		// Load file
 		FastaFileIterator ffi = new FastaFileIterator(proteinFile);
 		for (String seq : ffi) {
-			// String trId = ffi.getTranscriptId();
-			String trId = ffi.getName();
-			add(trId, seq, ffi.getLineNum());
+			String trId = ffi.getTranscriptId();
+			add(trId, seq, ffi.getLineNum(), true);
+
+			// Also try processing header line using different separators
+			List<String> ids = fastaHeader2Ids(ffi.getName());
+			for (String id : ids) {
+				// We don't check for uniqueness here since many items in this
+				// list are tokens that are expected to be repeated
+				add(id, seq, ffi.getLineNum(), false);
+			}
 		}
 	}
 
@@ -430,7 +452,7 @@ public class SnpEffCmdProtein extends SnpEff {
 					String seq = f.getAasequence();
 
 					if (debug) Gpr.debug(trId + "\t" + seq);
-					if ((trId != null) && (seq != null)) add(trId, seq, -1);
+					if ((trId != null) && (seq != null)) add(trId, seq, -1, true);
 				}
 			}
 		}
@@ -465,7 +487,7 @@ public class SnpEffCmdProtein extends SnpEff {
 				String seq = field[1].trim();
 				String trId = field[0].trim();
 
-				add(trId, seq, lineNum);
+				add(trId, seq, lineNum, true);
 			}
 
 			lineNum++;
