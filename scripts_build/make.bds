@@ -82,9 +82,9 @@ string{} built
 snpEffVersion := ""
 
 #-------------------------------------------------------------------------------
-# Add a build command
+# Add a task to build a database for 'genome'
 #-------------------------------------------------------------------------------
-bool addBuild(string genome) {
+bool addBuildDb(string genome) {
 	dir := "$dirData/$genome"
 	db := "$dir/snpEffectPredictor.bin"
 	geneFiles := dir.dirPath("genes.*") 
@@ -200,7 +200,7 @@ bool buildDbAll() {
 	print("Building:\n")
 	for(string genome : dbids.lines()  ) {
 		genome = genome.trim().baseName()
-		addBuild(genome)
+		addBuildDb(genome)
 	}
 	wait
 
