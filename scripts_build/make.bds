@@ -40,7 +40,7 @@ GRCM				:= "GRCm38"
 dbNsfpVer			:= '3.0b2a'
 
 # Configuration parameters
-bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22", "ENSEMBL_BFMPP_26"]
+bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22", "ENSEMBL_BFMPP_26", "ENSEMBL_BFMPP_27"]
 
 # Commands
 snpeff				:= "java -Xmx10G -jar snpEff.jar "
