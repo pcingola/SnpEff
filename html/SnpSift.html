@@ -1281,18 +1281,14 @@ $ java -jar SnpSift.jar gwasCat gwascatalog.txt test.vcf | tee test.gwas.vcf
 				The database is compressed (block-gzip) and <a href="http://samtools.sourceforge.net/tabix.shtml">tabix</a> indexed, so two files are required (the data *.gz file and the *.gz.tbi index file).
 				<br>
 				<br>
-				<b>Automatic database download:</b> As of SnpSift version 4.0, the dbNSFP databse will be downloaded and stored the first time you use <code>SnpSift dbNSFP</code>.
-				You can also download it manually and specify the path to the dbNSFP files using the <code>-db</code> command line option.
-				<br>
-				<br>
 				You can download the files from SnpEff's site (remember that you need both the databse and the index file):
 				<ul>
 					<li> GRCh37 / hg19: 
-							<a href="https://drive.google.com/uc?export=download&id=0B7Ms5xMSFMYlSTY5dDJjcHVRZ3M"> database </a>, 
-							<a href="https://drive.google.com/uc?export=download&id=0B7Ms5xMSFMYlOTV5RllpRjNHU2s"> index </a>
+							<a href="https://drive.google.com/uc?export=download&id=0B7Ms5xMSFMYlSTY5dDJjcHVRZ3M">database</a>, 
+							<a href="https://drive.google.com/uc?export=download&id=0B7Ms5xMSFMYlOTV5RllpRjNHU2s">index</a>
 					<li> GRCh38 / hg38: 
-							<a href="https://drive.google.com/uc?export=download&id=0B7Ms5xMSFMYlT1E2MGgyVWhqUmc"> database </a>, 
-							<a href="https://drive.google.com/uc?export=download&id=0B7Ms5xMSFMYlY05IbmthSExsSFU"> index </a>
+							<a href="https://drive.google.com/uc?export=download&id=0B7Ms5xMSFMYlT1E2MGgyVWhqUmc">database</a>, 
+							<a href="https://drive.google.com/uc?export=download&id=0B7Ms5xMSFMYlY05IbmthSExsSFU">index</a>
 				</ul>
 				</p>
 				<h3> dbNSFP Annotation example</h3> 
@@ -1308,47 +1304,10 @@ java -jar SnpSift.jar dbnsfp -v myFile.vcf > myFile.annotated.vcf
 
 				<br>
 				<i class="icon-warning-sign"></i> You can now specify which fields you want to use for annotation using the '-f' command line option followed by a comma separated list of field names.
-				Defaults fields are 
-				<ul>
-					<li> Uniprot_acc
-					<li> Interpro_domain
-					<li> SIFT_pred
-					<li> Polyphen2_HDIV_pred
-					<li> Polyphen2_HVAR_pred
-					<li> LRT_pred
-					<li> MutationTaster_pred
-					<li> GERP++_NR
-					<li> GERP++_RS
-					<li> phastCons100way_vertebrate
-					<li> 1000Gp1_AF
-					<li> 1000Gp1_AFR_AF
-					<li> 1000Gp1_EUR_AF
-					<li> 1000Gp1_AMR_AF
-					<li> 1000Gp1_ASN_AF
-					<li> ESP6500_AA_AF
-					<li> ESP6500_EA_AF
-				</ul>
-				</p>
-				<h3> dbNSFP manual download </h3> 
-				If you prefer to manually download dbNSFP (e.g. because you want to pre-install the database).
-				You can download the files from SnpEff's site:
-				<ul>
-					<li> Database: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.9.txt.gz"> here </a>
-					<li> Tabix index: <a href="http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.9.txt.gz.tbi"> here </a>
-				</ul>
-				</p>
-				<p>
-				Here is a command line example:
+				Defaults fields are shown when running the command without any arguments <code>java -jar SnpSift.jar dbNSFP</code>
 				<br>
 				<br>
-<pre>
-# Donload database and tabix index files (you need to do this only once):
-# WARNING: The database file is large (over 5Gb)
-wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.9.txt.gz
-wget http://sourceforge.net/projects/snpeff/files/databases/dbNSFP/dbNSFP2.9.txt.gz.tbi
-</pre>
-				<br>
-				Now when you annotate, remember to specify the path where you downloaded the dbNSFP file:
+				If your dbNSFP file is not in the 'default' path (where SnpEff expects it), you can specify the path to your dbNSFP file using the <code>-db</code> command line option:
 				<br>
 <pre>
 # Annotate using dbNSFP
