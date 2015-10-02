@@ -23,7 +23,7 @@ public class TestCasesApplySnp extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 290, "T", "A");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplySnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class TestCasesApplySnp extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 299, "C", "A");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplySnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class TestCasesApplySnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplySnp(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -69,7 +69,7 @@ public class TestCasesApplySnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplySnp(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -87,7 +87,7 @@ public class TestCasesApplySnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplySnp(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -99,7 +99,7 @@ public class TestCasesApplySnp extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 400, "A", "C");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplySnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class TestCasesApplySnp extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 410, "A", "T");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplySnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 }

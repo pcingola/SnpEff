@@ -23,7 +23,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 290, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
+		checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 297, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
+		checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 299, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
+		checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 303, 402);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 402);
+		checkApplyIns(variant, expectedCds, null, 1, 300, 402);
 
 	}
 
@@ -80,7 +80,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 402);
+		checkApplyIns(variant, expectedCds, null, 1, 300, 402);
 
 	}
 
@@ -98,7 +98,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 402);
+		checkApplyIns(variant, expectedCds, null, 1, 300, 402);
 
 	}
 
@@ -116,7 +116,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 402);
+		checkApplyIns(variant, expectedCds, null, 1, 300, 402);
 
 	}
 
@@ -128,7 +128,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 400, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 410, "", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 290, "", "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAGGTGAAGGCAT");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 420, 519);
+		checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 420, 519);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 519);
+		checkApplyIns(variant, expectedCds, null, 1, 300, 519);
 
 	}
 
@@ -182,7 +182,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 		String seq = "ATTGGCTCGACGCTCATTCACTCCAACAGCCCGGGACCCCCGCTCAATTATTTCACTCACCGGGAAAATTGTACCGATTGTCCGTGCCTTACTTCAAATGACATCCGCAG";
 		Variant variant = new Variant(transcript.getParent(), 290, "", seq);
 
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 410, 509);
+		checkApplyIns(variant, transcript.cds(), transcript.protein(), 1, 410, 509);
 
 	}
 
@@ -201,7 +201,7 @@ public class TestCasesApplyIns extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 499);
+		checkApplyIns(variant, expectedCds, null, 1, 300, 499);
 	}
 
 }

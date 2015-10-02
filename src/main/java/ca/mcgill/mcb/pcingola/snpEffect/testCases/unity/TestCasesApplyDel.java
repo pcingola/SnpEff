@@ -23,7 +23,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 290, "TTT", "");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 297, 396);
+		checkApplyDel(variant, transcript.cds(), transcript.protein(), 1, 297, 396);
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 297, "TCC", "");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 297, 396);
+		checkApplyDel(variant, transcript.cds(), transcript.protein(), 1, 297, 396);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 299, 396);
+		checkApplyDel(variant, expectedCds, null, 1, 299, 396);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 396);
+		checkApplyDel(variant, expectedCds, null, 1, 300, 396);
 
 	}
 
@@ -86,7 +86,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 396);
+		checkApplyDel(variant, expectedCds, null, 1, 300, 396);
 
 	}
 
@@ -104,7 +104,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 396);
+		checkApplyDel(variant, expectedCds, null, 1, 300, 396);
 
 	}
 
@@ -122,7 +122,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 397);
+		checkApplyDel(variant, expectedCds, null, 1, 300, 397);
 
 	}
 
@@ -134,7 +134,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 400, "AAA", "");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplyDel(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 410, "ACG", "");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplyDel(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 
 		// Note: Since the original exon 1 is deleted, we check coordinates 
 		// for exon 2 (that becomes exon 1 in the new transcript)
-		checkApply(variant, expectedCds, null, 1, 780, 879);
+		checkApplyDel(variant, expectedCds, null, 1, 780, 879);
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 
 		// Note: Since the original exon 1 is deleted, we check coordinates 
 		// for exon 2 (that becomes exon 1 in the new transcript)
-		checkApply(variant, expectedCds, null, 1, 780, 879);
+		checkApplyDel(variant, expectedCds, null, 1, 780, 879);
 	}
 
 	/**
@@ -214,7 +214,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 
 		// Note: Since the original exon 1 is deleted, we check coordinates 
 		// for exon 2 (that becomes exon 1 in the new transcript)
-		checkApply(variant, expectedCds, null, 1, 780, 879);
+		checkApplyDel(variant, expectedCds, null, 1, 780, 879);
 
 	}
 
@@ -238,7 +238,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 
 		// Note: Since the original exon 1 is deleted, we check coordinates 
 		// for exon 2 (that becomes exon 1 in the new transcript)
-		checkApply(variant, expectedCds, null, 1, 800, 899);
+		checkApplyDel(variant, expectedCds, null, 1, 800, 899);
 	}
 
 }

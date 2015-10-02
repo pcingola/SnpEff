@@ -23,7 +23,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 290, "TTT", "AAA");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplyMnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 297, "TCC", "ACG");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplyMnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplyMnp(variant, expectedCds, null, 1, 300, 399);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplyMnp(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -86,7 +86,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplyMnp(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -104,7 +104,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplyMnp(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -122,7 +122,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplyMnp(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -134,7 +134,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 400, "AAA", "TTT");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplyMnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent(), 410, "ACG", "TGC");
-		checkApply(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
+		checkApplyMnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplyMnp(variant, expectedCds, null, 1, 300, 399);
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplyMnp(variant, expectedCds, null, 1, 300, 399);
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplyMnp(variant, expectedCds, null, 1, 300, 399);
 
 	}
 
@@ -230,7 +230,7 @@ public class TestCasesApplyMnp extends TestCasesBaseApply {
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
 				;
 
-		checkApply(variant, expectedCds, null, 1, 300, 399);
+		checkApplyMnp(variant, expectedCds, null, 1, 300, 399);
 	}
 
 }

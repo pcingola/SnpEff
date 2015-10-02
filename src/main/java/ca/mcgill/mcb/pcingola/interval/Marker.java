@@ -104,10 +104,10 @@ public class Marker extends Interval implements TxtSerializable {
 			newMarker = applyDel(variant, lenChange);
 			break;
 
-		//		case MIXED:
-		//			lenChange = variant.lengthChange();
-		//			newMarker = applyMixed(variant, lenChange);
-		//			break;
+		case MIXED:
+			lenChange = variant.lengthChange();
+			newMarker = applyMixed(variant, lenChange);
+			break;
 
 		default:
 			// We are not ready for mixed changes
@@ -622,7 +622,8 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Calculate the effect of this variant
-	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
+	 * @param variantRef :	Before analyzing results, we have to change markers using variantrRef 
+	 * 						to create a new reference 'on the fly'
 	 */
 	public boolean variantEffectNonRef(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check

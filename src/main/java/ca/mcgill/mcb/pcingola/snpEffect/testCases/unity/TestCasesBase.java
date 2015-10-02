@@ -15,6 +15,7 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
@@ -87,7 +88,7 @@ public class TestCasesBase {
 	/**
 	 * Apply a variant to a transcript and check resulting CDS sequence, protein sequence and exon coordinates
 	 */
-	public void checkApply(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
+	public void checkApply(Variant variant, VariantType varType, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
 		Transcript newTr = transcript.apply(variant);
 
 		if (debug) {
@@ -110,6 +111,12 @@ public class TestCasesBase {
 			);
 		}
 
+		// Check that reference sequence matches chromosome
+		if (Math.random() < 2) throw new RuntimeException("CHECK CHROMO SEQUNECE!");
+
+		// Check variant type
+		if (Math.random() < 2) throw new RuntimeException("CHECK VARAINT TYPE!");
+
 		// Check sequences
 		Assert.assertEquals("CDS sequence should not change", expectedCds, newTr.cds());
 		if (expectedProtein != null) Assert.assertEquals("Protein sequence should not change", expectedProtein, newTr.protein());
@@ -118,6 +125,26 @@ public class TestCasesBase {
 		Exon newEx1 = newTr.sorted().get(1);
 		Assert.assertEquals("Exon start coordinate", expectedExon1Start, newEx1.getStart());
 		Assert.assertEquals("Exon end coordinate", expectedExon1End, newEx1.getEnd());
+	}
+
+	public void checkApplyDel(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
+		checkApply(variant, VariantType.INS, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
+	}
+
+	public void checkApplyIns(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
+		checkApply(variant, VariantType.INS, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
+	}
+
+	public void checkApplyMixed(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
+		checkApply(variant, VariantType.MIXED, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
+	}
+
+	public void checkApplyMnp(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
+		checkApply(variant, VariantType.MNP, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
+	}
+
+	public void checkApplySnp(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
+		checkApply(variant, VariantType.SNP, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
 	}
 
 	protected void checkEffect(Variant variant, EffectType effectExpected) {
