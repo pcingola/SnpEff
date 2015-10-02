@@ -24,7 +24,7 @@ uploadCore			:= false		help Upload 'core' package
 uploadDbs			:= false		help Upload all databases in 'zip' directory
 uploadDev			:= false		help Upload 'development' version
 uploadHtml 			:= false		help Upload weh pages
-zipGenome			:= ""			help Zip a specific genome
+string[] zipGenome	= []			help Zip a specific genome
 
 # Process us one CPU
 cpus = 1
@@ -539,6 +539,18 @@ void zipDb(string gen) {
 		zip := "$dirZip/snpEff_v" + versionUnd() + "_$gen.zip"
 		println "\tZIP '$zip'"
 		task( zip <- bin )	sys zip -r $zip data/$gen/*.bin
+	} else {
+		println "\tERROR: database $bin not found"
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Create databases (non-bundled) Zip files
+#-------------------------------------------------------------------------------
+
+void zipDbs(string[] gens) {
+	for( string gen : gens ) {
+		zipDb(gen)
 	}
 }
 
@@ -568,24 +580,24 @@ void zipDbs() {
 
 print("Building\n")
 
-if( args.isEmpty() )	build()					# No arguments? Build (create JAR files)
-if( bundleLists )		buildBundleLists()		# Create bundle list and config files
-if( config )			buildConfig()			# Create config file
-if( db )				buildDb()				# Build genomes
-if( dbTest )			buildDbTest()			# Build databases used in test cases
-if( distro )			makeDistro()			# Create distribution files
-if( distroCore )		zipCore()				# Create distribution files (core 'zip')
-if( distroBundles )		zipBundles()			# Create 'bundle' distribution files
-if( download )			downloadAll()			# Perform downloads
-if( make )				build()					# Build (create JAR files)
-if( query )				queryUcscAll()			# Query UCSC database
-if( test )				runTests()				# Run test cases 
-if( testHgvs )			runTestsSnpEffHgvs()	# Run test cases (SnpEff HGVS)
-if( uploadCore )		uploadCore2Sf()			# Upload 'core' files
-if( uploadDbs )			uploadDbs2Sf()			# Upload all database files in 'zip' dir
-if( uploadDev )			uploadDev2Sf()			# Upload 'development' version
-if( uploadHtml )		uploadHtml2Sf()			# Upload html pages
-if( zipGenome != '' )	zipDb(zipGenome)		# Zip only 'zipGenome' database
+if( args.isEmpty() )		build()					# No arguments? Build (create JAR files)
+if( bundleLists )			buildBundleLists()		# Create bundle list and config files
+if( config )				buildConfig()			# Create config file
+if( db )					buildDb()				# Build genomes
+if( dbTest )				buildDbTest()			# Build databases used in test cases
+if( distro )				makeDistro()			# Create distribution files
+if( distroCore )			zipCore()				# Create distribution files (core 'zip')
+if( distroBundles )			zipBundles()			# Create 'bundle' distribution files
+if( download )				downloadAll()			# Perform downloads
+if( make )					build()					# Build (create JAR files)
+if( query )					queryUcscAll()			# Query UCSC database
+if( test )					runTests()				# Run test cases 
+if( testHgvs )				runTestsSnpEffHgvs()	# Run test cases (SnpEff HGVS)
+if( uploadCore )			uploadCore2Sf()			# Upload 'core' files
+if( uploadDbs )				uploadDbs2Sf()			# Upload all database files in 'zip' dir
+if( uploadDev )				uploadDev2Sf()			# Upload 'development' version
+if( uploadHtml )			uploadHtml2Sf()			# Upload html pages
+if( !zipGenome.isEmpty() )	zipDbs(zipGenome)		# Zip only 'zipGenome' database
 
 wait
 print("Done\n")

@@ -45,7 +45,6 @@ public class SnpEffCmdClosest extends SnpEff {
 
 	/**
 	 * Update header
-	 * @param vcf
 	 */
 	void addHeaderLines(VcfFileIterator vcf) {
 		vcf.getVcfHeader().addLine("##SnpEffVersion=\"" + SnpEff.VERSION + "\"");
@@ -105,7 +104,6 @@ public class SnpEffCmdClosest extends SnpEff {
 
 	/**
 	 * Find closest marker
-	 * @param queryMarker
 	 */
 	Markers findClosestMarker(Marker queryMarker) {
 		int initialExtension = 1000;
@@ -138,9 +136,6 @@ public class SnpEffCmdClosest extends SnpEff {
 
 	/**
 	 * Find closest marker to query (in markers collection)
-	 * @param queryMarker
-	 * @param markers
-	 * @return
 	 */
 	Markers findClosestMarkers(Marker queryMarker, Markers markers, int maxDistance) {
 		Markers closest = new Markers();
@@ -167,8 +162,6 @@ public class SnpEffCmdClosest extends SnpEff {
 
 	/**
 	 * Find a transcript
-	 * @param m
-	 * @return
 	 */
 	Transcript findTranscript(Marker m) {
 		if (m instanceof Transcript) return (Transcript) m;
@@ -177,9 +170,6 @@ public class SnpEffCmdClosest extends SnpEff {
 
 	/**
 	 * Find minimum distance
-	 * @param queryMarker
-	 * @param markers
-	 * @return minumum distance
 	 */
 	int minDistance(Marker queryMarker, Markers markers) {
 		int minDist = Integer.MAX_VALUE;
@@ -201,15 +191,25 @@ public class SnpEffCmdClosest extends SnpEff {
 	public void parseArgs(String[] args) {
 		this.args = args;
 		for (int i = 0; i < args.length; i++) {
+			String arg = args[i];
 
-			// Argument starts with '-'?
-			if (isOpt(args[i])) {
-				if (args[i].equals("-bed")) bedFormat = true;
-				else if (args[i].equals("-tss")) tss = true;
-				else usage("Unknown option '" + args[i] + "'");
-			} else if (genomeVer.isEmpty()) genomeVer = args[i];
-			else if (inFile == null) inFile = args[i];
-			else usage("Unknown parameter '" + args[i] + "'");
+			// Command line arguments?
+			if (isOpt(arg)) {
+				switch (arg) {
+				case "-bed":
+					bedFormat = true;
+					break;
+
+				case "-tss":
+					tss = true;
+					break;
+
+				default:
+					usage("Unknown option '" + arg + "'");
+				}
+			} else if (genomeVer.isEmpty()) genomeVer = arg;
+			else if (inFile == null) inFile = arg;
+			else usage("Unknown parameter '" + arg + "'");
 		}
 
 		// Check: Do we have all required parameters?
@@ -219,9 +219,6 @@ public class SnpEffCmdClosest extends SnpEff {
 
 	/**
 	 * Calculate distance to report
-	 * @param closestMarkers
-	 * @param queryMarker
-	 * @return
 	 */
 	int reportDistance(Markers closestMarkers, Marker queryMarker) {
 		Marker firstMarker = closestMarkers.getMarkers().get(0); // If there is more than one marker, they are at the same distance, so we just report the distance to the first one
