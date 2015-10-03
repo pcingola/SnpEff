@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import net.sf.samtools.util.BlockCompressedInputStream;
 
@@ -375,8 +376,13 @@ public class TabixReader implements Iterable<String> {
 		readIndex();
 	}
 
-	private int chr2tid(final String chr) {
+	private int chr2tid(String chr) {
 		if (sequenceName2tid.containsKey(chr)) return sequenceName2tid.get(chr);
+
+		// Try simple chromosome names (no 'chr')
+		chr = Chromosome.simpleName(chr);
+		if (sequenceName2tid.containsKey(chr)) return sequenceName2tid.get(chr);
+
 		else return -1;
 	}
 
@@ -635,10 +641,14 @@ public class TabixReader implements Iterable<String> {
 			if (buf[i] == 0) {
 				byte[] b = new byte[i - j];
 				System.arraycopy(buf, j, b, 0, b.length);
-				String s = new String(b);
-				if (debug) Gpr.debug("sequenceNames[" + tid + "] = s: '" + s);
-				sequenceName2tid.put(s, tid);
-				sequenceNames[tid++] = s;
+				String chrName = new String(b);
+
+				// Add chromosome mapping
+				if (debug) Gpr.debug("sequenceNames[" + tid + "] = s: '" + chrName + "'");
+				sequenceName2tid.put(chrName, tid);
+				sequenceName2tid.put(Chromosome.simpleName(chrName), tid); // Add simple name as well
+
+				sequenceNames[tid++] = chrName;
 				j = i + 1;
 			}
 		}
