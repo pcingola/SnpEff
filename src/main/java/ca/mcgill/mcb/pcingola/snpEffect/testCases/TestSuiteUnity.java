@@ -10,7 +10,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntro
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesAlign;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyDel;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyIns;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyMixed;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyMnp;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplySnp;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBinomial;
@@ -64,7 +63,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesAnn.class, //
 		TestCasesApplyDel.class, //
 		TestCasesApplyIns.class, //
-		TestCasesApplyMixed.class, // This is not finished
+		//		TestCasesApplyMixed.class, // This is not finished
 		TestCasesApplyMnp.class, //
 		TestCasesApplySnp.class, //
 		TestCasesBinomial.class, //

@@ -144,7 +144,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	public void test_apply_variant_09() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(transcript.getParent(), 410, "ACG", "");
+		Variant variant = new Variant(transcript.getParent(), 410, "AGC", "");
 		checkApplyDel(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
 	}
 

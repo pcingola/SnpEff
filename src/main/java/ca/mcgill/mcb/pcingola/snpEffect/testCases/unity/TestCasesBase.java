@@ -112,10 +112,13 @@ public class TestCasesBase {
 		}
 
 		// Check that reference sequence matches chromosome
-		if (Math.random() < 2) throw new RuntimeException("CHECK CHROMO SEQUNECE!");
+		if (!variant.getReference().isEmpty()) {
+			String chrSeq = chromoSequence.substring(variant.getStart(), variant.getEnd() + 1);
+			Assert.assertEquals("Reference sequence does not match: " + chrSeq + " vs " + variant.getReference(), chrSeq, variant.getReference());
+		}
 
 		// Check variant type
-		if (Math.random() < 2) throw new RuntimeException("CHECK VARAINT TYPE!");
+		Assert.assertEquals("Variant type does not match: " + varType + " vs " + variant.getVariantType(), varType, variant.getVariantType());
 
 		// Check sequences
 		Assert.assertEquals("CDS sequence should not change", expectedCds, newTr.cds());
@@ -128,7 +131,7 @@ public class TestCasesBase {
 	}
 
 	public void checkApplyDel(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
-		checkApply(variant, VariantType.INS, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
+		checkApply(variant, VariantType.DEL, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
 	}
 
 	public void checkApplyIns(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
