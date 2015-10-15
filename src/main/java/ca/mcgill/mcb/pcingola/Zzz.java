@@ -1,15 +1,23 @@
 package ca.mcgill.mcb.pcingola;
 
+import java.io.File;
+import java.io.IOException;
+
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 public class Zzz extends SnpEff {
 
 	public static void main(String[] args) {
-		String header = ">ENSTTRT00000007616 ensembl_projection:known_by_projection scaffold:turTru1:scaffold_113855:40787:62938:1 gene:ENSTTRG00000007618 gene_biotype:protein_coding transcript_biotype:protein_coding";
 
-		String l[] = header.substring(1).split("[ \t:;,]");
-		for (String s : l)
-			System.out.println("'" + s + "'");
-
+		String fileName = Gpr.HOME + "/workspace";
+		File file = new File(fileName);
+		try {
+			System.out.println("Canonical : " + file.getCanonicalPath());
+			System.out.println("Absolute  : " + file.getAbsolutePath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
