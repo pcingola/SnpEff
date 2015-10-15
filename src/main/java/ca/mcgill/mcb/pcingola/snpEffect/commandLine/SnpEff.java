@@ -1081,7 +1081,6 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-dataDir <path>              : Override data_dir parameter from config file.");
 		System.err.println("\t-download                    : Download a SnpEff database, if not available locally. Default: " + download);
 		System.err.println("\t-nodownload                  : Do not download a SnpEff database, if not available locally.");
-		System.err.println("\t-noShiftHgvs                 : Do not shift variants towards most 3-prime position (as required by HGVS).");
 		System.err.println("\t-h , -help                   : Show this help and exit");
 		System.err.println("\t-noLog                       : Do not report usage statistics to server");
 		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
