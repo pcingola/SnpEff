@@ -57,6 +57,7 @@ public class Config implements Serializable, Iterable<String> {
 	boolean errorOnMissingChromo; // Error if chromosome is missing
 	boolean errorChromoHit; // Error if chromosome is not hit in a query
 	boolean shiftHgvs = true; // Shift variants according to HGVS notation (towards the most 3prime possible coordinate)
+	boolean useHgvs = true; // Use HGVS notation?
 	double lofIgnoreProteinCodingAfter;
 	double lofIgnoreProteinCodingBefore;
 	double lofDeleteProteinCodingBases;
@@ -449,6 +450,10 @@ public class Config implements Serializable, Iterable<String> {
 		return treatAllAsProteinCoding;
 	}
 
+	public boolean isUseHgvs() {
+		return useHgvs;
+	}
+
 	public boolean isVerbose() {
 		return verbose;
 	}
@@ -677,6 +682,10 @@ public class Config implements Serializable, Iterable<String> {
 
 	public void setTreatAllAsProteinCoding(boolean treatAllAsProteinCoding) {
 		this.treatAllAsProteinCoding = treatAllAsProteinCoding;
+	}
+
+	public void setUseHgvs(boolean useHgvs) {
+		this.useHgvs = useHgvs;
 	}
 
 	public void setVerbose(boolean verbose) {
