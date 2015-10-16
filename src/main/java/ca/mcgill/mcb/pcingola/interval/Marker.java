@@ -88,24 +88,20 @@ public class Marker extends Interval implements TxtSerializable {
 		switch (variant.getVariantType()) {
 		case SNP:
 		case MNP:
-			// Variant does not change length?
-			// No effect when applying (all coordinates remain the same)
+			// Variant does not change length. No effect when applying (all coordinates remain the same)
 			newMarker = this;
 			break;
 
 		case INS:
-			int lenChange = variant.lengthChange();
-			newMarker = applyIns(variant, lenChange);
+			newMarker = applyIns(variant);
 			break;
 
 		case DEL:
-			lenChange = variant.lengthChange();
-			newMarker = applyDel(variant, lenChange);
+			newMarker = applyDel(variant);
 			break;
 
 		case MIXED:
-			lenChange = variant.lengthChange();
-			newMarker = applyMixed(variant, lenChange);
+			newMarker = applyMixed(variant);
 			break;
 
 		default:
@@ -115,27 +111,27 @@ public class Marker extends Interval implements TxtSerializable {
 
 		// Always return a copy of the marker (if the variant is applied)
 		if (newMarker == this) return cloneShallow();
-
 		return newMarker;
 	}
 
 	/**
 	 * Apply a Variant to a marker. Variant is a deletion
 	 */
-	protected Marker applyDel(Variant variant, int lenChange) {
+	protected Marker applyDel(Variant variant) {
 		Marker m = cloneShallow();
 
-		if (variant.getEnd() < start) {
+		if (variant.getEnd() < m.start) {
 			// Deletion before start: Adjust coordinates
+			int lenChange = variant.lengthChange();
 			m.start += lenChange;
 			m.end += lenChange;
-		} else if (variant.includes(this)) {
+		} else if (variant.includes(m)) {
 			// Deletion completely includes this marker => The whole marker deleted
 			return null;
-		} else if (includes(variant)) {
+		} else if (m.includes(variant)) {
 			// This marker completely includes the deletion, but deletion does not include
 			// marker. Marker is shortened (i.e. only 'end' coordinate needs to be updated)
-			m.end += lenChange;
+			m.end += variant.lengthChange();
 		} else {
 			// Variant is partially included in this marker.
 			// This is treated as three different type of deletions:
@@ -157,7 +153,7 @@ public class Marker extends Interval implements TxtSerializable {
 			m.end -= (iend - istart + 1); // Update end coordinate
 
 			// Part 3: Deletion before the marker
-			if (variant.getStart() < start) {
+			if (variant.getStart() < m.start) {
 				// Update coordinates shifting the marker to the left
 				int delta = m.start - variant.getStart();
 				m.start -= delta;
@@ -171,16 +167,17 @@ public class Marker extends Interval implements TxtSerializable {
 	/**
 	 * Apply a Variant to a marker. Variant is an insertion
 	 */
-	protected Marker applyIns(Variant variant, int lenChange) {
+	protected Marker applyIns(Variant variant) {
 		Marker m = cloneShallow();
 
-		if (variant.getStart() < start) {
+		if (variant.getStart() < m.start) {
 			// Insertion point before marker start? => Adjust both coordinates
+			int lenChange = variant.lengthChange();
 			m.start += lenChange;
 			m.end += lenChange;
-		} else if (variant.getStart() <= end) {
+		} else if (variant.getStart() <= m.end) {
 			// Insertion point after start, but before end? => Adjust end coordinate
-			m.end += lenChange;
+			m.end += variant.lengthChange();
 		} else {
 			// Insertion point after end, no effect on marker coordinates
 		}
@@ -190,30 +187,17 @@ public class Marker extends Interval implements TxtSerializable {
 
 	/**
 	 * Apply a mixed variant
-	 * MIXED variant is interpreted as "MNP + InDel" or "InDel + MNP"
+	 * Note: MIXED variant is interpreted as "MNP + InDel"
 	 */
-	protected Marker applyMixed(Variant variant, int lenChange) {
-		Marker m = cloneShallow();
+	protected Marker applyMixed(Variant variant) {
+		// Decompose variant into simple variants
+		Variant variants[] = variant.decompose();
 
-		if (includes(variant)) {
-			// This marker completely includes the variant.
-			// Marker is shortened (i.e. only 'end' coordinate needs to be updated)
-			m.end += lenChange;
-		} else if (variant.includes(this)) {
-			// Variant completely includes this marker => The whole marker
-			// replaced but coordinates do not change (i.e. MNP + InDel )
-			throw new RuntimeException("Unimplemented");
-			// return m;
-		} else if (variant.getStart() < start) {
-			// Variant before start: Adjust coordinates
-			// In this case we can see the variant as a InDel (at the
-			// start coordinate) followed by a MNP.
-			m.start += lenChange;
-			m.end += lenChange;
-		} else {
-			// This marker includes the variant.
-			// Marker is shortened (i.e. only 'end' coordinate needs to be updated)
-			m.end += lenChange;
+		// Apply each basic variant progressively
+		Marker m = this;
+		for (Variant var : variants) {
+			m = m.apply(var);
+			if (m == null) return null;
 		}
 
 		return m;
