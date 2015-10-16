@@ -207,6 +207,13 @@ public class MarkerSeq extends Marker {
 		return basesAt(index, len);
 	}
 
+	@Override
+	public MarkerSeq cloneShallow() {
+		MarkerSeq clone = (Exon) super.cloneShallow();
+		clone.sequence = sequence.clone();
+		return clone;
+	}
+
 	/**
 	 * Get sequence
 	 *

@@ -51,6 +51,12 @@ public class DnaSequence extends BinarySequence {
 	}
 
 	@Override
+	public DnaSequence clone() {
+		DnaSequence clone = (DnaSequence) super.clone();
+		return clone;
+	}
+
+	@Override
 	public int compareTo(BinarySequence o) {
 		DnaSequence bs = (DnaSequence) o;
 		int minlen = Math.min(length, bs.length);

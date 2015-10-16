@@ -21,6 +21,7 @@ public class TestCasesApplySnp extends TestCasesBaseApply {
 	@Test
 	public void test_apply_variant_01() {
 		Gpr.debug("Test");
+		verbose = true;
 
 		Variant variant = new Variant(transcript.getParent(), 290, "T", "A");
 		checkApplySnp(variant, transcript.cds(), transcript.protein(), 1, 300, 399);
