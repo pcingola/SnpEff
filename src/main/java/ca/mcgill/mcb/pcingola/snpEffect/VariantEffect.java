@@ -508,6 +508,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Change in HGVS notation
 	 */
 	public String getHgvs() {
+		if (!Config.get().isUseHgvs()) return "";
+
 		// Calculate protein level and dna level changes
 		String hgvsProt = getHgvsProt();
 		String hgvsDna = getHgvsDna();
@@ -527,6 +529,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Change in HGVS (Dna) notation
 	 */
 	public String getHgvsDna() {
+		if (!Config.get().isUseHgvs()) return "";
+
 		HgvsDna hgvsDna = new HgvsDna(this);
 		String hgvs = hgvsDna.toString();
 		return hgvs != null ? hgvs : "";
@@ -536,6 +540,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	 * Change in HGVS (Protein) notation
 	 */
 	public String getHgvsProt() {
+		if (!Config.get().isUseHgvs()) return "";
+
 		HgvsProtein hgvsProtein = new HgvsProtein(this);
 		String hgvs = hgvsProtein.toString();
 		return hgvs != null ? hgvs : "";

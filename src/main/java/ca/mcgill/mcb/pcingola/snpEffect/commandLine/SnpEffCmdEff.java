@@ -714,6 +714,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 					case "-nohgvs":
 						useHgvs = false; // Do not use HGVS notation
+						shiftHgvs = false;
 						break;
 
 					case "-geneid":
@@ -938,6 +939,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		loadDb(); // Load database
 
 		// Set some configuration options
+		config.setUseHgvs(useHgvs);
 		config.setShiftHgvs(useHgvs && shiftHgvs);
 
 		// Check if we can open the input file (no need to check if it is STDIN)

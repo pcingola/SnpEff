@@ -469,21 +469,22 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 		// Shift variant towards the most 3-prime end
 		// This is done in order to comply with HGVS notation
 		//---
-
-		// Keep track of the original variants, just in case it is changed
-		Variant variantOri = variant;
-		// Do we need to 'walk and roll'? I.e. align variant towards the most 3-prime
-		// end of the transcript? Note that VCF request variants to be aligned towards
-		// the 'leftmost' coordinate, so this re-alignment is only required for variants
-		// within transcripts on the positive strand.
-		//---
 		boolean shifted3prime = false;
-		if (!variant.isSnp() && Config.get().isShiftHgvs() && isStrandPlus()) {
-			// Get sequence information. Might have to load sequences from database
-			variant = variant.realignLeft();
+		if (Config.get().isShiftHgvs()) {
+			// Keep track of the original variants, just in case it is changed
+			Variant variantOri = variant;
+			// Do we need to 'walk and roll'? I.e. align variant towards the most 3-prime
+			// end of the transcript? Note that VCF request variants to be aligned towards
+			// the 'leftmost' coordinate, so this re-alignment is only required for variants
+			// within transcripts on the positive strand.
+			//---
+			if (!variant.isSnp() && Config.get().isShiftHgvs() && isStrandPlus()) {
+				// Get sequence information. Might have to load sequences from database
+				variant = variant.realignLeft();
 
-			// Created a new variant? => It was shifted towards the left (i.e. 3-prime)
-			shifted3prime = (variant != variantOri);
+				// Created a new variant? => It was shifted towards the left (i.e. 3-prime)
+				shifted3prime = (variant != variantOri);
+			}
 		}
 
 		//---
