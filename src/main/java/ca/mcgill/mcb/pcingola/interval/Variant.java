@@ -168,6 +168,32 @@ public class Variant extends Marker {
 		return clone;
 	}
 
+	/**
+	 * Decompose a variant into basic constituents
+	 * At the moment this only makes sense for MIXED variants which
+	 * are decomposed into two variants: MNP + InDel
+	 */
+	public Variant[] decompose() {
+		if (variantType != VariantType.MIXED) throw new RuntimeException("Cannot decompose variant type " + variantType + ":\n\t" + this);
+
+		Variant varMnp = null, varInDel = null;
+		if (ref.length() < alt.length()) {
+			// MNP + INS
+			varMnp = new Variant(getChromosome(), start, ref, alt.substring(0, ref.length()), id + "_MNP");
+			varInDel = new Variant(getChromosome(), start + ref.length(), "", alt.substring(ref.length()), id + "_INS");
+		} else {
+			// MNP + DEL
+			varMnp = new Variant(getChromosome(), start, ref.substring(0, alt.length()), alt, id + "_MNP");
+			varInDel = new Variant(getChromosome(), start + alt.length(), ref.substring(alt.length()), "", id + "_DEL");
+		}
+
+		Variant[] variants = new Variant[2];
+		variants[0] = varMnp;
+		variants[1] = varInDel;
+
+		return variants;
+	}
+
 	public String getAlt() {
 		return alt;
 	}

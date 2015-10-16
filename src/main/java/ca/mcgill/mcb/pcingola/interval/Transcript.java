@@ -1722,6 +1722,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Create 'vertical lines'
 		StringBuilder lines = new StringBuilder();
+		lines.append(' ');
 		int prev = start;
 		for (Exon ex : this.sorted()) {
 			lines.append(Gpr.repeat(' ', ex.getStart() - prev - 1) + "|");
@@ -1742,12 +1743,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		for (Exon ex : exons) {
 			// Right-side coordinate
 			n = ex.getEnd();
-			len = n - start;
+			len = n - start + 1;
 			coords.append((len > 0 ? lines.subSequence(0, len) : "") + "^" + n + "\n");
 
 			// Left-side coordinate
 			n = ex.getStart();
-			len = n - start;
+			len = n - start + 1;
 			coords.append((len > 0 ? lines.subSequence(0, len) : "") + "^" + n + "\n");
 		}
 

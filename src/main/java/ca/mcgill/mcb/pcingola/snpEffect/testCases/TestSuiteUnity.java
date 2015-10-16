@@ -10,6 +10,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntro
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesAlign;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyDel;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyIns;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyMixed;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplyMnp;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesApplySnp;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBinomial;
@@ -50,6 +51,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSequenceIndexer
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSnps;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSpliceRegion;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesSpliceSite;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVariantDecompose;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVariantRealignment;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 
@@ -63,7 +65,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesAnn.class, //
 		TestCasesApplyDel.class, //
 		TestCasesApplyIns.class, //
-		//		TestCasesApplyMixed.class, // This is not finished
+		TestCasesApplyMixed.class, //
 		TestCasesApplyMnp.class, //
 		TestCasesApplySnp.class, //
 		TestCasesBinomial.class, //
@@ -107,6 +109,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesSnps.class, //
 		TestCasesSpliceSite.class, //
 		TestCasesSpliceRegion.class, //
+		TestCasesVariantDecompose.class, //
 		TestCasesVariantRealignment.class, //
 		TestCasesVcf.class //
 

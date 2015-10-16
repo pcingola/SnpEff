@@ -70,9 +70,12 @@ public class MarkerSeq extends Marker {
 				applyMnp(variant, newMarkerSeq);
 				break;
 
-			//			case MIXED:
-			//				applyMixed(variant, newMarkerSeq);
-			//				break;
+			case MIXED:
+				// When applying a MIXED variant, it is decomposed into two
+				// variants (MNP+InDel) and each of them is applied to the
+				// marker. So at this point the variants have been fully
+				// applied and there is no need for further processing.
+				break;
 
 			default:
 				throw new RuntimeException("Unimplemented method for variant change type " + variant.getVariantType() + "\n\tVariant: " + variant);
@@ -119,26 +122,26 @@ public class MarkerSeq extends Marker {
 		markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
 	}
 
-	/**
-	 * Apply a change type deletion (update sequence)
-	 */
-	protected void applyMixed(Variant variant, MarkerSeq markerSeq) {
-		// Get sequence in positive strand direction
-		String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
-
-		// Apply change to sequence
-		int idxStart = variant.getStart() - start;
-		int idxEnd = idxStart + variant.size();
-
-		StringBuilder newSeq = new StringBuilder();
-		if (idxStart >= 0) newSeq.append(seq.substring(0, idxStart));
-		newSeq.append(variant.getAlt().toLowerCase());
-		if (idxEnd >= 0 && (idxEnd < seq.length())) newSeq.append(seq.substring(idxEnd));
-
-		// Update sequence
-		seq = newSeq.toString();
-		markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
-	}
+	//	/**
+	//	 * Apply a change type deletion (update sequence)
+	//	 */
+	//	protected void applyMixed(Variant variant, MarkerSeq markerSeq) {
+	//		// Get sequence in positive strand direction
+	//		String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
+	//
+	//		// Apply change to sequence
+	//		int idxStart = variant.getStart() - start;
+	//		int idxEnd = idxStart + variant.size();
+	//
+	//		StringBuilder newSeq = new StringBuilder();
+	//		if (idxStart >= 0) newSeq.append(seq.substring(0, idxStart));
+	//		newSeq.append(variant.getAlt().toLowerCase());
+	//		if (idxEnd >= 0 && (idxEnd < seq.length())) newSeq.append(seq.substring(idxEnd));
+	//
+	//		// Update sequence
+	//		seq = newSeq.toString();
+	//		markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
+	//	}
 
 	/**
 	 * Apply a change type MNP (update sequence)
@@ -209,7 +212,7 @@ public class MarkerSeq extends Marker {
 
 	@Override
 	public MarkerSeq cloneShallow() {
-		MarkerSeq clone = (Exon) super.cloneShallow();
+		MarkerSeq clone = (MarkerSeq) super.cloneShallow();
 		clone.sequence = sequence.clone();
 		return clone;
 	}
