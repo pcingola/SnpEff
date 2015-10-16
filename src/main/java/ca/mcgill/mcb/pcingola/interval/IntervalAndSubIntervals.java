@@ -76,22 +76,28 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	public IntervalAndSubIntervals<T> apply(Variant variant) {
 		if (!shouldApply(variant)) return this;
 
+		// Apply to Marker
 		IntervalAndSubIntervals<T> newMarker = (IntervalAndSubIntervals<T>) super.apply(variant);
 		if (newMarker == null) return null;
-
-		// Sanity check
 		if (newMarker == this) {
-			RuntimeException r = new RuntimeException("New marker is the same as original marker after super.apply(). This should never happen!\n\tvariant: " + variant + "\n\tthis: " + this + "\n");
-			r.printStackTrace();
-			throw r;
+			// Sanity check: At this time the new Marker should be different than 'this'
+			throw new RuntimeException("This should never happen!" //
+					+ "\n\tApply error: New marker is the same as original marker after super.apply()." //
+					+ "\n\tvariant: " + variant //
+					+ "\n\tthis: " + this //
+					+ "\n");
 		}
-		newMarker.reset();
 
+		// Now apply to all sub-markers
+		newMarker.reset();
 		for (T m : this) {
 			T mcopy = (T) m.apply(variant);
 
 			// Do not add if interval is completely removed
 			if (mcopy != null) {
+				// Make sure we don't modify the original subinterval.
+				if (mcopy == m) mcopy = (T) m.cloneShallow();
+
 				mcopy.setParent(newMarker);
 				newMarker.add(mcopy);
 			}
