@@ -32,9 +32,9 @@ import ca.mcgill.mcb.pcingola.util.Timer;
  */
 public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 
-    	private static final long serialVersionUID = 2339867422366567569L;
+	private static final long serialVersionUID = 2339867422366567569L;
 
-    	public static final int MAX_ITERATIONS = 1000000;
+	public static final int MAX_ITERATIONS = 1000000;
 
 	public static boolean debug = false;
 	public static boolean verbose = false;
