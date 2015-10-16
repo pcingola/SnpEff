@@ -289,6 +289,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					newUtr.setParent(newExon);
 					newTr.utrs.add(newUtr);
 				} else {
+					// This should never happen since deleting the UTR should also delete the exon
 					throw new RuntimeException("Error applying variant: Could not find 'new' parent exon for 'new' UTR" //
 							+ "\n\t\tVariant           : " + variant //
 							+ "\n" //

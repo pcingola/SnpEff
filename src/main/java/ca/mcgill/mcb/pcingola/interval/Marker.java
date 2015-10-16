@@ -85,7 +85,6 @@ public class Marker extends Interval implements TxtSerializable {
 		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are suported!\n\tVariant : " + variant);
 
 		Marker newMarker = null;
-
 		switch (variant.getVariantType()) {
 		case SNP:
 		case MNP:

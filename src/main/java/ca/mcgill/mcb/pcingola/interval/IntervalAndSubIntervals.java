@@ -78,7 +78,9 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 		IntervalAndSubIntervals<T> newMarker = (IntervalAndSubIntervals<T>) super.apply(variant);
 		if (newMarker == null) return null;
-		if (newMarker != this) {
+
+		// Sanity check
+		if (newMarker == this) {
 			RuntimeException r = new RuntimeException("New marker is the same as original marker after super.apply(). This should never happen!\n\tvariant: " + variant + "\n\tthis: " + this + "\n");
 			r.printStackTrace();
 			throw r;
