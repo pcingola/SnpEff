@@ -1063,7 +1063,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\tlen                          : Calculate total genomic length for each marker type.");
 		System.err.println("\tprotein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
 		System.err.println("\tshow                         : Show a text representation of genes or transcripts coordiantes, DNA sequence and protein sequence.");
-		System.err.println("\tspliceAnalysis               : Perform an analysis of splice sites. Experimental feature.");
+		// System.err.println("\tspliceAnalysis               : Perform an analysis of splice sites. Experimental feature.");
 
 		usageGenericAndDb();
 
