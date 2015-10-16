@@ -35,7 +35,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	/**
 	 * Add a subinterval
 	 */
-	public void add(T t) {
+	public synchronized void add(T t) {
 		if (subIntervals.put(t.getId(), t) != null) {
 			// Keys should be unique
 			throw new RuntimeException(t.getClass().getSimpleName() //
@@ -178,7 +178,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	/**
 	 * Remove a subinterval
 	 */
-	public void remove(T t) {
+	public synchronized void remove(T t) {
 		subIntervals.remove(t.getId());
 		invalidateSorted();
 	}
