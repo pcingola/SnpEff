@@ -78,7 +78,8 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 		IntervalAndSubIntervals<T> newMarker = (IntervalAndSubIntervals<T>) super.apply(variant);
 		if (newMarker == null) return null;
-		newMarker.reset();
+		if (newMarker != this) newMarker.reset();
+		else throw new RuntimeException("New marker is the same as original marker after super.apply(). This should never happen!");
 
 		for (T m : this) {
 			T mcopy = (T) m.apply(variant);
@@ -139,7 +140,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 	@Override
 	public Iterator<T> iterator() {
-		return subIntervals.values().iterator();
+		return subIntervals().iterator();
 	}
 
 	/**
@@ -147,7 +148,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	 */
 	public Markers markers() {
 		Markers markers = new Markers();
-		markers.addAll(subIntervals.values());
+		markers.addAll(subIntervals());
 		return markers;
 	}
 
@@ -185,7 +186,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	/**
 	 * Remove all intervals
 	 */
-	public void reset() {
+	public synchronized void reset() {
 		subIntervals = new HashMap<String, T>();
 		invalidateSorted();
 	}
@@ -211,7 +212,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		return super.serializeSave(markerSerializer) //
-				+ "\t" + markerSerializer.save((Collection<Marker>) subIntervals.values()) //
+				+ "\t" + markerSerializer.save((Collection<Marker>) subIntervals()) //
 				;
 	}
 
@@ -230,7 +231,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	public void shiftCoordinates(int shift) {
 		super.shiftCoordinates(shift);
 
-		for (T m : subIntervals.values())
+		for (T m : subIntervals())
 			m.shiftCoordinates(shift);
 	}
 
@@ -239,9 +240,11 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	 */
 	public synchronized List<T> sorted() {
 		if (sorted != null) return sorted;
-		sorted = new ArrayList<T>();
-		sorted.addAll(subIntervals.values());
+		ArrayList<T> sorted = new ArrayList<T>();
+		sorted.addAll(subIntervals());
 		Collections.sort(sorted);
+
+		this.sorted = sorted;
 		return sorted;
 	}
 
@@ -252,19 +255,20 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	public synchronized List<T> sortedStrand() {
 		if (sortedStrand != null) return sortedStrand;
 
-		sortedStrand = new ArrayList<T>();
-		sortedStrand.addAll(subIntervals.values());
+		ArrayList<T> sortedStrand = new ArrayList<T>();
+		sortedStrand.addAll(subIntervals());
 
 		if (isStrandPlus()) Collections.sort(sortedStrand, new IntervalComparatorByStart()); // Sort by start position
 		else Collections.sort(sortedStrand, new IntervalComparatorByEnd(true)); // Sort by end position (reversed)
 
+		this.sortedStrand = sortedStrand;
 		return sortedStrand;
 	}
 
 	/**
 	 * Return a collection of sub intervals
 	 */
-	public Collection<T> subintervals() {
+	public Collection<T> subIntervals() {
 		return subIntervals.values();
 	}
 

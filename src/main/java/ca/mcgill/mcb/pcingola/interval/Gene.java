@@ -250,7 +250,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 		if (canonical != null) {
 			// Remove all other transcripts
 			ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
-			toDelete.addAll(subIntervals.values());
+			toDelete.addAll(subIntervals());
 			toDelete.remove(canonical); // Do not remove canonical transcript.
 
 			// Remove all other transcripts

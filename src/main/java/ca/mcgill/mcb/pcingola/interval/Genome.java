@@ -453,7 +453,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				if (tr.isDnaCheck()) countCheckDna++;
 
 				int numCds = tr.getCds().size();
-				int numExons = tr.subintervals().size();
+				int numExons = tr.subIntervals().size();
 
 				countTranscripts++;
 				countExons += numExons;

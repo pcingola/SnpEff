@@ -154,7 +154,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		if (utr3size > 0) {
 			// Create UTR3
 			List<Exon> exons = new ArrayList<Exon>();
-			exons.addAll(tr.subintervals());
+			exons.addAll(tr.subIntervals());
 			Collections.sort(exons, new IntervalComparatorByEnd(tr.isStrandPlus()));
 
 			for (Exon ex : exons) {

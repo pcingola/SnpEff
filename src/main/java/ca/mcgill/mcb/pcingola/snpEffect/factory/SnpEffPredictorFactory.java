@@ -96,7 +96,7 @@ public abstract class SnpEffPredictorFactory {
 			if (oldex.includes(exon)) return; // Redundant, just ignore it.
 
 			// Create a new exon with same info and different 'id'
-			exon = new Exon(tr, exon.getStart(), exon.getEnd(), exon.isStrandMinus(), exon.getId() + "_" + tr.subintervals().size(), exon.getRank());
+			exon = new Exon(tr, exon.getStart(), exon.getEnd(), exon.isStrandMinus(), exon.getId() + "_" + tr.subIntervals().size(), exon.getRank());
 		}
 
 		// Add exon

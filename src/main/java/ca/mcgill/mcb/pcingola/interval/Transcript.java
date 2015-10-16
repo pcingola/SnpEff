@@ -554,7 +554,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Collapse Exons
 		//---
 		Markers markers = new Markers();
-		markers.addAll(subintervals());
+		markers.addAll(subIntervals());
 		Map<Marker, Marker> collapse = MarkerUtil.collapseZeroGap(markers); // Create a map of collapsed exons
 
 		// Replace exons
@@ -699,7 +699,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		//---
 		// Delete redundant exons
 		//---
-		Map<Marker, Marker> includedIn = MarkerUtil.redundant(subintervals());
+		Map<Marker, Marker> includedIn = MarkerUtil.redundant(subIntervals());
 		for (Marker exon : includedIn.keySet()) {
 			ret = true;
 			remove((Exon) exon);
@@ -1342,8 +1342,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	@Override
 	public Markers markers() {
 		Markers markers = new Markers();
-		markers.addAll(subIntervals.values());
-		//		markers.addAll(spliceSites);
+		markers.addAll(subIntervals());
 		markers.addAll(utrs);
 		markers.addAll(cdss);
 		markers.add(upstream);
@@ -1735,7 +1734,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		coords.append(lines + "\n");
 
 		ArrayList<Exon> exons = new ArrayList<>();
-		exons.addAll(subintervals());
+		exons.addAll(subIntervals());
 		Collections.sort(exons, new IntervalComparatorByStart(true)); // Sort by reverse position
 
 		int n, len;
