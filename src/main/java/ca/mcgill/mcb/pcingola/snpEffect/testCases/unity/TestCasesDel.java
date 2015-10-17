@@ -113,8 +113,11 @@ public class TestCasesDel {
 		int countMatch = 0;
 		VariantEffects effectsAll = snpEffectPredictor.variantEffect(var);
 		for (VariantEffect eff : effectsAll) {
-			if (verbose) System.out.println("\t" + eff.getEffectTypeString(false) + "\t" + eff);
-			if (eff.getEffectType() == EffectType.TRANSCRIPT_DELETED) countMatch++;
+			if (verbose) System.out.println("\t" + eff.getEffectTypeString(false) + "\tHGVS.p: '" + eff.getHgvsProt() + "'");
+			if (eff.getEffectType() == EffectType.TRANSCRIPT_DELETED) {
+				countMatch++;
+				Assert.assertEquals("HGVS.p notation error", "p.0?", eff.getHgvsProt());
+			}
 		}
 		Assert.assertTrue("No variant effects found", countMatch > 0);
 	}
