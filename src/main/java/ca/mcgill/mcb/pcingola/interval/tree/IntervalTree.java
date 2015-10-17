@@ -22,7 +22,6 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 	private IntervalNode head;
 	private final Markers intervals;
 	private boolean inSync;
-	private int size;
 
 	/**
 	 * Instantiate a new interval tree with no intervals
@@ -31,7 +30,6 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 		head = new IntervalNode();
 		intervals = new Markers();
 		inSync = true;
-		size = 0;
 	}
 
 	/**
@@ -43,7 +41,6 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 		this.intervals = new Markers();
 		this.intervals.add(intervals);
 		inSync = true;
-		size = intervals.size();
 	}
 
 	/**
@@ -77,15 +74,7 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 		if (!inSync) {
 			head = new IntervalNode(intervals);
 			inSync = true;
-			size = intervals.size();
 		}
-	}
-
-	/**
-	 * @return the number of entries in the currently built interval tree
-	 */
-	public int currentSize() {
-		return size;
 	}
 
 	public Markers getIntervals() {

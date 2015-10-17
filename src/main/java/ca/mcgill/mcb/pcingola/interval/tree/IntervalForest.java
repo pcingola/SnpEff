@@ -1,7 +1,9 @@
 package ca.mcgill.mcb.pcingola.interval.tree;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -199,9 +201,13 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		for (String chromo : forest.keySet()) {
+		ArrayList<String> chrs = new ArrayList<>();
+		chrs.addAll(forest.keySet());
+		Collections.sort(chrs);
+
+		for (String chromo : chrs) {
 			IntervalTree tree = getOrCreateTree(chromo);
-			sb.append("chr" + chromo + ":\n" + tree + "\n");
+			sb.append("chr" + chromo + "\t size:" + tree.size() + "\n");
 		}
 
 		return sb.toString();
