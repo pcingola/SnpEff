@@ -86,12 +86,12 @@ public class TestCasesHgvsExon extends TestCasesHgvsBase {
 						String effectExpected = protHgvs + "/" + dnaHgvs;
 
 						// Create a SeqChange
-						Variant seqChange = new Variant(chromosome, pos, refBase + "", snp + "", "");
+						Variant variant = new Variant(chromosome, pos, refBase + "", snp + "", "");
 
-						if (!seqChange.isVariant()) protHgvs = "EXON";
+						if (!variant.isVariant()) protHgvs = "EXON";
 
 						// Calculate effects
-						VariantEffects effects = snpEffectPredictor.variantEffect(seqChange);
+						VariantEffects effects = snpEffectPredictor.variantEffect(variant);
 
 						// There should be only one effect
 						Assert.assertEquals(true, effects.size() <= 1);
@@ -103,7 +103,7 @@ public class TestCasesHgvsExon extends TestCasesHgvsBase {
 
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-									+ "\t" + seqChange + (seqChange.isStrandPlus() ? "+" : "-") //
+									+ "\t" + variant //
 									+ "\tCodon: " + codon + " -> " + newCodon //
 									+ "\tAA: " + aa + " -> " + newAa //
 									+ "\tEffect expected: " + effectExpected //

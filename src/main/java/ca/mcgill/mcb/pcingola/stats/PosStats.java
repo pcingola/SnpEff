@@ -60,7 +60,6 @@ public class PosStats extends ChrPosStats {
 
 	/**
 	 * Use 'num' as a sample
-	 * @param num
 	 */
 	public void sample(Marker marker, Marker markerReference) {
 		if (!markerReference.intersects(marker)) return;

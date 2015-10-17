@@ -230,8 +230,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 		// Variant's reference sequence
 		String refStr;
-		if (variant.isNonRef()) refStr = ((VariantNonRef) variant).getVariantRef().alternative();
-		else refStr = variant.reference();
+		if (variant.isNonRef()) refStr = ((VariantNonRef) variant).getVariantRef().getAlt();
+		else refStr = variant.getReference();
 
 		if (varRefEnd >= refStr.length()) return ErrorWarningType.ERROR_OUT_OF_EXON;
 

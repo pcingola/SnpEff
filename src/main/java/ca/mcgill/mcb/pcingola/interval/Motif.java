@@ -62,7 +62,6 @@ public class Motif extends Marker {
 			MarkerSeq mseq = new MarkerSeq((Marker) parent, start, end, false, id); // Notice: We use positive strand
 			String seqBest = pwm.getBestSequenceStr();
 			mseq.setSequence(isStrandPlus() ? seqBest : GprSeq.reverseWc(seqBest));
-			if (variant.isStrandMinus()) throw new RuntimeException("Variants in minus strand are not supported!\n\t" + variant);
 
 			// Step 2:
 			//     Calculate new sequence, by 'applying' variant to mseq.

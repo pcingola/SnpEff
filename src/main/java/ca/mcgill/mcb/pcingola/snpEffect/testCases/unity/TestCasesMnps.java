@@ -89,7 +89,7 @@ public class TestCasesMnps extends TestCasesBase {
 				if (error || debug) {
 					Gpr.debug("Fatal error:"//
 							+ "\n\tPos           : " + pos //
-							+ "\n\tVariant       : " + variant + (variant.isStrandPlus() ? "+" : "-") //
+							+ "\n\tVariant       : " + variant //
 							+ "\n\tCodon (exp)   : " + codons//
 							+ "\n\tCodon (pred)  : " + effect.getCodonsRef().toUpperCase() + "/" + effect.getCodonsAlt().toUpperCase() //
 							+ "\n\tEffect (pred) : " + effStr //
