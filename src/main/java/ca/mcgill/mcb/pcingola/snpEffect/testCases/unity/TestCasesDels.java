@@ -1,7 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
@@ -13,6 +11,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
+import junit.framework.Assert;
 
 /**
  * Test random DEL changes
@@ -206,8 +205,11 @@ public class TestCasesDels extends TestCasesBase {
 					if (aaOld.isEmpty()) aaOld = "-";
 					if (aaNew.isEmpty()) aaNew = "-";
 
-					if (variant.includes(exon)) effectExpected = "EXON_DELETED";
-					else if (netChange.length() % 3 != 0) {
+					if (variant.includes(transcript)) {
+						effectExpected = "TRANSCRIPT_DELETED";
+					} else if (variant.includes(exon)) {
+						effectExpected = "EXON_DELETED";
+					} else if (netChange.length() % 3 != 0) {
 						effectExpected = "FRAME_SHIFT";
 						aaExpected = "(" + aaOld + "/" + "-" + ")";
 					} else {
@@ -287,11 +289,12 @@ public class TestCasesDels extends TestCasesBase {
 						for (String e : effStr.split("\\" + EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD)) {
 							if (effectExpected.equals(e)) {
 								ok = true;
-								// Check codons
-								if ((effect.getEffectType() != EffectType.FRAME_SHIFT) // No codons in 'FRAME_SHIFT'
-										&& (effect.getEffectType() != EffectType.EXON_DELETED) // No codons in 'EXON_DELETED'
-										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // No codons in 'SPLICE_SITE_REGION'
-										&& (effect.getEffectType() != EffectType.INTERGENIC) // No codons in 'INTERGENIC'
+								// Check codons, except some cases
+								if ((effect.getEffectType() != EffectType.FRAME_SHIFT) // 
+										&& (effect.getEffectType() != EffectType.TRANSCRIPT_DELETED) // 
+										&& (effect.getEffectType() != EffectType.EXON_DELETED) // 
+										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // 
+										&& (effect.getEffectType() != EffectType.INTERGENIC) // 
 								) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
