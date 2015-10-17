@@ -16,6 +16,7 @@ import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.TranscriptSupportLevel;
 import ca.mcgill.mcb.pcingola.logStatsServer.LogStats;
 import ca.mcgill.mcb.pcingola.logStatsServer.VersionCheck;
 import ca.mcgill.mcb.pcingola.motif.Jaspar;
@@ -69,9 +70,9 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "l";
-	public static final String BUILD = "2015-10-16";
-	public static final String VERSION_MAJOR = "4.1";
+	public static final String REVISION = "";
+	public static final String BUILD = "2015-10-17";
+	public static final String VERSION_MAJOR = "4.2";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
 	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_NO_NAME;
@@ -108,6 +109,7 @@ public class SnpEff implements CommandLine {
 	protected String dataDir; // Override data_dir in config file
 	protected String genomeVer; // Genome version
 	protected String onlyTranscriptsFile = null; // Only use the transcripts in this file (Format: One transcript ID per line)
+	protected TranscriptSupportLevel maxTranscriptSupportLevel = null; // Filter by maximum Transcript Support Level (TSL)
 	protected StringBuilder output = new StringBuilder();
 	protected Config config; // Configuration
 	protected Genome genome;
@@ -374,6 +376,22 @@ public class SnpEff implements CommandLine {
 						int cdsLen = (cds != null ? cds.length() : 0);
 						System.err.println("\t\t" + g.getGeneName() + "\t" + g.getId() + "\t" + t.getId() + "\t" + cdsLen);
 					}
+				}
+			}
+			if (verbose) Timer.showStdErr("done.");
+		}
+
+		// Filter transcripts by TSL
+		if (maxTranscriptSupportLevel != null) {
+			if (verbose) Timer.showStdErr("Filtering transcripts by Transcript Support Level (TSL): " + maxTranscriptSupportLevel);
+			config.getSnpEffectPredictor().filterTranscriptSupportLevel(maxTranscriptSupportLevel);
+
+			if (verbose) {
+				// Show genes and transcript (which ones are considered 'canonical')
+				Timer.showStdErr("Transcript:\n\t\tgeneName\tgeneId\ttranscriptId\tTSL");
+				for (Gene g : config.getSnpEffectPredictor().getGenome().getGenes()) {
+					for (Transcript t : g)
+						System.err.println("\t\t" + g.getGeneName() + "\t" + g.getId() + "\t" + t.getId() + "\t" + t.getTranscriptSupportLevel());
 				}
 			}
 			if (verbose) Timer.showStdErr("done.");
@@ -712,6 +730,10 @@ public class SnpEff implements CommandLine {
 					else usage("Option '-interval' without config interval_file argument");
 					break;
 
+				case "-maxtsl":
+					if ((i + 1) < args.length) maxTranscriptSupportLevel = TranscriptSupportLevel.parse(args[++i]);
+					else usage("Option '-maxTSL' without config transcript_support_level argument");
+					break;
 				case "-motif":
 					motif = true; // Use motif database
 					break;
@@ -1007,6 +1029,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.help = help;
 		snpEffCmd.log = log;
 		snpEffCmd.motif = motif;
+		snpEffCmd.maxTranscriptSupportLevel = maxTranscriptSupportLevel;
 		snpEffCmd.multiThreaded = multiThreaded;
 		snpEffCmd.nextProt = nextProt;
 		snpEffCmd.noGenome = noGenome;
@@ -1087,9 +1110,11 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-q , -quiet                  : Quiet mode (do not show any messages or errors)");
 		System.err.println("\t-v , -verbose                : Verbose mode");
 		System.err.println("\t-version                     : Show version number and exit");
+		//
 		System.err.println("\nDatabase options:");
 		System.err.println("\t-canon                       : Only use canonical transcripts.");
 		System.err.println("\t-interval <file>             : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
+		System.err.println("\t-maxTSL <TSL_number>         : Only use transcripts having Transcript Support Level lower than <TSL_number>.");
 		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database).");
 		System.err.println("\t-nextProt                    : Annotate using NextProt (requires NextProt database).");
 		System.err.println("\t-noGenome                    : Do not load any genomic database (e.g. annotate using custom files).");

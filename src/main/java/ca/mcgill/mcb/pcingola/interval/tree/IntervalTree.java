@@ -48,7 +48,10 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 
 	/**
 	 * Add an interval object to the interval tree's list
-	 * Will not rebuild the tree until the next query or call to build
+	 * 
+	 * Note: Marks the tree as 'not inSync', but will not rebuild 
+	 * the tree until the next query or call to build
+	 * 
 	 * @param interval the interval object to add
 	 */
 	public void add(Marker interval) {
@@ -58,7 +61,8 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 
 	/**
 	 * Add all intervals to interval tree's list
-	 * Will not rebuild the tree until the next query or call to build
+	 * Note: Marks the tree as 'not inSync', but will not rebuild 
+	 * the tree until the next query or call to build
 	 */
 	public void add(Markers markers) {
 		intervals.add(markers);
@@ -68,9 +72,6 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 	/**
 	 * Build the interval tree to reflect the list of intervals,
 	 * Will not run if this is currently in sync
-	 *
-	 * WARNING: This method is not thread safe
-	 *
 	 */
 	public void build() {
 		if (!inSync) {
@@ -127,19 +128,15 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 
 	/**
 	 * Perform an interval query, returning the intervals that intersect with 'interval'
-	 * Will rebuild the tree if out of sync
-	 *
-	 * WARNING: This method is not thread safe if the interval tree is not fully built
-	 *
 	 * @return All intervals that intersect 'interval'
 	 */
 	public Markers query(Interval interval) {
-		build();
+		if (!inSync) throw new RuntimeException("Interval tree needs to be updated!");
 		return head.query(interval);
 	}
 
 	/**
-	 * @return the number of entries in the interval list, equal to .size() if inSync()
+	 * Size: number of entries in the interval list
 	 */
 	public int size() {
 		return intervals.size();
@@ -147,15 +144,10 @@ public class IntervalTree implements Serializable, Iterable<Marker> {
 
 	/**
 	 * Perform a stabbing query, returning the interval objects
-	 * Will rebuild the tree if out of sync
-	 *
-	 * WARNING: This method is not thread safe if the interval tree is not fully built
-	 *
-	 * @param point the time to stab
-	 * @return	   all intervals that contain time
+	 * @return All intervals intersecting 'point'
 	 */
 	public Markers stab(int point) {
-		build();
+		if (!inSync) throw new RuntimeException("Interval tree needs to be updated!");
 		return head.stab(point);
 	}
 

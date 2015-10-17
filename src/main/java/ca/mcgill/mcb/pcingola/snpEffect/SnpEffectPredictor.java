@@ -16,6 +16,7 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.TranscriptSupportLevel;
 import ca.mcgill.mcb.pcingola.interval.Utr;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
@@ -186,6 +187,14 @@ public class SnpEffectPredictor implements Serializable {
 			markers.add(intergenic);
 
 		return markers;
+	}
+
+	/**
+	 * Filter transcripts by TSL
+	 */
+	public void filterTranscriptSupportLevel(TranscriptSupportLevel maxTsl) {
+		for (Gene g : genome.getGenes())
+			g.filterTranscriptSupportLevel(maxTsl);
 	}
 
 	/**
@@ -620,7 +629,7 @@ public class SnpEffectPredictor implements Serializable {
 				if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
 					variantEffects.add(variant, chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
 
-					// If the deletion is too large, querying will result in too many 
+					// If the deletion is too large, querying will result in too many
 					// results. We stop here to avoid memory and performance issues
 					if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD) return variantEffects;
 				}

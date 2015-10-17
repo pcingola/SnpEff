@@ -164,6 +164,23 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 		return oe.oe(this);
 	}
 
+	/**
+	 * Filter transcripts by TSL
+	 */
+	public void filterTranscriptSupportLevel(TranscriptSupportLevel maxTsl) {
+		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
+
+		// Mark transcripts for removal
+		for (Transcript tr : this)
+			if (!tr.hasTranscriptSupportLevelInfo() //
+					|| (tr.getTranscriptSupportLevel().compareTo(maxTsl) > 0) //
+			) toDelete.add(tr);
+
+		// Remove transcripts
+		for (Transcript t : toDelete)
+			remove(t);
+	}
+
 	public GeneType geneType() {
 		if (bioType.length() > 0) {
 			// Is it 'protein_coding'or a 'mRNA'?
