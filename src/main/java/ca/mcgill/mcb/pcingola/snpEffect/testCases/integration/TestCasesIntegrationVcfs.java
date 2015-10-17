@@ -3,8 +3,6 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 import java.io.IOException;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
@@ -14,6 +12,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import junit.framework.Assert;
 
 /**
  * VCF annotations test cases
