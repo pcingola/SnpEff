@@ -52,7 +52,7 @@ public class SnpEffCmdCds extends SnpEff {
 	 * Compare all CDS
 	 */
 	double cdsCompare() {
-		int i = 1;
+		int i = 0;
 
 		if (verbose) {
 			// Show labels
@@ -64,8 +64,8 @@ public class SnpEffCmdCds extends SnpEff {
 		}
 
 		// Compare all genes
-		for (Gene gint : config.getGenome().getGenes())
-			for (Transcript tr : gint) {
+		for (Gene gene : config.getGenome().getGenes())
+			for (Transcript tr : gene) {
 				char status = ' ';
 
 				boolean ok = false;
@@ -77,16 +77,12 @@ public class SnpEffCmdCds extends SnpEff {
 
 				if (cdsReference == null) {
 					status = '.';
-					totalNotFound++;
 					if (debug) System.err.println("\nWARNING:Cannot find reference CDS for transcript '" + tr.getId() + "'");
 				} else if (cds.isEmpty()) {
 					status = '.';
-					totalNotFound++;
 					if (debug) System.err.println("\nWARNING:Empty CDS for transcript '" + tr.getId() + "'");
 				} else if (cds.equals(cdsReference)) {
 					status = '+';
-					totalOk++;
-					ok = true;
 
 					// Sanity check: Start and stop codons
 					if ((cds != null) && (cds.length() >= 3)) {
@@ -108,31 +104,22 @@ public class SnpEffCmdCds extends SnpEff {
 					}
 				} else if (mRna.equals(cdsReference)) { // May be the file has mRNA instead of CDS?
 					status = '+';
-					totalOk++;
-					ok = true;
 				} else if ((mRna.length() < cdsReference.length()) // CDS longer than mRNA? May be it is actually an mRNA + poly-A tail (instead of a CDS)
 						&& cdsReference.substring(mRna.length()).replace('A', ' ').trim().isEmpty() // May be it is an mRNA and it has a ploy-A tail added
 						&& cdsReference.substring(0, mRna.length()).equals(mRna) // Compare cutting poly-A tail
 				) {
 					// OK, it was a mRNA +  polyA
 					status = '+';
-					totalOk++;
-					ok = true;
 				} else if ((mRna.length() > cdsReference.length()) // PolyA in the reference?
 						&& mRna.substring(cdsReference.length()).replace('A', ' ').trim().isEmpty() //
 						&& mRna.substring(0, cdsReference.length()).equals(mRna) //
 				) {
 					// OK, it was a mRNA +  polyA
 					status = '+';
-					totalOk++;
-					ok = true;
 				} else if (cdsReference.indexOf(cds) >= 0) { // CDS fully included in reference?
 					status = '+';
-					totalOk++;
-					ok = true;
 				} else {
 					status = '*';
-					totalErrors++;
 
 					if (debug || storeAlignments || onlyOneError) {
 						// Create a string indicating differences
@@ -162,10 +149,26 @@ public class SnpEffCmdCds extends SnpEff {
 							throw new RuntimeException("Showing only one error!");
 						}
 
-					} else if (verbose) System.out.print('*');
-
+					}
 				}
 
+				// Update counters
+				switch (status) {
+				case '.':
+					totalNotFound++;;
+					break;
+
+				case '+':
+					totalOk++;
+					ok = true;
+					break;
+
+				case '*':
+					totalErrors++;;
+					break;
+				}
+
+				// Update transcript DnaCheck status
 				if (ok) tr.setDnaCheck(true);
 
 				// Show a mark

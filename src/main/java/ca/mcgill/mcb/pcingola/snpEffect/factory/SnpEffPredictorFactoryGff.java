@@ -2,14 +2,21 @@ package ca.mcgill.mcb.pcingola.snpEffect.factory;
 
 import java.io.BufferedReader;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
+import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
+import ca.mcgill.mcb.pcingola.interval.GffMarker;
+import ca.mcgill.mcb.pcingola.interval.GffType;
 import ca.mcgill.mcb.pcingola.interval.IntergenicConserved;
+import ca.mcgill.mcb.pcingola.interval.IntronConserved;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.TranscriptSupportLevel;
 import ca.mcgill.mcb.pcingola.interval.Utr3prime;
 import ca.mcgill.mcb.pcingola.interval.Utr5prime;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
@@ -26,57 +33,10 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
-	public static final HashMap<String, String> typeMap;
-	public static final String GENE = Gene.class.getSimpleName();
-	public static final String TRANSCRIPT = Transcript.class.getSimpleName();
-	public static final String EXON = Exon.class.getSimpleName();
-	public static final String UTR5 = Utr5prime.class.getSimpleName();
-	public static final String UTR3 = Utr3prime.class.getSimpleName();
-	public static final String INTERGENIC_CONSERVED = IntergenicConserved.class.getSimpleName();
-
 	public static final String FASTA_DELIMITER = "##FASTA";
 
 	String version = "";
 	boolean mainFileHasFasta = false; // Are sequences in the GFF file or in a separate FASTA file?
-
-	static {
-		// Initialize typeMap
-		typeMap = new HashMap<String, String>();
-
-		addTypeMap("gene", GENE);
-		addTypeMap("pseudogene", TRANSCRIPT);
-
-		addTypeMap("transcript", TRANSCRIPT);
-		addTypeMap("mRNA", TRANSCRIPT);
-		addTypeMap("tRNA", TRANSCRIPT);
-		addTypeMap("snoRNA", TRANSCRIPT);
-		addTypeMap("rRNA", TRANSCRIPT);
-		addTypeMap("ncRNA", TRANSCRIPT);
-		addTypeMap("miRNA", TRANSCRIPT);
-		addTypeMap("snRNA", TRANSCRIPT);
-		addTypeMap("pseudogenic_transcript", TRANSCRIPT);
-
-		addTypeMap("exon", EXON);
-		addTypeMap("pseudogenic_exon", EXON);
-		addTypeMap("CDS", EXON);
-		addTypeMap("start_codon", EXON);
-		addTypeMap("stop_codon", EXON);
-		addTypeMap("intron_CNS", EXON);
-
-		addTypeMap("five_prime_UTR", UTR5);
-		addTypeMap("5'-UTR", UTR5);
-		addTypeMap("5UTR", UTR5);
-
-		addTypeMap("three_prime_UTR", UTR3);
-		addTypeMap("3'-UTR", UTR3);
-		addTypeMap("3UTR", UTR3);
-
-		addTypeMap("inter_CNS", INTERGENIC_CONSERVED);
-	}
-
-	static void addTypeMap(String typeAliasStr, String type) {
-		typeMap.put(typeAliasStr.toUpperCase(), type);
-	}
 
 	public SnpEffPredictorFactoryGff(Config config) {
 		super(config, 1);
@@ -89,31 +49,308 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		frameType = FrameType.GFF;
 	}
 
+	/**
+	 * Create a new exon
+	 */
+	protected Exon addExon(Transcript tr, GffMarker gffMarker, String exonId) {
+		int rank = 0; // Rank information is added later
+		Exon ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), exonId, rank);
+		ex.setFrame(gffMarker.getFrame());
+		add(ex);
+		return ex;
+	}
+
+	/**
+	 * Create and add a new exon
+	 */
+	protected List<Exon> addExons(GffMarker gffMarker) {
+		String id = gffMarker.getId();
+		List<Exon> list = new LinkedList<>();
+
+		// Add exon to each parent (can belong to more than one transcript)
+		for (String parentId : gffMarker.getGffParentIds()) {
+			parentId = parentId.trim();
+
+			// Exon's parent (should be a transcript)
+			Transcript tr = findTranscript(parentId, id);
+			Gene gene = findGene(parentId);
+
+			// Is exon's parent a gene instead of a transcript?
+			if ((tr == null) && (gene != null)) {
+				// Create a transcript from the gene
+				String trId = "Transcript_" + gene.getId(); // Transcript ID
+				tr = addTranscript(gene, gffMarker, trId);
+				warning("Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for this exon.");
+			}
+
+			// Try to find the gene
+			if (gene == null) gene = findGene(gffMarker.getGeneId());
+
+			// No transcript found? => Try creating one
+			if (tr == null) {
+				// No gene? Create one
+				if (gene == null) {
+					// Create and add gene
+					String gId = "Gene_" + (parentId.isEmpty() ? id : parentId); // Gene ID
+					gene = addGene(gffMarker, gId);
+				}
+
+				// Create transcript
+				String trId = parentId.isEmpty() ? "Transcript_" + id : parentId; // Transcript ID
+				tr = addTranscript(gene, gffMarker, trId);
+
+				// Add gene & transcript
+				warning("Cannot find transcript '" + parentId + "'. Created transcript '" + tr.getId() + "' and gene '" + gene.getId() + "' for this exon");
+			}
+
+			// This can be added in different ways
+			int rank = 0; // Rank information is added later
+			switch (gffMarker.getGffType()) {
+			case EXON:
+				Exon ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), id, rank);
+				ex.setFrame(gffMarker.getFrame());
+				add(ex);
+				list.add(ex);
+				break;
+
+			case CDS:
+				Cds cds = new Cds(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), id);
+				cds.setFrame(gffMarker.getFrame());
+				add(cds);
+				break;
+
+			case START_CODON:
+			case STOP_CODON:
+				ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), id, rank);
+				ex.setFrame(gffMarker.getFrame());
+				add(ex);
+
+				cds = new Cds(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getGffType() + "_" + id);
+				cds.setFrame(gffMarker.getFrame());
+				add(cds);
+				break;
+
+			default:
+				throw new RuntimeException("Unsupported type " + gffMarker.getGffType());
+			}
+
+		}
+
+		return list.isEmpty() ? null : list;
+	}
+
+	/**
+	 * Create and add a gene based on GffMarker
+	 */
+	protected Gene addGene(GffMarker gffMarker, String geneId) {
+		String bioType = gffMarker.getGeneBiotype();
+		if (bioType == null) bioType = "mRNA";
+
+		Gene gene = new Gene(gffMarker.getChromosome() //
+		, gffMarker.getStart() //
+		, gffMarker.getEnd() //
+		, gffMarker.isStrandMinus() //
+		, geneId //
+				, gffMarker.getGeneName() //
+				, bioType);
+
+		add(gene);
+
+		return gene;
+	}
+
+	/**
+	 * Add an intergenic conserved region
+	 */
+	protected IntergenicConserved addIntergenicConserved(GffMarker gffMarker) {
+		IntergenicConserved intergenicConserved = new IntergenicConserved(gffMarker.getChromosome(), gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+		add(intergenicConserved);
+		return intergenicConserved;
+	}
+
+	/**
+	 * Add interval based on GffMarker data
+	 * @return true if on success
+	 */
+	protected boolean addInterval(GffMarker gffMarker) {
+
+		switch (gffMarker.getGffType()) {
+		case GENE:
+			// Sanity check: Have we already added this one?
+			String geneId = gffMarker.getGeneId();
+			if ((geneId != null) && (findGene(geneId) != null)) {
+				warning("Gene '" + geneId + "' already added");
+				return false;
+			}
+
+			return findOrCreateGene(gffMarker) != null;
+
+		case TRANSCRIPT:
+			// Sanity check: Have we already added this one?
+			String trId = gffMarker.getTranscriptId();
+			if ((trId != null) && (findTranscript(trId) != null)) {
+				warning("Transcript '" + trId + "' already added");
+				return false;
+			}
+
+			return findOrCreateTranscript(gffMarker) != null;
+
+		case CDS:
+			return addExons(gffMarker) != null;
+
+		case EXON:
+		case STOP_CODON:
+		case START_CODON:
+			return addExons(gffMarker) != null;
+
+		case UTR5:
+			return addUtr5(gffMarker) != null;
+
+		case UTR3:
+			return addUtr3(gffMarker) != null;
+
+		case INTRON_CONSERVED:
+			return addIntronConserved(gffMarker) != null;
+
+		case INTERGENIC_CONSERVED:
+			return addIntergenicConserved(gffMarker) != null;
+
+		default:
+			return false;
+		}
+	}
+
+	/**
+	 * Add an intron conserved region
+	 */
+	protected IntronConserved addIntronConserved(GffMarker gffMarker) {
+		String trId = gffMarker.getTranscriptId();
+
+		// Find transcript
+		Transcript tr = findTranscript(trId);
+		if (tr == null) tr = findTranscript(gffMarker.getId());
+		if (tr == null) {
+			warning("Could not find transcript '" + trId + "'");
+			return null;
+		}
+
+		IntronConserved intronConserved = new IntronConserved(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+		add(intronConserved);
+		return intronConserved;
+	}
+
+	/**
+	 * Create and add transcript
+	 */
+	Transcript addTranscript(Gene gene, GffMarker gffMarker, String trId) {
+		Transcript tr = new Transcript(gene, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), trId);
+
+		// Set protein coding (if available)
+		if (gffMarker.isProteingCoding()) tr.setProteinCoding(true);
+
+		// Biotype
+		String bioType = gffMarker.getTranscriptBiotype();
+		if (bioType != null) tr.setBioType(bioType);
+
+		// Transcript support level  (TSL)
+		String tslStr = gffMarker.getAttr("transcript_support_level");
+		if (tslStr != null) tr.setTranscriptSupportLevel(TranscriptSupportLevel.parse(tslStr));
+
+		// Add transcript
+		add(tr);
+
+		//---
+		// Sanity check and updates for gene
+		//---
+
+		// Update gene bio-type (if needed)
+		GffType gffType = gffMarker.getGffType();
+		String type = (gffType == null ? "" : gffType.toString());
+		if (gene.getBioType() == null) gene.setBioType(type);
+
+		// Check that gene and transcript are in the same chromosome
+		if (!gene.getChromosomeName().equals(tr.getChromosomeName())) {
+			error("Trying to assign Transcript to a Gene in a different chromosome!" //
+					+ "\n\tTranscript : " + tr.toStr()//
+					+ "\n\tGene       : " + gene.toStr() //
+			);
+		}
+
+		return tr;
+	}
+
+	/**
+	 * Create new UTR3primes
+	 */
+	protected List<Utr3prime> addUtr3(GffMarker gffMarker) {
+		List<Utr3prime> list = new LinkedList<>();
+
+		// Add to each parent (can belong to more than one transcript)
+		for (String parentId : gffMarker.getGffParentIds()) {
+
+			// Find exon & transcript
+			Exon exon = findOrCreateExon(parentId, gffMarker);
+			Transcript tr = (Transcript) exon.getParent();
+
+			// Create UTR
+			Utr3prime u3 = new Utr3prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+			tr.add(u3);
+			add(u3);
+			list.add(u3);
+		}
+
+		return list.isEmpty() ? null : list;
+	}
+
+	/**
+	 * Create UTR5primes
+	 */
+	protected List<Utr5prime> addUtr5(GffMarker gffMarker) {
+		List<Utr5prime> list = new LinkedList<>();
+
+		// Add to each parent (can belong to more than one transcript)
+		for (String parentId : gffMarker.getGffParentIds()) {
+			// Find exon & transcript
+			Exon exon = findOrCreateExon(parentId, gffMarker);
+			Transcript tr = (Transcript) exon.getParent();
+
+			// Create UTR
+			Utr5prime u5 = new Utr5prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+			tr.add(u5);
+			add(u5);
+			list.add(u5);
+		}
+
+		return list.isEmpty() ? null : list;
+	}
+
 	@Override
 	public SnpEffectPredictor create() {
 		// Read gene intervals from a file
 		if (verbose) System.out.println("Reading " + version + " data file  : '" + fileName + "'");
 		try {
-			// We have to read the file a few times because we want to have all genes, then all transcripts, then all exons, etc.
-			if (verbose) System.out.print("\tReading genes       : ");
-			readGff(GENE);
+			readGff();
 
-			if (verbose) System.out.print("\tReading transcripts : ");
-			readGff(TRANSCRIPT);
-
-			if (verbose) System.out.print("\tReading exons       : ");
-			readGff(EXON);
-
-			// This features are not present in GFF2 and are optional in GTF 2.2
-			if (!version.equals("GFF2")) {
-				exonsFromCds(); // We need to create exons from CDSs before UTRs are added, since UTR require exons as parents
-
-				if (verbose) System.out.print("\tReading UTRs (5)    : ");
-				readGff(UTR5);
-
-				if (verbose) System.out.print("\tReading UTRs (3)    : ");
-				readGff(UTR3);
-			}
+			//			// We have to read the file a few times because we want to have all genes, then all transcripts, then all exons, etc.
+			//			if (verbose) System.out.print("\tReading genes       : ");
+			//			readGff(GffType.GENE);
+			//
+			//			if (verbose) System.out.print("\tReading transcripts : ");
+			//			readGff(GffType.TRANSCRIPT);
+			//
+			//			if (verbose) System.out.print("\tReading exons       : ");
+			//			readGff(GffType.EXON);
+			//
+			//			// This features are not present in GFF2 and are optional in GTF 2.2
+			//			if (!version.equals("GFF2")) {
+			//				exonsFromCds(); // We need to create exons from CDSs before UTRs are added, since UTR require exons as parents
+			//
+			//				if (verbose) System.out.print("\tReading UTRs (5)    : ");
+			//				readGff(GffType.UTR5);
+			//
+			//				if (verbose) System.out.print("\tReading UTRs (3)    : ");
+			//				readGff(GffType.UTR3);
+			//			}
 
 			// Some clean-up before reading exon sequences
 			beforeExonSequences();
@@ -136,37 +373,86 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	}
 
 	/**
-	 * Is 'term' a 'type'?
+	 * Find an exon for a given parentId
 	 */
-	boolean is(String term, String type) {
-		String inType = typeMap.get(term.toUpperCase());
-		if (inType == null) return false;
-		return inType.equals(type);
+	protected Exon findOrCreateExon(String parentId, GffMarker gffMarker) {
+		// Get transcript
+		Transcript tr = findTranscript(parentId);
+		if (tr == null) tr = findTranscript(gffMarker.getTranscriptId());
+		if (tr == null) {
+			warning("Cannot find transcript '" + parentId + "'");
+			return null;
+		}
+
+		// Find exon using coordinates
+		Marker utr = new Marker(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+		Exon exon = tr.queryExon(utr);
+		if (exon != null) return exon;
+
+		// Nothing found? Create exon
+		exon = addExon(tr, gffMarker, gffMarker.getId());
+		warning("Cannot find exon for UTR: '" + utr.getId() + "'. Creating exon '" + gffMarker.getId() + "'");
+		return exon;
 	}
 
 	/**
-	 * Is this protein coding according to the source
-	 *
-	 * References: http://vega.sanger.ac.uk/info/about/gene_and_transcript_types.html
+	 * Find or create a gene based on GffMarker
 	 */
-	protected boolean isProteingCoding(String biotype) {
-		return biotype.equals("protein_coding") //
-				|| biotype.equals("IG_C_gene") //
-				|| biotype.equals("IG_D_gene") //
-				|| biotype.equals("IG_J_gene") //
-				|| biotype.equals("IG_V_gene") //
-				|| biotype.equals("TR_C_gene") //
-				|| biotype.equals("TR_D_gene") //
-				|| biotype.equals("TR_J_gene") //
-				|| biotype.equals("TR_V_gene") //
-		;
+	protected Gene findOrCreateGene(GffMarker gffMarker) {
+		// Find gene
+		Gene gene = findGene(gffMarker.getGeneId());
+		if (gene == null) gene = findGene(gffMarker.getId());
+
+		// Add gene if needed
+		if (gene == null) gene = addGene(gffMarker, gffMarker.getGeneId());
+
+		return gene;
 	}
+
+	/**
+	 * Create and add a transcript based on GffMarker
+	 */
+	protected Transcript findOrCreateTranscript(GffMarker gffMarker) {
+		// Add transcript
+		String trId = gffMarker.getTranscriptId();
+		Transcript tr = findTranscript(trId);
+		if (tr == null) tr = findTranscript(gffMarker.getId());
+
+		if (tr == null) {
+			// Add gene if needed
+			Gene gene = findOrCreateGene(gffMarker);
+			tr = addTranscript(gene, gffMarker, trId);
+		}
+
+		return tr;
+	}
+
+	//	/**
+	//	 * Is this protein coding according to the source
+	//	 *
+	//	 * References: http://vega.sanger.ac.uk/info/about/gene_and_transcript_types.html
+	//	 */
+	//	protected boolean isProteingCoding(String biotype) {
+	//		return biotype.equals("protein_coding") //
+	//				|| biotype.equals("IG_C_gene") //
+	//				|| biotype.equals("IG_D_gene") //
+	//				|| biotype.equals("IG_J_gene") //
+	//				|| biotype.equals("IG_V_gene") //
+	//				|| biotype.equals("TR_C_gene") //
+	//				|| biotype.equals("TR_D_gene") //
+	//				|| biotype.equals("TR_J_gene") //
+	//				|| biotype.equals("TR_V_gene") //
+	//				;
+	//	}
 
 	/**
 	 * Parse a line
 	 * @return true if a line was parsed
 	 */
-	protected abstract boolean parse(String line, String typeToRead);
+	protected boolean parse(String line) {
+		GffMarker gffMarker = new GffMarker(genome, line);
+		return addInterval(gffMarker);
+	}
 
 	@Override
 	protected void readExonSequences() {
@@ -229,7 +515,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	/**
 	 * Read GFF file from the beginning looking for 'typeToRead' elements
 	 */
-	protected void readGff(String typeToRead) throws Exception {
+	protected void readGff() throws Exception {
 		int count = 0;
 		BufferedReader reader = Gpr.reader(fileName);
 		if (reader == null) return; // Error
@@ -245,7 +531,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 					break;
 				} else if (line.startsWith("#")) {
 					// Ignore this line
-				} else if (parse(line, typeToRead)) {
+				} else if (parse(line)) {
 					count++;
 					if (verbose) Gpr.showMark(count, MARK, "\t\t");
 				}
@@ -255,6 +541,6 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		}
 
 		reader.close();
-		if (verbose) System.out.println((count > 0 ? "\n" : "") + "\tTotal: " + count + " " + typeToRead + "s added.");
+		if (verbose) System.out.println((count > 0 ? "\n" : "") + "\tTotal: " + count + " markers added.");
 	}
 }

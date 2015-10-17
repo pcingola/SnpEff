@@ -1,9 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.factory;
 
-import ca.mcgill.mcb.pcingola.interval.Chromosome;
-import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.Gene;
-import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 
 /**
@@ -37,93 +33,27 @@ public class SnpEffPredictorFactoryGff2 extends SnpEffPredictorFactoryGff {
 		version = "GFF2";
 	}
 
-	/**
-	 * Add a new interval to SnpEffect predictor
-	 */
-	void addInterval(String id, String type, String chromo, int start, int end, boolean strandMinus, String geneId, String trId) {
-		// Get chromosome
-		Chromosome chromosome = getOrCreateChromosome(chromo);
+	//	/**
+	//	 * Add a new interval to SnpEffect predictor
+	//	 */
+	//	@Override
+	//	protected boolean addInterval(GffMarker gffMarker) {
+	//		Marker m = null;
+	//
+	//		switch (gffMarker.getType()) {
+	//		case TRANSCRIPT:
+	//			m = findOrCreateTranscript(gffMarker);
+	//			break;
+	//
+	//		case EXON:
+	//			m = addExon(gffMarker);
+	//			break;
+	//
+	//		default:
+	//			break;
+	//		}
+	//
+	//		return m != null;
+	//	}
 
-		// Add gene?
-		if (is(type, TRANSCRIPT)) {
-			// Add gene if needed
-			Gene gene = findGene(geneId);
-			if (gene == null) {
-				gene = new Gene(chromosome, start, end, strandMinus, geneId, geneId, "mRNA");
-				add(gene);
-			}
-
-			// Add transcript
-			Transcript tint = findTranscript(trId);
-			if (tint == null) {
-				tint = new Transcript(gene, start, end, strandMinus, trId);
-				add(tint);
-			}
-		} else if (is(type, EXON)) {
-			// Get transcript
-			Transcript tint = findTranscript(trId);
-			if (tint == null) {
-				System.err.println("Cannot find transcript '" + trId + "'");
-				return;
-			}
-
-			// Create and add exon
-			int rank = 0; // Rank info not available in GFF2
-			Exon exon = new Exon(tint, start, end, strandMinus, id, rank);
-			add(exon);
-		}
-
-	}
-
-	/**
-	 * Read and parse GFF file
-	 */
-	@Override
-	protected boolean parse(String line, String typeToRead) {
-
-		String fields[] = line.split("\t");
-
-		// Ommit headers
-		if (fields.length <= 6) return false;
-		String type = fields[2];
-
-		// Is it the type that we want to read?
-		if (!is(type, typeToRead)) return false;
-
-		// Parse fields
-		String chromo = fields[0];
-		int start = parsePosition(fields[3]);
-		int end = parsePosition(fields[4]);
-		boolean strandMinus = fields[6].equals("-");
-		String geneId = "", trId = "";
-
-		// Parse attributes
-		if (fields.length >= 8) {
-			String attrStr = fields[8];
-
-			if (attrStr.length() > 0) {
-				String attrs[] = attrStr.split(";");
-				for (int i = 0; i < attrs.length; i++) {
-					attrs[i] = attrs[i].trim();
-					String kv[] = attrs[i].split("\\s+");
-					String key = kv[0];
-					String value = unquote(kv[1]);
-
-					if (key.equalsIgnoreCase("gene_id")) geneId = value;
-					else if (key.equalsIgnoreCase("transcript_id")) trId = value;
-				}
-			}
-		}
-
-		// Add interval
-		String id = typeToRead + "_" + chromo + "_" + (start + 1) + "_" + (end + 1);
-
-		// Sometimes names or IDs may have spaces, we have to get rid of them
-		id = id.trim();
-		geneId = geneId.trim();
-
-		addInterval(id, type, chromo, start, end, strandMinus, geneId, trId);
-
-		return true;
-	}
 }

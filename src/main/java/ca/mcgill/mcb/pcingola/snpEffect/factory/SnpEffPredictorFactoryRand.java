@@ -187,7 +187,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 	}
 
 	@Override
-	protected boolean parse(String line, String typeToRead) {
+	protected boolean parse(String line) {
 		return false;
 	}
 

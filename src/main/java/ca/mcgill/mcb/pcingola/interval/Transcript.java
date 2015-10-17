@@ -37,15 +37,20 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	private static final long serialVersionUID = -2665025617916107311L;
 
-	boolean proteinCoding; // Is this a protein-coding transcript?
+	boolean aaCheck; // Has this transcript been checked against a protein sequence?
 	boolean canonical; // Is this a canonical transcript?
-	int cdsStart, cdsEnd;
-	int upDownLength; // Upstream and downstream size
+	boolean corrected; // Have coordinates been corrected? (e.g. frame correction)
+	boolean dnaCheck; // Has this transcript been checked against a CDS/cDNA sequence?
+	boolean proteinCoding; // Is this a protein-coding transcript?
+	boolean ribosomalSlippage; // Ribosomal slippage causes changes in reading frames. This might be represented as negative length introns (overlapping exons).
+	int cdsStart, cdsEnd; // CDS start and end coordinates. Note: If the transcript is in reverse strand, then cdsStart > cdsEnd
 	int spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax; // Splice sizes
+	int upDownLength; // Upstream and downstream size
 	String bioType = ""; // Transcript biotype
 	String cds; // Coding sequence
 	String mRna; // mRna sequence (includes 5'UTR and 3'UTR)
 	String protein; // Protein sequence
+	String version = ""; // Transcript version
 	ArrayList<Utr> utrs; // UTRs
 	ArrayList<Cds> cdss; // CDS information
 	ArrayList<Intron> introns; // Intron markers
@@ -53,9 +58,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	Downstream downstream; // Downstream interval
 	Exon firstCodingExon; // First coding exon. I.e. where transcription start site (TSS) is.
 	int cds2pos[], aa2pos[];
-	boolean aaCheck, dnaCheck;
-	boolean corrected; // Have coordinates been corrected? (e.g. frame correction)
-	boolean ribosomalSlippage; // Ribosomal slippage causes changes in reading frames. This might be represented as negative length introns (overlapping exons).
 	TranscriptSupportLevel transcriptSupportLevel = TranscriptSupportLevel.TSL_NA;
 
 	public Transcript() {
@@ -1112,6 +1114,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return utrs;
 	}
 
+	public String getVersion() {
+		return version;
+	}
+
 	/**
 	 * Does this transcript have any errors?
 	 */
@@ -1506,6 +1512,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		corrected = markerSerializer.getNextFieldBoolean();
 		ribosomalSlippage = markerSerializer.getNextFieldBoolean();
 		transcriptSupportLevel = TranscriptSupportLevel.parse(markerSerializer.getNextField());
+		version = markerSerializer.getNextField();
+
 		upstream = (Upstream) markerSerializer.getNextFieldMarker();
 		downstream = (Downstream) markerSerializer.getNextFieldMarker();
 
@@ -1530,6 +1538,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + corrected //
 				+ "\t" + ribosomalSlippage //
 				+ "\t" + transcriptSupportLevel //
+				+ "\t" + version //
 				+ "\t" + markerSerializer.save(upstream) //
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
@@ -1563,6 +1572,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	public void setTranscriptSupportLevel(TranscriptSupportLevel transcriptSupportLevel) {
 		this.transcriptSupportLevel = transcriptSupportLevel;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 	public List<SpliceSite> spliceSites() {

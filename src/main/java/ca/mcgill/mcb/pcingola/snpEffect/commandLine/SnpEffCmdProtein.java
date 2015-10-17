@@ -130,7 +130,7 @@ public class SnpEffCmdProtein extends SnpEff {
 			// Check against each codon table
 			for (CodonTable codonTable : CodonTables.getInstance()) {
 				setCodonTable(chromo, codonTable);
-				proteinCompare(chr, false);
+				proteinCompare(chr, false, false);
 			}
 		}
 
@@ -148,7 +148,7 @@ public class SnpEffCmdProtein extends SnpEff {
 			checkCodonTables();
 		} else {
 			// Compare proteins
-			proteinCompare(null, true);
+			proteinCompare(null, true, true);
 		}
 	}
 
@@ -261,7 +261,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	/**
 	 * Compare list of proteins
 	 */
-	double proteinCompare(String chr, boolean addTotals) {
+	double proteinCompare(String chr, boolean addTotals, boolean updateTranscriptAaCheck) {
 		List<Transcript> trList = null;
 
 		// No chromosome name specified? => Use all transcripts
@@ -279,7 +279,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		if (verbose) System.out.print((chr != null ? chr : "") + "\t");
 
 		// Check each transcript
-		int countNotFound = 0, countOk = 0, countErrors = 0, countWarnings = 0;
+		int countNotFound = 0, countOk = 0, countErrors = 0;
 		for (Transcript tr : trList) {
 			char status = ' ';
 			String protein = tr.protein();
@@ -288,18 +288,14 @@ public class SnpEffCmdProtein extends SnpEff {
 			if (proteinReference == null) {
 				if (tr.isProteinCoding()) {
 					status = '-';
-					countNotFound++;
 					if (debug) System.err.println("\nWARNING:Cannot find Protein for transcript " + tr.getId());
 				}
 			} else if (equals(protein, proteinReference)) {
 				status = '+';
-				countOk++;
-				if (addTotals) tr.setAaCheck(true);
 			} else {
 				status = '*';
-				countErrors++;
 
-				if (debug || storeAlignments || onlyOneError) {
+				if (Math.random() < 2 || debug || storeAlignments || onlyOneError) {
 					protein = proteinFormat(protein);
 					proteinReference = proteinFormat(proteinReference);
 
@@ -311,9 +307,9 @@ public class SnpEffCmdProtein extends SnpEff {
 					int maxScore = Math.min(protein.length(), proteinReference.length());
 					int score = sw.getAlignmentScore();
 
-					if (debug || onlyOneError) {
+					if (Math.random() < 2 || debug || onlyOneError) {
 						System.err.println("\nERROR: Proteins do not match for transcript " + tr.getId() //
-								+ "\tStrand:" + (tr.isStrandPlus() ? 1 : -1) //
+								+ "\tStrand:" + (tr.isStrandPlus() ? "+" : "-") //
 								+ "\tExons: " + tr.numChilds() //
 								+ "\n" //
 								+ String.format("\tSnpEff protein     (%6d) : '%s'\n", protein.length(), protein) //
@@ -334,6 +330,26 @@ public class SnpEffCmdProtein extends SnpEff {
 				}
 			}
 
+			// Update counters
+			boolean ok = false;
+			switch (status) {
+			case '.':
+				countNotFound++;
+				break;
+
+			case '+':
+				countOk++;
+				ok = true;
+				break;
+
+			case '*':
+				countErrors++;
+				break;
+			}
+
+			// Update transcript status
+			if (ok && updateTranscriptAaCheck) tr.setAaCheck(true);
+
 			// Show a mark
 			if (verbose && (status != ' ')) {
 				System.out.print(status);
@@ -350,7 +366,6 @@ public class SnpEffCmdProtein extends SnpEff {
 				+ (chr != null ? "\tChromosome: " + chr : "") //
 				+ (chr != null ? "\tCodon table: " + CodonTables.getInstance().getTable(genome, chr).getName() : "") //
 				+ "\tOK: " + countOk //
-				+ "\tWarnings: " + countWarnings //
 				+ "\tNot found: " + countNotFound //
 				+ "\tErrors: " + countErrors //
 				+ "\tError percentage: " + (100 * errorRate) + "%" //
@@ -361,7 +376,6 @@ public class SnpEffCmdProtein extends SnpEff {
 			totalNotFound += countNotFound;
 			totalOk += countOk;
 			totalErrors += countErrors;
-			totalWarnings += countWarnings;
 		}
 
 		return errorRate;
