@@ -624,7 +624,10 @@ public class SnpEffectPredictor implements Serializable {
 				double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
 				if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
 					variantEffects.add(variant, chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
-					return variantEffects;
+
+					// If the deletion is too large, querying will result in too many 
+					// results. We stop here to avoid memory and performance issues
+					if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD) return variantEffects;
 				}
 			}
 		}

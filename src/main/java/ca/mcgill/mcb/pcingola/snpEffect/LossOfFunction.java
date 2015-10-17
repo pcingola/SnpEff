@@ -110,9 +110,9 @@ public class LossOfFunction {
 		if (lofCount < 0) {
 			lofCount = nmdCount = 0;
 
-			// Iterate over all changeEffects
-			for (VariantEffect changeEffect : variantEffects)
-				if (isLof(changeEffect)) lofCount++;
+			// Iterate over all variantEffects
+			for (VariantEffect variantEffect : variantEffects)
+				if (isLof(variantEffect)) lofCount++;
 		}
 
 		return lofCount > 0;
@@ -198,18 +198,20 @@ public class LossOfFunction {
 	 * 		1) First (coding) exon deleted
 	 * 		2) More than 50% of coding sequence deleted
 	 */
-	protected boolean isLofDeletion(VariantEffect changeEffect) {
-		Transcript tr = changeEffect.getTranscript();
-		if (tr == null) throw new RuntimeException("Transcript not found for change:\n\t" + changeEffect);
+	protected boolean isLofDeletion(VariantEffect variantEffect) {
+		Transcript tr = variantEffect.getTranscript();
+		if (tr == null) throw new RuntimeException("Transcript not found for change:\n\t" + variantEffect);
 
 		//---
 		// Criteria:
-		// 		1) First (coding) exon deleted
+		// 		1) The whole transcript or the first (coding) exon deleted
 		//---
-		if (changeEffect.hasEffectType(EffectType.EXON_DELETED)) {
-			Variant seqChange = changeEffect.getVariant();
-			if (seqChange == null) throw new RuntimeException("Cannot retrieve 'seqChange' from EXON_DELETED effect!");
-			if (seqChange.includes(tr.getFirstCodingExon())) return true;
+		if (variantEffect.hasEffectType(EffectType.TRANSCRIPT_DELETED)) return true;
+
+		if (variantEffect.hasEffectType(EffectType.EXON_DELETED)) {
+			Variant variant = variantEffect.getVariant();
+			if (variant == null) throw new RuntimeException("Cannot retrieve 'variant' from EXON_DELETED effect!");
+			if (variant.includes(tr.getFirstCodingExon())) return true;
 		}
 
 		//---
@@ -218,16 +220,16 @@ public class LossOfFunction {
 		//---
 
 		// Find coding part of the transcript (i.e. no UTRs)
-		Variant seqChange = changeEffect.getVariant();
+		Variant variant = variantEffect.getVariant();
 		int cdsStart = tr.isStrandPlus() ? tr.getCdsStart() : tr.getCdsEnd();
 		int cdsEnd = tr.isStrandPlus() ? tr.getCdsEnd() : tr.getCdsStart();
-		Marker coding = new Marker(seqChange.getChromosome(), cdsStart, cdsEnd, false, "");
+		Marker coding = new Marker(variant.getChromosome(), cdsStart, cdsEnd, false, "");
 
 		// Create an interval intersecting the CDS and the deletion
-		int start = Math.max(cdsStart, seqChange.getStart());
-		int end = Math.min(cdsEnd, seqChange.getEnd());
+		int start = Math.max(cdsStart, variant.getStart());
+		int end = Math.min(cdsEnd, variant.getEnd());
 		if (start >= end) return false; // No intersections with coding part of the exon? => not LOF
-		Marker codingDeleted = new Marker(seqChange.getChromosome(), start, end, false, "");
+		Marker codingDeleted = new Marker(variant.getChromosome(), start, end, false, "");
 
 		// Count:
 		//   - number of coding bases deleted
@@ -271,11 +273,11 @@ public class LossOfFunction {
 		if (lastNmdPos < 0) return false; // No valid 'lastNmdPos'? => There is no NMD event.
 
 		// Does this change affect the region 'before' this last NMD position? => It is assumed to be NMD
-		Variant seqChange = variantEffect.getVariant();
+		Variant variant = variantEffect.getVariant();
 
 		boolean nmd;
-		if (tr.isStrandPlus()) nmd = seqChange.getStart() <= lastNmdPos;
-		else nmd = lastNmdPos <= seqChange.getEnd();
+		if (tr.isStrandPlus()) nmd = variant.getStart() <= lastNmdPos;
+		else nmd = lastNmdPos <= variant.getEnd();
 
 		// Update sets and counters
 		if (nmd) {
@@ -339,9 +341,9 @@ public class LossOfFunction {
 	/**
 	 * Which percentile of the protein does this effect hit?
 	 */
-	double percentCds(VariantEffect changeEffect) {
-		int cdsLen = changeEffect.getAaLength();
-		int codonNum = changeEffect.getCodonNum();
+	double percentCds(VariantEffect variantEffect) {
+		int cdsLen = variantEffect.getAaLength();
+		int codonNum = variantEffect.getCodonNum();
 		if ((cdsLen >= 0) && (codonNum >= 0)) return codonNum / ((double) cdsLen);
 		return Double.NaN;
 	}

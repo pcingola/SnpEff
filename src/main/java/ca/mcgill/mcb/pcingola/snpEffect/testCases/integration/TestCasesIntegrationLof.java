@@ -79,12 +79,12 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 	 */
 	void checkLofExonDeletedFirstExon(Transcript tr) {
 		Exon ex = tr.getFirstCodingExon();
-		Variant seqChange = new Variant(tr.getChromosome(), ex.getStart(), "AC", "A");
-		seqChange.setStart(ex.getStart());
-		seqChange.setEnd(ex.getEnd());
-		seqChange.setVariantType(VariantType.DEL);
-		if (verbose) Gpr.debug("SeqChange:" + seqChange);
-		LinkedList<VariantEffect> changeEffects = variantEffects(seqChange, EffectType.EXON_DELETED, ex);
+		Variant Variant = new Variant(tr.getChromosome(), ex.getStart(), "AC", "A");
+		Variant.setStart(ex.getStart());
+		Variant.setEnd(ex.getEnd());
+		Variant.setVariantType(VariantType.DEL);
+		if (verbose) Gpr.debug("Variant:" + Variant);
+		LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.EXON_DELETED, ex);
 
 		// Calculate LOF
 		LossOfFunction lof = new LossOfFunction(config, changeEffects);
@@ -100,17 +100,17 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		Marker cds = cdsMarker(tr);
 
 		for (int i = 0; i < NUM_DEL_TEST; i++) {
-			// Create a random seqChange
+			// Create a random Variant
 			int delStart = random.nextInt(tr.size() - 1) + tr.getStart();
 			int delEnd = random.nextInt(tr.getEnd() - delStart) + delStart + 1;
-			Variant seqChange = new Variant(tr.getChromosome(), delStart, "AC", "A");
-			seqChange.setStart(delStart);
-			seqChange.setEnd(delEnd);
-			if (verbose) Gpr.debug("SeqChange:" + seqChange);
-			seqChange.setVariantType(VariantType.DEL);
+			Variant Variant = new Variant(tr.getChromosome(), delStart, "AC", "A");
+			Variant.setStart(delStart);
+			Variant.setEnd(delEnd);
+			if (verbose) Gpr.debug("Variant:" + Variant);
+			Variant.setVariantType(VariantType.DEL);
 
 			// How many coding bases are affected?
-			Marker codingDel = cds.intersect(seqChange);
+			Marker codingDel = cds.intersect(Variant);
 			if (codingDel != null) { // Does it intersect?
 				int numBases = 0;
 				for (Exon ex : tr)
@@ -121,7 +121,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				boolean delIsLof = perc > LossOfFunction.DEFAULT_DELETE_PROTEIN_CODING_BASES;
 
 				// Calculate LOF
-				LinkedList<VariantEffect> changeEffects = variantEffects(seqChange, EffectType.TRANSCRIPT, tr); // Notice that we don't care what type of effect is, so we just use 'TRANSCRIPT'
+				LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.TRANSCRIPT, tr); // Notice that we don't care what type of effect is, so we just use 'TRANSCRIPT'
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
 				boolean islof = lof.isLof();
 				Assert.assertEquals(delIsLof, islof);
@@ -143,16 +143,16 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 
 			// All exonic positions
 			for (int pos = start; ex.intersects(pos); pos += step) {
-				// Create a seqChange
-				Variant seqChange;
+				// Create a Variant
+				Variant Variant;
 				boolean ins = random.nextBoolean(); // Randomly choose INS or DEL
-				if (ins) seqChange = new Variant(tr.getChromosome(), pos, "A", "AC");
-				else seqChange = new Variant(tr.getChromosome(), pos, "AC", "A");
-				seqChange.setVariantType(ins ? VariantType.INS : VariantType.DEL);
-				if (verbose) Gpr.debug("SeqChange:" + seqChange);
+				if (ins) Variant = new Variant(tr.getChromosome(), pos, "A", "AC");
+				else Variant = new Variant(tr.getChromosome(), pos, "AC", "A");
+				Variant.setVariantType(ins ? VariantType.INS : VariantType.DEL);
+				if (verbose) Gpr.debug("Variant:" + Variant);
 
 				// Create change effect
-				LinkedList<VariantEffect> changeEffects = variantEffects(seqChange, EffectType.FRAME_SHIFT, ex);
+				LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.FRAME_SHIFT, ex);
 				VariantEffect changeEffect = changeEffects.get(0);
 				changeEffect.setCodons("", "", codingBase / 3, codingBase % 3); // Set codon affected
 				int aaLen = changeEffect.getAaLength();
@@ -187,8 +187,8 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 	void checkLofStartLost(Transcript tr) {
 		// Find start codon position
 		int pos = tr.getCdsStart();
-		Variant seqChange = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a seqChange
-		if (verbose) Gpr.debug("SeqChange:" + seqChange);
+		Variant Variant = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a Variant
+		if (verbose) Gpr.debug("Variant:" + Variant);
 
 		// Finr exon
 		Exon exon = null;
@@ -197,7 +197,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		if (exon == null) throw new RuntimeException("Cannot find first exon for transcript " + tr.getId());
 
 		// Create a LOF object and analyze the effect
-		LinkedList<VariantEffect> changeEffects = variantEffects(seqChange, EffectType.START_LOST, exon);
+		LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.START_LOST, exon);
 		LossOfFunction lof = new LossOfFunction(config, changeEffects);
 		boolean islof = lof.isLof();
 		Assert.assertEquals(true, islof);
@@ -223,10 +223,10 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 			// For all position on splice site donor positions, make sure it is LOF
 			//---
 			for (int pos = posDonor, i = 0; i < maxSize; i++, pos += step) {
-				Variant seqChange = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a seqChange
-				Marker marker = findMarker(config.getSnpEffectPredictor(), seqChange, EffectType.SPLICE_SITE_ACCEPTOR, null, intron);
-				LinkedList<VariantEffect> changeEffects = variantEffects(seqChange, EffectType.SPLICE_SITE_ACCEPTOR, marker); // Create a SPLICE_SITE_ACCEPTOR effect
-				if (verbose) Gpr.debug("SeqChange:" + seqChange);
+				Variant Variant = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a Variant
+				Marker marker = findMarker(config.getSnpEffectPredictor(), Variant, EffectType.SPLICE_SITE_ACCEPTOR, null, intron);
+				LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.SPLICE_SITE_ACCEPTOR, marker); // Create a SPLICE_SITE_ACCEPTOR effect
+				if (verbose) Gpr.debug("Variant:" + Variant);
 
 				// Create a LOF object and analyze the effect
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
@@ -258,10 +258,10 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 			//---
 			for (int pos = posDonor, i = 0; i < maxSize; i++, pos += step) {
 				if (verbose) Gpr.debug("Position: " + tr.getChromosome().getId() + ":" + posDonor);
-				Variant variant = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a seqChange
+				Variant variant = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a Variant
 				Marker marker = findMarker(config.getSnpEffectPredictor(), variant, EffectType.SPLICE_SITE_DONOR, null, intron);
 				LinkedList<VariantEffect> changeEffects = variantEffects(variant, EffectType.SPLICE_SITE_DONOR, marker); // Create a SPLICE_DONOR effect
-				if (verbose) Gpr.debug("SeqChange:" + variant);
+				if (verbose) Gpr.debug("Variant:" + variant);
 
 				// Create a LOF object and analyze the effect
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);

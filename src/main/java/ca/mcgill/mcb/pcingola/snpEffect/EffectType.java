@@ -16,6 +16,7 @@ import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 public enum EffectType {
 	// High impact
 	CHROMOSOME_LARGE_DELETION //
+	, TRANSCRIPT_DELETED //
 	, EXON_DELETED //
 	, FRAME_SHIFT //
 	, STOP_GAINED //
@@ -114,6 +115,7 @@ public enum EffectType {
 	 */
 	public EffectImpact effectImpact() {
 		switch (this) {
+		case TRANSCRIPT_DELETED:
 		case EXON_DELETED:
 		case FRAME_SHIFT:
 		case SPLICE_SITE_ACCEPTOR:
@@ -216,6 +218,7 @@ public enum EffectType {
 		case SPLICE_SITE_REGION:
 			return EffectType.SPLICE_SITE_REGION;
 
+		case TRANSCRIPT_DELETED:
 		case INTRAGENIC:
 		case START_LOST:
 		case SYNONYMOUS_START:
@@ -394,6 +397,9 @@ public enum EffectType {
 		case TRANSCRIPT:
 			//	return "transcript";
 			return "non_coding_transcript_variant";
+
+		case TRANSCRIPT_DELETED:
+			return "transcript_ablation";
 
 		case UPSTREAM:
 			return "upstream_gene_variant";

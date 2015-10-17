@@ -1722,7 +1722,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Create 'vertical lines'
 		StringBuilder lines = new StringBuilder();
-		lines.append(' ');
+		if (isStrandPlus()) lines.append(' ');
 		int prev = start;
 		for (Exon ex : this.sorted()) {
 			lines.append(Gpr.repeat(' ', ex.getStart() - prev - 1) + "|");
@@ -1797,6 +1797,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
+
+		if (variant.isDel() && variant.includes(this)) {
+			CodonChange codonChange = CodonChange.factory(variant, this, variantEffects);
+			codonChange.codonChange();
+			return true;
+		}
 
 		//---
 		// Does it hit an exon?

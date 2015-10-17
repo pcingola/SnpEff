@@ -502,6 +502,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 
 			// Calculate effects
 			hitTranscript |= tr.intersects(variant);
+
 			tr.variantEffect(variant, variantEffects);
 		}
 
@@ -516,9 +517,8 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 		//---
 		if (shifted3prime) {
 			for (VariantEffect ve : variantEffects) {
-				if (ve.getVariant() == variant) { // Is this effect using the shifted variant?
-					ve.addErrorWarningInfo(ErrorWarningType.INFO_REALIGN_3_PRIME); // Mark as shifted
-				}
+				// Is this effect using the shifted variant? => Mark as shifted
+				if (ve.getVariant() == variant) ve.addErrorWarningInfo(ErrorWarningType.INFO_REALIGN_3_PRIME);
 			}
 		}
 

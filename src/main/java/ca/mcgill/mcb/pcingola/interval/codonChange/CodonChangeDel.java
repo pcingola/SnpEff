@@ -21,6 +21,17 @@ public class CodonChangeDel extends CodonChange {
 		requireNetCdsChange = true;
 	}
 
+	@Override
+	public void codonChange() {
+		if (variant.includes(transcript)) {
+			// Large deletion removing the whole transcript?
+			effect(transcript, EffectType.TRANSCRIPT_DELETED, "", "", "", -1, -1, false);
+		} else {
+			// Normal cases
+			super.codonChange();
+		}
+	}
+
 	/**
 	 * Analyze deletions in this transcript.
 	 * Add changeEffect to 'changeEffect'
