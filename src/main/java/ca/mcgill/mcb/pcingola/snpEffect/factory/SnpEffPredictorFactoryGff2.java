@@ -33,27 +33,4 @@ public class SnpEffPredictorFactoryGff2 extends SnpEffPredictorFactoryGff {
 		version = "GFF2";
 	}
 
-	//	/**
-	//	 * Add a new interval to SnpEffect predictor
-	//	 */
-	//	@Override
-	//	protected boolean addInterval(GffMarker gffMarker) {
-	//		Marker m = null;
-	//
-	//		switch (gffMarker.getType()) {
-	//		case TRANSCRIPT:
-	//			m = findOrCreateTranscript(gffMarker);
-	//			break;
-	//
-	//		case EXON:
-	//			m = addExon(gffMarker);
-	//			break;
-	//
-	//		default:
-	//			break;
-	//		}
-	//
-	//		return m != null;
-	//	}
-
 }

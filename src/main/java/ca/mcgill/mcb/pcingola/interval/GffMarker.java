@@ -163,14 +163,6 @@ public class GffMarker extends Custom {
 		return source;
 	}
 
-	//	/**
-	//	 * Do we have additional annotations?
-	//	 */
-	//	@Override
-	//	public boolean hasAnnotations() {
-	//		return (keyValues != null) && (!keyValues.isEmpty());
-	//	}
-
 	public String getTranscriptId() {
 		String key = "transcript_id";
 		if (hasAttr(key)) return getAttr(key);

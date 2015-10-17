@@ -331,27 +331,6 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		try {
 			readGff();
 
-			//			// We have to read the file a few times because we want to have all genes, then all transcripts, then all exons, etc.
-			//			if (verbose) System.out.print("\tReading genes       : ");
-			//			readGff(GffType.GENE);
-			//
-			//			if (verbose) System.out.print("\tReading transcripts : ");
-			//			readGff(GffType.TRANSCRIPT);
-			//
-			//			if (verbose) System.out.print("\tReading exons       : ");
-			//			readGff(GffType.EXON);
-			//
-			//			// This features are not present in GFF2 and are optional in GTF 2.2
-			//			if (!version.equals("GFF2")) {
-			//				exonsFromCds(); // We need to create exons from CDSs before UTRs are added, since UTR require exons as parents
-			//
-			//				if (verbose) System.out.print("\tReading UTRs (5)    : ");
-			//				readGff(GffType.UTR5);
-			//
-			//				if (verbose) System.out.print("\tReading UTRs (3)    : ");
-			//				readGff(GffType.UTR3);
-			//			}
-
 			// Some clean-up before reading exon sequences
 			beforeExonSequences();
 
@@ -426,24 +405,6 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 		return tr;
 	}
-
-	//	/**
-	//	 * Is this protein coding according to the source
-	//	 *
-	//	 * References: http://vega.sanger.ac.uk/info/about/gene_and_transcript_types.html
-	//	 */
-	//	protected boolean isProteingCoding(String biotype) {
-	//		return biotype.equals("protein_coding") //
-	//				|| biotype.equals("IG_C_gene") //
-	//				|| biotype.equals("IG_D_gene") //
-	//				|| biotype.equals("IG_J_gene") //
-	//				|| biotype.equals("IG_V_gene") //
-	//				|| biotype.equals("TR_C_gene") //
-	//				|| biotype.equals("TR_D_gene") //
-	//				|| biotype.equals("TR_J_gene") //
-	//				|| biotype.equals("TR_V_gene") //
-	//				;
-	//	}
 
 	/**
 	 * Parse a line
