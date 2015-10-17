@@ -447,7 +447,7 @@ public class SnpEff implements CommandLine {
 				markers.add(m);
 			} else {
 				// Not a custom interval? Create one
-				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), m.isStrandMinus(), m.getId(), label);
+				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), false, m.getId(), label);
 				markers.add(custom);
 			}
 		}

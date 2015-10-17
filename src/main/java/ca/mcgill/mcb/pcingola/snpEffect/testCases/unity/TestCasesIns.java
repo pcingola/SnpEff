@@ -135,7 +135,7 @@ public class TestCasesIns extends TestCasesBase {
 
 							if (debug) System.out.println("\tPos: " + pos //
 									+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-									+ "\t" + variant + "\tstrand" + (variant.isStrandPlus() ? "+" : "-") //
+									+ "\t" + variant //
 									+ "\tCodon: " + codonOld + " -> " + codonNew //
 									+ "\tAA: " + aaOld + " -> " + aaNew //
 									+ "\n\t\tEffect          : '" + effStr + "'\t'" + effFullStr + "'" //

@@ -81,9 +81,6 @@ public class Marker extends Interval implements TxtSerializable {
 	public Marker apply(Variant variant) {
 		if (!shouldApply(variant)) return this;
 
-		// Negative strand variants are a pain. We will eventually get rid of them...(they do not make sense any more)
-		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are suported!\n\tVariant : " + variant);
-
 		Marker newMarker = null;
 		switch (variant.getVariantType()) {
 		case SNP:

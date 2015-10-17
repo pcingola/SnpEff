@@ -138,20 +138,6 @@ public class Variant extends Marker {
 		init(parent, position, referenceStr, altStr, null, id);
 	}
 
-	/**
-	 * Return the alternative sequence (always in positive strand)
-	 */
-	public String alternative() {
-		return isStrandPlus() ? alt : GprSeq.reverseWc(alt);
-	}
-
-	/**
-	 * Return the change (always in positive strand)
-	 */
-	public String change() {
-		return isStrandPlus() ? alt : GprSeq.reverseWc(alt);
-	}
-
 	@Override
 	public Variant clone() {
 		return (Variant) super.clone();
@@ -369,9 +355,6 @@ public class Variant extends Marker {
 			if ((removeBefore + removeAfter) >= netChange.length()) return ""; // Nothing left
 		} else removeAfter = 0;
 
-		// Use reverse-WC?
-		if (isStrandMinus()) netChange = GprSeq.reverseWc(netChange);
-
 		// Remove leading and trailing parts
 		netChange = netChange.substring(removeBefore, netChange.length() - removeAfter);
 
@@ -388,13 +371,6 @@ public class Variant extends Marker {
 		VariantRealign vr = new VariantRealign(gs, this);
 		if (!vr.realign()) return this;
 		return vr.getVariantRealigned();
-	}
-
-	/**
-	 * Return the reference sequence (always in positive strand)
-	 */
-	public String reference() {
-		return isStrandPlus() ? ref : GprSeq.reverseWc(ref);
 	}
 
 	public void setGenotype(String genotype) {
@@ -435,4 +411,5 @@ public class Variant extends Marker {
 		else if (isDel()) return getChromosomeName() + ":" + getStart() + "_*" + "/-" + getReference();
 		return getChromosomeName() + ":" + getStart() + "_" + getReference() + "/" + getAlt();
 	}
+
 }

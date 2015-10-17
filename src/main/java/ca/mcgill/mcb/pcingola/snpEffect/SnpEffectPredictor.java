@@ -454,11 +454,6 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Add into to a hash
-	 * @param hits
-	 * @param marker
-	 * @param hit2add
-	 * @param showGeneDetails
-	 * @param compareTemplate
 	 */
 	void regionsAddHit(HashSet<String> hits, Marker hit2add, Marker marker, boolean showGeneDetails, boolean compareTemplate) {
 		String hitStr = hit2add.getClass().getSimpleName();

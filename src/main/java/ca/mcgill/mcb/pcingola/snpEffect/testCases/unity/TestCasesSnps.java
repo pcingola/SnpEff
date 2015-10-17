@@ -124,7 +124,7 @@ public class TestCasesSnps extends TestCasesBase {
 						String effStr = effectStr(effect);
 						if (debug) System.out.println("\tPos: " + pos //
 								+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-								+ "\t" + variant + (variant.isStrandPlus() ? "+" : "-") //
+								+ "\t" + variant //
 								+ "\tCodon: " + codon + " -> " + newCodon //
 								+ "\tAA: " + aa + " -> " + newAa //
 								+ "\tEffect: " + effStr);

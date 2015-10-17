@@ -45,9 +45,6 @@ public class MarkerSeq extends Marker {
 	public MarkerSeq apply(Variant variant) {
 		if (!shouldApply(variant)) return this;
 
-		// Negative strand variants are a pain. We will eventually get rid of them...(they do not make sense any more)
-		if (variant.isStrandMinus()) throw new RuntimeException("Only variants in postive strand are suported!\n\tVariant : " + variant);
-
 		// Create new MarkerSeq with updated coordinates
 		MarkerSeq newMarkerSeq = (MarkerSeq) super.apply(variant);
 		if (newMarkerSeq == null) return null;
@@ -222,8 +219,6 @@ public class MarkerSeq extends Marker {
 		if (marker.isStrandMinus()) throw new RuntimeException("marker on negative strand not supported");
 
 		return basesAtPos(marker.getStart(), marker.size());
-		//		if (isStrandPlus()) return basesAtPos(marker.getStart(), marker.size());
-		//		return basesAtPos(marker.getEnd(), marker.size());
 	}
 
 	/**
