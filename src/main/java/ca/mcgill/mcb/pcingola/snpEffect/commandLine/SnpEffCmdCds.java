@@ -66,6 +66,8 @@ public class SnpEffCmdCds extends SnpEff {
 		// Compare all genes
 		for (Gene gint : config.getGenome().getGenes())
 			for (Transcript tr : gint) {
+				char status = ' ';
+
 				boolean ok = false;
 				String cds = tr.cds().toUpperCase();
 				String mRna = tr.mRna().toUpperCase();
@@ -74,18 +76,17 @@ public class SnpEffCmdCds extends SnpEff {
 				if (cdsReference != null) cdsReference = cdsReference.toUpperCase();
 
 				if (cdsReference == null) {
+					status = '.';
+					totalNotFound++;
 					if (debug) System.err.println("\nWARNING:Cannot find reference CDS for transcript '" + tr.getId() + "'");
-					else if (verbose) System.out.print('.');
-					totalNotFound++;
 				} else if (cds.isEmpty()) {
-					if (debug) System.err.println("\nWARNING:Empty CDS for transcript '" + tr.getId() + "'");
-					else if (verbose) System.out.print('.');
+					status = '.';
 					totalNotFound++;
+					if (debug) System.err.println("\nWARNING:Empty CDS for transcript '" + tr.getId() + "'");
 				} else if (cds.equals(cdsReference)) {
+					status = '+';
 					totalOk++;
 					ok = true;
-
-					if (verbose) System.out.print('+');
 
 					// Sanity check: Start and stop codons
 					if ((cds != null) && (cds.length() >= 3)) {
@@ -106,34 +107,33 @@ public class SnpEffCmdCds extends SnpEff {
 						}
 					}
 				} else if (mRna.equals(cdsReference)) { // May be the file has mRNA instead of CDS?
+					status = '+';
 					totalOk++;
 					ok = true;
-
-					if (verbose) System.out.print('+');
 				} else if ((mRna.length() < cdsReference.length()) // CDS longer than mRNA? May be it is actually an mRNA + poly-A tail (instead of a CDS)
 						&& cdsReference.substring(mRna.length()).replace('A', ' ').trim().isEmpty() // May be it is an mRNA and it has a ploy-A tail added
 						&& cdsReference.substring(0, mRna.length()).equals(mRna) // Compare cutting poly-A tail
 				) {
 					// OK, it was a mRNA +  polyA
+					status = '+';
 					totalOk++;
 					ok = true;
-
-					if (verbose) System.out.print('+');
 				} else if ((mRna.length() > cdsReference.length()) // PolyA in the reference?
 						&& mRna.substring(cdsReference.length()).replace('A', ' ').trim().isEmpty() //
 						&& mRna.substring(0, cdsReference.length()).equals(mRna) //
 				) {
 					// OK, it was a mRNA +  polyA
+					status = '+';
 					totalOk++;
 					ok = true;
-
-					if (verbose) System.out.print('+');
 				} else if (cdsReference.indexOf(cds) >= 0) { // CDS fully included in reference?
+					status = '+';
 					totalOk++;
 					ok = true;
-
-					if (verbose) System.out.print('+');
 				} else {
+					status = '*';
+					totalErrors++;
+
 					if (debug || storeAlignments || onlyOneError) {
 						// Create a string indicating differences
 						SmithWaterman sw = new SmithWaterman(cds, cdsReference);
@@ -164,14 +164,21 @@ public class SnpEffCmdCds extends SnpEff {
 
 					} else if (verbose) System.out.print('*');
 
-					totalErrors++;
 				}
 
 				if (ok) tr.setDnaCheck(true);
 
 				// Show a mark
-				if (verbose && (i % 100 == 0)) System.out.print("\n\t");
-				i++;
+				if (verbose && (status != ' ')) {
+					if (status == '.' && !tr.isProteinCoding()) {
+						// OK, may be this is a non-protein coding transcript and that's why we could not find the CDS
+					} else {
+						System.out.print(status);
+						i++;
+						if (i % 100 == 0) System.out.print("\n\t");
+					}
+
+				}
 			}
 
 		double perc = ((double) totalErrors) / ((double) (totalErrors + totalOk));

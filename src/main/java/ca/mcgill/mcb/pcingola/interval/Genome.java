@@ -41,6 +41,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	HashMap<String, Chromosome> chromosomes;
 	Genes genes; // All genes, transcripts, exons, UTRs, CDS, etc.
 	Boolean codingInfo = null; // Do we have coding info from genes?
+	Boolean transcriptSupportLevelInfo = null; // Do we have 'TranscriptSupportLevel' info in transcripts?
 	GenomicSequences genomicSequences; // Store all genomic sequences (of interest) here
 
 	/**
@@ -272,6 +273,21 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	/**
 	 * Do we have coding info from genes?
 	 */
+	public boolean hasTranscriptSupportLevelInfo() {
+		// Is this already calculated?
+		if (transcriptSupportLevelInfo == null) {
+			int countTsl = 0;
+
+			for (Gene gene : genes)
+				for (Transcript tr : gene)
+					if (tr.hasTranscriptSupportLevelInfo()) countTsl++;
+
+			transcriptSupportLevelInfo = (countTsl != 0);
+		}
+
+		return codingInfo;
+	}
+
 	public boolean hasCodingInfo() {
 		// Is this already calculated?
 		if (codingInfo == null) {
@@ -432,6 +448,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		int exonSeq = 0, exonNoSeq = 0;
 		int countGenes = 0, countGenesProteinCoding = 0;
 		int countTranscripts = 0, countTranscriptsProteinCoding = 0;
+		int countTsl = 0;
 		int countExons = 0, countCds = 0;
 		int countCheckAa = 0, countCheckDna = 0;
 		int countUtrs = 0;
@@ -451,6 +468,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				if (tr.isProteinCoding()) countTranscriptsProteinCoding++;
 				if (tr.isAaCheck()) countCheckAa++;
 				if (tr.isDnaCheck()) countCheckDna++;
+				if (tr.hasTranscriptSupportLevelInfo()) countTsl++;
 
 				int numCds = tr.getCds().size();
 				int numExons = tr.subIntervals().size();
@@ -506,6 +524,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		sb.append("# Genome name                : '" + species + "'" + "\n");
 		sb.append("# Genome version             : '" + version + "'\n");
 		sb.append("# Has protein coding info    : " + hasCodingInfo() + "\n");
+		sb.append("# Has Tr. Support Level info : " + hasTranscriptSupportLevelInfo() + "\n");
 		sb.append("# Genes                      : " + countGenes + "\n");
 		sb.append("# Protein coding genes       : " + countGenesProteinCoding + "\n");
 
@@ -513,6 +532,9 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		sb.append("#-----------------------------------------------\n");
 		sb.append("# Transcripts                : " + countTranscripts + "\n");
 		sb.append(String.format("# Avg. transcripts per gene  : %.2f", avgTrPerGene) + "\n");
+		if (hasTranscriptSupportLevelInfo()) {
+			sb.append("# TSL transcripts            : " + countTsl + "\n");
+		}
 
 		// Checked transcripts
 		sb.append("#-----------------------------------------------\n");

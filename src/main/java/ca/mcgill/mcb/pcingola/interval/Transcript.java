@@ -56,6 +56,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	boolean aaCheck, dnaCheck;
 	boolean corrected; // Have coordinates been corrected? (e.g. frame correction)
 	boolean ribosomalSlippage; // Ribosomal slippage causes changes in reading frames. This might be represented as negative length introns (overlapping exons).
+	TranscriptSupportLevel transcriptSupportLevel = TranscriptSupportLevel.TSL_NA;
 
 	public Transcript() {
 		super();
@@ -1087,6 +1088,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return firstCodingExon;
 	}
 
+	public TranscriptSupportLevel getTranscriptSupportLevel() {
+		return transcriptSupportLevel;
+	}
+
 	/**
 	 * Create a TSS marker
 	 */
@@ -1119,6 +1124,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	public boolean hasErrorOrWarning() {
 		return hasError() || hasWarning();
+	}
+
+	public boolean hasTranscriptSupportLevelInfo() {
+		return (transcriptSupportLevel != null) && (transcriptSupportLevel != TranscriptSupportLevel.TSL_NA);
 	}
 
 	/**
@@ -1496,6 +1505,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		aaCheck = markerSerializer.getNextFieldBoolean();
 		corrected = markerSerializer.getNextFieldBoolean();
 		ribosomalSlippage = markerSerializer.getNextFieldBoolean();
+		transcriptSupportLevel = TranscriptSupportLevel.parse(markerSerializer.getNextField());
 		upstream = (Upstream) markerSerializer.getNextFieldMarker();
 		downstream = (Downstream) markerSerializer.getNextFieldMarker();
 
@@ -1519,6 +1529,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + aaCheck //
 				+ "\t" + corrected //
 				+ "\t" + ribosomalSlippage //
+				+ "\t" + transcriptSupportLevel //
 				+ "\t" + markerSerializer.save(upstream) //
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
@@ -1548,6 +1559,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	public void setRibosomalSlippage(boolean ribosomalSlippage) {
 		this.ribosomalSlippage = ribosomalSlippage;
+	}
+
+	public void setTranscriptSupportLevel(TranscriptSupportLevel transcriptSupportLevel) {
+		this.transcriptSupportLevel = transcriptSupportLevel;
 	}
 
 	public List<SpliceSite> spliceSites() {

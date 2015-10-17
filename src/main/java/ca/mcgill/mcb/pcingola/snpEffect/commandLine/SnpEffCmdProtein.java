@@ -281,20 +281,24 @@ public class SnpEffCmdProtein extends SnpEff {
 		// Check each transcript
 		int countNotFound = 0, countOk = 0, countErrors = 0, countWarnings = 0;
 		for (Transcript tr : trList) {
+			char status = ' ';
 			String protein = tr.protein();
 			String proteinReference = proteinByTrId.get(tr.getId());
 
 			if (proteinReference == null) {
 				if (tr.isProteinCoding()) {
+					status = '-';
 					countNotFound++;
 					if (debug) System.err.println("\nWARNING:Cannot find Protein for transcript " + tr.getId());
-					else if (verbose) System.out.print('-');
 				}
 			} else if (equals(protein, proteinReference)) {
+				status = '+';
 				countOk++;
 				if (addTotals) tr.setAaCheck(true);
-				if (verbose) System.out.print('+');
 			} else {
+				status = '*';
+				countErrors++;
+
 				if (debug || storeAlignments || onlyOneError) {
 					protein = proteinFormat(protein);
 					proteinReference = proteinFormat(proteinReference);
@@ -322,10 +326,7 @@ public class SnpEffCmdProtein extends SnpEff {
 						);
 						System.err.println("Transcript details:\n" + tr);
 					}
-
-				} else if (verbose) System.out.print('*');
-
-				countErrors++;
+				}
 
 				if (onlyOneError) {
 					System.err.println("Transcript details:\n" + tr);
@@ -334,8 +335,11 @@ public class SnpEffCmdProtein extends SnpEff {
 			}
 
 			// Show a mark
-			if (verbose && (i % 100 == 0)) System.out.print("\n\t");
-			i++;
+			if (verbose && (status != ' ')) {
+				System.out.print(status);
+				i++;
+				if (i % 100 == 0) System.out.print("\n\t");
+			}
 		}
 
 		// Relative error rate

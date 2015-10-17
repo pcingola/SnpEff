@@ -12,6 +12,7 @@ import ca.mcgill.mcb.pcingola.interval.IntergenicConserved;
 import ca.mcgill.mcb.pcingola.interval.IntronConserved;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.TranscriptSupportLevel;
 import ca.mcgill.mcb.pcingola.interval.Utr3prime;
 import ca.mcgill.mcb.pcingola.interval.Utr5prime;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
@@ -38,7 +39,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 	/**
 	 * Add a new interval to SnpEffect predictor
 	 */
-	void addInterval(String id, String type, String chromo, int start, int end, boolean strandMinus, String geneId, String geneName, String transcriptId, boolean proteinCoding, String geneBioType, String trBioType, int frame) {
+	void addInterval(String id, String type, String chromo, int start, int end, boolean strandMinus, String geneId, String geneName, String transcriptId, boolean proteinCoding, String geneBioType, String trBioType, int frame, String transcriptSupportLevel) {
 		// Get chromosome
 		Chromosome chromosome = getOrCreateChromosome(chromo);
 
@@ -70,8 +71,17 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		tr = findTranscript(transcriptId);
 		if (tr == null) {
 			tr = new Transcript(gene, start, end, strandMinus, transcriptId);
-			if ((trBioType == null) || (trBioType.isEmpty())) trBioType = "mRNA"; // No bioType? Create a default one
+
+			// No bioType? Create a default one
+			if ((trBioType == null) || trBioType.isEmpty()) trBioType = "mRNA";
 			tr.setBioType(trBioType);
+
+			// Add transcript support level information
+			if (transcriptSupportLevel != null) {
+				TranscriptSupportLevel tsl = TranscriptSupportLevel.parse(transcriptSupportLevel);
+				tr.setTranscriptSupportLevel(tsl);
+			}
+
 			add(tr);
 		}
 
@@ -158,6 +168,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		frame = frameType.convertFrame(frame);
 		String geneId = "", transcriptId = "";
 		String geneName = null;
+		String transcriptSupportLevel = null;
 
 		// Is it protein coding?
 		String geneBioType = "", trBioType = "";
@@ -179,6 +190,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 			trBioType = attrMap.get("transcript_biotype"); // Transcript biotype
 			if (trBioType == null) trBioType = attrMap.get("transcript_type"); // Note: This is GENCODE specific
 
+			transcriptSupportLevel = attrMap.get("transcript_support_level");
 		}
 
 		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
@@ -196,7 +208,7 @@ public class SnpEffPredictorFactoryGtf22 extends SnpEffPredictorFactoryGff {
 		String id = type + "_" + chromo + "_" + (start + 1) + "_" + (end + 1); // Create ID
 		if (transcriptId.isEmpty() && geneId.isEmpty()) {
 			warning("Empty gene_id and transcript_id. This should never happen (see GTF norm)");
-		} else addInterval(id, type, chromo, start, end, strandMinus, geneId, geneName, transcriptId, proteinCoding, geneBioType, trBioType, frame); // Add interval
+		} else addInterval(id, type, chromo, start, end, strandMinus, geneId, geneName, transcriptId, proteinCoding, geneBioType, trBioType, frame, transcriptSupportLevel); // Add interval
 
 		return true;
 	}
