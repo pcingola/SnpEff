@@ -295,7 +295,7 @@ public class SnpEffCmdProtein extends SnpEff {
 			} else {
 				status = '*';
 
-				if (Math.random() < 2 || debug || storeAlignments || onlyOneError) {
+				if (debug || storeAlignments || onlyOneError) {
 					protein = proteinFormat(protein);
 					proteinReference = proteinFormat(proteinReference);
 
@@ -307,7 +307,7 @@ public class SnpEffCmdProtein extends SnpEff {
 					int maxScore = Math.min(protein.length(), proteinReference.length());
 					int score = sw.getAlignmentScore();
 
-					if (Math.random() < 2 || debug || onlyOneError) {
+					if (debug || onlyOneError) {
 						System.err.println("\nERROR: Proteins do not match for transcript " + tr.getId() //
 								+ "\tStrand:" + (tr.isStrandPlus() ? "+" : "-") //
 								+ "\tExons: " + tr.numChilds() //

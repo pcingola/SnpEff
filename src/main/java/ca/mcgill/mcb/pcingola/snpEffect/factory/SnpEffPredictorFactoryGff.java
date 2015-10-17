@@ -256,6 +256,10 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		String tslStr = gffMarker.getAttr("transcript_support_level");
 		if (tslStr != null) tr.setTranscriptSupportLevel(TranscriptSupportLevel.parse(tslStr));
 
+		// Transcript version
+		String ver = gffMarker.getTranscriptVersion();
+		if (ver != null) tr.setVersion(ver);
+
 		// Add transcript
 		add(tr);
 

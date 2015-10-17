@@ -984,6 +984,8 @@ public class VcfEffect {
 			} else if (tr != null) {
 				featureType = "transcript";
 				featureId = transcriptId = tr.getId();
+				// Append version number (this is recommended by HGVS specification)
+				if (tr.getVersion() != null && !tr.getVersion().isEmpty()) featureId += "." + tr.getVersion();
 			} else {
 				featureType = marker.getType().toSequenceOntology(formatVersion, null);
 				featureId = marker.getId();

@@ -171,6 +171,10 @@ public class GffMarker extends Custom {
 		return GffType.TRANSCRIPT + "_" + id;
 	}
 
+	public String getTranscriptVersion() {
+		return getAttr("transcript_version");
+	}
+
 	public boolean hasAttr(String key) {
 		key = key.toLowerCase();
 		return keyValues.containsKey(key) && (keyValues.get(key) != null);
