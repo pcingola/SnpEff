@@ -74,6 +74,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 		IntervalTree intervalTree = forest.get(chromo);
 		if (intervalTree == null) {
 			intervalTree = new IntervalTree();
+			intervalTree.build();
 			forest.put(chromo, intervalTree);
 		}
 
@@ -207,7 +208,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 		for (String chromo : chrs) {
 			IntervalTree tree = getOrCreateTree(chromo);
-			sb.append("chr" + chromo + "\t size:" + tree.size() + "\n");
+			sb.append("chr" + chromo + "\tsize:" + tree.size() + "\tin_sync: " + tree.isInSync() + "\n");
 		}
 
 		return sb.toString();

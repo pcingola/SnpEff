@@ -4,7 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesAnn;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsExon;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntron;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesAlign;
@@ -63,7 +62,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesAlign.class, //
-		TestCasesAnn.class, //
 		TestCasesApplyDel.class, //
 		TestCasesApplyIns.class, //
 		TestCasesApplyMixed.class, //

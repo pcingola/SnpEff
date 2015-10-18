@@ -159,8 +159,6 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Build interval forest
 		intervalForest.build();
-
-		Gpr.debug("Forest:" + intervalForest);
 	}
 
 	/**

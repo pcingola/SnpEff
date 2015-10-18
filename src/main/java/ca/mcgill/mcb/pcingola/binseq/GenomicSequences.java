@@ -33,7 +33,6 @@ import ca.mcgill.mcb.pcingola.util.Timer;
 public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 
 	private static final long serialVersionUID = 2339867422366567569L;
-
 	public static final int MAX_ITERATIONS = 1000000;
 
 	public static boolean debug = false;
@@ -54,6 +53,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	public void addChromosomeSequence(String chr, String chrSeq) {
 		MarkerSeq ms = new MarkerSeq(genome.getOrCreateChromosome(chr), 0, chrSeq.length() - 1, chrSeq);
 		intervalForest.add(ms);
+		build();
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 
 		// Build tree
 		if (verbose) Timer.showStdErr("Building sequence tree for chromosome '" + chr + "'");
-		tree.build();
+		build();
 		if (verbose) Timer.showStdErr("Done. Loaded " + tree.getIntervals().size() + " sequences.");
 
 		return !tree.isEmpty();
@@ -115,11 +115,17 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 			}
 		}
 
+		build();
 		return seqsAdded;
 	}
 
+	/**
+	 * Build interval forest
+	 */
 	public void build() {
+		if (verbose) Timer.showStdErr("Building sequence tree for genome sequences");
 		intervalForest.build();
+		if (verbose) Timer.showStdErr("Done.");
 	}
 
 	/**

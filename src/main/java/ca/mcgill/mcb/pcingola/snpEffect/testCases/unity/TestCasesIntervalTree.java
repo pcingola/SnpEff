@@ -199,14 +199,14 @@ public class TestCasesIntervalTree {
 	public void test_04_IntervalTree2() {
 		Gpr.debug("Test");
 
-		IntervalTree2 intForest = new IntervalTree2(markers);
-		intForest.build();
+		IntervalTree2 intTree = new IntervalTree2(markers);
+		intTree.build();
 
 		Markers queries = createRandomLargeMarkers(chromosome, 10000);
 		int i = 0;
 		int totalResults = 0;
 		for (Marker m : queries) {
-			totalResults += compareQuery(m, intForest);
+			totalResults += compareQuery(m, intTree);
 			Gpr.showMark(i++, 10);
 		}
 
