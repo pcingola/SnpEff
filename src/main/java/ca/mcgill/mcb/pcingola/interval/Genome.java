@@ -437,7 +437,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	private void setGenomeId() {
 		genomeId = genomeIdCounter++;
-		Gpr.debug("Assigning genomeId: " + getGenomeId());
 	}
 
 	/**
