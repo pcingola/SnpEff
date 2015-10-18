@@ -16,8 +16,6 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 
 /**
  * The Node class contains the interval tree information for one single node
- *
- * Adapted from Kevin Dolan's implementation
  */
 public class IntervalNode implements Serializable, Iterable<Marker> {
 
@@ -34,16 +32,14 @@ public class IntervalNode implements Serializable, Iterable<Marker> {
 		rightNode = null;
 	}
 
-	public IntervalNode(Markers intervalList) {
+	public IntervalNode(Markers markers) {
 		intervals = new TreeMap<Marker, List<Marker>>();
 
 		SortedSet<Integer> endpoints = new TreeSet<Integer>();
 
-		for (Interval interval : intervalList) {
-			if (interval.isValid()) {
-				endpoints.add(interval.getStart());
-				endpoints.add(interval.getEnd());
-			} else System.err.println("WARNING: Ignoring interval " + interval);
+		for (Interval interval : markers) {
+			endpoints.add(interval.getStart());
+			endpoints.add(interval.getEnd());
 		}
 
 		if (endpoints.isEmpty()) {
@@ -57,7 +53,7 @@ public class IntervalNode implements Serializable, Iterable<Marker> {
 		Markers left = new Markers();
 		Markers right = new Markers();
 
-		for (Marker interval : intervalList) {
+		for (Marker interval : markers) {
 			if (interval.getEnd() < median) left.add(interval);
 			else if (interval.getStart() > median) right.add(interval);
 			else {
@@ -137,18 +133,6 @@ public class IntervalNode implements Serializable, Iterable<Marker> {
 		if (target.getStart() < center && leftNode != null) result.add(leftNode.query(target));
 		if (target.getEnd() > center && rightNode != null) result.add(rightNode.query(target));
 		return result;
-	}
-
-	public void setCenter(Integer center) {
-		this.center = center;
-	}
-
-	public void setLeft(IntervalNode left) {
-		leftNode = left;
-	}
-
-	public void setRight(IntervalNode right) {
-		rightNode = right;
 	}
 
 	/**

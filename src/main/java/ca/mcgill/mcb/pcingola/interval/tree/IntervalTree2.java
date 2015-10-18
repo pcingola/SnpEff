@@ -1,7 +1,6 @@
 package ca.mcgill.mcb.pcingola.interval.tree;
 
 import java.io.Serializable;
-import java.util.Iterator;
 
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Interval;
@@ -15,19 +14,19 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
  *
  * Adapted from Kevin Dolan's implementation
  */
-public class IntervalTree implements AbstractIntervalTree, Serializable, Iterable<Marker> {
+public class IntervalTree2 implements AbstractIntervalTree, Serializable {
 
 	private static final long serialVersionUID = 1808077263026999072L;
 
-	private IntervalNode head;
+	private IntervalNode2 head;
 	private final Markers intervals;
 	private boolean inSync;
 
 	/**
 	 * Instantiate a new interval tree with no intervals
 	 */
-	public IntervalTree() {
-		head = new IntervalNode();
+	public IntervalTree2() {
+		head = new IntervalNode2();
 		intervals = new Markers();
 		inSync = true;
 	}
@@ -36,8 +35,8 @@ public class IntervalTree implements AbstractIntervalTree, Serializable, Iterabl
 	 * Instantiate and build an interval tree with a preset list of intervals
 	 * @param intervals the list of intervals to use
 	 */
-	public IntervalTree(Markers intervals) {
-		head = new IntervalNode(intervals);
+	public IntervalTree2(Markers intervals) {
+		head = new IntervalNode2(intervals);
 		this.intervals = new Markers();
 		this.intervals.add(intervals);
 		inSync = true;
@@ -45,10 +44,10 @@ public class IntervalTree implements AbstractIntervalTree, Serializable, Iterabl
 
 	/**
 	 * Add an interval object to the interval tree's list
-	 * 
-	 * Note: Marks the tree as 'not inSync', but will not rebuild 
+	 *
+	 * Note: Marks the tree as 'not inSync', but will not rebuild
 	 * the tree until the next query or call to build
-	 * 
+	 *
 	 * @param interval the interval object to add
 	 */
 	@Override
@@ -59,7 +58,7 @@ public class IntervalTree implements AbstractIntervalTree, Serializable, Iterabl
 
 	/**
 	 * Add all intervals to interval tree's list
-	 * Note: Marks the tree as 'not inSync', but will not rebuild 
+	 * Note: Marks the tree as 'not inSync', but will not rebuild
 	 * the tree until the next query or call to build
 	 */
 	@Override
@@ -75,7 +74,7 @@ public class IntervalTree implements AbstractIntervalTree, Serializable, Iterabl
 	@Override
 	public void build() {
 		if (!inSync) {
-			head = new IntervalNode(intervals);
+			head = new IntervalNode2(intervals);
 			inSync = true;
 		}
 	}
@@ -98,17 +97,12 @@ public class IntervalTree implements AbstractIntervalTree, Serializable, Iterabl
 		return inSync;
 	}
 
-	@Override
-	public Iterator<Marker> iterator() {
-		return head.iterator();
-	}
-
 	public void load(String fileName, Genome genome) {
 		intervals.load(fileName, genome);
 		inSync = false;
 	}
 
-	private String nodeString(IntervalNode node, int level) {
+	private String nodeString(IntervalNode2 node, int level) {
 		if (node == null) return "";
 
 		StringBuffer sb = new StringBuffer();

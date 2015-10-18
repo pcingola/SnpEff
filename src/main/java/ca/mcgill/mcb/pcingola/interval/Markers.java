@@ -395,8 +395,14 @@ public class Markers implements Serializable, Collection<Marker> {
 	}
 
 	@Override
-	public Object[] toArray() {
-		return markers.toArray();
+	public Marker[] toArray() {
+		Marker markers[] = new Marker[size()];
+
+		int i = 0;
+		for (Marker m : this)
+			markers[i++] = m;
+
+		return markers;
 	}
 
 	@Override
