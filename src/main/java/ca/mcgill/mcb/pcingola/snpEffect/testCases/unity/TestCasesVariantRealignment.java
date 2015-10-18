@@ -33,7 +33,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 		Variant variant = new Variant(genome.getOrCreateChromosome(chrName), pos, ref, alt);
 
 		// Realign variant
-		VariantRealign vr = new VariantRealign(gs, variant);
+		VariantRealign vr = new VariantRealign(variant);
 		vr.realign();
 		if (verbose) Gpr.debug("Realigned variant: " + vr);
 

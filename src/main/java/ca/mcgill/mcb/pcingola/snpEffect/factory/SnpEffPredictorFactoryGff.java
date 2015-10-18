@@ -80,7 +80,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				// Create a transcript from the gene
 				String trId = "Transcript_" + gene.getId(); // Transcript ID
 				tr = addTranscript(gene, gffMarker, trId);
-				warning("Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for this exon.");
+				if (debug) warning("Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for this exon.");
 			}
 
 			// Try to find the gene
@@ -89,18 +89,14 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// No transcript found? => Try creating one
 			if (tr == null) {
 				// No gene? Create one
-				if (gene == null) {
-					// Create and add gene
-					String gId = "Gene_" + (parentId.isEmpty() ? id : parentId); // Gene ID
-					gene = addGene(gffMarker, gId);
-				}
+				if (gene == null) gene = addGene(gffMarker);
 
 				// Create transcript
 				String trId = parentId.isEmpty() ? "Transcript_" + id : parentId; // Transcript ID
 				tr = addTranscript(gene, gffMarker, trId);
 
 				// Add gene & transcript
-				warning("Cannot find transcript '" + parentId + "'. Created transcript '" + tr.getId() + "' and gene '" + gene.getId() + "' for this exon");
+				if (debug) warning("Cannot find transcript '" + parentId + "'. Created transcript '" + tr.getId() + "' and gene '" + gene.getId() + "' for this exon");
 			}
 
 			// This can be added in different ways
@@ -142,7 +138,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	/**
 	 * Create and add a gene based on GffMarker
 	 */
-	protected Gene addGene(GffMarker gffMarker, String geneId) {
+	protected Gene addGene(GffMarker gffMarker) {
 		String bioType = gffMarker.getGeneBiotype();
 		if (bioType == null) bioType = "mRNA";
 
@@ -150,9 +146,9 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		, gffMarker.getStart() //
 		, gffMarker.getEnd() //
 		, gffMarker.isStrandMinus() //
-		, geneId //
-				, gffMarker.getGeneName() //
-				, bioType);
+		, gffMarker.getGeneId() //
+		, gffMarker.getGeneName() //
+		, bioType);
 
 		add(gene);
 
@@ -374,7 +370,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 		// Nothing found? Create exon
 		exon = addExon(tr, gffMarker, gffMarker.getId());
-		warning("Cannot find exon for UTR: '" + utr.getId() + "'. Creating exon '" + gffMarker.getId() + "'");
+		if (debug) warning("Cannot find exon for UTR: '" + utr.getId() + "'. Creating exon '" + gffMarker.getId() + "'");
 		return exon;
 	}
 
@@ -387,7 +383,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		if (gene == null) gene = findGene(gffMarker.getId());
 
 		// Add gene if needed
-		if (gene == null) gene = addGene(gffMarker, gffMarker.getGeneId());
+		if (gene == null) gene = addGene(gffMarker);
 
 		return gene;
 	}

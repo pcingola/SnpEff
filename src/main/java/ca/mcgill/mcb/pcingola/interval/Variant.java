@@ -368,7 +368,7 @@ public class Variant extends Marker {
 		GenomicSequences gs = getGenome().getGenomicSequences();
 		if (gs == null) return this;
 
-		VariantRealign vr = new VariantRealign(gs, this);
+		VariantRealign vr = new VariantRealign(this);
 		if (!vr.realign()) return this;
 		return vr.getVariantRealigned();
 	}

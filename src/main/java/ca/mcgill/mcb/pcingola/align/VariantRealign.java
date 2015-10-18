@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.align;
 
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
+import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.MarkerSeq;
 import ca.mcgill.mcb.pcingola.interval.Variant;
@@ -36,14 +37,16 @@ public class VariantRealign {
 	String sequenceRef, sequenceAlt;
 	String refRealign, altRealign; // Ref and Alt after realignment
 	GenomicSequences genSeqs; // Provides sequences
+	Genome genome; // Reference genome
 	Variant variant;
 	Variant variantRealigned;
 
 	public VariantRealign() {
 	}
 
-	public VariantRealign(GenomicSequences genSeqs, Variant variant) {
-		this.genSeqs = genSeqs;
+	public VariantRealign(Variant variant) {
+		this.genome = variant.getGenome();
+		this.genSeqs = genome.getGenomicSequences();
 		this.variant = variant;
 	}
 

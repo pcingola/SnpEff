@@ -19,6 +19,8 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
  */
 public class IntervalForest implements Serializable, Iterable<Itree> {
 
+	public static final boolean USE_INTERVAL_TREE_NEW = true; // Use new version
+
 	private static final long serialVersionUID = 1L;
 	HashMap<String, Itree> forest;
 
@@ -138,8 +140,8 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	 * In oder to change the implementation, only this method should be changed.
 	 */
 	protected Itree newItree() {
-		return new IntervalTree();
-		// return new IntervalTreeOri();
+		if (USE_INTERVAL_TREE_NEW) return new IntervalTree();
+		return new IntervalTreeOri();
 	}
 
 	/**

@@ -2,14 +2,13 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
+import junit.framework.Assert;
 
 /**
  * Test Loss of Function prediction
@@ -29,6 +28,8 @@ public class TestCasesIntegrationCutsomIntervals {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
+		verbose = true;
+
 		// Load database
 		String[] args = { "-classic", "-interval", "tests/custom_intervals_01.gff", "testHg3770Chr22", "tests/custom_intervals_01.vcf" };
 		SnpEff cmd = new SnpEff(args);
