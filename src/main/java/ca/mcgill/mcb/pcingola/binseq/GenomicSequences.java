@@ -128,6 +128,10 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 		if (verbose) Timer.showStdErr("Done.");
 	}
 
+	public void clear() {
+		intervalForest = new IntervalForest();
+	}
+
 	/**
 	 * List of all exons
 	 */
@@ -279,8 +283,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 		//       So we can just return the first one (and only one) we
 		//       find. The loop is necessary to filter out 'Chromosome'.
 		for (Marker m : res)
-			if (m.includes(marker) && (m instanceof MarkerSeq)) //
-				return (MarkerSeq) m;
+			if (m.includes(marker) && (m instanceof MarkerSeq)) return (MarkerSeq) m;
 
 		return null;
 	}

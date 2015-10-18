@@ -138,7 +138,8 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	 * In oder to change the implementation, only this method should be changed.
 	 */
 	protected Itree newItree() {
-		return new IntervalTreeOri();
+		return new IntervalTree();
+		// return new IntervalTreeOri();
 	}
 
 	/**

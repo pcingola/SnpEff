@@ -415,14 +415,19 @@ public class Markers implements Serializable, Collection<Marker> {
 		int num = 1;
 		StringBuilder sb = new StringBuilder();
 		for (Marker i : this)
-			sb.append("\t" + (num++) + ":\t" + i.getChromosomeName() + "\t" + i.getStart() + "\t" + i.getEnd() + "\t" + i.getClass().getSimpleName() + "\t" + i.getId() + "\n");
+			sb.append("\t" + (num++) + ":" //
+					+ "\t" + i.getChromosomeName() //
+					+ "\t" + i.getStart() //
+					+ "\t" + i.getEnd() //
+					+ "\t" + i.getClass().getSimpleName() //
+					+ "\t" + i.getId() //
+					+ "\n");
+
 		return sb.toString();
 	}
 
 	/**
 	 * Show all intervals as an ASCII art
-	 * @param maxLen
-	 * @return
 	 */
 	public String toStringAsciiArt(int maxLen) {
 		StringBuilder sb = new StringBuilder();

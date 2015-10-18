@@ -269,6 +269,7 @@ public class TestCasesBase {
 		transcript = gene.iterator().next();
 
 		// Create genomic sequences
+		genome.getGenomicSequences().clear();
 		genome.getGenomicSequences().addGeneSequences(chromosome.getId(), chromoSequence);
 	}
 
