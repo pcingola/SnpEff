@@ -173,9 +173,9 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 		// Add custom markers info fields
 		if (addCustomFields) {
-			for (VariantEffect changeEffect : variantEffects) {
-				if (changeEffect.hasAdditionalAnnotations()) {
-					Custom custom = (Custom) changeEffect.getMarker();
+			for (VariantEffect variantEffect : variantEffects) {
+				if (variantEffect.hasAdditionalAnnotations()) {
+					Custom custom = (Custom) variantEffect.getMarker();
 					for (KeyValue<String, String> kv : custom) {
 						String key = VcfEntry.vcfInfoSafe(custom.getLabel() + "_" + kv.key);
 						String value = VcfEntry.vcfInfoSafe(kv.value);

@@ -290,13 +290,15 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 			// Find exon & transcript
 			Exon exon = findOrCreateExon(parentId, gffMarker);
-			Transcript tr = (Transcript) exon.getParent();
+			if (exon != null) {
+				Transcript tr = (Transcript) exon.getParent();
 
-			// Create UTR
-			Utr3prime u3 = new Utr3prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
-			tr.add(u3);
-			add(u3);
-			list.add(u3);
+				// Create UTR
+				Utr3prime u3 = new Utr3prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+				tr.add(u3);
+				add(u3);
+				list.add(u3);
+			} else warning("Could not add UTR");
 		}
 
 		return list.isEmpty() ? null : list;
@@ -312,13 +314,15 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		for (String parentId : gffMarker.getGffParentIds()) {
 			// Find exon & transcript
 			Exon exon = findOrCreateExon(parentId, gffMarker);
-			Transcript tr = (Transcript) exon.getParent();
+			if (exon != null) {
+				Transcript tr = (Transcript) exon.getParent();
 
-			// Create UTR
-			Utr5prime u5 = new Utr5prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
-			tr.add(u5);
-			add(u5);
-			list.add(u5);
+				// Create UTR
+				Utr5prime u5 = new Utr5prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+				tr.add(u5);
+				add(u5);
+				list.add(u5);
+			} else warning("Could not add UTR");
 		}
 
 		return list.isEmpty() ? null : list;

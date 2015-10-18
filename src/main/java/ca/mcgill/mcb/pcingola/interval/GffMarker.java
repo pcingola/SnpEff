@@ -3,9 +3,14 @@ package ca.mcgill.mcb.pcingola.interval;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.KeyValue;
 
 /**
  * An interval intended as a mark
@@ -20,7 +25,9 @@ public class GffMarker extends Custom {
 	String source;
 	int frame;
 	GffType gffType;
+	String gffTypeStr;
 	Map<String, String> keyValues;
+	Set<String> keys;
 
 	/**
 	 * Can this line (form a GFF file) be parsed?
@@ -56,6 +63,9 @@ public class GffMarker extends Custom {
 	 */
 	public void add(String key, String value) {
 		if (keyValues == null) keyValues = new HashMap<>();
+		if (keys == null) keys = new HashSet<>();
+
+		keys.add(key); // Store original key (to preserve capitalization in 'Custom' annotations)
 		keyValues.put(key.toLowerCase(), value);
 	}
 
@@ -175,6 +185,14 @@ public class GffMarker extends Custom {
 		return getAttr("transcript_version");
 	}
 
+	/**
+	 * When annotating a VCF file, add fields from this GFF
+	 */
+	@Override
+	public boolean hasAnnotations() {
+		return true;
+	}
+
 	public boolean hasAttr(String key) {
 		key = key.toLowerCase();
 		return keyValues.containsKey(key) && (keyValues.get(key) != null);
@@ -199,6 +217,22 @@ public class GffMarker extends Custom {
 				;
 	}
 
+	@Override
+	public Iterator<KeyValue<String, String>> iterator() {
+		// Sort keys alphabetically
+		ArrayList<String> keysSorted = new ArrayList<>();
+		keysSorted.addAll(keys);
+		Collections.sort(keysSorted);
+
+		// Create an list of (sorted) key-value pairs
+		LinkedList<KeyValue<String, String>> iter = new LinkedList<>();
+		for (String key : keysSorted) {
+			iter.add(new KeyValue<String, String>(key, getAttr(key)));
+		}
+
+		return iter.iterator();
+	}
+
 	/**
 	 * Parse an entry (line) from a GFF file
 	 */
@@ -215,9 +249,9 @@ public class GffMarker extends Custom {
 		if (source.equals(".")) source = "";
 
 		// Parse type
-		String typeStr = fields[2];
-		if (typeStr.isEmpty() || typeStr.equals(".")) gffType = null;
-		gffType = GffType.parse(typeStr);
+		gffTypeStr = fields[2];
+		if (gffTypeStr.isEmpty() || gffTypeStr.equals(".")) gffType = null;
+		gffType = GffType.parse(gffTypeStr);
 
 		// Coordinates: closed, one-based
 		start = Gpr.parseIntSafe(fields[3]) - 1;
@@ -232,6 +266,7 @@ public class GffMarker extends Custom {
 
 		// Parse attributes
 		if (fields.length >= 8) parseAttributes(fields[8]);
+		else parseAttributes(null);
 
 		// Parse some special fields
 		id = parseId();
@@ -241,15 +276,25 @@ public class GffMarker extends Custom {
 	 * Parse attributes (key-value pairs) from a line in a GFF file
 	 */
 	protected void parseAttributes(String attrStr) {
-		if (attrStr.length() > 0) {
-			String attrs[] = attrStr.split(";");
-			for (int i = 0; i < attrs.length; i++) {
-				// Split key value pair
-				String kv[] = attrs[i].split("=");
-				if (kv.length > 1) {
-					String key = kv[0].trim();
-					String value = kv[1].trim();
-					add(key, value);
+		keyValues = new HashMap<>();
+		keys = new HashSet<String>();
+
+		// Add some column fields 
+		add("source", source);
+		add("type", gffTypeStr);
+
+		// Parse and add all key-value pairs
+		if (attrStr != null) {
+			if (attrStr.length() > 0) {
+				String attrs[] = attrStr.split(";");
+				for (int i = 0; i < attrs.length; i++) {
+					// Split key value pair
+					String kv[] = attrs[i].split("=");
+					if (kv.length > 1) {
+						String key = kv[0].trim();
+						String value = kv[1].trim();
+						add(key, value);
+					}
 				}
 			}
 		}
