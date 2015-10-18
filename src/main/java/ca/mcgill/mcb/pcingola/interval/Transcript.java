@@ -46,7 +46,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	int cdsStart, cdsEnd; // CDS start and end coordinates. Note: If the transcript is in reverse strand, then cdsStart > cdsEnd
 	int spliceSiteSize, spliceRegionExonSize, spliceRegionIntronMin, spliceRegionIntronMax; // Splice sizes
 	int upDownLength; // Upstream and downstream size
-	String bioType = ""; // Transcript biotype
+	BioType bioType; // Transcript biotype
 	String cds; // Coding sequence
 	String mRna; // mRna sequence (includes 5'UTR and 3'UTR)
 	String protein; // Protein sequence
@@ -1047,7 +1047,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return list;
 	}
 
-	public String getBioType() {
+	public BioType getBioType() {
 		return bioType;
 	}
 
@@ -1505,7 +1505,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {
 		super.serializeParse(markerSerializer);
-		bioType = markerSerializer.getNextField();
+		bioType = BioType.parse(markerSerializer.getNextField());
 		proteinCoding = markerSerializer.getNextFieldBoolean();
 		dnaCheck = markerSerializer.getNextFieldBoolean();
 		aaCheck = markerSerializer.getNextFieldBoolean();
@@ -1550,7 +1550,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		this.aaCheck = aaCheck;
 	}
 
-	public void setBioType(String bioType) {
+	public void setBioType(BioType bioType) {
 		this.bioType = bioType;
 	}
 
@@ -1601,7 +1601,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		sb.append(getChromosomeName() + ":" + start + "-" + end);
 		sb.append(", strand: " + (isStrandPlus() ? "+" : "-"));
 		if ((id != null) && (id.length() > 0)) sb.append(", id:" + id);
-		if ((bioType != null) && (bioType.length() > 0)) sb.append(", bioType:" + bioType);
+		if ((bioType != null) && (bioType != null)) sb.append(", bioType:" + bioType);
 		if (isProteinCoding()) sb.append(", Protein");
 		if (isAaCheck()) sb.append(", AA check");
 		if (isDnaCheck()) sb.append(", DNA check");

@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import ca.mcgill.mcb.pcingola.interval.BioType;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.GffMarker;
-import ca.mcgill.mcb.pcingola.interval.GffType;
 import ca.mcgill.mcb.pcingola.interval.IntergenicConserved;
 import ca.mcgill.mcb.pcingola.interval.IntronConserved;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -139,8 +139,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	 * Create and add a gene based on GffMarker
 	 */
 	protected Gene addGene(GffMarker gffMarker) {
-		String bioType = gffMarker.getGeneBiotype();
-		if (bioType == null) bioType = "mRNA";
+		BioType bioType = gffMarker.getGeneBiotype();
 
 		Gene gene = new Gene(gffMarker.getChromosome() //
 		, gffMarker.getStart() //
@@ -245,8 +244,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		if (gffMarker.isProteingCoding()) tr.setProteinCoding(true);
 
 		// Biotype
-		String bioType = gffMarker.getTranscriptBiotype();
-		if (bioType != null) tr.setBioType(bioType);
+		tr.setBioType(gffMarker.getTranscriptBiotype());
 
 		// Transcript support level  (TSL)
 		String tslStr = gffMarker.getAttr("transcript_support_level");
@@ -264,9 +262,8 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		//---
 
 		// Update gene bio-type (if needed)
-		GffType gffType = gffMarker.getGffType();
-		String type = (gffType == null ? "" : gffType.toString());
-		if (gene.getBioType() == null) gene.setBioType(type);
+		BioType geneBioType = gffMarker.getGeneBiotype();
+		if (gene.getBioType() == null && geneBioType != null) gene.setBioType(geneBioType);
 
 		// Check that gene and transcript are in the same chromosome
 		if (!gene.getChromosomeName().equals(tr.getChromosomeName())) {

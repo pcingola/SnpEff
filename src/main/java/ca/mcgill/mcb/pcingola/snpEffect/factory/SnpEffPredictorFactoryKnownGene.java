@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.collections.MultivalueHashMap;
+import ca.mcgill.mcb.pcingola.interval.BioType;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -104,7 +105,7 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 
 		// Need to create a new gene
 		String geneId = geneName + (geneIndex > 0 ? "." + geneIndex : "");
-		Gene gene = new Gene(chromo, start, end, strandMinus, geneId, geneName, isCoding ? "Protein" : "mRNA");
+		Gene gene = new Gene(chromo, start, end, strandMinus, geneId, geneName, BioType.coding(isCoding));
 		genesByName.add(geneName, gene);
 		add(gene);
 

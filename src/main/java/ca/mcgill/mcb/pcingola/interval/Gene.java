@@ -28,16 +28,16 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 	private static final long serialVersionUID = 8419206759034068147L;
 
 	String geneName;
-	String bioType;
+	BioType bioType;
 
 	public Gene() {
 		super();
 		geneName = "";
-		bioType = "";
+		bioType = null;
 		type = EffectType.GENE;
 	}
 
-	public Gene(Marker parent, int start, int end, boolean strandMinus, String id, String geneName, String bioType) {
+	public Gene(Marker parent, int start, int end, boolean strandMinus, String id, String geneName, BioType bioType) {
 		super(parent, start, end, strandMinus, id);
 		this.geneName = geneName;
 		this.bioType = bioType;
@@ -182,16 +182,15 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 	}
 
 	public GeneType geneType() {
-		if (bioType.length() > 0) {
-			// Is it 'protein_coding'or a 'mRNA'?
-			if (bioType.equalsIgnoreCase("protein_coding") || bioType.equalsIgnoreCase("mRNA")) return GeneType.CODING;
+		if (bioType != null) {
+			if (bioType.isProteinCoding()) return GeneType.CODING;
 			return GeneType.NON_CODING;
 		}
 
 		return GeneType.UNKNOWN;
 	}
 
-	public String getBioType() {
+	public BioType getBioType() {
 		return bioType;
 	}
 
@@ -308,7 +307,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 	public void serializeParse(MarkerSerializer markerSerializer) {
 		super.serializeParse(markerSerializer);
 		geneName = markerSerializer.getNextField();
-		bioType = markerSerializer.getNextField();
+		bioType = BioType.parse(markerSerializer.getNextField());
 	}
 
 	/**
@@ -321,7 +320,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 				+ "\t" + bioType;
 	}
 
-	public void setBioType(String bioType) {
+	public void setBioType(BioType bioType) {
 		this.bioType = bioType;
 	}
 
@@ -462,7 +461,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 		sb.append(", strand:" + (strandMinus ? "-1" : "1"));
 		if ((id != null) && (id.length() > 0)) sb.append(", id:" + id);
 		if ((geneName != null) && (geneName.length() > 0)) sb.append(", name:" + geneName);
-		if ((bioType != null) && (bioType.length() > 0)) sb.append(", bioType:" + bioType);
+		if ((bioType != null) && (bioType != null)) sb.append(", bioType:" + bioType);
 
 		sb.append("\n");
 

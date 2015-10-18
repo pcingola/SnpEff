@@ -123,7 +123,7 @@ public class GeneCountByTypeTable implements Iterable<String>, Serializable {
 		counter.inc(key);
 
 		// Add biotype
-		if (tr.getBioType() != null) bioType.put(key, tr.getBioType());
+		if (tr.getBioType() != null) bioType.put(key, tr.getBioType().toString());
 
 		// Calculate the size of the intersection
 		Marker marker = variantEffect.getMarker();

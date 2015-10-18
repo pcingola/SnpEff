@@ -73,15 +73,15 @@ public class GffMarker extends Custom {
 		return keyValues.get(key.toLowerCase());
 	}
 
-	public String getBiotype() {
+	public BioType getBiotype() {
 		if (gffType == GffType.GENE) return getGeneBiotype();
 		if (gffType == GffType.TRANSCRIPT) return getTranscriptBiotype();
 
 		// Default: Use generic biotype
-		if (hasAttr("biotype")) return getAttr("biotype");
+		if (hasAttr("biotype")) return BioType.parse(getAttr("biotype"));
 
 		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
-		return source;
+		return BioType.parse(source);
 
 	}
 
@@ -93,15 +93,16 @@ public class GffMarker extends Custom {
 		return frame;
 	}
 
-	public String getGeneBiotype() {
+	public BioType getGeneBiotype() {
 		// Note: Different data providers use different keys
 		// E.g.: ENSEMBL uses "gene_biotype" and GenCode uses "gene_type"
 		String keys[] = { "gene_biotype", "gene_type", "biotype" };
 
 		for (String key : keys)
-			if (hasAttr(key)) return getAttr(key);
+			if (hasAttr(key)) return BioType.parse(getAttr(key));
 
-		return null;
+		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
+		return BioType.parse(source);
 	}
 
 	public String getGeneId() {
@@ -114,10 +115,9 @@ public class GffMarker extends Custom {
 	}
 
 	public String getGeneName() {
-		String key = "gene_name";
-		if (hasAttr(key)) return getAttr(key);
-		if (gffType == GffType.GENE) return getAttr("name");
-		return GffType.GENE + "_" + id;
+		if (hasAttr("gene_name")) return getAttr("gene_name");
+		if (hasAttr("name")) return getAttr("name");
+		return id;
 	}
 
 	public String getGffParentId() {
@@ -161,16 +161,16 @@ public class GffMarker extends Custom {
 		return gffType;
 	}
 
-	public String getTranscriptBiotype() {
+	public BioType getTranscriptBiotype() {
 		// Note: Different data providers use different keys
 		// E.g.: ENSEMBL uses "transcript_biotype" and GenCode uses "transcript_type"
 		String keys[] = { "transcript_biotype", "transcript_type", "biotype" };
 
 		for (String key : keys)
-			if (hasAttr(key)) return getAttr(key);
+			if (hasAttr(key)) return BioType.parse(getAttr(key));
 
 		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
-		return source;
+		return BioType.parse(source);
 	}
 
 	public String getTranscriptId() {
@@ -202,19 +202,7 @@ public class GffMarker extends Custom {
 	 * Is biotType considered 'protein coding'?
 	 */
 	public boolean isProteingCoding() {
-		String bioType = getBiotype();
-		if (bioType == null) return false;
-
-		return bioType.equals("protein_coding") //
-				|| bioType.equals("IG_C_gene") //
-				|| bioType.equals("IG_D_gene") //
-				|| bioType.equals("IG_J_gene") //
-				|| bioType.equals("IG_V_gene") //
-				|| bioType.equals("TR_C_gene") //
-				|| bioType.equals("TR_D_gene") //
-				|| bioType.equals("TR_J_gene") //
-				|| bioType.equals("TR_V_gene") //
-				;
+		return getBiotype().isProteinCoding();
 	}
 
 	@Override
@@ -279,7 +267,7 @@ public class GffMarker extends Custom {
 		keyValues = new HashMap<>();
 		keys = new HashSet<String>();
 
-		// Add some column fields 
+		// Add some column fields
 		add("source", source);
 		add("type", gffTypeStr);
 

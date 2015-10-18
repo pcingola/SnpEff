@@ -1,5 +1,6 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
+import ca.mcgill.mcb.pcingola.interval.BioType;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -62,7 +63,7 @@ public class TestCasesBaseApply extends TestCasesBase {
 		codonTable = genome.codonTable();
 
 		// Create gene, trancript and exons
-		gene = new Gene(chromosome, 0, 999, false, "gene1", "gene1", "protein_coding");
+		gene = new Gene(chromosome, 0, 999, false, "gene1", "gene1", BioType.protein_coding);
 		transcript = new Transcript(gene, gene.getStart(), gene.getEnd(), gene.isStrandMinus(), "transcript1");
 		transcript.setProteinCoding(true);
 

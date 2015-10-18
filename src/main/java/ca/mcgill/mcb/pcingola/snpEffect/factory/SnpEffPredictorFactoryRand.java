@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import ca.mcgill.mcb.pcingola.interval.BioType;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -64,7 +65,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		if (forcePositiveStrand) strandMinus = false;
 		if (forceNegativeStrand) strandMinus = true;
 
-		Gene gene = new Gene(chromo, start, end, strandMinus, "gene1", "gene1", "gene");
+		Gene gene = new Gene(chromo, start, end, strandMinus, "gene1", "gene1", BioType.protein_coding);
 		add(gene);
 
 		// Create transcripts

@@ -1,10 +1,10 @@
 package ca.mcgill.mcb.pcingola.snpEffect.factory;
 
 import java.io.BufferedReader;
-import java.util.HashMap;
 import java.util.List;
 
 import ca.mcgill.mcb.pcingola.collections.MultivalueHashMap;
+import ca.mcgill.mcb.pcingola.interval.BioType;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -67,8 +67,6 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 
-	private final HashMap<String, String> biotypeById = new HashMap<String, String>();
-
 	public static final String CDS_STAT_COMPLETE = "cmpl";
 
 	MultivalueHashMap<String, Gene> genesByName;
@@ -78,24 +76,6 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 
 		genesByName = new MultivalueHashMap<String, Gene>();
 
-		// Populate biotype map
-		biotypeById.put("AC", "Alternate_Genomic");
-		biotypeById.put("AP", "Alternate_Protein");
-		biotypeById.put("NC", "Genomic   ");
-		biotypeById.put("NG", "Incomplete_Genomic");
-		biotypeById.put("NM", "mRNA");
-		biotypeById.put("NP", "Protein");
-		biotypeById.put("NR", "Non-coding_transcript");
-		biotypeById.put("NT", "Intermediate_Genomic");
-		biotypeById.put("NW", "Intermediate_Genomic");
-		biotypeById.put("NZ", "Genomic");
-		biotypeById.put("XM", "mRNA");
-		biotypeById.put("XP", "Protein");
-		biotypeById.put("XR", "Non-coding_transcript");
-		biotypeById.put("YP", "Protein");
-		biotypeById.put("ZP", "Protein");
-		biotypeById.put("NS", "Genomic");
-
 		frameType = FrameType.UCSC;
 		frameCorrection = true;
 	}
@@ -104,13 +84,34 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 	 * Get biotype based on ID
 	 * Reference http://www.ncbi.nlm.nih.gov/RefSeq/key.html
 	 */
-	String bioType(String id) {
-		if (id.length() < 2) return "";
+	BioType bioType(String id) {
+		if (id.length() < 2) return null;
 
 		String key = id.substring(0, 2);
-		String biotype = biotypeById.get(key);
+		switch (key) {
+		case "NM":
+		case "NP":
+		case "XM":
+		case "XP":
+		case "YP":
+		case "ZP":
+			return BioType.protein_coding;
 
-		return biotype != null ? biotype : "";
+		case "AC":
+		case "AP":
+		case "NC":
+		case "NG":
+		case "NR":
+		case "NT":
+		case "NW":
+		case "NZ":
+		case "XR":
+		case "NS":
+			return BioType.pseudogene;
+
+		default:
+			return null;
+		}
 	}
 
 	@Override
@@ -171,18 +172,14 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 
 	/**
 	 * Is this protein coding?
-	 * @param id
-	 * @return
 	 */
 	boolean isProteinCoding(String id) {
-		String biotype = bioType(id).toLowerCase();
-		return biotype.equals("mrna") || biotype.equals("protein");
+		BioType biotype = bioType(id);
+		return biotype != null && biotype.isProteinCoding();
 	}
 
 	/**
 	 * Read and parse GFF file
-	 * @param vcfFileName
-	 * @throws Exception
 	 */
 	protected void readRefSeqFile() {
 		try {
@@ -276,8 +273,6 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 
 	/**
 	 * Create a new (unique) transcript ID
-	 * @param id
-	 * @return
 	 */
 	String uniqueTrId(String id) {
 		if (!transcriptsById.containsKey(id)) return id;

@@ -226,7 +226,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 		Gene gene = findGene(geneId);
 		if (gene == null) {
-			gene = new Gene(chr, start, end, f.isComplement(), geneId, geneName, "");
+			gene = new Gene(chr, start, end, f.isComplement(), geneId, geneName, null);
 			add(gene);
 			if (debug) System.err.println("WARNING: Gene '" + geneId + "' not found: created.");
 		}
