@@ -7,7 +7,7 @@ import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Utr;
-import ca.mcgill.mcb.pcingola.interval.tree.IntervalTree;
+import ca.mcgill.mcb.pcingola.interval.tree.Itree;
 import ca.mcgill.mcb.pcingola.util.Timer;
 import scala.collection.mutable.StringBuilder;
 
@@ -64,7 +64,7 @@ public class SnpEffCmdDump extends SnpEff {
 		// Show title
 		if (dumpFormat == DumpFormat.TXT) System.out.println("chr\tstart\tend\tstrand\ttype\tid\tgeneName\tgeneId\tnumberOfTranscripts\tcanonicalTranscriptLength\ttranscriptId\tcdsLength\tnumerOfExons\texonRank\texonSpliceType");
 
-		for (IntervalTree tree : config.getSnpEffectPredictor().getIntervalForest()) {
+		for (Itree tree : config.getSnpEffectPredictor().getIntervalForest()) {
 			for (Marker i : tree) {
 				try {
 					print(i);

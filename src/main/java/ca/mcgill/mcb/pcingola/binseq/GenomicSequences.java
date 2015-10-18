@@ -13,7 +13,7 @@ import ca.mcgill.mcb.pcingola.interval.MarkerSeq;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
-import ca.mcgill.mcb.pcingola.interval.tree.IntervalTree;
+import ca.mcgill.mcb.pcingola.interval.tree.Itree;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
@@ -61,7 +61,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	 */
 	boolean addExonSequences(String chr) {
 		if (verbose) Timer.showStdErr("Creating sequences from exon information '" + chr + "'");
-		IntervalTree tree = intervalForest.getOrCreateTree(chr);
+		Itree tree = intervalForest.getOrCreateTree(chr);
 
 		// Add all exon sequences. Collapse them if possible
 		Markers exonMarkers = exonMarkers(chr);
@@ -195,14 +195,14 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 		if (!intervalForest.hasTree(chr)) return false;
 
 		// Tried to load tree and it's empty?
-		IntervalTree tree = intervalForest.getTree(chr);
+		Itree tree = intervalForest.getTree(chr);
 		if (tree != null && tree.isEmpty()) return false; // Tree is empty, means we could not load any sequence from 'database'
 
 		return true;
 	}
 
 	public boolean isEmpty() {
-		for (IntervalTree tree : intervalForest)
+		for (Itree tree : intervalForest)
 			if (!tree.getIntervals().isEmpty()) return false;
 
 		return true;
@@ -212,7 +212,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	public Iterator<MarkerSeq> iterator() {
 		ArrayList<MarkerSeq> all = new ArrayList<MarkerSeq>();
 
-		for (IntervalTree tree : intervalForest)
+		for (Itree tree : intervalForest)
 			for (Marker m : tree.getIntervals())
 				all.add((MarkerSeq) m);
 
@@ -236,7 +236,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 
 		// Load markers
 		if (verbose) Timer.showStdErr("Loading sequences for chromosome '" + chr + "' from file '" + fileName + "'");
-		IntervalTree tree = intervalForest.getOrCreateTree(chr);
+		Itree tree = intervalForest.getOrCreateTree(chr);
 		tree.load(fileName, genome);
 		if (verbose) Timer.showStdErr("Building sequence tree for chromosome '" + chr + "'");
 		tree.build();
@@ -264,7 +264,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 
 		// Get or load interval tree
 		if (!intervalForest.hasTree(chr)) loadOrCreateFromGenome(chr);
-		IntervalTree tree = intervalForest.getTree(chr);
+		Itree tree = intervalForest.getTree(chr);
 
 		// Nothing available
 		if (tree == null || tree.isEmpty()) return null;
@@ -330,7 +330,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 		}
 
 		// OK, there is something to save => Save markers to file
-		IntervalTree tree = intervalForest.getTree(chr);
+		Itree tree = intervalForest.getTree(chr);
 		String fileName = Config.get().getFileNameSequence(chr);
 		if (verbose) Timer.showStdErr("Saving sequences for chromosome '" + chr + "' to file '" + fileName + "'");
 		tree.getIntervals().save(fileName);
@@ -352,7 +352,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 		long sumMarkers = 0;
 		long sumLen = 0;
 		for (String chr : intervalForest.getTreeNames()) {
-			IntervalTree tree = intervalForest.getTree(chr);
+			Itree tree = intervalForest.getTree(chr);
 
 			// Calculate total sequence length stored
 			long len = 0;

@@ -1,17 +1,14 @@
 package ca.mcgill.mcb.pcingola.interval.tree;
 
+import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Interval;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 
 /**
- * An Interval Tree is essentially a map from intervals to objects, which
- * can be queried for all data associated with a particular interval of
- * point
- *
- * Adapted from Kevin Dolan's implementation
+ * Interval tree interface
  */
-public interface AbstractIntervalTree {
+public interface Itree extends Iterable<Marker> {
 
 	/**
 	 * Add an interval object to the interval tree's list
@@ -32,6 +29,17 @@ public interface AbstractIntervalTree {
 	public Markers getIntervals();
 
 	public boolean isEmpty();
+
+	/**
+	 * Is the tree 'in sync'?
+	 * If false, the tree must be 'build()' before the next query
+	 */
+	public boolean isInSync();
+
+	/**
+	 * Load intervals from file
+	 */
+	public void load(String fileName, Genome genome);
 
 	/**
 	 * Perform an interval query, returning the intervals that

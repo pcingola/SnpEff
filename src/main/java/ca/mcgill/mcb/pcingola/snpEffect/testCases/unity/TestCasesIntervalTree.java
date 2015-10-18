@@ -9,7 +9,7 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.tree.AbstractIntervalTree;
+import ca.mcgill.mcb.pcingola.interval.tree.Itree;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalTreeOri;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalTree;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -40,7 +40,7 @@ public class TestCasesIntervalTree {
 	 * Perform a query using 'naive' lookup and interval forest.
 	 * Compare results and throw an exception if any difference exists
 	 */
-	protected int compareQuery(Marker m, AbstractIntervalTree intTree) {
+	protected int compareQuery(Marker m, Itree intTree) {
 		Markers resultsNaive = queryNaive(m);
 		Markers resultsIntForest = intTree.query(m);
 

@@ -13,7 +13,7 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
  * can be queried for all data associated with a particular interval of
  * point
  */
-public class IntervalTree implements AbstractIntervalTree, Serializable, Iterable<Marker> {
+public class IntervalTree implements Itree, Serializable {
 
 	private static final long serialVersionUID = 1808077263026999072L;
 
@@ -92,6 +92,7 @@ public class IntervalTree implements AbstractIntervalTree, Serializable, Iterabl
 	 * Determine whether this interval tree is currently a reflection of all intervals in the interval list
 	 * @return true if no changes have been made since the last build
 	 */
+	@Override
 	public boolean isInSync() {
 		return inSync;
 	}
@@ -101,6 +102,7 @@ public class IntervalTree implements AbstractIntervalTree, Serializable, Iterabl
 		return intervals.iterator();
 	}
 
+	@Override
 	public void load(String fileName, Genome genome) {
 		intervals.load(fileName, genome);
 		inSync = false;

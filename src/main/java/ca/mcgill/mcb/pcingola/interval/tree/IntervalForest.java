@@ -17,17 +17,17 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
  *
  * @author pcingola
  */
-public class IntervalForest implements Serializable, Iterable<IntervalTree> {
+public class IntervalForest implements Serializable, Iterable<Itree> {
 
 	private static final long serialVersionUID = 1L;
-	HashMap<String, IntervalTree> forest;
+	HashMap<String, Itree> forest;
 
 	public IntervalForest() {
-		forest = new HashMap<String, IntervalTree>();
+		forest = new HashMap<String, Itree>();
 	}
 
 	public IntervalForest(Markers markers) {
-		forest = new HashMap<String, IntervalTree>();
+		forest = new HashMap<String, Itree>();
 		add(markers);
 	}
 
@@ -60,31 +60,31 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 	 * Build all trees
 	 */
 	public void build() {
-		for (IntervalTree tree : forest.values())
+		for (Itree tree : forest.values())
 			tree.build();
 	}
 
 	/**
 	 * Get (or create) an interval tree
 	 */
-	public IntervalTree getOrCreateTree(String chromo) {
+	public Itree getOrCreateTree(String chromo) {
 		chromo = Chromosome.simpleName(chromo);
 
 		// Retrieve (or create) interval tree
-		IntervalTree intervalTree = forest.get(chromo);
-		if (intervalTree == null) {
-			intervalTree = new IntervalTree();
-			intervalTree.build();
-			forest.put(chromo, intervalTree);
+		Itree itree = forest.get(chromo);
+		if (itree == null) {
+			itree = newItree();
+			itree.build();
+			forest.put(chromo, itree);
 		}
 
-		return intervalTree;
+		return itree;
 	}
 
 	/**
 	 * Get an interval tree
 	 */
-	public IntervalTree getTree(String chromo) {
+	public Itree getTree(String chromo) {
 		return forest.get(Chromosome.simpleName(chromo));
 	}
 
@@ -129,8 +129,16 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 	}
 
 	@Override
-	public Iterator<IntervalTree> iterator() {
+	public Iterator<Itree> iterator() {
 		return forest.values().iterator();
+	}
+
+	/**
+	 * Create new tree.
+	 * In oder to change the implementation, only this method should be changed.
+	 */
+	protected Itree newItree() {
+		return new IntervalTreeOri();
 	}
 
 	/**
@@ -179,7 +187,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 
 	public int size() {
 		int size = 0;
-		for (IntervalTree it : forest.values())
+		for (Itree it : forest.values())
 			size += it.size();
 		return size;
 	}
@@ -207,7 +215,7 @@ public class IntervalForest implements Serializable, Iterable<IntervalTree> {
 		Collections.sort(chrs);
 
 		for (String chromo : chrs) {
-			IntervalTree tree = getOrCreateTree(chromo);
+			Itree tree = getOrCreateTree(chromo);
 			sb.append("chr" + chromo + "\tsize:" + tree.size() + "\tin_sync: " + tree.isInSync() + "\n");
 		}
 
