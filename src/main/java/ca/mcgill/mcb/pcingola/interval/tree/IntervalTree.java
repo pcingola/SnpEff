@@ -12,8 +12,6 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
  * An Interval Tree is essentially a map from intervals to objects, which
  * can be queried for all data associated with a particular interval of
  * point
- *
- * Adapted from Kevin Dolan's implementation
  */
 public class IntervalTree implements AbstractIntervalTree, Serializable, Iterable<Marker> {
 
@@ -45,10 +43,10 @@ public class IntervalTree implements AbstractIntervalTree, Serializable, Iterabl
 
 	/**
 	 * Add an interval object to the interval tree's list
-	 * 
-	 * Note: Marks the tree as 'not inSync', but will not rebuild 
+	 *
+	 * Note: Marks the tree as 'not inSync', but will not rebuild
 	 * the tree until the next query or call to build
-	 * 
+	 *
 	 * @param interval the interval object to add
 	 */
 	@Override
@@ -59,7 +57,7 @@ public class IntervalTree implements AbstractIntervalTree, Serializable, Iterabl
 
 	/**
 	 * Add all intervals to interval tree's list
-	 * Note: Marks the tree as 'not inSync', but will not rebuild 
+	 * Note: Marks the tree as 'not inSync', but will not rebuild
 	 * the tree until the next query or call to build
 	 */
 	@Override
@@ -100,7 +98,7 @@ public class IntervalTree implements AbstractIntervalTree, Serializable, Iterabl
 
 	@Override
 	public Iterator<Marker> iterator() {
-		return head.iterator();
+		return intervals.iterator();
 	}
 
 	public void load(String fileName, Genome genome) {

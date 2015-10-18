@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval.tree;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Interval;
@@ -11,22 +12,20 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
  * An Interval Tree is essentially a map from intervals to objects, which
  * can be queried for all data associated with a particular interval of
  * point
- *
- * Adapted from Kevin Dolan's implementation
  */
-public class IntervalTree2 implements AbstractIntervalTree, Serializable {
+public class IntervalTreeOri implements AbstractIntervalTree, Serializable, Iterable<Marker> {
 
 	private static final long serialVersionUID = 1808077263026999072L;
 
-	private IntervalNode2 head;
+	private IntervalNodeOri head;
 	private final Markers intervals;
 	private boolean inSync;
 
 	/**
 	 * Instantiate a new interval tree with no intervals
 	 */
-	public IntervalTree2() {
-		head = new IntervalNode2();
+	public IntervalTreeOri() {
+		head = new IntervalNodeOri();
 		intervals = new Markers();
 		inSync = true;
 	}
@@ -35,8 +34,8 @@ public class IntervalTree2 implements AbstractIntervalTree, Serializable {
 	 * Instantiate and build an interval tree with a preset list of intervals
 	 * @param intervals the list of intervals to use
 	 */
-	public IntervalTree2(Markers intervals) {
-		head = new IntervalNode2(intervals);
+	public IntervalTreeOri(Markers intervals) {
+		head = new IntervalNodeOri(intervals);
 		this.intervals = new Markers();
 		this.intervals.add(intervals);
 		inSync = true;
@@ -44,10 +43,10 @@ public class IntervalTree2 implements AbstractIntervalTree, Serializable {
 
 	/**
 	 * Add an interval object to the interval tree's list
-	 *
-	 * Note: Marks the tree as 'not inSync', but will not rebuild
+	 * 
+	 * Note: Marks the tree as 'not inSync', but will not rebuild 
 	 * the tree until the next query or call to build
-	 *
+	 * 
 	 * @param interval the interval object to add
 	 */
 	@Override
@@ -58,7 +57,7 @@ public class IntervalTree2 implements AbstractIntervalTree, Serializable {
 
 	/**
 	 * Add all intervals to interval tree's list
-	 * Note: Marks the tree as 'not inSync', but will not rebuild
+	 * Note: Marks the tree as 'not inSync', but will not rebuild 
 	 * the tree until the next query or call to build
 	 */
 	@Override
@@ -74,7 +73,7 @@ public class IntervalTree2 implements AbstractIntervalTree, Serializable {
 	@Override
 	public void build() {
 		if (!inSync) {
-			head = new IntervalNode2(intervals);
+			head = new IntervalNodeOri(intervals);
 			inSync = true;
 		}
 	}
@@ -97,12 +96,17 @@ public class IntervalTree2 implements AbstractIntervalTree, Serializable {
 		return inSync;
 	}
 
+	@Override
+	public Iterator<Marker> iterator() {
+		return head.iterator();
+	}
+
 	public void load(String fileName, Genome genome) {
 		intervals.load(fileName, genome);
 		inSync = false;
 	}
 
-	private String nodeString(IntervalNode2 node, int level) {
+	private String nodeString(IntervalNodeOri node, int level) {
 		if (node == null) return "";
 
 		StringBuffer sb = new StringBuffer();

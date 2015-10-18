@@ -10,8 +10,8 @@ import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.tree.AbstractIntervalTree;
+import ca.mcgill.mcb.pcingola.interval.tree.IntervalTreeOri;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalTree;
-import ca.mcgill.mcb.pcingola.interval.tree.IntervalTree2;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import junit.framework.Assert;
 
@@ -131,7 +131,7 @@ public class TestCasesIntervalTree {
 	public void test_01() {
 		Gpr.debug("Test");
 
-		IntervalTree intTree = new IntervalTree(markers);
+		IntervalTreeOri intTree = new IntervalTreeOri(markers);
 		intTree.build();
 
 		Markers queries = createRandomSmallMarkers(chromosome, 100000);
@@ -154,7 +154,7 @@ public class TestCasesIntervalTree {
 	public void test_02() {
 		Gpr.debug("Test");
 
-		IntervalTree intForest = new IntervalTree(markers);
+		IntervalTreeOri intForest = new IntervalTreeOri(markers);
 		intForest.build();
 
 		Markers queries = createRandomLargeMarkers(chromosome, 10000);
@@ -176,7 +176,7 @@ public class TestCasesIntervalTree {
 	public void test_03_IntervalTree2() {
 		Gpr.debug("Test");
 
-		IntervalTree2 intTree = new IntervalTree2(markers);
+		IntervalTree intTree = new IntervalTree(markers);
 		intTree.build();
 
 		Markers queries = createRandomSmallMarkers(chromosome, 100000);
@@ -199,7 +199,7 @@ public class TestCasesIntervalTree {
 	public void test_04_IntervalTree2() {
 		Gpr.debug("Test");
 
-		IntervalTree2 intTree = new IntervalTree2(markers);
+		IntervalTree intTree = new IntervalTree(markers);
 		intTree.build();
 
 		Markers queries = createRandomLargeMarkers(chromosome, 10000);

@@ -1,6 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 
-import scala.collection.mutable.StringBuilder;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -10,6 +9,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Utr;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalTree;
 import ca.mcgill.mcb.pcingola.util.Timer;
+import scala.collection.mutable.StringBuilder;
 
 /**
  * Command line program: Build database
@@ -99,7 +99,6 @@ public class SnpEffCmdDump extends SnpEff {
 
 	/**
 	 * Print a marker
-	 * @param marker
 	 */
 	void print(Marker marker) {
 		if (dumpFormat == DumpFormat.BED) printBed(marker);
@@ -108,7 +107,6 @@ public class SnpEffCmdDump extends SnpEff {
 
 	/**
 	 * Show a marker in BED format
-	 * @param marker
 	 */
 	void printBed(Marker marker) {
 		String chr = chrStr + marker.getChromosome().getId();
@@ -120,7 +118,6 @@ public class SnpEffCmdDump extends SnpEff {
 
 	/**
 	 * Print as a TXT format
-	 * @param marker
 	 */
 	void printTxt(Marker marker) {
 		String chr = chrStr + marker.getChromosome().getId();
