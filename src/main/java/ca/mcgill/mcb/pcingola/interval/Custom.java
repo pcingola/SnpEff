@@ -51,7 +51,6 @@ public class Custom extends Marker implements Iterable<KeyValue<String, String>>
 
 	/**
 	 * Do we have additional annotations?
-	 * @return
 	 */
 	public boolean hasAnnotations() {
 		return false;

@@ -4,7 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesAnn;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsExon;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesHgvsIntron;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesAlign;
@@ -38,6 +37,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsProtDup;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHypergeometric;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIns;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntStats;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalTree;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalVariant;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervals;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesJaspar;
@@ -62,7 +62,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesAlign.class, //
-		TestCasesAnn.class, //
 		TestCasesApplyDel.class, //
 		TestCasesApplyIns.class, //
 		TestCasesApplyMixed.class, //
@@ -87,6 +86,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesFisherExactTest.class, //
 		TestCasesGenePvalueList.class, //
 		TestCasesGenotypeVector.class, //
+		TestCasesIntervalTree.class, //
 		TestCasesIubString.class, //
 		TestCasesHgvsExon.class, //
 		TestCasesHgvsIntron.class, //

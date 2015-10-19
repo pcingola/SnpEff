@@ -47,7 +47,7 @@ public class TestCasesIntegrationCodingTag {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getImpact() == EffectImpact.MODERATE) {
 					if (verbose) System.out.println("\t" + veff);
-					Assert.assertFalse(veff.getBioType() == null || veff.getBioType().isEmpty()); // Make sure the biotype field is avaialble
+					Assert.assertFalse(veff.getBioType() == null || (veff.getBioType() == null)); // Make sure the biotype field is avaialble
 				}
 			}
 		}

@@ -238,11 +238,11 @@ public class TestCasesIntervals {
 
 			// Create forest (one tree per chromosome)
 			IntervalForest forest = new IntervalForest(intervals);
+			forest.build();
 
 			if (verbose) {
 				intervals.sort(false, false);
 				System.out.println(intervals.toStringAsciiArt(maxLen));
-				forest.build();
 				System.out.println(forest);
 			}
 

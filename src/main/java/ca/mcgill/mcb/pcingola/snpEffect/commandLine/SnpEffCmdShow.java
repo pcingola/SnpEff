@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -103,7 +104,9 @@ public class SnpEffCmdShow extends SnpEff {
 		String trStr = tr.toString(true);
 		String art = tr.toStringAsciiArt(true);
 
-		System.out.println("Transcript:\t" + trStr);
+		CodonTable codonTable = tr.getChromosome().getCodonTable();
+
+		System.out.println("Transcript (codon table: " + codonTable.getName() + " ) :\t" + trStr);
 		System.out.println(Gpr.prependEachLine("\t\t", art) + "\n");
 
 		sb.append(trStr + "\n");

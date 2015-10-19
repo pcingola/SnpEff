@@ -1,7 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Variant;
@@ -9,6 +7,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import junit.framework.Assert;
 
 /**
  *
@@ -309,6 +308,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 		// We need at least 2 exons for this test case
 		minExons = 2;
+
 		initSnpEffPredictor();
 
 		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
@@ -326,7 +326,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'" + "\nEffects:" + effs);
 		Assert.assertEquals("c.50-2_51dupAAAG", hgvsDna);
 	}
 

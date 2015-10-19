@@ -1,10 +1,10 @@
 testCase
 Y	0-399 CHROMOSOME 'Y'
-Y:99-199, strand:1, id:Gene1, name:Gene1, bioType:mRNA
+Y:99-199, strand:1, id:Gene1, name:Gene1, bioType:protein_coding
 Transcipts:
-	Y:99-199, strand: +, id:Tr1, Protein
+	Y:99-199, strand: +, id:Tr1, bioType:protein_coding, Protein
 		Exons:
-		Y:99-199 'Exon_Y_100_102' rank:1, sequence: acccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+		Y:99-199 'START_CODON_Y_100_102' rank:1, sequence: acccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 		CDS     :	acccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 		Protein :	TPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP?
 

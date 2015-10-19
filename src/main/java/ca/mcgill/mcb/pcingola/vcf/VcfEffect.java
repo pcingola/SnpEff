@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.vcf;
 import java.util.LinkedList;
 import java.util.List;
 
+import ca.mcgill.mcb.pcingola.interval.BioType;
 import ca.mcgill.mcb.pcingola.interval.Custom;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -81,7 +82,7 @@ public class VcfEffect {
 	int cDnaLen, cDnaPos;
 	int distance;
 	int rank, rankMax;
-	String bioType;
+	BioType bioType;
 	String codon, aa, hgvsC, hgvsP;
 	VariantEffect.Coding coding;
 	String genotype;
@@ -149,7 +150,7 @@ public class VcfEffect {
 	 * Add subfield to a buffer
 	 */
 	void add(StringBuilder sb, Object obj) {
-		sb.append(VcfEntry.vcfInfoSafe(obj.toString()));
+		if (obj != null) sb.append(VcfEntry.vcfInfoSafe(obj.toString()));
 		sb.append("|");
 	}
 
@@ -275,7 +276,7 @@ public class VcfEffect {
 
 				// Transcript biotype
 				if (tr != null) {
-					if ((tr.getBioType() != null) && !tr.getBioType().isEmpty()) effBuff.append(tr.getBioType());
+					if ((tr.getBioType() != null) && (tr.getBioType() != null)) effBuff.append(tr.getBioType());
 					else effBuff.append(tr.isProteinCoding() ? "protein_coding" : ""); // No biotype? Add protein_coding of we know it is.
 				}
 				effBuff.append("|");
@@ -414,7 +415,7 @@ public class VcfEffect {
 		return genotype;
 	}
 
-	public String getBioType() {
+	public BioType getBioType() {
 		return bioType;
 	}
 
@@ -547,7 +548,7 @@ public class VcfEffect {
 			return transcriptId;
 
 		case "BIOTYPE":
-			return bioType;
+			return (bioType == null ? "" : bioType.toString());
 
 		case "RANK":
 			return Integer.toString(rank);
@@ -693,7 +694,8 @@ public class VcfEffect {
 
 	void init() {
 		aaLen = aaPos = cdsLen = cdsPos = cDnaLen = cDnaPos = distance = rank = rankMax = -1;
-		vcfFieldString = effString = effectTypesStr = effectDetails = bioType = codon = aa = hgvsC = hgvsP = genotype = errorsWarnings = geneName = geneId = featureType = featureId = transcriptId = exonId = errorsWarnings = "";
+		vcfFieldString = effString = effectTypesStr = effectDetails = codon = aa = hgvsC = hgvsP = genotype = errorsWarnings = geneName = geneId = featureType = featureId = transcriptId = exonId = errorsWarnings = "";
+		bioType = null;
 		impact = null;
 		funClass = FunctionalClass.NONE;
 		useSequenceOntology = true;
@@ -748,7 +750,7 @@ public class VcfEffect {
 		if (featureType.equals("transcript")) transcriptId = featureId;
 
 		// Biotype
-		bioType = vcfFieldStrings[index++];
+		bioType = BioType.parse(vcfFieldStrings[index++]);
 
 		// Rank '/' rankMax
 		Tuple<Integer, Integer> ints = parseSlash(vcfFieldStrings[index++]);
@@ -831,7 +833,7 @@ public class VcfEffect {
 			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) geneName = vcfFieldStrings[index];
 			index++;
 
-			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) bioType = vcfFieldStrings[index];
+			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) bioType = BioType.parse(vcfFieldStrings[index]);
 			index++;
 
 			if ((vcfFieldStrings.length > index) && !vcfFieldStrings[index].isEmpty()) coding = VariantEffect.Coding.valueOf(vcfFieldStrings[index]);
@@ -994,14 +996,14 @@ public class VcfEffect {
 
 		// Biotype
 		if (tr != null) {
-			if ((tr.getBioType() != null) && !tr.getBioType().isEmpty()) {
+			if ((tr.getBioType() != null) && (tr.getBioType() != null)) {
 				bioType = tr.getBioType();
 			} else {
 				// No biotype? Add protein_coding of we know it is.
-				bioType = tr.isProteinCoding() ? "Coding" : "Noncoding";
+				bioType = BioType.coding(tr.isProteinCoding());
 			}
 		} else {
-			bioType = "";
+			bioType = null;
 		}
 
 		// Rank
@@ -1085,7 +1087,7 @@ public class VcfEffect {
 		this.aaLen = aaLen;
 	}
 
-	public void setBioType(String bioType) {
+	public void setBioType(BioType bioType) {
 		this.bioType = bioType;
 	}
 

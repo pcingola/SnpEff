@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import ca.mcgill.mcb.pcingola.interval.BioType;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -78,9 +79,12 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// Is exon's parent a gene instead of a transcript?
 			if ((tr == null) && (gene != null)) {
 				// Create a transcript from the gene
-				String trId = "Transcript_" + gene.getId(); // Transcript ID
-				tr = addTranscript(gene, gffMarker, trId);
-				warning("Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for this exon.");
+				String trId = GffType.TRANSCRIPT + "_" + gene.getId(); // Transcript ID
+				tr = findTranscript(trId);
+				if (tr == null) {
+					tr = addTranscript(gene, gffMarker, trId);
+					if (debug) warning("Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for this exon.");
+				}
 			}
 
 			// Try to find the gene
@@ -89,18 +93,14 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// No transcript found? => Try creating one
 			if (tr == null) {
 				// No gene? Create one
-				if (gene == null) {
-					// Create and add gene
-					String gId = "Gene_" + (parentId.isEmpty() ? id : parentId); // Gene ID
-					gene = addGene(gffMarker, gId);
-				}
+				if (gene == null) gene = addGene(gffMarker);
 
 				// Create transcript
-				String trId = parentId.isEmpty() ? "Transcript_" + id : parentId; // Transcript ID
+				String trId = parentId.isEmpty() ? GffType.TRANSCRIPT + "_" + id : parentId; // Transcript ID
 				tr = addTranscript(gene, gffMarker, trId);
 
 				// Add gene & transcript
-				warning("Cannot find transcript '" + parentId + "'. Created transcript '" + tr.getId() + "' and gene '" + gene.getId() + "' for this exon");
+				if (debug) warning("Cannot find transcript '" + parentId + "'. Created transcript '" + tr.getId() + "' and gene '" + gene.getId() + "' for this exon");
 			}
 
 			// This can be added in different ways
@@ -142,17 +142,16 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	/**
 	 * Create and add a gene based on GffMarker
 	 */
-	protected Gene addGene(GffMarker gffMarker, String geneId) {
-		String bioType = gffMarker.getGeneBiotype();
-		if (bioType == null) bioType = "mRNA";
+	protected Gene addGene(GffMarker gffMarker) {
+		BioType bioType = gffMarker.getGeneBiotype();
 
 		Gene gene = new Gene(gffMarker.getChromosome() //
 		, gffMarker.getStart() //
 		, gffMarker.getEnd() //
 		, gffMarker.isStrandMinus() //
-		, geneId //
-				, gffMarker.getGeneName() //
-				, bioType);
+		, gffMarker.getGeneId() //
+		, gffMarker.getGeneName() //
+		, bioType);
 
 		add(gene);
 
@@ -249,8 +248,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		if (gffMarker.isProteingCoding()) tr.setProteinCoding(true);
 
 		// Biotype
-		String bioType = gffMarker.getTranscriptBiotype();
-		if (bioType != null) tr.setBioType(bioType);
+		tr.setBioType(gffMarker.getTranscriptBiotype());
 
 		// Transcript support level  (TSL)
 		String tslStr = gffMarker.getAttr("transcript_support_level");
@@ -268,9 +266,8 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		//---
 
 		// Update gene bio-type (if needed)
-		GffType gffType = gffMarker.getGffType();
-		String type = (gffType == null ? "" : gffType.toString());
-		if (gene.getBioType() == null) gene.setBioType(type);
+		BioType geneBioType = gffMarker.getGeneBiotype();
+		if (gene.getBioType() == null && geneBioType != null) gene.setBioType(geneBioType);
 
 		// Check that gene and transcript are in the same chromosome
 		if (!gene.getChromosomeName().equals(tr.getChromosomeName())) {
@@ -294,13 +291,15 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 			// Find exon & transcript
 			Exon exon = findOrCreateExon(parentId, gffMarker);
-			Transcript tr = (Transcript) exon.getParent();
+			if (exon != null) {
+				Transcript tr = (Transcript) exon.getParent();
 
-			// Create UTR
-			Utr3prime u3 = new Utr3prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
-			tr.add(u3);
-			add(u3);
-			list.add(u3);
+				// Create UTR
+				Utr3prime u3 = new Utr3prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+				tr.add(u3);
+				add(u3);
+				list.add(u3);
+			} else warning("Could not add UTR");
 		}
 
 		return list.isEmpty() ? null : list;
@@ -316,13 +315,15 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		for (String parentId : gffMarker.getGffParentIds()) {
 			// Find exon & transcript
 			Exon exon = findOrCreateExon(parentId, gffMarker);
-			Transcript tr = (Transcript) exon.getParent();
+			if (exon != null) {
+				Transcript tr = (Transcript) exon.getParent();
 
-			// Create UTR
-			Utr5prime u5 = new Utr5prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
-			tr.add(u5);
-			add(u5);
-			list.add(u5);
+				// Create UTR
+				Utr5prime u5 = new Utr5prime(exon, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), gffMarker.getId());
+				tr.add(u5);
+				add(u5);
+				list.add(u5);
+			} else warning("Could not add UTR");
 		}
 
 		return list.isEmpty() ? null : list;
@@ -374,7 +375,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 		// Nothing found? Create exon
 		exon = addExon(tr, gffMarker, gffMarker.getId());
-		warning("Cannot find exon for UTR: '" + utr.getId() + "'. Creating exon '" + gffMarker.getId() + "'");
+		if (debug) warning("Cannot find exon for UTR: '" + utr.getId() + "'. Creating exon '" + gffMarker.getId() + "'");
 		return exon;
 	}
 
@@ -387,7 +388,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		if (gene == null) gene = findGene(gffMarker.getId());
 
 		// Add gene if needed
-		if (gene == null) gene = addGene(gffMarker, gffMarker.getGeneId());
+		if (gene == null) gene = addGene(gffMarker);
 
 		return gene;
 	}

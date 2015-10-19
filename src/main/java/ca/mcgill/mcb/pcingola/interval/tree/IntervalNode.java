@@ -1,14 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval.tree;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.Arrays;
 
 import ca.mcgill.mcb.pcingola.interval.Interval;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -16,74 +9,52 @@ import ca.mcgill.mcb.pcingola.interval.Markers;
 
 /**
  * The Node class contains the interval tree information for one single node
- *
- * Adapted from Kevin Dolan's implementation
  */
-public class IntervalNode implements Serializable, Iterable<Marker> {
+public class IntervalNode implements Serializable {
 
 	private static final long serialVersionUID = -444656480302906048L;
-	private final SortedMap<Marker, List<Marker>> intervals;
+
+	public static boolean USE_NEW = true;
+
+	Marker[] intervals;
 	private Integer center;
 	private IntervalNode leftNode;
 	private IntervalNode rightNode;
 
 	public IntervalNode() {
-		intervals = new TreeMap<Marker, List<Marker>>();
 		center = 0;
 		leftNode = null;
 		rightNode = null;
 	}
 
-	public IntervalNode(Markers intervalList) {
-		intervals = new TreeMap<Marker, List<Marker>>();
-
-		SortedSet<Integer> endpoints = new TreeSet<Integer>();
-
-		for (Interval interval : intervalList) {
-			if (interval.isValid()) {
-				endpoints.add(interval.getStart());
-				endpoints.add(interval.getEnd());
-			} else System.err.println("WARNING: Ignoring interval " + interval);
-		}
-
-		if (endpoints.isEmpty()) {
+	public IntervalNode(Markers markers) {
+		// Empty markers?
+		if (markers.size() == 0) {
 			center = 0;
 			return;
 		}
 
-		int median = getMedian(endpoints);
-		center = median;
+		// Calculate median point
+		center = getMedian(markers);
 
+		// Split markers to the left, to the right and intersecting 'center'
 		Markers left = new Markers();
 		Markers right = new Markers();
+		Markers intersecting = new Markers();
 
-		for (Marker interval : intervalList) {
-			if (interval.getEnd() < median) left.add(interval);
-			else if (interval.getStart() > median) right.add(interval);
-			else {
-				List<Marker> posting = intervals.get(interval);
-				if (posting == null) {
-					posting = new ArrayList<Marker>();
-					intervals.put(interval, posting);
-				}
-				posting.add(interval);
-			}
+		for (Marker interval : markers) {
+			if (interval.getEnd() < center) left.add(interval);
+			else if (interval.getStart() > center) right.add(interval);
+			else intersecting.add(interval);
 		}
 
+		// Convert markers to array
+		if (intersecting.isEmpty()) intervals = null;
+		else intervals = intersecting.toArray();
+
+		// Recurse
 		if (left.size() > 0) leftNode = new IntervalNode(left);
 		if (right.size() > 0) rightNode = new IntervalNode(right);
-	}
-
-	/**
-	 * Add all intervals to the 'allIntervals' list
-	 * @param allIntervals
-	 */
-	void addAllIntervals(List<Marker> allIntervals) {
-		for (List<Marker> list : intervals.values())
-			allIntervals.addAll(list);
-
-		if (leftNode != null) leftNode.addAllIntervals(allIntervals);
-		if (rightNode != null) rightNode.addAllIntervals(allIntervals);
 	}
 
 	public Integer getCenter() {
@@ -95,76 +66,56 @@ public class IntervalNode implements Serializable, Iterable<Marker> {
 	}
 
 	/**
-	 * @param set the set to look on
-	 * @return	  the median of the set, not interpolated
+	 * Calculate the median point in this set of markers
 	 */
-	private Integer getMedian(SortedSet<Integer> set) {
+	protected int getMedian(Markers markers) {
+		// Add all start & end coordinates
 		int i = 0;
-		int middle = set.size() / 2;
-		for (Integer point : set) {
-			if (i == middle) return point;
-			i++;
+		int endpoints[] = new int[2 * markers.size()];
+		for (Interval interval : markers) {
+			endpoints[i++] = interval.getStart();
+			endpoints[i++] = interval.getEnd();
 		}
-		return null;
+
+		// Calculate median by sorting and selecting middle element
+		Arrays.sort(endpoints);
+		int middle = endpoints.length / 2;
+		return endpoints[middle];
 	}
 
 	public IntervalNode getRight() {
 		return rightNode;
 	}
 
-	@Override
-	public Iterator<Marker> iterator() {
-		ArrayList<Marker> allIntervals = new ArrayList<Marker>();
-		addAllIntervals(allIntervals);
-		return allIntervals.iterator();
-	}
-
 	/**
 	 * Perform an interval intersection query on the node
-	 * @param target: the interval to intersect
-	 * @return all intervals containing 'target'
+	 * @param queryMarker: The interval to intersect
+	 * @return All intervals containing 'target'
 	 */
-	public Markers query(Interval target) {
-		Markers result = new Markers();
+	public Markers query(Interval queryInterval) {
+		Markers results = new Markers();
 
-		for (Entry<Marker, List<Marker>> entry : intervals.entrySet()) {
-			if (entry.getKey().intersects(target)) {
-				for (Marker interval : entry.getValue())
-					result.add(interval);
-			} else if (entry.getKey().getStart() > target.getEnd()) break;
+		if (intervals != null) {
+			for (Marker marker : intervals)
+				if (marker.intersects(queryInterval)) results.add(marker);
 		}
 
-		if (target.getStart() < center && leftNode != null) result.add(leftNode.query(target));
-		if (target.getEnd() > center && rightNode != null) result.add(rightNode.query(target));
-		return result;
-	}
+		if (queryInterval.getStart() < center && leftNode != null) results.add(leftNode.query(queryInterval));
+		if (queryInterval.getEnd() > center && rightNode != null) results.add(rightNode.query(queryInterval));
 
-	public void setCenter(Integer center) {
-		this.center = center;
-	}
-
-	public void setLeft(IntervalNode left) {
-		leftNode = left;
-	}
-
-	public void setRight(IntervalNode right) {
-		rightNode = right;
+		return results;
 	}
 
 	/**
 	 * Perform a stabbing query on the node
 	 * @param point the time to query at
-	 * @return	   all intervals containing time
+	 * @return All intervals containing time
 	 */
 	public Markers stab(Integer point) {
 		Markers result = new Markers();
 
-		for (Entry<Marker, List<Marker>> entry : intervals.entrySet()) {
-			if (entry.getKey().intersects(point)) { //
-				for (Marker interval : entry.getValue())
-					result.add(interval);
-			} else if (entry.getKey().getStart() > point) break;
-		}
+		for (Marker marker : intervals)
+			if (marker.intersects(point)) result.add(marker);
 
 		if (point < center && leftNode != null) result.add(leftNode.stab(point));
 		else if (point > center && rightNode != null) result.add(rightNode.stab(point));
@@ -174,14 +125,11 @@ public class IntervalNode implements Serializable, Iterable<Marker> {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(center + ": ");
-		for (Entry<Marker, List<Marker>> entry : intervals.entrySet()) {
-			sb.append("[" + entry.getKey().getStart() + "," + entry.getKey().getEnd() + "]:{");
-			for (Interval interval : entry.getValue()) {
-				sb.append("(" + interval + ")");
-			}
-			sb.append("} ");
-		}
+		sb.append(center + ":\n");
+
+		for (Marker marker : intervals)
+			sb.append("\t" + marker + "\n");
+
 		return sb.toString();
 	}
 }

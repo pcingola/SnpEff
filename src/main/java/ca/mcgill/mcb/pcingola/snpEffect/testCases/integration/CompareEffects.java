@@ -84,6 +84,7 @@ public class CompareEffects {
 	 * Compare effects
 	 */
 	boolean compareEff(VariantEffect varEff, String expEffs) {
+		if (verbose) Gpr.debug("Variant effect: " + varEff);
 		for (EffectType effType : varEff.getEffectTypes())
 			for (String realEff : findEffTypes(expEffs)) {
 				if (debug) Gpr.debug("Compare effect\texp:" + effType + "\treal:" + realEff);

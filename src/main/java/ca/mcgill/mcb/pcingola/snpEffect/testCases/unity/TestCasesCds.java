@@ -1,7 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -9,6 +7,7 @@ import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Utr5prime;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import junit.framework.Assert;
 
 /**
  * Test random SNP changes
@@ -69,7 +68,7 @@ public class TestCasesCds extends TestCasesBase {
 	@Test
 	public void test_cdsStartEnd_1() {
 		Gpr.debug("Test");
-		Gene g = new Gene(chromosome, 0, 100, false, "g1", "g1", "");
+		Gene g = new Gene(chromosome, 0, 100, false, "g1", "g1", null);
 		Transcript tr = new Transcript(g, 10, 100, false, "tr1");
 
 		Exon e1 = new Exon(tr, 10, 30, false, "e1", 1);
@@ -92,7 +91,7 @@ public class TestCasesCds extends TestCasesBase {
 	@Test
 	public void test_cdsStartEnd_2() {
 		Gpr.debug("Test");
-		Gene g = new Gene(chromosome, 10, 100, false, "g1", "g1", "");
+		Gene g = new Gene(chromosome, 10, 100, false, "g1", "g1", null);
 		Transcript tr = new Transcript(g, 10, 100, false, "tr1");
 
 		Exon e1 = new Exon(tr, 10, 30, false, "e1", 1);

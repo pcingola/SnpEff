@@ -78,6 +78,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		chromosomes = new HashMap<String, Chromosome>();
 		genes = new Genes(this);
 		genomicSequences = new GenomicSequences(this);
+		genomicSequences.build();
 		setGenomeId();
 	}
 
@@ -89,6 +90,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		chromosomes = new HashMap<String, Chromosome>();
 		genes = new Genes(this);
 		genomicSequences = new GenomicSequences(this);
+		genomicSequences.build();
 		setGenomeId();
 	}
 
@@ -98,6 +100,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		type = EffectType.GENOME;
 		genes = new Genes(this);
 		genomicSequences = new GenomicSequences(this);
+		genomicSequences.build();
 
 		species = properties.getProperty(version + ".genome");
 		if (species == null) throw new RuntimeException("Property: '" + version + ".genome' not found");
@@ -270,6 +273,20 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		return false;
 	}
 
+	public boolean hasCodingInfo() {
+		// Is this already calculated?
+		if (codingInfo == null) {
+			int countCoding = 0;
+
+			for (Gene gene : genes)
+				if (gene.isProteinCoding()) countCoding++;
+
+			codingInfo = (countCoding != 0);
+		}
+
+		return codingInfo;
+	}
+
 	/**
 	 * Do we have coding info from genes?
 	 */
@@ -283,20 +300,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 					if (tr.hasTranscriptSupportLevelInfo()) countTsl++;
 
 			transcriptSupportLevelInfo = (countTsl != 0);
-		}
-
-		return codingInfo;
-	}
-
-	public boolean hasCodingInfo() {
-		// Is this already calculated?
-		if (codingInfo == null) {
-			int countCoding = 0;
-
-			for (Gene gene : genes)
-				if (gene.isProteinCoding()) countCoding++;
-
-			codingInfo = (countCoding != 0);
 		}
 
 		return codingInfo;
@@ -523,6 +526,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		sb.append("#-----------------------------------------------\n");
 		sb.append("# Genome name                : '" + species + "'" + "\n");
 		sb.append("# Genome version             : '" + version + "'\n");
+		sb.append("# Genome ID                  : '" + getGenomeId() + "'" + "\n");
 		sb.append("# Has protein coding info    : " + hasCodingInfo() + "\n");
 		sb.append("# Has Tr. Support Level info : " + hasTranscriptSupportLevelInfo() + "\n");
 		sb.append("# Genes                      : " + countGenes + "\n");

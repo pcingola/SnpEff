@@ -16,6 +16,7 @@ import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
+import ca.mcgill.mcb.pcingola.interval.GffType;
 import ca.mcgill.mcb.pcingola.interval.IntervalComparatorByEnd;
 import ca.mcgill.mcb.pcingola.interval.IntervalComparatorByStart;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -323,7 +324,7 @@ public abstract class SnpEffPredictorFactory {
 			for (Transcript tr : gene) {
 				if (tr.getCds() != null && !tr.getCds().isEmpty()) {
 					// If transcript doesn't have protein coding flag set (and doesn't have biotype information), use CDS as a proxy for 'protein coding'
-					if (!tr.isProteinCoding() && (tr.getBioType() == null || tr.getBioType().isEmpty())) {
+					if (!tr.isProteinCoding() && (tr.getBioType() == null)) {
 						tr.setProteinCoding(true);
 						i++;
 						if (debug) System.err.println("\t\tMarking as protein coding transcript " + tr.getId());
@@ -478,7 +479,7 @@ public abstract class SnpEffPredictorFactory {
 		int rank = 1;
 		for (Cds cds : cdss) {
 			// Create exon and add it to transcript
-			String id = "Exon_" + cds.getChromosomeName() + "_" + cds.getStart() + "_" + cds.getEnd();
+			String id = GffType.EXON + "_" + cds.getChromosomeName() + "_" + cds.getStart() + "_" + cds.getEnd();
 			if (tr.get(id) == null) { // Don't add an exon twice
 				Exon exon = new Exon(tr, cds.getStart(), cds.getEnd(), trStrandMinus, id, rank);
 				tr.add(exon);
@@ -492,13 +493,13 @@ public abstract class SnpEffPredictorFactory {
 	protected Gene findGene(String id) {
 		Gene gene = genesById.get(id);
 		if (gene != null) return gene;
-		return genesById.get("Gene_" + id); // Alternative gene ID
+		return genesById.get(GffType.GENE + "_" + id); // Alternative gene ID
 	}
 
 	protected Gene findGene(String geneId, String id) {
 		Gene gene = findGene(geneId);
 		if (gene != null) return gene;
-		return genesById.get("Gene_" + id); // Alternative gene ID
+		return genesById.get(GffType.GENE + "_" + id); // Alternative gene ID
 	}
 
 	protected Marker findMarker(String id) {
@@ -508,13 +509,13 @@ public abstract class SnpEffPredictorFactory {
 	protected Transcript findTranscript(String id) {
 		Transcript tr = transcriptsById.get(id);
 		if (tr != null) return tr;
-		return transcriptsById.get("Transcript_" + id); // Alternative transcript ID
+		return transcriptsById.get(GffType.TRANSCRIPT + "_" + id); // Alternative transcript ID
 	}
 
 	protected Transcript findTranscript(String trId, String id) {
 		Transcript tr = findTranscript(trId);
 		if (tr != null) return tr;
-		return transcriptsById.get("Transcript_" + id);
+		return transcriptsById.get(GffType.TRANSCRIPT + "_" + id);
 	}
 
 	/**

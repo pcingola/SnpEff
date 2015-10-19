@@ -1,12 +1,12 @@
 testCase
 Y	0-399 CHROMOSOME 'Y'
-Y:99-199, strand:1, id:Gene1, name:Gene1, bioType:mRNA
+Y:99-199, strand:1, id:Gene1, name:Gene1, bioType:protein_coding
 Transcipts:
-	Y:99-199, strand: +, id:Tr1, Protein
-		5'UTR:	Y	99-118 UTR_5_PRIME 'Utr5prime_Y_100_119'
+	Y:99-199, strand: +, id:Tr1, bioType:protein_coding, Protein
+		5'UTR:	Y	99-118 UTR_5_PRIME 'UTR5_Y_100_119'
 		Exons:
-		Y:99-199 'Exon_Y_100_200' rank:1, sequence: acccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-		3'UTR:	Y	180-199 UTR_3_PRIME 'Utr3prime_Y_181_200'
+		Y:99-199 'EXON_Y_100_200' rank:1, sequence: acccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+		3'UTR:	Y	180-199 UTR_3_PRIME 'UTR3_Y_181_200'
 		CDS     :	ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 		Protein :	PPPPPPPPPPPPPPPPPPPP?
 

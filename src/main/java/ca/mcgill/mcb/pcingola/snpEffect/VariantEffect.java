@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
+import ca.mcgill.mcb.pcingola.interval.BioType;
 import ca.mcgill.mcb.pcingola.interval.Custom;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -305,15 +306,15 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	/**
 	 * Get biotype
 	 */
-	public String getBiotype() {
+	public BioType getBiotype() {
 		Gene gene = getGene();
-		if (gene == null) return "";
+		if (gene == null) return null;
 
 		Transcript tr = getTranscript();
 		if (tr != null) return tr.getBioType();
-		else if (gene.getGenome().hasCodingInfo()) return (gene.isProteinCoding() ? "coding" : "non-coding");
+		else if (gene.getGenome().hasCodingInfo()) return BioType.coding(gene.isProteinCoding());
 
-		return "";
+		return null;
 	}
 
 	public int getcDnaPos() {
@@ -749,7 +750,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	public String toString(boolean useSeqOntology, boolean useHgvs) {
 		// Get data to show
-		String geneId = "", geneName = "", bioType = "", transcriptId = "", exonId = "", customId = "";
+		String geneId = "", geneName = "", transcriptId = "", exonId = "", customId = "";
+		String bioType = null;
 		int exonRank = -1;
 
 		if (marker != null) {
@@ -761,7 +763,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 			if (gene != null) {
 				geneId = gene.getId();
 				geneName = gene.getGeneName();
-				bioType = getBiotype();
+				bioType = (getBiotype() == null ? "" : getBiotype().toString());
 			}
 
 			// Update trId

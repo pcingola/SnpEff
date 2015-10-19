@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.factory;
 
 import java.io.File;
 
+import ca.mcgill.mcb.pcingola.interval.BioType;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
@@ -70,7 +71,7 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 
 		Gene gint = snpEffectPredictor.getGene(geneId);
 		if (gint == null) {
-			gint = new Gene(chromo, parsePosition(fields[3]), parsePosition(fields[4]), Gpr.parseIntSafe(fields[5]) < 0, geneId, fields[0], fields[6]);
+			gint = new Gene(chromo, parsePosition(fields[3]), parsePosition(fields[4]), Gpr.parseIntSafe(fields[5]) < 0, geneId, fields[0], BioType.parse(fields[6]));
 			snpEffectPredictor.add(gint);
 		}
 

@@ -3,6 +3,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 import org.junit.Before;
 import org.junit.Test;
 
+import ca.mcgill.mcb.pcingola.interval.BioType;
 import ca.mcgill.mcb.pcingola.interval.Cds;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
@@ -49,7 +50,7 @@ public class TestCasesDel {
 		chr.setSequence(chrSeq);
 		genome.add(chr);
 
-		gene = new Gene(chr, 333, 408, true, "gene1", "gene1", "protein_coding");
+		gene = new Gene(chr, 333, 408, true, "gene1", "gene1", BioType.protein_coding);
 
 		tr = new Transcript(gene, 333, 408, true, "tr1");
 		gene.add(tr);

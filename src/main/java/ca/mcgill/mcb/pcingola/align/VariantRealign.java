@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.align;
 
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
+import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.MarkerSeq;
 import ca.mcgill.mcb.pcingola.interval.Variant;
@@ -9,7 +10,8 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 /**
  * Re-align a variant towards the leftmost (rightmost) position
  *
- * Note: We perform a 'progressive' realignment, asking for more reference sequence as we need it
+ * Note: We perform a 'progressive' realignment, asking for more 
+ *       reference sequence as we need it
  *
  * @author pcingola
  */
@@ -35,14 +37,16 @@ public class VariantRealign {
 	String sequenceRef, sequenceAlt;
 	String refRealign, altRealign; // Ref and Alt after realignment
 	GenomicSequences genSeqs; // Provides sequences
+	Genome genome; // Reference genome
 	Variant variant;
 	Variant variantRealigned;
 
 	public VariantRealign() {
 	}
 
-	public VariantRealign(GenomicSequences genSeqs, Variant variant) {
-		this.genSeqs = genSeqs;
+	public VariantRealign(Variant variant) {
+		this.genome = variant.getGenome();
+		this.genSeqs = genome.getGenomicSequences();
 		this.variant = variant;
 	}
 
@@ -192,7 +196,7 @@ public class VariantRealign {
 			if (!createAltSeq()) return false;
 
 			// Realign
-			realigned = realignSeqs();
+			realignSeqs();
 
 			// Prepare for next iteration
 			needMoreBases = needMoreBases();
@@ -200,18 +204,16 @@ public class VariantRealign {
 			basesAddedRightPrev = basesAddedRight;
 		}
 
-		if (!realigned) return false;
-
 		// Create new variant
-		boolean ok = createRealignedVariant();
-		if (debug) Gpr.debug(this);
-		return ok;
+		realigned = createRealignedVariant();
+		if (debug) Gpr.debug("Realign:\n" + this);
+		return realigned;
 	}
 
 	/**
 	 * Realignment
 	 */
-	public boolean realignSeqs() {
+	public void realignSeqs() {
 		// Initialize
 		basesTrimLeft = basesTrimRight = 0;
 
@@ -231,8 +233,6 @@ public class VariantRealign {
 		// Calculate new 'ref' and 'alt'
 		refRealign = trimedSequence(sequenceRef).toUpperCase();
 		altRealign = trimedSequence(sequenceAlt).toUpperCase();
-
-		return true;
 	}
 
 	public void setAlignLeft() {

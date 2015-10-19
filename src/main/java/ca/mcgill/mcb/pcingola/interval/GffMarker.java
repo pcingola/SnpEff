@@ -3,9 +3,14 @@ package ca.mcgill.mcb.pcingola.interval;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.KeyValue;
 
 /**
  * An interval intended as a mark
@@ -20,7 +25,9 @@ public class GffMarker extends Custom {
 	String source;
 	int frame;
 	GffType gffType;
+	String gffTypeStr;
 	Map<String, String> keyValues;
+	Set<String> keys;
 
 	/**
 	 * Can this line (form a GFF file) be parsed?
@@ -56,6 +63,9 @@ public class GffMarker extends Custom {
 	 */
 	public void add(String key, String value) {
 		if (keyValues == null) keyValues = new HashMap<>();
+		if (keys == null) keys = new HashSet<>();
+
+		keys.add(key); // Store original key (to preserve capitalization in 'Custom' annotations)
 		keyValues.put(key.toLowerCase(), value);
 	}
 
@@ -63,35 +73,43 @@ public class GffMarker extends Custom {
 		return keyValues.get(key.toLowerCase());
 	}
 
-	public String getBiotype() {
+	public BioType getBiotype() {
 		if (gffType == GffType.GENE) return getGeneBiotype();
 		if (gffType == GffType.TRANSCRIPT) return getTranscriptBiotype();
-
-		// Default: Use generic biotype
-		if (hasAttr("biotype")) return getAttr("biotype");
-
-		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
-		return source;
-
+		return getBiotypeGeneric();
 	}
 
 	protected String getBioType() {
 		return getAttr("biotype");
 	}
 
+	protected BioType getBiotypeGeneric() {
+		BioType bioType = null;
+
+		// Use generic biotype field
+		if (hasAttr("biotype")) return BioType.parse(getAttr("biotype"));
+
+		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
+		bioType = BioType.parse(source);
+		if (bioType != null) return bioType;
+
+		// One last effor to try to inferr it from the GFF's 'type' column
+		return BioType.parse(gffTypeStr);
+	}
+
 	public int getFrame() {
 		return frame;
 	}
 
-	public String getGeneBiotype() {
+	public BioType getGeneBiotype() {
 		// Note: Different data providers use different keys
 		// E.g.: ENSEMBL uses "gene_biotype" and GenCode uses "gene_type"
 		String keys[] = { "gene_biotype", "gene_type", "biotype" };
 
 		for (String key : keys)
-			if (hasAttr(key)) return getAttr(key);
+			if (hasAttr(key)) return BioType.parse(getAttr(key));
 
-		return null;
+		return getBiotypeGeneric();
 	}
 
 	public String getGeneId() {
@@ -104,10 +122,13 @@ public class GffMarker extends Custom {
 	}
 
 	public String getGeneName() {
-		String key = "gene_name";
-		if (hasAttr(key)) return getAttr(key);
-		if (gffType == GffType.GENE) return getAttr("name");
-		return GffType.GENE + "_" + id;
+		if (hasAttr("gene_name")) return getAttr("gene_name");
+		if (gffType == GffType.GENE && hasAttr("name")) return getAttr("name");
+		if (gffType == GffType.TRANSCRIPT) {
+			String pid = getGffParentId();
+			if (pid != null) return pid;
+		}
+		return id;
 	}
 
 	public String getGffParentId() {
@@ -151,16 +172,15 @@ public class GffMarker extends Custom {
 		return gffType;
 	}
 
-	public String getTranscriptBiotype() {
+	public BioType getTranscriptBiotype() {
 		// Note: Different data providers use different keys
 		// E.g.: ENSEMBL uses "transcript_biotype" and GenCode uses "transcript_type"
 		String keys[] = { "transcript_biotype", "transcript_type", "biotype" };
 
 		for (String key : keys)
-			if (hasAttr(key)) return getAttr(key);
+			if (hasAttr(key)) return BioType.parse(getAttr(key));
 
-		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
-		return source;
+		return getBiotypeGeneric();
 	}
 
 	public String getTranscriptId() {
@@ -175,6 +195,14 @@ public class GffMarker extends Custom {
 		return getAttr("transcript_version");
 	}
 
+	/**
+	 * When annotating a VCF file, add fields from this GFF
+	 */
+	@Override
+	public boolean hasAnnotations() {
+		return true;
+	}
+
 	public boolean hasAttr(String key) {
 		key = key.toLowerCase();
 		return keyValues.containsKey(key) && (keyValues.get(key) != null);
@@ -184,19 +212,24 @@ public class GffMarker extends Custom {
 	 * Is biotType considered 'protein coding'?
 	 */
 	public boolean isProteingCoding() {
-		String bioType = getBiotype();
-		if (bioType == null) return false;
+		BioType bioType = getBiotype();
+		return bioType != null && bioType.isProteinCoding();
+	}
 
-		return bioType.equals("protein_coding") //
-				|| bioType.equals("IG_C_gene") //
-				|| bioType.equals("IG_D_gene") //
-				|| bioType.equals("IG_J_gene") //
-				|| bioType.equals("IG_V_gene") //
-				|| bioType.equals("TR_C_gene") //
-				|| bioType.equals("TR_D_gene") //
-				|| bioType.equals("TR_J_gene") //
-				|| bioType.equals("TR_V_gene") //
-				;
+	@Override
+	public Iterator<KeyValue<String, String>> iterator() {
+		// Sort keys alphabetically
+		ArrayList<String> keysSorted = new ArrayList<>();
+		keysSorted.addAll(keys);
+		Collections.sort(keysSorted);
+
+		// Create an list of (sorted) key-value pairs
+		LinkedList<KeyValue<String, String>> iter = new LinkedList<>();
+		for (String key : keysSorted) {
+			iter.add(new KeyValue<String, String>(key, getAttr(key)));
+		}
+
+		return iter.iterator();
 	}
 
 	/**
@@ -215,9 +248,9 @@ public class GffMarker extends Custom {
 		if (source.equals(".")) source = "";
 
 		// Parse type
-		String typeStr = fields[2];
-		if (typeStr.isEmpty() || typeStr.equals(".")) gffType = null;
-		gffType = GffType.parse(typeStr);
+		gffTypeStr = fields[2];
+		if (gffTypeStr.isEmpty() || gffTypeStr.equals(".")) gffType = null;
+		gffType = GffType.parse(gffTypeStr);
 
 		// Coordinates: closed, one-based
 		start = Gpr.parseIntSafe(fields[3]) - 1;
@@ -232,6 +265,7 @@ public class GffMarker extends Custom {
 
 		// Parse attributes
 		if (fields.length >= 8) parseAttributes(fields[8]);
+		else parseAttributes(null);
 
 		// Parse some special fields
 		id = parseId();
@@ -241,15 +275,26 @@ public class GffMarker extends Custom {
 	 * Parse attributes (key-value pairs) from a line in a GFF file
 	 */
 	protected void parseAttributes(String attrStr) {
-		if (attrStr.length() > 0) {
-			String attrs[] = attrStr.split(";");
-			for (int i = 0; i < attrs.length; i++) {
-				// Split key value pair
-				String kv[] = attrs[i].split("=");
-				if (kv.length > 1) {
-					String key = kv[0].trim();
-					String value = kv[1].trim();
-					add(key, value);
+		keyValues = new HashMap<>();
+		keys = new HashSet<String>();
+
+		// Add some column fields
+		add("source", source);
+		add("type", gffTypeStr);
+
+		// Parse and add all key-value pairs
+		if (attrStr != null) {
+			if (attrStr.length() > 0) {
+				String attrs[] = attrStr.split(";");
+				for (int i = 0; i < attrs.length; i++) {
+					// Split key value pair
+					String kv[] = attrs[i].split("=");
+					if (kv.length > 1) {
+						String key = kv[0].trim();
+						String value = kv[1].trim();
+
+						if (!hasAttr(key)) add(key, value);
+					}
 				}
 			}
 		}
