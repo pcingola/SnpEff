@@ -36,7 +36,7 @@ public class SnpEffCmdBuild extends SnpEff {
 
 	GeneDatabaseFormat geneDatabaseFormat; // Database format (only used if 'buildDb' is active)
 	boolean storeAlignments; // Store alignments (used for some test cases)
-	boolean storeSequences = false; // Store full sequences
+	boolean storeSequences = true; // Store full sequences
 	String cellType = null;
 	SnpEffCmdProtein snpEffCmdProtein;
 	SnpEffCmdCds snpEffCmdCds;
@@ -157,25 +157,65 @@ public class SnpEffCmdBuild extends SnpEff {
 	public void parseArgs(String[] args) {
 		this.args = args;
 		for (int i = 0; i < args.length; i++) {
-
 			String arg = args[i];
 
-			// Argument starts with '-'?
-			if (arg.startsWith("-")) {
-				if (arg.equalsIgnoreCase("-gff3")) geneDatabaseFormat = GeneDatabaseFormat.GFF3;
-				else if (arg.equalsIgnoreCase("-gff2")) geneDatabaseFormat = GeneDatabaseFormat.GFF2;
-				else if (arg.equalsIgnoreCase("-gtf22")) geneDatabaseFormat = GeneDatabaseFormat.GTF22;
-				else if (arg.equalsIgnoreCase("-refseq")) geneDatabaseFormat = GeneDatabaseFormat.REFSEQ;
-				else if (arg.equalsIgnoreCase("-genbank")) geneDatabaseFormat = GeneDatabaseFormat.GENBANK;
-				else if (arg.equalsIgnoreCase("-knowngenes")) geneDatabaseFormat = GeneDatabaseFormat.KNOWN_GENES;
-				else if (arg.equalsIgnoreCase("-embl")) geneDatabaseFormat = GeneDatabaseFormat.EMBL;
-				else if (arg.equalsIgnoreCase("-txt")) geneDatabaseFormat = GeneDatabaseFormat.BIOMART;
-				else if (arg.equalsIgnoreCase("-storeSeqs")) storeSequences = true;
-				else if (arg.equalsIgnoreCase("-onlyReg")) onlyRegulation = true;
-				else if (arg.equalsIgnoreCase("-cellType")) {
+			// It is an argument?
+			if (isOpt(arg)) {
+
+				switch (arg.toLowerCase()) {
+				case "-gff3":
+					geneDatabaseFormat = GeneDatabaseFormat.GFF3;
+					break;
+
+				case "-gff2":
+					geneDatabaseFormat = GeneDatabaseFormat.GFF2;
+					break;
+
+				case "-gtf22":
+					geneDatabaseFormat = GeneDatabaseFormat.GTF22;
+					break;
+
+				case "-refseq":
+					geneDatabaseFormat = GeneDatabaseFormat.REFSEQ;
+					break;
+
+				case "-genbank":
+					geneDatabaseFormat = GeneDatabaseFormat.GENBANK;
+					break;
+
+				case "-knowngenes":
+					geneDatabaseFormat = GeneDatabaseFormat.KNOWN_GENES;
+					break;
+
+				case "-embl":
+					geneDatabaseFormat = GeneDatabaseFormat.EMBL;
+					break;
+
+				case "-txt":
+					geneDatabaseFormat = GeneDatabaseFormat.BIOMART;
+					break;
+
+				case "-storeseqs":
+					storeSequences = true;
+					break;
+
+				case "-nostoreseqs":
+					storeSequences = false;
+					break;
+
+				case "-onlyreg":
+					onlyRegulation = true;
+					break;
+
+				case "-celltype":
 					if ((i + 1) < args.length) cellType = args[++i];
 					else usage("Missing 'cellType' argument");
-				} else usage("Unknown option '" + arg + "'");
+					break;
+
+				default:
+					usage("Unknown option '" + arg + "'");
+				}
+
 			} else if (genomeVer.length() <= 0) genomeVer = arg;
 			else usage("Unknown parameter '" + arg + "'");
 		}
@@ -343,27 +383,23 @@ public class SnpEffCmdBuild extends SnpEff {
 		System.err.println("snpEff version " + VERSION);
 		System.err.println("Usage: snpEff build [options] genome_version");
 		System.err.println("\nBuild DB options:");
-		System.err.println("\t-embl                   : Use Embl format. It implies '-1'.");
-		System.err.println("\t-genbank                : Use GenBank format. It implies '-1'.");
-		System.err.println("\t-gff2                   : Use GFF2 format (obsolete). It implies '-1'.");
-		System.err.println("\t-gff3                   : Use GFF3 format. It implies '-1'");
-		System.err.println("\t-gtf22                  : Use GTF 2.2 format. It implies '-1'. Default");
-		System.err.println("\t-knowngenes             : Use KnownGenes table from UCSC. It implies '-0'.");
-		System.err.println("\t-refseq                 : Use RefSeq table from UCSC. It implies '-0'.");
-		System.err.println("\t-onlyReg                : Only build regulation tracks.");
-		System.err.println("\t-storeSeqs              : Store sequence in binary files. Default: " + storeSequences);
-		System.err.println("\t-txt                    : Use TXT format (obsolete).");
-		System.err.println("\t-cellType <type>        : Only build regulation tracks for cellType <type>.");
-		System.err.println("\nGeneric options:");
-		System.err.println("\t-0                      : File positions are zero-based (same as '-inOffset 0 -outOffset 0')");
-		System.err.println("\t-1                      : File positions are one-based (same as '-inOffset 1 -outOffset 1')");
-		System.err.println("\t-c , -config            : Specify config file");
-		System.err.println("\t-h , -help              : Show this help and exit");
-		System.err.println("\t-if, -inOffset          : Offset input by a number of bases. E.g. '-inOffset 1' for one-based input files");
-		System.err.println("\t-of, -outOffset         : Offset output by a number of bases. E.g. '-outOffset 1' for one-based output files");
-		System.err.println("\t-noLog                  : Do not report usage statistics to server");
-		System.err.println("\t-q , -quiet             : Quiet mode (do not show any messages or errors)");
-		System.err.println("\t-v , -verbose           : Verbose mode");
+		System.err.println("\nDatabase format option (default: Auto detect):");
+		System.err.println("\t-embl                        : Use Embl format.");
+		System.err.println("\t-genbank                     : Use GenBank format.");
+		System.err.println("\t-gff2                        : Use GFF2 format (obsolete).");
+		System.err.println("\t-gff3                        : Use GFF3 format.");
+		System.err.println("\t-gtf22                       : Use GTF 2.2 format.");
+		System.err.println("\t-knowngenes                  : Use KnownGenes table from UCSC.");
+		System.err.println("\t-refseq                      : Use RefSeq table from UCSC.");
+		System.err.println("\nDatabase build options:");
+		System.err.println("\t-cellType <type>             : Only build regulation tracks for cellType <type>.");
+		System.err.println("\t-noStoreSeqs                 : Do not store sequence in binary files. Default: " + !storeSequences);
+		System.err.println("\t-onlyReg                     : Only build regulation tracks.");
+		System.err.println("\t-storeSeqs                   : Store sequence in binary files. Default: " + storeSequences);
+		System.err.println("\t-txt                         : Use TXT format (obsolete).");
+
+		usageGeneric();
+
 		System.exit(-1);
 	}
 }

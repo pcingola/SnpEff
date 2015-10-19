@@ -1094,23 +1094,9 @@ public class SnpEff implements CommandLine {
 	}
 
 	/**
-	 * Show generic options
+	 * Show database load and build options
 	 */
-	protected void usageGenericAndDb() {
-		System.err.println("\nGeneric options:");
-		System.err.println("\t-c , -config                 : Specify config file");
-		System.err.println("\t-configOption name=value     : Override a config file option");
-		System.err.println("\t-d , -debug                  : Debug mode (very verbose).");
-		System.err.println("\t-dataDir <path>              : Override data_dir parameter from config file.");
-		System.err.println("\t-download                    : Download a SnpEff database, if not available locally. Default: " + download);
-		System.err.println("\t-nodownload                  : Do not download a SnpEff database, if not available locally.");
-		System.err.println("\t-h , -help                   : Show this help and exit");
-		System.err.println("\t-noLog                       : Do not report usage statistics to server");
-		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
-		System.err.println("\t-q , -quiet                  : Quiet mode (do not show any messages or errors)");
-		System.err.println("\t-v , -verbose                : Verbose mode");
-		System.err.println("\t-version                     : Show version number and exit");
-		//
+	protected void usageDb() {
 		System.err.println("\nDatabase options:");
 		System.err.println("\t-canon                       : Only use canonical transcripts.");
 		System.err.println("\t-interval <file>             : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
@@ -1130,6 +1116,30 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-spliceRegionIntronMax <int> : Set maximum number of bases for splice site region within intron. Default: " + spliceRegionIntronMax + " bases");
 		System.err.println("\t-strict                      : Only use 'validated' transcripts (i.e. sequence has been checked). Default: " + strict);
 		System.err.println("\t-ud , -upDownStreamLen <int> : Set upstream downstream interval length (in bases)");
+	}
+
+	/**
+	 * Show generic options
+	 */
+	protected void usageGeneric() {
+		System.err.println("\nGeneric options:");
+		System.err.println("\t-c , -config                 : Specify config file");
+		System.err.println("\t-configOption name=value     : Override a config file option");
+		System.err.println("\t-d , -debug                  : Debug mode (very verbose).");
+		System.err.println("\t-dataDir <path>              : Override data_dir parameter from config file.");
+		System.err.println("\t-download                    : Download a SnpEff database, if not available locally. Default: " + download);
+		System.err.println("\t-nodownload                  : Do not download a SnpEff database, if not available locally.");
+		System.err.println("\t-h , -help                   : Show this help and exit");
+		System.err.println("\t-noLog                       : Do not report usage statistics to server");
+		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
+		System.err.println("\t-q , -quiet                  : Quiet mode (do not show any messages or errors)");
+		System.err.println("\t-v , -verbose                : Verbose mode");
+		System.err.println("\t-version                     : Show version number and exit");
+	}
+
+	protected void usageGenericAndDb() {
+		usageGeneric();
+		usageDb();
 	}
 
 }
