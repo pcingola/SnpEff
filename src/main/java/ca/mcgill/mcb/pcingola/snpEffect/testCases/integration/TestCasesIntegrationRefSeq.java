@@ -1,12 +1,17 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
+import java.util.HashMap;
+
 import org.junit.Test;
 
+import ca.mcgill.mcb.pcingola.align.SmithWaterman;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
+import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdBuild;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import junit.framework.Assert;
 
@@ -42,33 +47,33 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 
 	}
 
-	//	/**
-	//	 * Test improved exon frame correction in UCSC references
-	//	 */
-	//	@Test
-	//	public void test_02() {
-	//		Gpr.debug("Test");
-	//
-	//		//---
-	//		/// Build SnpEffectPredictor using a RefSeq file
-	//		//---
-	//		String genome = "testNM_015296";
-	//		String args[] = { "build", genome };
-	//		SnpEff snpeff = new SnpEff(args);
-	//		snpeff.setDebug(debug);
-	//		snpeff.setVerbose(verbose);
-	//
-	//		// Build database
-	//		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.snpEffCmd();
-	//		snpeffBuild.setStoreAlignments(true);
-	//		snpeffBuild.run();
-	//
-	//		//---
-	//		// Make sure the alignment matches on most bases after exon rank 49
-	//		//---
-	//		HashMap<String, SmithWaterman> alignmentByTrId = snpeffBuild.getSnpEffCmdProtein().getAlignmentByTrId();
-	//		SmithWaterman sw = alignmentByTrId.get("NM_015296.2");
-	//		if (debug) Gpr.debug(sw.getAlignmentScore() + "\n" + sw);
-	//		Assert.assertTrue(sw.getAlignmentScore() >= 2061);
-	//	}
+	/**
+	 * Test improved exon frame correction in UCSC references
+	 */
+	@Test
+	public void test_02() {
+		Gpr.debug("Test");
+
+		//---
+		/// Build SnpEffectPredictor using a RefSeq file
+		//---
+		String genome = "testNM_015296";
+		String args[] = { "build", genome };
+		SnpEff snpeff = new SnpEff(args);
+		snpeff.setDebug(debug);
+		snpeff.setVerbose(verbose);
+
+		// Build database
+		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.snpEffCmd();
+		snpeffBuild.setStoreAlignments(true);
+		snpeffBuild.run();
+
+		//---
+		// Make sure the alignment matches on most bases after exon rank 49
+		//---
+		HashMap<String, SmithWaterman> alignmentByTrId = snpeffBuild.getSnpEffCmdProtein().getAlignmentByTrId();
+		SmithWaterman sw = alignmentByTrId.get("NM_015296.2");
+		if (debug) Gpr.debug(sw.getAlignmentScore() + "\n" + sw);
+		Assert.assertTrue(sw.getAlignmentScore() >= 2061);
+	}
 }
