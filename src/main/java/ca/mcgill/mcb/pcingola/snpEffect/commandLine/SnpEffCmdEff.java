@@ -197,9 +197,12 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			for (Variant variant : variants) {
 				countVariants++;
 				if (verbose && (countVariants % SHOW_EVERY == 0)) {
-					int secs = (int) (annotateTimer.elapsed() / 1000);
-					int varsPerSec = (int) (countVariants / secs);
-					Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
+					int millisec = (int) annotateTimer.elapsed();
+					int secs = millisec / 1000;
+					if (secs > 0) {
+						int varsPerSec = (int) (countVariants * 1000.0 / millisec);
+						Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
+					}
 				}
 
 				// Calculate effects: By default do not annotate non-variant sites
