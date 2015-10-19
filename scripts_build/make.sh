@@ -2,7 +2,7 @@
 
 # Separate version-subversion by '_'
 # E.g.: '4_1' (instead of '4.1')
-export VERSION=4.1
+export VERSION=4.2
 export VERSION_UND=`echo $VERSION | tr '.' '_'`
 
 #---

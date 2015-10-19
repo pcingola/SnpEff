@@ -1,7 +1,5 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
@@ -9,6 +7,7 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import junit.framework.Assert;
 
 /**
  * Test Splice sites variants
@@ -33,7 +32,7 @@ public class TestCasesEffectCollapse extends TestCasesBase {
 	void check(int pos, String effStrExpected) {
 		if (verbose) Gpr.debug("Transcript:" + transcript);
 
-		// Create a variant that hits splice_region and creates a non_syn
+		// Create a variant 
 		Variant variant = new Variant(chromosome, pos, "A", "T");
 
 		// Calculate variant

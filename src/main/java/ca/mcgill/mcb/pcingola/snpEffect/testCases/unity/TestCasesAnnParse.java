@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import org.junit.Test;
 
@@ -8,20 +8,17 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
- * Test case
+ * Test case for parsing ANN fields
  *
  */
-public class TestCasesZzz {
+public class TestCasesAnnParse {
 
-	public TestCasesZzz() {
+	public TestCasesAnnParse() {
 		super();
 	}
 
-	/**
-	 * Exon.frameCorrection: Exon too short (size: 1), cannot correct frame!
-	 */
 	@Test
-	public void testCase_zzz() {
+	public void testCase_tfbs_ablation() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/tfbs_ablation.vcf";
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
