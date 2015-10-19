@@ -330,11 +330,15 @@ public class TestCasesIntegrationVariant {
 
 	/**
 	 * MT chromo
+	 * Effectusing an alternative codon table:
+	 * 		Codon change            : atA / atG
+	 * 		Standard codon table    : Ile / Met => NON_SYNONYMOUS
+	 * 		Mithocondria codon table: Met / Met => SYNONYMOUS
 	 */
 	@Test
 	public void test_31_CodonTable() {
 		Gpr.debug("Test");
-		String genomeName = "testHg3767Chr21Mt";
+		String genomeName = "testHg3767ChrMt";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect("tests/mt.txt", null, true);
 	}
