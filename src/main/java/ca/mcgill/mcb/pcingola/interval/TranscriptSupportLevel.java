@@ -31,7 +31,12 @@ public enum TranscriptSupportLevel {
 		// So we have to remove the part in parenthesis
 		if (str.length() > 2) str = str.substring(0, 2).trim();
 
-		return TranscriptSupportLevel.valueOf("TSL_" + str);
+		// Safely parse TSL
+		try {
+			return TranscriptSupportLevel.valueOf("TSL_" + str);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

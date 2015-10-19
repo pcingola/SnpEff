@@ -58,7 +58,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	Downstream downstream; // Downstream interval
 	Exon firstCodingExon; // First coding exon. I.e. where transcription start site (TSS) is.
 	int cds2pos[], aa2pos[];
-	TranscriptSupportLevel transcriptSupportLevel = TranscriptSupportLevel.TSL_NA;
+	TranscriptSupportLevel transcriptSupportLevel = null;
 
 	public Transcript() {
 		super();
@@ -1537,7 +1537,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + aaCheck //
 				+ "\t" + corrected //
 				+ "\t" + ribosomalSlippage //
-				+ "\t" + transcriptSupportLevel //
+				+ "\t" + (transcriptSupportLevel == null ? "" : transcriptSupportLevel.toString()) //
 				+ "\t" + version //
 				+ "\t" + markerSerializer.save(upstream) //
 				+ "\t" + markerSerializer.save(downstream) //
