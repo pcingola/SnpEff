@@ -38,7 +38,7 @@ public class VcfHeader {
 	/**
 	 * Add a VCF INFO header definition
 	 */
-	public void add(VcfHeaderEntry vcfInfo) {
+	public synchronized void add(VcfHeaderEntry vcfInfo) {
 		parseInfoLines();
 
 		// Already added? Remove old entry
@@ -47,13 +47,12 @@ public class VcfHeader {
 		// Add line
 		addLine(vcfInfo.toString());
 		resetCache(); // Invalidate cache
-
 	}
 
 	/**
 	 * Add a 'FORMAT' meta info
 	 */
-	public void addFormat(VcfHeaderInfoGenotype vcfInfoGenotype) {
+	public synchronized void addFormat(VcfHeaderInfoGenotype vcfInfoGenotype) {
 		parseInfoLines();
 
 		// Not already added?
@@ -66,7 +65,7 @@ public class VcfHeader {
 	/**
 	 * Add line to header (can add many lines)
 	 */
-	public void addLine(String newHeaderLine) {
+	public synchronized void addLine(String newHeaderLine) {
 		// Nothing to do?
 		if (newHeaderLine == null) return;
 
@@ -115,7 +114,7 @@ public class VcfHeader {
 		if (lastChar != '\n' && lastChar != '\r') header.append('\n');
 	}
 
-	public String[] getLines() {
+	protected String[] getLines() {
 		return header.toString().split("\n");
 	}
 
@@ -133,7 +132,7 @@ public class VcfHeader {
 	/**
 	 * Get pedigree (if any)
 	 */
-	public List<PedigreeEnrty> getPedigree() {
+	public synchronized List<PedigreeEnrty> getPedigree() {
 		ArrayList<PedigreeEnrty> list = new ArrayList<PedigreeEnrty>();
 
 		List<String> sampleNames = getSampleNames();
@@ -207,30 +206,7 @@ public class VcfHeader {
 	 */
 	public List<String> getSampleNames() {
 		if (sampleNames != null) return sampleNames;
-
-		// Split header
-		String headerLines[] = header.toString().split("\n");
-
-		// Find "#CHROM" line in header
-		for (String line : headerLines) {
-			if (line.startsWith("#CHROM")) {
-				chromLine = true;
-
-				// This line contains all the sample names (starting on column 9)
-				String titles[] = line.split("\t");
-
-				// Create a list of names
-				sampleNames = new ArrayList<String>();
-				for (int i = 9; i < titles.length; i++)
-					sampleNames.add(titles[i]);
-
-				// Done
-				return sampleNames;
-			}
-		}
-
-		// Not found
-		return null;
+		return parseSampleNames();
 	}
 
 	/**
@@ -238,17 +214,7 @@ public class VcfHeader {
 	 * @return -1 if not found
 	 */
 	public int getSampleNum(String sameplName) {
-		if (sampleName2Num == null) {
-			sampleName2Num = new HashMap<>();
-
-			// Create mapping
-			int count = 0;
-			if (getSampleNames() != null) {
-				for (String name : getSampleNames()) {
-					sampleName2Num.put(name, count++);
-				}
-			}
-		}
+		if (sampleName2Num == null) parseSampleNum();
 
 		// Get sample number
 		Integer num = sampleName2Num.get(sameplName);
@@ -258,7 +224,7 @@ public class VcfHeader {
 	/**
 	 * Get all VcfInfo entries
 	 */
-	public Collection<VcfHeaderInfo> getVcfInfo() {
+	public synchronized Collection<VcfHeaderInfo> getVcfInfo() {
 		parseInfoLines();
 		return vcfInfoById.values();
 	}
@@ -266,17 +232,12 @@ public class VcfHeader {
 	/**
 	 * Get Info type for a given ID
 	 */
-	public VcfHeaderInfo getVcfInfo(String id) {
+	public synchronized VcfHeaderInfo getVcfInfo(String id) {
 		parseInfoLines();
 		return vcfInfoById.get(id);
 	}
 
-	public Map<String, VcfHeaderInfo> getVcfInfoById() {
-		parseInfoLines();
-		return vcfInfoById;
-	}
-
-	public VcfHeaderInfoGenotype getVcfInfoGenotype(String id) {
+	public synchronized VcfHeaderInfoGenotype getVcfInfoGenotype(String id) {
 		parseInfoLines();
 		return vcfInfoGenotypeById.get(id);
 	}
@@ -284,7 +245,7 @@ public class VcfHeader {
 	/**
 	 * Parse INFO fields from header
 	 */
-	public void parseInfoLines() {
+	public synchronized void parseInfoLines() {
 		if (vcfInfoById != null) return;
 
 		chromLine = header.indexOf(CHROM_PREFIX) >= 0;
@@ -455,10 +416,48 @@ public class VcfHeader {
 		}
 	}
 
+	// Split header
+	protected synchronized List<String> parseSampleNames() {
+		String headerLines[] = header.toString().split("\n");
+
+		// Find "#CHROM" line in header
+		for (String line : headerLines) {
+			if (line.startsWith("#CHROM")) {
+				chromLine = true;
+
+				// This line contains all the sample names (starting on column 9)
+				String titles[] = line.split("\t");
+
+				// Create a list of names
+				sampleNames = new ArrayList<String>();
+				for (int i = 9; i < titles.length; i++)
+					sampleNames.add(titles[i]);
+
+				// Done
+				return sampleNames;
+			}
+		}
+
+		// Not found
+		return null;
+	}
+
+	protected synchronized void parseSampleNum() {
+		sampleName2Num = new HashMap<>();
+
+		// Create mapping
+		int count = 0;
+		if (getSampleNames() != null) {
+			for (String name : getSampleNames()) {
+				sampleName2Num.put(name, count++);
+			}
+		}
+	}
+
 	/**
 	 * Remove header line starting with a prefix
 	 */
-	public void remove(String linePrefix) {
+	public synchronized void remove(String linePrefix) {
 		// We should insert this line before '#CHROM' line
 		// Split header
 		String headerLines[] = header.toString().split("\n");
@@ -476,7 +475,7 @@ public class VcfHeader {
 	/**
 	 * Remove header line matching an INFO field
 	 */
-	public void removeInfo(String infoId) {
+	public synchronized void removeInfo(String infoId) {
 		// We should insert this line before '#CHROM' line
 		// Split header
 		String headerLines[] = header.toString().split("\n");
