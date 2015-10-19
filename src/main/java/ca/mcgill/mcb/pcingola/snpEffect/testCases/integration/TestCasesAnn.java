@@ -111,7 +111,7 @@ public class TestCasesAnn extends TestCasesBase {
 		Assert.assertEquals("ENST00000472155", veff.getTranscriptId());
 
 		// Biotype
-		Assert.assertEquals("protein_coding", veff.getBioType());
+		Assert.assertEquals("protein_coding", veff.getBioType().toString());
 
 		// Rank
 		Assert.assertEquals("10", "" + veff.getRank());
@@ -217,7 +217,7 @@ public class TestCasesAnn extends TestCasesBase {
 		Assert.assertEquals("ENST00000374221", veff.getTranscriptId());
 
 		// Biotype
-		Assert.assertEquals("protein_coding", veff.getBioType());
+		Assert.assertEquals("protein_coding", veff.getBioType().toString());
 
 		// Rank
 		Assert.assertEquals("11", "" + veff.getRank());
@@ -279,7 +279,7 @@ public class TestCasesAnn extends TestCasesBase {
 		Assert.assertEquals("ENST00000374221", veff.getTranscriptId());
 
 		// Biotype
-		Assert.assertEquals("protein_coding", veff.getBioType());
+		Assert.assertEquals("protein_coding", veff.getBioType().toString());
 
 		// Rank
 		Assert.assertEquals("12", "" + veff.getRank());
@@ -341,7 +341,7 @@ public class TestCasesAnn extends TestCasesBase {
 		Assert.assertEquals("", veff.getTranscriptId());
 
 		// Biotype
-		Assert.assertEquals("", veff.getBioType());
+		Assert.assertTrue(veff.getBioType() == null);
 
 		// Rank
 		Assert.assertEquals("-1", "" + veff.getRank());

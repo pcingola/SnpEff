@@ -150,7 +150,7 @@ public class VcfEffect {
 	 * Add subfield to a buffer
 	 */
 	void add(StringBuilder sb, Object obj) {
-		sb.append(VcfEntry.vcfInfoSafe(obj.toString()));
+		if (obj != null) sb.append(VcfEntry.vcfInfoSafe(obj.toString()));
 		sb.append("|");
 	}
 
