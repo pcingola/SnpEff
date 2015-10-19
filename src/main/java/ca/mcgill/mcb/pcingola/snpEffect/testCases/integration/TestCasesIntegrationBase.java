@@ -160,7 +160,14 @@ public class TestCasesIntegrationBase {
 
 		// Compare result
 		String result = showTranscripts(sep.getGenome()).trim();
-		if (verbose || !Gpr.noSpaces(expectedResult).equals(Gpr.noSpaces(result))) System.out.println("Result:\n----------\n" + result + "\n----------\n");
+
+		// Remove spaces and compare
+		String erNs = Gpr.noSpaces(expectedResult);
+		String rNs = Gpr.noSpaces(result);
+		if (verbose || !erNs.equals(rNs)) {
+			System.out.println("Result:\n----------\n" + result + "\n----------\n");
+			System.out.println("Expected (" + resultFile + "):\n----------\n" + expectedResult + "\n----------\n");
+		}
 		Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 
 		return sep;

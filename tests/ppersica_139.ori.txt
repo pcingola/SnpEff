@@ -3,10 +3,10 @@ ppersica139
 scaffold_1	0-46098485 CHROMOSOME 'scaffold_1'
 scaffold_1:46082351-46098485, strand:-1, id:ppa000009m.g, name:ppa000009m.g, bioType:mRNA
 Transcipts:
-	scaffold_1:46082351-46098485, strand: -, id:PAC:17661739
-		5'UTR   :	scaffold_1	46098406-46098485 UTR_5_PRIME 'Utr5prime_scaffold_1_46098407_46098486'
+	scaffold_1:46082351-46098485, strand: -, id:PAC:17661739, Protein
 		5'UTR   :	scaffold_1	46095816-46095968 UTR_5_PRIME 'Utr5prime_scaffold_1_46095817_46095969'
 		5'UTR   :	scaffold_1	46096045-46096142 UTR_5_PRIME 'Utr5prime_scaffold_1_46096046_46096143'
+		5'UTR   :	scaffold_1	46098406-46098485 UTR_5_PRIME 'Utr5prime_scaffold_1_46098407_46098486'
 		Exons:
 		scaffold_1:46082351-46082650 'Utr3prime_scaffold_1_46082352_46082548' rank:16, sequence: 
 		scaffold_1:46082817-46082923 'Exon_scaffold_1_46082817_46082923' rank:15, sequence: 
@@ -25,5 +25,7 @@ Transcipts:
 		scaffold_1:46096045-46096142 'Utr5prime_scaffold_1_46096046_46096143' rank:2, sequence: 
 		scaffold_1:46098406-46098485 'Utr5prime_scaffold_1_46098407_46098486' rank:1, sequence: 
 		3'UTR   :	scaffold_1	46082351-46082547 UTR_3_PRIME 'Utr3prime_scaffold_1_46082352_46082548'
+		CDS     :	
+		Protein :	
 
 		CDS 'PAC:17661739':

@@ -31,12 +31,15 @@ public class TestCasesZzz extends TestCasesIntegrationBase {
 		Exon.ToStringVersion = 1; // Set "toString()" version
 	}
 
+	/**
+	 * Exon.frameCorrection: Exon too short (size: 1), cannot correct frame!
+	 */
 	@Test
-	public void testCase_01_Exon_Simple() {
+	public void testCase_10_MaizeZmB73() {
 		Gpr.debug("Test");
-		String genome = "testCase";
-		String gff3File = "tests/exonSimple.gff3";
-		String resultFile = "tests/exonSimple.txt";
+		String genome = "testMaizeZmB73";
+		String gff3File = "tests/testMaizeZmB73.gff3";
+		String resultFile = "tests/testMaizeZmB73.txt";
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 	}
 

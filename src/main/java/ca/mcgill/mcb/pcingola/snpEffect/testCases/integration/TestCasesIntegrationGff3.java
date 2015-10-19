@@ -166,7 +166,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 		String genome = "testMaizeZmB73";
 		String gff3File = "tests/testMaizeZmB73.gff3";
 		String resultFile = "tests/testMaizeZmB73.txt";
-		buildGff3AndCompare(genome, gff3File, resultFile, false, true);
+		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 	}
 
 }

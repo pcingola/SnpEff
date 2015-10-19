@@ -76,17 +76,25 @@ public class GffMarker extends Custom {
 	public BioType getBiotype() {
 		if (gffType == GffType.GENE) return getGeneBiotype();
 		if (gffType == GffType.TRANSCRIPT) return getTranscriptBiotype();
-
-		// Default: Use generic biotype
-		if (hasAttr("biotype")) return BioType.parse(getAttr("biotype"));
-
-		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
-		return BioType.parse(source);
-
+		return getBiotypeGeneric();
 	}
 
 	protected String getBioType() {
 		return getAttr("biotype");
+	}
+
+	protected BioType getBiotypeGeneric() {
+		BioType bioType = null;
+
+		// Use generic biotype field
+		if (hasAttr("biotype")) return BioType.parse(getAttr("biotype"));
+
+		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
+		bioType = BioType.parse(source);
+		if (bioType != null) return bioType;
+
+		// One last effor to try to inferr it from the GFF's 'type' column
+		return BioType.parse(gffTypeStr);
 	}
 
 	public int getFrame() {
@@ -101,8 +109,7 @@ public class GffMarker extends Custom {
 		for (String key : keys)
 			if (hasAttr(key)) return BioType.parse(getAttr(key));
 
-		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
-		return BioType.parse(source);
+		return getBiotypeGeneric();
 	}
 
 	public String getGeneId() {
@@ -116,7 +123,11 @@ public class GffMarker extends Custom {
 
 	public String getGeneName() {
 		if (hasAttr("gene_name")) return getAttr("gene_name");
-		if (hasAttr("name")) return getAttr("name");
+		if (gffType == GffType.GENE && hasAttr("name")) return getAttr("name");
+		if (gffType == GffType.TRANSCRIPT) {
+			String pid = getGffParentId();
+			if (pid != null) return pid;
+		}
 		return id;
 	}
 
@@ -169,8 +180,7 @@ public class GffMarker extends Custom {
 		for (String key : keys)
 			if (hasAttr(key)) return BioType.parse(getAttr(key));
 
-		// Use 'source' as bioType (Old ENSEMBL GTF files use this field)
-		return BioType.parse(source);
+		return getBiotypeGeneric();
 	}
 
 	public String getTranscriptId() {
@@ -202,7 +212,8 @@ public class GffMarker extends Custom {
 	 * Is biotType considered 'protein coding'?
 	 */
 	public boolean isProteingCoding() {
-		return getBiotype().isProteinCoding();
+		BioType bioType = getBiotype();
+		return bioType != null && bioType.isProteinCoding();
 	}
 
 	@Override
@@ -281,7 +292,8 @@ public class GffMarker extends Custom {
 					if (kv.length > 1) {
 						String key = kv[0].trim();
 						String value = kv[1].trim();
-						add(key, value);
+
+						if (!hasAttr(key)) add(key, value);
 					}
 				}
 			}

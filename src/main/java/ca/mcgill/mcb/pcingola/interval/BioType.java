@@ -86,9 +86,55 @@ public enum BioType {
 	 */
 	public static BioType parse(String str) {
 		try {
+			if (str == null) return null;
+
 			return BioType.valueOf(str);
 		} catch (Exception e) {
-			if (str != null && str.equals("3prime_overlapping_ncrna")) return prime3_overlapping_ncrna;
+			if (str != null) {
+				switch (str.toLowerCase()) {
+				case "mrna":
+				case "protein":
+				case "cds":
+				case "trna":
+				case "start_codon":
+				case "stop_codon":
+				case "five_prime_utr":
+				case "5'-utr":
+				case "5'utr":
+				case "5utr":
+				case "three_prime_utr":
+				case "3'-utr":
+				case "3'utr":
+				case "3utr":
+					return protein_coding;
+
+				case "pseudogenic_transcript":
+				case "pseudogenic_exon":
+					return transcribed_processed_pseudogene;
+
+				case "ncrna":
+					return lincRNA;
+
+				case "rrna":
+					return rRNA;
+
+				case "mirna":
+					return miRNA;
+
+				case "snrna":
+					return snRNA;
+
+				case "snorna":
+					return snoRNA;
+
+				case "3prime_overlapping_ncrna": //  WARNING: This one is actually called '3prime_overlapping_ncrna' but identifiers cannot start with a number in Java
+					return prime3_overlapping_ncrna;
+
+				default:
+					return null;
+				}
+			}
+
 			return null;
 		}
 	}

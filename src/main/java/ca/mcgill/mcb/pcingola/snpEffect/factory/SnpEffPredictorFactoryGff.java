@@ -12,6 +12,7 @@ import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.FrameType;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.GffMarker;
+import ca.mcgill.mcb.pcingola.interval.GffType;
 import ca.mcgill.mcb.pcingola.interval.IntergenicConserved;
 import ca.mcgill.mcb.pcingola.interval.IntronConserved;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -78,9 +79,12 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// Is exon's parent a gene instead of a transcript?
 			if ((tr == null) && (gene != null)) {
 				// Create a transcript from the gene
-				String trId = "Transcript_" + gene.getId(); // Transcript ID
-				tr = addTranscript(gene, gffMarker, trId);
-				if (debug) warning("Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for this exon.");
+				String trId = GffType.TRANSCRIPT + "_" + gene.getId(); // Transcript ID
+				tr = findTranscript(trId);
+				if (tr == null) {
+					tr = addTranscript(gene, gffMarker, trId);
+					if (debug) warning("Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for this exon.");
+				}
 			}
 
 			// Try to find the gene
@@ -92,7 +96,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				if (gene == null) gene = addGene(gffMarker);
 
 				// Create transcript
-				String trId = parentId.isEmpty() ? "Transcript_" + id : parentId; // Transcript ID
+				String trId = parentId.isEmpty() ? GffType.TRANSCRIPT + "_" + id : parentId; // Transcript ID
 				tr = addTranscript(gene, gffMarker, trId);
 
 				// Add gene & transcript

@@ -18,6 +18,7 @@ public enum GffType {
 	public static GffType parse(String str) {
 		switch (str.toLowerCase()) {
 		case "gene":
+		case "protein":
 			return GENE;
 
 		case "pseudogene":
