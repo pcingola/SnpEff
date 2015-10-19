@@ -51,6 +51,7 @@ public enum EffectType {
 	, UPSTREAM //
 	, DOWNSTREAM //
 	, MOTIF //
+	, MOTIF_DELETED //
 	, REGULATION //
 	, MICRO_RNA //
 
@@ -172,6 +173,7 @@ public enum EffectType {
 			return EffectImpact.MODIFIER;
 
 		case MOTIF:
+		case MOTIF_DELETED:
 			return EffectImpact.LOW;
 
 		case NEXT_PROT:
@@ -260,6 +262,7 @@ public enum EffectType {
 			return EffectType.REGULATION;
 
 		case MOTIF:
+		case MOTIF_DELETED:
 			return EffectType.MOTIF;
 
 		case MICRO_RNA:
@@ -339,6 +342,9 @@ public enum EffectType {
 
 		case MOTIF:
 			return "TF_binding_site_variant";
+
+		case MOTIF_DELETED:
+			return "TFBS_ablation";
 
 		case NEXT_PROT:
 			return "sequence_feature";

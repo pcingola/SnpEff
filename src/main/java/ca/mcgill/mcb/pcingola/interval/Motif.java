@@ -51,12 +51,10 @@ public class Motif extends Marker {
 	 * It would be better to use the real reference sequence, but at this moment, we do not have it.
 	 */
 	EffectImpact effectImpact(Variant variant) {
-
 		EffectImpact effectImpact = EffectImpact.MODIFIER;
 
 		// Do we have PWM?
 		if (pwm != null) {
-
 			// Step 1:
 			//     Create a MarkerSeq (we can 'apply' a change to it and see what the resulting sequence is
 			MarkerSeq mseq = new MarkerSeq((Marker) parent, start, end, false, id); // Notice: We use positive strand
@@ -124,7 +122,14 @@ public class Motif extends Marker {
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false;// Sanity check
-		variantEffects.add(variant, this, type, effectImpact(variant), "");
+
+		if (variant.isDel() && variant.includes(this)) {
+			// Site deleted?
+			variantEffects.add(variant, this, EffectType.MOTIF_DELETED, EffectImpact.LOW, "");
+		} else {
+			variantEffects.add(variant, this, type, effectImpact(variant), "");
+		}
+
 		return true;
 	}
 

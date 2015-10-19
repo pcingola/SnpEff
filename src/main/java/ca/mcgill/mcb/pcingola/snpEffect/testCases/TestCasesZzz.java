@@ -4,15 +4,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
+import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Test case
  *
  */
-public class TestCasesZzz extends TestCasesIntegrationBase {
+public class TestCasesZzz {
 
 	int exonToStringVersionOri;
 
@@ -35,12 +37,16 @@ public class TestCasesZzz extends TestCasesIntegrationBase {
 	 * Exon.frameCorrection: Exon too short (size: 1), cannot correct frame!
 	 */
 	@Test
-	public void testCase_10_MaizeZmB73() {
+	public void testCase_zzz() {
 		Gpr.debug("Test");
-		String genome = "testMaizeZmB73";
-		String gff3File = "tests/testMaizeZmB73.gff3";
-		String resultFile = "tests/testMaizeZmB73.txt";
-		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
+		String vcfFile = "tests/tfbs_ablation.vcf";
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		for (VcfEntry ve : vcf) {
+			System.out.println(ve);
+			for (VcfEffect veff : ve.getVcfEffects()) {
+				System.out.println("\t" + veff);
+			}
+		}
 	}
 
 }
