@@ -17,6 +17,7 @@ import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
+import ca.mcgill.mcb.pcingola.interval.TranscriptSupportLevel;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -192,21 +193,32 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		Transcript trThis = getTranscript();
 		Transcript trOther = varEffOther.getTranscript();
 		if (trThis != null && trOther != null) {
+			// Compare using TSL
+			TranscriptSupportLevel tslThis = trThis.getTranscriptSupportLevel();
+			TranscriptSupportLevel tslOther = trOther.getTranscriptSupportLevel();
+			if (trThis != null && trOther != null) {
+				comp = tslThis.compareTo(tslOther);
+				if (comp != 0) return comp;
+			}
+
+			// Compare canonical?
 			comp = (trOther.isCanonical() ? 1 : 0) - (trThis.isCanonical() ? 1 : 0);
+			if (comp != 0) return comp;
+
+			// Compare genomic coordinate
+			comp = trThis.compareToPos(trOther);
+			if (comp != 0) return comp;
+
+			// Compare IDs
+			comp = trThis.getId().compareTo(trOther.getId());
+			if (comp != 0) return comp;
 		}
-		if (comp != 0) return comp;
-
-		// Sort by genomic coordinate of affected 'marker'
-		if ((trThis != null) && (trOther != null)) comp = trThis.compareToPos(trOther);
-		if (comp != 0) return comp;
-
-		// Compare IDs
-		if ((trThis != null) && (trOther != null)) comp = trThis.getId().compareTo(trOther.getId());
-		if (comp != 0) return comp;
 
 		// Compare by marker
-		if ((getMarker() != null) && (varEffOther.getMarker() != null)) comp = getMarker().compareToPos(varEffOther.getMarker());
-		if (comp != 0) return comp;
+		if ((getMarker() != null) && (varEffOther.getMarker() != null)) {
+			comp = getMarker().compareToPos(varEffOther.getMarker());
+			if (comp != 0) return comp;
+		}
 
 		// Sort by variant (most of the time this is equal)
 		return variant.compareTo(varEffOther.getVariant());
