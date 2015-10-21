@@ -196,7 +196,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 			// Compare using TSL
 			TranscriptSupportLevel tslThis = trThis.getTranscriptSupportLevel();
 			TranscriptSupportLevel tslOther = trOther.getTranscriptSupportLevel();
-			if (trThis != null && trOther != null) {
+			if (tslThis != null && tslOther != null) {
 				comp = tslThis.compareTo(tslOther);
 				if (comp != 0) return comp;
 			}
