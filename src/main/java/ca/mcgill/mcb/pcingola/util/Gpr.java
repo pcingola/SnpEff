@@ -833,8 +833,9 @@ public class Gpr {
 
 		for (int i = 0; i < vals.length; i++) {
 			sb.append("|");
-			for (int j = 0; j < vals[i].length; j++)
+			for (int j = 0; j < vals[i].length; j++) {
 				sb.append(" " + toString(vals[i][j]));
+			}
 
 			sb.append(" |\n");
 		}
