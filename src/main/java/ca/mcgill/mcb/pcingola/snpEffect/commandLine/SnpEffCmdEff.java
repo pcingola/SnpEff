@@ -288,6 +288,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	@Override
 	public boolean annotateFinish() {
 		boolean ok = true;
+
 		// Creates a summary output file
 		if (createSummaryCsv) {
 			if (verbose) Timer.showStdErr("Creating summary file: " + summaryFileCsv);

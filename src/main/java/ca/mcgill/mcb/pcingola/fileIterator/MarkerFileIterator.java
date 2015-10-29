@@ -1,15 +1,12 @@
 package ca.mcgill.mcb.pcingola.fileIterator;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import net.sf.samtools.tabix.TabixReader;
-import net.sf.samtools.tabix.TabixReader.TabixIterator;
 
 /**
  * Opens a Marker file and iterates over all markers
@@ -22,8 +19,8 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	protected Genome genome;
 	protected boolean ignoreChromosomeErrors = true; // If true, do not throw an exception when a chromosome is not found. Just ignore the line
 	protected int inOffset;
-	protected TabixReader tabixReader;
-	protected TabixIterator tabixIterator;
+	//	protected TabixReader tabixReader;
+	//	protected TabixIterator tabixIterator;
 
 	public MarkerFileIterator(BufferedReader reader, int inOffset) {
 		super(reader);
@@ -57,18 +54,18 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 		return genome;
 	}
 
-	@Override
-	public boolean hasNext() {
-		if (tabixReader == null) return super.hasNext();
-		if (tabixIterator == null) return false;
-
-		if (next == null) {
-			next = readNext(); // Try reading next item.
-			if ((next == null) && autoClose) close(); // End of file or any problem? => Close file
-		}
-
-		return (next != null);
-	}
+	//	@Override
+	//	public boolean hasNext() {
+	//		if (tabixReader == null) return super.hasNext();
+	//		if (tabixIterator == null) return false;
+	//
+	//		if (next == null) {
+	//			next = readNext(); // Try reading next item.
+	//			if ((next == null) && autoClose) close(); // End of file or any problem? => Close file
+	//		}
+	//
+	//		return (next != null);
+	//	}
 
 	/**
 	 * Initialize
@@ -80,46 +77,43 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 		lineNum = 0;
 		next = null;
 		this.fileName = fileName;
-
-		if (fileName != null) {
-			if (!initTabix(fileName)) reader = Gpr.reader(fileName);
-		}
+		if (fileName != null) reader = Gpr.reader(fileName);
 	}
 
-	/**
-	 * Initialize tabix reader
-	 */
-	protected boolean initTabix(String fileName) {
-		try {
-			// Do we have a tabix file?
-			if (!Gpr.exists(fileName + ".tbi")) return false; // No index, cannot open in 'tabix' mode
-
-			// Close if already open
-			if (tabixReader != null) tabixReader.close();
-
-			// Open tabix reader
-			tabixReader = new TabixReader(fileName);
-			tabixIterator = tabixReader.iterator();
-
-			// We won't be using the reader
-			if (reader != null) {
-				reader.close();
-				reader = null;
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("Error opening tabix file '" + fileName + "'", e);
-		}
-
-		return true;
-	}
+	//	/**
+	//	 * Initialize tabix reader
+	//	 */
+	//	protected boolean initTabix(String fileName) {
+	//		try {
+	//			// Do we have a tabix file?
+	//			if (!Gpr.exists(fileName + ".tbi")) return false; // No index, cannot open in 'tabix' mode
+	//
+	//			// Close if already open
+	//			if (tabixReader != null) tabixReader.close();
+	//
+	//			// Open tabix reader
+	//			tabixReader = new TabixReader(fileName);
+	//			tabixIterator = tabixReader.iterator();
+	//
+	//			// We won't be using the reader
+	//			if (reader != null) {
+	//				reader.close();
+	//				reader = null;
+	//			}
+	//		} catch (IOException e) {
+	//			throw new RuntimeException("Error opening tabix file '" + fileName + "'", e);
+	//		}
+	//
+	//		return true;
+	//	}
 
 	public boolean isIgnoreChromosomeErrors() {
 		return ignoreChromosomeErrors;
 	}
 
-	public boolean isTabix() {
-		return tabixReader != null;
-	}
+	//	public boolean isTabix() {
+	//		return tabixReader != null;
+	//	}
 
 	public Markers loadMarkers() {
 		Markers list = new Markers();
@@ -137,35 +131,35 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 		return Gpr.parseIntSafe(posStr) - inOffset;
 	}
 
-	@Override
-	protected String readLine() throws IOException {
-		if (tabixReader == null) return super.readLine(); // No tabix => Do 'normal' readline()
+	//	@Override
+	//	protected String readLine() throws IOException {
+	//		if (tabixReader == null) return super.readLine(); // No tabix => Do 'normal' readline()
+	//
+	//		if (nextLine != null) {
+	//			String nl = nextLine;
+	//			nextLine = null;
+	//			return nl;
+	//		}
+	//
+	//		// Use tabix
+	//		if (tabixIterator != null) nextLine = tabixIterator.next(); // Tabix? => Use tabix iterator
+	//
+	//		// Remove trailing '\r'
+	//		if ((nextLine != null) && (nextLine.length() > 0) && nextLine.charAt(nextLine.length() - 1) == '\r') nextLine = nextLine.substring(0, nextLine.length() - 1);
+	//
+	//		// Increment line counter
+	//		if (nextLine != null) lineNum++;
+	//
+	//		return nextLine;
+	//	}
 
-		if (nextLine != null) {
-			String nl = nextLine;
-			nextLine = null;
-			return nl;
-		}
-
-		// Use tabix
-		if (tabixIterator != null) nextLine = tabixIterator.next(); // Tabix? => Use tabix iterator
-
-		// Remove trailing '\r'
-		if ((nextLine != null) && (nextLine.length() > 0) && nextLine.charAt(nextLine.length() - 1) == '\r') nextLine = nextLine.substring(0, nextLine.length() - 1);
-
-		// Increment line counter
-		if (nextLine != null) lineNum++;
-
-		return nextLine;
-	}
-
-	@Override
-	protected boolean ready() throws IOException {
-		if (tabixReader == null) return super.ready();
-
-		if (nextLine != null) return true; // Next line is null? then we have to try to read a line (to see if one is available)
-		return readLine() != null; // Line was read from the file? Then we are ready.
-	}
+	//	@Override
+	//	protected boolean ready() throws IOException {
+	//		if (tabixReader == null) return super.ready();
+	//
+	//		if (nextLine != null) return true; // Next line is null? then we have to try to read a line (to see if one is available)
+	//		return readLine() != null; // Line was read from the file? Then we are ready.
+	//	}
 
 	/**
 	 * Sanity check
@@ -180,22 +174,22 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 		}
 	}
 
-	public void seek(String chr) {
-		nextLine = null;
-		next = null;
-		tabixReader.query(chr + ":1");
-		tabixIterator = tabixReader.iterator();
-	}
-
-	/**
-	 * Seek to a chr:pos region
-	 */
-	public boolean seek(String chr, int pos) {
-		nextLine = null;
-		next = null;
-		tabixIterator = tabixReader.query(chr + ":" + (pos + 1));
-		return tabixIterator != null;
-	}
+	//	public void seek(String chr) {
+	//		nextLine = null;
+	//		next = null;
+	//		tabixReader.query(chr + ":1");
+	//		tabixIterator = tabixReader.iterator();
+	//	}
+	//
+	//	/**
+	//	 * Seek to a chr:pos region
+	//	 */
+	//	public boolean seek(String chr, int pos) {
+	//		nextLine = null;
+	//		next = null;
+	//		tabixIterator = tabixReader.query(chr + ":" + (pos + 1));
+	//		return tabixIterator != null;
+	//	}
 
 	public void setCreateChromos(boolean createChromos) {
 		this.createChromos = createChromos;
