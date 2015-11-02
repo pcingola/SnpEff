@@ -184,7 +184,10 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 		String effect = variantEffect.getEffectTypeString(useSequenceOntology);
 		if (effect == null || effect.isEmpty()) return; // No effect? Nothing to do
 
-		countByEffect.inc(effect);
+		// Split effects
+		String effects[] = effect.split("[\\+&]");
+		for (String eff : effects)
+			countByEffect.inc(eff);
 
 		// Count by gene region
 		String geneRegion = variantEffect.getGeneRegion();
@@ -204,10 +207,11 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 			Gene gene = variantEffect.getGene();
 			Transcript tr = variantEffect.getTranscript();
 			if (tr != null && gene != null) {
-				// Count by effect by gene
-				geneCountByEffectTable.sample(gene, tr, effect, variantEffect);
+				// Count by effect by transcript
+				for (String eff : effects)
+					geneCountByEffectTable.sample(gene, tr, eff, variantEffect);
 
-				// Count by region by gene
+				// Count by region by transcript
 				geneCountByRegionTable.sample(gene, tr, geneRegion, variantEffect);
 
 				// Count by impact
