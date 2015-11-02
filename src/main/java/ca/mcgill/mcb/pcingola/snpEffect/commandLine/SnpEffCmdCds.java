@@ -166,6 +166,9 @@ public class SnpEffCmdCds extends SnpEff {
 				case '*':
 					totalErrors++;;
 					break;
+
+				default:
+					throw new RuntimeException("Unknown status '" + status + "'");
 				}
 
 				// Update transcript DnaCheck status
