@@ -39,6 +39,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHypergeometric;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIns;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntStats;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalTree;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalTreeArray;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalTreeOri;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalVariant;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervals;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIubString;
@@ -90,6 +92,8 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesGenePvalueList.class, //
 		TestCasesGenotypeVector.class, //
 		TestCasesIntervalTree.class, //
+		TestCasesIntervalTreeOri.class, //
+		TestCasesIntervalTreeArray.class, //
 		TestCasesIubString.class, //
 		TestCasesHgvsExon.class, //
 		TestCasesHgvsIntron.class, //

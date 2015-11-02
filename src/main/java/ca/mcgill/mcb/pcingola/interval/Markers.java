@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.interval;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -131,8 +132,30 @@ public class Markers implements Serializable, Collection<Marker> {
 		return true;
 	}
 
+	public Marker get(int i) {
+		return markers.get(i);
+	}
+
 	public List<Marker> getMarkers() {
 		return markers;
+	}
+
+	/**
+	 * Calculate the median point in this set of markers
+	 */
+	public int getMedian() {
+		// Add all start & end coordinates
+		int i = 0;
+		int points[] = new int[2 * size()];
+		for (Interval interval : this) {
+			points[i++] = interval.getStart();
+			points[i++] = interval.getEnd();
+		}
+
+		// Calculate median by sorting and selecting middle element
+		Arrays.sort(points);
+		int middle = points.length / 2;
+		return points[middle];
 	}
 
 	public String getName() {

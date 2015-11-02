@@ -9,9 +9,8 @@ import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Genome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.tree.Itree;
-import ca.mcgill.mcb.pcingola.interval.tree.IntervalTreeOri;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalTree;
+import ca.mcgill.mcb.pcingola.interval.tree.Itree;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import junit.framework.Assert;
 
@@ -41,16 +40,20 @@ public class TestCasesIntervalTree {
 	 * Compare results and throw an exception if any difference exists
 	 */
 	protected int compareQuery(Marker m, Itree intTree) {
+		if (debug) Gpr.debug("Query: " + m);
 		Markers resultsNaive = queryNaive(m);
 		Markers resultsIntForest = intTree.query(m);
 
-		// Compare results size
-		Assert.assertEquals("Results sizes differ for query '" + m + "'.", resultsNaive.size(), resultsIntForest.size());
+		if (debug) {
+			Gpr.debug("Query: " + m + "\n\tResults: " + resultsIntForest.size());
+			for (Marker res : resultsIntForest)
+				System.err.println("\t" + res + (res.intersects(m) ? "" : "\tERROR!"));
+		}
 
 		// Compare all results
 		String resultsNaiveStr = resultsNaive.sort().toString();
 		String resultsIntForestStr = resultsIntForest.sort().toString();
-		Assert.assertEquals("Results sizes differ for query '" + m + "'.", resultsNaiveStr, resultsIntForestStr);
+		Assert.assertEquals("Results differ for query '" + m + "'.", resultsNaiveStr, resultsIntForestStr);
 
 		return resultsNaive.size();
 	}
@@ -124,6 +127,10 @@ public class TestCasesIntervalTree {
 		return results;
 	}
 
+	protected Itree newItree(Markers markers) {
+		return new IntervalTree(markers);
+	}
+
 	/**
 	 * Test small intervals
 	 */
@@ -131,7 +138,7 @@ public class TestCasesIntervalTree {
 	public void test_01() {
 		Gpr.debug("Test");
 
-		IntervalTreeOri intTree = new IntervalTreeOri(markers);
+		Itree intTree = newItree(markers);
 		intTree.build();
 
 		Markers queries = createRandomSmallMarkers(chromosome, 100000);
@@ -154,7 +161,7 @@ public class TestCasesIntervalTree {
 	public void test_02() {
 		Gpr.debug("Test");
 
-		IntervalTreeOri intForest = new IntervalTreeOri(markers);
+		Itree intForest = newItree(markers);
 		intForest.build();
 
 		Markers queries = createRandomLargeMarkers(chromosome, 10000);
@@ -167,51 +174,6 @@ public class TestCasesIntervalTree {
 
 		Assert.assertTrue("Not a signle result found in all queries!", totalResults > 0);
 		System.err.println("");
-	}
-
-	/**
-	 * Test small intervals
-	 */
-	@Test
-	public void test_03_IntervalTree2() {
-		Gpr.debug("Test");
-
-		IntervalTree intTree = new IntervalTree(markers);
-		intTree.build();
-
-		Markers queries = createRandomSmallMarkers(chromosome, 100000);
-
-		int i = 0;
-		int totalResults = 0;
-		for (Marker m : queries) {
-			totalResults += compareQuery(m, intTree);
-			Gpr.showMark(i++, 100);
-		}
-
-		Assert.assertTrue("Not a signle result found in all queries!", totalResults > 0);
-		System.err.println("\n");
-	}
-
-	/**
-	 * Test large intervals
-	 */
-	@Test
-	public void test_04_IntervalTree2() {
-		Gpr.debug("Test");
-
-		IntervalTree intTree = new IntervalTree(markers);
-		intTree.build();
-
-		Markers queries = createRandomLargeMarkers(chromosome, 10000);
-		int i = 0;
-		int totalResults = 0;
-		for (Marker m : queries) {
-			totalResults += compareQuery(m, intTree);
-			Gpr.showMark(i++, 10);
-		}
-
-		Assert.assertTrue("Not a signle result found in all queries!", totalResults > 0);
-		System.err.println("\n");
 	}
 
 	//	@Test

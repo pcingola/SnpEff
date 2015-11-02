@@ -17,9 +17,9 @@ public class IntervalTree implements Itree, Serializable {
 
 	private static final long serialVersionUID = 1808077263026999072L;
 
-	private IntervalNode head;
-	private final Markers intervals;
-	private boolean inSync;
+	protected IntervalNode head;
+	protected Markers intervals;
+	protected boolean inSync;
 
 	/**
 	 * Instantiate a new interval tree with no intervals
@@ -31,14 +31,13 @@ public class IntervalTree implements Itree, Serializable {
 	}
 
 	/**
-	 * Instantiate and build an interval tree with a preset list of intervals
-	 * @param intervals the list of intervals to use
+	 * Instantiate an interval tree with a list of intervals
 	 */
 	public IntervalTree(Markers intervals) {
 		head = new IntervalNode(intervals);
 		this.intervals = new Markers();
 		this.intervals.add(intervals);
-		inSync = true;
+		inSync = false;
 	}
 
 	/**

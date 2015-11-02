@@ -1,7 +1,6 @@
 package ca.mcgill.mcb.pcingola.interval.tree;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import ca.mcgill.mcb.pcingola.interval.Interval;
 import ca.mcgill.mcb.pcingola.interval.Marker;
@@ -35,7 +34,7 @@ public class IntervalNode implements Serializable {
 		}
 
 		// Calculate median point
-		center = getMedian(markers);
+		center = markers.getMedian();
 
 		// Split markers to the left, to the right and intersecting 'center'
 		Markers left = new Markers();
@@ -63,24 +62,6 @@ public class IntervalNode implements Serializable {
 
 	public IntervalNode getLeft() {
 		return leftNode;
-	}
-
-	/**
-	 * Calculate the median point in this set of markers
-	 */
-	protected int getMedian(Markers markers) {
-		// Add all start & end coordinates
-		int i = 0;
-		int endpoints[] = new int[2 * markers.size()];
-		for (Interval interval : markers) {
-			endpoints[i++] = interval.getStart();
-			endpoints[i++] = interval.getEnd();
-		}
-
-		// Calculate median by sorting and selecting middle element
-		Arrays.sort(endpoints);
-		int middle = endpoints.length / 2;
-		return endpoints[middle];
 	}
 
 	public IntervalNode getRight() {
