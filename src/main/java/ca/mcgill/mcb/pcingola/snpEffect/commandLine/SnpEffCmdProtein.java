@@ -276,7 +276,15 @@ public class SnpEffCmdProtein extends SnpEff {
 		if (trList.isEmpty()) return 0;
 
 		int i = 1;
-		if (verbose) System.out.print((chr != null ? chr : "") + "\t");
+
+		if (verbose) {
+			// Show labels
+			System.err.println("\tLabels:");
+			System.err.println("\t\t'+' : OK");
+			System.err.println("\t\t'.' : Missing");
+			System.err.println("\t\t'*' : Error");
+			System.out.print((chr != null ? chr : "") + "\t");
+		}
 
 		// Check each transcript
 		int countNotFound = 0, countOk = 0, countErrors = 0;
@@ -287,7 +295,7 @@ public class SnpEffCmdProtein extends SnpEff {
 
 			if (proteinReference == null) {
 				if (tr.isProteinCoding()) {
-					status = '-';
+					status = '.';
 					if (debug) System.err.println("\nWARNING:Cannot find Protein for transcript " + tr.getId());
 				}
 			} else if (equals(protein, proteinReference)) {
