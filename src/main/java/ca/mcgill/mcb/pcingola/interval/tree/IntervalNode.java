@@ -7,26 +7,30 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 
 /**
- * The Node class contains the interval tree information for one single node
+ * Node for interval tree structure
+ *
+ * @author pcingola
  */
 public class IntervalNode implements Serializable {
 
 	private static final long serialVersionUID = -444656480302906048L;
 
-	public static boolean USE_NEW = true;
-
-	Marker[] intervals;
-	private Integer center;
-	private IntervalNode leftNode;
-	private IntervalNode rightNode;
+	protected int center; // Center point
+	protected IntervalNode leftNode; // All intervals absolutely to the left respect to 'center'
+	protected IntervalNode rightNode; // All intervals absolutely to the right respect to 'center'
+	protected Marker[] intervalsCenter; // Intervals intersecting 'center'
 
 	public IntervalNode() {
-		center = 0;
-		leftNode = null;
-		rightNode = null;
 	}
 
 	public IntervalNode(Markers markers) {
+		build(markers);
+	}
+
+	/**
+	 * Build interval tree
+	 */
+	protected void build(Markers markers) {
 		// Empty markers?
 		if (markers.size() == 0) {
 			center = 0;
@@ -48,12 +52,12 @@ public class IntervalNode implements Serializable {
 		}
 
 		// Convert markers to array
-		if (intersecting.isEmpty()) intervals = null;
-		else intervals = intersecting.toArray();
+		if (intersecting.isEmpty()) intervalsCenter = null;
+		else intervalsCenter = intersecting.toArray();
 
 		// Recurse
-		if (left.size() > 0) leftNode = new IntervalNode(left);
-		if (right.size() > 0) rightNode = new IntervalNode(right);
+		if (left.size() > 0) leftNode = newNode(left);
+		if (right.size() > 0) rightNode = newNode(right);
 	}
 
 	public Integer getCenter() {
@@ -69,6 +73,13 @@ public class IntervalNode implements Serializable {
 	}
 
 	/**
+	 * Create a new node
+	 */
+	protected IntervalNode newNode(Markers markers) {
+		return new IntervalNode(markers);
+	}
+
+	/**
 	 * Perform an interval intersection query on the node
 	 * @param queryMarker: The interval to intersect
 	 * @return All intervals containing 'target'
@@ -76,8 +87,8 @@ public class IntervalNode implements Serializable {
 	public Markers query(Interval queryInterval) {
 		Markers results = new Markers();
 
-		if (intervals != null) {
-			for (Marker marker : intervals)
+		if (intervalsCenter != null) {
+			for (Marker marker : intervalsCenter)
 				if (marker.intersects(queryInterval)) results.add(marker);
 		}
 
@@ -95,8 +106,10 @@ public class IntervalNode implements Serializable {
 	public Markers stab(Integer point) {
 		Markers result = new Markers();
 
-		for (Marker marker : intervals)
-			if (marker.intersects(point)) result.add(marker);
+		if (intervalsCenter != null) {
+			for (Marker marker : intervalsCenter)
+				if (marker.intersects(point)) result.add(marker);
+		}
 
 		if (point < center && leftNode != null) result.add(leftNode.stab(point));
 		else if (point > center && rightNode != null) result.add(rightNode.stab(point));
@@ -108,8 +121,10 @@ public class IntervalNode implements Serializable {
 		StringBuffer sb = new StringBuffer();
 		sb.append(center + ":\n");
 
-		for (Marker marker : intervals)
-			sb.append("\t" + marker + "\n");
+		if (intervalsCenter != null) {
+			for (Marker marker : intervalsCenter)
+				sb.append("\t" + marker + "\n");
+		}
 
 		return sb.toString();
 	}

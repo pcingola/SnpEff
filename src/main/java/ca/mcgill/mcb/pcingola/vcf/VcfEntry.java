@@ -74,7 +74,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	protected int lineNum; // Line number
 	protected Double quality;
 	protected String ref;
-	protected boolean useNumericGenotype;
 	protected LinkedList<Variant> variants;
 	protected VariantType variantType;
 	protected List<VcfEffect> vcfEffects;
@@ -703,10 +702,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return variantType == VariantType.SNP;
 	}
 
-	public boolean isUseNumericGenotype() {
-		return useNumericGenotype;
-	}
-
 	/**
 	 * Is this a change or are the ALTs actually the same as the reference
 	 */
@@ -1161,10 +1156,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		this.lineNum = lineNum;
 	}
 
-	public void setUseNumericGenotype(boolean useNumericGenotype) {
-		this.useNumericGenotype = useNumericGenotype;
-	}
-
 	/**
 	 * To string as a simple "chr:start-end" format
 	 */
@@ -1296,17 +1287,15 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		// Create one Variant for each ALT
 		Chromosome chr = (Chromosome) parent;
-		int genotypeNumber = 1;
 
 		if (!isVariant()) {
 			// Not a variant?
 			List<Variant> vars = variants(chr, start, ref, null, id);
 			String alt = ".";
 
-			for (Variant variant : vars) {
-				if (useNumericGenotype) variant.setGenotype(Integer.toString(genotypeNumber));
-				else variant.setGenotype(alt);
-			}
+			// Add original 'ALT' field as genotype
+			for (Variant variant : vars)
+				variant.setGenotype(alt);
 
 			variants.addAll(vars);
 		} else {
@@ -1316,14 +1305,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 				List<Variant> vars = variants(chr, start, ref, alt, id);
 
-				// Set corresponding genotype
-				for (Variant variant : vars) {
-					if (useNumericGenotype) variant.setGenotype(Integer.toString(genotypeNumber));
-					else variant.setGenotype(alt);
-				}
+				// Add original 'ALT' field as genotype
+				for (Variant variant : vars)
+					variant.setGenotype(alt);
 
 				variants.addAll(vars);
-				genotypeNumber++;
 			}
 		}
 

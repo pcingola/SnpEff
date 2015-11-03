@@ -20,9 +20,13 @@ import junit.framework.Assert;
 public class TestCasesIntervalTree {
 
 	public static int MAX_SMALL_MARKER_SIZE = 5;
-	public static int NUM_LARGE_INTERVALS = 100;
+	//	public static int NUM_LARGE_INTERVALS = 100;
+	//	public static int NUM_SMALL_INTERVALS = 10 * NUM_LARGE_INTERVALS;
+	//	public static int CHR_SIZE = 10 * 1000;
+
+	public static int NUM_LARGE_INTERVALS = 10000;
 	public static int NUM_SMALL_INTERVALS = 10 * NUM_LARGE_INTERVALS;
-	public static int CHR_SIZE = 10 * 1000;
+	public static int CHR_SIZE = 1000 * 1000;
 
 	protected boolean debug = false;
 	protected boolean verbose = false || debug;
@@ -174,6 +178,7 @@ public class TestCasesIntervalTree {
 
 		Assert.assertTrue("Not a signle result found in all queries!", totalResults > 0);
 		System.err.println("");
+
 	}
 
 	//	@Test
@@ -194,22 +199,20 @@ public class TestCasesIntervalTree {
 	//			System.err.println(i + "\tTotal time [IntervalTree]:\t\t" + timer.elapsed());
 	//
 	//			// Measure time for IntervalTree2
-	//			IntervalNode2.USE_NEW = !IntervalNode2.USE_NEW;
-	//			IntervalTree2 intTree2 = new IntervalTree2(markers);
+	//			IntervalTreeOri intTree2 = new IntervalTreeOri(markers);
 	//			intTree2.build();
 	//			timer = new Timer();
 	//			for (Marker m : queries)
 	//				intTree2.query(m);
-	//			System.err.println(i + "\tTotal time [IntervalTree2:" + IntervalNode2.USE_NEW + "]:\t" + timer.elapsed());
+	//			System.err.println(i + "\tTotal time [IntervalTreeOri]:\t" + timer.elapsed());
 	//
-	//			// Measure time for IntervalTree2
-	//			IntervalNode2.USE_NEW = !IntervalNode2.USE_NEW;
-	//			intTree2 = new IntervalTree2(markers);
-	//			intTree2.build();
+	//			// Measure time for IntervalTreeArray
+	//			IntervalTreeArray intTreeArr = new IntervalTreeArray(markers);
+	//			intTreeArr.build();
 	//			timer = new Timer();
 	//			for (Marker m : queries)
-	//				intTree2.query(m);
-	//			System.err.println(i + "\tTotal time [IntervalTree2:" + IntervalNode2.USE_NEW + "]:\t" + timer.elapsed());
+	//				intTreeArr.query(m);
+	//			System.err.println(i + "\tTotal time [IntervalTreeArray]:\t" + timer.elapsed());
 	//		}
 	//	}
 

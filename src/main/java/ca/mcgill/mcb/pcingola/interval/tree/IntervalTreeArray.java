@@ -11,6 +11,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Interval tree structure using arrays
+ * This is slightly faster than the new IntervalTree implementation
  *
  * @author pcingola
  */
@@ -219,6 +220,9 @@ public class IntervalTreeArray implements Itree {
 		mid = new int[INITIAL_CAPACITY];
 		intersectMarkers = new Marker[INITIAL_CAPACITY][];
 		lastIdx = 0;
+
+		for (int i = 0; i < left.length; i++)
+			left[i] = right[i] = -1;
 	}
 
 	/**
