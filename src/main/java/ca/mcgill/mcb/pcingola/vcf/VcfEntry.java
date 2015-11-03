@@ -81,6 +81,25 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	protected ArrayList<VcfGenotype> vcfGenotypes = null;
 
 	/**
+	 * Does 'value' represent an EMPTY / MISSING value in a VCF field?
+	 * (or multiple MISSING comma-separated values)
+	 */
+	public static boolean isEmpty(String value) {
+		if (value == null || value.isEmpty() || value.equals(VcfFileIterator.MISSING)) return true;
+
+		if (value.indexOf(',') >= 0) {
+			// Multiple values, all of them MISSING?
+			String values[] = value.split(",");
+			for (String val : values)
+				if (!(val.isEmpty() || val.equals(VcfFileIterator.MISSING))) return false;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Check that this value can be added to an INFO field
 	 * @return true if OK, false if invalid value
 	 */

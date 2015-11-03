@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Variant + VcfEntry
@@ -28,10 +27,8 @@ public class VariantVcfEntry extends Variant {
 	public static Collection<VariantVcfEntry> factory(VcfEntry vcfEntry) {
 		LinkedList<VariantVcfEntry> list = new LinkedList<>();
 
-		for (Variant var : vcfEntry.variants()) {
-			Gpr.debug("Variant: " + var + "\tVcfEntry: " + vcfEntry);
+		for (Variant var : vcfEntry.variants())
 			list.add(new VariantVcfEntry(var, vcfEntry));
-		}
 
 		return list;
 	}
@@ -54,4 +51,8 @@ public class VariantVcfEntry extends Variant {
 		return vcfEntry;
 	}
 
+	@Override
+	public String toString() {
+		return "Variant: " + super.toString() + "\tVcfEntry: " + vcfEntry;
+	}
 }
