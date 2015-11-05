@@ -439,10 +439,16 @@ public class SnpEff implements CommandLine {
 		config.getSnpEffectPredictor().buildForest();
 		if (verbose) Timer.showStdErr("done.");
 
-		// Show some genome stats. Chromosome names are shown, a lot of people has problems with the correct chromosome names.
+		// Show some genome stats. Chromosome names are shown, a lot of people has 
+		// problems with the correct chromosome names.
 		if (verbose) {
 			Timer.showStdErr("Genome stats :");
-			System.err.println(config.getGenome());
+			Genome genome = config.getGenome();
+
+			// When in debug mode, try to show detailed errors
+			StringBuilder errors = debug ? new StringBuilder() : null;
+			System.err.println(genome.toString(errors));
+			if (errors != null && (errors.length() > 0)) System.err.println(errors);
 		}
 
 		genome = config.getSnpEffectPredictor().getGenome();

@@ -441,10 +441,17 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 	/**
 	 * Show number of genes, transcripts & exons
-	 * @return true : If there is an error condition (most exons do not have sequences)
 	 */
 	@Override
 	public String toString() {
+		return toString(null);
+	}
+
+	/**
+	 * Show number of genes, transcripts & exons
+	 * Arr all errors to buffer
+	 */
+	public String toString(StringBuilder errors) {
 		StringBuilder sb = new StringBuilder();
 
 		// Initialize counters
@@ -489,31 +496,42 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				// Transcript sanity check: Check if there are any common errors in protein coding transcript
 				//---
 				if (tr.isProteinCoding()) {
-					boolean hasError = false;
+					boolean hasError = false, hasWarning = false;
 
 					if (!tr.getUtrs().isEmpty()) countUtrs++;
 
 					if (tr.isErrorProteinLength()) {
 						hasError = true;
 						errorProteinLength++; // Protein length error
+						if (errors != null) errors.append("ERROR: Protein coding transcript '" + tr.getId() + "' has length " + tr.cds().length() + " (not mutiple of 3).\n");
+					} else if (tr.isWarningStopCodon()) {
+						// This is considered a warning, not an error (sometimes 
+						// the annotations exclude STOP codon on pourpose, although GTF 
+						// say they should not)
+						// Note: If there are length errors, we should not check 
+						//       this, since it will pop up almost surely.
+						warningStopCodon++; // Protein does not end with STOP codon
+						hasWarning = true;
+						if (errors != null) errors.append("WARNING: Protein coding transcript '" + tr.getId() + "' last codon is not a STOP codon\n");
 					}
 
 					if (tr.isErrorStopCodonsInCds()) {
 						hasError = true;
 						errorProteinStopCodons++; // Protein has STOP codons in CDS
-					}
-
-					if (tr.isWarningStopCodon()) {
-						// Note: This is considered a warning, not an error (sometimes the annotations exclude STOP codon on pourpose, although GTF say they should not)
-						warningStopCodon++; // Protein does not end with STOP codon
+						if (errors != null) errors.append("ERROR: Protein coding transcript '" + tr.getId() + "' has STOP codons in non-last position\n");
 					}
 
 					if (tr.isErrorStartCodon()) {
 						hasError = true;
 						errorStartCodon++; // Protein does not start with START codon
+						if (errors != null) errors.append("ERROR: Protein coding transcript '" + tr.getId() + "' first codon is not a START codon\n");
 					}
 
 					if (hasError) errorTr++;
+
+					if (errors != null && (hasError || hasWarning)) {
+						errors.append(tr + "\n");
+					}
 				}
 			}
 		}
