@@ -1180,7 +1180,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 */
 	@Override
 	public String toStr() {
-		return getClass().getSimpleName() + "_" + getChromosomeName() + ":" + (start + 1) + "_" + ref + "/" + getAltsStr();
+		return getClass().getSimpleName() //
+				+ "_" + getChromosomeName() //
+				+ ":" + (start + 1) //
+				+ "_" + ref //
+				+ "/" + getAltsStr();
 	}
 
 	@Override

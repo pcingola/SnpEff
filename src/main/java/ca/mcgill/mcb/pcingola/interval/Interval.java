@@ -255,6 +255,17 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		return end - start + 1;
 	}
 
+	/**
+	 * To string as a simple "chr:start-end" format
+	 */
+	public String toStr() {
+		return getClass().getSimpleName() //
+				+ "_" + getChromosomeName() //
+				+ ":" + (start + 1) //
+				+ "-" + (end + 1) //
+				;
+	}
+
 	@Override
 	public String toString() {
 		return start + "-" + end //
