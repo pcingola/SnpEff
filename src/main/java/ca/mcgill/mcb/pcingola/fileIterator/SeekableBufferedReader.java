@@ -103,7 +103,7 @@ public class SeekableBufferedReader extends BufferedReader {
 
 	@Override
 	public int read() throws IOException {
-		throw new IOException("Unimplemented method!");
+		return randomAccFile.read();
 	}
 
 	@Override

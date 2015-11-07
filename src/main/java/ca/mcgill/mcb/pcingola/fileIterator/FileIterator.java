@@ -19,7 +19,7 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 	protected boolean debug;
 	protected boolean verbose;
 	protected boolean autoClose;
-	protected boolean hasBackslashR;
+	protected int countNewLineChars; // How many newline characters we use (e.g. '\n' = 1,  '\r\n' = 2)
 	protected int lineNum;
 	protected T next;
 	protected BufferedReader reader;
@@ -32,6 +32,7 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		init(null, 0);
 		this.reader = reader;
 		autoClose = false;
+		guessNewLineChars();
 	}
 
 	public FileIterator(String fileName) {
@@ -55,6 +56,28 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 	}
 
 	/**
+	 * Guess number of newline characters used (e.g. '\n' or '\r\n'
+	 */
+	protected int countNewLineChars() {
+		try {
+			int c, cprev = 0;
+			while ((c = reader.read()) != -1) {
+				if (cprev == '\r') {
+					if (c == '\n') return 2;
+					return 1;
+				} else if (c == '\n') return 1;
+
+				cprev = c;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+		// Reached end of stream and could not guess.
+		return 0;
+	}
+
+	/**
 	 * Get position within file
 	 */
 	public long getFilePointer() {
@@ -65,7 +88,7 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
 		// Has a line been already loaded? We need to discount
 		// those bytes (they haven't been delivered yet)
-		return pos - nextLine.length() - (hasBackslashR ? 2 : 1);
+		return pos - nextLine.length() - countNewLineChars;
 	}
 
 	public String getLine() {
@@ -74,6 +97,22 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 
 	public int getLineNum() {
 		return lineNum;
+	}
+
+	/**
+	 * Guess number of newline characters used (e.g. '\n' or '\r\n'
+	 * Make sure we return to the current read position
+	 */
+	protected void guessNewLineChars() {
+		if (!hasSeek()) return; // Can only guess if have 'seek' operation
+
+		try {
+			long pos = ((SeekableBufferedReader) reader).getFilePointer();
+			countNewLineChars = countNewLineChars();
+			seek(pos);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -141,12 +180,12 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		if (nextLine != null) {
 			String nl = nextLine;
 			nextLine = null;
-			return removeBackslashR(nl);
+			return nl;
 		}
 
 		nextLine = reader.readLine(); // Read a line (only if needed)
 		if (nextLine != null) lineNum++;
-		return removeBackslashR(nextLine);
+		return nextLine;
 	}
 
 	/**
@@ -169,20 +208,21 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		throw new RuntimeException("Unimplemented");
 	}
 
-	/**
-	 * Remove trailing '\r'
-	 */
-	protected String removeBackslashR(String line) {
-		if ((line != null) //
-				&& (line.length() > 0) //
-				&& line.charAt(line.length() - 1) == '\r' //
-		) {
-			hasBackslashR = true;
-			line = line.substring(0, line.length() - 1);
-		}
-
-		return line;
-	}
+	//	/**
+	//	 * Remove trailing '\r'
+	//	 */
+	//	protected String removeBackslashR(String line) {
+	//		if ((line != null) //
+	//				&& (!line.isEmpty()) //
+	//				&& line.charAt(line.length() - 1) == '\r' //
+	//		) {
+	//			hasCrLf = true;
+	//			Gpr.debug("HAS BACKSLASH_R");
+	//			line = line.substring(0, line.length() - 1);
+	//		}
+	//
+	//		return line;
+	//	}
 
 	/**
 	 * Seek to 'pos' (jump to byte number 'pos' in the file
