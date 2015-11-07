@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
+import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import net.sf.samtools.util.BlockCompressedInputStream;
 
@@ -56,7 +57,7 @@ public class TabixReader implements Iterable<String> {
 		private long curr_off;
 		private boolean iseof;
 		private String next = null;
-		private boolean noHeader = true; // By default, do not return header lines
+		private boolean showHeader = false; // By default, do not return header lines
 
 		public TabixIterator(final int _tid, final int _beg, final int _end, final TPair64[] _off) {
 			i = -1;
@@ -115,7 +116,7 @@ public class TabixReader implements Iterable<String> {
 
 						// Check header
 						if (str[0] == mMeta) {
-							if (noHeader) continue;
+							if (!showHeader) continue;
 							return s;
 						}
 
@@ -137,8 +138,8 @@ public class TabixReader implements Iterable<String> {
 			throw new RuntimeException("Unimplemented!");
 		}
 
-		public void setNoHeader(boolean noHeader) {
-			this.noHeader = noHeader;
+		public void setShowHeader(boolean showHeader) {
+			this.showHeader = showHeader;
 		}
 
 		@Override
@@ -245,10 +246,9 @@ public class TabixReader implements Iterable<String> {
 	}
 
 	public static boolean debug = false;
-
 	private static int MAX_BIN = 37450; // Maximum possible number of bins
-
 	private static int TAD_LIDX_SHIFT = 14; // Minimum bin size is 2^TAD_LIDX_SHIFT = 2^14 = 16KB
+
 	private String fileName;
 	private BlockCompressedInputStream fileInputStream;
 	private int mPreset;
@@ -261,6 +261,7 @@ public class TabixReader implements Iterable<String> {
 	private HashMap<String, Integer> sequenceName2tid;
 	private TIndex[] tabixIndexes;;
 	private TabixIterator tabixIterator;
+	protected boolean showHeader;
 
 	public static String binInfo(int k) {
 		int l = (int) Math.floor((Math.log(7 * k + 1) / (3 * Math.log(2.0))));
@@ -460,7 +461,7 @@ public class TabixReader implements Iterable<String> {
 		TPair64 off[] = new TPair64[1];
 		off[0] = new TPair64(0, Long.MAX_VALUE);
 		tabixIterator = new TabixIterator(-1, 0, Integer.MAX_VALUE, off);
-		tabixIterator.setNoHeader(false); // We want header lines
+		tabixIterator.setShowHeader(showHeader); // Do we want header lines?
 
 		return tabixIterator;
 	}
@@ -580,10 +581,30 @@ public class TabixReader implements Iterable<String> {
 		return new TabixReader.TabixIterator(tid, beg, end, mergedChunks);
 	};
 
-	public TabixIterator query(final String reg) {
-		int[] x = parseReg(reg); // Parso to an array: [tid, begin, end]. Note 'tid' means chromosome number
+	/**
+	 * Return an iterator for the interval in this query
+	 * Format: "chr:star-end"
+	 */
+	public TabixIterator query(String reg) {
+		// Parse to an array: [tid, begin, end]. Note 'tid' means chromosome ID
+		int[] x = parseReg(reg);
 		tabixIterator = query(x[0], x[1], x[2]);
 		return tabixIterator;
+	}
+
+	/**
+	 * Return an iterator for the interval in this query
+	 */
+	public TabixIterator query(Variant variant) {
+		int tid = chr2tid(variant.getChromosomeName());
+
+		// Tabix uses zero-based, half-open coordinates whereas
+		// marker has zero-based, closed coordinates.
+		int start = variant.getStart();
+		int end = variant.getEnd() + 1;
+		if (variant.isIns()) start--;
+
+		return query(tid, start, end);
 	}
 
 	/**
@@ -706,5 +727,9 @@ public class TabixReader implements Iterable<String> {
 	 */
 	public String readLine() throws IOException {
 		return readLine(fileInputStream);
+	}
+
+	public void setShowHeader(boolean showHeader) {
+		this.showHeader = showHeader;
 	}
 }

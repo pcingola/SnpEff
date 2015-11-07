@@ -580,6 +580,20 @@ public class Gpr {
 		return obj;
 	}
 
+	/**
+	 * Remove trailing '\r'
+	 */
+	public static String removeBackslashR(String line) {
+		if ((line != null) //
+				&& (!line.isEmpty()) //
+				&& line.charAt(line.length() - 1) == '\r' //
+		) {
+			line = line.substring(0, line.length() - 1);
+		}
+
+		return line;
+	}
+
 	public static String removeExt(String file) {
 		int lastDot = file.indexOf('.');
 		if (lastDot >= 0) return file.substring(0, lastDot);
@@ -891,4 +905,5 @@ public class Gpr {
 		sb.append(" ]");
 		return sb.toString();
 	}
+
 }

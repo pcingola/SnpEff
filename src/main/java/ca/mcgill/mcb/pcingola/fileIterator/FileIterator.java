@@ -208,22 +208,6 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		throw new RuntimeException("Unimplemented");
 	}
 
-	//	/**
-	//	 * Remove trailing '\r'
-	//	 */
-	//	protected String removeBackslashR(String line) {
-	//		if ((line != null) //
-	//				&& (!line.isEmpty()) //
-	//				&& line.charAt(line.length() - 1) == '\r' //
-	//		) {
-	//			hasCrLf = true;
-	//			Gpr.debug("HAS BACKSLASH_R");
-	//			line = line.substring(0, line.length() - 1);
-	//		}
-	//
-	//		return line;
-	//	}
-
 	/**
 	 * Seek to 'pos' (jump to byte number 'pos' in the file
 	 */

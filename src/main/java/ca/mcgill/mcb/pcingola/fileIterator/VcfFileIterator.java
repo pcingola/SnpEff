@@ -105,7 +105,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry>implements Pars
 	/**
 	 * Parse a line from a VCF file
 	 */
-	protected VcfEntry parseVcfLine(String line) {
+	public VcfEntry parseVcfLine(String line) {
 		try {
 			if (line.startsWith("#")) {
 				header.addLine(line); // Header?
