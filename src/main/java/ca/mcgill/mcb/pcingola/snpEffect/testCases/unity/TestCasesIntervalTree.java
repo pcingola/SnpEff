@@ -20,13 +20,9 @@ import junit.framework.Assert;
 public class TestCasesIntervalTree {
 
 	public static int MAX_SMALL_MARKER_SIZE = 5;
-	//	public static int NUM_LARGE_INTERVALS = 100;
-	//	public static int NUM_SMALL_INTERVALS = 10 * NUM_LARGE_INTERVALS;
-	//	public static int CHR_SIZE = 10 * 1000;
-
-	public static int NUM_LARGE_INTERVALS = 10000;
+	public static int NUM_LARGE_INTERVALS = 100;
 	public static int NUM_SMALL_INTERVALS = 10 * NUM_LARGE_INTERVALS;
-	public static int CHR_SIZE = 1000 * 1000;
+	public static int CHR_SIZE = 10 * 1000;
 
 	protected boolean debug = false;
 	protected boolean verbose = false || debug;
@@ -180,40 +176,4 @@ public class TestCasesIntervalTree {
 		System.err.println("");
 
 	}
-
-	//	@Test
-	//	public void test_ZZ_time() {
-	//		Gpr.debug("Test");
-	//
-	//		for (int i = 0; i < 10; i++) {
-	//			// Create markers and queries
-	//			markers = createRandomMarkers();
-	//			Markers queries = createRandomSmallMarkers(chromosome, 100000);
-	//
-	//			// Measure time for IntervalTree
-	//			Timer timer = new Timer();
-	//			IntervalTree intTree = new IntervalTree(markers);
-	//			intTree.build();
-	//			for (Marker m : queries)
-	//				intTree.query(m);
-	//			System.err.println(i + "\tTotal time [IntervalTree]:\t\t" + timer.elapsed());
-	//
-	//			// Measure time for IntervalTree2
-	//			IntervalTreeOri intTree2 = new IntervalTreeOri(markers);
-	//			intTree2.build();
-	//			timer = new Timer();
-	//			for (Marker m : queries)
-	//				intTree2.query(m);
-	//			System.err.println(i + "\tTotal time [IntervalTreeOri]:\t" + timer.elapsed());
-	//
-	//			// Measure time for IntervalTreeArray
-	//			IntervalTreeArray intTreeArr = new IntervalTreeArray(markers);
-	//			intTreeArr.build();
-	//			timer = new Timer();
-	//			for (Marker m : queries)
-	//				intTreeArr.query(m);
-	//			System.err.println(i + "\tTotal time [IntervalTreeArray]:\t" + timer.elapsed());
-	//		}
-	//	}
-
 }
