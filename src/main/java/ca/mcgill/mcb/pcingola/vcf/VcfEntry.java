@@ -114,7 +114,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public static String vcfInfoSafe(String str) {
 		//			return str.replaceAll("(\\s|;|,)+", "_");
 		if (str == null) return str;
-		return str.replaceAll("[ ,;|=()]", "_");
+		return str.replaceAll("[ ,;|=()\t]", "_");
 	}
 
 	public VcfEntry(VcfFileIterator vcfFileIterator, Marker parent, String chromosomeName, int start, String id, String ref, String altsStr, double quality, String filterPass, String infoStr, String format) {
