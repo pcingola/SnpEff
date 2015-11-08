@@ -44,7 +44,6 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 			if (verbose) System.out.println("\t" + eff);
 			Assert.assertEquals(eff.getEffectType(), EffectType.INTERGENIC);
 		}
-
 	}
 
 	/**

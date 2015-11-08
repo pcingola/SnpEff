@@ -354,6 +354,9 @@ public class SnpEffCmdProtein extends SnpEff {
 				countErrors++;
 				break;
 
+			case ' ':
+				break;
+
 			default:
 				throw new RuntimeException("Unknown status '" + status + "'");
 			}

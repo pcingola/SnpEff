@@ -155,7 +155,7 @@ public class SnpEffCmdCds extends SnpEff {
 				// Update counters
 				switch (status) {
 				case '.':
-					totalNotFound++;;
+					totalNotFound++;
 					break;
 
 				case '+':
@@ -164,7 +164,10 @@ public class SnpEffCmdCds extends SnpEff {
 					break;
 
 				case '*':
-					totalErrors++;;
+					totalErrors++;
+					break;
+
+				case ' ':
 					break;
 
 				default:
