@@ -230,6 +230,7 @@ public abstract class SnpEffPredictorFactory {
 	protected void adjustChromosomes() {
 		if (verbose) System.out.print("\n\tAdjusting chromosomes lengths: ");
 
+		// Chromosome length should be longer than any gene's end coordinate
 		HashMap<String, Integer> lenByChr = new HashMap<String, Integer>();
 		for (Gene gene : config.getGenome().getGenes()) {
 			String chrName = gene.getChromosomeName();
