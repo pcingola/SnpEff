@@ -62,7 +62,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	protected String[] alts;
 	protected String altStr;
 	protected String chromosomeName; // Original chromosome name
-	protected String filterPass;
+	protected String filter;
 	protected String format;
 	protected String formatFields[];
 	protected String genotypeFields[]; // Raw fields from VCF file
@@ -123,7 +123,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		this.ref = ref;
 		parseAlts(altsStr);
 		this.quality = quality;
-		this.filterPass = filterPass;
+		filter = filterPass;
 		this.infoStr = infoStr;
 		parseInfo();
 		this.format = format;
@@ -388,8 +388,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return chromosomeName;
 	}
 
-	public String getFilterPass() {
-		return filterPass;
+	public String getFilter() {
+		return filter;
 	}
 
 	public String getFormat() {
@@ -668,7 +668,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public boolean isFilterPass() {
-		return filterPass.equals("PASS");
+		return filter.equals("PASS");
 	}
 
 	public boolean isInDel() {
@@ -846,7 +846,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			else quality = null;
 
 			// Filter
-			filterPass = vcfFileIterator.readField(fields, 6); // Filter parameters
+			filter = vcfFileIterator.readField(fields, 6); // Filter parameters
 
 			// INFO fields
 			infoStr = vcfFileIterator.readField(fields, 7);
@@ -1160,7 +1160,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public void setFilterPass(String filterPass) {
-		this.filterPass = filterPass;
+		filter = filterPass;
 	}
 
 	public void setFormat(String format) {
@@ -1236,7 +1236,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		// Quality, filter, info, format...
 		sb.append("\t" + (quality != null ? quality + "" : "."));
-		sb.append("\t" + ((filterPass == null) || filterPass.isEmpty() ? "." : filterPass));
+		sb.append("\t" + ((filter == null) || filter.isEmpty() ? "." : filter));
 		sb.append("\t" + ((infoStr == null) || infoStr.isEmpty() ? "." : infoStr));
 
 		return sb.toString();
