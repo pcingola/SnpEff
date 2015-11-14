@@ -43,6 +43,7 @@ import java.util.Iterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.util.Timer;
 import net.sf.samtools.util.BlockCompressedInputStream;
 
 public class TabixReader implements Iterable<String> {
@@ -178,7 +179,9 @@ public class TabixReader implements Iterable<String> {
 		}
 
 		void seek(long pos) throws IOException {
+			Timer.showStdErr("seek(" + pos + ")");
 			fileInputStream.seek(pos);
+			Timer.showStdErr("seek: done");
 		}
 
 		public void setShowHeader(boolean showHeader) {
