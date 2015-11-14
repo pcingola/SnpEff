@@ -96,7 +96,11 @@ public class TabixReader implements Iterable<String> {
 		 */
 		private String readNext() {
 			try {
-				if (iseof) return null;
+				if (iseof) {
+					Gpr.debug("EOF");
+					return null;
+				}
+
 				for (;;) {
 					if (curr_off == 0 || !less64(curr_off, off[i].v)) { // then jump to the next chunk
 						if (i == off.length - 1) break; // no more chunks
@@ -109,6 +113,7 @@ public class TabixReader implements Iterable<String> {
 						}
 						++i;
 					}
+
 					String s;
 					if ((s = readLine(fileInputStream)) != null) {
 						TIntv intv;
@@ -126,8 +131,11 @@ public class TabixReader implements Iterable<String> {
 						intv = getIntv(s);
 						if (((tid >= 0) && (intv.tid != tid)) || intv.beg >= end) break; // no need to proceed. Note: tid < 0 means any-chromosome (i.e. no-limits
 						else if (intv.end > beg && intv.beg < end) return s; // overlap; return
-					} else break; // end of file
+					} else {
+						break; // end of file
+					}
 				}
+
 				iseof = true;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
