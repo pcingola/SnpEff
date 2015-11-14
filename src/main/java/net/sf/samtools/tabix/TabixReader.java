@@ -114,7 +114,7 @@ public class TabixReader implements Iterable<String> {
 									&& (latestIntv != null) //
 									&& ((latestIntv.tid != tid) || (latestIntv.beg >= end)) //
 							) {
-								Gpr.debug("readNext return: Cached interval starts before query end" //
+								Gpr.debug("Cached Tintv hit: Cached interval starts before query end" //
 										+ "\n\tFile position: " + latestIntvPos //
 										+ "\n\tInterval      : " + latestIntv //
 								);
