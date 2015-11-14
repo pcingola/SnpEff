@@ -109,7 +109,7 @@ public class TabixReader implements Iterable<String> {
 						}
 						if (i >= 0) assert (curr_off == off[i].v); // otherwise bug
 						if (i < 0 || off[i].v != off[i + 1].u) { // not adjacent chunks; then seek
-							fileInputStream.seek(off[i + 1].u);
+							seek(off[i + 1].u);
 							curr_off = fileInputStream.getFilePointer();
 							if (debug) Gpr.debug("readNext seek: " + off[i + 1].u + "\tcurr_off: " + curr_off);
 						}
@@ -118,7 +118,7 @@ public class TabixReader implements Iterable<String> {
 
 					String s;
 					if ((s = readLine(fileInputStream)) != null) {
-						TIntv intv;
+						// TIntv intv;
 						char[] str = s.toCharArray();
 						curr_off = fileInputStream.getFilePointer();
 						if (str.length == 0) continue;
@@ -131,15 +131,17 @@ public class TabixReader implements Iterable<String> {
 						}
 
 						// Check range
-						intv = getIntv(s);
-						if (((tid >= 0) && (intv.tid != tid)) || intv.beg >= end) {
+						latestIntv = getIntv(s);
+						latestTintvPos = curr_off;
+
+						if (((tid >= 0) && (latestIntv.tid != tid)) || latestIntv.beg >= end) {
 							// No need to proceed. Note: tid < 0 means any-chromosome (i.e. no-limits)
 							if (debug) Gpr.debug("readNext break: Interval from file after query:" //
 									+ "\n\tQuery        :\t" + "tid: " + tid + ", start: " + beg + ", end: " + end //
-									+ "\n\tFile interval:\t" + intv //
+									+ "\n\tFile interval:\t" + latestIntv //
 							);
 							break;
-						} else if (intv.end > beg && intv.beg < end) {
+						} else if (latestIntv.end > beg && latestIntv.beg < end) {
 							if (debug) Gpr.debug("readNext return, line: " + s);
 							return s; // overlap; return
 						}
@@ -161,6 +163,10 @@ public class TabixReader implements Iterable<String> {
 		@Override
 		public void remove() {
 			throw new RuntimeException("Unimplemented!");
+		}
+
+		void seek(long pos) throws IOException {
+			fileInputStream.seek(pos);
 		}
 
 		public void setShowHeader(boolean showHeader) {
@@ -295,6 +301,8 @@ public class TabixReader implements Iterable<String> {
 	private TIndex[] tabixIndexes;;
 	private TabixIterator tabixIterator;
 	protected boolean showHeader;
+	long latestTintvPos = -1;
+	TIntv latestIntv = null;
 
 	public static String binInfo(int k) {
 		int l = (int) Math.floor((Math.log(7 * k + 1) / (3 * Math.log(2.0))));
