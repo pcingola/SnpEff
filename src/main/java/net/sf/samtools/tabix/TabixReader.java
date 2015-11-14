@@ -100,7 +100,7 @@ public class TabixReader implements Iterable<String> {
 				for (;;) {
 					if (curr_off == 0 || !less64(curr_off, off[i].v)) { // then jump to the next chunk
 						if (i == off.length - 1) break; // no more chunks
-						if (i >= 0) assert(curr_off == off[i].v); // otherwise bug
+						if (i >= 0) assert (curr_off == off[i].v); // otherwise bug
 						if (i < 0 || off[i].v != off[i + 1].u) { // not adjacent chunks; then seek
 							fileInputStream.seek(off[i + 1].u);
 							curr_off = fileInputStream.getFilePointer();
@@ -604,7 +604,9 @@ public class TabixReader implements Iterable<String> {
 		int end = variant.getEnd() + 1;
 		if (variant.isIns()) start--;
 
-		return query(tid, start, end);
+		TabixIterator tabixIterator = query(tid, start, end);
+		Gpr.debug("Query: " + variant + "\ttabixIterator: " + tabixIterator);
+		return tabixIterator;
 	}
 
 	/**
