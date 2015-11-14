@@ -134,6 +134,7 @@ public class TabixReader implements Iterable<String> {
 					if ((s = readLine(fileInputStream)) != null) {
 						// TIntv intv;
 						char[] str = s.toCharArray();
+						long posPrev = curr_off;
 						curr_off = fileInputStream.getFilePointer();
 						if (str.length == 0) {
 							if (debug) Gpr.debug("readNext continue, empty line");
@@ -153,7 +154,8 @@ public class TabixReader implements Iterable<String> {
 
 						// Check range
 						latestIntv = getIntv(s);
-						latestIntvPos = curr_off;
+						latestIntvPos = posPrev;
+						if (debug) Gpr.debug("Update Tintv cache:\tlatestIntvPos: " + latestIntvPos + "\tlatestIntv: " + latestIntv);
 
 						if (((tid >= 0) && (latestIntv.tid != tid)) || latestIntv.beg >= end) {
 							// No need to proceed. Note: tid < 0 means any-chromosome (i.e. no-limits)
