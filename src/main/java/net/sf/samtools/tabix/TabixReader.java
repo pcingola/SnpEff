@@ -278,10 +278,10 @@ public class TabixReader implements Iterable<String> {
 		}
 	}
 
-	public static boolean debug = true;
 	private static int MAX_BIN = 37450; // Maximum possible number of bins
 	private static int TAD_LIDX_SHIFT = 14; // Minimum bin size is 2^TAD_LIDX_SHIFT = 2^14 = 16KB
 
+	boolean debug = false;
 	private String fileName;
 	private BlockCompressedInputStream fileInputStream;
 	private int mPreset;
@@ -612,7 +612,7 @@ public class TabixReader implements Iterable<String> {
 
 		// Create an iterator to read the chunks
 		return new TabixReader.TabixIterator(tid, beg, end, mergedChunks);
-	};
+	}
 
 	/**
 	 * Return an iterator for the interval in this query
@@ -623,7 +623,7 @@ public class TabixReader implements Iterable<String> {
 		int[] x = parseReg(reg);
 		tabixIterator = query(x[0], x[1], x[2]);
 		return tabixIterator;
-	}
+	};
 
 	/**
 	 * Return an iterator for the interval in this query
@@ -762,6 +762,10 @@ public class TabixReader implements Iterable<String> {
 	 */
 	public String readLine() throws IOException {
 		return readLine(fileInputStream);
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 	public void setShowHeader(boolean showHeader) {
