@@ -109,7 +109,13 @@ public class TabixReader implements Iterable<String> {
 						}
 						if (i >= 0) assert (curr_off == off[i].v); // otherwise bug
 						if (i < 0 || off[i].v != off[i + 1].u) { // not adjacent chunks; then seek
-							seek(off[i + 1].u);
+							long pos = off[i + 1].u;
+							if (pos == latestTintvPos && ((latestIntv.tid != tid) || (latestIntv.beg >= end))) {
+								Gpr.debug("readNext return: Cached interval starts before query end");
+								return null;
+							}
+
+							seek(pos);
 							curr_off = fileInputStream.getFilePointer();
 							if (debug) Gpr.debug("readNext seek: " + off[i + 1].u + "\tcurr_off: " + curr_off);
 						}
