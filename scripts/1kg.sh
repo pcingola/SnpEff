@@ -1,62 +1,32 @@
 #!/bin/sh
 
-# VCF="1kg/ALL.wgs.phase1.projectConsensus.snps.sites.vcf"
-VCF="1kg/ALL.wgs.phase1_release_v3.20101123.snps_indels_sv.sites.vcf"
-VCF="1kg/1kgchr1.vcf"
+VCF="$HOME/snpEff/db/GRCh37/1kg/1kg.vcf"
+VCF="$HOME/snpEff/db/GRCh37/1kg/1kg_head.vcf"
 
-REF=GRCh37.66
+REF=GRCh37.75
 REF=hg19
 
-EFF=`dirname $VCF`/`basename $VCF .vcf`.eff.vcf
+VCFOUT_BASE=`dirname $VCF`/`basename $VCF .vcf`
+VCFOUT_ANN=$VCFOUT_BASE.ann.vcf
+VCFOUT_DBSNP=$VCFOUT_BASE.ann.dbSNp.vcf
+VCFOUT_CLINVAR=$VCFOUT_BASE.ann.dbSNp.clinvar.vcf
+VCFOUT_DBNSFP=$VCFOUT_BASE.ann.dbSNp..clinvar.dbNSFP.vcf
+
+# Path to databases
+DBDIR="$HOME/snpEff/db/GRCh37/"
+DBSNP="$DBDIR/dbSnp/dbSnp.vcf"
+DBCLINVAR="$DBDIR/clinvar/clinvar.vcf"
+DBNSFP="$DBDIR/dbNSFP/dbNSFP2.9.txt.gz"
 
 #---
-# Get & unzip file
+# Annotate
 #---
 
-#cd 1kg
+time java -Xmx8G -jar snpEff.jar ann -v -stats $VCF.html $REF $VCF > $VCFOUT_ANN
 
-#wget "ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20101123/interim_phase1_release/ALL.wgs.phase1.projectConsensus.snps.sites.vcf.gz"
-#gunzip ALL.wgs.phase1.projectConsensus.snps.sites.vcf.gz 
+time java -Xmx8G -jar SnpSift.jar ann -v $DBSNP $VCFOUT_ANN > $VCFOUT_DBSNP
 
-#wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20110521/ALL.wgs.phase1_release_v3.20101123.snps_indels_sv.sites.vcf.gz
-#$HOME/tools/pigz/pigz -d ALL.wgs.phase1_release_v3.20101123.snps_indels_sv.sites.vcf.gz
+time java -Xmx8G -jar SnpSift.jar ann -v $DBCLINVAR $VCFOUT_DBSNP > $VCFOUT_CLINVAR
 
-#cd -
-
-#---
-# SNP analysis
-# Note: The are 41.6 millon variants
-#	$ wc -l 1kg/ALL.wgs.phase1.projectConsensus.snps.sites.vcf
-#	41599494 1kg/ALL.wgs.phase1.projectConsensus.snps.sites.vcf
-# Time:
-#	- VCF input and VCF output: 81m30.039s
-#	- VCF input and no output : 77m18.157s
-#---
-
-time java -Xmx4G -jar snpEff.jar eff \
-	-v \
-	-stats $VCF.html \
-	$REF \
-	$VCF \
-	> $EFF
-
-#echo "TXT output"
-#time ./scripts/snpEffXL.sh \
-#	-v \
-#	-useLocalTemplate \
-#	-stats $VCF.html \
-#	$REF \
-#	$VCF \
-#	> $EFF.txt
-
-#---
-#	Multi-threaded version 
-#---
-#echo "VCF output (multi-thread)"
-#time ./scripts/snpEffXL.sh \
-#	-v \
-#	-t \
-#	$REF \
-#	$VCF \
-#	> $EFF
+time java -Xmx8G -jar SnpSift.jar dbnsfp -v -db $DBNSFP $VCFOUT_CLINVAR > $VCFOUT_DBNSFP
 
