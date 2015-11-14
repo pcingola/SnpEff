@@ -28,5 +28,5 @@ DBNSFP="$DBDIR/dbNSFP/dbNSFP2.9.txt.gz"
 #
 #time java -Xmx8G -jar SnpSift.jar ann -v $DBCLINVAR $VCFOUT_DBSNP > $VCFOUT_CLINVAR
 
-time java -Xmx8G -jar SnpSift.jar dbnsfp -v -d -db $DBNSFP $VCFOUT_CLINVAR > $VCFOUT_DBNSFP
+time java -Xmx8G -jar SnpSift.jar dbnsfp -v -db $DBNSFP $VCFOUT_CLINVAR > $VCFOUT_DBNSFP
 

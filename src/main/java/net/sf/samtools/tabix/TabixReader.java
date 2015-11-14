@@ -104,7 +104,7 @@ public class TabixReader implements Iterable<String> {
 				for (;;) {
 					if (curr_off == 0 || !less64(curr_off, off[i].v)) { // then jump to the next chunk
 						if (i == off.length - 1) {
-							if (debug) Gpr.debug("readNext break: No more chnks");
+							if (debug) Gpr.debug("readNext break: No more chunks");
 							break; // no more chunks
 						}
 						if (i >= 0) assert (curr_off == off[i].v); // otherwise bug
