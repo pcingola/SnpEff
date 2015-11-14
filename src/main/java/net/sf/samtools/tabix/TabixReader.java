@@ -120,6 +120,8 @@ public class TabixReader implements Iterable<String> {
 										+ "\n\tInterval      : " + latestIntv //
 								);
 								return null;
+							} else {
+								Gpr.debug("Cache miss:\tpos" + pos + ", latestIntvPos: " + latestIntvPos + ", latestInv: " + latestIntv + ", tid: " + tid + ", end: " + end);
 							}
 
 							seek(pos);
