@@ -97,18 +97,21 @@ public class TabixReader implements Iterable<String> {
 		private String readNext() {
 			try {
 				if (iseof) {
-					Gpr.debug("EOF");
+					if (debug) Gpr.debug("readNext return: EOF");
 					return null;
 				}
 
 				for (;;) {
 					if (curr_off == 0 || !less64(curr_off, off[i].v)) { // then jump to the next chunk
-						if (i == off.length - 1) break; // no more chunks
+						if (i == off.length - 1) {
+							if (debug) Gpr.debug("readNext break: No more chnks");
+							break; // no more chunks
+						}
 						if (i >= 0) assert (curr_off == off[i].v); // otherwise bug
 						if (i < 0 || off[i].v != off[i + 1].u) { // not adjacent chunks; then seek
 							fileInputStream.seek(off[i + 1].u);
 							curr_off = fileInputStream.getFilePointer();
-							if (debug) Gpr.debug("Seek: " + off[i + 1].u + "\tcurr_off: " + curr_off);
+							if (debug) Gpr.debug("readNext seek: " + off[i + 1].u + "\tcurr_off: " + curr_off);
 						}
 						++i;
 					}
@@ -123,19 +126,25 @@ public class TabixReader implements Iterable<String> {
 						// Check header
 						if (str[0] == mMeta) {
 							if (!showHeader) continue;
+							if (debug) Gpr.debug("readNext return, line: " + s);
 							return s;
 						}
 
 						// Check range
 						intv = getIntv(s);
 						if (((tid >= 0) && (intv.tid != tid)) || intv.beg >= end) {
-							if (debug) Gpr.debug("Interval from file after query:" //
+							// No need to proceed. Note: tid < 0 means any-chromosome (i.e. no-limits)
+							if (debug) Gpr.debug("readNext break: Interval from file after query:" //
 									+ "\n\tQuery        :\t" + "tid: " + tid + ", start: " + beg + ", end: " + end //
 									+ "\n\tFile interval:\t" + intv //
 							);
-							break; // no need to proceed. Note: tid < 0 means any-chromosome (i.e. no-limits
-						} else if (intv.end > beg && intv.beg < end) return s; // overlap; return
+							break;
+						} else if (intv.end > beg && intv.beg < end) {
+							if (debug) Gpr.debug("readNext return, line: " + s);
+							return s; // overlap; return
+						}
 					} else {
+						if (debug) Gpr.debug("readNext break: End of file");
 						break; // end of file
 					}
 				}
@@ -144,6 +153,8 @@ public class TabixReader implements Iterable<String> {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+
+			if (debug) Gpr.debug("readNext return, line: null");
 			return null;
 		}
 
