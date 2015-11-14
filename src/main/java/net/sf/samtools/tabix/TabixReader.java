@@ -110,8 +110,14 @@ public class TabixReader implements Iterable<String> {
 						if (i >= 0) assert (curr_off == off[i].v); // otherwise bug
 						if (i < 0 || off[i].v != off[i + 1].u) { // not adjacent chunks; then seek
 							long pos = off[i + 1].u;
-							if (pos == latestTintvPos && ((latestIntv.tid != tid) || (latestIntv.beg >= end))) {
-								Gpr.debug("readNext return: Cached interval starts before query end");
+							if (pos == latestIntvPos //
+									&& (latestIntv != null) //
+									&& ((latestIntv.tid != tid) || (latestIntv.beg >= end)) //
+							) {
+								Gpr.debug("readNext return: Cached interval starts before query end" //
+										+ "\n\tFile position: " + latestIntvPos //
+										+ "\n\tInterval      : " + latestIntv //
+								);
 								return null;
 							}
 
@@ -138,7 +144,7 @@ public class TabixReader implements Iterable<String> {
 
 						// Check range
 						latestIntv = getIntv(s);
-						latestTintvPos = curr_off;
+						latestIntvPos = curr_off;
 
 						if (((tid >= 0) && (latestIntv.tid != tid)) || latestIntv.beg >= end) {
 							// No need to proceed. Note: tid < 0 means any-chromosome (i.e. no-limits)
@@ -307,7 +313,7 @@ public class TabixReader implements Iterable<String> {
 	private TIndex[] tabixIndexes;;
 	private TabixIterator tabixIterator;
 	protected boolean showHeader;
-	long latestTintvPos = -1;
+	long latestIntvPos = -1;
 	TIntv latestIntv = null;
 
 	public static String binInfo(int k) {
