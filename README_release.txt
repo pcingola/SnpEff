@@ -5,8 +5,9 @@
 
 0) Install required libraries
 
-	wget http://www.antlr.org/download/antlr-4.4-complete.jar
-	mvn install:install-file -Dfile=antlr-4.4-complete.jar -DgroupId=org.antlr -DartifactId=antlr -Dversion=4.4 -Dpackaging=jar
+	# ANTRL
+	curl -O http://www.antlr.org/download/antlr-4.5.1-complete.jar
+	mvn install:install-file -Dfile=antlr-4.5.1-complete.jar -DgroupId=org.antlr -DartifactId=antlr -Dversion=4.5.1 -Dpackaging=jar
 
 1) Run JUnit tests (TestSuiteUnity) and make sure all of them pass
 

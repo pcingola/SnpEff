@@ -13,13 +13,13 @@ cd $HOME/workspace/SnpEff/
 
 mvn clean compile assembly:assembly
 
-cp target/snpEff-$VERSION-jar-with-dependencies.jar $HOME/snpEff/snpEff.jar
+cp target/SnpEff-$VERSION-jar-with-dependencies.jar $HOME/snpEff/snpEff.jar
 
 # Install JAR file in local Maven repo
 mvn install:install-file \
-	-Dfile=target/snpEff-$VERSION.jar \
+	-Dfile=target/SnpEff-$VERSION.jar \
 	-DgroupId=ca.mcgill.mcb.pcingola \
-	-DartifactId=snpEff \
+	-DartifactId=SnpEff \
 	-Dversion=$VERSION \
 	-Dpackaging=jar \
 	-DgeneratePom=true \
@@ -34,13 +34,13 @@ cd $HOME/workspace/SnpSift/
 
 mvn clean compile assembly:assembly
 
-cp target/snpSift-$VERSION-jar-with-dependencies.jar $HOME/snpEff/SnpSift.jar
+cp target/SnpSift-$VERSION-jar-with-dependencies.jar $HOME/snpEff/SnpSift.jar
 
 # Install JAR file in local Maven repo
 mvn install:install-file \
-	-Dfile=target/snpSift-$VERSION.jar \
+	-Dfile=target/SnpSift-$VERSION.jar \
 	-DgroupId=ca.mcgill.mcb.pcingola \
-	-DartifactId=snpSift \
+	-DartifactId=SnpSift \
 	-Dversion=$VERSION \
 	-Dpackaging=jar \
 	-DgeneratePom=true \
