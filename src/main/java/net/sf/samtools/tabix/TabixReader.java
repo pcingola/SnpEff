@@ -43,7 +43,6 @@ import java.util.Iterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.util.Timer;
 import net.sf.samtools.util.BlockCompressedInputStream;
 
 public class TabixReader implements Iterable<String> {
@@ -136,11 +135,18 @@ public class TabixReader implements Iterable<String> {
 						// TIntv intv;
 						char[] str = s.toCharArray();
 						curr_off = fileInputStream.getFilePointer();
-						if (str.length == 0) continue;
+						if (str.length == 0) {
+							if (debug) Gpr.debug("readNext continue, empty line");
+							continue;
+						}
 
 						// Check header
 						if (str[0] == mMeta) {
-							if (!showHeader) continue;
+							if (!showHeader) {
+								if (debug) Gpr.debug("readNext continue, header line: " + s);
+								continue;
+							}
+
 							if (debug) Gpr.debug("readNext return, line: " + s);
 							return s;
 						}
@@ -181,9 +187,8 @@ public class TabixReader implements Iterable<String> {
 		}
 
 		void seek(long pos) throws IOException {
-			Timer.showStdErr("seek(" + pos + ")");
+			if (debug) Gpr.debug("seek(" + pos + ")");
 			fileInputStream.seek(pos);
-			Timer.showStdErr("seek: done");
 		}
 
 		public void setShowHeader(boolean showHeader) {
