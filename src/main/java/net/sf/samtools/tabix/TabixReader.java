@@ -102,8 +102,10 @@ public class TabixReader implements Iterable<String> {
 						if (i == off.length - 1) break; // no more chunks
 						if (i >= 0) assert (curr_off == off[i].v); // otherwise bug
 						if (i < 0 || off[i].v != off[i + 1].u) { // not adjacent chunks; then seek
+							Gpr.debug("Seek: " + off[i + 1].u);
 							fileInputStream.seek(off[i + 1].u);
 							curr_off = fileInputStream.getFilePointer();
+							Gpr.debug("Seek: " + off[i + 1].u + "\tcurr_off: " + curr_off);
 						}
 						++i;
 					}
