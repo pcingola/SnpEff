@@ -106,10 +106,9 @@ public class TabixReader implements Iterable<String> {
 						if (i == off.length - 1) break; // no more chunks
 						if (i >= 0) assert (curr_off == off[i].v); // otherwise bug
 						if (i < 0 || off[i].v != off[i + 1].u) { // not adjacent chunks; then seek
-							Gpr.debug("Seek: " + off[i + 1].u);
 							fileInputStream.seek(off[i + 1].u);
 							curr_off = fileInputStream.getFilePointer();
-							Gpr.debug("Seek: " + off[i + 1].u + "\tcurr_off: " + curr_off);
+							if (debug) Gpr.debug("Seek: " + off[i + 1].u + "\tcurr_off: " + curr_off);
 						}
 						++i;
 					}
@@ -129,8 +128,13 @@ public class TabixReader implements Iterable<String> {
 
 						// Check range
 						intv = getIntv(s);
-						if (((tid >= 0) && (intv.tid != tid)) || intv.beg >= end) break; // no need to proceed. Note: tid < 0 means any-chromosome (i.e. no-limits
-						else if (intv.end > beg && intv.beg < end) return s; // overlap; return
+						if (((tid >= 0) && (intv.tid != tid)) || intv.beg >= end) {
+							if (debug) Gpr.debug("Interval from file after query:" //
+									+ "\n\tQuery        :\t" + "tid: " + tid + ", start: " + beg + ", end: " + end //
+									+ "\n\tFile interval:\t" + intv //
+							);
+							break; // no need to proceed. Note: tid < 0 means any-chromosome (i.e. no-limits
+						} else if (intv.end > beg && intv.beg < end) return s; // overlap; return
 					} else {
 						break; // end of file
 					}
@@ -226,6 +230,14 @@ public class TabixReader implements Iterable<String> {
 
 	private class TIntv {
 		int tid, beg, end;
+
+		@Override
+		public String toString() {
+			return "tid: " + tid //
+					+ ", start: " + beg //
+					+ ", end: " + end //
+					;
+		}
 	}
 
 	/**
@@ -255,7 +267,7 @@ public class TabixReader implements Iterable<String> {
 		}
 	}
 
-	public static boolean debug = false;
+	public static boolean debug = true;
 	private static int MAX_BIN = 37450; // Maximum possible number of bins
 	private static int TAD_LIDX_SHIFT = 14; // Minimum bin size is 2^TAD_LIDX_SHIFT = 2^14 = 16KB
 
@@ -615,7 +627,7 @@ public class TabixReader implements Iterable<String> {
 		if (variant.isIns()) start--;
 
 		TabixIterator tabixIterator = query(tid, start, end);
-		Gpr.debug("Query: " + variant + "\ttabixIterator: " + tabixIterator);
+		if (debug) Gpr.debug("Query: " + variant + "\ttabixIterator: " + tabixIterator);
 		return tabixIterator;
 	}
 
