@@ -114,13 +114,13 @@ public class TabixReader implements Iterable<String> {
 									&& (latestIntv != null) //
 									&& ((latestIntv.tid != tid) || (latestIntv.beg >= end)) //
 							) {
-								Gpr.debug("Cached Tintv hit: Cached interval starts before query end" //
+								if (debug) Gpr.debug("Cached Tintv hit: Cached interval starts before query end" //
 										+ "\n\tFile position: " + latestIntvPos //
 										+ "\n\tInterval      : " + latestIntv //
 								);
 								return null;
 							} else {
-								Gpr.debug("Cache miss\tpos: " + pos + ", latestIntvPos: " + latestIntvPos + ", latestInv: " + latestIntv + ", tid: " + tid + ", end: " + end);
+								if (debug) Gpr.debug("Cache miss\tpos: " + pos + ", latestIntvPos: " + latestIntvPos + ", latestInv: " + latestIntv + ", tid: " + tid + ", end: " + end);
 							}
 
 							seek(pos);
