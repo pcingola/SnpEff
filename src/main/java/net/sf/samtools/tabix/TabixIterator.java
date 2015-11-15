@@ -153,19 +153,19 @@ public class TabixIterator implements Iterator<String>, Iterable<String> {
 		this.showHeader = showHeader;
 	}
 
-	public String toStringBlocks() {
-		StringBuilder sb = new StringBuilder();
-		for (TPair64 tp : offsets)
-			sb.append(tp.toStringRor16() + "\n");
-		return sb.toString();
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("tid:" + tid + "\tbeg:" + beg + "\tend:" + end);
 		for (TPair64 tp : offsets)
 			sb.append("\t" + tp + "\n");
+		return sb.toString();
+	}
+
+	public String toStringBlocks() {
+		StringBuilder sb = new StringBuilder();
+		for (TPair64 tp : offsets)
+			sb.append(tp.toStringRor16() + "\n");
 		return sb.toString();
 	}
 }
