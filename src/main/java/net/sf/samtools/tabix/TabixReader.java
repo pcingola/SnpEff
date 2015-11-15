@@ -304,8 +304,9 @@ public class TabixReader implements Iterable<String> {
 
 		@Override
 		public String toString() {
-			return "<" + u + "," + v + ">";
+			return "<" + u + "," + v + ">, size: " + Gpr.toByteSize(Math.abs(v - u));
 		}
+
 	}
 
 	private static int MAX_BIN = 37450; // Maximum possible number of bins
@@ -671,6 +672,7 @@ public class TabixReader implements Iterable<String> {
 
 		TabixIterator tabixIterator = query(tid, start, end);
 		if (debug) Gpr.debug("Query: " + variant + "\ttabixIterator: " + tabixIterator);
+		Gpr.debug("Query: " + variant + "\ttabixIterator: " + tabixIterator);
 		return tabixIterator;
 	}
 

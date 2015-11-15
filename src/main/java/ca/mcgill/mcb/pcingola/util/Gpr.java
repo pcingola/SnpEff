@@ -99,6 +99,12 @@ public class Gpr {
 		}
 	}
 
+	public static final long KB = 1024;
+	public static final long MB = KB * KB;
+	public static final long GB = KB * MB;
+
+	public static final long TB = KB * GB;
+
 	// Number of cores in this computer
 	public static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
@@ -334,8 +340,6 @@ public class Gpr {
 
 	/**
 	 * Remove spaces and tabs from string.
-	 * @param str
-	 * @return
 	 */
 	public static String noSpaces(String str) {
 		String lines[] = str.split("\n");
@@ -349,8 +353,6 @@ public class Gpr {
 
 	/**
 	 * Equivalent to Boolean.parseBoolean, except it returns 0 on invalid integer (NumberFormatException)
-	 * @param s
-	 * @return	int
 	 */
 	public static boolean parseBoolSafe(String s) {
 		try {
@@ -362,8 +364,6 @@ public class Gpr {
 
 	/**
 	 * Equivalent to Double.parseDouble(), except it returns 0 on invalid double (NumberFormatException)
-	 * @param s
-	 * @return	int
 	 */
 	public static double parseDoubleSafe(String s) {
 		try {
@@ -735,6 +735,14 @@ public class Gpr {
 		return sb.toString();
 	}
 
+	public static String toByteSize(long l) {
+		if (l > TB) return String.format("%1.2f TB", l / ((double) TB));
+		if (l > GB) return String.format("%1.2f GB", l / ((double) GB));
+		if (l > MB) return String.format("%1.2f MB", l / ((double) MB));
+		if (l > KB) return String.format("%1.2f KB", l / ((double) KB));
+		return l + " bytes";
+	}
+
 	/**
 	 * Write an object to a file
 	 * @param fileName: File to write
@@ -905,5 +913,4 @@ public class Gpr {
 		sb.append(" ]");
 		return sb.toString();
 	}
-
 }
