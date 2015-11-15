@@ -1,7 +1,7 @@
 #!/bin/sh
 
-VCF="$HOME/snpEff/db/GRCh37/1kg/1kg.vcf"
 VCF="$HOME/snpEff/db/GRCh37/1kg/1kg_head.vcf"
+VCF="$HOME/snpEff/db/GRCh37/1kg/1kg.vcf"
 
 REF=GRCh37.75
 REF=hg19
