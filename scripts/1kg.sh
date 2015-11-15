@@ -22,7 +22,7 @@ DBNSFP="$DBDIR/dbNSFP/dbNSFP2.9.txt.gz"
 # Annotate
 #---
 
-time java -Xmx8G -jar snpEff.jar ann -v -stats $VCF.html $REF $VCF > $VCFOUT_ANN
+time java -Xmx8G -jar snpEff.jar ann -v -noStats $REF $VCF > $VCFOUT_ANN
 
 time java -Xmx8G -jar SnpSift.jar ann -v $DBSNP $VCFOUT_ANN > $VCFOUT_DBSNP
 
