@@ -247,7 +247,7 @@ public class TestCasesBase {
 
 		// Update config
 		config.setSnpEffectPredictor(snpEffectPredictor);
-		config.setShiftHgvs(shiftHgvs);
+		config.setHgvsShift(shiftHgvs);
 
 		// Set predictor parameters
 		snpEffectPredictor.setSpliceRegionExonSize(spliceRegionExonSize);

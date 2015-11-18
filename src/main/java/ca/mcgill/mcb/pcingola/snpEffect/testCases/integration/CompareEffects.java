@@ -131,7 +131,7 @@ public class CompareEffects {
 		}
 
 		config.setTreatAllAsProteinCoding(true); // For historical reasons we set this one to 'true'....
-		config.setShiftHgvs(shiftHgvs);
+		config.setHgvsShift(shiftHgvs);
 		config.getSnpEffectPredictor().buildForest();
 	}
 

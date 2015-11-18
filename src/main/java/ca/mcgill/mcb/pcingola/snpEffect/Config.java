@@ -56,8 +56,10 @@ public class Config implements Serializable, Iterable<String> {
 	boolean onlyRegulation; // Only use regulation features
 	boolean errorOnMissingChromo; // Error if chromosome is missing
 	boolean errorChromoHit; // Error if chromosome is not hit in a query
-	boolean shiftHgvs = true; // Shift variants according to HGVS notation (towards the most 3prime possible coordinate)
-	boolean useHgvs = true; // Use HGVS notation?
+	boolean hgvs = true; // Use HGVS notation?
+	boolean hgvsShift = true; // Shift variants according to HGVS notation (towards the most 3prime possible coordinate)
+	boolean hgvsOneLetterAa = false; // Use HGVS 1 letter amino acid in HGVS notation?
+	boolean hgvsTrId = false; // Use HGVS transcript ID in HGVS notation?
 	double lofIgnoreProteinCodingAfter;
 	double lofIgnoreProteinCodingBefore;
 	double lofDeleteProteinCodingBases;
@@ -438,20 +440,28 @@ public class Config implements Serializable, Iterable<String> {
 		return errorOnMissingChromo;
 	}
 
+	public boolean isHgvs() {
+		return hgvs;
+	}
+
+	public boolean isHgvs1LetterAA() {
+		return hgvsOneLetterAa;
+	}
+
+	public boolean isHgvsShift() {
+		return hgvsShift;
+	}
+
+	public boolean isHgvsTrId() {
+		return hgvsTrId;
+	}
+
 	public boolean isOnlyRegulation() {
 		return onlyRegulation;
 	}
 
-	public boolean isShiftHgvs() {
-		return shiftHgvs;
-	}
-
 	public boolean isTreatAllAsProteinCoding() {
 		return treatAllAsProteinCoding;
-	}
-
-	public boolean isUseHgvs() {
-		return useHgvs;
 	}
 
 	public boolean isVerbose() {
@@ -664,12 +674,20 @@ public class Config implements Serializable, Iterable<String> {
 		lofDeleteProteinCodingBases = getDouble(KEY_LOF_DELETE_PROTEIN_CODING_BASES, LossOfFunction.DEFAULT_DELETE_PROTEIN_CODING_BASES);
 	}
 
-	public void setOnlyRegulation(boolean onlyRegulation) {
-		this.onlyRegulation = onlyRegulation;
+	public void setHgvsOneLetterAA(boolean hgvsOneLetterAa) {
+		this.hgvsOneLetterAa = hgvsOneLetterAa;
 	}
 
-	public void setShiftHgvs(boolean shiftHgvs) {
-		this.shiftHgvs = shiftHgvs;
+	public void setHgvsShift(boolean hgvsShift) {
+		this.hgvsShift = hgvsShift;
+	}
+
+	public void setHgvsTrId(boolean hgvsTrId) {
+		this.hgvsTrId = hgvsTrId;
+	}
+
+	public void setOnlyRegulation(boolean onlyRegulation) {
+		this.onlyRegulation = onlyRegulation;
 	}
 
 	public void setSnpEffectPredictor(SnpEffectPredictor snpEffectPredictor) {
@@ -685,7 +703,7 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	public void setUseHgvs(boolean useHgvs) {
-		this.useHgvs = useHgvs;
+		hgvs = useHgvs;
 	}
 
 	public void setVerbose(boolean verbose) {

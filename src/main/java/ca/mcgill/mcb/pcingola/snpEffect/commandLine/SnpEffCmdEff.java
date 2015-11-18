@@ -76,7 +76,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	boolean createSummaryHtml = true;
 	boolean lossOfFunction = true; // Create loss of function LOF tag?
 	boolean useGeneId = false; // Use gene ID instead of gene name (VCF output)
-	boolean useHgvs = true; // Use Hgvs notation
 	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
 	boolean useOicr = false; // Use OICR tag
 	boolean useSequenceOntology = true; // Use Sequence Ontology terms
@@ -358,7 +357,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		outputFormatter.setChrStr(chrStr);
 		outputFormatter.setUseSequenceOntology(useSequenceOntology);
 		outputFormatter.setUseOicr(useOicr);
-		outputFormatter.setUseHgvs(useHgvs);
+		outputFormatter.setUseHgvs(hgvs);
 		outputFormatter.setUseGeneId(useGeneId);
 		outputFormatter.setOutputFile(outputFile);
 	}
@@ -636,7 +635,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 							else if (outFor.equals("GATK")) {
 								outputFormat = OutputFormat.GATK;
 								useSequenceOntology = false;
-								useHgvs = false;
+								hgvs = false;
 								nextProt = false;
 								motif = false;
 
@@ -712,15 +711,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						lossOfFunction = false; // Do not add LOF tag
 						break;
 
-					case "-hgvs":
-						useHgvs = true; // Use HGVS notation
-						break;
-
-					case "-nohgvs":
-						useHgvs = false; // Do not use HGVS notation
-						shiftHgvs = false;
-						break;
-
 					case "-geneid":
 						useGeneId = true; // Use gene ID instead of gene name
 						break;
@@ -731,7 +721,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 					case "-classic":
 						useSequenceOntology = false;
-						useHgvs = false;
+						hgvs = false;
 						formatVersion = EffFormatVersion.FORMAT_EFF_4;
 						break;
 
@@ -942,10 +932,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		loadConfig(); // Read config file
 		loadDb(); // Load database
 
-		// Set some configuration options
-		config.setUseHgvs(useHgvs);
-		config.setShiftHgvs(useHgvs && shiftHgvs);
-
 		// Check if we can open the input file (no need to check if it is STDIN)
 		if (!Gpr.canRead(inputFile)) usage("Cannot open input file '" + inputFile + "'");
 
@@ -1100,7 +1086,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");
 		System.err.println("\t-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').");
 		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
-		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + useHgvs);
+		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + hgvs);
 		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");
 		System.err.println("\t-noHgvs                         : Do not add HGVS annotations.");
 		System.err.println("\t-noLof                          : Do not add LOF and NMD annotations.");

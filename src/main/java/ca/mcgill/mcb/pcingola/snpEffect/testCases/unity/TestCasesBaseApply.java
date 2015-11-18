@@ -88,7 +88,7 @@ public class TestCasesBaseApply extends TestCasesBase {
 
 		// Update config
 		config.setSnpEffectPredictor(snpEffectPredictor);
-		config.setShiftHgvs(shiftHgvs);
+		config.setHgvsShift(shiftHgvs);
 
 		// Build forest
 		snpEffectPredictor.buildForest();

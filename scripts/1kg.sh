@@ -10,7 +10,7 @@ VCFOUT_BASE=`dirname $VCF`/`basename $VCF .vcf`
 VCFOUT_ANN=$VCFOUT_BASE.ann.vcf
 VCFOUT_DBSNP=$VCFOUT_BASE.ann.dbSNp.vcf
 VCFOUT_CLINVAR=$VCFOUT_BASE.ann.dbSNp.clinvar.vcf
-VCFOUT_DBNSFP=$VCFOUT_BASE.ann.dbSNp..clinvar.dbNSFP.vcf
+VCFOUT_DBNSFP=$VCFOUT_BASE.ann.dbSNp.clinvar.dbNSFP.vcf
 
 # Path to databases
 DBDIR="$HOME/snpEff/db/GRCh37/"

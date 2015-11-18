@@ -25,6 +25,7 @@ public class Hgvs {
 
 	protected boolean duplication;
 	protected boolean strandPlus, strandMinus;
+	protected boolean hgvsTrId;
 
 	public static String parseTranscript(String hgvs) {
 		int idxTr = hgvs.indexOf(':');
@@ -44,6 +45,7 @@ public class Hgvs {
 		marker = variantEffect.getMarker();
 		tr = variantEffect.getTranscript();
 		genome = marker != null ? marker.getGenome() : null;
+		hgvsTrId = Config.get().isHgvsTrId();
 		initStrand();
 	}
 

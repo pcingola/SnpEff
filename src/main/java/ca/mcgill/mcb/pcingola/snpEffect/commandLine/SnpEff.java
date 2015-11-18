@@ -71,7 +71,7 @@ public class SnpEff implements CommandLine {
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
 	public static final String REVISION = "";
-	public static final String BUILD = "2015-11-15";
+	public static final String BUILD = "2015-11-18";
 	public static final String VERSION_MAJOR = "4.2";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -84,6 +84,10 @@ public class SnpEff implements CommandLine {
 	protected boolean debug; // Debug mode
 	protected boolean download = true; // Download genome, if not available
 	protected boolean help; // Show command help and exit
+	protected boolean hgvs = true; // Use Hgvs notation
+	protected boolean hgvsOneLetterAa = false; // Use 1-letter AA codes in HGVS.p notation?
+	protected boolean hgvsShift = true; // Shift variants towards the 3-prime end of the transcript
+	protected boolean hgvsTrId = false; // Use full transcript version in HGVS notation?
 	protected boolean log; // Log to server (statistics)
 	protected boolean motif = true; // Annotate using motifs
 	protected boolean multiThreaded = false; // Use multiple threads
@@ -93,7 +97,6 @@ public class SnpEff implements CommandLine {
 	protected boolean onlyProtein = false; // Only use protein coding transcripts
 	protected boolean onlyRegulation = false; // Only build regulation tracks
 	protected boolean quiet; // Be quiet
-	protected boolean shiftHgvs = true; // Shift variants towards the 3-prime end of the transcript
 	protected boolean strict = false; // Only use transcript that have been validated
 	protected boolean saveOutput = false; // Save output to buffer (instead of printing it to STDOUT)
 	protected boolean suppressOutput = false; // Only used for debugging purposes
@@ -267,7 +270,13 @@ public class SnpEff implements CommandLine {
 		config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 		if (verbose) Timer.showStdErr("done");
 
-		// Set some parameters
+		// Set configuration options
+		config.setUseHgvs(hgvs);
+		config.setHgvsShift(hgvsShift);
+		config.setHgvsOneLetterAA(hgvsOneLetterAa);
+		config.setHgvsTrId(hgvsTrId);
+
+		// Verbose & debug
 		config.setDebug(debug);
 		config.setVerbose(verbose);
 	}
@@ -358,9 +367,6 @@ public class SnpEff implements CommandLine {
 		config.getSnpEffectPredictor().setSpliceRegionExonSize(spliceRegionExonSize);
 		config.getSnpEffectPredictor().setSpliceRegionIntronMin(spliceRegionIntronMin);
 		config.getSnpEffectPredictor().setSpliceRegionIntronMax(spliceRegionIntronMax);
-
-		// Set upstream-downstream interval length
-		config.setShiftHgvs(shiftHgvs);
 
 		// Filter canonical transcripts
 		if (canonical) {
@@ -773,9 +779,27 @@ public class SnpEff implements CommandLine {
 					suppressOutput = true;
 					break;
 
+				case "-hgvs":
+					hgvs = true; // Use HGVS notation
+					break;
+
+				case "-nohgvs":
+					hgvs = false; // Do not use HGVS notation
+					hgvsShift = false;
+					break;
+
 				case "-noshifthgvs":
 				case "-no_shift_hgvs":
-					shiftHgvs = false;
+					hgvsShift = false;
+					break;
+
+				case "-hgvs1letteraa":
+				case "-hgvsoneletteraa":
+					hgvsOneLetterAa = true;
+					break;
+
+				case "-hgvsTrId":
+					hgvsTrId = true;
 					break;
 
 				case "-onlyreg":
@@ -974,7 +998,7 @@ public class SnpEff implements CommandLine {
 	}
 
 	public void setShiftHgvs(boolean shiftHgvs) {
-		this.shiftHgvs = shiftHgvs;
+		this.hgvsShift = shiftHgvs;
 	}
 
 	public void setSpliceSiteSize(int spliceSiteSize) {
@@ -1033,6 +1057,10 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.filterIntervalFiles = filterIntervalFiles;
 		snpEffCmd.genomeVer = genomeVer;
 		snpEffCmd.help = help;
+		snpEffCmd.hgvs = hgvs;
+		snpEffCmd.hgvsOneLetterAa = hgvsOneLetterAa;
+		snpEffCmd.hgvsShift = hgvsShift;
+		snpEffCmd.hgvsTrId = hgvsTrId;
 		snpEffCmd.log = log;
 		snpEffCmd.motif = motif;
 		snpEffCmd.maxTranscriptSupportLevel = maxTranscriptSupportLevel;
@@ -1054,7 +1082,6 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
 		snpEffCmd.upDownStreamLength = upDownStreamLength;
 		snpEffCmd.verbose = verbose;
-		snpEffCmd.shiftHgvs = shiftHgvs;
 		snpEffCmd.configOverride = configOverride;
 
 		// Help requested?

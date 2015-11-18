@@ -38,13 +38,6 @@ public class HgvsDna extends Hgvs {
 	}
 
 	/**
-	 * Prefix for coding or non-coding sequences
-	 */
-	protected String codingPrefix() {
-		return (tr != null && tr.isProteinCoding() ? "c." : "n.");
-	}
-
-	/**
 	 * DNA level base changes
 	 */
 	protected String dnaBaseChange() {
@@ -369,6 +362,15 @@ public class HgvsDna extends Hgvs {
 		return "-" + idx; // 5'UTR: We are before TSS, coordinates must be '-1', '-2', etc.
 	}
 
+	/**
+	 * Prefix for coding or non-coding sequences
+	 */
+	protected String prefix() {
+		return (hgvsTrId && tr != null ? tr.getId() + ":" : "") // Use transcript ID as prefix?
+				+ (tr != null && tr.isProteinCoding() ? "c." : "n.") // Is the transcript protein coding?
+				;
+	}
+
 	@Override
 	public String toString() {
 		if (variant == null || genome == null) return null;
@@ -403,7 +405,7 @@ public class HgvsDna extends Hgvs {
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
 
-		return codingPrefix() + pos + type + dnaBaseChange();
+		return prefix() + pos + type + dnaBaseChange();
 	}
 
 }

@@ -14,13 +14,18 @@ public class HgvsProtein extends Hgvs {
 	public static boolean debug = false;
 
 	int codonNum, aaPos;
-	String aaNew3, aaOld3;
+	String aaNew, aaOld;
+	boolean hgvsOneLetterAa;
+	int lettersPerAa;
 
 	public HgvsProtein(VariantEffect variantEffect) {
 		super(variantEffect);
 
 		codonNum = variantEffect.getCodonNum();
 		marker = variantEffect.getMarker();
+
+		hgvsOneLetterAa = Config.get().isHgvs1LetterAA();
+		lettersPerAa = hgvsOneLetterAa ? 1 : 3;
 
 		// No marker? Nothing to do
 		if (marker != null) {
@@ -33,17 +38,17 @@ public class HgvsProtein extends Hgvs {
 			// 		 termination codon; for clarity we this page describes changes using the three-letter amino acid
 			CodonTable codonTable = marker.codonTable();
 
-			String aaNew = variantEffect.getAaAlt();
-			String aaOld = variantEffect.getAaRef();
+			aaNew = variantEffect.getAaAlt();
+			aaOld = variantEffect.getAaRef();
 
-			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew3 = "";
-			else aaNew3 = codonTable.aaThreeLetterCode(aaNew);
+			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
+			else if (!hgvsOneLetterAa) aaNew = codonTable.aaThreeLetterCode(aaNew);
 
-			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) aaOld3 = "";
-			else aaOld3 = codonTable.aaThreeLetterCode(aaOld);
+			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) aaOld = "";
+			else if (!hgvsOneLetterAa) aaOld = codonTable.aaThreeLetterCode(aaOld);
 		} else {
 			aaPos = -1;
-			aaNew3 = aaOld3 = "";
+			aaNew = aaOld = "";
 		}
 	}
 
@@ -99,7 +104,7 @@ public class HgvsProtein extends Hgvs {
 	 * frame is given (i.e. including the first amino acid changed).
 	 */
 	protected String delins() {
-		return "delins" + aaNew3;
+		return "delins" + aaNew;
 	}
 
 	/**
@@ -136,7 +141,7 @@ public class HgvsProtein extends Hgvs {
 	 * NOTE: it must be possible to deduce the 17 inserted amino acids from the description given at DNA or RNA level
 	 */
 	protected String ins() {
-		return "ins" + aaNew3;
+		return "ins" + aaNew;
 	}
 
 	/**
@@ -146,7 +151,7 @@ public class HgvsProtein extends Hgvs {
 	 * 		- A 'CODON_CHANGE_PLUS_CODON_DELETION' is not a 'pure' deletion for HGVS (it's a 'delins')
 	 */
 	boolean isDel() {
-		return !aaOld3.isEmpty() && aaNew3.isEmpty();
+		return !aaOld.isEmpty() && aaNew.isEmpty();
 	}
 
 	/**
@@ -212,7 +217,7 @@ public class HgvsProtein extends Hgvs {
 	 * 		- A 'CODON_CHANGE_PLUS_CODON_INSERTION' is not a 'pure' insertion for HGVS (it's a 'delins')
 	 */
 	boolean isIns() {
-		return aaOld3.isEmpty() && !aaNew3.isEmpty();
+		return aaOld.isEmpty() && !aaNew.isEmpty();
 	}
 
 	/**
@@ -252,10 +257,10 @@ public class HgvsProtein extends Hgvs {
 		String posStart = pos(codonNum);
 		if (posStart == null) return null;
 
-		if (aaOld3 == null || aaOld3.isEmpty() || aaOld3.equals("-")) return null;
-		if (aaOld3.length() == 3) return posStart; // Single AA deleted
+		if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) return null;
+		if (aaOld.length() == lettersPerAa) return posStart; // Single AA deleted
 
-		int end = codonNum + (aaOld3.length() - aaNew3.length()) / 3 - 1;
+		int end = codonNum + (aaOld.length() - aaNew.length()) / lettersPerAa - 1;
 		String posEnd = pos(end);
 		if (posEnd == null) return null;
 
@@ -273,9 +278,9 @@ public class HgvsProtein extends Hgvs {
 		// ... the description does not include a description of the deletion from the site of the change
 		if (variantEffect.hasEffectType(EffectType.FRAME_SHIFT)) return posStart;
 
-		if (aaOld3 == null || aaOld3.isEmpty() || aaOld3.equals("-")) aaOld3 = "";
-		if (aaOld3.length() == 3) return posStart; // Single AA deleted
-		int end = codonNum + (aaOld3.length() / 3) - 1;
+		if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) aaOld = "";
+		if (aaOld.length() == lettersPerAa) return posStart; // Single AA deleted
+		int end = codonNum + (aaOld.length() / lettersPerAa) - 1;
 
 		String posEnd = pos(end);
 		if (posEnd == null) return null;
@@ -288,7 +293,7 @@ public class HgvsProtein extends Hgvs {
 	protected String posDup() {
 		int start, end;
 
-		int netLen = aaNew3.length() / 3;
+		int netLen = aaNew.length() / lettersPerAa;
 		if (netLen == 1) {
 			start = end = codonNum - 1;
 		} else {
@@ -351,6 +356,15 @@ public class HgvsProtein extends Hgvs {
 	}
 
 	/**
+	 * Return "p." string with/without transcript ID, according to user command line options.
+	 */
+	protected String prefix() {
+		if (!hgvsTrId) return "p.";
+		if (tr != null) return tr.getId() + ":p.";
+		return "p.";
+	}
+
+	/**
 	 * Can we simplify AAs?
 	 */
 	void simplifyAminoAcids() {
@@ -363,15 +377,15 @@ public class HgvsProtein extends Hgvs {
 	 */
 	void simplifyAminoAcidsLeft() {
 		// Can we simplify AAs?
-		while (!aaOld3.isEmpty() && !aaNew3.isEmpty()) {
+		while (!aaOld.isEmpty() && !aaNew.isEmpty()) {
 			// Get the first AA
-			String ao3 = aaOld3.substring(0, 3);
-			String an3 = aaNew3.substring(0, 3);
+			String ao = aaOld.substring(0, lettersPerAa);
+			String an = aaNew.substring(0, lettersPerAa);
 
 			// Both share the same AA? => Remove it
-			if (ao3.equals(an3)) {
-				aaOld3 = aaOld3.substring(3);
-				aaNew3 = aaNew3.substring(3);
+			if (ao.equals(an)) {
+				aaOld = aaOld.substring(lettersPerAa);
+				aaNew = aaNew.substring(lettersPerAa);
 				codonNum++;
 			} else return;
 		}
@@ -382,18 +396,18 @@ public class HgvsProtein extends Hgvs {
 	 */
 	void simplifyAminoAcidsRight() {
 		// Can we simplify AAs?
-		while (!aaOld3.isEmpty() && !aaNew3.isEmpty()) {
+		while (!aaOld.isEmpty() && !aaNew.isEmpty()) {
 			// Get the last AA
-			int lastAaOldIdx = aaOld3.length() - 3;
-			String ao3 = aaOld3.substring(lastAaOldIdx);
+			int lastAaOldIdx = aaOld.length() - lettersPerAa;
+			String ao = aaOld.substring(lastAaOldIdx);
 
-			int lastAaNewIdx = aaNew3.length() - 3;
-			String an3 = aaNew3.substring(lastAaNewIdx);
+			int lastAaNewIdx = aaNew.length() - lettersPerAa;
+			String an = aaNew.substring(lastAaNewIdx);
 
 			// Both share the same AA? => Remove it
-			if (ao3.equals(an3)) {
-				aaOld3 = aaOld3.substring(0, lastAaOldIdx);
-				aaNew3 = aaNew3.substring(0, lastAaNewIdx);
+			if (ao.equals(an)) {
+				aaOld = aaOld.substring(0, lastAaOldIdx);
+				aaNew = aaNew.substring(0, lastAaNewIdx);
 			} else return;
 		}
 	}
@@ -413,7 +427,7 @@ public class HgvsProtein extends Hgvs {
 		// Nonsense variant are a special type of amino acid deletion removing the entire C-terminal part of a
 		// protein starting at the site of the variant. A nonsense change is described using the format
 		// p.Trp26Ter (alternatively p.Trp26*).
-		if (variantEffect.hasEffectType(EffectType.STOP_GAINED)) return aaOld3 + aaPos + "*";
+		if (variantEffect.hasEffectType(EffectType.STOP_GAINED)) return aaOld + aaPos + "*";
 
 		// Stop codon mutations
 		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#extp
@@ -424,7 +438,7 @@ public class HgvsProtein extends Hgvs {
 		// 		p.*327Argext*? (alternatively p.Ter327ArgextTer? or p.*327Rext*?) describes a variant in the stop
 		//		codon (Ter/*) at position 327, changing it to a codon for Arginine (Arg, R) and adding a tail of
 		//		new amino acids of unknown length since the shifted frame does not contain a new stop codon.
-		if (variantEffect.hasEffectType(EffectType.STOP_LOST)) return aaOld3 + aaPos + aaNew3 + "ext*?";
+		if (variantEffect.hasEffectType(EffectType.STOP_LOST)) return aaOld + aaPos + aaNew + "ext*?";
 
 		// Start codon lost
 		// Reference : http://www.hgvs.org/mutnomen/disc.html#Met
@@ -438,7 +452,7 @@ public class HgvsProtein extends Hgvs {
 		if (variantEffect.hasEffectType(EffectType.START_LOST) //
 				|| variantEffect.hasEffectType(EffectType.SYNONYMOUS_START) //
 				|| variantEffect.hasEffectType(EffectType.NON_SYNONYMOUS_START) //
-		) return aaOld3 + "1?";
+		) return aaOld + "1?";
 
 		// Synonymous changes
 		// Description of so called "silent" changes in the format p.Leu54Leu (or p.L54L) is not allowed; descriptions
@@ -446,9 +460,9 @@ public class HgvsProtein extends Hgvs {
 		// at DNA level which may underlie p.Leu54Leu);  correct description has the format c.162C>G.
 		if ((variantEffect.hasEffectType(EffectType.SYNONYMOUS_CODING)) //
 				|| (variantEffect.hasEffectType(EffectType.SYNONYMOUS_STOP)) //
-		) return aaOld3 + aaPos + aaNew3;
+		) return aaOld + aaPos + aaNew;
 
-		return aaOld3 + aaPos + aaNew3;
+		return aaOld + aaPos + aaNew;
 	}
 
 	@Override
@@ -456,7 +470,7 @@ public class HgvsProtein extends Hgvs {
 		if (variant == null || marker == null) return null;
 
 		// Deleted transcript produces no protein.
-		if (variantEffect.getEffectType() == EffectType.TRANSCRIPT_DELETED) return "p.0?";
+		if (variantEffect.getEffectType() == EffectType.TRANSCRIPT_DELETED) return prefix() + ".0?";
 
 		// Can we simplify amino acids in aaNew/aaOld?
 		if (!variant.isSnp() && !variant.isMnp()) simplifyAminoAcids();
@@ -495,6 +509,6 @@ public class HgvsProtein extends Hgvs {
 		}
 
 		if (protChange == null || pos == null) return null;
-		return "p." + pos + protChange;
+		return prefix() + pos + protChange;
 	}
 }
