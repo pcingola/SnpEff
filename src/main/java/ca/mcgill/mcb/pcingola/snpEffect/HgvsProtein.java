@@ -360,8 +360,11 @@ public class HgvsProtein extends Hgvs {
 	 */
 	protected String prefix() {
 		if (!hgvsTrId) return "p.";
-		if (tr != null) return tr.getId() + ":p.";
-		return "p.";
+
+		if (tr == null) return "p.";
+
+		String ver = tr.getVersion();
+		return tr.getId() + (ver != null ? "." + ver : "") + ":p.";
 	}
 
 	/**

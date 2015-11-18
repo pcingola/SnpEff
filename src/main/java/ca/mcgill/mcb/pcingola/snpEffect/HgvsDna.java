@@ -366,9 +366,23 @@ public class HgvsDna extends Hgvs {
 	 * Prefix for coding or non-coding sequences
 	 */
 	protected String prefix() {
-		return (hgvsTrId && tr != null ? tr.getId() + ":" : "") // Use transcript ID as prefix?
-				+ (tr != null && tr.isProteinCoding() ? "c." : "n.") // Is the transcript protein coding?
-				;
+		if (tr == null) return "n.";
+
+		// Is the transcript protein coding?
+		String prefix = tr.isProteinCoding() ? "c." : "n.";
+
+		// Not using transcript ID?
+		if (!hgvsTrId) return prefix;
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(tr.getId());
+
+		String ver = tr.getVersion();
+		if (ver != null) sb.append("." + ver);
+
+		sb.append(prefix);
+
+		return sb.toString();
 	}
 
 	@Override
