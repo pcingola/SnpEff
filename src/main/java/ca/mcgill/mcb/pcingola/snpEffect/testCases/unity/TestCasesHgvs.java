@@ -61,6 +61,7 @@ public class TestCasesHgvs extends TestCasesBase {
 		Config.get().setHgvsOneLetterAA(true);
 		Variant variant = new Variant(chromosome, 898, "C", "A", ""); // Add 'GHQ' amino acids
 		checkHgvsProt(variant, "p.Q7K");
+		Config.get().setHgvsOneLetterAA(false);
 	}
 
 	/**
@@ -73,6 +74,7 @@ public class TestCasesHgvs extends TestCasesBase {
 		Config.get().setHgvsTrId(true);
 		Variant variant = new Variant(chromosome, 898, "C", "A", ""); // Add 'GHQ' amino acids
 		checkHgvsProt(variant, "transcript_0:p.Gln7Lys");
+		Config.get().setHgvsTrId(false);
 	}
 
 }

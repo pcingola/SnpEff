@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
@@ -9,7 +10,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEffCmdEff;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
-import junit.framework.Assert;
 
 /**
  *

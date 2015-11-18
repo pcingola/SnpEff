@@ -626,6 +626,28 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 					//---
 					// Output options
 					//---
+					case "-chr":
+						chrStr = args[++i];
+						break;
+
+					case "-csvstats":
+						createSummaryCsv = true; // Create a CSV formatted summary file.
+						if ((i + 1) < args.length) {
+							summaryFileCsv = args[++i];
+							String base = Gpr.baseName(summaryFileCsv, ".csv");
+							String dir = Gpr.dirName(summaryFileCsv);
+							summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
+						} else usage("Missing parameter: CSV stats file name ");
+						break;
+
+					case "-nochromoplots":
+						chromoPlots = false;
+						break;
+
+					case "-nostats":
+						createSummaryHtml = createSummaryCsv = false;
+						break;
+
 					case "-o": // Output format
 						if ((i + 1) < args.length) {
 							String outFor = args[++i].toUpperCase();
@@ -665,30 +687,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						} else usage("Missing parameter: HTML stats file name ");
 						break;
 
-					case "-nostats":
-						createSummaryHtml = createSummaryCsv = false;
-						break;
-
-					case "-csvstats":
-						createSummaryCsv = true; // Create a CSV formatted summary file.
-						if ((i + 1) < args.length) {
-							summaryFileCsv = args[++i];
-							String base = Gpr.baseName(summaryFileCsv, ".csv");
-							String dir = Gpr.dirName(summaryFileCsv);
-							summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
-						} else usage("Missing parameter: CSV stats file name ");
-						break;
-
-					case "-chr":
-						chrStr = args[++i];
-						break;
-
 					case "-uselocaltemplate": // Undocumented option (only used for development & debugging)
 						useLocalTemplate = true;
-						break;
-
-					case "-nochromoplots":
-						chromoPlots = false;
 						break;
 
 					//---
@@ -703,22 +703,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						else usage("Missing -cancerSamples argument");
 						break;
 
-					case "-lof":
-						lossOfFunction = true; // Add LOF tag
-						break;
-
-					case "-nolof":
-						lossOfFunction = false; // Do not add LOF tag
-						break;
-
-					case "-geneid":
-						useGeneId = true; // Use gene ID instead of gene name
-						break;
-
-					case "-sequenceontology":
-						useSequenceOntology = true; // Use SO temrs
-						break;
-
 					case "-classic":
 						useSequenceOntology = false;
 						hgvs = false;
@@ -729,8 +713,47 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						formatVersion = EffFormatVersion.FORMAT_EFF_4;
 						break;
 
+					case "-geneid":
+						useGeneId = true; // Use gene ID instead of gene name
+						break;
+
+					case "-hgvs":
+						hgvs = true; // Use HGVS notation
+						break;
+
+					case "-hgvs1letteraa":
+					case "-hgvsoneletteraa":
+						hgvsOneLetterAa = true;
+						break;
+
+					case "-hgvsTrId":
+						hgvsTrId = true;
+						break;
+
+					case "-lof":
+						lossOfFunction = true; // Add LOF tag
+						break;
+
+					case "-nohgvs":
+						hgvs = false; // Do not use HGVS notation
+						hgvsShift = false;
+						break;
+
+					case "-noshifthgvs":
+					case "-no_shift_hgvs":
+						hgvsShift = false;
+						break;
+
+					case "-nolof":
+						lossOfFunction = false; // Do not add LOF tag
+						break;
+
 					case "-oicr":
 						useOicr = true; // Use OICR tag
+						break;
+
+					case "-sequenceontology":
+						useSequenceOntology = true; // Use SO temrs
 						break;
 
 					//---

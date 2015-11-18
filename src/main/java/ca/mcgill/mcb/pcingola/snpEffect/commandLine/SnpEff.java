@@ -445,7 +445,7 @@ public class SnpEff implements CommandLine {
 		config.getSnpEffectPredictor().buildForest();
 		if (verbose) Timer.showStdErr("done.");
 
-		// Show some genome stats. Chromosome names are shown, a lot of people has 
+		// Show some genome stats. Chromosome names are shown, a lot of people has
 		// problems with the correct chromosome names.
 		if (verbose) {
 			Timer.showStdErr("Genome stats :");
@@ -648,7 +648,6 @@ public class SnpEff implements CommandLine {
 
 	/**
 	 * Parse command line arguments
-	 * @param args
 	 */
 	@Override
 	public void parseArgs(String[] args) {
@@ -777,29 +776,6 @@ public class SnpEff implements CommandLine {
 				case "-noout":
 					// Undocumented option (only used for development & debugging)
 					suppressOutput = true;
-					break;
-
-				case "-hgvs":
-					hgvs = true; // Use HGVS notation
-					break;
-
-				case "-nohgvs":
-					hgvs = false; // Do not use HGVS notation
-					hgvsShift = false;
-					break;
-
-				case "-noshifthgvs":
-				case "-no_shift_hgvs":
-					hgvsShift = false;
-					break;
-
-				case "-hgvs1letteraa":
-				case "-hgvsoneletteraa":
-					hgvsOneLetterAa = true;
-					break;
-
-				case "-hgvsTrId":
-					hgvsTrId = true;
 					break;
 
 				case "-onlyreg":
@@ -998,7 +974,7 @@ public class SnpEff implements CommandLine {
 	}
 
 	public void setShiftHgvs(boolean shiftHgvs) {
-		this.hgvsShift = shiftHgvs;
+		hgvsShift = shiftHgvs;
 	}
 
 	public void setSpliceSiteSize(int spliceSiteSize) {
