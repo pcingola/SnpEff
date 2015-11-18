@@ -77,7 +77,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 				if (verbose) System.out.println("\t" + veff.getAllele() + "\t" + veff);
 				if (veff.getAllele().indexOf('-') > 0) {
 					countCancer++;
-					System.out.println("\t\t" + veff.getErrorsWarning());
+					if (verbose) System.out.println("\t\t" + veff.getErrorsWarning());
 					if ((veff.getErrorsWarning() != null) && (!veff.getErrorsWarning().isEmpty())) countCancerWarnings++;
 				}
 			}

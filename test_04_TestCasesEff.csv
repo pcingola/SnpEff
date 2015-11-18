@@ -3,7 +3,7 @@
 
 Name , Value
 Genome , testHg3770Chr22 
-Date , 2015-11-18 15:25
+Date , 2015-11-18 16:42
 SnpEff_version , SnpEff 4.2 (build 2015-11-18), by Pablo Cingolani
 Command_line_arguments , SnpEff  -csvStats test_04_TestCasesEff.csv testHg3770Chr22 tests/eff_sort.vcf 
 Warnings , 1185 
