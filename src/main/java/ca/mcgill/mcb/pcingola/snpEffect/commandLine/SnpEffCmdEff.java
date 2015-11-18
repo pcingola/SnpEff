@@ -726,7 +726,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						hgvsOneLetterAa = true;
 						break;
 
-					case "-hgvsTrId":
+					case "-hgvstrid":
 						hgvsTrId = true;
 						break;
 
