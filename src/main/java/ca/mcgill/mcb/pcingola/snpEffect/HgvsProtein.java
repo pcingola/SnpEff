@@ -21,7 +21,6 @@ public class HgvsProtein extends Hgvs {
 
 		codonNum = variantEffect.getCodonNum();
 		marker = variantEffect.getMarker();
-		// effectType = variantEffect.getEffectType();
 
 		// No marker? Nothing to do
 		if (marker != null) {
