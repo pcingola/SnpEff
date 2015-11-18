@@ -470,7 +470,7 @@ public class HgvsProtein extends Hgvs {
 		if (variant == null || marker == null) return null;
 
 		// Deleted transcript produces no protein.
-		if (variantEffect.getEffectType() == EffectType.TRANSCRIPT_DELETED) return prefix() + ".0?";
+		if (variantEffect.getEffectType() == EffectType.TRANSCRIPT_DELETED) return prefix() + "0?";
 
 		// Can we simplify amino acids in aaNew/aaOld?
 		if (!variant.isSnp() && !variant.isMnp()) simplifyAminoAcids();
