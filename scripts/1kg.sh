@@ -16,7 +16,7 @@ VCFOUT_DBNSFP=$VCFOUT_BASE.ann.dbSNp..clinvar.dbNSFP.vcf
 DBDIR="$HOME/snpEff/db/GRCh37/"
 DBSNP="$DBDIR/dbSnp/dbSnp.vcf"
 DBCLINVAR="$DBDIR/clinvar/clinvar.vcf"
-DBNSFP="$DBDIR/dbNSFP/dbNSFP2.9.txt.gz"
+DBNSFP="$DBDIR/dbNSFP/dbNSFP.txt.gz"
 
 #---
 # Annotate
