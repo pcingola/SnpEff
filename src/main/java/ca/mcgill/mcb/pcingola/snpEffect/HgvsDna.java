@@ -378,7 +378,7 @@ public class HgvsDna extends Hgvs {
 		sb.append(tr.getId());
 
 		String ver = tr.getVersion();
-		if (ver != null) sb.append("." + ver);
+		if (!ver.isEmpty()) sb.append("." + ver);
 
 		sb.append(prefix);
 

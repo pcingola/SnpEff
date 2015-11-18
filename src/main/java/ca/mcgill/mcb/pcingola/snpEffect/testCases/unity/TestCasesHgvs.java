@@ -65,12 +65,13 @@ public class TestCasesHgvs extends TestCasesBase {
 	}
 
 	/**
-	 * Test case: Use 1-letter AA change
+	 * Test case: Use transcript ID
 	 */
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 
+		verbose = true;
 		Config.get().setHgvsTrId(true);
 		Variant variant = new Variant(chromosome, 898, "C", "A", ""); // Add 'GHQ' amino acids
 		checkHgvsProt(variant, "transcript_0:p.Gln7Lys");

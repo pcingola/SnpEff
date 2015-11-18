@@ -364,7 +364,7 @@ public class HgvsProtein extends Hgvs {
 		if (tr == null) return "p.";
 
 		String ver = tr.getVersion();
-		return tr.getId() + (ver != null ? "." + ver : "") + ":p.";
+		return tr.getId() + (ver.isEmpty() ? "" : "." + ver) + ":p.";
 	}
 
 	/**
