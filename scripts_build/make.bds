@@ -31,13 +31,13 @@ cpus = 1
 
 # Genome versions
 ensemblRelease		:= "82"
-ensemblBfmppRelease	:= "27"
+ensemblBfmppRelease	:= "29"
 flybaseRelease		:= "FB2015_03"
 flybaseGenomes		:= [ 'dana_r1.04', 'dere_r1.04', 'dgri_r1.3', 'dmel_r6.06', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.03', 'dsec_r1.3', 'dsim_r2.01', 'dvir_r1.03', 'dwil_r1.04', 'dyak_r1.04' ]
 GRCH				:= "GRCh38"
 humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 GRCM				:= "GRCm38"
-dbNsfpVer			:= '3.0b2a'
+dbNsfpVer			:= '3.0a'
 
 # Configuration parameters
 bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22", "ENSEMBL_BFMPP_26", "ENSEMBL_BFMPP_27"]
@@ -300,7 +300,7 @@ void downloadAll() {
 	downloadGwasCatalog()
 	downloadNextProt()
 	downloadPdb()
-	downloadDbNsfp()
+	#downloadDbNsfp()	# We need to update this method
 	downloadClinvar()
 	downloadDbSnp()
 
