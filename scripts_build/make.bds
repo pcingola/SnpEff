@@ -300,7 +300,7 @@ void downloadAll() {
 	downloadGwasCatalog()
 	downloadNextProt()
 	downloadPdb()
-	#downloadDbNsfp()	# We need to update this method
+	downloadDbNsfp()	# We need to update this method
 	downloadClinvar()
 	downloadDbSnp()
 
