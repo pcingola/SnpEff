@@ -1,12 +1,14 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.codons.CodonTable;
 import ca.mcgill.mcb.pcingola.codons.CodonTables;
+import ca.mcgill.mcb.pcingola.interval.Chromosome;
+import ca.mcgill.mcb.pcingola.interval.Genome;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import junit.framework.Assert;
 
 /**
  * Codon tables
@@ -20,7 +22,6 @@ public class TestCasesCodonTable {
 	/**
 	 * Degeneracy test
 	 * References: http://en.wikipedia.org/wiki/Genetic_code#Degeneracy
-	 *
 	 */
 	@Test
 	public void test_01() {
@@ -49,4 +50,26 @@ public class TestCasesCodonTable {
 		 */
 		Assert.assertEquals(3, codonTable.degenerate("ATT", 2));
 	}
+
+	/**
+	 * Setting genome-wide codon tables
+	 */
+	@Test
+	public void test_02() {
+		Gpr.debug("Test");
+		String genomeVersion = "test_ctab";
+		Config config = new Config(genomeVersion);
+
+		String chr1Name = "any_chromo";
+		Genome genome = config.getGenome();
+		Chromosome chr1 = genome.getOrCreateChromosome(chr1Name);
+		if (debug) Gpr.debug("Codon table [" + chr1Name + "]: " + chr1.getCodonTable().getName());
+		Assert.assertEquals("Blepharisma_Macronuclear", chr1.getCodonTable().getName());
+
+		String chrMtName = "MT";
+		Chromosome chrMt = genome.getOrCreateChromosome(chrMtName);
+		if (debug) Gpr.debug("Codon table [" + chrMtName + "]: " + chrMt.getCodonTable().getName());
+		Assert.assertEquals("Vertebrate_Mitochondrial", chrMt.getCodonTable().getName());
+	}
+
 }

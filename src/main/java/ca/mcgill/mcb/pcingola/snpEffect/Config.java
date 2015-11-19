@@ -67,10 +67,10 @@ public class Config implements Serializable, Iterable<String> {
 	String dataDir; // Directory containing all databases and genomes
 	Properties properties;
 	Genome genome;
-	HashMap<String, Genome> genomeByVersion;
-	HashMap<String, String> referenceByVersion;
-	HashMap<String, String> nameByVersion;
-	HashMap<String, String> bundleByGenome;
+	HashMap<String, Genome> genomeById;
+	HashMap<String, String> referenceById;
+	HashMap<String, String> nameById;
+	HashMap<String, String> bundleByGenomeId;
 	SnpEffectPredictor snpEffectPredictor;
 	String databaseRepository = "";
 	String versionsUrl = "";
@@ -129,7 +129,7 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Extract and create codon tables
 	 */
-	void createCodonTables(String genomeVersion, Properties properties) {
+	void createCodonTables(String genomeId, Properties properties) {
 		//---
 		// Read codon tables
 		//---
@@ -147,31 +147,33 @@ public class Config implements Serializable, Iterable<String> {
 		//---
 		for (Object key : properties.keySet()) {
 			String keyStr = key.toString();
-			if (keyStr.endsWith(KEY_CODONTABLE_SUFIX) && keyStr.startsWith(genomeVersion + ".")) {
+			if (keyStr.endsWith(KEY_CODONTABLE_SUFIX) && keyStr.startsWith(genomeId + ".")) {
 				// Everything between gneomeName and ".codonTable" is assumed to be chromosome name
 				int chrNameEnd = keyStr.length() - KEY_CODONTABLE_SUFIX.length();
-				int chrNameStart = genomeVersion.length() + 1;
+				int chrNameStart = genomeId.length() + 1;
 				int chrNameLen = chrNameEnd - chrNameStart;
-				if (chrNameLen < 0) throw new RuntimeException("Error parsing config entry '" + keyStr + "'.\n\tExpected format: GENOME.CHROMOSOME.codonTable\n\tChromosome name not found!");
-				String chromo = keyStr.substring(chrNameStart, chrNameEnd);
+				String chromo = null;
+				if (chrNameLen > 0) chromo = keyStr.substring(chrNameStart, chrNameEnd);
 
+				// Find codon table
 				String codonTableName = properties.getProperty(key.toString());
 				CodonTable codonTable = CodonTables.getInstance().getTable(codonTableName);
-
-				// Sanity checks
-				if (genomeByVersion.get(genomeVersion) == null) throw new RuntimeException("Error parsing property '" + key + "'. No such genome '" + genomeVersion + "'");
 				if (codonTable == null) throw new RuntimeException("Error parsing property '" + key + "'. No such codon table '" + codonTableName + "'");
 
-				Chromosome chr = genomeByVersion.get(genomeVersion).getChromosome(chromo);
-				if (chr == null) {
-					// Create chromosome
-					Genome genome = genomeByVersion.get(genomeVersion);
-					chr = new Chromosome(genome, 0, 0, chromo);
-					genome.add(chr);
-				}
+				// Find genome
+				Genome gen = getGenome(genomeId);
+				if (gen == null) throw new RuntimeException("Error parsing property '" + key + "'. No such genome '" + genomeId + "'");
 
-				// Everything seems to be OK, go on
-				CodonTables.getInstance().set(genomeByVersion.get(genomeVersion), chr, codonTable);
+				if (chromo != null) {
+					// Find chromosome
+					Chromosome chr = gen.getOrCreateChromosome(chromo);
+
+					// Everything seems to be OK, go on
+					CodonTables.getInstance().set(genomeById.get(genomeId), chr, codonTable);
+				} else {
+					// Set genome-wide chromosome table
+					CodonTables.getInstance().set(genomeById.get(genomeId), codonTable);
+				}
 			}
 		}
 	}
@@ -233,7 +235,7 @@ public class Config implements Serializable, Iterable<String> {
 	 * Is this genome packed in a bundle?
 	 */
 	public String getBundleName(String genomeVer) {
-		return bundleByGenome.get(genomeVer);
+		return bundleByGenomeId.get(genomeVer);
 	}
 
 	/**
@@ -348,6 +350,10 @@ public class Config implements Serializable, Iterable<String> {
 		return genome;
 	}
 
+	public Genome getGenome(String genomeId) {
+		return genomeById.get(genomeId);
+	}
+
 	public double getLofDeleteProteinCodingBases() {
 		return lofDeleteProteinCodingBases;
 	}
@@ -370,11 +376,11 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	public String getName(String genomeVersion) {
-		return nameByVersion.get(genomeVersion);
+		return nameById.get(genomeVersion);
 	}
 
 	public String getReference(String genomeVersion) {
-		return referenceByVersion.get(genomeVersion);
+		return referenceById.get(genomeVersion);
 	}
 
 	/**
@@ -423,7 +429,7 @@ public class Config implements Serializable, Iterable<String> {
 		this.dataDir = dataDir;
 
 		readConfig(genomeVersion, configFileName, override); // Read config file and get a genome
-		genome = genomeByVersion.get(genomeVersion); // Set a genome
+		genome = genomeById.get(genomeVersion); // Set a genome
 		if (!genomeVersion.isEmpty() && (genome == null)) throw new RuntimeException("No such genome '" + genomeVersion + "'");
 		configInstance = this;
 	}
@@ -470,7 +476,7 @@ public class Config implements Serializable, Iterable<String> {
 
 	@Override
 	public Iterator<String> iterator() {
-		return nameByVersion.keySet().iterator();
+		return nameById.keySet().iterator();
 	}
 
 	/**
@@ -533,9 +539,9 @@ public class Config implements Serializable, Iterable<String> {
 		//---
 		// Find all genomes in this configuration file
 		//---
-		genomeByVersion = new HashMap<String, Genome>();
-		referenceByVersion = new HashMap<String, String>();
-		nameByVersion = new HashMap<String, String>();
+		genomeById = new HashMap<String, Genome>();
+		referenceById = new HashMap<String, String>();
+		nameById = new HashMap<String, String>();
 
 		// Sorted keys
 		ArrayList<String> keys = new ArrayList<String>();
@@ -549,25 +555,25 @@ public class Config implements Serializable, Iterable<String> {
 
 				// Add full name
 				String name = properties.getProperty(genVer + KEY_GENOME_SUFIX);
-				nameByVersion.put(genVer, name);
+				nameById.put(genVer, name);
 
 				// Add reference
 				String ref = properties.getProperty(genVer + KEY_REFERENCE_SUFIX);
-				referenceByVersion.put(genVer, ref);
+				referenceById.put(genVer, ref);
 			}
 		}
 
 		//---
 		// Find all bundles
 		//---
-		bundleByGenome = new HashMap<String, String>();
+		bundleByGenomeId = new HashMap<String, String>();
 		for (String key : keys) {
 			if (key.endsWith(KEY_BUNDLE_SUFIX)) {
 				String bundleName = key.substring(0, key.length() - KEY_BUNDLE_SUFIX.length());
 				String entries = properties.getProperty(key);
 				for (String gen : entries.split("\\s+")) {
 					gen = gen.trim();
-					bundleByGenome.put(gen, bundleName);
+					bundleByGenomeId.put(gen, bundleName);
 				}
 			}
 		}
@@ -607,7 +613,7 @@ public class Config implements Serializable, Iterable<String> {
 		}
 
 		genome = new Genome(genVer, properties);
-		genomeByVersion.put(genVer, genome);
+		genomeById.put(genVer, genome);
 	}
 
 	/**
@@ -715,8 +721,8 @@ public class Config implements Serializable, Iterable<String> {
 		StringBuilder sb = new StringBuilder();
 
 		for (String genVer : this) {
-			String name = nameByVersion.get(genVer).replace('_', ' ');
-			String ref = referenceByVersion.get(genVer);
+			String name = nameById.get(genVer).replace('_', ' ');
+			String ref = referenceById.get(genVer);
 
 			sb.append("\t" + genVer);
 			sb.append("\t" + name);

@@ -58,14 +58,24 @@ public class CodonTables implements Iterable<CodonTable> {
 	}
 
 	/**
+	 * Get default genome-wide codon table
+	 */
+	public CodonTable getTable(Genome genome) {
+		String key = genome.getId();
+		CodonTable codonTable = genChr2codonTable.get(key);
+		if (codonTable == null) return codonTables.getTable(STANDARD_TABLE_NAME); // Not found? Use default
+		return codonTable;
+	}
+
+	/**
 	 * Get a codon table
 	 * WARNING: It will return the standard codon table if nothing if found
 	 */
 	public CodonTable getTable(Genome genome, String chromosome) {
 		String key = genome.getId() + KEY_SEPARATOR + chromosome;
 		CodonTable codonTable = genChr2codonTable.get(key);
-		if (codonTable == null) return codonTables.getTable(STANDARD_TABLE_NAME);
-		return codonTable;
+		if (codonTable != null) return codonTable;
+		return getTable(genome); // Not found? Use genome wide codon table
 	}
 
 	/**
@@ -88,4 +98,15 @@ public class CodonTables implements Iterable<CodonTable> {
 		String key = genome.getId() + KEY_SEPARATOR + chr.getId();
 		genChr2codonTable.put(key, codonTable);
 	}
+
+	/**
+	 * Set a codon table for a all chromosomes in a genome
+	 * I.e.: Default genome-wide chromosome table
+	 */
+	public void set(Genome genome, CodonTable codonTable) {
+		add(codonTable); // Just in case it's not already added
+		String key = genome.getId();
+		genChr2codonTable.put(key, codonTable);
+	}
+
 }
