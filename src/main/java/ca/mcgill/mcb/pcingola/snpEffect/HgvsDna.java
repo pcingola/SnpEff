@@ -380,6 +380,7 @@ public class HgvsDna extends Hgvs {
 		String ver = tr.getVersion();
 		if (!ver.isEmpty()) sb.append("." + ver);
 
+		sb.append(':');
 		sb.append(prefix);
 
 		return sb.toString();

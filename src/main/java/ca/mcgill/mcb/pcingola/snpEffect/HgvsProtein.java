@@ -359,9 +359,7 @@ public class HgvsProtein extends Hgvs {
 	 * Return "p." string with/without transcript ID, according to user command line options.
 	 */
 	protected String prefix() {
-		if (!hgvsTrId) return "p.";
-
-		if (tr == null) return "p.";
+		if (!hgvsTrId || tr == null) return "p.";
 
 		String ver = tr.getVersion();
 		return tr.getId() + (ver.isEmpty() ? "" : "." + ver) + ":p.";

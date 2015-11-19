@@ -21,7 +21,7 @@ public class TestCasesHgvs extends TestCasesBase {
 		super();
 	}
 
-	void checkHgvsProt(Variant variant, String expectedHgvsP) {
+	void checkHgvsProt(Variant variant, String expectedHgvsC, String expectedHgvsP) {
 		prependSequenceToFirstExon("atgaaaatgggccatcagcagcagtgctgc"); // This is 'MKMGHQQQCC' as a DNA sequence
 
 		if (verbose) {
@@ -48,7 +48,8 @@ public class TestCasesHgvs extends TestCasesBase {
 			Gpr.debug("HGVS (Prot): '" + hgvsProt + "'");
 		}
 
-		Assert.assertEquals("HGVS.p notation does not match", expectedHgvsP, hgvsProt);
+		if (expectedHgvsC != null) Assert.assertEquals("HGVS.c notation does not match", expectedHgvsC, hgvsDna);
+		if (expectedHgvsP != null) Assert.assertEquals("HGVS.p notation does not match", expectedHgvsP, hgvsProt);
 	}
 
 	/**
@@ -60,7 +61,7 @@ public class TestCasesHgvs extends TestCasesBase {
 
 		Config.get().setHgvsOneLetterAA(true);
 		Variant variant = new Variant(chromosome, 898, "C", "A", ""); // Add 'GHQ' amino acids
-		checkHgvsProt(variant, "p.Q7K");
+		checkHgvsProt(variant, null, "p.Q7K");
 		Config.get().setHgvsOneLetterAA(false);
 	}
 
@@ -71,10 +72,9 @@ public class TestCasesHgvs extends TestCasesBase {
 	public void test_02() {
 		Gpr.debug("Test");
 
-		verbose = true;
 		Config.get().setHgvsTrId(true);
 		Variant variant = new Variant(chromosome, 898, "C", "A", ""); // Add 'GHQ' amino acids
-		checkHgvsProt(variant, "transcript_0:p.Gln7Lys");
+		checkHgvsProt(variant, "transcript_0:c.19C>A", "transcript_0:p.Gln7Lys");
 		Config.get().setHgvsTrId(false);
 	}
 
