@@ -663,24 +663,26 @@ public class SnpEff implements CommandLine {
 		//---
 		// Parse command
 		//---
-		if (args[0].equalsIgnoreCase("build") //
+		if (args[0].equalsIgnoreCase("ann") // Annotate: Same as 'eff'
+				|| args[0].equalsIgnoreCase("build") //
 				|| args[0].equalsIgnoreCase("buildNextProt") //
-				|| args[0].equalsIgnoreCase("dump") //
 				|| args[0].equalsIgnoreCase("cds") //
-				|| args[0].equalsIgnoreCase("eff") //
-				|| args[0].equalsIgnoreCase("ann") // Annotate: just another way to say 'eff'
-				|| args[0].equalsIgnoreCase("download") //
-				|| args[0].equalsIgnoreCase("protein") //
 				|| args[0].equalsIgnoreCase("closest") //
-				|| args[0].equalsIgnoreCase("test") //
-				|| args[0].equalsIgnoreCase("databases") //
-				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 				|| args[0].equalsIgnoreCase("count") //
+				|| args[0].equalsIgnoreCase("databases") //
+				|| args[0].equalsIgnoreCase("download") //
+				|| args[0].equalsIgnoreCase("dump") //
+				|| args[0].equalsIgnoreCase("eff") //
 				|| args[0].equalsIgnoreCase("genes2bed") //
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
-				|| args[0].equalsIgnoreCase("acat") //
+				|| args[0].equalsIgnoreCase("protein") //
+				|| args[0].equalsIgnoreCase("spliceAnalysis") //
+				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("show") //
+				|| args[0].equalsIgnoreCase("pdb") //
+		// Obselete stuuff (from T2D projects)
+				|| args[0].equalsIgnoreCase("acat") //
 		) {
 			command = args[argNum++].trim().toLowerCase();
 		}
@@ -1005,23 +1007,80 @@ public class SnpEff implements CommandLine {
 
 		// All commands are lower-case
 		command = command.trim().toLowerCase();
-		if (command.equalsIgnoreCase("build")) snpEffCmd = new SnpEffCmdBuild();
-		else if (command.equalsIgnoreCase("buildNextProt")) snpEffCmd = new SnpEffCmdBuildNextProt();
-		else if (command.equalsIgnoreCase("dump")) snpEffCmd = new SnpEffCmdDump();
-		else if (command.equalsIgnoreCase("download")) snpEffCmd = new SnpEffCmdDownload();
-		else if (command.equalsIgnoreCase("cds")) snpEffCmd = new SnpEffCmdCds();
-		else if (command.equalsIgnoreCase("eff") || command.equalsIgnoreCase("ann")) snpEffCmd = new SnpEffCmdEff();
-		else if (command.equalsIgnoreCase("protein")) snpEffCmd = new SnpEffCmdProtein();
-		else if (command.equalsIgnoreCase("closest")) snpEffCmd = new SnpEffCmdClosest();
-		else if (command.equalsIgnoreCase("databases")) snpEffCmd = new SnpEffCmdDatabases();
-		else if (command.equalsIgnoreCase("genes2bed")) snpEffCmd = new SnpEffCmdGenes2Bed();
-		else if (command.equalsIgnoreCase("spliceanalysis")) snpEffCmd = new SnpEffCmdSpliceAnalysis();
-		else if (command.equalsIgnoreCase("count")) snpEffCmd = new SnpEffCmdCount();
-		else if (command.equalsIgnoreCase("len")) snpEffCmd = new SnpEffCmdLen();
-		else if (command.equalsIgnoreCase("gsa")) snpEffCmd = new SnpEffCmdGsa();
-		else if (command.equalsIgnoreCase("acat")) snpEffCmd = new SnpEffCmdAcat();
-		else if (command.equalsIgnoreCase("show")) snpEffCmd = new SnpEffCmdShow();
-		else throw new RuntimeException("Unknown command '" + command + "'");
+		switch (command.toLowerCase()) {
+		case "ann":
+		case "eff":
+			snpEffCmd = new SnpEffCmdEff();
+			break;
+
+		case "build":
+			snpEffCmd = new SnpEffCmdBuild();
+			break;
+
+		case "buildnextprot":
+			snpEffCmd = new SnpEffCmdBuildNextProt();
+			break;
+
+		case "cds":
+			snpEffCmd = new SnpEffCmdCds();
+			break;
+
+		case "closest":
+			snpEffCmd = new SnpEffCmdClosest();
+			break;
+
+		case "count":
+			snpEffCmd = new SnpEffCmdCount();
+			break;
+
+		case "databases":
+			snpEffCmd = new SnpEffCmdDatabases();
+			break;
+
+		case "download":
+			snpEffCmd = new SnpEffCmdDownload();
+			break;
+
+		case "dump":
+			snpEffCmd = new SnpEffCmdDump();
+			break;
+
+		case "gsa":
+			snpEffCmd = new SnpEffCmdGsa();
+			break;
+
+		case "genes2bed":
+			snpEffCmd = new SnpEffCmdGenes2Bed();
+			break;
+
+		case "len":
+			snpEffCmd = new SnpEffCmdLen();
+			break;
+
+		case "pdb":
+			snpEffCmd = new SnpEffCmdPdb();
+			break;
+
+		case "protein":
+			snpEffCmd = new SnpEffCmdProtein();
+			break;
+
+		case "spliceanalysis":
+			snpEffCmd = new SnpEffCmdSpliceAnalysis();
+			break;
+
+		case "show":
+			snpEffCmd = new SnpEffCmdShow();
+			break;
+
+		// Obsolete stuff
+		case "acat":
+			snpEffCmd = new SnpEffCmdAcat();
+			break;
+
+		default:
+			throw new RuntimeException("Unknown command '" + command + "'");
+		}
 
 		// Copy values to specific command
 		snpEffCmd.canonical = canonical;

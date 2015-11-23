@@ -838,7 +838,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		//---
 
 		// Check: Do we have all required parameters?
-		if (genomeVer.isEmpty()) usage("Missing genomer_version parameter");
+		if (genomeVer == null || genomeVer.isEmpty()) usage("Missing genomer_version parameter");
 
 		// Check input file
 		if (inputFile.isEmpty()) inputFile = "-"; // Use STDIN as default

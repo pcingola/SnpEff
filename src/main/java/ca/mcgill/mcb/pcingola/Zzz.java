@@ -1,33 +1,54 @@
 package ca.mcgill.mcb.pcingola;
 
-import ca.mcgill.mcb.pcingola.interval.Chromosome;
-import ca.mcgill.mcb.pcingola.interval.Genome;
-import ca.mcgill.mcb.pcingola.interval.Marker;
-import ca.mcgill.mcb.pcingola.interval.Markers;
-import ca.mcgill.mcb.pcingola.interval.tree.IntervalTreeArray;
-import ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff;
+import java.io.File;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
-public class Zzz extends SnpEff {
+import ca.mcgill.mcb.pcingola.util.Gpr;
+
+public class Zzz {
+
+	public static final String PDB_EXT = ".ent";
+	public static final String PDB_EXT_GZ = ".ent.gz";
+
+	boolean debug = true;
+	String pdbDir;
+	Collection<String> pdbFiles;
 
 	public static void main(String[] args) {
-		Markers markers = new Markers();
+		String pdbDir = Gpr.HOME + "/snpEff/db/pdb";
+		Zzz zzz = new Zzz(pdbDir);
+		zzz.setDebug(true);
+		zzz.findPdbFiles();
+	}
 
-		// Create markers
-		Genome genome = new Genome();
-		Chromosome chr1 = genome.getOrCreateChromosome("1");
+	public Zzz(String pdbDir) {
+		this.pdbDir = pdbDir;
+	}
 
-		for (int i = 0; i < 10; i++) {
-			int start = 1000 * i;
-			int end = start + 100;
-			Marker m = new Marker(chr1, start, end);
-			markers.add(m);
-			System.out.println(m);
+	public void findPdbFiles() {
+		pdbFiles = findPdbFiles(new File(pdbDir));
+	}
+
+	Collection<String> findPdbFiles(File dir) {
+		List<String> list = new LinkedList<>();
+
+		for (File f : dir.listFiles()) {
+			String fileName = f.getName();
+			if (f.isDirectory()) {
+				findPdbFiles(f);
+			} else if (f.isFile() && (fileName.endsWith(PDB_EXT) || fileName.endsWith(PDB_EXT_GZ))) {
+				list.add(f.getAbsolutePath());
+				if (debug) Gpr.debug("Adding file: " + f.getAbsolutePath());
+			}
 		}
 
-		// Build tree
-		IntervalTreeArray itree = new IntervalTreeArray(markers);
-		itree.build();
-
-		System.out.println(itree.toStringAll());
+		return list;
 	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
 }
