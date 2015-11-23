@@ -59,7 +59,6 @@ public class DistanceResult {
 				String f[] = chrPos1.split(":");
 				chr1 = f[0];
 				pos1 = Gpr.parseIntSafe(f[1]);
-				//				chr1Num = Chromosome.number(chr1);
 			}
 		}
 
@@ -69,7 +68,6 @@ public class DistanceResult {
 				String f[] = chrPos2.split(":");
 				chr2 = f[0];
 				pos2 = Gpr.parseIntSafe(f[1]);
-				//				chr2Num = Chromosome.number(chr1);
 			}
 		}
 

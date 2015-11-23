@@ -1,7 +1,10 @@
 package ca.mcgill.mcb.pcingola.snpEffect.commandLine;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.GZIPOutputStream;
 
 import org.biojava.bio.structure.AminoAcid;
 import org.biojava.bio.structure.Atom;
@@ -27,6 +31,7 @@ import ca.mcgill.mcb.pcingola.pdb.IdMapperEntry;
 import ca.mcgill.mcb.pcingola.pdb.PdbFile;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.Timer;
+import net.sf.samtools.util.RuntimeEOFException;
 
 /**
  * PDB distance analysis
@@ -42,6 +47,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	public static final String PDB_EXT = ".ent";
 	public static final String PDB_EXT_GZ = ".ent.gz";
 	public static final String[] PDB_EXTS = { PDB_EXT_GZ, PDB_EXT };
+	public static final String PROTEIN_INTERACTION_FILE = "interactions.bin";
 
 	public static final double DEFAULT_DISTANCE_THRESHOLD = 3.0; // Maximum distance to be considered 'in contact'
 	public static final double DEFAULT_MAX_MISMATCH_RATE = 0.1;
@@ -65,6 +71,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	PDBFileReader pdbreader;
 	Map<String, Transcript> trancriptById;
 	Collection<String> pdbFileNames;
+	BufferedWriter outpufFile;
 
 	public SnpEffCmdPdb() {
 	}
@@ -160,6 +167,15 @@ public class SnpEffCmdPdb extends SnpEff {
 		return idmapsNew;
 	}
 
+	void closeOuptut() {
+		try {
+			if (outpufFile != null) outpufFile.close();
+			outpufFile = null;
+		} catch (IOException e) {
+			throw new RuntimeEOFException("Error closing output file", e);
+		}
+	}
+
 	void createTranscriptMap() {
 		// Create transcript map
 		trancriptById = new HashMap<>();
@@ -193,7 +209,7 @@ public class SnpEffCmdPdb extends SnpEff {
 					if (dres.hasValidCoords()) {
 						results.add(dres);
 						countMapOk++;
-						if (verbose) System.out.println(((d <= distanceThreshold) ? "AA_IN_CONTACT\t" : "AA_NOT_IN_CONTACT\t") + dres);
+						if (debug) Gpr.debug(((d <= distanceThreshold) ? "AA_IN_CONTACT\t" : "AA_NOT_IN_CONTACT\t") + dres);
 					} else {
 						countMapError++;
 					}
@@ -404,6 +420,18 @@ public class SnpEffCmdPdb extends SnpEff {
 	}
 
 	/**
+	 * Open output file
+	 */
+	void openOuptut(String fileName) {
+		try {
+			if (verbose) Timer.showStdErr("Saving results to database file '" + fileName + "'");
+			outpufFile = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(new File(fileName)))));
+		} catch (IOException e) {
+			throw new RuntimeEOFException("Error opening output file '" + fileName + "'", e);
+		}
+	}
+
+	/**
 	 * Parse command line arguments
 	 */
 	@Override
@@ -487,9 +515,14 @@ public class SnpEffCmdPdb extends SnpEff {
 		// Create transcript map
 		createTranscriptMap();
 
+		// Open output file (save to database)
+		String outFile = config.getDirDataVersion() + "/" + PROTEIN_INTERACTION_FILE;
+		openOuptut(outFile);
+
 		// Map IDs and confirm that amino acid sequence matches (within certain error rate)
 		if (verbose) Timer.showStdErr("Analyzing PDB sequences");
 		pdbAnalysis();
+		closeOuptut();
 	}
 
 	/**
@@ -525,7 +558,7 @@ public class SnpEffCmdPdb extends SnpEff {
 		Structure pdbStruct = readPdbFile(pdbFileName);
 		if (pdbStruct == null || !filterPdb(pdbStruct)) return; // Passes filter?
 
-		// Check that the entries map to the genome
+		// Check that entries map to the genome
 		countFilesPass++;
 		List<IdMapperEntry> idMapConfirmed = checkSequencePdbGenome(pdbStruct, trIds);
 		if (idMapConfirmed == null || idMapConfirmed.isEmpty()) return;
@@ -534,9 +567,9 @@ public class SnpEffCmdPdb extends SnpEff {
 		for (IdMapperEntry idmap : idMapConfirmed) {
 			// Get full transcript ID including version (version numbers are removed in the IdMap)
 			Transcript tr = trancriptById.get(idmap.trId);
-			distance(pdbStruct, tr, tr);
+			List<DistanceResult> dres = distance(pdbStruct, tr, tr);
+			save(dres);
 		}
-
 	}
 
 	/**
@@ -558,6 +591,15 @@ public class SnpEffCmdPdb extends SnpEff {
 		load();
 		pdb();
 		return true;
+	}
+
+	void save(List<DistanceResult> distResults) {
+		for (DistanceResult d : distResults)
+			try {
+				outpufFile.write(d.toString());
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 	}
 
 	public void setDistanceThresholdNon(double distanceThresholdNon) {
