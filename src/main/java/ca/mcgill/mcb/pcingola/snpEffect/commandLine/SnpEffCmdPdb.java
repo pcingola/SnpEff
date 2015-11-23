@@ -596,7 +596,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	void save(List<DistanceResult> distResults) {
 		for (DistanceResult d : distResults)
 			try {
-				outpufFile.write(d.toString());
+				outpufFile.write(d.toString() + "\n");
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
