@@ -91,7 +91,7 @@ public class DistanceResult {
 
 		// Does transcript's AA sequence match the expected AA?
 		String protein = tr.protein();
-		if (protein == null || protein.length() < aaNum) {
+		if (protein == null || protein.length() <= aaNum) {
 			if (debug) Gpr.debug("Invalid AA number:" //
 					+ "\n\tAA number     : " + aaNum //
 					+ "\n\tProtein length: " + protein.length() //
