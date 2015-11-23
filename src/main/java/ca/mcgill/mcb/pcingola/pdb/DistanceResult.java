@@ -3,9 +3,12 @@ package ca.mcgill.mcb.pcingola.pdb;
 import org.biojava.bio.structure.AminoAcid;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
 public class DistanceResult {
+
+	public static boolean debug = false;
 
 	// Pdb information
 	public String pdbId;
@@ -26,12 +29,12 @@ public class DistanceResult {
 		aa1 = aa2 = '.';
 	}
 
-	public DistanceResult(AminoAcid aa1, AminoAcid aa2, String trId1, String trId2, double distance) {
+	public DistanceResult(AminoAcid aa1, AminoAcid aa2, Transcript tr1, Transcript tr2, double distance) {
 		this();
 		setAa1(aa1);
 		setAa2(aa2);
-		this.trId1 = trId1;
-		this.trId2 = trId2;
+		setTr1(tr1);
+		setTr2(tr2);
 		this.distance = distance;
 	}
 
@@ -75,6 +78,58 @@ public class DistanceResult {
 	}
 
 	/**
+	 * Convert AA number to genomic coordinate
+	 */
+	int aaNum2ChrPos(Transcript tr, int aaNum, char aa) {
+		if (aaNum < 0) {
+			if (debug) Gpr.debug("Invalid AA number:" + aaNum //
+					+ "\n\tDistanceResult: " + this //
+					+ "\n\tTranscript    : " + tr //
+			);
+			return -1;
+		}
+
+		// Does transcript's AA sequence match the expected AA?
+		String protein = tr.protein();
+		if (protein == null || protein.length() < aaNum) {
+			if (debug) Gpr.debug("Invalid AA number:" //
+					+ "\n\tAA number     : " + aaNum //
+					+ "\n\tProtein length: " + protein.length() //
+					+ "\n\tDistanceResult: " + this //
+					+ "\n\tTranscript    : " + tr //
+			);
+			return -1;
+		}
+
+		// Does transcript's AA sequence match the expected AA?
+		if (protein.charAt(aaNum) != aa) {
+			if (debug) Gpr.debug("AA not matching the expected sequence:" //
+					+ "\n\tAA             :\t" + aa //
+					+ "\n\ttr.protein     :\t" + protein //
+					+ "\n\ttr.protein[" + aaNum + "]:\t" + protein.charAt(aaNum) //
+					+ "\n\tDistanceResult: " + this //
+					+ "\n\tTranscript    : " + tr //
+			);
+			return -1;
+		}
+
+		// Find genomic position based on AA position
+		int aa2pos[] = tr.aaNumber2Pos();
+		if (aa2pos.length <= aaNum) {
+			if (debug) Gpr.debug("AA number out of range in aa2pos[]: " //
+					+ "\n\tAA number        : " + aaNum //
+					+ "\n\ttr.aa2pos.length : " + aa2pos.length //
+					+ "\n\tDistanceResult: " + this //
+					+ "\n\tTranscript       : " + tr //
+			);
+			return -1;
+		}
+
+		// Convert to genomic positions
+		return aa2pos[aaNum];
+	}
+
+	/**
 	 * Compare by genomic position
 	 */
 	public int compareByPos(DistanceResult d) {
@@ -110,6 +165,12 @@ public class DistanceResult {
 				;
 	}
 
+	public boolean hasValidCoords() {
+		return !chr1.isEmpty() && !trId1.isEmpty() && pos1 >= 0 //
+				&& !chr2.isEmpty() && !trId2.isEmpty() && pos2 >= 0 //
+				;
+	}
+
 	public void setAa1(AminoAcid aa) {
 		pdbId = aa.getChain().getParent().getPDBCode();
 		pdbChainId = aa.getChainId();
@@ -122,6 +183,18 @@ public class DistanceResult {
 		pdbChainId = aa.getChainId();
 		aaPos2 = aa.getResidueNumber().getSeqNum() - 1;
 		aa2 = aa.getChemComp().getOne_letter_code().charAt(0);
+	}
+
+	public void setTr1(Transcript tr) {
+		trId1 = tr.getId();
+		chr1 = tr.getChromosomeName();
+		pos1 = aaNum2ChrPos(tr, aaPos1, aa1);
+	}
+
+	public void setTr2(Transcript tr) {
+		trId2 = tr.getId();
+		chr2 = tr.getChromosomeName();
+		pos2 = aaNum2ChrPos(tr, aaPos2, aa2);
 	}
 
 	@Override
