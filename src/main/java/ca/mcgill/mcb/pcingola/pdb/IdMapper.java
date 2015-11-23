@@ -61,28 +61,6 @@ public class IdMapper {
 		imes.stream().forEach(ime -> add(ime));
 	}
 
-	//	/**
-	//	 * Pick "best" entries
-	//	 */
-	//	public Collection<IdMapperEntry> best(DistanceResults distanceResults) {
-	//		// Sort best entries by geneId
-	//		Map<String, List<IdMapperEntry>> map = entries.stream() //
-	//				.sorted((im1, im2) -> compareToBetterMap(distanceResults, im1, im2)) //
-	//				.collect(Collectors.groupingBy(im -> im.geneId)) //
-	//				;
-	//
-	//		// Show
-	//		ArrayList<IdMapperEntry> best = new ArrayList<>();
-	//		map.keySet().forEach(k -> {
-	//			best.add(map.get(k).get(0)); // Add first entry to 'best'
-	//			System.err.println("map\t" + k);
-	//			map.get(k).forEach(im -> System.err.println("\t\t" + im + "\tAA_contacts: " + contacts(distanceResults, im)));
-	//		} //
-	//		);
-	//
-	//		return best;
-	//	}
-
 	/**
 	 * Comparator: Get "best" mappings first
 	 */

@@ -1,8 +1,5 @@
 package ca.mcgill.mcb.pcingola.pdb;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.biojava.bio.structure.AminoAcid;
 
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
@@ -18,21 +15,23 @@ public class DistanceResult {
 	public double distance;
 
 	// Genomic information
-	public String transcriptId;
+	public String trId1, trId2;
 	public String chr1, chr2;
 	public int pos1, pos2;
 
 	public DistanceResult() {
-		pdbId = pdbChainId = transcriptId = chr1 = chr2 = "";
+		pdbId = pdbChainId = trId1 = trId2 = chr1 = chr2 = "";
 		aaPos1 = aaPos2 = pos1 = pos2 = -1;
 		distance = -1;
 		aa1 = aa2 = '.';
 	}
 
-	public DistanceResult(AminoAcid aa1, AminoAcid aa2, double distance) {
+	public DistanceResult(AminoAcid aa1, AminoAcid aa2, String trId1, String trId2, double distance) {
 		this();
 		setAa1(aa1);
 		setAa2(aa2);
+		this.trId1 = trId1;
+		this.trId2 = trId2;
 		this.distance = distance;
 	}
 
@@ -71,7 +70,8 @@ public class DistanceResult {
 			}
 		}
 
-		if (fields.length > n) transcriptId = fields[n++];
+		if (fields.length > n) trId1 = fields[n++];
+		if (fields.length > n) trId2 = fields[n++];
 	}
 
 	/**
@@ -110,42 +110,6 @@ public class DistanceResult {
 				;
 	}
 
-	/**
-	 * Return amino acid pair (sorted)
-	 */
-	public String getAaPair() {
-		return aa1 <= aa2 ? aa1 + "-" + aa2 : aa2 + "-" + aa1;
-	}
-
-	/**
-	 * Return amino acid pair (sorted) + all combinations of annotations
-	 */
-	public List<String> getAaPairAnnotations() {
-		new ArrayList<>();
-
-		throw new RuntimeException("");
-		//		Arrays.stream(annotations1.split(";")) //
-		//				.forEach( //
-		//						ann1 -> Arrays.stream(annotations2.split(";")) //
-		//								.forEach( //
-		//										ann2 -> anns.add(aaPair + "\t" //
-		//												+ (reversed ? ann2 + "\t" + ann1 : ann1 + "\t" + ann2) //
-		//		) //
-		//		) //
-		//		);
-		//
-		//		return anns;
-	}
-
-	/**
-	 * Return transcript ID without sub-version
-	 * E.g.  If trId is 'NM_176795.3'  => return 'NM_176795'
-	 */
-	public String getTrIdNoSub() {
-		int n = transcriptId.indexOf('.');
-		return n > 0 ? transcriptId.substring(0, n) : transcriptId;
-	}
-
 	public void setAa1(AminoAcid aa) {
 		pdbId = aa.getChain().getParent().getPDBCode();
 		pdbChainId = aa.getChainId();
@@ -171,7 +135,8 @@ public class DistanceResult {
 				+ "\t" + aaPos2 //
 				+ "\t" + (!chr1.isEmpty() ? chr1 + ":" + pos1 : "") //
 				+ "\t" + (!chr2.isEmpty() ? chr2 + ":" + pos2 : "") //
-				+ "\t" + transcriptId //
+				+ "\t" + trId1 //
+				+ "\t" + trId2 //
 				;
 	}
 

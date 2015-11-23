@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.biojava.bio.structure.AminoAcid;
 import org.biojava.bio.structure.Atom;
@@ -174,7 +173,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	/**
 	 * Distances within two amino acids within the same chain
 	 */
-	List<DistanceResult> distance(Chain chain) {
+	List<DistanceResult> distance(Chain chain, String trId1, String trId2) {
 		ArrayList<DistanceResult> results = new ArrayList<>();
 		List<AminoAcid> aas = aminoAcids(chain);
 
@@ -189,7 +188,7 @@ public class SnpEffCmdPdb extends SnpEff {
 				if ((Double.isFinite(distanceThreshold) && d <= distanceThreshold) // Amino acids in close distance
 						|| (Double.isFinite(distanceThresholdNon) && (d > distanceThresholdNon)) // Amino acids far apart
 				) {
-					DistanceResult dres = new DistanceResult(aa1, aa2, d);
+					DistanceResult dres = new DistanceResult(aa1, aa2, trId1, trId2, d);
 					results.add(dres);
 					if (verbose) {
 						System.out.println(((d <= distanceThreshold) ? "AA_IN_CONTACT\t" : "AA_NOT_IN_CONTACT\t") //
@@ -206,60 +205,14 @@ public class SnpEffCmdPdb extends SnpEff {
 	/**
 	 * Distances within all chains in a structure
 	 */
-	List<DistanceResult> distance(Structure structure) {
+	List<DistanceResult> distance(Structure structure, String trId1, String trId2) {
 		ArrayList<DistanceResult> results = new ArrayList<>();
 
 		// Distance
 		for (Chain chain : structure.getChains())
-			results.addAll(distance(chain));
+			results.addAll(distance(chain, trId1, trId2));
 
 		return results;
-	}
-
-	//		List<DistanceResult> res = idMapperConfirmed.getEntries().stream() //
-	//				.map(ime -> ime.pdbId) //
-	//				.sorted() //
-	//				.distinct() //
-	//				.parallel() //
-	//				.flatMap(pid -> distanceId(pid)) //
-	//				.collect(Collectors.toList()) //
-	//				;
-
-	/**
-	 * Distances associated with this PDB file
-	 */
-	public List<DistanceResult> distanceFile(String pdbFileName) {
-		try {
-			// Read structure form file
-			PdbFile pdbreader = new PdbFile();
-			if (verbose) System.err.println("Distance: " + pdbFileName);
-			Structure pdbStruct = pdbreader.getStructure(pdbFileName);
-
-			// Does it have associated transcripts?
-			String id = pdbStruct.getPDBCode();
-			if (idMapper.getByPdbId(id) == null) return EMPTY_DISTANCES;
-
-			// Distance
-			return distance(pdbStruct);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return EMPTY_DISTANCES;
-	}
-
-	/**
-	 * Distances associated with this entry
-	 */
-	public Stream<DistanceResult> distanceId(String pdbId) {
-		// Does file exists?
-		String pdbFileName = pdbDir + "/" + pdbId.toLowerCase() + ".pdb";
-		if (!Gpr.exists(pdbFileName)) {
-			Gpr.debug("Cannot open file '" + pdbFileName + "'");
-			return EMPTY_DISTANCES.stream();
-		}
-
-		// Read structure form file
-		return distanceFile(pdbFileName).stream();
 	}
 
 	/**
@@ -279,17 +232,6 @@ public class SnpEffCmdPdb extends SnpEff {
 			}
 
 		return distMin;
-	}
-
-	public Stream<DistanceResult> distanceStream() {
-		// Calculate distances for each one
-		return idMapper.getEntries().stream() //
-				.map(ime -> ime.pdbId) //
-				.sorted() //
-				.distinct() //
-				.parallel() //
-				.flatMap(pid -> distanceId(pid)) //
-				;
 	}
 
 	/**
@@ -569,14 +511,23 @@ public class SnpEffCmdPdb extends SnpEff {
 
 		// Read PDB structure
 		Structure pdbStruct = readPdbFile(pdbFileName);
-		if (!filterPdb(pdbStruct)) return; // Passes filter?
+		if (pdbStruct == null || !filterPdb(pdbStruct)) return; // Passes filter?
 
 		// Check that the entries map to the genome
 		List<IdMapperEntry> idMapConfirmed = checkSequencePdbGenome(pdbStruct, trIds);
 		if (idMapConfirmed == null || idMapConfirmed.isEmpty()) return;
 
 		// Calculate distances
-		distance(pdbStruct);
+		for (IdMapperEntry idmap : idMapConfirmed) {
+			// Get full transcript ID including version (version numbers are removed in the IdMap)
+			Transcript tr = trancriptById.get(idmap.trId);
+			String trId = tr.getId();
+
+			// Note that both transcript IDs are the same in this case because
+			// we are calculating amino acids in contact within the protein
+			distance(pdbStruct, trId, trId);
+		}
+
 	}
 
 	/**
@@ -588,7 +539,8 @@ public class SnpEffCmdPdb extends SnpEff {
 			if (verbose) Timer.showStdErr("Reading PDB file: " + pdbFileName);
 			return pdbreader.getStructure(pdbFileName);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			if (verbose) e.printStackTrace();
+			return null;
 		}
 	}
 
