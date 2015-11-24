@@ -22,7 +22,7 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 
 	private static final long serialVersionUID = 1L;
 
-	boolean debug = true;
+	boolean debug;
 	HashMap<String, Itree> forest;
 
 	public IntervalForest() {
