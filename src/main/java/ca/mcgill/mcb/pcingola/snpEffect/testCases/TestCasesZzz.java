@@ -1,17 +1,9 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.File;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
-import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
-import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
  * Test case
@@ -22,38 +14,25 @@ public class TestCasesZzz extends TestCasesIntegrationBase {
 	public TestCasesZzz() {
 	}
 
-	/**
-	 * Test output order
-	 */
-	@Test
-	public void test_01() {
-		Gpr.debug("Test");
-		List<VcfEntry> vcfEntries = snpEffect("testHg19Chr1", "tests/test_interaction_01.vcf", null, null);
-
-		Set<String> expectedIds = new HashSet<>();
-		expectedIds.add("NM_001048199.2:1A12_A:25_136");
-		expectedIds.add("NM_001048199.2:1A12_B:25_136");
-		expectedIds.add("NM_001048199.2:1A12_C:25_136");
-		expectedIds.add("NM_001269.4:1A12_A:25_136");
-		expectedIds.add("NM_001269.4:1A12_B:25_136");
-		expectedIds.add("NM_001269.4:1A12_C:25_136");
-
-		// Parse and check output
-		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
-
-			int countPi = 0;
-			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (veff.getEffectType() == EffectType.PROTEIN_INTERACTION_LOCUS) {
-					if (verbose) System.out.println("\t" + veff.getEffectType() + "\t" + veff);
-					countPi++;
-
-					String id = veff.getFeatureId();
-					Assert.assertTrue("Unexcpedted ID" + id, expectedIds.contains(id));
-				}
+	int countSequenceBinFiles(String dir) {
+		int count = 0;
+		for (String fn : (new File(dir)).list()) {
+			if (fn.startsWith("sequence") && fn.endsWith(".bin")) {
+				count++;
+				if (verbose) Gpr.debug("Found file (" + count + "): " + fn);
 			}
+		}
 
-			Assert.assertTrue("No PROTEIN_INTERACTION_LOCUS effect found", countPi > 0);
+		return count;
+	}
+
+	void deleteAllBinFiles(String dir) {
+		for (File f : (new File(dir)).listFiles()) {
+			String fn = f.getName();
+			if (fn.startsWith("sequence") && fn.endsWith(".bin")) {
+				if (verbose) Gpr.debug("Deleting file: " + f.getAbsolutePath());
+				f.delete();
+			}
 		}
 	}
 

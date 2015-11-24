@@ -145,30 +145,32 @@ public class TestCasesIntegrationBase {
 	 * Build a genome from a GFF3 file and compare results to 'expected' results
 	 */
 	public SnpEffectPredictor buildGff3AndCompare(String genome, String gff3File, String resultFile, boolean readSeqs, boolean createRandSequences) {
-		String expectedResult = (resultFile == null ? "" : Gpr.readFile(resultFile).trim());
 
 		// Build
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
 		SnpEffPredictorFactoryGff3 fgff3 = new SnpEffPredictorFactoryGff3(config);
 		fgff3.setVerbose(verbose);
-		fgff3.setFileName(gff3File);
+		if (gff3File != null) fgff3.setFileName(gff3File);
 		fgff3.setReadSequences(readSeqs);
 		fgff3.setCreateRandSequences(createRandSequences);
 		fgff3.setRandom(new Random(20140410)); // Note: we want consistent results in our test cases, so we always initialize the random generator in the same way
 
 		SnpEffectPredictor sep = fgff3.create();
 
-		// Compare result
-		String result = showTranscripts(sep.getGenome()).trim();
+		if (resultFile != null) {
+			// Compare result
+			String result = showTranscripts(sep.getGenome()).trim();
+			String expectedResult = Gpr.readFile(resultFile).trim();
 
-		// Remove spaces and compare
-		String erNs = Gpr.noSpaces(expectedResult);
-		String rNs = Gpr.noSpaces(result);
-		if (verbose || !erNs.equals(rNs)) {
-			System.out.println("Result:\n----------\n" + result + "\n----------\n");
-			System.out.println("Expected (" + resultFile + "):\n----------\n" + expectedResult + "\n----------\n");
+			// Remove spaces and compare
+			String erNs = Gpr.noSpaces(expectedResult);
+			String rNs = Gpr.noSpaces(result);
+			if (verbose || !erNs.equals(rNs)) {
+				System.out.println("Result:\n----------\n" + result + "\n----------\n");
+				System.out.println("Expected (" + resultFile + "):\n----------\n" + expectedResult + "\n----------\n");
+			}
+			Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 		}
-		Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 
 		return sep;
 	}

@@ -69,8 +69,8 @@ public class ChromosomeSimpleName {
 				}
 			}
 
-			// Remove left zeros and trim spaces
-			chr = removePrefix(chr, "0");
+			// Remove left zeros (unless the name is '0') and trim spaces
+			if (!chr.equals("0")) chr = removePrefix(chr, "0");
 			chr = chr.trim();
 
 		} while (!chr.equals(chrPrev));

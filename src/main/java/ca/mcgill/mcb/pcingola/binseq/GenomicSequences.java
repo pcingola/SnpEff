@@ -3,8 +3,11 @@ package ca.mcgill.mcb.pcingola.binseq;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
+import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Exon;
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Genome;
@@ -34,10 +37,12 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 
 	private static final long serialVersionUID = 2339867422366567569L;
 	public static final int MAX_ITERATIONS = 1000000;
+	public static final int CHR_LEN_SEPARATE_FILE = 1000 * 1000; // Minimum chromosome length to be saved to a separate file
 
 	public static boolean debug = false;
 	public static boolean verbose = false;
 
+	boolean allSmallLoaded; // Have all "small" chromosomes been loaded? (i.e. have we already loaded 'sequence.bin' file?)
 	boolean disableLoad = false; // Do not load sequences from disk. Used minly for test cases
 	Genome genome; // Reference genome
 	IntervalForest intervalForest; // This is an interval forest of 'MarkerSeq' (genomic markers that have sequences)
@@ -224,7 +229,44 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	}
 
 	/**
-	 * Load sequences from databases
+	 * Load sequences for all 'small chromosomes" (from "sequence.bin" file)
+	 */
+	public synchronized boolean load() {
+		if (disableLoad) return false; // Loading form database disabled?
+		if (allSmallLoaded) return false;
+
+		// File does not exists?  Cannot load...
+		String fileName = Config.get().getFileNameSequence();
+		if (!Gpr.exists(fileName)) {
+			if (Config.get().isDebug()) Timer.showStdErr("Attempting to load sequences from file '" + fileName + "' failed, nothing done.");
+			return false;
+		}
+
+		// Load markers
+		if (verbose) Timer.showStdErr("Loading sequences from file '" + fileName + "'");
+		Markers markers = new Markers();
+		Set<Itree> toBuild = new HashSet<>();
+		markers.load(fileName, genome);
+		for (Marker m : markers) {
+			if (m instanceof Genome || m instanceof Chromosome) continue;
+			Itree tree = intervalForest.getOrCreateTreeChromo(m.getChromosomeName());
+			tree.add(m);
+			toBuild.add(tree);
+		}
+
+		// Build all trees
+		for (Itree itree : toBuild) {
+			if (itree.getIntervals().size() > 0 && verbose) Timer.showStdErr("Building sequence tree for chromosome '" + itree.getIntervals().get(0).getChromosomeName() + "'");
+			itree.build();
+
+		}
+
+		allSmallLoaded = true;
+		return true;
+	}
+
+	/**
+	 * Load sequences for a single chromosome (from "sequence.chr.bin" file)
 	 */
 	public synchronized boolean load(String chr) {
 		// Already loaded?
@@ -253,7 +295,13 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	 */
 	public synchronized boolean loadOrCreateFromGenome(String chr) {
 		if (hasChromosome(chr)) return true;
-		if (load(chr)) return true;
+
+		if (load(chr)) return true; // Loaded form 'separate' file
+		else {
+			// Try loading form bundled file (small chromosomes)
+			load();
+		}
+
 		return addExonSequences(chr);
 	}
 
@@ -315,12 +363,37 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	public void save(Config config) {
 		if (isEmpty()) return; // Nothing to do
 
+		// Sort chromomse names
 		ArrayList<String> chrNames = new ArrayList<String>();
 		chrNames.addAll(intervalForest.keySet());
 		Collections.sort(chrNames);
 
-		for (String chr : chrNames)
-			save(chr);
+		// Save 'long' chromsomes in separate files
+		Genome genome = config.getGenome();
+		ArrayList<String> toSaveOneFile = new ArrayList<String>();
+		for (String chrName : chrNames) {
+			int seqLen = sequenceLen(chrName);
+			if (seqLen >= CHR_LEN_SEPARATE_FILE) save(chrName); // Save in separate file
+			else toSaveOneFile.add(chrName); // Save all small chromosomes in one file
+		}
+
+		// Save all remaining ones in one file
+		if (!toSaveOneFile.isEmpty()) {
+			Markers markers = new Markers();
+			markers.add(genome);
+
+			for (String chrName : toSaveOneFile) {
+				if (intervalForest.hasTree(chrName)) {
+					Itree tree = intervalForest.getTreeChromo(chrName);
+					markers.addAll(tree.getIntervals());
+				}
+			}
+
+			// Save to file
+			String fileName = Config.get().getFileNameSequence();
+			if (verbose) Timer.showStdErr("Saving sequences for small chromosmes to file '" + fileName + "'");
+			markers.save(fileName);
+		}
 	}
 
 	/**
@@ -337,6 +410,24 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 		String fileName = Config.get().getFileNameSequence(chr);
 		if (verbose) Timer.showStdErr("Saving sequences for chromosome '" + chr + "' to file '" + fileName + "'");
 		tree.getIntervals().save(fileName, chr);
+	}
+
+	/**
+	 * Length of all sequences in chromosome 'chr'
+	 */
+	int sequenceLen(String chr) {
+		Itree tree = intervalForest.getTreeChromo(chr);
+		if (tree == null) return 0;
+
+		int size = 0;
+		for (Marker m : tree.getIntervals()) {
+			if (m instanceof MarkerSeq) {
+				MarkerSeq ms = (MarkerSeq) m;
+				size += ms.getSequence().length();
+			}
+		}
+
+		return size;
 	}
 
 	public void setDisableLoad(boolean disableLoad) {

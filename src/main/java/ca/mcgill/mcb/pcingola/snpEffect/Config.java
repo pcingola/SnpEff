@@ -336,10 +336,13 @@ public class Config implements Serializable, Iterable<String> {
 		return getDirDataVersion() + "/protein.fa";
 	}
 
+	public String getFileNameSequence() {
+		return getBaseFileNameSequence() + ".bin";
+	}
+
 	public String getFileNameSequence(String chr) {
 		String chrNameSafe = Gpr.sanityzeFileName(chr);
 		return getBaseFileNameSequence() + "." + chrNameSafe + ".bin";
-
 	}
 
 	public String getFileSnpEffectPredictor() {

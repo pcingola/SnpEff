@@ -735,7 +735,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("pdb") //
-		// Obselete stuuff (from T2D projects)
+		// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 		) {
 			command = args[argNum++].trim().toLowerCase();

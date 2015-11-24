@@ -31,6 +31,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFasta;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFileIndexChrPos;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFisherExactTest;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesGenePvalueList;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesGenomicSequences;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesGenotypeVector;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvs;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesHgvsDnaDup;
@@ -91,6 +92,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesFileIndexChrPos.class, //
 		TestCasesFisherExactTest.class, //
 		TestCasesGenePvalueList.class, //
+		TestCasesGenomicSequences.class, //
 		TestCasesGenotypeVector.class, //
 		TestCasesIntervalTree.class, //
 		TestCasesIntervalTreeOri.class, //
