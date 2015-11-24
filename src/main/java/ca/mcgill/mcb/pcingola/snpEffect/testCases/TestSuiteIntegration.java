@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesAnn;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegratioAnnInteract;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationApply;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationCancer;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationCircularGenome;
@@ -61,6 +62,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntegrationMark
  */
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesAnn.class, //
+		TestCasesIntegratioAnnInteract.class, //
 		TestCasesIntegrationApply.class, //
 		TestCasesIntegrationCancer.class, //
 		TestCasesIntegrationCircularGenome.class, //
@@ -111,5 +113,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntegrationMark
 		TestCasesIntegrationSnpEff.class, //
 		TestCasesIntegrationSnpEffMultiThread.class, //
 })
+
 public class TestSuiteIntegration {
 }

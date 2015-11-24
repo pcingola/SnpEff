@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.integration;
 
 import java.util.HashSet;
 import java.util.List;
@@ -8,23 +8,18 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 /**
- * Test case
- *
+ * Test cases for annotation of protein interaction loci
  */
-public class TestCasesZzz extends TestCasesIntegrationBase {
+public class TestCasesIntegratioAnnInteract extends TestCasesIntegrationBase {
 
-	public TestCasesZzz() {
+	public TestCasesIntegratioAnnInteract() {
 	}
 
-	/**
-	 * Test output order
-	 */
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
