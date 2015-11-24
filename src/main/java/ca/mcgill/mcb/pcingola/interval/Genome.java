@@ -419,7 +419,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 		for (Marker m : markerSerializer.getNextFieldMarkers())
 			add((Chromosome) m);
-
 	}
 
 	/**

@@ -394,6 +394,35 @@ public class Markers implements Serializable, Collection<Marker> {
 		markerSerializer.save(fileName, markersToSave);
 	}
 
+	/**
+	 * Save to a file using a serializer
+	 * Only save one chromosome ('chr')
+	 * Note: This is used to save only markers related to one
+	 * chromosome (e.g. when saving GenomicSequences)
+	 */
+	public void save(String fileName, String chr) {
+		// Nothing to save
+		if (size() <= 0) return;
+
+		// Create a set of all markers to be saved
+		Markers markersToSave = new Markers();
+
+		// Add genome
+		Genome genome = markers.get(0).getGenome();
+
+		// Add only chromosome 'chr'
+		markersToSave.add(genome.getChromosome(chr));
+
+		// Add markers
+		for (Marker m : markers)
+			markersToSave.add(m);
+
+		// Save
+		MarkerSerializer markerSerializer = new MarkerSerializer(genome);
+		markerSerializer.doNotSave(genome);
+		markerSerializer.save(fileName, markersToSave);
+	}
+
 	@Override
 	public int size() {
 		return markers.size();

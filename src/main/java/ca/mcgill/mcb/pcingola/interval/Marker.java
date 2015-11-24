@@ -534,14 +534,6 @@ public class Marker extends Interval implements TxtSerializable {
 		strandMinus = markerSerializer.getNextFieldBoolean();
 	}
 
-	//	/**
-	//	 * Reset marker dependencies (e.g. sub-markers)
-	//	 * Typically called after a 'Marker.apply(Variant)'
-	//	 */
-	//	public void reset() {
-	//		// Default: Do nithing
-	//	}
-
 	/**
 	 * Create a string to serialize to a file
 	 */

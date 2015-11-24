@@ -240,7 +240,6 @@ public class MarkerSeq extends Marker {
 
 	/**
 	 * Create a string to serialize to a file
-	 * @return
 	 */
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {

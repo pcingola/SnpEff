@@ -336,7 +336,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 		Itree tree = intervalForest.getTreeChromo(chr);
 		String fileName = Config.get().getFileNameSequence(chr);
 		if (verbose) Timer.showStdErr("Saving sequences for chromosome '" + chr + "' to file '" + fileName + "'");
-		tree.getIntervals().save(fileName);
+		tree.getIntervals().save(fileName, chr);
 	}
 
 	public void setDisableLoad(boolean disableLoad) {
