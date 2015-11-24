@@ -513,6 +513,7 @@ public class Config implements Serializable, Iterable<String> {
 	public SnpEffectPredictor loadSnpEffectPredictor() {
 		snpEffectPredictor = SnpEffectPredictor.load(this);
 		genome = snpEffectPredictor.genome; // WARNING: 'genome' object get replaced upon loading a snpEffectPredictor (this might have dangerous side effects)
+		snpEffectPredictor.setDebug(debug);
 		return snpEffectPredictor;
 	}
 

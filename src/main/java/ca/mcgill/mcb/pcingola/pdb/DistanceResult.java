@@ -163,6 +163,15 @@ public class DistanceResult {
 				;
 	}
 
+	public String getId() {
+		return trId1 //
+				+ (!trId2.equals(trId1) ? ":" + trId2 : "") // Ommit if it's the same transcript
+				+ ":" + pdbId // PDB ID
+				+ "_" + pdbChainId // PDB chain name
+				+ ":" + (aaPos1 + 1) // AA number (one-based)
+				+ "_" + (aaPos2 + 1); // AA number (one-based)
+	}
+
 	public boolean hasValidCoords() {
 		return !chr1.isEmpty() && !trId1.isEmpty() && pos1 >= 0 //
 				&& !chr2.isEmpty() && !trId2.isEmpty() && pos2 >= 0 //

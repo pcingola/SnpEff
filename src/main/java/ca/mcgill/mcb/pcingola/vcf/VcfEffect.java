@@ -12,6 +12,7 @@ import ca.mcgill.mcb.pcingola.interval.Intron;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
+import ca.mcgill.mcb.pcingola.interval.ProteinInteractionLocus;
 import ca.mcgill.mcb.pcingola.interval.Regulation;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
@@ -983,6 +984,9 @@ public class VcfEffect {
 				Motif motif = (Motif) marker;
 				featureType = motif.getPwmName();
 				featureId = motif.getPwmId();
+			} else if (marker instanceof ProteinInteractionLocus) {
+				featureType = "interaction";
+				featureId = marker.getId();
 			} else if (tr != null) {
 				featureType = "transcript";
 				featureId = transcriptId = tr.getId();
@@ -1018,6 +1022,14 @@ public class VcfEffect {
 			if (intron != null) {
 				rank = intron.getRank();
 				rankMax = Math.max(0, tr.numChilds() - 1);
+			} else if (tr != null) {
+				// Can we try to find an exon?
+				for (Exon e : tr)
+					if (e.intersects(marker)) {
+						rank = e.getRank();
+						rankMax = tr.numChilds();
+						break;
+					}
 			}
 		}
 

@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	Map<String, Transcript> trancriptById;
 	Collection<String> pdbFileNames;
 	BufferedWriter outpufFile;
+	Set<String> saved;
 
 	public SnpEffCmdPdb() {
 	}
@@ -171,6 +173,7 @@ public class SnpEffCmdPdb extends SnpEff {
 		try {
 			if (outpufFile != null) outpufFile.close();
 			outpufFile = null;
+			saved = null;
 		} catch (IOException e) {
 			throw new RuntimeEOFException("Error closing output file", e);
 		}
@@ -426,6 +429,7 @@ public class SnpEffCmdPdb extends SnpEff {
 		try {
 			if (verbose) Timer.showStdErr("Saving results to database file '" + fileName + "'");
 			outpufFile = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(new File(fileName)))));
+			saved = new HashSet<String>();
 		} catch (IOException e) {
 			throw new RuntimeEOFException("Error opening output file '" + fileName + "'", e);
 		}
@@ -596,7 +600,12 @@ public class SnpEffCmdPdb extends SnpEff {
 	void save(List<DistanceResult> distResults) {
 		for (DistanceResult d : distResults)
 			try {
-				outpufFile.write(d.toString() + "\n");
+				String dstr = d.toString();
+
+				if (!saved.contains(dstr)) {
+					outpufFile.write(dstr + "\n");
+					saved.add(dstr);
+				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

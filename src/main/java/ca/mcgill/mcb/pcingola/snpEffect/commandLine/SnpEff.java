@@ -14,6 +14,7 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
+import ca.mcgill.mcb.pcingola.interval.ProteinInteractionLocus;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.TranscriptSupportLevel;
@@ -21,6 +22,7 @@ import ca.mcgill.mcb.pcingola.logStatsServer.LogStats;
 import ca.mcgill.mcb.pcingola.logStatsServer.VersionCheck;
 import ca.mcgill.mcb.pcingola.motif.Jaspar;
 import ca.mcgill.mcb.pcingola.motif.Pwm;
+import ca.mcgill.mcb.pcingola.pdb.DistanceResult;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
@@ -88,6 +90,7 @@ public class SnpEff implements CommandLine {
 	protected boolean hgvsOneLetterAa = false; // Use 1-letter AA codes in HGVS.p notation?
 	protected boolean hgvsShift = true; // Shift variants towards the 3-prime end of the transcript
 	protected boolean hgvsTrId = false; // Use full transcript version in HGVS notation?
+	protected boolean interaction = true; // Use interaction loci information if available
 	protected boolean log; // Log to server (statistics)
 	protected boolean motif = true; // Annotate using motifs
 	protected boolean multiThreaded = false; // Use multiple threads
@@ -440,6 +443,9 @@ public class SnpEff implements CommandLine {
 		// Load Motif databases
 		if (motif) loadMotif();
 
+		// Load Motif databases
+		if (interaction) loadInteractions();
+
 		// Build tree
 		if (verbose) Timer.showStdErr("Building interval forest");
 		config.getSnpEffectPredictor().buildForest();
@@ -459,6 +465,54 @@ public class SnpEff implements CommandLine {
 
 		genome = config.getSnpEffectPredictor().getGenome();
 		genome.getGenomicSequences().setVerbose(verbose);
+	}
+
+	/**
+	 * Load protein interaction database
+	 */
+	void loadInteractions() {
+		//---
+		// Sanity checks
+		//---
+		String intFileName = config.getDirDataVersion() + "/" + SnpEffCmdPdb.PROTEIN_INTERACTION_FILE;
+		if (!Gpr.exists(intFileName)) {
+			if (debug) if (!Gpr.exists(intFileName)) warning("Warning: Cannot open interactions file ", intFileName);
+			return;
+		}
+
+		// Build transcript map
+		HashMap<String, Transcript> id2tr = new HashMap<>();
+		SnpEffectPredictor sep = config.getSnpEffectPredictor();
+		Genome genome = sep.getGenome();
+		for (Gene g : genome.getGenes())
+			for (Transcript tr : g)
+				id2tr.put(tr.getId(), tr);
+
+		//---
+		// Load all interactions
+		//---
+		if (verbose) Timer.showStdErr("\tLoading interactions from : " + intFileName);
+		String lines[] = Gpr.readFile(intFileName, true).split("\n");
+		int count = 0, countSkipped = 0;
+		for (String line : lines) {
+			DistanceResult dres = new DistanceResult(line);
+			Chromosome chr1 = genome.getChromosome(dres.chr1);
+			Chromosome chr2 = genome.getChromosome(dres.chr2);
+			Transcript tr1 = id2tr.get(dres.trId1);
+			Transcript tr2 = id2tr.get(dres.trId2);
+
+			// All chromosomes and transcript found? => Add entries
+			if (chr1 != null && chr2 != null && tr1 != null && tr2 != null) {
+				// We need to add two markers (one for each "side" of the interaction
+				String id = dres.getId();
+				sep.addPerTranscript(dres.trId1, new ProteinInteractionLocus(tr1, dres.pos1, id));
+				sep.addPerTranscript(dres.trId2, new ProteinInteractionLocus(tr2, dres.pos2, id));
+
+				count++;
+			} else countSkipped++;
+		}
+
+		if (verbose) Timer.showStdErr("\tInteractions: " + count + " added, " + countSkipped + " skipped.");
 	}
 
 	/**
@@ -738,6 +792,10 @@ public class SnpEff implements CommandLine {
 					if (command.isEmpty()) usage(null); // Help was invoked without a specific command: Show generic help
 					break;
 
+				case "-interaction":
+					interaction = true; // Use interaction database
+					break;
+
 				case "-interval":
 					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
 					else usage("Option '-interval' without config interval_file argument");
@@ -747,12 +805,17 @@ public class SnpEff implements CommandLine {
 					if ((i + 1) < args.length) maxTranscriptSupportLevel = TranscriptSupportLevel.parse(args[++i]);
 					else usage("Option '-maxTSL' without config transcript_support_level argument");
 					break;
+
 				case "-motif":
 					motif = true; // Use motif database
 					break;
 
 				case "-nogenome":
 					noGenome = true; // Do not load genome
+					break;
+
+				case "-nointeraction":
+					interaction = false; // Do not use interaction database
 					break;
 
 				case "-nomotif":
@@ -1096,6 +1159,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.hgvsOneLetterAa = hgvsOneLetterAa;
 		snpEffCmd.hgvsShift = hgvsShift;
 		snpEffCmd.hgvsTrId = hgvsTrId;
+		snpEffCmd.interaction = interaction;
 		snpEffCmd.log = log;
 		snpEffCmd.motif = motif;
 		snpEffCmd.maxTranscriptSupportLevel = maxTranscriptSupportLevel;
@@ -1167,11 +1231,13 @@ public class SnpEff implements CommandLine {
 	protected void usageDb() {
 		System.err.println("\nDatabase options:");
 		System.err.println("\t-canon                       : Only use canonical transcripts.");
+		System.err.println("\t-interaction                 : Annotate using inteactions (requires interaciton database). Default: " + interaction);
 		System.err.println("\t-interval <file>             : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
 		System.err.println("\t-maxTSL <TSL_number>         : Only use transcripts having Transcript Support Level lower than <TSL_number>.");
-		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database).");
+		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database). Default: " + motif);
 		System.err.println("\t-nextProt                    : Annotate using NextProt (requires NextProt database).");
 		System.err.println("\t-noGenome                    : Do not load any genomic database (e.g. annotate using custom files).");
+		System.err.println("\t-noInteraction               : Disable inteaction annotations");
 		System.err.println("\t-noMotif                     : Disable motif annotations.");
 		System.err.println("\t-noNextProt                  : Disable NextProt annotations.");
 		System.err.println("\t-onlyReg                     : Only use regulation tracks.");

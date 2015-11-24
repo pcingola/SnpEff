@@ -1,17 +1,19 @@
 package ca.mcgill.mcb.pcingola.snpEffect.testCases;
 
+import java.util.List;
+
 import org.junit.Test;
 
-import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
-import junit.framework.Assert;
 
 /**
  * Test case
  *
  */
-public class TestCasesZzz {
+public class TestCasesZzz extends TestCasesIntegrationBase {
 
 	boolean verbose = true;
 
@@ -19,33 +21,22 @@ public class TestCasesZzz {
 
 	}
 
+	/**
+	 * Test output order
+	 */
 	@Test
-	public void test_23_VcfUnsorted() {
+	public void test_01() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/out_of_order.vcf";
+		verbose = true;
+		List<VcfEntry> vcfEntries = snpEffect("testHg19Chr1", "tests/test_interaction_01.vcf", null, null);
 
-		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
-		vcf.setErrorIfUnsorted(true);
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve);
 
-		boolean errorFound = false;
-		String expectedErrorMessage = "VCF file 'tests/out_of_order.vcf' is not sorted, genomic position 20:2622038 is before 20:2621729";
-		try {
-			for (VcfEntry ve : vcf) {
-				if (verbose) System.out.println(ve);
-			}
-		} catch (Throwable e) {
-			errorFound = e.getMessage().startsWith(expectedErrorMessage);
-			if (verbose) e.printStackTrace();
-
-			if (!errorFound) {
-				Gpr.debug("Error messages differ:" //
-						+ "\n\tExpected : '" + expectedErrorMessage + "'" //
-						+ "\n\tActual   : '" + e.getMessage() + "'" //
-				);
+			for (VcfEffect veff : ve.getVcfEffects()) {
+				if (verbose) System.out.println("\t" + veff);
 			}
 		}
-
-		Assert.assertTrue(errorFound);
 	}
 
 }
