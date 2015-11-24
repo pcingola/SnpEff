@@ -319,10 +319,8 @@ public class MarkerSerializer {
 			outFile.print(SnpEff.SOFTWARE_NAME + "\t" + SnpEff.VERSION_MAJOR + "\n");
 
 			// Serialize all markers
-			for (Marker m : markers) {
-				if (m instanceof Chromosome) Gpr.debug("CHROMO: " + m);
+			for (Marker m : markers)
 				save(m);
-			}
 
 			outFile.close();
 		} catch (IOException e) {
