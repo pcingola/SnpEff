@@ -480,7 +480,7 @@ public class SnpEffCmdPdb extends SnpEff {
 					break;
 
 				case "-pdbdir":
-					if ((i + 1) < args.length) idMapFile = args[++i];
+					if ((i + 1) < args.length) pdbDir = args[++i];
 					else usage("Missing parameter in '-pdbDir'");
 					break;
 
