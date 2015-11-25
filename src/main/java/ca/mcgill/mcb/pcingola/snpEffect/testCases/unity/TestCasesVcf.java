@@ -284,13 +284,26 @@ public class TestCasesVcf extends TestCasesBase {
 	}
 
 	@Test
-	public void test_14_OutputFormatter_AddInfo() {
+	public void test_14_VcfInfoKey() {
+		Gpr.debug("Test");
+		new VcfOutputFormatter((List<VcfEntry>) null);
+		String testIn[] = { "Hi ", "Hi how;", "Hi how;are|", "Hi how;are|you,", "Hi how;are|you,doing=", "Hi how;are|you,doing=today(.)", ".ann" };
+		String testOut[] = { "Hi_", "Hi_how_", "Hi_how_are_", "Hi_how_are_you_", "Hi_how_are_you_doing_", "Hi_how_are_you_doing_today_._", "_.ann" };
+		for (int i = 0; i < testIn.length; i++) {
+			String safe = VcfEntry.vcfInfoValueSafe(testIn[i]);
+			if (verbose) System.out.println("'" + testIn[i] + "'\t'" + safe + "'\t'" + testOut[i] + "'");
+			Assert.assertEquals(testOut[i], safe);
+		}
+	}
+
+	@Test
+	public void test_14_VcfInfoValue() {
 		Gpr.debug("Test");
 		new VcfOutputFormatter((List<VcfEntry>) null);
 		String testIn[] = { "Hi ", "Hi how;", "Hi how;are|", "Hi how;are|you,", "Hi how;are|you,doing=", "Hi how;are|you,doing=today(.)" };
 		String testOut[] = { "Hi_", "Hi_how_", "Hi_how_are_", "Hi_how_are_you_", "Hi_how_are_you_doing_", "Hi_how_are_you_doing_today_._" };
 		for (int i = 0; i < testIn.length; i++) {
-			String safe = VcfEntry.vcfInfoSafe(testIn[i]);
+			String safe = VcfEntry.vcfInfoValueSafe(testIn[i]);
 			if (verbose) System.out.println("'" + testIn[i] + "'\t'" + safe + "'\t'" + testOut[i] + "'");
 			Assert.assertEquals(testOut[i], safe);
 		}
@@ -617,6 +630,19 @@ public class TestCasesVcf extends TestCasesBase {
 		}
 
 		Assert.assertEquals(1, countVariants);
+	}
+
+	@Test
+	public void test_32_VcfInfoKeyNames() {
+		String keysPass[] = { "ANN", "ann9", "a9nn", "ann_", "a_nn", "_ann", "ann.gene" };
+		String keysFail[] = { "ann+", "9ann", ".gene" };
+
+		for (String key : keysPass) {
+			Assert.assertTrue("String '" + key + "' should be a valid INFO key", VcfEntry.isValidInfoKey(key));
+		}
+
+		for (String key : keysFail)
+			Assert.assertFalse("String '" + key + "' should be an invalid INFO key", VcfEntry.isValidInfoKey(key));
 	}
 
 }

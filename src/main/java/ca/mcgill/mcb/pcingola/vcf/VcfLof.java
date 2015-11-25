@@ -103,8 +103,8 @@ public class VcfLof {
 	@Override
 	public String toString() {
 		return String.format("(%s|%s|%d|%.2f)" //
-				, VcfEntry.vcfInfoSafe(geneName) //
-				, VcfEntry.vcfInfoSafe(geneId) //
+				, VcfEntry.vcfInfoValueSafe(geneName) //
+				, VcfEntry.vcfInfoValueSafe(geneId) //
 				, numTranscripts //
 				, percentAffected //
 				);

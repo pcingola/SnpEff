@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ca.mcgill.mcb.pcingola.align.VcfRefAltAlign;
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
@@ -34,6 +36,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	public static final double ALLELE_FEQUENCY_COMMON = 0.05;
 	public static final double ALLELE_FEQUENCY_LOW = 0.01;
+
+	public static final Pattern INFO_KEY_PATTERN = Pattern.compile("[\\p{Alpha}_][\\p{Alnum}._]*");
 
 	public static final String VCF_INFO_END = "END"; // Imprecise variants
 
@@ -100,6 +104,15 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
+	 * Make sure the INFO key matches the regular
+	 * expression (as specified in VCF spec 4.3)
+	 */
+	public static boolean isValidInfoKey(String key) {
+		Matcher m = INFO_KEY_PATTERN.matcher(key);
+		return m.matches();
+	}
+
+	/**
 	 * Check that this value can be added to an INFO field
 	 * @return true if OK, false if invalid value
 	 */
@@ -109,10 +122,20 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
-	 * Return a string safe to be used in an 'INFO' field (VCF file)
+	 * Return a string safe to be used in an 'INFO' field key
 	 */
-	public static String vcfInfoSafe(String str) {
-		//			return str.replaceAll("(\\s|;|,)+", "_");
+	public static String vcfInfoKeySafe(String str) {
+		if (str == null) return str;
+		str = str.replaceAll("[^a-zA-Z0-9_.]", "_");
+		char c0 = str.charAt(0);
+		if (c0 != '_' && !Character.isAlphabetic(c0)) str = '_' + str;
+		return str;
+	}
+
+	/**
+	 * Return a string safe to be used in an 'INFO' field value
+	 */
+	public static String vcfInfoValueSafe(String str) {
 		if (str == null) return str;
 		return str.replaceAll("[ ,;|=()\t]", "_");
 	}
@@ -167,28 +190,29 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	/**
 	 * Add a "key=value" tuple the info field
 	 *
-	 * @param name : INFO key name
+	 * @param key : INFO key name
 	 * @param value : Can be null if it is a boolean field.
 	 */
-	public void addInfo(String name, String value) {
-		if (!isValidInfoValue(name) || !isValidInfoValue(value)) throw new RuntimeException("No white-space, semi-colons, or equals-signs are permitted in INFO field. Name:\"" + name + "\" Value:\"" + value + "\"");
+	public void addInfo(String key, String value) {
+		if (!isValidInfoKey(key)) throw new RuntimeException("Illegal INFO key / name. Key: \"" + key + "\" does not match regular expression ^[A-Za-z_][0-9A-Za-z_.]*$");
+		if (!isValidInfoValue(value)) throw new RuntimeException("No white-space, semi-colons, or equals-signs are permitted in INFO field values. Name:\"" + key + "\" Value:\"" + value + "\"");
 
 		// Remove previous 'key' for INFO field?
-		removeInfo(name);
+		removeInfo(key);
 
 		// Is this a 'flag'?
 		boolean isFlag = false;
 		VcfHeader vcfHeader = vcfFileIterator.getVcfHeader();
 		if (vcfHeader != null) {
-			VcfHeaderInfo vcfHeaderInfo = vcfFileIterator.getVcfHeader().getVcfInfo(name);
+			VcfHeaderInfo vcfHeaderInfo = vcfFileIterator.getVcfHeader().getVcfInfo(key);
 			isFlag = (vcfHeaderInfo != null) && (vcfHeaderInfo.getVcfInfoType() == VcfInfoType.Flag);
 		}
 
 		// Add to info hash (if available)
-		if (info != null) info.put(name, value);
+		if (info != null) info.put(key, value);
 
 		// Append value to infoStr
-		String addInfoStr = name + (value != null && !isFlag ? "=" + value : ""); // String to append
+		String addInfoStr = key + (value != null && !isFlag ? "=" + value : ""); // String to append
 		if ((infoStr == null) || infoStr.isEmpty()) infoStr = addInfoStr;
 		else {
 			if (!infoStr.endsWith(SUB_FIELD_SEP)) infoStr += SUB_FIELD_SEP; // Do we need to add a semicolon?

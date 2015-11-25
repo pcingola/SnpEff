@@ -135,7 +135,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 						// Get cDNA position
 						int pos = tr.isStrandMinus() ? variant.getStart() : variant.getEnd(); // First base in cDNA
 						int cdnaIdx = tr.baseNumber2MRnaPos(pos) + 1; // Which cDNA base number?
-						if (cdnaIdx > 0) sb.append("(" + VcfEntry.vcfInfoSafe(tr.getId()) + "|" + cdnaIdx + ")");
+						if (cdnaIdx > 0) sb.append("(" + VcfEntry.vcfInfoValueSafe(tr.getId()) + "|" + cdnaIdx + ")");
 
 						oicr.add(sb.toString());
 					}
@@ -177,8 +177,8 @@ public class VcfOutputFormatter extends OutputFormatter {
 				if (variantEffect.hasAdditionalAnnotations()) {
 					Custom custom = (Custom) variantEffect.getMarker();
 					for (KeyValue<String, String> kv : custom) {
-						String key = VcfEntry.vcfInfoSafe(custom.getLabel() + "_" + kv.key);
-						String value = VcfEntry.vcfInfoSafe(kv.value);
+						String key = VcfEntry.vcfInfoValueSafe(custom.getLabel() + "_" + kv.key);
+						String value = VcfEntry.vcfInfoValueSafe(kv.value);
 						vcfEntry.addInfo(key, value);
 					}
 				}

@@ -151,7 +151,7 @@ public class VcfEffect {
 	 * Add subfield to a buffer
 	 */
 	void add(StringBuilder sb, Object obj) {
-		if (obj != null) sb.append(VcfEntry.vcfInfoSafe(obj.toString()));
+		if (obj != null) sb.append(VcfEntry.vcfInfoValueSafe(obj.toString()));
 		sb.append("|");
 	}
 
@@ -272,7 +272,7 @@ public class VcfEffect {
 			Transcript tr = variantEffect.getTranscript();
 			if (gene != null) {
 				// Gene name
-				effBuff.append(VcfEntry.vcfInfoSafe(useGeneId ? geneId : geneName));
+				effBuff.append(VcfEntry.vcfInfoValueSafe(useGeneId ? geneId : geneName));
 				effBuff.append("|");
 
 				// Transcript biotype
@@ -292,12 +292,12 @@ public class VcfEffect {
 				effBuff.append("|" + reg.getCellType() + "||");
 			} else if (variantEffect.isCustom()) {
 				Marker m = variantEffect.getMarker();
-				if (m != null) effBuff.append("|" + VcfEntry.vcfInfoSafe(m.getId()) + "||");
+				if (m != null) effBuff.append("|" + VcfEntry.vcfInfoValueSafe(m.getId()) + "||");
 				else effBuff.append("|||");
 			} else effBuff.append("|||");
 		} else {
 			// No variantEffect? Use parsed information
-			effBuff.append(VcfEntry.vcfInfoSafe(useGeneId ? geneId : geneName));
+			effBuff.append(VcfEntry.vcfInfoValueSafe(useGeneId ? geneId : geneName));
 			effBuff.append("|");
 			effBuff.append(bioType);
 			effBuff.append("|");
@@ -306,7 +306,7 @@ public class VcfEffect {
 		}
 
 		// Add transcript info
-		effBuff.append(VcfEntry.vcfInfoSafe(transcriptId));
+		effBuff.append(VcfEntry.vcfInfoValueSafe(transcriptId));
 		effBuff.append("|");
 
 		// Add exon (or intron) rank info
