@@ -505,8 +505,10 @@ public class SnpEff implements CommandLine {
 			if (chr1 != null && chr2 != null && tr1 != null && tr2 != null) {
 				// We need to add two markers (one for each "side" of the interaction
 				String id = dres.getId();
-				sep.addPerGene(dres.trId1, new ProteinInteractionLocus(tr1, dres.pos1, id));
-				sep.addPerGene(dres.trId2, new ProteinInteractionLocus(tr2, dres.pos2, id));
+				String geneId1 = tr1.getParent().getId();
+				String geneId2 = tr2.getParent().getId();
+				sep.addPerGene(geneId1, new ProteinInteractionLocus(tr1, dres.pos1, id));
+				sep.addPerGene(geneId2, new ProteinInteractionLocus(tr2, dres.pos2, id));
 
 				count++;
 			} else countSkipped++;
