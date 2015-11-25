@@ -13,6 +13,9 @@ public class Zzz {
 
 		for (String key : keysFail)
 			System.out.println(key + "\t" + VcfEntry.isValidInfoKey(key));
+
+		String key = ".ann";
+		System.out.println(key + "\t'" + VcfEntry.vcfInfoKeySafe(key) + "'");
 	}
 
 }

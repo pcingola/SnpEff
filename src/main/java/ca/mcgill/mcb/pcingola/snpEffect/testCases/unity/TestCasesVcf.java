@@ -290,7 +290,7 @@ public class TestCasesVcf extends TestCasesBase {
 		String testIn[] = { "Hi ", "Hi how;", "Hi how;are|", "Hi how;are|you,", "Hi how;are|you,doing=", "Hi how;are|you,doing=today(.)", ".ann" };
 		String testOut[] = { "Hi_", "Hi_how_", "Hi_how_are_", "Hi_how_are_you_", "Hi_how_are_you_doing_", "Hi_how_are_you_doing_today_._", "_.ann" };
 		for (int i = 0; i < testIn.length; i++) {
-			String safe = VcfEntry.vcfInfoValueSafe(testIn[i]);
+			String safe = VcfEntry.vcfInfoKeySafe(testIn[i]);
 			if (verbose) System.out.println("'" + testIn[i] + "'\t'" + safe + "'\t'" + testOut[i] + "'");
 			Assert.assertEquals(testOut[i], safe);
 		}
