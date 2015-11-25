@@ -50,7 +50,7 @@ public class SnpEffectPredictor implements Serializable {
 	Genome genome;
 	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
 	IntervalForest intervalForest; // Interval forest by chromosome name
-	IntervalForest intervalForestPerTr; // Interval forest by transcript ID
+	IntervalForest intervalForestGene; // Interval forest by gene
 
 	/**
 	 * Load predictor from a binary file
@@ -127,14 +127,14 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
-	 * Add a transcript dependent marker
+	 * Add a gene dependent marker
 	 */
-	public void addPerTranscript(String trId, Marker marker) {
-		if (intervalForestPerTr == null) {
-			intervalForestPerTr = new IntervalForest();
-			intervalForestPerTr.setDebug(debug);
+	public void addPerGene(String geneId, Marker marker) {
+		if (intervalForestGene == null) {
+			intervalForestGene = new IntervalForest();
+			intervalForestGene.setDebug(debug);
 		}
-		intervalForestPerTr.getOrCreateTreeChromo(trId).add(marker);
+		intervalForestGene.getOrCreateTreeChromo(geneId).add(marker);
 	}
 
 	/**
@@ -173,14 +173,14 @@ public class SnpEffectPredictor implements Serializable {
 		// Build interval forest
 		intervalForest.build();
 
-		buildPerTranscript();
+		buildPerGene();
 	}
 
 	/**
-	 * Build 'per transcript' information
+	 * Build 'per gene' information
 	 */
-	void buildPerTranscript() {
-		if (intervalForestPerTr != null) intervalForestPerTr.build();
+	void buildPerGene() {
+		if (intervalForestGene != null) intervalForestGene.build();
 	}
 
 	/**
@@ -677,9 +677,9 @@ public class SnpEffectPredictor implements Serializable {
 				else marker.variantEffect(variant, variantEffects);
 
 				// Do we have 'per transcript' information?
-				if (intervalForestPerTr != null && marker instanceof Gene) {
-					for (Transcript tr : (Gene) marker) // Annotate any transcript within the gene
-						variantEffectTr(tr, variant, variantEffects);
+				if (intervalForestGene != null && marker instanceof Gene) {
+					String geneId = marker.getId();// Annotate any transcript within the gene
+					variantEffectGene(geneId, variant, variantEffects);
 				}
 
 				hitSomething = true;
@@ -710,8 +710,8 @@ public class SnpEffectPredictor implements Serializable {
 	/**
 	 * Add transcript specific annotations
 	 */
-	protected void variantEffectTr(Transcript tr, Variant variant, VariantEffects variantEffects) {
-		Itree itree = intervalForestPerTr.getTree(tr.getId());
+	protected void variantEffectGene(String geneId, Variant variant, VariantEffects variantEffects) {
+		Itree itree = intervalForestGene.getTree(geneId);
 		if (itree == null) return;
 
 		Markers res = itree.query(variant);

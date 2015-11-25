@@ -73,7 +73,7 @@ public class SnpEff implements CommandLine {
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
 	public static final String REVISION = "";
-	public static final String BUILD = "2015-11-23";
+	public static final String BUILD = "2015-11-25";
 	public static final String VERSION_MAJOR = "4.2";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -505,8 +505,8 @@ public class SnpEff implements CommandLine {
 			if (chr1 != null && chr2 != null && tr1 != null && tr2 != null) {
 				// We need to add two markers (one for each "side" of the interaction
 				String id = dres.getId();
-				sep.addPerTranscript(dres.trId1, new ProteinInteractionLocus(tr1, dres.pos1, id));
-				sep.addPerTranscript(dres.trId2, new ProteinInteractionLocus(tr2, dres.pos2, id));
+				sep.addPerGene(dres.trId1, new ProteinInteractionLocus(tr1, dres.pos1, id));
+				sep.addPerGene(dres.trId2, new ProteinInteractionLocus(tr2, dres.pos2, id));
 
 				count++;
 			} else countSkipped++;
