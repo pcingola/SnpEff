@@ -20,6 +20,7 @@ import ca.mcgill.mcb.pcingola.interval.TranscriptSupportLevel;
 import ca.mcgill.mcb.pcingola.interval.Utr;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.interval.tree.IntervalForest;
+import ca.mcgill.mcb.pcingola.interval.tree.Itree;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.ErrorWarningType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -40,16 +41,16 @@ public class SnpEffectPredictor implements Serializable {
 	public static final double HUGE_DELETION_RATIO_THRESHOLD = 0.01; // Percentage of bases
 
 	boolean useChromosomes = true;
-
+	boolean debug;
 	int upDownStreamLength = DEFAULT_UP_DOWN_LENGTH;
 	int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE;
 	int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
 	int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
 	int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
-
 	Genome genome;
 	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
-	IntervalForest intervalForest;
+	IntervalForest intervalForest; // Interval forest by chromosome name
+	IntervalForest intervalForestGene; // Interval forest by gene
 
 	/**
 	 * Load predictor from a binary file
@@ -126,10 +127,22 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
+	 * Add a gene dependent marker
+	 */
+	public void addPerGene(String geneId, Marker marker) {
+		if (intervalForestGene == null) {
+			intervalForestGene = new IntervalForest();
+			intervalForestGene.setDebug(debug);
+		}
+		intervalForestGene.getOrCreateTreeChromo(geneId).add(marker);
+	}
+
+	/**
 	 * Create interval trees (forest)
 	 */
 	public void buildForest() {
 		intervalForest = new IntervalForest();
+		intervalForest.setDebug(debug);
 
 		// Add all chromosomes to forest
 		if (useChromosomes) {
@@ -159,6 +172,15 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Build interval forest
 		intervalForest.build();
+
+		buildPerGene();
+	}
+
+	/**
+	 * Build 'per gene' information
+	 */
+	void buildPerGene() {
+		if (intervalForestGene != null) intervalForestGene.build();
 	}
 
 	/**
@@ -559,6 +581,10 @@ public class SnpEffectPredictor implements Serializable {
 		markersToSave.save(fileName);
 	}
 
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
 	public void setSpliceRegionExonSize(int spliceRegionExonSize) {
 		this.spliceRegionExonSize = spliceRegionExonSize;
 	}
@@ -650,6 +676,12 @@ public class SnpEffectPredictor implements Serializable {
 				if (variant.isNonRef()) marker.variantEffectNonRef(variant, variantEffects);
 				else marker.variantEffect(variant, variantEffects);
 
+				// Do we have 'per transcript' information?
+				if (intervalForestGene != null && marker instanceof Gene) {
+					String geneId = marker.getId();// Annotate any transcript within the gene
+					variantEffectGene(geneId, variant, variantEffects);
+				}
+
 				hitSomething = true;
 			}
 		}
@@ -674,4 +706,17 @@ public class SnpEffectPredictor implements Serializable {
 
 		return variantEffects;
 	}
+
+	/**
+	 * Add transcript specific annotations
+	 */
+	protected void variantEffectGene(String geneId, Variant variant, VariantEffects variantEffects) {
+		Itree itree = intervalForestGene.getTree(geneId);
+		if (itree == null) return;
+
+		Markers res = itree.query(variant);
+		for (Marker m : res)
+			m.variantEffect(variant, variantEffects);
+	}
+
 }

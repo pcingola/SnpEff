@@ -14,6 +14,7 @@ import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
 import ca.mcgill.mcb.pcingola.interval.Motif;
 import ca.mcgill.mcb.pcingola.interval.NextProt;
+import ca.mcgill.mcb.pcingola.interval.ProteinInteractionLocus;
 import ca.mcgill.mcb.pcingola.interval.SpliceSite;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.TranscriptSupportLevel;
@@ -21,6 +22,7 @@ import ca.mcgill.mcb.pcingola.logStatsServer.LogStats;
 import ca.mcgill.mcb.pcingola.logStatsServer.VersionCheck;
 import ca.mcgill.mcb.pcingola.motif.Jaspar;
 import ca.mcgill.mcb.pcingola.motif.Pwm;
+import ca.mcgill.mcb.pcingola.pdb.DistanceResult;
 import ca.mcgill.mcb.pcingola.serializer.MarkerSerializer;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.SnpEffectPredictor;
@@ -71,7 +73,7 @@ public class SnpEff implements CommandLine {
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
 	public static final String REVISION = "";
-	public static final String BUILD = "2015-11-18";
+	public static final String BUILD = "2015-11-25";
 	public static final String VERSION_MAJOR = "4.2";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
@@ -88,6 +90,7 @@ public class SnpEff implements CommandLine {
 	protected boolean hgvsOneLetterAa = false; // Use 1-letter AA codes in HGVS.p notation?
 	protected boolean hgvsShift = true; // Shift variants towards the 3-prime end of the transcript
 	protected boolean hgvsTrId = false; // Use full transcript version in HGVS notation?
+	protected boolean interaction = true; // Use interaction loci information if available
 	protected boolean log; // Log to server (statistics)
 	protected boolean motif = true; // Annotate using motifs
 	protected boolean multiThreaded = false; // Use multiple threads
@@ -440,6 +443,9 @@ public class SnpEff implements CommandLine {
 		// Load Motif databases
 		if (motif) loadMotif();
 
+		// Load Motif databases
+		if (interaction) loadInteractions();
+
 		// Build tree
 		if (verbose) Timer.showStdErr("Building interval forest");
 		config.getSnpEffectPredictor().buildForest();
@@ -459,6 +465,56 @@ public class SnpEff implements CommandLine {
 
 		genome = config.getSnpEffectPredictor().getGenome();
 		genome.getGenomicSequences().setVerbose(verbose);
+	}
+
+	/**
+	 * Load protein interaction database
+	 */
+	void loadInteractions() {
+		//---
+		// Sanity checks
+		//---
+		String intFileName = config.getDirDataVersion() + "/" + SnpEffCmdPdb.PROTEIN_INTERACTION_FILE;
+		if (!Gpr.exists(intFileName)) {
+			if (debug) if (!Gpr.exists(intFileName)) warning("Warning: Cannot open interactions file ", intFileName);
+			return;
+		}
+
+		// Build transcript map
+		HashMap<String, Transcript> id2tr = new HashMap<>();
+		SnpEffectPredictor sep = config.getSnpEffectPredictor();
+		Genome genome = sep.getGenome();
+		for (Gene g : genome.getGenes())
+			for (Transcript tr : g)
+				id2tr.put(tr.getId(), tr);
+
+		//---
+		// Load all interactions
+		//---
+		if (verbose) Timer.showStdErr("\tLoading interactions from : " + intFileName);
+		String lines[] = Gpr.readFile(intFileName, true).split("\n");
+		int count = 0, countSkipped = 0;
+		for (String line : lines) {
+			DistanceResult dres = new DistanceResult(line);
+			Chromosome chr1 = genome.getChromosome(dres.chr1);
+			Chromosome chr2 = genome.getChromosome(dres.chr2);
+			Transcript tr1 = id2tr.get(dres.trId1);
+			Transcript tr2 = id2tr.get(dres.trId2);
+
+			// All chromosomes and transcript found? => Add entries
+			if (chr1 != null && chr2 != null && tr1 != null && tr2 != null) {
+				// We need to add two markers (one for each "side" of the interaction
+				String id = dres.getId();
+				String geneId1 = tr1.getParent().getId();
+				String geneId2 = tr2.getParent().getId();
+				sep.addPerGene(geneId1, new ProteinInteractionLocus(tr1, dres.pos1, id));
+				sep.addPerGene(geneId2, new ProteinInteractionLocus(tr2, dres.pos2, id));
+
+				count++;
+			} else countSkipped++;
+		}
+
+		if (verbose) Timer.showStdErr("\tInteractions: " + count + " added, " + countSkipped + " skipped.");
 	}
 
 	/**
@@ -663,24 +719,26 @@ public class SnpEff implements CommandLine {
 		//---
 		// Parse command
 		//---
-		if (args[0].equalsIgnoreCase("build") //
+		if (args[0].equalsIgnoreCase("ann") // Annotate: Same as 'eff'
+				|| args[0].equalsIgnoreCase("build") //
 				|| args[0].equalsIgnoreCase("buildNextProt") //
-				|| args[0].equalsIgnoreCase("dump") //
 				|| args[0].equalsIgnoreCase("cds") //
-				|| args[0].equalsIgnoreCase("eff") //
-				|| args[0].equalsIgnoreCase("ann") // Annotate: just another way to say 'eff'
-				|| args[0].equalsIgnoreCase("download") //
-				|| args[0].equalsIgnoreCase("protein") //
 				|| args[0].equalsIgnoreCase("closest") //
-				|| args[0].equalsIgnoreCase("test") //
-				|| args[0].equalsIgnoreCase("databases") //
-				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 				|| args[0].equalsIgnoreCase("count") //
+				|| args[0].equalsIgnoreCase("databases") //
+				|| args[0].equalsIgnoreCase("download") //
+				|| args[0].equalsIgnoreCase("dump") //
+				|| args[0].equalsIgnoreCase("eff") //
 				|| args[0].equalsIgnoreCase("genes2bed") //
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
-				|| args[0].equalsIgnoreCase("acat") //
+				|| args[0].equalsIgnoreCase("protein") //
+				|| args[0].equalsIgnoreCase("spliceAnalysis") //
+				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("show") //
+				|| args[0].equalsIgnoreCase("pdb") //
+		// Obsolete stuff (from T2D projects)
+				|| args[0].equalsIgnoreCase("acat") //
 		) {
 			command = args[argNum++].trim().toLowerCase();
 		}
@@ -736,6 +794,10 @@ public class SnpEff implements CommandLine {
 					if (command.isEmpty()) usage(null); // Help was invoked without a specific command: Show generic help
 					break;
 
+				case "-interaction":
+					interaction = true; // Use interaction database
+					break;
+
 				case "-interval":
 					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
 					else usage("Option '-interval' without config interval_file argument");
@@ -745,12 +807,17 @@ public class SnpEff implements CommandLine {
 					if ((i + 1) < args.length) maxTranscriptSupportLevel = TranscriptSupportLevel.parse(args[++i]);
 					else usage("Option '-maxTSL' without config transcript_support_level argument");
 					break;
+
 				case "-motif":
 					motif = true; // Use motif database
 					break;
 
 				case "-nogenome":
 					noGenome = true; // Do not load genome
+					break;
+
+				case "-nointeraction":
+					interaction = false; // Do not use interaction database
 					break;
 
 				case "-nomotif":
@@ -1005,23 +1072,80 @@ public class SnpEff implements CommandLine {
 
 		// All commands are lower-case
 		command = command.trim().toLowerCase();
-		if (command.equalsIgnoreCase("build")) snpEffCmd = new SnpEffCmdBuild();
-		else if (command.equalsIgnoreCase("buildNextProt")) snpEffCmd = new SnpEffCmdBuildNextProt();
-		else if (command.equalsIgnoreCase("dump")) snpEffCmd = new SnpEffCmdDump();
-		else if (command.equalsIgnoreCase("download")) snpEffCmd = new SnpEffCmdDownload();
-		else if (command.equalsIgnoreCase("cds")) snpEffCmd = new SnpEffCmdCds();
-		else if (command.equalsIgnoreCase("eff") || command.equalsIgnoreCase("ann")) snpEffCmd = new SnpEffCmdEff();
-		else if (command.equalsIgnoreCase("protein")) snpEffCmd = new SnpEffCmdProtein();
-		else if (command.equalsIgnoreCase("closest")) snpEffCmd = new SnpEffCmdClosest();
-		else if (command.equalsIgnoreCase("databases")) snpEffCmd = new SnpEffCmdDatabases();
-		else if (command.equalsIgnoreCase("genes2bed")) snpEffCmd = new SnpEffCmdGenes2Bed();
-		else if (command.equalsIgnoreCase("spliceanalysis")) snpEffCmd = new SnpEffCmdSpliceAnalysis();
-		else if (command.equalsIgnoreCase("count")) snpEffCmd = new SnpEffCmdCount();
-		else if (command.equalsIgnoreCase("len")) snpEffCmd = new SnpEffCmdLen();
-		else if (command.equalsIgnoreCase("gsa")) snpEffCmd = new SnpEffCmdGsa();
-		else if (command.equalsIgnoreCase("acat")) snpEffCmd = new SnpEffCmdAcat();
-		else if (command.equalsIgnoreCase("show")) snpEffCmd = new SnpEffCmdShow();
-		else throw new RuntimeException("Unknown command '" + command + "'");
+		switch (command.toLowerCase()) {
+		case "ann":
+		case "eff":
+			snpEffCmd = new SnpEffCmdEff();
+			break;
+
+		case "build":
+			snpEffCmd = new SnpEffCmdBuild();
+			break;
+
+		case "buildnextprot":
+			snpEffCmd = new SnpEffCmdBuildNextProt();
+			break;
+
+		case "cds":
+			snpEffCmd = new SnpEffCmdCds();
+			break;
+
+		case "closest":
+			snpEffCmd = new SnpEffCmdClosest();
+			break;
+
+		case "count":
+			snpEffCmd = new SnpEffCmdCount();
+			break;
+
+		case "databases":
+			snpEffCmd = new SnpEffCmdDatabases();
+			break;
+
+		case "download":
+			snpEffCmd = new SnpEffCmdDownload();
+			break;
+
+		case "dump":
+			snpEffCmd = new SnpEffCmdDump();
+			break;
+
+		case "gsa":
+			snpEffCmd = new SnpEffCmdGsa();
+			break;
+
+		case "genes2bed":
+			snpEffCmd = new SnpEffCmdGenes2Bed();
+			break;
+
+		case "len":
+			snpEffCmd = new SnpEffCmdLen();
+			break;
+
+		case "pdb":
+			snpEffCmd = new SnpEffCmdPdb();
+			break;
+
+		case "protein":
+			snpEffCmd = new SnpEffCmdProtein();
+			break;
+
+		case "spliceanalysis":
+			snpEffCmd = new SnpEffCmdSpliceAnalysis();
+			break;
+
+		case "show":
+			snpEffCmd = new SnpEffCmdShow();
+			break;
+
+		// Obsolete stuff
+		case "acat":
+			snpEffCmd = new SnpEffCmdAcat();
+			break;
+
+		default:
+			throw new RuntimeException("Unknown command '" + command + "'");
+		}
 
 		// Copy values to specific command
 		snpEffCmd.canonical = canonical;
@@ -1037,6 +1161,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.hgvsOneLetterAa = hgvsOneLetterAa;
 		snpEffCmd.hgvsShift = hgvsShift;
 		snpEffCmd.hgvsTrId = hgvsTrId;
+		snpEffCmd.interaction = interaction;
 		snpEffCmd.log = log;
 		snpEffCmd.motif = motif;
 		snpEffCmd.maxTranscriptSupportLevel = maxTranscriptSupportLevel;
@@ -1108,11 +1233,13 @@ public class SnpEff implements CommandLine {
 	protected void usageDb() {
 		System.err.println("\nDatabase options:");
 		System.err.println("\t-canon                       : Only use canonical transcripts.");
+		System.err.println("\t-interaction                 : Annotate using inteactions (requires interaciton database). Default: " + interaction);
 		System.err.println("\t-interval <file>             : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
 		System.err.println("\t-maxTSL <TSL_number>         : Only use transcripts having Transcript Support Level lower than <TSL_number>.");
-		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database).");
+		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database). Default: " + motif);
 		System.err.println("\t-nextProt                    : Annotate using NextProt (requires NextProt database).");
 		System.err.println("\t-noGenome                    : Do not load any genomic database (e.g. annotate using custom files).");
+		System.err.println("\t-noInteraction               : Disable inteaction annotations");
 		System.err.println("\t-noMotif                     : Disable motif annotations.");
 		System.err.println("\t-noNextProt                  : Disable NextProt annotations.");
 		System.err.println("\t-onlyReg                     : Only use regulation tracks.");

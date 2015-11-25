@@ -4,6 +4,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 import ca.mcgill.mcb.pcingola.fileIterator.LineFileIterator;
@@ -54,8 +57,9 @@ public class MarkerSerializer {
 	String fields[];
 	int currId = 0;
 	Genome genome;
-	HashMap<Integer, TxtSerializable> byId;
-	HashMap<TxtSerializable, Integer> byMarker;
+	Map<Integer, TxtSerializable> byId;
+	Map<TxtSerializable, Integer> byMarker;
+	Set<TxtSerializable> doNotSave;
 
 	public MarkerSerializer() {
 		this(null);
@@ -67,12 +71,18 @@ public class MarkerSerializer {
 		byMarker = new HashMap<TxtSerializable, Integer>();
 	}
 
+	public void doNotSave(Marker m) {
+		if (doNotSave == null) doNotSave = new HashSet<>();
+		doNotSave.add(m);
+	}
+
 	protected TxtSerializable getById(int id) {
 		return byId.get(id);
 	}
 
 	public int getIdByMarker(Marker m) {
 		Integer id = byMarker.get(m);
+		if (isDoNotSave(m)) return -1;
 		if (id == null) { throw new RuntimeException("Marker has no numeric ID. \n" //
 				+ "\tClass    : " + m.getClass().getSimpleName() + "\n" //
 				+ "\tMarker ID: '" + m.getId() + "'\n" //
@@ -118,6 +128,10 @@ public class MarkerSerializer {
 
 	protected int getNextId() {
 		return ++currId;
+	}
+
+	boolean isDoNotSave(Marker m) {
+		return doNotSave != null && doNotSave.contains(m);
 	}
 
 	/**
@@ -278,7 +292,7 @@ public class MarkerSerializer {
 	 */
 	public int save(Marker m) {
 		if (m == null) return -1;
-		if (byMarker.containsKey(m)) return byMarker.get(m); // Already done
+		if (shouldSkip(m)) return getIdByMarker(m); // Already done
 
 		// Store already saved IDs
 		int id = getNextId();
@@ -312,6 +326,10 @@ public class MarkerSerializer {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	boolean shouldSkip(Marker m) {
+		return byMarker.containsKey(m) || isDoNotSave(m);
 	}
 
 }

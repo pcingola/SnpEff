@@ -336,10 +336,13 @@ public class Config implements Serializable, Iterable<String> {
 		return getDirDataVersion() + "/protein.fa";
 	}
 
+	public String getFileNameSequence() {
+		return getBaseFileNameSequence() + ".bin";
+	}
+
 	public String getFileNameSequence(String chr) {
 		String chrNameSafe = Gpr.sanityzeFileName(chr);
 		return getBaseFileNameSequence() + "." + chrNameSafe + ".bin";
-
 	}
 
 	public String getFileSnpEffectPredictor() {
@@ -513,6 +516,7 @@ public class Config implements Serializable, Iterable<String> {
 	public SnpEffectPredictor loadSnpEffectPredictor() {
 		snpEffectPredictor = SnpEffectPredictor.load(this);
 		genome = snpEffectPredictor.genome; // WARNING: 'genome' object get replaced upon loading a snpEffectPredictor (this might have dangerous side effects)
+		snpEffectPredictor.setDebug(debug);
 		return snpEffectPredictor;
 	}
 

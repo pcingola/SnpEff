@@ -11,17 +11,18 @@ import java.util.Iterator;
 import ca.mcgill.mcb.pcingola.interval.Chromosome;
 import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Markers;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
- * A set of interval trees (one per chromosome)
+ * A set of interval trees (e.g. one per chromosome, one per transcript ID, etc)
  *
  * @author pcingola
  */
 public class IntervalForest implements Serializable, Iterable<Itree> {
 
-	public static final boolean USE_INTERVAL_TREE_NEW = true; // Use new version
-
 	private static final long serialVersionUID = 1L;
+
+	boolean debug;
 	HashMap<String, Itree> forest;
 
 	public IntervalForest() {
@@ -47,7 +48,7 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	public void add(Marker interval) {
 		if (interval == null) return;
 		String chName = Chromosome.simpleName(interval.getChromosomeName());
-		getOrCreateTree(chName).add(interval); // Add interval to tree
+		getOrCreateTreeChromo(chName).add(interval); // Add interval to tree
 	}
 
 	/**
@@ -62,43 +63,56 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	 * Build all trees
 	 */
 	public void build() {
-		for (Itree tree : forest.values())
+		for (String key : forest.keySet()) {
+			if (debug) Gpr.debug("Building interval tree for '" + key + "'");
+			Itree tree = forest.get(key);
 			tree.build();
+		}
+		//		for (Itree tree : forest.values())
+		//			tree.build();
 	}
 
 	/**
-	 * Get (or create) an interval tree
+	 * Get (or create) an interval tree for ID
 	 */
-	public Itree getOrCreateTree(String chromo) {
-		chromo = Chromosome.simpleName(chromo);
-
+	public Itree getOrCreateTree(String id) {
 		// Retrieve (or create) interval tree
-		Itree itree = forest.get(chromo);
+		Itree itree = forest.get(id);
 		if (itree == null) {
 			itree = newItree();
 			itree.build();
-			forest.put(chromo, itree);
+			forest.put(id, itree);
 		}
 
 		return itree;
 	}
 
 	/**
-	 * Get an interval tree
+	 * Get (or create) an interval tree based for "chromo" (chromosome name)
 	 */
-	public Itree getTree(String chromo) {
-		return forest.get(Chromosome.simpleName(chromo));
+	public Itree getOrCreateTreeChromo(String chromo) {
+		return getOrCreateTree(Chromosome.simpleName(chromo));
 	}
 
-	public Collection<String> getTreeNames() {
-		return forest.keySet();
+	/**
+	 * Get an interval tree using an ID
+	 */
+	public Itree getTree(String key) {
+		return forest.get(key);
+	}
+
+	/**
+	 * Get an interval tree using a chromosome name
+	 */
+	public Itree getTreeChromo(String chromo) {
+		return forest.get(Chromosome.simpleName(chromo));
 	}
 
 	/**
 	 * Is the tree 'chromo' available?
 	 */
 	public boolean hasTree(String chromo) {
-		return getTree(chromo) != null;
+		return getTreeChromo(chromo) != null;
 	}
 
 	/**
@@ -135,20 +149,23 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 		return forest.values().iterator();
 	}
 
+	public Collection<String> keySet() {
+		return forest.keySet();
+	}
+
 	/**
 	 * Create new tree.
 	 * In oder to change the implementation, only this method should be changed.
 	 */
 	protected Itree newItree() {
-		if (USE_INTERVAL_TREE_NEW) return new IntervalTree();
-		return new IntervalTreeOri();
+		return new IntervalTree();
 	}
 
 	/**
 	 * Query all intervals that intersect with 'interval'
 	 */
 	public Markers query(Marker marker) {
-		return getOrCreateTree(marker.getChromosomeName()).query(marker);
+		return getOrCreateTreeChromo(marker.getChromosomeName()).query(marker);
 	}
 
 	/**
@@ -188,6 +205,10 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 		return ints;
 	}
 
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
 	public int size() {
 		int size = 0;
 		for (Itree it : forest.values())
@@ -206,22 +227,23 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	 * Obtain all intervals that intersect with 'point'
 	 */
 	public Markers stab(String chromo, int point) {
-		return getOrCreateTree(chromo).stab(point);
+		return getOrCreateTreeChromo(chromo).stab(point);
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		ArrayList<String> chrs = new ArrayList<>();
-		chrs.addAll(forest.keySet());
-		Collections.sort(chrs);
+		ArrayList<String> keys = new ArrayList<>();
+		keys.addAll(forest.keySet());
+		Collections.sort(keys);
 
-		for (String chromo : chrs) {
-			Itree tree = getOrCreateTree(chromo);
-			sb.append("chr" + chromo + "\tsize:" + tree.size() + "\tin_sync: " + tree.isInSync() + "\n");
+		for (String key : keys) {
+			Itree tree = getOrCreateTreeChromo(key);
+			sb.append(key + "\tsize:" + tree.size() + "\tin_sync: " + tree.isInSync() + "\n");
 		}
 
 		return sb.toString();
 	}
+
 }

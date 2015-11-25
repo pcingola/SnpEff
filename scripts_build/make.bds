@@ -238,6 +238,10 @@ void buildDbTest() {
 			task $snpeff build -v -storeSeqs $gen
 		}
 	}
+
+	# Build PDB database for testHg19Chr1
+	# We need to make sure that PDB entry '1A12' is in the dir
+	task $snpeff pdb -pdbDir $dirSnpeff/data/testHg19Chr1 testHg19Chr1
 }
 
 #-------------------------------------------------------------------------------

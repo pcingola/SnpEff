@@ -94,6 +94,16 @@
 	</exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+    	<groupId>org.biojava</groupId>
+    	<artifactId>biojava3-core</artifactId>
+    	<version>3.0.7</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.biojava</groupId>
+    	<artifactId>biojava3-structure</artifactId>
+    	<version>3.0.7</version>
+    </dependency>
   </dependencies>
 
   <repositories>
@@ -121,8 +131,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
           <encoding>ISO-8859-1</encoding>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>

@@ -419,7 +419,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 		for (Marker m : markerSerializer.getNextFieldMarkers())
 			add((Chromosome) m);
-
 	}
 
 	/**
@@ -505,10 +504,10 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 						errorProteinLength++; // Protein length error
 						if (errors != null) errors.append("ERROR: Protein coding transcript '" + tr.getId() + "' has length " + tr.cds().length() + " (not mutiple of 3).\n");
 					} else if (tr.isWarningStopCodon()) {
-						// This is considered a warning, not an error (sometimes 
-						// the annotations exclude STOP codon on pourpose, although GTF 
+						// This is considered a warning, not an error (sometimes
+						// the annotations exclude STOP codon on pourpose, although GTF
 						// say they should not)
-						// Note: If there are length errors, we should not check 
+						// Note: If there are length errors, we should not check
 						//       this, since it will pop up almost surely.
 						warningStopCodon++; // Protein does not end with STOP codon
 						hasWarning = true;
