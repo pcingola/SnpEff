@@ -1,21 +1,19 @@
 package ca.mcgill.mcb.pcingola;
 
+import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
 public class Zzz {
 
 	public static void main(String[] args) {
-		String keysPass[] = { "ANN", "ann9", "a9nn", "ann_", "a_nn" };
-		String keysFail[] = { "ann+", "9ann", "_ann" };
+		String vcfFileName = Gpr.HOME + "/snpEff/miika_EML4_ALK_fusion.vcf";
+		// String vcfFileName = Gpr.HOME + "/snpEff/miika_FGFR3_TACC3_fusion.vcf";
 
-		for (String key : keysPass)
-			System.out.println(key + "\t" + VcfEntry.isValidInfoKey(key));
-
-		for (String key : keysFail)
-			System.out.println(key + "\t" + VcfEntry.isValidInfoKey(key));
-
-		String key = ".ann";
-		System.out.println(key + "\t'" + VcfEntry.vcfInfoKeySafe(key) + "'");
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		for (VcfEntry ve : vcf) {
+			System.out.println(ve);
+		}
 	}
 
 }
