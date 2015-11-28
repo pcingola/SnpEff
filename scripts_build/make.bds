@@ -228,7 +228,7 @@ void buildDbTest() {
 	dirs := "$dirSnpeff/data/".dir("test*")
 
 	# This one needs PWMs
-	sys cp db/jaspar/pwms.bin data/testHg3770Chr22/
+	sys cp $pwmsBin data/testHg3770Chr22/
 
 	# Build all test genomes
 	for( string gen : dirs ) {
