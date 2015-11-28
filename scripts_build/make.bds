@@ -40,7 +40,7 @@ GRCM				:= "GRCm38"
 dbNsfpVer			:= '3.0a'
 
 # Configuration parameters
-bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_21", "ENSEMBL_BFMPP_22", "ENSEMBL_BFMPP_26", "ENSEMBL_BFMPP_27"]
+bundles				:= ["NCBI_bacterial", "ENSEMBL_BFMPP_27"]
 
 # Commands
 snpeff				:= "java -Xmx10G -jar snpEff.jar "
@@ -154,18 +154,12 @@ void buildConfig() {
 	sys cat config/snpEff.core.config \
 			config/snpEff.dbs.config \
 			config/snpEff.test.config \
-			config/snpEff.ENSEMBL_71.config \
-			config/snpEff.ENSEMBL_72.config \
-			config/snpEff.ENSEMBL_73.config \
-			config/snpEff.ENSEMBL_74.config \
 			config/snpEff.ENSEMBL_75.config \
 			config/snpEff.ENSEMBL_76.config \
 			config/snpEff.ENSEMBL_77.config \
 			config/snpEff.ENSEMBL_78.config \
 			config/snpEff.ENSEMBL_79.config \
 			config/snpEff.ENSEMBL_81.config \
-			config/snpEff.ENSEMBL_BFMPP_22.config \
-			config/snpEff.ENSEMBL_BFMPP_26.config \
 			config/snpEff.ENSEMBL_BFMPP_27.config \
 			config/snpEff.FLYBASE_FB2015_01.config \
 			config/snpEff.FLYBASE_FB2015_03.config \
