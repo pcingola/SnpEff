@@ -544,19 +544,19 @@ void downloadNcbiBacteria() {
 void downloadNcbiVirus() {
 	println "Download NCBI virus"
 
-	configFile := "$dirSnpeff/config/snpEff.NCBI_virus.config"
+	configFile := "$dirSnpeff/config/snpEff.NCBI_viruses.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return
 	}
 
-	dir := "$dirDownload/ncbi_virus"
+	dir := "$dirDownload/ncbi_viruses"
 	dir.mkdir()
 	dir.chdir()
 
 	downloadOk := "download.ok"
 	if( ! downloadOk.exists() ) {
-		println "Downloading NCBI (Virus)"
+		println "Downloading NCBI (Viruses)"
 
 		sys rsync -avP \
 			--include='*.gbk' \
