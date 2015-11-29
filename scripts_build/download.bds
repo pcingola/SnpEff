@@ -225,7 +225,7 @@ void downloadEnsembl() {
 	println "Writing config file $configFile"
 	configFile.write( configLines.join("\n") )
 
-	wait
+	
 }
 
 #-------------------------------------------------------------------------------
@@ -532,7 +532,7 @@ void downloadNcbiBacteria() {
 	configFile.write( configLines.join("\n") )
 
 	# Copy files to data directory
-	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + echo cp -rvf + $dirData
+	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + cp -rvf + $dirData
 }
 
 #-------------------------------------------------------------------------------
@@ -584,7 +584,7 @@ void downloadNcbiVirus() {
 	configFile.write( configLines.join("\n") )
 
 	# Copy files to data directory
-	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + echo cp -rvf + $dirData
+	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + cp -rvf + $dirData
 }
 
 #-------------------------------------------------------------------------------
