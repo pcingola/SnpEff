@@ -307,7 +307,7 @@ void downloadAll() {
 	downloadNcbi()
 	downloadNcbiBacteria()
 	downloadNcbiVirus()
-#	downloadFlyBase()
+	downloadFlyBase()
 }
 
 #-------------------------------------------------------------------------------
