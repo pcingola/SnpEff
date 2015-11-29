@@ -514,14 +514,8 @@ void downloadNcbiBacteria() {
 		downloadOk.write("OK")	# Mark as all downloads OK
 	}
 
-	# Copy to 'data' dir
-	dataDir := "$dir/data"
-	dataDir.mkdir()
-	sys find . -mindepth 1 -maxdepth 1 -type d ! -name data -exec cp -rvf -t $dataDir/ \{\} +
-
 	# Create genes.gbk files and create config
 	# lines (one per subdirectory in dataDir)
-	dataDir.chdir()
 	string[] configLines
 	println "Creating genes.gbk:"
 	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
@@ -569,14 +563,8 @@ void downloadNcbiVirus() {
 		downloadOk.write("OK")	# Mark as all downloads OK
 	}
 
-	# Copy to 'data' dir
-	dataDir := "$dir/data"
-	dataDir.mkdir()
-	sys find . -mindepth 1 -maxdepth 1 -type d ! -name data -exec cp {} $dataDir/ +
-
 	# Create genes.gbk files and create config
 	# lines (one per subdirectory in dataDir)
-	dataDir.chdir()
 	string[] configLines
 	println "Creating genes.gbk:"
 	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
