@@ -293,15 +293,15 @@ void downloadAll() {
 #	downloadUcscHg38()
 #	downloadUcscHg38Kg()
 #	downloadUcscMm10()
-#
-#	# Other databases
-#	downloadJaspar()
-#	downloadGwasCatalog()
-#	downloadNextProt()
-#	downloadPdb()
-#	downloadDbNsfp()	# We need to update this method
-#	downloadClinvar()
-#	downloadDbSnp()
+
+	# Other databases
+	downloadJaspar()
+	downloadGwasCatalog()
+	downloadNextProt()
+	downloadPdb()
+	downloadDbNsfp()	# We need to update this method
+	downloadClinvar()
+	downloadDbSnp()
 
    # Non-human
 	downloadNcbi()
