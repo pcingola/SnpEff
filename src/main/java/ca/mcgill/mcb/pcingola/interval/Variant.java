@@ -12,7 +12,7 @@ import ca.mcgill.mcb.pcingola.util.IubString;
  * A variant represents a change in a reference sequence
  *
  * Notes:
- * 		 This class was previously known as SeqChange.
+ * 		 This class was previously known as Variant.
  *
  *       As of version 4.0, variants in the negative strand
  *       are NOT allowed any more (they just complicate the
@@ -324,7 +324,7 @@ public class Variant extends Marker {
 	public int lengthChange() {
 		if (isSnp() || isMnp()) return 0;
 
-		// This is a length changing SeqChange (i.e. Insertions, deletion, or mixed change)
+		// This is a length changing Variant (i.e. Insertions, deletion, or mixed change)
 		// Calculate the number of bases of change in length
 		return alt.length() - ref.length();
 	}

@@ -7,7 +7,7 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
 
 /**
  * Variant + VcfEntry
- * This is used to 'explode' a VcfEntry into all its constituent variants.
+ * This is used to 'outer-join' a VcfEntry into all its constituent variants.
  *
  * IMPORTANT: The reason why we need this is because a VcfEntry may have
  * multiple variants (e.g. multiallelic entry). These entries may need

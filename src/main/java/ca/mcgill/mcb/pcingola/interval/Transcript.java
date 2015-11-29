@@ -1853,7 +1853,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				utr.variantEffect(variant, variantEffects);
 				included |= utr.includes(variant); // Is this variant fully included in the UTR?
 			}
-		if (included) return true; // SeqChange fully included in the UTR? => We are done.
+		if (included) return true; // Variant fully included in the UTR? => We are done.
 
 		//---
 		// Does it hit an intron?
@@ -1863,7 +1863,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				intron.variantEffect(variant, variantEffects);
 				included |= intron.includes(variant); // Is this variant fully included in this intron?
 			}
-		if (included) return true; // SeqChange fully included? => We are done.
+		if (included) return true; // Variant fully included? => We are done.
 
 		//---
 		// No annotations from eoxns? => Add transcript
