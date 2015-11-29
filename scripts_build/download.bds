@@ -225,7 +225,8 @@ void downloadEnsembl() {
 	println "Writing config file $configFile"
 	configFile.write( configLines.join("\n") )
 
-	
+	# Copy files to snpEff/data directory
+	sys cd data ; cp -rvf . $dirData
 }
 
 #-------------------------------------------------------------------------------
@@ -315,7 +316,8 @@ void downloadEnsemblBfmpp() {
 	println "Writing config file $configFile"
 	configFile.write( configLines.join("\n") )
 
-	wait
+	# Copy files to snpEff/data directory
+	sys cd data ; cp -rvf . $dirData
 }
 
 #-------------------------------------------------------------------------------
@@ -359,7 +361,8 @@ void downloadFlyBase() {
 	println "Writing config file $configFile"
 	configFile.write( configLines.join("\n") )
 
-	wait
+	# Copy files to snpEff/data directory
+	sys cd data ; cp -rvf . $dirData
 }
 
 #-------------------------------------------------------------------------------
@@ -393,8 +396,6 @@ void downloadJaspar() {
 		sys gzip -c pfm_all.txt > pwms.bin
 		println "Jaspar: File $dir/pwms.bin created"
 	}
-
-	wait
 }
 
 #-------------------------------------------------------------------------------
@@ -608,8 +609,6 @@ void downloadNextProt() {
 
 		downloadOk.write("OK")	# Mark as downlaoded OK
 	}
-
-	wait
 }
 
 #-------------------------------------------------------------------------------
@@ -668,7 +667,8 @@ void downloadUcscHg19() {
 		sys gzip -f $dir/cds.fa
 	}
 
-	wait
+	# Copy files to snpEff/data dir
+	sys cp -vf cds.fa* protein.fa* sequences.fa* genes.* $dirData/$ref/
 }
 
 #-------------------------------------------------------------------------------
@@ -686,7 +686,8 @@ void downloadUcscHg19Kg() {
 	# Query database
 	queryUcscKg(ref, refdb, dir)
 
-	wait
+	# Copy files to snpEff/data dir
+	sys cp -vf cds.fa* protein.fa* sequences.fa* genes.* $dirData/$ref/
 }
 
 #-------------------------------------------------------------------------------

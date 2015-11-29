@@ -283,10 +283,10 @@ void copyPwm() {
 #-------------------------------------------------------------------------------
 
 void downloadAll() {
-#	# Ensembl genomes
-#	downloadEnsembl()
-#	downloadEnsemblBfmpp()
-#
+	# Ensembl genomes
+	downloadEnsembl()
+	downloadEnsemblBfmpp()
+
 #	# UCSC genomes
 #	downloadUcscHg19()
 #	downloadUcscHg19Kg()
