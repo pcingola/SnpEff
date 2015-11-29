@@ -668,7 +668,7 @@ void downloadUcscHg19() {
 	}
 
 	# Copy files to snpEff/data dir
-	sys cp -vf cds.fa* protein.fa* sequences.fa* genes.* $dirData/$ref/
+	sys cd $dir ; cp -vf cds.fa* protein.fa* sequences.fa* genes.* $dirData/$ref/
 }
 
 #-------------------------------------------------------------------------------
