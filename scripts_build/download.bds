@@ -170,7 +170,7 @@ void downloadEnsembl() {
 						--include='*MotifFeatures.gff.gz' \
 						--include='*/' \
 						--exclude='*' \
-						rsync://$site/ensembl/pub/release-$ensemblRelease/gtf/ \
+						rsync://$site/ensembl/pub/release-$ensemblRelease/regulation/ \
 						.
 
 		wait
