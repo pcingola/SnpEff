@@ -150,14 +150,14 @@ void downloadEnsembl() {
 		println "Downloading ENSEMBL $ensemblRelease"
 
 		# Download GTF files
-		task rsync -av	--include='*$ensemblRelease.gtf.gz' \
+		sys rsync -av	--include='*$ensemblRelease.gtf.gz' \
 						--include='*/' \
 						--exclude='*' \
 						rsync://$site/ensembl/pub/release-$ensemblRelease/gtf/ \
 						.
     
 		# Download FASTA files (reference genomes)
-		task rsync -av	--include='*.dna.toplevel.fa.gz' \
+		sys rsync -av	--include='*.dna.toplevel.fa.gz' \
 						--include='*.cdna.all.fa.gz' \
 						--include='*.pep.all.fa.gz' \
 						--include='*/' \
@@ -166,14 +166,12 @@ void downloadEnsembl() {
 						.
 
 		# Download regulation tracks
-		task rsync -av	--include='*AnnotatedFeatures.gff.gz' \
+		sys rsync -av	--include='*AnnotatedFeatures.gff.gz' \
 						--include='*MotifFeatures.gff.gz' \
 						--include='*/' \
 						--exclude='*' \
 						rsync://$site/ensembl/pub/release-$ensemblRelease/regulation/ \
 						.
-
-		wait
 
 		downloadOk.write("OK")	# Mark as all downloads OK
 	}
