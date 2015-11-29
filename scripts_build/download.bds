@@ -417,7 +417,7 @@ void downloadNcbi() {
 	if( ! downloadOk.exists() ) {
 		println "Downloading NCBI"
 
-		task rsync -avP \
+		sys rsync -avP \
 			--exclude='.snapshot' \
 			--exclude='.templates' \
 			--exclude='all' \
@@ -450,8 +450,6 @@ void downloadNcbi() {
 			--exclude='*' \
 			ftp.ncbi.nih.gov::genomes \
 			.
-
-		wait 
 
 		sys chmod -Rf u+rw $dir
 
@@ -505,44 +503,39 @@ void downloadNcbiBacteria() {
 	if( ! downloadOk.exists() ) {
 		println "Downloading NCBI (Bacteria)"
 
-		task rsync -avP \
+		sys rsync -avP \
 			--include='*.gbk' \
 			--exclude='*' \
 			ftp.ncbi.nih.gov::genomes/Bacteria \
 			.
-
-		wait 
 
 		sys chmod -Rf u+rw $dir
 
 		downloadOk.write("OK")	# Mark as all downloads OK
 	}
 
-#	# Copy to 'data' dir
-#	dataDir := "$dir/data"
-#	dataDir.mkdir()
-#	sys cd $dir/Bacteria ; $cp -rv . $dataDir/
-#	sys cd $dir/Virus ; $cp -rv . $dataDir/
-#
-#	# Create genes.gbk files and create config
-#	# lines (one per subdirectory in dataDir)
-#	dataDir.chdir()
-#	string[] configLines
-#	println "Creating genes.gbk:"
-#	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
-#	for( string gdir : genomes.lines() ) {
-#		gen := gdir.baseName()
-#		println "\t$gen"
-#		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
-#
-#		# Collapse all geneBank files into one 
-#		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
-#	}
-#
-#	println "Writing config file $configFile"
-#	configFile.write( configLines.join("\n") )
-#
-#	wait
+	# Copy to 'data' dir
+	dataDir := "$dir/data"
+	dataDir.mkdir()
+	sys $cp -rv . $dataDir/
+
+	# Create genes.gbk files and create config
+	# lines (one per subdirectory in dataDir)
+	dataDir.chdir()
+	string[] configLines
+	println "Creating genes.gbk:"
+	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
+	for( string gdir : genomes.lines() ) {
+		gen := gdir.baseName()
+		println "\t$gen"
+		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
+
+		# Collapse all geneBank files into one 
+		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
+	}
+
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
 }
 
 #-------------------------------------------------------------------------------
@@ -565,44 +558,39 @@ void downloadNcbiVirus() {
 	if( ! downloadOk.exists() ) {
 		println "Downloading NCBI (Virus)"
 
-		task rsync -avP \
+		sys rsync -avP \
 			--include='*.gbk' \
 			--exclude='*' \
-			ftp.ncbi.nih.gov::genomes/Virus \
+			ftp.ncbi.nih.gov::genomes/Viruses \
 			.
-
-		wait 
 
 		sys chmod -Rf u+rw $dir
 
 		downloadOk.write("OK")	# Mark as all downloads OK
 	}
 
-#	# Copy to 'data' dir
-#	dataDir := "$dir/data"
-#	dataDir.mkdir()
-#	sys cd $dir/Bacteria ; $cp -rv . $dataDir/
-#	sys cd $dir/Virus ; $cp -rv . $dataDir/
-#
-#	# Create genes.gbk files and create config
-#	# lines (one per subdirectory in dataDir)
-#	dataDir.chdir()
-#	string[] configLines
-#	println "Creating genes.gbk:"
-#	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
-#	for( string gdir : genomes.lines() ) {
-#		gen := gdir.baseName()
-#		println "\t$gen"
-#		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
-#
-#		# Collapse all geneBank files into one 
-#		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
-#	}
-#
-#	println "Writing config file $configFile"
-#	configFile.write( configLines.join("\n") )
-#
-#	wait
+	# Copy to 'data' dir
+	dataDir := "$dir/data"
+	dataDir.mkdir()
+	sys $cp -rv . $dataDir/
+
+	# Create genes.gbk files and create config
+	# lines (one per subdirectory in dataDir)
+	dataDir.chdir()
+	string[] configLines
+	println "Creating genes.gbk:"
+	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
+	for( string gdir : genomes.lines() ) {
+		gen := gdir.baseName()
+		println "\t$gen"
+		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Viruses/"
+
+		# Collapse all geneBank files into one 
+		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
+	}
+
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
 }
 
 #-------------------------------------------------------------------------------
