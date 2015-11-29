@@ -401,9 +401,9 @@ void downloadJaspar() {
 # Download NCBI
 #-------------------------------------------------------------------------------
 void downloadNcbi() {
-	println "Download NCBI bacterial"
+	println "Download NCBI"
 
-	configFile := "$dirSnpeff/config/snpEff.NCBI_bacterial.config"
+	configFile := "$dirSnpeff/config/snpEff.NCBI.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return
@@ -415,37 +415,194 @@ void downloadNcbi() {
 
 	downloadOk := "download.ok"
 	if( ! downloadOk.exists() ) {
-		println "Downloading ENSEMBL (BFMPP) $ensemblBfmppRelease"
+		println "Downloading NCBI"
 
-		task $wgetA "gbk" "ftp://ftp.ncbi.nih.gov/genomes/Bacteria/"
+		task rsync -avP \
+			--exclude='.snapshot' \
+			--exclude='.templates' \
+			--exclude='all' \
+			--exclude='archive' \
+			--exclude='genbank' \
+			--exclude='refseq' \
+			--exclude='ARCHIVE' \
+			--exclude='ASSEMBLY_BACTERIA' \
+			--exclude='ASSEMBLY_REPORTS' \
+			--exclude='Bacteria' \
+			--exclude='Bacteria_DRAFT' \
+			--exclude='Chloroplasts' \
+			--exclude='CLUSTERS' \
+			--exclude='GENOME_REPORTS' \
+			--exclude='HUMAN_MICROBIOM' \
+			--exclude='INFLUENZA' \
+			--exclude='MITOCHONDRIA' \
+			--exclude='PLANTS' \
+			--exclude='Plasmids' \
+			--exclude='TARGET' \
+			--exclude='TOOLS' \
+			--exclude='Virus' \
+			\
+			--include='*/GFF/*_top_level.gff3.gz' \
+			--include='protein.fa.gz' \
+			--include='rna.fa.gz' \
+			--include='*/Assembled_chromosomes/seq/*.fa.gz' \
+			--include='*/' \
+			\
+			--exclude='*' \
+			ftp.ncbi.nih.gov::genomes \
+			.
+
 		wait 
+
+		sys chmod -Rf u+rw $dir
 
 		downloadOk.write("OK")	# Mark as all downloads OK
 	}
 
-	# Copy to 'data' dir
-	"data".mkdir()
-	sys $cp -rv ftp.ncbi.nih.gov/genomes/Bacteria/* data/
-
-	# Create genes.gbk files and create config
-	"data".chdir()
-	string[] configLines
-
-	println "Creating genes.gbk:"
-	genomes := sys find . -mindepth 1 -maxdepth 1 -type d
-	for( string gdir : genomes.lines() ) {
-		gen := gdir.baseName()
-		println "\t$gen"
-		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
-
-		# Collapse all geneBank files into one 
-		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
-	}
-
-	println "Writing config file $configFile"
-	configFile.write( configLines.join("\n") )
+#	# Copy to 'data' dir
+#	dataDir := "$dir/data"
+#	dataDir.mkdir()
+#	sys cd $dir/Bacteria ; $cp -rv . $dataDir/
+#	sys cd $dir/Virus ; $cp -rv . $dataDir/
+#
+#	# Create genes.gbk files and create config
+#	# lines (one per subdirectory in dataDir)
+#	dataDir.chdir()
+#	string[] configLines
+#	println "Creating genes.gbk:"
+#	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
+#	for( string gdir : genomes.lines() ) {
+#		gen := gdir.baseName()
+#		println "\t$gen"
+#		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
+#
+#		# Collapse all geneBank files into one 
+#		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
+#	}
+#
+#	println "Writing config file $configFile"
+#	configFile.write( configLines.join("\n") )
 
 	wait
+}
+
+#-------------------------------------------------------------------------------
+# Download NCBI Bacteria
+#-------------------------------------------------------------------------------
+void downloadNcbiBacteria() {
+	println "Download NCBI bacteria"
+
+	configFile := "$dirSnpeff/config/snpEff.NCBI_bacteria.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	dir := "$dirDownload/ncbi_bacteria"
+	dir.mkdir()
+	dir.chdir()
+
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Downloading NCBI (Bacteria)"
+
+		task rsync -avP \
+			--include='*.gbk' \
+			--exclude='*' \
+			ftp.ncbi.nih.gov::genomes/Bacteria \
+			.
+
+		wait 
+
+		sys chmod -Rf u+rw $dir
+
+		downloadOk.write("OK")	# Mark as all downloads OK
+	}
+
+#	# Copy to 'data' dir
+#	dataDir := "$dir/data"
+#	dataDir.mkdir()
+#	sys cd $dir/Bacteria ; $cp -rv . $dataDir/
+#	sys cd $dir/Virus ; $cp -rv . $dataDir/
+#
+#	# Create genes.gbk files and create config
+#	# lines (one per subdirectory in dataDir)
+#	dataDir.chdir()
+#	string[] configLines
+#	println "Creating genes.gbk:"
+#	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
+#	for( string gdir : genomes.lines() ) {
+#		gen := gdir.baseName()
+#		println "\t$gen"
+#		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
+#
+#		# Collapse all geneBank files into one 
+#		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
+#	}
+#
+#	println "Writing config file $configFile"
+#	configFile.write( configLines.join("\n") )
+#
+#	wait
+}
+
+#-------------------------------------------------------------------------------
+# Download NCBI Virus
+#-------------------------------------------------------------------------------
+void downloadNcbiVirus() {
+	println "Download NCBI virus"
+
+	configFile := "$dirSnpeff/config/snpEff.NCBI_virus.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	dir := "$dirDownload/ncbi_virus"
+	dir.mkdir()
+	dir.chdir()
+
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Downloading NCBI (Virus)"
+
+		task rsync -avP \
+			--include='*.gbk' \
+			--exclude='*' \
+			ftp.ncbi.nih.gov::genomes/Virus \
+			.
+
+		wait 
+
+		sys chmod -Rf u+rw $dir
+
+		downloadOk.write("OK")	# Mark as all downloads OK
+	}
+
+#	# Copy to 'data' dir
+#	dataDir := "$dir/data"
+#	dataDir.mkdir()
+#	sys cd $dir/Bacteria ; $cp -rv . $dataDir/
+#	sys cd $dir/Virus ; $cp -rv . $dataDir/
+#
+#	# Create genes.gbk files and create config
+#	# lines (one per subdirectory in dataDir)
+#	dataDir.chdir()
+#	string[] configLines
+#	println "Creating genes.gbk:"
+#	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
+#	for( string gdir : genomes.lines() ) {
+#		gen := gdir.baseName()
+#		println "\t$gen"
+#		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
+#
+#		# Collapse all geneBank files into one 
+#		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
+#	}
+#
+#	println "Writing config file $configFile"
+#	configFile.write( configLines.join("\n") )
+#
+#	wait
 }
 
 #-------------------------------------------------------------------------------

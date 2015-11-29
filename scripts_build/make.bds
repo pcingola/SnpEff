@@ -162,7 +162,9 @@ void buildConfig() {
 			config/snpEff.ENSEMBL_81.config \
 			config/snpEff.ENSEMBL_BFMPP_27.config \
 			config/snpEff.FLYBASE_FB2015_03.config \
-			config/snpEff.NCBI_bacterial.config \
+			config/snpEff.NCBI.config \
+			config/snpEff.NCBI_bacteria.config \
+			config/snpEff.NCBI_virus.config \
 			config/snpEff.etc.config \
 			config/snpEff.bundles.*.config \
 			> snpEff.config
@@ -303,6 +305,8 @@ void downloadAll() {
 
    # Non-human
 	downloadNcbi()
+	downloadNcbiBacteria()
+	downloadNcbiVirus()
 	downloadFlyBase()
 }
 
