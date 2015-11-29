@@ -287,8 +287,8 @@ void downloadAll() {
 	downloadEnsembl()
 	downloadEnsemblBfmpp()
 
-#	# UCSC genomes
-#	downloadUcscHg19()
+	# UCSC genomes
+	downloadUcscHg19()
 #	downloadUcscHg19Kg()
 #	downloadUcscHg38()
 #	downloadUcscHg38Kg()
