@@ -289,10 +289,10 @@ void downloadAll() {
 
 	# UCSC genomes
 	downloadUcscHg19()
-#	downloadUcscHg19Kg()
-#	downloadUcscHg38()
-#	downloadUcscHg38Kg()
-#	downloadUcscMm10()
+	downloadUcscHg19Kg()
+	downloadUcscHg38()
+	downloadUcscHg38Kg()
+	downloadUcscMm10()
 
 	# Other databases
 	downloadJaspar()
