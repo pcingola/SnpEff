@@ -399,63 +399,65 @@ void downloadJaspar() {
 
 #-------------------------------------------------------------------------------
 # Download NCBI
+# This is not working at the moment (downloading the fasta sequences is 
+# mess and needs to be fixed)
 #-------------------------------------------------------------------------------
 void downloadNcbi() {
-	println "Download NCBI"
+	println "Download NCBI: Not working!"
 
-	configFile := "$dirSnpeff/config/snpEff.NCBI.config"
-	if( configFile.exists() ) {
-		println "\tConfig file '$configFile' exists: nothing done"
-		return
-	}
-
-	dir := "$dirDownload/ncbi"
-	dir.mkdir()
-	dir.chdir()
-
-	downloadOk := "download.ok"
-	if( ! downloadOk.exists() ) {
-		println "Downloading NCBI"
-
-		sys rsync -avP \
-			--exclude='.snapshot' \
-			--exclude='.templates' \
-			--exclude='all' \
-			--exclude='archive' \
-			--exclude='genbank' \
-			--exclude='refseq' \
-			--exclude='ARCHIVE' \
-			--exclude='ASSEMBLY_BACTERIA' \
-			--exclude='ASSEMBLY_REPORTS' \
-			--exclude='Bacteria' \
-			--exclude='Bacteria_DRAFT' \
-			--exclude='Chloroplasts' \
-			--exclude='CLUSTERS' \
-			--exclude='GENOME_REPORTS' \
-			--exclude='HUMAN_MICROBIOM' \
-			--exclude='INFLUENZA' \
-			--exclude='MITOCHONDRIA' \
-			--exclude='PLANTS' \
-			--exclude='Plasmids' \
-			--exclude='TARGET' \
-			--exclude='TOOLS' \
-			--exclude='Virus' \
-			\
-			--include='*/GFF/*_top_level.gff3.gz' \
-			--include='protein.fa.gz' \
-			--include='rna.fa.gz' \
-			--include='*/Assembled_chromosomes/seq/*.fa.gz' \
-			--include='*/' \
-			\
-			--exclude='*' \
-			ftp.ncbi.nih.gov::genomes \
-			.
-
-		sys chmod -Rf u+rw $dir
-
-		downloadOk.write("OK")	# Mark as all downloads OK
-	}
-
+#	configFile := "$dirSnpeff/config/snpEff.NCBI.config"
+#	if( configFile.exists() ) {
+#		println "\tConfig file '$configFile' exists: nothing done"
+#		return
+#	}
+#
+#	dir := "$dirDownload/ncbi"
+#	dir.mkdir()
+#	dir.chdir()
+#
+#	downloadOk := "download.ok"
+#	if( ! downloadOk.exists() ) {
+#		println "Downloading NCBI"
+#
+#		sys rsync -avP \
+#			--exclude='.snapshot' \
+#			--exclude='.templates' \
+#			--exclude='all' \
+#			--exclude='archive' \
+#			--exclude='genbank' \
+#			--exclude='refseq' \
+#			--exclude='ARCHIVE' \
+#			--exclude='ASSEMBLY_BACTERIA' \
+#			--exclude='ASSEMBLY_REPORTS' \
+#			--exclude='Bacteria' \
+#			--exclude='Bacteria_DRAFT' \
+#			--exclude='Chloroplasts' \
+#			--exclude='CLUSTERS' \
+#			--exclude='GENOME_REPORTS' \
+#			--exclude='HUMAN_MICROBIOM' \
+#			--exclude='INFLUENZA' \
+#			--exclude='MITOCHONDRIA' \
+#			--exclude='PLANTS' \
+#			--exclude='Plasmids' \
+#			--exclude='TARGET' \
+#			--exclude='TOOLS' \
+#			--exclude='Virus' \
+#			\
+#			--include='*/GFF/*_top_level.gff3.gz' \
+#			--include='protein.fa.gz' \
+#			--include='rna.fa.gz' \
+#			--include='*/Assembled_chromosomes/seq/*.fa.gz' \
+#			--include='*/' \
+#			\
+#			--exclude='*' \
+#			ftp.ncbi.nih.gov::genomes \
+#			.
+#
+#		sys chmod -Rf u+rw $dir
+#
+#		downloadOk.write("OK")	# Mark as all downloads OK
+#	}
+#
 #	# Copy to 'data' dir
 #	dataDir := "$dir/data"
 #	dataDir.mkdir()
@@ -479,8 +481,6 @@ void downloadNcbi() {
 #
 #	println "Writing config file $configFile"
 #	configFile.write( configLines.join("\n") )
-
-	wait
 }
 
 #-------------------------------------------------------------------------------
@@ -530,6 +530,9 @@ void downloadNcbiBacteria() {
 
 	println "Writing config file $configFile"
 	configFile.write( configLines.join("\n") )
+
+	# Copy files to data directory
+	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + echo cp -rvf + $dirData
 }
 
 #-------------------------------------------------------------------------------
@@ -579,6 +582,9 @@ void downloadNcbiVirus() {
 
 	println "Writing config file $configFile"
 	configFile.write( configLines.join("\n") )
+
+	# Copy files to data directory
+	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + echo cp -rvf + $dirData
 }
 
 #-------------------------------------------------------------------------------
