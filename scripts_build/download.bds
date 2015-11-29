@@ -574,7 +574,7 @@ void downloadNcbiVirus() {
 		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Viruses/"
 
 		# Collapse all geneBank files into one 
-		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
+		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk || true
 	}
 
 	println "Writing config file $configFile"
