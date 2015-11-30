@@ -53,14 +53,16 @@ cp					:= "cp -v -u"
 
 # Directories
 dirSnpeff			:="$HOME/snpEff"
+dirBuild			:="$dirSnpeff/build"
+dirData				:="$dirSnpeff/data"
+dirDb				:="$dirSnpeff/db"
+dirDarned			:="$dirDb/darned"
+dirDownload			:="$dirSnpeff/download"
+dirNextProt         :="$dirDb/nextProt"
+dirPdb              :="$dirDb/pdb"
 dirScripts			:="$dirSnpeff/scripts"
 dirScriptsBuild		:="$dirSnpeff/scripts_build"
-dirData				:="$dirSnpeff/data"
-dirDownload			:="$dirSnpeff/download"
 dirZip				:="$dirSnpeff/zip"
-dirBuild			:="$dirSnpeff/build"
-dirDb				:="$dirSnpeff/db"
-dirDarned			:="$dirDb/darned/"
 pwmsBin				:="$dirDb/jaspar/pwms.bin"
 
 # URLs
@@ -174,9 +176,10 @@ void buildConfig() {
 #-------------------------------------------------------------------------------
 
 void buildDb() {
-	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
-	buildDbAll()
-	buildDbSpecial()
+	#copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
+	#buildDbAll()
+	#buildDbSpecial()
+	buildDbPdb()
 }
 
 #-------------------------------------------------------------------------------
@@ -207,6 +210,29 @@ bool buildDbAll() {
 }
 
 #-------------------------------------------------------------------------------
+# Build 'interaction' databases
+#-------------------------------------------------------------------------------
+void buildDbPdb() {
+	print("Build PDB.\n")
+
+	dataDirsHg := dirData.dir("GRCh*") + dirData.dir("hg*")
+
+	# Check each genome version
+	for( string hg : dataDirsHg ) {
+		hg = hg.baseName()
+		println "\t$hg"
+		pdbfile := "$dirData/$hg/interactions.bin"
+
+		if( !pdbfile.exists() ) {
+			print("PDB ($hg): Build\t\tPDB db file: '$pdbfile'\n")
+			sys $snpeff pdb -v -pdbDir $dirPdb -idMap $dirPdb/idMap_pdbId_ensemblId_refseqId.txt.gz $hg 
+		} else {
+			print("PDB ($hg): OK\t\tPDB db file: '$pdbfile'\n")
+		}
+	}
+}
+
+#-------------------------------------------------------------------------------
 # Build special databases
 #-------------------------------------------------------------------------------
 
@@ -217,7 +243,6 @@ void buildDbSpecial() {
 #-------------------------------------------------------------------------------
 # Build databases used in test cases
 #-------------------------------------------------------------------------------
-
 void buildDbTest() {
 	dirs := "$dirSnpeff/data/".dir("test*")
 
@@ -241,18 +266,16 @@ void buildDbTest() {
 #-------------------------------------------------------------------------------
 # Build special databases
 #-------------------------------------------------------------------------------
-
 void buildDbNextProt() {
 	# Note: This takes a huge amount of memory, don't run multiple of these process because the server will crash
-	# TODO: Add amount of memory to the taks and remove the constraint
-	print("Build special.\n")
+	print("Build NextProt\n")
 
 	# XML files used to build NextProt
 	dirNextProt := "$dirSnpeff/db/nextProt/"
 	xmlFiles := dirNextProt.dirPath("*.xml")
 
 	# Check each genome version
-	for( string hg : dirData.dir("GRCh37.*") ) {
+	for( string hg : dirData.dir("GRCh*") ) {
 		hg = hg.baseName()
 		npfile := "$dirData/$hg/nextProt.bin"
 
