@@ -393,9 +393,6 @@ public class HgvsDna extends Hgvs {
 		// Is this a duplication?
 		if (variant.isIns()) duplication = isDuplication();
 
-		String pos = pos();
-		if (pos == null) return null;
-
 		String type = "";
 		switch (variant.getVariantType()) {
 		case INS:
@@ -416,9 +413,17 @@ public class HgvsDna extends Hgvs {
 			type = "";
 			break;
 
+		case INV:
+		case DUP:
+			return "";
+
 		default:
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
+
+		// HGVS formatted Position
+		String pos = pos();
+		if (pos == null) return null;
 
 		return prefix() + pos + type + dnaBaseChange();
 	}
