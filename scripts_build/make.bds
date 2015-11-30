@@ -155,16 +155,15 @@ void buildConfig() {
 			config/snpEff.dbs.config \
 			config/snpEff.test.config \
 			config/snpEff.ENSEMBL_75.config \
-			config/snpEff.ENSEMBL_76.config \
-			config/snpEff.ENSEMBL_77.config \
 			config/snpEff.ENSEMBL_78.config \
 			config/snpEff.ENSEMBL_79.config \
 			config/snpEff.ENSEMBL_81.config \
+			config/snpEff.ENSEMBL_82.config \
 			config/snpEff.ENSEMBL_BFMPP_27.config \
-			config/snpEff.FLYBASE_FB2015_03.config \
-			config/snpEff.NCBI.config \
+			config/snpEff.ENSEMBL_BFMPP_29.config \
+			config/snpEff.FLYBASE_FB2015_05.config \
 			config/snpEff.NCBI_bacteria.config \
-			config/snpEff.NCBI_virus.config \
+			config/snpEff.NCBI_viruses.config \
 			config/snpEff.etc.config \
 			config/snpEff.bundles.*.config \
 			> snpEff.config
