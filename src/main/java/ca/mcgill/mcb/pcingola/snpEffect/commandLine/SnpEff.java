@@ -1218,6 +1218,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\tdump                         : Dump to STDOUT a SnpEff database (mostly used for debugging).");
 		System.err.println("\tgenes2bed                    : Create a bed file from a genes list.");
 		System.err.println("\tlen                          : Calculate total genomic length for each marker type.");
+		System.err.println("\tpdb                          : Build interaction database (based on PDB data).");
 		System.err.println("\tprotein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
 		System.err.println("\tshow                         : Show a text representation of genes or transcripts coordiantes, DNA sequence and protein sequence.");
 		// System.err.println("\tspliceAnalysis               : Perform an analysis of splice sites. Experimental feature.");

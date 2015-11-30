@@ -639,7 +639,7 @@ public class SnpEffCmdPdb extends SnpEff {
 		System.err.println("\nOptions:");
 		System.err.println("\t-aaSep <number>                 : Minimum number of AA of separation within the sequence. Default: " + aaMinSeparation);
 		System.err.println("\t-idMap <file>                   : ID map file (i.e. file containing mapping from PDB ID to transcript ID).");
-		System.err.println("\t-maxDist <number>               : Maximum distance for a pair of amino acids to be considered 'in contact'. Default: " + distanceThreshold);
+		System.err.println("\t-maxDist <number>               : Maximum distance in Angtrom for any atom in a pair of amino acids to be considered 'in contact'. Default: " + distanceThreshold);
 		System.err.println("\t-maxErr <number>                : Maximum amino acid sequence differece between PDB file and genome. Default: " + maxMismatchRate);
 		System.err.println("\t-org <name>                     : Organism 'common name'. Default: " + pdbOrganismCommon);
 		System.err.println("\t-pdbDir <path>                  : Path to PDB files (files in all sub-dirs are scanned).");
