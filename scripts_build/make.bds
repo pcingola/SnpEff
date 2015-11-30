@@ -119,7 +119,6 @@ bool addBuildDb(string genome) {
 #-------------------------------------------------------------------------------
 # Build JAR files (compile)
 #-------------------------------------------------------------------------------
-
 void build() {
 	buildConfig()
 	sys ./scripts_build/make.sh
@@ -128,7 +127,6 @@ void build() {
 #-------------------------------------------------------------------------------
 # Build bundle lists
 #-------------------------------------------------------------------------------
-
 void buildBundleLists() {
 	println "Make bundle lists:"
 
@@ -151,7 +149,6 @@ void buildBundleLists() {
 #-------------------------------------------------------------------------------
 # Build configuration file (snpEff.config)
 #-------------------------------------------------------------------------------
-
 void buildConfig() {
 	sys cat config/snpEff.core.config \
 			config/snpEff.dbs.config \
@@ -174,18 +171,16 @@ void buildConfig() {
 #-------------------------------------------------------------------------------
 # Build all databases
 #-------------------------------------------------------------------------------
-
 void buildDb() {
-	#copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
-	#buildDbAll()
-	#buildDbSpecial()
+	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
+	buildDbAll()
+	buildDbSpecial()
 	buildDbPdb()
 }
 
 #-------------------------------------------------------------------------------
 # Build all databases
 #-------------------------------------------------------------------------------
-
 bool buildDbAll() {
 	print("Build: Start\n")
 	dirBuild.mkdir()	# Make sure build dir exists
@@ -235,7 +230,6 @@ void buildDbPdb() {
 #-------------------------------------------------------------------------------
 # Build special databases
 #-------------------------------------------------------------------------------
-
 void buildDbSpecial() {
 	buildDbNextProt()
 }
@@ -303,7 +297,6 @@ void copyPwm() {
 #-------------------------------------------------------------------------------
 # Download all databases
 #-------------------------------------------------------------------------------
-
 void downloadAll() {
 	# Ensembl genomes
 	downloadEnsembl()
@@ -335,7 +328,6 @@ void downloadAll() {
 #-------------------------------------------------------------------------------
 # Create distribution files
 #-------------------------------------------------------------------------------
-
 void makeDistro() {
 	dirZip.mkdir()	# Make sure zip dir exists
 	zipCore()
@@ -346,7 +338,6 @@ void makeDistro() {
 #-------------------------------------------------------------------------------
 # Run test cases
 #-------------------------------------------------------------------------------
-
 void runTests() {
 	runTestsSnpSiftAll()
 	runTestsSnpEffIntegration()
@@ -356,7 +347,6 @@ void runTests() {
 #-------------------------------------------------------------------------------
 # Run test cases
 #-------------------------------------------------------------------------------
-
 void runTestsSnpSiftAll() {
 	# Run SnpSift test cases
 	task cd $HOME/workspace/SnpSift/ ; \
@@ -371,7 +361,6 @@ void runTestsSnpSiftAll() {
 #-------------------------------------------------------------------------------
 # Run test cases: SnpEff-HGVS
 #-------------------------------------------------------------------------------
-
 void runTestsSnpEffHgvs() {
 	# Run SnpEff test cases: HGVS
 	task cd $HOME/workspace/SnpEff/ ; \
@@ -386,7 +375,6 @@ void runTestsSnpEffHgvs() {
 #-------------------------------------------------------------------------------
 # Run test cases: SnpEff-Integration
 #-------------------------------------------------------------------------------
-
 void runTestsSnpEffIntegration() {
 	# Run SnpEff test cases: Integration
 	task cd $HOME/workspace/SnpEff/ ; \
@@ -401,7 +389,6 @@ void runTestsSnpEffIntegration() {
 #-------------------------------------------------------------------------------
 # Run test cases: SnpEff Unity
 #-------------------------------------------------------------------------------
-
 void runTestsSnpEffUnity() {
 	# Run SnpEff test cases: Unity
 	task cd $HOME/workspace/SnpEff/ ; \
@@ -416,7 +403,6 @@ void runTestsSnpEffUnity() {
 #-------------------------------------------------------------------------------
 # Upload core files
 #-------------------------------------------------------------------------------
-
 void uploadCore2Sf() {
 	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
 	zipLatest := "snpEff_latest_core.zip"
@@ -426,7 +412,6 @@ void uploadCore2Sf() {
 #-------------------------------------------------------------------------------
 # Upload database files
 #-------------------------------------------------------------------------------
-
 void uploadDbs2Sf() {
 	ver := versionUnd()
 	sys scp -v $dirZip/snpEff_v$ver*.zip pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/databases/v$ver/
@@ -435,7 +420,6 @@ void uploadDbs2Sf() {
 #-------------------------------------------------------------------------------
 # Upload core files
 #-------------------------------------------------------------------------------
-
 void uploadDev2Sf() {
 	zipDev    := "snpEff_development.zip"
 	sys scp -v $zipDev pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/
@@ -444,7 +428,6 @@ void uploadDev2Sf() {
 #-------------------------------------------------------------------------------
 # Upload binary files
 #-------------------------------------------------------------------------------
-
 void uploadHtml2Sf() {
 	htmlDir    := "$HOME/workspace/SnpEff/html"
 
@@ -474,7 +457,6 @@ string version() {
 #-------------------------------------------------------------------------------
 # SnpEff's version using underscores instead of '.'
 #-------------------------------------------------------------------------------
-
 string versionUnd() {
 	ver := version()
 	return ver.replace("\.","_").replaceAll("[a-zA-Z]", "").trim() # Remove sub-version letter
@@ -483,7 +465,6 @@ string versionUnd() {
 #-------------------------------------------------------------------------------
 # SnpEff's version using underscores instead of '.'
 #-------------------------------------------------------------------------------
-
 string versionSubUnd() {
 	ver := version()
 	return ver.replace("\.","_").trim()
@@ -492,7 +473,6 @@ string versionSubUnd() {
 #-------------------------------------------------------------------------------
 # Create bundle's ZIP files
 #-------------------------------------------------------------------------------
-
 void zipBundles() {
 	println "Create bundles ZIP files"
 
@@ -525,7 +505,6 @@ void zipBundles() {
 #-------------------------------------------------------------------------------
 # Create SnpEff core Zip file
 #-------------------------------------------------------------------------------
-
 void zipCore() {
 	ver := versionSubUnd()
 	dir := "snpEff_$ver"
@@ -553,7 +532,6 @@ void zipCore() {
 #-------------------------------------------------------------------------------
 # Create databases (non-bundled) Zip files
 #-------------------------------------------------------------------------------
-
 void zipDb(string gen) {
 	bin := "data/$gen/snpEffectPredictor.bin"
 
@@ -570,7 +548,6 @@ void zipDb(string gen) {
 #-------------------------------------------------------------------------------
 # Create databases (non-bundled) Zip files
 #-------------------------------------------------------------------------------
-
 void zipDbs(string[] gens) {
 	for( string gen : gens ) {
 		zipDb(gen)
@@ -580,7 +557,6 @@ void zipDbs(string[] gens) {
 #-------------------------------------------------------------------------------
 # Create databases (non-bundled) Zip files
 #-------------------------------------------------------------------------------
-
 void zipDbs() {
 	println "Create database ZIP files"
 	dbList := "databases.txt"
