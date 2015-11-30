@@ -155,16 +155,21 @@ public class SnpEffCmdPdb extends SnpEff {
 					int trAaLen = tr.protein().length();
 					int pdbAaLen = chain.getAtomGroups("amino").size();
 
-					idmapsOri.stream() //
-							.filter(idm -> trId.equals(idm.trId) && pdbId.equals(idm.pdbId)) //
-							.findFirst() //
-							.ifPresent(i -> idmapsNew.add(i.cloneAndSet(chain.getChainID(), pdbAaLen, trAaLen)));
+					for (IdMapperEntry idm : idmapsOri) {
+						if (trId.equals(idm.trId) && pdbId.equals(idm.pdbId)) {
+							idmapsNew.add(idm.cloneAndSet(chain.getChainID(), pdbAaLen, trAaLen));
+							break;
+						}
+					}
 				} else if (debug) Gpr.debug("\tMapping ERROR :\t" + trId + "\terror: " + err);
 			}
 		}
 
 		// Show all confirmed mappings
-		if (debug) idmapsNew.stream().forEach(i -> System.out.println(i));
+		if (debug) {
+			for (IdMapperEntry ime : idmapsNew)
+				Gpr.debug(ime);
+		}
 
 		return idmapsNew;
 	}
@@ -205,8 +210,8 @@ public class SnpEffCmdPdb extends SnpEff {
 				AminoAcid aa2 = aas.get(j);
 				double d = distanceMin(aa1, aa2);
 
-				if ((Double.isFinite(distanceThreshold) && d <= distanceThreshold) // Amino acids in close distance
-						|| (Double.isFinite(distanceThresholdNon) && (d > distanceThresholdNon)) // Amino acids far apart
+				if ((!Double.isInfinite(distanceThreshold) && d <= distanceThreshold) // Amino acids in close distance
+						|| (!Double.isInfinite(distanceThresholdNon) && (d > distanceThresholdNon)) // Amino acids far apart
 				) {
 					DistanceResult dres = new DistanceResult(aa1, aa2, tr1, tr2, d);
 					if (dres.hasValidCoords()) {
@@ -356,7 +361,8 @@ public class SnpEffCmdPdb extends SnpEff {
 			sb.append("PDB ID: " + pdbId);
 			sb.append("\tEntries:\n");
 			if (idEntries != null) {
-				idEntries.forEach(le -> sb.append("\t\t" + le + "\n"));
+				for (IdMapperEntry ime : idEntries)
+					sb.append("\t\t" + ime + "\n");
 				sb.append("\tTranscripts:\t" + trIds + "\n");
 			}
 			Gpr.debug(sb);
@@ -536,7 +542,8 @@ public class SnpEffCmdPdb extends SnpEff {
 	protected void pdbAnalysis() {
 		if (verbose) Timer.showStdErr("Analyzing PDB files");
 
-		pdbFileNames.stream().forEach(pf -> pdbAnalysis(pf));
+		for (String pdbFileName : pdbFileNames)
+			pdbAnalysis(pdbFileName);
 
 		if (verbose) Timer.showStdErr("Done." //
 				+ "\n\tNumber of PDB files : " + pdbFileNames.size() //
