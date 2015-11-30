@@ -647,7 +647,7 @@ void downloadUcscHg19() {
 	if( "$dir/protein.fa.gz" <- "$ori/protein.fa.gz") {
 		sys gunzip -c $ori/protein.fa.gz \
 		| $dirScriptsBuild/hg19_proteinFasta2NM.pl $ori/refLink.txt \
-		| $dirScriptsBuild/hg19_proteinFastaReplaceName.pl genes.refseq.gz \
+		| $dirScriptsBuild/hg19_proteinFastaReplaceName.pl $dir/genes.refseq.gz \
 		> $dir/protein.fa
 		sys gzip -f $dir/protein.fa
 	}
