@@ -720,7 +720,7 @@ void downloadUcscHg38() {
 	}
 
 	# Copy files to snpEff/data dir
-	sys echo DIR=$dir; cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $dirData/$ref/ 
+	sys cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $dirData/$ref/ 
 }
 
 #-------------------------------------------------------------------------------
