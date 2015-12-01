@@ -29,6 +29,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 	int maxTranscripts;
 	int maxExons;
 	int minExons = 1;
+	int numGenes = 1;
 	int maxGeneLen;
 	int minGeneSize = 100;
 	String chromoSequence = "";
@@ -49,29 +50,33 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 	@Override
 	public SnpEffectPredictor create() {
 		// Create chromo
-		chromo = new Chromosome(genome, 0, 2 * maxGeneLen, "chr1");
+		chromo = new Chromosome(genome, 0, numGenes * 2 * maxGeneLen, "chr1");
 		genome.add(chromo);
 
 		// Create sequence
 		chromoSequence = GprSeq.randSequence(random, chromo.size());
 
 		// Create gene
-		int start = random.nextInt(maxGeneLen);
-		int end = start + Math.max(minGeneSize, random.nextInt(maxGeneLen));
+		int trNum = 0;
+		for (int geneNum = 1; geneNum <= numGenes; geneNum++) {
+			int start = random.nextInt(geneNum * maxGeneLen);
+			int end = start + Math.max(minGeneSize, random.nextInt(maxGeneLen));
 
-		// Strand
-		boolean strandMinus = !random.nextBoolean();
-		if (forcePositiveStrand && forceNegativeStrand) throw new RuntimeException("Cannot force both positive and negative strands!");
-		if (forcePositiveStrand) strandMinus = false;
-		if (forceNegativeStrand) strandMinus = true;
+			// Strand
+			boolean strandMinus = !random.nextBoolean();
+			if (forcePositiveStrand && forceNegativeStrand) throw new RuntimeException("Cannot force both positive and negative strands!");
+			if (forcePositiveStrand) strandMinus = false;
+			if (forceNegativeStrand) strandMinus = true;
 
-		Gene gene = new Gene(chromo, start, end, strandMinus, "gene1", "gene1", BioType.protein_coding);
-		add(gene);
+			String geneId = "gene" + geneNum;
+			Gene gene = new Gene(chromo, start, end, strandMinus, geneId, geneId, BioType.protein_coding);
+			add(gene);
 
-		// Create transcripts
-		int numTr = Math.max(random.nextInt(maxTranscripts), 1);
-		for (int nt = 0; nt < numTr; nt++)
-			createTranscript(gene, "" + nt);
+			// Create transcripts
+			int numTr = Math.max(random.nextInt(maxTranscripts), 1);
+			for (int nt = 0; nt < numTr; nt++, trNum++)
+				createTranscript(gene, "" + trNum);
+		}
 
 		return snpEffectPredictor;
 	}
@@ -210,5 +215,9 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 
 	public void setMinExons(int minExons) {
 		this.minExons = minExons;
+	}
+
+	public void setNumGenes(int numGenes) {
+		this.numGenes = numGenes;
 	}
 }

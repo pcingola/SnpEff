@@ -47,6 +47,7 @@ public class TestCasesBase {
 	protected boolean onlyMinusStrand;
 	protected boolean shiftHgvs; // Do or do not shift variants according to HGVS notation (for test cases that were created before the feature was implemented)
 
+	protected int numGenes = 1;
 	protected int maxGeneLen;
 	protected int maxTranscripts;
 	protected int maxExons;
@@ -206,6 +207,7 @@ public class TestCasesBase {
 		addUtrs = false;
 		onlyPlusStrand = true;
 		onlyMinusStrand = false;
+		numGenes = 1;
 		maxGeneLen = 1000;
 		maxTranscripts = 1;
 		maxExons = 5;
@@ -237,6 +239,7 @@ public class TestCasesBase {
 
 		// Initialize factory
 		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
+		sepf.setNumGenes(numGenes);
 		sepf.setForcePositiveStrand(onlyPlusStrand);
 		sepf.setForceNegativeStrand(onlyMinusStrand);
 		sepf.setAddUtrs(addUtrs);

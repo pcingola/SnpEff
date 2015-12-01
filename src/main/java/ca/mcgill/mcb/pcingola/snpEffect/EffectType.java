@@ -46,6 +46,7 @@ public enum EffectType {
 	, CODON_CHANGE //
 
 	// Low impact
+	, TRANSCRIPT_INVERSION //
 	, UTR_5_PRIME //
 	, UTR_3_PRIME //
 	, START_GAINED //
@@ -149,6 +150,7 @@ public enum EffectType {
 		case SYNONYMOUS_START:
 		case SYNONYMOUS_STOP:
 		case CODON_CHANGE:
+		case TRANSCRIPT_INVERSION:
 			return EffectImpact.LOW;
 
 		case CDS:
@@ -223,6 +225,7 @@ public enum EffectType {
 			return EffectType.SPLICE_SITE_REGION;
 
 		case TRANSCRIPT_DELETED:
+		case TRANSCRIPT_INVERSION:
 		case INTRAGENIC:
 		case GENE:
 		case NEXT_PROT:
@@ -412,6 +415,9 @@ public enum EffectType {
 
 		case TRANSCRIPT_DELETED:
 			return "transcript_ablation";
+
+		case TRANSCRIPT_INVERSION:
+			return "inversion";
 
 		case UPSTREAM:
 			return "upstream_gene_variant";

@@ -1826,7 +1826,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false; // Sanity check
 
-		if (variant.isDel() && variant.includes(this)) {
+		if (variant.includes(this) && (variant.isDel() || variant.isInv())) {
 			CodonChange codonChange = CodonChange.factory(variant, this, variantEffects);
 			codonChange.codonChange();
 			return true;
