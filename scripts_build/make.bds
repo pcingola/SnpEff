@@ -172,9 +172,9 @@ void buildConfig() {
 # Build all databases
 #-------------------------------------------------------------------------------
 void buildDb() {
-	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
-	buildDbAll()
-	buildDbSpecial()
+#	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
+#	buildDbAll()
+#	buildDbSpecial()
 	buildDbPdb()
 }
 
