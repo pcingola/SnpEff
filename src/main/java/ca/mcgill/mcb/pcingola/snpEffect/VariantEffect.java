@@ -751,6 +751,23 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		}
 	}
 
+	public String toStr() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Variant             : " + variant.toStr());
+		sb.append("\n\tEffectTypes     : " + effectTypes);
+		sb.append("\n\tEffectImpacts   : " + effectImpacts);
+		sb.append("\n\tMarker          : " + marker.toStr());
+		if (!codonsRef.isEmpty() || !codonsAlt.isEmpty()) sb.append("\n\tCodons Ref/Alt  : " + codonsRef + " / " + codonsAlt);
+		if (!aaRef.isEmpty() || !aaAlt.isEmpty()) sb.append("\n\tAA Ref/Alt      : " + aaRef + " / " + aaAlt);
+		if (cDnaPos >= 0) sb.append("\n\tcDnaPos         : " + cDnaPos);
+		if (codonNum >= 0) sb.append("\n\tcodon num/index : " + codonNum + " / " + codonIndex);
+		if (!error.isEmpty()) sb.append("\n\tError           : " + error);
+		if (!warning.isEmpty()) sb.append("\n\tWarning         : " + warning);
+		if (!message.isEmpty()) sb.append("\n\tMessage         : " + message);
+
+		return sb.toString();
+	}
+
 	@Override
 	public String toString() {
 		return toString(false, false);
