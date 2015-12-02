@@ -22,7 +22,7 @@ public class CodonChangeIns extends CodonChange {
 	 * Add changeEffect to 'changeEffect'
 	 */
 	@Override
-	protected boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChange(Exon exon) {
 		String netChange = variant.netChange(transcript.isStrandMinus());
 
 		codonsRef = codonsRef();

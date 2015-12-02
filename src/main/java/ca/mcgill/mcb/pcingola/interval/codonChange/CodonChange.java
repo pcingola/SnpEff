@@ -178,12 +178,12 @@ public class CodonChange {
 
 				// Use appropriate method to calculate codon change
 				boolean hasChanged = false; // Was there any change?
-				hasChanged = codonChangeSingle(exon);
+				hasChanged = codonChange(exon);
 
 				// Any change? => Add change to list
 				if (hasChanged && !variantEffects.hasMarker()) variantEffects.setMarker(exon); // It is affecting this exon, so we set the marker
 
-				// Can we return immediately?
+				// Can we finish after effect of first exon is added?
 				if (returnNow) return;
 			}
 
@@ -195,9 +195,9 @@ public class CodonChange {
 	}
 
 	/**
-	 * Calculate the effect of a single change type: SNP, MNP, INS, DEL
+	 * Calculate the effect on an exon
 	 */
-	protected boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChange(Exon exon) {
 		throw new RuntimeException("Unimplemented method codonChangeSingle() for\n\t\tVariant type : " + variant.getType() + "\n\t\tClass        : " + getClass().getSimpleName() + "\n\t\tVariant      : " + variant);
 	}
 

@@ -59,7 +59,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		// Create gene
 		int trNum = 0;
 		for (int geneNum = 1; geneNum <= numGenes; geneNum++) {
-			int start = random.nextInt(geneNum * maxGeneLen);
+			int start = 2 * (geneNum - 1) * maxGeneLen + random.nextInt(geneNum * maxGeneLen);
 			int end = start + Math.max(minGeneSize, random.nextInt(maxGeneLen));
 
 			// Strand

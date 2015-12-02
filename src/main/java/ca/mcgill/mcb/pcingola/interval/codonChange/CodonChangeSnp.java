@@ -23,7 +23,7 @@ public class CodonChangeSnp extends CodonChange {
 	 * Add changeEffect to 'changeEffect'
 	 */
 	@Override
-	protected boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChange(Exon exon) {
 		// Get old and new codons
 		codonsRef = codonsRef();
 		codonsAlt = codonsAlt();

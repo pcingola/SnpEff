@@ -37,8 +37,8 @@ public class SnpEffectPredictor implements Serializable {
 	private static final long serialVersionUID = 4519418862303325081L;
 
 	public static final int DEFAULT_UP_DOWN_LENGTH = 5000;
-	public static final int HUGE_DELETION_SIZE_THRESHOLD = 1000000; // Number of bases
-	public static final double HUGE_DELETION_RATIO_THRESHOLD = 0.01; // Percentage of bases
+	public static final int HUGE_VARIANT_SIZE_THRESHOLD = 1000000; // Number of bases
+	public static final double HUGE_VARIANT_RATIO_THRESHOLD = 0.01; // Percentage of bases
 
 	boolean useChromosomes = true;
 	boolean debug;
@@ -406,7 +406,6 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Name of the regions hit by a marker
-	 * @param marker
 	 * @return A set of region names
 	 */
 	public Set<String> regions(Marker marker, boolean showGeneDetails, boolean compareTemplate) {
@@ -415,11 +414,7 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Name of the regions hit by a marker
-	 * @param marker
-	 * @param showGeneDetails
-	 * @param compareTemplate
-	 * @param id : Only use genes or transcripts matching this ID
-	 * @return
+	 * @param id : Only use genes or transcripts matching this ID (null for any)
 	 */
 	public Set<String> regions(Marker marker, boolean showGeneDetails, boolean compareTemplate, String id) {
 		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(marker)) throw new RuntimeException("Chromosome missing for marker: " + marker);
@@ -626,40 +621,25 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Predict the effect of a variant
-	 * @param variant : Sequence change
-	 * @param variantRef : Before analyzing results, we have to change markers using variantrRef to create a new reference 'on the fly'
 	 */
 	public VariantEffects variantEffect(Variant variant) {
 		VariantEffects variantEffects = new VariantEffects();
 
-		//---
 		// Chromosome missing?
-		//---
 		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(variant)) {
 			variantEffects.addErrorWarning(variant, ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND);
 			return variantEffects;
 		}
 
-		//---
-		// Check that this is not a huge deletion.
-		// Huge deletions would crash the rest of the algorithm, so we need to stop them here.
-		//---
-		// Get chromosome
-		if (variant.isDel()) {
-			String chromoName = variant.getChromosomeName();
-			Chromosome chr = genome.getChromosome(chromoName);
+		// Is this a structural variant? Large structural variants (e.g. involving more than
+		// one gene) may require to calculate effects by using all involved genes
+		boolean structuralVariant = variant.isStructural();
 
-			// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
-			if (chr != null) {
-				double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
-				if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
-					variantEffects.add(variant, chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
-
-					// If the deletion is too large, querying will result in too many
-					// results. We stop here to avoid memory and performance issues
-					if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD) return variantEffects;
-				}
-			}
+		// Check that this is not a huge variant.
+		if (structuralVariant && variantEffectStructuralHuge(variant, variantEffects)) {
+			// Large variants could make the query results huge and slow down
+			// the algorithm, so we stop here
+			return variantEffects;
 		}
 
 		//---
@@ -667,6 +647,24 @@ public class SnpEffectPredictor implements Serializable {
 		//---
 		Markers intersects = query(variant);
 
+		// In case of large structural variants, we need to check the number of genes
+		// involved. If more than one, then we need a different approach (e.g. taking
+		// into account all genes involved to calculate fusions)");
+		if (structuralVariant && variantEffectStructural(variant, variantEffects, intersects)) {
+			// Effects calculated based on multiple genes, do not procees to gene-by-gene calculation
+			return variantEffects;
+		}
+
+		// Calculate variant effect for each query result
+		variantEffect(variant, variantEffects, intersects);
+
+		return variantEffects;
+	}
+
+	/**
+	 * Calculate variant effect for each marker in 'intersect'
+	 */
+	protected void variantEffect(Variant variant, VariantEffects variantEffects, Markers intersects) {
 		// Show all results
 		boolean hitChromo = false, hitSomething = false;
 		for (Marker marker : intersects) {
@@ -676,11 +674,9 @@ public class SnpEffectPredictor implements Serializable {
 				if (variant.isNonRef()) marker.variantEffectNonRef(variant, variantEffects);
 				else marker.variantEffect(variant, variantEffects);
 
-				// Do we have 'per transcript' information?
-				if (intervalForestGene != null && marker instanceof Gene) {
-					String geneId = marker.getId();// Annotate any transcript within the gene
-					variantEffectGene(geneId, variant, variantEffects);
-				}
+				// Do we have 'per gene' information?
+				if (intervalForestGene != null && marker instanceof Gene) //
+					variantEffectGene(marker.getId(), variant, variantEffects);
 
 				hitSomething = true;
 			}
@@ -703,12 +699,10 @@ public class SnpEffectPredictor implements Serializable {
 				variantEffects.add(variant, null, EffectType.INTERGENIC, "");
 			}
 		}
-
-		return variantEffects;
 	}
 
 	/**
-	 * Add transcript specific annotations
+	 * Add gene specific annotations
 	 */
 	protected void variantEffectGene(String geneId, Variant variant, VariantEffects variantEffects) {
 		Itree itree = intervalForestGene.getTree(geneId);
@@ -717,6 +711,57 @@ public class SnpEffectPredictor implements Serializable {
 		Markers res = itree.query(variant);
 		for (Marker m : res)
 			m.variantEffect(variant, variantEffects);
+	}
+
+	/**
+	 * Calculate structural variant effects taking into account all involved genes
+	 * @return true on success (i.e. no further gene-by-gene analysis is required)
+	 */
+	boolean variantEffectStructural(Variant variant, VariantEffects variantEffects, Markers intersects) {
+		Gpr.debug("TO DO!!!!");
+		return false;
+	}
+
+	/**
+	 * Check huge structural variants
+	 * @return true on success (i.e. no further analysis is required, or further analysis
+	 *         may affect performance because a query may return too many results)
+	 */
+	boolean variantEffectStructuralHuge(Variant variant, VariantEffects variantEffects) {
+		String chromoName = variant.getChromosomeName();
+		Chromosome chr = genome.getChromosome(chromoName);
+
+		// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
+		if (chr != null) {
+			double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
+			if (variant.size() > HUGE_VARIANT_SIZE_THRESHOLD || ratio > HUGE_VARIANT_RATIO_THRESHOLD) {
+
+				EffectType eff;
+				switch (variant.getVariantType()) {
+				case DEL:
+					eff = EffectType.CHROMOSOME_LARGE_DELETION;
+					break;
+
+				case DUP:
+					eff = EffectType.CHROMOSOME_LARGE_DUPLICATION;
+					break;
+
+				case INV:
+					eff = EffectType.CHROMOSOME_LARGE_INVERSION;
+					break;
+
+				default:
+					throw new RuntimeException("Unimplemented option for variant type " + variant.getVariantType());
+				}
+
+				variantEffects.add(variant, chr, eff, "");
+
+				// If the variant is too large, querying will result in too many
+				// results. We stop here to avoid memory and performance issues
+				if (variant.size() > HUGE_VARIANT_SIZE_THRESHOLD) return true;
+			}
+		}
+		return false;
 	}
 
 }

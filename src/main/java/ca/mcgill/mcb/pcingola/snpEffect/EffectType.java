@@ -16,6 +16,8 @@ import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 public enum EffectType {
 	// High impact
 	CHROMOSOME_LARGE_DELETION //
+	, CHROMOSOME_LARGE_INVERSION //
+	, CHROMOSOME_LARGE_DUPLICATION //
 	, TRANSCRIPT_DELETED //
 	, EXON_DELETED //
 	, FRAME_SHIFT //
@@ -139,6 +141,7 @@ public enum EffectType {
 		case SPLICE_SITE_BRANCH_U12:
 		case UTR_3_DELETED:
 		case UTR_5_DELETED:
+		case CHROMOSOME_LARGE_INVERSION:
 			return EffectImpact.MODERATE;
 
 		case SPLICE_SITE_REGION:
@@ -151,6 +154,7 @@ public enum EffectType {
 		case SYNONYMOUS_STOP:
 		case CODON_CHANGE:
 		case TRANSCRIPT_INVERSION:
+		case CHROMOSOME_LARGE_DUPLICATION:
 			return EffectImpact.LOW;
 
 		case CDS:

@@ -34,6 +34,7 @@ public class Variant extends Marker {
 		, MIXED // A mixture of insertion, deletions, SNPs and or MNPs (a.k.a. substitution)
 		, INV // Inversion (structural variant)
 		, DUP // Duplication (structural variant)
+		, BND // Break-ends (rearrangement)
 		, INTERVAL
 		// Just analyze interval hits. Not a variant (e.g. BED input format)
 	}
@@ -293,19 +294,19 @@ public class Variant extends Marker {
 	}
 
 	public boolean isIns() {
-		return (variantType == VariantType.INS);
+		return variantType == VariantType.INS;
 	}
 
 	public boolean isInterval() {
-		return (variantType == VariantType.INTERVAL);
+		return variantType == VariantType.INTERVAL;
 	}
 
 	public boolean isInv() {
-		return (variantType == VariantType.INV);
+		return variantType == VariantType.INV;
 	}
 
 	public boolean isMixed() {
-		return (variantType == VariantType.MIXED);
+		return variantType == VariantType.MIXED;
 	}
 
 	public boolean isMnp() {
@@ -323,6 +324,10 @@ public class Variant extends Marker {
 
 	public boolean isSnp() {
 		return variantType == VariantType.SNP;
+	}
+
+	public boolean isStructural() {
+		return isDel() || isInv() || isDup();
 	}
 
 	public boolean isTruncation() {

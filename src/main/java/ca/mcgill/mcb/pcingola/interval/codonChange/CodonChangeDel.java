@@ -34,10 +34,9 @@ public class CodonChangeDel extends CodonChange {
 
 	/**
 	 * Analyze deletions in this transcript.
-	 * Add changeEffect to 'changeEffect'
 	 */
 	@Override
-	protected boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChange(Exon exon) {
 		// Is there any net effect?
 		if (netCdsChange.isEmpty()) return false;
 
