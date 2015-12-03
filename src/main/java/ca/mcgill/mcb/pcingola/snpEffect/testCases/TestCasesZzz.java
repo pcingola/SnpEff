@@ -35,13 +35,13 @@ public class TestCasesZzz extends TestCasesBase {
 		}
 
 		Set<String> expectedHgvsp = new HashSet<>();
-		if (expectedHgvsp != null) {
+		if (expHgvsp != null) {
 			for (String h : expHgvsp)
 				expectedHgvsp.add(h);
 		}
 
 		Set<String> expectedHgvsc = new HashSet<>();
-		if (expectedHgvsc != null) {
+		if (expHgvsc != null) {
 			for (String h : expHgvsc)
 				expectedHgvsc.add(h);
 		}
@@ -132,10 +132,9 @@ public class TestCasesZzz extends TestCasesBase {
 		variant.setVariantType(VariantType.INV);
 
 		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
-		String expHgvsp[] = {};
-		String expHgvsc[] = {};
+		String expHgvsc[] = { "c.-7_*43inv" };
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc);
+		checkEffects(variant, expEffs, null, expHgvsc);
 	}
 
 	//	/**

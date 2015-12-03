@@ -492,6 +492,8 @@ public class HgvsProtein extends Hgvs {
 			break;
 
 		case INV:
+			// Inversion description not used at protein level
+			// Reference: http://www.hgvs.org/mutnomen/examplesAA.html
 			return "";
 
 		case DUP:

@@ -69,6 +69,13 @@ public class HgvsDna extends Hgvs {
 			if (strandPlus) return "del" + variant.getReference() + "ins" + variant.getAlt();
 			return "del" + GprSeq.reverseWc(variant.getReference()) + "ins" + GprSeq.reverseWc(variant.getAlt());
 
+		case INV:
+			// Inversions are designated by "inv" after an indication of the 
+			// first and last nucleotides affected by the inversion.
+			// Reference: http://www.hgvs.org/mutnomen/recs-DNA.html#inv
+			// => No base changes are used
+			return "";
+
 		case INTERVAL:
 			return "";
 
@@ -201,6 +208,7 @@ public class HgvsDna extends Hgvs {
 
 		case DEL:
 		case MIXED:
+		case INV:
 			if (strandPlus) {
 				posStart = variant.getStart();
 				posEnd = variant.getEnd();
@@ -414,6 +422,9 @@ public class HgvsDna extends Hgvs {
 			break;
 
 		case INV:
+			type = "inv";
+			break;
+
 		case DUP:
 			return "";
 
