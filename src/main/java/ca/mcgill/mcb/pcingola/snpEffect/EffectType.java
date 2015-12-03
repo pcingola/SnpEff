@@ -20,6 +20,8 @@ public enum EffectType {
 	, CHROMOSOME_LARGE_DUPLICATION //
 	, TRANSCRIPT_DELETED //
 	, EXON_DELETED //
+	, EXON_INVERSION //
+	, EXON_INVERSION_PARTIAL //
 	, FRAME_SHIFT //
 	, STOP_GAINED //
 	, STOP_LOST //
@@ -122,6 +124,7 @@ public enum EffectType {
 		switch (this) {
 		case TRANSCRIPT_DELETED:
 		case EXON_DELETED:
+		case EXON_INVERSION:
 		case FRAME_SHIFT:
 		case SPLICE_SITE_ACCEPTOR:
 		case SPLICE_SITE_DONOR:

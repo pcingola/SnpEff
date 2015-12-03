@@ -4,14 +4,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Gene;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsProtein;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
@@ -25,7 +28,7 @@ public class TestCasesZzz extends TestCasesBase {
 		super();
 	}
 
-	protected void checkEffects(Variant variant, EffectType expEffs[], String expHgvsp[], String expHgvsc[]) {
+	protected void checkEffects(Variant variant, EffectType expEffs[], String expHgvsp[], String expHgvsc[], EffectImpact expectedImpact) {
 		// Convert to sets
 		Set<EffectType> expectedEffs = new HashSet<>();
 		if (expEffs != null) {
@@ -66,6 +69,7 @@ public class TestCasesZzz extends TestCasesBase {
 		Set<EffectType> effs = new HashSet<>();
 		Set<String> hgvscs = new HashSet<>();
 		Set<String> hgvsps = new HashSet<>();
+		boolean impactOk = false;
 		for (VariantEffect varEff : effects) {
 			effs.addAll(varEff.getEffectTypes());
 
@@ -76,6 +80,8 @@ public class TestCasesZzz extends TestCasesBase {
 			HgvsProtein hgvsp = new HgvsProtein(varEff);
 			String hgvsProt = hgvsp.toString();
 			hgvsps.add(hgvsProt);
+
+			impactOk |= (varEff.getEffectImpact() == expectedImpact);
 
 			if (verbose) Gpr.debug("Effect: " + varEff.toStr() //
 					+ "\n\tHGVS.c: " + hgvsDna //
@@ -89,6 +95,9 @@ public class TestCasesZzz extends TestCasesBase {
 				+ "\n\tFound    : " + effs//
 				, effs.containsAll(expectedEffs) //
 		);
+
+		// Check impact
+		Assert.assertTrue("Effect impact '" + expectedImpact + "' not found", impactOk);
 
 		// Check HGVS.c
 		Assert.assertTrue("HGVS.c do not match" //
@@ -124,7 +133,7 @@ public class TestCasesZzz extends TestCasesBase {
 	}
 
 	//	/**
-	//	 * Inversion: Whole gene
+	//	 * Inversion: Whole gene / whole transcript
 	//	 */
 	//	@Test
 	//	public void test01() {
@@ -134,35 +143,41 @@ public class TestCasesZzz extends TestCasesBase {
 	//
 	//		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
 	//		String expHgvsc[] = { "c.-7_*43inv" };
+	//		EffectImpact expectedImpact = EffectImpact.LOW;
 	//
-	//		checkEffects(variant, expEffs, null, expHgvsc);
+	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
 	//	}
-
+	//
 	//	/**
 	//	 * Inversion: One coding exon
 	//	 */
 	//	@Test
 	//	public void test02() {
-	//		verbose = true;
-	//
 	//		Variant variant = new Variant(chromosome, 1040, 1100, "");
 	//		variant.setVariantType(VariantType.INV);
 	//
-	//		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
-	//		String expHgvsc[] = { "c.-7_*43inv" };
+	//		verbose = true;
+	//		EffectType expEffs[] = { EffectType.EXON_INVERSION };
+	//		String expHgvsc[] = { "c.33-5_45+43inv" };
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
 	//
-	//		checkEffects(variant, expEffs, null, expHgvsc);
+	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
 	//	}
-
+	//
 	//	/**
 	//	 * Inversion: Two coding exons
 	//	 */
 	//	@Test
 	//	public void test03() {
-	//		initSnpEffPredictor();
-	//
 	//		Variant variant = new Variant(chromosome, 1040, 1160, "");
 	//		variant.setVariantType(VariantType.INV);
+	//
+	//		EffectType expEffs[] = { EffectType.EXON_INVERSION };
+	//		String expHgvsc[] = { "c.33-5_*3inv" };
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
+	//
+	//		verbose = true;
+	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
 	//	}
 	//
 	//	/**
@@ -170,40 +185,51 @@ public class TestCasesZzz extends TestCasesBase {
 	//	 */
 	//	@Test
 	//	public void test04() {
-	//		initSnpEffPredictor();
-	//
 	//		Variant variant = new Variant(chromosome, 1040, 1050, "");
 	//		variant.setVariantType(VariantType.INV);
-	//	}
 	//
+	//		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
+	//		String expHgvsc[] = { "c.33-5_38inv" };
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
+	//
+	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
+	//	}
+
 	//	/**
 	//	 * Inversion: Part of two coding exon
 	//	 */
 	//	@Test
 	//	public void test05() {
-	//		initSnpEffPredictor();
-	//
 	//		Variant variant = new Variant(chromosome, 1050, 1150, "");
 	//		variant.setVariantType(VariantType.INV);
+	//
+	//		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
+	//		String expHgvsc[] = { "c.38_48inv" };
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
+	//
+	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
 	//	}
-	//
-	//	/**
-	//	 * Inversion: Two genes
-	//	 */
-	//	@Test
-	//	public void test06() {
-	//		initSnpEffPredictor();
-	//
-	//		Variant variant = new Variant(chromosome, 1050, 2150, "");
-	//		variant.setVariantType(VariantType.INV);
-	//	}
-	//
+
+	/**
+	 * Inversion: Two genes
+	 */
+	@Test
+	public void test06() {
+		Variant variant = new Variant(chromosome, 1050, 2150, "");
+		variant.setVariantType(VariantType.INV);
+
+		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
+		String expHgvsc[] = { "c.38_48inv" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
+	}
+
 	//	/**
 	//		 * Inversion: Part of two genes (fusions) cutting on introns
 	//		 */
 	//	@Test
 	//	public void test07() {
-	//		initSnpEffPredictor();
 	//		Variant variant = new Variant(chromosome, 1100, 2075, "");
 	//		variant.setVariantType(VariantType.INV);
 	//	}
@@ -213,7 +239,6 @@ public class TestCasesZzz extends TestCasesBase {
 	//		 */
 	//	@Test
 	//	public void test08() {
-	//		initSnpEffPredictor();
 	//		Variant variant = new Variant(chromosome, 1050, 2120, "");
 	//		variant.setVariantType(VariantType.INV);
 	//	}
@@ -223,15 +248,14 @@ public class TestCasesZzz extends TestCasesBase {
 	//	 */
 	//	@Test
 	//	public void test09() {
-	//		verbose = true;
-	//
 	//		Variant variant = new Variant(chromosome, 991, 1020, "");
 	//		variant.setVariantType(VariantType.INV);
 	//
 	//		EffectType expEffs[] = { EffectType.INTRON };
 	//		String expHgvsc[] = { "c.32+3_33-25inv" };
+	//		EffectImpact expectedImpact = EffectImpact.MODIFIER;
 	//
-	//		checkEffects(variant, expEffs, null, expHgvsc);
+	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
 	//
 	//	}
 

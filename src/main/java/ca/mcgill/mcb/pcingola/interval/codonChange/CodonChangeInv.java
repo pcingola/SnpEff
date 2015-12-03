@@ -1,9 +1,11 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
+import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
@@ -25,46 +27,41 @@ public class CodonChangeInv extends CodonChange {
 		} else {
 			// Part of the transcript is inverted
 
-			// Count how many exons are fully and partially included
-			int countExonsIncluded = 0, countExonsIntersect = 0;
+			// Does the inversion affect any exon?
+			boolean intersectsExons = false;
 			for (Exon ex : transcript) {
-				if (variant.includes(ex)) countExonsIncluded++;
-				else if (variant.intersects(ex)) countExonsIntersect++;
+				if (variant.intersects(ex)) {
+					intersectsExons = true;
+					break;
+				}
 			}
 
-			// Different cases based on exon coverage
-			if (countExonsIncluded == 0) {
-				if (countExonsIntersect == 0) intron(); // Inversion intersects no exon => Introns
-				else partialExons(); // Inversion intersects one or two exons, but does not include any exon
-			} else {
-				if (countExonsIntersect == 0) fullExons(); // One or more exons fully included (no partial overlap)
-				else fullAndPartialExons(); // A mixture of one or more full and one or more partial exons
-			}
-
-			// TODO: Which part is inverted?
-			//       Coding exon:
-			//       	One or more coding exon/s? (cutting at the introns / intergenic)
-			//       	One or more coding exon/s? (cutting at the exon/s)
-			//       Non-coding exon?
-			//			Part of the 3'UTR
-			//			Part of the 5'UTR
-			//			A whole exon in the UTR
-			//
+			// Annotate
+			if (intersectsExons) exons();
+			else intron();
 		}
-	}
-
-	/**
-	 * A mixture of one or more full and one or more partial exons
-	 */
-	void fullAndPartialExons() {
-		if (Math.random() < 2) throw new RuntimeException("TODO!!!");
 	}
 
 	/**
 	 * One or more exons fully included (no partial overlap)
 	 */
-	void fullExons() {
-		if (Math.random() < 2) throw new RuntimeException("TODO!!!");
+	void exons() {
+		Marker cdsMarker = null;
+		if (transcript.isProteinCoding()) cdsMarker = transcript.cdsMarker();
+
+		for (Exon ex : transcript)
+			if (variant.intersects(ex)) {
+				EffectImpact impact = EffectImpact.LOW;
+
+				// Is the variant affecting a coding part of the exon?
+				// If so, then this is a HIGH impact effect.
+				if (cdsMarker != null && variant.intersect(ex).intersects(cdsMarker)) impact = EffectImpact.HIGH;
+
+				// Is the whole exon inverted or just part of it?
+				EffectType effType = variant.includes(ex) ? EffectType.EXON_INVERSION : EffectType.EXON_INVERSION_PARTIAL;
+
+				effect(ex, effType, impact, "", "", "", -1, -1, false);
+			}
 	}
 
 	/**
@@ -72,17 +69,6 @@ public class CodonChangeInv extends CodonChange {
 	 */
 	void intron() {
 		effect(transcript, EffectType.INTRON, "", "", "", -1, -1, false);
-	}
-
-	/**
-	 * Inversion intersects (cuts) one or two exons, but does
-	 * not include any exon
-	 */
-	void partialExons() {
-		// Coding exon:
-		//	  Part of one one coding exon?
-		//    One or more coding exon/s? (cutting at the exon/s)
-		if (Math.random() < 2) throw new RuntimeException("TODO!!!");
 	}
 
 }

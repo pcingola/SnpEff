@@ -527,6 +527,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return cds;
 	}
 
+	/**
+	 * Create a marker of the coding region in this transcript
+	 */
+	public Marker cdsMarker() {
+		return isStrandPlus() //
+				? new Marker(this, getCdsStart(), getCdsEnd()) //
+				: new Marker(this, getCdsEnd(), getCdsStart()) //
+				;
+	}
+
 	@Override
 	public Transcript cloneShallow() {
 		Transcript clone = (Transcript) super.cloneShallow();
@@ -733,8 +743,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Return the Exon that hits position 'pos'
-	 * @return An exon intersecting 'pos' (null if not found)
+	 * Return the an exon that intersects 'pos'
 	 */
 	public Exon findExon(int pos) {
 		for (Exon exon : this)
@@ -743,8 +752,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Return the Exon that hits 'marker'
-	 * @return An exon intersecting 'pos' (null if not found)
+	 * Return an exon intersecting 'marker' (first exon found)
 	 */
 	public Exon findExon(Marker marker) {
 		for (Exon exon : this)
@@ -753,13 +761,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Return an Intron overlapoing position 'pos'
+	 * Return an intron overlapping position 'pos'
 	 */
 	public Intron findIntron(int pos) {
 		// Is 'pos' in intron?
-		for (Intron intron : introns()) {
+		for (Intron intron : introns())
 			if (intron.intersects(pos)) return intron;
-		}
 		return null;
 	}
 
@@ -784,8 +791,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Return the UTR that hits position 'pos'
-	 * @return An UTR intersecting 'pos' (null if not found)
+	 * Return the UTR that intersects 'marker' (null if not found)
 	 */
 	public List<Utr> findUtrs(Marker marker) {
 		List<Utr> utrs = new LinkedList<Utr>();

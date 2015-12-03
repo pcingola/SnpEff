@@ -724,7 +724,7 @@ public class SnpEffectPredictor implements Serializable {
 			if (m instanceof Gene) countGenes++;
 
 		if (countGenes <= 1) return false;
-		throw new RuntimeException("TO DO!!!!");
+		throw new RuntimeException("TO DO\t" + countGenes);
 	}
 
 	/**

@@ -9,6 +9,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
@@ -239,13 +240,17 @@ public class CodonChange {
 		return codon;
 	}
 
+	protected VariantEffect effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
+		return effect(marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex, allowReplace);
+	}
+
 	/**
 	 * Add an effect
 	 */
-	protected VariantEffect effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
+	protected VariantEffect effect(Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
 		// Create and add variant affect
 		int cDnaPos = transcript.baseNumber2MRnaPos(variant.getStart());
-		VariantEffect varEff = new VariantEffect(variant, marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex, cDnaPos);
+		VariantEffect varEff = new VariantEffect(variant, marker, effectType, effectImpact, message, codonsOld, codonsNew, codonNum, codonIndex, cDnaPos);
 		variantEffects.add(varEff);
 
 		// Are there any additional effects? Sometimes a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
