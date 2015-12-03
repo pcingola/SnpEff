@@ -220,7 +220,7 @@ void buildDbPdb() {
 
 		if( !pdbfile.exists() ) {
 			print("PDB ($hg): Build\t\tPDB db file: '$pdbfile'\n")
-			sys $snpeff pdb -v -pdbDir $dirPdb -idMap $dirPdb/idMap_pdbId_ensemblId_refseqId.txt.gz $hg 
+			task $snpeff pdb -v -pdbDir $dirPdb -idMap $dirPdb/idMap_pdbId_ensemblId_refseqId.txt.gz $hg 
 		} else {
 			print("PDB ($hg): OK\t\tPDB db file: '$pdbfile'\n")
 		}
