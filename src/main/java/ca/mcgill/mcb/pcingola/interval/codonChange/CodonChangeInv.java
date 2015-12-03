@@ -25,13 +25,14 @@ public class CodonChangeInv extends CodonChange {
 		} else {
 			// Part of the transcript is inverted
 
-			// Case 1: One exon is inverted (cutting at the introns)
+			// Count how many exons are fully and partially included
 			int countExonsIncluded = 0, countExonsIntersect = 0;
 			for (Exon ex : transcript) {
 				if (variant.includes(ex)) countExonsIncluded++;
 				else if (variant.intersects(ex)) countExonsIntersect++;
 			}
 
+			// Different cases based on exon coverage
 			if (countExonsIncluded == 0) {
 				if (countExonsIntersect == 0) intron(); // Inversion intersects no exon => Introns
 				else partialExons(); // Inversion intersects one or two exons, but does not include any exon

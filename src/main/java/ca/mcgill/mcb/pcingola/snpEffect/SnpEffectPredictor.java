@@ -718,6 +718,12 @@ public class SnpEffectPredictor implements Serializable {
 	 * @return true on success (i.e. no further gene-by-gene analysis is required)
 	 */
 	boolean variantEffectStructural(Variant variant, VariantEffects variantEffects, Markers intersects) {
+		// How many genes are intersected?
+		int countGenes = 0;
+		for (Marker m : intersects)
+			if (m instanceof Gene) countGenes++;
+
+		if (countGenes <= 1) return false;
 		throw new RuntimeException("TO DO!!!!");
 	}
 

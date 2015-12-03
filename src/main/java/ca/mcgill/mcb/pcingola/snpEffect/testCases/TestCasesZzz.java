@@ -4,11 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Assert;
-import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.interval.Gene;
+import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.interval.Variant.VariantType;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsDna;
 import ca.mcgill.mcb.pcingola.snpEffect.HgvsProtein;
@@ -51,8 +50,11 @@ public class TestCasesZzz extends TestCasesBase {
 
 		if (verbose) {
 			Gpr.debug("Variant: " + variant);
-			for (Gene g : genome.getGenes())
-				Gpr.debug("\tGene: " + g);
+			for (Gene g : genome.getGenes()) {
+				Gpr.debug("\tGene: " + g.getId());
+				for (Transcript tr : g)
+					Gpr.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
+			}
 		}
 
 		// Calculate effects
@@ -136,21 +138,21 @@ public class TestCasesZzz extends TestCasesBase {
 	//		checkEffects(variant, expEffs, null, expHgvsc);
 	//	}
 
-	/**
-	 * Inversion: One coding exon
-	 */
-	@Test
-	public void test02() {
-		verbose = true;
-
-		Variant variant = new Variant(chromosome, 1040, 1100, "");
-		variant.setVariantType(VariantType.INV);
-
-		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
-		String expHgvsc[] = { "c.-7_*43inv" };
-
-		checkEffects(variant, expEffs, null, expHgvsc);
-	}
+	//	/**
+	//	 * Inversion: One coding exon
+	//	 */
+	//	@Test
+	//	public void test02() {
+	//		verbose = true;
+	//
+	//		Variant variant = new Variant(chromosome, 1040, 1100, "");
+	//		variant.setVariantType(VariantType.INV);
+	//
+	//		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
+	//		String expHgvsc[] = { "c.-7_*43inv" };
+	//
+	//		checkEffects(variant, expEffs, null, expHgvsc);
+	//	}
 
 	//	/**
 	//	 * Inversion: Two coding exons
@@ -214,6 +216,23 @@ public class TestCasesZzz extends TestCasesBase {
 	//		initSnpEffPredictor();
 	//		Variant variant = new Variant(chromosome, 1050, 2120, "");
 	//		variant.setVariantType(VariantType.INV);
+	//	}
+
+	//	/**
+	//	 * Inversion: Part of two genes (fusions) cutting exons
+	//	 */
+	//	@Test
+	//	public void test09() {
+	//		verbose = true;
+	//
+	//		Variant variant = new Variant(chromosome, 991, 1020, "");
+	//		variant.setVariantType(VariantType.INV);
+	//
+	//		EffectType expEffs[] = { EffectType.INTRON };
+	//		String expHgvsc[] = { "c.32+3_33-25inv" };
+	//
+	//		checkEffects(variant, expEffs, null, expHgvsc);
+	//
 	//	}
 
 }
