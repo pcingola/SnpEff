@@ -718,8 +718,7 @@ public class SnpEffectPredictor implements Serializable {
 	 * @return true on success (i.e. no further gene-by-gene analysis is required)
 	 */
 	boolean variantEffectStructural(Variant variant, VariantEffects variantEffects, Markers intersects) {
-		Gpr.debug("TO DO!!!!");
-		return false;
+		throw new RuntimeException("TO DO!!!!");
 	}
 
 	/**

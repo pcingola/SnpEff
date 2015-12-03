@@ -50,6 +50,7 @@ public class TestCasesZzz extends TestCasesBase {
 		initSnpEffPredictor();
 
 		if (verbose) {
+			Gpr.debug("Variant: " + variant);
 			for (Gene g : genome.getGenes())
 				Gpr.debug("\tGene: " + g);
 		}
@@ -120,15 +121,29 @@ public class TestCasesZzz extends TestCasesBase {
 		initRand();
 	}
 
+	//	/**
+	//	 * Inversion: Whole gene
+	//	 */
+	//	@Test
+	//	public void test01() {
+	//		// Create variant
+	//		Variant variant = new Variant(chromosome, 950, 1200, "");
+	//		variant.setVariantType(VariantType.INV);
+	//
+	//		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
+	//		String expHgvsc[] = { "c.-7_*43inv" };
+	//
+	//		checkEffects(variant, expEffs, null, expHgvsc);
+	//	}
+
 	/**
-	 * Inversion: Whole gene
+	 * Inversion: One coding exon
 	 */
 	@Test
-	public void test01() {
+	public void test02() {
 		verbose = true;
 
-		// Create variant
-		Variant variant = new Variant(chromosome, 950, 1200, "");
+		Variant variant = new Variant(chromosome, 1040, 1100, "");
 		variant.setVariantType(VariantType.INV);
 
 		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
@@ -137,17 +152,6 @@ public class TestCasesZzz extends TestCasesBase {
 		checkEffects(variant, expEffs, null, expHgvsc);
 	}
 
-	//	/**
-	//	 * Inversion: One coding exon
-	//	 */
-	//	@Test
-	//	public void test02() {
-	//		initSnpEffPredictor();
-	//
-	//		Variant variant = new Variant(chromosome, 1040, 1100, "");
-	//		variant.setVariantType(VariantType.INV);
-	//	}
-	//
 	//	/**
 	//	 * Inversion: Two coding exons
 	//	 */
