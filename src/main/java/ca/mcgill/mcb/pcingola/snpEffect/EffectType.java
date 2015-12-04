@@ -18,6 +18,8 @@ public enum EffectType {
 	CHROMOSOME_LARGE_DELETION //
 	, CHROMOSOME_LARGE_INVERSION //
 	, CHROMOSOME_LARGE_DUPLICATION //
+	, GENE_REARRANGEMENT //
+	, GENE_DELETED //
 	, TRANSCRIPT_DELETED //
 	, EXON_DELETED //
 	, EXON_INVERSION //
@@ -50,6 +52,8 @@ public enum EffectType {
 	, CODON_CHANGE //
 
 	// Low impact
+	, GENE_INVERSION //
+	, GENE_DUPLICATION //
 	, TRANSCRIPT_INVERSION //
 	, UTR_5_PRIME //
 	, UTR_3_PRIME //
@@ -157,6 +161,7 @@ public enum EffectType {
 		case SYNONYMOUS_STOP:
 		case CODON_CHANGE:
 		case TRANSCRIPT_INVERSION:
+		case GENE_INVERSION:
 		case CHROMOSOME_LARGE_DUPLICATION:
 			return EffectImpact.LOW;
 

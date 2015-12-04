@@ -25,8 +25,6 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 /**
  * Effect of a variant.
  *
- * TODO: Remove all code related to formatting (e.g. VCF output formatting should be done elsewhere).
- *
  * @author pcingola
  */
 public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
@@ -756,7 +754,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		sb.append("Variant             : " + variant.toStr());
 		sb.append("\n\tEffectTypes     : " + effectTypes);
 		sb.append("\n\tEffectImpacts   : " + effectImpacts);
-		sb.append("\n\tMarker          : " + marker.toStr());
+		if (marker != null) sb.append("\n\tMarker          : " + marker.toStr());
 		if (!codonsRef.isEmpty() || !codonsAlt.isEmpty()) sb.append("\n\tCodons Ref/Alt  : " + codonsRef + " / " + codonsAlt);
 		if (!aaRef.isEmpty() || !aaAlt.isEmpty()) sb.append("\n\tAA Ref/Alt      : " + aaRef + " / " + aaAlt);
 		if (cDnaPos >= 0) sb.append("\n\tcDnaPos         : " + cDnaPos);

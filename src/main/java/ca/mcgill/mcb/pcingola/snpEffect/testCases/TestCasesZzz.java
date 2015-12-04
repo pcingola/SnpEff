@@ -62,6 +62,7 @@ public class TestCasesZzz extends TestCasesBase {
 
 		// Calculate effects
 		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
+		if (verbose) Gpr.debug("VariantEffects: " + effects);
 
 		// Checknumber of results
 		Assert.assertEquals(true, effects.size() >= 1);
@@ -218,9 +219,9 @@ public class TestCasesZzz extends TestCasesBase {
 		Variant variant = new Variant(chromosome, 1050, 2150, "");
 		variant.setVariantType(VariantType.INV);
 
-		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
+		EffectType expEffs[] = { EffectType.GENE_INVERSION };
 		String expHgvsc[] = { "c.38_48inv" };
-		EffectImpact expectedImpact = EffectImpact.HIGH;
+		EffectImpact expectedImpact = EffectImpact.LOW;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
 	}

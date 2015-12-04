@@ -720,11 +720,18 @@ public class SnpEffectPredictor implements Serializable {
 	boolean variantEffectStructural(Variant variant, VariantEffects variantEffects, Markers intersects) {
 		// How many genes are intersected?
 		int countGenes = 0;
+
 		for (Marker m : intersects)
 			if (m instanceof Gene) countGenes++;
 
+		// Only one gene intersected? => No need to continue
 		if (countGenes <= 1) return false;
-		throw new RuntimeException("TO DO\t" + countGenes);
+
+		// Create a new variant effect for structural variants
+		VariantEffect veff = new VariantEffectStructural(variant, intersects);
+		Gpr.debug("VariantEffectStructural: " + veff);
+		variantEffects.add(veff);
+		return true;
 	}
 
 	/**
