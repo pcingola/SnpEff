@@ -40,7 +40,7 @@ GRCM				:= "GRCm38"
 dbNsfpVer			:= '3.1a'
 
 # Configuration parameters
-bundles				:= ["NCBI_bacteria", "NCBI_viruses", "ENSEMBL_BFMPP_27", "ENSEMBL_BFMPP_29"]
+bundles				:= ["NCBI_bacteria", "NCBI_viruses", "ENSEMBL_BFMPP_29"]
 
 # Commands
 snpeff				:= "java -Xmx10G -jar snpEff.jar "
@@ -154,11 +154,8 @@ void buildConfig() {
 			config/snpEff.dbs.config \
 			config/snpEff.test.config \
 			config/snpEff.ENSEMBL_75.config \
-			config/snpEff.ENSEMBL_78.config \
-			config/snpEff.ENSEMBL_79.config \
 			config/snpEff.ENSEMBL_81.config \
 			config/snpEff.ENSEMBL_82.config \
-			config/snpEff.ENSEMBL_BFMPP_27.config \
 			config/snpEff.ENSEMBL_BFMPP_29.config \
 			config/snpEff.FLYBASE_FB2015_05.config \
 			config/snpEff.NCBI_bacteria.config \
