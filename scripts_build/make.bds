@@ -150,24 +150,29 @@ void buildBundleLists() {
 # Build configuration file (snpEff.config)
 #-------------------------------------------------------------------------------
 void buildConfig() {
+	confDir := "$dirSnpeff/config"
+	conf := "$dirSnpeff/snpEff.config"
+
 	bundlesConf := ""
 	for( string b : bundles) {
-		bundlesConf += " config/snpEff.$b.config"
+		bundlesConf += " $confDir/snpEff.bundles.$b.config"
 	}
 
-	sys cat config/snpEff.core.config \
-			config/snpEff.dbs.config \
-			config/snpEff.test.config \
-			config/snpEff.ENSEMBL_75.config \
-			config/snpEff.ENSEMBL_81.config \
-			config/snpEff.ENSEMBL_$ensemblRelease.config \
-			config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config \
-			config/snpEff.FLYBASE_$flybaseRelease.config \
-			config/snpEff.NCBI_bacteria.config \
-			config/snpEff.NCBI_viruses.config \
-			config/snpEff.etc.config \
+	println "Building config file '$conf'"
+
+	sys cat $confDir/snpEff.core.config \
+			$confDir/snpEff.dbs.config \
+			$confDir/snpEff.test.config \
+			$confDir/snpEff.ENSEMBL_75.config \
+			$confDir/snpEff.ENSEMBL_81.config \
+			$confDir/snpEff.ENSEMBL_$ensemblRelease.config \
+			$confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config \
+			$confDir/snpEff.FLYBASE_$flybaseRelease.config \
+			$confDir/snpEff.NCBI_bacteria.config \
+			$confDir/snpEff.NCBI_viruses.config \
+			$confDir/snpEff.etc.config \
 			$bundlesConf \
-			> snpEff.config
+			> $conf
 }
 
 #-------------------------------------------------------------------------------
