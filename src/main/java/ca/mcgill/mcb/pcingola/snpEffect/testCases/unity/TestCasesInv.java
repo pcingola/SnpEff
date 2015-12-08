@@ -1,4 +1,4 @@
-package ca.mcgill.mcb.pcingola.snpEffect.testCases;
+package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +16,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.HgvsProtein;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
-import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
@@ -24,11 +23,11 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 /**
  * Test case
  */
-public class TestCasesZzz extends TestCasesBase {
+public class TestCasesInv extends TestCasesBase {
 
 	EffFormatVersion formatVersion = EffFormatVersion.FORMAT_ANN;
 
-	public TestCasesZzz() {
+	public TestCasesInv() {
 		super();
 	}
 

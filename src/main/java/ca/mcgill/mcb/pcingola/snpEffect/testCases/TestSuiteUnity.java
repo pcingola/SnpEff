@@ -45,6 +45,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalTreeArr
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalTreeOri;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalVariant;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervals;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesInv;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIubString;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesJaspar;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesMarkerUtils;
@@ -109,6 +110,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesIntervalVariant.class, //
 		TestCasesIns.class, //
 		TestCasesIntStats.class, //
+		TestCasesInv.class, //
 		TestCasesJaspar.class, //
 		TestCasesMarkerUtils.class, //
 		TestCasesMnps.class, //
