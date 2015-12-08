@@ -58,7 +58,12 @@ public class VariantEffectStructural extends VariantEffect {
 	 */
 	public VariantEffect fusion() {
 		// Only if both genes are different
-		if (geneLeft == null || geneRight == null || geneLeft.getId().equals(geneRight.getId())) return null;
+		if (variant.isDup() //
+				|| geneLeft == null //
+				|| geneRight == null //
+				|| geneLeft.getId().equals(geneRight.getId()) //
+		) return null;
+
 		return new VariantEffectFusion(this);
 	}
 

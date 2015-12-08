@@ -23,6 +23,8 @@ public enum EffectType {
 	, GENE_FUSION //
 	, TRANSCRIPT_DELETED //
 	, EXON_DELETED //
+	, EXON_DUPLICATION //
+	, EXON_DUPLICATION_PARTIAL //
 	, EXON_INVERSION //
 	, EXON_INVERSION_PARTIAL //
 	, FRAME_SHIFT //
@@ -55,6 +57,7 @@ public enum EffectType {
 	// Low impact
 	, GENE_INVERSION //
 	, GENE_DUPLICATION //
+	, TRANSCRIPT_DUPLICATION //
 	, TRANSCRIPT_INVERSION //
 	, UTR_5_PRIME //
 	, UTR_3_PRIME //
@@ -129,7 +132,10 @@ public enum EffectType {
 		switch (this) {
 		case CHROMOSOME_LARGE_DELETION:
 		case EXON_DELETED:
+		case EXON_DUPLICATION:
+		case EXON_DUPLICATION_PARTIAL:
 		case EXON_INVERSION:
+		case EXON_INVERSION_PARTIAL:
 		case FRAME_SHIFT:
 		case GENE_FUSION:
 		case PROTEIN_INTERACTION_LOCUS:
@@ -164,6 +170,7 @@ public enum EffectType {
 		case SYNONYMOUS_CODING:
 		case SYNONYMOUS_START:
 		case SYNONYMOUS_STOP:
+		case TRANSCRIPT_DUPLICATION:
 		case TRANSCRIPT_INVERSION:
 			return EffectImpact.LOW;
 
@@ -305,6 +312,9 @@ public enum EffectType {
 		case CHROMOSOME_LARGE_DELETION:
 			return "chromosome_number_variation";
 
+		case CHROMOSOME_LARGE_DUPLICATION:
+			return "duplication";
+
 		case CHROMOSOME_LARGE_INVERSION:
 			return "inversion";
 
@@ -338,6 +348,12 @@ public enum EffectType {
 
 		case EXON_DELETED:
 			return "exon_loss_variant";
+
+		case EXON_DUPLICATION:
+			return "duplication";
+
+		case EXON_DUPLICATION_PARTIAL:
+			return "duplication";
 
 		case EXON_INVERSION:
 			return "inversion";
@@ -446,6 +462,9 @@ public enum EffectType {
 
 		case TRANSCRIPT_DELETED:
 			return "transcript_ablation";
+
+		case TRANSCRIPT_DUPLICATION:
+			return "duplication";
 
 		case TRANSCRIPT_INVERSION:
 			return "inversion";

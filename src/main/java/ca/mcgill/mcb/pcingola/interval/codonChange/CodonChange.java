@@ -49,6 +49,8 @@ public class CodonChange {
 			return new CodonChangeMnp(variant, transcript, variantEffects);
 		case MIXED:
 			return new CodonChangeMixed(variant, transcript, variantEffects);
+		case DUP:
+			return new CodonChangeDup(variant, transcript, variantEffects);
 		case INV:
 			return new CodonChangeInv(variant, transcript, variantEffects);
 		case INTERVAL:
