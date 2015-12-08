@@ -18,17 +18,30 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesBase;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
+import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
  * Test case
  */
 public class TestCasesZzz extends TestCasesBase {
 
+	EffFormatVersion formatVersion = EffFormatVersion.FORMAT_ANN;
+
 	public TestCasesZzz() {
 		super();
 	}
 
-	protected void checkEffects(Variant variant, EffectType expEffs[], String expHgvsp[], String expHgvsc[], EffectImpact expectedImpact) {
+	Set<String> arrayToSet(String array[]) {
+		Set<String> set = new HashSet<>();
+		if (array != null) {
+			for (String h : array)
+				set.add(h);
+		}
+		return set;
+	}
+
+	protected void checkEffects(Variant variant, EffectType expEffs[], String expHgvsp[], String expHgvsc[], EffectImpact expectedImpact, String expAnns[]) {
 		// Convert to sets
 		Set<EffectType> expectedEffs = new HashSet<>();
 		if (expEffs != null) {
@@ -36,17 +49,9 @@ public class TestCasesZzz extends TestCasesBase {
 				expectedEffs.add(et);
 		}
 
-		Set<String> expectedHgvsp = new HashSet<>();
-		if (expHgvsp != null) {
-			for (String h : expHgvsp)
-				expectedHgvsp.add(h);
-		}
-
-		Set<String> expectedHgvsc = new HashSet<>();
-		if (expHgvsc != null) {
-			for (String h : expHgvsc)
-				expectedHgvsc.add(h);
-		}
+		Set<String> expectedHgvsp = arrayToSet(expHgvsp);
+		Set<String> expectedHgvsc = arrayToSet(expHgvsc);
+		Set<String> expectedAnns = arrayToSet(expAnns);
 
 		// Initialize
 		initSnpEffPredictor();
@@ -70,6 +75,7 @@ public class TestCasesZzz extends TestCasesBase {
 		Set<EffectType> effs = new HashSet<>();
 		Set<String> hgvscs = new HashSet<>();
 		Set<String> hgvsps = new HashSet<>();
+		Set<String> anns = new HashSet<>();
 		boolean impactOk = false;
 		for (VariantEffect varEff : effects) {
 			effs.addAll(varEff.getEffectTypes());
@@ -84,9 +90,15 @@ public class TestCasesZzz extends TestCasesBase {
 
 			impactOk |= (varEff.getEffectImpact() == expectedImpact);
 
+			// Create VcfEffect
+			VcfEffect vcfEffect = new VcfEffect(varEff, formatVersion);
+			String annField = vcfEffect.toString();
+			anns.add(annField);
+
 			if (verbose) Gpr.debug("Effect: " + varEff.toStr() //
 					+ "\n\tHGVS.c: " + hgvsDna //
 					+ "\n\tHGVS.p: " + hgvsProt //
+					+ "\n\tANN   : " + annField //
 			);
 		}
 
@@ -114,6 +126,13 @@ public class TestCasesZzz extends TestCasesBase {
 				, hgvsps.containsAll(expectedHgvsp) //
 		);
 
+		// Check ANN fields
+		Assert.assertTrue("ANN fields do not match" //
+				+ "\n\tExpected : " + expectedAnns //
+				+ "\n\tFound    : " + anns //
+				, anns.containsAll(expectedAnns) //
+		);
+
 	}
 
 	@Override
@@ -133,97 +152,130 @@ public class TestCasesZzz extends TestCasesBase {
 		initRand();
 	}
 
-	//	/**
-	//	 * Inversion: Whole gene / whole transcript
-	//	 */
-	//	@Test
-	//	public void test01() {
-	//		// Create variant
-	//		Variant variant = new Variant(chromosome, 950, 1200, "");
-	//		variant.setVariantType(VariantType.INV);
-	//
-	//		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
-	//		String expHgvsc[] = { "c.-7_*43inv" };
-	//		EffectImpact expectedImpact = EffectImpact.LOW;
-	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
-	//	}
-	//
-	//	/**
-	//	 * Inversion: One coding exon
-	//	 */
-	//	@Test
-	//	public void test02() {
-	//		Variant variant = new Variant(chromosome, 1040, 1100, "");
-	//		variant.setVariantType(VariantType.INV);
-	//
-	//		verbose = true;
-	//		EffectType expEffs[] = { EffectType.EXON_INVERSION };
-	//		String expHgvsc[] = { "c.33-5_45+43inv" };
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
-	//	}
-	//
-	//	/**
-	//	 * Inversion: Two coding exons
-	//	 */
-	//	@Test
-	//	public void test03() {
-	//		Variant variant = new Variant(chromosome, 1040, 1160, "");
-	//		variant.setVariantType(VariantType.INV);
-	//
-	//		EffectType expEffs[] = { EffectType.EXON_INVERSION };
-	//		String expHgvsc[] = { "c.33-5_*3inv" };
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//
-	//		verbose = true;
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
-	//	}
-	//
-	//	/**
-	//	 * Inversion: Part of one coding exon
-	//	 */
-	//	@Test
-	//	public void test04() {
-	//		Variant variant = new Variant(chromosome, 1040, 1050, "");
-	//		variant.setVariantType(VariantType.INV);
-	//
-	//		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
-	//		String expHgvsc[] = { "c.33-5_38inv" };
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
-	//	}
+	/**
+	 * Inversion: Whole gene / whole transcript
+	 */
+	@Test
+	public void test01() {
+		Gpr.debug("Test");
 
-	//	/**
-	//	 * Inversion: Part of two coding exon
-	//	 */
-	//	@Test
-	//	public void test05() {
-	//		Variant variant = new Variant(chromosome, 1050, 1150, "");
-	//		variant.setVariantType(VariantType.INV);
-	//
-	//		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
-	//		String expHgvsc[] = { "c.38_48inv" };
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
-	//	}
+		// Create variant
+		Variant variant = new Variant(chromosome, 950, 1200, "");
+		variant.setVariantType(VariantType.INV);
+
+		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
+		String expHgvsc[] = { "c.-7_*43inv" };
+		EffectImpact expectedImpact = EffectImpact.LOW;
+
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Inversion: One coding exon
+	 */
+	@Test
+	public void test02() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(chromosome, 1040, 1100, "");
+		variant.setVariantType(VariantType.INV);
+
+		EffectType expEffs[] = { EffectType.EXON_INVERSION };
+		String expHgvsc[] = { "c.33-5_45+43inv" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Inversion: Two coding exons
+	 */
+	@Test
+	public void test03() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(chromosome, 1040, 1160, "");
+		variant.setVariantType(VariantType.INV);
+
+		EffectType expEffs[] = { EffectType.EXON_INVERSION };
+		String expHgvsc[] = { "c.33-5_*3inv" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Inversion: Part of one coding exon
+	 */
+	@Test
+	public void test04() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(chromosome, 1040, 1050, "");
+		variant.setVariantType(VariantType.INV);
+
+		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
+		String expHgvsc[] = { "c.33-5_38inv" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Inversion: Part of two coding exon
+	 */
+	@Test
+	public void test05() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(chromosome, 1050, 1150, "");
+		variant.setVariantType(VariantType.INV);
+
+		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
+		String expHgvsc[] = { "c.38_48inv" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Inversion: Part of two genes (fusions) cutting exons
+	 */
+	@Test
+	public void test09() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(chromosome, 991, 1020, "");
+		variant.setVariantType(VariantType.INV);
+
+		EffectType expEffs[] = { EffectType.INTRON };
+		String expHgvsc[] = { "c.32+3_33-25inv" };
+		EffectImpact expectedImpact = EffectImpact.MODIFIER;
+
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+
+	}
 
 	/**
 	 * Inversion: Two genes
 	 */
 	@Test
 	public void test06() {
+		Gpr.debug("Test");
+
 		Variant variant = new Variant(chromosome, 1050, 2150, "");
 		variant.setVariantType(VariantType.INV);
 
-		EffectType expEffs[] = { EffectType.GENE_INVERSION };
-		String expHgvsc[] = { "c.38_48inv" };
-		EffectImpact expectedImpact = EffectImpact.LOW;
+		EffectType expEffs[] = { EffectType.GENE_INVERSION, EffectType.GENE_FUSION };
+		String expHgvsc[] = { "n.1051_2151inv" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+		String expAnns[] = { //
+				"|inversion|LOW|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2151inv||||||" //
+				, "|gene_fusion|HIGH|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2151inv||||||" //
+		};
 
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
+		verbose = true;
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
 	}
 
 	//	/**
@@ -242,22 +294,6 @@ public class TestCasesZzz extends TestCasesBase {
 	//	public void test08() {
 	//		Variant variant = new Variant(chromosome, 1050, 2120, "");
 	//		variant.setVariantType(VariantType.INV);
-	//	}
-
-	//	/**
-	//	 * Inversion: Part of two genes (fusions) cutting exons
-	//	 */
-	//	@Test
-	//	public void test09() {
-	//		Variant variant = new Variant(chromosome, 991, 1020, "");
-	//		variant.setVariantType(VariantType.INV);
-	//
-	//		EffectType expEffs[] = { EffectType.INTRON };
-	//		String expHgvsc[] = { "c.32+3_33-25inv" };
-	//		EffectImpact expectedImpact = EffectImpact.MODIFIER;
-	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact);
-	//
 	//	}
 
 }

@@ -37,8 +37,8 @@ public class SnpEffectPredictor implements Serializable {
 	private static final long serialVersionUID = 4519418862303325081L;
 
 	public static final int DEFAULT_UP_DOWN_LENGTH = 5000;
-	public static final int HUGE_VARIANT_SIZE_THRESHOLD = 1000000; // Number of bases
-	public static final double HUGE_VARIANT_RATIO_THRESHOLD = 0.01; // Percentage of bases
+	public static final int LARGE_VARIANT_SIZE_THRESHOLD = 1000000; // Number of bases
+	public static final double LARGE_VARIANT_RATIO_THRESHOLD = 0.01; // Percentage of bases
 
 	boolean useChromosomes = true;
 	boolean debug;
@@ -636,7 +636,7 @@ public class SnpEffectPredictor implements Serializable {
 		boolean structuralVariant = variant.isStructural();
 
 		// Check that this is not a huge variant.
-		if (structuralVariant && variantEffectStructuralHuge(variant, variantEffects)) {
+		if (structuralVariant && variantEffectStructuralLarge(variant, variantEffects)) {
 			// Large variants could make the query results huge and slow down
 			// the algorithm, so we stop here
 			return variantEffects;
@@ -728,25 +728,29 @@ public class SnpEffectPredictor implements Serializable {
 		if (countGenes <= 1) return false;
 
 		// Create a new variant effect for structural variants
-		VariantEffect veff = new VariantEffectStructural(variant, intersects);
-		Gpr.debug("VariantEffectStructural: " + veff);
+		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
 		variantEffects.add(veff);
+
+		// Do we have a fusion event?
+		VariantEffect veffFusion = veff.fusion();
+		if (veffFusion != null) variantEffects.add(veffFusion);
+
 		return true;
 	}
 
 	/**
-	 * Check huge structural variants
+	 * Check large structural variants
 	 * @return true on success (i.e. no further analysis is required, or further analysis
 	 *         may affect performance because a query may return too many results)
 	 */
-	boolean variantEffectStructuralHuge(Variant variant, VariantEffects variantEffects) {
+	boolean variantEffectStructuralLarge(Variant variant, VariantEffects variantEffects) {
 		String chromoName = variant.getChromosomeName();
 		Chromosome chr = genome.getChromosome(chromoName);
 
 		// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
 		if (chr != null) {
 			double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
-			if (variant.size() > HUGE_VARIANT_SIZE_THRESHOLD || ratio > HUGE_VARIANT_RATIO_THRESHOLD) {
+			if (variant.size() > LARGE_VARIANT_SIZE_THRESHOLD || ratio > LARGE_VARIANT_RATIO_THRESHOLD) {
 
 				EffectType eff;
 				switch (variant.getVariantType()) {
@@ -770,7 +774,7 @@ public class SnpEffectPredictor implements Serializable {
 
 				// If the variant is too large, querying will result in too many
 				// results. We stop here to avoid memory and performance issues
-				if (variant.size() > HUGE_VARIANT_SIZE_THRESHOLD) return true;
+				if (variant.size() > LARGE_VARIANT_SIZE_THRESHOLD) return true;
 			}
 		}
 		return false;

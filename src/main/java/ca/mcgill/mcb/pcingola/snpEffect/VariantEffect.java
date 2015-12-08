@@ -503,6 +503,10 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return eff.toString();
 	}
 
+	public List<Gene> getGenes() {
+		return null;
+	}
+
 	/**
 	 * Get genotype string
 	 */
@@ -627,6 +631,10 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	public boolean isMotif() {
 		return hasEffectType(EffectType.MOTIF);
+	}
+
+	public boolean isMultipleGenes() {
+		return false;
 	}
 
 	public boolean isNextProt() {
