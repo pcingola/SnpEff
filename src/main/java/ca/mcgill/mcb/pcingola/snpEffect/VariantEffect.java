@@ -97,11 +97,11 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		effectImpacts = new ArrayList<EffectImpact>();
 	}
 
-	public VariantEffect(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, int cDnaPos) {
+	public VariantEffect(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String codonsOld, String codonsNew, int codonNum, int codonIndex, int cDnaPos) {
 		this.variant = variant;
 		effectTypes = new ArrayList<EffectType>();
 		effectImpacts = new ArrayList<EffectImpact>();
-		set(marker, effectType, effectImpact, message);
+		set(marker, effectType, effectImpact, "");
 		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 		this.cDnaPos = cDnaPos;
 	}

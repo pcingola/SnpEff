@@ -180,12 +180,12 @@ public class TestCasesZzz extends TestCasesBase {
 		Variant variant = new Variant(chromosome, 1040, 1100, "");
 		variant.setVariantType(VariantType.DUP);
 
-		EffectType expEffs[] = { EffectType.EXON_DUPLICATION };
-		String expHgvsc[] = { "c.33-5_45+43inv" };
+		EffectType expEffs[] = { EffectType.EXON_DUPLICATION, EffectType.FRAME_SHIFT };
+		String expHgvsc[] = { "c.33-5_45+43dup" };
+		String expHgvsp[] = { "p.Arg16fs", "p.Arg16_Gly18delinsCysValAlaAsnTerThrTrp" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		verbose = true;
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	//	/**
@@ -198,13 +198,15 @@ public class TestCasesZzz extends TestCasesBase {
 	//		Variant variant = new Variant(chromosome, 1040, 1160, "");
 	//		variant.setVariantType(VariantType.DUP);
 	//
-	//		EffectType expEffs[] = { EffectType.EXON_INVERSION };
-	//		String expHgvsc[] = { "c.33-5_*3inv" };
+	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION };
+	//		String expHgvsc[] = { "c.33-5_*3dup" };
 	//		EffectImpact expectedImpact = EffectImpact.HIGH;
 	//
 	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	//	}
-	//
+
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 	//	/**
 	//	 * Duplication Part of one coding exon
 	//	 */

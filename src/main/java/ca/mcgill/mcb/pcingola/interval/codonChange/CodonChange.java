@@ -207,14 +207,14 @@ public class CodonChange {
 	/**
 	 * Calculate new codons
 	 */
-	public String codonsAlt() {
+	protected String codonsAlt() {
 		throw new RuntimeException("Unimplemented method for this thype of CodonChange: " + this.getClass().getSimpleName());
 	}
 
 	/**
 	 * Calculate 'reference' codons
 	 */
-	public String codonsRef() {
+	protected String codonsRef() {
 		return codonsRef(1);
 	}
 
@@ -242,17 +242,17 @@ public class CodonChange {
 		return codon;
 	}
 
-	protected VariantEffect effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
-		return effect(marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex, allowReplace);
+	protected VariantEffect effect(Marker marker, EffectType effectType, boolean allowReplace) {
+		return effect(marker, effectType, effectType.effectImpact(), codonsRef, codonsAlt, codonStartNum, codonStartIndex, allowReplace);
 	}
 
 	/**
 	 * Add an effect
 	 */
-	protected VariantEffect effect(Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
+	private VariantEffect effect(Marker marker, EffectType effectType, EffectImpact effectImpact, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
 		// Create and add variant affect
 		int cDnaPos = transcript.baseNumber2MRnaPos(variant.getStart());
-		VariantEffect varEff = new VariantEffect(variant, marker, effectType, effectImpact, message, codonsOld, codonsNew, codonNum, codonIndex, cDnaPos);
+		VariantEffect varEff = new VariantEffect(variant, marker, effectType, effectImpact, codonsOld, codonsNew, codonNum, codonIndex, cDnaPos);
 		variantEffects.add(varEff);
 
 		// Are there any additional effects? Sometimes a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
@@ -268,6 +268,18 @@ public class CodonChange {
 		}
 
 		return varEff;
+	}
+
+	//	protected VariantEffect effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
+	//		return effect(marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex, allowReplace);
+	//	}
+
+	protected VariantEffect effectNoCodon(Marker marker, EffectType effectType) {
+		return effect(marker, effectType, effectType.effectImpact(), "", "", -1, -1, false);
+	}
+
+	protected VariantEffect effectNoCodon(Marker marker, EffectType effectType, EffectImpact effectImpact) {
+		return effect(marker, effectType, effectImpact, "", "", -1, -1, false);
 	}
 
 	/**

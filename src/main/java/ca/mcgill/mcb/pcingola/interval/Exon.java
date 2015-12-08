@@ -68,8 +68,10 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	/**
 	 * Apply variant to exon
 	 *
-	 * WARNING: There might be conditions which change the exon type (e.g. an intron is deleted)
-	 * 			Nevertheless ExonSpliceType s not updated since it reflects the exon type before a sequence change.
+	 * WARNING: There might be conditions which change the exon
+	 *          type (e.g. an intron is deleted). Nevertheless ExonSpliceType
+	 *          is not updated since it reflects the exon type
+	 *          before a sequence change.
 	 */
 	@Override
 	public Exon apply(Variant variant) {

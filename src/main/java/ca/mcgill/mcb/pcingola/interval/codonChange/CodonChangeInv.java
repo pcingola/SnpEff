@@ -23,7 +23,7 @@ public class CodonChangeInv extends CodonChange {
 	public void codonChange() {
 		if (variant.includes(transcript)) {
 			// Whole transcript inverted?
-			effect(transcript, EffectType.TRANSCRIPT_INVERSION, "", "", "", -1, -1, false);
+			effectNoCodon(transcript, EffectType.TRANSCRIPT_INVERSION);
 		} else {
 			// Part of the transcript is inverted
 
@@ -60,7 +60,7 @@ public class CodonChangeInv extends CodonChange {
 				// Is the whole exon inverted or just part of it?
 				EffectType effType = variant.includes(ex) ? EffectType.EXON_INVERSION : EffectType.EXON_INVERSION_PARTIAL;
 
-				effect(ex, effType, impact, "", "", "", -1, -1, false);
+				effectNoCodon(ex, effType, impact);
 			}
 	}
 
@@ -68,7 +68,7 @@ public class CodonChangeInv extends CodonChange {
 	 * Inversion does not intersect any exon
 	 */
 	void intron() {
-		effect(transcript, EffectType.INTRON, "", "", "", -1, -1, false);
+		effectNoCodon(transcript, EffectType.INTRON);
 	}
 
 }

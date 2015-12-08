@@ -69,7 +69,7 @@ public class CodonChangeIns extends CodonChange {
 			}
 		}
 
-		effect(exon, effType, "", codonsRef, codonsAlt, codonStartNum, codonStartIndex, false);
+		effect(exon, effType, false);
 
 		return true;
 	}
@@ -78,7 +78,7 @@ public class CodonChangeIns extends CodonChange {
 	 * Get new (modified) codons
 	 */
 	@Override
-	public String codonsAlt() {
+	protected String codonsAlt() {
 		// Inserts BEFORE base:
 		//		- In positive strand that is BEFORE pos
 		//		- In negative strand, that is AFTER pos

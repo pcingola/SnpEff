@@ -238,24 +238,6 @@ public class TestCasesInv extends TestCasesBase {
 	}
 
 	/**
-	 * Inversion: Part of two genes (fusions) cutting exons
-	 */
-	@Test
-	public void test09() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(chromosome, 991, 1020, "");
-		variant.setVariantType(VariantType.INV);
-
-		EffectType expEffs[] = { EffectType.INTRON };
-		String expHgvsc[] = { "c.32+3_33-25inv" };
-		EffectImpact expectedImpact = EffectImpact.MODIFIER;
-
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
-
-	}
-
-	/**
 	 * Inversion: Two genes
 	 */
 	@Test
@@ -316,6 +298,24 @@ public class TestCasesInv extends TestCasesBase {
 		};
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
+
+	}
+
+	/**
+	 * Inversion: Part of two genes (fusions) cutting exons
+	 */
+	@Test
+	public void test09() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(chromosome, 991, 1020, "");
+		variant.setVariantType(VariantType.INV);
+
+		EffectType expEffs[] = { EffectType.INTRON };
+		String expHgvsc[] = { "c.32+3_33-25inv" };
+		EffectImpact expectedImpact = EffectImpact.MODIFIER;
+
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 
 	}
 

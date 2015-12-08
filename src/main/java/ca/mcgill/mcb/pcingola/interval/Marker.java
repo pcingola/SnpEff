@@ -97,6 +97,10 @@ public class Marker extends Interval implements TxtSerializable {
 			newMarker = applyDel(variant);
 			break;
 
+		case DUP:
+			newMarker = applyDup(variant);
+			break;
+
 		case MIXED:
 			newMarker = applyMixed(variant);
 			break;
@@ -156,6 +160,27 @@ public class Marker extends Interval implements TxtSerializable {
 				m.start -= delta;
 				m.end -= delta;
 			}
+		}
+
+		return m;
+	}
+
+	/**
+	 * Apply a Variant to a marker. Variant is a duplication
+	 */
+	protected Marker applyDup(Variant variant) {
+		Marker m = cloneShallow();
+
+		if (variant.getStart() < m.start) {
+			// Insertion point before marker start? => Adjust both coordinates
+			int lenChange = variant.lengthChange();
+			m.start += lenChange;
+			m.end += lenChange;
+		} else if (variant.getStart() <= m.end) {
+			// Insertion point after start, but before end? => Adjust end coordinate
+			m.end += variant.lengthChange();
+		} else {
+			// Insertion point after end, no effect on marker coordinates
 		}
 
 		return m;

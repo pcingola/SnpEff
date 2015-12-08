@@ -1,12 +1,12 @@
 package ca.mcgill.mcb.pcingola.interval.codonChange;
 
 import ca.mcgill.mcb.pcingola.interval.Exon;
-import ca.mcgill.mcb.pcingola.interval.Marker;
 import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
+import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
-import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 
 /**
  * Calculate codon changes produced by a duplication
@@ -19,11 +19,38 @@ public class CodonChangeDup extends CodonChange {
 		super(variant, transcript, variantEffects);
 	}
 
+	/**
+	 * Differences between two CDSs after removing equal codons from
+	 * the beginning and from the end of both strings
+	 */
+	void cdsDiff(String cdsRef, String cdsAlt) {
+		int min = Math.min(cdsRef.length(), cdsAlt.length()) / 3;
+
+		// Removing codons form the beginning
+		codonStartNum = 0;
+		codonStartIndex = 0;
+		for (int i = 0; i < min; i++) {
+			codonStartNum = i;
+			if (!codonEquals(cdsRef, cdsAlt, i, i)) break;
+		}
+
+		// Removing trailing codons
+		int codonNumEndRef = cdsRef.length() / 3 + (cdsRef.length() % 3 == 0 ? 0 : 1);
+		int codonNumEndAlt = cdsAlt.length() / 3 + (cdsAlt.length() % 3 == 0 ? 0 : 1);
+
+		for (; codonNumEndRef >= codonStartNum && codonNumEndAlt >= codonStartNum; codonNumEndRef--, codonNumEndAlt--)
+			if (!codonEquals(cdsRef, cdsAlt, codonNumEndRef, codonNumEndAlt)) break;
+
+		// Codons Ref/Alt
+		codonsRef = codons(cdsRef, codonStartNum, codonNumEndRef);
+		codonsAlt = codons(cdsAlt, codonStartNum, codonNumEndAlt);
+	}
+
 	@Override
 	public void codonChange() {
 		if (variant.includes(transcript)) {
 			// Whole transcript inverted?
-			effect(transcript, EffectType.TRANSCRIPT_DUPLICATION, "", "", "", -1, -1, false);
+			effectNoCodon(transcript, EffectType.TRANSCRIPT_DUPLICATION);
 		} else {
 			// Part of the transcript is inverted
 
@@ -43,32 +70,54 @@ public class CodonChangeDup extends CodonChange {
 	}
 
 	/**
+	 * Compare codons from cdsRef[codonNumRef] and cdsAlt[codonNumAlt]
+	 */
+	boolean codonEquals(String cdsRef, String cdsAlt, int codonNumRef, int codonNumAlt) {
+		for (int h = 0, i = 3 * codonNumRef, j = 3 * codonNumAlt; (h < 3) && (i < cdsRef.length()) && (j < cdsAlt.length()); i++, j++, h++)
+			if (cdsRef.charAt(i) != cdsAlt.charAt(j)) return false;
+
+		return true;
+	}
+
+	/**
+	 * Get codons from CDS
+	 */
+	String codons(String cds, int codonNumStart, int codonNumEnd) {
+		int endBase = Math.min(cds.length(), 3 * codonNumEnd);
+		int startBase = Math.max(0, 3 * codonNumStart);
+		return cds.substring(startBase, endBase);
+	}
+
+	/**
 	 * One or more exons fully included (no partial overlap)
 	 */
 	void exons() {
-		Marker cdsMarker = null;
-		if (transcript.isProteinCoding()) cdsMarker = transcript.cdsMarker();
+		if (transcript.isProteinCoding() || Config.get().isTreatAllAsProteinCoding()) {
+			Transcript trNew = transcript.apply(variant);
 
-		for (Exon ex : transcript)
-			if (variant.intersects(ex)) {
-				EffectImpact impact = EffectImpact.LOW;
+			String cdsAlt = trNew.cds();
+			String cdsRef = transcript.cds();
 
-				// Is the variant affecting a coding part of the exon?
-				// If so, then this is a HIGH impact effect.
-				if (cdsMarker != null && variant.intersect(ex).intersects(cdsMarker)) impact = EffectImpact.HIGH;
+			Gpr.debug("Diff: " //
+					+ "\n\tCDS Ref : " + cdsRef //
+					+ "\n\tCDS Alt : " + cdsAlt //
+			);
 
-				// Is the whole exon inverted or just part of it?
-				EffectType effType = variant.includes(ex) ? EffectType.EXON_DUPLICATION : EffectType.EXON_DUPLICATION_PARTIAL;
+			// Calculate differences: CDS
+			cdsDiff(cdsRef, cdsAlt);
+			effect(transcript, EffectType.EXON_DUPLICATION, false);
 
-				effect(ex, effType, impact, "", "", "", -1, -1, false);
-			}
+			// Is this duplication creating a frame-shift?
+			int lenDiff = cdsAlt.length() - cdsRef.length();
+			if (lenDiff % 3 != 3) effect(transcript, EffectType.FRAME_SHIFT, false);
+		}
 	}
 
 	/**
 	 * Inversion does not intersect any exon
 	 */
 	void intron() {
-		effect(transcript, EffectType.INTRON, "", "", "", -1, -1, false);
+		effectNoCodon(transcript, EffectType.INTRON);
 	}
 
 }

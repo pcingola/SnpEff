@@ -58,8 +58,9 @@ public class HgvsDna extends Hgvs {
 			}
 			return "del" + ref + "ins" + alt;
 
-		case INS:
 		case DEL:
+		case DUP:
+		case INS:
 			if (variant.size() > MAX_SEQUENCE_LEN_HGVS) return "";
 			String netChange = variant.netChange(false);
 			if (strandPlus) return netChange;
@@ -207,8 +208,9 @@ public class HgvsDna extends Hgvs {
 			break;
 
 		case DEL:
-		case MIXED:
+		case DUP:
 		case INV:
+		case MIXED:
 			if (strandPlus) {
 				posStart = variant.getStart();
 				posEnd = variant.getEnd();
@@ -426,7 +428,8 @@ public class HgvsDna extends Hgvs {
 			break;
 
 		case DUP:
-			return "";
+			type = "dup";
+			break;
 
 		default:
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
