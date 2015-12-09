@@ -5,6 +5,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.Config;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 
@@ -17,8 +18,55 @@ public class CodonChangeDup extends CodonChange {
 
 	public static boolean debug = false;
 
+	protected boolean coding;
+
 	public CodonChangeDup(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		super(variant, transcript, variantEffects);
+		coding = transcript.isProteinCoding() || Config.get().isTreatAllAsProteinCoding();
+	}
+
+	/**
+	 * Analyze whether the duplication is past transcript's coding region
+	 *
+	 * E.g.:   Transcript  = chr1:100-200
+	 *         Duplication = chr1:150-999
+	 *         The duplicated segment starts at base 1000, which is beyond's
+	 *         transcript's end, so it probably has no effect on the amino
+	 *         acid sequence
+	 *
+	 *  Rationale:
+	 *  If we have two genes:
+	 *
+	 *     | gene_1 |                 |          gene_2            |
+	 *  ---<<<<<<<<<<----------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-----
+	 *        |___________dup____________|
+	 *
+	 *  Then this duplication seems to disrupt gene_2:
+	 *
+	 *     | gene_1 |                 |          gene_2                                        |
+	 *  ---<<<<<<<<<<----------------->>>><<<<<<<----------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-----
+	 *        |___________dup____________||___________dup____________|
+	 *
+	 *  Whereas this one does not, because the duplication affects the gene
+	 *  after the gene's coding region:
+	 *
+	 *     | gene_1 |                 |          gene_2            |
+	 *  ---<<<<<<<<<<----------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-----
+	 *                                     |___________dup____________|
+	 *
+	 *     | gene_1 |                 |          gene_2            |
+	 *  ---<<<<<<<<<<----------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->>>>>>>>>>>>>>>>>>>>>>>>>-----
+	 *                                     |___________dup____________||___________dup____________|
+	 *
+	 * @return true if the duplication is beyond transcript's end
+	 */
+	boolean beyondTranscript() {
+		if (coding) {
+			if (transcript.isStrandPlus()) return variant.getEnd() > transcript.getCdsEnd();
+			return variant.getEnd() > transcript.getCdsStart();
+		}
+
+		return variant.getEnd() > transcript.getEnd();
 	}
 
 	/**
@@ -109,33 +157,55 @@ public class CodonChangeDup extends CodonChange {
 		return cds.substring(startBase, endBase);
 	}
 
+	void exons() {
+		// Full and / or partial exons duplicated?
+		boolean full = false, partial = false;
+		for (Exon ex : transcript) {
+			if (variant.includes(ex)) full = true;
+			else if (variant.intersects(ex)) partial = true;
+		}
+
+		if (beyondTranscript()) {
+			// Is the effect of a duplication beyond transcript's end?
+			// Then it probably does not have much impact
+			EffectImpact impact = coding ? EffectImpact.LOW : EffectImpact.MODIFIER;
+			if (full) effectNoCodon(transcript, EffectType.EXON_DUPLICATION, impact);
+			if (partial) effectNoCodon(transcript, EffectType.EXON_DUPLICATION_PARTIAL, impact);
+			return;
+		}
+
+		if (coding) exonsCoding(full, partial);
+		else exonsNoncoding(full, partial);
+
+	}
+
 	/**
 	 * One or more exons fully included (no partial overlap)
 	 */
-	void exons() {
-		if (transcript.isProteinCoding() || Config.get().isTreatAllAsProteinCoding()) {
-			Transcript trNew = transcript.apply(variant);
+	void exonsCoding(boolean full, boolean partial) {
+		Transcript trNew = transcript.apply(variant);
+		if (debug) Gpr.debug("Transcript after apply: " + trNew);
 
-			if (debug) Gpr.debug("Transcript after apply: " + trNew);
+		String cdsAlt = trNew.cds();
+		String cdsRef = transcript.cds();
 
-			String cdsAlt = trNew.cds();
-			String cdsRef = transcript.cds();
+		// Calculate differences: CDS
+		cdsDiff(cdsRef, cdsAlt);
 
-			// Calculate differences: CDS
-			cdsDiff(cdsRef, cdsAlt);
+		if (full) effect(transcript, EffectType.EXON_DUPLICATION, false);
+		if (partial) effect(transcript, EffectType.EXON_DUPLICATION_PARTIAL, false);
 
-			boolean full = false, partial = false;
-			for (Exon ex : transcript) {
-				if (variant.includes(ex)) full = true;
-				else if (variant.intersects(ex)) partial = true;
-			}
-			if (full) effect(transcript, EffectType.EXON_DUPLICATION, false);
-			if (partial) effect(transcript, EffectType.EXON_DUPLICATION_PARTIAL, false);
+		// Is this duplication creating a frame-shift?
+		int lenDiff = cdsAlt.length() - cdsRef.length();
+		if (lenDiff % 3 != 0) effect(transcript, EffectType.FRAME_SHIFT, false);
+	}
 
-			// Is this duplication creating a frame-shift?
-			int lenDiff = cdsAlt.length() - cdsRef.length();
-			if (lenDiff % 3 != 0) effect(transcript, EffectType.FRAME_SHIFT, false);
-		}
+	/**
+	 * Effects for non-coding transcripts
+	 */
+	void exonsNoncoding(boolean full, boolean partial) {
+		if (full) effectNoCodon(transcript, EffectType.EXON_DUPLICATION, EffectImpact.MODIFIER);
+		if (partial) effectNoCodon(transcript, EffectType.EXON_DUPLICATION_PARTIAL, EffectImpact.MODIFIER);
 	}
 
 	/**

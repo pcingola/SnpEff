@@ -25,6 +25,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaNSequence;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaOverlap;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaSequence;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaSequenceByte;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDup;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesEffectCollapse;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesEffectCollapse2;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFasta;
@@ -87,6 +88,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesDnaOverlap.class, //
 		TestCasesDnaSequenceByte.class, //
 		TestCasesDnaSequence.class, //
+		TestCasesDup.class, //
 		TestCasesEffectCollapse.class, //
 		TestCasesEffectCollapse2.class, //
 		TestCasesFasta.class, //

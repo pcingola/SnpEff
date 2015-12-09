@@ -270,10 +270,6 @@ public class CodonChange {
 		return varEff;
 	}
 
-	//	protected VariantEffect effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
-	//		return effect(marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex, allowReplace);
-	//	}
-
 	protected VariantEffect effectNoCodon(Marker marker, EffectType effectType) {
 		return effect(marker, effectType, effectType.effectImpact(), "", "", -1, -1, false);
 	}
