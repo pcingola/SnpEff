@@ -290,23 +290,24 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	/**
-	 * Net AA change (only for InDels)
+	 * Net AA change (InDels)
 	 */
 	public String getAaNetChange() {
-		String aaLong = "", aaShort = "";
+		String aaShort = getAaRef().toUpperCase();
+		String aaLong = getAaAlt().toUpperCase();
 
-		if (variant.isIns()) {
-			aaShort = getAaRef().toUpperCase();
-			aaLong = getAaAlt().toUpperCase();
-		} else if (variant.isDel()) {
-			aaLong = getAaRef().toUpperCase();
-			aaShort = getAaAlt().toUpperCase();
+		if (aaLong.length() < aaShort.length()) {
+			String tmp = aaShort;
+			aaShort = aaLong;
+			aaLong = tmp;
 		}
 
 		if (aaLong.startsWith(aaShort)) return aaLong.substring(aaShort.length());
 		if (aaLong.endsWith(aaLong)) return aaLong.substring(0, aaLong.length() - aaShort.length());
+		if (aaShort.isEmpty()) return aaLong;
 
-		return aaLong;
+		// Assumptions broken (may be this is not an InDel).
+		return null;
 	}
 
 	public String getAaRef() {

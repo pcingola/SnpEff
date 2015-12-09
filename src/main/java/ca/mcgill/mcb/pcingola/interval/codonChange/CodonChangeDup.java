@@ -15,7 +15,7 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class CodonChangeDup extends CodonChange {
 
-	public static boolean debug = true;
+	public static boolean debug = false;
 
 	public CodonChangeDup(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		super(variant, transcript, variantEffects);

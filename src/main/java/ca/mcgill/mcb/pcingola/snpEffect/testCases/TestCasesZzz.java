@@ -218,10 +218,10 @@ public class TestCasesZzz extends TestCasesBase {
 
 		EffectType expEffs[] = { EffectType.EXON_DUPLICATION_PARTIAL };
 		String expHgvsc[] = { "c.33-5_38dup" };
+		String expHgvsp[] = { "p.Val12_Leu13insPheVal" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		verbose = true;
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	//	/**
