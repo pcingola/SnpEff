@@ -189,7 +189,7 @@ public class TestCasesZzz extends TestCasesBase {
 	//	}
 	//
 	//	/**
-	//	 * Duplication Two coding exons
+	//	 * Duplication Two coding exons (within the same gene)
 	//	 */
 	//	@Test
 	//	public void test03() {
@@ -205,27 +205,27 @@ public class TestCasesZzz extends TestCasesBase {
 	//
 	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	//	}
-
-	/**
-	 * Duplication Part of one coding exon
-	 */
-	@Test
-	public void test04() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(chromosome, 1040, 1050, "");
-		variant.setVariantType(VariantType.DUP);
-
-		EffectType expEffs[] = { EffectType.EXON_DUPLICATION_PARTIAL };
-		String expHgvsc[] = { "c.33-5_38dup" };
-		String expHgvsp[] = { "p.Val12_Leu13insPheVal" };
-		EffectImpact expectedImpact = EffectImpact.HIGH;
-
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
-	}
-
+	//
 	//	/**
-	//	 * Duplication Part of two coding exon
+	//	 * Duplication Part of one coding exon
+	//	 */
+	//	@Test
+	//	public void test04() {
+	//		Gpr.debug("Test");
+	//
+	//		Variant variant = new Variant(chromosome, 1040, 1050, "");
+	//		variant.setVariantType(VariantType.DUP);
+	//
+	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION_PARTIAL };
+	//		String expHgvsc[] = { "c.33-5_38dup" };
+	//		String expHgvsp[] = { "p.Val12_Leu13insPheVal" };
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
+	//
+	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	//	}
+	//
+	//	/**
+	//	 * Duplication Part of two coding exons (within the same gene)
 	//	 */
 	//	@Test
 	//	public void test05() {
@@ -234,15 +234,17 @@ public class TestCasesZzz extends TestCasesBase {
 	//		Variant variant = new Variant(chromosome, 1050, 1150, "");
 	//		variant.setVariantType(VariantType.DUP);
 	//
-	//		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
-	//		String expHgvsc[] = { "c.38_48inv" };
+	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION_PARTIAL };
+	//		String expHgvsc[] = { "c.38_48dup" };
+	//		String expHgvsp[] = { "p.Arg16_???19delinsCysTerLeuGluAspMetAsp" };
 	//		EffectImpact expectedImpact = EffectImpact.HIGH;
 	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+	//		verbose = true;
+	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	//	}
 	//
 	//	/**
-	//	 * Duplication Part of two genes (fusions) cutting exons
+	//	 * Duplication Intron
 	//	 */
 	//	@Test
 	//	public void test09() {
@@ -252,7 +254,7 @@ public class TestCasesZzz extends TestCasesBase {
 	//		variant.setVariantType(VariantType.DUP);
 	//
 	//		EffectType expEffs[] = { EffectType.INTRON };
-	//		String expHgvsc[] = { "c.32+3_33-25inv" };
+	//		String expHgvsc[] = { "c.32+3_33-25dup" };
 	//		EffectImpact expectedImpact = EffectImpact.MODIFIER;
 	//
 	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
@@ -269,40 +271,35 @@ public class TestCasesZzz extends TestCasesBase {
 	//		Variant variant = new Variant(chromosome, 1050, 2150, "");
 	//		variant.setVariantType(VariantType.DUP);
 	//
-	//		EffectType expEffs[] = { EffectType.GENE_INVERSION, EffectType.GENE_FUSION };
-	//		String expHgvsc[] = { "n.1051_2151inv" };
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//		String expAnns[] = { //
-	//				"|inversion|LOW|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2151inv||||||" //
-	//				, "|gene_fusion|HIGH|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2151inv||||||" //
-	//		};
+	//		EffectType expEffs[] = { EffectType.GENE_DUPLICATION };
+	//		String expHgvsc[] = { "n.1051_2151dup" };
+	//		EffectImpact expectedImpact = EffectImpact.LOW;
+	//		String expAnns[] = { "|duplication|LOW|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2151dup||||||" };
 	//
+	//		verbose = true;
 	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
 	//	}
-	//
+
+	/**
+	 * Duplication Part of two genes cutting on introns
+	 */
+	@Test
+	public void test07() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(chromosome, 1100, 2075, "");
+		variant.setVariantType(VariantType.DUP);
+
+		EffectType expEffs[] = { EffectType.EXON_DUPLICATION, EffectType.FRAME_SHIFT };
+		String expHgvsc[] = { "n.1101_2076dup" };
+		String expHgvsp[] = { "zzz" }; //"p.Gly18_???19insGlnThrTrp", "p.???19fs" , "p.Ser2_Leu10delinsTyrPheProPheThrProThrSerAlaAla???", "p.Ser2fs" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
 	//	/**
-	//	 * Duplication Part of two genes (fusions) cutting on introns
-	//	 */
-	//	@Test
-	//	public void test07() {
-	//		Gpr.debug("Test");
-	//
-	//		Variant variant = new Variant(chromosome, 1100, 2075, "");
-	//		variant.setVariantType(VariantType.DUP);
-	//
-	//		EffectType expEffs[] = { EffectType.GENE_INVERSION, EffectType.GENE_FUSION };
-	//		String expHgvsc[] = { "n.1101_2076inv" };
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//		String expAnns[] = { //
-	//				"|inversion|LOW|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1101_2076inv||||||" //
-	//				, "|gene_fusion|HIGH|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1101_2076inv||||||" //
-	//		};
-	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
-	//	}
-	//
-	//	/**
-	//	 * Duplication Part of two genes (fusions) cutting exons
+	//	 * Duplication Part of two genes  cutting exons
 	//	 */
 	//	@Test
 	//	public void test08() {
@@ -311,14 +308,15 @@ public class TestCasesZzz extends TestCasesBase {
 	//		Variant variant = new Variant(chromosome, 1050, 2120, "");
 	//		variant.setVariantType(VariantType.DUP);
 	//
-	//		EffectType expEffs[] = { EffectType.GENE_INVERSION, EffectType.GENE_FUSION };
-	//		String expHgvsc[] = { "n.1051_2121inv" };
+	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION, EffectType.EXON_DUPLICATION_PARTIAL };
+	//		String expHgvsc[] = { "n.1051_2121dup" };
 	//		EffectImpact expectedImpact = EffectImpact.HIGH;
 	//		String expAnns[] = { //
 	//				"|inversion|LOW|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2121inv||||||" //
 	//				, "|gene_fusion|HIGH|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2121inv||||||" //
 	//		};
 	//
+	//		verbose = true;
 	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
 	//
 	//	}

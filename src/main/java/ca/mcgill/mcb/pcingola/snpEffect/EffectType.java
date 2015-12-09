@@ -161,6 +161,7 @@ public enum EffectType {
 
 		case CHROMOSOME_LARGE_DUPLICATION:
 		case CODON_CHANGE:
+		case GENE_DUPLICATION:
 		case GENE_INVERSION:
 		case NON_SYNONYMOUS_START:
 		case NON_SYNONYMOUS_STOP:
@@ -372,6 +373,9 @@ public enum EffectType {
 
 		case GENE_DELETED:
 			return "feature_ablation";
+
+		case GENE_DUPLICATION:
+			return "duplication";
 
 		case GENE_FUSION:
 			return "gene_fusion";

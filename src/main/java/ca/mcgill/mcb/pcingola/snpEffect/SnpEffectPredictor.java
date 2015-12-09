@@ -650,9 +650,12 @@ public class SnpEffectPredictor implements Serializable {
 		// In case of large structural variants, we need to check the number of genes
 		// involved. If more than one, then we need a different approach (e.g. taking
 		// into account all genes involved to calculate fusions)");
-		if (structuralVariant && variantEffectStructural(variant, variantEffects, intersects)) {
-			// Effects calculated based on multiple genes, do not procees to gene-by-gene calculation
-			return variantEffects;
+		if (structuralVariant) {
+			// Calculated effect based on multiple genes
+			intersects = variantEffectStructural(variant, variantEffects, intersects);
+
+			// Are we done?
+			if (intersects == null) return variantEffects;
 		}
 
 		// Calculate variant effect for each query result
@@ -687,7 +690,7 @@ public class SnpEffectPredictor implements Serializable {
 			// Special case: Insertion right after chromosome's last base
 			Chromosome chr = genome.getChromosome(variant.getChromosomeName());
 			if (variant.isIns() && variant.getStart() == (chr.getEnd() + 1)) {
-				// OK: This is just a chromosome extension
+				// This is a chromosome extension
 				variantEffects.add(variant, null, EffectType.CHROMOSOME_ELONGATION, "");
 			} else if (Config.get().isErrorChromoHit()) {
 				variantEffects.addErrorWarning(variant, ErrorWarningType.ERROR_OUT_OF_CHROMOSOME_RANGE);
@@ -715,27 +718,48 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Calculate structural variant effects taking into account all involved genes
-	 * @return true on success (i.e. no further gene-by-gene analysis is required)
+	 *
+	 * @return A list of intervals that need to be further analyzed
+	 *         or 'null' if no further gene-by-gene analysis is required
 	 */
-	boolean variantEffectStructural(Variant variant, VariantEffects variantEffects, Markers intersects) {
+	Markers variantEffectStructural(Variant variant, VariantEffects variantEffects, Markers intersects) {
 		// How many genes are intersected?
 		int countGenes = 0;
 
+		// How many genes are affected by this variant?
 		for (Marker m : intersects)
 			if (m instanceof Gene) countGenes++;
 
-		// Only one gene intersected? => No need to continue
-		if (countGenes <= 1) return false;
+		if (countGenes <= 1) {
+			// Only one gene intersected? We don't analyze
+			// => Continue analyzing all intervals using the 'standard' algorithm
+			return intersects;
+		}
 
-		// Create a new variant effect for structural variants
+		// Create a new variant effect for structural variants, add effect (if any)
 		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
-		variantEffects.add(veff);
+		if (veff.getEffectType() != EffectType.NONE) variantEffects.add(veff);
 
 		// Do we have a fusion event?
 		VariantEffect veffFusion = veff.fusion();
 		if (veffFusion != null) variantEffects.add(veffFusion);
 
-		return true;
+		// In some cases we want to annotate the varaint's partially overlapping genes
+		if (variant.isDup()) {
+			Markers markers = new Markers();
+			for (Marker m : intersects)
+				if (!variant.includes(m)) {
+					// Note that all these markers overlap the variant so we
+					// just filter out the ones fully included in the variant
+					markers.add(m);
+				}
+
+			// Use these markers for further analysis
+			return markers;
+		}
+
+		// We are done and there is no need for further analysis
+		return null;
 	}
 
 	/**

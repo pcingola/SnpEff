@@ -185,7 +185,7 @@ public class Marker extends Interval implements TxtSerializable {
 			// Duplication included in marker? => Adjust end coordinate
 			m.end += variant.lengthChange();
 		} else if (variant.intersects(m)) {
-			// Duplication includes part of marker? => Adjust end 
+			// Duplication includes part of marker? => Adjust end
 			m.end += variant.intersect(m).size();
 		} else {
 			// Duplication after end, no effect on marker coordinates

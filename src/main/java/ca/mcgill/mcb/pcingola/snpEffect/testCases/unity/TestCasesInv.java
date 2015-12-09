@@ -302,7 +302,7 @@ public class TestCasesInv extends TestCasesBase {
 	}
 
 	/**
-	 * Inversion: Part of two genes (fusions) cutting exons
+	 * Inversion: Intron
 	 */
 	@Test
 	public void test09() {
@@ -315,6 +315,7 @@ public class TestCasesInv extends TestCasesBase {
 		String expHgvsc[] = { "c.32+3_33-25inv" };
 		EffectImpact expectedImpact = EffectImpact.MODIFIER;
 
+		verbose = true;
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 
 	}

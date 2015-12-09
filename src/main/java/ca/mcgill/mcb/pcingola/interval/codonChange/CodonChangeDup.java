@@ -116,7 +116,7 @@ public class CodonChangeDup extends CodonChange {
 		if (transcript.isProteinCoding() || Config.get().isTreatAllAsProteinCoding()) {
 			Transcript trNew = transcript.apply(variant);
 
-			if (debug) Gpr.debug("trNew: " + trNew);
+			if (debug) Gpr.debug("Transcript after apply: " + trNew);
 
 			String cdsAlt = trNew.cds();
 			String cdsRef = transcript.cds();

@@ -20,6 +20,8 @@ public class VariantEffectStructural extends VariantEffect {
 	Gene geneLeft = null;
 	Gene geneRight = null;
 	Set<Gene> genes = null;
+	int countWholeGenes = 0; // How many genes does the variant fully include?
+	int countPartialGenes = 0; // How many genes does the variant partially overlap?
 
 	public VariantEffectStructural(Variant variant) {
 		this(variant, null);
@@ -36,16 +38,16 @@ public class VariantEffectStructural extends VariantEffect {
 	EffectType effect() {
 		switch (variant.getVariantType()) {
 		case INV:
-			return EffectType.GENE_INVERSION;
+			return countWholeGenes > 0 ? EffectType.GENE_INVERSION : EffectType.NONE;
 
 		case DEL:
-			return EffectType.GENE_DELETED;
+			return countWholeGenes > 0 ? EffectType.GENE_DELETED : EffectType.NONE;
 
 		case DUP:
-			return EffectType.GENE_DUPLICATION;
+			return countWholeGenes > 0 ? EffectType.GENE_DUPLICATION : EffectType.NONE;
 
 		case BND:
-			return EffectType.GENE_REARRANGEMENT;
+			return (countWholeGenes + countPartialGenes) > 1 ? EffectType.GENE_REARRANGEMENT : EffectType.NONE;
 
 		default:
 			throw new RuntimeException("Unknown effect for variant type " + variant.getVariantType());
@@ -99,6 +101,9 @@ public class VariantEffectStructural extends VariantEffect {
 			if (m instanceof Gene) {
 				if (m.intersects(variant.getStart())) geneLeft = (Gene) m;
 				if (m.intersects(variant.getEnd())) geneRight = (Gene) m;
+
+				if (variant.includes(m)) countWholeGenes++;
+				else countPartialGenes++;
 
 				genes.add((Gene) m);
 			}
