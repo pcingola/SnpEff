@@ -15,6 +15,8 @@ import ca.mcgill.mcb.pcingola.util.Gpr;
  */
 public class CodonChangeDup extends CodonChange {
 
+	public static boolean debug = true;
+
 	public CodonChangeDup(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		super(variant, transcript, variantEffects);
 	}
@@ -26,35 +28,47 @@ public class CodonChangeDup extends CodonChange {
 	void cdsDiff(String cdsRef, String cdsAlt) {
 		int min = Math.min(cdsRef.length(), cdsAlt.length()) / 3;
 
-		// Removing codons form the beginning
+		// Removing form the beginning
 		codonStartNum = 0;
 		codonStartIndex = 0;
-		for (int i = 0; i < min; i++) {
+		for (int i = 0; i <= min; i++) {
 			codonStartNum = i;
+			if (debug) Gpr.debug("cdsDiff Start\tcodonEquals(" + i + " , " + i + "): " + codonEquals(cdsRef, cdsAlt, i, i) //
+					+ "\n\tcodonsRef [" + codonStartNum + "]: " + codons(cdsRef, codonStartNum, -1) //
+					+ "\n\tcodonsAlt [" + codonStartNum + "]: " + codons(cdsAlt, codonStartNum, -1) //
+			);
 			if (!codonEquals(cdsRef, cdsAlt, i, i)) break;
 		}
 
 		// Removing trailing codons
-		int codonNumEndRef = cdsRef.length() / 3 + (cdsRef.length() % 3 == 0 ? 0 : 1);
-		int codonNumEndAlt = cdsAlt.length() / 3 + (cdsAlt.length() % 3 == 0 ? 0 : 1);
+		int codonNumEndRef = cdsRef.length() / 3; //+ (cdsRef.length() % 3 == 0 ? 0 : 1);
+		int codonNumEndAlt = cdsAlt.length() / 3; //+ (cdsAlt.length() % 3 == 0 ? 0 : 1);
 
-		for (; codonNumEndRef >= codonStartNum && codonNumEndAlt >= codonStartNum; codonNumEndRef--, codonNumEndAlt--)
+		for (; codonNumEndRef >= codonStartNum && codonNumEndAlt >= codonStartNum; codonNumEndRef--, codonNumEndAlt--) {
+			if (debug) Gpr.debug("cdsDiff End\tcodonEquals(" + codonNumEndRef + " , " + codonNumEndAlt + "): " + codonEquals(cdsRef, cdsAlt, codonNumEndRef, codonNumEndAlt) //
+					+ "\n\tcodonsRef [" + codonStartNum + " , " + codonNumEndRef + "]: " + codons(cdsRef, codonStartNum, codonNumEndRef) //
+					+ "\n\tcodonsAlt [" + codonStartNum + " , " + codonNumEndAlt + "]: " + codons(cdsAlt, codonStartNum, codonNumEndAlt) //
+			);
 			if (!codonEquals(cdsRef, cdsAlt, codonNumEndRef, codonNumEndAlt)) break;
+		}
 
-		// Codons Ref/Alt
+		// Codons
 		codonsRef = codons(cdsRef, codonStartNum, codonNumEndRef);
 		codonsAlt = codons(cdsAlt, codonStartNum, codonNumEndAlt);
+
+		// No codon difference found?
+		if (codonsRef.isEmpty() && codonsAlt.isEmpty()) codonStartNum = codonStartIndex = -1;
 	}
 
 	@Override
 	public void codonChange() {
 		if (variant.includes(transcript)) {
-			// Whole transcript inverted?
+			// Whole transcript duplicated?
 			effectNoCodon(transcript, EffectType.TRANSCRIPT_DUPLICATION);
 		} else {
-			// Part of the transcript is inverted
+			// Part of the transcript is duplicated
 
-			// Does the inversion affect any exon?
+			// Does the duplication affect any exon?
 			boolean intersectsExons = false;
 			for (Exon ex : transcript) {
 				if (variant.intersects(ex)) {
@@ -73,8 +87,13 @@ public class CodonChangeDup extends CodonChange {
 	 * Compare codons from cdsRef[codonNumRef] and cdsAlt[codonNumAlt]
 	 */
 	boolean codonEquals(String cdsRef, String cdsAlt, int codonNumRef, int codonNumAlt) {
-		for (int h = 0, i = 3 * codonNumRef, j = 3 * codonNumAlt; (h < 3) && (i < cdsRef.length()) && (j < cdsAlt.length()); i++, j++, h++)
+		for (int h = 0, i = 3 * codonNumRef, j = 3 * codonNumAlt; h < 3; i++, j++, h++) {
+			if ((i >= cdsRef.length()) || (j >= cdsAlt.length())) // Premature end of sequence? (i.e. sequence ends before codon end)
+				return (i >= cdsRef.length()) && (j >= cdsAlt.length()); // We consider them equal only if both sequences reached the end at the same time
+
+			// Same base?
 			if (cdsRef.charAt(i) != cdsAlt.charAt(j)) return false;
+		}
 
 		return true;
 	}
@@ -83,7 +102,9 @@ public class CodonChangeDup extends CodonChange {
 	 * Get codons from CDS
 	 */
 	String codons(String cds, int codonNumStart, int codonNumEnd) {
-		int endBase = Math.min(cds.length(), 3 * codonNumEnd);
+		if (codonNumEnd >= 0 && codonNumEnd < codonNumStart) return "";
+		int endBase = codonNumEnd < 0 ? cds.length() : 3 * (codonNumEnd + 1);
+		endBase = Math.min(cds.length(), endBase);
 		int startBase = Math.max(0, 3 * codonNumStart);
 		return cds.substring(startBase, endBase);
 	}
@@ -95,21 +116,25 @@ public class CodonChangeDup extends CodonChange {
 		if (transcript.isProteinCoding() || Config.get().isTreatAllAsProteinCoding()) {
 			Transcript trNew = transcript.apply(variant);
 
+			if (debug) Gpr.debug("trNew: " + trNew);
+
 			String cdsAlt = trNew.cds();
 			String cdsRef = transcript.cds();
 
-			Gpr.debug("Diff: " //
-					+ "\n\tCDS Ref : " + cdsRef //
-					+ "\n\tCDS Alt : " + cdsAlt //
-			);
-
 			// Calculate differences: CDS
 			cdsDiff(cdsRef, cdsAlt);
-			effect(transcript, EffectType.EXON_DUPLICATION, false);
+
+			boolean full = false, partial = false;
+			for (Exon ex : transcript) {
+				if (variant.includes(ex)) full = true;
+				else if (variant.intersects(ex)) partial = true;
+			}
+			if (full) effect(transcript, EffectType.EXON_DUPLICATION, false);
+			if (partial) effect(transcript, EffectType.EXON_DUPLICATION_PARTIAL, false);
 
 			// Is this duplication creating a frame-shift?
 			int lenDiff = cdsAlt.length() - cdsRef.length();
-			if (lenDiff % 3 != 3) effect(transcript, EffectType.FRAME_SHIFT, false);
+			if (lenDiff % 3 != 0) effect(transcript, EffectType.FRAME_SHIFT, false);
 		}
 	}
 

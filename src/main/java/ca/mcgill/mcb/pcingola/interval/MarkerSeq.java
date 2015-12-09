@@ -113,11 +113,11 @@ public class MarkerSeq extends Marker {
 		// Get sequence in positive strand direction
 		String seq = isStrandPlus() ? sequence.getSequence() : sequence.reverseWc().getSequence();
 
-		// Apply change to sequence
-		String netChange = variant.netChange(this);
+		// Apply duplication to sequence
+		String dupSeq = getSequence(intersect(variant));
 		int idx = variant.getStart() - start - 1;
-		if (idx >= 0) seq = seq.substring(0, idx + 1) + netChange + seq.substring(idx + 1);
-		else seq = netChange + seq;
+		if (idx >= 0) seq = seq.substring(0, idx + 1) + dupSeq + seq.substring(idx + 1);
+		else seq = dupSeq + seq;
 
 		// Update sequence
 		markerSeq.setSequence(isStrandPlus() ? seq : GprSeq.reverseWc(seq));
@@ -228,7 +228,6 @@ public class MarkerSeq extends Marker {
 
 	/**
 	 * Get sequence intersecting 'marker'
-	 *
 	 *
 	 * WARNING: Sequence is always according to coding
 	 * strand. E.g. if the strand is negative, the sequence

@@ -496,12 +496,6 @@ public class HgvsProtein extends Hgvs {
 			// Reference: http://www.hgvs.org/mutnomen/examplesAA.html
 			return "";
 
-		case DUP:
-			// A duplication at DNA level may or may not end up in 
-			// a duplication at amino acid level.
-
-			//			return "";
-
 		default:
 			if (isFs()) {
 				// Frame shifts

@@ -349,7 +349,10 @@ public class Variant extends Marker {
 
 		// This is a length changing Variant (i.e. Insertions, deletion, or mixed change)
 		// Calculate the number of bases of change in length
-		return alt.length() - ref.length();
+		if (!ref.isEmpty() || !alt.isEmpty()) return alt.length() - ref.length();
+
+		// Default to traditional apporach for imprecise and structural variants
+		return end - start;
 	}
 
 	/**

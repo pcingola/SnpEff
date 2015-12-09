@@ -171,16 +171,24 @@ public class Marker extends Interval implements TxtSerializable {
 	protected Marker applyDup(Variant variant) {
 		Marker m = cloneShallow();
 
-		if (variant.getStart() < m.start) {
-			// Insertion point before marker start? => Adjust both coordinates
+		if (variant.getEnd() < m.start) {
+			// Duplication before marker start? => Adjust both coordinates
 			int lenChange = variant.lengthChange();
 			m.start += lenChange;
 			m.end += lenChange;
-		} else if (variant.getStart() <= m.end) {
-			// Insertion point after start, but before end? => Adjust end coordinate
+		} else if (variant.includes(m)) {
+			// Duplication includes whole marker? => Adjust both coordinates
+			int lenChange = variant.lengthChange();
+			m.start += lenChange;
+			m.end += lenChange;
+		} else if (m.includes(variant)) {
+			// Duplication included in marker? => Adjust end coordinate
 			m.end += variant.lengthChange();
+		} else if (variant.intersects(m)) {
+			// Duplication includes part of marker? => Adjust end 
+			m.end += variant.intersect(m).size();
 		} else {
-			// Insertion point after end, no effect on marker coordinates
+			// Duplication after end, no effect on marker coordinates
 		}
 
 		return m;

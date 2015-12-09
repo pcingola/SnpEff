@@ -735,6 +735,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("protein") //
 				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 				|| args[0].equalsIgnoreCase("test") //
+				|| args[0].equalsIgnoreCase("seq") //
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("pdb") //
 		// Obsolete stuff (from T2D projects)
@@ -1130,8 +1131,8 @@ public class SnpEff implements CommandLine {
 			snpEffCmd = new SnpEffCmdProtein();
 			break;
 
-		case "spliceanalysis":
-			snpEffCmd = new SnpEffCmdSpliceAnalysis();
+		case "seq":
+			snpEffCmd = new SnpEffCmdSeq();
 			break;
 
 		case "show":
@@ -1139,6 +1140,11 @@ public class SnpEff implements CommandLine {
 			break;
 
 		// Obsolete stuff
+
+		case "spliceanalysis":
+			snpEffCmd = new SnpEffCmdSpliceAnalysis();
+			break;
+
 		case "acat":
 			snpEffCmd = new SnpEffCmdAcat();
 			break;

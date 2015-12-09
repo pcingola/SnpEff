@@ -319,4 +319,44 @@ public class TestCasesInv extends TestCasesBase {
 
 	}
 
+	/**
+	 * Inversion: Part of two genes (fusions) cutting exons
+	 */
+	@Test
+	public void test10() {
+		Gpr.debug("Test");
+
+		throw new RuntimeException("Invertion creating a fusion betwen two pairs (i.e. four genes)");
+
+		//		Variant variant = new Variant(chromosome, 991, 1020, "");
+		//		variant.setVariantType(VariantType.INV);
+		//
+		//		EffectType expEffs[] = { EffectType.INTRON };
+		//		String expHgvsc[] = { "c.32+3_33-25inv" };
+		//		EffectImpact expectedImpact = EffectImpact.MODIFIER;
+		//
+		//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+
+	}
+
+	/**
+	 * Inversion: Part of two genes (fusions) cutting exons
+	 */
+	@Test
+	public void test11() {
+		Gpr.debug("Test");
+
+		throw new RuntimeException("Invertion creating a fusion betwen two genes having opposite directions");
+
+		//		Variant variant = new Variant(chromosome, 991, 1020, "");
+		//		variant.setVariantType(VariantType.INV);
+		//
+		//		EffectType expEffs[] = { EffectType.INTRON };
+		//		String expHgvsc[] = { "c.32+3_33-25inv" };
+		//		EffectImpact expectedImpact = EffectImpact.MODIFIER;
+		//
+		//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+
+	}
+
 }
