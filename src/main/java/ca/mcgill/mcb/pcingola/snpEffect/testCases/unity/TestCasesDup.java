@@ -21,7 +21,7 @@ import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
- * Test case
+ * Test case for structural variants: Duplications
  */
 public class TestCasesDup extends TestCasesBase {
 

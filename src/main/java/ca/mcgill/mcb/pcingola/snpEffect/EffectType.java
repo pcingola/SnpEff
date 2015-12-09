@@ -380,6 +380,9 @@ public enum EffectType {
 		case GENE_FUSION:
 			return "gene_fusion";
 
+		case GENE_REARRANGEMENT:
+			return "rearranged_at_DNA_level";
+
 		case INTERGENIC:
 			return "intergenic_region";
 
