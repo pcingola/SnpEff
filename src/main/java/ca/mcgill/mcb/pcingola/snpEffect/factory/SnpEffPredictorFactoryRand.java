@@ -68,8 +68,9 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 			if (forcePositiveStrand) strandMinus = false;
 			if (forceNegativeStrand) strandMinus = true;
 
-			String geneId = "gene" + geneNum;
-			Gene gene = new Gene(chromo, start, end, strandMinus, geneId, geneId, BioType.protein_coding);
+			String geneId = "geneId" + geneNum;
+			String geneName = "geneName" + geneNum;
+			Gene gene = new Gene(chromo, start, end, strandMinus, geneId, geneName, BioType.protein_coding);
 			add(gene);
 
 			// Create transcripts
@@ -118,7 +119,6 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 
 	/**
 	 * Create UTRs for transcript
-	 * @param tr
 	 */
 	void createUtrs(Transcript tr) {
 		// Exonic bases

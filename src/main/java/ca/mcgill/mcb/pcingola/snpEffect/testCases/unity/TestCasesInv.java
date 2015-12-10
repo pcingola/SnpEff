@@ -244,18 +244,14 @@ public class TestCasesInv extends TestCasesBase {
 	public void test06() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 1050, 2150, "");
+		Variant variant = new Variant(chromosome, 1050, 2160, "");
 		variant.setVariantType(VariantType.INV);
 
-		EffectType expEffs[] = { EffectType.GENE_INVERSION, EffectType.GENE_FUSION };
-		String expHgvsc[] = { "n.1051_2151inv" };
-		EffectImpact expectedImpact = EffectImpact.HIGH;
-		String expAnns[] = { //
-				"|inversion|LOW|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2151inv||||||" //
-				, "|gene_fusion|HIGH|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2151inv||||||" //
-		};
+		EffectType expEffs[] = { EffectType.GENE_INVERSION };
+		String expHgvsc[] = { "n.1051_2161inv" };
+		EffectImpact expectedImpact = EffectImpact.LOW;
 
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -268,13 +264,10 @@ public class TestCasesInv extends TestCasesBase {
 		Variant variant = new Variant(chromosome, 1100, 2075, "");
 		variant.setVariantType(VariantType.INV);
 
-		EffectType expEffs[] = { EffectType.GENE_INVERSION, EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		String expHgvsc[] = { "n.1101_2076inv" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
-		String expAnns[] = { //
-				"|inversion|LOW|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1101_2076inv||||||" //
-				, "|gene_fusion|HIGH|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1101_2076inv||||||" //
-		};
+		String expAnns[] = { "|gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1101_2076inv||||||" };
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
 	}
@@ -289,13 +282,10 @@ public class TestCasesInv extends TestCasesBase {
 		Variant variant = new Variant(chromosome, 1050, 2120, "");
 		variant.setVariantType(VariantType.INV);
 
-		EffectType expEffs[] = { EffectType.GENE_INVERSION, EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		String expHgvsc[] = { "n.1051_2121inv" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
-		String expAnns[] = { //
-				"|inversion|LOW|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2121inv||||||" //
-				, "|gene_fusion|HIGH|gene1&gene2|gene1&gene2|gene_variant|gene1|||n.1051_2121inv||||||" //
-		};
+		String expAnns[] = { "|gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1051_2121inv||||||" };
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
 
@@ -315,7 +305,6 @@ public class TestCasesInv extends TestCasesBase {
 		String expHgvsc[] = { "c.32+3_33-25inv" };
 		EffectImpact expectedImpact = EffectImpact.MODIFIER;
 
-		verbose = true;
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 
 	}
