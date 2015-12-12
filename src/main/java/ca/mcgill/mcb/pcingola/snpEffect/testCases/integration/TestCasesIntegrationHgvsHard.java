@@ -85,5 +85,4 @@ public class TestCasesIntegrationHgvsHard extends TestCasesIntegrationBase {
 		String vcf = "tests/hgvs_protein_deleteion_length_2.vcf";
 		compareHgvs(genome, vcf);
 	}
-
 }

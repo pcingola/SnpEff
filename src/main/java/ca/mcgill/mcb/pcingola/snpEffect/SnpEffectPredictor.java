@@ -38,8 +38,9 @@ public class SnpEffectPredictor implements Serializable {
 	private static final long serialVersionUID = 4519418862303325081L;
 
 	public static final int DEFAULT_UP_DOWN_LENGTH = 5000;
-	public static final int LARGE_VARIANT_SIZE_THRESHOLD = 1000000; // Number of bases
+	public static final int LARGE_VARIANT_SIZE_THRESHOLD = 1000000; // Number of bases for a variant to be considered large/huge
 	public static final double LARGE_VARIANT_RATIO_THRESHOLD = 0.01; // Percentage of bases
+	public static final int SMALL_VARIANT_SIZE_THRESHOLD = 20; // Number of bases for a variant to be considered 'small'
 
 	boolean useChromosomes = true;
 	boolean debug;
@@ -634,7 +635,7 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Is this a structural variant? Large structural variants (e.g. involving more than
 		// one gene) may require to calculate effects by using all involved genes
-		boolean structuralVariant = variant.isStructural();
+		boolean structuralVariant = variant.isStructural() && variant.size() > SMALL_VARIANT_SIZE_THRESHOLD;
 
 		// Check that this is not a huge variant.
 		if (structuralVariant && variantEffectStructuralLarge(variant, variantEffects)) {
@@ -737,15 +738,23 @@ public class SnpEffectPredictor implements Serializable {
 			return intersects;
 		}
 
+		// Any variant effects added?
+		boolean added = false;
+
 		// Create a new variant effect for structural variants, add effect (if any)
 		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
-		if (veff.getEffectType() != EffectType.NONE) variantEffects.add(veff);
+		if (veff.getEffectType() != EffectType.NONE) {
+			variantEffects.add(veff);
+			added = true;
+		}
 
 		// Do we have a fusion event?
 		List<VariantEffect> veffFusions = veff.fusion();
 		if (veffFusions != null) {
-			for (VariantEffect veffFusion : veffFusions)
+			for (VariantEffect veffFusion : veffFusions) {
+				added = true;
 				variantEffects.add(veffFusion);
+			}
 		}
 
 		// In some cases we want to annotate the varaint's partially overlapping genes
@@ -762,8 +771,8 @@ public class SnpEffectPredictor implements Serializable {
 			return markers;
 		}
 
-		// We are done and there is no need for further analysis
-		return null;
+		// If variant effects were added, there is no need for further analysis
+		return added ? null : intersects;
 	}
 
 	/**

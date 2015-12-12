@@ -215,6 +215,7 @@ public enum EffectType {
 		case NONE:
 		case CHROMOSOME:
 		case CHROMOSOME_LARGE_DELETION:
+		case CHROMOSOME_LARGE_INVERSION:
 		case CHROMOSOME_ELONGATION:
 		case CUSTOM:
 		case CDS:
@@ -247,12 +248,20 @@ public enum EffectType {
 			return EffectType.SPLICE_SITE_REGION;
 
 		case TRANSCRIPT_DELETED:
+		case TRANSCRIPT_DUPLICATION:
 		case TRANSCRIPT_INVERSION:
 		case INTRAGENIC:
-		case GENE:
 		case NEXT_PROT:
 		case TRANSCRIPT:
 			return EffectType.TRANSCRIPT;
+
+		case GENE:
+		case GENE_DELETED:
+		case GENE_DUPLICATION:
+		case GENE_FUSION:
+		case GENE_INVERSION:
+		case GENE_REARRANGEMENT:
+			return EffectType.GENE;
 
 		case EXON:
 		case EXON_DELETED:

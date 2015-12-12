@@ -74,7 +74,13 @@ public class VariantEffectStructural extends VariantEffect {
 		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
 		for (Gene gLeft : genesLeft)
 			for (Gene gRight : genesRight)
-				if (!gLeft.getId().equals(gRight.getId())) {
+				if (!gLeft.getId().equals(gRight.getId())) { // Not the same gene?
+					// If both genes overlap and the variant is within that
+					// region, then it's not a fusion, it's just a variant
+					// acting on both genes.
+					Marker gIntersect = gLeft.intersect(gRight);
+					if (gIntersect != null && gIntersect.includes(variant)) continue;
+
 					VariantEffectFusion fusion = new VariantEffectFusion(variant, gLeft, gRight);
 					fusions.add(fusion);
 				}
