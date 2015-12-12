@@ -20,7 +20,6 @@ import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
 import ca.mcgill.mcb.pcingola.snpEffect.factory.SnpEffPredictorFactoryGtf22;
 import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
-import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 
 /**
  *
@@ -402,24 +401,6 @@ public class TestCasesIntegrationVariant {
 			VariantEffect varEff = new VariantEffect(var);
 			varEff.setEffectType(eff);
 			if (verbose) System.out.println(var.isVariant() + "\t" + eff + "\t" + varEff.getEffectImpact());
-		}
-	}
-
-	/**
-	 * Make sure all effect_tpyes have appropriate impacts, regions, etc.
-	 */
-	@Test
-	public void test_37_EffectType() {
-		for (EffectType eff : EffectType.values()) {
-			if (verbose) System.out.println("\t" + eff);
-
-			// None of these should throw an exception
-			eff.effectImpact();
-			eff.getGeneRegion();
-
-			for (EffFormatVersion formatVersion : EffFormatVersion.values()) {
-				eff.toSequenceOntology(formatVersion, null);
-			}
 		}
 	}
 
