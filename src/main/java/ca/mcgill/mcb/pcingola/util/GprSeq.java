@@ -285,6 +285,16 @@ public class GprSeq {
 		return false;
 	}
 
+	public static String padN(String seq, int size) {
+		if (seq.length() >= size) return seq;
+
+		StringBuilder sb = new StringBuilder(seq);
+		for (int i = seq.length(); i < size; i++)
+			sb.append('N');
+
+		return sb.toString();
+	}
+
 	/**
 	 * Random base
 	 */

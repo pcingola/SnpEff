@@ -221,6 +221,10 @@ public class TestCasesBase {
 		rand = new Random(randSeed);
 	}
 
+	protected void initSnpEffPredictor() {
+		initSnpEffPredictor(null);
+	}
+
 	/**
 	 * Create a predictor
 	 * For the default parameters the first predictor
@@ -231,7 +235,7 @@ public class TestCasesBase {
 	 * 			CDS     :   taaccccatatgattagtacggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgatgaccgatttatttgattccccacatttatttcatcgggac
 	 * 			Protein :   *PHMISTVEEKHLTPIEQDLFRNTLYR*PIYLIPHIYFIG?
 	 */
-	protected void initSnpEffPredictor() {
+	protected void initSnpEffPredictor(Gene genesToAdd[]) {
 		// Create a config and force out snpPredictor
 		if (config == null || config.getGenome() == null || !config.getGenome().getGenomeName().equals(genomeName)) {
 			config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
@@ -244,6 +248,12 @@ public class TestCasesBase {
 		sepf.setForceNegativeStrand(onlyMinusStrand);
 		sepf.setAddUtrs(addUtrs);
 		sepf.setMinExons(minExons);
+
+		// Add some genes to predictor?
+		if (genesToAdd != null) {
+			for (Gene g : genesToAdd)
+				snpEffectPredictor.add(g);
+		}
 
 		// Create predictor
 		snpEffectPredictor = sepf.create();

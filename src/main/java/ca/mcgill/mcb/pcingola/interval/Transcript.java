@@ -1681,6 +1681,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				String s = exon.getSequence().toLowerCase();
 				if (exon.isStrandMinus()) s = GprSeq.reverseWc(s);
 
+				s = GprSeq.padN(s, exon.size());
 				seq.append(s);
 				i += s.length() - 1;
 			} else seq.append('.');

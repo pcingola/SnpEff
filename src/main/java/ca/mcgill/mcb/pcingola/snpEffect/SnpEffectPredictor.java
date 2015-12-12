@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
@@ -741,8 +742,11 @@ public class SnpEffectPredictor implements Serializable {
 		if (veff.getEffectType() != EffectType.NONE) variantEffects.add(veff);
 
 		// Do we have a fusion event?
-		VariantEffect veffFusion = veff.fusion();
-		if (veffFusion != null) variantEffects.add(veffFusion);
+		List<VariantEffect> veffFusions = veff.fusion();
+		if (veffFusions != null) {
+			for (VariantEffect veffFusion : veffFusions)
+				variantEffects.add(veffFusion);
+		}
 
 		// In some cases we want to annotate the varaint's partially overlapping genes
 		if (variant.isDup()) {

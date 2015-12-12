@@ -2,6 +2,7 @@ package ca.mcgill.mcb.pcingola.snpEffect;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,9 +18,9 @@ import ca.mcgill.mcb.pcingola.interval.Variant;
  */
 public class VariantEffectStructural extends VariantEffect {
 
-	Gene geneLeft = null;
-	Gene geneRight = null;
-	Set<Gene> genes = null;
+	List<Gene> genesLeft;
+	List<Gene> genesRight;
+	Set<Gene> genes;
 	int countWholeGenes = 0; // How many genes does the variant fully include?
 	int countPartialGenes = 0; // How many genes does the variant partially overlap?
 
@@ -29,6 +30,10 @@ public class VariantEffectStructural extends VariantEffect {
 
 	public VariantEffectStructural(Variant variant, Markers intersects) {
 		super(variant);
+		genesLeft = new LinkedList<>();
+		genesRight = new LinkedList<>();
+		genes = new HashSet<Gene>();
+
 		if (intersects != null) {
 			setGenes(intersects);
 			setEffect(effect());
@@ -58,20 +63,30 @@ public class VariantEffectStructural extends VariantEffect {
 	/**
 	 * Is there another 'fusion' effect?
 	 */
-	public VariantEffect fusion() {
+	public List<VariantEffect> fusion() {
 		// Only if both genes are different
 		if (variant.isDup() //
-				|| geneLeft == null //
-				|| geneRight == null //
-				|| geneLeft.getId().equals(geneRight.getId()) //
+				|| genesLeft.isEmpty() //
+				|| genesRight.isEmpty() //
 		) return null;
 
-		return new VariantEffectFusion(this);
+		// Add all gene pairs
+		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
+		for (Gene gLeft : genesLeft)
+			for (Gene gRight : genesRight)
+				if (!gLeft.getId().equals(gRight.getId())) {
+					VariantEffectFusion fusion = new VariantEffectFusion(variant, gLeft, gRight);
+					fusions.add(fusion);
+				}
+
+		return fusions;
 	}
 
 	@Override
 	public Gene getGene() {
-		return geneLeft != null ? geneLeft : geneRight;
+		if (!genesLeft.isEmpty()) return genesLeft.get(0);
+		if (!genesRight.isEmpty()) return genesRight.get(0);
+		return null;
 	}
 
 	@Override
@@ -83,7 +98,7 @@ public class VariantEffectStructural extends VariantEffect {
 
 	@Override
 	public Marker getMarker() {
-		return geneLeft != null ? geneLeft : geneRight;
+		return getGene();
 	}
 
 	@Override
@@ -95,12 +110,10 @@ public class VariantEffectStructural extends VariantEffect {
 	 * Set genes from all intersecting intervals
 	 */
 	void setGenes(Markers intersects) {
-		genes = new HashSet<Gene>();
-
 		for (Marker m : intersects)
 			if (m instanceof Gene) {
-				if (m.intersects(variant.getStart())) geneLeft = (Gene) m;
-				if (m.intersects(variant.getEnd())) geneRight = (Gene) m;
+				if (m.intersects(variant.getStart())) genesLeft.add((Gene) m);
+				if (m.intersects(variant.getEnd())) genesRight.add((Gene) m);
 
 				if (variant.includes(m)) countWholeGenes++;
 				else countPartialGenes++;
@@ -113,10 +126,18 @@ public class VariantEffectStructural extends VariantEffect {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toStr());
-		sb.append("\n\tGene left  : " + geneLeft.getId() + " [" + geneLeft.getGeneName() + "]");
-		sb.append("\n\tGene right : " + geneRight.getId() + " [" + geneRight.getGeneName() + "]");
 
-		sb.append("\n\tGenes other: [");
+		sb.append("\n\tGene left  : [");
+		for (Gene g : genesLeft)
+			sb.append(" " + g.getId());
+		sb.append("]");
+
+		sb.append("\n\tGene right  : [");
+		for (Gene g : genesRight)
+			sb.append(" " + g.getId());
+		sb.append("]");
+
+		sb.append("\n\tGenes all: [");
 		for (Gene g : genes)
 			sb.append(g.getGeneName() + " ");
 		sb.append(" ]");
