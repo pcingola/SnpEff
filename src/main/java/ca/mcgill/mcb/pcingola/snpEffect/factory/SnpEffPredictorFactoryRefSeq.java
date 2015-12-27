@@ -190,8 +190,9 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 			for (lineNum = 1; reader.ready(); lineNum++) {
 				line = reader.readLine();
 
+				Gpr.debug(lineNum + "\t" + line);
 				// Skip headers
-				if ((lineNum > 1) || !line.startsWith("#")) {
+				if ((lineNum > 1) && !line.startsWith("#")) {
 					String fields[] = line.split("\t");
 
 					if (fields.length >= 16) {
