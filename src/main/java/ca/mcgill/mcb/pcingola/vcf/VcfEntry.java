@@ -31,6 +31,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	public static final String SUB_FIELD_SEP = ";";
+	public static final char WITHIN_FIELD_SEP = ',';
 
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
 

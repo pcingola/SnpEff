@@ -6,11 +6,14 @@
 0) Install required libraries
 
 	# ANTRL
-	curl -O http://www.antlr.org/download/antlr-4.5.1-complete.jar
+	wget http://www.antlr.org/download/antlr-4.5.1-complete.jar
 	mvn install:install-file -Dfile=antlr-4.5.1-complete.jar -DgroupId=org.antlr -DartifactId=antlr -Dversion=4.5.1 -Dpackaging=jar
 
 	# BioJava
+	wget http://biojava.org/download/maven/org/biojava/biojava3-core/3.0.7/biojava3-core-3.0.7.jar
 	mvn install:install-file -Dfile=biojava3-core-3.0.7.jar      -DgroupId=org.biojava -DartifactId=biojava3-core      -Dversion=3.0.7 -Dpackaging=jar
+	
+	wget http://biojava.org/download/maven/org/biojava/biojava3-structure/3.0.7/biojava3-structure-3.0.7.jar
 	mvn install:install-file -Dfile=biojava3-structure-3.0.7.jar -DgroupId=org.biojava -DartifactId=biojava3-structure -Dversion=3.0.7 -Dpackaging=jar
 
 1) Change version numbers:

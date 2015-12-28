@@ -70,8 +70,8 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 
 	@Override
 	public boolean run() {
-		boolean isEmpty = (geneIds.size() <= 0);
 		loadGenes();
+		boolean isEmpty = (geneIds.size() <= 0);
 		if (verbose) {
 			Timer.showStdErr("Number of gene IDs to look up: " + geneIds.size());
 			if (isEmpty) Timer.showStdErr("Empty list of IDs. Using all genes.");
@@ -88,7 +88,10 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		System.out.println("#chr\tstart\tend\tgeneName;geneId");
 		for (Gene g : genome.getGenesSortedPos()) {
 			// Is gene.id or gene.name in geneSet? => Show it
-			if (isEmpty || geneIds.contains(g.getId()) || geneIds.contains(g.getGeneName())) {
+			if (isEmpty //
+					|| geneIds.contains(g.getId()) // Is the geneId in the list?
+					|| geneIds.contains(g.getGeneName()) // Id the geneName in the list?
+			) {
 				found++;
 
 				// Show or filter?
@@ -100,14 +103,13 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 					// Show
 					System.out.println(g.getChromosomeName() + "\t" + start + "\t" + end + "\t" + g.getGeneName() + ";" + g.getId());
 				} else filtered++;
-
 			}
 		}
 
 		if (verbose) {
 			Timer.showStdErr("Done\n\tFound      : " + found + " / " + geneIds.size() //
 					+ (filtered > 0 ? "\n\tFiltered out : " + filtered + " / " + found : "") //
-					);
+			);
 		}
 
 		return true;
