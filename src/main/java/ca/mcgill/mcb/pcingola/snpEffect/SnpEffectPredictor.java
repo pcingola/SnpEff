@@ -725,19 +725,6 @@ public class SnpEffectPredictor implements Serializable {
 	 *         or 'null' if no further gene-by-gene analysis is required
 	 */
 	Markers variantEffectStructural(Variant variant, VariantEffects variantEffects, Markers intersects) {
-		// How many genes are intersected?
-		int countGenes = 0;
-
-		// How many genes are affected by this variant?
-		for (Marker m : intersects)
-			if (m instanceof Gene) countGenes++;
-
-		if (countGenes <= 1) {
-			// Only one gene intersected? We don't analyze
-			// => Continue analyzing all intervals using the 'standard' algorithm
-			return intersects;
-		}
-
 		// Any variant effects added?
 		boolean added = false;
 

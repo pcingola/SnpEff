@@ -25,9 +25,9 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 
 /**
  * Test cases for structural variants: Inversions
- * 
+ *
  * Gene models used in these test cases:
- * 
+ *
  * Gene: Gene_1:953-1216
  * 1:957-1157, strand: +, id:transcript_0, Protein
  * 		Exons:
@@ -36,13 +36,13 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
  * 		1:1148-1157 'exon_0_2', rank: 3, frame: ., sequence: agacatggac
  * 		CDS     :	gttgcttgaatactgtatagccttgccattgttgtgttgctaactagacatggac
  * 		Protein :	VA*ILYSLAIVVLLTRHG?
- * 
- *                                            1                                                                                                                                                             
- *                                            0                                                                                                   1                                                         
- *    6         7         8         9         0         1         2         3         4         5         6         7         8         9         0         1         2         3         4         5       
+ *
+ *                                            1
+ *                                            0                                                                                                   1
+ *    6         7         8         9         0         1         2         3         4         5         6         7         8         9         0         1         2         3         4         5
  * 789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567
  * gttgcttgaatactgtatagccttgccattgt........................................................tgtgttgctaact..........................................................................................agacatggac
- *  V  A  *  I  L  Y  S  L  A  I                                                          V  V  L  L  T                                                                                            R  H  G 
+ *  V  A  *  I  L  Y  S  L  A  I                                                          V  V  L  L  T                                                                                            R  H  G
  * 01201201201201201201201201201201                                                        2012012012012                                                                                          0120120120
  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-------------------------------------------------------->>>>>>>>>>>>>------------------------------------------------------------------------------------------>>>>>>>>>>
  *  |                              |                                                        |           |                                                                                          |        |
@@ -52,8 +52,8 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
  *  |                              |                                                        ^1045
  *  |                              ^988
  *  ^957
- * 
- * 
+ *
+ *
  * Gene: Gene_1:2057-2157
  * 1:2066-2141, strand: +, id:transcript_1, Protein
  * 		Exons:
@@ -63,12 +63,12 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
  * 		1:2133-2141 'exon_1_3', rank: 4, frame: ., sequence: ccgccgctg
  * 		CDS     :	acttcccttttacgcccacgtccgccgctg
  * 		Protein :	TSLLRPRPPL
- * 
- *                                   1                                         
- *     7         8         9         0         1         2         3         4 
+ *
+ *                                   1
+ *     7         8         9         0         1         2         3         4
  * 6789012345678901234567890123456789012345678901234567890123456789012345678901
  * actt..............cccttt..........................tacgcccacgt......ccgccgctg
- *  T                S  L                            L  R  P  R        P  P  L 
+ *  T                S  L                            L  R  P  R        P  P  L
  * 0120              120120                          12012012012      012012012
  * >>>>-------------->>>>>>-------------------------->>>>>>>>>>>------>>>>>>>>>
  *  |  |              |    |                          |         |      |       |
@@ -80,7 +80,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
  *  |  |              ^2084
  *  |  ^2069
  *  ^2066
- * 
+ *
  */
 public class TestCasesInv extends TestCasesBase {
 
@@ -215,10 +215,27 @@ public class TestCasesInv extends TestCasesBase {
 	}
 
 	/**
-	 * Inversion: Whole gene / whole transcript
+	 * Inversion: Whole gene
 	 */
 	@Test
-	public void test01() {
+	public void test01_invGene() {
+		Gpr.debug("Test");
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 950, 1250, "");
+		variant.setVariantType(VariantType.INV);
+
+		EffectType expEffs[] = { EffectType.GENE_INVERSION };
+		EffectImpact expectedImpact = EffectImpact.LOW;
+
+		checkEffects(variant, expEffs, null, null, expectedImpact, null);
+	}
+
+	/**
+	 * Inversion: whole transcript
+	 */
+	@Test
+	public void test01_invTr() {
 		Gpr.debug("Test");
 
 		// Create variant
@@ -369,7 +386,6 @@ public class TestCasesInv extends TestCasesBase {
 		EffectImpact expectedImpact = EffectImpact.MODIFIER;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
-
 	}
 
 	/**

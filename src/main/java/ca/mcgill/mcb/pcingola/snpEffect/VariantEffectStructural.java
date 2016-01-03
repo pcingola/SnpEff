@@ -65,10 +65,7 @@ public class VariantEffectStructural extends VariantEffect {
 	 */
 	public List<VariantEffect> fusion() {
 		// Only if both genes are different
-		if (variant.isDup() //
-				|| genesLeft.isEmpty() //
-				|| genesRight.isEmpty() //
-		) return null;
+		if (genesLeft.isEmpty() || genesRight.isEmpty()) return null;
 
 		// Add all gene pairs
 		List<VariantEffect> fusions = new LinkedList<VariantEffect>();

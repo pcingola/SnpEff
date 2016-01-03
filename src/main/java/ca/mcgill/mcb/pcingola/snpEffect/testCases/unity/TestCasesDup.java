@@ -152,13 +152,32 @@ public class TestCasesDup extends TestCasesBase {
 	}
 
 	/**
-	 * Duplication Whole gene / whole transcript
+	 * Duplication Whole gene
 	 */
 	@Test
-	public void test01() {
+	public void test01_dupGene() {
 		Gpr.debug("Test");
 
 		// Create variant
+		Variant variant = new Variant(chromosome, 950, 1250, "");
+		variant.setVariantType(VariantType.DUP);
+
+		EffectType expEffs[] = { EffectType.GENE_DUPLICATION };
+		String expHgvsc[] = null;
+		EffectImpact expectedImpact = EffectImpact.LOW;
+
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Duplication whole transcript
+	 */
+	@Test
+	public void test01_dupTr() {
+		Gpr.debug("Test");
+
+		// Create variant
+		// Note that Gene ends at 1216, so this variant covers transcript (but not gene)
 		Variant variant = new Variant(chromosome, 950, 1200, "");
 		variant.setVariantType(VariantType.DUP);
 
@@ -250,7 +269,11 @@ public class TestCasesDup extends TestCasesBase {
 		Variant variant = new Variant(chromosome, 1050, 2150, "");
 		variant.setVariantType(VariantType.DUP);
 
-		EffectType expEffs[] = { EffectType.EXON_DUPLICATION, EffectType.EXON_DUPLICATION_PARTIAL, EffectType.TRANSCRIPT_DUPLICATION };
+		EffectType expEffs[] = { EffectType.EXON_DUPLICATION //
+		, EffectType.EXON_DUPLICATION_PARTIAL //
+		, EffectType.TRANSCRIPT_DUPLICATION //
+		, EffectType.GENE_FUSION //
+		};
 		String expHgvsc[] = { "n.1051_2151dup" };
 		EffectImpact expectedImpact = EffectImpact.LOW;
 
@@ -284,7 +307,10 @@ public class TestCasesDup extends TestCasesBase {
 		Variant variant = new Variant(chromosome, 1100, 2075, "");
 		variant.setVariantType(VariantType.DUP);
 
-		EffectType expEffs[] = { EffectType.EXON_DUPLICATION, EffectType.FRAME_SHIFT };
+		EffectType expEffs[] = { EffectType.EXON_DUPLICATION //
+		, EffectType.FRAME_SHIFT //
+		, EffectType.GENE_FUSION //
+		};
 		String expHgvsc[] = { "n.1101_2076dup" };
 		String expHgvsp[] = { "p.Ser2_Leu10delinsTyrPheProPheThrProThrSerAlaAla???", "p.Ser2fs" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
@@ -302,13 +328,15 @@ public class TestCasesDup extends TestCasesBase {
 		Variant variant = new Variant(chromosome, 1050, 2120, "");
 		variant.setVariantType(VariantType.DUP);
 
-		EffectType expEffs[] = { EffectType.EXON_DUPLICATION, EffectType.EXON_DUPLICATION_PARTIAL };
+		EffectType expEffs[] = { EffectType.EXON_DUPLICATION //
+		, EffectType.EXON_DUPLICATION_PARTIAL //
+		, EffectType.GENE_FUSION //
+		};
 		String expHgvsc[] = { "n.1051_2121dup", "c.38_*963dup", "c.-1016_15dup" };
 		String expHgvsp[] = { "p.Pro6_Arg7delinsTyrAlaHisValLeuProPhe" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
-
 	}
 
 	/**
