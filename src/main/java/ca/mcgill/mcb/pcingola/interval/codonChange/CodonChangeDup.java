@@ -117,16 +117,7 @@ public class CodonChangeDup extends CodonChange {
 			// Part of the transcript is duplicated
 
 			// Does the duplication affect any exon?
-			boolean intersectsExons = false;
-			for (Exon ex : transcript) {
-				if (variant.intersects(ex)) {
-					intersectsExons = true;
-					break;
-				}
-			}
-
-			// Annotate
-			if (intersectsExons) exons();
+			if (intersectsExons()) exons();
 			else intron();
 		}
 	}

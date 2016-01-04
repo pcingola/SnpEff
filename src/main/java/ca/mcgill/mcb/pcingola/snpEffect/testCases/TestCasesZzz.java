@@ -153,107 +153,108 @@ public class TestCasesZzz extends TestCasesBase {
 	}
 
 	//	/**
-	//	 * Duplication Whole gene / whole transcript
+	//	 * Deletion Whole gene / whole transcript
 	//	 */
 	//	@Test
-	//	public void test01_dupTr() {
+	//	public void test01_delTr() {
 	//		Gpr.debug("Test");
 	//
 	//		// Create variant
 	//		// Note that Gene ends at 1216, so this variant covers transcript (but not gene)
 	//		Variant variant = new Variant(chromosome, 950, 1200, "");
-	//		variant.setVariantType(VariantType.DUP);
+	//		variant.setVariantType(VariantType.DEL);
 	//
-	//		EffectType expEffs[] = { EffectType.TRANSCRIPT_DUPLICATION };
+	//		EffectType expEffs[] = { EffectType.TRANSCRIPT_DELETED };
 	//		String expHgvsc[] = null;
-	//		EffectImpact expectedImpact = EffectImpact.LOW;
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
 	//
 	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	//	}
 	//
 	//	/**
-	//	 * Duplication Whole gene / whole transcript
+	//	 * Deletion Whole gene / whole transcript
 	//	 */
 	//	@Test
-	//	public void test01_dupGene() {
+	//	public void test01_delGene() {
 	//		Gpr.debug("Test");
 	//
 	//		// Create variant
 	//		Variant variant = new Variant(chromosome, 950, 1250, "");
-	//		variant.setVariantType(VariantType.DUP);
+	//		variant.setVariantType(VariantType.DEL);
 	//
-	//		EffectType expEffs[] = { EffectType.GENE_DUPLICATION };
+	//		EffectType expEffs[] = { EffectType.GENE_DELETED };
 	//		String expHgvsc[] = null;
-	//		EffectImpact expectedImpact = EffectImpact.LOW;
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
 	//
 	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	//	}
-
+	//
 	//	/**
-	//	 * Duplication One coding exon
+	//	 * Deletion One coding exon
 	//	 */
 	//	@Test
 	//	public void test02() {
 	//		Gpr.debug("Test");
 	//
 	//		Variant variant = new Variant(chromosome, 1040, 1100, "");
-	//		variant.setVariantType(VariantType.DUP);
+	//		variant.setVariantType(VariantType.DEL);
 	//
-	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION, EffectType.FRAME_SHIFT };
-	//		String expHgvsc[] = { "c.33-5_45+43dup" };
-	//		String expHgvsp[] = { "p.Arg16fs", "p.Arg16_Gly18delinsCysValAlaAsnTerThrTrp" };
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//
-	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
-	//	}
-	//
-	//	/**
-	//	 * Duplication two coding exons (within the same gene)
-	//	 */
-	//	@Test
-	//	public void test03() {
-	//		Gpr.debug("Test");
-	//
-	//		Variant variant = new Variant(chromosome, 1040, 1160, "");
-	//		variant.setVariantType(VariantType.DUP);
-	//
-	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION };
-	//		String expHgvsc[] = { "c.33-5_*3dup" };
+	//		EffectType expEffs[] = { EffectType.EXON_DELETED };
+	//		String expHgvsc[] = { "c.33-5_45+43del" };
 	//		EffectImpact expectedImpact = EffectImpact.HIGH;
 	//
 	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	//	}
 	//
 	//	/**
-	//	 * Duplication Part of one coding exon
+	//	 * Deletion two coding exons (within the same gene)
 	//	 */
 	//	@Test
-	//	public void test04() {
+	//	public void test03() {
 	//		Gpr.debug("Test");
 	//
-	//		Variant variant = new Variant(chromosome, 1040, 1050, "");
-	//		variant.setVariantType(VariantType.DUP);
+	//		Variant variant = new Variant(chromosome, 1040, 1160, "");
+	//		variant.setVariantType(VariantType.DEL);
 	//
-	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION_PARTIAL };
-	//		String expHgvsc[] = { "c.33-5_38dup" };
-	//		String expHgvsp[] = { "p.Val12_Leu13insPheVal" };
+	//		EffectType expEffs[] = { EffectType.EXON_DELETED };
+	//		String expHgvsc[] = { "c.33-5_*3del" };
 	//		EffectImpact expectedImpact = EffectImpact.HIGH;
 	//
-	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	//	}
+
+	/**
+	 * Deletion Part of one coding exon
+	 */
+	@Test
+	public void test04() {
+		Gpr.debug("Test");
+
+		verbose = true;
+
+		Variant variant = new Variant(chromosome, 1040, 1050, "");
+		variant.setVariantType(VariantType.DEL);
+
+		EffectType expEffs[] = {};
+		String expHgvsc[] = { "c.33-5_38del" };
+		String expHgvsp[] = { "p.Val12_Leu13insPheVal" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	}
 	//
 	//	/**
-	//	 * Duplication Part of two coding exons (within the same gene)
+	//	 * Deletion Part of two coding exons (within the same gene)
 	//	 */
 	//	@Test
 	//	public void test05() {
 	//		Gpr.debug("Test");
 	//
 	//		Variant variant = new Variant(chromosome, 1050, 1150, "");
-	//		variant.setVariantType(VariantType.DUP);
+	//		variant.setVariantType(VariantType.DEL);
 	//
-	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION_PARTIAL };
-	//		String expHgvsc[] = { "c.38_48dup" };
+	//		EffectType expEffs[] = { EffectType.EXON_DELETED_PARTIAL };
+	//		String expHgvsc[] = { "c.38_48del" };
 	//		String expHgvsp[] = { "p.Arg16_???19delinsCysTerLeuGluAspMetAsp" };
 	//		EffectImpact expectedImpact = EffectImpact.HIGH;
 	//
@@ -261,97 +262,97 @@ public class TestCasesZzz extends TestCasesBase {
 	//	}
 	//
 	//	/**
-	//	 * Duplication Two genes
+	//	 * Deletion Two genes
 	//	 */
 	//	@Test
 	//	public void test06() {
 	//		Gpr.debug("Test");
 	//
 	//		Variant variant = new Variant(chromosome, 1050, 2150, "");
-	//		variant.setVariantType(VariantType.DUP);
+	//		variant.setVariantType(VariantType.DEL);
 	//
-	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION //
-	//		, EffectType.EXON_DUPLICATION_PARTIAL //
-	//		, EffectType.TRANSCRIPT_DUPLICATION //
+	//		EffectType expEffs[] = { EffectType.EXON_DELETED //
+	//		, EffectType.EXON_DELETED_PARTIAL //
+	//		, EffectType.TRANSCRIPT_DELETED //
 	//		, EffectType.GENE_FUSION //
 	//		};
-	//		String expHgvsc[] = { "n.1051_2151dup" };
+	//		String expHgvsc[] = { "n.1051_2151del" };
 	//		EffectImpact expectedImpact = EffectImpact.LOW;
 	//
 	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	//	}
 	//
 	//	/**
-	//	 * Duplication After gene's coding region (LOW impact)
+	//	 * Deletion After gene's coding region (LOW impact)
 	//	 */
 	//	@Test
 	//	public void test07() {
 	//		Gpr.debug("Test");
 	//
 	//		Variant variant = new Variant(chromosome, 1100, 2000, "");
-	//		variant.setVariantType(VariantType.DUP);
+	//		variant.setVariantType(VariantType.DEL);
 	//
-	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION };
-	//		String expHgvsc[] = { "n.1101_2001dup" };
+	//		EffectType expEffs[] = { EffectType.EXON_DELETED };
+	//		String expHgvsc[] = { "n.1101_2001del" };
 	//		EffectImpact expectedImpact = EffectImpact.LOW;
 	//
 	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	//	}
-
+	//
 	//	/**
-	//	 * Duplication Part of two genes cutting on introns
+	//	 * Deletion Part of two genes cutting on introns
 	//	 */
 	//	@Test
 	//	public void test08() {
 	//		Gpr.debug("Test");
 	//
 	//		Variant variant = new Variant(chromosome, 1100, 2075, "");
-	//		variant.setVariantType(VariantType.DUP);
+	//		variant.setVariantType(VariantType.DEL);
 	//
-	//		EffectType expEffs[] = { EffectType.EXON_DUPLICATION //
+	//		EffectType expEffs[] = { EffectType.EXON_DELETED //
 	//		, EffectType.FRAME_SHIFT //
 	//		, EffectType.GENE_FUSION //
 	//		};
-	//		String expHgvsc[] = { "n.1101_2076dup" };
+	//		String expHgvsc[] = { "n.1101_2076del" };
 	//		String expHgvsp[] = { "p.Ser2_Leu10delinsTyrPheProPheThrProThrSerAlaAla???", "p.Ser2fs" };
 	//		EffectImpact expectedImpact = EffectImpact.HIGH;
 	//
 	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	//	}
-
-	/**
-	 * Duplication Part of two genes cutting exons
-	 */
-	@Test
-	public void test09() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(chromosome, 1050, 2120, "");
-		variant.setVariantType(VariantType.DUP);
-
-		EffectType expEffs[] = { EffectType.EXON_DUPLICATION //		
-		, EffectType.EXON_DUPLICATION_PARTIAL //
-		, EffectType.GENE_FUSION //
-		};
-		String expHgvsc[] = { "n.1051_2121dup", "c.38_*963dup", "c.-1016_15dup" };
-		String expHgvsp[] = { "p.Pro6_Arg7delinsTyrAlaHisValLeuProPhe" };
-		EffectImpact expectedImpact = EffectImpact.HIGH;
-
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
-	}
-
+	//
 	//	/**
-	//	 * Duplication Intron
+	//	 * Deletion Part of two genes cutting exons
+	//	 */
+	//	@Test
+	//	public void test09() {
+	//		Gpr.debug("Test");
+	//
+	//		Variant variant = new Variant(chromosome, 1050, 2120, "");
+	//		variant.setVariantType(VariantType.DEL);
+	//
+	//		EffectType expEffs[] = { EffectType.EXON_DELETED //		
+	//		, EffectType.EXON_DELETED_PARTIAL //
+	//		, EffectType.GENE_FUSION //
+	//		};
+	//		String expHgvsc[] = { "n.1051_2121del", "c.38_*963del", "c.-1016_15del" };
+	//		String expHgvsp[] = { "p.Pro6_Arg7delinsTyrAlaHisValLeuProPhe" };
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
+	//
+	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	//	}
+	//
+	//	/**
+	//	 * Deletion Intron
 	//	 */
 	//	@Test
 	//	public void test10() {
 	//		Gpr.debug("Test");
 	//
 	//		Variant variant = new Variant(chromosome, 991, 1020, "");
-	//		variant.setVariantType(VariantType.DUP);
+	//		variant.setVariantType(VariantType.DEL);
 	//
 	//		EffectType expEffs[] = { EffectType.INTRON };
-	//		String expHgvsc[] = { "c.32+3_33-25dup" };
+	//		String expHgvsc[] = { "c.32+3_33-25del" };
 	//		EffectImpact expectedImpact = EffectImpact.MODIFIER;
 	//
 	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);

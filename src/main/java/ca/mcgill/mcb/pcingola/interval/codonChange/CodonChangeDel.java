@@ -27,6 +27,9 @@ public class CodonChangeDel extends CodonChange {
 			// Large deletion removing the whole transcript?
 			effectNoCodon(transcript, EffectType.TRANSCRIPT_DELETED);
 		} else {
+			// Exon fully deleted
+			if (exonDeleted()) return;
+
 			// Normal cases
 			super.codonChange();
 		}
@@ -154,6 +157,19 @@ public class CodonChangeDel extends CodonChange {
 		else codons = transcript.cds().substring(oldCodonCdsStart, oldCodonCdsEnd + 1);
 
 		return codons;
+	}
+
+	/**
+	 * Whole exon/s deleted?
+	 */
+	boolean exonDeleted() {
+		boolean found = false;
+		for (Exon ex : transcript)
+			if (variant.includes(ex)) {
+				effectNoCodon(ex, EffectType.EXON_DELETED);
+				found = true;
+			}
+		return found;
 	}
 
 }

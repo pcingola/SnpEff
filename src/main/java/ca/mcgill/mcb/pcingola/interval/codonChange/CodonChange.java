@@ -279,6 +279,15 @@ public class CodonChange {
 	}
 
 	/**
+	 * Does the variant intersect any exons?
+	 */
+	protected boolean intersectsExons() {
+		for (Exon ex : transcript)
+			if (variant.intersects(ex)) return true;
+		return false;
+	}
+
+	/**
 	 * We may have to calculate 'netCdsChange', which is the effect on the CDS
 	 * Note: A deletion or a MNP might affect several exons
 	 */
