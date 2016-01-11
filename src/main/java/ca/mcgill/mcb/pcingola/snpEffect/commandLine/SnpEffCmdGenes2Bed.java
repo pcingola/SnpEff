@@ -136,23 +136,13 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	 * Show either a gene or all exons for all transcripts within a gene 
 	 */
 	void show(Gene g) {
-		// Expand interval
-		int start = g.getStart() - expandUpstreamDownstream;
-		int end = g.getEnd() + 1 + expandUpstreamDownstream;
 
-		System.out.println(g.getChromosomeName() //
-				+ "\t" + start //
-				+ "\t" + end //
-				+ "\t" + g.getGeneName() //
-				+ ";" + g.getId() //
-		);
-
-		// Show exon information as well
 		if (showExons) {
+			// Show exon for each transcript
 			for (Transcript tr : g) {
 				for (Exon ex : tr) {
-					start = ex.getStart() - expandUpstreamDownstream;
-					end = ex.getEnd() + 1 + expandUpstreamDownstream;
+					int start = ex.getStart() - expandUpstreamDownstream;
+					int end = ex.getEnd() + 1 + expandUpstreamDownstream;
 
 					System.out.println(ex.getChromosomeName() //
 							+ "\t" + start //
@@ -164,6 +154,17 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 					);
 				}
 			}
+		} else {
+			// Show gene
+			int start = g.getStart() - expandUpstreamDownstream;
+			int end = g.getEnd() + 1 + expandUpstreamDownstream;
+
+			System.out.println(g.getChromosomeName() //
+					+ "\t" + start //
+					+ "\t" + end //
+					+ "\t" + g.getGeneName() //
+					+ ";" + g.getId() //
+			);
 		}
 	}
 
