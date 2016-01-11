@@ -101,11 +101,14 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		loadConfig();
 		loadDb();
 
+		// Show title
+		if (showExons) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;exonRank");
+		else System.out.println("#chr\tstart\tend\tgeneName;geneId");
+
 		// Find genes
 		Genome genome = config.getGenome();
 		if (verbose) Timer.showStdErr("Finding genes.");
 		int found = 0, filtered = 0;
-		System.out.println("#chr\tstart\tend\tgeneName;geneId");
 		for (Gene g : genome.getGenesSortedPos()) {
 			// Is gene.id or gene.name in geneSet? => Show it
 			if (isEmpty //
@@ -129,6 +132,9 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		return true;
 	}
 
+	/**
+	 * Show either a gene or all exons for all transcripts within a gene 
+	 */
 	void show(Gene g) {
 		// Expand interval
 		int start = g.getStart() - expandUpstreamDownstream;
