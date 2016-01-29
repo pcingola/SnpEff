@@ -423,6 +423,10 @@ public class Markers implements Serializable, Collection<Marker> {
 		markerSerializer.save(fileName, markersToSave);
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@Override
 	public int size() {
 		return markers.size();
