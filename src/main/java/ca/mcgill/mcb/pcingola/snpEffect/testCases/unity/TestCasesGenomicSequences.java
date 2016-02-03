@@ -20,7 +20,7 @@ import ca.mcgill.mcb.pcingola.util.GprSeq;
  */
 public class TestCasesGenomicSequences {
 
-	boolean verbose = false;
+	boolean verbose = true;
 
 	public TestCasesGenomicSequences() {
 	}

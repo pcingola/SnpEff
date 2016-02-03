@@ -39,7 +39,7 @@ public class Config implements Serializable, Iterable<String> {
 	public static final String KEY_CODONTABLE_SUFIX = ".codonTable";
 	public static final String KEY_COORDINATES = "coordinates";
 	public static final String KEY_DATA_DIR = "data.dir";
-	public static final String KEY_DATABASE_LOCAL = "database.local";
+	public static final String KEY_DATABASE_LOCAL = "database";
 	public static final String KEY_DATABASE_REPOSITORY = "database.repository";
 	public static final String KEY_GENOME_SUFIX = ".genome";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_AFTER = "lof.ignoreProteinCodingAfter";
@@ -65,6 +65,7 @@ public class Config implements Serializable, Iterable<String> {
 	double lofDeleteProteinCodingBases;
 	String configDirPath = ""; // Configuration file directory
 	String dataDir; // Directory containing all databases and genomes
+	String genomeVersion;
 	Properties properties;
 	Genome genome;
 	HashMap<String, Genome> genomeById;
@@ -238,11 +239,20 @@ public class Config implements Serializable, Iterable<String> {
 		return bundleByGenomeId.get(genomeVer);
 	}
 
+	public String getCoordinates() {
+		return getString(genomeVersion + "." + Config.KEY_COORDINATES);
+	}
+
 	/**
 	 * Database local file for a specific database, such as 'dbSnp', 'ClinVar', etc.
 	 */
 	public String getDatabaseLocal(String dbName) {
-		String dbLocal = properties.getProperty(KEY_DATABASE_LOCAL + "." + dbName, "");
+		String coordinates = getCoordinates();
+		if (coordinates == null) throw new RuntimeException("Cannot find coordinates config entry for genome '" + genomeVersion + "'");
+
+		String dbLocal = properties.getProperty(KEY_DATABASE_LOCAL + "." + dbName + "." + coordinates, "");
+		Gpr.debug("DB:" + dbName + "\tdbLocal: " + dbLocal);
+
 		if (dbLocal.isEmpty()) return "";
 		return canonicalDir(dbLocal);
 	}
@@ -255,7 +265,9 @@ public class Config implements Serializable, Iterable<String> {
 	 * Database repository for a specific database, such as 'dbSnp', 'ClinVar', etc.
 	 */
 	public String getDatabaseRepository(String dbName) {
-		return properties.getProperty(KEY_DATABASE_REPOSITORY + "." + dbName, "");
+		String coordinates = getCoordinates();
+		if (coordinates == null) throw new RuntimeException("Cannot find coordinates config entry for genome '" + genomeVersion + "'");
+		return properties.getProperty(KEY_DATABASE_REPOSITORY + "." + dbName + "." + coordinates, "");
 	}
 
 	public URL getDatabaseRepositoryUrl(String dbName) {
@@ -429,9 +441,10 @@ public class Config implements Serializable, Iterable<String> {
 		onlyRegulation = false;
 		errorOnMissingChromo = true;
 		errorChromoHit = true;
+		this.genomeVersion = genomeVersion;
 		this.dataDir = dataDir;
 
-		readConfig(genomeVersion, configFileName, override); // Read config file and get a genome
+		readConfig(configFileName, override); // Read config file and get a genome
 		genome = genomeById.get(genomeVersion); // Set a genome
 		if (!genomeVersion.isEmpty() && (genome == null)) throw new RuntimeException("No such genome '" + genomeVersion + "'");
 		configInstance = this;
@@ -523,7 +536,7 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Read configuration file and create all 'genomes'
 	 */
-	private void readConfig(String genomeVersion, String configFileName, Map<String, String> override) {
+	private void readConfig(String configFileName, Map<String, String> override) {
 		//---
 		// Read properties file
 		//---
