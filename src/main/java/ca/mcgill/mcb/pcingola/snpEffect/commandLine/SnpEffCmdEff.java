@@ -317,6 +317,12 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Reset all counters
 		totalErrs = 0;
 		countInputLines = countVariants = countEffects = 0; // = countVariantsFilteredOut = 0;
+		anyCancerSample = false;
+		pedigree = null;
+		errByType = new CountByType();
+		warnByType = new CountByType();
+		countVcfEntries = 0;
+		annotateTimer = new Timer();
 
 		// Create 'stats' objects
 		variantStats = new VariantStats(config.getGenome());
@@ -434,14 +440,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Open VCF file
 		VcfFileIterator vcfFile = new VcfFileIterator(inputFile, config.getGenome());
 		vcfFile.setDebug(debug);
-		anyCancerSample = false;
-		pedigree = null;
-		errByType = new CountByType();
-		warnByType = new CountByType();
 
 		// Iterate over VCF entries
-		countVcfEntries = 0;
-		annotateTimer = new Timer();
 		for (VcfEntry vcfEntry : vcfFile) {
 			annotate(vcfEntry);
 		}
