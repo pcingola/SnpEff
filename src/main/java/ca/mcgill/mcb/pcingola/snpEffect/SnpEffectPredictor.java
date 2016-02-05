@@ -37,8 +37,6 @@ public class SnpEffectPredictor implements Serializable {
 	private static final long serialVersionUID = 4519418862303325081L;
 
 	public static final int DEFAULT_UP_DOWN_LENGTH = 5000;
-	public static final int HUGE_DELETION_SIZE_THRESHOLD = 1000000; // Number of bases
-	public static final double HUGE_DELETION_RATIO_THRESHOLD = 0.01; // Percentage of bases
 
 	boolean useChromosomes = true;
 	boolean debug;
@@ -645,21 +643,12 @@ public class SnpEffectPredictor implements Serializable {
 		// Huge deletions would crash the rest of the algorithm, so we need to stop them here.
 		//---
 		// Get chromosome
-		if (variant.isDel()) {
-			String chromoName = variant.getChromosomeName();
-			Chromosome chr = genome.getChromosome(chromoName);
+		if (variant.isHugeDel()) {
+			variantEffects.add(variant, variant.getChromosome(), EffectType.CHROMOSOME_LARGE_DELETION, "");
 
-			// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
-			if (chr != null) {
-				double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
-				if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD) {
-					variantEffects.add(variant, chr, EffectType.CHROMOSOME_LARGE_DELETION, "");
-
-					// If the deletion is too large, querying will result in too many
-					// results. We stop here to avoid memory and performance issues
-					if (variant.size() > HUGE_DELETION_SIZE_THRESHOLD) return variantEffects;
-				}
-			}
+			// If the deletion is too large, querying will result in too many
+			// results. We stop here to avoid memory and performance issues
+			if (variant.size() > Variant.HUGE_DELETION_SIZE_THRESHOLD) return variantEffects;
 		}
 
 		//---

@@ -38,8 +38,9 @@ public class VcfAnnotatorChain implements VcfAnnotator {
 	@Override
 	public boolean annotate(VcfEntry vcfEntry) {
 		boolean annotated = false;
-		for (VcfAnnotator vcfAnnotator : annotators)
+		for (VcfAnnotator vcfAnnotator : annotators) {
 			annotated |= vcfAnnotator.annotate(vcfEntry);
+		}
 
 		return annotated;
 	}

@@ -232,38 +232,38 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 					// Finish up this section
 					outputFormatter.printSection(variant);
 				}
-			}
 
-			//---
-			// Do we analyze cancer samples?
-			// Here we deal with Somatic vs Germline comparisons
-			//---
-			if (anyCancerSample && impact && vcfEntry.isMultiallelic()) {
-				// Calculate all required comparisons
-				Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
+				//---
+				// Do we analyze cancer samples?
+				// Here we deal with Somatic vs Germline comparisons
+				//---
+				if (anyCancerSample && impact && vcfEntry.isMultiallelic()) {
+					// Calculate all required comparisons
+					Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
 
-				// Analyze each comparison
-				for (Tuple<Integer, Integer> comp : comparisons) {
-					// We have to compare comp.first vs comp.second
-					int altGtNum = comp.first; // comp.first is 'derived' (our new ALT)
-					int refGtNum = comp.second; // comp.second is 'original' (our new REF)
+					// Analyze each comparison
+					for (Tuple<Integer, Integer> comp : comparisons) {
+						// We have to compare comp.first vs comp.second
+						int altGtNum = comp.first; // comp.first is 'derived' (our new ALT)
+						int refGtNum = comp.second; // comp.second is 'original' (our new REF)
 
-					Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
-					Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
-					VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
+						Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
+						Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
+						VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
 
-					// Calculate effects
-					VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
+						// Calculate effects
+						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
 
-					// Create new 'section'
-					outputFormatter.startSection(varNonRef);
+						// Create new 'section'
+						outputFormatter.startSection(varNonRef);
 
-					// Show results (note, we don't add these to the statistics)
-					for (VariantEffect variantEffect : variantEffects)
-						outputFormatter.add(variantEffect);
+						// Show results (note, we don't add these to the statistics)
+						for (VariantEffect variantEffect : variantEffects)
+							outputFormatter.add(variantEffect);
 
-					// Finish up this section
-					outputFormatter.printSection(varNonRef);
+						// Finish up this section
+						outputFormatter.printSection(varNonRef);
+					}
 				}
 			}
 

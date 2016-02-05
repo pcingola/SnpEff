@@ -437,6 +437,7 @@ public class VcfHeader {
 		String headerLines[] = header.toString().split("\n");
 
 		// Find "#CHROM" line in header
+		sampleNames = new ArrayList<String>();
 		for (String line : headerLines) {
 			if (line.startsWith("#CHROM")) {
 				chromLine = true;
@@ -445,7 +446,6 @@ public class VcfHeader {
 				String titles[] = line.split("\t");
 
 				// Create a list of names
-				sampleNames = new ArrayList<String>();
 				for (int i = 9; i < titles.length; i++)
 					sampleNames.add(titles[i]);
 
@@ -455,7 +455,7 @@ public class VcfHeader {
 		}
 
 		// Not found
-		return null;
+		return sampleNames;
 	}
 
 	protected synchronized void parseSampleNum() {
