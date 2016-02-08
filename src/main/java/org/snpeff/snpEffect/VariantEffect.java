@@ -600,6 +600,12 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				;
 	}
 
+	public boolean hasEffectImpact(EffectImpact effectImpact) {
+		for (EffectImpact effImp : effectImpacts)
+			if (effImp == effectImpact) return true;
+		return false;
+	}
+
 	public boolean hasEffectType(EffectType effectType) {
 		for (EffectType effType : effectTypes)
 			if (effType == effectType) return true;

@@ -13,8 +13,8 @@ import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.HgvsDna;
 import org.snpeff.snpEffect.HgvsProtein;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
@@ -86,7 +86,7 @@ public class TestCasesDup extends TestCasesBase {
 			String hgvsProt = hgvsp.toString();
 			hgvsps.add(hgvsProt);
 
-			impactOk |= (varEff.getEffectImpact() == expectedImpact);
+			impactOk |= varEff.hasEffectImpact(expectedImpact);
 
 			// Create VcfEffect
 			VcfEffect vcfEffect = new VcfEffect(varEff, formatVersion);

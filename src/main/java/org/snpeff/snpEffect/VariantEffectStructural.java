@@ -46,7 +46,8 @@ public class VariantEffectStructural extends VariantEffect {
 			return countWholeGenes > 0 ? EffectType.GENE_INVERSION : EffectType.NONE;
 
 		case DEL:
-			return countWholeGenes > 0 ? EffectType.GENE_DELETED : EffectType.NONE;
+			// Note: For one gene, we annotate all transcripts
+			return countWholeGenes > 1 ? EffectType.GENE_DELETED : EffectType.NONE;
 
 		case DUP:
 			return countWholeGenes > 0 ? EffectType.GENE_DUPLICATION : EffectType.NONE;
