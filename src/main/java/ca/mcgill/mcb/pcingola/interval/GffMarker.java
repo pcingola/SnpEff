@@ -137,6 +137,7 @@ public class GffMarker extends Custom {
 		switch (gffType) {
 		case TRANSCRIPT:
 		case INTRON_CONSERVED:
+			if (hasAttr("gene")) return getAttr("gene");
 			return getGeneId();
 
 		case EXON:

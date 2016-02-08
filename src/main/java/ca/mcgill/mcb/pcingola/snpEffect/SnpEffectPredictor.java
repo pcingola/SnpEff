@@ -38,8 +38,8 @@ public class SnpEffectPredictor implements Serializable {
 	private static final long serialVersionUID = 4519418862303325081L;
 
 	public static final int DEFAULT_UP_DOWN_LENGTH = 5000;
-	public static final int LARGE_VARIANT_SIZE_THRESHOLD = 1000000; // Number of bases for a variant to be considered large/huge
-	public static final double LARGE_VARIANT_RATIO_THRESHOLD = 0.01; // Percentage of bases
+	//public static final int LARGE_VARIANT_SIZE_THRESHOLD = 1000000; // Number of bases for a variant to be considered large/huge
+	//public static final double LARGE_VARIANT_RATIO_THRESHOLD = 0.01; // Percentage of bases
 	public static final int SMALL_VARIANT_SIZE_THRESHOLD = 20; // Number of bases for a variant to be considered 'small'
 
 	boolean useChromosomes = true;
@@ -637,11 +637,14 @@ public class SnpEffectPredictor implements Serializable {
 		// one gene) may require to calculate effects by using all involved genes
 		boolean structuralVariant = variant.isStructural() && variant.size() > SMALL_VARIANT_SIZE_THRESHOLD;
 
-		// Check that this is not a huge variant.
-		if (structuralVariant && variantEffectStructuralLarge(variant, variantEffects)) {
+		// Structural variants?
+		if (structuralVariant) {
 			// Large variants could make the query results huge and slow down
 			// the algorithm, so we stop here
-			return variantEffects;
+			if (variant.isStructuralHuge()) {
+				variantEffectStructuralLarge(variant, variantEffects);
+				return variantEffects;
+			}
 		}
 
 		//---
@@ -763,45 +766,30 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
-	 * Check large structural variants
-	 * @return true on success (i.e. no further analysis is required, or further analysis
-	 *         may affect performance because a query may return too many results)
+	 * Add large structural variant effects
 	 */
-	boolean variantEffectStructuralLarge(Variant variant, VariantEffects variantEffects) {
-		String chromoName = variant.getChromosomeName();
-		Chromosome chr = genome.getChromosome(chromoName);
+	void variantEffectStructuralLarge(Variant variant, VariantEffects variantEffects) {
+		EffectType eff;
 
-		// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
-		if (chr != null) {
-			double ratio = (chr.size() > 0 ? variant.size() / ((double) chr.size()) : 0);
-			if (variant.size() > LARGE_VARIANT_SIZE_THRESHOLD || ratio > LARGE_VARIANT_RATIO_THRESHOLD) {
+		switch (variant.getVariantType()) {
+		case DEL:
+			eff = EffectType.CHROMOSOME_LARGE_DELETION;
+			break;
 
-				EffectType eff;
-				switch (variant.getVariantType()) {
-				case DEL:
-					eff = EffectType.CHROMOSOME_LARGE_DELETION;
-					break;
+		case DUP:
+			eff = EffectType.CHROMOSOME_LARGE_DUPLICATION;
+			break;
 
-				case DUP:
-					eff = EffectType.CHROMOSOME_LARGE_DUPLICATION;
-					break;
+		case INV:
+			eff = EffectType.CHROMOSOME_LARGE_INVERSION;
+			break;
 
-				case INV:
-					eff = EffectType.CHROMOSOME_LARGE_INVERSION;
-					break;
-
-				default:
-					throw new RuntimeException("Unimplemented option for variant type " + variant.getVariantType());
-				}
-
-				variantEffects.add(variant, chr, eff, "");
-
-				// If the variant is too large, querying will result in too many
-				// results. We stop here to avoid memory and performance issues
-				if (variant.size() > LARGE_VARIANT_SIZE_THRESHOLD) return true;
-			}
+		default:
+			throw new RuntimeException("Unimplemented option for variant type " + variant.getVariantType());
 		}
-		return false;
+
+		// Add effect
+		variantEffects.add(variant, variant.getChromosome(), eff, "");
 	}
 
 }

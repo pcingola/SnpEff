@@ -36,7 +36,7 @@ public class SnpEffCmdBuild extends SnpEff {
 
 	GeneDatabaseFormat geneDatabaseFormat; // Database format (only used if 'buildDb' is active)
 	boolean storeAlignments; // Store alignments (used for some test cases)
-	boolean storeSequences = true; // Store full sequences
+	boolean storeSequences = false; // Store full sequences
 	String cellType = null;
 	SnpEffCmdProtein snpEffCmdProtein;
 	SnpEffCmdCds snpEffCmdCds;

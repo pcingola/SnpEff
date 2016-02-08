@@ -53,7 +53,7 @@ import ca.mcgill.mcb.pcingola.vcf.VcfHeader;
  *
  * @author pcingola
  */
-public class VcfFileIterator extends MarkerFileIterator<VcfEntry>implements Parser<VcfEntry> {
+public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Parser<VcfEntry> {
 
 	public static final String MISSING = "."; // Missing value
 	private static final String EMPTY = "";

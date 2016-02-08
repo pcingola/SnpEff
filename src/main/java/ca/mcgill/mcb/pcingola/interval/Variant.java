@@ -39,6 +39,10 @@ public class Variant extends Marker {
 		// Just analyze interval hits. Not a variant (e.g. BED input format)
 	}
 
+	public static final int HUGE_DELETION_SIZE_THRESHOLD = 1000000; // Number of bases
+
+	public static final double HUGE_DELETION_RATIO_THRESHOLD = 0.01; // Percentage of bases
+
 	// Not a variant (ref=alt)
 	public static final Variant NO_VARIANT = new Variant(null, 0, 0, "");
 
@@ -328,6 +332,22 @@ public class Variant extends Marker {
 
 	public boolean isStructural() {
 		return isDel() || isInv() || isDup();
+	}
+
+	/**
+	 * Is this a huge structural variant?
+	 */
+	public boolean isStructuralHuge() {
+		if (!isStructural()) return false;
+
+		// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
+		Chromosome chr = getChromosome();
+		if (chr != null) {
+			double ratio = (chr.size() > 0 ? size() / ((double) chr.size()) : 0);
+			return size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD;
+		}
+
+		return size() > HUGE_DELETION_SIZE_THRESHOLD;
 	}
 
 	public boolean isTruncation() {

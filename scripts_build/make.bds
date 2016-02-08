@@ -21,6 +21,7 @@ query	 			:= false		help Run queries against UCSC MySql server
 test	 			:= false		help Run SnpEff / SnpSift test cases
 testHgvs 			:= false		help Run SnpEff HGVS test cases
 uploadCore			:= false		help Upload 'core' package
+uploadDbNsfp		:= false		help Upload dbNsfp to google drive
 uploadDbs			:= false		help Upload all databases in 'zip' directory
 uploadDev			:= false		help Upload 'development' version
 uploadHtml 			:= false		help Upload weh pages
@@ -29,18 +30,19 @@ string[] zipGenome	= []			help Zip a specific genome
 # Process us one CPU
 cpus = 1
 
-# Genome versions
+# Versions
 ensemblRelease		:= "82"
 ensemblBfmppRelease	:= "29"
 flybaseRelease		:= "FB2015_05"
 flybaseGenomes		:= [ 'dana_r1.04', 'dere_r1.04', 'dgri_r1.3', 'dmel_r6.08', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.03', 'dsec_r1.3', 'dsim_r2.01', 'dvir_r1.04', 'dwil_r1.04', 'dyak_r1.04' ]
 GRCH				:= "GRCh38"
+GRCHs				:= ["GRCh37", "GRCh38"]
 humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 GRCM				:= "GRCm38"
 dbNsfpVer			:= '3.1a'
 
 # Configuration parameters
-bundles				:= ["NCBI_bacteria", "NCBI_viruses", "ENSEMBL_BFMPP_27", "ENSEMBL_BFMPP_29"]
+bundles				:= ["NCBI_bacteria", "NCBI_viruses", "ENSEMBL_BFMPP_$ensemblBfmppRelease"]
 
 # Commands
 snpeff				:= "java -Xmx10G -jar snpEff.jar "
@@ -52,18 +54,19 @@ wgetA				:= "wget -r -N -A"
 cp					:= "cp -v -u"
 
 # Directories
-dirSnpeff			:="$HOME/snpEff"
-dirBuild			:="$dirSnpeff/build"
-dirData				:="$dirSnpeff/data"
-dirDb				:="$dirSnpeff/db"
-dirDarned			:="$dirDb/darned"
-dirDownload			:="$dirSnpeff/download"
-dirNextProt         :="$dirDb/nextProt"
-dirPdb              :="$dirDb/pdb"
-dirScripts			:="$dirSnpeff/scripts"
-dirScriptsBuild		:="$dirSnpeff/scripts_build"
-dirZip				:="$dirSnpeff/zip"
-pwmsBin				:="$dirDb/jaspar/pwms.bin"
+dirSnpeff			:= "$HOME/snpEff"
+dirBuild			:= "$dirSnpeff/build"
+dirData				:= "$dirSnpeff/data"
+dirDb				:= "$dirSnpeff/db"
+dirDarned			:= "$dirDb/darned"
+dirDownload			:= "$dirSnpeff/download"
+dirGdrive           := "$HOME/gdrive"
+dirNextProt         := "$dirDb/nextProt"
+dirPdb              := "$dirDb/pdb"
+dirScripts			:= "$dirSnpeff/scripts"
+dirScriptsBuild		:= "$dirSnpeff/scripts_build"
+dirZip				:= "$dirSnpeff/zip"
+pwmsBin				:= "$dirDb/jaspar/pwms.bin"
 
 # URLs
 snpeffDownload		:= "http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip"
@@ -150,22 +153,29 @@ void buildBundleLists() {
 # Build configuration file (snpEff.config)
 #-------------------------------------------------------------------------------
 void buildConfig() {
-	sys cat config/snpEff.core.config \
-			config/snpEff.dbs.config \
-			config/snpEff.test.config \
-			config/snpEff.ENSEMBL_75.config \
-			config/snpEff.ENSEMBL_78.config \
-			config/snpEff.ENSEMBL_79.config \
-			config/snpEff.ENSEMBL_81.config \
-			config/snpEff.ENSEMBL_82.config \
-			config/snpEff.ENSEMBL_BFMPP_27.config \
-			config/snpEff.ENSEMBL_BFMPP_29.config \
-			config/snpEff.FLYBASE_FB2015_05.config \
-			config/snpEff.NCBI_bacteria.config \
-			config/snpEff.NCBI_viruses.config \
-			config/snpEff.etc.config \
-			config/snpEff.bundles.*.config \
-			> snpEff.config
+	confDir := "$dirSnpeff/config"
+	conf := "$dirSnpeff/snpEff.config"
+
+	bundlesConf := ""
+	for( string b : bundles) {
+		bundlesConf += " $confDir/snpEff.bundles.$b.config"
+	}
+
+	println "Building config file '$conf'"
+
+	sys cat $confDir/snpEff.core.config \
+			$confDir/snpEff.dbs.config \
+			$confDir/snpEff.test.config \
+			$confDir/snpEff.ENSEMBL_75.config \
+			$confDir/snpEff.ENSEMBL_81.config \
+			$confDir/snpEff.ENSEMBL_$ensemblRelease.config \
+			$confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config \
+			$confDir/snpEff.FLYBASE_$flybaseRelease.config \
+			$confDir/snpEff.NCBI_bacteria.config \
+			$confDir/snpEff.NCBI_viruses.config \
+			$confDir/snpEff.etc.config \
+			$bundlesConf \
+			> $conf
 }
 
 #-------------------------------------------------------------------------------
@@ -220,7 +230,7 @@ void buildDbPdb() {
 
 		if( !pdbfile.exists() ) {
 			print("PDB ($hg): Build\t\tPDB db file: '$pdbfile'\n")
-			sys $snpeff pdb -v -pdbDir $dirPdb -idMap $dirPdb/idMap_pdbId_ensemblId_refseqId.txt.gz $hg 
+			task $snpeff pdb -v -pdbDir $dirPdb -idMap $dirPdb/idMap_pdbId_ensemblId_refseqId.txt.gz $hg 
 		} else {
 			print("PDB ($hg): OK\t\tPDB db file: '$pdbfile'\n")
 		}
@@ -410,6 +420,21 @@ void uploadCore2Sf() {
 }
 
 #-------------------------------------------------------------------------------
+# Upload DbNsfp files
+#-------------------------------------------------------------------------------
+void uploadDbNsfp2Gdrive() {
+	for(string grch : GRCHs) {
+		base := "dbNSFPv$dbNsfpVer"
+		bgFile := "$dirDb/$grch/$base.txt.gz"
+		tbiFile := "$dirDb/$grch/$base.txt.gz.tbi"
+		if( "$dirGdrive/$base.txt.gz" <- bgFile ) sys scp -v $bgFile $tbiFile $dirGdrive
+	}
+
+	# Upload to goolge drive
+	sys cd $dirGdrive ; drive upload file public/snpEff/db/GRCh38/dbNSFP/ 2>&1 | tee gdrive_info.txt
+}
+
+#-------------------------------------------------------------------------------
 # Upload database files
 #-------------------------------------------------------------------------------
 void uploadDbs2Sf() {
@@ -594,6 +619,7 @@ if( test )					runTests()				# Run test cases
 if( testHgvs )				runTestsSnpEffHgvs()	# Run test cases (SnpEff HGVS)
 if( uploadCore )			uploadCore2Sf()			# Upload 'core' files
 if( uploadDbs )				uploadDbs2Sf()			# Upload all database files in 'zip' dir
+if( uploadDbNsfp )			uploadDbNsfp2Gdrive()	# Upload dbNsfp database files to google drive
 if( uploadDev )				uploadDev2Sf()			# Upload 'development' version
 if( uploadHtml )			uploadHtml2Sf()			# Upload html pages
 if( !zipGenome.isEmpty() )	zipDbs(zipGenome)		# Zip only 'zipGenome' database

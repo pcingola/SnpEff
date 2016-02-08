@@ -71,6 +71,7 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 
 	public Markers loadMarkers() {
 		Markers list = new Markers();
+		list.setName(fileName);
 		for (M t : this)
 			list.add(t);
 		close();

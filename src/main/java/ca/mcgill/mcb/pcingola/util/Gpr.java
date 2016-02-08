@@ -745,8 +745,6 @@ public class Gpr {
 
 	/**
 	 * Write an object to a file
-	 * @param fileName: File to write
-	 * @param obj: Object
 	 */
 	public static void toFile(String fileName, Object obj) {
 		toFile(fileName, obj, false);
@@ -754,8 +752,6 @@ public class Gpr {
 
 	/**
 	 * Write an object to a file
-	 * @param fileName: File to write
-	 * @param obj: Object
 	 */
 	public static void toFile(String fileName, Object obj, boolean append) {
 		BufferedWriter outFile;

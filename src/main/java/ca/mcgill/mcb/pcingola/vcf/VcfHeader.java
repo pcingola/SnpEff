@@ -31,6 +31,10 @@ public class VcfHeader {
 	Map<String, Integer> sampleName2Num;
 	boolean chromLine = false;
 
+	public static boolean isInfoOrGtLine(String line) {
+		return line.startsWith(INFO_PREFIX) || line.startsWith(FORMAT_PREFIX);
+	}
+
 	public VcfHeader() {
 		header = new StringBuffer();
 	}
@@ -42,7 +46,7 @@ public class VcfHeader {
 		parseInfoLines();
 
 		// Already added? Remove old entry
-		if (vcfInfoById.containsKey(vcfInfo.getId())) removeInfo(vcfInfo.getId());
+		if (hasHeaderInfo(vcfInfo)) removeInfo(vcfInfo.getId());
 
 		// Add line
 		addLine(vcfInfo.toString());
@@ -67,7 +71,7 @@ public class VcfHeader {
 	 */
 	public synchronized void addLine(String newHeaderLine) {
 		// Nothing to do?
-		if (newHeaderLine == null) return;
+		if (newHeaderLine == null || newHeaderLine.isEmpty()) return;
 
 		// We should insert this line before '#CHROM' line
 		if (chromLine) {
@@ -114,7 +118,12 @@ public class VcfHeader {
 		if (lastChar != '\n' && lastChar != '\r') header.append('\n');
 	}
 
-	protected String[] getLines() {
+	String[] getHeaderLines() {
+		if (header == null) return new String[0];
+		return header.toString().split("\n");
+	}
+
+	public String[] getLines() {
 		return header.toString().split("\n");
 	}
 
@@ -240,6 +249,13 @@ public class VcfHeader {
 	public synchronized VcfHeaderInfoGenotype getVcfInfoGenotype(String id) {
 		parseInfoLines();
 		return vcfInfoGenotypeById.get(id);
+	}
+
+	/**
+	 * Do we already have this header?
+	 */
+	public synchronized boolean hasHeaderInfo(VcfHeaderEntry vcfInfo) {
+		return vcfInfoById != null && vcfInfoById.containsKey(vcfInfo.getId());
 	}
 
 	/**
@@ -408,7 +424,7 @@ public class VcfHeader {
 		// Add all INFO fields from header
 		//---
 		for (String line : getLines()) {
-			if (line.startsWith(INFO_PREFIX) || line.startsWith(FORMAT_PREFIX)) {
+			if (isInfoOrGtLine(line)) {
 				VcfHeaderInfo vcfInfo = (VcfHeaderInfo) VcfHeaderEntry.factory(line);
 				if (vcfInfo instanceof VcfHeaderInfoGenotype) vcfInfoGenotypeById.put(vcfInfo.getId(), (VcfHeaderInfoGenotype) vcfInfo);
 				else vcfInfoById.put(vcfInfo.getId(), vcfInfo);
@@ -421,6 +437,7 @@ public class VcfHeader {
 		String headerLines[] = header.toString().split("\n");
 
 		// Find "#CHROM" line in header
+		sampleNames = new ArrayList<String>();
 		for (String line : headerLines) {
 			if (line.startsWith("#CHROM")) {
 				chromLine = true;
@@ -429,7 +446,6 @@ public class VcfHeader {
 				String titles[] = line.split("\t");
 
 				// Create a list of names
-				sampleNames = new ArrayList<String>();
 				for (int i = 9; i < titles.length; i++)
 					sampleNames.add(titles[i]);
 
@@ -439,7 +455,7 @@ public class VcfHeader {
 		}
 
 		// Not found
-		return null;
+		return sampleNames;
 	}
 
 	protected synchronized void parseSampleNum() {
@@ -483,7 +499,7 @@ public class VcfHeader {
 
 		// Find "#CHROM" line in header (should always be the last one)
 		for (String line : headerLines) {
-			if (line.startsWith(INFO_PREFIX) || line.startsWith(FORMAT_PREFIX)) {
+			if (isInfoOrGtLine(line)) {
 				VcfHeaderInfo vhinfo = (VcfHeaderInfo) VcfHeaderEntry.factory(line); // Parse INFO line
 				if (vhinfo.getId().equals(infoId)) continue; // Skip this line
 			}

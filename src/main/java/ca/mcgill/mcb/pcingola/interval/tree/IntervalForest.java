@@ -68,8 +68,6 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 			Itree tree = forest.get(key);
 			tree.build();
 		}
-		//		for (Itree tree : forest.values())
-		//			tree.build();
 	}
 
 	/**

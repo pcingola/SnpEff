@@ -10,6 +10,7 @@
 # Build dbNSFP database for genome 'hg'
 #-------------------------------------------------------------------------------
 void buildDbNsfp(string hg, string base, string baseChr) {
+	println "Building dbNSFP for '$hg'"
 	hg.mkdir()
 
 	bgFile := "$hg/$base.txt.gz"
@@ -25,15 +26,18 @@ void buildDbNsfp(string hg, string base, string baseChr) {
 		bgChrFile := "$hg/$baseChr\_variant.chr$chr.gz"
 		bgFiles += bgChrFile
 
+		println "\tCompressing file '$chrFile'"
 		task( bgChrFile <- chrFile ) sys bgzip -c $chrFile > $bgChrFile
 	}
 	wait
 
 	# Concatenate individual files
+	println "\tCombining files"
 	bgFilesStr := bgFiles.join(" ")
 	if( bgFile <- bgFiles ) sys cat $bgFilesStr > $bgFile
 
 	# Tabix-index the bgzip file
+	println "\tCreating tabix index"
 	if( index <- bgFile ) sys tabix -s 1 -b 2 -e 2 $bgFile
 }
 

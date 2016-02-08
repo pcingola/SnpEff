@@ -1,3 +1,4 @@
+#binNum	name	chrom	strand	txStart	txEnd	cdsStart	cdsEnd	exonCount	exonStarts	exonEnds	score	name2	cdsStartStat	cdsEndStat	exonFrames
 587	NM_001005277	chr1	+	367658	368597	367658	368597	1	367658,	368597,	0	OR4F16	cmpl	cmpl	0,
 589	NM_001005277	chr1	-	621095	622034	621095	622034	1	621095,	622034,	0	OR4F16	cmpl	cmpl	0,
 1964	NM_001005277	chr5	+	180794287	180795226	180794287	180795226	1	180794287,	180795226,	0	OR4F16	cmpl	cmpl	0,

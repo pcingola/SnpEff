@@ -31,8 +31,6 @@ public class SamEntry {
 
 	/**
 	 * Get an ID from a SAM line
-	 * @param line
-	 * @return
 	 */
 	public static String samLine2Id(String line) {
 		return GprSeq.readId(line.split("\t")[0]);
@@ -40,7 +38,6 @@ public class SamEntry {
 
 	/**
 	 * Create an entry give a line from a file
-	 * @param line
 	 */
 	public SamEntry(String line) {
 		this.line = line;
@@ -65,8 +62,6 @@ public class SamEntry {
 
 	/**
 	 * Does this entry have a tag?
-	 * @param tagName
-	 * @return
 	 */
 	public String findTag(String tagName) {
 		if (tagsByName == null) parseTags();
@@ -127,7 +122,6 @@ public class SamEntry {
 
 	/**
 	 * Some aligners just use '255' in the mapping quality field (bowtie)
-	 * @return
 	 */
 	public boolean hasMapq() {
 		return mapq != 255;
@@ -156,7 +150,6 @@ public class SamEntry {
 
 	/**
 	 * Is this entry mapped to the genome?
-	 * @return
 	 */
 	public boolean isMapped() {
 		return !isUnmapped();
@@ -171,7 +164,6 @@ public class SamEntry {
 
 	/**
 	 * Is this read mapped to multiple genomic locations?
-	 * @return
 	 */
 	public boolean isMultipleHits() {
 		// These tags are produced by BWA

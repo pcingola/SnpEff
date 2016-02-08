@@ -179,7 +179,7 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 	}
 
 	/**
-	 * Read and parse GFF file
+	 * Read and parse RefSeq file
 	 */
 	protected void readRefSeqFile() {
 		try {
@@ -190,76 +190,77 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 			for (lineNum = 1; reader.ready(); lineNum++) {
 				line = reader.readLine();
 
-				if ((lineNum > 1) && !line.startsWith("#")) {
-					String fields[] = line.split("\t");
+				// Skip headers
+				if ((lineNum == 1) || line.startsWith("#")) continue;
 
-					if (fields.length >= 16) {
-						// Parse fields
+				String fields[] = line.split("\t");
 
-						// String bin= fields[0]; // Not used
-						String id = fields[1];
-						String chromoName = fields[2];
-						boolean strandMinus = fields[3].equals("-");
+				if (fields.length >= 16) {
+					// Parse fields
 
-						int txstart = parsePosition(fields[4]);
-						int txend = parsePosition(fields[5]) - 1; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
+					// String bin= fields[0]; // Not used
+					String id = fields[1];
+					String chromoName = fields[2];
+					boolean strandMinus = fields[3].equals("-");
 
-						int cdsStart = parsePosition(fields[6]);
-						int cdsEnd = parsePosition(fields[7]) - 1; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
+					int txstart = parsePosition(fields[4]);
+					int txend = parsePosition(fields[5]) - 1; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
 
-						int exonCount = Gpr.parseIntSafe(fields[8]);
-						String exonStarts = fields[9];
-						String exonEnds = fields[10]; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
+					int cdsStart = parsePosition(fields[6]);
+					int cdsEnd = parsePosition(fields[7]) - 1; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
 
-						// String score= fields[11]; // Not used
-						String geneName = fields[12];
-						String cdsStartStat = fields[13];
-						String cdsEndStat = fields[14];
-						String exonFrames = fields[15];
+					int exonCount = Gpr.parseIntSafe(fields[8]);
+					String exonStarts = fields[9];
+					String exonEnds = fields[10]; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
 
-						//---
-						// Create
-						//----
-						Chromosome chromo = getOrCreateChromosome(chromoName);
+					// String score= fields[11]; // Not used
+					String geneName = fields[12];
+					String cdsStartStat = fields[13];
+					String cdsEndStat = fields[14];
+					String exonFrames = fields[15];
 
-						// Create IDs
-						String trId = uniqueTrId(id);
+					//---
+					// Create
+					//----
+					Chromosome chromo = getOrCreateChromosome(chromoName);
 
-						// Get or create gene
-						Gene gene = findOrCreateGene(geneName, trId, chromo, txstart, txend, strandMinus);
+					// Create IDs
+					String trId = uniqueTrId(id);
 
-						// Create transcript
-						Transcript tr = new Transcript(gene, txstart, txend, strandMinus, trId);
-						boolean markAsCoding = isProteinCoding(trId) && cdsStartStat.equals(CDS_STAT_COMPLETE) && cdsEndStat.equals(CDS_STAT_COMPLETE); // If CDS start or end are not 'complete', don't mark as protein coding
-						tr.setProteinCoding(markAsCoding);
-						add(tr);
+					// Get or create gene
+					Gene gene = findOrCreateGene(geneName, trId, chromo, txstart, txend, strandMinus);
 
-						// Add Exons and CDS
-						String exStartStr[] = exonStarts.split(",");
-						String exEndStr[] = exonEnds.split(",");
-						String exFrameStr[] = exonFrames.split(",");
-						for (int i = 0; i < exonCount; i++) {
-							// Exons
-							int exStart = parsePosition(exStartStr[i]);
-							int exEnd = parsePosition(exEndStr[i]) - 1; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
-							int exFrame = Gpr.parseIntSafe(exFrameStr[i]);
-							String exId = trId + ".ex." + (i + 1);
-							Exon ex = new Exon(tr, exStart, exEnd, strandMinus, exId, i);
+					// Create transcript
+					Transcript tr = new Transcript(gene, txstart, txend, strandMinus, trId);
+					boolean markAsCoding = isProteinCoding(trId) && cdsStartStat.equals(CDS_STAT_COMPLETE) && cdsEndStat.equals(CDS_STAT_COMPLETE); // If CDS start or end are not 'complete', don't mark as protein coding
+					tr.setProteinCoding(markAsCoding);
+					add(tr);
 
-							exFrame = frameType.convertFrame(exFrame);
-							ex.setFrame(exFrame);
-							add(ex);
+					// Add Exons and CDS
+					String exStartStr[] = exonStarts.split(",");
+					String exEndStr[] = exonEnds.split(",");
+					String exFrameStr[] = exonFrames.split(",");
+					for (int i = 0; i < exonCount; i++) {
+						// Exons
+						int exStart = parsePosition(exStartStr[i]);
+						int exEnd = parsePosition(exEndStr[i]) - 1; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
+						int exFrame = Gpr.parseIntSafe(exFrameStr[i]);
+						String exId = trId + ".ex." + (i + 1);
+						Exon ex = new Exon(tr, exStart, exEnd, strandMinus, exId, i);
 
-							// CDS (ony if intersects)
-							if ((exStart <= cdsEnd) && (exEnd >= cdsStart)) {
-								Cds cds = new Cds(tr, Math.max(cdsStart, exStart), Math.min(cdsEnd, exEnd), strandMinus, exId);
-								add(cds);
-							}
+						exFrame = frameType.convertFrame(exFrame);
+						ex.setFrame(exFrame);
+						add(ex);
+
+						// CDS (ony if intersects)
+						if ((exStart <= cdsEnd) && (exEnd >= cdsStart)) {
+							Cds cds = new Cds(tr, Math.max(cdsStart, exStart), Math.min(cdsEnd, exEnd), strandMinus, exId);
+							add(cds);
 						}
-
-						count++;
-						if (verbose) Gpr.showMark(count, MARK, "\t\t");
 					}
+
+					count++;
+					if (verbose) Gpr.showMark(count, MARK, "\t\t");
 				}
 			}
 

@@ -6,79 +6,34 @@
 0) Install required libraries
 
 	# ANTRL
-	curl -O http://www.antlr.org/download/antlr-4.5.1-complete.jar
+	wget http://www.antlr.org/download/antlr-4.5.1-complete.jar
 	mvn install:install-file -Dfile=antlr-4.5.1-complete.jar -DgroupId=org.antlr -DartifactId=antlr -Dversion=4.5.1 -Dpackaging=jar
 
 	# BioJava
+	wget http://biojava.org/download/maven/org/biojava/biojava3-core/3.0.7/biojava3-core-3.0.7.jar
 	mvn install:install-file -Dfile=biojava3-core-3.0.7.jar      -DgroupId=org.biojava -DartifactId=biojava3-core      -Dversion=3.0.7 -Dpackaging=jar
+	
+	wget http://biojava.org/download/maven/org/biojava/biojava3-structure/3.0.7/biojava3-structure-3.0.7.jar
 	mvn install:install-file -Dfile=biojava3-structure-3.0.7.jar -DgroupId=org.biojava -DartifactId=biojava3-structure -Dversion=3.0.7 -Dpackaging=jar
 
-1) Run JUnit tests (TestSuiteUnity) and make sure all of them pass
-
-2) Run integration tests (TestSuiteIntegration)
-
-3) Change version numbers:
-
+1) Change version numbers:
 	- Update SnpEff pom.xml 
 	- Update SnpSift pom.xml
-	- Update scripts_build/config.sh 
-	- Update scripts_build/make.bds
 
-4) Build JAR files, download databases, build databases, etc.
-	
-	a) Build JAR files
-		./scripts_build/make.sh 
-	
-	b) Nextprot:
-	
-		 - Check nextProt database: Any new release? 
-				ftp://ftp.nextprot.org/pub/current_release/xml/
-				
-		 - Build nextProt database (WARNING: It takes a lot of memory!): 
-		 
-		 	java -Xmx50G -jar snpEff.jar buildNextProt -v GRCh37.71 db/nextProt 2>&1 | tee buildNextProt.out
-		 	
-	c) Motif (Jasper)
-	
-		- Download latest Jaspar database
-		
-			./scripts_build/download_Pwms_Jaspar.sh
-				
-		- Copy to latest GRCh and GRCm (or any that has a mofit file "ls data/*/motif*)
-		
-			cp db/jaspar/pwms.bin data/GRCh37.75/
-			cp db/jaspar/pwms.bin data/GRCm38.78/
-		
-	d) Check if there is a newer dbNSFP
-	
-		https://sites.google.com/site/jpopgen/dbNSFP
+2) Build JAR files, download databases, build databases, etc.
+		./make.bds 
 
-	e) Download ENSEMBL genomes
+3) Run JUnit tests and integration tests
+	./make.bds -test
 
-		./scripts_build/download_ensembl.sh
-		./scripts_build/download_ensembl_bfmpp.sh
-
-	f) Download NCBI genomes
-
-		./scripts_build/download_ncbi.sh
-		
-	g) Download NCBI Human genomes
-
-		./scripts_build/download_hg19.sh
-		./scripts_build/download_hg19kg.sh
-
-		./scripts_build/download_hg38.sh
-		./scripts_build/download_hg38kg.sh
-
+4) Download databases: ENSEMBL, NCBI, dbSnp, ClinVar, dbNSFP, PDB, Jaspar, etc.
+		./make.bds -download
+		 		
+5) Build databases
+		./make.bds -db
 			
-5) Upload files to sourceForge
+6) Upload files to sourceForge
 
-	./scripts_build/uploadSourceForge.sh
-
-6) Update Galaxy's snpEff.xml
-		# Create galaxy genomes list 
-		scripts_build/galaxy.sh		 
-
-7) Upload to Galaxy ToolShed: http://toolshed.g2.bx.psu.edu/
-		Reference: http://wiki.g2.bx.psu.edu/Tool%20Shed
-
+	./make.bds -uploadCore		# Upload core files
+	./make.bds -uploadDbs		# Upload databases files
+	./make.bds -uploadHtml		# Upload web pages and manual	

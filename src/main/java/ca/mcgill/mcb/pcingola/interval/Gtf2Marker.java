@@ -1,5 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +35,9 @@ public class Gtf2Marker extends GffMarker {
 	 */
 	@Override
 	protected void parseAttributes(String attrStr) {
+		keyValues = new HashMap<>();
+		keys = new HashSet<String>();
+
 		if (attrStr.length() > 0) {
 			Matcher matcher = ATTRIBUTE_PATTERN.matcher(attrStr);
 			while (matcher.find()) {
