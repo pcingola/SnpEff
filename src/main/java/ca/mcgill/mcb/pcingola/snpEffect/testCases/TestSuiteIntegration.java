@@ -6,6 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesAnn;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegratioAnnInteract;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegratioBuildPdb;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationApply;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationCancer;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.integration.TestCasesIntegrationCircularGenome;
@@ -64,6 +65,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntegrationMark
 @SuiteClasses({ TestCasesAnn.class, //
 		TestCasesIntegratioAnnInteract.class, //
 		TestCasesIntegrationApply.class, //
+		TestCasesIntegratioBuildPdb.class, //
 		TestCasesIntegrationCancer.class, //
 		TestCasesIntegrationCircularGenome.class, //
 		TestCasesIntegrationCodingTag.class, //

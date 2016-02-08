@@ -3,7 +3,9 @@ package ca.mcgill.mcb.pcingola.snpEffect.testCases.unity;
 import org.junit.Test;
 
 import ca.mcgill.mcb.pcingola.fileIterator.VcfFileIterator;
+import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.util.Gpr;
+import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
 
@@ -13,8 +15,28 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEntry;
  */
 public class TestCasesAnnParse {
 
+	boolean verbose = false;
+
 	public TestCasesAnnParse() {
 		super();
+	}
+
+	/**
+	 * Make sure all effect_tpyes have appropriate impacts, regions, etc.
+	 */
+	@Test
+	public void test_EffectType() {
+		for (EffectType eff : EffectType.values()) {
+			if (verbose) System.out.println("\t" + eff);
+
+			// None of these should throw an exception
+			eff.effectImpact();
+			eff.getGeneRegion();
+
+			for (EffFormatVersion formatVersion : EffFormatVersion.values()) {
+				eff.toSequenceOntology(formatVersion, null);
+			}
+		}
 	}
 
 	@Test

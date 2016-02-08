@@ -136,8 +136,10 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+
+		sb.append("Effects; " + size() + "\n");
 		for (VariantEffect eff : this)
-			sb.append(eff + "\n");
+			sb.append(Gpr.prependEachLine("\t", eff.toStr()) + "\n");
 		return sb.toString();
 	}
 }

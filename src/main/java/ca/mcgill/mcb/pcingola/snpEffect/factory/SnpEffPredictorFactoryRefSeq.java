@@ -179,7 +179,7 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 	}
 
 	/**
-	 * Read and parse GFF file
+	 * Read and parse RefSeq file
 	 */
 	protected void readRefSeqFile() {
 		try {

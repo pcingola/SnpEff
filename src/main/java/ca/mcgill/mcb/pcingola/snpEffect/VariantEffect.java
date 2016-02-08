@@ -25,8 +25,6 @@ import ca.mcgill.mcb.pcingola.vcf.VcfEffect;
 /**
  * Effect of a variant.
  *
- * TODO: Remove all code related to formatting (e.g. VCF output formatting should be done elsewhere).
- *
  * @author pcingola
  */
 public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
@@ -99,11 +97,11 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		effectImpacts = new ArrayList<EffectImpact>();
 	}
 
-	public VariantEffect(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, int cDnaPos) {
+	public VariantEffect(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String codonsOld, String codonsNew, int codonNum, int codonIndex, int cDnaPos) {
 		this.variant = variant;
 		effectTypes = new ArrayList<EffectType>();
 		effectImpacts = new ArrayList<EffectImpact>();
-		set(marker, effectType, effectImpact, message);
+		set(marker, effectType, effectImpact, "");
 		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 		this.cDnaPos = cDnaPos;
 	}
@@ -292,23 +290,24 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	}
 
 	/**
-	 * Net AA change (only for InDels)
+	 * Net AA change (InDels)
 	 */
 	public String getAaNetChange() {
-		String aaLong = "", aaShort = "";
+		String aaShort = getAaRef().toUpperCase();
+		String aaLong = getAaAlt().toUpperCase();
 
-		if (variant.isIns()) {
-			aaShort = getAaRef().toUpperCase();
-			aaLong = getAaAlt().toUpperCase();
-		} else if (variant.isDel()) {
-			aaLong = getAaRef().toUpperCase();
-			aaShort = getAaAlt().toUpperCase();
+		if (aaLong.length() < aaShort.length()) {
+			String tmp = aaShort;
+			aaShort = aaLong;
+			aaLong = tmp;
 		}
 
 		if (aaLong.startsWith(aaShort)) return aaLong.substring(aaShort.length());
 		if (aaLong.endsWith(aaLong)) return aaLong.substring(0, aaLong.length() - aaShort.length());
+		if (aaShort.isEmpty()) return aaLong;
 
-		return aaLong;
+		// Assumptions broken (may be this is not an InDel).
+		return null;
 	}
 
 	public String getAaRef() {
@@ -505,6 +504,10 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return eff.toString();
 	}
 
+	public List<Gene> getGenes() {
+		return null;
+	}
+
 	/**
 	 * Get genotype string
 	 */
@@ -631,6 +634,10 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return hasEffectType(EffectType.MOTIF);
 	}
 
+	public boolean isMultipleGenes() {
+		return false;
+	}
+
 	public boolean isNextProt() {
 		return hasEffectType(EffectType.NEXT_PROT);
 	}
@@ -749,6 +756,23 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 			Exon exon = getExon();
 			if (exon != null) addErrorWarningInfo(exon.sanityCheck(variant));
 		}
+	}
+
+	public String toStr() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Variant             : " + variant.toStr());
+		sb.append("\n\tEffectTypes     : " + effectTypes);
+		sb.append("\n\tEffectImpacts   : " + effectImpacts);
+		if (marker != null) sb.append("\n\tMarker          : " + marker.toStr());
+		if (!codonsRef.isEmpty() || !codonsAlt.isEmpty()) sb.append("\n\tCodons Ref/Alt  : " + codonsRef + " / " + codonsAlt);
+		if (!aaRef.isEmpty() || !aaAlt.isEmpty()) sb.append("\n\tAA Ref/Alt      : " + aaRef + " / " + aaAlt);
+		if (cDnaPos >= 0) sb.append("\n\tcDnaPos         : " + cDnaPos);
+		if (codonNum >= 0) sb.append("\n\tcodon num/index : " + codonNum + " / " + codonIndex);
+		if (!error.isEmpty()) sb.append("\n\tError           : " + error);
+		if (!warning.isEmpty()) sb.append("\n\tWarning         : " + warning);
+		if (!message.isEmpty()) sb.append("\n\tMessage         : " + message);
+
+		return sb.toString();
 	}
 
 	@Override

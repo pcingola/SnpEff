@@ -493,7 +493,6 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 			// end of the transcript? Note that VCF request variants to be aligned towards
 			// the 'leftmost' coordinate, so this re-alignment is only required for variants
 			// within transcripts on the positive strand.
-			//---
 			if (!variant.isSnp() && Config.get().isHgvsShift() && isStrandPlus()) {
 				// Get sequence information. Might have to load sequences from database
 				variant = variant.realignLeft();
@@ -507,7 +506,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 		// Calculate effects
 		//---
 
-		// Find effect for each transcript
+		// Calculate effect for each transcript
 		boolean hitTranscript = false;
 		for (Transcript tr : this) {
 			// Apply sequence change to create new 'reference'?

@@ -36,7 +36,7 @@ public class CodonChangeMnp extends CodonChange {
 		codonOldNew();
 
 		// Create change effect
-		effect(transcript, EffectType.CODON_CHANGE, "", codonsRef, codonsAlt, codonStartNum, codonStartIndex, true); // Use a generic low priority variant, this allows 'setCodons' to override it
+		effect(transcript, EffectType.CODON_CHANGE, true); // Use a generic low priority variant, this allows 'setCodons' to override it
 
 		return;
 	}
@@ -121,7 +121,7 @@ public class CodonChangeMnp extends CodonChange {
 	}
 
 	@Override
-	public String codonsAlt() {
+	protected String codonsAlt() {
 		return codonsAlt;
 	}
 
@@ -129,7 +129,7 @@ public class CodonChangeMnp extends CodonChange {
 	 * Calculate old codons
 	 */
 	@Override
-	public String codonsRef() {
+	protected String codonsRef() {
 		return codonsRef;
 	}
 

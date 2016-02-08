@@ -83,6 +83,16 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 		// Now apply to all sub-markers
 		newMarker.reset();
 		for (T m : this) {
+			// Whole marker duplication
+			if (variant.isDup() && variant.includes(m)) {
+				// We need to add another copy of the marker: One without any modification and one with coordinates updated
+				T mcopy = (T) m.cloneShallow();
+				mcopy.setId(mcopy.getId() + ".dup"); // Change ID
+				mcopy.setParent(newMarker);
+				newMarker.add(mcopy);
+			}
+
+			// Apply variant to marker
 			T mcopy = (T) m.apply(variant);
 
 			// Do not add if interval is completely removed

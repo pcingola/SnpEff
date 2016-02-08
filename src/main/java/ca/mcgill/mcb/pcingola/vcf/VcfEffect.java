@@ -1,5 +1,7 @@
 package ca.mcgill.mcb.pcingola.vcf;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -67,8 +69,6 @@ public class VcfEffect {
 			"GT", "GENOTYPE_NUMBER", "GENOTYPE", //
 			"ERRORS", "WARNINGS", "INFOS", //
 	};
-
-	//	private static HashMap<EffFormatVersion, HashMap<String, Integer>> fieldName2Num = new HashMap<EffFormatVersion, HashMap<String, Integer>>();
 
 	EffFormatVersion formatVersion;
 	String vcfFieldString; // Original 'raw' string from VCF Info field
@@ -927,15 +927,15 @@ public class VcfEffect {
 	 */
 	void set(VariantEffect variantEffect) {
 		// Allele
-		Variant var = variantEffect.getVariant();
-		Gene g = variantEffect.getGene();
+		Variant variant = variantEffect.getVariant();
+		Gene gene = variantEffect.getGene();
 		Marker marker = variantEffect.getMarker();
 		Transcript tr = variantEffect.getTranscript();
 
 		// Genotype
-		if (var.getGenotype() != null) genotype = var.getGenotype();
-		else if (!var.isVariant()) genotype = var.getReference();
-		else genotype = var.getAlt();
+		if (variant.getGenotype() != null) genotype = variant.getGenotype();
+		else if (!variant.isVariant()) genotype = variant.getReference();
+		else genotype = variant.getAlt();
 		// else if (var.isNonRef()) genotype = var.getGenotype();
 
 		// Effect
@@ -955,9 +955,13 @@ public class VcfEffect {
 		funClass = variantEffect.getFunctionalClass();
 
 		// Gene
-		if (g != null) {
-			geneName = g.getGeneName();
-			geneId = g.getId();
+		if (gene != null) {
+			if (variantEffect.isMultipleGenes()) {
+				setGeneNameIdMultiple(variantEffect);
+			} else {
+				geneName = gene.getGeneName();
+				geneId = gene.getId();
+			}
 		} else if (marker instanceof Intergenic) {
 			geneName = ((Intergenic) marker).getName();
 			geneId = marker.getId();
@@ -1138,6 +1142,36 @@ public class VcfEffect {
 
 	public void setGeneName(String geneName) {
 		this.geneName = geneName;
+	}
+
+	/**
+	 * Structural variant having multiple genes: Set all geneNames and geneIds
+	 */
+	void setGeneNameIdMultiple(VariantEffect variantEffect) {
+		// Get all genes
+		List<Gene> genes = variantEffect.getGenes();
+
+		// Sort by geneName
+		Collections.sort(genes, new Comparator<Gene>() {
+			@Override
+			public int compare(Gene g1, Gene g2) {
+				return g1.getGeneName().compareTo(g2.getGeneName());
+			}
+		});
+
+		// Create gene name and geneId strings
+		StringBuilder geneNames = new StringBuilder();
+		StringBuilder geneIds = new StringBuilder();
+
+		String sep = "";
+		for (Gene g : genes) {
+			geneNames.append(sep + g.getGeneName());
+			geneIds.append(sep + g.getId());
+			if (sep.isEmpty()) sep = formatVersion.separator();
+		}
+
+		geneName = geneNames.toString();
+		geneId = geneIds.toString();
 	}
 
 	public void setGenotype(String genotype) {

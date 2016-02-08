@@ -23,7 +23,6 @@ public class SnpEffCmdShow extends SnpEff {
 
 	/**
 	 * Parse command line arguments
-	 * @param args
 	 */
 	@Override
 	public void parseArgs(String[] args) {
@@ -115,13 +114,12 @@ public class SnpEffCmdShow extends SnpEff {
 
 	/**
 	 * Show 'usage;' message and exit with an error code '-1'
-	 * @param message
 	 */
 	@Override
 	public void usage(String message) {
 		if (message != null) System.err.println("Error: " + message + "\n");
 		System.err.println("snpEff version " + VERSION);
-		System.err.println("Usage: snpEff showTr genome_version gene_1 ... gene_N ... trId_1 ... trId_N");
+		System.err.println("Usage: snpEff show genome_version gene_1 ... gene_N ... trId_1 ... trId_N");
 		System.exit(-1);
 	}
 }

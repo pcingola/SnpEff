@@ -1,6 +1,7 @@
 package ca.mcgill.mcb.pcingola.interval;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import ca.mcgill.mcb.pcingola.align.VariantRealign;
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
@@ -31,6 +32,9 @@ public class Variant extends Marker {
 		, INS // Insertion (i.e. some bases added)
 		, DEL // Deletion (some bases removed)
 		, MIXED // A mixture of insertion, deletions, SNPs and or MNPs (a.k.a. substitution)
+		, INV // Inversion (structural variant)
+		, DUP // Duplication (structural variant)
+		, BND // Break-ends (rearrangement)
 		, INTERVAL
 		// Just analyze interval hits. Not a variant (e.g. BED input format)
 	}
@@ -53,7 +57,7 @@ public class Variant extends Marker {
 	/**
 	 * Create variants from ALT (which can be multiple values)
 	 */
-	public static LinkedList<Variant> factory(Chromosome chromo, int start, String ref, String altStr, String id, boolean expand) {
+	public static List<Variant> factory(Chromosome chromo, int start, String ref, String altStr, String id, boolean expand) {
 		LinkedList<Variant> list = new LinkedList<Variant>();
 
 		// No alt? It's an interval
@@ -66,13 +70,15 @@ public class Variant extends Marker {
 		// Split alts
 		String alts[];
 		if (altStr.indexOf(',') >= 0) alts = altStr.split(",");
-		else alts = altStr.split("/");
+		else {
+			alts = altStr.split("/");
 
-		// Special case, two ALTs are the same
-		if (alts.length == 2 && alts[0].equals(alts[1])) {
-			Variant var = new Variant(chromo, start, ref, alts[0], id);
-			list.add(var);
-			return list;
+			// Special case, two ALTs are the same
+			if (alts.length == 2 && alts[0].equals(alts[1])) {
+				Variant var = new Variant(chromo, start, ref, alts[0], id);
+				list.add(var);
+				return list;
+			}
 		}
 
 		// Add each alt
@@ -213,7 +219,12 @@ public class Variant extends Marker {
 	}
 
 	void init(Marker parent, int position, String referenceStr, String altStr, VariantType variantType, String id) {
-		if (altStr == null) altStr = referenceStr; // Not a variant (this is an interval). Set ref = alt
+		if (altStr == null) {
+			// Not a variant (this is an interval). Set ref = alt
+			altStr = referenceStr;
+			variantType = VariantType.INTERVAL;
+		}
+
 		ref = referenceStr.toUpperCase();
 		alt = altStr.toUpperCase();
 
@@ -270,24 +281,12 @@ public class Variant extends Marker {
 		return (variantType == VariantType.DEL);
 	}
 
-	public boolean isElongation() {
-		return lengthChange() > 0;
+	public boolean isDup() {
+		return (variantType == VariantType.DUP);
 	}
 
-	/**
-	 * Is this a huge deletion
-	 */
-	public boolean isHugeDel() {
-		if (!isDel()) return false;
-
-		// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
-		Chromosome chr = getChromosome();
-		if (chr != null) {
-			double ratio = (chr.size() > 0 ? size() / ((double) chr.size()) : 0);
-			return (size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD);
-		}
-
-		return size() > HUGE_DELETION_SIZE_THRESHOLD;
+	public boolean isElongation() {
+		return lengthChange() > 0;
 	}
 
 	public boolean isImprecise() {
@@ -299,15 +298,19 @@ public class Variant extends Marker {
 	}
 
 	public boolean isIns() {
-		return (variantType == VariantType.INS);
+		return variantType == VariantType.INS;
 	}
 
 	public boolean isInterval() {
-		return (variantType == VariantType.INTERVAL);
+		return variantType == VariantType.INTERVAL;
+	}
+
+	public boolean isInv() {
+		return variantType == VariantType.INV;
 	}
 
 	public boolean isMixed() {
-		return (variantType == VariantType.MIXED);
+		return variantType == VariantType.MIXED;
 	}
 
 	public boolean isMnp() {
@@ -327,6 +330,26 @@ public class Variant extends Marker {
 		return variantType == VariantType.SNP;
 	}
 
+	public boolean isStructural() {
+		return isDel() || isInv() || isDup();
+	}
+
+	/**
+	 * Is this a huge structural variant?
+	 */
+	public boolean isStructuralHuge() {
+		if (!isStructural()) return false;
+
+		// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
+		Chromosome chr = getChromosome();
+		if (chr != null) {
+			double ratio = (chr.size() > 0 ? size() / ((double) chr.size()) : 0);
+			return size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD;
+		}
+
+		return size() > HUGE_DELETION_SIZE_THRESHOLD;
+	}
+
 	public boolean isTruncation() {
 		return lengthChange() < 0;
 	}
@@ -335,7 +358,7 @@ public class Variant extends Marker {
 	 * Is this a change or is ALT actually the same as the reference
 	 */
 	public boolean isVariant() {
-		return !ref.equals(alt);
+		return variantType != VariantType.INTERVAL;
 	}
 
 	/**
@@ -346,7 +369,10 @@ public class Variant extends Marker {
 
 		// This is a length changing Variant (i.e. Insertions, deletion, or mixed change)
 		// Calculate the number of bases of change in length
-		return alt.length() - ref.length();
+		if (!ref.isEmpty() || !alt.isEmpty()) return alt.length() - ref.length();
+
+		// Default to traditional apporach for imprecise and structural variants
+		return end - start;
 	}
 
 	/**
@@ -407,7 +433,9 @@ public class Variant extends Marker {
 
 	@Override
 	public String toString() {
-		if (variantType == VariantType.INTERVAL) return "chr" + getChromosomeName() + ":" + start + "-" + end;
+		if ((ref == null || ref.isEmpty()) //
+				&& (alt == null || alt.isEmpty()) //
+		) return "chr" + getChromosomeName() + ":" + start + "-" + end + "[" + variantType + "]";
 
 		return "chr" + getChromosomeName() //
 				+ ":" + start //

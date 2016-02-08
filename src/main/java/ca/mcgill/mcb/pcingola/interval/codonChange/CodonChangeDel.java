@@ -25,8 +25,11 @@ public class CodonChangeDel extends CodonChange {
 	public void codonChange() {
 		if (variant.includes(transcript)) {
 			// Large deletion removing the whole transcript?
-			effect(transcript, EffectType.TRANSCRIPT_DELETED, "", "", "", -1, -1, false);
+			effectNoCodon(transcript, EffectType.TRANSCRIPT_DELETED);
 		} else {
+			// Exon fully deleted
+			if (exonDeleted()) return;
+
 			// Normal cases
 			super.codonChange();
 		}
@@ -34,10 +37,9 @@ public class CodonChangeDel extends CodonChange {
 
 	/**
 	 * Analyze deletions in this transcript.
-	 * Add changeEffect to 'changeEffect'
 	 */
 	@Override
-	protected boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChange(Exon exon) {
 		// Is there any net effect?
 		if (netCdsChange.isEmpty()) return false;
 
@@ -103,7 +105,7 @@ public class CodonChangeDel extends CodonChange {
 			}
 		}
 
-		effect(exon, effType, "", codonsRef, codonsAlt, codonStartNum, codonStartIndex, false);
+		effect(exon, effType, false);
 
 		return true;
 	}
@@ -112,7 +114,7 @@ public class CodonChangeDel extends CodonChange {
 	 * Get new (modified) codons
 	 */
 	@Override
-	public String codonsAlt() {
+	protected String codonsAlt() {
 		if (netCdsChange.isEmpty()) return "";
 
 		int after = netCdsChange.length() + codonStartIndex;
@@ -128,7 +130,7 @@ public class CodonChangeDel extends CodonChange {
 	 * Get original codons in CDS
 	 */
 	@Override
-	public String codonsRef() {
+	protected String codonsRef() {
 		if (netCdsChange.isEmpty()) return "";
 
 		int min = variant.getStart();
@@ -155,6 +157,19 @@ public class CodonChangeDel extends CodonChange {
 		else codons = transcript.cds().substring(oldCodonCdsStart, oldCodonCdsEnd + 1);
 
 		return codons;
+	}
+
+	/**
+	 * Whole exon/s deleted?
+	 */
+	boolean exonDeleted() {
+		boolean found = false;
+		for (Exon ex : transcript)
+			if (variant.includes(ex)) {
+				effectNoCodon(ex, EffectType.EXON_DELETED);
+				found = true;
+			}
+		return found;
 	}
 
 }

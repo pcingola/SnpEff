@@ -25,6 +25,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaNSequence;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaOverlap;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaSequence;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDnaSequenceByte;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesDup;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesEffectCollapse;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesEffectCollapse2;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesFasta;
@@ -45,6 +46,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalTreeArr
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalTreeOri;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervalVariant;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIntervals;
+import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesInv;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesIubString;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesJaspar;
 import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesMarkerUtils;
@@ -86,6 +88,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesDnaOverlap.class, //
 		TestCasesDnaSequenceByte.class, //
 		TestCasesDnaSequence.class, //
+		TestCasesDup.class, //
 		TestCasesEffectCollapse.class, //
 		TestCasesEffectCollapse2.class, //
 		TestCasesFasta.class, //
@@ -109,6 +112,7 @@ import ca.mcgill.mcb.pcingola.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesIntervalVariant.class, //
 		TestCasesIns.class, //
 		TestCasesIntStats.class, //
+		TestCasesInv.class, //
 		TestCasesJaspar.class, //
 		TestCasesMarkerUtils.class, //
 		TestCasesMnps.class, //

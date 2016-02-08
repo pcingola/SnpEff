@@ -477,39 +477,54 @@ public class HgvsProtein extends Hgvs {
 		if (!variant.isSnp() && !variant.isMnp()) simplifyAminoAcids();
 
 		String pos = "", protChange = "";
-		if (!variant.isVariant()) {
+
+		switch (variant.getVariantType()) {
+
+		case INTERVAL:
 			// Not a variant? Nothing to do
 			return "";
-		} else if (variant.isSnp() || variant.isMnp()) {
+
+		case SNP:
+		case MNP:
 			// SNP or MNP
 			protChange = snpOrMnp();
 			pos = "";
-		} else if (isFs()) {
-			// Frame shifts
-			protChange = fs();
-			pos = posFs();
-		} else if (isIns()) {
-			// This is a 'pure' insertion
-			duplication = isDuplication(); // Is it a duplication?
+			break;
 
-			if (duplication) {
-				protChange = dup();
-				pos = posDup();
+		case INV:
+			// Inversion description not used at protein level
+			// Reference: http://www.hgvs.org/mutnomen/examplesAA.html
+			return "";
+
+		default:
+			if (isFs()) {
+				// Frame shifts
+				protChange = fs();
+				pos = posFs();
+			} else if (isIns()) {
+				// This is a 'pure' insertion
+				duplication = isDuplication(); // Is it a duplication?
+
+				if (duplication) {
+					protChange = dup();
+					pos = posDup();
+				} else {
+					protChange = ins();
+					pos = posIns();
+				}
+			} else if (isDel()) {
+				// A deletion
+				protChange = del();
+				pos = posDel();
 			} else {
-				protChange = ins();
-				pos = posIns();
+				// A mixture of insertion and deletion
+				protChange = delins();
+				pos = posDelIns();
 			}
-		} else if (isDel()) {
-			// A deletion
-			protChange = del();
-			pos = posDel();
-		} else {
-			// A mixture of insertion and deletion
-			protChange = delins();
-			pos = posDelIns();
 		}
 
 		if (protChange == null || pos == null) return null;
+
 		return prefix() + pos + protChange;
 	}
 }

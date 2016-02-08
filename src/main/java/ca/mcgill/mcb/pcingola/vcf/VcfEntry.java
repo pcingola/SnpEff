@@ -30,6 +30,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		Common, LowFrequency, Rare
 	}
 
+	public static final char WITHIN_FIELD_SEP = ',';
 	public static final String SUB_FIELD_SEP = ";";
 	public static final char WITHIN_FIELD_SEP = ',';
 
@@ -1368,12 +1369,14 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Create a variant
 	 */
 	List<Variant> variants(Chromosome chromo, int start, String reference, String alt, String id) {
-		// No change?
-		if (alt == null || alt.isEmpty() || alt.equals(reference)) return Variant.factory(chromo, start, reference, null, id, false);
+		if (alt == null || alt.isEmpty() || alt.equals(reference)) {
+			// Non-variant
+			return Variant.factory(chromo, start, reference, null, id, false);
+		}
 
 		alt = alt.toUpperCase();
 
-		// Case: Structural variant
+		// Case: Deletion
 		// 2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
 		if (alt.startsWith("<DEL")) {
 			// Create deletion string
@@ -1392,6 +1395,26 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 			// Create variant
 			return Variant.factory(chromo, startNew, ch, "", id, false);
+		}
+
+		// Case: Inversion
+		if (alt.startsWith("<INV")) {
+			int startNew = start + reference.length();
+			Variant var = new Variant(chromo, startNew, end, id);
+			var.setVariantType(VariantType.INV);
+			LinkedList<Variant> list = new LinkedList<Variant>();
+			list.add(var);
+			return list;
+		}
+
+		// Case: Duplication
+		if (alt.startsWith("<DUP")) {
+			int startNew = start + reference.length();
+			Variant var = new Variant(chromo, startNew, end, id);
+			var.setVariantType(VariantType.DUP);
+			LinkedList<Variant> list = new LinkedList<Variant>();
+			list.add(var);
+			return list;
 		}
 
 		// Case: SNP, MNP

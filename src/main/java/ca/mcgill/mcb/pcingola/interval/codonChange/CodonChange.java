@@ -9,6 +9,7 @@ import ca.mcgill.mcb.pcingola.interval.Transcript;
 import ca.mcgill.mcb.pcingola.interval.Variant;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect;
+import ca.mcgill.mcb.pcingola.snpEffect.VariantEffect.EffectImpact;
 import ca.mcgill.mcb.pcingola.snpEffect.VariantEffects;
 
 /**
@@ -48,6 +49,10 @@ public class CodonChange {
 			return new CodonChangeMnp(variant, transcript, variantEffects);
 		case MIXED:
 			return new CodonChangeMixed(variant, transcript, variantEffects);
+		case DUP:
+			return new CodonChangeDup(variant, transcript, variantEffects);
+		case INV:
+			return new CodonChangeInv(variant, transcript, variantEffects);
 		case INTERVAL:
 			return new CodonChangeInterval(variant, transcript, variantEffects);
 		default:
@@ -176,12 +181,12 @@ public class CodonChange {
 
 				// Use appropriate method to calculate codon change
 				boolean hasChanged = false; // Was there any change?
-				hasChanged = codonChangeSingle(exon);
+				hasChanged = codonChange(exon);
 
 				// Any change? => Add change to list
 				if (hasChanged && !variantEffects.hasMarker()) variantEffects.setMarker(exon); // It is affecting this exon, so we set the marker
 
-				// Can we return immediately?
+				// Can we finish after effect of first exon is added?
 				if (returnNow) return;
 			}
 
@@ -193,23 +198,23 @@ public class CodonChange {
 	}
 
 	/**
-	 * Calculate the effect of a single change type: SNP, MNP, INS, DEL
+	 * Calculate the effect on an exon
 	 */
-	protected boolean codonChangeSingle(Exon exon) {
+	protected boolean codonChange(Exon exon) {
 		throw new RuntimeException("Unimplemented method codonChangeSingle() for\n\t\tVariant type : " + variant.getType() + "\n\t\tClass        : " + getClass().getSimpleName() + "\n\t\tVariant      : " + variant);
 	}
 
 	/**
 	 * Calculate new codons
 	 */
-	public String codonsAlt() {
+	protected String codonsAlt() {
 		throw new RuntimeException("Unimplemented method for this thype of CodonChange: " + this.getClass().getSimpleName());
 	}
 
 	/**
 	 * Calculate 'reference' codons
 	 */
-	public String codonsRef() {
+	protected String codonsRef() {
 		return codonsRef(1);
 	}
 
@@ -237,13 +242,17 @@ public class CodonChange {
 		return codon;
 	}
 
+	protected VariantEffect effect(Marker marker, EffectType effectType, boolean allowReplace) {
+		return effect(marker, effectType, effectType.effectImpact(), codonsRef, codonsAlt, codonStartNum, codonStartIndex, allowReplace);
+	}
+
 	/**
 	 * Add an effect
 	 */
-	protected VariantEffect effect(Marker marker, EffectType effectType, String message, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
+	private VariantEffect effect(Marker marker, EffectType effectType, EffectImpact effectImpact, String codonsOld, String codonsNew, int codonNum, int codonIndex, boolean allowReplace) {
 		// Create and add variant affect
 		int cDnaPos = transcript.baseNumber2MRnaPos(variant.getStart());
-		VariantEffect varEff = new VariantEffect(variant, marker, effectType, effectType.effectImpact(), message, codonsOld, codonsNew, codonNum, codonIndex, cDnaPos);
+		VariantEffect varEff = new VariantEffect(variant, marker, effectType, effectImpact, codonsOld, codonsNew, codonNum, codonIndex, cDnaPos);
 		variantEffects.add(varEff);
 
 		// Are there any additional effects? Sometimes a new effect arises from setting codons (e.g. FRAME_SHIFT disrupts a STOP codon)
@@ -259,6 +268,23 @@ public class CodonChange {
 		}
 
 		return varEff;
+	}
+
+	protected VariantEffect effectNoCodon(Marker marker, EffectType effectType) {
+		return effect(marker, effectType, effectType.effectImpact(), "", "", -1, -1, false);
+	}
+
+	protected VariantEffect effectNoCodon(Marker marker, EffectType effectType, EffectImpact effectImpact) {
+		return effect(marker, effectType, effectImpact, "", "", -1, -1, false);
+	}
+
+	/**
+	 * Does the variant intersect any exons?
+	 */
+	protected boolean intersectsExons() {
+		for (Exon ex : transcript)
+			if (variant.intersects(ex)) return true;
+		return false;
 	}
 
 	/**

@@ -19,6 +19,8 @@ import org.biojava.bio.structure.AminoAcid;
 import org.biojava.bio.structure.Atom;
 import org.biojava.bio.structure.Calc;
 import org.biojava.bio.structure.Chain;
+import org.biojava.bio.structure.Compound;
+import org.biojava.bio.structure.DBRef;
 import org.biojava.bio.structure.Group;
 import org.biojava.bio.structure.Structure;
 import org.biojava.bio.structure.StructureException;
@@ -45,10 +47,13 @@ public class SnpEffCmdPdb extends SnpEff {
 
 	public static final String DEFAULT_PDB_DIR = "db/pdb";
 	public static final String DEFAULT_ID_MAP_FILE = DEFAULT_PDB_DIR + "/idMap_pdbId_ensemblId_refseqId.txt";
+	public static final String DEFAULT_INTERACT_FILE = DEFAULT_PDB_DIR + "/pdbCompoundLines.txt";
 	public static final String PDB_EXT = ".ent";
 	public static final String PDB_EXT_GZ = ".ent.gz";
 	public static final String[] PDB_EXTS = { PDB_EXT_GZ, PDB_EXT };
 	public static final String PROTEIN_INTERACTION_FILE = "interactions.bin";
+
+	public static final String UNIPROT_DATABASE = "UNP";
 
 	public static final double DEFAULT_DISTANCE_THRESHOLD = 3.0; // Maximum distance to be considered 'in contact'
 	public static final double DEFAULT_MAX_MISMATCH_RATE = 0.1;
@@ -59,6 +64,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	public static final ArrayList<DistanceResult> EMPTY_DISTANCES = new ArrayList<>();
 
 	String idMapFile = DEFAULT_ID_MAP_FILE;
+	String interactListFile = DEFAULT_ID_MAP_FILE;
 	String pdbDir = DEFAULT_PDB_DIR;
 	String pdbOrganismCommon = DEFAULT_PDB_ORGANISM_COMMON; // PDB organism "common name"
 	double pdbResolution = DEFAULT_PDB_RESOLUTION; // PDB file resolution (in Angstrom)
@@ -70,12 +76,28 @@ public class SnpEffCmdPdb extends SnpEff {
 	IdMapper idMapper;
 	IdMapper idMapperConfirmed;
 	PDBFileReader pdbreader;
-	Map<String, Transcript> trancriptById;
-	Collection<String> pdbFileNames;
+	Set<String> confirmedPdbChainsMappings; // A Set of all 'pbdId:chainId' mappings that have been confirmed with the reference genome
+	Map<String, Transcript> trancriptById; // Transcripts by id (trId without version number)
+	Collection<String> pdbFileNames; // PDB files to porcess
 	BufferedWriter outpufFile;
 	Set<String> saved;
+	List<DistanceResult> distanceResults;
 
 	public SnpEffCmdPdb() {
+	}
+
+	/**
+	 * Get AA sequence
+	 */
+	String aaSequence(Chain chain) {
+		// AA sequence
+		List<AminoAcid> aas = aminoAcids(chain);
+		StringBuilder sb = new StringBuilder();
+
+		for (AminoAcid aa1 : aas)
+			sb.append(aa1.getAminoType());
+
+		return sb.toString();
 	}
 
 	/**
@@ -86,6 +108,78 @@ public class SnpEffCmdPdb extends SnpEff {
 		for (Group group : chain.getAtomGroups())
 			if (group instanceof AminoAcid) aas.add((AminoAcid) group);
 		return aas;
+	}
+
+	/**
+	 * Get NIPROT IDs from PDB structure
+	 */
+	Map<String, String> chainUniprotIds(Structure pdbStruct) {
+		Map<String, String> chain2uniproId = new HashMap<String, String>();
+		for (DBRef dbref : pdbStruct.getDBRefs()) {
+			if (debug) Gpr.debug("PDB_DBREF\tchain:" + dbref.getChainId() + "\tdb: " + dbref.getDatabase() + "\tID: " + dbref.getDbAccession());
+			if (dbref.getDatabase().equals(UNIPROT_DATABASE)) chain2uniproId.put(dbref.getChainId(), dbref.getDbAccession());
+		}
+		return chain2uniproId;
+	}
+
+	/**
+	 * Check that protein sequences match between a PDB 'chain' and the refrence genome
+	 * Return a list of maps that are confirmed (i.e. AA sequence matches between transcript and PDB)
+	 * Note: Only part of the sequence usually matches (PDB chains shorter than the transcript)
+	 */
+	List<IdMapperEntry> checkSequencePdbGenome(Structure pdbStruct, Chain chain, String trId, List<IdMapperEntry> idmapsOri) {
+		List<IdMapperEntry> idmapsNew = new ArrayList<>();
+		String pdbId = pdbStruct.getPDBCode();
+
+		// Does chain pass filter criteria?
+		if (!filterPdbChain(chain)) return idmapsNew;
+
+		// Transcript
+		Transcript tr = trancriptById.get(trId);
+		String prot = tr.protein();
+		if (debug) System.err.println("\tTranscript ID: " + tr.getId() + "\tProtein [" + prot.length() + "]: " + prot);
+
+		// Compare sequence to each AA-Chain
+		StringBuilder sb = new StringBuilder();
+		int countMatch = 0, countMismatch = 0;
+
+		// Count differences
+		for (Group group : chain.getAtomGroups())
+			if (group instanceof AminoAcid) {
+				AminoAcid aa = (AminoAcid) group;
+				int aaPos = aa.getResidueNumber().getSeqNum() - 1;
+				if (aaPos < 0) continue; // I don't know why some PDB coordinates are negative...
+
+				char aaLetter = aa.getChemComp().getOne_letter_code().charAt(0);
+				if (prot.length() > aaPos) {
+					char trAaLetter = prot.charAt(aaPos);
+					if (aaLetter == trAaLetter) countMatch++;
+					else countMismatch++;
+				} else countMismatch++;
+				sb.append(aa.getChemComp().getOne_letter_code());
+			}
+
+		// Only use mappings that have low error rate
+		if (countMatch + countMismatch > 0) {
+			double err = countMismatch / ((double) (countMatch + countMismatch));
+			if (debug) Gpr.debug("\tChain: " + chain.getChainID() + "\terror: " + err + "\t" + sb);
+
+			if (err < maxMismatchRate) {
+				if (debug) Gpr.debug("\tMapping OK    :\t" + trId + "\terror: " + err);
+
+				int trAaLen = tr.protein().length();
+				int pdbAaLen = chain.getAtomGroups("amino").size();
+
+				for (IdMapperEntry idm : idmapsOri) {
+					if (trId.equals(idm.trId) && pdbId.equals(idm.pdbId)) {
+						idmapsNew.add(idm.cloneAndSet(chain.getChainID(), pdbAaLen, trAaLen));
+						break;
+					}
+				}
+			} else if (debug) Gpr.debug("\tMapping ERROR :\t" + trId + "\terror: " + err);
+		}
+
+		return idmapsNew;
 	}
 
 	/**
@@ -114,56 +208,9 @@ public class SnpEffCmdPdb extends SnpEff {
 		List<IdMapperEntry> idmapsOri = idMapper.getByPdbId(pdbId);
 		List<IdMapperEntry> idmapsNew = new ArrayList<>();
 
-		// Transcript
-		Transcript tr = trancriptById.get(trId);
-		String prot = tr.protein();
-		if (debug) System.err.println("\tTranscript ID: " + tr.getId() + "\tProtein [" + prot.length() + "]: " + prot);
-
-		// Compare to PDB structure
-		for (Chain chain : pdbStruct.getChains()) {
-			// Chain passes criteria?
-			if (!filterPdbChain(chain)) continue;
-
-			// Compare sequence to each AA-Chain
-			StringBuilder sb = new StringBuilder();
-			int countMatch = 0, countMismatch = 0;
-
-			// Count differences
-			for (Group group : chain.getAtomGroups())
-				if (group instanceof AminoAcid) {
-					AminoAcid aa = (AminoAcid) group;
-					int aaPos = aa.getResidueNumber().getSeqNum() - 1;
-					if (aaPos < 0) continue; // I don't know why some PDB coordinates are negative...
-
-					char aaLetter = aa.getChemComp().getOne_letter_code().charAt(0);
-					if (prot.length() > aaPos) {
-						char trAaLetter = prot.charAt(aaPos);
-						if (aaLetter == trAaLetter) countMatch++;
-						else countMismatch++;
-					} else countMismatch++;
-					sb.append(aa.getChemComp().getOne_letter_code());
-				}
-
-			// Only use mappings that have low error rate
-			if (countMatch + countMismatch > 0) {
-				double err = countMismatch / ((double) (countMatch + countMismatch));
-				if (debug) Gpr.debug("\tChain: " + chain.getChainID() + "\terror: " + err + "\t" + sb);
-
-				if (err < maxMismatchRate) {
-					if (debug) Gpr.debug("\tMapping OK    :\t" + trId + "\terror: " + err);
-
-					int trAaLen = tr.protein().length();
-					int pdbAaLen = chain.getAtomGroups("amino").size();
-
-					for (IdMapperEntry idm : idmapsOri) {
-						if (trId.equals(idm.trId) && pdbId.equals(idm.pdbId)) {
-							idmapsNew.add(idm.cloneAndSet(chain.getChainID(), pdbAaLen, trAaLen));
-							break;
-						}
-					}
-				} else if (debug) Gpr.debug("\tMapping ERROR :\t" + trId + "\terror: " + err);
-			}
-		}
+		// Compare each chain in the PDB structure
+		for (Chain chain : pdbStruct.getChains())
+			idmapsNew.addAll(checkSequencePdbGenome(pdbStruct, chain, trId, idmapsOri));
 
 		// Show all confirmed mappings
 		if (debug) {
@@ -184,6 +231,9 @@ public class SnpEffCmdPdb extends SnpEff {
 		}
 	}
 
+	/**
+	 * Map transcript ID to transcript
+	 */
 	void createTranscriptMap() {
 		// Create transcript map
 		trancriptById = new HashMap<>();
@@ -193,54 +243,6 @@ public class SnpEffCmdPdb extends SnpEff {
 				trancriptById.put(trId, tr);
 			}
 		}
-	}
-
-	/**
-	 * Distances within two amino acids within the same chain
-	 */
-	List<DistanceResult> distance(Chain chain, Transcript tr1, Transcript tr2) {
-		ArrayList<DistanceResult> results = new ArrayList<>();
-		List<AminoAcid> aas = aminoAcids(chain);
-
-		for (int i = 0; i < aas.size(); i++) {
-			int minj = i + aaMinSeparation;
-
-			for (int j = minj; j < aas.size(); j++) {
-				AminoAcid aa1 = aas.get(i);
-				AminoAcid aa2 = aas.get(j);
-				double d = distanceMin(aa1, aa2);
-
-				if ((!Double.isInfinite(distanceThreshold) && d <= distanceThreshold) // Amino acids in close distance
-						|| (!Double.isInfinite(distanceThresholdNon) && (d > distanceThresholdNon)) // Amino acids far apart
-				) {
-					DistanceResult dres = new DistanceResult(aa1, aa2, tr1, tr2, d);
-					if (dres.hasValidCoords()) {
-						results.add(dres);
-						countMapOk++;
-						if (debug) Gpr.debug(((d <= distanceThreshold) ? "AA_IN_CONTACT\t" : "AA_NOT_IN_CONTACT\t") + dres);
-					} else {
-						countMapError++;
-					}
-				}
-			}
-		}
-
-		return results;
-	}
-
-	/**
-	 * Distances within all chains in a structure
-	 */
-	List<DistanceResult> distance(Structure structure, Transcript tr1, Transcript tr2) {
-		ArrayList<DistanceResult> results = new ArrayList<>();
-
-		// Distance
-		for (Chain chain : structure.getChains())
-			if (filterPdbChain(chain)) {
-				results.addAll(distance(chain, tr1, tr2));
-			}
-
-		return results;
 	}
 
 	/**
@@ -273,11 +275,10 @@ public class SnpEffCmdPdb extends SnpEff {
 	}
 
 	/**
-	 * Return true if the PDB structure passes the criteria
+	 * Return true if the PDB structure passes the filter criteria
 	 * I.e.: Resolution less or equal to desire one and species matches
 	 */
 	boolean filterPdb(Structure pdbStruct) {
-		// Filter PDB structure
 		// Within resolution limits? => Process
 		double res = pdbStruct.getPDBHeader().getResolution();
 		if (res > pdbResolution) {
@@ -327,6 +328,89 @@ public class SnpEffCmdPdb extends SnpEff {
 		return true;
 	}
 
+	/**
+	 * Analyze interacting sites in a pdb structure
+	 */
+	List<DistanceResult> findInteractingCompound(Structure pdbStruct, Chain chain1, Chain chain2, String trId1, String trId2) {
+		ArrayList<DistanceResult> results = new ArrayList<>();
+
+		Transcript tr1 = getTranscript(trId1);
+		Transcript tr2 = getTranscript(trId2);
+		List<AminoAcid> aas1 = aminoAcids(chain1);
+		List<AminoAcid> aas2 = aminoAcids(chain2);
+
+		// Make sure we analyze within chain interactions
+		results.addAll(findInteractingSingle(chain1, tr1));
+		results.addAll(findInteractingSingle(chain2, tr2));
+
+		// Find between chain interactions
+		for (AminoAcid aa1 : aas1) {
+			for (AminoAcid aa2 : aas2) {
+				double dmin = distanceMin(aa1, aa2);
+				if (select(dmin)) {
+					DistanceResult dres = new DistanceResult(aa1, aa2, tr1, tr2, dmin);
+					if (dres.hasValidCoords()) {
+						results.add(dres);
+						countMapOk++;
+
+						Gpr.debug("INTERACTION: " + dres);
+						if (debug) Gpr.debug(((dmin <= distanceThreshold) ? "AA_IN_CONTACT\t" : "AA_NOT_IN_CONTACT\t") + dres);
+					} else {
+						countMapError++;
+					}
+				}
+			}
+		}
+
+		return results;
+	}
+
+	/**
+	 * Find interacting AA within s same chain (i.e. two amino acids in close proximity within the same chain)
+	 */
+	List<DistanceResult> findInteractingSingle(Chain chain, Transcript tr) {
+		ArrayList<DistanceResult> results = new ArrayList<>();
+		List<AminoAcid> aas = aminoAcids(chain);
+
+		for (int i = 0; i < aas.size(); i++) {
+			int minj = i + aaMinSeparation;
+
+			for (int j = minj; j < aas.size(); j++) {
+				AminoAcid aa1 = aas.get(i);
+				AminoAcid aa2 = aas.get(j);
+				double d = distanceMin(aa1, aa2);
+
+				if (select(d)) {
+					DistanceResult dres = new DistanceResult(aa1, aa2, tr, tr, d);
+					if (dres.hasValidCoords()) {
+						results.add(dres);
+						countMapOk++;
+						if (debug) Gpr.debug(((d <= distanceThreshold) ? "AA_IN_CONTACT\t" : "AA_NOT_IN_CONTACT\t") + dres);
+					} else {
+						countMapError++;
+					}
+				}
+			}
+		}
+
+		return results;
+	}
+
+	/**
+	 * Distances within all chains in a structure
+	 */
+	List<DistanceResult> findInteractingSingle(Structure structure, Transcript tr) {
+		ArrayList<DistanceResult> results = new ArrayList<>();
+
+		// Distance
+		for (Chain chain : structure.getChains())
+			if (filterPdbChain(chain)) {
+				results.addAll(findInteractingSingle(chain, tr));
+			}
+
+		return results;
+	}
+
 	Collection<String> findPdbFiles() {
 		return findPdbFiles(new File(pdbDir));
 	}
@@ -369,6 +453,30 @@ public class SnpEffCmdPdb extends SnpEff {
 		}
 
 		return trIds;
+	}
+
+	public List<DistanceResult> getDistanceResults() {
+		return distanceResults;
+	}
+
+	Transcript getTranscript(String trId) {
+		return trancriptById.get(IdMapper.transcriptIdNoVersion(trId));
+	}
+
+	/**
+	 * Filter IdMaps for a specific chain
+	 */
+	List<IdMapperEntry> idMapChain(Structure pdbStruct, Chain chain, List<IdMapperEntry> idMaps) {
+		List<IdMapperEntry> idMapChain = new ArrayList<>();
+		for (IdMapperEntry idmap : idMaps) {
+			if (idmap.pdbId.equals(pdbStruct.getPDBCode()) //
+					&& idmap.pdbChainId.equals(chain.getChainID()) //
+			) {
+				idMapChain.add(idmap);
+			}
+		}
+
+		return idMapChain;
 	}
 
 	/**
@@ -415,6 +523,11 @@ public class SnpEffCmdPdb extends SnpEff {
 		// Initialize reader
 		//---
 		pdbreader = new PDBFileReader();
+	}
+
+	boolean isCompound(Structure pdbStruct) {
+		List<Compound> compounds = pdbStruct.getCompounds();
+		return compounds != null && !compounds.isEmpty();
 	}
 
 	@Override
@@ -468,6 +581,11 @@ public class SnpEffCmdPdb extends SnpEff {
 				case "-idmap":
 					if ((i + 1) < args.length) idMapFile = args[++i];
 					else usage("Missing parameter in '-idMap'");
+					break;
+
+				case "-interactlist":
+					if ((i + 1) < args.length) idMapFile = args[++i];
+					else usage("Missing parameter in '-interactList'");
 					break;
 
 				case "-maxdist":
@@ -557,8 +675,10 @@ public class SnpEffCmdPdb extends SnpEff {
 	 * Analyze a PDB file
 	 */
 	protected void pdbAnalysis(String pdbFileName) {
-		// Find transcript IDs
+		// Get Pdb ID from file name
 		String pdbId = fileName2PdbId(pdbFileName);
+
+		// Find transcript IDs
 		Set<String> trIds = findTranscriptIds(pdbId);
 		if (trIds == null || trIds.isEmpty()) {
 			if (debug) Gpr.debug("No transcript IDs found for PDB entry '" + pdbId + "'");
@@ -569,6 +689,64 @@ public class SnpEffCmdPdb extends SnpEff {
 		Structure pdbStruct = readPdbFile(pdbFileName);
 		if (pdbStruct == null || !filterPdb(pdbStruct)) return; // Passes filter?
 
+		if (isCompound(pdbStruct)) pdbAnalysisCompound(pdbStruct, trIds);
+		else pdbAnalysisSingle(pdbStruct, trIds);
+	}
+
+	/**
+	 * Interaction analysis of PDB compounds (co-crystalized molecules)
+	 */
+	void pdbAnalysisCompound(Structure pdbStruct, Set<String> trIds) {
+		countFilesPass++;
+		List<IdMapperEntry> idMapConfirmed = checkSequencePdbGenome(pdbStruct, trIds);
+		if (idMapConfirmed == null || idMapConfirmed.isEmpty()) return;
+
+		// Get uniprot references
+		Map<String, String> chain2uniproId = chainUniprotIds(pdbStruct);
+
+		// Analyze distance between amino acids in different chains
+		for (Chain chain1 : pdbStruct.getChains()) {
+
+			String chainId1 = chain1.getChainID();
+			List<IdMapperEntry> idMapChain1 = idMapChain(pdbStruct, chain1, idMapConfirmed);
+			if (idMapChain1.isEmpty()) {
+				if (debug) Gpr.debug("Empty maps for chain '" + chainId1 + "'");
+				continue;
+			}
+
+			for (Chain chain2 : pdbStruct.getChains()) {
+				String chainId2 = chain2.getChainID();
+				if (chainId1.compareTo(chainId2) >= 0) continue; // Only calculate once
+
+				// Compare UNIPROT IDs
+				String uniprot1 = chain2uniproId.get(chainId1);
+				String uniprot2 = chain2uniproId.get(chainId2);
+				if (uniprot1 != null && uniprot2 != null && uniprot1.equals(uniprot2)) {
+					if (debug) Gpr.debug("Filtering out two chains with same UNIPROT ID: '" + uniprot1);
+					continue;
+				}
+
+				List<IdMapperEntry> idMapChain2 = idMapChain(pdbStruct, chain2, idMapConfirmed);
+				if (idMapChain2.isEmpty()) {
+					if (debug) Gpr.debug("Empty maps for chain '" + chainId2 + "'");
+					continue;
+				}
+
+				// Find interactions for each transcript pair
+				for (IdMapperEntry im1 : idMapChain1) {
+					for (IdMapperEntry im2 : idMapChain2) {
+						List<DistanceResult> dres = findInteractingCompound(pdbStruct, chain1, chain2, im1.trId, im2.trId);
+						save(dres);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Interaction analysis of PDB molecules (within molecule interactions)
+	 */
+	void pdbAnalysisSingle(Structure pdbStruct, Set<String> trIds) {
 		// Check that entries map to the genome
 		countFilesPass++;
 		List<IdMapperEntry> idMapConfirmed = checkSequencePdbGenome(pdbStruct, trIds);
@@ -577,8 +755,8 @@ public class SnpEffCmdPdb extends SnpEff {
 		// Calculate distances
 		for (IdMapperEntry idmap : idMapConfirmed) {
 			// Get full transcript ID including version (version numbers are removed in the IdMap)
-			Transcript tr = trancriptById.get(idmap.trId);
-			List<DistanceResult> dres = distance(pdbStruct, tr, tr);
+			Transcript tr = getTranscript(idmap.trId);
+			List<DistanceResult> dres = findInteractingSingle(pdbStruct, tr);
 			save(dres);
 		}
 	}
@@ -604,18 +782,38 @@ public class SnpEffCmdPdb extends SnpEff {
 		return true;
 	}
 
+	public boolean run(boolean storeResults) {
+		distanceResults = new ArrayList<>();
+		run();
+		return true;
+	}
+
+	/**
+	 * Save results
+	 */
 	void save(List<DistanceResult> distResults) {
 		for (DistanceResult d : distResults)
 			try {
+
 				String dstr = d.toString();
 
 				if (!saved.contains(dstr)) {
 					outpufFile.write(dstr + "\n");
 					saved.add(dstr);
+					if (distanceResults != null) distanceResults.add(d);
 				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
+	}
+
+	/**
+	 * Should this pair of amino acids be selected?
+	 */
+	boolean select(double d) {
+		if (!Double.isInfinite(distanceThreshold)) return d <= distanceThreshold; // Amino acids in close distance
+		if (!Double.isInfinite(distanceThresholdNon)) return d > distanceThresholdNon;// Amino acids far apart
+		throw new RuntimeException("Neither distance is finite!");
 	}
 
 	public void setDistanceThresholdNon(double distanceThresholdNon) {
@@ -638,7 +836,8 @@ public class SnpEffCmdPdb extends SnpEff {
 		System.err.println("\n");
 		System.err.println("\nOptions:");
 		System.err.println("\t-aaSep <number>                 : Minimum number of AA of separation within the sequence. Default: " + aaMinSeparation);
-		System.err.println("\t-idMap <file>                   : ID map file (i.e. file containing mapping from PDB ID to transcript ID).");
+		System.err.println("\t-idMap <file>                   : ID map file (i.e. file containing mapping from PDB ID to transcript ID). Default: " + idMapFile);
+		System.err.println("\t-interactList <file>            : A file containing protein-protein interations (from PDB co-srystalzed structures). Default: " + interactListFile);
 		System.err.println("\t-maxDist <number>               : Maximum distance in Angtrom for any atom in a pair of amino acids to be considered 'in contact'. Default: " + distanceThreshold);
 		System.err.println("\t-maxErr <number>                : Maximum amino acid sequence differece between PDB file and genome. Default: " + maxMismatchRate);
 		System.err.println("\t-org <name>                     : Organism 'common name'. Default: " + pdbOrganismCommon);

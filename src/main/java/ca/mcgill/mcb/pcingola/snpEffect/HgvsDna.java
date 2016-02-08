@@ -58,8 +58,9 @@ public class HgvsDna extends Hgvs {
 			}
 			return "del" + ref + "ins" + alt;
 
-		case INS:
 		case DEL:
+		case DUP:
+		case INS:
 			if (variant.size() > MAX_SEQUENCE_LEN_HGVS) return "";
 			String netChange = variant.netChange(false);
 			if (strandPlus) return netChange;
@@ -68,6 +69,13 @@ public class HgvsDna extends Hgvs {
 		case MIXED:
 			if (strandPlus) return "del" + variant.getReference() + "ins" + variant.getAlt();
 			return "del" + GprSeq.reverseWc(variant.getReference()) + "ins" + GprSeq.reverseWc(variant.getAlt());
+
+		case INV:
+			// Inversions are designated by "inv" after an indication of the 
+			// first and last nucleotides affected by the inversion.
+			// Reference: http://www.hgvs.org/mutnomen/recs-DNA.html#inv
+			// => No base changes are used
+			return "";
 
 		case INTERVAL:
 			return "";
@@ -200,6 +208,8 @@ public class HgvsDna extends Hgvs {
 			break;
 
 		case DEL:
+		case DUP:
+		case INV:
 		case MIXED:
 			if (strandPlus) {
 				posStart = variant.getStart();
@@ -393,9 +403,6 @@ public class HgvsDna extends Hgvs {
 		// Is this a duplication?
 		if (variant.isIns()) duplication = isDuplication();
 
-		String pos = pos();
-		if (pos == null) return null;
-
 		String type = "";
 		switch (variant.getVariantType()) {
 		case INS:
@@ -416,9 +423,21 @@ public class HgvsDna extends Hgvs {
 			type = "";
 			break;
 
+		case INV:
+			type = "inv";
+			break;
+
+		case DUP:
+			type = "dup";
+			break;
+
 		default:
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
+
+		// HGVS formatted Position
+		String pos = pos();
+		if (pos == null) return null;
 
 		return prefix() + pos + type + dnaBaseChange();
 	}

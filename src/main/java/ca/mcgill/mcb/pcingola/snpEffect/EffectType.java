@@ -16,8 +16,17 @@ import ca.mcgill.mcb.pcingola.vcf.EffFormatVersion;
 public enum EffectType {
 	// High impact
 	CHROMOSOME_LARGE_DELETION //
+	, CHROMOSOME_LARGE_INVERSION //
+	, CHROMOSOME_LARGE_DUPLICATION //
+	, GENE_REARRANGEMENT //
+	, GENE_DELETED //
+	, GENE_FUSION //
 	, TRANSCRIPT_DELETED //
 	, EXON_DELETED //
+	, EXON_DUPLICATION //
+	, EXON_DUPLICATION_PARTIAL //
+	, EXON_INVERSION //
+	, EXON_INVERSION_PARTIAL //
 	, FRAME_SHIFT //
 	, STOP_GAINED //
 	, STOP_LOST //
@@ -46,6 +55,10 @@ public enum EffectType {
 	, CODON_CHANGE //
 
 	// Low impact
+	, GENE_INVERSION //
+	, GENE_DUPLICATION //
+	, TRANSCRIPT_DUPLICATION //
+	, TRANSCRIPT_INVERSION //
 	, UTR_5_PRIME //
 	, UTR_3_PRIME //
 	, START_GAINED //
@@ -117,19 +130,27 @@ public enum EffectType {
 	 */
 	public EffectImpact effectImpact() {
 		switch (this) {
-		case TRANSCRIPT_DELETED:
+		case CHROMOSOME_LARGE_DELETION:
 		case EXON_DELETED:
+		case EXON_DUPLICATION:
+		case EXON_DUPLICATION_PARTIAL:
+		case EXON_INVERSION:
+		case EXON_INVERSION_PARTIAL:
 		case FRAME_SHIFT:
+		case GENE_DELETED:
+		case GENE_FUSION:
+		case GENE_REARRANGEMENT:
+		case PROTEIN_INTERACTION_LOCUS:
+		case RARE_AMINO_ACID:
 		case SPLICE_SITE_ACCEPTOR:
 		case SPLICE_SITE_DONOR:
 		case START_LOST:
 		case STOP_GAINED:
 		case STOP_LOST:
-		case RARE_AMINO_ACID:
-		case PROTEIN_INTERACTION_LOCUS:
-		case CHROMOSOME_LARGE_DELETION:
+		case TRANSCRIPT_DELETED:
 			return EffectImpact.HIGH;
 
+		case CHROMOSOME_LARGE_INVERSION:
 		case CODON_CHANGE_PLUS_CODON_DELETION:
 		case CODON_CHANGE_PLUS_CODON_INSERTION:
 		case CODON_DELETION:
@@ -140,15 +161,20 @@ public enum EffectType {
 		case UTR_5_DELETED:
 			return EffectImpact.MODERATE;
 
-		case SPLICE_SITE_REGION:
-		case SPLICE_SITE_BRANCH:
+		case CHROMOSOME_LARGE_DUPLICATION:
+		case CODON_CHANGE:
+		case GENE_DUPLICATION:
+		case GENE_INVERSION:
 		case NON_SYNONYMOUS_START:
 		case NON_SYNONYMOUS_STOP:
+		case SPLICE_SITE_REGION:
+		case SPLICE_SITE_BRANCH:
 		case START_GAINED:
 		case SYNONYMOUS_CODING:
 		case SYNONYMOUS_START:
 		case SYNONYMOUS_STOP:
-		case CODON_CHANGE:
+		case TRANSCRIPT_DUPLICATION:
+		case TRANSCRIPT_INVERSION:
 			return EffectImpact.LOW;
 
 		case CDS:
@@ -191,6 +217,8 @@ public enum EffectType {
 		case NONE:
 		case CHROMOSOME:
 		case CHROMOSOME_LARGE_DELETION:
+		case CHROMOSOME_LARGE_DUPLICATION:
+		case CHROMOSOME_LARGE_INVERSION:
 		case CHROMOSOME_ELONGATION:
 		case CUSTOM:
 		case CDS:
@@ -223,14 +251,27 @@ public enum EffectType {
 			return EffectType.SPLICE_SITE_REGION;
 
 		case TRANSCRIPT_DELETED:
+		case TRANSCRIPT_DUPLICATION:
+		case TRANSCRIPT_INVERSION:
 		case INTRAGENIC:
-		case GENE:
 		case NEXT_PROT:
 		case TRANSCRIPT:
 			return EffectType.TRANSCRIPT;
 
+		case GENE:
+		case GENE_DELETED:
+		case GENE_DUPLICATION:
+		case GENE_FUSION:
+		case GENE_INVERSION:
+		case GENE_REARRANGEMENT:
+			return EffectType.GENE;
+
 		case EXON:
 		case EXON_DELETED:
+		case EXON_DUPLICATION:
+		case EXON_DUPLICATION_PARTIAL:
+		case EXON_INVERSION:
+		case EXON_INVERSION_PARTIAL:
 		case NON_SYNONYMOUS_START:
 		case NON_SYNONYMOUS_CODING:
 		case SYNONYMOUS_CODING:
@@ -288,6 +329,12 @@ public enum EffectType {
 		case CHROMOSOME_LARGE_DELETION:
 			return "chromosome_number_variation";
 
+		case CHROMOSOME_LARGE_DUPLICATION:
+			return "duplication";
+
+		case CHROMOSOME_LARGE_INVERSION:
+			return "inversion";
+
 		case CHROMOSOME:
 			return "chromosome";
 
@@ -319,11 +366,38 @@ public enum EffectType {
 		case EXON_DELETED:
 			return "exon_loss_variant";
 
+		case EXON_DUPLICATION:
+			return "duplication";
+
+		case EXON_DUPLICATION_PARTIAL:
+			return "duplication";
+
+		case EXON_INVERSION:
+			return "inversion";
+
+		case EXON_INVERSION_PARTIAL:
+			return "inversion";
+
 		case FRAME_SHIFT:
 			return "frameshift_variant";
 
 		case GENE:
 			return "gene_variant";
+
+		case GENE_INVERSION:
+			return "inversion";
+
+		case GENE_DELETED:
+			return "feature_ablation";
+
+		case GENE_DUPLICATION:
+			return "duplication";
+
+		case GENE_FUSION:
+			return "gene_fusion";
+
+		case GENE_REARRANGEMENT:
+			return "rearranged_at_DNA_level";
 
 		case INTERGENIC:
 			return "intergenic_region";
@@ -407,11 +481,16 @@ public enum EffectType {
 			return "initiator_codon_variant" + formatVersion.separator() + "non_canonical_start_codon";
 
 		case TRANSCRIPT:
-			//	return "transcript";
 			return "non_coding_transcript_variant";
 
 		case TRANSCRIPT_DELETED:
 			return "transcript_ablation";
+
+		case TRANSCRIPT_DUPLICATION:
+			return "duplication";
+
+		case TRANSCRIPT_INVERSION:
+			return "inversion";
 
 		case UPSTREAM:
 			return "upstream_gene_variant";
