@@ -6,6 +6,7 @@ import java.util.List;
 import ca.mcgill.mcb.pcingola.align.VariantRealign;
 import ca.mcgill.mcb.pcingola.binseq.GenomicSequences;
 import ca.mcgill.mcb.pcingola.snpEffect.EffectType;
+import ca.mcgill.mcb.pcingola.util.Gpr;
 import ca.mcgill.mcb.pcingola.util.GprSeq;
 import ca.mcgill.mcb.pcingola.util.IubString;
 
@@ -342,7 +343,10 @@ public class Variant extends Marker {
 
 		// Chromosome might not exists (e.g. error in chromosome name or '-noGenome' option)
 		Chromosome chr = getChromosome();
-		if (chr != null) {
+
+		// We only check if: a) that the chromosome exists and b) chromosome it is not small
+		if (chr != null && chr.size() > HUGE_DELETION_SIZE_THRESHOLD) {
+			Gpr.debug("Chromosom size: " + chr.size());
 			double ratio = (chr.size() > 0 ? size() / ((double) chr.size()) : 0);
 			return size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD;
 		}
