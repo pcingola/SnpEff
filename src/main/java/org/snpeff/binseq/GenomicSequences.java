@@ -39,9 +39,8 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	public static final int MAX_ITERATIONS = 1000000;
 	public static final int CHR_LEN_SEPARATE_FILE = 1000 * 1000; // Minimum chromosome length to be saved to a separate file
 
-	public static boolean debug = false;
-	public static boolean verbose = false;
-
+	boolean debug = false;
+	boolean verbose = false;
 	boolean allSmallLoaded; // Have all "small" chromosomes been loaded? (i.e. have we already loaded 'sequence.bin' file?)
 	boolean disableLoad = false; // Do not load sequences from disk. Used minly for test cases
 	Genome genome; // Reference genome
@@ -435,7 +434,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	}
 
 	public void setVerbose(boolean verbose) {
-		GenomicSequences.verbose = verbose;
+		this.verbose = verbose;
 	}
 
 	@Override

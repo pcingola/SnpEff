@@ -3,6 +3,7 @@ package org.snpeff.snpEffect.testCases.unity;
 import org.junit.Test;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.interval.Exon;
+import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
@@ -112,6 +113,12 @@ public class TestCasesDels extends TestCasesBase {
 		randSeed = 20100629;
 	}
 
+	boolean isExonDel(Transcript tr, Variant variant) {
+		for (Exon ex : tr)
+			if (variant.includes(ex)) return true;
+		return false;
+	}
+
 	/**
 	 * Remove white spaces from a string.
 	 * @param str
@@ -207,7 +214,7 @@ public class TestCasesDels extends TestCasesBase {
 
 					if (variant.includes(transcript)) {
 						effectExpected = "TRANSCRIPT_DELETED";
-					} else if (variant.includes(exon)) {
+					} else if (isExonDel(transcript, variant)) {
 						effectExpected = "EXON_DELETED";
 					} else if (netChange.length() % 3 != 0) {
 						effectExpected = "FRAME_SHIFT";
@@ -290,11 +297,11 @@ public class TestCasesDels extends TestCasesBase {
 							if (effectExpected.equals(e)) {
 								ok = true;
 								// Check codons, except some cases
-								if ((effect.getEffectType() != EffectType.FRAME_SHIFT) // 
-										&& (effect.getEffectType() != EffectType.TRANSCRIPT_DELETED) // 
-										&& (effect.getEffectType() != EffectType.EXON_DELETED) // 
-										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) // 
-										&& (effect.getEffectType() != EffectType.INTERGENIC) // 
+								if ((effect.getEffectType() != EffectType.FRAME_SHIFT) //
+										&& (effect.getEffectType() != EffectType.TRANSCRIPT_DELETED) //
+										&& (effect.getEffectType() != EffectType.EXON_DELETED) //
+										&& (effect.getEffectType() != EffectType.SPLICE_SITE_REGION) //
+										&& (effect.getEffectType() != EffectType.INTERGENIC) //
 								) {
 									if (codonsNew.equals("-")) codonsNew = "";
 
