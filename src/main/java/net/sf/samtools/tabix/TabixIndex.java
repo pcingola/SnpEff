@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import ca.mcgill.mcb.pcingola.util.Gpr;
+import org.snpeff.util.Gpr;
 
 /**
  * Tabix Index (i.e. the structure stored in *.tbi file)

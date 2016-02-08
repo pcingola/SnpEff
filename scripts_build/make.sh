@@ -18,7 +18,7 @@ cp target/SnpEff-$VERSION-jar-with-dependencies.jar $HOME/snpEff/snpEff.jar
 # Install JAR file in local Maven repo
 mvn install:install-file \
 	-Dfile=target/SnpEff-$VERSION.jar \
-	-DgroupId=ca.mcgill.mcb.pcingola \
+	-DgroupId=org.snpeff \
 	-DartifactId=SnpEff \
 	-Dversion=$VERSION \
 	-Dpackaging=jar \
@@ -39,7 +39,7 @@ cp target/SnpSift-$VERSION-jar-with-dependencies.jar $HOME/snpEff/SnpSift.jar
 # Install JAR file in local Maven repo
 mvn install:install-file \
 	-Dfile=target/SnpSift-$VERSION.jar \
-	-DgroupId=ca.mcgill.mcb.pcingola \
+	-DgroupId=org.snpsift \
 	-DartifactId=SnpSift \
 	-Dversion=$VERSION \
 	-Dpackaging=jar \

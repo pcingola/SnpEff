@@ -3,7 +3,7 @@ package net.sf.samtools.tabix;
 import java.io.IOException;
 import java.io.InputStream;
 
-import ca.mcgill.mcb.pcingola.util.Gpr;
+import org.snpeff.util.Gpr;
 
 /**
  * Pair of 'long' (64 bits)

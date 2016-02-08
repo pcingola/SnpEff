@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>ca.mcgill.mcb.pcingola</groupId>
+  <groupId>org.snpeff</groupId>
   <artifactId>SnpEff</artifactId>
   <packaging>jar</packaging>
   <name>Snp Effect</name>
@@ -175,7 +175,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>ca.mcgill.mcb.pcingola.snpEffect.commandLine.SnpEff</mainClass>
+              <mainClass>org.snpeff.snpEffect.commandLine.SnpEff</mainClass>
             </manifest>
           </archive>
         </configuration>

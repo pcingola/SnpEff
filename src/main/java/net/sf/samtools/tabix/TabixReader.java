@@ -37,9 +37,10 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import ca.mcgill.mcb.pcingola.interval.Chromosome;
-import ca.mcgill.mcb.pcingola.interval.Variant;
-import ca.mcgill.mcb.pcingola.util.Gpr;
+import org.snpeff.interval.Chromosome;
+import org.snpeff.interval.Variant;
+import org.snpeff.util.Gpr;
+
 import net.sf.samtools.util.BlockCompressedInputStream;
 
 public class TabixReader implements Iterable<String> {

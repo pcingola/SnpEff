@@ -2,7 +2,7 @@ package net.sf.samtools.tabix;
 
 import java.util.Iterator;
 
-import ca.mcgill.mcb.pcingola.util.Gpr;
+import org.snpeff.util.Gpr;
 
 /**
  * Iterate on a result from TabixReader.query()
