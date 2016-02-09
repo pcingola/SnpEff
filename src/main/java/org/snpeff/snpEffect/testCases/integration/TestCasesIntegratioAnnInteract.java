@@ -25,6 +25,8 @@ public class TestCasesIntegratioAnnInteract extends TestCasesIntegrationBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
+		verbose = true;
+
 		List<VcfEntry> vcfEntries = snpEffect("testHg19Chr1", "tests/test_interaction_01.vcf", null, null);
 
 		Set<String> expectedIds = new HashSet<>();
@@ -41,30 +43,18 @@ public class TestCasesIntegratioAnnInteract extends TestCasesIntegrationBase {
 
 			int countPi = 0;
 			for (VcfEffect veff : ve.getVcfEffects()) {
+				System.out.println("\t" + veff.getEffectType() + "\t" + veff);
 				if (veff.getEffectType() == EffectType.PROTEIN_INTERACTION_LOCUS) {
-					if (verbose) System.out.println("\t" + veff.getEffectType() + "\t" + veff);
+					if (verbose) System.out.println("FOUND\t" + veff.getEffectType() + "\t" + veff);
 					countPi++;
 
 					String id = veff.getFeatureId();
-					Assert.assertTrue("Unexcpedted ID" + id, expectedIds.contains(id));
+					Assert.assertTrue("Unexpected ID" + id, expectedIds.contains(id));
 				}
 			}
 
 			Assert.assertTrue("No PROTEIN_INTERACTION_LOCUS effect found", countPi > 0);
 		}
-	}
-
-	/**
-	 * Annotate interaction between two proteins
-	 */
-	@Test
-	public void test_02() {
-		Gpr.debug("Test");
-
-		// TODO: Test case using 2G4D. Should annotate interaction 
-		// between amino acid #441 of Senp1 and #60 of Sumo1 proteins
-		// See thesis, Fig 4.5
-		throw new RuntimeException("CREATE TEST CASE!!!");
 	}
 
 }

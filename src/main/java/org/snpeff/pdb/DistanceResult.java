@@ -11,7 +11,8 @@ public class DistanceResult {
 
 	// Pdb information
 	public String pdbId;
-	public String pdbChainId;
+	public String pdbChainId1;
+	public String pdbChainId2;
 	public int aaPos1, aaPos2;
 	public char aa1, aa2;
 	public double distance;
@@ -22,7 +23,7 @@ public class DistanceResult {
 	public int pos1, pos2;
 
 	public DistanceResult() {
-		pdbId = pdbChainId = trId1 = trId2 = chr1 = chr2 = "";
+		pdbId = pdbChainId1 = pdbChainId2 = trId1 = trId2 = chr1 = chr2 = "";
 		aaPos1 = aaPos2 = pos1 = pos2 = -1;
 		distance = -1;
 		aa1 = aa2 = '.';
@@ -40,38 +41,43 @@ public class DistanceResult {
 	public DistanceResult(String line) {
 		this();
 
-		// Parse line
-		String fields[] = line.split("\t");
-		int n = 0;
-		pdbId = fields[n++];
-		pdbChainId = fields[n++];
-		distance = Gpr.parseDoubleSafe(fields[n++]);
-		aa1 = fields[n++].charAt(0);
-		aaPos1 = Gpr.parseIntSafe(fields[n++]);
-		aa2 = fields[n++].charAt(0);
-		aaPos2 = Gpr.parseIntSafe(fields[n++]);
+		try {
+			// Parse line
+			String fields[] = line.split("\t");
+			int n = 0;
+			pdbId = fields[n++];
+			pdbChainId1 = fields[n++];
+			pdbChainId2 = fields[n++];
+			distance = Gpr.parseDoubleSafe(fields[n++]);
+			aa1 = fields[n++].charAt(0);
+			aaPos1 = Gpr.parseIntSafe(fields[n++]);
+			aa2 = fields[n++].charAt(0);
+			aaPos2 = Gpr.parseIntSafe(fields[n++]);
 
-		// Optional fields
-		if (fields.length > n) {
-			String chrPos1 = fields[n++];
-			if (!chrPos1.isEmpty()) {
-				String f[] = chrPos1.split(":");
-				chr1 = f[0];
-				pos1 = Gpr.parseIntSafe(f[1]);
+			// Optional fields
+			if (fields.length > n) {
+				String chrPos1 = fields[n++];
+				if (!chrPos1.isEmpty()) {
+					String f[] = chrPos1.split(":");
+					chr1 = f[0];
+					pos1 = Gpr.parseIntSafe(f[1]);
+				}
 			}
-		}
 
-		if (fields.length > n) {
-			String chrPos2 = fields[n++];
-			if (!chrPos2.isEmpty()) {
-				String f[] = chrPos2.split(":");
-				chr2 = f[0];
-				pos2 = Gpr.parseIntSafe(f[1]);
+			if (fields.length > n) {
+				String chrPos2 = fields[n++];
+				if (!chrPos2.isEmpty()) {
+					String f[] = chrPos2.split(":");
+					chr2 = f[0];
+					pos2 = Gpr.parseIntSafe(f[1]);
+				}
 			}
-		}
 
-		if (fields.length > n) trId1 = fields[n++];
-		if (fields.length > n) trId2 = fields[n++];
+			if (fields.length > n) trId1 = fields[n++];
+			if (fields.length > n) trId2 = fields[n++];
+		} catch (Exception e) {
+			throw new RuntimeException("Error processing line:\t'" + line + "'", e);
+		}
 	}
 
 	/**
@@ -166,7 +172,7 @@ public class DistanceResult {
 		return trId1 //
 				+ (!trId2.equals(trId1) ? ":" + trId2 : "") // Ommit if it's the same transcript
 				+ ":" + pdbId // PDB ID
-				+ "_" + pdbChainId // PDB chain name
+				+ "_" + pdbChainId1 // PDB chain name
 				+ ":" + (aaPos1 + 1) // AA number (one-based)
 				+ "_" + (aaPos2 + 1); // AA number (one-based)
 	}
@@ -178,17 +184,26 @@ public class DistanceResult {
 	}
 
 	public void setAa1(AminoAcid aa) {
-		pdbId = aa.getChain().getParent().getPDBCode();
-		pdbChainId = aa.getChainId();
+		setPdbId(aa.getChain().getParent().getPDBCode());
+		pdbChainId1 = aa.getChainId();
 		aaPos1 = aa.getResidueNumber().getSeqNum() - 1;
 		aa1 = aa.getChemComp().getOne_letter_code().charAt(0);
 	}
 
 	public void setAa2(AminoAcid aa) {
-		pdbId = aa.getChain().getParent().getPDBCode();
-		pdbChainId = aa.getChainId();
+		setPdbId(aa.getChain().getParent().getPDBCode());
+		pdbChainId2 = aa.getChainId();
 		aaPos2 = aa.getResidueNumber().getSeqNum() - 1;
 		aa2 = aa.getChemComp().getOne_letter_code().charAt(0);
+	}
+
+	void setPdbId(String pdbId) {
+		if (this.pdbId == null || this.pdbId.isEmpty()) {
+			this.pdbId = pdbId;
+		} else if (!this.pdbId.equals(pdbId)) {
+			// Cannot change to different Pdb ID
+			throw new RuntimeException("New pdbId does not match old pdbId: " + this.pdbId + " != " + pdbId);
+		}
 	}
 
 	public void setTr1(Transcript tr) {
@@ -206,7 +221,8 @@ public class DistanceResult {
 	@Override
 	public String toString() {
 		return pdbId //
-				+ "\t" + pdbChainId //
+				+ "\t" + pdbChainId1 //
+				+ "\t" + pdbChainId2 //
 				+ "\t" + distance //
 				+ "\t" + aa1 //
 				+ "\t" + aaPos1 //
