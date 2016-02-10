@@ -143,8 +143,11 @@ public class CompareToVep {
 	boolean compare(String effSo, String csqSo) {
 		if (effSo.equals(csqSo)) return true;
 		if (effSo.equals("inframe_deletion") && csqSo.equals("feature_truncation")) return true;
+		if (effSo.equals("conservative_inframe_insertion") && csqSo.equals("inframe_insertion")) return true;
 		if (effSo.equals("disruptive_inframe_insertion") && csqSo.equals("inframe_insertion")) return true;
+		if (effSo.equals("conservative_inframe_deletion") && csqSo.equals("inframe_deletion")) return true;
 		if (effSo.equals("disruptive_inframe_deletion") && csqSo.equals("inframe_deletion")) return true;
+		if (effSo.equals("conservative_inframe_deletion") && csqSo.equals("feature_truncation")) return true;
 		if (effSo.equals("disruptive_inframe_deletion") && csqSo.equals("feature_truncation")) return true;
 		if (effSo.equals("synonymous_variant") && csqSo.equals("coding_sequence_variant")) return true;
 		if (effSo.equals("non_coding_exon_variant") && csqSo.equals("NMD_transcript_variant")) return true;

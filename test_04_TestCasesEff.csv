@@ -3,7 +3,7 @@
 
 Name , Value
 Genome , testHg3770Chr22 
-Date , 2016-02-08 14:44
+Date , 2016-02-09 21:55
 SnpEff_version , SnpEff 4.2a (build 2016-02-05), by Pablo Cingolani
 Command_line_arguments , SnpEff  -csvStats test_04_TestCasesEff.csv testHg3770Chr22 tests/eff_sort.vcf 
 Warnings , 1185 
@@ -46,10 +46,10 @@ Type , Count , Percent
 5_prime_UTR_premature_start_codon_gain_variant , 20 , 0.19459% 
 5_prime_UTR_variant , 111 , 1.079977% 
 TF_binding_site_variant , 5 , 0.048648% 
+conservative_inframe_deletion , 16 , 0.155672% 
 disruptive_inframe_deletion , 5 , 0.048648% 
 downstream_gene_variant , 736 , 7.160926% 
 frameshift_variant , 47 , 0.457287% 
-inframe_deletion , 16 , 0.155672% 
 initiator_codon_variant , 2 , 0.019459% 
 intron_variant , 3881 , 37.760265% 
 missense_variant , 1236 , 12.025686% 
