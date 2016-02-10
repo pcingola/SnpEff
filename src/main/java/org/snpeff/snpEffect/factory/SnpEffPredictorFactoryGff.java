@@ -261,7 +261,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		// Add transcript
 		add(tr);
 
-		//---
+		//---parse
 		// Sanity check and updates for gene
 		//---
 
@@ -492,7 +492,9 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				line = reader.readLine();
 
 				// Are we done?
-				if (line.equals(FASTA_DELIMITER)) {
+				if (line.isEmpty()) {
+					// Ignore
+				} else if (line.equals(FASTA_DELIMITER)) {
 					mainFileHasFasta = true;
 					break;
 				} else if (line.startsWith("#")) {
