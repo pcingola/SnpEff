@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.snpeff.align.VariantRealign;
 import org.snpeff.binseq.GenomicSequences;
+import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
@@ -419,6 +420,7 @@ public class Variant extends Marker {
 		if (gs == null) return this;
 
 		VariantRealign vr = new VariantRealign(this);
+		vr.setDebug(Config.get().isDebug());
 		if (!vr.realign()) return this;
 		return vr.getVariantRealigned();
 	}

@@ -10,7 +10,7 @@ import org.snpeff.util.Gpr;
 /**
  * Re-align a variant towards the leftmost (rightmost) position
  *
- * Note: We perform a 'progressive' realignment, asking for more 
+ * Note: We perform a 'progressive' realignment, asking for more
  *       reference sequence as we need it
  *
  * @author pcingola
@@ -25,8 +25,7 @@ public class VariantRealign {
 
 	public static final int MAX_ITERATIONS = 100;
 
-	public static boolean debug = false;
-
+	boolean debug = false;
 	boolean alignLeft = true; // By default, align to the left
 	boolean realigned; // Was the variant realigned?
 	boolean needMoreBasesLeft, needMoreBasesRight; // Do we need more bases to the left / right to improve current aligment?
@@ -45,8 +44,8 @@ public class VariantRealign {
 	}
 
 	public VariantRealign(Variant variant) {
-		this.genome = variant.getGenome();
-		this.genSeqs = genome.getGenomicSequences();
+		genome = variant.getGenome();
+		genSeqs = genome.getGenomicSequences();
 		this.variant = variant;
 	}
 
@@ -241,6 +240,10 @@ public class VariantRealign {
 
 	public void setAlignRight() {
 		alignLeft = false;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 	public void setSequenceAlt(String sequenceAlt) {

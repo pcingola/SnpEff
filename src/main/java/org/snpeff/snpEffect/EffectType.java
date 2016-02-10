@@ -351,10 +351,10 @@ public enum EffectType {
 			return "disruptive_inframe_deletion";
 
 		case CODON_DELETION:
-			return "inframe_deletion";
+			return "conservative_inframe_deletion";
 
 		case CODON_INSERTION:
-			return "inframe_insertion";
+			return "conservative_inframe_insertion";
 
 		case DOWNSTREAM:
 			return "downstream_gene_variant";

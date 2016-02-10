@@ -8,8 +8,8 @@ import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Gpr;
 
