@@ -379,62 +379,75 @@ public class Marker extends Interval implements TxtSerializable {
 	}
 
 	public String idChain() {
-		return idChain(";", true);
+		return idChain(";", ":", true);
 	}
 
-	public String idChain(String separator, boolean useGeneId) {
-		return idChain(separator, useGeneId, null);
+	public String idChain(String separatorBetween, String separatorWithin, boolean useGeneId) {
+		return idChain(separatorBetween, separatorWithin, useGeneId, null);
 	}
 
 	/**
 	 * A list of all IDs and parent IDs until chromosome
 	 */
-	public String idChain(String separator, boolean useGeneId, VariantEffect changeEffect) {
+	public String idChain(String separatorBetween, String separatorWithin, boolean useGeneId, VariantEffect varEff) {
 		StringBuilder sb = new StringBuilder();
 
 		for (Marker m = this; (m != null) && !(m instanceof Chromosome) && !(m instanceof Genome); m = m.getParent()) {
-			if (sb.length() > 0) sb.append(separator);
+			if (sb.length() > 0) sb.append(separatorBetween);
 
 			switch (m.getType()) {
 			case EXON:
 				Transcript tr = (Transcript) m.getParent();
 				Exon ex = (Exon) m;
-				sb.append("exon_" + ex.getRank() + "_" + tr.numChilds() + "_" + ex.getSpliceType());
+				sb.append(m.getClass().getSimpleName());
+				sb.append(separatorWithin + ex.getRank());
+				sb.append(separatorWithin + tr.numChilds());
+				sb.append(separatorWithin + ex.getSpliceType());
 				break;
 
 			case INTRON:
 				Intron intron = (Intron) m;
-				sb.append("intron_" + intron.getRank() + "_" + intron.getSpliceType());
+				tr = (Transcript) m.getParent();
+				sb.append(m.getClass().getSimpleName());
+				sb.append(separatorWithin + intron.getRank());
+				sb.append(separatorWithin + (tr.numChilds() - 1));
+				sb.append(separatorWithin + intron.getSpliceType());
 				break;
 
 			case GENE:
 				Gene g = (Gene) m;
-				sb.append(useGeneId ? m.getId() : g.getGeneName());
-				sb.append(separator + g.getBioType());
+				sb.append(m.getClass().getSimpleName());
+				sb.append(separatorWithin + (useGeneId ? m.getId() : g.getGeneName()));
+				sb.append(separatorWithin + g.getBioType());
 				break;
 
 			case TRANSCRIPT:
-				sb.append(m.getId());
-				sb.append(separator + ((Transcript) m).getBioType());
+				tr = (Transcript) m;
+				sb.append(m.getClass().getSimpleName());
+				sb.append(separatorWithin + m.getId());
+				if (tr.getBioType() != null) sb.append(separatorWithin + tr.getBioType());
 				break;
 
 			case DOWNSTREAM:
-				if ((changeEffect != null) && (changeEffect.getVariant() != null)) {
+				sb.append(m.getClass().getSimpleName());
+				if ((varEff != null) && (varEff.getVariant() != null)) {
 					Downstream downstream = (Downstream) m;
-					sb.append(downstream.distanceToTr(changeEffect.getVariant()));
+					sb.append(separatorWithin + downstream.distanceToTr(varEff.getVariant()));
 				}
 				break;
 
 			case UPSTREAM:
-				if ((changeEffect != null) && (changeEffect.getVariant() != null)) {
+				sb.append(m.getClass().getSimpleName());
+				if ((varEff != null) && (varEff.getVariant() != null)) {
 					Upstream upstream = (Upstream) m;
-					sb.append(upstream.distanceToTr(changeEffect.getVariant()));
+					sb.append(separatorWithin + upstream.distanceToTr(varEff.getVariant()));
 				}
 				break;
 
 			case CHROMOSOME:
 			case INTERGENIC:
-				sb.append(m.getId());
+				sb.append(m.getClass().getSimpleName());
+				sb.append(separatorWithin + m.getId());
 				break;
 
 			default:
@@ -442,11 +455,8 @@ public class Marker extends Interval implements TxtSerializable {
 			}
 		}
 
-		// Empty? Add ID
-		if (sb.length() <= 0) sb.append(getId());
-
-		// Prepend type
-		sb.insert(0, this.getClass().getSimpleName() + separator);
+		// Empty? Add type + ID
+		if (sb.length() <= 0) sb.append(this.getClass().getSimpleName() + separatorWithin + getId());
 
 		return sb.toString();
 	}

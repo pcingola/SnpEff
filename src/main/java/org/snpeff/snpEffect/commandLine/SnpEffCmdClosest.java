@@ -84,7 +84,7 @@ public class SnpEffCmdClosest extends SnpEff {
 
 					// Append all closest markers
 					for (Marker closestMarker : closestMarkers)
-						idsb.append(";" + closestMarker.idChain(",", false));
+						idsb.append(";" + closestMarker.idChain(",", ":", false));
 
 					id = idsb.toString();
 				}
@@ -309,7 +309,7 @@ public class SnpEffCmdClosest extends SnpEff {
 
 					// Append all closest markers
 					for (Marker closestMarker : closestMarkers)
-						closestsb.append("|" + closestMarker.idChain(",", false));
+						closestsb.append("|" + closestMarker.idChain(",", ":", false));
 
 					ve.addInfo(CLOSEST, closestsb.toString());
 				}

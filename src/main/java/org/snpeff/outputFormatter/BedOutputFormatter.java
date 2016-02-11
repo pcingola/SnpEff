@@ -51,15 +51,15 @@ public class BedOutputFormatter extends OutputFormatter {
 
 		// Show results
 		HashSet<String> chEffs = new HashSet<String>();
-		for (VariantEffect changeEffect : variantEffects) {
+		for (VariantEffect varEff : variantEffects) {
 			// If it is not filtered out by changeEffectResutFilter  => Show it
-			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(changeEffect))) {
+			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(varEff))) {
 
 				StringBuffer sb = new StringBuffer();
-				sb.append(changeEffect.effect(true, false, false, useSequenceOntology, false));
+				sb.append(varEff.effect(true, false, false, useSequenceOntology, false));
 
-				Marker m = changeEffect.getMarker();
-				if (m != null) chEffs.add(m.idChain("|", useGeneId, changeEffect));
+				Marker m = varEff.getMarker();
+				if (m != null) chEffs.add(m.idChain("|", ":", useGeneId, varEff));
 			}
 
 		}
