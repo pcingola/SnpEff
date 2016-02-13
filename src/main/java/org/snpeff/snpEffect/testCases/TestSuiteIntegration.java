@@ -15,6 +15,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCutsomInte
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationDelEtc;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationEff;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationEmbl;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationErrors;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationExonFrame;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationFilterTranscripts;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationGenomicSequences;
@@ -33,6 +34,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHugeDeleti
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationInsEtc;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationInsVep;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationLof;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationMarkerSeq;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationMissenseSilentRatio;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationMixedVariants;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationMnp;
@@ -52,8 +54,6 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationTranscript
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationTranscriptError;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVariant;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
-import org.snpeff.snpEffect.testCases.unity.TestCasesIntegrationErrors;
-import org.snpeff.snpEffect.testCases.unity.TestCasesIntegrationMarkerSeq;
 
 /**
  * Invoke all integration test cases

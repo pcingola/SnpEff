@@ -1,4 +1,4 @@
-package org.snpeff.snpEffect.testCases.unity;
+package org.snpeff.snpEffect.testCases.integration;
 
 import java.util.List;
 
