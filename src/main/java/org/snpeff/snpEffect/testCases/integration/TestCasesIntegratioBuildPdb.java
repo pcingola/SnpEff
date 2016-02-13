@@ -41,6 +41,7 @@ public class TestCasesIntegratioBuildPdb extends TestCasesIntegrationBase {
 		boolean ok = false;
 		for (DistanceResult dr : distanceResults) {
 			ok |= dr.pdbId.equals("1A12") && dr.aaPos1 == 24 && dr.aaPos2 == 135;
+			if (verbose) Gpr.debug("INTERACTION:\t" + dr);
 		}
 
 		Assert.assertTrue("Interaction not found!", ok);
