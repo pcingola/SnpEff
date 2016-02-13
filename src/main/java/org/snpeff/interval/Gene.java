@@ -93,7 +93,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 				end = newEnd;
 				changed = true;
 			}
-		} else Gpr.debug("Gene '" + id + "' (name:'" + geneName + "') not adjusted: " + this);
+		} else if (Config.get().isDebug()) {
+			Gpr.debug("Gene '" + id + "' (name:'" + geneName + "') not adjusted: " + this);
+		}
 
 		return changed;
 	}

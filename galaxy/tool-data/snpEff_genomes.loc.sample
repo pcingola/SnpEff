@@ -38228,6 +38228,7 @@ testHg19Chr9 	 testHg19Chr9   testHg19Chr9
 testHg19ChrX 	 testHg19ChrX   testHg19ChrX
 testHg19ChrY 	 testHg19ChrY   testHg19ChrY
 testHg19Hgvs 	 testHg19Hgvs   testHg19Hgvs
+testHg19Pdb 	 testHg19Pdb   testHg19Pdb
 test_circular_GCA_000210475.1.22 	 test_circular_GCA_000210475.1.22   test_circular_GCA_000210475.1.22
 test_circular_GCA_000210475.1.22_end 	 test_circular_GCA_000210475.1.22_end   test_circular_GCA_000210475.1.22_end
 uncultured_Sulfuricurvum_RIFRC_1_uid193658 	 uncultured_Sulfuricurvum_RIFRC_1_uid193658   uncultured_Sulfuricurvum_RIFRC_1_uid193658

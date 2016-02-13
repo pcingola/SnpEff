@@ -169,4 +169,16 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 	}
 
+	/**
+	 * Test for bug: Infinite loop when looking up "Parent ID" in some GFF3 files
+	 */
+	@Test
+	public void testCase_11_mita() {
+		Gpr.debug("Test");
+		String genome = "testMita";
+		String gff3File = "tests/testMita.gff";
+		String resultFile = null; // We only check that there is no "Out of memory" error due to infinite loop
+		buildGff3AndCompare(genome, gff3File, resultFile, false, false);
+	}
+
 }

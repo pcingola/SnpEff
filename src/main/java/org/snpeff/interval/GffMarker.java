@@ -116,7 +116,7 @@ public class GffMarker extends Custom {
 		String key = "gene_id";
 		if (hasAttr(key)) return getAttr(key);
 		if (gffType == GffType.GENE) return id;
-		if (gffType == GffType.TRANSCRIPT) return getGffParentId();
+		if (gffType == GffType.TRANSCRIPT) return getGffParentId(true);
 
 		return GffType.GENE + "_" + id;
 	}
@@ -125,20 +125,20 @@ public class GffMarker extends Custom {
 		if (hasAttr("gene_name")) return getAttr("gene_name");
 		if (gffType == GffType.GENE && hasAttr("name")) return getAttr("name");
 		if (gffType == GffType.TRANSCRIPT) {
-			String pid = getGffParentId();
+			String pid = getGffParentId(true);
 			if (pid != null) return pid;
 		}
 		return id;
 	}
 
-	public String getGffParentId() {
+	public String getGffParentId(boolean fromGeneId) {
 		if (hasAttr("Parent")) return getAttr("Parent");
 
 		switch (gffType) {
 		case TRANSCRIPT:
 		case INTRON_CONSERVED:
 			if (hasAttr("gene")) return getAttr("gene");
-			return getGeneId();
+			return fromGeneId ? null : getGeneId(); // Avoid infinite recursion
 
 		case EXON:
 		case CDS:
@@ -161,7 +161,7 @@ public class GffMarker extends Custom {
 		if (ids != null) return ids.split(",");
 
 		// Nothing found? Try to find parentId
-		String pid = getGffParentId();
+		String pid = getGffParentId(false);
 		if (pid == null) return null; // Nothing found? Give up
 
 		// Pack parentId into a String[]
@@ -188,7 +188,7 @@ public class GffMarker extends Custom {
 		String key = "transcript_id";
 		if (hasAttr(key)) return getAttr(key);
 		if (gffType == GffType.TRANSCRIPT) return id;
-		if (gffType == GffType.EXON) return getGffParentId();
+		if (gffType == GffType.EXON) return getGffParentId(false);
 		return GffType.TRANSCRIPT + "_" + id;
 	}
 
