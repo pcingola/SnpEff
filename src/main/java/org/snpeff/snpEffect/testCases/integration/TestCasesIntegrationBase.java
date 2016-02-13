@@ -650,6 +650,7 @@ public class TestCasesIntegrationBase {
 						// OK. I consider these the same
 						if (eff.equals("5_prime_UTR_premature_start_codon_gain_variant")) eff = "5_prime_UTR_variant";
 						if (eff.equals("disruptive_inframe_insertion")) eff = "inframe_insertion";
+						if (eff.equals("conservative_inframe_insertion")) eff = "inframe_insertion";
 						if (eff.equals("start_lost")) eff = "initiator_codon_variant";
 						effSos.add(eff);
 					}
