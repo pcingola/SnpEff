@@ -17,40 +17,43 @@ public class TestCasesIntegratioBuildPdb extends TestCasesIntegrationBase {
 	public TestCasesIntegratioBuildPdb() {
 	}
 
-	//	/**
-	//	 * Interaction within protein
-	//	 */
-	//	@Test
-	//	public void test_01() {
-	//		Gpr.debug("Test");
-	//
-	//		// Command line arguments
-	//		String genome = "testHg19Pdb";
-	//		String pdbDir = "tests/pdb";
-	//		String args[] = { "-pdbDir", pdbDir, genome };
-	//
-	//		// Create command
-	//		SnpEffCmdPdb cmd = new SnpEffCmdPdb();
-	//		cmd.setVerbose(verbose);
-	//		cmd.setDebug(debug);
-	//		cmd.parseArgs(args);
-	//		cmd.run(true);
-	//		List<DistanceResult> distanceResults = cmd.getDistanceResults();
-	//
-	//		// Check results for a specific interaction
-	//		boolean ok = false;
-	//		for (DistanceResult dr : distanceResults) {
-	//			ok |= dr.pdbId.equals("1A12") && dr.aaPos1 == 24 && dr.aaPos2 == 135;
-	//		}
-	//
-	//		Assert.assertTrue("Interaction not found!", ok);
-	//	}
+	/**
+	 * Interaction within protein using PDB entry '1A12'
+	 */
+	@Test
+	public void test_01() {
+		Gpr.debug("Test");
+
+		// Command line arguments
+		String genome = "testHg19Pdb";
+		String pdbDir = "tests/pdb";
+		String args[] = { "-pdbDir", pdbDir, genome };
+
+		// Create command
+		SnpEffCmdPdb cmd = new SnpEffCmdPdb();
+		cmd.setVerbose(verbose);
+		cmd.setDebug(debug);
+		cmd.parseArgs(args);
+		cmd.run(true);
+		List<DistanceResult> distanceResults = cmd.getDistanceResults();
+
+		// Check results for a specific interaction
+		boolean ok = false;
+		for (DistanceResult dr : distanceResults) {
+			ok |= dr.pdbId.equals("1A12") && dr.aaPos1 == 24 && dr.aaPos2 == 135;
+		}
+
+		Assert.assertTrue("Interaction not found!", ok);
+	}
 
 	/**
 	 * Interaction between two proteins
-	 * TODO: Test case using 2G4D. Should find interaction
-	 * between amino acid #441 of Senp1 and #60 of Sumo1 proteins
-	 * See thesis, Fig 4.5
+	 * PDB entry 4OVU should have an interaction between chains 'A' 
+	 * and 'B' (Min distance :2.45 Angstrom)
+	 * 
+	 *  	AA.pos	AA		chr:pos			transcript
+	 *  	22		E		3:178916679		NM_006218.2
+	 *  	533		R		5:67591006		NM_181523.2
 	 */
 	@Test
 	public void test_02() {
@@ -72,49 +75,16 @@ public class TestCasesIntegratioBuildPdb extends TestCasesIntegrationBase {
 		// Check results
 		boolean ok = false;
 		for (DistanceResult dr : distanceResults) {
-			System.out.println(dr);
+			ok |= dr.pdbId.equals("4OVU") //
+					&& dr.aaPos1 == 22 //
+					&& dr.aaPos2 == 533 //
+					&& dr.trId1.equals("NM_006218.2") //
+					&& dr.trId2.equals("NM_181523.2") //
+					;
+			if (verbose) Gpr.debug(dr);
 		}
 
 		Assert.assertTrue("Interaction not found!", ok);
-
-		// TODO: Check comparisson
-		throw new RuntimeException("CREATE!!!");
 	}
-
-	//	/**
-	//	 * Interaction between two proteins
-	//	 * TODO: Test case using 4OVU. 
-	//	 * From email: "...PIK3R1 mutations was based on protein-protein 
-	//	 * 				interactions (PDB:4OVU). It looked like D560 was 
-	//	 * 				interacting with PIK3CA"
-	//	 */
-	//	@Test
-	//	public void test_03() {
-	//		Gpr.debug("Test");
-	//
-	//		// Command line arguments
-	//		String genome = "testHg19Pdb";
-	//		String pdbDir = "tests/pdb";
-	//		String args[] = { "-pdbDir", pdbDir, genome };
-	//
-	//		// Create command
-	//		SnpEffCmdPdb cmd = new SnpEffCmdPdb();
-	//		cmd.setVerbose(verbose);
-	//		cmd.setDebug(debug);
-	//		cmd.parseArgs(args);
-	//		cmd.run(true);
-	//		List<DistanceResult> distanceResults = cmd.getDistanceResults();
-	//
-	//		// Check resoults
-	//		boolean ok = false;
-	//		for (DistanceResult dr : distanceResults) {
-	//			Gpr.debug("TODO: Find interaction\t" + dr);
-	//		}
-	//
-	//		Assert.assertTrue("Interaction not found!", ok);
-	//
-	//		// TODO: Check comparison
-	//		throw new RuntimeException("CREATE!!!");
-	//	}
 
 }

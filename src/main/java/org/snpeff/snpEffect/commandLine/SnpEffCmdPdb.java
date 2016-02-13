@@ -695,8 +695,7 @@ public class SnpEffCmdPdb extends SnpEff {
 		if (pdbStruct == null || !filterPdb(pdbStruct)) return; // Passes filter?
 
 		// Single protein analysis
-		Gpr.debug("COMENTED OUT WITHIN PROTEIN ANALYSIS!!!");
-		//pdbAnalysisSingle(pdbStruct, trIds);
+		pdbAnalysisSingle(pdbStruct, trIds);
 
 		// Compound protein analysis
 		if (isCompound(pdbStruct)) pdbAnalysisCompound(pdbStruct, trIds);
