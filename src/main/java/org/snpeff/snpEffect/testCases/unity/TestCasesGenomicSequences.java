@@ -19,7 +19,7 @@ import org.snpeff.util.GprSeq;
  */
 public class TestCasesGenomicSequences {
 
-	boolean verbose = true;
+	boolean verbose = false;
 
 	public TestCasesGenomicSequences() {
 	}
