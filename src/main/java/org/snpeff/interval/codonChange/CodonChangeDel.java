@@ -4,39 +4,19 @@ import org.snpeff.interval.Exon;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffects;
 
 /**
  * Calculate codon changes produced by a deletion
  * @author pcingola
  */
-public class CodonChangeDel extends CodonChange {
-
-	int oldCodonCdsStart = -1;
-	int oldCodonCdsEnd = -1;
-	int countPartial = 0;
+public class CodonChangeDel extends CodonChangeStructural {
 
 	public CodonChangeDel(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		super(variant, transcript, variantEffects);
 		returnNow = false;
 		requireNetCdsChange = true;
-	}
-
-	@Override
-	public void codonChange() {
-		if (variant.includes(transcript)) {
-			// Large deletion removing the whole transcript?
-			effectNoCodon(transcript, EffectType.TRANSCRIPT_DELETED);
-		} else {
-			// Exon fully deleted
-			if (exonDeleted()) return;
-
-			//			// More than one exon partially deleted?
-			//			if (countPartial > 1) throw new RuntimeException("UNIMPLEMENTED!!!");
-
-			// One exon partially deleted?
-			super.codonChange();
-		}
 	}
 
 	/**
@@ -115,7 +95,7 @@ public class CodonChangeDel extends CodonChange {
 	}
 
 	/**
-	 * Get new (modified) codons
+	 * Get alternative codons
 	 */
 	@Override
 	protected String codonsAlt() {
@@ -153,8 +133,8 @@ public class CodonChangeDel extends CodonChange {
 
 		int maxCodon = cdsBaseMax / CodonChange.CODON_SIZE;
 		int minCodon = cdsBaseMin / CodonChange.CODON_SIZE;
-		oldCodonCdsStart = (CodonChange.CODON_SIZE * minCodon);
-		oldCodonCdsEnd = (CodonChange.CODON_SIZE * (maxCodon + 1)) - 1;
+		int oldCodonCdsStart = (CodonChange.CODON_SIZE * minCodon);
+		int oldCodonCdsEnd = (CodonChange.CODON_SIZE * (maxCodon + 1)) - 1;
 
 		String codons = "";
 		if (oldCodonCdsEnd >= transcript.cds().length()) codons = transcript.cds().substring(oldCodonCdsStart);
@@ -163,17 +143,82 @@ public class CodonChangeDel extends CodonChange {
 		return codons;
 	}
 
+	@Override
+	protected void effectTranscript() {
+		effectNoCodon(transcript, EffectType.TRANSCRIPT_DELETED);
+	}
+
 	/**
 	 * Whole exon/s deleted?
 	 */
-	boolean exonDeleted() {
-		boolean found = false;
+	void exonLoss() {
 		for (Exon ex : transcript)
-			if (variant.includes(ex)) {
-				effectNoCodon(ex, EffectType.EXON_DELETED);
-				found = true;
+			if (variant.includes(ex)) effectNoCodon(ex, EffectType.EXON_DELETED);
+	}
+
+	/**
+	 * Deletion analysis using full transcript information. This is
+	 * done only when the variant affects more than one exons.
+	 */
+	@Override
+	protected void exons() {
+		if (exonFull == 0 && exonPartial == 1) {
+			// Variant partially affects only one exon?
+			// => Use the standard (by exon) method
+			codonChangeSuper();
+			return;
+		} else if (exonFull > 0) {
+			// Full exons deleted
+			exonLoss();
+
+			// Only whole exons deleted? We are done
+			if (exonPartial == 0) return;
+		}
+
+		//---
+		// A combination of partial and full exons affected
+		//---
+		codonsRefAlt();
+		EffectType effType = null;
+		int lenDiff = cdsAlt.length() - cdsRef.length();
+		if (lenDiff % CodonChange.CODON_SIZE != 0) {
+			effType = EffectType.FRAME_SHIFT;
+		} else if (codonStartIndex == 0) {
+			effType = EffectType.CODON_DELETION;
+		} else {
+			if (codonsAlt.isEmpty() || codonsRef.startsWith(codonsAlt)) {
+				effType = EffectType.CODON_DELETION;
+			} else {
+				effType = EffectType.CODON_CHANGE_PLUS_CODON_DELETION;
 			}
-		return found;
+		}
+
+		// Assign to first exon
+		for (Exon ex : transcript)
+			if (variant.includes(ex) || variant.intersects(ex)) {
+				exon = ex;
+				break;
+			}
+
+		// Add variant effect
+		effect(exon, effType, false);
+	}
+
+	@Override
+	protected void exonsCoding() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void exonsNoncoding() {
+		if (exonFull > 0) effectNoCodon(transcript, EffectType.EXON_DELETED, EffectImpact.MODIFIER);
+		if (exonPartial > 0) effectNoCodon(transcript, EffectType.EXON_DELETED_PARTIAL, EffectImpact.MODIFIER);
+	}
+
+	@Override
+	protected void intron() {
+		effectNoCodon(transcript, EffectType.INTRON);
 	}
 
 }

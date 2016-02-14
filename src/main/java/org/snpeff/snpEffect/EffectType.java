@@ -23,6 +23,7 @@ public enum EffectType {
 	, GENE_FUSION //
 	, TRANSCRIPT_DELETED //
 	, EXON_DELETED //
+	, EXON_DELETED_PARTIAL //
 	, EXON_DUPLICATION //
 	, EXON_DUPLICATION_PARTIAL //
 	, EXON_INVERSION //
@@ -132,6 +133,7 @@ public enum EffectType {
 		switch (this) {
 		case CHROMOSOME_LARGE_DELETION:
 		case EXON_DELETED:
+		case EXON_DELETED_PARTIAL:
 		case EXON_DUPLICATION:
 		case EXON_DUPLICATION_PARTIAL:
 		case EXON_INVERSION:
@@ -268,6 +270,7 @@ public enum EffectType {
 
 		case EXON:
 		case EXON_DELETED:
+		case EXON_DELETED_PARTIAL:
 		case EXON_DUPLICATION:
 		case EXON_DUPLICATION_PARTIAL:
 		case EXON_INVERSION:
@@ -364,6 +367,9 @@ public enum EffectType {
 			return "non_coding_exon_variant";
 
 		case EXON_DELETED:
+			return "exon_loss_variant";
+
+		case EXON_DELETED_PARTIAL:
 			return "exon_loss_variant";
 
 		case EXON_DUPLICATION:

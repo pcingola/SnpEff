@@ -6,7 +6,6 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
 
 /**
  * Calculate codon changes produced by a duplication
@@ -14,8 +13,6 @@ import org.snpeff.util.Gpr;
  * @author pcingola
  */
 public class CodonChangeDup extends CodonChangeStructural {
-
-	public static boolean debug = false;
 
 	public CodonChangeDup(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		super(variant, transcript, variantEffects);
@@ -92,14 +89,7 @@ public class CodonChangeDup extends CodonChangeStructural {
 	 */
 	@Override
 	protected void exonsCoding() {
-		Transcript trNew = transcript.apply(variant);
-		if (debug) Gpr.debug("Transcript after apply: " + trNew);
-
-		String cdsAlt = trNew.cds();
-		String cdsRef = transcript.cds();
-
-		// Calculate differences: CDS
-		cdsDiff(cdsRef, cdsAlt);
+		codonsRefAlt();
 
 		if (exonFull > 0) effect(transcript, EffectType.EXON_DUPLICATION, false);
 		if (exonPartial > 0) effect(transcript, EffectType.EXON_DUPLICATION_PARTIAL, false);

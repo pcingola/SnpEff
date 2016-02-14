@@ -18,6 +18,8 @@ public abstract class CodonChangeStructural extends CodonChange {
 
 	protected boolean coding;
 	protected int exonFull, exonPartial;
+	protected String cdsAlt;
+	protected String cdsRef;
 
 	public CodonChangeStructural(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		super(variant, transcript, variantEffects);
@@ -29,7 +31,7 @@ public abstract class CodonChangeStructural extends CodonChange {
 	 * Differences between two CDSs after removing equal codons from
 	 * the beginning and from the end of both strings
 	 */
-	protected void cdsDiff(String cdsRef, String cdsAlt) {
+	protected void cdsDiff() {
 		int min = Math.min(cdsRef.length(), cdsAlt.length()) / 3;
 
 		// Removing form the beginning
@@ -41,7 +43,13 @@ public abstract class CodonChangeStructural extends CodonChange {
 					+ "\n\tcodonsRef [" + codonStartNum + "]: " + codons(cdsRef, codonStartNum, -1) //
 					+ "\n\tcodonsAlt [" + codonStartNum + "]: " + codons(cdsAlt, codonStartNum, -1) //
 			);
-			if (!codonEquals(cdsRef, cdsAlt, i, i)) break;
+
+			// Codons differ?
+			if (!codonEquals(cdsRef, cdsAlt, i, i)) {
+				// Find index difference within codon
+				codonStartIndex = codonDiffIndex(cdsRef, cdsAlt, i, i);
+				break;
+			}
 		}
 
 		// Removing trailing codons
@@ -76,6 +84,22 @@ public abstract class CodonChangeStructural extends CodonChange {
 		}
 	}
 
+	protected void codonChangeSuper() {
+		super.codonChange();
+	}
+
+	private int codonDiffIndex(String cdsRef, String cdsAlt, int codonNumRef, int codonNumAlt) {
+		for (int h = 0, i = 3 * codonNumRef, j = 3 * codonNumAlt; h < 3; i++, j++, h++) {
+			// Premature end of sequence? (i.e. sequence ends before codon end)
+			if ((i >= cdsRef.length()) || (j >= cdsAlt.length())) return h;
+
+			// Different base? Return index
+			if (cdsRef.charAt(i) != cdsAlt.charAt(j)) return h;
+		}
+
+		return -1;
+	}
+
 	/**
 	 * Compare codons from cdsRef[codonNumRef] and cdsAlt[codonNumAlt]
 	 */
@@ -100,6 +124,21 @@ public abstract class CodonChangeStructural extends CodonChange {
 		endBase = Math.min(cds.length(), endBase);
 		int startBase = Math.max(0, 3 * codonNumStart);
 		return cds.substring(startBase, endBase);
+	}
+
+	/**
+	 * Calculate codons by applying the variant and calculating the differences in CDS sequences
+	 * This is a slow method, makes sense only for complex variants
+	 */
+	protected void codonsRefAlt() {
+		Transcript trNew = transcript.apply(variant);
+		if (debug) Gpr.debug("Transcript after apply: " + trNew);
+
+		cdsAlt = trNew.cds();
+		cdsRef = transcript.cds();
+
+		// Calculate differences: CDS
+		cdsDiff();
 	}
 
 	/**

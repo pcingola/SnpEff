@@ -166,8 +166,10 @@ public class TestCasesDels extends TestCasesBase {
 					// Get a random base different from 'refBase'
 					int delLen = rand.nextInt(10) + 1;
 
+					// Variants affecting only one exon
 					int start = pos;
-					int end = pos + delLen;
+					int end = Math.min(pos + delLen, exon.getEnd());
+
 					if (transcript.isStrandMinus()) {
 						start = pos - delLen;
 						end = pos;

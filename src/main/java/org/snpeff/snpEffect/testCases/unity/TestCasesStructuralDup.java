@@ -217,7 +217,7 @@ public class TestCasesStructuralDup extends TestCasesBase {
 
 		EffectType expEffs[] = { EffectType.EXON_DUPLICATION };
 		String expHgvsc[] = { "c.33-5_*3dup" };
-		EffectImpact expectedImpact = EffectImpact.HIGH;
+		EffectImpact expectedImpact = EffectImpact.LOW;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}

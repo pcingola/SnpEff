@@ -310,7 +310,7 @@ public class CodonChange {
 
 		sb.append("Transcript : " + transcript.getId() + "\n");
 		sb.append("Variant    : " + variant + "\n");
-		sb.append("Codonss    : " + codonsRef + "/" + codonsAlt + "\tnum: " + codonStartNum + "\tidx: " + codonStartIndex + "\n");
+		sb.append("Codons     : " + codonsRef + "/" + codonsAlt + "\tnum: " + codonStartNum + "\tidx: " + codonStartIndex + "\n");
 		sb.append("Effects    :\n");
 		for (VariantEffect veff : variantEffects)
 			sb.append("\t" + veff.getEffectTypeString(false) + "\t" + veff.getCodonsRef() + "/" + veff.getCodonsAlt() + "\t" + veff.getAaRef() + "/" + veff.getAaAlt() + "\n");
