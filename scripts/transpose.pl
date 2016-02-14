@@ -9,7 +9,7 @@ my($rownum) = 0;
 
 # Read data
 while (<STDIN>) {
-	my(@row) = split /\s/;
+	my(@row) = split /\t/;
 	my($colnum) = 0;
 	foreach my $val (@row) { $data{$rownum}{$colnum++} = $val; }
 	$rownum++;
