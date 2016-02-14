@@ -9,8 +9,8 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
+import org.snpeff.snpEffect.VariantEffects;
 
 /**
  * Analyze codon changes based on a variant and a Transcript
@@ -70,7 +70,7 @@ public class CodonChange {
 	 * Calculate additional effect due to codon changes
 	 * E.g. A frame-shift that also affects a stop codon
 	 */
-	public EffectType additionalEffect(String codonsOld, String codonsNew, int codonNum, int codonIndex, String aaOld, String aaNew) {
+	protected EffectType additionalEffect(String codonsOld, String codonsNew, int codonNum, int codonIndex, String aaOld, String aaNew) {
 		EffectType newEffectType = null;
 
 		CodonTable codonTable = transcript.codonTable();

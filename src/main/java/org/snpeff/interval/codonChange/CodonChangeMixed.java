@@ -12,7 +12,7 @@ import org.snpeff.util.Gpr;
 /**
  * Calculate codon changes produced by a 'mixed' variant
  *
- * Essetially every 'mixed' variant can be represented as a concatenation of a SNP/MNP + an INS/DEL
+ * Essentially every 'mixed' variant can be represented as a concatenation of a SNP/MNP + an INS/DEL
  *
  * @author pcingola
  */

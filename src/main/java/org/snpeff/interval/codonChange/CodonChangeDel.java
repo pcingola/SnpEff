@@ -14,6 +14,7 @@ public class CodonChangeDel extends CodonChange {
 
 	int oldCodonCdsStart = -1;
 	int oldCodonCdsEnd = -1;
+	int countPartial = 0;
 
 	public CodonChangeDel(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		super(variant, transcript, variantEffects);
@@ -30,7 +31,10 @@ public class CodonChangeDel extends CodonChange {
 			// Exon fully deleted
 			if (exonDeleted()) return;
 
-			// Normal cases
+			//			// More than one exon partially deleted?
+			//			if (countPartial > 1) throw new RuntimeException("UNIMPLEMENTED!!!");
+
+			// One exon partially deleted?
 			super.codonChange();
 		}
 	}

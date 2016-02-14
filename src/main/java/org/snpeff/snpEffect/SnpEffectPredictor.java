@@ -40,7 +40,7 @@ public class SnpEffectPredictor implements Serializable {
 	public static final int DEFAULT_UP_DOWN_LENGTH = 5000;
 	//public static final int LARGE_VARIANT_SIZE_THRESHOLD = 1000000; // Number of bases for a variant to be considered large/huge
 	//public static final double LARGE_VARIANT_RATIO_THRESHOLD = 0.01; // Percentage of bases
-	public static final int SMALL_VARIANT_SIZE_THRESHOLD = 20; // Number of bases for a variant to be considered 'small'
+	public static final int SMALL_VARIANT_SIZE_THRESHOLD = 10; // Number of bases for a variant to be considered 'small'
 
 	boolean useChromosomes = true;
 	boolean debug;
@@ -740,7 +740,7 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Do we have a fusion event?
 		List<VariantEffect> veffFusions = veff.fusion();
-		if (veffFusions != null) {
+		if (veffFusions != null && !veffFusions.isEmpty()) {
 			for (VariantEffect veffFusion : veffFusions) {
 				added = true;
 				variantEffects.add(veffFusion);

@@ -4,8 +4,8 @@ import org.snpeff.interval.Exon;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
+import org.snpeff.snpEffect.VariantEffects;
 
 /**
  * Calculate codon changes produced by a SNP
@@ -27,7 +27,9 @@ public class CodonChangeSnp extends CodonChange {
 		// Get old and new codons
 		codonsRef = codonsRef();
 		codonsAlt = codonsAlt();
-		effect(exon, EffectType.CODON_CHANGE, true);// Use a generic low priority variant, this allows 'setCodons' to override it
+
+		// Use a generic low priority variant, this allows 'setCodons' to override it
+		effect(exon, EffectType.CODON_CHANGE, true);
 
 		if (codonsRef.isEmpty()) variantEffects.addErrorWarning(variant, ErrorWarningType.ERROR_MISSING_CDS_SEQUENCE);
 
@@ -76,9 +78,11 @@ public class CodonChangeSnp extends CodonChange {
 
 		// Create codon sequence
 		char codonChars[] = cdsStr.substring(minBase, maxBase).toLowerCase().toCharArray();
+
 		// Capitatlize changed base
 		if (codonStartIndex < codonChars.length) codonChars[codonStartIndex] = Character.toUpperCase(codonChars[codonStartIndex]);
 		String codon = new String(codonChars);
+
 		return codon;
 	}
 }

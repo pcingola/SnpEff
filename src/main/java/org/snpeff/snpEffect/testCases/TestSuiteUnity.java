@@ -24,7 +24,6 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesDnaNSequence;
 import org.snpeff.snpEffect.testCases.unity.TestCasesDnaOverlap;
 import org.snpeff.snpEffect.testCases.unity.TestCasesDnaSequence;
 import org.snpeff.snpEffect.testCases.unity.TestCasesDnaSequenceByte;
-import org.snpeff.snpEffect.testCases.unity.TestCasesDup;
 import org.snpeff.snpEffect.testCases.unity.TestCasesEffectCollapse;
 import org.snpeff.snpEffect.testCases.unity.TestCasesEffectCollapse2;
 import org.snpeff.snpEffect.testCases.unity.TestCasesFasta;
@@ -45,7 +44,6 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesIntervalTreeArray;
 import org.snpeff.snpEffect.testCases.unity.TestCasesIntervalTreeOri;
 import org.snpeff.snpEffect.testCases.unity.TestCasesIntervalVariant;
 import org.snpeff.snpEffect.testCases.unity.TestCasesIntervals;
-import org.snpeff.snpEffect.testCases.unity.TestCasesInv;
 import org.snpeff.snpEffect.testCases.unity.TestCasesIubString;
 import org.snpeff.snpEffect.testCases.unity.TestCasesJaspar;
 import org.snpeff.snpEffect.testCases.unity.TestCasesMarkerUtils;
@@ -58,6 +56,9 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesSequenceIndexer;
 import org.snpeff.snpEffect.testCases.unity.TestCasesSnps;
 import org.snpeff.snpEffect.testCases.unity.TestCasesSpliceRegion;
 import org.snpeff.snpEffect.testCases.unity.TestCasesSpliceSite;
+import org.snpeff.snpEffect.testCases.unity.TestCasesStructuralDel;
+import org.snpeff.snpEffect.testCases.unity.TestCasesStructuralDup;
+import org.snpeff.snpEffect.testCases.unity.TestCasesStructuralInv;
 import org.snpeff.snpEffect.testCases.unity.TestCasesVariantDecompose;
 import org.snpeff.snpEffect.testCases.unity.TestCasesVariantRealignment;
 import org.snpeff.snpEffect.testCases.unity.TestCasesVcf;
@@ -87,7 +88,6 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesDnaOverlap.class, //
 		TestCasesDnaSequenceByte.class, //
 		TestCasesDnaSequence.class, //
-		TestCasesDup.class, //
 		TestCasesEffectCollapse.class, //
 		TestCasesEffectCollapse2.class, //
 		TestCasesFasta.class, //
@@ -111,7 +111,6 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesIntervalVariant.class, //
 		TestCasesIns.class, //
 		TestCasesIntStats.class, //
-		TestCasesInv.class, //
 		TestCasesJaspar.class, //
 		TestCasesMarkerUtils.class, //
 		TestCasesMnps.class, //
@@ -123,6 +122,9 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesSnps.class, //
 		TestCasesSpliceSite.class, //
 		TestCasesSpliceRegion.class, //
+		TestCasesStructuralDel.class, //
+		TestCasesStructuralDup.class, //
+		TestCasesStructuralInv.class, //
 		TestCasesVariantDecompose.class, //
 		TestCasesVariantRealignment.class, //
 		TestCasesVcf.class //

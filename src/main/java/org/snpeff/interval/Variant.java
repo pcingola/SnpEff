@@ -381,7 +381,7 @@ public class Variant extends Marker {
 	}
 
 	/**
-	 * Return the change (always compared to 'referenceStrand') without any '+' or '-' leading characters
+	 * Return the change (always compared to 'referenceStrand')
 	 */
 	public String netChange(boolean reverseStrand) {
 		if (isDel()) return reverseStrand ? GprSeq.reverseWc(ref) : ref; // Deleteion have empty 'alt'
@@ -390,7 +390,7 @@ public class Variant extends Marker {
 
 	/**
 	 * Only the part of the change that overlaps with a marker
-	 * Return the change (always in positive strand) without any '+' or '-' leading characters
+	 * Return the change (always in positive strand) 
 	 */
 	public String netChange(Marker marker) {
 		String netChange = alt;

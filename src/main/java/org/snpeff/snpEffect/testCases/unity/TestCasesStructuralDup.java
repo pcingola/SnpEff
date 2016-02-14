@@ -22,11 +22,11 @@ import org.snpeff.vcf.VcfEffect;
 /**
  * Test case for structural variants: Duplications
  */
-public class TestCasesDup extends TestCasesBase {
+public class TestCasesStructuralDup extends TestCasesBase {
 
 	EffFormatVersion formatVersion = EffFormatVersion.FORMAT_ANN;
 
-	public TestCasesDup() {
+	public TestCasesStructuralDup() {
 		super();
 	}
 

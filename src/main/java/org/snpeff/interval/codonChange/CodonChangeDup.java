@@ -1,12 +1,11 @@
 package org.snpeff.interval.codonChange;
 
-import org.snpeff.interval.Exon;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
 
 /**
@@ -14,11 +13,9 @@ import org.snpeff.util.Gpr;
  *
  * @author pcingola
  */
-public class CodonChangeDup extends CodonChange {
+public class CodonChangeDup extends CodonChangeStructural {
 
 	public static boolean debug = false;
-
-	protected boolean coding;
 
 	public CodonChangeDup(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		super(variant, transcript, variantEffects);
@@ -69,111 +66,32 @@ public class CodonChangeDup extends CodonChange {
 		return variant.getEnd() > transcript.getEnd();
 	}
 
-	/**
-	 * Differences between two CDSs after removing equal codons from
-	 * the beginning and from the end of both strings
-	 */
-	void cdsDiff(String cdsRef, String cdsAlt) {
-		int min = Math.min(cdsRef.length(), cdsAlt.length()) / 3;
-
-		// Removing form the beginning
-		codonStartNum = 0;
-		codonStartIndex = 0;
-		for (int i = 0; i <= min; i++) {
-			codonStartNum = i;
-			if (debug) Gpr.debug("cdsDiff Start\tcodonEquals(" + i + " , " + i + "): " + codonEquals(cdsRef, cdsAlt, i, i) //
-					+ "\n\tcodonsRef [" + codonStartNum + "]: " + codons(cdsRef, codonStartNum, -1) //
-					+ "\n\tcodonsAlt [" + codonStartNum + "]: " + codons(cdsAlt, codonStartNum, -1) //
-			);
-			if (!codonEquals(cdsRef, cdsAlt, i, i)) break;
-		}
-
-		// Removing trailing codons
-		int codonNumEndRef = cdsRef.length() / 3; //+ (cdsRef.length() % 3 == 0 ? 0 : 1);
-		int codonNumEndAlt = cdsAlt.length() / 3; //+ (cdsAlt.length() % 3 == 0 ? 0 : 1);
-
-		for (; codonNumEndRef >= codonStartNum && codonNumEndAlt >= codonStartNum; codonNumEndRef--, codonNumEndAlt--) {
-			if (debug) Gpr.debug("cdsDiff End\tcodonEquals(" + codonNumEndRef + " , " + codonNumEndAlt + "): " + codonEquals(cdsRef, cdsAlt, codonNumEndRef, codonNumEndAlt) //
-					+ "\n\tcodonsRef [" + codonStartNum + " , " + codonNumEndRef + "]: " + codons(cdsRef, codonStartNum, codonNumEndRef) //
-					+ "\n\tcodonsAlt [" + codonStartNum + " , " + codonNumEndAlt + "]: " + codons(cdsAlt, codonStartNum, codonNumEndAlt) //
-			);
-			if (!codonEquals(cdsRef, cdsAlt, codonNumEndRef, codonNumEndAlt)) break;
-		}
-
-		// Codons
-		codonsRef = codons(cdsRef, codonStartNum, codonNumEndRef);
-		codonsAlt = codons(cdsAlt, codonStartNum, codonNumEndAlt);
-
-		// No codon difference found?
-		if (codonsRef.isEmpty() && codonsAlt.isEmpty()) codonStartNum = codonStartIndex = -1;
+	@Override
+	protected void effectTranscript() {
+		effectNoCodon(transcript, EffectType.TRANSCRIPT_DUPLICATION);
 	}
 
 	@Override
-	public void codonChange() {
-		if (variant.includes(transcript)) {
-			// Whole transcript duplicated?
-			effectNoCodon(transcript, EffectType.TRANSCRIPT_DUPLICATION);
-		} else {
-			// Part of the transcript is duplicated
-
-			// Does the duplication affect any exon?
-			if (intersectsExons()) exons();
-			else intron();
-		}
-	}
-
-	/**
-	 * Compare codons from cdsRef[codonNumRef] and cdsAlt[codonNumAlt]
-	 */
-	boolean codonEquals(String cdsRef, String cdsAlt, int codonNumRef, int codonNumAlt) {
-		for (int h = 0, i = 3 * codonNumRef, j = 3 * codonNumAlt; h < 3; i++, j++, h++) {
-			if ((i >= cdsRef.length()) || (j >= cdsAlt.length())) // Premature end of sequence? (i.e. sequence ends before codon end)
-				return (i >= cdsRef.length()) && (j >= cdsAlt.length()); // We consider them equal only if both sequences reached the end at the same time
-
-			// Same base?
-			if (cdsRef.charAt(i) != cdsAlt.charAt(j)) return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Get codons from CDS
-	 */
-	String codons(String cds, int codonNumStart, int codonNumEnd) {
-		if (codonNumEnd >= 0 && codonNumEnd < codonNumStart) return "";
-		int endBase = codonNumEnd < 0 ? cds.length() : 3 * (codonNumEnd + 1);
-		endBase = Math.min(cds.length(), endBase);
-		int startBase = Math.max(0, 3 * codonNumStart);
-		return cds.substring(startBase, endBase);
-	}
-
-	void exons() {
-		// Full and / or partial exons duplicated?
-		boolean full = false, partial = false;
-		for (Exon ex : transcript) {
-			if (variant.includes(ex)) full = true;
-			else if (variant.intersects(ex)) partial = true;
-		}
-
+	protected void exons() {
 		if (beyondTranscript()) {
 			// Is the effect of a duplication beyond transcript's end?
 			// Then it probably does not have much impact
 			EffectImpact impact = coding ? EffectImpact.LOW : EffectImpact.MODIFIER;
-			if (full) effectNoCodon(transcript, EffectType.EXON_DUPLICATION, impact);
-			if (partial) effectNoCodon(transcript, EffectType.EXON_DUPLICATION_PARTIAL, impact);
+			if (exonFull > 0) effectNoCodon(transcript, EffectType.EXON_DUPLICATION, impact);
+			if (exonPartial > 0) effectNoCodon(transcript, EffectType.EXON_DUPLICATION_PARTIAL, impact);
 			return;
 		}
 
-		if (coding) exonsCoding(full, partial);
-		else exonsNoncoding(full, partial);
+		if (coding) exonsCoding();
+		else exonsNoncoding();
 
 	}
 
 	/**
 	 * One or more exons fully included (no partial overlap)
 	 */
-	void exonsCoding(boolean full, boolean partial) {
+	@Override
+	protected void exonsCoding() {
 		Transcript trNew = transcript.apply(variant);
 		if (debug) Gpr.debug("Transcript after apply: " + trNew);
 
@@ -183,8 +101,8 @@ public class CodonChangeDup extends CodonChange {
 		// Calculate differences: CDS
 		cdsDiff(cdsRef, cdsAlt);
 
-		if (full) effect(transcript, EffectType.EXON_DUPLICATION, false);
-		if (partial) effect(transcript, EffectType.EXON_DUPLICATION_PARTIAL, false);
+		if (exonFull > 0) effect(transcript, EffectType.EXON_DUPLICATION, false);
+		if (exonPartial > 0) effect(transcript, EffectType.EXON_DUPLICATION_PARTIAL, false);
 
 		// Is this duplication creating a frame-shift?
 		int lenDiff = cdsAlt.length() - cdsRef.length();
@@ -194,15 +112,17 @@ public class CodonChangeDup extends CodonChange {
 	/**
 	 * Effects for non-coding transcripts
 	 */
-	void exonsNoncoding(boolean full, boolean partial) {
-		if (full) effectNoCodon(transcript, EffectType.EXON_DUPLICATION, EffectImpact.MODIFIER);
-		if (partial) effectNoCodon(transcript, EffectType.EXON_DUPLICATION_PARTIAL, EffectImpact.MODIFIER);
+	@Override
+	protected void exonsNoncoding() {
+		if (exonFull > 0) effectNoCodon(transcript, EffectType.EXON_DUPLICATION, EffectImpact.MODIFIER);
+		if (exonPartial > 0) effectNoCodon(transcript, EffectType.EXON_DUPLICATION_PARTIAL, EffectImpact.MODIFIER);
 	}
 
 	/**
 	 * Inversion does not intersect any exon
 	 */
-	void intron() {
+	@Override
+	protected void intron() {
 		effectNoCodon(transcript, EffectType.INTRON);
 	}
 

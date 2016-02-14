@@ -20,7 +20,7 @@ public class CodonChangeInterval extends CodonChange {
 	}
 
 	/**
-	 * Analyze
+	 * Interval is not a variant, nothing to do
 	 */
 	@Override
 	protected boolean codonChange(Exon exon) {

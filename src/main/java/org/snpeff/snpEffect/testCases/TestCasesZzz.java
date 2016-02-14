@@ -13,8 +13,8 @@ import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.HgvsDna;
 import org.snpeff.snpEffect.HgvsProtein;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.testCases.unity.TestCasesBase;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.EffFormatVersion;
@@ -151,77 +151,6 @@ public class TestCasesZzz extends TestCasesBase {
 		initRand();
 	}
 
-	//	/**
-	//	 * Deletion Whole gene / whole transcript
-	//	 */
-	//	@Test
-	//	public void test01_delTr() {
-	//		Gpr.debug("Test");
-	//
-	//		// Create variant
-	//		// Note that Gene ends at 1216, so this variant covers transcript (but not gene)
-	//		Variant variant = new Variant(chromosome, 950, 1200, "");
-	//		variant.setVariantType(VariantType.DEL);
-	//
-	//		EffectType expEffs[] = { EffectType.TRANSCRIPT_DELETED };
-	//		String expHgvsc[] = null;
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
-	//	}
-	//
-	//	/**
-	//	 * Deletion Whole gene / whole transcript
-	//	 */
-	//	@Test
-	//	public void test01_delGene() {
-	//		Gpr.debug("Test");
-	//
-	//		// Create variant
-	//		Variant variant = new Variant(chromosome, 950, 1250, "");
-	//		variant.setVariantType(VariantType.DEL);
-	//
-	//		EffectType expEffs[] = { EffectType.GENE_DELETED };
-	//		String expHgvsc[] = null;
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
-	//	}
-	//
-	//	/**
-	//	 * Deletion One coding exon
-	//	 */
-	//	@Test
-	//	public void test02() {
-	//		Gpr.debug("Test");
-	//
-	//		Variant variant = new Variant(chromosome, 1040, 1100, "");
-	//		variant.setVariantType(VariantType.DEL);
-	//
-	//		EffectType expEffs[] = { EffectType.EXON_DELETED };
-	//		String expHgvsc[] = { "c.33-5_45+43del" };
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
-	//	}
-	//
-	//	/**
-	//	 * Deletion two coding exons (within the same gene)
-	//	 */
-	//	@Test
-	//	public void test03() {
-	//		Gpr.debug("Test");
-	//
-	//		Variant variant = new Variant(chromosome, 1040, 1160, "");
-	//		variant.setVariantType(VariantType.DEL);
-	//
-	//		EffectType expEffs[] = { EffectType.EXON_DELETED };
-	//		String expHgvsc[] = { "c.33-5_*3del" };
-	//		EffectImpact expectedImpact = EffectImpact.HIGH;
-	//
-	//		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
-	//	}
-
 	/**
 	 * Deletion Part of one coding exon
 	 */
@@ -236,12 +165,12 @@ public class TestCasesZzz extends TestCasesBase {
 
 		EffectType expEffs[] = {};
 		String expHgvsc[] = { "c.33-5_38del" };
-		String expHgvsp[] = { "p.Val12_Leu13insPheVal" };
+		String expHgvsp[] = {};
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
-	//
+
 	//	/**
 	//	 * Deletion Part of two coding exons (within the same gene)
 	//	 */

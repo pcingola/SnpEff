@@ -12,8 +12,8 @@ import org.snpeff.interval.codonChange.CodonChange;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
@@ -1841,6 +1841,23 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		}
 
 		//---
+		// Structural variants may affect more than one exon
+		//---
+		boolean mayAffectSeveralExons = variant.isStructural() || variant.isMixed() || variant.isMnp();
+		if (mayAffectSeveralExons) {
+			int countExon = 0;
+			for (Exon ex : this)
+				if (ex.intersects(variant)) countExon++;
+
+			// More than one exon?
+			if (countExon > 1) {
+				CodonChange codonChange = CodonChange.factory(variant, this, variantEffects);
+				codonChange.codonChange();
+				return true;
+			}
+		}
+
+		//---
 		// Does it hit an exon?
 		// Note: This only adds spliceSites effects, for detailed codon
 		//       changes effects we use 'CodonChange' class
@@ -1874,10 +1891,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		if (included) return true; // Variant fully included? => We are done.
 
 		//---
-		// No annotations from eoxns? => Add transcript
+		// No annotations from exons? => Add transcript
 		//---
 		if (!exonAnnotated) {
-			variantEffects.add(variant, this, EffectType.TRANSCRIPT, ""); // No exons annotated? Just mark it as hitting a transcript
+			variantEffects.add(variant, this, EffectType.TRANSCRIPT, "");
 			return true;
 		}
 

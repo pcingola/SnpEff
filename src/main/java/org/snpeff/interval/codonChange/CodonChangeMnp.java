@@ -83,9 +83,19 @@ public class CodonChangeMnp extends CodonChange {
 		int diff = scEnd3 - (transcript.cds().length() - 1);
 		if (diff > 0) {
 			scEnd3 = transcript.cds().length() - 1;
-			if (diff == 1) padN = "N";
-			else if (diff == 2) padN = "NN";
-			else throw new RuntimeException("Sanity check failed. Number of 'N' pading is :" + diff + ". This should not happen!");
+			// Pad with 'N'
+			switch (diff) {
+			case 1:
+				padN = "N";
+				break;
+
+			case 2:
+				padN = "NN";
+				break;
+
+			default:
+				throw new RuntimeException("Sanity check failed. Number of 'N' pading is :" + diff + ". This should not happen!");
+			}
 		}
 
 		// Get old codon (reference)

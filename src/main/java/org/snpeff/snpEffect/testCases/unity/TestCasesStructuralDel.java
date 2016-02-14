@@ -5,8 +5,6 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.snpeff.interval.BioType;
-import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
@@ -15,33 +13,31 @@ import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.HgvsDna;
 import org.snpeff.snpEffect.HgvsProtein;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.GprSeq;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 
 /**
- * Test cases for structural variants: Inversions
- *
- * Gene models used in these test cases:
- *
- * Gene: Gene_1:953-1216
- * 1:957-1157, strand: +, id:transcript_0, Protein
+ * Test case
+ * Gene: geneId1
+ * 	1:957-1157, strand: +, id:transcript_0, Protein
  * 		Exons:
  * 		1:957-988 'exon_0_0', rank: 1, frame: ., sequence: gttgcttgaatactgtatagccttgccattgt
  * 		1:1045-1057 'exon_0_1', rank: 2, frame: ., sequence: tgtgttgctaact
  * 		1:1148-1157 'exon_0_2', rank: 3, frame: ., sequence: agacatggac
  * 		CDS     :	gttgcttgaatactgtatagccttgccattgttgtgttgctaactagacatggac
  * 		Protein :	VA*ILYSLAIVVLLTRHG?
- *
- *                                            1
- *                                            0                                                                                                   1
- *    6         7         8         9         0         1         2         3         4         5         6         7         8         9         0         1         2         3         4         5
+ * 
+ * 
+ * 
+ *                                            1                                                                                                                                                             
+ *                                            0                                                                                                   1                                                         
+ *    6         7         8         9         0         1         2         3         4         5         6         7         8         9         0         1         2         3         4         5       
  * 789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567
  * gttgcttgaatactgtatagccttgccattgt........................................................tgtgttgctaact..........................................................................................agacatggac
- *  V  A  *  I  L  Y  S  L  A  I                                                          V  V  L  L  T                                                                                            R  H  G
+ *  V  A  *  I  L  Y  S  L  A  I                                                          V  V  L  L  T                                                                                            R  H  G 
  * 01201201201201201201201201201201                                                        2012012012012                                                                                          0120120120
  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-------------------------------------------------------->>>>>>>>>>>>>------------------------------------------------------------------------------------------>>>>>>>>>>
  *  |                              |                                                        |           |                                                                                          |        |
@@ -51,10 +47,10 @@ import org.snpeff.vcf.VcfEffect;
  *  |                              |                                                        ^1045
  *  |                              ^988
  *  ^957
- *
- *
- * Gene: Gene_1:2057-2157
- * 1:2066-2141, strand: +, id:transcript_1, Protein
+ * 
+ * 
+ * Gene: geneId2
+ * 	1:2066-2141, strand: +, id:transcript_1, Protein
  * 		Exons:
  * 		1:2066-2069 'exon_1_0', rank: 1, frame: ., sequence: actt
  * 		1:2084-2089 'exon_1_1', rank: 2, frame: ., sequence: cccttt
@@ -62,12 +58,14 @@ import org.snpeff.vcf.VcfEffect;
  * 		1:2133-2141 'exon_1_3', rank: 4, frame: ., sequence: ccgccgctg
  * 		CDS     :	acttcccttttacgcccacgtccgccgctg
  * 		Protein :	TSLLRPRPPL
- *
- *                                   1
- *     7         8         9         0         1         2         3         4
+ * 
+ * 
+ * 
+ *                                   1                                         
+ *     7         8         9         0         1         2         3         4 
  * 6789012345678901234567890123456789012345678901234567890123456789012345678901
  * actt..............cccttt..........................tacgcccacgt......ccgccgctg
- *  T                S  L                            L  R  P  R        P  P  L
+ *  T                S  L                            L  R  P  R        P  P  L 
  * 0120              120120                          12012012012      012012012
  * >>>>-------------->>>>>>-------------------------->>>>>>>>>>>------>>>>>>>>>
  *  |  |              |    |                          |         |      |       |
@@ -79,13 +77,13 @@ import org.snpeff.vcf.VcfEffect;
  *  |  |              ^2084
  *  |  ^2069
  *  ^2066
- *
+ * 
  */
-public class TestCasesInv extends TestCasesBase {
+public class TestCasesStructuralDel extends TestCasesBase {
 
 	EffFormatVersion formatVersion = EffFormatVersion.FORMAT_ANN;
 
-	public TestCasesInv() {
+	public TestCasesStructuralDel() {
 		super();
 	}
 
@@ -99,10 +97,6 @@ public class TestCasesInv extends TestCasesBase {
 	}
 
 	protected void checkEffects(Variant variant, EffectType expEffs[], String expHgvsp[], String expHgvsc[], EffectImpact expectedImpact, String expAnns[]) {
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, expAnns, null);
-	}
-
-	protected void checkEffects(Variant variant, EffectType expEffs[], String expHgvsp[], String expHgvsc[], EffectImpact expectedImpact, String expAnns[], Gene genesToAdd[]) {
 		// Convert to sets
 		Set<EffectType> expectedEffs = new HashSet<>();
 		if (expEffs != null) {
@@ -115,12 +109,12 @@ public class TestCasesInv extends TestCasesBase {
 		Set<String> expectedAnns = arrayToSet(expAnns);
 
 		// Initialize
-		initSnpEffPredictor(genesToAdd);
+		initSnpEffPredictor();
 
 		if (verbose) {
 			Gpr.debug("Variant: " + variant);
 			for (Gene g : genome.getGenes()) {
-				Gpr.debug("\tGene: " + g.toStr());
+				Gpr.debug("\tGene: " + g.getId());
 				for (Transcript tr : g)
 					Gpr.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
 			}
@@ -214,208 +208,207 @@ public class TestCasesInv extends TestCasesBase {
 	}
 
 	/**
-	 * Inversion: Whole gene
+	 * Deletion Whole gene / whole transcript
 	 */
 	@Test
-	public void test01_invGene() {
+	public void test01_delTr() {
 		Gpr.debug("Test");
 
 		// Create variant
-		Variant variant = new Variant(chromosome, 950, 1250, "");
-		variant.setVariantType(VariantType.INV);
-
-		EffectType expEffs[] = { EffectType.GENE_INVERSION };
-		EffectImpact expectedImpact = EffectImpact.LOW;
-
-		checkEffects(variant, expEffs, null, null, expectedImpact, null);
-	}
-
-	/**
-	 * Inversion: whole transcript
-	 */
-	@Test
-	public void test01_invTr() {
-		Gpr.debug("Test");
-
-		// Create variant
+		// Note that Gene ends at 1216, so this variant covers transcript (but not gene)
 		Variant variant = new Variant(chromosome, 950, 1200, "");
-		variant.setVariantType(VariantType.INV);
+		variant.setVariantType(VariantType.DEL);
 
-		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
-		String expHgvsc[] = { "c.-7_*43inv" };
-		EffectImpact expectedImpact = EffectImpact.LOW;
+		EffectType expEffs[] = { EffectType.TRANSCRIPT_DELETED };
+		String expHgvsc[] = null;
+		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
 
 	/**
-	 * Inversion: One coding exon
+	 * Deletion Whole gene / whole transcript
+	 */
+	@Test
+	public void test01_delGene() {
+		Gpr.debug("Test");
+
+		// Create variant
+		Variant variant = new Variant(chromosome, 950, 2500, "");
+		variant.setVariantType(VariantType.DEL);
+
+		EffectType expEffs[] = { EffectType.GENE_DELETED };
+		String expHgvsc[] = null;
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Deletion One coding exon
 	 */
 	@Test
 	public void test02() {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1040, 1100, "");
-		variant.setVariantType(VariantType.INV);
+		variant.setVariantType(VariantType.DEL);
 
-		EffectType expEffs[] = { EffectType.EXON_INVERSION };
-		String expHgvsc[] = { "c.33-5_45+43inv" };
+		EffectType expEffs[] = { EffectType.EXON_DELETED };
+		String expHgvsc[] = { "c.33-5_45+43del" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
 
 	/**
-	 * Inversion: Two coding exons
+	 * Deletion two coding exons (within the same gene)
 	 */
 	@Test
 	public void test03() {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1040, 1160, "");
-		variant.setVariantType(VariantType.INV);
+		variant.setVariantType(VariantType.DEL);
 
-		EffectType expEffs[] = { EffectType.EXON_INVERSION };
-		String expHgvsc[] = { "c.33-5_*3inv" };
+		EffectType expEffs[] = { EffectType.EXON_DELETED };
+		String expHgvsc[] = { "c.33-5_*3del" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
 
 	/**
-	 * Inversion: Part of one coding exon
+	 * Deletion Part of one coding exon
 	 */
 	@Test
 	public void test04() {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1040, 1050, "");
-		variant.setVariantType(VariantType.INV);
+		variant.setVariantType(VariantType.DEL);
 
-		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
-		String expHgvsc[] = { "c.33-5_38inv" };
+		EffectType expEffs[] = {};
+		String expHgvsc[] = { "c.33-5_38del" };
+		String expHgvsp[] = { "p.Val12_Leu13insPheVal" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
-	 * Inversion: Part of two coding exon
+	 * Deletion Part of two coding exons (within the same gene)
 	 */
 	@Test
 	public void test05() {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1050, 1150, "");
-		variant.setVariantType(VariantType.INV);
+		variant.setVariantType(VariantType.DEL);
 
-		EffectType expEffs[] = { EffectType.EXON_INVERSION_PARTIAL };
-		String expHgvsc[] = { "c.38_48inv" };
+		EffectType expEffs[] = { EffectType.EXON_DELETED };
+		String expHgvsc[] = { "c.38_48del" };
+		String expHgvsp[] = { "p.Arg16_???19delinsCysTerLeuGluAspMetAsp" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
-	 * Inversion: Two genes
+	 * Deletion Two genes
 	 */
 	@Test
 	public void test06() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 1050, 2160, "");
-		variant.setVariantType(VariantType.INV);
+		Variant variant = new Variant(chromosome, 1050, 2150, "");
+		variant.setVariantType(VariantType.DEL);
 
-		EffectType expEffs[] = { EffectType.GENE_INVERSION };
-		String expHgvsc[] = { "n.1051_2161inv" };
+		EffectType expEffs[] = { EffectType.EXON_DELETED //
+		, EffectType.EXON_DELETED //
+		, EffectType.TRANSCRIPT_DELETED //
+		, EffectType.GENE_FUSION //
+		};
+		String expHgvsc[] = { "n.1051_2151del" };
 		EffectImpact expectedImpact = EffectImpact.LOW;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
 
 	/**
-	 * Inversion: Part of two genes (fusions) cutting on introns
+	 * Deletion After gene's coding region (LOW impact)
 	 */
 	@Test
 	public void test07() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 1100, 2075, "");
-		variant.setVariantType(VariantType.INV);
+		Variant variant = new Variant(chromosome, 1100, 2000, "");
+		variant.setVariantType(VariantType.DEL);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
-		String expHgvsc[] = { "n.1101_2076inv" };
-		EffectImpact expectedImpact = EffectImpact.HIGH;
-		String expAnns[] = { "|gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1101_2076inv||||||" };
-
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
-	}
-
-	/**
-	 * Inversion: Part of two genes (fusions) cutting exons
-	 */
-	@Test
-	public void test08() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(chromosome, 1050, 2120, "");
-		variant.setVariantType(VariantType.INV);
-
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
-		String expHgvsc[] = { "n.1051_2121inv" };
-		EffectImpact expectedImpact = EffectImpact.HIGH;
-		String expAnns[] = { "|gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1051_2121inv||||||" };
-
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
-
-	}
-
-	/**
-	 * Inversion: Intron
-	 */
-	@Test
-	public void test09() {
-		Gpr.debug("Test");
-
-		Variant variant = new Variant(chromosome, 991, 1020, "");
-		variant.setVariantType(VariantType.INV);
-
-		EffectType expEffs[] = { EffectType.INTRON };
-		String expHgvsc[] = { "c.32+3_33-25inv" };
-		EffectImpact expectedImpact = EffectImpact.MODIFIER;
+		EffectType expEffs[] = { EffectType.EXON_DELETED };
+		String expHgvsc[] = { "n.1101_2001del" };
+		EffectImpact expectedImpact = EffectImpact.LOW;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
 
 	/**
-	 * Inversion creating a fusion between two pairs (i.e. four genes)
+	 * Deletion Part of two genes cutting on introns
+	 */
+	@Test
+	public void test08() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(chromosome, 1100, 2075, "");
+		variant.setVariantType(VariantType.DEL);
+
+		EffectType expEffs[] = { EffectType.EXON_DELETED //
+		, EffectType.FRAME_SHIFT //
+		, EffectType.GENE_FUSION //
+		};
+		String expHgvsc[] = { "n.1101_2076del" };
+		String expHgvsp[] = { "p.Ser2_Leu10delinsTyrPheProPheThrProThrSerAlaAla???", "p.Ser2fs" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Deletion Part of two genes cutting exons
+	 */
+	@Test
+	public void test09() {
+		Gpr.debug("Test");
+
+		Variant variant = new Variant(chromosome, 1050, 2120, "");
+		variant.setVariantType(VariantType.DEL);
+
+		EffectType expEffs[] = { EffectType.EXON_DELETED //		
+		, EffectType.EXON_DELETED //
+		, EffectType.GENE_FUSION //
+		};
+		String expHgvsc[] = { "n.1051_2121del", "c.38_*963del", "c.-1016_15del" };
+		String expHgvsp[] = { "p.Pro6_Arg7delinsTyrAlaHisValLeuProPhe" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Deletion Intron
 	 */
 	@Test
 	public void test10() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 1050, 2120, "");
-		variant.setVariantType(VariantType.INV);
+		Variant variant = new Variant(chromosome, 991, 1020, "");
+		variant.setVariantType(VariantType.DEL);
 
-		// Add another gene
-		boolean strandMinus = false;
-		Gene gene = new Gene(chromosome, 2000, 2200, strandMinus, "geneId3", "geneName3", BioType.protein_coding);
-		Transcript tr = new Transcript(gene, 2000, 2200, strandMinus, "tr3");
-		Exon ex = new Exon(tr, 2000, 2200, strandMinus, "ex1_tr3", 1);
-		String seq = chromoSequence.substring(ex.getStart(), ex.getEnd() - 1);
-		ex.setSequence(strandMinus ? GprSeq.reverseWc(seq) : seq);
-		tr.add(ex);
-		gene.add(tr);
-		Gene genesToAdd[] = { gene };
+		EffectType expEffs[] = { EffectType.INTRON };
+		String expHgvsc[] = { "c.32+3_33-25del" };
+		EffectImpact expectedImpact = EffectImpact.MODIFIER;
 
-		// Expected resutls
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
-		String expHgvsc[] = { "n.1051_2121inv" };
-		EffectImpact expectedImpact = EffectImpact.HIGH;
-		String expAnns[] = { "|gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1051_2121inv||||||" //
-				, "|gene_fusion|HIGH|geneName1&geneName3|geneId1&geneId3|gene_variant|geneId1|||n.1051_2121inv||||||" //
-		};
-
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns, genesToAdd);
+		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
+
 }
