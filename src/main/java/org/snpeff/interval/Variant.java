@@ -390,7 +390,7 @@ public class Variant extends Marker {
 
 	/**
 	 * Only the part of the change that overlaps with a marker
-	 * Return the change (always in positive strand) 
+	 * Return the change (always in positive strand)
 	 */
 	public String netChange(Marker marker) {
 		String netChange = alt;

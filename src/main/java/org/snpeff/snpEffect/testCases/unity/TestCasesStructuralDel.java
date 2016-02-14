@@ -29,15 +29,15 @@ import org.snpeff.vcf.VcfEffect;
  * 		1:1148-1157 'exon_0_2', rank: 3, frame: ., sequence: agacatggac
  * 		CDS     :	gttgcttgaatactgtatagccttgccattgttgtgttgctaactagacatggac
  * 		Protein :	VA*ILYSLAIVVLLTRHG?
- * 
- * 
- * 
- *                                            1                                                                                                                                                             
- *                                            0                                                                                                   1                                                         
- *    6         7         8         9         0         1         2         3         4         5         6         7         8         9         0         1         2         3         4         5       
+ *
+ *
+ *
+ *                                            1
+ *                                            0                                                                                                   1
+ *    6         7         8         9         0         1         2         3         4         5         6         7         8         9         0         1         2         3         4         5
  * 789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567
  * gttgcttgaatactgtatagccttgccattgt........................................................tgtgttgctaact..........................................................................................agacatggac
- *  V  A  *  I  L  Y  S  L  A  I                                                          V  V  L  L  T                                                                                            R  H  G 
+ *  V  A  *  I  L  Y  S  L  A  I                                                          V  V  L  L  T                                                                                            R  H  G
  * 01201201201201201201201201201201                                                        2012012012012                                                                                          0120120120
  * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-------------------------------------------------------->>>>>>>>>>>>>------------------------------------------------------------------------------------------>>>>>>>>>>
  *  |                              |                                                        |           |                                                                                          |        |
@@ -47,8 +47,8 @@ import org.snpeff.vcf.VcfEffect;
  *  |                              |                                                        ^1045
  *  |                              ^988
  *  ^957
- * 
- * 
+ *
+ *
  * Gene: geneId2
  * 	1:2066-2141, strand: +, id:transcript_1, Protein
  * 		Exons:
@@ -58,14 +58,14 @@ import org.snpeff.vcf.VcfEffect;
  * 		1:2133-2141 'exon_1_3', rank: 4, frame: ., sequence: ccgccgctg
  * 		CDS     :	acttcccttttacgcccacgtccgccgctg
  * 		Protein :	TSLLRPRPPL
- * 
- * 
- * 
- *                                   1                                         
- *     7         8         9         0         1         2         3         4 
+ *
+ *
+ *
+ *                                   1
+ *     7         8         9         0         1         2         3         4
  * 6789012345678901234567890123456789012345678901234567890123456789012345678901
  * actt..............cccttt..........................tacgcccacgt......ccgccgctg
- *  T                S  L                            L  R  P  R        P  P  L 
+ *  T                S  L                            L  R  P  R        P  P  L
  * 0120              120120                          12012012012      012012012
  * >>>>-------------->>>>>>-------------------------->>>>>>>>>>>------>>>>>>>>>
  *  |  |              |    |                          |         |      |       |
@@ -77,7 +77,7 @@ import org.snpeff.vcf.VcfEffect;
  *  |  |              ^2084
  *  |  ^2069
  *  ^2066
- * 
+ *
  */
 public class TestCasesStructuralDel extends TestCasesBase {
 
@@ -114,7 +114,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 		if (verbose) {
 			Gpr.debug("Variant: " + variant);
 			for (Gene g : genome.getGenes()) {
-				Gpr.debug("\tGene: " + g.getId());
+				Gpr.debug("\tGene: " + g.getId() + "\t" + gene.getStart() + " - " + gene.getEnd());
 				for (Transcript tr : g)
 					Gpr.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
 			}
@@ -211,15 +211,14 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 * Deletion Whole gene / whole transcript
 	 */
 	@Test
-	public void test01_delTr() {
+	public void test01_delGene() {
 		Gpr.debug("Test");
 
 		// Create variant
-		// Note that Gene ends at 1216, so this variant covers transcript (but not gene)
-		Variant variant = new Variant(chromosome, 950, 1200, "");
+		Variant variant = new Variant(chromosome, 950, 2500, "");
 		variant.setVariantType(VariantType.DEL);
 
-		EffectType expEffs[] = { EffectType.TRANSCRIPT_DELETED };
+		EffectType expEffs[] = { EffectType.GENE_DELETED };
 		String expHgvsc[] = null;
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
@@ -230,14 +229,15 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 * Deletion Whole gene / whole transcript
 	 */
 	@Test
-	public void test01_delGene() {
+	public void test01_delTr() {
 		Gpr.debug("Test");
 
 		// Create variant
-		Variant variant = new Variant(chromosome, 950, 2500, "");
+		// Note that Gene ends at 1216, so this variant covers transcript (but not gene)
+		Variant variant = new Variant(chromosome, 950, 1200, "");
 		variant.setVariantType(VariantType.DEL);
 
-		EffectType expEffs[] = { EffectType.GENE_DELETED };
+		EffectType expEffs[] = { EffectType.TRANSCRIPT_DELETED };
 		String expHgvsc[] = null;
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
@@ -285,12 +285,13 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	public void test04() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 1040, 1050, "");
-		variant.setVariantType(VariantType.DEL);
+		int start = 1040;
+		int end = 1050;
+		Variant variant = new Variant(chromosome, start, chromoSequence.substring(start, end + 1), "", "");
 
 		EffectType expEffs[] = {};
-		String expHgvsc[] = { "c.33-5_38del" };
-		String expHgvsp[] = { "p.Val12_Leu13insPheVal" };
+		String expHgvsc[] = { "c.33-5_38delTTGCGCAGCTT" };
+		String expHgvsp[] = { "p.Val12_Leu13del" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
@@ -303,51 +304,53 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	public void test05() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 1050, 1150, "");
-		variant.setVariantType(VariantType.DEL);
+		int start = 1050;
+		int end = 1150;
+		Variant variant = new Variant(chromosome, start, chromoSequence.substring(start, end + 1), "", "");
 
-		EffectType expEffs[] = { EffectType.EXON_DELETED };
+		EffectType expEffs[] = { EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "c.38_48del" };
-		String expHgvsp[] = { "p.Arg16_???19delinsCysTerLeuGluAspMetAsp" };
+		String expHgvsp[] = { "p.Leu13fs" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
-	 * Deletion Two genes
+	 * Deletion one genes and part of another gene
 	 */
 	@Test
 	public void test06() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 1050, 2150, "");
-		variant.setVariantType(VariantType.DEL);
+		int start = 1050;
+		int end = 2160;
+		Variant variant = new Variant(chromosome, start, chromoSequence.substring(start, end + 1), "", "");
 
 		EffectType expEffs[] = { EffectType.EXON_DELETED //
-		, EffectType.EXON_DELETED //
+		, EffectType.CODON_DELETION //
 		, EffectType.TRANSCRIPT_DELETED //
-		, EffectType.GENE_FUSION //
 		};
-		String expHgvsc[] = { "n.1051_2151del" };
-		EffectImpact expectedImpact = EffectImpact.LOW;
+		String expHgvsc[] = { "n.1051_2161del" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
 
 	/**
-	 * Deletion After gene's coding region (LOW impact)
+	 * Deletion after gene's coding region (LOW impact)
 	 */
 	@Test
 	public void test07() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 1100, 2000, "");
-		variant.setVariantType(VariantType.DEL);
+		int start = 1100;
+		int end = 2000;
+		Variant variant = new Variant(chromosome, start, chromoSequence.substring(start, end + 1), "", "");
 
 		EffectType expEffs[] = { EffectType.EXON_DELETED };
 		String expHgvsc[] = { "n.1101_2001del" };
-		EffectImpact expectedImpact = EffectImpact.LOW;
+		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
@@ -359,15 +362,13 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	public void test08() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 1100, 2075, "");
-		variant.setVariantType(VariantType.DEL);
+		int start = 1100;
+		int end = 2075;
+		Variant variant = new Variant(chromosome, start, chromoSequence.substring(start, end + 1), "", "");
 
-		EffectType expEffs[] = { EffectType.EXON_DELETED //
-		, EffectType.FRAME_SHIFT //
-		, EffectType.GENE_FUSION //
-		};
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		String expHgvsc[] = { "n.1101_2076del" };
-		String expHgvsp[] = { "p.Ser2_Leu10delinsTyrPheProPheThrProThrSerAlaAla???", "p.Ser2fs" };
+		String expHgvsp[] = {};
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
@@ -380,15 +381,13 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	public void test09() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 1050, 2120, "");
-		variant.setVariantType(VariantType.DEL);
+		int start = 1050;
+		int end = 2120;
+		Variant variant = new Variant(chromosome, start, chromoSequence.substring(start, end + 1), "", "");
 
-		EffectType expEffs[] = { EffectType.EXON_DELETED //		
-		, EffectType.EXON_DELETED //
-		, EffectType.GENE_FUSION //
-		};
-		String expHgvsc[] = { "n.1051_2121del", "c.38_*963del", "c.-1016_15del" };
-		String expHgvsp[] = { "p.Pro6_Arg7delinsTyrAlaHisValLeuProPhe" };
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		String expHgvsc[] = { "n.1051_2121del" };
+		String expHgvsp[] = {};
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
@@ -401,11 +400,12 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	public void test10() {
 		Gpr.debug("Test");
 
-		Variant variant = new Variant(chromosome, 991, 1020, "");
-		variant.setVariantType(VariantType.DEL);
+		int start = 991;
+		int end = 1020;
+		Variant variant = new Variant(chromosome, start, chromoSequence.substring(start, end + 1), "", "");
 
 		EffectType expEffs[] = { EffectType.INTRON };
-		String expHgvsc[] = { "c.32+3_33-25del" };
+		String expHgvsc[] = { "c.32+3_33-25delGTTGCTCATAGCTAATCTCGTGGAGACTAA" };
 		EffectImpact expectedImpact = EffectImpact.MODIFIER;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
