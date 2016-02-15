@@ -308,31 +308,31 @@ void copyPwm() {
 # Download all databases
 #-------------------------------------------------------------------------------
 void downloadAll() {
-	# Ensembl genomes
-	downloadEnsembl()
-	downloadEnsemblBfmpp()
+#	# Ensembl genomes
+#	downloadEnsembl()
+#	downloadEnsemblBfmpp()
 
 	# UCSC genomes
 	downloadUcscHg19()
 	downloadUcscHg19Kg()
 	downloadUcscHg38()
 	downloadUcscHg38Kg()
-	downloadUcscMm10()
+#	downloadUcscMm10()
 
 	# Other databases
 	downloadJaspar()
-	downloadGwasCatalog()
+#	downloadGwasCatalog()
 	downloadNextProt()
 	downloadPdb()
-	downloadDbNsfp()	# We need to update this method
-	downloadClinvar()
-	downloadDbSnp()
-
-   # Non-human
-	downloadNcbi()
-	downloadNcbiBacteria()
-	downloadNcbiVirus()
-	downloadFlyBase()
+#	downloadDbNsfp()	# We need to update this method
+#	downloadClinvar()
+#	downloadDbSnp()
+#
+#   # Non-human
+#	downloadNcbi()
+#	downloadNcbiBacteria()
+#	downloadNcbiVirus()
+#	downloadFlyBase()
 }
 
 #-------------------------------------------------------------------------------
