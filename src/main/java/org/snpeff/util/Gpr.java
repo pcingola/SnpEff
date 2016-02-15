@@ -220,8 +220,6 @@ public class Gpr {
 
 	/**
 	 * Return file's dir
-	 * @param file
-	 * @return
 	 */
 	public static String dirName(String file) {
 		File f = new File(file);
@@ -231,8 +229,6 @@ public class Gpr {
 
 	/**
 	 * Does 'file' exist?
-	 * @param file
-	 * @return
 	 */
 	public static boolean exists(String file) {
 		return new File(file).exists();
@@ -240,8 +236,6 @@ public class Gpr {
 
 	/**
 	 * Get a file's extension (all letters after the last '.'
-	 * @param file
-	 * @return
 	 */
 	public static String extName(String file) {
 		String base = baseName(file);
@@ -253,7 +247,6 @@ public class Gpr {
 	/**
 	 * Generate an evenly separated pallette of colors
 	 * @param num	Number of colors
-	 * @return
 	 */
 	public static Paint[] getPaints(int num) {
 		return getPaints(num, false);

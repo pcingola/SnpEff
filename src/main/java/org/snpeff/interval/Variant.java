@@ -7,7 +7,6 @@ import org.snpeff.align.VariantRealign;
 import org.snpeff.binseq.GenomicSequences;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.IubString;
 
@@ -347,7 +346,6 @@ public class Variant extends Marker {
 
 		// We only check if: a) that the chromosome exists and b) chromosome it is not small
 		if (chr != null && chr.size() > HUGE_DELETION_SIZE_THRESHOLD) {
-			Gpr.debug("Chromosom size: " + chr.size());
 			double ratio = (chr.size() > 0 ? size() / ((double) chr.size()) : 0);
 			return size() > HUGE_DELETION_SIZE_THRESHOLD || ratio > HUGE_DELETION_RATIO_THRESHOLD;
 		}

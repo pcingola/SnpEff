@@ -14,6 +14,7 @@ public class VcfLof {
 	String geneId;
 	int numTranscripts;
 	double percentAffected;
+	VcfEntry vcfEntry;
 
 	/**
 	 * Convert from field name to field number
@@ -54,6 +55,11 @@ public class VcfLof {
 		this.percentAffected = percentAffected;
 	}
 
+	public VcfLof(VcfEntry vcfEntry, String lofStr) {
+		this.vcfEntry = vcfEntry;
+		parse(lofStr);
+	}
+
 	public String getGeneId() {
 		return geneId;
 	}
@@ -68,6 +74,14 @@ public class VcfLof {
 
 	public double getPercentAffected() {
 		return percentAffected;
+	}
+
+	public String getPercentAffectedStr() {
+		return String.format("%.1f", 100.0 * percentAffected);
+	}
+
+	public VcfEntry getVcfEntry() {
+		return vcfEntry;
 	}
 
 	void parse(String lof) {
@@ -107,6 +121,6 @@ public class VcfLof {
 				, VcfEntry.vcfInfoValueSafe(geneId) //
 				, numTranscripts //
 				, percentAffected //
-				);
+		);
 	}
 }

@@ -42,4 +42,8 @@ public class VcfNmd extends VcfLof {
 		super(geneName, geneId, numTranscripts, percentAffected);
 	}
 
+	public VcfNmd(VcfEntry vcfEntry, String nmdStr) {
+		super(vcfEntry, nmdStr);
+	}
+
 }

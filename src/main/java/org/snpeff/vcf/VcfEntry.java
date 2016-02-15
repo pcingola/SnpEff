@@ -580,6 +580,13 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return ref;
 	}
 
+	public String getStr() {
+		return getChromosomeName() //
+				+ ":" + (start + 1) //
+				+ "_" + ref //
+				+ "/" + getAltsStr();
+	}
+
 	public VariantType getVariantType() {
 		return variantType;
 	}
@@ -1085,7 +1092,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Split comma separated list
 		String lofs[] = lofStr.split(",");
 		for (String lof : lofs)
-			lofList.add(new VcfLof(lof));
+			lofList.add(new VcfLof(this, lof));
 
 		return lofList;
 	}
@@ -1201,7 +1208,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
-	 * To string as a simple "chr:start-end" format
+	 * To string as a simple "CHR:START_REF/ALTs" format
 	 */
 	@Override
 	public String toStr() {
