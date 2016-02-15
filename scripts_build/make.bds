@@ -363,7 +363,7 @@ void runTestsSnpSiftAll() {
 		java -Xmx4g \
 			-cp $dirSnpeff/SnpSift.jar \
 			org.junit.runner.JUnitCore \
-			ca.mcgill.mcb.pcingola.snpSift.testCases.TestSuiteAll \
+			org.snpsift.testCases.TestSuiteAll \
 			2>&1 \
 			| tee $dirSnpeff/testcases.snpsift.all.txt
 }
@@ -377,7 +377,7 @@ void runTestsSnpEffHgvs() {
 		java -Xmx4g \
 			-cp $dirSnpeff/snpEff.jar \
 			org.junit.runner.JUnitCore \
-			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteHgvs \
+			org.snpeff.snpEffect.testCases.TestSuiteHgvs \
 			2>&1 \
 			| tee $dirSnpeff/testcases.snpeff.hgvs.txt
 }
@@ -391,7 +391,7 @@ void runTestsSnpEffIntegration() {
 		java -Xmx4g \
 			-cp $dirSnpeff/snpEff.jar \
 			org.junit.runner.JUnitCore \
-			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteIntegration \
+			org.snpeff.snpEffect.testCases.TestSuiteIntegration \
 			2>&1 \
 			| tee $dirSnpeff/testcases.snpeff.integration.txt
 }
@@ -405,7 +405,7 @@ void runTestsSnpEffUnity() {
 		java -Xmx4g \
 			-cp $dirSnpeff/snpEff.jar \
 			org.junit.runner.JUnitCore \
-			ca.mcgill.mcb.pcingola.snpEffect.testCases.TestSuiteUnity \
+			org.snpeff.snpEffect.testCases.TestSuiteUnity \
 			2>&1 \
 			| tee $dirSnpeff/testcases.snpeff.unity.txt
 }
