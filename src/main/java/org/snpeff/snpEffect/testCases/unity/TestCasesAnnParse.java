@@ -8,6 +8,8 @@ import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
+import junit.framework.Assert;
+
 /**
  * Test case for parsing ANN fields
  *
@@ -38,17 +40,25 @@ public class TestCasesAnnParse {
 		}
 	}
 
+	/**
+	 * Make sure there are no exceptions thrown when parsing TFBS_abalation SO term
+	 */
 	@Test
 	public void testCase_tfbs_ablation() {
 		Gpr.debug("Test");
 		String vcfFile = "tests/tfbs_ablation.vcf";
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+
+		boolean ok = false;
 		for (VcfEntry ve : vcf) {
-			System.out.println(ve);
+			if (verbose) System.out.println(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				System.out.println("\t" + veff);
+				if (verbose) System.out.println("\t" + veff.getEffectsStrSo());
+				ok |= veff.getEffectsStrSo().indexOf("TFBS_ablation") >= 0;
 			}
 		}
+
+		Assert.assertTrue("SO term 'TFBS_ablation' not found", ok);
 	}
 
 }
