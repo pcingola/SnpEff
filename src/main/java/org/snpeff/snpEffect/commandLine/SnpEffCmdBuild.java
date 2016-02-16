@@ -396,7 +396,6 @@ public class SnpEffCmdBuild extends SnpEff {
 		System.err.println("\t-noStoreSeqs                 : Do not store sequence in binary files. Default: " + !storeSequences);
 		System.err.println("\t-onlyReg                     : Only build regulation tracks.");
 		System.err.println("\t-storeSeqs                   : Store sequence in binary files. Default: " + storeSequences);
-		System.err.println("\t-txt                         : Use TXT format (obsolete).");
 
 		usageGeneric();
 
