@@ -50,6 +50,7 @@ public class LineChrPos implements Comparable<LineChrPos> {
 	void parse(String str) {
 		// Parse line using "chr\tpos\t...."
 		String fields[] = str.split("\t", 3);
+		if (fields.length < 2) throw new RuntimeException("Cannot parse line:\t" + str);
 		chr = fields[0];
 		chrNum = Gpr.parseIntSafe(fields[0]);
 		pos = Gpr.parseIntSafe(fields[1]);

@@ -930,7 +930,11 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		for (String alt : alts) {
 			if (!isVariant(alt)) continue;
+
 			if (alt.startsWith("<DEL")) variantType = VariantType.DEL;
+			else if (alt.startsWith("<INV")) variantType = VariantType.INV;
+			else if (alt.startsWith("<DUP")) variantType = VariantType.DUP;
+			else if (alt.startsWith("<INS")) variantType = VariantType.INS;
 
 			maxAltLen = Math.max(maxAltLen, alt.length());
 			minAltLen = Math.min(minAltLen, alt.length());
@@ -1038,7 +1042,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			// If there is an 'END' tag, we should use it
 			if ((getInfo(VCF_INFO_END) != null)) {
 				// Get 'END' field and do some sanity check
-				end = (int) getInfoInt("END") - 1;
+				end = (int) getInfoInt(VCF_INFO_END) - 1;
 				if (end < start) throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start);
 			}
 		}
@@ -1382,11 +1386,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		alt = alt.toUpperCase();
 
-		// Case: Deletion
-		// 2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
 		if (alt.startsWith("<DEL")) {
-			// Create deletion string
-			// May be we should be using "imprecise" for these variants
+			// Case: Deletion
+			// 2 321682    .  T   <DEL>         6     PASS    IMPRECISE;SVTYPE=DEL;END=321887;SVLEN=-105;CIPOS=-56,20;CIEND=-10,62
 			String ch = ref;
 			int startNew = start;
 
@@ -1398,35 +1400,27 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 					change[i] = reference.length() > i ? reference.charAt(i) : 'N';
 				ch = new String(change);
 			}
-
-			// Create variant
 			return Variant.factory(chromo, startNew, ch, "", id, false);
-		}
-
-		// Case: Inversion
-		if (alt.startsWith("<INV")) {
+		} else if (alt.startsWith("<INV")) {
+			// Inversion
 			int startNew = start + reference.length();
 			Variant var = new Variant(chromo, startNew, end, id);
 			var.setVariantType(VariantType.INV);
 			LinkedList<Variant> list = new LinkedList<Variant>();
 			list.add(var);
 			return list;
-		}
-
-		// Case: Duplication
-		if (alt.startsWith("<DUP")) {
+		} else if (alt.startsWith("<DUP")) {
+			// Duplication
 			int startNew = start + reference.length();
 			Variant var = new Variant(chromo, startNew, end, id);
 			var.setVariantType(VariantType.DUP);
 			LinkedList<Variant> list = new LinkedList<Variant>();
 			list.add(var);
 			return list;
-		}
-
-		// Case: SNP, MNP
-		// 20     3 .         C      G       .   PASS  DP=100
-		// 20     3 .         TC     AT      .   PASS  DP=100
-		if (reference.length() == alt.length()) {
+		} else if (reference.length() == alt.length()) {
+			// Case: SNP, MNP
+			// 20     3 .         C      G       .   PASS  DP=100
+			// 20     3 .         TC     AT      .   PASS  DP=100
 			// SNPs
 			if (reference.length() == 1) return Variant.factory(chromo, start, reference, alt, id, true);
 
