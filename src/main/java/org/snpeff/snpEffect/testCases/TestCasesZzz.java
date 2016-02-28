@@ -1,8 +1,10 @@
 package org.snpeff.snpEffect.testCases;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Variant;
+import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEntry;
 
@@ -25,12 +27,16 @@ public class TestCasesZzz {
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
-			//			if (verbose) System.out.println(ve.getVariantType() + "\t" + ve);
-			//			Assert.assertEquals("Variant type is not 'BND'", VariantType.BND, ve.getVariantType());
+			if (verbose) System.out.println(ve);
 
+			boolean ok = false;
 			for (Variant var : ve.variants()) {
 				if (verbose) System.out.println("\t" + var.getVariantType() + "\t" + var);
+				Assert.assertEquals("Variant type is not 'BND'", VariantType.BND, var.getVariantType());
+				ok = true;
 			}
+
+			Assert.assertTrue("No variants found!", ok);
 		}
 	}
 

@@ -16,6 +16,7 @@ import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
+import org.snpeff.interval.VariantTranslocation;
 import org.snpeff.snpEffect.LossOfFunction;
 import org.snpeff.util.Gpr;
 
@@ -1375,6 +1376,24 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			}
 		} else if ((alt.indexOf('[') >= 0) || (alt.indexOf(']') >= 0)) {
 			// Translocations
+
+			// Parse ALT string
+			boolean left = alt.indexOf(']') >= 0;
+			String sep = (left ? "\\]" : "\\[");
+			String tpos[] = alt.split(sep);
+			String pos = tpos[1];
+			boolean before = tpos.length <= 2;
+			String altBases = (before ? tpos[0] : tpos[2]);
+
+			// Parse 'chr:start'
+			String posSplit[] = pos.split(":");
+			String trChrName = posSplit[0];
+			Chromosome trChr = chromo.getGenome().getOrCreateChromosome(trChrName);
+			int trStart = Gpr.parseIntSafe(posSplit[1]) - 1;
+
+			VariantTranslocation var = new VariantTranslocation(chromo, start, ref, altBases, trChr, trStart, left, before);
+			list = new LinkedList<Variant>();
+			list.add(var);
 		} else if (reference.length() == alt.length()) {
 			// Case: SNP, MNP
 			if (reference.length() == 1) {
@@ -1441,6 +1460,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		//---
 		// Add original 'ALT' field as genotype
 		//---
+		if (list == null) list = new LinkedList<Variant>();
 		for (Variant variant : list)
 			variant.setGenotype(alt);
 

@@ -8,47 +8,39 @@ package org.snpeff.interval;
 public class VariantTranslocation extends Variant {
 
 	private static final long serialVersionUID = 1L;
-	Variant variantEndPoint;
+	Marker endPoint;
+	boolean left; // Is endPoint oriented to the left?
+	boolean before; // Is endPoint before ALT?
 
 	public VariantTranslocation() {
 		super();
 	}
 
-	public VariantTranslocation(Variant variant, Variant variantRef) {
-		super(variant.getParent(), variant.getStart(), variant.getReference(), variant.getAlt(), variant.getId());
-		genotype = variant.getGenotype();
-		variantEndPoint = variantRef;
-	}
-
-	@Override
-	public String getGenotype() {
-		return genotype + "-" + variantEndPoint.getGenotype();
-	}
-
-	public Variant getVariantRef() {
-		return variantEndPoint;
-	}
-
-	@Override
-	public boolean isNonRef() {
-		return true;
+	public VariantTranslocation(Marker parent, int start, String ref, String alt, Chromosome chrTr, int startTr, boolean right, boolean after) {
+		super(parent, start, ref, alt);
+		endPoint = new Marker(chrTr, startTr, startTr);
+		endPoint.setStrandMinus(left);
+		left = right;
+		before = after;
+		variantType = VariantType.BND;
 	}
 
 	@Override
 	public Variant realignLeft() {
-		// Realigning in cancer samples is not trivial: What happens if one realigns and the other doesn't?
-		// For now, do not realign
+		// Do not realign translocations
 		return this;
-	}
-
-	public void setVariantRef(Variant variantRef) {
-		variantEndPoint = variantRef;
 	}
 
 	@Override
 	public String toString() {
-		String valt = super.toString();
-		String vref = variantEndPoint.toString();
-		return valt + "-" + vref;
+		String sep = left ? "]" : "[";
+		String trPos = sep + endPoint.getChromosomeName() + ":" + endPoint.getStart() + sep;
+
+		return "chr" + getChromosomeName() //
+				+ ":" + start //
+				+ "_" + getReference() //
+				+ "/" //
+				+ (before ? getAlt() + trPos : trPos + getAlt()) //
+				;
 	}
 }
