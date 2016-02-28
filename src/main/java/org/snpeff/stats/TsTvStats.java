@@ -116,7 +116,7 @@ public class TsTvStats implements SamplingStats<VcfEntry> {
 
 		// Is this a variant? (i.e. not the same as reference)
 		// Is this a SNP?
-		if (!vcfEntry.isVariant() || !vcfEntry.isSnp()) return;
+		if (!vcfEntry.isVariant() || !vcfEntry.isSingleSnp()) return;
 
 		// Do we need to initialize?
 		int genotypes = vcfEntry.getVcfGenotypes().size();

@@ -3,7 +3,7 @@
 
 Name , Value
 Genome , testHg3770Chr22 
-Date , 2016-02-15 15:32
+Date , 2016-02-28 09:07
 SnpEff_version , SnpEff 4.3 (build 2016-02-15), by Pablo Cingolani
 Command_line_arguments , SnpEff  -csvStats test_04_TestCasesEff.csv testHg3770Chr22 tests/eff_sort.vcf 
 Warnings , 1185 
@@ -98,24 +98,24 @@ base  , A  , C  , G  , T
 
 # Ts/Tv summary
 
-Transitions , 920
-Transversions , 272
-Ts_Tv_ratio , 3.382353
+Transitions , 891
+Transversions , 238
+Ts_Tv_ratio , 3.743697
 
 # Ts/Tv : All variants
 
 Sample ,Total
-Transitions ,920,920
-Transversions ,272,272
-Ts/Tv ,3.382,3.382
+Transitions ,891,891
+Transversions ,238,238
+Ts/Tv ,3.744,3.744
 
 
 # Ts/Tv : Known variants
 
 Sample ,Total
-Transitions ,920,920
-Transversions ,272,272
-Ts/Tv ,3.382,3.382
+Transitions ,891,891
+Transversions ,238,238
+Ts/Tv ,3.744,3.744
 
 
 # Allele frequency

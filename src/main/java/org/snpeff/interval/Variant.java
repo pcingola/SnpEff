@@ -104,14 +104,14 @@ public class Variant extends Marker {
 				}
 			} else if (!altIub && refIub) {
 				// REF has IUB characters
-				IubString iubsRef = new IubString(alt);
+				IubString iubsRef = new IubString(ref);
 				for (String seqRef : iubsRef) {
 					Variant var = new Variant(chromo, start, seqRef, alt, id);
 					list.add(var);
 				}
 			} else if (altIub && refIub) {
 				// Both REF and ALT have IUB characters
-				IubString iubsRef = new IubString(alt);
+				IubString iubsRef = new IubString(ref);
 				for (String seqRef : iubsRef) {
 					IubString iubsAlt = new IubString(alt);
 					for (String seqAlt : iubsAlt) {

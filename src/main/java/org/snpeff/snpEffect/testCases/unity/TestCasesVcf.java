@@ -2,6 +2,7 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Variant;
@@ -14,10 +15,8 @@ import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.VcfGenotype;
 import org.snpeff.vcf.VcfHeaderInfo;
-import org.snpeff.vcf.VcfInfoType;
 import org.snpeff.vcf.VcfHeaderInfo.VcfInfoNumber;
-
-import junit.framework.Assert;
+import org.snpeff.vcf.VcfInfoType;
 
 /**
  * VCF parsing test cases
@@ -218,7 +217,7 @@ public class TestCasesVcf extends TestCasesBase {
 		VcfFileIterator vcf = new VcfFileIterator(file);
 		for (VcfEntry vcfEntry : vcf) {
 			if (verbose) System.out.println(vcfEntry);
-			Assert.assertEquals(0.0, vcfEntry.getQuality());
+			Assert.assertEquals(0.0, vcfEntry.getQuality(), 10 ^ -6);
 		}
 	}
 
@@ -434,13 +433,18 @@ public class TestCasesVcf extends TestCasesBase {
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		int start = -1;
 		for (VcfEntry ve : vcf) {
+			if (verbose) System.out.println(ve);
 			if (start < 0) start = ve.getStart();
 
 			// Check
 			if (start != ve.getStart()) throw new RuntimeException("Start position should be " + start + " instead of " + ve.getStart() + "\n" + ve);
-			if (!ve.getVariantType().toString().equals(ve.getInfo("Type"))) throw new RuntimeException("Variant type should be '" + ve.getInfo("Type") + "' instead of '" + ve.getVariantType() + "'\n" + ve);
 
-			if (verbose) System.out.println(ve + "\n\t\tSize   : " + ve.size() + "\n\t\tVariant: " + ve.isVariant() + "\n\t\tType   : " + ve.getVariantType() + "\n");
+			boolean ok = false;
+			for (Variant var : ve.variants()) {
+				ok |= var.getVariantType().toString().equals(ve.getInfo("Type"));
+				if (verbose) System.out.println(ve + "\n\t\tSize   : " + ve.size() + "\n\t\tVariant: " + ve.isVariant() + "\n\t\tType   : " + var.getVariantType() + "\n");
+			}
+			if (!ok) throw new RuntimeException("Variant type should be '" + ve.getInfo("Type") + "'\n" + ve);
 
 			start += ve.size();
 		}

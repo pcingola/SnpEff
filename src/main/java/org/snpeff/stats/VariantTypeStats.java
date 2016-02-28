@@ -2,6 +2,7 @@ package org.snpeff.stats;
 
 import java.util.List;
 
+import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.vcf.VcfEntry;
 
@@ -78,15 +79,20 @@ public class VariantTypeStats implements SamplingStats<VcfEntry> {
 		if (gt == null || gt.length < 1) return;
 
 		// Get counter for this variant type
-		int count[] = getCounter(vcfEntry.getVariantType());
-
 		boolean isMultiallelic = vcfEntry.isMultiallelic();
+		for (Variant var : vcfEntry.variants()) {
+			int count[] = getCounter(var.getVariantType());
 
-		// For each sample count if this sample has the MAC
-		if (count != null) {
-			for (int i = 0; i < gt.length; i++) {
-				if (gt[i] > 0) count[i]++;
-				if (isMultiallelic && gt[i] > 0) counterMultiallelic[i]++;
+			// For each sample count non-ref genotypes
+			if (count != null) {
+				int altIdx = vcfEntry.getAltIndex(var.getAlt());
+
+				if (altIdx > 0) {
+					for (int i = 0; i < gt.length; i++) {
+						if (gt[i] == altIdx) count[i]++;
+						if (isMultiallelic && gt[i] == altIdx) counterMultiallelic[i]++;
+					}
+				}
 			}
 		}
 	}
