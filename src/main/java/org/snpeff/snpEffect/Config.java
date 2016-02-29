@@ -41,6 +41,7 @@ public class Config implements Serializable, Iterable<String> {
 	public static final String KEY_DATA_DIR = "data.dir";
 	public static final String KEY_DATABASE_LOCAL = "database";
 	public static final String KEY_DATABASE_REPOSITORY = "database.repository";
+	public static final String KEY_DBNSFP_FIELDS = "dbnsfp.fields";
 	public static final String KEY_GENOME_SUFIX = ".genome";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_AFTER = "lof.ignoreProteinCodingAfter";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_BEFORE = "lof.ignoreProteinCodingBefore";
@@ -63,6 +64,7 @@ public class Config implements Serializable, Iterable<String> {
 	double lofIgnoreProteinCodingAfter;
 	double lofIgnoreProteinCodingBefore;
 	double lofDeleteProteinCodingBases;
+	String configFileName = "";
 	String configDirPath = ""; // Configuration file directory
 	String dataDir; // Directory containing all databases and genomes
 	String genomeVersion;
@@ -239,8 +241,22 @@ public class Config implements Serializable, Iterable<String> {
 		return bundleByGenomeId.get(genomeVer);
 	}
 
+	public String getConfigFileName() {
+		return configFileName;
+	}
+
 	public String getCoordinates() {
 		return getString(genomeVersion + "." + Config.KEY_COORDINATES);
+	}
+
+	public String getDbNsfpFields() {
+		String coordinates = getCoordinates();
+		if (coordinates == null) {
+			if (verbose) System.err.println("Cannot find coordinates config entry for genome '" + genomeVersion + "'");
+			return null;
+		}
+
+		return properties.getProperty(KEY_DBNSFP_FIELDS + "." + coordinates, "");
 	}
 
 	/**
@@ -251,7 +267,6 @@ public class Config implements Serializable, Iterable<String> {
 		if (coordinates == null) throw new RuntimeException("Cannot find coordinates config entry for genome '" + genomeVersion + "'");
 
 		String dbLocal = properties.getProperty(KEY_DATABASE_LOCAL + "." + dbName + "." + coordinates, "");
-		Gpr.debug("DB:" + dbName + "\tdbLocal: " + dbLocal);
 
 		if (dbLocal.isEmpty()) return "";
 		return canonicalDir(dbLocal);
@@ -369,6 +384,10 @@ public class Config implements Serializable, Iterable<String> {
 		return genomeById.get(genomeId);
 	}
 
+	public String getGenomeVersion() {
+		return genomeVersion;
+	}
+
 	public double getLofDeleteProteinCodingBases() {
 		return lofDeleteProteinCodingBases;
 	}
@@ -441,6 +460,7 @@ public class Config implements Serializable, Iterable<String> {
 		onlyRegulation = false;
 		errorOnMissingChromo = true;
 		errorChromoHit = true;
+		this.configFileName = configFileName;
 		this.genomeVersion = genomeVersion;
 		this.dataDir = dataDir;
 
