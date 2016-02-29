@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Variant;
+import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.outputFormatter.VcfOutputFormatter;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.util.Gpr;
@@ -647,6 +648,26 @@ public class TestCasesVcf extends TestCasesBase {
 
 		for (String key : keysFail)
 			Assert.assertFalse("String '" + key + "' should be an invalid INFO key", VcfEntry.isValidInfoKey(key));
+	}
+
+	@Test
+	public void test_33_translocations() {
+		Gpr.debug("Test");
+		String vcfFile = "tests/vcf_translocation.vcf";
+
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		for (VcfEntry ve : vcf) {
+			if (verbose) System.out.println(ve);
+
+			boolean ok = false;
+			for (Variant var : ve.variants()) {
+				if (verbose) System.out.println("\t" + var.getVariantType() + "\t" + var);
+				Assert.assertEquals("Variant type is not 'BND'", VariantType.BND, var.getVariantType());
+				ok = true;
+			}
+
+			Assert.assertTrue("No variants found!", ok);
+		}
 	}
 
 }
