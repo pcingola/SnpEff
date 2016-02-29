@@ -249,16 +249,6 @@ public class Config implements Serializable, Iterable<String> {
 		return getString(genomeVersion + "." + Config.KEY_COORDINATES);
 	}
 
-	public String getDbNsfpFields() {
-		String coordinates = getCoordinates();
-		if (coordinates == null) {
-			if (verbose) System.err.println("Cannot find coordinates config entry for genome '" + genomeVersion + "'");
-			return null;
-		}
-
-		return properties.getProperty(KEY_DBNSFP_FIELDS + "." + coordinates, "");
-	}
-
 	/**
 	 * Database local file for a specific database, such as 'dbSnp', 'ClinVar', etc.
 	 */
@@ -293,6 +283,16 @@ public class Config implements Serializable, Iterable<String> {
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public String getDbNsfpFields() {
+		String coordinates = getCoordinates();
+		if (coordinates == null) {
+			if (verbose) System.err.println("Cannot find coordinates config entry for genome '" + genomeVersion + "'");
+			return null;
+		}
+
+		return properties.getProperty(KEY_DBNSFP_FIELDS + "." + coordinates, "");
 	}
 
 	/**
