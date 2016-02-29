@@ -927,7 +927,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		// SNP
 		if (altsStr.length() == 1) {
-			if (altsStr.equals("A") || altsStr.equals("C") || altsStr.equals("G") || altsStr.equals("T") || altsStr.equals(".")) {
+			if (altsStr.equals("A") || altsStr.equals("C") || altsStr.equals("G") || altsStr.equals("T") || altsStr.equals("*")) {
 				alts = new String[1];
 				alts[0] = altsStr;
 			} else if (altsStr.equals("N")) { // aNy base
