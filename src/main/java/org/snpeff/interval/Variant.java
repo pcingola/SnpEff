@@ -286,6 +286,10 @@ public class Variant extends Marker {
 		return (variantType == VariantType.DUP);
 	}
 
+	public boolean isBnd() {
+		return false;
+	}
+
 	public boolean isElongation() {
 		return lengthChange() > 0;
 	}
@@ -332,7 +336,7 @@ public class Variant extends Marker {
 	}
 
 	public boolean isStructural() {
-		return isDel() || isInv() || isDup();
+		return isDel() || isInv() || isDup() || isBnd();
 	}
 
 	/**

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;
+import org.snpeff.interval.tree.IntervalForest;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.serializer.TxtSerializable;
 import org.snpeff.snpEffect.EffectType;
@@ -522,6 +523,13 @@ public class Marker extends Interval implements TxtSerializable {
 		} else ints.add(this); // No intersection => Just add 'this' interval
 
 		return ints;
+	}
+
+	/**
+	 * Return a collection of intervals that intersect this marker
+	 */
+	public Markers query(IntervalForest intervalForest) {
+		return intervalForest.query(this);
 	}
 
 	/**

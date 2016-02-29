@@ -338,7 +338,6 @@ public class Markers implements Serializable, Collection<Marker> {
 
 	/**
 	 * Return a random interval within this collection
-	 * @return
 	 */
 	public Interval rand() {
 		int idx = (int) (Math.random() * markers.size());

@@ -1,5 +1,7 @@
 package org.snpeff.interval;
 
+import org.snpeff.interval.tree.IntervalForest;
+
 /**
  * A translocation consisting of two endpoints
  *
@@ -16,13 +18,46 @@ public class VariantTranslocation extends Variant {
 		super();
 	}
 
-	public VariantTranslocation(Marker parent, int start, String ref, String alt, Chromosome chrTr, int startTr, boolean right, boolean after) {
+	public VariantTranslocation(Marker parent, int start, String ref, String alt, Chromosome chrTr, int startTr, boolean left, boolean before) {
 		super(parent, start, ref, alt);
 		endPoint = new Marker(chrTr, startTr, startTr);
 		endPoint.setStrandMinus(left);
-		left = right;
-		before = after;
+		this.left = left;
+		this.before = before;
 		variantType = VariantType.BND;
+	}
+
+	public Marker getEndPoint() {
+		return endPoint;
+	}
+
+	public boolean isBefore() {
+		return before;
+	}
+
+	@Override
+	public boolean isBnd() {
+		return true;
+	}
+
+	public boolean isLeft() {
+		return left;
+	}
+
+	@Override
+	public boolean isStructural() {
+		return true;
+	}
+
+	/**
+	 * Return a collection of intervals that intersect both ends of this variant
+	 */
+	@Override
+	public Markers query(IntervalForest intervalForest) {
+		Markers res1 = intervalForest.query(this);
+		Markers res2 = intervalForest.query(endPoint);
+		res1.add(res2);
+		return res1;
 	}
 
 	@Override
@@ -43,4 +78,5 @@ public class VariantTranslocation extends Variant {
 				+ (before ? getAlt() + trPos : trPos + getAlt()) //
 				;
 	}
+
 }

@@ -38,8 +38,6 @@ public class SnpEffectPredictor implements Serializable {
 	private static final long serialVersionUID = 4519418862303325081L;
 
 	public static final int DEFAULT_UP_DOWN_LENGTH = 5000;
-	//public static final int LARGE_VARIANT_SIZE_THRESHOLD = 1000000; // Number of bases for a variant to be considered large/huge
-	//public static final double LARGE_VARIANT_RATIO_THRESHOLD = 0.01; // Percentage of bases
 	public static final int SMALL_VARIANT_SIZE_THRESHOLD = 10; // Number of bases for a variant to be considered 'small'
 
 	boolean useChromosomes = true;
@@ -305,7 +303,7 @@ public class SnpEffectPredictor implements Serializable {
 	 * Return a collection of intervals that intersect 'marker'
 	 */
 	public Markers query(Marker marker) {
-		return intervalForest.query(marker);
+		return marker.query(intervalForest);
 	}
 
 	/**
@@ -635,7 +633,9 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Is this a structural variant? Large structural variants (e.g. involving more than
 		// one gene) may require to calculate effects by using all involved genes
-		boolean structuralVariant = variant.isStructural() && variant.size() > SMALL_VARIANT_SIZE_THRESHOLD;
+		// For some variants we require to be 'N' bases appart (translocations
+		// are assumed always involve large genomic regions)
+		boolean structuralVariant = variant.isStructural() && (variant.size() > SMALL_VARIANT_SIZE_THRESHOLD || variant.isBnd());
 
 		// Structural variants?
 		if (structuralVariant) {
@@ -733,7 +733,8 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Create a new variant effect for structural variants, add effect (if any)
 		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
-		if (veff.getEffectType() != EffectType.NONE) {
+		// Note that fusions are added in the next step, when we invoke veff.fusion(), so we skip them here
+		if (veff.getEffectType() != EffectType.NONE && veff.getEffectType() != EffectType.GENE_FUSION) {
 			variantEffects.add(veff);
 			added = true;
 		}

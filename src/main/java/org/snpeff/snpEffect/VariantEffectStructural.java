@@ -10,6 +10,7 @@ import org.snpeff.interval.Gene;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.interval.Variant;
+import org.snpeff.interval.VariantTranslocation;
 
 /**
  * Effect of a structural variant affecting multiple genes
@@ -53,7 +54,8 @@ public class VariantEffectStructural extends VariantEffect {
 			return countWholeGenes > 0 ? EffectType.GENE_DUPLICATION : EffectType.NONE;
 
 		case BND:
-			return (countWholeGenes + countPartialGenes) > 1 ? EffectType.GENE_REARRANGEMENT : EffectType.NONE;
+			// Translocation always intersect "partial genes" since they have two (unconnected) break-points
+			return countPartialGenes > 1 ? EffectType.GENE_FUSION : EffectType.NONE;
 
 		default:
 			throw new RuntimeException("Unknown effect for variant type " + variant.getVariantType());
@@ -105,6 +107,33 @@ public class VariantEffectStructural extends VariantEffect {
 		return getGene();
 	}
 
+	/**
+	 * We say that intersects the "Left" side if the 'start' of the variant
+	 * intersects the marker.
+	 *
+	 * Note: For translocations this is the 'main' variants (as opposed to
+	 * the endPoint). This is just nomenclature and we could have defined
+	 * it the other way around (or called it intersect1 and intersect2
+	 * instead of intersectLeft intersercRight)
+	 */
+	boolean intersectsLeft(Marker m) {
+		return m.intersects(variant.getStart());
+	}
+
+	/**
+	 * We say that intersects the "Right" side if the 'end' of the variant
+	 * intersects the marker.
+	 *
+	 * Note: For translocations this is the 'endPoint' (as opposed to
+	 * the 'main' variant). This is just nomenclature and we could have defined
+	 * it the other way around (or called it intersect1 and intersect2
+	 * instead of intersectLeft intersercRight)
+	 */
+	boolean intersectsRight(Marker m) {
+		if (variant.isBnd()) return m.intersects(((VariantTranslocation) variant).getEndPoint().getStart());
+		return m.intersects(variant.getEnd());
+	}
+
 	@Override
 	public boolean isMultipleGenes() {
 		return true;
@@ -116,8 +145,8 @@ public class VariantEffectStructural extends VariantEffect {
 	void setGenes(Markers intersects) {
 		for (Marker m : intersects)
 			if (m instanceof Gene) {
-				if (m.intersects(variant.getStart())) genesLeft.add((Gene) m);
-				if (m.intersects(variant.getEnd())) genesRight.add((Gene) m);
+				if (intersectsLeft(m)) genesLeft.add((Gene) m);
+				if (intersectsRight(m)) genesRight.add((Gene) m);
 
 				if (variant.includes(m)) countWholeGenes++;
 				else countPartialGenes++;
