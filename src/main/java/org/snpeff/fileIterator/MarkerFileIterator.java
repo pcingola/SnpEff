@@ -92,7 +92,7 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	public void sanityCheckChromo(String chromoName, Chromosome chromo) {
 		if (chromo == null) {
 			if (ignoreChromosomeErrors) {
-				System.err.println("WARNING: Chromosome '" + chromoName + "' not found. File '" + fileName + "', line " + lineNum);
+				if (verbose) System.err.println("WARNING: Chromosome '" + chromoName + "' not found. File '" + fileName + "', line " + lineNum);
 				return;
 			}
 			throw new RuntimeException("ERROR: Chromosome '" + chromoName + "' not found! File '" + fileName + "', line " + lineNum);
