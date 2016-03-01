@@ -15,7 +15,7 @@ import org.snpeff.util.Gpr;
  */
 public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<M> {
 
-	protected boolean createChromos = false; // Create chromosomes if not found
+	protected boolean createChromos = true; // Create chromosomes if not found
 	protected Genome genome;
 	protected boolean ignoreChromosomeErrors = true; // If true, do not throw an exception when a chromosome is not found. Just ignore the line
 	protected int inOffset;
@@ -24,7 +24,6 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 		super(reader);
 		this.inOffset = inOffset;
 		this.genome = new Genome("genome");
-		this.createChromos = true;
 	}
 
 	public MarkerFileIterator(String fileName, Genome genome, int inOffset) {
@@ -37,7 +36,6 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 		super(fileName);
 		this.inOffset = inOffset;
 		this.genome = new Genome("genome");
-		this.createChromos = true;
 	}
 
 	/**
