@@ -795,7 +795,7 @@ public class SnpEffCmdPdb extends SnpEff {
 		// Note: We do this before opening the database, because it removes
 		// old interaction files (we don't want to try to load stale or old
 		// interactions).
-		String outputPdbFile = config.getDirDataVersion() + "/" + PROTEIN_INTERACTION_FILE;
+		String outputPdbFile = config.getDirDataGenomeVersion() + "/" + PROTEIN_INTERACTION_FILE;
 		deleteOuptut(outputPdbFile);
 
 		loadDb(); // Load database

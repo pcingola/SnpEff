@@ -474,7 +474,7 @@ public class SnpEff implements CommandLine {
 		//---
 		// Sanity checks
 		//---
-		String intFileName = config.getDirDataVersion() + "/" + SnpEffCmdPdb.PROTEIN_INTERACTION_FILE;
+		String intFileName = config.getDirDataGenomeVersion() + "/" + SnpEffCmdPdb.PROTEIN_INTERACTION_FILE;
 		if (!Gpr.exists(intFileName)) {
 			if (debug) if (!Gpr.exists(intFileName)) warning("Warning: Cannot open interactions file ", intFileName);
 			return;
@@ -549,7 +549,7 @@ public class SnpEff implements CommandLine {
 		//---
 		// Sanity checks
 		//---
-		String pwmsFileName = config.getDirDataVersion() + "/pwms.bin";
+		String pwmsFileName = config.getDirDataGenomeVersion() + "/pwms.bin";
 		String motifBinFileName = config.getBaseFileNameMotif() + ".bin";
 
 		if (!Gpr.exists(pwmsFileName) || !Gpr.exists(motifBinFileName)) {
@@ -607,7 +607,7 @@ public class SnpEff implements CommandLine {
 		//---
 		// Read nextProt binary file
 		//---
-		String nextProtBinFile = config.getDirDataVersion() + "/nextProt.bin";
+		String nextProtBinFile = config.getDirDataGenomeVersion() + "/nextProt.bin";
 		if (!Gpr.canRead(nextProtBinFile)) {
 			if (debug) Timer.showStdErr("NextProt database '" + nextProtBinFile + "' doesn't exist. Ignoring.");
 			return;
@@ -677,7 +677,7 @@ public class SnpEff implements CommandLine {
 		// Read file
 		//---
 		if (verbose) Timer.showStdErr("Reading regulation track '" + regTrack + "'");
-		String regFile = config.getDirDataVersion() + "/regulation_" + regTrack + ".bin";
+		String regFile = config.getDirDataGenomeVersion() + "/regulation_" + regTrack + ".bin";
 		Markers regulation = new Markers();
 		regulation.load(regFile);
 

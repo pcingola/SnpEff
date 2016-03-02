@@ -258,7 +258,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		if (verbose) Timer.showStdErr("[Optional] Reading regulation elements: BED ");
 
 		String inDir = config.getDirRegulationBed();
-		String outDir = config.getDirDataVersion();
+		String outDir = config.getDirDataGenomeVersion();
 
 		// Is the directory present?
 		File dir = new File(inDir);
@@ -290,7 +290,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		RegulationFileIterator regulationFileIterator = new RegulationGffFileIterator(regulationFileName);
 		RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus(verbose);
 		regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
-		regulationGffConsensus.save(config.getDirDataVersion()); // Save database
+		regulationGffConsensus.save(config.getDirDataGenomeVersion()); // Save database
 		if (verbose) Timer.showStdErr("Done.");
 	}
 
@@ -301,7 +301,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		if (verbose) Timer.showStdErr("[Optional] Reading motifs: GFF");
 		String motifFileName = config.getBaseFileNameMotif() + ".gff";
 		String motifBinFileName = config.getBaseFileNameMotif() + ".bin";
-		String pwmsFileName = config.getDirDataVersion() + "/pwms.bin";
+		String pwmsFileName = config.getDirDataGenomeVersion() + "/pwms.bin";
 
 		if (!Gpr.exists(pwmsFileName)) {
 			if (verbose) Timer.showStdErr("Warning: Cannot open PWMs file " + pwmsFileName + ". Nothing done");

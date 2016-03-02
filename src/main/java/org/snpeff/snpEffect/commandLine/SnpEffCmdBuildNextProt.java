@@ -642,7 +642,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 	 * Save nextprot markers
 	 */
 	void save() {
-		String nextProtBinFile = config.getDirDataVersion() + "/nextProt.bin";
+		String nextProtBinFile = config.getDirDataGenomeVersion() + "/nextProt.bin";
 		if (verbose) Timer.showStdErr("Saving database to file '" + nextProtBinFile + "'");
 
 		// Add chromosomes

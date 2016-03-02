@@ -71,7 +71,7 @@ public class TestCasesGenomicSequences {
 		gs.setVerbose(verbose);
 
 		// Remove all previous sequence*.bin files
-		String dir = config.getDirDataVersion();
+		String dir = config.getDirDataGenomeVersion();
 		deleteAllBinFiles(dir);
 		Assert.assertEquals("Sequence files have not been deleted from " + dir, 0, countSequenceBinFiles(dir));
 
@@ -89,7 +89,7 @@ public class TestCasesGenomicSequences {
 		gs.save(config);
 
 		// Count number of sequence*.bin files
-		int countSeqFiles = countSequenceBinFiles(config.getDirDataVersion());
+		int countSeqFiles = countSequenceBinFiles(config.getDirDataGenomeVersion());
 		Assert.assertEquals("Unexpected number of sequence*.bin files", 1, countSeqFiles);
 
 		//---
@@ -133,7 +133,7 @@ public class TestCasesGenomicSequences {
 		gs.setVerbose(verbose);
 
 		// Remove all previous sequence*.bin files
-		String dir = config.getDirDataVersion();
+		String dir = config.getDirDataGenomeVersion();
 		deleteAllBinFiles(dir);
 		Assert.assertEquals("Sequence files have not been deleted from " + dir, 0, countSequenceBinFiles(dir));
 
@@ -154,7 +154,7 @@ public class TestCasesGenomicSequences {
 		gs.save(config);
 
 		// Count number of sequence*.bin files
-		int countSeqFiles = countSequenceBinFiles(config.getDirDataVersion());
+		int countSeqFiles = countSequenceBinFiles(config.getDirDataGenomeVersion());
 		Assert.assertEquals("Unexpected number of sequence*.bin files", (numberOfLargeChromos + 1), countSeqFiles);
 
 		//---

@@ -220,14 +220,14 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	public String getBaseFileNameMotif() {
-		return getDirDataVersion() + "/motif";
+		return getDirDataGenomeVersion() + "/motif";
 	}
 
 	/**
 	 * Regulation file (GFF format)
 	 */
 	public String getBaseFileNameRegulation() {
-		return getDirDataVersion() + "/regulation";
+		return getDirDataGenomeVersion() + "/regulation";
 	}
 
 	public String getBaseFileNameSequence() {
@@ -305,7 +305,7 @@ public class Config implements Serializable, Iterable<String> {
 	/**
 	 * Data dir for a specific genome version (i.e. where the database is)
 	 */
-	public String getDirDataVersion() {
+	public String getDirDataGenomeVersion() {
 		return dataDir + "/" + genome.getVersion();
 	}
 
@@ -321,7 +321,7 @@ public class Config implements Serializable, Iterable<String> {
 	 * Directory where regulation 'BED' files are
 	 */
 	public String getDirRegulationBed() {
-		return getDirDataVersion() + "/regulation.bed/";
+		return getDirDataGenomeVersion() + "/regulation.bed/";
 	}
 
 	/**
@@ -344,7 +344,7 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	public String getFileNameCds() {
-		return getDirDataVersion() + "/cds.fa";
+		return getDirDataGenomeVersion() + "/cds.fa";
 	}
 
 	/**
@@ -360,7 +360,7 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	public String getFileNameProteins() {
-		return getDirDataVersion() + "/protein.fa";
+		return getDirDataGenomeVersion() + "/protein.fa";
 	}
 
 	public String getFileNameSequence() {
