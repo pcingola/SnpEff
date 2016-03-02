@@ -670,4 +670,11 @@ public class TestCasesVcf extends TestCasesBase {
 		}
 	}
 
+	public void test_34_vcfInfoEncoding() {
+		String str = "hi;hello;bye;\nadios=chau\tbye\nhi=hello\thola";
+		String enc = VcfEntry.vcfInfoEncode(str);
+		String dec = VcfEntry.vcfInfoDecode(enc);
+		Assert.assertEquals("Encoding-Decoding cycle failed", str, dec);
+	}
+
 }

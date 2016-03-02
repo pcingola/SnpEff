@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,7 +64,22 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	public static final String VCF_INFO_PRIVATE = "Private";
 
+	private static final Map<String, String> INFO_VALUE_ENCODE;
+
 	private static final long serialVersionUID = 4226374412681243433L;
+
+	static {
+		// Initialize VCF value encoding table
+		INFO_VALUE_ENCODE = new HashMap<>();
+		INFO_VALUE_ENCODE.put("%3A", ":");
+		INFO_VALUE_ENCODE.put("%3B", ";");
+		INFO_VALUE_ENCODE.put("%3D", "=");
+		INFO_VALUE_ENCODE.put("%25", "%");
+		INFO_VALUE_ENCODE.put("%2C", ",");
+		INFO_VALUE_ENCODE.put("%0D", "\n");
+		INFO_VALUE_ENCODE.put("%0A", "\r");
+		INFO_VALUE_ENCODE.put("%09", "\t");
+	}
 
 	protected String[] alts;
 	protected String altStr;
@@ -83,6 +99,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	protected LinkedList<Variant> variants;
 	protected List<VcfEffect> vcfEffects;
 	protected VcfFileIterator vcfFileIterator; // Iterator where this entry was red from
+
 	protected ArrayList<VcfGenotype> vcfGenotypes = null;
 
 	/**
@@ -120,6 +137,41 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public static boolean isValidInfoValue(String value) {
 		boolean invalid = ((value != null) && ((value.indexOf(' ') >= 0) || (value.indexOf(';') >= 0) || (value.indexOf('=') >= 0) || (value.indexOf('\t') >= 0) || (value.indexOf('\n') >= 0)));
 		return !invalid;
+	}
+
+	/**
+	 * Decode INFO value
+	 */
+	public static String vcfInfoDecode(String str) {
+		if (str == null || str.isEmpty() || str.equals(".")) return str;
+
+		for (String encoded : INFO_VALUE_ENCODE.keySet())
+			str = str.replace(encoded, INFO_VALUE_ENCODE.get(encoded));
+
+		return str;
+	}
+
+	/**
+	 * Encode a string to be used in an 'INFO' field value
+	 * From the VCF 4.3 specification
+	 * Characters with special meaning (such as field delimiters ';' in INFO or ':' FORMAT
+	 * fields) must be represented using the capitalized percent encoding:
+	 * 		%3A : (colon)
+	 * 		%3B ; (semicolon)
+	 * 		%3D = (equal sign)
+	 * 		%25 % (percent sign)
+	 * 		%2C , (comma)
+	 * 		%0D CR
+	 * 		%0A LF
+	 * 		%09 TAB
+	 */
+	public static String vcfInfoEncode(String str) {
+		if (str == null || str.isEmpty() || str.equals(".")) return str;
+
+		for (String encoded : INFO_VALUE_ENCODE.keySet())
+			str = str.replace(INFO_VALUE_ENCODE.get(encoded), encoded);
+
+		return str;
 	}
 
 	/**

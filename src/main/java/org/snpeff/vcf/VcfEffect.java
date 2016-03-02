@@ -124,7 +124,6 @@ public class VcfEffect {
 
 	/**
 	 * Constructor: Force format version
-	 * @param effStr
 	 * @param formatVersion : If null, will try to guess it
 	 */
 	public VcfEffect(String effectString, EffFormatVersion formatVersion) {
@@ -151,7 +150,7 @@ public class VcfEffect {
 	 * Add subfield to a buffer
 	 */
 	void add(StringBuilder sb, Object obj) {
-		if (obj != null) sb.append(VcfEntry.vcfInfoValueSafe(obj.toString()));
+		if (obj != null) sb.append(VcfEntry.vcfInfoEncode(obj.toString()));
 		sb.append("|");
 	}
 
@@ -250,10 +249,10 @@ public class VcfEffect {
 		// Add HGVS (amino acid change)
 		if (useHgvs) {
 			StringBuilder hgvs = new StringBuilder();
-			if (hgvsP != null) hgvs.append(hgvsP);
+			if (hgvsP != null) hgvs.append(VcfEntry.vcfInfoEncode(hgvsP));
 			if (hgvsC != null) {
 				if (hgvs.length() > 0) hgvs.append('/');
-				hgvs.append(hgvsC);
+				hgvs.append(VcfEntry.vcfInfoEncode(hgvsC));
 			}
 
 			effBuff.append(hgvs.toString());
@@ -759,10 +758,10 @@ public class VcfEffect {
 		rankMax = ints.second;
 
 		// HGVS
-		hgvsC = vcfFieldStrings[index++];
+		hgvsC = VcfEntry.vcfInfoDecode(vcfFieldStrings[index++]);
 		codon = hgvsC;
 
-		hgvsP = vcfFieldStrings[index++];
+		hgvsP = VcfEntry.vcfInfoDecode(vcfFieldStrings[index++]);
 		aa = hgvsP;
 
 		// cDna: 'pos / len'
@@ -817,11 +816,15 @@ public class VcfEffect {
 				String f[] = aa.split("/");
 
 				// HGVS Protein
-				if (f.length > 0 && f[0].startsWith("p.")) hgvsP = f[0];
+				if (f.length > 0 && f[0].startsWith("p.")) {
+					hgvsP = VcfEntry.vcfInfoDecode(f[0]);
+				}
 
 				// HGVS DNA
-				if ((f.length > 1) && (f[1].startsWith("c.") || f[1].startsWith("n."))) hgvsC = f[1];
-			} else if (aa.startsWith("c.") || aa.startsWith("n.")) hgvsC = aa; // Only HGVS DNA
+				if ((f.length > 1) && (f[1].startsWith("c.") || f[1].startsWith("n."))) hgvsC = VcfEntry.vcfInfoDecode(f[1]);
+			} else if (aa.startsWith("c.") || aa.startsWith("n.")) {
+				hgvsC = aa = VcfEntry.vcfInfoDecode(aa); // Only HGVS DNA
+			}
 
 			index++;
 
