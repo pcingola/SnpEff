@@ -8,9 +8,11 @@ import org.junit.Test;
 import org.snpeff.interval.BioType;
 import org.snpeff.interval.Cds;
 import org.snpeff.interval.Chromosome;
+import org.snpeff.interval.CytoBands;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
+import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantTranslocation;
@@ -116,6 +118,12 @@ public class TestCasesZzz {
 		snpEffectPredictor.add(gene1);
 		snpEffectPredictor.add(gene2);
 		snpEffectPredictor.buildForest();
+
+		// Create fake cytobands
+		CytoBands cytoBands = genome.getCytoBands();
+		cytoBands.add(new Marker(chr1, chr1.getStart(), chr1.getEnd(), false, "p1"));
+		cytoBands.add(new Marker(chr2, chr2.getStart(), chr2.getEnd(), false, "p2"));
+		cytoBands.build();
 	}
 
 	Set<String> arrayToSet(String array[]) {
@@ -229,14 +237,13 @@ public class TestCasesZzz {
 	public void test01() {
 		Gpr.debug("Test");
 
-		verbose = true;
 		init(false, false);
 
 		// Create variant
 		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
 
-		EffectType expEffs[] = { EffectType.GENE_DELETED };
-		String expHgvsc[] = null;
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);

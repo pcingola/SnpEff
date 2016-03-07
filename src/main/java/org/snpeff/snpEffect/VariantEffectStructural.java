@@ -9,6 +9,7 @@ import java.util.Set;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
+import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantTranslocation;
 
@@ -73,17 +74,18 @@ public class VariantEffectStructural extends VariantEffect {
 		// Add all gene pairs
 		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
 		for (Gene gLeft : genesLeft)
-			for (Gene gRight : genesRight)
-				if (!gLeft.getId().equals(gRight.getId())) { // Not the same gene?
-					// If both genes overlap and the variant is within that
-					// region, then it's not a fusion, it's just a variant
-					// acting on both genes.
-					Marker gIntersect = gLeft.intersect(gRight);
-					if (gIntersect != null && gIntersect.includes(variant)) continue;
+			for (Transcript trLeft : gLeft)
+				for (Gene gRight : genesRight)
+					if (!gLeft.getId().equals(gRight.getId())) { // Not the same gene?
+						// If both genes overlap and the variant is within that
+						// region, then it's not a fusion, it's just a variant
+						// acting on both genes.
+						Marker gIntersect = gLeft.intersect(gRight);
+						if (gIntersect != null && gIntersect.includes(variant)) continue;
 
-					VariantEffectFusion fusion = new VariantEffectFusion(variant, gLeft, gRight);
-					fusions.add(fusion);
-				}
+						VariantEffectFusion fusion = new VariantEffectFusion(variant, trLeft, gRight);
+						fusions.add(fusion);
+					}
 
 		return fusions;
 	}

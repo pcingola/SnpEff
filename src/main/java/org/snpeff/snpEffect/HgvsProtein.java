@@ -356,16 +356,6 @@ public class HgvsProtein extends Hgvs {
 	}
 
 	/**
-	 * Return "p." string with/without transcript ID, according to user command line options.
-	 */
-	protected String prefix() {
-		if (!hgvsTrId || tr == null) return "p.";
-
-		String ver = tr.getVersion();
-		return tr.getId() + (ver.isEmpty() ? "" : "." + ver) + ":p.";
-	}
-
-	/**
 	 * Can we simplify AAs?
 	 */
 	void simplifyAminoAcids() {
@@ -471,7 +461,7 @@ public class HgvsProtein extends Hgvs {
 		if (variant == null || marker == null) return null;
 
 		// Deleted transcript produces no protein.
-		if (variantEffect.getEffectType() == EffectType.TRANSCRIPT_DELETED) return prefix() + "0?";
+		if (variantEffect.getEffectType() == EffectType.TRANSCRIPT_DELETED) return typeOfReference() + "0?";
 
 		// Can we simplify amino acids in aaNew/aaOld?
 		if (!variant.isSnp() && !variant.isMnp()) simplifyAminoAcids();
@@ -525,6 +515,16 @@ public class HgvsProtein extends Hgvs {
 
 		if (protChange == null || pos == null) return null;
 
-		return prefix() + pos + protChange;
+		return typeOfReference() + pos + protChange;
+	}
+
+	/**
+	 * Return "p." string with/without transcript ID, according to user command line options.
+	 */
+	protected String typeOfReference() {
+		if (!hgvsTrId || tr == null) return "p.";
+
+		String ver = tr.getVersion();
+		return tr.getId() + (ver.isEmpty() ? "" : "." + ver) + ":p.";
 	}
 }

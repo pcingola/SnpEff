@@ -204,6 +204,11 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		return chrs;
 	}
 
+	public synchronized CytoBands getCytoBands() {
+		if (cytoBands == null) cytoBands = new CytoBands(this);
+		return cytoBands;
+	}
+
 	public String getFastaDir() {
 		return fastaDir;
 	}
@@ -614,11 +619,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		sb.append("#-----------------------------------------------\n");
 
 		return sb.toString();
-	}
-
-	public synchronized CytoBands getCytoBands() {
-		if (cytoBands == null) cytoBands = new CytoBands(this);
-		return cytoBands;
 	}
 
 }

@@ -1,8 +1,11 @@
 package org.snpeff.snpEffect;
 
+import org.snpeff.interval.CytoBands;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Intron;
 import org.snpeff.interval.Marker;
+import org.snpeff.interval.Markers;
+import org.snpeff.interval.VariantTranslocation;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 
@@ -71,13 +74,16 @@ public class HgvsDna extends Hgvs {
 			return "del" + GprSeq.reverseWc(variant.getReference()) + "ins" + GprSeq.reverseWc(variant.getAlt());
 
 		case INV:
-			// Inversions are designated by "inv" after an indication of the 
+			// Inversions are designated by "inv" after an indication of the
 			// first and last nucleotides affected by the inversion.
 			// Reference: http://www.hgvs.org/mutnomen/recs-DNA.html#inv
 			// => No base changes are used
 			return "";
 
 		case INTERVAL:
+			return "";
+
+		case BND:
 			return "";
 
 		default:
@@ -207,6 +213,7 @@ public class HgvsDna extends Hgvs {
 			}
 			break;
 
+		case BND:
 		case DEL:
 		case DUP:
 		case INV:
@@ -373,27 +380,42 @@ public class HgvsDna extends Hgvs {
 	}
 
 	/**
-	 * Prefix for coding or non-coding sequences
+	 * Translocation nomenclature.
+	 * From HGVS:
+	 * 		Translocations are described at the molecular level using the 
+	 * 		format "t(X;4)(p21.2;q34)", followed by the usual numbering, indicating 
+	 * 		the position translocation breakpoint. The sequences of the translocation 
+	 * 		breakpoints need to be submitted to a sequence database (Genbank, EMBL, 
+	 * 		DDJB) and the accession.version numbers should be given (see Discussion).
+	 * 		E.g.:
+	 * 			t(X;4)(p21.2;q35)(c.857+101_857+102) denotes a translocation breakpoint 
+	 * 			in the intron between coding DNA nucleotides 857+101 and 857+102, joining 
+	 * 			chromosome bands Xp21.2 and 4q34
 	 */
-	protected String prefix() {
-		if (tr == null) return "n.";
+	protected String prefixTranslocation() {
+		VariantTranslocation vtr = (VariantTranslocation) variant;
 
-		// Is the transcript protein coding?
-		String prefix = tr.isProteinCoding() ? "c." : "n.";
+		// Chromosome part
+		String chrCoords = "(" //
+				+ vtr.getChromosomeName() //
+				+ ";" //
+				+ vtr.getEndPoint().getChromosomeName() //
+				+ ")" //
+				;
 
-		// Not using transcript ID?
-		if (!hgvsTrId) return prefix;
+		// Get cytobands
+		String band1 = "";
+		CytoBands cytoBands = genome.getCytoBands();
+		Markers bands1 = cytoBands.query(vtr);
+		if (!bands1.isEmpty()) band1 = bands1.get(0).getId(); // Get first match 
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(tr.getId());
+		String band2 = "";
+		Markers bands2 = cytoBands.query(vtr.getEndPoint());
+		if (!bands2.isEmpty()) band2 = bands2.get(0).getId(); // Get first match 
 
-		String ver = tr.getVersion();
-		if (!ver.isEmpty()) sb.append("." + ver);
+		String bands = "(" + band1 + ";" + band2 + ")";
 
-		sb.append(':');
-		sb.append(prefix);
-
-		return sb.toString();
+		return "t" + chrCoords + bands + "(";
 	}
 
 	@Override
@@ -403,7 +425,7 @@ public class HgvsDna extends Hgvs {
 		// Is this a duplication?
 		if (variant.isIns()) duplication = isDuplication();
 
-		String type = "";
+		String type = "", prefix = "", suffix = "";
 		switch (variant.getVariantType()) {
 		case INS:
 			type = duplication ? "dup" : "ins";
@@ -431,6 +453,12 @@ public class HgvsDna extends Hgvs {
 			type = "dup";
 			break;
 
+		case BND:
+			prefix = prefixTranslocation();
+			type = "";
+			suffix = ")";
+			break;
+
 		default:
 			throw new RuntimeException("Unimplemented method for variant type " + variant.getVariantType());
 		}
@@ -439,7 +467,31 @@ public class HgvsDna extends Hgvs {
 		String pos = pos();
 		if (pos == null) return null;
 
-		return prefix() + pos + type + dnaBaseChange();
+		return prefix + typeOfReference() + pos + type + dnaBaseChange() + suffix;
+	}
+
+	/**
+	 * Prefix for coding or non-coding sequences
+	 */
+	protected String typeOfReference() {
+		if (tr == null) return "n.";
+
+		// Is the transcript protein coding?
+		String prefix = tr.isProteinCoding() ? "c." : "n.";
+
+		// Not using transcript ID?
+		if (!hgvsTrId) return prefix;
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(tr.getId());
+
+		String ver = tr.getVersion();
+		if (!ver.isEmpty()) sb.append("." + ver);
+
+		sb.append(':');
+		sb.append(prefix);
+
+		return sb.toString();
 	}
 
 }

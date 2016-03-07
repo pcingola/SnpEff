@@ -74,22 +74,22 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	// Don't show codon change sequences that are too long
 	public static final int MAX_CODON_SEQUENCE_LEN = 100;
 
-	Variant variant = null;
-	List<EffectType> effectTypes;
-	EffectType effectType;
-	List<EffectImpact> effectImpacts;
-	EffectImpact effectImpact = null;
-	Marker marker = null;
-	String error = "", warning = "", message = ""; // Any message, warning or error?
-	String codonsRef = "", codonsAlt = ""; // Codon change information
-	String codonsAroundOld = "", codonsAroundNew = ""; // Codons around
-	int distance = -1; // Distance metric
-	int cDnaPos = -1; // Position in cDNA
-	int codonNum = -1; // Codon number (negative number mens 'information not available')
-	int codonIndex = -1; // Index within a codon (negative number mens 'information not available')
-	int codonDegeneracy = -1; // Codon degeneracy (negative number mens 'information not available')
-	String aaRef = "", aaAlt = ""; // Amino acid changes
-	String aasAroundOld = "", aasAroundNew = ""; // Amino acids around
+	protected Variant variant = null;
+	protected List<EffectType> effectTypes;
+	protected EffectType effectType;
+	protected List<EffectImpact> effectImpacts;
+	protected EffectImpact effectImpact = null;
+	protected Marker marker = null;
+	protected String error = "", warning = "", message = ""; // Any message, warning or error?
+	protected String codonsRef = "", codonsAlt = ""; // Codon change information
+	protected String codonsAroundOld = "", codonsAroundNew = ""; // Codons around
+	protected int distance = -1; // Distance metric
+	protected int cDnaPos = -1; // Position in cDNA
+	protected int codonNum = -1; // Codon number (negative number mens 'information not available')
+	protected int codonIndex = -1; // Index within a codon (negative number mens 'information not available')
+	protected int codonDegeneracy = -1; // Codon degeneracy (negative number mens 'information not available')
+	protected String aaRef = "", aaAlt = ""; // Amino acid changes
+	protected String aasAroundOld = "", aasAroundNew = ""; // Amino acids around
 
 	public VariantEffect(Variant variant) {
 		this.variant = variant;

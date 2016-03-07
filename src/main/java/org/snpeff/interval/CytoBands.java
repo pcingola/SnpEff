@@ -34,6 +34,14 @@ public class CytoBands {
 		else if (debug) Gpr.debug("Cannot open file '" + cytoBandFile + "', not loadng cytobands");
 	}
 
+	public void add(Marker m) {
+		forest.add(m);
+	}
+
+	public void build() {
+		forest.build();
+	}
+
 	public boolean isEmpty() {
 		return forest.size() <= 0;
 	}
@@ -47,7 +55,7 @@ public class CytoBands {
 
 		int count = 0;
 		for (Variant var : bed) {
-			forest.add(var);
+			add(var);
 			count++;
 		}
 
@@ -56,7 +64,7 @@ public class CytoBands {
 			else Timer.showStdErr("Loaded " + count + " cytoband intervals");
 		}
 
-		forest.build();
+		build();
 	}
 
 	public Markers query(Marker marker) {
