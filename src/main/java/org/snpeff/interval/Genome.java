@@ -43,6 +43,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	Boolean codingInfo = null; // Do we have coding info from genes?
 	Boolean transcriptSupportLevelInfo = null; // Do we have 'TranscriptSupportLevel' info in transcripts?
 	GenomicSequences genomicSequences; // Store all genomic sequences (of interest) here
+	CytoBands cytoBands;
 
 	/**
 	 * Create a genome from a faidx file.
@@ -67,7 +68,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 			genome.add(chromosome);
 		}
 		return genome;
-
 	}
 
 	public Genome() {
@@ -615,4 +615,10 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 		return sb.toString();
 	}
+
+	public synchronized CytoBands getCytoBands() {
+		if (cytoBands == null) cytoBands = new CytoBands(this);
+		return cytoBands;
+	}
+
 }

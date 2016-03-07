@@ -2,7 +2,9 @@ package org.snpeff.interval;
 
 import org.snpeff.fileIterator.BedFileIterator;
 import org.snpeff.interval.tree.IntervalForest;
+import org.snpeff.interval.tree.Itree;
 import org.snpeff.snpEffect.Config;
+import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 
 /**
@@ -16,16 +18,24 @@ public class CytoBands {
 	public static final String DEFAULT_CYTOBAND_BED_FILE = "cytoBand.txt";
 
 	boolean verbose;
+	boolean debug;
+	Genome genome;
 	IntervalForest forest;
 
-	public CytoBands(Config config) {
+	public CytoBands(Genome genome) {
+		Config config = Config.get();
+		this.genome = genome;
 		verbose = config.isVerbose();
+		debug = config.isDebug();
 		forest = new IntervalForest();
 
-		if (config.getCoordinates() != null) {
-			String cytoBandFile = config.getDirDataGenomeVersion() + "/" + DEFAULT_CYTOBAND_BED_FILE;
-			load(cytoBandFile);
-		}
+		String cytoBandFile = config.getDirDataGenomeVersion() + "/" + DEFAULT_CYTOBAND_BED_FILE;
+		if (Gpr.exists(cytoBandFile)) load(cytoBandFile);
+		else if (debug) Gpr.debug("Cannot open file '" + cytoBandFile + "', not loadng cytobands");
+	}
+
+	public boolean isEmpty() {
+		return forest.size() <= 0;
 	}
 
 	/**
@@ -47,6 +57,22 @@ public class CytoBands {
 		}
 
 		forest.build();
+	}
+
+	public Markers query(Marker marker) {
+		return forest.query(marker);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Cytobands for " + genome.getId() + " : " + (isEmpty() ? "[Empty]" : "") + "\n");
+
+		for (Itree tree : forest)
+			for (Marker m : tree)
+				sb.append("\t" + m.getChromosomeName() + "\t" + m.getStart() + "\t" + m.getEnd() + "\t" + m.getId() + "\n");
+
+		return sb.toString();
 	}
 
 }

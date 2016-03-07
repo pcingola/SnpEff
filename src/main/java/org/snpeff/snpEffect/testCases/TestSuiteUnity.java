@@ -18,6 +18,7 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesCds;
 import org.snpeff.snpEffect.testCases.unity.TestCasesChiSquare;
 import org.snpeff.snpEffect.testCases.unity.TestCasesCochranArmitage;
 import org.snpeff.snpEffect.testCases.unity.TestCasesCodonTable;
+import org.snpeff.snpEffect.testCases.unity.TestCasesCytoBands;
 import org.snpeff.snpEffect.testCases.unity.TestCasesDel;
 import org.snpeff.snpEffect.testCases.unity.TestCasesDels;
 import org.snpeff.snpEffect.testCases.unity.TestCasesDnaNSequence;
@@ -82,6 +83,7 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesCds.class, //
 		TestCasesCochranArmitage.class, //
 		TestCasesCodonTable.class, //
+		TestCasesCytoBands.class, //
 		TestCasesDels.class, //
 		TestCasesDel.class, //
 		TestCasesDnaNSequence.class, //
