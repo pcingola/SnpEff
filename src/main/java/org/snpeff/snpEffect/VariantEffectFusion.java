@@ -58,7 +58,6 @@ public class VariantEffectFusion extends VariantEffectStructural {
 	 */
 	void aaPos() {
 		VariantTranslocation vtrans = getVariantTranslocation();
-		boolean sameStrand = trLeft.isStrandPlus() == trRight.isStrandPlus();
 
 		// E.g.:  C[2:321682[
 		if (!vtrans.isLeft() && !vtrans.isBefore()) {
@@ -89,8 +88,6 @@ public class VariantEffectFusion extends VariantEffectStructural {
 
 		// E.g.:  ]13:123456]T
 		if (vtrans.isLeft() && vtrans.isBefore()) {
-			setEffect(sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
-
 			if (trLeft.isStrandMinus()) aaLeftBegin();
 			else aaLeftEnd();
 

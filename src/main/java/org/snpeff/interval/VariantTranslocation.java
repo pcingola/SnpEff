@@ -75,7 +75,7 @@ public class VariantTranslocation extends Variant {
 				+ ":" + start //
 				+ "_" + getReference() //
 				+ "/" //
-				+ (before ? getAlt() + trPos : trPos + getAlt()) //
+				+ (before ? trPos + getAlt() : getAlt() + trPos) //
 				;
 	}
 

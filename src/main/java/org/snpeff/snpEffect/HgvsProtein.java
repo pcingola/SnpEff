@@ -3,7 +3,6 @@ package org.snpeff.snpEffect;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.VariantTranslocation;
-import org.snpeff.interval.codonChange.CodonChange;
 import org.snpeff.util.Gpr;
 
 /**
@@ -565,16 +564,14 @@ public class HgvsProtein extends Hgvs {
 				;
 
 		// Left transcript coordinates
-		Transcript trLeft = veffFusion.getTrLeft();
-		int aaNumLeftStart = 0;
-		int aaNumLeftEnd = trLeft.baseNumberCds(variant.getStart(), true) / CodonChange.CODON_SIZE;
-		String trLeftStr = trLeft.getId() + ":" + pos(trLeft, aaNumLeftStart, aaNumLeftEnd);
+		String trLeftStr = veffFusion.getTrLeft().getId() //
+				+ ":" //
+				+ pos(veffFusion.getTrLeft(), veffFusion.getAaNumLeftStart(), veffFusion.getAaNumLeftEnd());
 
 		// Right transcript coordinates
-		Transcript trRight = veffFusion.getTrRight();
-		int aaNumRightStart = trRight.baseNumberCds(vtr.getEndPoint().getStart(), true) / CodonChange.CODON_SIZE;
-		int aaNumRightEnd = trRight.protein().length() - 1;
-		String trRightStr = trRight.getId() + ":" + pos(trRight, aaNumRightStart, aaNumRightEnd);
+		String trRightStr = veffFusion.getTrRight().getId() //
+				+ ":" //
+				+ pos(veffFusion.getTrRight(), veffFusion.getAaNumRightStart(), veffFusion.getAaNumRightEnd());
 
 		return "t" + chrCoords + "(" + trLeftStr + ";" + trRightStr + ")";
 	}
