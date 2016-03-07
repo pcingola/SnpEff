@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import org.junit.Test;
 import org.snpeff.interval.BioType;
 import org.snpeff.interval.Cds;
 import org.snpeff.interval.Chromosome;
@@ -15,7 +14,6 @@ import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
-import org.snpeff.interval.VariantTranslocation;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.HgvsDna;
@@ -230,33 +228,117 @@ public class TestCasesZzz {
 		super();
 	}
 
-	/**
-	 * Translocation in the same direction (both genes in positive strand)
-	 * 
-	 * #CHROM   POS    ID    REF    ALT
-	 * chr1     35     .     N      N[chr2:140[
-	 * 
-	 * gene1:   >>>>>>>>>>>----
-	 *                         |
-	 * gene2                   ---->>>>>>>>>
-	 * 
-	 */
-	@Test
-	public void test01() {
-		Gpr.debug("Test");
-
-		init(false, false);
-
-		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
-
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
-		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
-		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:His6_Tyr19)" };
-		EffectImpact expectedImpact = EffectImpact.HIGH;
-
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
-	}
+	//	/**
+	//	 * Translocation in the same direction (both genes in positive strand)
+	//	 * 
+	//	 * #CHROM   POS    ID    REF    ALT
+	//	 * chr1     35     .     N      N[chr2:140[
+	//	 * 
+	//	 * gene1:   >>>>>>>>>>>----
+	//	 *                         |
+	//	 * gene2                   ---->>>>>>>>>
+	//	 * 
+	//	 */
+	//	@Test
+	//	public void test01_0() {
+	//		Gpr.debug("Test");
+	//
+	//		init(false, false);
+	//
+	//		// Create variant
+	//		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
+	//
+	//		EffectType expEffs[] = { EffectType.GENE_FUSION };
+	//		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
+	//		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:His6_Tyr19)" };
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
+	//
+	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	//	}
+	//
+	//	/**
+	//	 * Translocation in the same direction (both genes in positive strand)
+	//	 * 
+	//	 * #CHROM   POS    ID    REF    ALT
+	//	 * chr1     35     .     N      N[chr2:140[
+	//	 * 
+	//	 * gene1:   >>>>>>>>>>>----
+	//	 *                         |
+	//	 * gene2                   ----<<<<<<<<<<<<---
+	//	 * 
+	//	 */
+	//	@Test
+	//	public void test01_1() {
+	//		Gpr.debug("Test");
+	//
+	//		init(false, true);
+	//
+	//		// Create variant
+	//		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
+	//
+	//		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
+	//		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
+	//		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:Ile1_Met14)" };
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
+	//
+	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	//	}
+	//
+	//	/**
+	//	 * Translocation in the same direction (both genes in positive strand)
+	//	 * 
+	//	 * #CHROM   POS    ID    REF    ALT
+	//	 * chr1     35     .     N      N[chr2:140[
+	//	 * 
+	//	 * gene1:   <<<<<<<<<<<<----
+	//	 *                         |
+	//	 * gene2                   ---->>>>>>>>>----
+	//	 * 
+	//	 */
+	//	@Test
+	//	public void test01_2() {
+	//		Gpr.debug("Test");
+	//
+	//		init(true, false);
+	//
+	//		// Create variant
+	//		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
+	//
+	//		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
+	//		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
+	//		String expHgvsp[] = { "t(1;2)(tr1:Val17_Ile24;tr2:His6_Tyr19)" };
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
+	//
+	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	//	}
+	//
+	//	/**
+	//	 * Translocation in the same direction (both genes in positive strand)
+	//	 * 
+	//	 * #CHROM   POS    ID    REF    ALT
+	//	 * chr1     35     .     N      N[chr2:140[
+	//	 * 
+	//	 * gene1:   <<<<<<<<<<<<----
+	//	 *                         |
+	//	 * gene2                   ----<<<<<<<<<<<<---
+	//	 * 
+	//	 */
+	//	@Test
+	//	public void test01_3() {
+	//		Gpr.debug("Test");
+	//
+	//		init(true, true);
+	//
+	//		// Create variant
+	//		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
+	//
+	//		EffectType expEffs[] = { EffectType.GENE_FUSION };
+	//		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
+	//		String expHgvsp[] = { "t(1;2)(tr1:Val17_Ile24;tr2:Ile1_Met14)" };
+	//		EffectImpact expectedImpact = EffectImpact.HIGH;
+	//
+	//		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	//	}
 
 	//	/**
 	//	 * Translocation in the same direction (both genes in negative strand)
