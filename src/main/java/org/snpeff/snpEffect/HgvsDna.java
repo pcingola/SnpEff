@@ -382,14 +382,14 @@ public class HgvsDna extends Hgvs {
 	/**
 	 * Translocation nomenclature.
 	 * From HGVS:
-	 * 		Translocations are described at the molecular level using the 
-	 * 		format "t(X;4)(p21.2;q34)", followed by the usual numbering, indicating 
-	 * 		the position translocation breakpoint. The sequences of the translocation 
-	 * 		breakpoints need to be submitted to a sequence database (Genbank, EMBL, 
+	 * 		Translocations are described at the molecular level using the
+	 * 		format "t(X;4)(p21.2;q34)", followed by the usual numbering, indicating
+	 * 		the position translocation breakpoint. The sequences of the translocation
+	 * 		breakpoints need to be submitted to a sequence database (Genbank, EMBL,
 	 * 		DDJB) and the accession.version numbers should be given (see Discussion).
 	 * 		E.g.:
-	 * 			t(X;4)(p21.2;q35)(c.857+101_857+102) denotes a translocation breakpoint 
-	 * 			in the intron between coding DNA nucleotides 857+101 and 857+102, joining 
+	 * 			t(X;4)(p21.2;q35)(c.857+101_857+102) denotes a translocation breakpoint
+	 * 			in the intron between coding DNA nucleotides 857+101 and 857+102, joining
 	 * 			chromosome bands Xp21.2 and 4q34
 	 */
 	protected String prefixTranslocation() {
@@ -407,11 +407,11 @@ public class HgvsDna extends Hgvs {
 		String band1 = "";
 		CytoBands cytoBands = genome.getCytoBands();
 		Markers bands1 = cytoBands.query(vtr);
-		if (!bands1.isEmpty()) band1 = bands1.get(0).getId(); // Get first match 
+		if (!bands1.isEmpty()) band1 = bands1.get(0).getId(); // Get first match
 
 		String band2 = "";
 		Markers bands2 = cytoBands.query(vtr.getEndPoint());
-		if (!bands2.isEmpty()) band2 = bands2.get(0).getId(); // Get first match 
+		if (!bands2.isEmpty()) band2 = bands2.get(0).getId(); // Get first match
 
 		String bands = "(" + band1 + ";" + band2 + ")";
 

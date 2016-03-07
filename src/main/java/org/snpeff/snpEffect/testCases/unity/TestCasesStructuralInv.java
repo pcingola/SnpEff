@@ -343,10 +343,10 @@ public class TestCasesStructuralInv extends TestCasesBase {
 		Variant variant = new Variant(chromosome, 1100, 2075, "");
 		variant.setVariantType(VariantType.INV);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "n.1101_2076inv" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
-		String expAnns[] = { "|gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1101_2076inv||||||" };
+		String expAnns[] = { "|bidirectional_gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1101_2076inv||||||" };
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
 	}
@@ -361,13 +361,12 @@ public class TestCasesStructuralInv extends TestCasesBase {
 		Variant variant = new Variant(chromosome, 1050, 2120, "");
 		variant.setVariantType(VariantType.INV);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "n.1051_2121inv" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
-		String expAnns[] = { "|gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1051_2121inv||||||" };
+		String expAnns[] = { "|bidirectional_gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1051_2121inv||||||" };
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns);
-
 	}
 
 	/**
@@ -409,11 +408,11 @@ public class TestCasesStructuralInv extends TestCasesBase {
 		Gene genesToAdd[] = { gene };
 
 		// Expected resutls
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "n.1051_2121inv" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
-		String expAnns[] = { "|gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1051_2121inv||||||" //
-				, "|gene_fusion|HIGH|geneName1&geneName3|geneId1&geneId3|gene_variant|geneId1|||n.1051_2121inv||||||" //
+		String expAnns[] = { "|bidirectional_gene_fusion|HIGH|geneName1&geneName2|geneId1&geneId2|gene_variant|geneId1|||n.1051_2121inv||||||" //
+				, "|bidirectional_gene_fusion|HIGH|geneName1&geneName3|geneId1&geneId3|gene_variant|geneId1|||n.1051_2121inv||||||" //
 		};
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, expAnns, genesToAdd);

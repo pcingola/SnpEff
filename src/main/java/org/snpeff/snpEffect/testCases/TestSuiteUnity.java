@@ -60,6 +60,7 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesSpliceSite;
 import org.snpeff.snpEffect.testCases.unity.TestCasesStructuralDel;
 import org.snpeff.snpEffect.testCases.unity.TestCasesStructuralDup;
 import org.snpeff.snpEffect.testCases.unity.TestCasesStructuralInv;
+import org.snpeff.snpEffect.testCases.unity.TestCasesStructuralTranslocations;
 import org.snpeff.snpEffect.testCases.unity.TestCasesVariantDecompose;
 import org.snpeff.snpEffect.testCases.unity.TestCasesVariantRealignment;
 import org.snpeff.snpEffect.testCases.unity.TestCasesVcf;
@@ -127,6 +128,7 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesStructuralDel.class, //
 		TestCasesStructuralDup.class, //
 		TestCasesStructuralInv.class, //
+		TestCasesStructuralTranslocations.class, //
 		TestCasesVariantDecompose.class, //
 		TestCasesVariantRealignment.class, //
 		TestCasesVcf.class //

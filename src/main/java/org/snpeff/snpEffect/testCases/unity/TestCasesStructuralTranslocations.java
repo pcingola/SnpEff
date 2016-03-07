@@ -1,4 +1,4 @@
-package org.snpeff.snpEffect.testCases;
+package org.snpeff.snpEffect.testCases.unity;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -33,9 +33,9 @@ import junit.framework.Assert;
 
 /**
  * Test case for structural variants: Translocation (fusions)
- * 
- * We create two genes (one transcript each). Each gene is in one different chromosome 
- * 
+ *
+ * We create two genes (one transcript each). Each gene is in one different chromosome
+ *
  * Transcripts:
  * 1:10-90, strand: +, id:tr1, Protein
  *      Exons:
@@ -50,7 +50,7 @@ import junit.framework.Assert;
  *      2:150-190 'exon4', rank: 2, frame: ., sequence: atgggaacggagtgtcgacagcaccttatggggagctatat
  *      CDS     :   gttaatgggatttcacatgggaacggagtgtcgacagcaccttatggggagctatat
  *      Protein :   VNGISHGNGVSTAPYGELY */
-public class TestCasesZzz {
+public class TestCasesStructuralTranslocations {
 
 	EffFormatVersion formatVersion = EffFormatVersion.FORMAT_ANN;
 
@@ -67,63 +67,8 @@ public class TestCasesZzz {
 	Transcript tr1, tr2;
 	SnpEffectPredictor snpEffectPredictor;
 
-	public void init(boolean gene1NegativeStrand, boolean gene2NegativeStrand) {
-		config = new Config("test");
-
-		chr1Seq = "TGCTTGTCGATATTTGTATGAGGATTTGAGTACTACGCACTACTCAGTGCTGGGCAATCCCTTAGCTGTCGCGCCGCTTACCCTACTATTCAGGAGTAGGCCCTATCTCCACAGTGACTGTAGTACCAGCCATCTCTCTCGTTGCCGTCTGCGGTGCCGTCACACACGCTCCAGTCCCAGCTACGTTTCGCCAGGCTCAG";
-		chr2Seq = "GCGATTGGTTGAATAAGCATAAGGTAGTTATCCGCCTGCACCTTGTTGAAAGATTGGACTTAATCCACCCCGTTAACAAAGGAATCGATCATGTTGCGCATATCGTCTAGGTTAATGGGATTTCACCGCTTACCCACTTAGCGGGCTGGAATGGGAACGGAGTGTCGACAGCACCTTATGGGGAGCTATATTCCCCCTAT";
-		genome = new Genome("test");
-
-		chr1 = new Chromosome(genome, 0, chr1Seq.length() - 1, "1");
-		chr2 = new Chromosome(genome, 0, chr2Seq.length() - 1, "2");
-		chr1.setSequence(chr1Seq);
-		chr2.setSequence(chr2Seq);
-		genome.add(chr1);
-		genome.add(chr2);
-
-		gene1 = new Gene(chr1, 10, 90, gene1NegativeStrand, "gene1", "gene1", BioType.protein_coding);
-		gene2 = new Gene(chr2, 110, 190, gene2NegativeStrand, "gene2", "gene2", BioType.protein_coding);
-
-		tr1 = new Transcript(gene1, gene1.getStart(), gene1.getEnd(), gene1.isStrandMinus(), "tr1");
-		tr2 = new Transcript(gene2, gene2.getStart(), gene2.getEnd(), gene2.isStrandMinus(), "tr2");
-		gene1.add(tr1);
-		gene2.add(tr2);
-		tr1.setProteinCoding(true);
-		tr2.setProteinCoding(true);
-
-		Exon e11 = new Exon(tr1, 10, 30, tr1.isStrandMinus(), "exon1", 0);
-		Exon e12 = new Exon(tr1, 40, 90, tr1.isStrandMinus(), "exon2", 0);
-		Exon e21 = new Exon(tr2, 110, 125, tr2.isStrandMinus(), "exon3", 0);
-		Exon e22 = new Exon(tr2, 150, 190, tr2.isStrandMinus(), "exon4", 0);
-		Exon exons[] = { e11, e12, e21, e22 };
-
-		for (Exon e : exons) {
-			String seq = e.getChromosome().getSequence().substring(e.getStart(), e.getEnd() + 1);
-			if (e.isStrandMinus()) seq = GprSeq.reverseWc(seq);
-			e.setSequence(seq);
-
-			Transcript tr = (Transcript) e.getParent();
-			tr.add(e);
-
-			Cds cds = new Cds(tr, e.getStart(), e.getEnd(), e.isStrandMinus(), "");
-			tr.add(cds);
-		}
-		tr1.rankExons();
-		tr2.rankExons();
-
-		if (verbose) System.out.println("Transcripts:\n" + tr1 + "\n" + tr2);
-
-		snpEffectPredictor = new SnpEffectPredictor(genome);
-		snpEffectPredictor.setUpDownStreamLength(0);
-		snpEffectPredictor.add(gene1);
-		snpEffectPredictor.add(gene2);
-		snpEffectPredictor.buildForest();
-
-		// Create fake cytobands
-		CytoBands cytoBands = genome.getCytoBands();
-		cytoBands.add(new Marker(chr1, chr1.getStart(), chr1.getEnd(), false, "p1"));
-		cytoBands.add(new Marker(chr2, chr2.getStart(), chr2.getEnd(), false, "p2"));
-		cytoBands.build();
+	public TestCasesStructuralTranslocations() {
+		super();
 	}
 
 	Set<String> arrayToSet(String array[]) {
@@ -226,20 +171,75 @@ public class TestCasesZzz {
 
 	}
 
-	public TestCasesZzz() {
-		super();
+	public void init(boolean gene1NegativeStrand, boolean gene2NegativeStrand) {
+		config = new Config("test");
+
+		chr1Seq = "TGCTTGTCGATATTTGTATGAGGATTTGAGTACTACGCACTACTCAGTGCTGGGCAATCCCTTAGCTGTCGCGCCGCTTACCCTACTATTCAGGAGTAGGCCCTATCTCCACAGTGACTGTAGTACCAGCCATCTCTCTCGTTGCCGTCTGCGGTGCCGTCACACACGCTCCAGTCCCAGCTACGTTTCGCCAGGCTCAG";
+		chr2Seq = "GCGATTGGTTGAATAAGCATAAGGTAGTTATCCGCCTGCACCTTGTTGAAAGATTGGACTTAATCCACCCCGTTAACAAAGGAATCGATCATGTTGCGCATATCGTCTAGGTTAATGGGATTTCACCGCTTACCCACTTAGCGGGCTGGAATGGGAACGGAGTGTCGACAGCACCTTATGGGGAGCTATATTCCCCCTAT";
+		genome = new Genome("test");
+
+		chr1 = new Chromosome(genome, 0, chr1Seq.length() - 1, "1");
+		chr2 = new Chromosome(genome, 0, chr2Seq.length() - 1, "2");
+		chr1.setSequence(chr1Seq);
+		chr2.setSequence(chr2Seq);
+		genome.add(chr1);
+		genome.add(chr2);
+
+		gene1 = new Gene(chr1, 10, 90, gene1NegativeStrand, "gene1", "gene1", BioType.protein_coding);
+		gene2 = new Gene(chr2, 110, 190, gene2NegativeStrand, "gene2", "gene2", BioType.protein_coding);
+
+		tr1 = new Transcript(gene1, gene1.getStart(), gene1.getEnd(), gene1.isStrandMinus(), "tr1");
+		tr2 = new Transcript(gene2, gene2.getStart(), gene2.getEnd(), gene2.isStrandMinus(), "tr2");
+		gene1.add(tr1);
+		gene2.add(tr2);
+		tr1.setProteinCoding(true);
+		tr2.setProteinCoding(true);
+
+		Exon e11 = new Exon(tr1, 10, 30, tr1.isStrandMinus(), "exon1", 0);
+		Exon e12 = new Exon(tr1, 40, 90, tr1.isStrandMinus(), "exon2", 0);
+		Exon e21 = new Exon(tr2, 110, 125, tr2.isStrandMinus(), "exon3", 0);
+		Exon e22 = new Exon(tr2, 150, 190, tr2.isStrandMinus(), "exon4", 0);
+		Exon exons[] = { e11, e12, e21, e22 };
+
+		for (Exon e : exons) {
+			String seq = e.getChromosome().getSequence().substring(e.getStart(), e.getEnd() + 1);
+			if (e.isStrandMinus()) seq = GprSeq.reverseWc(seq);
+			e.setSequence(seq);
+
+			Transcript tr = (Transcript) e.getParent();
+			tr.add(e);
+
+			Cds cds = new Cds(tr, e.getStart(), e.getEnd(), e.isStrandMinus(), "");
+			tr.add(cds);
+		}
+		tr1.rankExons();
+		tr2.rankExons();
+
+		if (verbose) System.out.println("Transcripts:\n" + tr1 + "\n" + tr2);
+
+		snpEffectPredictor = new SnpEffectPredictor(genome);
+		snpEffectPredictor.setUpDownStreamLength(0);
+		snpEffectPredictor.add(gene1);
+		snpEffectPredictor.add(gene2);
+		snpEffectPredictor.buildForest();
+
+		// Create fake cytobands
+		CytoBands cytoBands = genome.getCytoBands();
+		cytoBands.add(new Marker(chr1, chr1.getStart(), chr1.getEnd(), false, "p1"));
+		cytoBands.add(new Marker(chr2, chr2.getStart(), chr2.getEnd(), false, "p2"));
+		cytoBands.build();
 	}
 
 	/**
 	 * Translocation in the same direction (both genes in positive strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N[chr2:140[
-	 * 
+	 *
 	 * gene1:   >>>>>>>>>>>----
 	 *                         |
 	 * gene2                   ---->>>>>>>>>
-	 * 
+	 *
 	 */
 	@Test
 	public void test01_0() {
@@ -260,14 +260,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in positive strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N[chr2:140[
-	 * 
+	 *
 	 * gene1:   >>>>>>>>>>>----
 	 *                         |
 	 * gene2                   ----<<<<<<<<<<<<---
-	 * 
+	 *
 	 */
 	@Test
 	public void test01_1() {
@@ -288,14 +288,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in positive strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N[chr2:140[
-	 * 
+	 *
 	 * gene1:   <<<<<<<<<<<<----
 	 *                         |
 	 * gene2                   ---->>>>>>>>>----
-	 * 
+	 *
 	 */
 	@Test
 	public void test01_2() {
@@ -316,14 +316,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in positive strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N[chr2:140[
-	 * 
+	 *
 	 * gene1:   <<<<<<<<<<<<----
 	 *                         |
 	 * gene2                   ----<<<<<<<<<<<<---
-	 * 
+	 *
 	 */
 	@Test
 	public void test01_3() {
@@ -344,14 +344,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
-	 * 
+	 *
 	 * gene1:   >>>>>>>>>>>----
 	 *                         |
-	 * gene2    >>>>>>>>>>>---- 
-	 * 
+	 * gene2    >>>>>>>>>>>----
+	 *
 	 */
 	@Test
 	public void test02_0() {
@@ -372,14 +372,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
-	 * 
+	 *
 	 * gene1:   >>>>>>>>>>>----
 	 *                         |
-	 * gene2    <<<<<<<<<<<---- 
-	 * 
+	 * gene2    <<<<<<<<<<<----
+	 *
 	 */
 	@Test
 	public void test02_1() {
@@ -400,14 +400,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
-	 * 
+	 *
 	 * gene1:   <<<<<<<<<<<----
 	 *                         |
-	 * gene2    >>>>>>>>>>>---- 
-	 * 
+	 * gene2    >>>>>>>>>>>----
+	 *
 	 */
 	@Test
 	public void test02_2() {
@@ -428,14 +428,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
-	 * 
+	 *
 	 * gene1:   <<<<<<<<<<<----
 	 *                         |
-	 * gene2    <<<<<<<<<<<---- 
-	 * 
+	 * gene2    <<<<<<<<<<<----
+	 *
 	 */
 	@Test
 	public void test02_3() {
@@ -456,14 +456,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      [chr2:140[N
-	 * 
+	 *
 	 * gene1:                  --->>>>>>>>>>>----
 	 *                         |
-	 * gene2                   --->>>>>>>>>>>---- 
-	 * 
+	 * gene2                   --->>>>>>>>>>>----
+	 *
 	 */
 	@Test
 	public void test03_0() {
@@ -484,14 +484,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      [chr2:140[N
-	 * 
+	 *
 	 * gene1:                  --->>>>>>>>>>>----
 	 *                         |
-	 * gene2                   ---<<<<<<<<<<---- 
-	 * 
+	 * gene2                   ---<<<<<<<<<<----
+	 *
 	 */
 	@Test
 	public void test03_1() {
@@ -512,14 +512,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      [chr2:140[N
-	 * 
+	 *
 	 * gene1:                  ---<<<<<<<<<<<----
 	 *                         |
-	 * gene2                   --->>>>>>>>>>>---- 
-	 * 
+	 * gene2                   --->>>>>>>>>>>----
+	 *
 	 */
 	@Test
 	public void test03_2() {
@@ -540,14 +540,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      [chr2:140[N
-	 * 
+	 *
 	 * gene1:                  ---<<<<<<<<<<<----
 	 *                         |
-	 * gene2                   ---<<<<<<<<<<<---- 
-	 * 
+	 * gene2                   ---<<<<<<<<<<<----
+	 *
 	 */
 	@Test
 	public void test03_3() {
@@ -568,14 +568,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      ]chr2:140]N
-	 * 
+	 *
 	 * gene1:                  --->>>>>>>>>>>----
 	 *                         |
-	 * gene2  --->>>>>>>>>>>---- 
-	 * 
+	 * gene2  --->>>>>>>>>>>----
+	 *
 	 */
 	@Test
 	public void test04_0() {
@@ -596,14 +596,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      ]chr2:140]N
-	 * 
+	 *
 	 * gene1:                  --->>>>>>>>>>>----
 	 *                         |
-	 * gene2  ---<<<<<<<<<<<---- 
-	 * 
+	 * gene2  ---<<<<<<<<<<<----
+	 *
 	 */
 	@Test
 	public void test04_1() {
@@ -624,14 +624,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      ]chr2:140]N
-	 * 
+	 *
 	 * gene1:                  ---<<<<<<<<<<<<<<----
 	 *                         |
-	 * gene2  --->>>>>>>>>>>---- 
-	 * 
+	 * gene2  --->>>>>>>>>>>----
+	 *
 	 */
 	@Test
 	public void test04_2() {
@@ -652,14 +652,14 @@ public class TestCasesZzz {
 
 	/**
 	 * Translocation in the same direction (both genes in negative strand)
-	 * 
+	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      ]chr2:140]N
-	 * 
+	 *
 	 * gene1:                  ---<<<<<<<<<<<<----
 	 *                         |
-	 * gene2  ---<<<<<<<<<<<---- 
-	 * 
+	 * gene2  ---<<<<<<<<<<<----
+	 *
 	 */
 	@Test
 	public void test04_3() {

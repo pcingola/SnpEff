@@ -23,7 +23,7 @@ public class VariantEffectFusion extends VariantEffectStructural {
 	public VariantEffectFusion(Variant variant, Transcript trLeft, Transcript trRight) {
 		super(variant);
 
-		marker = this.trLeft = trLeft;
+		this.trLeft = trLeft;
 		this.trRight = trRight;
 		geneLeft = (Gene) trLeft.getParent();
 		geneRight = (Gene) trRight.getParent();
@@ -34,7 +34,6 @@ public class VariantEffectFusion extends VariantEffectStructural {
 		genes.add(geneRight);
 
 		calcEffect();
-		aaPos();
 	}
 
 	/**
@@ -117,27 +116,51 @@ public class VariantEffectFusion extends VariantEffectStructural {
 	 * Note: For notes and example figures, see VCF 4.2 specification, Figure 1
 	 */
 	void calcEffect() {
-		VariantTranslocation vtrans = getVariantTranslocation();
 		boolean sameStrand = trLeft.isStrandPlus() == trRight.isStrandPlus();
 
-		// Note: The following block of 'setEffect' could be written simply as
-		//
-		// 		    setEffect( (vtrans.isLeft() != vtrans.isBefore()) ^ sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
-		//
-		//       But this would be rather cryptic, that's why I use an explicit
-		//       case by case scenario
+		switch (variant.getVariantType()) {
+		case INV:
+			setEffect(sameStrand ? EffectType.GENE_FUSION_REVERESE : EffectType.GENE_FUSION);
+			break;
 
-		// E.g.:  C[2:321682[
-		if (!vtrans.isLeft() && !vtrans.isBefore()) setEffect(sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+		case DEL:
+		case DUP:
+			// Non-translocations: DEL, DUP
+			setEffect(sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			break;
 
-		// E.g.: G]17:198982]
-		if (vtrans.isLeft() && !vtrans.isBefore()) setEffect(!sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+		case BND:
+			marker = trLeft; // Force HGVS.c notation to use '.c' instead of '.n'
 
-		// E.g.:  [17:198983[A
-		if (!vtrans.isLeft() && vtrans.isBefore()) setEffect(!sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			// Translocation
+			VariantTranslocation vtrans = getVariantTranslocation();
 
-		// E.g.:  ]13:123456]T
-		if (vtrans.isLeft() && vtrans.isBefore()) setEffect(sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			// Note: The following block of 'setEffect' could be written simply as
+			//
+			// 		    setEffect( (vtrans.isLeft() != vtrans.isBefore()) ^ sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			//
+			//       But this would be rather cryptic, that's why I use an explicit case by case scenario
+
+			// E.g.:  C[2:321682[
+			if (!vtrans.isLeft() && !vtrans.isBefore()) setEffect(sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+
+			// E.g.: G]17:198982]
+			if (vtrans.isLeft() && !vtrans.isBefore()) setEffect(!sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+
+			// E.g.:  [17:198983[A
+			if (!vtrans.isLeft() && vtrans.isBefore()) setEffect(!sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+
+			// E.g.:  ]13:123456]T
+			if (vtrans.isLeft() && vtrans.isBefore()) setEffect(sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+
+			// Calculate AA positions
+			aaPos();
+
+			break;
+
+		default:
+			throw new RuntimeException("Unimplemented method for variant type '" + variant.getVariantType() + "'");
+		}
 	}
 
 	public int getAaNumLeftEnd() {
@@ -174,6 +197,10 @@ public class VariantEffectFusion extends VariantEffectStructural {
 
 	VariantTranslocation getVariantTranslocation() {
 		return (VariantTranslocation) variant;
+	}
+
+	boolean isVariantTranslocation() {
+		return variant instanceof VariantTranslocation;
 	}
 
 }
