@@ -11,16 +11,38 @@ import org.snpeff.interval.Variant;
  */
 public class VariantEffectFusion extends VariantEffectStructural {
 
-	public VariantEffectFusion(Variant variant, Transcript trLeft, Gene geneRight) {
+	Transcript trLeft, trRight;
+	Gene geneLeft, geneRight;
+
+	public VariantEffectFusion(Variant variant, Transcript trLeft, Transcript trRight) {
 		super(variant);
 		setEffect(EffectType.GENE_FUSION);
 
-		marker = trLeft;
-		Gene geneLeft = (Gene) trLeft.getParent();
+		marker = this.trLeft = trLeft;
+		this.trRight = trRight;
+		geneLeft = (Gene) trLeft.getParent();
+		geneRight = (Gene) trRight.getParent();
+
 		genesLeft.add(geneLeft);
 		genesRight.add(geneRight);
 		genes.add(geneLeft);
 		genes.add(geneRight);
+	}
+
+	public Gene getGeneLeft() {
+		return geneLeft;
+	}
+
+	public Gene getGeneRight() {
+		return geneRight;
+	}
+
+	public Transcript getTrLeft() {
+		return trLeft;
+	}
+
+	public Transcript getTrRight() {
+		return trRight;
 	}
 
 }

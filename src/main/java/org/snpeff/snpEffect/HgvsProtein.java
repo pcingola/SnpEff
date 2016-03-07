@@ -2,6 +2,8 @@ package org.snpeff.snpEffect;
 
 import org.snpeff.codons.CodonTable;
 import org.snpeff.interval.Transcript;
+import org.snpeff.interval.VariantTranslocation;
+import org.snpeff.interval.codonChange.CodonChange;
 import org.snpeff.util.Gpr;
 
 /**
@@ -224,28 +226,40 @@ public class HgvsProtein extends Hgvs {
 	 * Protein position
 	 */
 	protected String pos(int codonNum) {
-		if (codonNum < 0) return null;
+		Transcript tr = variantEffect.getTranscript();
+		return pos(tr, codonNum);
+	}
+
+	protected String pos(int start, int end) {
+		Transcript tr = variantEffect.getTranscript();
+		return pos(tr, start, end);
+	}
+
+	/**
+	 * Protein position
+	 */
+	protected String pos(Transcript tr, int codonNum) {
+		if (codonNum < 0 || tr == null) return null;
 
 		// Sanity check: Longer than protein?
-		Transcript tr = variantEffect.getTranscript();
 		String protSeq = tr.protein();
 		if (codonNum >= protSeq.length()) return null;
 
-		CodonTable codonTable = marker.codonTable();
+		CodonTable codonTable = tr.codonTable();
 		return codonTable.aaThreeLetterCode(protSeq.charAt(codonNum)) + (codonNum + 1);
 	}
 
 	/**
 	 * Position string given two coordinates
 	 */
-	String pos(int start, int end) {
+	protected String pos(Transcript tr, int start, int end) {
 		// Only one position needed?
-		String posStart = pos(start);
+		String posStart = pos(tr, start);
 		if (posStart == null) return null;
 		if (start == end) return posStart;
 
 		// Both position needed
-		String posEnd = pos(end);
+		String posEnd = pos(tr, end);
 		if (posEnd == null) return null;
 		return posStart + "_" + posEnd;
 	}
@@ -466,7 +480,7 @@ public class HgvsProtein extends Hgvs {
 		// Can we simplify amino acids in aaNew/aaOld?
 		if (!variant.isSnp() && !variant.isMnp()) simplifyAminoAcids();
 
-		String pos = "", protChange = "";
+		String pos = "", protChange = "", prefix = "", suffix = "";
 
 		switch (variant.getVariantType()) {
 
@@ -485,6 +499,9 @@ public class HgvsProtein extends Hgvs {
 			// Inversion description not used at protein level
 			// Reference: http://www.hgvs.org/mutnomen/examplesAA.html
 			return "";
+
+		case BND:
+			return translocation();
 
 		default:
 			if (isFs()) {
@@ -515,7 +532,51 @@ public class HgvsProtein extends Hgvs {
 
 		if (protChange == null || pos == null) return null;
 
-		return typeOfReference() + pos + protChange;
+		return prefix + typeOfReference() + pos + protChange + suffix;
+	}
+
+	/**
+	 * Translocation nomenclature.
+	 * From HGVS:
+	 * 	Translocations at protein level occur when a translocation at DNA level
+	 * 	leads to the production of a fusion protein, joining the N-terminal
+	 * 	end of the protein on one chromosome to the C-terminal end of the protein
+	 * 	on the other chromosome (and vice versa). No recommendations have been
+	 * 	made sofar to describe protein translocations.
+	 *
+	 * 		t(X;17)(DMD:p.Met1_Val1506; SGCA:p.Val250_*387)
+	 * 	describes a fusion protein resulting from a translocation between the
+	 * chromosomes X and 17; the fusion protein contains an N-terminal segment
+	 * of DMD (dystrophin, amino acids Methionine-1 to Valine-1506), and a
+	 * C-terminal segment of SGCA (alpha-sarcoglycan, amino acids Valine-250
+	 * to the stop codon at 387)
+	 */
+	protected String translocation() {
+		if (!(variantEffect instanceof VariantEffectFusion)) return "";
+		VariantTranslocation vtr = (VariantTranslocation) variant;
+		VariantEffectFusion veffFusion = (VariantEffectFusion) variantEffect;
+
+		// Chromosome part
+		String chrCoords = "(" //
+				+ vtr.getChromosomeName() //
+				+ ";" //
+				+ vtr.getEndPoint().getChromosomeName() //
+				+ ")" //
+				;
+
+		// Left transcript coordinates
+		Transcript trLeft = veffFusion.getTrLeft();
+		int aaNumLeftStart = 0;
+		int aaNumLeftEnd = trLeft.baseNumberCds(variant.getStart(), true) / CodonChange.CODON_SIZE;
+		String trLeftStr = trLeft.getId() + ":" + pos(trLeft, aaNumLeftStart, aaNumLeftEnd);
+
+		// Right transcript coordinates
+		Transcript trRight = veffFusion.getTrRight();
+		int aaNumRightStart = trRight.baseNumberCds(vtr.getEndPoint().getStart(), true) / CodonChange.CODON_SIZE;
+		int aaNumRightEnd = trRight.protein().length() - 1;
+		String trRightStr = trRight.getId() + ":" + pos(trRight, aaNumRightStart, aaNumRightEnd);
+
+		return "t" + chrCoords + "(" + trLeftStr + ";" + trRightStr + ")";
 	}
 
 	/**

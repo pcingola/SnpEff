@@ -54,7 +54,7 @@ public class TestCasesZzz {
 
 	EffFormatVersion formatVersion = EffFormatVersion.FORMAT_ANN;
 
-	boolean debug = false;
+	boolean debug = true;
 	boolean verbose = false || debug;
 
 	Random rand = new Random(20160229);
@@ -244,9 +244,10 @@ public class TestCasesZzz {
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:His6_Tyr19)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 }

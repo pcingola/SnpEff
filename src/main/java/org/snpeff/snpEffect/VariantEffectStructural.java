@@ -74,18 +74,22 @@ public class VariantEffectStructural extends VariantEffect {
 		// Add all gene pairs
 		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
 		for (Gene gLeft : genesLeft)
-			for (Transcript trLeft : gLeft)
-				for (Gene gRight : genesRight)
-					if (!gLeft.getId().equals(gRight.getId())) { // Not the same gene?
-						// If both genes overlap and the variant is within that
-						// region, then it's not a fusion, it's just a variant
-						// acting on both genes.
-						Marker gIntersect = gLeft.intersect(gRight);
-						if (gIntersect != null && gIntersect.includes(variant)) continue;
+			for (Gene gRight : genesRight)
+				if (!gLeft.getId().equals(gRight.getId())) { // Not the same gene?
+					// If both genes overlap and the variant is within that
+					// region, then it's not a fusion, it's just a variant
+					// acting on both genes.
+					Marker gIntersect = gLeft.intersect(gRight);
+					if (gIntersect != null && gIntersect.includes(variant)) continue;
 
-						VariantEffectFusion fusion = new VariantEffectFusion(variant, trLeft, gRight);
-						fusions.add(fusion);
-					}
+					// One for fussion effect for each transcript
+					// NOTE: This can be a long list...
+					for (Transcript trLeft : gLeft)
+						for (Transcript trRight : gRight) {
+							VariantEffectFusion fusion = new VariantEffectFusion(variant, trLeft, trRight);
+							fusions.add(fusion);
+						}
+				}
 
 		return fusions;
 	}
