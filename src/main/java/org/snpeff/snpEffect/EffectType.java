@@ -21,6 +21,7 @@ public enum EffectType {
 	, GENE_REARRANGEMENT //
 	, GENE_DELETED //
 	, GENE_FUSION //
+	, GENE_FUSION_REVERESE //
 	, TRANSCRIPT_DELETED //
 	, EXON_DELETED //
 	, EXON_DELETED_PARTIAL //
@@ -141,6 +142,7 @@ public enum EffectType {
 		case FRAME_SHIFT:
 		case GENE_DELETED:
 		case GENE_FUSION:
+		case GENE_FUSION_REVERESE:
 		case GENE_REARRANGEMENT:
 		case PROTEIN_INTERACTION_LOCUS:
 		case RARE_AMINO_ACID:
@@ -264,6 +266,7 @@ public enum EffectType {
 		case GENE_DELETED:
 		case GENE_DUPLICATION:
 		case GENE_FUSION:
+		case GENE_FUSION_REVERESE:
 		case GENE_INVERSION:
 		case GENE_REARRANGEMENT:
 			return EffectType.GENE;
@@ -401,6 +404,9 @@ public enum EffectType {
 
 		case GENE_FUSION:
 			return "gene_fusion";
+
+		case GENE_FUSION_REVERESE:
+			return "bidirectional_gene_fusion";
 
 		case GENE_REARRANGEMENT:
 			return "rearranged_at_DNA_level";
