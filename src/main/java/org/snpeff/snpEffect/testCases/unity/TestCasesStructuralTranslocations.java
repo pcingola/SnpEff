@@ -80,12 +80,18 @@ public class TestCasesStructuralTranslocations {
 		return set;
 	}
 
-	protected void checkEffects(Variant variant, EffectType expEffs[], String expHgvsp[], String expHgvsc[], EffectImpact expectedImpact, String expAnns[]) {
+	protected void checkEffects(Variant variant, EffectType expEffs[], EffectType notExpEffs[], String expHgvsp[], String expHgvsc[], EffectImpact expectedImpact, String expAnns[]) {
 		// Convert to sets
 		Set<EffectType> expectedEffs = new HashSet<>();
 		if (expEffs != null) {
 			for (EffectType et : expEffs)
 				expectedEffs.add(et);
+		}
+
+		Set<EffectType> notExpectedEffs = new HashSet<>();
+		if (notExpEffs != null) {
+			for (EffectType et : notExpEffs)
+				notExpectedEffs.add(et);
 		}
 
 		Set<String> expectedHgvsp = arrayToSet(expHgvsp);
@@ -143,6 +149,11 @@ public class TestCasesStructuralTranslocations {
 				+ "\n\tExpected : " + expectedEffs //
 				+ "\n\tFound    : " + effs//
 				, effs.containsAll(expectedEffs) //
+		);
+
+		// Check effects that should NOT be present
+		Assert.assertFalse("Effects should NOT be present: " + notExpectedEffs //
+		, effs.removeAll(notExpectedEffs) // Returns true if the set has changed (i.e. there was an element removed)
 		);
 
 		// Check impact
@@ -250,12 +261,41 @@ public class TestCasesStructuralTranslocations {
 		// Create variant
 		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
 		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:His6_Tyr19)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Translocation in the same direction (both genes in positive strand)
+	 *
+	 * #CHROM   POS    ID    REF    ALT
+	 * chr1     35     .     N      N[chr2:140[
+	 *
+	 * gene1:   >>>>>>>>>>>----
+	 *                         |
+	 * gene2              ---->>>>>>>>>>>>---
+	 *
+	 */
+	@Test
+	public void test01_0_nonFs() {
+		Gpr.debug("Test");
+
+		init(false, false);
+
+		// Create variant
+		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 152, false, false);
+
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
+		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:Gly7_Tyr19)" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, notExpEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -283,7 +323,7 @@ public class TestCasesStructuralTranslocations {
 		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:Ile1_Met14)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -308,10 +348,10 @@ public class TestCasesStructuralTranslocations {
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
-		String expHgvsp[] = { "t(1;2)(tr1:Val17_Ile24;tr2:His6_Tyr19)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Thr18_Ile24;tr2:His6_Tyr19)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -334,12 +374,41 @@ public class TestCasesStructuralTranslocations {
 		// Create variant
 		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
-		String expHgvsp[] = { "t(1;2)(tr1:Val17_Ile24;tr2:Ile1_Met14)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Thr18_Ile24;tr2:Ile1_Met14)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Translocation in the same direction (both genes in positive strand)
+	 *
+	 * #CHROM   POS    ID    REF    ALT
+	 * chr1     35     .     N      N[chr2:140[
+	 *
+	 * gene1:   <<<<<<<<<<<<----
+	 *                         |
+	 * gene2                --<<<<<<<<<<<<---
+	 *
+	 */
+	@Test
+	public void test01_3_noFs() {
+		Gpr.debug("Test");
+
+		init(true, true);
+
+		// Create variant
+		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 152, false, false);
+
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
+		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Thr18_Ile24;tr2:Ile1_Pro13)" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, notExpEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -367,7 +436,7 @@ public class TestCasesStructuralTranslocations {
 		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:Val1_His6)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -390,12 +459,12 @@ public class TestCasesStructuralTranslocations {
 		// Create variant
 		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, false);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
 		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:Met14_Asn19)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -418,12 +487,12 @@ public class TestCasesStructuralTranslocations {
 		// Create variant
 		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, false);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
-		String expHgvsp[] = { "t(1;2)(tr1:Val17_Ile24;tr2:Val1_His6)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Thr18_Ile24;tr2:Val1_His6)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -448,10 +517,10 @@ public class TestCasesStructuralTranslocations {
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
-		String expHgvsp[] = { "t(1;2)(tr1:Val17_Ile24;tr2:Met14_Asn19)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Thr18_Ile24;tr2:Met14_Asn19)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -476,10 +545,10 @@ public class TestCasesStructuralTranslocations {
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
-		String expHgvsp[] = { "t(1;2)(tr1:Ser7_Phe24;tr2:His6_Tyr19)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Tyr8_Phe24;tr2:His6_Tyr19)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -502,12 +571,12 @@ public class TestCasesStructuralTranslocations {
 		// Create variant
 		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, true);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
-		String expHgvsp[] = { "t(1;2)(tr1:Ser7_Phe24;tr2:Ile1_Met14)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Tyr8_Phe24;tr2:Ile1_Met14)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -530,12 +599,12 @@ public class TestCasesStructuralTranslocations {
 		// Create variant
 		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, true);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
 		String expHgvsp[] = { "t(1;2)(tr1:Glu1_Val17;tr2:His6_Tyr19)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -563,7 +632,7 @@ public class TestCasesStructuralTranslocations {
 		String expHgvsp[] = { "t(1;2)(tr1:Glu1_Val17;tr2:Ile1_Met14)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -586,12 +655,12 @@ public class TestCasesStructuralTranslocations {
 		// Create variant
 		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, true);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
-		String expHgvsp[] = { "t(1;2)(tr1:Ser7_Phe24;tr2:Val1_His6)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Tyr8_Phe24;tr2:Val1_His6)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -616,10 +685,10 @@ public class TestCasesStructuralTranslocations {
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
-		String expHgvsp[] = { "t(1;2)(tr1:Ser7_Phe24;tr2:Met14_Asn19)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Tyr8_Phe24;tr2:Met14_Asn19)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -647,7 +716,7 @@ public class TestCasesStructuralTranslocations {
 		String expHgvsp[] = { "t(1;2)(tr1:Glu1_Val17;tr2:Val1_His6)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -670,12 +739,12 @@ public class TestCasesStructuralTranslocations {
 		// Create variant
 		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, true);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
 		String expHgvsp[] = { "t(1;2)(tr1:Glu1_Val17;tr2:Met14_Asn19)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
-		checkEffects(variant, expEffs, expHgvsp, expHgvsc, expectedImpact, null);
+		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 }

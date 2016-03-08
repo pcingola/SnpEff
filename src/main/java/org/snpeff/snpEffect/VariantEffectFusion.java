@@ -41,14 +41,14 @@ public class VariantEffectFusion extends VariantEffectStructural {
 	 */
 	void aaLeftBegin() {
 		aaNumLeftStart = 0;
-		aaNumLeftEnd = trLeft.baseNumberCds(variant.getStart(), true) / CodonChange.CODON_SIZE;
+		aaNumLeftEnd = baseNumberCdsLeft() / CodonChange.CODON_SIZE;
 	}
 
 	/**
 	 * Transcript left has positions at the end
 	 */
 	void aaLeftEnd() {
-		aaNumLeftStart = trLeft.baseNumberCds(variant.getStart(), true) / CodonChange.CODON_SIZE;;
+		aaNumLeftStart = baseNumberCdsLeft() / CodonChange.CODON_SIZE;;
 		aaNumLeftEnd = trLeft.protein().length() - 1;
 	}
 
@@ -100,15 +100,40 @@ public class VariantEffectFusion extends VariantEffectStructural {
 	 */
 	void aaRightBegin() {
 		aaNumRightStart = 0;
-		aaNumRightEnd = trRight.baseNumberCds(getVariantTranslocation().getEndPoint().getStart(), true) / CodonChange.CODON_SIZE;
+		aaNumRightEnd = baseNumberCdsRight() / CodonChange.CODON_SIZE;
 	}
 
 	/**
 	 * Transcript right has positions at the end
 	 */
 	void aaRightEnd() {
-		aaNumRightStart = trRight.baseNumberCds(getVariantTranslocation().getEndPoint().getStart(), true) / CodonChange.CODON_SIZE;
+		aaNumRightStart = baseNumberCdsRight() / CodonChange.CODON_SIZE;
 		aaNumRightEnd = trRight.protein().length() - 1;;
+	}
+
+	/**
+	 * CDS base number for gene on the left side
+	 * Note: If the translocation lies within an intron, we want the first
+	 * exonic base BEFORE the intron
+	 */
+	int baseNumberCdsLeft() {
+		boolean usePrevBaseIntron = (trLeft.isStrandPlus() && !getVariantTranslocation().isBefore()) //
+				|| (trLeft.isStrandMinus() && getVariantTranslocation().isBefore()) //
+				;
+
+		return trLeft.baseNumberCds(variant.getStart(), usePrevBaseIntron);
+	}
+
+	/**
+	 * CDS base number for gene on the right side
+	 * Note: If the translocation lies within an intron, we want the first
+	 * exonic base AFTER the intron
+	 */
+	int baseNumberCdsRight() {
+		boolean usePrevBaseIntron = (trRight.isStrandMinus() && !getVariantTranslocation().isBefore())//
+				|| (trRight.isStrandPlus() && getVariantTranslocation().isBefore()) //
+				;
+		return trRight.baseNumberCds(getVariantTranslocation().getEndPoint().getStart(), usePrevBaseIntron);
 	}
 
 	/**
@@ -134,6 +159,7 @@ public class VariantEffectFusion extends VariantEffectStructural {
 
 			// Translocation
 			VariantTranslocation vtrans = getVariantTranslocation();
+			EffectType effType = null;
 
 			// Note: The following block of 'setEffect' could be written simply as
 			//
@@ -141,26 +167,56 @@ public class VariantEffectFusion extends VariantEffectStructural {
 			//
 			//       But this would be rather cryptic, that's why I use an explicit case by case scenario
 
-			// E.g.:  C[2:321682[
-			if (!vtrans.isLeft() && !vtrans.isBefore()) setEffect(sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			if (!vtrans.isLeft() && !vtrans.isBefore()) {
+				// E.g.:  C[2:321682[
+				effType = (sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			} else if (vtrans.isLeft() && !vtrans.isBefore()) {
+				// E.g.: G]17:198982]
+				effType = (!sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			} else if (!vtrans.isLeft() && vtrans.isBefore()) {
+				// E.g.:  [17:198983[A
+				effType = (!sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			} else if (vtrans.isLeft() && vtrans.isBefore()) {
+				// E.g.:  ]13:123456]T
+				effType = (sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			} else throw new RuntimeException("This should never happen!");
 
-			// E.g.: G]17:198982]
-			if (vtrans.isLeft() && !vtrans.isBefore()) setEffect(!sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
-
-			// E.g.:  [17:198983[A
-			if (!vtrans.isLeft() && vtrans.isBefore()) setEffect(!sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
-
-			// E.g.:  ]13:123456]T
-			if (vtrans.isLeft() && vtrans.isBefore()) setEffect(sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			setEffect(effType);
 
 			// Calculate AA positions
 			aaPos();
+
+			// Is this fusion introducing a frame shift?
+			if (effType == EffectType.GENE_FUSION) frameShift();
 
 			break;
 
 		default:
 			throw new RuntimeException("Unimplemented method for variant type '" + variant.getVariantType() + "'");
 		}
+	}
+
+	/**
+	 * Is this fusion introducing a frame shift?
+	 */
+	void frameShift() {
+		int cdsPosLeft = baseNumberCdsLeft();
+		int frameLeft = cdsPosLeft % CodonChange.CODON_SIZE;
+		int cdsPosRight = baseNumberCdsRight();
+		int frameRight = cdsPosRight % CodonChange.CODON_SIZE;
+
+		// Is the next base in frame?
+		// It is in frame if:
+		//    (frame_before_tranlocation + 1) % 3 == frame_after_translocation
+		// Otherwise, we have a frame shift
+		if (trLeft.isStrandPlus() && (frameLeft + 1) % CodonChange.CODON_SIZE != frameRight) {
+			addEffect(EffectType.FRAME_SHIFT);
+		} else if (trLeft.isStrandMinus() && (frameRight + 1) % CodonChange.CODON_SIZE != frameLeft) {
+			addEffect(EffectType.FRAME_SHIFT);
+		}
+
+		//		Gpr.debug("cdsPosLeft: " + cdsPosLeft + "\t" + frameLeft);
+		//		Gpr.debug("cdsPosRight: " + cdsPosRight + "\t" + frameRight);
 	}
 
 	public int getAaNumLeftEnd() {
