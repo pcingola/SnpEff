@@ -5,6 +5,7 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantTranslocation;
 import org.snpeff.interval.codonChange.CodonChange;
+import org.snpeff.util.Gpr;
 
 /**
  * Effect of a structural variant (fusion) affecting two genes
@@ -113,27 +114,16 @@ public class VariantEffectFusion extends VariantEffectStructural {
 
 	/**
 	 * CDS base number for gene on the left side
-	 * Note: If the translocation lies within an intron, we want the first
-	 * exonic base BEFORE the intron
 	 */
 	int baseNumberCdsLeft() {
-		boolean usePrevBaseIntron = (trLeft.isStrandPlus() && !getVariantTranslocation().isBefore()) //
-				|| (trLeft.isStrandMinus() && getVariantTranslocation().isBefore()) //
-				;
-
-		return trLeft.baseNumberCds(variant.getStart(), usePrevBaseIntron);
+		return trLeft.baseNumberCds(variant.getStart(), usePrevBaseIntronLeft());
 	}
 
 	/**
 	 * CDS base number for gene on the right side
-	 * Note: If the translocation lies within an intron, we want the first
-	 * exonic base AFTER the intron
 	 */
 	int baseNumberCdsRight() {
-		boolean usePrevBaseIntron = (trRight.isStrandMinus() && !getVariantTranslocation().isBefore())//
-				|| (trRight.isStrandPlus() && getVariantTranslocation().isBefore()) //
-				;
-		return trRight.baseNumberCds(getVariantTranslocation().getEndPoint().getStart(), usePrevBaseIntron);
+		return trRight.baseNumberCds(getVariantTranslocation().getEndPoint().getStart(), !usePrevBaseIntronLeft());
 	}
 
 	/**
@@ -209,14 +199,19 @@ public class VariantEffectFusion extends VariantEffectStructural {
 		// It is in frame if:
 		//    (frame_before_tranlocation + 1) % 3 == frame_after_translocation
 		// Otherwise, we have a frame shift
-		if (trLeft.isStrandPlus() && (frameLeft + 1) % CodonChange.CODON_SIZE != frameRight) {
-			addEffect(EffectType.FRAME_SHIFT);
-		} else if (trLeft.isStrandMinus() && (frameRight + 1) % CodonChange.CODON_SIZE != frameLeft) {
-			addEffect(EffectType.FRAME_SHIFT);
-		}
+		boolean ok = false;
+		boolean before = getVariantTranslocation().isBefore();
 
-		//		Gpr.debug("cdsPosLeft: " + cdsPosLeft + "\t" + frameLeft);
-		//		Gpr.debug("cdsPosRight: " + cdsPosRight + "\t" + frameRight);
+		// Do frames match for each case?
+		if (!before && trLeft.isStrandPlus()) ok = ((frameLeft + 1) % CodonChange.CODON_SIZE == frameRight);
+		else if (!before && trLeft.isStrandMinus()) ok = ((frameRight + 1) % CodonChange.CODON_SIZE == frameLeft);
+		else if (before && trLeft.isStrandMinus()) ok = ((frameLeft + 1) % CodonChange.CODON_SIZE == frameRight);
+		else if (before && trLeft.isStrandPlus()) ok = ((frameRight + 1) % CodonChange.CODON_SIZE == frameLeft);
+
+		if (!ok) addEffect(EffectType.FRAME_SHIFT);
+
+		Gpr.debug("cdsPosLeft: " + cdsPosLeft + "\t" + frameLeft);
+		Gpr.debug("cdsPosRight: " + cdsPosRight + "\t" + frameRight);
 	}
 
 	public int getAaNumLeftEnd() {
@@ -257,6 +252,16 @@ public class VariantEffectFusion extends VariantEffectStructural {
 
 	boolean isVariantTranslocation() {
 		return variant instanceof VariantTranslocation;
+	}
+
+	/**
+	 * If the translocation lies within an intron, do we want the
+	 * first exonic base BEFORE the intron? (Left gene)
+	 */
+	boolean usePrevBaseIntronLeft() {
+		return (trLeft.isStrandPlus() && !getVariantTranslocation().isBefore()) //
+				|| (trLeft.isStrandMinus() && getVariantTranslocation().isBefore()) //
+				;
 	}
 
 }

@@ -473,6 +473,35 @@ public class TestCasesStructuralTranslocations {
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
 	 *
+	 * gene1:   >>>>>>>>>>>----
+	 *                         |
+	 * gene2    <<<<<<<<<<<----
+	 *
+	 */
+	@Test
+	public void test02_1_nonFs() {
+		Gpr.debug("Test");
+
+		init(false, true);
+
+		// Create variant
+		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 124, true, false);
+
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
+		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:Ter15_Asn19)" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, notExpEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Translocation in the same direction (both genes in negative strand)
+	 *
+	 * #CHROM   POS    ID    REF    ALT
+	 * chr1     35     .     N      N]chr2:140]
+	 *
 	 * gene1:   <<<<<<<<<<<----
 	 *                         |
 	 * gene2    >>>>>>>>>>>----
@@ -493,6 +522,35 @@ public class TestCasesStructuralTranslocations {
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Translocation in the same direction (both genes in negative strand)
+	 *
+	 * #CHROM   POS    ID    REF    ALT
+	 * chr1     35     .     N      N]chr2:140]
+	 *
+	 * gene1:   <<<<<<<<<<<----
+	 *                         |
+	 * gene2    >>>>>>>>>>>----
+	 *
+	 */
+	@Test
+	public void test02_2_nonFs() {
+		Gpr.debug("Test");
+
+		init(true, false);
+
+		// Create variant
+		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 124, true, false);
+
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
+		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Thr18_Ile24;tr2:Val1_Ser5)" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, notExpEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
@@ -577,6 +635,35 @@ public class TestCasesStructuralTranslocations {
 		EffectImpact expectedImpact = EffectImpact.HIGH;
 
 		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Translocation in the same direction (both genes in negative strand)
+	 *
+	 * #CHROM   POS    ID    REF    ALT
+	 * chr1     35     .     N      [chr2:140[N
+	 *
+	 * gene1:                  --->>>>>>>>>>>----
+	 *                         |
+	 * gene2                   ---<<<<<<<<<<----
+	 *
+	 */
+	@Test
+	public void test03_1_nonFs() {
+		Gpr.debug("Test");
+
+		init(false, true);
+
+		// Create variant
+		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 152, false, true);
+
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
+		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Tyr8_Phe24;tr2:Ile1_Pro13)" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, notExpEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}
 
 	/**
