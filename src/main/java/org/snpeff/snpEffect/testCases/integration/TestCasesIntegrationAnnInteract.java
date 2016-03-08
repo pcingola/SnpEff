@@ -14,9 +14,9 @@ import org.snpeff.vcf.VcfEntry;
 /**
  * Test cases for annotation of protein interaction loci
  */
-public class TestCasesIntegratioAnnInteract extends TestCasesIntegrationBase {
+public class TestCasesIntegrationAnnInteract extends TestCasesIntegrationBase {
 
-	public TestCasesIntegratioAnnInteract() {
+	public TestCasesIntegrationAnnInteract() {
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class TestCasesIntegratioAnnInteract extends TestCasesIntegrationBase {
 			int countPi = 0;
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t" + veff.getEffectType() + "\t" + veff);
-				if (veff.getEffectType() == EffectType.PROTEIN_PROTEIN_INTERACTION_LOCUS) {
+				if (veff.getEffectType() == EffectType.PROTEIN_STRUCTURAL_INTERACTION_LOCUS) {
 					if (verbose) System.out.println("FOUND\t" + veff.getEffectType() + "\t" + veff);
 					countPi++;
 

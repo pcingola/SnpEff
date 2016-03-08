@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.snpeff.snpEffect.testCases.integration.TestCasesAnn;
-import org.snpeff.snpEffect.testCases.integration.TestCasesIntegratioAnnInteract;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationAnnInteract;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegratioBuildPdb;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationApply;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCancer;
@@ -62,7 +62,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesAnn.class, //
-		TestCasesIntegratioAnnInteract.class, //
+		TestCasesIntegrationAnnInteract.class, //
 		TestCasesIntegrationApply.class, //
 		TestCasesIntegratioBuildPdb.class, //
 		TestCasesIntegrationCancer.class, //
