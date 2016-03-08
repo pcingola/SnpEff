@@ -5,7 +5,6 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantTranslocation;
 import org.snpeff.interval.codonChange.CodonChange;
-import org.snpeff.util.Gpr;
 
 /**
  * Effect of a structural variant (fusion) affecting two genes
@@ -208,10 +207,8 @@ public class VariantEffectFusion extends VariantEffectStructural {
 		else if (before && trLeft.isStrandMinus()) ok = ((frameLeft + 1) % CodonChange.CODON_SIZE == frameRight);
 		else if (before && trLeft.isStrandPlus()) ok = ((frameRight + 1) % CodonChange.CODON_SIZE == frameLeft);
 
+		// Frames do not match => Add frame shift effect
 		if (!ok) addEffect(EffectType.FRAME_SHIFT);
-
-		Gpr.debug("cdsPosLeft: " + cdsPosLeft + "\t" + frameLeft);
-		Gpr.debug("cdsPosRight: " + cdsPosRight + "\t" + frameRight);
 	}
 
 	public int getAaNumLeftEnd() {
