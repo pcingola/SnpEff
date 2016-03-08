@@ -184,8 +184,9 @@ public class TestCasesIntegrationVariant {
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 
 		VariantFileIterator snpFileIterator;
-		snpFileIterator = new VariantTxtFileIterator("tests/chr_not_found.out", comp.config.getGenome());
+		snpFileIterator = new VariantTxtFileIterator("tests/chr_not_found.out", comp.getConfig().getGenome());
 		snpFileIterator.setIgnoreChromosomeErrors(false);
+		snpFileIterator.setCreateChromos(false);
 
 		boolean trown = false;
 		try {

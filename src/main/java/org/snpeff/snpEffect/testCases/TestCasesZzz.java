@@ -1,35 +1,12 @@
 package org.snpeff.snpEffect.testCases;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-
 import org.junit.Test;
-import org.snpeff.interval.BioType;
-import org.snpeff.interval.Cds;
-import org.snpeff.interval.Chromosome;
-import org.snpeff.interval.CytoBands;
-import org.snpeff.interval.Exon;
-import org.snpeff.interval.Gene;
-import org.snpeff.interval.Genome;
-import org.snpeff.interval.Marker;
-import org.snpeff.interval.Transcript;
+import org.snpeff.fileIterator.VariantFileIterator;
+import org.snpeff.fileIterator.VariantTxtFileIterator;
 import org.snpeff.interval.Variant;
-import org.snpeff.interval.VariantTranslocation;
-import org.snpeff.snpEffect.Config;
-import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.HgvsDna;
-import org.snpeff.snpEffect.HgvsProtein;
-import org.snpeff.snpEffect.SnpEffectPredictor;
-import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.VariantEffect.EffectImpact;
-import org.snpeff.snpEffect.VariantEffects;
+import org.snpeff.snpEffect.testCases.integration.CompareEffects;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.GprSeq;
 import org.snpeff.vcf.EffFormatVersion;
-import org.snpeff.vcf.VcfEffect;
-
-import junit.framework.Assert;
 
 /**
  * Test case for structural variants: Translocation (fusions)
@@ -56,218 +33,37 @@ public class TestCasesZzz {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
-
-	Random rand = new Random(20160229);
-	Config config;
-	String chr1Seq;
-	String chr2Seq;
-	Genome genome;
-	Chromosome chr1, chr2;
-	Gene gene1, gene2;
-	Transcript tr1, tr2;
-	SnpEffectPredictor snpEffectPredictor;
-
-	public void init(boolean gene1NegativeStrand, boolean gene2NegativeStrand) {
-		config = new Config("test");
-
-		chr1Seq = "TGCTTGTCGATATTTGTATGAGGATTTGAGTACTACGCACTACTCAGTGCTGGGCAATCCCTTAGCTGTCGCGCCGCTTACCCTACTATTCAGGAGTAGGCCCTATCTCCACAGTGACTGTAGTACCAGCCATCTCTCTCGTTGCCGTCTGCGGTGCCGTCACACACGCTCCAGTCCCAGCTACGTTTCGCCAGGCTCAG";
-		chr2Seq = "GCGATTGGTTGAATAAGCATAAGGTAGTTATCCGCCTGCACCTTGTTGAAAGATTGGACTTAATCCACCCCGTTAACAAAGGAATCGATCATGTTGCGCATATCGTCTAGGTTAATGGGATTTCACCGCTTACCCACTTAGCGGGCTGGAATGGGAACGGAGTGTCGACAGCACCTTATGGGGAGCTATATTCCCCCTAT";
-		genome = new Genome("test");
-
-		chr1 = new Chromosome(genome, 0, chr1Seq.length() - 1, "1");
-		chr2 = new Chromosome(genome, 0, chr2Seq.length() - 1, "2");
-		chr1.setSequence(chr1Seq);
-		chr2.setSequence(chr2Seq);
-		genome.add(chr1);
-		genome.add(chr2);
-
-		gene1 = new Gene(chr1, 10, 90, gene1NegativeStrand, "gene1", "gene1", BioType.protein_coding);
-		gene2 = new Gene(chr2, 110, 190, gene2NegativeStrand, "gene2", "gene2", BioType.protein_coding);
-
-		tr1 = new Transcript(gene1, gene1.getStart(), gene1.getEnd(), gene1.isStrandMinus(), "tr1");
-		tr2 = new Transcript(gene2, gene2.getStart(), gene2.getEnd(), gene2.isStrandMinus(), "tr2");
-		gene1.add(tr1);
-		gene2.add(tr2);
-		tr1.setProteinCoding(true);
-		tr2.setProteinCoding(true);
-
-		Exon e11 = new Exon(tr1, 10, 30, tr1.isStrandMinus(), "exon1", 0);
-		Exon e12 = new Exon(tr1, 40, 90, tr1.isStrandMinus(), "exon2", 0);
-		Exon e21 = new Exon(tr2, 110, 125, tr2.isStrandMinus(), "exon3", 0);
-		Exon e22 = new Exon(tr2, 150, 190, tr2.isStrandMinus(), "exon4", 0);
-		Exon exons[] = { e11, e12, e21, e22 };
-
-		for (Exon e : exons) {
-			String seq = e.getChromosome().getSequence().substring(e.getStart(), e.getEnd() + 1);
-			if (e.isStrandMinus()) seq = GprSeq.reverseWc(seq);
-			e.setSequence(seq);
-
-			Transcript tr = (Transcript) e.getParent();
-			tr.add(e);
-
-			Cds cds = new Cds(tr, e.getStart(), e.getEnd(), e.isStrandMinus(), "");
-			tr.add(cds);
-		}
-		tr1.rankExons();
-		tr2.rankExons();
-
-		if (verbose) System.out.println("Transcripts:\n" + tr1 + "\n" + tr2);
-
-		snpEffectPredictor = new SnpEffectPredictor(genome);
-		snpEffectPredictor.setUpDownStreamLength(0);
-		snpEffectPredictor.add(gene1);
-		snpEffectPredictor.add(gene2);
-		snpEffectPredictor.buildForest();
-
-		// Create fake cytobands
-		CytoBands cytoBands = genome.getCytoBands();
-		cytoBands.add(new Marker(chr1, chr1.getStart(), chr1.getEnd(), false, "p1"));
-		cytoBands.add(new Marker(chr2, chr2.getStart(), chr2.getEnd(), false, "p2"));
-		cytoBands.build();
-	}
-
-	Set<String> arrayToSet(String array[]) {
-		Set<String> set = new HashSet<>();
-		if (array != null) {
-			for (String h : array)
-				set.add(h);
-		}
-		return set;
-	}
-
-	protected void checkEffects(Variant variant, EffectType expEffs[], EffectType notExpEffs[], String expHgvsp[], String expHgvsc[], EffectImpact expectedImpact, String expAnns[]) {
-		// Convert to sets
-		Set<EffectType> expectedEffs = new HashSet<>();
-		if (expEffs != null) {
-			for (EffectType et : expEffs)
-				expectedEffs.add(et);
-		}
-
-		Set<EffectType> notExpectedEffs = new HashSet<>();
-		if (notExpEffs != null) {
-			for (EffectType et : notExpEffs)
-				notExpectedEffs.add(et);
-		}
-
-		Set<String> expectedHgvsp = arrayToSet(expHgvsp);
-		Set<String> expectedHgvsc = arrayToSet(expHgvsc);
-		Set<String> expectedAnns = arrayToSet(expAnns);
-
-		if (verbose) {
-			Gpr.debug("Variant: " + variant);
-			for (Gene g : genome.getGenes()) {
-				Gpr.debug("\tGene: " + g.getId() + "\t" + gene1.getStart() + " - " + gene1.getEnd());
-				for (Transcript tr : g)
-					Gpr.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
-			}
-		}
-
-		// Calculate effects
-		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
-		if (verbose) Gpr.debug("VariantEffects: " + effects);
-
-		// Checknumber of results
-		Assert.assertEquals(true, effects.size() >= 1);
-
-		Set<EffectType> effs = new HashSet<>();
-		Set<String> hgvscs = new HashSet<>();
-		Set<String> hgvsps = new HashSet<>();
-		Set<String> anns = new HashSet<>();
-		boolean impactOk = false;
-		for (VariantEffect varEff : effects) {
-			effs.addAll(varEff.getEffectTypes());
-
-			HgvsDna hgvsc = new HgvsDna(varEff);
-			String hgvsDna = hgvsc.toString();
-			hgvscs.add(hgvsDna);
-
-			HgvsProtein hgvsp = new HgvsProtein(varEff);
-			String hgvsProt = hgvsp.toString();
-			hgvsps.add(hgvsProt);
-
-			impactOk |= (varEff.getEffectImpact() == expectedImpact);
-
-			// Create VcfEffect
-			VcfEffect vcfEffect = new VcfEffect(varEff, formatVersion);
-			String annField = vcfEffect.toString();
-			anns.add(annField);
-
-			if (verbose) Gpr.debug("Effect: " + varEff.toStr() //
-					+ "\n\tHGVS.c: " + hgvsDna //
-					+ "\n\tHGVS.p: " + hgvsProt //
-					+ "\n\tANN   : " + annField //
-			);
-		}
-
-		// Check effects
-		Assert.assertTrue("Effects do not match" //
-				+ "\n\tExpected : " + expectedEffs //
-				+ "\n\tFound    : " + effs//
-				, effs.containsAll(expectedEffs) //
-		);
-
-		// Check effects that should NOT be present
-		Assert.assertFalse("Effects should NOT be present: " + notExpectedEffs //
-		, effs.removeAll(notExpectedEffs) // Returns true if the set has changed (i.e. there was an element removed)
-		);
-
-		// Check impact
-		Assert.assertTrue("Effect impact '" + expectedImpact + "' not found", impactOk);
-
-		// Check HGVS.c
-		Assert.assertTrue("HGVS.c do not match" //
-				+ "\n\tExpected : " + expectedHgvsc //
-				+ "\n\tFound    : " + hgvscs//
-				, hgvscs.containsAll(expectedHgvsc) //
-		);
-
-		// Check HGVS.p
-		Assert.assertTrue("HGVS.p do not match" //
-				+ "\n\tExpected : " + expectedHgvsp //
-				+ "\n\tFound    : " + hgvsps//
-				, hgvsps.containsAll(expectedHgvsp) //
-		);
-
-		// Check ANN fields
-		Assert.assertTrue("ANN fields do not match" //
-				+ "\n\tExpected : " + expectedAnns //
-				+ "\n\tFound    : " + anns //
-				, anns.containsAll(expectedAnns) //
-		);
-
-	}
-
-	public TestCasesZzz() {
-		super();
-	}
+	long randSeed = 20100629;
+	String genomeName = "testCase";
 
 	/**
-	 * Translocation in the same direction (both genes in positive strand)
-	 *
-	 * #CHROM   POS    ID    REF    ALT
-	 * chr1     35     .     N      N[chr2:140[
-	 *
-	 * gene1:   >>>>>>>>>>>----
-	 *                         |
-	 * gene2                   ---->>>>>>>>>
-	 *
+	 * Read file test: Should throw an exception (chromosome not found)
 	 */
 	@Test
-	public void test01_0() {
+	public void test_22() {
 		Gpr.debug("Test");
+		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 
-		verbose = true;
-		init(false, false);
+		VariantFileIterator snpFileIterator;
+		snpFileIterator = new VariantTxtFileIterator("tests/chr_not_found.out", comp.getConfig().getGenome());
+		snpFileIterator.setIgnoreChromosomeErrors(false);
+		snpFileIterator.setCreateChromos(false);
 
-		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
+		boolean trown = false;
+		try {
+			// Read all SNPs from file. Note: This should throw an exception "Chromosome not found"
+			for (Variant variant : snpFileIterator) {
+				Gpr.debug(variant);
+			}
+		} catch (RuntimeException e) {
+			trown = true;
+			String expectedMessage = "ERROR: Chromosome 'chrZ' not found! File 'tests/chr_not_found.out', line 1";
+			if (e.getMessage().equals(expectedMessage)) ; // OK
+			else throw new RuntimeException("This is not the exception I was expecting!\n\tExpected message: '" + expectedMessage + "'\n\tMessage: '" + e.getMessage() + "'", e);
+		}
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
-		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
-		String expHgvsp[] = { "t(1;2)(tr1:Tyr1_Ser7;tr2:His6_Tyr19)" };
-		EffectImpact expectedImpact = EffectImpact.HIGH;
-
-		checkEffects(variant, expEffs, null, expHgvsp, expHgvsc, expectedImpact, null);
+		// If no exception => error
+		if (!trown) throw new RuntimeException("This should have thown an exception 'Chromosome not found!' but it didn't");
 	}
 
 }

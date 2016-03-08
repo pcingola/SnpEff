@@ -71,7 +71,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	static {
 		// Initialize VCF value encoding table
 		INFO_VALUE_ENCODE = new HashMap<>();
-		INFO_VALUE_ENCODE.put("%3A", ":");
+		// INFO_VALUE_ENCODE.put("%3A", ":"); // This is used in genotype entries, not INFO entries.
 		INFO_VALUE_ENCODE.put("%3B", ";");
 		INFO_VALUE_ENCODE.put("%3D", "=");
 		INFO_VALUE_ENCODE.put("%25", "%");
@@ -171,7 +171,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		for (String encoded : INFO_VALUE_ENCODE.keySet())
 			str = str.replace(INFO_VALUE_ENCODE.get(encoded), encoded);
 
-		return str;
+		return str.replaceAll(" ", "_"); // Transform spaces, if any
 	}
 
 	/**

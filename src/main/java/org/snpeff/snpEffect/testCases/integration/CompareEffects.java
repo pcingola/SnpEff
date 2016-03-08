@@ -114,6 +114,10 @@ public class CompareEffects {
 		return eff.substring(0, aaidx).split("\\+");
 	}
 
+	public Config getConfig() {
+		return config;
+	}
+
 	void initRand() {
 		rand = new Random(randSeed);
 	}
