@@ -1,9 +1,7 @@
 package org.snpeff.interval;
 
-import org.snpeff.pdb.DistanceResult;
-import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
+import org.snpeff.snpEffect.VariantEffects;
 
 /**
  * Protein interaction: An amino acid that is "in contact" with another amino acid.
@@ -12,27 +10,37 @@ import org.snpeff.snpEffect.VariantEffect.EffectImpact;
  *
  * @author pablocingolani
  */
-public class ProteinInteractionLocus extends Marker {
+public abstract class ProteinInteractionLocus extends Marker {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final boolean debug = false;
-	DistanceResult distanceResult;
+
+	public static ProteinInteractionLocus factory(Transcript parent, int aaPos, Transcript trInteract, String id) {
+		// Interaction type
+		String geneId1 = parent.getParent().getId();
+		String geneId2 = trInteract.getParent().getId();
+
+		if (Math.random() < 2) throw new RuntimeException("CHANGE AAPOS TO GENOMIC COORDINATES!!!");
+
+		// Same gene? => Within protein interaction
+		if (geneId1.equals(geneId2)) return new ProteinStructuralInteractionLocus(parent, aaPos, id);
+
+		// Different genes? => Protein-protein interaction
+		return new ProteinProteinInteractionLocus(parent, aaPos, trInteract, id);
+	}
 
 	public ProteinInteractionLocus() {
 		super();
-		type = EffectType.PROTEIN_INTERACTION_LOCUS;
 	}
 
-	public ProteinInteractionLocus(Transcript parent, int start, String id) {
-		super(parent, start, start, false, id);
-		type = EffectType.PROTEIN_INTERACTION_LOCUS;
+	public ProteinInteractionLocus(Transcript parent, int aaPos, String id) {
+		super(parent, 0, 0, false, id);
 	}
 
 	@Override
 	public ProteinInteractionLocus cloneShallow() {
 		ProteinInteractionLocus clone = (ProteinInteractionLocus) super.cloneShallow();
-		clone.distanceResult = distanceResult;
 		return clone;
 	}
 
@@ -42,9 +50,7 @@ public class ProteinInteractionLocus extends Marker {
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false;// Sanity check
-
-		variantEffects.add(variant, this, EffectType.PROTEIN_INTERACTION_LOCUS, EffectImpact.HIGH, "");
-
+		variantEffects.add(variant, this, type, EffectImpact.HIGH, "");
 		return true;
 	}
 

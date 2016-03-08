@@ -36,7 +36,8 @@ public enum EffectType {
 	, SPLICE_SITE_ACCEPTOR //
 	, SPLICE_SITE_DONOR //
 	, RARE_AMINO_ACID //
-	, PROTEIN_INTERACTION_LOCUS //
+	, PROTEIN_PROTEIN_INTERACTION_LOCUS //
+	, PROTEIN_STRUCTURAL_INTERACTION_LOCUS //
 
 	// Moderate impact
 	, NON_SYNONYMOUS_CODING //
@@ -144,7 +145,8 @@ public enum EffectType {
 		case GENE_FUSION:
 		case GENE_FUSION_REVERESE:
 		case GENE_REARRANGEMENT:
-		case PROTEIN_INTERACTION_LOCUS:
+		case PROTEIN_PROTEIN_INTERACTION_LOCUS:
+		case PROTEIN_STRUCTURAL_INTERACTION_LOCUS:
 		case RARE_AMINO_ACID:
 		case SPLICE_SITE_ACCEPTOR:
 		case SPLICE_SITE_DONOR:
@@ -294,7 +296,8 @@ public enum EffectType {
 		case NON_SYNONYMOUS_STOP:
 		case STOP_LOST:
 		case RARE_AMINO_ACID:
-		case PROTEIN_INTERACTION_LOCUS:
+		case PROTEIN_PROTEIN_INTERACTION_LOCUS:
+		case PROTEIN_STRUCTURAL_INTERACTION_LOCUS:
 			return EffectType.EXON;
 
 		case INTRON:
@@ -447,8 +450,11 @@ public enum EffectType {
 		case NON_SYNONYMOUS_STOP:
 			return "stop_retained_variant";
 
-		case PROTEIN_INTERACTION_LOCUS:
+		case PROTEIN_PROTEIN_INTERACTION_LOCUS:
 			return "protein_protein_contact";
+
+		case PROTEIN_STRUCTURAL_INTERACTION_LOCUS:
+			return "structural_interaction_variant";
 
 		case RARE_AMINO_ACID:
 			return "rare_amino_acid_variant";
