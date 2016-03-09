@@ -31,10 +31,10 @@ string[] zipGenome	= []			help Zip a specific genome
 cpus = 1
 
 # Versions
-ensemblRelease		:= "82"
-ensemblBfmppRelease	:= "29"
-flybaseRelease		:= "FB2015_05"
-flybaseGenomes		:= [ 'dana_r1.04', 'dere_r1.04', 'dgri_r1.3', 'dmel_r6.08', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.03', 'dsec_r1.3', 'dsim_r2.01', 'dvir_r1.04', 'dwil_r1.04', 'dyak_r1.04' ]
+ensemblRelease		:= "83"
+ensemblBfmppRelease	:= "30"
+flybaseRelease		:= "FB2016_01"
+flybaseGenomes		:= [ 'dana_r1.05', 'dere_r1.05', 'dgri_r1.3', 'dmel_r6.09', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.03', 'dsec_r1.3', 'dsim_r2.01', 'dvir_r1.05', 'dwil_r1.05', 'dyak_r1.05' ]
 GRCH				:= "GRCh38"
 GRCHs				:= ["GRCh37", "GRCh38"]
 humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
@@ -308,31 +308,33 @@ void copyPwm() {
 # Download all databases
 #-------------------------------------------------------------------------------
 void downloadAll() {
-#	# Ensembl genomes
-#	downloadEnsembl()
-#	downloadEnsemblBfmpp()
+	# Ensembl genomes
+	downloadEnsembl()
+	downloadEnsemblBfmpp()
 
 	# UCSC genomes
 	downloadUcscHg19()
 	downloadUcscHg19Kg()
 	downloadUcscHg38()
 	downloadUcscHg38Kg()
-#	downloadUcscMm10()
+	downloadUcscMm10()
 
 	# Other databases
 	downloadJaspar()
-#	downloadGwasCatalog()
+	downloadGwasCatalog()
 	downloadNextProt()
 	downloadPdb()
-#	downloadDbNsfp()	# We need to update this method
-#	downloadClinvar()
-#	downloadDbSnp()
-#
-#   # Non-human
-#	downloadNcbi()
-#	downloadNcbiBacteria()
-#	downloadNcbiVirus()
-#	downloadFlyBase()
+	downloadDbNsfp()	# We need to update this method
+	downloadClinvar()
+	downloadDbSnp()
+
+   # NCBI
+	downloadNcbi()
+	downloadNcbiBacteria()
+	downloadNcbiVirus()
+
+	# FlyBase
+	downloadFlyBase()
 }
 
 #-------------------------------------------------------------------------------
