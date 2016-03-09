@@ -4,9 +4,11 @@ import java.io.IOException;
 
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
+import org.snpeff.interval.Markers;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantWithScore;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Timer;
 
 /**
  * Opens a sequence change file and iterates over all intervals in BED format.
@@ -27,6 +29,21 @@ import org.snpeff.util.Gpr;
  * @author pcingola
  */
 public class BedFileIterator extends VariantFileIterator {
+
+	public static Markers load(String bedFileName, boolean verbose) {
+		if (verbose) Timer.showStdErr("Reading intervals from BED file '" + bedFileName + "'");
+
+		BedFileIterator bed = new BedFileIterator(bedFileName);
+		Markers markers = new Markers();
+
+		for (Variant var : bed)
+			markers.add(var);
+
+		// Check that file is not empty
+		if (markers.isEmpty()) throw new RuntimeException("No intervals found in BED file " + bedFileName);
+
+		return markers;
+	}
 
 	public BedFileIterator(String fileName) {
 		super(fileName);
