@@ -2,6 +2,7 @@ package org.snpeff.interval;
 
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffects;
+import org.snpeff.util.Gpr;
 
 /**
  * Protein interaction: An amino acid that is "in contact" with another amino acid.
@@ -21,7 +22,8 @@ public abstract class ProteinInteractionLocus extends Marker {
 		String geneId1 = parent.getParent().getId();
 		String geneId2 = trInteract.getParent().getId();
 
-		if (Math.random() < 2) throw new RuntimeException("CHANGE AAPOS TO GENOMIC COORDINATES!!!");
+		int codon2pos[] = parent.codonNumber2Pos(aaPos);
+		Gpr.debug("Codon2pos[" + aaPos + "]: " + codon2pos);
 
 		// Same gene? => Within protein interaction
 		if (geneId1.equals(geneId2)) return new ProteinStructuralInteractionLocus(parent, aaPos, id);

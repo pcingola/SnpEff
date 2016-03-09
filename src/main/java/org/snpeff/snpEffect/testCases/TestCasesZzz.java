@@ -1,11 +1,5 @@
 package org.snpeff.snpEffect.testCases;
 
-import org.junit.Test;
-import org.snpeff.fileIterator.VariantFileIterator;
-import org.snpeff.fileIterator.VariantTxtFileIterator;
-import org.snpeff.interval.Variant;
-import org.snpeff.snpEffect.testCases.integration.CompareEffects;
-import org.snpeff.util.Gpr;
 import org.snpeff.vcf.EffFormatVersion;
 
 /**
@@ -33,37 +27,5 @@ public class TestCasesZzz {
 
 	boolean debug = false;
 	boolean verbose = false || debug;
-	long randSeed = 20100629;
-	String genomeName = "testCase";
-
-	/**
-	 * Read file test: Should throw an exception (chromosome not found)
-	 */
-	@Test
-	public void test_22() {
-		Gpr.debug("Test");
-		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-
-		VariantFileIterator snpFileIterator;
-		snpFileIterator = new VariantTxtFileIterator("tests/chr_not_found.out", comp.getConfig().getGenome());
-		snpFileIterator.setIgnoreChromosomeErrors(false);
-		snpFileIterator.setCreateChromos(false);
-
-		boolean trown = false;
-		try {
-			// Read all SNPs from file. Note: This should throw an exception "Chromosome not found"
-			for (Variant variant : snpFileIterator) {
-				Gpr.debug(variant);
-			}
-		} catch (RuntimeException e) {
-			trown = true;
-			String expectedMessage = "ERROR: Chromosome 'chrZ' not found! File 'tests/chr_not_found.out', line 1";
-			if (e.getMessage().equals(expectedMessage)) ; // OK
-			else throw new RuntimeException("This is not the exception I was expecting!\n\tExpected message: '" + expectedMessage + "'\n\tMessage: '" + e.getMessage() + "'", e);
-		}
-
-		// If no exception => error
-		if (!trown) throw new RuntimeException("This should have thown an exception 'Chromosome not found!' but it didn't");
-	}
 
 }

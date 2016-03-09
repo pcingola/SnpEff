@@ -323,6 +323,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return newTr;
 	}
 
+	public String baseAt(int pos) {
+		calcCdsStartEnd();
+		Exon ex = findExon(pos);
+		if (ex == null) return null;
+		return ex.basesAt(pos - ex.getStart(), 1);
+	}
+
 	/**
 	 * Calculate distance from transcript start to a position
 	 * mRNA is roughly the same than cDNA. Strictly speaking mRNA
@@ -406,7 +413,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	/**
 	 * Calculate chromosome position as function of CDS number
 	 *
-	 * @returns An array mapping 'pos[cdsBaseNumber] = chromosmalPos'
+	 * @returns An array mapping 'cds2pos[cdsBaseNumber] = chromosmalPos'
 	 */
 	public synchronized int[] baseNumberCds2Pos() {
 		if (cds2pos != null) return cds2pos;
@@ -550,6 +557,27 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		clone.ribosomalSlippage = ribosomalSlippage;
 
 		return clone;
+	}
+
+	/**
+	 * Return an array of 3 genomic positions where amino acid number 'aaNum' maps
+	 *
+	 * @return aa2pos[0], aa2pos[1], aa2pos[2] are the coordinates (within the chromosome)
+	 *         of the three bases conforming codon 'aaNum'. Any aa2pos[i] = -1 means that
+	 *         it could a base in the codon could not be mapped.
+	 */
+	public int[] codonNumber2Pos(int codonNum) {
+		if (cds2pos == null) baseNumberCds2Pos();
+
+		// Initialize
+		int codon[] = new int[3];
+		int step = isStrandPlus() ? 1 : -1;
+		int idxStart = isStrandPlus() ? 0 : 2;
+		for (int i = idxStart, j = 3 * codonNum; (i < codon.length) && (i >= 0) && j < cds2pos.length; i += step, j++) {
+			codon[i] = cds2pos[j];
+		}
+
+		return codon;
 	}
 
 	/**
@@ -1407,7 +1435,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	@Override
 	public Markers query(Marker marker) {
-
 		Set<Marker> results = new HashSet<Marker>();
 
 		// Add exons
