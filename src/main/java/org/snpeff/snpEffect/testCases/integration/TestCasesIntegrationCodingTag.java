@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEffect;

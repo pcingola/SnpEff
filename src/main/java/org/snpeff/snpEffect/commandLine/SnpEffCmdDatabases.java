@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import org.snpeff.SnpEff;
 import org.snpeff.util.Gpr;
 
 /**

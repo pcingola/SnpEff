@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Exon;
@@ -26,7 +27,6 @@ import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdBuild;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryEmbl;

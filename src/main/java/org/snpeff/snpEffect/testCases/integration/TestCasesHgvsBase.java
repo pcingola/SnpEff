@@ -4,13 +4,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
+import org.snpeff.SnpEff;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryRand;
 import org.snpeff.util.GprSeq;

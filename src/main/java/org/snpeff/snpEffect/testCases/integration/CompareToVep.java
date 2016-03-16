@@ -5,10 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Assert;
+import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfConsequence;

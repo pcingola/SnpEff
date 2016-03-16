@@ -5,8 +5,8 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEffect;

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.snpeff.snpEffect.commandLine.SnpEff;
+import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEffect;

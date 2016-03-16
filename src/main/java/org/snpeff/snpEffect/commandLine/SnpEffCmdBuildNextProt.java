@@ -11,6 +11,7 @@ import java.util.zip.GZIPInputStream;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.snpeff.SnpEff;
 import org.snpeff.codons.CodonTables;
 import org.snpeff.collections.AutoHashMap;
 import org.snpeff.interval.Chromosome;

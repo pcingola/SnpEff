@@ -3,13 +3,13 @@ package org.snpeff.snpEffect.testCases.integration;
 import java.util.HashMap;
 
 import org.junit.Test;
+import org.snpeff.SnpEff;
 import org.snpeff.align.SmithWaterman;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdBuild;
 import org.snpeff.util.Gpr;
 

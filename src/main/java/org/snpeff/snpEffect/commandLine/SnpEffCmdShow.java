@@ -3,6 +3,7 @@ package org.snpeff.snpEffect.commandLine;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.snpeff.SnpEff;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;

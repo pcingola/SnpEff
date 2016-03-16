@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.snpeff.SnpEff;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.stats.CountByType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;

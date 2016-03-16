@@ -31,9 +31,9 @@ string[] zipGenome	= []			help Zip a specific genome
 cpus = 1
 
 # Versions
-ensemblRelease		:= "83"
-ensemblBfmppRelease	:= "30"
-flybaseRelease		:= "FB2016_01"
+ensemblRelease		:= "82"
+ensemblBfmppRelease	:= "29"
+flybaseRelease		:= "FB2015_05" # "FB2016_01"
 flybaseGenomes		:= [ 'dana_r1.05', 'dere_r1.05', 'dgri_r1.3', 'dmel_r6.09', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.03', 'dsec_r1.3', 'dsim_r2.01', 'dvir_r1.05', 'dwil_r1.05', 'dyak_r1.05' ]
 GRCH				:= "GRCh38"
 GRCHs				:= ["GRCh37", "GRCh38"]

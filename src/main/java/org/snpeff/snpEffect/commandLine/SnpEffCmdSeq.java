@@ -2,6 +2,7 @@ package org.snpeff.snpEffect.commandLine;
 
 import java.util.ArrayList;
 
+import org.snpeff.SnpEff;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;
 import org.snpeff.interval.Genome;

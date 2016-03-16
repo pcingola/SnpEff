@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.snpeff.SnpEff;
 import org.snpeff.coverage.CountReadsOnMarkers;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.stats.ReadsOnMarkersModel;

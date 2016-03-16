@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.snpeff.SnpEff;
 import org.snpeff.collections.AutoHashMap;
 import org.snpeff.fileIterator.BedFileIterator;
 import org.snpeff.fileIterator.LineFileIterator;

@@ -2,6 +2,7 @@ package org.snpeff.snpEffect.commandLine;
 
 import java.util.HashSet;
 
+import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.BedFileIterator;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Chromosome;

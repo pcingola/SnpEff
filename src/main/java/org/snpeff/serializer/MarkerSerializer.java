@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
+import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.LineFileIterator;
 import org.snpeff.interval.Cds;
 import org.snpeff.interval.Chromosome;
@@ -31,7 +32,6 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Utr3prime;
 import org.snpeff.interval.Utr5prime;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.util.Gpr;
 
 /**

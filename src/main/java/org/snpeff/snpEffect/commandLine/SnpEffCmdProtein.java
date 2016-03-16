@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.snpeff.SnpEff;
 import org.snpeff.align.SmithWaterman;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;

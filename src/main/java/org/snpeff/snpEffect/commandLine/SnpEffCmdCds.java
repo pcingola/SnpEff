@@ -2,6 +2,7 @@ package org.snpeff.snpEffect.commandLine;
 
 import java.util.HashMap;
 
+import org.snpeff.SnpEff;
 import org.snpeff.align.SmithWaterman;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;

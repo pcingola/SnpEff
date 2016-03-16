@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
+import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Variant;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.EffFormatVersion;

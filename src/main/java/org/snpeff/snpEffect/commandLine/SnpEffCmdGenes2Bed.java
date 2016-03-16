@@ -2,6 +2,7 @@ package org.snpeff.snpEffect.commandLine;
 
 import java.util.HashSet;
 
+import org.snpeff.SnpEff;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;

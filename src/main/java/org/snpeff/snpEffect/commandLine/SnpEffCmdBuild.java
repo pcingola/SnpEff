@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.snpeff.RegulationConsensusMultipleBed;
 import org.snpeff.RegulationFileConsensus;
+import org.snpeff.SnpEff;
 import org.snpeff.codons.FindRareAaIntervals;
 import org.snpeff.fileIterator.MotifFileIterator;
 import org.snpeff.fileIterator.RegulationFileIterator;

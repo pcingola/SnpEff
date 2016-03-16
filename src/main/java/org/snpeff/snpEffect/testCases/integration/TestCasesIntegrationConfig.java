@@ -3,8 +3,8 @@ package org.snpeff.snpEffect.testCases.integration;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.Config;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.util.Gpr;
 
 /**

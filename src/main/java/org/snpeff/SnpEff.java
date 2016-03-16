@@ -1,11 +1,10 @@
-package org.snpeff.snpEffect.commandLine;
+package org.snpeff;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.snpeff.Pcingola;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Custom;
 import org.snpeff.interval.Gene;
@@ -26,6 +25,24 @@ import org.snpeff.pdb.DistanceResult;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
+import org.snpeff.snpEffect.commandLine.CommandLine;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdAcat;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdBuild;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdBuildNextProt;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdCds;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdClosest;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdCount;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdDatabases;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdDownload;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdDump;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdGenes2Bed;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdGsa;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdLen;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdPdb;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdProtein;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdSeq;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdShow;
 import org.snpeff.spliceSites.SnpEffCmdSpliceAnalysis;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
@@ -191,7 +208,7 @@ public class SnpEff implements CommandLine {
 	/**
 	 * 	Command line argument list (try to fit it into COMMAND_LINE_WIDTH)
 	 */
-	String commandLineStr(boolean splitLines) {
+	protected String commandLineStr(boolean splitLines) {
 		if (args == null) return "";
 
 		StringBuilder argsList = new StringBuilder();

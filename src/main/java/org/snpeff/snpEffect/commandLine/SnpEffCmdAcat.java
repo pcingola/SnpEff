@@ -1,5 +1,6 @@
 package org.snpeff.snpEffect.commandLine;
 
+import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.stats.CountByType;

@@ -1,5 +1,6 @@
 package org.snpeff.snpEffect.commandLine;
 
+import org.snpeff.SnpEff;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;

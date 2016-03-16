@@ -1,8 +1,8 @@
 package org.snpeff.interval;
 
+import org.snpeff.SnpEff;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 
 /**
  * CDS: The coding region of a gene, also known as the coding sequence or CDS (from Coding DNA Sequence), is

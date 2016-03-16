@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.snpeff.SnpEff;
 import org.snpeff.logStatsServer.VersionCheck;
 import org.snpeff.util.Download;
 import org.snpeff.util.Gpr;

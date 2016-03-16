@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
+import org.snpeff.SnpEff;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.snpEffect.testCases.unity.TestCasesBase;
 import org.snpeff.util.Gpr;

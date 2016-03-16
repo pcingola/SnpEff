@@ -175,7 +175,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>org.snpeff.snpEffect.commandLine.SnpEff</mainClass>
+              <mainClass>org.snpeff.SnpEff</mainClass>
             </manifest>
           </archive>
         </configuration>

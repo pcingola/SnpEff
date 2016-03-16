@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
+import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.FastaFileIterator;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
@@ -20,7 +21,6 @@ import org.snpeff.motif.MotifLogo;
 import org.snpeff.motif.Pwm;
 import org.snpeff.probablility.FisherExactTest;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.stats.CountByType;
 import org.snpeff.stats.IntStats;
 import org.snpeff.util.Gpr;

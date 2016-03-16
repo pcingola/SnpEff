@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.junit.After;
 import org.junit.Test;
+import org.snpeff.SnpEff;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Intron;
@@ -17,7 +18,6 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.LossOfFunction;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.util.Gpr;
 
 import junit.framework.Assert;

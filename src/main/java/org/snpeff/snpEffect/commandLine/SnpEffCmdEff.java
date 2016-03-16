@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.snpeff.SnpEff;
 import org.snpeff.akka.vcf.VcfWorkQueue;
 import org.snpeff.fileIterator.BedFileIterator;
 import org.snpeff.fileIterator.VariantFileIterator;

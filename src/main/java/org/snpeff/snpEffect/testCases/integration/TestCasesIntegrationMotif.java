@@ -1,8 +1,8 @@
 package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.Test;
+import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
-import org.snpeff.snpEffect.commandLine.SnpEff;
 import org.snpeff.util.Gpr;
 
 /**
