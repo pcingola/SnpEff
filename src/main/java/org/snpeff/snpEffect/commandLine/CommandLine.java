@@ -19,7 +19,6 @@ public interface CommandLine {
 
 	/**
 	 * Parse command line arguments
-	 * @param args
 	 */
 	public void parseArgs(String[] args);
 
@@ -30,7 +29,6 @@ public interface CommandLine {
 
 	/**
 	 * Show 'usage' message and exit with an error code '-1'
-	 * @param message
 	 */
 	public void usage(String message);
 }

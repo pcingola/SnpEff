@@ -65,6 +65,20 @@ public class VcfAnnotatorChain implements VcfAnnotator {
 	}
 
 	@Override
+	public String[] getArgs() {
+		return null;
+	}
+
+	@Override
+	public void parseArgs(String[] args) {
+	}
+
+	@Override
+	public boolean run() {
+		return false;
+	}
+
+	@Override
 	public void setConfig(Config config) {
 		for (VcfAnnotator vcfAnnotator : annotators)
 			vcfAnnotator.setConfig(config);
@@ -80,6 +94,10 @@ public class VcfAnnotatorChain implements VcfAnnotator {
 	public void setVerbose(boolean verbose) {
 		for (VcfAnnotator vcfAnnotator : annotators)
 			vcfAnnotator.setVerbose(verbose);
+	}
+
+	@Override
+	public void usage(String message) {
 	}
 
 }

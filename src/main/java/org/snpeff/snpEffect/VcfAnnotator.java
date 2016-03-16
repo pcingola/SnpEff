@@ -1,13 +1,14 @@
 package org.snpeff.snpEffect;
 
 import org.snpeff.fileIterator.VcfFileIterator;
+import org.snpeff.snpEffect.commandLine.CommandLine;
 import org.snpeff.vcf.VcfEntry;
 
 /**
  * Annotate a VCF file: E.g. add information to INFO column
  *
  */
-public interface VcfAnnotator {
+public interface VcfAnnotator extends CommandLine {
 
 	/**
 	 * Add annotation headers to VCF file
