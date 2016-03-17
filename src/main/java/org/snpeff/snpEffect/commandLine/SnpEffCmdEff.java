@@ -30,9 +30,9 @@ import org.snpeff.outputFormatter.VcfOutputFormatter;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
+import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VcfAnnotator;
-import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.commandLine.eff.MasterEff;
 import org.snpeff.stats.CountByType;
 import org.snpeff.stats.VariantEffectStats;
@@ -360,7 +360,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 		outputFormatter.setVersion(VERSION_NO_NAME);
 		outputFormatter.setCommandLineStr(commandLineStr(false));
-		outputFormatter.setChangeEffectResutFilter(variantEffectResutFilter);
+		outputFormatter.setVariantEffectResutFilter(variantEffectResutFilter);
 		outputFormatter.setSupressOutput(suppressOutput);
 		outputFormatter.setChrStr(chrStr);
 		outputFormatter.setUseSequenceOntology(useSequenceOntology);
@@ -1105,7 +1105,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\t-no-intron                      : Do not show INTRON changes");
 		System.err.println("\t-no-upstream                    : Do not show UPSTREAM changes");
 		System.err.println("\t-no-utr                         : Do not show 5_PRIME_UTR or 3_PRIME_UTR changes");
-		System.err.println("\t-no EffectType                  : Do not show 'EffectType'. This option can be used several times.");
+		System.err.println("\t-no <effectType>                : Do not show 'EffectType'. This option can be used several times.");
 		System.err.println("\nAnnotations options:");
 		System.err.println("\t-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: " + cancer);
 		System.err.println("\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");

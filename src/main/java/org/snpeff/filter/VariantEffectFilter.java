@@ -24,7 +24,6 @@ public class VariantEffectFilter implements Filter<VariantEffect> {
 
 	/**
 	 * Is any of the options set?
-	 * @return
 	 */
 	@Override
 	public boolean anythingSet() {

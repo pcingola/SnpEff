@@ -145,10 +145,6 @@ public abstract class OutputFormatter {
 		print(endSection(marker));
 	}
 
-	public void setChangeEffectResutFilter(VariantEffectFilter changeEffectResutFilter) {
-		variantEffectResutFilter = changeEffectResutFilter;
-	}
-
 	public void setChrStr(String chrStr) {
 		this.chrStr = chrStr;
 	}
@@ -191,6 +187,10 @@ public abstract class OutputFormatter {
 
 	public void setUseSequenceOntology(boolean useSequenceOntology) {
 		this.useSequenceOntology = useSequenceOntology;
+	}
+
+	public void setVariantEffectResutFilter(VariantEffectFilter changeEffectResutFilter) {
+		variantEffectResutFilter = changeEffectResutFilter;
 	}
 
 	public void setVersion(String version) {
