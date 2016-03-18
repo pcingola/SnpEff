@@ -19,7 +19,7 @@ import org.snpeff.util.Gpr;
  * @author pcingola
  *
  */
-public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializable {
+public class Gene extends IntervalAndSubIntervals<Transcript> implements Serializable {
 
 	public enum GeneType {
 		CODING, NON_CODING, UNKNOWN
@@ -221,8 +221,18 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 	public int keepTranscripts(Set<String> trIds) {
 		// Find transcripts in trIds
 		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
-		for (Transcript t : this)
-			if (!trIds.contains(t.getId())) toDelete.add(t);
+		for (Transcript t : this) {
+			String trId = t.getId();
+
+			// Sometimes the provided list does not have version numbers 
+			// (e.g. NM_005157 instead of NM_005157.4)
+			String trIdNoVersion = t.getId();
+			int versionIdx = trIdNoVersion.indexOf('.');
+			if (versionIdx > 0) trIdNoVersion = trIdNoVersion.substring(0, versionIdx);
+
+			// Transcript not in the list? => Remove it
+			if (!trIds.contains(trId) && !trIds.contains(trIdNoVersion)) toDelete.add(t);
+		}
 
 		// Remove them
 		for (Transcript t : toDelete)
