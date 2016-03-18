@@ -162,12 +162,14 @@ public class VariantEffectFusion extends VariantEffectStructural {
 		switch (variant.getVariantType()) {
 		case INV:
 			setEffect(sameStrand ? EffectType.GENE_FUSION_REVERESE : EffectType.GENE_FUSION);
+			marker = geneLeft;
 			break;
 
 		case DEL:
 		case DUP:
 			// Non-translocations: DEL, DUP
 			setEffect(sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
+			marker = geneLeft;
 			break;
 
 		case BND:
@@ -263,6 +265,13 @@ public class VariantEffectFusion extends VariantEffectStructural {
 
 	public int getAaNumRightStart() {
 		return aaNumRightStart;
+	}
+
+	@Override
+	public Gene getGene() {
+		if (geneLeft != null) return geneLeft;
+		if (geneRight != null) return geneRight;
+		return null;
 	}
 
 	public Gene getGeneLeft() {

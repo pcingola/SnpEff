@@ -15,7 +15,7 @@ import org.snpeff.util.Timer;
  */
 public class CytoBands {
 
-	public static final String DEFAULT_CYTOBAND_BED_FILE = "cytoBand.txt";
+	public static final String DEFAULT_CYTOBAND_BED_FILE = "cytoBand.txt.gz";
 
 	boolean verbose;
 	boolean debug;

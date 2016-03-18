@@ -258,7 +258,9 @@ void buildDbTest() {
 		db := "$dirSnpeff/data/$gen/snpEffectPredictor.bin"
 		if( ! db.exists() )	{
 			println "Genome: $gen\tdb: '$db'"
-			task $snpeff build -v -storeSeqs $gen
+			task( cpus := 2 ) {
+				sys $snpeff build -v -storeSeqs $gen
+			}
 		}
 	}
 

@@ -79,18 +79,21 @@ public class VariantEffectStructural extends VariantEffect {
 			for (Marker gRight : featuresRight) {
 				if (variant.isBnd()) {
 					// Is this a translocation? OK
-				} else if (isGene(gLeft) //
-						&& isGene(gRight) //
-						&& gLeft.getId().equals(gRight.getId())) {
-					// Otherwise, make sure the variant is not acting within
-					// the same gene (e.g. a deletion)
+				} else if (!isGene(gLeft) || !isGene(gRight)) {
+					// For non-translocations, both sides must be genes in order to create a fusion
 					continue;
 				} else {
-					// If both genes overlap and the variant is within that
-					// region, then it's not a fusion, it's just a variant
-					// acting on both genes.
-					Marker gIntersect = gLeft.intersect(gRight);
-					if (gIntersect != null && gIntersect.includes(variant)) continue;
+					if (gLeft.getId().equals(gRight.getId())) {
+						// Otherwise, make sure the variant is not acting within
+						// the same gene (e.g. a deletion)
+						continue;
+					} else {
+						// If both genes overlap and the variant is within that
+						// region, then it's not a fusion, it's just a variant
+						// acting on both genes.
+						Marker gIntersect = gLeft.intersect(gRight);
+						if (gIntersect != null && gIntersect.includes(variant)) continue;
+					}
 				}
 
 				// Add all possible transcript fussions
@@ -98,6 +101,7 @@ public class VariantEffectStructural extends VariantEffect {
 			}
 
 		return fusions;
+
 	}
 
 	/**
