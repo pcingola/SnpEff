@@ -74,12 +74,12 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 	// Don't show codon change sequences that are too long
 	public static final int MAX_CODON_SEQUENCE_LEN = 100;
 
-	protected Variant variant = null;
+	protected Variant variant;
 	protected List<EffectType> effectTypes;
 	protected EffectType effectType;
 	protected List<EffectImpact> effectImpacts;
-	protected EffectImpact effectImpact = null;
-	protected Marker marker = null;
+	protected EffectImpact effectImpact;
+	protected Marker marker;
 	protected String error = "", warning = "", message = ""; // Any message, warning or error?
 	protected String codonsRef = "", codonsAlt = ""; // Codon change information
 	protected String codonsAroundOld = "", codonsAroundNew = ""; // Codons around

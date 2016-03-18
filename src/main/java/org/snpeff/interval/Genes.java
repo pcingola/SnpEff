@@ -107,9 +107,23 @@ public class Genes implements Iterable<Gene>, Serializable {
 		Gene genePrev = null;
 		Chromosome chrPrev = null;
 		for (Gene gene : genesSorted) {
-
 			// Chromosome change? Invaludate genePrev
-			if (chrPrev != gene.getChromosome()) genePrev = null;
+			if (chrPrev != gene.getChromosome()) {
+
+				// Add last intergenic region in the chromosome
+				if (chrPrev != null && genePrev != null) {
+					int start = genePrev.getEnd() + 1;
+					int end = chrPrev.getEnd();
+					if (start < end) {
+						String id = genePrev.getId() + "-END";
+						String name = genePrev.getGeneName() + "-END";
+						Intergenic intergenic = new Intergenic(genePrev.getChromosome(), start, end, false, id, name);
+						intergenics.add(intergenic);
+					}
+				}
+
+				genePrev = null;
+			}
 
 			// Intergenic region's [start, end] interval
 			int start = (genePrev != null ? genePrev.getEnd() + 1 : 0);

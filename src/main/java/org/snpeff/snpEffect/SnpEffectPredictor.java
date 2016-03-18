@@ -734,7 +734,11 @@ public class SnpEffectPredictor implements Serializable {
 		// Create a new variant effect for structural variants, add effect (if any)
 		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
 		// Note that fusions are added in the next step, when we invoke veff.fusion(), so we skip them here
-		if (veff.getEffectType() != EffectType.NONE && veff.getEffectType() != EffectType.GENE_FUSION) {
+		if (veff.getEffectType() != EffectType.NONE //
+				&& veff.getEffectType() != EffectType.GENE_FUSION //
+				&& veff.getEffectType() != EffectType.GENE_FUSION_REVERESE //
+				&& veff.getEffectType() != EffectType.FEATURE_FUSION //
+		) {
 			variantEffects.add(veff);
 			added = true;
 		}

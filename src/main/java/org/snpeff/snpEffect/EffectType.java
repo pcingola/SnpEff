@@ -60,6 +60,7 @@ public enum EffectType {
 	// Low impact
 	, GENE_INVERSION //
 	, GENE_DUPLICATION //
+	, FEATURE_FUSION //
 	, TRANSCRIPT_DUPLICATION //
 	, TRANSCRIPT_INVERSION //
 	, UTR_5_PRIME //
@@ -171,6 +172,7 @@ public enum EffectType {
 		case CODON_CHANGE:
 		case GENE_DUPLICATION:
 		case GENE_INVERSION:
+		case FEATURE_FUSION:
 		case NON_SYNONYMOUS_START:
 		case NON_SYNONYMOUS_STOP:
 		case SPLICE_SITE_REGION:
@@ -233,6 +235,7 @@ public enum EffectType {
 
 		case INTERGENIC:
 		case INTERGENIC_CONSERVED:
+		case FEATURE_FUSION:
 			return EffectType.INTERGENIC;
 
 		case UPSTREAM:
@@ -389,6 +392,9 @@ public enum EffectType {
 
 		case EXON_INVERSION_PARTIAL:
 			return "inversion";
+
+		case FEATURE_FUSION:
+			return "feature_fusion";
 
 		case FRAME_SHIFT:
 			return "frameshift_variant";

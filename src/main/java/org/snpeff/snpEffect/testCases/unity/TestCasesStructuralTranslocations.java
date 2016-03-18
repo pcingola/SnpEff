@@ -236,8 +236,10 @@ public class TestCasesStructuralTranslocations {
 
 		// Create fake cytobands
 		CytoBands cytoBands = genome.getCytoBands();
-		cytoBands.add(new Marker(chr1, chr1.getStart(), chr1.getEnd(), false, "p1"));
-		cytoBands.add(new Marker(chr2, chr2.getStart(), chr2.getEnd(), false, "p2"));
+		cytoBands.add(new Marker(chr1, chr1.getStart(), 99, false, "p1"));
+		cytoBands.add(new Marker(chr1, 100, chr1.getEnd(), false, "q1"));
+		cytoBands.add(new Marker(chr2, chr2.getStart(), 99, false, "q2"));
+		cytoBands.add(new Marker(chr2, 100, chr2.getEnd(), false, "p2"));
 		cytoBands.build();
 	}
 
@@ -917,6 +919,69 @@ public class TestCasesStructuralTranslocations {
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
 		String expHgvsp[] = { "t(1;2)(tr1:Glu1_Val17;tr2:Ter15_Asn19)" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, notExpEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Translocation affecting a gene and an intergenic region
+	 */
+	@Test
+	public void test05_1_one_gene() {
+		Gpr.debug("Test");
+
+		init(true, true);
+
+		// Create variant
+		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 50, true, true);
+
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType notExpEffs[] = {};
+		String expHgvsc[] = { "t(1;2)(p1;q2)(c.51+5)" };
+		String expHgvsp[] = { "t(1;2)(tr1:Glu1_Val17;)" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, notExpEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Translocation affecting a gene and an intergenic region
+	 */
+	@Test
+	public void test05_2_one_gene() {
+		Gpr.debug("Test");
+
+		init(true, true);
+
+		// Create variant
+		VariantTranslocation variant = new VariantTranslocation(chr1, 135, "N", "N", chr2, 124, true, true);
+
+		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType notExpEffs[] = {};
+		String expHgvsc[] = { "t(1;2)(q1;p2)(c.42-10)" };
+		String expHgvsp[] = { "t(1;2)(;tr2:Ter15_Asn19)" };
+		EffectImpact expectedImpact = EffectImpact.HIGH;
+
+		checkEffects(variant, expEffs, notExpEffs, expHgvsp, expHgvsc, expectedImpact, null);
+	}
+
+	/**
+	 * Translocation affecting a gene and an intergenic region
+	 */
+	@Test
+	public void test06_no_gene() {
+		Gpr.debug("Test");
+
+		init(true, true);
+
+		// Create variant
+		VariantTranslocation variant = new VariantTranslocation(chr1, 135, "N", "N", chr2, 50, true, true);
+
+		EffectType expEffs[] = { EffectType.FEATURE_FUSION };
+		EffectType notExpEffs[] = {};
+		String expHgvsc[] = { "t(1;2)(q1;q2)(n.136)" };
+		String expHgvsp[] = { "" };
+		EffectImpact expectedImpact = EffectImpact.LOW;
 
 		checkEffects(variant, expEffs, notExpEffs, expHgvsp, expHgvsc, expectedImpact, null);
 	}

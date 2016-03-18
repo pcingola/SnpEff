@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.snpeff.interval.Gene;
+import org.snpeff.interval.Intergenic;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.interval.Transcript;
@@ -20,8 +21,8 @@ import org.snpeff.interval.VariantTranslocation;
  */
 public class VariantEffectStructural extends VariantEffect {
 
-	List<Gene> genesLeft;
-	List<Gene> genesRight;
+	List<Marker> featuresLeft;
+	List<Marker> featuresRight;
 	Set<Gene> genes;
 	int countWholeGenes = 0; // How many genes does the variant fully include?
 	int countPartialGenes = 0; // How many genes does the variant partially overlap?
@@ -32,8 +33,8 @@ public class VariantEffectStructural extends VariantEffect {
 
 	public VariantEffectStructural(Variant variant, Markers intersects) {
 		super(variant);
-		genesLeft = new LinkedList<>();
-		genesRight = new LinkedList<>();
+		featuresLeft = new LinkedList<>();
+		featuresRight = new LinkedList<>();
 		genes = new HashSet<Gene>();
 
 		if (intersects != null) {
@@ -56,7 +57,8 @@ public class VariantEffectStructural extends VariantEffect {
 
 		case BND:
 			// Translocation always intersect "partial genes" since they have two (unconnected) break-points
-			return countPartialGenes > 1 ? EffectType.GENE_FUSION : EffectType.NONE;
+			// We use 'FEATURE_FUSION' when neither end of the translocation lands on a gene (i.e. a fusion of intergenic regions)
+			return countPartialGenes >= 1 ? EffectType.GENE_FUSION : EffectType.FEATURE_FUSION;
 
 		default:
 			throw new RuntimeException("Unknown effect for variant type " + variant.getVariantType());
@@ -69,35 +71,83 @@ public class VariantEffectStructural extends VariantEffect {
 	 */
 	public List<VariantEffect> fusion() {
 		// Only if both genes are different
-		if (genesLeft.isEmpty() || genesRight.isEmpty()) return null;
+		if (featuresLeft.isEmpty() || featuresRight.isEmpty()) return null;
 
 		// Add all gene pairs
 		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
-		for (Gene gLeft : genesLeft)
-			for (Gene gRight : genesRight)
-				if (!gLeft.getId().equals(gRight.getId())) { // Not the same gene?
+		for (Marker gLeft : featuresLeft)
+			for (Marker gRight : featuresRight) {
+				if (variant.isBnd()) {
+					// Is this a translocation? OK
+				} else if (isGene(gLeft) //
+						&& isGene(gRight) //
+						&& gLeft.getId().equals(gRight.getId())) {
+					// Otherwise, make sure the variant is not acting within
+					// the same gene (e.g. a deletion)
+					continue;
+				} else {
 					// If both genes overlap and the variant is within that
 					// region, then it's not a fusion, it's just a variant
 					// acting on both genes.
 					Marker gIntersect = gLeft.intersect(gRight);
 					if (gIntersect != null && gIntersect.includes(variant)) continue;
-
-					// One for fussion effect for each transcript
-					// NOTE: This can be a long list...
-					for (Transcript trLeft : gLeft)
-						for (Transcript trRight : gRight) {
-							VariantEffectFusion fusion = new VariantEffectFusion(variant, trLeft, trRight);
-							fusions.add(fusion);
-						}
 				}
+
+				// Add all possible transcript fussions
+				fusions.addAll(fusion(variant, gLeft, gRight));
+			}
+
+		return fusions;
+	}
+
+	/**
+	 * Create all possible fusions for these two genes
+	 */
+	List<VariantEffect> fusion(Variant variant, Marker mLeft, Marker mRight) {
+		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
+		// One for fusion effect for each transcript
+		// This can be a long list...
+		Markers msLeft = new Markers();
+		Markers msRight = new Markers();
+
+		// If it's a gene, add all transcripts
+		Gene gLeft = null;
+		if (isGene(mLeft)) {
+			gLeft = (Gene) mLeft;
+			msLeft.addAll(gLeft.subIntervals());
+		} else msLeft.add(mLeft);
+
+		// If it's a gene, add all transcripts
+		Gene gRight = null;
+		if (isGene(mRight)) {
+			gRight = (Gene) mRight;
+			msRight.addAll(gRight.subIntervals());
+		} else msRight.add(mRight);
+
+		for (Marker ml : msLeft)
+			for (Marker mr : msRight) {
+				// Transcript from the same gene are added only once
+				if (isTranscript(ml) //
+						&& isTranscript(mr) //
+						&& gLeft.getId().equals(gRight.getId()) // Genes have the same ID
+						&& ml.getId().compareTo(mr.getId()) > 0 // Compare transcript IDs alphabetically
+				) continue;
+
+				VariantEffectFusion fusion = new VariantEffectFusion(variant, ml, mr);
+				fusions.add(fusion);
+			}
 
 		return fusions;
 	}
 
 	@Override
 	public Gene getGene() {
-		if (!genesLeft.isEmpty()) return genesLeft.get(0);
-		if (!genesRight.isEmpty()) return genesRight.get(0);
+		for (Marker m : featuresLeft)
+			if (isGene(m)) return (Gene) m;
+
+		for (Marker m : featuresRight)
+			if (isGene(m)) return (Gene) m;
+
 		return null;
 	}
 
@@ -123,7 +173,8 @@ public class VariantEffectStructural extends VariantEffect {
 	 * instead of intersectLeft intersercRight)
 	 */
 	boolean intersectsLeft(Marker m) {
-		return m.intersects(variant.getStart());
+		return m.getChromosomeName().equals(variant.getChromosomeName()) //
+				&& m.intersects(variant.getStart());
 	}
 
 	/**
@@ -136,8 +187,18 @@ public class VariantEffectStructural extends VariantEffect {
 	 * instead of intersectLeft intersercRight)
 	 */
 	boolean intersectsRight(Marker m) {
-		if (variant.isBnd()) return m.intersects(((VariantTranslocation) variant).getEndPoint().getStart());
-		return m.intersects(variant.getEnd());
+		if (variant.isBnd()) {
+			Marker endPoint = ((VariantTranslocation) variant).getEndPoint();
+			return m.getChromosomeName().equals(endPoint.getChromosomeName()) //
+					&& m.intersects(endPoint.getStart());
+		}
+
+		return m.getChromosomeName().equals(variant.getChromosomeName()) //
+				&& m.intersects(variant.getEnd());
+	}
+
+	protected boolean isGene(Marker m) {
+		return m instanceof Gene;
 	}
 
 	@Override
@@ -145,14 +206,21 @@ public class VariantEffectStructural extends VariantEffect {
 		return true;
 	}
 
+	protected boolean isTranscript(Marker m) {
+		return m instanceof Transcript;
+	}
+
 	/**
 	 * Set genes from all intersecting intervals
 	 */
 	void setGenes(Markers intersects) {
 		for (Marker m : intersects)
-			if (m instanceof Gene) {
-				if (intersectsLeft(m)) genesLeft.add((Gene) m);
-				if (intersectsRight(m)) genesRight.add((Gene) m);
+			if (m instanceof Intergenic) {
+				if (intersectsLeft(m)) featuresLeft.add(m);
+				if (intersectsRight(m)) featuresRight.add(m);
+			} else if (m instanceof Gene) {
+				if (intersectsLeft(m)) featuresLeft.add(m);
+				if (intersectsRight(m)) featuresRight.add(m);
 
 				if (variant.includes(m)) countWholeGenes++;
 				else countPartialGenes++;
@@ -167,13 +235,13 @@ public class VariantEffectStructural extends VariantEffect {
 		sb.append(super.toStr());
 
 		sb.append("\n\tGene left  : [");
-		for (Gene g : genesLeft)
-			sb.append(" " + g.getId());
+		for (Marker m : featuresLeft)
+			sb.append(" " + m.getId());
 		sb.append("]");
 
 		sb.append("\n\tGene right  : [");
-		for (Gene g : genesRight)
-			sb.append(" " + g.getId());
+		for (Marker m : featuresRight)
+			sb.append(" " + m.getId());
 		sb.append("]");
 
 		sb.append("\n\tGenes all: [");

@@ -1,6 +1,7 @@
 package org.snpeff.snpEffect;
 
 import org.snpeff.interval.Gene;
+import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantTranslocation;
@@ -17,21 +18,29 @@ public class VariantEffectFusion extends VariantEffectStructural {
 	int aaNumLeftEnd;
 	int aaNumRightStart;
 	int aaNumRightEnd;
+	Marker mLeft, mRight;
 	Transcript trLeft, trRight;
 	Gene geneLeft, geneRight;
 
-	public VariantEffectFusion(Variant variant, Transcript trLeft, Transcript trRight) {
+	public VariantEffectFusion(Variant variant, Marker mLeft, Marker mRight) {
 		super(variant);
 
-		this.trLeft = trLeft;
-		this.trRight = trRight;
-		geneLeft = (Gene) trLeft.getParent();
-		geneRight = (Gene) trRight.getParent();
+		this.mLeft = mLeft;
+		if (isTranscript(mLeft)) {
+			trLeft = (Transcript) mLeft;
+			geneLeft = (Gene) mLeft.getParent();
+			genes.add(geneLeft);
+		}
 
-		genesLeft.add(geneLeft);
-		genesRight.add(geneRight);
-		genes.add(geneLeft);
-		genes.add(geneRight);
+		this.mRight = mRight;
+		if (isTranscript(mRight)) {
+			trRight = (Transcript) mRight;
+			geneRight = (Gene) mRight.getParent();
+			genes.add(geneRight);
+		}
+
+		featuresLeft.add(mLeft);
+		featuresRight.add(mRight);
 
 		calcEffect();
 	}
@@ -60,38 +69,54 @@ public class VariantEffectFusion extends VariantEffectStructural {
 
 		// E.g.:  C[2:321682[
 		if (!vtrans.isLeft() && !vtrans.isBefore()) {
-			if (trLeft.isStrandPlus()) aaLeftBegin();
-			else aaLeftEnd();
+			if (trLeft != null) {
+				if (trLeft.isStrandPlus()) aaLeftBegin();
+				else aaLeftEnd();
+			}
 
-			if (trRight.isStrandMinus()) aaRightBegin();
-			else aaRightEnd();
+			if (trRight != null) {
+				if (trRight.isStrandMinus()) aaRightBegin();
+				else aaRightEnd();
+			}
 		}
 
 		// E.g.: G]17:198982]
 		if (vtrans.isLeft() && !vtrans.isBefore()) {
-			if (trLeft.isStrandPlus()) aaLeftBegin();
-			else aaLeftEnd();
+			if (trLeft != null) {
+				if (trLeft.isStrandPlus()) aaLeftBegin();
+				else aaLeftEnd();
+			}
 
-			if (trRight.isStrandPlus()) aaRightBegin();
-			else aaRightEnd();
+			if (trRight != null) {
+				if (trRight.isStrandPlus()) aaRightBegin();
+				else aaRightEnd();
+			}
 		}
 
 		// E.g.:  [17:198983[A
 		if (!vtrans.isLeft() && vtrans.isBefore()) {
-			if (trLeft.isStrandMinus()) aaLeftBegin();
-			else aaLeftEnd();
+			if (trLeft != null) {
+				if (trLeft.isStrandMinus()) aaLeftBegin();
+				else aaLeftEnd();
+			}
 
-			if (trRight.isStrandMinus()) aaRightBegin();
-			else aaRightEnd();
+			if (trRight != null) {
+				if (trRight.isStrandMinus()) aaRightBegin();
+				else aaRightEnd();
+			}
 		}
 
 		// E.g.:  ]13:123456]T
 		if (vtrans.isLeft() && vtrans.isBefore()) {
-			if (trLeft.isStrandMinus()) aaLeftBegin();
-			else aaLeftEnd();
+			if (trLeft != null) {
+				if (trLeft.isStrandMinus()) aaLeftBegin();
+				else aaLeftEnd();
+			}
 
-			if (trRight.isStrandPlus()) aaRightBegin();
-			else aaRightEnd();
+			if (trRight != null) {
+				if (trRight.isStrandPlus()) aaRightBegin();
+				else aaRightEnd();
+			}
 		}
 	}
 
@@ -130,7 +155,9 @@ public class VariantEffectFusion extends VariantEffectStructural {
 	 * Note: For notes and example figures, see VCF 4.2 specification, Figure 1
 	 */
 	void calcEffect() {
-		boolean sameStrand = trLeft.isStrandPlus() == trRight.isStrandPlus();
+		boolean sameStrand = trLeft == null //
+				|| trRight == null //
+				|| trLeft.isStrandPlus() == trRight.isStrandPlus();
 
 		switch (variant.getVariantType()) {
 		case INV:
@@ -145,6 +172,9 @@ public class VariantEffectFusion extends VariantEffectStructural {
 
 		case BND:
 			marker = trLeft; // Force HGVS.c notation to use '.c' instead of '.n'
+			if (marker == null) marker = trRight;
+			if (marker == null) marker = mLeft;
+			if (marker == null) marker = mRight;
 
 			// Translocation
 			VariantTranslocation vtrans = getVariantTranslocation();
@@ -156,7 +186,13 @@ public class VariantEffectFusion extends VariantEffectStructural {
 			//
 			//       But this would be rather cryptic, that's why I use an explicit case by case scenario
 
-			if (!vtrans.isLeft() && !vtrans.isBefore()) {
+			if (trLeft == null && trRight == null) {
+				// Both ends lie onto intergenic regions
+				effType = EffectType.FEATURE_FUSION;
+			} else if (trLeft == null || trRight == null) {
+				// One end lies onto intergenic regions
+				effType = EffectType.GENE_FUSION;
+			} else if (!vtrans.isLeft() && !vtrans.isBefore()) {
 				// E.g.:  C[2:321682[
 				effType = (sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);
 			} else if (vtrans.isLeft() && !vtrans.isBefore()) {
@@ -189,6 +225,8 @@ public class VariantEffectFusion extends VariantEffectStructural {
 	 * Is this fusion introducing a frame shift?
 	 */
 	void frameShift() {
+		if (trLeft == null || trRight == null) return;
+
 		int cdsPosLeft = baseNumberCdsLeft();
 		int frameLeft = cdsPosLeft % CodonChange.CODON_SIZE;
 		int cdsPosRight = baseNumberCdsRight();
@@ -235,6 +273,11 @@ public class VariantEffectFusion extends VariantEffectStructural {
 		return geneRight;
 	}
 
+	@Override
+	public Marker getMarker() {
+		return marker;
+	}
+
 	public Transcript getTrLeft() {
 		return trLeft;
 	}
@@ -251,14 +294,38 @@ public class VariantEffectFusion extends VariantEffectStructural {
 		return variant instanceof VariantTranslocation;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toStr());
+
+		sb.append("\n\tFeatures left  : [");
+		for (Marker m : featuresLeft)
+			sb.append(" " + m.getId());
+		sb.append("]");
+
+		sb.append("\n\tFeatures right  : [");
+		for (Marker m : featuresRight)
+			sb.append(" " + m.getId());
+		sb.append("]");
+
+		sb.append("\n\tGenes: [");
+		for (Gene g : genes)
+			sb.append(g.getGeneName() + " ");
+		sb.append(" ]");
+
+		return sb.toString();
+	}
+
 	/**
 	 * If the translocation lies within an intron, do we want the
 	 * first exonic base BEFORE the intron? (Left gene)
 	 */
 	boolean usePrevBaseIntronLeft() {
-		return (trLeft.isStrandPlus() && !getVariantTranslocation().isBefore()) //
-				|| (trLeft.isStrandMinus() && getVariantTranslocation().isBefore()) //
-				;
+		return trLeft != null //
+				&& ((trLeft.isStrandPlus() && !getVariantTranslocation().isBefore()) //
+						|| (trLeft.isStrandMinus() && getVariantTranslocation().isBefore())) //
+						;
 	}
 
 }

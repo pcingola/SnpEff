@@ -23,7 +23,6 @@ public class HgvsProtein extends Hgvs {
 		super(variantEffect);
 
 		codonNum = variantEffect.getCodonNum();
-		marker = variantEffect.getMarker();
 
 		hgvsOneLetterAa = Config.get().isHgvs1LetterAA();
 		lettersPerAa = hgvsOneLetterAa ? 1 : 3;
@@ -555,6 +554,8 @@ public class HgvsProtein extends Hgvs {
 		VariantTranslocation vtr = (VariantTranslocation) variant;
 		VariantEffectFusion veffFusion = (VariantEffectFusion) variantEffect;
 
+		if (veffFusion.getTrLeft() == null && veffFusion.getTrRight() == null) return "";
+
 		// Chromosome part
 		String chrCoords = "(" //
 				+ vtr.getChromosomeName() //
@@ -564,14 +565,20 @@ public class HgvsProtein extends Hgvs {
 				;
 
 		// Left transcript coordinates
-		String trLeftStr = veffFusion.getTrLeft().getId() //
-				+ ":" //
-				+ pos(veffFusion.getTrLeft(), veffFusion.getAaNumLeftStart(), veffFusion.getAaNumLeftEnd());
+		String trLeftStr = "";
+		if (veffFusion.getTrLeft() != null) {
+			trLeftStr = veffFusion.getTrLeft().getId() //
+					+ ":" //
+					+ pos(veffFusion.getTrLeft(), veffFusion.getAaNumLeftStart(), veffFusion.getAaNumLeftEnd());
+		}
 
 		// Right transcript coordinates
-		String trRightStr = veffFusion.getTrRight().getId() //
-				+ ":" //
-				+ pos(veffFusion.getTrRight(), veffFusion.getAaNumRightStart(), veffFusion.getAaNumRightEnd());
+		String trRightStr = "";
+		if (veffFusion.getTrRight() != null) {
+			trRightStr = veffFusion.getTrRight().getId() //
+					+ ":" //
+					+ pos(veffFusion.getTrRight(), veffFusion.getAaNumRightStart(), veffFusion.getAaNumRightEnd());
+		}
 
 		return "t" + chrCoords + "(" + trLeftStr + ";" + trRightStr + ")";
 	}

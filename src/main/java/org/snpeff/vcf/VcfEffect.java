@@ -1029,7 +1029,7 @@ public class VcfEffect {
 			if (intron != null) {
 				rank = intron.getRank();
 				rankMax = Math.max(0, tr.numChilds() - 1);
-			} else if (tr != null) {
+			} else if (tr != null && marker != null) {
 				// Can we try to find an exon?
 				for (Exon e : tr)
 					if (e.intersects(marker)) {

@@ -74,7 +74,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// INFO_VALUE_ENCODE.put("%3A", ":"); // This is used in genotype entries, not INFO entries.
 		INFO_VALUE_ENCODE.put("%3B", ";");
 		INFO_VALUE_ENCODE.put("%3D", "=");
-		INFO_VALUE_ENCODE.put("%25", "%");
+		//		INFO_VALUE_ENCODE.put("%25", "%");
 		INFO_VALUE_ENCODE.put("%2C", ",");
 		INFO_VALUE_ENCODE.put("%0D", "\n");
 		INFO_VALUE_ENCODE.put("%0A", "\r");
