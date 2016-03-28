@@ -236,8 +236,6 @@ public class MarkerSeq extends Marker {
 	 */
 	public String getSequence(Marker marker) {
 		if (!includes(marker)) return null; // Cannot provide full sequence for this marker, since it's not fully included in this MarkerSeq
-		if (marker.isStrandMinus()) throw new RuntimeException("marker on negative strand not supported");
-
 		return basesAtPos(marker.getStart(), marker.size());
 	}
 
