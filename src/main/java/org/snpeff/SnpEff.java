@@ -279,16 +279,17 @@ public class SnpEff implements CommandLine {
 	 * Read config file
 	 */
 	protected void loadConfig() {
-		if (config != null) return; // Already loaded?
+		if (config == null) {
 
-		// Read config file
-		if (verbose) //
-			Timer.showStdErr("Reading configuration file '" + configFile + "'" //
-					+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-		);
+			// Read config file
+			if (verbose) //
+				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
+						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
+			);
 
-		config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
-		if (verbose) Timer.showStdErr("done");
+			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
+			if (verbose) Timer.showStdErr("done");
+		}
 
 		// Set configuration options
 		config.setUseHgvs(hgvs);
