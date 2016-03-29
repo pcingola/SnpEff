@@ -292,8 +292,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					newUtr.setParent(newExon);
 					newTr.utrs.add(newUtr);
 				} else {
-					// This should never happen since deleting the UTR should also delete the exon
-					throw new RuntimeException("Error applying variant: Could not find 'new' parent exon for 'new' UTR" //
+					// This might happen when a duplication affecting part of an exon
+					// E.g. If the duplication affects the coding part and NOT the 3'UTR then the UTR doesn't have a  
+					if (Config.get().isDebug()) Gpr.debug("WARNING: applying variant: Could not find 'new' parent exon for 'new' UTR" //
 							+ "\n\t\tVariant           : " + variant //
 							+ "\n" //
 							+ "\n\t\tUTR        (ori) :" + utr //
