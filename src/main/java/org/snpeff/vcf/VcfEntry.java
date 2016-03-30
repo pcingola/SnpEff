@@ -32,6 +32,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		Common, LowFrequency, Rare
 	}
 
+	public static final String FILTER_PASS = "PASS";
+
 	public static final char WITHIN_FIELD_SEP = ',';
 	public static final String SUB_FIELD_SEP = ";";
 
@@ -1210,8 +1212,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		return deleted;
 	}
 
-	public void setFilterPass(String filterPass) {
-		filter = filterPass;
+	public void setFilter(String filter) {
+		this.filter = filter;
 	}
 
 	public void setFormat(String format) {
