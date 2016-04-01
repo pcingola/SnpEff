@@ -16,6 +16,7 @@
 # Parse command line option (file base name)
 $base = 'plot';
 if( $ARGV[0] ne '' )	{ $base = $ARGV[0]; }
+if( $ARGV[1] ne '' )	{ $label = $ARGV[1]; }
 
 $pngFile = "$base.png";
 $txtFile = "$base.txt";
@@ -41,10 +42,9 @@ close TXT;
 open R, "| R --vanilla --slave " or die "Cannot open R program\n";
 print R <<EOF;
 
-plotChart <- function( x, labels, title ) {
+plotChart <- function( x, labels, title, label ) {
     plot(x, ,xaxt = "n")
 	axis(1, at=1:length(x), labels=labels)
-
 
     # Mean & median calculated over the whola data
     abline( h=mean(x), col='blue', lty=2, lwd=2);
@@ -59,7 +59,7 @@ png('$pngFile', width = 1024, height = 1024);
 data <- read.csv("$txtFile", sep='\\t', header = TRUE);
 x <- data\$x
 labels <- data\$label
-plotChart( x, labels, "All data" );
+plotChart( x, labels, "All data", '$label' );
 print( summary( x ) )
 
 dev.off();
