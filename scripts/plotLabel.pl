@@ -17,6 +17,7 @@
 $base = 'plot';
 if( $ARGV[0] ne '' )	{ $base = $ARGV[0]; }
 if( $ARGV[1] ne '' )	{ $label = $ARGV[1]; }
+print "label:$label\n";
 
 $pngFile = "$base.png";
 $txtFile = "$base.txt";
@@ -43,7 +44,9 @@ open R, "| R --vanilla --slave " or die "Cannot open R program\n";
 print R <<EOF;
 
 plotChart <- function( x, labels, title, label ) {
-    plot(x, ,xaxt = "n")
+	keep <- (labels == label)
+	cat('label:', label, '\t', sum(keep), '\n')
+	plot(x, xaxt = "n", col=ifelse(keep, "red", "black"))
 	axis(1, at=1:length(x), labels=labels)
 
     # Mean & median calculated over the whola data
