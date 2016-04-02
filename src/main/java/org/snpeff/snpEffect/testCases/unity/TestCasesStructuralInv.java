@@ -225,7 +225,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 		variant.setVariantType(VariantType.INV);
 
 		EffectType expEffs[] = { EffectType.GENE_INVERSION };
-		EffectImpact expectedImpact = EffectImpact.LOW;
+		EffectImpact expectedImpact = EffectImpact.MODERATE;
 
 		checkEffects(variant, expEffs, null, null, expectedImpact, null);
 	}
@@ -243,7 +243,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 
 		EffectType expEffs[] = { EffectType.TRANSCRIPT_INVERSION };
 		String expHgvsc[] = { "c.-7_*43inv" };
-		EffectImpact expectedImpact = EffectImpact.LOW;
+		EffectImpact expectedImpact = EffectImpact.MODERATE;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
@@ -328,7 +328,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 
 		EffectType expEffs[] = { EffectType.GENE_INVERSION };
 		String expHgvsc[] = { "n.1051_2161inv" };
-		EffectImpact expectedImpact = EffectImpact.LOW;
+		EffectImpact expectedImpact = EffectImpact.MODERATE;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}

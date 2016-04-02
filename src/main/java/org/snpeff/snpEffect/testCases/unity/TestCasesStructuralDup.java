@@ -163,7 +163,7 @@ public class TestCasesStructuralDup extends TestCasesBase {
 
 		EffectType expEffs[] = { EffectType.GENE_DUPLICATION };
 		String expHgvsc[] = null;
-		EffectImpact expectedImpact = EffectImpact.LOW;
+		EffectImpact expectedImpact = EffectImpact.MODERATE;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
@@ -182,7 +182,7 @@ public class TestCasesStructuralDup extends TestCasesBase {
 
 		EffectType expEffs[] = { EffectType.TRANSCRIPT_DUPLICATION };
 		String expHgvsc[] = null;
-		EffectImpact expectedImpact = EffectImpact.LOW;
+		EffectImpact expectedImpact = EffectImpact.MODERATE;
 
 		checkEffects(variant, expEffs, null, expHgvsc, expectedImpact, null);
 	}
