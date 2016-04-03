@@ -64,7 +64,7 @@ public class TestCasesIntegrationTranscript {
 	}
 
 	@Test
-	public void test_02_mapping() {
+	public void test_02_mapping_mRna_Cds() {
 		Gpr.debug("Test");
 		String genome = "testHg3766Chr1";
 		Config config = new Config(genome);
@@ -232,4 +232,37 @@ public class TestCasesIntegrationTranscript {
 		Assert.assertTrue("No codon/AA checked!", countOk > 0);
 	}
 
+	@Test
+	public void test_05_codonNumber_aaNumber() {
+		Gpr.debug("Test");
+		String genome = "testHg19Chr1";
+		Config config = new Config(genome);
+
+		if (verbose) Timer.showStdErr("Loading genome " + genome);
+		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
+		if (verbose) Timer.showStdErr("Done");
+
+		int countOk = 0;
+		for (Gene gene : sep.getGenome().getGenes()) {
+			for (Transcript tr : gene) {
+				if (!tr.isProteinCoding()) continue;
+				if (tr.hasErrorOrWarning()) continue;
+
+				if (debug) Gpr.debug(tr);
+				String protein = tr.protein();
+				int aanum2pos[] = tr.aaNumber2Pos();
+
+				// Check each AA <-> codon mapping
+				for (int aaNum = 0; aaNum < protein.length(); aaNum++) {
+					// Get codon coordinates
+
+					if (Math.random() < 2) throw new RuntimeException("FINISH THIS TEST CASE!!!!" + aanum2pos);
+
+					countOk++;
+				}
+			}
+		}
+
+		Assert.assertTrue("No codon/AA checked!", countOk > 0);
+	}
 }

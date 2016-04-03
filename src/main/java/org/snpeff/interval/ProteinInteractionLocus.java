@@ -21,9 +21,6 @@ public abstract class ProteinInteractionLocus extends Marker {
 		String geneId1 = parent.getParent().getId();
 		String geneId2 = trInteract.getParent().getId();
 
-		//		int codon2pos[] = parent.codonNumber2Pos(aaPos);
-		//		Gpr.debug("Codon2pos[" + aaPos + "]: " + codon2pos);
-
 		// Same gene? => Within protein interaction
 		if (geneId1.equals(geneId2)) return new ProteinStructuralInteractionLocus(parent, aaPos, id);
 
@@ -37,6 +34,9 @@ public abstract class ProteinInteractionLocus extends Marker {
 
 	public ProteinInteractionLocus(Transcript parent, int aaPos, String id) {
 		super(parent, 0, 0, false, id);
+
+		int apnum2pos[] = parent.aaNumber2Pos();
+
 	}
 
 	@Override

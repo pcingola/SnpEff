@@ -26,6 +26,7 @@ public class TestCasesIntegrationAnnInteract extends TestCasesIntegrationBase {
 	public void test_01() {
 		Gpr.debug("Test");
 
+		verbose = true;
 		List<VcfEntry> vcfEntries = snpEffect("testHg19Pdb", "tests/test_interaction_01.vcf", null, null);
 
 		Map<String, Boolean> expectedIds = new HashMap<>();

@@ -518,6 +518,7 @@ public class SnpEff implements CommandLine {
 			Chromosome chr2 = genome.getChromosome(dres.chr2);
 			Transcript tr1 = id2tr.get(dres.trId1);
 			Transcript tr2 = id2tr.get(dres.trId2);
+
 			String id = dres.getId();
 
 			// All chromosomes and transcript found? => Add entries
@@ -525,9 +526,16 @@ public class SnpEff implements CommandLine {
 				// We need to add two markers (one for each "side" of the interaction
 				String geneId1 = tr1.getParent().getId();
 				String geneId2 = tr2.getParent().getId();
+
+				ProteinInteractionLocus pl = ProteinInteractionLocus.factory(tr1, dres.aaPos1, tr2, id);
+				Gpr.debug("pl: " + pl);
+
 				sep.addPerGene(geneId1, ProteinInteractionLocus.factory(tr1, dres.aaPos1, tr2, id));
 				sep.addPerGene(geneId2, ProteinInteractionLocus.factory(tr2, dres.aaPos2, tr1, id));
 
+				if (dres.trId1.equals("NM_001048199.2") || dres.trId1.equals("NM_001048199.2")) {
+					Gpr.debug(dres);
+				}
 				count++;
 			} else countSkipped++;
 		}

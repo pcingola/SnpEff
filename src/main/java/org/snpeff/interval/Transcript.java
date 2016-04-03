@@ -92,7 +92,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// For each exon, add CDS position to array
 		int aaNum = 0;
 		int step = isStrandPlus() ? 1 : -1;
-		int codonBase = 0;
+		int codonFrame = 0;
 		for (Exon exon : sortedStrand()) {
 			int min = isStrandPlus() ? exon.getStart() : exon.getEnd();
 
@@ -106,13 +106,13 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					aaIdxEnd = aaNum;
 
 					// First codon base? Add to map
-					if (codonBase == 0) aa2pos[aaNum] = pos;
+					if (codonFrame == 0) aa2pos[aaNum] = pos;
 
-					// Last codon base? Increment AA number
-					if (codonBase == 2) aaNum++;
+					// Last base in this codon? Increment AA number
+					if (codonFrame == 2) aaNum++;
 
 					// Update codon base
-					codonBase = (codonBase + 1) % 3;
+					codonFrame = (codonFrame + 1) % 3;
 				}
 			}
 
@@ -121,6 +121,15 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		}
 
 		return aa2pos;
+	}
+
+	/**
+	 * Find a genomic position of the first base in a Amino Acid 'aaNum'
+	 */
+	public int aaNumber2Pos(int aaNum) {
+		int aanum2Pos[] = aaNumber2Pos();
+
+		return -1;
 	}
 
 	/**
@@ -324,6 +333,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return newTr;
 	}
 
+	/**
+	 * Find base at genomic coordinate 'pos'
+	 */
 	public String baseAt(int pos) {
 		calcCdsStartEnd();
 		Exon ex = findExon(pos);
@@ -583,9 +595,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Collapses exons having gaps of zero (i.e. exons that followed by other exons).
-	 * Does the same for CDSs.
-	   Does the same for UTRs.
-	   @return true of any exon in the transcript was 'collapsed'
+	 * Does the same for CDSs and UTRs.
+	 * @return true of any exon in the transcript was 'collapsed'
 	 */
 	public boolean collapseZeroGap() {
 		if (ribosomalSlippage) return false; // Overlapping exons are representing ribosomal slippage, so they are not annotations errors and must not be corrected.
@@ -802,7 +813,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	/**
 	 * Find a CDS that matches exactly the exon
 	 */
-	public Cds findMatchingCds(Exon exon) {
+	public Cds findCds(Exon exon) {
 		for (Cds cds : cdss)
 			if (exon.includes(cds)) return cds;
 		return null;
@@ -911,7 +922,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Reset frame, since it was already corrected
 		exonFirst.setFrame(0);
-		Cds cds = findMatchingCds(exonFirst);
+		Cds cds = findCds(exonFirst);
 		if (cds != null) cds.frameCorrection(cds.getFrame());
 
 		// Add UTR5'
@@ -1004,7 +1015,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 							);
 						}
 						// Find matching CDS
-						Cds cdsToCorrect = findMatchingCds(exon);
+						Cds cdsToCorrect = findCds(exon);
 
 						// Correct exon until we get the expected frame
 						for (boolean ok = true; ok && frameReal != exon.getFrame();) {
