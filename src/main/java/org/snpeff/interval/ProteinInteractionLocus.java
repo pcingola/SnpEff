@@ -1,5 +1,8 @@
 package org.snpeff.interval;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffects;
 
@@ -16,26 +19,65 @@ public abstract class ProteinInteractionLocus extends Marker {
 
 	public static final boolean debug = false;
 
-	public static ProteinInteractionLocus factory(Transcript parent, int aaPos, Transcript trInteract, String id) {
+	/**
+	 * Create interaction
+	 */
+	private static ProteinInteractionLocus factory(Transcript tr, int start, int end, Transcript trInteract, String id) {
 		// Interaction type
-		String geneId1 = parent.getParent().getId();
+		String geneId1 = tr.getParent().getId();
 		String geneId2 = trInteract.getParent().getId();
 
 		// Same gene? => Within protein interaction
-		if (geneId1.equals(geneId2)) return new ProteinStructuralInteractionLocus(parent, aaPos, id);
+		if (geneId1.equals(geneId2)) return new ProteinStructuralInteractionLocus(tr, start, end, id);
 
 		// Different genes? => Protein-protein interaction
-		return new ProteinProteinInteractionLocus(parent, aaPos, trInteract, id);
+		return new ProteinProteinInteractionLocus(tr, start, end, trInteract, id);
+
+	}
+
+	/**
+	 * Create interaction. Most of the time it is only one interval, but 
+	 * if introns split an amino acid, it may be more then one interval
+	 */
+	public static List<ProteinInteractionLocus> factory(Transcript tr, int aaPos, Transcript trInteract, String id) {
+		List<ProteinInteractionLocus> list = new LinkedList<>();
+
+		// In most cases, bases within a codon will be adjacent, but if
+		// there is an intron splitting the codon, then bases will be
+		// on non-contiguous positions. In such case, we need to create
+		// one interaction interval for each range of contiguous bases
+		// in the codon (in theory we could end up with three different
+		// intervals, but that would be quite rare
+		int codon2pos[] = tr.codonNumber2Pos(aaPos);
+
+		int j = tr.isStrandPlus() ? 0 : 2;
+		int start, prev, pos;
+		int step = tr.isStrandPlus() ? 1 : -1;
+
+		pos = prev = start = codon2pos[j];
+		j += step;
+		while (0 <= j && j <= 2) {
+			pos = codon2pos[j];
+			if (pos != (prev + step)) {
+				// Non-contiguous, create new interval
+				list.add(factory(tr, start, prev, trInteract, id));
+				start = pos;
+			}
+			j++;
+			prev = pos;
+		}
+
+		// Make sure at least one interval is created
+		list.add(factory(tr, start, pos, trInteract, id));
+		return list;
 	}
 
 	public ProteinInteractionLocus() {
 		super();
 	}
 
-	public ProteinInteractionLocus(Transcript parent, int aaPos, String id) {
-		super(parent, 0, 0, false, id);
-
-		int apnum2pos[] = parent.aaNumber2Pos();
+	public ProteinInteractionLocus(Transcript parent, int start, int end, String id) {
+		super(parent, start, end, false, id);
 
 	}
 

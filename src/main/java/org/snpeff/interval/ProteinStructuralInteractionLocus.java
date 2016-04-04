@@ -18,8 +18,8 @@ public class ProteinStructuralInteractionLocus extends ProteinInteractionLocus {
 		type = EffectType.PROTEIN_STRUCTURAL_INTERACTION_LOCUS;
 	}
 
-	public ProteinStructuralInteractionLocus(Transcript parent, int aaPos, String id) {
-		super(parent, aaPos, id);
+	public ProteinStructuralInteractionLocus(Transcript parent, int start, int end, String id) {
+		super(parent, start, end, id);
 		type = EffectType.PROTEIN_STRUCTURAL_INTERACTION_LOCUS;
 	}
 

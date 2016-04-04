@@ -3,6 +3,7 @@ package org.snpeff;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.snpeff.interval.Chromosome;
@@ -524,18 +525,19 @@ public class SnpEff implements CommandLine {
 			// All chromosomes and transcript found? => Add entries
 			if (chr1 != null && chr2 != null && tr1 != null && tr2 != null) {
 				// We need to add two markers (one for each "side" of the interaction
+
+				// Gene1
 				String geneId1 = tr1.getParent().getId();
+				List<ProteinInteractionLocus> list = ProteinInteractionLocus.factory(tr1, dres.aaPos1, tr2, id);
+				for (Marker m : list)
+					sep.addPerGene(geneId1, m);
+
+				// Gene2
 				String geneId2 = tr2.getParent().getId();
+				list = ProteinInteractionLocus.factory(tr2, dres.aaPos2, tr1, id);
+				for (Marker m : list)
+					sep.addPerGene(geneId2, m);
 
-				ProteinInteractionLocus pl = ProteinInteractionLocus.factory(tr1, dres.aaPos1, tr2, id);
-				Gpr.debug("pl: " + pl);
-
-				sep.addPerGene(geneId1, ProteinInteractionLocus.factory(tr1, dres.aaPos1, tr2, id));
-				sep.addPerGene(geneId2, ProteinInteractionLocus.factory(tr2, dres.aaPos2, tr1, id));
-
-				if (dres.trId1.equals("NM_001048199.2") || dres.trId1.equals("NM_001048199.2")) {
-					Gpr.debug(dres);
-				}
 				count++;
 			} else countSkipped++;
 		}

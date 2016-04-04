@@ -127,7 +127,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Find a genomic position of the first base in a Amino Acid 'aaNum'
 	 */
 	public int aaNumber2Pos(int aaNum) {
-		int aanum2Pos[] = aaNumber2Pos();
+		aaNumber2Pos();
 
 		return -1;
 	}
@@ -302,7 +302,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					newTr.utrs.add(newUtr);
 				} else {
 					// This might happen when a duplication affecting part of an exon
-					// E.g. If the duplication affects the coding part and NOT the 3'UTR then the UTR doesn't have a  
+					// E.g. If the duplication affects the coding part and NOT the 3'UTR then the UTR doesn't have a
 					if (Config.get().isDebug()) Gpr.debug("WARNING: applying variant: Could not find 'new' parent exon for 'new' UTR" //
 							+ "\n\t\tVariant           : " + variant //
 							+ "\n" //
@@ -783,6 +783,15 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
+	 * Find a CDS that matches exactly the exon
+	 */
+	public Cds findCds(Exon exon) {
+		for (Cds cds : cdss)
+			if (exon.includes(cds)) return cds;
+		return null;
+	}
+
+	/**
 	 * Return the an exon that intersects 'pos'
 	 */
 	public Exon findExon(int pos) {
@@ -807,15 +816,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Is 'pos' in intron?
 		for (Intron intron : introns())
 			if (intron.intersects(pos)) return intron;
-		return null;
-	}
-
-	/**
-	 * Find a CDS that matches exactly the exon
-	 */
-	public Cds findCds(Exon exon) {
-		for (Cds cds : cdss)
-			if (exon.includes(cds)) return cds;
 		return null;
 	}
 

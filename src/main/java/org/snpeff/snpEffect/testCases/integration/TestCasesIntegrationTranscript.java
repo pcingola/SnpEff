@@ -254,11 +254,18 @@ public class TestCasesIntegrationTranscript {
 
 				// Check each AA <-> codon mapping
 				for (int aaNum = 0; aaNum < protein.length(); aaNum++) {
-					// Get codon coordinates
-
-					if (Math.random() < 2) throw new RuntimeException("FINISH THIS TEST CASE!!!!" + aanum2pos);
+					// Get codon coordinateshrow new RuntimeException("FINISH THIS TEST CASE!!!!" + aanum2pos);
+					int codon[] = tr.codonNumber2Pos(aaNum);
+					int codonPos = (tr.isStrandPlus() ? codon[0] : codon[2]);
+					Assert.assertEquals("Genomic locations do not matcn:" //
+							+ "\n\taaNum           : " + aaNum //
+							+ "\n\tcodonNumber2Pos : " + codonPos //
+							+ "\n\taanum2pos       : " + aanum2pos[aaNum] //
+							, codonPos //
+							, aanum2pos[aaNum]);
 
 					countOk++;
+					if (verbose) Gpr.showMark(countOk, 1);
 				}
 			}
 		}

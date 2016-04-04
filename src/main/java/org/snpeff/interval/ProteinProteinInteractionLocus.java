@@ -21,8 +21,8 @@ public class ProteinProteinInteractionLocus extends ProteinInteractionLocus {
 		type = EffectType.PROTEIN_PROTEIN_INTERACTION_LOCUS;
 	}
 
-	public ProteinProteinInteractionLocus(Transcript parent, int aaPos, Transcript trInteract, String id) {
-		super(parent, aaPos, id);
+	public ProteinProteinInteractionLocus(Transcript parent, int start, int end, Transcript trInteract, String id) {
+		super(parent, start, end, id);
 		this.trInteract = trInteract;
 		type = EffectType.PROTEIN_PROTEIN_INTERACTION_LOCUS;
 	}
@@ -40,9 +40,7 @@ public class ProteinProteinInteractionLocus extends ProteinInteractionLocus {
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
 		if (!intersects(variant)) return false;// Sanity check
-
 		variantEffects.add(variant, this, EffectType.PROTEIN_PROTEIN_INTERACTION_LOCUS, EffectImpact.HIGH, "");
-
 		return true;
 	}
 
