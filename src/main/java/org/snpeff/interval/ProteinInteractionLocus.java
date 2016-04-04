@@ -27,11 +27,15 @@ public abstract class ProteinInteractionLocus extends Marker {
 		String geneId1 = tr.getParent().getId();
 		String geneId2 = trInteract.getParent().getId();
 
+		// Intervals may be swapped for transcript on the negative strand 
+		int s = Math.min(start, end);
+		int e = Math.min(start, end);
+
 		// Same gene? => Within protein interaction
-		if (geneId1.equals(geneId2)) return new ProteinStructuralInteractionLocus(tr, start, end, id);
+		if (geneId1.equals(geneId2)) return new ProteinStructuralInteractionLocus(tr, s, e, id);
 
 		// Different genes? => Protein-protein interaction
-		return new ProteinProteinInteractionLocus(tr, start, end, trInteract, id);
+		return new ProteinProteinInteractionLocus(tr, s, e, trInteract, id);
 
 	}
 
