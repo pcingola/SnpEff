@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.snpeff.snpEffect.testCases.integration.TestCasesHgvsExon;
 import org.snpeff.snpEffect.testCases.integration.TestCasesHgvsIntron;
+import org.snpeff.snpEffect.testCases.integration.TestCasesProteinInteraction;
 import org.snpeff.snpEffect.testCases.unity.TestCasesAlign;
 import org.snpeff.snpEffect.testCases.unity.TestCasesAnnParse;
 import org.snpeff.snpEffect.testCases.unity.TestCasesApplyDel;
@@ -119,6 +120,7 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesMnps.class, //
 		TestCasesNmers.class, //
 		TestCasesOverlap.class, //
+		TestCasesProteinInteraction.class, //
 		TestCasesReactome.class, //
 		TestCasesSeekableReader.class, //
 		TestCasesSequenceIndexer.class, //

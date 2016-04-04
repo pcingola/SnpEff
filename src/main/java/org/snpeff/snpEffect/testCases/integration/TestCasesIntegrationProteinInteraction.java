@@ -14,19 +14,18 @@ import org.snpeff.vcf.VcfEntry;
 /**
  * Test cases for annotation of protein interaction loci
  */
-public class TestCasesIntegrationAnnInteract extends TestCasesIntegrationBase {
+public class TestCasesIntegrationProteinInteraction extends TestCasesIntegrationBase {
 
-	public TestCasesIntegrationAnnInteract() {
+	public TestCasesIntegrationProteinInteraction() {
 	}
 
 	/**
 	 * Annotate within protein interaction
 	 */
 	@Test
-	public void test_01() {
+	public void test_01_within_protein_interactions() {
 		Gpr.debug("Test");
 
-		verbose = true;
 		List<VcfEntry> vcfEntries = snpEffect("testHg19Pdb", "tests/test_interaction_01.vcf", null, null);
 
 		Map<String, Boolean> expectedIds = new HashMap<>();
@@ -46,20 +45,26 @@ public class TestCasesIntegrationAnnInteract extends TestCasesIntegrationBase {
 				if (verbose) System.out.println("\t" + veff.getEffectType() + "\t" + veff);
 				if (veff.getEffectType() == EffectType.PROTEIN_STRUCTURAL_INTERACTION_LOCUS) {
 					if (verbose) System.out.println("FOUND\t" + veff.getEffectType() + "\t" + veff);
-					countPi++;
 
 					String id = veff.getFeatureId();
-					Assert.assertTrue("Unexpected ID" + id, expectedIds.containsKey(id));
-					expectedIds.put(id, true); // Mark interaction as 'found'
+					if (expectedIds.containsKey(id)) {
+						countPi++;
+						expectedIds.put(id, true); // Mark interaction as 'found'
+					} else if (verbose) System.err.println("Found additional ID '" + id + "'"); // Show IDs we didn't include
 				}
 			}
 
-			Assert.assertTrue("No PROTEIN_INTERACTION_LOCUS effect found", countPi > 0);
+			Assert.assertTrue("No protein interaction effect found", countPi > 0);
 
 			// Check if we've found all interactions
 			for (String id : expectedIds.keySet())
 				Assert.assertTrue("Interaction not found: " + id, expectedIds.get(id));
 		}
+	}
+
+	@Test
+	public void test_02_protein_protein_interactions() {
+		if (Math.random() < 2.0) throw new RuntimeException("IMPLEMENT THIS TEST!");
 	}
 
 }
