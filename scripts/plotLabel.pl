@@ -46,7 +46,7 @@ print R <<EOF;
 plotChart <- function( x, labels, title, label ) {
 	keep <- (labels == label)
 	cat('label:', label, '\t', sum(keep), '\n')
-	plot(x, xaxt = "n", col=ifelse(keep, "red", "black"))
+	plot(x, xaxt = "n", col=ifelse(keep, "red", "black"), pch=ifelse(keep, 15, 1))
 	axis(1, at=1:length(x), labels=labels)
 
     # Mean & median calculated over the whola data
