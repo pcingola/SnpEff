@@ -243,8 +243,12 @@ public class HgvsProtein extends Hgvs {
 		String protSeq = tr.protein();
 		if (codonNum >= protSeq.length()) return null;
 
+		// Get AA code
 		CodonTable codonTable = tr.codonTable();
-		return codonTable.aaThreeLetterCode(protSeq.charAt(codonNum)) + (codonNum + 1);
+		String aa = Character.toString(protSeq.charAt(codonNum));
+		if (!hgvsOneLetterAa) aa = codonTable.aaThreeLetterCode(aa);
+
+		return aa + (codonNum + 1);
 	}
 
 	/**
