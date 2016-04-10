@@ -56,9 +56,22 @@ public class VariantEffectStructural extends VariantEffect {
 			return countWholeGenes > 0 ? EffectType.GENE_DUPLICATION : EffectType.NONE;
 
 		case BND:
-			// Translocation always intersect "partial genes" since they have two (unconnected) break-points
-			// We use 'FEATURE_FUSION' when neither end of the translocation lands on a gene (i.e. a fusion of intergenic regions)
-			return countPartialGenes >= 1 ? EffectType.GENE_FUSION : EffectType.FEATURE_FUSION;
+			// Translocation can only intersect "partial genes" since they 
+			// have two (unconnected) break-points. 
+			switch (countPartialGenes) {
+			case 0:
+				// We use 'FEATURE_FUSION'  when neither end of the translocation 
+				// lands on a gene (i.e.a fusion of intergenic regions)
+				return EffectType.FEATURE_FUSION;
+
+			case 1:
+				// Genes on only one side of the translocation (the other side is intergenic) 
+				return EffectType.GENE_FUSION_HALF;
+
+			default:
+				// Genes on both sides of the translocation
+				return EffectType.GENE_FUSION;
+			}
 
 		default:
 			throw new RuntimeException("Unknown effect for variant type " + variant.getVariantType());
@@ -71,7 +84,15 @@ public class VariantEffectStructural extends VariantEffect {
 	 */
 	public List<VariantEffect> fusion() {
 		// Only if both genes are different
-		if (featuresLeft.isEmpty() || featuresRight.isEmpty()) return null;
+		if (variant.isBnd()) {
+			if (featuresLeft.isEmpty() || featuresRight.isEmpty()) return null;
+
+			if (featuresLeft.isEmpty()) { return null; }
+
+			if (featuresRight.isEmpty()) return null;
+		} else {
+			if (featuresLeft.isEmpty() || featuresRight.isEmpty()) return null;
+		}
 
 		// Add all gene pairs
 		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
@@ -101,7 +122,6 @@ public class VariantEffectStructural extends VariantEffect {
 			}
 
 		return fusions;
-
 	}
 
 	/**

@@ -278,16 +278,16 @@ public class Variant extends Marker {
 		this.id = id;
 	}
 
+	public boolean isBnd() {
+		return false;
+	}
+
 	public boolean isDel() {
 		return (variantType == VariantType.DEL);
 	}
 
 	public boolean isDup() {
 		return (variantType == VariantType.DUP);
-	}
-
-	public boolean isBnd() {
-		return false;
 	}
 
 	public boolean isElongation() {

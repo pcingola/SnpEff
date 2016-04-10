@@ -56,7 +56,7 @@ public class CodonChange {
 		case INTERVAL:
 			return new CodonChangeInterval(variant, transcript, variantEffects);
 		default:
-			throw new RuntimeException("Unimplemented factory for variant: " + variant);
+			throw new RuntimeException("Unimplemented factory for variant type '" + variant.getVariantType() + "', variant: " + variant);
 		}
 	}
 

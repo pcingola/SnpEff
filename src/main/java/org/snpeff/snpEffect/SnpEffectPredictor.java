@@ -633,14 +633,16 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Is this a structural variant? Large structural variants (e.g. involving more than
 		// one gene) may require to calculate effects by using all involved genes
-		// For some variants we require to be 'N' bases appart (translocations
+		// For some variants we require to be 'N' bases apart (translocations
 		// are assumed always involve large genomic regions)
-		boolean structuralVariant = variant.isStructural() && (variant.size() > SMALL_VARIANT_SIZE_THRESHOLD || variant.isBnd());
+		boolean structuralVariant = variant.isStructural() && (variant.isBnd() || variant.size() > SMALL_VARIANT_SIZE_THRESHOLD);
 
 		// Structural variants?
-		if (structuralVariant) {
+		if (structuralVariant && !variant.isBnd()) {
 			// Large variants could make the query results huge and slow down
 			// the algorithm, so we stop here
+			// Note: Translocations (BND) only intercept two loci, so this 
+			//       issue does not apply.
 			if (variant.isStructuralHuge()) {
 				variantEffectStructuralLarge(variant, variantEffects);
 				return variantEffects;
@@ -733,12 +735,17 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Create a new variant effect for structural variants, add effect (if any)
 		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
+
+		EffectType et = veff.getEffectType();
+		boolean considerFussion = (et == EffectType.NONE //
+				|| et == EffectType.GENE_FUSION //
+				|| et == EffectType.GENE_FUSION_REVERESE //
+				|| et == EffectType.GENE_FUSION_HALF //
+				|| et == EffectType.FEATURE_FUSION //
+		);
+
 		// Note that fusions are added in the next step, when we invoke veff.fusion(), so we skip them here
-		if (veff.getEffectType() != EffectType.NONE //
-				&& veff.getEffectType() != EffectType.GENE_FUSION //
-				&& veff.getEffectType() != EffectType.GENE_FUSION_REVERESE //
-				&& veff.getEffectType() != EffectType.FEATURE_FUSION //
-		) {
+		if (!considerFussion) {
 			variantEffects.add(veff);
 			added = true;
 		}
