@@ -658,6 +658,11 @@ public class SnpEffectPredictor implements Serializable {
 		// involved. If more than one, then we need a different approach (e.g. taking
 		// into account all genes involved to calculate fusions)");
 		if (structuralVariant) {
+			if (variant.isBnd()) {
+				variantEffectBnd(variant, variantEffects, intersects);
+				return variantEffects;
+			}
+
 			// Calculated effect based on multiple genes
 			intersects = variantEffectStructural(variant, variantEffects, intersects);
 
@@ -775,6 +780,54 @@ public class SnpEffectPredictor implements Serializable {
 
 		// If variant effects were added, there is no need for further analysis
 		return added ? null : intersects;
+	}
+
+	/**
+	 * Calculate translocations variant effects 
+	 */
+	void variantEffectBnd(Variant variant, VariantEffects variantEffects, Markers intersects) {
+		// Create a new variant effect for structural variants, add effect (if any)
+		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
+
+		//		EffectType et = veff.getEffectType();
+		//		boolean considerFussion = (et == EffectType.NONE //
+		//				|| et == EffectType.GENE_FUSION //
+		//				|| et == EffectType.GENE_FUSION_REVERESE //
+		//				|| et == EffectType.GENE_FUSION_HALF //
+		//				|| et == EffectType.FEATURE_FUSION //
+		//		);
+		//
+		//		// Note that fusions are added in the next step, when we invoke veff.fusion(), so we skip them here
+		//		if (!considerFussion) {
+		//			variantEffects.add(veff);
+		//			added = true;
+		//		}
+		//
+		//		// Do we have a fusion event?
+		//		List<VariantEffect> veffFusions = veff.fusion();
+		//		if (veffFusions != null && !veffFusions.isEmpty()) {
+		//			for (VariantEffect veffFusion : veffFusions) {
+		//				added = true;
+		//				variantEffects.add(veffFusion);
+		//			}
+		//		}
+		//
+		//		// In some cases we want to annotate the varaint's partially overlapping genes
+		//		if (variant.isDup()) {
+		//			Markers markers = new Markers();
+		//			for (Marker m : intersects)
+		//				if (!variant.includes(m)) {
+		//					// Note that all these markers overlap the variant so we
+		//					// just filter out the ones fully included in the variant
+		//					markers.add(m);
+		//				}
+		//
+		//			// Use these markers for further analysis
+		//			return markers;
+		//		}
+		//
+		//		// If variant effects were added, there is no need for further analysis
+		//		return added ? null : intersects;
 	}
 
 	/**

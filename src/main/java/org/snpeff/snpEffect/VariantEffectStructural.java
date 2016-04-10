@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Gene;
-import org.snpeff.interval.Intergenic;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.interval.Transcript;
@@ -239,10 +239,7 @@ public class VariantEffectStructural extends VariantEffect {
 	 */
 	void setGenes(Markers intersects) {
 		for (Marker m : intersects)
-			if (m instanceof Intergenic) {
-				if (intersectsLeft(m)) featuresLeft.add(m);
-				if (intersectsRight(m)) featuresRight.add(m);
-			} else if (m instanceof Gene) {
+			if (m instanceof Gene) {
 				if (intersectsLeft(m)) featuresLeft.add(m);
 				if (intersectsRight(m)) featuresRight.add(m);
 
@@ -250,6 +247,9 @@ public class VariantEffectStructural extends VariantEffect {
 				else countPartialGenes++;
 
 				genes.add((Gene) m);
+			} else if (!(m instanceof Chromosome)) {
+				if (intersectsLeft(m)) featuresLeft.add(m);
+				if (intersectsRight(m)) featuresRight.add(m);
 			}
 	}
 
