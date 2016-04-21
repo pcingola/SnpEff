@@ -13,6 +13,8 @@ import org.snpeff.util.Gpr;
  */
 public class VcfGenotype {
 
+	public static final String GT_FIELD_DEPTH_OF_COVERAGE = "DP"; // Approximate read depth (reads with MQ=255 or with bad mates are filtered)
+	public static final String GT_FIELD_ALLELIC_DEPTH_OF_COVERAGE = "AD"; // Allelic depths for the ref and alt alleles in the order listed
 	String values;
 	int genotype[];
 	int ploidy;
@@ -20,7 +22,9 @@ public class VcfGenotype {
 	double gQuality;
 	int depth;
 	int genotypeLikelihoodPhred[];
+
 	HashMap<String, String> fields;
+
 	VcfEntry vcfEntry;
 
 	public VcfGenotype(VcfEntry vcfEntry, String format, String values) {
@@ -46,6 +50,25 @@ public class VcfGenotype {
 		// Finally, add the values
 		values += (values.endsWith(":") ? "" : ":") + value; // Add to value string
 		if (fields != null) fields.put(name, value); // Add value to hash (if needed)
+	}
+
+	/**
+	 * Depth of coverage
+	 * @return -1 if not found
+	 */
+	public int depth() {
+		// Try DP field
+		String dp = get(GT_FIELD_DEPTH_OF_COVERAGE);
+		if (dp != null && !dp.isEmpty()) return Gpr.parseIntSafe(dp);
+
+		String ads = get(GT_FIELD_ALLELIC_DEPTH_OF_COVERAGE);
+		if (ads == null || ads.isEmpty()) return -1;
+
+		int depth = 0;
+		for (String ad : ads.split(","))
+			depth += Gpr.parseIntSafe(ad);
+
+		return depth;
 	}
 
 	/**
