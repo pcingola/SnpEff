@@ -221,6 +221,17 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
+	 * Add string to FILTER  field
+	 */
+	public void addFilter(String filterStr) {
+		// Get current value
+		if (filter.equals(".") || filter.equals(VcfEntry.FILTER_PASS)) filter = ""; // Empty?
+
+		// Append new value
+		filter += (!filter.isEmpty() ? ";" : "") + filterStr; // Add this filter to the not-passed list
+	}
+
+	/**
 	 * Add a 'FORMAT' field
 	 */
 	public void addFormat(String formatName) {
@@ -434,6 +445,24 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if ((homs.length() == 0) && (hets.length() == 0) && (nas.length() == 0)) addInfo(VCF_INFO_NAS, null);
 
 		return true;
+	}
+
+	/**
+	 * Remove a string from FILTER field
+	 */
+	public void delFilter(String filterStr) {
+		// Get current value
+		StringBuilder sbFilter = new StringBuilder();
+
+		// Split by semicolon and filter out the undesired values
+		boolean removed = false;
+		for (String f : filter.split(";")) {
+			if (!f.equals(filterStr)) sbFilter.append((sbFilter.length() > 0 ? ";" : "") + f); // Append if it does not match filterStr
+			else removed = true;
+		}
+
+		// Changed? Set new value
+		if (removed) filter = sbFilter.toString();
 	}
 
 	/**
