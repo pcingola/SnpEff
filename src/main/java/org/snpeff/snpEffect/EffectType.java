@@ -279,6 +279,7 @@ public enum EffectType {
 		case GENE_DELETED:
 		case GENE_DUPLICATION:
 		case GENE_FUSION:
+		case GENE_FUSION_HALF:
 		case GENE_FUSION_REVERESE:
 		case GENE_INVERSION:
 		case GENE_REARRANGEMENT:
@@ -424,6 +425,9 @@ public enum EffectType {
 
 		case GENE_FUSION_REVERESE:
 			return "bidirectional_gene_fusion";
+
+		case GENE_FUSION_HALF:
+			return "transcript_ablation";
 
 		case GENE_REARRANGEMENT:
 			return "rearranged_at_DNA_level";
