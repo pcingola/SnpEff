@@ -31,7 +31,7 @@ public interface VcfAnnotator extends CommandLine {
 	 *
 	 * @return true if OK, false on error
 	 */
-	public boolean annotateFinish();
+	public boolean annotateFinish(VcfFileIterator vcfFile);
 
 	/**
 	 * Initialize annotator: This method is called after vcfFile

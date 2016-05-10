@@ -132,12 +132,12 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	public boolean annotate(String inputFile, String outputFile) {
 		// Initialize
 		annotateInit(outputFile);
+		VcfFileIterator vcf = null;
 
 		// Iterate over input files
 		switch (inputFormat) {
 		case VCF:
-			if (multiThreaded) annotateVcfMulti(inputFile, outputFormatter);
-			else annotateVcf(inputFile);
+			vcf = (multiThreaded ? annotateVcfMulti(inputFile, outputFormatter) : annotateVcf(inputFile));
 			break;
 		default:
 			annotateVariant(inputFile, outputFormatter);
@@ -145,7 +145,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		outputFormatter.close();
 
 		// Create reports and finish up
-		boolean err = annotateFinish();
+		boolean err = annotateFinish(vcf);
 
 		return !err;
 	}
@@ -287,8 +287,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Finish annotations and create reports
 	 */
 	@Override
-	public boolean annotateFinish() {
+	public boolean annotateFinish(VcfFileIterator vcfFile) {
 		boolean ok = true;
+
+		if (vcfFile != null) vcfFile.close();
 
 		// Creates a summary output file
 		if (createSummaryCsv) {
@@ -438,34 +440,32 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Iterate on all inputs (VCF) and calculate effects.
 	 * Note: This is used only on input format VCF, which has a different iteration modality
 	 */
-	void annotateVcf(String inputFile) {
+	VcfFileIterator annotateVcf(String inputFile) {
 		// Open VCF file
 		VcfFileIterator vcfFile = new VcfFileIterator(inputFile, config.getGenome());
 		vcfFile.setDebug(debug);
 
 		// Iterate over VCF entries
-		for (VcfEntry vcfEntry : vcfFile) {
+		for (VcfEntry vcfEntry : vcfFile)
 			annotate(vcfEntry);
-		}
 
 		// Empty file? Show at least the header
 		if (countVcfEntries == 0) outputFormatter.print(vcfFile.getVcfHeader().toString());
-
-		// Close file iterator (not really needed, but just in case)
-		vcfFile.close();
 
 		// Show errors and warnings
 		if (verbose) {
 			if (!errByType.isEmpty()) System.err.println("\nERRORS: Some errors were detected\nError type\tNumber of errors\n" + errByType + "\n");
 			if (!warnByType.isEmpty()) System.err.println("\nWARNINGS: Some warning were detected\nWarning type\tNumber of warnings\n" + warnByType + "\n");
 		}
+
+		return vcfFile;
 	}
 
 	/**
 	 * Multi-threaded iteration on VCF inputs and calculates effects.
 	 * Note: This is used only on input format VCF, which has a different iteration modality
 	 */
-	void annotateVcfMulti(String inputFile, final OutputFormatter outputFormatter) {
+	VcfFileIterator annotateVcfMulti(String inputFile, final OutputFormatter outputFormatter) {
 		if (verbose) Timer.showStdErr("Running multi-threaded mode (numThreads=" + numWorkers + ").");
 
 		outputFormatter.setShowHeader(false); // Master process takes care of the header (instead of outputFormatter). Otherwise you get the header printed one time per worker.
@@ -475,7 +475,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		final VcfOutputFormatter vcfOutForm = (VcfOutputFormatter) outputFormatter;
 		final SnpEffCmdEff snpEffCmdEff = this;
 
-		new VcfFileIterator(inputFile, config.getGenome());
+		VcfFileIterator vcf = new VcfFileIterator(inputFile, config.getGenome());
 
 		// Master factory
 		Props props = new Props(new UntypedActorFactory() {
@@ -494,6 +494,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		int batchSize = 10;
 		VcfWorkQueue vcfWorkQueue = new VcfWorkQueue(inputFile, config, batchSize, -1, props);
 		vcfWorkQueue.run(true);
+
+		return vcf;
 	}
 
 	/**
