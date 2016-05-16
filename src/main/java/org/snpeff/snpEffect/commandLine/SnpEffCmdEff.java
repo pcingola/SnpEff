@@ -725,6 +725,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						hgvs = true; // Use HGVS notation
 						break;
 
+					case "-hgvsdnaold":
+						hgvsDnaOld = true;
+						break;
+
 					case "-hgvs1letteraa":
 					case "-hgvsoneletteraa":
 						hgvsOneLetterAa = true;
@@ -1114,6 +1118,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\t-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').");
 		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
 		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + hgvs);
+		System.err.println("\t-hgvsDnaOld                     : Use one old HGVS notation (for HGVS.c). Default: " + hgvsDnaOld);
 		System.err.println("\t-hgvs1LetterAa                  : Use one letter Amino acid codes in HGVS notation. Default: " + hgvsOneLetterAa);
 		System.err.println("\t-hgvsTrId                       : Use transcript ID in HGVS notation. Default: " + hgvsTrId);
 		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");

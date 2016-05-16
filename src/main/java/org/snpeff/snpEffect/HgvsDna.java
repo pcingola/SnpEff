@@ -467,6 +467,21 @@ public class HgvsDna extends Hgvs {
 		String pos = pos();
 		if (pos == null) return null;
 
+		// SNPs using old HGVS notation?
+		if (Config.get().isHgvsDnaOld() && type.isEmpty()) {
+			String ref, alt;
+			if (strandPlus) {
+				ref = variant.getReference();
+				alt = variant.getAlt();
+			} else {
+				ref = GprSeq.reverseWc(variant.getReference());
+				alt = GprSeq.reverseWc(variant.getAlt());
+			}
+
+			// Use 'c.G123T' instead of 'c.123G>T'
+			return prefix + typeOfReference() + ref + pos + alt + suffix;
+		}
+
 		return prefix + typeOfReference() + pos + type + dnaBaseChange() + suffix;
 	}
 

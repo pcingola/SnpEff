@@ -106,6 +106,7 @@ public class SnpEff implements CommandLine {
 	protected boolean help; // Show command help and exit
 	protected boolean hgvs = true; // Use Hgvs notation
 	protected boolean hgvsOneLetterAa = false; // Use 1-letter AA codes in HGVS.p notation?
+	protected boolean hgvsDnaOld = false; // Old notation style for DNA (C-dot) notation: E.g. 'c.G123T' instead of 'c.123G>T'
 	protected boolean hgvsShift = true; // Shift variants towards the 3-prime end of the transcript
 	protected boolean hgvsTrId = false; // Use full transcript version in HGVS notation?
 	protected boolean interaction = true; // Use interaction loci information if available
@@ -292,10 +293,11 @@ public class SnpEff implements CommandLine {
 			if (verbose) Timer.showStdErr("done");
 		}
 
-		// Set configuration options
+		// Command line options overriding configuration file
 		config.setUseHgvs(hgvs);
-		config.setHgvsShift(hgvsShift);
+		config.setHgvsDnaOld(hgvsDnaOld);
 		config.setHgvsOneLetterAA(hgvsOneLetterAa);
+		config.setHgvsShift(hgvsShift);
 		config.setHgvsTrId(hgvsTrId);
 
 		// Verbose & debug
@@ -1192,6 +1194,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.genomeVer = genomeVer;
 		snpEffCmd.help = help;
 		snpEffCmd.hgvs = hgvs;
+		snpEffCmd.hgvsDnaOld = hgvsDnaOld;
 		snpEffCmd.hgvsOneLetterAa = hgvsOneLetterAa;
 		snpEffCmd.hgvsShift = hgvsShift;
 		snpEffCmd.hgvsTrId = hgvsTrId;
