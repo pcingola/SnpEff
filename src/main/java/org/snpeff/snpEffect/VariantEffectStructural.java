@@ -12,7 +12,7 @@ import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
-import org.snpeff.interval.VariantTranslocation;
+import org.snpeff.interval.VariantBnd;
 
 /**
  * Effect of a structural variant affecting multiple genes
@@ -43,7 +43,14 @@ public class VariantEffectStructural extends VariantEffect {
 		}
 	}
 
-	EffectType effect() {
+	protected int countGenes(List<Marker> features) {
+		int count = 0;
+		for (Marker m : features)
+			if (m instanceof Gene) count++;
+		return count;
+	}
+
+	protected EffectType effect() {
 		switch (variant.getVariantType()) {
 		case INV:
 			return countWholeGenes > 0 ? EffectType.GENE_INVERSION : EffectType.NONE;
@@ -56,22 +63,18 @@ public class VariantEffectStructural extends VariantEffect {
 			return countWholeGenes > 0 ? EffectType.GENE_DUPLICATION : EffectType.NONE;
 
 		case BND:
-			// Translocation can only intersect "partial genes" since they 
-			// have two (unconnected) break-points. 
-			switch (countPartialGenes) {
-			case 0:
-				// We use 'FEATURE_FUSION'  when neither end of the translocation 
-				// lands on a gene (i.e.a fusion of intergenic regions)
-				return EffectType.FEATURE_FUSION;
+			int countGenesLeft = countGenes(featuresLeft);
+			int countGenesRight = countGenes(featuresRight);
 
-			case 1:
-				// Genes on only one side of the translocation (the other side is intergenic) 
-				return EffectType.GENE_FUSION_HALF;
+			// Both sides are genes
+			if (countGenesLeft > 0 && countGenesRight > 0) return EffectType.GENE_FUSION;
 
-			default:
-				// Genes on both sides of the translocation
-				return EffectType.GENE_FUSION;
-			}
+			// Genes on only one side of the translocation (the other side is intergenic)
+			if (countGenesLeft > 0 || countGenesRight > 0) return EffectType.GENE_FUSION_HALF;
+
+			// We use 'FEATURE_FUSION'  when neither end of the translocation
+			// lands on a gene (i.e. fusion of intergenic regions)
+			return EffectType.FEATURE_FUSION;
 
 		default:
 			throw new RuntimeException("Unknown effect for variant type " + variant.getVariantType());
@@ -82,31 +85,23 @@ public class VariantEffectStructural extends VariantEffect {
 	/**
 	 * Is there another 'fusion' effect?
 	 */
-	public List<VariantEffect> fusion() {
+	public List<VariantEffect> fusions() {
 		// Only if both genes are different
-		if (variant.isBnd()) {
-			if (featuresLeft.isEmpty() || featuresRight.isEmpty()) return null;
-
-			if (featuresLeft.isEmpty()) { return null; }
-
-			if (featuresRight.isEmpty()) return null;
-		} else {
-			if (featuresLeft.isEmpty() || featuresRight.isEmpty()) return null;
-		}
+		if (featuresLeft.isEmpty() || featuresRight.isEmpty()) return null;
 
 		// Add all gene pairs
 		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
 		for (Marker gLeft : featuresLeft)
 			for (Marker gRight : featuresRight) {
 				if (variant.isBnd()) {
-					// Is this a translocation? OK
+					// Is this a translocation? OK, add a fusion
 				} else if (!isGene(gLeft) || !isGene(gRight)) {
 					// For non-translocations, both sides must be genes in order to create a fusion
 					continue;
 				} else {
 					if (gLeft.getId().equals(gRight.getId())) {
 						// Otherwise, make sure the variant is not acting within
-						// the same gene (e.g. a deletion)
+						// the same gene (e.g. a one base deletion)
 						continue;
 					} else {
 						// If both genes overlap and the variant is within that
@@ -118,36 +113,37 @@ public class VariantEffectStructural extends VariantEffect {
 				}
 
 				// Add all possible transcript fussions
-				fusions.addAll(fusion(variant, gLeft, gRight));
+				fusions.addAll(fusions(variant, gLeft, gRight));
 			}
 
 		return fusions;
 	}
 
 	/**
-	 * Create all possible fusions for these two genes
+	 * Create all possible transcript pair fusions for these two genes
 	 */
-	List<VariantEffect> fusion(Variant variant, Marker mLeft, Marker mRight) {
+	List<VariantEffect> fusions(Variant variant, Marker mLeft, Marker mRight) {
 		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
 		// One for fusion effect for each transcript
 		// This can be a long list...
 		Markers msLeft = new Markers();
 		Markers msRight = new Markers();
 
-		// If it's a gene, add all transcripts
+		// Left: If it's a gene, add all transcripts
 		Gene gLeft = null;
 		if (isGene(mLeft)) {
 			gLeft = (Gene) mLeft;
 			msLeft.addAll(gLeft.subIntervals());
 		} else msLeft.add(mLeft);
 
-		// If it's a gene, add all transcripts
+		// Right: If it's a gene, add all transcripts
 		Gene gRight = null;
 		if (isGene(mRight)) {
 			gRight = (Gene) mRight;
 			msRight.addAll(gRight.subIntervals());
 		} else msRight.add(mRight);
 
+		// Add all transcript pairs
 		for (Marker ml : msLeft)
 			for (Marker mr : msRight) {
 				// Transcript from the same gene are added only once
@@ -212,7 +208,7 @@ public class VariantEffectStructural extends VariantEffect {
 	 */
 	boolean intersectsRight(Marker m) {
 		if (variant.isBnd()) {
-			Marker endPoint = ((VariantTranslocation) variant).getEndPoint();
+			Marker endPoint = ((VariantBnd) variant).getEndPoint();
 			return m.getChromosomeName().equals(endPoint.getChromosomeName()) //
 					&& m.intersects(endPoint.getStart());
 		}

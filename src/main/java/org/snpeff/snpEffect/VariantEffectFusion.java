@@ -4,7 +4,7 @@ import org.snpeff.interval.Gene;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
-import org.snpeff.interval.VariantTranslocation;
+import org.snpeff.interval.VariantBnd;
 import org.snpeff.interval.codonChange.CodonChange;
 
 /**
@@ -65,7 +65,7 @@ public class VariantEffectFusion extends VariantEffectStructural {
 	 * Calculate transcript's start/end AA numbers
 	 */
 	void aaPos() {
-		VariantTranslocation vtrans = getVariantTranslocation();
+		VariantBnd vtrans = getVariantTranslocation();
 
 		// E.g.:  C[2:321682[
 		if (!vtrans.isLeft() && !vtrans.isBefore()) {
@@ -179,7 +179,7 @@ public class VariantEffectFusion extends VariantEffectStructural {
 			if (marker == null) marker = mRight;
 
 			// Translocation
-			VariantTranslocation vtrans = getVariantTranslocation();
+			VariantBnd vtrans = getVariantTranslocation();
 			EffectType effType = null;
 
 			// Note: The following block of 'setEffect' could be written simply as
@@ -295,12 +295,12 @@ public class VariantEffectFusion extends VariantEffectStructural {
 		return trRight;
 	}
 
-	VariantTranslocation getVariantTranslocation() {
-		return (VariantTranslocation) variant;
+	VariantBnd getVariantTranslocation() {
+		return (VariantBnd) variant;
 	}
 
 	boolean isVariantTranslocation() {
-		return variant instanceof VariantTranslocation;
+		return variant instanceof VariantBnd;
 	}
 
 	@Override

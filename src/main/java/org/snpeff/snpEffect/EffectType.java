@@ -279,6 +279,7 @@ public enum EffectType {
 		case GENE_DELETED:
 		case GENE_DUPLICATION:
 		case GENE_FUSION:
+		case GENE_FUSION_HALF:
 		case GENE_FUSION_REVERESE:
 		case GENE_INVERSION:
 		case GENE_REARRANGEMENT:
@@ -338,6 +339,14 @@ public enum EffectType {
 		default:
 			throw new RuntimeException("Unknown gene region for effect type: '" + this + "'");
 		}
+	}
+
+	public boolean isFusion() {
+		return this == GENE_FUSION //
+				|| this == GENE_FUSION_REVERESE //
+				|| this == GENE_FUSION_HALF //
+				|| this == FEATURE_FUSION //
+				;
 	}
 
 	public String toSequenceOntology(EffFormatVersion formatVersion, Variant variant) {

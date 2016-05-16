@@ -15,7 +15,7 @@ import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
-import org.snpeff.interval.VariantTranslocation;
+import org.snpeff.interval.VariantBnd;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.HgvsDna;
@@ -261,7 +261,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, false, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
@@ -289,7 +289,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 152, false, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 152, false, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
@@ -318,7 +318,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, false, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
@@ -346,7 +346,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, false, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
@@ -374,7 +374,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, false, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
@@ -402,7 +402,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 152, false, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 152, false, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
@@ -431,7 +431,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, true, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
@@ -459,7 +459,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, true, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
@@ -487,7 +487,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 124, true, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 124, true, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
@@ -516,7 +516,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, true, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
@@ -544,7 +544,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 124, true, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 124, true, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
@@ -573,7 +573,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, false);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, true, false);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
@@ -601,7 +601,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, false, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
@@ -629,7 +629,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, false, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
@@ -657,7 +657,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 152, false, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 152, false, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
@@ -686,7 +686,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, false, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
@@ -714,7 +714,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 152, false, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 152, false, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
@@ -743,7 +743,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, false, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, false, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
@@ -771,7 +771,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, true, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
@@ -799,7 +799,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 124, true, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 124, true, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
@@ -828,7 +828,7 @@ public class TestCasesStructuralTranslocations {
 		init(false, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, true, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.21+5)" };
@@ -856,7 +856,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, false);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, true, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION_REVERESE };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
@@ -884,7 +884,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 140, true, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 140, true, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION, EffectType.FRAME_SHIFT };
 		String expHgvsc[] = { "t(1;2)(p1;p2)(c.51+5)" };
@@ -912,7 +912,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 124, true, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 124, true, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		EffectType notExpEffs[] = { EffectType.FRAME_SHIFT };
@@ -933,7 +933,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 35, "N", "N", chr2, 50, true, true);
+		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 50, true, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		EffectType notExpEffs[] = {};
@@ -954,7 +954,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 135, "N", "N", chr2, 124, true, true);
+		VariantBnd variant = new VariantBnd(chr1, 135, "N", "N", chr2, 124, true, true);
 
 		EffectType expEffs[] = { EffectType.GENE_FUSION };
 		EffectType notExpEffs[] = {};
@@ -975,7 +975,7 @@ public class TestCasesStructuralTranslocations {
 		init(true, true);
 
 		// Create variant
-		VariantTranslocation variant = new VariantTranslocation(chr1, 135, "N", "N", chr2, 50, true, true);
+		VariantBnd variant = new VariantBnd(chr1, 135, "N", "N", chr2, 50, true, true);
 
 		EffectType expEffs[] = { EffectType.FEATURE_FUSION };
 		EffectType notExpEffs[] = {};

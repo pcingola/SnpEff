@@ -17,7 +17,7 @@ import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
-import org.snpeff.interval.VariantTranslocation;
+import org.snpeff.interval.VariantBnd;
 import org.snpeff.snpEffect.LossOfFunction;
 import org.snpeff.util.Gpr;
 
@@ -1474,7 +1474,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			Chromosome trChr = chromo.getGenome().getOrCreateChromosome(trChrName);
 			int trStart = Gpr.parseIntSafe(posSplit[1]) - 1;
 
-			VariantTranslocation var = new VariantTranslocation(chromo, start, ref, altBases, trChr, trStart, left, before);
+			VariantBnd var = new VariantBnd(chromo, start, ref, altBases, trChr, trStart, left, before);
 			list = new LinkedList<Variant>();
 			list.add(var);
 		} else if (reference.length() == alt.length()) {

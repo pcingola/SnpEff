@@ -5,7 +5,7 @@ import org.snpeff.interval.Exon;
 import org.snpeff.interval.Intron;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
-import org.snpeff.interval.VariantTranslocation;
+import org.snpeff.interval.VariantBnd;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 
@@ -393,7 +393,7 @@ public class HgvsDna extends Hgvs {
 	 * 			chromosome bands Xp21.2 and 4q34
 	 */
 	protected String prefixTranslocation() {
-		VariantTranslocation vtr = (VariantTranslocation) variant;
+		VariantBnd vtr = (VariantBnd) variant;
 
 		// Chromosome part
 		String chrCoords = "(" //

@@ -2,7 +2,7 @@ package org.snpeff.snpEffect;
 
 import org.snpeff.codons.CodonTable;
 import org.snpeff.interval.Transcript;
-import org.snpeff.interval.VariantTranslocation;
+import org.snpeff.interval.VariantBnd;
 import org.snpeff.util.Gpr;
 
 /**
@@ -555,7 +555,7 @@ public class HgvsProtein extends Hgvs {
 	 */
 	protected String translocation() {
 		if (!(variantEffect instanceof VariantEffectFusion)) return "";
-		VariantTranslocation vtr = (VariantTranslocation) variant;
+		VariantBnd vtr = (VariantBnd) variant;
 		VariantEffectFusion veffFusion = (VariantEffectFusion) variantEffect;
 
 		if (veffFusion.getTrLeft() == null && veffFusion.getTrRight() == null) return "";
