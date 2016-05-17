@@ -631,22 +631,28 @@ public class SnpEffectPredictor implements Serializable {
 			return variantEffects;
 		}
 
+		// Translocations require special treatment
+		// (e.g. they have two intersections points instead of one)
+		if (variant.isBnd()) {
+			Markers intersects = query(variant);
+			variantEffectBnd(variant, variantEffects, intersects);
+			return variantEffects;
+		}
+
 		// Is this a structural variant? Large structural variants (e.g. involving more than
 		// one gene) may require to calculate effects by using all involved genes
 		// For some variants we require to be 'N' bases apart (translocations
 		// are assumed always involve large genomic regions)
-		boolean structuralVariant = variant.isStructural() && (variant.isBnd() || variant.size() > SMALL_VARIANT_SIZE_THRESHOLD);
+		boolean structuralVariant = variant.isStructural() && (variant.size() > SMALL_VARIANT_SIZE_THRESHOLD);
 
 		// Structural variants?
-		if (structuralVariant && !variant.isBnd()) {
+		if (structuralVariant && variant.isStructuralHuge()) {
 			// Large variants could make the query results huge and slow down
 			// the algorithm, so we stop here
-			// Note: Translocations (BND) only intercept two loci, so this 
+			// Note: Translocations (BND) only intercept two loci, so this
 			//       issue does not apply.
-			if (variant.isStructuralHuge()) {
-				variantEffectStructuralLarge(variant, variantEffects);
-				return variantEffects;
-			}
+			variantEffectStructuralLarge(variant, variantEffects);
+			return variantEffects;
 		}
 
 		//---
@@ -712,6 +718,21 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
+	 * Calculate translocations variant effects
+	 */
+	void variantEffectBnd(Variant variant, VariantEffects variantEffects, Markers intersects) {
+		// Create a new variant effect for structural variants, then calculate all transcript fusions
+		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
+
+		// Do we have a fusion event?
+		List<VariantEffect> veffFusions = veff.fusions();
+		if (veffFusions != null) {
+			for (VariantEffect veffFusion : veffFusions)
+				variantEffects.add(veffFusion);
+		}
+	}
+
+	/**
 	 * Add gene specific annotations
 	 */
 	protected void variantEffectGene(String geneId, Variant variant, VariantEffects variantEffects) {
@@ -738,10 +759,7 @@ public class SnpEffectPredictor implements Serializable {
 
 		EffectType et = veff.getEffectType();
 		boolean considerFussion = (et == EffectType.NONE //
-				|| et == EffectType.GENE_FUSION //
-				|| et == EffectType.GENE_FUSION_REVERESE //
-				|| et == EffectType.GENE_FUSION_HALF //
-				|| et == EffectType.FEATURE_FUSION //
+				|| et.isFusion() //
 		);
 
 		// Note that fusions are added in the next step, when we invoke veff.fusion(), so we skip them here
@@ -751,7 +769,7 @@ public class SnpEffectPredictor implements Serializable {
 		}
 
 		// Do we have a fusion event?
-		List<VariantEffect> veffFusions = veff.fusion();
+		List<VariantEffect> veffFusions = veff.fusions();
 		if (veffFusions != null && !veffFusions.isEmpty()) {
 			for (VariantEffect veffFusion : veffFusions) {
 				added = true;

@@ -29,7 +29,7 @@ public abstract class ProteinInteractionLocus extends Marker {
 
 		// Intervals may be swapped for transcript on the negative strand 
 		int s = Math.min(start, end);
-		int e = Math.min(start, end);
+		int e = Math.max(start, end);
 
 		// Same gene? => Within protein interaction
 		if (geneId1.equals(geneId2)) return new ProteinStructuralInteractionLocus(tr, s, e, id);

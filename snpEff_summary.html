@@ -141,11 +141,15 @@ th a:active, th a:hover {
 <table border=0>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Genome </b> </td>
-		<td> testHg19Chr1 </td>
+		<td> testHg3775Chr1 </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Date </b> </td>
+<<<<<<< HEAD
 		<td> 2016-04-27 14:54 </td>
+=======
+		<td> 2016-05-16 00:16 </td>
+>>>>>>> 31859b023e0f2359c939bdc0f1f6d93fa5e3f539
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> SnpEff version </b> </td>
@@ -153,7 +157,7 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Command line arguments </b> </td>
-		<td> <pre>SnpEff  testHg19Chr1 /home/pcingola/snpEff/z.vcf 
+		<td> <pre>SnpEff  testHg3775Chr1 tests/test_non_variants.vcf 
 </pre> </td>
 	</tr>
 	<tr bgcolor=ffffff> 
@@ -168,11 +172,11 @@ th a:active, th a:hover {
 	</tr>	
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of lines (input file) </b> </td>
-		<td> 1 </td>
+		<td> 882 </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants (before filter) </b> </td>
-		<td> 1 </td>
+		<td> 882 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of not variants <br>(i.e. reference equals alternative) </b> </td>
@@ -180,7 +184,7 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants processed <br> (i.e. after filter and non-variants) </b> </td>
-		<td> 1 </td>
+		<td> 0 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of known variants <br>(i.e. non-empty ID) </b> </td>
@@ -201,15 +205,23 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome total length </b> </td>
-		<td> 249,250,622 </td>
+		<td> 249,250,621 </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Genome effective length </b> </td>
+<<<<<<< HEAD
 		<td> 1 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Variant rate </b> </td>
 		<td> 1 variant every 1 bases </td>
+=======
+		<td> 0 </td>
+	</tr>
+	<tr bgcolor=ffffff>
+		<td valign=top> <b> Variant rate </b> </td>
+		<td> 1 variant every 0 bases </td>
+>>>>>>> 31859b023e0f2359c939bdc0f1f6d93fa5e3f539
 	</tr>
 </table>
 <p>
@@ -227,6 +239,7 @@ th a:active, th a:hover {
 
 <table border=1>
 	<tr><th> Chromosome </th><th> Length </th><th> Variants </th><th> Variants rate </th></tr> 
+<<<<<<< HEAD
 		<tr>
 			<td> 9 </td>
 			<td class="numeric"> 1 </td>
@@ -238,6 +251,13 @@ th a:active, th a:hover {
 		<th class="numeric"> 1 </th>
 		<th class="numeric"> 1 </th>
 		<th class="numeric"> 1 </th>
+=======
+	<tr>
+		<th> Total </th>
+		<th class="numeric"> 0 </th>
+		<th class="numeric"> 0 </th>
+		<th class="numeric"> 0 </th>
+>>>>>>> 31859b023e0f2359c939bdc0f1f6d93fa5e3f539
 	</tr> 
 </table> 
 </center>
@@ -299,7 +319,7 @@ th a:active, th a:hover {
     <tfoot>
 	    <tr>
 	    	<th><b>Total </b> </th>
-	    	<th class="numeric"> 1 </th>
+	    	<th class="numeric"> 0 </th>
 	    </tr>
     </tfoot>
 </table>
@@ -393,7 +413,7 @@ Missense / Silent ratio: 0
 </table>
 <p>
 
-<img src="http://chart.apis.google.com/chart?cht=bvs&chs=800x300&chbh=50,4,8&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AA__AAAAAAAAAAAAAAAAAA,AAAA__AAAAAAAAAAAAAAAA,AAAAAA__AAAAAA__AAAAAA,AAAAAAAA__AAAAAAAAAAAA,AAAAAAAAAA__AAAAAAAAAA,AAAAAAAAAAAA__AAAAAAAA,AAAAAAAAAAAAAAAA__AAAA,AAAAAAAAAAAAAAAAAA__AA,__AAAAAAAAAAAAAAAAAA__" border=1><p>
+<img src="http://chart.apis.google.com/chart?cht=bvs&chbh=50,4,8&chs=800x300&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AA__AAAAAAAAAAAAAAAAAA,AAAA__AAAAAAAAAAAAAAAA,AAAAAA__AAAAAA__AAAAAA,AAAAAAAA__AAAAAAAAAAAA,AAAAAAAAAA__AAAAAAAAAA,AAAAAAAAAAAA__AAAAAAAA,AAAAAAAAAAAAAAAA__AAAA,AAAAAAAAAAAAAAAAAA__AA,__AAAAAAAAAAAAAAAAAA__" border=1><p>
 
 </center>
 
@@ -491,6 +511,7 @@ Missense / Silent ratio: 0
 <a name="alleleFreq">
 <center> <b> Allele frequency </b> <p> </center>
 
+<<<<<<< HEAD
 	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Allele+Frequency+%25&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Count|2:|50|3:|Alleles+frequency"><br>
 	<table class="histo">
 		<tr> <th width=15%>Min</th><td>50</td> </tr>
@@ -502,6 +523,9 @@ Missense / Silent ratio: 0
 		<tr> <th>Count</th><td>1</td> </tr>
 		</tr>
 	</table>
+=======
+	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Allele+Frequency+%25&chxl=1:|Count|3:|Alleles+frequency&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+>>>>>>> 31859b023e0f2359c939bdc0f1f6d93fa5e3f539
 <p>
 	
 <!--==========================================================================
@@ -511,6 +535,7 @@ Missense / Silent ratio: 0
 <hr> 
 <a name="alleleCount">
 <center> <b> Allele Count </b> <p> </center>
+<<<<<<< HEAD
 	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|1|3:|Allele+Count&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0"><br>
 	<table class="histo">
 		<tr> <th width=15%>Min</th><td>1</td> </tr>
@@ -522,6 +547,9 @@ Missense / Silent ratio: 0
 		<tr> <th>Count</th><td>1</td> </tr>
 		</tr>
 	</table>
+=======
+	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|3:|Allele+Count&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+>>>>>>> 31859b023e0f2359c939bdc0f1f6d93fa5e3f539
 <p>
 
 
@@ -532,6 +560,7 @@ Missense / Silent ratio: 0
 <hr> 
 <a name="homHet">
 <center> <b> Hom/Het per sample </b> <p> </center>
+<<<<<<< HEAD
 	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Heterozygous+genotypes&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Heterozygous+count|2:|0|3:|Sample+number"><br>
 	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Homozygous+%28ALT%29+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Homozygous+count|2:|0|3:|Sample+number"><br>
 	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Missing+genotypes&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Missing+count|2:|0|3:|Sample+number"><br>
@@ -541,6 +570,17 @@ Reference , 0
 Het , 1
 Hom , 0
 Missing , 0
+=======
+	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Heterozygous+genotypes&chxl=1:|Heterozygous+count|3:|Sample+number&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Homozygous+%28ALT%29+genotypes&chxl=1:|Homozygous+count|3:|Sample+number&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Missing+genotypes&chxl=1:|Missing+count|3:|Sample+number&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	
+	<pre>Sample_names 
+Reference 
+Het 
+Hom 
+Missing 
+>>>>>>> 31859b023e0f2359c939bdc0f1f6d93fa5e3f539
 </pre>
 <p>
 
@@ -611,12 +651,15 @@ Missing , 0
 <b> Variants by chromosome</b><p> 
 
 <center>
+<<<<<<< HEAD
 	<pre>
 		<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:AAAA&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Variants+histogram%3A+9&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Variants%2F1b|2:|0|1|3:|Position"><br>
 		9, Position,0,1
 9,Count,0,0
 
 	</pre>
+=======
+>>>>>>> 31859b023e0f2359c939bdc0f1f6d93fa5e3f539
 </center>
 
 <!--==========================================================================

@@ -45,11 +45,11 @@ public class VcfAnnotatorChain implements VcfAnnotator {
 	}
 
 	@Override
-	public boolean annotateFinish() {
+	public boolean annotateFinish(VcfFileIterator vcf) {
 		boolean error = false;
 
 		for (VcfAnnotator vcfAnnotator : annotators)
-			error |= vcfAnnotator.annotateFinish();
+			error |= vcfAnnotator.annotateFinish(vcf);
 
 		return error;
 	}

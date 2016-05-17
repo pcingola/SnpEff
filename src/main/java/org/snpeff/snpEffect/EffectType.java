@@ -341,6 +341,14 @@ public enum EffectType {
 		}
 	}
 
+	public boolean isFusion() {
+		return this == GENE_FUSION //
+				|| this == GENE_FUSION_REVERESE //
+				|| this == GENE_FUSION_HALF //
+				|| this == FEATURE_FUSION //
+				;
+	}
+
 	public String toSequenceOntology(EffFormatVersion formatVersion, Variant variant) {
 		switch (this) {
 
@@ -421,6 +429,9 @@ public enum EffectType {
 			return "duplication";
 
 		case GENE_FUSION:
+			return "gene_fusion";
+
+		case GENE_FUSION_HALF:
 			return "gene_fusion";
 
 		case GENE_FUSION_REVERESE:
