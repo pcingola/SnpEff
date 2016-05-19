@@ -60,7 +60,7 @@ public class Config implements Serializable, Iterable<String> {
 	boolean hgvs = true; // Use HGVS notation?
 	boolean hgvsShift = true; // Shift variants according to HGVS notation (towards the most 3prime possible coordinate)
 	boolean hgvsOneLetterAa = false; // Use HGVS 1 letter amino acid in HGVS notation?
-	boolean hgvsDnaOld = false;
+	boolean hgvsOld = false;
 	boolean hgvsTrId = false; // Use HGVS transcript ID in HGVS notation?
 	double lofIgnoreProteinCodingAfter;
 	double lofIgnoreProteinCodingBefore;
@@ -491,8 +491,8 @@ public class Config implements Serializable, Iterable<String> {
 		return hgvsOneLetterAa;
 	}
 
-	public boolean isHgvsDnaOld() {
-		return hgvsDnaOld;
+	public boolean isHgvsOld() {
+		return hgvsOld;
 	}
 
 	public boolean isHgvsShift() {
@@ -722,8 +722,8 @@ public class Config implements Serializable, Iterable<String> {
 		lofDeleteProteinCodingBases = getDouble(KEY_LOF_DELETE_PROTEIN_CODING_BASES, LossOfFunction.DEFAULT_DELETE_PROTEIN_CODING_BASES);
 	}
 
-	public void setHgvsDnaOld(boolean hgvsDnaOld) {
-		this.hgvsDnaOld = hgvsDnaOld;
+	public void setHgvsOld(boolean hgvsDnaOld) {
+		this.hgvsOld = hgvsDnaOld;
 	}
 
 	public void setHgvsOneLetterAA(boolean hgvsOneLetterAa) {

@@ -182,7 +182,7 @@ public class Gpr {
 
 			// Format as timestamp
 			Date epochDate = new Date(epoch);
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			return df.format(epochDate);
 		} catch (Exception e) {
 			return null;

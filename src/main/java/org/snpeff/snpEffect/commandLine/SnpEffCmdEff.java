@@ -114,7 +114,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		chrStr = ""; // Default: Don't show 'chr' before chromosome
 		inputFile = ""; // variant input file
 		variantEffectResutFilter = new VariantEffectFilter(); // Filter prediction results
-		filterIntervalFiles = new ArrayList<String>(); // Files used for filter intervals
+		filterIntervalFiles = new ArrayList<>(); // Files used for filter intervals
 		summaryFileHtml = DEFAULT_SUMMARY_HTML_FILE;
 		summaryFileCsv = DEFAULT_SUMMARY_CSV_FILE;
 		summaryGenesFile = DEFAULT_SUMMARY_GENES_FILE;
@@ -502,7 +502,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Analyze which comparisons to make in cancer genomes
 	 */
 	Set<Tuple<Integer, Integer>> compareCancerGenotypes(VcfEntry vcfEntry, List<PedigreeEnrty> pedigree) {
-		HashSet<Tuple<Integer, Integer>> comparisons = new HashSet<Tuple<Integer, Integer>>();
+		HashSet<Tuple<Integer, Integer>> comparisons = new HashSet<>();
 
 		// Find out which comparisons have to be analyzed
 		for (PedigreeEnrty pe : pedigree) {
@@ -526,7 +526,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
 						) {
-							Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[i], go[i]);
+							Tuple<Integer, Integer> compare = new Tuple<>(gd[i], go[i]);
 							comparisons.add(compare);
 						}
 					}
@@ -539,7 +539,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
 							) {
-								Tuple<Integer, Integer> compare = new Tuple<Integer, Integer>(gd[d], go[o]);
+								Tuple<Integer, Integer> compare = new Tuple<>(gd[d], go[o]);
 								comparisons.add(compare);
 							}
 						}
@@ -725,8 +725,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						hgvs = true; // Use HGVS notation
 						break;
 
-					case "-hgvsdnaold":
-						hgvsDnaOld = true;
+					case "-hgvsold":
+						hgvsOld = true;
 						break;
 
 					case "-hgvs1letteraa":
@@ -854,7 +854,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 		// Read input files from file list?
 		if (isFileList) {
-			inputFiles = new ArrayList<String>();
+			inputFiles = new ArrayList<>();
 			for (String file : readFile(inputFile).split("\n"))
 				inputFiles.add(file);
 		}
@@ -909,7 +909,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			if (verbose) Timer.showStdErr("Reading cancer samples pedigree from file '" + cancerSamples + "'.");
 
 			List<String> sampleNames = vcfFile.getVcfHeader().getSampleNames();
-			pedigree = new ArrayList<PedigreeEnrty>();
+			pedigree = new ArrayList<>();
 
 			for (String line : Gpr.readFile(cancerSamples).split("\n")) {
 				String recs[] = line.split("\\s", -1);
@@ -982,7 +982,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		}
 
 		// Store VCF results in a list?
-		if (createList) vcfEntriesDebug = new ArrayList<VcfEntry>();
+		if (createList) vcfEntriesDebug = new ArrayList<>();
 
 		// Predict
 		boolean ok = true;
@@ -1006,7 +1006,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		if (verbose) Timer.showStdErr("done.");
 
 		if (!ok) return null;
-		if (vcfEntriesDebug == null) return new ArrayList<VcfEntry>();
+		if (vcfEntriesDebug == null) return new ArrayList<>();
 		return vcfEntriesDebug;
 	}
 
@@ -1058,7 +1058,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 */
 	HashMap<String, Object> summaryCreateHash() {
 		// Create the root hash (where data objects are)
-		HashMap<String, Object> root = new HashMap<String, Object>();
+		HashMap<String, Object> root = new HashMap<>();
 		root.put("args", commandLineStr(createSummaryCsv ? false : true));
 		root.put("changeStats", variantEffectStats);
 		root.put("chromoPlots", chromoPlots);
@@ -1118,7 +1118,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\t-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').");
 		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
 		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + hgvs);
-		System.err.println("\t-hgvsDnaOld                     : Use one old HGVS notation (for HGVS.c). Default: " + hgvsDnaOld);
+		System.err.println("\t-hgvsOld                        : Use old HGVS notation. Default: " + hgvsOld);
 		System.err.println("\t-hgvs1LetterAa                  : Use one letter Amino acid codes in HGVS notation. Default: " + hgvsOneLetterAa);
 		System.err.println("\t-hgvsTrId                       : Use transcript ID in HGVS notation. Default: " + hgvsTrId);
 		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");

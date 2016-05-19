@@ -106,7 +106,7 @@ public class SnpEff implements CommandLine {
 	protected boolean help; // Show command help and exit
 	protected boolean hgvs = true; // Use Hgvs notation
 	protected boolean hgvsOneLetterAa = false; // Use 1-letter AA codes in HGVS.p notation?
-	protected boolean hgvsDnaOld = false; // Old notation style for DNA (C-dot) notation: E.g. 'c.G123T' instead of 'c.123G>T'
+	protected boolean hgvsOld = false; // Old notation style notation: E.g. 'c.G123T' instead of 'c.123G>T' and 'X' instead of '*' 
 	protected boolean hgvsShift = true; // Shift variants towards the 3-prime end of the transcript
 	protected boolean hgvsTrId = false; // Use full transcript version in HGVS notation?
 	protected boolean interaction = true; // Use interaction loci information if available
@@ -141,7 +141,7 @@ public class SnpEff implements CommandLine {
 	protected SnpEff snpEffCmd; // Real command to run
 	protected ArrayList<String> customIntervalFiles; // Custom interval files (bed)
 	protected ArrayList<String> filterIntervalFiles;// Files used for filter intervals
-	protected HashSet<String> regulationTracks = new HashSet<String>();
+	protected HashSet<String> regulationTracks = new HashSet<>();
 	protected Map<String, String> configOverride = new HashMap<>();
 
 	/**
@@ -168,7 +168,7 @@ public class SnpEff implements CommandLine {
 		quiet = false; // Be quiet
 		log = true; // Log to server (statistics)
 		multiThreaded = false; // Use multiple threads
-		customIntervalFiles = new ArrayList<String>(); // Custom interval files
+		customIntervalFiles = new ArrayList<>(); // Custom interval files
 	}
 
 	public SnpEff(String[] args) {
@@ -179,7 +179,7 @@ public class SnpEff implements CommandLine {
 		quiet = false; // Be quiet
 		log = true; // Log to server (statistics)
 		multiThreaded = false; // Use multiple threads
-		customIntervalFiles = new ArrayList<String>(); // Custom interval files
+		customIntervalFiles = new ArrayList<>(); // Custom interval files
 
 		this.args = args;
 	}
@@ -287,7 +287,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+				);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -295,7 +295,7 @@ public class SnpEff implements CommandLine {
 
 		// Command line options overriding configuration file
 		config.setUseHgvs(hgvs);
-		config.setHgvsDnaOld(hgvsDnaOld);
+		config.setHgvsOld(hgvsOld);
 		config.setHgvsOneLetterAA(hgvsOneLetterAa);
 		config.setHgvsShift(hgvsShift);
 		config.setHgvsTrId(hgvsTrId);
@@ -440,7 +440,7 @@ public class SnpEff implements CommandLine {
 		if (onlyTranscriptsFile != null) {
 			// Load file
 			String onlyTr = Gpr.readFile(onlyTranscriptsFile);
-			HashSet<String> trIds = new HashSet<String>();
+			HashSet<String> trIds = new HashSet<>();
 			for (String trId : onlyTr.split("\n"))
 				trIds.add(trId.trim());
 
@@ -648,7 +648,7 @@ public class SnpEff implements CommandLine {
 		Markers nextProtDb = markerSerializer.load(nextProtBinFile);
 
 		// Create a collection of (only) NextProt markers. The original nextProtDb has Chromosomes, Genomes and other markers (otherwise it could have not been saved)
-		ArrayList<NextProt> nextProts = new ArrayList<NextProt>(nextProtDb.size());
+		ArrayList<NextProt> nextProts = new ArrayList<>(nextProtDb.size());
 		for (Marker m : nextProtDb)
 			if (m instanceof NextProt) nextProts.add((NextProt) m);
 
@@ -660,7 +660,7 @@ public class SnpEff implements CommandLine {
 		if (verbose) Timer.showStdErr("Adding transcript info to NextProt markers.");
 
 		// Create a list of all transcripts
-		HashMap<String, Transcript> trs = new HashMap<String, Transcript>();
+		HashMap<String, Transcript> trs = new HashMap<>();
 		for (Gene g : snpEffectPredictor.getGenome().getGenes())
 			for (Transcript tr : g)
 				trs.put(tr.getId(), tr);
@@ -678,7 +678,7 @@ public class SnpEff implements CommandLine {
 			//          sets). We only keep nextProt markers associated to found
 			//          transcripts. All others are discarded (the user doesn't
 			//          want that info).
-			ArrayList<NextProt> nextProtsToAdd = new ArrayList<NextProt>();
+			ArrayList<NextProt> nextProtsToAdd = new ArrayList<>();
 			for (NextProt np : nextProts) {
 				Transcript tr = trs.get(np.getTranscriptId());
 
@@ -714,7 +714,7 @@ public class SnpEff implements CommandLine {
 		//---
 		// Are all chromosomes available?
 		//---
-		HashMap<String, Integer> chrs = new HashMap<String, Integer>();
+		HashMap<String, Integer> chrs = new HashMap<>();
 		for (Marker r : regulation) {
 			String chr = r.getChromosomeName();
 			int max = chrs.containsKey(chr) ? chrs.get(chr) : 0;
@@ -768,7 +768,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("seq") //
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("pdb") //
-		// Obsolete stuff (from T2D projects)
+				// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 		) {
 			command = args[argNum++].trim().toLowerCase();
@@ -777,7 +777,7 @@ public class SnpEff implements CommandLine {
 		//---
 		// Copy and parse arguments, except initial 'command'
 		//---
-		ArrayList<String> argsList = new ArrayList<String>();
+		ArrayList<String> argsList = new ArrayList<>();
 		for (int i = argNum; i < args.length; i++) {
 			String arg = args[i];
 
@@ -988,7 +988,7 @@ public class SnpEff implements CommandLine {
 	 * Additional values to be reported
 	 */
 	public HashMap<String, String> reportValues() {
-		HashMap<String, String> reportValues = new HashMap<String, String>();
+		HashMap<String, String> reportValues = new HashMap<>();
 		return reportValues;
 	}
 
@@ -1194,7 +1194,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.genomeVer = genomeVer;
 		snpEffCmd.help = help;
 		snpEffCmd.hgvs = hgvs;
-		snpEffCmd.hgvsDnaOld = hgvsDnaOld;
+		snpEffCmd.hgvsOld = hgvsOld;
 		snpEffCmd.hgvsOneLetterAa = hgvsOneLetterAa;
 		snpEffCmd.hgvsShift = hgvsShift;
 		snpEffCmd.hgvsTrId = hgvsTrId;

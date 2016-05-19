@@ -86,10 +86,10 @@ public class TestCasesHgvs extends TestCasesBase {
 	public void test_03() {
 		Gpr.debug("Test");
 
-		Config.get().setHgvsDnaOld(true);
+		Config.get().setHgvsOld(true);
 		Variant variant = new Variant(chromosome, 898, "C", "A", ""); // Add 'GHQ' amino acids
 		checkHgvsProt(variant, "c.C19A", null);
-		Config.get().setHgvsDnaOld(false);
+		Config.get().setHgvsOld(false);
 	}
 
 }

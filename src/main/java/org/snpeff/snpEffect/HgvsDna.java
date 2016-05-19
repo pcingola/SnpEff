@@ -468,7 +468,7 @@ public class HgvsDna extends Hgvs {
 		if (pos == null) return null;
 
 		// SNPs using old HGVS notation?
-		if (Config.get().isHgvsDnaOld() && type.isEmpty()) {
+		if (Config.get().isHgvsOld() && type.isEmpty()) {
 			String ref, alt;
 			if (strandPlus) {
 				ref = variant.getReference();
