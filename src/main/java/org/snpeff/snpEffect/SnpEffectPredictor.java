@@ -799,25 +799,31 @@ public class SnpEffectPredictor implements Serializable {
 	 * Add large structural variant effects
 	 */
 	void variantEffectStructuralLarge(Variant variant, VariantEffects variantEffects) {
-		EffectType eff, effTr, effGene;
+		EffectType eff, effGene, effTr, effExon, effExonPartial;
 
 		switch (variant.getVariantType()) {
 		case DEL:
 			eff = EffectType.CHROMOSOME_LARGE_DELETION;
-			effTr = EffectType.TRANSCRIPT_DELETED;
 			effGene = EffectType.GENE_DELETED;
+			effTr = EffectType.TRANSCRIPT_DELETED;
+			effExon = EffectType.EXON_DELETED;
+			effExonPartial = EffectType.EXON_DELETED_PARTIAL;
 			break;
 
 		case DUP:
 			eff = EffectType.CHROMOSOME_LARGE_DUPLICATION;
-			effTr = EffectType.TRANSCRIPT_DUPLICATION;
 			effGene = EffectType.GENE_DUPLICATION;
+			effTr = EffectType.TRANSCRIPT_DUPLICATION;
+			effExon = EffectType.EXON_DUPLICATION;
+			effExonPartial = EffectType.EXON_DUPLICATION_PARTIAL;
 			break;
 
 		case INV:
 			eff = EffectType.CHROMOSOME_LARGE_INVERSION;
-			effTr = EffectType.TRANSCRIPT_INVERSION;
 			effGene = EffectType.GENE_INVERSION;
+			effTr = EffectType.TRANSCRIPT_INVERSION;
+			effExon = EffectType.EXON_INVERSION;
+			effExonPartial = EffectType.EXON_INVERSION_PARTIAL;
 			break;
 
 		default:
@@ -828,25 +834,34 @@ public class SnpEffectPredictor implements Serializable {
 		variantEffects.add(variant, variant.getChromosome(), eff, "");
 
 		// Add detailed effects for genes & transcripts
-		variantEffectStructuralLargeGenes(variant, variantEffects, effGene, effTr);
+		variantEffectStructuralLargeGenes(variant, variantEffects, effGene, effTr, effExon, effExonPartial);
 	}
 
 	/**
 	 * Add large structural variant effects: Genes and transcripts
 	 */
-	void variantEffectStructuralLargeGenes(Variant variant, VariantEffects variantEffects, EffectType effGene, EffectType effTr) {
+	void variantEffectStructuralLargeGenes(Variant variant, VariantEffects variantEffects, EffectType effGene, EffectType effTr, EffectType effExon, EffectType effExonPartial) {
 		// Check all genes in the genome
 		for (Gene g : genome.getGenes()) {
 			// Does the variant affect the gene?
 			if (variant.intersects(g)) {
 				variantEffects.add(variant, g, effGene, "");
-				Gpr.debug("Gene: " + g.getGeneName());
 
 				// Does the variant affect this transcript?
 				for (Transcript tr : g) {
-					Gpr.debug("\tTR: " + tr.getId());
-					if (variant.intersects(tr)) {
+					// Variant affects the whole transcript?  
+					if (variant.includes(tr)) {
 						variantEffects.add(variant, tr, effTr, "");
+					} else if (variant.intersects(tr)) {
+						// Variant affects part of the transcript
+						// Add effects for each exon  
+						for (Exon ex : tr) {
+							if (variant.includes(ex)) {
+								variantEffects.add(variant, ex, effExon, "");
+							} else if (variant.intersects(ex)) {
+								variantEffects.add(variant, ex, effExonPartial, "");
+							}
+						}
 					}
 				}
 			}
