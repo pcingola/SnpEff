@@ -79,7 +79,6 @@ public class VariantEffectStructural extends VariantEffect {
 		default:
 			throw new RuntimeException("Unknown effect for variant type " + variant.getVariantType());
 		}
-
 	}
 
 	/**
