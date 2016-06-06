@@ -10,7 +10,15 @@ while( $l = <STDIN> ) {
 		$t[2] = ".";	# ID
 		$t[5] = ".";	# QUALITY
 		$t[6] = ".";	# FILTER
-		$t[7] = ".";	# INFO
+
+		# INFO
+		#if( $t[7] =~ /[\t;](END=\d+)[;\t]/ ) {
+		if( $t[7] =~ /(END=\d+)/ ) {
+			# If there is an 'END' field, keep it
+			$t[7] = $1;
+		} else {
+			$t[7] = ".";
+		}
 
 		# Cut INFO and GENOTYPES
 		for( $i=0 ; $i <= $#t ; $i++ ) {
