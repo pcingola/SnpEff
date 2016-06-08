@@ -184,7 +184,8 @@ void buildConfig() {
 #-------------------------------------------------------------------------------
 void buildDb() {
 	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
-	buildDbAll()
+	if( ! dbs.isEmpty() )	dbs.buildDbs()			# Build some genomes
+	else buildDbAll()	# Build ALL genomes
 	buildDbSpecial()
 	buildDbPdb()
 }
@@ -239,7 +240,7 @@ bool buildDbs(string[] dbids) {
 void buildDbPdb() {
 	print("Build PDB.\n")
 
-	dataDirsHg := dirData.dir("GRCh*") + dirData.dir("hg*")
+	dataDirsHg := dirsHg()
 
 	# Check each genome version
 	for( string hg : dataDirsHg ) {
@@ -317,12 +318,19 @@ void buildDbNextProt() {
 # Copy pwms.bin to every human dir
 #-------------------------------------------------------------------------------
 void copyPwm() {
-	humanDirs := dirData.dirPath("GRCh*")
+	humanDirs := dirsHg()
 	print("Copying $pwmsBin to human genomes\n")
 	for( string hg : humanDirs ) {
 		print("\t$hg\n")
 		sys cp $pwmsBin $hg
 	}
+}
+
+#-------------------------------------------------------------------------------
+# Human genomes data dirs
+#-------------------------------------------------------------------------------
+string[] dirsHg() {
+	return dirData.dir("GRCh*") + dirData.dir("hg*")
 }
 
 #-------------------------------------------------------------------------------
@@ -630,8 +638,7 @@ print("Building\n")
 if( args.isEmpty() )		build()					# No arguments? Build (create JAR files)
 if( bundleLists )			buildBundleLists()		# Create bundle list and config files
 if( config )				buildConfig()			# Create config file
-if( db )					buildDb()				# Build ALL genomes
-if( ! dbs.isEmpty() )		dbs.buildDbs()			# Build some genomes
+if( db || !dbs.isEmpty() )	buildDb()				# Build ALL genomes
 if( dbTest )				buildDbTest()			# Build databases used in test cases
 if( distro )				makeDistro()			# Create distribution files
 if( distroCore )			zipCore()				# Create distribution files (core 'zip')
