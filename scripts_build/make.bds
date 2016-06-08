@@ -11,6 +11,7 @@
 bundleLists			:= false		help Create bundle lists and config entries
 config				:= false		help Create config file
 db					:= false		help Build databases
+string[] dbs						help Build databases
 dbTest				:= false		help Build databases used in test cases
 distro	 			:= false		help Create distribution files (zip)
 distroBundles		:= false		help Create bundle files (zip)
@@ -192,7 +193,7 @@ void buildDb() {
 # Build all databases
 #-------------------------------------------------------------------------------
 bool buildDbAll() {
-	print("Build: Start\n")
+	print("Build all dbs: Start\n")
 	dirBuild.mkdir()	# Make sure build dir exists
 	
 	# Look into all directories
@@ -209,6 +210,24 @@ bool buildDbAll() {
 	# Create build summary
 	print("Build: Checking build logs!\n")
 	sys cat $dirBuild/build.*.out | ./scripts_build/buildCheck.pl | tee $buildSummary
+
+	print("Build: Done!\n")
+	return( true )
+}
+
+#-------------------------------------------------------------------------------
+# Build some databases
+#-------------------------------------------------------------------------------
+bool buildDbs(string[] dbids) {
+	print("Build dbs: Start\n")
+	dirBuild.mkdir()	# Make sure build dir exists
+	
+	print("Building:\n")
+	for(string genome : dbids  ) {
+		println "\t$genome"
+		addBuildDb(genome)
+	}
+	wait
 
 	print("Build: Done!\n")
 	return( true )
@@ -611,7 +630,8 @@ print("Building\n")
 if( args.isEmpty() )		build()					# No arguments? Build (create JAR files)
 if( bundleLists )			buildBundleLists()		# Create bundle list and config files
 if( config )				buildConfig()			# Create config file
-if( db )					buildDb()				# Build genomes
+if( db )					buildDb()				# Build ALL genomes
+if( ! dbs.isEmpty() )		dbs.buildDbs()			# Build some genomes
 if( dbTest )				buildDbTest()			# Build databases used in test cases
 if( distro )				makeDistro()			# Create distribution files
 if( distroCore )			zipCore()				# Create distribution files (core 'zip')
