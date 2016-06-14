@@ -106,7 +106,7 @@ public class SnpEff implements CommandLine {
 	protected boolean help; // Show command help and exit
 	protected boolean hgvs = true; // Use Hgvs notation
 	protected boolean hgvsOneLetterAa = false; // Use 1-letter AA codes in HGVS.p notation?
-	protected boolean hgvsOld = false; // Old notation style notation: E.g. 'c.G123T' instead of 'c.123G>T' and 'X' instead of '*' 
+	protected boolean hgvsOld = false; // Old notation style notation: E.g. 'c.G123T' instead of 'c.123G>T' and 'X' instead of '*'
 	protected boolean hgvsShift = true; // Shift variants towards the 3-prime end of the transcript
 	protected boolean hgvsTrId = false; // Use full transcript version in HGVS notation?
 	protected boolean interaction = true; // Use interaction loci information if available
