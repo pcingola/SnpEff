@@ -212,6 +212,8 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 			if (comp != 0) return comp;
 		}
 
+		if (trThis == null || trOther == null) return (trThis == null ? 0 : 1) - (trOther == null ? 0 : 1);
+
 		// Compare by marker
 		if ((getMarker() != null) && (varEffOther.getMarker() != null)) {
 			comp = getMarker().compareToPos(varEffOther.getMarker());
