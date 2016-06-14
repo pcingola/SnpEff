@@ -2,7 +2,7 @@
 
 while( $l = <STDIN> ) {
 	chomp $l;
-	@t = split /\s+/, $l;
+	@t = split /\t/, $l;
 
 	if( $l =~ /^#/ ) {
 		if( $l =~ /^#CHROM/ ) { print "$l\n"; } # Only use title line
@@ -20,15 +20,20 @@ while( $l = <STDIN> ) {
 			$t[7] = ".";
 		}
 
-		# Cut INFO and GENOTYPES
-		for( $i=0 ; $i <= $#t ; $i++ ) {
+		# Show fields
+		for( $i=0 ; $i < 8 ; $i++ ) {
 			print "\t" if $i > 0;
+			print $t[$i];
+		}
+
+		# Show sample fields (only show genotypes)
+		for( $i=8 ; $i <= $#t ; $i++ ) {
 			$f = $t[$i];
 
 			if( $f =~ /(.*?):/ )	{ $f = $1; }
 			if( $f =~ /(.*?);/ )	{ $f = $1; }
 
-			print $f;
+			print "\t$f";
 		}
 		print "\n";
 	}
