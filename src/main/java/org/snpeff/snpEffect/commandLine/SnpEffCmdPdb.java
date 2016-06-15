@@ -15,16 +15,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
-import org.biojava.bio.structure.AminoAcid;
-import org.biojava.bio.structure.Atom;
-import org.biojava.bio.structure.Calc;
-import org.biojava.bio.structure.Chain;
-import org.biojava.bio.structure.Compound;
-import org.biojava.bio.structure.DBRef;
-import org.biojava.bio.structure.Group;
-import org.biojava.bio.structure.Structure;
-import org.biojava.bio.structure.StructureException;
-import org.biojava.bio.structure.io.PDBFileReader;
+import org.biojava.nbio.structure.AminoAcid;
+import org.biojava.nbio.structure.Atom;
+import org.biojava.nbio.structure.Calc;
+import org.biojava.nbio.structure.Chain;
+import org.biojava.nbio.structure.Compound;
+import org.biojava.nbio.structure.DBRef;
+import org.biojava.nbio.structure.Group;
+import org.biojava.nbio.structure.GroupType;
+import org.biojava.nbio.structure.Structure;
+import org.biojava.nbio.structure.StructureException;
+import org.biojava.nbio.structure.io.PDBFileReader;
 import org.snpeff.SnpEff;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
@@ -171,7 +172,7 @@ public class SnpEffCmdPdb extends SnpEff {
 				if (debug) Gpr.debug("\tMapping OK    :\t" + trId + "\terror: " + err);
 
 				int trAaLen = tr.protein().length();
-				int pdbAaLen = chain.getAtomGroups("amino").size();
+				int pdbAaLen = chain.getAtomGroups(GroupType.AMINOACID).size();
 
 				for (IdMapperEntry idm : idmapsOri) {
 					if (trId.equals(idm.trId) && pdbId.equals(idm.pdbId)) {
@@ -261,12 +262,8 @@ public class SnpEffCmdPdb extends SnpEff {
 
 		for (Atom atom1 : aa1.getAtoms())
 			for (Atom atom2 : aa2.getAtoms()) {
-				try {
-					double dist = Calc.getDistance(atom1, atom2);
-					distMin = Math.min(distMin, dist);
-				} catch (StructureException e) {
-					throw new RuntimeException(e);
-				}
+				double dist = Calc.getDistance(atom1, atom2);
+				distMin = Math.min(distMin, dist);
 			}
 
 		return distMin;
@@ -307,25 +304,15 @@ public class SnpEffCmdPdb extends SnpEff {
 	 * I.e.: Organism matches
 	 */
 	boolean filterPdbChain(Chain chain) {
-		if (chain.getHeader() == null) return false;
-
-		// Try 'ORGANISM_SCINETIFIC'
-		String orgs = chain.getHeader().getOrganismScientific();
-		if (orgs != null && orgs.indexOf(pdbOrganismScientific) >= 0) return true;
-
-		// Try 'ORGANISM_COMMON'
-		orgs = chain.getHeader().getOrganismCommon();
-		if (orgs == null) return false;
-
-		// Multiple organisms?
-		if (orgs.indexOf(' ') > 0) {
-			for (String org : orgs.split("\\s"))
-				if (org.equals(pdbOrganismCommon)) return true;
-
-		}
-
-		return orgs.equals(pdbOrganismCommon);
-	}
+                // note: Compound is replaced by EntityInfo in biojava 5.x
+                for (Compound compound : chain.getStructure().getCompounds()) {
+                        if (contains(compound.getOrganismCommon(), pdbOrganismCommon) ||
+                            contains(compound.getOrganismScientific(), pdbOrganismScientific)) {
+                                return true;
+                        }
+                }
+                return false;
+        }
 
 	/**
 	 * Return true if the transcript passes the criteria
@@ -876,4 +863,15 @@ public class SnpEffCmdPdb extends SnpEff {
 		System.exit(-1);
 	}
 
+
+        /**
+         * Return true if <code>s1</code> is not null and contains <code>s2</code>.
+         *
+         * @param s1 string
+         * @param s2 string
+         * @return true if <code>s1</code> is not null and contains <code>s2</code>
+         */
+        private static boolean contains(String s1, String s2) {
+                return s1 != null && s1.indexOf(s2) >= 0;
+        }
 }

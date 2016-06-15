@@ -1,6 +1,6 @@
 package org.snpeff.pdb;
 
-import org.biojava.bio.structure.AminoAcid;
+import org.biojava.nbio.structure.AminoAcid;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Transcript;
 import org.snpeff.util.Gpr;
@@ -188,14 +188,14 @@ public class DistanceResult {
 	}
 
 	public void setAa1(AminoAcid aa) {
-		setPdbId(aa.getChain().getParent().getPDBCode());
+		setPdbId(aa.getChain().getStructure().getPDBCode());
 		pdbChainId1 = aa.getChainId();
 		aaPos1 = aa.getResidueNumber().getSeqNum() - 1;
 		aa1 = aa.getChemComp().getOne_letter_code().charAt(0);
 	}
 
 	public void setAa2(AminoAcid aa) {
-		setPdbId(aa.getChain().getParent().getPDBCode());
+		setPdbId(aa.getChain().getStructure().getPDBCode());
 		pdbChainId2 = aa.getChainId();
 		aaPos2 = aa.getResidueNumber().getSeqNum() - 1;
 		aa2 = aa.getChemComp().getOne_letter_code().charAt(0);
