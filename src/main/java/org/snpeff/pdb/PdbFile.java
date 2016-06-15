@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.biojava.bio.structure.Structure;
-import org.biojava.bio.structure.io.FileParsingParameters;
-import org.biojava.bio.structure.io.PDBFileParser;
-import org.biojava3.core.util.InputStreamProvider;
+import org.biojava.nbio.core.util.InputStreamProvider;
+import org.biojava.nbio.structure.Structure;
+import org.biojava.nbio.structure.io.FileParsingParameters;
+import org.biojava.nbio.structure.io.PDBFileParser;
 
 /**
  * A structure that reads PDB files
