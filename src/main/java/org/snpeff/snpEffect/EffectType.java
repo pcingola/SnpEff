@@ -390,7 +390,7 @@ public enum EffectType {
 
 		case EXON:
 			if (variant != null && (!variant.isVariant() || variant.isInterval())) return "exon_region";
-			return "non_coding_exon_variant";
+			return "non_coding_transcript_exon_variant";
 
 		case EXON_DELETED:
 			return "exon_loss_variant";

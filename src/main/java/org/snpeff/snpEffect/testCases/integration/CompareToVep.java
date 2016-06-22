@@ -150,7 +150,7 @@ public class CompareToVep {
 		if (effSo.equals("conservative_inframe_deletion") && csqSo.equals("feature_truncation")) return true;
 		if (effSo.equals("disruptive_inframe_deletion") && csqSo.equals("feature_truncation")) return true;
 		if (effSo.equals("synonymous_variant") && csqSo.equals("coding_sequence_variant")) return true;
-		if (effSo.equals("non_coding_exon_variant") && csqSo.equals("NMD_transcript_variant")) return true;
+		if (effSo.equals("non_coding_transcript_exon_variant") && csqSo.equals("NMD_transcript_variant")) return true;
 		return false;
 	}
 
