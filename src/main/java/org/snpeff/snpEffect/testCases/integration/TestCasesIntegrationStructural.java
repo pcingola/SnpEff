@@ -151,4 +151,41 @@ public class TestCasesIntegrationStructural {
 		Assert.assertTrue("No translocation found", checked);
 	}
 
+	/**
+	 * Deletion creates a gene fusion
+	 */
+	@Test
+	public void test_05_fusion() {
+		Gpr.debug("Test");
+		String genome = "hg19";
+		String vcf = "tests//test_fusion_ROS1-SLC34A2.vcf";
+
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// Transform from hg38 to hg19 coordinates:
+		//		4   25665006    155_1   N   N]CHR6:117337147]   .   .   SVTYPE=BND
+		//		6   117337147   155_2   N   N]CHR4:25665006]    .   .   SVTYPE=BND
+
+		String args[] = { "-noLog", "-ud", "0", genome, vcf };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		snpEff.setDebug(debug);
+
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		boolean checked = false;
+		List<VcfEntry> vcfEntries = seff.run(true);
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve);
+			for (VcfEffect veff : ve.getVcfEffects()) {
+				if (verbose) System.out.println("\t\t" + veff);
+				if (veff.getEffectType() == EffectType.GENE_FUSION) {
+					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
+					Assert.assertEquals(veff.getGeneId(), "ROS1&SLC34A2");
+					checked = true;
+				}
+			}
+		}
+		Assert.assertTrue("No translocation found", checked);
+	}
+
 }
