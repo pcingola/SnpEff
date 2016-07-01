@@ -334,7 +334,7 @@ public class VariantEffectFusion extends VariantEffectStructural {
 		return trLeft != null //
 				&& ((trLeft.isStrandPlus() && !getVariantTranslocation().isBefore()) //
 						|| (trLeft.isStrandMinus() && getVariantTranslocation().isBefore())) //
-						;
+		;
 	}
 
 }

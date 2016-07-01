@@ -35,7 +35,7 @@ public class VariantEffectStructural extends VariantEffect {
 		super(variant);
 		featuresLeft = new LinkedList<>();
 		featuresRight = new LinkedList<>();
-		genes = new HashSet<Gene>();
+		genes = new HashSet<>();
 
 		if (intersects != null) {
 			setGenes(intersects);
@@ -89,7 +89,7 @@ public class VariantEffectStructural extends VariantEffect {
 		if (featuresLeft.isEmpty() || featuresRight.isEmpty()) return null;
 
 		// Add all gene pairs
-		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
+		List<VariantEffect> fusions = new LinkedList<>();
 		for (Marker gLeft : featuresLeft)
 			for (Marker gRight : featuresRight) {
 				if (variant.isBnd()) {
@@ -122,7 +122,7 @@ public class VariantEffectStructural extends VariantEffect {
 	 * Create all possible transcript pair fusions for these two genes
 	 */
 	List<VariantEffect> fusions(Variant variant, Marker mLeft, Marker mRight) {
-		List<VariantEffect> fusions = new LinkedList<VariantEffect>();
+		List<VariantEffect> fusions = new LinkedList<>();
 		// One for fusion effect for each transcript
 		// This can be a long list...
 		Markers msLeft = new Markers();

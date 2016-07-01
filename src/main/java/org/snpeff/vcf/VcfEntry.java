@@ -1465,8 +1465,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			String sep = (left ? "\\]" : "\\[");
 			String tpos[] = alt.split(sep);
 			String pos = tpos[1];
-			boolean before = (alt.indexOf(']') > 0) || (alt.indexOf('[') > 0);
-			String altBases = (before ? tpos[0] : tpos[2]);
+			boolean before = (alt.indexOf(']') == 0) || (alt.indexOf('[') == 0);
+			String altBases = (before ? tpos[2] : tpos[0]);
 
 			// Parse 'chr:start'
 			String posSplit[] = pos.split(":");
