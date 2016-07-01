@@ -246,7 +246,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Add a genotype as a string
 	 */
 	public void addGenotype(String vcfGenotypeStr) {
-		if (vcfGenotypes == null) vcfGenotypes = new ArrayList<VcfGenotype>();
+		if (vcfGenotypes == null) vcfGenotypes = new ArrayList<>();
 		if (format == null) format = "";
 		vcfGenotypes.add(new VcfGenotype(this, format, vcfGenotypeStr));
 
@@ -707,7 +707,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		}
 
 		// Create a list of effect
-		vcfEffects = new ArrayList<VcfEffect>();
+		vcfEffects = new ArrayList<>();
 
 		// Note: An empty "EFF" string can be viewed as a FLAG type and transformed to a "true" value
 		if ((effStr == null) || effStr.isEmpty() || effStr.equals("true")) return vcfEffects;
@@ -811,7 +811,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				&& ref.length() == 1 //
 				&& altStr.length() == 1 //
 				&& !ref.equalsIgnoreCase(altStr) //
-				;
+		;
 	}
 
 	/**
@@ -850,7 +850,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				&& !alt.equals(VCF_ALT_NON_REF_gVCF) // '<NON_REF>'
 				&& !alt.equals(VCF_ALT_MISSING_REF) // '<*>'
 				&& !alt.equals(ref) // Is ALT different than REF?
-				;
+		;
 	}
 
 	@Override
@@ -1101,7 +1101,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (isCompressedGenotypes()) {
 			uncompressGenotypes();
 		} else {
-			vcfGenotypes = new ArrayList<VcfGenotype>();
+			vcfGenotypes = new ArrayList<>();
 
 			// No genotype string? => Nothing to do
 			if (genotypeFieldsStr == null) return;
@@ -1121,7 +1121,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 */
 	void parseInfo() {
 		// Parse info entries
-		info = new HashMap<String, String>();
+		info = new HashMap<>();
 		for (String inf : infoStr.split(SUB_FIELD_SEP)) {
 			String vp[] = inf.split("=", 2);
 
@@ -1136,7 +1136,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public List<VcfLof> parseLof() {
 		String lofStr = getInfo(LossOfFunction.VCF_INFO_LOF_NAME);
 
-		ArrayList<VcfLof> lofList = new ArrayList<VcfLof>();
+		ArrayList<VcfLof> lofList = new ArrayList<>();
 		if (lofStr == null || lofStr.isEmpty()) return lofList;
 
 		// Split comma separated list
@@ -1153,7 +1153,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	public List<VcfNmd> parseNmd() {
 		String nmdStr = getInfo(LossOfFunction.VCF_INFO_NMD_NAME);
 
-		ArrayList<VcfNmd> nmdList = new ArrayList<VcfNmd>();
+		ArrayList<VcfNmd> nmdList = new ArrayList<>();
 		if (nmdStr == null || nmdStr.isEmpty()) return nmdList;
 
 		// Split comma separated list
@@ -1388,7 +1388,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		if (variants != null) return variants;
 
 		// Create list of variants
-		variants = new LinkedList<Variant>();
+		variants = new LinkedList<>();
 
 		// Create one Variant for each ALT
 		Chromosome chr = (Chromosome) parent;
@@ -1447,14 +1447,14 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				int startNew = start + reference.length();
 				Variant var = new Variant(chromo, startNew, end, id);
 				var.setVariantType(VariantType.INV);
-				list = new LinkedList<Variant>();
+				list = new LinkedList<>();
 				list.add(var);
 			} else if (alt.startsWith("<DUP")) {
 				// Duplication
 				int startNew = start + reference.length();
 				Variant var = new Variant(chromo, startNew, end, id);
 				var.setVariantType(VariantType.DUP);
-				list = new LinkedList<Variant>();
+				list = new LinkedList<>();
 				list.add(var);
 			}
 		} else if ((alt.indexOf('[') >= 0) || (alt.indexOf(']') >= 0)) {
@@ -1465,7 +1465,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			String sep = (left ? "\\]" : "\\[");
 			String tpos[] = alt.split(sep);
 			String pos = tpos[1];
-			boolean before = tpos.length <= 2;
+			boolean before = (alt.indexOf(']') > 0) || (alt.indexOf('[') > 0);
 			String altBases = (before ? tpos[0] : tpos[2]);
 
 			// Parse 'chr:start'
@@ -1475,7 +1475,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			int trStart = Gpr.parseIntSafe(posSplit[1]) - 1;
 
 			VariantBnd var = new VariantBnd(chromo, start, ref, altBases, trChr, trStart, left, before);
-			list = new LinkedList<Variant>();
+			list = new LinkedList<>();
 			list.add(var);
 		} else if (reference.length() == alt.length()) {
 			// Case: SNP, MNP
@@ -1543,7 +1543,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		//---
 		// Add original 'ALT' field as genotype
 		//---
-		if (list == null) list = new LinkedList<Variant>();
+		if (list == null) list = new LinkedList<>();
 		for (Variant variant : list)
 			variant.setGenotype(alt);
 

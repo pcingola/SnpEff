@@ -91,10 +91,10 @@ public class LossOfFunction {
 
 	public LossOfFunction(Config config, Collection<VariantEffect> variantEffects) {
 		this.variantEffects = variantEffects;
-		transcriptsLof = new HashSet<Transcript>();
-		genesLof = new HashSet<Gene>();
-		transcriptsNmd = new HashSet<Transcript>();
-		genesNmd = new HashSet<Gene>();
+		transcriptsLof = new HashSet<>();
+		genesLof = new HashSet<>();
+		transcriptsNmd = new HashSet<>();
+		genesNmd = new HashSet<>();
 
 		this.config = config;
 		ignoreProteinCodingBefore = config.getLofIgnoreProteinCodingBefore();
@@ -213,6 +213,12 @@ public class LossOfFunction {
 			if (variant == null) throw new RuntimeException("Cannot retrieve 'variant' from EXON_DELETED effect!");
 			if (variant.includes(tr.getFirstCodingExon())) return true;
 		}
+
+		// Fusion are loss of functions
+		if (variantEffect.hasEffectType(EffectType.GENE_FUSION) //
+				|| variantEffect.hasEffectType(EffectType.GENE_FUSION_HALF) //
+				|| variantEffect.hasEffectType(EffectType.GENE_FUSION_REVERESE) //
+		) return true;
 
 		//---
 		// Criteria:
@@ -366,7 +372,7 @@ public class LossOfFunction {
 	public String toString() {
 		return (isLof() ? "LOF=" + toStringVcfLof() + " " : "") //
 				+ (isNmd() ? "NMD=" + toStringVcfNmd() : "") //
-				;
+		;
 	}
 
 	/**
