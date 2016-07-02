@@ -49,7 +49,23 @@ import junit.framework.Assert;
  *      2:110-125 'exon3', rank: 1, frame: ., sequence: gttaatgggatttcac
  *      2:150-190 'exon4', rank: 2, frame: ., sequence: atgggaacggagtgtcgacagcaccttatggggagctatat
  *      CDS     :   gttaatgggatttcacatgggaacggagtgtcgacagcaccttatggggagctatat
- *      Protein :   VNGISHGNGVSTAPYGELY */
+ *      Protein :   VNGISHGNGVSTAPYGELY
+ *
+ *
+ *  Genes diagram:
+ *
+ *       [ Chr1: Gene1                                                                   ]
+ *       >>>>>>>>>>>>>>>>>>>>>--------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ *       |                   |         |                                                 |
+ *       ^10                 ^30       ^40                                               ^90
+ *
+ *
+ *                                                                                                           [ Chr2: Gene2                                                                   ]
+ *                                                                                                           >>>>>>>>>>>>>>>>------------------------>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ *                                                                                                           |              |                        |                                       |
+ *                                                                                                           ^110           ^125                     ^150                                    ^190
+ *
+ */
 public class TestCasesStructuralTranslocations {
 
 	EffFormatVersion formatVersion = EffFormatVersion.FORMAT_ANN;
@@ -257,7 +273,6 @@ public class TestCasesStructuralTranslocations {
 	@Test
 	public void test01_0() {
 		Gpr.debug("Test");
-
 		init(false, false);
 
 		// Create variant
@@ -301,7 +316,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in positive strand)
+	 * Translocation in opposite directions
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N[chr2:140[
@@ -329,7 +344,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in positive strand)
+	 * Translocation in opposite directions
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N[chr2:140[
@@ -357,7 +372,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in positive strand)
+	 * Translocation in the same direction (both genes in negative strand)
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N[chr2:140[
@@ -385,7 +400,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in positive strand)
+	 * Translocation in the same direction (both genes in negative strand)
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N[chr2:140[
@@ -414,7 +429,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in opposite directions (both genes in positive strand)
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
@@ -442,7 +457,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
@@ -470,14 +485,14 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
 	 *
 	 * gene1:   >>>>>>>>>>>----
 	 *                         |
-	 * gene2    <<<<<<<<<<<----
+	 * gene2    -----<<<<<<<<<<<----
 	 *
 	 */
 	@Test
@@ -499,7 +514,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
@@ -527,14 +542,14 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
 	 *
 	 * gene1:   <<<<<<<<<<<----
 	 *                         |
-	 * gene2    >>>>>>>>>>>----
+	 * gene2    ----->>>>>>>>>>>----
 	 *
 	 */
 	@Test
@@ -556,7 +571,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the opposite directions
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      N]chr2:140]
@@ -584,7 +599,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in opposite directions
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      [chr2:140[N
@@ -612,7 +627,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      [chr2:140[N
@@ -640,12 +655,12 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      [chr2:140[N
 	 *
-	 * gene1:                  --->>>>>>>>>>>----
+	 * gene1:               --->>>>>>>>>>>----
 	 *                         |
 	 * gene2                   ---<<<<<<<<<<----
 	 *
@@ -669,7 +684,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      [chr2:140[N
@@ -697,7 +712,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      [chr2:140[N
@@ -726,7 +741,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the opposite directions
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      [chr2:140[N
@@ -754,7 +769,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction (both genes in positive strand)
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      ]chr2:140]N
@@ -782,7 +797,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction (both genes in positive strand)
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      ]chr2:140]N
@@ -811,7 +826,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in opposite directions
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      ]chr2:140]N
@@ -839,7 +854,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in opposite directions
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      ]chr2:140]N
@@ -867,7 +882,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      ]chr2:140]N
@@ -895,7 +910,7 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation in the same direction (both genes in negative strand)
+	 * Translocation in the same direction
 	 *
 	 * #CHROM   POS    ID    REF    ALT
 	 * chr1     35     .     N      ]chr2:140]N
@@ -925,6 +940,17 @@ public class TestCasesStructuralTranslocations {
 
 	/**
 	 * Translocation affecting a gene and an intergenic region
+	 *
+	 *       [ Chr1: Gene1                                                                   ]
+	 * ......>>>>>>>>>>>>>>>>>>>>>--------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..............................................................................................................
+	 *       ^10                 ^30  |    ^40                                               ^90                                          |
+	 *                                |>
+	 *                                ------------------
+	 *                                                <|
+	 *                                                 |                                                                        |
+	 * ..........................................................................................................>>>>>>>>>>>>>>>>------------------------>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..........
+	 *                                                                                                           ^110           ^125                     ^150                                    ^190
+	 *                                                                                                           [ Chr2: Gene2                                                                   ]
 	 */
 	@Test
 	public void test05_1_one_gene() {
@@ -946,6 +972,17 @@ public class TestCasesStructuralTranslocations {
 
 	/**
 	 * Translocation affecting a gene and an intergenic region
+	 *
+	 *       [ Chr1: Gene1                                                                   ]
+	 * ......>>>>>>>>>>>>>>>>>>>>>--------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..............................................................................................................
+	 *       ^10                 ^30       ^40                                               ^90                                          |
+	 *                                                                                                                                    |>
+	 *                                                                                                                         ------------
+	 *                                                                                                                        <|
+	 *                                                                                                                         |
+	 * ..........................................................................................................>>>>>>>>>>>>>>>>------------------------>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..........
+	 *                                                                                                           ^110           ^125                     ^150                                    ^190
+	 *                                                                                                           [ Chr2: Gene2                                                                   ]
 	 */
 	@Test
 	public void test05_2_one_gene() {
@@ -966,7 +1003,16 @@ public class TestCasesStructuralTranslocations {
 	}
 
 	/**
-	 * Translocation affecting a gene and an intergenic region
+	 * Translocation not affecting any gene (intergenic regions)
+	 *
+	 *       [ Chr1: Gene1                                                                   ]
+	 * ......>>>>>>>>>>>>>>>>>>>>>--------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..............................................................................................................
+	 *       ^10                 ^30       ^40                                               ^90                                          |
+	 *                                              <|------------------------------------------------------------------------------------|>
+	 *                                               |
+	 * ..........................................................................................................>>>>>>>>>>>>>>>>------------------------>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..........
+	 *                                                                                                           ^110           ^125                     ^150                                    ^190
+	 *                                                                                                           [ Chr2: Gene2                                                                   ]
 	 */
 	@Test
 	public void test06_no_gene() {

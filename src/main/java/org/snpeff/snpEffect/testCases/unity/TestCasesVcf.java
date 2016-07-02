@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
+import org.snpeff.interval.VariantBnd;
 import org.snpeff.outputFormatter.VcfOutputFormatter;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.util.Gpr;
@@ -670,11 +671,35 @@ public class TestCasesVcf extends TestCasesBase {
 		}
 	}
 
+	@Test
 	public void test_34_vcfInfoEncoding() {
 		String str = "hi;hello;bye;\nadios=chau\tbye\nhi=hello\thola";
 		String enc = VcfEntry.vcfInfoEncode(str);
 		String dec = VcfEntry.vcfInfoDecode(enc);
 		Assert.assertEquals("Encoding-Decoding cycle failed", str, dec);
+	}
+
+	@Test
+	public void test_35_translocations_parsing() {
+		Gpr.debug("Test");
+		String vcfFile = "tests/vcf_translocation_parsing.vcf";
+
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		for (VcfEntry ve : vcf) {
+			if (verbose) System.out.println(ve);
+			boolean ok = false;
+			for (Variant var : ve.variants()) {
+				if (verbose) System.out.println("\t" + var.getVariantType() + "\t" + var);
+				Assert.assertEquals("Variant type is not 'BND'", VariantType.BND, var.getVariantType());
+
+				VariantBnd vbnd = (VariantBnd) var;
+				Assert.assertEquals("Variant BND 'left' does not match", ve.getInfoFlag("LEFT"), vbnd.isLeft());
+				Assert.assertEquals("Variant BND 'before' does not match", ve.getInfoFlag("BEFORE"), vbnd.isBefore());
+				ok = true;
+			}
+
+			Assert.assertTrue("No variants found!", ok);
+		}
 	}
 
 }
