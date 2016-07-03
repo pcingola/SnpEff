@@ -3,8 +3,8 @@
 
 Name , Value
 Genome , testHg3770Chr22 
-Date , 2016-06-14 18:30
-SnpEff_version , SnpEff 4.3 (build 2016-06-14 18:13), by Pablo Cingolani
+Date , 2016-07-03 08:03
+SnpEff_version , SnpEff 4.3 (build 2016-06-25 15:57), by Pablo Cingolani
 Command_line_arguments , SnpEff  -csvStats test_04_TestCasesEff.csv testHg3770Chr22 tests/eff_sort.vcf 
 Warnings , 1185 
 Number_of_lines_in_input_file, 1205
@@ -53,7 +53,7 @@ frameshift_variant , 47 , 0.457287%
 initiator_codon_variant , 2 , 0.019459% 
 intron_variant , 3881 , 37.760265% 
 missense_variant , 1236 , 12.025686% 
-non_coding_exon_variant , 1053 , 10.245184% 
+non_coding_transcript_exon_variant , 1053 , 10.245184% 
 sequence_feature , 415 , 4.037751% 
 splice_acceptor_variant , 9 , 0.087566% 
 splice_donor_variant , 10 , 0.097295% 

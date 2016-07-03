@@ -159,11 +159,7 @@ public class TestCasesIntegrationStructural {
 		Gpr.debug("Test");
 		String genome = "hg19";
 		String vcf = "tests//test_fusion_ROS1-SLC34A2.vcf";
-
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		// Transform from hg38 to hg19 coordinates:
-		//		4   25665006    155_1   N   N]CHR6:117337147]   .   .   SVTYPE=BND
-		//		6   117337147   155_2   N   N]CHR4:25665006]    .   .   SVTYPE=BND
+		verbose = true;
 
 		String args[] = { "-noLog", "-ud", "0", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -179,8 +175,8 @@ public class TestCasesIntegrationStructural {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION) {
-					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
-					Assert.assertEquals(veff.getGeneId(), "ROS1&SLC34A2");
+					Assert.assertEquals("Impact does not match", EffectImpact.HIGH, veff.getImpact());
+					Assert.assertEquals("Affected genes do not match", "ROS1&SLC34A2", veff.getGeneId());
 					checked = true;
 				}
 			}
