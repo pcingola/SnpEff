@@ -287,7 +287,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-				);
+			);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -768,7 +768,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("seq") //
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("pdb") //
-				// Obsolete stuff (from T2D projects)
+		// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 		) {
 			command = args[argNum++].trim().toLowerCase();
@@ -1257,6 +1257,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\tlen                          : Calculate total genomic length for each marker type.");
 		System.err.println("\tpdb                          : Build interaction database (based on PDB data).");
 		System.err.println("\tprotein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
+		System.err.println("\tseq                          : Show sequence (from command line) translation.");
 		System.err.println("\tshow                         : Show a text representation of genes or transcripts coordiantes, DNA sequence and protein sequence.");
 		// System.err.println("\tspliceAnalysis               : Perform an analysis of splice sites. Experimental feature.");
 
