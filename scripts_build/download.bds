@@ -293,6 +293,7 @@ void downloadEnsemblBfmpp() {
 	# Move files to propper structure in 'local data' dir
 	#---
 	# Copy files to local dir
+	println "Copying files to parent dir"
 	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
 
 	# Move files
@@ -314,10 +315,10 @@ void downloadEnsemblBfmpp() {
 			# Copy files
 			dataDir := "data/$shortName"
 			dataDir.mkdir()
-			if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz
-			if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz
-			if( "$dataDir/protein.fa.gz" <- prot )		sys $cp $prot  $dataDir/protein.fa.gz
-			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz
+			if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz    || true
+			if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz       || true
+			if( "$dataDir/protein.fa.gz" <- prot )		sys $cp $prot  $dataDir/protein.fa.gz   || true
+			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz || true
         
 			# Append config lines
 			configLines += "$shortName.genome : $longName"
