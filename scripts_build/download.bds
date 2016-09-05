@@ -270,16 +270,16 @@ void downloadEnsemblBfmpp() {
 
 		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'plants', 'protists'] ) {
 			# Download GTF files (annotations)
-			sys rsync -av	--include='*$ensemblBfmppRelease.gtf.gz' \
+			sys rsync -av	--include='*.$ensemblBfmppRelease.gtf.gz' \
 							--include='*/' \
 							--exclude='*' \
 							rsync://$ensemblBfmppFtp/all/pub/$org/release-$ensemblBfmppRelease/gtf/ \
 							.
         
 			# Download FASTA files (reference genomes)
-			sys rsync -av	--include='*$ensemblBfmppRelease.dna.toplevel.fa.gz' \
-							--include='*$ensemblBfmppRelease.cdna.all.fa.gz' \
-							--include='*$ensemblBfmppRelease.pep.all.fa.gz' \
+			sys rsync -av	--include='*.dna.toplevel.fa.gz' \
+							--include='*.cdna.all.fa.gz' \
+							--include='*.pep.all.fa.gz' \
 							--include='*/' \
 							--exclude='*' \
 							rsync://$ensemblBfmppFtp/all/pub/$org/release-$ensemblBfmppRelease/fasta/ \
