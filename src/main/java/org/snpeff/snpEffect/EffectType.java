@@ -279,6 +279,7 @@ public enum EffectType {
 		case GENE_DELETED:
 		case GENE_DUPLICATION:
 		case GENE_FUSION:
+		case GENE_FUSION_HALF:
 		case GENE_FUSION_REVERESE:
 		case GENE_INVERSION:
 		case GENE_REARRANGEMENT:
@@ -340,6 +341,14 @@ public enum EffectType {
 		}
 	}
 
+	public boolean isFusion() {
+		return this == GENE_FUSION //
+				|| this == GENE_FUSION_REVERESE //
+				|| this == GENE_FUSION_HALF //
+				|| this == FEATURE_FUSION //
+				;
+	}
+
 	public String toSequenceOntology(EffFormatVersion formatVersion, Variant variant) {
 		switch (this) {
 
@@ -381,7 +390,7 @@ public enum EffectType {
 
 		case EXON:
 			if (variant != null && (!variant.isVariant() || variant.isInterval())) return "exon_region";
-			return "non_coding_exon_variant";
+			return "non_coding_transcript_exon_variant";
 
 		case EXON_DELETED:
 			return "exon_loss_variant";
@@ -420,6 +429,9 @@ public enum EffectType {
 			return "duplication";
 
 		case GENE_FUSION:
+			return "gene_fusion";
+
+		case GENE_FUSION_HALF:
 			return "gene_fusion";
 
 		case GENE_FUSION_REVERESE:

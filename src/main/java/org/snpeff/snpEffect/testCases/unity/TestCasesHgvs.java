@@ -78,4 +78,18 @@ public class TestCasesHgvs extends TestCasesBase {
 		Config.get().setHgvsTrId(false);
 	}
 
+	/**
+	 * Test case: Use old HGVS.C nomenclature
+	 * E.g. : c.G123T instead of c.123G>T
+	 */
+	@Test
+	public void test_03() {
+		Gpr.debug("Test");
+
+		Config.get().setHgvsOld(true);
+		Variant variant = new Variant(chromosome, 898, "C", "A", ""); // Add 'GHQ' amino acids
+		checkHgvsProt(variant, "c.C19A", null);
+		Config.get().setHgvsOld(false);
+	}
+
 }

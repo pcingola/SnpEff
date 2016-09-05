@@ -7,8 +7,8 @@ import org.snpeff.interval.codonChange.CodonChange;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
 
 /**
@@ -329,7 +329,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		// Different analysis for coding or non-coding
 		boolean exonAnnotated = false;
 		if (!coding || variant.isInterval() || !variant.isVariant()) {
-			// Non-coding? Just annotate as 'exon'
+			// Non-coding or non-variant? Just annotate as 'exon'
 			variantEffects.add(variant, this, EffectType.EXON, "");
 			exonAnnotated = true;
 		} else if (tr.isCds(variant)) {

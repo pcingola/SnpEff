@@ -3,22 +3,22 @@ package org.snpeff.interval;
 import org.snpeff.interval.tree.IntervalForest;
 
 /**
- * A translocation consisting of two endpoints
+ * A 'BND' variant (i.e. translocation) consisting of two endpoints
  *
  * @author pcingola
  */
-public class VariantTranslocation extends Variant {
+public class VariantBnd extends Variant {
 
 	private static final long serialVersionUID = 1L;
 	Marker endPoint;
 	boolean left; // Is endPoint oriented to the left?
 	boolean before; // Is endPoint before ALT?
 
-	public VariantTranslocation() {
+	public VariantBnd() {
 		super();
 	}
 
-	public VariantTranslocation(Marker parent, int start, String ref, String alt, Chromosome chrTr, int startTr, boolean left, boolean before) {
+	public VariantBnd(Marker parent, int start, String ref, String alt, Chromosome chrTr, int startTr, boolean left, boolean before) {
 		super(parent, start, ref, alt);
 		endPoint = new Marker(chrTr, startTr, startTr);
 		endPoint.setStrandMinus(left);

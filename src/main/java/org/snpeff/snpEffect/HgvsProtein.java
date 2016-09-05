@@ -1,8 +1,7 @@
 package org.snpeff.snpEffect;
 
-import org.snpeff.codons.CodonTable;
 import org.snpeff.interval.Transcript;
-import org.snpeff.interval.VariantTranslocation;
+import org.snpeff.interval.VariantBnd;
 import org.snpeff.util.Gpr;
 
 /**
@@ -17,7 +16,9 @@ public class HgvsProtein extends Hgvs {
 	int codonNum, aaPos;
 	String aaNew, aaOld;
 	boolean hgvsOneLetterAa;
+	boolean hgvsOld;
 	int lettersPerAa;
+	char stop;
 
 	public HgvsProtein(VariantEffect variantEffect) {
 		super(variantEffect);
@@ -25,6 +26,8 @@ public class HgvsProtein extends Hgvs {
 		codonNum = variantEffect.getCodonNum();
 
 		hgvsOneLetterAa = Config.get().isHgvs1LetterAA();
+		hgvsOld = Config.get().isHgvsOld();
+		stop = hgvsOld ? 'X' : '*';
 		lettersPerAa = hgvsOneLetterAa ? 1 : 3;
 
 		// No marker? Nothing to do
@@ -33,23 +36,29 @@ public class HgvsProtein extends Hgvs {
 			// HGVS: the translation initiator Methionine is numbered as +1
 			if (codonNum >= 0) aaPos = codonNum + 1;
 
-			// Convert to 3 letter code
-			// HGVS: the three-letter amino acid code is prefered (see Discussion), with "*" designating a translation
-			// 		 termination codon; for clarity we this page describes changes using the three-letter amino acid
-			CodonTable codonTable = marker.codonTable();
-
-			aaNew = variantEffect.getAaAlt();
-			aaOld = variantEffect.getAaRef();
-
-			if (aaNew == null || aaNew.isEmpty() || aaNew.equals("-")) aaNew = "";
-			else if (!hgvsOneLetterAa) aaNew = codonTable.aaThreeLetterCode(aaNew);
-
-			if (aaOld == null || aaOld.isEmpty() || aaOld.equals("-")) aaOld = "";
-			else if (!hgvsOneLetterAa) aaOld = codonTable.aaThreeLetterCode(aaOld);
+			aaNew = aaCode(variantEffect.getAaAlt());
+			aaOld = aaCode(variantEffect.getAaRef());
 		} else {
 			aaPos = -1;
 			aaNew = aaOld = "";
 		}
+	}
+
+	protected String aaCode(char aa1Letter) {
+		return aaCode(Character.toString(aa1Letter));
+	}
+
+	/**
+	 * Use one letter / three letter AA codes
+	 * Most times we want to vonvert to 3 letter code
+	 * HGVS: the three-letter amino acid code is prefered (see Discussion), with "*" designating a translation
+	 *       termination codon; for clarity we this page describes changes using the three-letter amino acid
+	 */
+	protected String aaCode(String aa1Letter) {
+		if (aa1Letter == null || aa1Letter.isEmpty() || aa1Letter.equals("-")) return "";
+		if (hgvsOld) return aa1Letter.replace('*', 'X');
+		if (hgvsOneLetterAa) return aa1Letter;
+		return marker.codonTable().aaThreeLetterCode(aa1Letter);
 	}
 
 	/**
@@ -244,9 +253,7 @@ public class HgvsProtein extends Hgvs {
 		if (codonNum >= protSeq.length()) return null;
 
 		// Get AA code
-		CodonTable codonTable = tr.codonTable();
-		String aa = Character.toString(protSeq.charAt(codonNum));
-		if (!hgvsOneLetterAa) aa = codonTable.aaThreeLetterCode(aa);
+		String aa = aaCode(protSeq.charAt(codonNum));
 
 		return aa + (codonNum + 1);
 	}
@@ -336,7 +343,6 @@ public class HgvsProtein extends Hgvs {
 		//       incorporate any knowledge regarding the change at DNA-level.
 		//       Thus, p.His150Hisfs*10 is not correct, but p.Gln151Thrfs*9 is.
 		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#del
-		CodonTable codonTable = marker.codonTable();
 
 		if (!variant.isMixed()) { // Apply is not supported on MIXED variants at the moment
 			Transcript newTr = tr.apply(variant);
@@ -348,11 +354,11 @@ public class HgvsProtein extends Hgvs {
 			for (int cn = codonNum; cn < len; cn++) {
 				char aa = protSeq.charAt(cn);
 				char newAa = newProtSeq.charAt(cn);
-				if (aa != newAa) return codonTable.aaThreeLetterCode(aa) + (cn + 1);
+				if (aa != newAa) return aaCode(aa) + (cn + 1);
 			}
 		}
 
-		return codonTable.aaThreeLetterCode(protSeq.charAt(codonNum)) + (codonNum + 1);
+		return aaCode(protSeq.charAt(codonNum)) + (codonNum + 1);
 	}
 
 	/**
@@ -434,7 +440,7 @@ public class HgvsProtein extends Hgvs {
 		// Nonsense variant are a special type of amino acid deletion removing the entire C-terminal part of a
 		// protein starting at the site of the variant. A nonsense change is described using the format
 		// p.Trp26Ter (alternatively p.Trp26*).
-		if (variantEffect.hasEffectType(EffectType.STOP_GAINED)) return aaOld + aaPos + "*";
+		if (variantEffect.hasEffectType(EffectType.STOP_GAINED)) return aaOld + aaPos + stop;
 
 		// Stop codon mutations
 		// Reference: http://www.hgvs.org/mutnomen/recs-prot.html#extp
@@ -445,7 +451,7 @@ public class HgvsProtein extends Hgvs {
 		// 		p.*327Argext*? (alternatively p.Ter327ArgextTer? or p.*327Rext*?) describes a variant in the stop
 		//		codon (Ter/*) at position 327, changing it to a codon for Arginine (Arg, R) and adding a tail of
 		//		new amino acids of unknown length since the shifted frame does not contain a new stop codon.
-		if (variantEffect.hasEffectType(EffectType.STOP_LOST)) return aaOld + aaPos + aaNew + "ext*?";
+		if (variantEffect.hasEffectType(EffectType.STOP_LOST)) return aaOld + aaPos + aaNew + "ext" + stop + "?";
 
 		// Start codon lost
 		// Reference : http://www.hgvs.org/mutnomen/disc.html#Met
@@ -555,7 +561,7 @@ public class HgvsProtein extends Hgvs {
 	 */
 	protected String translocation() {
 		if (!(variantEffect instanceof VariantEffectFusion)) return "";
-		VariantTranslocation vtr = (VariantTranslocation) variant;
+		VariantBnd vtr = (VariantBnd) variant;
 		VariantEffectFusion veffFusion = (VariantEffectFusion) variantEffect;
 
 		if (veffFusion.getTrLeft() == null && veffFusion.getTrRight() == null) return "";
@@ -566,7 +572,7 @@ public class HgvsProtein extends Hgvs {
 				+ ";" //
 				+ vtr.getEndPoint().getChromosomeName() //
 				+ ")" //
-				;
+		;
 
 		// Left transcript coordinates
 		String trLeftStr = "";

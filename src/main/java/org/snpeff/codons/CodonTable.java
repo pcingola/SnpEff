@@ -27,7 +27,7 @@ public class CodonTable {
 	public static final String DEFAULT_START_CODON = "M";
 
 	static {
-		aa3letter = new HashMap<String, String>();
+		aa3letter = new HashMap<>();
 		aa3letter.put("A", "Ala");
 		aa3letter.put("B", "Asx");
 		aa3letter.put("C", "Cys");
@@ -49,7 +49,7 @@ public class CodonTable {
 		aa3letter.put("U", "Sec"); // Selenocysteine (Rare amino acid)
 		aa3letter.put("V", "Val");
 		aa3letter.put("W", "Trp");
-		aa3letter.put("X", "X");
+		aa3letter.put("X", "X"); // Old stop codon nomenclature
 		aa3letter.put("Y", "Tyr");
 		aa3letter.put("Z", "Glx");
 		aa3letter.put("*", "*");
@@ -64,10 +64,10 @@ public class CodonTable {
 
 	public CodonTable(String name, String table) {
 		this.name = name;
-		codon2aa = new HashMap<String, String>();
-		aa2codon = new HashMap<String, String>();
-		startCodons = new HashSet<String>();
-		stopCodons = new HashSet<String>();
+		codon2aa = new HashMap<>();
+		aa2codon = new HashMap<>();
+		startCodons = new HashSet<>();
+		stopCodons = new HashSet<>();
 		//		startAas = new HashSet<String>();
 		parse(table);
 		calcDegeneracy();
@@ -141,7 +141,7 @@ public class CodonTable {
 	 * Calculate degeneracy table
 	 */
 	void calcDegeneracy() {
-		degeneracy = new HashMap<String, Integer>();
+		degeneracy = new HashMap<>();
 
 		for (char base1 : DnaCoder.TO_BASE)
 			for (char base2 : DnaCoder.TO_BASE)
@@ -292,7 +292,7 @@ public class CodonTable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder("codon." + name + ": ");
 
-		ArrayList<String> codons = new ArrayList<String>();
+		ArrayList<String> codons = new ArrayList<>();
 		codons.addAll(codon2aa.keySet());
 		Collections.sort(codons);
 		for (String codon : codons)

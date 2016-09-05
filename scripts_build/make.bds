@@ -11,6 +11,7 @@
 bundleLists			:= false		help Create bundle lists and config entries
 config				:= false		help Create config file
 db					:= false		help Build databases
+string[] dbs						help Build databases
 dbTest				:= false		help Build databases used in test cases
 distro	 			:= false		help Create distribution files (zip)
 distroBundles		:= false		help Create bundle files (zip)
@@ -31,8 +32,8 @@ string[] zipGenome	= []			help Zip a specific genome
 cpus = 1
 
 # Versions
-ensemblRelease		:= "82"
-ensemblBfmppRelease	:= "29"
+ensemblRelease		:= "85"
+ensemblBfmppRelease	:= "32"
 flybaseRelease		:= "FB2015_05" # "FB2016_01"
 flybaseGenomes		:= [ 'dana_r1.05', 'dere_r1.05', 'dgri_r1.3', 'dmel_r6.09', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.03', 'dsec_r1.3', 'dsim_r2.01', 'dvir_r1.05', 'dwil_r1.05', 'dyak_r1.05' ]
 GRCH				:= "GRCh38"
@@ -183,7 +184,8 @@ void buildConfig() {
 #-------------------------------------------------------------------------------
 void buildDb() {
 	copyPwm()		# We must do this before building, otherwise we don't get 'motif.bin' databases
-	buildDbAll()
+	if( ! dbs.isEmpty() )	dbs.buildDbs()			# Build some genomes
+	else buildDbAll()	# Build ALL genomes
 	buildDbSpecial()
 	buildDbPdb()
 }
@@ -192,7 +194,7 @@ void buildDb() {
 # Build all databases
 #-------------------------------------------------------------------------------
 bool buildDbAll() {
-	print("Build: Start\n")
+	print("Build all dbs: Start\n")
 	dirBuild.mkdir()	# Make sure build dir exists
 	
 	# Look into all directories
@@ -215,12 +217,30 @@ bool buildDbAll() {
 }
 
 #-------------------------------------------------------------------------------
+# Build some databases
+#-------------------------------------------------------------------------------
+bool buildDbs(string[] dbids) {
+	print("Build dbs: Start\n")
+	dirBuild.mkdir()	# Make sure build dir exists
+	
+	print("Building:\n")
+	for(string genome : dbids  ) {
+		println "\t$genome"
+		addBuildDb(genome)
+	}
+	wait
+
+	print("Build: Done!\n")
+	return( true )
+}
+
+#-------------------------------------------------------------------------------
 # Build 'interaction' databases
 #-------------------------------------------------------------------------------
 void buildDbPdb() {
 	print("Build PDB.\n")
 
-	dataDirsHg := dirData.dir("GRCh*") + dirData.dir("hg*")
+	dataDirsHg := dirsHg()
 
 	# Check each genome version
 	for( string hg : dataDirsHg ) {
@@ -298,12 +318,19 @@ void buildDbNextProt() {
 # Copy pwms.bin to every human dir
 #-------------------------------------------------------------------------------
 void copyPwm() {
-	humanDirs := dirData.dirPath("GRCh*")
+	humanDirs := dirsHg()
 	print("Copying $pwmsBin to human genomes\n")
 	for( string hg : humanDirs ) {
 		print("\t$hg\n")
 		sys cp $pwmsBin $hg
 	}
+}
+
+#-------------------------------------------------------------------------------
+# Human genomes data dirs
+#-------------------------------------------------------------------------------
+string[] dirsHg() {
+	return dirData.dir("GRCh*") + dirData.dir("hg*")
 }
 
 #-------------------------------------------------------------------------------
@@ -611,7 +638,7 @@ print("Building\n")
 if( args.isEmpty() )		build()					# No arguments? Build (create JAR files)
 if( bundleLists )			buildBundleLists()		# Create bundle list and config files
 if( config )				buildConfig()			# Create config file
-if( db )					buildDb()				# Build genomes
+if( db || !dbs.isEmpty() )	buildDb()				# Build ALL genomes
 if( dbTest )				buildDbTest()			# Build databases used in test cases
 if( distro )				makeDistro()			# Create distribution files
 if( distroCore )			zipCore()				# Create distribution files (core 'zip')

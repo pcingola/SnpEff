@@ -14,6 +14,7 @@ import org.snpeff.interval.Intron;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Motif;
 import org.snpeff.interval.NextProt;
+import org.snpeff.interval.ProteinProteinInteractionLocus;
 import org.snpeff.interval.ProteinStructuralInteractionLocus;
 import org.snpeff.interval.Regulation;
 import org.snpeff.interval.Transcript;
@@ -992,6 +993,9 @@ public class VcfEffect {
 				featureType = motif.getPwmName();
 				featureId = motif.getPwmId();
 			} else if (marker instanceof ProteinStructuralInteractionLocus) {
+				featureType = "interaction";
+				featureId = marker.getId();
+			} else if (marker instanceof ProteinProteinInteractionLocus) {
 				featureType = "interaction";
 				featureId = marker.getId();
 			} else if (tr != null) {

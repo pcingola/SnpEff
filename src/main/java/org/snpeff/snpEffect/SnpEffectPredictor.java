@@ -420,7 +420,7 @@ public class SnpEffectPredictor implements Serializable {
 		if (Config.get().isErrorOnMissingChromo() && isChromosomeMissing(marker)) throw new RuntimeException("Chromosome missing for marker: " + marker);
 
 		boolean hitChromo = false;
-		HashSet<String> hits = new HashSet<String>();
+		HashSet<String> hits = new HashSet<>();
 
 		Markers intersects = query(marker);
 		if (intersects.size() > 0) {
@@ -631,43 +631,44 @@ public class SnpEffectPredictor implements Serializable {
 			return variantEffects;
 		}
 
+		// Translocations require special treatment
+		// (e.g. they have two intersections points instead of one)
+		if (variant.isBnd()) {
+			Markers intersects = query(variant);
+			variantEffectBnd(variant, variantEffects, intersects);
+			return variantEffects;
+		}
+
 		// Is this a structural variant? Large structural variants (e.g. involving more than
 		// one gene) may require to calculate effects by using all involved genes
 		// For some variants we require to be 'N' bases apart (translocations
 		// are assumed always involve large genomic regions)
-		boolean structuralVariant = variant.isStructural() && (variant.isBnd() || variant.size() > SMALL_VARIANT_SIZE_THRESHOLD);
+		boolean structuralVariant = variant.isStructural() && (variant.size() > SMALL_VARIANT_SIZE_THRESHOLD);
+
+		Markers intersects = null;
 
 		// Structural variants?
-		if (structuralVariant && !variant.isBnd()) {
+		boolean structuralHuge = structuralVariant && variant.isStructuralHuge();
+		if (structuralHuge) {
 			// Large variants could make the query results huge and slow down
 			// the algorithm, so we stop here
-			// Note: Translocations (BND) only intercept two loci, so this 
+			// Note: Translocations (BND) only intercept two loci, so this
 			//       issue does not apply.
-			if (variant.isStructuralHuge()) {
-				variantEffectStructuralLarge(variant, variantEffects);
-				return variantEffects;
-			}
+			intersects = variantEffectStructuralLarge(variant, variantEffects);
+		} else {
+			// Query interval tree: Which intervals does variant intersect?
+			intersects = query(variant);
 		}
-
-		//---
-		// Query interval tree: Which intervals does variant intersect?
-		//---
-		Markers intersects = query(variant);
 
 		// In case of large structural variants, we need to check the number of genes
 		// involved. If more than one, then we need a different approach (e.g. taking
 		// into account all genes involved to calculate fusions)");
 		if (structuralVariant) {
-			if (variant.isBnd()) {
-				variantEffectBnd(variant, variantEffects, intersects);
-				return variantEffects;
-			}
-
 			// Calculated effect based on multiple genes
 			intersects = variantEffectStructural(variant, variantEffects, intersects);
 
 			// Are we done?
-			if (intersects == null) return variantEffects;
+			if (intersects == null || structuralHuge) return variantEffects;
 		}
 
 		// Calculate variant effect for each query result
@@ -717,6 +718,21 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
+	 * Calculate translocations variant effects
+	 */
+	void variantEffectBnd(Variant variant, VariantEffects variantEffects, Markers intersects) {
+		// Create a new variant effect for structural variants, then calculate all transcript fusions
+		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
+
+		// Do we have a fusion event?
+		List<VariantEffect> veffFusions = veff.fusions();
+		if (veffFusions != null) {
+			for (VariantEffect veffFusion : veffFusions)
+				variantEffects.add(veffFusion);
+		}
+	}
+
+	/**
 	 * Add gene specific annotations
 	 */
 	protected void variantEffectGene(String geneId, Variant variant, VariantEffects variantEffects) {
@@ -740,23 +756,13 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Create a new variant effect for structural variants, add effect (if any)
 		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
-
-		EffectType et = veff.getEffectType();
-		boolean considerFussion = (et == EffectType.NONE //
-				|| et == EffectType.GENE_FUSION //
-				|| et == EffectType.GENE_FUSION_REVERESE //
-				|| et == EffectType.GENE_FUSION_HALF //
-				|| et == EffectType.FEATURE_FUSION //
-		);
-
-		// Note that fusions are added in the next step, when we invoke veff.fusion(), so we skip them here
-		if (!considerFussion) {
+		if (veff.getEffectType() != EffectType.NONE) {
 			variantEffects.add(veff);
 			added = true;
 		}
 
 		// Do we have a fusion event?
-		List<VariantEffect> veffFusions = veff.fusion();
+		List<VariantEffect> veffFusions = veff.fusions();
 		if (veffFusions != null && !veffFusions.isEmpty()) {
 			for (VariantEffect veffFusion : veffFusions) {
 				added = true;
@@ -783,70 +789,34 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
-	 * Calculate translocations variant effects 
-	 */
-	void variantEffectBnd(Variant variant, VariantEffects variantEffects, Markers intersects) {
-		// Create a new variant effect for structural variants, add effect (if any)
-		VariantEffectStructural veff = new VariantEffectStructural(variant, intersects);
-
-		//		EffectType et = veff.getEffectType();
-		//		boolean considerFussion = (et == EffectType.NONE //
-		//				|| et == EffectType.GENE_FUSION //
-		//				|| et == EffectType.GENE_FUSION_REVERESE //
-		//				|| et == EffectType.GENE_FUSION_HALF //
-		//				|| et == EffectType.FEATURE_FUSION //
-		//		);
-		//
-		//		// Note that fusions are added in the next step, when we invoke veff.fusion(), so we skip them here
-		//		if (!considerFussion) {
-		//			variantEffects.add(veff);
-		//			added = true;
-		//		}
-		//
-		//		// Do we have a fusion event?
-		//		List<VariantEffect> veffFusions = veff.fusion();
-		//		if (veffFusions != null && !veffFusions.isEmpty()) {
-		//			for (VariantEffect veffFusion : veffFusions) {
-		//				added = true;
-		//				variantEffects.add(veffFusion);
-		//			}
-		//		}
-		//
-		//		// In some cases we want to annotate the varaint's partially overlapping genes
-		//		if (variant.isDup()) {
-		//			Markers markers = new Markers();
-		//			for (Marker m : intersects)
-		//				if (!variant.includes(m)) {
-		//					// Note that all these markers overlap the variant so we
-		//					// just filter out the ones fully included in the variant
-		//					markers.add(m);
-		//				}
-		//
-		//			// Use these markers for further analysis
-		//			return markers;
-		//		}
-		//
-		//		// If variant effects were added, there is no need for further analysis
-		//		return added ? null : intersects;
-	}
-
-	/**
 	 * Add large structural variant effects
 	 */
-	void variantEffectStructuralLarge(Variant variant, VariantEffects variantEffects) {
-		EffectType eff;
+	Markers variantEffectStructuralLarge(Variant variant, VariantEffects variantEffects) {
+		EffectType eff, effGene, effTr, effExon, effExonPartial;
 
 		switch (variant.getVariantType()) {
 		case DEL:
 			eff = EffectType.CHROMOSOME_LARGE_DELETION;
+			effGene = EffectType.GENE_DELETED;
+			effTr = EffectType.TRANSCRIPT_DELETED;
+			effExon = EffectType.EXON_DELETED;
+			effExonPartial = EffectType.EXON_DELETED_PARTIAL;
 			break;
 
 		case DUP:
 			eff = EffectType.CHROMOSOME_LARGE_DUPLICATION;
+			effGene = EffectType.GENE_DUPLICATION;
+			effTr = EffectType.TRANSCRIPT_DUPLICATION;
+			effExon = EffectType.EXON_DUPLICATION;
+			effExonPartial = EffectType.EXON_DUPLICATION_PARTIAL;
 			break;
 
 		case INV:
 			eff = EffectType.CHROMOSOME_LARGE_INVERSION;
+			effGene = EffectType.GENE_INVERSION;
+			effTr = EffectType.TRANSCRIPT_INVERSION;
+			effExon = EffectType.EXON_INVERSION;
+			effExonPartial = EffectType.EXON_INVERSION_PARTIAL;
 			break;
 
 		default:
@@ -855,6 +825,47 @@ public class SnpEffectPredictor implements Serializable {
 
 		// Add effect
 		variantEffects.add(variant, variant.getChromosome(), eff, "");
+
+		// Add detailed effects for genes & transcripts
+		return variantEffectStructuralLargeGenes(variant, variantEffects, effGene, effTr, effExon, effExonPartial);
 	}
 
+	/**
+	 * Add large structural variant effects: Genes and transcripts
+	 */
+	Markers variantEffectStructuralLargeGenes(Variant variant, VariantEffects variantEffects, EffectType effGene, EffectType effTr, EffectType effExon, EffectType effExonPartial) {
+		Markers intersect = new Markers();
+
+		// Check all genes in the genome
+		for (Gene g : genome.getGenes()) {
+			// Does the variant affect the gene?
+			if (variant.intersects(g)) {
+				intersect.add(g);
+				variantEffects.add(variant, g, effGene, "");
+
+				// Does the variant affect this transcript?
+				for (Transcript tr : g) {
+					// Variant affects the whole transcript?
+					if (variant.includes(tr)) {
+						intersect.add(tr);
+						variantEffects.add(variant, tr, effTr, "");
+					} else if (variant.intersects(tr)) {
+						intersect.add(tr);
+
+						// Variant affects part of the transcript
+						// Add effects for each exon
+						for (Exon ex : tr) {
+							if (variant.includes(ex)) {
+								variantEffects.add(variant, ex, effExon, "");
+							} else if (variant.intersects(ex)) {
+								variantEffects.add(variant, ex, effExonPartial, "");
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return intersect;
+	}
 }

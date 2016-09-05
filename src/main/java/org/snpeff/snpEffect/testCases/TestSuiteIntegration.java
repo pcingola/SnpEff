@@ -4,7 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.snpeff.snpEffect.testCases.integration.TestCasesAnn;
-import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationProteinInteraction;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegratioBuildPdb;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationApply;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCancer;
@@ -43,6 +42,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationNextProt;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationNmd;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationNoChange;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationProtein;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationProteinInteraction;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationRefSeq;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationRegulation;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSequenceOntology;
@@ -50,6 +50,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnp;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnpEff;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnpEffMultiThread;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnpEnsembl;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationStructural;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationTranscript;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationTranscriptError;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVariant;
@@ -62,7 +63,6 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesAnn.class, //
-		TestCasesIntegrationProteinInteraction.class, //
 		TestCasesIntegrationApply.class, //
 		TestCasesIntegratioBuildPdb.class, //
 		TestCasesIntegrationCancer.class, //
@@ -101,11 +101,13 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
 		TestCasesIntegrationNmd.class, //
 		TestCasesIntegrationNoChange.class, //
 		TestCasesIntegrationProtein.class, //
+		TestCasesIntegrationProteinInteraction.class, //
 		TestCasesIntegrationRefSeq.class, //
 		TestCasesIntegrationRegulation.class, //
 		TestCasesIntegrationSequenceOntology.class, //
 		TestCasesIntegrationSnpEnsembl.class, //
 		TestCasesIntegrationSnp.class, //
+		TestCasesIntegrationStructural.class, //
 		TestCasesIntegrationTranscriptError.class, //
 		TestCasesIntegrationTranscript.class, //
 		TestCasesIntegrationVariant.class, //

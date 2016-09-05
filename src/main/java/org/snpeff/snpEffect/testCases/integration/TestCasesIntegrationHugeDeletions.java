@@ -69,4 +69,45 @@ public class TestCasesIntegrationHugeDeletions {
 			Assert.assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
 		}
 	}
+
+	@Test
+	public void test_03() {
+		Gpr.debug("Test");
+		String args[] = { "-classic", "-noOut", "testHg19Chr9", "./tests/huge_deletion_chr9.vcf" };
+
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
+		List<VcfEntry> vcfEntries = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+
+		boolean okCdkn2a = false;
+		boolean okCdkn2aTr = false;
+		boolean okCdkn2b = false;
+
+		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
+
+			Assert.assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
+
+			for (VcfEffect veff : ve.getVcfEffects()) {
+				if (verbose) System.out.println("\t" + veff);
+
+				EffectType eff = veff.getEffectType();
+				String geneName = veff.getGeneName();
+				String trId = veff.getTranscriptId();
+
+				if (eff == EffectType.GENE_DELETED && geneName.equals("CDKN2A")) okCdkn2a = true;
+				if (eff == EffectType.GENE_DELETED && geneName.equals("CDKN2B")) okCdkn2b = true;
+				if (eff == EffectType.TRANSCRIPT_DELETED && trId.equals("NM_000077.4")) okCdkn2aTr = true;
+			}
+		}
+
+		Assert.assertTrue("GENE_DELETED CDKN2A: Not found", okCdkn2a);
+		Assert.assertTrue("GENE_DELETED CDKN2B: Not found", okCdkn2b);
+		Assert.assertTrue("TRANSCRIPT_DELETED CDKN2A (NM_000077.4): Not found", okCdkn2aTr);
+	}
+
 }

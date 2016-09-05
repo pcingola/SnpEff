@@ -1,0 +1,6 @@
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+chr1	35	.	N	N[chr2:140[	.	.	.
+chr1	35	.	N	N]chr2:140]	.	.	LEFT
+chr1	35	.	N	[chr2:140[N	.	.	BEFORE
+chr1	35	.	N	]chr2:140]N	.	.	LEFT;BEFORE
+

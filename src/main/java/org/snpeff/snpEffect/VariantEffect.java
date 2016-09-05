@@ -19,6 +19,7 @@ import org.snpeff.interval.Regulation;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.TranscriptSupportLevel;
 import org.snpeff.interval.Variant;
+import org.snpeff.util.Gpr;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 
@@ -93,14 +94,14 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	public VariantEffect(Variant variant) {
 		this.variant = variant;
-		effectTypes = new ArrayList<EffectType>();
-		effectImpacts = new ArrayList<EffectImpact>();
+		effectTypes = new ArrayList<>();
+		effectImpacts = new ArrayList<>();
 	}
 
 	public VariantEffect(Variant variant, Marker marker, EffectType effectType, EffectImpact effectImpact, String codonsOld, String codonsNew, int codonNum, int codonIndex, int cDnaPos) {
 		this.variant = variant;
-		effectTypes = new ArrayList<EffectType>();
-		effectImpacts = new ArrayList<EffectImpact>();
+		effectTypes = new ArrayList<>();
+		effectImpacts = new ArrayList<>();
 		set(marker, effectType, effectImpact, "");
 		setCodons(codonsOld, codonsNew, codonNum, codonIndex);
 		this.cDnaPos = cDnaPos;
@@ -179,6 +180,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 
 	@Override
 	public int compareTo(VariantEffect varEffOther) {
+
 		// Sort by impact
 		int comp = getEffectImpact().compareTo(varEffOther.getEffectImpact());
 		if (comp != 0) return comp;
@@ -187,38 +189,111 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		comp = getEffectType().compareTo(varEffOther.getEffectType());
 		if (comp != 0) return comp;
 
-		// Sort by: Is canonical transcript?
+		//---
+		// Transcript based comparisons
+		//---
 		Transcript trThis = getTranscript();
 		Transcript trOther = varEffOther.getTranscript();
-		if (trThis != null && trOther != null) {
-			// Compare using TSL
-			TranscriptSupportLevel tslThis = trThis.getTranscriptSupportLevel();
-			TranscriptSupportLevel tslOther = trOther.getTranscriptSupportLevel();
-			if (tslThis != null && tslOther != null) {
-				comp = tslThis.compareTo(tslOther);
-				if (comp != 0) return comp;
-			}
 
-			// Compare canonical?
-			comp = (trOther.isCanonical() ? 1 : 0) - (trThis.isCanonical() ? 1 : 0);
-			if (comp != 0) return comp;
-
-			// Compare genomic coordinate
-			comp = trThis.compareToPos(trOther);
-			if (comp != 0) return comp;
-
-			// Compare IDs
-			comp = trThis.getId().compareTo(trOther.getId());
-			if (comp != 0) return comp;
+		// This transcript data
+		int tslThis = TranscriptSupportLevel.TSL_NULL_VALUE;
+		int canonThis = 0;
+		int startThis = 0;
+		int endThis = 0;
+		String idThis = null;
+		String chrThis = null;
+		if (trThis != null) {
+			tslThis = TranscriptSupportLevel.tsl(trThis.getTranscriptSupportLevel());
+			canonThis = trThis.isCanonical() ? 1 : 0;
+			idThis = trThis.getId();
+			chrThis = trThis.getChromosomeName();
+			startThis = trThis.getStart();
+			endThis = trThis.getEnd();
 		}
 
-		// Compare by marker
-		if ((getMarker() != null) && (varEffOther.getMarker() != null)) {
-			comp = getMarker().compareToPos(varEffOther.getMarker());
-			if (comp != 0) return comp;
+		// Other transcript data
+		int tslOther = TranscriptSupportLevel.TSL_NULL_VALUE;
+		int canonOther = 0;
+		int startOther = 0;
+		int endOther = 0;
+		String idOther = null;
+		String chrOther = null;
+		if (trOther != null) {
+			tslOther = TranscriptSupportLevel.tsl(trOther.getTranscriptSupportLevel());
+			canonOther = trOther.isCanonical() ? 1 : 0;
+			idOther = trOther.getId();
+			chrOther = trOther.getChromosomeName();
+			startOther = trOther.getStart();
+			endOther = trOther.getEnd();
 		}
 
-		// Sort by variant (most of the time this is equal)
+		// Compare by TSL: Smaller first
+		comp = tslThis - tslOther;
+		if (comp != 0) return comp;
+
+		// Compare by canonical transcript: Larger first
+		comp = canonOther - canonThis;
+		if (comp != 0) return comp;
+
+		// Compare genomic coordinate
+		comp = Gpr.compareNull(chrThis, chrOther);
+		if (comp != 0) return comp;
+
+		comp = startThis - startOther;
+		if (comp != 0) return comp;
+
+		comp = endThis - endOther;
+		if (comp != 0) return comp;
+
+		// Compare IDs
+		comp = Gpr.compareNull(idThis, idOther);
+		if (comp != 0) return comp;
+
+		//---
+		// Marker based comparisons
+		//---
+		Marker mThis = getMarker();
+		Marker mOther = varEffOther.getMarker();
+
+		startThis = 0;
+		endThis = 0;
+		idThis = null;
+		chrThis = null;
+		if (mThis != null) {
+			idThis = mThis.getId();
+			chrThis = mThis.getChromosomeName();
+			startThis = mThis.getStart();
+			endThis = mThis.getEnd();
+		}
+
+		startOther = 0;
+		endOther = 0;
+		idOther = null;
+		chrOther = null;
+		if (mOther != null) {
+			idOther = mOther.getId();
+			chrOther = mOther.getChromosomeName();
+			startOther = mOther.getStart();
+			endOther = mOther.getEnd();
+		}
+
+		// Compare genomic coordinate
+		comp = Gpr.compareNull(chrThis, chrOther);
+		if (comp != 0) return comp;
+
+		comp = startThis - startOther;
+		if (comp != 0) return comp;
+
+		comp = endThis - endOther;
+		if (comp != 0) return comp;
+
+		// Compare IDs
+		comp = Gpr.compareNull(idThis, idOther);
+		if (comp != 0) return comp;
+
+		//---
+		// Variant based comparison
+		//---
 		return variant.compareTo(varEffOther.getVariant());
 	}
 
@@ -597,7 +672,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		return getMarker() != null // Do we have a marker?
 				&& (getMarker() instanceof Custom) // Is it 'custom'?
 				&& ((Custom) getMarker()).hasAnnotations() // Does it have additional annotations?
-				;
+		;
 	}
 
 	public boolean hasEffectImpact(EffectImpact effectImpact) {
@@ -658,13 +733,13 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				|| hasEffectType(EffectType.SPLICE_SITE_REGION) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH) //
 				|| hasEffectType(EffectType.SPLICE_SITE_BRANCH_U12) //
-				;
+		;
 	}
 
 	public boolean isSpliceSiteCore() {
 		return hasEffectType(EffectType.SPLICE_SITE_DONOR) //
 				|| hasEffectType(EffectType.SPLICE_SITE_ACCEPTOR) //
-				;
+		;
 	}
 
 	public boolean isSpliceSiteRegion() {
@@ -849,7 +924,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 				+ "\t" + (codonsAroundOld.length() > 0 ? codonsAroundOld + " / " + codonsAroundNew : "") //
 				+ "\t" + (aasAroundOld.length() > 0 ? aasAroundOld + " / " + aasAroundNew : "") //
 				+ "\t" + customId //
-				;
+		;
 	}
 
 	/**

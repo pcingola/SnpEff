@@ -3,6 +3,7 @@ package org.snpeff.snpEffect.commandLine;
 import java.util.HashSet;
 
 import org.snpeff.SnpEff;
+import org.snpeff.interval.Cds;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
@@ -20,6 +21,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	String fileName = null;
 	boolean onlyProteinCoding;
 	boolean showExons;
+	boolean showCds;
 	int expandUpstreamDownstream = 0;
 
 	public static void main(String[] args) {
@@ -60,6 +62,11 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 				case "-e":
 					// Show exons for all transcripts
 					showExons = true;
+					break;
+
+				case "-cds":
+					// Show exons in CDS
+					showCds = true;
 					break;
 
 				case "-f":
@@ -134,18 +141,28 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	}
 
 	/**
-	 * Show either a gene or all exons for all transcripts within a gene 
+	 * Show either a gene or all exons for all transcripts within a gene
 	 */
 	void show(Gene g) {
 
-		if (showExons) {
-			// Show exon for each transcript
-			for (Transcript tr : g) {
-				for (Exon ex : tr) {
-					int start = ex.getStart() - expandUpstreamDownstream;
-					int end = ex.getEnd() + 1 + expandUpstreamDownstream;
+		if (showCds) showCds(g);
+		else if (showExons) showExons(g);
+		else showGene(g);
+	}
 
-					System.out.println(ex.getChromosomeName() //
+	/**
+	 * Show CDS coordinates
+	 */
+	void showCds(Gene g) {
+		for (Transcript tr : g) {
+			for (Exon ex : tr) {
+				Cds cds = tr.findCds(ex); // Find corresponding CDS
+
+				if (cds != null) {
+					int start = cds.getStart();
+					int end = cds.getEnd() + 1;
+
+					System.out.println(cds.getChromosomeName() //
 							+ "\t" + start //
 							+ "\t" + end //
 							+ "\t" + g.getGeneName() //
@@ -155,18 +172,45 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 					);
 				}
 			}
-		} else {
-			// Show gene
-			int start = g.getStart() - expandUpstreamDownstream;
-			int end = g.getEnd() + 1 + expandUpstreamDownstream;
-
-			System.out.println(g.getChromosomeName() //
-					+ "\t" + start //
-					+ "\t" + end //
-					+ "\t" + g.getGeneName() //
-					+ ";" + g.getId() //
-			);
 		}
+	}
+
+	/**
+	 * Show exons coordinates
+	 */
+	void showExons(Gene g) {
+		// Show exon for each transcript
+		for (Transcript tr : g) {
+			for (Exon ex : tr) {
+				int start = ex.getStart() - expandUpstreamDownstream;
+				int end = ex.getEnd() + 1 + expandUpstreamDownstream;
+
+				System.out.println(ex.getChromosomeName() //
+						+ "\t" + start //
+						+ "\t" + end //
+						+ "\t" + g.getGeneName() //
+						+ ";" + g.getId() //
+						+ ";" + tr.getId() //
+						+ ";" + ex.getRank() //
+				);
+			}
+		}
+	}
+
+	/**
+	 * Show a gene coordiantes
+	 */
+	void showGene(Gene g) {
+		// Show gene
+		int start = g.getStart() - expandUpstreamDownstream;
+		int end = g.getEnd() + 1 + expandUpstreamDownstream;
+
+		System.out.println(g.getChromosomeName() //
+				+ "\t" + start //
+				+ "\t" + end //
+				+ "\t" + g.getGeneName() //
+				+ ";" + g.getId() //
+		);
 	}
 
 	@Override
@@ -174,6 +218,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		if (message != null) System.err.println("Error: " + message + "\n");
 		System.err.println("Usage: " + SnpEffCmdGenes2Bed.class.getSimpleName() + " genomeVer [-f genes.txt | geneList]}");
 		System.err.println("Options: ");
+		System.err.println("\t-cds           : Show coding exons (no UTRs).");
 		System.err.println("\t-e             : Show exons.");
 		System.err.println("\t-f <file.txt>  : A TXT file having one gene ID (or name) per line.");
 		System.err.println("\t-pc            : Use only protein coding genes.");
