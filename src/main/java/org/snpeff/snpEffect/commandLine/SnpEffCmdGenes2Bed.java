@@ -32,7 +32,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 
 	public SnpEffCmdGenes2Bed() {
 		super();
-		geneIds = new HashSet<String>();
+		geneIds = new HashSet<>();
 	}
 
 	void loadGenes() {
@@ -144,7 +144,6 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	 * Show either a gene or all exons for all transcripts within a gene
 	 */
 	void show(Gene g) {
-
 		if (showCds) showCds(g);
 		else if (showExons) showExons(g);
 		else showGene(g);
