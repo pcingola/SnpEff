@@ -664,11 +664,8 @@ public class SnpEffectPredictor implements Serializable {
 		// involved. If more than one, then we need a different approach (e.g. taking
 		// into account all genes involved to calculate fusions)");
 		if (structuralVariant) {
-			// Calculated effect based on multiple genes
-			intersects = variantEffectStructural(variant, variantEffects, intersects);
-
 			// Are we done?
-			if (intersects == null || structuralHuge) return variantEffects;
+			if (variantEffectStructural(variant, variantEffects, intersects)) return variantEffects;
 		}
 
 		// Calculate variant effect for each query result
@@ -750,7 +747,7 @@ public class SnpEffectPredictor implements Serializable {
 	 * @return A list of intervals that need to be further analyzed
 	 *         or 'null' if no further gene-by-gene analysis is required
 	 */
-	Markers variantEffectStructural(Variant variant, VariantEffects variantEffects, Markers intersects) {
+	boolean variantEffectStructural(Variant variant, VariantEffects variantEffects, Markers intersects) {
 		// Any variant effects added?
 		boolean added = false;
 
@@ -770,22 +767,11 @@ public class SnpEffectPredictor implements Serializable {
 			}
 		}
 
-		// In some cases we want to annotate the varaint's partially overlapping genes
-		if (variant.isDup()) {
-			Markers markers = new Markers();
-			for (Marker m : intersects)
-				if (!variant.includes(m)) {
-					// Note that all these markers overlap the variant so we
-					// just filter out the ones fully included in the variant
-					markers.add(m);
-				}
-
-			// Use these markers for further analysis
-			return markers;
-		}
+		// In some cases we want to annotate all overlapping genes
+		if (variant.isDup()) return false;
 
 		// If variant effects were added, there is no need for further analysis
-		return added ? null : intersects;
+		return added;
 	}
 
 	/**

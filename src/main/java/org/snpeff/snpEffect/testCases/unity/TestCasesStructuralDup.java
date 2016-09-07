@@ -101,9 +101,10 @@ public class TestCasesStructuralDup extends TestCasesBase {
 		}
 
 		// Check effects
-		Assert.assertTrue("Effects do not match" //
-				+ "\n\tExpected : " + expectedEffs //
-				+ "\n\tFound    : " + effs//
+		Assert.assertTrue(
+				"Effects do not match" //
+						+ "\n\tExpected : " + expectedEffs //
+						+ "\n\tFound    : " + effs//
 				, effs.containsAll(expectedEffs) //
 		);
 
@@ -111,23 +112,26 @@ public class TestCasesStructuralDup extends TestCasesBase {
 		Assert.assertTrue("Effect impact '" + expectedImpact + "' not found", impactOk);
 
 		// Check HGVS.c
-		Assert.assertTrue("HGVS.c do not match" //
-				+ "\n\tExpected : " + expectedHgvsc //
-				+ "\n\tFound    : " + hgvscs//
+		Assert.assertTrue(
+				"HGVS.c do not match" //
+						+ "\n\tExpected : " + expectedHgvsc //
+						+ "\n\tFound    : " + hgvscs//
 				, hgvscs.containsAll(expectedHgvsc) //
 		);
 
 		// Check HGVS.p
-		Assert.assertTrue("HGVS.p do not match" //
-				+ "\n\tExpected : " + expectedHgvsp //
-				+ "\n\tFound    : " + hgvsps//
+		Assert.assertTrue(
+				"HGVS.p do not match" //
+						+ "\n\tExpected : " + expectedHgvsp //
+						+ "\n\tFound    : " + hgvsps//
 				, hgvsps.containsAll(expectedHgvsp) //
 		);
 
 		// Check ANN fields
-		Assert.assertTrue("ANN fields do not match" //
-				+ "\n\tExpected : " + expectedAnns //
-				+ "\n\tFound    : " + anns //
+		Assert.assertTrue(
+				"ANN fields do not match" //
+						+ "\n\tExpected : " + expectedAnns //
+						+ "\n\tFound    : " + anns //
 				, anns.containsAll(expectedAnns) //
 		);
 
@@ -269,9 +273,9 @@ public class TestCasesStructuralDup extends TestCasesBase {
 		variant.setVariantType(VariantType.DUP);
 
 		EffectType expEffs[] = { EffectType.EXON_DUPLICATION //
-		, EffectType.EXON_DUPLICATION_PARTIAL //
-		, EffectType.TRANSCRIPT_DUPLICATION //
-		, EffectType.GENE_FUSION //
+				, EffectType.EXON_DUPLICATION_PARTIAL //
+				, EffectType.TRANSCRIPT_DUPLICATION //
+				, EffectType.GENE_FUSION //
 		};
 		String expHgvsc[] = { "n.1051_2151dup" };
 		EffectImpact expectedImpact = EffectImpact.LOW;
@@ -307,8 +311,8 @@ public class TestCasesStructuralDup extends TestCasesBase {
 		variant.setVariantType(VariantType.DUP);
 
 		EffectType expEffs[] = { EffectType.EXON_DUPLICATION //
-		, EffectType.FRAME_SHIFT //
-		, EffectType.GENE_FUSION //
+				, EffectType.FRAME_SHIFT //
+				, EffectType.GENE_FUSION //
 		};
 		String expHgvsc[] = { "n.1101_2076dup" };
 		String expHgvsp[] = { "p.Ser2_Leu10delinsTyrPheProPheThrProThrSerAlaAla???", "p.Ser2fs" };
@@ -328,8 +332,8 @@ public class TestCasesStructuralDup extends TestCasesBase {
 		variant.setVariantType(VariantType.DUP);
 
 		EffectType expEffs[] = { EffectType.EXON_DUPLICATION //
-		, EffectType.EXON_DUPLICATION_PARTIAL //
-		, EffectType.GENE_FUSION //
+				, EffectType.EXON_DUPLICATION_PARTIAL //
+				, EffectType.GENE_FUSION //
 		};
 		String expHgvsc[] = { "n.1051_2121dup", "c.38_*963dup", "c.-1016_15dup" };
 		String expHgvsp[] = { "p.Pro6_Arg7delinsTyrAlaHisValLeuProPhe" };

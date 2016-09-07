@@ -12,6 +12,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCodingTag;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationConfig;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCutsomIntervals;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationDelEtc;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationDup;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationEff;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationEmbl;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationErrors;
@@ -71,6 +72,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
 		TestCasesIntegrationConfig.class, //
 		TestCasesIntegrationCutsomIntervals.class, //
 		TestCasesIntegrationDelEtc.class, //
+		TestCasesIntegrationDup.class, //
 		TestCasesIntegrationEff.class, //
 		TestCasesIntegrationEmbl.class, //
 		TestCasesIntegrationExonFrame.class, //
