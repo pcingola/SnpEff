@@ -644,9 +644,15 @@ void downloadUcscHg19() {
 	ori.chdir()
 
 	fetch("$urlUcscCse/$ref/bigZips/chromFa.tar.gz")
-	fetch("$urlUcscCse/$ref/database/refLink.txt.gz")
 	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
 	fetch("$urlNcbiFtp/refseq/H_sapiens/H_sapiens/protein/protein.fa.gz")
+
+	#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	# TODO
+	# We need to replace this table by a MySql query
+	#	select * from hgFixed.refLink limit 10;
+	#
+	fetch("$urlUcscCse/$ref/database/refLink.txt.gz")
 
 	# Create FASTA file
 	fastaFromTar(ref, "$ori/chromFa.tar.gz")
