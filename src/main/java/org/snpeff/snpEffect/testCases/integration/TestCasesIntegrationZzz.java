@@ -25,7 +25,6 @@ public class TestCasesIntegrationZzz {
 	@Test
 	public void test_30_RareAa() {
 		Gpr.debug("Test");
-		verbose = true;
 		String genomeName = "testHg3765Chr22";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect("tests/rareAa.txt", null, true);
