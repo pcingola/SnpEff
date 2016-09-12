@@ -878,7 +878,6 @@ public class VcfEffect {
 		if (eff.isEmpty()) return effs;
 
 		// Split multiple effectTypes
-		//		if (eff.indexOf(formatVersion.separator()) >= 0) {
 		if (eff.indexOf(EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD) >= 0) {
 			// Old version
 			for (String es : eff.split("\\" + EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD))
