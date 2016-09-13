@@ -647,18 +647,13 @@ void downloadUcscHg19() {
 	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
 	fetch("$urlNcbiFtp/refseq/H_sapiens/H_sapiens/protein/protein.fa.gz")
 
-	#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	# TODO
-	# We need to replace this table by a MySql query
-	#	select * from hgFixed.refLink limit 10;
-	#
-	fetch("$urlUcscCse/$ref/database/refLink.txt.gz")
-
 	# Create FASTA file
 	fastaFromTar(ref, "$ori/chromFa.tar.gz")
 
 	# Query database
 	queryUcsc(ref, dir)
+	refLinkGz := queryUcscRefLink(ref, dir)
+	refLink := refLinkGz.removeExt('.gz')
 
 	#---
 	# Create protein FASTA
@@ -667,10 +662,10 @@ void downloadUcscHg19() {
 	#    - hg19_proteinFastaReplaceName.pl : Adds TranscriptID version to TranscriptID
 	#---
 	println 'Creating proteins FASTA'
-	if( "$ori/refLink.txt" <- "$ori/refLink.txt.gz") sys gunzip -c $ori/refLink.txt.gz > $ori/refLink.txt
+	if( refLink <- refLinkGz) sys gunzip -c $refLinkGz > $refLink
 	if( "$dir/protein.fa.gz" <- "$ori/protein.fa.gz") {
 		sys gunzip -c $ori/protein.fa.gz \
-		| $dirScriptsBuild/hg19_proteinFasta2NM.pl $ori/refLink.txt \
+		| $dirScriptsBuild/hg19_proteinFasta2NM.pl $refLink \
 		| $dirScriptsBuild/hg19_proteinFastaReplaceName.pl $dir/genes.refseq.gz \
 		> $dir/protein.fa
 		sys gzip -f $dir/protein.fa
@@ -949,5 +944,19 @@ string queryUcscKg(string ref, string refdb, string dir) {
 		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $refdb | gzip -c > $refSeq.gz
 	}
 	return refSeqGz
+}
+
+#-------------------------------------------------------------------------------
+# Query MySql's database (RefSeq) for refLink table
+#-------------------------------------------------------------------------------
+string queryUcscRefLink(string ref, string dir) {
+	refLinkGz := "$dir/refLink.txt.gz"
+	if( !refLinkGz.exists() ) {
+		println "Querying database for RefLink table: $ref"
+		query := "use $ref; select * from hgFixed.refLink;"
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refLinkGz
+	}
+	println "RefLink file: $refLinkGz"
+	return refLinkGz
 }
 
