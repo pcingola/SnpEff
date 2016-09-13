@@ -617,7 +617,7 @@ void downloadNextProt() {
 		println "Download NextProt"
 
 		# Download each chromosome's XML file
-		for( string chr : humanChrs ) {
+		for( string chr : humanChrsDd ) {
 			fetch("$urlNextProt/nextprot_chromosome_$chr.xml.gz")
 		}
 
