@@ -27,6 +27,9 @@ urlPdb             := "rsync.wwpdb.org::ftp_data/structures/divided/pdb/"
 urlUcscCse         := "http://hgdownload.cse.ucsc.edu/goldenPath"
 urlUcscSoe         := "http://hgdownload.soe.ucsc.edu/goldenPath"
 
+# ENSEMBL file names used a different format prior to this version
+ensemblReleaseUseNumber     := 75
+
 #-------------------------------------------------------------------------------
 # Build dbNSFP database for genome 'hg'
 #-------------------------------------------------------------------------------
@@ -216,6 +219,12 @@ void downloadEnsembl() {
 			fasta := "$baseNoVer.dna.toplevel.fa.gz"
 			cds := "$baseNoVer.cdna.all.fa.gz"
 			prot := "$baseNoVer.pep.all.fa.gz"
+			if( ensemblRelease <= ensemblReleaseUseNumber ) {
+				# Slightly different name format in prior versions
+				fasta = "$base.dna.toplevel.fa.gz"
+				cds = "$base.cdna.all.fa.gz"
+				prot = "$base.pep.all.fa.gz"
+			}
         
 			# Copy files
 			dataDir := "data/$shortName"

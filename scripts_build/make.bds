@@ -32,8 +32,7 @@ string[] zipGenome	= []			help Zip a specific genome
 cpus = 1
 
 # Versions
-ensemblRelease		:= "85"
-#ensemblRelease		:= "75"
+ensemblRelease		:= 85
 ensemblBfmppRelease	:= "32"
 flybaseRelease		:= "FB2016_04" # "FB2016_01"
 flybaseGenomes		:= [ 'dana_r1.05', 'dere_r1.05', 'dgri_r1.3', 'dmel_r6.12', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.04', 'dsec_r1.3', 'dsim_r2.02', 'dvir_r1.06', 'dwil_r1.05', 'dyak_r1.05' ]
@@ -171,12 +170,9 @@ void buildConfig() {
 			$confDir/snpEff.dbs.config \
 			$confDir/snpEff.test.config \
 			$confDir/snpEff.ENSEMBL_75.config \
-			$confDir/snpEff.ENSEMBL_81.config \
 			$confDir/snpEff.ENSEMBL_$ensemblRelease.config \
 			$confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config \
 			$confDir/snpEff.FLYBASE_$flybaseRelease.config \
-			$confDir/snpEff.NCBI_bacteria.config \
-			$confDir/snpEff.NCBI_viruses.config \
 			$confDir/snpEff.etc.config \
 			$bundlesConf \
 			> $conf
