@@ -259,7 +259,7 @@ void downloadEnsembl() {
 # Download ENSEMBL genomes (BFMPP)
 #-------------------------------------------------------------------------------
 void downloadEnsemblBfmpp() {
-	println "Download ENSEMBL BFMPP $ensemblBfmppRelease"
+	println "ENSEMBL BFMPP $ensemblBfmppRelease"
 
 	configFile := "$dirSnpeff/config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config"
 	if( configFile.exists() ) {
@@ -276,7 +276,7 @@ void downloadEnsemblBfmpp() {
 	#---
 	downloadOk := "download.ok"
 	if( ! downloadOk.exists() ) {
-		println "Downloading ENSEMBL (BFMPP) $ensemblBfmppRelease"
+		println "ENSEMBL BFMPP $ensemblBfmppRelease: Downloading"
 
 		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'plants', 'protists'] ) {
 			# Download GTF files (annotations)
@@ -303,24 +303,23 @@ void downloadEnsemblBfmpp() {
 	# Move files to propper structure in 'local data' dir
 	#---
 	# Copy files to local dir
-	println "Copying files to parent dir"
+	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to parent dir"
 	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
 
 	# Move files
-	println 'Copying files to data dir'
+	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to data dir"
 	string[] configLines
 	for( string gtf : ".".dir("*.gtf.gz") ) {
 		base := gtf.baseName('.gtf.gz')
+		baseNoVer := base.removeExt()
 		longName := base.split('\.').head()
 		shortName := base.split('\.').tail().join('.')
 
 		if( !shortName.isEmpty() ) {
-			println "\t$shortName"
-        
-			fasta := "$base.dna.toplevel.fa.gz"
-			cds := "$base.cdna.all.fa.gz"
-			prot := "$base.pep.all.fa.gz"
-			println "\t$shortName"
+			fasta := "$baseNoVer.dna.toplevel.fa.gz"
+			cds := "$baseNoVer.cdna.all.fa.gz"
+			prot := "$baseNoVer.pep.all.fa.gz"
+			println "\t$shortName\t$fasta\t$cds\t$prot"
         
 			# Copy files
 			dataDir := "data/$shortName"
@@ -337,7 +336,7 @@ void downloadEnsemblBfmpp() {
 	}
 
 	# Create config file
-	println "Writing config file $configFile"
+	println "ENSEMBL BFMPP $ensemblBfmppRelease: Writing config file $configFile"
 	configFile.write( configLines.join("\n") )
 
 	# Copy files to snpEff/data directory
