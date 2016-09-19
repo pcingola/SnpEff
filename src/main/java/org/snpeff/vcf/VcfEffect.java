@@ -874,11 +874,10 @@ public class VcfEffect {
 		int idx = eff.indexOf('[');
 		if (idx > 0) eff = eff.substring(0, idx);
 
-		List<EffectType> effs = new LinkedList<EffectType>();
+		List<EffectType> effs = new LinkedList<>();
 		if (eff.isEmpty()) return effs;
 
 		// Split multiple effectTypes
-		//		if (eff.indexOf(formatVersion.separator()) >= 0) {
 		if (eff.indexOf(EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD) >= 0) {
 			// Old version
 			for (String es : eff.split("\\" + EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD))
@@ -923,7 +922,7 @@ public class VcfEffect {
 			}
 		}
 
-		return new Tuple<Integer, Integer>(i1, i2);
+		return new Tuple<>(i1, i2);
 	}
 
 	/**
@@ -959,13 +958,14 @@ public class VcfEffect {
 		funClass = variantEffect.getFunctionalClass();
 
 		// Gene
-		if (gene != null) {
-			if (variantEffect.isMultipleGenes()) {
-				setGeneNameIdMultiple(variantEffect);
-			} else {
-				geneName = gene.getGeneName();
-				geneId = gene.getId();
-			}
+		if (variantEffect.isMultipleGenes() //
+				&& variantEffect.getGenes() != null //
+				&& !variantEffect.getGenes().isEmpty() //
+		) {
+			setGeneNameIdMultiple(variantEffect);
+		} else if (gene != null) {
+			geneName = gene.getGeneName();
+			geneId = gene.getId();
 		} else if (marker instanceof Intergenic) {
 			geneName = ((Intergenic) marker).getName();
 			geneId = marker.getId();
@@ -1127,7 +1127,7 @@ public class VcfEffect {
 	}
 
 	public void setEffectType(EffectType effect) {
-		effectTypes = new LinkedList<EffectType>();
+		effectTypes = new LinkedList<>();
 		addEffectType(effect);
 	}
 

@@ -27,6 +27,7 @@ public class TestCasesAnnParse {
 	 */
 	@Test
 	public void test_EffectType() {
+		Gpr.debug("Test");
 		for (EffectType eff : EffectType.values()) {
 			if (verbose) System.out.println("\t" + eff);
 
@@ -36,6 +37,29 @@ public class TestCasesAnnParse {
 
 			for (EffFormatVersion formatVersion : EffFormatVersion.values()) {
 				eff.toSequenceOntology(formatVersion, null);
+			}
+		}
+	}
+
+	@Test
+	public void test_old_SO() {
+		Gpr.debug("Test");
+		EffectType eff = EffectType.parse(EffFormatVersion.DEFAULT_FORMAT_VERSION, "non_coding_exon_variant");
+		Assert.assertTrue("Effect type not found", eff != null);
+		Assert.assertEquals("Effect type does not match", eff, EffectType.EXON);
+	}
+
+	@Test
+	public void test_old_SO_vcf() {
+		Gpr.debug("Test");
+		String vcfFile = "tests/test_old_SO_01.vcf";
+
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		for (VcfEntry ve : vcf) {
+			if (verbose) System.out.println(ve);
+			for (VcfEffect veff : ve.getVcfEffects()) {
+				if (verbose) System.out.println(veff.getEffectsStrSo() + "\t" + veff.getEffectType());
+				Assert.assertEquals("Effect type does not match", veff.getEffectType(), EffectType.EXON);
 			}
 		}
 	}

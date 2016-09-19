@@ -1,6 +1,7 @@
 package org.snpeff.snpEffect;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
@@ -99,7 +100,7 @@ public enum EffectType {
 	, NONE //
 	;
 
-	static HashMap<String, EffectType> so2efftype = new HashMap<String, EffectType>();
+	static Map<String, EffectType> so2efftype = new HashMap<>();
 
 	/**
 	 * Parse a string to an EffectType
@@ -108,7 +109,7 @@ public enum EffectType {
 		try {
 			return EffectType.valueOf(str);
 		} catch (Exception e) {
-			// OK, the value does not exits. Try Sequence ontology
+			// OK, the value does not exits. Try Sequence Ontology
 		}
 
 		// Try an SO term
@@ -134,6 +135,18 @@ public enum EffectType {
 			for (String soSingle : so.split(formatVersion.separatorSplit()))
 				if (!so2efftype.containsKey(soSingle)) so2efftype.put(soSingle, efftype);
 		}
+
+		//---
+		// Add old terms for backwards compatibility
+		//---
+		Map<String, EffectType> oldSo2efftype = new HashMap<>();
+		oldSo2efftype.put("non_coding_exon_variant", EffectType.EXON);
+
+		// Add terms if not already in the map 
+		for (String so : oldSo2efftype.keySet()) {
+			if (!so2efftype.containsKey(so)) so2efftype.put(so, oldSo2efftype.get(so));
+		}
+
 	}
 
 	/**
@@ -346,7 +359,7 @@ public enum EffectType {
 				|| this == GENE_FUSION_REVERESE //
 				|| this == GENE_FUSION_HALF //
 				|| this == FEATURE_FUSION //
-				;
+		;
 	}
 
 	public String toSequenceOntology(EffFormatVersion formatVersion, Variant variant) {
