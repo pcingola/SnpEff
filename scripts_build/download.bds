@@ -151,7 +151,7 @@ void downloadDbSnp() {
 #-------------------------------------------------------------------------------
 # Download ENSEMBL genomes
 #-------------------------------------------------------------------------------
-void downloadEnsembl() {
+void downloadEnsembl(int ensemblRelease) {
 	println "Download ENSEMBL $ensemblRelease"
 
 	configFile := "$dirSnpeff/config/snpEff.ENSEMBL_$ensemblRelease.config"
@@ -211,10 +211,10 @@ void downloadEnsembl() {
 		base := gtf.baseName('.gtf.gz')
 		baseNoVer := base.removeExt()
 		longName := base.split('\.').head()
-		shortName := base.split('\.').tail().join('.')
+		name := base.split('\.').tail().join('.')
 
-		if( !shortName.isEmpty() ) {
-			println "\t$shortName"
+		if( !name.isEmpty() ) {
+			println "\t$name"
         
 			fasta := "$baseNoVer.dna.toplevel.fa.gz"
 			cds := "$baseNoVer.cdna.all.fa.gz"
@@ -227,7 +227,7 @@ void downloadEnsembl() {
 			}
         
 			# Copy files
-			dataDir := "data/$shortName"
+			dataDir := "data/$name"
 			dataDir.mkdir()
 			if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz
 			if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz
@@ -235,23 +235,26 @@ void downloadEnsembl() {
 			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz
         
 			# Append config lines
-			configLines += "$shortName.genome : $longName"
-			configLines += "$shortName.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+			configLines += "$name.genome : $longName"
+			configLines += "$name.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
 		}
 	}
 
 	# Regulation tracks (human and mouse only)
-	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz data/$GRCH.$ensemblRelease/regulation.gff.gz
-	sys $cp homo_sapiens/MotifFeatures.gff.gz data/$GRCH.$ensemblRelease/motif.gff.gz
+	dataDir := "data/$GRCH.$ensemblRelease"
+	dataDir.mkdir()
+	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz $dataDir/regulation.gff.gz
+	sys $cp homo_sapiens/MotifFeatures.gff.gz $dataDir/motif.gff.gz
 
-	sys $cp mus_musculus/AnnotatedFeatures.gff.gz data/$GRCM.$ensemblRelease/regulation.gff.gz
-	sys $cp mus_musculus/MotifFeatures.gff.gz data/$GRCM.$ensemblRelease/motif.gff.gz
+	sys $cp mus_musculus/AnnotatedFeatures.gff.gz $dataDir/regulation.gff.gz
+	sys $cp mus_musculus/MotifFeatures.gff.gz $dataDir/motif.gff.gz
 
 	# Create config file
 	println "Writing config file $configFile"
 	configFile.write( configLines.join("\n") )
 
 	# Copy files to snpEff/data directory
+	println "Copying data to $dirData"
 	sys cd data ; cp -rvf . $dirData
 }
 
@@ -304,7 +307,7 @@ void downloadEnsemblBfmpp() {
 	#---
 	# Copy files to local dir
 	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to parent dir"
-	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
+	#sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
 
 	# Move files
 	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to data dir"
@@ -313,16 +316,18 @@ void downloadEnsemblBfmpp() {
 		base := gtf.baseName('.gtf.gz')
 		baseNoVer := base.removeExt()
 		longName := base.split('\.').head()
-		shortName := base.split('\.').tail().join('.')
+		#shortName := base.split('\.').tail().join('.')
+		name := longName
+		println "name: $name\tbase: $base"
 
-		if( !shortName.isEmpty() ) {
+		if( !name.isEmpty() ) {
 			fasta := "$baseNoVer.dna.toplevel.fa.gz"
 			cds := "$baseNoVer.cdna.all.fa.gz"
 			prot := "$baseNoVer.pep.all.fa.gz"
-			println "\t$shortName\t$fasta\t$cds\t$prot"
+			println "\t$name\t$fasta\t$cds\t$prot"
         
 			# Copy files
-			dataDir := "data/$shortName"
+			dataDir := "data/$name"
 			dataDir.mkdir()
 			if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz    || true
 			if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz       || true
@@ -330,8 +335,8 @@ void downloadEnsemblBfmpp() {
 			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz || true
         
 			# Append config lines
-			configLines += "$shortName.genome : $longName"
-			configLines += "$shortName.reference : $ensemblBfmppFtp"
+			configLines += "$name.genome : $longName"
+			configLines += "$name.reference : $ensemblBfmppFtp"
 		}
 	}
 

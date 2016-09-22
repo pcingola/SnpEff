@@ -32,7 +32,7 @@ string[] zipGenome	= []			help Zip a specific genome
 cpus = 1
 
 # Versions
-ensemblRelease		:= 85
+ensemblReleases		:= [75, 85]
 ensemblBfmppRelease	:= "32"
 flybaseRelease		:= "FB2016_04" # "FB2016_01"
 flybaseGenomes		:= [ 'dana_r1.05', 'dere_r1.05', 'dgri_r1.3', 'dmel_r6.12', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.04', 'dsec_r1.3', 'dsim_r2.02', 'dvir_r1.06', 'dwil_r1.05', 'dyak_r1.05' ]
@@ -45,7 +45,8 @@ dbNsfpVer			:= '3.1a'
 ucscGenomes			:= [ 'hg19', 'mm9', 'mm10' ]
 
 # Configuration parameters
-bundles				:= ["NCBI_bacteria", "NCBI_viruses", "ENSEMBL_BFMPP_$ensemblBfmppRelease"]
+#bundles				:= ["NCBI_bacteria", "NCBI_viruses", "ENSEMBL_BFMPP_$ensemblBfmppRelease"]
+bundles				:= ["ENSEMBL_BFMPP_$ensemblBfmppRelease"]
 
 # Commands
 snpeff				:= "java -Xmx10G -jar snpEff.jar "
@@ -159,23 +160,25 @@ void buildConfig() {
 	confDir := "$dirSnpeff/config"
 	conf := "$dirSnpeff/snpEff.config"
 
-	bundlesConf := ""
-	for( string b : bundles) {
-		bundlesConf += " $confDir/snpEff.bundles.$b.config"
-	}
-
 	println "Building config file '$conf'"
 
 	sys cat $confDir/snpEff.core.config \
 			$confDir/snpEff.dbs.config \
 			$confDir/snpEff.test.config \
-			$confDir/snpEff.ENSEMBL_75.config \
-			$confDir/snpEff.ENSEMBL_$ensemblRelease.config \
-			$confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config \
+			> $conf
+
+	for(int ensemblRelease : ensemblReleases ) {
+		sys cat $confDir/snpEff.ENSEMBL_$ensemblRelease.config >> $conf
+	}
+
+	sys cat $confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config \
 			$confDir/snpEff.FLYBASE_$flybaseRelease.config \
 			$confDir/snpEff.etc.config \
-			$bundlesConf \
-			> $conf
+			>> $conf
+
+	for( string b : bundles) {
+		sys cat $confDir/snpEff.bundles.$b.config >> $conf
+	}
 }
 
 #-------------------------------------------------------------------------------
@@ -337,7 +340,9 @@ string[] dirsHg() {
 #-------------------------------------------------------------------------------
 void downloadAll() {
 	# Ensembl genomes
-	downloadEnsembl()
+	for( int ensemblRelease : ensemblReleases ) {
+		downloadEnsembl(ensemblRelease)
+	}
 	downloadEnsemblBfmpp()
 
 	# UCSC genomes
