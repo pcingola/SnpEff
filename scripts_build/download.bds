@@ -639,66 +639,66 @@ void downloadNextProt() {
 	}
 }
 
-#-------------------------------------------------------------------------------
-# Download geome from UCSC
-#-------------------------------------------------------------------------------
-void downloadUcscHg19() {
-	println "Download hg19 (UCSC)"
-
-	ref := 'hg19'
-	dir := "$dirDownload/ucsc_$ref"
-	dir.mkdir()
-	dir.chdir()
-	
-	#---
-	# Download data
-	#---
-	ori := "$dir/ORI"
-	ori.mkdir()
-	ori.chdir()
-
-	fetch("$urlUcscCse/$ref/bigZips/chromFa.tar.gz")
-	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
-	fetch("$urlNcbiFtp/refseq/H_sapiens/H_sapiens/protein/protein.fa.gz")
-
-	# Create FASTA file
-	fastaFromTar(ref, "$ori/chromFa.tar.gz")
-
-	# Query database
-	queryUcsc(ref, dir)
-	refLinkGz := queryUcscRefLink(ref, dir)
-	refLink := refLinkGz.removeExt('.gz')
-
-	#---
-	# Create protein FASTA
-	# Scripts:
-	#    - hg19_proteinFasta2NM.pl: Converts from ProteinIDs to TranscriptID
-	#    - hg19_proteinFastaReplaceName.pl : Adds TranscriptID version to TranscriptID
-	#---
-	println 'Creating proteins FASTA'
-	if( refLink <- refLinkGz) sys gunzip -c $refLinkGz > $refLink
-	if( "$dir/protein.fa.gz" <- "$ori/protein.fa.gz") {
-		sys gunzip -c $ori/protein.fa.gz \
-		| $dirScriptsBuild/hg19_proteinFasta2NM.pl $refLink \
-		| $dirScriptsBuild/hg19_proteinFastaReplaceName.pl $dir/genes.refseq.gz \
-		> $dir/protein.fa
-		sys gzip -f $dir/protein.fa
-	}
-
-	#---
-	# Create CDS FASTA
-	# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" 
-	#---
-	println 'Creating CDS FASTA'
-	if( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
-		sys gunzip -c $ori/refMrna.fa.gz | tr " " "." > $dir/cds.fa
-		sys gzip -f $dir/cds.fa
-	}
-
-	# Copy files to snpEff/data dir
-	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf cds.fa.gz protein.fa.gz genes.refseq.gz $dirData/$ref/ 
-}
-
+# #-------------------------------------------------------------------------------
+# # Download geome from UCSC
+# #-------------------------------------------------------------------------------
+# void downloadUcscHg19() {
+# 	println "Download hg19 (UCSC)"
+# 
+# 	ref := 'hg19'
+# 	dir := "$dirDownload/ucsc_$ref"
+# 	dir.mkdir()
+# 	dir.chdir()
+# 	
+# 	#---
+# 	# Download data
+# 	#---
+# 	ori := "$dir/ORI"
+# 	ori.mkdir()
+# 	ori.chdir()
+# 
+# 	fetch("$urlUcscCse/$ref/bigZips/chromFa.tar.gz")
+# 	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+# 	fetch("$urlNcbiFtp/refseq/H_sapiens/H_sapiens/protein/protein.fa.gz")
+# 
+# 	# Create FASTA file
+# 	fastaFromTar(ref, "$ori/chromFa.tar.gz")
+# 
+# 	# Query database
+# 	queryUcsc(ref, dir)
+# 	refLinkGz := queryUcscRefLink(ref, dir)
+# 	refLink := refLinkGz.removeExt('.gz')
+# 
+# 	#---
+# 	# Create protein FASTA
+# 	# Scripts:
+# 	#    - hg19_proteinFasta2NM.pl: Converts from ProteinIDs to TranscriptID
+# 	#    - hg19_proteinFastaReplaceName.pl : Adds TranscriptID version to TranscriptID
+# 	#---
+# 	println 'Creating proteins FASTA'
+# 	if( refLink <- refLinkGz) sys gunzip -c $refLinkGz > $refLink
+# 	if( "$dir/protein.fa.gz" <- "$ori/protein.fa.gz") {
+# 		sys gunzip -c $ori/protein.fa.gz \
+# 		| $dirScriptsBuild/hg19_proteinFasta2NM.pl $refLink \
+# 		| $dirScriptsBuild/hg19_proteinFastaReplaceName.pl $dir/genes.refseq.gz \
+# 		> $dir/protein.fa
+# 		sys gzip -f $dir/protein.fa
+# 	}
+# 
+# 	#---
+# 	# Create CDS FASTA
+# 	# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" 
+# 	#---
+# 	println 'Creating CDS FASTA'
+# 	if( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
+# 		sys gunzip -c $ori/refMrna.fa.gz | tr " " "." > $dir/cds.fa
+# 		sys gzip -f $dir/cds.fa
+# 	}
+# 
+# 	# Copy files to snpEff/data dir
+# 	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf cds.fa.gz protein.fa.gz genes.refseq.gz $dirData/$ref/ 
+# }
+# 
 #-------------------------------------------------------------------------------
 # Download geome from UCSC (Known genes)
 #-------------------------------------------------------------------------------
@@ -716,6 +716,7 @@ void downloadUcscHg19Kg() {
 
 	# Copy files to snpEff/data dir
 	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf genes.kg.gz $dirData/$ref/ 
+	sys cd $dirData/genomes; ln -s $refdb.fa.gz $ref.fa.gz
 }
 
 #-------------------------------------------------------------------------------
@@ -738,6 +739,11 @@ void downloadUcscHg38() {
 
 	fetch("$urlUcscCse/$ref/bigZips/$ref.fa.gz")
 	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+
+	fagz := "$ref.fa.gz"
+	fagzData := "$dirData/genomes/$fagz"
+	fagzOri := "$dir/ORI/$fagz"
+	if( fagzData <- fagzOri ) sys cp -vf $fagzOri $fagzData
 
 	# Query gene database
 	queryUcsc(ref, dir)
@@ -773,6 +779,7 @@ void downloadUcscHg38Kg() {
 
 	# Copy files to snpEff/data dir
 	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf genes.kg.gz $dirData/$ref/ 
+	sys cd $dirData/genomes; ln -s $refdb.fa.gz $ref.fa.gz
 }
 
 #-------------------------------------------------------------------------------
@@ -796,7 +803,10 @@ void downloadUcsc(string ref) {
 	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
 
 	# Create fasta from tar
-	fastaFromTar(ref, "chromFa.tar.gz")
+	fagz := fastaFromTar(ref, "chromFa.tar.gz")
+	fagzData := "$dirData/genomes/$fagz"
+	fagzOri := "$dir/ORI/$fagz"
+	if( fagzData <- fagzOri ) sys cp -vf $fagzOri $fagzData
 
 	# Query gene database
 	queryUcsc(ref, dir)
@@ -812,7 +822,8 @@ void downloadUcsc(string ref) {
 	}
 
 	# Copy files to snpEff/data dir
-	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $dirData/$ref/ 
+	"$dirData/$ref".mkdir()
+	sys cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $dirData/$ref/ 
 }
 
 #-------------------------------------------------------------------------------
