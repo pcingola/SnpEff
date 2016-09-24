@@ -162,6 +162,7 @@ public abstract class SnpEffPredictorFactory {
 		}
 
 		if (verbose) System.out.print("\t\tAdding genomic sequences to exons: ");
+		int chrLen = chrSeq.length();
 
 		// Find and add sequences for all exons in this chromosome
 		for (Gene gene : genome.getGenes()) {
@@ -172,10 +173,10 @@ public abstract class SnpEffPredictorFactory {
 						int ssEnd = exon.getEnd() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
 
 						String seq = null;
-						if ((ssStart >= 0) && (ssEnd <= chrSeq.length())) {
+						if ((ssStart >= 0) && (ssEnd <= chrLen)) {
 							// Regular coordinates
 							try {
-								seq = chrSeq.substring(ssStart, ssEnd).toUpperCase();
+								seq = chrSeq.substring(ssStart, ssEnd);
 							} catch (Throwable t) {
 								t.printStackTrace();
 								throw new RuntimeException("Error trying to add sequence to exon:\n\tChromosome sequence length: " + chrSeq.length() + "\n\tExon: " + exon);
@@ -186,18 +187,24 @@ public abstract class SnpEffPredictorFactory {
 							//     i) Interval before zero: This gets mapped to the end of the chromosome
 							//     ii) Interval after zero: This are "normal" coordinates
 							// Then we concatenate both sequences
-							int len = chrSeq.length();
-							ssStart += len;
-							seq = chrSeq.substring(ssStart, len) + chrSeq.substring(0, ssEnd + 1);
-						} else if ((ssStart >= 0) && (ssEnd >= chrSeq.length())) {
+							ssStart += chrLen;
+							seq = chrSeq.substring(ssStart, chrLen) + chrSeq.substring(0, ssEnd + 1);
+						} else if ((ssStart >= chrLen) && (ssEnd >= chrLen)) {
+							// Both coordinates outside chromosome length? This is probably a circular genome
+							// Convert to 2 intervals by mapping them to the beginning of the chromosome
+							ssEnd -= chrLen;
+							ssStart -= chrLen;
+							Gpr.debug("ssStart: " + ssStart + "\tssEnd:" + ssEnd + "\tchrLen:" + chrLen);
+							seq = chrSeq.substring(ssStart, ssEnd);
+						} else if ((ssStart >= 0) && (ssEnd >= chrLen)) {
 							// Coordinates outside chromosome length? This is probably a circular genome
 							// Convert to 2 intervals:
 							//     i) Interval before chr.end: This are "normal" coordinates
 							//     ii) Interval after chr.end: This gets mapped to the beginning of the chromosome
 							// Then we concatenate both sequences
-							int len = chrSeq.length();
-							ssEnd -= len;
-							seq = chrSeq.substring(ssStart, len) + chrSeq.substring(0, ssEnd + 1);
+							ssEnd -= chrLen;
+							Gpr.debug("ssStart: " + ssStart + "\tssEnd:" + ssEnd + "\tchrLen:" + chrLen);
+							seq = chrSeq.substring(ssStart, chrLen) + chrSeq.substring(0, ssEnd + 1);
 						} else {
 							warning("Ignoring exon outside chromosome range (chromo length: " + chrSeq.length() + "). Exon: " + exon);
 							seqsIgnored++;
@@ -209,9 +216,9 @@ public abstract class SnpEffPredictorFactory {
 
 							// Reverse strand? => reverse complement of the sequence
 							if (exon.isStrandMinus()) seq = GprSeq.reverseWc(seq);
+							seq = seq.toUpperCase();
 							exon.setSequence(seq);
 							seqsAdded++;
-
 						}
 					}
 				}
