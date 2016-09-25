@@ -30,14 +30,16 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 
 	public Interval(Interval parent, int start, int end, boolean strandMinus, String id) {
 		// Sanity checks
-		if (end < start) throw new RuntimeException("Interval error: end before start." //
-				+ "\n\tClass        : " + getClass().getSimpleName() //
-				+ "\n\tStart        : " + start //
-				+ "\n\tEnd          : " + end //
-				+ "\n\tID           : " + id //
-				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
-				+ "\n\tParent       : " + parent //
-		);
+		// This check is no longer valid: Circular genomes can have 'start' after 'end'
+		//
+		//		if (end < start) throw new RuntimeException("Interval error: end before start." //
+		//				+ "\n\tClass        : " + getClass().getSimpleName() //
+		//				+ "\n\tStart        : " + start //
+		//				+ "\n\tEnd          : " + end //
+		//				+ "\n\tID           : " + id //
+		//				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
+		//				+ "\n\tParent       : " + parent //
+		//		);
 
 		this.start = start;
 		this.end = end;
@@ -201,6 +203,14 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 
 		if (end < start) return 0;
 		return (end - start) + 1;
+	}
+
+	/**
+	 * Is this interval part of a circular chromosome and it spans
+	 * the 'chromosome zero / chromosome end' line?
+	 */
+	public boolean isCircularSpanZero() {
+		return start < 0 || (start > end);
 	}
 
 	public boolean isSameChromo(Marker interval) {

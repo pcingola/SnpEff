@@ -170,7 +170,7 @@ public abstract class SnpEffPredictorFactory {
 				for (Transcript tr : gene) {
 
 					// Circular chromosomes coordinated are corrected in this step
-					tr.correctCircular(chrLen);
+					tr.circularCorrection(chrLen);
 
 					for (Exon exon : tr) {
 						int ssStart = exon.getStart();
@@ -282,12 +282,12 @@ public abstract class SnpEffPredictorFactory {
 	 * Perform some actions before reading sequences
 	 */
 	protected void beforeExonSequences() {
-		// Sometimes we have to guess exon info from CDS info (not the best 
-		// case scenario, but there are a lot of crappy genome annotations 
+		// Sometimes we have to guess exon info from CDS info (not the best
+		// case scenario, but there are a lot of crappy genome annotations
 		// around)
 		exonsFromCds();
 
-		// Some annotation formats split exons in two parts (e.g. stop-codon 
+		// Some annotation formats split exons in two parts (e.g. stop-codon
 		// not part of exon in GTF).
 		deleteRedundant();
 
