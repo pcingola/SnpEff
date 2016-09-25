@@ -1,6 +1,7 @@
 package org.snpeff.snpEffect.commandLine;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.snpeff.SnpEff;
 import org.snpeff.align.SmithWaterman;
@@ -47,6 +48,21 @@ public class SnpEffCmdCds extends SnpEff {
 		this.configFile = configFile;
 		this.genomeVer = genomeVer;
 		this.cdsFile = cdsFile;
+	}
+
+	void add(String trId, String seq, int lineNum, boolean check) {
+		// Repeated transcript Id? => Check that Protein is the same
+		if (check && (cdsByTrId.get(trId) != null) && (!cdsByTrId.get(trId).equals(seq))) //
+			System.err.println("ERROR: Different CDS for the same transcript ID. This should never happen!!!"//
+					+ "\n\tLine number   : " + lineNum //
+					+ "\n\tTranscript ID : '" + trId + "'"//
+					+ "\n\tProtein       : " + cdsByTrId.get(trId) //
+					+ "\n\tProtein (new) : " + seq //
+		);
+
+		// Use whole trId
+		cdsByTrId.put(trId, seq); // Add it to the hash
+		if (debug) Gpr.debug("Adding cdsByTrId{'" + trId + "'} :\t" + seq);
 	}
 
 	/**
@@ -248,11 +264,15 @@ public class SnpEffCmdCds extends SnpEff {
 		FastaFileIterator ffi = new FastaFileIterator(cdsFile);
 		for (String seq : ffi) {
 			String trId = ffi.getName();
+			add(trId, seq, ffi.getLineNum(), true);
 
-			// Repeated transcript Id? => Check that CDS is the same
-			if ((cdsByTrId.get(trId) != null) && (!cdsByTrId.get(trId).equals(seq))) System.err.println("ERROR: Different CDS for the same transcript ID. This should never happen!!!\n\tLine number: " + ffi.getLineNum() + "\n\tTranscript ID:\t" + trId + "\n\tCDS:\t\t" + cdsByTrId.get(trId) + "\n\tCDS (new):\t" + seq);
-
-			cdsByTrId.put(trId, seq); // Add it to the hash
+			// Also try processing header line using different separators
+			List<String> ids = ffi.fastaHeader2Ids();
+			for (String id : ids) {
+				// We don't check for uniqueness here since many items in this
+				// list are tokens that are expected to be repeated
+				add(id, seq, ffi.getLineNum(), false);
+			}
 		}
 	}
 

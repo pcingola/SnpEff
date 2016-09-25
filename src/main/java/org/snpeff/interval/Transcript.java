@@ -457,7 +457,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	synchronized void calcCdsStartEnd() {
 		// Do we need to calculate these values?
-		if (cdsStart < 0) {
+		// Note: In circular genomes, one of cdsStart / cdsEnd might be less
+		//       than zero (we must check both)
+		if ((cdsStart < 0) && (cdsEnd < 0)) {
 			// Calculate coding start (after 5 prime UTR)
 
 			if (utrs.isEmpty()) {
@@ -656,6 +658,87 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			utrs.add((Utr) utr);
 
 		return ret;
+	}
+
+	/**
+	 * Correct circular coordinates
+	*/
+	public void correctCircular(int chrLen) {
+		if (correctCircularExon(chrLen)) {
+			correctCircularCds(chrLen);
+		}
+	}
+
+	void correctCircularCds(int chrLen) {
+		for (Cds cds : getCds())
+			cds.shiftCoordinates(-chrLen);
+	}
+
+	/**
+	 * Correct circular exon coordinates
+	 * Note: Nomenclature for circular chromosomes we use negative coordinates
+	 *       spanning over "zero". This is arbitrary, we could have used
+	 *       coordinates spanning over chromo.length
+	 */
+	boolean correctCircularExon(int chrLen) {
+		boolean corrected = false;
+
+		int maxExonLen = 0;
+		for (Exon exon : this) {
+			int exStart = exon.getStart();
+			int exEnd = exon.getEnd();
+			maxExonLen = Math.max(maxExonLen, exon.size());
+
+			// Coordinates spanning over 'chrLen': We need to correct them
+			if ((exStart >= chrLen) || (exEnd >= chrLen)) {
+				exon.shiftCoordinates(-chrLen);
+				corrected = true;
+			}
+
+		}
+
+		// Not corrected? Nothing else to do
+		if (!corrected) return false;
+
+		// Do we need to correct other exons that have coordinates within limits?
+		// A typical case would be when start/stop codons are expressed in other
+		// coordinates
+		// E.g.:
+		//		ChrLen     : 10,000
+		// 		exonStart  : [ 9900, 9902 ]		// Start codon expressed in "span-over-end" coordinates (it should have been [-100, -98]
+		// 		exon1      : [ -100, 100 ]		// Exon expressed in "span-over-zero" coordinates
+		// 		exonStop   : [ 10098, 10100 ]	// Stop Codon expressed in "span-over-end" coordinates (it should have been [98, 100])
+		//
+		do {
+			corrected = false;
+			for (Exon exon : this) {
+				// We analyze exons on the left half of the chromosome (which are candidated to be
+				if ((exon.getStart() >= chrLen / 2) //
+						&& (exon.getEnd() <= chrLen)) {
+					// Do we need to correct these coordinates?
+					Exon exShifted = exon.cloneShallow();
+					exShifted.shiftCoordinates(-chrLen);
+
+					// Minimum distance to other exons expressed in negative coordiantes
+					int minDist = Integer.MAX_VALUE;
+					for (Exon ex : this) {
+						if (ex.getStart() < 0) {
+							minDist = Math.min(minDist, exShifted.distance(ex));
+						}
+					}
+
+					// Distance is "small" => we assume that we need to correct this exon as well.
+					if (minDist >= 0 && minDist < maxExonLen) {
+						exon.shiftCoordinates(-chrLen);
+						corrected = true;
+					}
+				}
+			}
+		} while (corrected);
+
+		deleteRedundant();
+		resetCache();
+		return true;
 	}
 
 	/**
@@ -1861,7 +1944,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			minus.add(cint);
 
 		Markers missingUtrs = exons.minus(minus); // Perform interval minus
-		if (missingUtrs.size() > 0) return addMissingUtrs(missingUtrs, verbose); // Anything left? => There was a missing UTR
+		if (!missingUtrs.isEmpty()) return addMissingUtrs(missingUtrs, verbose); // Anything left? => There was a missing UTR
 		return false;
 	}
 

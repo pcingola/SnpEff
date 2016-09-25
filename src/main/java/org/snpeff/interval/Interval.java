@@ -225,7 +225,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 
 	public void setEnd(int end) {
 		if (end < start) throw new RuntimeException("Trying to set end before start:\n\tstart: " + start + "\n\tend : " + end + "\n\t" + this);
-		if (end < 0) throw new RuntimeException("Trying to set negative 'end' coordinate:\n\t: " + start + "\n\tend : " + end + "\n\t" + this);
+		// if (end < 0) throw new RuntimeException("Trying to set negative 'end' coordinate:\n\t: " + start + "\n\tend : " + end + "\n\t" + this);
 		this.end = end;
 	}
 
@@ -238,7 +238,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 	}
 
 	public void setStart(int start) {
-		if (start < 0) throw new RuntimeException("Trying to set negative 'start' coordinate:\n\t: " + start + "\n\tend : " + end + "\n\t" + this);
+		//		if (start < 0) throw new RuntimeException("Trying to set negative 'start' coordinate:\n\t: " + start + "\n\tend : " + end + "\n\t" + this);
 		this.start = start;
 	}
 

@@ -2,7 +2,6 @@ package org.snpeff.snpEffect.commandLine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.snpeff.SnpEff;
@@ -13,10 +12,10 @@ import org.snpeff.collections.AutoHashMap;
 import org.snpeff.fileIterator.FastaFileIterator;
 import org.snpeff.genBank.EmblFile;
 import org.snpeff.genBank.Feature;
+import org.snpeff.genBank.Feature.Type;
 import org.snpeff.genBank.Features;
 import org.snpeff.genBank.FeaturesFile;
 import org.snpeff.genBank.GenBankFile;
-import org.snpeff.genBank.Feature.Type;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
@@ -38,8 +37,6 @@ public class SnpEffCmdProtein extends SnpEff {
 
 	public static boolean onlyOneError = false; // This is used in some test-cases
 	public static double MAX_ERROR_RATE = 0.05; // Maximum allowed error is 1% (otherwise test fails)
-	String TRANSCRIPT_ID_SEPARATORS_REGEX = "[ \t:,.=]";
-	char TRANSCRIPT_ID_SEPARATORS[] = TRANSCRIPT_ID_SEPARATORS_REGEX.substring(1, TRANSCRIPT_ID_SEPARATORS_REGEX.length() - 1).toCharArray();
 
 	boolean codonTables;
 	boolean storeAlignments; // Store alignments (used for some test cases)
@@ -199,29 +196,6 @@ public class SnpEffCmdProtein extends SnpEff {
 		if (proteinNoStartU.equals(refNoStart)) return true;
 
 		return false;
-	}
-
-	/**
-	 * Try to parse IDs from a fasta header
-	 */
-	List<String> fastaHeader2Ids(String fastaHeaderLine) {
-		if (debug) Gpr.debug("Parsing IDs from line:\t" + fastaHeaderLine);
-
-		List<String> list = new LinkedList<>();
-
-		// Try using some separators individually
-		for (char sep : TRANSCRIPT_ID_SEPARATORS) {
-			String ids[] = fastaHeaderLine.split(sep + "");
-			for (String id : ids)
-				list.add(id);
-		}
-
-		// Try using some separators toghether
-		String ids[] = fastaHeaderLine.split(TRANSCRIPT_ID_SEPARATORS_REGEX);
-		for (String id : ids)
-			list.add(id);
-
-		return list;
 	}
 
 	public HashMap<String, SmithWaterman> getAlignmentByTrId() {
@@ -454,7 +428,7 @@ public class SnpEffCmdProtein extends SnpEff {
 			add(trId, seq, ffi.getLineNum(), true);
 
 			// Also try processing header line using different separators
-			List<String> ids = fastaHeader2Ids(ffi.getName());
+			List<String> ids = ffi.fastaHeader2Ids();
 			for (String id : ids) {
 				// We don't check for uniqueness here since many items in this
 				// list are tokens that are expected to be repeated

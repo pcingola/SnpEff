@@ -1,6 +1,8 @@
 package org.snpeff.fileIterator;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,12 +21,37 @@ public class FastaFileIterator extends FileIterator<String> {
 		COMPLETE; // Complete parser state.
 	}
 
+	public static String TRANSCRIPT_ID_SEPARATORS_REGEX = "[ \t:,.=]";
+	public static char TRANSCRIPT_ID_SEPARATORS[] = TRANSCRIPT_ID_SEPARATORS_REGEX.substring(1, TRANSCRIPT_ID_SEPARATORS_REGEX.length() - 1).toCharArray();
+
 	Pattern transcriptPattern = Pattern.compile("transcript:(\\S*)");
 	String header = null;
 	String nextHeader = null;
 
 	public FastaFileIterator(String fastaFileName) {
 		super(fastaFileName);
+	}
+
+	/**
+	 * Try to parse IDs from a fasta header
+	 */
+	public List<String> fastaHeader2Ids() {
+		String fastaHeaderLine = getName();
+		List<String> list = new LinkedList<>();
+
+		// Try using some separators individually
+		for (char sep : TRANSCRIPT_ID_SEPARATORS) {
+			String ids[] = fastaHeaderLine.split(sep + "");
+			for (String id : ids)
+				list.add(id);
+		}
+
+		// Try using some separators together
+		String ids[] = fastaHeaderLine.split(TRANSCRIPT_ID_SEPARATORS_REGEX);
+		for (String id : ids)
+			list.add(id);
+
+		return list;
 	}
 
 	/**

@@ -168,6 +168,10 @@ public abstract class SnpEffPredictorFactory {
 		for (Gene gene : genome.getGenes()) {
 			if (gene.getChromosomeName().equalsIgnoreCase(chr)) { // Same chromosome? => go on
 				for (Transcript tr : gene) {
+
+					// Circular chromosomes coordinated are corrected in this step
+					tr.correctCircular(chrLen);
+
 					for (Exon exon : tr) {
 						int ssStart = exon.getStart();
 						int ssEnd = exon.getEnd() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
@@ -188,26 +192,16 @@ public abstract class SnpEffPredictorFactory {
 							//     ii) Interval after zero: This are "normal" coordinates
 							// Then we concatenate both sequences
 							ssStart += chrLen;
-							seq = chrSeq.substring(ssStart, chrLen) + chrSeq.substring(0, ssEnd + 1);
-						} else if ((ssStart >= chrLen) && (ssEnd >= chrLen)) {
-							// Both coordinates outside chromosome length? This is probably a circular genome
-							// Convert to 2 intervals by mapping them to the beginning of the chromosome
-							ssEnd -= chrLen;
-							ssStart -= chrLen;
-							Gpr.debug("ssStart: " + ssStart + "\tssEnd:" + ssEnd + "\tchrLen:" + chrLen);
-							seq = chrSeq.substring(ssStart, ssEnd);
-						} else if ((ssStart >= 0) && (ssEnd >= chrLen)) {
-							// Coordinates outside chromosome length? This is probably a circular genome
+							seq = chrSeq.substring(ssStart, chrLen) + chrSeq.substring(0, ssEnd);
+						} else if ((ssStart < 0) && (ssEnd < 0)) {
+							// Negative start coordinates? This is probably a circular genome
 							// Convert to 2 intervals:
-							//     i) Interval before chr.end: This are "normal" coordinates
-							//     ii) Interval after chr.end: This gets mapped to the beginning of the chromosome
+							//     i) Interval before zero: This gets mapped to the end of the chromosome
+							//     ii) Interval after zero: This are "normal" coordinates
 							// Then we concatenate both sequences
-							ssEnd -= chrLen;
-							Gpr.debug("ssStart: " + ssStart + "\tssEnd:" + ssEnd + "\tchrLen:" + chrLen);
-							seq = chrSeq.substring(ssStart, chrLen) + chrSeq.substring(0, ssEnd + 1);
-						} else {
-							warning("Ignoring exon outside chromosome range (chromo length: " + chrSeq.length() + "). Exon: " + exon);
-							seqsIgnored++;
+							ssStart += chrLen;
+							ssEnd += chrLen;
+							seq = chrSeq.substring(ssStart, ssEnd);
 						}
 
 						if (seq != null) {
@@ -220,6 +214,7 @@ public abstract class SnpEffPredictorFactory {
 							exon.setSequence(seq);
 							seqsAdded++;
 						}
+
 					}
 				}
 			}
@@ -287,10 +282,13 @@ public abstract class SnpEffPredictorFactory {
 	 * Perform some actions before reading sequences
 	 */
 	protected void beforeExonSequences() {
-		// Sometimes we have to guess exon info from CDS info (not the best case scenario, but there are a lot of crappy genome annotations around)
+		// Sometimes we have to guess exon info from CDS info (not the best 
+		// case scenario, but there are a lot of crappy genome annotations 
+		// around)
 		exonsFromCds();
 
-		// Some annotation formats split exons in two parts (e.g. stop-codon not part of exon in GTF).
+		// Some annotation formats split exons in two parts (e.g. stop-codon 
+		// not part of exon in GTF).
 		deleteRedundant();
 
 		// Some annotations introduce zero size introns
@@ -664,7 +662,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Read exon sequences from a FASTA file
-	 * @param fastaFile
 	 */
 	protected void readExonSequences() {
 		List<String> files = config.getFileListGenomeFasta();
