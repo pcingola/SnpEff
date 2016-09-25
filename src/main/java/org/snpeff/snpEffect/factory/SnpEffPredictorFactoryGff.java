@@ -492,7 +492,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				line = reader.readLine();
 
 				// Are we done?
-				if (line.isEmpty()) {
+				if (line == null || line.isEmpty()) {
 					// Ignore
 				} else if (line.equals(FASTA_DELIMITER)) {
 					mainFileHasFasta = true;
