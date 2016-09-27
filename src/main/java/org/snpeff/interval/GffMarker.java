@@ -238,7 +238,6 @@ public class GffMarker extends Custom {
 	 */
 	protected void parse(Genome genome, String line) {
 		// Split fields
-		Gpr.debug("line: " + line);
 		String fields[] = line.split("\t");
 
 		// Parse chromosome
