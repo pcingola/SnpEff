@@ -110,7 +110,6 @@ public class RegulationFileConsensus {
 
 			// Different chromosome? flush all
 			if (!chromo.equals(reg.getChromosomeName())) {
-				if (verbose) Timer.showStdErr("\tChromosome '" + reg.getChromosomeName() + "'\tline: " + regulationFileIterator.getLineNum());
 				for (RegulationConsensus regCons : regConsByName.values())
 					regCons.flush();
 				chromo = reg.getChromosomeName();
