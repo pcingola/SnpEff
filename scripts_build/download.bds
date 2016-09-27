@@ -19,8 +19,7 @@ urlFlyBase         := "ftp://ftp.flybase.net"
 urlGwasCatalog     := "http://www.genome.gov/admin/gwascatalog.txt"
 urlJaspar          := "http://jaspar.binf.ku.dk/html/DOWNLOAD/JASPAR_CORE/pfm/redundant/pfm_all.txt"
 urlNcbiFtp         := "ftp://ftp.ncbi.nlm.nih.gov/"
-#urlNcbiBacteria    := "ftp.ncbi.nih.gov::genomes/Bacteria"
-urlNcbiBacteria    := "rsync://ftp.ncbi.nih.gov/genomes/genbank/bacteria/"
+urlNcbiBacteria    := "ftp.ncbi.nih.gov::genomes/Bacteria"
 urlNcbiViruses     := "ftp.ncbi.nih.gov::genomes/Viruses"
 urlNextProt        := "ftp://ftp.nextprot.org/pub/current_release/xml"
 urlPdb             := "rsync.wwpdb.org::ftp_data/structures/divided/pdb/"
@@ -246,6 +245,8 @@ void downloadEnsembl(int ensemblRelease) {
 	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz $dataDir/regulation.gff.gz
 	sys $cp homo_sapiens/MotifFeatures.gff.gz $dataDir/motif.gff.gz
 
+	dataDir = "data/$GRCM.$ensemblRelease"
+	dataDir.mkdir()
 	sys $cp mus_musculus/AnnotatedFeatures.gff.gz $dataDir/regulation.gff.gz
 	sys $cp mus_musculus/MotifFeatures.gff.gz $dataDir/motif.gff.gz
 

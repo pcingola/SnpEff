@@ -38,9 +38,9 @@ flybaseRelease		:= "FB2016_04" # "FB2016_01"
 flybaseGenomes		:= [ 'dana_r1.05', 'dere_r1.05', 'dgri_r1.3', 'dmel_r6.12', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.04', 'dsec_r1.3', 'dsim_r2.02', 'dvir_r1.06', 'dwil_r1.05', 'dyak_r1.05' ]
 GRCH				:= "GRCh38"
 GRCHs				:= ["GRCh37", "GRCh38"]
+GRCM				:= "GRCm38"
 humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 humanChrsDd			:= [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
-GRCM				:= "GRCm38"
 dbNsfpVer			:= '3.1a'
 ucscGenomes			:= [ 'hg19', 'mm9', 'mm10' ]
 
