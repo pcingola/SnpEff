@@ -890,7 +890,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 			}
 
 			// Regulation
-			if (isRegulation()) bioType = ((Regulation) marker).getCellType();
+			if (isRegulation()) bioType = ((Regulation) marker).getRegulationType();
 		}
 
 		// Add seqChage's ID

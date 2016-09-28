@@ -289,7 +289,7 @@ public class VcfEffect {
 				effBuff.append("|");
 			} else if (variantEffect.isRegulation()) {
 				Regulation reg = (Regulation) variantEffect.getMarker();
-				effBuff.append("|" + reg.getCellType() + "||");
+				effBuff.append("|" + reg.getRegulationType() + "||");
 			} else if (variantEffect.isCustom()) {
 				Marker m = variantEffect.getMarker();
 				if (m != null) effBuff.append("|" + VcfEntry.vcfInfoValueSafe(m.getId()) + "||");
@@ -983,7 +983,7 @@ public class VcfEffect {
 			} else if (marker instanceof Regulation) {
 				// Regulation includes cell type
 				Regulation reg = (Regulation) marker;
-				featureType = reg.getType() + formatVersion.separator() + reg.getName() + ":" + reg.getCellType();
+				featureType = reg.getType() + formatVersion.separator() + reg.getName() + ":" + reg.getRegulationType();
 				featureId = marker.getId();
 			} else if (marker instanceof NextProt) {
 				featureType = marker.getId();

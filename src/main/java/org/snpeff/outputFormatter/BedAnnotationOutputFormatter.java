@@ -50,7 +50,7 @@ public class BedAnnotationOutputFormatter extends BedOutputFormatter {
 					// Show complete regulation info
 					if (m instanceof Regulation) {
 						Regulation r = (Regulation) m;
-						type += "|" + r.getName() + "|" + r.getCellType();
+						type += "|" + r.getName() + "|" + r.getRegulationType();
 					}
 
 					// Add BED line

@@ -59,7 +59,7 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 						// Parse info field, looking for "Name=XXXX"
 						String info = fields[8];
 						String name = "";
-						String cellType = "";
+						String type = "";
 						String infos[] = info.split(";");
 						for (String nv : infos) { // Field has "name = value" pairs
 							String nameValue[] = nv.split("="); // Get field name
@@ -68,20 +68,21 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 								String val = nameValue[1].trim();
 
 								// Is name 'Name'? 
-								if (attr.equals("Name")) name = val;
-								else if (attr.equals("Cell_type")) {
-									cellType = val; // Cell type 
-								} else if (attr.equals("Alias") && cellType.isEmpty()) {
-									cellType = val.split("_")[0]; // Cell type is in 'Alias'
+								if (attr.equals("Name") || attr.equals("feature_type")) {
+									name = val;
+								} else if (attr.equals("Cell_type") || attr.equals("description")) {
+									type = val.replaceAll(" - ", "-"); // Cell type or tissue type
+								} else if (attr.equals("Alias") && type.isEmpty()) {
+									type = val.split("_")[0]; // Cell type is in 'Alias'
 								}
 							}
 						}
 
 						// Create unique ID
-						String id = cellType + "_" + name + "_" + lineNum;
+						String id = type + "_" + name + "_" + lineNum;
 
 						// Create seqChange
-						Regulation reg = new Regulation(chromo, start, end, strandMinus, id, name, cellType);
+						Regulation reg = new Regulation(chromo, start, end, strandMinus, id, name, type);
 						return reg;
 					}
 				}

@@ -13,7 +13,7 @@ public class Regulation extends Marker {
 
 	private static final long serialVersionUID = -5607588295343642199L;
 
-	String cellType = "";
+	String regulationType = "";
 	String name = "";
 
 	public Regulation() {
@@ -21,27 +21,27 @@ public class Regulation extends Marker {
 		type = EffectType.REGULATION;
 	}
 
-	public Regulation(Marker parent, int start, int end, boolean strandMinus, String id, String name, String cellType) {
+	public Regulation(Marker parent, int start, int end, boolean strandMinus, String id, String name, String regulationType) {
 		super(parent, start, end, strandMinus, id);
 		type = EffectType.REGULATION;
 		this.name = name;
-		this.cellType = cellType;
+		this.regulationType = regulationType;
 	}
 
 	@Override
 	public Regulation cloneShallow() {
 		Regulation clone = (Regulation) super.cloneShallow();
-		clone.cellType = cellType;
+		clone.regulationType = regulationType;
 		clone.name = name;
 		return clone;
 	}
 
-	public String getCellType() {
-		return cellType;
-	}
-
 	public String getName() {
 		return name;
+	}
+
+	public String getRegulationType() {
+		return regulationType;
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class Regulation extends Marker {
 	@Override
 	public void serializeParse(MarkerSerializer markerSerializer) {
 		super.serializeParse(markerSerializer);
-		cellType = markerSerializer.getNextField();
+		regulationType = markerSerializer.getNextField();
 		name = markerSerializer.getNextField();
 	}
 
@@ -61,7 +61,7 @@ public class Regulation extends Marker {
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		return super.serializeSave(markerSerializer) //
-				+ "\t" + cellType //
+				+ "\t" + regulationType //
 				+ "\t" + name //
 				;
 	}

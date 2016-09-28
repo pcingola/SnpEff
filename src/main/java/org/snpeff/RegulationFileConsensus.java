@@ -8,6 +8,7 @@ import java.util.List;
 import org.snpeff.fileIterator.RegulationFileIterator;
 import org.snpeff.interval.Markers;
 import org.snpeff.interval.Regulation;
+import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 
 /**
@@ -48,7 +49,7 @@ public class RegulationFileConsensus {
 				totalCount++;
 				totalLength += consensus.size();
 
-				List<Regulation> regs = getRegulationList(consensus.getCellType());
+				List<Regulation> regs = getRegulationList(consensus.getRegulationType());
 				regs.add(consensus);
 			}
 		}
@@ -60,7 +61,7 @@ public class RegulationFileConsensus {
 	int totalLineNum = 0;
 
 	HashMap<String, RegulationConsensus> regConsByName = new HashMap<String, RegulationFileConsensus.RegulationConsensus>();
-	HashMap<String, ArrayList<Regulation>> regByCell = new HashMap<String, ArrayList<Regulation>>();
+	HashMap<String, ArrayList<Regulation>> regByRegType = new HashMap<String, ArrayList<Regulation>>();
 
 	public RegulationFileConsensus(boolean verbose) {
 		this.verbose = verbose;
@@ -71,7 +72,7 @@ public class RegulationFileConsensus {
 	 */
 	public void consensus(Regulation reg) {
 		String name = reg.getName();
-		String cell = reg.getCellType();
+		String cell = reg.getRegulationType();
 		String key = cell + "_" + name;
 
 		// Get or create
@@ -84,18 +85,18 @@ public class RegulationFileConsensus {
 		regCons.add(reg);
 	}
 
-	public Collection<String> getCellTypes() {
-		return regByCell.keySet();
+	public Collection<String> getRegTypes() {
+		return regByRegType.keySet();
 	}
 
 	/**
 	 * Get regulation list by cell type (or create a new list)
 	 */
-	public ArrayList<Regulation> getRegulationList(String cellType) {
-		ArrayList<Regulation> regs = regByCell.get(cellType);
+	public ArrayList<Regulation> getRegulationList(String regType) {
+		ArrayList<Regulation> regs = regByRegType.get(regType);
 		if (regs == null) {
 			regs = new ArrayList<Regulation>();
-			regByCell.put(cellType, regs);
+			regByRegType.put(regType, regs);
 		}
 		return regs;
 	}
@@ -144,13 +145,14 @@ public class RegulationFileConsensus {
 	 * Save databases (one file per cellType)
 	 */
 	public void save(String outputDir) {
-		for (String cellType : regByCell.keySet()) {
-			String fileName = outputDir + "/regulation_" + cellType + ".bin";
-			if (verbose) Timer.showStdErr("Saving database '" + cellType + "' in file '" + fileName + "'");
+		for (String regType : regByRegType.keySet()) {
+			String rType = Gpr.sanityzeFileName(regType);
+			String fileName = outputDir + "/regulation_" + rType + ".bin";
+			if (verbose) Timer.showStdErr("Saving database '" + regType + "' in file '" + fileName + "'");
 
 			// Save markers to file
 			Markers markersToSave = new Markers();
-			markersToSave.addAll(regByCell.get(cellType));
+			markersToSave.addAll(regByRegType.get(regType));
 			markersToSave.save(fileName);
 		}
 	}
