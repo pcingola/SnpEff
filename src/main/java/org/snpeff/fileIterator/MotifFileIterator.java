@@ -75,7 +75,7 @@ public class MotifFileIterator extends MarkerFileIterator<Motif> {
 							}
 						}
 
-						// Create seqChange
+						// Create marker
 						if (name.isEmpty()) {
 							if (verbose) System.err.println("Warning: Name not found, line " + lineNum + "\t" + line);
 						} else if (pwmId.isEmpty()) {
