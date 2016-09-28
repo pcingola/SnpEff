@@ -61,7 +61,7 @@ public class RegulationFileConsensus {
 	int totalLineNum = 0;
 
 	HashMap<String, RegulationConsensus> regConsByName = new HashMap<String, RegulationFileConsensus.RegulationConsensus>();
-	HashMap<String, ArrayList<Regulation>> regByRegType = new HashMap<String, ArrayList<Regulation>>();
+	HashMap<String, ArrayList<Regulation>> regListByRegType = new HashMap<String, ArrayList<Regulation>>();
 
 	public RegulationFileConsensus(boolean verbose) {
 		this.verbose = verbose;
@@ -72,8 +72,8 @@ public class RegulationFileConsensus {
 	 */
 	public void consensus(Regulation reg) {
 		String name = reg.getName();
-		String cell = reg.getRegulationType();
-		String key = cell + "_" + name;
+		String regType = reg.getRegulationType();
+		String key = regType + "_" + name;
 
 		// Get or create
 		RegulationConsensus regCons = regConsByName.get(key);
@@ -86,17 +86,18 @@ public class RegulationFileConsensus {
 	}
 
 	public Collection<String> getRegTypes() {
-		return regByRegType.keySet();
+		return regListByRegType.keySet();
 	}
 
 	/**
 	 * Get regulation list by cell type (or create a new list)
 	 */
 	public ArrayList<Regulation> getRegulationList(String regType) {
-		ArrayList<Regulation> regs = regByRegType.get(regType);
+		ArrayList<Regulation> regs = regListByRegType.get(regType);
 		if (regs == null) {
+			if (verbose) Timer.showStdErr("\tAdding regulatory type: '" + regType + "'");
 			regs = new ArrayList<Regulation>();
-			regByRegType.put(regType, regs);
+			regListByRegType.put(regType, regs);
 		}
 		return regs;
 	}
@@ -125,7 +126,7 @@ public class RegulationFileConsensus {
 			totalLineNum++;
 		}
 
-		// Finished, flush all
+		// Finished, flush all (add all consensus intervals to the lists)
 		for (RegulationConsensus regCons : regConsByName.values())
 			regCons.flush();
 
@@ -145,14 +146,14 @@ public class RegulationFileConsensus {
 	 * Save databases (one file per cellType)
 	 */
 	public void save(String outputDir) {
-		for (String regType : regByRegType.keySet()) {
+		for (String regType : regListByRegType.keySet()) {
 			String rType = Gpr.sanityzeFileName(regType);
 			String fileName = outputDir + "/regulation_" + rType + ".bin";
 			if (verbose) Timer.showStdErr("Saving database '" + regType + "' in file '" + fileName + "'");
 
 			// Save markers to file
 			Markers markersToSave = new Markers();
-			markersToSave.addAll(regByRegType.get(regType));
+			markersToSave.addAll(regListByRegType.get(regType));
 			markersToSave.save(fileName);
 		}
 	}
