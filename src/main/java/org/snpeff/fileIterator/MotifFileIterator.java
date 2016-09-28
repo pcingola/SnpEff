@@ -67,16 +67,26 @@ public class MotifFileIterator extends MarkerFileIterator<Motif> {
 									String names[] = name.split(":");
 									name = names[0];
 									pwmId = names[names.length - 1];
+								} else if (attr.equals("binding_matrix")) {
+									pwmId = val;
+								} else if (attr.equals("motif_feature_type")) {
+									name = val;
 								}
 							}
 						}
 
 						// Create seqChange
-						Motif motif = new Motif(chromo, start, end, strandMinus, id, name, pwmId);
-						motif.setPwm(jaspar.getPwm(pwmId));
-						if (motif.getPwm() == null) System.err.println("Warning: Pwm '" + id + "' not found! Name = " + name);
-
-						return motif;
+						if (name.isEmpty()) {
+							if (verbose) System.err.println("Warning: Name not found, line " + lineNum + "\t" + line);
+						} else if (pwmId.isEmpty()) {
+							if (verbose) System.err.println("Warning: PWM ID not found, line " + lineNum + "\t" + line);
+						} else if (jaspar.getPwm(pwmId) == null) {
+							if (verbose) System.err.println("Warning: PWM '" + pwmId + "' not found, line " + lineNum + "\t" + line);
+						} else {
+							Motif motif = new Motif(chromo, start, end, strandMinus, id, name, pwmId);
+							motif.setPwm(jaspar.getPwm(pwmId));
+							return motif;
+						}
 					}
 				}
 			}
