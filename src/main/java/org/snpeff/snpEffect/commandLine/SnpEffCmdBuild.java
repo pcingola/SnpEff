@@ -38,6 +38,7 @@ public class SnpEffCmdBuild extends SnpEff {
 	GeneDatabaseFormat geneDatabaseFormat; // Database format (only used if 'buildDb' is active)
 	boolean storeAlignments; // Store alignments (used for some test cases)
 	boolean storeSequences = false; // Store full sequences
+	boolean regSortedByType = false; // Is the 'regulation.gff' file sorted by regulation type?
 	String cellType = null;
 	SnpEffCmdProtein snpEffCmdProtein;
 	SnpEffCmdCds snpEffCmdCds;
@@ -196,6 +197,10 @@ public class SnpEffCmdBuild extends SnpEff {
 					geneDatabaseFormat = GeneDatabaseFormat.BIOMART;
 					break;
 
+				case "-regsortedbytype":
+					regSortedByType = true;
+					break;
+
 				case "-storeseqs":
 					storeSequences = true;
 					break;
@@ -290,8 +295,9 @@ public class SnpEffCmdBuild extends SnpEff {
 		// Open the regulation file and create a consensus
 		RegulationFileIterator regulationFileIterator = new RegulationGffFileIterator(regulationFileName);
 		RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus(verbose);
-		regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
-		regulationGffConsensus.save(config.getDirDataGenomeVersion()); // Save database
+		regulationGffConsensus.setRegSortedByType(regSortedByType);
+		regulationGffConsensus.setOutputDir(config.getDirDataGenomeVersion()); // Save database
+		regulationGffConsensus.createDatabases(regulationFileIterator);
 		if (verbose) Timer.showStdErr("Done.");
 	}
 
@@ -396,6 +402,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		System.err.println("\t-cellType <type>             : Only build regulation tracks for cellType <type>.");
 		System.err.println("\t-noStoreSeqs                 : Do not store sequence in binary files. Default: " + !storeSequences);
 		System.err.println("\t-onlyReg                     : Only build regulation tracks.");
+		System.err.println("\t-regSortedByType             : The 'regulation.gff' file is sorted by 'regulation type' instead of sorted by chromosome:pos. Default: " + regSortedByType);
 		System.err.println("\t-storeSeqs                   : Store sequence in binary files. Default: " + storeSequences);
 
 		usageGeneric();

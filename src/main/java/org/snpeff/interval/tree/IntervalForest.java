@@ -24,13 +24,14 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 
 	boolean debug;
 	HashMap<String, Itree> forest;
+	String name;
 
 	public IntervalForest() {
-		forest = new HashMap<String, Itree>();
+		forest = new HashMap<>();
 	}
 
 	public IntervalForest(Markers markers) {
-		forest = new HashMap<String, Itree>();
+		forest = new HashMap<>();
 		add(markers);
 	}
 
@@ -68,6 +69,10 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 			Itree tree = forest.get(key);
 			tree.build();
 		}
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -184,7 +189,7 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	 * I.e.: Return a set of intervals that intersects (at least once) with any interval in 'markers'
 	 */
 	public Markers queryUnique(Markers markers) {
-		HashSet<Marker> uniqueMarkers = new HashSet<Marker>();
+		HashSet<Marker> uniqueMarkers = new HashSet<>();
 
 		// Add all intersecting intervals
 		for (Marker q : markers) {
@@ -205,6 +210,10 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int size() {
