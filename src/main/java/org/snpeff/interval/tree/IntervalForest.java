@@ -23,6 +23,7 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	private static final long serialVersionUID = 1L;
 
 	boolean debug;
+	String name;
 	HashMap<String, Itree> forest;
 
 	public IntervalForest() {
@@ -68,6 +69,10 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 			Itree tree = forest.get(key);
 			tree.build();
 		}
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -205,6 +210,10 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int size() {

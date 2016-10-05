@@ -143,7 +143,7 @@ public class RegulationFileConsensus {
 	}
 
 	/**
-	 * Save databases (one file per cellType)
+	 * Save databases (one file per regType)
 	 */
 	public void save(String outputDir) {
 		for (String regType : regListByRegType.keySet()) {
