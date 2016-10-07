@@ -38,11 +38,7 @@ public class SnpEffCmdBuild extends SnpEff {
 	GeneDatabaseFormat geneDatabaseFormat; // Database format (only used if 'buildDb' is active)
 	boolean storeAlignments; // Store alignments (used for some test cases)
 	boolean storeSequences = false; // Store full sequences
-<<<<<<< HEAD
-	boolean regSortedByType = false; // Is the 'regulation.gff' file sorted by regulation type?
-=======
 	boolean regSortedByType = false;
->>>>>>> dd373f0fe0a0836086bb9634481c71cfde54898a
 	String cellType = null;
 	SnpEffCmdProtein snpEffCmdProtein;
 	SnpEffCmdCds snpEffCmdCds;
@@ -201,10 +197,6 @@ public class SnpEffCmdBuild extends SnpEff {
 					geneDatabaseFormat = GeneDatabaseFormat.BIOMART;
 					break;
 
-				case "-regsortedbytype":
-					regSortedByType = true;
-					break;
-
 				case "-storeseqs":
 					storeSequences = true;
 					break;
@@ -219,7 +211,7 @@ public class SnpEffCmdBuild extends SnpEff {
 
 				case "-celltype":
 					if ((i + 1) < args.length) cellType = args[++i];
-					else usage("Missing 'cellType' argument");
+					else usage("Missing 'regType' argument");
 					break;
 
 				case "-regsortedbytype":

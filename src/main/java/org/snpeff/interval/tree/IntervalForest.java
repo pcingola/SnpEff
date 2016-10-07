@@ -25,7 +25,6 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	boolean debug;
 	String name;
 	HashMap<String, Itree> forest;
-	String name;
 
 	public IntervalForest() {
 		forest = new HashMap<>();

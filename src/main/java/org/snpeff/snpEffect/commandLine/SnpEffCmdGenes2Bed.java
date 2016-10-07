@@ -168,6 +168,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 							+ ";" + g.getId() //
 							+ ";" + tr.getId() //
 							+ ";" + ex.getRank() //
+							+ ";" + (ex.isStrandPlus() ? "+" : "-") //
 					);
 				}
 			}
@@ -191,6 +192,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 						+ ";" + g.getId() //
 						+ ";" + tr.getId() //
 						+ ";" + ex.getRank() //
+						+ ";" + (ex.isStrandPlus() ? "+" : "-") //
 				);
 			}
 		}
@@ -209,6 +211,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 				+ "\t" + end //
 				+ "\t" + g.getGeneName() //
 				+ ";" + g.getId() //
+				+ ";" + (g.isStrandPlus() ? "+" : "-") //
 		);
 	}
 
