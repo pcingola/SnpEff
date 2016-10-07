@@ -23,6 +23,7 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	private static final long serialVersionUID = 1L;
 
 	boolean debug;
+	String name;
 	HashMap<String, Itree> forest;
 	String name;
 
