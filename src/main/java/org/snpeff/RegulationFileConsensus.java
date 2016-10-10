@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.snpeff.fileIterator.RegulationFileIterator;
 import org.snpeff.interval.Markers;
@@ -60,10 +61,12 @@ public class RegulationFileConsensus {
 	int totalLineNum = 0;
 	long totalLength = 0;
 	String outputDir;
-	HashMap<String, RegulationConsensus> regConsByName;
-	HashMap<String, ArrayList<Regulation>> regListByRegType;
+	Map<String, RegulationConsensus> regConsByName;
+	Map<String, ArrayList<Regulation>> regListByRegType;
 
 	public RegulationFileConsensus() {
+		regConsByName = new HashMap<>();
+		regListByRegType = new HashMap<>();
 	}
 
 	/**
@@ -83,11 +86,6 @@ public class RegulationFileConsensus {
 
 		regCons.add(reg);
 	}
-
-	//	public void createDatabases(RegulationFileIterator regulationFileIterator) {
-	//		readFile(regulationFileIterator); // Read info from file
-	//		save(); // Save database
-	//	}
 
 	// Flush all add all consensus intervals to the lists
 	void flush() {
@@ -168,12 +166,12 @@ public class RegulationFileConsensus {
 		}
 	}
 
-	public void setVerbose(boolean verbose) {
-		this.verbose = verbose;
-	}
-
 	public void setOutputDir(String outputDir) {
 		this.outputDir = outputDir;
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
 	}
 
 	void show(Regulation reg) {
