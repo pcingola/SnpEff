@@ -295,7 +295,6 @@ public class SnpEffCmdBuild extends SnpEff {
 
 		// Split large GFF files into smaller ones
 		RegulationFileIterator regulationFileIterator = new RegulationGffFileIterator(regulationFileName);
-<<<<<<< HEAD
 		RegulationFileSplitBytType regSplit = new RegulationFileSplitBytType();
 		regSplit.setVerbose(verbose);
 		regSplit.splitFile(regulationFileIterator, config.getDirDataGenomeVersion());
@@ -306,15 +305,10 @@ public class SnpEffCmdBuild extends SnpEff {
 			regulationFileIterator = new RegulationGffFileIterator(regFileName);
 			RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus();
 			regulationGffConsensus.setVerbose(verbose);
+			regulationGffConsensus.setOutputDir(config.getDirDataGenomeVersion());
 			regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
-			regulationGffConsensus.save(config.getDirDataGenomeVersion()); // Save database
+			regulationGffConsensus.save(); // Save database
 		}
-=======
-		RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus(verbose);
-		regulationGffConsensus.setRegSortedByType(regSortedByType);
-		regulationGffConsensus.setOutputDir(config.getDirDataGenomeVersion()); // Save database
-		regulationGffConsensus.createDatabases(regulationFileIterator);
->>>>>>> 0e2bb5ee2b3f56f7ade37e7c6c88f814308cfbd9
 		if (verbose) Timer.showStdErr("Done.");
 	}
 

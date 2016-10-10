@@ -56,7 +56,6 @@ public class RegulationFileConsensus {
 	}
 
 	boolean verbose = false;
-	boolean regSortedByType = false;
 	int totalCount = 0;
 	int totalLineNum = 0;
 	long totalLength = 0;
@@ -64,13 +63,7 @@ public class RegulationFileConsensus {
 	HashMap<String, RegulationConsensus> regConsByName;
 	HashMap<String, ArrayList<Regulation>> regListByRegType;
 
-<<<<<<< HEAD
 	public RegulationFileConsensus() {
-=======
-	public RegulationFileConsensus(boolean verbose) {
-		this.verbose = verbose;
-		reset();
->>>>>>> 0e2bb5ee2b3f56f7ade37e7c6c88f814308cfbd9
 	}
 
 	/**
@@ -91,10 +84,10 @@ public class RegulationFileConsensus {
 		regCons.add(reg);
 	}
 
-	public void createDatabases(RegulationFileIterator regulationFileIterator) {
-		readFile(regulationFileIterator); // Read info from file
-		save(); // Save database
-	}
+	//	public void createDatabases(RegulationFileIterator regulationFileIterator) {
+	//		readFile(regulationFileIterator); // Read info from file
+	//		save(); // Save database
+	//	}
 
 	// Flush all add all consensus intervals to the lists
 	void flush() {
@@ -125,22 +118,10 @@ public class RegulationFileConsensus {
 	public void readFile(RegulationFileIterator regulationFileIterator) {
 		String chromo = "";
 		int lineNum = 1;
-		String regType = "";
 		for (Regulation reg : regulationFileIterator) {
 
 			// Different chromosome? flush all
 			if (!chromo.equals(reg.getChromosomeName())) flush();
-
-			// Regulation type different than previous one?
-			if (regSortedByType //
-					&& !reg.getRegulationType().equals(regType) //
-					&& !regType.isEmpty() //
-			) {
-				// Save regulation markers
-				Gpr.debug("TYPE: '" + reg.getRegulationType() + "' vs '" + regType + "'");
-				save();
-				reset();
-			}
 
 			// Create consensus
 			consensus(reg);
@@ -148,7 +129,6 @@ public class RegulationFileConsensus {
 			// Prepatre for next iteration
 			lineNum++;
 			totalLineNum++;
-			regType = reg.getRegulationType();
 			chromo = reg.getChromosomeName();
 		}
 
@@ -165,11 +145,6 @@ public class RegulationFileConsensus {
 			System.err.println("\tTotal annotated length      : " + totalLength);
 			System.err.println("\tNumber of cell/annotations  : " + regConsByName.size());
 		}
-	}
-
-	void reset() {
-		regConsByName = new HashMap<>();
-		regListByRegType = new HashMap<>();
 	}
 
 	/**
@@ -193,17 +168,12 @@ public class RegulationFileConsensus {
 		}
 	}
 
-<<<<<<< HEAD
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
-=======
-	public void setOutputDir(String outputDir) {
-		this.outputDir = outputDir;
 	}
 
-	public void setRegSortedByType(boolean regSortedByType) {
-		this.regSortedByType = regSortedByType;
->>>>>>> 0e2bb5ee2b3f56f7ade37e7c6c88f814308cfbd9
+	public void setOutputDir(String outputDir) {
+		this.outputDir = outputDir;
 	}
 
 	void show(Regulation reg) {
