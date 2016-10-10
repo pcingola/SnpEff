@@ -43,7 +43,9 @@ public class RegulationConsensusMultipleBed {
 		Collections.sort(regs);
 
 		if (verbose) Timer.showStdErr("Adding to final consensus");
-		RegulationFileConsensus consCellType = new RegulationFileConsensus(false);
+		RegulationFileConsensus consCellType = new RegulationFileConsensus();
+		regCons.setVerbose(verbose);
+
 		for (Regulation reg : regs)
 			consCellType.consensus(reg);
 
@@ -74,7 +76,8 @@ public class RegulationConsensusMultipleBed {
 	 * @return
 	 */
 	RegulationFileConsensus readBeds(List<String> bedFiles, String cellType) {
-		RegulationFileConsensus regCons = new RegulationFileConsensus(true);
+		RegulationFileConsensus regCons = new RegulationFileConsensus();
+		regCons.setVerbose(verbose);
 
 		// Read all files, creating a consensus for each
 		for (String bedFile : bedFiles) {

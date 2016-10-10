@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.snpeff.RegulationConsensusMultipleBed;
 import org.snpeff.RegulationFileConsensus;
+import org.snpeff.RegulationFileSplitBytType;
 import org.snpeff.SnpEff;
 import org.snpeff.codons.FindRareAaIntervals;
 import org.snpeff.fileIterator.MotifFileIterator;
@@ -292,11 +293,21 @@ public class SnpEffCmdBuild extends SnpEff {
 			return;
 		}
 
-		// Open the regulation file and create a consensus
+		// Split large GFF files into smaller ones
 		RegulationFileIterator regulationFileIterator = new RegulationGffFileIterator(regulationFileName);
-		RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus(verbose);
-		regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
-		regulationGffConsensus.save(config.getDirDataGenomeVersion()); // Save database
+		RegulationFileSplitBytType regSplit = new RegulationFileSplitBytType();
+		regSplit.setVerbose(verbose);
+		regSplit.splitFile(regulationFileIterator, config.getDirDataGenomeVersion());
+
+		// Create database for each individual GFF file
+		for (String regFileName : regSplit.getRegFileNames()) {
+			// Open the regulation file and create a consensus
+			regulationFileIterator = new RegulationGffFileIterator(regFileName);
+			RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus();
+			regulationGffConsensus.setVerbose(verbose);
+			regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
+			regulationGffConsensus.save(config.getDirDataGenomeVersion()); // Save database
+		}
 		if (verbose) Timer.showStdErr("Done.");
 	}
 

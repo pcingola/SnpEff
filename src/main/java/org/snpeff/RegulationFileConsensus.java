@@ -63,8 +63,7 @@ public class RegulationFileConsensus {
 	HashMap<String, RegulationConsensus> regConsByName = new HashMap<String, RegulationFileConsensus.RegulationConsensus>();
 	HashMap<String, ArrayList<Regulation>> regListByRegType = new HashMap<String, ArrayList<Regulation>>();
 
-	public RegulationFileConsensus(boolean verbose) {
-		this.verbose = verbose;
+	public RegulationFileConsensus() {
 	}
 
 	/**
@@ -90,7 +89,7 @@ public class RegulationFileConsensus {
 	}
 
 	/**
-	 * Get regulation list by cell type (or create a new list)
+	 * Get regulation list by type (or create a new list)
 	 */
 	public ArrayList<Regulation> getRegulationList(String regType) {
 		ArrayList<Regulation> regs = regListByRegType.get(regType);
@@ -156,6 +155,10 @@ public class RegulationFileConsensus {
 			markersToSave.addAll(regListByRegType.get(regType));
 			markersToSave.save(fileName);
 		}
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
 	}
 
 	void show(Regulation reg) {
