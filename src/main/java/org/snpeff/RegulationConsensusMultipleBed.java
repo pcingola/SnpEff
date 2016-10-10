@@ -13,7 +13,7 @@ import org.snpeff.util.Timer;
 
 /**
  * Create a regulation consensus from multiple BED files
- * 
+ *
  * @author pcingola
  *
  */
@@ -58,20 +58,21 @@ public class RegulationConsensusMultipleBed {
 	/**
 	 * Create a consensus for each cell type
 	 */
-	void consensusByCellType() {
+	void consensusByRegType() {
 		for (String cellType : filesByCellType.keySet()) {
 			ArrayList<String> bedFiles = filesByCellType.getOrCreate(cellType);
 			if (verbose) Timer.showStdErr("Creating consensus for cellType '" + cellType + "', files: " + bedFiles);
 
 			RegulationFileConsensus regCons = readBeds(bedFiles, cellType);
+			regCons.setOutputDir(outDir);
 			regCons = consensus(regCons, cellType); // Create a new consensus from all previous consensus (yep, this is confusing...)
-			regCons.save(outDir); // Save to output dir
+			regCons.save(); // Save to output dir
 		}
 	}
 
-	/** 
+	/**
 	 * Read all BED files and create a regulation consensus
-	 * 
+	 *
 	 * @param bedFiles
 	 * @return
 	 */
@@ -85,7 +86,7 @@ public class RegulationConsensusMultipleBed {
 
 			String epigeneticMark = epiMarkByFile.get(bedFile);
 			RegulationBedFileIterator regFile = new RegulationBedFileIterator(bedFile, epigeneticMark, cellType);
-			regCons.readFile(regFile); // Add consensus 
+			regCons.readFile(regFile); // Add consensus
 		}
 
 		return regCons;
@@ -94,12 +95,12 @@ public class RegulationConsensusMultipleBed {
 	/**
 	 * Read all file names from a dir and looks for BED files
 	 * BED file name format: regulatory.CellType.EpigeneticMark.bed[.gz]
-	 * 
+	 *
 	 * @param dirName
 	 */
 	void readDir(String dirName) {
-		filesByCellType = new AutoHashMap<String, ArrayList<String>>(new ArrayList<String>());
-		epiMarkByFile = new HashMap<String, String>();
+		filesByCellType = new AutoHashMap<>(new ArrayList<String>());
+		epiMarkByFile = new HashMap<>();
 
 		// Read all files
 		int countFiles = 0;
@@ -135,7 +136,7 @@ public class RegulationConsensusMultipleBed {
 	 */
 	public void run() {
 		readDir(inDir);
-		consensusByCellType();
+		consensusByRegType();
 		if (verbose) Timer.showStdErr("Done");
 	}
 

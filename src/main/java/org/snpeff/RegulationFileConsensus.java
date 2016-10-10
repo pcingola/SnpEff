@@ -56,14 +56,21 @@ public class RegulationFileConsensus {
 	}
 
 	boolean verbose = false;
+	boolean regSortedByType = false;
 	int totalCount = 0;
-	long totalLength = 0;
 	int totalLineNum = 0;
+	long totalLength = 0;
+	String outputDir;
+	HashMap<String, RegulationConsensus> regConsByName;
+	HashMap<String, ArrayList<Regulation>> regListByRegType;
 
-	HashMap<String, RegulationConsensus> regConsByName = new HashMap<String, RegulationFileConsensus.RegulationConsensus>();
-	HashMap<String, ArrayList<Regulation>> regListByRegType = new HashMap<String, ArrayList<Regulation>>();
-
+<<<<<<< HEAD
 	public RegulationFileConsensus() {
+=======
+	public RegulationFileConsensus(boolean verbose) {
+		this.verbose = verbose;
+		reset();
+>>>>>>> 0e2bb5ee2b3f56f7ade37e7c6c88f814308cfbd9
 	}
 
 	/**
@@ -84,6 +91,17 @@ public class RegulationFileConsensus {
 		regCons.add(reg);
 	}
 
+	public void createDatabases(RegulationFileIterator regulationFileIterator) {
+		readFile(regulationFileIterator); // Read info from file
+		save(); // Save database
+	}
+
+	// Flush all add all consensus intervals to the lists
+	void flush() {
+		for (RegulationConsensus regCons : regConsByName.values())
+			regCons.flush();
+	}
+
 	public Collection<String> getRegTypes() {
 		return regListByRegType.keySet();
 	}
@@ -95,7 +113,7 @@ public class RegulationFileConsensus {
 		ArrayList<Regulation> regs = regListByRegType.get(regType);
 		if (regs == null) {
 			if (verbose) Timer.showStdErr("\tAdding regulatory type: '" + regType + "'");
-			regs = new ArrayList<Regulation>();
+			regs = new ArrayList<>();
 			regListByRegType.put(regType, regs);
 		}
 		return regs;
@@ -107,27 +125,35 @@ public class RegulationFileConsensus {
 	public void readFile(RegulationFileIterator regulationFileIterator) {
 		String chromo = "";
 		int lineNum = 1;
+		String regType = "";
 		for (Regulation reg : regulationFileIterator) {
 
 			// Different chromosome? flush all
-			if (!chromo.equals(reg.getChromosomeName())) {
-				for (RegulationConsensus regCons : regConsByName.values())
-					regCons.flush();
-				chromo = reg.getChromosomeName();
+			if (!chromo.equals(reg.getChromosomeName())) flush();
+
+			// Regulation type different than previous one?
+			if (regSortedByType //
+					&& !reg.getRegulationType().equals(regType) //
+					&& !regType.isEmpty() //
+			) {
+				// Save regulation markers
+				Gpr.debug("TYPE: '" + reg.getRegulationType() + "' vs '" + regType + "'");
+				save();
+				reset();
 			}
 
 			// Create consensus
 			consensus(reg);
 
-			// Show every now and then
-			// if( lineNum % 100000 == 0 ) System.err.println("\t" + lineNum + " / " + totalCount + "\t" + String.format("%.1f%%", (100.0 * totalCount / lineNum)));
+			// Prepatre for next iteration
 			lineNum++;
 			totalLineNum++;
+			regType = reg.getRegulationType();
+			chromo = reg.getChromosomeName();
 		}
 
 		// Finished, flush all (add all consensus intervals to the lists)
-		for (RegulationConsensus regCons : regConsByName.values())
-			regCons.flush();
+		flush();
 
 		// Show stats
 		if (verbose) {
@@ -141,24 +167,43 @@ public class RegulationFileConsensus {
 		}
 	}
 
+	void reset() {
+		regConsByName = new HashMap<>();
+		regListByRegType = new HashMap<>();
+	}
+
 	/**
 	 * Save databases (one file per regType)
 	 */
-	public void save(String outputDir) {
-		for (String regType : regListByRegType.keySet()) {
-			String rType = Gpr.sanityzeFileName(regType);
-			String fileName = outputDir + "/regulation_" + rType + ".bin";
-			if (verbose) Timer.showStdErr("Saving database '" + regType + "' in file '" + fileName + "'");
+	public void save() {
+		flush();
 
-			// Save markers to file
+		for (String regType : regListByRegType.keySet()) {
 			Markers markersToSave = new Markers();
 			markersToSave.addAll(regListByRegType.get(regType));
-			markersToSave.save(fileName);
+
+			if (!markersToSave.isEmpty()) {
+				String rType = Gpr.sanityzeFileName(regType);
+				String fileName = outputDir + "/regulation_" + rType + ".bin";
+				if (verbose) Timer.showStdErr("\tSaving database '" + regType + "' (" + markersToSave.size() + " markers) in file '" + fileName + "'");
+
+				// Save markers to file
+				markersToSave.save(fileName);
+			}
 		}
 	}
 
+<<<<<<< HEAD
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
+=======
+	public void setOutputDir(String outputDir) {
+		this.outputDir = outputDir;
+	}
+
+	public void setRegSortedByType(boolean regSortedByType) {
+		this.regSortedByType = regSortedByType;
+>>>>>>> 0e2bb5ee2b3f56f7ade37e7c6c88f814308cfbd9
 	}
 
 	void show(Regulation reg) {

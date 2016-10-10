@@ -27,11 +27,11 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	HashMap<String, Itree> forest;
 
 	public IntervalForest() {
-		forest = new HashMap<String, Itree>();
+		forest = new HashMap<>();
 	}
 
 	public IntervalForest(Markers markers) {
-		forest = new HashMap<String, Itree>();
+		forest = new HashMap<>();
 		add(markers);
 	}
 
@@ -189,7 +189,7 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	 * I.e.: Return a set of intervals that intersects (at least once) with any interval in 'markers'
 	 */
 	public Markers queryUnique(Markers markers) {
-		HashSet<Marker> uniqueMarkers = new HashSet<Marker>();
+		HashSet<Marker> uniqueMarkers = new HashSet<>();
 
 		// Add all intersecting intervals
 		for (Marker q : markers) {

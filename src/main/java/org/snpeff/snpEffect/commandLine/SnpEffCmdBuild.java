@@ -212,7 +212,7 @@ public class SnpEffCmdBuild extends SnpEff {
 
 				case "-celltype":
 					if ((i + 1) < args.length) cellType = args[++i];
-					else usage("Missing 'cellType' argument");
+					else usage("Missing 'regType' argument");
 					break;
 
 				case "-regsortedbytype":
@@ -295,6 +295,7 @@ public class SnpEffCmdBuild extends SnpEff {
 
 		// Split large GFF files into smaller ones
 		RegulationFileIterator regulationFileIterator = new RegulationGffFileIterator(regulationFileName);
+<<<<<<< HEAD
 		RegulationFileSplitBytType regSplit = new RegulationFileSplitBytType();
 		regSplit.setVerbose(verbose);
 		regSplit.splitFile(regulationFileIterator, config.getDirDataGenomeVersion());
@@ -308,6 +309,12 @@ public class SnpEffCmdBuild extends SnpEff {
 			regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
 			regulationGffConsensus.save(config.getDirDataGenomeVersion()); // Save database
 		}
+=======
+		RegulationFileConsensus regulationGffConsensus = new RegulationFileConsensus(verbose);
+		regulationGffConsensus.setRegSortedByType(regSortedByType);
+		regulationGffConsensus.setOutputDir(config.getDirDataGenomeVersion()); // Save database
+		regulationGffConsensus.createDatabases(regulationFileIterator);
+>>>>>>> 0e2bb5ee2b3f56f7ade37e7c6c88f814308cfbd9
 		if (verbose) Timer.showStdErr("Done.");
 	}
 
@@ -412,6 +419,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		System.err.println("\t-cellType <type>             : Only build regulation tracks for cellType <type>.");
 		System.err.println("\t-noStoreSeqs                 : Do not store sequence in binary files. Default: " + !storeSequences);
 		System.err.println("\t-onlyReg                     : Only build regulation tracks.");
+		System.err.println("\t-regSortedByType             : The 'regulation.gff' file is sorted by 'regulation type' instead of sorted by chromosome:pos. Default: " + regSortedByType);
 		System.err.println("\t-storeSeqs                   : Store sequence in binary files. Default: " + storeSequences);
 
 		usageGeneric();
