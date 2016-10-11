@@ -12,6 +12,7 @@ public class SvgCds extends Svg {
 	public SvgCds(Cds cds, Svg svg) {
 		super(cds, svg);
 		this.cds = cds;
+		baseY = svg.baseY;
 		rectColorFill = "#00ff00";
 	}
 

@@ -18,7 +18,7 @@ public class Svg {
 
 	public static final int DEFAULT_SIZE_X = 1000;
 	public static final int DEFAULT_SIZE_Y = 1000;
-	public static final int DEFAULT_BASE_Y = 50;
+	public static final int DEFAULT_BASE_Y = 10;
 
 	public static final String LINE_COLOR_STROKE = "#000000";
 	public static final int LINE_STROKE_WIDTH = 1;
@@ -28,8 +28,8 @@ public class Svg {
 	public static final int RECT_HEIGHT = 20;
 	public static final int RECT_STROKE_WIDTH = 1;
 
-	public static final int TEXT_SIZE = 20;
-	public static final String TEXT_STYLE = "font-family: Arial; font-size:" + TEXT_SIZE + ";stroke: #000000;fill: #000000;";
+	public static final int TEXT_SIZE = 10;
+	public static final String TEXT_STYLE = "font-family: Arial; font-size:" + TEXT_SIZE + ";";
 
 	int baseY;
 	int rectHeight;
@@ -39,6 +39,7 @@ public class Svg {
 	int posStart, posEnd; // Chromosome positions
 	double scaleX;
 	Marker m;
+	int nextBaseY; // BaseY for next item
 
 	public static Svg factory(Marker m, Svg svg) {
 		switch (m.getType()) {
@@ -68,12 +69,24 @@ public class Svg {
 		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
 
 		for (Gene g : sep.getGenome().getGenes())
-			if (g.isProteinCoding() && g.isStrandMinus()) Gpr.debug(g.getGeneName());
+			if (g.isProteinCoding() && g.isStrandMinus()) Gpr.debug(g.getGeneName() + "\t" + g.subIntervals().size());
 
 		//		Gene g = sep.getGene("SH3BP1");
-		Gene g = sep.getGene("PI4KA");
-		Svg svg = Svg.factory(g, null);
-		String svgStr = svg.open() + svg + svg.close();
+		Gene g1 = sep.getGene("POLDIP3");
+		Svg svgScale1 = new SvgScale(g1, null);
+		Svg svg1 = Svg.factory(g1, svgScale1);
+
+		Svg svgSpacer = new SvgSpacer(g1, svg1);
+
+		Gene g2 = sep.getGene("INPP5J");
+		Svg svgScale2 = new SvgScale(g2, svgSpacer);
+		svgScale2.setScaleX();
+		Svg svg2 = Svg.factory(g2, svgScale2);
+
+		String svgStr = svg1.open() //
+				+ svg1 + svgScale1 //
+				+ svg2 + svgScale2 //
+				+ svg1.close();
 
 		Gpr.debug(svgStr);
 		Gpr.toFile(fileName, svgStr);
@@ -92,8 +105,10 @@ public class Svg {
 			posStart = svg.posStart;
 			posEnd = svg.posEnd;
 			scaleX = svg.scaleX;
-			baseY = svg.baseY;
+			baseY = svg.nextBaseY;
 		} else setScaleX();
+
+		nextBaseY = baseY + RECT_HEIGHT * 2;
 	}
 
 	public String close() {
@@ -104,26 +119,19 @@ public class Svg {
 		return (m.getEnd() - posStart) * scaleX;
 	}
 
-	public String id() {
-		double y = baseY - rectHeight / 2;
-
-		return "<text" //
-				+ " x=" + start() //
-				+ " y=" + y //
-				+ " style=\"" + TEXT_STYLE + "\">" //
-				+ m.getId() //
-				+ "</text>\n" //
-				;
+	public String hline(int y) {
+		return line(start(), baseY + y, end(), baseY + y);
 	}
 
-	public String line() {
-		return line(start(), baseY, end(), baseY);
+	public String id() {
+		double y = baseY - rectHeight / 2;
+		return text(start(), y, m.getId());
 	}
 
 	String line(double x1, double y1, double x2, double y2) {
 		String lineStyle = "stroke:" + LINE_COLOR_STROKE //
 				+ ";stroke-width:" + LINE_STROKE_WIDTH //
-				;
+		;
 
 		return "<line"//
 				+ " x1=" + x1 //
@@ -159,16 +167,23 @@ public class Svg {
 		return "<svg width=\"" + sizeX + "\" height=\"" + sizeY + "\">\n";
 	}
 
+	double pos2coord(int pos) {
+		return (pos - posStart) * scaleX;
+	}
+
 	public String rectangle() {
 		double w = size();
 		double h = rectHeight;
 		double x = start();
-		double y = baseY - h / 2;
+		double y = baseY;
+		return rectangle(x, y, w, h, false);
+	}
 
-		String rectStyle = "fill:" + rectColorFill //
+	public String rectangle(double x, double y, double w, double h, boolean empty) {
+		String rectStyle = "fill:" + (empty ? "none" : rectColorFill)//
 				+ ";stroke:" + rectColorStroke //
 				+ ";stroke-width:" + RECT_STROKE_WIDTH //
-				;
+		;
 
 		return "<rect"//
 				+ " x=" + x //
@@ -196,6 +211,16 @@ public class Svg {
 
 	double start() {
 		return (m.getStart() - posStart) * scaleX;
+	}
+
+	public String text(double x, double y, String str) {
+		return "<text" //
+				+ " x=" + x //
+				+ " y=" + y //
+				+ " style=\"" + TEXT_STYLE + "\">" //
+				+ str //
+				+ "</text>\n" //
+		;
 	}
 
 	@Override

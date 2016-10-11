@@ -2,7 +2,6 @@ package org.snpeff.svg;
 
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
-import org.snpeff.util.Gpr;
 
 /**
  * Create an SVG representation of a Marker
@@ -14,22 +13,23 @@ public class SvgGene extends Svg {
 	public SvgGene(Gene gene, Svg svg) {
 		super(gene, svg);
 		this.gene = gene;
+		nextBaseY = baseY + RECT_HEIGHT + gene.subIntervals().size() * RECT_HEIGHT * 2;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(rectangle());
 		sb.append(id());
 
-		int base = baseY;
+		Svg svgPrev = this;
+		int endY = baseY;
 		for (Transcript tr : gene) {
-			base += 2 * rectHeight;
-			Gpr.debug("BASE: " + base);
-			Svg svg = factory(tr, this);
-			svg.setBaseY(base);
+			Svg svg = factory(tr, svgPrev);
 			sb.append(svg);
+			svgPrev = svg;
+			endY = svg.nextBaseY;
 		}
+		sb.append(rectangle(start(), baseY, sizeX, endY - baseY, true));
 		return sb.toString();
 	}
 
