@@ -87,21 +87,21 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 	HashMap<String, String> sequenceByUniqueName;
 	AutoHashMap<String, CountByType> countAaSequenceByType;
 	HashMap<String, Transcript> trById;
-	HashSet<String> proteinDifferences = new HashSet<String>();
-	HashSet<String> proteinOk = new HashSet<String>();
+	HashSet<String> proteinDifferences = new HashSet<>();
+	HashSet<String> proteinOk = new HashSet<>();
 	Markers markers;
 	Genome genome;
 	int aaErrors;
 
 	public SnpEffCmdBuildNextProt() {
 		markers = new Markers();
-		trIdByUniqueName = new HashMap<String, String>();
-		sequenceByUniqueName = new HashMap<String, String>();
-		countAaSequenceByType = new AutoHashMap<String, CountByType>(new CountByType());
-		trById = new HashMap<String, Transcript>();
+		trIdByUniqueName = new HashMap<>();
+		sequenceByUniqueName = new HashMap<>();
+		countAaSequenceByType = new AutoHashMap<>(new CountByType());
+		trById = new HashMap<>();
 
 		// Create and populate black list
-		categoryBlackList = new HashSet<String>();
+		categoryBlackList = new HashSet<>();
 		for (String cat : CATAGORY_BLACK_LIST_STR)
 			categoryBlackList.add(cat);
 	}
@@ -116,7 +116,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 				+ "\n\tMin AA conservation : " + HIGHLY_CONSERVED_AA_PERCENT //
 		);
 
-		ArrayList<String> keys = new ArrayList<String>();
+		ArrayList<String> keys = new ArrayList<>();
 		keys.addAll(countAaSequenceByType.keySet());
 		Collections.sort(keys);
 
@@ -178,7 +178,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 							+ "\t" + (highlyConservedAaSequence ? "High" : "") //
 							+ "\t" + key //
 							+ "\t" + sb //
-					);
+			);
 
 			// Mark highly conserved
 			if (highlyConservedAaSequence) {
@@ -209,7 +209,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 	 * Parse a node
 	 */
 	ArrayList<Node> findNodes(Node node, String nodeName, String nodeValue, String attrName, String attrValue) {
-		ArrayList<Node> resulstsList = new ArrayList<Node>();
+		ArrayList<Node> resulstsList = new ArrayList<>();
 
 		while (node != null) {
 			boolean found = false;
@@ -281,7 +281,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 	 * Parse a node list
 	 */
 	List<Node> findNodes(NodeList nodeList, String nodeName, String nodeValue, String attrName, String attrValue) {
-		ArrayList<Node> resulstsList = new ArrayList<Node>();
+		ArrayList<Node> resulstsList = new ArrayList<>();
 
 		for (int temp = 0; temp < nodeList.getLength(); temp++) {
 			Node node = nodeList.item(temp);
@@ -445,8 +445,10 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 			if (verbose) Timer.showStdErr("Found " + nodeList.size() + " protein nodes");
 
 			// Parse each node
-			for (Node node : nodeList)
+			for (Node node : nodeList) {
+				Gpr.debug("NODE:" + node);
 				parseProteinNode(node);
+			}
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -585,6 +587,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 		// Find Ensembl gene ID
 		String geneId = getGeneId(node, uniqueName);
 		if (geneId != null) {
+			if (debug) Timer.showStdErr("\tFound matching gene ID: " + geneId);
 			// Get transcript IDs
 			if (findTrIds(node)) {
 				findSequences(node); // Find sequences
@@ -647,7 +650,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 		if (verbose) Timer.showStdErr("Saving database to file '" + nextProtBinFile + "'");
 
 		// Add chromosomes
-		HashSet<Chromosome> chromos = new HashSet<Chromosome>();
+		HashSet<Chromosome> chromos = new HashSet<>();
 		for (Marker m : markers)
 			chromos.add(m.getChromosome());
 
