@@ -1,7 +1,7 @@
 package org.snpeff.svg;
 
+import org.snpeff.interval.Transcript;
 import org.snpeff.interval.VariantBnd;
-import org.snpeff.util.Gpr;
 
 /**
  * Create an SVG representation of a BND (translocation) variant
@@ -22,6 +22,27 @@ public class SvgBnd extends Svg {
 
 	VariantBnd varBnd;
 	Svg svgTr1, svgTr2;
+
+	/**
+	 * Create transcript and variant Svgs
+	 */
+	public static String plotTranslocation(Transcript tr1, Transcript tr2, VariantBnd varBnd) {
+		Svg svgScale1 = new SvgScale(tr1, null);
+		Svg svgTr1 = Svg.factory(tr1, svgScale1);
+		Svg svgSpacer = new SvgSpacer(tr1, svgTr1);
+		Svg svgScale2 = new SvgScale(tr2, svgSpacer);
+		svgScale2.setScaleX();
+		Svg svgTr2 = Svg.factory(tr2, svgScale2);
+		Svg svgBnd = new SvgBnd(varBnd, svgTr1, svgTr2);
+
+		String svgStr = svgTr1.open() //
+				+ svgTr1 + svgScale1 //
+				+ svgTr2 + svgScale2 //
+				+ svgBnd //
+				+ svgTr1.close();
+
+		return svgStr;
+	}
 
 	public SvgBnd(VariantBnd varBnd, Svg svgTr1, Svg svgTr2) {
 		super();
@@ -66,7 +87,7 @@ public class SvgBnd extends Svg {
 		double x2 = svgTr2.pos2coord(pos2);
 		double y2 = svgTr2.baseY + svgTr2.rectHeight / 2;
 
-		double x3 = Math.max(x1, x2) + BND_CURL_SIZE;
+		double x3 = Math.min(sizeX, Math.max(x1, x2) + BND_CURL_SIZE);
 
 		sb.append(line(x1, y1, x3, y1));
 		sb.append(line(x3, y1 - lineStrokeWidth / 2, x3, y2 + lineStrokeWidth / 2));
@@ -94,7 +115,7 @@ public class SvgBnd extends Svg {
 		double x2 = svgTr2.pos2coord(pos2);
 		double y2 = svgTr2.baseY + svgTr2.rectHeight / 2;
 
-		double x3 = Math.min(x1, x2) - BND_CURL_SIZE;
+		double x3 = Math.max(0, Math.min(x1, x2) - BND_CURL_SIZE);
 
 		sb.append(line(x1, y1, x3, y1));
 		sb.append(line(x3, y1 - lineStrokeWidth / 2, x3, y2 + lineStrokeWidth / 2));
@@ -104,7 +125,6 @@ public class SvgBnd extends Svg {
 
 	@Override
 	public String toString() {
-		Gpr.debug("Variant:" + varBnd + "\tleft: " + varBnd.isLeft() + "\tbefore: " + varBnd.isBefore());
 		if (!varBnd.isBefore()) {
 			if (!varBnd.isLeft()) return bndType1();
 			return bndType2();
