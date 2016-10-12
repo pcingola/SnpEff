@@ -1,5 +1,6 @@
 package org.snpeff.svg;
 
+import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Cds;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
@@ -7,9 +8,11 @@ import org.snpeff.interval.IntervalAndSubIntervals;
 import org.snpeff.interval.Intron;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
+import org.snpeff.interval.VariantBnd;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
+import org.snpeff.vcf.VcfEntry;
 
 /**
  * Create an SVG representation of a Marker
@@ -31,15 +34,19 @@ public class Svg {
 	public static final int TEXT_SIZE = 10;
 	public static final String TEXT_STYLE = "font-family: Arial; font-size:" + TEXT_SIZE + ";";
 
+	public static boolean debug = false;
+
 	int baseY;
+	int lineStrokeWidth;
+	String lineColor;
+	Marker m;
+	int nextBaseY; // BaseY for next item
+	int posStart, posEnd; // Chromosome positions
 	int rectHeight;
 	String rectColorFill;
 	String rectColorStroke;
-	int sizeX, sizeY; // Canvas size
-	int posStart, posEnd; // Chromosome positions
 	double scaleX;
-	Marker m;
-	int nextBaseY; // BaseY for next item
+	int sizeX, sizeY; // Canvas size
 
 	public static Svg factory(Marker m, Svg svg) {
 		switch (m.getType()) {
@@ -68,37 +75,61 @@ public class Svg {
 		Config config = new Config("testHg19Chr22");
 		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
 
-		for (Gene g : sep.getGenome().getGenes())
-			if (g.isProteinCoding() && g.isStrandMinus()) Gpr.debug(g.getGeneName() + "\t" + g.subIntervals().size());
+		if (debug) {
+			for (Gene g : sep.getGenome().getGenes())
+				if (g.isProteinCoding() && g.isStrandMinus()) Gpr.debug(g.getGeneName() + "\t" + g.subIntervals().size());
+		}
 
-		//		Gene g = sep.getGene("SH3BP1");
+		// Read VCF file (one line)
+		String vcfFile = "z.vcf";
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		VcfEntry ve = vcf.next();
+		Gpr.debug(ve);
+
+		// Get genes
 		Gene g1 = sep.getGene("POLDIP3");
-		Svg svgScale1 = new SvgScale(g1, null);
-		Svg svg1 = Svg.factory(g1, svgScale1);
+		Transcript tr1 = g1.get("NM_032311.4");
+		Svg svgScale1 = new SvgScale(tr1, null);
+		Svg svgTr1 = Svg.factory(tr1, svgScale1);
 
-		Svg svgSpacer = new SvgSpacer(g1, svg1);
+		Svg svgSpacer = new SvgSpacer(tr1, svgTr1);
 
 		Gene g2 = sep.getGene("INPP5J");
-		Svg svgScale2 = new SvgScale(g2, svgSpacer);
+		Transcript tr2 = g2.get("NM_001002837.2");
+		Svg svgScale2 = new SvgScale(tr2, svgSpacer);
 		svgScale2.setScaleX();
-		Svg svg2 = Svg.factory(g2, svgScale2);
+		Svg svgTr2 = Svg.factory(tr2, svgScale2);
 
-		String svgStr = svg1.open() //
-				+ svg1 + svgScale1 //
-				+ svg2 + svgScale2 //
-				+ svg1.close();
+		VariantBnd varBnd = (VariantBnd) ve.variants().get(0);
+		Gpr.debug("Variant: " + varBnd);
+		Svg svgBnd = new SvgBnd(varBnd, svgTr1, svgTr2);
 
-		Gpr.debug(svgStr);
+		String svgStr = svgTr1.open() //
+				+ svgTr1 + svgScale1 //
+				+ svgTr2 + svgScale2 //
+				+ svgBnd //
+				+ svgTr1.close();
+
+		if (debug) Gpr.debug(svgStr);
 		Gpr.toFile(fileName, svgStr);
+		Gpr.debug("Done. Saved to file " + fileName);
 	}
 
-	public Svg(Marker m, Svg svg) {
+	public Svg() {
 		sizeX = DEFAULT_SIZE_X;
 		sizeY = DEFAULT_SIZE_Y;
 		baseY = DEFAULT_BASE_Y;
+
+		lineStrokeWidth = LINE_STROKE_WIDTH;
+		lineColor = LINE_COLOR_STROKE;
+
 		rectColorFill = RECT_COLOR_FILL;
 		rectColorStroke = RECT_COLOR_STROKE;
 		rectHeight = RECT_HEIGHT;
+	}
+
+	public Svg(Marker m, Svg svg) {
+		this();
 		this.m = m;
 
 		if (svg != null) {
@@ -129,9 +160,9 @@ public class Svg {
 	}
 
 	String line(double x1, double y1, double x2, double y2) {
-		String lineStyle = "stroke:" + LINE_COLOR_STROKE //
-				+ ";stroke-width:" + LINE_STROKE_WIDTH //
-		;
+		String lineStyle = "stroke:" + lineColor //
+				+ ";stroke-width:" + lineStrokeWidth //
+				;
 
 		return "<line"//
 				+ " x1=" + x1 //
@@ -183,7 +214,7 @@ public class Svg {
 		String rectStyle = "fill:" + (empty ? "none" : rectColorFill)//
 				+ ";stroke:" + rectColorStroke //
 				+ ";stroke-width:" + RECT_STROKE_WIDTH //
-		;
+				;
 
 		return "<rect"//
 				+ " x=" + x //
@@ -220,7 +251,7 @@ public class Svg {
 				+ " style=\"" + TEXT_STYLE + "\">" //
 				+ str //
 				+ "</text>\n" //
-		;
+				;
 	}
 
 	@Override
