@@ -445,10 +445,8 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 			if (verbose) Timer.showStdErr("Found " + nodeList.size() + " protein nodes");
 
 			// Parse each node
-			for (Node node : nodeList) {
-				Gpr.debug("NODE:" + node);
+			for (Node node : nodeList)
 				parseProteinNode(node);
-			}
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
