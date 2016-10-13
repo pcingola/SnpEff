@@ -285,6 +285,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 
 		for (int temp = 0; temp < nodeList.getLength(); temp++) {
 			Node node = nodeList.item(temp);
+			Gpr.debug("Node:" + node);
 			resulstsList.addAll(findNodes(node, nodeName, nodeValue, attrName, attrValue));
 		}
 
