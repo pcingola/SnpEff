@@ -323,8 +323,9 @@ void copyPwm() {
 	humanDirs := dirsHg()
 	print("Copying $pwmsBin to human genomes\n")
 	for( string hg : humanDirs ) {
-		print("\t$hg\n")
-		sys cp $pwmsBin $hg
+		dir := "$dirData/$hg/"
+		print("\t$hg: $dir\n")
+		sys cp $pwmsBin $dir
 	}
 }
 
