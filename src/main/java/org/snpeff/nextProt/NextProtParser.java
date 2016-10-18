@@ -1,19 +1,13 @@
 package org.snpeff.nextProt;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.snpeff.codons.CodonTables;
 import org.snpeff.collections.AutoHashMap;
-import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
@@ -25,7 +19,6 @@ import org.snpeff.stats.CountByType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.Timer;
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -83,7 +76,6 @@ public class NextProtParser {
 
 	boolean debug;
 	boolean verbose;
-	String xmlDirName;
 	HashSet<String> categoryBlackList;
 	HashMap<String, String> trIdByUniqueName;
 	HashMap<String, String> sequenceByUniqueName;
@@ -91,24 +83,31 @@ public class NextProtParser {
 	HashMap<String, Transcript> trById;
 	HashSet<String> proteinDifferences = new HashSet<>();
 	HashSet<String> proteinOk = new HashSet<>();
-	Config config;
 	Markers markers;
+	Config config;
 	Genome genome;
 	int aaErrors;
 
-	public NextProtParser(String xmlDirName, Config config) {
+	public NextProtParser(Config config) {
 		this.config = config;
-		this.xmlDirName = xmlDirName;
-		markers = new Markers();
+		this.genome = config.getGenome();
 		trIdByUniqueName = new HashMap<>();
 		sequenceByUniqueName = new HashMap<>();
 		countAaSequenceByType = new AutoHashMap<>(new CountByType());
 		trById = new HashMap<>();
+		markers = new Markers();
 
 		// Create and populate black list
 		categoryBlackList = new HashSet<>();
 		for (String cat : CATAGORY_BLACK_LIST_STR)
 			categoryBlackList.add(cat);
+	}
+
+	void addTranscripts() {
+		// Build transcript map
+		for (Gene gene : config.getSnpEffectPredictor().getGenome().getGenes())
+			for (Transcript tr : gene)
+				trById.put(tr.getId(), tr);
 	}
 
 	/**
@@ -375,6 +374,10 @@ public class NextProtParser {
 		return getAttribute(geneNode, ATTR_NAME_ACCESSION);
 	}
 
+	public Markers getMarkers() {
+		return markers;
+	}
+
 	/**
 	 * Get text form a node
 	 */
@@ -433,73 +436,20 @@ public class NextProtParser {
 	}
 
 	/**
-	 * Parse XML file
+	 * Parse an XML document
 	 */
-	public boolean parse() {
-		genome = config.getGenome();
-		if (verbose) Timer.showStdErr("done");
+	public void parse(Node doc) {
+		addTranscripts();
 
-		// Build transcript map
-		for (Gene gene : config.getSnpEffectPredictor().getGenome().getGenes())
-			for (Transcript tr : gene)
-				trById.put(tr.getId(), tr);
+		if (verbose) Timer.showStdErr("Parsing XML data.");
+		List<Node> nodeList = findNodes(doc.getChildNodes(), NODE_NAME_PROTEIN, null, null, null);
+		if (verbose) Timer.showStdErr("Found " + nodeList.size() + " protein nodes");
 
-		// Parse all XML files in directory
-		if (verbose) Timer.showStdErr("Reading NextProt files from directory '" + xmlDirName + "'");
-		String files[] = (new File(xmlDirName)).list();
-		if (files != null) {
-			for (String xmlFileName : files) {
-				if (verbose) Timer.showStdErr("\tNextProt file '" + xmlFileName + "'");
-				if (xmlFileName.endsWith(".xml.gz") || xmlFileName.endsWith(".xml")) {
-					String path = xmlDirName + "/" + xmlFileName;
-					parse(path);
-				}
-			}
-		} else fatalError("No XML files found in directory '" + xmlDirName + "'");
-
-		// Show stats
-		if (verbose) Timer.showStdErr("Proteing sequences:" //
-				+ "\n\tMatch       : " + proteinOk.size() //
-				+ "\n\tDifferences : " + proteinDifferences.size() //
-				+ "\n\tAA errros   : " + aaErrors //
-		);
+		// Parse each node
+		for (Node node : nodeList)
+			parseProteinNode(node);
 
 		analyzeSequenceConservation();
-		return true;
-	}
-
-	/**
-	 * Parse an XML file
-	 */
-	void parse(String xmlFileName) {
-		try {
-			//---
-			// Load document
-			//---
-			if (verbose) Timer.showStdErr("Reading file:" + xmlFileName);
-			File xmlFile = new File(xmlFileName);
-
-			Document doc = null;
-			if (xmlFileName.endsWith(".gz")) doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new GZIPInputStream(new FileInputStream(xmlFile)));
-			else doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
-
-			if (verbose) Timer.showStdErr("Normalizing XML document");
-			doc.getDocumentElement().normalize();
-
-			//---
-			// Parse nodes
-			//---
-			if (verbose) Timer.showStdErr("Parsing XML data.");
-			List<Node> nodeList = findNodes(doc.getChildNodes(), NODE_NAME_PROTEIN, null, null, null);
-			if (verbose) Timer.showStdErr("Found " + nodeList.size() + " protein nodes");
-
-			// Parse each node
-			for (Node node : nodeList)
-				parseProteinNode(node);
-
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
@@ -621,28 +571,12 @@ public class NextProtParser {
 		}
 	}
 
-	/**
-	 * Save nextprot markers as databases
-	 */
-	public void saveDatabase() {
-		String nextProtBinFile = config.getDirDataGenomeVersion() + "/nextProt.bin";
-		if (verbose) Timer.showStdErr("Saving database to file '" + nextProtBinFile + "'");
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
 
-		// Add chromosomes
-		HashSet<Chromosome> chromos = new HashSet<>();
-		for (Marker m : markers)
-			chromos.add(m.getChromosome());
-
-		// Create a set of all markers to be saved
-		Markers markersToSave = new Markers();
-		markersToSave.add(genome);
-		for (Chromosome chr : chromos)
-			markersToSave.add(chr);
-		for (Marker m : markers)
-			markersToSave.add(m);
-
-		// Save
-		markersToSave.save(nextProtBinFile);
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
 	}
 
 	/**

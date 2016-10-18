@@ -1,7 +1,7 @@
 package org.snpeff.snpEffect.commandLine;
 
 import org.snpeff.SnpEff;
-import org.snpeff.nextProt.NextProtParser;
+import org.snpeff.nextProt.NextProtDb;
 import org.snpeff.util.Timer;
 
 /**
@@ -50,9 +50,11 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 		loadConfig(); // Read config file
 		loadDb();
 
-		NextProtParser nextProtParser = new NextProtParser(xmlDirName, config);
-		nextProtParser.parse(); // Parse XML files
-		nextProtParser.saveDatabase(); // Save database
+		NextProtDb nextProtDb = new NextProtDb(xmlDirName, config);
+		nextProtDb.setVerbose(verbose);
+		nextProtDb.setDebug(debug);
+		nextProtDb.parse(); // Parse XML files
+		nextProtDb.saveDatabase(); // Save database
 
 		if (verbose) Timer.showStdErr("Done!");
 		return true;
