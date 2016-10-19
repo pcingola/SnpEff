@@ -88,6 +88,8 @@ public class NextProtDb {
 
 	void parse(Node doc) {
 		int xmlVersion = nextProtXmlVersion(doc);
+		if (verbose) Timer.showStdErr("NextProt XML version:" + xmlVersion);
+
 		NextProtParser nextProtParser;
 		switch (xmlVersion) {
 		case 1:
