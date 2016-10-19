@@ -104,6 +104,8 @@ public class NextProtDb {
 			throw new RuntimeException("Unknown NextProt XML version " + xmlVersion);
 		}
 
+		nextProtParser.setVerbose(verbose);
+		nextProtParser.setDebug(debug);
 		nextProtParser.parse(doc);
 		markers.add(nextProtParser.getMarkers());
 	}

@@ -436,7 +436,7 @@ public class NextProtParser {
 	}
 
 	/**
-	 * Parse an XML document
+	 * Parse  XML document
 	 */
 	public void parse(Node doc) {
 		addTranscripts();
