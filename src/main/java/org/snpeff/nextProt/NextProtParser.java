@@ -43,36 +43,35 @@ public class NextProtParser {
 			, "mature protein" //
 			, "mutagenesis site" //
 			, "retained intron" //
+			, "expression-info" //
 	};
 
-	public static final String NODE_NAME_PROTEIN = "protein";
-	public static final String NODE_NAME_GENE = "gene";
-	public static final String NODE_NAME_TRANSCRIPT = "transcript";
-	public static final String NODE_NAME_ANNOTATION = "annotation";
-	public static final String NODE_NAME_ANNOTATION_LIST = "annotationList";
-	public static final String NODE_NAME_POSITION = "position";
-	public static final String NODE_NAME_PROPERTY = "property";
-	public static final String NODE_NAME_DESCRIPTION = "description";
-	public static final String NODE_NAME_CVNAME = "cvName";
-	public static final String NODE_NAME_SEQUENCE = "sequence";
-	public static final String NODE_NAME_XREF = "xref";
+	protected String NODE_NAME_PROTEIN;
+	protected String NODE_NAME_GENE;
+	protected String NODE_NAME_TRANSCRIPT;
+	protected String NODE_NAME_ANNOTATION;
+	protected String NODE_NAME_ANNOTATION_LIST;
+	protected String NODE_NAME_POSITION;
+	protected String NODE_NAME_PROPERTY;
+	protected String NODE_NAME_DESCRIPTION;
+	protected String NODE_NAME_CVNAME;
+	protected String NODE_NAME_SEQUENCE;
+	protected String NODE_NAME_XREF;
 
-	public static final String ATTR_NAME_UNIQUE_NAME = "uniqueName";
-	public static final String ATTR_NAME_DATABASE = "database";
-	public static final String ATTR_NAME_ACCESSION = "accession";
-	public static final String ATTR_NAME_ANNOTATION_LIST = "annotationList";
-	public static final String ATTR_NAME_CATAGORY = "category";
-	public static final String ATTR_NAME_FIRST = "first";
-	public static final String ATTR_NAME_LAST = "last";
-	public static final String ATTR_NAME_ISOFORM_REF = "isoformRef";
-	public static final String ATTR_NAME_PROPERTY_NAME = "propertyName";
-	public static final String ATTR_NAME_VALUE = "value";
+	protected String ATTR_NAME_UNIQUE_NAME;
+	protected String ATTR_NAME_DATABASE;
+	protected String ATTR_NAME_ACCESSION;
+	protected String ATTR_NAME_ANNOTATION_LIST;
+	protected String ATTR_NAME_CATAGORY;
+	protected String ATTR_NAME_FIRST;
+	protected String ATTR_NAME_LAST;
+	protected String ATTR_NAME_ISOFORM_REF;
+	protected String ATTR_NAME_PROPERTY_NAME;
+	protected String ATTR_NAME_VALUE;
 
-	public static final String ATTR_VALUE_ENSEMBL = "Ensembl";
-	public static final String ATTR_VALUE_REFSEQ = "RefSeq";
-	public static final String ATTR_VALUE_NUCLEOTIDE_SEQUENCE_ID = "'nucleotide sequence ID";
-
-	public static final String NEXT_PROT_DB_DIR = Gpr.HOME + "/snpEff/db/nextProt/2012_06";
+	protected String ATTR_VALUE_ENSEMBL;
+	protected String ATTR_VALUE_REFSEQ;
+	protected String ATTR_VALUE_NUCLEOTIDE_SEQUENCE_ID;
 
 	boolean debug;
 	boolean verbose;
@@ -90,12 +89,14 @@ public class NextProtParser {
 
 	public NextProtParser(Config config) {
 		this.config = config;
-		this.genome = config.getGenome();
+		genome = config.getGenome();
 		trIdByUniqueName = new HashMap<>();
 		sequenceByUniqueName = new HashMap<>();
 		countAaSequenceByType = new AutoHashMap<>(new CountByType());
 		trById = new HashMap<>();
 		markers = new Markers();
+
+		defineNextProtXmlTerms();
 
 		// Create and populate black list
 		categoryBlackList = new HashSet<>();
@@ -209,6 +210,36 @@ public class NextProtParser {
 		cbt.inc(sequence);
 	}
 
+	protected void defineNextProtXmlTerms() {
+		// Define NextProt XML terms
+		NODE_NAME_PROTEIN = "protein";
+		NODE_NAME_GENE = "gene";
+		NODE_NAME_TRANSCRIPT = "transcript";
+		NODE_NAME_ANNOTATION = "annotation";
+		NODE_NAME_ANNOTATION_LIST = "annotationList";
+		NODE_NAME_POSITION = "position";
+		NODE_NAME_PROPERTY = "property";
+		NODE_NAME_DESCRIPTION = "description";
+		NODE_NAME_CVNAME = "cvName";
+		NODE_NAME_SEQUENCE = "sequence";
+		NODE_NAME_XREF = "xref";
+
+		ATTR_NAME_UNIQUE_NAME = "uniqueName";
+		ATTR_NAME_DATABASE = "database";
+		ATTR_NAME_ACCESSION = "accession";
+		ATTR_NAME_ANNOTATION_LIST = "annotationList";
+		ATTR_NAME_CATAGORY = "category";
+		ATTR_NAME_FIRST = "first";
+		ATTR_NAME_LAST = "last";
+		ATTR_NAME_ISOFORM_REF = "isoformRef";
+		ATTR_NAME_PROPERTY_NAME = "propertyName";
+		ATTR_NAME_VALUE = "value";
+
+		ATTR_VALUE_ENSEMBL = "Ensembl";
+		ATTR_VALUE_REFSEQ = "RefSeq";
+		ATTR_VALUE_NUCLEOTIDE_SEQUENCE_ID = "'nucleotide sequence ID";
+	}
+
 	/**
 	 * Show an error message and exit
 	 */
@@ -320,8 +351,7 @@ public class NextProtParser {
 		List<Node> seqNodes = findNodes(node, NODE_NAME_SEQUENCE, null, null, null);
 		for (Node seq : seqNodes) {
 			String seqStr = getText(seq);
-			Node iso = seq.getParentNode();
-			String uniq = getAttribute(iso, ATTR_NAME_UNIQUE_NAME);
+			String uniq = getUniqueNameSequence(seq);
 			sequenceByUniqueName.put(uniq, seqStr);
 		}
 	}
@@ -340,8 +370,7 @@ public class NextProtParser {
 			String trId = getAttribute(trNode, ATTR_NAME_ACCESSION);
 
 			// Get Unique ID
-			Node isoMap = trNode.getParentNode();
-			String trUniqName = getAttribute(isoMap, ATTR_NAME_UNIQUE_NAME);
+			String trUniqName = getUniqueNameTranscript(trNode);
 
 			// Add to map
 			trIdByUniqueName.put(trUniqName, trId);
@@ -349,6 +378,40 @@ public class NextProtParser {
 		}
 
 		return added;
+	}
+
+	/**
+	 * Get AA end position from position node
+	 */
+	protected int getAaEnd(Node posNode) {
+		String last = getAttribute(posNode, ATTR_NAME_LAST);
+		int aaEnd = Gpr.parseIntSafe(last) - 1;
+		return aaEnd;
+	}
+
+	/**
+	 * Get AA start position from position node
+	 */
+	protected int getAaStart(Node posNode) {
+		String first = getAttribute(posNode, ATTR_NAME_FIRST);
+		int aaStart = Gpr.parseIntSafe(first) - 1;
+		return aaStart;
+	}
+
+	/**
+	 * Get annotation description from annotation node
+	 */
+	String getAnnDescription(Node annNode) {
+		Node descr = findOneNode(annNode, NODE_NAME_DESCRIPTION, null, null, null);
+		String description = getText(descr);
+		if (description == null) description = "";
+		else if (description.indexOf(';') > 0) description = description.substring(0, description.indexOf(';')); // Cut after semicolon
+		return description;
+	}
+
+	List<Node> getAnnotationCategories(Node node) {
+		List<Node> annListNodes = findNodes(node, NODE_NAME_ANNOTATION_LIST, null, null, null);
+		return annListNodes;
 	}
 
 	/**
@@ -367,11 +430,32 @@ public class NextProtParser {
 	}
 
 	/**
+	 * Get controlled vocabulary term from annotation node
+	 */
+	String getControlledVocubulary(Node annNode) {
+		// Controlled vocabulary
+		Node cv = findOneNode(annNode, NODE_NAME_CVNAME, null, null, null);
+		String contrVoc = getText(cv);
+		if (contrVoc == null) contrVoc = "";
+
+		contrVoc.indexOf(';');
+		String cvs[] = contrVoc.split(";", 2);
+		if (cvs.length > 1) return cvs[0];
+		return contrVoc;
+	}
+
+	/**
 	 * Get Ensembl gene ID
 	 */
 	String getGeneId(Node node, String uniqueName) {
 		Node geneNode = findOneNode(node, NODE_NAME_GENE, null, ATTR_NAME_DATABASE, ATTR_VALUE_ENSEMBL);
 		return getAttribute(geneNode, ATTR_NAME_ACCESSION);
+	}
+
+	protected String getIsoformRefFromPos(Node posNode) {
+		Node isoAnn = posNode.getParentNode().getParentNode();
+		String isoformRef = getAttribute(isoAnn, ATTR_NAME_ISOFORM_REF);
+		return isoformRef;
 	}
 
 	public Markers getMarkers() {
@@ -384,6 +468,18 @@ public class NextProtParser {
 	String getText(Node n) {
 		if (n == null) return null;
 		return n.getTextContent().replace('\n', ' ').trim();
+	}
+
+	String getUniqueNameSequence(Node seqNode) {
+		Node iso = seqNode.getParentNode();
+		String seqUniqName = getAttribute(iso, ATTR_NAME_UNIQUE_NAME);
+		return seqUniqName;
+	}
+
+	String getUniqueNameTranscript(Node trNode) {
+		Node isoMap = trNode.getParentNode();
+		String trUniqName = getAttribute(isoMap, ATTR_NAME_UNIQUE_NAME);
+		return trUniqName;
 	}
 
 	/**
@@ -446,8 +542,10 @@ public class NextProtParser {
 		if (verbose) Timer.showStdErr("Found " + nodeList.size() + " protein nodes");
 
 		// Parse each node
-		for (Node node : nodeList)
+		for (Node node : nodeList) {
+			if (debug) Gpr.debug("Processing protein node: " + toString(node));
 			parseProteinNode(node);
+		}
 
 		analyzeSequenceConservation();
 	}
@@ -456,39 +554,22 @@ public class NextProtParser {
 	 * Parse a protein node
 	 */
 	void parseAnnotation(Node ann, String geneId, String category) {
-		// Description
-		Node descr = findOneNode(ann, NODE_NAME_DESCRIPTION, null, null, null);
-		String description = getText(descr);
-		if (description == null) description = "";
-		else if (description.indexOf(';') > 0) description = description.substring(0, description.indexOf(';')); // Cut after semicolon
-
-		// Controlled vocabulary
-		Node cv = findOneNode(ann, NODE_NAME_CVNAME, null, null, null);
-		String contrVoc = getText(cv);
-		if (contrVoc == null) contrVoc = "";
-
-		contrVoc.indexOf(';');
-		String cvs[] = contrVoc.split(";", 2);
-		String contrVoc2 = "";
-		if (cvs.length > 1) {
-			contrVoc = cvs[0];
-			contrVoc2 = cvs[1];
-		}
+		if (debug) Gpr.debug("\t\tAnnotation: " + toString(ann) + "\tCategory: " + category);
+		String description = getAnnDescription(ann);
+		String contrVoc = getControlledVocubulary(ann);
 
 		// Search annotations
 		List<Node> posNodes = findNodes(ann, NODE_NAME_POSITION, null, null, null);
 		for (Node pos : posNodes) {
-
+			if (debug) Gpr.debug("\t\t\tPosition: " + toString(pos));
 			// Get first & last position
-			String first = getAttribute(pos, ATTR_NAME_FIRST);
-			String last = getAttribute(pos, ATTR_NAME_LAST);
-			int aaStart = Gpr.parseIntSafe(first) - 1;
-			int aaEnd = Gpr.parseIntSafe(last) - 1;
+			int aaStart = getAaStart(pos);
+			int aaEnd = getAaStart(pos);
+			if (aaStart < 0 || aaEnd < 0) continue;
 			int len = aaEnd - aaStart + 1;
 
 			// Get ID
-			Node isoAnn = pos.getParentNode().getParentNode();
-			String isoformRef = getAttribute(isoAnn, ATTR_NAME_ISOFORM_REF);
+			String isoformRef = getIsoformRefFromPos(pos);
 
 			// Find sequence
 			String sequence = sequenceByUniqueName.get(isoformRef);
@@ -499,34 +580,31 @@ public class NextProtParser {
 			TranscriptData trData = transcriptData(isoformRef, aaStart, aaEnd, sequence, subSeq);
 
 			// Create nextProt markers
-			if (trData.ok && (len > 0)) {
-				if (debug) System.out.println(geneId //
-						+ "\t" + isoformRef //
-						+ "\t" + trData.tr.getId() //
-						+ "\t'" + category + "'" //
-						+ "\t" + description //
-						+ "\t" + contrVoc //
-						+ "\t" + contrVoc2 //
-						+ "\t" + first //
-						+ "\t" + last //
-						+ "\t" + len //
-						+ "\t" + trData.chrName //
-						+ "\t" + trData.chrPosStart //
-						+ "\t" + trData.chrPosEnd //
-						+ "\t" + subSeq //
-						+ "\t" + trData.codon //
-						+ "\t" + trData.aa//
-				);
+			if (!trData.ok || (len <= 0)) continue;
 
-				// Create marker
-				String id = key(category, contrVoc, description);
-				NextProt nextProt = new NextProt(trData.tr, trData.chrPosStart, trData.chrPosEnd, id);
-				if (debug) Gpr.debug("Adding NextProt: " + nextProt);
-				markers.add(nextProt);
+			// Create marker
+			String id = key(category, contrVoc, description);
+			NextProt nextProt = new NextProt(trData.tr, trData.chrPosStart, trData.chrPosEnd, id);
+			markers.add(nextProt);
+			if (debug) Gpr.debug("Added NextProt entry:" + nextProt //
+					+ "\n\tgeneId:" + geneId //
+					+ "\n\tisoformRef:" + isoformRef //
+					+ "\n\ttrId:" + trData.tr.getId() //
+					+ "\n\tcategory:'" + category + "'" //
+					+ "\n\tdescription:'" + description + "'" //
+					+ "\n\tcontrolled_vocabulary:" + contrVoc //
+					+ "\n\taaStart:" + aaStart//
+					+ "\n\taaEnd:" + aaEnd //
+					+ "\n\taaLen:" + len //
+					+ "\n\tchr:" + trData.chrName //
+					+ "\n\tstart:" + trData.chrPosStart //
+					+ "\n\tend:" + trData.chrPosEnd //
+					+ "\n\tsubSeq:" + subSeq //
+					+ "\n\tcodon:" + trData.codon //
+					+ "\n\taa:" + trData.aa//
+			);
 
-				// if (subSeq.length() == 1) countAaSequence(category, contrVoc, description, subSeq);
-				countAaSequence(category, contrVoc, description, subSeq);
-			}
+			countAaSequence(category, contrVoc, description, subSeq);
 		}
 	}
 
@@ -535,7 +613,7 @@ public class NextProtParser {
 	 */
 	void parseAnnotations(Node node, String geneId) {
 		// Find all <annotationList> XML marks
-		List<Node> annListNodes = findNodes(node, NODE_NAME_ANNOTATION_LIST, null, null, null);
+		List<Node> annListNodes = getAnnotationCategories(node);
 
 		// For each <annotationList> set of nodes
 		for (Node annListNode : annListNodes) {
