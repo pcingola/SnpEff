@@ -287,7 +287,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+				);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -768,7 +768,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("seq") //
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("pdb") //
-		// Obsolete stuff (from T2D projects)
+				// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 		) {
 			command = args[argNum++].trim().toLowerCase();
