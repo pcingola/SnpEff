@@ -116,9 +116,6 @@ public class NextProtParser {
 	}
 
 	void addTr(Transcript tr) {
-		if (tr.getId().equals("NM_003405.3")) {
-			Gpr.debug("DEBUG!");
-		}
 		String trId = tr.getId();
 		trById.put(trId, tr);
 
