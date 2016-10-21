@@ -31,6 +31,7 @@ public class NextProtDb {
 
 	boolean debug;
 	boolean verbose;
+	String trIdFile;
 	String xmlDirName;
 	Markers markers;
 	Config config;
@@ -106,6 +107,7 @@ public class NextProtDb {
 
 		nextProtParser.setVerbose(verbose);
 		nextProtParser.setDebug(debug);
+		nextProtParser.setTrIdFile(trIdFile);
 		nextProtParser.parse(doc);
 		markers.add(nextProtParser.getMarkers());
 	}
@@ -159,6 +161,10 @@ public class NextProtDb {
 
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	public void setTrIdFile(String trIdFile) {
+		this.trIdFile = trIdFile;
 	}
 
 	public void setVerbose(boolean verbose) {

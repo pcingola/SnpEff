@@ -14,6 +14,7 @@ import org.snpeff.util.Timer;
 public class SnpEffCmdBuildNextProt extends SnpEff {
 
 	String xmlDirName;
+	String trIdFile;
 
 	public SnpEffCmdBuildNextProt() {
 		super();
@@ -30,8 +31,15 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 
 			// Argument starts with '-'?
 			if (isOpt(arg)) {
-				// All of them are parsed in SnpEff
-				usage("Unknonwn option '" + arg + "'");
+				switch (arg.toLowerCase()) {
+				case "-trids":
+					if ((i + 1) < args.length) trIdFile = args[++i];
+					else usage("Option '-trids' without transcript id file");
+					break;
+
+				default:
+					usage("Unknonwn option '" + arg + "'");
+				}
 			} else if ((genomeVer == null) || genomeVer.isEmpty()) genomeVer = args[i];
 			else if ((xmlDirName == null) || xmlDirName.isEmpty()) xmlDirName = args[i];
 		}
@@ -53,6 +61,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 		NextProtDb nextProtDb = new NextProtDb(xmlDirName, config);
 		nextProtDb.setVerbose(verbose);
 		nextProtDb.setDebug(debug);
+		nextProtDb.setTrIdFile(trIdFile);
 		nextProtDb.parse(); // Parse XML files
 		nextProtDb.saveDatabase(); // Save database
 
@@ -65,6 +74,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 		if (message != null) System.err.println("Error        :\t" + message);
 		System.err.println("snpEff version " + VERSION);
 		System.err.println("Usage: snpEff buildNextProt [options] genome_version nextProt_XML_dir");
+		System.err.println("\t-trIds <file.txt>      : Transcript IDs map file. Format 'ENSEMBL_TR_ID \t REFSEQ_TR_ID'.");
 		System.exit(-1);
 	}
 

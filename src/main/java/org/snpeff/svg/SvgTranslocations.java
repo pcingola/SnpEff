@@ -25,6 +25,8 @@ public class SvgTranslocations extends SnpEff {
 
 	public static void main(String[] args) {
 		String genomeVer = "testHg19Chr2";
+		String ensembl2refSeq = Gpr.HOME + "/workspace/SnpEff/ensembl2refSeq.txt";
+
 		String vcfFileName = "zz.vcf";
 		SvgTranslocations svg = new SvgTranslocations(genomeVer, vcfFileName);
 		svg.setVerbose(true);

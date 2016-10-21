@@ -84,8 +84,10 @@ public class NextProtParser {
 
 	boolean debug;
 	boolean verbose;
+	String trIdFile;
 	HashSet<String> categoryBlackList;
 	HashMap<String, String> trIdByUniqueName;
+	HashMap<String, String> trIdMap;
 	HashMap<String, String> sequenceByUniqueName;
 	AutoHashMap<String, CountByType> countAaSequenceByType;
 	HashMap<String, Transcript> trById;
@@ -113,11 +115,33 @@ public class NextProtParser {
 			categoryBlackList.add(cat);
 	}
 
+	void addTr(Transcript tr) {
+		if (tr.getId().equals("NM_003405.3")) {
+			Gpr.debug("DEBUG!");
+		}
+		String trId = tr.getId();
+		trById.put(trId, tr);
+
+		// Find another transcript ID in the map
+		String id = trIdMap.get(trId);
+		if (id != null) trById.put(id, tr);
+
+		// Remove transcript version (if any)
+		if (trId.indexOf('.') > 0) {
+			trId = trId.split("\\.")[0];
+			id = trIdMap.get(trId);
+			if (id != null) trById.put(id, tr);
+		}
+	}
+
 	void addTranscripts() {
+		// Read transcript ids
+		readTrIdMap();
+
 		// Build transcript map
 		for (Gene gene : config.getSnpEffectPredictor().getGenome().getGenes())
 			for (Transcript tr : gene)
-				trById.put(tr.getId(), tr);
+				addTr(tr);
 	}
 
 	/**
@@ -658,8 +682,31 @@ public class NextProtParser {
 		}
 	}
 
+	/**
+	 * Read transcript file
+	 */
+	void readTrIdMap() {
+		trIdMap = new HashMap<>();
+		if (trIdFile == null) return;
+		if (verbose) Timer.showStdErr("Reading transcripts file '" + trIdFile + "'");
+
+		String lines[] = Gpr.readFile(trIdFile).split("\n");
+		for (String line : lines) {
+			String ids[] = line.split("\t");
+			if (ids.length > 1) {
+				String ensemblId = ids[0].trim();
+				String refSeqId = ids[1].trim();
+				trIdMap.put(refSeqId, ensemblId);
+			}
+		}
+	}
+
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	public void setTrIdFile(String trIdFile) {
+		this.trIdFile = trIdFile;
 	}
 
 	public void setVerbose(boolean verbose) {
