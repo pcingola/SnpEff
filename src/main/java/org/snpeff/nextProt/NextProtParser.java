@@ -38,12 +38,21 @@ public class NextProtParser {
 
 	// We don't care about these categories
 	public static final String CATAGORY_BLACK_LIST_STR[] = { "" //
-			, "sequence variant" //
-			, "sequence conflict" //
+			, "expression-info" //
+			, "mature-protein" //
 			, "mature protein" //
 			, "mutagenesis site" //
+			, "mutagenesis-site" //
+			, "mutagenesis" //
+			, "pdb-mapping" //
+			, "peptide-mapping" //
 			, "retained intron" //
-			, "expression-info" //
+			, "sequence conflict" //
+			, "sequence-conflict" //
+			, "sequence variant" //
+			, "sequence-variant" //
+			, "srm-peptide-mapping" //
+			, "variant" //
 	};
 
 	protected String NODE_NAME_PROTEIN;
