@@ -20,6 +20,7 @@ import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.filter.VariantEffectFilter;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
+import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantNonRef;
 import org.snpeff.interval.tree.IntervalForest;
@@ -89,6 +90,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	String cancerSamples = null;
 	String chrStr = "";
 	String inputFile = ""; // Input file
+	String fastaProt = null;
 	String summaryFileCsv; // HTML Summary file name
 	String summaryFileHtml; // CSV Summary file name
 	String summaryGenesFile; // Gene table file
@@ -193,7 +195,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			// Note, this is the standard analysis.
 			// Next section deals with cancer: Somatic vs Germline comparisons
 			//---
-			boolean impact = false; // Does this entry have an impact (other than MODIFIER)?
+			boolean impactLowOrHigher = false; // Does this entry have an impact (other than MODIFIER)?
+			boolean impactModerateOrHigh = false; // Does this entry have a 'MODERATE' or 'HIGH' impact?
 			List<Variant> variants = vcfEntry.variants();
 			for (Variant variant : variants) {
 				countVariants++;
@@ -225,7 +228,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
 
 						// Does this entry have an impact (other than MODIFIER)?
-						impact |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
+						impactLowOrHigher |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
+						impactModerateOrHigh |= (variantEffect.getEffectImpact() == EffectImpact.MODERATE) || (variantEffect.getEffectImpact() == EffectImpact.HIGH);
 
 						outputFormatter.add(variantEffect);
 						countEffects++;
@@ -233,13 +237,18 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 					// Finish up this section
 					outputFormatter.printSection(variant);
+
+					if (fastaProt != null && impactModerateOrHigh) {
+						// Output protein changes to fasta file
+						proteinAltSequence(variant, variantEffects);
+					}
 				}
 
 				//---
 				// Do we analyze cancer samples?
 				// Here we deal with Somatic vs Germline comparisons
 				//---
-				if (anyCancerSample && impact && vcfEntry.isMultiallelic()) {
+				if (anyCancerSample && impactLowOrHigher && vcfEntry.isMultiallelic()) {
 					// Calculate all required comparisons
 					Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
 
@@ -333,6 +342,12 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		variantEffectStats = new VariantEffectStats(config.getGenome());
 		variantEffectStats.setUseSequenceOntology(useSequenceOntology);
 		vcfStats = new VcfStats();
+
+		if (fastaProt != null) {
+			if ((new File(fastaProt)).delete() && verbose) {
+				Timer.showStdErr("Deleted protein fasta output file '" + fastaProt + "'");
+			}
+		}
 
 		//---
 		// Create output formatter
@@ -644,6 +659,11 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						} else usage("Missing parameter: CSV stats file name ");
 						break;
 
+					case "-fastaprot":
+						if ((i + 1) < args.length) fastaProt = args[++i]; // Output protein sequences in fasta files
+						else usage("Missing -cancerSamples argument");
+						break;
+
 					case "-nochromoplots":
 						chromoPlots = false;
 						break;
@@ -873,6 +893,37 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		if (multiThreaded && cancer) usage("Cancer analysis is currently not supported in multi-threaded mode.");
 		if (multiThreaded && !isOutVcf) usage("Multi-threaded option is only supported when when output is in VCF format");
 		if (multiThreaded && (createSummaryHtml || createSummaryCsv)) usage("Multi-threaded option should be used with 'noStats'.");
+	}
+
+	/**
+	 * Append ALT protein sequence to 'fastaProt' file
+	 */
+	void proteinAltSequence(Variant var, VariantEffects variantEffects) {
+		Set<Transcript> doneTr = new HashSet<Transcript>();
+		for (VariantEffect varEff : variantEffects) {
+			Transcript tr = varEff.getTranscript();
+			if (tr == null || doneTr.contains(tr)) continue;
+
+			// Calculate sequence after applying variant
+			Transcript trAlt = tr.apply(var);
+
+			// Build fasta entries and append to file
+			StringBuilder sb = new StringBuilder();
+			sb.append(">" + tr.getId() + " Ref\n" + tr.protein() + "\n");
+			sb.append(">" + tr.getId() + " Variant " //
+					+ var.getChromosomeName() //
+					+ ":" + (var.getStart() + 1) //
+					+ "-" + (var.getEnd() + 1) //
+					+ " Ref:" + var.getReference() //
+					+ " Alt:" + var.getAlt() //
+					+ " HGVS.p:" + varEff.getHgvsProt() //
+					+ "\n" //
+					+ trAlt.protein() + "\n" //
+			);
+			Gpr.toFile(fastaProt, sb, true);
+
+			doneTr.add(tr);
+		}
 	}
 
 	/**

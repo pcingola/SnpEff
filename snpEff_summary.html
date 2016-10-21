@@ -141,19 +141,20 @@ th a:active, th a:hover {
 <table border=0>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> Genome </b> </td>
-		<td> testHg3775Chr1 </td>
+		<td> testHg19Chr1 </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Date </b> </td>
-		<td> 2016-10-10 10:02 </td>
+		<td> 2016-10-21 15:56 </td>
 	</tr>
 	<tr bgcolor=ffffff> 
 		<td valign=top> <b> SnpEff version </b> </td>
-		<td> <pre>SnpEff 4.3a (build 2016-10-09 11:19), by Pablo Cingolani</pre> </td>
+		<td> <pre>SnpEff 4.3a (build 2016-10-21 12:28), by Pablo Cingolani</pre> </td>
 	</tr>
 	<tr bgcolor=dddddd> 
 		<td valign=top> <b> Command line arguments </b> </td>
-		<td> <pre>SnpEff  testHg3775Chr1 tests/test_non_variants.vcf 
+		<td> <pre>SnpEff  -fastaProt /Users/pcingola/snpEff/z.fa 
+testHg19Chr1 /Users/pcingola/snpEff/z.vcf 
 </pre> </td>
 	</tr>
 	<tr bgcolor=ffffff> 
@@ -168,11 +169,11 @@ th a:active, th a:hover {
 	</tr>	
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of lines (input file) </b> </td>
-		<td> 882 </td>
+		<td> 10 </td>
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants (before filter) </b> </td>
-		<td> 882 </td>
+		<td> 10 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of not variants <br>(i.e. reference equals alternative) </b> </td>
@@ -180,13 +181,13 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of variants processed <br> (i.e. after filter and non-variants) </b> </td>
-		<td> 0 </td>
+		<td> 10 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Number of known variants <br>(i.e. non-empty ID) </b> </td>
 		<td> 
-		0
-		( 0% ) 
+		1
+		( 10% ) 
 		</td>
 	</tr>
 	<tr bgcolor=ffffff>
@@ -197,7 +198,7 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Number of effects </b> </td>
-		<td> 0 </td>
+		<td> 10 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Genome total length </b> </td>
@@ -205,11 +206,11 @@ th a:active, th a:hover {
 	</tr>
 	<tr bgcolor=dddddd>
 		<td valign=top> <b> Genome effective length </b> </td>
-		<td> 0 </td>
+		<td> 249,250,621 </td>
 	</tr>
 	<tr bgcolor=ffffff>
 		<td valign=top> <b> Variant rate </b> </td>
-		<td> 1 variant every 0 bases </td>
+		<td> 1 variant every 24,925,062 bases </td>
 	</tr>
 </table>
 <p>
@@ -227,11 +228,17 @@ th a:active, th a:hover {
 
 <table border=1>
 	<tr><th> Chromosome </th><th> Length </th><th> Variants </th><th> Variants rate </th></tr> 
+		<tr>
+			<td> 1 </td>
+			<td class="numeric"> 249,250,621 </td>
+			<td class="numeric"> 10 </td>
+			<td class="numeric"> 24,925,062 </td>
+		</tr> 
 	<tr>
 		<th> Total </th>
-		<th class="numeric"> 0 </th>
-		<th class="numeric"> 0 </th>
-		<th class="numeric"> 0 </th>
+		<th class="numeric"> 249,250,621 </th>
+		<th class="numeric"> 10 </th>
+		<th class="numeric"> 24,925,062 </th>
 	</tr> 
 </table> 
 </center>
@@ -255,7 +262,7 @@ th a:active, th a:hover {
     <tbody>
 	    <tr>
 	    	<td> <b> SNP </b> </td>
-	    	<td class="numeric" bgcolor="ffffff"> 0 </td>
+	    	<td class="numeric" bgcolor="ffffff"> 10 </td>
 	    </tr>
 	    <tr>
 	    	<td> <b> MNP </b> </td>
@@ -293,7 +300,7 @@ th a:active, th a:hover {
     <tfoot>
 	    <tr>
 	    	<th><b>Total </b> </th>
-	    	<th class="numeric"> 0 </th>
+	    	<th class="numeric"> 10 </th>
 	    </tr>
     </tfoot>
 </table>
@@ -317,6 +324,18 @@ th a:active, th a:hover {
 			<th> Percent </th>
 		</tr>
 	</thead>
+		<tr> 
+			<td> <b> MODERATE </b> </td> 
+			<th> &nbsp; </th>
+			<td class="numeric" bgcolor="#00ff00"> 4 </td> 
+			<td class="numeric" bgcolor="#00ff00"> 40% </td>
+		</tr>
+		<tr> 
+			<td> <b> MODIFIER </b> </td> 
+			<th> &nbsp; </th>
+			<td class="numeric" bgcolor="#ff0000"> 6 </td> 
+			<td class="numeric" bgcolor="#ff0000"> 60% </td>
+		</tr>
 </table><br>
 <p>
 </center>
@@ -339,6 +358,12 @@ th a:active, th a:hover {
 			<th> Percent </th>
 		</tr>
 	</thead>
+		<tr> 
+			<td> <b> MISSENSE </b> </td> 
+			<th> &nbsp; </th>
+			<td class="numeric" bgcolor="ffffff"> 4 </td> 
+			<td class="numeric" bgcolor="ffffff"> 100% </td>
+		</tr>
 </table><br>
 <p>
 
@@ -370,6 +395,18 @@ Missense / Silent ratio: 0
 			<th> Percent </th>
 		</tr>
 	</thead>
+		<tr> 
+			<td> <b> missense_variant </b> </td> 
+			<th> &nbsp; </th>
+			<td class="numeric" bgcolor="#00ff00"> 4 </td> 
+			<td class="numeric" bgcolor="#00ff00"> 40% </td>
+		</tr>
+		<tr> 
+			<td> <b> non_coding_transcript_exon_variant </b> </td> 
+			<th> &nbsp; </th>
+			<td class="numeric" bgcolor="#ff0000"> 6 </td> 
+			<td class="numeric" bgcolor="#ff0000"> 60% </td>
+		</tr>
 </table><br>
  </td>
 		<td> <table border=0>
@@ -381,13 +418,19 @@ Missense / Silent ratio: 0
 			<th> Percent </th>
 		</tr>
 	</thead>
+		<tr> 
+			<td> <b> EXON </b> </td> 
+			<th> &nbsp; </th>
+			<td class="numeric" bgcolor="ffffff"> 10 </td> 
+			<td class="numeric" bgcolor="ffffff"> 100% </td>
+		</tr>
 </table><br>
  </td>
 	</tr>
 </table>
 <p>
 
-<img src="http://chart.apis.google.com/chart?cht=bvs&chs=800x300&chbh=50,4,8&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,0.0|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AA__AAAAAAAAAAAAAAAAAA,AAAA__AAAAAAAAAAAAAAAA,AAAAAA__AAAAAA__AAAAAA,AAAAAAAA__AAAAAAAAAAAA,AAAAAAAAAA__AAAAAAAAAA,AAAAAAAAAAAA__AAAAAAAA,AAAAAAAAAAAAAAAA__AAAA,AAAAAAAAAAAAAAAAAA__AA,__AAAAAAAAAAAAAAAAAA__" border=1><p>
+<img src="http://chart.apis.google.com/chart?cht=bvs&chbh=50,4,8&chs=800x300&chxt=y,y,x,x&chtt=Variations&chxp=1,50.0|3,50.0&chxr=0,0.0,100.0|1,0.0,100.0|3,0.0,100.0&chco=00FFFF,FA8072,FF0000,A52A2A,FFA500,DEB887,E9967A,7FFFD4,808080&chdl=Upstream|5%27UTR|Exon|Splice+Donor|Intron|Splice+Acceptor|3%27UTR|Downstream|Intergenic&chxl=1:|%25|2:|Intergenic|Up|5%27UTR|Exon|Donor|Intron|Acceptor|Exon|3%27UTR|Down|Intergenic|3:|&chd=e:AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAA..AAAAAA..AAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA,AAAAAAAAAAAAAAAAAAAAAA" border=1><p>
 
 </center>
 
@@ -400,7 +443,17 @@ Missense / Silent ratio: 0
 <b> Quality:</b> 
 <p>
 <pre>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Quality+histogram&chxl=1:|Count|3:|Quality&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<table class="histo">
+		<tr> <th width=15%>Min</th><td>22</td> </tr>
+		<tr> <th>Max</th><td>6,905</td> </tr>
+		<tr> <th>Mean</th><td>750.6</td> </tr>
+		<tr> <th>Median</th><td>53.5</td> </tr>
+		<tr> <th>Standard deviation</th><td>2,162.926</td> </tr>
+		<tr> <th>Values</th><td>22,24,41,43,45,62,67,139,158,6905</td> </tr>
+		<tr> <th>Count</th><td>1,1,1,1,1,1,1,1,1,1</td> </tr>
+		</tr>
+	</table>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chxp=1,50.0|3,50.0&chtt=Quality+histogram&chd=e:....................&chxr=0,0.0,1.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Count|2:|22|||||||||6905|3:|Quality"><br>
 </pre>
 
 <!--==========================================================================
@@ -428,9 +481,9 @@ Missense / Silent ratio: 0
     <tr>
     	<td> &nbsp; </td>  <th> <b> A </b> </th> <th> <b> C </b> </th> <th> <b> G </b> </th> <th> <b> T </b> </th>
     </tr>
-	    <tr> <th> <b> A </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
-	    <tr> <th> <b> C </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
-	    <tr> <th> <b> G </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
+	    <tr> <th> <b> A </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="#3fbf00"> 2 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
+	    <tr> <th> <b> C </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="#3fbf00"> 2 </td> </tr>
+	    <tr> <th> <b> G </b> </th><td class="numeric" bgcolor="#ff0000"> 5 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="#00ff00"> 1 </td> </tr>
 	    <tr> <th> <b> T </b> </th><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td><td class="numeric" bgcolor="ffffff"> 0 </td> </tr>
 </table>
 </center>
@@ -453,18 +506,26 @@ Missense / Silent ratio: 0
 
 <center>
 <table border=1>
-	<tr> <th> Transitions </th><td class="numeric"> 0 </td> </tr>
-	<tr> <th> Transversions </th><td class="numeric"> 0 </td> </tr>
-	<tr> <th> Ts/Tv ratio </th><td class="numeric"> 0 </td> </tr>
+	<tr> <th> Transitions </th><td class="numeric"> 9 </td> </tr>
+	<tr> <th> Transversions </th><td class="numeric"> 1 </td> </tr>
+	<tr> <th> Ts/Tv ratio </th><td class="numeric"> 9 </td> </tr>
 </table>
 </center>
 <p>
 
 	<b>All variants:</b>
-	<pre>No results available (empty input?)</pre>
+	<pre>Sample ,Total
+Transitions ,9,9
+Transversions ,1,1
+Ts/Tv ,9.000,9.000
+</pre>
 	<p>
 	<b>Only known variants</b> (i.e. the ones having a non-empty ID field):
-	<pre>No results available (empty input?)</pre>
+	<pre>Sample ,Total
+Transitions ,1,1
+Transversions ,0,0
+Ts/Tv ,Infinity,Infinity
+</pre>
 <p>
 
 <!--==========================================================================
@@ -485,7 +546,17 @@ Missense / Silent ratio: 0
 <hr> 
 <a name="alleleCount">
 <center> <b> Allele Count </b> <p> </center>
-	<img src="http://chart.apis.google.com/chart?chd=e:&cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|3:|Allele+Count&chxr=0,2.147483647E9,-2.147483648E9|1,0.0,100.0|3,0.0,100.0"><br>
+	<img src="http://chart.apis.google.com/chart?cht=bvg&chd=e:..&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chtt=Allele+Count&chxp=1,50.0|3,50.0&chxl=1:|Count|2:|1|3:|Allele+Count&chxr=0,0.0,10.0|1,0.0,100.0|3,0.0,100.0"><br>
+	<table class="histo">
+		<tr> <th width=15%>Min</th><td>1</td> </tr>
+		<tr> <th>Max</th><td>1</td> </tr>
+		<tr> <th>Mean</th><td>1</td> </tr>
+		<tr> <th>Median</th><td>1</td> </tr>
+		<tr> <th>Standard deviation</th><td>0</td> </tr>
+		<tr> <th>Values</th><td>1</td> </tr>
+		<tr> <th>Count</th><td>10</td> </tr>
+		</tr>
+	</table>
 <p>
 
 
@@ -531,9 +602,161 @@ Missing
 	<thead>
 		<tr> 
 			<th> &nbsp; </th>
-			
+			 <th> ACA </th>  <th> AGC </th>  <th> CAG </th>  <th> CGC </th>  <th> CGG </th>  <th> GCA </th>  <th> GGC </th>  <th> TGC </th> 
 		</tr>
 	</thead>
+			<tr> 
+				<th> ACA </th>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> AGC </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> CAG </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> CGC </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> 1 </td>
+			</tr>
+			<tr> 
+				<th> CGG </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> GCA </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> GGC </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> TGC </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+			</tr>
 </table>
 </center>
 
@@ -559,9 +782,128 @@ Missing
 	<thead>
 		<tr> 
 			<th> &nbsp; </th>
-			
+			 <th> A </th>  <th> C </th>  <th> G </th>  <th> Q </th>  <th> R </th>  <th> S </th>  <th> T </th> 
 		</tr>
 	</thead>
+			<tr> 
+				<th> A </th>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> C </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> G </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> Q </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> R </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> S </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+			</tr>
+			<tr> 
+				<th> T </th>
+					
+						<td class="numeric" bgcolor="ffffff"> 1 </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<td class="numeric" bgcolor="ffffff"> &nbsp </td>
+					
+						<th class="numeric"> &nbsp </th>
+			</tr>
 </table>
 </center>
 
@@ -575,6 +917,12 @@ Missing
 <b> Variants by chromosome</b><p> 
 
 <center>
+	<pre>
+		<img src="http://chart.apis.google.com/chart?cht=bvg&chbh=8,4,2&chs=800x300&chxt=y,y,x,x&chg=2.49E7,1.0,3,2&chxp=1,50.0|3,50.0&chtt=Variants+histogram%3A+1&chxr=0,0.0,10.0|1,0.0,100.0|3,0.0,100.0&chxl=1:|Variants%2F1000Kb|2:|0|||||||||||||||||||||||||25000000|||||||||||||||||||||||||50000000|||||||||||||||||||||||||75000000|||||||||||||||||||||||||100000000|||||||||||||||||||||||||125000000|||||||||||||||||||||||||150000000|||||||||||||||||||||||||175000000|||||||||||||||||||||||||200000000|||||||||||||||||||||||||225000000||||||||||||||||||||||||249000000|3:|Position&chd=e:..AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"><br>
+		1, Position,0,1000000,2000000,3000000,4000000,5000000,6000000,7000000,8000000,9000000,10000000,11000000,12000000,13000000,14000000,15000000,16000000,17000000,18000000,19000000,20000000,21000000,22000000,23000000,24000000,25000000,26000000,27000000,28000000,29000000,30000000,31000000,32000000,33000000,34000000,35000000,36000000,37000000,38000000,39000000,40000000,41000000,42000000,43000000,44000000,45000000,46000000,47000000,48000000,49000000,50000000,51000000,52000000,53000000,54000000,55000000,56000000,57000000,58000000,59000000,60000000,61000000,62000000,63000000,64000000,65000000,66000000,67000000,68000000,69000000,70000000,71000000,72000000,73000000,74000000,75000000,76000000,77000000,78000000,79000000,80000000,81000000,82000000,83000000,84000000,85000000,86000000,87000000,88000000,89000000,90000000,91000000,92000000,93000000,94000000,95000000,96000000,97000000,98000000,99000000,100000000,101000000,102000000,103000000,104000000,105000000,106000000,107000000,108000000,109000000,110000000,111000000,112000000,113000000,114000000,115000000,116000000,117000000,118000000,119000000,120000000,121000000,122000000,123000000,124000000,125000000,126000000,127000000,128000000,129000000,130000000,131000000,132000000,133000000,134000000,135000000,136000000,137000000,138000000,139000000,140000000,141000000,142000000,143000000,144000000,145000000,146000000,147000000,148000000,149000000,150000000,151000000,152000000,153000000,154000000,155000000,156000000,157000000,158000000,159000000,160000000,161000000,162000000,163000000,164000000,165000000,166000000,167000000,168000000,169000000,170000000,171000000,172000000,173000000,174000000,175000000,176000000,177000000,178000000,179000000,180000000,181000000,182000000,183000000,184000000,185000000,186000000,187000000,188000000,189000000,190000000,191000000,192000000,193000000,194000000,195000000,196000000,197000000,198000000,199000000,200000000,201000000,202000000,203000000,204000000,205000000,206000000,207000000,208000000,209000000,210000000,211000000,212000000,213000000,214000000,215000000,216000000,217000000,218000000,219000000,220000000,221000000,222000000,223000000,224000000,225000000,226000000,227000000,228000000,229000000,230000000,231000000,232000000,233000000,234000000,235000000,236000000,237000000,238000000,239000000,240000000,241000000,242000000,243000000,244000000,245000000,246000000,247000000,248000000,249000000
+1,Count,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+
+	</pre>
 </center>
 
 <!--==========================================================================
