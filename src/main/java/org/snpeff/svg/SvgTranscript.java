@@ -5,7 +5,7 @@ import org.snpeff.interval.Intron;
 import org.snpeff.interval.Transcript;
 
 /**
- * Create an SVG representation of a Marker
+ * Create an SVG representation of a transcript
  */
 public class SvgTranscript extends Svg {
 

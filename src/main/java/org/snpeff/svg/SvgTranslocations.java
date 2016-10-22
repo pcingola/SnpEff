@@ -21,16 +21,20 @@ import org.snpeff.vcf.VcfEntry;
  */
 public class SvgTranslocations extends SnpEff {
 
+	boolean onlyOneTranscript;
 	boolean save;
 	String vcfFileName;
 
 	public static void main(String[] args) {
-		String genomeVer = "testHg3775Chr2";
+		String genomeVer = "testHg3775Chr22";
 		String vcfFileName = "zz_chr22.ann.vcf";
 		SvgTranslocations svg = new SvgTranslocations(genomeVer, vcfFileName);
 		svg.setVerbose(true);
 		//		svg.setDebug(true);
+		svg.setOnlyOneTranscript(true);
+		svg.setCanonical(true);
 		svg.setSave(true);
+		svg.setNextProt(true);
 		svg.loadConfig();
 		svg.loadDb();
 		svg.plots();
@@ -63,20 +67,28 @@ public class SvgTranslocations extends SnpEff {
 		if (g1 == null || g2 == null) return;
 
 		for (Transcript tr1 : g1)
-			for (Transcript tr2 : g2)
+			for (Transcript tr2 : g2) {
 				plot(var, tr1, tr2);
+				if (onlyOneTranscript) {
+					if (verbose) Timer.showStdErr("Plotting only one transcript pair");
+					return;
+				}
+			}
 	}
 
-	void plot(VariantBnd var, Transcript tr1, Transcript tr2) {
+	String plot(VariantBnd var, Transcript tr1, Transcript tr2) {
 		if (debug) System.out.println("\tTranscripts: " + tr1.getId() + "\t" + tr2.getId());
-		String svgStr = SvgBnd.plotTranslocation(tr1, tr2, var);
+		SvgTranslocation svgTranslocation = new SvgTranslocation(tr1, tr2, var, config.getSnpEffectPredictor());
+		String svgStr = svgTranslocation.toString();
 
 		// Save to file
 		if (save) {
 			String fileName = Gpr.HOME + "/z_" + tr1.getId() + "-" + tr2.getId() + ".html";
 			Gpr.toFile(fileName, svgStr);
-			Gpr.debug("Saved to file " + fileName);
+			if (verbose) Timer.showStdErr("Saved to file " + fileName);
 		}
+
+		return svgStr;
 	}
 
 	void plots() {
@@ -98,11 +110,17 @@ public class SvgTranslocations extends SnpEff {
 
 				String trStr = veff.getTranscriptId();
 				if (verbose) Timer.showStdErr("Plotting transcript: '" + trStr + "'");
+
+				if (genes.length < 2) continue;
 				String geneName1 = genes[0];
 				String geneName2 = genes[1];
 				plot((VariantBnd) var, geneName1, geneName2);
 			}
 		}
+	}
+
+	public void setOnlyOneTranscript(boolean onlyOneTranscript) {
+		this.onlyOneTranscript = onlyOneTranscript;
 	}
 
 	public void setSave(boolean save) {

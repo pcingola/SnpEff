@@ -1,6 +1,5 @@
 package org.snpeff.svg;
 
-import org.snpeff.interval.Transcript;
 import org.snpeff.interval.VariantBnd;
 
 /**
@@ -22,27 +21,6 @@ public class SvgBnd extends Svg {
 
 	VariantBnd varBnd;
 	Svg svgTr1, svgTr2;
-
-	/**
-	 * Create transcript and variant Svgs
-	 */
-	public static String plotTranslocation(Transcript tr1, Transcript tr2, VariantBnd varBnd) {
-		Svg svgScale1 = new SvgScale(tr1, null);
-		Svg svgTr1 = Svg.factory(tr1, svgScale1);
-		Svg svgSpacer = new SvgSpacer(tr1, svgTr1);
-		Svg svgScale2 = new SvgScale(tr2, svgSpacer);
-		svgScale2.setScaleX();
-		Svg svgTr2 = Svg.factory(tr2, svgScale2);
-		Svg svgBnd = new SvgBnd(varBnd, svgTr1, svgTr2);
-
-		String svgStr = svgTr1.open() //
-				+ svgTr1 + svgScale1 //
-				+ svgTr2 + svgScale2 //
-				+ svgBnd //
-				+ svgTr1.close();
-
-		return svgStr;
-	}
 
 	public SvgBnd(VariantBnd varBnd, Svg svgTr1, Svg svgTr2) {
 		super();
