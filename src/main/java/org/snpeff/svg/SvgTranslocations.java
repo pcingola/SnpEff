@@ -5,6 +5,7 @@ import java.util.List;
 import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Gene;
+import org.snpeff.interval.Genes;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
@@ -24,13 +25,11 @@ public class SvgTranslocations extends SnpEff {
 	String vcfFileName;
 
 	public static void main(String[] args) {
-		String genomeVer = "testHg19Chr2";
-		String ensembl2refSeq = Gpr.HOME + "/workspace/SnpEff/ensembl2refSeq.txt";
-
-		String vcfFileName = "zz.vcf";
+		String genomeVer = "testHg3775Chr2";
+		String vcfFileName = "zz.GRCh.vcf";
 		SvgTranslocations svg = new SvgTranslocations(genomeVer, vcfFileName);
 		svg.setVerbose(true);
-		svg.setDebug(true);
+		//		svg.setDebug(true);
 		svg.setSave(true);
 		svg.loadConfig();
 		svg.loadDb();
@@ -42,21 +41,26 @@ public class SvgTranslocations extends SnpEff {
 		this.vcfFileName = vcfFileName;
 	}
 
-	void plot(VariantBnd var, String gene1, String gene2) {
-		if (debug) System.out.println("\tGenes: " + gene1 + "\t" + gene2);
+	Gene findGene(String gene) {
 		SnpEffectPredictor sep = config.getSnpEffectPredictor();
 
-		Gene g1 = sep.getGene(gene1);
-		if (g1 == null) {
-			Timer.showStdErr("Gene '" + gene1 + "' not found. Skipping plot");
-			return;
-		}
+		// Look up using geneId
+		Gene g = sep.getGene(gene);
+		if (g != null) return g;
 
-		Gene g2 = sep.getGene(gene2);
-		if (g2 == null) {
-			Timer.showStdErr("Gene '" + gene2 + "' not found. Skipping plot");
-			return;
-		}
+		// Search using geneName
+		Genes genes = sep.getGenome().getGenes();
+		g = genes.getGeneByName(gene);
+		if (g == null) Timer.showStdErr("Gene '" + gene + "' not found. Skipping plot");
+
+		return g;
+	}
+
+	void plot(VariantBnd var, String gene1, String gene2) {
+		if (debug) System.out.println("\tGenes: " + gene1 + "\t" + gene2);
+		Gene g1 = findGene(gene1);
+		Gene g2 = findGene(gene2);
+		if (g1 == null || g2 == null) return;
 
 		for (Transcript tr1 : g1)
 			for (Transcript tr2 : g2)
@@ -77,8 +81,7 @@ public class SvgTranslocations extends SnpEff {
 
 	void plots() {
 		// Read VCF file (one line)
-		String vcfFile = "zz.vcf";
-		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
 			if (debug) System.out.println(ve);
 
@@ -94,7 +97,7 @@ public class SvgTranslocations extends SnpEff {
 				String genes[] = geneStr.split("&");
 
 				String trStr = veff.getTranscriptId();
-				System.out.println("\tTranscript:" + trStr);
+				if (verbose) Timer.showStdErr("Plotting transcript: '" + trStr + "'");
 				String geneName1 = genes[0];
 				String geneName2 = genes[1];
 				plot((VariantBnd) var, geneName1, geneName2);

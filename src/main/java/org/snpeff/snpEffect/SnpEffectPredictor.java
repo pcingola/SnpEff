@@ -220,7 +220,7 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
-	 * Obtain a gene 
+	 * Obtain a gene by geneId
 	 */
 	public Gene getGene(String geneId) {
 		return genome.getGenes().get(geneId);

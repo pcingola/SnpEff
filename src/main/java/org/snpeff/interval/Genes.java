@@ -199,6 +199,17 @@ public class Genes implements Iterable<Gene>, Serializable {
 		return genesById.get(geneId);
 	}
 
+	/**
+	 * Obtain a gene by GeneName
+	 * WARNING: The first match is returned. If multiple genes share the
+	 *          same gene name, no order can be expected for this method.
+	 */
+	public Gene getGeneByName(String geneName) {
+		for (Gene g : this)
+			if (g.getGeneName().equals(geneName)) return g;
+		return null;
+	}
+
 	@Override
 	public Iterator<Gene> iterator() {
 		return genesById.values().iterator();
