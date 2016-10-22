@@ -26,7 +26,7 @@ public class SvgTranslocations extends SnpEff {
 
 	public static void main(String[] args) {
 		String genomeVer = "testHg3775Chr2";
-		String vcfFileName = "zz.GRCh.vcf";
+		String vcfFileName = "zz_chr22.ann.vcf";
 		SvgTranslocations svg = new SvgTranslocations(genomeVer, vcfFileName);
 		svg.setVerbose(true);
 		//		svg.setDebug(true);
