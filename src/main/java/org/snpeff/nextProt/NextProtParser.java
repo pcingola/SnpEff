@@ -604,7 +604,11 @@ public class NextProtParser {
 			// Find sequence
 			String sequence = sequenceByUniqueName.get(isoformRef);
 			String subSeq = "";
-			if ((sequence != null) && (aaStart >= 0) && (aaEnd >= aaStart)) subSeq = sequence.substring(aaStart, aaEnd + 1);
+			if ((sequence != null) //
+					&& (aaStart >= 0) //
+					&& (aaEnd >= aaStart) //
+					&& (aaEnd < subSeq.length()) //
+			) subSeq = sequence.substring(aaStart, aaEnd + 1);
 
 			// Check transcript
 			TranscriptData trData = transcriptData(isoformRef, aaStart, aaEnd, sequence, subSeq);
@@ -771,26 +775,28 @@ public class NextProtParser {
 						int codonStart = aaStart * 3;
 						int codonEnd = (aaEnd + 1) * 3 - 1;
 
-						if (tr.isStrandPlus()) {
-							trData.chrPosStart = cdsBase2Pos[codonStart];
-							trData.chrPosEnd = cdsBase2Pos[codonEnd];
-						} else {
-							trData.chrPosStart = cdsBase2Pos[codonEnd];
-							trData.chrPosEnd = cdsBase2Pos[codonStart];
+						if (codonStart < cdsBase2Pos.length && codonEnd < cdsBase2Pos.length) {
+							if (tr.isStrandPlus()) {
+								trData.chrPosStart = cdsBase2Pos[codonStart];
+								trData.chrPosEnd = cdsBase2Pos[codonEnd];
+							} else {
+								trData.chrPosStart = cdsBase2Pos[codonEnd];
+								trData.chrPosEnd = cdsBase2Pos[codonStart];
+							}
+
+							trData.chrName = tr.getChromosomeName();
+
+							// More sanity checks
+							trData.codon = tr.cds().substring(codonStart, codonEnd + 1);
+							trData.aa = CodonTables.getInstance().aa(trData.codon, genome, trData.chrName);
+							if (!subSeq.equals(trData.aa) && verbose) Timer.showStdErr("WARNING: AA differ: " //
+									+ "\tUniqueName" + isoformRef //
+									+ "\tEnsembl ID: " + trId //
+									+ "\tEnsembl  AA: " + trData.aa//
+									+ "\tNextProt AA:" + subSeq//
+									+ "\n");
+							else trData.ok = true; // All sanity checks passed
 						}
-
-						trData.chrName = tr.getChromosomeName();
-
-						// More sanity checks
-						trData.codon = tr.cds().substring(codonStart, codonEnd + 1);
-						trData.aa = CodonTables.getInstance().aa(trData.codon, genome, trData.chrName);
-						if (!subSeq.equals(trData.aa) && verbose) Timer.showStdErr("WARNING: AA differ: " //
-								+ "\tUniqueName" + isoformRef //
-								+ "\tEnsembl ID: " + trId //
-								+ "\tEnsembl  AA: " + trData.aa//
-								+ "\tNextProt AA:" + subSeq//
-								+ "\n");
-						else trData.ok = true; // All sanity checks passed
 					}
 				} else {
 					if (!proteinDifferences.contains(trId) && verbose) Timer.showStdErr("WARNING: Protein sequences differ: " //

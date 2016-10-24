@@ -88,41 +88,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		else if (!Gpr.canRead(vcfFileName)) usage("Cannot read input file '" + vcfFileName + "'");
 	}
 
-	void plot(VariantBnd var, String gene1, String gene2) {
-		if (debug) System.out.println("\tGenes: " + gene1 + "\t" + gene2);
-		Gene g1 = findGene(gene1);
-		Gene g2 = findGene(gene2);
-		if (g1 == null || g2 == null) return;
-
-		for (Transcript tr1 : g1)
-			for (Transcript tr2 : g2) {
-				plot(var, tr1, tr2);
-				if (onlyOneTranscript) {
-					if (verbose) Timer.showStdErr("Plotting only one transcript pair");
-					return;
-				}
-			}
-	}
-
-	String plot(VariantBnd var, Transcript tr1, Transcript tr2) {
-		if (debug) System.out.println("\tTranscripts: " + tr1.getId() + "\t" + tr2.getId());
-		SvgTranslocation svgTranslocation = new SvgTranslocation(tr1, tr2, var, config.getSnpEffectPredictor());
-		String svgStr = svgTranslocation.toString();
-
-		// Save to file
-		if (outPath != null && !outPath.isEmpty()) {
-			String fileName = outPath + "/" + tr1.getId() + "-" + tr2.getId() + ".html";
-			Gpr.toFile(fileName, svgStr);
-			if (verbose) Timer.showStdErr("Saved to file " + fileName);
-		} else {
-			System.out.println(svgStr);
-
-		}
-
-		return svgStr;
-	}
-
-	void plots() {
+	void report() {
 		// Read VCF file (one line)
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
@@ -139,22 +105,72 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 				String geneStr = veff.getGeneId();
 				String genes[] = geneStr.split("&");
 
-				String trStr = veff.getTranscriptId();
-				if (verbose) Timer.showStdErr("Plotting transcript: '" + trStr + "'");
+				if (verbose) Timer.showStdErr("Plotting translocation: '" + veff + "'");
 
 				if (genes.length < 2) continue;
 				String geneName1 = genes[0];
 				String geneName2 = genes[1];
-				plot((VariantBnd) var, geneName1, geneName2);
+				report((VariantBnd) var, geneName1, geneName2);
+
 			}
 		}
+	}
+
+	/**
+	 * Report a translocation (Gene level)
+	 */
+	String report(VariantBnd var, String gene1, String gene2) {
+		if (debug) System.out.println("\tGenes: " + gene1 + "\t" + gene2);
+		Gene g1 = findGene(gene1);
+		Gene g2 = findGene(gene2);
+		if (g1 == null || g2 == null) return "";
+
+		StringBuilder sb = new StringBuilder();
+		for (Transcript tr1 : g1)
+			for (Transcript tr2 : g2) {
+				sb.append(report(var, tr1, tr2));
+				if (onlyOneTranscript) {
+					if (verbose) Timer.showStdErr("Plotting only one transcript pair");
+					return sb.toString();
+				}
+			}
+
+		return sb.toString();
+	}
+
+	/**
+	 * Report a translocation (transcript level)
+	 */
+	String report(VariantBnd var, Transcript tr1, Transcript tr2) {
+		if (debug) System.out.println("\tTranscripts: " + tr1.getId() + "\t" + tr2.getId());
+		SvgTranslocation svgTranslocation = new SvgTranslocation(tr1, tr2, var, config.getSnpEffectPredictor());
+		StringBuilder sb = new StringBuilder();
+
+		// Plot translocation
+		sb.append(svgTranslocation.toString());
+
+		// Save to file
+		if (outPath != null && !outPath.isEmpty()) {
+			String fileName = outPath + "/" //
+					+ var.getChromosomeName() + ":" + (var.getStart() + 1) //
+					+ "_" + var.getEndPoint().getChromosomeName() + ":" + (var.getEndPoint().getStart() + 1) //
+					+ "-" + tr2.getId() //
+					+ ".html";
+			Gpr.toFile(fileName, sb);
+			if (verbose) Timer.showStdErr("Saved to file " + fileName);
+		} else {
+			System.out.println(sb);
+
+		}
+
+		return sb.toString();
 	}
 
 	@Override
 	public boolean run() {
 		loadConfig();
 		loadDb();
-		plots();
+		report();
 		return true;
 	}
 
