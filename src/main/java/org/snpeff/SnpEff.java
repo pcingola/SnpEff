@@ -25,6 +25,7 @@ import org.snpeff.motif.Pwm;
 import org.snpeff.pdb.DistanceResult;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
+import org.snpeff.snpEffect.SnpEffCmdTranslocationsReport;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.commandLine.CommandLine;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdAcat;
@@ -287,7 +288,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+				);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -762,14 +763,15 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("genes2bed") //
 				|| args[0].equalsIgnoreCase("gsa") //
 				|| args[0].equalsIgnoreCase("len") //
+				|| args[0].equalsIgnoreCase("pdb") //
 				|| args[0].equalsIgnoreCase("protein") //
-				|| args[0].equalsIgnoreCase("spliceAnalysis") //
-				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("seq") //
 				|| args[0].equalsIgnoreCase("show") //
-				|| args[0].equalsIgnoreCase("pdb") //
-		// Obsolete stuff (from T2D projects)
+				|| args[0].equalsIgnoreCase("test") //
+				|| args[0].equalsIgnoreCase("translocreport") //
+				// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
+				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 		) {
 			command = args[argNum++].trim().toLowerCase();
 		}
@@ -1177,8 +1179,11 @@ public class SnpEff implements CommandLine {
 			snpEffCmd = new SnpEffCmdShow();
 			break;
 
-		// Obsolete stuff
+		case "translocreport":
+			snpEffCmd = new SnpEffCmdTranslocationsReport();
+			break;
 
+		// Obsolete stuff
 		case "spliceanalysis":
 			snpEffCmd = new SnpEffCmdSpliceAnalysis();
 			break;
@@ -1267,6 +1272,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\tprotein                      : Compare protein sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness.");
 		System.err.println("\tseq                          : Show sequence (from command line) translation.");
 		System.err.println("\tshow                         : Show a text representation of genes or transcripts coordiantes, DNA sequence and protein sequence.");
+		System.err.println("\ttranslocReport               : Create a translocations report (from VCF file).");
 		// System.err.println("\tspliceAnalysis               : Perform an analysis of splice sites. Experimental feature.");
 
 		usageGenericAndDb();

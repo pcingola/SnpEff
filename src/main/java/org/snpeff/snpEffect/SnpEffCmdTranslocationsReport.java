@@ -1,4 +1,4 @@
-package org.snpeff.svg;
+package org.snpeff.snpEffect;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.interval.VariantBnd;
-import org.snpeff.snpEffect.SnpEffectPredictor;
+import org.snpeff.svg.SvgTranslocation;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 import org.snpeff.vcf.VcfEffect;
@@ -19,30 +19,15 @@ import org.snpeff.vcf.VcfEntry;
 /**
  * Create an SVG representation of a Marker
  */
-public class SvgTranslocations extends SnpEff {
+public class SnpEffCmdTranslocationsReport extends SnpEff {
 
 	boolean onlyOneTranscript;
-	boolean save;
-	String vcfFileName;
+	String outPath = ".";
+	String vcfFileName = "";
 
-	public static void main(String[] args) {
-		String genomeVer = "testHg3775Chr22";
-		String vcfFileName = "zz_chr22.ann.vcf";
-		SvgTranslocations svg = new SvgTranslocations(genomeVer, vcfFileName);
-		svg.setVerbose(true);
-		//		svg.setDebug(true);
-		svg.setOnlyOneTranscript(true);
-		svg.setCanonical(true);
-		svg.setSave(true);
-		svg.setNextProt(true);
-		svg.loadConfig();
-		svg.loadDb();
-		svg.plots();
-	}
-
-	public SvgTranslocations(String genomeVer, String vcfFileName) {
-		this.genomeVer = genomeVer;
-		this.vcfFileName = vcfFileName;
+	public SnpEffCmdTranslocationsReport() {
+		super();
+		nextProt = true;
 	}
 
 	Gene findGene(String gene) {
@@ -58,6 +43,49 @@ public class SvgTranslocations extends SnpEff {
 		if (g == null) Timer.showStdErr("Gene '" + gene + "' not found. Skipping plot");
 
 		return g;
+	}
+
+	/**
+	 * Parse command line arguments
+	 */
+	@Override
+	public void parseArgs(String[] args) {
+		if (args == null) return;
+
+		this.args = args;
+
+		for (int i = 0; i < args.length; i++) {
+			String arg = args[i];
+
+			//---
+			// Is it a command line option?
+			// Note: Generic options (such as config, verbose, debug, quiet, etc.) are parsed by SnpEff class
+			//---
+			if (isOpt(arg)) {
+				switch (arg.toLowerCase()) {
+				case "-onlyonetr":
+					onlyOneTranscript = true;
+					break;
+
+				case "-outpath":
+					if ((i + 1) < args.length) outPath = args[++i];
+					else usage("Missing -outPath argument");
+					break;
+
+				default:
+					usage("Unknown option '" + arg + "'");
+				}
+			} else if (genomeVer.isEmpty()) genomeVer = arg;
+			else if (vcfFileName.isEmpty()) vcfFileName = arg;
+			else usage("Unknown parameter '" + arg + "'");
+		}
+
+		// Check: Do we have all required parameters?
+		if (genomeVer == null || genomeVer.isEmpty()) usage("Missing genomer_version parameter");
+
+		// Check input file
+		if (vcfFileName.isEmpty()) vcfFileName = "-"; // Use STDIN as default
+		else if (!Gpr.canRead(vcfFileName)) usage("Cannot read input file '" + vcfFileName + "'");
 	}
 
 	void plot(VariantBnd var, String gene1, String gene2) {
@@ -82,10 +110,13 @@ public class SvgTranslocations extends SnpEff {
 		String svgStr = svgTranslocation.toString();
 
 		// Save to file
-		if (save) {
-			String fileName = Gpr.HOME + "/z_" + tr1.getId() + "-" + tr2.getId() + ".html";
+		if (outPath != null && !outPath.isEmpty()) {
+			String fileName = outPath + "/" + tr1.getId() + "-" + tr2.getId() + ".html";
 			Gpr.toFile(fileName, svgStr);
 			if (verbose) Timer.showStdErr("Saved to file " + fileName);
+		} else {
+			System.out.println(svgStr);
+
 		}
 
 		return svgStr;
@@ -119,12 +150,38 @@ public class SvgTranslocations extends SnpEff {
 		}
 	}
 
+	@Override
+	public boolean run() {
+		loadConfig();
+		loadDb();
+		plots();
+		return true;
+	}
+
 	public void setOnlyOneTranscript(boolean onlyOneTranscript) {
 		this.onlyOneTranscript = onlyOneTranscript;
 	}
 
-	public void setSave(boolean save) {
-		this.save = save;
+	public void setVcfFileName(String vcfFileName) {
+		this.vcfFileName = vcfFileName;
+	}
+
+	/**
+	 * Show 'usage;' message and exit with an error code '-1'
+	 */
+	@Override
+	public void usage(String message) {
+		if (message != null) {
+			System.err.println("Error        :\t" + message);
+			System.err.println("Command line :\t" + commandLineStr(false) + "\n");
+		}
+
+		System.err.println("snpEff version " + VERSION);
+		System.err.println("Usage: snpEff translocReport [options] genome_version input.vcf");
+		System.err.println("\n");
+		System.err.println("\nOptions:");
+		System.err.println("\t-outPath <string>  : Create output files in 'path' (set to empty to disable). Default '.'");
+		System.err.println("\t-onlyOneTr         : Report only one transcript.");
 	}
 
 }
