@@ -1,5 +1,11 @@
 package org.snpeff.snpEffect;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
 
 import org.snpeff.SnpEff;
@@ -10,19 +16,30 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.interval.VariantBnd;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.svg.SvgTranslocation;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+
 /**
  * Create an SVG representation of a Marker
  */
 public class SnpEffCmdTranslocationsReport extends SnpEff {
 
+	public static final String REPORT_TEMPLATE = "transcript_report.ftl";
+	public static final String DEFAULT_REPORT_HTML_FILE = "transcript_report.html";
+
 	boolean onlyOneTranscript;
+	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
 	String outPath = ".";
+	String reportFile = DEFAULT_REPORT_HTML_FILE;
 	String vcfFileName = "";
 
 	public SnpEffCmdTranslocationsReport() {
@@ -72,6 +89,15 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 					else usage("Missing -outPath argument");
 					break;
 
+				case "-report":
+					if ((i + 1) < args.length) reportFile = args[++i];
+					else usage("Missing -report argument");
+					break;
+
+				case "-uselocaltemplate": // Undocumented option (only used for development & debugging)
+					useLocalTemplate = true;
+					break;
+
 				default:
 					usage("Unknown option '" + arg + "'");
 				}
@@ -88,6 +114,9 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		else if (!Gpr.canRead(vcfFileName)) usage("Cannot read input file '" + vcfFileName + "'");
 	}
 
+	/**
+	 * Create report including all translocations in VCF file
+	 */
 	void report() {
 		// Read VCF file (one line)
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
@@ -171,6 +200,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		loadConfig();
 		loadDb();
 		report();
+		summary(REPORT_TEMPLATE, reportFile, false);
 		return true;
 	}
 
@@ -180,6 +210,63 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 
 	public void setVcfFileName(String vcfFileName) {
 		this.vcfFileName = vcfFileName;
+	}
+
+	boolean summary(String templateFile, String outputFile, boolean noCommas) {
+		try {
+			// Configure FreeMaker
+			Configuration cfg = new Configuration();
+
+			// Specify the data source where the template files come from
+			if (useLocalTemplate) cfg.setDirectoryForTemplateLoading(new File("./templates/")); // Use local 'template' directory
+			else cfg.setClassForTemplateLoading(SnpEffCmdEff.class, "/"); // Use current directory in JAR file
+
+			cfg.setObjectWrapper(new DefaultObjectWrapper()); // Specify how templates will see the data-model. This is an advanced topic...
+			cfg.setLocale(java.util.Locale.US);
+			if (noCommas) cfg.setNumberFormat("0.######");
+
+			// Create the root hash (where data objects are)
+			HashMap<String, Object> root = summaryCreateHash();
+
+			// Get the template
+			Template temp = cfg.getTemplate(templateFile);
+
+			// Process the template
+			Writer out = new OutputStreamWriter(new FileOutputStream(new File(outputFile)));
+			temp.process(root, out);
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			error(e, "Error creating summary: " + e.getMessage());
+			return false;
+		} catch (TemplateException e) {
+			error(e, "Error creating summary: " + e.getMessage());
+			return false;
+		}
+
+		return true;
+	}
+
+	HashMap<String, Object> summaryCreateHash() {
+		// Create the root hash (where data objects are)
+		HashMap<String, Object> root = new HashMap<>();
+		//		root.put("args", commandLineStr(createSummaryCsv ? false : true));
+		//		root.put("changeStats", variantEffectStats);
+		//		root.put("chromoPlots", chromoPlots);
+		//		root.put("countEffects", countEffects);
+		//		root.put("countInputLines", countInputLines);
+		//		root.put("countVariants", countVariants);
+		//		root.put("date", String.format("%1$TY-%1$Tm-%1$Td %1$TH:%1$TM", new Date()));
+		//		root.put("genesFile", Gpr.baseName(summaryGenesFile, ""));
+		//		root.put("genome", config.getGenome());
+		//		root.put("genomeVersion", genomeVer);
+		//		root.put("variantEffectResutFilter", variantEffectResutFilter);
+		//		root.put("variantStats", variantStats);
+		//		root.put("snpEffectPredictor", config.getSnpEffectPredictor());
+		//		root.put("vcfStats", vcfStats);
+		root.put("version", SnpEff.VERSION); // Version used
+
+		return root;
 	}
 
 	/**
@@ -196,8 +283,9 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		System.err.println("Usage: snpEff translocReport [options] genome_version input.vcf");
 		System.err.println("\n");
 		System.err.println("\nOptions:");
-		System.err.println("\t-outPath <string>  : Create output files in 'path' (set to empty to disable). Default '.'");
+		System.err.println("\t-outPath <dir>     : Create output files in 'path' (set to empty to disable). Default '.'");
 		System.err.println("\t-onlyOneTr         : Report only one transcript.");
+		System.err.println("\t-report <file>     : Output report file name. Default: " + reportFile);
 	}
 
 }
