@@ -607,7 +607,7 @@ public class NextProtParser {
 			if ((sequence != null) //
 					&& (aaStart >= 0) //
 					&& (aaEnd >= aaStart) //
-					&& (aaEnd < subSeq.length()) //
+					&& (aaEnd < sequence.length()) //
 			) subSeq = sequence.substring(aaStart, aaEnd + 1);
 
 			// Check transcript
@@ -789,13 +789,14 @@ public class NextProtParser {
 							// More sanity checks
 							trData.codon = tr.cds().substring(codonStart, codonEnd + 1);
 							trData.aa = CodonTables.getInstance().aa(trData.codon, genome, trData.chrName);
-							if (!subSeq.equals(trData.aa) && verbose) Timer.showStdErr("WARNING: AA differ: " //
-									+ "\tUniqueName" + isoformRef //
-									+ "\tEnsembl ID: " + trId //
-									+ "\tEnsembl  AA: " + trData.aa//
-									+ "\tNextProt AA:" + subSeq//
-									+ "\n");
-							else trData.ok = true; // All sanity checks passed
+							if (!subSeq.equals(trData.aa) && verbose) {
+								Timer.showStdErr("WARNING: AA differ: " //
+										+ "\tUniqueName : " + isoformRef //
+										+ "\tEnsembl ID : " + trId //
+										+ "\tEnsembl  AA: '" + trData.aa + "'"//
+										+ "\tNextProt AA: '" + subSeq + "'"//
+										+ "\n");
+							} else trData.ok = true; // All sanity checks passed
 						}
 					}
 				} else {
@@ -816,7 +817,6 @@ public class NextProtParser {
 	String vcfSafe(String str) {
 		return str.trim().replaceAll("(,|;|=| |\t)+", "_");
 	}
-
 }
 
 class TranscriptData {
@@ -824,4 +824,12 @@ class TranscriptData {
 	public Transcript tr = null;
 	public int chrPosStart = -1, chrPosEnd = -1;
 	public String chrName = "", codon = "", aa = "";
+
+	@Override
+	public String toString() {
+		return chrName + ":" + chrPosStart + "-" + chrPosEnd //
+				+ ", codon: '" + codon + "'" //
+				+ ", aa: '" + aa + "'" //
+		;
+	}
 }

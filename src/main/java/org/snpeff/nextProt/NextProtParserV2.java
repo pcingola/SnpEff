@@ -31,31 +31,20 @@ public class NextProtParserV2 extends NextProtParser {
 
 		NODE_NAME_GENE = "genomic-mapping";
 		NODE_NAME_TRANSCRIPT = "transcript-mapping";
-		//		NODE_NAME_ANNOTATION = "annotation";
 		NODE_NAME_ANNOTATION_LIST = "annotation-list";
 		NODE_NAME_ANNOTATION_CATEGORY = "annotation-category";
 		NODE_NAME_POSITION = "location";
-		//		NODE_NAME_PROPERTY = "property";
-		//		NODE_NAME_DESCRIPTION = "description";
 		NODE_NAME_CVNAME = "cv-term";
 		NODE_NAME_SEQUENCE = "isoform-sequence";
-		//		NODE_NAME_XREF = "xref";
 		//
 		ATTR_NAME_UNIQUE_NAME = "accession";
 		ATTR_NAME_DATABASE = "database";
 		ATTR_NAME_ACCESSION = "accession";
-		//		ATTR_NAME_ANNOTATION_LIST = "annotationList";
-		//		ATTR_NAME_CATAGORY = "category";
 		ATTR_NAME_FIRST = "begin";
 		ATTR_NAME_LAST = "end";
 		ATTR_NAME_POSITION = "position";
 		ATTR_NAME_ISOFORM_REF = "accession";
-		//		ATTR_NAME_PROPERTY_NAME = "propertyName";
-		//		ATTR_NAME_VALUE = "value";
-		//
 		ATTR_VALUE_ENSEMBL = "Ensembl";
-		//		ATTR_VALUE_REFSEQ = "RefSeq";
-		//		ATTR_VALUE_NUCLEOTIDE_SEQUENCE_ID = "'nucleotide sequence ID";
 	}
 
 	/**
