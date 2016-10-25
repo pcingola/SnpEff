@@ -286,6 +286,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		System.err.println("\t-onlyOneTr         : Report only one transcript (used for debugging).");
 		System.err.println("\t-outPath <dir>     : Create output SVG files for each translocation in 'path' (set to empty to disable). Default '" + outPath + "'");
 		System.err.println("\t-report <file>     : Output report file name. Default: " + reportFile);
+		System.exit(-1);
 	}
 
 }

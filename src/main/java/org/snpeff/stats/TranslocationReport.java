@@ -51,6 +51,13 @@ public class TranslocationReport {
 		return veff.getImpact().toString();
 	}
 
+	public String getIndex() {
+		return getChr1() + ":" + getPos1OneBased() //
+				+ "-" + getChr2() + ":" + getPos2OneBased() //
+				+ " " + getTrId1() + "-" + getTrId2() //
+		;
+	}
+
 	/**
 	 * Get position (as one-based coordinates)
 	 */

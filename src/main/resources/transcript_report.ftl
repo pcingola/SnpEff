@@ -43,12 +43,32 @@
 		<td> ${countTranslocations} </td>
 	</tr>
 </table>
+<h3>Index</h3>
+<p>
+<table class="table table-striped">
+	<tr> 
+		<th> Translocation position </th>
+		<th> Genes and transcripts </th>
+	</tr>
+<#list translocations as transloc>
+	<tr> 
+		<th> <a href="#${transloc.index}">${transloc.chr1}:${transloc.pos1OneBased} - ${transloc.chr2}:${transloc.pos2OneBased}</a> </th>
+		<td> <a href="#${transloc.index}">${transloc.geneName1} - ${transloc.geneName2}  ${transloc.trId1} - ${transloc.trId2}</a> </td>
+	</tr>
+</#list>
+</table>
 </div>
 
 <h3>Details</h3>
 <div>
 <#list translocations as transloc>
+	<a name="${transloc.index}"><h3>${transloc.index}</h3></a>
 	<table class="table table-striped">
+		<tr> 
+			<th> </th>
+			<th> BND Endpoint 1 </th>
+			<th> BND Endpoint 2 </th>
+		</tr>
 		<tr> 
 			<th> Genes </th>
 			<td> ${transloc.geneName1} </td>
@@ -85,8 +105,7 @@
 	<b> Vcf annotation entry (raw data) </b>
 	<pre> ${transloc.vcfEffect} </pre>
 
-	${transloc.svgPlot}
-	
+	${transloc.svgPlot}	
 </#list>
 	
 </div>
