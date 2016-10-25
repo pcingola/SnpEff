@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-rm -vf snpeff_*.html snpEff_genes.txt snpEff_summary.csv testSuiteAll.snpeff.txt
+rm -vf snpeff_*.html snpEff_genes.txt snpEff_summary.csv testSuiteAll.snpeff.txt transcript_report.html
 
 comment="$1"
 
