@@ -831,6 +831,23 @@ public class SnpEff implements CommandLine {
 					interaction = true; // Use interaction database
 					break;
 
+				case "-hgvs":
+					hgvs = true; // Use HGVS notation
+					break;
+
+				case "-hgvsold":
+					hgvsOld = true;
+					break;
+
+				case "-hgvs1letteraa":
+				case "-hgvsoneletteraa":
+					hgvsOneLetterAa = true;
+					break;
+
+				case "-hgvstrid":
+					hgvsTrId = true;
+					break;
+
 				case "-interval":
 					if ((i + 1) < args.length) customIntervalFiles.add(args[++i]);
 					else usage("Option '-interval' without config interval_file argument");

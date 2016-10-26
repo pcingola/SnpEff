@@ -741,23 +741,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						useGeneId = true; // Use gene ID instead of gene name
 						break;
 
-					case "-hgvs":
-						hgvs = true; // Use HGVS notation
-						break;
-
-					case "-hgvsold":
-						hgvsOld = true;
-						break;
-
-					case "-hgvs1letteraa":
-					case "-hgvsoneletteraa":
-						hgvsOneLetterAa = true;
-						break;
-
-					case "-hgvstrid":
-						hgvsTrId = true;
-						break;
-
 					case "-lof":
 						lossOfFunction = true; // Add LOF tag
 						break;
@@ -899,7 +882,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Append ALT protein sequence to 'fastaProt' file
 	 */
 	void proteinAltSequence(Variant var, VariantEffects variantEffects) {
-		Set<Transcript> doneTr = new HashSet<Transcript>();
+		Set<Transcript> doneTr = new HashSet<>();
 		for (VariantEffect varEff : variantEffects) {
 			Transcript tr = varEff.getTranscript();
 			if (tr == null || doneTr.contains(tr)) continue;

@@ -36,8 +36,8 @@ import freemarker.template.TemplateException;
  */
 public class SnpEffCmdTranslocationsReport extends SnpEff {
 
-	public static final String REPORT_TEMPLATE = "transcript_report.ftl";
-	public static final String DEFAULT_REPORT_HTML_FILE = "transcript_report.html";
+	public static final String REPORT_TEMPLATE = "translocations_report.ftl";
+	public static final String DEFAULT_REPORT_HTML_FILE = "translocations_report.html";
 
 	boolean onlyOneTranscript;
 	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)

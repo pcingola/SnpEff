@@ -47,13 +47,17 @@
 <p>
 <table class="table table-striped">
 	<tr> 
-		<th> Translocation position </th>
-		<th> Genes and transcripts </th>
+		<th> Effect </th>
+		<th> Genes </th>
+		<th> Transcripts </th>
+		<th> Coordiantes </th>
 	</tr>
 <#list translocations as transloc>
 	<tr> 
+		<td> <a href="#${transloc.index}"></a> ${transloc.variantEffect} </td>
+		<td> <a href="#${transloc.index}">${transloc.geneName1} - ${transloc.geneName2} </a> </td>
+		<td> <a href="#${transloc.index}">${transloc.trId1} - ${transloc.trId2}</a> </td>
 		<th> <a href="#${transloc.index}">${transloc.chr1}:${transloc.pos1OneBased} - ${transloc.chr2}:${transloc.pos2OneBased}</a> </th>
-		<td> <a href="#${transloc.index}">${transloc.geneName1} - ${transloc.geneName2}  ${transloc.trId1} - ${transloc.trId2}</a> </td>
 	</tr>
 </#list>
 </table>

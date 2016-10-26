@@ -1,6 +1,7 @@
 package org.snpeff.svg;
 
 import org.snpeff.interval.Cds;
+import org.snpeff.interval.Gene;
 import org.snpeff.interval.Intron;
 import org.snpeff.interval.Transcript;
 
@@ -19,6 +20,13 @@ public class SvgTranscript extends Svg {
 			nextBaseY = baseY + 2 * RECT_HEIGHT;
 		}
 		rectColorStroke = "#ffffff";
+	}
+
+	@Override
+	public String id() {
+		double y = baseY - rectHeight / 2;
+		Gene g = (Gene) tr.getParent();
+		return text(start(), y, g.getGeneName() + " " + tr.getId());
 	}
 
 	@Override
