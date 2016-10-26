@@ -45,6 +45,8 @@ public class DistanceResult {
 			// Parse line
 			String fields[] = line.split("\t");
 			int n = 0;
+			if (fields.length < 7) return;
+
 			pdbId = fields[n++];
 			pdbChainId1 = fields[n++];
 			pdbChainId2 = fields[n++];
@@ -165,7 +167,7 @@ public class DistanceResult {
 				&& chr2.equals(d.chr2) //
 				&& pos1 == d.pos1 //
 				&& pos2 == d.pos2 //
-				;
+		;
 	}
 
 	public String getId() {
@@ -176,13 +178,13 @@ public class DistanceResult {
 				+ "_" + (aaPos2 + 1) // AA number (one-based)
 				+ ":" + trId1 //
 				+ (!trId2.equals(trId1) ? "-" + trId2 : "") // Ommit if it's the same transcript
-				;
+		;
 	}
 
 	public boolean hasValidCoords() {
 		return !chr1.isEmpty() && !trId1.isEmpty() && pos1 >= 0 //
 				&& !chr2.isEmpty() && !trId2.isEmpty() && pos2 >= 0 //
-				;
+		;
 	}
 
 	public void setAa1(AminoAcid aa) {
@@ -234,7 +236,7 @@ public class DistanceResult {
 				+ "\t" + (!chr2.isEmpty() ? chr2 + ":" + pos2 : "") //
 				+ "\t" + trId1 //
 				+ "\t" + trId2 //
-				;
+		;
 	}
 
 	/**
@@ -244,6 +246,6 @@ public class DistanceResult {
 		return "" //
 				+ (chr1 != null ? "\t" + chr1 + ":" + pos1 : "") //
 				+ (chr2 != null ? "\t" + chr2 + ":" + pos2 : "") //
-				;
+		;
 	}
 }
