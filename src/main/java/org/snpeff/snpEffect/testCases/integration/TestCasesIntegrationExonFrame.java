@@ -70,7 +70,7 @@ public class TestCasesIntegrationExonFrame {
 		// Check annotations
 		//---
 		String vcfFileName = "tests/testLukas.vcf";
-		String argsEff[] = { "-classic", "-ud", "0", genomeName, vcfFileName };
+		String argsEff[] = { "-classic", "-noHgvs", "-ud", "0", genomeName, vcfFileName };
 
 		// Annotate
 		SnpEff cmd = new SnpEff(argsEff);

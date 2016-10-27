@@ -21,10 +21,10 @@ public class TestCasesIntegrationMnp {
 	static boolean verbose = false || debug;
 
 	@Test
-	public void test_02() {
+	public void test_01() {
 		Gpr.debug("Test");
 		// Run
-		String args[] = { "-classic", "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
+		String args[] = { "-classic", "-noHgvs", "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
 		snpeff.setVerbose(verbose);

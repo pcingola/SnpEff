@@ -26,7 +26,7 @@ public class TestCasesIntegrationInsEtc {
 	@Test
 	public void test_02_InsOffByOne() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "testENST00000268124", "tests/ins_off_by_one.vcf" };
+		String args[] = { "-classic", "-noHgvs", "testENST00000268124", "tests/ins_off_by_one.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
