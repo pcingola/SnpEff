@@ -1283,7 +1283,9 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				<table class="table table-striped">
 					<tr> <th> Effect<br>Seq. Ontology </th><th> Effect<br>Classic </th><th> Note &amp; Example </th><th>Impact</th> </tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001580"> coding_sequence_variant </a>  </td><td> CDS  </td><td> The variant hits a CDS. </td> <td> MODIFIER </td></tr> 
-					<tr> <td> chromosome  </td><td> CHROMOSOME_LARGE DELETION  </td><td> A large parte (over 1%) of the chromosome was deleted. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001580">chromosome</a>  </td><td> CHROMOSOME_LARGE DELETION  </td><td> A large part (over 1% or 1,000,000 bases) of the chromosome was deleted. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000035">duplication</a>  </td><td> CHROMOSOME_LARGE_DUPLICATION  </td><td> Duplication of a large chromoome segment (over 1% or 1,000,000 bases). </td> <td> LOW </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000036">inversion</a>  </td><td> CHROMOSOME_LARGE_INVERSION  </td><td> Inversion of a large chromoome segment (over 1% or 1,000,000 bases). </td> <td> MODERATE </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001580"> coding_sequence_variant </a>  </td><td> CODON_CHANGE  </td><td> One or many codons are changed <br>e.g.:  An MNP of size multiple of 3 </td> <td> MODERATE </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001821"> inframe_insertion </a>  </td><td> CODON_INSERTION  </td><td> One or many codons are inserted <br>e.g.:  An insert multiple of three in a codon boundary </td> <td> MODERATE </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001824"> disruptive_inframe_insertion</a>  </td><td> CODON_CHANGE_PLUS CODON_INSERTION  </td><td> One codon is changed and one or many codons are inserted <br>e.g.:  An insert of size multiple of three, not at codon boundary </td> <td> MODERATE </td></tr> 
@@ -1292,8 +1294,19 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001632"> downstream_gene_variant </a>  </td><td> DOWNSTREAM  </td><td> Downstream of a gene (default length: 5K bases) </td> <td> MODIFIER </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001791"> exon_variant </a>  </td><td> EXON  </td><td> The variant hits an exon (from a non-coding transcript) or a retained intron. </td> <td> MODIFIER </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572"> exon_loss_variant </a>  </td><td> EXON_DELETED  </td><td> A deletion removes the whole exon. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001572">exon_loss_variant</a>  </td><td> EXON_DELETED_PARTIAL  </td><td> Deletion affecting part of an exon. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000035">duplication</a>  </td><td> EXON_DUPLICATION  </td><td> Duplication of an exon. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000035">duplication</a>  </td><td> EXON_DUPLICATION_PARTIAL </td><td> Duplication affecting part of an exon. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000036">inversion</a> </td><td> EXON_INVERSION  </td><td> Inversion of an exon. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000036">inversion</a> </td><td> EXON_INVERSION_PARTIAL </td><td> Inversion affecting part of an exon. </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001589"> frameshift_variant </a>  </td><td> FRAME_SHIFT  </td><td> Insertion or deletion causes a frame shift <br>e.g.:  An indel size is not multple of 3 </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001564"> gene_variant </a>  </td><td> GENE  </td><td> The variant hits a gene. </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001879">feature_ablation</a>  </td><td> GENE_DELETED  </td><td> Deletion of a gene. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:1000035">duplication</a>  </td><td> GENE_DUPLICATION  </td><td> Duplication of a gene. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001565">gene_fusion</a>  </td><td> GENE_FUSION  </td><td> Fusion of two genes. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001565">gene_fusion</a>  </td><td> GENE_FUSION_HALF  </td><td> Fusion of one gene and an intergenic region. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002086">bidirectional_gene_fusion</a>  </td><td> GENE_FUSION_REVERESE  </td><td> Fusion of two genes in opposite directions. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0000904">rearranged_at_DNA_level</a>  </td><td> GENE_REARRANGEMENT  </td><td> Rearrengment affecting one or more genes. </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0000605"> intergenic_region</a> </td><td> INTERGENIC </td><td> The variant is in an intergenic region </td> <td> MODIFIER </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002017"> conserved_intergenic_variant</a> </td><td> INTERGENIC_CONSERVED </td><td> The variant is in a highly conserved intergenic region </td> <td> MODIFIER </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002011"> intragenic_variant</a> </td><td> INTRAGENIC </td><td> The variant hits a gene, but no transcripts within the gene</td> <td> MODIFIER </td></tr> 
@@ -1303,6 +1316,8 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001583"> missense_variant </a>  </td><td> NON_SYNONYMOUS_CODING  </td><td> Variant causes a codon that produces a different amino acid <br>e.g.:  Tgg/Cgg, W/R </td> <td> MODERATE </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001582"> initiator_codon_variant </a>  </td><td> NON_SYNONYMOUS_START  </td><td> Variant causes start codon to be mutated into another start codon (the new codon produces a different AA). <br>e.g.: Atg/Ctg, M/L (ATG and CTG can be START codons) </td> <td> LOW </td> </tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001567"> stop_retained_variant </a>  </td><td> NON_SYNONYMOUS_STOP  </td><td> Variant causes stop codon to be mutated into another stop codon (the new codon produces a different AA). <br>e.g.: Atg/Ctg, M/L (ATG and CTG can be START codons) </td> <td> LOW </td> </tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001093">protein_protein_contact</a> </td><td> PROTEIN_PROTEIN_INTERACTION_LOCUS </td><td> Protein-Protein interacion loci. </td> <td> HIGH </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002093">structural_interaction_variant</a> </td><td> PROTEIN_STRUCTURAL_INTERACTION_LOCUS </td><td> Within protein interacion loci (e.g. two AA that are in contact within the same protein, prossibly helping structural conformation). </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0002008"> rare_amino_acid_variant</a> </td><td> RARE_AMINO_ACID </td><td> The variant hits a rare amino acid thus is likely to produce protein loss of function </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001574"> splice_acceptor_variant </a>  </td><td> SPLICE_SITE_ACCEPTOR  </td><td> The variant hits a splice acceptor site (defined as two bases before exon start, except for the first exon). </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001575"> splice_donor_variant </a>  </td><td> SPLICE_SITE_DONOR  </td><td> The variant hits a Splice donor site (defined as two bases after coding exon end, except for the last exon). </td> <td> HIGH </td></tr> 
@@ -1317,6 +1332,7 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 					<tr> <td> <a href=""> start_retained </a>  </td><td> SYNONYMOUS_START  </td><td> Variant causes start codon to be mutated into another start codon. <br>e.g.:  Ttg/Ctg, L/L (TTG and CTG can be START codons) </td> <td> LOW </td> </tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001567"> stop_retained_variant </a>  </td><td> SYNONYMOUS_STOP  </td><td> Variant causes stop codon to be mutated into another stop codon. <br>e.g.: taA/taG, */* </td> <td> LOW </td> </tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001576"> transcript_variant </a>  </td><td> TRANSCRIPT  </td><td> The variant hits a transcript. </td> <td> MODIFIER </td></tr> 
+					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001879">feature_ablation</a>  </td><td> TRANSCRIPT_DELETED  </td><td> Deletion of a transcript. </td> <td> HIGH </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001566"> regulatory_region_variant </a>  </td><td> REGULATION  </td><td> The variant hits a known regulatory feature (non-coding). </td> <td> MODIFIER </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001631"> upstream_gene_variant </a>  </td><td> UPSTREAM  </td><td> Upstream of a gene (default length: 5K bases) </td> <td> MODIFIER </td></tr> 
 					<tr> <td> <a href="http://www.sequenceontology.org/browser/current_svn/term/SO:0001624"> 3_prime_UTR_variant </a>  </td><td> UTR_3_PRIME  </td><td> Variant hits 3'UTR region </td> <td> MODIFIER </td></tr> 
@@ -1353,6 +1369,19 @@ EFF= Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chang
 				<i class="icon-warning-sign"></i> When the variant hits a RARE_AMINO_ACID mark, it is likely that 
 				the 'old_AA/new_AA' field will be incorrect. This may happen because 
 				the amino acid is not predictable using a codon table. 
+				<br>
+				<br>
+				<p> <b>Details about Protein interaction effects </b>
+				<br>
+				<br>
+				Protein interactions are calculated from <a href="http://www.rcsb.org">PDB</a>. There are two main types of interations:
+				<ul>
+					<li> <b>protein_protein_contact</b>: These are "protein-protein" interacion loci. 
+						They are calculated from PDB's co-crystalized structures by inferring pairs of amino acids in different proteins that have atoms closer than 3 Angstrom from each other.
+					<li> <b>structural_interaction_variant</b>: These are "within protein" interacion loci, which are likely to be supporting the protein structure. 
+						They are calculated from single protein PDB entries, by selecting amino acids that are: a) atom within 3 Angstrom of each other; and b) are far away in the AA sequence (over 20 AA distance). 
+						The assumption is that, since they are very close in distance, they must be "interacting" and thus important for protein structure.
+				</ul>
 				<br>
 				<p> <h3> Impact prediction </h3>
 				SnpEff reports putative variant impact in order to make it easier quickly to categorize and prioritize variants.
