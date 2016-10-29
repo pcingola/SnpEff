@@ -71,6 +71,7 @@ dirScripts			:= "$dirSnpeff/scripts"
 dirScriptsBuild		:= "$dirSnpeff/scripts_build"
 dirZip				:= "$dirSnpeff/zip"
 pwmsBin				:= "$dirDb/jaspar/pwms.bin"
+ensembl2refSeqTrIds := "$dirDb/ensembl2refSeq/ensembl2refSeq.GRCh.txt"
 
 # URLs
 snpeffDownload		:= "http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip"
@@ -303,13 +304,13 @@ void buildDbNextProt() {
 	xmlFiles := dirNextProt.dirPath("*.xml")
 
 	# Check each genome version
-	for( string hg : dirData.dir("GRCh*") ) {
+	for( string hg : dirsHg() ) {
 		hg = hg.baseName()
 		npfile := "$dirData/$hg/nextProt.bin"
 
 		if( !npfile.exists() ) {
 			print("NextProt ($hg): Build\t\tNextProt db file: '$npfile'\n")
-			sys $snpeffXl buildNextProt -v $hg db/nextProt/
+			sys $snpeffXl buildNextProt -v -trIds $ensembl2refSeqTrIds $hg db/nextProt/
 		} else {
 			print("NextProt ($hg): OK\t\tNextProt db file: '$npfile'\n")
 		}
