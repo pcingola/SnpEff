@@ -717,7 +717,7 @@ void downloadUcscHg19Kg() {
 
 	# Copy files to snpEff/data dir
 	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf genes.kg.gz $dirData/$ref/ 
-	sys cd $dirData/genomes; ln -s $refdb.fa.gz $ref.fa.gz
+	sys cd $dirData/genomes; rm -vf $ref.fa.gz; ln -s $refdb.fa.gz $ref.fa.gz
 }
 
 #-------------------------------------------------------------------------------
@@ -780,7 +780,7 @@ void downloadUcscHg38Kg() {
 
 	# Copy files to snpEff/data dir
 	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf genes.kg.gz $dirData/$ref/ 
-	sys cd $dirData/genomes; ln -s $refdb.fa.gz $ref.fa.gz
+	sys cd $dirData/genomes; rm -vf $ref.fa.gz ; ln -s $refdb.fa.gz $ref.fa.gz
 }
 
 #-------------------------------------------------------------------------------
