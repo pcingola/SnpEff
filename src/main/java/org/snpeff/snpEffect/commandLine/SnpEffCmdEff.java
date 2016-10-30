@@ -730,6 +730,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 					case "-classic":
 						useSequenceOntology = false;
 						formatVersion = EffFormatVersion.FORMAT_EFF_4;
+						hgvs = hgvsForce;
 						break;
 
 					case "-formateff":

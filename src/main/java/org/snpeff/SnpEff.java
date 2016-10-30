@@ -91,7 +91,7 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "a";
+	public static final String REVISION = "b";
 	public static final String BUILD = Gpr.compileTimeStamp(SnpEff.class);
 	public static final String VERSION_MAJOR = "4.3";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
@@ -106,6 +106,7 @@ public class SnpEff implements CommandLine {
 	protected boolean download = true; // Download genome, if not available
 	protected boolean help; // Show command help and exit
 	protected boolean hgvs = true; // Use Hgvs notation
+	protected boolean hgvsForce = false; // Use Hgvs notation even in classic mode?
 	protected boolean hgvsOneLetterAa = false; // Use 1-letter AA codes in HGVS.p notation?
 	protected boolean hgvsOld = false; // Old notation style notation: E.g. 'c.G123T' instead of 'c.123G>T' and 'X' instead of '*'
 	protected boolean hgvsShift = true; // Shift variants towards the 3-prime end of the transcript
@@ -288,7 +289,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-				);
+			);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -769,7 +770,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("translocreport") //
-				// Obsolete stuff (from T2D projects)
+		// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 		) {
@@ -832,7 +833,7 @@ public class SnpEff implements CommandLine {
 					break;
 
 				case "-hgvs":
-					hgvs = true; // Use HGVS notation
+					hgvs = hgvsForce = true; // Use HGVS notation
 					break;
 
 				case "-hgvsold":
@@ -1224,6 +1225,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.genomeVer = genomeVer;
 		snpEffCmd.help = help;
 		snpEffCmd.hgvs = hgvs;
+		snpEffCmd.hgvsForce = hgvsForce;
 		snpEffCmd.hgvsOld = hgvsOld;
 		snpEffCmd.hgvsOneLetterAa = hgvsOneLetterAa;
 		snpEffCmd.hgvsShift = hgvsShift;
