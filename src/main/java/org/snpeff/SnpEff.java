@@ -136,6 +136,7 @@ public class SnpEff implements CommandLine {
 	protected String dataDir; // Override data_dir in config file
 	protected String genomeVer; // Genome version
 	protected String onlyTranscriptsFile = null; // Only use the transcripts in this file (Format: One transcript ID per line)
+	protected String cannonicaChangeFile = null; // Use cannonical transcripts changing the ones that are present in the file.
 	protected TranscriptSupportLevel maxTranscriptSupportLevel = null; // Filter by maximum Transcript Support Level (TSL)
 	protected StringBuilder output = new StringBuilder();
 	protected Config config; // Configuration
@@ -289,7 +290,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+				);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -770,7 +771,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("translocreport") //
-		// Obsolete stuff (from T2D projects)
+				// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 		) {
@@ -906,6 +907,11 @@ public class SnpEff implements CommandLine {
 
 				case "-onlytr":
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
+					else usage("Option '-onltTr' without file argument");
+					break;
+
+				case "-onlytr":
+					if ((i + 1) < args.length) cannonicaChangeFile = args[++i];
 					else usage("Option '-onltTr' without file argument");
 					break;
 
