@@ -136,7 +136,7 @@ public class SnpEff implements CommandLine {
 	protected String dataDir; // Override data_dir in config file
 	protected String genomeVer; // Genome version
 	protected String onlyTranscriptsFile = null; // Only use the transcripts in this file (Format: One transcript ID per line)
-	protected String cannonicaChangeFile = null; // Use cannonical transcripts changing the ones that are present in the file.
+	protected String canonicalFile = null; // Use cannonical transcripts changing the ones that are present in the file.
 	protected TranscriptSupportLevel maxTranscriptSupportLevel = null; // Filter by maximum Transcript Support Level (TSL)
 	protected StringBuilder output = new StringBuilder();
 	protected Config config; // Configuration
@@ -290,7 +290,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-				);
+			);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -414,6 +414,10 @@ public class SnpEff implements CommandLine {
 			if (verbose) Timer.showStdErr("done.");
 		}
 
+		// Filter canonical transcripts
+		if (canonicalFile != null && !canonicalFile.isEmpty()) canonicalFile();
+		if (canonical) canonical();
+
 		// Filter transcripts by TSL
 		if (maxTranscriptSupportLevel != null) {
 			if (verbose) Timer.showStdErr("Filtering transcripts by Transcript Support Level (TSL): " + maxTranscriptSupportLevel);
@@ -489,6 +493,27 @@ public class SnpEff implements CommandLine {
 
 		genome = config.getSnpEffectPredictor().getGenome();
 		genome.getGenomicSequences().setVerbose(verbose);
+	}
+
+	/**
+	 *  Filter canonical transcripts
+	 */
+	protected void canonical() {
+		if (verbose) Timer.showStdErr("Filtering out non-canonical transcripts.");
+		config.getSnpEffectPredictor().removeNonCanonical();
+
+		if (verbose) {
+			// Show genes and transcript (which ones are considered 'canonical')
+			Timer.showStdErr("Canonical transcripts:\n\t\tgeneName\tgeneId\ttranscriptId\tcdsLength");
+			for (Gene g : config.getSnpEffectPredictor().getGenome().getGenes()) {
+				for (Transcript t : g) {
+					String cds = t.cds();
+					int cdsLen = (cds != null ? cds.length() : 0);
+					System.err.println("\t\t" + g.getGeneName() + "\t" + g.getId() + "\t" + t.getId() + "\t" + cdsLen);
+				}
+			}
+		}
+		if (verbose) Timer.showStdErr("done.");
 	}
 
 	/**
@@ -771,7 +796,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("translocreport") //
-				// Obsolete stuff (from T2D projects)
+		// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 		) {
@@ -807,6 +832,11 @@ public class SnpEff implements CommandLine {
 
 				case "-canon":
 					canonical = true; // Use canonical transcripts
+					break;
+
+				case "-canonlist":
+					if ((i + 1) < args.length) canonicalFile = args[++i];
+					else usage("Option '-canonList' without file argument");
 					break;
 
 				case "-d":
@@ -907,11 +937,6 @@ public class SnpEff implements CommandLine {
 
 				case "-onlytr":
 					if ((i + 1) < args.length) onlyTranscriptsFile = args[++i]; // Only use the transcripts in this file
-					else usage("Option '-onltTr' without file argument");
-					break;
-
-				case "-onlytr":
-					if ((i + 1) < args.length) cannonicaChangeFile = args[++i];
 					else usage("Option '-onltTr' without file argument");
 					break;
 
@@ -1222,6 +1247,7 @@ public class SnpEff implements CommandLine {
 
 		// Copy values to specific command
 		snpEffCmd.canonical = canonical;
+		snpEffCmd.canonicalFile = canonicalFile;
 		snpEffCmd.configFile = configFile;
 		snpEffCmd.customIntervalFiles = customIntervalFiles;
 		snpEffCmd.dataDir = dataDir;
@@ -1311,6 +1337,7 @@ public class SnpEff implements CommandLine {
 	protected void usageDb() {
 		System.err.println("\nDatabase options:");
 		System.err.println("\t-canon                       : Only use canonical transcripts.");
+		System.err.println("\t-canonList <file>            : Only use canonical transcripts, replace some transcripts using the 'gene_id \t transcript_id' entries in <file>.");
 		System.err.println("\t-interaction                 : Annotate using inteactions (requires interaciton database). Default: " + interaction);
 		System.err.println("\t-interval <file>             : Use a custom intervals in TXT/BED/BigBed/VCF/GFF file (you may use this option many times)");
 		System.err.println("\t-maxTSL <TSL_number>         : Only use transcripts having Transcript Support Level lower than <TSL_number>.");
