@@ -19,7 +19,7 @@ import org.snpeff.util.Gpr;
  * @author pcingola
  *
  */
-public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializable {
+public class Gene extends IntervalAndSubIntervals<Transcript> implements Serializable {
 
 	public enum GeneType {
 		CODING, NON_CODING, UNKNOWN
@@ -119,7 +119,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
 								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-				) //
+						) //
 				) {
 					canonical = t;
 					canonicalLen = tlen;
@@ -134,7 +134,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
 								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-				) //
+						) //
 				) {
 					canonical = t;
 					canonicalLen = tlen;
@@ -170,7 +170,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 	 * Filter transcripts by TSL
 	 */
 	public void filterTranscriptSupportLevel(TranscriptSupportLevel maxTsl) {
-		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
+		ArrayList<Transcript> toDelete = new ArrayList<>();
 
 		// Mark transcripts for removal
 		for (Transcript tr : this)
@@ -220,11 +220,11 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 	 */
 	public int keepTranscripts(Set<String> trIds) {
 		// Find transcripts in trIds
-		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
+		ArrayList<Transcript> toDelete = new ArrayList<>();
 		for (Transcript t : this) {
 			String trId = t.getId();
 
-			// Sometimes the provided list does not have version numbers 
+			// Sometimes the provided list does not have version numbers
 			// (e.g. NM_005157 instead of NM_005157.4)
 			String trIdNoVersion = t.getId();
 			int versionIdx = trIdNoVersion.indexOf('.');
@@ -247,7 +247,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 	 */
 	public int keepTranscriptsProtein() {
 		// Find transcripts in trIds
-		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
+		ArrayList<Transcript> toDelete = new ArrayList<>();
 		for (Transcript t : this)
 			if (!t.isProteinCoding()) toDelete.add(t);
 
@@ -271,13 +271,18 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 	/**
 	 * Remove all non-canonical transcripts
 	 */
-	public void removeNonCanonical() {
-		Transcript canonical = canonical();
+	public void removeNonCanonical(String trId) {
+		// User transcript 'trId' or find canonical transcript
+		Transcript canonical;
+		if (trId != null) {
+			canonical = get(trId);
+			if (canonical == null) throw new RuntimeException("Canonical transcript '" + trId + "' not found! Gene name: '" + getGeneName() + "', Gene ID: '" + getId() + "'");
+		} else canonical = canonical();
 
 		// Found canonical? => Remove all others
 		if (canonical != null) {
 			// Remove all other transcripts
-			ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
+			ArrayList<Transcript> toDelete = new ArrayList<>();
 			toDelete.addAll(subIntervals());
 			toDelete.remove(canonical); // Do not remove canonical transcript.
 
@@ -293,7 +298,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 	 */
 	public boolean removeUnverified() {
 		// Mark unchecked transcripts for deletion
-		ArrayList<Transcript> toDelete = new ArrayList<Transcript>();
+		ArrayList<Transcript> toDelete = new ArrayList<>();
 
 		int countRemoved = 0;
 		for (Transcript tr : this) {

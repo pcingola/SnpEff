@@ -7,6 +7,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesAnn;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegratioBuildPdb;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationApply;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCancer;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCanonical;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCircularGenome;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCodingTag;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationConfig;
@@ -67,6 +68,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
 		TestCasesIntegrationApply.class, //
 		TestCasesIntegratioBuildPdb.class, //
 		TestCasesIntegrationCancer.class, //
+		TestCasesIntegrationCanonical.class, //
 		TestCasesIntegrationCircularGenome.class, //
 		TestCasesIntegrationCodingTag.class, //
 		TestCasesIntegrationConfig.class, //

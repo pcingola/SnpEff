@@ -1,8 +1,10 @@
 package org.snpeff.snpEffect;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.snpeff.binseq.GenomicSequences;
@@ -499,10 +501,30 @@ public class SnpEffectPredictor implements Serializable {
 
 	/**
 	 * Remove all non-canonical transcripts
+	 * If a file is provided, read "Gene => canonical_transcript" mapping
+	 * from file
 	 */
-	public void removeNonCanonical() {
+	public void removeNonCanonical(String canonFile) {
+		Map<String, String> geneCanonTr = new HashMap<>();
+
+		// Any gene mapping file?
+		if (canonFile != null && !canonFile.isEmpty()) {
+			// Read "gene -> trId" map form file
+			String lines = Gpr.readFile(canonFile).trim();
+			if (lines.isEmpty()) throw new RuntimeException("Empty or missing file '" + canonFile + "'");
+
+			// Parse lines and store in hash
+			for (String line : lines.split("\n")) {
+				String fields[] = line.split("\t");
+				String geneId = fields[0].trim();
+				String trId = fields[1].trim();
+				geneCanonTr.put(geneId, trId);
+			}
+		}
+
+		// Remove non-canonical transcripts
 		for (Gene g : genome.getGenes())
-			g.removeNonCanonical();
+			g.removeNonCanonical(geneCanonTr.get(g.getId()));
 	}
 
 	/**

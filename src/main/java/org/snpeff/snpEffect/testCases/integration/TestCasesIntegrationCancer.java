@@ -29,7 +29,6 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		verbose = true;
 		String file = "tests/test.cancer.snp.01.vcf";
 		snpEffectCancer(file, null, "p.Leu1?/c.1A>G", "G-C");
 	}

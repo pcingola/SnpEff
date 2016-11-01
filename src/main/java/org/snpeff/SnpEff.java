@@ -192,6 +192,27 @@ public class SnpEff implements CommandLine {
 	}
 
 	/**
+	 *  Filter canonical transcripts
+	 */
+	protected void canonical() {
+		if (verbose) Timer.showStdErr("Filtering out non-canonical transcripts.");
+		config.getSnpEffectPredictor().removeNonCanonical(canonicalFile);
+
+		if (verbose) {
+			// Show genes and transcript (which ones are considered 'canonical')
+			Timer.showStdErr("Canonical transcripts:\n\t\tgeneName\tgeneId\ttranscriptId\tcdsLength");
+			for (Gene g : config.getSnpEffectPredictor().getGenome().getGenes()) {
+				for (Transcript t : g) {
+					String cds = t.cds();
+					int cdsLen = (cds != null ? cds.length() : 0);
+					System.err.println("\t\t" + g.getGeneName() + "\t" + g.getId() + "\t" + t.getId() + "\t" + cdsLen);
+				}
+			}
+		}
+		if (verbose) Timer.showStdErr("done.");
+	}
+
+	/**
 	 * Check if there is a new version of the program
 	 */
 	void checkNewVersion(Config config) {
@@ -290,7 +311,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+				);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -396,27 +417,7 @@ public class SnpEff implements CommandLine {
 		config.getSnpEffectPredictor().setSpliceRegionIntronMax(spliceRegionIntronMax);
 
 		// Filter canonical transcripts
-		if (canonical) {
-			if (verbose) Timer.showStdErr("Filtering out non-canonical transcripts.");
-			config.getSnpEffectPredictor().removeNonCanonical();
-
-			if (verbose) {
-				// Show genes and transcript (which ones are considered 'canonical')
-				Timer.showStdErr("Canonical transcripts:\n\t\tgeneName\tgeneId\ttranscriptId\tcdsLength");
-				for (Gene g : config.getSnpEffectPredictor().getGenome().getGenes()) {
-					for (Transcript t : g) {
-						String cds = t.cds();
-						int cdsLen = (cds != null ? cds.length() : 0);
-						System.err.println("\t\t" + g.getGeneName() + "\t" + g.getId() + "\t" + t.getId() + "\t" + cdsLen);
-					}
-				}
-			}
-			if (verbose) Timer.showStdErr("done.");
-		}
-
-		// Filter canonical transcripts
-		if (canonicalFile != null && !canonicalFile.isEmpty()) canonicalFile();
-		if (canonical) canonical();
+		if (canonical || (canonicalFile != null && !canonicalFile.isEmpty())) canonical();
 
 		// Filter transcripts by TSL
 		if (maxTranscriptSupportLevel != null) {
@@ -493,27 +494,6 @@ public class SnpEff implements CommandLine {
 
 		genome = config.getSnpEffectPredictor().getGenome();
 		genome.getGenomicSequences().setVerbose(verbose);
-	}
-
-	/**
-	 *  Filter canonical transcripts
-	 */
-	protected void canonical() {
-		if (verbose) Timer.showStdErr("Filtering out non-canonical transcripts.");
-		config.getSnpEffectPredictor().removeNonCanonical();
-
-		if (verbose) {
-			// Show genes and transcript (which ones are considered 'canonical')
-			Timer.showStdErr("Canonical transcripts:\n\t\tgeneName\tgeneId\ttranscriptId\tcdsLength");
-			for (Gene g : config.getSnpEffectPredictor().getGenome().getGenes()) {
-				for (Transcript t : g) {
-					String cds = t.cds();
-					int cdsLen = (cds != null ? cds.length() : 0);
-					System.err.println("\t\t" + g.getGeneName() + "\t" + g.getId() + "\t" + t.getId() + "\t" + cdsLen);
-				}
-			}
-		}
-		if (verbose) Timer.showStdErr("done.");
 	}
 
 	/**
@@ -796,7 +776,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("translocreport") //
-		// Obsolete stuff (from T2D projects)
+				// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 		) {
