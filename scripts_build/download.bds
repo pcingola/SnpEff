@@ -86,6 +86,23 @@ void downloadClinvar() {
 }
 
 #-------------------------------------------------------------------------------
+# Download CytoBands
+#-------------------------------------------------------------------------------
+void downloadCytoBands() {
+	println "Download cytobands"
+
+	for(string grch : GRCh2Hg.keys() ) {
+		hg := GRCh2Hg{grch}
+		dir := "$dirDb/$grch/cytoBand"
+		file := "$dir/cytoBand.txt.gz"
+		url := "http://hgdownload.cse.ucsc.edu/goldenPath/$hg/database/cytoBand.txt.gz"
+		dir.mkdir()
+		dir.chdir()
+		if( !file.exists() ) fetch(url)
+	}
+}
+
+#-------------------------------------------------------------------------------
 # Download dbNSFP
 #-------------------------------------------------------------------------------
 void downloadDbNsfp() {
