@@ -104,10 +104,10 @@ public class Gpr {
 	}
 
 	public static final long KB = 1024;
+
 	public static final long MB = KB * KB;
 	public static final long GB = KB * MB;
 	public static final long TB = KB * GB;
-
 	// Number of cores in this computer
 	public static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
@@ -346,6 +346,13 @@ public class Gpr {
 			line = reader.readLine();
 		}
 		return file;
+	}
+
+	/**
+	 * Empty or '-' means STDIN
+	 */
+	public static boolean isStdin(String fileName) {
+		return fileName.isEmpty() || fileName.equals("-");
 	}
 
 	public static boolean isValidIp(String ip) {
