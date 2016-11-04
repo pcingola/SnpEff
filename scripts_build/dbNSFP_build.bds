@@ -1,0 +1,31 @@
+#!/usr/bin/env bds
+
+dbnsfpVersion := "3.2a"
+genome        := "GRCh38"
+dirDb         := "$HOME/snpEff/db/$genome/dbNSFP"
+base          := "$dirDb/dbNSFP$dbnsfpVersion\_variant.chr"
+dbNsfp        := "$dirDb/dbNSFP$dbnsfpVersion.txt.gz"
+
+string[] gzs
+for(string file : dirDb.dir()) {
+	if(!file.startsWith("dbNSFP$dbnsfpVersion\_variant") || file.endsWith("gz")) continue
+	file = dirDb + '/' + file.trim()
+
+	println("File: $file")
+	base := file.baseName()
+	sorted := "$dirDb/$base.sort.txt.gz"
+	gzs += sorted
+	
+	task( sorted <- file , cpus := 2) {
+		sys cat $file \
+			| ./scripts_build/dbNSFP_sort.pl \
+			| bgzip -c > $sorted
+	}
+}
+
+gzStr := gzs.join(' ')
+task( dbNsfp <- gzs ) {
+	sys cat $gzStr > $dbNsfp
+	sys tabix -s 1 -b 2 -e 2 $dbNsfp
+}
+
