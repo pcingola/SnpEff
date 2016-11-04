@@ -54,7 +54,7 @@ public class SvgTranslocation extends Svg {
 	 */
 	@Override
 	public String toString() {
-		if (tr2.intersects(varBnd) && tr1.intersects(varBnd.getEndPoint())) {
+		if (tr2.intersects(varBnd.getStart()) && tr1.intersects(varBnd.getEndPoint().getStart())) {
 			// Swap transcripts
 			Transcript trTmp = tr2;
 			tr2 = tr1;
@@ -75,7 +75,8 @@ public class SvgTranslocation extends Svg {
 		Svg svgNextProt2 = nextProt(tr2, svgTr2);
 
 		// Translocation
-		Svg svgBnd = new SvgBnd(varBnd, svgTr1, svgTr2);
+		Svg svgBnd;
+		svgBnd = new SvgBnd(varBnd, svgTr1, svgTr2);
 
 		String svgStr = svgTr1.open() //
 				+ svgTr1 + svgScale1 //

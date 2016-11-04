@@ -76,7 +76,7 @@ public class VariantBnd extends Variant {
 				+ "_" + getReference() //
 				+ "/" //
 				+ (before ? trPos + getAlt() : getAlt() + trPos) //
-				;
+		;
 	}
 
 }

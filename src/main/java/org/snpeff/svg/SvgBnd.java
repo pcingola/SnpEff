@@ -36,19 +36,32 @@ public class SvgBnd extends Svg {
 	 */
 	String bndType1() {
 		StringBuilder sb = new StringBuilder();
-		int pos1 = varBnd.getStart();
+		int pos1 = pos1();
 		double x1 = svgTr1.pos2coord(pos1);
 		double y1 = svgTr1.baseY + svgTr1.rectHeight / 2;
 
-		int pos2 = varBnd.getEndPoint().getStart();
+		int pos2 = pos2();
 		double x2 = svgTr2.pos2coord(pos2);
 		double y2 = svgTr2.baseY + svgTr2.rectHeight / 2;
 
-		double x3 = (x1 + x2) / 2;
+		double d = lineStrokeWidth / 2;
 
-		sb.append(line(x1, y1, x3, y1));
-		sb.append(line(x3, y1 - lineStrokeWidth / 2, x3, y2 + lineStrokeWidth / 2));
-		sb.append(line(x2, y2, x3, y2));
+		if (x1 < x2) {
+			double x3 = (x1 + x2) / 2;
+			sb.append(line(x1, y1, x3, y1));
+			sb.append(line(x3, y1 - d, x3, y2 + d));
+			sb.append(line(x2, y2, x3, y2));
+		} else {
+			double x1e = Math.min(sizeX, x1 + BND_CURL_SIZE);
+			double x2e = Math.max(0, x2 - BND_CURL_SIZE);
+			double ymid = (y1 + y2) / 2;
+			sb.append(line(x1, y1, x1e, y1));
+			sb.append(line(x1e, y1 - d, x1e, ymid + d));
+			sb.append(line(x1e, ymid, x2e, ymid));
+			sb.append(line(x2e, y2 + d, x2e, ymid - d));
+			sb.append(line(x2, y2, x2e, y2));
+		}
+
 		return sb.toString();
 	}
 
@@ -57,18 +70,20 @@ public class SvgBnd extends Svg {
 	 */
 	String bndType2() {
 		StringBuilder sb = new StringBuilder();
-		int pos1 = varBnd.getStart();
+		int pos1 = pos1();
 		double x1 = svgTr1.pos2coord(pos1);
 		double y1 = svgTr1.baseY + svgTr1.rectHeight / 2;
 
-		int pos2 = varBnd.getEndPoint().getStart();
+		int pos2 = pos2();
 		double x2 = svgTr2.pos2coord(pos2);
 		double y2 = svgTr2.baseY + svgTr2.rectHeight / 2;
 
 		double x3 = Math.min(sizeX, Math.max(x1, x2) + BND_CURL_SIZE);
 
+		double d = lineStrokeWidth / 2;
+
 		sb.append(line(x1, y1, x3, y1));
-		sb.append(line(x3, y1 - lineStrokeWidth / 2, x3, y2 + lineStrokeWidth / 2));
+		sb.append(line(x3, y1 - d, x3, y2 + d));
 		sb.append(line(x2, y2, x3, y2));
 		return sb.toString();
 	}
@@ -77,7 +92,34 @@ public class SvgBnd extends Svg {
 	 * Create a 'bnd type 3'
 	 */
 	String bndType3() {
-		return bndType1(); // The representation looks the same as type 1
+		StringBuilder sb = new StringBuilder();
+		int pos1 = pos1();
+		double x1 = svgTr1.pos2coord(pos1);
+		double y1 = svgTr1.baseY + svgTr1.rectHeight / 2;
+
+		int pos2 = pos2();
+		double x2 = svgTr2.pos2coord(pos2);
+		double y2 = svgTr2.baseY + svgTr2.rectHeight / 2;
+
+		double d = lineStrokeWidth / 2;
+
+		if (x2 < x1) {
+			double x3 = (x1 + x2) / 2;
+			sb.append(line(x1, y1, x3, y1));
+			sb.append(line(x3, y1 - d, x3, y2 + d));
+			sb.append(line(x2, y2, x3, y2));
+		} else {
+			double x1e = Math.max(0, x1 - BND_CURL_SIZE);
+			double x2e = Math.min(sizeX, x2 + BND_CURL_SIZE);
+			double ymid = (y1 + y2) / 2;
+			sb.append(line(x1, y1, x1e, y1));
+			sb.append(line(x1e, y1 - d, x1e, ymid + d));
+			sb.append(line(x1e, ymid, x2e, ymid));
+			sb.append(line(x2e, y2 + d, x2e, ymid - d));
+			sb.append(line(x2, y2, x2e, y2));
+		}
+
+		return sb.toString();
 	}
 
 	/**
@@ -85,20 +127,30 @@ public class SvgBnd extends Svg {
 	 */
 	String bndType4() {
 		StringBuilder sb = new StringBuilder();
-		int pos1 = varBnd.getStart();
+		int pos1 = pos1();
 		double x1 = svgTr1.pos2coord(pos1);
 		double y1 = svgTr1.baseY + svgTr1.rectHeight / 2;
 
-		int pos2 = varBnd.getEndPoint().getStart();
+		int pos2 = pos2();
 		double x2 = svgTr2.pos2coord(pos2);
 		double y2 = svgTr2.baseY + svgTr2.rectHeight / 2;
 
 		double x3 = Math.max(0, Math.min(x1, x2) - BND_CURL_SIZE);
 
+		double d = lineStrokeWidth / 2;
+
 		sb.append(line(x1, y1, x3, y1));
-		sb.append(line(x3, y1 - lineStrokeWidth / 2, x3, y2 + lineStrokeWidth / 2));
+		sb.append(line(x3, y1 - d, x3, y2 + d));
 		sb.append(line(x2, y2, x3, y2));
 		return sb.toString();
+	}
+
+	int pos1() {
+		return varBnd.getStart();
+	}
+
+	int pos2() {
+		return varBnd.getEndPoint().getStart();
 	}
 
 	@Override

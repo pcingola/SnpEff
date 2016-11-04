@@ -18,6 +18,7 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.interval.VariantBnd;
+import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.stats.TranslocationReport;
 import org.snpeff.svg.SvgTranslocation;
@@ -52,6 +53,19 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		nextProt = true;
 	}
 
+	/**
+	 * Filter according to variant types
+	 */
+	boolean filterVariants(Variant var) {
+		VariantType vt = var.getVariantType();
+		return vt != VariantType.BND //
+				&& vt != VariantType.DUP //
+		;
+	}
+
+	/**
+	 * Find gene from gene name
+	 */
 	Gene findGene(String gene) {
 		SnpEffectPredictor sep = config.getSnpEffectPredictor();
 
@@ -65,6 +79,16 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		if (g == null) Timer.showStdErr("Gene '" + gene + "' not found. Skipping plot");
 
 		return g;
+	}
+
+	/**
+	 * Is this a translocation effect?
+	 */
+	boolean isTranslocation(EffectType effType) {
+		return effType == EffectType.GENE_FUSION //
+				|| effType == EffectType.GENE_FUSION_REVERESE //
+				|| effType == EffectType.GENE_FUSION_HALF //
+		;
 	}
 
 	/**
@@ -134,30 +158,39 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 			if (vars.isEmpty()) continue;
 
 			Variant var = vars.get(0);
-			if (var.getVariantType() != VariantType.BND) continue;
+			if (filterVariants(var)) continue;
 
 			countTranslocations++;
 
-			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (debug) System.out.println("\t" + veff);
-				String geneStr = veff.getGeneId();
-				String genes[] = geneStr.split("&");
+			report(ve, var);
+		}
+	}
 
-				if (verbose) Timer.showStdErr("Plotting translocation: '" + veff + "'");
+	/**
+	 * Report a trnaslocation
+	 */
+	void report(VcfEntry ve, Variant var) {
+		for (VcfEffect veff : ve.getVcfEffects()) {
+			if (!isTranslocation(veff.getEffectType())) continue;
 
-				if (genes.length < 2) continue;
-				String geneName1 = genes[0];
-				String geneName2 = genes[1];
-				report((VariantBnd) var, veff, geneName1, geneName2);
+			if (debug) System.out.println("\t" + veff);
+			String geneStr = veff.getGeneId();
+			String genes[] = geneStr.split("&");
 
-			}
+			if (verbose) Timer.showStdErr("Plotting translocation: '" + veff + "'");
+
+			if (genes.length < 2) continue;
+			String geneName1 = genes[0];
+			String geneName2 = genes[1];
+
+			reportBnd(variantBnd(var), veff, geneName1, geneName2);
 		}
 	}
 
 	/**
 	 * Report a translocation (Gene level)
 	 */
-	String report(VariantBnd var, VcfEffect veff, String gene1, String gene2) {
+	String reportBnd(VariantBnd varBnd, VcfEffect veff, String gene1, String gene2) {
 		if (debug) System.out.println("\tGenes: " + gene1 + "\t" + gene2);
 		Gene g1 = findGene(gene1);
 		Gene g2 = findGene(gene2);
@@ -166,7 +199,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		StringBuilder sb = new StringBuilder();
 		for (Transcript tr1 : g1)
 			for (Transcript tr2 : g2) {
-				sb.append(report(var, veff, tr1, tr2));
+				sb.append(reportBnd(varBnd, veff, tr1, tr2));
 				if (onlyOneTranscript) {
 					if (verbose) Timer.showStdErr("Plotting only one transcript pair");
 					return sb.toString();
@@ -179,23 +212,24 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 	/**
 	 * Report a translocation (transcript level)
 	 */
-	TranslocationReport report(VariantBnd var, VcfEffect veff, Transcript tr1, Transcript tr2) {
+	TranslocationReport reportBnd(VariantBnd varBnd, VcfEffect veff, Transcript tr1, Transcript tr2) {
 		if (debug) System.out.println("\tTranscripts: " + tr1.getId() + "\t" + tr2.getId());
-		SvgTranslocation svgTranslocation = new SvgTranslocation(tr1, tr2, var, config.getSnpEffectPredictor());
+
+		SvgTranslocation svgTranslocation = new SvgTranslocation(tr1, tr2, varBnd, config.getSnpEffectPredictor());
 
 		// Plot translocation
 		String svgPlot = svgTranslocation.toString();
 
 		// Create and add translocation report
-		TranslocationReport trRep = new TranslocationReport(var, veff, tr1, tr2);
+		TranslocationReport trRep = new TranslocationReport(varBnd, veff, tr1, tr2);
 		trRep.setSvgPlot(svgPlot);
 		translocationReports.add(trRep);
 
 		// Save to separate files
 		if (outPath != null && !outPath.isEmpty()) {
 			String fileName = outPath + "/" //
-					+ var.getChromosomeName() + ":" + (var.getStart() + 1) //
-					+ "_" + var.getEndPoint().getChromosomeName() + ":" + (var.getEndPoint().getStart() + 1) //
+					+ varBnd.getChromosomeName() + ":" + (varBnd.getStart() + 1) //
+					+ "_" + varBnd.getEndPoint().getChromosomeName() + ":" + (varBnd.getEndPoint().getStart() + 1) //
 					+ "-" + tr2.getId() //
 					+ ".html";
 			Gpr.toFile(fileName, svgPlot);
@@ -287,6 +321,19 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		System.err.println("\t-outPath <dir>     : Create output SVG files for each translocation in 'path' (set to empty to disable). Default '" + outPath + "'");
 		System.err.println("\t-report <file>     : Output report file name. Default: " + reportFile);
 		System.exit(-1);
+	}
+
+	/**
+	 * Create a VariantBnd from a Variant (could be a <DUP> or <DEL>)
+	 */
+	VariantBnd variantBnd(Variant var) {
+		// BND? Nothing to do
+		if (var.isBnd()) return (VariantBnd) var;
+
+		// Duplications expressed ad BND
+		if (var.isDup()) return new VariantBnd(var.getChromosome(), var.getStart(), "N", "N", var.getChromosome(), var.getEnd(), false, false);
+
+		throw new RuntimeException("Unsupported variant type '" + var.getVariantType() + "'");
 	}
 
 }

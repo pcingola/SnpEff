@@ -59,7 +59,7 @@ public class Variant extends Marker {
 	 * Create variants from ALT (which can be multiple values)
 	 */
 	public static List<Variant> factory(Chromosome chromo, int start, String ref, String altStr, String id, boolean expand) {
-		LinkedList<Variant> list = new LinkedList<Variant>();
+		LinkedList<Variant> list = new LinkedList<>();
 
 		// No alt? It's an interval
 		if (altStr == null) {
