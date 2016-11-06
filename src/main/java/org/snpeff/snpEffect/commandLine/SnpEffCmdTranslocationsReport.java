@@ -60,7 +60,8 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		VariantType vt = var.getVariantType();
 		return vt != VariantType.BND //
 				&& vt != VariantType.DUP //
-		;
+				&& vt != VariantType.DEL //
+				;
 	}
 
 	/**
@@ -88,7 +89,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		return effType == EffectType.GENE_FUSION //
 				|| effType == EffectType.GENE_FUSION_REVERESE //
 				|| effType == EffectType.GENE_FUSION_HALF //
-		;
+				;
 	}
 
 	/**
@@ -245,6 +246,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		loadDb();
 		report();
 		summary(REPORT_TEMPLATE, reportFile, false);
+		if (verbose) Timer.showStdErr("Done.");
 		return true;
 	}
 
@@ -330,8 +332,10 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		// BND? Nothing to do
 		if (var.isBnd()) return (VariantBnd) var;
 
-		// Duplications expressed ad BND
-		if (var.isDup()) return new VariantBnd(var.getChromosome(), var.getStart(), "N", "N", var.getChromosome(), var.getEnd(), false, false);
+		if (var.isDup() || var.isDel()) {
+			// Create a BND variant
+			return new VariantBnd(var.getChromosome(), var.getStart(), "N", "N", var.getChromosome(), var.getEnd(), false, false);
+		}
 
 		throw new RuntimeException("Unsupported variant type '" + var.getVariantType() + "'");
 	}
