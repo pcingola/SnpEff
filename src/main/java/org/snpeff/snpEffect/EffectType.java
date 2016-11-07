@@ -142,7 +142,7 @@ public enum EffectType {
 		Map<String, EffectType> oldSo2efftype = new HashMap<>();
 		oldSo2efftype.put("non_coding_exon_variant", EffectType.EXON);
 
-		// Add terms if not already in the map 
+		// Add terms if not already in the map
 		for (String so : oldSo2efftype.keySet()) {
 			if (!so2efftype.containsKey(so)) so2efftype.put(so, oldSo2efftype.get(so));
 		}
@@ -250,9 +250,8 @@ public enum EffectType {
 		case CHROMOSOME_LARGE_INVERSION:
 		case CHROMOSOME_ELONGATION:
 		case CUSTOM:
-		case CDS:
 		case SEQUENCE:
-			return EffectType.NONE;
+			return EffectType.CHROMOSOME;
 
 		case INTERGENIC:
 		case INTERGENIC_CONSERVED:
@@ -286,6 +285,7 @@ public enum EffectType {
 		case INTRAGENIC:
 		case NEXT_PROT:
 		case TRANSCRIPT:
+		case CDS:
 			return EffectType.TRANSCRIPT;
 
 		case GENE:
@@ -359,7 +359,7 @@ public enum EffectType {
 				|| this == GENE_FUSION_REVERESE //
 				|| this == GENE_FUSION_HALF //
 				|| this == FEATURE_FUSION //
-		;
+				;
 	}
 
 	public String toSequenceOntology(EffFormatVersion formatVersion, Variant variant) {
