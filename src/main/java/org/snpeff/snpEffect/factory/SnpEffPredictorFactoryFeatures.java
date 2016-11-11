@@ -1,10 +1,10 @@
 package org.snpeff.snpEffect.factory;
 
 import org.snpeff.genBank.Feature;
+import org.snpeff.genBank.Feature.Type;
 import org.snpeff.genBank.FeatureCoordinates;
 import org.snpeff.genBank.Features;
 import org.snpeff.genBank.FeaturesFile;
-import org.snpeff.genBank.Feature.Type;
 import org.snpeff.interval.Cds;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Exon;
@@ -34,6 +34,79 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 	public SnpEffPredictorFactoryFeatures(Config config) {
 		super(config, OFFSET);
+	}
+
+	/**
+	 * Add CDS and protein coding information
+	 */
+	Transcript addCds(Feature f, Gene geneLatest, Transcript trLatest) {
+		// Add CDS and protein coding information
+
+		// Convert coordinates to zero-based
+		int start = f.getStart() - inOffset;
+		int end = f.getEnd() - inOffset;
+
+		// Find corresponding transcript
+		Transcript tr = null;
+		String trId = null;
+		if ((trLatest != null) && trLatest.intersects(start, end)) {
+			tr = trLatest;
+			trId = tr.getId();
+		} else {
+			// Try to find transcript
+			trId = f.getTranscriptId();
+			tr = findTranscript(trId);
+		}
+
+		if (tr == null) {
+			// Not found? => Create gene and transcript
+
+			// Find or create gene
+			Gene gene = null;
+			if ((geneLatest != null) && geneLatest.intersects(start, end)) gene = geneLatest;
+			else gene = findOrCreateGene(f, chromosome, false);
+
+			if (debug) System.err.println("Transcript '" + trId + "' not found. Creating new transcript for gene '" + gene.getId() + "'.\n" + f);
+
+			if (trId == null) trId = "Tr_" + start + "_" + end;
+			tr = findTranscript(trId);
+			if (tr == null) {
+				tr = new Transcript(gene, start, end, f.isComplement(), trId);
+				add(tr);
+			}
+		}
+
+		// Mark transcript as protein coding
+		if (f.getAasequence() != null) tr.setProteinCoding(true);
+
+		// Check and set ribosomal slippage
+		if (f.get("ribosomal_slippage") != null) tr.setRibosomalSlippage(true);
+
+		// Add exons?
+		if (f.hasMultipleCoordinates()) {
+			int cdsEndPrev = -1;
+			boolean pastChrEnd = false;
+			for (FeatureCoordinates fc : f) {
+				int cdsStart = fc.start - inOffset;
+				int cdsEnd = fc.end - inOffset;
+
+				// Need to account for genes at the edge of the chromosome in case of circular genomes 
+				pastChrEnd |= (cdsStart < cdsEndPrev);
+				if (pastChrEnd) {
+					cdsStart += chromosome.getEnd() + 1;
+					cdsEnd += chromosome.getEnd() + 1;
+				}
+
+				Cds cds = new Cds(tr, cdsStart, cdsEnd, f.isComplement(), "CDS_" + trId);
+				add(cds);
+				cdsEndPrev = cdsEnd;
+			}
+		} else {
+			Cds cds = new Cds(tr, f.getStart() - inOffset, f.getEnd() - inOffset, f.isComplement(), "CDS_" + trId);
+			add(cds);
+		}
+
+		return tr;
 	}
 
 	/**
@@ -83,90 +156,42 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 				geneLatest = findOrCreateGene(f, chromosome, false);
 				trLatest = null;
 			} else if (f.getType() == Type.MRNA) {
-				// Add transcript information
-
-				// Convert coordinates to zero-based
-				int start = f.getStart() - inOffset;
-				int end = f.getEnd() - inOffset;
-
-				// Get gene: Make sure the transcript actually refers to the latest gene.
-				Gene gene = null;
-				if ((geneLatest != null) && geneLatest.intersects(start, end)) gene = geneLatest;
-				else gene = findOrCreateGene(f, chromosome, false); // Find or create gene
-
-				// Add transcript
-				String trId = f.getTranscriptId();
-				Transcript tr = new Transcript(gene, start, end, f.isComplement(), trId);
-
-				// Add exons?
-				if (f.hasMultipleCoordinates()) {
-					int exNum = 1;
-					for (FeatureCoordinates fc : f) {
-						Exon e = new Exon(tr, fc.start - inOffset, fc.end - inOffset, fc.complement, tr.getId() + "_" + exNum, exNum);
-						tr.add(e);
-						exNum++;
-					}
-				}
-
-				add(tr);
-
-				trLatest = tr;
+				trLatest = addMrna(f, geneLatest);
 			} else if (f.getType() == Type.CDS) {
-				// Add CDS and protein coding information
-
-				// Convert coordinates to zero-based
-				int start = f.getStart() - inOffset;
-				int end = f.getEnd() - inOffset;
-
-				// Find corresponding transcript
-				Transcript tr = null;
-				String trId = null;
-				if ((trLatest != null) && trLatest.intersects(start, end)) {
-					tr = trLatest;
-					trId = tr.getId();
-				} else {
-					// Try to find transcript
-					trId = f.getTranscriptId();
-					tr = findTranscript(trId);
-				}
-
-				if (tr == null) {
-					// Not found? => Create gene and transcript
-
-					// Find or create gene
-					Gene gene = null;
-					if ((geneLatest != null) && geneLatest.intersects(start, end)) gene = geneLatest;
-					else gene = findOrCreateGene(f, chromosome, false);
-
-					if (debug) System.err.println("Transcript '" + trId + "' not found. Creating new transcript for gene '" + gene.getId() + "'.\n" + f);
-
-					if (trId == null) trId = "Tr_" + start + "_" + end;
-					tr = findTranscript(trId);
-					if (tr == null) {
-						tr = new Transcript(gene, start, end, f.isComplement(), trId);
-						add(tr);
-					}
-				}
-
-				// Mark transcript as protein coding
-				if (f.getAasequence() != null) tr.setProteinCoding(true);
-
-				// Check and set ribosomal slippage
-				if (f.get("ribosomal_slippage") != null) tr.setRibosomalSlippage(true);
-
-				// Add exons?
-				if (f.hasMultipleCoordinates()) {
-					for (FeatureCoordinates fc : f) {
-						Cds cds = new Cds(tr, fc.start - inOffset, fc.end - inOffset, f.isComplement(), "CDS_" + trId);
-						tr.add(cds);
-						add(cds);
-					}
-				} else {
-					Cds cds = new Cds(tr, f.getStart() - inOffset, f.getEnd() - inOffset, f.isComplement(), "CDS_" + trId);
-					add(cds);
-				}
+				trLatest = addCds(f, geneLatest, trLatest);
 			}
 		}
+	}
+
+	/**
+	 * Add transcript information
+	 */
+	Transcript addMrna(Feature f, Gene geneLatest) {
+		// Convert coordinates to zero-based
+		int start = f.getStart() - inOffset;
+		int end = f.getEnd() - inOffset;
+
+		// Get gene: Make sure the transcript actually refers to the latest gene.
+		Gene gene = null;
+		if ((geneLatest != null) && geneLatest.intersects(start, end)) gene = geneLatest;
+		else gene = findOrCreateGene(f, chromosome, false); // Find or create gene
+
+		// Add transcript
+		String trId = f.getTranscriptId();
+		Transcript tr = new Transcript(gene, start, end, f.isComplement(), trId);
+
+		// Add exons?
+		if (f.hasMultipleCoordinates()) {
+			int exNum = 1;
+			for (FeatureCoordinates fc : f) {
+				Exon e = new Exon(tr, fc.start - inOffset, fc.end - inOffset, fc.complement, tr.getId() + "_" + exNum, exNum);
+				tr.add(e);
+				exNum++;
+			}
+		}
+
+		add(tr);
+		return tr;
 	}
 
 	/**

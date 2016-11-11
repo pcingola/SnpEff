@@ -18,6 +18,8 @@ import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 
+import net.sf.samtools.util.RuntimeEOFException;
+
 /**
  * Codon position
  * @author pcingola
@@ -62,8 +64,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	public Transcript() {
 		super();
-		utrs = new ArrayList<Utr>();
-		cdss = new ArrayList<Cds>();
+		utrs = new ArrayList<>();
+		cdss = new ArrayList<>();
 		type = EffectType.TRANSCRIPT;
 	}
 
@@ -144,7 +146,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Add an intron
 	 */
 	public void add(Intron intron) {
-		if (introns == null) introns = new ArrayList<Intron>();
+		if (introns == null) introns = new ArrayList<>();
 		introns.add(intron);
 
 		// Introns should be sorted by strand
@@ -556,7 +558,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return isStrandPlus() //
 				? new Marker(this, getCdsStart(), getCdsEnd()) //
 				: new Marker(this, getCdsEnd(), getCdsStart()) //
-				;
+		;
 	}
 
 	/**
@@ -580,6 +582,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 *       coordinates spanning over chromo.length
 	 */
 	boolean circularCorrectionExon(int chrLen) {
+		if (Math.random() < 2) throw new RuntimeEOFException("SHOULD WE PERFORM A CIRCULAR CORRECTION?!?!?!?!?");
 		boolean corrected = false;
 
 		int maxExonLen = 0;
@@ -727,7 +730,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Collapse CDS
 		//---
 		collapse = MarkerUtil.collapseZeroGap(new Markers(cdss));
-		cdss = new ArrayList<Cds>(); // Re-create CDSs list
+		cdss = new ArrayList<>(); // Re-create CDSs list
 		Markers uniqCollapsedCds = new Markers(collapse.values()).unique(); // Create a set of unique CDSs and add them to CDSs list
 		for (Marker cds : uniqCollapsedCds)
 			cdss.add((Cds) cds);
@@ -737,7 +740,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		//---
 		collapse = MarkerUtil.collapseZeroGap(new Markers(utrs));
 		Markers uniqCollapsedUtrs = new Markers(collapse.values()).unique(); // Create a set of unique UTRs, and add them to the list
-		utrs = new ArrayList<Utr>(); // Re-generate UTRs list
+		utrs = new ArrayList<>(); // Re-generate UTRs list
 		for (Marker utr : uniqCollapsedUtrs)
 			utrs.add((Utr) utr);
 
@@ -920,7 +923,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Return the UTR that intersects 'marker' (null if not found)
 	 */
 	public List<Utr> findUtrs(Marker marker) {
-		List<Utr> utrs = new LinkedList<Utr>();
+		List<Utr> utrs = new LinkedList<>();
 
 		// Is it in UTR instead of CDS?
 		for (Utr utr : utrs)
@@ -1151,7 +1154,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Create a list of 3 prime UTRs
 	 */
 	public List<Utr3prime> get3primeUtrs() {
-		ArrayList<Utr3prime> list = new ArrayList<Utr3prime>();
+		ArrayList<Utr3prime> list = new ArrayList<>();
 		for (Utr utr : utrs)
 			if (utr instanceof Utr3prime) list.add((Utr3prime) utr);
 		return list;
@@ -1167,7 +1170,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Create a list of 5 prime UTRs
 	 */
 	public List<Utr5prime> get5primeUtrs() {
-		ArrayList<Utr5prime> list = new ArrayList<Utr5prime>();
+		ArrayList<Utr5prime> list = new ArrayList<>();
 		for (Utr utr : utrs)
 			if (utr instanceof Utr5prime) list.add((Utr5prime) utr);
 		return list;
@@ -1281,7 +1284,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	public synchronized List<Intron> introns() {
 		if (introns == null) {
-			introns = new ArrayList<Intron>();
+			introns = new ArrayList<>();
 
 			Exon exBefore = null;
 			for (Exon ex : sortedStrand()) {
@@ -1533,7 +1536,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 */
 	@Override
 	public Markers query(Marker marker) {
-		Set<Marker> results = new HashSet<Marker>();
+		Set<Marker> results = new HashSet<>();
 
 		// Add exons
 		for (Exon ex : this)
@@ -1600,8 +1603,8 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		super.reset();
 
 		sorted = null;
-		utrs = new ArrayList<Utr>();
-		cdss = new ArrayList<Cds>();
+		utrs = new ArrayList<>();
+		cdss = new ArrayList<>();
 		introns = null;
 		upstream = null;
 		downstream = null;
@@ -1674,7 +1677,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-				;
+		;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1710,7 +1713,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	public List<SpliceSite> spliceSites() {
-		List<SpliceSite> sslist = new ArrayList<SpliceSite>();
+		List<SpliceSite> sslist = new ArrayList<>();
 
 		for (Exon ex : this)
 			sslist.addAll(ex.getSpliceSites());
@@ -1922,7 +1925,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ (isProteinCoding() ? "\n" + aaStr + "\n" + frameStr : "") //
 				+ "\n" + new String(art) //
 				+ "\n" + coords //
-				;
+		;
 	}
 
 	/**

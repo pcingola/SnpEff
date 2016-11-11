@@ -1,7 +1,13 @@
 package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.Test;
+import org.snpeff.interval.Gene;
+import org.snpeff.interval.Genome;
+import org.snpeff.interval.Transcript;
+import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
+
+import junit.framework.Assert;
 
 /**
  *
@@ -9,25 +15,41 @@ import org.snpeff.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationZzz {
-
-	boolean verbose = false;
-	long randSeed = 20100629;
-	String genomeName = "testCase";
+public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
 
 	public TestCasesIntegrationZzz() {
 		super();
 	}
 
-	/**
-	 * Rare Amino acid
-	 */
 	@Test
-	public void test_30_RareAa() {
+	public void testCase_05_CircularGenome_ExonsOrder() {
 		Gpr.debug("Test");
-		String genomeName = "testHg3765Chr22";
-		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/rareAa.txt", null, true);
+
+		verbose = true;
+		String expectedProtein = "MGSLEMVPMGAGPPSPGGDPDGYDGGNNSQYPSASGSSGNTPTP" //
+				+ "PNDEERESNEEPPPPYEDPYWGNGDRHSDYQPLGTQDQSLYLGLQHDGNDGLPPPPYS" //
+				+ "PRDDSSQHIYEEAGRGSMNPVCLPVIVAPYLFWLAAIAASCFTASVSTVVTATGLALS" //
+				+ "LLLLAAVASSYAAAQRKLLTPVTVLTAVVTFFAICLTWRIEDPPFNSLLFALLAAAGG" //
+				+ "LQGIYVLVMLVLLILAYRRRWRRLTVCGGIMFLACVLVLIVDAVLQLSPLLGAVTVVS" //
+				+ "MTLLLLAFVLWLSSPGGLGTLGAALLTLAAALALLASLILGTLNLTTMFLLMLLWTLV" //
+				+ "VLLICSSCSSCPLSKILLARLFLYALALLLLASALIAGGSILQTNFKSLSSTEFIPNL" //
+				+ "FCMLLLIVAGILFILAILTEWGSGNRTYGPVFMCLGGLLTMVAGAVWLTVMSNTLLSA" //
+				+ "WILTAGFLIFLIGFALFGVIRCCRYCCYYCLTLESEERPPTPYRNTV";
+
+		// Create database & build interval forest
+		String genomeName = "testCase";
+		String genBankFile = "tests/Human_herpesvirus_4_uid14413.gbk";
+		SnpEffectPredictor sep = buildGeneBank(genomeName, genBankFile);
+		sep.buildForest();
+
+		// Create variant
+		Genome genome = sep.getGenome();
+		Gene gene = genome.getGenes().getGeneByName("LMP2");
+		Transcript tr = gene.iterator().next();
+		String prot = tr.protein();
+
+		if (verbose) Gpr.debug(tr);
+		Assert.assertEquals("Protein sequence deas not match", expectedProtein, prot);
 	}
 
 }

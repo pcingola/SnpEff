@@ -28,7 +28,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 	HashMap<String, Gene> genesById;
 
 	public Genes(Genome genome) {
-		genesById = new HashMap<String, Gene>();
+		genesById = new HashMap<>();
 		this.genome = genome;
 	}
 
@@ -44,7 +44,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 		the chromosome so that they can be referenced by both circular coordinates.
 	 */
 	public void createCircularGenes() {
-		List<Gene> newGenes = new LinkedList<Gene>();
+		List<Gene> newGenes = new LinkedList<>();
 
 		// Check if any gene spans across chromosome limits
 		for (Gene g : genome.getGenes()) {
@@ -72,11 +72,13 @@ public class Genes implements Iterable<Gene>, Serializable {
 				}
 
 				newGene.shiftCoordinates(shift);
-				if (Config.get().isVerbose()) Timer.showStdErr("Gene '" + g.getId() + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
-						+ "\n\tGene        :" + g.toStr() //
-						+ "\n\tNew gene    :" + newGene.toStr() //
-						+ "\n\tChrsomosome :" + chr.toStr() //
-				);
+				if (Config.get().isVerbose()) {
+					Timer.showStdErr("Gene '" + g.getId() + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
+							+ "\n\tGene        :" + g.toStr() //
+							+ "\n\tNew gene    :" + newGene.toStr() //
+							+ "\n\tChrsomosome :" + chr.toStr() //
+					);
+				}
 
 				// Add them to genes
 				newGenes.add(newGene);
@@ -96,10 +98,10 @@ public class Genes implements Iterable<Gene>, Serializable {
 	 * Creates a list of Intergenic regions
 	 */
 	public List<Intergenic> createIntergenic() {
-		ArrayList<Intergenic> intergenics = new ArrayList<Intergenic>(genesById.size());
+		ArrayList<Intergenic> intergenics = new ArrayList<>(genesById.size());
 
 		// Create a list of genes sorted by position
-		ArrayList<Gene> genesSorted = new ArrayList<Gene>(genesById.size());
+		ArrayList<Gene> genesSorted = new ArrayList<>(genesById.size());
 		genesSorted.addAll(genesById.values());
 		Collections.sort(genesSorted);
 
@@ -168,7 +170,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 	 * Note: If upDownLength <=0 no interval is created
 	 */
 	public List<Marker> createUpDownStream(int upDownLength) {
-		ArrayList<Marker> list = new ArrayList<Marker>();
+		ArrayList<Marker> list = new ArrayList<>();
 		if (upDownLength <= 0) return list;
 
 		// For each gene, transcript
@@ -220,7 +222,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 	}
 
 	public Collection<Gene> sorted() {
-		ArrayList<Gene> genes = new ArrayList<Gene>();
+		ArrayList<Gene> genes = new ArrayList<>();
 		genes.addAll(genesById.values());
 		Collections.sort(genes, new IntervalComparatorByStart());
 		return genes;

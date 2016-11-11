@@ -51,12 +51,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	public boolean adjust() {
 		boolean changed = false;
 		int strandSumGene = 0;
-		//int newStart = start, newEnd = start;
 
-		//		if (newStart == 0 && newEnd == 0) {
 		int newStart = Integer.MAX_VALUE;
 		int newEnd = Integer.MIN_VALUE;
-		//		}
 
 		for (Transcript tr : this) {
 			newStart = Math.min(newStart, tr.getStart());

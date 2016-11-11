@@ -67,11 +67,11 @@ public abstract class SnpEffPredictorFactory {
 
 		genome = config.getGenome();
 		snpEffectPredictor = new SnpEffectPredictor(config.getGenome());
-		exonsByChromo = new HashMap<String, Integer>();
-		markersById = new HashMap<String, Marker>();
-		genesById = new HashMap<String, Gene>();
-		transcriptsById = new HashMap<String, Transcript>();
-		chromoNamesReference = new HashSet<String>();
+		exonsByChromo = new HashMap<>();
+		markersById = new HashMap<>();
+		genesById = new HashMap<>();
+		transcriptsById = new HashMap<>();
+		chromoNamesReference = new HashSet<>();
 
 		frameCorrection = false;
 		frameType = FrameType.UNKNOWN;
@@ -233,7 +233,7 @@ public abstract class SnpEffPredictorFactory {
 		if (verbose) System.out.print("\n\tAdjusting chromosomes lengths: ");
 
 		// Chromosome length should be longer than any gene's end coordinate
-		HashMap<String, Integer> lenByChr = new HashMap<String, Integer>();
+		HashMap<String, Integer> lenByChr = new HashMap<>();
 		for (Gene gene : config.getGenome().getGenes()) {
 			String chrName = gene.getChromosomeName();
 			Integer len = lenByChr.get(chrName);
@@ -359,7 +359,7 @@ public abstract class SnpEffPredictorFactory {
 	 */
 	@SuppressWarnings("unused")
 	void countExonsByChromo() {
-		exonsByChromo = new HashMap<String, Integer>();
+		exonsByChromo = new HashMap<>();
 
 		for (Gene gint : genome.getGenes()) {
 			Chromosome chromo = gint.getChromosome();
@@ -698,7 +698,7 @@ public abstract class SnpEffPredictorFactory {
 	 */
 	void removeEmptyChromos() {
 		if (verbose) System.out.println("\n\tRemove empty chromosomes: ");
-		ArrayList<Chromosome> chrToDelete = new ArrayList<Chromosome>();
+		ArrayList<Chromosome> chrToDelete = new ArrayList<>();
 		for (Chromosome chr : config.getGenome())
 			if (chr.size() <= 1) chrToDelete.add(chr);
 
@@ -761,7 +761,7 @@ public abstract class SnpEffPredictorFactory {
 		if (chromoNamesReference.isEmpty()) return "";
 
 		// Get all chromosome names
-		Set<String> chrs = new HashSet<String>();
+		Set<String> chrs = new HashSet<>();
 		for (Gene g : config.getGenome().getGenes())
 			chrs.add(g.getChromosomeName());
 
@@ -770,7 +770,7 @@ public abstract class SnpEffPredictorFactory {
 		//---
 		int counMissinfRef = 0;
 		StringBuilder sbMissingRef = new StringBuilder();
-		ArrayList<String> chrsSorted = new ArrayList<String>();
+		ArrayList<String> chrsSorted = new ArrayList<>();
 		chrsSorted.addAll(chrs);
 		Collections.sort(chrsSorted);
 		for (String chr : chrsSorted) {
@@ -786,7 +786,7 @@ public abstract class SnpEffPredictorFactory {
 		//---
 		int counMissinfGenes = 0;
 		StringBuilder sbMissingGenes = new StringBuilder();
-		ArrayList<String> chrsRefSorted = new ArrayList<String>();
+		ArrayList<String> chrsRefSorted = new ArrayList<>();
 		chrsRefSorted.addAll(chromoNamesReference);
 		Collections.sort(chrsRefSorted);
 		for (String chr : chrsRefSorted) {
@@ -809,7 +809,7 @@ public abstract class SnpEffPredictorFactory {
 		return msg //
 				+ (sbMissingRef.length() > 0 ? "\tChromosome names missing in 'reference sequence' file:\t" + sbMissingRef.toString() : "") //
 				+ (sbMissingGenes.length() > 0 ? "\n\tChromosome names missing in 'genes' file             :\t" + sbMissingGenes.toString() : "")//
-				;
+		;
 	}
 
 	String unquote(String qstr) {
