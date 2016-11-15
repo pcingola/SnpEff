@@ -209,8 +209,12 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 	 * Is this interval part of a circular chromosome and it spans
 	 * the 'chromosome zero / chromosome end' line?
 	 */
-	public boolean isCircularSpanZero() {
-		return start < 0 || (start > end);
+	public boolean isCircular() {
+		Chromosome chr = getChromosome();
+		return start < 0 // Negative coordinates?
+				|| (start > end) // Start before end?
+				|| (end > chr.getEnd()) // Ends after chromosome end?
+				;
 	}
 
 	public boolean isSameChromo(Marker interval) {

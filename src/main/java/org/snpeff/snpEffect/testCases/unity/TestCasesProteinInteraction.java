@@ -1,10 +1,9 @@
-package org.snpeff.snpEffect.testCases.integration;
+package org.snpeff.snpEffect.testCases.unity;
 
 import java.util.List;
 
 import org.junit.Test;
 import org.snpeff.interval.ProteinInteractionLocus;
-import org.snpeff.snpEffect.testCases.unity.TestCasesBaseApply;
 import org.snpeff.util.Gpr;
 
 import junit.framework.Assert;

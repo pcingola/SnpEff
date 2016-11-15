@@ -5,9 +5,9 @@ import org.snpeff.util.Gpr;
 
 /**
  * A class representing the same data as a GenBank file (a 'GB' file)
- * 
+ *
  * References: http://www.ncbi.nlm.nih.gov/Sitemap/samplerecord
- * 
+ *
  * @author pablocingolani
  */
 public class GenBank extends Features {
@@ -47,7 +47,7 @@ public class GenBank extends Features {
 	/**
 	 * Parse a feature line
 	 */
-	protected void parseFieldLine(String name, String valueOri, int fieldLineNum) {
+	protected void parseFieldLine(String name, String valueOri, int fieldLineNum, int fileLineNum) {
 		String value = valueOri.trim();
 
 		if (name.equals("LOCUS")) {
@@ -72,6 +72,7 @@ public class GenBank extends Features {
 			if (fieldLineNum == 0) references.add(new StringBuffer());
 			references.get(references.size() - 1).append(value + "\n");
 		} else if (name.equals("FEATURES")) {
+			if (featuresStartLine < 0) featuresStartLine = fileLineNum;
 			if (fieldLineNum > 0) featuresStr.append(valueOri + "\n"); // We need all spaces preserved for this field
 		} else if (name.equals("ORIGIN")) {
 			String seq[] = value.split(" ", 2);
@@ -112,7 +113,7 @@ public class GenBank extends Features {
 
 			// Parse field
 			if (name != null) {
-				parseFieldLine(name, value, fieldLineNum);
+				parseFieldLine(name, value, fieldLineNum, lineFileIterator.getLineNum());
 				fieldLineNum++;
 			}
 		}

@@ -12,6 +12,7 @@ import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Timer;
 
 /**
  * Interval for a gene, as well as transcripts
@@ -19,11 +20,13 @@ import org.snpeff.util.Gpr;
  * @author pcingola
  *
  */
-public class Gene extends IntervalAndSubIntervals<Transcript> implements Serializable {
+public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializable {
 
 	public enum GeneType {
 		CODING, NON_CODING, UNKNOWN
 	}
+
+	public static final String CIRCULAR_GENE_ID = "_circ";
 
 	private static final long serialVersionUID = 8419206759034068147L;
 
@@ -116,7 +119,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
 								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-						) //
+				) //
 				) {
 					canonical = t;
 					canonicalLen = tlen;
@@ -131,7 +134,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
 								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-						) //
+				) //
 				) {
 					canonical = t;
 					canonicalLen = tlen;
@@ -143,6 +146,45 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		if (canonical != null) canonical.setCanonical(true);
 
 		return canonical;
+	}
+
+	/**
+	 * In a circular genome, a gene can have negative coordinates or crosses
+	 * over chromosome end. These genes are mirrored to the opposite end of
+	 * the chromosome so that they can be referenced by both circular
+	 * coordinates.
+	 */
+	public Gene circularClone() {
+		Gene newGene = (Gene) clone();
+
+		// Change IDs
+		newGene.setId(id + CIRCULAR_GENE_ID);
+		for (Transcript tr : newGene) {
+			tr.setId(tr.getId() + CIRCULAR_GENE_ID);
+			for (Exon ex : tr)
+				ex.setId(ex.getId() + CIRCULAR_GENE_ID);
+		}
+
+		// Shift coordinates
+		Chromosome chr = getChromosome();
+
+		int shift = 0;
+		if (start < 0) {
+			shift = chr.size();
+		} else if (end > chr.getEnd()) {
+			shift = -chr.size();
+		} else throw new RuntimeException("Sanity check: This should neve happen!");
+
+		newGene.shiftCoordinates(shift);
+		if (Config.get().isVerbose()) {
+			Timer.showStdErr("Gene '" + id + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
+					+ "\n\tGene        :" + toStr() //
+					+ "\n\tNew gene    :" + newGene.toStr() //
+					+ "\n\tChrsomosome :" + chr.toStr() //
+			);
+		}
+
+		return newGene;
 	}
 
 	@Override
@@ -526,7 +568,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			// Apply sequence change to create new 'reference'?
 			if (variant.isNonRef()) {
 				Variant vref = ((VariantNonRef) variant).getVariantRef();
-				tr = tr.apply(vref); // TODO: We need to check on null transcript (e.g. huge deletion removing the whole transcript)
+				tr = tr.apply(vref); // Note: Do we need to check on null transcript? e.g. huge deletion removing the whole transcript
 			}
 
 			// Calculate effects

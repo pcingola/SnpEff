@@ -18,6 +18,7 @@ public class SnpEffPredictorFactoryGenBank extends SnpEffPredictorFactoryFeature
 
 	public SnpEffPredictorFactoryGenBank(Config config, String fileName) {
 		super(config);
+		this.fileName = fileName;
 		featuresFile = new GenBankFile(fileName);
 	}
 }

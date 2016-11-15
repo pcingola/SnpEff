@@ -9,6 +9,8 @@ import org.snpeff.interval.Cds;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
+import org.snpeff.interval.Marker;
+import org.snpeff.interval.Markers;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
@@ -84,23 +86,20 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 		// Add exons?
 		if (f.hasMultipleCoordinates()) {
-			int cdsEndPrev = -1;
-			boolean pastChrEnd = false;
+			Markers addedCds = new Markers();
 			for (FeatureCoordinates fc : f) {
 				int cdsStart = fc.start - inOffset;
 				int cdsEnd = fc.end - inOffset;
-
-				// Need to account for genes at the edge of the chromosome in case of circular genomes 
-				pastChrEnd |= (cdsStart < cdsEndPrev);
-				if (pastChrEnd) {
-					cdsStart += chromosome.getEnd() + 1;
-					cdsEnd += chromosome.getEnd() + 1;
-				}
-
 				Cds cds = new Cds(tr, cdsStart, cdsEnd, f.isComplement(), "CDS_" + trId);
-				add(cds);
-				cdsEndPrev = cdsEnd;
+				addedCds.add(cds);
 			}
+
+			// In case these are CDS from a circular chromosme, we may need to correct coordinates 
+			Markers addedCdsCorrected = addedCds.circularCorrect();
+
+			// Add corrected CDSs
+			for (Marker m : addedCdsCorrected)
+				add((Cds) m);
 		} else {
 			Cds cds = new Cds(tr, f.getStart() - inOffset, f.getEnd() - inOffset, f.isComplement(), "CDS_" + trId);
 			add(cds);
@@ -167,6 +166,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	 * Add transcript information
 	 */
 	Transcript addMrna(Feature f, Gene geneLatest) {
+		if (debug) Gpr.debug("Feature:" + f);
 		// Convert coordinates to zero-based
 		int start = f.getStart() - inOffset;
 		int end = f.getEnd() - inOffset;

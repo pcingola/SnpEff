@@ -21,7 +21,6 @@ import org.snpeff.util.Timer;
 public class Genes implements Iterable<Gene>, Serializable {
 
 	private static final long serialVersionUID = 9022385501946879197L;
-	public static final String CIRCULAR_GENE_ID = "_circ";
 
 	public boolean debug = false;
 	Genome genome;
@@ -39,49 +38,19 @@ public class Genes implements Iterable<Gene>, Serializable {
 		genesById.put(gene.getId(), gene);
 	}
 
-	/** In a circular genome, a gene can have negative coordinates or crosses
-		over chromosome end. These genes are mirrored to the opposite end of
-		the chromosome so that they can be referenced by both circular coordinates.
+	/**
+	 * In a circular genome, a gene can have negative coordinates or crosses
+	 * over chromosome end. These genes are mirrored to the opposite end of
+	 * the chromosome so that they can be referenced by both circular
+	 * coordinates.
 	 */
 	public void createCircularGenes() {
 		List<Gene> newGenes = new LinkedList<>();
 
 		// Check if any gene spans across chromosome limits
 		for (Gene g : genome.getGenes()) {
-			Chromosome chr = g.getChromosome();
-
-			Gene newGene = null;
-
-			if ((g.getStart() < 0) || (g.getEnd() > chr.getEnd())) {
-				newGene = (Gene) g.clone();
-
-				// Change IDs
-				newGene.setId(g.getId() + CIRCULAR_GENE_ID);
-				for (Transcript tr : newGene) {
-					tr.setId(tr.getId() + CIRCULAR_GENE_ID);
-					for (Exon ex : tr)
-						ex.setId(ex.getId() + CIRCULAR_GENE_ID);
-				}
-
-				// Shift coordinates
-				int shift = 0;
-				if (g.getStart() < 0) {
-					shift = chr.size();
-				} else if (g.getEnd() > chr.getEnd()) {
-					shift = -chr.size();
-				}
-
-				newGene.shiftCoordinates(shift);
-				if (Config.get().isVerbose()) {
-					Timer.showStdErr("Gene '" + g.getId() + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
-							+ "\n\tGene        :" + g.toStr() //
-							+ "\n\tNew gene    :" + newGene.toStr() //
-							+ "\n\tChrsomosome :" + chr.toStr() //
-					);
-				}
-
-				// Add them to genes
-				newGenes.add(newGene);
+			if (g.isCircular()) {
+				newGenes.add(g.circularClone());
 			}
 		}
 
@@ -89,7 +58,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 		if (!newGenes.isEmpty()) {
 			for (Gene g : newGenes)
 				genome.getGenes().add(g);
-			if (Config.get().isVerbose()) Timer.showStdErr("Total: " + newGenes.size() + " added as circular mirrored genes (appended '" + CIRCULAR_GENE_ID + "' to IDs).");
+			if (Config.get().isVerbose()) Timer.showStdErr("Total: " + newGenes.size() + " added as circular mirrored genes (appended '" + Gene.CIRCULAR_GENE_ID + "' to IDs).");
 		}
 
 	}

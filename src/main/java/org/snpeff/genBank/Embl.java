@@ -3,8 +3,8 @@ package org.snpeff.genBank;
 import org.snpeff.fileIterator.LineFileIterator;
 
 /**
- * A class representing the same data as an EMBL file 
- * 
+ * A class representing the same data as an EMBL file
+ *
  * References: http://www.ebi.ac.uk/embl/Documentation/User_manual/usrman.html
  *
  * @author pablocingolani
@@ -42,7 +42,7 @@ public class Embl extends Features {
 
 	/**
 	 * Parse a feature line
-	 * 
+	 *
 	 * Line types:
 
 			 ID - identification             (begins each entry; 1 per entry)
@@ -64,18 +64,18 @@ public class Embl extends Features {
 		     RL - reference location         (>=1 per entry)
 		     DR - database cross-reference   (>=0 per entry)
 		     CC - comments or notes          (>=0 per entry)
-		     AH - assembly header            (0 or 1 per entry)   
+		     AH - assembly header            (0 or 1 per entry)
 		     AS - assembly information       (0 or >=1 per entry)
 		     FH - feature table header       (2 per entry)
-		     FT - feature table data         (>=2 per entry)    
+		     FT - feature table data         (>=2 per entry)
 		     XX - spacer line                (many per entry)
 		     SQ - sequence header            (1 per entry)
-		     CO - contig/construct line      (0 or >=1 per entry) 
+		     CO - contig/construct line      (0 or >=1 per entry)
 		     bb - (blanks) sequence data     (>=1 per entry)
 		     // - termination line           (ends each entry; 1 per entry)
-	 * 
+	 *
 	 */
-	protected void parseFieldLine(String fkey, String valueOri) {
+	protected void parseFieldLine(String fkey, String valueOri, int fieldLineNum) {
 		String value = valueOri.trim();
 
 		if (fkey.equals("XX")) {
@@ -103,6 +103,7 @@ public class Embl extends Features {
 		} else if (fkey.equals("OS") | fkey.equals("OC")) {
 			organism += value;
 		} else if (fkey.equals("FT")) {
+			if (featuresStartLine < 0) featuresStartLine = fieldLineNum;
 			featuresStr.append(valueOri + "\n"); // We need all spaces preserved for this field
 		} else if (fkey.equals("//")) {
 			// End of file
@@ -141,7 +142,7 @@ public class Embl extends Features {
 			}
 
 			// Parse line
-			parseFieldLine(fkey, value);
+			parseFieldLine(fkey, value, lineFileIterator.getLineNum());
 
 			fkeyPrev = fkey;
 		}

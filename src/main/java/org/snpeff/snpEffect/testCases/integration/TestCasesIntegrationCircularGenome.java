@@ -116,14 +116,14 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 		String prot = "MQTECSAGAYEFPASCGRRVVARFDGGRMSSDGGVILVKQADDILGLSRRF" //
 				+ "AACFRDKRHPGFVEYIPQSRDAAYRENRQQSGG*" //
-		;
+				;
 
 		String cds = "ATGCAGACAGAGTGTAGCGCAGGCGCGTATGAGTTTCCAGCCTCCTGTGGAC" //
 				+ "GGCGTGTTGTGGCCCGTTTTGACGGGGGTCGCATGAGTTCGGATGGGGGCGTCAT" //
 				+ "TCTGGTGAAGCAGGCTGATGACATTCTGGGTCTCAGCCGCCGCTTTGCTGCCTGT" //
 				+ "TTTCGCGATAAGCGGCATCCCGGCTTTGTGGAATATATTCCACAAAGCCGGGATG" //
 				+ "CCGCTTATCGCGAAAACAGGCAGCAAAGCGGCGGCTGA" //
-		;
+				;
 
 		// Create database & build interval forest
 		String genomeName = "test_Acetobacter_pasteurianus";
@@ -142,7 +142,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 				+ "YLKKGVSIDVIGELVQESWSKDGKIYYKHKIKVKEIDFRTPKDNISEANFENEDTPSNHL" //
 				+ "LYLVEDNMRAVTIPIIISEQTPNIAKFSNVISKECKLSLAICSMVLLLSSIIFNHIQPSY" //
 				+ "SKSSIQIFVKTTPNKNAITYIARNPTNSSIINNSLLVLICKLCILWQFIIYYYIHSL*" //
-		;
+				;
 
 		String cds = "ATGACAAATAATATAGTAATTGCAGGAAGATTGGTGGCAGACGCTGAACTATTTTTTACA" //
 				+ "AATAATGGCTCTGCTATTTGTAATTTTACTTTGGCGAATAATAAAAGATACAAAGACATA" //
@@ -156,7 +156,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 				+ "TCAAAAAGCTCAATCCAAATTTTTGTAAAAACAACACCTAATAAGAATGCAATAACGTAC" //
 				+ "ATTGCAAGAAATCCTACTAACTCGTCCATAATCAATAATTCCTTATTAGTCTTAATTTGT" //
 				+ "AAGCTCTGTATTTTATGGCAATTTATTATTTATTATTATATCCATTCTCTATGA" //
-		;
+				;
 
 		// Create database & build interval forest
 		String genomeName = "test_Campylobacter_fetus_subsp_venerealis_nctc_10354";
@@ -165,6 +165,36 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 		Transcript tr = g.subIntervals().iterator().next();
 		Assert.assertEquals("Protein sequence differs", prot, tr.protein());
 		Assert.assertEquals("CDS sequence differs", cds, tr.cds().toUpperCase());
+	}
+
+	@Test
+	public void testCase_05_CircularGenome_ExonsOrder() {
+		Gpr.debug("Test");
+
+		String expectedProtein = "MGSLEMVPMGAGPPSPGGDPDGYDGGNNSQYPSASGSSGNTPTP" //
+				+ "PNDEERESNEEPPPPYEDPYWGNGDRHSDYQPLGTQDQSLYLGLQHDGNDGLPPPPYS" //
+				+ "PRDDSSQHIYEEAGRGSMNPVCLPVIVAPYLFWLAAIAASCFTASVSTVVTATGLALS" //
+				+ "LLLLAAVASSYAAAQRKLLTPVTVLTAVVTFFAICLTWRIEDPPFNSLLFALLAAAGG" //
+				+ "LQGIYVLVMLVLLILAYRRRWRRLTVCGGIMFLACVLVLIVDAVLQLSPLLGAVTVVS" //
+				+ "MTLLLLAFVLWLSSPGGLGTLGAALLTLAAALALLASLILGTLNLTTMFLLMLLWTLV" //
+				+ "VLLICSSCSSCPLSKILLARLFLYALALLLLASALIAGGSILQTNFKSLSSTEFIPNL" //
+				+ "FCMLLLIVAGILFILAILTEWGSGNRTYGPVFMCLGGLLTMVAGAVWLTVMSNTLLSA" //
+				+ "WILTAGFLIFLIGFALFGVIRCCRYCCYYCLTLESEERPPTPYRNTV*";
+
+		// Create database & build interval forest
+		String genomeName = "testCase";
+		String genBankFile = "tests/Human_herpesvirus_4_uid14413.gbk";
+		SnpEffectPredictor sep = buildGeneBank(genomeName, genBankFile);
+		sep.buildForest();
+
+		// Create variant
+		Genome genome = sep.getGenome();
+		Gene gene = genome.getGenes().getGeneByName("LMP2");
+		Transcript tr = gene.iterator().next();
+		String prot = tr.protein();
+
+		if (verbose) Gpr.debug("Transcript: " + tr);
+		Assert.assertEquals("Protein sequence deas not match", expectedProtein, prot);
 	}
 
 }

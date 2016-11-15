@@ -94,6 +94,96 @@ public class Markers implements Serializable, Collection<Marker> {
 		return changed;
 	}
 
+	/**
+	 * Correct coordinates for circular chromosomes
+	 *
+	 * WARNING: This method assuumes the the markers are sorted according to genomic order
+	 *          E.g. if these are CDS, they are assumed to be sorted according to how they
+	 *          are translated, which might differ from genomic coordinates (particularly
+	 *          in case of circular chromosomes.
+	 *
+	 * WARNING: This corrects the coordinates of the markers (it does not clone them)
+	 *
+	 * WARNIGN: It returns the same Markers if no correction is needed
+	 */
+	public Markers circularCorrect() {
+		Markers corrected = new Markers();
+		if (isEmpty()) return corrected;
+
+		// Assume all markers are on the same strand
+		Marker first = markers.get(0);
+		boolean strandPlus = first.isStrandPlus();
+
+		// Assume all markers in the same chromosome
+		Chromosome chr = first.getChromosome();
+		int chrEnd = chr.getEnd();
+
+		// Chromosome length not set? We cannot perform this correction
+		if (chrEnd <= 0) return this;
+
+		// Sanity check
+		int countAfterChrEnd = 0, countBeforeZero = 0, countCircularRight = 0, countCircularLeft = 0;
+		int endPrev = -1, startPrev = Integer.MAX_VALUE;
+		for (Marker m : this) {
+			if (m.isStrandPlus() != strandPlus) throw new RuntimeException("Fatal error:All markers must be in the same strand!");
+			if (m.getChromosomeName() != chr.getId()) throw new RuntimeException("Fatal error:All markers must be in the same chromosome!");
+
+			if (m.getStart() < 0) countBeforeZero++;
+			else if (m.getEnd() > chrEnd) countAfterChrEnd++;
+			else if (strandPlus && m.getStart() < endPrev) countCircularRight++;
+			else if (!strandPlus && m.getEnd() > startPrev) countCircularLeft++;
+
+			endPrev = m.getEnd();
+			startPrev = m.getStart();
+		}
+
+		// Some intervals before 'zero' coordinate. OK this is the nomenclature we want
+		if (countBeforeZero > 0) {
+			// No adjustment needed
+			return this;
+		}
+
+		// Some intervals after 'chr.end' coordinate.
+		int len = chr.size();
+		if (countAfterChrEnd > 0) {
+			// We need to shift them on chr.length
+			for (Marker m : this) {
+				m.shiftCoordinates(-len);
+				corrected.add(m);
+			}
+			return corrected;
+		}
+
+		// Some markers are "before" in coordantes than the previous ones.
+		// We assume they are passing the 'chr.end' boundary and starting from
+		// zero in positive stranded 'gene'
+		if (countCircularRight > 0) {
+			// We need to shift some markers before zero
+			corrected.addAll(this);
+			for (Marker m : corrected) {
+				if (strandPlus && m.getStart() < endPrev) break; // We stop when we find the first one after passing the "zero coordinate"
+				m.shiftCoordinates(-len);
+			}
+			return corrected.sort(false, false);
+		}
+
+		// Some markers are "after" in coordantes than the previous ones.
+		// We assume they are passing the 'zero' boundary and starting from
+		// chr.end in negative stranded 'gene'
+		if (countCircularLeft > 0) {
+			// We need to shift some markers before zero
+			corrected.addAll(this);
+			boolean correct = false;
+			for (Marker m : corrected) {
+				if (!strandPlus && m.getEnd() > startPrev) correct = true; // We stop when we find the first one after passing the "chr.end"
+				if (correct) m.shiftCoordinates(-len);
+			}
+			return corrected.sort(false, true);
+		}
+
+		return this;
+	}
+
 	@Override
 	public void clear() {
 		markers.clear();
@@ -521,9 +611,6 @@ public class Markers implements Serializable, Collection<Marker> {
 	 *
 	 * For each marker, calculate all overlapping markers and create a new marker that contains them all.
 	 * Return a set of those new markers.
-	 *
-	 * @param markerIntervals
-	 * @return
 	 */
 	public Markers union() {
 		Markers unionOfOverlaps = new Markers();
@@ -559,9 +646,11 @@ public class Markers implements Serializable, Collection<Marker> {
 	 */
 	public Markers unique() {
 		HashSet<Marker> set = new HashSet<Marker>();
-		set.addAll(markers);
-		markers = new ArrayList<Marker>();
-		markers.addAll(set);
+		ArrayList<Marker> markersUnique = new ArrayList<Marker>();
+		for (Marker m : markers) {
+			if (set.add(m)) markersUnique.add(m);
+		}
+		markers = markersUnique;
 		return this;
 	}
 

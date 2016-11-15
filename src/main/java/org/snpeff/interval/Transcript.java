@@ -18,8 +18,6 @@ import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 
-import net.sf.samtools.util.RuntimeEOFException;
-
 /**
  * Codon position
  * @author pcingola
@@ -558,11 +556,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return isStrandPlus() //
 				? new Marker(this, getCdsStart(), getCdsEnd()) //
 				: new Marker(this, getCdsEnd(), getCdsStart()) //
-		;
+				;
 	}
 
 	/**
 	 * Correct circular coordinates
+	 * 
 	*/
 	public void circularCorrection(int chrLen) {
 		if (circularCorrectionExon(chrLen)) {
@@ -577,12 +576,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	/**
 	 * Correct circular exon coordinates
+	 * 
 	 * Note: Nomenclature for circular chromosomes we use negative coordinates
 	 *       spanning over "zero". This is arbitrary, we could have used
 	 *       coordinates spanning over chromo.length
+	 *       
+	 * Note: This method only "corrects" coordiantes for exons having [start, end] after 
+	 *       the chromsome end. No correction is applied to exons having negative 
+	 *       coordinates (since that's the nomenclature that we want to use).
 	 */
 	boolean circularCorrectionExon(int chrLen) {
-		if (Math.random() < 2) throw new RuntimeEOFException("SHOULD WE PERFORM A CIRCULAR CORRECTION?!?!?!?!?");
 		boolean corrected = false;
 
 		int maxExonLen = 0;
@@ -1602,7 +1605,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public void reset() {
 		super.reset();
 
-		sorted = null;
+		invalidateSorted();
 		utrs = new ArrayList<>();
 		cdss = new ArrayList<>();
 		introns = null;
@@ -1677,7 +1680,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ "\t" + markerSerializer.save(downstream) //
 				+ "\t" + markerSerializer.save((Iterable) utrs)//
 				+ "\t" + markerSerializer.save((Iterable) cdss)//
-		;
+				;
 	}
 
 	public void setAaCheck(boolean aaCheck) {
@@ -1925,7 +1928,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				+ (isProteinCoding() ? "\n" + aaStr + "\n" + frameStr : "") //
 				+ "\n" + new String(art) //
 				+ "\n" + coords //
-		;
+				;
 	}
 
 	/**

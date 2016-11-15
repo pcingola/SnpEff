@@ -896,8 +896,6 @@ public class VcfEffect {
 	 * E.g. NEXT_PROT[amino_acid_modification:Phosphoserine]  returns "amino_acid_modification:Phosphoserine"
 	 */
 	String parseEffectDetails(String eff) {
-		// TODO: ("Check that nextprot doesn't include '&' in the names");
-
 		int idx = eff.indexOf('[');
 		if (idx < 0) return "";
 		return eff.substring(idx + 1, eff.length() - 1);

@@ -27,6 +27,7 @@ public abstract class Features implements Iterable<Feature> {
 
 	String locusName, moleculeType, shape, division, date;
 	int sequenceLength;
+	int featuresStartLine = -1;
 	String definition = "";
 	String accession = "";
 	String version = "";
@@ -235,9 +236,10 @@ public abstract class Features implements Iterable<Feature> {
 		String type = null;
 		String value = "";
 		StringBuilder values = new StringBuilder();
-		int lineNum = 0;
+		int lineNum = featuresStartLine;
 		for (String line : featuresStr.toString().split("\n")) {
 			lineNum++;
+			if (debug) Gpr.debug("Line:" + lineNum + "\tLine:" + line);
 
 			// Feature start
 			if (isNewFeature(line)) {

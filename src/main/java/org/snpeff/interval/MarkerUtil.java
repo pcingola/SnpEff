@@ -116,8 +116,6 @@ public class MarkerUtil {
 			if (m.getStart() <= m.getEnd()) {
 				markers.add(m);
 			}
-		// TODO: Remove following line
-		// markers.addAll(markersOri);
 		int size = markers.size();
 
 		// Iterate on all markers

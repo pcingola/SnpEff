@@ -206,8 +206,7 @@ public class CodonChangeDel extends CodonChangeStructural {
 
 	@Override
 	protected void exonsCoding() {
-		// TODO Auto-generated method stub
-
+		// Nothing to do
 	}
 
 	@Override

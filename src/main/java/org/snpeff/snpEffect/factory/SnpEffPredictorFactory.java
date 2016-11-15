@@ -109,10 +109,10 @@ public abstract class SnpEffPredictorFactory {
 	 * Add a Gene
 	 */
 	protected void add(Gene gene) {
+		if (debug) Gpr.debug("\tAdding gene\tID: '" + gene.getId() + "'\tname: '" + gene.getGeneName() + "'\t" + gene.toStr());
 		snpEffectPredictor.add(gene);
 
 		if (genesById.containsKey(gene.getId())) throw new RuntimeException("Gene  '" + gene.getId() + "' already exists");
-		if (debug) System.out.println("\tAdding gene\tID: '" + gene.getId() + "'\tname: '" + gene.getGeneName() + "'\t" + gene.toStr());
 		genesById.put(gene.getId(), gene);
 	}
 
@@ -120,8 +120,8 @@ public abstract class SnpEffPredictorFactory {
 	 * Add a generic Marker
 	 */
 	protected void add(Marker marker) {
+		if (debug) Gpr.debug("\tAdding " + marker.getClass().getSimpleName() + ":\tID: '" + marker.getId() + "'\t" + marker.toStr());
 		addMarker(marker, false);
-		if (debug) System.out.println("\tAdding " + marker.getClass().getSimpleName() + ":\tID: '" + marker.getId() + "'\t" + marker.toStr());
 	}
 
 	/**
@@ -129,10 +129,10 @@ public abstract class SnpEffPredictorFactory {
 	 */
 	protected void add(Transcript tr) {
 		Gene gene = (Gene) tr.getParent();
+		if (debug) Gpr.debug("\tAdding transcript :\tID: '" + tr.getId() + "' to gene '" + gene.getId() + "'\t" + tr.toStr());
 		gene.add(tr);
 
 		if (transcriptsById.containsKey(tr.getId())) throw new RuntimeException("Transcript  '" + tr.getId() + "' already exists");
-		if (debug) System.out.println("\tAdding transcript :\tID: '" + tr.getId() + "'\t" + tr.toStr());
 		transcriptsById.put(tr.getId(), tr);
 	}
 
@@ -809,7 +809,7 @@ public abstract class SnpEffPredictorFactory {
 		return msg //
 				+ (sbMissingRef.length() > 0 ? "\tChromosome names missing in 'reference sequence' file:\t" + sbMissingRef.toString() : "") //
 				+ (sbMissingGenes.length() > 0 ? "\n\tChromosome names missing in 'genes' file             :\t" + sbMissingGenes.toString() : "")//
-		;
+				;
 	}
 
 	String unquote(String qstr) {
