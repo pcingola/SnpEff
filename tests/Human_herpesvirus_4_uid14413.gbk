@@ -203,6 +203,27 @@ FEATURES             Location/Qualifiers
      gene            58..166458
                      /gene="LMP2"
                      /db_xref="GeneID:17494212"
+     gene            complement(150285..151694)
+                     /gene="LF1"
+                     /db_xref="GeneID:3783747"
+     CDS             complement(150285..151694)
+                     /gene="LF1"
+                     /codon_start=1
+                     /product="LF1 protein"
+                     /protein_id="YP_401709.1"
+                     /db_xref="GI:82503265"
+                     /db_xref="InterPro:IPR006882"
+                     /db_xref="UniProtKB/Swiss-Prot:Q8AZJ5"
+                     /db_xref="GeneID:3783747"
+                     /translation="MALQTDTQAWRVEIGTRGLMFSNCVPLHLPEGQYHKLRLPVSAY
+                     EALAVARYGLVGSLWEVPAVNSALQCLAAAAPCKDVKIYPSCIFQVHAPMFVTIKTSL
+                     RCLNPHDLCLCLICVGAAILDIPLLCAPRDGAGARAAEGQAAAAQGGKLRVWGRLSPS
+                     SPTSLSLAFPYAGPPPVAWYRHSINLTRSEGVGIGKDCAQDHACPVPPQGHASSAADQ
+                     AGVPERGRKRAHEGPGAGEAASAGRGDVALSQSRALLWRGLGWDTGRGRLAPGLAMSR
+                     DAASGSVHLDIQVDRAEEGWVCDVLLEPGPPTAREGCSLSMDPGLVTLKDAWTLFPLH
+                     PEHDAVVPPKEEIHVMAQGHLQGGTPSLWGFTFQEAACDQWVLRPRVWTAHSPIKMTV
+                     YNCGHKPLHIGPSTRLGLALFWPAERSDNLDAGRIFYQLTSGELYWGRTVARPPTLTL
+                     PVDELRPWPKLTPEEPMQH"
 ORIGIN      
         1 agaattcgtc ttgctctatt cacccttact tttcttcttg cccgttctct ttcttagtat
        61 gaatccagta tgcctgcctg taattgttgc gccctacctc ttttggctgg cggctattgc
