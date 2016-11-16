@@ -116,14 +116,14 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 		String prot = "MQTECSAGAYEFPASCGRRVVARFDGGRMSSDGGVILVKQADDILGLSRRF" //
 				+ "AACFRDKRHPGFVEYIPQSRDAAYRENRQQSGG*" //
-				;
+		;
 
 		String cds = "ATGCAGACAGAGTGTAGCGCAGGCGCGTATGAGTTTCCAGCCTCCTGTGGAC" //
 				+ "GGCGTGTTGTGGCCCGTTTTGACGGGGGTCGCATGAGTTCGGATGGGGGCGTCAT" //
 				+ "TCTGGTGAAGCAGGCTGATGACATTCTGGGTCTCAGCCGCCGCTTTGCTGCCTGT" //
 				+ "TTTCGCGATAAGCGGCATCCCGGCTTTGTGGAATATATTCCACAAAGCCGGGATG" //
 				+ "CCGCTTATCGCGAAAACAGGCAGCAAAGCGGCGGCTGA" //
-				;
+		;
 
 		// Create database & build interval forest
 		String genomeName = "test_Acetobacter_pasteurianus";
@@ -142,7 +142,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 				+ "YLKKGVSIDVIGELVQESWSKDGKIYYKHKIKVKEIDFRTPKDNISEANFENEDTPSNHL" //
 				+ "LYLVEDNMRAVTIPIIISEQTPNIAKFSNVISKECKLSLAICSMVLLLSSIIFNHIQPSY" //
 				+ "SKSSIQIFVKTTPNKNAITYIARNPTNSSIINNSLLVLICKLCILWQFIIYYYIHSL*" //
-				;
+		;
 
 		String cds = "ATGACAAATAATATAGTAATTGCAGGAAGATTGGTGGCAGACGCTGAACTATTTTTTACA" //
 				+ "AATAATGGCTCTGCTATTTGTAATTTTACTTTGGCGAATAATAAAAGATACAAAGACATA" //
@@ -156,7 +156,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 				+ "TCAAAAAGCTCAATCCAAATTTTTGTAAAAACAACACCTAATAAGAATGCAATAACGTAC" //
 				+ "ATTGCAAGAAATCCTACTAACTCGTCCATAATCAATAATTCCTTATTAGTCTTAATTTGT" //
 				+ "AAGCTCTGTATTTTATGGCAATTTATTATTTATTATTATATCCATTCTCTATGA" //
-				;
+		;
 
 		// Create database & build interval forest
 		String genomeName = "test_Campylobacter_fetus_subsp_venerealis_nctc_10354";
@@ -183,7 +183,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 		// Create database & build interval forest
 		String genomeName = "testCase";
-		String genBankFile = "tests/Human_herpesvirus_4_uid14413.gbk";
+		String genBankFile = "tests/Human_herpesvirus_4_uid14413.gbk.gz";
 		SnpEffectPredictor sep = buildGeneBank(genomeName, genBankFile);
 		sep.buildForest();
 
