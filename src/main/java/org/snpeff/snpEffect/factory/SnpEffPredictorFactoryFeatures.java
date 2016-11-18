@@ -104,7 +104,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 				addedCds.add(cds);
 			}
 
-			// In case these are CDS from a circular chromosme, we may need to correct coordinates 
+			// In case these are CDS from a circular chromosme, we may need to correct coordinates
 			Markers addedCdsCorrected = addedCds.circularCorrect();
 
 			// Add corrected CDSs
