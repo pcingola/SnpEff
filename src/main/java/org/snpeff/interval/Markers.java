@@ -48,23 +48,23 @@ public class Markers implements Serializable, Collection<Marker> {
 	}
 
 	public Markers() {
-		markers = new ArrayList<Marker>();
+		markers = new ArrayList<>();
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Markers(Collection otherMarkers) {
-		markers = new ArrayList<Marker>();
+		markers = new ArrayList<>();
 		addAll(otherMarkers);
 	}
 
 	public Markers(Markers otherMarkers) {
-		markers = new ArrayList<Marker>();
+		markers = new ArrayList<>();
 		addAll(otherMarkers.getMarkers());
 	}
 
 	public Markers(String name) {
 		this.name = name;
-		markers = new ArrayList<Marker>();
+		markers = new ArrayList<>();
 	}
 
 	/**
@@ -265,7 +265,7 @@ public class Markers implements Serializable, Collection<Marker> {
 		Markers intersectOfOverlaps = new Markers();
 		IntervalForest forest = new IntervalForest(this);
 
-		HashSet<Marker> done = new HashSet<Marker>();
+		HashSet<Marker> done = new HashSet<>();
 		for (Marker mi : this) {
 			if (!done.contains(mi)) { // No added yet?
 				Markers query = forest.query(mi);
@@ -460,7 +460,7 @@ public class Markers implements Serializable, Collection<Marker> {
 		Genome genome = markers.get(0).getGenome();
 
 		// Add all chromosomes to a set (to make sure they are added only once)
-		HashSet<Chromosome> chromos = new HashSet<Chromosome>();
+		HashSet<Chromosome> chromos = new HashSet<>();
 		for (Marker m : this)
 			chromos.add(m.getChromosome());
 
@@ -618,7 +618,7 @@ public class Markers implements Serializable, Collection<Marker> {
 		IntervalForest forest = new IntervalForest(this);
 		forest.build();
 
-		HashSet<Marker> done = new HashSet<Marker>();
+		HashSet<Marker> done = new HashSet<>();
 		for (Marker mi : this) {
 			if (!done.contains(mi)) { // No added yet?
 				Markers query = forest.query(mi);
@@ -645,8 +645,8 @@ public class Markers implements Serializable, Collection<Marker> {
 	 * @return this object
 	 */
 	public Markers unique() {
-		HashSet<Marker> set = new HashSet<Marker>();
-		ArrayList<Marker> markersUnique = new ArrayList<Marker>();
+		HashSet<Marker> set = new HashSet<>();
+		ArrayList<Marker> markersUnique = new ArrayList<>();
 		for (Marker m : markers) {
 			if (set.add(m)) markersUnique.add(m);
 		}

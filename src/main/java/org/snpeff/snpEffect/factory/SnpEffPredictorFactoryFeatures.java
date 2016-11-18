@@ -105,6 +105,8 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 			}
 
 			// In case these are CDS from a circular chromosme, we may need to correct coordinates
+			if (tr.getId().equals("HHV4_LMP-1")) //
+				Gpr.debug("DEBUG!");
 			Markers addedCdsCorrected = addedCds.circularCorrect();
 
 			// Add corrected CDSs
