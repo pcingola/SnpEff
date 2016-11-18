@@ -247,7 +247,12 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	public String getCoordinates() {
-		return getString(genomeVersion + "." + Config.KEY_COORDINATES);
+		String coords = getString(genomeVersion + "." + Config.KEY_COORDINATES);
+		if (coords != null) return coords;
+
+		// Not found? Try genome name without version (e.g. 'GRCh38.85' => 'GRCh38')
+		coords = genomeVersion.split("\\.")[0];
+		return coords;
 	}
 
 	/**
@@ -338,7 +343,7 @@ public class Config implements Serializable, Iterable<String> {
 	 * Filenames for reference sequence (fasta files)
 	 */
 	public List<String> getFileListGenomeFasta() {
-		ArrayList<String> files = new ArrayList<String>();
+		ArrayList<String> files = new ArrayList<>();
 		files.add(getDirData() + "/genomes/" + genome.getVersion() + ".fa");
 		files.add(getDirData() + "/" + genome.getVersion() + "/sequences.fa");
 		return files;
@@ -581,12 +586,12 @@ public class Config implements Serializable, Iterable<String> {
 		//---
 		// Find all genomes in this configuration file
 		//---
-		genomeById = new HashMap<String, Genome>();
-		referenceById = new HashMap<String, String>();
-		nameById = new HashMap<String, String>();
+		genomeById = new HashMap<>();
+		referenceById = new HashMap<>();
+		nameById = new HashMap<>();
 
 		// Sorted keys
-		ArrayList<String> keys = new ArrayList<String>();
+		ArrayList<String> keys = new ArrayList<>();
 		for (Object k : properties.keySet())
 			keys.add(k.toString());
 		Collections.sort(keys);
@@ -608,7 +613,7 @@ public class Config implements Serializable, Iterable<String> {
 		//---
 		// Find all bundles
 		//---
-		bundleByGenomeId = new HashMap<String, String>();
+		bundleByGenomeId = new HashMap<>();
 		for (String key : keys) {
 			if (key.endsWith(KEY_BUNDLE_SUFIX)) {
 				String bundleName = key.substring(0, key.length() - KEY_BUNDLE_SUFIX.length());
@@ -723,7 +728,7 @@ public class Config implements Serializable, Iterable<String> {
 	}
 
 	public void setHgvsOld(boolean hgvsDnaOld) {
-		this.hgvsOld = hgvsDnaOld;
+		hgvsOld = hgvsDnaOld;
 	}
 
 	public void setHgvsOneLetterAA(boolean hgvsOneLetterAa) {
