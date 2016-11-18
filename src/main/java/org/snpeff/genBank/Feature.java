@@ -53,7 +53,7 @@ public class Feature implements Iterable<FeatureCoordinates> {
 
 	public Feature(Type type, String def) {
 		this.type = type;
-		qualifiers = new HashMap<String, String>();
+		qualifiers = new HashMap<>();
 		start = -1;
 		end = -1;
 		complement = false;
@@ -62,7 +62,7 @@ public class Feature implements Iterable<FeatureCoordinates> {
 
 	public Feature(Type type, String def, int start, int end, boolean complement, int lineNum) {
 		this.type = type;
-		qualifiers = new HashMap<String, String>();
+		qualifiers = new HashMap<>();
 		this.complement = complement;
 
 		// Assign start & end
@@ -83,7 +83,7 @@ public class Feature implements Iterable<FeatureCoordinates> {
 	}
 
 	public void add(FeatureCoordinates fc) {
-		if (featureCoordinates == null) featureCoordinates = new LinkedList<FeatureCoordinates>();
+		if (featureCoordinates == null) featureCoordinates = new LinkedList<>();
 		featureCoordinates.add(fc);
 	}
 
@@ -106,12 +106,19 @@ public class Feature implements Iterable<FeatureCoordinates> {
 	}
 
 	public String getGeneId() {
+
 		// Try ID
-		String geneId = get("id");
+		String geneId = null;
+
+		if (type == Type.GENE) geneId = get("id");
 		if (geneId != null) return geneId;
 
 		// Try 'locus'...
 		geneId = get("locus_tag");
+		if (geneId != null) return geneId;
+
+		// Try 'db_xref'...
+		geneId = get("db_xref");
 		if (geneId != null) return geneId;
 
 		return null;

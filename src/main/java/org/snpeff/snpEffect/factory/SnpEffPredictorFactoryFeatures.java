@@ -42,27 +42,37 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	 * Add CDS and protein coding information
 	 */
 	Transcript addCds(Feature f, Gene geneLatest, Transcript trLatest) {
-		// Add CDS and protein coding information
-
 		// Convert coordinates to zero-based
 		int start = f.getStart() - inOffset;
 		int end = f.getEnd() - inOffset;
 
-		// Find corresponding transcript
+		// Use latest transcript?
 		Transcript tr = null;
 		String trId = null;
 		if ((trLatest != null) && trLatest.intersects(start, end)) {
 			tr = trLatest;
 			trId = tr.getId();
-		} else {
-			// Try to find transcript
+
+			// Sanity check: Do gene names match?
+			String geneName = f.getGeneName();
+			if (geneName != null //
+					&& geneLatest != null //
+					&& !geneLatest.getGeneName().equals(geneName) // No match?
+			) {
+				// Gene names do no match, we are not in the same transcript
+				tr = null;
+				trId = null;
+			}
+		}
+
+		// Try to find transcript
+		if (tr == null) {
 			trId = f.getTranscriptId();
 			tr = findTranscript(trId);
 		}
 
+		// Not found? => Create gene and transcript
 		if (tr == null) {
-			// Not found? => Create gene and transcript
-
 			// Find or create gene
 			Gene gene = null;
 			if ((geneLatest != null) && geneLatest.intersects(start, end)) gene = geneLatest;
@@ -156,8 +166,10 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 				trLatest = null;
 			} else if (f.getType() == Type.MRNA) {
 				trLatest = addMrna(f, geneLatest);
+				geneLatest = (Gene) trLatest.getParent();
 			} else if (f.getType() == Type.CDS) {
 				trLatest = addCds(f, geneLatest, trLatest);
+				geneLatest = (Gene) trLatest.getParent();
 			}
 		}
 	}

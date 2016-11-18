@@ -168,7 +168,6 @@ public abstract class SnpEffPredictorFactory {
 		for (Gene gene : genome.getGenes()) {
 			if (gene.getChromosomeName().equalsIgnoreCase(chr)) { // Same chromosome? => go on
 				for (Transcript tr : gene) {
-
 					// Circular chromosomes coordinated are corrected in this step
 					tr.circularCorrection(chrLen);
 
@@ -809,7 +808,7 @@ public abstract class SnpEffPredictorFactory {
 		return msg //
 				+ (sbMissingRef.length() > 0 ? "\tChromosome names missing in 'reference sequence' file:\t" + sbMissingRef.toString() : "") //
 				+ (sbMissingGenes.length() > 0 ? "\n\tChromosome names missing in 'genes' file             :\t" + sbMissingGenes.toString() : "")//
-				;
+		;
 	}
 
 	String unquote(String qstr) {
