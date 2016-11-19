@@ -10,11 +10,21 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Command line program: Build database
@@ -23,11 +33,30 @@ import java.util.zip.ZipOutputStream;
  */
 public class Download {
 
+	/**
+	 * Used to get rid of some SSL Certificateproblems
+	 * Ref: http://stackoverflow.com/questions/1828775/how-to-handle-invalid-ssl-certificates-with-apache-httpclient
+	 */
+	private static class DefaultTrustManager implements X509TrustManager {
+
+		@Override
+		public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+		}
+
+		@Override
+		public X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+	}
+
 	private static int BUFFER_SIZE = 102400;
-
 	boolean debug = false;
-
 	boolean verbose = false;
+
 	boolean update; // Are we updating ?
 
 	/**
@@ -76,6 +105,8 @@ public class Download {
 	public boolean download(URL url, String localFile) {
 		boolean res = false;
 		try {
+			sslSetup(); // Set up SSL for websites having issues with certificates (e.g. Sourceforge)
+
 			if (verbose) Timer.showStdErr("Connecting to " + url);
 			URLConnection connection = url.openConnection();
 
@@ -180,6 +211,16 @@ public class Download {
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
+	}
+
+	/**
+	 * Sourceforge certificates throw exceptions if we don't add this SSL setup
+	 * Reference: http://stackoverflow.com/questions/1828775/how-to-handle-invalid-ssl-certificates-with-apache-httpclient
+	 */
+	void sslSetup() throws NoSuchAlgorithmException, KeyManagementException {
+		SSLContext ctx = SSLContext.getInstance("TLS");
+		ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
+		SSLContext.setDefault(ctx);
 	}
 
 	/**
