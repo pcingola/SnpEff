@@ -12,6 +12,7 @@ import java.util.Set;
 import org.snpeff.fileIterator.FastaFileIterator;
 import org.snpeff.interval.Cds;
 import org.snpeff.interval.Chromosome;
+import org.snpeff.interval.CircularCorrection;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.FrameType;
 import org.snpeff.interval.Gene;
@@ -165,56 +166,72 @@ public abstract class SnpEffPredictorFactory {
 		int chrLen = chrSeq.length();
 
 		// Find and add sequences for all exons in this chromosome
+		Map<Transcript, Transcript> trToReplace = null;
 		for (Gene gene : genome.getGenes()) {
-			if (gene.getChromosomeName().equalsIgnoreCase(chr)) { // Same chromosome? => go on
-				for (Transcript tr : gene) {
-					// Circular chromosomes coordinated are corrected in this step
-					tr.circularCorrection(chrLen);
+			// Different chromosome? Skip
+			if (!gene.getChromosomeName().equalsIgnoreCase(chr)) continue;
 
-					for (Exon exon : tr) {
-						int ssStart = exon.getStart();
-						int ssEnd = exon.getEnd() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
+			for (Transcript tr : gene) {
+				// Circular chromosomes coordinates are corrected in this step
+				CircularCorrection cc = new CircularCorrection(tr, chrLen);
+				if (cc.needsCorrection()) {
+					if (trToReplace == null) trToReplace = new HashMap<>();
+					Transcript trNew = cc.correct();
+					trToReplace.put(tr, trNew); // We'll need to replace this gene's transcript/s
+					tr = trNew;
+				}
 
-						String seq = null;
-						if ((ssStart >= 0) && (ssEnd <= chrLen)) {
-							// Regular coordinates
-							try {
-								seq = chrSeq.substring(ssStart, ssEnd);
-							} catch (Throwable t) {
-								t.printStackTrace();
-								throw new RuntimeException("Error trying to add sequence to exon:\n\tChromosome sequence length: " + chrSeq.length() + "\n\tExon: " + exon);
-							}
-						} else if ((ssStart < 0) && (ssEnd > 0)) {
-							// Negative start coordinates? This is probably a circular genome
-							// Convert to 2 intervals:
-							//     i) Interval before zero: This gets mapped to the end of the chromosome
-							//     ii) Interval after zero: This are "normal" coordinates
-							// Then we concatenate both sequences
-							ssStart += chrLen;
-							seq = chrSeq.substring(ssStart, chrLen) + chrSeq.substring(0, ssEnd);
-						} else if ((ssStart < 0) && (ssEnd < 0)) {
-							// Negative start coordinates? This is probably a circular genome
-							// Convert to 2 intervals:
-							//     i) Interval before zero: This gets mapped to the end of the chromosome
-							//     ii) Interval after zero: This are "normal" coordinates
-							// Then we concatenate both sequences
-							ssStart += chrLen;
-							ssEnd += chrLen;
+				for (Exon exon : tr) {
+					int ssStart = exon.getStart();
+					int ssEnd = exon.getEnd() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
+
+					String seq = null;
+					if ((ssStart >= 0) && (ssEnd <= chrLen)) {
+						// Regular coordinates
+						try {
 							seq = chrSeq.substring(ssStart, ssEnd);
+						} catch (Throwable t) {
+							t.printStackTrace();
+							throw new RuntimeException("Error trying to add sequence to exon:\n\tChromosome sequence length: " + chrSeq.length() + "\n\tExon: " + exon);
 						}
-
-						if (seq != null) {
-							// Sanity check
-							if (seq.length() != exon.size()) warning("Exon sequence length does not match exon.size()\n" + exon);
-
-							// Reverse strand? => reverse complement of the sequence
-							if (exon.isStrandMinus()) seq = GprSeq.reverseWc(seq);
-							seq = seq.toUpperCase();
-							exon.setSequence(seq);
-							seqsAdded++;
-						}
-
+					} else if ((ssStart < 0) && (ssEnd > 0)) {
+						// Negative start coordinates? This is probably a circular genome
+						// Convert to 2 intervals:
+						//     i) Interval before zero: This gets mapped to the end of the chromosome
+						//     ii) Interval after zero: This are "normal" coordinates
+						// Then we concatenate both sequences
+						ssStart += chrLen;
+						seq = chrSeq.substring(ssStart, chrLen) + chrSeq.substring(0, ssEnd);
+					} else if ((ssStart < 0) && (ssEnd < 0)) {
+						// Negative start coordinates? This is probably a circular genome
+						// Convert to 2 intervals:
+						//     i) Interval before zero: This gets mapped to the end of the chromosome
+						//     ii) Interval after zero: This are "normal" coordinates
+						// Then we concatenate both sequences
+						ssStart += chrLen;
+						ssEnd += chrLen;
+						seq = chrSeq.substring(ssStart, ssEnd);
 					}
+
+					if (seq != null) {
+						// Sanity check
+						if (seq.length() != exon.size()) warning("Exon sequence length does not match exon.size()\n" + exon);
+
+						// Reverse strand? => reverse complement of the sequence
+						if (exon.isStrandMinus()) seq = GprSeq.reverseWc(seq);
+						seq = seq.toUpperCase();
+						exon.setSequence(seq);
+						seqsAdded++;
+					}
+
+				}
+			}
+
+			// Do we need to replace any gene's transcripts
+			if (trToReplace != null) {
+				for (Transcript tr : trToReplace.keySet()) {
+					gene.remove(tr);
+					gene.add(trToReplace.get(tr));
 				}
 			}
 		}

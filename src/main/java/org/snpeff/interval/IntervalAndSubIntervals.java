@@ -201,7 +201,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	 * Remove all intervals
 	 */
 	public synchronized void reset() {
-		subIntervals = new HashMap<String, T>();
+		subIntervals = new HashMap<>();
 		invalidateSorted();
 	}
 
@@ -227,7 +227,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + markerSerializer.save((Collection<Marker>) subIntervals()) //
-				;
+		;
 	}
 
 	@Override
@@ -254,7 +254,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	 */
 	public synchronized List<T> sorted() {
 		if (sorted != null) return sorted;
-		ArrayList<T> sorted = new ArrayList<T>();
+		ArrayList<T> sorted = new ArrayList<>();
 		sorted.addAll(subIntervals());
 		Collections.sort(sorted);
 
@@ -269,7 +269,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 	public synchronized List<T> sortedStrand() {
 		if (sortedStrand != null) return sortedStrand;
 
-		ArrayList<T> sortedStrand = new ArrayList<T>();
+		ArrayList<T> sortedStrand = new ArrayList<>();
 		sortedStrand.addAll(subIntervals());
 
 		if (isStrandPlus()) Collections.sort(sortedStrand, new IntervalComparatorByStart()); // Sort by start position

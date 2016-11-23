@@ -20,7 +20,7 @@ import org.snpeff.util.Timer;
  * @author pcingola
  *
  */
-public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializable {
+public class Gene extends IntervalAndSubIntervals<Transcript> implements Serializable {
 
 	public enum GeneType {
 		CODING, NON_CODING, UNKNOWN
@@ -119,7 +119,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
 								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-				) //
+						) //
 				) {
 					canonical = t;
 					canonicalLen = tlen;
@@ -134,7 +134,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript>implements Serializ
 						&& ((canonical == null) // No canonical selected so far? => Select this one
 								|| (canonicalLen < tlen) // Longer? => Update
 								|| ((canonicalLen == tlen) && (t.getId().compareTo(canonical.getId()) < 0)) // Same length? Compare IDs
-				) //
+						) //
 				) {
 					canonical = t;
 					canonicalLen = tlen;

@@ -7,10 +7,9 @@ import org.snpeff.genBank.Features;
 import org.snpeff.genBank.FeaturesFile;
 import org.snpeff.interval.Cds;
 import org.snpeff.interval.Chromosome;
+import org.snpeff.interval.CircularCorrection;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
-import org.snpeff.interval.Marker;
-import org.snpeff.interval.Markers;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
@@ -96,22 +95,20 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 		// Add exons?
 		if (f.hasMultipleCoordinates()) {
-			Markers addedCds = new Markers();
 			for (FeatureCoordinates fc : f) {
 				int cdsStart = fc.start - inOffset;
 				int cdsEnd = fc.end - inOffset;
 				Cds cds = new Cds(tr, cdsStart, cdsEnd, f.isComplement(), "CDS_" + trId);
-				addedCds.add(cds);
+				tr.add(cds);
 			}
 
-			// In case these are CDS from a circular chromosme, we may need to correct coordinates
-			if (tr.getId().equals("HHV4_LMP-1")) //
-				Gpr.debug("DEBUG!");
-			Markers addedCdsCorrected = addedCds.circularCorrect();
+			// Circular correction
+			CircularCorrection cc = new CircularCorrection(tr);
+			if (cc.needsCorrection()) tr = cc.correct();
 
-			// Add corrected CDSs
-			for (Marker m : addedCdsCorrected)
-				add((Cds) m);
+			// Add all (corrected) CDSs
+			for (Cds cds : tr.getCds())
+				add(cds);
 		} else {
 			Cds cds = new Cds(tr, f.getStart() - inOffset, f.getEnd() - inOffset, f.isComplement(), "CDS_" + trId);
 			add(cds);
