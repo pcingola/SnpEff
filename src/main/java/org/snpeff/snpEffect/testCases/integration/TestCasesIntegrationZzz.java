@@ -1,13 +1,11 @@
 package org.snpeff.snpEffect.testCases.integration;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.interval.Gene;
-import org.snpeff.interval.Genome;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
-
-import junit.framework.Assert;
 
 /**
  *
@@ -22,36 +20,60 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
 	}
 
 	@Test
-	public void testCase_06_CircularGenome_ExonsOrder() {
+	public void testCase_03_CircularGenome() {
 		Gpr.debug("Test");
 
-		verbose = true;
+		String prot = "MQTECSAGAYEFPASCGRRVVARFDGGRMSSDGGVILVKQADDILGLSRRF" //
+				+ "AACFRDKRHPGFVEYIPQSRDAAYRENRQQSGG*" //
+		;
 
-		String expectedProtein = "MEHDLERGPPGPRRPPRGPPLSSSLGLALLLLLLALLFWLYIVM" //
-				+ "SDWTGGALLVLYSFALMLIIIILIIFIFRRDLLCPLGALCILLLMITLLLIALWNLHG" //
-				+ "QALFLGIVLFIFGCLLVLGIWIYLLEMLWRLGATIWQLLAFFLAFFLDLILLIIALYL" //
-				+ "QQNWWTLLVDLLWLLLFLAILIWMYYHGQRHSDEHHHDDSLPHPQQATDDSGHESDSN" //
-				+ "SNEGRHHLLVSGAGDGPPLCSQNLGAPGGGPDNGPQDPDNTDDNGPQDPDNTDDNGPH" //
-				+ "DPLPQDPDNTDDNGPQDPDNTDDNGPHDPLPHSPSDSAGNDGGPPQLTEEVENKGGDQ" //
-				+ "GPPLMTDGGGGHSHDSGHGGGDPHLPTLLLGSSGSGGDDDDPHGPVQLSYYD" //
+		String cds = "ATGCAGACAGAGTGTAGCGCAGGCGCGTATGAGTTTCCAGCCTCCTGTGGAC" //
+				+ "GGCGTGTTGTGGCCCGTTTTGACGGGGGTCGCATGAGTTCGGATGGGGGCGTCAT" //
+				+ "TCTGGTGAAGCAGGCTGATGACATTCTGGGTCTCAGCCGCCGCTTTGCTGCCTGT" //
+				+ "TTTCGCGATAAGCGGCATCCCGGCTTTGTGGAATATATTCCACAAAGCCGGGATG" //
+				+ "CCGCTTATCGCGAAAACAGGCAGCAAAGCGGCGGCTGA" //
 		;
 
 		// Create database & build interval forest
-		String genomeName = "testCase";
-		String genBankFile = "tests/Human_herpesvirus_4_uid14413.gbk.gz";
-		SnpEffectPredictor sep = buildGeneBank(genomeName, genBankFile);
-		sep.buildForest();
-
-		// Create variant
-		Genome genome = sep.getGenome();
-		Gene gene = genome.getGenes().getGeneByName("LMP1");
-
-		Transcript tr = gene.get("HHV4_LMP-1");
-		Assert.assertTrue("Transcript not found", tr != null);
-		String prot = tr.protein();
-
-		if (verbose) Gpr.debug("Transcript: " + tr);
-		Assert.assertEquals("Protein sequence does not match", expectedProtein, prot);
+		String genomeName = "test_Acetobacter_pasteurianus";
+		SnpEffectPredictor sep = build(genomeName);
+		Gene g = sep.getGene("DB34_00005");
+		Transcript tr = g.subIntervals().iterator().next();
+		Assert.assertEquals("Protein sequence differs", prot, tr.protein());
+		Assert.assertEquals("CDS sequence differs", cds, tr.cds().toUpperCase());
 	}
+
+	//	@Test
+	//	public void testCase_04_CircularGenome() {
+	//		Gpr.debug("Test");
+	//
+	//		String prot = "MTNNIVIAGRLVADAELFFTNNGSAICNFTLANNKRYKDIEKSTFIEASIFGNYAESMNK" //
+	//				+ "YLKKGVSIDVIGELVQESWSKDGKIYYKHKIKVKEIDFRTPKDNISEANFENEDTPSNHL" //
+	//				+ "LYLVEDNMRAVTIPIIISEQTPNIAKFSNVISKECKLSLAICSMVLLLSSIIFNHIQPSY" //
+	//				+ "SKSSIQIFVKTTPNKNAITYIARNPTNSSIINNSLLVLICKLCILWQFIIYYYIHSL*" //
+	//		;
+	//
+	//		String cds = "ATGACAAATAATATAGTAATTGCAGGAAGATTGGTGGCAGACGCTGAACTATTTTTTACA" //
+	//				+ "AATAATGGCTCTGCTATTTGTAATTTTACTTTGGCGAATAATAAAAGATACAAAGACATA" //
+	//				+ "GAAAAAAGCACTTTTATAGAAGCTAGTATTTTTGGCAACTATGCAGAATCTATGAATAAG" //
+	//				+ "TATCTAAAAAAAGGCGTATCAATTGATGTAATAGGAGAGCTGGTTCAAGAAAGCTGGAGC" //
+	//				+ "AAAGATGGAAAAATATATTATAAACATAAAATCAAAGTCAAAGAGATTGATTTTAGAACA" //
+	//				+ "CCAAAAGATAATATTTCAGAAGCAAACTTTGAAAATGAAGATACACCCTCAAATCATCTG" //
+	//				+ "CTTTATCTGGTGGAAGACAATATGAGAGCTGTAACTATTCCTATTATCATAAGTGAGCAA" //
+	//				+ "ACGCCAAATATAGCAAAATTCTCAAATGTCATTTCTAAAGAATGCAAACTTTCTCTTGCT" //
+	//				+ "ATTTGCTCTATGGTTTTATTACTTTCTTCTATCATTTTCAATCATATTCAACCAAGTTAT" //
+	//				+ "TCAAAAAGCTCAATCCAAATTTTTGTAAAAACAACACCTAATAAGAATGCAATAACGTAC" //
+	//				+ "ATTGCAAGAAATCCTACTAACTCGTCCATAATCAATAATTCCTTATTAGTCTTAATTTGT" //
+	//				+ "AAGCTCTGTATTTTATGGCAATTTATTATTTATTATTATATCCATTCTCTATGA" //
+	//		;
+	//
+	//		// Create database & build interval forest
+	//		String genomeName = "test_Campylobacter_fetus_subsp_venerealis_nctc_10354";
+	//		SnpEffectPredictor sep = build(genomeName);
+	//		Gene g = sep.getGene("CFV354_1968");
+	//		Transcript tr = g.subIntervals().iterator().next();
+	//		Assert.assertEquals("Protein sequence differs", prot, tr.protein());
+	//		Assert.assertEquals("CDS sequence differs", cds, tr.cds().toUpperCase());
+	//	}
 
 }

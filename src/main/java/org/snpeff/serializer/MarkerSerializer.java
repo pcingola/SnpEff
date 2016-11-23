@@ -67,8 +67,8 @@ public class MarkerSerializer {
 
 	public MarkerSerializer(Genome genome) {
 		this.genome = genome;
-		byId = new HashMap<Integer, TxtSerializable>();
-		byMarker = new HashMap<TxtSerializable, Integer>();
+		byId = new HashMap<>();
+		byMarker = new HashMap<>();
 	}
 
 	public void doNotSave(Marker m) {
@@ -83,10 +83,12 @@ public class MarkerSerializer {
 	public int getIdByMarker(Marker m) {
 		Integer id = byMarker.get(m);
 		if (isDoNotSave(m)) return -1;
-		if (id == null) { throw new RuntimeException("Marker has no numeric ID. \n" //
-				+ "\tClass    : " + m.getClass().getSimpleName() + "\n" //
-				+ "\tMarker ID: '" + m.getId() + "'\n" //
-				+ "\t" + m); }
+		if (id == null) { //
+			throw new RuntimeException("Marker has no numeric ID. \n" //
+					+ "\tClass    : " + m.getClass().getSimpleName() + "\n" //
+					+ "\tMarker ID: '" + m.getId() + "'\n" //
+					+ "\t" + m);
+		}
 		return id;
 	}
 

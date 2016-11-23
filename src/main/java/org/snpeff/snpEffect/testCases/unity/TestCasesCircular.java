@@ -41,9 +41,9 @@ public class TestCasesCircular {
 
 		CircularCorrection cc = new CircularCorrection(tr);
 		cc.setDebug(debug);
-		Transcript trCorr = cc.correct();
+		cc.correct();
 
-		List<Cds> cdss = trCorr.getCds();
+		List<Cds> cdss = tr.getCds();
 		Marker cds1 = cdss.get(0);
 		Marker cds2 = cdss.get(1);
 		Marker cds3 = cdss.get(2);
@@ -69,9 +69,9 @@ public class TestCasesCircular {
 
 		CircularCorrection cc = new CircularCorrection(tr);
 		cc.setDebug(debug);
-		Transcript trCorr = cc.correct();
+		cc.correct();
 
-		List<Cds> cdss = trCorr.getCds();
+		List<Cds> cdss = tr.getCds();
 		Marker cds1 = cdss.get(0);
 		Marker cds2 = cdss.get(1);
 		Marker cds3 = cdss.get(2);
@@ -97,8 +97,8 @@ public class TestCasesCircular {
 
 		CircularCorrection cc = new CircularCorrection(tr);
 		cc.setDebug(debug);
-		Transcript trCorr = cc.correct();
-		Assert.assertNull("No correction expexted for this transcript", trCorr);
+		cc.correct();
+		Assert.assertFalse("No correction expexted for this transcript", cc.isCorrected());
 	}
 
 	@Test
@@ -117,9 +117,9 @@ public class TestCasesCircular {
 
 		CircularCorrection cc = new CircularCorrection(tr);
 		cc.setDebug(debug);
-		Transcript trCorr = cc.correct();
+		cc.correct();
 
-		List<Cds> cdss = trCorr.getCds();
+		List<Cds> cdss = tr.getCds();
 		Marker cds1 = cdss.get(0);
 		Marker cds2 = cdss.get(1);
 		Marker cds3 = cdss.get(2);

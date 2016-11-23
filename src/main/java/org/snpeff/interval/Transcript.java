@@ -1515,7 +1515,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	public void reset() {
 		super.reset();
 
-		invalidateSorted();
 		utrs = new ArrayList<>();
 		cdss = new ArrayList<>();
 		introns = null;
@@ -1533,6 +1532,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		aa2pos = null;
 		mRna = null;
 		protein = null;
+	}
+
+	public void resetCds() {
+		cdss = new ArrayList<>();
+		resetCache();
+	}
+
+	public void resetExons() {
+		super.reset();
+		resetCache();
 	}
 
 	/**

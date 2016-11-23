@@ -99,16 +99,12 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 				int cdsStart = fc.start - inOffset;
 				int cdsEnd = fc.end - inOffset;
 				Cds cds = new Cds(tr, cdsStart, cdsEnd, f.isComplement(), "CDS_" + trId);
-				tr.add(cds);
+				add(cds);
 			}
 
 			// Circular correction
 			CircularCorrection cc = new CircularCorrection(tr);
-			if (cc.needsCorrection()) tr = cc.correct();
-
-			// Add all (corrected) CDSs
-			for (Cds cds : tr.getCds())
-				add(cds);
+			cc.correct();
 		} else {
 			Cds cds = new Cds(tr, f.getStart() - inOffset, f.getEnd() - inOffset, f.isComplement(), "CDS_" + trId);
 			add(cds);

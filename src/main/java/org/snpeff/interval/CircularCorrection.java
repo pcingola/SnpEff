@@ -11,6 +11,7 @@ import org.snpeff.util.Gpr;
 public class CircularCorrection {
 
 	boolean debug;
+	boolean corrected;
 	Transcript tr;
 	int chrLen;
 
@@ -27,7 +28,7 @@ public class CircularCorrection {
 	/**
 	 * Return a circular corrected transcript or null if no correction is needed
 	 */
-	public Transcript correct() {
+	public boolean correct() {
 		// Correct CDSs?
 		Markers cdss = new Markers(tr.getCds());
 		cdss = correct(cdss);
@@ -37,9 +38,13 @@ public class CircularCorrection {
 		exons = correct(exons);
 
 		// New transcript?
-		if (cdss != null || exons != null) return replaceCdsExons(tr, cdss, exons);
+		if (cdss != null || exons != null) {
+			corrected = true;
+			replaceCdsExons(tr, cdss, exons);
+			return true;
+		}
 
-		return null;
+		return false;
 	}
 
 	/**
@@ -136,6 +141,10 @@ public class CircularCorrection {
 		return rightGap;
 	}
 
+	public boolean isCorrected() {
+		return corrected;
+	}
+
 	/**
 	 * Does marker has coordinates after chrEnd;
 	 */
@@ -189,43 +198,29 @@ public class CircularCorrection {
 		return false;
 	}
 
-	public boolean needsCorrection() {
-		return false;
-	}
-
 	boolean needsCorrection(Markers markers) {
 		return isCorrectionAfterChrEnd(markers) //
 				|| isCorrectionStartAfterEnd(markers) //
 				|| isCorrectionLargeGap(markers);
 	}
 
-	Transcript replaceCdsExons(Transcript tr, Markers cdss, Markers exons) {
+	void replaceCdsExons(Transcript tr, Markers cdss, Markers exons) {
 		if (debug) Gpr.debug("Before replacing:" + tr + "\n\tCDS:" + tr.getCds());
-		Transcript trNew = tr.cloneShallow();
 
-		// Add new CDSs
-		if (cdss == null) {
-			for (Cds cds : tr.getCds())
-				trNew.add(cds);
-		} else {
-			// Use new CDSs
+		// Use new CDSs
+		if (cdss != null) {
+			tr.resetCds();
 			for (Marker cds : cdss.sort())
-				trNew.add((Cds) cds);
+				tr.add((Cds) cds);
 		}
 
-		// Add all exons
-		if (exons == null) {
-			for (Exon ex : tr)
-				trNew.add(ex);
-		} else {
-			// Use new exons
+		// Use new exons
+		if (exons != null) {
+			tr.resetExons();
 			for (Marker ex : exons)
-				trNew.add((Exon) ex);
+				tr.add((Exon) ex);
 
 		}
-
-		if (debug) Gpr.debug("After replacing:" + trNew + "\n\tCDS:" + trNew.getCds());
-		return trNew;
 	}
 
 	public void setDebug(boolean debug) {

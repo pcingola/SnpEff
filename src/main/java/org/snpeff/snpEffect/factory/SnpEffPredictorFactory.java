@@ -166,7 +166,6 @@ public abstract class SnpEffPredictorFactory {
 		int chrLen = chrSeq.length();
 
 		// Find and add sequences for all exons in this chromosome
-		Map<Transcript, Transcript> trToReplace = null;
 		for (Gene gene : genome.getGenes()) {
 			// Different chromosome? Skip
 			if (!gene.getChromosomeName().equalsIgnoreCase(chr)) continue;
@@ -174,12 +173,7 @@ public abstract class SnpEffPredictorFactory {
 			for (Transcript tr : gene) {
 				// Circular chromosomes coordinates are corrected in this step
 				CircularCorrection cc = new CircularCorrection(tr, chrLen);
-				if (cc.needsCorrection()) {
-					if (trToReplace == null) trToReplace = new HashMap<>();
-					Transcript trNew = cc.correct();
-					trToReplace.put(tr, trNew); // We'll need to replace this gene's transcript/s
-					tr = trNew;
-				}
+				cc.correct();
 
 				for (Exon exon : tr) {
 					int ssStart = exon.getStart();
@@ -224,14 +218,6 @@ public abstract class SnpEffPredictorFactory {
 						seqsAdded++;
 					}
 
-				}
-			}
-
-			// Do we need to replace any gene's transcripts
-			if (trToReplace != null) {
-				for (Transcript tr : trToReplace.keySet()) {
-					gene.remove(tr);
-					gene.add(trToReplace.get(tr));
 				}
 			}
 		}
@@ -638,8 +624,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Does this chromosome have any exons?
-	 * @param chromoName
-	 * @return
 	 */
 	boolean hasExons(String chromoName) {
 		Integer count = exonsByChromo.get(chromoName);
@@ -648,7 +632,6 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Show a mark onthe screen (to show progress)
-	 * @param count
 	 */
 	void mark(int count) {
 		if (verbose) Gpr.showMark(count, MARK, "\t\t");
@@ -657,9 +640,6 @@ public abstract class SnpEffPredictorFactory {
 	/**
 	 * Parse a string as a 'position'.
 	 * Note: It subtracts 'inOffset' so that all coordinates are zero-based
-	 *
-	 * @param posStr
-	 * @return
 	 */
 	protected int parsePosition(String posStr) {
 		return Gpr.parseIntSafe(posStr) - inOffset;
@@ -732,6 +712,11 @@ public abstract class SnpEffPredictorFactory {
 				System.out.println("");
 			}
 		}
+	}
+
+	protected void replaceTranscript(Transcript trOld, Transcript trNew) {
+		transcriptsById.remove(trOld.getId());
+		transcriptsById.put(trNew.getId(), trNew);
 	}
 
 	public void setCreateRandSequences(boolean createRandSequences) {
