@@ -1,7 +1,5 @@
 package org.snpeff.interval;
 
-import org.snpeff.util.Gpr;
-
 /**
  * Correct circular genomic coordinates
  * Nomenclature: We use coordinates at the beginning of the chromosme and negative coordinates
@@ -31,32 +29,34 @@ public class CircularCorrection {
 	public boolean correct() {
 		// Correct CDSs?
 		Markers cdss = new Markers(tr.getCds());
-		cdss = correct(cdss);
+		if (correct(cdss)) {
+			corrected = true;
+			tr.sortCds();
+		}
 
 		// Correct exons?
 		Markers exons = new Markers(tr.subIntervals());
-		exons = correct(exons);
+		corrected |= correct(exons);
+
+		// Some redundant exons might have to be deleted
+		// E.g if one exon with corrected coordinates now overlaps another exon
+		if (corrected) tr.deleteRedundant();
 
 		// New transcript?
-		if (cdss != null || exons != null) {
-			corrected = true;
-			replaceCdsExons(tr, cdss, exons);
-			return true;
-		}
-
-		return false;
+		return corrected;
 	}
 
 	/**
 	 * Correct markers
 	 * @return New set of markers or null if no correction is performed
 	 */
-	Markers correct(Markers markers) {
-		if (isCorrectionLargeGap(markers)) return correctLargeGap(markers);
-		else if (isCorrectionAfterChrEnd(markers)) return correctAfterChrEnd(markers);
-		else if (isCorrectionStartAfterEnd(markers)) return correctStartAfterEnd(markers);
+	boolean correct(Markers markers) {
+		boolean corr = false;
+		if (isCorrectionStartAfterEnd(markers)) corr |= correctStartAfterEnd(markers);
+		if (isCorrectionLargeGap(markers)) corr |= correctLargeGap(markers);
+		if (isCorrectionAfterChrEnd(markers)) corr |= correctAfterChrEnd(markers);
 
-		return null;
+		return corr;
 	}
 
 	/**
@@ -66,13 +66,13 @@ public class CircularCorrection {
 	 * Exons:                                                                 [***]   [***] [****]
 	 * Correction: Shift all coordinates to the begininig
 	 */
-	Markers correctAfterChrEnd(Markers markers) {
-		Markers ms = new Markers();
+	boolean correctAfterChrEnd(Markers markers) {
+		boolean corr = false;
 		for (Marker m : markers) {
 			m.shiftCoordinates(-chrLen);
-			ms.add(m);
+			corr = true;
 		}
-		return ms;
+		return corr;
 	}
 
 	/**
@@ -82,21 +82,21 @@ public class CircularCorrection {
 	 * Exons:    [***]                                                            [***]  [***]
 	 * Correction: Only correct the markers at the end
 	 */
-	Markers correctLargeGap(Markers markers) {
+	boolean correctLargeGap(Markers markers) {
 		Marker rightGap = findLargeGap(markers);
 		int gapPos = rightGap.getStart();
 
-		Markers ms = new Markers();
+		boolean corr = false;
 		for (Marker m : markers) {
 			// Correct coordinates if the marker is to the right of the gap.
 			// I.e.: Move from the end of the chromosome to the beggining of the chromosome
 			if (m.getStart() >= gapPos) {
 				m.shiftCoordinates(-chrLen);
+				corr = true;
 			}
-			ms.add(m);
 		}
 
-		return ms;
+		return corr;
 	}
 
 	/**
@@ -106,15 +106,15 @@ public class CircularCorrection {
 	 * Exons:   >>]                                                          [***]   [***] [>>
 	 * Correction: All coordinates at the end have to be shifted to the beginning
 	 */
-	Markers correctStartAfterEnd(Markers markers) {
-		Markers ms = new Markers();
+	boolean correctStartAfterEnd(Markers markers) {
+		boolean corr = false;
 		for (Marker m : markers) {
 			if (isCorrectionStartAfterEnd(m)) {
 				m.setStart(m.getStart() - chrLen);
+				corr = true;
 			}
-			ms.add(m);
 		}
-		return ms;
+		return corr;
 	}
 
 	/**
@@ -204,27 +204,50 @@ public class CircularCorrection {
 				|| isCorrectionLargeGap(markers);
 	}
 
-	void replaceCdsExons(Transcript tr, Markers cdss, Markers exons) {
-		if (debug) Gpr.debug("Before replacing:" + tr + "\n\tCDS:" + tr.getCds());
-
-		// Use new CDSs
-		if (cdss != null) {
-			tr.resetCds();
-			for (Marker cds : cdss.sort())
-				tr.add((Cds) cds);
-		}
-
-		// Use new exons
-		if (exons != null) {
-			tr.resetExons();
-			for (Marker ex : exons)
-				tr.add((Exon) ex);
-
-		}
-	}
-
+	//	void replaceCdsExons(Transcript tr, Markers cdss, Markers exons) {
+	//		if (debug) Gpr.debug("Before replacing:" + tr + "\n\tCDS:" + tr.getCds());
+	//
+	//		// Use new CDSs
+	//		if (cdss != null) {
+	//			tr.resetCds();
+	//			for (Marker cds : cdss.sort())
+	//				tr.add((Cds) cds);
+	//		}
+	//
+	//		// Use new exons
+	//		if (exons != null) {
+	//			tr.resetExons();
+	//			for (Marker ex : exons)
+	//				tr.add((Exon) ex);
+	//
+	//		}
+	//	}
+	//
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		Markers cdss = new Markers(tr.getCds());
+		Markers exons = new Markers(tr.subIntervals());
+
+		sb.append("Circular correction\n");
+		sb.append("\n\tCorrected :" + corrected);
+		sb.append("\n\tChr len   :" + chrLen);
+		sb.append("\n\tCDS corrections :");
+		sb.append("\n\t\tAfter Chr End   :" + isCorrectionAfterChrEnd(cdss));
+		sb.append("\n\t\tLarge Gap       :" + isCorrectionLargeGap(cdss));
+		sb.append("\n\t\tStart After End :" + isCorrectionStartAfterEnd(cdss));
+		sb.append("\n\tExons corrections :");
+		sb.append("\n\t\tAfter Chr End   :" + isCorrectionAfterChrEnd(exons));
+		sb.append("\n\t\tLarge Gap       :" + isCorrectionLargeGap(exons));
+		sb.append("\n\t\tStart After End :" + isCorrectionStartAfterEnd(exons));
+		sb.append("\n\tTranscript :\n" + tr);
+		sb.append("\n\tCDSs:\n" + cdss);
+		return sb.toString();
 	}
 
 	//	/**

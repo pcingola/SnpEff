@@ -1534,11 +1534,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		protein = null;
 	}
 
-	public void resetCds() {
-		cdss = new ArrayList<>();
-		resetCache();
-	}
-
 	public void resetExons() {
 		super.reset();
 		resetCache();
@@ -1632,6 +1627,11 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public void sortCds() {
+		Collections.sort(cdss);
+		resetCache();
 	}
 
 	public List<SpliceSite> spliceSites() {

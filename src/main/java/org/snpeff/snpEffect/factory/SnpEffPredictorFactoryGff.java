@@ -41,9 +41,9 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 	public SnpEffPredictorFactoryGff(Config config) {
 		super(config, 1);
-		markersById = new HashMap<String, Marker>();
-		genesById = new HashMap<String, Gene>();
-		transcriptsById = new HashMap<String, Transcript>();
+		markersById = new HashMap<>();
+		genesById = new HashMap<>();
+		transcriptsById = new HashMap<>();
 		fileName = config.getBaseFileNameGenes() + ".gff";
 
 		frameCorrection = true;
@@ -146,12 +146,12 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		BioType bioType = gffMarker.getGeneBiotype();
 
 		Gene gene = new Gene(gffMarker.getChromosome() //
-		, gffMarker.getStart() //
-		, gffMarker.getEnd() //
-		, gffMarker.isStrandMinus() //
-		, gffMarker.getGeneId() //
-		, gffMarker.getGeneName() //
-		, bioType);
+				, gffMarker.getStart() //
+				, gffMarker.getEnd() //
+				, gffMarker.isStrandMinus() //
+				, gffMarker.getGeneId() //
+				, gffMarker.getGeneName() //
+				, bioType);
 
 		add(gene);
 
