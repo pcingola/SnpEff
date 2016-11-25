@@ -6,26 +6,37 @@ dirDb         := "$HOME/snpEff/db/$genome/dbNSFP"
 base          := "$dirDb/dbNSFP$dbnsfpVersion\_variant.chr"
 dbNsfp        := "$dirDb/dbNSFP$dbnsfpVersion.txt.gz"
 
-string[] gzs
+string[] txts
+header := ""
 for(string file : dirDb.dir()) {
 	if(!file.startsWith("dbNSFP$dbnsfpVersion\_variant") || file.endsWith("gz")) continue
 	file = dirDb + '/' + file.trim()
 
+	# Create header file
+	if( header.isEmpty() ) {
+		header = "$dirDb/dbNSFP$dbnsfpVersion.header"
+		println("Creating headr file 'header'")
+		sys head -n 1 $file > $header
+	}
+
+	# Sort files
 	println("File: $file")
 	base := file.baseName()
-	sorted := "$dirDb/$base.sort.txt.gz"
-	gzs += sorted
+	sorted := "$dirDb/$base.sort.txt"
+	txts += sorted
 	
 	task( sorted <- file , cpus := 2) {
 		sys cat $file \
 			| ./scripts_build/dbNSFP_sort.pl \
-			| bgzip -c > $sorted
+			| grep -v "^#" \
+			> $sorted
 	}
 }
 
-gzStr := gzs.join(' ')
-task( dbNsfp <- gzs ) {
-	sys cat $gzStr > $dbNsfp
+# Compress and create index
+txtsStr := txts.join(' ')
+task( dbNsfp <- txts ) {
+	sys cat $header $txtsStr | bgzip -c > $dbNsfp
 	sys tabix -s 1 -b 2 -e 2 $dbNsfp
 }
 
