@@ -1,2 +1,2 @@
-SNPEFF 4.3E 2016-11-19	http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
-4.3E (BUILD 08:45	http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+SNPEFF 4.3F 2016-11-25	http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+4.3F (BUILD 11:44	http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
