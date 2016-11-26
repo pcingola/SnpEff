@@ -19,11 +19,13 @@
 $chrCol = 0;
 $posCol = 1;
 $replace = 0;
+$showTitle = 1;
 
 # Two arguments? Use them as columns for chr and pos respectively
 if( $#ARGV > 1 ) {
 	$chrCol = $ARGV[0];
-	$posCol = $ARGV[0];
+	$posCol = $ARGV[1];
+	$showTitle = 0;
 	$replace = 1;
 }
 
@@ -33,7 +35,6 @@ $splitCols = ( $chrCol > $posCol ? $chrCol : $posCol ) + 2;
 #---
 # Read all data into memory (we need a lot of memory)
 #---
-$showTitle = 1;
 for( $i=1 ; $l = <STDIN> ; $i++ ) {
 	if( $l =~ /^#chr/ ) {
 		print $l if $showTitle;
