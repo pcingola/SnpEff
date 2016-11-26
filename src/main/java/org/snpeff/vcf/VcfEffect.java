@@ -1034,7 +1034,7 @@ public class VcfEffect {
 			} else if (tr != null && marker != null) {
 				// Can we try to find an exon?
 				for (Exon e : tr)
-					if (e.intersects(marker)) {
+					if (e.intersects(variant)) {
 						rank = e.getRank();
 						rankMax = tr.numChilds();
 						break;
