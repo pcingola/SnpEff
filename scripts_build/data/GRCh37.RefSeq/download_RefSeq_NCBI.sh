@@ -83,8 +83,9 @@ cat protein.ORI.fa | $SCRIPTS_BUILD_DIR/fix_fasta_protein_cds.pl protein_id.map.
 gzip -f $DB_DIR/protein.fa
 
 echo "Processing RNA FASTA files"
-gunzip -c rna.fa.gz | sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" > cds.ORI.fa 
-cat cds.ORI.fa | $SCRIPTS_BUILD_DIR/fix_fasta_protein_cds.pl ids.map.txt > $DB_DIR/cds.fa
-gzip -f $DB_DIR/cds.fa
+gunzip -c rna.fa.gz | sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" | gzip -c > $DB_DIR/cds.fa.gz
+#gunzip -c rna.fa.gz | sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" > cds.ORI.fa 
+#cat cds.ORI.fa | $SCRIPTS_BUILD_DIR/fix_fasta_protein_cds.pl ids.map.txt > $DB_DIR/cds.fa
+#gzip -f $DB_DIR/cds.fa
 
 echo "Done."
