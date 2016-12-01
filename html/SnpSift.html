@@ -219,7 +219,24 @@ rs71262674
 rs71262673</pre> 
 				</ul>
 
-				Now you get the idea. You can combine any conditions you want using boolean operators. <p>
+				You can combine any conditions you want using boolean operators. <p>
+
+				<h3>Command line opions</h3> 
+<pre>
+Usage: java -jar SnpSift.jar filter [options] 'expression' [input.vcf]
+Options:
+	-a|--addFilter <str>  : Add a string to FILTER VCF field if 'expression' is true. Default: '' (none)
+	-e|--exprFile <file>  : Read expression from a file
+	-f|--file <input.vcf> : VCF input file. Default: STDIN
+	-i|--filterId <str>   : ID for this filter (##FILTER tag in header and FILTER VCF field). Default: 'SnpSift'
+	-n|--inverse          : Inverse. Show lines that do not match filter expression
+	-p|--pass             : Use 'PASS' field instead of filtering out VCF entries
+	-r|--rmFilter <str>   : Remove a string from FILTER VCF field if 'expression' is true (and 'str' is in the field). Default: '' (none)
+	-s|--set <file>       : Create a SET using 'file'
+	--errMissing          : Error is a field is missing. Default: false
+	--format <format>     : SnpEff format version: {2, 3}. Default: Auto
+	--galaxy              : Used from Galaxy (expressions have been sanitized).
+</pre>
 
 				<h3>Variables</h3> 
 				All VCF fields can be used as variables names, as long as they are declared in the VCF header OR they are "standard" VCF fields (as defined by the VCF 4.1 specification).
