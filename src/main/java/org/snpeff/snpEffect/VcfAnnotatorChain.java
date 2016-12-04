@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.snpeff.fileIterator.VcfFileIterator;
+import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEntry;
 
 /**
@@ -48,8 +49,10 @@ public class VcfAnnotatorChain implements VcfAnnotator {
 	public boolean annotateFinish(VcfFileIterator vcf) {
 		boolean error = false;
 
-		for (VcfAnnotator vcfAnnotator : annotators)
+		for (VcfAnnotator vcfAnnotator : annotators) {
+			Gpr.debug("Annotator: " + vcfAnnotator.getClass().getSimpleName());
 			error |= vcfAnnotator.annotateFinish(vcf);
+		}
 
 		return error;
 	}
