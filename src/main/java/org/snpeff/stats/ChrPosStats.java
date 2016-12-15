@@ -11,6 +11,8 @@ import org.snpeff.util.Gpr;
  */
 public class ChrPosStats {
 
+	public static boolean debug = false;
+
 	int maxBins = 300; // Max number of points to show in a plot (plots to sample)
 	String name; // Chromosome name
 	int length; // Chromosome length;
@@ -66,16 +68,13 @@ public class ChrPosStats {
 	 */
 	public void sample(int position) {
 		// Ignore counts for zero or one-length chromosomes
-		if (length <= 1) {
-			//Gpr.debug("Warning: Chromosome '" + chrName + "' has length " + chrLength);
-			return;
-		}
+		if (length <= 1) { return; }
 
 		int i = position / factor;
 		if ((i >= 0) && (i < count.length)) {
 			count[i]++;
 			total++;
-		} else Gpr.debug("Error counting samples on chromosome '" + name + "'. Position '" + position + "' => count[" + i + "]  (count.length: " + count.length + ", factor: " + factor + ", chrLength: " + length + ").");
+		} else if (debug) Gpr.debug("Error counting samples on chromosome '" + name + "'. Position '" + position + "' => count[" + i + "]  (count.length: " + count.length + ", factor: " + factor + ", chrLength: " + length + ").");
 	}
 
 	public int size() {
