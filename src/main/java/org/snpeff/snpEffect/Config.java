@@ -771,6 +771,14 @@ public class Config implements Serializable, Iterable<String> {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
+		ArrayList<String> keys = new ArrayList<>();
+		for (Object key : properties.keySet())
+			keys.add(key.toString());
+		Collections.sort(keys);
+
+		for (String key : keys)
+			sb.append("\t" + key + " = '" + properties.getProperty(key) + "'\n");
+
 		for (String genVer : this) {
 			String name = nameById.get(genVer).replace('_', ' ');
 			String ref = referenceById.get(genVer);
@@ -780,6 +788,7 @@ public class Config implements Serializable, Iterable<String> {
 			if (ref != null) sb.append("\t" + ref);
 			sb.append("\n");
 		}
+
 		return sb.toString();
 	}
 

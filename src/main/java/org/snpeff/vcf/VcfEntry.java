@@ -449,8 +449,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 	/**
 	 * Remove a string from FILTER field
+	 * @returns true if the value is removed
 	 */
-	public void delFilter(String filterStr) {
+	public boolean delFilter(String filterStr) {
 		// Get current value
 		StringBuilder sbFilter = new StringBuilder();
 
@@ -463,6 +464,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 		// Changed? Set new value
 		if (removed) filter = sbFilter.toString();
+		return removed;
 	}
 
 	/**

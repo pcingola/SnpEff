@@ -24,7 +24,7 @@ public class TestCasesIntegrationInsEtc {
 	 * Insertion on minus strand
 	 */
 	@Test
-	public void test_02_InsOffByOne() {
+	public void test_01_InsOffByOne() {
 		Gpr.debug("Test");
 		String args[] = { "-classic", "-noHgvs", "testENST00000268124", "tests/ins_off_by_one.vcf" };
 
