@@ -1,17 +1,18 @@
 #!/bin/sh -e
 
 # Genome name (in SnpEff's config file)
-VER="p7"
-GENOME="GRCh38.$VER.RefSeq"
+VER="GRCh38"
+SUBVER="p7"
+GENOME="$VER.$SUBVER.RefSeq"
 
 # Path to scripts
 SNPEFF_DIR="$HOME/snpEff"
 SCRIPTS_DIR="$SNPEFF_DIR/scripts"
-SCRIPTS_BUILD_DIR="$SNPEFF_DIR/scripts_build/data/GRCh38.RefSeq"
+SCRIPTS_BUILD_DIR="$SNPEFF_DIR/scripts_build/data/$VER.RefSeq"
 DB_DIR="$SNPEFF_DIR/data/$GENOME"
 
 # File names
-GFF_REF="ref_GRCh38.$VER""_top_level.gff3.gz"
+GFF_REF="ref_$VER.$SUBVER""_top_level.gff3.gz"
 CHR_IDS="$DB_DIR/chromosomes.txt"
 CHR_IDS_2_NAME="$DB_DIR/chromosomes2name.txt"
 
@@ -24,7 +25,7 @@ cd $DB_DIR/ORI
 #---
 
 echo Downloading reference seuquences
-wget -N "ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/Assembled_chromosomes/seq/hs_ref_GRCh38.$VER\_*.fa.gz"
+wget -N "ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/Assembled_chromosomes/seq/hs_ref_$VER.$SUBVER\_*.fa.gz"
 
 echo Downloading mRNA sequences
 wget -N "ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.*.rna.fna.gz"
