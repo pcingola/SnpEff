@@ -311,7 +311,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-				);
+			);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -520,7 +520,7 @@ public class SnpEff implements CommandLine {
 		//---
 		// Load all interactions
 		//---
-		if (verbose) Timer.showStdErr("\tLoading interactions from : " + intFileName);
+		if (verbose) Timer.showStdErr("Loading interactions from : " + intFileName);
 		String lines[] = Gpr.readFile(intFileName, true).split("\n");
 		int count = 0, countSkipped = 0;
 		for (String line : lines) {
@@ -604,14 +604,14 @@ public class SnpEff implements CommandLine {
 		//---
 		// Load all PWMs
 		//---
-		if (verbose) Timer.showStdErr("\tLoading PWMs from : " + pwmsFileName);
+		if (verbose) Timer.showStdErr("Loading PWMs from : " + pwmsFileName);
 		Jaspar jaspar = new Jaspar();
 		jaspar.load(pwmsFileName);
 
 		//---
 		// Read motifs
 		//---
-		if (verbose) Timer.showStdErr("\tLoading Motifs from file '" + motifBinFileName + "'");
+		if (verbose) Timer.showStdErr("Loading Motifs from file '" + motifBinFileName + "'");
 
 		MarkerSerializer markerSerializer = new MarkerSerializer();
 		Markers motifsDb = markerSerializer.load(motifBinFileName);
@@ -776,7 +776,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("translocreport") //
-				// Obsolete stuff (from T2D projects)
+		// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 		) {
@@ -1100,6 +1100,10 @@ public class SnpEff implements CommandLine {
 
 	public void setGenomeVer(String genomeVer) {
 		this.genomeVer = genomeVer;
+	}
+
+	public void setLog(boolean log) {
+		this.log = log;
 	}
 
 	public void setNextProt(boolean nextProt) {
