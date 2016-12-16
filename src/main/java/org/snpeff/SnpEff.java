@@ -91,12 +91,13 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "h";
+	public static final String REVISION = "i";
 	public static final String BUILD = Gpr.compileTimeStamp(SnpEff.class);
 	public static final String VERSION_MAJOR = "4.3";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
-	public static final String VERSION_NO_NAME = VERSION_SHORT + " (build " + BUILD + "), by " + Pcingola.BY;
-	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_NO_NAME;
+	public static final String VERSION_BUILD = VERSION_SHORT + " (build " + BUILD + ")";
+	public static final String VERSION_AUTHOR = VERSION_BUILD + ", by " + Pcingola.BY;
+	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_AUTHOR;
 
 	protected String command = "";
 	protected String[] args; // Arguments used to invoke this command
@@ -1050,7 +1051,7 @@ public class SnpEff implements CommandLine {
 		// Report to server (usage statistics)
 		if (log) {
 			// Log to server
-			LogStats.report(SOFTWARE_NAME, VERSION_SHORT, VERSION, ok, verbose, args, err.toString(), snpEffCmd.reportValues());
+			LogStats.report(SOFTWARE_NAME, VERSION_BUILD, VERSION, ok, verbose, args, err.toString(), snpEffCmd.reportValues());
 
 			// Check for new version (use config file from command, since this one doesn't load a config file)
 			checkNewVersion(snpEffCmd.config);

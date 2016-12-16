@@ -9,15 +9,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import org.snpeff.SnpEff;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 
-/** 
- * 
+/**
+ *
  * Log basic usage information to a server (for feedback and stats)
  * This information an always be suppressed (no info sent at all)
- * 
+ *
  */
 public class LogStats extends Thread {
 
@@ -36,8 +35,8 @@ public class LogStats extends Thread {
 	public static boolean debug = false; // Debug mode?
 
 	// Log server parameters
-	private static final String URL_WWW = "http://www.tacner.com/";
-	private static final String URL_ROOT = URL_WWW + "special/recuse.php";
+	private static final String URL_WWW = "http://www.dnaminer.com";
+	private static final String URL_ROOT = URL_WWW + "/recuse.php";
 	private static final String HTTP_CHARSET = "ISO-8859-1";
 	private static final int HTTP_CONNECT_TIMEOUT_MSECS = 22000;
 	private static final int HTTP_READ_TIMEOUT_MSECS = 23000;
@@ -45,13 +44,12 @@ public class LogStats extends Thread {
 	// Class variables
 	public StringBuilder msg = new StringBuilder(); // info for the user
 	private final String versionFull;
+	private final String programName;
 	private RequestResult res = RequestResult.NOINFO;
-	private long duration; // time to complete the request, in msecs - succuessfull or not
+	private long duration; // Time to complete the request, in msecs - successful or not
 	protected boolean log = true; // Log to server (statistics)
 	protected boolean verbose = false; // Be verbose
 	HashMap<String, String> values; // Values to report
-
-	//	boolean newVersion = false;
 
 	/**
 	 * Report stats to server
@@ -64,7 +62,7 @@ public class LogStats extends Thread {
 	 */
 	public static LogStats report(String software, String versionShort, String versionFull, boolean ok, boolean verbose, String args[], String errorMessage, HashMap<String, String> reportValues) {
 		//---
-		// Create logStats & add data 
+		// Create logStats & add data
 		//---
 		LogStats logStats = new LogStats(software, versionShort, versionFull);
 
@@ -83,7 +81,7 @@ public class LogStats extends Thread {
 		if ((errorMessage != null) && !errorMessage.isEmpty()) logStats.add("Error", errorMessage);
 
 		//---
-		// Add system info 
+		// Add system info
 		//---
 		// What kind of systems do users run this program on?
 		String properties[] = { "user.name", "os.name", "os.version", "os.arch" };
@@ -104,7 +102,7 @@ public class LogStats extends Thread {
 		};
 
 		//---
-		// Add custom values 
+		// Add custom values
 		//---
 		for (String name : reportValues.keySet())
 			logStats.add(name, reportValues.get(name));
@@ -133,19 +131,15 @@ public class LogStats extends Thread {
 
 	/**
 	 * Constructor
-	 * @param software
-	 * @param versionShort
-	 * @param versionFull
 	 */
 	public LogStats(String software, String versionShort, String versionFull) {
+		programName = software;
 		this.versionFull = versionFull;
 		values = new HashMap<String, String>();
 	}
 
 	/**
 	 * Add a 'name=value' pair
-	 * @param name
-	 * @param value
 	 */
 	public void add(String name, String value) {
 		// Replace '\n' char by (literally) a "\n" string. Same for '\t'
@@ -156,27 +150,16 @@ public class LogStats extends Thread {
 		values.put(name, value); // Now we can store values
 	}
 
-	/** Unencripted */
-	private URL buildUrl() {
-		try {
-			return buildUrl0();
-		} catch (MalformedURLException e) {
-			msg.append(e.getMessage());
-			return null;
-		}
-	}
-
 	/**
 	 * Create URL
-	 * @return
-	 * @throws MalformedURLException
 	 */
-	private URL buildUrl0() throws MalformedURLException {
+	private URL buildUrl() throws MalformedURLException {
 		StringBuilder urlsb = new StringBuilder();
 		urlsb.append(URL_ROOT).append("?");
 
 		// Add program and version
-		urlsb.append("program=").append(encode2url(SnpEff.class.getSimpleName()));
+		//		urlsb.append("program=").append(encode2url(SnpEff.class.getSimpleName()));
+		urlsb.append("program=").append(encode2url(programName));
 		urlsb.append("&version=").append(encode2url(versionFull));
 
 		// Add all other 'name=value' pairs in alphabetical order
@@ -186,7 +169,18 @@ public class LogStats extends Thread {
 		for (String name : names)
 			urlsb.append("&" + name + "=").append(encode2url(values.get(name)));
 
+		if (debug) Gpr.debug("URL: " + urlsb);
 		return new URL(urlsb.toString());
+	}
+
+	/** Unencripted */
+	private URL buildUrlWrap() {
+		try {
+			return buildUrl();
+		} catch (MalformedURLException e) {
+			msg.append(e.getMessage());
+			return null;
+		}
 	}
 
 	/**
@@ -198,7 +192,7 @@ public class LogStats extends Thread {
 		long t0 = System.currentTimeMillis();
 		if (debug) Gpr.debug("Connect Step = " + step);
 		try {
-			URL url = buildUrl();
+			URL url = buildUrlWrap();
 
 			// Step 1: Open connection
 			step = 1;
@@ -216,12 +210,14 @@ public class LogStats extends Thread {
 			if (debug) Gpr.debug("Connect Step = " + step);
 
 			// Step 4: Parse results (nothing done here)
-			//			step = 4;
-			//			String responseStr = Gpr.read(httpConnection.getInputStream());
-			//			parseResponse(responseStr);
+			step = 4;
+			String responseStr = Gpr.read(httpConnection.getInputStream());
+			if (debug) Gpr.debug("Server response: " + responseStr);
+			// parseResponse(responseStr);
 
 			res = RequestResult.OK;
 		} catch (Exception e) {
+			if (debug) e.printStackTrace();
 			msg.append(step > 3 ? "Bad response" : "Error in connection. ").append(" Step " + step).append("(").append(e.toString()).append(")");
 			res = RequestResult.ERROR;
 		} finally {
@@ -234,8 +230,6 @@ public class LogStats extends Thread {
 
 	/**
 	 * Encode data to URL format
-	 * @param data
-	 * @return
 	 */
 	private String encode2url(String data) {
 		try {

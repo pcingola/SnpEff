@@ -375,7 +375,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			throw new RuntimeException("Unknown output format '" + outputFormat + "'");
 		}
 
-		outputFormatter.setVersion(VERSION_NO_NAME);
+		outputFormatter.setVersion(VERSION_AUTHOR);
 		outputFormatter.setCommandLineStr(commandLineStr(false));
 		outputFormatter.setVariantEffectResutFilter(variantEffectResutFilter);
 		outputFormatter.setSupressOutput(suppressOutput);
