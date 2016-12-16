@@ -112,7 +112,7 @@ public enum EffectType {
 			// OK, the value does not exits. Try Sequence Ontology
 		}
 
-		// Try an SO term
+		// Populate S.O. terms map
 		if (so2efftype.isEmpty()) {
 			// In some cases a 'non-variant' has different effect (e.g. 'exon_region'), so we need to call this twice
 			so2efftype(formatVersion, null);
@@ -141,6 +141,8 @@ public enum EffectType {
 		//---
 		Map<String, EffectType> oldSo2efftype = new HashMap<>();
 		oldSo2efftype.put("non_coding_exon_variant", EffectType.EXON);
+		oldSo2efftype.put("inframe_insertion", EffectType.CODON_INSERTION);
+		oldSo2efftype.put("inframe_deletion", EffectType.CODON_DELETION);
 
 		// Add terms if not already in the map
 		for (String so : oldSo2efftype.keySet()) {
