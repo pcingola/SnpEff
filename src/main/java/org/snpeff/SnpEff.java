@@ -1057,6 +1057,7 @@ public class SnpEff implements CommandLine {
 			checkNewVersion(snpEffCmd.config);
 		}
 
+		if (verbose) Timer.showStdErr("Done.");
 		return ok;
 	}
 

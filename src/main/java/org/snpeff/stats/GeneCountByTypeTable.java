@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.snpeff.interval.BioType;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
@@ -24,9 +25,6 @@ import org.snpeff.snpEffect.VariantEffect;
  */
 public class GeneCountByTypeTable implements Iterable<String>, Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 	public static int GENE_CPG_NUM_BINS = 30;
 	public static boolean debug = false;
@@ -123,7 +121,11 @@ public class GeneCountByTypeTable implements Iterable<String>, Serializable {
 		counter.inc(key);
 
 		// Add biotype
-		if (tr.getBioType() != null) bioType.put(key, tr.getBioType().toString());
+		if (tr.getBioType() != null) {
+			bioType.put(key, tr.getBioType().toString());
+		} else {
+			bioType.put(key, tr.isProteinCoding() ? BioType.protein_coding.toString() : "");
+		}
 
 		// Calculate the size of the intersection
 		Marker marker = variantEffect.getMarker();

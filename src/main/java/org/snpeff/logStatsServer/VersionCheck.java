@@ -9,7 +9,7 @@ import java.net.URL;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 
-/** 
+/**
  * Check is a new version is available
  */
 public class VersionCheck extends Thread {
@@ -26,19 +26,10 @@ public class VersionCheck extends Thread {
 
 	/**
 	 * Get version data
-	 * @param url
-	 * @param verbose
-	 * @return
 	 */
 	public static VersionCheck version(String software, String latestVersion, String url, boolean verbose) {
-		//---
-		// Create logStats & add data 
-		//---
-		VersionCheck versionCheck = new VersionCheck(software, latestVersion, url);
-
-		//---
 		// Run thread
-		//---
+		VersionCheck versionCheck = new VersionCheck(software, latestVersion, url);
 		versionCheck.start();
 
 		// Finish up
@@ -66,8 +57,6 @@ public class VersionCheck extends Thread {
 
 	/**
 	 * Get page as string
-	 * @return
-	 * @throws Exception
 	 */
 	String getData() throws Exception {
 		if ((url == null) || url.isEmpty()) return "";
@@ -107,7 +96,6 @@ public class VersionCheck extends Thread {
 
 	/**
 	 * Parse versions page
-	 * @param text
 	 */
 	void parse(String text) {
 		String lines[] = text.split("\n");
