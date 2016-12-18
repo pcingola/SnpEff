@@ -352,6 +352,17 @@ void copyPwm() {
 }
 
 #-------------------------------------------------------------------------------
+# Create 'software vesion' file
+#-------------------------------------------------------------------------------
+string createVersionFile(string htmlDir) {
+	verFile := "$htmlDir/versions.txt"
+	println "Creating versions file: '$verFile'"
+	snpEffVer  := sys $snpeff -version 2>&1
+	verFile.write(snpEffVer.trim().toUpper() + "\t$snpeffDownload\n");
+	return verFile
+}
+
+#-------------------------------------------------------------------------------
 # Human genomes data dirs
 #-------------------------------------------------------------------------------
 string[] dirsHg() {
@@ -528,15 +539,8 @@ void uploadDev2Sf() {
 # Upload binary files
 #-------------------------------------------------------------------------------
 void uploadHtml2Sf() {
-	htmlDir    := "$HOME/workspace/SnpEff/html"
-
-	# Create version file
-	verFile    := "$htmlDir/versions.txt"
-	println "Creating versions file: '$verFile'"
-	snpEffVer  := sys $snpeff 2>&1  | grep -i "SnpEff version"  | cut -f 3,4,6 -d " " | cut -f 1 -d ")"
-	snpSiftVer := sys $snpsift 2>&1 | grep -i "SnpSift version" | cut -f 3,4,6 -d " " | cut -f 1 -d ")"
-
-	verFile.write(snpEffVer.trim().toUpper() + "\t$snpeffDownload\n" + snpSiftVer.trim().toUpper() + "\t$snpeffDownload\n");
+	htmlDir := "$HOME/workspace/SnpEff/html"
+	verFile := htmlDir.createVersionFile()
 
 	# Upload HTML, versions and images to SF
 	println "Upload web pages"

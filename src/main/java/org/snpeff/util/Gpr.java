@@ -166,6 +166,10 @@ public class Gpr {
 		return c1.compareTo(c2);
 	}
 
+	public static String compileDate(Class<?> cl) {
+		return compileTimeStamp(cl, new SimpleDateFormat("yyyy-MM-dd"));
+	}
+
 	public static String compileTimeStamp() {
 		return compileTimeStamp(Gpr.class);
 	}
@@ -175,6 +179,14 @@ public class Gpr {
 	 * created OR when was a class compiled
 	 */
 	public static String compileTimeStamp(Class<?> cl) {
+		return compileTimeStamp(cl, new SimpleDateFormat("yyyy-MM-dd HH:mm"));
+	}
+
+	/**
+	 * Return a time-stamp showing When was the JAR file
+	 * created OR when was a class compiled
+	 */
+	public static String compileTimeStamp(Class<?> cl, SimpleDateFormat dateFormat) {
 		try {
 			String resName = cl.getName().replace('.', '/') + ".class";
 			URLConnection conn = ClassLoader.getSystemResource(resName).openConnection();
@@ -190,8 +202,7 @@ public class Gpr {
 
 			// Format as timestamp
 			Date epochDate = new Date(epoch);
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-			return df.format(epochDate);
+			return dateFormat.format(epochDate);
 		} catch (Exception e) {
 			return null;
 		}
@@ -199,8 +210,6 @@ public class Gpr {
 
 	/**
 	 * Count number of column in a file
-	 * @param file
-	 * @return
 	 */
 	public static int countColumns(String file) {
 		try {

@@ -58,7 +58,7 @@ public class VersionCheck extends Thread {
 	/**
 	 * Get page as string
 	 */
-	String getData() throws Exception {
+	protected String getData() throws Exception {
 		if ((url == null) || url.isEmpty()) return "";
 
 		StringBuffer text = new StringBuffer();
@@ -96,8 +96,10 @@ public class VersionCheck extends Thread {
 
 	/**
 	 * Parse versions page
+	 * Format: One entry per line
+	 * Line format: "softwareName \t version \t date \t URL \n" 
 	 */
-	void parse(String text) {
+	protected void parse(String text) {
 		String lines[] = text.split("\n");
 		for (String line : lines) {
 			if (debug) Gpr.debug("Parse line: " + line);

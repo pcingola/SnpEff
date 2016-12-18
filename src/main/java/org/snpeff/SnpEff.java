@@ -91,8 +91,9 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "i";
+	public static final String REVISION = "j";
 	public static final String BUILD = Gpr.compileTimeStamp(SnpEff.class);
+	public static final String BUILD_DATE = Gpr.compileDate(SnpEff.class);
 	public static final String VERSION_MAJOR = "4.3";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_BUILD = VERSION_SHORT + " (build " + BUILD + ")";
@@ -983,7 +984,7 @@ public class SnpEff implements CommandLine {
 
 				case "-version":
 					// Show version number and exit
-					System.out.println(VERSION_SHORT);
+					System.out.println(SOFTWARE_NAME + "\t" + VERSION_SHORT + "\t" + BUILD_DATE);
 					System.exit(0);
 					break;
 
