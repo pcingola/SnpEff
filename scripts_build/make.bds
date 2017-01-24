@@ -175,7 +175,6 @@ void buildConfig() {
 
 	sys cat $confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config \
 			$confDir/snpEff.FLYBASE_$flybaseRelease.config \
-			$confDir/snpEff.etc.config \
 			>> $conf
 
 	for( string b : bundles) {
