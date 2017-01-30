@@ -499,8 +499,6 @@ public class Gpr {
 
 	/**
 	 * Try to open a file (BufferedReader) using either the file or a gzip file (appending '.gz' to fileName)
-	 * @param fileName
-	 * @return
 	 */
 	public static BufferedReader reader(String fileName) {
 		return reader(fileName, false);
@@ -508,9 +506,7 @@ public class Gpr {
 
 	/**
 	 * Try to open a file (BufferedReader) using either the file or a gzip file (appending '.gz' to fileName)
-	 * @param fileName
 	 * @param gzip : If true, file is assumed to be gzipped
-	 * @return
 	 */
 	public static BufferedReader reader(String fileName, boolean gzip) {
 		BufferedReader reader = null;

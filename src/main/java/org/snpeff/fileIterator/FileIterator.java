@@ -137,7 +137,6 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 	/**
 	 * Initialize
 	 * @param fileName : Can be null (no file is opened)
-	 * @param inOffset
 	 */
 	protected void init(String fileName, int inOffset) {
 		line = null;
