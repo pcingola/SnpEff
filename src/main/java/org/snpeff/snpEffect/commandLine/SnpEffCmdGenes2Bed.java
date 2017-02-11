@@ -99,43 +99,17 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	@Override
 	public boolean run() {
 		loadGenes();
-		boolean isEmpty = (geneIds.size() <= 0);
 		if (verbose) {
 			Timer.showStdErr("Number of gene IDs to look up: " + geneIds.size());
-			if (isEmpty) Timer.showStdErr("Empty list of IDs. Using all genes.");
+			if (geneIds.isEmpty()) Timer.showStdErr("Empty list of IDs. Using all genes.");
 		}
 
 		// Load config & database
 		loadConfig();
 		loadDb();
 
-		// Show title
-		if (showExons) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;exonRank");
-		else System.out.println("#chr\tstart\tend\tgeneName;geneId");
-
-		// Find genes
-		Genome genome = config.getGenome();
-		if (verbose) Timer.showStdErr("Finding genes.");
-		int found = 0, filtered = 0;
-		for (Gene g : genome.getGenesSortedPos()) {
-			// Is gene.id or gene.name in geneSet? => Show it
-			if (isEmpty //
-					|| geneIds.contains(g.getId()) // Is the geneId in the list?
-					|| geneIds.contains(g.getGeneName()) // Id the geneName in the list?
-			) {
-				found++;
-
-				// Show or filter?
-				if (!onlyProteinCoding || g.isProteinCoding()) show(g);
-				else filtered++;
-			}
-		}
-
-		if (verbose) {
-			Timer.showStdErr("Done\n\tFound      : " + found + " / " + geneIds.size() //
-					+ (filtered > 0 ? "\n\tFiltered out : " + filtered + " / " + found : "") //
-			);
-		}
+		// Show genes
+		showGenes();
 
 		return true;
 	}
@@ -213,6 +187,39 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 				+ ";" + g.getId() //
 				+ ";" + (g.isStrandPlus() ? "+" : "-") //
 		);
+	}
+
+	/**
+	 * Show genes in BED format
+	 */
+	public void showGenes() {
+		// Show title
+		if (showExons) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;exonRank");
+		else System.out.println("#chr\tstart\tend\tgeneName;geneId");
+
+		// Find genes
+		Genome genome = config.getGenome();
+		if (verbose) Timer.showStdErr("Finding genes.");
+		int found = 0, filtered = 0;
+		for (Gene g : genome.getGenesSortedPos()) {
+			// Is gene.id or gene.name in geneSet? => Show it
+			if (geneIds.isEmpty() // Empty set means 'use all genes'
+					|| geneIds.contains(g.getId()) // Is the geneId in the list?
+					|| geneIds.contains(g.getGeneName()) // Id the geneName in the list?
+			) {
+				found++;
+
+				// Show or filter?
+				if (!onlyProteinCoding || g.isProteinCoding()) show(g);
+				else filtered++;
+			}
+		}
+
+		if (verbose) {
+			Timer.showStdErr("Done\n\tFound      : " + found + " / " + geneIds.size() //
+					+ (filtered > 0 ? "\n\tFiltered out : " + filtered + " / " + found : "") //
+			);
+		}
 	}
 
 	@Override

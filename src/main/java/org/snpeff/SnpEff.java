@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Custom;
@@ -450,7 +451,7 @@ public class SnpEff implements CommandLine {
 		if (onlyTranscriptsFile != null) {
 			// Load file
 			String onlyTr = Gpr.readFile(onlyTranscriptsFile);
-			HashSet<String> trIds = new HashSet<>();
+			Set<String> trIds = new HashSet<>();
 			for (String trId : onlyTr.split("\n"))
 				trIds.add(trId.trim());
 
