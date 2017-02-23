@@ -1019,28 +1019,8 @@ public class VcfEffect {
 			bioType = null;
 		}
 
-		// Rank
-		Exon ex = variantEffect.getExon();
-		rank = -1;
-		if (ex != null) {
-			rank = ex.getRank();
-			rankMax = tr.numChilds();
-		} else {
-			// Do we have an intron?
-			Intron intron = variantEffect.getIntron();
-			if (intron != null) {
-				rank = intron.getRank();
-				rankMax = Math.max(0, tr.numChilds() - 1);
-			} else if (tr != null && marker != null) {
-				// Can we try to find an exon?
-				for (Exon e : tr)
-					if (e.intersects(variant)) {
-						rank = e.getRank();
-						rankMax = tr.numChilds();
-						break;
-					}
-			}
-		}
+		// Find and set rank and rankMax
+		setRank();
 
 		// Codon change
 		codon = variantEffect.getCodonChangeMax();
@@ -1185,6 +1165,51 @@ public class VcfEffect {
 
 	public void setImpact(VariantEffect.EffectImpact impact) {
 		this.impact = impact;
+	}
+
+	/**
+	 * Find and set rank and rank max
+	 */
+	void setRank() {
+		Transcript tr = variantEffect.getTranscript();
+
+		// Rank
+		Exon ex = variantEffect.getExon();
+		rank = -1;
+		if (ex != null) {
+			rank = ex.getRank();
+			rankMax = tr.numChilds();
+			return;
+		}
+		// Do we have an intron?
+		Intron intron = variantEffect.getIntron();
+		if (intron != null) {
+			rank = intron.getRank();
+			rankMax = Math.max(0, tr.numChilds() - 1);
+			return;
+		}
+
+		// Try to find an exon
+		Variant variant = variantEffect.getVariant();
+		for (Exon e : tr)
+			if (e.intersects(variant)) {
+				rank = e.getRank();
+				rankMax = tr.numChilds();
+				return;
+			}
+
+		// Try to find an intron
+		List<Intron> introns = tr.introns();
+		for (Intron in : introns) {
+			if (in.intersects(variant)) {
+				rank = in.getRank();
+				rankMax = introns.size();
+				return;
+			}
+		}
+
+		// Nothing found
+		rank = rankMax = -1;
 	}
 
 	public void setTranscriptId(String transcriptId) {
