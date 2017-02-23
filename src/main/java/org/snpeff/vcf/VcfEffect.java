@@ -1189,7 +1189,9 @@ public class VcfEffect {
 			return;
 		}
 
-		// Try to find an exon
+		if (tr == null) return;
+
+		// Exon not explicitly set. Try to find it
 		Variant variant = variantEffect.getVariant();
 		for (Exon e : tr)
 			if (e.intersects(variant)) {
@@ -1198,7 +1200,7 @@ public class VcfEffect {
 				return;
 			}
 
-		// Try to find an intron
+		// Intron not explicitly set. Try to find it.
 		List<Intron> introns = tr.introns();
 		for (Intron in : introns) {
 			if (in.intersects(variant)) {

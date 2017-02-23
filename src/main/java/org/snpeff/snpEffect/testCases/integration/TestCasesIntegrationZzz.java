@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.SnpEff;
+import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEffect;
@@ -22,27 +23,37 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
 		super();
 	}
 
+	/**
+	 * Annotate intron rank in gene_fusion
+	 */
 	@Test
-	public void test_11_ExonRank() {
+	public void test_06_fusion() {
 		Gpr.debug("Test");
+		String genome = "testHg19Chr3";
+		String vcf = "tests/test_fusion_intron_rank.vcf";
 
-		String vcfFileName = "tests/mixed_11.vcf";
-		String args[] = { "testHg19Chr20", vcfFileName };
+		String args[] = { "-noLog", "-ud", "0", genome, vcf };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		snpEff.setDebug(debug);
 
-		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
-		snpeff.setSupressOutput(!verbose);
-		snpeff.setVerbose(verbose);
-
-		List<VcfEntry> vcfEnties = snpeff.run(true);
-		VcfEntry ve = vcfEnties.get(0);
-
-		// Get first effect (there should be only one)
-		List<VcfEffect> veffs = ve.getVcfEffects();
-		VcfEffect veff = veffs.get(0);
-
-		Assert.assertEquals("Exon rank does not match", 12, veff.getRank());
-
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		boolean checked = false;
+		List<VcfEntry> vcfEntries = seff.run(true);
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve);
+			for (VcfEffect veff : ve.getVcfEffects()) {
+				if (verbose) System.out.println("\t\t" + veff);
+				if (veff.getEffectType() == EffectType.GENE_FUSION && veff.getTranscriptId().equals("NM_001777.3")) {
+					if (verbose) System.err.println("VcfEffect: " + veff);
+					Assert.assertEquals("Expected rank does not match", 7, veff.getRank());
+					Assert.assertEquals("Expected rankMax does not match", 10, veff.getRankMax());
+					checked = true;
+				}
+			}
+		}
+		Assert.assertTrue("No translocation found", checked);
 	}
 
 }

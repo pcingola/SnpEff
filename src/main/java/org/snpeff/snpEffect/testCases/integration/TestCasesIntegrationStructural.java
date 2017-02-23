@@ -158,8 +158,7 @@ public class TestCasesIntegrationStructural {
 	public void test_05_fusion() {
 		Gpr.debug("Test");
 		String genome = "hg19";
-		String vcf = "tests//test_fusion_ROS1-SLC34A2.vcf";
-		verbose = true;
+		String vcf = "tests/test_fusion_ROS1-SLC34A2.vcf";
 
 		String args[] = { "-noLog", "-ud", "0", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -184,4 +183,36 @@ public class TestCasesIntegrationStructural {
 		Assert.assertTrue("No translocation found", checked);
 	}
 
+	/**
+	 * Annotate intron rank in gene_fusion
+	 */
+	@Test
+	public void test_06_fusion() {
+		Gpr.debug("Test");
+		String genome = "testHg19Chr3";
+		String vcf = "tests/test_fusion_intron_rank.vcf";
+
+		String args[] = { "-noLog", "-ud", "0", genome, vcf };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		snpEff.setDebug(debug);
+
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		boolean checked = false;
+		List<VcfEntry> vcfEntries = seff.run(true);
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve);
+			for (VcfEffect veff : ve.getVcfEffects()) {
+				if (verbose) System.out.println("\t\t" + veff);
+				if (veff.getEffectType() == EffectType.GENE_FUSION && veff.getTranscriptId().equals("NM_001777.3")) {
+					if (verbose) System.err.println("VcfEffect: " + veff);
+					Assert.assertEquals("Expected rank does not match", 7, veff.getRank());
+					Assert.assertEquals("Expected rankMax does not match", 10, veff.getRankMax());
+					checked = true;
+				}
+			}
+		}
+		Assert.assertTrue("No translocation found", checked);
+	}
 }
