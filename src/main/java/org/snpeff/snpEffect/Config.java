@@ -57,6 +57,7 @@ public class Config implements Serializable, Iterable<String> {
 	boolean onlyRegulation; // Only use regulation features
 	boolean errorOnMissingChromo; // Error if chromosome is missing
 	boolean errorChromoHit; // Error if chromosome is not hit in a query
+	boolean expandIub = true; // Expand IUB codes in variants?
 	boolean hgvs = true; // Use HGVS notation?
 	boolean hgvsShift = true; // Shift variants according to HGVS notation (towards the most 3prime possible coordinate)
 	boolean hgvsOneLetterAa = false; // Use HGVS 1 letter amino acid in HGVS notation?
@@ -488,6 +489,10 @@ public class Config implements Serializable, Iterable<String> {
 		return errorOnMissingChromo;
 	}
 
+	public boolean isExpandIub() {
+		return expandIub;
+	}
+
 	public boolean isHgvs() {
 		return hgvs;
 	}
@@ -715,6 +720,10 @@ public class Config implements Serializable, Iterable<String> {
 
 	public void setErrorOnMissingChromo(boolean errorOnMissingChromo) {
 		this.errorOnMissingChromo = errorOnMissingChromo;
+	}
+
+	public void setExpandIub(boolean expandIub) {
+		this.expandIub = expandIub;
 	}
 
 	/**

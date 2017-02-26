@@ -101,7 +101,6 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	protected LinkedList<Variant> variants;
 	protected List<VcfEffect> vcfEffects;
 	protected VcfFileIterator vcfFileIterator; // Iterator where this entry was red from
-
 	protected ArrayList<VcfGenotype> vcfGenotypes = null;
 
 	/**
@@ -813,7 +812,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				&& ref.length() == 1 //
 				&& altStr.length() == 1 //
 				&& !ref.equalsIgnoreCase(altStr) //
-		;
+				;
 	}
 
 	/**
@@ -852,7 +851,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				&& !alt.equals(VCF_ALT_NON_REF_gVCF) // '<NON_REF>'
 				&& !alt.equals(VCF_ALT_MISSING_REF) // '<*>'
 				&& !alt.equals(ref) // Is ALT different than REF?
-		;
+				;
 	}
 
 	@Override
@@ -1003,77 +1002,106 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Parse single ALT record, return parsed ALTS
 	 */
 	String[] parseAltSingle(String altsStr) {
-		String alts[];
+		if (altsStr.length() != 1 // Not a SNP? Do not expand
+				|| !isVariant(altsStr) // Not a variant? Do not expand
+				|| !vcfFileIterator.isExpandIub() // Do not expand IUB option?
+		) {
+			String alts[] = { altsStr };
+			return alts;
+		}
 
 		// Not a variant?
 		if (altsStr.equals(VCF_ALT_NON_REF)) { return VCF_ALT_NON_REF_ARRAY; }
 		if (altsStr.equals(VCF_ALT_MISSING_REF)) { return VCF_ALT_MISSING_REF_ARRAY; }
 		if (altsStr.equals(VCF_ALT_NON_REF_gVCF)) { return VCF_ALT_NON_REF_gVCF_ARRAY; }
 
-		// SNP
-		if (altsStr.length() == 1) {
-			if (altsStr.equals("A") || altsStr.equals("C") || altsStr.equals("G") || altsStr.equals("T") || altsStr.equals("*") || altsStr.equals(".")) {
-				alts = new String[1];
-				alts[0] = altsStr;
-			} else if (altsStr.equals("N")) { // aNy base
-				alts = new String[4];
-				alts[0] = "A";
-				alts[1] = "C";
-				alts[2] = "G";
-				alts[3] = "T";
-			} else if (altsStr.equals("B")) { // B: not A
-				alts = new String[3];
-				alts[0] = "C";
-				alts[1] = "G";
-				alts[2] = "T";
-			} else if (altsStr.equals("D")) { // D: not C
-				alts = new String[3];
-				alts[0] = "A";
-				alts[1] = "G";
-				alts[2] = "T";
-			} else if (altsStr.equals("H")) { // H: not G
-				alts = new String[3];
-				alts[0] = "A";
-				alts[1] = "C";
-				alts[2] = "T";
-			} else if (altsStr.equals("V")) { // V: not T
-				alts = new String[3];
-				alts[0] = "A";
-				alts[1] = "C";
-				alts[2] = "G";
-			} else if (altsStr.equals("M")) {
-				alts = new String[2];
-				alts[0] = "A";
-				alts[1] = "C";
-			} else if (altsStr.equals("R")) {
-				alts = new String[2];
-				alts[0] = "A";
-				alts[1] = "G";
-			} else if (altsStr.equals("W")) { // Weak
-				alts = new String[2];
-				alts[0] = "A";
-				alts[1] = "T";
-			} else if (altsStr.equals("S")) { // Strong
-				alts = new String[2];
-				alts[0] = "C";
-				alts[1] = "G";
-			} else if (altsStr.equals("Y")) {
-				alts = new String[2];
-				alts[0] = "C";
-				alts[1] = "T";
-			} else if (altsStr.equals("K")) {
-				alts = new String[2];
-				alts[0] = "G";
-				alts[1] = "T";
-			} else if (!isVariant(altsStr)) { // A non-variant, non-ref, etc. (e.g. '*', '<NON_REF>', or '<*>')
-				alts = new String[1];
-				alts[0] = altsStr;
-			} else {
-				throw new RuntimeException("WARNING: Unkown IUB code for SNP '" + altsStr + "'");
-			}
-		} else {
+		// SNP IUB conversion table
+		String alts[];
+		switch (altsStr) {
+		case "A":
+		case "C":
+		case "G":
+		case "T":
+		case "*":
+		case ".":
 			alts = new String[1];
 			alts[0] = altsStr;
+			break;
+
+		case "N": // aNy base
+			alts = new String[4];
+			alts[0] = "A";
+			alts[1] = "C";
+			alts[2] = "G";
+			alts[3] = "T";
+			break;
+
+		case "B": // B: not A
+			alts = new String[3];
+			alts[0] = "C";
+			alts[1] = "G";
+			alts[2] = "T";
+			break;
+
+		case "D": // D: not C
+			alts = new String[3];
+			alts[0] = "A";
+			alts[1] = "G";
+			alts[2] = "T";
+			break;
+
+		case "H": // H: not G
+			alts = new String[3];
+			alts[0] = "A";
+			alts[1] = "C";
+			alts[2] = "T";
+			break;
+
+		case "V": // V: not T
+			alts = new String[3];
+			alts[0] = "A";
+			alts[1] = "C";
+			alts[2] = "G";
+			break;
+
+		case "M":
+			alts = new String[2];
+			alts[0] = "A";
+			alts[1] = "C";
+			break;
+
+		case "R":
+			alts = new String[2];
+			alts[0] = "A";
+			alts[1] = "G";
+			break;
+
+		case "W": // Weak
+			alts = new String[2];
+			alts[0] = "A";
+			alts[1] = "T";
+			break;
+
+		case "S": // Strong
+			alts = new String[2];
+			alts[0] = "C";
+			alts[1] = "G";
+			break;
+
+		case "Y":
+			alts = new String[2];
+			alts[0] = "C";
+			alts[1] = "T";
+			break;
+
+		case "K":
+			alts = new String[2];
+			alts[0] = "G";
+			alts[1] = "T";
+			break;
+
+		default:
+			throw new RuntimeException("WARNING: Unkown IUB code for SNP '" + altsStr + "'");
 		}
 
 		return alts;
@@ -1484,7 +1512,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if (reference.length() == 1) {
 				// SNPs
 				// 20     3 .         C      G       .   PASS  DP=100
-				list = Variant.factory(chromo, start, reference, alt, id, true);
+				list = Variant.factory(chromo, start, reference, alt, id, vcfFileIterator.isExpandIub());
 			} else {
 				// MNPs
 				// 20     3 .         TC     AT      .   PASS  DP=100
@@ -1501,7 +1529,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 
 				String newRef = reference.substring(startDiff, endDiff + 1);
 				String newAlt = alt.substring(startDiff, endDiff + 1);
-				list = Variant.factory(chromo, start + startDiff, newRef, newAlt, id, true);
+				list = Variant.factory(chromo, start + startDiff, newRef, newAlt, id, vcfFileIterator.isExpandIub());
 			}
 		} else {
 			// Short Insertions, Deletions or Mixed Variants (substitutions)
@@ -1517,7 +1545,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				String ref = "";
 				String ch = align.getAlignment();
 				if (!ch.startsWith("-")) throw new RuntimeException("Deletion '" + ch + "' does not start with '-'. This should never happen!");
-				list = Variant.factory(chromo, start + startDiff, ref, ch, id, true);
+				list = Variant.factory(chromo, start + startDiff, ref, ch, id, vcfFileIterator.isExpandIub());
 				break;
 
 			case INS:
@@ -1526,14 +1554,14 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				ch = align.getAlignment();
 				ref = "";
 				if (!ch.startsWith("+")) throw new RuntimeException("Insertion '" + ch + "' does not start with '+'. This should never happen!");
-				list = Variant.factory(chromo, start + startDiff, ref, ch, id, true);
+				list = Variant.factory(chromo, start + startDiff, ref, ch, id, vcfFileIterator.isExpandIub());
 				break;
 
 			case MIXED:
 				// Case: Mixed variant (substitution)
 				reference = reference.substring(startDiff);
 				alt = alt.substring(startDiff);
-				list = Variant.factory(chromo, start + startDiff, reference, alt, id, true);
+				list = Variant.factory(chromo, start + startDiff, reference, alt, id, vcfFileIterator.isExpandIub());
 				break;
 
 			default:

@@ -92,7 +92,7 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "j";
+	public static final String REVISION = "k";
 	public static final String BUILD = Gpr.compileTimeStamp(SnpEff.class);
 	public static final String BUILD_DATE = Gpr.compileDate(SnpEff.class);
 	public static final String VERSION_MAJOR = "4.3";
@@ -107,6 +107,7 @@ public class SnpEff implements CommandLine {
 	protected boolean canonical = false; // Use only canonical transcripts
 	protected boolean debug; // Debug mode
 	protected boolean download = true; // Download genome, if not available
+	protected boolean expandIub = true; // Expand IUB codes
 	protected boolean help; // Show command help and exit
 	protected boolean hgvs = true; // Use Hgvs notation
 	protected boolean hgvsForce = false; // Use Hgvs notation even in classic mode?
@@ -326,6 +327,7 @@ public class SnpEff implements CommandLine {
 		config.setHgvsOneLetterAA(hgvsOneLetterAa);
 		config.setHgvsShift(hgvsShift);
 		config.setHgvsTrId(hgvsTrId);
+		config.setExpandIub(expandIub);
 
 		// Verbose & debug
 		config.setDebug(debug);
@@ -877,6 +879,10 @@ public class SnpEff implements CommandLine {
 					motif = true; // Use motif database
 					break;
 
+				case "-noexpandiub":
+					expandIub = false; // Do not expand IUB codes
+					break;
+
 				case "-nogenome":
 					noGenome = true; // Do not load genome
 					break;
@@ -1241,6 +1247,7 @@ public class SnpEff implements CommandLine {
 		snpEffCmd.dataDir = dataDir;
 		snpEffCmd.debug = debug;
 		snpEffCmd.download = download;
+		snpEffCmd.expandIub = expandIub;
 		snpEffCmd.filterIntervalFiles = filterIntervalFiles;
 		snpEffCmd.genomeVer = genomeVer;
 		snpEffCmd.help = help;
@@ -1332,6 +1339,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-motif                       : Annotate using motifs (requires Motif database). Default: " + motif);
 		System.err.println("\t-nextProt                    : Annotate using NextProt (requires NextProt database).");
 		System.err.println("\t-noGenome                    : Do not load any genomic database (e.g. annotate using custom files).");
+		System.err.println("\t-noExpandIUB                 : Disable IUB code expansion in input variants");
 		System.err.println("\t-noInteraction               : Disable inteaction annotations");
 		System.err.println("\t-noMotif                     : Disable motif annotations.");
 		System.err.println("\t-noNextProt                  : Disable NextProt annotations.");

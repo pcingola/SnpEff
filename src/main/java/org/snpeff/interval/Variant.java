@@ -87,36 +87,43 @@ public class Variant extends Marker {
 			// Note: We use 'hasIUBMax()' instead of 'hasIUB()' because large InDels may
 			// have tons of 'N' bases. In such cases, it is impractical (and useless) to
 			// produce all possible combinations
-			boolean refIub = expand && IubString.hasIUBMax(ref);
-			boolean altIub = expand && IubString.hasIUBMax(alt);
-
-			// Expand all possible REF / ALT combinations
-			if (!refIub && !altIub) {
+			boolean refIub, altIub;
+			if (!expand) {
 				// Non-IUB expansion needed
 				Variant var = new Variant(chromo, start, ref, alt, id);
 				list.add(var);
-			} else if (altIub && !refIub) {
-				// ALT has IUB characters
-				IubString iubsAlt = new IubString(alt);
-				for (String seqAlt : iubsAlt) {
-					Variant var = new Variant(chromo, start, ref, seqAlt, id);
+			} else {
+				refIub = IubString.hasIUBMax(ref);
+				altIub = IubString.hasIUBMax(alt);
+
+				// Expand all possible REF / ALT combinations
+				if (!refIub && !altIub) {
+					// Non-IUB expansion needed
+					Variant var = new Variant(chromo, start, ref, alt, id);
 					list.add(var);
-				}
-			} else if (!altIub && refIub) {
-				// REF has IUB characters
-				IubString iubsRef = new IubString(ref);
-				for (String seqRef : iubsRef) {
-					Variant var = new Variant(chromo, start, seqRef, alt, id);
-					list.add(var);
-				}
-			} else if (altIub && refIub) {
-				// Both REF and ALT have IUB characters
-				IubString iubsRef = new IubString(ref);
-				for (String seqRef : iubsRef) {
+				} else if (altIub && !refIub) {
+					// ALT has IUB characters
 					IubString iubsAlt = new IubString(alt);
 					for (String seqAlt : iubsAlt) {
-						Variant var = new Variant(chromo, start, seqRef, seqAlt, id);
+						Variant var = new Variant(chromo, start, ref, seqAlt, id);
 						list.add(var);
+					}
+				} else if (!altIub && refIub) {
+					// REF has IUB characters
+					IubString iubsRef = new IubString(ref);
+					for (String seqRef : iubsRef) {
+						Variant var = new Variant(chromo, start, seqRef, alt, id);
+						list.add(var);
+					}
+				} else if (altIub && refIub) {
+					// Both REF and ALT have IUB characters
+					IubString iubsRef = new IubString(ref);
+					for (String seqRef : iubsRef) {
+						IubString iubsAlt = new IubString(alt);
+						for (String seqAlt : iubsAlt) {
+							Variant var = new Variant(chromo, start, seqRef, seqAlt, id);
+							list.add(var);
+						}
 					}
 				}
 			}

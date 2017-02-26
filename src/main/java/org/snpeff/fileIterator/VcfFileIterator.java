@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.snpeff.fileIterator.parser.Parser;
 import org.snpeff.interval.Genome;
+import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.VcfHeader;
@@ -53,7 +54,7 @@ import org.snpeff.vcf.VcfHeader;
  *
  * @author pcingola
  */
-public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Parser<VcfEntry> {
+public class VcfFileIterator extends MarkerFileIterator<VcfEntry>implements Parser<VcfEntry> {
 
 	public static final String MISSING = "."; // Missing value
 	private static final String EMPTY = "";
@@ -61,20 +62,24 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 	boolean parseNow = true;
 	boolean headeSection = false;
 	boolean errorIfUnsorted = false;
+	boolean expandIub;
 	VcfHeader header = new VcfHeader();
 	String chrPrev = "";
 	int posPrev = -1;
 
 	public VcfFileIterator(BufferedReader reader) {
 		super(reader, 1);
+		init();
 	}
 
 	public VcfFileIterator(String fileName) {
 		super(fileName, 1);
+		init();
 	}
 
 	public VcfFileIterator(String fileName, Genome genome) {
 		super(fileName, genome, 1);
+		init();
 	}
 
 	/**
@@ -89,6 +94,14 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 	 */
 	public VcfHeader getVcfHeader() {
 		return header;
+	}
+
+	protected void init() {
+		expandIub = (Config.get() != null ? Config.get().isExpandIub() : true);
+	}
+
+	public boolean isExpandIub() {
+		return expandIub;
 	}
 
 	public boolean isHeadeSection() {
@@ -207,6 +220,10 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 	public void setErrorIfUnsorted(boolean errorIfUnsorted) {
 		this.errorIfUnsorted = errorIfUnsorted;
+	}
+
+	public void setExpandIub(boolean expandIub) {
+		this.expandIub = expandIub;
 	}
 
 	@Override
