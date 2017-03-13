@@ -217,23 +217,68 @@ data.dir = ./data/
           <div class="page-header">
             <h1>Source code </h1>
           </div>
-				<b> Getting the souce:</b> 
+				<h3> Getting the souce</h3> 
 				The source code is in GitHub (although we keep the binary distribution is at SourceForge). 
 				Here is the <code>git</code> command to check out the development version of the code:
 				<br>
 				<br>
 <pre>
+# Get SnpEff
 git clone https://github.com/pcingola/SnpEff.git
 
-# If you want to SnpSift as well
+# Get SnpSift as well
 git clone https://github.com/pcingola/SnpSift.git
 </pre>
 				<br>
-				<b>Install required libraries:</b> 
+				<h3>Building from the source</h3> 
 				Most libraries should be install using Maven, so you just need to run <code>mvn</code> command.
+				<ul>
+					<li> Java 8 (JDK) 
+					<li> ANT
+					<li> Maven
+				</ul>
+				Some libraries are not available through maven, so you have to install them into via Maven manually (these libraries are in <code>SnpEff/lib</code>)
+<pre>
+# Go to 'lib' dir
+cd SnpEff/lib
+
+# Antlr
+mvn install:install-file \
+	-Dfile=antlr-4.5.1-complete.jar \
+	-DgroupId=org.antlr \
+	-DartifactId=antlr \
+	-Dversion=4.5.1 \
+	-Dpackaging=jar
+
+# BioJava core
+mvn install:install-file \
+	-Dfile=biojava3-core-3.0.7.jar \
+	-DgroupId=org.biojava \
+	-DartifactId=biojava3-core \
+	-Dversion=3.0.7 \
+	-Dpackaging=jar
+
+# BioJava structure
+mvn install:install-file \
+	-Dfile=biojava3-structure-3.0.7.jar \
+	-DgroupId=org.biojava \
+	-DartifactId=biojava3-structure \
+	-Dversion=3.0.7 \
+	-Dpackaging=jar
+</pre>
+				Once the libraries are installed, you can use <code>make.sh</code> to build the code
+<pre>
+cd $HOME/snpEff
+
+# Create link to scripts_build directory if it doesn't exist
+ln -s $HOME/workspace/SnpEff/scripts_build
+
+# Invoke the build script
+./scripts_build/make.sh
+</pre>
 				<br>
 				<br>
-				<b>Intalling test cases:</b>
+				<h3>Intalling test cases</h3>
 				Test cases require special "test cases databases and genome", you can find them here:
 				<br>
 				<br>
