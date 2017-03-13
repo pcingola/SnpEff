@@ -1503,21 +1503,8 @@ LOF=(GAB4|ENSG00000215568|4|0.25);NMD=(GAB4|ENSG00000215568|4|0.25)
 					<tr> <td> ERROR_CHROMOSOME_NOT_FOUND </td> 
 						<td>
 							Chromosome does not exits in reference database. 
-							Typically this means that there is a mismatch between the chromosome names in your input file and the chromosome names used in the reference genome to build SnpEff's database. 
 							<br>
-							<br>
-							<b>Warning:</b> This could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment.
-							Obviously doing this makes no sense and the annotation information you'll get will be garbage.
-							That's why SnpEff shows you an error message.
-							<br>
-							<br>
-							<b>Possible solution:</b> Sometime SnpEff database matches the reference genome for your organism, and it's just that the chromosome names are changed.
-							You can fix this by changing the input file.
-							<br>
-							You can see chromosome names used by SnpEff by using <code>-v</code> (verbose) option. 
-							SnpEff will show a line like this one:
-							<pre># Chromosomes names [sizes]  : '1' [249250621] '2' [243199373] ...</pre>
-							Then you can modify your input file chromosome names to match the database (e.g. using <code>sed</code> unix command).
+							See this <a href="SnpEff_faq.html#ERROR_CHROMOSOME_NOT_FOUND">FAQ</a> for more details.
 						</td> 
 					</tr>
 					<tr> <td> ERROR_OUT_OF_CHROMOSOME_RANGE </td> 
