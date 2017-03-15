@@ -83,8 +83,8 @@ public class VcfOutputFormatter extends OutputFormatter {
 		//---
 		// Calculate all effects and genes
 		//---
-		HashSet<String> effs = new HashSet<String>();
-		ArrayList<String> effsSorted = new ArrayList<String>();
+		HashSet<String> effs = new HashSet<>();
+		ArrayList<String> effsSorted = new ArrayList<>();
 		HashSet<String> oicr = (useOicr ? new HashSet<String>() : null);
 		boolean addCustomFields = false;
 		for (VariantEffect variantEffect : variantEffects) {
@@ -235,7 +235,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 	 * New lines to be added to header
 	 */
 	public List<String> getNewHeaderLines() {
-		ArrayList<String> newLines = new ArrayList<String>();
+		ArrayList<String> newLines = new ArrayList<>();
 
 		newLines.add("##SnpEffVersion=\"" + version + "\"");
 		newLines.add("##SnpEffCmd=\"" + commandLineStr + "\"");
@@ -244,8 +244,8 @@ public class VcfOutputFormatter extends OutputFormatter {
 		newLines.add(formatVersion.vcfHeader());
 
 		if (lossOfFunction) {
-			newLines.add("##INFO=<ID=LOF,Number=.,Type=String,Description=\"Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' \">");
-			newLines.add("##INFO=<ID=NMD,Number=.,Type=String,Description=\"Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' \">");
+			newLines.add("##INFO=<ID=LOF,Number=.,Type=String,Description=\"Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected'\">");
+			newLines.add("##INFO=<ID=NMD,Number=.,Type=String,Description=\"Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected'\">");
 		}
 
 		if (useOicr) newLines.add("##INFO=<ID=OICR,Number=.,Type=String,Description=\"Format: ( Transcript | Distance from begining cDNA )\">");
@@ -322,7 +322,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		if (variantEffects.size() <= 1) return variantEffects;
 
 		// Create a new list of variant effects
-		ArrayList<VariantEffect> varEffsGatk = new ArrayList<VariantEffect>();
+		ArrayList<VariantEffect> varEffsGatk = new ArrayList<>();
 
 		// In GATK mode, skip varianrEffects having errors or warnings (unless ALL effects have warnings)
 		if (allWarnings()) {
