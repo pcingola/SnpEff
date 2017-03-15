@@ -161,38 +161,42 @@ public class TestCasesStructuralTranslocations {
 		}
 
 		// Check effects
-		Assert.assertTrue("Effects do not match" //
-				+ "\n\tExpected : " + expectedEffs //
-				+ "\n\tFound    : " + effs//
+		Assert.assertTrue(
+				"Effects do not match" //
+						+ "\n\tExpected : " + expectedEffs //
+						+ "\n\tFound    : " + effs//
 				, effs.containsAll(expectedEffs) //
 		);
 
 		// Check effects that should NOT be present
 		Assert.assertFalse("Effects should NOT be present: " + notExpectedEffs //
-		, effs.removeAll(notExpectedEffs) // Returns true if the set has changed (i.e. there was an element removed)
+				, effs.removeAll(notExpectedEffs) // Returns true if the set has changed (i.e. there was an element removed)
 		);
 
 		// Check impact
 		Assert.assertTrue("Effect impact '" + expectedImpact + "' not found", impactOk);
 
 		// Check HGVS.c
-		Assert.assertTrue("HGVS.c do not match" //
-				+ "\n\tExpected : " + expectedHgvsc //
-				+ "\n\tFound    : " + hgvscs//
+		Assert.assertTrue(
+				"HGVS.c do not match" //
+						+ "\n\tExpected : " + expectedHgvsc //
+						+ "\n\tFound    : " + hgvscs//
 				, hgvscs.containsAll(expectedHgvsc) //
 		);
 
 		// Check HGVS.p
-		Assert.assertTrue("HGVS.p do not match" //
-				+ "\n\tExpected : " + expectedHgvsp //
-				+ "\n\tFound    : " + hgvsps//
+		Assert.assertTrue(
+				"HGVS.p do not match" //
+						+ "\n\tExpected : " + expectedHgvsp //
+						+ "\n\tFound    : " + hgvsps//
 				, hgvsps.containsAll(expectedHgvsp) //
 		);
 
 		// Check ANN fields
-		Assert.assertTrue("ANN fields do not match" //
-				+ "\n\tExpected : " + expectedAnns //
-				+ "\n\tFound    : " + anns //
+		Assert.assertTrue(
+				"ANN fields do not match" //
+						+ "\n\tExpected : " + expectedAnns //
+						+ "\n\tFound    : " + anns //
 				, anns.containsAll(expectedAnns) //
 		);
 
@@ -961,7 +965,7 @@ public class TestCasesStructuralTranslocations {
 		// Create variant
 		VariantBnd variant = new VariantBnd(chr1, 35, "N", "N", chr2, 50, true, true);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION_HALF };
 		EffectType notExpEffs[] = {};
 		String expHgvsc[] = { "t(1;2)(p1;q2)(c.51+5)" };
 		String expHgvsp[] = { "t(1;2)(tr1:Glu1_Val17;)" };
@@ -993,7 +997,7 @@ public class TestCasesStructuralTranslocations {
 		// Create variant
 		VariantBnd variant = new VariantBnd(chr1, 135, "N", "N", chr2, 124, true, true);
 
-		EffectType expEffs[] = { EffectType.GENE_FUSION };
+		EffectType expEffs[] = { EffectType.GENE_FUSION_HALF };
 		EffectType notExpEffs[] = {};
 		String expHgvsc[] = { "t(1;2)(q1;p2)(c.42-10)" };
 		String expHgvsp[] = { "t(1;2)(;tr2:Ter15_Asn19)" };

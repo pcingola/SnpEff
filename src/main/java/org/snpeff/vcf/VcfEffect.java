@@ -956,10 +956,8 @@ public class VcfEffect {
 		funClass = variantEffect.getFunctionalClass();
 
 		// Gene
-		if (variantEffect.isMultipleGenes() //
-				&& variantEffect.getGenes() != null //
-				&& !variantEffect.getGenes().isEmpty() //
-		) {
+		List<Gene> genes = variantEffect.isMultipleGenes() ? variantEffect.getGenes() : null;
+		if (genes != null) { // Multiple genes
 			setGeneNameIdMultiple(variantEffect);
 		} else if (gene != null) {
 			geneName = gene.getGeneName();

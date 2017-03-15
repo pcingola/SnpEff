@@ -34,6 +34,7 @@ import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGenBank;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGff3;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGtf22;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryRefSeq;
+import org.snpeff.util.Diff;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
@@ -169,6 +170,7 @@ public class TestCasesIntegrationBase {
 			if (verbose || !erNs.equals(rNs)) {
 				System.out.println("Result:\n----------\n" + result + "\n----------\n");
 				System.out.println("Expected (" + resultFile + "):\n----------\n" + expectedResult + "\n----------\n");
+				System.out.println(new Diff(expectedResult, result));
 			}
 			Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 		}
@@ -344,7 +346,7 @@ public class TestCasesIntegrationBase {
 							+ "\thasEffectType : " + veff.hasEffectType(EffectType.NEXT_PROT) //
 							+ "\tmatch details : " + effectDetails.equals(veff.getEffectDetails()) //
 							+ "\tmatch impact: " + (impact == veff.getImpact()) //
-				);
+					);
 			}
 		}
 
@@ -357,7 +359,7 @@ public class TestCasesIntegrationBase {
 	void checkNmd(Config config, Gene gene, Transcript tr) {
 		int pos = 0;
 		boolean isNmd[] = new boolean[tr.cds().length()];
-		HashSet<Exon> codingExons = new HashSet<Exon>();
+		HashSet<Exon> codingExons = new HashSet<>();
 
 		StringBuilder nmdStr = new StringBuilder();
 		StringBuilder nmdStrSimple = new StringBuilder();
@@ -377,7 +379,7 @@ public class TestCasesIntegrationBase {
 					// Create a STOP_GAIN effect
 					VariantEffect variantEffect = new VariantEffect(variant);
 					variantEffect.set(exon, EffectType.STOP_GAINED, EffectType.STOP_GAINED.effectImpact(), "");
-					LinkedList<VariantEffect> changeEffects = new LinkedList<VariantEffect>();
+					LinkedList<VariantEffect> changeEffects = new LinkedList<>();
 					changeEffects.add(variantEffect);
 
 					// Create a LOF object and analyze the effect
@@ -482,7 +484,7 @@ public class TestCasesIntegrationBase {
 
 		// Run & get result (single line)
 		List<VcfEntry> results = snpeff.run(true);
-		Set<String> trNotFoundSet = new HashSet<String>();
+		Set<String> trNotFoundSet = new HashSet<>();
 
 		// Make sure entries are annotated as expected
 		int countOkC = 0, countErrC = 0, countOkP = 0, countErrP = 0, countTrFound = 0;
@@ -630,7 +632,7 @@ public class TestCasesIntegrationBase {
 
 		for (VcfEntry ve : vcfEnties) {
 			// Create a set of found variants
-			HashSet<String> vepSos = new HashSet<String>();
+			HashSet<String> vepSos = new HashSet<>();
 			String vepSo = ve.getInfo("SO");
 			for (String so : vepSo.split(",")) {
 				if (so.equals("feature_elongation")) so = null; // This one is useless, if the variant is an insertion, it obviously causes an elongation
@@ -640,7 +642,7 @@ public class TestCasesIntegrationBase {
 			}
 
 			// Get effects for transcript 'trId'
-			HashSet<String> effSos = new HashSet<String>();
+			HashSet<String> effSos = new HashSet<>();
 			List<VcfEffect> veffs = ve.getVcfEffects();
 			for (VcfEffect veff : veffs) {
 				if (veff.getTranscriptId().equals(trId)) {
@@ -743,7 +745,7 @@ public class TestCasesIntegrationBase {
 			sb.append(chr + "\n");
 
 		// Genes
-		ArrayList<Gene> genes = new ArrayList<Gene>();
+		ArrayList<Gene> genes = new ArrayList<>();
 
 		// Sort genes
 		for (Gene gene : genome.getGenes())
@@ -781,7 +783,7 @@ public class TestCasesIntegrationBase {
 	 */
 	public List<VcfEntry> snpEffect(String genome, String vcfFile, String otherArgs[], EffFormatVersion effFormatVersion) {
 		// Arguments
-		ArrayList<String> args = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<>();
 		if (otherArgs != null) {
 			for (String a : otherArgs)
 				args.add(a);
@@ -843,7 +845,7 @@ public class TestCasesIntegrationBase {
 	LinkedList<VariantEffect> variantEffects(Variant variant, EffectType effectType, Marker marker) {
 		VariantEffect changeEffect = new VariantEffect(variant);
 		changeEffect.set(marker, effectType, effectType.effectImpact(), "");
-		LinkedList<VariantEffect> changeEffects = new LinkedList<VariantEffect>();
+		LinkedList<VariantEffect> changeEffects = new LinkedList<>();
 		changeEffects.add(changeEffect);
 		return changeEffects;
 

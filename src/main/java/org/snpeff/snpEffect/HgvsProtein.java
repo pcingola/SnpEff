@@ -486,7 +486,8 @@ public class HgvsProtein extends Hgvs {
 		if (variantEffect.getEffectType() == EffectType.TRANSCRIPT_DELETED) return typeOfReference() + "0?";
 
 		// Can we simplify amino acids in aaNew/aaOld?
-		if (!variant.isSnp() && !variant.isMnp()) simplifyAminoAcids();
+		// if (!variant.isSnp() && !variant.isMnp()) simplifyAminoAcids();
+		if (!variant.isSnp()) simplifyAminoAcids();
 
 		String pos = "", protChange = "", prefix = "", suffix = "";
 

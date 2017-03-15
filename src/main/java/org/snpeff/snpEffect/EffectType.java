@@ -361,7 +361,7 @@ public enum EffectType {
 				|| this == GENE_FUSION_REVERESE //
 				|| this == GENE_FUSION_HALF //
 				|| this == FEATURE_FUSION //
-				;
+		;
 	}
 
 	public String toSequenceOntology(EffFormatVersion formatVersion, Variant variant) {

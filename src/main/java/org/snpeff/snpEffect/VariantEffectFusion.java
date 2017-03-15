@@ -193,7 +193,7 @@ public class VariantEffectFusion extends VariantEffectStructural {
 				effType = EffectType.FEATURE_FUSION;
 			} else if (trLeft == null || trRight == null) {
 				// One end lies onto intergenic regions
-				effType = EffectType.GENE_FUSION;
+				effType = EffectType.GENE_FUSION_HALF;
 			} else if (!vtrans.isLeft() && !vtrans.isBefore()) {
 				// E.g.:  C[2:321682[
 				effType = (sameStrand ? EffectType.GENE_FUSION : EffectType.GENE_FUSION_REVERESE);

@@ -71,7 +71,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	@Test
 	public void testCase_04_AthalianaTair10_AT5G66790() {
 		Gpr.debug("Test");
-		String genome = "athalianaTair10";
+		Exon.ToStringVersion = exonToStringVersionOri;
+		String genome = "testAthalianaTair10"; //"athalianaTair10";
 		String gff3File = "tests/AT5G66790.gff3";
 		String resultFile = "tests/AT5G66790.txt";
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
@@ -80,7 +81,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	@Test
 	public void testCase_05_PaeruPA14muccA() {
 		Gpr.debug("Test");
-		String genome = "paeru.PA14";
+		Exon.ToStringVersion = exonToStringVersionOri;
+		String genome = "testPaeru.PA14";
 		String gff3File = "tests/paeru.PA14.muccA.gff";
 		String resultFile = "tests/paeru.PA14.muccA.txt";
 		SnpEffectPredictor sep = buildGff3AndCompare(genome, gff3File, resultFile, true, false);
@@ -96,7 +98,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	@Test
 	public void testCase_06_Ppersica() {
 		Gpr.debug("Test");
-		String genome = "ppersica139";
+		Exon.ToStringVersion = exonToStringVersionOri;
+		String genome = "testPpersica139";
 		String gff3File = "tests/ppersica_139.gff";
 		String resultFile = "tests/ppersica_139.txt";
 		buildGff3AndCompare(genome, gff3File, resultFile, false, false);
@@ -114,7 +117,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	@Test
 	public void testCase_08_Vibrio() {
 		Gpr.debug("Test");
-		String genome = "vibrio";
+		Exon.ToStringVersion = exonToStringVersionOri;
+		String genome = "testVibrio";
 		String gff3File = "tests/vibrio.gff3";
 		String resultFile = "tests/vibrio.txt";
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);

@@ -1,5 +1,4 @@
-
-ppersica139
+testPpersica139
 scaffold_1	0-46098485 CHROMOSOME 'scaffold_1'
 scaffold_1:46082351-46098485, strand:-1, id:ppa000009m.g, name:ppa000009m.g, bioType:protein_coding
 Transcipts:
@@ -8,22 +7,22 @@ Transcipts:
 		5'UTR   :	scaffold_1	46096045-46096142 UTR_5_PRIME 'UTR5_scaffold_1_46096046_46096143'
 		5'UTR   :	scaffold_1	46098406-46098485 UTR_5_PRIME 'UTR5_scaffold_1_46098407_46098486'
 		Exons:
-		scaffold_1:46082351-46082650 'UTR3_scaffold_1_46082352_46082548' rank:16, sequence: 
-		scaffold_1:46082817-46082923 'EXON_scaffold_1_46082817_46082923' rank:15, sequence: 
-		scaffold_1:46083470-46083609 'EXON_scaffold_1_46083470_46083609' rank:14, sequence: 
-		scaffold_1:46083702-46083927 'EXON_scaffold_1_46083702_46083927' rank:13, sequence: 
-		scaffold_1:46084015-46084095 'EXON_scaffold_1_46084015_46084095' rank:12, sequence: 
-		scaffold_1:46084209-46084355 'EXON_scaffold_1_46084209_46084355' rank:11, sequence: 
-		scaffold_1:46084436-46085555 'EXON_scaffold_1_46084436_46085555' rank:10, sequence: 
-		scaffold_1:46085770-46086062 'EXON_scaffold_1_46085770_46086062' rank:9, sequence: 
-		scaffold_1:46086176-46086453 'EXON_scaffold_1_46086176_46086453' rank:8, sequence: 
-		scaffold_1:46087155-46087353 'EXON_scaffold_1_46087155_46087353' rank:7, sequence: 
-		scaffold_1:46087435-46087737 'EXON_scaffold_1_46087435_46087737' rank:6, sequence: 
-		scaffold_1:46087829-46088931 'EXON_scaffold_1_46087829_46088931' rank:5, sequence: 
-		scaffold_1:46089025-46095607 'EXON_scaffold_1_46089025_46095607' rank:4, sequence: 
-		scaffold_1:46095762-46095968 'EXON_scaffold_1_46095762_46095815' rank:3, sequence: 
-		scaffold_1:46096045-46096142 'UTR5_scaffold_1_46096046_46096143' rank:2, sequence: 
-		scaffold_1:46098406-46098485 'UTR5_scaffold_1_46098407_46098486' rank:1, sequence: 
+		scaffold_1:46082351-46082650 'UTR3_scaffold_1_46082352_46082548', rank:16, frame:1, sequence: 
+		scaffold_1:46082817-46082923 'EXON_scaffold_1_46082817_46082923', rank:15, frame:0, sequence: 
+		scaffold_1:46083470-46083609 'EXON_scaffold_1_46083470_46083609', rank:14, frame:2, sequence: 
+		scaffold_1:46083702-46083927 'EXON_scaffold_1_46083702_46083927', rank:13, frame:0, sequence: 
+		scaffold_1:46084015-46084095 'EXON_scaffold_1_46084015_46084095', rank:12, frame:0, sequence: 
+		scaffold_1:46084209-46084355 'EXON_scaffold_1_46084209_46084355', rank:11, frame:0, sequence: 
+		scaffold_1:46084436-46085555 'EXON_scaffold_1_46084436_46085555', rank:10, frame:1, sequence: 
+		scaffold_1:46085770-46086062 'EXON_scaffold_1_46085770_46086062', rank:9, frame:0, sequence: 
+		scaffold_1:46086176-46086453 'EXON_scaffold_1_46086176_46086453', rank:8, frame:2, sequence: 
+		scaffold_1:46087155-46087353 'EXON_scaffold_1_46087155_46087353', rank:7, frame:0, sequence: 
+		scaffold_1:46087435-46087737 'EXON_scaffold_1_46087435_46087737', rank:6, frame:0, sequence: 
+		scaffold_1:46087829-46088931 'EXON_scaffold_1_46087829_46088931', rank:5, frame:2, sequence: 
+		scaffold_1:46089025-46095607 'EXON_scaffold_1_46089025_46095607', rank:4, frame:0, sequence: 
+		scaffold_1:46095762-46095968 'EXON_scaffold_1_46095762_46095815', rank:3, frame:., sequence: 
+		scaffold_1:46096045-46096142 'UTR5_scaffold_1_46096046_46096143', rank:2, frame:., sequence: 
+		scaffold_1:46098406-46098485 'UTR5_scaffold_1_46098407_46098486', rank:1, frame:., sequence: 
 		3'UTR   :	scaffold_1	46082351-46082547 UTR_3_PRIME 'UTR3_scaffold_1_46082352_46082548'
 		CDS     :	
 		Protein :	
