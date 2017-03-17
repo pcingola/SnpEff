@@ -447,7 +447,7 @@ public enum EffectType {
 			return "gene_fusion";
 
 		case GENE_FUSION_HALF:
-			return "gene_fusion";
+			return "transcript_ablation";
 
 		case GENE_FUSION_REVERESE:
 			return "bidirectional_gene_fusion";

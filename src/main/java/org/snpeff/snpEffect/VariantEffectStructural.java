@@ -115,6 +115,23 @@ public class VariantEffectStructural extends VariantEffect {
 				fusions.addAll(fusions(variant, gLeft, gRight));
 			}
 
+		// If there is a gene-gene fusion and other gene-intergenic fusions, only report
+		// the gene-gene fusions.
+		// Otherwise it's extremelly confusing for everyone reading the annotations
+		if (fusions.size() > 0) {
+			int countGeneGeneFusion = 0;
+			for (VariantEffect fusion : fusions)
+				if (((VariantEffectFusion) fusion).isGeneGeneFusion()) countGeneGeneFusion++;
+
+			if (countGeneGeneFusion > 0 && fusions.size() > countGeneGeneFusion) {
+				// Create a new list only keeping gene-gene fusions
+				List<VariantEffect> fusionsFiltered = new LinkedList<>();
+				for (VariantEffect fusion : fusions)
+					if (((VariantEffectFusion) fusion).isGeneGeneFusion()) fusionsFiltered.add(fusion);
+				fusions = fusionsFiltered;
+			}
+		}
+
 		return fusions;
 	}
 

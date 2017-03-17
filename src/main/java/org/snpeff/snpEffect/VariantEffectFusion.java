@@ -299,6 +299,10 @@ public class VariantEffectFusion extends VariantEffectStructural {
 		return (VariantBnd) variant;
 	}
 
+	public boolean isGeneGeneFusion() {
+		return geneLeft != null && geneRight != null;
+	}
+
 	boolean isVariantTranslocation() {
 		return variant instanceof VariantBnd;
 	}

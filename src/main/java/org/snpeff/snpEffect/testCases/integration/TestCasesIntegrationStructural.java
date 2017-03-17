@@ -205,7 +205,7 @@ public class TestCasesIntegrationStructural {
 			if (verbose) System.out.println(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) System.out.println("\t\t" + veff);
-				if (veff.getEffectType() == EffectType.GENE_FUSION && veff.getTranscriptId().equals("NM_001777.3")) {
+				if (veff.getEffectType() == EffectType.TRANSCRIPT_DELETED && veff.getTranscriptId().equals("NM_001777.3")) {
 					if (verbose) System.err.println("VcfEffect: " + veff);
 					Assert.assertEquals("Expected rank does not match", 7, veff.getRank());
 					Assert.assertEquals("Expected rankMax does not match", 10, veff.getRankMax());
