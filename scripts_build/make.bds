@@ -551,7 +551,7 @@ void uploadHtml2Sf() {
 #-------------------------------------------------------------------------------
 string version() {
 	if( snpEffVersion == '' ) {
-		snpEffVersion = sys $snpeff -version
+		snpEffVersion = sys $snpeff -version | cut -f 1,2
 	}
 	return snpEffVersion;
 }
