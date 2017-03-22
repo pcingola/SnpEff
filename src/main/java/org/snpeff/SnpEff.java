@@ -187,7 +187,6 @@ public class SnpEff implements CommandLine {
 		log = true; // Log to server (statistics)
 		multiThreaded = false; // Use multiple threads
 		customIntervalFiles = new ArrayList<>(); // Custom interval files
-
 		this.args = args;
 	}
 
@@ -315,7 +314,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-			);
+				);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -781,7 +780,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("translocreport") //
-		// Obsolete stuff (from T2D projects)
+				// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 		) {
