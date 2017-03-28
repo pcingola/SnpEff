@@ -39,7 +39,7 @@ public class TestCasesAnn extends TestCasesBase {
 		snpEff.setSupressOutput(!verbose);
 		snpEff.setDebug(debug);
 
-		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.cmd();
 		List<VcfEntry> vcfEntries = seff.run(true);
 
 		Assert.assertTrue("Empty annotataions list!", !vcfEntries.isEmpty());
@@ -148,7 +148,7 @@ public class TestCasesAnn extends TestCasesBase {
 		String args[] = { "testHg3775Chr1", "tests/test_ann_integration_01.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 

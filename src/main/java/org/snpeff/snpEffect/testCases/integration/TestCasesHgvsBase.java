@@ -166,7 +166,7 @@ public class TestCasesHgvsBase {
 		String args[] = { "-classic", "-hgvs", "-ud", "0", genomeVer, vcfFile };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 

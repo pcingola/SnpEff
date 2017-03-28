@@ -91,7 +91,7 @@ public class TestCasesIntegrationBase {
 		String args[] = { "build", genome };
 		SnpEff snpeff = new SnpEff(args);
 		snpeff.setVerbose(verbose);
-		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.snpEffCmd();
+		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.cmd();
 		snpeffBuild.run();
 		return snpeffBuild.getConfig().getSnpEffectPredictor();
 	}
@@ -272,7 +272,7 @@ public class TestCasesIntegrationBase {
 		SnpEff cmd = new SnpEff(args);
 
 		// Run
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
@@ -314,7 +314,7 @@ public class TestCasesIntegrationBase {
 		cmd.setSupressOutput(!verbose);
 
 		// Run
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
 		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
@@ -426,7 +426,7 @@ public class TestCasesIntegrationBase {
 
 	public void checkNoChange(String args[]) {
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = snpeff.run(true);
@@ -446,7 +446,7 @@ public class TestCasesIntegrationBase {
 	 */
 	public void checkTranscriptError(String args[], ErrorWarningType warningType) {
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = snpeff.run(true);
@@ -580,7 +580,7 @@ public class TestCasesIntegrationBase {
 		String args[] = { "-classic", genome, vcf };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setSupressOutput(!verbose);
 
 		List<VcfEntry> vcfEnties = cmdEff.run(true);
@@ -623,7 +623,7 @@ public class TestCasesIntegrationBase {
 		String args[] = { "-classic", "-sequenceOntology", genome, vcf };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 
@@ -792,7 +792,7 @@ public class TestCasesIntegrationBase {
 		args.add(vcfFile);
 
 		SnpEff cmd = new SnpEff(args.toArray(new String[0]));
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		if (effFormatVersion != null) cmdEff.setFormatVersion(effFormatVersion);
@@ -814,7 +814,7 @@ public class TestCasesIntegrationBase {
 		String args[] = (txtFile == null ? argsVcf : argsTxt);
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 

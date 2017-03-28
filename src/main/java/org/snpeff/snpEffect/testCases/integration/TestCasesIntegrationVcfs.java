@@ -64,7 +64,7 @@ public class TestCasesIntegrationVcfs {
 		SnpEff snpeff = new SnpEff(args);
 
 		// Create command and run
-		SnpEffCmdEff effcmd = (SnpEffCmdEff) snpeff.snpEffCmd();
+		SnpEffCmdEff effcmd = (SnpEffCmdEff) snpeff.cmd();
 		effcmd.setVerbose(verbose);
 		effcmd.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = effcmd.run(true);
@@ -115,7 +115,7 @@ public class TestCasesIntegrationVcfs {
 		snpEff.setDebug(debug);
 
 		// Run command
-		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.cmd();
 		List<VcfEntry> vcfEntries = seff.run(true);
 		Assert.assertFalse("SnpEff run failed, returned an empty list", vcfEntries.isEmpty());
 

@@ -38,7 +38,7 @@ public class TestCasesIntegrationSnp {
 		snpEff.setSupressOutput(!verbose);
 		snpEff.setDebug(debug);
 
-		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.cmd();
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
@@ -70,7 +70,7 @@ public class TestCasesIntegrationSnp {
 		snpEff.setSupressOutput(!verbose);
 		snpEff.setDebug(debug);
 
-		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.cmd();
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
@@ -102,7 +102,7 @@ public class TestCasesIntegrationSnp {
 		snpEff.setSupressOutput(!verbose);
 		snpEff.setDebug(debug);
 
-		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.cmd();
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {

@@ -30,7 +30,7 @@ public class TestCasesIntegrationHugeDeletions {
 		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion_DEL.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 
@@ -57,7 +57,7 @@ public class TestCasesIntegrationHugeDeletions {
 		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion.vcf.gz" };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
@@ -76,7 +76,7 @@ public class TestCasesIntegrationHugeDeletions {
 		String args[] = { "-classic", "-noOut", "testHg19Chr9", "./tests/huge_deletion_chr9.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);

@@ -32,7 +32,7 @@ public class TestCasesIntegrationCanonical extends TestCasesIntegrationBase {
 		String args[] = { "-canon", "testHg19Chr22", "tests/empty.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		cmdEff.load();
@@ -53,7 +53,7 @@ public class TestCasesIntegrationCanonical extends TestCasesIntegrationBase {
 		String args[] = { "-canonList", "tests/canon_geneId2trId_test02.txt", "testHg19Chr22", "tests/empty.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		cmdEff.load();

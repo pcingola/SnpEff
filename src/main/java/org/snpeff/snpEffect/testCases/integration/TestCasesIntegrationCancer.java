@@ -59,7 +59,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 		};
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 		snpeff.setSupressOutput(!verbose);
 		snpeff.setVerbose(verbose);
 

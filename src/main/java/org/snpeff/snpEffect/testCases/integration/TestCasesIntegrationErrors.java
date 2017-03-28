@@ -38,7 +38,7 @@ public class TestCasesIntegrationErrors {
 		snpEff.setSupressOutput(!verbose);
 		snpEff.setDebug(debug);
 
-		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.cmd();
 		List<VcfEntry> vcfEntries = seff.run(true);
 		int count = 0;
 		for (VcfEntry ve : vcfEntries) {
@@ -67,7 +67,7 @@ public class TestCasesIntegrationErrors {
 		snpEff.setSupressOutput(!verbose);
 		snpEff.setDebug(debug);
 
-		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.snpEffCmd();
+		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.cmd();
 		List<VcfEntry> vcfEntries = seff.run(true);
 		int count = 0;
 		for (VcfEntry ve : vcfEntries) {

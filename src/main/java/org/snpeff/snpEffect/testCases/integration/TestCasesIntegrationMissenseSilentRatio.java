@@ -33,7 +33,7 @@ public class TestCasesIntegrationMissenseSilentRatio {
 		SnpEff cmd = new SnpEff(args);
 		cmd.setVerbose(verbose);
 		cmd.setSupressOutput(!verbose);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 
 		snpeff.run();
 

@@ -33,6 +33,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 	boolean needAddHeader = true;
 	boolean lossOfFunction;
 	boolean gatk;
+	boolean onlyHighestAnn;
 	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
 	List<VcfEntry> vcfEntries;
 
@@ -78,7 +79,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		Collections.sort(variantEffects);
 
 		// GATK mode: Picks the first (i.e. highest impact) effect
-		if (gatk) variantEffects = variantEffectsGatk();
+		if (gatk) variantEffects = variantEffectsHighest(variantEffects);
 
 		//---
 		// Calculate all effects and genes
@@ -191,7 +192,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 	/**
 	 * Are all varaint effects having some sort of warning or error?
 	 */
-	boolean allWarnings() {
+	boolean allWarnings(List<VariantEffect> variantEffects) {
 		if (variantEffects.size() <= 0) return false; // Emtpy => No warnings
 
 		for (VariantEffect varEff : variantEffects)
@@ -318,29 +319,29 @@ public class VcfOutputFormatter extends OutputFormatter {
 	 * no error/warning. If all variant effects have warnings or errors, just
 	 * pick the first (to avoid having an empty annotation)
 	 */
-	List<VariantEffect> variantEffectsGatk() {
+	List<VariantEffect> variantEffectsHighest(List<VariantEffect> variantEffects) {
 		if (variantEffects.size() <= 1) return variantEffects;
 
 		// Create a new list of variant effects
-		ArrayList<VariantEffect> varEffsGatk = new ArrayList<>();
+		ArrayList<VariantEffect> varEffsHighest = new ArrayList<>();
 
 		// In GATK mode, skip varianrEffects having errors or warnings (unless ALL effects have warnings)
-		if (allWarnings()) {
+		if (allWarnings(variantEffects)) {
 			// Do all effects have warnings or errors?
 			// We avoid producing an empty 'EFF' field in GATK mode by just picking the first
-			varEffsGatk.add(variantEffects.get(0));
+			varEffsHighest.add(variantEffects.get(0));
 		} else {
 			// Pick the first variantEffect that has no error or warning
 			for (VariantEffect variantEffect : variantEffects) {
 				if (!variantEffect.hasError() && !variantEffect.hasWarning()) {
-					varEffsGatk.add(variantEffect);
-					return varEffsGatk;
+					varEffsHighest.add(variantEffect);
+					return varEffsHighest;
 				}
 			}
 		}
 
 		// Note: This list will always have at most one element
-		return varEffsGatk;
+		return varEffsHighest;
 	}
 
 }

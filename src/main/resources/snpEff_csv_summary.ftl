@@ -23,7 +23,7 @@ Number_of_lines_in_input_file, ${countInputLines}
 Number_of_variants_before_filter, ${countVariants}
 Number_of_not_variants , ${variantStats.countNonVariants}
 Number_of_variants_processed , ${variantStats.count}
-Number_of_known_variants <br>(i.e. non-empty ID) , ${variantStats.countNonEmptyId}, ${ ( 100 * variantStats.getKnownRatio() ) }% 
+Number_of_known_variants (i.e. non-empty ID) , ${variantStats.countNonEmptyId}, ${ ( 100 * variantStats.getKnownRatio() ) }% 
 Number_of_effects , ${countEffects} 
 Genome_total_length ,${variantStats.genomeLen} 
 Genome_effective_length ,${variantStats.genomeLenEffective} 
@@ -34,6 +34,10 @@ Change_rate , ${variantStats.rateOfChange}
 Chromosome , Length , Changes , Change_rate 
 <#list variantStats.chromosomeNamesEffective as chr>${chr} , ${variantStats.getChromosomeLength(chr)} , ${variantStats.getCountByChromosome(chr)} , ${variantStats.getRateOfChangeByChromosome(chr)}
 </#list>
+
+# Variantss by type
+
+<@countByType variantStats.countByChangeType />
 
 # Effects by impact
 

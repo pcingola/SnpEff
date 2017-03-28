@@ -116,7 +116,7 @@ public class TestCasesIntegrationMixedVariants {
 		String args[] = { "testHg19Chr20", vcfFileName };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 		snpeff.setSupressOutput(!verbose);
 		snpeff.setVerbose(verbose);
 

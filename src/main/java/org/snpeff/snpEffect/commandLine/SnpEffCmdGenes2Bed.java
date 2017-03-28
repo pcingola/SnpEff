@@ -20,8 +20,9 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	HashSet<String> geneIds;
 	String fileName = null;
 	boolean onlyProteinCoding;
-	boolean showExons;
 	boolean showCds;
+	boolean showExons;
+	boolean showTranscripts;
 	int expandUpstreamDownstream = 0;
 
 	public static void main(String[] args) {
@@ -80,6 +81,11 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 					onlyProteinCoding = true;
 					break;
 
+				case "-tr":
+					// Show transcripts
+					showTranscripts = true;
+					break;
+
 				case "-ud":
 					// Expand upstream & downstream
 					if ((i + 1) < args.length) expandUpstreamDownstream = Gpr.parseIntSafe(args[++i]);
@@ -94,6 +100,12 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 				genomeVer = args[i];
 			} else geneIds.add(args[i]);
 		}
+
+		int countMutex = 0;
+		if (showCds) countMutex++;
+		if (showExons) countMutex++;
+		if (showTranscripts) countMutex++;
+		if (countMutex > 1) usage("Options '-e', '-cds' and '-tr' are mutually exclusive");
 	}
 
 	@Override
@@ -120,6 +132,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	void show(Gene g) {
 		if (showCds) showCds(g);
 		else if (showExons) showExons(g);
+		else if (showTranscripts) showTr(g);
 		else showGene(g);
 	}
 
@@ -132,8 +145,8 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 				Cds cds = tr.findCds(ex); // Find corresponding CDS
 
 				if (cds != null) {
-					int start = cds.getStart();
-					int end = cds.getEnd() + 1;
+					int start = cds.getStart() - expandUpstreamDownstream;
+					int end = cds.getEnd() + 1 + expandUpstreamDownstream;
 
 					System.out.println(cds.getChromosomeName() //
 							+ "\t" + start //
@@ -194,8 +207,10 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	 */
 	public void showGenes() {
 		// Show title
-		if (showExons) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;exonRank");
-		else System.out.println("#chr\tstart\tend\tgeneName;geneId");
+		if (showCds) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;exonRank;strand");
+		else if (showExons) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;exonRank;stramd");
+		else if (showTranscripts) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;strand");
+		else System.out.println("#chr\tstart\tend\tgeneName;geneId;strand");
 
 		// Find genes
 		Genome genome = config.getGenome();
@@ -222,6 +237,25 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		}
 	}
 
+	/**
+	 * Show transcript coordinates
+	 */
+	void showTr(Gene g) {
+		for (Transcript tr : g) {
+			int start = tr.getStart() - expandUpstreamDownstream;
+			int end = tr.getEnd() + 1 + expandUpstreamDownstream;
+
+			System.out.println(tr.getChromosomeName() //
+					+ "\t" + start //
+					+ "\t" + end //
+					+ "\t" + g.getGeneName() //
+					+ ";" + g.getId() //
+					+ ";" + tr.getId() //
+					+ ";" + (tr.isStrandPlus() ? "+" : "-") //
+			);
+		}
+	}
+
 	@Override
 	public void usage(String message) {
 		if (message != null) System.err.println("Error: " + message + "\n");
@@ -231,6 +265,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		System.err.println("\t-e             : Show exons.");
 		System.err.println("\t-f <file.txt>  : A TXT file having one gene ID (or name) per line.");
 		System.err.println("\t-pc            : Use only protein coding genes.");
+		System.err.println("\t-tr            : Show transcript coordinates.");
 		System.err.println("\t-ud <num>      : Expand gene interval upstream and downstream by 'num' bases.");
 		System.err.println("\tgeneList       : A list of gene IDs or names. One per command line argument: geneId_1 geneId_2 geneId_3 ... geneId_N");
 		System.exit(-1);

@@ -354,7 +354,7 @@ void downloadEnsemblBfmpp() {
         
 			# Append config lines
 			configLines += "$name.genome : $longName"
-			configLines += "$name.reference : $ensemblBfmppFtp"
+			configLines += "$name.reference : $ensemblBfmppFtppub/release-$ensemblBfmppRelease"
 		}
 	}
 

@@ -29,7 +29,7 @@ public class TestCasesIntegrationInsEtc {
 		String args[] = { "-classic", "-noHgvs", "testENST00000268124", "tests/ins_off_by_one.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 		snpeff.setSupressOutput(!verbose);
 		snpeff.setVerbose(verbose);
 

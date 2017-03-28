@@ -74,7 +74,7 @@ public class TestCasesIntegrationExonFrame {
 
 		// Annotate
 		SnpEff cmd = new SnpEff(argsEff);
-		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);

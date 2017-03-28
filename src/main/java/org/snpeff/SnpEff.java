@@ -179,14 +179,7 @@ public class SnpEff implements CommandLine {
 	}
 
 	public SnpEff(String[] args) {
-		genomeVer = ""; // Genome version
-		configFile = Config.DEFAULT_CONFIG_FILE; // Config file
-		verbose = false; // Be verbose
-		debug = false; // Debug mode
-		quiet = false; // Be quiet
-		log = true; // Log to server (statistics)
-		multiThreaded = false; // Use multiple threads
-		customIntervalFiles = new ArrayList<>(); // Custom interval files
+		this();
 		this.args = args;
 	}
 
@@ -235,6 +228,99 @@ public class SnpEff implements CommandLine {
 	}
 
 	/**
+	 * Create an appropriate SnpEffCmd* object
+	 */
+	public SnpEff cmd() {
+		// Parse command line arguments (generic and database specific arguments)
+		parseArgs(args);
+
+		// Create a new command
+		SnpEff cmd = cmdFactory(command);
+
+		// Copy values to specific command
+		copyValues(cmd);
+
+		// Help requested?
+		if (help) {
+			cmd.usage(null); // Show help message and exit
+			return null;
+		}
+
+		// Parse command specific arguments
+		cmd.parseArgs(shiftArgs);
+		return cmd;
+	}
+
+	SnpEff cmdFactory(String command) {
+
+		// All commands are lower-case
+		switch (command.trim().toLowerCase()) {
+		case "ann":
+		case "eff":
+			return new SnpEffCmdEff();
+
+		case "build":
+			return new SnpEffCmdBuild();
+
+		case "buildnextprot":
+			return new SnpEffCmdBuildNextProt();
+
+		case "cds":
+			return new SnpEffCmdCds();
+
+		case "closest":
+			return new SnpEffCmdClosest();
+
+		case "count":
+			return new SnpEffCmdCount();
+
+		case "databases":
+			return new SnpEffCmdDatabases();
+
+		case "download":
+			return new SnpEffCmdDownload();
+
+		case "dump":
+			return new SnpEffCmdDump();
+
+		case "gsa":
+			return new SnpEffCmdGsa();
+
+		case "genes2bed":
+			return new SnpEffCmdGenes2Bed();
+
+		case "len":
+			return new SnpEffCmdLen();
+
+		case "pdb":
+			return new SnpEffCmdPdb();
+
+		case "protein":
+			return new SnpEffCmdProtein();
+
+		case "seq":
+			return new SnpEffCmdSeq();
+
+		case "show":
+			return new SnpEffCmdShow();
+
+		case "translocreport":
+			return new SnpEffCmdTranslocationsReport();
+
+		// Obsolete stuff
+		case "spliceanalysis":
+			return new SnpEffCmdSpliceAnalysis();
+
+		case "acat":
+			return new SnpEffCmdAcat();
+
+		default:
+			throw new RuntimeException("Unknown command '" + command + "'");
+		}
+
+	}
+
+	/**
 	 * 	Command line argument list (try to fit it into COMMAND_LINE_WIDTH)
 	 */
 	protected String commandLineStr(boolean splitLines) {
@@ -257,6 +343,52 @@ public class SnpEff implements CommandLine {
 		}
 
 		return argsList.toString();
+	}
+
+	/**
+	 * Copy values to a new command
+	 */
+	void copyValues(SnpEff cmd) {
+		cmd.canonical = canonical;
+		cmd.canonicalFile = canonicalFile;
+		cmd.configFile = configFile;
+		cmd.customIntervalFiles = customIntervalFiles;
+		cmd.dataDir = dataDir;
+		cmd.debug = debug;
+		cmd.download = download;
+		cmd.expandIub = expandIub;
+		cmd.filterIntervalFiles = filterIntervalFiles;
+		cmd.genomeVer = genomeVer;
+		cmd.help = help;
+		cmd.hgvs = hgvs;
+		cmd.hgvsForce = hgvsForce;
+		cmd.hgvsOld = hgvsOld;
+		cmd.hgvsOneLetterAa = hgvsOneLetterAa;
+		cmd.hgvsShift = hgvsShift;
+		cmd.hgvsTrId = hgvsTrId;
+		cmd.interaction = interaction;
+		cmd.log = log;
+		cmd.motif = motif;
+		cmd.maxTranscriptSupportLevel = maxTranscriptSupportLevel;
+		cmd.multiThreaded = multiThreaded;
+		cmd.nextProt = nextProt;
+		cmd.noGenome = noGenome;
+		cmd.numWorkers = numWorkers;
+		cmd.onlyProtein = onlyProtein;
+		cmd.onlyRegulation = onlyRegulation;
+		cmd.onlyTranscriptsFile = onlyTranscriptsFile;
+		cmd.quiet = quiet;
+		cmd.regulationTracks = regulationTracks;
+		cmd.spliceSiteSize = spliceSiteSize;
+		cmd.spliceRegionExonSize = spliceRegionExonSize;
+		cmd.spliceRegionIntronMax = spliceRegionIntronMax;
+		cmd.spliceRegionIntronMin = spliceRegionIntronMin;
+		cmd.strict = strict;
+		cmd.suppressOutput = suppressOutput;
+		cmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
+		cmd.upDownStreamLength = upDownStreamLength;
+		cmd.verbose = verbose;
+		cmd.configOverride = configOverride;
 	}
 
 	/**
@@ -314,7 +446,7 @@ public class SnpEff implements CommandLine {
 			if (verbose) //
 				Timer.showStdErr("Reading configuration file '" + configFile + "'" //
 						+ ((genomeVer != null) && (!genomeVer.isEmpty()) ? ". Genome: '" + genomeVer + "'" : "") //
-				);
+			);
 
 			config = new Config(genomeVer, configFile, dataDir, configOverride, verbose); // Read configuration
 			if (verbose) Timer.showStdErr("done");
@@ -459,7 +591,9 @@ public class SnpEff implements CommandLine {
 			// Remove transcripts
 			if (verbose) Timer.showStdErr("Filtering out transcripts in file '" + onlyTranscriptsFile + "'. Total " + trIds.size() + " transcript IDs.");
 			int removed = config.getSnpEffectPredictor().retainAllTranscripts(trIds);
-			if (verbose) Timer.showStdErr("Done: " + removed + " transcripts removed.");
+			int countTr = config.getSnpEffectPredictor().countTranscripts();
+			if (verbose) Timer.showStdErr("Done: " + removed + " transcripts removed, " + countTr + " transcripts left.");
+			if (countTr <= 0) fatalError("No transcripts left for analysis after filter using file '" + onlyTranscriptsFile + "'");
 		}
 
 		// Use protein coding transcripts
@@ -780,7 +914,7 @@ public class SnpEff implements CommandLine {
 				|| args[0].equalsIgnoreCase("show") //
 				|| args[0].equalsIgnoreCase("test") //
 				|| args[0].equalsIgnoreCase("translocreport") //
-				// Obsolete stuff (from T2D projects)
+		// Obsolete stuff (from T2D projects)
 				|| args[0].equalsIgnoreCase("acat") //
 				|| args[0].equalsIgnoreCase("spliceAnalysis") //
 		) {
@@ -1036,7 +1170,7 @@ public class SnpEff implements CommandLine {
 	 */
 	@Override
 	public boolean run() {
-		SnpEff snpEffCmd = snpEffCmd();
+		SnpEff snpEffCmd = cmd();
 		if (snpEffCmd == null) return true;
 
 		//---
@@ -1048,7 +1182,7 @@ public class SnpEff implements CommandLine {
 			ok = snpEffCmd.run();
 		} catch (Throwable t) {
 			ok = false;
-			if (err != null) err.append(t.getMessage());
+			err.append(t.getMessage());
 			t.printStackTrace();
 		}
 
@@ -1141,154 +1275,6 @@ public class SnpEff implements CommandLine {
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
-	}
-
-	/**
-	 * Create an appropriate SnpEffCmd* object
-	 */
-
-	public SnpEff snpEffCmd() {
-		// Parse command line arguments (generic and database specific arguments)
-		parseArgs(args);
-
-		SnpEff snpEffCmd = null;
-
-		// All commands are lower-case
-		command = command.trim().toLowerCase();
-		switch (command.toLowerCase()) {
-		case "ann":
-		case "eff":
-			snpEffCmd = new SnpEffCmdEff();
-			break;
-
-		case "build":
-			snpEffCmd = new SnpEffCmdBuild();
-			break;
-
-		case "buildnextprot":
-			snpEffCmd = new SnpEffCmdBuildNextProt();
-			break;
-
-		case "cds":
-			snpEffCmd = new SnpEffCmdCds();
-			break;
-
-		case "closest":
-			snpEffCmd = new SnpEffCmdClosest();
-			break;
-
-		case "count":
-			snpEffCmd = new SnpEffCmdCount();
-			break;
-
-		case "databases":
-			snpEffCmd = new SnpEffCmdDatabases();
-			break;
-
-		case "download":
-			snpEffCmd = new SnpEffCmdDownload();
-			break;
-
-		case "dump":
-			snpEffCmd = new SnpEffCmdDump();
-			break;
-
-		case "gsa":
-			snpEffCmd = new SnpEffCmdGsa();
-			break;
-
-		case "genes2bed":
-			snpEffCmd = new SnpEffCmdGenes2Bed();
-			break;
-
-		case "len":
-			snpEffCmd = new SnpEffCmdLen();
-			break;
-
-		case "pdb":
-			snpEffCmd = new SnpEffCmdPdb();
-			break;
-
-		case "protein":
-			snpEffCmd = new SnpEffCmdProtein();
-			break;
-
-		case "seq":
-			snpEffCmd = new SnpEffCmdSeq();
-			break;
-
-		case "show":
-			snpEffCmd = new SnpEffCmdShow();
-			break;
-
-		case "translocreport":
-			snpEffCmd = new SnpEffCmdTranslocationsReport();
-			break;
-
-		// Obsolete stuff
-		case "spliceanalysis":
-			snpEffCmd = new SnpEffCmdSpliceAnalysis();
-			break;
-
-		case "acat":
-			snpEffCmd = new SnpEffCmdAcat();
-			break;
-
-		default:
-			throw new RuntimeException("Unknown command '" + command + "'");
-		}
-
-		// Copy values to specific command
-		snpEffCmd.canonical = canonical;
-		snpEffCmd.canonicalFile = canonicalFile;
-		snpEffCmd.configFile = configFile;
-		snpEffCmd.customIntervalFiles = customIntervalFiles;
-		snpEffCmd.dataDir = dataDir;
-		snpEffCmd.debug = debug;
-		snpEffCmd.download = download;
-		snpEffCmd.expandIub = expandIub;
-		snpEffCmd.filterIntervalFiles = filterIntervalFiles;
-		snpEffCmd.genomeVer = genomeVer;
-		snpEffCmd.help = help;
-		snpEffCmd.hgvs = hgvs;
-		snpEffCmd.hgvsForce = hgvsForce;
-		snpEffCmd.hgvsOld = hgvsOld;
-		snpEffCmd.hgvsOneLetterAa = hgvsOneLetterAa;
-		snpEffCmd.hgvsShift = hgvsShift;
-		snpEffCmd.hgvsTrId = hgvsTrId;
-		snpEffCmd.interaction = interaction;
-		snpEffCmd.log = log;
-		snpEffCmd.motif = motif;
-		snpEffCmd.maxTranscriptSupportLevel = maxTranscriptSupportLevel;
-		snpEffCmd.multiThreaded = multiThreaded;
-		snpEffCmd.nextProt = nextProt;
-		snpEffCmd.noGenome = noGenome;
-		snpEffCmd.numWorkers = numWorkers;
-		snpEffCmd.onlyProtein = onlyProtein;
-		snpEffCmd.onlyRegulation = onlyRegulation;
-		snpEffCmd.onlyTranscriptsFile = onlyTranscriptsFile;
-		snpEffCmd.quiet = quiet;
-		snpEffCmd.regulationTracks = regulationTracks;
-		snpEffCmd.spliceSiteSize = spliceSiteSize;
-		snpEffCmd.spliceRegionExonSize = spliceRegionExonSize;
-		snpEffCmd.spliceRegionIntronMax = spliceRegionIntronMax;
-		snpEffCmd.spliceRegionIntronMin = spliceRegionIntronMin;
-		snpEffCmd.strict = strict;
-		snpEffCmd.suppressOutput = suppressOutput;
-		snpEffCmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
-		snpEffCmd.upDownStreamLength = upDownStreamLength;
-		snpEffCmd.verbose = verbose;
-		snpEffCmd.configOverride = configOverride;
-
-		// Help requested?
-		if (help) {
-			snpEffCmd.usage(null); // Show help message and exit
-			return null;
-		}
-
-		// Parse command specific arguments
-		snpEffCmd.parseArgs(shiftArgs);
-		return snpEffCmd;
 	}
 
 	/**

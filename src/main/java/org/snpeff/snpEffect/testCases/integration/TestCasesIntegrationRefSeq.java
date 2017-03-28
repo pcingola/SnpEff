@@ -63,7 +63,7 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 		snpeff.setVerbose(verbose);
 
 		// Build database
-		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.snpEffCmd();
+		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.cmd();
 		snpeffBuild.setStoreAlignments(true);
 		snpeffBuild.run();
 

@@ -282,13 +282,13 @@ th a:active, th a:hover {
 </center>
 
 <!--==========================================================================
-	Variantss by type
+	Variants by type
 	========================================================================== -->
 
 <hr> 
 <a name="changesByType"> 
 <center>
-<b> Number variantss by type</b><p>
+<b> Number variants by type</b><p>
 
 <table border=1>
 	<thead>

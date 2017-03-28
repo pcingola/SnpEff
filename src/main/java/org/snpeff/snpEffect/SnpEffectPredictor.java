@@ -194,6 +194,16 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
+	 * Count number of transcripts
+	 */
+	public int countTranscripts() {
+		int total = 0;
+		for (Gene g : genome.getGenes())
+			total += g.numChilds();
+		return total;
+	}
+
+	/**
 	 * Create (and add) up-down stream, splice sites, intergenic, etc
 	 */
 	public Markers createGenomicRegions() {

@@ -26,7 +26,7 @@ public class TestCasesIntegrationMnp {
 		// Run
 		String args[] = { "-classic", "-noHgvs", "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);
 		snpeff.setDebug(debug);

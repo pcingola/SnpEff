@@ -31,7 +31,7 @@ public class TestCasesIntegrationDelEtc {
 		String args[] = { "-ud", "0", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 		snpeff.setSupressOutput(!verbose);
 		snpeff.setVerbose(verbose);
 
@@ -72,7 +72,7 @@ public class TestCasesIntegrationDelEtc {
 		String args[] = { "-ud", "0", "-o", "gatk", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
-		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.snpEffCmd();
+		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 		snpeff.setSupressOutput(!verbose);
 		snpeff.setVerbose(verbose);
 

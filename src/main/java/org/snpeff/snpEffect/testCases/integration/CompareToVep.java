@@ -325,7 +325,7 @@ public class CompareToVep {
 	 */
 	List<VcfEntry> runSnpEff(String[] args) {
 		SnpEff cmd = new SnpEff(args);
-		cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
+		cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		cmdEff.setDebug(debug);
