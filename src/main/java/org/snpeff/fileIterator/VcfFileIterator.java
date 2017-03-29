@@ -176,7 +176,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 	protected VcfEntry readNext() {
 		// Read another line from the file
 		try {
-			headeSection = false;
+			headeSection = (lineNum == 0); // First line is header (even if missing)
 			while (ready()) {
 				line = readLine();
 				if (line == null) return null; // End of file?
@@ -210,7 +210,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 
 					// Return new entry
 					return vcfEntry;
-				} else headeSection |= true;
+				} else headeSection = true;
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Error reading file '" + fileName + "'. Line ignored:\n\tLine (" + lineNum + "):\t'" + line + "'");
