@@ -3,15 +3,15 @@
 
 Name , Value
 Genome , testHg3770Chr22 
-Date , 2017-03-17 12:51
-SnpEff_version , SnpEff 4.3k (build 2017-03-17 12:49), by Pablo Cingolani
+Date , 2017-03-29 12:42
+SnpEff_version , SnpEff 4.3k (build 2017-03-29 08:47), by Pablo Cingolani
 Command_line_arguments , SnpEff  -csvStats test_04_TestCasesEff.csv testHg3770Chr22 tests/eff_sort.vcf 
 Warnings , 1185 
 Number_of_lines_in_input_file, 1205
 Number_of_variants_before_filter, 1242
 Number_of_not_variants , 0
 Number_of_variants_processed , 1242
-Number_of_known_variants <br>(i.e. non-empty ID) , 1242, 100% 
+Number_of_known_variants (i.e. non-empty ID) , 1242, 100% 
 Number_of_effects , 9666 
 Genome_total_length ,51304566 
 Genome_effective_length ,51304566 
@@ -21,6 +21,13 @@ Change_rate , 41308
 
 Chromosome , Length , Changes , Change_rate 
 22 , 51304566 , 1242 , 41308
+
+# Variantss by type
+
+Type , Count , Percent 
+DEL , 32 , 2.57649% 
+INS , 18 , 1.449275% 
+SNP , 1192 , 95.974235% 
 
 # Effects by impact
 
