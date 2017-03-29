@@ -26,7 +26,7 @@ public class VcfHeader {
 	int numberOfSamples = -1;
 	StringBuffer header;
 	Map<String, VcfHeaderInfo> vcfInfoById;
-	Map<String, VcfHeaderInfoGenotype> vcfInfoGenotypeById;
+	Map<String, VcfHeaderFormatGenotype> vcfFormatGenotypeById;
 	ArrayList<String> sampleNames;
 	Map<String, Integer> sampleName2Num;
 	boolean chromLine = false;
@@ -40,30 +40,34 @@ public class VcfHeader {
 	}
 
 	/**
+	 * Add a 'FORMAT' meta info
+	 */
+	public synchronized void addFormat(VcfHeaderFormatGenotype vcfInfoGenotype) {
+		parseInfoLines();
+
+		// Not already added?
+		if (!vcfFormatGenotypeById.containsKey(vcfInfoGenotype.getId())) {
+			addLine(vcfInfoGenotype.toString()); // Add line
+			resetCache(); // Invalidate cache
+		}
+	}
+
+	public synchronized void add(VcfHeaderEntry vcfHeader) {
+		throw new RuntimeException("!!!!!!!!!!!!!");
+	}
+
+	/**
 	 * Add a VCF INFO header definition
 	 */
-	public synchronized void add(VcfHeaderEntry vcfInfo) {
+	public synchronized void addInfo(VcfHeaderInfo vcfInfo) {
 		parseInfoLines();
 
 		// Already added? Remove old entry
-		if (hasHeaderInfo(vcfInfo)) removeInfo(vcfInfo.getId());
+		if (hasInfo(vcfInfo)) removeInfo(vcfInfo.getId());
 
 		// Add line
 		addLine(vcfInfo.toString());
 		resetCache(); // Invalidate cache
-	}
-
-	/**
-	 * Add a 'FORMAT' meta info
-	 */
-	public synchronized void addFormat(VcfHeaderInfoGenotype vcfInfoGenotype) {
-		parseInfoLines();
-
-		// Not already added?
-		if (!vcfInfoGenotypeById.containsKey(vcfInfoGenotype.getId())) {
-			addLine(vcfInfoGenotype.toString()); // Add line
-			resetCache(); // Invalidate cache
-		}
 	}
 
 	/**
@@ -246,15 +250,22 @@ public class VcfHeader {
 		return vcfInfoById.get(id);
 	}
 
-	public synchronized VcfHeaderInfoGenotype getVcfInfoGenotype(String id) {
+	public synchronized VcfHeaderFormatGenotype getVcfInfoGenotype(String id) {
 		parseInfoLines();
-		return vcfInfoGenotypeById.get(id);
+		return vcfFormatGenotypeById.get(id);
 	}
 
 	/**
-	 * Do we already have this header?
+	 * Do we already have this 'format' entry?
 	 */
-	public synchronized boolean hasHeaderInfo(VcfHeaderEntry vcfInfo) {
+	public synchronized boolean hasFormat(VcfHeaderFormatGenotype vcfFormat) {
+		return vcfFormatGenotypeById != null && vcfFormatGenotypeById.containsKey(vcfFormat.getId());
+	}
+
+	/**
+	 * Do we already have this 'info' header?
+	 */
+	public synchronized boolean hasInfo(VcfHeaderInfo vcfInfo) {
 		return vcfInfoById != null && vcfInfoById.containsKey(vcfInfo.getId());
 	}
 
@@ -400,24 +411,24 @@ public class VcfHeader {
 		vcfInfoById.put("NMD.PERC", new VcfHeaderInfo("NMD.PERC", VcfInfoType.Float, ".", "SnpEff NMD percentage of transcripts in this gene that are affected"));
 
 		// Genotype fields
-		vcfInfoGenotypeById = new HashMap<String, VcfHeaderInfoGenotype>();
-		vcfInfoGenotypeById.put("DP", new VcfHeaderInfoGenotype("DP", VcfInfoType.Integer, "1", "Read depth"));
-		vcfInfoGenotypeById.put("EC", new VcfHeaderInfoGenotype("EC", VcfInfoType.Integer, "A", "Expected alternate allele counts"));
-		vcfInfoGenotypeById.put("FT", new VcfHeaderInfoGenotype("FT", VcfInfoType.String, "1", "Genotype filter"));
-		vcfInfoGenotypeById.put("GT", new VcfHeaderInfoGenotype("GT", VcfInfoType.String, "1", "Genotype"));
-		vcfInfoGenotypeById.put("GP", new VcfHeaderInfoGenotype("GP", VcfInfoType.Float, "1", "Genotype phred-scaled genotype posterior probabilities"));
-		vcfInfoGenotypeById.put("GQ", new VcfHeaderInfoGenotype("GQ", VcfInfoType.Integer, "1", "Genotype conditional genotype quality, encoded as a phred quality"));
-		vcfInfoGenotypeById.put("HQ", new VcfHeaderInfoGenotype("HQ", VcfInfoType.Integer, "2", "Haplotype qualities"));
-		vcfInfoGenotypeById.put("PL", new VcfHeaderInfoGenotype("PL", VcfInfoType.String, "G", "Normalized, Phred-scaled likelihoods for genotypes"));
-		vcfInfoGenotypeById.put("PQ", new VcfHeaderInfoGenotype("PQ", VcfInfoType.Integer, "1", "Phasing quality"));
-		vcfInfoGenotypeById.put("PS", new VcfHeaderInfoGenotype("PS", VcfInfoType.Integer, "1", "Phase set"));
-		vcfInfoGenotypeById.put("MQ", new VcfHeaderInfoGenotype("MQ", VcfInfoType.Integer, "1", "RMS mapping quality."));
+		vcfFormatGenotypeById = new HashMap<String, VcfHeaderFormatGenotype>();
+		vcfFormatGenotypeById.put("DP", new VcfHeaderFormatGenotype("DP", VcfInfoType.Integer, "1", "Read depth"));
+		vcfFormatGenotypeById.put("EC", new VcfHeaderFormatGenotype("EC", VcfInfoType.Integer, "A", "Expected alternate allele counts"));
+		vcfFormatGenotypeById.put("FT", new VcfHeaderFormatGenotype("FT", VcfInfoType.String, "1", "Genotype filter"));
+		vcfFormatGenotypeById.put("GT", new VcfHeaderFormatGenotype("GT", VcfInfoType.String, "1", "Genotype"));
+		vcfFormatGenotypeById.put("GP", new VcfHeaderFormatGenotype("GP", VcfInfoType.Float, "1", "Genotype phred-scaled genotype posterior probabilities"));
+		vcfFormatGenotypeById.put("GQ", new VcfHeaderFormatGenotype("GQ", VcfInfoType.Integer, "1", "Genotype conditional genotype quality, encoded as a phred quality"));
+		vcfFormatGenotypeById.put("HQ", new VcfHeaderFormatGenotype("HQ", VcfInfoType.Integer, "2", "Haplotype qualities"));
+		vcfFormatGenotypeById.put("PL", new VcfHeaderFormatGenotype("PL", VcfInfoType.String, "G", "Normalized, Phred-scaled likelihoods for genotypes"));
+		vcfFormatGenotypeById.put("PQ", new VcfHeaderFormatGenotype("PQ", VcfInfoType.Integer, "1", "Phasing quality"));
+		vcfFormatGenotypeById.put("PS", new VcfHeaderFormatGenotype("PS", VcfInfoType.Integer, "1", "Phase set"));
+		vcfFormatGenotypeById.put("MQ", new VcfHeaderFormatGenotype("MQ", VcfInfoType.Integer, "1", "RMS mapping quality."));
 
 		// Set all automatically added fields as "implicit"
 		for (VcfHeaderInfo vcfInfo : vcfInfoById.values())
 			vcfInfo.setImplicit(true);
 
-		for (VcfHeaderInfoGenotype vcfInfoGenotype : vcfInfoGenotypeById.values())
+		for (VcfHeaderFormatGenotype vcfInfoGenotype : vcfFormatGenotypeById.values())
 			vcfInfoGenotype.setImplicit(true);
 
 		//---
@@ -426,7 +437,7 @@ public class VcfHeader {
 		for (String line : getLines()) {
 			if (isInfoOrGtLine(line)) {
 				VcfHeaderInfo vcfInfo = (VcfHeaderInfo) VcfHeaderEntry.factory(line);
-				if (vcfInfo instanceof VcfHeaderInfoGenotype) vcfInfoGenotypeById.put(vcfInfo.getId(), (VcfHeaderInfoGenotype) vcfInfo);
+				if (vcfInfo instanceof VcfHeaderFormatGenotype) vcfFormatGenotypeById.put(vcfInfo.getId(), (VcfHeaderFormatGenotype) vcfInfo);
 				else vcfInfoById.put(vcfInfo.getId(), vcfInfo);
 			}
 		}
@@ -512,7 +523,7 @@ public class VcfHeader {
 
 	void resetCache() {
 		vcfInfoById = null;
-		vcfInfoGenotypeById = null;
+		vcfFormatGenotypeById = null;
 	}
 
 	/**

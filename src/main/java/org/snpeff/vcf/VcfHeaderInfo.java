@@ -75,7 +75,6 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 
 	protected int number;
 	protected boolean implicit; // Is this field implicit? (Added automatically by VcfHeader class)
-	protected boolean genotype; // Is this a 'genotype' field?
 	protected VcfInfoNumber vcfInfoNumber;
 	protected VcfInfoType vcfInfoType;
 	protected String description;
@@ -88,8 +87,6 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 
 		// Is this an Info line?
 		if (line.startsWith("##INFO=") || line.startsWith("##FORMAT=")) {
-			genotype = line.startsWith("##FORMAT=");
-
 			// Remove all trailing '\n'
 			while (line.endsWith("\n"))
 				line = line.substring(0, line.length() - 1);
@@ -126,7 +123,7 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 			if (matcher.find()) description = matcher.group(1);
 			else throw new RuntimeException("Cannot find 'Description' in info line: '" + line + "'");
 
-		} else throw new RuntimeException("Line provided is not an INFO definition: '" + line + "'");
+		} else throw new RuntimeException("Line provided is not an INFO/FORMAT definition: '" + line + "'");
 	}
 
 	public VcfHeaderInfo(String id, VcfInfoType vcfInfoType, String number, String description) {
@@ -144,7 +141,6 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 		id = header.id;
 		number = header.number;
 		implicit = header.implicit;
-		genotype = header.genotype;
 		vcfInfoNumber = header.vcfInfoNumber;
 		vcfInfoType = header.vcfInfoType;
 		description = header.description;
@@ -166,12 +162,13 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 		return vcfInfoType;
 	}
 
-	public boolean isGenotype() {
-		return genotype;
-	}
-
 	public boolean isImplicit() {
 		return implicit;
+	}
+
+	@Override
+	public boolean isInfo() {
+		return true;
 	}
 
 	public boolean isNumberAllAlleles() {
@@ -192,10 +189,6 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 
 	public boolean isNumberPerAllele() {
 		return vcfInfoNumber == VcfInfoNumber.ALLELE || vcfInfoNumber == VcfInfoNumber.ALL_ALLELES;
-	}
-
-	public void setGenotype(boolean genotype) {
-		this.genotype = genotype;
 	}
 
 	public void setImplicit(boolean implicit) {

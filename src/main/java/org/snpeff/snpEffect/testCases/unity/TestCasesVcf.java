@@ -470,7 +470,7 @@ public class TestCasesVcf extends TestCasesBase {
 		for (VcfEntry ve : vcf) {
 			if (vcf.isHeadeSection()) {
 				// Add INFO field to header
-				vcf.getVcfHeader().add(vhInfo);
+				vcf.getVcfHeader().addInfo(vhInfo);
 				if (verbose) System.out.println(vcf.getVcfHeader());
 				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader));
 			}
@@ -508,12 +508,12 @@ public class TestCasesVcf extends TestCasesBase {
 		for (VcfEntry ve : vcf) {
 			if (vcf.isHeadeSection()) {
 				// Add INFO field to header
-				vcf.getVcfHeader().add(vhInfo);
+				vcf.getVcfHeader().addInfo(vhInfo);
 				if (verbose) System.out.println(vcf.getVcfHeader());
 				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader));
 
 				// Add second INFO field to header (should replace first one)
-				vcf.getVcfHeader().add(vhInfo2);
+				vcf.getVcfHeader().addInfo(vhInfo2);
 				if (verbose) System.out.println(vcf.getVcfHeader());
 				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader2)); // New header
 				Assert.assertTrue(!vcf.getVcfHeader().toString().contains(expectedHeader)); // Old header should be gone
