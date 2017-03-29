@@ -551,7 +551,7 @@ void uploadHtml2Sf() {
 #-------------------------------------------------------------------------------
 string version() {
 	if( snpEffVersion == '' ) {
-		snpEffVersion = sys $snpeff -version | cut -f 1,2
+		snpEffVersion = sys $snpeff -version | cut -f 2
 	}
 	return snpEffVersion;
 }
@@ -609,15 +609,19 @@ void zipBundles() {
 #-------------------------------------------------------------------------------
 void zipCore() {
 	ver := versionSubUnd()
-	dir := "snpEff_$ver"
-	sys rm -rvf $dir snpEff
+	dir := "snpEff"
+	sys rm -rvf $dir
 	sys mkdir $dir
 
 	# Copy core files
 	sys cp -RvfL snpEff.config snpEff.jar SnpSift.jar examples galaxy scripts $dir
 
-	# Change name to 'snpEff' (so that config file can be used out of the box)
-	sys mv $dir snpEff
+	# Copy ClinEff files
+	clinEff := "$HOME/clinEff"
+	dirClinEff := "clinEff"
+	sys rm -rvf $dirClinEff
+	sys mkdir $dirClinEff
+	sys cp -RvfL $clinEff/clinEff.config $clinEff/ClinEff.jar $clinEff/workflow* $clinEff/report $dirClinEff
 
 	# Create 'core' zip file
 	zip := "snpEff_v" + ver + "_core.zip"
@@ -625,7 +629,7 @@ void zipCore() {
 	zipDev    := "snpEff_development.zip"
 	sys rm -f $zip 2> /dev/null
 	task { 
-		sys zip -r $zip snpEff
+		sys zip -r $zip snpEff clinEff
 		sys cp $zip $zipLatest
 		sys cp $zip $zipDev
 	}
