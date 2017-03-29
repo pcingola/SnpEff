@@ -269,7 +269,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		boolean isFlag = false;
 		VcfHeader vcfHeader = vcfFileIterator.getVcfHeader();
 		if (vcfHeader != null) {
-			VcfHeaderInfo vcfHeaderInfo = vcfFileIterator.getVcfHeader().getVcfInfo(key);
+			VcfHeaderInfo vcfHeaderInfo = vcfFileIterator.getVcfHeader().getVcfHeaderInfo(key);
 			isFlag = (vcfHeaderInfo != null) && (vcfHeaderInfo.getVcfInfoType() == VcfInfoType.Flag);
 		}
 
@@ -740,20 +740,20 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * Get VcfInfo type for a given ID
 	 */
 	public VcfHeaderInfo getVcfInfo(String id) {
-		return vcfFileIterator.getVcfHeader().getVcfInfo(id);
+		return vcfFileIterator.getVcfHeader().getVcfHeaderInfo(id);
 	}
 
 	/**
 	 * Get Info number for a given ID
 	 */
 	public VcfInfoType getVcfInfoNumber(String id) {
-		VcfHeaderInfo vcfInfo = vcfFileIterator.getVcfHeader().getVcfInfo(id);
+		VcfHeaderInfo vcfInfo = vcfFileIterator.getVcfHeader().getVcfHeaderInfo(id);
 		if (vcfInfo == null) return null;
 		return vcfInfo.getVcfInfoType();
 	}
 
 	public boolean hasField(String filedName) {
-		return vcfFileIterator.getVcfHeader().getVcfInfo(filedName) != null;
+		return vcfFileIterator.getVcfHeader().getVcfHeaderInfo(filedName) != null;
 	}
 
 	public boolean hasGenotypes() {

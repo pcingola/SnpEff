@@ -11,7 +11,7 @@ import org.snpeff.util.Gpr;
  * References: http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41
  *
  * INFO fields should be described as follows (all keys are required):
- * 		##INFO=<ID=ID,Number=number,Type=type,Description=�description�>
+ * 		##INFO=<ID=ID,Number=number,Type=type,Description=description>
  *
  * 		Possible Types for INFO fields are: Integer, Float, Flag, Character, and String.
  *
@@ -86,7 +86,7 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 		super(line);
 
 		// Is this an Info line?
-		if (line.startsWith("##INFO=") || line.startsWith("##FORMAT=")) {
+		if (VcfHeader.isInfoLine(line) || VcfHeader.isFormatLine(line)) {
 			// Remove all trailing '\n'
 			while (line.endsWith("\n"))
 				line = line.substring(0, line.length() - 1);
@@ -137,7 +137,6 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 
 	public VcfHeaderInfo(VcfHeaderInfo header) {
 		super(null);
-
 		id = header.id;
 		number = header.number;
 		implicit = header.implicit;
@@ -236,6 +235,6 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 				+ ",Type=" + vcfInfoType //
 				+ ",Description=\"" + description + "\"" //
 				+ ">" //
-				;
+		;
 	}
 }

@@ -1,20 +1,20 @@
 package org.snpeff.vcf;
 
-public class VcfHeaderFormatGenotype extends VcfHeaderInfo {
+public class VcfHeaderFormat extends VcfHeaderInfo {
 
 	/**
 	 * Constructor using a "##FORMAT" line from a VCF file
 	 */
-	public VcfHeaderFormatGenotype(String line) {
+	public VcfHeaderFormat(String line) {
 		super(line);
 	}
 
-	public VcfHeaderFormatGenotype(String id, VcfInfoType vcfInfoType, String number, String description) {
+	public VcfHeaderFormat(String id, VcfInfoType vcfInfoType, String number, String description) {
 		super(id, vcfInfoType, number, description);
 	}
 
 	@Override
-	public boolean isFormatGenotype() {
+	public boolean isFormat() {
 		return true;
 	}
 

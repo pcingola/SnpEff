@@ -61,7 +61,7 @@ public class LineChrPos implements Comparable<LineChrPos> {
 		return (chrNum > 0 ? chrNum + "[number]" : chr + "[string]") //
 				+ ":" + pos //
 				+ "\t" + new String(line) //
-				;
+		;
 	}
 
 }

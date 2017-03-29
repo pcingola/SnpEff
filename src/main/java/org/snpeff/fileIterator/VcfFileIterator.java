@@ -54,7 +54,7 @@ import org.snpeff.vcf.VcfHeader;
  *
  * @author pcingola
  */
-public class VcfFileIterator extends MarkerFileIterator<VcfEntry>implements Parser<VcfEntry> {
+public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Parser<VcfEntry> {
 
 	public static final String MISSING = "."; // Missing value
 	private static final String EMPTY = "";
@@ -66,6 +66,11 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry>implements Pars
 	VcfHeader header = new VcfHeader();
 	String chrPrev = "";
 	int posPrev = -1;
+
+	public VcfFileIterator() {
+		super((String) null, 1);
+		init();
+	}
 
 	public VcfFileIterator(BufferedReader reader) {
 		super(reader, 1);
@@ -90,7 +95,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry>implements Pars
 	}
 
 	/**
-	 * Get all VcfInfo entries
+	 * Get VcfHeader
 	 */
 	public VcfHeader getVcfHeader() {
 		return header;
@@ -110,7 +115,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry>implements Pars
 
 	@Override
 	public Collection<VcfEntry> parse(String str) {
-		LinkedList<VcfEntry> list = new LinkedList<VcfEntry>();
+		LinkedList<VcfEntry> list = new LinkedList<>();
 		list.add(parseVcfLine(str));
 		return list;
 	}
@@ -236,6 +241,13 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry>implements Pars
 	 */
 	public void setParseNow(boolean parseNow) {
 		this.parseNow = parseNow;
+	}
+
+	/**
+	 * Set header
+	 */
+	public void setVcfHeader(VcfHeader header) {
+		this.header = header;
 	}
 
 }

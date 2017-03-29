@@ -29,7 +29,7 @@ public class VcfConsequenceHeader {
 	}
 
 	void parseCsqHeader(VcfFileIterator vcf) {
-		vcfInfoCsq = vcf.getVcfHeader().getVcfInfo(VcfConsequence.VCF_INFO_CSQ_NAME);
+		vcfInfoCsq = vcf.getVcfHeader().getVcfHeaderInfo(VcfConsequence.VCF_INFO_CSQ_NAME);
 		if (vcfInfoCsq == null) throw new RuntimeException("Cannot find " + VcfConsequence.VCF_INFO_CSQ_NAME + " in VCF header");
 
 		String descr = vcfInfoCsq.getDescription();

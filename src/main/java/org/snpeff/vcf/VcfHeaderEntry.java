@@ -4,7 +4,7 @@ package org.snpeff.vcf;
  * Represents a info elements in a VCF file's header
  *
  * References:
- * 		https://samtools.github.io/hts-specs/VCFv4.3.pdf 
+ * 		https://samtools.github.io/hts-specs/VCFv4.3.pdf
  * 		http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41
  *
  * @author pablocingolani
@@ -15,7 +15,7 @@ public class VcfHeaderEntry {
 	protected String id;
 
 	public static VcfHeaderEntry factory(String line) {
-		if (line.startsWith("##FORMAT=")) return new VcfHeaderFormatGenotype(line);
+		if (line.startsWith("##FORMAT=")) return new VcfHeaderFormat(line);
 		if (line.startsWith("##INFO=")) return new VcfHeaderInfo(line);
 		return new VcfHeaderEntry(line);
 	}
@@ -32,7 +32,7 @@ public class VcfHeaderEntry {
 		return id;
 	}
 
-	public boolean isFormatGenotype() {
+	public boolean isFormat() {
 		return false;
 	}
 
