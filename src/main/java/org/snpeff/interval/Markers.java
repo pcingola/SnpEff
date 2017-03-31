@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.snpeff.fileIterator.BedFileIterator;
 import org.snpeff.fileIterator.BigBedFileIterator;
@@ -447,6 +448,11 @@ public class Markers implements Serializable, Collection<Marker> {
 		if (byEnd) Collections.sort(markers, new IntervalComparatorByEnd(reverse));
 		else Collections.sort(markers, new IntervalComparatorByStart(reverse));
 		return this;
+	}
+
+	@Override
+	public Stream<Marker> stream() {
+		return markers.stream();
 	}
 
 	@Override

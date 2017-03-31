@@ -1,18 +1,14 @@
 package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.Test;
-import org.snpeff.codons.CodonTable;
-import org.snpeff.interval.Exon;
 import org.snpeff.interval.Variant;
+import org.snpeff.interval.Variants;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.GprSeq;
-
-import junit.framework.Assert;
 
 /**
- * Test random SNP changes
+ * Test multiple variants affecting one codon
  *
  * @author pcingola
  */
@@ -34,109 +30,119 @@ public class TestCasesZzz extends TestCasesBase {
 	@Override
 	protected void init() {
 		super.init();
-		randSeed = 20100629;
+		randSeed = 20170331;
 	}
 
+	/**
+	 * Two SNPs affect one transcript
+	 */
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 
-		CodonTable codonTable = genome.codonTable();
+		minExons = 3;
+		initSnpEffPredictor();
 
-		// Test N times
-		//	- Create a random gene transcript, exons
-		//	- Change each base in the exon
-		//	- Calculate effect
-		for (int i = 0; i < N; i++) {
-			initSnpEffPredictor();
-			if (debug) System.out.println("SNP Test iteration: " + i + "\n" + transcript);
-			else if (verbose) System.out.println("SNP Test iteration: " + i + "\t" + transcript.getStrand() + "\t" + transcript.cds());
-			else Gpr.showMark(i + 1, 1);
+		Variant snp1 = new Variant(chromosome, 374, "G", "C");
+		Variant snp2 = new Variant(chromosome, 375, "C", "A");
+		Variants vars = new Variants();
+		vars.add(snp1);
+		vars.add(snp2);
+		Gpr.debug("Transcript:" + transcript);
+		Gpr.debug("Variants:" + vars);
 
-			int cdsBaseNum = 0;
+		VariantEffects variantEffects = new VariantEffects();
+		transcript.variantEffect(vars, variantEffects);
+		Gpr.debug("Variant effects" + variantEffects);
 
-			// For each exon...
-			for (Exon exon : transcript.sortedStrand()) {
-				int step = exon.isStrandPlus() ? 1 : -1;
-				int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
+	}
 
-				// For each base in this exon...
-				for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
-					// Reference base
-					char refBase = chromoBases[pos]; // exon.basesAt(pos - exon.getStart(), 1).charAt(0);
-					refBase = Character.toUpperCase(refBase);
-					// Codon number
-					int cdsCodonNum = cdsBaseNum / 3;
-					int cdsCodonPos = cdsBaseNum % 3;
+	/**
+	 * Two SNPs affect one transcript: Exon edges
+	 */
+	@Test
+	public void test_02() {
+		Gpr.debug("Test");
+	}
 
-					int minCodonPos = cdsCodonNum * 3;
-					int maxCodonPos = minCodonPos + 3;
-					if (maxCodonPos < transcript.cds().length()) {
-						String codon = transcript.cds().substring(minCodonPos, maxCodonPos);
-						codon = codon.toUpperCase();
-						String aa = codonTable.aa(codon);
+	/**
+	 * Two SNPs: Only one affects the coding part of the transcript
+	 */
+	@Test
+	public void test_03() {
+		Gpr.debug("Test");
+	}
 
-						// Get a random base different from 'refBase'
-						char snp = refBase;
-						while (snp == refBase) {
-							snp = Character.toUpperCase(GprSeq.randBase(rand));
-						}
+	/**
+	 * Two SNPs affect multiple transcripts
+	 */
+	@Test
+	public void test_04() {
+		Gpr.debug("Test");
+	}
 
-						// Codon change
-						String newCodon = codon.substring(0, cdsCodonPos) + snp + codon.substring(cdsCodonPos + 1);
-						String newAa = codonTable.aa(newCodon);
-						String effectExpected = "";
+	/**
+	 * Two MNPs 
+	 */
+	@Test
+	public void test_05() {
+		Gpr.debug("Test");
+	}
 
-						// Effect
-						if (newAa.equals(aa)) {
-							if ((cdsCodonNum == 0) && (codonTable.isStart(codon))) {
-								if (codonTable.isStart(newCodon)) effectExpected = "SYNONYMOUS_START(" + aa + ")";
-								else effectExpected = "START_LOST(" + aa + ")";
-							} else if (aa.equals("*")) effectExpected = "SYNONYMOUS_STOP(" + aa + ")";
-							else effectExpected = "SYNONYMOUS_CODING(" + aa + ")";
-						} else {
-							if ((cdsCodonNum == 0) && (codonTable.isStart(codon))) {
-								if (codonTable.isStart(newCodon)) effectExpected = "NON_SYNONYMOUS_START(" + aa + "/" + newAa + ")";
-								else effectExpected = "START_LOST(" + aa + "/" + newAa + ")";
-							} else if (codonTable.isStop(codon)) effectExpected = "STOP_LOST(" + aa + "/" + newAa + ")";
-							else if (codonTable.isStop(newCodon)) effectExpected = "STOP_GAINED(" + aa + "/" + newAa + ")";
-							else effectExpected = "NON_SYNONYMOUS_CODING(" + aa + "/" + newAa + ")";
-						}
+	/**
+	 * Two frame-compensating INS nearby  
+	 */
+	@Test
+	public void test_06() {
+		Gpr.debug("Test");
+	}
 
-						// Create a variant
-						if (exon.isStrandMinus()) {
-							snp = GprSeq.wc(snp);
-							refBase = GprSeq.wc(refBase);
-						}
-						Variant variant = new Variant(chromosome, pos, refBase + "", snp + "", "");
+	/**
+	 * Two frame-compensating INS far away  
+	 */
+	@Test
+	public void test_07() {
+		Gpr.debug("Test");
+	}
 
-						if (!variant.isVariant()) effectExpected = "EXON";
+	/**
+	 * Two frame-compensating DEL nearby  
+	 */
+	@Test
+	public void test_08() {
+		Gpr.debug("Test");
+	}
 
-						// Calculate effects
-						VariantEffects effects = snpEffectPredictor.variantEffect(variant);
+	/**
+	 * Two frame-compensating DEL far away
+	 */
+	@Test
+	public void test_09() {
+		Gpr.debug("Test");
+	}
 
-						// Checknumber of results
-						Assert.assertEquals(true, effects.size() == 1);
-						if (debug) System.out.println(effects);
+	/**
+	 * Haplotype detection: Two phased variants
+	 */
+	@Test
+	public void test_10() {
+		Gpr.debug("Test");
+	}
 
-						// Check effect
-						VariantEffect effect = effects.get();
-						String effStr = effectStr(effect);
-						if (debug) System.out.println("\tPos: " + pos //
-								+ "\tCDS base num: " + cdsBaseNum + " [" + cdsCodonNum + ":" + cdsCodonPos + "]" //
-								+ "\t" + variant //
-								+ "\tCodon: " + codon + " -> " + newCodon //
-								+ "\tAA: " + aa + " -> " + newAa //
-								+ "\tEffect: " + effStr);
+	/**
+	 * Haplotype detection: Two variants implicitly phased (one of them is homozygous)
+	 */
+	@Test
+	public void test_11() {
+		Gpr.debug("Test");
+	}
 
-						// Check effect
-						Assert.assertEquals(effectExpected, effStr);
-					}
-				}
-			}
-		}
-
-		System.err.println("");
+	/**
+	 * Haplotype detection: Two variants implicitly phased (both homozygous)
+	 */
+	@Test
+	public void test_12() {
+		Gpr.debug("Test");
 	}
 
 }

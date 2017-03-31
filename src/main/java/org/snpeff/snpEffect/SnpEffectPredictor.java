@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.snpeff.binseq.GenomicSequences;
 import org.snpeff.interval.Cds;
@@ -22,6 +23,7 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.TranscriptSupportLevel;
 import org.snpeff.interval.Utr;
 import org.snpeff.interval.Variant;
+import org.snpeff.interval.Variants;
 import org.snpeff.interval.tree.IntervalForest;
 import org.snpeff.interval.tree.Itree;
 import org.snpeff.serializer.MarkerSerializer;
@@ -744,6 +746,27 @@ public class SnpEffectPredictor implements Serializable {
 				variantEffects.add(variant, null, EffectType.INTERGENIC, "");
 			}
 		}
+	}
+
+	/**
+	 * Calculate effect of multiple variants affecting a haplotype
+	 */
+	public VariantEffects variantEffect(Variants variants) {
+		VariantEffects variantEffects = new VariantEffects();
+
+		// Create a set of affected transcripts
+		Set<Transcript> trSet = variants.stream()//
+				.map(v -> query(v)) //
+				.flatMap(m -> m.stream()) //
+				.filter(i -> i instanceof Transcript) //
+				.map(t -> (Transcript) t) //
+				.collect(Collectors.toSet());
+
+		// Calculate effects for each transcript
+		for (Transcript tr : trSet)
+			tr.variantEffect(variants, variantEffects);
+
+		return variantEffects;
 	}
 
 	/**

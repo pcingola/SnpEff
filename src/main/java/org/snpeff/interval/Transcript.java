@@ -1877,7 +1877,16 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	}
 
 	/**
-	 * Get some details about the effect on this transcript
+	 * Annotate variant effect (multiple variants affecting the same haplotype) 
+	 * @return true if successfully annotated
+	 */
+	public boolean variantEffect(Variants variants, VariantEffects variantEffects) {
+		return true;
+	}
+
+	/**
+	 * Annotate variant effect (single variant) 
+	 * @return true if successfully annotated
 	 */
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {
