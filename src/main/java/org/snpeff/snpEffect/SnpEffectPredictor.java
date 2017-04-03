@@ -760,7 +760,8 @@ public class SnpEffectPredictor implements Serializable {
 				.flatMap(m -> m.stream()) //
 				.filter(i -> i instanceof Transcript) //
 				.map(t -> (Transcript) t) //
-				.collect(Collectors.toSet());
+				.collect(Collectors.toSet()) //
+		;
 
 		// Calculate effects for each transcript
 		for (Transcript tr : trSet)

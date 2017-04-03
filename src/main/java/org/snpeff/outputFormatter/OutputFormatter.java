@@ -12,6 +12,9 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.VariantEffect;
 
 /**
+ * 
+ * TODO: Remove OutputFormatter, remove support for BED and BEDANN formats (useless now)
+ * 
  * Formats output
  * How is this used:
  *    - newSection();   // Create a new 'section' on the output format (e.g. a new seqChange)
@@ -41,7 +44,7 @@ public abstract class OutputFormatter {
 	Config config;
 
 	public OutputFormatter() {
-		variantEffects = new ArrayList<VariantEffect>();
+		variantEffects = new ArrayList<>();
 	}
 
 	/**

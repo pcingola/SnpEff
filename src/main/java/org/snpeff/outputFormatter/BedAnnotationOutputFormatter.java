@@ -31,20 +31,20 @@ public class BedAnnotationOutputFormatter extends BedOutputFormatter {
 		String variantName = seqChange.getChromosomeName() + ":" + (seqChange.getStart() + outOffset);
 
 		// Show results
-		HashSet<String> chEffs = new HashSet<String>();
-		for (VariantEffect changeEffect : variantEffects) {
+		HashSet<String> chEffs = new HashSet<>();
+		for (VariantEffect varEff : variantEffects) {
 			// If it is not filtered out by changeEffectResutFilter  => Show it
-			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(changeEffect))) {
+			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(varEff))) {
 				String ann = null;
 
-				Marker m = changeEffect.getMarker();
+				Marker m = varEff.getMarker();
 				if (m != null) {
 					// Get gene name (if any)
 					String geneName = null;
-					Gene gene = changeEffect.getGene();
+					Gene gene = varEff.getGene();
 					if (gene != null) geneName = (useGeneId ? gene.getId() : gene.getGeneName());
 
-					// Get annotation type
+					// Get type
 					String type = m.getType().toString();
 
 					// Show complete regulation info

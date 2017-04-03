@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.snpeff.util.Gpr;
 
@@ -155,7 +159,7 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 	 * Load all elements from a file into a list
 	 */
 	public List<T> load() {
-		LinkedList<T> list = new LinkedList<T>();
+		LinkedList<T> list = new LinkedList<>();
 		for (T t : this)
 			list.add(t);
 		close();
@@ -229,12 +233,19 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		this.verbose = verbose;
 	}
 
+	public Stream<T> stream() {
+		int characteristics = Spliterator.DISTINCT | Spliterator.SORTED | Spliterator.ORDERED;
+		Spliterator<T> spliterator = Spliterators.spliteratorUnknownSize(iterator(), characteristics);
+		boolean parallel = false;
+		return StreamSupport.stream(spliterator, parallel);
+	}
+
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() //
 				+ ":'" + fileName + "'" //
 				+ ",autoClose:" + autoClose //
 				+ (hasSeek() ? ",pos:" + ((SeekableBufferedReader) reader).getFilePointer() : "") //
-				;
+		;
 	}
 }
