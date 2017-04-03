@@ -18,6 +18,7 @@ import org.snpeff.geneSets.GeneSets;
 import org.snpeff.geneSets.GeneSetsRanked;
 import org.snpeff.geneSets.GeneStats;
 import org.snpeff.geneSets.algorithm.EnrichmentAlgorithm;
+import org.snpeff.geneSets.algorithm.EnrichmentAlgorithm.EnrichmentAlgorithmType;
 import org.snpeff.geneSets.algorithm.EnrichmentAlgorithmGreedyVariableSize;
 import org.snpeff.geneSets.algorithm.FisherPValueAlgorithm;
 import org.snpeff.geneSets.algorithm.FisherPValueGreedyAlgorithm;
@@ -25,7 +26,6 @@ import org.snpeff.geneSets.algorithm.LeadingEdgeFractionAlgorithm;
 import org.snpeff.geneSets.algorithm.NoneAlgorithm;
 import org.snpeff.geneSets.algorithm.RankSumPValueAlgorithm;
 import org.snpeff.geneSets.algorithm.RankSumPValueGreedyAlgorithm;
-import org.snpeff.geneSets.algorithm.EnrichmentAlgorithm.EnrichmentAlgorithmType;
 import org.snpeff.gsa.ChrPosScoreList;
 import org.snpeff.gsa.PvaluesList;
 import org.snpeff.gsa.ScoreList;
@@ -54,7 +54,6 @@ public class SnpEffCmdGsa extends SnpEff {
 	public static int READ_INPUT_SHOW_EVERY = 1000;
 	public static int MAX_WARNS = 20;
 
-	InputFormat inputFormat = InputFormat.VCF;
 	boolean useClosestGene = false; // Map to 'any' closest gene?
 	boolean useGeneId = false; // Use geneId instead of geneName
 	boolean usePvalues = true;
@@ -168,7 +167,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		//---
 		if (verbose) Timer.showStdErr("Correction: Reading results from file '" + residuesFile + "'");
 		if (!Gpr.canRead(residuesFile)) throw new RuntimeException("Cannot read correction's results from file '" + residuesFile + "'");
-		geneScore = new HashMap<String, Double>();
+		geneScore = new HashMap<>();
 		String lines[] = Gpr.readFile(residuesFile).split("\n");
 		for (String line : lines) {
 			// Parse line
@@ -242,13 +241,14 @@ public class SnpEffCmdGsa extends SnpEff {
 		if (verbose) {
 			double realPerc = (100.0 * count) / geneScore.size();
 			double realPercAdded = (100.0 * countAdded) / geneScore.size();
-			Timer.showStdErr(String.format("Score threshold:"//
-					+ "\n\tRange                    : [ %f , %f ]"//
-					+ "\n\tQuantile                 : %.2f%%"//
-					+ "\n\tThreshold                : %f"//
-					+ "\n\tInteresting genes        : %d  (%.2f%%)" //
-					+ "\n\tInteresting genes added  : %d  (%.2f%%)" //
-			, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
+			Timer.showStdErr(String.format(
+					"Score threshold:"//
+							+ "\n\tRange                    : [ %f , %f ]"//
+							+ "\n\tQuantile                 : %.2f%%"//
+							+ "\n\tThreshold                : %f"//
+							+ "\n\tInteresting genes        : %d  (%.2f%%)" //
+							+ "\n\tInteresting genes added  : %d  (%.2f%%)" //
+					, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
 		}
 	}
 
@@ -267,7 +267,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		}
 
 		// Calculate statistics on each gene
-		AutoHashMap<String, GeneStats> genesStats = new AutoHashMap<String, GeneStats>(new GeneStats());
+		AutoHashMap<String, GeneStats> genesStats = new AutoHashMap<>(new GeneStats());
 		for (Gene gene : genome.getGenes()) {
 			String geneName = useGeneId ? gene.getId() : gene.getGeneName();
 			genesStats.getOrCreate(geneName).add(gene, useGeneId);
@@ -402,8 +402,8 @@ public class SnpEffCmdGsa extends SnpEff {
 		if (verbose) Timer.showStdErr("Mapping scores to genes.");
 
 		// Create an auto-hash
-		if (usePvalues) geneScores = new AutoHashMap<String, ScoreList>(new PvaluesList());
-		else geneScores = new AutoHashMap<String, ScoreList>(new ScoreList());
+		if (usePvalues) geneScores = new AutoHashMap<>(new PvaluesList());
+		else geneScores = new AutoHashMap<>(new ScoreList());
 
 		//---
 		// Map every chr:pos
@@ -438,7 +438,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 		if (debug) {
 			System.err.println("Mapping Gene to Score:");
-			ArrayList<String> geneIds = new ArrayList<String>(geneScores.keySet());
+			ArrayList<String> geneIds = new ArrayList<>(geneScores.keySet());
 			Collections.sort(geneIds);
 			for (String geneId : geneIds)
 				System.err.println("\t" + geneScores.get(geneId));
@@ -452,7 +452,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	 * @return
 	 */
 	List<String> mapToGenes(String chr, int start, int end) {
-		LinkedList<String> geneIds = new LinkedList<String>();
+		LinkedList<String> geneIds = new LinkedList<>();
 
 		// Query
 		Marker m = new Marker(genome.getChromosome(chr), start, end, false, "");
@@ -492,8 +492,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 				if (arg.equals("-i")) {
 					// Input format
-					if ((i + 1) < args.length) inputFormat = InputFormat.valueOf(args[++i].toUpperCase());
-					else usage("Missing input format in command line option '-i'");
+					usage("Command line option '-i' no longer supported: Only VCF format can be used for input and output.");
 				} else if (arg.equals("-info")) {
 					// INFO field name
 					if ((i + 1) < args.length) infoName = args[++i];
@@ -569,7 +568,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 		if (commandsFile == null) {
 			// All these check are only performed when "commands" is not set
-			if ((inputFormat == InputFormat.VCF) && infoName.isEmpty() && geneScoreFile.isEmpty() && geneInterestingFile.isEmpty()) usage("Missing '-info' comamnd line option.");
+			if (infoName.isEmpty() && geneScoreFile.isEmpty() && geneInterestingFile.isEmpty()) usage("Missing '-info' comamnd line option.");
 
 			if (inputFile.isEmpty()) inputFile = "-"; // Default is STDIN
 			if (!Gpr.canRead(inputFile)) fatalError("Cannot read input file '" + inputFile + "'");
@@ -596,7 +595,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	void readGeneInteresting(String geneScoreFile) {
 		if (verbose) Timer.showStdErr("Reading interesting genes file '" + geneInterestingFile + "'");
 		String lines[] = Gpr.readFile(geneScoreFile).split("\n");
-		genesInteresting = new HashSet<String>();
+		genesInteresting = new HashSet<>();
 		for (String g : lines)
 			genesInteresting.add(g.trim());
 		if (verbose) Timer.showStdErr("Done. Added: " + genesInteresting.size());
@@ -611,7 +610,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	void readGeneScores(String geneScoreFile) {
 		if (verbose) Timer.showStdErr("Reading gene scores file '" + geneScoreFile + "'");
 
-		geneScore = new HashMap<String, Double>();
+		geneScore = new HashMap<>();
 
 		// Read the whole file
 		String lines[] = Gpr.readFile(geneScoreFile).split("\n");
@@ -641,24 +640,8 @@ public class SnpEffCmdGsa extends SnpEff {
 	 * Read input file and populate 'chrPosScoreList'
 	 */
 	void readInput() {
-		if (verbose) Timer.showStdErr("Reading input file '" + inputFile + "' (format '" + inputFormat + "')");
-
-		switch (inputFormat) {
-		case VCF:
-			chrPosScoreList = readInputVcf();
-			break;
-
-		case BED:
-			chrPosScoreList = readInputBed();
-			break;
-
-		//		case TXT:
-		//			chrPosScoreList = readInputTxt();
-		//			break;
-
-		default:
-			fatalError("Input format '" + inputFormat + "' not supported!");
-		}
+		if (verbose) Timer.showStdErr("Reading input file '" + inputFile + "'");
+		chrPosScoreList = readInputVcf();
 
 		if (verbose) {
 			System.err.println("");
@@ -817,7 +800,7 @@ public class SnpEffCmdGsa extends SnpEff {
 			Timer.showStdErr("Random scores. Iteration " + iter);
 
 			// Create random Scores based on input
-			geneScore = new HashMap<String, Double>();
+			geneScore = new HashMap<>();
 			for (String gene : geneScoreOri.keySet())
 				geneScore.put(gene, Math.random());
 
@@ -875,7 +858,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		// Create one Score per gene
 		double scoreMin = Double.MAX_VALUE, scoreMax = Double.MIN_VALUE;
 
-		geneScore = new HashMap<String, Double>();
+		geneScore = new HashMap<>();
 
 		for (String geneId : geneScores.keySet()) {
 			// Calculate aggregated score
@@ -903,7 +886,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		System.err.println("\n\tInput data options:");
 		System.err.println("\t-commands <file>              : Read commands from file (allows multiple analysis loading the database only once).");
 		System.err.println("\t-geneId                       : Use geneID instead of gene names. Default: " + useGeneId);
-		System.err.println("\t-i <format>                   : Input format {vcf, bed, txt}. Default: " + inputFormat);
+		//		 System.err.println("\t-i <format>                   : Input format {vcf, bed, txt}. Default: " + inputFormat);
 		System.err.println("\t-info <name>                  : INFO tag used for scores (in VCF input format).");
 		System.err.println("\t-desc                         : Sort scores in descending order (high score are better then low scores). Default " + orderDescending);
 		System.err.println("\t-save <file>                  : Save results to file.");

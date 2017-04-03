@@ -157,7 +157,7 @@ public class TestCasesAnn extends TestCasesBase {
 		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Expected results
-		Set<String> allelesExpected = new HashSet<String>();
+		Set<String> allelesExpected = new HashSet<>();
 		allelesExpected.add("AACACACACACACACACACACACACACACACACACACAC");
 		allelesExpected.add("AACACACACACACACACACACACACACACACACACACACAC");
 		allelesExpected.add("AACACACACACACACACACACACACACAC");
@@ -165,7 +165,7 @@ public class TestCasesAnn extends TestCasesBase {
 		allelesExpected.add("AACACACACACACACACACACACACACACACACACAC");
 
 		// Find AA change for a genotype
-		Set<String> allelesReal = new HashSet<String>();
+		Set<String> allelesReal = new HashSet<>();
 		for (VcfEntry vcfEntry : list) {
 			if (debug) System.err.println(vcfEntry);
 

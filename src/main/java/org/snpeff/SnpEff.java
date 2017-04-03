@@ -72,20 +72,6 @@ public class SnpEff implements CommandLine {
 		, EMBL // EMBL file format
 	}
 
-	/**
-	 *  Available input formats
-	 */
-	public enum InputFormat {
-		VCF, BED
-	}
-
-	/**
-	 *  Available output formats
-	 */
-	public enum OutputFormat {
-		VCF, BED, BEDANN, GATK
-	}
-
 	public static final String DEFAULT_COMMAND = "ann";
 	public static final int COMMAND_LINE_WIDTH = 40;
 
@@ -117,7 +103,6 @@ public class SnpEff implements CommandLine {
 	protected boolean interaction = true; // Use interaction loci information if available
 	protected boolean log; // Log to server (statistics)
 	protected boolean motif = true; // Annotate using motifs
-	protected boolean multiThreaded = false; // Use multiple threads
 	protected boolean nextProt = true; // Annotate using NextProt database
 	protected boolean nextProtKeepAllTrs = false; // Keep all nextprot entries, even if the transcript doesn't exist
 	protected boolean noGenome = false; // Do not load genome database
@@ -173,7 +158,7 @@ public class SnpEff implements CommandLine {
 		debug = false; // Debug mode
 		quiet = false; // Be quiet
 		log = true; // Log to server (statistics)
-		multiThreaded = false; // Use multiple threads
+		//		multiThreaded = false; // Use multiple threads
 		customIntervalFiles = new ArrayList<>(); // Custom interval files
 	}
 
@@ -369,7 +354,6 @@ public class SnpEff implements CommandLine {
 		cmd.log = log;
 		cmd.motif = motif;
 		cmd.maxTranscriptSupportLevel = maxTranscriptSupportLevel;
-		cmd.multiThreaded = multiThreaded;
 		cmd.nextProt = nextProt;
 		cmd.noGenome = noGenome;
 		cmd.numWorkers = numWorkers;
@@ -1098,7 +1082,8 @@ public class SnpEff implements CommandLine {
 					break;
 
 				case "-t":
-					multiThreaded = true;
+					//					multiThreaded = true;
+					usage("Multi-thread command line option '-t' is no longer supported.");
 					break;
 
 				case "-treatallasproteincoding":
@@ -1352,7 +1337,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-nodownload                  : Do not download a SnpEff database, if not available locally.");
 		System.err.println("\t-h , -help                   : Show this help and exit");
 		System.err.println("\t-noLog                       : Do not report usage statistics to server");
-		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
+		//		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
 		System.err.println("\t-q , -quiet                  : Quiet mode (do not show any messages or errors)");
 		System.err.println("\t-v , -verbose                : Verbose mode");
 		System.err.println("\t-version                     : Show version number and exit");

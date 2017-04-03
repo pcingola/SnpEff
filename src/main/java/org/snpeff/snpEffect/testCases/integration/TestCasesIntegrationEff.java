@@ -67,7 +67,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-		String args[] = { "-o", "gatk" };
+		String args[] = { "-gatk" };
 		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
 
 		for (VcfEntry ve : vcfEntries) {
@@ -105,7 +105,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
 		String vcf = "tests/gatk_NO_splice_regions.vcf";
-		String args[] = { "eff", "-noLog", "-o", "gatk" };
+		String args[] = { "eff", "-noLog", "-gatk" };
 		List<VcfEntry> vcfEntries = snpEffect(genomeName, vcf, args);
 
 		for (VcfEntry ve : vcfEntries) {
@@ -153,7 +153,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 
 		String genomeName = "testMycobacterium_tuberculosis_CCDC5079_uid203790";
 		String vcf = "tests/test_gatk_no_annotations.vcf";
-		String args[] = { "-noLog", "-o", "gatk" };
+		String args[] = { "-noLog", "-gatk" };
 		List<VcfEntry> vcfEntries = snpEffect(genomeName, vcf, args);
 
 		for (VcfEntry ve : vcfEntries) {

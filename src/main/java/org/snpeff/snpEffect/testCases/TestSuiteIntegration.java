@@ -50,7 +50,6 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationRegulation
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSequenceOntology;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnp;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnpEff;
-import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnpEffMultiThread;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnpEnsembl;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationStructural;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationTranscript;
@@ -118,7 +117,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
 		TestCasesIntegrationVcfs.class, //
 		// Long test cases
 		TestCasesIntegrationSnpEff.class, //
-		TestCasesIntegrationSnpEffMultiThread.class, //
+		//		TestCasesIntegrationSnpEffMultiThread.class, // TODO: Remove. Multithreaded support removed in version 5.0
 })
 
 public class TestSuiteIntegration {

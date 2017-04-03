@@ -1,11 +1,11 @@
 package org.snpeff.snpEffect.testCases.integration;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
+
+import junit.framework.Assert;
 
 /**
  * Calculate missense over silent ratio
@@ -23,8 +23,8 @@ public class TestCasesIntegrationMissenseSilentRatio {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String args[] = { "-i", "vcf" //
-				, "-classic" //
+		String args[] = { //
+				"-classic" //
 				, "-useLocalTemplate" //
 				, "testHg3765Chr22" //
 				, "./tests/missenseSilent.chr22.vcf.gz" //

@@ -47,7 +47,7 @@ public class TestCasesIntegrationDelEtc {
 			List<VcfEffect> veffs = ve.getVcfEffects();
 
 			for (VcfEffect veff : veffs) {
-				Set<String> effs = new HashSet<String>();
+				Set<String> effs = new HashSet<>();
 				if (verbose) System.out.println("\t" + veff.getEffString());
 
 				// Make sure each effect is unique
@@ -69,7 +69,7 @@ public class TestCasesIntegrationDelEtc {
 	@Test
 	public void test_02_del_repeated_effects_gatk() {
 		Gpr.debug("Test");
-		String args[] = { "-ud", "0", "-o", "gatk", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
+		String args[] = { "-ud", "0", "-gatk", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();

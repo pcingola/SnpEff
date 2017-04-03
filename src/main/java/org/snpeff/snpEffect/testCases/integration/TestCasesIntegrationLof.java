@@ -5,7 +5,6 @@ import java.util.Random;
 
 import org.junit.After;
 import org.junit.Test;
-import org.snpeff.SnpEff;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Intron;
@@ -294,18 +293,21 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		}
 	}
 
-	/**
-	 * We should be able to annotate a BED file
-	 */
-	@Test
-	public void test_02() {
-		String args[] = { "testHg3775Chr22", "-noLog", "-i", "bed", "tests/test_lof_02.bed" };
-		SnpEff snpeff = new SnpEff(args);
-		snpeff.setVerbose(verbose);
-		snpeff.setSupressOutput(!verbose);
-		boolean ok = snpeff.run();
-		Assert.assertEquals(true, ok);
-	}
+	//
+	// TODO: Remove code. BED support removed in version 5.0
+	//
+	//	/**
+	//	 * We should be able to annotate a BED file
+	//	 */
+	//	@Test
+	//	public void test_02() {
+	//		String args[] = { "testHg3775Chr22", "-noLog", "-i", "bed", "tests/test_lof_02.bed" };
+	//		SnpEff snpeff = new SnpEff(args);
+	//		snpeff.setVerbose(verbose);
+	//		snpeff.setSupressOutput(!verbose);
+	//		boolean ok = snpeff.run();
+	//		Assert.assertEquals(true, ok);
+	//	}
 
 	/**
 	 * Create change effects
@@ -314,7 +316,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 	LinkedList<VariantEffect> variantEffects(Variant variant, EffectType effectType, Marker marker) {
 		VariantEffect changeEffect = new VariantEffect(variant);
 		changeEffect.set(marker, effectType, effectType.effectImpact(), "");
-		LinkedList<VariantEffect> changeEffects = new LinkedList<VariantEffect>();
+		LinkedList<VariantEffect> changeEffects = new LinkedList<>();
 		changeEffects.add(changeEffect);
 		return changeEffects;
 
