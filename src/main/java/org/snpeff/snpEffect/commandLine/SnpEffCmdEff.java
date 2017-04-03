@@ -21,7 +21,6 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantNonRef;
 import org.snpeff.interval.tree.IntervalForest;
-import org.snpeff.outputFormatter.OutputFormatter;
 import org.snpeff.outputFormatter.VcfOutputFormatter;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
@@ -98,7 +97,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
 	List<PedigreeEnrty> pedigree;
 	CountByType errByType, warnByType;
-	OutputFormatter outputFormatter = null;
+	VcfOutputFormatter vcfOutputFormatter = null;
 	Timer annotateTimer;
 
 	public SnpEffCmdEff() {
@@ -114,8 +113,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 	@Override
 	public boolean addHeaders(VcfFileIterator vcfFile) {
-		// This is done by VcfOutputFormatter, so there is nothing to do here.
-		// TODO: Move processing here?
+		// Done in VcfOutputFormatter
 		return false;
 	}
 
@@ -128,7 +126,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		VcfFileIterator vcf = null;
 		vcf = annotateVcf(inputFile);
 
-		outputFormatter.close();
+		vcfOutputFormatter.close();
 
 		// Create reports and finish up
 		boolean err = annotateFinish(vcf);
@@ -141,7 +139,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 */
 	@Override
 	public boolean annotate(VcfEntry vcfEntry) {
-		boolean printed = false;
 		boolean filteredOut = false;
 		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
 
@@ -150,15 +147,13 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			countVcfEntries++;
 
 			// Find if there is a pedigree and if it has any 'derived' entry
-			if (vcfFile.isHeadeSection()) {
-				if (cancer) {
-					pedigree = readPedigree(vcfFile);
+			if (cancer && vcfFile.isHeadeSection()) {
+				pedigree = readPedigree(vcfFile);
 
-					// Any 'derived' entry in this pedigree?
-					if (pedigree != null) {
-						for (PedigreeEnrty pe : pedigree)
-							anyCancerSample |= pe.isDerived();
-					}
+				// Any 'derived' entry in this pedigree?
+				if (pedigree != null) {
+					for (PedigreeEnrty pe : pedigree)
+						anyCancerSample |= pe.isDerived();
 				}
 			}
 
@@ -172,7 +167,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			}
 
 			// Create new 'section'
-			outputFormatter.startSection(vcfEntry);
+			vcfOutputFormatter.setVcfEntry(vcfEntry);
 
 			//---
 			// Analyze all changes in this VCF entry
@@ -200,9 +195,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 					VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
 
-					// Create new 'section'
-					outputFormatter.startSection(variant);
-
 					// Show results
 					for (VariantEffect variantEffect : variantEffects) {
 						if (createSummaryHtml || createSummaryCsv) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
@@ -215,12 +207,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						impactLowOrHigher |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
 						impactModerateOrHigh |= (variantEffect.getEffectImpact() == EffectImpact.MODERATE) || (variantEffect.getEffectImpact() == EffectImpact.HIGH);
 
-						outputFormatter.add(variantEffect);
+						vcfOutputFormatter.add(variantEffect);
 						countEffects++;
 					}
-
-					// Finish up this section
-					outputFormatter.printSection(variant);
 
 					if (fastaProt != null && impactModerateOrHigh) {
 						// Output protein changes to fasta file
@@ -249,28 +238,21 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						// Calculate effects
 						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
 
-						// Create new 'section'
-						outputFormatter.startSection(varNonRef);
-
 						// Show results (note, we don't add these to the statistics)
 						for (VariantEffect variantEffect : variantEffects)
-							outputFormatter.add(variantEffect);
-
-						// Finish up this section
-						outputFormatter.printSection(varNonRef);
+							vcfOutputFormatter.add(variantEffect);
 					}
 				}
 			}
 
 			// Finish up this section
-			outputFormatter.printSection(vcfEntry);
-
-			printed = true;
+			vcfOutputFormatter.print();
 		} catch (Throwable t) {
 			totalErrs++;
 			error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
 		} finally {
-			if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
+			if (filteredOut) return false;
+			vcfOutputFormatter.print(); // Make sure we don't skip the entry when there is an exception
 		}
 
 		return true;
@@ -336,7 +318,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		//---
 		// Create output formatter
 		//---
-		outputFormatter = null;
+		vcfOutputFormatter = null;
 		VcfOutputFormatter vof = new VcfOutputFormatter(vcfEntriesDebug);
 		if (gatk) {
 			vof.setGatk(true);
@@ -345,17 +327,16 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			vof.setLossOfFunction(lossOfFunction);
 			vof.setConfig(config);
 		}
-		outputFormatter = vof;
-		outputFormatter.setVersion(VERSION_AUTHOR);
-		outputFormatter.setCommandLineStr(commandLineStr(false));
-		outputFormatter.setVariantEffectResutFilter(variantEffectResutFilter);
-		outputFormatter.setSupressOutput(suppressOutput);
-		outputFormatter.setChrStr(chrStr);
-		outputFormatter.setUseSequenceOntology(useSequenceOntology);
-		outputFormatter.setUseOicr(useOicr);
-		outputFormatter.setUseHgvs(hgvs);
-		outputFormatter.setUseGeneId(useGeneId);
-		outputFormatter.setOutputFile(outputFile);
+		vcfOutputFormatter = vof;
+		vcfOutputFormatter.setVariantEffectResutFilter(variantEffectResutFilter);
+		vcfOutputFormatter.setSupressOutput(suppressOutput);
+		vcfOutputFormatter.setChrStr(chrStr);
+		vcfOutputFormatter.setUseSequenceOntology(useSequenceOntology);
+		vcfOutputFormatter.setUseOicr(useOicr);
+		vcfOutputFormatter.setUseHgvs(hgvs);
+		vcfOutputFormatter.setUseGeneId(useGeneId);
+		vcfOutputFormatter.setOutputFile(outputFile);
+		vcfOutputFormatter.setCommandLineStr(commandLineStr(false));
 	}
 
 	@Override
@@ -374,11 +355,12 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		vcfFile.setDebug(debug);
 
 		// Iterate over VCF entries
-		for (VcfEntry vcfEntry : vcfFile)
+		for (VcfEntry vcfEntry : vcfFile) {
 			annotate(vcfEntry);
+		}
 
 		// Empty file? Show at least the header
-		if (countVcfEntries == 0) outputFormatter.print(vcfFile.getVcfHeader().toString());
+		if (countVcfEntries == 0) vcfOutputFormatter.print(vcfFile.getVcfHeader().toString());
 
 		// Show errors and warnings
 		if (verbose) {

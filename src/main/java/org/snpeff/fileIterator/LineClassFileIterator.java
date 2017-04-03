@@ -7,8 +7,6 @@ import java.util.Iterator;
 
 import org.snpeff.util.Gpr;
 
-import scala.collection.mutable.StringBuilder;
-
 /**
  * Iterate on each line. Create and populate objects based 
  * on 'fieldNames' definition: a colon separated list of fields.
@@ -107,7 +105,7 @@ public class LineClassFileIterator<T> extends FileIterator<T> {
 	 */
 	protected void fieldMap() {
 		fieldNames = fieldStr.split("" + FIELD_NAME_SEPARATOR);
-		fieldByName = new HashMap<String, Field>();
+		fieldByName = new HashMap<>();
 
 		for (String fname : fieldNames) {
 			try {

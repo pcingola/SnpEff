@@ -8,8 +8,6 @@ import java.util.HashMap;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 
-import scala.collection.mutable.StringBuilder;
-
 /**
  * Load a table from a file. The table is loaded into an arbitrary object having arrays to hold the data.
  * 
@@ -169,7 +167,7 @@ public class TableFile implements Serializable {
 			if (fieldStr == null) fieldStr = guessFields(); // No fields data? guess them.
 
 			fieldNames = fieldStr.split("" + FIELD_NAME_SEPARATOR);
-			fieldByName = new HashMap<String, Field>();
+			fieldByName = new HashMap<>();
 
 			for (String fname : fieldNames) {
 				try {

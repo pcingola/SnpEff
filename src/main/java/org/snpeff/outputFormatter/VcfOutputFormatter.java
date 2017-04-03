@@ -1,16 +1,21 @@
 package org.snpeff.outputFormatter;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
+import org.snpeff.filter.VariantEffectFilter;
 import org.snpeff.interval.Custom;
-import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
+import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.LossOfFunction;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.util.Gpr;
@@ -18,54 +23,72 @@ import org.snpeff.util.KeyValue;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
+import org.snpeff.vcf.VcfHeaderEntry;
+import org.snpeff.vcf.VcfHeaderInfo;
+import org.snpeff.vcf.VcfInfoType;
 
 /**
  * Formats output as VCF
  *
  * @author pcingola
  */
-public class VcfOutputFormatter extends OutputFormatter {
+public class VcfOutputFormatter {
 
 	public static boolean debug = false;
 	public static final String VCF_INFO_OICR_NAME = "OICR";
 
+	Config config;
+	boolean gatk;
+	boolean lossOfFunction;
 	boolean needAddInfo = false;
 	boolean needAddHeader = true;
-	boolean lossOfFunction;
-	boolean gatk;
+	boolean supressOutput = false; // Do not print anything (used for testCases)
 	boolean onlyHighestAnn;
+	boolean printed = false;
+	boolean showHeader = true; // Show header information
+	boolean useHgvs; // Use HGVS notation
+	boolean useGeneId; // Use Gene ID instead of gene name
+	boolean useSequenceOntology; // Use Sequence Ontology terms
+	boolean useOicr; // Use OICR tag
+	boolean vcfHeaderProcessed = false;
+	int entryNum = 0;
+	int outOffset = 1;
+	String commandLineStr;
+	String version;
+	String chrStr;
+	String outputFile = null;
+	BufferedWriter out;
+	VcfEntry vcfEntryCurrent;
+	VariantEffectFilter variantEffectResutFilter = null; // Filter prediction results
+	List<VariantEffect> variantEffects;
 	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
 	List<VcfEntry> vcfEntries;
 
 	public VcfOutputFormatter() {
-		super();
+		variantEffects = new ArrayList<>();
 	}
 
 	/**
 	 * Add all vcf entries to a list (used only for debugging and test-cases)
 	 */
 	public VcfOutputFormatter(List<VcfEntry> vcfEntries) {
-		super();
+		this();
 		this.vcfEntries = vcfEntries;
 	}
 
 	/**
-	 * Add header
+	 * Add effects to list
 	 */
-	protected void addHeader() {
-		VcfEntry vcfEntry = (VcfEntry) section;
+	public void add(VariantEffect variantEffect) {
+		// Passes the filter? => Add
+		if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(variantEffect))) variantEffects.add(variantEffect);
+	}
 
-		// Sanity check
-		if (vcfEntry == null) return;
-
-		// Get header
-		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
-
-		// Add new lines
-		for (String newHeaderLine : getNewHeaderLines())
-			vcfFile.getVcfHeader().addLine(newHeaderLine);
-
-		needAddHeader = false;
+	public boolean addHeaders(VcfFileIterator vcf) {
+		// Add new header lines
+		for (VcfHeaderEntry vh : headers())
+			vcf.getVcfHeader().add(vh);
+		return true;
 	}
 
 	/**
@@ -86,7 +109,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		//---
 		HashSet<String> effs = new HashSet<>();
 		ArrayList<String> effsSorted = new ArrayList<>();
-		HashSet<String> oicr = (useOicr ? new HashSet<String>() : null);
+		HashSet<String> oicr = (useOicr ? new HashSet<>() : null);
 		boolean addCustomFields = false;
 		for (VariantEffect variantEffect : variantEffects) {
 
@@ -202,56 +225,137 @@ public class VcfOutputFormatter extends OutputFormatter {
 	}
 
 	@Override
-	public OutputFormatter clone() {
+	public VcfOutputFormatter clone() {
 		try {
+			// Create a new formatter. We cannot use the same output formatter for all workers
 			VcfOutputFormatter newOutputFormatter = (VcfOutputFormatter) super.clone();
+			newOutputFormatter = this.getClass().newInstance();
 			newOutputFormatter.formatVersion = formatVersion;
 			newOutputFormatter.needAddInfo = needAddInfo;
 			newOutputFormatter.needAddHeader = needAddHeader;
 			newOutputFormatter.lossOfFunction = lossOfFunction;
 			newOutputFormatter.gatk = gatk;
-			// newOutputFormatter.genome = genome;
+			newOutputFormatter.supressOutput = supressOutput;
+			newOutputFormatter.showHeader = showHeader;
+			newOutputFormatter.useHgvs = useHgvs;
+			newOutputFormatter.useGeneId = useGeneId;
+			newOutputFormatter.useSequenceOntology = useSequenceOntology;
+			newOutputFormatter.useOicr = useOicr;
+			newOutputFormatter.entryNum = entryNum;
+			newOutputFormatter.outOffset = outOffset;
+			newOutputFormatter.commandLineStr = commandLineStr;
+			newOutputFormatter.version = version;
+			newOutputFormatter.chrStr = chrStr;
+			newOutputFormatter.vcfEntryCurrent = vcfEntryCurrent;
+			newOutputFormatter.variantEffectResutFilter = variantEffectResutFilter;
+			newOutputFormatter.config = config;
 			return newOutputFormatter;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+
 	}
 
 	/**
-	 * Finish up section
+	 * CLose output files, if any
 	 */
-	@Override
-	public String endSection(Marker marker) {
-		if (marker == null) {
-			return super.endSection(marker);
-		} else if (marker instanceof VcfEntry) {
-			// Ignore other markers (e.g. seqChanges)
-			if (vcfEntries != null) vcfEntries.add((VcfEntry) marker);
-			return super.endSection(marker);
+	public void close() {
+		if (out != null) {
+			try {
+				out.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
-		return null;
 	}
 
 	/**
 	 * New lines to be added to header
 	 */
-	public List<String> getNewHeaderLines() {
-		ArrayList<String> newLines = new ArrayList<>();
+	public List<VcfHeaderEntry> headers() {
+		List<VcfHeaderEntry> newLines = new ArrayList<>();
 
-		newLines.add("##SnpEffVersion=\"" + version + "\"");
-		newLines.add("##SnpEffCmd=\"" + commandLineStr + "\"");
+		newLines.add(new VcfHeaderEntry("##SnpEffVersion=\"" + SnpEff.VERSION_AUTHOR + "\""));
+		newLines.add(new VcfHeaderEntry("##SnpEffCmd=\"" + commandLineStr + "\""));
 
 		// Fields changed in different format versions
-		newLines.add(formatVersion.vcfHeader());
+		newLines.add(new VcfHeaderEntry(formatVersion.vcfHeader()));
 
 		if (lossOfFunction) {
-			newLines.add("##INFO=<ID=LOF,Number=.,Type=String,Description=\"Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected'\">");
-			newLines.add("##INFO=<ID=NMD,Number=.,Type=String,Description=\"Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected'\">");
+			newLines.add(new VcfHeaderInfo("LOF", VcfInfoType.String, ".", "Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected"));
+			newLines.add(new VcfHeaderInfo("NMD", VcfInfoType.String, ".", "Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected'"));
 		}
 
-		if (useOicr) newLines.add("##INFO=<ID=OICR,Number=.,Type=String,Description=\"Format: ( Transcript | Distance from begining cDNA )\">");
+		if (useOicr) {
+			newLines.add(new VcfHeaderInfo("OICR", VcfInfoType.String, ".", "Format: ( Transcript | Distance from begining cDNA )"));
+		}
 
 		return newLines;
+	}
+
+	/**
+	 * End this section and print results
+	 */
+	public void print() {
+		if (!printed) print(toString());
+		printed = true;
+	}
+
+	/**
+	 * Print a "raw" string to a file
+	 */
+	public void print(String outStr) {
+		try {
+			// Open output file?
+			if ((outputFile != null) && (out == null)) out = new BufferedWriter(new FileWriter(outputFile));
+
+			// Write something?
+			if ((outStr != null) && (!outStr.isEmpty())) {
+				// Write to file?
+				if (out != null) {
+					out.write(outStr);
+					out.write("\n");
+				} else if (!supressOutput) {
+					System.out.println(outStr); // Show on STDOUT
+				}
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Process VCF header related issues
+	 */
+	protected String processVcfHeader(VcfFileIterator vcf) {
+		if (vcfHeaderProcessed // Already processed? Skip
+				|| (!vcf.isHeadeSection() && vcf.getLineNum() > 1) // First line is header (when missing)
+		) return "";
+
+		// Add lines to header
+		addHeaders(vcf);
+		vcfHeaderProcessed = true;
+
+		if (showHeader) {
+			String headerStr = vcf.getVcfHeader().toString();
+			if (!headerStr.isEmpty()) print(headerStr);
+			showHeader = false;
+			return headerStr;
+		}
+
+		return "";
+	}
+
+	public void setChrStr(String chrStr) {
+		this.chrStr = chrStr;
+	}
+
+	public void setCommandLineStr(String commandLineStr) {
+		this.commandLineStr = commandLineStr;
+	}
+
+	public void setConfig(Config config) {
+		this.config = config;
 	}
 
 	public void setFormatVersion(EffFormatVersion formatVersion) {
@@ -267,37 +371,83 @@ public class VcfOutputFormatter extends OutputFormatter {
 		this.lossOfFunction = lossOfFunction;
 	}
 
-	@Override
-	public void setOutOffset(int outOffset) {
-		throw new RuntimeException("Cannot set output offset on '" + this.getClass().getSimpleName() + "' formatter!");
+	public void setOutputFile(String outputFile) {
+		this.outputFile = outputFile;
 	}
 
-	@Override
-	public void startSection(Marker marker) {
-		// Ignore other markers (e.g. seqChanges)
-		if (marker instanceof VcfEntry) super.startSection(marker);
+	public void setShowHeader(boolean showHeader) {
+		this.showHeader = showHeader;
+	}
+
+	public void setSupressOutput(boolean supressOutput) {
+		this.supressOutput = supressOutput;
+	}
+
+	public void setUseGeneId(boolean useGeneId) {
+		this.useGeneId = useGeneId;
+	}
+
+	public void setUseHgvs(boolean useHgvs) {
+		this.useHgvs = useHgvs;
+	}
+
+	public void setUseOicr(boolean useOicr) {
+		this.useOicr = useOicr;
+	}
+
+	public void setUseSequenceOntology(boolean useSequenceOntology) {
+		this.useSequenceOntology = useSequenceOntology;
+	}
+
+	public void setVariantEffectResutFilter(VariantEffectFilter changeEffectResutFilter) {
+		variantEffectResutFilter = changeEffectResutFilter;
+	}
+
+	public void setVcfEntry(VcfEntry ve) {
+		vcfEntryCurrent = ve;
 		needAddInfo = true;
+		printed = false;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 	@Override
 	public String toString() {
-		if (section == null) return "";
-		VcfEntry vcfEntry = (VcfEntry) section;
-		if (needAddInfo) addInfo(vcfEntry);
-		return vcfEntry.toString();
+		if (vcfEntryCurrent == null) return "";
+
+		if (vcfEntries != null) vcfEntries.add(vcfEntryCurrent);
+
+		// Create header?
+		String header = null;
+		if (showHeader && (entryNum == 0)) {
+			header = toStringHeader();
+			if (!header.isEmpty()) {
+				header += "\n";
+			}
+		}
+
+		// Current vcf entry
+		if (needAddInfo) addInfo(vcfEntryCurrent);
+		String line = vcfEntryCurrent.toString();
+
+		// Update
+		entryNum++;
+		variantEffects.clear();
+
+		return header == null ? line : header + line;
 	}
 
 	/**
 	 * Show header
 	 */
-	@Override
 	protected String toStringHeader() {
-		if (needAddHeader) addHeader(); // Add header lines
-
-		VcfEntry vcfEntry = (VcfEntry) section;
+		VcfEntry vcfEntry = vcfEntryCurrent;
 		if (vcfEntry == null) return "";
 
 		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
+		if (needAddHeader) addHeaders(vcfFile); // Add header lines
 		return vcfFile.getVcfHeader().toString();
 	}
 

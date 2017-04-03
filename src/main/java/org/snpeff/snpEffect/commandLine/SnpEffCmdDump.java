@@ -11,8 +11,6 @@ import org.snpeff.interval.Utr;
 import org.snpeff.interval.tree.Itree;
 import org.snpeff.util.Timer;
 
-import scala.collection.mutable.StringBuilder;
-
 /**
  * Command line program: Build database
  *
