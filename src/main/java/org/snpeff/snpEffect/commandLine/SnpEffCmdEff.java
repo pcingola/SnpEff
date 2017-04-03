@@ -121,16 +121,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Annotate: Calculate the effect of variants and show results
 	 */
 	public boolean annotate(String inputFile, String outputFile) {
-		// Initialize
-		annotateInit(outputFile);
-		VcfFileIterator vcf = null;
-		vcf = annotateVcf(inputFile);
-
-		vcfOutputFormatter.close();
-
-		// Create reports and finish up
-		boolean err = annotateFinish(vcf);
-
+		annotateInit(outputFile); // Initialize
+		VcfFileIterator vcf = annotateVcf(inputFile); // Annotate
+		vcfOutputFormatter.close(); // Close output
+		boolean err = annotateFinish(vcf); // Create reports and finish up
 		return !err;
 	}
 
@@ -157,7 +151,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 				}
 			}
 
-			// Sample vcf entry
+			// Statistics for VcfEntry
 			if (createSummaryHtml || createSummaryCsv) vcfStats.sample(vcfEntry);
 
 			// Skip if there are filter intervals and they are not matched
@@ -166,13 +160,11 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 				return false;
 			}
 
-			// Create new 'section'
+			// Set VcfEntry 
 			vcfOutputFormatter.setVcfEntry(vcfEntry);
 
 			//---
 			// Analyze all changes in this VCF entry
-			// Note, this is the standard analysis.
-			// Next section deals with cancer: Somatic vs Germline comparisons
 			//---
 			boolean impactLowOrHigher = false; // Does this entry have an impact (other than MODIFIER)?
 			boolean impactModerateOrHigh = false; // Does this entry have a 'MODERATE' or 'HIGH' impact?
@@ -189,6 +181,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 				}
 
 				// Calculate effects: By default do not annotate non-variant sites
+				// Note, this is the standard analysis.
+				// Next section deals with cancer: Somatic vs Germline comparisons
 				if (variant.isVariant()) {
 					// Perform basic statistics about this variant
 					if (createSummaryHtml || createSummaryCsv) variantStats.sample(variant);
@@ -355,12 +349,13 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		vcfFile.setDebug(debug);
 
 		// Iterate over VCF entries
-		for (VcfEntry vcfEntry : vcfFile) {
+		for (VcfEntry vcfEntry : vcfFile)
 			annotate(vcfEntry);
-		}
 
 		// Empty file? Show at least the header
-		if (countVcfEntries == 0) vcfOutputFormatter.print(vcfFile.getVcfHeader().toString());
+		if (countVcfEntries == 0) {
+			vcfOutputFormatter.print(vcfFile.getVcfHeader().toString());
+		}
 
 		// Show errors and warnings
 		if (verbose) {
