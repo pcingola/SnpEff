@@ -571,10 +571,10 @@ public class SnpEffCmdGsa extends SnpEff {
 			if (infoName.isEmpty() && geneScoreFile.isEmpty() && geneInterestingFile.isEmpty()) usage("Missing '-info' comamnd line option.");
 
 			if (inputFile.isEmpty()) inputFile = "-"; // Default is STDIN
-			if (!Gpr.canRead(inputFile)) fatalError("Cannot read input file '" + inputFile + "'");
+			if (!Gpr.canRead(inputFile)) Gpr.fatalError("Cannot read input file '" + inputFile + "'");
 
-			if (msigdb.isEmpty()) fatalError("Missing Gene-Sets file");
-			if (!Gpr.canRead(msigdb)) fatalError("Cannot read Gene-Sets file '" + msigdb + "'");
+			if (msigdb.isEmpty()) Gpr.fatalError("Missing Gene-Sets file");
+			if (!Gpr.canRead(msigdb)) Gpr.fatalError("Cannot read Gene-Sets file '" + msigdb + "'");
 
 			if (maxGeneSetSize <= 0) usage("MaxSetSize must be a positive number.");
 			if (minGeneSetSize >= maxGeneSetSize) usage("MaxSetSize (" + maxGeneSetSize + ") must larger than MinSetSize (" + minGeneSetSize + ").");
@@ -583,7 +583,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 			if (!geneInterestingFile.isEmpty() && !enrichmentAlgorithmType.isBinary()) usage("Cannot specify '-geneInterestingFile' using algorithm '" + enrichmentAlgorithmType + "'");
 		} else {
-			if (!Gpr.canRead(commandsFile)) fatalError("Cannot read commands file '" + commandsFile + "'");
+			if (!Gpr.canRead(commandsFile)) Gpr.fatalError("Cannot read commands file '" + commandsFile + "'");
 		}
 
 	}

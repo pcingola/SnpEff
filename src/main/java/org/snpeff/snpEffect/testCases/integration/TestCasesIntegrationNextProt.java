@@ -1,6 +1,5 @@
 package org.snpeff.snpEffect.testCases.integration;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
@@ -9,6 +8,8 @@ import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
+
+import junit.framework.Assert;
 
 /**
  * Test NextProt databases

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.snpeff.interval.Chromosome;
-import org.snpeff.interval.Custom;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
@@ -46,6 +45,7 @@ import org.snpeff.snpEffect.commandLine.SnpEffCmdProtein;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdSeq;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdShow;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdTranslocationsReport;
+import org.snpeff.snpEffect.commandLine.ValuesCopy;
 import org.snpeff.spliceSites.SnpEffCmdSpliceAnalysis;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
@@ -63,77 +63,78 @@ public class SnpEff implements CommandLine {
 	public enum GeneDatabaseFormat {
 		// BED // http://genome.ucsc.edu/FAQ/FAQformat.html#format1
 		BIOMART //
-		, GFF3 // Discouraged GFF 3 format (http://www.sequenceontology.org/gff3.shtml)
-		, GFF2 // Obsolete GFF 2 format
-		, GTF22 // GTF 2.2 format (http://mblab.wustl.edu/GTF22.html)
-		, REFSEQ // UCSC's format using RefSeq
-		, KNOWN_GENES // UCSC's format using KnownGenes
-		, GENBANK //  GeneBank file format
 		, EMBL // EMBL file format
+		, GENBANK //  GeneBank file format
+		, GFF2 // Obsolete GFF 2 format
+		, GFF3 // Discouraged GFF 3 format (http://www.sequenceontology.org/gff3.shtml)
+		, GTF22 // GTF 2.2 format (http://mblab.wustl.edu/GTF22.html)
+		, KNOWN_GENES // UCSC's format using KnownGenes
+		, REFSEQ // UCSC's format using RefSeq
 	}
 
-	public static final String DEFAULT_COMMAND = "ann";
-	public static final int COMMAND_LINE_WIDTH = 40;
-
-	// Version info
-	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "";
 	public static final String BUILD = Gpr.compileTimeStamp(SnpEff.class);
 	public static final String BUILD_DATE = Gpr.compileDate(SnpEff.class);
+
+	public static final int COMMAND_LINE_WIDTH = 40;
+	public static final String DEFAULT_COMMAND = "ann";
+
+	// Version info
+	public static final String REVISION = "";
+	public static final String SOFTWARE_NAME = "SnpEff";
 	public static final String VERSION_MAJOR = "5.0";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_BUILD = VERSION_SHORT + " (build " + BUILD + ")";
 	public static final String VERSION_AUTHOR = VERSION_BUILD + ", by " + Pcingola.BY;
 	public static final String VERSION = SOFTWARE_NAME + " " + VERSION_AUTHOR;
 
-	protected String command = "";
 	protected String[] args; // Arguments used to invoke this command
-	protected String[] shiftArgs;
 	protected boolean canonical = false; // Use only canonical transcripts
+	protected String canonicalFile = null; // Use cannonical transcripts changing the ones that are present in the file.
+	protected String command = "";
+	protected Config config; // Configuration
+	protected String configFile; // Config file
+	protected Map<String, String> configOverride = new HashMap<>();
+	protected ArrayList<String> customIntervalFiles; // Custom interval files (bed)
+	protected String dataDir; // Override data_dir in config file
 	protected boolean debug; // Debug mode
 	protected boolean download = true; // Download genome, if not available
 	protected boolean expandIub = true; // Expand IUB codes
+	protected ArrayList<String> filterIntervalFiles;// Files used for filter intervals
+	protected Genome genome;
+	protected String genomeVer; // Genome version
 	protected boolean help; // Show command help and exit
 	protected boolean hgvs = true; // Use Hgvs notation
 	protected boolean hgvsForce = false; // Use Hgvs notation even in classic mode?
-	protected boolean hgvsOneLetterAa = false; // Use 1-letter AA codes in HGVS.p notation?
 	protected boolean hgvsOld = false; // Old notation style notation: E.g. 'c.G123T' instead of 'c.123G>T' and 'X' instead of '*'
+	protected boolean hgvsOneLetterAa = false; // Use 1-letter AA codes in HGVS.p notation?
 	protected boolean hgvsShift = true; // Shift variants towards the 3-prime end of the transcript
 	protected boolean hgvsTrId = false; // Use full transcript version in HGVS notation?
 	protected boolean interaction = true; // Use interaction loci information if available
 	protected boolean log; // Log to server (statistics)
+	protected TranscriptSupportLevel maxTranscriptSupportLevel = null; // Filter by maximum Transcript Support Level (TSL)
 	protected boolean motif = true; // Annotate using motifs
 	protected boolean nextProt = true; // Annotate using NextProt database
 	protected boolean nextProtKeepAllTrs = false; // Keep all nextprot entries, even if the transcript doesn't exist
 	protected boolean noGenome = false; // Do not load genome database
+	protected int numWorkers = Gpr.NUM_CORES; // Max number of threads (if multi-threaded version is available)
 	protected boolean onlyProtein = false; // Only use protein coding transcripts
 	protected boolean onlyRegulation = false; // Only build regulation tracks
-	protected boolean quiet; // Be quiet
-	protected boolean strict = false; // Only use transcript that have been validated
-	protected boolean saveOutput = false; // Save output to buffer (instead of printing it to STDOUT)
-	protected boolean suppressOutput = false; // Only used for debugging purposes
-	protected boolean verbose; // Be verbose
-	protected Boolean treatAllAsProteinCoding = null; // Only use coding genes. Default is 'null' which means 'auto'
-	protected int numWorkers = Gpr.NUM_CORES; // Max number of threads (if multi-threaded version is available)
-	protected int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE; // Splice site size default: 2 bases (canonical splice site)
-	protected int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
-	protected int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
-	protected int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
-	protected int upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH; // Upstream & downstream interval length
-	protected String configFile; // Config file
-	protected String dataDir; // Override data_dir in config file
-	protected String genomeVer; // Genome version
 	protected String onlyTranscriptsFile = null; // Only use the transcripts in this file (Format: One transcript ID per line)
-	protected String canonicalFile = null; // Use cannonical transcripts changing the ones that are present in the file.
-	protected TranscriptSupportLevel maxTranscriptSupportLevel = null; // Filter by maximum Transcript Support Level (TSL)
 	protected StringBuilder output = new StringBuilder();
-	protected Config config; // Configuration
-	protected Genome genome;
-	protected SnpEff snpEffCmd; // Real command to run
-	protected ArrayList<String> customIntervalFiles; // Custom interval files (bed)
-	protected ArrayList<String> filterIntervalFiles;// Files used for filter intervals
+	protected boolean quiet; // Be quiet
 	protected HashSet<String> regulationTracks = new HashSet<>();
-	protected Map<String, String> configOverride = new HashMap<>();
+	protected boolean saveOutput = false; // Save output to buffer (instead of printing it to STDOUT)
+	protected String[] shiftArgs;
+	protected SnpEff snpEffCmd; // Real command to run
+	protected int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
+	protected int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
+	protected int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
+	protected int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE; // Splice site size default: 2 bases (canonical splice site)
+	protected boolean strict = false; // Only use transcript that have been validated
+	protected boolean suppressOutput = false; // Only used for debugging purposes
+	protected Boolean treatAllAsProteinCoding = null; // Only use coding genes. Default is 'null' which means 'auto'
+	protected int upDownStreamLength = SnpEffectPredictor.DEFAULT_UP_DOWN_LENGTH; // Upstream & downstream interval length
+	protected boolean verbose; // Be verbose
 
 	/**
 	 * Main
@@ -158,8 +159,8 @@ public class SnpEff implements CommandLine {
 		debug = false; // Debug mode
 		quiet = false; // Be quiet
 		log = true; // Log to server (statistics)
-		//		multiThreaded = false; // Use multiple threads
 		customIntervalFiles = new ArrayList<>(); // Custom interval files
+		filterIntervalFiles = new ArrayList<>(); // Files used for filter intervals
 	}
 
 	public SnpEff(String[] args) {
@@ -333,45 +334,8 @@ public class SnpEff implements CommandLine {
 	 * Copy values to a new command
 	 */
 	void copyValues(SnpEff cmd) {
-		cmd.canonical = canonical;
-		cmd.canonicalFile = canonicalFile;
-		cmd.configFile = configFile;
-		cmd.customIntervalFiles = customIntervalFiles;
-		cmd.dataDir = dataDir;
-		cmd.debug = debug;
-		cmd.download = download;
-		cmd.expandIub = expandIub;
-		cmd.filterIntervalFiles = filterIntervalFiles;
-		cmd.genomeVer = genomeVer;
-		cmd.help = help;
-		cmd.hgvs = hgvs;
-		cmd.hgvsForce = hgvsForce;
-		cmd.hgvsOld = hgvsOld;
-		cmd.hgvsOneLetterAa = hgvsOneLetterAa;
-		cmd.hgvsShift = hgvsShift;
-		cmd.hgvsTrId = hgvsTrId;
-		cmd.interaction = interaction;
-		cmd.log = log;
-		cmd.motif = motif;
-		cmd.maxTranscriptSupportLevel = maxTranscriptSupportLevel;
-		cmd.nextProt = nextProt;
-		cmd.noGenome = noGenome;
-		cmd.numWorkers = numWorkers;
-		cmd.onlyProtein = onlyProtein;
-		cmd.onlyRegulation = onlyRegulation;
-		cmd.onlyTranscriptsFile = onlyTranscriptsFile;
-		cmd.quiet = quiet;
-		cmd.regulationTracks = regulationTracks;
-		cmd.spliceSiteSize = spliceSiteSize;
-		cmd.spliceRegionExonSize = spliceRegionExonSize;
-		cmd.spliceRegionIntronMax = spliceRegionIntronMax;
-		cmd.spliceRegionIntronMin = spliceRegionIntronMin;
-		cmd.strict = strict;
-		cmd.suppressOutput = suppressOutput;
-		cmd.treatAllAsProteinCoding = treatAllAsProteinCoding;
-		cmd.upDownStreamLength = upDownStreamLength;
-		cmd.verbose = verbose;
-		cmd.configOverride = configOverride;
+		ValuesCopy vc = new ValuesCopy(this, cmd);
+		vc.copy();
 	}
 
 	/**
@@ -380,14 +344,6 @@ public class SnpEff implements CommandLine {
 	public void error(Throwable e, String message) {
 		if (verbose && (e != null)) e.printStackTrace();
 		if (!quiet) System.err.println("Error: " + message);
-	}
-
-	/**
-	 * Show an error message and exit
-	 */
-	public void fatalError(String message) {
-		System.err.println("Fatal error: " + message);
-		System.exit(-1);
 	}
 
 	@Override
@@ -452,7 +408,7 @@ public class SnpEff implements CommandLine {
 	 * Read a custom interval file
 	 */
 	protected int loadCustomFile(String fileName) {
-		Markers markers = loadMarkers(fileName);
+		Markers markers = Markers.loadCustomMarkers(fileName);
 
 		// Add all markers to predictor
 		for (Marker m : markers)
@@ -558,7 +514,7 @@ public class SnpEff implements CommandLine {
 		if (strict) {
 			if (verbose) Timer.showStdErr("Filtering out non-verified transcripts.");
 			if (config.getSnpEffectPredictor().removeUnverified()) {
-				fatalError("All transcripts have been removed form every single gene!\nUsing strickt on this database leaves no information.");
+				Gpr.fatalError("All transcripts have been removed form every single gene!\nUsing strickt on this database leaves no information.");
 			}
 			if (verbose) Timer.showStdErr("done.");
 		}
@@ -576,7 +532,7 @@ public class SnpEff implements CommandLine {
 			int removed = config.getSnpEffectPredictor().retainAllTranscripts(trIds);
 			int countTr = config.getSnpEffectPredictor().countTranscripts();
 			if (verbose) Timer.showStdErr("Done: " + removed + " transcripts removed, " + countTr + " transcripts left.");
-			if (countTr <= 0) fatalError("No transcripts left for analysis after filter using file '" + onlyTranscriptsFile + "'");
+			if (countTr <= 0) Gpr.fatalError("No transcripts left for analysis after filter using file '" + onlyTranscriptsFile + "'");
 		}
 
 		// Use protein coding transcripts
@@ -676,30 +632,30 @@ public class SnpEff implements CommandLine {
 		if (verbose) Timer.showStdErr("\tInteractions: " + count + " added, " + countSkipped + " skipped.");
 	}
 
-	/**
-	 * Read markers file
-	 * Supported formats: BED, TXT, BigBed, GFF
-	 */
-	protected Markers loadMarkers(String fileName) {
-		Markers markersSeqChange = Markers.readMarkers(fileName);
-		String label = Gpr.removeExt(Gpr.baseName(fileName));
-
-		// Convert markers to 'Custom' markers
-		Markers markers = new Markers();
-		for (Marker m : markersSeqChange) {
-			if (m instanceof Custom) {
-				((Custom) m).setLabel(label);
-				markers.add(m);
-			} else {
-				// Not a custom interval? Create one
-				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), false, m.getId(), label);
-				markers.add(custom);
-			}
-		}
-
-		// Number added
-		return markers;
-	}
+	//	/**
+	//	 * Read markers file
+	//	 * Supported formats: BED, TXT, BigBed, GFF
+	//	 */
+	//	protected Markers loadMarkers(String fileName) {
+	//		Markers markersFromFile = Markers.readMarkers(fileName);
+	//		String label = Gpr.removeExt(Gpr.baseName(fileName));
+	//
+	//		// Convert markers to 'Custom' markers
+	//		Markers markers = new Markers();
+	//		for (Marker m : markersFromFile) {
+	//			if (m instanceof Custom) {
+	//				((Custom) m).setLabel(label);
+	//				markers.add(m);
+	//			} else {
+	//				// Not a custom interval? Create one
+	//				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), false, m.getId(), label);
+	//				markers.add(custom);
+	//			}
+	//		}
+	//
+	//		// Number added
+	//		return markers;
+	//	}
 
 	/**
 	 * Read regulation motif files

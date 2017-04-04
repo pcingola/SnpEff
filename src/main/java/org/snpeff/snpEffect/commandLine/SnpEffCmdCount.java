@@ -29,7 +29,7 @@ public class SnpEffCmdCount extends SnpEff {
 	List<String> fileNames; // Files to count (can be BAM, SAM) 
 
 	public SnpEffCmdCount() {
-		fileNames = new ArrayList<String>();
+		fileNames = new ArrayList<>();
 	}
 
 	/**
@@ -78,10 +78,10 @@ public class SnpEffCmdCount extends SnpEff {
 		if (fileNames.size() < 1) usage("Missing input file/s");
 
 		for (String file : fileNames)
-			if (!Gpr.canRead(file)) fatalError("Cannot read input file '" + file + "'");
+			if (!Gpr.canRead(file)) Gpr.fatalError("Cannot read input file '" + file + "'");
 
 		for (String file : customIntervalFiles)
-			if (!Gpr.canRead(file)) fatalError("Cannot read custom intervals file '" + file + "'");
+			if (!Gpr.canRead(file)) Gpr.fatalError("Cannot read custom intervals file '" + file + "'");
 
 		if (noGenome && customIntervalFiles.isEmpty()) usage("No user defined intervals were defined (mandatory if '-noGenome' option is enabled)");
 	}

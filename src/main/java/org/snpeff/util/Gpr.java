@@ -296,6 +296,14 @@ public class Gpr {
 	}
 
 	/**
+	 * Show an error message and exit
+	 */
+	public static void fatalError(String message) {
+		System.err.println("Fatal error: " + message);
+		System.exit(-1);
+	}
+
+	/**
 	 * Generate an evenly separated pallette of colors
 	 * @param num	Number of colors
 	 */
@@ -574,6 +582,16 @@ public class Gpr {
 			throw new RuntimeException(e);
 		}
 		return strb.toString();
+	}
+
+	/**
+	 * Read a file after checking for some common error conditions
+	 */
+	public static String readFileFatalError(String fileName) {
+		File file = new File(fileName);
+		if (!file.exists()) Gpr.fatalError("No such file '" + fileName + "'");
+		if (!file.canRead()) Gpr.fatalError("Cannot open file '" + fileName + "'");
+		return Gpr.readFile(fileName);
 	}
 
 	/**
@@ -956,4 +974,5 @@ public class Gpr {
 		sb.append(" ]");
 		return sb.toString();
 	}
+
 }

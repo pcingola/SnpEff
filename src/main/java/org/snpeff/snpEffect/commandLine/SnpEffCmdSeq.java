@@ -6,6 +6,7 @@ import org.snpeff.SnpEff;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;
 import org.snpeff.interval.Genome;
+import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 
 /**
@@ -16,7 +17,7 @@ import org.snpeff.util.GprSeq;
 public class SnpEffCmdSeq extends SnpEff {
 
 	boolean reverseWc = false;
-	ArrayList<String> sequences = new ArrayList<String>();
+	ArrayList<String> sequences = new ArrayList<>();
 
 	public SnpEffCmdSeq() {
 		super();
@@ -65,7 +66,7 @@ public class SnpEffCmdSeq extends SnpEff {
 		Genome genome = config.getGenome();
 		CodonTable codonTable = CodonTables.getInstance().getTable(genome);
 		if (codonTable == null) {
-			fatalError("Could not find codon table for genome '" + genome.getId() + "'");
+			Gpr.fatalError("Could not find codon table for genome '" + genome.getId() + "'");
 		}
 
 		// Translate sequences

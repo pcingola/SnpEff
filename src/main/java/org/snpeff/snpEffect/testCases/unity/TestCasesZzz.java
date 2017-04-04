@@ -1,11 +1,17 @@
 package org.snpeff.snpEffect.testCases.unity;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.junit.Test;
-import org.snpeff.interval.Variant;
-import org.snpeff.interval.Variants;
-import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.VariantEffects;
+import org.snpeff.SnpEff;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
+import org.snpeff.vcf.VcfEffect;
+import org.snpeff.vcf.VcfEntry;
+
+import junit.framework.Assert;
 
 /**
  * Test multiple variants affecting one codon
@@ -20,129 +26,49 @@ public class TestCasesZzz extends TestCasesBase {
 		super();
 	}
 
-	String effectStr(VariantEffect effect) {
-		String effStr = effect.effect(true, true, true, false, false);
-		String aaStr = effect.getAaChangeOld();
-		int idx = effStr.indexOf('(');
-		return effStr.substring(0, idx) + "(" + aaStr + ")";
-	}
-
-	@Override
-	protected void init() {
-		super.init();
-		randSeed = 20170331;
-	}
-
 	/**
-	 * Two SNPs affect one transcript
+	 * Check that RAW alt fields are kept in 'Allele/Genotype'
 	 */
 	@Test
-	public void test_01() {
+	public void test_01_VcfRawAlt() {
 		Gpr.debug("Test");
+		verbose = true;
 
-		minExons = 3;
-		initSnpEffPredictor();
+		// Create command
+		String args[] = { "testHg3775Chr1", "tests/test_ann_integration_01.vcf" };
 
-		Variant snp1 = new Variant(chromosome, 374, "G", "C");
-		Variant snp2 = new Variant(chromosome, 375, "C", "A");
-		Variants vars = new Variants();
-		vars.add(snp1);
-		vars.add(snp2);
-		Gpr.debug("Transcript:" + transcript);
-		Gpr.debug("Variants:" + vars);
+		SnpEff cmd = new SnpEff(args);
+		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
+		cmdEff.setVerbose(verbose);
+		cmdEff.setSupressOutput(!verbose);
 
-		VariantEffects variantEffects = new VariantEffects();
-		transcript.variantEffect(vars, variantEffects);
-		Gpr.debug("Variant effects" + variantEffects);
+		// Run command
+		List<VcfEntry> list = cmdEff.run(true);
+		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
-	}
+		// Expected results
+		Set<String> allelesExpected = new HashSet<>();
+		allelesExpected.add("AACACACACACACACACACACACACACACACACACACAC");
+		allelesExpected.add("AACACACACACACACACACACACACACACACACACACACAC");
+		allelesExpected.add("AACACACACACACACACACACACACACAC");
+		allelesExpected.add("AACACACACACACACACACACACACACACACACACACACACAC");
+		allelesExpected.add("AACACACACACACACACACACACACACACACACACAC");
 
-	/**
-	 * Two SNPs affect one transcript: Exon edges
-	 */
-	@Test
-	public void test_02() {
-		Gpr.debug("Test");
-	}
+		// Find AA change for a genotype
+		Set<String> allelesReal = new HashSet<>();
+		for (VcfEntry vcfEntry : list) {
+			if (debug) System.err.println(vcfEntry);
 
-	/**
-	 * Two SNPs: Only one affects the coding part of the transcript
-	 */
-	@Test
-	public void test_03() {
-		Gpr.debug("Test");
-	}
+			for (VcfEffect eff : vcfEntry.getVcfEffects()) {
+				String allele = eff.getAllele();
+				if (verbose) System.err.println("\t" + eff + "\n\t\tAllele: " + allele);
 
-	/**
-	 * Two SNPs affect multiple transcripts
-	 */
-	@Test
-	public void test_04() {
-		Gpr.debug("Test");
-	}
+				Assert.assertTrue("Unexpected allele '" + allele + "'", allelesExpected.contains(allele));
+				allelesReal.add(allele);
+			}
+		}
 
-	/**
-	 * Two MNPs 
-	 */
-	@Test
-	public void test_05() {
-		Gpr.debug("Test");
-	}
-
-	/**
-	 * Two frame-compensating INS nearby  
-	 */
-	@Test
-	public void test_06() {
-		Gpr.debug("Test");
-	}
-
-	/**
-	 * Two frame-compensating INS far away  
-	 */
-	@Test
-	public void test_07() {
-		Gpr.debug("Test");
-	}
-
-	/**
-	 * Two frame-compensating DEL nearby  
-	 */
-	@Test
-	public void test_08() {
-		Gpr.debug("Test");
-	}
-
-	/**
-	 * Two frame-compensating DEL far away
-	 */
-	@Test
-	public void test_09() {
-		Gpr.debug("Test");
-	}
-
-	/**
-	 * Haplotype detection: Two phased variants
-	 */
-	@Test
-	public void test_10() {
-		Gpr.debug("Test");
-	}
-
-	/**
-	 * Haplotype detection: Two variants implicitly phased (one of them is homozygous)
-	 */
-	@Test
-	public void test_11() {
-		Gpr.debug("Test");
-	}
-
-	/**
-	 * Haplotype detection: Two variants implicitly phased (both homozygous)
-	 */
-	@Test
-	public void test_12() {
-		Gpr.debug("Test");
+		Assert.assertEquals(allelesExpected, allelesReal);
 	}
 
 }

@@ -29,6 +29,27 @@ public class Markers implements Serializable, Collection<Marker> {
 	protected ArrayList<Marker> markers;
 	protected String name = "";
 
+	public static Markers loadCustomMarkers(String fileName) {
+		Markers markersFromFile = Markers.readMarkers(fileName);
+		String label = Gpr.removeExt(Gpr.baseName(fileName));
+
+		// Convert markers to 'Custom' markers
+		Markers markers = new Markers();
+		for (Marker m : markersFromFile) {
+			if (m instanceof Custom) {
+				((Custom) m).setLabel(label);
+				markers.add(m);
+			} else {
+				// Not a custom interval? Create one
+				Custom custom = new Custom(m.getParent(), m.getStart(), m.getEnd(), false, m.getId(), label);
+				markers.add(custom);
+			}
+		}
+
+		// Number added
+		return markers;
+	}
+
 	/**
 	 * Read markers from a file
 	 * Supported formats: BED, BigBed, VCF, TXT
