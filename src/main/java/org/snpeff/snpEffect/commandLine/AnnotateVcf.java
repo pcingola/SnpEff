@@ -122,6 +122,10 @@ public class AnnotateVcf implements VcfAnnotator {
 		if (variantStats != null) report.put("variants", variantStats.getCount() + "");
 	}
 
+	protected void addVariantEffect(VariantEffect variantEffect) {
+		vcfOutputFormatter.add(variantEffect);
+	}
+
 	/**
 	 * Annotate: Calculate the effect of variants and show results
 	 */
@@ -166,7 +170,7 @@ public class AnnotateVcf implements VcfAnnotator {
 			}
 
 			// Set VcfEntry
-			vcfOutputFormatter.setVcfEntry(vcfEntry);
+			currentVcfEntry(vcfEntry);
 
 			//---
 			// Analyze all changes in this VCF entry
@@ -206,7 +210,7 @@ public class AnnotateVcf implements VcfAnnotator {
 						impactLowOrHigher |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
 						impactModerateOrHigh |= (variantEffect.getEffectImpact() == EffectImpact.MODERATE) || (variantEffect.getEffectImpact() == EffectImpact.HIGH);
 
-						vcfOutputFormatter.add(variantEffect);
+						addVariantEffect(variantEffect);
 						countEffects++;
 					}
 
@@ -239,19 +243,19 @@ public class AnnotateVcf implements VcfAnnotator {
 
 						// Show results (note, we don't add these to the statistics)
 						for (VariantEffect variantEffect : variantEffects)
-							vcfOutputFormatter.add(variantEffect);
+							addVariantEffect(variantEffect);
 					}
 				}
 			}
 
 			// Finish up this section
-			vcfOutputFormatter.print();
+			print();
 		} catch (Throwable t) {
 			totalErrs++;
 			error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
 		} finally {
 			if (filteredOut) return false;
-			vcfOutputFormatter.print(); // Make sure we don't skip the entry when there is an exception
+			print(); // Make sure we don't skip the entry when there is an exception
 		}
 
 		return true;
@@ -423,6 +427,11 @@ public class AnnotateVcf implements VcfAnnotator {
 		return comparisons;
 	}
 
+	protected void currentVcfEntry(VcfEntry vcfEntry) {
+		// Set VcfEntry
+		vcfOutputFormatter.setVcfEntry(vcfEntry);
+	}
+
 	/**
 	 * Show an error (if not 'quiet' mode)
 	 */
@@ -468,6 +477,11 @@ public class AnnotateVcf implements VcfAnnotator {
 		summaryGenesFile = Gpr.dirName(inputFile) + "/" + base + "_genes.txt";
 
 		return outputFile;
+	}
+
+	protected void print() {
+		// Finish up this section
+		vcfOutputFormatter.print();
 	}
 
 	/**
