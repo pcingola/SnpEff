@@ -18,6 +18,7 @@ import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.LossOfFunction;
 import org.snpeff.snpEffect.VariantEffect;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.KeyValue;
 import org.snpeff.vcf.EffFormatVersion;
@@ -82,6 +83,15 @@ public class VcfOutputFormatter {
 	public void add(VariantEffect variantEffect) {
 		// Passes the filter? => Add
 		if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(variantEffect))) variantEffects.add(variantEffect);
+	}
+
+	/**
+	 * Add all variant effects
+	 */
+	public void add(VariantEffects variantEffects) {
+		if (variantEffects == null) return;
+		for (VariantEffect eff : variantEffects)
+			add(eff);
 	}
 
 	public boolean addHeaders(VcfFileIterator vcf) {

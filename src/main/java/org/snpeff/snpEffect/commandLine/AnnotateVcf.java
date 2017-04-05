@@ -15,6 +15,7 @@ import java.util.Set;
 import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.filter.VariantEffectFilter;
+import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.interval.Transcript;
@@ -122,7 +123,7 @@ public class AnnotateVcf implements VcfAnnotator {
 		if (variantStats != null) report.put("variants", variantStats.getCount() + "");
 	}
 
-	protected void addVariantEffect(VariantEffect variantEffect) {
+	protected void addVariantEffect(VcfEntry ve, Variant variant, VariantEffect variantEffect) {
 		vcfOutputFormatter.add(variantEffect);
 	}
 
@@ -210,7 +211,7 @@ public class AnnotateVcf implements VcfAnnotator {
 						impactLowOrHigher |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
 						impactModerateOrHigh |= (variantEffect.getEffectImpact() == EffectImpact.MODERATE) || (variantEffect.getEffectImpact() == EffectImpact.HIGH);
 
-						addVariantEffect(variantEffect);
+						addVariantEffect(vcfEntry, variant, variantEffect);
 						countEffects++;
 					}
 
@@ -243,19 +244,16 @@ public class AnnotateVcf implements VcfAnnotator {
 
 						// Show results (note, we don't add these to the statistics)
 						for (VariantEffect variantEffect : variantEffects)
-							addVariantEffect(variantEffect);
+							addVariantEffect(vcfEntry, varNonRef, variantEffect);
 					}
 				}
 			}
-
-			// Finish up this section
-			print();
 		} catch (Throwable t) {
 			totalErrs++;
 			error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
 		} finally {
 			if (filteredOut) return false;
-			print(); // Make sure we don't skip the entry when there is an exception
+			print(); // Print entry: Make sure we don't skip the entry when there is an exception
 		}
 
 		return true;
@@ -294,7 +292,7 @@ public class AnnotateVcf implements VcfAnnotator {
 	 * Calculate the effect of variants and show results
 	 */
 	protected void annotateInit(String outputFile) {
-		snpEffectPredictor = config.getSnpEffectPredictor();
+		if (snpEffectPredictor == null) snpEffectPredictor = config.getSnpEffectPredictor();
 
 		// Reset all counters
 		totalErrs = 0;
@@ -307,8 +305,9 @@ public class AnnotateVcf implements VcfAnnotator {
 		annotateTimer = new Timer();
 
 		// Create 'stats' objects
-		variantStats = new VariantStats(config.getGenome());
-		variantEffectStats = new VariantEffectStats(config.getGenome());
+		Genome genome = snpEffectPredictor.getGenome();
+		variantStats = new VariantStats(genome);
+		variantEffectStats = new VariantEffectStats(genome);
 		variantEffectStats.setUseSequenceOntology(useSequenceOntology);
 		vcfStats = new VcfStats();
 
@@ -638,6 +637,14 @@ public class AnnotateVcf implements VcfAnnotator {
 
 	public void setFormatVersion(EffFormatVersion formatVersion) {
 		this.formatVersion = formatVersion;
+	}
+
+	public void setNoSummary() {
+		createSummaryCsv = createSummaryHtml = false;
+	}
+
+	public void setSnpEffectPredictor(SnpEffectPredictor snpEffectPredictor) {
+		this.snpEffectPredictor = snpEffectPredictor;
 	}
 
 	@Override
