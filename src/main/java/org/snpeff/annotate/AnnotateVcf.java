@@ -1,4 +1,4 @@
-package org.snpeff.snpEffect.commandLine;
+package org.snpeff.annotate;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +27,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VcfAnnotator;
 import org.snpeff.stats.CountByType;
@@ -36,6 +37,7 @@ import org.snpeff.stats.VcfStats;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 import org.snpeff.util.Tuple;
+import org.snpeff.util.ValuesCopy;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.PedigreeEnrty;
 import org.snpeff.vcf.VcfEntry;

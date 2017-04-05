@@ -1,10 +1,9 @@
-package org.snpeff.snpEffect.commandLine;
+package org.snpeff.annotate;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 
+import org.snpeff.collections.AutoHashMap;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.VariantEffect;
@@ -21,12 +20,14 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 
 	Queue<VcfEntry> queue;
 	VcfEntry latestVcfEntry;
-	Map<VcfEntry, VariantEffects> effsByVcfEntry;
+	AutoHashMap<VcfEntry, VariantEffects> effsByVcfEntry;
+	SameCodonHaplotype sameCodonHaplotype;
 
 	public AnnotateVcfHaplotypes() {
 		super();
 		queue = new LinkedList<>();
-		effsByVcfEntry = new HashMap<>();
+		effsByVcfEntry = new AutoHashMap<>(new VariantEffects());
+		sameCodonHaplotype = new SameCodonHaplotype();
 	}
 
 	/**
@@ -40,12 +41,10 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 	@Override
 	protected void addVariantEffect(VcfEntry ve, Variant variant, VariantEffect variantEffect) {
 		Gpr.debug("Adding:" + ve.toStr() + "\t" + variantEffect);
-		VariantEffects effs = effsByVcfEntry.get(ve);
-		if (effs == null) {
-			effs = new VariantEffects();
-			effsByVcfEntry.put(ve, effs);
-		}
-		effs.add(variantEffect);
+		effsByVcfEntry.getOrCreate(ve).add(variantEffect);
+
+		// Detection strategies
+		sameCodonHaplotype.add(ve, variant, variantEffect);
 	}
 
 	/**
@@ -90,6 +89,7 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 		VcfEntry ve = queue.remove();
 		if (latestVcfEntry == ve) latestVcfEntry = null;
 		effsByVcfEntry.remove(ve);
+		sameCodonHaplotype.remove(ve);
 		return ve;
 	}
 
@@ -141,7 +141,7 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 	 *
 	 */
 	boolean sameCodon(VcfEntry ve) {
-		return false;
+		return sameCodonHaplotype.hasSameCodon(ve);
 	}
 
 	int size() {

@@ -1,9 +1,9 @@
 package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.Test;
+import org.snpeff.annotate.AnnotateVcfHaplotypes;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.commandLine.AnnotateVcfHaplotypes;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEntry;
 
@@ -98,7 +98,7 @@ public class TestCasesHaplotypeVcf extends TestCasesBase {
 	//	}
 	//
 	//	/**
-	//	 * Two MNPs 
+	//	 * Two MNPs
 	//	 */
 	//	@Test
 	//	public void test_05() {
@@ -106,7 +106,7 @@ public class TestCasesHaplotypeVcf extends TestCasesBase {
 	//	}
 	//
 	//	/**
-	//	 * Two frame-compensating INS nearby  
+	//	 * Two frame-compensating INS nearby
 	//	 */
 	//	@Test
 	//	public void test_06() {
@@ -114,7 +114,7 @@ public class TestCasesHaplotypeVcf extends TestCasesBase {
 	//	}
 	//
 	//	/**
-	//	 * Two frame-compensating INS far away  
+	//	 * Two frame-compensating INS far away
 	//	 */
 	//	@Test
 	//	public void test_07() {
@@ -122,7 +122,7 @@ public class TestCasesHaplotypeVcf extends TestCasesBase {
 	//	}
 	//
 	//	/**
-	//	 * Two frame-compensating DEL nearby  
+	//	 * Two frame-compensating DEL nearby
 	//	 */
 	//	@Test
 	//	public void test_08() {

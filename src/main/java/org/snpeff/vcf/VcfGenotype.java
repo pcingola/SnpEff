@@ -15,6 +15,7 @@ public class VcfGenotype {
 
 	public static final String GT_FIELD_DEPTH_OF_COVERAGE = "DP"; // Approximate read depth (reads with MQ=255 or with bad mates are filtered)
 	public static final String GT_FIELD_ALLELIC_DEPTH_OF_COVERAGE = "AD"; // Allelic depths for the ref and alt alleles in the order listed
+
 	String values;
 	int genotype[];
 	int ploidy;
@@ -22,9 +23,7 @@ public class VcfGenotype {
 	double gQuality;
 	int depth;
 	int genotypeLikelihoodPhred[];
-
 	HashMap<String, String> fields;
-
 	VcfEntry vcfEntry;
 
 	public VcfGenotype(VcfEntry vcfEntry, String format, String values) {
@@ -245,6 +244,7 @@ public class VcfGenotype {
 		parseFields(); // Lazy parse
 
 		if (genotype != null) {
+			if (genotype[0] <= 0) return false;
 			// Any genotype is different? => not homozygous
 			for (int i = 1; i < genotype.length; i++)
 				if (genotype[i] != genotype[i - 1]) return false;
@@ -321,7 +321,7 @@ public class VcfGenotype {
 		if (fields != null) return;
 
 		try {
-			fields = new HashMap<String, String>();
+			fields = new HashMap<>();
 
 			if (values.isEmpty()) return; // Values are missing? Nothing to do
 
@@ -341,10 +341,11 @@ public class VcfGenotype {
 			}
 
 		} catch (Exception e) {
-			throw new RuntimeException("Error parsing fields on line:" //
-					+ "\n\tFormat   : '" + vcfEntry.getFormat() + "'" //
-					+ "\n\tValues   : '" + values + "'" //
-					+ "\n\tVcf line : " + vcfEntry //
+			throw new RuntimeException(
+					"Error parsing fields on line:" //
+							+ "\n\tFormat   : '" + vcfEntry.getFormat() + "'" //
+							+ "\n\tValues   : '" + values + "'" //
+							+ "\n\tVcf line : " + vcfEntry //
 					, e);
 		}
 	}

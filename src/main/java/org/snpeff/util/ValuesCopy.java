@@ -1,4 +1,4 @@
-package org.snpeff.snpEffect.commandLine;
+package org.snpeff.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.snpeff.util.Gpr;
 
 /**
  * Copies fields having the same value and type from one object to another object

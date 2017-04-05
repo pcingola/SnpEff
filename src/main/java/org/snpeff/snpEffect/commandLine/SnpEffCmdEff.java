@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.snpeff.SnpEff;
+import org.snpeff.annotate.AnnotateVcf;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.filter.VariantEffectFilter;
 import org.snpeff.interval.tree.IntervalForest;

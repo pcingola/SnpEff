@@ -45,10 +45,10 @@ import org.snpeff.snpEffect.commandLine.SnpEffCmdProtein;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdSeq;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdShow;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdTranslocationsReport;
-import org.snpeff.snpEffect.commandLine.ValuesCopy;
 import org.snpeff.spliceSites.SnpEffCmdSpliceAnalysis;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
+import org.snpeff.util.ValuesCopy;
 
 /**
  * SnpEff's main command line program
