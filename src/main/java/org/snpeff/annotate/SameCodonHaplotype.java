@@ -8,7 +8,6 @@ import org.snpeff.collections.AutoHashMap;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.VcfGenotype;
 
@@ -44,8 +43,10 @@ public class SameCodonHaplotype {
 		for (EffectType et : SUPPORTED_EFFECTS)
 			supportedEffectTypes.add(et);
 	}
+
 	AutoHashMap<String, HashSet<VcfHaplotypeTuple>> tuplesByTrCodon;
 	AutoHashMap<VcfEntry, HashSet<VcfHaplotypeTuple>> tuplesByVcfentry;
+	boolean keepAll;
 
 	public SameCodonHaplotype() {
 		reset();
@@ -62,9 +63,6 @@ public class SameCodonHaplotype {
 		EffectType effType = variantEffect.getEffectType();
 		if (!supportedEffectTypes.contains(effType)) return;
 
-		// Any kind of phasing information (explicit or implicit) for any sample?
-		if (!hasPhase(ve)) return;
-
 		// Add
 		VcfHaplotypeTuple vht = new VcfHaplotypeTuple(ve, variant, variantEffect);
 		add(vht);
@@ -75,8 +73,15 @@ public class SameCodonHaplotype {
 		tuplesByVcfentry.getOrCreate(vht.getVcfEntry()).add(vht);
 	}
 
+	/**
+	 * Are these genotypes phased?
+	 */
 	boolean arePhased(VcfGenotype gt1, VcfGenotype gt2) {
+		// Are the variants phased?
 		if (!isPhased(gt1) || !isPhased(gt2)) return false;
+
+		// Do they have phase groups?
+		if (!samePhaseGroup(gt1, gt2)) return false;
 
 		// Check that both are ALT at the same chromosome (maternal / paternal)
 		int geno1[] = gt1.getGenotype();
@@ -105,14 +110,14 @@ public class SameCodonHaplotype {
 	/**
 	 * Does this set have a 'same codon' variant?
 	 */
-	boolean hasSameCodon(String trCodon, Set<VcfHaplotypeTuple> tuples) {
-		if (tuples == null || tuples.size() <= 1) return false;
+	boolean hasSameCodon(Set<VcfHaplotypeTuple> tupleSetVe, Set<VcfHaplotypeTuple> tupleSetCodon) {
+		if (tupleSetCodon == null || tupleSetCodon.size() <= 1) return false;
 
-		for (VcfHaplotypeTuple vht1 : tuples) {
+		for (VcfHaplotypeTuple vht1 : tupleSetVe) {
 			VcfEntry ve1 = vht1.getVcfEntry();
-			for (VcfHaplotypeTuple vht2 : tuples) {
+			for (VcfHaplotypeTuple vht2 : tupleSetCodon) {
 				VcfEntry ve2 = vht2.getVcfEntry();
-				if (ve1.compareTo(ve2) <= 0) continue; // Only compare once
+				if (ve1.compareTo(ve2) == 0) continue; // Don't compare to self
 				if (hasSameCodon(vht1, vht2)) return true;
 			}
 		}
@@ -124,21 +129,25 @@ public class SameCodonHaplotype {
 	 * Does this vcfEntry have any 'same codon' variants associated?
 	 */
 	public boolean hasSameCodon(VcfEntry ve) {
-		Set<VcfHaplotypeTuple> tupleSet = tuplesByVcfentry.get(ve);
-		if (tuplesByVcfentry == null) return false;
+		Set<VcfHaplotypeTuple> tupleSetVe = tuplesByVcfentry.get(ve);
+		if (tupleSetVe == null) return false;
 
 		// Look tuples by codon
-		for (VcfHaplotypeTuple vht : tupleSet) {
+		Set<String> keysAnalyzed = new HashSet<>();
+		for (VcfHaplotypeTuple vht : tupleSetVe) {
 			String key = vht.getTrCodonKey();
-			Set<VcfHaplotypeTuple> tset = tuplesByTrCodon.get(key);
-			if (hasSameCodon(key, tset)) return true;
+
+			// If a transcript/codon has already been analyzed, we should skip it in the next iteration
+			if (!keysAnalyzed.add(key)) continue;
+
+			Set<VcfHaplotypeTuple> tupleSetCodon = tuplesByTrCodon.get(key);
+			if (hasSameCodon(tupleSetVe, tupleSetCodon)) return true;
 		}
 
 		return false;
 	}
 
 	boolean hasSameCodon(VcfHaplotypeTuple vht1, VcfHaplotypeTuple vht2) {
-		Gpr.debug("vht1: " + vht1 + "\tvht2: " + vht2);
 		VcfEntry ve1 = vht1.getVcfEntry();
 		VcfEntry ve2 = vht2.getVcfEntry();
 		List<VcfGenotype> gts1 = ve1.getVcfGenotypes();
@@ -159,7 +168,12 @@ public class SameCodonHaplotype {
 		return gt.isPhased() || gt.isHomozygousAlt();
 	}
 
+	/**
+	 * Remove a VcfEntry
+	 */
 	public void remove(VcfEntry ve) {
+		if (keepAll) return; // Keep all entries (used for test cases and debugging)
+
 		// Remove from 'tuplesByVcfentry
 		Set<VcfHaplotypeTuple> tupleSet = tuplesByVcfentry.remove(ve);
 		if (tupleSet == null) return;
@@ -183,6 +197,21 @@ public class SameCodonHaplotype {
 	void reset() {
 		tuplesByTrCodon = new AutoHashMap<>(new HashSet<VcfHaplotypeTuple>());
 		tuplesByVcfentry = new AutoHashMap<>(new HashSet<VcfHaplotypeTuple>());
+	}
+
+	/**
+	 * Are these genotypes in the same phase group?
+	 */
+	boolean samePhaseGroup(VcfGenotype gt1, VcfGenotype gt2) {
+		String ps1 = gt1.get(VcfGenotype.GT_FIELD_PHASE_GROUP);
+		String ps2 = gt2.get(VcfGenotype.GT_FIELD_PHASE_GROUP);
+		if (ps1 == null && ps2 == null) return true; // Both of them are empty? Consider them as match
+		if (ps1 == null || ps2 == null) return false; // Only one of them is empty? Consider them as NO match
+		return ps1.equals(ps2);
+	}
+
+	public void setKeepAll(boolean keepAll) {
+		this.keepAll = keepAll;
 	}
 
 	@Override

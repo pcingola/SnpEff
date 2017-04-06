@@ -1,6 +1,8 @@
 package org.snpeff.annotate;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import org.snpeff.collections.AutoHashMap;
@@ -18,16 +20,19 @@ import org.snpeff.vcf.VcfEntry;
  */
 public class AnnotateVcfHaplotypes extends AnnotateVcf {
 
+	boolean saveResults;
 	Queue<VcfEntry> queue;
 	VcfEntry latestVcfEntry;
 	AutoHashMap<VcfEntry, VariantEffects> effsByVcfEntry;
 	SameCodonHaplotype sameCodonHaplotype;
+	List<VcfEntry> vcfEntries;
 
 	public AnnotateVcfHaplotypes() {
 		super();
 		queue = new LinkedList<>();
 		effsByVcfEntry = new AutoHashMap<>(new VariantEffects());
 		sameCodonHaplotype = new SameCodonHaplotype();
+		vcfEntries = new ArrayList<>();
 	}
 
 	/**
@@ -40,7 +45,7 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 
 	@Override
 	protected void addVariantEffect(VcfEntry ve, Variant variant, VariantEffect variantEffect) {
-		Gpr.debug("Adding:" + ve.toStr() + "\t" + variantEffect);
+		if (debug) Gpr.debug("Adding:" + ve.toStr() + "\t" + variantEffect);
 		effsByVcfEntry.getOrCreate(ve).add(variantEffect);
 
 		// Detection strategies
@@ -54,6 +59,7 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 	public boolean annotate(VcfEntry vcfEntry) {
 		add(vcfEntry);
 		super.annotate(vcfEntry);
+		if (saveResults) vcfEntries.add(vcfEntry);
 		return true;
 	}
 
@@ -75,10 +81,10 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 	}
 
 	/**
-	 * Could this entry be a compensating Is this entry at the same codon (and transcript) than the latest entry processed?
-	 *
+	 * Could this entry be a compensating Is this entry at the same codon
+	 * (and transcript) than the latest entry processed?
 	 */
-	boolean compensatingFrameShift(VcfEntry ve) {
+	public boolean compensatingFrameShift(VcfEntry ve) {
 		return false;
 	}
 
@@ -99,6 +105,10 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 	void flush() {
 		while (!queue.isEmpty())
 			print(queue.remove());
+	}
+
+	public List<VcfEntry> getVcfEntries() {
+		return vcfEntries;
 	}
 
 	VcfEntry peek() {
@@ -140,8 +150,16 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 	 * Is this entry at the same codon (and transcript) than the latest entry processed?
 	 *
 	 */
-	boolean sameCodon(VcfEntry ve) {
+	public boolean sameCodon(VcfEntry ve) {
 		return sameCodonHaplotype.hasSameCodon(ve);
+	}
+
+	public void setKeepAll(boolean keepAll) {
+		sameCodonHaplotype.setKeepAll(keepAll);
+	}
+
+	public void setSaveResults(boolean saveResults) {
+		this.saveResults = saveResults;
 	}
 
 	int size() {
@@ -169,4 +187,5 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 		}
 		return sb.toString();
 	}
+
 }

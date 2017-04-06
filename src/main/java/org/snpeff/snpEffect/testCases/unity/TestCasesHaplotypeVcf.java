@@ -1,5 +1,8 @@
 package org.snpeff.snpEffect.testCases.unity;
 
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.annotate.AnnotateVcfHaplotypes;
 import org.snpeff.fileIterator.VcfFileIterator;
@@ -33,46 +36,72 @@ public class TestCasesHaplotypeVcf extends TestCasesBase {
 		randSeed = 20170331;
 	}
 
-	/**
-	 * Two SNPs affect same codon: Phased
-	 */
-	@Test
-	public void test_01_phased() {
-		Gpr.debug("Test");
-		verbose = true;
-
-		String vcfFileName = "tests/test_haplotype_vcf_01_phased.vcf";
+	AnnotateVcfHaplotypes annotate(String vcfFileName) {
 		minExons = 3;
 		initSnpEffPredictor();
 
+		if (debug) Gpr.debug("Transcript:\n" + transcript);
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
-
 		AnnotateVcfHaplotypes annhap = new AnnotateVcfHaplotypes();
 		annhap.setConfig(config);
 		annhap.setSnpEffectPredictor(snpEffectPredictor);
 		annhap.setNoSummary();
+		annhap.setSaveResults(true);
+		annhap.setKeepAll(true);
+		annhap.setVerbose(verbose);
+		annhap.setSuppressOutput(!verbose);
 
+		// Annotate all vcfEntries
 		annhap.annotateInit(vcf);
 		for (VcfEntry ve : vcf) {
 			annhap.annotate(ve);
 		}
 		annhap.annotateFinish(vcf);
+		return annhap;
 	}
 
+	//	/**
+	//	 * Two SNPs affect same codon: Phased
+	//	 */
+	//	@Test
+	//	public void test_01_phased() {
+	//		Gpr.debug("Test");
+	//		String vcfFileName = "tests/test_haplotype_vcf_01_phased.vcf";
+	//		AnnotateVcfHaplotypes annhap = annotate(vcfFileName);
+	//		List<VcfEntry> ves = annhap.getVcfEntries();
+	//		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), annhap.sameCodon(ves.get(0)));
+	//		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), annhap.sameCodon(ves.get(1)));
+	//		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), annhap.sameCodon(ves.get(2)));
+	//	}
+	//
 	//	/**
 	//	 * Two SNPs affect same codon: Phased using phase group
 	//	 */
 	//	@Test
 	//	public void test_01_phasegroup() {
+	//		Gpr.debug("Test");
+	//		String vcfFileName = "tests/test_haplotype_vcf_01_phasegroup.vcf";
+	//		AnnotateVcfHaplotypes annhap = annotate(vcfFileName);
+	//		List<VcfEntry> ves = annhap.getVcfEntries();
+	//		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), annhap.sameCodon(ves.get(0)));
+	//		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), annhap.sameCodon(ves.get(1)));
+	//		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), annhap.sameCodon(ves.get(2)));
 	//	}
-	//
-	//	/**
-	//	 * Two SNPs affect same codon: Implicit phasing
-	//	 */
-	//	@Test
-	//	public void test_01_implicit() {
-	//	}
-	//
+
+	/**
+	 * Two SNPs affect same codon: Implicit phasing
+	 */
+	@Test
+	public void test_01_implicit() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_vcf_01_phase_implicit.vcf";
+		AnnotateVcfHaplotypes annhap = annotate(vcfFileName);
+		List<VcfEntry> ves = annhap.getVcfEntries();
+		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), annhap.sameCodon(ves.get(0)));
+		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), annhap.sameCodon(ves.get(1)));
+		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), annhap.sameCodon(ves.get(2)));
+	}
+
 	//	/**
 	//	 * Two SNPs affect one transcript: Exon edges
 	//	 */

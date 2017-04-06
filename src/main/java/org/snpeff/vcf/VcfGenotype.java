@@ -15,6 +15,7 @@ public class VcfGenotype {
 
 	public static final String GT_FIELD_DEPTH_OF_COVERAGE = "DP"; // Approximate read depth (reads with MQ=255 or with bad mates are filtered)
 	public static final String GT_FIELD_ALLELIC_DEPTH_OF_COVERAGE = "AD"; // Allelic depths for the ref and alt alleles in the order listed
+	public static final String GT_FIELD_PHASE_GROUP = "PS"; // Phase group
 
 	String values;
 	int genotype[];

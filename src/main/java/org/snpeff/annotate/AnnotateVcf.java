@@ -27,9 +27,9 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
-import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VcfAnnotator;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.stats.CountByType;
 import org.snpeff.stats.VariantEffectStats;
 import org.snpeff.stats.VariantStats;
@@ -67,7 +67,7 @@ public class AnnotateVcf implements VcfAnnotator {
 	String cancerSamples = null;
 	boolean chromoPlots = true; // Create mutations by chromosome plots?
 	String chrStr = "";
-	String commandLineStr, commandLineStrReport;
+	String commandLineStr = "", commandLineStrReport = "";
 	Config config; // Configuration
 	long countEffects = 0;
 	long countInputLines = 0;
@@ -647,6 +647,10 @@ public class AnnotateVcf implements VcfAnnotator {
 
 	public void setSnpEffectPredictor(SnpEffectPredictor snpEffectPredictor) {
 		this.snpEffectPredictor = snpEffectPredictor;
+	}
+
+	public void setSuppressOutput(boolean suppressOutput) {
+		this.suppressOutput = suppressOutput;
 	}
 
 	@Override
