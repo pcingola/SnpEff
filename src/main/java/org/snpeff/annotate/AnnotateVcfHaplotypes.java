@@ -22,24 +22,23 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 
 	boolean saveResults;
 	Queue<VcfEntry> queue;
-	VcfEntry latestVcfEntry;
 	AutoHashMap<VcfEntry, VariantEffects> effsByVcfEntry;
-	SameCodonHaplotype sameCodonHaplotype;
+	List<HaplotypeAnnotationDetector> hapDetectors;
 	List<VcfEntry> vcfEntries;
 
 	public AnnotateVcfHaplotypes() {
 		super();
 		queue = new LinkedList<>();
 		effsByVcfEntry = new AutoHashMap<>(new VariantEffects());
-		sameCodonHaplotype = new SameCodonHaplotype();
-		vcfEntries = new ArrayList<>();
+		vcfEntries = new ArrayList<>(); // Used for debugging and test cases
+		hapDetectors = new ArrayList<>();
+		hapDetectors.add(new SameCodonHaplotypeDetector());
 	}
 
 	/**
 	 * Add entry
 	 */
 	void add(VcfEntry ve) {
-		latestVcfEntry = ve;
 		queue.add(ve);
 	}
 
@@ -48,8 +47,9 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 		if (debug) Gpr.debug("Adding:" + ve.toStr() + "\t" + variantEffect);
 		effsByVcfEntry.getOrCreate(ve).add(variantEffect);
 
-		// Detection strategies
-		sameCodonHaplotype.add(ve, variant, variantEffect);
+		// Add to all detection strategies
+		for (HaplotypeAnnotationDetector hapdet : hapDetectors)
+			hapdet.add(ve, variant, variantEffect);
 	}
 
 	/**
@@ -74,18 +74,11 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 	 * I.e. is this entry free from any restrictions?
 	 */
 	boolean canPrint(VcfEntry ve) {
-		return (!sameChromosome(ve)) // Difference chromosomes? No restrictions
-				|| (!sameCodon(ve) // Different codons?
-						&& !compensatingFrameShift(ve) // Different genes?
-				);
-	}
-
-	/**
-	 * Could this entry be a compensating Is this entry at the same codon
-	 * (and transcript) than the latest entry processed?
-	 */
-	public boolean compensatingFrameShift(VcfEntry ve) {
-		return false;
+		// Is it free on all detectors?
+		for (HaplotypeAnnotationDetector hapdet : hapDetectors) {
+			if (!hapdet.isFree(ve)) return false;
+		}
+		return true;
 	}
 
 	/**
@@ -93,9 +86,9 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 	 */
 	VcfEntry dequeue() {
 		VcfEntry ve = queue.remove();
-		if (latestVcfEntry == ve) latestVcfEntry = null;
 		effsByVcfEntry.remove(ve);
-		sameCodonHaplotype.remove(ve);
+		for (HaplotypeAnnotationDetector hapdet : hapDetectors)
+			hapdet.remove(ve);
 		return ve;
 	}
 
@@ -139,25 +132,6 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 		vcfOutputFormatter.print();
 	}
 
-	/**
-	 * Is this entry at the same chromosome as the latest VcfEntry processed?
-	 */
-	boolean sameChromosome(VcfEntry ve) {
-		return ve.getChromosomeName().equals(latestVcfEntry.getChromosomeName());
-	}
-
-	/**
-	 * Is this entry at the same codon (and transcript) than the latest entry processed?
-	 *
-	 */
-	public boolean sameCodon(VcfEntry ve) {
-		return sameCodonHaplotype.hasSameCodon(ve);
-	}
-
-	public void setKeepAll(boolean keepAll) {
-		sameCodonHaplotype.setKeepAll(keepAll);
-	}
-
 	public void setSaveResults(boolean saveResults) {
 		this.saveResults = saveResults;
 	}
@@ -177,12 +151,13 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 
 		int num = 0;
 		for (VcfEntry ve : queue) {
-			sb.append(num //
-					+ "\tsameChr: " + sameChromosome(ve) //
-					+ "\tsameCodon: " + sameCodon(ve) //
-					+ "\tcompFs: " + compensatingFrameShift(ve) //
-					+ "\t" + ve //
-					+ "\n");
+			sb.append(num);
+			for (HaplotypeAnnotationDetector hapdet : hapDetectors) {
+				sb.append("\t" + hapdet.getClass().getSimpleName() + ".isFree : " + hapdet.isFree(ve));
+				sb.append("\t" + hapdet.getClass().getSimpleName() + ".hasHaplotypeAnnotation : " + hapdet.hasHaplotypeAnnotation(ve));
+			}
+			sb.append("\t" + ve + "\n");
+
 			num++;
 		}
 		return sb.toString();

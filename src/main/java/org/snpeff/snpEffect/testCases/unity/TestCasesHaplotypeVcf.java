@@ -1,12 +1,16 @@
 package org.snpeff.snpEffect.testCases.unity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.snpeff.annotate.AnnotateVcfHaplotypes;
+import org.snpeff.annotate.HaplotypeAnnotationDetector;
+import org.snpeff.annotate.SameCodonHaplotypeDetector;
 import org.snpeff.fileIterator.VcfFileIterator;
+import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.VariantEffect;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEntry;
 
@@ -17,17 +21,42 @@ import org.snpeff.vcf.VcfEntry;
  */
 public class TestCasesHaplotypeVcf extends TestCasesBase {
 
+	class DetectorAndVcfEntries {
+		public HaplotypeAnnotationDetector hapDet;
+		public List<VcfEntry> vcfEntries;
+
+		public DetectorAndVcfEntries() {
+			vcfEntries = new ArrayList<>();
+		}
+	}
+
 	public static int N = 1000;
 
 	public TestCasesHaplotypeVcf() {
 		super();
 	}
 
-	String effectStr(VariantEffect effect) {
-		String effStr = effect.effect(true, true, true, false, false);
-		String aaStr = effect.getAaChangeOld();
-		int idx = effStr.indexOf('(');
-		return effStr.substring(0, idx) + "(" + aaStr + ")";
+	DetectorAndVcfEntries detectSameCodon(String vcfFileName) {
+		minExons = 3;
+		initSnpEffPredictor();
+
+		if (debug) Gpr.debug("Transcript:\n" + transcript);
+		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
+		SameCodonHaplotypeDetector sameCodonHaplotypeDetector = new SameCodonHaplotypeDetector();
+		sameCodonHaplotypeDetector.setVerbose(verbose);
+
+		// Annotate all variants and add them o the detector
+		DetectorAndVcfEntries dv = new DetectorAndVcfEntries();
+		dv.hapDet = sameCodonHaplotypeDetector;
+		for (VcfEntry ve : vcf) {
+			dv.vcfEntries.add(ve);
+			for (Variant var : ve.variants()) {
+				VariantEffects variantEffects = snpEffectPredictor.variantEffect(var);
+				for (VariantEffect veff : variantEffects)
+					sameCodonHaplotypeDetector.add(ve, var, veff);
+			}
+		}
+		return dv;
 	}
 
 	@Override
@@ -36,57 +65,43 @@ public class TestCasesHaplotypeVcf extends TestCasesBase {
 		randSeed = 20170331;
 	}
 
-	AnnotateVcfHaplotypes annotate(String vcfFileName) {
-		minExons = 3;
-		initSnpEffPredictor();
+	/**
+	 * Two SNPs affect same codon: Phased
+	 */
+	@Test
+	public void test_01_phased() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_vcf_01_phased.vcf";
+		DetectorAndVcfEntries dv = detectSameCodon(vcfFileName);
+		List<VcfEntry> ves = dv.vcfEntries;
 
-		if (debug) Gpr.debug("Transcript:\n" + transcript);
-		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
-		AnnotateVcfHaplotypes annhap = new AnnotateVcfHaplotypes();
-		annhap.setConfig(config);
-		annhap.setSnpEffectPredictor(snpEffectPredictor);
-		annhap.setNoSummary();
-		annhap.setSaveResults(true);
-		annhap.setKeepAll(true);
-		annhap.setVerbose(verbose);
-		annhap.setSuppressOutput(!verbose);
+		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), dv.hapDet.hasHaplotypeAnnotation(ves.get(0)));
+		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), dv.hapDet.hasHaplotypeAnnotation(ves.get(1)));
+		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), dv.hapDet.hasHaplotypeAnnotation(ves.get(2)));
 
-		// Annotate all vcfEntries
-		annhap.annotateInit(vcf);
-		for (VcfEntry ve : vcf) {
-			annhap.annotate(ve);
-		}
-		annhap.annotateFinish(vcf);
-		return annhap;
+		Assert.assertTrue("Variant should be free:" + ves.get(0), dv.hapDet.isFree(ves.get(0)));
+		Assert.assertTrue("Variant should be free:" + ves.get(1), dv.hapDet.isFree(ves.get(1)));
+		Assert.assertFalse("Variant should NOT be free:" + ves.get(2), dv.hapDet.isFree(ves.get(2)));
 	}
 
-	//	/**
-	//	 * Two SNPs affect same codon: Phased
-	//	 */
-	//	@Test
-	//	public void test_01_phased() {
-	//		Gpr.debug("Test");
-	//		String vcfFileName = "tests/test_haplotype_vcf_01_phased.vcf";
-	//		AnnotateVcfHaplotypes annhap = annotate(vcfFileName);
-	//		List<VcfEntry> ves = annhap.getVcfEntries();
-	//		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), annhap.sameCodon(ves.get(0)));
-	//		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), annhap.sameCodon(ves.get(1)));
-	//		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), annhap.sameCodon(ves.get(2)));
-	//	}
-	//
-	//	/**
-	//	 * Two SNPs affect same codon: Phased using phase group
-	//	 */
-	//	@Test
-	//	public void test_01_phasegroup() {
-	//		Gpr.debug("Test");
-	//		String vcfFileName = "tests/test_haplotype_vcf_01_phasegroup.vcf";
-	//		AnnotateVcfHaplotypes annhap = annotate(vcfFileName);
-	//		List<VcfEntry> ves = annhap.getVcfEntries();
-	//		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), annhap.sameCodon(ves.get(0)));
-	//		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), annhap.sameCodon(ves.get(1)));
-	//		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), annhap.sameCodon(ves.get(2)));
-	//	}
+	/**
+	 * Two SNPs affect same codon: Phased using phase group
+	 */
+	@Test
+	public void test_01_phasegroup() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_vcf_01_phasegroup.vcf";
+		DetectorAndVcfEntries dv = detectSameCodon(vcfFileName);
+		List<VcfEntry> ves = dv.vcfEntries;
+
+		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), dv.hapDet.hasHaplotypeAnnotation(ves.get(0)));
+		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), dv.hapDet.hasHaplotypeAnnotation(ves.get(1)));
+		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), dv.hapDet.hasHaplotypeAnnotation(ves.get(2)));
+
+		Assert.assertFalse("Variant should NOT be free:" + ves.get(0), dv.hapDet.isFree(ves.get(0)));
+		Assert.assertFalse("Variant should NOT be free:" + ves.get(1), dv.hapDet.isFree(ves.get(1)));
+		Assert.assertFalse("Variant should NOT be free:" + ves.get(2), dv.hapDet.isFree(ves.get(2)));
+	}
 
 	/**
 	 * Two SNPs affect same codon: Implicit phasing
@@ -95,11 +110,16 @@ public class TestCasesHaplotypeVcf extends TestCasesBase {
 	public void test_01_implicit() {
 		Gpr.debug("Test");
 		String vcfFileName = "tests/test_haplotype_vcf_01_phase_implicit.vcf";
-		AnnotateVcfHaplotypes annhap = annotate(vcfFileName);
-		List<VcfEntry> ves = annhap.getVcfEntries();
-		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), annhap.sameCodon(ves.get(0)));
-		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), annhap.sameCodon(ves.get(1)));
-		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), annhap.sameCodon(ves.get(2)));
+		DetectorAndVcfEntries dv = detectSameCodon(vcfFileName);
+		List<VcfEntry> ves = dv.vcfEntries;
+
+		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), dv.hapDet.hasHaplotypeAnnotation(ves.get(0)));
+		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), dv.hapDet.hasHaplotypeAnnotation(ves.get(1)));
+		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), dv.hapDet.hasHaplotypeAnnotation(ves.get(2)));
+
+		Assert.assertTrue("Variant should be free:" + ves.get(0), dv.hapDet.isFree(ves.get(0)));
+		Assert.assertTrue("Variant should be free:" + ves.get(1), dv.hapDet.isFree(ves.get(1)));
+		Assert.assertFalse("Variant should NOT be free:" + ves.get(2), dv.hapDet.isFree(ves.get(2)));
 	}
 
 	//	/**
