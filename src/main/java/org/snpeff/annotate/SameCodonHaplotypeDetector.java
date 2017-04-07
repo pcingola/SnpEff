@@ -143,9 +143,14 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 				|| latestVcfEntry == ve //
 		) return false;
 
+		// The vcfEntry does not have any tuples? Then there's nothing interesting about it
 		Set<VcfHaplotypeTuple> tupleSet = tuplesByVcfentry.get(ve);
-		if (tupleSet == null) return false;
+		if (tupleSet == null) return true;
 
+		// The latestVcfEntry does not have any tuples? 
+		// Then we don't know whether it's in the same codon or not
+		// e.g. latestVcfEntry is in an intron but the next vcfEntry is
+		// in the an exon within the same codon as 've'
 		Set<VcfHaplotypeTuple> tupleSetLatest = tuplesByVcfentry.get(latestVcfEntry);
 		if (tupleSetLatest == null) return false;
 

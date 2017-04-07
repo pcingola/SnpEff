@@ -160,42 +160,42 @@ public class TestCasesHaplotypeDetectionVcf extends TestCasesBase {
 		Assert.assertFalse("Variant should NOT be free:" + ves.get(2), dv.hapDet.isFree(ves.get(2)));
 	}
 
-	//
-	//	/**
-	//	 * Two SNPs affect same codon: Exon edges: Phased using phase group
-	//	 */
-	//	@Test
-	//	public void test_02_phasegroup() {
-	//		Gpr.debug("Test");
-	//		String vcfFileName = "tests/test_haplotype_vcf_02_phasegroup.vcf";
-	//		DetectorAndVcfEntries dv = detectSameCodon(vcfFileName);
-	//		List<VcfEntry> ves = dv.vcfEntries;
-	//
-	//		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), dv.hapDet.hasHaplotypeAnnotation(ves.get(0)));
-	//		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), dv.hapDet.hasHaplotypeAnnotation(ves.get(1)));
-	//		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), dv.hapDet.hasHaplotypeAnnotation(ves.get(2)));
-	//
-	//		Assert.assertFalse("Variant should NOT be free:" + ves.get(0), dv.hapDet.isFree(ves.get(0)));
-	//		Assert.assertFalse("Variant should NOT be free:" + ves.get(1), dv.hapDet.isFree(ves.get(1)));
-	//		Assert.assertFalse("Variant should NOT be free:" + ves.get(2), dv.hapDet.isFree(ves.get(2)));
-	//	}
+	/**
+	 * Two SNPs affect same codon: Exon edges: Phased using phase group
+	 */
+	@Test
+	public void test_02_phasegroup() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_vcf_02_phasegroup.vcf";
+		DetectorAndVcfEntries dv = detectSameCodon(vcfFileName);
+		List<VcfEntry> ves = dv.vcfEntries;
 
-	//	/**
-	//	 * Two SNPs affect one transcript: Exon edges
-	//	 */
-	//	@Test
-	//	public void test_02() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Two SNPs: Only one affects the coding part of the transcript
-	//	 */
-	//	@Test
-	//	public void test_03() {
-	//		Gpr.debug("Test");
-	//	}
-	//
+		Assert.assertTrue("Variant should be in same codon:" + ves.get(0), dv.hapDet.hasHaplotypeAnnotation(ves.get(0)));
+		Assert.assertTrue("Variant should be in same codon:" + ves.get(1), dv.hapDet.hasHaplotypeAnnotation(ves.get(1)));
+		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(2), dv.hapDet.hasHaplotypeAnnotation(ves.get(2)));
+
+		Assert.assertFalse("Variant should NOT be free:" + ves.get(0), dv.hapDet.isFree(ves.get(0)));
+		Assert.assertFalse("Variant should NOT be free:" + ves.get(1), dv.hapDet.isFree(ves.get(1)));
+		Assert.assertFalse("Variant should NOT be free:" + ves.get(2), dv.hapDet.isFree(ves.get(2)));
+	}
+
+	/**
+	 * Two SNPs: Only one affects the coding part of the transcript
+	 */
+	@Test
+	public void test_03() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_vcf_03.vcf";
+		DetectorAndVcfEntries dv = detectSameCodon(vcfFileName);
+		List<VcfEntry> ves = dv.vcfEntries;
+
+		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(0), dv.hapDet.hasHaplotypeAnnotation(ves.get(0)));
+		Assert.assertFalse("Variant should NOT be in same codon:" + ves.get(1), dv.hapDet.hasHaplotypeAnnotation(ves.get(1)));
+
+		Assert.assertTrue("Variant should be free:" + ves.get(0), dv.hapDet.isFree(ves.get(0)));
+		Assert.assertFalse("Variant should NOT be free:" + ves.get(1), dv.hapDet.isFree(ves.get(1)));
+	}
+
 	//	/**
 	//	 * Two SNPs affect multiple transcripts
 	//	 */
