@@ -11,12 +11,33 @@ public class VcfHaplotypeTuple {
 	Variant variant;
 	VariantEffect variantEffect;
 	Transcript transcript;
+	int aaStart, aaEnd;
 
 	public VcfHaplotypeTuple(VcfEntry ve, Variant variant, VariantEffect variantEffect) {
 		vcfEntry = ve;
 		this.variant = variant;
 		this.variantEffect = variantEffect;
 		transcript = variantEffect.getTranscript();
+
+		if (hasTranscript()) {
+			aaStart = variantEffect.getCodonNum();
+			if (variant.isSnp()) aaEnd = aaStart;
+			else {
+				String aaRef = variantEffect.getAaRef();
+				aaEnd = aaStart + aaRef.length() - 1;
+			}
+		} else {
+			aaStart = aaEnd = -1;
+		}
+	}
+
+	/**
+	 * Do the amino acid numbers intersect
+	 */
+	public boolean aaIntersect(VcfHaplotypeTuple vht) {
+		return getTrId().equals(vht.getTrId()) // Same transcript
+				&& (aaStart <= vht.aaEnd) && (aaEnd >= vht.aaStart) // AA intervals intersect?
+		;
 	}
 
 	public int getCodonNum() {
@@ -27,8 +48,8 @@ public class VcfHaplotypeTuple {
 		return variantEffect.getTranscript();
 	}
 
-	public String getTrCodonKey() {
-		return getTranscript().getId() + "\t" + getCodonNum();
+	public String getTrId() {
+		return transcript.getId();
 	}
 
 	public Variant getVariant() {
@@ -52,7 +73,7 @@ public class VcfHaplotypeTuple {
 		return vcfEntry.toStr() //
 				+ "," + variant //
 				+ "," + (hasTranscript() ? transcript.getId() : "null")//
-				+ ",codon:" + variantEffect.getCodonNum() //
+				+ ",codon" + (aaStart == aaEnd ? ": " + aaStart : "s : [" + aaStart + ", " + aaEnd + "]") //
 		;
 	}
 

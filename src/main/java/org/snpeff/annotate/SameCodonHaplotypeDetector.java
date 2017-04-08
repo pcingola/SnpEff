@@ -46,7 +46,7 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 	}
 
 	VcfEntry latestVcfEntry;
-	AutoHashMap<String, HashSet<VcfHaplotypeTuple>> tuplesByTrCodon;
+	AutoHashMap<String, HashSet<VcfHaplotypeTuple>> tuplesByTr;
 	AutoHashMap<VcfEntry, HashSet<VcfHaplotypeTuple>> tuplesByVcfentry;
 
 	public SameCodonHaplotypeDetector() {
@@ -73,7 +73,7 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 	}
 
 	void add(VcfHaplotypeTuple vht) {
-		tuplesByTrCodon.getOrCreate(vht.getTrCodonKey()).add(vht);
+		tuplesByTr.getOrCreate(vht.getTrId()).add(vht);
 		tuplesByVcfentry.getOrCreate(vht.getVcfEntry()).add(vht);
 	}
 
@@ -91,15 +91,10 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 		if (tupleSetVe == null) return false;
 
 		// Look tuples by codon
-		Set<String> keysAnalyzed = new HashSet<>();
 		for (VcfHaplotypeTuple vht : tupleSetVe) {
-			String key = vht.getTrCodonKey();
-
-			// If a transcript/codon has already been analyzed, we should skip it in the next iteration
-			if (!keysAnalyzed.add(key)) continue;
-
-			Set<VcfHaplotypeTuple> tupleSetCodon = tuplesByTrCodon.get(key);
-			if (hasSameCodon(tupleSetVe, tupleSetCodon)) return true;
+			String key = vht.getTrId();
+			Set<VcfHaplotypeTuple> tupleSetTr = tuplesByTr.get(key);
+			if (hasSameCodon(tupleSetVe, tupleSetTr)) return true;
 		}
 
 		return false;
@@ -108,12 +103,12 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 	/**
 	 * Does this set have a 'same codon' variant?
 	 */
-	boolean hasSameCodon(Set<VcfHaplotypeTuple> tupleSetVe, Set<VcfHaplotypeTuple> tupleSetCodon) {
-		if (tupleSetCodon == null || tupleSetVe == null) return false;
+	boolean hasSameCodon(Set<VcfHaplotypeTuple> tupleSetVe, Set<VcfHaplotypeTuple> tupleSetTr) {
+		if (tupleSetTr == null || tupleSetVe == null) return false;
 
 		for (VcfHaplotypeTuple vht1 : tupleSetVe) {
 			VcfEntry ve1 = vht1.getVcfEntry();
-			for (VcfHaplotypeTuple vht2 : tupleSetCodon) {
+			for (VcfHaplotypeTuple vht2 : tupleSetTr) {
 				VcfEntry ve2 = vht2.getVcfEntry();
 				if (ve1.compareTo(ve2) == 0) continue; // Don't compare to self
 				if (hasSameCodon(vht1, vht2)) return true;
@@ -123,7 +118,12 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 		return false;
 	}
 
+	/**
+	 * Is there a phased overlap (same AA affected)
+	 */
 	boolean hasSameCodon(VcfHaplotypeTuple vht1, VcfHaplotypeTuple vht2) {
+		if (!vht1.aaIntersect(vht2)) return false;
+
 		VcfEntry ve1 = vht1.getVcfEntry();
 		VcfEntry ve2 = vht2.getVcfEntry();
 		List<VcfGenotype> gts1 = ve1.getVcfGenotypes();
@@ -147,23 +147,17 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 		Set<VcfHaplotypeTuple> tupleSet = tuplesByVcfentry.get(ve);
 		if (tupleSet == null) return true;
 
-		// The latestVcfEntry does not have any tuples? 
+		// The latestVcfEntry does not have any tuples?
 		// Then we don't know whether it's in the same codon or not
 		// e.g. latestVcfEntry is in an intron but the next vcfEntry is
 		// in the an exon within the same codon as 've'
 		Set<VcfHaplotypeTuple> tupleSetLatest = tuplesByVcfentry.get(latestVcfEntry);
 		if (tupleSetLatest == null) return false;
 
-		Set<String> keysLatest = new HashSet<>();
-		for (VcfHaplotypeTuple vht : tupleSetLatest)
-			keysLatest.add(vht.getTrCodonKey());
-
-		// Does 've' share any 'transcript / codon" with the latest vcfEntry?
-		for (VcfHaplotypeTuple vht : tupleSet)
-			if (keysLatest.contains(vht.getTrCodonKey())) {
-				// Same codon on at least one transcript: 've' is nor free
-				return false;
-			}
+		// Does 've' share any transcript & codon with the latest vcfEntry?
+		for (VcfHaplotypeTuple vht1 : tupleSetLatest)
+			for (VcfHaplotypeTuple vht2 : tupleSet)
+				if (vht1.aaIntersect(vht2)) return false; // Same codon on at least one transcript: 've' is nor free
 
 		return true;
 	}
@@ -182,21 +176,21 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 		// Remove from 'tuplesByTrCodon'
 		// Remove all VcfHaplotypeTuple associated with this 'vcfEntry'
 		for (VcfHaplotypeTuple vht : tupleSet) {
-			String key = vht.getTrCodonKey();
+			String key = vht.getTrId();
 
 			// Remove vht from this set
-			Set<VcfHaplotypeTuple> tset = tuplesByTrCodon.get(key);
+			Set<VcfHaplotypeTuple> tset = tuplesByTr.get(key);
 			if (tset != null) {
 				tset.remove(vht);
 				if (tset.isEmpty()) { // No more entries in set? Remove it
-					tuplesByTrCodon.remove(key);
+					tuplesByTr.remove(key);
 				}
 			}
 		}
 	}
 
 	void reset() {
-		tuplesByTrCodon = new AutoHashMap<>(new HashSet<VcfHaplotypeTuple>());
+		tuplesByTr = new AutoHashMap<>(new HashSet<VcfHaplotypeTuple>());
 		tuplesByVcfentry = new AutoHashMap<>(new HashSet<VcfHaplotypeTuple>());
 	}
 
@@ -205,12 +199,12 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getSimpleName() + ":\n");
 
-		sb.append("\ttuplesByTrCodon.size:" + tuplesByTrCodon.size() + ":\n");
-		for (String key : tuplesByTrCodon.keySet()) {
+		sb.append("\ttuplesByTrCodon.size:" + tuplesByTr.size() + ":\n");
+		for (String key : tuplesByTr.keySet()) {
 			sb.append("\t\t'" + key + "': ");
 			sb.append("[ ");
 
-			HashSet<VcfHaplotypeTuple> tupleSet = tuplesByTrCodon.get(key);
+			HashSet<VcfHaplotypeTuple> tupleSet = tuplesByTr.get(key);
 			for (VcfHaplotypeTuple vht : tupleSet)
 				sb.append("'" + vht + "' ");
 
