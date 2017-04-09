@@ -90,13 +90,6 @@ public abstract class HaplotypeAnnotationDetector {
 	 */
 	public abstract boolean isFree(VcfEntry ve);
 
-	//	/**
-	//	 * Are these genotypes phased?
-	//	 */
-	//	protected boolean isPhased(VcfGenotype gt) {
-	//		return gt.isPhased() || gt.isHomozygousAlt();
-	//	}
-
 	/**
 	 * Remove entry and free associated resources
 	 */
