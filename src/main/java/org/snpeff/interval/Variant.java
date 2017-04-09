@@ -53,7 +53,6 @@ public class Variant extends Marker {
 	protected String ref; // Reference (i.e. original bases in the genome)
 	protected String alt; // Changed bases
 	protected String genotype; // Genotype 'ALT' (e.g. A VCF entry may encode multiple ALTs).
-	protected boolean imprecise = false; // Imprecise variant: coordinates are not exact (E.g. see section "Encoding Structural Variants in VCF" from VCF spec. 4.1)
 
 	/**
 	 * Create variants from ALT (which can be multiple values)
@@ -168,7 +167,7 @@ public class Variant extends Marker {
 		clone.ref = ref;
 		clone.alt = alt;
 		clone.genotype = genotype;
-		clone.imprecise = imprecise;
+		// clone.imprecise = imprecise;
 		return clone;
 	}
 
@@ -299,10 +298,6 @@ public class Variant extends Marker {
 
 	public boolean isElongation() {
 		return lengthChange() > 0;
-	}
-
-	public boolean isImprecise() {
-		return imprecise;
 	}
 
 	public boolean isInDel() {
@@ -436,10 +431,6 @@ public class Variant extends Marker {
 
 	public void setGenotype(String genotype) {
 		this.genotype = genotype;
-	}
-
-	public void setImprecise(boolean imprecise) {
-		this.imprecise = imprecise;
 	}
 
 	public void setVariantType(VariantType variantType) {

@@ -13,28 +13,19 @@ import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.VcfGenotype;
 
 /**
- * Detects variants / vcfEntries affecting the same codon (in the same transcript)
+ * Detects variants / vcfEntries creating compensating 
+ * frame-shifts (within the same transcript)
  *
  * @author pcingola
  */
-public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
+public class HaplotypeDetectorCompFs extends HaplotypeAnnotationDetector {
 
 	public static final EffectType SUPPORTED_EFFECTS[] = { //
-			EffectType.CODON_CHANGE //
-			, EffectType.CODON_CHANGE_PLUS_CODON_DELETION //
+			EffectType.CODON_CHANGE_PLUS_CODON_DELETION //
 			, EffectType.CODON_CHANGE_PLUS_CODON_INSERTION //
 			, EffectType.CODON_DELETION //
 			, EffectType.CODON_INSERTION //
 			, EffectType.FRAME_SHIFT //
-			, EffectType.NON_SYNONYMOUS_CODING //
-			, EffectType.NON_SYNONYMOUS_START //
-			, EffectType.NON_SYNONYMOUS_STOP //
-			, EffectType.START_LOST //
-			, EffectType.STOP_GAINED //
-			, EffectType.STOP_LOST //
-			, EffectType.SYNONYMOUS_CODING //
-			, EffectType.SYNONYMOUS_START //
-			, EffectType.SYNONYMOUS_STOP //
 	};
 
 	private static final Set<EffectType> supportedEffectTypes;
@@ -49,7 +40,7 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 	AutoHashMap<String, HashSet<VcfHaplotypeTuple>> tuplesByTr;
 	AutoHashMap<VcfEntry, HashSet<VcfHaplotypeTuple>> tuplesByVcfentry;
 
-	public SameCodonHaplotypeDetector() {
+	public HaplotypeDetectorCompFs() {
 		reset();
 	}
 
@@ -59,6 +50,9 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 	@Override
 	public void add(VcfEntry ve, Variant variant, VariantEffect variantEffect) {
 		latestVcfEntry = ve;
+
+		// We only care about insertions and deletions
+		if (!variant.isInDel()) return;
 
 		// Does it have a transcript and a codon number?
 		if (variantEffect.getTranscript() == null || variantEffect.getCodonNum() < 0) return;
@@ -83,7 +77,7 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 	}
 
 	/**
-	 * Does this vcfEntry have any 'same codon' variants associated?
+	 * Does this vcfEntry have any 'same transcript' variants associated?
 	 */
 	@Override
 	public boolean hasHaplotypeAnnotation(VcfEntry ve) {
@@ -94,16 +88,16 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 		for (VcfHaplotypeTuple vht : tupleSetVe) {
 			String key = vht.getTrId();
 			Set<VcfHaplotypeTuple> tupleSetTr = tuplesByTr.get(key);
-			if (hasSameCodon(tupleSetVe, tupleSetTr)) return true;
+			if (hasSameTr(tupleSetVe, tupleSetTr)) return true;
 		}
 
 		return false;
 	}
 
 	/**
-	 * Does this set have a 'same codon' variant?
+	 * Does this set have a 'same transcript' variant?
 	 */
-	boolean hasSameCodon(Set<VcfHaplotypeTuple> tupleSetVe, Set<VcfHaplotypeTuple> tupleSetTr) {
+	boolean hasSameTr(Set<VcfHaplotypeTuple> tupleSetVe, Set<VcfHaplotypeTuple> tupleSetTr) {
 		if (tupleSetTr == null || tupleSetVe == null) return false;
 
 		for (VcfHaplotypeTuple vht1 : tupleSetVe) {
@@ -111,7 +105,7 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 			for (VcfHaplotypeTuple vht2 : tupleSetTr) {
 				VcfEntry ve2 = vht2.getVcfEntry();
 				if (ve1.compareTo(ve2) == 0) continue; // Don't compare to self
-				if (hasSameCodon(vht1, vht2)) return true;
+				if (hasSameTr(vht1, vht2)) return true;
 			}
 		}
 
@@ -119,10 +113,10 @@ public class SameCodonHaplotypeDetector extends HaplotypeAnnotationDetector {
 	}
 
 	/**
-	 * Is there a phased overlap (same AA affected)
+	 * Is there a phased overlap (same transcript affected)
 	 */
-	boolean hasSameCodon(VcfHaplotypeTuple vht1, VcfHaplotypeTuple vht2) {
-		if (!vht1.aaIntersect(vht2)) return false;
+	boolean hasSameTr(VcfHaplotypeTuple vht1, VcfHaplotypeTuple vht2) {
+		if (!vht1.sameTr(vht2)) return false;
 
 		VcfEntry ve1 = vht1.getVcfEntry();
 		VcfEntry ve2 = vht2.getVcfEntry();

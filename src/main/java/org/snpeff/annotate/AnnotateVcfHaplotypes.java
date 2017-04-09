@@ -32,7 +32,7 @@ public class AnnotateVcfHaplotypes extends AnnotateVcf {
 		effsByVcfEntry = new AutoHashMap<>(new VariantEffects());
 		vcfEntries = new ArrayList<>(); // Used for debugging and test cases
 		hapDetectors = new ArrayList<>();
-		hapDetectors.add(new SameCodonHaplotypeDetector());
+		hapDetectors.add(new HaplotypeDetectorSameCodon());
 	}
 
 	/**

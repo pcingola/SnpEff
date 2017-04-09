@@ -35,7 +35,7 @@ public class VcfHaplotypeTuple {
 	 * Do the amino acid numbers intersect
 	 */
 	public boolean aaIntersect(VcfHaplotypeTuple vht) {
-		return getTrId().equals(vht.getTrId()) // Same transcript
+		return sameTr(vht) // Same transcript
 				&& (aaStart <= vht.aaEnd) && (aaEnd >= vht.aaStart) // AA intervals intersect?
 		;
 	}
@@ -66,6 +66,13 @@ public class VcfHaplotypeTuple {
 
 	public boolean hasTranscript() {
 		return transcript != null;
+	}
+
+	/**
+	 * Same transcript?
+	 */
+	public boolean sameTr(VcfHaplotypeTuple vht) {
+		return getTrId().equals(vht.getTrId());
 	}
 
 	@Override

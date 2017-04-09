@@ -6,7 +6,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.annotate.HaplotypeAnnotationDetector;
-import org.snpeff.annotate.SameCodonHaplotypeDetector;
+import org.snpeff.annotate.HaplotypeDetectorSameCodon;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.VariantEffect;
@@ -42,18 +42,18 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 
 		if (debug) Gpr.debug("Transcript:\n" + transcript);
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
-		SameCodonHaplotypeDetector sameCodonHaplotypeDetector = new SameCodonHaplotypeDetector();
-		sameCodonHaplotypeDetector.setVerbose(verbose);
+		HaplotypeDetectorSameCodon hapdet = new HaplotypeDetectorSameCodon();
+		hapdet.setVerbose(verbose);
 
 		// Annotate all variants and add them o the detector
 		DetectorAndVcfEntries dv = new DetectorAndVcfEntries();
-		dv.hapDet = sameCodonHaplotypeDetector;
+		dv.hapDet = hapdet;
 		for (VcfEntry ve : vcf) {
 			dv.vcfEntries.add(ve);
 			for (Variant var : ve.variants()) {
 				VariantEffects variantEffects = snpEffectPredictor.variantEffect(var);
 				for (VariantEffect veff : variantEffects)
-					sameCodonHaplotypeDetector.add(ve, var, veff);
+					hapdet.add(ve, var, veff);
 			}
 		}
 
@@ -173,77 +173,5 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 		boolean isFree[] = { true, true, true, false };
 		detectSameCodon(vcfFileName, hasAnn, isFree);
 	}
-
-	//	/**
-	//	 * Two SNPs affect multiple transcripts
-	//	 */
-	//	@Test
-	//	public void test_04() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Two MNPs
-	//	 */
-	//	@Test
-	//	public void test_05() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Two frame-compensating INS nearby
-	//	 */
-	//	@Test
-	//	public void test_06() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Two frame-compensating INS far away
-	//	 */
-	//	@Test
-	//	public void test_07() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Two frame-compensating DEL nearby
-	//	 */
-	//	@Test
-	//	public void test_08() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Two frame-compensating DEL far away
-	//	 */
-	//	@Test
-	//	public void test_09() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Haplotype detection: Two phased variants
-	//	 */
-	//	@Test
-	//	public void test_10() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Haplotype detection: Two variants implicitly phased (one of them is homozygous)
-	//	 */
-	//	@Test
-	//	public void test_11() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Haplotype detection: Two variants implicitly phased (both homozygous)
-	//	 */
-	//	@Test
-	//	public void test_12() {
-	//		Gpr.debug("Test");
-	//	}
 
 }

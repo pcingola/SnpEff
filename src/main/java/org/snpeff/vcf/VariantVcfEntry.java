@@ -42,7 +42,6 @@ public class VariantVcfEntry extends Variant {
 		ref = variant.getReference();
 		alt = variant.getAlt();
 		genotype = variant.getGenotype();
-		imprecise = variant.isImprecise();
 
 		this.vcfEntry = vcfEntry;
 	}

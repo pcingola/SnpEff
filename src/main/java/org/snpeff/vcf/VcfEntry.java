@@ -812,7 +812,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				&& ref.length() == 1 //
 				&& altStr.length() == 1 //
 				&& !ref.equalsIgnoreCase(altStr) //
-				;
+		;
 	}
 
 	/**
@@ -851,7 +851,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				&& !alt.equals(VCF_ALT_NON_REF_gVCF) // '<NON_REF>'
 				&& !alt.equals(VCF_ALT_MISSING_REF) // '<*>'
 				&& !alt.equals(ref) // Is ALT different than REF?
-				;
+		;
 	}
 
 	@Override
@@ -1011,9 +1011,9 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		}
 
 		// Not a variant?
-		if (altsStr.equals(VCF_ALT_NON_REF)) { return VCF_ALT_NON_REF_ARRAY; }
-		if (altsStr.equals(VCF_ALT_MISSING_REF)) { return VCF_ALT_MISSING_REF_ARRAY; }
-		if (altsStr.equals(VCF_ALT_NON_REF_gVCF)) { return VCF_ALT_NON_REF_gVCF_ARRAY; }
+		if (altsStr.equals(VCF_ALT_NON_REF)) return VCF_ALT_NON_REF_ARRAY;
+		if (altsStr.equals(VCF_ALT_MISSING_REF)) return VCF_ALT_MISSING_REF_ARRAY;
+		if (altsStr.equals(VCF_ALT_NON_REF_gVCF)) return VCF_ALT_NON_REF_gVCF_ARRAY;
 
 		// SNP IUB conversion table
 		String alts[];
@@ -1486,6 +1486,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				var.setVariantType(VariantType.DUP);
 				list = new LinkedList<>();
 				list.add(var);
+			} else {
+				System.err.println("WARNING: Unrecognize variant ALT type '" + alt + "', chr: " + chromo.getChromosomeName() + ", pos: " + start + ", ref: " + reference);
 			}
 		} else if ((alt.indexOf('[') >= 0) || (alt.indexOf(']') >= 0)) {
 			// Translocations
