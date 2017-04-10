@@ -20,9 +20,10 @@ import org.snpeff.vcf.VcfGenotype;
 public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector {
 
 	Set<EffectType> supportedEffectTypes;
-	VcfEntry latestVcfEntry;
+	VcfHaplotypeTuple latestVcfHaplotypeTuple;
 	AutoHashMap<String, HashSet<VcfHaplotypeTuple>> tuplesByTr;
 	AutoHashMap<VcfEntry, HashSet<VcfHaplotypeTuple>> tuplesByVcfentry;
+	AutoHashMap<VcfEntry, HashSet<String>> trIdsByVcfentry;
 
 	public HaplotypeDetectorBase() {
 		reset();
@@ -33,19 +34,29 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 	 */
 	@Override
 	public void add(VcfEntry ve, Variant variant, VariantEffect variantEffect) {
-		latestVcfEntry = ve;
+		latestVcfHaplotypeTuple = new VcfHaplotypeTuple(ve, variant, variantEffect);
 
-		// Valid variant & varintEffect?
-		if (!isValidVariant(variant) || !isValidVariantEffect(variantEffect)) return;
+		// Always add transcript Ids
+		addTrIds(ve, variantEffect);
 
-		// Add
-		VcfHaplotypeTuple vht = new VcfHaplotypeTuple(ve, variant, variantEffect);
-		add(vht);
+		// Only add if it's a valid variant & varintEffect
+		if (isValidVariant(variant) && isValidVariantEffect(variantEffect)) {
+			add(latestVcfHaplotypeTuple);
+		}
 	}
 
 	protected void add(VcfHaplotypeTuple vht) {
 		tuplesByTr.getOrCreate(vht.getTrId()).add(vht);
 		tuplesByVcfentry.getOrCreate(vht.getVcfEntry()).add(vht);
+	}
+
+	/**
+	 * Add transcript ID by VcfEntry
+	 */
+	protected void addTrIds(VcfEntry ve, VariantEffect variantEffect) {
+		// Always store transcripts
+		Transcript tr = variantEffect.getTranscript();
+		if (tr != null) trIdsByVcfentry.getOrCreate(ve).add(tr.getId());
 	}
 
 	/**
@@ -118,23 +129,44 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 		return false;
 	}
 
+	/**
+	 * Do these VcfEntries share any transcript ID?
+	 */
+	protected boolean hasSameTrIdAsLatest(VcfEntry ve) {
+		Set<String> trIdsLatest = trIdsByVcfentry.get(latestVcfHaplotypeTuple.getVcfEntry());
+		if (trIdsLatest == null) return false; // Latest entry deosn't have any transcript IDs
+
+		Set<String> trIdsVe = trIdsByVcfentry.get(ve);
+		if (trIdsVe == null) return false; // Something went wrong here. Normally we should not have a missing set for this
+
+		for (String trid : trIdsLatest)
+			if (trIdsVe.contains(trid)) return true;
+
+		return false;
+	}
+
 	abstract void initSUpportedEffectTypes();
 
 	@Override
 	public boolean isFree(VcfEntry ve) {
-		if (latestVcfEntry == null //
-				|| latestVcfEntry == ve //
+		// Latest entry is not free, we don't know if the next entry might add a
+		if (latestVcfHaplotypeTuple == null //
+				|| latestVcfHaplotypeTuple.getVcfEntry() == ve //
 		) return false;
 
 		// The vcfEntry does not have any tuples? Then there's nothing interesting about it
 		Set<VcfHaplotypeTuple> tupleSet = tuplesByVcfentry.get(ve);
 		if (tupleSet == null) return true;
 
+		// The latestVcfEntry does not have any transcript IDs?
+		// Then it is not in the same haplotype
+		if (!hasSameTrIdAsLatest(ve)) return true;
+
 		// The latestVcfEntry does not have any tuples?
-		// Then we don't know whether it's in the same codon or not
+		// Then we don't know whether it's in the same haplotype or not
 		// e.g. latestVcfEntry is in an intron but the next vcfEntry is
 		// in the an exon within the same codon as 've'
-		Set<VcfHaplotypeTuple> tupleSetLatest = tuplesByVcfentry.get(latestVcfEntry);
+		Set<VcfHaplotypeTuple> tupleSetLatest = tuplesByVcfentry.get(latestVcfHaplotypeTuple.getVcfEntry());
 		if (tupleSetLatest == null) return false;
 
 		// Does 've' share any transcript & codon with the latest vcfEntry?
@@ -164,7 +196,10 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 	 */
 	@Override
 	public void remove(VcfEntry ve) {
-		if (ve == latestVcfEntry) latestVcfEntry = null;
+		if (latestVcfHaplotypeTuple != null && ve == latestVcfHaplotypeTuple.getVcfEntry()) latestVcfHaplotypeTuple = null;
+
+		// Remove from 'transcript Ids'
+		trIdsByVcfentry.remove(ve);
 
 		// Remove from 'tuplesByVcfentry
 		Set<VcfHaplotypeTuple> tupleSet = tuplesByVcfentry.remove(ve);
@@ -192,6 +227,7 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 	void reset() {
 		tuplesByTr = new AutoHashMap<>(new HashSet<VcfHaplotypeTuple>());
 		tuplesByVcfentry = new AutoHashMap<>(new HashSet<VcfHaplotypeTuple>());
+		trIdsByVcfentry = new AutoHashMap<>(new HashSet<String>());
 		initSUpportedEffectTypes();
 	}
 
@@ -200,26 +236,38 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 		StringBuilder sb = new StringBuilder();
 		sb.append(getClass().getSimpleName() + ":\n");
 
-		sb.append("\ttuplesByTrCodon.size:" + tuplesByTr.size() + ":\n");
+		sb.append("\ttuplesByTr.size:" + tuplesByTr.size() + ":\n");
 		for (String key : tuplesByTr.keySet()) {
 			sb.append("\t\t'" + key + "': ");
 			sb.append("[ ");
 
-			HashSet<VcfHaplotypeTuple> tupleSet = tuplesByTr.get(key);
+			Set<VcfHaplotypeTuple> tupleSet = tuplesByTr.get(key);
 			for (VcfHaplotypeTuple vht : tupleSet)
 				sb.append("'" + vht + "' ");
 
 			sb.append("]\n");
 		}
 
-		sb.append("\ttuplesByVcfentry.size:" + tuplesByVcfentry.size() + ":\n");
-		for (VcfEntry ve : tuplesByVcfentry.keySet()) {
+		sb.append("\ttuplesByVcfentry.size:" + trIdsByVcfentry.size() + ":\n");
+		for (VcfEntry ve : trIdsByVcfentry.keySet()) {
 			sb.append("\t\t" + ve.toStr() + ": ");
 			sb.append("[ ");
 
-			HashSet<VcfHaplotypeTuple> tupleSet = tuplesByVcfentry.get(ve);
+			Set<VcfHaplotypeTuple> tupleSet = tuplesByVcfentry.get(ve);
 			for (VcfHaplotypeTuple vht : tupleSet)
 				sb.append("'" + vht + "' ");
+
+			sb.append("]\n");
+		}
+
+		sb.append("\ttrIdsByVcfentry.size:" + trIdsByVcfentry.size() + ":\n");
+		for (VcfEntry ve : trIdsByVcfentry.keySet()) {
+			sb.append("\t\t'" + ve.toStr() + "': ");
+			sb.append("[ ");
+
+			Set<String> tupleSet = trIdsByVcfentry.get(ve);
+			for (String trId : tupleSet)
+				sb.append("'" + trId + "' ");
 
 			sb.append("]\n");
 		}

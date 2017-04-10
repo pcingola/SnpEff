@@ -84,7 +84,8 @@ public class TestCasesHaplotypeDetectionCompFsVcf extends TestCasesBase {
 	@Test
 	public void test_01_implicit() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_vcf_01_phase_implicit.vcf";
+		String vcfFileName = "tests/test_haplotype_fs_vcf_01_phased.vcf";
+		debug = true;
 		boolean hasAnn[] = { true, true, false };
 		boolean isFree[] = { true, true, false };
 		detectCompFs(vcfFileName, hasAnn, isFree);

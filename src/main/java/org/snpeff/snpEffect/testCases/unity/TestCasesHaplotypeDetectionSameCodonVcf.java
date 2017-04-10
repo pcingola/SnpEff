@@ -84,7 +84,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 	@Test
 	public void test_01_implicit() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_vcf_01_phase_implicit.vcf";
+		String vcfFileName = "tests/test_haplotype_samecodon_vcf_01_phase_implicit.vcf";
 		boolean hasAnn[] = { true, true, false };
 		boolean isFree[] = { true, true, false };
 		detectSameCodon(vcfFileName, hasAnn, isFree);
@@ -96,7 +96,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 	@Test
 	public void test_01_phased() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_vcf_01_phased.vcf";
+		String vcfFileName = "tests/test_haplotype_samecodon_vcf_01_phased.vcf";
 		boolean hasAnn[] = { true, true, false };
 		boolean isFree[] = { true, true, false };
 		detectSameCodon(vcfFileName, hasAnn, isFree);
@@ -108,7 +108,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 	@Test
 	public void test_01_phasegroup() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_vcf_01_phasegroup.vcf";
+		String vcfFileName = "tests/test_haplotype_samecodon_vcf_01_phasegroup.vcf";
 		boolean hasAnn[] = { true, true, false };
 		boolean isFree[] = { false, false, false };
 		detectSameCodon(vcfFileName, hasAnn, isFree);
@@ -120,7 +120,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 	@Test
 	public void test_02_implicit() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_vcf_02_phase_implicit.vcf";
+		String vcfFileName = "tests/test_haplotype_samecodon_vcf_02_phase_implicit.vcf";
 		boolean hasAnn[] = { true, true, false };
 		boolean isFree[] = { true, true, false };
 		detectSameCodon(vcfFileName, hasAnn, isFree);
@@ -132,7 +132,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 	@Test
 	public void test_02_phased() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_vcf_02_phased.vcf";
+		String vcfFileName = "tests/test_haplotype_samecodon_vcf_02_phased.vcf";
 		boolean hasAnn[] = { true, true, false };
 		boolean isFree[] = { true, true, false };
 		detectSameCodon(vcfFileName, hasAnn, isFree);
@@ -144,7 +144,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 	@Test
 	public void test_02_phasegroup() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_vcf_02_phasegroup.vcf";
+		String vcfFileName = "tests/test_haplotype_samecodon_vcf_02_phasegroup.vcf";
 		boolean hasAnn[] = { true, true, false };
 		boolean isFree[] = { false, false, false };
 		detectSameCodon(vcfFileName, hasAnn, isFree);
@@ -156,7 +156,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 	@Test
 	public void test_03() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_vcf_03.vcf";
+		String vcfFileName = "tests/test_haplotype_samecodon_vcf_03.vcf";
 		boolean hasAnn[] = { false, false };
 		boolean isFree[] = { true, false };
 		detectSameCodon(vcfFileName, hasAnn, isFree);
@@ -168,7 +168,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 	@Test
 	public void test_04_MNP() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_vcf_04.vcf";
+		String vcfFileName = "tests/test_haplotype_samecodon_vcf_04.vcf";
 		boolean hasAnn[] = { true, true, true, false };
 		boolean isFree[] = { true, true, true, false };
 		detectSameCodon(vcfFileName, hasAnn, isFree);
