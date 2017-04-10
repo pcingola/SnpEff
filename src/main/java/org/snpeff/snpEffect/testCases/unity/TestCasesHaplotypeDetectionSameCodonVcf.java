@@ -17,6 +17,15 @@ import org.snpeff.vcf.VcfEntry;
 /**
  * Test multiple variants affecting one codon
  *
+ * Test transcript:
+ * 1:374-925, strand: +, id:transcript_0, Protein
+ * 		Exons:
+ * 		1:374-422 'exon_0_0', rank: 1, frame: ., sequence: gcgggtacggcgcttagcgagtttccaggatctctttcccggttagttc
+ * 		1:563-567 'exon_0_1', rank: 2, frame: ., sequence: atatc
+ * 		1:824-925 'exon_0_2', rank: 3, frame: ., sequence: cgcgcaagtattcttcatagtgcccgtagcagcaagtggtatcactcccatcataggacttgacttcgtaaagtgtgctaccttactgttaccatagtgcaa
+ * 		CDS     :	gcgggtacggcgcttagcgagtttccaggatctctttcccggttagttcatatccgcgcaagtattcttcatagtgcccgtagcagcaagtggtatcactcccatcataggacttgacttcgtaaagtgtgctaccttactgttaccatagtgcaa
+ * 		Protein :	AGTALSEFPGSLSRLVHIRASILHSARSSKWYHSHHRT*LRKVCYLTVTIVQ
+ * 
  * @author pcingola
  */
 public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
