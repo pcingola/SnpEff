@@ -34,6 +34,7 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesFisherExactTest;
 import org.snpeff.snpEffect.testCases.unity.TestCasesGenePvalueList;
 import org.snpeff.snpEffect.testCases.unity.TestCasesGenomicSequences;
 import org.snpeff.snpEffect.testCases.unity.TestCasesGenotypeVector;
+import org.snpeff.snpEffect.testCases.unity.TestCasesHaplotypeDetectionCompFsVcf;
 import org.snpeff.snpEffect.testCases.unity.TestCasesHaplotypeDetectionSameCodonVcf;
 import org.snpeff.snpEffect.testCases.unity.TestCasesHgvs;
 import org.snpeff.snpEffect.testCases.unity.TestCasesHgvsDnaDup;
@@ -108,6 +109,7 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesIntervalTreeArray.class, //
 		TestCasesIubString.class, //
 		TestCasesHaplotypeDetectionSameCodonVcf.class, //
+		TestCasesHaplotypeDetectionCompFsVcf.class, //
 		TestCasesHgvs.class, //
 		TestCasesHgvsExon.class, //
 		TestCasesHgvsIntron.class, //

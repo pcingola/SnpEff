@@ -98,10 +98,10 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 		Set<VcfHaplotypeTuple> tupleSetVe = tuplesByVcfentry.get(ve);
 		if (tupleSetVe == null) return false;
 
-		// Look tuples by codon
+		// Look tuples by transcript
 		for (VcfHaplotypeTuple vht : tupleSetVe) {
-			String key = vht.getTrId();
-			Set<VcfHaplotypeTuple> tupleSetTr = tuplesByTr.get(key);
+			String trid = vht.getTrId();
+			Set<VcfHaplotypeTuple> tupleSetTr = tuplesByTr.get(trid);
 			if (hasHaplotypeAnnotation(tupleSetVe, tupleSetTr)) return true;
 		}
 
@@ -169,10 +169,10 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 		Set<VcfHaplotypeTuple> tupleSetLatest = tuplesByVcfentry.get(latestVcfHaplotypeTuple.getVcfEntry());
 		if (tupleSetLatest == null) return false;
 
-		// Does 've' share any transcript & codon with the latest vcfEntry?
+		// Does 've' share any transcript with the latest vcfEntry?
 		for (VcfHaplotypeTuple vht1 : tupleSetLatest)
 			for (VcfHaplotypeTuple vht2 : tupleSet)
-				if (vht1.aaIntersect(vht2)) return false; // Same codon on at least one transcript: 've' is nor free
+				if (checkTranscript(vht1, vht2)) return false; // Condition checks, then 've' is nor free
 
 		return true;
 	}

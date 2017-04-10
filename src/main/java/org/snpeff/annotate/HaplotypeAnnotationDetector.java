@@ -39,7 +39,7 @@ public abstract class HaplotypeAnnotationDetector {
 
 			// Check that at least one ALT is on the same chromosome (maternal / paternal)
 			int geno1[] = gt1.getGenotype();
-			int geno2[] = gt1.getGenotype();
+			int geno2[] = gt2.getGenotype();
 			int min = Math.min(geno1.length, geno2.length);
 			for (int i = 0; i < min; i++) {
 				if (geno1[i] > 0 && geno2[i] > 0) return true;

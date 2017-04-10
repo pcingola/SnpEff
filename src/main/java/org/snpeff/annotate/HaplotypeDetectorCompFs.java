@@ -39,7 +39,7 @@ public class HaplotypeDetectorCompFs extends HaplotypeDetectorBase {
 
 	@Override
 	protected boolean isValidVariant(Variant variant) {
-		return variant.isInDel();
+		return variant.isInDel() || variant.isMixed();
 	}
 
 }

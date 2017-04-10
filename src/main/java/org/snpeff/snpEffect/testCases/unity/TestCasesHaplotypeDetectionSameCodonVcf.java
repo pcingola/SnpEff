@@ -127,7 +127,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 	}
 
 	/**
-	 * Two SNPs affect same codon: Exon edges, phase groups
+	 * Two SNPs affect same codon: Exon edges, phased
 	 */
 	@Test
 	public void test_02_phased() {
@@ -139,7 +139,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 	}
 
 	/**
-	 * Two SNPs affect same codon: Exon edges: Phased using phase group
+	 * Two SNPs affect same codon: Exon edges: Phase group
 	 */
 	@Test
 	public void test_02_phasegroup() {

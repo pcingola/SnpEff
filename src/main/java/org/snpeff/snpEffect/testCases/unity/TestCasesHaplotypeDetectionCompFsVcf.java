@@ -79,156 +79,99 @@ public class TestCasesHaplotypeDetectionCompFsVcf extends TestCasesBase {
 	}
 
 	/**
-	 * Two SNPs affect same codon: Implicit phasing
+	 * Two InDels affect same codon: Implicit phasing
 	 */
 	@Test
 	public void test_01_implicit() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_fs_vcf_01_phased.vcf";
-		debug = true;
+		String vcfFileName = "tests/test_haplotype_fs_vcf_01_phase_implicit.vcf";
 		boolean hasAnn[] = { true, true, false };
 		boolean isFree[] = { true, true, false };
 		detectCompFs(vcfFileName, hasAnn, isFree);
 	}
 
-	//	/**
-	//	 * Two SNPs affect same codon: Phased
-	//	 */
-	//	@Test
-	//	public void test_01_phased() {
-	//		Gpr.debug("Test");
-	//		String vcfFileName = "tests/test_haplotype_vcf_01_phased.vcf";
-	//		boolean hasAnn[] = { true, true, false };
-	//		boolean isFree[] = { true, true, false };
-	//		detectCompFs(vcfFileName, hasAnn, isFree);
-	//	}
-	//
-	//	/**
-	//	 * Two SNPs affect same codon: Phased using phase group
-	//	 */
-	//	@Test
-	//	public void test_01_phasegroup() {
-	//		Gpr.debug("Test");
-	//		String vcfFileName = "tests/test_haplotype_vcf_01_phasegroup.vcf";
-	//		boolean hasAnn[] = { true, true, false };
-	//		boolean isFree[] = { false, false, false };
-	//		detectCompFs(vcfFileName, hasAnn, isFree);
-	//	}
-	//
-	//	/**
-	//	 * Two SNPs affect same codon: Exons edges, implicit phasing
-	//	 */
-	//	@Test
-	//	public void test_02_implicit() {
-	//		Gpr.debug("Test");
-	//		String vcfFileName = "tests/test_haplotype_vcf_02_phase_implicit.vcf";
-	//		boolean hasAnn[] = { true, true, false };
-	//		boolean isFree[] = { true, true, false };
-	//		detectCompFs(vcfFileName, hasAnn, isFree);
-	//	}
-	//
-	//	/**
-	//	 * Two SNPs affect same codon: Exon edges, phase groups
-	//	 */
-	//	@Test
-	//	public void test_02_phased() {
-	//		Gpr.debug("Test");
-	//		String vcfFileName = "tests/test_haplotype_vcf_02_phased.vcf";
-	//		boolean hasAnn[] = { true, true, false };
-	//		boolean isFree[] = { true, true, false };
-	//		detectCompFs(vcfFileName, hasAnn, isFree);
-	//	}
-	//
-	//	/**
-	//	 * Two SNPs affect same codon: Exon edges: Phased using phase group
-	//	 */
-	//	@Test
-	//	public void test_02_phasegroup() {
-	//		Gpr.debug("Test");
-	//		String vcfFileName = "tests/test_haplotype_vcf_02_phasegroup.vcf";
-	//		boolean hasAnn[] = { true, true, false };
-	//		boolean isFree[] = { false, false, false };
-	//		detectCompFs(vcfFileName, hasAnn, isFree);
-	//	}
-	//
-	//	/**
-	//	 * Two SNPs: Only one affects the coding part of the transcript
-	//	 */
-	//	@Test
-	//	public void test_03() {
-	//		Gpr.debug("Test");
-	//		String vcfFileName = "tests/test_haplotype_vcf_03.vcf";
-	//		boolean hasAnn[] = { false, false };
-	//		boolean isFree[] = { true, false };
-	//		detectCompFs(vcfFileName, hasAnn, isFree);
-	//	}
-	//
-	//	/**
-	//	 * Two MNP affect same codon
-	//	 */
-	//	@Test
-	//	public void test_04_MNP() {
-	//		Gpr.debug("Test");
-	//		String vcfFileName = "tests/test_haplotype_vcf_04.vcf";
-	//		boolean hasAnn[] = { true, true, true, false };
-	//		boolean isFree[] = { true, true, true, false };
-	//		detectCompFs(vcfFileName, hasAnn, isFree);
-	//	}
+	/**
+	 * Two InDels affect same codon: Phased
+	 */
+	@Test
+	public void test_01_phased() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_fs_vcf_01_phased.vcf";
+		boolean hasAnn[] = { true, true, false };
+		boolean isFree[] = { true, true, false };
+		detectCompFs(vcfFileName, hasAnn, isFree);
+	}
 
-	//	/**
-	//	 * Two frame-compensating INS nearby
-	//	 */
-	//	@Test
-	//	public void test_06() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Two frame-compensating INS far away
-	//	 */
-	//	@Test
-	//	public void test_07() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Two frame-compensating DEL nearby
-	//	 */
-	//	@Test
-	//	public void test_08() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Two frame-compensating DEL far away
-	//	 */
-	//	@Test
-	//	public void test_09() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Haplotype detection: Two phased variants
-	//	 */
-	//	@Test
-	//	public void test_10() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Haplotype detection: Two variants implicitly phased (one of them is homozygous)
-	//	 */
-	//	@Test
-	//	public void test_11() {
-	//		Gpr.debug("Test");
-	//	}
-	//
-	//	/**
-	//	 * Haplotype detection: Two variants implicitly phased (both homozygous)
-	//	 */
-	//	@Test
-	//	public void test_12() {
-	//		Gpr.debug("Test");
-	//	}
+	/**
+	 * Two InDels affect same codon: Phase group
+	 */
+	@Test
+	public void test_01_phasegroup() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_fs_vcf_01_phasegroup.vcf";
+		boolean hasAnn[] = { true, true, false };
+		boolean isFree[] = { false, false, false };
+		detectCompFs(vcfFileName, hasAnn, isFree);
+	}
+
+	/**
+	 * Two InDels affect same transcript: different exons, phased
+	 */
+	@Test
+	public void test_02_phased() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_fs_vcf_02_phased.vcf";
+		boolean hasAnn[] = { true, true, false };
+		boolean isFree[] = { false, false, false };
+		detectCompFs(vcfFileName, hasAnn, isFree);
+	}
+
+	/**
+	 * Two InDels affect same transcript: different exons, implicit phasing
+	 */
+	@Test
+	public void test_02_implicit() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_fs_vcf_02_phase_implicit.vcf";
+		boolean hasAnn[] = { true, true, true };
+		boolean isFree[] = { false, false, false };
+		detectCompFs(vcfFileName, hasAnn, isFree);
+	}
+
+	/**
+	 * Two InDels affect same transcript: different exons, phase group
+	 */
+	@Test
+	public void test_02_phasegroup() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_fs_vcf_02_phasegroup.vcf";
+		boolean hasAnn[] = { true, true, false };
+		boolean isFree[] = { false, false, false };
+		detectCompFs(vcfFileName, hasAnn, isFree);
+	}
+
+	/**
+	 * Two InDels: Only one affects the coding part of the transcript
+	 */
+	@Test
+	public void test_03() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_fs_vcf_03.vcf";
+		boolean hasAnn[] = { false, false };
+		boolean isFree[] = { true, false };
+		detectCompFs(vcfFileName, hasAnn, isFree);
+	}
+
+	/**
+	 * Two mixed variants affect the same transcript
+	 */
+	@Test
+	public void test_04_Mixed() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_fs_vcf_04.vcf";
+		boolean hasAnn[] = { true, true, true, false };
+		boolean isFree[] = { true, true, true, false };
+		detectCompFs(vcfFileName, hasAnn, isFree);
+	}
 
 }
