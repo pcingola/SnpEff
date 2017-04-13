@@ -1028,6 +1028,7 @@ public class VcfEffect {
 
 		// HGVS notation
 		hgvsC = variantEffect.getHgvsDna();
+		Gpr.debug("Codon num:" + variantEffect.getCodonNum() + ", codons Ref: " + variantEffect.getCodonsRef() + ", codons Alt: " + variantEffect.getCodonsAlt());
 		hgvsP = variantEffect.getHgvsProt();
 
 		// cDna position & len (cDNA is the DNA version of mRNA)

@@ -400,6 +400,7 @@ public class HgvsProtein extends Hgvs {
 				aaOld = aaOld.substring(lettersPerAa);
 				aaNew = aaNew.substring(lettersPerAa);
 				codonNum++;
+				aaPos++;
 			} else return;
 		}
 	}
