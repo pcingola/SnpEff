@@ -26,7 +26,7 @@ public class TestCasesIntegrationHgvsMnps extends TestCasesIntegrationBase {
 	public void test_01() {
 		Gpr.debug("Test");
 		String genome = "testHg19Chr17";
-		String vcf = "tests/hgvs_mnps.vcf";
+		String vcf = "tests/hgvs_mnps_01.vcf";
 		compareHgvs(genome, vcf, false);
 	}
 
