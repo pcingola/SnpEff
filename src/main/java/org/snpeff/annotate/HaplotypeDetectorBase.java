@@ -3,6 +3,7 @@ package org.snpeff.annotate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.snpeff.collections.AutoHashMap;
 import org.snpeff.interval.Transcript;
@@ -21,9 +22,10 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 
 	Set<EffectType> supportedEffectTypes;
 	VcfHaplotypeTuple latestVcfHaplotypeTuple;
-	AutoHashMap<String, HashSet<VcfHaplotypeTuple>> tuplesByTr;
-	AutoHashMap<VcfEntry, HashSet<VcfHaplotypeTuple>> tuplesByVcfentry;
-	AutoHashMap<VcfEntry, HashSet<String>> trIdsByVcfentry;
+	AutoHashMap<String, Set<VcfHaplotypeTuple>> tuplesByTr;
+	AutoHashMap<VcfEntry, Set<VcfHaplotypeTuple>> tuplesByVcfentry;
+	AutoHashMap<Variant, Set<VcfHaplotypeTuple>> tuplesByVariant;
+	AutoHashMap<VcfEntry, Set<String>> trIdsByVcfentry;
 
 	public HaplotypeDetectorBase() {
 		reset();
@@ -48,6 +50,7 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 	protected void add(VcfHaplotypeTuple vht) {
 		tuplesByTr.getOrCreate(vht.getTrId()).add(vht);
 		tuplesByVcfentry.getOrCreate(vht.getVcfEntry()).add(vht);
+		tuplesByVariant.getOrCreate(vht.getVariant()).add(vht);
 	}
 
 	/**
@@ -69,8 +72,27 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 	 */
 	@Override
 	public Set<Variant> haplotype(Variant var, Transcript tr) {
-		return null;
+		Set<VcfHaplotypeTuple> tuples = tuplesByTr.get(tr.getId());
+		if (tuples == null) return null;
+
+		return tuples.stream() //
+				.peek(vht -> System.out.println("vht:" + vht)) //
+				.filter(vht -> vht != null) // 
+				//				.map(vht -> vht.getVcfEntry()) //
+				.map(vht -> vht.getVariant()) //
+				.collect(Collectors.toSet()) //
+		;
 	}
+
+	//	public Set<Variant> haplotype(Variant var, Transcript tr, VcfGenotype vgt) {
+	//		Set<VcfHaplotypeTuple> tuples = tuplesByVariant.get(var);
+	//		if (tuples == null) return null;
+	//
+	//		return tuples.stream() //
+	//				.filter(vht -> vht.getTrId().equals(tr.getId())) //
+	//				.map(vht -> vht.getVariant()) //
+	//				.collect(Collectors.toSet());
+	//	}
 
 	/**
 	 * Does this set have a 'haplotype annotation' variant?
@@ -227,6 +249,7 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 	void reset() {
 		tuplesByTr = new AutoHashMap<>(new HashSet<VcfHaplotypeTuple>());
 		tuplesByVcfentry = new AutoHashMap<>(new HashSet<VcfHaplotypeTuple>());
+		tuplesByVariant = new AutoHashMap<>(new HashSet<VcfHaplotypeTuple>());
 		trIdsByVcfentry = new AutoHashMap<>(new HashSet<String>());
 		initSUpportedEffectTypes();
 	}
