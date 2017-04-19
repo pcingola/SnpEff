@@ -35,7 +35,7 @@ public class HaplotypeDetectorSameCodon extends HaplotypeDetectorBase {
 	}
 
 	@Override
-	protected boolean checkTranscript(VcfHaplotypeTuple vht1, VcfHaplotypeTuple vht2) {
+	protected boolean checkTranscript(VcfTuple vht1, VcfTuple vht2) {
 		return vht1.aaIntersect(vht2);
 	}
 

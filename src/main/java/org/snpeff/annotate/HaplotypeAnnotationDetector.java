@@ -28,32 +28,6 @@ public abstract class HaplotypeAnnotationDetector {
 	public abstract void add(VcfEntry ve, Variant variant, VariantEffect variantEffect);
 
 	/**
-	 * Are these genotypes phased?
-	 */
-	protected boolean arePhased(VcfGenotype gt1, VcfGenotype gt2) {
-		// Are the variants phased?
-		if (gt1.isPhased() && gt2.isPhased()) {
-			// If phased, do they have phase groups?
-			// (or no phase group information at all)
-			if (!samePhaseGroup(gt1, gt2)) return false;
-
-			// Check that at least one ALT is on the same chromosome (maternal / paternal)
-			int geno1[] = gt1.getGenotype();
-			int geno2[] = gt2.getGenotype();
-			int min = Math.min(geno1.length, geno2.length);
-			for (int i = 0; i < min; i++) {
-				if (geno1[i] > 0 && geno2[i] > 0) return true;
-			}
-
-			return false;
-		} else {
-			// Not phased? Check for implicit phasing
-			// i.e. Is at least one of them homozygous ALT?
-			return gt1.isHomozygousAlt() || gt2.isHomozygousAlt();
-		}
-	}
-
-	/**
 	 * Find a set of variants creating a haplotype with 'var' to
 	 * be annotated respect to transcript 'tr'
 	 */
@@ -94,17 +68,6 @@ public abstract class HaplotypeAnnotationDetector {
 	 * Remove entry and free associated resources
 	 */
 	public abstract void remove(VcfEntry ve);
-
-	/**
-	 * Are these genotypes in the same phase group?
-	 */
-	protected boolean samePhaseGroup(VcfGenotype gt1, VcfGenotype gt2) {
-		String ps1 = gt1.get(VcfGenotype.GT_FIELD_PHASE_GROUP);
-		String ps2 = gt2.get(VcfGenotype.GT_FIELD_PHASE_GROUP);
-		if (ps1 == null && ps2 == null) return true; // Both of them are empty? Consider them as match
-		if (ps1 == null || ps2 == null) return false; // Only one of them is empty? Consider them as NO match
-		return ps1.equals(ps2);
-	}
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;

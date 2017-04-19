@@ -609,19 +609,23 @@ void zipBundles() {
 #-------------------------------------------------------------------------------
 void zipCore() {
 	ver := versionSubUnd()
+
+	# Directories
 	dir := "snpEff"
-	sys rm -rvf $dir
-	sys mkdir $dir
-
-	# Copy core files
-	sys cp -RvfL snpEff.config snpEff.jar SnpSift.jar examples galaxy scripts $dir
-
-	# Copy ClinEff files
 	clinEff := "$HOME/clinEff"
 	dirClinEff := "clinEff"
+
+	# Copy core files
+	sys rm -rvf $dir
+	sys mkdir $dir
+	sys cp -RvfL snpEff.config snpEff.jar SnpSift.jar examples galaxy scripts $dir
+	sys mkdir $dir/data
+
+	# Copy ClinEff files
 	sys rm -rvf $dirClinEff
 	sys mkdir $dirClinEff
 	sys cp -RvfL $clinEff/clinEff.config $clinEff/ClinEff.jar $clinEff/workflow* $clinEff/report $dirClinEff
+	sys mkdir $dirClinEff/data
 
 	# Create 'core' zip file
 	zip := "snpEff_v" + ver + "_core.zip"
