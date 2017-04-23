@@ -87,8 +87,6 @@ public class VcfGenotype {
 	 * WARNING: If the genotype is missing, the numeric value is '-1'.
 	 * E.g.:
 	 * 			 './.' -> {-1, -1}
-	 *
-	 * @return
 	 */
 	public byte[] getGenotype() {
 		parseFields(); // Lazy parse
@@ -160,6 +158,14 @@ public class VcfGenotype {
 			code += (genotype[i] > 0 ? 1 : 0); // Any variant is '1', reference or missing is '0'
 
 		return code;
+	}
+
+	/**
+	 * Number of fields in genotype
+	 */
+	public int getGenotypeLen() {
+		parseFields(); // Lazy parse
+		return genotype == null ? 0 : genotype.length;
 	}
 
 	/**

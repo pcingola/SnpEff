@@ -1,5 +1,5 @@
 ##FORMAT=<ID=PS,Number=1,Type=Integer,Description="Phase set for the genotype">
-#CHROM  POS ID  REF ALT QUAL    FILTER  INFO    FORMAT  Mother  Father
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Mother	Father
 1	422	.	G	GA	.	.	AC=1	GT:PS	0|0	0|1:422
 1	566	.	AT	A	.	.	AC=2	GT:PS	0|0	0|1:422
 1	840	.	CA	C	.	.	AC=3	GT:PS	1|0	0|1:999

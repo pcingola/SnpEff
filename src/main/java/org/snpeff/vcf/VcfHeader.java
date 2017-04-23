@@ -22,6 +22,8 @@ public class VcfHeader {
 	public static final String PEDIGREE_PREFIX = "##PEDIGREE=";
 	public static final String CHROM_PREFIX = "#CHROM\t";
 
+	public static final int CHROM_LINE_MIN_NUM_FIELDS = 8;
+
 	int numberOfSamples = -1;
 	StringBuffer header;
 	Map<String, VcfHeaderInfo> vcfInfoById;
@@ -490,6 +492,8 @@ public class VcfHeader {
 
 				// This line contains all the sample names (starting on column 9)
 				String titles[] = line.split("\t");
+
+				if (titles.length < CHROM_LINE_MIN_NUM_FIELDS) throw new RuntimeException("Missing fields in VCF header '#CHROM' line. Only " + titles.length + " field/s found, expecting at least " + CHROM_LINE_MIN_NUM_FIELDS + " mandatory fields");
 
 				// Create a list of names
 				for (int i = 9; i < titles.length; i++)

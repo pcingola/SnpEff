@@ -25,7 +25,7 @@ import org.snpeff.vcf.VcfEntry;
  * 		1:824-925 'exon_0_2', rank: 3, frame: ., sequence: cgcgcaagtattcttcatagtgcccgtagcagcaagtggtatcactcccatcataggacttgacttcgtaaagtgtgctaccttactgttaccatagtgcaa
  * 		CDS     :	gcgggtacggcgcttagcgagtttccaggatctctttcccggttagttcatatccgcgcaagtattcttcatagtgcccgtagcagcaagtggtatcactcccatcataggacttgacttcgtaaagtgtgctaccttactgttaccatagtgcaa
  * 		Protein :	AGTALSEFPGSLSRLVHIRASILHSARSSKWYHSHHRT*LRKVCYLTVTIVQ
- * 
+ *
  * @author pcingola
  */
 public class TestCasesHaplotypeDetectionCompFsVcf extends TestCasesBase {
@@ -93,7 +93,6 @@ public class TestCasesHaplotypeDetectionCompFsVcf extends TestCasesBase {
 	@Test
 	public void test_01_implicit() {
 		Gpr.debug("Test");
-		debug = true;
 		String vcfFileName = "tests/test_haplotype_fs_vcf_01_phase_implicit.vcf";
 		boolean hasAnn[] = { true, true, false };
 		boolean isFree[] = { true, true, false };
@@ -125,18 +124,6 @@ public class TestCasesHaplotypeDetectionCompFsVcf extends TestCasesBase {
 	}
 
 	/**
-	 * Two InDels affect same transcript: different exons, phased
-	 */
-	@Test
-	public void test_02_phased() {
-		Gpr.debug("Test");
-		String vcfFileName = "tests/test_haplotype_fs_vcf_02_phased.vcf";
-		boolean hasAnn[] = { true, true, false };
-		boolean isFree[] = { false, false, false };
-		detectCompFs(vcfFileName, hasAnn, isFree);
-	}
-
-	/**
 	 * Two InDels affect same transcript: different exons, implicit phasing
 	 */
 	@Test
@@ -144,6 +131,18 @@ public class TestCasesHaplotypeDetectionCompFsVcf extends TestCasesBase {
 		Gpr.debug("Test");
 		String vcfFileName = "tests/test_haplotype_fs_vcf_02_phase_implicit.vcf";
 		boolean hasAnn[] = { true, true, true };
+		boolean isFree[] = { false, false, false };
+		detectCompFs(vcfFileName, hasAnn, isFree);
+	}
+
+	/**
+	 * Two InDels affect same transcript: different exons, phased
+	 */
+	@Test
+	public void test_02_phased() {
+		Gpr.debug("Test");
+		String vcfFileName = "tests/test_haplotype_fs_vcf_02_phased.vcf";
+		boolean hasAnn[] = { true, true, false };
 		boolean isFree[] = { false, false, false };
 		detectCompFs(vcfFileName, hasAnn, isFree);
 	}

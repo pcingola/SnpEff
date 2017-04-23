@@ -68,16 +68,6 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 	@Override
 	public Set<VcfTupleSet> haplotypes(Variant var, Transcript tr) {
 		return null;
-		//		VcfTupleSet tuples = tuplesByTr.get(tr.getId());
-		//		if (tuples == null) return null;
-		//
-		//		return tuples.stream() //
-		//				.peek(vht -> System.out.println("vht:" + vht)) //
-		//				.filter(vht -> vht != null) //
-		//				//				.map(vht -> vht.getVcfEntry()) //
-		//				.map(vht -> vht.getVariant()) //
-		//				.collect(Collectors.toSet()) //
-		//		;
 	}
 
 	/**
