@@ -363,7 +363,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		int numAlts = getAlts().length;
 		int gtNum = 1;
 		for (VcfGenotype vgt : getVcfGenotypes()) {
-			int gts[] = vgt.getGenotype();
+			byte gts[] = vgt.getGenotype();
 			if (gts != null) {
 				for (int i = 0; i < gts.length; i++)
 					if (gts[i] > numAlts) err.append("Genotype number " + gtNum + " has genotype number '" + gts[i] + "', but there are only '" + numAlts + "' ALTs.\n");

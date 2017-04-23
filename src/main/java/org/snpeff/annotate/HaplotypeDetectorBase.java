@@ -2,7 +2,6 @@ package org.snpeff.annotate;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.snpeff.collections.AutoHashMap;
 import org.snpeff.interval.Transcript;
@@ -67,17 +66,18 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 	 * Return the variants within the same haplotype (for this detector)
 	 */
 	@Override
-	public Set<Variant> haplotype(Variant var, Transcript tr) {
-		VcfTupleSet tuples = tuplesByTr.get(tr.getId());
-		if (tuples == null) return null;
-
-		return tuples.stream() //
-				.peek(vht -> System.out.println("vht:" + vht)) //
-				.filter(vht -> vht != null) //
-				//				.map(vht -> vht.getVcfEntry()) //
-				.map(vht -> vht.getVariant()) //
-				.collect(Collectors.toSet()) //
-		;
+	public Set<VcfTupleSet> haplotypes(Variant var, Transcript tr) {
+		return null;
+		//		VcfTupleSet tuples = tuplesByTr.get(tr.getId());
+		//		if (tuples == null) return null;
+		//
+		//		return tuples.stream() //
+		//				.peek(vht -> System.out.println("vht:" + vht)) //
+		//				.filter(vht -> vht != null) //
+		//				//				.map(vht -> vht.getVcfEntry()) //
+		//				.map(vht -> vht.getVariant()) //
+		//				.collect(Collectors.toSet()) //
+		//		;
 	}
 
 	/**
@@ -140,6 +140,9 @@ public abstract class HaplotypeDetectorBase extends HaplotypeAnnotationDetector 
 		if (latestVcfHaplotypeTuple == null //
 				|| latestVcfHaplotypeTuple.getVcfEntry() == ve //
 		) return false;
+
+		// Different chromosomes? => It is free
+		if (!ve.getChromosomeName().equals(latestVcfHaplotypeTuple.getVcfEntry().getChromosomeName())) return true;
 
 		// The vcfEntry does not have any tuples? Then there's nothing interesting about it
 		VcfTupleSet tupleSet = tuplesByVcfentry.get(ve);

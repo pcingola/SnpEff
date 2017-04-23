@@ -1,7 +1,6 @@
 package org.snpeff.snpEffect.testCases.unity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.annotate.HaplotypeAnnotationDetector;
 import org.snpeff.annotate.HaplotypeDetectorSameCodon;
+import org.snpeff.annotate.VcfTupleSet;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
@@ -49,7 +49,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 		super();
 	}
 
-	void compareHaplotypes(String expHaplotype, Set<Variant> haplotype) {
+	void compareHaplotypes(String expHaplotype, Set<VcfTupleSet> haplotype) {
 		if (expHaplotype == null) return; // Don't check
 		Assert.assertEquals(expHaplotype, haplotypeToString(haplotype));
 	}
@@ -91,7 +91,7 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 		if (hapsByKey != null) {
 			for (VcfEntry ve : dv.vcfEntries) {
 				for (Variant var : ve.variants()) {
-					Set<Variant> haplotype = hapdet.haplotype(var, transcript);
+					Set<VcfTupleSet> haplotype = hapdet.haplotypes(var, transcript);
 					String expHaplotype = hapsByKey.get(hapKey(transcript, var));
 					compareHaplotypes(expHaplotype, haplotype);
 				}
@@ -105,15 +105,17 @@ public class TestCasesHaplotypeDetectionSameCodonVcf extends TestCasesBase {
 		return tr.getId() + "\t" + keyVariant(var);
 	}
 
-	String haplotypeToString(Set<Variant> haplotype) {
-		if (haplotype == null) return "null";
-		List<Variant> vars = new ArrayList<>();
-		vars.addAll(haplotype);
-		Collections.sort(vars);
-		StringBuilder sb = new StringBuilder();
-		vars.stream().map(v -> keyVariant(v)).forEach(s -> sb.append(s + "\n"));
-		return sb.toString();
+	String haplotypeToString(Set<VcfTupleSet> haplotype) {
+		//		if (haplotype == null) return "null";
+		//		List<Variant> vars = new ArrayList<>();
+		//		for (VcfTuple vt : vcfTupleSet)
+		//			vars.add(vt.getVariant());
+		//		Collections.sort(vars);
+		//		StringBuilder sb = new StringBuilder();
+		//		vars.stream().map(v -> keyVariant(v)).forEach(s -> sb.append(s + "\n"));
+		//		return sb.toString();
 
+		return null;
 	}
 
 	@Override

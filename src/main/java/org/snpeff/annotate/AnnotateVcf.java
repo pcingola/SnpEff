@@ -390,8 +390,8 @@ public class AnnotateVcf implements VcfAnnotator {
 				VcfGenotype genOri = vcfEntry.getVcfGenotype(numOri);
 				VcfGenotype genDer = vcfEntry.getVcfGenotype(numDer);
 
-				int gd[] = genDer.getGenotype(); // Derived genotype
-				int go[] = genOri.getGenotype(); // Original genotype
+				byte gd[] = genDer.getGenotype(); // Derived genotype
+				byte go[] = genOri.getGenotype(); // Original genotype
 
 				// Skip if one of the genotypes is missing
 				if (gd == null || go == null) continue;
@@ -404,7 +404,7 @@ public class AnnotateVcf implements VcfAnnotator {
 								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 								&& (gd[i] != go[i]) // Both genotypes are different?
 						) {
-							Tuple<Integer, Integer> compare = new Tuple<>(gd[i], go[i]);
+							Tuple<Integer, Integer> compare = new Tuple<>((int) gd[i], (int) go[i]);
 							comparisons.add(compare);
 						}
 					}
@@ -417,7 +417,7 @@ public class AnnotateVcf implements VcfAnnotator {
 									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
 									&& (gd[d] != go[o]) // Both genotypes are different?
 							) {
-								Tuple<Integer, Integer> compare = new Tuple<>(gd[d], go[o]);
+								Tuple<Integer, Integer> compare = new Tuple<>((int) gd[d], (int) go[o]);
 								comparisons.add(compare);
 							}
 						}

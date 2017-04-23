@@ -18,7 +18,7 @@ public class VcfGenotype {
 	public static final String GT_FIELD_PHASE_GROUP = "PS"; // Phase group
 
 	String values;
-	int genotype[];
+	byte genotype[];
 	int ploidy;
 	boolean phased;
 	double gQuality;
@@ -90,7 +90,7 @@ public class VcfGenotype {
 	 *
 	 * @return
 	 */
-	public int[] getGenotype() {
+	public byte[] getGenotype() {
 		parseFields(); // Lazy parse
 		return genotype;
 	}
@@ -365,11 +365,11 @@ public class VcfGenotype {
 		}
 
 		// Create fields
-		genotype = new int[gtStr.length];
+		genotype = new byte[gtStr.length];
 		for (int i = 0; i < genotype.length; i++)
 			if (gtStr[i].isEmpty() || gtStr[i].equals(".")) genotype[i] = -1; // Genotype '-1' means missing values
 			else {
-				genotype[i] = Gpr.parseIntSafe(gtStr[i]);
+				genotype[i] = (byte) Gpr.parseIntSafe(gtStr[i]);
 
 				// Sanity check
 				if ((genotype[i] - 1) >= vcfEntry.getAlts().length) {
@@ -393,7 +393,7 @@ public class VcfGenotype {
 	 * Genotype plodity (i.e. how many copies of the chromosome does it have)
 	 */
 	public int plodity() {
-		int gt[] = getGenotype();
+		byte gt[] = getGenotype();
 		return gt == null ? 0 : gt.length;
 	}
 

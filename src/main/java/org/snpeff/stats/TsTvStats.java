@@ -13,7 +13,7 @@ import org.snpeff.vcf.VcfGenotype;
  */
 public class TsTvStats implements SamplingStats<VcfEntry> {
 
-	static int GENOTYPE_SINGLE_ALT_CHANGE[] = { 1 };
+	static byte GENOTYPE_SINGLE_ALT_CHANGE[] = { 1 };
 
 	List<String> sampleNames;
 	long countTs[];
@@ -137,7 +137,7 @@ public class TsTvStats implements SamplingStats<VcfEntry> {
 					Gpr.debug("WARNING: VCF entry has more genotype fields than expected (expected: " + countTs.length + ", number of genotypes: " + sampleNum + ").\n" + vcfEntry);
 				} else if (vcfGenotype.isVariant()) {
 					String alts[] = vcfEntry.getAlts();
-					int gens[] = vcfGenotype.getGenotype();
+					byte gens[] = vcfGenotype.getGenotype();
 
 					// Missing genotype information => assume single 'ALT' change
 					if (gens == null) gens = GENOTYPE_SINGLE_ALT_CHANGE;

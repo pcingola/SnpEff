@@ -1,13 +1,11 @@
 package org.snpeff.annotate;
 
-import java.util.List;
 import java.util.Set;
 
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.vcf.VcfEntry;
-import org.snpeff.vcf.VcfGenotype;
 
 /**
  * Detect haplotype annotations.
@@ -31,7 +29,7 @@ public abstract class HaplotypeAnnotationDetector {
 	 * Find a set of variants creating a haplotype with 'var' to
 	 * be annotated respect to transcript 'tr'
 	 */
-	public abstract Set<Variant> haplotype(Variant var, Transcript tr);
+	public abstract Set<VcfTupleSet> haplotypes(Variant var, Transcript tr);
 
 	/**
 	 * Analyze if a VcfEntry has a haplotype annotation
@@ -42,19 +40,6 @@ public abstract class HaplotypeAnnotationDetector {
 	 * @return true if the VcfEntry does have a haplotype annotation
 	 */
 	public abstract boolean hasHaplotypeAnnotation(VcfEntry ve);
-
-	/**
-	 * Is there any kind of phasing information?
-	 */
-	protected boolean hasPhase(VcfEntry vcfEntry) {
-		List<VcfGenotype> gts = vcfEntry.getVcfGenotypes();
-		for (VcfGenotype gt : gts) {
-			if (gt.isPhased() || gt.isHomozygousAlt()) { // Homozygous ALT means implicit phasing
-				return true;
-			}
-		}
-		return false;
-	}
 
 	/**
 	 * Analyze if a VcfEntry has or could have in the future any
