@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.snpeff.SnpEff;
 import org.snpeff.codons.CodonTable;
@@ -532,6 +533,14 @@ public class Config implements Serializable, Iterable<String> {
 	@Override
 	public Iterator<String> iterator() {
 		return nameById.keySet().iterator();
+	}
+
+	public List<String> keys() {
+		Set<Object> keyset = properties.keySet();
+		ArrayList<String> l = new ArrayList<>(keyset.size());
+		for (Object o : keyset)
+			l.add(o.toString());
+		return l;
 	}
 
 	/**

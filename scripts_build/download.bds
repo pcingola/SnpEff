@@ -170,7 +170,7 @@ void downloadDbSnp() {
 void downloadEnsembl(int ensemblRelease) {
 	println "Download ENSEMBL $ensemblRelease"
 
-	configFile := "$dirSnpeff/config/snpEff.ENSEMBL_$ensemblRelease.config"
+	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_$ensemblRelease.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return
@@ -282,7 +282,7 @@ void downloadEnsembl(int ensemblRelease) {
 void downloadEnsemblBfmpp() {
 	println "ENSEMBL BFMPP $ensemblBfmppRelease"
 
-	configFile := "$dirSnpeff/config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config"
+	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return
@@ -372,7 +372,7 @@ void downloadEnsemblBfmpp() {
 void downloadFlyBase() {
 	println "Download FlyBase $flybaseRelease"
 
-	configFile := "$dirSnpeff/config/snpEff.FLYBASE_$flybaseRelease.config"
+	configFile := "$dirSnpEff/config/snpEff.FLYBASE_$flybaseRelease.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return
@@ -452,7 +452,7 @@ void downloadJaspar() {
 void downloadNcbi() {
 	println "Download NCBI: Not working!"
 
-#	configFile := "$dirSnpeff/config/snpEff.NCBI.config"
+#	configFile := "$dirSnpEff/config/snpEff.NCBI.config"
 #	if( configFile.exists() ) {
 #		println "\tConfig file '$configFile' exists: nothing done"
 #		return
@@ -536,7 +536,7 @@ void downloadNcbi() {
 void downloadNcbiBacteria() {
 	println "Download NCBI bacteria"
 
-	configFile := "$dirSnpeff/config/snpEff.NCBI_bacteria.config"
+	configFile := "$dirSnpEff/config/snpEff.NCBI_bacteria.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return
@@ -588,7 +588,7 @@ void downloadNcbiBacteria() {
 void downloadNcbiVirus() {
 	println "Download NCBI virus"
 
-	configFile := "$dirSnpeff/config/snpEff.NCBI_viruses.config"
+	configFile := "$dirSnpEff/config/snpEff.NCBI_viruses.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return

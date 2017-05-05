@@ -59,18 +59,19 @@ wgetA				:= "wget -r -N -A"
 cp					:= "cp -v -u"
 
 # Directories
-dirSnpeff			:= "$HOME/snpEff"
-dirBuild			:= "$dirSnpeff/build"
-dirData				:= "$dirSnpeff/data"
-dirDb				:= "$dirSnpeff/db"
+dirSnpEff			:= "$HOME/snpEff"
+dirClinEff			:= "$HOME/clinEff"
+dirBuild			:= "$dirSnpEff/build"
+dirData				:= "$dirSnpEff/data"
+dirDb				:= "$dirSnpEff/db"
 dirDarned			:= "$dirDb/darned"
-dirDownload			:= "$dirSnpeff/download"
+dirDownload			:= "$dirSnpEff/download"
 dirGdrive           := "$HOME/gdrive"
 dirNextProt         := "$dirDb/nextProt"
 dirPdb              := "$dirDb/pdb"
-dirScripts			:= "$dirSnpeff/scripts"
-dirScriptsBuild		:= "$dirSnpeff/scripts_build"
-dirZip				:= "$dirSnpeff/zip"
+dirScripts			:= "$dirSnpEff/scripts"
+dirScriptsBuild		:= "$dirSnpEff/scripts_build"
+dirZip				:= "$dirSnpEff/zip"
 pwmsBin				:= "$dirDb/jaspar/pwms.bin"
 ensembl2refSeqTrIds := "$dirDb/ensembl2refSeq/ensembl2refSeq.GRCh.txt"
 
@@ -164,8 +165,8 @@ void buildBundleLists() {
 # Build configuration file (snpEff.config)
 #-------------------------------------------------------------------------------
 void buildConfig() {
-	confDir := "$dirSnpeff/config"
-	conf := "$dirSnpeff/snpEff.config"
+	confDir := "$dirSnpEff/config"
+	conf := "$dirSnpEff/snpEff.config"
 
 	println "Building config file '$conf'"
 
@@ -280,14 +281,14 @@ void buildDbSpecial() {
 # Build databases used in test cases
 #-------------------------------------------------------------------------------
 void buildDbTest() {
-	dirs := "$dirSnpeff/data/".dir("test*")
+	dirs := "$dirSnpEff/data/".dir("test*")
 
 	# This one needs PWMs
 	sys cp $pwmsBin data/testHg3770Chr22/
 
 	# Build all test genomes
 	for( string gen : dirs ) {
-		db := "$dirSnpeff/data/$gen/snpEffectPredictor.bin"
+		db := "$dirSnpEff/data/$gen/snpEffectPredictor.bin"
 		if( ! db.exists() )	{
 			println "Genome: $gen\tdb: '$db'"
 			task( cpus := 2 ) {
@@ -298,7 +299,7 @@ void buildDbTest() {
 
 	# Build PDB database for testHg19Chr1
 	# We need to make sure that PDB entry '1A12' is in the dir
-	task $snpeff pdb -pdbDir $dirSnpeff/data/testHg19Chr1 testHg19Chr1
+	task $snpeff pdb -pdbDir $dirSnpEff/data/testHg19Chr1 testHg19Chr1
 }
 
 #-------------------------------------------------------------------------------
@@ -309,7 +310,7 @@ void buildDbNextProt() {
 	print("Build NextProt\n")
 
 	# XML files used to build NextProt
-	dirNextProt := "$dirSnpeff/db/nextProt/"
+	dirNextProt := "$dirSnpEff/db/nextProt/"
 	xmlFiles := dirNextProt.dirPath("*.xml")
 
 	# Check each genome version
@@ -441,48 +442,59 @@ void runTests() {
 	runTestsSnpSiftAll()
 	runTestsSnpEffIntegration()
 	runTestsSnpEffUnity()
+	runTestsClinEffAll()
 }
 
 #-------------------------------------------------------------------------------
-# Run test cases
+# Run test cases: ClinEff-All
+#-------------------------------------------------------------------------------
+void runTestsClinEffAll() {
+	task cd $HOME/workspace/ClinEff/ ; \
+		java -Xmx4g \
+			-cp $dirClinEff/ClinEff.jar \
+			org.junit.runner.JUnitCore \
+			com.clineff.testCases.TestSuiteAll \
+			2>&1 \
+			| tee $dirSnpEff/testcases.clineff.all.txt
+}
+
+#-------------------------------------------------------------------------------
+# Run test cases: SnpSift
 #-------------------------------------------------------------------------------
 void runTestsSnpSiftAll() {
-	# Run SnpSift test cases
 	task cd $HOME/workspace/SnpSift/ ; \
 		java -Xmx4g \
-			-cp $dirSnpeff/SnpSift.jar \
+			-cp $dirSnpEff/SnpSift.jar \
 			org.junit.runner.JUnitCore \
 			org.snpsift.testCases.TestSuiteAll \
 			2>&1 \
-			| tee $dirSnpeff/testcases.snpsift.all.txt
+			| tee $dirSnpEff/testcases.snpsift.all.txt
 }
 
 #-------------------------------------------------------------------------------
 # Run test cases: SnpEff-HGVS
 #-------------------------------------------------------------------------------
 void runTestsSnpEffHgvs() {
-	# Run SnpEff test cases: HGVS
 	task cd $HOME/workspace/SnpEff/ ; \
 		java -Xmx4g \
-			-cp $dirSnpeff/snpEff.jar \
+			-cp $dirSnpEff/snpEff.jar \
 			org.junit.runner.JUnitCore \
 			org.snpeff.snpEffect.testCases.TestSuiteHgvs \
 			2>&1 \
-			| tee $dirSnpeff/testcases.snpeff.hgvs.txt
+			| tee $dirSnpEff/testcases.snpeff.hgvs.txt
 }
 
 #-------------------------------------------------------------------------------
 # Run test cases: SnpEff-Integration
 #-------------------------------------------------------------------------------
 void runTestsSnpEffIntegration() {
-	# Run SnpEff test cases: Integration
 	task cd $HOME/workspace/SnpEff/ ; \
 		java -Xmx4g \
-			-cp $dirSnpeff/snpEff.jar \
+			-cp $dirSnpEff/snpEff.jar \
 			org.junit.runner.JUnitCore \
 			org.snpeff.snpEffect.testCases.TestSuiteIntegration \
 			2>&1 \
-			| tee $dirSnpeff/testcases.snpeff.integration.txt
+			| tee $dirSnpEff/testcases.snpeff.integration.txt
 }
 
 #-------------------------------------------------------------------------------
@@ -492,11 +504,11 @@ void runTestsSnpEffUnity() {
 	# Run SnpEff test cases: Unity
 	task cd $HOME/workspace/SnpEff/ ; \
 		java -Xmx4g \
-			-cp $dirSnpeff/snpEff.jar \
+			-cp $dirSnpEff/snpEff.jar \
 			org.junit.runner.JUnitCore \
 			org.snpeff.snpEffect.testCases.TestSuiteUnity \
 			2>&1 \
-			| tee $dirSnpeff/testcases.snpeff.unity.txt
+			| tee $dirSnpEff/testcases.snpeff.unity.txt
 }
 
 #-------------------------------------------------------------------------------
@@ -584,7 +596,7 @@ void zipBundles() {
 	println "Create bundles ZIP files"
 
 	bundleList := "bundles.txt"
-	bundleLines := sys cat $dirSnpeff/snpEff.config | grep .bundle. > $bundleList
+	bundleLines := sys cat $dirSnpEff/snpEff.config | grep .bundle. > $bundleList
 	bundleList.rmOnExit()
 
 	for( string bline : bundleList.read().lines() ) {
