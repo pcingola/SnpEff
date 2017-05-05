@@ -130,7 +130,12 @@ bool addBuildDb(string genome) {
 #-------------------------------------------------------------------------------
 void build() {
 	buildConfig()
+
+	# Build SnpEff / SnpSift
 	sys ./scripts_build/make.sh
+
+	# Build ClinEff
+	sys cd $HOME/workspace/ClinEff/ ; ant
 }
 
 #-------------------------------------------------------------------------------
