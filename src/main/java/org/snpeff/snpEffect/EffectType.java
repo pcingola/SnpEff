@@ -143,6 +143,7 @@ public enum EffectType {
 		oldSo2efftype.put("non_coding_exon_variant", EffectType.EXON);
 		oldSo2efftype.put("inframe_insertion", EffectType.CODON_INSERTION);
 		oldSo2efftype.put("inframe_deletion", EffectType.CODON_DELETION);
+		oldSo2efftype.put("transcript", EffectType.TRANSCRIPT);
 
 		// Add terms if not already in the map
 		for (String so : oldSo2efftype.keySet()) {
