@@ -80,19 +80,11 @@ public class Genes implements Iterable<Gene>, Serializable {
 		for (Gene gene : genesSorted) {
 			// Chromosome change? Invaludate genePrev
 			if (chrPrev != gene.getChromosome()) {
-
-				// Add last intergenic region in the chromosome
+				// Add last intergenic region from previous chromosome
 				if (chrPrev != null && genePrev != null) {
-					int start = genePrev.getEnd() + 1;
-					int end = chrPrev.getEnd();
-					if (start < end) {
-						String id = genePrev.getId() + "-END";
-						String name = genePrev.getGeneName() + "-END";
-						Intergenic intergenic = new Intergenic(genePrev.getChromosome(), start, end, false, id, name);
-						intergenics.add(intergenic);
-					}
+					Intergenic intergenic = Intergenic.createIntergenic(genePrev, null);
+					intergenics.add(intergenic);
 				}
-
 				genePrev = null;
 			}
 
@@ -102,9 +94,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 
 			// Valid intergenic region?
 			if (start < end) {
-				String name = (genePrev != null ? genePrev.getGeneName() + "-" : "") + gene.getGeneName();
-				String id = (genePrev != null ? genePrev.getId() + "-" : "") + gene.getId();
-				Intergenic intergenic = new Intergenic(gene.getChromosome(), start, end, false, id, name);
+				Intergenic intergenic = Intergenic.createIntergenic(genePrev, gene);
 				intergenics.add(intergenic);
 			}
 
@@ -115,7 +105,12 @@ public class Genes implements Iterable<Gene>, Serializable {
 			chrPrev = gene.getChromosome();
 		}
 
+		// Add intergenic region for last gene in the list
+		Intergenic intergenic = Intergenic.createIntergenic(genePrev, null);
+		intergenics.add(intergenic);
+
 		return intergenics;
+
 	}
 
 	/**
