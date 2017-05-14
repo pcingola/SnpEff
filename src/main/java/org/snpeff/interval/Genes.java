@@ -78,7 +78,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 		Gene genePrev = null;
 		Chromosome chrPrev = null;
 		for (Gene gene : genesSorted) {
-			// Chromosome change? Invaludate genePrev
+			// Chromosome change? Invalidate genePrev
 			if (chrPrev != gene.getChromosome()) {
 
 				// Add last intergenic region in the chromosome
