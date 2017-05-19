@@ -72,7 +72,7 @@ public abstract class ProteinInteractionLocus extends Marker {
 		}
 
 		// Make sure at least one interval is created
-		list.add(factory(tr, start, pos, trInteract, id));
+		if (list.isEmpty()) list.add(factory(tr, start, pos, trInteract, id));
 		return list;
 	}
 
