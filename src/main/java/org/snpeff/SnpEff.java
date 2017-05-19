@@ -674,17 +674,19 @@ public class SnpEff implements CommandLine {
 			if (chr1 != null && chr2 != null && tr1 != null && tr2 != null) {
 
 				// Gene1
-				String geneId1 = tr1.getParent().getId();
+				Gene gene1 = (Gene) tr1.getParent();
+				gene1.getId();
 				List<ProteinInteractionLocus> list = ProteinInteractionLocus.factory(tr1, dres.aaPos1, tr2, id);
 				for (Marker m : list)
-					sep.addPerGene(geneId1, m);
+					gene1.addPerGene(m);
 
 				// Since they act on different transcript (or different AAs within the transcript), we
 				// need to add two markers (one for each "side" of the interaction
-				String geneId2 = tr2.getParent().getId();
+				Gene gene2 = (Gene) tr2.getParent();
+				gene2.getId();
 				list = ProteinInteractionLocus.factory(tr2, dres.aaPos2, tr1, id);
 				for (Marker m : list)
-					sep.addPerGene(geneId2, m);
+					gene2.addPerGene(m);
 				count++;
 			} else countSkipped++;
 		}

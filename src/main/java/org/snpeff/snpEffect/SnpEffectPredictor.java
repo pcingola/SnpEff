@@ -23,7 +23,6 @@ import org.snpeff.interval.TranscriptSupportLevel;
 import org.snpeff.interval.Utr;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.tree.IntervalForest;
-import org.snpeff.interval.tree.Itree;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.util.Gpr;
@@ -52,7 +51,6 @@ public class SnpEffectPredictor implements Serializable {
 	Genome genome;
 	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
 	IntervalForest intervalForest; // Interval forest by chromosome name
-	IntervalForest intervalForestGene; // Interval forest by gene
 
 	/**
 	 * Load predictor from a binary file
@@ -129,17 +127,6 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
-	 * Add a gene dependent marker
-	 */
-	public void addPerGene(String geneId, Marker marker) {
-		if (intervalForestGene == null) {
-			intervalForestGene = new IntervalForest();
-			intervalForestGene.setDebug(debug);
-		}
-		intervalForestGene.getOrCreateTreeChromo(geneId).add(marker);
-	}
-
-	/**
 	 * Create interval trees (forest)
 	 */
 	public void buildForest() {
@@ -175,6 +162,7 @@ public class SnpEffectPredictor implements Serializable {
 		// Build interval forest
 		intervalForest.build();
 
+		// Build gene-dependent 
 		buildPerGene();
 	}
 
@@ -182,7 +170,8 @@ public class SnpEffectPredictor implements Serializable {
 	 * Build 'per gene' information
 	 */
 	void buildPerGene() {
-		if (intervalForestGene != null) intervalForestGene.build();
+		for (Gene gene : genome.getGenes())
+			gene.buildPerGene();
 	}
 
 	/**
@@ -719,10 +708,6 @@ public class SnpEffectPredictor implements Serializable {
 				if (variant.isNonRef()) marker.variantEffectNonRef(variant, variantEffects);
 				else marker.variantEffect(variant, variantEffects);
 
-				// Do we have 'per gene' information?
-				if (intervalForestGene != null && marker instanceof Gene) //
-					variantEffectGene(marker.getId(), variant, variantEffects);
-
 				hitSomething = true;
 			}
 		}
@@ -759,18 +744,6 @@ public class SnpEffectPredictor implements Serializable {
 			for (VariantEffect veffFusion : veffFusions)
 				variantEffects.add(veffFusion);
 		}
-	}
-
-	/**
-	 * Add gene specific annotations
-	 */
-	protected void variantEffectGene(String geneId, Variant variant, VariantEffects variantEffects) {
-		Itree itree = intervalForestGene.getTree(geneId);
-		if (itree == null) return;
-
-		Markers res = itree.query(variant);
-		for (Marker m : res)
-			m.variantEffect(variant, variantEffects);
 	}
 
 	/**
