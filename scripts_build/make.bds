@@ -170,20 +170,35 @@ void buildConfig() {
 
 	println "Building config file '$conf'"
 
-	sys cat $confDir/snpEff.core.config \
-			$confDir/snpEff.dbs.config \
-			$confDir/snpEff.test.config \
-			> $conf
+	sys cat $confDir/snpEff.core.config > $conf
+	sys cat $confDir/snpEff.dbs.config >> $conf
+	sys cat	$confDir/snpEff.test.config >> $conf
 
 	for(int ensemblRelease : ensemblReleases ) {
+		sys echo >> $conf
+		sys echo "#---" >> $conf
+		sys echo "# ENSEMBL release $ensemblRelease" >> $conf
+		sys echo "#---" >> $conf
 		sys cat $confDir/snpEff.ENSEMBL_$ensemblRelease.config >> $conf
 	}
 
-	sys cat $confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config \
-			$confDir/snpEff.FLYBASE_$flybaseRelease.config \
-			>> $conf
+	sys echo >> $conf
+	sys echo "#---" >> $conf
+	sys echo "# ENSEMBL BFMPP release $ensemblBfmppRelease" >> $conf
+	sys echo "#---" >> $conf
+	sys cat $confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config >> $conf
+
+	sys echo >> $conf
+	sys echo "#---" >> $conf
+	sys echo "# FLYBASE release $flybaseRelease" >> $conf
+	sys echo "#---" >> $conf
+	sys cat	$confDir/snpEff.FLYBASE_$flybaseRelease.config >> $conf
 
 	for( string b : bundles) {
+		sys echo >> $conf
+		sys echo "#---" >> $conf
+		sys echo "# ENSEMBL Bundles $b" >> $conf
+		sys echo "#---" >> $conf
 		sys cat $confDir/snpEff.bundles.$b.config >> $conf
 	}
 }
