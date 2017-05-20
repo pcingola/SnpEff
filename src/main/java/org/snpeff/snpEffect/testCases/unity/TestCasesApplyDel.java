@@ -20,7 +20,6 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 	@Test
 	public void test_apply_variant_01() {
 		Gpr.debug("Test");
-
 		Variant variant = new Variant(transcript.getParent(), 290, "TTT", "");
 		checkApplyDel(variant, transcript.cds(), transcript.protein(), 1, 297, 396);
 	}
@@ -48,7 +47,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
 				+ "tttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
+		;
 
 		checkApplyDel(variant, expectedCds, null, 1, 299, 396);
 	}
@@ -65,7 +64,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
 				+ "ttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
+		;
 
 		checkApplyDel(variant, expectedCds, null, 1, 300, 396);
 
@@ -83,7 +82,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
 				+ "tgtttgggaaacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
+		;
 
 		checkApplyDel(variant, expectedCds, null, 1, 300, 396);
 
@@ -101,7 +100,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
 				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctca" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
+		;
 
 		checkApplyDel(variant, expectedCds, null, 1, 300, 396);
 
@@ -119,7 +118,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
 				+ "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaa".toLowerCase() // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
+		;
 
 		checkApplyDel(variant, expectedCds, null, 1, 300, 397);
 
@@ -155,7 +154,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent() //
-		, 290 //
+				, 290 //
 				, "tttatcgtcctgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacgaaagggagct" //
 				, "" //
 		);
@@ -163,7 +162,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
 				+ "" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
+		;
 
 		// Note: Since the original exon 1 is deleted, we check coordinates 
 		// for exon 2 (that becomes exon 1 in the new transcript)
@@ -178,7 +177,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent() //
-		, 300 //
+				, 300 //
 				, "TGTTTGGGAATTCACGGGCACGGTTCTGCAGCAAGCTGAATTGGCAGCTCGGCATAAATCCCGACCCCATCGTCACGCACGGATCAATTCATCCTCAACGAAAGGGAGCTAGCGCTGTAC" //
 				, "" //
 		);
@@ -186,7 +185,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
 				+ "" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
+		;
 
 		// Note: Since the original exon 1 is deleted, we check coordinates 
 		// for exon 2 (that becomes exon 1 in the new transcript)
@@ -201,7 +200,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent()//
-		, 280 //
+				, 280 //
 				, "aaccgctaactttatcgtcctgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toUpperCase() //
 				, "" //
 		);
@@ -209,7 +208,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
 				+ "" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
+		;
 
 		// Note: Since the original exon 1 is deleted, we check coordinates 
 		// for exon 2 (that becomes exon 1 in the new transcript)
@@ -225,7 +224,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		Gpr.debug("Test");
 
 		Variant variant = new Variant(transcript.getParent() //
-		, 300 //
+				, 300 //
 				, "tgtttgggaattcacgggcacggttctgcagcaagctgaattggcagctcggcataaatcccgaccccatcgtcacgcacggatcaattcatcctcaacg".toUpperCase() //
 				, "" //
 		);
@@ -233,7 +232,7 @@ public class TestCasesApplyDel extends TestCasesBaseApply {
 		String expectedCds = "atgtccgcaggtgaaggcatacacgctgcgcgtatactgatgttacctcgatggattttgtcagaaatatggtgcccaggacgcgaagggcatattatgg" // Exon[0]
 				+ "" // Exon[1]
 				+ "ggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgattaccgatttatttgattccccacatttatttcatcggg" // Exon[2]
-				;
+		;
 
 		// Note: Since the original exon 1 is deleted, we check coordinates 
 		// for exon 2 (that becomes exon 1 in the new transcript)

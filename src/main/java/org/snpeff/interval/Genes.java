@@ -106,8 +106,10 @@ public class Genes implements Iterable<Gene>, Serializable {
 		}
 
 		// Add intergenic region for last gene in the list
-		Intergenic intergenic = Intergenic.createIntergenic(genePrev, null);
-		intergenics.add(intergenic);
+		if (genePrev != null) {
+			Intergenic intergenic = Intergenic.createIntergenic(genePrev, null);
+			intergenics.add(intergenic);
+		}
 
 		return intergenics;
 

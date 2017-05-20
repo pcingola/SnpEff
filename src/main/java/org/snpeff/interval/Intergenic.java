@@ -17,11 +17,14 @@ public class Intergenic extends Marker {
 	String name;
 
 	public static Intergenic createIntergenic(Gene geneLeft, Gene geneRight) {
+		if ((geneLeft == null) && (geneRight == null)) return null;
+
 		// Left gene
 		int start = 0;
 		String gidLeft = CHROMOSOME_START;
 		String gnameLeft = CHROMOSOME_START;
 		Chromosome chr = null;
+
 		if (geneLeft != null) {
 			start = geneLeft.getEnd() + 1;
 			gidLeft = geneLeft.getId();
