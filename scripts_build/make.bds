@@ -314,10 +314,10 @@ void buildDbTest() {
 
 	# Build PDB database for testHg19Chr1
 	# We need to make sure that PDB entries for test cases are in these dirs
-	pdbTestCases = ['testHg19Chr1', 'testHg19Chr22']
+	pdbTestCases := ['testHg19Chr1', 'testHg19Chr22']
 	for( string genome : pdbTestCases ) {
 		task $snpeff pdb -v \
-				-pdbDir $dirSnpEff/data/$genome 
+				-pdbDir $dirSnpEff/data/$genome \
 				-idMap $dirPdb/idMap_pdbId_ensemblId_refseqId.txt.gz \
 				$genome
 	}
