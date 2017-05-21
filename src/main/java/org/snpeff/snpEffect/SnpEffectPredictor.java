@@ -162,7 +162,7 @@ public class SnpEffectPredictor implements Serializable {
 		// Build interval forest
 		intervalForest.build();
 
-		// Build gene-dependent 
+		// Build gene-dependent
 		buildPerGene();
 	}
 

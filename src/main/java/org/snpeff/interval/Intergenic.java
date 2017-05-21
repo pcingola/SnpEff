@@ -16,6 +16,11 @@ public class Intergenic extends Marker {
 
 	String name;
 
+	/**
+	 * Creates an intergenic marker based on the "space" between two genes
+	 *
+	 * @return null if the marker cannot be created
+	 */
 	public static Intergenic createIntergenic(Gene geneLeft, Gene geneRight) {
 		if ((geneLeft == null) && (geneRight == null)) return null;
 
@@ -45,7 +50,8 @@ public class Intergenic extends Marker {
 			end = chr.getEnd();
 		}
 
-		return new Intergenic(chr, start, end, false, gidLeft + "-" + gidRight, gnameLeft + "-" + gnameRight);
+		// Do not create marker if the coordinates are negative
+		return start <= end ? new Intergenic(chr, start, end, false, gidLeft + "-" + gidRight, gnameLeft + "-" + gnameRight) : null;
 	}
 
 	public Intergenic() {

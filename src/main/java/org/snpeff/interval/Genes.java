@@ -83,7 +83,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 				// Add last intergenic region from previous chromosome
 				if (chrPrev != null && genePrev != null) {
 					Intergenic intergenic = Intergenic.createIntergenic(genePrev, null);
-					intergenics.add(intergenic);
+					if (intergenic != null) intergenics.add(intergenic);
 				}
 				genePrev = null;
 			}
@@ -95,7 +95,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 			// Valid intergenic region?
 			if (start < end) {
 				Intergenic intergenic = Intergenic.createIntergenic(genePrev, gene);
-				intergenics.add(intergenic);
+				if (intergenic != null) intergenics.add(intergenic);
 			}
 
 			// Is it null or ends before this one? update 'genePrev'
@@ -108,7 +108,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 		// Add intergenic region for last gene in the list
 		if (genePrev != null) {
 			Intergenic intergenic = Intergenic.createIntergenic(genePrev, null);
-			intergenics.add(intergenic);
+			if (intergenic != null) intergenics.add(intergenic);
 		}
 
 		return intergenics;
