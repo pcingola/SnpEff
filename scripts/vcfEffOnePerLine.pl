@@ -18,6 +18,7 @@ while( $l = <STDIN> ) {
 	if( $l =~ /^#/ ) { print $l; }	
 	else {
 		chomp $l;
+		$l =~ tr/\n\r//d;
 
 		@t = @infos = @effs = (); # Clear arrays
 
@@ -49,12 +50,18 @@ while( $l = <STDIN> ) {
 		if( $#effs <= 0 )	{ print "$l\n"; }	# No EFF found, just show line
 		else {
 			$pre = "";
-			for( $i=0 ; $i < $INFO_FIELD_NUM ; $i++ ) { $pre .= ( $i > 0 ? "\t" : "" ) . "$t[$i]"; }
+			for( $i=0 ; $i < $INFO_FIELD_NUM ; $i++ ) {
+				$pre .= ( $i > 0 ? "\t" : "" ) . "$t[$i]"; 
+			}
 
 			$post = "";
-			for( $i=$INFO_FIELD_NUM+1 ; $i <= $#t ; $i++ ) { $post .= "\t$t[$i]"; }
+			for( $i=$INFO_FIELD_NUM+1 ; $i <= $#t ; $i++ ) {
+				$post .= "\t$t[$i]"; 
+			}
 
-			foreach $eff ( @effs ) { print $pre . "\t" . $infStr . ( $infStr eq '' ? '' : ';' ) . "$fieldName=$eff" . $post . "\n" ; }
+			foreach $eff ( @effs ) {
+				print "$pre\t$infStr" . ( $infStr eq '' ? '' : ';' ) . "$fieldName=$eff$post\n" ; 
+			}
 		}
 	}
 }
