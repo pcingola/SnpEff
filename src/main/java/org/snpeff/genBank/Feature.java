@@ -164,9 +164,9 @@ public class Feature implements Iterable<FeatureCoordinates> {
 		if (trId != null) return trId;
 
 		trId = get("product");
-		if (trId != null) trId = trId.replaceAll("\\s", "_");
+		if (trId != null) return trId.replaceAll("\\s", "_");
 
-		return trId;
+		return "tr_line_" + lineNum;
 	}
 
 	public Type getType() {
