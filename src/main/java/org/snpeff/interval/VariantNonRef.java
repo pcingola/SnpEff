@@ -15,7 +15,9 @@ public class VariantNonRef extends Variant {
 	}
 
 	public VariantNonRef(Variant variant, Variant variantRef) {
-		super(variant.getParent(), variant.getStart(), variant.getReference(), variant.getAlt(), variant.getId());
+		//		super(variant.getParent(), variant.getStart(), variant.getReference(), variant.getAlt(), variant.getId());
+		// TODO: Change to
+		super(variant.getParent(), variant.getStart(), variantRef.getAlt(), variant.getAlt(), variant.getId());
 		genotype = variant.getGenotype();
 		this.variantRef = variantRef;
 	}

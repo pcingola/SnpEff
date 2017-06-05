@@ -29,8 +29,8 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String file = "tests/test.cancer.snp.01.vcf";
-		snpEffectCancer(file, null, "p.Leu1?/c.1A>G", "G-C");
+		String file = "tests/integration/cancer/test.cancer.snp.01.vcf";
+		snpEffectCancer(file, null, "testHg3766Chr1", true, "p.Leu1?", "c.1C>G", "G-C");
 	}
 
 	/**
@@ -39,9 +39,9 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-		String fileVcf = "tests/test.cancer_no_ped.vcf";
-		String fileTxt = "tests/test.cancer_no_ped.txt";
-		snpEffectCancer(fileVcf, fileTxt, "p.Leu1?/c.1A>G", "G-C");
+		String fileVcf = "tests/integration/cancer/test.cancer_no_ped.vcf";
+		String fileTxt = "tests/integration/cancer/test.cancer_no_ped.txt";
+		snpEffectCancer(fileVcf, fileTxt, "testHg3766Chr1", true, "p.Leu1?", "c.1C>G", "G-C");
 	}
 
 	/**
@@ -51,11 +51,11 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	public void test_03_cancer_concurrent_modification() {
 		Gpr.debug("Test");
 		String args[] = { "-cancer"//
-				, "-cancerSamples", "tests/test_cancer_concurrent_modification.txt" //
+				, "-cancerSamples", "tests/integration/cancer/test_cancer_concurrent_modification.txt" //
 				, "-ud", "0" //
 				, "-strict" //
 				, "testHg3775Chr1"//
-				, "tests/test_cancer_concurrent_modification.vcf" //
+				, "tests/integration/cancer/test_cancer_concurrent_modification.vcf" //
 		};
 
 		SnpEff cmd = new SnpEff(args);
@@ -85,6 +85,16 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 
 		Assert.assertTrue("Cancer effects not found", countCancer > 0);
 		Assert.assertTrue("There should be no warnings: countCancerWarnings = " + countCancerWarnings, countCancerWarnings == 0);
+	}
+
+	/**
+	 * Test Somatic vs Germline: Check HGVS notation "c."
+	 */
+	@Test
+	public void test_04() {
+		Gpr.debug("Test");
+		String file = "tests/integration/cancer/test_04.vcf";
+		snpEffectCancer(file, null, "testHg19Chr22", false, "p.Gln133Leu", "c.398A>T", "A-T");
 	}
 
 }

@@ -40,6 +40,10 @@ public class HgvsDna extends Hgvs {
 		super(variantEffect);
 	}
 
+	protected String alt() {
+		return variant.getAlt();
+	}
+
 	/**
 	 * DNA level base changes
 	 */
@@ -47,17 +51,17 @@ public class HgvsDna extends Hgvs {
 
 		switch (variant.getVariantType()) {
 		case SNP:
-			if (strandPlus) return variant.getReference() + ">" + variant.getAlt();
-			return GprSeq.reverseWc(variant.getReference()) + ">" + GprSeq.reverseWc(variant.getAlt());
+			if (strandPlus) return ref() + ">" + alt();
+			return GprSeq.reverseWc(ref()) + ">" + GprSeq.reverseWc(alt());
 
 		case MNP:
 			String ref, alt;
 			if (strandPlus) {
-				ref = variant.getReference();
-				alt = variant.getAlt();
+				ref = ref();
+				alt = alt();
 			} else {
-				ref = GprSeq.reverseWc(variant.getReference());
-				alt = GprSeq.reverseWc(variant.getAlt());
+				ref = GprSeq.reverseWc(ref());
+				alt = GprSeq.reverseWc(alt());
 			}
 			return "del" + ref + "ins" + alt;
 
@@ -70,8 +74,8 @@ public class HgvsDna extends Hgvs {
 			return GprSeq.reverseWc(netChange);
 
 		case MIXED:
-			if (strandPlus) return "del" + variant.getReference() + "ins" + variant.getAlt();
-			return "del" + GprSeq.reverseWc(variant.getReference()) + "ins" + GprSeq.reverseWc(variant.getAlt());
+			if (strandPlus) return "del" + ref() + "ins" + alt();
+			return "del" + GprSeq.reverseWc(ref()) + "ins" + GprSeq.reverseWc(alt());
 
 		case INV:
 			// Inversions are designated by "inv" after an indication of the
@@ -116,7 +120,7 @@ public class HgvsDna extends Hgvs {
 
 		// Get sequence at the 3'end of the variant
 		int sstart, send;
-		int len = variant.getAlt().length();
+		int len = alt().length();
 
 		if (strandPlus) {
 			sstart = Math.max(0, variant.getStart() - len);
@@ -134,19 +138,19 @@ public class HgvsDna extends Hgvs {
 		if (ex != null && ex.includes(m)) {
 			if (debug) Gpr.debug("Variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (strandPlus ? "+" : "-"));
 			seq = ex.getSequence(m);
-			if (debug) Gpr.debug("Sequence (Exon)  [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'\tsequence (+ strand): " + (ex.isStrandPlus() ? ex.getSequence() : GprSeq.reverseWc(ex.getSequence())));
+			if (debug) Gpr.debug("Sequence (Exon)  [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + alt() + "'\tsequence (+ strand): " + (ex.isStrandPlus() ? ex.getSequence() : GprSeq.reverseWc(ex.getSequence())));
 		}
 
 		// May be it is not completely in the exon. Use genomic sequences
 		if (seq == null) {
 			seq = genome.getGenomicSequences().querySequence(m);
-			if (debug) Gpr.debug("Sequence (Genome) [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + variant.getAlt() + "'\tsequence (+ strand): " + seq);
+			if (debug) Gpr.debug("Sequence (Genome) [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + alt() + "'\tsequence (+ strand): " + seq);
 		}
 
 		// Compare to ALT sequence
 		if (seq == null) return false; // Cannot compare
 
-		return seq.equalsIgnoreCase(variant.getAlt());
+		return seq.equalsIgnoreCase(alt());
 	}
 
 	/**
@@ -179,7 +183,7 @@ public class HgvsDna extends Hgvs {
 			posStart = variantPosStart;
 			if (duplication) {
 				// Duplication coordinates
-				int lenAlt = variant.getAlt().length();
+				int lenAlt = alt().length();
 				if (lenAlt == 1) {
 					// One base duplications do not require end positions:
 					// Reference: http://www.hgvs.org/mutnomen/disc.html#dupins
@@ -401,7 +405,7 @@ public class HgvsDna extends Hgvs {
 				+ ";" //
 				+ vtr.getEndPoint().getChromosomeName() //
 				+ ")" //
-				;
+		;
 
 		// Get cytobands
 		String band1 = "";
@@ -416,6 +420,10 @@ public class HgvsDna extends Hgvs {
 		String bands = "(" + band1 + ";" + band2 + ")";
 
 		return "t" + chrCoords + bands + "(";
+	}
+
+	protected String ref() {
+		return variant.getReference();
 	}
 
 	@Override
@@ -471,11 +479,11 @@ public class HgvsDna extends Hgvs {
 		if (Config.get().isHgvsOld() && type.isEmpty()) {
 			String ref, alt;
 			if (strandPlus) {
-				ref = variant.getReference();
-				alt = variant.getAlt();
+				ref = ref();
+				alt = alt();
 			} else {
-				ref = GprSeq.reverseWc(variant.getReference());
-				alt = GprSeq.reverseWc(variant.getAlt());
+				ref = GprSeq.reverseWc(ref());
+				alt = GprSeq.reverseWc(alt());
 			}
 
 			// Use 'c.G123T' instead of 'c.123G>T'
