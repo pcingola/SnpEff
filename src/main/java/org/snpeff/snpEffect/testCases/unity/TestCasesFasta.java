@@ -23,7 +23,7 @@ public class TestCasesFasta {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String fastaFileName = "tests/emptyLine.fa";
+		String fastaFileName = "tests/unity/fasta/emptyLine.fa";
 		FastaFileIterator ffi = new FastaFileIterator(fastaFileName);
 		for (String seq : ffi) {
 			if (verbose) System.out.println("SeqName: " + ffi.getName() + "\tSize: " + seq.length());

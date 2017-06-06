@@ -44,7 +44,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_00() {
 		Gpr.debug("Test");
-		String fileName = "./tests/1kg_head.vcf";
+		String fileName = "./tests/unity/vcf/1kg_head.vcf";
 		VcfFileIterator vcf = new VcfFileIterator(fileName);
 
 		for (VcfEntry ve : vcf) {
@@ -58,7 +58,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String fileName = "./tests/vcf.vcf";
+		String fileName = "./tests/unity/vcf/vcf.vcf";
 		VcfFileIterator vcf = new VcfFileIterator(fileName);
 		vcf.setCreateChromos(true);
 		for (VcfEntry vcfEntry : vcf) {
@@ -76,7 +76,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_04_del() {
 		Gpr.debug("Test");
-		String fileName = "./tests/vcf_04_del.vcf";
+		String fileName = "./tests/unity/vcf/vcf_04_del.vcf";
 		VcfFileIterator vcf = new VcfFileIterator(fileName);
 		vcf.setCreateChromos(true);
 		for (VcfEntry vcfEntry : vcf) {
@@ -92,7 +92,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_05_choking_on_dot_slash_dot() {
 		Gpr.debug("Test");
-		String fileName = "./tests/choking_on_dot_slash_dot.vcf";
+		String fileName = "./tests/unity/vcf/choking_on_dot_slash_dot.vcf";
 		VcfFileIterator vcf = new VcfFileIterator(fileName);
 		vcf.setCreateChromos(true);
 		for (VcfEntry vcfEntry : vcf) {
@@ -125,7 +125,7 @@ public class TestCasesVcf extends TestCasesBase {
 	public void test_06_mixed_change() {
 		// WARNING: This test is expected to fail, because this functionality is unimplemented
 		Gpr.debug("Test");
-		String file = "./tests/array_out_of_bounds.vcf";
+		String file = "./tests/unity/vcf/array_out_of_bounds.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(file);
 		vcf.setCreateChromos(true);
@@ -148,7 +148,7 @@ public class TestCasesVcf extends TestCasesBase {
 	public void test_07_long_lines() {
 		Gpr.debug("Test");
 
-		String file = "./tests/long.vcf";
+		String file = "./tests/unity/vcf/long.vcf";
 
 		Timer t = new Timer();
 		t.start();
@@ -174,7 +174,7 @@ public class TestCasesVcf extends TestCasesBase {
 	public void test_08_alt_del() {
 		Gpr.debug("Test");
 
-		String file = "./tests/alt_del.vcf";
+		String file = "./tests/unity/vcf/alt_del.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(file);
 		vcf.setCreateChromos(true);
@@ -199,7 +199,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_09_empty_ALT() {
 		Gpr.debug("Test");
-		String file = "./tests/empty.vcf";
+		String file = "./tests/unity/vcf/empty.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(file);
 		for (VcfEntry vcfEntry : vcf) {
@@ -214,7 +214,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_10_empty_QUAL() {
 		Gpr.debug("Test");
-		String file = "./tests/empty.vcf";
+		String file = "./tests/unity/vcf/empty.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(file);
 		for (VcfEntry vcfEntry : vcf) {
@@ -229,7 +229,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_11_empty() {
 		Gpr.debug("Test");
-		String file = "./tests/empty.vcf";
+		String file = "./tests/unity/vcf/empty.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(file);
 		for (VcfEntry vcfEntry : vcf) {
@@ -241,7 +241,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_12_readHeader() {
 		Gpr.debug("Test");
-		String file = "./tests/test.chr1.1line.vcf";
+		String file = "./tests/unity/vcf/test.chr1.1line.vcf";
 
 		VcfFileIterator vcfFile = new VcfFileIterator(file);
 		vcfFile.readHeader();
@@ -261,7 +261,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_12_readHeader_NL() {
 		Gpr.debug("Test");
-		String file = "./tests/test.chr1.1line.vcf";
+		String file = "./tests/unity/vcf/test.chr1.1line.vcf";
 
 		VcfFileIterator vcfFile = new VcfFileIterator(file);
 		String header = vcfFile.readHeader().toString();
@@ -272,7 +272,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_13_chrOri() {
 		Gpr.debug("Test");
-		String file = "./tests/test.chr1.1line.vcf";
+		String file = "./tests/unity/vcf/test.chr1.1line.vcf";
 
 		VcfFileIterator vcfFile = new VcfFileIterator(file);
 		vcfFile.readHeader();
@@ -313,11 +313,11 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_15_Eff_format_version_guess() {
 		Gpr.debug("Test");
-		String vcfFileName = "./tests/test.EFF_V2.vcf";
+		String vcfFileName = "./tests/unity/vcf/test.EFF_V2.vcf";
 		EffFormatVersion formatVersion = formatVersion(vcfFileName);
 		Assert.assertEquals(EffFormatVersion.FORMAT_EFF_2, formatVersion);
 
-		vcfFileName = "./tests/test.EFF_V3.vcf";
+		vcfFileName = "./tests/unity/vcf/test.EFF_V3.vcf";
 		formatVersion = formatVersion(vcfFileName);
 		Assert.assertEquals(EffFormatVersion.FORMAT_EFF_3, formatVersion);
 	}
@@ -325,7 +325,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_16_indels() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/1kg.indels.vcf";
+		String vcfFile = "tests/unity/vcf/1kg.indels.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
@@ -352,7 +352,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_18_vcf_tabix() {
 		Gpr.debug("Test");
-		VcfFileIterator vcf = new VcfFileIterator("./tests/test_tabix.vcf.gz");
+		VcfFileIterator vcf = new VcfFileIterator("./tests/unity/vcf/test_tabix.vcf.gz");
 
 		String chrpos = "";
 		for (VcfEntry ve : vcf) {
@@ -367,7 +367,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_22_huge_headers() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/huge_header_slow.vcf.gz";
+		String vcfFile = "tests/unity/vcf/huge_header_slow.vcf.gz";
 
 		Timer timer = new Timer();
 		timer.start();
@@ -383,13 +383,13 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_23_VcfUnsorted() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/out_of_order.vcf";
+		String vcfFile = "tests/unity/vcf/out_of_order.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		vcf.setErrorIfUnsorted(true);
 
 		boolean errorFound = false;
-		String expectedErrorMessage = "VCF file 'tests/out_of_order.vcf' is not sorted, genomic position 20:2622038 is before 20:2621729";
+		String expectedErrorMessage = "VCF file '" + vcfFile + "' is not sorted, genomic position 20:2622038 is before 20:2621729";
 		try {
 			for (VcfEntry ve : vcf) {
 				if (verbose) System.out.println(ve);
@@ -414,7 +414,7 @@ public class TestCasesVcf extends TestCasesBase {
 	 */
 	@Test
 	public void test_24_VcfEffect_parse_SO() {
-		String vcfFileName = "tests/test_rasmus.vcf";
+		String vcfFileName = "tests/unity/vcf/test_rasmus.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
@@ -430,7 +430,7 @@ public class TestCasesVcf extends TestCasesBase {
 	 */
 	@Test
 	public void test_25_Genomic_VCF() {
-		String vcfFileName = "tests/genomic_vcf.gvcf";
+		String vcfFileName = "tests/unity/vcf/genomic_vcf.gvcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		int start = -1;
@@ -458,7 +458,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_26_vcfInfoHeaderAdd() {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/example_42.vcf";
+		String vcfFileName = "tests/unity/vcf/example_42.vcf";
 
 		// Create a new INFO field
 		String infoFieldName = "NEW_INFO";
@@ -493,7 +493,7 @@ public class TestCasesVcf extends TestCasesBase {
 		Gpr.debug("Test");
 
 		String infoFieldName = "NEW_INFO";
-		String vcfFileName = "tests/example_42.vcf";
+		String vcfFileName = "tests/unity/vcf/example_42.vcf";
 
 		// Add this header
 		VcfHeaderInfo vhInfo = new VcfHeaderInfo(infoFieldName, VcfInfoType.Integer, VcfInfoNumber.UNLIMITED.toString(), "An arbitrary set of integer random numbers");
@@ -536,7 +536,7 @@ public class TestCasesVcf extends TestCasesBase {
 	public void test_28_vcfInfoReplace() {
 		Gpr.debug("Test");
 
-		String vcfFileName = "tests/example_42.vcf";
+		String vcfFileName = "tests/unity/vcf/example_42.vcf";
 
 		// Replace all 'DP' fields using this value
 		String infoKey = "DP";
@@ -570,7 +570,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_29() {
 		Gpr.debug("Test");
-		String fileName = "./tests/test_vcf_ann_plus_sign.vcf";
+		String fileName = "./tests/unity/vcf/test_vcf_ann_plus_sign.vcf";
 		VcfFileIterator vcf = new VcfFileIterator(fileName);
 
 		for (VcfEntry ve : vcf) {
@@ -593,7 +593,7 @@ public class TestCasesVcf extends TestCasesBase {
 	public void test_30_gVCF_NON_REF() {
 		Gpr.debug("Test");
 
-		String vcfFileName = "tests/test_gVCF_NON_REF.vcf";
+		String vcfFileName = "tests/unity/vcf/test_gVCF_NON_REF.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
@@ -623,7 +623,7 @@ public class TestCasesVcf extends TestCasesBase {
 
 	@Test
 	public void test_31_MISSING_REF() {
-		String vcfFile = "tests/test_missing_ref.vcf";
+		String vcfFile = "tests/unity/vcf/test_missing_ref.vcf";
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 
 		int countVariants = 0;
@@ -654,7 +654,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_33_translocations() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/vcf_translocation.vcf";
+		String vcfFile = "tests/unity/vcf/vcf_translocation.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
@@ -682,7 +682,7 @@ public class TestCasesVcf extends TestCasesBase {
 	@Test
 	public void test_35_translocations_parsing() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/vcf_translocation_parsing.vcf";
+		String vcfFile = "tests/unity/vcf/vcf_translocation_parsing.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {

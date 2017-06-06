@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.fileIterator.SeekableBufferedReader;
 import org.snpeff.util.Gpr;
+
+import junit.framework.Assert;
 
 /**
  * Seekable file reader test case
@@ -56,7 +56,7 @@ public class TestCasesSeekableReader {
 	@Test
 	public void test_00() throws IOException {
 		Gpr.debug("Test");
-		String fileName = "tests/testLukas.vcf";
+		String fileName = "tests/unity/seekableReader/testLukas.vcf";
 		long hashExp = calcHashBufferedReader(fileName);
 		long hash = calcHash(fileName);
 		System.out.println(String.format("%016x\t%016x\t%s", hashExp, hash, fileName));
@@ -71,9 +71,10 @@ public class TestCasesSeekableReader {
 	@Test
 	public void test_01() throws IOException {
 		Gpr.debug("Test");
-		String dirName = "./tests/";
+		String dirName = "./tests/unity/seekableReader/";
 		File dir = new File(dirName);
 
+		int count = 0;
 		for (String fileName : dir.list()) {
 			if (fileName.endsWith(".txt") || fileName.endsWith(".vcf")) {
 				if (fileName.equals("testLukas.vcf")) {
@@ -83,8 +84,10 @@ public class TestCasesSeekableReader {
 					System.out.println(String.format("%016x\t%016x\t%s", hashExp, hash, fileName));
 
 					Assert.assertEquals(hashExp, hash);
+					count++;
 				}
 			}
 		}
+		Assert.assertTrue("No files found!", count > 0);
 	}
 }

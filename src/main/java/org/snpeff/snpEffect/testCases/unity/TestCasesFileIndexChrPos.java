@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.FileIndexChrPos;
-import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.FileIndexChrPos.LineAndPos;
+import org.snpeff.vcf.VcfEntry;
 
 import junit.framework.Assert;
 
@@ -71,7 +71,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_00_long_file() throws IOException {
 		Gpr.debug("Test");
-		readLinesCheck("tests/test.chr1.vcf", 1000);
+		readLinesCheck("tests/unity/fileIndexChrPos/test.chr1.vcf", 1000);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_00_short_file() throws IOException {
 		Gpr.debug("Test");
-		readLinesCheck("tests/test_filter_transcripts_001.ori.vcf", 1000);
+		readLinesCheck("tests/unity/fileIndexChrPos/test_filter_transcripts_001.ori.vcf", 1000);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_01() throws IOException {
 		Gpr.debug("Test");
-		String vcf = "tests/test.chr1.vcf";
+		String vcf = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 
 		if (verbose) System.out.println("Indexing file '" + vcf + "'");
 		FileIndexChrPos idx = new FileIndexChrPos(vcf);
@@ -113,7 +113,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_02() throws IOException {
 		Gpr.debug("Test");
-		String vcf = "tests/test.chr1.vcf";
+		String vcf = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 		String line = "1	861275	.	C	T	764.18	PASS	AC=1;AF=0.00061;AN=1644;DS;set=Intersection";
 
 		if (verbose) System.out.println("Indexing file '" + vcf + "'");
@@ -136,7 +136,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_03() throws IOException {
 		Gpr.debug("Test");
-		String vcf = "tests/test.chr1.vcf";
+		String vcf = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 
 		if (verbose) System.out.println("Indexing file '" + vcf + "'");
 		FileIndexChrPos idx = new FileIndexChrPos(vcf);
@@ -164,7 +164,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_04() throws IOException {
 		Gpr.debug("Test");
-		String vcf = "tests/test.chr1.vcf";
+		String vcf = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 
 		if (verbose) System.out.println("Indexing file '" + vcf + "'");
 		FileIndexChrPos idx = new FileIndexChrPos(vcf);
@@ -193,7 +193,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_05() throws IOException {
 		Gpr.debug("Test");
-		String vcf = "tests/test.chr1.vcf";
+		String vcf = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 
 		if (verbose) System.out.println("Indexing file '" + vcf + "'");
 		FileIndexChrPos idx = new FileIndexChrPos(vcf);
@@ -222,7 +222,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_06() throws IOException {
 		Gpr.debug("Test");
-		String vcf = "tests/test.chr1.vcf";
+		String vcf = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 
 		if (verbose) System.out.println("Indexing file '" + vcf + "'");
 		FileIndexChrPos idx = new FileIndexChrPos(vcf);
@@ -251,7 +251,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_07() throws IOException {
 		Gpr.debug("Test");
-		String vcf = "tests/test.chr1.vcf";
+		String vcf = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 
 		if (verbose) System.out.println("Indexing file '" + vcf + "'");
 		FileIndexChrPos idx = new FileIndexChrPos(vcf);
@@ -276,7 +276,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_10() throws IOException {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test.chr1.vcf";
+		String vcfFileName = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 		Random random = new Random(20130216);
 
 		// Index file
@@ -310,7 +310,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_11() throws IOException {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test.chr1.vcf";
+		String vcfFileName = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 
 		Random random = new Random(20130217);
 
@@ -358,7 +358,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_20() throws IOException {
 		Gpr.debug("Test");
-		String vcf = "tests/test.chr1.vcf";
+		String vcf = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 
 		if (verbose) System.out.println("Indexing file '" + vcf + "'");
 		FileIndexChrPos idx = new FileIndexChrPos(vcf);
@@ -381,7 +381,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_21() throws IOException {
 		Gpr.debug("Test");
-		String vcf = "tests/test.chr1.vcf";
+		String vcf = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 
 		if (verbose) System.out.println("Indexing file '" + vcf + "'");
 		FileIndexChrPos idx = new FileIndexChrPos(vcf);
@@ -404,7 +404,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_22() throws IOException {
 		Gpr.debug("Test");
-		String vcf = "tests/test.chr1.vcf";
+		String vcf = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 
 		if (verbose) System.out.println("Indexing file '" + vcf + "'");
 		FileIndexChrPos idx = new FileIndexChrPos(vcf);
@@ -427,7 +427,7 @@ public class TestCasesFileIndexChrPos {
 	@Test
 	public void test_23() throws IOException {
 		Gpr.debug("Test");
-		String vcfFileName = "tests/test.chr1.vcf";
+		String vcfFileName = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 		int MAX_TEST = 1000;
 		Random random = new Random(20130217);
 
@@ -441,7 +441,7 @@ public class TestCasesFileIndexChrPos {
 
 		// Read VCF file
 		int minPos = Integer.MAX_VALUE, maxPos = Integer.MIN_VALUE, count = 0;
-		ArrayList<VcfEntry> vcfEntries = new ArrayList<VcfEntry>();
+		ArrayList<VcfEntry> vcfEntries = new ArrayList<>();
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
 			vcfEntries.add(ve);
@@ -493,7 +493,7 @@ public class TestCasesFileIndexChrPos {
 	public void test_24() throws IOException {
 		Gpr.debug("Test");
 		int MAX_TEST = 100;
-		String vcfFileName = "tests/test.chr1.vcf";
+		String vcfFileName = "tests/unity/fileIndexChrPos/test.chr1.vcf";
 		Random random = new Random(20130217);
 
 		// Index file
@@ -506,7 +506,7 @@ public class TestCasesFileIndexChrPos {
 
 		// Read VCF file
 		int minPos = Integer.MAX_VALUE, maxPos = Integer.MIN_VALUE;
-		ArrayList<VcfEntry> vcfEntries = new ArrayList<VcfEntry>();
+		ArrayList<VcfEntry> vcfEntries = new ArrayList<>();
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
 			vcfEntries.add(ve);

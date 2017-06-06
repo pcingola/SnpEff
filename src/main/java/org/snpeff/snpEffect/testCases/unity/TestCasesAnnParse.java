@@ -52,7 +52,7 @@ public class TestCasesAnnParse {
 	@Test
 	public void test_old_SO_vcf() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/test_old_SO_01.vcf";
+		String vcfFile = "tests/unity/annParse/test_old_SO_01.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
@@ -70,7 +70,7 @@ public class TestCasesAnnParse {
 	@Test
 	public void testCase_tfbs_ablation() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/tfbs_ablation.vcf";
+		String vcfFile = "tests/unity/annParse/tfbs_ablation.vcf";
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 
 		boolean ok = false;
