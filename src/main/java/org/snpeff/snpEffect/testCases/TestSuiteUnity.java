@@ -43,6 +43,7 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesHgvsProtDup;
 import org.snpeff.snpEffect.testCases.unity.TestCasesHypergeometric;
 import org.snpeff.snpEffect.testCases.unity.TestCasesIns;
 import org.snpeff.snpEffect.testCases.unity.TestCasesIntStats;
+import org.snpeff.snpEffect.testCases.unity.TestCasesIntergenic;
 import org.snpeff.snpEffect.testCases.unity.TestCasesIntervalTree;
 import org.snpeff.snpEffect.testCases.unity.TestCasesIntervalTreeArray;
 import org.snpeff.snpEffect.testCases.unity.TestCasesIntervalTreeOri;
@@ -104,6 +105,7 @@ import org.snpeff.snpEffect.testCases.unity.TestCasesVcf;
 		TestCasesGenePvalueList.class, //
 		TestCasesGenomicSequences.class, //
 		TestCasesGenotypeVector.class, //
+		TestCasesIntergenic.class, //
 		TestCasesIntervalTree.class, //
 		TestCasesIntervalTreeOri.class, //
 		TestCasesIntervalTreeArray.class, //

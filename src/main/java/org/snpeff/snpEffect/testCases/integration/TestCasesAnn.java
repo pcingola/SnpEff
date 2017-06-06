@@ -330,14 +330,14 @@ public class TestCasesAnn extends TestCasesBase {
 		Assert.assertEquals("MODIFIER", veff.getImpact().toString());
 
 		// Gene name / ID
-		Assert.assertEquals("UBXN11", veff.getGeneName());
-		Assert.assertEquals("ENSG00000158062", veff.getGeneId());
+		Assert.assertEquals("CHR_START-UBXN11", veff.getGeneName());
+		Assert.assertEquals("CHR_START-ENSG00000158062", veff.getGeneId());
 
 		// Feature type
 		Assert.assertEquals("intergenic_region", veff.getFeatureType());
 
 		// FeatureId / transcriptId
-		Assert.assertEquals("ENSG00000158062", veff.getFeatureId());
+		Assert.assertEquals("CHR_START-ENSG00000158062", veff.getFeatureId());
 		Assert.assertEquals("", veff.getTranscriptId());
 
 		// Biotype

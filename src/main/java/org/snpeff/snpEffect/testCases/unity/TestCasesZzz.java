@@ -7,6 +7,7 @@ import java.util.Set;
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationBase;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -18,7 +19,7 @@ import junit.framework.Assert;
  *
  * @author pcingola
  */
-public class TestCasesZzz extends TestCasesBase {
+public class TestCasesZzz extends TestCasesIntegrationBase {
 
 	public static int N = 1000;
 

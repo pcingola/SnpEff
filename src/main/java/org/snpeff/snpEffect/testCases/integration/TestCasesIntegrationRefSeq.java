@@ -29,6 +29,7 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
+
 		/// Build SnpEffectPredictor using a RefSeq file
 		String genome = "hg19";
 		String refSeqFile = "tests/hg19_refSeq_OR4F16.txt";

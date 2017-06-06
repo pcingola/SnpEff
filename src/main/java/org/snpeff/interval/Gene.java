@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.snpeff.interval.tree.IntervalTree;
+import org.snpeff.interval.tree.Itree;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
@@ -32,6 +34,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	String geneName;
 	BioType bioType;
+	Itree intervalTreeGene;
 
 	public Gene() {
 		super();
@@ -45,6 +48,15 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		this.geneName = geneName;
 		this.bioType = bioType;
 		type = EffectType.GENE;
+	}
+
+	/**
+	 * Add a gene dependent marker
+	 */
+	public void addPerGene(Marker marker) {
+		if (intervalTreeGene == null) intervalTreeGene = new IntervalTree();
+
+		intervalTreeGene.add(marker);
 	}
 
 	/**
@@ -98,6 +110,13 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		}
 
 		return changed;
+	}
+
+	/**
+	 * Build gene dependent interval tree
+	 */
+	public void buildPerGene() {
+		if (intervalTreeGene != null) intervalTreeGene.build();
 	}
 
 	/**
@@ -583,6 +602,9 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			return true;
 		}
 
+		// Do we have 'per gene' information?
+		variantEffectGene(variant, variantEffects);
+
 		//---
 		// Do we need to add INFO_SHIFT_3_PRIME warning message?
 		//---
@@ -594,5 +616,16 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		}
 
 		return true;
+	}
+
+	/**
+	 * Add gene-specific annotations
+	 */
+	protected void variantEffectGene(Variant variant, VariantEffects variantEffects) {
+		if (intervalTreeGene == null) return;
+
+		Markers res = intervalTreeGene.query(variant);
+		for (Marker m : res)
+			m.variantEffect(variant, variantEffects);
 	}
 }

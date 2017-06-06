@@ -101,4 +101,50 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 		}
 	}
 
+	/**
+	 * Annotate protein-structural interaction
+	 * Make sure that the HGVS notation positions (DNA and Protein) are consistent.
+	 * When the variant is realigned, the protein-interaction annotation should not appear
+	 */
+	@Test
+	public void test_03_protein_protein_interactions_hgvs() {
+		Gpr.debug("Test");
+		String args[] = { "-canon" };
+		List<VcfEntry> vcfEntries = snpEffect("testHg19Chr22", "tests/test_interaction_03.vcf", args, null);
+
+		// Parse and check output
+		boolean foundPi = false;
+		boolean foundFs = false;
+		for (VcfEntry ve : vcfEntries) {
+			if (verbose) System.out.println(ve);
+
+			int countPi = 0;
+			for (VcfEffect veff : ve.getVcfEffects()) {
+				if (verbose) System.out.println("\tEFF\t" + veff.getEffectType() + "\t" + veff);
+				if (veff.getEffectType() == EffectType.PROTEIN_STRUCTURAL_INTERACTION_LOCUS) {
+					countPi++;
+					Assert.assertTrue("Expected HGVS.c possition does not match", veff.getHgvsDna().startsWith("c.679"));
+					Assert.assertTrue("Expected HGVS.p possition does not match", //
+							veff.getFeatureId().startsWith("1H4R:A_227") //
+									|| veff.getFeatureId().startsWith("1H4R:B_227") //
+					);
+					foundPi = true;
+				} else if (veff.getEffectType() == EffectType.FRAME_SHIFT) {
+					Assert.assertTrue("Expected HGVS.c possition does not match", veff.getHgvsDna().startsWith("c.683"));
+					Assert.assertTrue("Expected HGVS.p possition does not match", veff.getHgvsProt().startsWith("p.Lys228"));
+					foundFs = true;
+				}
+			}
+
+			if (ve.isSingleSnp()) {
+				Assert.assertTrue("No interactions found", countPi > 0);
+			} else {
+				Assert.assertFalse("There should be no interactions", countPi > 0);
+			}
+		}
+
+		Assert.assertTrue("Interaction term not found", foundPi);
+		Assert.assertTrue("Frameshift term not found", foundFs);
+	}
+
 }

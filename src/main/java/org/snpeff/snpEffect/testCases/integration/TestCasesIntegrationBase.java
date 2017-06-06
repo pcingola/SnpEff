@@ -807,12 +807,20 @@ public class TestCasesIntegrationBase {
 	/**
 	 * Calculate snp effect for a list of snps using cancer samples
 	 */
-	public void snpEffectCancer(String vcfFile, String txtFile, String aaHgsv, String genotype) {
+	public void snpEffectCancer(String vcfFile, String txtFile, String genome, boolean classic, String hgsvP, String hgvsC, String genotype) {
 		// Create command
-		String argsVcf[] = { "-classic", "-cancer", "-hgvs", "testHg3766Chr1", vcfFile };
-		String argsTxt[] = { "-classic", "-cancer", "-cancerSamples", txtFile, "-hgvs", "testHg3766Chr1", vcfFile };
-		String args[] = (txtFile == null ? argsVcf : argsTxt);
+		List<String> argList = new ArrayList<>();
+		argList.add("-cancer");
+		argList.add("-hgvs");
+		if (classic) argList.add("-classic");
+		if (txtFile != null) {
+			argList.add("-cancerSamples");
+			argList.add(txtFile);
+		}
+		argList.add(genome);
+		argList.add(vcfFile);
 
+		String args[] = argList.toArray(new String[0]);
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
@@ -827,9 +835,10 @@ public class TestCasesIntegrationBase {
 		for (VcfEntry vcfEntry : list) {
 			if (debug) System.err.println(vcfEntry);
 			for (VcfEffect eff : vcfEntry.getVcfEffects()) {
-				if (debug) System.err.println("\t" + eff + "\n\t\tAA : " + eff.getAa() + "\n\t\tGenotype: " + eff.getGenotype());
+				if (debug) System.err.println("\t" + eff + "\n\t\tHGVS.p : " + eff.getHgvsProt() + "\n\t\tHGVS.c : " + eff.getHgvsDna() + "\n\t\tGenotype: " + eff.getGenotype());
 				if (genotype.equals(eff.getGenotype())) {
-					Assert.assertEquals(aaHgsv, eff.getAa());
+					if (hgsvP != null) Assert.assertEquals(hgsvP, eff.getHgvsP());
+					if (hgvsC != null) Assert.assertEquals(hgvsC, eff.getHgvsDna());
 					found = true;
 				}
 			}

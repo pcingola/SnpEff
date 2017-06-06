@@ -27,7 +27,7 @@ public abstract class ProteinInteractionLocus extends Marker {
 		String geneId1 = tr.getParent().getId();
 		String geneId2 = trInteract.getParent().getId();
 
-		// Intervals may be swapped for transcript on the negative strand 
+		// Intervals may be swapped for transcript on the negative strand
 		int s = Math.min(start, end);
 		int e = Math.max(start, end);
 
@@ -40,7 +40,7 @@ public abstract class ProteinInteractionLocus extends Marker {
 	}
 
 	/**
-	 * Create interaction. Most of the time it is only one interval, but 
+	 * Create interaction. Most of the time it is only one interval, but
 	 * if introns split an amino acid, it may be more then one interval
 	 */
 	public static List<ProteinInteractionLocus> factory(Transcript tr, int aaPos, Transcript trInteract, String id) {
@@ -67,11 +67,11 @@ public abstract class ProteinInteractionLocus extends Marker {
 				list.add(factory(tr, start, prev, trInteract, id));
 				start = pos;
 			}
-			j++;
+			j += step;
 			prev = pos;
 		}
 
-		// Make sure at least one interval is created
+		// Add last interval
 		list.add(factory(tr, start, pos, trInteract, id));
 		return list;
 	}

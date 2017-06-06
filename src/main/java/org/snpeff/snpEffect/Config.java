@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.snpeff.SnpEff;
 import org.snpeff.codons.CodonTable;
@@ -32,6 +33,7 @@ public class Config implements Serializable, Iterable<String> {
 	public static final String DEFAULT_DATA_DIR = "./data";
 	public static String GENOMES_DIR = "genomes"; // Directory has one genomes information (FASTA files)
 	public static int MAX_WARNING_COUNT = 20;
+	public static String DEFAULT_COORDINATES = "GRCh37";
 
 	// Keys in properties file
 	public static final String KEY_BUNDLE_SUFIX = ".bundle";
@@ -253,20 +255,23 @@ public class Config implements Serializable, Iterable<String> {
 
 		// Not found? Try genome name without version (e.g. 'GRCh38.85' => 'GRCh38')
 		coords = genomeVersion.split("\\.")[0];
-		return coords;
+		return coords.isEmpty() ? DEFAULT_COORDINATES : coords;
 	}
 
 	/**
 	 * Database local file for a specific database, such as 'dbSnp', 'ClinVar', etc.
 	 */
 	public String getDatabaseLocal(String dbName) {
+		String dbLocal = properties.getProperty(getDatabaseLocalKey(dbName), "");
+		if (dbLocal.isEmpty()) return "";
+		return canonicalDir(dbLocal);
+	}
+
+	public String getDatabaseLocalKey(String dbName) {
 		String coordinates = getCoordinates();
 		if (coordinates == null) throw new RuntimeException("Cannot find coordinates config entry for genome '" + genomeVersion + "'");
 
-		String dbLocal = properties.getProperty(KEY_DATABASE_LOCAL + "." + dbName + "." + coordinates, "");
-
-		if (dbLocal.isEmpty()) return "";
-		return canonicalDir(dbLocal);
+		return KEY_DATABASE_LOCAL + "." + dbName + "." + coordinates;
 	}
 
 	public String getDatabaseRepository() {
@@ -528,6 +533,14 @@ public class Config implements Serializable, Iterable<String> {
 	@Override
 	public Iterator<String> iterator() {
 		return nameById.keySet().iterator();
+	}
+
+	public List<String> keys() {
+		Set<Object> keyset = properties.keySet();
+		ArrayList<String> l = new ArrayList<>(keyset.size());
+		for (Object o : keyset)
+			l.add(o.toString());
+		return l;
 	}
 
 	/**

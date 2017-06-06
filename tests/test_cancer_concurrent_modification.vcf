@@ -1,2 +1,0 @@
-#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	syn3-tumor	syn3-normal
-1	145302676	.	G	A,T	.	.	.	GT	0|2	0|1

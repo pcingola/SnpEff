@@ -85,7 +85,7 @@
         <ul class="nav nav-list bs-docs-sidenav">
           <li><a href="#intro"> <i class="icon-chevron-right"></i> Introduction</a></li>
           <li><a href="#filter"> <i class="icon-chevron-right"></i> SnpSift filter </a></li>
-          <li><a href="#annotate"> <i class="icon-chevron-right"></i> SnpSift Annotate & AnnMEM </a></li>
+          <li><a href="#annotate"> <i class="icon-chevron-right"></i> SnpSift Annotate </a></li>
           <li><a href="#casecontrol"> <i class="icon-chevron-right"></i> SnpSift CaseControl </a></li>
           <li><a href="#Intervals"> <i class="icon-chevron-right"></i> SnpSift Intervals </a></li>
           <li><a href="#intidx"> <i class="icon-chevron-right"></i> SnpSift Intervals Index </a></li>
@@ -138,7 +138,7 @@
 				Some examples of what you can do:
 				<table class="table table-striped">
 					<tr> <td> <b>Filter</b> </td> <td> You can filter using arbitrary expressions, for instance "(QUAL &gt; 30) | (exists INDEL) | ( countHet() &gt; 2 )". The actual expressions can be quite complex, so it allows for a lot of flexibility. </td> </tr>
-					<tr> <td> <b>Annotate & AnnMem</b> </td> <td> You can add 'ID' and INFO fields from another "VCF database" (e.g.  typically dbSnp database in VCF format). </td> </tr>
+					<tr> <td> <b>Annotate</b> </td> <td> You can add 'ID' and INFO fields from another "VCF database" (e.g.  typically dbSnp database in VCF format). </td> </tr>
 					<tr> <td> <b>CaseControl</b> </td> <td> You can compare how many variants are in 'case' and in 'control' groups. Also calculates p-values (Fisher exact test). </td> </tr>
 					<tr> <td> <b>Intervals</b> </td> <td> Filter variants that intersect with intervals. </td> </tr>
 					<tr> <td> <b>Intervals (intidx)</b> </td> <td> Filter variants that intersect with intervals. Index the VCF file using memory mapped I/O to speed up the search. This is intended for huge VCF files and a small number of intervals to retrieve. </td> </tr>
@@ -613,7 +613,7 @@ $ cat cancer.vcf | java -jar SnpSift.jar filter "GEN[Somatic].GT = '2/1'"
         ================================================== -->
         <section id="annotate">
           <div class="page-header">
-            <h1>3. SnpSift Annotate & AnnMEM </h1>
+            <h1>3. SnpSift Annotate</h1>
           </div>
 				<p class="lead">
 				Annotate using fields from another VCF file (e.g. dbSnp, 1000 Genomes projects, ClinVar, ExAC, etc.).

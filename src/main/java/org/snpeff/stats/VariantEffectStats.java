@@ -48,9 +48,9 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 		countByGeneRegion = new CountByType();
 		countByImpact = new CountByType();
 		countByFunctionalClass = new CountByType();
-		codonSet = new HashSet<String>();
-		aaSet = new HashSet<String>();
-		geneSet = new HashSet<String>();
+		codonSet = new HashSet<>();
+		aaSet = new HashSet<>();
+		geneSet = new HashSet<>();
 		geneCountByRegionTable = new GeneCountByTypeTable();
 		geneCountByEffectTable = new GeneCountByTypeTable();
 		geneCountByImpactTable = new GeneCountByTypeTable();
@@ -81,7 +81,7 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 	 * Get list of all amino acisd involved
 	 */
 	public List<String> getAaList() {
-		ArrayList<String> aas = new ArrayList<String>();
+		ArrayList<String> aas = new ArrayList<>();
 		aas.addAll(aaSet);
 		Collections.sort(aas);
 		return aas;
@@ -102,7 +102,7 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 	 * Get a list of all codons involved
 	 */
 	public List<String> getCodonList() {
-		ArrayList<String> codons = new ArrayList<String>();
+		ArrayList<String> codons = new ArrayList<>();
 		codons.addAll(codonSet);
 		Collections.sort(codons);
 		return codons;
@@ -215,7 +215,7 @@ public class VariantEffectStats implements SamplingStats<VariantEffect> {
 				geneCountByRegionTable.sample(gene, tr, geneRegion, variantEffect);
 
 				// Count by impact
-				geneCountByImpactTable.sample(gene, tr, variantEffect.getEffectImpact().toString(), variantEffect); // Also count 'gene' marker
+				geneCountByImpactTable.sample(gene, tr, variantEffect.getEffectImpact().toString(), variantEffect);
 			}
 		}
 

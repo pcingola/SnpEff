@@ -37,12 +37,12 @@ public class GeneCountByTypeTable implements Iterable<String>, Serializable {
 	HashMap<String, Integer> sizeByType;
 
 	public GeneCountByTypeTable() {
-		keys = new HashSet<String>();
-		types = new HashSet<String>();
-		countersByType = new HashMap<String, CountByType>();
-		counterSizeByType = new HashMap<String, CountByType>();
-		bioType = new HashMap<String, String>();
-		sizeByType = new HashMap<String, Integer>();
+		keys = new HashSet<>();
+		types = new HashSet<>();
+		countersByType = new HashMap<>();
+		counterSizeByType = new HashMap<>();
+		bioType = new HashMap<>();
+		sizeByType = new HashMap<>();
 	}
 
 	public String getBioType(String key) {
@@ -84,7 +84,7 @@ public class GeneCountByTypeTable implements Iterable<String>, Serializable {
 	 * Get a sorted list of keys
 	 */
 	public List<String> getKeyList() {
-		ArrayList<String> keyList = new ArrayList<String>();
+		ArrayList<String> keyList = new ArrayList<>();
 		keyList.addAll(keys);
 		Collections.sort(keyList);
 		return keyList;
@@ -99,7 +99,7 @@ public class GeneCountByTypeTable implements Iterable<String>, Serializable {
 	 * Get a sorted list of keys
 	 */
 	public List<String> getTypeList() {
-		ArrayList<String> typeList = new ArrayList<String>();
+		ArrayList<String> typeList = new ArrayList<>();
 		typeList.addAll(types);
 		Collections.sort(typeList);
 		return typeList;
