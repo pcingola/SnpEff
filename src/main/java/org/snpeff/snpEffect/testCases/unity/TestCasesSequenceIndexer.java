@@ -178,8 +178,8 @@ public class TestCasesSequenceIndexer {
 	@Test
 	public void test_05() {
 		Gpr.debug("Test");
-		String fileName = "tests/a_thaliana_test/assembly_test.fa";
-		String result = Gpr.readFile("tests/a_thaliana_test/assembly_test.result");
+		String fileName = "tests/unity/sequenceIndexer/a_thaliana_test/assembly_test.fa";
+		String result = Gpr.readFile("tests/unity/sequenceIndexer/a_thaliana_test/assembly_test.result");
 
 		// Create an index
 		SuffixIndexerNmer<DnaAndQualitySequence> seqIndex = new SuffixIndexerNmer<>(new DnaQualSubsequenceComparator(true), NMER_SIZE);
