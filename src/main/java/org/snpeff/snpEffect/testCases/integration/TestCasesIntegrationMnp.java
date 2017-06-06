@@ -24,7 +24,7 @@ public class TestCasesIntegrationMnp {
 	public void test_01() {
 		Gpr.debug("Test");
 		// Run
-		String args[] = { "-classic", "-noHgvs", "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
+		String args[] = { "-classic", "-noHgvs", "-ud", "0", "testHg3766Chr1", "./tests/integration/mnp/test.mnp.01.vcf" };
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 		snpeff.setVerbose(verbose);

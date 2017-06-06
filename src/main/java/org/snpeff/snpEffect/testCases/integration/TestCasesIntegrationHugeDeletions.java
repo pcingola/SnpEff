@@ -27,7 +27,7 @@ public class TestCasesIntegrationHugeDeletions {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion_DEL.vcf" };
+		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/integration/hgvsHugeDeletions/huge_deletion_DEL.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -54,7 +54,7 @@ public class TestCasesIntegrationHugeDeletions {
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion.vcf.gz" };
+		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/integration/hgvsHugeDeletions/huge_deletion.vcf.gz" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -73,7 +73,7 @@ public class TestCasesIntegrationHugeDeletions {
 	@Test
 	public void test_03() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noOut", "testHg19Chr9", "./tests/huge_deletion_chr9.vcf" };
+		String args[] = { "-classic", "-noOut", "testHg19Chr9", "./tests/integration/hgvsHugeDeletions/huge_deletion_chr9.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();

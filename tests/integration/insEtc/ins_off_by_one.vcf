@@ -1,4 +1,3 @@
 ##fileformat=VCFv4.1
-#15	89876828	.	T	A	.	.	.
-#CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
 15	89876827	.	T	TTGC	.	.	.

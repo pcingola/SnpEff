@@ -42,7 +42,7 @@ public class TestCasesIntegrationMarkerSeq {
 		int maxSize = 20; // Max subsequence size to test
 
 		String genome = "testHg19Chr17";
-		String vcf = "tests/hgvs_dup.vcf";
+		String vcf = "tests/integration/markerSeq/hgvs_dup.vcf";
 
 		// Create SnpEff
 		String args[] = { genome, vcf };

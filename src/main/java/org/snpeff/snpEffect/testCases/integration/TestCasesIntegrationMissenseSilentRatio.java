@@ -27,7 +27,7 @@ public class TestCasesIntegrationMissenseSilentRatio {
 				"-classic" //
 				, "-useLocalTemplate" //
 				, "testHg3765Chr22" //
-				, "./tests/missenseSilent.chr22.vcf.gz" //
+				, "./tests/integration/missenseSilentRatio/missenseSilent.chr22.vcf.gz" //
 		};
 
 		SnpEff cmd = new SnpEff(args);

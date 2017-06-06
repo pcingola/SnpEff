@@ -18,42 +18,13 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 		super();
 	}
 
-	//	/**
-	//	 * Calculate annotations for an input VCF file
-	//	 */
-	//	public List<VcfEntry> snpEffect(String genome, String vcfFile, String otherArgs[]) {
-	//		// Arguments
-	//		ArrayList<String> args = new ArrayList<String>();
-	//		if (otherArgs != null) {
-	//			for (String a : otherArgs)
-	//				args.add(a);
-	//		}
-	//		args.add(genome);
-	//		args.add(vcfFile);
-	//
-	//		SnpEff cmd = new SnpEff(args.toArray(new String[0]));
-	//		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.snpEffCmd();
-	//		cmdEff.setVerbose(verbose);
-	//		cmdEff.setSupressOutput(!verbose);
-	//		cmdEff.setFormatVersion(EffFormatVersion.FORMAT_EFF_4);
-	//
-	//		// Run command
-	//		List<VcfEntry> list = cmdEff.run(true);
-	//		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
-	//
-	//		// Check that there were no errors
-	//		Assert.assertFalse("Annotation finished with errors", cmdEff.getTotalErrs() > 0);
-	//
-	//		return list;
-	//	}
-
 	/**
 	 * Test for HGVS.C notation on upstream variants
 	 */
 	@Test
 	public void test_01_hgvs_upstream() {
 		Gpr.debug("Test");
-		List<VcfEntry> list = snpEffect("testHg19Chr2", "tests/hgvs_upstream.vcf", null);
+		List<VcfEntry> list = snpEffect("testHg19Chr2", "tests/integration/hgvsUpDownStream/hgvs_upstream.vcf", null);
 
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);
@@ -80,7 +51,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 	@Test
 	public void test_02_hgvs_downstream() {
 		Gpr.debug("Test");
-		List<VcfEntry> list = snpEffect("testHg19Chr2", "tests/hgvs_downstream.vcf", null);
+		List<VcfEntry> list = snpEffect("testHg19Chr2", "tests/integration/hgvsUpDownStream/hgvs_downstream.vcf", null);
 
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);
@@ -107,7 +78,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 	@Test
 	public void test_03_hgvs_upstream_del() {
 		Gpr.debug("Test");
-		List<VcfEntry> list = snpEffect("testHg3765Chr22", "tests/hgvs_upstream_del.vcf", null);
+		List<VcfEntry> list = snpEffect("testHg3765Chr22", "tests/integration/hgvsUpDownStream/hgvs_upstream_del.vcf", null);
 
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);
@@ -134,7 +105,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 	@Test
 	public void test_04_hgvs_upstream_negative_strand() {
 		Gpr.debug("Test");
-		List<VcfEntry> list = snpEffect("testHg19Chr17", "tests/hgvs_upstream_negative_strand.vcf", null);
+		List<VcfEntry> list = snpEffect("testHg19Chr17", "tests/integration/hgvsUpDownStream/hgvs_upstream_negative_strand.vcf", null);
 
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);
@@ -161,7 +132,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 	@Test
 	public void test_05_hgvs_downstream_negative_strand() {
 		Gpr.debug("Test");
-		List<VcfEntry> list = snpEffect("testHg19Chr17", "tests/hgvs_downstream_negative_strand.vcf", null);
+		List<VcfEntry> list = snpEffect("testHg19Chr17", "tests/integration/hgvsUpDownStream/hgvs_downstream_negative_strand.vcf", null);
 
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);

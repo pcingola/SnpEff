@@ -28,7 +28,7 @@ public class TestCasesIntegrationHgvsLarge {
 	public void test_13_large_Del_Hgvs() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr22";
-		String vcf = "tests/test_large_del_hgvs_13.vcf";
+		String vcf = "tests/integration/hgvsLarge/test_large_del_hgvs_13.vcf";
 
 		// Create SnpEff
 		String args[] = { genome, vcf };

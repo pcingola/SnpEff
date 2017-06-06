@@ -40,7 +40,7 @@ public class TestCasesIntegrationMixedVariants {
 	@Test
 	public void test_01_MixedVep() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/mixed_01.vcf";
+		String vcfFile = "tests/integration/mixedVariants/mixed_01.vcf";
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
@@ -54,50 +54,50 @@ public class TestCasesIntegrationMixedVariants {
 	@Test
 	public void test_02_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
+		compareVep("testHg3775Chr22", "tests/integration/mixedVariants/mixed_chr22.vcf");
 	}
 
 	@Test
 	public void test_03_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr14", "tests/mixed_chr14.vcf");
+		compareVep("testHg3775Chr14", "tests/integration/mixedVariants/mixed_chr14.vcf");
 	}
 
 	@Test
 	public void test_04_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr12", "tests/mixed_chr12.vcf");
+		compareVep("testHg3775Chr12", "tests/integration/mixedVariants/mixed_chr12.vcf");
 	}
 
 	@Test
 	public void test_05_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr22", "tests/mixed_chr22.vcf");
+		compareVep("testHg3775Chr22", "tests/integration/mixedVariants/mixed_chr22.vcf");
 	}
 
 	@Test
 	public void test_06_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr7", "tests/mixed_chr7.vcf");
+		compareVep("testHg3775Chr7", "tests/integration/mixedVariants/mixed_chr7.vcf");
 	}
 
 	@Test
 	public void test_07_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr6", "tests/mixed_chr6.vcf");
+		compareVep("testHg3775Chr6", "tests/integration/mixedVariants/mixed_chr6.vcf");
 	}
 
 	@Test
 	public void test_08_MixedVep() {
 		Gpr.debug("Test");
-		compareVep("testHg3775Chr1", "tests/mixed_chr1.vcf");
+		compareVep("testHg3775Chr1", "tests/integration/mixedVariants/mixed_chr1.vcf");
 	}
 
 	@Test
 	public void test_09_MixedVep() {
 		Gpr.debug("Test");
 
-		String vcfFileName = "tests/mixed_09.vcf";
+		String vcfFileName = "tests/integration/mixedVariants/mixed_09.vcf";
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
 			if (verbose) System.out.println(ve);
@@ -112,7 +112,7 @@ public class TestCasesIntegrationMixedVariants {
 	public void test_11_ExonRank() {
 		Gpr.debug("Test");
 
-		String vcfFileName = "tests/mixed_11.vcf";
+		String vcfFileName = "tests/integration/mixedVariants/mixed_11.vcf";
 		String args[] = { "testHg19Chr20", vcfFileName };
 
 		SnpEff cmd = new SnpEff(args);

@@ -25,7 +25,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 	@Test
 	public void test_01_build() {
 		Gpr.debug("Test");
-		String args[] = { "buildNextProt", "testHg3770Chr22", "tests/nextProt" };
+		String args[] = { "buildNextProt", "testHg3770Chr22", "tests/integration/nextProt" };
 		SnpEff snpEff = new SnpEff(args);
 		snpEff.setVerbose(verbose);
 		snpEff.setSupressOutput(!verbose);
@@ -40,7 +40,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		// since the database we build in test_01_build is small, there
 		// are not enough stats.
 		checkNextProt("testHg3770Chr22" //
-				, "tests/test_nextProt_02.vcf"//
+				, "tests/integration/nextProt/test_nextProt_02.vcf"//
 				, "amino_acid_modification:N-acetylglycine"//
 				, EffectImpact.LOW //
 				, true //
@@ -54,7 +54,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		// since the database we build in test_01_build is small, there are
 		// not enough stats.
 		checkNextProt("testHg3770Chr22" //
-				, "tests/test_nextProt_02.vcf" //
+				, "tests/integration/nextProt/test_nextProt_02.vcf" //
 				, "amino_acid_modification:N-acetylglycine" //
 				, EffectImpact.LOW //
 				, false //
@@ -68,7 +68,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		// since the database we build in test_01_build is small, there are
 		// not enough stats.
 		checkNextProt("testHg3770Chr22" //
-				, "tests/test_nextProt_03.vcf" //
+				, "tests/integration/nextProt/test_nextProt_03.vcf" //
 				, "amino_acid_modification:Phosphoserine" //
 				, EffectImpact.MODERATE //
 				, true //
@@ -82,7 +82,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		// since the database we build in test_01_build is small, there are
 		// not enough stats.
 		checkNextProt("testHg3770Chr22" //
-				, "tests/test_nextProt_03.vcf" //
+				, "tests/integration/nextProt/test_nextProt_03.vcf" //
 				, "amino_acid_modification:Phosphoserine" //
 				, EffectImpact.MODERATE //
 				, false //
@@ -92,7 +92,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 	@Test
 	public void test_04_parse() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/test.nextProt_paren.vcf";
+		String vcfFile = "tests/integration/nextProt/test.nextProt_paren.vcf";
 		int count = 0;
 		for (VcfEntry ve : new VcfFileIterator(vcfFile)) {
 			for (VcfEffect eff : ve.getVcfEffects()) {

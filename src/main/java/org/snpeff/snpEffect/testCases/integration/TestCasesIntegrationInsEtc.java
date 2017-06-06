@@ -26,7 +26,7 @@ public class TestCasesIntegrationInsEtc {
 	@Test
 	public void test_01_InsOffByOne() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noHgvs", "testENST00000268124", "tests/ins_off_by_one.vcf" };
+		String args[] = { "-classic", "-noHgvs", "testENST00000268124", "tests/integration/insEtc/ins_off_by_one.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
@@ -34,6 +34,7 @@ public class TestCasesIntegrationInsEtc {
 		snpeff.setVerbose(verbose);
 
 		List<VcfEntry> vcfEnties = snpeff.run(true);
+		int count = 0;
 		for (VcfEntry ve : vcfEnties) {
 
 			// Get first effect (there should be only one)
@@ -41,7 +42,10 @@ public class TestCasesIntegrationInsEtc {
 			VcfEffect veff = veffs.get(0);
 
 			Assert.assertEquals("Q53QQ", veff.getAa());
+			count++;
 		}
+
+		Assert.assertTrue(count > 0);
 	}
 
 }

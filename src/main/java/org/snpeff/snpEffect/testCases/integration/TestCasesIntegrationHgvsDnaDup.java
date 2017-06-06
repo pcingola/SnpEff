@@ -37,7 +37,7 @@ public class TestCasesIntegrationHgvsDnaDup extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 
 		String genome = "testHg19Chr17";
-		String vcf = "tests/hgvs_dup.vcf";
+		String vcf = "tests/integration/hgvsDnaDup/hgvs_dup.vcf";
 
 		// Create SnpEff
 		String args[] = { genome, vcf };
