@@ -28,7 +28,7 @@ public class TestCasesIntegrationDelEtc {
 	@Test
 	public void test_01_del_repeated_effects() {
 		Gpr.debug("Test");
-		String args[] = { "-ud", "0", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
+		String args[] = { "-ud", "0", "testHg3775Chr1", "tests/integration/delEtc/del_multiple_splice_region.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
@@ -69,7 +69,7 @@ public class TestCasesIntegrationDelEtc {
 	@Test
 	public void test_02_del_repeated_effects_gatk() {
 		Gpr.debug("Test");
-		String args[] = { "-ud", "0", "-gatk", "testHg3775Chr1", "tests/del_multiple_splice_region.vcf" };
+		String args[] = { "-ud", "0", "-gatk", "testHg3775Chr1", "tests/integration/delEtc/del_multiple_splice_region.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();

@@ -32,11 +32,11 @@ public class TestCasesIntegrationCutsomIntervals {
 		// Load database
 		String[] args = { "-classic"//
 				, "-interval"//
-				, "tests/custom_intervals_01.gff" //
+				, "tests/integration/customIntervals/custom_intervals_01.gff" //
 				, "-ud" //
 				, "0" //
 				, "testHg3770Chr22"//
-				, "tests/custom_intervals_01.vcf" //
+				, "tests/integration/customIntervals/custom_intervals_01.vcf" //
 		};
 
 		SnpEff cmd = new SnpEff(args);

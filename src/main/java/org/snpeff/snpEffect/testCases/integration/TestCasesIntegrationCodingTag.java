@@ -29,7 +29,7 @@ public class TestCasesIntegrationCodingTag {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-ud", "0", "-noOut", "testHg19Chr1", "./tests/missing_coding_tr_tag.vcf" };
+		String args[] = { "-classic", "-ud", "0", "-noOut", "testHg19Chr1", "./tests/integration/codingTag/missing_coding_tr_tag.vcf" };
 
 		// Run snpeff
 		SnpEff cmd = new SnpEff(args);

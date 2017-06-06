@@ -34,9 +34,9 @@ public class TestCasesIntegrationFilterTranscripts {
 		String args[] = { //
 				"-noStats" //
 				, "-classic" //
-				, "-onlyTr", "tests/filterTranscripts_01.txt"//
+				, "-onlyTr", "tests/integration/filterTranscripts/filterTranscripts_01.txt"//
 				, "testHg3765Chr22" //
-				, "tests/test_filter_transcripts_001.vcf" //
+				, "tests/integration/filterTranscripts/test_filter_transcripts_001.vcf" //
 		};
 
 		SnpEff cmd = new SnpEff(args);
@@ -66,9 +66,9 @@ public class TestCasesIntegrationFilterTranscripts {
 		String args[] = { //
 				"-noStats" //
 				, "-classic" //
-				, "-onlyTr", "tests/filterTranscripts_02.txt"//
+				, "-onlyTr", "tests/integration/filterTranscripts/filterTranscripts_02.txt"//
 				, "testHg3765Chr22" //
-				, "tests/test_filter_transcripts_001.vcf" //
+				, "tests/integration/filterTranscripts/test_filter_transcripts_001.vcf" //
 		};
 
 		SnpEff cmd = new SnpEff(args);

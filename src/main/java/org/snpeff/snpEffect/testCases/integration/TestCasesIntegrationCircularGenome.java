@@ -29,7 +29,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 		// Create database & build interval forest
 		String genomeName = "testCase";
-		String genBankFile = "tests/genes_circular.gbk";
+		String genBankFile = "tests/integration/circularGenome/genes_circular.gbk";
 		SnpEffectPredictor sep = buildGeneBank(genomeName, genBankFile);
 		sep.buildForest();
 
@@ -182,7 +182,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 		// Create database & build interval forest
 		String genomeName = "testCase";
-		String genBankFile = "tests/Human_herpesvirus_4_uid14413.gbk.gz";
+		String genBankFile = "tests/integration/circularGenome/Human_herpesvirus_4_uid14413.gbk.gz";
 		SnpEffectPredictor sep = buildGeneBank(genomeName, genBankFile);
 		sep.buildForest();
 
@@ -216,7 +216,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 		// Create database & build interval forest
 		String genomeName = "testCase";
-		String genBankFile = "tests/Human_herpesvirus_4_uid14413.gbk.gz";
+		String genBankFile = "tests/integration/circularGenome/Human_herpesvirus_4_uid14413.gbk.gz";
 		SnpEffectPredictor sep = buildGeneBank(genomeName, genBankFile);
 		sep.buildForest();
 

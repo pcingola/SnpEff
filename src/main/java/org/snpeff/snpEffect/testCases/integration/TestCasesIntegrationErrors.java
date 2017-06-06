@@ -2,8 +2,6 @@ package org.snpeff.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
@@ -11,6 +9,8 @@ import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
+
+import junit.framework.Assert;
 
 /**
  * Test cases for error reporting
@@ -30,7 +30,7 @@ public class TestCasesIntegrationErrors {
 	public void test_01_ERROR_CHROMOSOME_NOT_FOUND() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr1";
-		String vcf = "tests/missing_chromo.vcf";
+		String vcf = "tests/integration/errors/missing_chromo.vcf";
 
 		String args[] = { "-noLog", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -59,7 +59,7 @@ public class TestCasesIntegrationErrors {
 	public void test_02_ERROR_CHROMOSOME_NOT_FOUND() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr1";
-		String vcf = "tests/missing_chromo.vcf";
+		String vcf = "tests/integration/errors/missing_chromo.vcf";
 
 		String args[] = { "-noLog", "-classic", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);

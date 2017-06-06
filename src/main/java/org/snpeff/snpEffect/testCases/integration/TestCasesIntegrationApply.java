@@ -163,7 +163,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 										+ "\n\t\tOriginal            : " + ex //
 										+ "\n\t\tSequence (expected) : " + newSeq + "'" //
 										+ "\n\t\tSequence            : " + exNew.getSequence() + "'" //
-										;
+								;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}
@@ -243,7 +243,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 										+ "\n\t\tOriginal  : " + ex //
 										+ "\n\t\tNew       : " + exNew //
 										+ "\n\t\tNew seq   : " + newSeq //
-										;
+								;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}
@@ -341,7 +341,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 										+ "\n\t\tOriginal  : " + ex //
 										+ "\n\t\tNew       : " + exNew //
 										+ "\n\t\tNew seq   : " + newSeq //
-										;
+								;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}
@@ -362,7 +362,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	@Test
 	public void test_apply_05_delete_whole_exon() {
 		Gpr.debug("Test");
-		snpEffect("testHg19Chr1", "tests/test_apply_05_delete_whole_exon.vcf", null);
+		snpEffect("testHg19Chr1", "tests/integration/apply/test_apply_05_delete_whole_exon.vcf", null);
 	}
 
 	/**
@@ -372,7 +372,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	@Test
 	public void test_apply_06_delete_upstream() {
 		Gpr.debug("Test");
-		Transcript trNew = appyTranscript("testHg19Chr11", "NM_001004460.1", "tests/test_apply_06_delete_upstream.vcf");
+		Transcript trNew = appyTranscript("testHg19Chr11", "NM_001004460.1", "tests/integration/apply/test_apply_06_delete_upstream.vcf");
 
 		// Check expected sequence
 		Assert.assertEquals("atgagcttctcttccctgcctactgaaatacagtcattactctttctgacatttctaaccatctacctggtcaccctgatgggaaactgcctcatcattctggttaccctagctgaccccatgctacacagccccatgtacttcttcctcagaaacttatctttcctggagattggcttcaacctagtcattgtgcccaaaatgctggggaccctgcttgcccaggacacaaccatctccttccttggctgtgccactcagatgtatttcttcttct" //
@@ -386,61 +386,11 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	@Test
 	public void test_apply_07_delete_upstream() {
 		Gpr.debug("Test");
-		Transcript trNew = appyTranscript("testHg3775Chr11", "ENST00000379829", "tests/test_apply_07_delete_upstream.vcf");
+		Transcript trNew = appyTranscript("testHg3775Chr11", "ENST00000379829", "tests/integration/apply/test_apply_07_delete_upstream.vcf");
 
 		// Check expected sequence
 		Assert.assertEquals("ttttttggggctgctgagtgctgcctcctggccaccatggcatatgaccgctacgtggccatctgtgaccccttgcactacccagtcatcatgggccacatatcctgtgcccagctggcagctgcctcttggttctcagggttttcagtggccactgtgcaaaccacatggattttcagtttccctttttgtggccccaacagggtgaaccacttcttctgtgacagccctcctgttattgcactggtctgtgctgacacctctgtgtttgaactggaggctctgacagccactgtcctattcattctctttcctttcttgctgatcctgggatcctatgtccgcatcctctccactatcttcaggatgccgtcagctgaggggaaacatcaggcattctccacctgttccgcccacctcttggttgtctctctcttctatagcactgccatcctcacgtatttccgaccccaatccagtgcctcttctgagagcaagaagctgctgtcactctcttccacagtggtgactcccatgttgaaccccatcatctacagctcaaggaataaagaagtgaaggctgcactgaagcggcttatccacaggaccctgggctctcagaaactatga" //
 				, trNew.cds());
 	}
-
-	/**
-	 * The following test cases need a little bit more work
-	 */
-
-	//	/**
-	//	 * Mixed variants
-	//	 */
-	//	@Test
-	//	public void test_apply_08_mixed_variant() {
-	//		Gpr.debug("Test");
-	//		Transcript trNew = appyTranscript("testHg19Chr22", "NM_005318.3", "tests/test_apply_08_mixed_variant.vcf");
-	//
-	//		// Check expected sequence
-	//		Assert.assertEquals("atgtctaattccacgtccgcccctgcggccaagcccaagcgggccaaggcctccaagaagtccacagaccaccccaagtattcagacatgatcgtggctgccatccaggccgagaagaaccgcgctggctcctcgcgccagtccattcagaagtatatcaagagccactacaaggtgggtgagaacgctgactcgcagatcaagttgtccatcaagcgcctggtcaccaccggtgtcctcaagcagaccaaaggggtgggggcctcggggtccttccggctagccaagagcgacgaacccaagaagtcagtggccttcaagaagaccaagaaggaaatcaagaaggtagccacgccaaagaaggcatccaagcccaagaaggctgcctccaaagccccaaccaagaaacccaaagccaccccggtcaagaaggccaagaagaagctggctgccacgcccaagaaagccaaaaaacccaagactgtcaaagccaagccggtcaaggcatccaagcccaaaaaggccaaaccagtgaaacccaaagcaaagtccagtgccaagagggccggcaagaagaagtga" //
-	//				, trNew.cds());
-	//	}
-	//
-	//	/**
-	//	 * Mixed variants
-	//	 */
-	//	@Test
-	//	public void test_apply_09_mixed_variant() {
-	//		Gpr.debug("Test");
-	//		Transcript trNew = appyTranscript("testHg19Chr22", "NM_005318.3", "tests/test_apply_09_mixed_variant.vcf");
-	//
-	//		// Check expected sequence
-	//		Assert.assertEquals("tctaccgagaattccacgtccgcccctgcggccaagcccaagcgggccaaggcctccaagaagtccacagaccaccccaagtattcagacatgatcgtggctgccatccaggccgagaagaaccgcgctggctcctcgcgccagtccattcagaagtatatcaagagccactacaaggtgggtgagaacgctgactcgcagatcaagttgtccatcaagcgcctggtcaccaccggtgtcctcaagcagaccaaaggggtgggggcctcggggtccttccggctagccaagagcgacgaacccaagaagtcagtggccttcaagaagaccaagaaggaaatcaagaaggtagccacgccaaagaaggcatccaagcccaagaaggctgcctccaaagccccaaccaagaaacccaaagccaccccggtcaagaaggccaagaagaagctggctgccacgcccaagaaagccaaaaaacccaagactgtcaaagccaagccggtcaaggcatccaagcccaaaaaggccaaaccagtgaaacccaaagcaaagtccagtgccaagagggccggcaagaagaagtga" //
-	//				, trNew.cds());
-	//
-	//		Assert.assertEquals(
-	//				"ggaagaaacacagatggcggcggcgcagcgccattccgggccgggagcaggcagccagcagccctgtcctcaccgcggtccgcccgccgccgctaaatacccggatgcgccgcccaagcgccagacgcggagctgggaaaagggaggcagaggaggcggaggcagaggcagaggcagaggcagagcccgagcccggtgccgagaccaagcgacagaccggcggggctgggcctcgcaaagccggctcggcgagctctcccgacacccgagccggggaggaaaagcagcgactcctcgctcgcatccccgggagccgcactccagactggcccggtagtcaggggctcaggagcagatcccgaggcaggctttgctcagcctccgacgagggctggccctttggaaggcgccttcaacagccggaccagacaggcctctaccgagaattccacgtccgcccctgcggccaagcccaagcgggccaaggcctccaagaagtccacagaccaccccaagtattcagacatgatcgtggctgccatccaggccgagaagaaccgcgctggctcctcgcgccagtccattcagaagtatatcaagagccactacaaggtgggtgagaacgctgactcgcagatcaagttgtccatcaagcgcctggtcaccaccggtgtcctcaagcagaccaaaggggtgggggcctcggggtccttccggctagccaagagcgacgaacccaagaagtcagtggccttcaagaagaccaagaaggaaatcaagaaggtagccacgccaaagaaggcatccaagcccaagaaggctgcctccaaagccccaaccaagaaacccaaagccaccccggtcaagaaggccaagaagaagctggctgccacgcccaagaaagccaaaaaacccaagactgtcaaagccaagccggtcaaggcatccaagcccaaaaaggccaaaccagtgaaacccaaagcaaagtccagtgccaagagggccggcaagaagaagtgacaatgaagtcttttcttgcggacactccctcctgtctcctattttctgtaaataattttctccttttttctctcttgatgctcaccaccaccttttgcccccttctgttctgactttataagagacaggatttggattcttcagaaattacagaataattcatttttccttaaccagttgtgcaaggacagcaacaaccaatctaatgatgagaatgtacttatattttgttttgctattaacctacttacggggttagggatttgcggggggggcttgtgtgttttgttggcttgtttgccatgaaggtagatgtgggtggggagaagacacaaggcagtttgttctggctagatgagagggaacccaggaattgtgaggttagcaggaatatctttagggtgagtgagttttctttgagttgggcacccgttgtgagagtttcagaacctttggccagcaggagagaggtggtagggagcagccagccggcaaaggaaggagggggaaaaaaaccgccaccgggctgacttccacctcccagtggtgagcagtgggggcccaaacccagtttccttctcatttttgttagtttgcgctttcggcctccctattttcttagggaaggggagtggggtccaagtgacagctggatgggagaagccatagtttctcccagtcagctaggatgtagccattgggggatctttgtggcttcagcaaattctcttgttaaaccggagtgaaaacttcaggggaagggtggggagtcagccaagtgcctcagtgtgccctgttgaaacttaggtttttccacgcaatcgatggattgtgtcctaggaagacttttcttttcctctggatttttgttcctcctgtacaagaggtgtctttgcttggtttggtggggctgcggccacttaaaacctcccgatctctttttgagtcctttattataagtagttgtagctgcgggagggggagggggagtgggcgggcagtggatagtaagacttactgcagtcgatttgggatttgctaagtagttttacagagctagatctgtgtgcatgtgtgtgtttgtgtatatatacatatctagggctagtacttagtttcacacccgggagctgggagaaaaaacctgtacagttgtctttctcttatttttaataaaatagaaaaatcgcgcacttgcgcgtcccccccccacccccttttttaaacaagtgttacttgtgccgggaaaattttgctgtctttgtaattttaaaactttaaaataaattggaaaagggagaaactga" //
-	//				, trNew.mRna());
-	//
-	//	}
-	//
-	//	/**
-	//	 * Mixed variants
-	//	 */
-	//	@Test
-	//	public void test_apply_10_mixed_variant() {
-	//		Gpr.debug("Test");
-	//		Transcript trNew = appyTranscript("testHg19Chr22", "NM_005318.3", "tests/test_apply_10_mixed_variant.vcf");
-	//
-	//		// Check expected sequence
-	//		Assert.assertEquals(
-	//				"tctagaaacacagatggcggcggcgcagcgccattccgggccgggagcaggcagccagcagccctgtcctcaccgcggtccgcccgccgccgctaaatacccggatgcgccgcccaagcgccagacgcggagctgggaaaagggaggcagaggaggcggaggcagaggcagaggcagaggcagagcccgagcccggtgccgagaccaagcgacagaccggcggggctgggcctcgcaaagccggctcggcgagctctcccgacacccgagccggggaggaaaagcagcgactcctcgctcgcatccccgggagccgcactccagactggcccggtagtcaggggctcaggagcagatcccgaggcaggctttgctcagcctccgacgagggctggccctttggaaggcgccttcaacagccggaccagacaggccaccatgaccgagaattccacgtccgcccctgcggccaagcccaagcgggccaaggcctccaagaagtccacagaccaccccaagtattcagacatgatcgtggctgccatccaggccgagaagaaccgcgctggctcctcgcgccagtccattcagaagtatatcaagagccactacaaggtgggtgagaacgctgactcgcagatcaagttgtccatcaagcgcctggtcaccaccggtgtcctcaagcagaccaaaggggtgggggcctcggggtccttccggctagccaagagcgacgaacccaagaagtcagtggccttcaagaagaccaagaaggaaatcaagaaggtagccacgccaaagaaggcatccaagcccaagaaggctgcctccaaagccccaaccaagaaacccaaagccaccccggtcaagaaggccaagaagaagctggctgccacgcccaagaaagccaaaaaacccaagactgtcaaagccaagccggtcaaggcatccaagcccaaaaaggccaaaccagtgaaacccaaagcaaagtccagtgccaagagggccggcaagaagaagtgacaatgaagtcttttcttgcggacactccctcctgtctcctattttctgtaaataattttctccttttttctctcttgatgctcaccaccaccttttgcccccttctgttctgactttataagagacaggatttggattcttcagaaattacagaataattcatttttccttaaccagttgtgcaaggacagcaacaaccaatctaatgatgagaatgtacttatattttgttttgctattaacctacttacggggttagggatttgcggggggggcttgtgtgttttgttggcttgtttgccatgaaggtagatgtgggtggggagaagacacaaggcagtttgttctggctagatgagagggaacccaggaattgtgaggttagcaggaatatctttagggtgagtgagttttctttgagttgggcacccgttgtgagagtttcagaacctttggccagcaggagagaggtggtagggagcagccagccggcaaaggaaggagggggaaaaaaaccgccaccgggctgacttccacctcccagtggtgagcagtgggggcccaaacccagtttccttctcatttttgttagtttgcgctttcggcctccctattttcttagggaaggggagtggggtccaagtgacagctggatgggagaagccatagtttctcccagtcagctaggatgtagccattgggggatctttgtggcttcagcaaattctcttgttaaaccggagtgaaaacttcaggggaagggtggggagtcagccaagtgcctcagtgtgccctgttgaaacttaggtttttccacgcaatcgatggattgtgtcctaggaagacttttcttttcctctggatttttgttcctcctgtacaagaggtgtctttgcttggtttggtggggctgcggccacttaaaacctcccgatctctttttgagtcctttattataagtagttgtagctgcgggagggggagggggagtgggcgggcagtggatagtaagacttactgcagtcgatttgggatttgctaagtagttttacagagctagatctgtgtgcatgtgtgtgtttgtgtatatatacatatctagggctagtacttagtttcacacccgggagctgggagaaaaaacctgtacagttgtctttctcttatttttaataaaatagaaaaatcgcgcacttgcgcgtcccccccccacccccttttttaaacaagtgttacttgtgccgggaaaattttgctgtctttgtaattttaaaactttaaaataaattggaaaagggagaaactga" //
-	//				, trNew.mRna());
-	//
-	//	}
 
 }

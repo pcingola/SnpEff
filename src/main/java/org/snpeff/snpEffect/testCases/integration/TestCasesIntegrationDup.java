@@ -29,7 +29,7 @@ public class TestCasesIntegrationDup extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 
 		String genome = "testHg19Chr8";
-		String vcf = "tests/dup_01.vcf";
+		String vcf = "tests/integration/dup/dup_01.vcf";
 
 		// Create SnpEff
 		String args[] = { genome, vcf };

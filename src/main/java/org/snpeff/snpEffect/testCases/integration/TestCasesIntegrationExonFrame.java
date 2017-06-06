@@ -69,7 +69,7 @@ public class TestCasesIntegrationExonFrame {
 		//---
 		// Check annotations
 		//---
-		String vcfFileName = "tests/testLukas.vcf";
+		String vcfFileName = "tests/integration/exonFrame/testLukas.vcf";
 		String argsEff[] = { "-classic", "-noHgvs", "-ud", "0", genomeName, vcfFileName };
 
 		// Annotate

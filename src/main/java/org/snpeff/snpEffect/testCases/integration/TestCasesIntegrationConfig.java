@@ -1,11 +1,11 @@
 package org.snpeff.snpEffect.testCases.integration;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
+
+import junit.framework.Assert;
 
 /**
  * Test case
@@ -28,7 +28,7 @@ public class TestCasesIntegrationConfig {
 				"-configOption" //
 				, Config.KEY_DATABASE_REPOSITORY + "=" + repo //
 				, "testHg3775Chr22" //
-				, "tests/test_ann_01.vcf" //
+				, "tests/integration/config/test_ann_01.vcf" //
 		};
 
 		// Create command and run

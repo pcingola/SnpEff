@@ -2,11 +2,11 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.stats.IntStats;
 import org.snpeff.util.Gpr;
+
+import junit.framework.Assert;
 
 public class TestCasesIntStats {
 
@@ -29,7 +29,7 @@ public class TestCasesIntStats {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String fileName = "tests/intStats_test_01.txt";
+		String fileName = "tests/unity/intStats/intStats_test_01.txt";
 		String file = Gpr.readFile(fileName);
 		String lines[] = file.split("\n");
 
