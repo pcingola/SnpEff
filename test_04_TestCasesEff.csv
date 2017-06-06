@@ -3,8 +3,8 @@
 
 Name , Value
 Genome , testHg3770Chr22 
-Date , 2017-06-06 15:58
-SnpEff_version , SnpEff 5.0 (build 2017-06-06 15:56), by Pablo Cingolani
+Date , 2017-06-06 17:13
+SnpEff_version , SnpEff 5.0 (build 2017-06-06 17:11), by Pablo Cingolani
 Command_line_arguments , SnpEff ann -csvStats test_04_TestCasesEff.csv testHg3770Chr22 tests/integration/eff/eff_sort.vcf 
 Warnings , 1185 
 Number_of_lines_in_input_file, 1205
