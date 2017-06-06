@@ -57,8 +57,8 @@ public class TestCasesIntegrationVcfs {
 	@Test
 	public void test_01_vcf_bed_filter() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/test_vcf_filter.vcf";
-		String bedFile = "tests/test_vcf_filter.bed";
+		String vcfFile = "tests/integration/vcfs/test_vcf_filter.vcf";
+		String bedFile = "tests/integration/vcfs/test_vcf_filter.bed";
 
 		String args[] = { "-classic", "-filterinterval", bedFile, "testHg3771Chr1", vcfFile };
 		SnpEff snpeff = new SnpEff(args);
@@ -84,7 +84,7 @@ public class TestCasesIntegrationVcfs {
 	 */
 	@Test
 	public void test_02_Annotating_LOF_Spaces() {
-		String vcfFileName = "tests/vcf_genes_spaces.vcf";
+		String vcfFileName = "tests/integration/vcfs/vcf_genes_spaces.vcf";
 		String genomeName = "test_ENSG00000158062_spaces";
 
 		// Prepare a command line
@@ -104,7 +104,7 @@ public class TestCasesIntegrationVcfs {
 	 */
 	@Test
 	public void test_03_do_not_annotate_non_variants() {
-		String vcfFileName = "tests/test_non_variants.vcf";
+		String vcfFileName = "tests/integration/vcfs/test_non_variants.vcf";
 		String genomeName = "testHg3775Chr1";
 
 		// Prepare a command line

@@ -26,7 +26,7 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 	public void test_01_within_protein_interactions() {
 		Gpr.debug("Test");
 
-		List<VcfEntry> vcfEntries = snpEffect("testHg19Pdb", "tests/test_interaction_01.vcf", null, null);
+		List<VcfEntry> vcfEntries = snpEffect("testHg19Pdb", "tests/integration/proteinInteraction/test_interaction_01.vcf", null, null);
 
 		Map<String, Boolean> expectedIds = new HashMap<>();
 		expectedIds.put("1A12:A_25-A_136:NM_001048199.2", false);
@@ -69,7 +69,7 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 	public void test_02_protein_protein_interactions() {
 		Gpr.debug("Test");
 
-		List<VcfEntry> vcfEntries = snpEffect("testHg19Pdb", "tests/test_interaction_02.vcf", null, null);
+		List<VcfEntry> vcfEntries = snpEffect("testHg19Pdb", "tests/integration/proteinInteraction/test_interaction_02.vcf", null, null);
 
 		Map<String, Boolean> expectedIds = new HashMap<>();
 		expectedIds.put("4OVU:A_7-B_479:NM_006218.2-NM_181523.2", false);
@@ -110,7 +110,7 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 	public void test_03_protein_protein_interactions_hgvs() {
 		Gpr.debug("Test");
 		String args[] = { "-canon" };
-		List<VcfEntry> vcfEntries = snpEffect("testHg19Chr22", "tests/test_interaction_03.vcf", args, null);
+		List<VcfEntry> vcfEntries = snpEffect("testHg19Chr22", "tests/integration/proteinInteraction/test_interaction_03.vcf", args, null);
 
 		// Parse and check output
 		boolean foundPi = false;

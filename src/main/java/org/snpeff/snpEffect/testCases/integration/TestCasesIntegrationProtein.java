@@ -24,7 +24,7 @@ public class TestCasesIntegrationProtein {
 	@Test
 	public void test_01() throws IOException {
 		Gpr.debug("Test");
-		String args[] = { "testHg3763ChrY", "./tests/proteins_testHg3763ChrY.txt" };
+		String args[] = { "testHg3763ChrY", "./tests/integration/proteinInteraction/proteins_testHg3763ChrY.txt" };
 
 		SnpEffCmdProtein cmd = new SnpEffCmdProtein();
 		cmd.parseArgs(args);

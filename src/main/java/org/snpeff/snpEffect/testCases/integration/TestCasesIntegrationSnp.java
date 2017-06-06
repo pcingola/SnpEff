@@ -2,8 +2,6 @@ package org.snpeff.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.EffectType;
@@ -12,6 +10,8 @@ import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
+
+import junit.framework.Assert;
 
 /**
  * Test SNP variants
@@ -30,7 +30,7 @@ public class TestCasesIntegrationSnp {
 	public void test_02_Start_NonSyn() {
 		Gpr.debug("Test");
 		String genome = "testHg19ChrM";
-		String vcf = "tests/test_chrM_start_codon_nonSyn.vcf";
+		String vcf = "tests/integration/snp/test_chrM_start_codon_nonSyn.vcf";
 
 		String args[] = { "-noLog", "-classic", "-ud", "0", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -62,7 +62,7 @@ public class TestCasesIntegrationSnp {
 	public void test_02_StopGained_HighImpact() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr2";
-		String vcf = "tests/stop_gained_chr2.vcf";
+		String vcf = "tests/integration/snp/stop_gained_chr2.vcf";
 
 		String args[] = { "-noLog", "-classic", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -94,7 +94,7 @@ public class TestCasesIntegrationSnp {
 	public void test_03_Start_Loss() {
 		Gpr.debug("Test");
 		String genome = "testHg19ChrM";
-		String vcf = "tests/test_chrM_start_codon.vcf";
+		String vcf = "tests/integration/snp/test_chrM_start_codon.vcf";
 
 		String args[] = { "-noLog", "-classic", "-ud", "0", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);

@@ -31,7 +31,7 @@ public class TestCasesIntegrationRegulation {
 		Gpr.debug("Test");
 
 		String genome = "testHg3775Chr22";
-		String vcfFileName = "tests/test_regulatory_01.vcf";
+		String vcfFileName = "tests/integration/regulation/test_regulatory_01.vcf";
 		String cellType = "HepG2";
 		String dbFileName = "data/" + genome + "/regulation_" + cellType + ".bin";
 
