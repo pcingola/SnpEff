@@ -600,7 +600,7 @@ public class SnpEff implements CommandLine {
 		if (onlyProtein) {
 			// Remove transcripts
 			if (verbose) Timer.showStdErr("Filtering out non-protein coding transcripts.");
-			int removed = config.getSnpEffectPredictor().retainTranscriptsProtein();
+			int removed = config.getSnpEffectPredictor().keepTranscriptsProteinCoding();
 			if (verbose) Timer.showStdErr("Done: " + removed + " transcripts removed.");
 		}
 
