@@ -84,6 +84,7 @@ println "Processing RNA FASTA files"
 task( cds <- gff) {
 	sys gunzip -c $cdsOri \
 			| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
+			| perl -pe 's/>(.*?)\s+.*/>\1/' \
 			| gzip -c \
 			> $cds
 }
