@@ -67,6 +67,7 @@ println "Processing reference FASTA files"
 task(seq <- seqOri) {
 	sys gunzip -c $seqOri \
 			| sed "s/^>gi|.*|ref|\(.._.*\)|.*/>\1/" \
+			| perl -pe 's/>(.*?)\s+.*/>\1/' \
 			| gzip -c \
 			> $seq
 }
