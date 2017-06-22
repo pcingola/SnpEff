@@ -32,7 +32,7 @@ idMap      := "$dbDir/id_map.txt"
 idMapProt  := "$dbDir/id_map_protein.txt"
 
 # Original file names
-cdsOri     := "$oriDir/$genomeOri" + "_protein.faa.gz"
+cdsOri     := "$oriDir/$genomeOri" + "_rna.fna.gz"
 gffGzOri   := "$oriDir/$genomeOri" + "_genomic.gff.gz"
 proteinOri := "$oriDir/$genomeOri" + "_protein.faa.gz"
 seqOri     := "$oriDir/$genomeOri" + "_genomic.fna.gz"
@@ -75,6 +75,7 @@ println "Processing protein FASTA files"
 task(protein <- [proteinOri, idMapProt]) {
 	sys gunzip -c $proteinOri \
 			| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
+			| perl -pe 's/>(.*?)\s+.*/>\1/' \
 			| $scriptsDir/fix_fasta_protein_cds.pl $idMapProt \
 			| gzip -c \
 			> $protein

@@ -11,6 +11,8 @@
 # Debug mode?
 $debug = 0;
 
+my($countSeq) = 0;
+
 #-------------------------------------------------------------------------------
 # Show all sequences
 #-------------------------------------------------------------------------------
@@ -18,7 +20,10 @@ sub show($$) {
 	my($seq, $ids)  = @_;
 	my(@t) = split /\t/, $ids;
 	if( $debug && $#t > 1 ) { print STDERR "Duplicated name ($#t): $ids\n"; }
-	foreach $id ( @t ) { print ">$id\n$seq"; }
+	foreach $id ( @t ) {
+		print ">$id\n$seq"; 
+		$countSeq++;
+	}
 }
 
 #-------------------------------------------------------------------------------
@@ -47,12 +52,13 @@ while( $l = <IDMAP> ) {
 	$count++;
 }
 close IDMAP;
-print STDERR "Done: $count entries loaded.\n";
+print STDERR "\tDone: $count entries loaded.\n";
 die "Empty chromosome ID map file '$mapFile'\n" if $count <= 0;
 
 #---
 # Parse FASTA files from STDIN
 #---
+print STDERR "Creating output sequences\n";
 $id = $seq = "";
 while( $l = <STDIN> ) {
 	if( $l =~ /^>/ ) {
@@ -73,3 +79,4 @@ while( $l = <STDIN> ) {
 }
 
 show($seq, $name2id{$id}) if $id ne '';
+print STDERR "\tDone. Output $countSeq sequences.\n";
