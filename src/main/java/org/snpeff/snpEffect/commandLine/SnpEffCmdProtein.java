@@ -48,7 +48,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	String proteinFile = "";
 	HashMap<String, String> proteinByTrId;
 	AutoHashMap<String, List<Transcript>> trByChromo;
-	HashMap<String, SmithWaterman> alignmentByTrId = new HashMap<String, SmithWaterman>();
+	HashMap<String, SmithWaterman> alignmentByTrId = new HashMap<>();
 
 	/**
 	 * Count number of differences between strings
@@ -105,7 +105,7 @@ public class SnpEffCmdProtein extends SnpEff {
 					+ "\n\tTranscript ID : '" + trId + "'"//
 					+ "\n\tProtein       : " + proteinByTrId.get(trId) //
 					+ "\n\tProtein (new) : " + seq //
-		);
+			);
 
 		// Use whole trId
 		proteinByTrId.put(trId, seq); // Add it to the hash
@@ -198,6 +198,19 @@ public class SnpEffCmdProtein extends SnpEff {
 		return false;
 	}
 
+	/**
+	 * Show an error message that actually helps to solve the problem
+	 */
+	void fatalErrorNoTranscriptsChecked() {
+		StringBuilder sb = new StringBuilder();
+
+		// Show some transcript IDs
+		int maxTrIds = 20;
+		sb.append("Transcript IDs from database (sample):\n" + sampleTrIds(maxTrIds));
+		sb.append("Transcript IDs from database (fasta file):\n" + sampleTrIdsFasta(maxTrIds));
+		fatalError("No proteins checked. This is might be caused by differences in FASTA file transcript IDs respect to database's transcript's IDs.\n" + sb);
+	}
+
 	public HashMap<String, SmithWaterman> getAlignmentByTrId() {
 		return alignmentByTrId;
 	}
@@ -241,7 +254,7 @@ public class SnpEffCmdProtein extends SnpEff {
 
 		// No chromosome name specified? => Use all transcripts
 		if (chr == null) {
-			trList = new ArrayList<Transcript>();
+			trList = new ArrayList<>();
 			for (Gene g : genome.getGenes())
 				for (Transcript tr : g)
 					trList.add(tr);
@@ -365,6 +378,9 @@ public class SnpEffCmdProtein extends SnpEff {
 			totalNotFound += countNotFound;
 			totalOk += countOk;
 			totalErrors += countErrors;
+		} else {
+			// Sanity check
+			if (totalOk <= 0) fatalErrorNoTranscriptsChecked();
 		}
 
 		return errorRate;
@@ -398,7 +414,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	 */
 	void readProteinFile() {
 		if (verbose) Timer.showStdErr("Reading proteins from file '" + proteinFile + "'...");
-		proteinByTrId = new HashMap<String, String>();
+		proteinByTrId = new HashMap<>();
 
 		if (proteinFile.endsWith("txt") || proteinFile.endsWith("txt.gz")) readProteinFileTxt();
 		else if (proteinFile.endsWith(SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK)) readProteinFileGenBank();
@@ -514,6 +530,33 @@ public class SnpEffCmdProtein extends SnpEff {
 		checkProteins(); // Compare proteins
 
 		return true;
+	}
+
+	/**
+	 * Show same Transcript IDs
+	 */
+	String sampleTrIds(int maxTrIds) {
+		StringBuilder sb = new StringBuilder();
+		int count = 0;
+		for (Gene g : config.getGenome().getGenes())
+			for (Transcript tr : g) {
+				sb.append("\t'" + tr.getId() + "'\n");
+				if (count++ > maxTrIds) return sb.toString();
+			}
+		return sb.toString();
+	}
+
+	/**
+	 * Show same Transcript IDs from FASTA file
+	 */
+	String sampleTrIdsFasta(int maxTrIds) {
+		StringBuilder sb = new StringBuilder();
+		int count = 0;
+		for (String trid : proteinByTrId.keySet()) {
+			sb.append("\t'" + trid + "'\n");
+			if (count++ > maxTrIds) return sb.toString();
+		}
+		return sb.toString();
 	}
 
 	/**
