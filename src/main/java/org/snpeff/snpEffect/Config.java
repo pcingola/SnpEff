@@ -140,10 +140,11 @@ public class Config implements Serializable, Iterable<String> {
 		//---
 		// Read codon tables
 		//---
-		for (Object key : properties.keySet()) {
-			if (key.toString().startsWith(KEY_CODON_PREFIX)) {
+		for (Object k : properties.keySet()) {
+			String key = k.toString().trim();
+			if (key.startsWith(KEY_CODON_PREFIX)) {
 				String name = key.toString().substring(KEY_CODON_PREFIX.length());
-				String table = properties.getProperty(key.toString());
+				String table = properties.getProperty(key);
 				CodonTable codonTable = new CodonTable(name, table);
 				CodonTables.getInstance().add(codonTable);
 			}

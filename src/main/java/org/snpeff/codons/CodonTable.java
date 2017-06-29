@@ -68,7 +68,6 @@ public class CodonTable {
 		aa2codon = new HashMap<>();
 		startCodons = new HashSet<>();
 		stopCodons = new HashSet<>();
-		//		startAas = new HashSet<String>();
 		parse(table);
 		calcDegeneracy();
 	}
@@ -261,7 +260,7 @@ public class CodonTable {
 	 * @param table : Codon table
 	 */
 	void parse(String table) {
-		table = table.toUpperCase();
+		table = table.toUpperCase().trim();
 
 		String entries[] = table.split(",");
 		for (String entry : entries) {
