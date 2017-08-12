@@ -32,7 +32,7 @@ public class TestCasesZzz extends TestCasesIntegrationBase {
 	public void test_04() {
 		Gpr.debug("Test");
 		String file = "tests/integration/cancer/test_04.vcf";
-		snpEffectCancer(file, null, "testHg19Chr22", false, "p.Gln133Leu", "c.398A>T", "A-T");
+		snpEffectCancer(file, null, "testHg19Chr22", false, "p.Gln133Leu", "c.398A>T", "A-T", null);
 	}
 
 }

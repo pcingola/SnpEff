@@ -262,6 +262,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
 						VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
 
+						// No net variation? Skip
+						if (!varNonRef.isVariant()) continue;
+
 						// Calculate effects
 						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
 
@@ -1088,7 +1091,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 	/**
 	 * Create a hash with all variables needed for creating summary pages
-	 * @return
 	 */
 	HashMap<String, Object> summaryCreateHash() {
 		// Create the root hash (where data objects are)
