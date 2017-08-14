@@ -37,6 +37,7 @@ import org.snpeff.util.Timer;
 public class SnpEffCmdBuild extends SnpEff {
 
 	GeneDatabaseFormat geneDatabaseFormat; // Database format (only used if 'buildDb' is active)
+	boolean checkNumOk = true;
 	boolean storeAlignments; // Store alignments (used for some test cases)
 	boolean storeSequences = false; // Store full sequences
 	boolean regSortedByType = false;
@@ -64,7 +65,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			snpEffCmdCds.setVerbose(verbose);
 			snpEffCmdCds.setDebug(debug);
 			snpEffCmdCds.setStoreAlignments(storeAlignments);
-			snpEffCmdCds.run();
+			snpEffCmdCds.setCheckNumOk(checkNumOk);
 		} else if (debug) Timer.showStdErr("\tOptional file '" + cdsFile + "' not found, nothing done.");
 
 		//---
@@ -88,6 +89,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			snpEffCmdProtein.setVerbose(verbose);
 			snpEffCmdProtein.setDebug(debug);
 			snpEffCmdProtein.setStoreAlignments(storeAlignments);
+			snpEffCmdProtein.setCheckNumOk(checkNumOk);
 			snpEffCmdProtein.run();
 		} else if (debug) Timer.showStdErr("\tOptional file '" + protFile + "' not found, nothing done.");
 
@@ -386,6 +388,10 @@ public class SnpEffCmdBuild extends SnpEff {
 		if (verbose) Timer.showStdErr("Done");
 
 		return true;
+	}
+
+	public void setCheckNumOk(boolean checkNumOk) {
+		this.checkNumOk = checkNumOk;
 	}
 
 	public void setStoreAlignments(boolean storeAlignments) {

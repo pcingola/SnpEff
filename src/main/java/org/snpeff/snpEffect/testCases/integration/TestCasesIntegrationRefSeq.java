@@ -53,7 +53,6 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-
 		//---
 		/// Build SnpEffectPredictor using a RefSeq file
 		//---
@@ -66,6 +65,7 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 		// Build database
 		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.cmd();
 		snpeffBuild.setStoreAlignments(true);
+		snpeffBuild.setCheckNumOk(false);
 		snpeffBuild.run();
 
 		//---

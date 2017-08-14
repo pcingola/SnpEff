@@ -38,6 +38,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	public static boolean onlyOneError = false; // This is used in some test-cases
 	public static double MAX_ERROR_RATE = 0.05; // Maximum allowed error is 1% (otherwise test fails)
 
+	boolean checkNumOk = true;
 	boolean codonTables;
 	boolean storeAlignments; // Store alignments (used for some test cases)
 	int totalErrors = 0;
@@ -378,9 +379,8 @@ public class SnpEffCmdProtein extends SnpEff {
 			totalNotFound += countNotFound;
 			totalOk += countOk;
 			totalErrors += countErrors;
-		} else {
-			// Sanity check
-			if (totalOk <= 0) fatalErrorNoTranscriptsChecked();
+		} else if (checkNumOk && totalOk <= 0) {
+			fatalErrorNoTranscriptsChecked();
 		}
 
 		return errorRate;
@@ -557,6 +557,10 @@ public class SnpEffCmdProtein extends SnpEff {
 			if (count++ > maxTrIds) return sb.toString();
 		}
 		return sb.toString();
+	}
+
+	public void setCheckNumOk(boolean checkNumOk) {
+		this.checkNumOk = checkNumOk;
 	}
 
 	/**

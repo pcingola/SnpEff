@@ -29,6 +29,7 @@ public class SnpEffCmdCds extends SnpEff {
 	public static int MAX_ALIGN_LENGTH = 33000;
 
 	boolean storeAlignments; // Store alignments (used for some test cases)
+	boolean checkNumOk = true;
 	int totalErrors = 0;
 	int totalOk = 0;
 	int totalWarnings = 0;
@@ -218,7 +219,7 @@ public class SnpEffCmdCds extends SnpEff {
 		);
 
 		// Sanity check
-		if (totalOk <= 0) fatalErrorNoTranscriptsChecked();
+		if (checkNumOk && totalOk <= 0) fatalErrorNoTranscriptsChecked();
 
 		return perc;
 	}
@@ -376,6 +377,10 @@ public class SnpEffCmdCds extends SnpEff {
 			if (count++ > maxTrIds) return sb.toString();
 		}
 		return sb.toString();
+	}
+
+	public void setCheckNumOk(boolean checkNumOk) {
+		this.checkNumOk = checkNumOk;
 	}
 
 	public void setStoreAlignments(boolean storeAlignments) {
