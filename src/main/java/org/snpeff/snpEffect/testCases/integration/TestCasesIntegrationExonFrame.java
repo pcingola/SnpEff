@@ -24,6 +24,7 @@ import junit.framework.Assert;
 public class TestCasesIntegrationExonFrame {
 
 	boolean verbose = false;
+	boolean debug = false;
 
 	public TestCasesIntegrationExonFrame() {
 		super();
@@ -44,6 +45,7 @@ public class TestCasesIntegrationExonFrame {
 
 		SnpEff snpEff = new SnpEff(args);
 		snpEff.setVerbose(verbose);
+		snpEff.setDebug(debug);
 		snpEff.setSupressOutput(!verbose);
 		boolean ok = snpEff.run();
 		Assert.assertTrue(ok);
@@ -62,8 +64,10 @@ public class TestCasesIntegrationExonFrame {
 			for (Transcript tr : gene)
 				transcript = tr;
 
+		if (verbose) Gpr.debug("Trasncript:" + transcript);
+
 		// Check parameters
-		Assert.assertEquals(454126, transcript.getCdsStart());
+		Assert.assertEquals(454127, transcript.getCdsStart());
 		Assert.assertEquals(450599, transcript.getCdsEnd());
 
 		//---
@@ -81,6 +85,7 @@ public class TestCasesIntegrationExonFrame {
 		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Analyze annotations
+		ok = false;
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve.toStringNoGt());
 
@@ -104,11 +109,12 @@ public class TestCasesIntegrationExonFrame {
 						&& ((veff.getAa() == null) || veff.getAa().isEmpty() || expectedAa.equals(veff.getAa())) //
 						&& ((veff.getCodon() == null) || veff.getCodon().isEmpty() || expectedCodon.equals(veff.getCodon())) //
 				) //
-					found = true;
+					found = ok = true;
 			}
 
 			if (!found) throw new RuntimeException("Cannot find expected effect '" + expectedEffect + "', amino acid change '" + expectedAa + "' and codon change '" + expectedCodon + "'");
 		}
+		Assert.assertTrue("No match found", ok);
 	}
 
 	/**
