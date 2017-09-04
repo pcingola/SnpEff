@@ -2,6 +2,7 @@ package org.snpeff.snpEffect.commandLine;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 
 import org.snpeff.RegulationConsensusMultipleBed;
 import org.snpeff.RegulationFileConsensus;
@@ -53,7 +54,7 @@ public class SnpEffCmdBuild extends SnpEff {
 	/**
 	 * Check if database is OK
 	 */
-	void checkDb() {
+	void checkDb(SnpEffPredictorFactory snpEffectPredictorFactory) {
 		//---
 		// Check using CDS file
 		//---
@@ -72,6 +73,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		// Check using proteins file
 		//---
 		String protFile = null;
+		Map<String, String> proteinByTrId = snpEffectPredictorFactory.getProteinByTrId(); // Some factories provide the transcritpId -> protein_sequence mapping
 		if (geneDatabaseFormat == GeneDatabaseFormat.GENBANK) {
 			// GenBank format
 			protFile = config.getBaseFileNameGenes() + SnpEffPredictorFactoryGenBank.EXTENSION_GENBANK;
@@ -90,6 +92,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			snpEffCmdProtein.setDebug(debug);
 			snpEffCmdProtein.setStoreAlignments(storeAlignments);
 			snpEffCmdProtein.setCheckNumOk(checkNumOk);
+			snpEffCmdProtein.setProteinByTrId(proteinByTrId);
 			snpEffCmdProtein.run();
 		} else if (debug) Timer.showStdErr("\tOptional file '" + protFile + "' not found, nothing done.");
 
@@ -98,7 +101,7 @@ public class SnpEffCmdBuild extends SnpEff {
 	/**
 	 * Create SnpEffectPredictor
 	 */
-	SnpEffectPredictor createSnpEffPredictor() {
+	SnpEffPredictorFactory createSnpEffPredictorFactory() {
 		if (geneDatabaseFormat == null) geneDatabaseFormat = guessGenesFormat();
 
 		// Create factory
@@ -117,7 +120,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		factory.setVerbose(verbose);
 		factory.setDebug(debug);
 		factory.setStoreSequences(storeSequences);
-		return factory.create();
+		return factory;
 	}
 
 	/**
@@ -361,7 +364,8 @@ public class SnpEffCmdBuild extends SnpEff {
 
 		// Create SnpEffectPredictor
 		if (!onlyRegulation) {
-			SnpEffectPredictor snpEffectPredictor = createSnpEffPredictor();
+			SnpEffPredictorFactory snpEffectPredictorFactory = createSnpEffPredictorFactory();
+			SnpEffectPredictor snpEffectPredictor = snpEffectPredictorFactory.create();
 			config.setSnpEffectPredictor(snpEffectPredictor);
 
 			// Characterize exons (if possible)
@@ -373,7 +377,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			rareAa(snpEffectPredictor);
 
 			// Check database
-			checkDb();
+			checkDb(snpEffectPredictorFactory);
 
 			// Save database
 			if (verbose) Timer.showStdErr("Saving database");

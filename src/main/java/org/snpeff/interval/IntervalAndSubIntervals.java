@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.snpeff.serializer.MarkerSerializer;
 
@@ -18,9 +19,9 @@ import org.snpeff.serializer.MarkerSerializer;
 public class IntervalAndSubIntervals<T extends Marker> extends Marker implements Iterable<T> {
 
 	private static final long serialVersionUID = 1636197649250882952L;
-	HashMap<String, T> subIntervals;
-	ArrayList<T> sorted;
-	ArrayList<T> sortedStrand;
+	Map<String, T> subIntervals;
+	List<T> sorted;
+	List<T> sortedStrand;
 
 	public IntervalAndSubIntervals() {
 		super();

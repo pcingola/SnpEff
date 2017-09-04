@@ -81,7 +81,6 @@ public abstract class SnpEffPredictorFactory {
 	protected void add(Cds cds) {
 		Transcript tr = (Transcript) cds.getParent();
 		tr.add(cds);
-
 		addMarker(cds, false);
 	}
 
@@ -620,6 +619,10 @@ public abstract class SnpEffPredictorFactory {
 		}
 
 		return chromo;
+	}
+
+	public Map<String, String> getProteinByTrId() {
+		return null;
 	}
 
 	/**

@@ -3,6 +3,7 @@ package org.snpeff.snpEffect.commandLine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.snpeff.SnpEff;
 import org.snpeff.align.SmithWaterman;
@@ -47,7 +48,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	int totalNotFound = 0;
 	String configFile = Config.DEFAULT_CONFIG_FILE;
 	String proteinFile = "";
-	HashMap<String, String> proteinByTrId;
+	Map<String, String> proteinByTrId;
 	AutoHashMap<String, List<Transcript>> trByChromo;
 	HashMap<String, SmithWaterman> alignmentByTrId = new HashMap<>();
 
@@ -525,7 +526,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		if (verbose) Timer.showStdErr("Checking database using protein sequences");
 
 		loadConfig(); // Load config
-		readProteinFile(); // Read proteins
+		if (proteinByTrId == null) readProteinFile(); // Read proteins 
 		loadDb(); // Load database
 		checkProteins(); // Compare proteins
 
@@ -572,6 +573,10 @@ public class SnpEffCmdProtein extends SnpEff {
 		// Reset all protein translations for this chromosome
 		for (Transcript tr : trByChromo.get(chromo.getId()))
 			tr.resetCache();
+	}
+
+	public void setProteinByTrId(Map<String, String> proteinByTrId) {
+		this.proteinByTrId = proteinByTrId;
 	}
 
 	public void setStoreAlignments(boolean storeAlignments) {
