@@ -406,11 +406,13 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	 * @return Matching transcript, null if not found
 	 */
 	Transcript findTrFromLatest(Feature fcds, Gene geneLatest, List<Transcript> trLatest) {
+		if (trLatest == null) return null;
+
 		// Does CDS match latest gene?
 		if (cdsMatchesGene(fcds, geneLatest)) {
 			// Find first matching transcript without CDS information
 			for (Transcript tr : trLatest) {
-				if (tr.getCds().isEmpty() && cdsMatchesTr(fcds, tr)) { return tr; }
+				if (tr.getCds().isEmpty() && cdsMatchesTr(fcds, tr)) return tr;
 			}
 		}
 
@@ -439,6 +441,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		return "Gene_" + start + "_" + end;
 	}
 
+	@Override
 	public Map<String, String> getProteinByTrId() {
 		return proteinByTrId;
 	}
