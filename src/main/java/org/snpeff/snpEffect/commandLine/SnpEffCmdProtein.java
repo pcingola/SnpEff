@@ -526,7 +526,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		if (verbose) Timer.showStdErr("Checking database using protein sequences");
 
 		loadConfig(); // Load config
-		if (proteinByTrId == null) readProteinFile(); // Read proteins 
+		if (proteinByTrId == null) readProteinFile(); // Read proteins
 		loadDb(); // Load database
 		checkProteins(); // Compare proteins
 
