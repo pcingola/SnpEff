@@ -173,6 +173,24 @@ public class Variant extends Marker {
 	}
 
 	/**
+	 * Compare by start and end
+	 */
+	@Override
+	public int compareTo(Interval i2) {
+		int comp = compareToPos(i2);
+		if (comp != 0) return comp;
+
+		Variant v2 = (Variant) i2;
+		comp = ref.compareTo(v2.ref);
+		if (comp != 0) return comp;
+
+		comp = alt.compareTo(v2.alt);
+		if (comp != 0) return comp;
+
+		return 0;
+	}
+
+	/**
 	 * Decompose a variant into basic constituents
 	 * At the moment this only makes sense for MIXED variants which
 	 * are decomposed into two variants: MNP + InDel

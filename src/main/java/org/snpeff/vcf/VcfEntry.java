@@ -601,6 +601,43 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	}
 
 	/**
+	 * Get an INFO field matching a variant
+	 * @returns Field value (string) or null if there is no match
+	 */
+	public String getInfo(String key, Variant var) {
+		if (info == null) parseInfo();
+
+		// Get INFO value
+		String infoStr = info.get(key);
+		if (infoStr == null) return null;
+
+		// Split INFO value and match it to allele
+		String infos[] = infoStr.split(",");
+
+		// INFO fields having number type 'R' (all alleles) should have one value for reference as well.
+		// So in those cases we must skip the first value
+		int firstAltIndex = 0;
+		VcfHeaderInfo vcfInfo = getVcfInfo(key);
+		if (vcfInfo != null && vcfInfo.isNumberAllAlleles()) {
+			firstAltIndex = 1;
+
+			// Are we looking for 'REF' information? I.e. variant is not a variant)
+			if (!var.isVariant()) return infos[0];
+		}
+
+		// Look for genotype matching 'var'
+		int i = firstAltIndex;
+		String gtPrev = "";
+		for (Variant v : variants()) {
+			if (i >= infos.length) break;
+			if (var.equals(v)) return infos[i];
+			if (!v.getGenotype().equals(gtPrev)) i++; // Advance genotype counter
+		}
+
+		return null;
+	}
+
+	/**
 	 * Does the entry exists?
 	 */
 	public boolean getInfoFlag(String key) {
@@ -812,7 +849,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				&& ref.length() == 1 //
 				&& altStr.length() == 1 //
 				&& !ref.equalsIgnoreCase(altStr) //
-				;
+		;
 	}
 
 	/**
@@ -851,7 +888,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 				&& !alt.equals(VCF_ALT_NON_REF_gVCF) // '<NON_REF>'
 				&& !alt.equals(VCF_ALT_MISSING_REF) // '<*>'
 				&& !alt.equals(ref) // Is ALT different than REF?
-				;
+		;
 	}
 
 	@Override
