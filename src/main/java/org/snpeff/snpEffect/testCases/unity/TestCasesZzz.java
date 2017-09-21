@@ -1,9 +1,13 @@
 package org.snpeff.snpEffect.testCases.unity;
 
+import org.junit.Assert;
 import org.junit.Test;
-import org.snpeff.snpEffect.VariantEffect;
+import org.snpeff.fileIterator.VcfFileIterator;
+import org.snpeff.interval.Variant;
+import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationBase;
 import org.snpeff.util.Gpr;
+import org.snpeff.vcf.VcfEntry;
 
 /**
  * Test random SNP changes
@@ -18,21 +22,24 @@ public class TestCasesZzz extends TestCasesIntegrationBase {
 		super();
 	}
 
-	String effectStr(VariantEffect effect) {
-		String effStr = effect.effect(true, true, true, false, false);
-		String aaStr = effect.getAaChangeOld();
-		int idx = effStr.indexOf('(');
-		return effStr.substring(0, idx) + "(" + aaStr + ")";
-	}
-
-	/**
-	 * Test Somatic vs Germline: Check HGVS notation "c."
-	 */
 	@Test
-	public void test_04() {
+	public void test_35_translocations_parsing() {
 		Gpr.debug("Test");
-		String file = "tests/integration/cancer/test_04.vcf";
-		snpEffectCancer(file, null, "testHg19Chr22", false, "p.Gln133Leu", "c.398A>T", "A-T", null);
-	}
+		String vcfFile = "tests/vcf_sv_parsing.vcf";
 
+		verbose = true;
+
+		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
+		VcfEntry ve = vcf.iterator().next();
+		if (verbose) System.out.println(ve);
+		boolean ok = false;
+		for (Variant var : ve.variants()) {
+			if (verbose) System.out.println("\t" + var.getVariantType() + "\t" + var);
+			Assert.assertEquals("Variant type is not 'DEL'", VariantType.DEL, var.getVariantType());
+			Assert.assertEquals("Variant's start does not match", 24538578, var.getStart());
+			Assert.assertEquals("Variant's end does not match", 24538585, var.getEnd());
+			ok = true;
+		}
+		Assert.assertTrue("No variants found!", ok);
+	}
 }

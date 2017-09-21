@@ -146,6 +146,10 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		if (fileName != null) reader = Gpr.reader(fileName);
 	}
 
+	public boolean isDebug() {
+		return debug;
+	}
+
 	@Override
 	public Iterator<T> iterator() {
 		return this;
@@ -155,7 +159,7 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 	 * Load all elements from a file into a list
 	 */
 	public List<T> load() {
-		LinkedList<T> list = new LinkedList<T>();
+		LinkedList<T> list = new LinkedList<>();
 		for (T t : this)
 			list.add(t);
 		close();
@@ -235,6 +239,6 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 				+ ":'" + fileName + "'" //
 				+ ",autoClose:" + autoClose //
 				+ (hasSeek() ? ",pos:" + ((SeekableBufferedReader) reader).getFilePointer() : "") //
-				;
+		;
 	}
 }

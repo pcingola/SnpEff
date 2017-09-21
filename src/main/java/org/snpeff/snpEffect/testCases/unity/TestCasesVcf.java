@@ -701,5 +701,4 @@ public class TestCasesVcf extends TestCasesBase {
 			Assert.assertTrue("No variants found!", ok);
 		}
 	}
-
 }

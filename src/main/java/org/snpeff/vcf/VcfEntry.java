@@ -1156,7 +1156,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if ((getInfo(VCF_INFO_END) != null)) {
 				// Get 'END' field and do some sanity check
 				end = (int) getInfoInt(VCF_INFO_END) - 1;
-				if (end < start) throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start);
+				if (end < start) { throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start); }
 			}
 		}
 	}
