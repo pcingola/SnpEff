@@ -445,92 +445,6 @@ void downloadJaspar() {
 }
 
 #-------------------------------------------------------------------------------
-# Download NCBI
-# This is not working at the moment (downloading the fasta sequences is 
-# mess and needs to be fixed)
-#-------------------------------------------------------------------------------
-void downloadNcbi() {
-	println "Download NCBI: Not working!"
-
-#	configFile := "$dirSnpEff/config/snpEff.NCBI.config"
-#	if( configFile.exists() ) {
-#		println "\tConfig file '$configFile' exists: nothing done"
-#		return
-#	}
-#
-#	dir := "$dirDownload/ncbi"
-#	dir.mkdir()
-#	dir.chdir()
-#
-#	downloadOk := "download.ok"
-#	if( ! downloadOk.exists() ) {
-#		println "Downloading NCBI"
-#
-#		sys rsync -avP \
-#			--exclude='.snapshot' \
-#			--exclude='.templates' \
-#			--exclude='all' \
-#			--exclude='archive' \
-#			--exclude='genbank' \
-#			--exclude='refseq' \
-#			--exclude='ARCHIVE' \
-#			--exclude='ASSEMBLY_BACTERIA' \
-#			--exclude='ASSEMBLY_REPORTS' \
-#			--exclude='Bacteria' \
-#			--exclude='Bacteria_DRAFT' \
-#			--exclude='Chloroplasts' \
-#			--exclude='CLUSTERS' \
-#			--exclude='GENOME_REPORTS' \
-#			--exclude='HUMAN_MICROBIOM' \
-#			--exclude='INFLUENZA' \
-#			--exclude='MITOCHONDRIA' \
-#			--exclude='PLANTS' \
-#			--exclude='Plasmids' \
-#			--exclude='TARGET' \
-#			--exclude='TOOLS' \
-#			--exclude='Virus' \
-#			\
-#			--include='*/GFF/*_top_level.gff3.gz' \
-#			--include='protein.fa.gz' \
-#			--include='rna.fa.gz' \
-#			--include='*/Assembled_chromosomes/seq/*.fa.gz' \
-#			--include='*/' \
-#			\
-#			--exclude='*' \
-#			ftp.ncbi.nih.gov::genomes \
-#			.
-#
-#		sys chmod -Rf u+rw $dir
-#
-#		downloadOk.write("OK")	# Mark as all downloads OK
-#	}
-#
-#	# Copy to 'data' dir
-#	dataDir := "$dir/data"
-#	dataDir.mkdir()
-#	sys cd $dir/Bacteria ; $cp -rv . $dataDir/
-#	sys cd $dir/Virus ; $cp -rv . $dataDir/
-#
-#	# Create genes.gbk files and create config
-#	# lines (one per subdirectory in dataDir)
-#	dataDir.chdir()
-#	string[] configLines
-#	println "Creating genes.gbk:"
-#	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
-#	for( string gdir : genomes.lines() ) {
-#		gen := gdir.baseName()
-#		println "\t$gen"
-#		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
-#
-#		# Collapse all geneBank files into one 
-#		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
-#	}
-#
-#	println "Writing config file $configFile"
-#	configFile.write( configLines.join("\n") )
-}
-
-#-------------------------------------------------------------------------------
 # Download NCBI Bacteria
 #-------------------------------------------------------------------------------
 void downloadNcbiBacteria() {
@@ -657,86 +571,6 @@ void downloadNextProt() {
 	}
 }
 
-# #-------------------------------------------------------------------------------
-# # Download geome from UCSC
-# #-------------------------------------------------------------------------------
-# void downloadUcscHg19() {
-# 	println "Download hg19 (UCSC)"
-# 
-# 	ref := 'hg19'
-# 	dir := "$dirDownload/ucsc_$ref"
-# 	dir.mkdir()
-# 	dir.chdir()
-# 	
-# 	#---
-# 	# Download data
-# 	#---
-# 	ori := "$dir/ORI"
-# 	ori.mkdir()
-# 	ori.chdir()
-# 
-# 	fetch("$urlUcscCse/$ref/bigZips/chromFa.tar.gz")
-# 	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
-# 	fetch("$urlNcbiFtp/refseq/H_sapiens/H_sapiens/protein/protein.fa.gz")
-# 
-# 	# Create FASTA file
-# 	fastaFromTar(ref, "$ori/chromFa.tar.gz")
-# 
-# 	# Query database
-# 	queryUcsc(ref, dir)
-# 	refLinkGz := queryUcscRefLink(ref, dir)
-# 	refLink := refLinkGz.removeExt('.gz')
-# 
-# 	#---
-# 	# Create protein FASTA
-# 	# Scripts:
-# 	#    - hg19_proteinFasta2NM.pl: Converts from ProteinIDs to TranscriptID
-# 	#    - hg19_proteinFastaReplaceName.pl : Adds TranscriptID version to TranscriptID
-# 	#---
-# 	println 'Creating proteins FASTA'
-# 	if( refLink <- refLinkGz) sys gunzip -c $refLinkGz > $refLink
-# 	if( "$dir/protein.fa.gz" <- "$ori/protein.fa.gz") {
-# 		sys gunzip -c $ori/protein.fa.gz \
-# 		| $dirScriptsBuild/hg19_proteinFasta2NM.pl $refLink \
-# 		| $dirScriptsBuild/hg19_proteinFastaReplaceName.pl $dir/genes.refseq.gz \
-# 		> $dir/protein.fa
-# 		sys gzip -f $dir/protein.fa
-# 	}
-# 
-# 	#---
-# 	# Create CDS FASTA
-# 	# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" 
-# 	#---
-# 	println 'Creating CDS FASTA'
-# 	if( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
-# 		sys gunzip -c $ori/refMrna.fa.gz | tr " " "." > $dir/cds.fa
-# 		sys gzip -f $dir/cds.fa
-# 	}
-# 
-# 	# Copy files to snpEff/data dir
-# 	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf cds.fa.gz protein.fa.gz genes.refseq.gz $dirData/$ref/ 
-# }
-# 
-#-------------------------------------------------------------------------------
-# Download geome from UCSC (Known genes)
-#-------------------------------------------------------------------------------
-void downloadUcscHg19Kg() {
-	println "Download hg19 (UCSC: Known Genes)"
-	ref := 'hg19kg'
-	refdb := 'hg19'
-
-	dir := "$dirDownload/ucsc_$ref"
-	dir.mkdir()
-	dir.chdir()
-	
-	# Query database
-	queryUcscKg(ref, refdb, dir)
-
-	# Copy files to snpEff/data dir
-	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf genes.kg.gz $dirData/$ref/ 
-	sys cd $dirData/genomes; rm -vf $ref.fa.gz; ln -s $refdb.fa.gz $ref.fa.gz
-}
-
 #-------------------------------------------------------------------------------
 # Download geome from UCSC
 #-------------------------------------------------------------------------------
@@ -783,10 +617,9 @@ void downloadUcscHg38() {
 #-------------------------------------------------------------------------------
 # Download geome from UCSC (Known genes)
 #-------------------------------------------------------------------------------
-void downloadUcscHg38Kg() {
-	println "Doanload hg38 (UCSC Knonwn Genes)"
-	ref := 'hg38kg'
-	refdb := 'hg38'
+void downloadUcscKg(string refdb) {
+	println "Download '$refdb' (UCSC Knonwn Genes)"
+	ref := refdb + 'kg'
 
 	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
@@ -803,45 +636,81 @@ void downloadUcscHg38Kg() {
 #-------------------------------------------------------------------------------
 # Download geome from UCSC
 #-------------------------------------------------------------------------------
-void downloadUcsc(string ref) {
+void downloadUcscGenome(string ref) {
 	println "Download $ref (UCSC)"
+
+	# Initialize
+	seDataDir := "$dirData/$ref"
+	seDataDir.mkdir()
 
 	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
 	dir.chdir()
 	
-	#---
-	# Download data
-	#---
 	ori := "$dir/ORI"
 	ori.mkdir()
 	ori.chdir()
 
-	fetch("$urlUcscCse/$ref/bigZips/chromFa.tar.gz")
-	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
-
-	# Create fasta from tar
-	fagz := fastaFromTar(ref, "chromFa.tar.gz")
-	fagzData := "$dirData/genomes/$fagz"
-	fagzOri := "$dir/ORI/$fagz"
-	if( fagzData <- fagzOri ) sys cp -vf $fagzOri $fagzData
+	# Download data
+	fagz := ref.downloadUcscGenomeFasta(dir)
+	cdsgz := ref.downloadUcscGenomeFastaMrna(dir)
 
 	# Query gene database
 	queryUcsc(ref, dir)
 
+	# Copy files to snpEff/data dir
+	fagzData := "$dirData/genomes/$ref.fa.gz"
+	if( fagzData <- fagz ) sys cp -vf $fagz $fagzData
+
+	sys cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $seDataDir/
+}
+
+#-------------------------------------------------------------------------------
+# Download FASTA CDS from UCSC
+#-------------------------------------------------------------------------------
+string downloadUcscGenomeFastaMrna(string ref, string dir) {
 	#---
 	# Create CDS FASTA
-	# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" 
 	#---
+	println 'Download mRNA file'
+	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+
 	println 'Creating CDS FASTA'
-	if( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
-		sys gunzip -c $ori/refMrna.fa.gz | tr " " "." > $dir/cds.fa
-		sys gzip -f $dir/cds.fa
+	ori := "$dir/ORI"
+	refMrna := "$ori/refMrna.fa.gz"
+	cds := "$dir/cds.fa"
+	cdsgz := "$dir/cds.fa.gz"
+	if( cdsgz <- refMrna ) {
+		sys gunzip -c $refMrna | tr " " "." > $cds
+		sys gzip -f $cds
+	}
+	return cdsgz
+}
+
+#-------------------------------------------------------------------------------
+# Download FASTA geome from UCSC
+#-------------------------------------------------------------------------------
+string downloadUcscGenomeFasta(string ref, string dir) {
+	ori := "$dir/ORI"
+	localFile := "$ori/$ref.fa.gz"
+	if( localFile.exists() ) {
+		println "Local file '$localFile' exists, skipping download"
+		return localFile
 	}
 
-	# Copy files to snpEff/data dir
-	"$dirData/$ref".mkdir()
-	sys cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $dirData/$ref/ 
+	file := "$urlUcscCse/$ref/bigZips/chromFa.tar.gz"
+	if( file.exists() ) {
+		fetch("$urlUcscCse/$ref/bigZips/chromFa.tar.gz")
+
+		# Create fasta from tar
+		fagz := fastaFromTar(ref, "chromFa.tar.gz", ori)
+		return fagz
+	}
+	
+	println "File '$file' does not exists"
+	file = "$urlUcscCse/$ref/bigZips/$ref.fa.gz"
+	fetch(file)
+	return localFile
 }
 
 #-------------------------------------------------------------------------------
@@ -865,12 +734,12 @@ void downloadPdb() {
 #-------------------------------------------------------------------------------
 # Create a single fasta fiel from a set of fasta in a tar
 #-------------------------------------------------------------------------------
-string fastaFromTar(string ref, string tar) {
-	dirChr := 'chr'
+string fastaFromTar(string ref, string tar, string ori) {
+	dirChr := "$ori/chr"
 	dirChr.mkdir()
 
-	fasta := "$ref.fa"
-	fastaGz := "$ref.fa.gz"
+	fasta := "$ori/$ref.fa"
+	fastaGz := "$ori/$ref.fa.gz"
 
 	if( fastaGz <- tar ) {
 		println "Creating fasta file '$fastaGz' from tar file '$tar'"
