@@ -462,10 +462,10 @@ void downloadNcbiGenome(string genome) {
 		println "Downloading NCBI genome '$genome'"
 
 		sys rsync -avP \
-			--include='*_top_level.gff3.gz' \
-			--include='*protein.fa.gz' \
-			--include='*rna.fa.gz' \
-			--include='Assembled_chromosomes/seq/*_chr*.fa.gz' \
+			--include='/GFF/*_top_level.gff3.gz' \
+			--include='/protein/protein.fa.gz' \
+			--include='/RNA/rna.fa.gz' \
+			--include='/Assembled_chromosomes/seq/*_chr*.fa.gz' \
 			--include='*/' \
 			--exclude='*' \
 			$url \
