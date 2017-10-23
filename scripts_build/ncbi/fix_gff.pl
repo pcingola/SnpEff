@@ -86,11 +86,21 @@ my(%prot);		# Map protein ID to transcript ID
 my($l, $id, $key, $value, $name, $paren, $newParent);
 
 print STDERR "Parsing GFF file '$gff'\n";
-open GFF, $gff || die "Cannot open file '$gff'\n";
+if( $gff =~ /.gz$/ ) {
+	open GFF, "gunzip -c $gff |" || die "Cannot open file '$gff'\n";
+else {
+	open GFF, $gff || die "Cannot open file '$gff'\n";
+}
+
 while( $l = <GFF> ) {
 	# Skip headers
 	if( $l !~ /^#/ ) {
 		($chr, $source, $type, $start, $end, $score, $strand, $phase, $attr) = parseGffLine($l);
+
+		!!!!!!!!!!!!!!!!!!!!!!
+		# MAP chrId => chr
+		!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 		$name = $attr->{'Name'};
 		$id = $attr->{'ID'};
