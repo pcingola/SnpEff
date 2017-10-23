@@ -18,6 +18,7 @@ distroBundles		:= false		help Create bundle files (zip)
 distroCore 			:= false		help Create distribution files (zip only 'core')
 download 			:= false		help Download files
 downloadUcsc		:= ''			help Download genome files from UCSC (genome name)
+downloadNcbi		:= ''			help Download genome files from NCBI (genome name)
 make	 			:= false		help Make (build JAR files)
 query	 			:= false		help Run queries against UCSC MySql server
 test	 			:= false		help Run SnpEff / SnpSift test cases
@@ -733,6 +734,7 @@ if( distro )					makeDistro()								# Create distribution files
 if( distroCore )				zipCore()									# Create distribution files (core 'zip')
 if( distroBundles )				zipBundles()								# Create 'bundle' distribution files
 if( download )					downloadAll()								# Perform downloads
+if( !downloadNcbi.isEmpty() )	downloadNcbi.downloadNcbiGenome()			# Download NCBI genome
 if( !downloadUcsc.isEmpty() )	downloadUcsc.downloadUcscGenome()			# Download UCSC genome
 if( make )						build()										# Build (create JAR files)
 if( query )						queryUcscAll()								# Query UCSC database

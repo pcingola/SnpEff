@@ -19,6 +19,7 @@ urlFlyBase         := "ftp://ftp.flybase.net"
 urlGwasCatalog     := "http://www.genome.gov/admin/gwascatalog.txt"
 urlJaspar          := "http://jaspar.binf.ku.dk/html/DOWNLOAD/JASPAR_CORE/pfm/redundant/pfm_all.txt"
 urlNcbiFtp         := "ftp://ftp.ncbi.nlm.nih.gov/"
+urlNcbiGenomes     := "ftp.ncbi.nih.gov::genomes"
 urlNcbiBacteria    := "ftp.ncbi.nih.gov::genomes/Bacteria"
 urlNcbiViruses     := "ftp.ncbi.nih.gov::genomes/Viruses"
 urlNextProt        := "ftp://ftp.nextprot.org/pub/current_release/xml"
@@ -441,6 +442,40 @@ void downloadJaspar() {
 	if( fetch(urlJaspar) ) {
 		sys gzip -c pfm_all.txt > pwms.bin
 		println "Jaspar: File $dir/pwms.bin created"
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Download NCBI genome
+#-------------------------------------------------------------------------------
+void downloadNcbiGenome(string genome) {
+	println "Download NCBI genome '$genome'"
+
+	dir := "$dirDownload/ncbi_genome/$genome"
+	dir.mkdir()
+	dir.chdir()
+
+	downloadOk := "download.ok"
+	url := "$urlNcbiGenomes/$genome/"
+	println "URL: $url"
+	if( ! downloadOk.exists() ) {
+		println "Downloading NCBI genome '$genome'"
+
+		sys rsync -avP \
+			--include='*_top_level.gff3.gz' \
+			--include='*protein.fa.gz' \
+			--include='*rna.fa.gz' \
+			--include='Assembled_chromosomes/seq/*_chr*.fa.gz' \
+			--include='*/' \
+			--exclude='*' \
+			$url \
+			.
+
+		sys chmod -Rf u+rw $dir
+
+		downloadOk.write("OK")	# Mark as all downloads OK
+	} else {
+		println "File $downloadOk exists, nothing done"
 	}
 }
 
