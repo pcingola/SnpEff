@@ -18,8 +18,6 @@ public enum EffectType {
 	// High impact
 	// Order: Highest impact first
 	CHROMOSOME_LARGE_DELETION(EffectImpact.HIGH) //
-	, CHROMOSOME_LARGE_INVERSION(EffectImpact.MODERATE) //
-	, CHROMOSOME_LARGE_DUPLICATION(EffectImpact.LOW) //
 	, GENE_REARRANGEMENT(EffectImpact.HIGH) //
 	, GENE_DELETED(EffectImpact.HIGH) //
 	, TRANSCRIPT_DELETED(EffectImpact.HIGH) //
@@ -46,22 +44,15 @@ public enum EffectType {
 	// Order: Highest impact first
 	// Note: Method Codon.effect() relies on this order for effect
 	//       replacement (when 'allowReplace = true')
+	, CHROMOSOME_LARGE_INVERSION(EffectImpact.MODERATE) //
 	, NON_SYNONYMOUS_CODING(EffectImpact.MODERATE) //
-	, NON_SYNONYMOUS_STOP(EffectImpact.LOW) //
-	, NON_SYNONYMOUS_START(EffectImpact.LOW) //
 	, GENE_DUPLICATION(EffectImpact.MODERATE) //
 	, TRANSCRIPT_DUPLICATION(EffectImpact.MODERATE) //
 	, UTR_5_DELETED(EffectImpact.MODERATE) //
 	, UTR_3_DELETED(EffectImpact.MODERATE) //
 	, SPLICE_SITE_BRANCH_U12(EffectImpact.MODERATE) //
-	, SPLICE_SITE_REGION(EffectImpact.LOW) //
-	, SPLICE_SITE_BRANCH(EffectImpact.LOW) //
-	, SYNONYMOUS_CODING(EffectImpact.LOW) //
-	, SYNONYMOUS_START(EffectImpact.LOW) //
-	, SYNONYMOUS_STOP(EffectImpact.LOW) //
 	, GENE_INVERSION(EffectImpact.MODERATE) //
 	, TRANSCRIPT_INVERSION(EffectImpact.MODERATE) //
-	, CODON_CHANGE(EffectImpact.LOW) //
 	, CODON_INSERTION(EffectImpact.MODERATE) //
 	, CODON_CHANGE_PLUS_CODON_INSERTION(EffectImpact.MODERATE) //
 	, CODON_DELETION(EffectImpact.MODERATE) //
@@ -69,19 +60,28 @@ public enum EffectType {
 
 	// Low impact
 	// Order: Highest impact first
-	, UTR_5_PRIME(EffectImpact.MODIFIER) //
-	, UTR_3_PRIME(EffectImpact.MODIFIER) //
+	, CHROMOSOME_LARGE_DUPLICATION(EffectImpact.LOW) //
+	, NON_SYNONYMOUS_STOP(EffectImpact.LOW) //
+	, NON_SYNONYMOUS_START(EffectImpact.LOW) //
+	, SPLICE_SITE_REGION(EffectImpact.LOW) //
+	, SPLICE_SITE_BRANCH(EffectImpact.LOW) //
+	, SYNONYMOUS_CODING(EffectImpact.LOW) //
+	, SYNONYMOUS_START(EffectImpact.LOW) //
+	, SYNONYMOUS_STOP(EffectImpact.LOW) //
+	, CODON_CHANGE(EffectImpact.LOW) //
 	, START_GAINED(EffectImpact.LOW) //
 	, MOTIF(EffectImpact.LOW) //
 	, MOTIF_DELETED(EffectImpact.LOW) //
-	, REGULATION(EffectImpact.MODIFIER) //
-	, MICRO_RNA(EffectImpact.MODIFIER) //
 	, FEATURE_FUSION(EffectImpact.LOW) //
-	, UPSTREAM(EffectImpact.MODIFIER) //
-	, DOWNSTREAM(EffectImpact.MODIFIER) //
 
 	// Modifiers
 	// Order: Highest impact first
+	, UTR_5_PRIME(EffectImpact.MODIFIER) //
+	, UTR_3_PRIME(EffectImpact.MODIFIER) //
+	, REGULATION(EffectImpact.MODIFIER) //
+	, MICRO_RNA(EffectImpact.MODIFIER) //
+	, UPSTREAM(EffectImpact.MODIFIER) //
+	, DOWNSTREAM(EffectImpact.MODIFIER) //
 	, NEXT_PROT(EffectImpact.MODIFIER) //
 	, INTRON_CONSERVED(EffectImpact.MODIFIER) //
 	, INTRON(EffectImpact.MODIFIER) //
