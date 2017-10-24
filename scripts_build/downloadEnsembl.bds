@@ -70,6 +70,7 @@ void downloadEnsembl(int ensemblRelease) {
 
 	# Move files
 	println 'Copying files to data dir'
+	today := sys date +"%Y-%m-%d"
 	string[] configLines
 	for( string gtf : ".".dir("*.gtf.gz") ) {
 		base := gtf.baseName('.gtf.gz')
@@ -101,6 +102,7 @@ void downloadEnsembl(int ensemblRelease) {
 			# Append config lines
 			configLines += "$name.genome : $longName"
 			configLines += "$name.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+			configLines += "$name.retrieval_date : $today"
 		}
 	}
 
@@ -178,6 +180,7 @@ void downloadEnsemblBfmpp() {
 	# Move files
 	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to data dir"
 	string[] configLines
+	today := sys date +"%Y-%m-%d"
 	for( string gtf : ".".dir("*.gtf.gz") ) {
 		base := gtf.baseName('.gtf.gz')
 		baseNoVer := base.removeExt()
@@ -203,6 +206,7 @@ void downloadEnsemblBfmpp() {
 			# Append config lines
 			configLines += "$name.genome : $longName"
 			configLines += "$name.reference : $ensemblBfmppFtp/pub/release-$ensemblBfmppRelease"
+			configLines += "$name.retrieval_date : $today"
 		}
 	}
 

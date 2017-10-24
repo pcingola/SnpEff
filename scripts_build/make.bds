@@ -187,6 +187,12 @@ void buildConfig() {
 
 	sys echo >> $conf
 	sys echo "#---" >> $conf
+	sys echo "# NCBI genomes" >> $conf
+	sys echo "#---" >> $conf
+	sys cat	$confDir/snpEff.NCBI.*.config >> $conf
+
+	sys echo >> $conf
+	sys echo "#---" >> $conf
 	sys echo "# ENSEMBL BFMPP release $ensemblBfmppRelease" >> $conf
 	sys echo "#---" >> $conf
 	sys cat $confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config >> $conf

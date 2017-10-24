@@ -171,7 +171,10 @@ void downloadNcbiGenome(string genome) {
 	genome.createFilesFromNcbi()
 
 	# Create config file
-	configLines := "$genome.genome : $genome\n$genome.reference : ftp://ftp.ncbi.nih.gov/genomes/$genome/\n"
+	today := sys date +"%Y-%m-%d"
+	configLines := "$genome.genome : $genome\n"
+	configLines += "$genome.reference : ftp://ftp.ncbi.nih.gov/genomes/$genome/\n"
+	configLines += "$genome.retrieval_date : $today"
 	configFile.write(configLines)
 }
 
