@@ -1,0 +1,294 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+#
+# Download genome data
+#
+#-------------------------------------------------------------------------------
+
+ucscMysqlServer    := "genome-mysql.cse.ucsc.edu"
+urlUcscCse         := "http://hgdownload.cse.ucsc.edu/goldenPath"
+urlUcscSoe         := "http://hgdownload.soe.ucsc.edu/goldenPath"
+
+#-------------------------------------------------------------------------------
+# Download CytoBands
+#-------------------------------------------------------------------------------
+void downloadCytoBands() {
+	println "Download cytobands"
+
+	for(string grch : GRCh2Hg.keys() ) {
+		hg := GRCh2Hg{grch}
+		dir := "$dirDb/$grch/cytoBand"
+		file := "$dir/cytoBand.txt.gz"
+		url := "$urlUcscCse/$hg/database/cytoBand.txt.gz"
+		dir.mkdir()
+		dir.chdir()
+		if( !file.exists() ) fetch(url)
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Download geome from UCSC
+#-------------------------------------------------------------------------------
+void downloadUcscHg38() {
+	println "Download hg38 (UCSC)"
+	ref := 'hg38'
+
+	dir := "$dirDownload/ucsc_$ref"
+	dir.mkdir()
+	dir.chdir()
+	
+	#---
+	# Download data
+	#---
+	ori := "$dir/ORI"
+	ori.mkdir()
+	ori.chdir()
+
+	fetch("$urlUcscCse/$ref/bigZips/$ref.fa.gz")
+	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+
+	fagz := "$ref.fa.gz"
+	fagzData := "$dirData/genomes/$fagz"
+	fagzOri := "$dir/ORI/$fagz"
+	if( fagzData <- fagzOri ) sys cp -vf $fagzOri $fagzData
+
+	# Query gene database
+	queryUcsc(ref, dir)
+
+	#---
+	# Create CDS FASTA
+	# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" 
+	#---
+	println 'Creating CDS FASTA'
+	if( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
+		sys gunzip -c $ori/refMrna.fa.gz | tr " " "." > $dir/cds.fa
+		sys gzip -f $dir/cds.fa
+	}
+
+	# Copy files to snpEff/data dir
+	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $dirData/$ref/ 
+}
+
+#-------------------------------------------------------------------------------
+# Download geome from UCSC (Known genes)
+#-------------------------------------------------------------------------------
+void downloadUcscKg(string refdb) {
+	println "Download '$refdb' (UCSC Knonwn Genes)"
+	ref := refdb + 'kg'
+
+	dir := "$dirDownload/ucsc_$ref"
+	dir.mkdir()
+	dir.chdir()
+	
+	# Query database
+	queryUcscKg(ref, refdb, dir)
+
+	# Copy files to snpEff/data dir
+	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf genes.kg.gz $dirData/$ref/ 
+	sys cd $dirData/genomes; rm -vf $ref.fa.gz ; ln -s $refdb.fa.gz $ref.fa.gz
+}
+
+#-------------------------------------------------------------------------------
+# Download geome from UCSC
+#-------------------------------------------------------------------------------
+void downloadUcscGenome(string ref) {
+	println "Download $ref (UCSC)"
+
+	# Initialize
+	seDataDir := "$dirData/$ref"
+	seDataDir.mkdir()
+
+	dir := "$dirDownload/ucsc_$ref"
+	dir.mkdir()
+	dir.chdir()
+	
+	ori := "$dir/ORI"
+	ori.mkdir()
+	ori.chdir()
+
+	# Download data
+	fagz := ref.downloadUcscGenomeFasta(dir)
+	cdsgz := ref.downloadUcscGenomeFastaMrna(dir)
+
+	# Query gene database
+	queryUcsc(ref, dir)
+
+	# Copy files to snpEff/data dir
+	fagzData := "$dirData/genomes/$ref.fa.gz"
+	if( fagzData <- fagz ) sys cp -vf $fagz $fagzData
+
+	sys cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $seDataDir/
+}
+
+#-------------------------------------------------------------------------------
+# Download FASTA CDS from UCSC
+#-------------------------------------------------------------------------------
+string downloadUcscGenomeFastaMrna(string ref, string dir) {
+	#---
+	# Create CDS FASTA
+	#---
+	println 'Download mRNA file'
+	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+
+	println 'Creating CDS FASTA'
+	ori := "$dir/ORI"
+	refMrna := "$ori/refMrna.fa.gz"
+	cds := "$dir/cds.fa"
+	cdsgz := "$dir/cds.fa.gz"
+	if( cdsgz <- refMrna ) {
+		sys gunzip -c $refMrna | tr " " "." > $cds
+		sys gzip -f $cds
+	}
+	return cdsgz
+}
+
+#-------------------------------------------------------------------------------
+# Download FASTA geome from UCSC
+#-------------------------------------------------------------------------------
+string downloadUcscGenomeFasta(string ref, string dir) {
+	ori := "$dir/ORI"
+	localFile := "$ori/$ref.fa.gz"
+	if( localFile.exists() ) {
+		println "Local file '$localFile' exists, skipping download"
+		return localFile
+	}
+
+	file := "$urlUcscCse/$ref/bigZips/chromFa.tar.gz"
+	if( file.exists() ) {
+		fetch("$urlUcscCse/$ref/bigZips/chromFa.tar.gz")
+
+		# Create fasta from tar
+		fagz := fastaFromTar(ref, "chromFa.tar.gz", ori)
+		return fagz
+	}
+	
+	println "File '$file' does not exists"
+	file = "$urlUcscCse/$ref/bigZips/$ref.fa.gz"
+	fetch(file)
+	return localFile
+}
+
+#-------------------------------------------------------------------------------
+# Create a single fasta file from a set of fasta in a tar
+#-------------------------------------------------------------------------------
+string fastaFromTar(string ref, string tar, string ori) {
+	dirChr := "$ori/chr"
+	dirChr.mkdir()
+
+	fasta := "$ori/$ref.fa"
+	fastaGz := "$ori/$ref.fa.gz"
+
+	if( fastaGz <- tar ) {
+		println "Creating fasta file '$fastaGz' from tar file '$tar'"
+		sys cd $dirChr
+		sys tar -xvzf $tar
+		sys rm -f $fasta
+		sys cat *.fa > $fasta
+		sys gzip -f $fasta
+	}
+
+	return fastaGz
+}
+
+#-------------------------------------------------------------------------------
+# QueryUcsc
+#-------------------------------------------------------------------------------
+void queryUcscAll() {
+	refs:= ['hg19', 'hg38', 'mm10']
+
+	for( string ref : refs ) {
+		dir := "$dirDownload/ucsc_$ref"
+		dir.mkdir()
+		dir.chdir()
+		queryUcsc(ref, dir)
+
+		refdb := ref
+		ref = ref + 'kg'
+		dir = "$dirDownload/ucsc_$ref"
+		dir.mkdir()
+		dir.chdir()
+		queryUcscKg(ref, refdb, dir)
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Query MySql's database (RefSeq)
+#-------------------------------------------------------------------------------
+string queryUcsc(string ref, string dir) {
+	refSeq := "$dir/genes.refseq"
+	refSeqGz := "$dir/genes.refseq.gz"
+	if( !refSeqGz.exists() ) {
+		println "Querying database for RefSeq genes: $ref"
+		query := "
+			use $ref; 
+			select rg.bin as 'binNum'
+					, CONCAT(rg.name,'.',gi.version) as 'name'
+					, rg.chrom
+					, rg.strand
+					, rg.txStart
+					, rg.txEnd
+					, rg.cdsStart
+					, rg.cdsEnd
+					, rg.exonCount
+					, rg.exonStarts
+					, rg.exonEnds
+					, rg.score
+					, rg.name2
+					, rg.cdsStartStat
+					, rg.cdsEndStat
+					, rg.exonFrames 
+			from refGene rg 
+				inner join hgFixed.gbCdnaInfo gi 
+				on rg.name=gi.acc
+			;
+			"
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refSeq.gz
+	}
+	return refSeqGz
+}
+
+#-------------------------------------------------------------------------------
+# Query MySql's database (KnonwGene)
+#-------------------------------------------------------------------------------
+string queryUcscKg(string ref, string refdb, string dir) {
+	refSeq := "$dir/genes.kg"
+	refSeqGz := "$dir/genes.kg.gz"
+	if( !refSeqGz.exists() ) {
+		println "Querying database for KnownGenes genes: $ref"
+		query := "
+			use $refdb;
+			select kg.name as '#name'
+					, kg.chrom 
+					, kg.strand 
+					, kg.txStart 
+					, kg.txEnd 
+					, kg.cdsStart 
+					, kg.cdsEnd 
+					, kg.exonCount 
+					, kg.exonStarts 
+					, kg.exonEnds 
+					, kg.proteinID 
+					, kg.alignID 
+			from knownGene kg
+			;
+			"
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $refdb | gzip -c > $refSeq.gz
+	}
+	return refSeqGz
+}
+
+#-------------------------------------------------------------------------------
+# Query MySql's database (RefSeq) for refLink table
+#-------------------------------------------------------------------------------
+string queryUcscRefLink(string ref, string dir) {
+	refLinkGz := "$dir/refLink.txt.gz"
+	if( !refLinkGz.exists() ) {
+		println "Querying database for RefLink table: $ref"
+		query := "use $ref; select * from hgFixed.refLink;"
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refLinkGz
+	}
+	println "RefLink file: $refLinkGz"
+	return refLinkGz
+}
+

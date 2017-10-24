@@ -1,0 +1,55 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+#
+# Download genome data
+#
+#-------------------------------------------------------------------------------
+
+urlFlyBase         := "ftp://ftp.flybase.net"
+
+#-------------------------------------------------------------------------------
+# Download FlyBase
+#-------------------------------------------------------------------------------
+void downloadFlyBase() {
+	println "Download FlyBase $flybaseRelease"
+
+	configFile := "$dirSnpEff/config/snpEff.FLYBASE_$flybaseRelease.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	dir := "$dirDownload/flybase_$flybaseRelease"
+	dir.mkdir()
+	dir.chdir()
+
+	# Download each genome
+	string[] configLines
+	for( string g : flybaseGenomes ) {
+		organism := g.split('_')[0]
+		version := g.split('_')[1]
+		url := "$urlFlyBase/releases/$flybaseRelease/$g/gff/$organism-all-$version.gff.gz"
+		println "Organism: $organism\tversion: $version\tURL: $url"
+    
+		dirg := "$dir/$g"
+		dirg.mkdir()
+		fetch(url)
+    
+		# Update 'config' file
+		configLines += "$g.genome : $g"
+		configLines += "$g.reference : $url"
+
+		# Copy to data dir
+		dataDir := "data/$g"
+		dataDir.mkdir()
+		sys cp $organism-all-$version.gff.gz $dataDir/genes.gff.gz
+	}
+
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+
+	# Copy files to snpEff/data directory
+	sys cd data ; cp -rvf . $dirData
+}
+
