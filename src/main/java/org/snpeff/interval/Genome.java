@@ -35,8 +35,8 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	String species;
 	String version;
 	String fastaDir;
-	ArrayList<String> chromosomeNames;
-	ArrayList<String> chromosomeNamesSorted = null;
+	// ArrayList<String> chromosomeNames;
+	List<String> chromosomeNamesSorted = null;
 	String chromoFastaFiles[];
 	HashMap<String, Chromosome> chromosomes;
 	Genes genes; // All genes, transcripts, exons, UTRs, CDS, etc.
@@ -74,8 +74,8 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		super();
 		id = version = "";
 		type = EffectType.GENOME;
-		chromosomeNames = new ArrayList<String>();
-		chromosomes = new HashMap<String, Chromosome>();
+		// chromosomeNames = new ArrayList<String>();
+		chromosomes = new HashMap<>();
 		genes = new Genes(this);
 		genomicSequences = new GenomicSequences(this);
 		genomicSequences.build();
@@ -86,8 +86,8 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		super(null, 0, Integer.MAX_VALUE, false, version);
 		this.version = version;
 		type = EffectType.GENOME;
-		chromosomeNames = new ArrayList<String>();
-		chromosomes = new HashMap<String, Chromosome>();
+		//		chromosomeNames = new ArrayList<String>();
+		chromosomes = new HashMap<>();
 		genes = new Genes(this);
 		genomicSequences = new GenomicSequences(this);
 		genomicSequences.build();
@@ -106,7 +106,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		if (species == null) throw new RuntimeException("Property: '" + version + ".genome' not found");
 		species = species.trim();
 
-		chromosomeNames = new ArrayList<String>();
+		//		chromosomeNames = new ArrayList<String>();
 		String[] chromosomeNames = propertyToStringArray(properties, version + ".chromosomes");
 
 		// Fasta file & dir (optional)
@@ -115,7 +115,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		if (properties.getProperty(version + ".chromo_fasta_files") != null) chromoFastaFiles = propertyToStringArray(properties, version + ".chromo_fasta_files");
 		else chromoFastaFiles = new String[0];
 
-		chromosomes = new HashMap<String, Chromosome>();
+		chromosomes = new HashMap<>();
 		for (String chName : chromosomeNames)
 			add(new Chromosome(this, 0, 0, chName));
 
@@ -126,7 +126,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	 * Add a chromosome
 	 */
 	public synchronized void add(Chromosome chromo) {
-		chromosomeNames.add(chromo.getId());
+		//		chromosomeNames.add(chromo.getId());
 		chromosomes.put(chromo.getId(), chromo);
 		chromo.setParent(this);
 	}
@@ -138,12 +138,12 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		if (chromosomeNamesSorted != null) return chromosomeNamesSorted; // Already done? => return previous result
 
 		// Sort chromosomes by name
-		ArrayList<Chromosome> chromosArr = new ArrayList<Chromosome>(chromosomes.size());
+		ArrayList<Chromosome> chromosArr = new ArrayList<>(chromosomes.size());
 		chromosArr.addAll(chromosomes.values());
 		Collections.sort(chromosArr);
 
 		// Create a list and add all names to list
-		chromosomeNamesSorted = new ArrayList<String>();
+		chromosomeNamesSorted = new ArrayList<>();
 		for (int i = 0; i < chromosArr.size(); i++)
 			chromosomeNamesSorted.add(chromosArr.get(i).getId());
 
@@ -175,8 +175,14 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		return chromosomes.get(ch);
 	}
 
-	public String[] getChromosomeNames() {
-		return chromosomeNames.toArray(new String[0]);
+	//	public String[] getChromosomeNames() {
+	//		List<String> chromosomeNames = new ArrayList<>(chromosomes.size());
+	//		chromosomeNames.addAll(chromosomes.keySet());
+	//		return chromosomeNames.toArray(new String[0]);
+	//	}
+
+	public int getChromosomeCount() {
+		return chromosomes.size();
 	}
 
 	public Collection<Chromosome> getChromosomes() {
@@ -187,7 +193,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	 * Return chromosomes sorted by size (largest chromosomes first)
 	 */
 	public List<Chromosome> getChromosomesSortedSize() {
-		ArrayList<Chromosome> chrs = new ArrayList<Chromosome>();
+		ArrayList<Chromosome> chrs = new ArrayList<>();
 		chrs.addAll(chromosomes.values());
 
 		// Sort by size (and then by name)
@@ -221,7 +227,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	 * Create a sorted list of genes (sorted by gene Id)
 	 */
 	public List<Gene> getGenesSorted() {
-		ArrayList<Gene> genesSorted = new ArrayList<Gene>();
+		ArrayList<Gene> genesSorted = new ArrayList<>();
 		genesSorted.addAll(genes.values());
 		Collections.sort(genesSorted, new Comparator<Gene>() {
 
@@ -238,7 +244,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	 * Create a sorted list of genes (sorted by genomic position)
 	 */
 	public List<Gene> getGenesSortedPos() {
-		ArrayList<Gene> genesSorted = new ArrayList<Gene>();
+		ArrayList<Gene> genesSorted = new ArrayList<>();
 		genesSorted.addAll(genes.values());
 		Collections.sort(genesSorted);
 		return genesSorted;
@@ -273,9 +279,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	 * Is this chromosome in this genome?
 	 */
 	public boolean hasChromosome(String chromo) {
-		for (String ch : chromosomeNames)
-			if (ch.equals(chromo)) return true;
-		return false;
+		return chromosomes.containsKey(chromo);
 	}
 
 	public boolean hasCodingInfo() {
@@ -355,7 +359,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		if (value == null) return new String[0];
 
 		String values[] = value.split("[\\s+,]");
-		LinkedList<String> list = new LinkedList<String>();
+		LinkedList<String> list = new LinkedList<>();
 		for (String val : values)
 			if (val.length() > 0) list.add(val);
 
@@ -391,7 +395,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	 * WARINIG: Doesn't check any dependencies!
 	 */
 	public void remove(Chromosome chromo) {
-		chromosomeNames.remove(chromo.getId());
 		chromosomes.remove(chromo.getId());
 	}
 
@@ -436,7 +439,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 				+ "\t" + version //
 				+ "\t" + species //
 				+ "\t" + markerSerializer.save((Iterable) chromosomes.values()) //
-				;
+		;
 	}
 
 	private void setGenomeId() {
@@ -591,7 +594,7 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 
 		// MT check: Only check if number of chromosomes in the genome is more than one
 		// Check that MT chromosome has a proper codon table
-		ArrayList<Chromosome> mtChrs = new ArrayList<Chromosome>();
+		ArrayList<Chromosome> mtChrs = new ArrayList<>();
 		for (Chromosome chr : this)
 			if (chr.isMt()) mtChrs.add(chr);
 

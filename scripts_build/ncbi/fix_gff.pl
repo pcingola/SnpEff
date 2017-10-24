@@ -49,17 +49,37 @@ sub parseGffLine($) {
 }
 
 #-------------------------------------------------------------------------------
+# Read chromosome ID to chromosome name mapping from file
+#-------------------------------------------------------------------------------
+sub readChrMap($) {
+	my($chrMapFile) = @_;
+	my($l, $chrName, $chrId, %chrMap);
+	open CHRMAP, $chrMapFile;
+	while( $l = <CHRMAP> ) {
+		chomp $l;
+		($chrName, $chrId) = split /\t/, $l;
+		$chrMap{$chrId} = $chrName;
+	}
+	close CHRMAP;
+	return %chrMap;
+}
+
+#-------------------------------------------------------------------------------
 # Main
 #-------------------------------------------------------------------------------
 
 # Parse command line arguments
-die "Usage: $0 file.gff id_map.txt id_map_protein.txt\n" if $#ARGV < 0;
+die "Usage: $0 file.gff id_map.txt id_map_protein.txt chr_map.txt\n" if $#ARGV < 0;
 my($gff) = $ARGV[0];
 die "Missing command line argument 'file.gff'\n" if $gff eq '';
 my($idMapFile) = $ARGV[1];
 die "Missing command line argument 'id_map.txt' (output file)\n" if $idMapFile eq '';
 my($idProtMapFile) = $ARGV[2];
-die "Missing command line argument 'id_map_protein.txt' (output file)\n" if $gff eq '';
+die "Missing command line argument 'id_map_protein.txt' (output file)\n" if $idProtMapFile eq '';
+my($chrMapFile) = $ARGV[3];
+die "Missing command line argument 'chr_map.txt' (input file)\n" if $chrMapFile eq '';
+
+my(%chrMap) = readChrMap($chrMapFile);
 
 #---
 # Parse GFF files from STDIN
@@ -71,6 +91,7 @@ my($idsToChange) = {
 	,'D_gene_segment' => 1
 	,'J_gene_segment' => 1
 	,'V_gene_segment' => 1
+	, 'lnc_RNA' => 1
 	, 'mRNA' => 1
 	, 'ncRNA' => 1
 	, 'primary_transcript' => 1
@@ -88,7 +109,7 @@ my($l, $id, $key, $value, $name, $paren, $newParent);
 print STDERR "Parsing GFF file '$gff'\n";
 if( $gff =~ /.gz$/ ) {
 	open GFF, "gunzip -c $gff |" || die "Cannot open file '$gff'\n";
-else {
+} else {
 	open GFF, $gff || die "Cannot open file '$gff'\n";
 }
 
@@ -97,10 +118,10 @@ while( $l = <GFF> ) {
 	if( $l !~ /^#/ ) {
 		($chr, $source, $type, $start, $end, $score, $strand, $phase, $attr) = parseGffLine($l);
 
-		!!!!!!!!!!!!!!!!!!!!!!
-		# MAP chrId => chr
-		!!!!!!!!!!!!!!!!!!!!!!!!!
-
+		# Map chromosme id to name
+		if( $chrMap{$chr} ne '' ) {
+			$chr = $chrMap{$chr};
+		}
 
 		$name = $attr->{'Name'};
 		$id = $attr->{'ID'};
@@ -113,7 +134,7 @@ while( $l = <GFF> ) {
 					$name2id{$name} .= "\t$id";
 					$idOld2New{$id} = "$name.$id"; # Append 'id' to make it unique
             
-					print STDERR "Duplicated name '$name' using '$idOld2New{$id}'\n";
+					print STDERR "Duplicated name '$name' using '$idOld2New{$id}'\n" if $debug;
 				} else {
 					$idOld2New{$id} = $name;
 					$name2id{$name} = $id;

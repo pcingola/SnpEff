@@ -109,7 +109,7 @@ void createFilesFromNcbi(string genome) {
 
 	println "Fix GFF ids"
 	task([gff, idMap, idMapProt] <- gffGzOri) {
-		sys $scriptsDir/fix_gff.pl $gffGzOri $idMap $idMapProt \
+		sys $scriptsDir/fix_gff.pl $gffGzOri $idMap $idMapProt $chrMap \
 				| gzip -c \
 				> $gff
 	}
@@ -118,7 +118,6 @@ void createFilesFromNcbi(string genome) {
 	task(protein <- [proteinOri, idMapProt]) {
 		sys gunzip -c $proteinOri \
 				| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
-				| perl -pe 's/>(.*?)\s+.*/>\1/' \
 				| $scriptsDir/fix_fasta_protein_cds.pl $idMapProt \
 				| gzip -c \
 				> $protein
@@ -128,7 +127,6 @@ void createFilesFromNcbi(string genome) {
 	task( cds <- gff) {
 		sys gunzip -c $cdsOri \
 				| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
-				| perl -pe 's/>(.*?)\s+.*/>\1/' \
 				| gzip -c \
 				> $cds
 	}
@@ -597,7 +595,7 @@ void downloadNcbiGenome(string genome) {
 	# Create genome FASTA file and copy other files
 	dir.createChromosomeMap()
 	fa := dir.fastaFromNcbi()
-	sys cp -vn $fa $dirDataGenomeOri
+	sys cp -vn $fa $dirDataGenome
 	sys cp -vn RNA/rna.fa.gz $dirDataGenomeOri
 	sys cp -vn protein/protein.fa.gz $dirDataGenomeOri
 	sys cp -vn GFF/*_top_level.gff3.gz $dirDataGenomeOri/genes.gff.gz
@@ -607,7 +605,7 @@ void downloadNcbiGenome(string genome) {
 	genome.createFilesFromNcbi()
 
 	# Create config file
-	configLines := "$genome.genome : $genome\n$genome.reference : http://ftp.ncbi.nih.gov/genomes/$genome/"
+	configLines := "$genome.genome : $genome\n$genome.reference : ftp://ftp.ncbi.nih.gov/genomes/$genome/\n"
 	configFile.write(configLines)
 }
 
@@ -921,7 +919,6 @@ string fastaFromNcbi(string dir) {
 		sys ( echo ">$chr" ; gunzip -c $chrFile | grep -v "^>" ) | gzip -c >> $faGz
 	}
 	
-	error("!!!!!!!!!!!!!!!!")
 	return faGz
 }
 

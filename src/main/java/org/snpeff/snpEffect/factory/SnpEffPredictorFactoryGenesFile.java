@@ -31,7 +31,7 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 	public SnpEffectPredictor create() {
 		try {
 			// Sanity check
-			if ((genome.getChromoFastaFiles().length > 0) && (genome.getChromosomeNames().length != genome.getChromoFastaFiles().length)) throw new RuntimeException("Number of chromosomes does not match number of fasta files (there must be one fasta files per chromosome)\n" + genome);
+			if ((genome.getChromoFastaFiles().length > 0) && (genome.getChromosomeCount() != genome.getChromoFastaFiles().length)) throw new RuntimeException("Number of chromosomes does not match number of fasta files (there must be one fasta files per chromosome)\n" + genome);
 
 			// Read gene annotations from a file
 			fileName = config.getBaseFileNameGenes() + ".biomart";

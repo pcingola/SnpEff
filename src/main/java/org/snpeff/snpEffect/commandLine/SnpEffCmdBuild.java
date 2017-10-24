@@ -67,6 +67,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			snpEffCmdCds.setDebug(debug);
 			snpEffCmdCds.setStoreAlignments(storeAlignments);
 			snpEffCmdCds.setCheckNumOk(checkNumOk);
+			snpEffCmdCds.run();
 		} else if (debug) Timer.showStdErr("\tOptional file '" + cdsFile + "' not found, nothing done.");
 
 		//---
