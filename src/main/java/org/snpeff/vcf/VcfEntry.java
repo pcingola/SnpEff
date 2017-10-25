@@ -391,7 +391,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Check values
 		String values[] = valsStr.split(",");
 		for (String val : values)
-			if (!VcfEntry.isValidInfoValue(val)) return "INFO filed '" + infoName + "' has an invalid value '" + val + "' (no spaces, tabs, '=' or ';' are allowed)";
+			if (!VcfEntry.isValidInfoValue(val)) return "INFO field '" + infoName + "' has an invalid value '" + val + "' (no spaces, tabs, '=' or ';' are allowed)";
 
 		// Check number of INFO elements
 		if (vcfInfo.isNumberNumber() && vcfInfo.getNumber() != values.length) {
