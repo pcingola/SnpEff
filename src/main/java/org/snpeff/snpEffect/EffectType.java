@@ -17,88 +17,94 @@ import org.snpeff.vcf.EffFormatVersion;
 public enum EffectType {
 	// High impact
 	// Order: Highest impact first
-	CHROMOSOME_LARGE_DELETION //
-	, CHROMOSOME_LARGE_INVERSION //
-	, CHROMOSOME_LARGE_DUPLICATION //
-	, GENE_REARRANGEMENT //
-	, GENE_DELETED //
-	, TRANSCRIPT_DELETED //
-	, EXON_DELETED //
-	, EXON_DELETED_PARTIAL //
-	, GENE_FUSION //
-	, GENE_FUSION_REVERESE //
-	, GENE_FUSION_HALF //
-	, FRAME_SHIFT //
-	, STOP_GAINED //
-	, STOP_LOST //
-	, START_LOST //
-	, SPLICE_SITE_ACCEPTOR //
-	, SPLICE_SITE_DONOR //
-	, RARE_AMINO_ACID //
-	, EXON_DUPLICATION //
-	, EXON_DUPLICATION_PARTIAL //
-	, EXON_INVERSION //
-	, EXON_INVERSION_PARTIAL //
-	, PROTEIN_PROTEIN_INTERACTION_LOCUS //
-	, PROTEIN_STRUCTURAL_INTERACTION_LOCUS //
+	CHROMOSOME_LARGE_DELETION(EffectImpact.HIGH) //
+	, GENE_REARRANGEMENT(EffectImpact.HIGH) //
+	, GENE_DELETED(EffectImpact.HIGH) //
+	, TRANSCRIPT_DELETED(EffectImpact.HIGH) //
+	, EXON_DELETED(EffectImpact.HIGH) //
+	, EXON_DELETED_PARTIAL(EffectImpact.HIGH) //
+	, GENE_FUSION(EffectImpact.HIGH) //
+	, GENE_FUSION_REVERESE(EffectImpact.HIGH) //
+	, GENE_FUSION_HALF(EffectImpact.HIGH) //
+	, FRAME_SHIFT(EffectImpact.HIGH) //
+	, STOP_GAINED(EffectImpact.HIGH) //
+	, STOP_LOST(EffectImpact.HIGH) //
+	, START_LOST(EffectImpact.HIGH) //
+	, SPLICE_SITE_ACCEPTOR(EffectImpact.HIGH) //
+	, SPLICE_SITE_DONOR(EffectImpact.HIGH) //
+	, RARE_AMINO_ACID(EffectImpact.HIGH) //
+	, EXON_DUPLICATION(EffectImpact.HIGH) //
+	, EXON_DUPLICATION_PARTIAL(EffectImpact.HIGH) //
+	, EXON_INVERSION(EffectImpact.HIGH) //
+	, EXON_INVERSION_PARTIAL(EffectImpact.HIGH) //
+	, PROTEIN_PROTEIN_INTERACTION_LOCUS(EffectImpact.HIGH) //
+	, PROTEIN_STRUCTURAL_INTERACTION_LOCUS(EffectImpact.HIGH) //
 
 	// Moderate impact
 	// Order: Highest impact first
 	// Note: Method Codon.effect() relies on this order for effect
 	//       replacement (when 'allowReplace = true')
-	, NON_SYNONYMOUS_CODING //
-	, NON_SYNONYMOUS_STOP //
-	, NON_SYNONYMOUS_START //
-	, GENE_DUPLICATION //
-	, TRANSCRIPT_DUPLICATION //
-	, UTR_5_DELETED //
-	, UTR_3_DELETED //
-	, SPLICE_SITE_BRANCH_U12 //
-	, SPLICE_SITE_REGION //
-	, SPLICE_SITE_BRANCH //
-	, SYNONYMOUS_CODING //
-	, SYNONYMOUS_START //
-	, SYNONYMOUS_STOP //
-	, GENE_INVERSION //
-	, TRANSCRIPT_INVERSION //
-	, CODON_CHANGE //
-	, CODON_INSERTION //
-	, CODON_CHANGE_PLUS_CODON_INSERTION //
-	, CODON_DELETION //
-	, CODON_CHANGE_PLUS_CODON_DELETION //
+	, CHROMOSOME_LARGE_INVERSION(EffectImpact.MODERATE) //
+	, NON_SYNONYMOUS_CODING(EffectImpact.MODERATE) //
+	, GENE_DUPLICATION(EffectImpact.MODERATE) //
+	, TRANSCRIPT_DUPLICATION(EffectImpact.MODERATE) //
+	, UTR_5_DELETED(EffectImpact.MODERATE) //
+	, UTR_3_DELETED(EffectImpact.MODERATE) //
+	, SPLICE_SITE_BRANCH_U12(EffectImpact.MODERATE) //
+	, GENE_INVERSION(EffectImpact.MODERATE) //
+	, TRANSCRIPT_INVERSION(EffectImpact.MODERATE) //
+	, CODON_INSERTION(EffectImpact.MODERATE) //
+	, CODON_CHANGE_PLUS_CODON_INSERTION(EffectImpact.MODERATE) //
+	, CODON_DELETION(EffectImpact.MODERATE) //
+	, CODON_CHANGE_PLUS_CODON_DELETION(EffectImpact.MODERATE) //
 
 	// Low impact
 	// Order: Highest impact first
-	, UTR_5_PRIME //
-	, UTR_3_PRIME //
-	, START_GAINED //
-	, MOTIF //
-	, MOTIF_DELETED //
-	, REGULATION //
-	, MICRO_RNA //
-	, FEATURE_FUSION //
-	, UPSTREAM //
-	, DOWNSTREAM //
+	, CHROMOSOME_LARGE_DUPLICATION(EffectImpact.LOW) //
+	, NON_SYNONYMOUS_STOP(EffectImpact.LOW) //
+	, NON_SYNONYMOUS_START(EffectImpact.LOW) //
+	, SPLICE_SITE_REGION(EffectImpact.LOW) //
+	, SPLICE_SITE_BRANCH(EffectImpact.LOW) //
+	, SYNONYMOUS_CODING(EffectImpact.LOW) //
+	, SYNONYMOUS_START(EffectImpact.LOW) //
+	, SYNONYMOUS_STOP(EffectImpact.LOW) //
+	, CODON_CHANGE(EffectImpact.LOW) //
+	, START_GAINED(EffectImpact.LOW) //
+	, MOTIF(EffectImpact.LOW) //
+	, MOTIF_DELETED(EffectImpact.LOW) //
+	, FEATURE_FUSION(EffectImpact.LOW) //
 
 	// Modifiers
 	// Order: Highest impact first
-	, NEXT_PROT //
-	, INTRON_CONSERVED //
-	, INTRON //
-	, INTRAGENIC //
-	, INTERGENIC_CONSERVED //
-	, INTERGENIC //
-	, CDS //
-	, EXON //
-	, TRANSCRIPT //
-	, GENE //
-	, SEQUENCE //
-	, CHROMOSOME_ELONGATION //
-	, CUSTOM //
-	, CHROMOSOME //
-	, GENOME //
-	, NONE //
+	, UTR_5_PRIME(EffectImpact.MODIFIER) //
+	, UTR_3_PRIME(EffectImpact.MODIFIER) //
+	, REGULATION(EffectImpact.MODIFIER) //
+	, MICRO_RNA(EffectImpact.MODIFIER) //
+	, UPSTREAM(EffectImpact.MODIFIER) //
+	, DOWNSTREAM(EffectImpact.MODIFIER) //
+	, NEXT_PROT(EffectImpact.MODIFIER) //
+	, INTRON_CONSERVED(EffectImpact.MODIFIER) //
+	, INTRON(EffectImpact.MODIFIER) //
+	, INTRAGENIC(EffectImpact.MODIFIER) //
+	, INTERGENIC_CONSERVED(EffectImpact.MODIFIER) //
+	, INTERGENIC(EffectImpact.MODIFIER) //
+	, CDS(EffectImpact.MODIFIER) //
+	, EXON(EffectImpact.MODIFIER) //
+	, TRANSCRIPT(EffectImpact.MODIFIER) //
+	, GENE(EffectImpact.MODIFIER) //
+	, SEQUENCE(EffectImpact.MODIFIER) //
+	, CHROMOSOME_ELONGATION(EffectImpact.MODIFIER) //
+	, CUSTOM(EffectImpact.MODIFIER) //
+	, CHROMOSOME(EffectImpact.MODIFIER) //
+	, GENOME(EffectImpact.MODIFIER) //
+	, NONE(EffectImpact.MODIFIER) //
 	;
+
+	private final EffectImpact effectImpact;
+
+	private EffectType(EffectImpact effectImpact) {
+		this.effectImpact = effectImpact;
+	}
 
 	static Map<String, EffectType> so2efftype = new HashMap<>();
 
@@ -156,92 +162,7 @@ public enum EffectType {
 	 * Return effect impact
 	 */
 	public EffectImpact effectImpact() {
-		switch (this) {
-		case CHROMOSOME_LARGE_DELETION:
-		case EXON_DELETED:
-		case EXON_DELETED_PARTIAL:
-		case EXON_DUPLICATION:
-		case EXON_DUPLICATION_PARTIAL:
-		case EXON_INVERSION:
-		case EXON_INVERSION_PARTIAL:
-		case FRAME_SHIFT:
-		case GENE_DELETED:
-		case GENE_FUSION:
-		case GENE_FUSION_REVERESE:
-		case GENE_FUSION_HALF:
-		case GENE_REARRANGEMENT:
-		case PROTEIN_PROTEIN_INTERACTION_LOCUS:
-		case PROTEIN_STRUCTURAL_INTERACTION_LOCUS:
-		case RARE_AMINO_ACID:
-		case SPLICE_SITE_ACCEPTOR:
-		case SPLICE_SITE_DONOR:
-		case START_LOST:
-		case STOP_GAINED:
-		case STOP_LOST:
-		case TRANSCRIPT_DELETED:
-			return EffectImpact.HIGH;
-
-		case CHROMOSOME_LARGE_INVERSION:
-		case CODON_CHANGE_PLUS_CODON_DELETION:
-		case CODON_CHANGE_PLUS_CODON_INSERTION:
-		case CODON_DELETION:
-		case CODON_INSERTION:
-		case GENE_DUPLICATION:
-		case GENE_INVERSION:
-		case NON_SYNONYMOUS_CODING:
-		case SPLICE_SITE_BRANCH_U12:
-		case TRANSCRIPT_DUPLICATION:
-		case TRANSCRIPT_INVERSION:
-		case UTR_3_DELETED:
-		case UTR_5_DELETED:
-			return EffectImpact.MODERATE;
-
-		case CHROMOSOME_LARGE_DUPLICATION:
-		case CODON_CHANGE:
-		case FEATURE_FUSION:
-		case NON_SYNONYMOUS_START:
-		case NON_SYNONYMOUS_STOP:
-		case SPLICE_SITE_REGION:
-		case SPLICE_SITE_BRANCH:
-		case START_GAINED:
-		case SYNONYMOUS_CODING:
-		case SYNONYMOUS_START:
-		case SYNONYMOUS_STOP:
-			return EffectImpact.LOW;
-
-		case CDS:
-		case CHROMOSOME:
-		case CHROMOSOME_ELONGATION:
-		case CUSTOM:
-		case DOWNSTREAM:
-		case EXON:
-		case GENE:
-		case GENOME:
-		case INTRAGENIC:
-		case INTERGENIC:
-		case INTERGENIC_CONSERVED:
-		case INTRON:
-		case INTRON_CONSERVED:
-		case MICRO_RNA:
-		case NONE:
-		case REGULATION:
-		case SEQUENCE:
-		case TRANSCRIPT:
-		case UPSTREAM:
-		case UTR_3_PRIME:
-		case UTR_5_PRIME:
-			return EffectImpact.MODIFIER;
-
-		case MOTIF:
-		case MOTIF_DELETED:
-			return EffectImpact.LOW;
-
-		case NEXT_PROT:
-			return EffectImpact.MODIFIER;
-
-		default:
-			throw new RuntimeException("Unknown impact for effect type: '" + this + "'");
-		}
+		return effectImpact;
 	}
 
 	public EffectType getGeneRegion() {
