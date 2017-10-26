@@ -118,6 +118,7 @@ public class TestCasesZzz extends TestCasesIntegrationBase {
 	public void test_06_hgvs_upstream_negative_strand() {
 		Gpr.debug("Test");
 		List<VcfEntry> list = snpEffect("testHg38Chr1", testsDir + "hgvs_upstream_negative_strand_05.vcf", null);
+		boolean found = false;
 
 		for (VcfEntry ve : list) {
 			if (verbose) System.out.println(ve);
@@ -133,8 +134,11 @@ public class TestCasesZzz extends TestCasesIntegrationBase {
 					String expectedHgvsC = ve.getInfo("HGVSC");
 					String actualHgvsC = veff.getHgvsC();
 					Assert.assertEquals(expectedHgvsC, actualHgvsC);
+					found = true;
 				}
 			}
 		}
+
+		Assert.assertTrue("Test condition not found", found);
 	}
 }
