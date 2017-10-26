@@ -18,6 +18,8 @@ public enum EffectType {
 	// High impact
 	// Order: Highest impact first
 	CHROMOSOME_LARGE_DELETION(EffectImpact.HIGH) //
+	, CHROMOSOME_LARGE_INVERSION(EffectImpact.HIGH) //
+	, CHROMOSOME_LARGE_DUPLICATION(EffectImpact.HIGH) //
 	, GENE_REARRANGEMENT(EffectImpact.HIGH) //
 	, GENE_DELETED(EffectImpact.HIGH) //
 	, TRANSCRIPT_DELETED(EffectImpact.HIGH) //
@@ -44,7 +46,6 @@ public enum EffectType {
 	// Order: Highest impact first
 	// Note: Method Codon.effect() relies on this order for effect
 	//       replacement (when 'allowReplace = true')
-	, CHROMOSOME_LARGE_INVERSION(EffectImpact.MODERATE) //
 	, NON_SYNONYMOUS_CODING(EffectImpact.MODERATE) //
 	, GENE_DUPLICATION(EffectImpact.MODERATE) //
 	, TRANSCRIPT_DUPLICATION(EffectImpact.MODERATE) //
@@ -60,7 +61,6 @@ public enum EffectType {
 
 	// Low impact
 	// Order: Highest impact first
-	, CHROMOSOME_LARGE_DUPLICATION(EffectImpact.LOW) //
 	, NON_SYNONYMOUS_STOP(EffectImpact.LOW) //
 	, NON_SYNONYMOUS_START(EffectImpact.LOW) //
 	, SPLICE_SITE_REGION(EffectImpact.LOW) //
