@@ -153,7 +153,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	}
 
 	void createTrByChromo() {
-		trByChromo = new AutoHashMap<String, List<Transcript>>(new ArrayList<Transcript>());
+		trByChromo = new AutoHashMap<>(new ArrayList<Transcript>());
 
 		for (Gene gene : genome.getGenes()) {
 			for (Transcript tr : gene) {
@@ -210,7 +210,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		int maxTrIds = 20;
 		sb.append("Transcript IDs from database (sample):\n" + sampleTrIds(maxTrIds));
 		sb.append("Transcript IDs from database (fasta file):\n" + sampleTrIdsFasta(maxTrIds));
-		fatalError("No proteins checked. This is might be caused by differences in FASTA file transcript IDs respect to database's transcript's IDs.\n" + sb);
+		Gpr.fatalError("No proteins checked. This is might be caused by differences in FASTA file transcript IDs respect to database's transcript's IDs.\n" + sb);
 	}
 
 	public HashMap<String, SmithWaterman> getAlignmentByTrId() {
