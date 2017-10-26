@@ -82,6 +82,142 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	@Override
 	public boolean annotate(VcfEntry vcfEntry) {
 		return annotateVcf.annotate(vcfEntry);
+		//		boolean printed = false;
+		//		boolean filteredOut = false;
+		//		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
+		//
+		//		try {
+		//			countInputLines++;
+		//			countVcfEntries++;
+		//
+		//			// Find if there is a pedigree and if it has any 'derived' entry
+		//			if (vcfFile.isHeadeSection()) {
+		//				if (cancer) {
+		//					pedigree = readPedigree(vcfFile);
+		//
+		//					// Any 'derived' entry in this pedigree?
+		//					if (pedigree != null) {
+		//						for (PedigreeEnrty pe : pedigree)
+		//							anyCancerSample |= pe.isDerived();
+		//					}
+		//				}
+		//			}
+		//
+		//			// Sample vcf entry
+		//			if (createSummaryHtml || createSummaryCsv) vcfStats.sample(vcfEntry);
+		//
+		//			// Skip if there are filter intervals and they are not matched
+		//			if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) {
+		//				filteredOut = true;
+		//				return false;
+		//			}
+		//
+		//			// Create new 'section'
+		//			outputFormatter.startSection(vcfEntry);
+		//
+		//			//---
+		//			// Analyze all changes in this VCF entry
+		//			// Note, this is the standard analysis.
+		//			// Next section deals with cancer: Somatic vs Germline comparisons
+		//			//---
+		//			boolean impactLowOrHigher = false; // Does this entry have an impact (other than MODIFIER)?
+		//			boolean impactModerateOrHigh = false; // Does this entry have a 'MODERATE' or 'HIGH' impact?
+		//			List<Variant> variants = vcfEntry.variants();
+		//			for (Variant variant : variants) {
+		//				countVariants++;
+		//				if (verbose && (countVariants % SHOW_EVERY == 0)) {
+		//					int millisec = (int) annotateTimer.elapsed();
+		//					int secs = millisec / 1000;
+		//					if (secs > 0) {
+		//						int varsPerSec = (int) (countVariants * 1000.0 / millisec);
+		//						Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
+		//					}
+		//				}
+		//
+		//				// Calculate effects: By default do not annotate non-variant sites
+		//				if (variant.isVariant()) {
+		//					// Perform basic statistics about this variant
+		//					if (createSummaryHtml || createSummaryCsv) variantStats.sample(variant);
+		//
+		//					VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
+		//
+		//					// Create new 'section'
+		//					outputFormatter.startSection(variant);
+		//
+		//					// Show results
+		//					for (VariantEffect variantEffect : variantEffects) {
+		//						if (createSummaryHtml || createSummaryCsv) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
+		//
+		//						// Any errors or warnings?
+		//						if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
+		//						if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
+		//
+		//						// Does this entry have an impact (other than MODIFIER)?
+		//						impactLowOrHigher |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
+		//						impactModerateOrHigh |= (variantEffect.getEffectImpact() == EffectImpact.MODERATE) || (variantEffect.getEffectImpact() == EffectImpact.HIGH);
+		//
+		//						outputFormatter.add(variantEffect);
+		//						countEffects++;
+		//					}
+		//
+		//					// Finish up this section
+		//					outputFormatter.printSection(variant);
+		//
+		//					if (fastaProt != null && impactModerateOrHigh) {
+		//						// Output protein changes to fasta file
+		//						proteinAltSequence(variant, variantEffects);
+		//					}
+		//				}
+		//
+		//				//---
+		//				// Do we analyze cancer samples?
+		//				// Here we deal with Somatic vs Germline comparisons
+		//				//---
+		//				if (anyCancerSample && impactLowOrHigher && vcfEntry.isMultiallelic()) {
+		//					// Calculate all required comparisons
+		//					Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
+		//
+		//					// Analyze each comparison
+		//					for (Tuple<Integer, Integer> comp : comparisons) {
+		//						// We have to compare comp.first vs comp.second
+		//						int altGtNum = comp.first; // comp.first is 'derived' (our new ALT)
+		//						int refGtNum = comp.second; // comp.second is 'original' (our new REF)
+		//
+		//						Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
+		//						Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
+		//						VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
+		//
+		//						// No net variation? Skip
+		//						if (!varNonRef.isVariant()) continue;
+		//
+		//						// Calculate effects
+		//						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
+		//
+		//						// Create new 'section'
+		//						outputFormatter.startSection(varNonRef);
+		//
+		//						// Show results (note, we don't add these to the statistics)
+		//						for (VariantEffect variantEffect : variantEffects)
+		//							outputFormatter.add(variantEffect);
+		//
+		//						// Finish up this section
+		//						outputFormatter.printSection(varNonRef);
+		//					}
+		//				}
+		//			}
+		//
+		//			// Finish up this section
+		//			outputFormatter.printSection(vcfEntry);
+		//
+		//			printed = true;
+		//		} catch (Throwable t) {
+		//			totalErrs++;
+		//			error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
+		//		} finally {
+		//			if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
+		//		}
+		//
+		//		return true;
 	}
 
 	@Override
@@ -358,6 +494,70 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 	public void setFormatVersion(EffFormatVersion formatVersion) {
 		annotateVcf.setFormatVersion(formatVersion);
+		//		this.formatVersion = formatVersion;
+		//	}
+		//
+		//	/**
+		//	 * Creates a summary output file (using freeMarker and a template)
+		//	 */
+		//	boolean summary(String templateFile, String outputFile, boolean noCommas) {
+		//		try {
+		//			// Configure FreeMaker
+		//			Configuration cfg = new Configuration();
+		//
+		//			// Specify the data source where the template files come from
+		//			if (useLocalTemplate) cfg.setDirectoryForTemplateLoading(new File("./templates/")); // Use local 'template' directory
+		//			else cfg.setClassForTemplateLoading(SnpEffCmdEff.class, "/"); // Use current directory in JAR file
+		//
+		//			cfg.setObjectWrapper(new DefaultObjectWrapper()); // Specify how templates will see the data-model. This is an advanced topic...
+		//			cfg.setLocale(java.util.Locale.US);
+		//			if (noCommas) cfg.setNumberFormat("0.######");
+		//
+		//			// Create the root hash (where data objects are)
+		//			HashMap<String, Object> root = summaryCreateHash();
+		//
+		//			// Get the template
+		//			Template temp = cfg.getTemplate(templateFile);
+		//
+		//			// Process the template
+		//			Writer out = new OutputStreamWriter(new FileOutputStream(new File(outputFile)));
+		//			temp.process(root, out);
+		//			out.flush();
+		//			out.close();
+		//		} catch (IOException e) {
+		//			error(e, "Error creating summary: " + e.getMessage());
+		//			return false;
+		//		} catch (TemplateException e) {
+		//			error(e, "Error creating summary: " + e.getMessage());
+		//			return false;
+		//		}
+		//
+		//		return true;
+		//	}
+		//
+		//	/**
+		//	 * Create a hash with all variables needed for creating summary pages
+		//	 */
+		//	HashMap<String, Object> summaryCreateHash() {
+		//		// Create the root hash (where data objects are)
+		//		HashMap<String, Object> root = new HashMap<>();
+		//		root.put("args", commandLineStr(createSummaryCsv ? false : true));
+		//		root.put("changeStats", variantEffectStats);
+		//		root.put("chromoPlots", chromoPlots);
+		//		root.put("countEffects", countEffects);
+		//		root.put("countInputLines", countInputLines);
+		//		root.put("countVariants", countVariants);
+		//		root.put("date", String.format("%1$TY-%1$Tm-%1$Td %1$TH:%1$TM", new Date()));
+		//		root.put("genesFile", Gpr.baseName(summaryGenesFile, ""));
+		//		root.put("genome", config.getGenome());
+		//		root.put("genomeVersion", genomeVer);
+		//		root.put("variantEffectResutFilter", variantEffectResutFilter);
+		//		root.put("variantStats", variantStats);
+		//		root.put("snpEffectPredictor", config.getSnpEffectPredictor());
+		//		root.put("vcfStats", vcfStats);
+		//		root.put("version", SnpEff.VERSION); // Version used
+		//
+		//		return root;
 	}
 
 	/**

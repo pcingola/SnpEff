@@ -1,0 +1,95 @@
+#!/usr/bin/env bds
+
+# Build files from a set of NCBI downloaded files
+#
+# This script assumes that:
+#
+#	1) Current path is the genome directory
+#
+#	2) Original (downloaded) files are:
+#			ORI/cds.fa.gz     : CDS/RNA sequences
+#			ORI/genes.gff.gz  : Gene models in GFF3 format
+#			ORI/protein.fa.gz : Proteins FASTA file
+#			ORI/sequence.fa.gz: Chromosome sequences
+#      If names differ, you need to rename the files accordingly
+# 
+
+genome     := ''	help Genome name (snpEff)
+genomeOri  := ''	help Genome name (NCBI)
+
+# Path to scripts
+snpeffDir  := "$HOME/snpEff"
+dbDir      := "$snpeffDir/data/$genome"
+oriDir     := "$dbDir/ORI"
+scriptsDir := "$snpeffDir/scripts_build/ncbi"
+
+# File names
+cds        := "$dbDir/cds.fa.gz"
+gff        := "$dbDir/genes.gff.gz"
+protein    := "$dbDir/protein.fa.gz"
+seq        := "$dbDir/sequences.fa.gz"
+idMap      := "$dbDir/id_map.txt"
+idMapProt  := "$dbDir/id_map_protein.txt"
+
+# Original file names
+cdsOri     := "$oriDir/$genomeOri" + "_rna.fna.gz"
+gffGzOri   := "$oriDir/$genomeOri" + "_genomic.gff.gz"
+proteinOri := "$oriDir/$genomeOri" + "_protein.faa.gz"
+seqOri     := "$oriDir/$genomeOri" + "_genomic.fna.gz"
+
+#-------------------------------------------------------------------------------
+# Main
+#-------------------------------------------------------------------------------
+
+# Parameter check
+if( genome.isEmpty() || genomeOri.isEmpty() ) {
+	println "Missing mandatory command line options"
+	printHelp()
+	exit(1)
+}
+
+# Uncompress gff
+println "Processing GFF file"
+gffOri := gffGzOri.removeExt('.gz')
+task(gffOri <- gffGzOri) {
+	sys gunzip -c $gffGzOri > $gffOri
+}
+
+# Fix GFF ids
+task([gff, idMap, idMapProt] <- gffOri) {
+	sys $scriptsDir/fix_gff.pl $gffOri $idMap $idMapProt \
+			| gzip -c \
+			> $gff
+}
+
+# Create reference FASTA files
+println "Processing reference FASTA files"
+task(seq <- seqOri) {
+	sys gunzip -c $seqOri \
+			| sed "s/^>gi|.*|ref|\(.._.*\)|.*/>\1/" \
+			| perl -pe 's/>(.*?)\s+.*/>\1/' \
+			| gzip -c \
+			> $seq
+}
+
+println "Processing protein FASTA files"
+task(protein <- [proteinOri, idMapProt]) {
+	sys gunzip -c $proteinOri \
+			| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
+			| perl -pe 's/>(.*?)\s+.*/>\1/' \
+			| $scriptsDir/fix_fasta_protein_cds.pl $idMapProt \
+			| gzip -c \
+			> $protein
+}
+
+println "Processing RNA FASTA files"
+task( cds <- gff) {
+	sys gunzip -c $cdsOri \
+			| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
+			| perl -pe 's/>(.*?)\s+.*/>\1/' \
+			| gzip -c \
+			> $cds
+}
+
+wait
+println "Done."

@@ -44,10 +44,10 @@ public abstract class Features implements Iterable<Feature> {
 	 * Create features from a file
 	 */
 	public Features(LineFileIterator lineFileIterator) {
-		references = new ArrayList<StringBuffer>();
+		references = new ArrayList<>();
 		featuresStr = new StringBuffer();
 		sequence = new StringBuffer();
-		features = new ArrayList<Feature>();
+		features = new ArrayList<>();
 		this.lineFileIterator = lineFileIterator;
 		readFile();
 	}
@@ -56,10 +56,10 @@ public abstract class Features implements Iterable<Feature> {
 	 * Create features from a file
 	 */
 	public Features(String fileName) {
-		references = new ArrayList<StringBuffer>();
+		references = new ArrayList<>();
 		featuresStr = new StringBuffer();
 		sequence = new StringBuffer();
-		features = new ArrayList<Feature>();
+		features = new ArrayList<>();
 		open(fileName);
 		readFile();
 	}
@@ -101,7 +101,7 @@ public abstract class Features implements Iterable<Feature> {
 
 		// Split multiple locations?
 		String locs[] = locStr.split(",");
-		List<FeatureCoordinates> fcList = new LinkedList<FeatureCoordinates>();
+		List<FeatureCoordinates> fcList = new LinkedList<>();
 		int startMin = Integer.MAX_VALUE, endMax = 0;
 		for (String loc : locs) {
 			// Get rid of 'join' and 'complement' strings
@@ -303,7 +303,7 @@ public abstract class Features implements Iterable<Feature> {
 			loc = removeStartStr(loc, ORDER); // Remove 'order'
 		}
 
-		return new Tuple<String, Boolean>(loc, complement);
+		return new Tuple<>(loc, complement);
 	}
 
 	@Override

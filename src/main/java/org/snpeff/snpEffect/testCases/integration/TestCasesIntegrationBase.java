@@ -55,9 +55,12 @@ public class TestCasesIntegrationBase {
 	protected boolean ignoreErrors = false;
 	protected boolean shiftHgvs; // Do or do not shift variants according to HGVS notation (for test cases that were created before the feature was implemented)
 
+	public String testsDir;
+
 	public TestCasesIntegrationBase() {
 		super();
 		init();
+		testsDir = "tests/integration";
 	}
 
 	/**
@@ -807,7 +810,7 @@ public class TestCasesIntegrationBase {
 	/**
 	 * Calculate snp effect for a list of snps using cancer samples
 	 */
-	public void snpEffectCancer(String vcfFile, String txtFile, String genome, boolean classic, String hgsvP, String hgvsC, String genotype) {
+	public void snpEffectCancer(String vcfFile, String txtFile, String genome, boolean classic, String hgsvP, String hgvsC, String genotype, String trId) {
 		// Create command
 		List<String> argList = new ArrayList<>();
 		argList.add("-cancer");
@@ -836,6 +839,7 @@ public class TestCasesIntegrationBase {
 			if (debug) System.err.println(vcfEntry);
 			for (VcfEffect eff : vcfEntry.getVcfEffects()) {
 				if (debug) System.err.println("\t" + eff + "\n\t\tHGVS.p : " + eff.getHgvsProt() + "\n\t\tHGVS.c : " + eff.getHgvsDna() + "\n\t\tGenotype: " + eff.getGenotype());
+				if (trId != null && !trId.equals(eff.getTranscriptId())) continue;
 				if (genotype.equals(eff.getGenotype())) {
 					if (hgsvP != null) Assert.assertEquals(hgsvP, eff.getHgvsP());
 					if (hgvsC != null) Assert.assertEquals(hgvsC, eff.getHgvsDna());

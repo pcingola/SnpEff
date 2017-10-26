@@ -33,7 +33,7 @@ GENE_FILE="$DIR/genes.gbk"
 #---
 
 # Create db directory
-mkdir -p $DIR || true
+mkdir -p "$DIR" >/dev/null 2>&1 || true
 
 # Download GenBank file
 echo "Downloading genome $ID"

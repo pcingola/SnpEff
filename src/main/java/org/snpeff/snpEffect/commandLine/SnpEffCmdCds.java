@@ -29,6 +29,7 @@ public class SnpEffCmdCds extends SnpEff {
 	public static int MAX_ALIGN_LENGTH = 33000;
 
 	boolean storeAlignments; // Store alignments (used for some test cases)
+	boolean checkNumOk = true;
 	int totalErrors = 0;
 	int totalOk = 0;
 	int totalWarnings = 0;
@@ -58,7 +59,7 @@ public class SnpEffCmdCds extends SnpEff {
 					+ "\n\tTranscript ID : '" + trId + "'"//
 					+ "\n\tProtein       : " + cdsByTrId.get(trId) //
 					+ "\n\tProtein (new) : " + seq //
-		);
+			);
 
 		// Use whole trId
 		cdsByTrId.put(trId, seq); // Add it to the hash
@@ -217,7 +218,23 @@ public class SnpEffCmdCds extends SnpEff {
 				+ "\tError percentage: " + (100 * perc) + "%" //
 		);
 
+		// Sanity check
+		if (checkNumOk && totalOk <= 0) fatalErrorNoTranscriptsChecked();
+
 		return perc;
+	}
+
+	/**
+	 * Show an error message that actually helps to solve the problem
+	 */
+	void fatalErrorNoTranscriptsChecked() {
+		StringBuilder sb = new StringBuilder();
+
+		// Show some transcript IDs
+		int maxTrIds = 20;
+		sb.append("Transcript IDs from database (sample):\n" + sampleTrIds(maxTrIds));
+		sb.append("Transcript IDs from database (fasta file):\n" + sampleTrIdsFasta(maxTrIds));
+		fatalError("No CDS checked. This is might be caused by differences in FASTA file transcript IDs respect to database's transcript's IDs.\n" + sb);
 	}
 
 	/**
@@ -249,10 +266,12 @@ public class SnpEffCmdCds extends SnpEff {
 	 * Read a file that has all CDS
 	 */
 	void readCdsFile() {
-		cdsByTrId = new HashMap<String, String>();
+		cdsByTrId = new HashMap<>();
 
 		if (cdsFile.endsWith("txt") || cdsFile.endsWith("txt.gz")) readCdsFileTxt();
 		else readCdsFileFasta();
+
+		if (cdsByTrId.isEmpty()) fatalError("CDS file is empty!");
 	}
 
 	/**
@@ -331,6 +350,37 @@ public class SnpEffCmdCds extends SnpEff {
 		if (verbose) Timer.showStdErr("done");
 
 		return true;
+	}
+
+	/**
+	 * Show same Transcript IDs
+	 */
+	String sampleTrIds(int maxTrIds) {
+		StringBuilder sb = new StringBuilder();
+		int count = 0;
+		for (Gene g : config.getGenome().getGenes())
+			for (Transcript tr : g) {
+				sb.append("\t'" + tr.getId() + "'\n");
+				if (count++ > maxTrIds) return sb.toString();
+			}
+		return sb.toString();
+	}
+
+	/**
+	 * Show same Transcript IDs from FASTA file
+	 */
+	String sampleTrIdsFasta(int maxTrIds) {
+		StringBuilder sb = new StringBuilder();
+		int count = 0;
+		for (String trid : cdsByTrId.keySet()) {
+			sb.append("\t'" + trid + "'\n");
+			if (count++ > maxTrIds) return sb.toString();
+		}
+		return sb.toString();
+	}
+
+	public void setCheckNumOk(boolean checkNumOk) {
+		this.checkNumOk = checkNumOk;
 	}
 
 	public void setStoreAlignments(boolean storeAlignments) {

@@ -15,15 +15,20 @@ public class VariantNonRef extends Variant {
 	}
 
 	public VariantNonRef(Variant variant, Variant variantRef) {
-		//		super(variant.getParent(), variant.getStart(), variant.getReference(), variant.getAlt(), variant.getId());
-		// TODO: Change to
 		super(variant.getParent(), variant.getStart(), variantRef.getAlt(), variant.getAlt(), variant.getId());
 		genotype = variant.getGenotype();
+		if (genotype == null) {
+			// This may happen when the cancer variant reverts to reference
+			genotype = variant.getReference();
+		}
 		this.variantRef = variantRef;
 	}
 
 	@Override
 	public String getGenotype() {
+		if (variantRef.getGenotype() == null) { //
+			return genotype; // Any null?
+		}
 		return genotype + "-" + variantRef.getGenotype();
 	}
 

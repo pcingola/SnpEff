@@ -288,6 +288,17 @@ public class SnpEffectPredictor implements Serializable {
 	}
 
 	/**
+	 * Remove all transcripts that are NOT in the list
+	 * @return : Number of transcripts removed
+	 */
+	public int keepTranscriptsProteinCoding() {
+		int total = 0;
+		for (Gene g : genome.getGenes())
+			total += g.keepTranscriptsProteinCoding();
+		return total;
+	}
+
+	/**
 	 * Dump to sdtout
 	 */
 	public void print() {
@@ -551,17 +562,6 @@ public class SnpEffectPredictor implements Serializable {
 		int total = 0;
 		for (Gene g : genome.getGenes())
 			total += g.keepTranscripts(trIds);
-		return total;
-	}
-
-	/**
-	 * Remove all transcripts that are NOT in the list
-	 * @return : Number of transcripts removed
-	 */
-	public int retainTranscriptsProtein() {
-		int total = 0;
-		for (Gene g : genome.getGenes())
-			total += g.keepTranscriptsProtein();
 		return total;
 	}
 

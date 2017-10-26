@@ -1,7 +1,11 @@
 #!/bin/sh -e
 
-git fetch --all
-git reset --hard origin/master
+# Get current branch
+branch=`git branch | grep '^*' | cut -f 2 -d ' '`
+echo "Current branch is '$branch'"
 
+# Reset to branch
+git fetch --all
+git reset --hard "origin/$branch"
 git pull
 

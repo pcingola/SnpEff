@@ -203,8 +203,12 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 	public void setNumber(String number) {
 		this.number = -1;
 
+		// Flags are always zero according to VCF specification:
+		//   "The 'Flag' type indicates that the INFO field does not contain
+		//	  a Value entry, and hence the Number should be 0 in this case."
+		if (vcfInfoType == VcfInfoType.Flag) setNumber(0);
 		// Parse number field
-		if (number.equals("A")) vcfInfoNumber = VcfInfoNumber.ALLELE;
+		else if (number.equals("A")) vcfInfoNumber = VcfInfoNumber.ALLELE;
 		else if (number.equals("R")) vcfInfoNumber = VcfInfoNumber.ALL_ALLELES;
 		else if (number.equals("G")) vcfInfoNumber = VcfInfoNumber.GENOTYPE;
 		else if (number.equals(".")) vcfInfoNumber = VcfInfoNumber.UNLIMITED;

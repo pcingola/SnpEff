@@ -1367,6 +1367,26 @@ tabix -s 1 -b 2 -e 2 dbNSFP2.9.txt.gz
 				</ul>
 				</p>
 				<p>
+				<br>
+				<br>
+				<b> Building dbNSFP for hg19/GRCh37 using dbNSFP 3.X: </b> <br>
+				<br>
+				Latest dbNSFP versions (3.X) are based on GRCh38/hg38 genomic coordinates.
+				In order to use the latest dbNSFP databses with GRCh37/hg19 genome versions you need to create a new dbNSFP file with the right coordinates.
+Fortunately, dbNSFP 3.X provides GRCh37/hg19 coordinates, so we only need to swap coordinates and sort by genomic position.
+You can easily do this by using the <code>dbNSFP_sort.pl</code> script (<a href="https://raw.githubusercontent.com/pcingola/SnpEff/master/scripts_build/dbNSFP_sort.pl">you can find it here</a>) by running something like the following command lines:
+				<br>
+<pre>
+# Set to your downloaded dbNSFP version
+version="3.2a"
+
+# Replace coordinates by columns 7 and 8 (hg19 coordinates) and sort by those coordinates
+cat dbNSFP${version}_variant.chr* \
+    | $HOME/snpEff/scripts_build/dbNSFP_sort.pl 7 8 \
+    > dbNSFP${version}_hg19.txt
+</pre>
+				</p>
+				<p>
         </section>
 
         <!-- Split

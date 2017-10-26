@@ -391,7 +391,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Check values
 		String values[] = valsStr.split(",");
 		for (String val : values)
-			if (!VcfEntry.isValidInfoValue(val)) return "INFO filed '" + infoName + "' has an invalid value '" + val + "' (no spaces, tabs, '=' or ';' are allowed)";
+			if (!VcfEntry.isValidInfoValue(val)) return "INFO field '" + infoName + "' has an invalid value '" + val + "' (no spaces, tabs, '=' or ';' are allowed)";
 
 		// Check number of INFO elements
 		if (vcfInfo.isNumberNumber() && vcfInfo.getNumber() != values.length) {
@@ -596,6 +596,43 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Find ALT matching allele
 		for (int i = 0, j = firstAltIndex; (i < alts.length) && (j < infos.length); i++, j++)
 			if (alts[i].equalsIgnoreCase(allele)) return infos[j];
+
+		return null;
+	}
+
+	/**
+	 * Get an INFO field matching a variant
+	 * @returns Field value (string) or null if there is no match
+	 */
+	public String getInfo(String key, Variant var) {
+		if (info == null) parseInfo();
+
+		// Get INFO value
+		String infoStr = info.get(key);
+		if (infoStr == null) return null;
+
+		// Split INFO value and match it to allele
+		String infos[] = infoStr.split(",");
+
+		// INFO fields having number type 'R' (all alleles) should have one value for reference as well.
+		// So in those cases we must skip the first value
+		int firstAltIndex = 0;
+		VcfHeaderInfo vcfInfo = getVcfInfo(key);
+		if (vcfInfo != null && vcfInfo.isNumberAllAlleles()) {
+			firstAltIndex = 1;
+
+			// Are we looking for 'REF' information? I.e. variant is not a variant)
+			if (!var.isVariant()) return infos[0];
+		}
+
+		// Look for genotype matching 'var'
+		int i = firstAltIndex;
+		String gtPrev = "";
+		for (Variant v : variants()) {
+			if (i >= infos.length) break;
+			if (var.equals(v)) return infos[i];
+			if (!v.getGenotype().equals(gtPrev)) i++; // Advance genotype counter
+		}
 
 		return null;
 	}
@@ -1119,7 +1156,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			if ((getInfo(VCF_INFO_END) != null)) {
 				// Get 'END' field and do some sanity check
 				end = (int) getInfoInt(VCF_INFO_END) - 1;
-				if (end < start) throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start);
+				if (end < start) { throw new RuntimeException("INFO field 'END' is before varaint's 'POS'\n\tEND : " + end + "\n\tPOS : " + start); }
 			}
 		}
 	}

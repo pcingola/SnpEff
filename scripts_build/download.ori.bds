@@ -1,0 +1,1070 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+#
+# Download genome data
+#
+#-------------------------------------------------------------------------------
+
+clinvar            := "clinvar.vcf.gz"
+ensemblFtp         := "ftp.ensembl.org"
+ensemblBfmppFtp    := "ftp.ensemblgenomes.org"
+ucscMysqlServer    := "genome-mysql.cse.ucsc.edu"
+urlClinVarGrch37   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/$clinvar"
+urlClinVarGrch38   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/$clinvar"
+urlDbNsfp          := "ftp://dbnsfp:dbnsfp@dbnsfp.softgenetics.com/dbNSFPv$dbNsfpVer.zip"
+urlDbSnpGrch37     := "ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b147_GRCh37p13/VCF/00-All.vcf.gz"
+urlDbSnpGrch38     := "ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b147_GRCh38p2/VCF/00-All.vcf.gz"
+urlFlyBase         := "ftp://ftp.flybase.net"
+urlGwasCatalog     := "http://www.genome.gov/admin/gwascatalog.txt"
+urlJaspar          := "http://jaspar.binf.ku.dk/html/DOWNLOAD/JASPAR_CORE/pfm/redundant/pfm_all.txt"
+urlNcbiFtp         := "ftp://ftp.ncbi.nlm.nih.gov/"
+urlNcbiGenomes     := "ftp.ncbi.nih.gov::genomes"
+urlNcbiBacteria    := "ftp.ncbi.nih.gov::genomes/Bacteria"
+urlNcbiViruses     := "ftp.ncbi.nih.gov::genomes/Viruses"
+urlNextProt        := "ftp://ftp.nextprot.org/pub/current_release/xml"
+urlPdb             := "rsync.wwpdb.org::ftp_data/structures/divided/pdb/"
+urlUcscCse         := "http://hgdownload.cse.ucsc.edu/goldenPath"
+urlUcscSoe         := "http://hgdownload.soe.ucsc.edu/goldenPath"
+
+# ENSEMBL file names used a different format prior to this version
+ensemblReleaseUseNumber     := 75
+
+include 'downloadEnsembl'
+include 'downloadHumanDb'
+include 'downloadNcbi'
+include 'downloadUcsc'
+
+#-------------------------------------------------------------------------------
+# Find chrID from fasta file
+#-------------------------------------------------------------------------------
+string chrIdFromNcbiFastaFileName(string chrFile) {
+	chrId := sys zcat $chrFile | head -n 1 | cut -f 4 -d '|'
+	chrId = chrId.trim()
+	return chrId
+}
+
+#-------------------------------------------------------------------------------
+# Find chr from file name
+#-------------------------------------------------------------------------------
+string chrFromNcbiFastaFileName(string chrFile) {
+	chrStr := chrFile.baseName('.fa.gz')
+	chrSplit := chrStr.split('_')
+	chr := chrSplit[chrSplit.size() - 1]
+	return chr
+}
+
+#-------------------------------------------------------------------------------
+# Find fasta files in a directory
+#-------------------------------------------------------------------------------
+string[] findFasta(string dir) {
+	chrFilesStr := sys find $dir -type f -iname "*chr*.fa.gz" | sort
+	string[] chrs
+	for( string chrFile : chrFilesStr.lines() ) chrs += chrFile.trim()
+	return chrs
+}
+
+#-------------------------------------------------------------------------------
+# Create a map file from NCBI downloaded (single FASTA per chromsome) files
+#-------------------------------------------------------------------------------
+string createChromosomeMap(string dir) {
+	println "Creating chromosome map file"
+	chrMapFile := "$dir/chromosome_ID_map_file.txt"
+	if( chrMapFile.exists() ) {
+		println "Chromosome map file '$chrMapFile' exists, nothing done"
+		return chrMapFile
+	}
+
+	# Find all files and add chr/chrId to map file
+	chrFiles := dir.findFasta()
+	mapStr := ''
+	for( string chrFile : chrFiles ) {
+		chr := chrFile.chrFromNcbiFastaFileName()
+		chrId := chrFile.chrIdFromNcbiFastaFileName()
+		mapStr += "$chr\t$chrId\n"
+	}
+
+	chrMapFile.write(mapStr)
+	return chrMapFile
+}
+
+#-------------------------------------------------------------------------------
+# Create files for a genome downloaded from NCBI
+#-------------------------------------------------------------------------------
+void createFilesFromNcbi(string genome) { 
+	# Path to scripts
+	dbDir      := "$dirData/$genome"
+	oriDir     := "$dbDir/ORI"
+	scriptsDir := "$dirScriptsBuild/ncbi"
+
+	# File names
+	cds        := "$dbDir/cds.fa.gz"
+	gff        := "$dbDir/genes.gff.gz"
+	protein    := "$dbDir/protein.fa.gz"
+	seq        := "$dbDir/sequences.fa.gz"
+	idMap      := "$dbDir/id_map.txt"
+	idMapProt  := "$dbDir/id_map_protein.txt"
+	chrMap     := "$dbDir/chromosome_ID_map_file.txt"
+
+	# Original file names
+	cdsOri     := "$oriDir/rna.fa.gz"
+	gffGzOri   := "$oriDir/genes.gff.gz"
+	proteinOri := "$oriDir/protein.fa.gz"
+	seqOri     := "$oriDir/sequences.fa.gz"
+
+	println "Fix GFF ids"
+	task([gff, idMap, idMapProt] <- gffGzOri) {
+		sys $scriptsDir/fix_gff.pl $gffGzOri $idMap $idMapProt $chrMap \
+				| gzip -c \
+				> $gff
+	}
+
+	println "Processing protein FASTA files"
+	task(protein <- [proteinOri, idMapProt]) {
+		sys gunzip -c $proteinOri \
+				| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
+				| $scriptsDir/fix_fasta_protein_cds.pl $idMapProt \
+				| gzip -c \
+				> $protein
+	}
+
+	println "Processing RNA FASTA files"
+	task( cds <- gff) {
+		sys gunzip -c $cdsOri \
+				| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
+				| gzip -c \
+				> $cds
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Build dbNSFP database for genome 'hg'
+#-------------------------------------------------------------------------------
+void buildDbNsfp(string hg, string base, string baseChr) {
+	println "Building dbNSFP for '$hg'"
+	hg.mkdir()
+
+	bgFile := "$hg/$base.txt.gz"
+	index := "$bgFile.tbi"
+	if( bgFile.exists() && index.exists() )	return
+
+	# Compress using bgzip
+	string[] bgFiles
+	for( string chr : humanChrs ) {
+		if( chr == 'MT' ) chr = 'M'	# MT is called just 'M'
+
+		chrFile := "$baseChr\_variant.chr$chr"
+		bgChrFile := "$hg/$baseChr\_variant.chr$chr.gz"
+		bgFiles += bgChrFile
+
+		println "\tCompressing file '$chrFile'"
+		task( bgChrFile <- chrFile ) sys bgzip -c $chrFile > $bgChrFile
+	}
+	wait
+
+	# Concatenate individual files
+	println "\tCombining files"
+	bgFilesStr := bgFiles.join(" ")
+	if( bgFile <- bgFiles ) sys cat $bgFilesStr > $bgFile
+
+	# Tabix-index the bgzip file
+	println "\tCreating tabix index"
+	if( index <- bgFile ) sys tabix -s 1 -b 2 -e 2 $bgFile
+}
+
+#-------------------------------------------------------------------------------
+# Download ClinVar
+#-------------------------------------------------------------------------------
+void downloadClinvar() {
+	println "Download Clinvar"
+
+	# GRCh37
+	dir := "$dirDb/GRCh37/clinvar/"
+	dir.mkdir()
+	dir.chdir()
+	if( !clinvar.exists() ) fetch(urlClinVarGrch37)
+
+	# GRCh38
+	dir = "$dirDb/GRCh38/clinvar/"
+	dir.mkdir()
+	dir.chdir()
+	if( !clinvar.exists() ) fetch(urlClinVarGrch38)
+
+	wait
+}
+
+#-------------------------------------------------------------------------------
+# Download CytoBands
+#-------------------------------------------------------------------------------
+void downloadCytoBands() {
+	println "Download cytobands"
+
+	for(string grch : GRCh2Hg.keys() ) {
+		hg := GRCh2Hg{grch}
+		dir := "$dirDb/$grch/cytoBand"
+		file := "$dir/cytoBand.txt.gz"
+		url := "http://hgdownload.cse.ucsc.edu/goldenPath/$hg/database/cytoBand.txt.gz"
+		dir.mkdir()
+		dir.chdir()
+		if( !file.exists() ) fetch(url)
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Download dbNSFP
+#-------------------------------------------------------------------------------
+void downloadDbNsfp() {
+	println "Download dbNSFP"
+
+	dir := "$dirDb/GRCh38/dbNSFP/"
+	dir.mkdir()
+	dir.chdir()
+
+	base := "dbNSFPv$dbNsfpVer"
+	baseChr := "dbNSFP$dbNsfpVer"
+	zip := "$base.zip"
+
+	# Download
+	if( !zip.exists() ) {
+		println "Download dbNsfp $urlDbNsfp ($zip)"
+		fetch(urlDbNsfp)
+	}
+
+	# Unzip
+	chr1 := "$baseChr\_variant.chr1"
+	if( !chr1.exists() ) {
+		print "Uncompressing dbNsfp: $zip ($chr1)\n"
+		sys 7za x $zip
+	}
+
+	buildDbNsfp('.', base, baseChr)
+	wait
+}
+
+#-------------------------------------------------------------------------------
+# Download dbSnp
+#-------------------------------------------------------------------------------
+void downloadDbSnp() {
+	println "Download dbSnp"
+
+	dbsnp := "dbsnp.vcf.gz"
+
+	# GRCh37
+	dir := "$dirDb/GRCh37/dbSnp/"
+	dir.mkdir()
+	dir.chdir()
+	if( !dbsnp.exists() ) {
+		if( fetch(urlDbSnpGrch37) ) {
+			sys cp 00-All.vcf.gz $dbsnp
+		}
+	}
+
+	# GRCh38
+	dir = "$dirDb/GRCh38/dbSnp/"
+	dir.mkdir()
+	dir.chdir()
+	if( !dbsnp.exists() ) {
+		if( fetch(urlDbSnpGrch38) ) {
+			sys cp 00-All.vcf.gz $dbsnp
+		}
+	}
+
+	wait
+}
+
+#-------------------------------------------------------------------------------
+# Download ENSEMBL genomes
+#-------------------------------------------------------------------------------
+void downloadEnsembl(int ensemblRelease) {
+	println "Download ENSEMBL $ensemblRelease"
+
+	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_$ensemblRelease.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	dir := "$dirDownload/ensembl_$ensemblRelease"
+	dir.mkdir()
+	dir.chdir()
+
+	#---
+	# Download all files
+	#---
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Downloading ENSEMBL $ensemblRelease"
+
+		# Download GTF files
+		sys rsync -av	--include='*$ensemblRelease.gtf.gz' \
+						--include='*/' \
+						--exclude='*' \
+						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/gtf/ \
+						.
+    
+		# Download FASTA files (reference genomes)
+		sys rsync -av	--include='*.dna.toplevel.fa.gz' \
+						--include='*.cdna.all.fa.gz' \
+						--include='*.pep.all.fa.gz' \
+						--include='*/' \
+						--exclude='*' \
+						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/fasta/ \
+						.
+
+		# Download regulation tracks
+		sys rsync -av	--include='*AnnotatedFeatures.gff.gz' \
+						--include='*MotifFeatures.gff.gz' \
+						--include='*/' \
+						--exclude='*' \
+						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/regulation/ \
+						.
+
+		downloadOk.write("OK")	# Mark as all downloads OK
+	}
+
+	#---
+	# Move files to propper structure in 'local data' dir
+	#---
+	# Move downloaded files to current dir
+	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
+
+	# Move files
+	println 'Copying files to data dir'
+	string[] configLines
+	for( string gtf : ".".dir("*.gtf.gz") ) {
+		base := gtf.baseName('.gtf.gz')
+		baseNoVer := base.removeExt()
+		longName := base.split('\.').head()
+		name := base.split('\.').tail().join('.')
+
+		if( !name.isEmpty() ) {
+			println "\t$name"
+        
+			fasta := "$baseNoVer.dna.toplevel.fa.gz"
+			cds := "$baseNoVer.cdna.all.fa.gz"
+			prot := "$baseNoVer.pep.all.fa.gz"
+			if( ensemblRelease <= ensemblReleaseUseNumber ) {
+				# Slightly different name format in prior versions
+				fasta = "$base.dna.toplevel.fa.gz"
+				cds = "$base.cdna.all.fa.gz"
+				prot = "$base.pep.all.fa.gz"
+			}
+        
+			# Copy files
+			dataDir := "data/$name"
+			dataDir.mkdir()
+			if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz
+			if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz
+			if( "$dataDir/protein.fa.gz" <- prot )		sys $cp $prot  $dataDir/protein.fa.gz
+			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz
+        
+			# Append config lines
+			configLines += "$name.genome : $longName"
+			configLines += "$name.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+		}
+	}
+
+	# Regulation tracks (human and mouse only)
+	dataDir := "data/$GRCH.$ensemblRelease"
+	dataDir.mkdir()
+	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz $dataDir/regulation.gff.gz
+	sys $cp homo_sapiens/MotifFeatures.gff.gz $dataDir/motif.gff.gz
+
+	dataDir = "data/$GRCM.$ensemblRelease"
+	dataDir.mkdir()
+	sys $cp mus_musculus/AnnotatedFeatures.gff.gz $dataDir/regulation.gff.gz
+	sys $cp mus_musculus/MotifFeatures.gff.gz $dataDir/motif.gff.gz
+
+	# Create config file
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+
+	# Copy files to snpEff/data directory
+	println "Copying data to $dirData"
+	sys cd data ; cp -rvf . $dirData
+}
+
+#-------------------------------------------------------------------------------
+# Download ENSEMBL genomes (BFMPP)
+#-------------------------------------------------------------------------------
+void downloadEnsemblBfmpp() {
+	println "ENSEMBL BFMPP $ensemblBfmppRelease"
+
+	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	dir := "$dirDownload/ensembl_bfmpp_$ensemblBfmppRelease"
+	dir.mkdir()
+	dir.chdir()
+
+	#---
+	# Download all files
+	#---
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "ENSEMBL BFMPP $ensemblBfmppRelease: Downloading"
+
+		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'plants', 'protists'] ) {
+			# Download GTF files (annotations)
+			sys rsync -av	--include='*.$ensemblBfmppRelease.gtf.gz' \
+							--include='*/' \
+							--exclude='*' \
+							rsync://$ensemblBfmppFtp/all/pub/$org/release-$ensemblBfmppRelease/gtf/ \
+							.
+        
+			# Download FASTA files (reference genomes)
+			sys rsync -av	--include='*.dna.toplevel.fa.gz' \
+							--include='*.cdna.all.fa.gz' \
+							--include='*.pep.all.fa.gz' \
+							--include='*/' \
+							--exclude='*' \
+							rsync://$ensemblBfmppFtp/all/pub/$org/release-$ensemblBfmppRelease/fasta/ \
+							.
+		}
+
+		downloadOk.write("OK")	# Mark as all downloads OK
+	}
+
+	#---
+	# Move files to propper structure in 'local data' dir
+	#---
+	# Copy files to local dir
+	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to parent dir"
+	#sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
+
+	# Move files
+	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to data dir"
+	string[] configLines
+	for( string gtf : ".".dir("*.gtf.gz") ) {
+		base := gtf.baseName('.gtf.gz')
+		baseNoVer := base.removeExt()
+		longName := base.split('\.').head()
+		#shortName := base.split('\.').tail().join('.')
+		name := longName
+		println "name: $name\tbase: $base"
+
+		if( !name.isEmpty() ) {
+			fasta := "$baseNoVer.dna.toplevel.fa.gz"
+			cds := "$baseNoVer.cdna.all.fa.gz"
+			prot := "$baseNoVer.pep.all.fa.gz"
+			println "\t$name\t$fasta\t$cds\t$prot"
+        
+			# Copy files
+			dataDir := "data/$name"
+			dataDir.mkdir()
+			if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz    || true
+			if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz       || true
+			if( "$dataDir/protein.fa.gz" <- prot )		sys $cp $prot  $dataDir/protein.fa.gz   || true
+			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz || true
+        
+			# Append config lines
+			configLines += "$name.genome : $longName"
+			configLines += "$name.reference : $ensemblBfmppFtp/pub/release-$ensemblBfmppRelease"
+		}
+	}
+
+	# Create config file
+	println "ENSEMBL BFMPP $ensemblBfmppRelease: Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+
+	# Copy files to snpEff/data directory
+	sys cd data ; cp -rvf . $dirData
+}
+
+#-------------------------------------------------------------------------------
+# Download FlyBase
+#-------------------------------------------------------------------------------
+void downloadFlyBase() {
+	println "Download FlyBase $flybaseRelease"
+
+	configFile := "$dirSnpEff/config/snpEff.FLYBASE_$flybaseRelease.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	dir := "$dirDownload/flybase_$flybaseRelease"
+	dir.mkdir()
+	dir.chdir()
+
+	# Download each genome
+	string[] configLines
+	for( string g : flybaseGenomes ) {
+		organism := g.split('_')[0]
+		version := g.split('_')[1]
+		url := "$urlFlyBase/releases/$flybaseRelease/$g/gff/$organism-all-$version.gff.gz"
+		println "Organism: $organism\tversion: $version\tURL: $url"
+    
+		dirg := "$dir/$g"
+		dirg.mkdir()
+		fetch(url)
+    
+		# Update 'config' file
+		configLines += "$g.genome : $g"
+		configLines += "$g.reference : $url"
+
+		# Copy to data dir
+		dataDir := "data/$g"
+		dataDir.mkdir()
+		sys cp $organism-all-$version.gff.gz $dataDir/genes.gff.gz
+	}
+
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+
+	# Copy files to snpEff/data directory
+	sys cd data ; cp -rvf . $dirData
+}
+
+#-------------------------------------------------------------------------------
+# Download GWAS catalog
+#-------------------------------------------------------------------------------
+void downloadGwasCatalog() {
+	println "Download Gwas-Catalog"
+
+	dir := "$dirDb/gwasCatalog"
+	dir.mkdir()
+	dir.chdir()
+
+	if( fetch(urlGwasCatalog) ) {
+		sys cat gwascatalog.txt | $dirScriptsBuild/gwascatalog2vcf.pl > gwascatalog.vcf
+	}
+
+	wait
+}
+
+#-------------------------------------------------------------------------------
+# Download Jaspar
+#-------------------------------------------------------------------------------
+void downloadJaspar() {
+	println "Download Jaspar"
+
+	dir := "$dirDb/jaspar"
+	dir.mkdir()
+	dir.chdir()
+
+	if( fetch(urlJaspar) ) {
+		sys gzip -c pfm_all.txt > pwms.bin
+		println "Jaspar: File $dir/pwms.bin created"
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Download NCBI genome
+#-------------------------------------------------------------------------------
+void downloadNcbiGenome(string genome) {
+	println "Download NCBI genome '$genome'"
+
+	configFile := "$dirSnpEff/config/snpEff.NCBI.$genome.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	# Create download dir
+	dir := "$dirDownload/ncbi_genome/$genome"
+	dir.mkdir()
+	dir.chdir()
+
+	downloadOk := "download.ok"
+	url := "$urlNcbiGenomes/$genome/"
+	println "URL: $url"
+	if( ! downloadOk.exists() ) {
+		println "Downloading NCBI genome '$genome'"
+
+		sys rsync -avP \
+			--include='/GFF/*_top_level.gff3.gz' \
+			--include='/protein/protein.fa.gz' \
+			--include='/RNA/rna.fa.gz' \
+			--include='/Assembled_chromosomes/seq/*_chr*.fa.gz' \
+			--include='*/' \
+			--exclude='*' \
+			$url \
+			.
+
+		sys chmod -Rf u+rw $dir
+
+		downloadOk.write("OK")	# Mark as all downloads OK
+	} else {
+		println "File $downloadOk exists, nothing done"
+	}
+
+	# Create genome's dir
+	dirDataGenome := "$dirData/$genome"
+	dirDataGenomeOri := "$dirDataGenome/ORI"
+	dirDataGenomeOri.mkdir()
+
+	# Create genome FASTA file and copy other files
+	dir.createChromosomeMap()
+	fa := dir.fastaFromNcbi()
+	sys cp -vn $fa $dirDataGenome
+	sys cp -vn RNA/rna.fa.gz $dirDataGenomeOri
+	sys cp -vn protein/protein.fa.gz $dirDataGenomeOri
+	sys cp -vn GFF/*_top_level.gff3.gz $dirDataGenomeOri/genes.gff.gz
+	sys cp -vn chromosome_ID_map_file.txt $dirDataGenome/
+
+	# Create snpEff files
+	genome.createFilesFromNcbi()
+
+	# Create config file
+	configLines := "$genome.genome : $genome\n$genome.reference : ftp://ftp.ncbi.nih.gov/genomes/$genome/\n"
+	configFile.write(configLines)
+}
+
+#-------------------------------------------------------------------------------
+# Download NCBI Bacteria
+#-------------------------------------------------------------------------------
+void downloadNcbiBacteria() {
+	println "Download NCBI bacteria"
+
+	configFile := "$dirSnpEff/config/snpEff.NCBI_bacteria.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	dir := "$dirDownload/ncbi_bacteria"
+	dir.mkdir()
+	dir.chdir()
+
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Downloading NCBI (Bacteria)"
+
+		sys rsync -avP \
+			--include='*.gbk' \
+			--exclude='*' \
+			$urlNcbiBacteria \
+			.
+
+		sys chmod -Rf u+rw $dir
+
+		downloadOk.write("OK")	# Mark as all downloads OK
+	}
+
+	# Create genes.gbk files and create config
+	# lines (one per subdirectory in dataDir)
+	string[] configLines
+	println "Creating genes.gbk:"
+	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
+	for( string gdir : genomes.lines() ) {
+		gen := gdir.baseName()
+		println "\t$gen"
+		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
+
+		# Collapse all geneBank files into one 
+		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
+	}
+
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+
+	# Copy files to data directory
+	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + cp -rvf + $dirData
+}
+
+#-------------------------------------------------------------------------------
+# Download NCBI Virus
+#-------------------------------------------------------------------------------
+void downloadNcbiVirus() {
+	println "Download NCBI virus"
+
+	configFile := "$dirSnpEff/config/snpEff.NCBI_viruses.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	dir := "$dirDownload/ncbi_viruses"
+	dir.mkdir()
+	dir.chdir()
+
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Downloading NCBI (Viruses)"
+
+		sys rsync -avP \
+			--include='*.gbk' \
+			--exclude='*' \
+			$urlNcbiViruses \
+			.
+
+		sys chmod -Rf u+rw $dir
+
+		downloadOk.write("OK")	# Mark as all downloads OK
+	}
+
+	# Create genes.gbk files and create config
+	# lines (one per subdirectory in dataDir)
+	string[] configLines
+	println "Creating genes.gbk:"
+	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
+	for( string gdir : genomes.lines() ) {
+		gen := gdir.baseName()
+		println "\t$gen"
+		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Viruses/"
+
+		# Collapse all geneBank files into one 
+		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk || true
+	}
+
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+
+	# Copy files to data directory
+	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + cp -rvf + $dirData
+}
+
+#-------------------------------------------------------------------------------
+# Download NextProt
+#-------------------------------------------------------------------------------
+void downloadNextProt() {
+	println "Download NextProt"
+
+	dir := "$dirDb/nextProt"
+	dir.mkdir()
+	dir.chdir()
+	
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Download NextProt"
+
+		# Download each chromosome's XML file
+		for( string chr : humanChrsDd ) {
+			fetch("$urlNextProt/nextprot_chromosome_$chr.xml.gz")
+		}
+
+		downloadOk.write("OK")	# Mark as downlaoded OK
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Download geome from UCSC
+#-------------------------------------------------------------------------------
+void downloadUcscHg38() {
+	println "Download hg38 (UCSC)"
+	ref := 'hg38'
+
+	dir := "$dirDownload/ucsc_$ref"
+	dir.mkdir()
+	dir.chdir()
+	
+	#---
+	# Download data
+	#---
+	ori := "$dir/ORI"
+	ori.mkdir()
+	ori.chdir()
+
+	fetch("$urlUcscCse/$ref/bigZips/$ref.fa.gz")
+	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+
+	fagz := "$ref.fa.gz"
+	fagzData := "$dirData/genomes/$fagz"
+	fagzOri := "$dir/ORI/$fagz"
+	if( fagzData <- fagzOri ) sys cp -vf $fagzOri $fagzData
+
+	# Query gene database
+	queryUcsc(ref, dir)
+
+	#---
+	# Create CDS FASTA
+	# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" 
+	#---
+	println 'Creating CDS FASTA'
+	if( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
+		sys gunzip -c $ori/refMrna.fa.gz | tr " " "." > $dir/cds.fa
+		sys gzip -f $dir/cds.fa
+	}
+
+	# Copy files to snpEff/data dir
+	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $dirData/$ref/ 
+}
+
+#-------------------------------------------------------------------------------
+# Download geome from UCSC (Known genes)
+#-------------------------------------------------------------------------------
+void downloadUcscKg(string refdb) {
+	println "Download '$refdb' (UCSC Knonwn Genes)"
+	ref := refdb + 'kg'
+
+	dir := "$dirDownload/ucsc_$ref"
+	dir.mkdir()
+	dir.chdir()
+	
+	# Query database
+	queryUcscKg(ref, refdb, dir)
+
+	# Copy files to snpEff/data dir
+	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf genes.kg.gz $dirData/$ref/ 
+	sys cd $dirData/genomes; rm -vf $ref.fa.gz ; ln -s $refdb.fa.gz $ref.fa.gz
+}
+
+#-------------------------------------------------------------------------------
+# Download geome from UCSC
+#-------------------------------------------------------------------------------
+void downloadUcscGenome(string ref) {
+	println "Download $ref (UCSC)"
+
+	# Initialize
+	seDataDir := "$dirData/$ref"
+	seDataDir.mkdir()
+
+	dir := "$dirDownload/ucsc_$ref"
+	dir.mkdir()
+	dir.chdir()
+	
+	ori := "$dir/ORI"
+	ori.mkdir()
+	ori.chdir()
+
+	# Download data
+	fagz := ref.downloadUcscGenomeFasta(dir)
+	cdsgz := ref.downloadUcscGenomeFastaMrna(dir)
+
+	# Query gene database
+	queryUcsc(ref, dir)
+
+	# Copy files to snpEff/data dir
+	fagzData := "$dirData/genomes/$ref.fa.gz"
+	if( fagzData <- fagz ) sys cp -vf $fagz $fagzData
+
+	sys cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $seDataDir/
+}
+
+#-------------------------------------------------------------------------------
+# Download FASTA CDS from UCSC
+#-------------------------------------------------------------------------------
+string downloadUcscGenomeFastaMrna(string ref, string dir) {
+	#---
+	# Create CDS FASTA
+	#---
+	println 'Download mRNA file'
+	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+
+	println 'Creating CDS FASTA'
+	ori := "$dir/ORI"
+	refMrna := "$ori/refMrna.fa.gz"
+	cds := "$dir/cds.fa"
+	cdsgz := "$dir/cds.fa.gz"
+	if( cdsgz <- refMrna ) {
+		sys gunzip -c $refMrna | tr " " "." > $cds
+		sys gzip -f $cds
+	}
+	return cdsgz
+}
+
+#-------------------------------------------------------------------------------
+# Download FASTA geome from UCSC
+#-------------------------------------------------------------------------------
+string downloadUcscGenomeFasta(string ref, string dir) {
+	ori := "$dir/ORI"
+	localFile := "$ori/$ref.fa.gz"
+	if( localFile.exists() ) {
+		println "Local file '$localFile' exists, skipping download"
+		return localFile
+	}
+
+	file := "$urlUcscCse/$ref/bigZips/chromFa.tar.gz"
+	if( file.exists() ) {
+		fetch("$urlUcscCse/$ref/bigZips/chromFa.tar.gz")
+
+		# Create fasta from tar
+		fagz := fastaFromTar(ref, "chromFa.tar.gz", ori)
+		return fagz
+	}
+	
+	println "File '$file' does not exists"
+	file = "$urlUcscCse/$ref/bigZips/$ref.fa.gz"
+	fetch(file)
+	return localFile
+}
+
+#-------------------------------------------------------------------------------
+# Download PDB
+#-------------------------------------------------------------------------------
+void downloadPdb() {
+	println "Download PDB"
+
+	dir := "$dirDb/pdb"
+	dir.mkdir()
+	dir.chdir()
+
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Download PDB"
+		sys rsync -rlpt -v -z --delete --port=33444 $urlPdb .
+		downloadOk.write("OK")	# Mark as downlaoded OK
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Create a single fasta file from an NCBI download 
+# of 'single FASTA per chromosome'
+#-------------------------------------------------------------------------------
+string fastaFromNcbi(string dir) {
+	fa := "$dir/sequences.fa"
+	faGz := "$fa.gz"
+
+	# Already finished?
+	println "Creating genome fasta file '$faGz'"
+	if( faGz.exists() ) {
+		println "Fasta file '$faGz' exists, nothing done"
+		return faGz
+	}
+
+	# Create a big FASTA file including all chromosomes
+	chrFiles := dir.findFasta()
+	for(string chrFile: chrFiles) {
+		chr := chrFile.chrFromNcbiFastaFileName()
+		println "\tAdding chromosome '$chr' from file '$chrFile'"
+		sys ( echo ">$chr" ; gunzip -c $chrFile | grep -v "^>" ) | gzip -c >> $faGz
+	}
+	
+	return faGz
+}
+
+#-------------------------------------------------------------------------------
+# Create a single fasta file from a set of fasta in a tar
+#-------------------------------------------------------------------------------
+string fastaFromTar(string ref, string tar, string ori) {
+	dirChr := "$ori/chr"
+	dirChr.mkdir()
+
+	fasta := "$ori/$ref.fa"
+	fastaGz := "$ori/$ref.fa.gz"
+
+	if( fastaGz <- tar ) {
+		println "Creating fasta file '$fastaGz' from tar file '$tar'"
+		sys cd $dirChr
+		sys tar -xvzf $tar
+		sys rm -f $fasta
+		sys cat *.fa > $fasta
+		sys gzip -f $fasta
+	}
+
+	return fastaGz
+}
+
+#-------------------------------------------------------------------------------
+# Fetch (wget) a file
+#-------------------------------------------------------------------------------
+bool fetch(string url) {
+	if( url.startsWith('ftp://') ) {
+		sys $wget $url
+		return true
+	}
+
+	base := url.baseName()
+	if( base <- url ) {
+		println "Downloading '$url' to '$base'"
+		sys $wget $url
+		return true
+	}
+	return false
+}
+
+#-------------------------------------------------------------------------------
+# QueryUcsc
+#-------------------------------------------------------------------------------
+void queryUcscAll() {
+	refs:= ['hg19', 'hg38', 'mm10']
+
+	for( string ref : refs ) {
+		dir := "$dirDownload/ucsc_$ref"
+		dir.mkdir()
+		dir.chdir()
+		queryUcsc(ref, dir)
+
+		refdb := ref
+		ref = ref + 'kg'
+		dir = "$dirDownload/ucsc_$ref"
+		dir.mkdir()
+		dir.chdir()
+		queryUcscKg(ref, refdb, dir)
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Query MySql's database (RefSeq)
+#-------------------------------------------------------------------------------
+string queryUcsc(string ref, string dir) {
+	refSeq := "$dir/genes.refseq"
+	refSeqGz := "$dir/genes.refseq.gz"
+	if( !refSeqGz.exists() ) {
+		println "Querying database for RefSeq genes: $ref"
+		query := "
+			use $ref; 
+			select rg.bin as 'binNum'
+					, CONCAT(rg.name,'.',gi.version) as 'name'
+					, rg.chrom
+					, rg.strand
+					, rg.txStart
+					, rg.txEnd
+					, rg.cdsStart
+					, rg.cdsEnd
+					, rg.exonCount
+					, rg.exonStarts
+					, rg.exonEnds
+					, rg.score
+					, rg.name2
+					, rg.cdsStartStat
+					, rg.cdsEndStat
+					, rg.exonFrames 
+			from refGene rg 
+				inner join hgFixed.gbCdnaInfo gi 
+				on rg.name=gi.acc
+			;
+			"
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refSeq.gz
+	}
+	return refSeqGz
+}
+
+#-------------------------------------------------------------------------------
+# Query MySql's database (KnonwGene)
+#-------------------------------------------------------------------------------
+string queryUcscKg(string ref, string refdb, string dir) {
+	refSeq := "$dir/genes.kg"
+	refSeqGz := "$dir/genes.kg.gz"
+	if( !refSeqGz.exists() ) {
+		println "Querying database for KnownGenes genes: $ref"
+		query := "
+			use $refdb;
+			select kg.name as '#name'
+					, kg.chrom 
+					, kg.strand 
+					, kg.txStart 
+					, kg.txEnd 
+					, kg.cdsStart 
+					, kg.cdsEnd 
+					, kg.exonCount 
+					, kg.exonStarts 
+					, kg.exonEnds 
+					, kg.proteinID 
+					, kg.alignID 
+			from knownGene kg
+			;
+			"
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $refdb | gzip -c > $refSeq.gz
+	}
+	return refSeqGz
+}
+
+#-------------------------------------------------------------------------------
+# Query MySql's database (RefSeq) for refLink table
+#-------------------------------------------------------------------------------
+string queryUcscRefLink(string ref, string dir) {
+	refLinkGz := "$dir/refLink.txt.gz"
+	if( !refLinkGz.exists() ) {
+		println "Querying database for RefLink table: $ref"
+		query := "use $ref; select * from hgFixed.refLink;"
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refLinkGz
+	}
+	println "RefLink file: $refLinkGz"
+	return refLinkGz
+}
+

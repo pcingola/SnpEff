@@ -150,6 +150,10 @@ public abstract class FileIterator<T> implements Iterable<T>, Iterator<T> {
 		if (fileName != null) reader = Gpr.reader(fileName);
 	}
 
+	public boolean isDebug() {
+		return debug;
+	}
+
 	@Override
 	public Iterator<T> iterator() {
 		return this;

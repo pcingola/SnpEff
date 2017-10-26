@@ -30,7 +30,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	public void test_01() {
 		Gpr.debug("Test");
 		String file = "tests/integration/cancer/test.cancer.snp.01.vcf";
-		snpEffectCancer(file, null, "testHg3766Chr1", true, "p.Leu1?", "c.1C>G", "G-C");
+		snpEffectCancer(file, null, "testHg3766Chr1", true, "p.Leu1?", "c.1C>G", "G-C", null);
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 		String fileVcf = "tests/integration/cancer/test.cancer_no_ped.vcf";
 		String fileTxt = "tests/integration/cancer/test.cancer_no_ped.txt";
-		snpEffectCancer(fileVcf, fileTxt, "testHg3766Chr1", true, "p.Leu1?", "c.1C>G", "G-C");
+		snpEffectCancer(fileVcf, fileTxt, "testHg3766Chr1", true, "p.Leu1?", "c.1C>G", "G-C", null);
 	}
 
 	/**
@@ -94,7 +94,17 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	public void test_04() {
 		Gpr.debug("Test");
 		String file = "tests/integration/cancer/test_04.vcf";
-		snpEffectCancer(file, null, "testHg19Chr22", false, "p.Gln133Leu", "c.398A>T", "A-T");
+		snpEffectCancer(file, null, "testHg19Chr22", false, "p.Gln133Leu", "c.398A>T", "A-T", null);
+	}
+
+	/**
+	 * Cancer mutation is reversion to the REF base
+	 */
+	@Test
+	public void test_05() {
+		Gpr.debug("Test");
+		String file = "tests/integration/cancer/test.cancer_05.vcf";
+		snpEffectCancer(file, null, "testHg19Chr17", false, "p.Arg72Pro", "c.215G>C", "G-C", "NM_000546.5");
 	}
 
 }

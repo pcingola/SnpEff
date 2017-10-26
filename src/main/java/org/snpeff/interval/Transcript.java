@@ -51,9 +51,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	String mRna; // mRna sequence (includes 5'UTR and 3'UTR)
 	String protein; // Protein sequence
 	String version = ""; // Transcript version
-	ArrayList<Utr> utrs; // UTRs
-	ArrayList<Cds> cdss; // CDS information
-	ArrayList<Intron> introns; // Intron markers
+	List<Utr> utrs; // UTRs
+	List<Cds> cdss; // CDS information
+	List<Intron> introns; // Intron markers
 	Upstream upstream; // Upstream interval
 	Downstream downstream; // Downstream interval
 	Exon firstCodingExon; // First coding exon. I.e. where transcription start site (TSS) is.

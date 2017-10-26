@@ -300,10 +300,10 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 	}
 
 	/**
-	 * Remove only protein coding transcripts
+	 * Keep only protein coding transcripts
 	 * @return : Number of transcripts removed
 	 */
-	public int keepTranscriptsProtein() {
+	public int keepTranscriptsProteinCoding() {
 		// Find transcripts in trIds
 		ArrayList<Transcript> toDelete = new ArrayList<>();
 		for (Transcript t : this)

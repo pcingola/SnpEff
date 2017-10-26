@@ -1,5 +1,11 @@
 package org.snpeff.snpEffect.factory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.snpeff.genBank.Feature;
 import org.snpeff.genBank.Feature.Type;
 import org.snpeff.genBank.FeatureCoordinates;
@@ -32,73 +38,32 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	public static final int OFFSET = 1;
 	Chromosome chromosome; // It is assumed that there is only one 'Chromosome' (i.e. only one 'SOURCE' feature)
 	FeaturesFile featuresFile;
+	Map<String, String> proteinByTrId;
 
 	public SnpEffPredictorFactoryFeatures(Config config) {
 		super(config, OFFSET);
+		proteinByTrId = new HashMap<>();
 	}
 
 	/**
 	 * Add CDS and protein coding information
 	 */
-	Transcript addCds(Feature f, Gene geneLatest, Transcript trLatest) {
-		// Convert coordinates to zero-based
-		int start = f.getStart() - inOffset;
-		int end = f.getEnd() - inOffset;
-
-		// Use latest transcript?
-		Transcript tr = null;
-		String trId = null;
-		if ((trLatest != null) && trLatest.intersects(start, end)) {
-			tr = trLatest;
-			trId = tr.getId();
-
-			// Sanity check: Do gene names match?
-			String geneName = f.getGeneName();
-			if (geneName != null //
-					&& geneLatest != null //
-					&& !geneLatest.getGeneName().equals(geneName) // No match?
-			) {
-				// Gene names do no match, we are not in the same transcript
-				tr = null;
-				trId = null;
-			}
-		}
-
-		// Try to find transcript
-		if (tr == null) {
-			trId = f.getTranscriptId();
-			tr = findTranscript(trId);
-		}
-
-		// Not found? => Create gene and transcript
-		if (tr == null) {
-			// Find or create gene
-			Gene gene = null;
-			if ((geneLatest != null) && geneLatest.intersects(start, end)) gene = geneLatest;
-			else gene = findOrCreateGene(f, chromosome, false);
-
-			if (debug) System.err.println("Transcript '" + trId + "' not found. Creating new transcript for gene '" + gene.getId() + "'.\n" + f);
-
-			if (trId == null) trId = "Tr_" + start + "_" + end;
-			tr = findTranscript(trId);
-			if (tr == null) {
-				tr = new Transcript(gene, start, end, f.isComplement(), trId);
-				add(tr);
-			}
-		}
-
+	Transcript addCds(Feature fcds, Gene geneLatest, List<Transcript> trLatest) {
+		// Find (or create) transcript
+		Transcript tr = findTrForCds(fcds, geneLatest, trLatest);
+		//
 		// Mark transcript as protein coding
-		if (f.getAasequence() != null) tr.setProteinCoding(true);
+		if (fcds.getAasequence() != null) tr.setProteinCoding(true);
 
 		// Check and set ribosomal slippage
-		if (f.get("ribosomal_slippage") != null) tr.setRibosomalSlippage(true);
+		if (fcds.get("ribosomal_slippage") != null) tr.setRibosomalSlippage(true);
 
 		// Add exons?
-		if (f.hasMultipleCoordinates()) {
-			for (FeatureCoordinates fc : f) {
+		if (fcds.hasMultipleCoordinates()) {
+			for (FeatureCoordinates fc : fcds) {
 				int cdsStart = fc.start - inOffset;
 				int cdsEnd = fc.end - inOffset;
-				Cds cds = new Cds(tr, cdsStart, cdsEnd, f.isComplement(), "CDS_" + trId);
+				Cds cds = new Cds(tr, cdsStart, cdsEnd, fcds.isComplement(), "CDS_" + tr.getId());
 				add(cds);
 			}
 
@@ -106,9 +71,12 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 			CircularCorrection cc = new CircularCorrection(tr);
 			cc.correct();
 		} else {
-			Cds cds = new Cds(tr, f.getStart() - inOffset, f.getEnd() - inOffset, f.isComplement(), "CDS_" + trId);
+			Cds cds = new Cds(tr, fcds.getStart() - inOffset, fcds.getEnd() - inOffset, fcds.isComplement(), "CDS_" + tr.getId());
 			add(cds);
 		}
+
+		// Add transcript - protein sequence mapping
+		proteinByTrId.put(tr.getId(), fcds.getAasequence());
 
 		return tr;
 	}
@@ -137,7 +105,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 			}
 		}
 
-		// No SOURCE found? may be locusName is available.
+		// No 'SOURCE' entry found? May be locusName is available.
 		if (chromosome == null) {
 			String chrName = chromoName(features, null);
 			int chrSize = sequence(features).length();
@@ -153,18 +121,33 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		// Add a genes, transcripts and CDSs
 		//---
 		Gene geneLatest = null;
-		Transcript trLatest = null;
+		List<Transcript> trLatest = null;
 		for (Feature f : features.getFeatures()) {
 			if (f.getType() == Type.GENE) {
 				// Add gene
 				geneLatest = findOrCreateGene(f, chromosome, false);
 				trLatest = null;
-			} else if (f.getType() == Type.MRNA) {
-				trLatest = addMrna(f, geneLatest);
-				geneLatest = (Gene) trLatest.getParent();
-			} else if (f.getType() == Type.CDS) {
-				trLatest = addCds(f, geneLatest, trLatest);
-				geneLatest = (Gene) trLatest.getParent();
+			} else {
+				Transcript trl = null;
+
+				// Add feature
+				if (f.getType() == Type.MRNA) trl = addMrna(f, geneLatest);
+				else if (f.getType() == Type.CDS) trl = addCds(f, geneLatest, trLatest);
+
+				// Added transcript?
+				if (trl != null) {
+					// If we are using another gene, then 'geneLatest' should change
+					if (geneLatest == null //
+							|| trLatest == null //
+							|| !trl.getParent().getId().equals(geneLatest.getId()) // New gene? i.e. gen IDs do not math
+					) {
+						// Create new transcripts list
+						trLatest = new ArrayList<>();
+						trLatest.add(trl);
+					} else trLatest.add(trl);
+
+					geneLatest = (Gene) trl.getParent();
+				}
 			}
 		}
 	}
@@ -199,6 +182,124 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 		add(tr);
 		return tr;
+	}
+
+	/**
+	 * Does the transcript match the latest gene?
+	 */
+	boolean cdsMatchesGene(Feature fcds, Gene gene) {
+		if (gene == null) return false;
+
+		// Convert coordinates to zero-based
+		int start = fcds.getStart() - inOffset;
+		int end = fcds.getEnd() - inOffset;
+
+		// CDS cannot be outside gene coordinates
+		if (start < gene.getStart() || gene.getEnd() < end) return false;
+
+		// Sanity check: Do gene names match?
+		String geneName = fcds.getGeneName();
+
+		// Gene names do no match, we are not in the same transcript
+		return geneName != null //
+				&& gene != null //
+				&& gene.getGeneName().equals(geneName) // No match?
+		;
+	}
+
+	/**
+	 * Does this CDS feature match the latest transcript ?
+	 */
+	boolean cdsMatchesTr(Feature fcds, Transcript tr) {
+		if (tr == null) return false;
+
+		// Convert coordinates to zero-based
+		int start = fcds.getStart() - inOffset;
+		int end = fcds.getEnd() - inOffset;
+
+		// CDS cannot be outside transcript coordinates
+		if (start < tr.getStart() || tr.getEnd() < end) return false;
+
+		// If multiple coordinates are available (and transcript has exons), try to match exons
+		if (fcds.hasMultipleCoordinates() && !tr.subIntervals().isEmpty()) return cdsMatchesTrExons(fcds, tr);
+		return true;
+	}
+
+	/**
+	 * Does this CDS feature match the transcript coordinates?
+	 */
+	boolean cdsMatchesTrExons(Feature fcds, Transcript tr) {
+		// Sorted list of exons from CDS
+		List<Exon> cdsExons = new ArrayList<>();
+		for (FeatureCoordinates fc : fcds) {
+			Exon e = new Exon(tr, fc.start - inOffset, fc.end - inOffset, fc.complement, "", -1);
+			cdsExons.add(e);
+		}
+		Collections.sort(cdsExons);
+
+		// Sorted list of exons from transcript
+		List<Exon> trExons = new ArrayList<>();
+		trExons.addAll(tr.subIntervals());
+		Collections.sort(trExons);
+
+		// Do CDS exons match transcript exons?
+		if (cdsExons.size() > trExons.size()) return false; // Transcript must have at least as many exons as CDS
+
+		// Do exons match
+		return cdsMatchesTrExons(cdsExons, trExons, tr);
+	}
+
+	/**
+	 * Do CDS exon match transcript exons?
+	 * @param cdsExons : List of CDS exons sorted by start position
+	 * @param trExons : List of transcript exons sorted by start position
+	 * @param tr : Transcript
+	 * @return true if the list of CDS exons fits in transcript exons
+	 */
+	boolean cdsMatchesTrExons(List<Exon> cdsExons, List<Exon> trExons, Transcript tr) {
+		// Special case: CDS has only one exon
+		if (cdsExons.size() == 1) {
+			Exon cdsEx = cdsExons.get(0);
+			Exon trEx = tr.findExon(cdsEx);
+			return (trEx != null) && (trEx.includes(cdsEx));
+		}
+
+		int cdsExIdx = 0, trExIdx = 0;
+		Exon cdsEx = cdsExons.get(cdsExIdx);
+		Exon trEx = trExons.get(trExIdx);
+
+		// Skip transcript exons before CDs
+		while (cdsEx.getStart() > trEx.getEnd()) {
+			trExIdx++;
+			if (trExIdx >= trExons.size()) return false; // We run out of transcript's exons and none matched
+			trEx = trExons.get(trExIdx);
+		}
+
+		// First CDS exon can differ only on the left side.
+		if ((trEx.getStart() > cdsEx.getStart()) || (trEx.getEnd() != cdsEx.getEnd())) return false;
+
+		// Exons after the first (and before the last one) must match exactly
+		while (cdsExIdx < cdsExons.size() - 2) {
+			cdsExIdx++;
+			trExIdx++;
+			if (trExIdx >= trExons.size()) return false; // We run out of transcript's exons and none matched
+			cdsEx = cdsExons.get(cdsExIdx);
+			trEx = trExons.get(trExIdx);
+			if ((trEx.getStart() != cdsEx.getStart()) || (trEx.getEnd() != cdsEx.getEnd())) return false;
+		}
+
+		// Compare last CDS exon
+		cdsExIdx++;
+		trExIdx++;
+		if (cdsExIdx >= cdsExons.size()) return true; // Finished comparing
+		if (trExIdx >= trExons.size()) return false; // We run out of transcript's exons
+		cdsEx = cdsExons.get(cdsExIdx);
+		trEx = trExons.get(trExIdx);
+
+		// Last CDS exon can differ only on the right side.
+		if ((trEx.getStart() != cdsEx.getStart()) || (trEx.getEnd() < cdsEx.getEnd())) return false;
+
+		return true; // OK, all CDS exons match
 	}
 
 	/**
@@ -267,6 +368,58 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	}
 
 	/**
+	 * Find (or create) a transcript for this CDS feature
+	 */
+	Transcript findTrForCds(Feature fcds, Gene geneLatest, List<Transcript> trLatest) {
+		// Try to find the 'latest' gene / transcript
+		Transcript trLatestMatch = findTrFromLatest(fcds, geneLatest, trLatest);
+		if (trLatestMatch != null) return trLatestMatch;
+
+		// Try to find transcript by id
+		String trId = fcds.getTranscriptId();
+		Transcript tr = findTranscript(trId);
+		if (tr != null) return tr;
+
+		// Nothing found, create gene and transcript
+		int start = fcds.getStart() - inOffset; // Convert coordinates to zero-based
+		int end = fcds.getEnd() - inOffset;
+
+		// Create gene (or use latest)
+		Gene gene = null;
+		if (cdsMatchesGene(fcds, geneLatest)) gene = geneLatest;
+		else gene = findOrCreateGene(fcds, chromosome, false);
+
+		// Create transcript
+		if (trId == null) trId = "Tr_" + start + "_" + end;
+		tr = findTranscript(trId);
+		if (tr == null) {
+			if (debug) System.err.println("Transcript '" + trId + "' not found. Creating new transcript for gene '" + gene.getId() + "'.\n" + fcds);
+			tr = new Transcript(gene, start, end, fcds.isComplement(), trId);
+			add(tr);
+		}
+
+		return tr;
+	}
+
+	/**
+	 * Does the CDS feature match the latest gene / transcript?
+	 * @return Matching transcript, null if not found
+	 */
+	Transcript findTrFromLatest(Feature fcds, Gene geneLatest, List<Transcript> trLatest) {
+		if (trLatest == null) return null;
+
+		// Does CDS match latest gene?
+		if (cdsMatchesGene(fcds, geneLatest)) {
+			// Find first matching transcript without CDS information
+			for (Transcript tr : trLatest) {
+				if (tr.getCds().isEmpty() && cdsMatchesTr(fcds, tr)) return tr;
+			}
+		}
+
+		return null; // No match
+	}
+
+	/**
 	 * Try to get geneIDs
 	 */
 	protected String geneId(Feature f, int start, int end) {
@@ -286,6 +439,11 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		if (geneName != null) return geneName;
 
 		return "Gene_" + start + "_" + end;
+	}
+
+	@Override
+	public Map<String, String> getProteinByTrId() {
+		return proteinByTrId;
 	}
 
 	/**

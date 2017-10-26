@@ -1,6 +1,8 @@
 #!/bin/sh
 
-cat dbNSFP3.2a_variant.chr* \
+version="3.2a"
+
+cat dbNSFP${version}_variant.chr* \
 	| $HOME/snpEff/scripts_build/dbNSFP_sort.pl 7 8 \
-	> dbNSFP3.1a_hg19.txt
+	> dbNSFP${version}_hg19.txt
 

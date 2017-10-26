@@ -19,6 +19,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationEmbl;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationErrors;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationExonFrame;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationFilterTranscripts;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationGenBank;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationGenomicSequences;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationGff3;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationGtf22;
@@ -79,6 +80,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
 		TestCasesIntegrationExonFrame.class, //
 		TestCasesIntegrationErrors.class, //
 		TestCasesIntegrationFilterTranscripts.class, //
+		TestCasesIntegrationGenBank.class, //
 		TestCasesIntegrationGenomicSequences.class, //
 		TestCasesIntegrationGff3.class, //
 		TestCasesIntegrationGtf22.class, //
