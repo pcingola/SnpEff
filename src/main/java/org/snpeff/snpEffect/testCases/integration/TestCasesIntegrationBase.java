@@ -55,9 +55,12 @@ public class TestCasesIntegrationBase {
 	protected boolean ignoreErrors = false;
 	protected boolean shiftHgvs; // Do or do not shift variants according to HGVS notation (for test cases that were created before the feature was implemented)
 
+	public String testsDir;
+
 	public TestCasesIntegrationBase() {
 		super();
 		init();
+		testsDir = "tests/integration";
 	}
 
 	/**
