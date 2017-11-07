@@ -568,7 +568,7 @@ $ ssh -i ./aws_amazon/pcingola_aws.pem ec2-user@ec2-54-234-14-244.compute-1.amaz
 				As you can see, it's very simple.
 
 				<p><h3>Loading the database</h3>
-				One of the first thins SnpEff has to do is to load the database.
+				One of the first things SnpEff has to do is to load the database.
 				Usually it takes from a few seconds to a couple of minutes, depending on database size.
 				Complex databases, like human, require more time to load.
 				After the database is loaded, SnpEff can analyze thousands of variants per second.
@@ -576,7 +576,7 @@ $ ssh -i ./aws_amazon/pcingola_aws.pem ec2-user@ec2-54-234-14-244.compute-1.amaz
 
 				<p><h3>Command line vs Web interface</h3>
 				In order to run SnpEff you need to be comfortable running command from a command line terminal.
-				If you are not, then it is probably a good idea to ask you systems administrator to install a <a class="body"class="body" href="http://usegalaxy.org">Galaxy</a> server and use the web interface.
+				If you are not, then it is probably a good idea to ask your system administrator to install a <a class="body"class="body" href="http://usegalaxy.org">Galaxy</a> server and use the web interface.
 				You can also use the open Galaxy server, but functionality may be limited and SnpEff versions may not be updated frequently.
 				</p>
 
@@ -602,7 +602,7 @@ java -jar snpEff.jar
 				<center>
 				<table class="table table-striped">
 					<tr> <th>  Command      </th>	<th>  Meaning </th> </tr>
-					<tr> <td> [eff|ann]     </td>	<td> This is the default command. It is used for annotating variant filed (e.g. VCF files). </td> </tr>
+					<tr> <td> [eff|ann]     </td>	<td> This is the default command. It is used for annotating variant files (e.g. VCF files). </td> </tr>
 					<tr> <td> build         </td>	<td> Build a SnpEff database from reference genome files (FASTA, GTF, etc.). </td> </tr>
 					<tr> <td> buildNextProt </td>	<td> Build NextProt database using XML files </td> </tr>
 					<tr> <td> cds           </td>	<td> Compare CDS sequences calculated form a SnpEff database to the one in a FASTA file. Used for checking databases correctness (invoked automatically when building a database). </td> </tr>
@@ -1752,7 +1752,7 @@ $ java -Xmx4g -jar snpEff.jar -v \
 				<br>
 				This is the default method and the main advantage is that you don't have to carry information on a separate TXT file (all the information is within your VCF file).
 				You have to add the <code>PEDIGREE</code> header with the appropriate information to your VCF file.
-				Obviously this requires you to edit you VCF file's header.
+				Obviously this requires you to edit your VCF file's header.
 				<br>
 				<br>
 				<i class="icon-warning-sign"></i> How to edit VCF  headers is beyond the scope of this manual (we recommend using <code>vcf-annotate</code> from <a href="http://vcftools.sourceforge.net/docs.html#annotate">VCFtools</a>). But if you find adding PEDIGREE information to your VCF file difficult, just use the TXT file method described in the previous sub-section.
