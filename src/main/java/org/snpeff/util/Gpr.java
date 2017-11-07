@@ -104,15 +104,18 @@ public class Gpr {
 	}
 
 	public static final long KB = 1024;
-
 	public static final long MB = KB * KB;
 	public static final long GB = KB * MB;
 	public static final long TB = KB * GB;
+
 	// Number of cores in this computer
 	public static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
 	// User's home directory
 	public static final String HOME = System.getProperty("user.home");
+
+	// Valid extensions for GZIPPED files
+	public static final String[] GZIP_EXTENTIONS = { ".gz", ".bgz" };
 
 	/**
 	 * Return file's name (without the path)
@@ -514,7 +517,7 @@ public class Gpr {
 		try {
 			if (fileName.equals("-")) {
 				return new BufferedReader(new InputStreamReader(System.in));
-			} else if (fileName.endsWith(".gz") || gzip) {
+			} else if (fileName.endsWith(".gz") || fileName.endsWith(".bgz") || gzip) {
 				// This is a gzip compressed file
 				File inputFile = new File(fileName);
 				if (inputFile.exists()) return new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(new File(fileName)))));
@@ -524,11 +527,13 @@ public class Gpr {
 				File inputFile = new File(fileName);
 				if (inputFile.exists()) return new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)));
 				else {
-					// Doesn't exists? => append '.gz' the file's name and try gzipped file
-					String fileNameGz = fileName + ".gz";
-					inputFile = new File(fileNameGz);
-					if (inputFile.exists()) return new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(new File(fileNameGz)))));
-					else throw new RuntimeException("File not found '" + fileName + "'");
+					// Doesn't exists? => append GZIP extentions to file name and try gzipped file
+					for (String ext : GZIP_EXTENTIONS) {
+						String fileNameGz = fileName + ext;
+						inputFile = new File(fileNameGz);
+						if (inputFile.exists()) return new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(new File(fileNameGz)))));
+					}
+					throw new RuntimeException("File not found '" + fileName + "'");
 				}
 			}
 		} catch (FileNotFoundException e) {
