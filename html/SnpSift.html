@@ -1384,6 +1384,16 @@ version="3.2a"
 cat dbNSFP${version}_variant.chr* \
     | $HOME/snpEff/scripts_build/dbNSFP_sort.pl 7 8 \
     > dbNSFP${version}_hg19.txt
+
+# Remove entries with missing positions to allow errorless indexing
+grep -v "^\." dbNSFP${version}_hg19.txt > dbNSFP${version}_hg19_no_missing_positions.txt
+
+# Add the header that was removed when the dbNSFP was sorted
+sed -i.old '1s;^;'"$(head -n 1 dbNSFP${version}_variant.chr1)"'\n;' dbNSFP${version}_hg19_no_missing_positions.txt
+
+# Compress and index
+bgzip dbNSFP${version}_hg19_no_missing_positions.txt
+tabix -s 1 -b 2 -e 2 dbNSFP${version}_hg19_no_missing_positions.txt.gz
 </pre>
 				</p>
 				<p>
