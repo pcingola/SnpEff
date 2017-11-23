@@ -53,6 +53,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnp;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnpEff;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnpEffMultiThread;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSnpEnsembl;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationSpliceRegion;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationStructural;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationTranscript;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationTranscriptError;
@@ -113,6 +114,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
 		TestCasesIntegrationSequenceOntology.class, //
 		TestCasesIntegrationSnpEnsembl.class, //
 		TestCasesIntegrationSnp.class, //
+		TestCasesIntegrationSpliceRegion.class, //
 		TestCasesIntegrationStructural.class, //
 		TestCasesIntegrationTranscriptError.class, //
 		TestCasesIntegrationTranscript.class, //

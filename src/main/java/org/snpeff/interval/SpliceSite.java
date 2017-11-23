@@ -48,7 +48,7 @@ public abstract class SpliceSite extends Marker {
 	public abstract boolean intersectsCoreSpliceSite(Marker marker);
 
 	/**
-	 * Splice sites are no included in Exons, by definition.
+	 * Splice sites are not included in Exons, by definition.
 	 */
 	@Override
 	protected boolean isShowWarningIfParentDoesNotInclude() {

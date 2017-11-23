@@ -858,10 +858,9 @@ public class TestCasesIntegrationBase {
 	LinkedList<VariantEffect> variantEffects(Variant variant, EffectType effectType, Marker marker) {
 		VariantEffect changeEffect = new VariantEffect(variant);
 		changeEffect.set(marker, effectType, effectType.effectImpact(), "");
-		LinkedList<VariantEffect> changeEffects = new LinkedList<>();
-		changeEffects.add(changeEffect);
-		return changeEffects;
-
+		LinkedList<VariantEffect> variantEffects = new LinkedList<>();
+		variantEffects.add(changeEffect);
+		return variantEffects;
 	}
 
 }

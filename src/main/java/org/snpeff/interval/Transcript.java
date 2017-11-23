@@ -688,7 +688,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Create spliceSiteRegion on the Exon side
 		ArrayList<Exon> exons = (ArrayList<Exon>) sortedStrand();
 		if (exons.size() > 0) {
-			for (int i = 0; i < exons.size(); i++) {
+			for (int i = 0; i < exons.size(); i++) { // Iterate like this to check rank
 				Exon exon = exons.get(i);
 
 				if (i > 0) exon.createSpliceSiteRegionStart(spliceRegionExonSize); // Splice site region at the start

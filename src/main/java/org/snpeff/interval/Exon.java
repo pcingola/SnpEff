@@ -47,7 +47,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		super();
 		rank = 0;
 		type = EffectType.EXON;
-		spliceSites = new ArrayList<SpliceSite>();
+		spliceSites = new ArrayList<>();
 	}
 
 	public Exon(Transcript parent, int start, int end, boolean strandMinus, String id, int rank) {
@@ -55,7 +55,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 		this.strandMinus = strandMinus;
 		this.rank = rank;
 		type = EffectType.EXON;
-		spliceSites = new ArrayList<SpliceSite>();
+		spliceSites = new ArrayList<>();
 	}
 
 	/**
@@ -75,6 +75,9 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	 */
 	@Override
 	public Exon apply(Variant variant) {
+		// Variant after this marker: No effect
+		if (!shouldApply(variant)) return this;
+
 		// Create new exon with updated coordinates
 		Exon newEx = (Exon) super.apply(variant);
 		if (newEx == null) return null;
@@ -200,7 +203,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 	}
 
 	public void reset() {
-		spliceSites = new ArrayList<SpliceSite>();
+		spliceSites = new ArrayList<>();
 	}
 
 	/**
@@ -272,7 +275,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 				+ "\t" + rank //
 				+ "\t" + sequence //
 				+ "\t" + (spliceType != null ? spliceType.toString() : "")//
-				;
+		;
 	}
 
 	public void setAaIdx(int aaIdxStart, int aaIdxEnd) {
