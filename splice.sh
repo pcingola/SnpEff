@@ -1,9 +1,8 @@
 #!/bin/sh
 
-EXT="ori3.vcf"
+EXT="ori.vcf"
 
-#GENOME="hg19"
-GENOME="testHg19Chr7"
+GENOME="hg19"
 # pos: 117174417
 
 rm -vf splice*ann*.vcf
