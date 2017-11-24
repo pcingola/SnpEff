@@ -29,18 +29,6 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 	}
 
 	public Interval(Interval parent, int start, int end, boolean strandMinus, String id) {
-		// Sanity checks
-		// This check is no longer valid: Circular genomes can have 'start' after 'end'
-		//
-		//		if (end < start) throw new RuntimeException("Interval error: end before start." //
-		//				+ "\n\tClass        : " + getClass().getSimpleName() //
-		//				+ "\n\tStart        : " + start //
-		//				+ "\n\tEnd          : " + end //
-		//				+ "\n\tID           : " + id //
-		//				+ "\n\tParent class : " + (parent != null ? parent.getClass().getSimpleName() : "") //
-		//				+ "\n\tParent       : " + parent //
-		//		);
-
 		this.start = start;
 		this.end = end;
 		this.id = id;
@@ -214,7 +202,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		return start < 0 // Negative coordinates?
 				|| (start > end) // Start before end?
 				|| (end > chr.getEnd()) // Ends after chromosome end?
-				;
+		;
 	}
 
 	public boolean isSameChromo(Marker interval) {
@@ -239,7 +227,6 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 
 	public void setEnd(int end) {
 		if (end < start) throw new RuntimeException("Trying to set end before start:\n\tstart: " + start + "\n\tend : " + end + "\n\t" + this);
-		// if (end < 0) throw new RuntimeException("Trying to set negative 'end' coordinate:\n\t: " + start + "\n\tend : " + end + "\n\t" + this);
 		this.end = end;
 	}
 
@@ -252,7 +239,6 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 	}
 
 	public void setStart(int start) {
-		//		if (start < 0) throw new RuntimeException("Trying to set negative 'start' coordinate:\n\t: " + start + "\n\tend : " + end + "\n\t" + this);
 		this.start = start;
 	}
 
@@ -277,7 +263,7 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 				+ "_" + getChromosomeName() //
 				+ ":" + (start + 1) //
 				+ "-" + (end + 1) //
-				;
+		;
 	}
 
 	@Override
