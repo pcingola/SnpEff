@@ -10,6 +10,7 @@ public class CircularCorrection {
 
 	boolean debug;
 	boolean corrected;
+	boolean correctLargeGap = false;
 	Transcript tr;
 	int chrLen;
 
@@ -53,8 +54,8 @@ public class CircularCorrection {
 	boolean correct(Markers markers) {
 		boolean corr = false;
 		if (isCorrectionStartAfterEnd(markers)) corr |= correctStartAfterEnd(markers);
-		if (isCorrectionLargeGap(markers)) corr |= correctLargeGap(markers);
 		if (isCorrectionAfterChrEnd(markers)) corr |= correctAfterChrEnd(markers);
+		if (isCorrectionLargeGap(markers)) corr |= correctLargeGap(markers);
 
 		return corr;
 	}
@@ -166,6 +167,7 @@ public class CircularCorrection {
 	 * This indicates some markers at the end and some markers at the beginning
 	 */
 	boolean isCorrectionLargeGap(Markers markers) {
+		if (!correctLargeGap) return false;
 		if (markers.size() <= 1) return false;
 
 		int maxGap = 0;
