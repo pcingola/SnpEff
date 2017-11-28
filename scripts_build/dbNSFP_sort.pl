@@ -8,7 +8,7 @@
 #       have to specify columns 7 and 8. E.g.:
 #
 #			cat dbNSFP3.2a_variant.chr* \
-#				| ./dbNSFP3.2a_hg19.pl 7 8 \
+#				| $HOME/snpEff/scripts_build/dbNSFP_sort.pl 7 8 \
 #				> dbNSFP3.2a_hg19.txt
 #
 #
@@ -18,15 +18,13 @@
 # By default use the first two columns as 'chr' and 'pos'
 $chrCol = 0;
 $posCol = 1;
-$replace = 0;
-$showTitle = 1;
 
 # Two arguments? Use them as columns for chr and pos respectively
-if( $#ARGV > 0 ) {
+if( $#ARGV == 1 ) {
 	$chrCol = $ARGV[0];
 	$posCol = $ARGV[1];
-	$showTitle = 0;
-	$replace = 1;
+} else {
+	die "Usage cat dbNSFP*_variant.chr* | dbNSFP_sort.pl chrCol posCol\n";
 }
 
 # Maximum column to split
@@ -35,6 +33,7 @@ $splitCols = ( $chrCol > $posCol ? $chrCol : $posCol ) + 2;
 #---
 # Read all data into memory (we need a lot of memory)
 #---
+$showTitle = 1;
 for( $i=1 ; $l = <STDIN> ; $i++ ) {
 	if( $l =~ /^#chr/ ) {
 		print $l if $showTitle;
@@ -42,7 +41,7 @@ for( $i=1 ; $l = <STDIN> ; $i++ ) {
 		next;
 	}
 
-	# Parse line (we only use the first 9 columns)
+	# Parse line (we only use the first columns)
 	@t = split /\t/, $l, $splitCols;
 
 	# Genomic coordinates
@@ -52,17 +51,15 @@ for( $i=1 ; $l = <STDIN> ; $i++ ) {
 	# Show progress
 	print STDERR "$i\t$chr\t$pos\n" if( $i % 100000 == 0 );
 
+	# Skip line if missing data
+	if(($chr eq '') || ($pos eq '')) { next; }
+
+	# Replace coordinates
+	$t[0] = $chr;
+	$t[1] = $pos;
+
 	# Store lines by position
-	if(($chr ne '') && ($pos ne '')) {
-		# Replace coordinates
-		if( $replace ) {
-			$t[0] = $chr;
-			$t[1] = $pos;
-			$lines{$chr}->[$pos] .=  join("\t", @t);
-		} else {
-			$lines{$chr}->[$pos] .=  $l;
-		}
-	}
+	$lines{$chr}->[$pos] .=  join("\t", @t);
 }
 
 #---
