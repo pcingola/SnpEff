@@ -22,7 +22,7 @@ $replace = 0;
 $showTitle = 1;
 
 # Two arguments? Use them as columns for chr and pos respectively
-if( $#ARGV > 1 ) {
+if( $#ARGV > 0 ) {
 	$chrCol = $ARGV[0];
 	$posCol = $ARGV[1];
 	$showTitle = 0;
