@@ -40,6 +40,7 @@ public class TestCasesCircular {
 		tr.add(new Cds(tr, 10, 50, strandMinus, "cds3"));
 
 		CircularCorrection cc = new CircularCorrection(tr);
+		cc.setCorrectLargeGap(true);
 		cc.setDebug(debug);
 		cc.correct();
 
@@ -68,6 +69,7 @@ public class TestCasesCircular {
 		tr.add(new Cds(tr, 900, 950, strandMinus, "ex3"));
 
 		CircularCorrection cc = new CircularCorrection(tr);
+		cc.setCorrectLargeGap(true);
 		cc.setDebug(debug);
 		cc.correct();
 

@@ -612,7 +612,8 @@ public class Marker extends Interval implements TxtSerializable {
 	public String toString() {
 		return getChromosomeName() + "\t" + start + "-" + end //
 				+ " " //
-				+ type + ((id != null) && (id.length() > 0) ? " '" + id + "'" : "");
+				+ type //
+				+ ((id != null) && (id.length() > 0) ? " '" + id + "'" : "");
 	}
 
 	/**

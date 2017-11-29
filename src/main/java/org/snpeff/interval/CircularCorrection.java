@@ -206,6 +206,10 @@ public class CircularCorrection {
 				|| isCorrectionLargeGap(markers);
 	}
 
+	public void setCorrectLargeGap(boolean correctLargeGap) {
+		this.correctLargeGap = correctLargeGap;
+	}
+
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}

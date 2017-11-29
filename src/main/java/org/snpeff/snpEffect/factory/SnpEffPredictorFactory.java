@@ -150,7 +150,8 @@ public abstract class SnpEffPredictorFactory {
 	 */
 	protected void addSequences(String chr, String chrSeq) {
 		// Update chromosome length
-		chromoLen(chr, chrSeq.length());
+		Chromosome chromo = getOrCreateChromosome(chr);
+		chromo.detectCircular();
 
 		// Add sequences for each gene
 		int seqsAdded = 0, seqsIgnored = 0;
@@ -187,25 +188,31 @@ public abstract class SnpEffPredictorFactory {
 							t.printStackTrace();
 							throw new RuntimeException("Error trying to add sequence to exon:\n\tChromosome sequence length: " + chrSeq.length() + "\n\tExon: " + exon);
 						}
-					} else if ((ssStart < 0) && (ssEnd > 0)) {
-						// Negative start coordinates? This is probably a circular genome
-						// Convert to 2 intervals:
-						//     i) Interval before zero: This gets mapped to the end of the chromosome
-						//     ii) Interval after zero: This are "normal" coordinates
-						// Then we concatenate both sequences
-						ssStart += chrLen;
-						seq = chrSeq.substring(ssStart, chrLen) + chrSeq.substring(0, ssEnd);
-					} else if ((ssStart < 0) && (ssEnd < 0)) {
-						// Negative start coordinates? This is probably a circular genome
-						// Convert to 2 intervals:
-						//     i) Interval before zero: This gets mapped to the end of the chromosome
-						//     ii) Interval after zero: This are "normal" coordinates
-						// Then we concatenate both sequences
-						ssStart += chrLen;
-						ssEnd += chrLen;
-						seq = chrSeq.substring(ssStart, ssEnd);
+					} else {
+						// Sanity check
+						if (!chromo.isCircular()) throw new RuntimeException("Coordinated out of bounds on a non-circular chromosome. This should never happen!Error trying to add sequence to exon:\n\tExon: " + exon);
+
+						if ((ssStart < 0) && (ssEnd > 0)) {
+							// Negative start coordinates? This is probably a circular genome
+							// Convert to 2 intervals:
+							//     i) Interval before zero: This gets mapped to the end of the chromosome
+							//     ii) Interval after zero: This are "normal" coordinates
+							// Then we concatenate both sequences
+							ssStart += chrLen;
+							seq = chrSeq.substring(ssStart, chrLen) + chrSeq.substring(0, ssEnd);
+						} else if ((ssStart < 0) && (ssEnd < 0)) {
+							// Negative start coordinates? This is probably a circular genome
+							// Convert to 2 intervals:
+							//     i) Interval before zero: This gets mapped to the end of the chromosome
+							//     ii) Interval after zero: This are "normal" coordinates
+							// Then we concatenate both sequences
+							ssStart += chrLen;
+							ssEnd += chrLen;
+							seq = chrSeq.substring(ssStart, ssEnd);
+						}
 					}
 
+					// Set sequence
 					if (seq != null) {
 						// Sanity check
 						if (seq.length() != exon.size()) warning("Exon sequence length does not match exon.size()\n" + exon);
@@ -216,7 +223,6 @@ public abstract class SnpEffPredictorFactory {
 						exon.setSequence(seq);
 						seqsAdded++;
 					}
-
 				}
 			}
 		}
