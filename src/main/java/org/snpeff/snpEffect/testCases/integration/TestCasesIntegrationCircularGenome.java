@@ -2,6 +2,7 @@ package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Transcript;

@@ -191,9 +191,9 @@ public class Chromosome extends Marker {
 	}
 
 	public void setCircular(boolean circular) {
-		!!!!!!!!!!!!!!! "Config file should also say if this is cirular" !!!!!!!!!!!!!!!!!!!!
-		this.circular = circular;
-	}
+			!!!!!!!!!!!!!!! "Config file should also say if this is cirular" !!!!!!!!!!!!!!!!!!!!
+			this.circular = circular;
+		}
 
 	public void setLength(int len) {
 		end = len - 1; // Remember that intervals are zero-based
