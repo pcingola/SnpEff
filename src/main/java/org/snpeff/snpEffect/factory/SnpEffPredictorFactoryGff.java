@@ -467,10 +467,8 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 			// Last chromosome
 			// Set chromosome sequneces and length (create it if it doesn't exist)
-			if (chromoName != null) {
-				chromoLen(chromoName, chromoSb.length());
-				addSequences(chromoName, chromoSb.toString()); // Add all sequences
-			} else warning("Ignoring sequences for '" + chromoName + "'. Cannot find chromosome"); // Chromosome not found
+			if (chromoName != null) addSequences(chromoName, chromoSb.toString()); // Add all sequences
+			else warning("Ignoring sequences for '" + chromoName + "'. Cannot find chromosome"); // Chromosome not found
 
 			reader.close();
 		} catch (Exception e) {

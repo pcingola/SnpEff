@@ -1,77 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>SnpEff</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<head>
+	<meta charset="utf-8">
+	<title>SnpEff</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
 
-    <!-- Styles -->
-    <link href="css/bootstrap.css" rel="stylesheet">
-    <link href="css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="css/docs.css" rel="stylesheet">
-    <link href="js/google-code-prettify/prettify.css" rel="stylesheet">
+	<!-- Styles -->
+	<link href="css/bootstrap.css" rel="stylesheet">
+	<link href="css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="css/docs.css" rel="stylesheet">
+	<link href="js/google-code-prettify/prettify.css" rel="stylesheet">
 	<link href="css/my.css" rel="stylesheet">
 
-    <!-- hTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="js/html5shiv.js"></script>
-    <![endif]-->
+	<!-- hTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="js/html5shiv.js"></script>
+	<![endif]-->
 
-    <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
-      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
-                    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
-                                   <link rel="shortcut icon" href="ico/favicon.png">
+	<!-- Fav and touch icons -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+	<link rel="shortcut icon" href="ico/favicon.png">
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		ga('create', 'UA-66345247-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+</head>
 
-  ga('create', 'UA-66345247-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
-  </head>
-
-  <body data-spy="scroll" data-target=".bs-docs-sidebar">
-
-    <!-- Navbar
-    ================================================== -->
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="#">SnpEff</a>
-          <div class="nav-collapse collapse">
-            <p class="navbar-text pull-right">
-            </p>
-            <ul class="nav">
-              <li class="active"><a href="index.html">Home</a></li>
-              <li><a href="download.html">Download</a></li>
-              <li><a href="SnpEff_manual.html">Documentation</a></li>
-              <li><a href="SnpSift.html">SnpSift</a></li>
-              <li><a href="about.html">About</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
+<body data-spy="scroll" data-target=".bs-docs-sidebar">
+	<!-- Navbar
+	================================================== -->
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="brand" href="#">SnpEff</a>
+				<div class="nav-collapse collapse">
+					<p class="navbar-text pull-right"></p>
+					<ul class="nav">
+						<li class="active"><a href="index.html">Home</a></li>
+						<li><a href="download.html">Download</a></li>
+						<li><a href="SnpEff_manual.html">Documentation</a></li>
+						<li><a href="SnpSift.html">SnpSift</a></li>
+						<li><a href="about.html">About</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
 
 <!-- Subhead
 ================================================== -->
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1>SnpEff</h1>
-    <p class="lead">Download and install</p>
+	<h1>SnpEff</h1>
+	<p class="lead">Download and install</p>
   </div>
 </header>
 
@@ -81,71 +77,73 @@
 		<div class="page-header">
 			<h1>Downloading SnpEff &amp SnpSift</h1>
 		</div>
-		<div class="span3">
-			<div class="hero-unit">
-				<p> <a href="http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip/download" class="btn btn-primary btn-large" onClick="ga('send', 'event', { eventCategory: 'download', eventAction: 'snpeff_core'});">Download SnpEff now</a> Old versions <a href="https://sourceforge.net/projects/snpeff/files/" title="Download">here</a>.
-				<p>
-				</p>
+		<div class="row-fluid">
+			<div class="span3">
+				<div class="hero-unit">
+					<p> <a href="http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip/download" class="btn btn-primary btn-large" onClick="ga('send', 'event', { eventCategory: 'download', eventAction: 'snpeff_core'});">Download SnpEff now</a> Old versions <a href="https://sourceforge.net/projects/snpeff/files/" title="Download">here</a>.
+					<p>
+					</p>
+				</div>
 			</div>
-		</div>
-		<div class="span9">
-          <div class="hero-unit">
-			<h3>In Memory of Dr. Xiangyi Lu: <a href="https://giving.wayne.edu/donate/medicine">Please donate</a></h3>
-			On October 22, 2017, Xiangyi Lu, a co-author on the SnpEff and SnpSift papers, died of ovarian cancer after a three year struggle.
-			Douglas Ruden, Xiangyi's husband and senior author on the papers, has requested that a non-mandatory gift of at least $10 for using SnpEff or SnpSift be donated to WSU to honor Xiangyi Lu.
-			All gifts will go to a newly named fund, the <b>"Xiangyi Lu Graduate Student Fellowship in Bioinformatics Fund."</b> with the goal of raising $1 million, in order to permanently endow one graduate student research position in bioinformatics every year. 
-			<br>
-			<br>
-			<h3>How to donate</h3>
-			<br>
-			<ul>
-				<li> Visit <a href="https://giving.wayne.edu/donate/medicine">Wayne State University donation site</a>
-				<li> Choose the amount that you would like to donate
-				<li> Choose your payment type and if you would like this to be a recurring gift.
-				<li> Click on the designation box and click on the option “Other”
-				<li> In the next box, enter: IMO Dr. Xiangyi Lu
-				<li> At the bottom of the page, click on “Give Now.”
-			</ul>
-			<br>
-			<br>
-			<b>Donation page example:</b>
-			<a href="https://giving.wayne.edu/donate/medicine"><img src="images/donate_Xiangyi_howto.png"></a>
-		  </div>
-		</div>
+			<div class="span9">
+				<div class="hero-unit">
+					<div class="row-fluid">
+						<div class="span9">
+								<h3>In memory of Dr. Xiangyi Lu: <a href="https://giving.wayne.edu/donate/medicine">Please donate</a></h3>
+								On October 22, 2017, Xiangyi Lu, a co-author on the SnpEff and SnpSift papers, died of ovarian cancer after a three year struggle.
+								Douglas Ruden, Xiangyi's husband and senior author on the papers, has requested that a non-mandatory gift of at least $10 for using SnpEff or SnpSift be donated to WSU to honor Xiangyi Lu.
+								All gifts will go to a newly named fund, the <b>"Xiangyi Lu Graduate Student Fellowship in Bioinformatics Fund."</b> with the goal of raising $1 million, in order to permanently endow one graduate student research position in bioinformatics every year. 
+						</div>
+						<div class="span3">
+							<img src="images/xiangy.jpg">
+						</div>
+					</div>
+					<div class="row-fluid">
+						<div class="span12">
+							<h3>How to donate</h3>
+							<ul>
+								<li> Visit <a href="https://giving.wayne.edu/donate/medicine">Wayne State University donation site</a>
+								<li> Choose the amount that you would like to donate
+								<li> Choose your payment type and if you would like this to be a recurring gift.
+								<li> Click on the designation box and click on the option “Other”
+								<li> In the next box, enter: IMO Dr. Xiangyi Lu
+								<li> At the bottom of the page, click on “Give Now.”
+							</ul>
+							<b>Donation page example:</b>
+							<a href="https://giving.wayne.edu/donate/medicine"><img src="images/donate_Xiangyi_howto.png"></a>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 
-    <!-- Footer
-    ================================================== -->
-      <footer>
-        <p class="text-center">&copy; <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a></p>
-      </footer>
+	<!-- Footer
+	================================================== -->
+	  <footer>
+		<p class="text-center">&copy; <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a></p>
+	  </footer>
 
 
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap-transition.js"></script>
-    <script src="js/bootstrap-alert.js"></script>
-    <script src="js/bootstrap-modal.js"></script>
-    <script src="js/bootstrap-dropdown.js"></script>
-    <script src="js/bootstrap-scrollspy.js"></script>
-    <script src="js/bootstrap-tab.js"></script>
-    <script src="js/bootstrap-tooltip.js"></script>
-    <script src="js/bootstrap-popover.js"></script>
-    <script src="js/bootstrap-button.js"></script>
-    <script src="js/bootstrap-collapse.js"></script>
-    <script src="js/bootstrap-carousel.js"></script>
-    <script src="js/bootstrap-typeahead.js"></script>
-    <script src="js/bootstrap-affix.js"></script>
-
-    <script src="js/holder/holder.js"></script>
-    <script src="js/google-code-prettify/prettify.js"></script>
-
-    <script src="js/application.js"></script>
-
-
-
-  </body>
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap-transition.js"></script>
+	<script src="js/bootstrap-alert.js"></script>
+	<script src="js/bootstrap-modal.js"></script>
+	<script src="js/bootstrap-dropdown.js"></script>
+	<script src="js/bootstrap-scrollspy.js"></script>
+	<script src="js/bootstrap-tab.js"></script>
+	<script src="js/bootstrap-tooltip.js"></script>
+	<script src="js/bootstrap-popover.js"></script>
+	<script src="js/bootstrap-button.js"></script>
+	<script src="js/bootstrap-collapse.js"></script>
+	<script src="js/bootstrap-carousel.js"></script>
+	<script src="js/bootstrap-typeahead.js"></script>
+	<script src="js/bootstrap-affix.js"></script>
+	<script src="js/holder/holder.js"></script>
+	<script src="js/google-code-prettify/prettify.js"></script>
+	<script src="js/application.js"></script>
+</body>
 </html>

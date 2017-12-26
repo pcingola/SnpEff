@@ -796,12 +796,22 @@ $  java -jar SnpSift.jar caseControl -name "_MY_GROUP" "++++0-----" cc.vcf \
 						<tr> <th> </th>          <th> A/A </th>  <th> a/A </th>  <th> a/a </th> </tr>
 						<tr> <th> Cases    </th> <td> N11 </td>  <td> N12 </td>  <td> N13 </td> </tr>
 						<tr> <th> Controls </th> <td> N21 </td>  <td> N22 </td>  <td> N23 </td> </tr>
+					</table>
+					This means that the first column are the number of homozygous reference genotypes.
+					The second column is the number of heterozygous.
+					And the third column is the number of homozygous non-reference. 
+					<b>Chi-Square</b> distribution with two degrees of freedom is calculate the p-value.
+					<li> Cochran-Armitage trend model (<code>CC_TREND</code>): A 2 by 3 contingency table is created
+					<table class="table table-striped">
+						<tr> <th> </th>          <th> A/A </th>  <th> a/A </th>  <th> a/a </th> </tr>
+						<tr> <th> Cases    </th> <td> N11 </td>  <td> N12 </td>  <td> N13 </td> </tr>
+						<tr> <th> Controls </th> <td> N21 </td>  <td> N22 </td>  <td> N23 </td> </tr>
 						<tr> <th> Weight   </th> <td> 0.0 </td>  <td> 1.0 </td>  <td> 2.0 </td> </tr>
 					</table>
 					This means that the first column are the number of homozygous reference genotypes.
 					The second column is the number of heterozygous.
 					And the third column is the number of homozygous non-reference. 
-					Cochran-Armitage test is used to calculate the p-value, using the weights shown in the last row.
+					<b>Cochran-Armitage</b> test is used to calculate the p-value, using the weights shown in the last row.
 				</ul>
 
 
@@ -1384,6 +1394,10 @@ version="3.2a"
 cat dbNSFP${version}_variant.chr* \
     | $HOME/snpEff/scripts_build/dbNSFP_sort.pl 7 8 \
     > dbNSFP${version}_hg19.txt
+
+# Compress and index
+bgzip dbNSFP${version}_hg19.txt
+tabix -s 1 -b 2 -e 2 dbNSFP${version}_hg19.txt.gz
 </pre>
 				</p>
 				<p>

@@ -1,0 +1,7 @@
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+2	234667582	.	A	C	.	.	HGVSC=c.-1352A>C;
+2	234668918	.	A	G	.	.	HGVSC=c.-16A>G;NOTE=first_base_upstream_of_transcript
+2	234668919	.	A	G	.	.	HGVSC=c.-15A>G;NOTE=first_base_in_transcript
+2	234668932	.	C	G	.	.	HGVSC=c.-2C>G;NOTE=2_bases_before_TSS
+2	234668933	.	C	G	.	.	HGVSC=c.-1C>G;NOTE=1_base_before_TSS
+2	234668934	.	A	C	.	.	HGVSC=c.1A>C;NOTE=Start_codon

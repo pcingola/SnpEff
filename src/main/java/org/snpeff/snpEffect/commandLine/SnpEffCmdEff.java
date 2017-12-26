@@ -1151,6 +1151,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\nAnnotations options:");
 		System.err.println("\t-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: " + cancer);
 		System.err.println("\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");
+		System.err.println("\t-fastaProt <file>               : Create an output file containing the resulting protein sequences.");
 		System.err.println("\t-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').");
 		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
 		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + hgvs);

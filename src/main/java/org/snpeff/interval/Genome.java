@@ -35,7 +35,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 	String species;
 	String version;
 	String fastaDir;
-	// ArrayList<String> chromosomeNames;
 	List<String> chromosomeNamesSorted = null;
 	String chromoFastaFiles[];
 	HashMap<String, Chromosome> chromosomes;
@@ -86,7 +85,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		super(null, 0, Integer.MAX_VALUE, false, version);
 		this.version = version;
 		type = EffectType.GENOME;
-		//		chromosomeNames = new ArrayList<String>();
 		chromosomes = new HashMap<>();
 		genes = new Genes(this);
 		genomicSequences = new GenomicSequences(this);
@@ -174,12 +172,6 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		String ch = Chromosome.simpleName(chromoName);
 		return chromosomes.get(ch);
 	}
-
-	//	public String[] getChromosomeNames() {
-	//		List<String> chromosomeNames = new ArrayList<>(chromosomes.size());
-	//		chromosomeNames.addAll(chromosomes.keySet());
-	//		return chromosomeNames.toArray(new String[0]);
-	//	}
 
 	public int getChromosomeCount() {
 		return chromosomes.size();

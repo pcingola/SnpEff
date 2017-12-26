@@ -1,0 +1,4 @@
+##fileformat=VCFv4.2
+##reference=hg38
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+chr1	1232300	NM_016176.3:c.-562A>C	T	G	.	PASS	.

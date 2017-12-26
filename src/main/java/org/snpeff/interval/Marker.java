@@ -336,7 +336,7 @@ public class Marker extends Interval implements TxtSerializable {
 	public int distanceBases(List<? extends Marker> markers, boolean fromEnd) {
 
 		// Create a new list of sorted intervals
-		ArrayList<Marker> markersSort = new ArrayList<Marker>();
+		ArrayList<Marker> markersSort = new ArrayList<>();
 		markersSort.addAll(markers);
 		if (fromEnd) Collections.sort(markersSort, new IntervalComparatorByEnd(true));
 		else Collections.sort(markersSort, new IntervalComparatorByStart());
@@ -597,7 +597,7 @@ public class Marker extends Interval implements TxtSerializable {
 				+ "\t" + end //
 				+ "\t" + id //
 				+ "\t" + strandMinus //
-				;
+		;
 	}
 
 	/**
@@ -612,7 +612,8 @@ public class Marker extends Interval implements TxtSerializable {
 	public String toString() {
 		return getChromosomeName() + "\t" + start + "-" + end //
 				+ " " //
-				+ type + ((id != null) && (id.length() > 0) ? " '" + id + "'" : "");
+				+ type //
+				+ ((id != null) && (id.length() > 0) ? " '" + id + "'" : "");
 	}
 
 	/**

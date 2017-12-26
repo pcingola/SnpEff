@@ -1,7 +1,0 @@
-#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
-2	234681205	.	A	C	.	.	HGVSC=c.1602A>C;NOTE=last_coding_base
-2	234681206	.	G	C	.	.	HGVSC=c.*1G>C;NOTE=first_3_prime_UTR_base
-2	234681207	.	A	C	.	.	HGVSC=c.*2A>C;NOTE=second_3_prime_UTR_base
-2	234681945	.	T	C	.	.	HGVSC=c.*740T>C;NOTE=last_3_prime_UTR_base
-2	234681946	.	A	C	.	.	HGVSC=c.*741A>C;NOTE=first_base_downstream
-2	234681947	.	A	C	.	.	HGVSC=c.*742A>C;NOTE=first_base_downstream

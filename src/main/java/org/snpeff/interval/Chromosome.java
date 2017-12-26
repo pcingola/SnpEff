@@ -4,6 +4,7 @@ import org.snpeff.binseq.DnaSequence;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;
 import org.snpeff.serializer.MarkerSerializer;
+import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.util.Gpr;
 
@@ -20,6 +21,7 @@ public class Chromosome extends Marker {
 
 	double chromosomeNum;
 	DnaSequence sequence = null;
+	boolean circular;
 
 	/**
 	 * Compare chromosome names
@@ -58,6 +60,7 @@ public class Chromosome extends Marker {
 		super(null, start, end, false, id); // Parent = null to avoid sanity check (it will always fail for chromosomes)
 		this.parent = parent;
 		type = EffectType.CHROMOSOME;
+		circular = false;
 		setChromosomeName(id);
 	}
 
@@ -65,6 +68,7 @@ public class Chromosome extends Marker {
 	public Chromosome cloneShallow() {
 		Chromosome clone = (Chromosome) super.cloneShallow();
 		clone.chromosomeNum = chromosomeNum;
+		clone.circular = circular;
 		return clone;
 	}
 
@@ -87,6 +91,43 @@ public class Chromosome extends Marker {
 		return 0;
 	}
 
+	/**
+	 * Is this a circular chromosome? See if any exon has evidence of 'circular coordinates'
+	 * @return
+	 */
+	public boolean detectCircular() {
+		String chr = getChromosomeName();
+		int chrLen = size();
+		for (Gene gene : getGenome().getGenes()) {
+			// Different chromosome? Skip
+			if (!gene.getChromosomeName().equalsIgnoreCase(chr)) continue;
+
+			for (Transcript tr : gene) {
+				for (Exon exon : tr) {
+					int ssStart = exon.getStart();
+					int ssEnd = exon.getEnd() + 1; // String.substring does not include the last character in the interval (so we have to add 1)
+
+					if ((ssStart >= 0) && (ssEnd <= chrLen)) {
+						// OK: Regular coordinates, nothing to do
+					} else if ((ssStart < 0) && (ssEnd > 0)) {
+						// Negative start coordinates? This is probably a circular genome
+						circular = true;
+						if (Config.get().isDebug()) Gpr.debug("Chromosome '" + chr + "' has exon with negative start coordinate: Marking as 'circular'. Exon:" + exon);
+					} else if ((ssStart < 0) && (ssEnd < 0)) {
+						// Negative start coordinates? This is probably a circular genome
+						circular = true;
+						if (Config.get().isDebug()) Gpr.debug("Chromosome '" + chr + "' has exon with negative coordinates: Marking as 'circular'. Exon:" + exon);
+					} else if (ssEnd > chrLen) {
+						// Exon ends is after chromosme length
+						circular = true;
+						if (Config.get().isDebug()) Gpr.debug("Chromosome '" + chr + "' has exon with end coordinate after chromosome end: Marking as 'circular'. Exon:" + exon);
+					}
+				}
+			}
+		}
+		return circular;
+	}
+
 	public CodonTable getCodonTable() {
 		return CodonTables.getInstance().getTable(getGenome(), getId());
 	}
@@ -99,6 +140,11 @@ public class Chromosome extends Marker {
 		return sequence.toString();
 	}
 
+	@Override
+	public boolean isCircular() {
+		return circular;
+	}
+
 	/**
 	 * Is this a mitochondrial chromosome?
 	 * Note: This is a wild guess just by looking at the name
@@ -108,7 +154,7 @@ public class Chromosome extends Marker {
 		return iduc.equals("M") //
 				|| iduc.startsWith("MT") //
 				|| (iduc.indexOf("MITO") >= 0) //
-				;
+		;
 	}
 
 	@Override
@@ -123,6 +169,14 @@ public class Chromosome extends Marker {
 	public void serializeParse(MarkerSerializer markerSerializer) {
 		super.serializeParse(markerSerializer);
 		setChromosomeName(id);
+		circular = markerSerializer.getNextFieldBoolean();
+	}
+
+	@Override
+	public String serializeSave(MarkerSerializer markerSerializer) {
+		return super.serializeSave(markerSerializer) //
+				+ "\t" + circular //
+		;
 	}
 
 	/**
@@ -136,6 +190,11 @@ public class Chromosome extends Marker {
 		chromosomeNum = Gpr.parseIntSafe(id); // Try to parse a numeric string
 	}
 
+	public void setCircular(boolean circular) {
+		//			!!!!!!!!!!!!!!! "Config file should also say if this is cirular" !!!!!!!!!!!!!!!!!!!!
+		this.circular = circular;
+	}
+
 	public void setLength(int len) {
 		end = len - 1; // Remember that intervals are zero-based
 	}
@@ -147,6 +206,16 @@ public class Chromosome extends Marker {
 	public void setSequence(String sequenceStr) {
 		sequence = new DnaSequence(sequenceStr, true);
 		setLength(sequenceStr.length()); // Update chromosome length
+	}
+
+	@Override
+	public String toString() {
+		return getChromosomeName() + "\t" + start + "-" + end //
+				+ " " //
+				+ type //
+				+ ((id != null) && (id.length() > 0) ? " '" + id + "'" : "") //
+				+ (circular ? " [Cicular]" : "") //
+		;
 	}
 
 }

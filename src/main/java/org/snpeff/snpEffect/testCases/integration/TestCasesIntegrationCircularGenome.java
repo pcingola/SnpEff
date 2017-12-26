@@ -114,6 +114,8 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 	public void testCase_03_CircularGenome() {
 		Gpr.debug("Test");
 
+		verbose = true;
+
 		String prot = "MQTECSAGAYEFPASCGRRVVARFDGGRMSSDGGVILVKQADDILGLSRRF" //
 				+ "AACFRDKRHPGFVEYIPQSRDAAYRENRQQSGG*" //
 		;

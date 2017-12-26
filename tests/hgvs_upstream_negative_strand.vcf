@@ -1,7 +1,0 @@
-17	78194112	.	T	A	.	.	HGVSC=c.1A>T;NOTE=first_base_start_codon
-17	78194113	.	G	A	.	.	HGVSC=c.-1C>T;NOTE=first_base_5_prime_UTR
-17	78194114	.	G	A	.	.	HGVSC=c.-2C>T;NOTE=second_base_5_prime_UTR
-17	78194115	.	C	A	.	.	HGVSC=c.-3G>T;NOTE=third_base_5_prime_UTR
-17	78194199	.	C	A	.	.	HGVSC=c.-87G>T;NOTE=last_base_5_prime_UTR
-17	78194200	.	C	A	.	.	HGVSC=c.-88G>T;NOTE=first_base_upstream
-17	78194201	.	C	A	.	.	HGVSC=c.-89G>T;NOTE=first_base_upstream

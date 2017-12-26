@@ -16,7 +16,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 
 	public TestCasesIntegrationHgvsUpDownStream() {
 		super();
-		testsDir = "tests/integration/hgvs/hgvs_up_down_stream/";
+		testsDir = "tests/integration/hgvs_up_down_stream/";
 	}
 
 	/**
