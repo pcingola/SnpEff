@@ -172,6 +172,7 @@ public abstract class SnpEffPredictorFactory {
 			for (Transcript tr : gene) {
 				// Circular chromosomes coordinates are corrected in this step
 				CircularCorrection cc = new CircularCorrection(tr, chrLen);
+				cc.setDebug(debug);
 				cc.correct();
 
 				for (Exon exon : tr) {
