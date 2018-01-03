@@ -1,1 +1,1 @@
-SNPEFF	4.3T	2017-11-24	http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+SNPEFF	4.4	2017-12-20	http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
