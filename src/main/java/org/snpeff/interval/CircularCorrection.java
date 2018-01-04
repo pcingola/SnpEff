@@ -1,7 +1,5 @@
 package org.snpeff.interval;
 
-import org.snpeff.util.Gpr;
-
 /**
  * Correct circular genomic coordinates
  * Nomenclature: We use coordinates at the beginning of the chromosme and negative coordinates
@@ -55,24 +53,9 @@ public class CircularCorrection {
 	 */
 	boolean correct(Markers markers) {
 		boolean corr = false;
-<<<<<<< HEAD
-		if (isCorrectionStartAfterEnd(markers)) {
-			Gpr.debug("Circular correction, Start After End:" + tr.getId());
-			corr |= correctStartAfterEnd(markers);
-		}
-		if (isCorrectionLargeGap(markers)) {
-			Gpr.debug("Circular correction, Large Gap:" + tr.getId());
-			corr |= correctLargeGap(markers);
-		}
-		if (isCorrectionAfterChrEnd(markers)) {
-			Gpr.debug("Circular correction, After Chr End:" + tr.getId());
-			corr |= correctAfterChrEnd(markers);
-		}
-=======
 		if (isCorrectionStartAfterEnd(markers)) corr |= correctStartAfterEnd(markers);
 		if (isCorrectionAfterChrEnd(markers)) corr |= correctAfterChrEnd(markers);
 		if (isCorrectionLargeGap(markers)) corr |= correctLargeGap(markers);
->>>>>>> 2d4076f8a87580142e58fdd91df1f3b94e1d5ea3
 
 		return corr;
 	}
@@ -184,9 +167,10 @@ public class CircularCorrection {
 	 * This indicates some markers at the end and some markers at the beginning
 	 */
 	boolean isCorrectionLargeGap(Markers markers) {
-<<<<<<< HEAD
-		Gpr.debug("!!!");
 		return false;
+		// TODO: Review / remove this code!!!
+		//
+		//		if (!correctLargeGap) return false;
 		//		if (markers.size() <= 1) return false;
 		//
 		//		int maxGap = 0;
@@ -204,26 +188,6 @@ public class CircularCorrection {
 		//
 		//		// Large gap between markers (e.g. one at the beginning and one at the end of the chromosome)
 		//		return maxGap > chrLen / 2;
-=======
-		if (!correctLargeGap) return false;
-		if (markers.size() <= 1) return false;
-
-		int maxGap = 0;
-		int endPrev = -1;
-		boolean first = true;
-		for (Marker m : markers.sort()) {
-			// Calculate maximum gap between markers
-			if (!first) {
-				int gap = m.getStart() - endPrev;
-				maxGap = Math.max(maxGap, gap);
-			}
-			endPrev = m.getEnd();
-			first = false;
-		}
-
-		// Large gap between markers (e.g. one at the beginning and one at the end of the chromosome)
-		return maxGap > chrLen / 2;
->>>>>>> 2d4076f8a87580142e58fdd91df1f3b94e1d5ea3
 	}
 
 	/**
@@ -239,19 +203,20 @@ public class CircularCorrection {
 		return false;
 	}
 
+	public boolean isDebug() {
+		return debug;
+	}
+
 	boolean needsCorrection(Markers markers) {
 		return isCorrectionAfterChrEnd(markers) //
 				|| isCorrectionStartAfterEnd(markers) //
 				|| isCorrectionLargeGap(markers);
 	}
 
-<<<<<<< HEAD
-=======
 	public void setCorrectLargeGap(boolean correctLargeGap) {
 		this.correctLargeGap = correctLargeGap;
 	}
 
->>>>>>> 2d4076f8a87580142e58fdd91df1f3b94e1d5ea3
 	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
@@ -278,12 +243,4 @@ public class CircularCorrection {
 		sb.append("\n\tCDSs:\n" + cdss);
 		return sb.toString();
 	}
-<<<<<<< HEAD
-
-	public boolean isDebug() {
-		return debug;
-	}
-
-=======
->>>>>>> 2d4076f8a87580142e58fdd91df1f3b94e1d5ea3
 }
