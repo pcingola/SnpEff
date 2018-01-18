@@ -36,7 +36,6 @@ public class TestCasesIntegrationExonFrame {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-
 		//---
 		// Build database
 		//---
