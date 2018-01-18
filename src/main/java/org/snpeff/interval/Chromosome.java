@@ -195,7 +195,7 @@ public class Chromosome extends Marker {
 	}
 
 	public void setLength(int len) {
-		end = len - 1; // Remember that intervals are zero-based
+		end = len - 1; // Intervals are zero-based
 	}
 
 	/**

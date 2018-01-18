@@ -63,6 +63,20 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 				System.out.println(chr);
 		}
 
+		// Check if chr is circular
+		Chromosome chr = sep.getGenome().getChromosome("p948");
+		if (verbose) System.out.println("Chromosome:" + chr);
+		Assert.assertTrue("Chromosome is not circular", chr.isCircular());
+
+		// Check protien sequence
+		String protein = "MDTSLAHENARLRALLQTQQDTIRQMAEYNRLLSQRVAAYASEINRLKALVAKLQRMQFGKSSEKLRAKTERQIQEAQERISALQEEMAETLGEQYDPVLPSALRQSSARKPLPASLPRETRVIRPEEECCPACGGELSSLGCDVSEQLELISSAFKVIETQRPKQACCRCDHIVQAPVPSKPIARSYAGAGLLAHVVTGKYADHLPLYRQSEIYRRQGVELSRATLGRWTGAVAELLEPLYDVLRQYVLMPGKVHADDIPVPVQEPGSGKTRTARLWVYVRDDRNAGSQMPPAVWFAYSPDRKGIHPQNHLAGYSGVLQADAYGGYRALYESGRITEAACMAHARRKIHDVHARAPTYITTEALQRIGELYAIEAEVRGCSAEQRLAARKARAAPLMQSLYDWIQQQMKTLSRHSDTAKAFAYLLKQWDALNVYCSNGWVEIDNNIAENALRGVAVGRKNWMFAGSDSGGEHAAVLYSLIGTCRLNNVEPEKWLRYVIEHIQDWPANRVRDLLPWKVDLSSQ*";
+		for (Gene g : sep.getGenome().getGenes()) {
+			for (Transcript tr : g) {
+				Assert.assertEquals("Expected protein sequence does not match", protein, tr.protein());
+				if (verbose) System.out.println(tr);
+			}
+		}
+
 		//---
 		// Check variants in zero or negative coordiantes
 		//---

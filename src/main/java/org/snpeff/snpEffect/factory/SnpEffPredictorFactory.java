@@ -150,7 +150,9 @@ public abstract class SnpEffPredictorFactory {
 	 */
 	protected void addSequences(String chr, String chrSeq) {
 		// Update chromosome length
+		int chrLen = chrSeq.length();
 		Chromosome chromo = getOrCreateChromosome(chr);
+		chromo.setLength(chrLen);
 		chromo.detectCircular();
 
 		// Add sequences for each gene
@@ -163,7 +165,6 @@ public abstract class SnpEffPredictorFactory {
 		}
 
 		if (verbose) System.out.print("\t\tAdding genomic sequences to exons: ");
-		int chrLen = chrSeq.length();
 
 		// Find and add sequences for all exons in this chromosome
 		for (Gene gene : genome.getGenes()) {
@@ -303,13 +304,13 @@ public abstract class SnpEffPredictorFactory {
 		collapseZeroLenIntrons();
 	}
 
-	/**
-	 * Get (or create) a chromosome and set it's length
-	 */
-	void chromoLen(String chromoName, int len) {
-		Chromosome chromo = getOrCreateChromosome(chromoName);
-		chromo.setLength(len);
-	}
+	//	/**
+	//	 * Get (or create) a chromosome and set it's length
+	//	 */
+	//	void chromoLen(String chromoName, int len) {
+	//		Chromosome chromo = getOrCreateChromosome(chromoName);
+	//		chromo.setLength(len);
+	//	}
 
 	/**
 	 * Only coding transcripts have CDS: Make sure that transcripts having CDS are protein coding
