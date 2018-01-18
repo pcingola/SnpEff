@@ -39,12 +39,13 @@ public abstract class SnpEffPredictorFactory {
 	public static int MIN_TOTAL_FRAME_COUNT = 10;
 
 	// Debug mode?
-	boolean debug = false;
-	boolean verbose = false;
-	boolean readSequences = true; // Do not read sequences from GFF file (this is only used for debugging)
+	boolean circularCorrectLargeGap = false;
 	boolean createRandSequences = false; // If sequences are not read frmo a file, create random sequences
+	boolean debug = false;
 	boolean frameCorrection;
+	boolean readSequences = true; // Do not read sequences from GFF file (this is only used for debugging)
 	boolean storeSequences = false; // Store full gene sequences (in separate 'sequence.chr*.bin' files)
+	boolean verbose = false;
 	int lineNum;
 	int inOffset; // This amount is subtracted to all position coordinates
 	int totalSeqsAdded = 0, totalSeqsIgnored = 0; // Number of sequences added and ignored
@@ -175,6 +176,7 @@ public abstract class SnpEffPredictorFactory {
 				// Circular chromosomes coordinates are corrected in this step
 				CircularCorrection cc = new CircularCorrection(tr, chrLen);
 				cc.setDebug(debug);
+				cc.setCorrectLargeGap(circularCorrectLargeGap);
 				cc.correct();
 
 				for (Exon exon : tr) {
@@ -304,14 +306,6 @@ public abstract class SnpEffPredictorFactory {
 		collapseZeroLenIntrons();
 	}
 
-	//	/**
-	//	 * Get (or create) a chromosome and set it's length
-	//	 */
-	//	void chromoLen(String chromoName, int len) {
-	//		Chromosome chromo = getOrCreateChromosome(chromoName);
-	//		chromo.setLength(len);
-	//	}
-
 	/**
 	 * Only coding transcripts have CDS: Make sure that transcripts having CDS are protein coding
 	 *
@@ -348,6 +342,14 @@ public abstract class SnpEffPredictorFactory {
 			}
 		if (verbose) System.out.print("\n\tDone: " + i + " transcripts marked");
 	}
+
+	//	/**
+	//	 * Get (or create) a chromosome and set it's length
+	//	 */
+	//	void chromoLen(String chromoName, int len) {
+	//		Chromosome chromo = getOrCreateChromosome(chromoName);
+	//		chromo.setLength(len);
+	//	}
 
 	/**
 	 * Collapse exons having zero size introns between them
@@ -728,6 +730,10 @@ public abstract class SnpEffPredictorFactory {
 	protected void replaceTranscript(Transcript trOld, Transcript trNew) {
 		transcriptsById.remove(trOld.getId());
 		transcriptsById.put(trNew.getId(), trNew);
+	}
+
+	public void setCircularCorrectLargeGap(boolean circularCorrectLargeGap) {
+		this.circularCorrectLargeGap = circularCorrectLargeGap;
 	}
 
 	public void setCreateRandSequences(boolean createRandSequences) {

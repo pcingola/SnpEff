@@ -128,8 +128,6 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 	public void testCase_03_CircularGenome() {
 		Gpr.debug("Test");
 
-		verbose = true;
-
 		String prot = "MQTECSAGAYEFPASCGRRVVARFDGGRMSSDGGVILVKQADDILGLSRRF" //
 				+ "AACFRDKRHPGFVEYIPQSRDAAYRENRQQSGG*" //
 		;
@@ -186,6 +184,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 	@Test
 	public void testCase_05_CircularGenome_ExonsOrder() {
 		Gpr.debug("Test");
+
 		String expectedProtein = "MGSLEMVPMGAGPPSPGGDPDGYDGGNNSQYPSASGSSGNTPTP" //
 				+ "PNDEERESNEEPPPPYEDPYWGNGDRHSDYQPLGTQDQSLYLGLQHDGNDGLPPPPYS" //
 				+ "PRDDSSQHIYEEAGRGSMNPVCLPVIVAPYLFWLAAIAASCFTASVSTVVTATGLALS" //
@@ -199,7 +198,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 		// Create database & build interval forest
 		String genomeName = "testCase";
 		String genBankFile = "tests/Human_herpesvirus_4_uid14413.gbk.gz";
-		SnpEffectPredictor sep = buildGeneBank(genomeName, genBankFile);
+		SnpEffectPredictor sep = buildGeneBank(genomeName, genBankFile, true);
 		sep.buildForest();
 
 		// Create variant

@@ -69,6 +69,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 			// Circular correction
 			CircularCorrection cc = new CircularCorrection(tr);
+			cc.setCorrectLargeGap(circularCorrectLargeGap);
 			cc.correct();
 		} else {
 			Cds cds = new Cds(tr, fcds.getStart() - inOffset, fcds.getEnd() - inOffset, fcds.isComplement(), "CDS_" + tr.getId());

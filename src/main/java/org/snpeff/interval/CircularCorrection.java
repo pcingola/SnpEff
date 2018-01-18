@@ -64,13 +64,15 @@ public class CircularCorrection {
 	 * Markers after chromosome end
 	 * Chr:    |------------------------------------------------------------------------------|
 	 * Exons:                                                                 [***]   [***] [****]
-	 * Correction: Shift all coordinates to the begininig
+	 * Correction: Shift all coordinates to the left
 	 */
 	boolean correctAfterChrEnd(Markers markers) {
 		boolean corr = false;
 		for (Marker m : markers) {
-			m.shiftCoordinates(-chrLen);
-			corr = true;
+			if (m.getStart() > 0) {
+				m.shiftCoordinates(-chrLen);
+				corr = true;
+			}
 		}
 		return corr;
 	}
@@ -89,7 +91,7 @@ public class CircularCorrection {
 		boolean corr = false;
 		for (Marker m : markers) {
 			// Correct coordinates if the marker is to the right of the gap.
-			// I.e.: Move from the end of the chromosome to the beggining of the chromosome
+			// I.e.: Move from the end of the chromosome to the start of the chromosome
 			if (m.getStart() >= gapPos) {
 				m.shiftCoordinates(-chrLen);
 				corr = true;
@@ -101,7 +103,7 @@ public class CircularCorrection {
 
 	/**
 	 * Correct markers: Start after end
-	 * One marker has end after start (i.e. marker croses "end-of-chr" boundary)
+	 * One marker has end after start (i.e. marker crosses "end-of-chr" boundary)
 	 * Chr:    |------------------------------------------------------------------------------|
 	 * Exons:   >>]                                                          [***]   [***] [>>
 	 * Correction: All coordinates at the end have to be shifted to the beginning

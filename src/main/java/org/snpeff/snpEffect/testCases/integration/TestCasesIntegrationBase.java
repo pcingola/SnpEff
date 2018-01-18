@@ -135,13 +135,18 @@ public class TestCasesIntegrationBase {
 		return sep;
 	}
 
+	public SnpEffectPredictor buildGeneBank(String genome, String genBankFile) {
+		return buildGeneBank(genome, genBankFile, false);
+	}
+
 	/**
 	 * Build a genome from a genbank file and compare results to 'expected' results
 	 */
-	public SnpEffectPredictor buildGeneBank(String genome, String genBankFile) {
+	public SnpEffectPredictor buildGeneBank(String genome, String genBankFile, boolean circularCorrectlargeGap) {
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
 		SnpEffPredictorFactoryGenBank sepfg = new SnpEffPredictorFactoryGenBank(config, genBankFile);
 		sepfg.setVerbose(verbose);
+		sepfg.setCircularCorrectLargeGap(circularCorrectlargeGap);
 		SnpEffectPredictor sep = sepfg.create();
 		return sep;
 	}
