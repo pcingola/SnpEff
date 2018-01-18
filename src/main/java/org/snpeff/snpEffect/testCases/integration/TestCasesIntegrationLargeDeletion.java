@@ -8,6 +8,7 @@ import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
+import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -16,18 +17,17 @@ import org.snpeff.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationHugeDeletions {
+public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase {
 
-	boolean verbose = false;
-
-	public TestCasesIntegrationHugeDeletions() {
+	public TestCasesIntegrationLargeDeletion() {
 		super();
+		testsDir = "tests/integration/large_deletion/";
 	}
 
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion_DEL.vcf" };
+		String args[] = { "-classic", "-noOut", "testHg3766Chr1", testsDir + "huge_deletion_DEL.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -54,7 +54,7 @@ public class TestCasesIntegrationHugeDeletions {
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noOut", "testHg3766Chr1", "./tests/huge_deletion.vcf.gz" };
+		String args[] = { "-classic", "-noOut", "testHg3766Chr1", testsDir + "huge_deletion.vcf.gz" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -73,7 +73,7 @@ public class TestCasesIntegrationHugeDeletions {
 	@Test
 	public void test_03() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noOut", "testHg19Chr9", "./tests/huge_deletion_chr9.vcf" };
+		String args[] = { "-classic", "-noOut", "testHg19Chr9", testsDir + "huge_deletion_chr9.vcf" };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -108,6 +108,56 @@ public class TestCasesIntegrationHugeDeletions {
 		Assert.assertTrue("GENE_DELETED CDKN2A: Not found", okCdkn2a);
 		Assert.assertTrue("GENE_DELETED CDKN2B: Not found", okCdkn2b);
 		Assert.assertTrue("TRANSCRIPT_DELETED CDKN2A (NM_000077.4): Not found", okCdkn2aTr);
+	}
+
+	/**
+	 * Show transcripts deleted when there is a gene-fusion due to deletion
+	 */
+	@Test
+	public void test_04() {
+		Gpr.debug("Test");
+		String genome = "testHg19Chr9";
+		String vcfFile = testsDir + "huge_deletion_fusion_chr9.vcf";
+		List<VcfEntry> vcfs = snpEffect(genome, vcfFile, null, EffFormatVersion.FORMAT_ANN_1);
+
+		// Sanity check
+		Assert.assertEquals(1, vcfs.size());
+
+		// Find effects
+		boolean foundFusion = false, foundTrDel = false, foundExDel = false;
+		for (VcfEffect veff : vcfs.get(0).getVcfEffects()) {
+			if (verbose) System.out.println(veff);
+
+			// Fusion
+			if (veff.getEffectType() == EffectType.GENE_FUSION_REVERESE //
+					&& veff.getGeneName().equals("CDKN2A&CDKN2B-AS1") //
+			) {
+				if (verbose) System.out.println("FOUND:\t" + veff);
+				foundFusion = true;
+			}
+
+			// Transcript deletion
+			if (veff.getEffectType() == EffectType.TRANSCRIPT_DELETED //
+					&& veff.getTranscriptId().equals("NM_004936.3") //
+			) {
+				if (verbose) System.out.println("FOUND:\t" + veff);
+				foundTrDel = true;
+			}
+
+			// Exon deletion
+			if (veff.getEffectType() == EffectType.EXON_DELETED //
+					&& veff.getTranscriptId().equals("NM_001195132.1") //
+			) {
+				if (verbose) System.out.println("FOUND EXON LOSS:\t" + veff);
+				foundExDel = true;
+			}
+
+		}
+
+		// All three must be present
+		Assert.assertTrue("Could not find expected gene fusion", foundFusion);
+		Assert.assertTrue("Could not find expected transcript deletion", foundTrDel);
+		Assert.assertTrue("Could not find expected exon deletion", foundExDel);
 	}
 
 }

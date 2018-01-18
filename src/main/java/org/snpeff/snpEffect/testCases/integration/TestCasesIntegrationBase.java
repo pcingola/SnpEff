@@ -66,7 +66,7 @@ public class TestCasesIntegrationBase {
 	/**
 	 * Apply a variant to a transcript
 	 */
-	public Transcript appyTranscript(String genome, String trId, String vcfFileName) {
+	public Transcript applyTranscript(String genome, String trId, String vcfFileName) {
 		// Load database
 		SnpEffectPredictor sep = loadSnpEffectPredictor(genome, false);
 

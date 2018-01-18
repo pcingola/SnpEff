@@ -32,7 +32,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsIns;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsLarge;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsMnps;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsUpDownStream;
-import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHugeDeletions;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationLargeDeletion;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationInsEtc;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationInsVep;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationLof;
@@ -95,7 +95,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
 		TestCasesIntegrationHgvsMnps.class, //
 		TestCasesIntegrationHgvsIns.class, //
 		TestCasesIntegrationHgvsUpDownStream.class, //
-		TestCasesIntegrationHugeDeletions.class, //
+		TestCasesIntegrationLargeDeletion.class, //
 		TestCasesIntegrationInsEtc.class, //
 		TestCasesIntegrationInsVep.class, //
 		TestCasesIntegrationLof.class, //

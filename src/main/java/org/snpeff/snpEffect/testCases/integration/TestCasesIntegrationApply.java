@@ -372,7 +372,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	@Test
 	public void test_apply_06_delete_upstream() {
 		Gpr.debug("Test");
-		Transcript trNew = appyTranscript("testHg19Chr11", "NM_001004460.1", "tests/test_apply_06_delete_upstream.vcf");
+		Transcript trNew = applyTranscript("testHg19Chr11", "NM_001004460.1", "tests/test_apply_06_delete_upstream.vcf");
 
 		// Check expected sequence
 		Assert.assertEquals("atgagcttctcttccctgcctactgaaatacagtcattactctttctgacatttctaaccatctacctggtcaccctgatgggaaactgcctcatcattctggttaccctagctgaccccatgctacacagccccatgtacttcttcctcagaaacttatctttcctggagattggcttcaacctagtcattgtgcccaaaatgctggggaccctgcttgcccaggacacaaccatctccttccttggctgtgccactcagatgtatttcttcttct" //
@@ -386,7 +386,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	@Test
 	public void test_apply_07_delete_upstream() {
 		Gpr.debug("Test");
-		Transcript trNew = appyTranscript("testHg3775Chr11", "ENST00000379829", "tests/test_apply_07_delete_upstream.vcf");
+		Transcript trNew = applyTranscript("testHg3775Chr11", "ENST00000379829", "tests/test_apply_07_delete_upstream.vcf");
 
 		// Check expected sequence
 		Assert.assertEquals("ttttttggggctgctgagtgctgcctcctggccaccatggcatatgaccgctacgtggccatctgtgaccccttgcactacccagtcatcatgggccacatatcctgtgcccagctggcagctgcctcttggttctcagggttttcagtggccactgtgcaaaccacatggattttcagtttccctttttgtggccccaacagggtgaaccacttcttctgtgacagccctcctgttattgcactggtctgtgctgacacctctgtgtttgaactggaggctctgacagccactgtcctattcattctctttcctttcttgctgatcctgggatcctatgtccgcatcctctccactatcttcaggatgccgtcagctgaggggaaacatcaggcattctccacctgttccgcccacctcttggttgtctctctcttctatagcactgccatcctcacgtatttccgaccccaatccagtgcctcttctgagagcaagaagctgctgtcactctcttccacagtggtgactcccatgttgaaccccatcatctacagctcaaggaataaagaagtgaaggctgcactgaagcggcttatccacaggaccctgggctctcagaaactatga" //

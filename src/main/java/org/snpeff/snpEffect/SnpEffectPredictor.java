@@ -773,7 +773,7 @@ public class SnpEffectPredictor implements Serializable {
 		}
 
 		// In some cases we want to annotate all overlapping genes
-		if (variant.isDup()) return false;
+		if (variant.isDup() || variant.isDel()) return false;
 
 		// If variant effects were added, there is no need for further analysis
 		return added;

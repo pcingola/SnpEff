@@ -21,9 +21,9 @@ import org.snpeff.interval.VariantBnd;
  */
 public class VariantEffectStructural extends VariantEffect {
 
-	List<Marker> featuresLeft;
-	List<Marker> featuresRight;
-	Set<Gene> genes;
+	List<Marker> featuresLeft; // Features intersecting at the left-most side of the interval (start)
+	List<Marker> featuresRight; // Features intersecting at the right-most side of the interval (end)
+	Set<Gene> genes; // All genes within this interval
 	int countWholeGenes = 0; // How many genes does the variant fully include?
 	int countPartialGenes = 0; // How many genes does the variant partially overlap?
 
