@@ -1,4 +1,4 @@
-package org.snpeff.snpEffect.testCases.integration;
+package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -7,6 +7,7 @@ import org.snpeff.interval.Exon;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
+import org.snpeff.snpEffect.testCases.integration.TestCasesHgvsBase;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 import org.snpeff.vcf.VcfEntry;

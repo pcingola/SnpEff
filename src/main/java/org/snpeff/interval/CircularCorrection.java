@@ -2,9 +2,8 @@ package org.snpeff.interval;
 
 /**
  * Correct circular genomic coordinates
+ * 
  * Nomenclature: We use coordinates at the beginning of the chromosme and negative coordinates
- *
- *
  */
 public class CircularCorrection {
 
@@ -167,27 +166,24 @@ public class CircularCorrection {
 	 * This indicates some markers at the end and some markers at the beginning
 	 */
 	boolean isCorrectionLargeGap(Markers markers) {
-		return false;
-		// TODO: Review / remove this code!!!
-		//
-		//		if (!correctLargeGap) return false;
-		//		if (markers.size() <= 1) return false;
-		//
-		//		int maxGap = 0;
-		//		int endPrev = -1;
-		//		boolean first = true;
-		//		for (Marker m : markers.sort()) {
-		//			// Calculate maximum gap between markers
-		//			if (!first) {
-		//				int gap = m.getStart() - endPrev;
-		//				maxGap = Math.max(maxGap, gap);
-		//			}
-		//			endPrev = m.getEnd();
-		//			first = false;
-		//		}
-		//
-		//		// Large gap between markers (e.g. one at the beginning and one at the end of the chromosome)
-		//		return maxGap > chrLen / 2;
+		if (!correctLargeGap) return false;
+		if (markers.size() <= 1) return false;
+
+		int maxGap = 0;
+		int endPrev = -1;
+		boolean first = true;
+		for (Marker m : markers.sort()) {
+			// Calculate maximum gap between markers
+			if (!first) {
+				int gap = m.getStart() - endPrev;
+				maxGap = Math.max(maxGap, gap);
+			}
+			endPrev = m.getEnd();
+			first = false;
+		}
+
+		// Large gap between markers (e.g. one at the beginning and one at the end of the chromosome)
+		return maxGap > chrLen / 2;
 	}
 
 	/**

@@ -26,18 +26,18 @@ import junit.framework.Assert;
  */
 public class TestCasesHgvsBase {
 
-	boolean debug = false;
-	boolean verbose = false || debug;
+	protected boolean debug = false;
+	protected boolean verbose = false || debug;
 
-	Random rand;
-	Config config;
-	Genome genome;
-	Chromosome chromosome;
-	Gene gene;
-	Transcript transcript;
-	SnpEffectPredictor snpEffectPredictor;
-	String chromoSequence = "";
-	char chromoBases[];
+	protected Random rand;
+	protected Config config;
+	protected Genome genome;
+	protected Chromosome chromosome;
+	protected Gene gene;
+	protected Transcript transcript;
+	protected SnpEffectPredictor snpEffectPredictor;
+	protected String chromoSequence = "";
+	protected char chromoBases[];
 
 	public TestCasesHgvsBase() {
 		super();
@@ -47,7 +47,7 @@ public class TestCasesHgvsBase {
 	/**
 	 * Count how many bases are there until the exon
 	 */
-	int exonBase(char bases[], int pos, int direction) {
+	protected int exonBase(char bases[], int pos, int direction) {
 		int countAfter = 0, countBefore = 0;
 		int posBefore, posAfter;
 		for (posAfter = pos; (posAfter >= 0) && (posAfter < bases.length); countAfter++, posAfter += direction)
@@ -60,19 +60,19 @@ public class TestCasesHgvsBase {
 		return posAfter;
 	}
 
-	void init() {
+	protected void init() {
 		initRand();
 		initSnpEffPredictor(false, true);
 	}
 
-	void initRand() {
+	protected void initRand() {
 		rand = new Random(20130708);
 	}
 
 	/**
 	 * Create a predictor
 	 */
-	void initSnpEffPredictor(boolean addUtrs, boolean onlyPlusStrand) {
+	protected void initSnpEffPredictor(boolean addUtrs, boolean onlyPlusStrand) {
 		// Create a config and force out snpPredictor for hg37 chromosome Y
 		if (config == null) config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 
@@ -112,7 +112,7 @@ public class TestCasesHgvsBase {
 	/**
 	 * Intronic HGS notation
 	 */
-	String intronHgsv(char bases[], int j, int pos, String refStr, String altStr) {
+	protected String intronHgsv(char bases[], int j, int pos, String refStr, String altStr) {
 		if (transcript.isStrandMinus()) {
 			refStr = GprSeq.wc(refStr);
 			altStr = GprSeq.wc(altStr);
@@ -182,7 +182,7 @@ public class TestCasesHgvsBase {
 			// Load hgvs expexcted annotations into set
 			String hgvsStr = vcfEntry.getInfo("HGVS");
 			String trId = vcfEntry.getInfo("TR");
-			HashSet<String> hgvsExpected = new HashSet<String>();
+			HashSet<String> hgvsExpected = new HashSet<>();
 			for (String h : hgvsStr.split(",")) {
 				if (h.indexOf(':') > 0) h = h.substring(h.indexOf(':') + 1);
 				hgvsExpected.add(h);

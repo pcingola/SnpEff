@@ -191,7 +191,6 @@ public class Chromosome extends Marker {
 	}
 
 	public void setCircular(boolean circular) {
-		//			!!!!!!!!!!!!!!! "Config file should also say if this is cirular" !!!!!!!!!!!!!!!!!!!!
 		this.circular = circular;
 	}
 

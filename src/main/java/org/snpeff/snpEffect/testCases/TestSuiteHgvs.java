@@ -3,8 +3,6 @@ package org.snpeff.snpEffect.testCases;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.snpeff.snpEffect.testCases.integration.TestCasesHgvsExon;
-import org.snpeff.snpEffect.testCases.integration.TestCasesHgvsIntron;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvs;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsDnaDup;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsFrameShift;
@@ -15,6 +13,8 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsMnps;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsUpDownStream;
 import org.snpeff.snpEffect.testCases.unity.TestCasesHgvsDnaDup;
 import org.snpeff.snpEffect.testCases.unity.TestCasesHgvsDnaDupNegative;
+import org.snpeff.snpEffect.testCases.unity.TestCasesHgvsExon;
+import org.snpeff.snpEffect.testCases.unity.TestCasesHgvsIntron;
 import org.snpeff.snpEffect.testCases.unity.TestCasesHgvsProtDup;
 import org.snpeff.snpEffect.testCases.unity.TestCasesVariantRealignment;
 
