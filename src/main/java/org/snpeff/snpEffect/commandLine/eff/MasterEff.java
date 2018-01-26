@@ -5,6 +5,7 @@ import org.snpeff.interval.tree.IntervalForest;
 import org.snpeff.outputFormatter.OutputFormatter;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
+import org.snpeff.util.Gpr;
 
 import akka.actor.Actor;
 import akka.actor.Props;
@@ -32,5 +33,6 @@ public class MasterEff extends MasterVcf<String> {
 				}) //
 				, numWorkers);
 		parseNow = false;
+		Gpr.debug("MASTER!!!");
 	}
 }

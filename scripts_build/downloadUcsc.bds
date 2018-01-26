@@ -7,8 +7,11 @@
 #-------------------------------------------------------------------------------
 
 ucscMysqlServer    := "genome-mysql.cse.ucsc.edu"
-urlUcscCse         := "http://hgdownload.cse.ucsc.edu/goldenPath"
-urlUcscSoe         := "http://hgdownload.soe.ucsc.edu/goldenPath"
+cse                := "hgdownload.cse.ucsc.edu"
+soe                := "hgdownload.soe.ucsc.edu"
+urlUcscCse         := "http://$cse/goldenPath"
+urlUcscSoe         := "http://$soe/goldenPath"
+ftpUcscSoe         := "ftp://$soe/goldenPath"
 
 #-------------------------------------------------------------------------------
 # Download CytoBands

@@ -45,7 +45,7 @@ GRCM				:= "GRCm38"
 humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 humanChrsDd			:= [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 dbNsfpVer			:= '3.1a'
-ucscGenomes			:= [ 'hg19', 'mm9', 'mm10' ]
+ucscGenomes			:= [ 'hg19', 'mm9', 'mm10' ] # Get full list from "curl ftp://hgdownload.cse.ucsc.edu/goldenPath/"
 ucscGenomesKg		:= [ 'hg19', 'hg38' ]
 
 # Configuration parameters
@@ -755,3 +755,4 @@ if( !zipGenome.isEmpty() )		zipDbs(zipGenome)							# Zip only 'zipGenome' datab
 
 wait
 print("Done\n")
+
