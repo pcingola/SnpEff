@@ -25,6 +25,7 @@ scriptsDir := "$snpeffDir/scripts_build/ncbi"
 
 # File names
 cds        := "$dbDir/cds.fa.gz"
+chrMap     := "$dbDir/chr_map.txt"
 gff        := "$dbDir/genes.gff.gz"
 protein    := "$dbDir/protein.fa.gz"
 seq        := "$dbDir/sequences.fa.gz"
@@ -56,37 +57,37 @@ task(gffOri <- gffGzOri) {
 }
 
 # Fix GFF ids
-task([gff, idMap, idMapProt] <- gffOri) {
-	sys $scriptsDir/fix_gff.pl $gffOri $idMap $idMapProt \
+task([gff, idMap, idMapProt] <- [gffOri, chrMap]) {
+	sys $scriptsDir/fix_gff.pl $gffOri $idMap $idMapProt $chrMap \
 			| gzip -c \
 			> $gff
 }
 
 # Create reference FASTA files
+#			| perl -pe 's/>(.*?)\s+.*/>\1/' \
 println "Processing reference FASTA files"
 task(seq <- seqOri) {
 	sys gunzip -c $seqOri \
 			| sed "s/^>gi|.*|ref|\(.._.*\)|.*/>\1/" \
-			| perl -pe 's/>(.*?)\s+.*/>\1/' \
 			| gzip -c \
 			> $seq
 }
 
 println "Processing protein FASTA files"
+#			| perl -pe 's/>(.*?)\s+.*/>\1/' \
 task(protein <- [proteinOri, idMapProt]) {
 	sys gunzip -c $proteinOri \
 			| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
-			| perl -pe 's/>(.*?)\s+.*/>\1/' \
 			| $scriptsDir/fix_fasta_protein_cds.pl $idMapProt \
 			| gzip -c \
 			> $protein
 }
 
 println "Processing RNA FASTA files"
+#			| perl -pe 's/>(.*?)\s+.*/>\1/' \
 task( cds <- gff) {
 	sys gunzip -c $cdsOri \
 			| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
-			| perl -pe 's/>(.*?)\s+.*/>\1/' \
 			| gzip -c \
 			> $cds
 }
