@@ -57,8 +57,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		int rank = 0; // Rank information is added later
 		Exon ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), exonId, rank);
 		ex.setFrame(gffMarker.getFrame());
-		add(ex);
-		return ex;
+		return add(ex);
 	}
 
 	/**
@@ -109,7 +108,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			case EXON:
 				Exon ex = new Exon(tr, gffMarker.getStart(), gffMarker.getEnd(), gffMarker.isStrandMinus(), id, rank);
 				ex.setFrame(gffMarker.getFrame());
-				add(ex);
+				ex = add(ex);
 				list.add(ex);
 				break;
 

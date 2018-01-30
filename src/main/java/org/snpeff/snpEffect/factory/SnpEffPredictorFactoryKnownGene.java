@@ -48,7 +48,7 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 	public SnpEffPredictorFactoryKnownGene(Config config) {
 		super(config, 0); // Zero values coordinates
 
-		genesByName = new MultivalueHashMap<String, Gene>();
+		genesByName = new MultivalueHashMap<>();
 
 		frameType = FrameType.UCSC;
 		frameCorrection = true;
@@ -176,7 +176,7 @@ public class SnpEffPredictorFactoryKnownGene extends SnpEffPredictorFactory {
 							int exEnd = parsePosition(exEndStr[i]) - 1; // Our internal database representations of coordinates always have a zero-based start and a one-based end (Reference: http://genome.ucsc.edu/FAQ/FAQtracks.html#tracks1 )
 							String exId = trId + ".ex." + (i + 1);
 							Exon ex = new Exon(tr, exStart, exEnd, strandMinus, exId, i);
-							add(ex);
+							ex = add(ex);
 
 							// CDS (ony if intersects)
 							if ((exStart <= cdsEnd) && (exEnd >= cdsStart)) {

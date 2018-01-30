@@ -63,7 +63,6 @@ public class VcfHeader {
 	 * Add header line
 	 */
 	public synchronized void add(VcfHeaderEntry vcfHeader) {
-		// TODO: Design problem, VcfFormat should not be a child of VcfInfo
 		if (vcfHeader.isInfo()) addInfo((VcfHeaderInfo) vcfHeader);
 		else if (vcfHeader.isFormat()) addFormat((VcfHeaderFormat) vcfHeader);
 		else {

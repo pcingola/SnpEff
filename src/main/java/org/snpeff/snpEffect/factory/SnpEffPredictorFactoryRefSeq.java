@@ -74,7 +74,7 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 	public SnpEffPredictorFactoryRefSeq(Config config) {
 		super(config, 0); // Zero values coordinates
 
-		genesByName = new MultivalueHashMap<String, Gene>();
+		genesByName = new MultivalueHashMap<>();
 
 		frameType = FrameType.UCSC;
 		frameCorrection = true;
@@ -250,7 +250,7 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 
 						exFrame = frameType.convertFrame(exFrame);
 						ex.setFrame(exFrame);
-						add(ex);
+						ex = add(ex);
 
 						// CDS (ony if intersects)
 						if ((exStart <= cdsEnd) && (exEnd >= cdsStart)) {

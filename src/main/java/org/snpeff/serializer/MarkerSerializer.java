@@ -298,7 +298,7 @@ public class MarkerSerializer {
 
 		// Store already saved IDs
 		int id = getNextId();
-		byMarker.put(m, id);
+		if (byMarker.put(m, id) != null) throw new RuntimeException("Marker already had a numeric ID. Marker : " + m.toStr());
 
 		// Print line
 		String line = m.serializeSave(this);

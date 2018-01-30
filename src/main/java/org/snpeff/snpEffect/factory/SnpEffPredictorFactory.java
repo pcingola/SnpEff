@@ -89,13 +89,21 @@ public abstract class SnpEffPredictorFactory {
 		genome.add(chromo);
 	}
 
-	protected void add(Exon exon) {
+	/**
+	 * Add an exon
+	 * 
+	 * @param exon
+	 * @return exon added.
+	 * Note: If the exon exists with the same ID, return old exon.
+	 *       If exon exists with same ID and same coordiates, add a new exon with different ID.
+	 */
+	protected Exon add(Exon exon) {
 		Transcript tr = (Transcript) exon.getParent();
 
 		// Make sure the same exon was not added before
 		Exon oldex = tr.get(exon.getId());
 		if (oldex != null) {
-			if (oldex.includes(exon)) return; // Redundant, just ignore it.
+			if (oldex.includes(exon)) return oldex; // Redundant, just ignore it.
 
 			// Create a new exon with same info and different 'id'
 			exon = new Exon(tr, exon.getStart(), exon.getEnd(), exon.isStrandMinus(), exon.getId() + "_" + tr.subIntervals().size(), exon.getRank());
@@ -104,6 +112,7 @@ public abstract class SnpEffPredictorFactory {
 		// Add exon
 		tr.add(exon);
 		addMarker(exon, false);
+		return exon;
 	}
 
 	/**

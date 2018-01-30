@@ -106,7 +106,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 			String seq = chromoSequence.substring(start, end + 1);
 			if (exon.isStrandMinus()) seq = GprSeq.reverseWc(seq); // Reverse strand? => reverse complement of the sequence
 			exon.setSequence(seq);
-			add(exon);
+			exon = add(exon);
 		}
 
 		// Add UTRs
@@ -159,7 +159,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 		int utr3size = random.nextInt(size / 4);
 		if (utr3size > 0) {
 			// Create UTR3
-			List<Exon> exons = new ArrayList<Exon>();
+			List<Exon> exons = new ArrayList<>();
 			exons.addAll(tr.subIntervals());
 			Collections.sort(exons, new IntervalComparatorByEnd(tr.isStrandPlus()));
 
