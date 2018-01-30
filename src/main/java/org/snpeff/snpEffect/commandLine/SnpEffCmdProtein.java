@@ -153,7 +153,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	}
 
 	void createTrByChromo() {
-		trByChromo = new AutoHashMap<String, List<Transcript>>(new ArrayList<Transcript>());
+		trByChromo = new AutoHashMap<>(new ArrayList<Transcript>());
 
 		for (Gene gene : genome.getGenes()) {
 			for (Transcript tr : gene) {
@@ -174,7 +174,7 @@ public class SnpEffCmdProtein extends SnpEff {
 
 		if (protein.equals(proteinRef)) return true;
 
-		// Remove last AA in Ref sequence (e.g. when las AA in reference by is 'unknown')
+		// Remove last AA in Ref sequence (e.g. when last AA in reference by is 'unknown')
 		String refUnk = "";
 		if (proteinRef.length() > 0) {
 			refUnk = proteinRef.substring(0, proteinRef.length() - 1);
@@ -183,11 +183,11 @@ public class SnpEffCmdProtein extends SnpEff {
 
 		// Replace First AA by 'Met'? Start codon may be translated as Met even if it normally encodes other AA.
 		// Compare everything but start codon.
-		String proteinNoStart = "", refNoStart = "";
+		String proteinNoStart = "", proteinRefNoStart = "";
 		if ((protein.length() > 0) && (proteinRef.length() > 0)) {
 			proteinNoStart = protein.substring(1);
-			refNoStart = proteinRef.substring(1);
-			if (proteinNoStart.equals(refNoStart)) return true;
+			proteinRefNoStart = proteinRef.substring(1);
+			if (proteinNoStart.equals(proteinRefNoStart)) return true;
 		}
 
 		// Rare amino acid translations (U)
@@ -195,7 +195,10 @@ public class SnpEffCmdProtein extends SnpEff {
 		if (proteinU.equals(proteinRef) || proteinU.equals(refUnk)) return true;
 
 		String proteinNoStartU = proteinNoStart.replace('*', 'U');
-		if (proteinNoStartU.equals(refNoStart)) return true;
+		if (proteinNoStartU.equals(proteinRefNoStart)) return true;
+
+		String proteinUnknownAa = replaceUnknownAa(proteinNoStartU, proteinRefNoStart);
+		if (proteinUnknownAa.equals(proteinRefNoStart)) return true;
 
 		return false;
 	}
@@ -516,6 +519,20 @@ public class SnpEffCmdProtein extends SnpEff {
 
 			lineNum++;
 		}
+	}
+
+	/**
+	 * Replace unknown AA using the reference sequence
+	 * @return A new protein sequence including AAs from the Reference sequence in "Unknown sites"
+	 */
+	String replaceUnknownAa(String protein, String proteinRef) {
+		char p[] = protein.toCharArray();
+		char pref[] = proteinRef.toCharArray();
+		if (p.length != pref.length) return protein; // Nothing done
+		for (int i = 0; i < p.length; i++) {
+			if (p[i] == '?' && pref[i] != '?') p[i] = pref[i];
+		}
+		return new String(p);
 	}
 
 	/**
