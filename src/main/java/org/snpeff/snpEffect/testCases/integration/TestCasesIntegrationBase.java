@@ -272,6 +272,31 @@ public class TestCasesIntegrationBase {
 		Assert.assertTrue("Too few variants checked: " + countCheck, countCheck >= minCheck);
 	}
 
+	// Check variant's HGVS.c nomenclature
+	void checkHgvscForTr(List<VcfEntry> list, String trId) {
+		boolean found = false;
+		for (VcfEntry ve : list) {
+			if (verbose) System.out.println(ve);
+
+			for (VcfEffect veff : ve.getVcfEffects()) {
+				if (veff.getTranscriptId().equals(trId)) {
+					if (verbose) {
+						System.out.println("\t" + veff);
+						System.out.println("\t\tHGVS.c: " + veff.getHgvsC());
+					}
+
+					// Compare against expected result
+					String expectedHgvsC = ve.getInfo("HGVSC");
+					String actualHgvsC = veff.getHgvsC();
+					Assert.assertEquals(expectedHgvsC, actualHgvsC);
+					found = true;
+				}
+			}
+		}
+
+		Assert.assertTrue("No annotations found for transcript " + trId, found);
+	}
+
 	void checkMotif(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact, boolean useAnn) {
 		String args[] = { "-classic", "-motif", "-ud", "0", genomeVer, vcfFile };
 		String argsAnn[] = { "-ud", "0", genomeVer, vcfFile };

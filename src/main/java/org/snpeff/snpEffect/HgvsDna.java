@@ -271,13 +271,26 @@ public class HgvsDna extends Hgvs {
 		return null;
 	}
 
+	//	/**
+	//	 * Position downstream of the transcript
+	//	 */
+	//	protected String posDownstream(int pos) {
+	//		int baseNumCdsEnd = tr.getCdsEnd();
+	//		int idx = Math.abs(pos - baseNumCdsEnd);
+	//
+	//		return "*" + idx; // We are after stop codon, coordinates must be '*1', '*2', etc.
+	//	}
+
 	/**
 	 * Position downstream of the transcript
 	 */
 	protected String posDownstream(int pos) {
-		int baseNumCdsEnd = tr.getCdsEnd();
-		int idx = Math.abs(pos - baseNumCdsEnd);
+		int trEnd = tr.isStrandPlus() ? tr.getEnd() : tr.getStart();
+		int baseNumTrEnd = tr.baseNumber2MRnaPos(trEnd);
+		int baseNumCdsEnd = tr.baseNumber2MRnaPos(tr.getCdsEnd());
+		int basesFromCdsEndToTrEnd = Math.abs(baseNumTrEnd - baseNumCdsEnd);
 
+		int idx = basesFromCdsEndToTrEnd + Math.abs(pos - trEnd);
 		return "*" + idx; // We are after stop codon, coordinates must be '*1', '*2', etc.
 	}
 
@@ -301,8 +314,11 @@ public class HgvsDna extends Hgvs {
 	protected String posIntron(int pos, Intron intron) {
 		// Jump to closest exon position
 		// Ref:
-		//		beginning of the intron; the number of the last nucleotide of the preceding exon, a plus sign and the position in the intron, like c.77+1G, c.77+2T, etc.
-		// 		end of the intron; the number of the first nucleotide of the following exon, a minus sign and the position upstream in the intron, like c.78-1G.
+		//		Beginning of the intron; the number of the last nucleotide of the
+		//      preceding exon, a plus sign and the position in the intron, like
+		//      c.77+1G, c.77+2T, etc.
+		// 		End of the intron; the number of the first nucleotide of the following
+		//      exon, a minus sign and the position upstream in the intron, like c.78-1G.
 		int posExon = -1;
 		String posExonStr = "";
 		int distanceLeft = Math.max(0, pos - intron.getStart()) + 1;
@@ -348,12 +364,54 @@ public class HgvsDna extends Hgvs {
 		return utrStr + utrDistance + (exonDistance > 0 ? posExonStr + exonDistance : "");
 	}
 
+	//	/**
+	//	 * Position upstream of the transcript
+	//	 */
+	//	protected String posUpstream(int pos) {
+	//		int tss = tr.getCdsStart();
+	//		int idx = Math.abs(pos - tss);
+	//
+	//		if (idx <= 0) return null;
+	//		return "-" + idx; // 5'UTR: We are before TSS, coordinates must be '-1', '-2', etc.
+	//	}
+
 	/**
 	 * Position upstream of the transcript
+	 * 
+	 * Note: How to calculate Upstream position:
+	 * If strand is '-' as for NM_016176.3, "genomicTxStart" being the rightmost tx coord:
+	 *     cDotUpstream = -(cdsStart + variantPos - genomicTxStart)
+	 *     
+	 * Instead of "-(variantPos - genomicCdsStart)":
+	 * 
+	 * The method that stays in transcript space until extending beyond the transcript is
+	 * correct because of these statements on http://varnomen.hgvs.org/bg-material/numbering/:
+	 * 
+	 *     * nucleotides upstream (5') of the ATG-translation initiation
+	 *       codon (start) are marked with a "-" (minus) and numbered c.-1,
+	 *       c.-2, c.-3, etc. (i.e. going further upstream)
+	 *
+	 *     * Question: When the ATG translation initiation codon is in
+	 *       exon 2, and we find a variant in exon 1, should we include
+	 *       intron 1 (upstream of c.-14) in nucleotide
+	 *       numbering? (Isabelle Touitou, Montpellier, France)
+	 *
+	 *       Answer: Nucleotides in introns 5' of the ATG translation
+	 *       initiation codon (i.e. in the 5'UTR) are numbered as
+	 *       introns in the protein coding sequence (see coding DNA
+	 *       numbering). In your example, based on a coding DNA
+	 *       reference sequence, the intron is present between
+	 *       nucleotides c.-15 and c.-14. The nucleotides for this
+	 *       intron are numbered as c.-15+1, c.-15+2, c.-15+3, ....,
+	 *       c.-14-3, c.-14-2, c.-14-1. Consequently, regarding the
+	 *       question, when a coding DNA reference sequence is used,
+	 *       the intronic nucleotides are not counted.
+	 *
 	 */
 	protected String posUpstream(int pos) {
-		int tss = tr.getCdsStart();
-		int idx = Math.abs(pos - tss);
+		int baseNumTss = tr.baseNumber2MRnaPos(tr.getCdsStart());
+		int trStart = tr.isStrandPlus() ? tr.getStart() : tr.getEnd();
+		int idx = baseNumTss + Math.abs(pos - trStart);
 
 		if (idx <= 0) return null;
 		return "-" + idx; // 5'UTR: We are before TSS, coordinates must be '-1', '-2', etc.
