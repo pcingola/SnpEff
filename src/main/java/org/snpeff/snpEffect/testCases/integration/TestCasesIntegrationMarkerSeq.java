@@ -16,10 +16,8 @@ import org.snpeff.util.GprSeq;
  *
  * Test case
  */
-public class TestCasesIntegrationMarkerSeq {
+public class TestCasesIntegrationMarkerSeq extends TestCasesIntegrationBase {
 
-	protected boolean debug = false;
-	protected boolean verbose = false || debug;
 	protected int randSeed = 20141128;
 	protected Random rand;
 
@@ -42,7 +40,7 @@ public class TestCasesIntegrationMarkerSeq {
 		int maxSize = 20; // Max subsequence size to test
 
 		String genome = "testHg19Chr17";
-		String vcf = "tests/hgvs_dup.vcf";
+		String vcf = path("hgvs_dup.vcf");
 
 		// Create SnpEff
 		String args[] = { genome, vcf };

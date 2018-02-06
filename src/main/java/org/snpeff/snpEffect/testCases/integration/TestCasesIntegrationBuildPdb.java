@@ -12,9 +12,9 @@ import junit.framework.Assert;
 /**
  * Test cases for annotation of protein interaction loci
  */
-public class TestCasesIntegratioBuildPdb extends TestCasesIntegrationBase {
+public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 
-	public TestCasesIntegratioBuildPdb() {
+	public TestCasesIntegrationBuildPdb() {
 	}
 
 	/**
@@ -26,7 +26,7 @@ public class TestCasesIntegratioBuildPdb extends TestCasesIntegrationBase {
 
 		// Command line arguments
 		String genome = "testHg19Pdb";
-		String pdbDir = "tests/pdb";
+		String pdbDir = path("pdb");
 		String args[] = { "-pdbDir", pdbDir, genome };
 
 		// Create command
@@ -62,7 +62,7 @@ public class TestCasesIntegratioBuildPdb extends TestCasesIntegrationBase {
 
 		// Command line arguments
 		String genome = "testHg19Pdb";
-		String pdbDir = "tests/pdb";
+		String pdbDir = path("pdb");
 		String args[] = { "-pdbDir", pdbDir, genome };
 
 		// Create command

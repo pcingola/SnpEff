@@ -30,7 +30,7 @@ public class TestCasesIntegrationSpliceRegion extends TestCasesIntegrationBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String file = "tests/integration/splice_region/test.splice_region_01.vcf";
+		String file = path("test.splice_region_01.vcf");
 		String args[] = { "-canon" };
 		int pos = 117174416;
 

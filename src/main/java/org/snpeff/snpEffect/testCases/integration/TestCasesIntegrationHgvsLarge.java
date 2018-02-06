@@ -15,10 +15,7 @@ import org.snpeff.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationHgvsLarge {
-
-	boolean debug = false;
-	boolean verbose = false || debug;
+public class TestCasesIntegrationHgvsLarge extends TestCasesIntegrationBase {
 
 	/**
 	 * Using non-standard splice size (15 instead of 2)
@@ -28,7 +25,7 @@ public class TestCasesIntegrationHgvsLarge {
 	public void test_13_large_Del_Hgvs() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr22";
-		String vcf = "tests/test_large_del_hgvs_13.vcf";
+		String vcf = path("test_large_del_hgvs_13.vcf");
 
 		// Create SnpEff
 		String args[] = { genome, vcf };

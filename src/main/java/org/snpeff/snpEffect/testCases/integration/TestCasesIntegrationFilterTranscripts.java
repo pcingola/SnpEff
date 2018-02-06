@@ -17,9 +17,7 @@ import junit.framework.Assert;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationFilterTranscripts {
-
-	boolean verbose = false;
+public class TestCasesIntegrationFilterTranscripts extends TestCasesIntegrationBase {
 
 	public TestCasesIntegrationFilterTranscripts() {
 		super();
@@ -36,9 +34,9 @@ public class TestCasesIntegrationFilterTranscripts {
 				, "-i", "vcf" //
 				, "-o", "vcf" //
 				, "-classic" //
-				, "-onlyTr", "tests/filterTranscripts_01.txt"//
+				, "-onlyTr", path("filterTranscripts_01.txt")//
 				, "testHg3765Chr22" //
-				, "tests/test_filter_transcripts_001.vcf" //
+				, path("test_filter_transcripts_001.vcf") //
 		};
 
 		SnpEff cmd = new SnpEff(args);
@@ -70,9 +68,9 @@ public class TestCasesIntegrationFilterTranscripts {
 				, "-i", "vcf" //
 				, "-o", "vcf" //
 				, "-classic" //
-				, "-onlyTr", "tests/filterTranscripts_02.txt"//
+				, "-onlyTr", path("filterTranscripts_02.txt")//
 				, "testHg3765Chr22" //
-				, "tests/test_filter_transcripts_001.vcf" //
+				, path("test_filter_transcripts_001.vcf") //
 		};
 
 		SnpEff cmd = new SnpEff(args);

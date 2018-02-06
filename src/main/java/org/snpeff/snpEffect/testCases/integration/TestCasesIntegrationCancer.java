@@ -29,7 +29,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String file = "tests/integration/cancer/test.cancer.snp.01.vcf";
+		String file = path("test.cancer.snp.01.vcf");
 		snpEffectCancer(file, null, "testHg3766Chr1", true, "p.Leu1?", "c.1C>G", "G-C", null);
 	}
 
@@ -39,8 +39,8 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-		String fileVcf = "tests/integration/cancer/test.cancer_no_ped.vcf";
-		String fileTxt = "tests/integration/cancer/test.cancer_no_ped.txt";
+		String fileVcf = path("test.cancer_no_ped.vcf");
+		String fileTxt = path("test.cancer_no_ped.txt");
 		snpEffectCancer(fileVcf, fileTxt, "testHg3766Chr1", true, "p.Leu1?", "c.1C>G", "G-C", null);
 	}
 
@@ -51,11 +51,11 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	public void test_03_cancer_concurrent_modification() {
 		Gpr.debug("Test");
 		String args[] = { "-cancer"//
-				, "-cancerSamples", "tests/integration/cancer/test_cancer_concurrent_modification.txt" //
+				, "-cancerSamples", path("test_cancer_concurrent_modification.txt") //
 				, "-ud", "0" //
 				, "-strict" //
 				, "testHg3775Chr1"//
-				, "tests/integration/cancer/test_cancer_concurrent_modification.vcf" //
+				, path("test_cancer_concurrent_modification.vcf") //
 		};
 
 		SnpEff cmd = new SnpEff(args);
@@ -93,7 +93,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	@Test
 	public void test_04() {
 		Gpr.debug("Test");
-		String file = "tests/integration/cancer/test_04.vcf";
+		String file = path("test_04.vcf");
 		snpEffectCancer(file, null, "testHg19Chr22", false, "p.Gln133Leu", "c.398A>T", "A-T", null);
 	}
 
@@ -103,7 +103,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	@Test
 	public void test_05() {
 		Gpr.debug("Test");
-		String file = "tests/integration/cancer/test.cancer_05.vcf";
+		String file = path("test.cancer_05.vcf");
 		snpEffectCancer(file, null, "testHg19Chr17", false, "p.Arg72Pro", "c.215G>C", "G-C", "NM_000546.5");
 	}
 

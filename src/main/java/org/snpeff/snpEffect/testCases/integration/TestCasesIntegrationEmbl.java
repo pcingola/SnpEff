@@ -41,7 +41,7 @@ public class TestCasesIntegrationEmbl extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 		// Create SnpEff predictor
 		String genome = "testEmblPberghei";
-		String resultFile = "tests/testEmblPberghei.genes.embl";
+		String resultFile = path("testEmblPberghei.genes.embl");
 		SnpEffectPredictor sep = buildEmbl(genome, resultFile);
 
 		int pos = 4056 - 1;

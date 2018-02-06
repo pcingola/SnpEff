@@ -15,16 +15,13 @@ import org.snpeff.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationMnp {
-
-	static boolean debug = false;
-	static boolean verbose = false || debug;
+public class TestCasesIntegrationMnp extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
 		// Run
-		String args[] = { "-classic", "-noHgvs", "-ud", "0", "testHg3766Chr1", "./tests/test.mnp.01.vcf" };
+		String args[] = { "-classic", "-noHgvs", "-ud", "0", "testHg3766Chr1", path("test.mnp.01.vcf") };
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();
 		snpeff.setVerbose(verbose);

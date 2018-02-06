@@ -21,10 +21,7 @@ import junit.framework.Assert;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationExonFrame {
-
-	boolean verbose = false;
-	boolean debug = false;
+public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
 
 	public TestCasesIntegrationExonFrame() {
 		super();
@@ -72,7 +69,7 @@ public class TestCasesIntegrationExonFrame {
 		//---
 		// Check annotations
 		//---
-		String vcfFileName = "tests/testLukas.vcf";
+		String vcfFileName = path("testLukas.vcf");
 		String argsEff[] = { "-classic", "-noHgvs", "-ud", "0", genomeName, vcfFileName };
 
 		// Annotate

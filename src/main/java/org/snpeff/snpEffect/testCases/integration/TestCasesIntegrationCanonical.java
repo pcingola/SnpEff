@@ -29,7 +29,7 @@ public class TestCasesIntegrationCanonical extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 		String geneId = "APOBEC3H";
 		String trId = "NM_001166003.2";
-		String args[] = { "-canon", "testHg19Chr22", "tests/empty.vcf" };
+		String args[] = { "-canon", "testHg19Chr22", path("empty.vcf") };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -50,7 +50,7 @@ public class TestCasesIntegrationCanonical extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 		String geneId = "APOBEC3H";
 		String trId = "NM_181773.4";
-		String args[] = { "-canonList", "tests/canon_geneId2trId_test02.txt", "testHg19Chr22", "tests/empty.vcf" };
+		String args[] = { "-canonList", path("canon_geneId2trId_test02.txt"), "testHg19Chr22", path("empty.vcf") };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();

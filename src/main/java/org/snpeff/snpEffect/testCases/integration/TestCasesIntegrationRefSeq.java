@@ -32,9 +32,9 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 
 		/// Build SnpEffectPredictor using a RefSeq file
 		String genome = "hg19";
-		String refSeqFile = "tests/hg19_refSeq_OR4F16.txt";
-		String fastaFile = null; // "tests/chrY.fa.gz";
-		String resultFile = "tests/hg19_refSeq_OR4F16.dump.txt";
+		String refSeqFile = path("hg19_refSeq_OR4F16.txt");
+		String fastaFile = null;
+		String resultFile = path("hg19_refSeq_OR4F16.dump.txt");
 		SnpEffectPredictor sep = buildAndCompare(genome, refSeqFile, fastaFile, resultFile, true);
 
 		// Check a SNP

@@ -78,7 +78,7 @@ public class TestCasesAnn extends TestCasesBase {
 	@Test
 	public void test_01_Annotation_Stop() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/test_ann_01.vcf";
+		String vcfFile = path("test_ann_01.vcf");
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, "ENST00000472155");
@@ -145,7 +145,7 @@ public class TestCasesAnn extends TestCasesBase {
 		Gpr.debug("Test");
 
 		// Create command
-		String args[] = { "testHg3775Chr1", "tests/test_ann_integration_01.vcf" };
+		String args[] = { "testHg3775Chr1", path("test_ann_integration_01.vcf") };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -184,7 +184,7 @@ public class TestCasesAnn extends TestCasesBase {
 	@Test
 	public void test_02_Annotation_SpliceRegion() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/test_ann_02.vcf";
+		String vcfFile = path("test_ann_02.vcf");
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, "ENST00000374221");
@@ -246,7 +246,7 @@ public class TestCasesAnn extends TestCasesBase {
 	@Test
 	public void test_03_Annotation_NonSyn() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/test_ann_03.vcf";
+		String vcfFile = path("test_ann_03.vcf");
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, "ENST00000374221");
@@ -308,7 +308,7 @@ public class TestCasesAnn extends TestCasesBase {
 	@Test
 	public void test_04_Annotation_Intergenic() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/test_ann_04.vcf";
+		String vcfFile = path("test_ann_04.vcf");
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, null);

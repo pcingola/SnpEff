@@ -1,5 +1,7 @@
 package org.snpeff.snpEffect.testCases.integration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Chromosome;
@@ -41,6 +44,7 @@ import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
 import junit.framework.Assert;
+import net.sf.samtools.util.RuntimeEOFException;
 
 /**
  * Base class: Provides common methods used for testing
@@ -48,6 +52,7 @@ import junit.framework.Assert;
 public class TestCasesIntegrationBase {
 
 	public static int SHOW_EVERY = 10;
+	public static final String BASE_DIR = "tests";
 
 	public boolean debug = false;
 	public boolean verbose = false || debug;
@@ -56,11 +61,56 @@ public class TestCasesIntegrationBase {
 	protected boolean shiftHgvs; // Do or do not shift variants according to HGVS notation (for test cases that were created before the feature was implemented)
 
 	public String testsDir;
+	protected String testType;
+	protected List<String> prefixes;
 
 	public TestCasesIntegrationBase() {
 		super();
 		init();
-		testsDir = "tests/integration";
+		testType = "integration";
+
+		prefixes = new LinkedList<>();
+		prefixes.add("TestCases");
+		prefixes.add("TestsCase");
+		prefixes.add("Unit");
+		prefixes.add("Integration");
+	}
+
+	public String path(String fileName) {
+		String dir = BASE_DIR + "/" + testType + "/" + pathClassName();
+		String path = dir + "/" + fileName;
+		String oldPath = BASE_DIR + "/old/" + fileName;
+
+		if (!Gpr.exists(dir)) {
+			Gpr.debug("File migration: Creating dir:" + dir);
+			File d = new File(dir);
+			d.mkdir();
+		}
+
+		if (!Gpr.exists(oldPath)) {
+			if (Gpr.exists(oldPath + ".gz")) {
+				oldPath += ".gz";
+				path += ".gz";
+			} else Gpr.debug("File migration: Cannot find original file:" + oldPath);
+		}
+
+		if (!Gpr.exists(path) && Gpr.exists(oldPath)) {
+			Gpr.debug("File migration: Moving file:" + path);
+			try {
+				FileUtils.moveFile(new File(oldPath), new File(path));
+			} catch (IOException e) {
+				throw new RuntimeEOFException("Cannot copy files:\n\tsrc: " + oldPath + "\n\tdst: " + path, e);
+
+			}
+		}
+		return path;
+	}
+
+	protected String pathClassName() {
+		String sname = this.getClass().getSimpleName();
+		for (String prefix : prefixes)
+			if (sname.startsWith(prefix)) sname = sname.substring(prefix.length());
+		return sname.substring(0, 1).toLowerCase() + sname.substring(1);
 	}
 
 	/**

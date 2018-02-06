@@ -1,20 +1,18 @@
 package org.snpeff.snpEffect.testCases.integration;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
+
+import junit.framework.Assert;
 
 /**
  * Calculate missense over silent ratio
  *
  * @author pcingola
  */
-public class TestCasesIntegrationMissenseSilentRatio {
-
-	boolean verbose = false;
+public class TestCasesIntegrationMissenseSilentRatio extends TestCasesIntegrationBase {
 
 	public TestCasesIntegrationMissenseSilentRatio() {
 		super();
@@ -27,7 +25,7 @@ public class TestCasesIntegrationMissenseSilentRatio {
 				, "-classic" //
 				, "-useLocalTemplate" //
 				, "testHg3765Chr22" //
-				, "./tests/missenseSilent.chr22.vcf.gz" //
+				, path("missenseSilent.chr22.vcf.gz") //
 		};
 
 		SnpEff cmd = new SnpEff(args);

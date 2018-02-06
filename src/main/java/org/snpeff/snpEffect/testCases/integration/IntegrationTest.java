@@ -11,12 +11,10 @@ import org.snpeff.util.Gpr;
  *
  * @author pcingola
  */
-public class IntegrationTest {
+public class IntegrationTest extends TestCasesIntegrationBase {
 
 	public final int BUFFER_SIZE = 10 * 1024 * 1024;
 	public static final int MAX_LINES_DIFF = 20;
-
-	protected boolean verbose = false;
 
 	public IntegrationTest() {
 		super();

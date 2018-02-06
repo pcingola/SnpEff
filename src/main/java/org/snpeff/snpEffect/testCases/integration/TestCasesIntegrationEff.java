@@ -28,7 +28,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", null);
+		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", path("eff_sort.vcf"), null);
 
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) System.out.println(ve);
@@ -50,7 +50,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	@Test
 	public void test_01_canonical() {
 		Gpr.debug("Test");
-		List<VcfEntry> vcfEntries = snpEffect("testHg3775Chr8", "tests/eff_sort_canon.vcf", null);
+		List<VcfEntry> vcfEntries = snpEffect("testHg3775Chr8", path("eff_sort_canon.vcf"), null);
 
 		// Only one entry in this file
 		Assert.assertEquals(1, vcfEntries.size());
@@ -68,7 +68,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	public void test_02() {
 		Gpr.debug("Test");
 		String args[] = { "-o", "gatk" };
-		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
+		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", path("eff_sort.vcf"), args);
 
 		for (VcfEntry ve : vcfEntries) {
 			int numEffs = ve.getVcfEffects().size();
@@ -84,7 +84,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	public void test_03_EmptyVcf() {
 		Gpr.debug("Test");
 		String args[] = { "eff", "-noLog" };
-		snpEffect("testHg3770Chr22", "tests/empty_only_header.vcf", args);
+		snpEffect("testHg3770Chr22", path("empty_only_header.vcf"), args);
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	public void test_04() {
 		Gpr.debug("Test");
 		String args[] = { "-csvStats", "test_04_TestCasesEff.csv" };
-		snpEffect("testHg3770Chr22", "tests/eff_sort.vcf", args);
+		snpEffect("testHg3770Chr22", path("eff_sort.vcf"), args);
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	public void test_05() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
-		String vcf = "tests/gatk_NO_splice_regions.vcf";
+		String vcf = path("gatk_NO_splice_regions.vcf");
 		String args[] = { "eff", "-noLog", "-o", "gatk" };
 		List<VcfEntry> vcfEntries = snpEffect(genomeName, vcf, args);
 
@@ -125,7 +125,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	public void test_06() {
 		Gpr.debug("Test");
 		String args[] = {};
-		List<VcfEntry> list = snpEffect("testHg3775Chr15", "tests/mnp_insertion_at_transcript_end.vcf", args);
+		List<VcfEntry> list = snpEffect("testHg3775Chr15", path("mnp_insertion_at_transcript_end.vcf"), args);
 
 		// We should be able to annotate this entry (if INFO is empty, something went wrong)
 		Assert.assertFalse(list.get(0).getInfoStr().isEmpty());
@@ -138,7 +138,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	public void test_07() {
 		Gpr.debug("Test");
 		String args[] = {};
-		List<VcfEntry> list = snpEffect("testHg3775Chr10", "tests/mnp_deletion.vcf", args);
+		List<VcfEntry> list = snpEffect("testHg3775Chr10", path("mnp_deletion.vcf"), args);
 
 		// We should be able to annotate this entry (if INFO is empty, something went wrong)
 		Assert.assertFalse(list.get(0).getInfoStr().isEmpty());
@@ -152,7 +152,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 
 		String genomeName = "testMycobacterium_tuberculosis_CCDC5079_uid203790";
-		String vcf = "tests/test_gatk_no_annotations.vcf";
+		String vcf = path("test_gatk_no_annotations.vcf");
 		String args[] = { "-noLog", "-o", "gatk" };
 		List<VcfEntry> vcfEntries = snpEffect(genomeName, vcf, args);
 

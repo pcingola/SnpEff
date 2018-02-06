@@ -20,7 +20,7 @@ public class TestCasesIntegrationHgvsDel extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 
 		String genomeName = "testHg19Chr11";
-		String vcf = "tests/test_01_hgvs_deletions_chr11.vcf";
+		String vcf = path("test_01_hgvs_deletions_chr11.vcf");
 
 		snpEffect(genomeName, vcf, null);
 

@@ -299,7 +299,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02() {
-		String args[] = { "testHg3775Chr22", "-noLog", "-i", "bed", "tests/test_lof_02.bed" };
+		String args[] = { "testHg3775Chr22", "-noLog", "-i", "bed", path("test_lof_02.bed") };
 		SnpEff snpeff = new SnpEff(args);
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);

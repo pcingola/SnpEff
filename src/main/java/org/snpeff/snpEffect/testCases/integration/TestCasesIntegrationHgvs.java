@@ -17,17 +17,14 @@ import junit.framework.Assert;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationHgvs {
-
-	boolean debug = false;
-	boolean verbose = false || debug;
+public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
 
 		String genomeName = "testHg3775Chr1";
-		String vcf = "tests/hgvs_1.vep.vcf";
+		String vcf = path("hgvs_1.vep.vcf");
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.compareVep(vcf);
@@ -39,7 +36,7 @@ public class TestCasesIntegrationHgvs {
 	public void test_03() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
-		String vcf = "tests/ensembl_hgvs_intron.1.vep.vcf";
+		String vcf = path("ensembl_hgvs_intron.1.vep.vcf");
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.setStrict(true);
@@ -53,7 +50,7 @@ public class TestCasesIntegrationHgvs {
 	public void test_04() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
-		String vcf = "tests/ensembl_hgvs_intron.outsideCds.vep.vcf";
+		String vcf = path("ensembl_hgvs_intron.outsideCds.vep.vcf");
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.setStrict(true);
@@ -67,7 +64,7 @@ public class TestCasesIntegrationHgvs {
 	public void test_05() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
-		String vcf = "tests/ensembl_hgvs_intron.vep.vcf";
+		String vcf = path("ensembl_hgvs_intron.vep.vcf");
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.setStrict(true);
@@ -81,7 +78,7 @@ public class TestCasesIntegrationHgvs {
 	public void test_06() {
 		Gpr.debug("Test");
 		String genomeName = "testHg3775Chr1";
-		String vcf = "tests/ensembl_hgvs_intron.within_cds.vep.vcf";
+		String vcf = path("ensembl_hgvs_intron.within_cds.vep.vcf");
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.setStrict(true);
@@ -95,7 +92,7 @@ public class TestCasesIntegrationHgvs {
 	public void test_10_MixedVep_HGVS() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr1";
-		String vcf = "tests/mixed_10_hgvs.vep.vcf";
+		String vcf = path("mixed_10_hgvs.vep.vcf");
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		comp.setCompareHgvs();
 		comp.setOnlyProtein(true);
@@ -109,7 +106,7 @@ public class TestCasesIntegrationHgvs {
 		Gpr.debug("Test");
 
 		String genome = "testHg19Hgvs";
-		String vcf = "tests/hgvs_counsyl.vcf";
+		String vcf = path("hgvs_counsyl.vcf");
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		comp.setCompareHgvs();
 		comp.setCompareHgvsProt(false);
@@ -123,7 +120,7 @@ public class TestCasesIntegrationHgvs {
 	public void test_11_Hg19Hgvs_noShift() {
 		Gpr.debug("Test");
 		String genome = "testHg19Hgvs";
-		String vcf = "tests/hgvs_counsyl.noShift.vcf";
+		String vcf = path("hgvs_counsyl.noShift.vcf");
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		comp.setCompareHgvs();
 		comp.setCompareHgvsProt(false);
@@ -142,7 +139,7 @@ public class TestCasesIntegrationHgvs {
 		Gpr.debug("Test");
 		int spliceSize = 15;
 		String genome = "test_BRCA";
-		String vcf = "tests/test_BRCA_splice_15.vcf";
+		String vcf = path("test_BRCA_splice_15.vcf");
 
 		// Create SnpEff
 		String args[] = { genome, vcf };
@@ -180,7 +177,7 @@ public class TestCasesIntegrationHgvs {
 	public void test_14_splice_region_Hgvs() {
 		Gpr.debug("Test");
 		String genome = "testHg19Chr1";
-		String vcf = "tests/hgvs_splice_region.vcf";
+		String vcf = path("hgvs_splice_region.vcf");
 
 		// Create SnpEff
 		String args[] = { genome, vcf };
@@ -218,7 +215,7 @@ public class TestCasesIntegrationHgvs {
 	public void test_15_hgvs_INS_intergenic() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr22";
-		String vcf = "tests/test_hgvs_INS_intergenic.vcf";
+		String vcf = path("test_hgvs_INS_intergenic.vcf");
 
 		// Create SnpEff
 		String args[] = { genome, vcf };
@@ -239,7 +236,7 @@ public class TestCasesIntegrationHgvs {
 			if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
 			ok |= veff.hasEffectType(EffectType.INTERGENIC) //
 					&& veff.getHgvsDna().equals("n.15070000_15070001insT") //
-					;
+			;
 		}
 
 		Assert.assertTrue("Error in HGVS annotaiton", ok);

@@ -26,9 +26,8 @@ import org.snpeff.util.GprSeq;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationVariant {
+public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 
-	boolean verbose = false;
 	long randSeed = 20100629;
 	String genomeName = "testCase";
 
@@ -47,8 +46,8 @@ public class TestCasesIntegrationVariant {
 		comp.initSnpEffPredictor();
 
 		// Read CDS (hg37, chromosome Y) from a file and store them indexed by transcript ID
-		HashMap<String, String> cdsByTrId = new HashMap<String, String>();
-		String cdsY = Gpr.readFile("./tests/cds_hg37_chrY.txt");
+		HashMap<String, String> cdsByTrId = new HashMap<>();
+		String cdsY = Gpr.readFile(path("cds_hg37_chrY.txt"));
 		String lines[] = cdsY.split("\n");
 		for (String line : lines) {
 			String recs[] = line.split("\t");
@@ -84,7 +83,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.setUseAaNoNum(true);
-		comp.snpEffect("tests/" + trId + ".out", trId, true);
+		comp.snpEffect(path(trId + ".out"), trId, true);
 	}
 
 	/**
@@ -96,7 +95,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.setUseAaNoNum(true);
-		comp.snpEffect("tests/" + trId + "_all.out", trId, false);
+		comp.snpEffect(path(trId + "_all.out"), trId, false);
 	}
 
 	/**
@@ -106,7 +105,7 @@ public class TestCasesIntegrationVariant {
 	public void test_12() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/splice_site.out", null, true);
+		comp.snpEffect(path("splice_site.out"), null, true);
 	}
 
 	/**
@@ -116,7 +115,7 @@ public class TestCasesIntegrationVariant {
 	public void test_12_2() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/splice_site_2.out", null, true);
+		comp.snpEffect(path("splice_site_2.out"), null, true);
 	}
 
 	/**
@@ -127,7 +126,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000439108";
-		comp.snpEffect("tests/" + trId + ".snps", trId, true);
+		comp.snpEffect(path(trId + ".snps"), trId, true);
 	}
 
 	/**
@@ -138,7 +137,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000382673";
-		comp.snpEffect("tests/" + trId + ".snps", trId, true);
+		comp.snpEffect(path(trId + ".snps"), trId, true);
 	}
 
 	/**
@@ -149,7 +148,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000250823";
-		comp.snpEffect("tests/" + trId + "_InDels.out", trId, true);
+		comp.snpEffect(path(trId + "_InDels.out"), trId, true);
 	}
 
 	/**
@@ -160,7 +159,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000250823";
-		comp.snpEffect("tests/" + trId + "_InDels_2.out", trId, true);
+		comp.snpEffect(path(trId + "_InDels_2.out"), trId, true);
 	}
 
 	/**
@@ -172,7 +171,7 @@ public class TestCasesIntegrationVariant {
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000250823";
 		comp.setUseAaNoNum(true);
-		comp.snpEffect("tests/" + trId + "_InDels_3.out", trId, true);
+		comp.snpEffect(path(trId + "_InDels_3.out"), trId, true);
 	}
 
 	/**
@@ -184,7 +183,7 @@ public class TestCasesIntegrationVariant {
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 
 		VariantFileIterator snpFileIterator;
-		snpFileIterator = new VariantTxtFileIterator("tests/chr_not_found.out", comp.getConfig().getGenome());
+		snpFileIterator = new VariantTxtFileIterator(path("chr_not_found.out"), comp.getConfig().getGenome());
 		snpFileIterator.setIgnoreChromosomeErrors(false);
 		snpFileIterator.setCreateChromos(false);
 
@@ -196,7 +195,7 @@ public class TestCasesIntegrationVariant {
 			}
 		} catch (RuntimeException e) {
 			trown = true;
-			String expectedMessage = "ERROR: Chromosome 'chrZ' not found! File 'tests/chr_not_found.out', line 1";
+			String expectedMessage = "ERROR: Chromosome 'chrZ' not found! File '" + path("chr_not_found.out") + "', line 1";
 			if (e.getMessage().equals(expectedMessage)) ; // OK
 			else throw new RuntimeException("This is not the exception I was expecting!\n\tExpected message: '" + expectedMessage + "'\n\tMessage: '" + e.getMessage() + "'", e);
 		}
@@ -214,7 +213,7 @@ public class TestCasesIntegrationVariant {
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000250823";
 		comp.setUseAaNoNum(true);
-		comp.snpEffect("tests/" + trId + "_mnp_out_of_exon.txt", trId, true);
+		comp.snpEffect(path(trId + "_mnp_out_of_exon.txt"), trId, true);
 	}
 
 	/**
@@ -224,7 +223,7 @@ public class TestCasesIntegrationVariant {
 	public void test_24_delete_exon_utr() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/delete_exon_utr.txt", null, true);
+		comp.snpEffect(path("delete_exon_utr.txt"), null, true);
 	}
 
 	@Test
@@ -233,7 +232,7 @@ public class TestCasesIntegrationVariant {
 		Config config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 
-		String fastaFile = "tests/testCase.fa";
+		String fastaFile = path("testCase.fa");
 		String seq = GprSeq.fastaSimpleRead(fastaFile);
 
 		// Test all bases in all exons
@@ -271,7 +270,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		String genomeName = "testHg3761Chr15";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/chr15_78909452.txt", null, true);
+		comp.snpEffect(path("chr15_78909452.txt"), null, true);
 	}
 
 	/**
@@ -283,7 +282,7 @@ public class TestCasesIntegrationVariant {
 		//---
 		// Build snpEffect
 		//---
-		String gtfFile = "tests/ENSMUSG00000005763.gtf";
+		String gtfFile = path("ENSMUSG00000005763.gtf");
 		String genome = "testMm37.61";
 
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
@@ -301,7 +300,7 @@ public class TestCasesIntegrationVariant {
 		// Calculate effect
 		//---
 		CompareEffects comp = new CompareEffects(snpEffectPredictor, randSeed, verbose);
-		comp.snpEffect("tests/ENSMUSG00000005763.out", null, true);
+		comp.snpEffect(path("ENSMUSG00000005763.out"), null, true);
 	}
 
 	/**
@@ -313,7 +312,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		String genomeName = "testHg3763Chr20";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/warren.eff.missing.chr20.txt", null, true);
+		comp.snpEffect(path("warren.eff.missing.chr20.txt"), null, true);
 	}
 
 	/**
@@ -324,7 +323,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		String genomeName = "testHg3765Chr22";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/rareAa.txt", null, true);
+		comp.snpEffect(path("rareAa.txt"), null, true);
 	}
 
 	/**
@@ -339,7 +338,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		String genomeName = "testHg3767ChrMt";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/mt.txt", null, true);
+		comp.snpEffect(path("mt.txt"), null, true);
 	}
 
 	/**
@@ -350,7 +349,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		String genomeName = "testHg3769Chr12";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/start_gained_test.txt", null, true);
+		comp.snpEffect(path("start_gained_test.txt"), null, true);
 	}
 
 	/**
@@ -361,7 +360,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		String genomeName = "testHg3769Chr12";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffectNegate("tests/start_gained_NOT_test.txt", null, true);
+		comp.snpEffectNegate(path("start_gained_NOT_test.txt"), null, true);
 	}
 
 	/**
@@ -372,7 +371,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		String genomeName = "testHg3766Chr1";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/start_gained_test_2.txt", null, true);
+		comp.snpEffect(path("start_gained_test_2.txt"), null, true);
 	}
 
 	/**
@@ -383,7 +382,7 @@ public class TestCasesIntegrationVariant {
 		Gpr.debug("Test");
 		String genomeName = "testHg3766Chr1";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffectNegate("tests/start_gained_NOT_test_2.txt", null, true);
+		comp.snpEffectNegate(path("start_gained_NOT_test_2.txt"), null, true);
 	}
 
 	/**
@@ -411,7 +410,7 @@ public class TestCasesIntegrationVariant {
 	public void test_38_NON_SYNONYMOUS_START() {
 		Gpr.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
-		comp.snpEffect("tests/nonSynStart.out", "ENST00000250823", true);
+		comp.snpEffect(path("nonSynStart.out"), "ENST00000250823", true);
 	}
 
 }

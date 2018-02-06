@@ -45,8 +45,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	public void testCase_01_Exon_Simple() {
 		Gpr.debug("Test");
 		String genome = "testCase";
-		String gff3File = "tests/exonSimple.gff3";
-		String resultFile = "tests/exonSimple.txt";
+		String gff3File = path("exonSimple.gff3");
+		String resultFile = path("exonSimple.txt");
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 	}
 
@@ -54,8 +54,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	public void testCase_02_ExonIn() {
 		Gpr.debug("Test");
 		String genome = "testCase";
-		String gff3File = "tests/exonIn.gff3";
-		String resultFile = "tests/exonIn.txt";
+		String gff3File = path("exonIn.gff3");
+		String resultFile = path("exonIn.txt");
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 	}
 
@@ -63,8 +63,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	public void testCase_03_ExonOut() {
 		Gpr.debug("Test");
 		String genome = "testCase";
-		String gff3File = "tests/exonOut.gff3";
-		String resultFile = "tests/exonOut.txt";
+		String gff3File = path("exonOut.gff3");
+		String resultFile = path("exonOut.txt");
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 	}
 
@@ -73,8 +73,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testAthalianaTair10"; //"athalianaTair10";
-		String gff3File = "tests/AT5G66790.gff3";
-		String resultFile = "tests/AT5G66790.txt";
+		String gff3File = path("AT5G66790.gff3");
+		String resultFile = path("AT5G66790.txt");
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 	}
 
@@ -83,8 +83,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testPaeru.PA14";
-		String gff3File = "tests/paeru.PA14.muccA.gff";
-		String resultFile = "tests/paeru.PA14.muccA.txt";
+		String gff3File = path("paeru.PA14.muccA.gff");
+		String resultFile = path("paeru.PA14.muccA.txt");
 		SnpEffectPredictor sep = buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 
 		// Make sure no splice site is added
@@ -100,8 +100,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testPpersica139";
-		String gff3File = "tests/ppersica_139.gff";
-		String resultFile = "tests/ppersica_139.txt";
+		String gff3File = path("ppersica_139.gff");
+		String resultFile = path("ppersica_139.txt");
 		buildGff3AndCompare(genome, gff3File, resultFile, false, false);
 	}
 
@@ -109,8 +109,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	public void testCase_07_Rice5() {
 		Gpr.debug("Test");
 		String genome = "testRice5";
-		String gff3File = "tests/Os03t0150600.gff";
-		String resultFile = "tests/Os03t0150600.txt";
+		String gff3File = path("Os03t0150600.gff");
+		String resultFile = path("Os03t0150600.txt");
 		buildGff3AndCompare(genome, gff3File, resultFile, false, false);
 	}
 
@@ -119,8 +119,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 		Gpr.debug("Test");
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testVibrio";
-		String gff3File = "tests/vibrio.gff3";
-		String resultFile = "tests/vibrio.txt";
+		String gff3File = path("vibrio.gff3");
+		String resultFile = path("vibrio.txt");
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 	}
 
@@ -128,8 +128,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	public void testCase_09() {
 		Gpr.debug("Test");
 		String genome = "testAP";
-		String gff3File = "tests/testAP_genes.gff.gz";
-		String resultFile = "tests/testAP.txt";
+		String gff3File = path("testAP_genes.gff.gz");
+		String resultFile = path("testAP.txt");
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 	}
 
@@ -137,8 +137,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	public void testCase_09_AP() {
 		Gpr.debug("Test");
 		String genome = "testAP";
-		String gff3File = "tests/testAP_genes.gff.gz";
-		String resultFile = "tests/testAP.txt";
+		String gff3File = path("testAP_genes.gff.gz");
+		String resultFile = path("testAP.txt");
 
 		// Capture STDERR
 		PrintStream errOri = System.err;
@@ -168,8 +168,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	public void testCase_10_MaizeZmB73() {
 		Gpr.debug("Test");
 		String genome = "testMaizeZmB73";
-		String gff3File = "tests/testMaizeZmB73.gff3";
-		String resultFile = "tests/testMaizeZmB73.txt";
+		String gff3File = path("testMaizeZmB73.gff3");
+		String resultFile = path("testMaizeZmB73.txt");
 		buildGff3AndCompare(genome, gff3File, resultFile, true, false);
 	}
 
@@ -180,7 +180,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	public void testCase_11_mita() {
 		Gpr.debug("Test");
 		String genome = "testMita";
-		String gff3File = "tests/testMita.gff";
+		String gff3File = path("testMita.gff");
 		String resultFile = null; // We only check that there is no "Out of memory" error due to infinite loop
 		buildGff3AndCompare(genome, gff3File, resultFile, false, false);
 	}

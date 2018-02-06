@@ -4,8 +4,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.snpeff.snpEffect.testCases.integration.TestCasesAnn;
-import org.snpeff.snpEffect.testCases.integration.TestCasesIntegratioBuildPdb;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationApply;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationBuildPdb;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCancer;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCanonical;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCircularGenome;
@@ -32,9 +32,9 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsIns;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsLarge;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsMnps;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationHgvsUpDownStream;
-import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationLargeDeletion;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationInsEtc;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationInsVep;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationLargeDeletion;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationLof;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationMarkerSeq;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationMissenseSilentRatio;
@@ -68,7 +68,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
 @RunWith(Suite.class)
 @SuiteClasses({ TestCasesAnn.class, //
 		TestCasesIntegrationApply.class, //
-		TestCasesIntegratioBuildPdb.class, //
+		TestCasesIntegrationBuildPdb.class, //
 		TestCasesIntegrationCancer.class, //
 		TestCasesIntegrationCanonical.class, //
 		TestCasesIntegrationCircularGenome.class, //

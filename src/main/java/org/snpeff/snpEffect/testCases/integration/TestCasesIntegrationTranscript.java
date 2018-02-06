@@ -120,7 +120,6 @@ public class TestCasesIntegrationTranscript {
 				if (debug) Gpr.debug(tr);
 				CodonTable codonTable = tr.codonTable();
 
-				//				String mRna = tr.mRna().toLowerCase();
 				String cds = tr.cds().toLowerCase();
 				String protein = tr.protein();
 

@@ -34,9 +34,9 @@ public class TestCasesIntegrationGtf22 extends TestCasesIntegrationBase {
 	public void testCaseHg37_61_ENST00000250838() {
 		Gpr.debug("Test");
 		String genome = "testHg37.61";
-		String gtfFile = "tests/ENST00000250838.gtf";
-		String fastaFile = "tests/chrY.fa.gz";
-		String resultFile = "tests/ENST00000250838.txt";
+		String gtfFile = path("ENST00000250838.gtf");
+		String fastaFile = path("chrY.fa.gz");
+		String resultFile = path("ENST00000250838.txt");
 		buildGtfAndCompare(genome, gtfFile, fastaFile, resultFile);
 	}
 
@@ -44,9 +44,9 @@ public class TestCasesIntegrationGtf22 extends TestCasesIntegrationBase {
 	public void testCaseHg37_61_ENST00000331397() {
 		Gpr.debug("Test");
 		String genome = "testHg37.61";
-		String gtfFile = "tests/ENST00000331397.gtf22";
-		String fastaFile = "tests/chrY.fa.gz";
-		String resultFile = "tests/ENST00000331397.txt";
+		String gtfFile = path("ENST00000331397.gtf22");
+		String fastaFile = path("chrY.fa.gz");
+		String resultFile = path("ENST00000331397.txt");
 		buildGtfAndCompare(genome, gtfFile, fastaFile, resultFile);
 	}
 
@@ -54,8 +54,8 @@ public class TestCasesIntegrationGtf22 extends TestCasesIntegrationBase {
 	public void testCaseMm37_61_ENSMUSG00000051951() {
 		Gpr.debug("Test");
 		String genome = "testMm37.61";
-		String gtfFile = "tests/ENSMUSG00000051951.gtf";
-		String resultFile = "tests/ENSMUSG00000051951.txt";
+		String gtfFile = path("ENSMUSG00000051951.gtf");
+		String resultFile = path("ENSMUSG00000051951.txt");
 		buildGtfAndCompare(genome, gtfFile, null, resultFile);
 	}
 
@@ -63,8 +63,8 @@ public class TestCasesIntegrationGtf22 extends TestCasesIntegrationBase {
 	public void testCaseMm37_61_ENSMUST00000070533() {
 		Gpr.debug("Test");
 		String genome = "testMm37.61";
-		String gtfFile = "tests/ENSMUST00000070533.gtf";
-		String resultFile = "tests/ENSMUST00000070533.txt";
+		String gtfFile = path("ENSMUST00000070533.gtf");
+		String resultFile = path("ENSMUST00000070533.txt");
 		buildGtfAndCompare(genome, gtfFile, null, resultFile);
 	}
 

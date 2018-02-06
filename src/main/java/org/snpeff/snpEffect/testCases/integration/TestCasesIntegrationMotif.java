@@ -19,37 +19,37 @@ public class TestCasesIntegrationMotif extends TestCasesIntegrationBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		checkMotif("testHg3770Chr22", "tests/test_motif_01.vcf", "MA0099.2:AP1", EffectImpact.LOW, false);
+		checkMotif("testHg3770Chr22", path("test_motif_01.vcf"), "MA0099.2:AP1", EffectImpact.LOW, false);
 	}
 
 	@Test
 	public void test_01_ann() {
 		Gpr.debug("Test");
-		checkMotif("testHg3770Chr22", "tests/test_motif_01.vcf", "MA0099.2", EffectImpact.LOW, true);
+		checkMotif("testHg3770Chr22", path("test_motif_01.vcf"), "MA0099.2", EffectImpact.LOW, true);
 	}
 
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-		checkMotif("testHg3770Chr22", "tests/test_motif_02.vcf", "MA0099.2:AP1", EffectImpact.MODIFIER, false);
+		checkMotif("testHg3770Chr22", path("test_motif_02.vcf"), "MA0099.2:AP1", EffectImpact.MODIFIER, false);
 	}
 
 	@Test
 	public void test_02_ann() {
 		Gpr.debug("Test");
-		checkMotif("testHg3770Chr22", "tests/test_motif_02.vcf", "MA0099.2", EffectImpact.MODIFIER, true);
+		checkMotif("testHg3770Chr22", path("test_motif_02.vcf"), "MA0099.2", EffectImpact.MODIFIER, true);
 	}
 
 	@Test
 	public void test_03() {
 		Gpr.debug("Test");
-		checkMotif("testHg3770Chr22", "tests/test_motif_03.vcf", "MA0099.2:AP1", EffectImpact.LOW, false);
+		checkMotif("testHg3770Chr22", path("test_motif_03.vcf"), "MA0099.2:AP1", EffectImpact.LOW, false);
 	}
 
 	@Test
 	public void test_03_ann() {
 		Gpr.debug("Test");
-		checkMotif("testHg3770Chr22", "tests/test_motif_03.vcf", "MA0099.2", EffectImpact.LOW, true);
+		checkMotif("testHg3770Chr22", path("test_motif_03.vcf"), "MA0099.2", EffectImpact.LOW, true);
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class TestCasesIntegrationMotif extends TestCasesIntegrationBase {
 	public void test_04() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr11";
-		String vcf = "tests/craig_chr11.vcf";
+		String vcf = path("craig_chr11.vcf");
 
 		String args[] = { "-noLog", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -77,7 +77,7 @@ public class TestCasesIntegrationMotif extends TestCasesIntegrationBase {
 	public void test_05() {
 		Gpr.debug("Test");
 		String genome = "testHg3775Chr14";
-		String vcf = "tests/craig_chr14.vcf";
+		String vcf = path("craig_chr14.vcf");
 
 		String args[] = { "-noLog", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);

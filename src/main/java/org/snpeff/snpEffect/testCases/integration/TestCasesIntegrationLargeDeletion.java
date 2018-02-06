@@ -21,13 +21,12 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 
 	public TestCasesIntegrationLargeDeletion() {
 		super();
-		testsDir = "tests/integration/large_deletion/";
 	}
 
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noOut", "testHg3766Chr1", testsDir + "huge_deletion_DEL.vcf" };
+		String args[] = { "-classic", "-noOut", "testHg3766Chr1", path("huge_deletion_DEL.vcf") };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -54,7 +53,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noOut", "testHg3766Chr1", testsDir + "huge_deletion.vcf.gz" };
+		String args[] = { "-classic", "-noOut", "testHg3766Chr1", path("huge_deletion.vcf.gz") };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -73,7 +72,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 	@Test
 	public void test_03() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noOut", "testHg19Chr9", testsDir + "huge_deletion_chr9.vcf" };
+		String args[] = { "-classic", "-noOut", "testHg19Chr9", path("huge_deletion_chr9.vcf") };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -117,7 +116,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 	public void test_04() {
 		Gpr.debug("Test");
 		String genome = "testHg19Chr9";
-		String vcfFile = testsDir + "huge_deletion_fusion_chr9.vcf";
+		String vcfFile = path("huge_deletion_fusion_chr9.vcf");
 		List<VcfEntry> vcfs = snpEffect(genome, vcfFile, null, EffFormatVersion.FORMAT_ANN_1);
 
 		// Sanity check

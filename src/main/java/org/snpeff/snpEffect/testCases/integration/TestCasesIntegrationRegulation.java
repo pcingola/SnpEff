@@ -14,10 +14,7 @@ import org.snpeff.vcf.VcfEntry;
 /**
  * Test case
  */
-public class TestCasesIntegrationRegulation {
-
-	boolean debug = false;
-	boolean verbose = false || debug;
+public class TestCasesIntegrationRegulation extends TestCasesIntegrationBase {
 
 	public TestCasesIntegrationRegulation() {
 		super();
@@ -31,7 +28,7 @@ public class TestCasesIntegrationRegulation {
 		Gpr.debug("Test");
 
 		String genome = "testHg3775Chr22";
-		String vcfFileName = "tests/test_regulatory_01.vcf";
+		String vcfFileName = path("test_regulatory_01.vcf");
 		String cellType = "HepG2";
 		String dbFileName = "data/" + genome + "/regulation_" + cellType + ".bin";
 

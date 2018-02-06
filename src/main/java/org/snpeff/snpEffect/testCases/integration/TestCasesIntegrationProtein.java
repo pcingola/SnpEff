@@ -17,14 +17,12 @@ import junit.framework.Assert;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationProtein {
-
-	public static boolean verbose = false;
+public class TestCasesIntegrationProtein extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() throws IOException {
 		Gpr.debug("Test");
-		String args[] = { "testHg3763ChrY", "./tests/proteins_testHg3763ChrY.txt" };
+		String args[] = { "testHg3763ChrY", path("proteins_testHg3763ChrY.txt") };
 
 		SnpEffCmdProtein cmd = new SnpEffCmdProtein();
 		cmd.parseArgs(args);

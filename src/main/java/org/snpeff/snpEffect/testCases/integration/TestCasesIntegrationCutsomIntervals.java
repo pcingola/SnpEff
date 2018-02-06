@@ -15,10 +15,8 @@ import junit.framework.Assert;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationCutsomIntervals {
+public class TestCasesIntegrationCutsomIntervals extends TestCasesIntegrationBase {
 
-	public static boolean debug = false;
-	public static boolean verbose = false || debug;
 	public static final int NUM_DEL_TEST = 10; // number of random test per transcript
 
 	public TestCasesIntegrationCutsomIntervals() {
@@ -32,11 +30,11 @@ public class TestCasesIntegrationCutsomIntervals {
 		// Load database
 		String[] args = { "-classic"//
 				, "-interval"//
-				, "tests/custom_intervals_01.gff" //
+				, path("custom_intervals_01.gff") //
 				, "-ud" //
 				, "0" //
 				, "testHg3770Chr22"//
-				, "tests/custom_intervals_01.vcf" //
+				, path("custom_intervals_01.vcf") //
 		};
 
 		SnpEff cmd = new SnpEff(args);

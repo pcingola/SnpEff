@@ -18,14 +18,14 @@ public class TestCasesIntegrationTranscriptError extends TestCasesIntegrationBas
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "testHg3763Chr20", "./tests/short_codon_bug.vcf" };
+		String args[] = { "-classic", "testHg3763Chr20", path("short_codon_bug.vcf") };
 		checkTranscriptError(args, ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE);
 	}
 
 	@Test
 	public void test_02() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "testHg3763Chr20", "./tests/incorrect_ref.vcf" };
+		String args[] = { "-classic", "testHg3763Chr20", path("incorrect_ref.vcf") };
 		checkTranscriptError(args, ErrorWarningType.WARNING_REF_DOES_NOT_MATCH_GENOME);
 	}
 

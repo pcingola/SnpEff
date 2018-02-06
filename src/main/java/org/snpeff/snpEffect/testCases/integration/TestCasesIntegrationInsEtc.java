@@ -15,10 +15,7 @@ import org.snpeff.vcf.VcfEntry;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationInsEtc {
-
-	public static boolean debug = false;
-	public static boolean verbose = false || debug;
+public class TestCasesIntegrationInsEtc extends TestCasesIntegrationBase {
 
 	/**
 	 * Insertion on minus strand
@@ -26,7 +23,7 @@ public class TestCasesIntegrationInsEtc {
 	@Test
 	public void test_01_InsOffByOne() {
 		Gpr.debug("Test");
-		String args[] = { "-classic", "-noHgvs", "testENST00000268124", "tests/ins_off_by_one.vcf" };
+		String args[] = { "-classic", "-noHgvs", "testENST00000268124", path("ins_off_by_one.vcf") };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff snpeff = (SnpEffCmdEff) cmd.cmd();

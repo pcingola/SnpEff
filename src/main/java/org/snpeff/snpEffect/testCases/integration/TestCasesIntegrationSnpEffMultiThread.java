@@ -19,8 +19,8 @@ public class TestCasesIntegrationSnpEffMultiThread extends IntegrationTest {
 		// FIXME: Mutithreading mode is broken: Move to Java streams + lambdas
 		if (Math.random() < 2.0) throw new RuntimeException("Mutithreading mode is broken: Move to Java streams + lambdas");
 
-		String expectedOutputFile = "tests/test.chr1.1line.out.classic.vcf";
-		String args[] = { "eff", "-t", "-classic", "-noHgvs", "-noStats", "-noLog", "-noLof", "testHg3763Chr1", "tests/test.chr1.1line.vcf" };
+		String expectedOutputFile = path("test.chr1.1line.out.classic.vcf");
+		String args[] = { "eff", "-t", "-classic", "-noHgvs", "-noStats", "-noLog", "-noLof", "testHg3763Chr1", path("test.chr1.1line.vcf") };
 		SnpEff snpeff = new SnpEff(args);
 		snpeff.setVerbose(verbose);
 		command(snpeff, expectedOutputFile);

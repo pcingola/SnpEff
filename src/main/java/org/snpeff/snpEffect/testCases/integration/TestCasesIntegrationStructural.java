@@ -18,10 +18,7 @@ import junit.framework.Assert;
  *
  * @author pcingola
  */
-public class TestCasesIntegrationStructural {
-
-	boolean debug = false;
-	boolean verbose = false || debug;
+public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 
 	/**
 	 * Duplication creates a gene fusion
@@ -30,7 +27,7 @@ public class TestCasesIntegrationStructural {
 	public void test_01_DUP_fusion() {
 		Gpr.debug("Test");
 		String genome = "hg19";
-		String vcf = "tests/test_fusion_FGFR3-TACC3.vcf";
+		String vcf = path("test_fusion_FGFR3-TACC3.vcf");
 
 		String args[] = { "-noLog", "-ud", "0", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -62,7 +59,7 @@ public class TestCasesIntegrationStructural {
 	public void test_02_INV_fusion() {
 		Gpr.debug("Test");
 		String genome = "testHg19Chr2";
-		String vcf = "tests/test_fusion_EML4-ALK.vcf";
+		String vcf = path("test_fusion_EML4-ALK.vcf");
 
 		String args[] = { "-noLog", "-ud", "0", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -94,7 +91,7 @@ public class TestCasesIntegrationStructural {
 	public void test_03_DEL_fusion() {
 		Gpr.debug("Test");
 		String genome = "testHg19Chr21";
-		String vcf = "tests/test_fusion_TTC3-DSCAM.vcf";
+		String vcf = path("test_fusion_TTC3-DSCAM.vcf");
 
 		String args[] = { "-noLog", "-ud", "0", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -126,7 +123,7 @@ public class TestCasesIntegrationStructural {
 	public void test_04_fusion() {
 		Gpr.debug("Test");
 		String genome = "testHg19Chr10";
-		String vcf = "tests//test_fusion_CCDC6-RET.vcf";
+		String vcf = path("/test_fusion_CCDC6-RET.vcf");
 
 		String args[] = { "-noLog", "-ud", "0", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -158,7 +155,7 @@ public class TestCasesIntegrationStructural {
 	public void test_05_fusion() {
 		Gpr.debug("Test");
 		String genome = "hg19";
-		String vcf = "tests/test_fusion_ROS1-SLC34A2.vcf";
+		String vcf = path("test_fusion_ROS1-SLC34A2.vcf");
 
 		String args[] = { "-noLog", "-ud", "0", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
@@ -190,7 +187,7 @@ public class TestCasesIntegrationStructural {
 	public void test_06_fusion() {
 		Gpr.debug("Test");
 		String genome = "testHg19Chr3";
-		String vcf = "tests/test_fusion_intron_rank.vcf";
+		String vcf = path("test_fusion_intron_rank.vcf");
 
 		String args[] = { "-noLog", "-ud", "0", genome, vcf };
 		SnpEff snpEff = new SnpEff(args);
