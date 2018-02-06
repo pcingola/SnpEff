@@ -21,12 +21,10 @@ import org.snpeff.util.GprSeq;
 
 import junit.framework.Assert;
 
-public class TestCasesIntervals {
+public class TestCasesIntervals extends TestCasesBase {
 
 	int maxLen = 100;
-	boolean verbose = false;
 	boolean compareCdsTestsEnable = false;
-	Random rand;
 	Genome genome;
 
 	public TestCasesIntervals() {
@@ -104,7 +102,8 @@ public class TestCasesIntervals {
 		}
 	}
 
-	void initRand() {
+	@Override
+	protected void initRand() {
 		rand = new Random(20100629);
 	}
 
@@ -153,8 +152,8 @@ public class TestCasesIntervals {
 	public void test_01() {
 		Gpr.debug("Test");
 		initRand();
-		Markers intervals = MarkerUtil.readTxt("tests/interval_data_100.txt", genome, 0);
-		compareToFile(intervals.toStringTxt(), "tests/test_01.txt");
+		Markers intervals = MarkerUtil.readTxt(path("interval_data_100.txt"), genome, 0);
+		compareToFile(intervals.toStringTxt(), path("test_01.txt"));
 	}
 
 	/**
@@ -166,7 +165,7 @@ public class TestCasesIntervals {
 		initRand();
 		Markers intervals = randomIntervals(10, maxLen, 10, 5);
 		intervals.sort(false, false);
-		compareToFile(intervals.toStringTxt(), "tests/test_02.txt");
+		compareToFile(intervals.toStringTxt(), path("test_02.txt"));
 	}
 
 	/**
@@ -178,7 +177,7 @@ public class TestCasesIntervals {
 		initRand();
 		Markers intervals = randomIntervals(100, maxLen, 25, 2);
 		intervals.sort(true, false);
-		compareToFile(intervals.toStringTxt(), "tests/test_03.txt");
+		compareToFile(intervals.toStringTxt(), path("test_03.txt"));
 	}
 
 	/**
@@ -191,7 +190,7 @@ public class TestCasesIntervals {
 		Markers intervals = randomIntervals(20, maxLen, 10, 2);
 		Markers merge = intervals.merge();
 		if (verbose) System.out.println("Merge :\n" + merge.toStringAsciiArt(maxLen));
-		compareToFile(merge.toStringTxt(), "tests/test_04.txt");
+		compareToFile(merge.toStringTxt(), path("test_04.txt"));
 	}
 
 	/**
@@ -209,7 +208,7 @@ public class TestCasesIntervals {
 		add.add(intervals);
 		add.add(intervals2);
 
-		compareToFile(add.toStringTxt(), "tests/test_05.txt");
+		compareToFile(add.toStringTxt(), path("test_05.txt"));
 
 		if (verbose) {
 			// Sort

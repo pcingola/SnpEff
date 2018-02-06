@@ -9,9 +9,7 @@ import org.snpeff.util.Gpr;
  *
  * @author pcingola
  */
-public class TestCasesFasta {
-
-	boolean verbose = false;
+public class TestCasesFasta extends TestCasesBase {
 
 	public TestCasesFasta() {
 		super();
@@ -23,7 +21,7 @@ public class TestCasesFasta {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String fastaFileName = "tests/emptyLine.fa";
+		String fastaFileName = path("emptyLine.fa");
 		FastaFileIterator ffi = new FastaFileIterator(fastaFileName);
 		for (String seq : ffi) {
 			if (verbose) System.out.println("SeqName: " + ffi.getName() + "\tSize: " + seq.length());

@@ -3,8 +3,6 @@ package org.snpeff.snpEffect.testCases.unity;
 import java.util.HashSet;
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.binseq.DnaAndQualitySequence;
 import org.snpeff.binseq.DnaSequence;
@@ -15,9 +13,9 @@ import org.snpeff.fastq.FastqVariant;
 import org.snpeff.fileIterator.FastqFileIterator;
 import org.snpeff.util.Gpr;
 
-public class TestCasesDnaSequence {
+import junit.framework.Assert;
 
-	public static boolean verbose = false;
+public class TestCasesDnaSequence extends TestCasesBase {
 
 	/**
 	 * Create random changes in a sequence
@@ -26,7 +24,7 @@ public class TestCasesDnaSequence {
 	 * @return
 	 */
 	String change(String sequence, int numChanges, Random rand) {
-		HashSet<Integer> changedPos = new HashSet<Integer>();
+		HashSet<Integer> changedPos = new HashSet<>();
 		char chars[] = sequence.toCharArray();
 
 		for (int i = 0; i < numChanges;) {
@@ -335,8 +333,8 @@ public class TestCasesDnaSequence {
 	@Test
 	public void test_05_fastqReader() {
 		Gpr.debug("Test");
-		String fastqFileName = "tests/fastq_test.fastq";
-		String txtFileName = "tests/fastq_test.txt";
+		String fastqFileName = path("fastq_test.fastq");
+		String txtFileName = path("fastq_test.txt");
 
 		// Read fastq file
 		StringBuilder sb = new StringBuilder();

@@ -2,24 +2,23 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.stats.IntStats;
 import org.snpeff.util.Gpr;
 
-public class TestCasesIntStats {
+import junit.framework.Assert;
+
+public class TestCasesIntStats extends TestCasesBase {
 
 	public static double EPSILON = 0.000001;
-	boolean verbose = false;
-	Random rand;
 
 	public TestCasesIntStats() {
 		super();
 		initRand();
 	}
 
-	void initRand() {
+	@Override
+	protected void initRand() {
 		rand = new Random(20110328);
 	}
 
@@ -29,7 +28,7 @@ public class TestCasesIntStats {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		String fileName = "tests/intStats_test_01.txt";
+		String fileName = path("intStats_test_01.txt");
 		String file = Gpr.readFile(fileName);
 		String lines[] = file.split("\n");
 

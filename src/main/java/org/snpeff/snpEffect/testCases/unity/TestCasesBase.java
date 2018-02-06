@@ -1,8 +1,12 @@
 package org.snpeff.snpEffect.testCases.unity;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.snpeff.binseq.GenomicSequences;
@@ -19,8 +23,8 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryRand;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.EffFormatVersion;
@@ -28,6 +32,7 @@ import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
 import junit.framework.Assert;
+import net.sf.samtools.util.RuntimeEOFException;
 
 /**
  * Base class for some test cases
@@ -35,6 +40,8 @@ import junit.framework.Assert;
  * @author pcingola
  */
 public class TestCasesBase {
+
+	public static final String BASE_DIR = "tests";
 
 	protected boolean debug = false;
 	protected boolean verbose = false || debug;
@@ -66,6 +73,19 @@ public class TestCasesBase {
 	protected String chromoSequence = "";
 	protected char chromoBases[];
 	protected CodonTable codonTable;
+
+	protected String testType;
+	protected List<String> prefixes;
+
+	public TestCasesBase() {
+		testType = "unity";
+
+		prefixes = new LinkedList<>();
+		prefixes.add("TestCases");
+		prefixes.add("TestsCase");
+		prefixes.add("Unit");
+		prefixes.add("Integration");
+	}
 
 	@After
 	public void after() {
@@ -284,6 +304,38 @@ public class TestCasesBase {
 		// Create genomic sequences
 		genome.getGenomicSequences().clear();
 		genome.getGenomicSequences().addGeneSequences(chromosome.getId(), chromoSequence);
+	}
+
+	public String path(String fileName) {
+		String dir = BASE_DIR + "/" + testType + "/" + pathClassName();
+		String path = dir + "/" + fileName;
+		String oldPath = BASE_DIR + "/old/" + fileName;
+
+		if (!Gpr.exists(dir)) {
+			Gpr.debug("File migration: Creating dir:" + dir);
+			File d = new File(dir);
+			d.mkdir();
+		}
+
+		if (!Gpr.exists(oldPath)) {
+			Gpr.debug("File migration: Cannot find original file:" + oldPath);
+		} else if (!Gpr.exists(path)) {
+			Gpr.debug("File migration: Moving file:" + path);
+			try {
+				FileUtils.moveFile(new File(oldPath), new File(path));
+			} catch (IOException e) {
+				throw new RuntimeEOFException("Cannot copy files:\n\tsrc: " + oldPath + "\n\tdst: " + path, e);
+
+			}
+		}
+		return path;
+	}
+
+	protected String pathClassName() {
+		String sname = this.getClass().getSimpleName();
+		for (String prefix : prefixes)
+			if (sname.startsWith(prefix)) sname = sname.substring(prefix.length());
+		return sname.substring(0, 1).toLowerCase() + sname.substring(1);
 	}
 
 	/**

@@ -14,9 +14,7 @@ import junit.framework.Assert;
  * Test case for parsing ANN fields
  *
  */
-public class TestCasesAnnParse {
-
-	boolean verbose = false;
+public class TestCasesAnnParse extends TestCasesBase {
 
 	public TestCasesAnnParse() {
 		super();
@@ -52,7 +50,7 @@ public class TestCasesAnnParse {
 	@Test
 	public void test_old_SO_vcf() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/test_old_SO_01.vcf";
+		String vcfFile = path("test_old_SO_01.vcf");
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
@@ -70,7 +68,7 @@ public class TestCasesAnnParse {
 	@Test
 	public void testCase_tfbs_ablation() {
 		Gpr.debug("Test");
-		String vcfFile = "tests/tfbs_ablation.vcf";
+		String vcfFile = path("tfbs_ablation.vcf");
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 
 		boolean ok = false;

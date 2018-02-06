@@ -1,17 +1,17 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.motif.Jaspar;
 import org.snpeff.util.Gpr;
+
+import junit.framework.Assert;
 
 /**
  * Test case for Jaspar parsing
  *
  * @author pcingola
  */
-public class TestCasesJaspar {
+public class TestCasesJaspar extends TestCasesBase {
 
 	public TestCasesJaspar() {
 		super();
@@ -21,7 +21,7 @@ public class TestCasesJaspar {
 	public void test_01() {
 		Gpr.debug("Test");
 		Jaspar jaspar = new Jaspar();
-		jaspar.load("tests/jaspar_old.txt.gz");
+		jaspar.load(path("jaspar_old.txt.gz"));
 
 		String actual = jaspar.getPwm("MA0001.1").toString().replace('\t', ' ');
 
@@ -55,7 +55,7 @@ public class TestCasesJaspar {
 	public void test_02() {
 		Gpr.debug("Test");
 		Jaspar jaspar = new Jaspar();
-		jaspar.load("tests/jaspar_2013.txt.gz");
+		jaspar.load(path("jaspar_2013.txt.gz"));
 
 		String actual = jaspar.getPwm("MA0001.1").toString().replace('\t', ' ');
 

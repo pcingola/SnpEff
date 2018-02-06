@@ -5,18 +5,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.fileIterator.SeekableBufferedReader;
 import org.snpeff.util.Gpr;
+
+import junit.framework.Assert;
 
 /**
  * Seekable file reader test case
  *
  * @author pcingola
  */
-public class TestCasesSeekableReader {
+public class TestCasesSeekableReader extends TestCasesBase {
 
 	/**
 	 * Calculate a simple hash using SeekableBufferedReader
@@ -56,7 +56,7 @@ public class TestCasesSeekableReader {
 	@Test
 	public void test_00() throws IOException {
 		Gpr.debug("Test");
-		String fileName = "tests/testLukas.vcf";
+		String fileName = path("testLukas.vcf");
 		long hashExp = calcHashBufferedReader(fileName);
 		long hash = calcHash(fileName);
 		System.out.println(String.format("%016x\t%016x\t%s", hashExp, hash, fileName));
@@ -71,20 +71,10 @@ public class TestCasesSeekableReader {
 	@Test
 	public void test_01() throws IOException {
 		Gpr.debug("Test");
-		String dirName = "./tests/";
-		File dir = new File(dirName);
-
-		for (String fileName : dir.list()) {
-			if (fileName.endsWith(".txt") || fileName.endsWith(".vcf")) {
-				if (fileName.equals("testLukas.vcf")) {
-					fileName = dirName + fileName;
-					long hashExp = calcHashBufferedReader(fileName);
-					long hash = calcHash(fileName);
-					System.out.println(String.format("%016x\t%016x\t%s", hashExp, hash, fileName));
-
-					Assert.assertEquals(hashExp, hash);
-				}
-			}
-		}
+		String fileName = path("testLukas.vcf");
+		long hashExp = calcHashBufferedReader(fileName);
+		long hash = calcHash(fileName);
+		System.out.println(String.format("%016x\t%016x\t%s", hashExp, hash, fileName));
+		Assert.assertEquals(hashExp, hash);
 	}
 }
