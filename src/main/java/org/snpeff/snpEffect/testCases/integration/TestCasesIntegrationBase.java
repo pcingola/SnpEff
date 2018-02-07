@@ -76,43 +76,6 @@ public class TestCasesIntegrationBase {
 		prefixes.add("Integration");
 	}
 
-	public String path(String fileName) {
-		String dir = BASE_DIR + "/" + testType + "/" + pathClassName();
-		String path = dir + "/" + fileName;
-		String oldPath = BASE_DIR + "/old/" + fileName;
-
-		if (!Gpr.exists(dir)) {
-			Gpr.debug("File migration: Creating dir:" + dir);
-			File d = new File(dir);
-			d.mkdir();
-		}
-
-		if (!Gpr.exists(oldPath)) {
-			if (Gpr.exists(oldPath + ".gz")) {
-				oldPath += ".gz";
-				path += ".gz";
-			} else Gpr.debug("File migration: Cannot find original file:" + oldPath);
-		}
-
-		if (!Gpr.exists(path) && Gpr.exists(oldPath)) {
-			Gpr.debug("File migration: Moving file:" + path);
-			try {
-				FileUtils.moveFile(new File(oldPath), new File(path));
-			} catch (IOException e) {
-				throw new RuntimeEOFException("Cannot copy files:\n\tsrc: " + oldPath + "\n\tdst: " + path, e);
-
-			}
-		}
-		return path;
-	}
-
-	protected String pathClassName() {
-		String sname = this.getClass().getSimpleName();
-		for (String prefix : prefixes)
-			if (sname.startsWith(prefix)) sname = sname.substring(prefix.length());
-		return sname.substring(0, 1).toLowerCase() + sname.substring(1);
-	}
-
 	/**
 	 * Apply a variant to a transcript
 	 */
@@ -808,6 +771,52 @@ public class TestCasesIntegrationBase {
 		sep.createGenomicRegions();
 		if (build) sep.buildForest();
 		return sep;
+	}
+
+	public String path(String fileName) {
+		return BASE_DIR + "/" + testType + "/" + pathClassName() + "/" + fileName;
+	}
+
+	protected String pathClassName() {
+		String sname = this.getClass().getSimpleName();
+		for (String prefix : prefixes)
+			if (sname.startsWith(prefix)) sname = sname.substring(prefix.length());
+		return sname.substring(0, 1).toLowerCase() + sname.substring(1);
+	}
+
+	/**
+	 * Used to migrate test files in old path
+	 * @param fileName
+	 * @return
+	 */
+	public String pathMigrate(String fileName) {
+		String dir = BASE_DIR + "/" + testType + "/" + pathClassName();
+		String path = dir + "/" + fileName;
+		String oldPath = BASE_DIR + "/old/" + fileName;
+
+		if (!Gpr.exists(dir)) {
+			Gpr.debug("File migration: Creating dir:" + dir);
+			File d = new File(dir);
+			d.mkdir();
+		}
+
+		if (!Gpr.exists(oldPath)) {
+			if (Gpr.exists(oldPath + ".gz")) {
+				oldPath += ".gz";
+				path += ".gz";
+			} else Gpr.debug("File migration: Cannot find original file:" + oldPath);
+		}
+
+		if (!Gpr.exists(path) && Gpr.exists(oldPath)) {
+			Gpr.debug("File migration: Moving file:" + path);
+			try {
+				FileUtils.moveFile(new File(oldPath), new File(path));
+			} catch (IOException e) {
+				throw new RuntimeEOFException("Cannot copy files:\n\tsrc: " + oldPath + "\n\tdst: " + path, e);
+
+			}
+		}
+		return path;
 	}
 
 	public String showTranscripts(Genome genome) {
