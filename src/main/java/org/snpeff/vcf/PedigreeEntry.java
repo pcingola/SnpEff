@@ -4,14 +4,14 @@ import java.util.List;
 
 /**
  * Pedigree entry in a VCF file header
- * 
- * E.g.: 
+ *
+ * E.g.:
  * 		##PEDIGREE=<Derived=Patient_01_Somatic,Original=Patient_01_Germline>
- * 
+ *
  * or
  * 		##PEDIGREE=<Child=CHILD-GENOME-ID,Mother=MOTHER-GENOME-ID,Father=FATHER-GENOME-ID>
- * 
- * 
+ *
+ *
  * @author pcingola
  *
  */
