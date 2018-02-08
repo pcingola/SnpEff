@@ -35,6 +35,37 @@ public class Pedigree implements Iterable<PedigreeEntry> {
 	}
 
 	/**
+	 * Are there any "back to reference" cancer variant
+	 */
+	public boolean anyBackToRef(VcfEntry vcfEntry) {
+		for (PedigreeEntry pe : derived()) {
+			int numOri = pe.getOriginalNum();
+			int numDer = pe.getDerivedNum();
+			VcfGenotype gtOri = vcfEntry.getVcfGenotype(numOri);
+			VcfGenotype gtDer = vcfEntry.getVcfGenotype(numDer);
+
+			int gd[] = gtDer.getGenotype(); // Derived genotype
+			int go[] = gtOri.getGenotype(); // Original genotype
+
+			// Skip if one of the genotypes is missing
+			if (gd == null || go == null) continue;
+
+			if (gtOri.isPhased() && gtDer.isPhased()) {
+				// Phased, we only have two possible comparisons
+				for (int i = 0; i < 2; i++)
+					if ((go[i] > 0) && (gd[i] == 0)) return true;
+			} else {
+				// Not phased, compare all possible combinations
+				for (int o = 0; o < go.length; o++)
+					for (int d = 0; d < gd.length; d++)
+						if ((go[o] > 0) && (gd[d] == 0)) return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Is there any derived sample?
 	 */
 	public boolean anyDerived() {

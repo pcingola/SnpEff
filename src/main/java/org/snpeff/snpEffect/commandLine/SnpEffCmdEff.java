@@ -987,10 +987,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 */
 	boolean shouldAnnotateVariantCancer(List<Variant> variants, VcfEntry vcfEntry) {
 		if (vcfEntry.isMultiallelic()) return true;
-
-		// FIXME
-		Gpr.debug("!!!!!!!!!!!!!!!");
-		return false;
+		// Bi-allelic are analyzed only if there are "back to REF" mutation
+		return pedigree.anyBackToRef(vcfEntry);
 	}
 
 	/**
