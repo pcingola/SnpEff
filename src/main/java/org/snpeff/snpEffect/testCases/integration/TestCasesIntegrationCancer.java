@@ -98,16 +98,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	//		String file = path("test.cancer_05.vcf");
 	//		snpEffectCancer(file, null, "testHg19Chr17", false, "p.Arg72Pro", "c.215G>C", "G-C", "NM_000546.5");
 	//	}
-	//
-	//	/**
-	//	 * Cancer mutation is reversion to the REF base
-	//	 */
-	//	@Test
-	//	public void test_07() {
-	//		Gpr.debug("Test");
-	//		String file = path("test.cancer_07.vcf");
-	//		snpEffectCancer(file, null, "testHg19Chr17", false, "p.His72Pro", "c.215A>C", "G-T", "NM_000546.5");
-	//	}
+
 	/**
 	 * Cancer mutation is reversion to the REF base
 	 */
@@ -118,5 +109,15 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 		String file = path("test.cancer_06.vcf");
 		snpEffectCancer(file, null, "testHg19Chr17", false, "p.His72Pro", "c.215A>C", "G-T", "NM_000546.5");
 	}
+
+	//	/**
+	//	 * Cancer mutation is reversion to the REF base
+	//	 */
+	//	@Test
+	//	public void test_07() {
+	//		Gpr.debug("Test");
+	//		String file = path("test.cancer_07.vcf");
+	//		snpEffectCancer(file, null, "testHg19Chr17", false, "p.His72Pro", "c.215A>C", "G-T", "NM_000546.5");
+	//	}
 
 }

@@ -307,6 +307,17 @@ public class TestCasesBase {
 	}
 
 	public String path(String fileName) {
+		return BASE_DIR + "/" + testType + "/" + pathClassName() + "/" + fileName;
+	}
+
+	protected String pathClassName() {
+		String sname = this.getClass().getSimpleName();
+		for (String prefix : prefixes)
+			if (sname.startsWith(prefix)) sname = sname.substring(prefix.length());
+		return sname.substring(0, 1).toLowerCase() + sname.substring(1);
+	}
+
+	public String pathMigrate(String fileName) {
 		String dir = BASE_DIR + "/" + testType + "/" + pathClassName();
 		String path = dir + "/" + fileName;
 		String oldPath = BASE_DIR + "/old/" + fileName;
@@ -329,13 +340,6 @@ public class TestCasesBase {
 			}
 		}
 		return path;
-	}
-
-	protected String pathClassName() {
-		String sname = this.getClass().getSimpleName();
-		for (String prefix : prefixes)
-			if (sname.startsWith(prefix)) sname = sname.substring(prefix.length());
-		return sname.substring(0, 1).toLowerCase() + sname.substring(1);
 	}
 
 	/**

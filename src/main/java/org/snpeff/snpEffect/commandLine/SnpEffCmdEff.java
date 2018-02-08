@@ -204,96 +204,16 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			List<Variant> variants = vcfEntry.variants();
 			for (Variant variant : variants) {
 				// Show progress
-				countVariants++;
-				if (verbose && (countVariants % SHOW_EVERY == 0)) {
-					int millisec = ((int) annotateTimer.elapsed());
-					int secs = millisec / 1000;
-					if (secs > 0) {
-						int varsPerSec = (int) (countVariants * 1000.0 / millisec);
-						Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
-					}
-				}
+				showProgress();
 
 				// Annotate variant
 				impactLowOrHigher |= annotateVariant(variant);
 
-				// FIXME: Remove this code (refactored)
-				//				// Calculate effects: By default do not annotate non-variant sites
-				//				if (variant.isVariant()) {
-				//					// Perform basic statistics about this variant
-				//					if (createSummaryHtml || createSummaryCsv) variantStats.sample(variant);
-				//
-				//					VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
-				//
-				//					// Create new 'section'
-				//					outputFormatter.startSection(variant);
-				//
-				//					// Show results
-				//					for (VariantEffect variantEffect : variantEffects) {
-				//						if (createSummaryHtml || createSummaryCsv) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
-				//
-				//						// Any errors or warnings?
-				//						if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
-				//						if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
-				//
-				//						// Does this entry have an impact (other than MODIFIER)?
-				//						impactLowOrHigher |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
-				//						impactModerateOrHigh |= (variantEffect.getEffectImpact() == EffectImpact.MODERATE) || (variantEffect.getEffectImpact() == EffectImpact.HIGH);
-				//
-				//						outputFormatter.add(variantEffect);
-				//						countEffects++;
-				//					}
-				//
-				//					// Finish up this section
-				//					outputFormatter.printSection(variant);
-				//
-				//					if (fastaProt != null && impactModerateOrHigh) {
-				//						// Output protein changes to fasta file
-				//						proteinAltSequence(variant, variantEffects);
-				//					}
-				//				}
+				// FIXME: Should this be
+				// impactLowOrHigher |= annotateVariant(variant);
 
 				// Perform cancer annotations
 				if (anyCancerSample && impactLowOrHigher) annotateVariantCancer(variant, variants, vcfEntry);
-
-				// FIXME: Remove this code (refactored)
-				//				//---
-				//				// Do we analyze cancer samples?
-				//				// Here we deal with Somatic vs Germline comparisons
-				//				//---
-				//				if (anyCancerSample && impactLowOrHigher && vcfEntry.isMultiallelic()) {
-				//					Gpr.debug("VARIANT:" + variant + "\tisVariant: " + variant.isVariant());
-				//
-				//					// Calculate all required comparisons
-				//					Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
-				//
-				//					// Analyze each comparison
-				//					for (Tuple<Integer, Integer> comp : comparisons) {
-				//						// We have to compare comp.first vs comp.second
-				//						int altGtNum = comp.first; // comp.first is 'derived' (our new ALT)
-				//						int refGtNum = comp.second; // comp.second is 'original' (our new REF)
-				//
-				//						Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
-				//						Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
-				//						VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
-				//
-				//						// No net variation? Skip
-				//						if (!varNonRef.isVariant()) continue;
-				//
-				//						// Calculate effects
-				//						VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
-				//
-				//						// Create new 'section'
-				//						outputFormatter.startSection(varNonRef);
-				//
-				//						// Show results (note, we don't add these to the statistics)
-				//						for (VariantEffect variantEffect : variantEffects)
-				//							outputFormatter.add(variantEffect);
-				//
-				//						// Finish up this section
-				//						outputFormatter.printSection(varNonRef);
-				//					}
-				//				}
 			}
 
 			// Finish up this section
@@ -472,7 +392,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 */
 	boolean annotateVariant(Variant variant) {
 		// Calculate effects: By default do not annotate non-variant sites
-		if (variant.isVariant()) return false;
+		if (!variant.isVariant()) return false;
 
 		boolean impactModerateOrHigh = false; // Does this entry have a 'MODERATE' or 'HIGH' impact?
 		boolean impactLowOrHigher = false; // Does this entry have an impact (other than MODIFIER)?
@@ -1148,6 +1068,21 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 	public void setFormatVersion(EffFormatVersion formatVersion) {
 		this.formatVersion = formatVersion;
+	}
+
+	/**
+	 * Show annotation progress
+	 */
+	void showProgress() {
+		countVariants++;
+		if (verbose && (countVariants % SHOW_EVERY == 0)) {
+			int millisec = ((int) annotateTimer.elapsed());
+			int secs = millisec / 1000;
+			if (secs > 0) {
+				int varsPerSec = (int) (countVariants * 1000.0 / millisec);
+				Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
+			}
+		}
 	}
 
 	/**
