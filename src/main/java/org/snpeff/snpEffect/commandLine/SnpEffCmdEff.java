@@ -43,9 +43,8 @@ import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 import org.snpeff.util.Tuple;
 import org.snpeff.vcf.EffFormatVersion;
-import org.snpeff.vcf.PedigreeEnrty;
+import org.snpeff.vcf.Pedigree;
 import org.snpeff.vcf.VcfEntry;
-import org.snpeff.vcf.VcfGenotype;
 
 import akka.actor.Actor;
 import akka.actor.Props;
@@ -106,7 +105,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	VcfStats vcfStats;
 	List<VcfEntry> vcfEntriesDebug = null; // Use for debugging or testing (in some test-cases)
 	EffFormatVersion formatVersion = EffFormatVersion.DEFAULT_FORMAT_VERSION;
-	List<PedigreeEnrty> pedigree;
+	Pedigree pedigree;
 	CountByType errByType, warnByType;
 	OutputFormatter outputFormatter = null;
 	Timer annotateTimer;
@@ -174,12 +173,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			if (vcfFile.isHeadeSection()) {
 				if (cancer) {
 					pedigree = readPedigree(vcfFile);
-
-					// Any 'derived' entry in this pedigree?
-					if (pedigree != null) {
-						for (PedigreeEnrty pe : pedigree)
-							anyCancerSample |= pe.isDerived();
-					}
+					anyCancerSample = pedigree.anyDerived();
 				}
 			}
 
@@ -208,13 +202,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 				// Annotate variant
 				impactLowOrHigher |= annotateVariant(variant);
-
-				// FIXME: Should this be
-				// impactLowOrHigher |= annotateVariant(variant);
-
-				// Perform cancer annotations
-				if (anyCancerSample && impactLowOrHigher) annotateVariantCancer(variant, variants, vcfEntry);
 			}
+
+			// Perform cancer annotations
+			if (anyCancerSample && impactLowOrHigher) annotateVariantCancer(variants, vcfEntry);
 
 			// Finish up this section
 			outputFormatter.printSection(vcfEntry);
@@ -424,51 +415,51 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Finish up this section
 		outputFormatter.printSection(variant);
 
-		if (fastaProt != null && impactModerateOrHigh) {
-			// Output protein changes to FASTA file
-			proteinAltSequence(variant, variantEffects);
-		}
+		// Output protein changes to FASTA file
+		if (fastaProt != null && impactModerateOrHigh) proteinAltSequence(variant, variantEffects);
 
 		return impactLowOrHigher;
 	}
 
 	/**
-	// Do we analyze cancer samples?
-	// Here we deal with Somatic vs Germline comparisons
-	//---
-	 *
+	 * Compare two genotypes
 	 */
-	void annotateVariantCancer(Variant variant, List<Variant> variants, VcfEntry vcfEntry) {
-		if (!vcfEntry.isMultiallelic()) return;
+	void annotateVariantCancer(List<Variant> variants, int altGtNum, int refGtNum) {
+		VariantNonRef varNonRef = variantCancer(variants, altGtNum, refGtNum);
+
+		// No net variation? Skip
+		if (!varNonRef.isVariant()) return;
+
+		// Calculate effects
+		VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
+
+		// Create new 'section'
+		outputFormatter.startSection(varNonRef);
+
+		// Show results (note, we don't add these to the statistics)
+		for (VariantEffect variantEffect : variantEffects)
+			outputFormatter.add(variantEffect);
+
+		// Finish up this section
+		outputFormatter.printSection(varNonRef);
+	}
+
+	/**
+	 * Do we analyze cancer samples?
+	 * Here we deal with Somatic vs Germline comparisons
+	 */
+	void annotateVariantCancer(List<Variant> variants, VcfEntry vcfEntry) {
+		if (!shouldAnnotateVariantCancer(variants, vcfEntry)) return;
 
 		// Calculate all required comparisons
-		Set<Tuple<Integer, Integer>> comparisons = compareCancerGenotypes(vcfEntry, pedigree);
+		Set<Tuple<Integer, Integer>> comparisons = pedigree.compareCancerGenotypes(vcfEntry);
 
 		// Analyze each comparison
 		for (Tuple<Integer, Integer> comp : comparisons) {
 			// We have to compare comp.first vs comp.second
 			int altGtNum = comp.first; // comp.first is 'derived' (our new ALT)
 			int refGtNum = comp.second; // comp.second is 'original' (our new REF)
-
-			Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
-			Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
-			VariantNonRef varNonRef = new VariantNonRef(variantAlt, variantRef);
-
-			// No net variation? Skip
-			if (!varNonRef.isVariant()) continue;
-
-			// Calculate effects
-			VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
-
-			// Create new 'section'
-			outputFormatter.startSection(varNonRef);
-
-			// Show results (note, we don't add these to the statistics)
-			for (VariantEffect variantEffect : variantEffects)
-				outputFormatter.add(variantEffect);
-
-			// Finish up this section
-			outputFormatter.printSection(varNonRef);
+			annotateVariantCancer(variants, altGtNum, refGtNum);
 		}
 	}
 
@@ -532,59 +523,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		vcfWorkQueue.run(true);
 
 		return vcf;
-	}
-
-	/**
-	 * Analyze which comparisons to make in cancer genomes
-	 */
-	Set<Tuple<Integer, Integer>> compareCancerGenotypes(VcfEntry vcfEntry, List<PedigreeEnrty> pedigree) {
-		HashSet<Tuple<Integer, Integer>> comparisons = new HashSet<>();
-
-		// Find out which comparisons have to be analyzed
-		for (PedigreeEnrty pe : pedigree) {
-			if (pe.isDerived()) {
-				int numOri = pe.getOriginalNum();
-				int numDer = pe.getDerivedNum();
-				VcfGenotype genOri = vcfEntry.getVcfGenotype(numOri);
-				VcfGenotype genDer = vcfEntry.getVcfGenotype(numDer);
-
-				int gd[] = genDer.getGenotype(); // Derived genotype
-				int go[] = genOri.getGenotype(); // Original genotype
-
-				// Skip if one of the genotypes is missing
-				if (gd == null || go == null) continue;
-
-				if (genOri.isPhased() && genDer.isPhased()) {
-					// Phased, we only have two possible comparisons
-					for (int i = 0; i < 2; i++) {
-						// Add comparisons
-						if ((go[i] > 0) && (gd[i] > 0) // Both genotypes are non-missing?
-								&& (go[i] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
-								&& (gd[i] != go[i]) // Both genotypes are different?
-						) {
-							Tuple<Integer, Integer> compare = new Tuple<>(gd[i], go[i]);
-							comparisons.add(compare);
-						}
-					}
-				} else {
-					// Phased, we only have two possible comparisons
-					for (int d = 0; d < gd.length; d++)
-						for (int o = 0; o < go.length; o++) {
-							// Add comparisons
-							if ((go[o] > 0) && (gd[d] > 0) // Both genotypes are non-missing?
-									&& (go[o] != 0) // Origin genotype is non-reference? (this is always analyzed in the default mode)
-									&& (gd[d] != go[o]) // Both genotypes are different?
-							) {
-								Gpr.debug("Adding comparisson:\tgd[" + d + "]: " + gd[d] + "\tgo[" + o + "]: " + go[o]);
-								Tuple<Integer, Integer> compare = new Tuple<>(gd[d], go[o]);
-								comparisons.add(compare);
-							}
-						}
-				}
-			}
-		}
-
-		return comparisons;
 	}
 
 	public VariantEffectStats getChangeEffectResutStats() {
@@ -957,35 +895,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	/**
 	 * Read pedigree either from VCF header or from cancerSample file
 	 */
-	List<PedigreeEnrty> readPedigree(VcfFileIterator vcfFile) {
-		List<PedigreeEnrty> pedigree = null;
-
-		if (cancerSamples != null) {
-			// Read from TXT file
-			if (verbose) Timer.showStdErr("Reading cancer samples pedigree from file '" + cancerSamples + "'.");
-
-			List<String> sampleNames = vcfFile.getVcfHeader().getSampleNames();
-			pedigree = new ArrayList<>();
-
-			for (String line : Gpr.readFile(cancerSamples).split("\n")) {
-				String recs[] = line.split("\\s", -1);
-				String original = recs[0];
-				String derived = recs[1];
-
-				PedigreeEnrty pe = new PedigreeEnrty(original, derived);
-				pe.sampleNumbers(sampleNames);
-
-				pedigree.add(pe);
-			}
-		} else {
-			// Read from VCF header
-			if (verbose) Timer.showStdErr("Reading cancer samples pedigree from VCF header.");
-			pedigree = vcfFile.getVcfHeader().getPedigree();
-			if (verbose) Timer.showStdErr("Pedigree: " + pedigree);
-		}
-
-		if (verbose && ((pedigree == null) || pedigree.isEmpty())) Timer.showStdErr("WARNING: No cancer sample pedigree found.");
-		return pedigree;
+	Pedigree readPedigree(VcfFileIterator vcfFile) {
+		if (cancerSamples != null) return new Pedigree(vcfFile, cancerSamples);
+		return new Pedigree(vcfFile);
 	}
 
 	@Override
@@ -1068,6 +980,17 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 	public void setFormatVersion(EffFormatVersion formatVersion) {
 		this.formatVersion = formatVersion;
+	}
+
+	/**
+	 * Should we annotate cancer variants?
+	 */
+	boolean shouldAnnotateVariantCancer(List<Variant> variants, VcfEntry vcfEntry) {
+		if (vcfEntry.isMultiallelic()) return true;
+
+		// FIXME
+		Gpr.debug("!!!!!!!!!!!!!!!");
+		return false;
 	}
 
 	/**
@@ -1202,6 +1125,25 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		usageGenericAndDb();
 
 		System.exit(-1);
+	}
+
+	/**
+	 * Create a cancer variant using alt and ref genotypes
+	 */
+	VariantNonRef variantCancer(List<Variant> variants, int altGtNum, int refGtNum) {
+		// Is this a "back to reference" variant?
+		// Example:
+		//       Germline: 'A' -> 'T'
+		//       Somatic:  'T' -> 'A'  (i.e. reverses the gerline mutation to the genome reference)
+		if (altGtNum == 0) {
+			Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
+			Variant variantAlt = variantRef.reverse(); // This our new 'variant'. The effect of this variant is "back to reference"
+			return new VariantNonRef(variantAlt, variantRef);
+		}
+
+		Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
+		Variant variantAlt = variants.get(altGtNum - 1); // This our new 'variant'
+		return new VariantNonRef(variantAlt, variantRef);
 	}
 
 }

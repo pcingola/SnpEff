@@ -15,20 +15,20 @@ import java.util.List;
  * @author pcingola
  *
  */
-public class PedigreeEnrty {
+public class PedigreeEntry {
 
 	public String father;
 	public String mother;
 	public String child;
 	public int fatherNum = -1, motherNum = -1, childNum = -1; // Sample number in VCF file (column number after 'FORMAT')
 
-	public PedigreeEnrty(String original, String derived) {
+	public PedigreeEntry(String original, String derived) {
 		child = derived;
 		father = original;
 		mother = null;
 	}
 
-	public PedigreeEnrty(String father, String mother, String child) {
+	public PedigreeEntry(String father, String mother, String child) {
 		this.child = child;
 		this.father = father;
 		this.mother = mother;

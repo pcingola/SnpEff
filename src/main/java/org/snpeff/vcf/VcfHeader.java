@@ -173,8 +173,8 @@ public class VcfHeader {
 	/**
 	 * Get pedigree (if any)
 	 */
-	public synchronized List<PedigreeEnrty> getPedigree() {
-		ArrayList<PedigreeEnrty> list = new ArrayList<>();
+	public synchronized List<PedigreeEntry> getPedigree() {
+		ArrayList<PedigreeEntry> list = new ArrayList<>();
 
 		List<String> sampleNames = getSampleNames();
 		if (sampleNames.isEmpty()) {
@@ -207,7 +207,7 @@ public class VcfHeader {
 					if (derived == null) throw new RuntimeException("Cannot parse PEDIGREE heade line. Missing 'Derived' name-value pair");
 					if (original == null) throw new RuntimeException("Cannot parse PEDIGREE heade line. Missing 'Original' name-value pair");
 
-					PedigreeEnrty pe = new PedigreeEnrty(original, derived);
+					PedigreeEntry pe = new PedigreeEntry(original, derived);
 					pe.sampleNumbers(sampleNames);
 
 					list.add(pe);
@@ -231,7 +231,7 @@ public class VcfHeader {
 					if (mother == null) throw new RuntimeException("Cannot parse PEDIGREE heade line. Missing 'Mother' name-value pair");
 					if (child == null) throw new RuntimeException("Cannot parse PEDIGREE heade line. Missing 'Child' name-value pair");
 
-					PedigreeEnrty pe = new PedigreeEnrty(father, mother, child);
+					PedigreeEntry pe = new PedigreeEntry(father, mother, child);
 					pe.sampleNumbers(sampleNames);
 					list.add(pe);
 

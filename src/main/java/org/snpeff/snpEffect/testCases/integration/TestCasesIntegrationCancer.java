@@ -111,6 +111,17 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	}
 
 	//	/**
+	//	 * Cancer mutation is reversion to the REF base (pahsed VCF genotypes)
+	//	 */
+	//	@Test
+	//	public void test_06_phased() {
+	//		Gpr.debug("Test");
+	//		debug = verbose = true;
+	//		String file = path("test.cancer_06_phased.vcf");
+	//		snpEffectCancer(file, null, "testHg19Chr17", false, "p.His72Pro", "c.215A>C", "G-T", "NM_000546.5");
+	//	}
+	//
+	//	/**
 	//	 * Cancer mutation is reversion to the REF base
 	//	 */
 	//	@Test

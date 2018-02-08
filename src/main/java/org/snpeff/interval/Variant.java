@@ -452,6 +452,19 @@ public class Variant extends Marker {
 		return vr.getVariantRealigned();
 	}
 
+	/**
+	 * Reverse variant (e.g. back to reference in cancer samples)
+	 */
+	public Variant reverse() {
+		Variant clone = (Variant) super.cloneShallow();
+		clone.variantType = variantType;
+		clone.alt = ref;
+		clone.ref = alt;
+		clone.genotype = ref;
+		clone.imprecise = imprecise;
+		return clone;
+	}
+
 	public void setGenotype(String genotype) {
 		this.genotype = genotype;
 	}
