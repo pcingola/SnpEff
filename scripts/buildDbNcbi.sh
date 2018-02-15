@@ -37,7 +37,7 @@ mkdir -p "$DIR" >/dev/null 2>&1 || true
 
 # Download GenBank file
 echo "Downloading genome $ID"
-curl "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=$ID&rettype=gbwithparts" > $GENE_FILE
+curl "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=$ID&rettype=gbwithparts&retmode=text" > $GENE_FILE
 
 #---
 # Build database
