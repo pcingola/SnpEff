@@ -173,7 +173,7 @@ public class CodonChange {
 
 				if (cdsBaseInExon < 0) cdsBaseInExon = 0;
 
-				// Get codon number and index within codon (where seqChage is pointing)
+				// Get codon number and index within codon
 				if (codonStartNum < 0) {
 					codonStartNum = (firstCdsBaseInExon + cdsBaseInExon) / CODON_SIZE;
 					codonStartIndex = (firstCdsBaseInExon + cdsBaseInExon) % CODON_SIZE;
@@ -242,6 +242,13 @@ public class CodonChange {
 		return codon;
 	}
 
+	/**
+	 * Calculate variant effect
+	 * @param marker: Genomic marker affected by this variant (e.g. exon, transcript, etc)
+	 * @param effectType: Effect type
+	 * @param allowReplace: Can another variant effect replace this one?
+	 * @return A new VariantEffect object
+	 */
 	protected VariantEffect effect(Marker marker, EffectType effectType, boolean allowReplace) {
 		return effect(marker, effectType, effectType.effectImpact(), codonsRef, codonsAlt, codonStartNum, codonStartIndex, allowReplace);
 	}

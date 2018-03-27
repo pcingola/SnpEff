@@ -57,4 +57,13 @@ public class TestCasesIntegrationHgvsFrameShift extends TestCasesIntegrationBase
 		checkHgvs("testHg19Chr19", path("hgvs_frameshifts_syn_chr19.vcf"), 2);
 	}
 
+	/**
+	 * Test HGVS frameshift at CDS end
+	 */
+	@Test
+	public void test_06_hgvs_frameshift() {
+		Gpr.debug("Test");
+		checkHgvs("testHg3775Chr2", path("hgvs_frameshifts_cds_end.vcf"), 6);
+	}
+
 }

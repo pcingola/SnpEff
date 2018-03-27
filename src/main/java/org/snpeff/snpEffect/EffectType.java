@@ -76,6 +76,8 @@ public enum EffectType {
 
 	// Modifiers
 	// Order: Highest impact first
+	, FRAME_SHIFT_BEFORE_CDS_START(EffectImpact.MODIFIER) //
+	, FRAME_SHIFT_AFTER_CDS_END(EffectImpact.MODIFIER) //
 	, UTR_5_PRIME(EffectImpact.MODIFIER) //
 	, UTR_3_PRIME(EffectImpact.MODIFIER) //
 	, REGULATION(EffectImpact.MODIFIER) //
@@ -100,13 +102,9 @@ public enum EffectType {
 	, NONE(EffectImpact.MODIFIER) //
 	;
 
-	private final EffectImpact effectImpact;
-
-	private EffectType(EffectImpact effectImpact) {
-		this.effectImpact = effectImpact;
-	}
-
 	static Map<String, EffectType> so2efftype = new HashMap<>();
+
+	private final EffectImpact effectImpact;
 
 	/**
 	 * Parse a string to an EffectType
@@ -150,12 +148,17 @@ public enum EffectType {
 		oldSo2efftype.put("inframe_insertion", EffectType.CODON_INSERTION);
 		oldSo2efftype.put("inframe_deletion", EffectType.CODON_DELETION);
 		oldSo2efftype.put("transcript", EffectType.TRANSCRIPT);
+		oldSo2efftype.put("non_canonical_start_codon", EffectType.SYNONYMOUS_START);
 
 		// Add terms if not already in the map
 		for (String so : oldSo2efftype.keySet()) {
 			if (!so2efftype.containsKey(so)) so2efftype.put(so, oldSo2efftype.get(so));
 		}
 
+	}
+
+	private EffectType(EffectImpact effectImpact) {
+		this.effectImpact = effectImpact;
 	}
 
 	/**
@@ -234,6 +237,8 @@ public enum EffectType {
 		case SYNONYMOUS_CODING:
 		case SYNONYMOUS_START:
 		case FRAME_SHIFT:
+		case FRAME_SHIFT_AFTER_CDS_END:
+		case FRAME_SHIFT_BEFORE_CDS_START:
 		case CODON_CHANGE:
 		case CODON_INSERTION:
 		case CODON_CHANGE_PLUS_CODON_INSERTION:
@@ -353,6 +358,12 @@ public enum EffectType {
 		case FRAME_SHIFT:
 			return "frameshift_variant";
 
+		case FRAME_SHIFT_BEFORE_CDS_START:
+			return "start_retained_variant";
+
+		case FRAME_SHIFT_AFTER_CDS_END:
+			return "stop_retained_variant";
+
 		case GENE:
 			return "gene_variant";
 
@@ -459,7 +470,7 @@ public enum EffectType {
 			return "stop_retained_variant";
 
 		case SYNONYMOUS_START:
-			return "initiator_codon_variant" + formatVersion.separator() + "non_canonical_start_codon";
+			return "start_retained_variant";
 
 		case TRANSCRIPT:
 			return "non_coding_transcript_variant";

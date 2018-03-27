@@ -514,7 +514,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		Collections.sort(effectTypes);
 
 		// More than one effect? Check for repeats
-		Set<String> added = ((effectTypes.size() > 1) && (!useFirstEffect) ? new HashSet<String>() : null);
+		Set<String> added = ((effectTypes.size() > 1) && (!useFirstEffect) ? new HashSet<>() : null);
 
 		// Create string
 		for (EffectType et : effectTypes) {

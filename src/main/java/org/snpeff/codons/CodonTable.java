@@ -13,6 +13,9 @@ import org.snpeff.binseq.coder.DnaCoder;
  */
 public class CodonTable {
 
+	public static final String TERMINATION_CODON = "Ter";
+	public static final String TERMINATION_CODON_1 = "*";
+
 	private static HashMap<String, String> aa3letter;
 
 	/**
@@ -108,7 +111,7 @@ public class CodonTable {
 	}
 
 	public String aaThreeLetterCode(char aa) {
-		if (aa == '*') return "Ter"; // Termination codon. Used to be "*" (see reference http://www.hgvs.org/mutnomen/standards.html#aalist)
+		if (aa == '*') return TERMINATION_CODON; // Termination codon. Used to be "*" (see reference http://www.hgvs.org/mutnomen/standards.html#aalist)
 		String aa3 = aa3letter.get(Character.toString(aa).toUpperCase());
 		if (aa3 == null) return "???";
 		return aa3;

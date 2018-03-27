@@ -1,5 +1,6 @@
 package org.snpeff.snpEffect;
 
+import org.snpeff.codons.CodonTable;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.VariantBnd;
 import org.snpeff.util.Gpr;
@@ -216,7 +217,10 @@ public class HgvsProtein extends Hgvs {
 	 * Is this a frameShift variant?
 	 */
 	boolean isFs() {
-		return variantEffect.hasEffectType(EffectType.FRAME_SHIFT);
+		return variantEffect.hasEffectType(EffectType.FRAME_SHIFT) //
+				|| variantEffect.hasEffectType(EffectType.FRAME_SHIFT_BEFORE_CDS_START) //
+				|| variantEffect.hasEffectType(EffectType.FRAME_SHIFT_AFTER_CDS_END) //
+		;
 	}
 
 	/**
@@ -337,7 +341,8 @@ public class HgvsProtein extends Hgvs {
 		// Sanity check: Longer than protein?
 		Transcript tr = variantEffect.getTranscript();
 		String protSeq = tr.protein();
-		if (codonNum >= protSeq.length()) return null;
+		if (codonNum > protSeq.length()) return null;
+		if (codonNum == protSeq.length()) return aaCode(CodonTable.TERMINATION_CODON_1) + codonNum;
 
 		// NOTE: the changes observed should be described on protein level and not try to
 		//       incorporate any knowledge regarding the change at DNA-level.

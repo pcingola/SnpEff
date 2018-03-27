@@ -411,7 +411,7 @@ public class Variant extends Marker {
 	 * Return the change (always compared to 'referenceStrand')
 	 */
 	public String netChange(boolean reverseStrand) {
-		if (isDel()) return reverseStrand ? GprSeq.reverseWc(ref) : ref; // Deleteion have empty 'alt'
+		if (isDel()) return reverseStrand ? GprSeq.reverseWc(ref) : ref; // Deletions have empty 'alt'
 		return reverseStrand ? GprSeq.reverseWc(alt) : alt; // Need reverse-WC?
 	}
 
