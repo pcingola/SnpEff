@@ -19,12 +19,11 @@ import org.biojava.nbio.structure.AminoAcid;
 import org.biojava.nbio.structure.Atom;
 import org.biojava.nbio.structure.Calc;
 import org.biojava.nbio.structure.Chain;
-import org.biojava.nbio.structure.Compound;
+import org.biojava.nbio.structure.EntityInfo;
 import org.biojava.nbio.structure.DBRef;
 import org.biojava.nbio.structure.Group;
 import org.biojava.nbio.structure.GroupType;
 import org.biojava.nbio.structure.Structure;
-import org.biojava.nbio.structure.StructureException;
 import org.biojava.nbio.structure.io.PDBFileReader;
 import org.snpeff.SnpEff;
 import org.snpeff.interval.Gene;
@@ -120,8 +119,8 @@ public class SnpEffCmdPdb extends SnpEff {
 	Map<String, String> chainUniprotIds(Structure pdbStruct) {
 		Map<String, String> chain2uniproId = new HashMap<String, String>();
 		for (DBRef dbref : pdbStruct.getDBRefs()) {
-			if (debug) Gpr.debug("PDB_DBREF\tchain:" + dbref.getChainId() + "\tdb: " + dbref.getDatabase() + "\tID: " + dbref.getDbAccession());
-			if (dbref.getDatabase().equals(UNIPROT_DATABASE)) chain2uniproId.put(dbref.getChainId(), dbref.getDbAccession());
+			if (debug) Gpr.debug("PDB_DBREF\tchain:" + dbref.getChainName() + "\tdb: " + dbref.getDatabase() + "\tID: " + dbref.getDbAccession());
+			if (dbref.getDatabase().equals(UNIPROT_DATABASE)) chain2uniproId.put(dbref.getChainName(), dbref.getDbAccession());
 		}
 		return chain2uniproId;
 	}
@@ -166,7 +165,7 @@ public class SnpEffCmdPdb extends SnpEff {
 		// Only use mappings that have low error rate
 		if (countMatch + countMismatch > 0) {
 			double err = countMismatch / ((double) (countMatch + countMismatch));
-			if (debug) Gpr.debug("\tChain: " + chain.getChainID() + "\terror: " + err + "\t" + sb);
+			if (debug) Gpr.debug("\tChain: " + chain.getId() + "\terror: " + err + "\t" + sb);
 
 			if (err < maxMismatchRate) {
 				if (debug) Gpr.debug("\tMapping OK    :\t" + trId + "\terror: " + err);
@@ -176,7 +175,7 @@ public class SnpEffCmdPdb extends SnpEff {
 
 				for (IdMapperEntry idm : idmapsOri) {
 					if (trId.equals(idm.trId) && pdbId.equals(idm.pdbId)) {
-						idmapsNew.add(idm.cloneAndSet(chain.getChainID(), pdbAaLen, trAaLen));
+						idmapsNew.add(idm.cloneAndSet(chain.getId(), pdbAaLen, trAaLen));
 						break;
 					}
 				}
@@ -305,9 +304,9 @@ public class SnpEffCmdPdb extends SnpEff {
 	 */
 	boolean filterPdbChain(Chain chain) {
                 // note: Compound is replaced by EntityInfo in biojava 5.x
-                for (Compound compound : chain.getStructure().getCompounds()) {
-                        if (contains(compound.getOrganismCommon(), pdbOrganismCommon) ||
-                            contains(compound.getOrganismScientific(), pdbOrganismScientific)) {
+                for (EntityInfo entityInfo : chain.getStructure().getEntityInfos()) {
+                        if (contains(entityInfo.getOrganismCommon(), pdbOrganismCommon) ||
+                            contains(entityInfo.getOrganismScientific(), pdbOrganismScientific)) {
                                 return true;
                         }
                 }
@@ -466,7 +465,7 @@ public class SnpEffCmdPdb extends SnpEff {
 		List<IdMapperEntry> idMapChain = new ArrayList<>();
 		for (IdMapperEntry idmap : idMaps) {
 			if (idmap.pdbId.equals(pdbStruct.getPDBCode()) //
-					&& idmap.pdbChainId.equals(chain.getChainID()) //
+					&& idmap.pdbChainId.equals(chain.getId()) //
 			) {
 				idMapChain.add(idmap);
 			}
@@ -522,7 +521,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	}
 
 	boolean isCompound(Structure pdbStruct) {
-		List<Compound> compounds = pdbStruct.getCompounds();
+		List<EntityInfo> compounds = pdbStruct.getEntityInfos();
 		return compounds != null && !compounds.isEmpty();
 	}
 
@@ -703,7 +702,7 @@ public class SnpEffCmdPdb extends SnpEff {
 		// Analyze distance between amino acids in different chains
 		for (Chain chain1 : pdbStruct.getChains()) {
 
-			String chainId1 = chain1.getChainID();
+			String chainId1 = chain1.getId();
 			List<IdMapperEntry> idMapChain1 = idMapChain(pdbStruct, chain1, idMapConfirmed);
 			if (idMapChain1.isEmpty()) {
 				if (debug) Gpr.debug("Empty maps for chain '" + chainId1 + "'");
@@ -711,7 +710,7 @@ public class SnpEffCmdPdb extends SnpEff {
 			}
 
 			for (Chain chain2 : pdbStruct.getChains()) {
-				String chainId2 = chain2.getChainID();
+				String chainId2 = chain2.getId();
 				if (chainId1.compareTo(chainId2) >= 0) continue; // Only calculate once
 
 				// Compare UNIPROT IDs
