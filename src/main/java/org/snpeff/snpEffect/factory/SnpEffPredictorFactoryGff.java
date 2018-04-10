@@ -68,7 +68,13 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		List<Exon> list = new LinkedList<>();
 
 		// Add exon to each parent (can belong to more than one transcript)
-		for (String parentId : gffMarker.getGffParentIds()) {
+		String parentIds[] = gffMarker.getGffParentIds();
+		if (parentIds == null) {
+			if (debug) warning("Cannot find parent ID for exon:\n\t" + gffMarker);
+			return null;
+		}
+
+		for (String parentId : parentIds) {
 			parentId = parentId.trim();
 
 			// Exon's parent (should be a transcript)
@@ -132,7 +138,6 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			default:
 				throw new RuntimeException("Unsupported type " + gffMarker.getGffType());
 			}
-
 		}
 
 		return list.isEmpty() ? null : list;

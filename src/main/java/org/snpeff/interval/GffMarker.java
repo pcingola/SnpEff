@@ -131,14 +131,14 @@ public class GffMarker extends Custom {
 		return id;
 	}
 
-	public String getGffParentId(boolean fromGeneId) {
+	public String getGffParentId(boolean doNotRecurse) {
 		if (hasAttr("Parent")) return getAttr("Parent");
 
 		switch (gffType) {
 		case TRANSCRIPT:
 		case INTRON_CONSERVED:
 			if (hasAttr("gene")) return getAttr("gene");
-			return fromGeneId ? null : getGeneId(); // Avoid infinite recursion
+			return doNotRecurse ? null : getGeneId(); // Avoid infinite recursion
 
 		case EXON:
 		case CDS:
@@ -146,7 +146,7 @@ public class GffMarker extends Custom {
 		case STOP_CODON:
 		case UTR3:
 		case UTR5:
-			return getTranscriptId();
+			return doNotRecurse ? null : getTranscriptId();
 
 		default:
 			return null;
@@ -188,7 +188,7 @@ public class GffMarker extends Custom {
 		String key = "transcript_id";
 		if (hasAttr(key)) return getAttr(key);
 		if (gffType == GffType.TRANSCRIPT) return id;
-		if (gffType == GffType.EXON) return getGffParentId(false);
+		if (gffType == GffType.EXON) return getGffParentId(true);
 		return GffType.TRANSCRIPT + "_" + id;
 	}
 
@@ -227,7 +227,7 @@ public class GffMarker extends Custom {
 		// Create an list of (sorted) key-value pairs
 		LinkedList<KeyValue<String, String>> iter = new LinkedList<>();
 		for (String key : keysSorted) {
-			iter.add(new KeyValue<String, String>(key, getAttr(key)));
+			iter.add(new KeyValue<>(key, getAttr(key)));
 		}
 
 		return iter.iterator();
@@ -277,7 +277,7 @@ public class GffMarker extends Custom {
 	 */
 	protected void parseAttributes(String attrStr) {
 		keyValues = new HashMap<>();
-		keys = new HashSet<String>();
+		keys = new HashSet<>();
 
 		// Add some column fields
 		add("source", source);
