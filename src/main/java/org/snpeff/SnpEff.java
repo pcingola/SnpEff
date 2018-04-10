@@ -252,7 +252,6 @@ public class SnpEff implements CommandLine {
 	}
 
 	SnpEff cmdFactory(String command) {
-
 		// All commands are lower-case
 		switch (command.trim().toLowerCase()) {
 		case "ann":

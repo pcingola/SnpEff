@@ -8,7 +8,6 @@ import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
 import org.snpeff.vcf.VcfEntry;
 
 /**
@@ -29,7 +28,6 @@ public class WorkerEff extends WorkerVcfStr {
 		this.snpEffectPredictor = snpEffectPredictor;
 		this.outputFormatter = outputFormatter;
 		this.filterIntervals = filterIntervals;
-		Gpr.debug("WORKER!!!");
 	}
 
 	@Override
@@ -47,7 +45,6 @@ public class WorkerEff extends WorkerVcfStr {
 			// Create new 'section'
 			outputFormatter.startSection(vcfEntry);
 
-			Gpr.debug(vcfEntry.toStr());
 			for (Variant variant : vcfEntry.variants()) {
 				if (variant.isVariant()) {
 					// Calculate effects
