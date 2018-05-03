@@ -2,7 +2,23 @@
 
 version="3.2a"
 
-cat dbNSFP${version}_variant.chr* \
-	| $HOME/snpEff/scripts_build/dbNSFP_sort.pl 7 8 \
-	> dbNSFP${version}_hg19.txt
+input="dbNSFP${version}.txt.gz"
+prefix_split="dbNSFP.split"
+output="dbNSFP${version}.sort_hg19.txt"
 
+echo "Splitting input file '$input' by chromosome"
+gunzip -c dbNSFP${version}.txt.gz \
+	| $HOME/snpEff/scripts_build/dbNSFP_split_by_chr.pl 7 8 \
+
+
+# Create output (sorted) file
+echo "Creating output file: '$output'"
+rm -vf "$output"
+
+for f in `ls $prefix_split.*.txt`
+do
+	echo "    Sorting file '$f'"
+	cat $f \
+		| $HOME/snpEff/scripts_build/dbNSFP_split_by_chr.pl 1 2 \
+		>> dbNSFP${version}.sort_hg19.txt
+done
