@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -e
 
 version="3.2a"
 
@@ -6,12 +6,11 @@ input="dbNSFP${version}.txt.gz"
 prefix_split="dbNSFP.split"
 output="dbNSFP${version}.sort_hg19.txt"
 
-echo "Splitting input file '$input' by chromosome"
-gunzip -c dbNSFP${version}.txt.gz \
+# echo "Splitting input file '$input' by chromosome"
+gunzip -c "$input" \
 	| $HOME/snpEff/scripts_build/dbNSFP_split_by_chr.pl 7 8 \
 
-
-# Create output (sorted) file
+# Create sorted output file
 echo "Creating output file: '$output'"
 rm -vf "$output"
 
@@ -19,6 +18,6 @@ for f in `ls $prefix_split.*.txt`
 do
 	echo "    Sorting file '$f'"
 	cat $f \
-		| $HOME/snpEff/scripts_build/dbNSFP_split_by_chr.pl 1 2 \
+		| $HOME/snpEff/scripts_build/dbNSFP_sort.pl 0 1 \
 		>> dbNSFP${version}.sort_hg19.txt
 done

@@ -67,7 +67,7 @@ for( $i=1 ; $l = <STDIN> ; $i++ ) {
 }
 
 # Close all files
-foreach $fh (values %files) {
-	print STDERR "Closing file '$fn'\n";
-	$fh.close();
+foreach $chr (keys %files) {
+	print STDERR "Closing file for chromosome '$chr'\n";
+	$files{$chr}.close();
 }
