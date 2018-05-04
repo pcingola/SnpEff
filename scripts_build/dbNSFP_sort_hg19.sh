@@ -3,13 +3,17 @@
 # Change this 
 version="3.5a"
 
+# File names
 prefix_input="dbNSFP${version}_variant.chr"
 prefix_split="dbNSFP.split"
 output="dbNSFP${version}.sort_hg19.txt"
 
+# Scripts dir
+scripts=`dirname "$0"`
+
 echo "Splitting input file '$input' by chromosome"
 cat $prefix_input* \
-	| $HOME/snpEff/scripts_build/dbNSFP_split_by_chr.pl 7 8 \
+	| $scripts/dbNSFP_split_by_chr.pl 7 8 \
 
 # Create sorted output file
 echo "Creating output file: '$output'"
@@ -19,6 +23,6 @@ for f in `ls $prefix_split.*.txt`
 do
 	echo "    Sorting file '$f'"
 	cat $f \
-		| $HOME/snpEff/scripts_build/dbNSFP_sort.pl 0 1 \
+		| $scripts/dbNSFP_sort.pl 0 1 \
 		>> "$output"
 done
