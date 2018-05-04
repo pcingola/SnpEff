@@ -1,13 +1,14 @@
 #!/bin/bash -e
 
-version="3.2a"
+# Change this 
+version="3.5a"
 
-input="dbNSFP${version}.txt.gz"
+prefix_input="dbNSFP${version}_variant.chr"
 prefix_split="dbNSFP.split"
 output="dbNSFP${version}.sort_hg19.txt"
 
-# echo "Splitting input file '$input' by chromosome"
-gunzip -c "$input" \
+echo "Splitting input file '$input' by chromosome"
+cat $prefix_input* \
 	| $HOME/snpEff/scripts_build/dbNSFP_split_by_chr.pl 7 8 \
 
 # Create sorted output file
@@ -19,5 +20,5 @@ do
 	echo "    Sorting file '$f'"
 	cat $f \
 		| $HOME/snpEff/scripts_build/dbNSFP_sort.pl 0 1 \
-		>> dbNSFP${version}.sort_hg19.txt
+		>> "$output"
 done
