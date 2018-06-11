@@ -105,14 +105,22 @@
       </exclusions>
     </dependency>
     <dependency>
-    	<groupId>org.biojava</groupId>
-    	<artifactId>biojava3-core</artifactId>
-    	<version>3.0.7</version>
+      <groupId>org.biojava</groupId>
+      <artifactId>biojava-core</artifactId>
+      <version>5.0.0</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
-    	<groupId>org.biojava</groupId>
-    	<artifactId>biojava3-structure</artifactId>
-    	<version>3.0.7</version>
+      <groupId>org.biojava</groupId>
+      <artifactId>biojava-structure</artifactId>
+      <version>5.0.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.biojava.thirdparty</groupId>
+          <artifactId>forester</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
