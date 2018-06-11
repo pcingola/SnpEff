@@ -14,7 +14,7 @@ urlFlyBase         := "ftp://ftp.flybase.net"
 void downloadFlyBase() {
 	println "Download FlyBase $flybaseRelease"
 
-	configFile := "$dirSnpEff/config/snpEff.FLYBASE_$flybaseRelease.config"
+	configFile := "$dirSnpEff/config/snpEff.FLYBASE_$flybaseRelease\.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return
@@ -29,7 +29,7 @@ void downloadFlyBase() {
 	for( string g : flybaseGenomes ) {
 		organism := g.split('_')[0]
 		version := g.split('_')[1]
-		url := "$urlFlyBase/releases/$flybaseRelease/$g/gff/$organism-all-$version.gff.gz"
+		url := "$urlFlyBase/releases/$flybaseRelease/$g/gff/$organism-all-$version\.gff.gz"
 		println "Organism: $organism\tversion: $version\tURL: $url"
     
 		dirg := "$dir/$g"
@@ -37,13 +37,13 @@ void downloadFlyBase() {
 		fetch(url)
     
 		# Update 'config' file
-		configLines += "$g.genome : $g"
-		configLines += "$g.reference : $url"
+		configLines += "$g\.genome : $g"
+		configLines += "$g\.reference : $url"
 
 		# Copy to data dir
 		dataDir := "data/$g"
 		dataDir.mkdir()
-		sys cp $organism-all-$version.gff.gz $dataDir/genes.gff.gz
+		sys cp $organism-all-$version\.gff.gz $dataDir/genes.gff.gz
 	}
 
 	println "Writing config file $configFile"

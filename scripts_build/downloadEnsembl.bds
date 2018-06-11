@@ -18,7 +18,7 @@ ensemblReleaseUseNumber     := 75
 void downloadEnsembl(int ensemblRelease) {
 	println "Download ENSEMBL $ensemblRelease"
 
-	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_$ensemblRelease.config"
+	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_$ensemblRelease\.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return
@@ -36,7 +36,7 @@ void downloadEnsembl(int ensemblRelease) {
 		println "Downloading ENSEMBL $ensemblRelease"
 
 		# Download GTF files
-		sys rsync -av	--include='*$ensemblRelease.gtf.gz' \
+		sys rsync -av	--include='*$ensemblRelease\.gtf.gz' \
 						--include='*/' \
 						--exclude='*' \
 						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/gtf/ \
@@ -81,14 +81,14 @@ void downloadEnsembl(int ensemblRelease) {
 		if( !name.isEmpty() ) {
 			println "\t$name"
         
-			fasta := "$baseNoVer.dna.toplevel.fa.gz"
-			cds := "$baseNoVer.cdna.all.fa.gz"
-			prot := "$baseNoVer.pep.all.fa.gz"
+			fasta := "$baseNoVer\.dna.toplevel.fa.gz"
+			cds := "$baseNoVer\.cdna.all.fa.gz"
+			prot := "$baseNoVer\.pep.all.fa.gz"
 			if( ensemblRelease <= ensemblReleaseUseNumber ) {
 				# Slightly different name format in prior versions
-				fasta = "$base.dna.toplevel.fa.gz"
-				cds = "$base.cdna.all.fa.gz"
-				prot = "$base.pep.all.fa.gz"
+				fasta = "$base\.dna.toplevel.fa.gz"
+				cds = "$base\.cdna.all.fa.gz"
+				prot = "$base\.pep.all.fa.gz"
 			}
         
 			# Copy files
@@ -100,9 +100,9 @@ void downloadEnsembl(int ensemblRelease) {
 			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz
         
 			# Append config lines
-			configLines += "$name.genome : $longName"
-			configLines += "$name.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
-			configLines += "$name.retrieval_date : $today"
+			configLines += "$name\.genome : $longName"
+			configLines += "$name\.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+			configLines += "$name\.retrieval_date : $today"
 		}
 	}
 
@@ -132,7 +132,7 @@ void downloadEnsembl(int ensemblRelease) {
 void downloadEnsemblBfmpp() {
 	println "ENSEMBL BFMPP $ensemblBfmppRelease"
 
-	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config"
+	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return
@@ -151,7 +151,7 @@ void downloadEnsemblBfmpp() {
 
 		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'plants', 'protists'] ) {
 			# Download GTF files (annotations)
-			sys rsync -av	--include='*.$ensemblBfmppRelease.gtf.gz' \
+			sys rsync -av	--include='*.$ensemblBfmppRelease\.gtf.gz' \
 							--include='*/' \
 							--exclude='*' \
 							rsync://$ensemblBfmppFtp/all/pub/$org/release-$ensemblBfmppRelease/gtf/ \
@@ -190,9 +190,9 @@ void downloadEnsemblBfmpp() {
 		println "name: $name\tbase: $base"
 
 		if( !name.isEmpty() ) {
-			fasta := "$baseNoVer.dna.toplevel.fa.gz"
-			cds := "$baseNoVer.cdna.all.fa.gz"
-			prot := "$baseNoVer.pep.all.fa.gz"
+			fasta := "$baseNoVer\.dna.toplevel.fa.gz"
+			cds := "$baseNoVer\.cdna.all.fa.gz"
+			prot := "$baseNoVer\.pep.all.fa.gz"
 			println "\t$name\t$fasta\t$cds\t$prot"
         
 			# Copy files
@@ -204,9 +204,9 @@ void downloadEnsemblBfmpp() {
 			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz || true
         
 			# Append config lines
-			configLines += "$name.genome : $longName"
-			configLines += "$name.reference : $ensemblBfmppFtp/pub/release-$ensemblBfmppRelease"
-			configLines += "$name.retrieval_date : $today"
+			configLines += "$name\.genome : $longName"
+			configLines += "$name\.reference : $ensemblBfmppFtp/pub/release-$ensemblBfmppRelease"
+			configLines += "$name\.retrieval_date : $today"
 		}
 	}
 

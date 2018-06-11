@@ -119,7 +119,7 @@ bool addBuildDb(string genome) {
 		# Use 'storeSeqs' for human and mouse genome
 		opt := ( genome.startsWith('GRC') || genome.startsWith('hg') ? "-storeSeqs" : "" )
 
-		task $snpeffBuild $opt $genome 2>&1 | tee $dirBuild/build.$genome.out
+		task $snpeffBuild $opt $genome 2>&1 | tee $dirBuild/build.$genome\.out
 	} else {
 		print("OK  :\t$genome\tgeneFile: $geneFile\tdb: $db\n")
 	}
@@ -149,14 +149,14 @@ void buildBundleLists() {
 	println "Make bundle lists:"
 
 	for( string bundle : bundles ) {
-		conf := "config/snpEff.bundles.$bundle.config"
+		conf := "config/snpEff.bundles.$bundle\.config"
 
 		if( conf.exists() ) {
 			print "Config file '$conf' exists, nothing done\n"
 		} else {
 			println "Creating bundles '$bundle' -> '$conf'"
-			sys cat config/snpEff.$bundle.config | cut -f 1 -d : | grep ".genome" | sed "s/.genome\s*//" | tr -d " " > snpEff.bundles.$bundle.genomes.txt
-			sys ./scripts_build/createBundles.pl snpEff.bundles.$bundle.genomes.txt $bundle > $conf
+			sys cat config/snpEff.$bundle\.config | cut -f 1 -d : | grep ".genome" | sed "s/.genome\s*//" | tr -d " " > snpEff.bundles.$bundle\.genomes.txt
+			sys ./scripts_build/createBundles.pl snpEff.bundles.$bundle\.genomes.txt $bundle > $conf
 		}
 	}
 
@@ -182,7 +182,7 @@ void buildConfig() {
 		sys echo "#---" >> $conf
 		sys echo "# ENSEMBL release $ensemblRelease" >> $conf
 		sys echo "#---" >> $conf
-		sys cat $confDir/snpEff.ENSEMBL_$ensemblRelease.config >> $conf
+		sys cat $confDir/snpEff.ENSEMBL_$ensemblRelease\.config >> $conf
 	}
 
 	sys echo >> $conf
@@ -195,20 +195,20 @@ void buildConfig() {
 	sys echo "#---" >> $conf
 	sys echo "# ENSEMBL BFMPP release $ensemblBfmppRelease" >> $conf
 	sys echo "#---" >> $conf
-	sys cat $confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease.config >> $conf
+	sys cat $confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.config >> $conf
 
 	sys echo >> $conf
 	sys echo "#---" >> $conf
 	sys echo "# FLYBASE release $flybaseRelease" >> $conf
 	sys echo "#---" >> $conf
-	sys cat	$confDir/snpEff.FLYBASE_$flybaseRelease.config >> $conf
+	sys cat	$confDir/snpEff.FLYBASE_$flybaseRelease\.config >> $conf
 
 	for( string b : bundles) {
 		sys echo >> $conf
 		sys echo "#---" >> $conf
 		sys echo "# ENSEMBL Bundles $b" >> $conf
 		sys echo "#---" >> $conf
-		sys cat $confDir/snpEff.bundles.$b.config >> $conf
+		sys cat $confDir/snpEff.bundles.$b\.config >> $conf
 	}
 }
 
@@ -551,9 +551,9 @@ void uploadCore2Sf() {
 void uploadDbNsfp2Gdrive() {
 	for(string grch : GRCHs) {
 		base := "dbNSFPv$dbNsfpVer"
-		bgFile := "$dirDb/$grch/$base.txt.gz"
-		tbiFile := "$dirDb/$grch/$base.txt.gz.tbi"
-		if( "$dirGdrive/$base.txt.gz" <- bgFile ) sys scp -v $bgFile $tbiFile $dirGdrive
+		bgFile := "$dirDb/$grch/$base\.txt.gz"
+		tbiFile := "$dirDb/$grch/$base\.txt.gz.tbi"
+		if( "$dirGdrive/$base\.txt.gz" <- bgFile ) sys scp -v $bgFile $tbiFile $dirGdrive
 	}
 
 	# Upload to goolge drive
@@ -685,7 +685,7 @@ void zipDb(string gen) {
 
 	# Do not create ZIP file unless database exists
 	if( bin.exists() ) {
-		zip := "$dirZip/snpEff_v" + versionUnd() + "_$gen.zip"
+		zip := "$dirZip/snpEff_v" + versionUnd() + "_$gen\.zip"
 		println "\tZIP '$zip'"
 
 		cyto := "data/$gen/cytoBand.txt.gz"

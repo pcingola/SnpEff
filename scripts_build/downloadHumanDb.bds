@@ -9,7 +9,7 @@
 clinvar            := "clinvar.vcf.gz"
 urlClinVarGrch37   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/$clinvar"
 urlClinVarGrch38   := "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/$clinvar"
-urlDbNsfp          := "ftp://dbnsfp:dbnsfp@dbnsfp.softgenetics.com/dbNSFPv$dbNsfpVer.zip"
+urlDbNsfp          := "ftp://dbnsfp:dbnsfp@dbnsfp.softgenetics.com/dbNSFPv$dbNsfpVer\.zip"
 urlDbSnpGrch37     := "ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b147_GRCh37p13/VCF/00-All.vcf.gz"
 urlDbSnpGrch38     := "ftp://ftp.ncbi.nih.gov/snp/organisms/human_9606_b147_GRCh38p2/VCF/00-All.vcf.gz"
 urlGwasCatalog     := "http://www.genome.gov/admin/gwascatalog.txt"
@@ -24,8 +24,8 @@ void buildDbNsfp(string hg, string base, string baseChr) {
 	println "Building dbNSFP for '$hg'"
 	hg.mkdir()
 
-	bgFile := "$hg/$base.txt.gz"
-	index := "$bgFile.tbi"
+	bgFile := "$hg/$base\.txt.gz"
+	index := "$bgFile\.tbi"
 	if( bgFile.exists() && index.exists() )	return
 
 	# Compress using bgzip
@@ -34,7 +34,7 @@ void buildDbNsfp(string hg, string base, string baseChr) {
 		if( chr == 'MT' ) chr = 'M'	# MT is called just 'M'
 
 		chrFile := "$baseChr\_variant.chr$chr"
-		bgChrFile := "$hg/$baseChr\_variant.chr$chr.gz"
+		bgChrFile := "$hg/$baseChr\_variant.chr$chr\.gz"
 		bgFiles += bgChrFile
 
 		println "\tCompressing file '$chrFile'"
@@ -85,7 +85,7 @@ void downloadDbNsfp() {
 
 	base := "dbNSFPv$dbNsfpVer"
 	baseChr := "dbNSFP$dbNsfpVer"
-	zip := "$base.zip"
+	zip := "$base\.zip"
 
 	# Download
 	if( !zip.exists() ) {
@@ -184,7 +184,7 @@ void downloadNextProt() {
 
 		# Download each chromosome's XML file
 		for( string chr : humanChrsDd ) {
-			fetch("$urlNextProt/nextprot_chromosome_$chr.xml.gz")
+			fetch("$urlNextProt/nextprot_chromosome_$chr\.xml.gz")
 		}
 
 		downloadOk.write("OK")	# Mark as downlaoded OK

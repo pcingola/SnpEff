@@ -48,10 +48,10 @@ void downloadUcscHg38() {
 	ori.mkdir()
 	ori.chdir()
 
-	fetch("$urlUcscCse/$ref/bigZips/$ref.fa.gz")
+	fetch("$urlUcscCse/$ref/bigZips/$ref\.fa.gz")
 	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
 
-	fagz := "$ref.fa.gz"
+	fagz := "$ref\.fa.gz"
 	fagzData := "$dirData/genomes/$fagz"
 	fagzOri := "$dir/ORI/$fagz"
 	if( fagzData <- fagzOri ) sys cp -vf $fagzOri $fagzData
@@ -89,7 +89,7 @@ void downloadUcscKg(string refdb) {
 
 	# Copy files to snpEff/data dir
 	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf genes.kg.gz $dirData/$ref/ 
-	sys cd $dirData/genomes; rm -vf $ref.fa.gz ; ln -s $refdb.fa.gz $ref.fa.gz
+	sys cd $dirData/genomes; rm -vf $ref\.fa.gz ; ln -s $refdb\.fa.gz $ref\.fa.gz
 }
 
 #-------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ void downloadUcscGenome(string ref) {
 	queryUcsc(ref, dir)
 
 	# Copy files to snpEff/data dir
-	fagzData := "$dirData/genomes/$ref.fa.gz"
+	fagzData := "$dirData/genomes/$ref\.fa.gz"
 	if( fagzData <- fagz ) sys cp -vf $fagz $fagzData
 
 	sys cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $seDataDir/
@@ -151,7 +151,7 @@ string downloadUcscGenomeFastaMrna(string ref, string dir) {
 #-------------------------------------------------------------------------------
 string downloadUcscGenomeFasta(string ref, string dir) {
 	ori := "$dir/ORI"
-	localFile := "$ori/$ref.fa.gz"
+	localFile := "$ori/$ref\.fa.gz"
 	if( localFile.exists() ) {
 		println "Local file '$localFile' exists, skipping download"
 		return localFile
@@ -167,7 +167,7 @@ string downloadUcscGenomeFasta(string ref, string dir) {
 	}
 	
 	println "File '$file' does not exists"
-	file = "$urlUcscCse/$ref/bigZips/$ref.fa.gz"
+	file = "$urlUcscCse/$ref/bigZips/$ref\.fa.gz"
 	fetch(file)
 	return localFile
 }
@@ -179,8 +179,8 @@ string fastaFromTar(string ref, string tar, string ori) {
 	dirChr := "$ori/chr"
 	dirChr.mkdir()
 
-	fasta := "$ori/$ref.fa"
-	fastaGz := "$ori/$ref.fa.gz"
+	fasta := "$ori/$ref\.fa"
+	fastaGz := "$ori/$ref\.fa.gz"
 
 	if( fastaGz <- tar ) {
 		println "Creating fasta file '$fastaGz' from tar file '$tar'"
@@ -246,7 +246,7 @@ string queryUcsc(string ref, string dir) {
 				on rg.name=gi.acc
 			;
 			"
-		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refSeq.gz
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refSeq\.gz
 	}
 	return refSeqGz
 }
@@ -276,7 +276,7 @@ string queryUcscKg(string ref, string refdb, string dir) {
 			from knownGene kg
 			;
 			"
-		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $refdb | gzip -c > $refSeq.gz
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $refdb | gzip -c > $refSeq\.gz
 	}
 	return refSeqGz
 }

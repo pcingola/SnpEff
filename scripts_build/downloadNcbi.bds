@@ -119,7 +119,7 @@ void createFilesFromNcbi(string genome) {
 void downloadNcbiGenome(string genome) {
 	println "Download NCBI genome '$genome'"
 
-	configFile := "$dirSnpEff/config/snpEff.NCBI.$genome.config"
+	configFile := "$dirSnpEff/config/snpEff.NCBI.$genome\.config"
 	if( configFile.exists() ) {
 		println "\tConfig file '$configFile' exists: nothing done"
 		return
@@ -172,9 +172,9 @@ void downloadNcbiGenome(string genome) {
 
 	# Create config file
 	today := sys date +"%Y-%m-%d"
-	configLines := "$genome.genome : $genome\n"
-	configLines += "$genome.reference : ftp://ftp.ncbi.nih.gov/genomes/$genome/\n"
-	configLines += "$genome.retrieval_date : $today"
+	configLines := "$genome\.genome : $genome\n"
+	configLines += "$genome\.reference : ftp://ftp.ncbi.nih.gov/genomes/$genome/\n"
+	configLines += "$genome\.retrieval_date : $today"
 	configFile.write(configLines)
 }
 
@@ -217,7 +217,7 @@ void downloadNcbiBacteria() {
 	for( string gdir : genomes.lines() ) {
 		gen := gdir.baseName()
 		println "\t$gen"
-		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
+		configLines += "$gen\.genome : $gen\n$gen\.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
 
 		# Collapse all geneBank files into one 
 		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
@@ -269,7 +269,7 @@ void downloadNcbiVirus() {
 	for( string gdir : genomes.lines() ) {
 		gen := gdir.baseName()
 		println "\t$gen"
-		configLines += "$gen.genome : $gen\n$gen.reference : http://ftp.ncbi.nih.gov/genomes/Viruses/"
+		configLines += "$gen\.genome : $gen\n$gen\.reference : http://ftp.ncbi.nih.gov/genomes/Viruses/"
 
 		# Collapse all geneBank files into one 
 		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk || true
@@ -288,7 +288,7 @@ void downloadNcbiVirus() {
 #-------------------------------------------------------------------------------
 string fastaFromNcbi(string dir) {
 	fa := "$dir/sequences.fa"
-	faGz := "$fa.gz"
+	faGz := "$fa\.gz"
 
 	# Already finished?
 	println "Creating genome fasta file '$faGz'"
