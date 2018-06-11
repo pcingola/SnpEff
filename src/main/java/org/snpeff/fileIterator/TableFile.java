@@ -8,10 +8,9 @@ import java.util.HashMap;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 
-import scala.collection.mutable.StringBuilder;
-
 /**
- * Load a table from a file. The table is loaded into an arbitrary object having arrays to hold the data.
+ * Load a table from a file. The table is loaded into an arbitrary object having
+ * arrays to hold the data.
  * 
  * @author pcingola
  */
@@ -44,7 +43,8 @@ public class TableFile implements Serializable {
 	}
 
 	/**
-	 * Assign values parse from 'line' into array elements indexed by 'idx' 
+	 * Assign values parse from 'line' into array elements indexed by 'idx'
+	 * 
 	 * @param line
 	 * @param idx
 	 */
@@ -67,17 +67,25 @@ public class TableFile implements Serializable {
 					// Get value
 					Object value = null;
 					String valOri = vals[i];
-					if (typeName.equals("java.lang.String[]")) value = valOri;
+					if (typeName.equals("java.lang.String[]"))
+						value = valOri;
 					else {
 						// Numeric values have to be trimmed
 						String valTrim = valOri.trim();
 
-						if (typeName.equals("int[]")) value = Gpr.parseIntSafe(valTrim);
-						else if (typeName.equals("long[]")) value = Gpr.parseLongSafe(valTrim);
-						else if (typeName.equals("double[]")) value = Gpr.parseDoubleSafe(valTrim);
-						else if (typeName.equals("float[]")) value = Gpr.parseFloatSafe(valTrim);
-						else if (typeName.equals("boolean[]")) value = Gpr.parseBoolSafe(valTrim);
-						else throw new RuntimeException("Unsoported parsing for object type '" + typeName + "' cannot be parsed.");
+						if (typeName.equals("int[]"))
+							value = Gpr.parseIntSafe(valTrim);
+						else if (typeName.equals("long[]"))
+							value = Gpr.parseLongSafe(valTrim);
+						else if (typeName.equals("double[]"))
+							value = Gpr.parseDoubleSafe(valTrim);
+						else if (typeName.equals("float[]"))
+							value = Gpr.parseFloatSafe(valTrim);
+						else if (typeName.equals("boolean[]"))
+							value = Gpr.parseBoolSafe(valTrim);
+						else
+							throw new RuntimeException(
+									"Unsoported parsing for object type '" + typeName + "' cannot be parsed.");
 					}
 
 					// Assign: array[idx] = value
@@ -92,6 +100,7 @@ public class TableFile implements Serializable {
 
 	/**
 	 * Try to guess field order
+	 * 
 	 * @return
 	 */
 	String guessFields() {
@@ -102,13 +111,15 @@ public class TableFile implements Serializable {
 			sb.append(f.getName() + FIELD_NAME_SEPARATOR);
 
 		// Remove last ';'
-		if (sb.charAt(sb.length() - 1) == FIELD_NAME_SEPARATOR) sb.deleteCharAt(sb.length() - 1);
+		if (sb.charAt(sb.length() - 1) == FIELD_NAME_SEPARATOR)
+			sb.deleteCharAt(sb.length() - 1);
 
 		return sb.toString();
 	}
 
 	/**
 	 * Initialize object
+	 * 
 	 * @param fileName
 	 * @param fieldStr
 	 */
@@ -119,11 +130,13 @@ public class TableFile implements Serializable {
 		verbose = false;
 		hasTitle = true;
 
-		if (fileName != null) load();
+		if (fileName != null)
+			load();
 	}
 
 	/**
 	 * Initialize arrays
+	 * 
 	 * @param size
 	 */
 	@SuppressWarnings("rawtypes")
@@ -135,22 +148,32 @@ public class TableFile implements Serializable {
 			// Get type name
 			String canName = f.getType().getCanonicalName();
 			int idx = canName.indexOf('[');
-			if (idx < 0) throw new RuntimeException("Cannot parse aarray class '" + canName + "'");
+			if (idx < 0)
+				throw new RuntimeException("Cannot parse aarray class '" + canName + "'");
 			String baseClassName = canName.substring(0, idx);
 
 			try {
 				// Find class based on type name
 				Class clazz = null;
 
-				if (baseClassName.equals("int")) clazz = int.class;
-				else if (baseClassName.equals("byte")) clazz = byte.class;
-				else if (baseClassName.equals("short")) clazz = short.class;
-				else if (baseClassName.equals("long")) clazz = long.class;
-				else if (baseClassName.equals("double")) clazz = double.class;
-				else if (baseClassName.equals("float")) clazz = float.class;
-				else if (baseClassName.equals("boolean")) clazz = boolean.class;
-				else if (baseClassName.equals("char")) clazz = char.class;
-				else clazz = Class.forName(baseClassName);
+				if (baseClassName.equals("int"))
+					clazz = int.class;
+				else if (baseClassName.equals("byte"))
+					clazz = byte.class;
+				else if (baseClassName.equals("short"))
+					clazz = short.class;
+				else if (baseClassName.equals("long"))
+					clazz = long.class;
+				else if (baseClassName.equals("double"))
+					clazz = double.class;
+				else if (baseClassName.equals("float"))
+					clazz = float.class;
+				else if (baseClassName.equals("boolean"))
+					clazz = boolean.class;
+				else if (baseClassName.equals("char"))
+					clazz = char.class;
+				else
+					clazz = Class.forName(baseClassName);
 
 				// Create array and set field to the newly constructed array
 				Object array = Array.newInstance(clazz, size);
@@ -166,7 +189,8 @@ public class TableFile implements Serializable {
 	 */
 	protected void initFields() {
 		if (fieldByName == null) {
-			if (fieldStr == null) fieldStr = guessFields(); // No fields data? guess them.
+			if (fieldStr == null)
+				fieldStr = guessFields(); // No fields data? guess them.
 
 			fieldNames = fieldStr.split("" + FIELD_NAME_SEPARATOR);
 			fieldByName = new HashMap<String, Field>();
@@ -178,7 +202,8 @@ public class TableFile implements Serializable {
 						fieldByName.put(fname, field);
 					}
 				} catch (NoSuchFieldException e) {
-					throw new RuntimeException("Error: Field '" + fname + "' not found for class '" + this.getClass().getCanonicalName() + "' (may be the fields is not public?)");
+					throw new RuntimeException("Error: Field '" + fname + "' not found for class '"
+							+ this.getClass().getCanonicalName() + "' (may be the fields is not public?)");
 				}
 			}
 		}
@@ -190,22 +215,28 @@ public class TableFile implements Serializable {
 	public void load() {
 		initFields();
 
-		if (verbose) Timer.showStdErr("Counting lines from '" + fileName + "'");
+		if (verbose)
+			Timer.showStdErr("Counting lines from '" + fileName + "'");
 		size = Gpr.countLines(fileName);
-		if (hasTitle) size--;
-		if (verbose) Timer.showStdErr("Done. " + size + " data lines.");
+		if (hasTitle)
+			size--;
+		if (verbose)
+			Timer.showStdErr("Done. " + size + " data lines.");
 
 		// Initialize all array objects
 		initArrays(size);
 
 		// Read file
-		if (verbose) Timer.showStdErr("Loading file '" + fileName + "'");
+		if (verbose)
+			Timer.showStdErr("Loading file '" + fileName + "'");
 		int idx = 0;
 		LineFileIterator lfi = new LineFileIterator(fileName);
 		for (String line : lfi)
-			if ((lfi.lineNum > 1) || (!hasTitle)) assign(line, idx++);
+			if ((lfi.lineNum > 1) || (!hasTitle))
+				assign(line, idx++);
 
-		if (verbose) Timer.showStdErr("Done. " + idx + " lines loaded.");
+		if (verbose)
+			Timer.showStdErr("Done. " + idx + " lines loaded.");
 
 		// Clean up
 		lfi.close();
@@ -213,18 +244,22 @@ public class TableFile implements Serializable {
 
 	/**
 	 * Save this object to a binary file (using Java serialization)
+	 * 
 	 * @param binaryFile
 	 */
 	public void save(String binaryFile) {
 		fieldByName = null; // This one is not serializable (and we don't really need it anyway)
 
-		if (verbose) Timer.showStdErr("Saving to file '" + binaryFile + "'");
+		if (verbose)
+			Timer.showStdErr("Saving to file '" + binaryFile + "'");
 		Gpr.toFileSerialize(binaryFile, this);
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose)
+			Timer.showStdErr("Done.");
 	}
 
 	/**
 	 * Array size
+	 * 
 	 * @return
 	 */
 	public int size() {
@@ -233,6 +268,7 @@ public class TableFile implements Serializable {
 
 	/**
 	 * Return line number 'index' as a string
+	 * 
 	 * @param index
 	 * @return
 	 */

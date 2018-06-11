@@ -1,6 +1,7 @@
 package org.snpeff.coverage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,12 +23,13 @@ import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
 import org.snpeff.vcf.VcfEntry;
 
-import net.sf.samtools.SAMFileReader;
-import net.sf.samtools.SAMFileReader.ValidationStringency;
-import net.sf.samtools.SAMRecord;
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.SamReaderFactory;
 
 /**
  * Count how many reads map (from many SAM/BAM files) onto markers
+ * 
  * @author pcingola
  */
 public class CountReads {
@@ -52,8 +54,10 @@ public class CountReads {
 	public CountReads(String fileName, SnpEffectPredictor snpEffectPredictor) {
 		this.fileName = fileName;
 
-		if (snpEffectPredictor != null) this.snpEffectPredictor = snpEffectPredictor;
-		else this.snpEffectPredictor = new SnpEffectPredictor(new Genome());
+		if (snpEffectPredictor != null)
+			this.snpEffectPredictor = snpEffectPredictor;
+		else
+			this.snpEffectPredictor = new SnpEffectPredictor(new Genome());
 
 		markerTypes = new MarkerTypes();
 		coverageByExons = new ArrayList<CoverageByType>();
@@ -65,6 +69,7 @@ public class CountReads {
 
 	/**
 	 * Create a collection of all markers
+	 * 
 	 * @return
 	 */
 	Collection<Marker> allMarkers() {
@@ -82,7 +87,8 @@ public class CountReads {
 
 		// Iterate over all BAM/SAM files
 		try {
-			if (verbose) Timer.showStdErr("Reading file '" + fileName + "'");
+			if (verbose)
+				Timer.showStdErr("Reading file '" + fileName + "'");
 			countReads = new CountByKey<Marker>();
 			countBases = new CountByKey<Marker>();
 			countTypes = new CountByType();
@@ -96,7 +102,8 @@ public class CountReads {
 			System.err.println("");
 			Timer.showStdErr("Finished reding file " + fileName + "\n\tTotal reads: " + countTotalReads);
 		}
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose)
+			Timer.showStdErr("Done.");
 	}
 
 	/**
@@ -111,12 +118,15 @@ public class CountReads {
 				readLengthCount++;
 				readLengthSum += read.size();
 				countMarker(fileName, read);
-				if (verbose) Gpr.showMark(readNum, SHOW_EVERY);
+				if (verbose)
+					Gpr.showMark(readNum, SHOW_EVERY);
 				readNum++;
 			} catch (Exception e) {
 				countExceptions++;
-				if (countExceptions < 10) e.printStackTrace();
-				else if (countExceptions == 10) System.err.println("Not showing more exceptions!");
+				if (countExceptions < 10)
+					e.printStackTrace();
+				else if (countExceptions == 10)
+					System.err.println("Not showing more exceptions!");
 			}
 		}
 	}
@@ -127,10 +137,14 @@ public class CountReads {
 	void countFile(String fileName) {
 		String fl = fileName.toLowerCase();
 
-		if (fl.endsWith(".bam") || fl.endsWith(".sam")) countSamFile(fileName);
-		else if (fl.endsWith(".vcf") || fl.endsWith(".vcf.gz")) countVcfFile(fileName);
-		else if (fl.endsWith(".bed") || fl.endsWith(".bed.gz")) countBedFile(fileName);
-		else throw new RuntimeException("Unrecognized file extention. Supported types: BAM, SAM, BED, VCF.");
+		if (fl.endsWith(".bam") || fl.endsWith(".sam"))
+			countSamFile(fileName);
+		else if (fl.endsWith(".vcf") || fl.endsWith(".vcf.gz"))
+			countVcfFile(fileName);
+		else if (fl.endsWith(".bed") || fl.endsWith(".bed.gz"))
+			countBedFile(fileName);
+		else
+			throw new RuntimeException("Unrecognized file extention. Supported types: BAM, SAM, BED, VCF.");
 	}
 
 	/**
@@ -180,6 +194,7 @@ public class CountReads {
 
 	/**
 	 * Count how many of each marker type are there
+	 * 
 	 * @return
 	 */
 	CountByType countMarkerTypes(Collection<Marker> markersToCount) {
@@ -188,7 +203,8 @@ public class CountReads {
 			String type = markerTypes.getType(marker);
 			String subtype = markerTypes.getSubType(marker);
 			countByMarkerType.inc(type);
-			if (subtype != null) countByMarkerType.inc(subtype);
+			if (subtype != null)
+				countByMarkerType.inc(subtype);
 		}
 		return countByMarkerType;
 	}
@@ -199,8 +215,9 @@ public class CountReads {
 	void countSamFile(String fileName) {
 		// Open file
 		int readNum = 1;
-		SAMFileReader sam = new SAMFileReader(new File(fileName));
-		sam.setValidationStringency(ValidationStringency.SILENT);
+		// SAMFileReader sam = new SAMFileReader(new File(fileName));
+		// sam.setValidationStringency(ValidationStringency.SILENT);
+		SamReader sam = SamReaderFactory.makeDefault().open(new File(fileName));
 
 		for (SAMRecord samRecord : sam) {
 			try {
@@ -208,7 +225,8 @@ public class CountReads {
 					Chromosome chr = genome.getOrCreateChromosome(samRecord.getReferenceName());
 					if (chr != null) {
 						// Create a marker from read
-						Marker read = new Marker(chr, samRecord.getAlignmentStart(), samRecord.getAlignmentEnd(), false, "");
+						Marker read = new Marker(chr, samRecord.getAlignmentStart(), samRecord.getAlignmentEnd(), false,
+								"");
 						readLengthCount++;
 						readLengthSum += read.size();
 
@@ -216,16 +234,24 @@ public class CountReads {
 					}
 				}
 
-				if (verbose) Gpr.showMark(readNum, SHOW_EVERY);
+				if (verbose)
+					Gpr.showMark(readNum, SHOW_EVERY);
 				readNum++;
 			} catch (Exception e) {
 				countExceptions++;
-				if (countExceptions < 10) e.printStackTrace();
-				else if (countExceptions == 10) System.err.println("Not showing more exceptions!");
+				if (countExceptions < 10)
+					e.printStackTrace();
+				else if (countExceptions == 10)
+					System.err.println("Not showing more exceptions!");
 			}
 
 		}
-		sam.close();
+		try {
+			sam.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException("Error closing SAM/BAM file '" + fileName + "'", e);
+		}
 	}
 
 	/**
@@ -240,25 +266,30 @@ public class CountReads {
 				readLengthCount++;
 				readLengthSum += read.size();
 				countMarker(fileName, read);
-				if (verbose) Gpr.showMark(readNum, SHOW_EVERY);
+				if (verbose)
+					Gpr.showMark(readNum, SHOW_EVERY);
 				readNum++;
 			} catch (Exception e) {
 				countExceptions++;
-				if (countExceptions < 10) e.printStackTrace();
-				else if (countExceptions == 10) System.err.println("Not showing more exceptions!");
+				if (countExceptions < 10)
+					e.printStackTrace();
+				else if (countExceptions == 10)
+					System.err.println("Not showing more exceptions!");
 			}
 		}
 	}
 
 	/**
 	 * Coverage by number of exons in a transcript
+	 * 
 	 * @param m
 	 * @param typeRank
 	 */
 	void coverageByExons(Marker read, Marker m, String typeRank) {
 		// Find corresponfing transcript
 		Transcript tr = (Transcript) m.findParent(Transcript.class);
-		if (tr == null) return;
+		if (tr == null)
+			return;
 
 		// Number of exons
 		int exons = tr.numChilds();
@@ -309,10 +340,12 @@ public class CountReads {
 
 	/**
 	 * Average read length
+	 * 
 	 * @return
 	 */
 	public int getReadLengthAvg() {
-		if (readLengthCount <= 0) return 0;
+		if (readLengthCount <= 0)
+			return 0;
 		double rl = ((double) readLengthSum) / readLengthCount;
 		return (int) Math.round(rl);
 	}
@@ -327,6 +360,7 @@ public class CountReads {
 
 	/**
 	 * Initialize
+	 * 
 	 * @param snpEffectPredictor
 	 */
 	void init(SnpEffectPredictor snpEffectPredictor) {

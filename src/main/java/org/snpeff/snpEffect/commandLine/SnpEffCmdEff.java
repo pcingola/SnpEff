@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.snpeff.SnpEff;
-import org.snpeff.akka.vcf.VcfWorkQueue;
 import org.snpeff.fileIterator.BedFileIterator;
 import org.snpeff.fileIterator.VariantFileIterator;
 import org.snpeff.fileIterator.VcfFileIterator;
@@ -34,7 +33,6 @@ import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VcfAnnotator;
-import org.snpeff.snpEffect.commandLine.eff.MasterEff;
 import org.snpeff.stats.CountByType;
 import org.snpeff.stats.VariantEffectStats;
 import org.snpeff.stats.VariantStats;
@@ -46,9 +44,6 @@ import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.Pedigree;
 import org.snpeff.vcf.VcfEntry;
 
-import akka.actor.Actor;
-import akka.actor.Props;
-import akka.actor.UntypedActorFactory;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -78,7 +73,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	boolean createSummaryHtml = true;
 	boolean lossOfFunction = true; // Create loss of function LOF tag?
 	boolean useGeneId = false; // Use gene ID instead of gene name (VCF output)
-	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
+	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for
+										// development and debugging)
 	boolean useOicr = false; // Use OICR tag
 	boolean useSequenceOntology = true; // Use Sequence Ontology terms
 	int totalErrs = 0;
@@ -138,7 +134,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Iterate over input files
 		switch (inputFormat) {
 		case VCF:
-			vcf = (multiThreaded ? annotateVcfMulti(inputFile, outputFormatter) : annotateVcf(inputFile));
+			// FIXME: Need to fix multithreding mode
+			// vcf = (multiThreaded ? annotateVcfMulti(inputFile, outputFormatter) :
+			// :annotateVcf(inputFile));
+			vcf = annotateVcf(inputFile);
 			break;
 
 		case BED:
@@ -178,7 +177,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			}
 
 			// Sample vcf entry
-			if (createSummaryHtml || createSummaryCsv) vcfStats.sample(vcfEntry);
+			if (createSummaryHtml || createSummaryCsv)
+				vcfStats.sample(vcfEntry);
 
 			// Skip if there are filter intervals and they are not matched
 			if ((filterIntervals != null) && (filterIntervals.query(vcfEntry).isEmpty())) {
@@ -189,11 +189,11 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			// Create new 'section'
 			outputFormatter.startSection(vcfEntry);
 
-			//---
+			// ---
 			// Analyze all changes in this VCF entry
 			// Note, this is the standard analysis.
 			// Next section deals with cancer: Somatic vs Germline comparisons
-			//---
+			// ---
 			boolean impactLowOrHigher = false; // Does this entry have an impact (other than MODIFIER)?
 			List<Variant> variants = vcfEntry.variants();
 			for (Variant variant : variants) {
@@ -205,7 +205,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			}
 
 			// Perform cancer annotations
-			if (anyCancerSample && impactLowOrHigher) annotateVariantCancer(variants, vcfEntry);
+			if (anyCancerSample && impactLowOrHigher)
+				annotateVariantCancer(variants, vcfEntry);
 
 			// Finish up this section
 			outputFormatter.printSection(vcfEntry);
@@ -213,17 +214,19 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			printed = true;
 		} catch (Throwable t) {
 			totalErrs++;
-			error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
+			error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n"
+					+ t);
 		} finally {
-			if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
+			if (!printed && !filteredOut)
+				outputFormatter.printSection(vcfEntry);
 		}
 
 		return true;
 	}
 
 	/**
-	 * Iterate on all inputs and calculate effects.
-	 * Note: This is used for all input formats except VCF, which has a different iteration modality
+	 * Iterate on all inputs and calculate effects. Note: This is used for all input
+	 * formats except VCF, which has a different iteration modality
 	 */
 	void annotateBed(String inputFile, OutputFormatter outputFormatter) {
 		SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
@@ -231,23 +234,26 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Create an input file iterator
 		VariantFileIterator variantFileIterator = new BedFileIterator(inputFile, config.getGenome());
 
-		//---
+		// ---
 		// Iterate over input file
-		//---
+		// ---
 		for (Variant variant : variantFileIterator) {
 			try {
 				countInputLines++;
 
 				countVariants++;
-				if (verbose && (countVariants % SHOW_EVERY == 0)) Timer.showStdErr("\t" + countVariants + " variants");
+				if (verbose && (countVariants % SHOW_EVERY == 0))
+					Timer.showStdErr("\t" + countVariants + " variants");
 
 				// Does it pass the filter? => Analyze
 
 				// Skip if there are filter intervals and they are not matched
-				if ((filterIntervals != null) && (filterIntervals.stab(variant).size() <= 0)) continue;
+				if ((filterIntervals != null) && (filterIntervals.stab(variant).size() <= 0))
+					continue;
 
 				// Perform basic statistics about this variant
-				if (createSummaryHtml || createSummaryCsv) variantStats.sample(variant);
+				if (createSummaryHtml || createSummaryCsv)
+					variantStats.sample(variant);
 
 				// Calculate effects
 				VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
@@ -266,7 +272,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 				outputFormatter.printSection(variant);
 			} catch (Throwable t) {
 				totalErrs++;
-				error(t, "Error while processing variant (line " + variantFileIterator.getLineNum() + ") :\n\t" + variant + "\n" + t);
+				error(t, "Error while processing variant (line " + variantFileIterator.getLineNum() + ") :\n\t"
+						+ variant + "\n" + t);
 			}
 		}
 
@@ -281,25 +288,30 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	public boolean annotateFinish(VcfFileIterator vcfFile) {
 		boolean ok = true;
 
-		if (vcfFile != null) vcfFile.close();
+		if (vcfFile != null)
+			vcfFile.close();
 
 		// Creates a summary output file
 		if (createSummaryCsv) {
-			if (verbose) Timer.showStdErr("Creating summary file: " + summaryFileCsv);
+			if (verbose)
+				Timer.showStdErr("Creating summary file: " + summaryFileCsv);
 			ok &= summary(SUMMARY_CSV_TEMPLATE, summaryFileCsv, true);
 		}
 		if (createSummaryHtml) {
-			if (verbose) Timer.showStdErr("Creating summary file: " + summaryFileHtml);
+			if (verbose)
+				Timer.showStdErr("Creating summary file: " + summaryFileHtml);
 			ok &= summary(SUMMARY_TEMPLATE, summaryFileHtml, false);
 		}
 
 		// Creates genes output file
 		if (createSummaryHtml || createSummaryCsv) {
-			if (verbose) Timer.showStdErr("Creating genes file: " + summaryGenesFile);
+			if (verbose)
+				Timer.showStdErr("Creating genes file: " + summaryGenesFile);
 			ok &= summary(SUMMARY_GENES_TEMPLATE, summaryGenesFile, true);
 		}
 
-		if (totalErrs > 0) System.err.println(totalErrs + " errors.");
+		if (totalErrs > 0)
+			System.err.println(totalErrs + " errors.");
 		return !ok;
 	}
 
@@ -331,9 +343,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			}
 		}
 
-		//---
+		// ---
 		// Create output formatter
-		//---
+		// ---
 		outputFormatter = null;
 		switch (outputFormat) {
 		case VCF:
@@ -371,25 +383,29 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 	@Override
 	public boolean annotateInit(VcfFileIterator vcfFile) {
-		if (inputFormat != InputFormat.VCF || outputFormat != OutputFormat.VCF) throw new RuntimeException();
+		if (inputFormat != InputFormat.VCF || outputFormat != OutputFormat.VCF)
+			throw new RuntimeException();
 		annotateInit((String) null);
 		return false;
 	}
 
 	/**
 	 * Annotate a single variant
+	 * 
 	 * @param variant
 	 * @return true if there is any impact 'Low' or higher
 	 */
 	boolean annotateVariant(Variant variant) {
 		// Calculate effects: By default do not annotate non-variant sites
-		if (!variant.isVariant()) return false;
+		if (!variant.isVariant())
+			return false;
 
 		boolean impactModerateOrHigh = false; // Does this entry have a 'MODERATE' or 'HIGH' impact?
 		boolean impactLowOrHigher = false; // Does this entry have an impact (other than MODIFIER)?
 
 		// Perform basic statistics about this variant
-		if (createSummaryHtml || createSummaryCsv) variantStats.sample(variant);
+		if (createSummaryHtml || createSummaryCsv)
+			variantStats.sample(variant);
 
 		VariantEffects variantEffects = snpEffectPredictor.variantEffect(variant);
 
@@ -398,15 +414,19 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 		// Show results
 		for (VariantEffect variantEffect : variantEffects) {
-			if (createSummaryHtml || createSummaryCsv) variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
+			if (createSummaryHtml || createSummaryCsv)
+				variantEffectStats.sample(variantEffect); // Perform basic statistics about this result
 
 			// Any errors or warnings?
-			if (variantEffect.hasError()) errByType.inc(variantEffect.getError());
-			if (variantEffect.hasWarning()) warnByType.inc(variantEffect.getWarning());
+			if (variantEffect.hasError())
+				errByType.inc(variantEffect.getError());
+			if (variantEffect.hasWarning())
+				warnByType.inc(variantEffect.getWarning());
 
 			// Does this entry have an impact (other than MODIFIER)?
 			impactLowOrHigher |= (variantEffect.getEffectImpact() != EffectImpact.MODIFIER);
-			impactModerateOrHigh |= (variantEffect.getEffectImpact() == EffectImpact.MODERATE) || (variantEffect.getEffectImpact() == EffectImpact.HIGH);
+			impactModerateOrHigh |= (variantEffect.getEffectImpact() == EffectImpact.MODERATE)
+					|| (variantEffect.getEffectImpact() == EffectImpact.HIGH);
 
 			outputFormatter.add(variantEffect);
 			countEffects++;
@@ -416,7 +436,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		outputFormatter.printSection(variant);
 
 		// Output protein changes to FASTA file
-		if (fastaProt != null && impactModerateOrHigh) proteinAltSequence(variant, variantEffects);
+		if (fastaProt != null && impactModerateOrHigh)
+			proteinAltSequence(variant, variantEffects);
 
 		return impactLowOrHigher;
 	}
@@ -428,7 +449,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		VariantNonRef varNonRef = variantCancer(variants, altGtNum, refGtNum);
 
 		// No net variation? Skip
-		if (!varNonRef.isVariant()) return;
+		if (!varNonRef.isVariant())
+			return;
 
 		// Calculate effects
 		VariantEffects variantEffects = snpEffectPredictor.variantEffect(varNonRef);
@@ -445,11 +467,12 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	}
 
 	/**
-	 * Do we analyze cancer samples?
-	 * Here we deal with Somatic vs Germline comparisons
+	 * Do we analyze cancer samples? Here we deal with Somatic vs Germline
+	 * comparisons
 	 */
 	void annotateVariantCancer(List<Variant> variants, VcfEntry vcfEntry) {
-		if (!shouldAnnotateVariantCancer(variants, vcfEntry)) return;
+		if (!shouldAnnotateVariantCancer(variants, vcfEntry))
+			return;
 
 		// Calculate all required comparisons
 		Set<Tuple<Integer, Integer>> comparisons = pedigree.compareCancerGenotypes(vcfEntry);
@@ -464,8 +487,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	}
 
 	/**
-	 * Iterate on all inputs (VCF) and calculate effects.
-	 * Note: This is used only on input format VCF, which has a different iteration modality
+	 * Iterate on all inputs (VCF) and calculate effects. Note: This is used only on
+	 * input format VCF, which has a different iteration modality
 	 */
 	VcfFileIterator annotateVcf(String inputFile) {
 		// Open VCF file
@@ -477,53 +500,65 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			annotate(vcfEntry);
 
 		// Empty file? Show at least the header
-		if (countVcfEntries == 0) outputFormatter.print(vcfFile.getVcfHeader().toString());
+		if (countVcfEntries == 0)
+			outputFormatter.print(vcfFile.getVcfHeader().toString());
 
 		// Show errors and warnings
 		if (verbose) {
-			if (!errByType.isEmpty()) System.err.println("\nERRORS: Some errors were detected\nError type\tNumber of errors\n" + errByType + "\n");
-			if (!warnByType.isEmpty()) System.err.println("\nWARNINGS: Some warning were detected\nWarning type\tNumber of warnings\n" + warnByType + "\n");
+			if (!errByType.isEmpty())
+				System.err.println(
+						"\nERRORS: Some errors were detected\nError type\tNumber of errors\n" + errByType + "\n");
+			if (!warnByType.isEmpty())
+				System.err.println("\nWARNINGS: Some warning were detected\nWarning type\tNumber of warnings\n"
+						+ warnByType + "\n");
 		}
 
 		return vcfFile;
 	}
 
-	/**
-	 * Multi-threaded iteration on VCF inputs and calculates effects.
-	 * Note: This is used only on input format VCF, which has a different iteration modality
-	 */
-	VcfFileIterator annotateVcfMulti(String inputFile, final OutputFormatter outputFormatter) {
-		if (verbose) Timer.showStdErr("Running multi-threaded mode (numThreads=" + numWorkers + ").");
-
-		outputFormatter.setShowHeader(false); // Master process takes care of the header (instead of outputFormatter). Otherwise you get the header printed one time per worker.
-
-		// We need final variables for the inner class
-		final SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
-		final VcfOutputFormatter vcfOutForm = (VcfOutputFormatter) outputFormatter;
-		final SnpEffCmdEff snpEffCmdEff = this;
-
-		VcfFileIterator vcf = new VcfFileIterator(inputFile, config.getGenome());
-
-		// Master factory
-		Props props = new Props(new UntypedActorFactory() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Actor create() {
-				MasterEff master = new MasterEff(numWorkers, snpEffCmdEff, snpEffectPredictor, outputFormatter, filterIntervals);
-				master.setAddHeader(vcfOutForm.getNewHeaderLines().toArray(new String[0]));
-				return master;
-			}
-		});
-
-		// Create and run queue
-		int batchSize = 10;
-		VcfWorkQueue vcfWorkQueue = new VcfWorkQueue(inputFile, config, batchSize, -1, props);
-		vcfWorkQueue.run(true);
-
-		return vcf;
-	}
+	// /**
+	// * Multi-threaded iteration on VCF inputs and calculates effects.
+	// * Note: This is used only on input format VCF, which has a different
+	// iteration modality
+	// */
+	// VcfFileIterator annotateVcfMulti(String inputFile, final OutputFormatter
+	// outputFormatter) {
+	// if (verbose) Timer.showStdErr("Running multi-threaded mode (numThreads=" +
+	// numWorkers + ").");
+	//
+	// outputFormatter.setShowHeader(false); // Master process takes care of the
+	// header (instead of outputFormatter). Otherwise you get the header printed one
+	// time per worker.
+	//
+	// // We need final variables for the inner class
+	// final SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
+	// final VcfOutputFormatter vcfOutForm = (VcfOutputFormatter) outputFormatter;
+	// final SnpEffCmdEff snpEffCmdEff = this;
+	//
+	// VcfFileIterator vcf = new VcfFileIterator(inputFile, config.getGenome());
+	//
+	// // Master factory
+	// Props props = new Props(new UntypedActorFactory() {
+	//
+	// private static final long serialVersionUID = 1L;
+	//
+	// @Override
+	// public Actor create() {
+	// MasterEff master = new MasterEff(numWorkers, snpEffCmdEff,
+	// snpEffectPredictor, outputFormatter, filterIntervals);
+	// master.setAddHeader(vcfOutForm.getNewHeaderLines().toArray(new String[0]));
+	// return master;
+	// }
+	// });
+	//
+	// // Create and run queue
+	// int batchSize = 10;
+	// VcfWorkQueue vcfWorkQueue = new VcfWorkQueue(inputFile, config, batchSize,
+	// -1, props);
+	// vcfWorkQueue.run(true);
+	//
+	// return vcf;
+	// }
 
 	public VariantEffectStats getChangeEffectResutStats() {
 		return variantEffectStats;
@@ -573,8 +608,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		}
 
 		// Create summary file names
-		if (createSummaryCsv) summaryFileCsv = Gpr.dirName(inputFile) + "/" + base + "_summary.csv";
-		if (createSummaryHtml) summaryFileHtml = Gpr.dirName(inputFile) + "/" + base + "_summary.html";
+		if (createSummaryCsv)
+			summaryFileCsv = Gpr.dirName(inputFile) + "/" + base + "_summary.csv";
+		if (createSummaryHtml)
+			summaryFileHtml = Gpr.dirName(inputFile) + "/" + base + "_summary.html";
 		summaryGenesFile = Gpr.dirName(inputFile) + "/" + base + "_genes.txt";
 
 		return outputFile;
@@ -585,7 +622,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 */
 	@Override
 	public void parseArgs(String[] args) {
-		if (args == null) return;
+		if (args == null)
+			return;
 
 		boolean isFileList = false;
 		this.args = args;
@@ -594,17 +632,19 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			String arg = args[i];
 
 			// Is it a command line option?
-			// Note: Generic options (such as config, verbose, debug, quiet, etc.) are parsed by SnpEff class
-			//---
+			// Note: Generic options (such as config, verbose, debug, quiet, etc.) are
+			// parsed by SnpEff class
+			// ---
 			if (isOpt(arg)) {
-				if (arg.equalsIgnoreCase("-fileList")) isFileList = true;
+				if (arg.equalsIgnoreCase("-fileList"))
+					isFileList = true;
 				else {
 					arg = arg.toLowerCase();
 
 					switch (arg) {
-					//---
+					// ---
 					// Output options
-					//---
+					// ---
 					case "-chr":
 						chrStr = args[++i];
 						break;
@@ -616,12 +656,15 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 							String base = Gpr.baseName(summaryFileCsv, ".csv");
 							String dir = Gpr.dirName(summaryFileCsv);
 							summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
-						} else usage("Missing parameter: CSV stats file name ");
+						} else
+							usage("Missing parameter: CSV stats file name ");
 						break;
 
 					case "-fastaprot":
-						if ((i + 1) < args.length) fastaProt = args[++i]; // Output protein sequences in fasta files
-						else usage("Missing -cancerSamples argument");
+						if ((i + 1) < args.length)
+							fastaProt = args[++i]; // Output protein sequences in fasta files
+						else
+							usage("Missing -cancerSamples argument");
 						break;
 
 					case "-nochromoplots":
@@ -637,7 +680,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 							String outFor = args[++i].toUpperCase();
 
 							// if (outFor.equals("TXT")) outputFormat = OutputFormat.TXT;
-							if (outFor.equals("VCF")) outputFormat = OutputFormat.VCF;
+							if (outFor.equals("VCF"))
+								outputFormat = OutputFormat.VCF;
 							else if (outFor.equals("GATK")) {
 								outputFormat = OutputFormat.GATK;
 								useSequenceOntology = false;
@@ -654,8 +698,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 							} else if (outFor.equals("BEDANN")) {
 								outputFormat = OutputFormat.BEDANN;
 								lossOfFunction = false;
-							} else if (outFor.equals("TXT")) usage("Output format 'TXT' has been deprecated. Please use 'VCF' instead.\nYou can extract VCF fields to a TXT file using 'SnpSift extractFields' (http://snpeff.sourceforge.net/SnpSift.html#Extract).");
-							else usage("Unknown output file format '" + outFor + "'");
+							} else if (outFor.equals("TXT"))
+								usage("Output format 'TXT' has been deprecated. Please use 'VCF' instead.\nYou can extract VCF fields to a TXT file using 'SnpSift extractFields' (http://snpeff.sourceforge.net/SnpSift.html#Extract).");
+							else
+								usage("Unknown output file format '" + outFor + "'");
 						}
 						break;
 
@@ -668,23 +714,26 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 							String base = Gpr.baseName(summaryFileHtml, ".html");
 							String dir = Gpr.dirName(summaryFileHtml);
 							summaryGenesFile = (dir != null ? dir + "/" : "") + base + ".genes.txt";
-						} else usage("Missing parameter: HTML stats file name ");
+						} else
+							usage("Missing parameter: HTML stats file name ");
 						break;
 
 					case "-uselocaltemplate": // Undocumented option (only used for development & debugging)
 						useLocalTemplate = true;
 						break;
 
-					//---
+					// ---
 					// Annotation options
-					//---
+					// ---
 					case "-cancer":
 						cancer = true; // Perform cancer comparisons
 						break;
 
 					case "-cancersamples":
-						if ((i + 1) < args.length) cancerSamples = args[++i]; // Read cancer samples from TXT files
-						else usage("Missing -cancerSamples argument");
+						if ((i + 1) < args.length)
+							cancerSamples = args[++i]; // Read cancer samples from TXT files
+						else
+							usage("Missing -cancerSamples argument");
 						break;
 
 					case "-classic":
@@ -727,13 +776,15 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						useSequenceOntology = true; // Use SO temrs
 						break;
 
-					//---
+					// ---
 					// Input options
-					//---
+					// ---
 					case "-fi":
 					case "-filterinterval":
-						if ((i + 1) < args.length) filterIntervalFiles.add(args[++i]);
-						else usage("Option '-fi' without config filter_interval_file argument");
+						if ((i + 1) < args.length)
+							filterIntervalFiles.add(args[++i]);
+						else
+							usage("Option '-fi' without config filter_interval_file argument");
 						break;
 
 					case "-i":
@@ -748,14 +799,17 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 								inputFormat = InputFormat.BED;
 								outputFormat = OutputFormat.BED;
 								lossOfFunction = false;
-							} else if (inFor.equals("TXT")) usage("Input format 'TXT' has been deprecated. Please use 'VCF' instead.");
-							else usage("Unknown input file format '" + inFor + "'");
-						} else usage("Missing input format in command line option '-i'");
+							} else if (inFor.equals("TXT"))
+								usage("Input format 'TXT' has been deprecated. Please use 'VCF' instead.");
+							else
+								usage("Unknown input file format '" + inFor + "'");
+						} else
+							usage("Missing input format in command line option '-i'");
 						break;
 
-					//---
+					// ---
 					// Filters
-					//---
+					// ---
 					case "-no-downstream":
 						variantEffectResutFilter.add(EffectType.DOWNSTREAM);
 						break;
@@ -781,7 +835,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 					case "-no":
 						String filterOut = "";
-						if ((i + 1) < args.length) filterOut = args[++i];
+						if ((i + 1) < args.length)
+							filterOut = args[++i];
 
 						String filterOutArray[] = filterOut.split(",");
 						for (String filterStr : filterOutArray) {
@@ -790,8 +845,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 								variantEffectResutFilter.add(EffectType.UTR_3_DELETED);
 								variantEffectResutFilter.add(EffectType.UTR_5_PRIME);
 								variantEffectResutFilter.add(EffectType.UTR_5_DELETED);
-							} else if (filterStr.equalsIgnoreCase("None")) ; // OK, nothing to do
-							else variantEffectResutFilter.add(EffectType.valueOf(filterStr.toUpperCase()));
+							} else if (filterStr.equalsIgnoreCase("None"))
+								; // OK, nothing to do
+							else
+								variantEffectResutFilter.add(EffectType.valueOf(filterStr.toUpperCase()));
 						}
 						break;
 
@@ -799,21 +856,27 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 						usage("Unknown option '" + arg + "'");
 					}
 				}
-			} else if (genomeVer.isEmpty()) genomeVer = arg;
-			else if (inputFile.isEmpty()) inputFile = arg;
-			else usage("Unknown parameter '" + arg + "'");
+			} else if (genomeVer.isEmpty())
+				genomeVer = arg;
+			else if (inputFile.isEmpty())
+				inputFile = arg;
+			else
+				usage("Unknown parameter '" + arg + "'");
 		}
 
-		//---
+		// ---
 		// Sanity checks
-		//---
+		// ---
 
 		// Check: Do we have all required parameters?
-		if (genomeVer == null || genomeVer.isEmpty()) usage("Missing genomer_version parameter");
+		if (genomeVer == null || genomeVer.isEmpty())
+			usage("Missing genomer_version parameter");
 
 		// Check input file
-		if (inputFile.isEmpty()) inputFile = "-"; // Use STDIN as default
-		else if (!Gpr.canRead(inputFile)) usage("Cannot read input file '" + inputFile + "'");
+		if (inputFile.isEmpty())
+			inputFile = "-"; // Use STDIN as default
+		else if (!Gpr.canRead(inputFile))
+			usage("Cannot read input file '" + inputFile + "'");
 
 		// Read input files from file list?
 		if (isFileList) {
@@ -824,18 +887,24 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 		// Sanity checks for VCF output format
 		boolean isOutVcf = (outputFormat == OutputFormat.VCF) || (outputFormat == OutputFormat.GATK);
-		if (isOutVcf && (inputFormat != InputFormat.VCF)) usage("Output in VCF format is only supported when the input is also in VCF format");
-		if (!isOutVcf && lossOfFunction) usage("Loss of function annotation is only supported when when output is in VCF format");
-		if (!isOutVcf && cancer) usage("Canccer annotation is only supported when when output is in VCF format");
+		if (isOutVcf && (inputFormat != InputFormat.VCF))
+			usage("Output in VCF format is only supported when the input is also in VCF format");
+		if (!isOutVcf && lossOfFunction)
+			usage("Loss of function annotation is only supported when when output is in VCF format");
+		if (!isOutVcf && cancer)
+			usage("Canccer annotation is only supported when when output is in VCF format");
 
 		// Sanity check for multi-threaded version
 		if (multiThreaded) {
 			createSummaryHtml = false; // This is implied ( '-t' => '-noStats' )
 			createSummaryCsv = false;
 		}
-		if (multiThreaded && cancer) usage("Cancer analysis is currently not supported in multi-threaded mode.");
-		if (multiThreaded && !isOutVcf) usage("Multi-threaded option is only supported when when output is in VCF format");
-		if (multiThreaded && (createSummaryHtml || createSummaryCsv)) usage("Multi-threaded option should be used with 'noStats'.");
+		if (multiThreaded && cancer)
+			usage("Cancer analysis is currently not supported in multi-threaded mode.");
+		if (multiThreaded && !isOutVcf)
+			usage("Multi-threaded option is only supported when when output is in VCF format");
+		if (multiThreaded && (createSummaryHtml || createSummaryCsv))
+			usage("Multi-threaded option should be used with 'noStats'.");
 	}
 
 	/**
@@ -845,7 +914,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		Set<Transcript> doneTr = new HashSet<>();
 		for (VariantEffect varEff : variantEffects) {
 			Transcript tr = varEff.getTranscript();
-			if (tr == null || doneTr.contains(tr)) continue;
+			if (tr == null || doneTr.contains(tr))
+				continue;
 
 			// Calculate sequence after applying variant
 			Transcript trAlt = tr.apply(var);
@@ -874,8 +944,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 */
 	String readFile(String fileName) {
 		File file = new File(fileName);
-		if (!file.exists()) fatalError("No such file '" + fileName + "'");
-		if (!file.canRead()) fatalError("Cannot open file '" + fileName + "'");
+		if (!file.exists())
+			fatalError("No such file '" + fileName + "'");
+		if (!file.canRead())
+			fatalError("Cannot open file '" + fileName + "'");
 		return Gpr.readFile(fileName);
 	}
 
@@ -885,7 +957,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	int readFilterIntFile(String intFile) {
 		Markers markers = loadMarkers(intFile);
 
-		if (filterIntervals == null) filterIntervals = new IntervalForest();
+		if (filterIntervals == null)
+			filterIntervals = new IntervalForest();
 		for (Marker filterInterval : markers)
 			filterIntervals.add(filterInterval);
 
@@ -896,14 +969,16 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Read pedigree either from VCF header or from cancerSample file
 	 */
 	Pedigree readPedigree(VcfFileIterator vcfFile) {
-		if (cancerSamples != null) return new Pedigree(vcfFile, cancerSamples);
+		if (cancerSamples != null)
+			return new Pedigree(vcfFile, cancerSamples);
 		return new Pedigree(vcfFile);
 	}
 
 	@Override
 	public HashMap<String, String> reportValues() {
 		HashMap<String, String> report = super.reportValues();
-		if (variantStats != null) report.put("variants", variantStats.getCount() + "");
+		if (variantStats != null)
+			report.put("variants", variantStats.getCount() + "");
 		return report;
 	}
 
@@ -919,12 +994,13 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Run according to command line options
 	 */
 	public List<VcfEntry> run(boolean createList) {
-		//---
+		// ---
 		// Prepare to run
-		//---
+		// ---
 
 		// Nothing to filter out => don't waste time
-		if (!variantEffectResutFilter.anythingSet()) variantEffectResutFilter = null;
+		if (!variantEffectResutFilter.anythingSet())
+			variantEffectResutFilter = null;
 
 		filterIntervals = null;
 
@@ -932,29 +1008,37 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		loadDb(); // Load database
 
 		// Check if we can open the input file (no need to check if it is STDIN)
-		if (!Gpr.canRead(inputFile)) usage("Cannot open input file '" + inputFile + "'");
+		if (!Gpr.canRead(inputFile))
+			usage("Cannot open input file '" + inputFile + "'");
 
 		// Read filter interval files
 		for (String filterIntFile : filterIntervalFiles) {
-			if (filterIntervals == null) filterIntervals = new IntervalForest();
-			if (verbose) Timer.showStdErr("Reading filter interval file '" + filterIntFile + "'");
+			if (filterIntervals == null)
+				filterIntervals = new IntervalForest();
+			if (verbose)
+				Timer.showStdErr("Reading filter interval file '" + filterIntFile + "'");
 			int count = readFilterIntFile(filterIntFile);
-			if (verbose) Timer.showStdErr("done (" + count + " intervals loaded). ");
+			if (verbose)
+				Timer.showStdErr("done (" + count + " intervals loaded). ");
 		}
 
 		// Build interval forest for filter (if any)
 		if (filterIntervals != null) {
-			if (verbose) Timer.showStdErr("Building filter interval forest");
+			if (verbose)
+				Timer.showStdErr("Building filter interval forest");
 			filterIntervals.build();
-			if (verbose) Timer.showStdErr("done.");
+			if (verbose)
+				Timer.showStdErr("done.");
 		}
 
 		// Store VCF results in a list?
-		if (createList) vcfEntriesDebug = new ArrayList<>();
+		if (createList)
+			vcfEntriesDebug = new ArrayList<>();
 
 		// Predict
 		boolean ok = true;
-		if (verbose) Timer.showStdErr("Predicting variants");
+		if (verbose)
+			Timer.showStdErr("Predicting variants");
 		if (inputFiles == null) {
 			// Single input file, output to STDOUT (typical usage)
 			ok = annotate(inputFile, null);
@@ -962,19 +1046,23 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			// Multiple input and output files
 			for (String inputFile : inputFiles) {
 				String outputFile = outputFile(inputFile);
-				if (verbose) Timer.showStdErr("Analyzing file" //
-						+ "\n\tInput         : '" + inputFile + "'" //
-						+ "\n\tOutput        : '" + outputFile + "'" //
-						+ (createSummaryHtml ? "\n\tSummary (HTML): '" + summaryFileHtml + "'" : "") //
-						+ (createSummaryCsv ? "\n\tSummary (CSV) : '" + summaryFileCsv + "'" : "") //
-				);
+				if (verbose)
+					Timer.showStdErr("Analyzing file" //
+							+ "\n\tInput         : '" + inputFile + "'" //
+							+ "\n\tOutput        : '" + outputFile + "'" //
+							+ (createSummaryHtml ? "\n\tSummary (HTML): '" + summaryFileHtml + "'" : "") //
+							+ (createSummaryCsv ? "\n\tSummary (CSV) : '" + summaryFileCsv + "'" : "") //
+					);
 				ok &= annotate(inputFile, outputFile);
 			}
 		}
-		if (verbose) Timer.showStdErr("done.");
+		if (verbose)
+			Timer.showStdErr("done.");
 
-		if (!ok) return null;
-		if (vcfEntriesDebug == null) return new ArrayList<>();
+		if (!ok)
+			return null;
+		if (vcfEntriesDebug == null)
+			return new ArrayList<>();
 		return vcfEntriesDebug;
 	}
 
@@ -986,7 +1074,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Should we annotate cancer variants?
 	 */
 	boolean shouldAnnotateVariantCancer(List<Variant> variants, VcfEntry vcfEntry) {
-		if (vcfEntry.isMultiallelic()) return true;
+		if (vcfEntry.isMultiallelic())
+			return true;
 		// Bi-allelic are analyzed only if there are "back to REF" mutation
 		return pedigree.anyBackToRef(vcfEntry);
 	}
@@ -1001,7 +1090,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			int secs = millisec / 1000;
 			if (secs > 0) {
 				int varsPerSec = (int) (countVariants * 1000.0 / millisec);
-				Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
+				Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), "
+						+ countVcfEntries + " VCF entries");
 			}
 		}
 	}
@@ -1015,12 +1105,16 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			Configuration cfg = new Configuration();
 
 			// Specify the data source where the template files come from
-			if (useLocalTemplate) cfg.setDirectoryForTemplateLoading(new File("./templates/")); // Use local 'template' directory
-			else cfg.setClassForTemplateLoading(SnpEffCmdEff.class, "/"); // Use current directory in JAR file
+			if (useLocalTemplate)
+				cfg.setDirectoryForTemplateLoading(new File("./templates/")); // Use local 'template' directory
+			else
+				cfg.setClassForTemplateLoading(SnpEffCmdEff.class, "/"); // Use current directory in JAR file
 
-			cfg.setObjectWrapper(new DefaultObjectWrapper()); // Specify how templates will see the data-model. This is an advanced topic...
+			cfg.setObjectWrapper(new DefaultObjectWrapper()); // Specify how templates will see the data-model. This is
+																// an advanced topic...
 			cfg.setLocale(java.util.Locale.US);
-			if (noCommas) cfg.setNumberFormat("0.######");
+			if (noCommas)
+				cfg.setNumberFormat("0.######");
 
 			// Create the root hash (where data objects are)
 			HashMap<String, Object> root = summaryCreateHash();
@@ -1071,6 +1165,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 	/**
 	 * Show 'usage;' message and exit with an error code '-1'
+	 * 
 	 * @param message
 	 */
 	@Override
@@ -1086,39 +1181,60 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		System.err.println("\tvariants_file                   : Default is STDIN");
 		System.err.println("\n");
 		System.err.println("\nOptions:");
-		System.err.println("\t-chr <string>                   : Prepend 'string' to chromosome name (e.g. 'chr1' instead of '1'). Only on TXT output.");
-		System.err.println("\t-classic                        : Use old style annotations instead of Sequence Ontology and Hgvs.");
+		System.err.println(
+				"\t-chr <string>                   : Prepend 'string' to chromosome name (e.g. 'chr1' instead of '1'). Only on TXT output.");
+		System.err.println(
+				"\t-classic                        : Use old style annotations instead of Sequence Ontology and Hgvs.");
 		System.err.println("\t-csvStats <file>                : Create CSV summary file.");
-		System.err.println("\t-download                       : Download reference genome if not available. Default: " + download);
+		System.err.println(
+				"\t-download                       : Download reference genome if not available. Default: " + download);
 		System.err.println("\t-i <format>                     : Input format [ vcf, bed ]. Default: VCF.");
 		System.err.println("\t-fileList                       : Input actually contains a list of files to process.");
-		System.err.println("\t-o <format>                     : Ouput format [ vcf, gatk, bed, bedAnn ]. Default: VCF.");
-		System.err.println("\t-s , -stats, -htmlStats         : Create HTML summary file.  Default is '" + DEFAULT_SUMMARY_HTML_FILE + "'");
+		System.err
+				.println("\t-o <format>                     : Ouput format [ vcf, gatk, bed, bedAnn ]. Default: VCF.");
+		System.err.println("\t-s , -stats, -htmlStats         : Create HTML summary file.  Default is '"
+				+ DEFAULT_SUMMARY_HTML_FILE + "'");
 		System.err.println("\t-noStats                        : Do not create stats (summary) file");
 		System.err.println("\nResults filter options:");
-		System.err.println("\t-fi , -filterInterval  <file>   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)");
+		System.err.println(
+				"\t-fi , -filterInterval  <file>   : Only analyze changes that intersect with the intervals specified in this file (you may use this option many times)");
 		System.err.println("\t-no-downstream                  : Do not show DOWNSTREAM changes");
 		System.err.println("\t-no-intergenic                  : Do not show INTERGENIC changes");
 		System.err.println("\t-no-intron                      : Do not show INTRON changes");
 		System.err.println("\t-no-upstream                    : Do not show UPSTREAM changes");
 		System.err.println("\t-no-utr                         : Do not show 5_PRIME_UTR or 3_PRIME_UTR changes");
-		System.err.println("\t-no <effectType>                : Do not show 'EffectType'. This option can be used several times.");
+		System.err.println(
+				"\t-no <effectType>                : Do not show 'EffectType'. This option can be used several times.");
 		System.err.println("\nAnnotations options:");
-		System.err.println("\t-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: " + cancer);
-		System.err.println("\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");
-		System.err.println("\t-fastaProt <file>               : Create an output file containing the resulting protein sequences.");
-		System.err.println("\t-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').");
-		System.err.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: " + useGeneId);
-		System.err.println("\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + hgvs);
+		System.err.println(
+				"\t-cancer                         : Perform 'cancer' comparisons (Somatic vs Germline). Default: "
+						+ cancer);
+		System.err.println(
+				"\t-cancerSamples <file>           : Two column TXT file defining 'oringinal \\t derived' samples.");
+		System.err.println(
+				"\t-fastaProt <file>               : Create an output file containing the resulting protein sequences.");
+		System.err.println(
+				"\t-formatEff                      : Use 'EFF' field compatible with older versions (instead of 'ANN').");
+		System.err
+				.println("\t-geneId                         : Use gene ID instead of gene name (VCF output). Default: "
+						+ useGeneId);
+		System.err.println(
+				"\t-hgvs                           : Use HGVS annotations for amino acid sub-field. Default: " + hgvs);
 		System.err.println("\t-hgvsOld                        : Use old HGVS notation. Default: " + hgvsOld);
-		System.err.println("\t-hgvs1LetterAa                  : Use one letter Amino acid codes in HGVS notation. Default: " + hgvsOneLetterAa);
-		System.err.println("\t-hgvsTrId                       : Use transcript ID in HGVS notation. Default: " + hgvsTrId);
-		System.err.println("\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");
+		System.err.println(
+				"\t-hgvs1LetterAa                  : Use one letter Amino acid codes in HGVS notation. Default: "
+						+ hgvsOneLetterAa);
+		System.err.println(
+				"\t-hgvsTrId                       : Use transcript ID in HGVS notation. Default: " + hgvsTrId);
+		System.err.println(
+				"\t-lof                            : Add loss of function (LOF) and Nonsense mediated decay (NMD) tags.");
 		System.err.println("\t-noHgvs                         : Do not add HGVS annotations.");
 		System.err.println("\t-noLof                          : Do not add LOF and NMD annotations.");
-		System.err.println("\t-noShiftHgvs                    : Do not shift variants according to HGVS notation (most 3prime end).");
+		System.err.println(
+				"\t-noShiftHgvs                    : Do not shift variants according to HGVS notation (most 3prime end).");
 		System.err.println("\t-oicr                           : Add OICR tag in VCF file. Default: " + useOicr);
-		System.err.println("\t-sequenceOntology               : Use Sequence Ontology terms. Default: " + useSequenceOntology);
+		System.err.println(
+				"\t-sequenceOntology               : Use Sequence Ontology terms. Default: " + useSequenceOntology);
 
 		usageGenericAndDb();
 
@@ -1131,11 +1247,13 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	VariantNonRef variantCancer(List<Variant> variants, int altGtNum, int refGtNum) {
 		// Is this a "back to reference" variant?
 		// Example:
-		//       Germline: 'A' -> 'T'
-		//       Somatic:  'T' -> 'A'  (i.e. reverses the gerline mutation to the genome reference)
+		// Germline: 'A' -> 'T'
+		// Somatic: 'T' -> 'A' (i.e. reverses the gerline mutation to the genome
+		// reference)
 		if (altGtNum == 0) {
 			Variant variantRef = variants.get(refGtNum - 1); // After applying this variant, we get the new 'reference'
-			Variant variantAlt = variantRef.reverse(); // This our new 'variant'. The effect of this variant is "back to reference"
+			Variant variantAlt = variantRef.reverse(); // This our new 'variant'. The effect of this variant is "back to
+														// reference"
 			return new VariantNonRef(variantAlt, variantRef);
 		}
 

@@ -2,8 +2,6 @@ package org.snpeff.svg;
 
 import org.snpeff.interval.Intron;
 
-import scala.collection.mutable.StringBuilder;
-
 /**
  * Create an SVG representation of a Marker
  */

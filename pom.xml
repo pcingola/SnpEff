@@ -45,11 +45,6 @@
       <version>1.2</version>
     </dependency>
     <dependency>
-      <groupId>com.typesafe.akka</groupId>
-      <artifactId>akka-actor</artifactId>
-      <version>2.0.1</version>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.4</version>
@@ -68,11 +63,6 @@
       <groupId>distlib</groupId>
       <artifactId>distlib</artifactId>
       <version>0.9.1</version>
-    </dependency>
-    <dependency>
-      <groupId>samtools</groupId>
-      <artifactId>samtools</artifactId>
-      <version>1.107</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -121,6 +111,11 @@
         </exclusion>
       </exclusions>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.github.samtools</groupId>
+        <artifactId>htsjdk</artifactId>
+        <version>2.15.1</version>
     </dependency>
   </dependencies>
 

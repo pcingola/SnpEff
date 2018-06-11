@@ -44,7 +44,6 @@ import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
 import junit.framework.Assert;
-import net.sf.samtools.util.RuntimeEOFException;
 
 /**
  * Base class: Provides common methods used for testing
@@ -58,7 +57,8 @@ public class TestCasesIntegrationBase {
 	public boolean verbose = false || debug;
 
 	protected boolean ignoreErrors = false;
-	protected boolean shiftHgvs; // Do or do not shift variants according to HGVS notation (for test cases that were created before the feature was implemented)
+	protected boolean shiftHgvs; // Do or do not shift variants according to HGVS notation (for test cases that
+									// were created before the feature was implemented)
 
 	public String testsDir;
 	protected String testType;
@@ -85,14 +85,16 @@ public class TestCasesIntegrationBase {
 
 		// Find transcript
 		Transcript tr = sep.getGenome().getGenes().findTranscript(trId);
-		if (tr == null) throw new RuntimeException("Could not find transcript ID '" + trId + "'");
+		if (tr == null)
+			throw new RuntimeException("Could not find transcript ID '" + trId + "'");
 
 		// Apply first variant
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
 			for (Variant var : ve.variants()) {
 				Transcript trNew = tr.apply(var);
-				if (debug) Gpr.debug(trNew);
+				if (debug)
+					Gpr.debug(trNew);
 				return trNew;
 			}
 		}
@@ -115,7 +117,8 @@ public class TestCasesIntegrationBase {
 	/**
 	 * Build a genome from a RefSeq file and compare results to 'expected' results
 	 */
-	public SnpEffectPredictor buildAndCompare(String genome, String refSeqFile, String fastaFile, String resultFile, boolean hideProtein) {
+	public SnpEffectPredictor buildAndCompare(String genome, String refSeqFile, String fastaFile, String resultFile,
+			boolean hideProtein) {
 		String expectedResult = Gpr.readFile(resultFile).trim();
 
 		// Build
@@ -125,14 +128,17 @@ public class TestCasesIntegrationBase {
 		factory.setVerbose(verbose);
 
 		// Set fasta file (or don't read sequences)
-		if (fastaFile != null) factory.setFastaFile(fastaFile);
-		else factory.setReadSequences(false);
+		if (fastaFile != null)
+			factory.setFastaFile(fastaFile);
+		else
+			factory.setReadSequences(false);
 
 		SnpEffectPredictor sep = factory.create();
 
 		// Compare result
 		String result = showTranscripts(sep.getGenome(), hideProtein).trim();
-		if (verbose) System.out.println(result);
+		if (verbose)
+			System.out.println(result);
 		Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 
 		return sep;
@@ -167,16 +173,19 @@ public class TestCasesIntegrationBase {
 	/**
 	 * Build a genome from a GFF3 file and compare results to 'expected' results
 	 */
-	public SnpEffectPredictor buildGff3AndCompare(String genome, String gff3File, String resultFile, boolean readSeqs, boolean createRandSequences) {
+	public SnpEffectPredictor buildGff3AndCompare(String genome, String gff3File, String resultFile, boolean readSeqs,
+			boolean createRandSequences) {
 
 		// Build
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
 		SnpEffPredictorFactoryGff3 fgff3 = new SnpEffPredictorFactoryGff3(config);
 		fgff3.setVerbose(verbose);
-		if (gff3File != null) fgff3.setFileName(gff3File);
+		if (gff3File != null)
+			fgff3.setFileName(gff3File);
 		fgff3.setReadSequences(readSeqs);
 		fgff3.setCreateRandSequences(createRandSequences);
-		fgff3.setRandom(new Random(20140410)); // Note: we want consistent results in our test cases, so we always initialize the random generator in the same way
+		fgff3.setRandom(new Random(20140410)); // Note: we want consistent results in our test cases, so we always
+												// initialize the random generator in the same way
 
 		SnpEffectPredictor sep = fgff3.create();
 
@@ -212,14 +221,17 @@ public class TestCasesIntegrationBase {
 		fgtf22.setVerbose(verbose);
 
 		// Set fasta file (or don't read sequences)
-		if (fastaFile != null) fgtf22.setFastaFile(fastaFile);
-		else fgtf22.setReadSequences(false);
+		if (fastaFile != null)
+			fgtf22.setFastaFile(fastaFile);
+		else
+			fgtf22.setReadSequences(false);
 
 		SnpEffectPredictor sep = fgtf22.create();
 
 		// Compare result
 		String result = showTranscripts(sep.getGenome(), true).trim();
-		if (verbose) System.out.println(result);
+		if (verbose)
+			System.out.println(result);
 		Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 	}
 
@@ -229,13 +241,15 @@ public class TestCasesIntegrationBase {
 		return new Marker(tr.getParent(), start, end, false, "");
 	}
 
-	void checkAnnotations(SnpEffectPredictor sep, String chr, int pos, String ref, String alt, String hgvsP, String hgvsC, String eff) {
+	void checkAnnotations(SnpEffectPredictor sep, String chr, int pos, String ref, String alt, String hgvsP,
+			String hgvsC, String eff) {
 		Genome genome = sep.getGenome();
 		Variant var = new Variant(genome.getChromosome(chr), pos, ref, alt, "");
 		VariantEffects varEffs = sep.variantEffect(var);
 		for (VariantEffect varEff : varEffs) {
 			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println("\t" + vcfEff);
+			if (verbose)
+				System.out.println("\t" + vcfEff);
 
 			Assert.assertEquals(hgvsP, vcfEff.getHgvsProt());
 			Assert.assertEquals(hgvsC, vcfEff.getHgvsDna());
@@ -251,10 +265,12 @@ public class TestCasesIntegrationBase {
 
 		int countCheck = 0;
 		for (VcfEntry ve : list) {
-			if (verbose) System.out.println(ve);
+			if (verbose)
+				System.out.println(ve);
 
 			String transcriptId = ve.getInfo("TR");
-			if (verbose) System.out.println("\tLooking for transcript '" + transcriptId + "'");
+			if (verbose)
+				System.out.println("\tLooking for transcript '" + transcriptId + "'");
 			for (VcfEffect veff : ve.getVcfEffects()) {
 
 				if (veff.getTranscriptId().equals(transcriptId)) {
@@ -281,7 +297,8 @@ public class TestCasesIntegrationBase {
 			}
 		}
 
-		if (verbose) System.out.println("Total checked: " + countCheck);
+		if (verbose)
+			System.out.println("Total checked: " + countCheck);
 		Assert.assertTrue("Too few variants checked: " + countCheck, countCheck >= minCheck);
 	}
 
@@ -289,7 +306,8 @@ public class TestCasesIntegrationBase {
 	void checkHgvscForTr(List<VcfEntry> list, String trId) {
 		boolean found = false;
 		for (VcfEntry ve : list) {
-			if (verbose) System.out.println(ve);
+			if (verbose)
+				System.out.println(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals(trId)) {
@@ -313,7 +331,8 @@ public class TestCasesIntegrationBase {
 	void checkMotif(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact, boolean useAnn) {
 		String args[] = { "-classic", "-motif", "-ud", "0", genomeVer, vcfFile };
 		String argsAnn[] = { "-ud", "0", genomeVer, vcfFile };
-		if (useAnn) args = argsAnn;
+		if (useAnn)
+			args = argsAnn;
 
 		SnpEff cmd = new SnpEff(args);
 
@@ -328,7 +347,8 @@ public class TestCasesIntegrationBase {
 		int numNextProt = 0;
 		for (VcfEntry ve : vcfEntries) {
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t" + veff.getVcfFieldString());
+				if (verbose)
+					System.out.println("\t" + veff.getVcfFieldString());
 
 				// Is it motif?
 				if (veff.getEffectType() == EffectType.MOTIF) {
@@ -342,7 +362,8 @@ public class TestCasesIntegrationBase {
 						ok = effectDetails.equals(veff.getEffectDetails()) && (impact == veff.getImpact());
 					}
 
-					if (ok) numNextProt++;
+					if (ok)
+						numNextProt++;
 				}
 			}
 		}
@@ -353,7 +374,8 @@ public class TestCasesIntegrationBase {
 	void checkNextProt(String genomeVer, String vcfFile, String effectDetails, EffectImpact impact, boolean useAnn) {
 		String args[] = { "-classic", "-nextProt", genomeVer, vcfFile };
 		String argsAnn[] = { genomeVer, vcfFile };
-		if (useAnn) args = argsAnn;
+		if (useAnn)
+			args = argsAnn;
 
 		SnpEff cmd = new SnpEff(args);
 		cmd.setVerbose(verbose);
@@ -374,10 +396,13 @@ public class TestCasesIntegrationBase {
 				{
 					// Are details OK?
 					boolean match = false;
-					if (!useAnn && effectDetails.equals(veff.getEffectDetails())) match = true;
-					if (useAnn && effectDetails.equals(veff.getFeatureType())) match = true;
+					if (!useAnn && effectDetails.equals(veff.getEffectDetails()))
+						match = true;
+					if (useAnn && effectDetails.equals(veff.getFeatureType()))
+						match = true;
 
-					if (match) numNextProt++;
+					if (match)
+						numNextProt++;
 				}
 
 				if (verbose) //
@@ -419,7 +444,7 @@ public class TestCasesIntegrationBase {
 					codingExons.add(exon);
 
 					// Create a seqChange
-					//					SeqChange seqChange = new SeqChange(tr.getChromosome(), expos, expos, "");
+					// SeqChange seqChange = new SeqChange(tr.getChromosome(), expos, expos, "");
 					Variant variant = new Variant(tr.getChromosome(), expos, "A", "C"); // Create a seqChange
 
 					// Create a STOP_GAIN effect
@@ -435,19 +460,22 @@ public class TestCasesIntegrationBase {
 					nmdStr.append(isNmd[pos] ? '+' : '.');
 					nmdStrSimple.append(isNmd[pos] ? '+' : '.');
 					pos++;
-				} else nmdStr.append('U');
+				} else
+					nmdStr.append('U');
 			}
 			nmdStr.append('\t');
 			nmdStrSimple.append('\t');
 		}
 
 		// Show string
-		if (verbose) System.err.println(nmdStr);
-		if (debug) System.err.println("\tCoding Exons:" + codingExons.size());
+		if (verbose)
+			System.err.println(nmdStr);
+		if (debug)
+			System.err.println("\tCoding Exons:" + codingExons.size());
 
-		//---
+		// ---
 		// Check that NMP prediction is 'correct'
-		//---
+		// ---
 		// We need a splice event in the coding part
 		if (codingExons.size() > 1) {
 			// Use the 'simple' string to check
@@ -462,7 +490,8 @@ public class TestCasesIntegrationBase {
 			String points = simpleNoLast.substring(lastNmd) + ex[ex.length - 1];
 			String plus = simpleNoLast.substring(0, lastNmd);
 
-			if (debug) System.err.println("\tPoints: " + points + "\n\tPlus :" + plus);
+			if (debug)
+				System.err.println("\tPoints: " + points + "\n\tPlus :" + plus);
 
 			// Check
 			Assert.assertEquals(0, points.replace('.', ' ').trim().length());
@@ -478,10 +507,12 @@ public class TestCasesIntegrationBase {
 		List<VcfEntry> vcfEntries = snpeff.run(true);
 
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose)
+				System.out.println(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				EffectImpact imp = veff.getImpact();
-				if (verbose) System.out.println("\t" + imp + "\t" + veff);
+				if (verbose)
+					System.out.println("\t" + imp + "\t" + veff);
 				Assert.assertEquals(EffectImpact.MODIFIER, imp);
 			}
 		}
@@ -499,13 +530,16 @@ public class TestCasesIntegrationBase {
 
 		boolean hasWarning = false;
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose)
+				System.out.println(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				EffectImpact imp = veff.getImpact();
-				if (verbose) System.out.println("\t" + imp + "\t" + veff);
+				if (verbose)
+					System.out.println("\t" + imp + "\t" + veff);
 
 				// Check if the warning type we expect is there
-				if (veff.getErrorsWarning() != null) hasWarning |= veff.getErrorsWarning().indexOf(warningType.toString()) >= 0;
+				if (veff.getErrorsWarning() != null)
+					hasWarning |= veff.getErrorsWarning().indexOf(warningType.toString()) >= 0;
 			}
 		}
 
@@ -550,8 +584,10 @@ public class TestCasesIntegrationBase {
 
 			if (verbose) {
 				System.out.println(ve);
-				if (trIdC != null) System.out.println("\tExpected HGVS_C: " + trIdC + ":" + hgvsCexp);
-				if (trIdP != null) System.out.println("\tExpected HGVS_P: " + trIdP + ":" + hgvsPexp + "\n");
+				if (trIdC != null)
+					System.out.println("\tExpected HGVS_C: " + trIdC + ":" + hgvsCexp);
+				if (trIdP != null)
+					System.out.println("\tExpected HGVS_P: " + trIdP + ":" + hgvsPexp + "\n");
 			}
 
 			// Check all effects
@@ -567,7 +603,8 @@ public class TestCasesIntegrationBase {
 				if (trId != null && trId.equals(trIdC)) {
 					trFound = true;
 					if (!hgvsCexp.equals(hgvsCactual)) {
-						if (!ignoreErrors) Assert.assertEquals(hgvsCexp, hgvsCactual);
+						if (!ignoreErrors)
+							Assert.assertEquals(hgvsCexp, hgvsCactual);
 						countErrC++;
 					} else {
 						okC = foundC = true;
@@ -578,7 +615,8 @@ public class TestCasesIntegrationBase {
 				// Compare results for HGVS_PROT
 				if (compareProt && trId != null && trId.equals(trIdP)) {
 					if (!hgvsPexp.equals(hgvsPactual)) {
-						if (!ignoreErrors) Assert.assertEquals(hgvsPexp, hgvsPactual);
+						if (!ignoreErrors)
+							Assert.assertEquals(hgvsPexp, hgvsPactual);
 						countErrP++;
 					} else {
 						okP = foundP = true;
@@ -589,8 +627,12 @@ public class TestCasesIntegrationBase {
 				if (verbose) {
 					System.out.println("\t" + veff //
 							+ "\n\t\tEFF    : " + veff.getEffectsStr() //
-							+ "\n\t\tHGVS_C : " + trId + ":" + hgvsCactual + "\t\tExpected: " + trIdC + ":" + hgvsCexp + "\t" + (foundC ? "OK" : "NO") //
-							+ (compareProt ? "\n\t\tHGVS_P : " + trId + ":" + hgvsPactual + "\t\tExpected: " + trIdP + ":" + hgvsPexp + "\t" + (foundP ? "OK" : "NO") : "") //
+							+ "\n\t\tHGVS_C : " + trId + ":" + hgvsCactual + "\t\tExpected: " + trIdC + ":" + hgvsCexp
+							+ "\t" + (foundC ? "OK" : "NO") //
+							+ (compareProt
+									? "\n\t\tHGVS_P : " + trId + ":" + hgvsPactual + "\t\tExpected: " + trIdP + ":"
+											+ hgvsPexp + "\t" + (foundP ? "OK" : "NO")
+									: "") //
 							+ "\n");
 				}
 
@@ -604,18 +646,22 @@ public class TestCasesIntegrationBase {
 
 			if (!ignoreErrors) {
 				Assert.assertTrue("HGVS (DNA) not found: '" + hgvsCexp + "'", okC);
-				if (!hgvsPexp.isEmpty()) Assert.assertTrue("HGVS (Protein) not found: '" + hgvsPexp + "'", okP);
+				if (!hgvsPexp.isEmpty())
+					Assert.assertTrue("HGVS (Protein) not found: '" + hgvsPexp + "'", okP);
 			} else {
 				// Show errors
-				if (!okC) System.err.println("HGVS (DNA) not found : '" + hgvsCexp + "', vcf entry:\t" + ve);
-				if (compareProt && !okP) System.err.println("HGVS (Prot) not found: '" + hgvsPexp + "', vcf entry:\t" + ve);
+				if (!okC)
+					System.err.println("HGVS (DNA) not found : '" + hgvsCexp + "', vcf entry:\t" + ve);
+				if (compareProt && !okP)
+					System.err.println("HGVS (Prot) not found: '" + hgvsPexp + "', vcf entry:\t" + ve);
 			}
 		}
 
 		if (verbose || ignoreErrors) {
 			System.out.println("Count OKs   :\tHGVS (DNA): " + countOkC + "\tHGVS (Protein): " + countOkP);
 			System.out.println("Count Errors:\tHGVS (DNA): " + countErrC + "\tHGVS (Protein): " + countErrP);
-			System.out.println("Transcripts not found:\t" + countTrFound + ", unique: " + trNotFoundSet.size() + "\n" + trNotFoundSet);
+			System.out.println("Transcripts not found:\t" + countTrFound + ", unique: " + trNotFoundSet.size() + "\n"
+					+ trNotFoundSet);
 		}
 	}
 
@@ -645,20 +691,26 @@ public class TestCasesIntegrationBase {
 					String vep = ve.getInfo("EFF_V");
 					String eff = veff.getEffectType().toString();
 
-					if (vep.equals(eff)) ok = true;
+					if (vep.equals(eff))
+						ok = true;
 					else {
-						if (vep.equals("CODON_INSERTION") && eff.equals("CODON_CHANGE_PLUS_CODON_INSERTION")) ok = true; // OK. I consider these the same
-						else if (vep.equals("STOP_GAINED,CODON_INSERTION") && eff.equals("STOP_GAINED")) ok = true; // OK. I consider these the same
-						else if (eff.equals("SPLICE_SITE_REGION")) ok = true; // OK. I'm not checking these
+						if (vep.equals("CODON_INSERTION") && eff.equals("CODON_CHANGE_PLUS_CODON_INSERTION"))
+							ok = true; // OK. I consider these the same
+						else if (vep.equals("STOP_GAINED,CODON_INSERTION") && eff.equals("STOP_GAINED"))
+							ok = true; // OK. I consider these the same
+						else if (eff.equals("SPLICE_SITE_REGION"))
+							ok = true; // OK. I'm not checking these
 						else {
-							String line = "\n" + ve + "\n\tSnpEff:" + veff + "\n\tVEP   :" + ve.getInfo("EFF_V") + "\t" + ve.getInfo("AA") + "\t" + ve.getInfo("CODON") + "\n";
+							String line = "\n" + ve + "\n\tSnpEff:" + veff + "\n\tVEP   :" + ve.getInfo("EFF_V") + "\t"
+									+ ve.getInfo("AA") + "\t" + ve.getInfo("CODON") + "\n";
 							msg.append(line);
 						}
 					}
 				}
 			}
 
-			if (!ok) throw new RuntimeException(msg.toString());
+			if (!ok)
+				throw new RuntimeException(msg.toString());
 		}
 	}
 
@@ -681,10 +733,15 @@ public class TestCasesIntegrationBase {
 			HashSet<String> vepSos = new HashSet<>();
 			String vepSo = ve.getInfo("SO");
 			for (String so : vepSo.split(",")) {
-				if (so.equals("feature_elongation")) so = null; // This one is useless, if the variant is an insertion, it obviously causes an elongation
-				else if (so.equals("feature_truncation")) so = null; // This one is useless, if the variant is an insertion, it obviously causes an elongation
+				if (so.equals("feature_elongation"))
+					so = null; // This one is useless, if the variant is an insertion, it obviously causes an
+								// elongation
+				else if (so.equals("feature_truncation"))
+					so = null; // This one is useless, if the variant is an insertion, it obviously causes an
+								// elongation
 
-				if (so != null) vepSos.add(so);
+				if (so != null)
+					vepSos.add(so);
 			}
 
 			// Get effects for transcript 'trId'
@@ -696,10 +753,14 @@ public class TestCasesIntegrationBase {
 
 					for (String eff : effs.split("\\" + EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD)) {
 						// OK. I consider these the same
-						if (eff.equals("5_prime_UTR_premature_start_codon_gain_variant")) eff = "5_prime_UTR_variant";
-						if (eff.equals("disruptive_inframe_insertion")) eff = "inframe_insertion";
-						if (eff.equals("conservative_inframe_insertion")) eff = "inframe_insertion";
-						if (eff.equals("start_lost")) eff = "initiator_codon_variant";
+						if (eff.equals("5_prime_UTR_premature_start_codon_gain_variant"))
+							eff = "5_prime_UTR_variant";
+						if (eff.equals("disruptive_inframe_insertion"))
+							eff = "inframe_insertion";
+						if (eff.equals("conservative_inframe_insertion"))
+							eff = "inframe_insertion";
+						if (eff.equals("start_lost"))
+							eff = "initiator_codon_variant";
 						effSos.add(eff);
 					}
 				}
@@ -729,33 +790,41 @@ public class TestCasesIntegrationBase {
 	/**
 	 * Find a marker that intersects variant
 	 */
-	Marker findMarker(SnpEffectPredictor sep, Variant variant, EffectType effectType, Transcript tr, Marker markerFilter) {
+	Marker findMarker(SnpEffectPredictor sep, Variant variant, EffectType effectType, Transcript tr,
+			Marker markerFilter) {
 		Markers markers = sep.queryDeep(variant);
 
 		for (Marker m : markers) {
 			Marker mfilter = null;
-			if (markerFilter != null) mfilter = (Marker) m.findParent(markerFilter.getClass());
+			if (markerFilter != null)
+				mfilter = (Marker) m.findParent(markerFilter.getClass());
 
 			Transcript mtr = (Transcript) m.findParent(Transcript.class);
 
-			if (debug) Gpr.debug("\tLooking for '" + effectType + "' in '" + (markerFilter != null ? markerFilter.getId() : "NULL") //
-					+ "', class: " + (markerFilter != null ? markerFilter.getClass().getSimpleName() : "") //
-					+ "\t\tFound: '" + m.getType() + "', mfilter: " + (mfilter != null ? mfilter.getId() : "NULL") //
-					+ ", parent: " + m.getParent().getClass().getSimpleName() //
-			);
+			if (debug)
+				Gpr.debug("\tLooking for '" + effectType + "' in '"
+						+ (markerFilter != null ? markerFilter.getId() : "NULL") //
+						+ "', class: " + (markerFilter != null ? markerFilter.getClass().getSimpleName() : "") //
+						+ "\t\tFound: '" + m.getType() + "', mfilter: " + (mfilter != null ? mfilter.getId() : "NULL") //
+						+ ", parent: " + m.getParent().getClass().getSimpleName() //
+				);
 
 			if ((m.getType() == effectType) && (mfilter != null) && (mtr != null)) {
 				if (markerFilter != null) {
 					// Id filter?
-					if (mfilter.getId().equals(markerFilter.getId())) return m;
+					if (mfilter.getId().equals(markerFilter.getId()))
+						return m;
 				} else if (tr != null) {
 					// Transcript filter?
-					if (mtr.getId().equals(tr.getId())) return m;
-				} else return m; // No exon reference? => just return this
+					if (mtr.getId().equals(tr.getId()))
+						return m;
+				} else
+					return m; // No exon reference? => just return this
 			}
 		}
 
-		throw new RuntimeException("Cannot find '" + effectType + "' " + (markerFilter != null ? "for exon " + markerFilter.getId() : "") + ", seqChange: " + variant);
+		throw new RuntimeException("Cannot find '" + effectType + "' "
+				+ (markerFilter != null ? "for exon " + markerFilter.getId() : "") + ", seqChange: " + variant);
 	}
 
 	public void init() {
@@ -769,7 +838,8 @@ public class TestCasesIntegrationBase {
 		Config config = new Config(genome);
 		SnpEffectPredictor sep = SnpEffectPredictor.load(config);
 		sep.createGenomicRegions();
-		if (build) sep.buildForest();
+		if (build)
+			sep.buildForest();
 		return sep;
 	}
 
@@ -780,12 +850,14 @@ public class TestCasesIntegrationBase {
 	protected String pathClassName() {
 		String sname = this.getClass().getSimpleName();
 		for (String prefix : prefixes)
-			if (sname.startsWith(prefix)) sname = sname.substring(prefix.length());
+			if (sname.startsWith(prefix))
+				sname = sname.substring(prefix.length());
 		return sname.substring(0, 1).toLowerCase() + sname.substring(1);
 	}
 
 	/**
 	 * Used to migrate test files in old path
+	 * 
 	 * @param fileName
 	 * @return
 	 */
@@ -804,7 +876,8 @@ public class TestCasesIntegrationBase {
 			if (Gpr.exists(oldPath + ".gz")) {
 				oldPath += ".gz";
 				path += ".gz";
-			} else Gpr.debug("File migration: Cannot find original file:" + oldPath);
+			} else
+				Gpr.debug("File migration: Cannot find original file:" + oldPath);
 		}
 
 		if (!Gpr.exists(path) && Gpr.exists(oldPath)) {
@@ -812,7 +885,7 @@ public class TestCasesIntegrationBase {
 			try {
 				FileUtils.moveFile(new File(oldPath), new File(path));
 			} catch (IOException e) {
-				throw new RuntimeEOFException("Cannot copy files:\n\tsrc: " + oldPath + "\n\tdst: " + path, e);
+				throw new RuntimeException("Cannot copy files:\n\tsrc: " + oldPath + "\n\tdst: " + path, e);
 
 			}
 		}
@@ -873,7 +946,8 @@ public class TestCasesIntegrationBase {
 	/**
 	 * Calculate snp effect for an input VCF file
 	 */
-	public List<VcfEntry> snpEffect(String genome, String vcfFile, String otherArgs[], EffFormatVersion effFormatVersion) {
+	public List<VcfEntry> snpEffect(String genome, String vcfFile, String otherArgs[],
+			EffFormatVersion effFormatVersion) {
 		// Arguments
 		ArrayList<String> args = new ArrayList<>();
 		if (otherArgs != null) {
@@ -887,7 +961,8 @@ public class TestCasesIntegrationBase {
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
-		if (effFormatVersion != null) cmdEff.setFormatVersion(effFormatVersion);
+		if (effFormatVersion != null)
+			cmdEff.setFormatVersion(effFormatVersion);
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);
@@ -899,12 +974,14 @@ public class TestCasesIntegrationBase {
 	/**
 	 * Calculate snp effect for a list of snps using cancer samples
 	 */
-	public void snpEffectCancer(String vcfFile, String txtFile, String genome, boolean classic, String hgsvP, String hgvsC, String genotype, String trId) {
+	public void snpEffectCancer(String vcfFile, String txtFile, String genome, boolean classic, String hgsvP,
+			String hgvsC, String genotype, String trId) {
 		// Create command
 		List<String> argList = new ArrayList<>();
 		argList.add("-cancer");
 		argList.add("-hgvs");
-		if (classic) argList.add("-classic");
+		if (classic)
+			argList.add("-classic");
 		if (txtFile != null) {
 			argList.add("-cancerSamples");
 			argList.add(txtFile);
@@ -925,20 +1002,27 @@ public class TestCasesIntegrationBase {
 		// Find AA change for a genotype
 		boolean found = false;
 		for (VcfEntry vcfEntry : list) {
-			if (debug) System.err.println(vcfEntry);
+			if (debug)
+				System.err.println(vcfEntry);
 			for (VcfEffect eff : vcfEntry.getVcfEffects()) {
-				if (debug) System.err.println("\t" + eff + "\n\t\tHGVS.p : " + eff.getHgvsProt() + "\n\t\tHGVS.c : " + eff.getHgvsDna() + "\n\t\tGenotype: " + eff.getGenotype());
-				if (trId != null && !trId.equals(eff.getTranscriptId())) continue;
+				if (debug)
+					System.err.println("\t" + eff + "\n\t\tHGVS.p : " + eff.getHgvsProt() + "\n\t\tHGVS.c : "
+							+ eff.getHgvsDna() + "\n\t\tGenotype: " + eff.getGenotype());
+				if (trId != null && !trId.equals(eff.getTranscriptId()))
+					continue;
 				if (genotype.equals(eff.getGenotype())) {
-					if (hgsvP != null) Assert.assertEquals(hgsvP, eff.getHgvsP());
-					if (hgvsC != null) Assert.assertEquals(hgvsC, eff.getHgvsDna());
+					if (hgsvP != null)
+						Assert.assertEquals(hgsvP, eff.getHgvsP());
+					if (hgvsC != null)
+						Assert.assertEquals(hgvsC, eff.getHgvsDna());
 					found = true;
 				}
 			}
 		}
 
 		// Not found? Error
-		if (!found) throw new RuntimeException("Genotype '" + genotype + "' not found.");
+		if (!found)
+			throw new RuntimeException("Genotype '" + genotype + "' not found.");
 	}
 
 	/**

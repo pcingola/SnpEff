@@ -32,7 +32,6 @@ import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
 import junit.framework.Assert;
-import net.sf.samtools.util.RuntimeEOFException;
 
 /**
  * Base class for some test cases
@@ -52,7 +51,8 @@ public class TestCasesBase {
 	protected boolean addUtrs;
 	protected boolean onlyPlusStrand;
 	protected boolean onlyMinusStrand;
-	protected boolean shiftHgvs; // Do or do not shift variants according to HGVS notation (for test cases that were created before the feature was implemented)
+	protected boolean shiftHgvs; // Do or do not shift variants according to HGVS notation (for test cases that
+									// were created before the feature was implemented)
 
 	protected int numGenes = 1;
 	protected int maxGeneLen;
@@ -107,9 +107,11 @@ public class TestCasesBase {
 	}
 
 	/**
-	 * Apply a variant to a transcript and check resulting CDS sequence, protein sequence and exon coordinates
+	 * Apply a variant to a transcript and check resulting CDS sequence, protein
+	 * sequence and exon coordinates
 	 */
-	public void checkApply(Variant variant, VariantType varType, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
+	public void checkApply(Variant variant, VariantType varType, String expectedCds, String expectedProtein,
+			int exonRank, int expectedExon1Start, int expectedExon1End) {
 		Transcript newTr = transcript.apply(variant);
 
 		if (debug) {
@@ -135,15 +137,18 @@ public class TestCasesBase {
 		// Check that reference sequence matches chromosome
 		if (!variant.getReference().isEmpty()) {
 			String chrSeq = chromoSequence.substring(variant.getStart(), variant.getEnd() + 1);
-			Assert.assertEquals("Reference sequence does not match: " + chrSeq + " vs " + variant.getReference(), chrSeq, variant.getReference());
+			Assert.assertEquals("Reference sequence does not match: " + chrSeq + " vs " + variant.getReference(),
+					chrSeq, variant.getReference());
 		}
 
 		// Check variant type
-		Assert.assertEquals("Variant type does not match: " + varType + " vs " + variant.getVariantType(), varType, variant.getVariantType());
+		Assert.assertEquals("Variant type does not match: " + varType + " vs " + variant.getVariantType(), varType,
+				variant.getVariantType());
 
 		// Check sequences
 		Assert.assertEquals("CDS sequence should not change", expectedCds, newTr.cds());
-		if (expectedProtein != null) Assert.assertEquals("Protein sequence should not change", expectedProtein, newTr.protein());
+		if (expectedProtein != null)
+			Assert.assertEquals("Protein sequence should not change", expectedProtein, newTr.protein());
 
 		// Check exon coordinates
 		Exon newEx1 = newTr.sorted().get(1);
@@ -151,31 +156,42 @@ public class TestCasesBase {
 		Assert.assertEquals("Exon end coordinate", expectedExon1End, newEx1.getEnd());
 	}
 
-	public void checkApplyDel(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
-		checkApply(variant, VariantType.DEL, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
+	public void checkApplyDel(Variant variant, String expectedCds, String expectedProtein, int exonRank,
+			int expectedExon1Start, int expectedExon1End) {
+		checkApply(variant, VariantType.DEL, expectedCds, expectedProtein, exonRank, expectedExon1Start,
+				expectedExon1End);
 	}
 
-	public void checkApplyIns(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
-		checkApply(variant, VariantType.INS, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
+	public void checkApplyIns(Variant variant, String expectedCds, String expectedProtein, int exonRank,
+			int expectedExon1Start, int expectedExon1End) {
+		checkApply(variant, VariantType.INS, expectedCds, expectedProtein, exonRank, expectedExon1Start,
+				expectedExon1End);
 	}
 
-	public void checkApplyMixed(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
-		checkApply(variant, VariantType.MIXED, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
+	public void checkApplyMixed(Variant variant, String expectedCds, String expectedProtein, int exonRank,
+			int expectedExon1Start, int expectedExon1End) {
+		checkApply(variant, VariantType.MIXED, expectedCds, expectedProtein, exonRank, expectedExon1Start,
+				expectedExon1End);
 	}
 
-	public void checkApplyMnp(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
-		checkApply(variant, VariantType.MNP, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
+	public void checkApplyMnp(Variant variant, String expectedCds, String expectedProtein, int exonRank,
+			int expectedExon1Start, int expectedExon1End) {
+		checkApply(variant, VariantType.MNP, expectedCds, expectedProtein, exonRank, expectedExon1Start,
+				expectedExon1End);
 	}
 
-	public void checkApplySnp(Variant variant, String expectedCds, String expectedProtein, int exonRank, int expectedExon1Start, int expectedExon1End) {
-		checkApply(variant, VariantType.SNP, expectedCds, expectedProtein, exonRank, expectedExon1Start, expectedExon1End);
+	public void checkApplySnp(Variant variant, String expectedCds, String expectedProtein, int exonRank,
+			int expectedExon1Start, int expectedExon1End) {
+		checkApply(variant, VariantType.SNP, expectedCds, expectedProtein, exonRank, expectedExon1Start,
+				expectedExon1End);
 	}
 
 	protected void checkEffect(Variant variant, EffectType effectExpected) {
 		checkEffect(variant, effectExpected, null, null);
 	}
 
-	protected void checkEffect(Variant variant, EffectType effectExpected, EffectType effectNotExpected, EffectImpact impact) {
+	protected void checkEffect(Variant variant, EffectType effectExpected, EffectType effectNotExpected,
+			EffectImpact impact) {
 		// Calculate effects
 		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
 
@@ -184,14 +200,19 @@ public class TestCasesBase {
 			String effStr = effect.getEffectTypeString(false);
 
 			// Check effect
-			if (verbose) System.out.println(effect.toStringSimple(true) + "\n\tEffect type: '" + effStr + "'\tExpected: '" + effectExpected + "'");
+			if (verbose)
+				System.out.println(effect.toStringSimple(true) + "\n\tEffect type: '" + effStr + "'\tExpected: '"
+						+ effectExpected + "'");
 			found |= effect.hasEffectType(effectExpected);
 
 			// Check that 'effectNotExpected' is not present
-			if (effectNotExpected != null && effect.hasEffectType(effectNotExpected)) throw new RuntimeException("Effect '" + effectNotExpected + "' should not be here");
+			if (effectNotExpected != null && effect.hasEffectType(effectNotExpected))
+				throw new RuntimeException("Effect '" + effectNotExpected + "' should not be here");
 
 			// Check impact
-			if (impact != null && effect.getEffectImpact() != impact) throw new RuntimeException("Effect '" + effectExpected + "' should have impact '" + impact + "', but impct was '" + effect.getEffectImpact() + "'.");
+			if (impact != null && effect.getEffectImpact() != impact)
+				throw new RuntimeException("Effect '" + effectExpected + "' should have impact '" + impact
+						+ "', but impct was '" + effect.getEffectImpact() + "'.");
 		}
 
 		Assert.assertTrue("Effect not found: '" + effectExpected + "' in variant " + variant, found);
@@ -205,7 +226,8 @@ public class TestCasesBase {
 		VcfEntry ve = vcf.next();
 
 		List<VcfEffect> effs = ve.getVcfEffects();
-		if (effs.isEmpty()) throw new RuntimeException("Empty list of effects. Tis should never happen!");
+		if (effs.isEmpty())
+			throw new RuntimeException("Empty list of effects. Tis should never happen!");
 
 		VcfEffect eff = effs.get(0);
 		return eff.formatVersion();
@@ -216,7 +238,8 @@ public class TestCasesBase {
 	 */
 	protected boolean hasEffect(String effectExpected, String effStr) {
 		for (String eff : effStr.split(EffFormatVersion.EFFECT_TYPE_SEPARATOR))
-			if (eff.equals(effectExpected)) return true;
+			if (eff.equals(effectExpected))
+				return true;
 
 		return false;
 	}
@@ -246,14 +269,13 @@ public class TestCasesBase {
 	}
 
 	/**
-	 * Create a predictor
-	 * For the default parameters the first predictor
-	 * created has only one transcript:
-	 * 		1:880-1001, strand: +, id:transcript_0, Protein
-	 * 		Exons:
-	 * 			1:880-1001 'exon_0_0', rank: 1, frame: ., sequence: taaccccatatgattagtacggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgatgaccgatttatttgattccccacatttatttcatcggga
-	 * 			CDS     :   taaccccatatgattagtacggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgatgaccgatttatttgattccccacatttatttcatcgggac
-	 * 			Protein :   *PHMISTVEEKHLTPIEQDLFRNTLYR*PIYLIPHIYFIG?
+	 * Create a predictor For the default parameters the first predictor created has
+	 * only one transcript: 1:880-1001, strand: +, id:transcript_0, Protein Exons:
+	 * 1:880-1001 'exon_0_0', rank: 1, frame: ., sequence:
+	 * taaccccatatgattagtacggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgatgaccgatttatttgattccccacatttatttcatcggga
+	 * CDS :
+	 * taaccccatatgattagtacggtagaggaaaagcacctaacccccattgagcaggatctctttcgtaatactctgtatcgatgaccgatttatttgattccccacatttatttcatcgggac
+	 * Protein : *PHMISTVEEKHLTPIEQDLFRNTLYR*PIYLIPHIYFIG?
 	 */
 	protected void initSnpEffPredictor(Gene genesToAdd[]) {
 		// Create a config and force out snpPredictor
@@ -262,7 +284,8 @@ public class TestCasesBase {
 		}
 
 		// Initialize factory
-		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts, maxExons);
+		SnpEffPredictorFactoryRand sepf = new SnpEffPredictorFactoryRand(config, rand, maxGeneLen, maxTranscripts,
+				maxExons);
 		sepf.setNumGenes(numGenes);
 		sepf.setForcePositiveStrand(onlyPlusStrand);
 		sepf.setForceNegativeStrand(onlyMinusStrand);
@@ -313,7 +336,8 @@ public class TestCasesBase {
 	protected String pathClassName() {
 		String sname = this.getClass().getSimpleName();
 		for (String prefix : prefixes)
-			if (sname.startsWith(prefix)) sname = sname.substring(prefix.length());
+			if (sname.startsWith(prefix))
+				sname = sname.substring(prefix.length());
 		return sname.substring(0, 1).toLowerCase() + sname.substring(1);
 	}
 
@@ -335,7 +359,7 @@ public class TestCasesBase {
 			try {
 				FileUtils.moveFile(new File(oldPath), new File(path));
 			} catch (IOException e) {
-				throw new RuntimeEOFException("Cannot copy files:\n\tsrc: " + oldPath + "\n\tdst: " + path, e);
+				throw new RuntimeException("Cannot copy files:\n\tsrc: " + oldPath + "\n\tdst: " + path, e);
 
 			}
 		}
@@ -355,7 +379,8 @@ public class TestCasesBase {
 		transcript.resetCache();
 
 		// Change chromosome sequence
-		chromoSequence = chromoSequence.substring(0, ex.getStart()) + ex.getSequence() + chromoSequence.substring(ex.getEnd() + 1);
+		chromoSequence = chromoSequence.substring(0, ex.getStart()) + ex.getSequence()
+				+ chromoSequence.substring(ex.getEnd() + 1);
 
 		// Rebuild genomicSequences
 		GenomicSequences gs = genome.getGenomicSequences();

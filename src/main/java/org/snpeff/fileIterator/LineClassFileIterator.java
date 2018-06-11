@@ -7,11 +7,9 @@ import java.util.Iterator;
 
 import org.snpeff.util.Gpr;
 
-import scala.collection.mutable.StringBuilder;
-
 /**
- * Iterate on each line. Create and populate objects based 
- * on 'fieldNames' definition: a colon separated list of fields.
+ * Iterate on each line. Create and populate objects based on 'fieldNames'
+ * definition: a colon separated list of fields.
  * 
  * Note: You can use empty names to skip columns
  * 
@@ -39,7 +37,8 @@ public class LineClassFileIterator<T> extends FileIterator<T> {
 		reader = Gpr.reader(fileName);
 
 		this.fieldStr = guessFields();
-		if (fieldStr != null) fieldMap();
+		if (fieldStr != null)
+			fieldMap();
 	}
 
 	public LineClassFileIterator(String fileName, Class clazz, String fieldNames) {
@@ -51,11 +50,13 @@ public class LineClassFileIterator<T> extends FileIterator<T> {
 		reader = Gpr.reader(fileName);
 
 		this.fieldStr = fieldNames;
-		if (fieldStr != null) fieldMap();
+		if (fieldStr != null)
+			fieldMap();
 	}
 
 	/**
-	 * Create an object using 
+	 * Create an object using
+	 * 
 	 * @param line
 	 * @return
 	 */
@@ -82,16 +83,23 @@ public class LineClassFileIterator<T> extends FileIterator<T> {
 				String typeName = field.getType().getCanonicalName();
 				try {
 					String valOri = vals[i];
-					if (typeName.equals("java.lang.String")) field.set(tObj, valOri);
+					if (typeName.equals("java.lang.String"))
+						field.set(tObj, valOri);
 					else {
 						// Numeric values have to be trimmed
 						String valTrim = valOri.trim();
 
-						if (typeName.equals("int")) field.setInt(tObj, Gpr.parseIntSafe(valTrim));
-						else if (typeName.equals("long")) field.setLong(tObj, Gpr.parseLongSafe(valTrim));
-						else if (typeName.equals("double")) field.setDouble(tObj, Gpr.parseDoubleSafe(valTrim));
-						else if (typeName.equals("float")) field.setFloat(tObj, Gpr.parseFloatSafe(valTrim));
-						else throw new RuntimeException("Unsoported parsing for object type '" + typeName + "' cannot be parsed.");
+						if (typeName.equals("int"))
+							field.setInt(tObj, Gpr.parseIntSafe(valTrim));
+						else if (typeName.equals("long"))
+							field.setLong(tObj, Gpr.parseLongSafe(valTrim));
+						else if (typeName.equals("double"))
+							field.setDouble(tObj, Gpr.parseDoubleSafe(valTrim));
+						else if (typeName.equals("float"))
+							field.setFloat(tObj, Gpr.parseFloatSafe(valTrim));
+						else
+							throw new RuntimeException(
+									"Unsoported parsing for object type '" + typeName + "' cannot be parsed.");
 					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);
@@ -116,14 +124,17 @@ public class LineClassFileIterator<T> extends FileIterator<T> {
 					fieldByName.put(fname, field);
 				}
 			} catch (NoSuchFieldException e) {
-				throw new RuntimeException("Error: Field '" + fname + "' not found for class '" + clazz.getCanonicalName() + "' (may be the fields is not public?)");
+				throw new RuntimeException("Error: Field '" + fname + "' not found for class '"
+						+ clazz.getCanonicalName() + "' (may be the fields is not public?)");
 			}
 		}
 	}
 
 	/**
-	 * Use field order as returned by 'class.getFields()'
-	 * WARNING: As far as I know, the JVM does specify a sort order. So this might not work on all platforms as expected.
+	 * Use field order as returned by 'class.getFields()' WARNING: As far as I know,
+	 * the JVM does specify a sort order. So this might not work on all platforms as
+	 * expected.
+	 * 
 	 * @return
 	 */
 	String guessFields() {
@@ -134,7 +145,8 @@ public class LineClassFileIterator<T> extends FileIterator<T> {
 			sb.append(f.getName() + FIELD_NAME_SEPARATOR);
 
 		// Remove last ';'
-		if (sb.charAt(sb.length() - 1) == FIELD_NAME_SEPARATOR) sb.deleteCharAt(sb.length() - 1);
+		if (sb.charAt(sb.length() - 1) == FIELD_NAME_SEPARATOR)
+			sb.deleteCharAt(sb.length() - 1);
 
 		return sb.toString();
 	}
@@ -146,6 +158,7 @@ public class LineClassFileIterator<T> extends FileIterator<T> {
 
 	/**
 	 * Read a sequence from the file
+	 * 
 	 * @return
 	 */
 	@Override
