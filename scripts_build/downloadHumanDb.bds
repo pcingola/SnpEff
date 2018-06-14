@@ -21,31 +21,48 @@ urlPdb             := "rsync.wwpdb.org::ftp_data/structures/divided/pdb/"
 # Build dbNSFP database for genome 'hg'
 #-------------------------------------------------------------------------------
 void buildDbNsfp(string genome) {
+	println "Building dbNsfp"
 	dirDbNsfp := "$dirDb/$genome/dbNSFP"
+	zip := "$dirDbNsfp/dbNSFPv$dbNsfpVer\.zip"
 	base := "$dirDbNsfp/dbNSFP$dbNsfpVer\_variant.chr"
 	dbNsfp := "$dirDbNsfp/dbNSFP$dbNsfpVer\.txt.gz"
+	if( dbNsfp.exists() ) {
+		println "Building dbNsfp: File $dbNsfp exists, nothing done."
+		return
+	}
 
+	println "Building dbNsfp: Unzipping file $zip"
+	chrs := ['M', 'X', 'Y']
+	string[] chrFiles
+	for(int chrNum=1; chrNum < 23 ; chrNum++ ) chrs += "$chrNum"
+	for(string chr: chrs) chrFiles += "$base$chr"
+
+	task(chrFiles <- zip) {
+		sys cd $dirDbNsfp
+		sys unzip -o $zip
+	}
+
+	println "Building dbNsfp: Sorting individual chromosome files"
 	string[] txts
 	header := ""
-	for(string file : dirDb.dir()) {
-		if(!file.startsWith("dbNSFP$dbNsfpVer\_variant") || file.endsWith("gz")) continue
-		file = dirDb + '/' + file.trim()
-
+	for(string chrFile : chrFiles) {
 		# Create header file
 		if( header.isEmpty() ) {
 			header = "$dirDb/dbNSFP$dbNsfpVer\.header"
-			println("Creating headr file 'header'")
-			sys head -n 1 $file > $header
+			println "Building dbNsfp: Creating headr file 'header'"
+			task(header <- chrFile) {
+				sys head -n 1 $chrFile > $header
+			}
 		}
 
 		# Sort files
-		println("File: $file")
-		base := file.baseName()
+		base := chrFile.baseName()
 		sorted := "$dirDb/$base\.sort.txt"
 		txts += sorted
 
-		task( sorted <- file , cpus := 2) {
-			sys cat $file \
+		println "Building dbNsfp: Sorting file $chrFile"
+		task(sorted <- chrFile , cpus := 2) {
+			sys cat $chrFile \
 				| $dirScriptsBuild/dbNSFP_sort.pl \
 				| grep -v "^#" \
 				> $sorted
@@ -54,7 +71,8 @@ void buildDbNsfp(string genome) {
 
 	# Compress and create index
 	txtsStr := txts.join(' ')
-	task( dbNsfp <- txts ) {
+	println "Building dbNsfp: Compressing and indexing"
+	task(dbNsfp <- (txts + header)) {
 		sys cat $header $txtsStr | bgzip -c > $dbNsfp
 		sys tabix -s 1 -b 2 -e 2 $dbNsfp
 	}
@@ -101,13 +119,6 @@ void downloadDbNsfp() {
 		println "Download dbNsfp $urlDbNsfp ($zip)"
 		fetch(urlDbNsfp)
 	}
-
-#	# Unzip
-#	chr1 := "$baseChr\_variant.chr1"
-#	if( !chr1.exists() ) {
-#		print "Uncompressing dbNsfp: $zip ($chr1)\n"
-#		sys 7za x $zip
-#	}
 
 	buildDbNsfp(hg)
 	wait
