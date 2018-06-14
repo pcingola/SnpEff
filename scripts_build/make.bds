@@ -408,11 +408,11 @@ string[] dirsHg() {
 # Download all databases
 #-------------------------------------------------------------------------------
 void downloadAll() {
-#	# Ensembl genomes
-#	for( int ensemblRelease : ensemblReleases ) {
-#		downloadEnsembl(ensemblRelease)
-#	}
-#	downloadEnsemblBfmpp()
+	# Ensembl genomes
+	for( int ensemblRelease : ensemblReleases ) {
+		downloadEnsembl(ensemblRelease)
+	}
+	downloadEnsemblBfmpp()
 
 	# UCSC genomes
 	for( string ref : ucscGenomes ) {
