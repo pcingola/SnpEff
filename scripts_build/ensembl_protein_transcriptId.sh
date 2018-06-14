@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
-sed "s/^>.*transcript:\(\.*\)/>\\1/" 
+sed 's/^>.*transcript:\(.*\)\..*/>\1/' 
 

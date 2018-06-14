@@ -96,8 +96,13 @@ void downloadEnsembl(int ensemblRelease) {
 			dataDir.mkdir()
 			if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz
 			if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz
-			if( "$dataDir/protein.fa.gz" <- prot )		sys $cp $prot  $dataDir/protein.fa.gz
 			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz
+			if( "$dataDir/protein.fa.gz" <- prot ) {
+				sys gunzip -c $prot \
+						| $dirScriptsBuild/ensembl_protein_transcriptId.sh \
+						| gzip -c \
+						> $dataDir/protein.fa.gz
+			}
         
 			# Append config lines
 			configLines += "$name\.genome : $longName"

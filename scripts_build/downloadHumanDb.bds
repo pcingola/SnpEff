@@ -20,52 +20,20 @@ urlPdb             := "rsync.wwpdb.org::ftp_data/structures/divided/pdb/"
 #-------------------------------------------------------------------------------
 # Build dbNSFP database for genome 'hg'
 #-------------------------------------------------------------------------------
-#void buildDbNsfp(string hg, string base, string baseChr) {
-#	println "Building dbNSFP for '$hg'"
-#	hg.mkdir()
-#
-#	bgFile := "$hg/$base\.txt.gz"
-#	index := "$bgFile\.tbi"
-#	if( bgFile.exists() && index.exists() )	return
-#
-#	# Compress using bgzip
-#	string[] bgFiles
-#	for( string chr : humanChrs ) {
-#		if( chr == 'MT' ) chr = 'M'	# MT is called just 'M'
-#
-#		chrFile := "$baseChr\_variant.chr$chr"
-#		bgChrFile := "$hg/$baseChr\_variant.chr$chr\.gz"
-#		bgFiles += bgChrFile
-#
-#		println "\tCompressing file '$chrFile'"
-#		task( bgChrFile <- chrFile ) sys bgzip -c $chrFile > $bgChrFile
-#	}
-#	wait
-#
-#	# Concatenate individual files
-#	println "\tCombining files"
-#	bgFilesStr := bgFiles.join(" ")
-#	if( bgFile <- bgFiles ) sys cat $bgFilesStr > $bgFile
-#
-#	# Tabix-index the bgzip file
-#	println "\tCreating tabix index"
-#	if( index <- bgFile ) sys tabix -s 1 -b 2 -e 2 $bgFile
-#}
-
 void buildDbNsfp(string genome) {
 	dirDbNsfp := "$dirDb/$genome/dbNSFP"
-	base := "$dirDbNsfp/dbNSFP$dbnsfpVersion\_variant.chr"
-	dbNsfp := "$dirDbNsfp/dbNSFP$dbnsfpVersion.txt.gz"
+	base := "$dirDbNsfp/dbNSFP$dbNsfpVer\_variant.chr"
+	dbNsfp := "$dirDbNsfp/dbNSFP$dbNsfpVer\.txt.gz"
 
 	string[] txts
 	header := ""
 	for(string file : dirDb.dir()) {
-		if(!file.startsWith("dbNSFP$dbnsfpVersion\_variant") || file.endsWith("gz")) continue
+		if(!file.startsWith("dbNSFP$dbNsfpVer\_variant") || file.endsWith("gz")) continue
 		file = dirDb + '/' + file.trim()
 
 		# Create header file
 		if( header.isEmpty() ) {
-			header = "$dirDb/dbNSFP$dbnsfpVersion.header"
+			header = "$dirDb/dbNSFP$dbNsfpVer\.header"
 			println("Creating headr file 'header'")
 			sys head -n 1 $file > $header
 		}
@@ -73,7 +41,7 @@ void buildDbNsfp(string genome) {
 		# Sort files
 		println("File: $file")
 		base := file.baseName()
-		sorted := "$dirDb/$base.sort.txt"
+		sorted := "$dirDb/$base\.sort.txt"
 		txts += sorted
 
 		task( sorted <- file , cpus := 2) {
