@@ -117,6 +117,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		summaryGenesFile = DEFAULT_SUMMARY_GENES_FILE;
 	}
 
+	public void setOutputFormatter(OutputFormatter outputFormatter) {
+		this.outputFormatter = outputFormatter;
+	}
+
 	@Override
 	public boolean addHeaders(VcfFileIterator vcfFile) {
 		// This is done by VcfOutputFormatter, so there is nothing to do here.
@@ -162,15 +166,15 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	public boolean annotate(VcfEntry vcfEntry) {
 		boolean printed = false;
 		boolean filteredOut = false;
-		VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
 
 		try {
 			countInputLines++;
 			countVcfEntries++;
 
 			// Find if there is a pedigree and if it has any 'derived' entry
-			if (vcfFile.isHeadeSection()) {
-				if (cancer) {
+			if (cancer) {
+				VcfFileIterator vcfFile = vcfEntry.getVcfFileIterator();
+                if (vcfFile.isHeadeSection()) {
 					pedigree = readPedigree(vcfFile);
 					anyCancerSample = pedigree.anyDerived();
 				}
@@ -185,9 +189,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 				filteredOut = true;
 				return false;
 			}
-
-			// Create new 'section'
-			outputFormatter.startSection(vcfEntry);
 
 			// ---
 			// Analyze all changes in this VCF entry
@@ -214,7 +215,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			printed = true;
 		} catch (Throwable t) {
 			totalErrs++;
-			error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n"
+			error(t, "Error while processing VCF entry :\n\t" + vcfEntry + "\n"
 					+ t);
 		} finally {
 			if (!printed && !filteredOut)
