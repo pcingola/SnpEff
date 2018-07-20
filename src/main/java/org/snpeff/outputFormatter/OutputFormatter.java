@@ -44,6 +44,11 @@ public abstract class OutputFormatter {
 		variantEffects = new ArrayList<VariantEffect>();
 	}
 
+	public void setOutputWriter(BufferedWriter out) {
+		this.out = out;
+	}
+
+
 	/**
 	 * Add effects to list
 	 */
