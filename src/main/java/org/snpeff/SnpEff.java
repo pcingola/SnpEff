@@ -357,7 +357,7 @@ public class SnpEff implements CommandLine {
 	/**
 	 * Copy values to a new command
 	 */
-	void copyValues(SnpEff cmd) {
+	public void copyValues(SnpEff cmd) {
 		cmd.canonical = canonical;
 		cmd.canonicalFile = canonicalFile;
 		cmd.configFile = configFile;

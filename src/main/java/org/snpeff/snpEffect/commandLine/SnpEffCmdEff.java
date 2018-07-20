@@ -1,10 +1,6 @@
 package org.snpeff.snpEffect.commandLine;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -117,8 +113,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		summaryGenesFile = DEFAULT_SUMMARY_GENES_FILE;
 	}
 
-	public void setOutputFormatter(OutputFormatter outputFormatter) {
-		this.outputFormatter = outputFormatter;
+	public void setOutputWriter(BufferedWriter writer) {
+		this.outputFormatter.setOutputWriter(writer);
 	}
 
 	@Override
@@ -189,6 +185,9 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 				filteredOut = true;
 				return false;
 			}
+
+			// Create new 'section'
+			outputFormatter.startSection(vcfEntry);
 
 			// ---
 			// Analyze all changes in this VCF entry
@@ -319,7 +318,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	/**
 	 * Calculate the effect of variants and show results
 	 */
-	protected void annotateInit(String outputFile) {
+	public void annotateInit(String outputFile) {
 		snpEffectPredictor = config.getSnpEffectPredictor();
 
 		// Reset all counters
@@ -491,9 +490,13 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Iterate on all inputs (VCF) and calculate effects. Note: This is used only on
 	 * input format VCF, which has a different iteration modality
 	 */
+
 	VcfFileIterator annotateVcf(String inputFile) {
+		return annotateVcf(new VcfFileIterator(inputFile, genome));
+	}
+
+	public VcfFileIterator annotateVcf(VcfFileIterator vcfFile) {
 		// Open VCF file
-		VcfFileIterator vcfFile = new VcfFileIterator(inputFile, config.getGenome());
 		vcfFile.setDebug(debug);
 
 		// Iterate over VCF entries
