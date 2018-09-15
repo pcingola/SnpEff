@@ -39,8 +39,8 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 
 		// Check a SNP
 		sep.buildForest();
-		Variant seqChange = new Variant(sep.getGenome().getChromosome("1"), 521603, "A", "G");
-		VariantEffects effs = sep.variantEffect(seqChange);
+		Variant variant = new Variant(sep.getGenome().getChromosome("1"), 521603, "A", "G");
+		VariantEffects effs = sep.variantEffect(variant);
 		for (VariantEffect eff : effs) {
 			if (verbose) System.out.println("\t" + eff);
 			Assert.assertEquals(eff.getEffectType(), EffectType.INTERGENIC);

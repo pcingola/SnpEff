@@ -8,12 +8,12 @@ import org.snpeff.interval.Regulation;
 
 /**
  * Opens a GFF3 file and create regulatory elements.
- * 
+ *
  * Example of regulatory GFF file:
  * 			ftp://ftp.ensembl.org/pub/release-63/regulation/homo_sapiens/AnnotatedFeatures.gff.gz
- * 
+ *
  * References (GFF3) : http://www.sequenceontology.org/gff3.shtml
- * 
+ *
  * @author pcingola
  */
 public class RegulationGffFileIterator extends RegulationFileIterator {
@@ -67,7 +67,7 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 								String attr = nameValue[0].trim();
 								String val = nameValue[1].trim();
 
-								// Is name 'Name'? 
+								// Is name 'Name'?
 								if (attr.equals("Name") || attr.equals("feature_type")) {
 									name = val;
 								} else if (attr.equals("Cell_type") || attr.equals("description")) {
@@ -81,7 +81,7 @@ public class RegulationGffFileIterator extends RegulationFileIterator {
 						// Create unique ID
 						String id = type + "_" + name + "_" + lineNum;
 
-						// Create seqChange
+						// Create regulation
 						Regulation reg = new Regulation(chromo, start, end, strandMinus, id, name, type);
 						return reg;
 					}

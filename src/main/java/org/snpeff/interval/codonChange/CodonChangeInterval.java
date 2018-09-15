@@ -14,8 +14,8 @@ import org.snpeff.snpEffect.VariantEffects;
  */
 public class CodonChangeInterval extends CodonChange {
 
-	public CodonChangeInterval(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
-		super(seqChange, transcript, changeEffects);
+	public CodonChangeInterval(Variant variant, Transcript transcript, VariantEffects varEffects) {
+		super(variant, transcript, varEffects);
 		returnNow = false; // An interval may affect more than one exon
 	}
 

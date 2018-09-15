@@ -8,9 +8,9 @@ import org.snpeff.snpEffect.VariantEffect;
 
 /**
  * Formats output as BED file
- * 
+ *
  * Referneces: http://genome.ucsc.edu/FAQ/FAQformat.html#format1
- * 
+ *
  * @author pcingola
  */
 public class BedOutputFormatter extends OutputFormatter {
@@ -26,7 +26,7 @@ public class BedOutputFormatter extends OutputFormatter {
 	 */
 	@Override
 	public String endSection(Marker marker) {
-		// Ignore other markers (e.g. seqChanges)
+		// Ignore other markers
 		if (marker instanceof Variant) return super.endSection(marker);
 		return null;
 	}
@@ -38,7 +38,7 @@ public class BedOutputFormatter extends OutputFormatter {
 
 	@Override
 	public void startSection(Marker marker) {
-		// Ignore other markers (e.g. seqChanges)
+		// Ignore other markers
 		if (marker instanceof Variant) super.startSection(marker);
 	}
 
@@ -47,10 +47,10 @@ public class BedOutputFormatter extends OutputFormatter {
 	 */
 	@Override
 	public String toString() {
-		Variant seqChange = (Variant) section;
+		Variant variant = (Variant) section;
 
 		// Show results
-		HashSet<String> chEffs = new HashSet<String>();
+		HashSet<String> chEffs = new HashSet<>();
 		for (VariantEffect varEff : variantEffects) {
 			// If it is not filtered out by changeEffectResutFilter  => Show it
 			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(varEff))) {
@@ -65,17 +65,16 @@ public class BedOutputFormatter extends OutputFormatter {
 		}
 
 		StringBuilder changeEffSb = new StringBuilder();
-		changeEffSb.append(seqChange.getId()); // Start with the old 'name' field
+		changeEffSb.append(variant.getId()); // Start with the old 'name' field
 		for (String chEff : chEffs) {
 			changeEffSb.append(";");
 			changeEffSb.append(chEff);
 		}
 
-		return chrStr + seqChange.getChromosomeName() //
-				+ "\t" + (seqChange.getStart() + outOffset) //
-				+ "\t" + (seqChange.getEnd() + 1) // End base is not included in BED format
+		return chrStr + variant.getChromosomeName() //
+				+ "\t" + (variant.getStart() + outOffset) //
+				+ "\t" + (variant.getEnd() + 1) // End base is not included in BED format
 				+ "\t" + changeEffSb.toString() //
-		// + "\t" + (!Double.isNaN(seqChange.getScore()) ? seqChange.getScore() : "") //
 		;
 	}
 

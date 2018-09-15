@@ -47,7 +47,7 @@ public class TestCasesIntervalVariant extends TestCasesBase {
 			// For each base in this exon...
 			for (int pos = 0; pos < chromosome.size(); pos++) {
 				//---
-				// Create seqChange
+				// Create variant
 				//---
 				// Interval length
 				int intLen = rand.nextInt(100) + 1;
@@ -107,7 +107,7 @@ public class TestCasesIntervalVariant extends TestCasesBase {
 							+ "\nExpected Effect : '" + expectedEffect + "'" //
 							+ "\nEffects         : '" + effSb + "'" //
 							+ "\n--------------------------------------------------------------\n" //
-				);
+					);
 				Assert.assertEquals(true, isExpectedOK);
 			}
 		}

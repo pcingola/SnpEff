@@ -87,19 +87,19 @@ public class Utr5prime extends Utr {
 
 	/**
 	 * Did we gain a start codon in this 5'UTR interval?
-	 * @param seqChange
+	 * @param variant
 	 * @return A new start codon (if gained)
 	 */
-	String startGained(Variant seqChange, Transcript tr) {
-		if (!seqChange.isSnp()) return ""; // Only SNPs supported.
+	String startGained(Variant variant, Transcript tr) {
+		if (!variant.isSnp()) return ""; // Only SNPs supported.
 
 		// Calculate SNP position relative to UTRs
-		int pos = seqChange.distanceBases(get5primeUtrs(), isStrandMinus());
+		int pos = variant.distanceBases(get5primeUtrs(), isStrandMinus());
 
 		// Change base at SNP position
 		String sequence = getSequence();
 		char[] chars = sequence.toCharArray();
-		char snpBase = seqChange.netChange(this).charAt(0);
+		char snpBase = variant.netChange(this).charAt(0);
 		if (isStrandMinus()) snpBase = GprSeq.wc(snpBase);
 		chars[pos] = snpBase;
 

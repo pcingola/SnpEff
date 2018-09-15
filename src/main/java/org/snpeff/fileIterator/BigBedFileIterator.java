@@ -73,10 +73,10 @@ public class BigBedFileIterator extends VariantFileIterator {
 		String restOfFields[] = f.getRestOfFields();
 		double score = Gpr.parseDoubleSafe(restOfFields[1]);
 
-		// Create seqChange
-		Variant seqChange = new VariantWithScore(getChromosome(f.getChromosome()), f.getStartBase(), f.getEndBase() - 1, id, score);
+		// Create variant
+		Variant variant = new VariantWithScore(getChromosome(f.getChromosome()), f.getStartBase(), f.getEndBase() - 1, id, score);
 
-		return seqChange;
+		return variant;
 	}
 
 }

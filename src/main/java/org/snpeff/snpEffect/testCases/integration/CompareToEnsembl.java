@@ -88,13 +88,13 @@ public class CompareToEnsembl {
 	 * Compare our results to some ENSEMBL annotations
 	 */
 	public void compareEnsembl(String ensemblFile, String trName) {
-		HashMap<Variant, String> seqChanges = readEnsemblFile(ensemblFile);
-		ArrayList<Variant> list = new ArrayList<Variant>();
-		list.addAll(seqChanges.keySet());
+		HashMap<Variant, String> variants = readEnsemblFile(ensemblFile);
+		ArrayList<Variant> list = new ArrayList<>();
+		list.addAll(variants.keySet());
 		Collections.sort(list);
 
-		for (Variant seqChange : list) {
-			VariantEffects changes = snpEffectPredictor.variantEffect(seqChange);
+		for (Variant variant : list) {
+			VariantEffects changes = snpEffectPredictor.variantEffect(variant);
 
 			boolean ok = false;
 			StringBuffer changesSb = new StringBuffer();
@@ -116,7 +116,7 @@ public class CompareToEnsembl {
 					String id = change2str(change);
 					changesAllSb.append("\tSnpEff  :\t" + change + "\n");
 
-					if (id.equals(seqChange.getId())) {
+					if (id.equals(variant.getId())) {
 						changesSb.append(id + "\t");
 						ok = true;
 					}
@@ -124,9 +124,9 @@ public class CompareToEnsembl {
 			}
 
 			// Was the change found?
-			if (verbose) if (ok && verbose) System.out.println("OK   :\t" + seqChange + "\t'" + changesSb + "'\n\tEnsembl :\t" + seqChanges.get(seqChange) + "\n" + changesAllSb);
+			if (verbose) if (ok && verbose) System.out.println("OK   :\t" + variant + "\t'" + changesSb + "'\n\tEnsembl :\t" + variants.get(variant) + "\n" + changesAllSb);
 			else {
-				String line = "DIFF :\t" + seqChange + "\t'" + changesSb + "'\n\tEnsembl :\t" + seqChanges.get(seqChange) + "\n" + changesAllSb;
+				String line = "DIFF :\t" + variant + "\t'" + changesSb + "'\n\tEnsembl :\t" + variants.get(variant) + "\n" + changesAllSb;
 				if (verbose) System.out.println(line);
 				if (throwException) throw new RuntimeException(line);
 			}
@@ -171,14 +171,14 @@ public class CompareToEnsembl {
 
 		if (lines.length <= 0) throw new RuntimeException("Cannot open file '" + fileName + "' (or it's empty).");
 
-		HashMap<Variant, String> seqChanges = new HashMap<Variant, String>();
+		HashMap<Variant, String> variants = new HashMap<>();
 
 		for (String line : lines) {
-			Variant seqChange = str2seqChange(line);
-			seqChanges.put(seqChange, line);
+			Variant variant = str2variant(line);
+			variants.put(variant, line);
 		}
 
-		return seqChanges;
+		return variants;
 	}
 
 	public void setVerbose(boolean verbose) {
@@ -188,7 +188,7 @@ public class CompareToEnsembl {
 	/**
 	 * Create a SeqChange from an ENSEMBL line
 	 */
-	Variant str2seqChange(String line) {
+	Variant str2variant(String line) {
 		try {
 			String recs[] = line.split("\t");
 
@@ -218,8 +218,8 @@ public class CompareToEnsembl {
 			String id = eff + " " + recs[11] + " " + recs[10];
 
 			// Create SeqChange
-			Variant seqChange = new Variant(chromo, pos, ref, alt, id);
-			return seqChange;
+			Variant variant = new Variant(chromo, pos, ref, alt, id);
+			return variant;
 		} catch (Exception e) {
 			throw new RuntimeException("Error parsing line:\n" + line, e);
 		}

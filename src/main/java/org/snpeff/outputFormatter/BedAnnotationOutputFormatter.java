@@ -10,9 +10,9 @@ import org.snpeff.snpEffect.VariantEffect;
 
 /**
  * Formats: Show all annotations that intersect the BED input file.
- * 
+ *
  * WARNING: In this format, the output are annotations (instead of input intervals)
- * 
+ *
  * @author pcingola
  */
 public class BedAnnotationOutputFormatter extends BedOutputFormatter {
@@ -27,11 +27,11 @@ public class BedAnnotationOutputFormatter extends BedOutputFormatter {
 	 */
 	@Override
 	public String toString() {
-		Variant seqChange = (Variant) section;
-		String variantName = seqChange.getChromosomeName() + ":" + (seqChange.getStart() + outOffset);
+		Variant variant = (Variant) section;
+		String variantName = variant.getChromosomeName() + ":" + (variant.getStart() + outOffset);
 
 		// Show results
-		HashSet<String> chEffs = new HashSet<String>();
+		HashSet<String> chEffs = new HashSet<>();
 		for (VariantEffect changeEffect : variantEffects) {
 			// If it is not filtered out by changeEffectResutFilter  => Show it
 			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(changeEffect))) {
@@ -54,7 +54,7 @@ public class BedAnnotationOutputFormatter extends BedOutputFormatter {
 					}
 
 					// Add BED line
-					ann = m.getChromosomeName() + "\t" // 
+					ann = m.getChromosomeName() + "\t" //
 							+ "\t" + (m.getStart() + outOffset) //
 							+ "\t" + (m.getEnd() + outOffset + 1) //
 							+ "\t" + variantName + ";" + type //
@@ -67,7 +67,7 @@ public class BedAnnotationOutputFormatter extends BedOutputFormatter {
 
 		}
 
-		// Show all 
+		// Show all
 		StringBuilder sb = new StringBuilder();
 		for (String chEff : chEffs)
 			sb.append(chEff + "\n");

@@ -32,7 +32,7 @@ public class TestCasesDels extends TestCasesBase {
 	/**
 	 * Calculate codonsNew using a naive algorithm
 	 */
-	String codonsNew(Variant seqChange) {
+	String codonsNew(Variant variant) {
 		int cdsBaseNum = 0;
 		String codonsNew = "";
 		char currCodon[] = new char[3];
@@ -47,7 +47,7 @@ public class TestCasesDels extends TestCasesBase {
 				int cdsCodonPos = cdsBaseNum % 3;
 
 				// Should we use this codon?
-				if (seqChange.intersects(pos)) useCodon = true;
+				if (variant.intersects(pos)) useCodon = true;
 				else {
 					// Should we use this base? We don't use the ones that intersect with 'seqChage' (because they are deleted)
 					char base = chromoBases[pos];
@@ -191,7 +191,7 @@ public class TestCasesDels extends TestCasesBase {
 
 					// Sanity checks
 					Assert.assertEquals(true, variant.isDel()); // Is it a deletion?
-					Assert.assertEquals(del.length(), variant.size()); // Does seqChange have the correct size?
+					Assert.assertEquals(del.length(), variant.size()); // Does variant have the correct size?
 
 					//---
 					// Expected Effect

@@ -86,7 +86,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		//---
 		HashSet<String> effs = new HashSet<>();
 		ArrayList<String> effsSorted = new ArrayList<>();
-		HashSet<String> oicr = (useOicr ? new HashSet<String>() : null);
+		HashSet<String> oicr = (useOicr ? new HashSet<>() : null);
 		boolean addCustomFields = false;
 		for (VariantEffect variantEffect : variantEffects) {
 
@@ -225,7 +225,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		if (marker == null) {
 			return super.endSection(marker);
 		} else if (marker instanceof VcfEntry) {
-			// Ignore other markers (e.g. seqChanges)
+			// Ignore other markers
 			if (vcfEntries != null) vcfEntries.add((VcfEntry) marker);
 			return super.endSection(marker);
 		}
@@ -274,7 +274,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 
 	@Override
 	public void startSection(Marker marker) {
-		// Ignore other markers (e.g. seqChanges)
+		// Ignore other markers
 		if (marker instanceof VcfEntry) super.startSection(marker);
 		needAddInfo = true;
 	}

@@ -18,7 +18,7 @@ import org.snpeff.snpEffect.VariantEffect;
 
 /**
  * Count for each 'type' and 'gene'.
- * Tries to avoid multiple counting by comparing to latest seqChanges.
+ * Tries to avoid multiple counting by comparing to latest variants.
  * WARNING: This strategy does not work if changeEffect are out of order.
  *
  * @author pcingola
@@ -111,7 +111,7 @@ public class GeneCountByTypeTable implements Iterable<String>, Serializable {
 	}
 
 	/**
-	 * Sample this <gene, marker, type, seqChange> tuple to update statistics
+	 * Sample this <gene, marker, type, variant> tuple to update statistics
 	 */
 	public void sample(Gene gene, Transcript tr, String type, VariantEffect variantEffect) {
 		String key = gene.getGeneName() + "\t" + gene.getId() + "\t" + tr.getId();

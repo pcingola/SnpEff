@@ -45,8 +45,8 @@ public class Gff3FileIterator extends MarkerFileIterator<GffMarker> {
 				if (line == null) return null; // End of file?
 
 				// Parse line
-				GffMarker seqChange = parse(line);
-				if (seqChange != null) return seqChange;
+				GffMarker gffmarker = parse(line);
+				if (gffmarker != null) return gffmarker;
 
 			}
 		} catch (IOException e) {

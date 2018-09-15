@@ -14,8 +14,8 @@ import org.snpeff.snpEffect.VariantEffect;
 /**
  * Formats output
  * How is this used:
- *    - newSection();   // Create a new 'section' on the output format (e.g. a new seqChange)
- *    - add();			// Add all changes related to this section (i.e. all changes related to this seqChange)
+ *    - newSection();   // Create a new 'section' on the output format (e.g. a new Marker)
+ *    - add();			// Add all changes related to this section (i.e. all changes related to this marker)
  *    - endSection();	// Output all changes related to this section (output header if needed), clean up list of changes
  *
  * @author pcingola
@@ -41,7 +41,7 @@ public abstract class OutputFormatter {
 	Config config;
 
 	public OutputFormatter() {
-		variantEffects = new ArrayList<VariantEffect>();
+		variantEffects = new ArrayList<>();
 	}
 
 	/**

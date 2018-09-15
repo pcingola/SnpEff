@@ -63,7 +63,7 @@ public class Regulation extends Marker {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + regulationType //
 				+ "\t" + name //
-				;
+		;
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class Regulation extends Marker {
 	}
 
 	/**
-	 * Calculate the effect of this seqChange
+	 * Calculate the effect of this variant
 	 */
 	@Override
 	public boolean variantEffect(Variant variant, VariantEffects variantEffects) {

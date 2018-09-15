@@ -12,8 +12,8 @@ import org.snpeff.snpEffect.VariantEffects;
  */
 public class CodonChangeIns extends CodonChange {
 
-	public CodonChangeIns(Variant seqChange, Transcript transcript, VariantEffects changeEffects) {
-		super(seqChange, transcript, changeEffects);
+	public CodonChangeIns(Variant variant, Transcript transcript, VariantEffects changeEffects) {
+		super(variant, transcript, changeEffects);
 		returnNow = true; // An insertion can only affect one exon
 	}
 
