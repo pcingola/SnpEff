@@ -1112,7 +1112,7 @@ public class SnpEff implements CommandLine {
 					break;
 
 				case "-t":
-					usage("Multi-threaded opton not supported in this version!!!");
+					usage("Multi-threaded opton not supported in this version!");
 					multiThreaded = true;
 					break;
 
@@ -1370,7 +1370,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-nodownload                  : Do not download a SnpEff database, if not available locally.");
 		System.err.println("\t-h , -help                   : Show this help and exit");
 		System.err.println("\t-noLog                       : Do not report usage statistics to server");
-		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
+		// System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
 		System.err.println("\t-q , -quiet                  : Quiet mode (do not show any messages or errors)");
 		System.err.println("\t-v , -verbose                : Verbose mode");
 		System.err.println("\t-version                     : Show version number and exit");
