@@ -132,6 +132,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			// Find canonical transcript in protein coding gene (longest CDS)
 			for (Transcript t : this) {
 				int tlen = t.cds().length();
+				if (id.equals("ENSG00000141510")) Gpr.debug("COMPARE TR" + t.getId() + "\tlen: " + tlen);
 
 				// Compare coding length. If both lengths are equal, compare IDs
 				if (t.isProteinCoding() //
@@ -161,7 +162,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			}
 		}
 
-		// Found canonincal transcript? Set canonical flag
+		// Found canonical transcript? Set canonical flag
 		if (canonical != null) canonical.setCanonical(true);
 
 		return canonical;

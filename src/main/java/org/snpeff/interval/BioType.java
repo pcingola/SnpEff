@@ -3,7 +3,7 @@ package org.snpeff.interval;
 /**
  * BioTypes: Gene or transcript bioType annotation
  *
- * References: http://vega.sanger.ac.uk/info/about/gene_and_transcript_types.html
+ * References: http://www.ensembl.org/info/genome/genebuild/biotypes.html
  *
  * Biotypes classifies genes and transcripts into groups including: protein coding, pseudogene
  * , processed pseudogene, miRNA, rRNA, scRNA, snoRNA, snRNA. The biotypes can be grouped into
@@ -42,6 +42,7 @@ public enum BioType {
 	, misc_RNA //
 	, Mt_rRNA //
 	, Mt_tRNA //
+	, non_coding //
 	, nonsense_mediated_decay //
 	, non_stop_decay //
 	, polymorphic_pseudogene //
@@ -53,6 +54,7 @@ public enum BioType {
 	, ribozyme //
 	, rRNA //
 	, scaRNA //
+	, scRNA //
 	, sense_intronic //
 	, sense_overlapping //
 	, snoRNA //
@@ -127,7 +129,8 @@ public enum BioType {
 				case "snorna":
 					return snoRNA;
 
-				case "3prime_overlapping_ncrna": //  WARNING: This one is actually called '3prime_overlapping_ncrna' but identifiers cannot start with a number in Java
+				case "3prime_overlapping_ncrna":
+					//  WARNING: This one is actually called '3prime_overlapping_ncrna' but identifiers cannot start with a number in Java
 					return prime3_overlapping_ncrna;
 
 				default:
@@ -145,13 +148,10 @@ public enum BioType {
 				|| this == IG_D_gene //
 				|| this == IG_J_gene //
 				|| this == IG_V_gene //
-				|| this == nonsense_mediated_decay //
-				|| this == non_stop_decay //
-				|| this == polymorphic_pseudogene //
 				|| this == TR_C_gene //
 				|| this == TR_D_gene //
 				|| this == TR_J_gene //
 				|| this == TR_V_gene //
-				;
+		;
 	}
 }

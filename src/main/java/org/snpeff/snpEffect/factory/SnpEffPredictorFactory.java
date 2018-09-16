@@ -91,7 +91,7 @@ public abstract class SnpEffPredictorFactory {
 
 	/**
 	 * Add an exon
-	 * 
+	 *
 	 * @param exon
 	 * @return exon added.
 	 * Note: If the exon exists with the same ID, return old exon.
@@ -351,14 +351,6 @@ public abstract class SnpEffPredictorFactory {
 			}
 		if (verbose) System.out.print("\n\tDone: " + i + " transcripts marked");
 	}
-
-	//	/**
-	//	 * Get (or create) a chromosome and set it's length
-	//	 */
-	//	void chromoLen(String chromoName, int len) {
-	//		Chromosome chromo = getOrCreateChromosome(chromoName);
-	//		chromo.setLength(len);
-	//	}
 
 	/**
 	 * Collapse exons having zero size introns between them
