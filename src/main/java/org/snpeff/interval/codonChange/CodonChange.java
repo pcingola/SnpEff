@@ -19,20 +19,8 @@ import org.snpeff.snpEffect.VariantEffects;
  */
 public class CodonChange {
 
-	public static boolean showCodonChange = true; // This is disabled in some specific test cases
 	public static final int CODON_SIZE = 3; // I'll be extremely surprised if you ever need to change this parameter...
-
-	boolean returnNow = false; // Can we return immediately after calculating the first 'codonChangeSingle()'?
-	boolean requireNetCdsChange = false;
-	Variant variant;
-	Transcript transcript;
-	Exon exon = null;
-	VariantEffects variantEffects;
-	int codonStartNum = -1;
-	int codonStartIndex = -1;
-	String codonsRef = ""; // REF codons (without variant)
-	String codonsAlt = ""; // ALT codons (after variant is applied)
-	String netCdsChange = "";
+	public static boolean showCodonChange = true; // This is disabled in some specific test cases
 
 	/**
 	 * Create a specific codon change for a variant
@@ -59,6 +47,19 @@ public class CodonChange {
 			throw new RuntimeException("Unimplemented factory for variant type '" + variant.getVariantType() + "', variant: " + variant);
 		}
 	}
+
+	String codonsAlt = ""; // ALT codons (after variant is applied)
+	String codonsRef = ""; // REF codons (without variant)
+	int codonStartIndex = -1;
+	int codonStartNum = -1;
+	Exon exon = null;
+	String netCdsChange = "";
+	boolean requireNetCdsChange = false;
+	boolean returnNow = false; // Can we return immediately after calculating the first 'codonChangeSingle()'?
+	Transcript transcript;
+	Variant variant;
+
+	VariantEffects variantEffects;
 
 	protected CodonChange(Variant variant, Transcript transcript, VariantEffects variantEffects) {
 		this.transcript = transcript;

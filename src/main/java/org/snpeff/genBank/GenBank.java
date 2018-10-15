@@ -50,7 +50,8 @@ public class GenBank extends Features {
 	protected void parseFieldLine(String name, String valueOri, int fieldLineNum, int fileLineNum) {
 		String value = valueOri.trim();
 
-		if (name.equals("LOCUS")) {
+		switch (name) {
+		case "LOCUS":
 			String subfields[] = value.split(" ");
 			locusName = subfields[0];
 			if (subfields.length > 1) sequenceLength = Gpr.parseIntSafe(subfields[1]);
@@ -58,23 +59,39 @@ public class GenBank extends Features {
 			if (subfields.length > 3) shape = subfields[3];
 			if (subfields.length > 4) division = subfields[4];
 			if (subfields.length > 5) date = subfields[5];
-		} else if (name.equals("DEFINITION")) {
+			break;
+
+		case "DEFINITION":
 			definition += value;
-		} else if (name.equals("ACCESSION")) {
+			break;
+
+		case "ACCESSION":
 			accession += value;
-		} else if (name.equals("VERSION")) {
+			break;
+
+		case "VERSION":
 			version += value;
-		} else if (name.equals("KEYWORDS")) {
+			break;
+
+		case "KEYWORDS":
 			keywords += value;
-		} else if (name.equals("SOURCE")) {
+			break;
+
+		case "SOURCE":
 			source += value;
-		} else if (name.equals("REFERENCE")) {
+			break;
+
+		case "REFERENCE":
 			if (fieldLineNum == 0) references.add(new StringBuffer());
 			references.get(references.size() - 1).append(value + "\n");
-		} else if (name.equals("FEATURES")) {
+			break;
+
+		case "FEATURES":
 			if (featuresStartLine < 0) featuresStartLine = fileLineNum;
 			if (fieldLineNum > 0) featuresStr.append(valueOri + "\n"); // We need all spaces preserved for this field
-		} else if (name.equals("ORIGIN")) {
+			break;
+
+		case "ORIGIN":
 			String seq[] = value.split(" ", 2);
 
 			// First line might be empty
@@ -82,7 +99,11 @@ public class GenBank extends Features {
 				String s = seq[1].replaceAll("\\s", ""); // Remove all spaces
 				sequence.append(s);
 			}
-		} else if (debug) System.err.println("Ignored feature '" + name + "'");;
+			break;
+
+		default:
+			if (debug) System.err.println("Ignored feature '" + name + "'");
+		}
 	}
 
 	/**
