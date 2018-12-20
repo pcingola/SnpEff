@@ -1138,7 +1138,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 			break;
 
 		default:
-			throw new RuntimeException("WARNING: Unkown IUB code for SNP '" + altsStr + "'");
+			throw new RuntimeException("WARNING: Unknown IUB code for SNP '" + altsStr + "'");
 		}
 
 		return alts;
