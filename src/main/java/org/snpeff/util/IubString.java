@@ -153,7 +153,7 @@ public class IubString implements Iterable<String>, Iterator<String> {
 			break;
 
 		default:
-			throw new RuntimeException("WARNING: Unkown IUB code for SNP '" + alt + "'");
+			throw new RuntimeException("WARNING: Unknown IUB code for SNP '" + alt + "'");
 		}
 
 		return alts;
