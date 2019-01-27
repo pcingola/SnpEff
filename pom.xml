@@ -4,7 +4,7 @@
   <groupId>org.snpeff</groupId>
   <artifactId>SnpEff</artifactId>
   <packaging>jar</packaging>
-  <name>Snp Effect</name>
+  <name>SnpEff</name>
   <description>Variant annotation and effect prediction package.</description>
   <url>http://snpeff.sourceforge.net/</url>
   <licenses>
