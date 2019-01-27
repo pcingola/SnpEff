@@ -415,9 +415,9 @@ string[] dirsHg() {
 void downloadAll() {
 	# Ensembl genomes
 	for( int ensemblRelease : ensemblReleases ) {
-		downloadEnsembl(ensemblRelease)
+		par downloadEnsembl(ensemblRelease)
 	}
-	downloadEnsemblBfmpp()
+	par downloadEnsemblBfmpp()
 
 	# UCSC genomes
 	for( string ref : ucscGenomes ) {
@@ -431,17 +431,19 @@ void downloadAll() {
 	}
 
 	# Other databases
+	par downloadPdb()
+	par downloadDbSnp()
 	downloadCytoBands()
 	downloadJaspar()
 	downloadGwasCatalog()
 	downloadNextProt()
-	downloadPdb()
 	downloadClinvar()
-	downloadDbSnp()
 	downloadDbNsfp()	# We need to update this method
 
 	# FlyBase
 	downloadFlyBase()
+
+	wait
 }
 
 #-------------------------------------------------------------------------------
