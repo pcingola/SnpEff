@@ -138,8 +138,13 @@ void build() {
 	println("Building SnpEff & SnpSift")
 	sys ./scripts_build/make.sh
 
-	println("Building ClinEff")
-	sys cd $HOME/workspace/ClinEff/ ; ant
+	dircf := "$HOME/workspace/ClinEff"
+	if( dircf.exists() ) {
+		println("Building ClinEff")
+		sys cd $dircf ; ant
+	} else {
+		println "WARNING: ClinEff dir '$dircf' not found, skipping."
+	}
 }
 
 #-------------------------------------------------------------------------------
