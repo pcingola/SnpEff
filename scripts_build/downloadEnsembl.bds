@@ -19,8 +19,10 @@ void downloadEnsembl(int ensemblRelease) {
 	println "Download ENSEMBL $ensemblRelease"
 
 	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_$ensemblRelease\.config"
-	if( configFile.exists() ) {
-		println "\tConfig file '$configFile' exists: nothing done"
+
+	doneFile := "$dirDownload/snpEff.ENSEMBL_$ensemblRelease\.download"
+	if( doneFile.exists() ) {
+		println "\tConfig file '$doneFile' exists: nothing done"
 		return
 	}
 
@@ -123,8 +125,12 @@ void downloadEnsembl(int ensemblRelease) {
 	sys $cp mus_musculus/MotifFeatures.gff.gz $dataDir/motif.gff.gz
 
 	# Create config file
-	println "Writing config file $configFile"
-	configFile.write( configLines.join("\n") )
+	if( configFile.exists() ) {
+		println "WARNING: Config file exists, skipping ('$configFile')"
+	} else {
+		println "Writing config file $configFile"
+		configFile.write( configLines.join("\n") )
+	}
 
 	# Copy files to snpEff/data directory
 	println "Copying data to $dirData"
@@ -138,8 +144,10 @@ void downloadEnsemblBfmpp() {
 	println "ENSEMBL BFMPP $ensemblBfmppRelease"
 
 	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.config"
-	if( configFile.exists() ) {
-		println "\tConfig file '$configFile' exists: nothing done"
+
+	doneFile := "$dirDownload/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.download"
+	if( doneFile.exists() ) {
+		println "\tDone file '$doneFile' exists: nothing done"
 		return
 	}
 
@@ -216,8 +224,12 @@ void downloadEnsemblBfmpp() {
 	}
 
 	# Create config file
-	println "ENSEMBL BFMPP $ensemblBfmppRelease: Writing config file $configFile"
-	configFile.write( configLines.join("\n") )
+	if( configFile.exists() ) {
+		println "WARNING: Config file exists, skipping ('$configFile')"
+	} else {
+		println "ENSEMBL BFMPP $ensemblBfmppRelease: Writing config file $configFile"
+		configFile.write( configLines.join("\n") )
+	}
 
 	# Copy files to snpEff/data directory
 	sys cd data ; cp -rvf . $dirData
