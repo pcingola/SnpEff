@@ -307,6 +307,9 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	 * Find or create a chromosome name for a feature
 	 */
 	String chromoName(Features features, Feature sourceFeature) {
+		// Use version as chromosome name
+		if (!features.getVersion().isEmpty()) return features.getVersion();
+
 		// Try 'chromosome' from SOURCE feature
 		if (sourceFeature != null) {
 			if (sourceFeature.getType() != Type.SOURCE) throw new RuntimeException("Cannot find chromosome name in a non-SOURCE feature");

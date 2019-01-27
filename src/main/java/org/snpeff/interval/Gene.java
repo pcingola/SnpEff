@@ -32,8 +32,8 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 	private static final long serialVersionUID = 8419206759034068147L;
 
-	String geneName;
 	BioType bioType;
+	String geneName;
 	Itree intervalTreeGene;
 
 	public Gene() {
@@ -132,7 +132,6 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			// Find canonical transcript in protein coding gene (longest CDS)
 			for (Transcript t : this) {
 				int tlen = t.cds().length();
-				if (id.equals("ENSG00000141510")) Gpr.debug("COMPARE TR" + t.getId() + "\tlen: " + tlen);
 
 				// Compare coding length. If both lengths are equal, compare IDs
 				if (t.isProteinCoding() //
