@@ -433,12 +433,12 @@ void downloadAll() {
 	# Other databases
 	par downloadPdb()
 	par downloadDbSnp()
+	par downloadDbNsfp()
 	downloadCytoBands()
 	downloadJaspar()
 	downloadGwasCatalog()
 	downloadNextProt()
 	downloadClinvar()
-	downloadDbNsfp()	# We need to update this method
 
 	# FlyBase
 	downloadFlyBase()
