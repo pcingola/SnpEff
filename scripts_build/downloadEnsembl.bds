@@ -20,7 +20,7 @@ void downloadEnsembl(int ensemblRelease) {
 
 	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_$ensemblRelease\.config"
 
-	doneFile := "$dirDownload/snpEff.ENSEMBL_$ensemblRelease\.download"
+	doneFile := "$dirDownload/ensembl_$ensemblRelease\.done"
 	if( doneFile.exists() ) {
 		println "\tConfig file '$doneFile' exists: nothing done"
 		return
@@ -142,7 +142,7 @@ void downloadEnsemblBfmpp() {
 
 	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.config"
 
-	doneFile := "$dirDownload/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.download"
+	doneFile := "$dirDownload/ensembl_bfmpp_$ensemblBfmppRelease\.done"
 	if( doneFile.exists() ) {
 		println "\tDone file '$doneFile' exists: nothing done"
 		return
