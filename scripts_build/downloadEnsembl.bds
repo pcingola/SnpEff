@@ -195,29 +195,27 @@ void downloadEnsemblBfmpp() {
 		base := gtf.baseName('.gtf.gz')
 		baseNoVer := base.removeExt()
 		longName := base.split('\.').head()
-		#shortName := base.split('\.').tail().join('.')
 		name := longName
 		println "name: $name\tbase: $base"
 
-		if( !name.isEmpty() ) {
-			fasta := "$baseNoVer\.dna.toplevel.fa.gz"
-			cds := "$baseNoVer\.cdna.all.fa.gz"
-			prot := "$baseNoVer\.pep.all.fa.gz"
-			println "\t$name\t$fasta\t$cds\t$prot"
+		if( name.isEmpty() ) continue
+		fasta := "$baseNoVer\.dna.toplevel.fa.gz"
+		cds := "$baseNoVer\.cdna.all.fa.gz"
+		prot := "$baseNoVer\.pep.all.fa.gz"
+		println "\t$name\t$fasta\t$cds\t$prot"
         
-			# Copy files
-			dataDir := "data/$name"
-			dataDir.mkdir()
-			if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz    || true
-			if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz       || true
-			if( "$dataDir/protein.fa.gz" <- prot )		sys $cp $prot  $dataDir/protein.fa.gz   || true
-			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz || true
+		# Copy files (some source files might not exist)
+		dataDir := "$dirData/$name"
+		dataDir.mkdir()
+		if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz    || true
+		if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz       || true
+		if( "$dataDir/protein.fa.gz" <- prot )		sys $cp $prot  $dataDir/protein.fa.gz   || true
+		if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz || true
         
-			# Append config lines
-			configLines += "$name\.genome : $longName"
-			configLines += "$name\.reference : $ensemblBfmppFtp/pub/release-$ensemblBfmppRelease"
-			configLines += "$name\.retrieval_date : $today"
-		}
+		# Append config lines
+		configLines += "$name\.genome : $longName"
+		configLines += "$name\.reference : $ensemblBfmppFtp/pub/release-$ensemblBfmppRelease"
+		configLines += "$name\.retrieval_date : $today"
 	}
 
 	# Create config file
@@ -228,7 +226,7 @@ void downloadEnsemblBfmpp() {
 		configFile.write( configLines.join("\n") )
 	}
 
-	# Copy files to snpEff/data directory
-	sys cd data ; cp -rvf . $dirData
+	# Create 'done' file
+	doneFile.write('OK')
 }
 
