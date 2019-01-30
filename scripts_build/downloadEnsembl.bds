@@ -132,9 +132,12 @@ void downloadEnsembl(int ensemblRelease) {
 		configFile.write( configLines.join("\n") )
 	}
 
-	# Copy files to snpEff/data directory
-	println "Copying data to $dirData"
-	sys cd data ; cp -rvf . $dirData
+	# Moving files to snpEff/data directory
+	println "Moving data to $dirData"
+	sys cd data ; mv -vf * $dirData
+
+	# Create 'done' file
+	doneFile.write('OK')
 }
 
 #-------------------------------------------------------------------------------
