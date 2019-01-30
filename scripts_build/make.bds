@@ -415,9 +415,9 @@ string[] dirsHg() {
 void downloadAll() {
 	# Ensembl genomes
 	for( int ensemblRelease : ensemblReleases ) {
-		par downloadEnsembl(ensemblRelease)
+		downloadEnsembl(ensemblRelease)
 	}
-	par downloadEnsemblBfmpp()
+	downloadEnsemblBfmpp()
 
 	# UCSC genomes
 	for( string ref : ucscGenomes ) {
