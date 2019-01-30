@@ -93,16 +93,16 @@ void downloadEnsembl(int ensemblRelease) {
 		}
     
 		# Copy files
-		dataDir := "$dirData/$name"
-		dataDir.mkdir()
-		if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz
-		if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz
-		if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz
-		if( "$dataDir/protein.fa.gz" <- prot ) {
+		genomeDir := "$dirData/$name"
+		genomeDir.mkdir()
+		if( "$genomeDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $genomeDir/genes.gtf.gz
+		if( "$genomeDir/cds.fa.gz" <- cds )			sys $cp $cds   $genomeDir/cds.fa.gz
+		if( "$genomeDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $genomeDir/sequences.fa.gz
+		if( "$genomeDir/protein.fa.gz" <- prot ) {
 			sys gunzip -c $prot \
 					| $dirScriptsBuild/ensembl_protein_transcriptId.sh \
 					| gzip -c \
-					> $dataDir/protein.fa.gz
+					> $genomeDir/protein.fa.gz
 		}
     
 		# Append config lines
@@ -112,15 +112,15 @@ void downloadEnsembl(int ensemblRelease) {
 	}
 
 	# Regulation tracks (human and mouse only)
-	dataDir := "$dirData/$GRCH.$ensemblRelease"
-	dataDir.mkdir()
-	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz $dataDir/regulation.gff.gz
-	sys $cp homo_sapiens/MotifFeatures.gff.gz $dataDir/motif.gff.gz
+	genomeDir := "$dirData/$GRCH.$ensemblRelease"
+	genomeDir.mkdir()
+	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz $genomeDir/regulation.gff.gz
+	sys $cp homo_sapiens/MotifFeatures.gff.gz $genomeDir/motif.gff.gz
 
-	dataDir = "$dirData/$GRCM.$ensemblRelease"
-	dataDir.mkdir()
-	sys $cp mus_musculus/AnnotatedFeatures.gff.gz $dataDir/regulation.gff.gz
-	sys $cp mus_musculus/MotifFeatures.gff.gz $dataDir/motif.gff.gz
+	genomeDir = "$dirData/$GRCM.$ensemblRelease"
+	genomeDir.mkdir()
+	sys $cp mus_musculus/AnnotatedFeatures.gff.gz $genomeDir/regulation.gff.gz
+	sys $cp mus_musculus/MotifFeatures.gff.gz $genomeDir/motif.gff.gz
 
 	# Create config file
 	if( configFile.exists() ) {
@@ -205,12 +205,12 @@ void downloadEnsemblBfmpp() {
 		println "\t$name\t$fasta\t$cds\t$prot"
         
 		# Copy files (some source files might not exist)
-		dataDir := "$dirData/$name"
-		dataDir.mkdir()
-		if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz    || true
-		if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz       || true
-		if( "$dataDir/protein.fa.gz" <- prot )		sys $cp $prot  $dataDir/protein.fa.gz   || true
-		if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz || true
+		genomeDir := "$dirData/$name"
+		genomeDir.mkdir()
+		if( "$genomeDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $genomeDir/genes.gtf.gz    || true
+		if( "$genomeDir/cds.fa.gz" <- cds )			sys $cp $cds   $genomeDir/cds.fa.gz       || true
+		if( "$genomeDir/protein.fa.gz" <- prot )		sys $cp $prot  $genomeDir/protein.fa.gz   || true
+		if( "$genomeDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $genomeDir/sequences.fa.gz || true
         
 		# Append config lines
 		configLines += "$name\.genome : $longName"
