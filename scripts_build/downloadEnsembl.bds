@@ -94,7 +94,7 @@ void downloadEnsembl(int ensemblRelease) {
 			}
         
 			# Copy files
-			dataDir := "data/$name"
+			dataDir := "$dir/data/$name"
 			dataDir.mkdir()
 			if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz
 			if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz
@@ -134,7 +134,7 @@ void downloadEnsembl(int ensemblRelease) {
 
 	# Moving files to snpEff/data directory
 	println "Moving data to $dirData"
-	sys cd data ; mv -vf * $dirData
+	sys cd $dir/data ; mv -vf * $dirData
 
 	# Create 'done' file
 	doneFile.write('OK')
