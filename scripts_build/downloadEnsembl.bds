@@ -79,47 +79,45 @@ void downloadEnsembl(int ensemblRelease) {
 		baseNoVer := base.removeExt()
 		longName := base.split('\.').head()
 		name := base.split('\.').tail().join('.')
-
-		if( !name.isEmpty() ) {
-			println "\t$name"
-        
-			fasta := "$baseNoVer\.dna.toplevel.fa.gz"
-			cds := "$baseNoVer\.cdna.all.fa.gz"
-			prot := "$baseNoVer\.pep.all.fa.gz"
-			if( ensemblRelease <= ensemblReleaseUseNumber ) {
-				# Slightly different name format in prior versions
-				fasta = "$base\.dna.toplevel.fa.gz"
-				cds = "$base\.cdna.all.fa.gz"
-				prot = "$base\.pep.all.fa.gz"
-			}
-        
-			# Copy files
-			dataDir := "$dir/data/$name"
-			dataDir.mkdir()
-			if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz
-			if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz
-			if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz
-			if( "$dataDir/protein.fa.gz" <- prot ) {
-				sys gunzip -c $prot \
-						| $dirScriptsBuild/ensembl_protein_transcriptId.sh \
-						| gzip -c \
-						> $dataDir/protein.fa.gz
-			}
-        
-			# Append config lines
-			configLines += "$name\.genome : $longName"
-			configLines += "$name\.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
-			configLines += "$name\.retrieval_date : $today"
+		if( name.isEmpty() ) continue
+		println "\t$name"
+    
+		fasta := "$baseNoVer\.dna.toplevel.fa.gz"
+		cds := "$baseNoVer\.cdna.all.fa.gz"
+		prot := "$baseNoVer\.pep.all.fa.gz"
+		if( ensemblRelease <= ensemblReleaseUseNumber ) {
+			# Slightly different name format in prior versions
+			fasta = "$base\.dna.toplevel.fa.gz"
+			cds = "$base\.cdna.all.fa.gz"
+			prot = "$base\.pep.all.fa.gz"
 		}
+    
+		# Copy files
+		dataDir := "$dirData/$name"
+		dataDir.mkdir()
+		if( "$dataDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $dataDir/genes.gtf.gz
+		if( "$dataDir/cds.fa.gz" <- cds )			sys $cp $cds   $dataDir/cds.fa.gz
+		if( "$dataDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $dataDir/sequences.fa.gz
+		if( "$dataDir/protein.fa.gz" <- prot ) {
+			sys gunzip -c $prot \
+					| $dirScriptsBuild/ensembl_protein_transcriptId.sh \
+					| gzip -c \
+					> $dataDir/protein.fa.gz
+		}
+    
+		# Append config lines
+		configLines += "$name\.genome : $longName"
+		configLines += "$name\.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
+		configLines += "$name\.retrieval_date : $today"
 	}
 
 	# Regulation tracks (human and mouse only)
-	dataDir := "data/$GRCH.$ensemblRelease"
+	dataDir := "$dirData/$GRCH.$ensemblRelease"
 	dataDir.mkdir()
 	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz $dataDir/regulation.gff.gz
 	sys $cp homo_sapiens/MotifFeatures.gff.gz $dataDir/motif.gff.gz
 
-	dataDir = "data/$GRCM.$ensemblRelease"
+	dataDir = "$dirData/$GRCM.$ensemblRelease"
 	dataDir.mkdir()
 	sys $cp mus_musculus/AnnotatedFeatures.gff.gz $dataDir/regulation.gff.gz
 	sys $cp mus_musculus/MotifFeatures.gff.gz $dataDir/motif.gff.gz
@@ -131,10 +129,6 @@ void downloadEnsembl(int ensemblRelease) {
 		println "Writing config file $configFile"
 		configFile.write( configLines.join("\n") )
 	}
-
-	# Moving files to snpEff/data directory
-	println "Moving data to $dirData"
-	sys cd $dir/data ; mv -vf * $dirData
 
 	# Create 'done' file
 	doneFile.write('OK')
