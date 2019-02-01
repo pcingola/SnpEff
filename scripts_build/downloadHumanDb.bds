@@ -68,7 +68,7 @@ void buildDbNsfp(string genome) {
 		txts += sorted
 
 		println "Building dbNsfp: Sorting file $chrFile"
-		task(sorted <- chrFile , cpus := 2, mem := 4*G) {
+		task(sorted <- chrFile , cpus := 2, mem := 8*G) {
 			sys gunzip -c $chrFile \
 				| $dirScriptsBuild/dbNSFP_sort.pl \
 				| grep -v "^#" \
