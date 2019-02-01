@@ -118,7 +118,7 @@ void downloadDbNsfp() {
 	if( !zip.exists() ) {
 		println "Download dbNsfp $urlDbNsfp ($zip)"
 		fetch(urlDbNsfp)
-	}
+	} else println "downloadDbNsfp: File '$zip' exists, skipping"
 
 	buildDbNsfp(hg)
 	wait
