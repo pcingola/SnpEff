@@ -421,7 +421,7 @@ void downloadAll() {
 #-------------------------------------------------------------------------------
 # Download one dataset
 #-------------------------------------------------------------------------------
-void downloadSet(string setToDownload) {
+void downloadOneSet(string setToDownload) {
 	switch( setToDownload ) {
 		case 'ensembl':
 			for( int ensemblRelease : ensemblReleases ) downloadEnsembl(ensemblRelease)
