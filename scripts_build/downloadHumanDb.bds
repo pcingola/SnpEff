@@ -43,6 +43,10 @@ void buildDbNsfp(string genome) {
 
 	if(chrFiles <- zip) {
 		sys cd $dirDbNsfp; unzip -o $zip
+
+		# Make sure the timestamp is updated (otherwise the timestamp in the zip file is used and we always run decompression)
+		chrFilesStr := chrFiles.join()
+		sys touch $chrFilesStr
 	}
 
 	println "Building dbNsfp: Sorting individual chromosome files"
