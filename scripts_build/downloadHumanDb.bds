@@ -110,7 +110,7 @@ void downloadDbNsfp() {
 	dir.mkdir()
 	dir.chdir()
 
-	base := "dbNSFPv$dbNsfpVer"
+	base := "dbNSFP$dbNsfpVer"
 	baseChr := "dbNSFP$dbNsfpVer"
 	zip := "$base\.zip"
 
