@@ -782,7 +782,6 @@ if( distro )					makeDistro()								# Create distribution files
 if( distroCore )				zipCore()									# Create distribution files (core 'zip')
 if( distroBundles )				zipBundles()								# Create 'bundle' distribution files
 if( download )					downloadAll()								# Perform downloads
-if( download )					downloadAll()								# Perform downloads
 if( !downloadNcbi.isEmpty() )	downloadNcbi.downloadNcbiGenome()			# Download NCBI genome
 if( !downloadUcsc.isEmpty() )	downloadUcsc.downloadUcscGenome()			# Download UCSC genome
 if( !downloadSet.isEmpty() )	downloadSet.downloadOneSet()				# Download one set
