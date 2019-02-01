@@ -478,6 +478,9 @@ void downloadOneSet(string setToDownload) {
 		case 'flybase':
 			downloadFlyBase()
 			break
+
+		default:
+			error("Unknown download set '$setToDownload'")
 	}
 }
 
