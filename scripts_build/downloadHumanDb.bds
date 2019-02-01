@@ -35,7 +35,11 @@ void buildDbNsfp(string genome) {
 	chrs := ['M', 'X', 'Y']
 	string[] chrFiles
 	for(int chrNum=1; chrNum < 23 ; chrNum++ ) chrs += "$chrNum"
-	for(string chr: chrs) chrFiles += "$base$chr"
+	for(string chr: chrs) {
+		chrFile := "$base$chr"
+		chrFiles += chrFile
+		println "buildDbNsfp:\tAdding chrFile '$chrFile'"
+	}
 
 	if(chrFiles <- zip) {
 		sys cd $dirDbNsfp; unzip -o $zip
