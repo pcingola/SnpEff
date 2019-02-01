@@ -415,7 +415,7 @@ string[] dirsHg() {
 #-------------------------------------------------------------------------------
 void downloadAll() {
 	dsets := ['ensembl', 'ensemblBfmpp', 'ucsc', 'hg38', 'ucsckg', 'pdb', 'dbsnp', 'dbnsfp', 'cytobands', 'jaspar', 'gwasCatalog', 'nextprot', 'clinvar', 'flybase']
-	for(string dset: dsets) dset.downloadSet()
+	for(string dset: dsets) dset.downloadOneSet()
 }
 
 #-------------------------------------------------------------------------------
