@@ -595,7 +595,7 @@ void uploadCore2Sf() {
 #-------------------------------------------------------------------------------
 void uploadDbNsfp2Gdrive() {
 	for(string grch : GRCHs) {
-		base := "dbNSFPv$dbNsfpVer"
+		base := "dbNSFP$dbNsfpVer"
 		bgFile := "$dirDb/$grch/$base\.txt.gz"
 		tbiFile := "$dirDb/$grch/$base\.txt.gz.tbi"
 		if( "$dirGdrive/$base\.txt.gz" <- bgFile ) sys scp -v $bgFile $tbiFile $dirGdrive
