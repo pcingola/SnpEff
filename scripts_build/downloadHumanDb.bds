@@ -140,7 +140,7 @@ void downloadDbSnp() {
 		if( fetch(urlDbSnpGrch37) ) {
 			sys cp 00-All.vcf.gz $dbsnp
 		}
-	}
+	} else println "downloadDbSnp: File '$dir/$dbsnp' exists, skipping"
 
 	# GRCh38
 	dir = "$dirDb/GRCh38/dbSnp/"
@@ -150,7 +150,7 @@ void downloadDbSnp() {
 		if( fetch(urlDbSnpGrch38) ) {
 			sys cp 00-All.vcf.gz $dbsnp
 		}
-	}
+	} else println "downloadDbSnp: File '$dir/$dbsnp' exists, skipping"
 
 	wait
 }
