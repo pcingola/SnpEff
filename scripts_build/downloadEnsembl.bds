@@ -187,7 +187,7 @@ void downloadEnsemblBfmpp() {
 	#---
 	# Copy files to local dir
 	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to parent dir"
-	#sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
+	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
 
 	# Move files
 	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to data dir"
