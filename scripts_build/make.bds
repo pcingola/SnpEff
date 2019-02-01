@@ -418,7 +418,7 @@ void downloadAll() {
 #		downloadEnsembl(ensemblRelease)
 #	}
 	downloadEnsemblBfmpp()
-	fatalerror("!!!!!!!!!!!!!!!!!!")
+	error("!!!!!!!!!!!!!!!!!!")
 
 	# UCSC genomes
 	for( string ref : ucscGenomes ) {
