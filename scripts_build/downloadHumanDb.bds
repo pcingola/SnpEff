@@ -41,11 +41,11 @@ void buildDbNsfp(string genome) {
 		println "buildDbNsfp:\tAdding chrFile '$chrFile', exists: " + chrFile.exists()
 	}
 
-	if(chrFiles <- zip) {
-		sys cd $dirDbNsfp; unzip -o $zip
-
-		# Make sure the timestamp is updated (otherwise the timestamp in the zip file is used and we always run decompression)
-		chrFilesStr := chrFiles.join()
+	# Make sure the timestamp is updated (otherwise the timestamp in the zip file is used and we always run decompression)
+	chrFilesStr := chrFiles.join()
+	task(chrFiles <- zip) {
+		sys cd $dirDbNsfp
+		sys unzip -o $zip
 		sys touch $chrFilesStr
 	}
 
