@@ -16,7 +16,8 @@ dbTest				:= false		help Build databases used in test cases
 distro	 			:= false		help Create distribution files (zip)
 distroBundles		:= false		help Create bundle files (zip)
 distroCore 			:= false		help Create distribution files (zip only 'core')
-download 			:= false		help Download files
+download 			:= false		help Download all genomes
+downloadSet			:= ''			help Download one genomes set
 downloadUcsc		:= ''			help Download genome files from UCSC (genome name)
 downloadNcbi		:= ''			help Download genome files from NCBI (genome name)
 make	 			:= false		help Make (build JAR files)
@@ -410,41 +411,74 @@ string[] dirsHg() {
 }
 
 #-------------------------------------------------------------------------------
-# Download all databases
+# Download all datasets
 #-------------------------------------------------------------------------------
 void downloadAll() {
-#	# Ensembl genomes
-#	for( int ensemblRelease : ensemblReleases ) {
-#		downloadEnsembl(ensemblRelease)
-#	}
-	downloadEnsemblBfmpp()
-	error("!!!!!!!!!!!!!!!!!!")
+	dsets := ['ensembl', 'ensemblBfmpp', 'ucsc', 'hg38', 'ucsckg', 'pdb', 'dbsnp', 'dbnsfp', 'cytobands', 'jaspar', 'gwasCatalog', 'nextprot', 'clinvar', 'flybase']
+	for(string dset: dsets) dset.downloadSet()
+}
 
-	# UCSC genomes
-	for( string ref : ucscGenomes ) {
-		ref.downloadUcscGenome()
+#-------------------------------------------------------------------------------
+# Download one dataset
+#-------------------------------------------------------------------------------
+void downloadSet(string setToDownload) {
+	switch( setToDownload ) {
+		case 'ensembl':
+			for( int ensemblRelease : ensemblReleases ) downloadEnsembl(ensemblRelease)
+			break
+
+		case 'ensemblBfmpp':
+			downloadEnsemblBfmpp()
+			break
+
+		case 'ucsc':
+			for( string ref : ucscGenomes ) ref.downloadUcscGenome()
+			break
+
+		case 'hg38':
+			downloadUcscHg38()	
+			break
+
+		case 'ucsckg':
+			for( string ref : ucscGenomesKg ) ref.downloadUcscKg()
+			break
+
+		case 'pdb':
+			downloadPdb()
+			break
+
+		case 'dbsnp':
+			downloadDbSnp()
+			break
+
+		case 'dbnsfp':
+			downloadDbNsfp()
+			break
+
+		case 'cytobands':
+			downloadCytoBands()
+			break
+
+		case 'jaspar':
+			downloadJaspar()
+			break
+
+		case 'gwasCatalog':
+			downloadGwasCatalog()
+			break
+
+		case 'nextprot':
+			downloadNextProt()
+			break
+
+		case 'clinvar':
+			downloadClinvar()
+			break
+
+		case 'flybase':
+			downloadFlyBase()
+			break
 	}
-	downloadUcscHg38()	# Hg38 doesn't have the same dir structure so we need a special function
-
-	# UCSC 'known genes' data (instead of 'RefSeq')
-	for( string ref : ucscGenomesKg ) {
-		ref.downloadUcscKg()
-	}
-
-	# Other databases
-	par downloadPdb()
-	par downloadDbSnp()
-	par downloadDbNsfp()
-	downloadCytoBands()
-	downloadJaspar()
-	downloadGwasCatalog()
-	downloadNextProt()
-	downloadClinvar()
-
-	# FlyBase
-	downloadFlyBase()
-
-	wait
 }
 
 #-------------------------------------------------------------------------------
@@ -748,8 +782,10 @@ if( distro )					makeDistro()								# Create distribution files
 if( distroCore )				zipCore()									# Create distribution files (core 'zip')
 if( distroBundles )				zipBundles()								# Create 'bundle' distribution files
 if( download )					downloadAll()								# Perform downloads
+if( download )					downloadAll()								# Perform downloads
 if( !downloadNcbi.isEmpty() )	downloadNcbi.downloadNcbiGenome()			# Download NCBI genome
 if( !downloadUcsc.isEmpty() )	downloadUcsc.downloadUcscGenome()			# Download UCSC genome
+if( !downloadSet.isEmpty() )	downloadSet.downloadOneSet()				# Download one set
 if( make )						build()										# Build (create JAR files)
 if( query )						queryUcscAll()								# Query UCSC database
 if( test )						runTests()									# Run test cases 
