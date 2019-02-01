@@ -208,7 +208,7 @@ void downloadNextProt() {
 		}
 
 		downloadOk.write("OK")	# Mark as downlaoded OK
-	}
+	} else println "downloadNextProt: Done file '$dir/$downloadOk' exists, skippping"
 }
 
 #-------------------------------------------------------------------------------
