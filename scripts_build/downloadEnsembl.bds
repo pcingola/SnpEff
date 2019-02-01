@@ -178,6 +178,8 @@ void downloadEnsemblBfmpp() {
 		}
 
 		downloadOk.write("OK")	# Mark as all downloads OK
+	} else {
+		println "ENSEMBL BFMPP $ensemblBfmppRelease: File '$downloadOk' exist, skipping download"
 	}
 
 	#---
