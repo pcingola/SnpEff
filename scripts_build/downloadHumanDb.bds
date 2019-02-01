@@ -36,7 +36,7 @@ void buildDbNsfp(string genome) {
 	string[] chrFiles
 	for(int chrNum=1; chrNum < 23 ; chrNum++ ) chrs += "$chrNum"
 	for(string chr: chrs) {
-		chrFile := "$base$chr"
+		chrFile := "$base$chr\.gz"
 		chrFiles += chrFile
 		println "buildDbNsfp:\tAdding chrFile '$chrFile'"
 	}
@@ -54,7 +54,7 @@ void buildDbNsfp(string genome) {
 			header = "$dirDb/dbNSFP$dbNsfpVer\.header"
 			println "Building dbNsfp: Creating headr file 'header'"
 			task(header <- chrFile) {
-				sys head -n 1 $chrFile > $header
+				sys gunzip -c $chrFile | head -n 1 > $header
 			}
 		}
 
@@ -65,7 +65,7 @@ void buildDbNsfp(string genome) {
 
 		println "Building dbNsfp: Sorting file $chrFile"
 		task(sorted <- chrFile , cpus := 2) {
-			sys cat $chrFile \
+			sys gunzip -c $chrFile \
 				| $dirScriptsBuild/dbNSFP_sort.pl \
 				| grep -v "^#" \
 				> $sorted
