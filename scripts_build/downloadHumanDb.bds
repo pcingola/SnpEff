@@ -226,6 +226,6 @@ void downloadPdb() {
 		println "Download PDB"
 		sys rsync -rlpt -v -z --delete --port=33444 $urlPdb .
 		downloadOk.write("OK")	# Mark as downlaoded OK
-	}
+	} else println "downloadPdb: Done file '$dir/$downloadOk' exists, skippping"
 }
 
