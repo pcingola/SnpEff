@@ -64,7 +64,7 @@ void buildDbNsfp(string genome) {
 
 		# Sort files
 		base := chrFile.baseName()
-		sorted := "$dirDb/$base\.sort.txt"
+		sorted := "$dirDbNsfp/$base\.sort.txt"
 		txts += sorted
 
 		println "Building dbNsfp: Sorting file $chrFile"
