@@ -38,7 +38,7 @@ void buildDbNsfp(string genome) {
 	for(string chr: chrs) {
 		chrFile := "$base$chr\.gz"
 		chrFiles += chrFile
-		println "buildDbNsfp:\tAdding chrFile '$chrFile'"
+		println "buildDbNsfp:\tAdding chrFile '$chrFile', exists: " + chrFile.exists()
 	}
 
 	if(chrFiles <- zip) {
