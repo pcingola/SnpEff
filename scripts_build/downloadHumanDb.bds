@@ -67,7 +67,7 @@ void buildDbNsfp(string genome) {
 		sorted := "$dirDbNsfp/$base\.sort.txt"
 		txts += sorted
 
-		println "Building dbNsfp: Sorting file $chrFile\n\tin: '$chrFile'\n\tout: '$sorted'"
+		println "Building dbNsfp: Sorting file $chrFile\n\tin : '$chrFile'\n\tout: '$sorted'\tdo: " + (sorted <- chrFile)
 		task(sorted <- chrFile , cpus := 2, mem := 8*G) {
 			sys gunzip -c $chrFile \
 				| $dirScriptsBuild/dbNSFP_sort.pl \
