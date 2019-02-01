@@ -37,9 +37,8 @@ void buildDbNsfp(string genome) {
 	for(int chrNum=1; chrNum < 23 ; chrNum++ ) chrs += "$chrNum"
 	for(string chr: chrs) chrFiles += "$base$chr"
 
-	task(chrFiles <- zip) {
-		sys cd $dirDbNsfp
-		sys unzip -o $zip
+	if(chrFiles <- zip) {
+		sys cd $dirDbNsfp; unzip -o $zip
 	}
 
 	println "Building dbNsfp: Sorting individual chromosome files"
