@@ -209,10 +209,10 @@ void downloadEnsemblBfmpp() {
 		# Copy files (some source files might not exist)
 		genomeDir := "$dirData/$name"
 		genomeDir.mkdir()
-		if( "$genomeDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $genomeDir/genes.gtf.gz    || true
-		if( "$genomeDir/cds.fa.gz" <- cds )			sys $cp $cds   $genomeDir/cds.fa.gz       || true
-		if( "$genomeDir/protein.fa.gz" <- prot )		sys $cp $prot  $genomeDir/protein.fa.gz   || true
-		if( "$genomeDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $genomeDir/sequences.fa.gz || true
+		if( "$genomeDir/genes.gtf.gz" <- gtf )		sys mv -vf $gtf   $genomeDir/genes.gtf.gz    || true
+		if( "$genomeDir/cds.fa.gz" <- cds )			sys mv -vf $cds   $genomeDir/cds.fa.gz       || true
+		if( "$genomeDir/protein.fa.gz" <- prot )	sys mv -vf $prot  $genomeDir/protein.fa.gz   || true
+		if( "$genomeDir/sequences.fa.gz" <- fasta )	sys mv -vf $fasta $genomeDir/sequences.fa.gz || true
         
 		# Append config lines
 		configLines += "$name\.genome : $longName"
