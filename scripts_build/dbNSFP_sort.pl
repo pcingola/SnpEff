@@ -67,10 +67,7 @@ for( $i=1 ; $l = <STDIN> ; $i++ ) {
 #---
 # Print sorted by chr:pos coordinates
 #---
-print STDERR "Printing results\n";
 foreach $chr (sort keys %lines) {
-	print STDERR "\tChr: $chr\n";
-
 	# Print all lines within this chromosome, sorted by hg19 position
 	$lpos = $lines{$chr};
 	$len = scalar @{ $lpos };
