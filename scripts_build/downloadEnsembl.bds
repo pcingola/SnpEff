@@ -54,7 +54,7 @@ void downloadEnsembl(int ensemblRelease) {
 #						.
 
 		# Download regulation tracks
-		sys rsync -av	--include='*AnnotatedFeatures.gff.gz' \
+		sys rsync -av	--include='**/regulation/**/*.gff.gz' \
 						--include='*MotifFeatures.gff.gz' \
 						--include='*/' \
 						--exclude='*' \
