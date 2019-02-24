@@ -54,10 +54,11 @@ void downloadEnsembl(int ensemblRelease) {
 #						.
 
 		# Download regulation tracks
-		sys rsync -av	--include='*.gff.gz' \
+		sys rsync -av	\
+						--exclude='*chromosome*motif_features.gff.gz' \
+						--include='*.gff.gz' \
 						--include='*/' \
 						--exclude='*' \
-						--exclude='*chromosome*motif_features.gff.gz' \
 						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/regulation/ \
 						.
 
