@@ -112,7 +112,7 @@ void downloadEnsembl(int ensemblRelease) {
 	}
 
 	# Regulation tracks (human and mouse only)
-	genomeDir := "$dirData/$GRCH.$ensemblRelease"
+	genomeDir := "$dirData/$GRCH\.$ensemblRelease"
 	genomeDir.mkdir()
 	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz $genomeDir/regulation.gff.gz
 	sys $cp homo_sapiens/MotifFeatures.gff.gz $genomeDir/motif.gff.gz
