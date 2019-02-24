@@ -2,6 +2,10 @@
 
 ver="$1"
 
+SCRIPT_DIR=$(cd $(dirname "$0") ; pwd -P)
+PROJECT_HOME=$(dirname $SCRIPT_DIR)
+cd "$PROJECT_HOME"
+
 # Parse command line parameter
 if [ -z "$ver" ]
 then

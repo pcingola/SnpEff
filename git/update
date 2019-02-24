@@ -1,4 +1,8 @@
 #!/bin/sh -e
 
+SCRIPT_DIR=$(cd $(dirname "$0") ; pwd -P)
+PROJECT_HOME=$(dirname $SCRIPT_DIR)
+cd "$PROJECT_HOME"
+
 git pull
 

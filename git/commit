@@ -1,5 +1,9 @@
 #!/bin/sh -e
 
+SCRIPT_DIR=$(cd $(dirname "$0") ; pwd -P)
+PROJECT_HOME=$(dirname $SCRIPT_DIR)
+cd "$PROJECT_HOME"
+
 rm -vf snpeff_*.html snpEff_genes.txt snpEff_summary.csv testSuiteAll.snpeff.txt transcript_report.html
 
 comment="$1"
