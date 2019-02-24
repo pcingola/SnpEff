@@ -51,7 +51,7 @@ for( $i=1 ; $l = <STDIN> ; $i++ ) {
 	$pos = $t[$posCol];
 
 	# Show progress
-	print STDERR "\t$i\t$chr\t$pos\n" if( $i % 100000 == 0 );
+	print STDERR "Read\t$i\t$chr\t$pos\n" if( $i % 100000 == 0 );
 
 	# Skip line if missing data
 	if(($chr eq '') || ($pos eq '')) { next; }
@@ -78,6 +78,6 @@ foreach $chr (sort keys %lines) {
 	for( $i=0 ; $i <= $#{$lpos} ; $i++ ) {
 		$lines = $lpos->[$i];
 		print $lines if $lines ne '';
-		print STDERR "\t$chr\t$i\n" if( $i % 1000000 == 0 );
+		print STDERR "Print\t$chr\t$i\n" if( $i % 1000000 == 0 );
 	}
 }
