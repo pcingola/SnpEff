@@ -41,7 +41,9 @@ void buildDbNsfp(string genome) {
 		println "buildDbNsfp:\tAdding chrFile '$chrFile', exists: " + chrFile.exists()
 	}
 
-	# Make sure the timestamp is updated (otherwise the timestamp in the zip file is used and we always run decompression)
+	# Uncompress Zip
+	# Note: Make sure the timestamp is updated (otherwise the timestamp in
+	#       the zip file is used and we always run decompression)
 	chrFilesStr := chrFiles.join()
 	task(chrFiles <- zip) {
 		sys cd $dirDbNsfp
@@ -68,7 +70,7 @@ void buildDbNsfp(string genome) {
 		txts += sorted
 
 		println "Building dbNsfp: Sorting file $chrFile\n\tin : '$chrFile'\n\tout: '$sorted'\n\tdo: " + (sorted <- chrFile)
-		task(sorted <- chrFile , cpus := 2, mem := 8*G) {
+		task(sorted <- chrFile , cpus := 2, mem := 16*G) {
 			sys gunzip -c $chrFile \
 				| $dirScriptsBuild/dbNSFP_sort.pl \
 				| grep -v "^#" \
