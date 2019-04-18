@@ -630,7 +630,8 @@ void uploadHtml2Sf() {
 
 	# Upload HTML, versions and images to SF
 	println "Upload web pages"
-	sys cd $htmlDir ; scp -v -r style.css *.html *.txt *.pdf images/ pcingola,snpeff@frs.sourceforge.net:htdocs/
+	#sys cd $htmlDir ; scp -v -r style.css *.html *.txt *.pdf images/ pcingola,snpeff@frs.sourceforge.net:htdocs/
+	sys cd $htmlDir ; scp -v -r style.css *.html *.txt *.pdf images/ pcingola@web.sourceforge.net:/home/project-web/snpeff/htdocs/
 }
 
 #-------------------------------------------------------------------------------
