@@ -37,21 +37,21 @@ void downloadEnsembl(int ensemblRelease) {
 	if( ! downloadOk.exists() ) {
 		println "Downloading ENSEMBL $ensemblRelease"
 
-#		# Download GTF files
-#		sys rsync -av	--include='*$ensemblRelease\.gtf.gz' \
-#						--include='*/' \
-#						--exclude='*' \
-#						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/gtf/ \
-#						.
-#    
-#		# Download FASTA files (reference genomes)
-#		sys rsync -av	--include='*.dna.toplevel.fa.gz' \
-#						--include='*.cdna.all.fa.gz' \
-#						--include='*.pep.all.fa.gz' \
-#						--include='*/' \
-#						--exclude='*' \
-#						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/fasta/ \
-#						.
+		# Download GTF files
+		sys rsync -av	--include='*$ensemblRelease\.gtf.gz' \
+						--include='*/' \
+						--exclude='*' \
+						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/gtf/ \
+						.
+    
+		# Download FASTA files (reference genomes)
+		sys rsync -av	--include='*.dna.toplevel.fa.gz' \
+						--include='*.cdna.all.fa.gz' \
+						--include='*.pep.all.fa.gz' \
+						--include='*/' \
+						--exclude='*' \
+						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/fasta/ \
+						.
 
 		# Download regulation tracks
 		sys rsync -av	\
