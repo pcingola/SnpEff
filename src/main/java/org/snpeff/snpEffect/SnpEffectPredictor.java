@@ -41,17 +41,6 @@ public class SnpEffectPredictor implements Serializable {
 	public static final int DEFAULT_UP_DOWN_LENGTH = 5000;
 	public static final int SMALL_VARIANT_SIZE_THRESHOLD = 10; // Number of bases for a variant to be considered 'small'
 
-	boolean useChromosomes = true;
-	boolean debug;
-	int upDownStreamLength = DEFAULT_UP_DOWN_LENGTH;
-	int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE;
-	int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
-	int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
-	int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
-	Genome genome;
-	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
-	IntervalForest intervalForest; // Interval forest by chromosome name
-
 	/**
 	 * Load predictor from a binary file
 	 */
@@ -95,6 +84,18 @@ public class SnpEffectPredictor implements Serializable {
 
 		return snpEffectPredictor;
 	}
+
+	boolean useChromosomes = true;
+	boolean debug;
+	int upDownStreamLength = DEFAULT_UP_DOWN_LENGTH;
+	int spliceSiteSize = SpliceSite.CORE_SPLICE_SITE_SIZE;
+	int spliceRegionExonSize = SpliceSite.SPLICE_REGION_EXON_SIZE;
+	int spliceRegionIntronMin = SpliceSite.SPLICE_REGION_INTRON_MIN;
+	int spliceRegionIntronMax = SpliceSite.SPLICE_REGION_INTRON_MAX;
+	Genome genome;
+	Markers markers; // All other markers are stored here (e.g. custom markers, intergenic, etc.)
+
+	IntervalForest intervalForest; // Interval forest by chromosome name
 
 	public SnpEffectPredictor(Genome genome) {
 		this.genome = genome;
@@ -533,8 +534,21 @@ public class SnpEffectPredictor implements Serializable {
 		}
 
 		// Remove non-canonical transcripts
-		for (Gene g : genome.getGenes())
-			g.removeNonCanonical(geneCanonTr.get(g.getId()));
+		Set<String> done = new HashSet<>();
+		done.addAll(geneCanonTr.keySet());
+		for (Gene g : genome.getGenes()) {
+			String geneId = g.getId();
+			String trId = geneCanonTr.get(geneId);
+			g.removeNonCanonical(trId);
+			done.remove(geneId);
+		}
+
+		// Check that all genes have been added
+		if (done.size() > 0) {
+			StringBuilder sb = new StringBuilder();
+			done.forEach(g -> sb.append(g + " "));
+			throw new RuntimeException("Canonical gene list file '" + canonFile + "' has gene Ids that do not match any gene: " + sb);
+		}
 	}
 
 	/**

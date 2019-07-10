@@ -504,10 +504,8 @@ public class SnpEff implements CommandLine {
 			// Create predictor
 			config.setSnpEffectPredictor(new SnpEffectPredictor(config.getGenome()));
 			config.setOnlyRegulation(true);
-			config.setErrorOnMissingChromo(false); // A chromosome might be missing (e.g. no regulation tracks available
-													// for 'MT')
-			config.setErrorChromoHit(false); // A chromosome's length might be smaller than the real (it's calculated
-												// using regulation features, not real chromo data)
+			config.setErrorOnMissingChromo(false); // A chromosome might be missing (e.g. no regulation tracks available  for 'MT')
+			config.setErrorChromoHit(false); // A chromosome's length might be smaller than the real (it's calculated using regulation features, not real chromo data)
 		} else {
 			// Read
 			if (verbose) Timer.showStdErr("Reading database for genome version '" + genomeVer + "' from file '" + config.getFileSnpEffectPredictor() + "' (this might take a while)");
