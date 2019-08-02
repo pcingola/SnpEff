@@ -58,8 +58,7 @@ snpeff				:= "java -Xmx10G -jar snpEff.jar "
 snpeffXl			:= "java -Xmx50G -jar snpEff.jar "
 snpeffBuild			:= "$snpeff build -v"
 snpsift				:= "java -jar SnpSift.jar "
-wget				:= "wget -N --retr-symlinks"
-wgetA				:= "wget -r -N -A"
+wgetCmd				:= "wget -N --retr-symlinks"
 cp					:= "cp -v -u"
 
 # Directories

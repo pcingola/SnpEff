@@ -97,13 +97,13 @@ void downloadClinvar() {
 	dir := "$dirDb/GRCh37/clinvar/"
 	dir.mkdir()
 	dir.chdir()
-	if( !clinvar.exists() ) fetch(urlClinVarGrch37)
+	if( !clinvar.exists() ) wgetTask(urlClinVarGrch37)
 
 	# GRCh38
 	dir = "$dirDb/GRCh38/clinvar/"
 	dir.mkdir()
 	dir.chdir()
-	if( !clinvar.exists() ) fetch(urlClinVarGrch38)
+	if( !clinvar.exists() ) wgetTask(urlClinVarGrch38)
 
 	wait
 }
@@ -126,7 +126,7 @@ void downloadDbNsfp() {
 	# Download
 	if( !zip.exists() ) {
 		println "Download dbNsfp $urlDbNsfp ($zip)"
-		fetch(urlDbNsfp)
+		wget(urlDbNsfp)
 	} else println "downloadDbNsfp: File '$zip' exists, skipping"
 
 	buildDbNsfp(hg)
@@ -146,7 +146,7 @@ void downloadDbSnp() {
 	dir.mkdir()
 	dir.chdir()
 	if( !dbsnp.exists() ) {
-		if( fetch(urlDbSnpGrch37) ) {
+		if( wget(urlDbSnpGrch37) ) {
 			sys cp 00-All.vcf.gz $dbsnp
 		}
 	} else println "downloadDbSnp: File '$dir/$dbsnp' exists, skipping"
@@ -156,7 +156,7 @@ void downloadDbSnp() {
 	dir.mkdir()
 	dir.chdir()
 	if( !dbsnp.exists() ) {
-		if( fetch(urlDbSnpGrch38) ) {
+		if( wget(urlDbSnpGrch38) ) {
 			sys cp 00-All.vcf.gz $dbsnp
 		}
 	} else println "downloadDbSnp: File '$dir/$dbsnp' exists, skipping"
@@ -174,7 +174,7 @@ void downloadGwasCatalog() {
 	dir.mkdir()
 	dir.chdir()
 
-	if( fetch(urlGwasCatalog) ) {
+	if( wget(urlGwasCatalog) ) {
 		sys cat gwascatalog.txt | $dirScriptsBuild/gwascatalog2vcf.pl > gwascatalog.vcf
 	}
 
@@ -191,7 +191,7 @@ void downloadJaspar() {
 	dir.mkdir()
 	dir.chdir()
 
-	if( fetch(urlJaspar) ) {
+	if( wget(urlJaspar) ) {
 		sys gzip -c pfm_all.txt > pwms.bin
 		println "Jaspar: File $dir/pwms.bin created"
 	}
@@ -213,9 +213,10 @@ void downloadNextProt() {
 
 		# Download each chromosome's XML file
 		for( string chr : humanChrsDd ) {
-			fetch("$urlNextProt/nextprot_chromosome_$chr\.xml.gz")
+			wgetTask("$urlNextProt/nextprot_chromosome_$chr\.xml.gz")
 		}
 
+		wait
 		downloadOk.write("OK")	# Mark as downlaoded OK
 	} else println "downloadNextProt: Done file '$dir/$downloadOk' exists, skippping"
 }

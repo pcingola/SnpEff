@@ -26,7 +26,7 @@ void downloadCytoBands() {
 		url := "$urlUcscCse/$hg/database/cytoBand.txt.gz"
 		dir.mkdir()
 		dir.chdir()
-		if( !file.exists() ) fetch(url)
+		if( !file.exists() ) wget(url)
 	}
 }
 
@@ -48,8 +48,9 @@ void downloadUcscHg38() {
 	ori.mkdir()
 	ori.chdir()
 
-	fetch("$urlUcscCse/$ref/bigZips/$ref\.fa.gz")
-	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+	wgetTask("$urlUcscCse/$ref/bigZips/$ref\.fa.gz")
+	wgetTask("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+	wait
 
 	fagz := "$ref\.fa.gz"
 	fagzData := "$dirData/genomes/$fagz"
@@ -132,7 +133,7 @@ string downloadUcscGenomeFastaMrna(string ref, string dir) {
 	# Create CDS FASTA
 	#---
 	println 'Download mRNA file'
-	fetch("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+	wget("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
 
 	println 'Creating CDS FASTA'
 	ori := "$dir/ORI"
@@ -159,7 +160,7 @@ string downloadUcscGenomeFasta(string ref, string dir) {
 
 	file := "$urlUcscCse/$ref/bigZips/chromFa.tar.gz"
 	if( file.exists() ) {
-		fetch("$urlUcscCse/$ref/bigZips/chromFa.tar.gz")
+		wget("$urlUcscCse/$ref/bigZips/chromFa.tar.gz")
 
 		# Create fasta from tar
 		fagz := fastaFromTar(ref, "chromFa.tar.gz", ori)
@@ -168,7 +169,7 @@ string downloadUcscGenomeFasta(string ref, string dir) {
 	
 	println "File '$file' does not exists"
 	file = "$urlUcscCse/$ref/bigZips/$ref\.fa.gz"
-	fetch(file)
+	wget(file)
 	return localFile
 }
 
