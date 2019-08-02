@@ -17,38 +17,32 @@ include 'downloadUcsc'
 # Returns true if download command is executed
 #-------------------------------------------------------------------------------
 bool wget(string url) {
-	return wgetLocalDir(url, ".", true)
+	return wget(url, true)
 }
 
 bool wgetTask(string url) {
-	return wgetLocalDir(url, ".", false)
+	return wget(url, false)
 }
 
 #-------------------------------------------------------------------------------
-# Fetch (wget) a file, provide local dir path
-# Returns true if download command is executed (or task created)
+# Fetch (wget) a list of files to current dir
+# Returns true if download command is executed
 #-------------------------------------------------------------------------------
-bool wgetLocalDir(string url, string localDir, bool doWait) {
-	base := url.baseName()
-	localFile := "$localDir/$base"
-	return wgetLocalFile(url, localFile, doWait)
+bool wgetTask(string[] urls) {
+	oks := true
+	for(string url: urls) {
+		ok := wget(url, false)
+		oks &= ok
+	}
+	return oks
 }
 
 #-------------------------------------------------------------------------------
 # Fetch (wget) a file, provide local file path
 # Returns true if download command is executed (or task created)
 #-------------------------------------------------------------------------------
-bool wgetLocalFile(string url, string localFile, bool doWait) {
-	if( localFile.isEmpty() ) {
-		localFile = url.baseName()
-	}
-
-	if( localFile.exists() ) {
-		print "Local file '$localFile' exists, not downloading"
-		return false
-	}
-
-	print "Downloading '$url' to '$localFile'"
+bool wget(string url, bool doWait) {
+	print "Downloading '$url'"
 	if( doWait ) {
 		sys $wgetCmd '$url'
 	} else {

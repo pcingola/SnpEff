@@ -7,10 +7,13 @@
 #-------------------------------------------------------------------------------
 
 ensemblFtp         := "ftp.ensembl.org"
+ensemblHttp        := "http://$ensemblFtp"
 ensemblBfmppFtp    := "ftp.ensemblgenomes.org"
 
+ensemblSpeciesRegulatory := ['homo_sapiens', 'mus_musculus']
+
 # ENSEMBL file names used a different format prior to this version
-ensemblReleaseUseNumber     := 75
+ensemblVer1     := 75
 
 #-------------------------------------------------------------------------------
 # Download ENSEMBL genomes
@@ -35,39 +38,11 @@ void downloadEnsembl(int ensemblRelease) {
 	#---
 	downloadOk := "download.ok"
 	if( ! downloadOk.exists() ) {
-		println "Downloading ENSEMBL $ensemblRelease"
-
-		# Download GTF files
-		sys rsync -av	--include='*$ensemblRelease\.gtf.gz' \
-						--include='*/' \
-						--exclude='*' \
-						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/gtf/ \
-						.
-    
-		# Download FASTA files (reference genomes)
-		sys rsync -av	--include='*.dna.toplevel.fa.gz' \
-						--include='*.cdna.all.fa.gz' \
-						--include='*.pep.all.fa.gz' \
-						--include='*/' \
-						--exclude='*' \
-						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/fasta/ \
-						.
-
-		# Download regulation tracks
-		sys rsync -av	\
-						--exclude='*chromosome*motif_features.gff.gz' \
-						--include='*.gff.gz' \
-						--include='*/' \
-						--exclude='*' \
-						rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/regulation/ \
-						.
-
+		# downloadEnsemblRsync(ensemblRelease)
+		downloadEnsemblFtp(ensemblRelease)
 		downloadOk.write("OK")	# Mark as all downloads OK
 	}
 
-	#---
-	# Move files to propper structure in 'local data' dir
-	#---
 	# Move downloaded files to current dir
 	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
 
@@ -86,7 +61,7 @@ void downloadEnsembl(int ensemblRelease) {
 		fasta := "$baseNoVer\.dna.toplevel.fa.gz"
 		cds := "$baseNoVer\.cdna.all.fa.gz"
 		prot := "$baseNoVer\.pep.all.fa.gz"
-		if( ensemblRelease <= ensemblReleaseUseNumber ) {
+		if( ensemblRelease <= ensemblVer1 ) {
 			# Slightly different name format in prior versions
 			fasta = "$base\.dna.toplevel.fa.gz"
 			cds = "$base\.cdna.all.fa.gz"
@@ -133,6 +108,96 @@ void downloadEnsembl(int ensemblRelease) {
 
 	# Create 'done' file
 	doneFile.write('OK')
+}
+
+#-------------------------------------------------------------------------------
+# Download ENSEMBL genomes via rsync
+#-------------------------------------------------------------------------------
+void downloadEnsemblRsync(int ensemblRelease) {
+	println "Downloading ENSEMBL (ftp) $ensemblRelease"
+
+	# Download GTF files
+	sys rsync -av	--include='*$ensemblRelease\.gtf.gz' \
+					--include='*/' \
+					--exclude='*' \
+					rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/gtf/ \
+					.
+
+	# Download FASTA files (reference genomes)
+	sys rsync -av	--include='*.dna.toplevel.fa.gz' \
+					--include='*.cdna.all.fa.gz' \
+					--include='*.pep.all.fa.gz' \
+					--include='*/' \
+					--exclude='*' \
+					rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/fasta/ \
+					.
+
+	# Download regulation tracks
+	sys rsync -av	\
+					--exclude='*chromosome*motif_features.gff.gz' \
+					--include='*.gff.gz' \
+					--include='*/' \
+					--exclude='*' \
+					rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/regulation/ \
+					.
+
+	# Move downloaded files to current dir
+	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
+}
+
+#-------------------------------------------------------------------------------
+# Download ENSEMBL genomes via ftp
+#-------------------------------------------------------------------------------
+void downloadEnsemblFtp(int ensemblRelease) {
+	println "Downloading ENSEMBL (http) $ensemblRelease"
+
+	dirFasta := "ftp://$ensemblFtp/pub/release-$ensemblRelease/fasta"
+	dirGtf := "ftp://$ensemblFtp/pub/release-$ensemblRelease/gtf"
+	dirRegulation := "ftp://$ensemblFtp/pub/release-$ensemblRelease/regulation"
+
+	# List of species
+	for(string sp: dirFasta.dir()) {
+		println "\tspecie: $sp"
+		
+		# Download GTF files
+		gtfs := "$dirGtf/$sp".dirPath("*.$ensemblRelease\.gtf.gz")
+		println "\t\tgtfs: $gtfs"
+
+		# Download FASTA files (reference genome)
+		dirBase := "$dirFasta/$sp"
+		fastasDna := "$dirBase/dna".dirPath('*.dna.toplevel.fa.gz')
+		println "\t\tfastasDna: $fastasDna"
+
+		# Download FASTA files (cDna)
+		fastasCdnas := "$dirBase/cdna".dirPath('*.cdna.all.fa.gz')
+		println "\t\tfastasCdnas: $fastasCdnas"
+
+		# Download FASTA files (protein)
+		fastasProts := "$dirBase/pep".dirPath('*.pep.all.fa.gz')
+		println "\t\tfastasProts: $fastasProts"
+
+		if( gtfs.isEmpty() || fastasDna.isEmpty() || fastasCdnas.isEmpty() || fastasProts.isEmpty() ) {
+			println "WARNING: Missing files for species '$sp', skipping download"
+			continue
+		}
+		wgetTask(gtfs + fastasDna + fastasCdnas + fastasProts)
+	}
+
+	# Download regulatory tracks only for some species
+	for(string sp: ensemblSpeciesRegulatory) {
+		# Download regulation tracks
+		path := "$dirRegulation/$sp/MotifFeatures/"
+		string[] gffs
+		if( ensemblRelease <= ensemblVer1 ) {
+			gffs = ["$dirRegulation/$sp/MotifFeatures.gff.gz"]
+		} else {
+			gffs = path.dirPath('*.chromosome*motif_features.gff.gz')
+		}
+		println "\t\tgffs: $gffs"
+
+		wgetTask(gffs)
+	}
+
 }
 
 #-------------------------------------------------------------------------------
