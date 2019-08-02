@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# FIXME: I think this script is now obsolete, remove?
+
 import sys
 
 debug = True
@@ -57,10 +59,6 @@ for l in sys.stdin:
 	elif 'MODERATE' in imp:
 		out += '\tMODERATE\t' + ','.join( sorted(imp['MODERATE'].keys()) )
 		out += '\t' + ','.join( sorted(imp['MODERATE'].values()) )
-	
+
 	if out: print chr + '\t' + pos + '\t' + out
 	else:	print chr + '\t' + pos + '\t.\t.\t.'
-
-
-
-

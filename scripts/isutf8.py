@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# FIXME: This script doesn't work in python3
+
 import sys
 import os.path
 
@@ -25,6 +27,3 @@ for file in sys.argv:
 					ok = False
 
 				lineNum = lineNum + 1
-
-			
-

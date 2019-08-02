@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 
 for line in sys.stdin:
 	line = line.rstrip()
-	print "{}\t{}".format( len( line.split('\t') ), line)
+	fields = line.split('\t')
+	print(f"{len(fields)}\t{line}")

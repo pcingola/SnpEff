@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 
@@ -8,30 +8,30 @@ import sys
 #-------------------------------------------------------------------------------
 
 def readFasta( fasta ):
-	print >> sys.stderr, 'Reading FASTA file ', fasta
+	print(f"Reading FASTA file {fasta}", file=sys.stderr)
 	lineNum = 1
 	chrname = ''
 	chrs = dict()
-	seq = []	# Read sequence as a list of strigs (it's faster than concatenatig each time)
+	seq = []	# Read sequence as a list of strigs
 
 	for line in open(fasta):
 		if line.startswith(">"):
 			# Add previous sequence, if any
 			if chrname != '':	chrs[chrname] = ''.join(seq).upper()
-
 			chrname = line[1:].strip()
 			if chrname.startswith('chr'): chrname = chrname[3:]
-			print >> sys.stderr, "Chromosome '%s'" % chrname
+			print(f"Chromosome '{chrname}'", file=sys.stderr)
 			chrs[chrname] = ""
 			seq = []
 		else:
 			seq.append( line.rstrip() )
-		
+
 		# Show something
-		if lineNum % 10000 == 0:	sys.stderr.write('.')
+		if lineNum % 10000 == 0:
+			sys.stderr.write('.')
 		lineNum += 1
 
-	print >> sys.stderr, ""
+	print("", file=sys.stderr)
 	if chrname != '':   chrs[chrname] = ''.join(seq).upper()
 	return chrs
 
@@ -39,7 +39,7 @@ def readFasta( fasta ):
 # Main
 #-------------------------------------------------------------------------------
 
-# read fasta file
+# Read fasta file
 fasta = sys.argv[1]
 chrs = readFasta(fasta)
 
@@ -49,7 +49,7 @@ for line in sys.stdin:
 
 	if line.startswith('#'):
 		# Show header
-		print line
+		print(line)
 	else:
 		# Extract REF field
 		fields = line.split('\t')
@@ -68,9 +68,9 @@ for line in sys.stdin:
 				ref = chrSeq[posStart:posEnd]
 				fields[3] = ref
 			else:
-				print >> sys.stderr, "Position %s not found in chromosome '%s' (chromosome length %d)" % (pos, chrom, len(chrSeq))
+				print(f"Position {pos} not found in chromosome '{chrom}' (chromosome length {len(chrSeq)})", file=sys.stderr)
 		else:
-			print >> sys.stderr, "Chromosome '%s' not found" % chrom
+			print(f"Chromosome '{chrom}' not found", file=sys.stderr)
 
 		# Show corrected line
-		print '\t'.join(fields)
+		print('\t'.join(fields))

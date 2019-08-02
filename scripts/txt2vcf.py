@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #-------------------------------------------------------------------------------
 #
 # Convert simple TXT files into VCF-like files
 #
-# Notes: 
+# Notes:
 #	i) TXT file is supposed to have a title line (first line is column names)
 #	ii) TXT is tab separated
 #
@@ -14,7 +14,7 @@
 #	where :
 #		'chrom', 'pos', etc. are the names of the columns for CHROM, POS, etc.
 #
-#		'info_1' ... 'info_N' will be added to the INFO fields using 
+#		'info_1' ... 'info_N' will be added to the INFO fields using
 #		the same names as field name
 #
 #
@@ -25,7 +25,7 @@ import sys
 
 # Parse command line argument
 if len(sys.argv) < 5:
-	print >> sys.stderr, 'Usage:', sys.argv[0], ' chrom pos ref alt info_1 .... info_N'
+	print(f'Usage: {sys.argv[0]} chrom pos ref alt info_1 .... info_N', file=sys.stderr)
 	exit(1)
 
 chromName = sys.argv[1]
@@ -54,35 +54,35 @@ for line in sys.stdin:
 			if f[i] == posName:		posCol = i
 			if f[i] == refName:		refCol = i
 			if f[i] == altName:		altCol = i
-			if f[i] in infoNames:	
+			if f[i] in infoNames:
 				infoCol[f[i]] = i
-				print >> sys.stderr, "Adding column name ", f[i], ", column number", i
+				print(f"Adding column name {f[i]}, column number {i}", file=sys.stderr)
 				infoNames.remove(f[i])
 
 		# Sanity checks
 		if infoNames:
-			print >> sys.stderr, "Columns not found: ", infoNames
+			print(f"Columns not found: {infoNames}", file=sys.stderr)
 			exit(1)
 
 		if chromCol < 0:
-			print >> sys.stderr, "Column not found: ", chromName
+			print(f"Column not found: {chromName}", file=sys.stderr)
 			exit(1)
-		
+
 		if posCol < 0:
-			print >> sys.stderr, "Column not found: ", posCol
+			print(f"Column not found: {posCol}", file=sys.stderr)
 			exit(1)
 
 		if refCol < 0:
-			print >> sys.stderr, "Column not found: ", refCol
+			print(f"Column not found: {refCol}", file=sys.stderr)
 			exit(1)
 
 		if altCol < 0:
-			print >> sys.stderr, "Column not found: ", altCol
+			print(f"Column not found: {altCol}", file=sys.stderr)
 			exit(1)
 
 		# Show VCF header
-		print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO"
-			
+		print("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO")
+
 	else:
 		# Add all info fields
 		infos = ""
@@ -93,4 +93,4 @@ for line in sys.stdin:
 			infos += "{}={}".format(name, val)
 
 		# Output in pseudo-VCF format
-		print "{}\t{}\t.\t{}\t{}\t.\t.\t{}\t".format( f[chromCol], f[posCol], f[refCol], f[altCol], infos)
+		print(f"{f[chromCol]}\t{f[posCol]}\t{f[refCol]}\t{f[altCol]}\t{infos}")

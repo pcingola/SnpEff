@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import re
+
 
 def alleles(gt1, gt2):
 	"""Get reference and alternative alleles"""
@@ -15,13 +16,12 @@ def alleles(gt1, gt2):
 		count[g] = count.get(g, 0) + 1
 
 	# Find mayor allele (we call it 'ref')
-	maxCount = 0 
+	maxCount = 0
 	ref = ''
 	for g in count:
 		if count[g] > maxCount:
 			maxCount  = count[g]
 			ref = g
-		# print "\t" + g + "\t" + str(count[g])
 
 	# Find minor allele (we call these one 'alt')
 	alt = ''
@@ -35,6 +35,7 @@ def alleles(gt1, gt2):
 
 	return ref, alt, count[alt], gtstr
 
+
 def gtVcf(ref, alt, gt):
 	""" Get genotype in VCF style string"""
 	if gt == ref: return "0"
@@ -47,7 +48,7 @@ def gtVcf(ref, alt, gt):
 
 # Parse comman line arguments
 if len(sys.argv) != 3 :
-	print >> sys.stderr, "Usage: " + sys.argv[0] + "file.ped file.map"
+	print(f"Usage: {sys.argv[0]} file.ped file.map", file=sys.stderr)
 	sys.exit(1)
 
 pedFile = sys.argv[1]
@@ -84,8 +85,9 @@ for line in open(pedFile):
 		geno2[i].append( gt2[i] )
 
 # Write VCF file
-print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tGT\t" + "\t".join(ids)
+ids_str = '\t'.join(ids)
+print(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tGT\t{ids_str}")
 for i in range(len(snps)) :
 	id, chr, pos = snps[i]
 	ref, alt, count, gtStr = alleles( geno1[i], geno2[i] )
-	print "{}\t{}\t{}\t{}\t{}\t.\t.\tAC={}\tGT{}".format(chr, pos, id, ref, alt, count, gtStr)
+	printf(f"{chr}\t{pos}\t{id}\t{ref}\t{alt}\t{count}\t{gtStr}")

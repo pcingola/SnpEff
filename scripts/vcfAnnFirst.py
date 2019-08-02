@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 
@@ -8,9 +8,9 @@ debug = True
 def vcfReplaceFirstAnn(line):
 	f = line.split('\t')
 	infos = f[7].split(';')
-	
+
 	infosChanged = False
-	
+
 	# For every INFO field
 	for i in range(0, len(infos)):
 		info = infos[i]
@@ -28,10 +28,10 @@ def vcfReplaceFirstAnn(line):
 	if infosChanged:
 		# Show new fields
 		f[7] = ';'.join(infos)
-		print '\t'.join(f)
-	else : 
+		print('\t'.join(f))
+	else :
 		# No change, just show original line
-		print line
+		print(line)
 
 #------------------------------------------------------------------------------
 # Main
@@ -41,9 +41,8 @@ def vcfReplaceFirstAnn(line):
 for l in sys.stdin:
 	l = l.rstrip()
 
-	if l.startswith('#') : 
+	if l.startswith('#') :
 		# Show header
-		print l
+		print(l)
 	else :
 		vcfReplaceFirstAnn(l)
-
