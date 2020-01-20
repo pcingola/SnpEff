@@ -217,6 +217,10 @@ svn co https://snpeff.svn.sourceforge.net/svnroot/snpeff/SnpSift/trunk
 					<pre>rs58108140
 rs71262674
 rs71262673</pre> 
+
+					<li> Filter using mathematical expressions of VCF fields:
+					<pre> cat variants.vcf | java -jar SnpSift.jar filter '((AN+0.0) / AO) > 1.0'</pre>
+					Note that we used 'AN+0.0' to convert the integer number to float (otherwise integer division would be used)
 				</ul>
 
 				You can combine any conditions you want using boolean operators. <p>
