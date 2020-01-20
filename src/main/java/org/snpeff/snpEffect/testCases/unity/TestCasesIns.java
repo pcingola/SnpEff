@@ -41,8 +41,9 @@ public class TestCasesIns extends TestCasesBase {
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor();
 			CodonTable codonTable = genome.codonTable();
-			if (debug) System.out.println("INS Test iteration: " + i + "\n" + transcript);
-			else if (verbose) System.out.println("INS Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+
+			if (debug) System.out.println("INS Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+			else if (verbose) System.out.println("INS Test iteration: " + i + "\n" + transcript);
 			else Gpr.showMark(i + 1, 1);
 
 			int cdsBaseNum = 0;
@@ -90,7 +91,10 @@ public class TestCasesIns extends TestCasesBase {
 						// Expected Effect
 						EffectType effectExpected = null;
 						String aaExpected = "";
-						if (insLen % 3 != 0) {
+						if (cdsCodonPos == 0 && cdsCodonNum == 0) {
+							effectExpected = EffectType.FRAME_SHIFT_BEFORE_CDS_START;
+							aaExpected = aaOld + "/" + aaNew;
+						} else if (insLen % 3 != 0) {
 							effectExpected = EffectType.FRAME_SHIFT;
 							aaExpected = aaOld + "/" + aaNew;
 						} else {
