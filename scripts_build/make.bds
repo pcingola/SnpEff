@@ -63,7 +63,6 @@ cp					:= "cp -v -u"
 
 # Directories
 dirSnpEff			:= "$HOME/snpEff"
-dirClinEff			:= "$HOME/clinEff"
 dirBuild			:= "$dirSnpEff/build"
 dirData				:= "$dirSnpEff/data"
 dirDb				:= "$dirSnpEff/db"
@@ -137,14 +136,6 @@ void build() {
 
 	println("Building SnpEff & SnpSift")
 	sys ./scripts_build/make.sh
-
-	dircf := "$HOME/workspace/ClinEff"
-	if( dircf.exists() ) {
-		println("Building ClinEff")
-		sys cd $dircf ; ant
-	} else {
-		println "WARNING: ClinEff dir '$dircf' not found, skipping."
-	}
 }
 
 #-------------------------------------------------------------------------------
@@ -511,20 +502,6 @@ void runTests() {
 	runTestsSnpSiftAll()
 	runTestsSnpEffIntegration()
 	runTestsSnpEffUnity()
-	runTestsClinEffAll()
-}
-
-#-------------------------------------------------------------------------------
-# Run test cases: ClinEff-All
-#-------------------------------------------------------------------------------
-void runTestsClinEffAll() {
-	task cd $HOME/workspace/ClinEff/ ; \
-		java -Xmx4g \
-			-cp $dirClinEff/ClinEff.jar \
-			org.junit.runner.JUnitCore \
-			com.clineff.testCases.TestSuiteAll \
-			2>&1 \
-			| tee $dirSnpEff/testcases.clineff.all.txt
 }
 
 #-------------------------------------------------------------------------------
@@ -703,20 +680,13 @@ void zipCore() {
 	# Copy core files
 	sys cp -RvfL snpEff.config snpEff.jar SnpSift.jar examples galaxy scripts $dir
 
-	# Copy ClinEff files
-	clinEff := "$HOME/clinEff"
-	dirClinEff := "clinEff"
-	sys rm -rvf $dirClinEff
-	sys mkdir $dirClinEff
-	sys cp -RvfL $clinEff/clinEff.config $clinEff/ClinEff.jar $clinEff/workflow* $clinEff/report $dirClinEff
-
 	# Create 'core' zip file
 	zip := "snpEff_v" + ver + "_core.zip"
 	zipLatest := "snpEff_latest_core.zip"
 	zipDev    := "snpEff_development.zip"
 	sys rm -f $zip 2> /dev/null
 	task { 
-		sys zip -r $zip snpEff clinEff
+		sys zip -r $zip snpEff
 		sys cp $zip $zipLatest
 		sys cp $zip $zipDev
 	}
