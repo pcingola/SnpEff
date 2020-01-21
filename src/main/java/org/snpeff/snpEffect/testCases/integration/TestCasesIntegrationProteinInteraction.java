@@ -109,6 +109,7 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 	@Test
 	public void test_03_protein_protein_interactions_hgvs() {
 		Gpr.debug("Test");
+
 		String args[] = { "-canon" };
 		List<VcfEntry> vcfEntries = snpEffect("testHg19Chr22", path("test_interaction_03.vcf"), args, null);
 
