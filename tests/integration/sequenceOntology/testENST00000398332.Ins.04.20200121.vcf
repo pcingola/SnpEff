@@ -398,7 +398,7 @@
 20	25062728	.	G	GTAAT	.	.	AC=1;SO=frameshift_variant,feature_elongation;AA=-;CODON=-;HGVSc=ENST00000398332.1:c.4_5insATTA;HGVSp=ENSP00000381376.1:p.Thr2AsnfsTer13
 20	25062729	.	T	TCCTGACCTTC	.	.	AC=1;SO=frameshift_variant,feature_elongation;AA=-;CODON=-;HGVSc=ENST00000398332.1:c.3_4insGAAGGTCAGG;HGVSp=ENSP00000381376.1:p.Thr2GlufsTer15
 20	25062730	.	C	CACATAA	.	.	AC=1;SO=initiator_codon_variant;AA=M/IYV;CODON=atg/atTTATGTg;HGVSc=ENST00000398332.1:c.2_3insTTATGT;HGVSp=ENSP00000381376.1:p.Met1?
-20	25062731	.	A	AAAAAGAA	.	.	AC=1;SO=start_retained_variant,feature_elongation;AA=-;CODON=-;HGVSc=ENST00000398332.1:c.1_2insTTCTTTT;HGVSp=ENSP00000381376.1:p.Met1IlefsTer?
+20	25062731	.	A	AAAAAGAA	.	.	AC=1;SO=frameshift_variant,feature_elongation;AA=-;CODON=-;HGVSc=ENST00000398332.1:c.1_2insTTCTTTT;HGVSp=ENSP00000381376.1:p.Met1IlefsTer?
 20	25062732	.	T	TTCGTAC	.	.	AC=1;SO=5_prime_UTR_variant,feature_elongation;AA=-;CODON=-;HGVSc=ENST00000398332.1:c.-1_1insGTACGA
 20	25062733	.	G	GGCTGGAATTT	.	.	AC=1;SO=5_prime_UTR_variant,feature_elongation;AA=-;CODON=-;HGVSc=ENST00000398332.1:c.-2_-1insAAATTCCAGC
 20	25062734	.	G	GCTCG	.	.	AC=1;SO=5_prime_UTR_variant,feature_elongation;AA=-;CODON=-;HGVSc=ENST00000398332.1:c.-3_-2insCGAG
