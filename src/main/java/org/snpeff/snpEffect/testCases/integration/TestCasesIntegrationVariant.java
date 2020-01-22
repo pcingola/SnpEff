@@ -196,7 +196,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 		} catch (RuntimeException e) {
 			trown = true;
 			String expectedMessage = "ERROR: Chromosome 'chrZ' not found! File '" + path("chr_not_found.out") + "', line 1";
-			if (e.getMessage().equals(expectedMessage)) ; // OK
+			if (e.getMessage().equals(expectedMessage)); // OK
 			else throw new RuntimeException("This is not the exception I was expecting!\n\tExpected message: '" + expectedMessage + "'\n\tMessage: '" + e.getMessage() + "'", e);
 		}
 

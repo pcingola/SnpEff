@@ -403,7 +403,7 @@ public class Variant extends Marker {
 		// Calculate the number of bases of change in length
 		if (!ref.isEmpty() || !alt.isEmpty()) return alt.length() - ref.length();
 
-		// Default to traditional apporach for imprecise and structural variants
+		// Default to traditional approach for imprecise and structural variants
 		return end - start;
 	}
 

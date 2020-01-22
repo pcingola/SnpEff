@@ -17,18 +17,19 @@ public class CodonChangeIns extends CodonChange {
 		returnNow = true; // An insertion can only affect one exon
 	}
 
-	@Override
-	public void codonChange() {
-		// Special case: Is the insertion at the edge of the CDS?
-		int pos = variant.getEnd();
-		if (pos == transcript.getCdsStart() || pos == transcript.getCdsEnd()) {
-			codonChangeCdsEdge();
-			return;
-		}
-
-		// OK, use the 'normal' codon change processing
-		super.codonChange();
-	}
+	//	@Override
+	//	public void codonChange() {
+	//		// Special case: Is the insertion at the edge of the CDS?
+	//		int pos = variant.getEnd();
+	//		Gpr.debug("pos: " + pos + "\tcds start: " + transcript.getCdsStart() + "\tcds end: " + transcript.getCdsEnd());
+	//		if (pos == transcript.getCdsStart() || pos == transcript.getCdsEnd()) {
+	//			codonChangeCdsEdge();
+	//			return;
+	//		}
+	//
+	//		// OK, use the 'normal' codon change processing
+	//		super.codonChange();
+	//	}
 
 	/**
 	 * Analyze insertions in this transcript.
@@ -87,57 +88,57 @@ public class CodonChangeIns extends CodonChange {
 		return true;
 	}
 
-	/**
-	 * Variant (insertion) starting right before CDS' left side
-	 * or right after CDS's right side?
-	 *
-	 * E.g.:
-	 *      [M  P  D  E  E  M  D  D  P  N  P  A ...
-	 *       ^Insertion here just before start codon
-	 *
-	 *       ... P  D  E  E  M  D  D  P  N  P  *]
-	 *                                          ^Insertion here right after stop codon
-	 *
-	 * In either case, the insertion has no coding effect.
-	 */
-	protected void codonChangeCdsEdge() {
-		// Is the insertion at the edge of the CDS?
-		int cdsStart = transcript.getCdsStart();
-		int cdsEnd = transcript.getCdsEnd();
-		int cdsLeft = Math.min(cdsStart, cdsEnd);
-		int cdsRight = Math.max(cdsStart, cdsEnd);
-
-		int pos = variant.getStart(); // Insertions have coordinated 'start = end'
-
-		Exon ex = transcript.findExon(pos);
-		if (pos == cdsLeft) {
-			// Insertion on CDS' left side
-			if (transcript.isStrandPlus()) {
-				// Left side = CDS start
-				codonStartNum = 0;
-				effect(ex, EffectType.FRAME_SHIFT_BEFORE_CDS_START, false);
-			} else {
-				// Left side = CDS end
-				codonStartNum = transcript.protein().length();
-				effect(ex, EffectType.FRAME_SHIFT_AFTER_CDS_END, false);
-			}
-			return;
-		} else if (pos == cdsRight) {
-			// Insertion on CDS' right side
-			if (transcript.isStrandPlus()) {
-				// Right side = CDS end
-				codonStartNum = transcript.protein().length();
-				effect(ex, EffectType.FRAME_SHIFT_AFTER_CDS_END, false);
-			} else {
-				// Right side = CDS start
-				codonStartNum = 0;
-				effect(ex, EffectType.FRAME_SHIFT_BEFORE_CDS_START, false);
-			}
-			return;
-		}
-
-		throw new RuntimeException("This should never happen!");
-	}
+	//	/**
+	//	 * Variant (insertion) starting right before CDS' left side
+	//	 * or right after CDS's right side?
+	//	 *
+	//	 * E.g.:
+	//	 *      [M  P  D  E  E  M  D  D  P  N  P  A ...
+	//	 *       ^Insertion here just before start codon
+	//	 *
+	//	 *       ... P  D  E  E  M  D  D  P  N  P  *]
+	//	 *                                          ^Insertion here right after stop codon
+	//	 *
+	//	 * In either case, the insertion has no coding effect.
+	//	 */
+	//	protected void codonChangeCdsEdge() {
+	//		// Is the insertion at the edge of the CDS?
+	//		int cdsStart = transcript.getCdsStart();
+	//		int cdsEnd = transcript.getCdsEnd();
+	//		int cdsLeft = Math.min(cdsStart, cdsEnd);
+	//		int cdsRight = Math.max(cdsStart, cdsEnd);
+	//
+	//		int pos = variant.getStart(); // Insertions have coordinated 'start = end'
+	//
+	//		Exon ex = transcript.findExon(pos);
+	//		if (pos == cdsLeft) {
+	//			// Insertion on CDS' left side
+	//			if (transcript.isStrandPlus()) {
+	//				// Left side = CDS start
+	//				codonStartNum = 0;
+	//				effect(ex, EffectType.FRAME_SHIFT_BEFORE_CDS_START, false);
+	//			} else {
+	//				// Left side = CDS end
+	//				codonStartNum = transcript.protein().length();
+	//				effect(ex, EffectType.FRAME_SHIFT_AFTER_CDS_END, false);
+	//			}
+	//			return;
+	//		} else if (pos == cdsRight) {
+	//			// Insertion on CDS' right side
+	//			if (transcript.isStrandPlus()) {
+	//				// Right side = CDS end
+	//				codonStartNum = transcript.protein().length();
+	//				effect(ex, EffectType.FRAME_SHIFT_AFTER_CDS_END, false);
+	//			} else {
+	//				// Right side = CDS start
+	//				codonStartNum = 0;
+	//				effect(ex, EffectType.FRAME_SHIFT_BEFORE_CDS_START, false);
+	//			}
+	//			return;
+	//		}
+	//
+	//		throw new RuntimeException("This should never happen!");
+	//	}
 
 	/**
 	 * Get new (modified) codons

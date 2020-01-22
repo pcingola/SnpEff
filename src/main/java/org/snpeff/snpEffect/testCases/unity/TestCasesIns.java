@@ -54,7 +54,7 @@ public class TestCasesIns extends TestCasesBase {
 				int beg = exon.isStrandPlus() ? exon.getStart() : exon.getEnd();
 
 				// For each base in this exon...
-				for (int pos = beg; (pos >= exon.getStart()) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
+				for (int pos = beg; (exon.getStart() <= pos) && (pos <= exon.getEnd()); pos += step, cdsBaseNum++) {
 
 					// Get a random base different from 'refBase'
 					int insLen = rand.nextInt(10) + 1;
@@ -91,10 +91,7 @@ public class TestCasesIns extends TestCasesBase {
 						// Expected Effect
 						EffectType effectExpected = null;
 						String aaExpected = "";
-						if (cdsCodonPos == 0 && cdsCodonNum == 0) {
-							effectExpected = EffectType.FRAME_SHIFT_BEFORE_CDS_START;
-							aaExpected = aaOld + "/" + aaNew;
-						} else if (insLen % 3 != 0) {
+						if (insLen % 3 != 0) {
 							effectExpected = EffectType.FRAME_SHIFT;
 							aaExpected = aaOld + "/" + aaNew;
 						} else {

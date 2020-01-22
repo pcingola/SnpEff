@@ -135,6 +135,14 @@ public class Utr5prime extends Utr {
 		variantEffect.setDistance(distance);
 		variantEffects.add(variantEffect);
 
+		if ((distance == 1) && (variant.lengthChange() % 3 != 0)) {
+			// Variant (insertion) starting right before CDS' left side
+			// E.g.:
+			//      [M  P  D  E  E  M  D  D  P  N  P  A ... ]
+			//      ^Variant here just before start codon
+			variantEffects.add(variant, this, EffectType.FRAME_SHIFT_BEFORE_CDS_START, "");
+		}
+
 		// Start gained?
 		String gained = startGained(variant, tr);
 		if (!gained.isEmpty()) variantEffects.add(variant, this, EffectType.START_GAINED, gained);

@@ -59,6 +59,14 @@ public class Utr3prime extends Utr {
 		Transcript tr = (Transcript) findParent(Transcript.class);
 		int distance = utrDistance(variant, tr);
 
+		if ((distance == 1) && (variant.lengthChange() % 3 != 0)) {
+			// Variant (insertion) starting right before CDS' left side
+			// E.g.:
+			//       [ ... P  D  E  E  M  D  D  P  N  P  *]
+			//                                            ^Variant here right after stop codon
+			variantEffects.add(variant, this, EffectType.FRAME_SHIFT_AFTER_CDS_END, "");
+		}
+
 		VariantEffect variantEffect = new VariantEffect(variant);
 		variantEffect.set(this, type, type.effectImpact(), distance >= 0 ? distance + " bases from CDS" : "");
 		variantEffect.setDistance(distance);
