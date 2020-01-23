@@ -1,9 +1,9 @@
 #!/bin/sh -e
 
 # These variables need to be updated with every version
-base="dbNSFP2.9"                                # Database version
+base="dbNSFP4.0a"                                # Database version
 dbZip="$base.zip"                               # Zip file name
-db="$base.txt"                                  # Output file
+db="$base.txt.gz"                                  # Output file
 
 # Check dbNSFP
 if [ ! -e "$dbZip" ]
@@ -16,38 +16,37 @@ fi
 # Create DB
 #---
 echo Create file $db
-head -n 1 $base\_variant.chr1 > $db
 
-cat $base\_variant.chr1 \
-		$base\_variant.chr2 \
-		$base\_variant.chr3 \
-		$base\_variant.chr4 \
-		$base\_variant.chr5 \
-		$base\_variant.chr6 \
-		$base\_variant.chr7 \
-		$base\_variant.chr8 \
-		$base\_variant.chr9 \
-		$base\_variant.chr10 \
-		$base\_variant.chr11 \
-		$base\_variant.chr12 \
-		$base\_variant.chr13 \
-		$base\_variant.chr14 \
-		$base\_variant.chr15 \
-		$base\_variant.chr16 \
-		$base\_variant.chr17 \
-		$base\_variant.chr18 \
-		$base\_variant.chr19 \
-		$base\_variant.chr20 \
-		$base\_variant.chr21 \
-		$base\_variant.chr22 \
-		$base\_variant.chrX \
-		$base\_variant.chrY \
+( gunzip -c $base\_variant.chr1.gz | head -n 1 || true ; 
+	gunzip -c \
+		$base\_variant.chr1.gz \
+		$base\_variant.chr2.gz \
+		$base\_variant.chr3.gz \
+		$base\_variant.chr4.gz \
+		$base\_variant.chr5.gz \
+		$base\_variant.chr6.gz \
+		$base\_variant.chr7.gz \
+		$base\_variant.chr8.gz \
+		$base\_variant.chr9.gz \
+		$base\_variant.chr10.gz \
+		$base\_variant.chr11.gz \
+		$base\_variant.chr12.gz \
+		$base\_variant.chr13.gz \
+		$base\_variant.chr14.gz \
+		$base\_variant.chr15.gz \
+		$base\_variant.chr16.gz \
+		$base\_variant.chr17.gz \
+		$base\_variant.chr18.gz \
+		$base\_variant.chr19.gz \
+		$base\_variant.chr20.gz \
+		$base\_variant.chr21.gz \
+		$base\_variant.chr22.gz \
+		$base\_variant.chrX.gz \
+		$base\_variant.chrY.gz \
 	| grep -v "^#" \
-	>> $db
-
-echo BGZIP $db
-bgzip $db
+) | bgzip -c > $db
 
 echo TABIX $db.gz
-tabix -s 1 -b 2 -e 2 $db.gz
+pwd
+tabix -s 1 -b 2 -e 2 $db
 

@@ -95,22 +95,14 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.biojava</groupId>
-      <artifactId>biojava-core</artifactId>
-      <version>5.3.0</version>
-      <scope>compile</scope>
+        <groupId>org.biojava</groupId>
+        <artifactId>biojava-core</artifactId>
+        <version>5.3.0</version>
     </dependency>
     <dependency>
-      <groupId>org.biojava</groupId>
-      <artifactId>biojava-structure</artifactId>
-      <version>5.0.0</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.biojava.thirdparty</groupId>
-          <artifactId>forester</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>compile</scope>
+        <groupId>org.biojava</groupId>
+        <artifactId>biojava-structure</artifactId>
+        <version>5.3.0</version>
     </dependency>
     <dependency>
         <groupId>com.github.samtools</groupId>
@@ -141,9 +133,18 @@
 
   <repositories>
     <repository>
+      <id>maven</id>
+      <name>Maven Repository</name>
+      <url>https://repo1.maven.org/maven2/</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>central</id>
       <name>Central Repository</name>
-      <url>http://repo.maven.apache.org/maven2</url>
+      <url>https://repo.maven.apache.org/maven2</url>
       <layout>default</layout>
       <snapshots>
         <enabled>false</enabled>
@@ -152,7 +153,7 @@
     <repository>
       <id>hadoop-bam</id>
       <name>Hadoop-BAM</name>
-      <url>http://hadoop-bam.sourceforge.net/maven/</url>
+      <url>https://hadoop-bam.sourceforge.net/maven/</url>
     </repository>
     <repository>
       <id>ncimvn-public</id>
@@ -162,7 +163,7 @@
     <repository>
       <id>typesafe</id>
       <name>Typesafe Repository</name>
-      <url>http://repo.typesafe.com/typesafe/releases/</url>
+      <url>https://repo.typesafe.com/typesafe/releases/</url>
     </repository>
   </repositories>
 
