@@ -170,9 +170,8 @@ void downloadEnsemblUrl(int ensemblRelease, string baseUrl) {
 		println "\tSpecie: '$sp'"
 		
 		# Download GTF files
-		println "DIR: '$dirGtf/$sp'"
 		gtfs := "$dirGtf/$sp".dirPath("**.$ensemblRelease\.gtf.gz")
-		println "\t\tdir: '$dirGtf/$sp'\n\t\tgtfs: $gtfs"
+		println "\t\tgtfs: $gtfs"
 
 		# Download FASTA files (reference genome)
 		dirBase := "$dirFasta/$sp"
@@ -209,6 +208,7 @@ void downloadEnsemblUrl(int ensemblRelease, string baseUrl) {
 		wgetTask(gffs)
 	}
 
+	wait
 }
 
 #-------------------------------------------------------------------------------
