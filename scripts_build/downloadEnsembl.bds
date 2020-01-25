@@ -39,7 +39,8 @@ void downloadEnsembl(int ensemblRelease) {
 	downloadOk := "download.ok"
 	if( ! downloadOk.exists() ) {
 		# downloadEnsemblRsync(ensemblRelease)
-		downloadEnsemblFtp(ensemblRelease)
+		# downloadEnsemblFtp(ensemblRelease)
+		downloadEnsemblHttp(ensemblRelease)
 		downloadOk.write("OK")	# Mark as all downloads OK
 	}
 
@@ -149,18 +150,27 @@ void downloadEnsemblRsync(int ensemblRelease) {
 # Download ENSEMBL genomes via ftp
 #-------------------------------------------------------------------------------
 void downloadEnsemblFtp(int ensemblRelease) {
-	println "Downloading ENSEMBL (http) $ensemblRelease"
+	downloadEnsemblUrl(ensemblRelease, "ftp://$ensemblFtp/pub/release-$ensemblRelease")
+}
 
-	dirFasta := "ftp://$ensemblFtp/pub/release-$ensemblRelease/fasta"
-	dirGtf := "ftp://$ensemblFtp/pub/release-$ensemblRelease/gtf"
-	dirRegulation := "ftp://$ensemblFtp/pub/release-$ensemblRelease/regulation"
+void downloadEnsemblHttp(int ensemblRelease) {
+	downloadEnsemblUrl(ensemblRelease, "$ensemblHttp/pub/release-$ensemblRelease")
+}
+
+void downloadEnsemblUrl(int ensemblRelease, string baseUrl) {
+	println "Downloading ENSEMBL (http) $ensemblRelease: '$baseUrl'"
+
+	dirFasta := "$baseUrl/fasta"
+	dirGtf := "$baseUrl/gtf"
+	dirRegulation := "$baseUrl/regulation"
 
 	# List of species
 	println("Getting directory from '$dirFasta'")
-	for(string sp: dirFasta.dir()) {
-		println "\tspecie: '$sp'"
+	for(string sp: "$dirFasta/".dir()) {
+		println "\tSpecie: '$sp'"
 		
 		# Download GTF files
+		println "DIR: '$dirGtf/$sp'"
 		gtfs := "$dirGtf/$sp".dirPath("**.$ensemblRelease\.gtf.gz")
 		println "\t\tdir: '$dirGtf/$sp'\n\t\tgtfs: $gtfs"
 
