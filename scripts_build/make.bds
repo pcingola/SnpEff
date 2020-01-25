@@ -36,9 +36,9 @@ cpus = 1
 
 # Versions
 ensemblReleases		:= [75, 99]
-ensemblBfmppRelease	:= "42"
-flybaseRelease		:= "FB2018_06"
-flybaseGenomes		:= [ 'dana_r1.06', 'dere_r1.05', 'dgri_r1.05', 'dmel_r6.25', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.04', 'dsec_r1.3', 'dsim_r2.02', 'dvir_r1.07', 'dwil_r1.05', 'dyak_r1.05' ]
+ensemblBfmppRelease	:= "46"
+flybaseRelease		:= "FB2019_06"
+flybaseGenomes		:= [ 'dana_r1.06', 'dere_r1.05', 'dgri_r1.05', 'dmel_r6.31', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.04', 'dsec_r1.3', 'dsim_r2.02', 'dvir_r1.07', 'dwil_r1.05', 'dyak_r1.05' ]
 GRCH				:= "GRCh38"
 GRCHs				:= ["GRCh37", "GRCh38"]
 GRCh2Hg				:= {"GRCh37" => "hg19", "GRCh38" => "hg38"}
