@@ -156,24 +156,25 @@ void downloadEnsemblFtp(int ensemblRelease) {
 	dirRegulation := "ftp://$ensemblFtp/pub/release-$ensemblRelease/regulation"
 
 	# List of species
+	println("Getting directory from '$dirFasta'")
 	for(string sp: dirFasta.dir()) {
-		println "\tspecie: $sp"
+		println "\tspecie: '$sp'"
 		
 		# Download GTF files
-		gtfs := "$dirGtf/$sp".dirPath("*.$ensemblRelease\.gtf.gz")
-		println "\t\tgtfs: $gtfs"
+		gtfs := "$dirGtf/$sp".dirPath("**.$ensemblRelease\.gtf.gz")
+		println "\t\tdir: '$dirGtf/$sp'\n\t\tgtfs: $gtfs"
 
 		# Download FASTA files (reference genome)
 		dirBase := "$dirFasta/$sp"
-		fastasDna := "$dirBase/dna".dirPath('*.dna.toplevel.fa.gz')
+		fastasDna := "$dirBase/dna".dirPath('**.dna.toplevel.fa.gz')
 		println "\t\tfastasDna: $fastasDna"
 
 		# Download FASTA files (cDna)
-		fastasCdnas := "$dirBase/cdna".dirPath('*.cdna.all.fa.gz')
+		fastasCdnas := "$dirBase/cdna".dirPath('**.cdna.all.fa.gz')
 		println "\t\tfastasCdnas: $fastasCdnas"
 
 		# Download FASTA files (protein)
-		fastasProts := "$dirBase/pep".dirPath('*.pep.all.fa.gz')
+		fastasProts := "$dirBase/pep".dirPath('**.pep.all.fa.gz')
 		println "\t\tfastasProts: $fastasProts"
 
 		if( gtfs.isEmpty() || fastasDna.isEmpty() || fastasCdnas.isEmpty() || fastasProts.isEmpty() ) {
@@ -191,7 +192,7 @@ void downloadEnsemblFtp(int ensemblRelease) {
 		if( ensemblRelease <= ensemblVer1 ) {
 			gffs = ["$dirRegulation/$sp/MotifFeatures.gff.gz"]
 		} else {
-			gffs = path.dirPath('*.chromosome*motif_features.gff.gz')
+			gffs = path.dirPath('**.chromosome*motif_features.gff.gz')
 		}
 		println "\t\tgffs: $gffs"
 
