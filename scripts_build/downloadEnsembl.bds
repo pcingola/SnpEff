@@ -91,13 +91,13 @@ void downloadEnsembl(int ensemblRelease) {
 	# Regulation tracks (human and mouse only)
 	genomeDir := "$dirData/$GRCH\.$ensemblRelease"
 	genomeDir.mkdir()
-	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz $genomeDir/regulation.gff.gz
-	sys $cp homo_sapiens/MotifFeatures.gff.gz $genomeDir/motif.gff.gz
+	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz $genomeDir/regulation.gff.gz || true
+	sys $cp homo_sapiens/MotifFeatures.gff.gz $genomeDir/motif.gff.gz || true
 
 	genomeDir = "$dirData/$GRCM.$ensemblRelease"
 	genomeDir.mkdir()
-	sys $cp mus_musculus/AnnotatedFeatures.gff.gz $genomeDir/regulation.gff.gz
-	sys $cp mus_musculus/MotifFeatures.gff.gz $genomeDir/motif.gff.gz
+	sys $cp mus_musculus/AnnotatedFeatures.gff.gz $genomeDir/regulation.gff.gz || true
+	sys $cp mus_musculus/MotifFeatures.gff.gz $genomeDir/motif.gff.gz || true
 
 	# Create config file
 	if( configFile.exists() ) {
