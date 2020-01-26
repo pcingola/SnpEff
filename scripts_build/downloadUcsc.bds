@@ -114,6 +114,7 @@ void downloadUcscGenome(string ref) {
 	# Download data
 	fagz := ref.downloadUcscGenomeFasta(dir)
 	cdsgz := ref.downloadUcscGenomeFastaMrna(dir)
+	if( cdsgz.isEmpty() ) return
 
 	# Query gene database
 	queryUcsc(ref, dir)
@@ -133,11 +134,16 @@ string downloadUcscGenomeFastaMrna(string ref, string dir) {
 	# Create CDS FASTA
 	#---
 	println 'Download mRNA file'
-	wget("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz", true, true)
+	urlRna := "$urlUcscSoe/$ref/bigZips/refMrna.fa.gz"
+	wget(urlRna, true, true)
 
 	println 'Creating CDS FASTA'
 	ori := "$dir/ORI"
 	refMrna := "$ori/refMrna.fa.gz"
+	if( refMrna.exists() ) {
+		println("WARNING: Could not download RNA file '$urlRna', skipping")
+		return ""
+	}
 	cds := "$dir/cds.fa"
 	cdsgz := "$dir/cds.fa.gz"
 	if( cdsgz <- refMrna ) {
