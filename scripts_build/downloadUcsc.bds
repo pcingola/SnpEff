@@ -140,7 +140,7 @@ string downloadUcscGenomeFastaMrna(string ref, string dir) {
 	println 'Creating CDS FASTA'
 	ori := "$dir/ORI"
 	refMrna := "$ori/refMrna.fa.gz"
-	if( refMrna.exists() ) {
+	if( !refMrna.exists() ) {
 		println("WARNING: Could not download RNA file '$urlRna', skipping")
 		return ""
 	}
