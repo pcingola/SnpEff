@@ -58,7 +58,7 @@ void downloadUcscHg38() {
 	if( fagzData <- fagzOri ) sys cp -vf $fagzOri $fagzData
 
 	# Query gene database
-	queryUcsc(ref, dir)
+	queryUcscRefGene(ref, dir)
 
 	#---
 	# Create CDS FASTA
@@ -117,7 +117,8 @@ void downloadUcscGenome(string ref) {
 	if( cdsgz.isEmpty() ) return
 
 	# Query gene database
-	queryUcsc(ref, dir)
+	if( ucscGenomesRefGene.has(ref) ) queryUcscRefGene(ref, dir)
+	else queryUcscXenoRefGene(ref, dir)
 
 	# Copy files to snpEff/data dir
 	fagzData := "$dirData/genomes/$ref\.fa.gz"
@@ -211,7 +212,7 @@ void queryUcscAll() {
 		dir := "$dirDownload/ucsc_$ref"
 		dir.mkdir()
 		dir.chdir()
-		queryUcsc(ref, dir)
+		queryUcscRefGene(ref, dir)
 
 		refdb := ref
 		ref = ref + 'kg'
@@ -220,42 +221,6 @@ void queryUcscAll() {
 		dir.chdir()
 		queryUcscKg(ref, refdb, dir)
 	}
-}
-
-#-------------------------------------------------------------------------------
-# Query MySql's database (RefSeq)
-#-------------------------------------------------------------------------------
-string queryUcsc(string ref, string dir) {
-	refSeq := "$dir/genes.refseq"
-	refSeqGz := "$dir/genes.refseq.gz"
-	if( !refSeqGz.exists() ) {
-		println "Querying database for RefSeq genes: $ref"
-		query := "
-			use $ref; 
-			select rg.bin as 'binNum'
-					, CONCAT(rg.name,'.',gi.version) as 'name'
-					, rg.chrom
-					, rg.strand
-					, rg.txStart
-					, rg.txEnd
-					, rg.cdsStart
-					, rg.cdsEnd
-					, rg.exonCount
-					, rg.exonStarts
-					, rg.exonEnds
-					, rg.score
-					, rg.name2
-					, rg.cdsStartStat
-					, rg.cdsEndStat
-					, rg.exonFrames 
-			from refGene rg 
-				inner join hgFixed.gbCdnaInfo gi 
-				on rg.name=gi.acc
-			;
-			"
-		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refSeq\.gz
-	}
-	return refSeqGz
 }
 
 #-------------------------------------------------------------------------------
@@ -289,6 +254,42 @@ string queryUcscKg(string ref, string refdb, string dir) {
 }
 
 #-------------------------------------------------------------------------------
+# Query MySql's database (RefSeq)
+#-------------------------------------------------------------------------------
+string queryUcscRefGene(string ref, string dir) {
+	refSeq := "$dir/genes.refseq"
+	refSeqGz := "$dir/genes.refseq.gz"
+	if( !refSeqGz.exists() ) {
+		println "Querying database for RefSeq genes: $ref"
+		query := "
+			use $ref; 
+			select rg.bin as 'binNum'
+					, CONCAT(rg.name,'.',gi.version) as 'name'
+					, rg.chrom
+					, rg.strand
+					, rg.txStart
+					, rg.txEnd
+					, rg.cdsStart
+					, rg.cdsEnd
+					, rg.exonCount
+					, rg.exonStarts
+					, rg.exonEnds
+					, rg.score
+					, rg.name2
+					, rg.cdsStartStat
+					, rg.cdsEndStat
+					, rg.exonFrames 
+			from refGene rg 
+				inner join hgFixed.gbCdnaInfo gi 
+				on rg.name=gi.acc
+			;
+			"
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refSeq\.gz
+	}
+	return refSeqGz
+}
+
+#-------------------------------------------------------------------------------
 # Query MySql's database (RefSeq) for refLink table
 #-------------------------------------------------------------------------------
 string queryUcscRefLink(string ref, string dir) {
@@ -300,5 +301,39 @@ string queryUcscRefLink(string ref, string dir) {
 	}
 	println "RefLink file: $refLinkGz"
 	return refLinkGz
+}
+
+#-------------------------------------------------------------------------------
+# Query MySql's database (dump xenoRefGene table)
+#-------------------------------------------------------------------------------
+string queryUcscXenoRefGene(string ref, string dir) {
+	refSeq := "$dir/genes.refseq"
+	refSeqGz := "$dir/genes.refseq.gz"
+	if( !refSeqGz.exists() ) {
+		println "Querying database for xenoRefGene genes: $ref"
+		query := "
+			use $ref; 
+			select rg.bin as 'binNum'
+					, rg.name as 'name'
+					, rg.chrom
+					, rg.strand
+					, rg.txStart
+					, rg.txEnd
+					, rg.cdsStart
+					, rg.cdsEnd
+					, rg.exonCount
+					, rg.exonStarts
+					, rg.exonEnds
+					, rg.score
+					, rg.name2
+					, rg.cdsStartStat
+					, rg.cdsEndStat
+					, rg.exonFrames 
+			from xenoRefGene rg 
+			;
+			"
+		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refSeq\.gz || true
+	}
+	return refSeqGz
 }
 
