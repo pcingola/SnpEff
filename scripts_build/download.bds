@@ -17,11 +17,11 @@ include 'downloadUcsc'
 # Returns true if download command is executed
 #-------------------------------------------------------------------------------
 bool wget(string url) {
-	return wget(url, true)
+	return wget(url, true, false)
 }
 
 bool wgetTask(string url) {
-	return wget(url, false)
+	return wget(url, false, false)
 }
 
 #-------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ bool wgetTask(string url) {
 bool wgetTask(string[] urls) {
 	oks := true
 	for(string url: urls) {
-		ok := wget(url, false)
+		ok := wget(url, false, false)
 		oks &= ok
 	}
 	return oks
@@ -41,12 +41,13 @@ bool wgetTask(string[] urls) {
 # Fetch (wget) a file, provide local file path
 # Returns true if download command is executed (or task created)
 #-------------------------------------------------------------------------------
-bool wget(string url, bool doWait) {
+bool wget(string url, bool doWait, bool canFail) {
+	canFailStr := (canFail ? '|| true' : '')
 	print "Downloading '$url'"
 	if( doWait ) {
-		sys $wgetCmd '$url'
+		sys $wgetCmd '$url' $canFailStr
 	} else {
-		task $wgetCmd '$url'
+		task $wgetCmd '$url' $canFailStr
 	}
 	return true
 }

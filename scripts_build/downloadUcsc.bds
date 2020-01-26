@@ -133,7 +133,7 @@ string downloadUcscGenomeFastaMrna(string ref, string dir) {
 	# Create CDS FASTA
 	#---
 	println 'Download mRNA file'
-	wget("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz")
+	wget("$urlUcscSoe/$ref/bigZips/refMrna.fa.gz", true, true)
 
 	println 'Creating CDS FASTA'
 	ori := "$dir/ORI"
