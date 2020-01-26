@@ -230,10 +230,6 @@ string queryUcsc(string ref, string dir) {
 	refSeqGz := "$dir/genes.refseq.gz"
 	if( !refSeqGz.exists() ) {
 		println "Querying database for RefSeq genes: $ref"
-		joinStr := ''
-		if(ref.startsWith('hg') || ref.startsWith('mm')) {
-			joinStr = "inner join hgFixed.gbCdnaInfo gi on rg.name=gi.acc"
-		}
 		query := "
 			use $ref; 
 			select rg.bin as 'binNum'
@@ -253,7 +249,8 @@ string queryUcsc(string ref, string dir) {
 					, rg.cdsEndStat
 					, rg.exonFrames 
 			from refGene rg 
-				$joinStr
+				inner join hgFixed.gbCdnaInfo gi 
+				on rg.name=gi.acc
 			;
 			"
 		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refSeq\.gz
