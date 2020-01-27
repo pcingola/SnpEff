@@ -40,7 +40,7 @@ void downloadUcscHg38() {
 	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
 	dir.chdir()
-	
+
 	#---
 	# Download data
 	#---
@@ -62,7 +62,7 @@ void downloadUcscHg38() {
 
 	#---
 	# Create CDS FASTA
-	# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" 
+	# Previous sed convertion: sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/"
 	#---
 	println 'Creating CDS FASTA'
 	if( "$dir/cds.fa.gz" <- "$ori/refMrna.fa.gz" ) {
@@ -71,7 +71,7 @@ void downloadUcscHg38() {
 	}
 
 	# Copy files to snpEff/data dir
-	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $dirData/$ref/ 
+	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $dirData/$ref/
 }
 
 #-------------------------------------------------------------------------------
@@ -84,12 +84,12 @@ void downloadUcscKg(string refdb) {
 	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
 	dir.chdir()
-	
+
 	# Query database
 	queryUcscKg(ref, refdb, dir)
 
 	# Copy files to snpEff/data dir
-	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf genes.kg.gz $dirData/$ref/ 
+	sys mkdir -p $dirData/$ref; cd $dir ; cp -vf genes.kg.gz $dirData/$ref/
 	sys cd $dirData/genomes; rm -vf $ref\.fa.gz ; ln -s $refdb\.fa.gz $ref\.fa.gz
 }
 
@@ -106,13 +106,14 @@ void downloadUcscGenome(string ref) {
 	dir := "$dirDownload/ucsc_$ref"
 	dir.mkdir()
 	dir.chdir()
-	
+
 	ori := "$dir/ORI"
 	ori.mkdir()
 	ori.chdir()
 
 	# Download data
 	fagz := ref.downloadUcscGenomeFasta(dir)
+	if( !fagz.exists() ) return
 	cdsgz := ref.downloadUcscGenomeFastaMrna(dir)
 	if( cdsgz.isEmpty() ) return
 
@@ -173,10 +174,10 @@ string downloadUcscGenomeFasta(string ref, string dir) {
 		fagz := fastaFromTar(ref, "chromFa.tar.gz", ori)
 		return fagz
 	}
-	
+
 	println "File '$file' does not exists"
 	file = "$urlUcscCse/$ref/bigZips/$ref\.fa.gz"
-	wget(file)
+	wget(file, true, true)
 	return localFile
 }
 
@@ -234,17 +235,17 @@ string queryUcscKg(string ref, string refdb, string dir) {
 		query := "
 			use $refdb;
 			select kg.name as '#name'
-					, kg.chrom 
-					, kg.strand 
-					, kg.txStart 
-					, kg.txEnd 
-					, kg.cdsStart 
-					, kg.cdsEnd 
-					, kg.exonCount 
-					, kg.exonStarts 
-					, kg.exonEnds 
-					, kg.proteinID 
-					, kg.alignID 
+					, kg.chrom
+					, kg.strand
+					, kg.txStart
+					, kg.txEnd
+					, kg.cdsStart
+					, kg.cdsEnd
+					, kg.exonCount
+					, kg.exonStarts
+					, kg.exonEnds
+					, kg.proteinID
+					, kg.alignID
 			from knownGene kg
 			;
 			"
@@ -262,7 +263,7 @@ string queryUcscRefGene(string ref, string dir) {
 	if( !refSeqGz.exists() ) {
 		println "Querying database for RefSeq genes: $ref"
 		query := "
-			use $ref; 
+			use $ref;
 			select rg.bin as 'binNum'
 					, CONCAT(rg.name,'.',gi.version) as 'name'
 					, rg.chrom
@@ -278,9 +279,9 @@ string queryUcscRefGene(string ref, string dir) {
 					, rg.name2
 					, rg.cdsStartStat
 					, rg.cdsEndStat
-					, rg.exonFrames 
-			from refGene rg 
-				inner join hgFixed.gbCdnaInfo gi 
+					, rg.exonFrames
+			from refGene rg
+				inner join hgFixed.gbCdnaInfo gi
 				on rg.name=gi.acc
 			;
 			"
@@ -312,7 +313,7 @@ string queryUcscXenoRefGene(string ref, string dir) {
 	if( !refSeqGz.exists() ) {
 		println "Querying database for xenoRefGene genes: $ref"
 		query := "
-			use $ref; 
+			use $ref;
 			select rg.bin as 'binNum'
 					, rg.name as 'name'
 					, rg.chrom
@@ -328,12 +329,11 @@ string queryUcscXenoRefGene(string ref, string dir) {
 					, rg.name2
 					, rg.cdsStartStat
 					, rg.cdsEndStat
-					, rg.exonFrames 
-			from xenoRefGene rg 
+					, rg.exonFrames
+			from xenoRefGene rg
 			;
 			"
 		sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $ref | gzip -c > $refSeq\.gz || true
 	}
 	return refSeqGz
 }
-
