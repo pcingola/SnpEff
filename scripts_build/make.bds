@@ -304,9 +304,12 @@ void buildDbSpecial() {
 #-------------------------------------------------------------------------------
 void buildDbTest() {
 	dirs := "$dirSnpEff/data/".dir("test*")
+	dirs += 'hg19'
+	dirs.remove('testNM_015296')	# This database is supposed to build with an error in one of the test cases
 
 	# This one needs PWMs
-	sys cp $pwmsBin data/testHg3770Chr22/
+	pwmsDst := "data/testHg3770Chr22/" + pwmsBin.baseName()
+	if( pwmsDst <- pwmsBin ) sys cp $pwmsBin $pwmsDst
 
 	# Build all test genomes
 	for( string gen : dirs ) {
@@ -323,10 +326,13 @@ void buildDbTest() {
 	# We need to make sure that PDB entries for test cases are in these dirs
 	pdbTestCases := ['testHg19Chr1', 'testHg19Chr22']
 	for( string genome : pdbTestCases ) {
-		task $snpeff pdb -v \
-				-pdbDir $dirSnpEff/data/$genome \
-				-idMap $dirPdb/idMap_pdbId_ensemblId_refseqId.txt.gz \
-				$genome
+		interactions := "$dirSnpEff/data/$genome/interactions.bin"
+		if( !interactions.exists() ) {
+			task $snpeff pdb -v \
+					-pdbDir $dirSnpEff/data/$genome \
+					-idMap $dirPdb/idMap_pdbId_ensemblId_refseqId.txt.gz \
+					$genome
+		}
 	}
 }
 

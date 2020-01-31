@@ -521,7 +521,7 @@ public class Gpr {
 				// This is a gzip compressed file
 				File inputFile = new File(fileName);
 				if (inputFile.exists()) return new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(new File(fileName)))));
-				else throw new RuntimeException("File not found '" + fileName + "'");
+				else throw new RuntimeException("File not found '" + inputFile.getAbsolutePath() + "'");
 			} else {
 				// Try opening the file
 				File inputFile = new File(fileName);

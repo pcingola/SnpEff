@@ -27,7 +27,8 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		// Command line arguments
 		String genome = "testHg19Pdb";
 		String pdbDir = path("pdb");
-		String args[] = { "-pdbDir", pdbDir, genome };
+		String idmap = path("pdb") + "/idMap_pdbId_ensemblId_refseqId.txt.gz";
+		String args[] = { "-pdbDir", pdbDir, "-idmap", idmap, genome };
 
 		// Create command
 		SnpEffCmdPdb cmd = new SnpEffCmdPdb();
@@ -49,9 +50,9 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 
 	/**
 	 * Interaction between two proteins
-	 * PDB entry 4OVU should have an interaction between chains 'A' 
+	 * PDB entry 4OVU should have an interaction between chains 'A'
 	 * and 'B' (Min distance :2.45 Angstrom)
-	 * 
+	 *
 	 *  	AA.pos	AA		chr:pos			transcript
 	 *  	22		E		3:178916679		NM_006218.2
 	 *  	533		R		5:67591006		NM_181523.2
@@ -63,7 +64,8 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		// Command line arguments
 		String genome = "testHg19Pdb";
 		String pdbDir = path("pdb");
-		String args[] = { "-pdbDir", pdbDir, genome };
+		String idmap = path("pdb") + "/idMap_pdbId_ensemblId_refseqId.txt.gz";
+		String args[] = { "-pdbDir", pdbDir, "-idmap", idmap, genome };
 
 		// Create command
 		SnpEffCmdPdb cmd = new SnpEffCmdPdb();
@@ -81,7 +83,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 					&& dr.aaPos2 == 533 //
 					&& dr.trId1.equals("NM_006218.2") //
 					&& dr.trId2.equals("NM_181523.2") //
-					;
+			;
 			if (verbose) Gpr.debug(dr);
 		}
 
