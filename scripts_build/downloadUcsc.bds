@@ -196,7 +196,7 @@ string fastaFromTar(string ref, string tar, string ori) {
 		sys cd $dirChr
 		sys tar -xvzf $tar
 		sys rm -f $fasta
-		sys cat *.fa > $fasta
+		sys cat `find . -iname "*.fa"` > $fasta
 		sys gzip -f $fasta
 	}
 
