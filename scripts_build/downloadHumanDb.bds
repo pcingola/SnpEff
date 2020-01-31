@@ -175,7 +175,8 @@ void downloadGwasCatalog() {
 	dir.chdir()
 
 	if( wget(urlGwasCatalog) ) {
-		sys cat gwascatalog.txt | $dirScriptsBuild/gwascatalog2vcf.pl > gwascatalog.vcf
+		localFile := urlGwasCatalog.baseName()
+		sys cat $localFile | $dirScriptsBuild/gwascatalog2vcf.pl > gwascatalog.vcf
 	}
 
 	wait
