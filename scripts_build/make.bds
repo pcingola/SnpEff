@@ -103,7 +103,7 @@ snpEffVersion := ""
 bool addBuildDb(string genome) {
 	dir := "$dirData/$genome"
 	db := "$dir/snpEffectPredictor.bin"
-	geneFiles := dir.dirPath("genes.*") 
+	geneFiles := dir.dirPath("**/genes.*") 
 
 	# No 'genes' file? Error
 	if( geneFiles.isEmpty() ) {
