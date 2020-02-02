@@ -345,7 +345,7 @@ void buildDbNextProt() {
 
 	# XML files used to build NextProt
 	dirNextProt := "$dirSnpEff/db/nextProt/"
-	xmlFiles := dirNextProt.dirPath("*.xml")
+	xmlFiles := dirNextProt.dirPath("**/*.xml")
 
 	# Check each genome version
 	for( string hg : dirsHg() ) {
