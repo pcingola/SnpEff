@@ -1,6 +1,0 @@
-
-SnpEff
-
-Variant annotation package
-
-

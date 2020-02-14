@@ -1,0 +1,19 @@
+.center {
+display: block;
+margin: 0 auto;
+}
+
+.smallerimg {
+width: 600px;
+}
+
+.smallimg {
+width: 200px;
+}
+
+.right {
+display: block;
+margin-left: auto;
+margin-right: auto;
+float: right;
+}
