@@ -2,7 +2,7 @@
 
 Genomic variant annotations and functional effect prediction toolbox.
 
-> [Download SnpEff](https://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip/download)
+[Download SnpEff](https://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip/download){: .button}
 
 Important: This version implements the [VCF annotation standard 'ANN' field](adds/VCFannotationformat_v1.0.pdf).
 
@@ -38,7 +38,7 @@ Features:
 * **HGVS** notation
 *  **Sequence Ontology** standardized terms
 
-View [details](se_annfield.md)
+[View details](se_annfield.md){: .button}
 
 ##  SnpSift
 
@@ -46,7 +46,7 @@ SnpSift annotates genomic variants using databases, filters, and manipulates gen
 
 Once you annotated your files using SnpEff, you can use SnpSift to help you filter large genomic datasets in order to find the most significant variants for your experiment.
 
-View [details](ss_introduction.md)
+[View details](ss_introduction.md){: .button}
 
 ##  Version 4.3
 
@@ -56,19 +56,19 @@ Features:
 * Improvements in large structural variant annotations
 * Protein-Protein interaction loci annotations (from PDB)
 
-View [details](features.md)
+[View details](features.md){: .button}
 
 ## Paper & Citing
 
 If you are using SnpEff or SnpSift in an research or academic environment, please cite our [papers](adds/SnpEff_paper.pdf).
 
-View [details](citing.md)
+[View details](citing.md){: .button}
 
 ## Who uses SnpEff?
 
 Users of SnpEff include most major research an academic institutions, as well as pharmaceutical companies and clinical sequencing projects.
 
-View [details](users_of_snpeff.md)
+[View details](users_of_snpeff.md){: .button}
 
 ## Galaxy & GATK
 
@@ -76,7 +76,7 @@ SnpEff is integrated with other tools commonly used in sequencing data analysis 
 
 Most notably [Galaxy](http://galaxyproject.org/) and [GATK](http://www.broadinstitute.org/gatk/) projects support SnpEff.
 
-View [details](se_integration.md)
+[View details](se_integration.md){: .button}
 
 ##  In memory of Dr. Xiangyi Lu: [Please donate](xiangyi_lu_donate.md)
 ![](images/xiangy_small.jpg){: .right}

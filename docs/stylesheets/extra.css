@@ -1,19 +1,37 @@
 .center {
-display: block;
-margin: 0 auto;
+    display: block;
+    margin: 0 auto;
 }
 
 .smallerimg {
-width: 600px;
+    width: 600px;
 }
 
 .smallimg {
-width: 200px;
+    width: 200px;
 }
 
 .right {
-display: block;
-margin-left: auto;
-margin-right: auto;
-float: right;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    float: right;
+}
+
+.button {
+    background-color: #3f51b5;
+    border: none;
+    border-radius: .1rem;
+    color: white !important;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none !important;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #7481c6;
 }
