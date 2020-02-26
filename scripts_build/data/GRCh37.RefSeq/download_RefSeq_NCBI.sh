@@ -1,20 +1,24 @@
-#!/bin/sh -e
+#!/bin/sh -eu
+set -o pipefail
+
+PROGRAM_DIR=$(cd $(dirname $0); pwd -P)
 
 # Genome name (in SnpEff's config file)
 VER="GRCh37"
 SUBVER="p13"
-ASSEMBLY_ID=""
+ASSEMBLY_ID="GCF_000001405.25"
 GENOME="$VER.$SUBVER.RefSeq"
 
 # Path to scripts
 SNPEFF_DIR="$HOME/snpEff"
 SCRIPTS_DIR="$SNPEFF_DIR/scripts"
-SCRIPTS_BUILD_DIR="$SNPEFF_DIR/data/$VER.$SUBVER.RefSeq"
+SCRIPTS_BUILD_DIR="$PROGRAM_DIR"
 DB_DIR="$SNPEFF_DIR/data/$GENOME"
 
 # File names
-ARCHIVE="ARCHIVE/ANNOTATION_RELEASE.109"
-HTTP_DIR="http://ftp.ncbi.nih.gov/genomes/Homo_sapiens/$ARCHIVE"
+ARCHIVE="ARCHIVE/ANNOTATION_RELEASE.105"
+HTTP_URL="http://ftp.ncbi.nih.gov/"
+HTTP_DIR="$HTTP_URL/genomes/Homo_sapiens/$ARCHIVE"
 GFF_REF="ref_$VER.$SUBVER""_top_level.gff3.gz"
 CHR_IDS="$DB_DIR/chromosomes.txt"
 CHR_IDS_2_NAME="$DB_DIR/chromosomes2name.txt"
@@ -28,7 +32,9 @@ cd $DB_DIR/ORI
 #---
 
 echo Downloading reference sequences
-wget -N "$HTTP_DIR/Assembled_chromosomes/seq/hs_ref_$VER.$SUBVER\_chr*.fa.gz"
+for chr in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y ; do
+	wget -N "$HTTP_DIR/Assembled_chromosomes/seq/hs_ref_${VER}.${SUBVER}_chr${chr}.fa.gz" 
+done
 
 echo Downloading mRNA sequences
 wget -N "$HTTP_DIR/RNA/rna.fa.gz"
@@ -41,24 +47,26 @@ wget -N "$HTTP_DIR/protein/protein.fa.gz"
 #---
 
 echo "Download GFF files"
-wget -N ftp://ftp.ncbi.nih.gov/genomes/Homo_sapiens/$ARCHIVE/GFF/$GFF_REF
+wget -N "$HTTP_DIR/GFF/$GFF_REF"
 
 echo "Copying genes.ORI.gff file"
-cp $GFF_REF genes.ORI.gff.gz
+cp -vf $GFF_REF genes.ORI.gff.gz
 gunzip -c genes.ORI.gff.gz > genes.ORI.gff
 
 #---
 # Download chromosome IDs file
 #---
 
+echo "Download chromosome IDs file"
 if [ -z "$ASSEMBLY_ID" ]
 then
-	ASSEMBLY_ID=`cat genes.ORI.gff | head -n 100 | grep "^#" | grep genome-build-accession | cut -f 2 -d :`
+	echo "Getting ID"
+	ASSEMBLY_ID=`cat genes.ORI.gff | head -n 100 | grep "^#" | grep genome-build-accession | cut -f 2 -d : || true`
 	echo "Assembly ID: $ASSEMBLY_ID"
 fi
 
 echo "Download chromosome IDs map file"
-wget -O - ftp://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/All/$ASSEMBLY_ID.assembly.txt > $CHR_IDS
+wget -O - "${HTTP_URL}/genomes/all/GCF/000/001/405/${ASSEMBLY_ID}_${VER}.${SUBVER}/${ASSEMBLY_ID}_${VER}.${SUBVER}_assembly_report.txt" > $CHR_IDS
 
 echo "Create a file mapping chromosome IDs to names: $CHR_IDS_2_NAME"
 cat $CHR_IDS | cut -f 1,7 | grep -v "^#" > $CHR_IDS_2_NAME
