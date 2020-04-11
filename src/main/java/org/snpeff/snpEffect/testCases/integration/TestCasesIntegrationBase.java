@@ -107,6 +107,7 @@ public class TestCasesIntegrationBase {
 		String args[] = { "build", genome };
 		SnpEff snpeff = new SnpEff(args);
 		snpeff.setVerbose(verbose);
+		snpeff.setDebug(debug);
 		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.cmd();
 		snpeffBuild.run();
 		return snpeffBuild.getConfig().getSnpEffectPredictor();

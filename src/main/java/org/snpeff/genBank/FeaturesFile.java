@@ -7,6 +7,9 @@ import org.snpeff.util.Gpr;
 
 /**
  * A file containing one or more set of features (e.g. multiple chromosomes concatenated in a single file)
+ * Reference:
+ * 		http://www.insdc.org/documents/feature-table
+ *
  * @author pcingola
  *
  */
