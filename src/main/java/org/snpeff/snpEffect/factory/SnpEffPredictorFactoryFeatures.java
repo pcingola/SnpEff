@@ -91,17 +91,14 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	 *	Add all features
 	 */
 	protected void addFeatures(Features features) {
-		//---
 		// Add chromosome
-		//---
 		for (Feature f : features.getFeatures()) {
-			// Convert coordinates to zero-based
-			int start = f.getStart() - inOffset;
-			int end = f.getEnd() - inOffset;
-
 			// Add chromosome
 			if (f.getType() == Type.SOURCE) {
 				if (chromosome == null) {
+					// Convert coordinates to zero-based
+					int start = f.getStart() - inOffset;
+					int end = f.getEnd() - inOffset;
 					String chrName = chromoName(features, f);
 					chromosome = new Chromosome(genome, start, end, chrName);
 					add(chromosome);
@@ -127,34 +124,76 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		// Add a genes, transcripts and CDSs
 		//---
 		Gene geneLatest = null;
-		List<Transcript> trLatest = null;
+		List<Transcript> trLatestList = null;
+		Transcript trLatest = null;
 		for (Feature f : features.getFeatures()) {
 			if (f.getType() == Type.GENE) {
 				// Add gene
 				geneLatest = findOrCreateGene(f, chromosome, false);
+				trLatestList = null;
 				trLatest = null;
 			} else {
-				Transcript trl = null;
-
 				// Add feature
-				if (f.getType() == Type.MRNA) trl = addMrna(f, geneLatest);
-				else if (f.getType() == Type.CDS) trl = addCds(f, geneLatest, trLatest);
+				if (f.getType() == Type.MRNA) trLatest = addMrna(f, geneLatest);
+				else if (f.getType() == Type.CDS) trLatest = addCds(f, geneLatest, trLatestList);
+				else if (f.getType() == Type.MAT_PEPTIDE) addMaturePeptide(f, geneLatest, trLatest);
 
 				// Added transcript?
-				if (trl != null) {
+				if (trLatest != null) {
 					// If we are using another gene, then 'geneLatest' should change
 					if (geneLatest == null //
-							|| trLatest == null //
-							|| !trl.getParent().getId().equals(geneLatest.getId()) // New gene? i.e. gen IDs do not math
+							|| trLatestList == null //
+							|| !trLatest.getParent().getId().equals(geneLatest.getId()) // New gene?
 					) {
 						// Create new transcripts list
-						trLatest = new ArrayList<>();
-						trLatest.add(trl);
-					} else trLatest.add(trl);
+						trLatestList = new ArrayList<>();
+						trLatestList.add(trLatest);
+					} else trLatestList.add(trLatest);
 
-					geneLatest = (Gene) trl.getParent();
+					geneLatest = (Gene) trLatest.getParent();
 				}
 			}
+		}
+	}
+
+	/**
+	 * Add mature peptide: CDS and protein coding information
+	 */
+	void addMaturePeptide(Feature fmatpep, Gene geneLatest, Transcript trLatest) {
+		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// Find (or create) transcript
+		Transcript tr = findOrCreateTranscript(fcds, geneLatest, trLatest);
+		//
+		// Mark transcript as protein coding
+		if (fcds.getAasequence() != null) tr.setProteinCoding(true);
+
+		// Check and set ribosomal slippage
+		if (fcds.get("ribosomal_slippage") != null) tr.setRibosomalSlippage(true);
+
+		// Add exons?
+		if (fcds.hasMultipleCoordinates()) {
+			for (FeatureCoordinates fc : fcds) {
+				int cdsStart = fc.start - inOffset;
+				int cdsEnd = fc.end - inOffset;
+				Cds cds = new Cds(tr, cdsStart, cdsEnd, fcds.isComplement(), "CDS_" + tr.getId());
+				add(cds);
+			}
+
+			// Circular correction
+			CircularCorrection cc = new CircularCorrection(tr);
+			cc.setCorrectLargeGap(circularCorrectLargeGap);
+			cc.correct();
+		} else {
+			Cds cds = new Cds(tr, fcds.getStart() - inOffset, fcds.getEnd() - inOffset, fcds.isComplement(), "CDS_" + tr.getId());
+			add(cds);
+		}
+
+		// Add transcript - protein sequence mapping
+		String trId = tr.getId();
+		String proteinSeq = fcds.getAasequence();
+		if (proteinSeq != null) {
+			if (proteinByTrId.containsKey(trId)) throw new RuntimeException("Protein sequence for transcript id '" + trId + "' already exists:\nProtein sequence: " + proteinSeq + "\nFeature: " + fcds);
+			else proteinByTrId.put(trId, proteinSeq);
 		}
 	}
 

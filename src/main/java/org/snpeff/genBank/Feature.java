@@ -18,7 +18,7 @@ import org.snpeff.util.Gpr;
 public class Feature implements Iterable<FeatureCoordinates> {
 
 	public enum Type {
-		SOURCE, ID, CDS, GENE, MRNA, TRNA, RRNA, MISC_RNA, REPEAT_UNIT, REPEAT_REGION, MISC_FEATURE, UTR_3, UTR_5;
+		SOURCE, ID, CDS, GENE, MRNA, TRNA, RRNA, MISC_RNA, REPEAT_UNIT, REPEAT_REGION, MISC_FEATURE, UTR_3, UTR_5, MAT_PEPTIDE;
 
 		/**
 		 * Parse a string into a Feature.Type
