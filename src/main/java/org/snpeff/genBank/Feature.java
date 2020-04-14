@@ -139,6 +139,27 @@ public class Feature implements Iterable<FeatureCoordinates> {
 		return getGeneId();
 	}
 
+	/**
+	 * Create an ID based on a feature
+	 */
+	public String getMaturePeptideId() {
+		String trId = get("transcript_id");
+		if (trId != null) return trId;
+
+		// Try 'protein'...
+		trId = get("protein_id");
+		if (trId != null) return trId;
+
+		trId = get("product");
+		if (trId != null) return trId.replaceAll("\\s", "_");
+
+		// Try 'locus'...
+		trId = get("locus_tag");
+		if (trId != null) return trId;
+
+		return "tr_line_" + lineNum;
+	}
+
 	public int getStart() {
 		return start;
 	}
