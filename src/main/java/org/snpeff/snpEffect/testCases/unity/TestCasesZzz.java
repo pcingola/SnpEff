@@ -1,9 +1,12 @@
 package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.Test;
-import org.snpeff.snpEffect.SnpEffectPredictor;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdBuild;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdProtein;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationBase;
 import org.snpeff.util.Gpr;
+
+import junit.framework.Assert;
 
 /**
  * Test random SNP changes
@@ -26,7 +29,13 @@ public class TestCasesZzz extends TestCasesIntegrationBase {
 		verbose = true;
 		debug = true;
 		String genome = "test_NC_045512_01";
-		SnpEffectPredictor sep = build(genome);
+		SnpEffCmdBuild buildCmd = buildGetBuildCmd(genome);
 
+		// Make sure all proteins are OK
+		SnpEffCmdProtein protCmd = buildCmd.getSnpEffCmdProtein();
+		Assert.assertEquals(2, protCmd.getTotalOk());
+		Assert.assertEquals(0, protCmd.getTotalErrors());
+		Assert.assertEquals(0, protCmd.getTotalWarnings());
+		Assert.assertEquals(0, protCmd.getTotalNotFound());
 	}
 }

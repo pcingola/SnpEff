@@ -224,8 +224,16 @@ public class SnpEffCmdProtein extends SnpEff {
 		return totalErrors;
 	}
 
+	public int getTotalNotFound() {
+		return totalNotFound;
+	}
+
 	public int getTotalOk() {
 		return totalOk;
+	}
+
+	public int getTotalWarnings() {
+		return totalWarnings;
 	}
 
 	/**
