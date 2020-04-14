@@ -11,6 +11,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCanonical;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCircularGenome;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCodingTag;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationConfig;
+import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCovid19;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationCutsomIntervals;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationDelEtc;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationDup;
@@ -74,6 +75,7 @@ import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationVcfs;
 		TestCasesIntegrationCircularGenome.class, //
 		TestCasesIntegrationCodingTag.class, //
 		TestCasesIntegrationConfig.class, //
+		TestCasesIntegrationCovid19.class, //
 		TestCasesIntegrationCutsomIntervals.class, //
 		TestCasesIntegrationDelEtc.class, //
 		TestCasesIntegrationDup.class, //
