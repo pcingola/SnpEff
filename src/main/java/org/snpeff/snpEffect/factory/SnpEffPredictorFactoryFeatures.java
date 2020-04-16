@@ -56,7 +56,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		if (fcds.getAasequence() != null) tr.setProteinCoding(true);
 
 		// Check and set ribosomal slippage
-		if (fcds.get("ribosomal_slippage") != null) tr.setRibosomalSlippage(true);
+		if (fcds.isRibosomalSlippage()) tr.setRibosomalSlippage(true);
 
 		// Add CDS information
 		createCdsInTranscript(tr, fcds);
@@ -140,14 +140,26 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	 * Add mature peptide: CDS and protein coding information
 	 */
 	void addMaturePeptide(Feature fmatpep, Gene geneLatest, Transcript trLatest) {
-		if (trLatest == null) throw new RuntimeException("No latest transcript while traying to add a " + fmatpep.getType() + ". This should not happen: Error in feature file?");
+		if (geneLatest == null) throw new RuntimeException("No latest gene while traying to add a " + fmatpep.getType() + ". This should not happen: Error in feature file?\nFeature: " + fmatpep);
 
 		// Create new transcript, copy transcript data, including ribosomal slippage flag
-		// Adjust transcript start / end according to peptide's coordinates
-		Gene gene = (Gene) trLatest.getParent();
-		Transcript tr = new Transcript(gene, fmatpep.getStart(), fmatpep.getEnd(), trLatest.isStrandMinus(), fmatpep.getMaturePeptideId());
+		boolean strandMinus, ribosomalSlippage;
+		String trId = fmatpep.getMaturePeptideId();
+		Gene gene;
+		if (trLatest != null) {
+			strandMinus = trLatest.isStrandMinus();
+			ribosomalSlippage = trLatest.isRibosomalSlippage();
+			gene = (Gene) trLatest.getParent();
+		} else {
+			strandMinus = fmatpep.isComplement();
+			ribosomalSlippage = fmatpep.isRibosomalSlippage();
+			gene = geneLatest;
+		}
+
+		// Create transcript and add it
+		Transcript tr = new Transcript(gene, fmatpep.getStart(), fmatpep.getEnd(), strandMinus, trId);
 		tr.setProteinCoding(true);
-		tr.setRibosomalSlippage(trLatest.isRibosomalSlippage());
+		tr.setRibosomalSlippage(ribosomalSlippage);
 		add(tr);
 
 		// Add CDS information

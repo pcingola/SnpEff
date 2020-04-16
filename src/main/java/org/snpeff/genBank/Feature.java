@@ -201,6 +201,10 @@ public class Feature implements Iterable<FeatureCoordinates> {
 		return complement;
 	}
 
+	public boolean isRibosomalSlippage() {
+		return get("ribosomal_slippage") != null;
+	}
+
 	@Override
 	public Iterator<FeatureCoordinates> iterator() {
 		return featureCoordinates.iterator();
