@@ -106,7 +106,6 @@ public class Feature implements Iterable<FeatureCoordinates> {
 	}
 
 	public String getGeneId() {
-
 		// Try ID
 		String geneId = null;
 

@@ -27,9 +27,8 @@ public class TestCasesIntegrationCovid19 extends TestCasesIntegrationBase {
 
 		// Make sure all proteins are OK
 		SnpEffCmdProtein protCmd = buildCmd.getSnpEffCmdProtein();
-		Assert.assertEquals(2, protCmd.getTotalOk());
+		Assert.assertEquals(5, protCmd.getTotalOk());
 		Assert.assertEquals(0, protCmd.getTotalErrors());
 		Assert.assertEquals(0, protCmd.getTotalWarnings());
-		Assert.assertEquals(0, protCmd.getTotalNotFound());
 	}
 }

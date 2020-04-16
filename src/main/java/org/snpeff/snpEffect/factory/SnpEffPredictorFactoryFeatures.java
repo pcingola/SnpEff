@@ -58,31 +58,11 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		// Check and set ribosomal slippage
 		if (fcds.get("ribosomal_slippage") != null) tr.setRibosomalSlippage(true);
 
-		// Add exons?
-		if (fcds.hasMultipleCoordinates()) {
-			for (FeatureCoordinates fc : fcds) {
-				int cdsStart = fc.start - inOffset;
-				int cdsEnd = fc.end - inOffset;
-				Cds cds = new Cds(tr, cdsStart, cdsEnd, fcds.isComplement(), "CDS_" + tr.getId());
-				add(cds);
-			}
-
-			// Circular correction
-			CircularCorrection cc = new CircularCorrection(tr);
-			cc.setCorrectLargeGap(circularCorrectLargeGap);
-			cc.correct();
-		} else {
-			Cds cds = new Cds(tr, fcds.getStart() - inOffset, fcds.getEnd() - inOffset, fcds.isComplement(), "CDS_" + tr.getId());
-			add(cds);
-		}
+		// Add CDS information
+		createCdsInTranscript(tr, fcds);
 
 		// Add transcript - protein sequence mapping
-		String trId = tr.getId();
-		String proteinSeq = fcds.getAasequence();
-		if (proteinSeq != null) {
-			if (proteinByTrId.containsKey(trId)) throw new RuntimeException("Protein sequence for transcript id '" + trId + "' already exists:\nProtein sequence: " + proteinSeq + "\nFeature: " + fcds);
-			else proteinByTrId.put(trId, proteinSeq);
-		}
+		proteinSequenceMapping(tr, fcds);
 
 		return tr;
 	}
@@ -160,46 +140,21 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	 * Add mature peptide: CDS and protein coding information
 	 */
 	void addMaturePeptide(Feature fmatpep, Gene geneLatest, Transcript trLatest) {
-		// TODO: Create new transcript, copy transcript data, including ribosomal slippage flag
-		// TODO: Adjust transcript start / end?
-		// TODO: Add right transcript ID fmatpep.getMaturePeptideId()
-		// TODO: Add CDS data
-		throw new RuntimeException("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		//		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//		// Find (or create) transcript
-		//		Transcript tr = findOrCreateTranscript(fcds, geneLatest, trLatest);
-		//		//
-		//		// Mark transcript as protein coding
-		//		if (fcds.getAasequence() != null) tr.setProteinCoding(true);
-		//
-		//		// Check and set ribosomal slippage
-		//		if (fcds.get("ribosomal_slippage") != null) tr.setRibosomalSlippage(true);
-		//
-		//		// Add exons?
-		//		if (fcds.hasMultipleCoordinates()) {
-		//			for (FeatureCoordinates fc : fcds) {
-		//				int cdsStart = fc.start - inOffset;
-		//				int cdsEnd = fc.end - inOffset;
-		//				Cds cds = new Cds(tr, cdsStart, cdsEnd, fcds.isComplement(), "CDS_" + tr.getId());
-		//				add(cds);
-		//			}
-		//
-		//			// Circular correction
-		//			CircularCorrection cc = new CircularCorrection(tr);
-		//			cc.setCorrectLargeGap(circularCorrectLargeGap);
-		//			cc.correct();
-		//		} else {
-		//			Cds cds = new Cds(tr, fcds.getStart() - inOffset, fcds.getEnd() - inOffset, fcds.isComplement(), "CDS_" + tr.getId());
-		//			add(cds);
-		//		}
-		//
-		//		// Add transcript - protein sequence mapping
-		//		String trId = tr.getId();
-		//		String proteinSeq = fcds.getAasequence();
-		//		if (proteinSeq != null) {
-		//			if (proteinByTrId.containsKey(trId)) throw new RuntimeException("Protein sequence for transcript id '" + trId + "' already exists:\nProtein sequence: " + proteinSeq + "\nFeature: " + fcds);
-		//			else proteinByTrId.put(trId, proteinSeq);
-		//		}
+		if (trLatest == null) throw new RuntimeException("No latest transcript while traying to add a " + fmatpep.getType() + ". This should not happen: Error in feature file?");
+
+		// Create new transcript, copy transcript data, including ribosomal slippage flag
+		// Adjust transcript start / end according to peptide's coordinates
+		Gene gene = (Gene) trLatest.getParent();
+		Transcript tr = new Transcript(gene, fmatpep.getStart(), fmatpep.getEnd(), trLatest.isStrandMinus(), fmatpep.getMaturePeptideId());
+		tr.setProteinCoding(true);
+		tr.setRibosomalSlippage(trLatest.isRibosomalSlippage());
+		add(tr);
+
+		// Add CDS information
+		createCdsInTranscript(tr, fmatpep);
+
+		// Add transcript - protein sequence mapping
+		proteinSequenceMapping(tr, fmatpep);
 	}
 
 	/**
@@ -401,6 +356,29 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	}
 
 	/**
+	 * Create CDS information for transcript
+	 */
+	void createCdsInTranscript(Transcript tr, Feature fcds) {
+		// Add exons?
+		if (fcds.hasMultipleCoordinates()) {
+			for (FeatureCoordinates fc : fcds) {
+				int cdsStart = fc.start - inOffset;
+				int cdsEnd = fc.end - inOffset;
+				Cds cds = new Cds(tr, cdsStart, cdsEnd, fcds.isComplement(), "CDS_" + tr.getId());
+				add(cds);
+			}
+
+			// Circular correction
+			CircularCorrection cc = new CircularCorrection(tr);
+			cc.setCorrectLargeGap(circularCorrectLargeGap);
+			cc.correct();
+		} else {
+			Cds cds = new Cds(tr, fcds.getStart() - inOffset, fcds.getEnd() - inOffset, fcds.isComplement(), "CDS_" + tr.getId());
+			add(cds);
+		}
+	}
+
+	/**
 	 * Find (or create) a gene from a feature
 	 */
 	Gene findOrCreateGene(Feature f, Chromosome chr, boolean warn) {
@@ -508,6 +486,17 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	@Override
 	public Map<String, String> getProteinByTrId() {
 		return proteinByTrId;
+	}
+
+	/**
+	 * Add protein sequence mapping for transcript 'tr'
+	 */
+	void proteinSequenceMapping(Transcript tr, Feature fcds) {
+		String proteinSeq = fcds.getAasequence();
+		if (proteinSeq == null) return;
+		String trId = tr.getId();
+		if (proteinByTrId.containsKey(trId)) throw new RuntimeException("Protein sequence for transcript id '" + trId + "' already exists:\nProtein sequence: " + proteinSeq + "\nFeature: " + fcds);
+		else proteinByTrId.put(trId, proteinSeq);
 	}
 
 	/**
