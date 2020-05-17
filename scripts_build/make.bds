@@ -208,6 +208,18 @@ void buildConfig() {
 		sys echo "#---" >> $conf
 		sys cat $confDir/snpEff.bundles.$b\.config >> $conf
 	}
+
+	sys echo >> $conf
+	sys echo "#---" >> $conf
+	sys echo "# Custom requests " >> $conf
+	sys echo "#---" >> $conf
+	sys cat	$confDir/snpEff.custom_requests.config >> $conf
+
+	sys echo >> $conf
+	sys echo "#---" >> $conf
+	sys echo "# COVID19 " >> $conf
+	sys echo "#---" >> $conf
+	sys cat	$confDir/snpEff.covid19.config >> $conf
 }
 
 #-------------------------------------------------------------------------------
