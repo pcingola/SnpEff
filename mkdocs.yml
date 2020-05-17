@@ -1,0 +1,81 @@
+site_name: 'SnpEff & SnpSift Documentation'
+site_description: 'SnpEff and SnpSift documentation'
+site_author: 'Pablo Cingolani'
+copyright: 'Pablo Cingolani'
+repo_name: 'SnpEff'
+repo_url: 'https://github.com/pcingola/SnpEff'
+edit_uri: ''
+
+extra_css:
+  - 'stylesheets/extra.css'
+
+theme:
+  name: material
+  palette:
+      primary: 'indigo'
+      accent: 'indigo'
+  feature:
+      tabs: true
+markdown_extensions:
+  - admonition
+  - attr_list
+
+extra:
+  social:
+    - type: 'linkedin'
+      link: 'http://www.linkedin.com/in/pablocingolani'
+    - type: 'github'
+      link: 'https://github.com/pcingola/SnpEff'
+
+nav:
+  - Home:
+      - Home: index.md
+      - Features: features.md
+      - Usage examples: examples.md
+      - Paper & Citations: citing.md
+      - Who uses SnpEff?: users_of_snpeff.md
+      - Integration: integration.md
+      - FAQ: faq.md
+      - License: license.md
+  - SnpEff:
+     - Important changes. 'ANN' field: se_annfield.md
+     - Introduction: se_introduction.md
+     - Running SnpEff: se_running.md
+     - Commands &amp; command line options: se_commandline.md
+     - Input &amp; output files: se_inputoutput.md
+     - Cancer samples: se_cansersamples.md
+     - Additional annotations: se_additionalann.md
+     - Output summary files: se_outputsummary.md
+     - Troubleshooting: se_troubleshooting.md
+     - Building databases: se_buildingdb.md
+     - Building databases. Regulatory and Non-coding: se_buildingreg.md
+     - Integration. GATK and Galaxy: se_integration.md
+     - Commands and utilities: se_commands.md
+  - SnpSift:
+     - Introduction: ss_introduction.md
+     - SnpSift Filter: ss_filter.md
+     - SnpSift Annotate: ss_annotate.md
+     - SnpSift CaseControl: ss_casecontrol.md
+     - SnpSift Intervals: ss_intervals.md
+     - SnpSift Intervals Index: ss_intervalsindex.md
+     - SnpSift Join: ss_join.md
+     - SnpSift RmRefGen: ss_rmrefgen.md
+     - SnpSift TsTv: ss_tstv.md
+     - SnpSift Extract Fields: ss_extractfields.md
+     - SnpSift Variant Type: ss_varianttype.md
+     - SnpSift GWAS Catalog: ss_gwascatalog.md
+     - SnpSift dbNSFP: ss_dbnsfp.md
+     - SnpSift Split: ss_split.md
+     - SnpSift PhastCons: ss_phastcons.md
+     - SnpSift Concordance: ss_concordance.md
+     - SnpSift Private: ss_private.md
+     - SnpSift Vcf2Tped: ss_vcf2ped.md
+     - SnpSift Intersect: ss_intersect.md
+     - SnpSift RmInfo: ss_rminfo.md
+     - SnpSift GeneSets: ss_genesets.md
+     - SnpSift GT: ss_gt.md
+     - SnpSift VcfCheck: ss_vcfcheck.md
+  - Download&Install:
+     - Download and install: download.md
+  - About:
+     - About: about.md
