@@ -6,7 +6,9 @@ import org.snpeff.util.Gpr;
 /**
  * A class representing the same data as a GenBank file (a 'GB' file)
  *
- * References: http://www.ncbi.nlm.nih.gov/Sitemap/samplerecord
+ * References:
+ * 		http://www.insdc.org/documents/feature-table
+ * 		http://www.ncbi.nlm.nih.gov/Sitemap/samplerecord
  *
  * @author pablocingolani
  */

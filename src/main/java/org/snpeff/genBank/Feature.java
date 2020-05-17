@@ -18,7 +18,7 @@ import org.snpeff.util.Gpr;
 public class Feature implements Iterable<FeatureCoordinates> {
 
 	public enum Type {
-		SOURCE, ID, CDS, GENE, MRNA, TRNA, RRNA, MISC_RNA, REPEAT_UNIT, REPEAT_REGION, MISC_FEATURE, UTR_3, UTR_5;
+		SOURCE, ID, CDS, GENE, MRNA, TRNA, RRNA, MISC_RNA, REPEAT_UNIT, REPEAT_REGION, MISC_FEATURE, UTR_3, UTR_5, MAT_PEPTIDE;
 
 		/**
 		 * Parse a string into a Feature.Type
@@ -106,7 +106,6 @@ public class Feature implements Iterable<FeatureCoordinates> {
 	}
 
 	public String getGeneId() {
-
 		// Try ID
 		String geneId = null;
 
@@ -137,6 +136,27 @@ public class Feature implements Iterable<FeatureCoordinates> {
 		if (geneName != null) return geneName;
 
 		return getGeneId();
+	}
+
+	/**
+	 * Create an ID based on a feature
+	 */
+	public String getMaturePeptideId() {
+		String trId = get("transcript_id");
+		if (trId != null) return trId;
+
+		// Try 'protein'...
+		trId = get("protein_id");
+		if (trId != null) return trId;
+
+		trId = get("product");
+		if (trId != null) return trId.replaceAll("\\s", "_");
+
+		// Try 'locus'...
+		trId = get("locus_tag");
+		if (trId != null) return trId;
+
+		return "tr_line_" + lineNum;
 	}
 
 	public int getStart() {
@@ -179,6 +199,10 @@ public class Feature implements Iterable<FeatureCoordinates> {
 
 	public boolean isComplement() {
 		return complement;
+	}
+
+	public boolean isRibosomalSlippage() {
+		return get("ribosomal_slippage") != null;
 	}
 
 	@Override

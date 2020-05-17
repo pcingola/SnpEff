@@ -101,15 +101,10 @@ public class TestCasesIntegrationBase {
 	}
 
 	/**
-	 * Build a genome
+	 * Build a genome, return SnpEffectPredictor
 	 */
 	public SnpEffectPredictor build(String genome) {
-		String args[] = { "build", genome };
-		SnpEff snpeff = new SnpEff(args);
-		snpeff.setVerbose(verbose);
-		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.cmd();
-		snpeffBuild.run();
-		return snpeffBuild.getConfig().getSnpEffectPredictor();
+		return buildGetBuildCmd(genome).getConfig().getSnpEffectPredictor();
 	}
 
 	/**
@@ -162,6 +157,19 @@ public class TestCasesIntegrationBase {
 		sepfg.setCircularCorrectLargeGap(circularCorrectlargeGap);
 		SnpEffectPredictor sep = sepfg.create();
 		return sep;
+	}
+
+	/**
+	 * Build a genome and return the build command
+	 */
+	public SnpEffCmdBuild buildGetBuildCmd(String genome) {
+		String args[] = { "build", genome };
+		SnpEff snpeff = new SnpEff(args);
+		snpeff.setVerbose(verbose);
+		snpeff.setDebug(debug);
+		SnpEffCmdBuild snpeffBuild = (SnpEffCmdBuild) snpeff.cmd();
+		snpeffBuild.run();
+		return snpeffBuild;
 	}
 
 	/**

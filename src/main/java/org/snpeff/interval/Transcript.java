@@ -1166,6 +1166,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		return version;
 	}
 
+	public boolean hasCds() {
+		return cdss != null && !cdss.isEmpty();
+	}
+
 	/**
 	 * Does this transcript have any errors?
 	 */

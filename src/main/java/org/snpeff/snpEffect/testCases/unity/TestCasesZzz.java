@@ -1,14 +1,10 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import java.util.List;
-
 import org.junit.Test;
-import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdBuild;
+import org.snpeff.snpEffect.commandLine.SnpEffCmdProtein;
 import org.snpeff.snpEffect.testCases.integration.TestCasesIntegrationBase;
 import org.snpeff.util.Gpr;
-import org.snpeff.vcf.EffFormatVersion;
-import org.snpeff.vcf.VcfEffect;
-import org.snpeff.vcf.VcfEntry;
 
 import junit.framework.Assert;
 
@@ -21,56 +17,25 @@ public class TestCasesZzz extends TestCasesIntegrationBase {
 
 	public TestCasesZzz() {
 		super();
-		testsDir = "tests/integration/large_deletion/";
+		testsDir = "tests/integration/covid19/";
 	}
 
 	/**
-	 * TODO: Merge into 'TestCasesIntegrationLargeDeletion'
+	 * TODO: Merge into 'TestCasesIntegrationCovid19'
 	 */
 	@Test
-	public void test_04() {
+	public void test_01() {
 		Gpr.debug("Test");
-		String genome = "testHg19Chr9";
-		String vcfFile = testsDir + "huge_deletion_fusion_chr9.vcf";
-		List<VcfEntry> vcfs = snpEffect(genome, vcfFile, null, EffFormatVersion.FORMAT_ANN_1);
+		verbose = true;
+		debug = true;
+		String genome = "test_NC_045512_01";
+		SnpEffCmdBuild buildCmd = buildGetBuildCmd(genome);
 
-		// Sanity check
-		Assert.assertEquals(1, vcfs.size());
-
-		// Find effects
-		boolean foundFusion = false, foundTrDel = false, foundExDel = false;
-		for (VcfEffect veff : vcfs.get(0).getVcfEffects()) {
-			if (verbose) System.out.println(veff);
-
-			// Fusion
-			if (veff.getEffectType() == EffectType.GENE_FUSION_REVERESE //
-					&& veff.getGeneName().equals("CDKN2A&CDKN2B-AS1") //
-			) {
-				if (verbose) System.out.println("FOUND:\t" + veff);
-				foundFusion = true;
-			}
-
-			// Transcript deletion
-			if (veff.getEffectType() == EffectType.TRANSCRIPT_DELETED //
-					&& veff.getTranscriptId().equals("NM_004936.3") //
-			) {
-				if (verbose) System.out.println("FOUND:\t" + veff);
-				foundTrDel = true;
-			}
-
-			// Exon deletion
-			if (veff.getEffectType() == EffectType.EXON_DELETED //
-					&& veff.getTranscriptId().equals("NM_001195132.1") //
-			) {
-				if (verbose) System.out.println("FOUND EXON LOSS:\t" + veff);
-				foundExDel = true;
-			}
-
-		}
-
-		// All three must be present
-		Assert.assertTrue("Could not find expected gene fusion", foundFusion);
-		Assert.assertTrue("Could not find expected transcript deletion", foundTrDel);
-		Assert.assertTrue("Could not find expected exon deletion", foundExDel);
+		// Make sure all proteins are OK
+		SnpEffCmdProtein protCmd = buildCmd.getSnpEffCmdProtein();
+		Assert.assertEquals(2, protCmd.getTotalOk());
+		Assert.assertEquals(0, protCmd.getTotalErrors());
+		Assert.assertEquals(0, protCmd.getTotalWarnings());
+		Assert.assertEquals(0, protCmd.getTotalNotFound());
 	}
 }

@@ -50,34 +50,19 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	 */
 	Transcript addCds(Feature fcds, Gene geneLatest, List<Transcript> trLatest) {
 		// Find (or create) transcript
-		Transcript tr = findTrForCds(fcds, geneLatest, trLatest);
+		Transcript tr = findOrCreateTranscript(fcds, geneLatest, trLatest);
 		//
 		// Mark transcript as protein coding
 		if (fcds.getAasequence() != null) tr.setProteinCoding(true);
 
 		// Check and set ribosomal slippage
-		if (fcds.get("ribosomal_slippage") != null) tr.setRibosomalSlippage(true);
+		if (fcds.isRibosomalSlippage()) tr.setRibosomalSlippage(true);
 
-		// Add exons?
-		if (fcds.hasMultipleCoordinates()) {
-			for (FeatureCoordinates fc : fcds) {
-				int cdsStart = fc.start - inOffset;
-				int cdsEnd = fc.end - inOffset;
-				Cds cds = new Cds(tr, cdsStart, cdsEnd, fcds.isComplement(), "CDS_" + tr.getId());
-				add(cds);
-			}
-
-			// Circular correction
-			CircularCorrection cc = new CircularCorrection(tr);
-			cc.setCorrectLargeGap(circularCorrectLargeGap);
-			cc.correct();
-		} else {
-			Cds cds = new Cds(tr, fcds.getStart() - inOffset, fcds.getEnd() - inOffset, fcds.isComplement(), "CDS_" + tr.getId());
-			add(cds);
-		}
+		// Add CDS information
+		createCdsInTranscript(tr, fcds);
 
 		// Add transcript - protein sequence mapping
-		proteinByTrId.put(tr.getId(), fcds.getAasequence());
+		proteinSequenceMapping(tr, fcds);
 
 		return tr;
 	}
@@ -86,17 +71,14 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	 *	Add all features
 	 */
 	protected void addFeatures(Features features) {
-		//---
 		// Add chromosome
-		//---
 		for (Feature f : features.getFeatures()) {
-			// Convert coordinates to zero-based
-			int start = f.getStart() - inOffset;
-			int end = f.getEnd() - inOffset;
-
 			// Add chromosome
 			if (f.getType() == Type.SOURCE) {
 				if (chromosome == null) {
+					// Convert coordinates to zero-based
+					int start = f.getStart() - inOffset;
+					int end = f.getEnd() - inOffset;
 					String chrName = chromoName(features, f);
 					chromosome = new Chromosome(genome, start, end, chrName);
 					add(chromosome);
@@ -122,35 +104,69 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		// Add a genes, transcripts and CDSs
 		//---
 		Gene geneLatest = null;
-		List<Transcript> trLatest = null;
+		List<Transcript> trLatestList = null;
+		Transcript trLatest = null;
 		for (Feature f : features.getFeatures()) {
 			if (f.getType() == Type.GENE) {
 				// Add gene
 				geneLatest = findOrCreateGene(f, chromosome, false);
+				trLatestList = null;
 				trLatest = null;
 			} else {
-				Transcript trl = null;
-
 				// Add feature
-				if (f.getType() == Type.MRNA) trl = addMrna(f, geneLatest);
-				else if (f.getType() == Type.CDS) trl = addCds(f, geneLatest, trLatest);
+				if (f.getType() == Type.MRNA) trLatest = addMrna(f, geneLatest);
+				else if (f.getType() == Type.CDS) trLatest = addCds(f, geneLatest, trLatestList);
+				else if (f.getType() == Type.MAT_PEPTIDE) addMaturePeptide(f, geneLatest, trLatest);
 
 				// Added transcript?
-				if (trl != null) {
+				if (trLatest != null) {
 					// If we are using another gene, then 'geneLatest' should change
 					if (geneLatest == null //
-							|| trLatest == null //
-							|| !trl.getParent().getId().equals(geneLatest.getId()) // New gene? i.e. gen IDs do not math
+							|| trLatestList == null //
+							|| !trLatest.getParent().getId().equals(geneLatest.getId()) // New gene?
 					) {
 						// Create new transcripts list
-						trLatest = new ArrayList<>();
-						trLatest.add(trl);
-					} else trLatest.add(trl);
+						trLatestList = new ArrayList<>();
+						trLatestList.add(trLatest);
+					} else trLatestList.add(trLatest);
 
-					geneLatest = (Gene) trl.getParent();
+					geneLatest = (Gene) trLatest.getParent();
 				}
 			}
 		}
+	}
+
+	/**
+	 * Add mature peptide: CDS and protein coding information
+	 */
+	void addMaturePeptide(Feature fmatpep, Gene geneLatest, Transcript trLatest) {
+		if (geneLatest == null) throw new RuntimeException("No latest gene while traying to add a " + fmatpep.getType() + ". This should not happen: Error in feature file?\nFeature: " + fmatpep);
+
+		// Create new transcript, copy transcript data, including ribosomal slippage flag
+		boolean strandMinus, ribosomalSlippage;
+		String trId = fmatpep.getMaturePeptideId();
+		Gene gene;
+		if (trLatest != null) {
+			strandMinus = trLatest.isStrandMinus();
+			ribosomalSlippage = trLatest.isRibosomalSlippage();
+			gene = (Gene) trLatest.getParent();
+		} else {
+			strandMinus = fmatpep.isComplement();
+			ribosomalSlippage = fmatpep.isRibosomalSlippage();
+			gene = geneLatest;
+		}
+
+		// Create transcript and add it
+		Transcript tr = new Transcript(gene, fmatpep.getStart(), fmatpep.getEnd(), strandMinus, trId);
+		tr.setProteinCoding(true);
+		tr.setRibosomalSlippage(ribosomalSlippage);
+		add(tr);
+
+		// Add CDS information
+		createCdsInTranscript(tr, fmatpep);
+
+		// Add transcript - protein sequence mapping
+		proteinSequenceMapping(tr, fmatpep);
 	}
 
 	/**
@@ -352,6 +368,29 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	}
 
 	/**
+	 * Create CDS information for transcript
+	 */
+	void createCdsInTranscript(Transcript tr, Feature fcds) {
+		// Add exons?
+		if (fcds.hasMultipleCoordinates()) {
+			for (FeatureCoordinates fc : fcds) {
+				int cdsStart = fc.start - inOffset;
+				int cdsEnd = fc.end - inOffset;
+				Cds cds = new Cds(tr, cdsStart, cdsEnd, fcds.isComplement(), "CDS_" + tr.getId());
+				add(cds);
+			}
+
+			// Circular correction
+			CircularCorrection cc = new CircularCorrection(tr);
+			cc.setCorrectLargeGap(circularCorrectLargeGap);
+			cc.correct();
+		} else {
+			Cds cds = new Cds(tr, fcds.getStart() - inOffset, fcds.getEnd() - inOffset, fcds.isComplement(), "CDS_" + tr.getId());
+			add(cds);
+		}
+	}
+
+	/**
 	 * Find (or create) a gene from a feature
 	 */
 	Gene findOrCreateGene(Feature f, Chromosome chr, boolean warn) {
@@ -373,35 +412,46 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 	/**
 	 * Find (or create) a transcript for this CDS feature
+	 * Note: The transcript has to match the coordinates and not have any associated CDSs
+	 * Returs: A transcript matching by transcript ID,
 	 */
-	Transcript findTrForCds(Feature fcds, Gene geneLatest, List<Transcript> trLatest) {
+	Transcript findOrCreateTranscript(Feature fcds, Gene geneLatest, List<Transcript> trLatest) {
 		// Try to find the 'latest' gene / transcript
 		Transcript trLatestMatch = findTrFromLatest(fcds, geneLatest, trLatest);
 		if (trLatestMatch != null) return trLatestMatch;
 
-		// Try to find transcript by id
+		// Try to find transcript based on transcript ID
 		String trId = fcds.getTranscriptId();
 		Transcript tr = findTranscript(trId);
-		if (tr != null) return tr;
+		if (tr != null && !tr.hasCds()) return tr; // If there is a transcript and does not have CDS data, we can use it
 
-		// Nothing found, create gene and transcript
-		int start = fcds.getStart() - inOffset; // Convert coordinates to zero-based
-		int end = fcds.getEnd() - inOffset;
+		// We need to create a new transcript, and maybe a new gene for the transcript as well
 
-		// Create gene (or use latest)
+		// Create gene or use latest?
 		Gene gene = null;
-		if (cdsMatchesGene(fcds, geneLatest)) gene = geneLatest;
-		else gene = findOrCreateGene(fcds, chromosome, false);
-
-		// Create transcript
-		if (trId == null) trId = "Tr_" + start + "_" + end;
-		tr = findTranscript(trId);
-		if (tr == null) {
-			if (debug) System.err.println("Transcript '" + trId + "' not found. Creating new transcript for gene '" + gene.getId() + "'.\n" + fcds);
-			tr = new Transcript(gene, start, end, fcds.isComplement(), trId);
-			add(tr);
+		int start, end;
+		boolean strandMinus;
+		if (tr != null) { // There is a transcript, but it already had CDS information
+			trId = unusedTranscriptId(trId); // We need to create a new transcript ID, because the current one is in use
+			gene = (Gene) tr.getParent();
+			start = tr.getStart();
+			end = tr.getEnd();
+			strandMinus = tr.isStrandMinus();
+		} else {
+			// Create gene or use latest?
+			if (cdsMatchesGene(fcds, geneLatest)) gene = geneLatest;
+			else gene = findOrCreateGene(fcds, chromosome, false);
+			start = fcds.getStart() - inOffset;
+			end = fcds.getEnd() - inOffset;
+			strandMinus = fcds.isComplement();
 		}
 
+		// Create a new transcript
+		if (debug) System.err.println("Transcript '" + trId + "' not found. Creating new transcript for gene '" + gene.getId() + "'.\n" + fcds);
+		tr = new Transcript(gene, start, end, strandMinus, trId);
+
+		// Add transcript
+		add(tr);
 		return tr;
 	}
 
@@ -416,7 +466,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		if (cdsMatchesGene(fcds, geneLatest)) {
 			// Find first matching transcript without CDS information
 			for (Transcript tr : trLatest) {
-				if (tr.getCds().isEmpty() && cdsMatchesTr(fcds, tr)) return tr;
+				if (!tr.hasCds() && cdsMatchesTr(fcds, tr)) return tr;
 			}
 		}
 
@@ -451,6 +501,17 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	}
 
 	/**
+	 * Add protein sequence mapping for transcript 'tr'
+	 */
+	void proteinSequenceMapping(Transcript tr, Feature fcds) {
+		String proteinSeq = fcds.getAasequence();
+		if (proteinSeq == null) return;
+		String trId = tr.getId();
+		if (proteinByTrId.containsKey(trId)) throw new RuntimeException("Protein sequence for transcript id '" + trId + "' already exists:\nProtein sequence: " + proteinSeq + "\nFeature: " + fcds);
+		else proteinByTrId.put(trId, proteinSeq);
+	}
+
+	/**
 	 * Get sequence either from features or from FASTA file
 	 */
 	String sequence(Features features) {
@@ -469,5 +530,15 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 		}
 
 		throw new RuntimeException("Cannot find sequence for '" + config.getGenome().getVersion() + "'");
+	}
+
+	/**
+	 * Find an unused transcript ID based on 'trId'
+	 */
+	String unusedTranscriptId(String trId) {
+		for (int i = 2; true; i++) {
+			String tridi = trId + '.' + i;
+			if (findTranscript(tridi) == null) return tridi;
+		}
 	}
 }
