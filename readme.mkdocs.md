@@ -1,10 +1,9 @@
 # Installation of mkdocs
 
-To build docs you need mkdocs and mkdocs-material theme installed:
+To build docs you need mkdocs-material theme installed (mkdocs dependencies is included in mkdocs-material now):
 <https://www.mkdocs.org/#installing-mkdocs>
 
-    pip install mkdocs
-    pip install mkdocs-material
+    pip install mkdocs-material==5.2
 
 # Building docs
 
