@@ -22,7 +22,7 @@ public class TestCasesIntegrationCovid19 extends TestCasesIntegrationBase {
 	@Test
 	public void test_01() {
 		Gpr.debug("Test");
-		verbose = true;
+		verbose = debug = true;
 		String genome = "test_NC_045512_01";
 		SnpEffCmdBuild buildCmd = buildGetBuildCmd(genome);
 
