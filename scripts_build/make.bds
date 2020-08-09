@@ -28,7 +28,7 @@ uploadCore			:= false		help Upload 'core' package
 uploadDbNsfp		:= false		help Upload dbNsfp to google drive
 uploadDbs			:= false		help Upload all databases in 'zip' directory
 uploadDev			:= false		help Upload 'development' version
-uploadHtml 			:= false		help Upload weh pages
+uploadHtml 			:= false		help Upload web pages
 string[] zipGenome	= []			help Zip a specific genome
 
 # Process us one CPU
@@ -512,7 +512,7 @@ void makeDistro() {
 	dirZip.mkdir()	# Make sure zip dir exists
 	zipCore()
 	zipDbs()
-	zipBundles()
+	# zipBundles()	# As of 2020-08 we'll stop using "bundles" because these were only used to reduce the number of files on SourceForge
 }
 
 #-------------------------------------------------------------------------------
@@ -602,7 +602,15 @@ void uploadDbNsfp2Gdrive() {
 }
 
 #-------------------------------------------------------------------------------
-# Upload database files
+# Upload database files to Azure
+#-------------------------------------------------------------------------------
+void uploadDbs2Azure() {
+	ver := versionUnd()
+	sys azcopy ....
+}
+
+#-------------------------------------------------------------------------------
+# Upload database files to SourceForge
 #-------------------------------------------------------------------------------
 void uploadDbs2Sf() {
 	ver := versionUnd()
@@ -783,7 +791,7 @@ if( query )						queryUcscAll()								# Query UCSC database
 if( test )						runTests()									# Run test cases 
 if( testHgvs )					runTestsSnpEffHgvs()						# Run test cases (SnpEff HGVS)
 if( uploadCore )				uploadCore2Sf()								# Upload 'core' files
-if( uploadDbs )					uploadDbs2Sf()								# Upload all database files in 'zip' dir
+if( uploadDbs )					uploadDbs2Azure()							# Upload all database files in 'zip' dir
 if( uploadDbNsfp )				uploadDbNsfp2Gdrive()						# Upload dbNsfp database files to google drive
 if( uploadDev )					uploadDev2Sf()								# Upload 'development' version
 if( uploadHtml )				uploadHtml2Sf()								# Upload html pages
