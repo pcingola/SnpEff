@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 # Scripts dir
-scripts=`dirname "$0"`
+scripts=$(pwd -P $(cd $(dirname "$0")))
 
 # Change this 
 version="4.1a"
