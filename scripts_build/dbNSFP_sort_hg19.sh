@@ -1,15 +1,18 @@
 #!/bin/bash -e
 
+# Scripts dir
+scripts=`dirname "$0"`
+
 # Change this 
 version="4.1a"
+
+# Go to dbNSFP dir
+cd $HOME/snpEff/db/GRCh38/dbNSFP
 
 # File names
 prefix_input="dbNSFP${version}_variant.chr"
 prefix_split="dbNSFP.split"
 output="dbNSFP${version}.sort_hg19.txt"
-
-# Scripts dir
-scripts=`dirname "$0"`
 
 echo "Splitting input file '$input' by chromosome"
 cat $prefix_input* \
