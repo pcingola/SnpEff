@@ -2,6 +2,7 @@
 
 # Scripts dir
 scripts=$(pwd -P $(cd $(dirname "$0")))
+echo "SCRIPTS='$scripts'"
 
 # Change this 
 version="4.1a"
