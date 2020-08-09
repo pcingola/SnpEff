@@ -588,7 +588,19 @@ void runTestsSnpEffUnity() {
 }
 
 #-------------------------------------------------------------------------------
-# Upload core files
+# Upload core files to Azure
+#-------------------------------------------------------------------------------
+void uploadCore2Azure() {
+	if( azureQueryString.isEmpty() ) error("Command line option '-azureQueryString' must be provided")
+	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
+	zipLatest := "snpEff_latest_core.zip"
+	azureContainer = 'versions'
+	sys azcopy cp $zip       "$azureBlobEndpoint/$azureContainer/$azureQueryString"
+	sys azcopy cp $zipLatest "$azureBlobEndpoint/$azureContainer/$azureQueryString"
+}
+
+#-------------------------------------------------------------------------------
+# Upload core files to SourceForge
 #-------------------------------------------------------------------------------
 void uploadCore2Sf() {
 	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
@@ -802,7 +814,7 @@ if( make )						build()										# Build (create JAR files)
 if( query )						queryUcscAll()								# Query UCSC database
 if( test )						runTests()									# Run test cases 
 if( testHgvs )					runTestsSnpEffHgvs()						# Run test cases (SnpEff HGVS)
-if( uploadCore )				uploadCore2Sf()								# Upload 'core' files
+if( uploadCore )				uploadCore2Azure()							# Upload 'core' files
 if( uploadDbs )					uploadDbs2Azure()							# Upload all database files in 'zip' dir
 if( uploadDbNsfp )				uploadDbNsfp2Gdrive()						# Upload dbNsfp database files to google drive
 if( uploadDev )					uploadDev2Sf()								# Upload 'development' version
