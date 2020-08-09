@@ -8,7 +8,8 @@
 
 
 # Command line options
-bundleLists			:= false		help Create bundle lists and config entries
+help Build and test options
+bundleLists			:= false		help Create bundle lists and config entries. OBSOLETE
 config				:= false		help Create config file
 db					:= false		help Build databases
 string[] dbs						help Build databases
@@ -16,20 +17,29 @@ dbTest				:= false		help Build databases used in test cases
 distro	 			:= false		help Create distribution files (zip)
 distroBundles		:= false		help Create bundle files (zip)
 distroCore 			:= false		help Create distribution files (zip only 'core')
+make	 			:= false		help Make (build JAR files)
+test	 			:= false		help Run SnpEff / SnpSift test cases
+testHgvs 			:= false		help Run SnpEff HGVS test cases
+
+help Data download options
 download 			:= false		help Download all genomes
 downloadSet			:= ''			help Download one genomes set
 downloadUcsc		:= ''			help Download genome files from UCSC (genome name)
 downloadNcbi		:= ''			help Download genome files from NCBI (genome name)
-make	 			:= false		help Make (build JAR files)
 query	 			:= false		help Run queries against UCSC MySql server
-test	 			:= false		help Run SnpEff / SnpSift test cases
-testHgvs 			:= false		help Run SnpEff HGVS test cases
+
+help Upload options
 uploadCore			:= false		help Upload 'core' package
 uploadDbNsfp		:= false		help Upload dbNsfp to google drive
 uploadDbs			:= false		help Upload all databases in 'zip' directory
 uploadDev			:= false		help Upload 'development' version
 uploadHtml 			:= false		help Upload web pages
 string[] zipGenome	= []			help Zip a specific genome
+
+help Azure options
+azureBlobEndpoint	:= 'https://snpeff.blob.core.windows.net'	help Azure Blob entry point
+azureContainer		:= 'databases'								help Azure container for databases
+azureQueryString	:= ''										help Azure 'query string' containing a security token.
 
 # Process us one CPU
 cpus = 1
@@ -606,7 +616,9 @@ void uploadDbNsfp2Gdrive() {
 #-------------------------------------------------------------------------------
 void uploadDbs2Azure() {
 	ver := versionUnd()
-	sys azcopy ....
+	if( azureQueryString.isEmpty() ) error("Command line option '-azureQueryString' must be provided")
+	sys ln -s $dirZip $ver
+	sys azcopy cp $ver/ "$azureBlobEndpoint/$azureContainer/$azureQueryString" --recursive
 }
 
 #-------------------------------------------------------------------------------
