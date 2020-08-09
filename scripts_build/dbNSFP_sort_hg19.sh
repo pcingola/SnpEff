@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 # Change this 
-version="3.5c"
+version="4.1a"
 
 # File names
 prefix_input="dbNSFP${version}_variant.chr"
