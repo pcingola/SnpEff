@@ -2,7 +2,7 @@
 set -o pipefail
 
 # Scripts dir
-scripts=$(pwd -P $(cd $(dirname "$0")))
+scripts=$(cd $(dirname "$0"); pwd -P)
 echo "0='$0'"
 echo "SCRIPTS='$scripts'"
 
