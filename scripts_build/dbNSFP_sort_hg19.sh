@@ -1,7 +1,9 @@
-#!/bin/bash -e
+#!/bin/bash -eu
+set -o pipefail
 
 # Scripts dir
 scripts=$(pwd -P $(cd $(dirname "$0")))
+echo "0='$0'"
 echo "SCRIPTS='$scripts'"
 
 # Change this 
