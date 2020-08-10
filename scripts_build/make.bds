@@ -597,6 +597,11 @@ void uploadCore2Azure() {
 	azureContainer = 'versions'
 	sys azcopy cp $zip       "$azureBlobEndpoint/$azureContainer/$azureQueryString"
 	sys azcopy cp $zipLatest "$azureBlobEndpoint/$azureContainer/$azureQueryString"
+	# Add version file
+	htmlDir := "$HOME/workspace/SnpEff/docs"
+	verFile := htmlDir.createVersionFile()
+	verBase := verFile.baseName()
+	sys azcopy cp $verFile "$azureBlobEndpoint/$azureContainer/$verBase$azureQueryString"
 }
 
 #-------------------------------------------------------------------------------
@@ -627,14 +632,15 @@ void uploadDbNsfp2Gdrive() {
 # Upload database files to Azure
 #-------------------------------------------------------------------------------
 void uploadDbs2Azure() {
-	ver := versionUnd()
 	if( azureQueryString.isEmpty() ) error("Command line option '-azureQueryString' must be provided")
+	ver := versionUnd()
 	sys ln -s $dirZip $ver
 	sys azcopy cp $ver/ "$azureBlobEndpoint/$azureContainer/$azureQueryString" --recursive
 }
 
 #-------------------------------------------------------------------------------
 # Upload database files to SourceForge
+# DEPRECATED
 #-------------------------------------------------------------------------------
 void uploadDbs2Sf() {
 	ver := versionUnd()
@@ -642,7 +648,18 @@ void uploadDbs2Sf() {
 }
 
 #-------------------------------------------------------------------------------
-# Upload core files
+# Upload core development files to azure
+#-------------------------------------------------------------------------------
+void uploadDev2Azure() {
+	if( azureQueryString.isEmpty() ) error("Command line option '-azureQueryString' must be provided")
+	azureContainer = 'versions'
+	zipDev := "snpEff_development.zip"
+	sys azcopy cp $zipDev "$azureBlobEndpoint/$azureContainer/$zipDev$azureQueryString"
+}
+
+#-------------------------------------------------------------------------------
+# Upload core development files to SourceForge
+# DEPRECATED
 #-------------------------------------------------------------------------------
 void uploadDev2Sf() {
 	zipDev    := "snpEff_development.zip"
@@ -651,9 +668,10 @@ void uploadDev2Sf() {
 
 #-------------------------------------------------------------------------------
 # Upload binary files
+# DEPRECATED: Pages moved to GitHub
 #-------------------------------------------------------------------------------
 void uploadHtml2Sf() {
-	htmlDir := "$HOME/workspace/SnpEff/html"
+	htmlDir := "$HOME/workspace/SnpEff/docs"
 	verFile := htmlDir.createVersionFile()
 
 	# Upload HTML, versions and images to SF
