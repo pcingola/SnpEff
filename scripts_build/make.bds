@@ -90,7 +90,7 @@ pwmsBin				:= "$dirDb/jaspar/pwms.bin"
 ensembl2refSeqTrIds := "$dirDb/ensembl2refSeq/ensembl2refSeq.GRCh.txt"
 
 # URLs
-snpeffDownload		:= "http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip"
+snpeffDownload		:= "$azureBlobEndpoint/versions/snpEff_latest_core.zip"
 
 # Output files
 buildSummary		:= "build.out"
