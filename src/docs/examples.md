@@ -16,7 +16,7 @@ Users of Windows computers can install CygWin, a free Linux-like environment for
 
 **Software:** We use the SnpEff annotation program and its companion tool SnpSift. These programs can perform annotation, primary impact assessment and variants filtering,
 as well as many other tasks beyond the scope of this protocol.
-We highly recommend reading their comprehensive documentation available [here](se_annfield.md).
+We highly recommend reading their comprehensive documentation available [here](adds/VCFannotationformat_v1.0.pdf).
 
 Before starting the protocol, it is necessary to download and install SnpEff. To do this, open a Unix, Linux or Cygwin shell and execute the following commands:
 ```

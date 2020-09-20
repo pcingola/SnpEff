@@ -44,7 +44,6 @@ nav:
       - FAQ: faq.md
       - License: license.md
   - SnpEff:
-     - Important changes. 'ANN' field: se_annfield.md
      - Introduction: se_introduction.md
      - Running SnpEff: se_running.md
      - Commands &amp; command line options: se_commandline.md
@@ -81,7 +80,7 @@ nav:
      - SnpSift GeneSets: ss_genesets.md
      - SnpSift GT: ss_gt.md
      - SnpSift VcfCheck: ss_vcfcheck.md
-  - Download&Install:
+  - 'Download & Install':
      - Download and install: download.md
   - About:
      - About: about.md

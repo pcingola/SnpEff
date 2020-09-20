@@ -36,9 +36,8 @@ Features:
 * **Cancer** variants analysis
 * **GATK** compatible (`-o gatk`)
 * **HGVS** notation
-*  **Sequence Ontology** standardized terms
+* **Sequence Ontology** standardized terms
 
-[View details](se_annfield.md){: .button}
 
 ##  SnpSift
 

@@ -71,6 +71,18 @@ Here is an example of some header lines added to an annotated file:
 
 Functional annotations information is added to the INFO field using an `ANN` tag.
 
+**NOTE:** field. SnpEff implements the [**VCF annotation standard 'ANN' field.**](adds/VCFannotationformat_v1.0.pdf)
+
+This format specification has been created by the developers of the most widely used variant annotation programs (SnpEff, ANNOVAR and ENSEMBL's VEP)
+and attempts to:
+
+* provide a common framework for variant annotation,
+* make pipeline development easier,
+* facilitate benchmarking, and
+* improve some known problems in variant annotations.
+
+Obviously this 'ANN' field broke compatibility with the old 'EFF' field from old SnpEff versions. In order to use the old 'EFF' field, you can use the `-formatEff` command line option.
+
 The annotation 'ANN' field looks like this (the full annotation standard specification can be found [here](adds/VCFannotationformat_v1.0.pdf)).
 
 ```
