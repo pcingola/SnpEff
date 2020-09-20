@@ -1,10 +1,15 @@
+
 site_name: 'SnpEff & SnpSift Documentation'
 site_description: 'SnpEff and SnpSift documentation'
 site_author: 'Pablo Cingolani'
 copyright: 'Pablo Cingolani'
 repo_name: 'SnpEff'
+
 repo_url: 'https://github.com/pcingola/SnpEff'
 edit_uri: ''
+
+docs_dir: 'src/docs'
+site_dir: 'site'
 
 extra_css:
   - 'stylesheets/extra.css'
@@ -16,6 +21,7 @@ theme:
       accent: 'indigo'
   features:
       - tabs
+
 markdown_extensions:
   - admonition
   - attr_list

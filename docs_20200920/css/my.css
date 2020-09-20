@@ -1,0 +1,20 @@
+
+/* PRE tag using sliders is too big */
+pre {
+  overflow: auto;
+  word-wrap: normal;
+  white-space: pre;
+}
+
+/* Customize Jumbotron colors */
+.jumbotron {
+  background: #212021; /* Old browsers */
+  background: -moz-linear-gradient(45deg,  #212021 0%, #685363 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#212021), color-stop(100%,#685363)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(45deg,  #212021 0%,#685363 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(45deg,  #212021 0%,#685363 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(45deg,  #212021 0%,#685363 100%); /* IE10+ */
+  background: linear-gradient(45deg,  #212021 0%,#685363 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#212021', endColorstr='#685363',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+

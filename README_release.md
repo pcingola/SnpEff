@@ -49,6 +49,9 @@ mvn install:install-file -Dfile=antlr-4.5.1-complete.jar -DgroupId=org.antlr -Da
 
 # SnpEff's Documentation
 
+
+**NOTE**: GitHub requires a `/docs` directory (un the main project's directory) for the HTML pages to be published in GitHub pages. But `mkdocs` requires a `docs` directory as the source for markdown files, so `mkdocs` files are located in `src/docs`
+
 SnpEff uses `mkdocs`.
 To build docs you need mkdocs-material theme installed.
 `mkdocs` dependencies is included in `mkdocs-material` now (ref: <https://www.mkdocs.org/#installing-mkdocs>
