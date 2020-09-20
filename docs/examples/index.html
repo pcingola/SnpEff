@@ -1,0 +1,2065 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SnpEff and SnpSift documentation">
+      
+      
+      
+        <meta name="author" content="Pablo Cingolani">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.2.0">
+    
+    
+      
+        <title>Usage examples - SnpEff & SnpSift Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.18ac144a.min.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/palette.616af814.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#3f51b5">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#usage-examples" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="SnpEff & SnpSift Documentation" class="md-header-nav__button md-logo" aria-label="SnpEff & SnpSift Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            SnpEff & SnpSift Documentation
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Usage examples
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+          
+
+  
+
+<nav class="md-tabs md-tabs--active" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href=".." class="md-tabs__link md-tabs__link--active">
+          Home
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../se_annfield/" class="md-tabs__link">
+          SnpEff
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../ss_introduction/" class="md-tabs__link">
+          SnpSift
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../download/" class="md-tabs__link">
+          Download&Install
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../about/" class="md-tabs__link">
+          About
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SnpEff & SnpSift Documentation" class="md-nav__button md-logo" aria-label="SnpEff & SnpSift Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    SnpEff & SnpSift Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1" checked>
+    
+    <label class="md-nav__link" for="nav-1">
+      Home
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Home" data-md-level="1">
+      <label class="md-nav__title" for="nav-1">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Home
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../features/" title="Features" class="md-nav__link">
+      Features
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Usage examples
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Usage examples" class="md-nav__link md-nav__link--active">
+      Usage examples
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#materials" class="md-nav__link">
+    Materials
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-1-coding-variants" class="md-nav__link">
+    Example 1: Coding variants
+  </a>
+  
+    <nav class="md-nav" aria-label="Example 1: Coding variants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-primary-variant-annotation-and-quality-control" class="md-nav__link">
+    Step 1: Primary variant annotation and quality control.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-counting-variants-in-case-and-control-subjects" class="md-nav__link">
+    Step 2: Counting variants in case and control subjects.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-filtering-variants" class="md-nav__link">
+    Step 3: Filtering variants.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-using-clinical-databases" class="md-nav__link">
+    Step 4. Using clinical databases.
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-2-software-integration-gatk-galaxy" class="md-nav__link">
+    Example 2: Software Integration (GATK &amp; Galaxy)
+  </a>
+  
+    <nav class="md-nav" aria-label="Example 2: Software Integration (GATK &amp; Galaxy)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gatk" class="md-nav__link">
+    GATK
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galaxy" class="md-nav__link">
+    Galaxy
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-3-non-coding-variants" class="md-nav__link">
+    Example 3: Non-Coding variants
+  </a>
+  
+    <nav class="md-nav" aria-label="Example 3: Non-Coding variants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-annotating-variants" class="md-nav__link">
+    Step 1. Annotating variants.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-adding-custom-regulatory-information" class="md-nav__link">
+    Step 2. Adding custom regulatory information.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-adding-conservation-information" class="md-nav__link">
+    Step 3. Adding conservation information.
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-4-sequencing-data-analysis" class="md-nav__link">
+    Example 4: Sequencing data analysis
+  </a>
+  
+    <nav class="md-nav" aria-label="Example 4: Sequencing data analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sequencing-data-example" class="md-nav__link">
+    Sequencing data example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-5-filter-out-variants-dbsnp" class="md-nav__link">
+    Example 5: Filter out variants (dbSnp)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-6-custom-annotations" class="md-nav__link">
+    Example 6: Custom annotations
+  </a>
+  
+    <nav class="md-nav" aria-label="Example 6: Custom annotations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-build-database" class="md-nav__link">
+    Step 1: Build database.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-custom-annotations-file" class="md-nav__link">
+    Step 2: Create custom annotations file.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-annotate" class="md-nav__link">
+    Step 3: Annotate.
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../citing/" title="Paper & Citations" class="md-nav__link">
+      Paper & Citations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../users_of_snpeff/" title="Who uses SnpEff?" class="md-nav__link">
+      Who uses SnpEff?
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../integration/" title="Integration" class="md-nav__link">
+      Integration
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../faq/" title="FAQ" class="md-nav__link">
+      FAQ
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      SnpEff
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="SnpEff" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        SnpEff
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_annfield/" title="Important changes. 'ANN' field" class="md-nav__link">
+      Important changes. 'ANN' field
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_introduction/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_running/" title="Running SnpEff" class="md-nav__link">
+      Running SnpEff
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_commandline/" title="Commands & command line options" class="md-nav__link">
+      Commands &amp; command line options
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_inputoutput/" title="Input & output files" class="md-nav__link">
+      Input &amp; output files
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_cansersamples/" title="Cancer samples" class="md-nav__link">
+      Cancer samples
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_additionalann/" title="Additional annotations" class="md-nav__link">
+      Additional annotations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_outputsummary/" title="Output summary files" class="md-nav__link">
+      Output summary files
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_troubleshooting/" title="Troubleshooting" class="md-nav__link">
+      Troubleshooting
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_buildingdb/" title="Building databases" class="md-nav__link">
+      Building databases
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_buildingreg/" title="Building databases. Regulatory and Non-coding" class="md-nav__link">
+      Building databases. Regulatory and Non-coding
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_integration/" title="Integration. GATK and Galaxy" class="md-nav__link">
+      Integration. GATK and Galaxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_commands/" title="Commands and utilities" class="md-nav__link">
+      Commands and utilities
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      SnpSift
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="SnpSift" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        SnpSift
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_introduction/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_filter/" title="SnpSift Filter" class="md-nav__link">
+      SnpSift Filter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_annotate/" title="SnpSift Annotate" class="md-nav__link">
+      SnpSift Annotate
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_casecontrol/" title="SnpSift CaseControl" class="md-nav__link">
+      SnpSift CaseControl
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_intervals/" title="SnpSift Intervals" class="md-nav__link">
+      SnpSift Intervals
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_intervalsindex/" title="SnpSift Intervals Index" class="md-nav__link">
+      SnpSift Intervals Index
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_join/" title="SnpSift Join" class="md-nav__link">
+      SnpSift Join
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_rmrefgen/" title="SnpSift RmRefGen" class="md-nav__link">
+      SnpSift RmRefGen
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_tstv/" title="SnpSift TsTv" class="md-nav__link">
+      SnpSift TsTv
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_extractfields/" title="SnpSift Extract Fields" class="md-nav__link">
+      SnpSift Extract Fields
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_varianttype/" title="SnpSift Variant Type" class="md-nav__link">
+      SnpSift Variant Type
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_gwascatalog/" title="SnpSift GWAS Catalog" class="md-nav__link">
+      SnpSift GWAS Catalog
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_dbnsfp/" title="SnpSift dbNSFP" class="md-nav__link">
+      SnpSift dbNSFP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_split/" title="SnpSift Split" class="md-nav__link">
+      SnpSift Split
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_phastcons/" title="SnpSift PhastCons" class="md-nav__link">
+      SnpSift PhastCons
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_concordance/" title="SnpSift Concordance" class="md-nav__link">
+      SnpSift Concordance
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_private/" title="SnpSift Private" class="md-nav__link">
+      SnpSift Private
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_vcf2ped/" title="SnpSift Vcf2Tped" class="md-nav__link">
+      SnpSift Vcf2Tped
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_intersect/" title="SnpSift Intersect" class="md-nav__link">
+      SnpSift Intersect
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_rminfo/" title="SnpSift RmInfo" class="md-nav__link">
+      SnpSift RmInfo
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_genesets/" title="SnpSift GeneSets" class="md-nav__link">
+      SnpSift GeneSets
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_gt/" title="SnpSift GT" class="md-nav__link">
+      SnpSift GT
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_vcfcheck/" title="SnpSift VcfCheck" class="md-nav__link">
+      SnpSift VcfCheck
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Download&Install
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Download&Install" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Download&Install
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../download/" title="Download and install" class="md-nav__link">
+      Download and install
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      About
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="About" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        About
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../about/" title="About" class="md-nav__link">
+      About
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../xiangyi_lu_donate/" title="In Memory" class="md-nav__link">
+      In Memory
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#materials" class="md-nav__link">
+    Materials
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-1-coding-variants" class="md-nav__link">
+    Example 1: Coding variants
+  </a>
+  
+    <nav class="md-nav" aria-label="Example 1: Coding variants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-primary-variant-annotation-and-quality-control" class="md-nav__link">
+    Step 1: Primary variant annotation and quality control.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-counting-variants-in-case-and-control-subjects" class="md-nav__link">
+    Step 2: Counting variants in case and control subjects.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-filtering-variants" class="md-nav__link">
+    Step 3: Filtering variants.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-using-clinical-databases" class="md-nav__link">
+    Step 4. Using clinical databases.
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-2-software-integration-gatk-galaxy" class="md-nav__link">
+    Example 2: Software Integration (GATK &amp; Galaxy)
+  </a>
+  
+    <nav class="md-nav" aria-label="Example 2: Software Integration (GATK &amp; Galaxy)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gatk" class="md-nav__link">
+    GATK
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#galaxy" class="md-nav__link">
+    Galaxy
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-3-non-coding-variants" class="md-nav__link">
+    Example 3: Non-Coding variants
+  </a>
+  
+    <nav class="md-nav" aria-label="Example 3: Non-Coding variants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-annotating-variants" class="md-nav__link">
+    Step 1. Annotating variants.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-adding-custom-regulatory-information" class="md-nav__link">
+    Step 2. Adding custom regulatory information.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-adding-conservation-information" class="md-nav__link">
+    Step 3. Adding conservation information.
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-4-sequencing-data-analysis" class="md-nav__link">
+    Example 4: Sequencing data analysis
+  </a>
+  
+    <nav class="md-nav" aria-label="Example 4: Sequencing data analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sequencing-data-example" class="md-nav__link">
+    Sequencing data example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-5-filter-out-variants-dbsnp" class="md-nav__link">
+    Example 5: Filter out variants (dbSnp)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-6-custom-annotations" class="md-nav__link">
+    Example 6: Custom annotations
+  </a>
+  
+    <nav class="md-nav" aria-label="Example 6: Custom annotations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-build-database" class="md-nav__link">
+    Step 1: Build database.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-custom-annotations-file" class="md-nav__link">
+    Step 2: Create custom annotations file.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-annotate" class="md-nav__link">
+    Step 3: Annotate.
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                <h1 id="usage-examples">Usage examples</h1>
+<h2 id="materials">Materials</h2>
+<p>In this protocol we show how to analyze genomic variants using the SnpEff pipeline.</p>
+<p><strong>Computer hardware:</strong> The materials required for this protocol are:</p>
+<ul>
+<li>a computer running a Unix operating system (Linux, OS.X),</li>
+<li>at least 4GB of RAM</li>
+<li>at least 1Gb of free disk space,</li>
+<li>Java version 1.8 or higher installed, and</li>
+<li>a reasonably fast internet connection.</li>
+</ul>
+<p>Users of Windows computers can install CygWin, a free Linux-like environment for Windows, although the precise commands listed in the protocol may need to adapted.</p>
+<p><strong>Software:</strong> We use the SnpEff annotation program and its companion tool SnpSift. These programs can perform annotation, primary impact assessment and variants filtering,
+as well as many other tasks beyond the scope of this protocol.
+We highly recommend reading their comprehensive documentation available <a href="../se_annfield/">here</a>.</p>
+<p>Before starting the protocol, it is necessary to download and install SnpEff. To do this, open a Unix, Linux or Cygwin shell and execute the following commands:</p>
+<pre><code># Move to home directory
+cd
+
+# Download and install SnpEff
+curl -v -L http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip &gt; snpEff_latest_core.zip
+unzip snpEff_latest_core.zip
+</code></pre>
+
+<p><strong>Notes:</strong></p>
+<ul>
+<li>SnpEff &amp; SnpSift annotation software used in this protocol are under very active development and some command line option may change in the future.</li>
+<li>The standard installation is to add the package in the "$HOME/snpEff" directory (where $HOME is your home directory). To install SnpEff elsewhere, update the "data_dir" parameter in your "snpEff.config" file, as described in the SnpEff documentation.</li>
+</ul>
+<p>Once SnpEff is installed, we will enter the following commands to download the pre-built human database (GRCh37.75) that will be used to annotate our data.</p>
+<pre><code>cd snpEff
+java -jar snpEff.jar download -v GRCh37.75
+</code></pre>
+
+<p>A list of pre-built databases for all other species is available by running the following command:</p>
+<pre><code>java -jar snpEff.jar databases
+</code></pre>
+<h2 id="example-1-coding-variants">Example 1: Coding variants</h2>
+<p>We show how to use SnpEff &amp; SnpSift to annotate, prioritize and filter coding variants.</p>
+<p><strong>Dataset:</strong> In this genomic annotation example, we use a simulated dataset to show how to find genetic variants of a Mendelian recessive disease, Cystic fibrosis, caused by a high impact coding variant, a nonsense mutation in CFTR gene (G542*).<br />
+The data files come from the publicly available "CEPH_1463" dataset, sequenced by <a href="http://www.completegenomics.com/public-data/">Complete Genomics</a>, and contains sequencing information for a family consisting of 4 grandparents, 2 parents and 11 siblings.</p>
+<p><img alt="figure2" class="center" src="../images/Cingolani_Figure2.png" /></p>
+<p>Although these are healthy individuals, we artificially introduced a known Cystic fibrosis mutation on three siblings (cases) in a manner that was consistent with the underlying haplotype structure.</p>
+<p>We now download and un-compress the example data used in this protocol, which, for reasons of space and time, is limited to only chromosome 7 and 17:</p>
+<pre><code># Go to SnpEff's dir
+cd ~/snpEff
+
+# Download sample data
+curl -v -L http://sourceforge.net/projects/snpeff/files/protocols.zip &gt; protocols.zip
+unzip protocols.zip
+</code></pre>
+
+<p>The goal in this example is to use SnpEff to find a mutation causing a Mendelian recessive trait. This will be done using a dataset of variant calls for chromosome 7 from a pedigree of 17 healthy individuals, sequenced by Complete Genomics, in which a coding variant causing cystic fibrosis was artificially introduced in three siblings (see Materials). For the purpose of this example, we assume that we do not know the causative variant, but that we know that we are dealing with a Mendelian recessive disorder, where the three siblings are affected (cases), but the 14 parents and grandparents are not (controls).</p>
+<p>Genomic variants are usually provided in a VCF file containing variant information of all the samples; storing the variant data in a single VCF file is the standard practice, not only because variant calling algorithms have better accuracy when run on all samples simultaneously, but also because it is much easier to annotate, manipulate and compare individuals when the data is stored and transferred together.
+A caveat of this approach is that VCF files can become very large when performing experiments with thousands of samples (from several Gigabytes to Terabytes in size).</p>
+<p>In the following protocol, SnpEff will add annotation fields to each variant record in the input VCF file.
+We will then use SnpSift, a filtering program to extract the most significant variants having annotations meeting certain criteria.</p>
+<h3 id="step-1-primary-variant-annotation-and-quality-control">Step 1: Primary variant annotation and quality control.</h3>
+<p>Our first step is to annotate each of the ~500,000 variants contained in the VCF file.
+By default, SnpEff adds primary annotations and basic impact assessment for coding and non-coding variants as described above.
+SnpEff has several command line options that can be used in this annotation stage and which are described in detail in the <a href="../se_commandline/">online manual</a>.</p>
+<p>In this example, we annotate (all these annotations are activated by default when using SnpEff):</p>
+<ul>
+<li>loss of function and nonsense mediated decay predictions;</li>
+<li>protein domain annotations from the curated NextProt database;</li>
+<li>putative transcription factor binding sites from the ENSEMBL 'Regulatory Build' and Jaspar database;</li>
+<li>use HGVS notation for amino acid changes; and</li>
+<li>to create a web page summarizing the annotation results in "ex1.html" (option <code>-stats</code>):<pre><code>java -Xmx4g -jar snpEff.jar -v -stats ex1.html GRCh37.75 protocols/ex1.vcf &gt; protocols/ex1.ann.vcf
+</code></pre>
+</li>
+</ul>
+<p>SnpEff produces three output files :</p>
+<ul>
+<li>the HTML file containing summary statistics about the variants and their annotations;</li>
+<li>an annotated VCF file; and</li>
+<li>a text file summarizing the number of variant types per gene.</li>
+</ul>
+<p>Creation of the summary files can be de-activated to speed up the program (for example, when the application is used together with Galaxy).
+By default, the statistics file "ex1.html" is a standard HTML file that can be opened in any web browser to view quality control (QC) metrics.
+It can also be created in comma-separated values format (CSV) to be used by downstream processing programs as part of an automated pipeline.
+In our example, the summary file contains basic quality control statistics calculated from the variant file: for our data, the Ts/Ts ratio is close to 2.0 (Figure 1c) and missense / silent ratio is around 1.0 (Figure 1d), both of which are expected for human data (but these numbers may differ for other species).</p>
+<p><img alt="figure1" class="center" src="../images/Cingolani_Figure1.png" /></p>
+<p>Large deviations from the expected values for the organism being sequenced might indicate problems with either the sequencing or variant calling pipelines.
+The summary file also contains QC information for the gene annotation used as input.
+In this example, 829 warnings (Figure 1a) were identified as a result of possible genomic annotation errors or small inconsistencies identified in the reference genome so we have to be careful analyzing those genes/transcripts.
+Other summary statistics are available, such as variant types (Figure 1e), variants effects (Figure 1d and 1g), and primary impacts (Figure 1b and 1g).</p>
+<h3 id="step-2-counting-variants-in-case-and-control-subjects">Step 2: Counting variants in case and control subjects.</h3>
+<p>In the first step of our protocol, SnpEff created a VCF file with half million annotated variants.
+Rather than scanning each annotation manually, we will use the SnpSift program to create a filter that will identify a small subset of variants with interesting functional properties.
+Since the VCF files used in most sequencing studies are even larger than the one in this example, our overall approach is to start by creating a filter using a very restrictive set of criteria.
+If no relevant variant is found using this stringent filter, we will relax the criteria to include variants with lower predicted impact.</p>
+<p>In our example, since the pedigree is consistent with a Mendelian recessive disease, so we will first use SnpEff to find high impact variants that are homozygous in cases and either absent or heterozygous in controls.
+This provides a very strong genetic argument to select the promising variants and will be used as the first step in our filter.
+To do this, we will identify the case and control samples by providing SnpEff with pedigree information using a "TFAM" file (a standard file format used to describe pedigrees).
+In our example, the TFAM file ("pedigree.tfam") identifies the three cases (NA12879, NA12885, NA12886), and lists the other family members as controls.
+The "caseControl" command instructs the SnpSift program to count the number homozygous non-reference, heterozygous and allele count (number of non-reference alleles in each DNA sample) for both cases and controls groups (running time: ~60 minutes):</p>
+<pre><code>java -Xmx1g -jar SnpSift.jar \
+    caseControl \
+    -v \
+    -tfam protocols/pedigree.tfam \
+    protocols/ex1.ann.vcf \
+    &gt; protocols/ex1.ann.cc.vcf
+</code></pre>
+
+<p>This analysis creates an output VCF file ("ex1.ann.cc.vcf") by adding new information to the INFO field for each variant: this includes information such as <code>Cases=1,1,3</code> and <code>Controls=8,6,22</code> which correspond to the number of homozygous non-reference, heterozygous and total allele counts in cases and controls for each variant.
+The program also calculates basic statistics for each variant based on the allele frequencies in the two groups using different models, which can be useful as a starting point for more in-depth statistical analysis.</p>
+<h3 id="step-3-filtering-variants">Step 3: Filtering variants.</h3>
+<p>We can use the <code>SnpSift filter</code> command to reduce the number of candidate loci base on alleles in cases and controls.
+SnpSift filter allows users to create powerful filters that select variants using Boolean expressions containing data from the VCF fields.
+The expression we use to filter the VCF file "ex1.ann.vcf" is developed as follows.</p>
+<p>We expect all the three cases and none of the controls to be homozygous for the mutation.
+This is expressed using the following filter: <code>(Cases[0] = 3) &amp; (Controls[0] = 0)</code>
+The full command line is:</p>
+<pre><code>cat protocols/ex1.ann.cc.vcf | java -jar SnpSift.jar filter \
+    &quot;(Cases[0] = 3) &amp; (Controls[0] = 0)&quot; \
+    &gt; protocols/ex1.filtered.hom.vcf
+</code></pre>
+
+<p>The filtered output file, filtered.hom_cases.vcf, contains over 400 variants satisfying our criteria.
+This is still too large to analyze by hand, so can we can add another filter to see if any of these variants is expected to have a high impact.
+To identify variants where any of these impacts is classified as either <code>HIGH</code> or <code>MODERATE</code> we add the condition <code>(ANN[*].IMPACT = 'HIGH') | (ANN[*].IMPACT = 'MODERATE')</code>.
+The new filtering commands become:</p>
+<pre><code>cat protocols/ex1.ann.cc.vcf \
+    | java -jar SnpSift.jar filter \
+    &quot;(Cases[0] = 3) &amp; (Controls[0] = 0) &amp; ((ANN[*].IMPACT = 'HIGH') | (ANN[*].IMPACT = 'MODERATE'))&quot; \
+    &gt; protocols/ex1.filtered.vcf
+</code></pre>
+
+<p>After filtering, only two variants satisfy our criteria, one of them is a <code>stop_gained</code> loss of function variant, whereas the other one is a <code>missense_variant</code> amino acid change.
+The first one is a known Cystic fibrosis variant.</p>
+<pre><code>$ cat protocols/ex1.filtered.vcf     | ./scripts/vcfInfoOnePerLine.pl
+7   117227832   .   G    T      .    .
+                                AC      14
+                                AN      22
+                                ANN     T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000003084|protein_coding|12/27|c.1624G&gt;T|p.Gly542*|1756/6128|1624/4443|542/1480||
+                                ANN     T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000454343|protein_coding|11/26|c.1441G&gt;T|p.Gly481*|1573/5949|1441/4260|481/1419||
+                                ANN     T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000426809|protein_coding|11/26|c.1534G&gt;T|p.Gly512*|1534/4316|1534/4316|512/1437||WARNING_TRANSCRIPT_INCOMPLETE
+                                ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding||c.1624G&gt;T||||||
+                                ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding||c.1624G&gt;T||||||
+                                ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|beta_strand|ENST00000003084|protein_coding|12/27|c.1624G&gt;T||||||
+                                ANN     T|sequence_feature|LOW|CFTR|ENSG00000001626|beta_strand|ENST00000454343|protein_coding|11/26|c.1441G&gt;T||||||
+                                ANN     T|upstream_gene_variant|MODIFIER|AC000111.5|ENSG00000234001|transcript|ENST00000448200|processed_pseudogene||n.-1C&gt;A|||||1362|
+                                ANN     T|downstream_gene_variant|MODIFIER|CFTR|ENSG00000001626|transcript|ENST00000472848|processed_transcript||n.*148G&gt;T|||||29|
+                                LOF     (CFTR|ENSG00000001626|11|0.27)
+                                NMD     (CFTR|ENSG00000001626|11|0.27)
+                                Cases   3
+                                Cases   0
+                                Cases   6
+                                Controls        0
+                                Controls        8
+                                Controls        8
+                                CC_TREND        9.111e-04
+                                CC_GENO NaN
+                                CC_ALL  4.025e-02
+                                CC_DOM  6.061e-03
+                                CC_REC  1.000e+00
+
+17    39135205   .    ACA       GCA,GCG .       .
+                                AC      16
+                                AC      8
+                                AN      31
+                                ANN     GCG|missense_variant|MODERATE|KRT40|ENSG00000204889|transcript|ENST00000377755|protein_coding||c.1045_1047delTGTinsCGC|p.Cys349Arg|1082/1812|1045/1296|349/431||
+                                ANN     GCG|missense_variant|MODERATE|KRT40|ENSG00000204889|transcript|ENST00000398486|protein_coding||c.1045_1047delTGTinsCGC|p.Cys349Arg|1208/1772|1045/1296|349/431||
+                                ANN     GCA|synonymous_variant|LOW|KRT40|ENSG00000204889|transcript|ENST00000377755|protein_coding|6/7|c.1047T&gt;C|p.Cys349Cys|1082/1812|1047/1296|349/431||
+                                ANN     GCA|synonymous_variant|LOW|KRT40|ENSG00000204889|transcript|ENST00000398486|protein_coding|8/9|c.1047T&gt;C|p.Cys349Cys|1208/1772|1047/1296|349/431||
+                                ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|6/9|c.1047T&gt;C||||||
+                                ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Coil_2|ENST00000398486|protein_coding|7/9|c.1045_1047delTGTinsCGC||||||
+                                ANN     GCA|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|3/9|c.1047T&gt;C||||||
+                                ANN     GCG|sequence_feature|LOW|KRT40|ENSG00000204889|region_of_interest:Rod|ENST00000398486|protein_coding|3/9|c.1045_1047delTGTinsCGC||||||
+                                ANN     GCA|3_prime_UTR_variant|MODIFIER|KRT40|ENSG00000204889|transcript|ENST00000461923|nonsense_mediated_decay|8/9|n.*509T&gt;C|||||2348|
+                                ANN     GCG|3_prime_UTR_variant|MODIFIER|KRT40|ENSG00000204889|transcript|ENST00000461923|nonsense_mediated_decay|8/9|n.*507_*509delTGTinsCGC|||||2346|
+                                ANN     GCA|downstream_gene_variant|MODIFIER|AC004231.2|ENSG00000234477|transcript|ENST00000418393|antisense||n.*815A&gt;G|||||3027|
+                                ANN     GCG|downstream_gene_variant|MODIFIER|AC004231.2|ENSG00000234477|transcript|ENST00000418393|antisense||n.*815_*815delACAinsGCG|||||3027|
+                                ANN     GCA|non_coding_exon_variant|MODIFIER|KRT40|ENSG00000204889|transcript|ENST00000461923|nonsense_mediated_decay|8/9|n.*509T&gt;C||||||
+                                ANN     GCG|non_coding_exon_variant|MODIFIER|KRT40|ENSG00000204889|transcript|ENST00000461923|nonsense_mediated_decay|8/9|n.*507_*509delTGTinsCGC||||||
+                                Cases   3
+                                Cases   0
+                                Cases   6
+                                Controls        0
+                                Controls        12
+                                Controls        18
+                                CC_TREND        7.008e-02
+                                CC_GENO NaN
+                                CC_ALL  1.700e-01
+                                CC_DOM  1.231e-01
+                                CC_REC  1.000e+00
+</code></pre>
+
+<p>A chart showing how the variant propagates across the pedigree structure can be created as follows:</p>
+<pre><code>java -jar SnpSift.jar pedShow \
+    protocols/pedigree.tfam \
+    protocols/ex1.filtered.vcf \
+    protocols/chart
+</code></pre>
+
+<h3 id="step-4-using-clinical-databases">Step 4. Using clinical databases.</h3>
+<p>So far, since the purpose of the example was to show how annotations and filtering are performed to uncover new variants, we assumed that the causative variant was not known.
+In reality the variant is known and databases, such as ClinVar, have this information in convenient VCF format that can be used for annotations.</p>
+<p>We can annotate using ClinVar by using the following command:</p>
+<pre><code>java -Xmx1g -jar SnpSift.jar \
+    annotate \
+    -v \
+    protocols/db/clinvar_00-latest.vcf \
+    protocols/ex1.ann.cc.vcf \
+    &gt; protocols/ex1.ann.cc.clinvar.vcf
+</code></pre>
+
+<p>Our variant of interest is then annotated as "Cystic Fibrosis"  (to find the variant, we filter for variants having ClinVar annotation "CLNDBN" that are in CFTR gene and have a <code>stop_gained</code> annotation):</p>
+<pre><code>$ cat protocols/ex1.ann.cc.clinvar.vcf \
+    | java -jar SnpSift.jar filter \
+    &quot;(exists CLNDBN) &amp; (ANN[*].EFFECT has 'stop_gained') &amp; (ANN[*].GENE = 'CFTR')&quot; \
+    &gt; protocols/ex1.ann.cc.clinvar.filtered.vcf
+
+$ cat protocols/ex1.ann.cc.clinvar.filtered.vcf | ./scripts/vcfInfoOnePerLine.pl
+7    117227832    rs113993959      G    T       .    .
+                                                AC              14
+                                                AN              22
+                                                ANN             T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000003084|protein_coding|12/27|c.1624G&gt;T|p.Gly542*|1756/6128|1624/4443|542/1480||
+                                                ANN             T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000454343|protein_coding|11/26|c.1441G&gt;T|p.Gly481*|1573/5949|1441/4260|481/1419||
+                                                ANN             T|stop_gained|HIGH|CFTR|ENSG00000001626|transcript|ENST00000426809|protein_coding|11/26|c.1534G&gt;T|p.Gly512*|1534/4316|1534/4316|512/1437||WARNING_TRANSCRIPT_INCOMPLETE
+                                                ANN             T|sequence_feature|LOW|CFTR|ENSG00000001626|topological_domain:Cytoplasmic|ENST00000003084|protein_coding||c.1624G&gt;T||||||
+                                                ANN             T|sequence_feature|LOW|CFTR|ENSG00000001626|domain:ABC_transporter_1|ENST00000003084|protein_coding||c.1624G&gt;T||||||
+                                                ANN             T|sequence_feature|LOW|CFTR|ENSG00000001626|beta_strand|ENST00000003084|protein_coding||c.1624G&gt;T||||||
+                                                ANN             T|sequence_feature|LOW|CFTR|ENSG00000001626|beta_strand|ENST00000454343|protein_coding||c.1441G&gt;T||||||
+                                                ANN             T|upstream_gene_variant|MODIFIER|AC000111.5|ENSG00000234001|transcript|ENST00000448200|processed_pseudogene||n.-1C&gt;A|||||1362|
+                                                ANN             T|downstream_gene_variant|MODIFIER|CFTR|ENSG00000001626|transcript|ENST00000472848|processed_transcript||n.*148G&gt;T|||||29|
+                                                LOF             (CFTR|ENSG00000001626|11|0.27)
+                                                NMD             (CFTR|ENSG00000001626|11|0.27)
+                                                Cases           3
+                                                Cases           0
+                                                Cases           6
+                                                Controls        0
+                                                Controls        8
+                                                Controls        8
+                                                CC_TREND        9.111e-04
+                                                CC_GENO         NaN
+                                                CC_ALL          4.025e-02
+                                                CC_DOM          6.061e-03
+                                                CC_REC          1.000e+00
+                                                ASP             true
+                                                CLNACC          RCV000007535.6|RCV000058931.3|RCV000119041.1
+                                                CLNALLE         1
+                                                CLNDBN          Cystic_fibrosis|not_provided|Hereditary_pancreatitis
+                                                CLNDSDB         GeneReviews:MedGen:OMIM:Orphanet:SNOMED_CT|MedGen|GeneReviews:MedGen:OMIM:Orphanet:SNOMED_CT
+                                                CLNDSDBID       NBK1250:C0010674:219700:ORPHA586:190905008|CN221809|NBK84399:C0238339:167800:ORPHA676:68072000
+                                                CLNHGVS         NC_000007.13:g.117227832G&gt;T
+                                                CLNORIGIN       1
+                                                CLNREVSTAT      prof|single|single
+                                                CLNSIG          5|5|5
+                                                CLNSRC          CFTR2|HGMD|OMIM_Allelic_Variant|OMIM_Allelic_Variant
+                                                CLNSRCID        G542X|CM900049|602421.0009|602421.0095
+                                                GENEINFO        CFTR:1080
+                                                LSD             true
+                                                NSN             true
+                                                OM              true
+                                                PM              true
+                                                PMC             true
+                                                REF             true
+                                                RS              113993959
+                                                RSPOS           117227832
+                                                S3D             true
+                                                SAO             1
+                                                SSR             0
+                                                VC              SNV
+                                                VLD             true
+                                                VP              0x050268000605040002110100
+                                                WGT             1
+                                                dbSNPBuildID    132
+</code></pre>
+
+<h2 id="example-2-software-integration-gatk-galaxy">Example 2: Software Integration (GATK &amp; Galaxy)</h2>
+<p>Software Integration (Optional): Sequence analysis software is often run in high performance computers combining several programs into processing pipelines.
+Annotations and impact assessment software needs to provide integration points with other analysis steps of the pipeline.</p>
+<p>In the following paragraphs we describe how to integrate SnpEff with two programs commonly used in sequencing analysis pipelines:</p>
+<ul>
+<li>Genome Analysis toolkit (GATK 2), a command-line driven software;</li>
+<li>Galaxy 3, a web based software.</li>
+</ul>
+<h3 id="gatk">GATK</h3>
+<p>The Genome Analysis Toolkit 2 is one of the most popular programs for bioinformatics pipelines.</p>
+<p>Annotations can be easily integrated into GATK using SnpEff and GATK's VariantAnnotator module.
+Here we show how to annotate a file using SnpEff and GATK, as an alternative way of performing step 1.
+You should perform this step only if your processing pipeline is based on GATK: compared to running SnpEff from the command line, the results obtained when using GATK will only contain the highest impact annotation for each variant.
+This was a conscious trade-off made by the designers of GATK, partly because most biologists do this implicitly when reading a list of variants, but also to improve the readability and reduce the size of the annotation results.</p>
+<p>The method requires two steps:</p>
+<ol>
+<li>Annotating a VCF file using SnpEff</li>
+<li>Using GATK's VariantAnnotator to incorporate those annotations into the final VCF file.</li>
+</ol>
+<p>When using SnpEff for GATK compatibility, we must use the <code>-o gatk</code> command line option:</p>
+<pre><code>java -Xmx4g -jar snpEff.jar \
+    -v \
+    -o gatk \
+    GRCh37.75 \
+    protocols/ex1.vcf \
+    &gt; protocols/ex1.ann.gatk.vcf
+</code></pre>
+
+<p>Next, we process these variants using GATK. For this step to work correctly, we need to make sure that our data files are compatible with the requirements GATK places on reference genomes (see GATK's documentation for more details):</p>
+<ul>
+<li>in the fasta file, chromosomes are expected to be sorted in karyotypic order;</li>
+<li>a genome fasta-index file must be available; and</li>
+<li>a dictionary file must be pre-computed.</li>
+</ul>
+<p>Assuming these requirements are satisfied, we can run the following command, which will produce a GATK annotated file ("ex1.gatk.vcf"):</p>
+<pre><code>java -Xmx4g -jar $HOME/tools/gatk/GenomeAnalysisTK.jar \
+    -T VariantAnnotator \
+    -R $HOME/genomes/GRCh37.75.fa \
+    -A SnpEff \
+    --variant protocols/ex1.vcf \
+    --snpEffFile protocols/ex1.ann.gatk.vcf \
+    -L protocols/ex1.vcf \
+    -o protocols/ex1.gatk.vcf
+</code></pre>
+
+<p>Note: We assumed GATK is installed in "$HOME/tools/gatk/" and the reference genome is contained in "$HOME/genomes/GRCh37.75.fa" These file locations should be adapted to the actual path in your computer.</p>
+<h3 id="galaxy">Galaxy</h3>
+<p>Anther popular tool in bioinformatics is Galaxy 3, which allows pipelines to be created in a web environment using graphical interface, making it flexible and straightforward to use.
+SnpEff provides <a href="../se_integration/#integration-galaxy">Galaxy modules</a>.</p>
+<p>Once these modules are installed, we can run our sample annotation pipeline in Galaxy.</p>
+<p><img alt="figure3" class="center" src="../images/Cingolani_Figure3.png" /></p>
+<h2 id="example-3-non-coding-variants">Example 3: Non-Coding variants</h2>
+<p>We show how to use SnpEff &amp; SnpSift to annotate, prioritize and filter non-coding variants.</p>
+<p><strong>Dataset:</strong> This example shows how to perform basic annotation of non-coding variants.
+It is based on a short list of 20 non-coding that were identified by sequencing a 700 kb region surrounding the gene T-box transcription factor (TBX5) in 260 patients with congenital heart disease 67.
+TBX5 is a transcription factor that plays a well-established dosage-dependent role in heart and limb development.
+Coding mutations in TBX5 have been frequently identified in patients with Holt-Oram syndrome, which is associated with abnormal hand, forearm and cardiac development.</p>
+<p><strong>Data source</strong>: <a href="http://www.ncbi.nlm.nih.gov/pubmed/22543974">Regulatory variation in a TBX5 enhancer leads to isolated congenital heart disease</a>.</p>
+<h3 id="step-1-annotating-variants">Step 1. Annotating variants.</h3>
+<p>We will perform non-coding variant annotation using SnpEff following a similar approach to Procedure I.
+In this case, we construct a command line that instructs SnpEff to include motif information ("-motif") and putative transcription factor binding sites (TFBS) identified in the ENSEMBL Regulatory Build and the Jaspar database:</p>
+<pre><code>java -Xmx4g -jar snpEff.jar \
+    -v \
+    -motif \
+    GRCh37.75 \
+    protocols/ex2.vcf \
+    &gt; protocols/ex2.ann.basic.vcf
+</code></pre>
+
+<h3 id="step-2-adding-custom-regulatory-information">Step 2. Adding custom regulatory information.</h3>
+<p>A quick scan through the results shows that most variants are catalogued as "INTERGENIC", and none of them is associated with a known TFBS.
+This is not surprising since TFBS are small and also because regulatory elements involved in cardiac or limb development may not be widely active in commonly studied adult tissues.
+In this case, basic annotations did not provide additional information that can be used to narrow down the list of candidate SNVs.</p>
+<p>To solve this, the authors examined data from other sources, including ChIP-seq data for H3K4me1 (a post-translationally modified histone protein found in transcriptionally active genome regions, including enhancers and promoters).
+Data produced from ChIP-Seq analysis are frequently published in BED, BigBed or similar formats, which can be used directly by SnpEff by adding the <code>-interval</code> command line option.</p>
+<p>This command line option can be used to add annotations using ChIP-Seq experiments from the ENCODE and Epigenome Roadmap projects: since multiple <code>-interval</code> options are allowed in each command line, it is a simple way to combine several annotations:</p>
+<pre><code>java -Xmx4g -jar snpEff.jar \
+    -v \
+    -motif \
+    -interval protocols/ex2_regulatory.bed \
+    GRCh37.75 \
+    protocols/ex2.vcf \
+    &gt; protocols/ex2.ann.vcf
+</code></pre>
+
+<p>In the output VCF file, variants intersecting genomic regions from the <code>-interval</code> command line option are annotated as <code>"CUSTOM[ex2_regulatory]"</code> :  the name in brackets identifies the file name provided to distinguish multiple annotation files.</p>
+<h3 id="step-3-adding-conservation-information">Step 3. Adding conservation information.</h3>
+<p>In order to refine our search, we can also look for variants in highly conserved non-coding bases.
+SnpEff natively supports PhastCons scores, but can also add annotations based on any other user-defined score provided as a Wig or VCF file.</p>
+<p>The command line for annotating using the PhastCons score is:</p>
+<pre><code>java -Xmx1g -jar SnpSift.jar \
+    phastCons \
+    -v \
+    protocols/phastcons \
+    protocols/ex2.ann.vcf \
+    &gt; protocols/ex2.ann.cons.vcf
+</code></pre>
+
+<p>Now we can filter our results looking for a highly conserved SNP in the regulatory region.
+We do this by using a "SnpSift filter" command and the appropriate Boolean expression:</p>
+<pre><code>cat protocols/ex2.ann.cons.vcf \
+    | java -jar SnpSift.jar filter \
+    &quot;(ANN[*].EFFECT = 'CUSTOM[ex2_regulatory]') &amp; (exists PhastCons) &amp; (PhastCons &gt; 0.9)&quot; \
+    &gt; protocols/ex2.filtered.vcf
+</code></pre>
+
+<p>SnpSift filter supports a flexible syntax to create Boolean expressions using the annotation data that provides a versatile way to prioritize shorter lists of SNPs for subsequent validation.
+This syntax is described in detail in the <a href="../ss_filter/">online manual</a>.
+In this example, our filter results in only two candidate SNPs, one of which was extensively validated in the original study and is assumed to be causative.</p>
+<p>The principles illustrated in our example for a small set of SNVs can be applied to millions of variants from whole genome sequencing experiments. Similarly, although we filtered the SNVs using "custom" ChIP-seq data that provided in the original study, regulatory information from public Encode or Epigenome Roadmap datasets could be used in a first line investigation before generating our own Chip-seq or RNA-seq data using disease-relevant cells and tissues.</p>
+<h2 id="example-4-sequencing-data-analysis">Example 4: Sequencing data analysis</h2>
+<p>Here we show an example on how to get from Sequencing data to an annotated variants file.</p>
+<h3 id="sequencing-data-example">Sequencing data example</h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is an extremely simplified version on how to analyze the data from scratch.
+This is not meant to be a tutorial on sequencing analysis as it would be way beyond the scope of this handbook.</p>
+</div>
+<p>Let's assume you have sequence data in FASTQ format (file "s.fastq") and your reference genome is dm5.34 (fly genome)</p>
+<pre><code># Download the genome, uncompress and rename file
+wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/dmel_r5.34_FB2011_02/fasta/dmel-all-chromosome-r5.34.fasta.gz
+gunzip dmel-all-chromosome-r5.34.fasta.gz
+mv dmel-all-chromosome-r5.34.fasta dm5.34.fasta
+
+# Create a genome index (we assume you installed BWA http://bio-bwa.sourceforge.net/)
+bwa index -bwtsw dm5.34.fasta
+
+# Map sequences to the genome: Create SAI file
+bwa aln -bwtsw dm5.34.fasta s.fastq &gt; s.sai
+
+# Map sequences to the genome: Create SAM file
+bwa samse dm5.34.fasta s.sai s.fastq &gt; s.sam
+
+# Create BAM file (we assume you installed SamTools http://samtools.sourceforge.net/)
+samtools view -S -b s.sam &gt; s.bam
+
+# Sort BAM file (will create s_sort.bam)
+samtools sort s.bam s_sort
+
+# Create VCF file (BcfTools is part of samtools distribution)
+samtools mpileup -uf dm5.34.fasta s_sort.bam | bcftools view -vcg - &gt; s.vcf
+
+# Analyze variants using snpEff
+java -Xmx4g -jar snpEff.jar dm5.34 s.vcf &gt; s.ann.vcf
+</code></pre>
+
+<p>This highly simplified sequencing data analysis pipeline, has these basic steps:</p>
+<ol>
+<li>Index the reference genome (bwa)</li>
+<li>Map reads to reference genome (bwa)</li>
+<li>Call variants (bcftools)</li>
+<li>Annotate variants (SnpEff)</li>
+</ol>
+<h2 id="example-5-filter-out-variants-dbsnp">Example 5: Filter out variants (dbSnp)</h2>
+<p>Here we show an example on how to get from Sequencing data to an annotated variants file.</p>
+<p>These are slightly more advanced examples.
+Here we'll try to show how to perform specific tasks.</p>
+<p>If you want to filter out SNPs from dbSnp, you can do it using SnpSift.
+You can download SnpSift from the "Downloads" page.</p>
+<p>You can download the file for this example <a href="../adds/file.vcf">here</a>.</p>
+<p>Here is how to do it:</p>
+<ol>
+<li>
+<p>Annotate ID fields using <code>SnpSift annotate</code> and DbSnp.</p>
+<pre><code># Annotate ID field using dbSnp
+# Note: SnpSift will automatically download and uncompress dbSnp database if not locally available.
+java -jar SnpSift.jar annotate -dbsnp file.vcf &gt; file.dbSnp.vcf
+</code></pre>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>We annotate using dbSnp before using SnpEff in order to have 'known' and 'unknown' statistics in SnpEff's summary page.
+Those stats are based on the presence of an ID field. If the ID is non-empty, then it is assumed to be a 'known variant'.</p>
+</div>
+</li>
+<li>
+<p>Annotate using SnpEff:</p>
+<pre><code>java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 file.dbSnp.vcf &gt; file.ann.vcf
+</code></pre>
+</li>
+<li>
+<p>Filter out variants that have a non-empty ID field.
+    These variants are the ones that are NOT in dbSnp, since we annotated the ID field using rs-numbers from dbSnp in step 1.</p>
+<pre><code>java -jar SnpSift.jar filter -f file.ann.vcf "! exists ID" &gt; file.ann.not_in_dbSnp.vcf
+</code></pre>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>The expression using to filter the file is "! exists ID".
+This means that the ID field does not exists (i.e. the value is empty) which is represented as a dot (".") in a VCF file.</p>
+</div>
+</li>
+</ol>
+<p><strong>Pipes</strong></p>
+<p>Obviously you can perform the three previous commands, pipeling the out from one command to the next, thus avoiding the creation of intermediate files (for very large projects, this can be a significant amount of time).</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>In SnpEff &amp; SnpSift the STDIN is denoted by file name <code>"-"</code></p>
+</div>
+<p>So the previous commands would be:</p>
+<pre><code>java -jar SnpSif.jar annotate -dbsnp file.vcf \
+    | java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 - \
+    | java -jar SnpSift.jar filter &quot;! exists ID&quot; \
+    &gt; file.ann.not_in_dbSnp.vcf
+</code></pre>
+
+<p>Here is an example of some entries in the annotated output file.
+You can see the 'ANN' field was added, predicting STOP_GAINED protein changes:</p>
+<pre><code>$ cat demo.1kg.snpeff.vcf | grep stop_gained
+1    889455    .    G    A    100.0    PASS    ...;ANN=A|stop_gained|HIGH|...
+1    897062    .    C    T    100.0    PASS    ...;ANN=T|stop_gained|HIGH|...
+1    900375    .    G    A    100.0    PASS    ...;ANN=A|stop_gained|HIGH|...
+</code></pre>
+
+<p>Note: The real output was edited for readability reasons.</p>
+<h2 id="example-6-custom-annotations">Example 6: Custom annotations</h2>
+<p>SnpEff can annotate using user specified (custom) genomic intervals, allowing you to add any kind of annotations you want.</p>
+<p>In this example, we are analyzing using a specific version of the Yeast genome (we will assume that the database is not available, just to show a more complete example).
+We also want to add annotations of genomic regions known as 'ARS', which are defined in a GFF file.
+This turns out to be quite easy, thanks to SnpEff's "custom intervals" feature.
+SnpEff allows you to add "custom" annotations from intervals in several formats: TXT, BED, BigBed, VCF, GFF.</p>
+<p>So, for this example, we need to:</p>
+<ul>
+<li>Build the database: For the sake of this example, we are assuming that SnpEff doesn't have this database (which is not true in most real life situations).</li>
+<li>Create a file with the features we want to analyze (ARS)</li>
+<li>Annotate using the ARS features</li>
+</ul>
+<h3 id="step-1-build-database">Step 1: Build database.</h3>
+<p>Once more, this is done for the sake of the example, in real life Yeast databases are available and you don't need to build the database yourself.</p>
+<pre><code>#---
+# Download data
+#---
+$ cd ~/snpEff
+$ mkdir data/sacCer
+$ cd data/sacCer
+$ wget http://downloads.yeastgenome.org/curation/chromosomal_feature/saccharomyces_cerevisiae.gff
+$ mv saccharomyces_cerevisiae.gff genes.gff
+</code></pre>
+
+<p>Now that we've downloaded the reference genome, we can build the database:</p>
+<pre><code>#---
+# Build
+#---
+$ cd ../..
+
+# Add entry to config file
+$ echo &quot;sacCer.genome : Yeast&quot; &gt;&gt; snpEff.config
+
+# Build database
+$ java -Xmx1G -jar snpEff.jar build -gff3 sacCer
+</code></pre>
+
+<h3 id="step-2-create-custom-annotations-file">Step 2: Create custom annotations file.</h3>
+<p>We need a file that has our features of interest (in this case, the "ARS" features).
+Since those features ara available in the original GFF (saccharomyces_cerevisiae.gff) file, we can filter the file to create our "custom" annotations file.</p>
+<pre><code>#---
+# Create a features file
+#---
+
+# GFF files have both genomic records and sequences, we need to know
+# where the 'records' section ends (it is delimited by a &quot;##FASTA&quot; line)
+$ grep -n &quot;^#&quot; data/sacCer/genes.gff | tail -n 1
+22994:##FASTA
+
+# Note that I'm cutting the INFO column (only for readability reasons)
+$ head -n 22994 data/sacCer/genes.gff \
+    | grep -v &quot;^#&quot; \
+    | grep ARS  \
+    | cut -f 1 -d &quot;;&quot; \
+    &gt; sacCer_ARS_features.gff
+</code></pre>
+
+<p>So now we have a custom file ready to be used.</p>
+<h3 id="step-3-annotate">Step 3: Annotate.</h3>
+<p>We built the database and we have the ARS features file, so we are ready to annotate:</p>
+<pre><code>#---
+# Features annotations example
+#---
+
+# Create a fake VCF file (one line), this is just an example to show that it works
+$ echo -e &quot;chrI\t700\t.\tA\tT\t.\t.\t.&quot; &gt; my.vcf
+
+$ java -jar snpEff.jar -interval sacCer_features.gff sacCer my.vcf &gt; my.ann.vcf
+</code></pre>
+
+<p>If we take a look at the results, we can see that the "ARS" feature is annotates (see last line)</p>
+<pre><code>$ cat my.ann.vcf | grep -v &quot;^#&quot; | cut -f 8 | tr &quot;,;&quot; &quot;\n\n&quot;
+EFF=missense_variant(LOW|MISSENSE|Cca/Tca|p.Pro55Ser/c.163A&gt;T|84|YAL068W-A|protein_coding|CODING|YAL068W-A_mRNA|1|1|WARNING_REF_DOES_NOT_MATCH_GENOME)
+upstream_gene_variant(MODIFIER||1780||75|YAL067W-A|protein_coding|CODING|YAL067W-A_mRNA||1)
+downstream_gene_variant(MODIFIER||1107||120|YAL068C|protein_coding|CODING|YAL068C_mRNA||1)
+downstream_gene_variant(MODIFIER||51||104|YAL069W|protein_coding|CODING|YAL069W_mRNA||1)
+custom[sacCer_features](MODIFIER||||||ARS102||||1)
+</code></pre>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../features/" title="Features" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Features
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../citing/" title="Paper & Citations" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Paper & Citations
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Pablo Cingolani
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="http://www.linkedin.com/in/pablocingolani" target="_blank" rel="noopener" title="www.linkedin.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/pcingola/SnpEff" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.d710d30a.min.js"></script>
+      <script src="../assets/javascripts/bundle.5f27aba8.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: ["tabs"],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.27c6a5e6.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

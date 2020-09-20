@@ -1,0 +1,1502 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SnpEff and SnpSift documentation">
+      
+      
+      
+        <meta name="author" content="Pablo Cingolani">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.2.0">
+    
+    
+      
+        <title>About - SnpEff & SnpSift Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.18ac144a.min.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/palette.616af814.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#3f51b5">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#about-contact-info-feature-requests-bug-reports" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="SnpEff & SnpSift Documentation" class="md-header-nav__button md-logo" aria-label="SnpEff & SnpSift Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            SnpEff & SnpSift Documentation
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              About
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+          
+
+  
+
+<nav class="md-tabs md-tabs--active" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href=".." class="md-tabs__link">
+          Home
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../se_annfield/" class="md-tabs__link">
+          SnpEff
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../ss_introduction/" class="md-tabs__link">
+          SnpSift
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../download/" class="md-tabs__link">
+          Download&Install
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="./" class="md-tabs__link md-tabs__link--active">
+          About
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SnpEff & SnpSift Documentation" class="md-nav__button md-logo" aria-label="SnpEff & SnpSift Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    SnpEff & SnpSift Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1">
+    
+    <label class="md-nav__link" for="nav-1">
+      Home
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Home" data-md-level="1">
+      <label class="md-nav__title" for="nav-1">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Home
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../features/" title="Features" class="md-nav__link">
+      Features
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../examples/" title="Usage examples" class="md-nav__link">
+      Usage examples
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../citing/" title="Paper & Citations" class="md-nav__link">
+      Paper & Citations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../users_of_snpeff/" title="Who uses SnpEff?" class="md-nav__link">
+      Who uses SnpEff?
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../integration/" title="Integration" class="md-nav__link">
+      Integration
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../faq/" title="FAQ" class="md-nav__link">
+      FAQ
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      SnpEff
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="SnpEff" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        SnpEff
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_annfield/" title="Important changes. 'ANN' field" class="md-nav__link">
+      Important changes. 'ANN' field
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_introduction/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_running/" title="Running SnpEff" class="md-nav__link">
+      Running SnpEff
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_commandline/" title="Commands & command line options" class="md-nav__link">
+      Commands &amp; command line options
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_inputoutput/" title="Input & output files" class="md-nav__link">
+      Input &amp; output files
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_cansersamples/" title="Cancer samples" class="md-nav__link">
+      Cancer samples
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_additionalann/" title="Additional annotations" class="md-nav__link">
+      Additional annotations
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_outputsummary/" title="Output summary files" class="md-nav__link">
+      Output summary files
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_troubleshooting/" title="Troubleshooting" class="md-nav__link">
+      Troubleshooting
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_buildingdb/" title="Building databases" class="md-nav__link">
+      Building databases
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_buildingreg/" title="Building databases. Regulatory and Non-coding" class="md-nav__link">
+      Building databases. Regulatory and Non-coding
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_integration/" title="Integration. GATK and Galaxy" class="md-nav__link">
+      Integration. GATK and Galaxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../se_commands/" title="Commands and utilities" class="md-nav__link">
+      Commands and utilities
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      SnpSift
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="SnpSift" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        SnpSift
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_introduction/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_filter/" title="SnpSift Filter" class="md-nav__link">
+      SnpSift Filter
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_annotate/" title="SnpSift Annotate" class="md-nav__link">
+      SnpSift Annotate
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_casecontrol/" title="SnpSift CaseControl" class="md-nav__link">
+      SnpSift CaseControl
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_intervals/" title="SnpSift Intervals" class="md-nav__link">
+      SnpSift Intervals
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_intervalsindex/" title="SnpSift Intervals Index" class="md-nav__link">
+      SnpSift Intervals Index
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_join/" title="SnpSift Join" class="md-nav__link">
+      SnpSift Join
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_rmrefgen/" title="SnpSift RmRefGen" class="md-nav__link">
+      SnpSift RmRefGen
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_tstv/" title="SnpSift TsTv" class="md-nav__link">
+      SnpSift TsTv
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_extractfields/" title="SnpSift Extract Fields" class="md-nav__link">
+      SnpSift Extract Fields
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_varianttype/" title="SnpSift Variant Type" class="md-nav__link">
+      SnpSift Variant Type
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_gwascatalog/" title="SnpSift GWAS Catalog" class="md-nav__link">
+      SnpSift GWAS Catalog
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_dbnsfp/" title="SnpSift dbNSFP" class="md-nav__link">
+      SnpSift dbNSFP
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_split/" title="SnpSift Split" class="md-nav__link">
+      SnpSift Split
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_phastcons/" title="SnpSift PhastCons" class="md-nav__link">
+      SnpSift PhastCons
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_concordance/" title="SnpSift Concordance" class="md-nav__link">
+      SnpSift Concordance
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_private/" title="SnpSift Private" class="md-nav__link">
+      SnpSift Private
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_vcf2ped/" title="SnpSift Vcf2Tped" class="md-nav__link">
+      SnpSift Vcf2Tped
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_intersect/" title="SnpSift Intersect" class="md-nav__link">
+      SnpSift Intersect
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_rminfo/" title="SnpSift RmInfo" class="md-nav__link">
+      SnpSift RmInfo
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_genesets/" title="SnpSift GeneSets" class="md-nav__link">
+      SnpSift GeneSets
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_gt/" title="SnpSift GT" class="md-nav__link">
+      SnpSift GT
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ss_vcfcheck/" title="SnpSift VcfCheck" class="md-nav__link">
+      SnpSift VcfCheck
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Download&Install
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Download&Install" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Download&Install
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../download/" title="Download and install" class="md-nav__link">
+      Download and install
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
+    
+    <label class="md-nav__link" for="nav-5">
+      About
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="About" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        About
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        About
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="About" class="md-nav__link md-nav__link--active">
+      About
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-about" class="md-nav__link">
+    1. About
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-acknowledgements" class="md-nav__link">
+    2. Acknowledgements
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bug-reports" class="md-nav__link">
+    3. Bug reports
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-asking-for-help" class="md-nav__link">
+    4. Asking for help
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-asking-for-new-features" class="md-nav__link">
+    5. Asking for new features
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-asking-for-new-database-genome" class="md-nav__link">
+    6. Asking for new database / genome
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-contact-information" class="md-nav__link">
+    7. Contact information
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../xiangyi_lu_donate/" title="In Memory" class="md-nav__link">
+      In Memory
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-about" class="md-nav__link">
+    1. About
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-acknowledgements" class="md-nav__link">
+    2. Acknowledgements
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bug-reports" class="md-nav__link">
+    3. Bug reports
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-asking-for-help" class="md-nav__link">
+    4. Asking for help
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-asking-for-new-features" class="md-nav__link">
+    5. Asking for new features
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-asking-for-new-database-genome" class="md-nav__link">
+    6. Asking for new database / genome
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-contact-information" class="md-nav__link">
+    7. Contact information
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                <h1 id="about-contact-info-feature-requests-bug-reports">About, contact info, feature requests &amp; bug reports</h1>
+<h2 id="1-about">1. About</h2>
+<p>This project is maintained by <a href="http://www.linkedin.com/in/pablocingolani"><strong>Pablo Cingolani</strong></a> <a href="mailto:pcingola@users.sourceforge.net">pcingola@users.sourceforge.net</a></p>
+<h2 id="2-acknowledgements">2. Acknowledgements</h2>
+<p>Acknowledgements and special thanks to (in order of appearance):</p>
+<ul>
+<li>Adrian Platts (McGill): tons of feedback, feature suggestions, test cases, etc.</li>
+<li>Doug Ruden (WSU): feedback, features request, debugging.</li>
+<li>Louis Letourneau (McGill / Genome Quebec): bug fixes, features suggestions, etc.</li>
+<li>Dave OConnor (UW-Madison): feature suggestions, HIV genome.</li>
+<li>Denis Reshetov (Rogaev lab): VCF output support and debugging on GTF parsing.</li>
+<li>Louis Letourneau (McGill / Genome Quebec): Maven project.</li>
+<li>Mark DePristo, Eric Banks &amp; David Rozen (Broad): VCF parsing and VCF output.</li>
+<li>Jonathan Fresnedo (University of California, Davis): P.Persica genome support.</li>
+<li><strong>GATK:</strong> integration was performed by Broad's Genome Analysis Team: David Rozen, Eric Banks and Mark DePristo</li>
+<li>Arno Velds (NKI: Netherlands Cancer Institute): Annomalities in ENSEMBL annotation files that led to '-onlyCoding = auto' development, as well as "rogue transcript filters".</li>
+<li>Giulio Genovese: ENSEMBL annotation problems, fixing and improving "rogue transcript" problem.</li>
+<li>Louis Letourneau (McGill / Genome Quebec): dbNSFP implementation</li>
+<li>Peter Briggs (Manchester University) : Improved Galaxy interface and wrappers.</li>
+<li>Jim Johnson (Minnesota Supercomputing Institute, University of Minnesota): SnpSift improvements and bugfixes.</li>
+<li>Davide Cittaro (Center for Translational Genomics and Bioinformatics, Ospedale San Raffaele): Debugging and beta-testing for both SnpEff &amp; SnpSift. Helped to debug many interoperability, compatibility and format specification issues. <br></li>
+<li>Louis Letourneau (McGill / Genome Quebec): Cancer effects, HSGV notation, etc.</li>
+<li>Sarmady, Mahdi (Children's hospital of Philadelphia): hg19 using transcript version from UCSC.</li>
+<li>Leipzig, Jeremy &amp; Sarmady, Mahdi (Children's hospital of Philadelphia): HGVS notation</li>
+<li>Jinghua (Frank) Feng  (University of Adelaide) : Losts of feedback, debugging and improvements in SnpSift annotations.</li>
+<li>Andrea Mafficini (University of Verona, Italy) : Support for dbNSFP 2.1</li>
+<li>Jim Johnson (Minnesota Supercomputing Institute, University of Minnesota): SnpSift 'rmFilter' bugfix.</li>
+<li>Brad Chapman (Harvad): HomeBrew (HomeBrew-Science) support and bash wrapper.</li>
+<li>Marco Cusumano-Towner &amp;  Eugene Brevdo (SVBio): Insertions in reverse strand bug report and bugfix.</li>
+<li>Uma Devi (U. Virginia), Karen Eilbeck (U. Utah) &amp; Nicole Marie Ruiz (U. Utah): Sequence Ontology, made right.</li>
+<li>Ryan Calhoun (Apistry): SnpSift annotate, tabix index bug.</li>
+</ul>
+<h2 id="3-bug-reports">3. Bug reports</h2>
+<p>Please send any bug reports by creating issues in repositories:</p>
+<ul>
+<li>SnpEff:  <a href="https://github.com/pcingola/SnpEff">https://github.com/pcingola/SnpEff</a></li>
+<li>SnpSift: <a href="https://github.com/pcingola/SnpSift">https://github.com/pcingola/SnpSift</a></li>
+</ul>
+<p><strong>Important:</strong> In order to assess and fix the issue, I must be able to reproduce exactly the error condition.
+This means that I need the following information:</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Explanation</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>What?</td>
+<td>A clear explanation of the bug condition.<br>Please copy the full stack trace if one is available.</td>
+<td>"a RuntimeException occurss when trying to annotate..."</td>
+</tr>
+<tr>
+<td>How?</td>
+<td>A minimal bug-demonstrating test case</td>
+<td>"when running the following command/s...".<br> Make sure you send the exact command lines you are using.</td>
+</tr>
+<tr>
+<td>Which?</td>
+<td>Which organism and genome version you are using (if applicable)</td>
+<td>"we use GRCh37.72"</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>Which SnpEFf version and sub-version you are using?<br> Make sure to try the <strong>latest version</strong> since the bug might be already fixed.</td>
+<td>"we are using SnpEFf 3.3H").<br> Hint: Running <code>java -jar snpEff.jar</code> shows version information.</td>
+</tr>
+<tr>
+<td>Command line</td>
+<td>The full command line that shows the issue.</td>
+<td><code>java -Xmx4g -jar snpEff.jar GRCh37.75 sample.vcf ...</code></td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Sample data enough to reproduce the conditions<br><strong>Always attach the data files</strong> such as VCF lines (even if you added some snippets in the email's body)</td>
+<td>"find attached a sample of the VCF file..."</td>
+</tr>
+<tr>
+<td>Results</td>
+<td>What you expect to obtain (if applicable)</td>
+<td>"we expected result X, but we obtained Y instead..."</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Important tips:</strong></p>
+<ul>
+<li>
+<p>Make sure you <strong>attached</strong> a minimal dataset to reproduce the error condition.
+    For instance, a few VCF lines showing the problem are enough (sometimes one VCF line is enough), I don't need your full VCF file.</p>
+</li>
+<li>
+<p>Always send the data <strong>attached</strong>, even if it's only one VCF line. There are two reasons for this:</p>
+<ol>
+<li>Many times the problem is a malformed line, which I can only asses if the data is attached, and</li>
+<li>I receive many emails, so reformatting copied &amp; pasted lines is a waste of time.</li>
+</ol>
+</li>
+<li>
+<p>If you have to send large files, as sometimes happens with genome references, try uploading them to a server (e.g. Google Drive) and sending me a link.
+    Also remember to compress them.</p>
+</li>
+<li>
+<p><strong>Try SnpEff's latest version.</strong>
+    SnpEff is updated often, may be the bug has already been corrected (e.g you are using version 3.1A, but I've already fixed it in version 3.1B).</p>
+</li>
+</ul>
+<h2 id="4-asking-for-help">4. Asking for help</h2>
+<p>Please send any questions by creating issues in repositories:</p>
+<ul>
+<li>SnpEff:  <a href="https://github.com/pcingola/SnpEff">https://github.com/pcingola/SnpEff</a></li>
+<li>SnpSift: <a href="https://github.com/pcingola/SnpSift">https://github.com/pcingola/SnpSift</a></li>
+</ul>
+<p><strong>Important:</strong> In order to assess and your problem precisely, I must be able to reproduce your example.
+       request for help should include at least the following items:</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Explanation</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>What?</td>
+<td>A clear explanation of what you are trying to achieve</td>
+<td>"I want to annotate variants... and then filter them to obtain..."</td>
+</tr>
+<tr>
+<td>How?</td>
+<td>A minimal demonstration of how you are trying to do it</td>
+<td>"we run the following command...".<br> Make sure you send the exact command lines you are using.</td>
+</tr>
+<tr>
+<td>Which?</td>
+<td>Which organism and genome version you are using</td>
+<td>"we are analyzing human samples using GRCh37.72 reference genome"</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>Which SnpEFf version and sub-version you are using?<br> Make sure to try the <strong>latest version</strong> since the issue might be already solved.</td>
+<td>"we are using SnpEFf 3.3H").<br> Hint: Running <code>java -jar snpEff.jar</code> shows version information.</td>
+</tr>
+<tr>
+<td>Command line</td>
+<td>The full command line that shows the issue.</td>
+<td><code>java -Xmx4g -jar snpEff.jar GRCh37.75 sample.vcf ...</code></td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Sample data enough to reproduce the conditions<br><strong>Always attach the data files</strong> such as VCF lines (even if you added some snippets in the email's body)</td>
+<td>"find attached a sample of the VCF file..."</td>
+</tr>
+<tr>
+<td>Results</td>
+<td>What you expect to obtain</td>
+<td>"we wanted to get information on variants that affect splcie regions..."</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> A few guidelines when asking for help...</p>
+<ul>
+<li>
+<p><strong>Use the latest version.</strong> SnpEff is updated often, may be the issue has already been corrected (e.g you are using version 3.1A, but I've already fixed it in version 3.1B).</p>
+</li>
+<li>
+<p><strong>Read the documentation first.</strong> Please make sure you've read the documentation before asking fo help.
+        I know this is obvious, but a lot of people ask for questions in that are answered or shown as examples in the documentation.</p>
+</li>
+<li>
+<p><strong>If the documentation did not help.</strong> I'm aware that the documentation is not always "easy reading" and I'm not Shakespeare.
+        So let me know which part of the manual is confusing, outdated or plain wrong.
+        I'm always trying to update and improve the docs.</p>
+</li>
+<li>
+<p><strong>Be polite.</strong> Again, it may be obvious, but you cannot imagine the number of emails I get saying something like:</p>
+<blockquote>
+<p><em>"I'm doing [something very wrong] and it doesn't work, so it' your fault because your program must have a bug!"</em></p>
+</blockquote>
+<p>or sometimes:</p>
+<blockquote>
+<p><em>"You must drop everything you are doing and do my job for me right now!"</em></p>
+</blockquote>
+</li>
+<li>
+<p><strong>Sometimes I'm too busy.</strong> I always try to help people, but sometimes I'm too busy and I won't be able to answer your emails in due time and manner.
+     Apologies in advanced.</p>
+</li>
+<li>
+<p><strong>If I don't get back to you...</strong> Do remind me if I don't get back to you within a few days.
+      Sometimes I'm swamped with work or just out of town, a polite reminder helps.
+      Keep in mind that this is not an invitation for you to spam me every single day because I didn't have time to answer your first email.</p>
+</li>
+<li>
+<p><strong> Ask for too much advice.</strong> I don't mind helping, I've been doing it forever.
+      However I won't be able to help you with all the details (due to limited time), so most times, the best I can do is to provide some pointers and general advise.</p>
+</li>
+</ul>
+<h2 id="5-asking-for-new-features">5. Asking for new features</h2>
+<p>I always take into account features request.
+So don't hesitate to send me your ideas by creating issues in repositories:</p>
+<ul>
+<li>SnpEff:  <a href="https://github.com/pcingola/SnpEff">https://github.com/pcingola/SnpEff</a></li>
+<li>SnpSift: <a href="https://github.com/pcingola/SnpSift">https://github.com/pcingola/SnpSift</a></li>
+</ul>
+<p>Of course, it  doesn't mean I'll get all suggestions implemented as soon as I get an email.
+But if a lot of people are asking for the same feature, it is a strong indicator that I should try to implement it sooner rather than later.</p>
+<p>Please, don't be frustrated if I tell you I cannot implement your suggestion / idea. Keep in mind that some features are impossible to implement for different reasons, e.g.:</p>
+<ul>
+<li>SnpEff uses some standard (e.g. VCF) and new features cannot break those standards.</li>
+<li>SnpEff is used by a LOT of people in MANY different pipelines. New features must be compatible with current infrastructure and cannot break operational production pipelines.</li>
+<li>Some feature requests are just too difficult to implement</li>
+</ul>
+<h2 id="6-asking-for-new-database-genome">6. Asking for new database / genome</h2>
+<p>I'm willing to help you out if you need to build a new database (a.k.a. add a new reference genome).
+Building a new database (i.e. adding a new reference genome) is relatively easy and the procedure is described in detail <a href="../se_buildingdb/">in the documentation</a>.
+If you are unable to build the database, I can try to help you out. Please, create issue in repository: <a href="https://github.com/pcingola/SnpEff">https://github.com/pcingola/SnpEff</a>.</p>
+<p>In order to do so, I need you to send me the following information:</p>
+<ul>
+<li>Name of the species</li>
+<li>Reference genome version</li>
+<li>A link to the reference genome sequence (i.e. a link to the FASTA file)</li>
+<li>A link to a gene and transcript definition file (either GTF, GFF, GenBank, etc.)</li>
+<li>At least one of the following (preferably, both):<ul>
+<li>A link to the CDS sequences (FASTA file)</li>
+<li>A link to the protein sequences (FASTA files)</li>
+</ul>
+</li>
+<li>Codon table information (take a look a the codon tables in <code>snpEff.config</code> file):<ul>
+<li>Which codon table does the organism use? (e.g. <code>codon.Standard</code> or <code>codon.Mycoplasma</code>).</li>
+<li>Specific codon tables used by some chromosomes (e.g. chromosome <code>'MT'</code> uses <code>codon.Vertebrate_Mitochondrial</code> table)</li>
+</ul>
+</li>
+</ul>
+<p>I'm well aware that I could try to google that information myself, but I need you to send the information because I want to be absolutely sure we are using exactly the reference genome version, sub-version, and data files you need.</p>
+<h2 id="7-contact-information">7. Contact information</h2>
+<p><strong><a href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a>.</strong></p>
+<p><a href="mailto:pcingola@users.sourceforge.net">pcingola@users.sourceforge.net</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../download/" title="Download and install" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Download and install
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../xiangyi_lu_donate/" title="In Memory" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                In Memory
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Pablo Cingolani
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="http://www.linkedin.com/in/pablocingolani" target="_blank" rel="noopener" title="www.linkedin.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/pcingola/SnpEff" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.d710d30a.min.js"></script>
+      <script src="../assets/javascripts/bundle.5f27aba8.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: ["tabs"],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.27c6a5e6.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
