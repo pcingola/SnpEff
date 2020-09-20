@@ -661,7 +661,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 							} else if (outFor.equals("BEDANN")) {
 								outputFormat = OutputFormat.BEDANN;
 								lossOfFunction = false;
-							} else if (outFor.equals("TXT")) usage("Output format 'TXT' has been deprecated. Please use 'VCF' instead.\nYou can extract VCF fields to a TXT file using 'SnpSift extractFields' (http://snpeff.sourceforge.net/SnpSift.html#Extract).");
+							} else if (outFor.equals("TXT")) usage("Output format 'TXT' has been deprecated. Please use 'VCF' instead.\nYou can extract VCF fields to a TXT file using 'SnpSift extractFields' (https://pcingola.github.io/SnpEff/SnpSift.html#Extract).");
 							else usage("Unknown output file format '" + outFor + "'");
 						}
 						break;

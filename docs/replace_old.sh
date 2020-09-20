@@ -32,7 +32,7 @@ touch supportRegulation_content.html
 
 for h in SnpSift_content.html about_content.html download_content.html examples.html examples_content.html faq.html faq_content.html features_content.html index_content.html index_frame.html manual.html manual_content.html moreBs.html moreBs_content.html snpEff_summary.html supportNewGenome.html supportNewGenome_content.html supportRegulation.html supportRegulation_content.html 
 do
-	echo "<meta http-equiv=\"refresh\" content=\"0; url=http://snpeff.sourceforge.net\">" > $h
+	echo "<meta http-equiv=\"refresh\" content=\"0; url=https://pcingola.github.io/SnpEff\">" > $h
 done
 
 scp SnpSift_content.html about_content.html download_content.html examples.html examples_content.html faq.html faq_content.html features_content.html index_content.html index_frame.html manual.html manual_content.html moreBs.html moreBs_content.html snpEff_summary.html supportNewGenome.html supportNewGenome_content.html supportRegulation.html supportRegulation_content.html pcingola,snpeff@frs.sourceforge.net:htdocs/

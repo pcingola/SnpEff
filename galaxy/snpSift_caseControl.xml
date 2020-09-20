@@ -41,7 +41,7 @@ This command adds two annotations to the VCF file:
 
  - **CC_GEN**: p-value using Genotypic (co-dominant) model
 
-For details about this tool, please go to http://snpeff.sourceforge.net/SnpSift.html#casecontrol
+For details about this tool, please go to https://pcingola.github.io/SnpEff/SnpSift.html#casecontrol
 
 	</help>
 </tool>

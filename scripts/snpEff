@@ -5,7 +5,7 @@
 # Wrapper for HomeBrew-science project 
 #
 # snpEff executable shell script
-# http://snpeff.sourceforge.net/
+# https://pcingola.github.io/SnpEff/
 # Extracts memory and system property Java arguments from the list of provided arguments
 # (ie -Xms 1g -Xmx 4g)
 #

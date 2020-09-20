@@ -2,7 +2,7 @@
 
 SnpSift is a toolbox that allows you to filter and manipulate annotated files.
 
-For older version of this page, see: [Manual page for SnpSift version 4.1](http://snpeff.sourceforge.net/SnpSift.version_4_1.html)
+For older version of this page, see: [Manual page for SnpSift version 4.1](https://pcingola.github.io/SnpEff/SnpSift.version_4_1.html)
 
 Once your genomic variants have been annotated, you need to filter them out in order to find the "interesting / relevant variants".
 Given the large data files, this is not a trivial task (e.g. you cannot load all the variants into XLS spreadsheet).

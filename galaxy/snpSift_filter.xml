@@ -56,7 +56,7 @@ Some examples:
     * **isHom( GEN[0] ) &amp; isVariant( GEN[0] ) &amp; isRef( GEN[1] )**
 
 
-For complete details about this tool and epressions that can be used, please go to http://snpeff.sourceforge.net/SnpSift.html#filter
+For complete details about this tool and epressions that can be used, please go to https://pcingola.github.io/SnpEff/SnpSift.html#filter
 
 	</help>
 </tool>
