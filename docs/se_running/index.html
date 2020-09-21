@@ -1175,7 +1175,7 @@ $ unzip snpEff_latest_core.zip
 <p>Let's assume you have a VCF file and you want to annotate the variants in that file.
 An example file is provided in <code>examples/test.chr22.vcf</code> (this data is from the 1000 Genomes project, so the reference genome is the human genome GRCh37).</p>
 <p>You can annotate the file by running the following command (as an input, we use a Variant Call Format (VCF) file available in SnpEff's <code>examples</code> directory).</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
+<pre><code>$ java -Xmx8g -jar snpEff.jar GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
 
 # Here is how the output looks like
 $ head examples/test.chr22.ann.vcf
@@ -1196,7 +1196,7 @@ $ head examples/test.chr22.ann.vcf
 Note: Older SnpEff version used 'EFF' field (details about the 'EFF' field format can be found in the <a href="../se_inputoutput/#eff-field-vcf-output-files">EFF Field</a> section).</p>
 <p>You can also annotate using the "verbose" mode (command line option <code>-v</code>), this makes SnpEff to show a lot of information which can be useful for debugging.</p>
 <p>Here output is edited for brevity:</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
+<pre><code>$ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
 00:00:00.000    Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.434    done
 00:00:00.434    Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -1310,7 +1310,7 @@ Take a quick look at it.</p>
 </div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>We used the java parameter -Xmx4g to increase the memory available to the Java Virtual Machine to 4G.
+<p>We used the java parameter -Xmx8g to increase the memory available to the Java Virtual Machine to 4G.
 SnpEff's human genome database is large and it has to be loaded into memory.
 If your computer doesn't have at least 4G of memory, you probably won't be able to run this example.</p>
 </div>
@@ -1318,7 +1318,7 @@ If your computer doesn't have at least 4G of memory, you probably won't be able 
 <p class="admonition-title">Info</p>
 <p>If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
 This is done using the '-c' command line option:</p>
-<pre><code>java -Xmx4g -jar snpEff.jar -c path/to/snpEff/snpEff.config -v GRCh37.75 test.chr22.vcf &gt; test.chr22.ann.vcf
+<pre><code>java -Xmx8g -jar snpEff.jar -c path/to/snpEff/snpEff.config -v GRCh37.75 test.chr22.vcf &gt; test.chr22.ann.vcf
 </code></pre>
 </div>
 <h3 id="detailed-examples">Detailed examples</h3>
@@ -1327,7 +1327,7 @@ This is done using the '-c' command line option:</p>
 <p>Sometimes you need to specify the path to the config file.
 For instance, when you run SnpEff from a different directory than your install directory, you have to
 specify where the config file is located using the '-c' command line option.</p>
-<pre><code>java -Xmx4g path/to/snpEff/snpEff.jar -c path/to/snpEff/snpEff.config GRCh37.75 path/to/snps.vcf
+<pre><code>java -Xmx8g path/to/snpEff/snpEff.jar -c path/to/snpEff/snpEff.config GRCh37.75 path/to/snps.vcf
 </code></pre>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
@@ -1340,7 +1340,7 @@ If you don't assign more memory to the process, you will most likely have an "Ou
 This can be easily done using the Java command line option <code>-Xmx</code>.
 E.g. In this example I use 4Gb:</p>
 <pre><code># Run using 4 Gb of memory
-java -Xmx4G snpEff.jar hg19 path/to/your/files/snps.vcf
+java -Xmx8g snpEff.jar hg19 path/to/your/files/snps.vcf
 </code></pre>
 <p>Note: There is no space between <code>-Xmx</code> and <code>4G</code>.</p>
 <h3 id="running-snpeff-in-the-cloud">Running SnpEff in the Cloud</h3>
@@ -1361,7 +1361,7 @@ You should not have any problems at all.</p>
 00:00:00.000    Downloading database for 'hg19'
 ...
 00:00:36.340    Done
-[ec2-user@ip-10-2-202-163 snpEff]$ java -Xmx4G -jar snpEff.jar dump -v hg19 &gt; /dev/null
+[ec2-user@ip-10-2-202-163 snpEff]$ java -Xmx8g -jar snpEff.jar dump -v hg19 &gt; /dev/null
 00:00:00.000    Reading database for genome 'hg19' (this might take a while)
 00:00:20.688    done
 00:00:20.688    Building interval forest

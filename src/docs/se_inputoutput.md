@@ -419,7 +419,7 @@ Other parameters used for LOF/NMD calculations:
 Usage example:
 ```
 # Note: Form version 4.0 onwards, the '-lof' command line option is not required
-java -Xmx4g -jar snpEff.jar -v \
+java -Xmx8g -jar snpEff.jar -v \
     -lof \
     GRCh37.75 \
     test.chr22.vcf > test.chr22.ann.vcf
@@ -489,7 +489,7 @@ Annotations are added to the fourth column of the BED file.
 
 E.g.:
 ```
-$ java -Xmx4g -jar snpEff.jar -i bed BDGP5.69 chipSeq_peaks.bed
+$ java -Xmx8g -jar snpEff.jar -i bed BDGP5.69 chipSeq_peaks.bed
 
 # SnpEff version 3.3 (build 2013-05-15), by Pablo Cingolani
 # Command line: SnpEff  -i bed BDGP5.69 /home/pcingola/fly_pvuseq/chipSeq/Sample_w1118_IP_w_5hmC/w1118_IP_w_5hmC_peaks.bed

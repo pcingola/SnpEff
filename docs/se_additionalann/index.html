@@ -1150,7 +1150,7 @@ drwxrwxr-x 3 pcingola pcingola     4096 Aug 26 19:51 ..
 
 <p>So we can annotate using any of those tracks.</p>
 <p>E.g. To use 'HeLa-S3' and 'NHEK' tracks, you can run:</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/test.1KG.vcf &gt; test.1KG.ann_reg.vcf
+<pre><code>$ java -Xmx8g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/test.1KG.vcf &gt; test.1KG.ann_reg.vcf
 00:00:00.000    Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.377    done
 00:00:00.377    Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -1195,7 +1195,7 @@ cd db/encode
 wget &quot;http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/fdrPeaks/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb&quot;
 
 # Annotate using ENCODE's data:
-java -Xmx4g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.75 examples/test.1KG.vcf &gt; test.1KG.ann_encode.vcf
+java -Xmx8g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.75 examples/test.1KG.vcf &gt; test.1KG.ann_encode.vcf
 
 # Annotations are added as &quot;CUSTOM&quot; intervals:
 $ grep CUSTOM test.1KG.ann_encode.vcf | head
@@ -1227,7 +1227,7 @@ wget https://snpeff.blob.core.windows.net/databases/epigenome_latest.tgz/downloa
 tar -xvzf epigenome_latest.tgz
 
 # Annotate using SnpEff and &quot;-interval&quot; command line
-java -Xmx4g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf &gt; test.ann.vcf
+java -Xmx8g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf &gt; test.ann.vcf
 
 # See the data represented as &quot;CUSTOM&quot; EFF fields
 $ grep CUSTOM test.ann.vcf
@@ -1245,7 +1245,7 @@ NextProt provides only human data.</p>
 the <code>-nextprot</code> command line option was used).
 NextProt databases are available by for in some GRCh37 genomes (e.g. file <code>data/GRCh37.75/nextProt.bin</code>).</p>
 <p>Annotations example:</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
+<pre><code>$ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
 00:00:00.000    Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.374    done
 00:00:00.374    Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -1270,7 +1270,7 @@ $ cat test.chr22.ann.vcf
 <p>As of SnpEff version 4.0, these annotations are added automatically, if the database is available for the genome version you are using (files <code>motif.bin</code> and <code>pwms.bin</code>).
 Older versions requires using the <code>-motif</code> command line option.</p>
 <p>Example of transcription factor binding sites prediction predictions:</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
+<pre><code>$ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
 00:00:00.000    Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.393    done
 00:00:00.394    Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)

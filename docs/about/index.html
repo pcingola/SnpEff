@@ -1173,13 +1173,14 @@
 <li>Ryan Calhoun (Apistry): SnpSift annotate, tabix index bug.</li>
 </ul>
 <h2 id="3-bug-reports">3. Bug reports</h2>
-<p>Please send any bug reports by creating issues in repositories:</p>
-<ul>
-<li>SnpEff:  <a href="https://github.com/pcingola/SnpEff">https://github.com/pcingola/SnpEff</a></li>
-<li>SnpSift: <a href="https://github.com/pcingola/SnpSift">https://github.com/pcingola/SnpSift</a></li>
-</ul>
-<p><strong>Important:</strong> In order to assess and fix the issue, I must be able to reproduce exactly the error condition.
-This means that I need the following information:</p>
+<p>Please send any bug reports by creating issues in repositories:
+* SnpEff:  <a href="https://github.com/pcingola/SnpEff/issues">https://github.com/pcingola/SnpEff/issues</a>
+* SnpSift: <a href="https://github.com/pcingola/SnpSift/issues">https://github.com/pcingola/SnpSift/issues</a></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Important:</strong> In order to assess and fix the issue, I must be able to reproduce exactly your error condition.</p>
+</div>
+<p>This means that I need the following information:</p>
 <table>
 <thead>
 <tr>
@@ -1212,7 +1213,7 @@ This means that I need the following information:</p>
 <tr>
 <td>Command line</td>
 <td>The full command line that shows the issue.</td>
-<td><code>java -Xmx4g -jar snpEff.jar GRCh37.75 sample.vcf ...</code></td>
+<td><code>java -Xmx8g -jar snpEff.jar GRCh37.75 sample.vcf ...</code></td>
 </tr>
 <tr>
 <td>Data</td>
@@ -1230,32 +1231,28 @@ This means that I need the following information:</p>
 <ul>
 <li>
 <p>Make sure you <strong>attached</strong> a minimal dataset to reproduce the error condition.
-    For instance, a few VCF lines showing the problem are enough (sometimes one VCF line is enough), I don't need your full VCF file.</p>
+    For instance, a few VCF lines showing the problem are enough (sometimes one VCF line is enough), most of the times I don't need the whole VCF file.</p>
 </li>
 <li>
-<p>Always send the data <strong>attached</strong>, even if it's only one VCF line. There are two reasons for this:</p>
-<ol>
-<li>Many times the problem is a malformed line, which I can only asses if the data is attached, and</li>
-<li>I receive many emails, so reformatting copied &amp; pasted lines is a waste of time.</li>
-</ol>
+<p>Always send the data <strong>attached</strong>, even if it's only one VCF line. Many times the problem is a malformed line, which I can only asses if the data is attached, and</p>
 </li>
 <li>
-<p>If you have to send large files, as sometimes happens with genome references, try uploading them to a server (e.g. Google Drive) and sending me a link.
-    Also remember to compress them.</p>
+<p>If you have to send large files, as sometimes happens with genome references, try uploading them to a server (e.g. Google Drive) and sending me a link. Remember to always compress them.</p>
 </li>
 <li>
 <p><strong>Try SnpEff's latest version.</strong>
-    SnpEff is updated often, may be the bug has already been corrected (e.g you are using version 3.1A, but I've already fixed it in version 3.1B).</p>
+    SnpEff is updated often, may be the bug has already been corrected (e.g you are using version 5.0A, but I've already fixed it in version 5.0B).</p>
 </li>
 </ul>
 <h2 id="4-asking-for-help">4. Asking for help</h2>
-<p>Please send any questions by creating issues in repositories:</p>
-<ul>
-<li>SnpEff:  <a href="https://github.com/pcingola/SnpEff">https://github.com/pcingola/SnpEff</a></li>
-<li>SnpSift: <a href="https://github.com/pcingola/SnpSift">https://github.com/pcingola/SnpSift</a></li>
-</ul>
-<p><strong>Important:</strong> In order to assess and your problem precisely, I must be able to reproduce your example.
-       request for help should include at least the following items:</p>
+<p>Please send any questions by creating issues in repositories:
+* SnpEff:  <a href="https://github.com/pcingola/SnpEff/issues">https://github.com/pcingola/SnpEff/issues</a>
+* SnpSift: <a href="https://github.com/pcingola/SnpSift/issues">https://github.com/pcingola/SnpSift/issues</a></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Important:</strong> In order to assess and your problem precisely, I must be able to reproduce your example.</p>
+</div>
+<p>Any request for help should include at least the following items:</p>
 <table>
 <thead>
 <tr>
@@ -1288,7 +1285,7 @@ This means that I need the following information:</p>
 <tr>
 <td>Command line</td>
 <td>The full command line that shows the issue.</td>
-<td><code>java -Xmx4g -jar snpEff.jar GRCh37.75 sample.vcf ...</code></td>
+<td><code>java -Xmx8g -jar snpEff.jar GRCh37.75 sample.vcf ...</code></td>
 </tr>
 <tr>
 <td>Data</td>
@@ -1305,55 +1302,45 @@ This means that I need the following information:</p>
 <p><strong>Note:</strong> A few guidelines when asking for help...</p>
 <ul>
 <li>
-<p><strong>Use the latest version.</strong> SnpEff is updated often, may be the issue has already been corrected (e.g you are using version 3.1A, but I've already fixed it in version 3.1B).</p>
+<p><strong>Use the latest version.</strong> SnpEff is updated often, may be the issue has already been corrected (e.g you are using version 5.0A, but I've already fixed it in version 5.0B).</p>
 </li>
 <li>
 <p><strong>Read the documentation first.</strong> Please make sure you've read the documentation before asking fo help.
         I know this is obvious, but a lot of people ask for questions in that are answered or shown as examples in the documentation.</p>
 </li>
 <li>
-<p><strong>If the documentation did not help.</strong> I'm aware that the documentation is not always "easy reading" and I'm not Shakespeare.
+<p><strong>If the documentation did not help.</strong> I'm aware that the documentation is not always "easy reading".
         So let me know which part of the manual is confusing, outdated or plain wrong.
-        I'm always trying to update and improve the docs.</p>
+        I'll do my best to update and improve the docs.</p>
 </li>
 <li>
-<p><strong>Be polite.</strong> Again, it may be obvious, but you cannot imagine the number of emails I get saying something like:</p>
-<blockquote>
-<p><em>"I'm doing [something very wrong] and it doesn't work, so it' your fault because your program must have a bug!"</em></p>
-</blockquote>
-<p>or sometimes:</p>
-<blockquote>
-<p><em>"You must drop everything you are doing and do my job for me right now!"</em></p>
-</blockquote>
+<p><strong>Be polite.</strong> This one should be obvious, but there is a reason it's in the list...</p>
 </li>
 <li>
-<p><strong>Sometimes I'm too busy.</strong> I always try to help people, but sometimes I'm too busy and I won't be able to answer your emails in due time and manner.
+<p><strong>I'm too busy.</strong> I always try to help people, but oftentimes I'm busy and I won't be able to answer your emails &amp; requests in due time and manner.
      Apologies in advanced.</p>
 </li>
 <li>
 <p><strong>If I don't get back to you...</strong> Do remind me if I don't get back to you within a few days.
-      Sometimes I'm swamped with work or just out of town, a polite reminder helps.
-      Keep in mind that this is not an invitation for you to spam me every single day because I didn't have time to answer your first email.</p>
+      Sometimes I'm swamped with work or just out of town, a polite reminder helps.</p>
 </li>
 <li>
 <p><strong> Ask for too much advice.</strong> I don't mind helping, I've been doing it forever.
-      However I won't be able to help you with all the details (due to limited time), so most times, the best I can do is to provide some pointers and general advise.</p>
+      However I won't be able to help you with all the details (due to limited bamdwith), so most times, the best I can do is to provide some pointers and general advise you can follow up on.</p>
 </li>
 </ul>
 <h2 id="5-asking-for-new-features">5. Asking for new features</h2>
 <p>I always take into account features request.
-So don't hesitate to send me your ideas by creating issues in repositories:</p>
-<ul>
-<li>SnpEff:  <a href="https://github.com/pcingola/SnpEff">https://github.com/pcingola/SnpEff</a></li>
-<li>SnpSift: <a href="https://github.com/pcingola/SnpSift">https://github.com/pcingola/SnpSift</a></li>
-</ul>
-<p>Of course, it  doesn't mean I'll get all suggestions implemented as soon as I get an email.
-But if a lot of people are asking for the same feature, it is a strong indicator that I should try to implement it sooner rather than later.</p>
-<p>Please, don't be frustrated if I tell you I cannot implement your suggestion / idea. Keep in mind that some features are impossible to implement for different reasons, e.g.:</p>
+So don't hesitate to send me your ideas by creating issues in repositories:
+* SnpEff:  <a href="https://github.com/pcingola/SnpEff/issues">https://github.com/pcingola/SnpEff/issues</a>
+* SnpSift: <a href="https://github.com/pcingola/SnpSift/issues">https://github.com/pcingola/SnpSift/issues</a></p>
+<p>Of course, it  doesn't mean I'll get all suggestions implemented as soon as I get a request.
+But if a lot of people are asking for the same feature, it is a strong indicator that I should try to implement it.</p>
+<p>Please, don't be frustrated if I tell you I cannot implement your suggestion / idea. Keep in mind that some features are too difficult to implement for non-obvious reasons, e.g.:</p>
 <ul>
 <li>SnpEff uses some standard (e.g. VCF) and new features cannot break those standards.</li>
 <li>SnpEff is used by a LOT of people in MANY different pipelines. New features must be compatible with current infrastructure and cannot break operational production pipelines.</li>
-<li>Some feature requests are just too difficult to implement</li>
+<li>Some feature requests are just too difficult to code, requiring large changes.</li>
 </ul>
 <h2 id="6-asking-for-new-database-genome">6. Asking for new database / genome</h2>
 <p>I'm willing to help you out if you need to build a new database (a.k.a. add a new reference genome).

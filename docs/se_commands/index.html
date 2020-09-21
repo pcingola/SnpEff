@@ -1313,7 +1313,7 @@ Here we describe all the other commands and some scripts provided, that are usef
 <h3 id="snpeff-closest">SnpEff closest</h3>
 <p>Annotates using the closest genomic region (e.g. exon, transcript ID, gene name) and distance in bases.</p>
 <p>Example:</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar closest GRCh37.66 test.vcf
+<pre><code>$ java -Xmx8g -jar snpEff.jar closest GRCh37.66 test.vcf
 ##INFO=&lt;ID=CLOSEST,Number=4,Type=String,Description=&quot;Closest exon: Distance (bases), exons Id, transcript Id, gene name&quot;&gt;
 1       12078   .       G       A       25.69   PASS    AC=2;AF=0.048;CLOSEST=0,exon_1_11869_12227,ENST00000456328,DDX11L1
 1       16097   .       T       G       42.42   PASS    AC=9;AF=0.0113;CLOSEST=150,exon_1_15796_15947,ENST00000423562,WASH7P
@@ -1344,7 +1344,7 @@ Input files can be in BAM, SAM, VCF, BED or BigBed formats.</p>
 <p><img alt="snpeff_count_02" class="smallerimg center" src="../images/snpeff_count_02.png" /></p>
 <p>If you need to count how many reads (and bases) from a BAM file hit each genomic region, you can use 'count' utility.</p>
 <p>The command line is quite simple. E.g. in order to count how many reads (from N BAM files) hit regions of the human genome, you simply run:</p>
-<pre><code>java -Xmx4g -jar snpEff.jar count GRCh37.68 readsFile_1.bam readsFile_2.bam ...  readsFile_N.bam &gt; countReads.txt
+<pre><code>java -Xmx8g -jar snpEff.jar count GRCh37.68 readsFile_1.bam readsFile_2.bam ...  readsFile_N.bam &gt; countReads.txt
 </code></pre>
 <p>The output is a TXT (tab-separated) file, that looks like this:</p>
 <pre><code>chr  start  end       type                IDs                         Reads:readsFile_1.bam  Bases:readsFile_1.bam  Reads:readsFile_2.bam  Bases:readsFile_2.bam ...
@@ -1383,7 +1383,7 @@ Input files can be in BAM, SAM, VCF, BED or BigBed formats.</p>
 <p><strong>Totals and Binomial model</strong></p>
 <p>Using command line option <code>-p</code>, you can calculate p-values based on a Binomial model.
 For example (output edited for the sake of brevity):</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar count -v BDGP5.69 fly.bam &gt; countReads.txt
+<pre><code>$ java -Xmx8g -jar snpEff.jar count -v BDGP5.69 fly.bam &gt; countReads.txt
 00:00:00.000    Reading configuration file 'snpEff.config'
 ...
 00:00:12.148    Calculating probability model for read length 50
@@ -1417,7 +1417,7 @@ Utr5prime          0.02765432673262785    8146       5675          7.90840684080
 <p>You can add user defined intervals using <code>-i file.bed</code> command line option.
 The option can be used multiple times, thus allowing multiple BED files to be added.</p>
 <p>Example : You want to know how many reads intersect each peak from a peak detection algorithm:</p>
-<pre><code>java -Xmx4g -jar snpEff.jar count -i peaks.bed GRCh37.68 reads.bam
+<pre><code>java -Xmx8g -jar snpEff.jar count -i peaks.bed GRCh37.68 reads.bam
 </code></pre>
 <h3 id="snpeff-databases">SnpEff databases</h3>
 <p>This command provides a list of configured databases, i.e. available in <code>snpEff.config</code> file.</p>
@@ -1479,7 +1479,7 @@ AP006561.1                                                  SARS coronavirus TWY
 <p>Dump the contents of a database to a text file, a BED file or a tab separated TXT file (that can be loaded into R).</p>
 <p><strong>BED file example</strong>:</p>
 <pre><code>$ java -jar snpEff.jar download -v GRCh37.70
-$ java -Xmx4g -jar snpEff.jar dump -v -bed GRCh37.70 &gt; GRCh37.70.bed
+$ java -Xmx8g -jar snpEff.jar dump -v -bed GRCh37.70 &gt; GRCh37.70.bed
 00:00:00.000    Reading database for genome 'GRCh37.70' (this might take a while)
 00:00:32.476    done
 00:00:32.477    Building interval forest
@@ -1506,7 +1506,7 @@ So a 2 base interval at (one-based) positions 100 and 101 is expressed as a BED 
 </code></pre>
 
 <p><strong>TXT file example</strong>:</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar dump -v -txt GRCh37.70 &gt; GRCh37.70.txt
+<pre><code>$ java -Xmx8g -jar snpEff.jar dump -v -txt GRCh37.70 &gt; GRCh37.70.txt
 00:00:00.000    Reading database for genome 'GRCh37.70' (this might take a while)
 00:00:31.961    done
 00:00:31.962    Building interval forest
@@ -1606,7 +1606,7 @@ chr start       end        strand  type         id                          gene
 <p>The functionality of this command is a subset of <code>SnpEff dump</code>, so it is likely to be deprecated in the future.</p>
 </div>
 <p>Example:</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar genes2bed GRCh37.66 DDX11L1 WASH7P
+<pre><code>$ java -Xmx8g -jar snpEff.jar genes2bed GRCh37.66 DDX11L1 WASH7P
 #chr    start   end geneName;geneId
 1   11868   14411   DDX11L1;ENSG00000223972
 1   14362   29805   WASH7P;ENSG00000227232

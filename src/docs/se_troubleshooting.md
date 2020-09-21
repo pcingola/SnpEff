@@ -13,7 +13,7 @@ The solution is simple: fix your VCF file to use standard chromosome names.
 You can see which chromosome names are used by SnpEff simply by using the `-v` (verbose) command line option.
 This shows all chromosome names and their respective lengths. Notice the last line ("Chromosomes names \[sizes\]"):
 ```
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
+$ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 ...
 # Number of chromosomes      : 297

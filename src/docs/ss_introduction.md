@@ -2,8 +2,6 @@
 
 SnpSift is a toolbox that allows you to filter and manipulate annotated files.
 
-For older version of this page, see: [Manual page for SnpSift version 4.1](https://pcingola.github.io/SnpEff/SnpSift.version_4_1.html)
-
 Once your genomic variants have been annotated, you need to filter them out in order to find the "interesting / relevant variants".
 Given the large data files, this is not a trivial task (e.g. you cannot load all the variants into XLS spreadsheet).
 SnpSift helps to perform this VCF file manipulation and filtering required at this stage in data processing pipelines.
@@ -14,7 +12,7 @@ SnpSift is part of SnpEff main distribution, so please click on [here](download.
 
 ### SnpSift utilities
 
-SnpSift is a collection of tools to manipulate [VCF](http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41) (variant call format) files.
+SnpSift is a collection of tools to manipulate VCF (variant call format) files.
 
 Some examples of what you can do:
 

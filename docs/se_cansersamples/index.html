@@ -1133,7 +1133,7 @@ This is also the "gold standard" in cancer analysis standard, so all samples (bo
 <h3 id="running-in-cancer-analysis-mode">Running in cancer analysis mode</h3>
 <p>Using the <code>-cancer</code> command line option, you can compare somatic vs germline samples.</p>
 <p>So an example command line would be:</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf &gt; cancer.ann.vcf
+<pre><code>$ java -Xmx8g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf &gt; cancer.ann.vcf
 </code></pre>
 <h3 id="representing-cancer-data">Representing cancer data</h3>
 <p>In a typical cancer sequencing experiment, we want to measure and annotate differences between germline (healthy) and somatic (cancer) tissue samples from the same patient.
@@ -1184,7 +1184,7 @@ Patient_04_Germline Patient_04_Somatic
 <pre><code>$ cat examples/samples_cancer_one.txt
 Patient_01_Germline    Patient_01_Somatic
 
-$ java -Xmx4g -jar snpEff.jar -v \
+$ java -Xmx8g -jar snpEff.jar -v \
                 -cancer \
                 -cancerSamples examples/samples_cancer_one.txt \
                 GRCh37.75 \
@@ -1209,7 +1209,7 @@ Obviously this requires you to edit you VCF file's header.</p>
 1   69511   .   A   C,G .       PASS    AF=0.3580   GT      1/1                 2/2
 
 
-$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 examples/cancer_pedigree.vcf &gt; examples/cancer_pedigree.ann.vcf
+$ java -Xmx8g -jar snpEff.jar -v -cancer GRCh37.75 examples/cancer_pedigree.vcf &gt; examples/cancer_pedigree.ann.vcf
 </code></pre>
 
 <p>Here we say that the sample called <code>Patient_01_Somatic</code> is derived from the sample called <code>Patient_01_Germline</code>.
@@ -1231,7 +1231,7 @@ It is important that you understand the meaning of the last one, because you'll 
 </ul>
 <p>Example: Sample output for the previously mentioned VCF example would be (the output has been edited for readability reasons)</p>
 <p>For the first line we get (edited for readability):</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar -v -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf &gt; examples/cancer.eff.vcf
+<pre><code>$ java -Xmx8g -jar snpEff.jar -v -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf &gt; examples/cancer.eff.vcf
 
 1   69091   .   A   C,G .   PASS    AF=0.1122;
                   ANN=G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A&gt;G|p.Met1?|1/918|1/918|1/305||
@@ -1287,7 +1287,7 @@ Just as a reminder, <code>EFF</code> field has the following format:</p>
 </code></pre>
 
 <p>For the previous example, we get (edited for readability):</p>
-<pre><code>$ java -Xmx4g -jar snpEff.jar -v -classic -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf &gt; examples/cancer.eff.vcf
+<pre><code>$ java -Xmx8g -jar snpEff.jar -v -classic -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf &gt; examples/cancer.eff.vcf
 
 1   69091   .   A   C,G .   PASS    AC=1;
                      EFF=START_LOST(HIGH|MISSENSE|Atg/Gtg|M1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G)

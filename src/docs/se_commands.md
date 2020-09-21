@@ -11,7 +11,7 @@ Annotates using the closest genomic region (e.g. exon, transcript ID, gene name)
 
 Example:
 ```
-$ java -Xmx4g -jar snpEff.jar closest GRCh37.66 test.vcf
+$ java -Xmx8g -jar snpEff.jar closest GRCh37.66 test.vcf
 ##INFO=<ID=CLOSEST,Number=4,Type=String,Description="Closest exon: Distance (bases), exons Id, transcript Id, gene name">
 1       12078   .       G       A       25.69   PASS    AC=2;AF=0.048;CLOSEST=0,exon_1_11869_12227,ENST00000456328,DDX11L1
 1       16097   .       T       G       42.42   PASS    AC=9;AF=0.0113;CLOSEST=150,exon_1_15796_15947,ENST00000423562,WASH7P
@@ -50,7 +50,7 @@ If you need to count how many reads (and bases) from a BAM file hit each genomic
 
 The command line is quite simple. E.g. in order to count how many reads (from N BAM files) hit regions of the human genome, you simply run:
 
-    java -Xmx4g -jar snpEff.jar count GRCh37.68 readsFile_1.bam readsFile_2.bam ...  readsFile_N.bam > countReads.txt
+    java -Xmx8g -jar snpEff.jar count GRCh37.68 readsFile_1.bam readsFile_2.bam ...  readsFile_N.bam > countReads.txt
 
 The output is a TXT (tab-separated) file, that looks like this:
 ```
@@ -91,7 +91,7 @@ The columns are:
 Using command line option `-p`, you can calculate p-values based on a Binomial model.
 For example (output edited for the sake of brevity):
 ```
-$ java -Xmx4g -jar snpEff.jar count -v BDGP5.69 fly.bam > countReads.txt
+$ java -Xmx8g -jar snpEff.jar count -v BDGP5.69 fly.bam > countReads.txt
 00:00:00.000	Reading configuration file 'snpEff.config'
 ...
 00:00:12.148	Calculating probability model for read length 50
@@ -128,7 +128,7 @@ The option can be used multiple times, thus allowing multiple BED files to be ad
 
 Example : You want to know how many reads intersect each peak from a peak detection algorithm:
 
-    java -Xmx4g -jar snpEff.jar count -i peaks.bed GRCh37.68 reads.bam
+    java -Xmx8g -jar snpEff.jar count -i peaks.bed GRCh37.68 reads.bam
 
 ### SnpEff databases
 
@@ -198,7 +198,7 @@ Dump the contents of a database to a text file, a BED file or a tab separated TX
 **BED file example**:
 ```
 $ java -jar snpEff.jar download -v GRCh37.70
-$ java -Xmx4g -jar snpEff.jar dump -v -bed GRCh37.70 > GRCh37.70.bed
+$ java -Xmx8g -jar snpEff.jar dump -v -bed GRCh37.70 > GRCh37.70.bed
 00:00:00.000	Reading database for genome 'GRCh37.70' (this might take a while)
 00:00:32.476	done
 00:00:32.477	Building interval forest
@@ -227,7 +227,7 @@ $ head GRCh37.70.bed
 
 **TXT file example**:
 ```
-$ java -Xmx4g -jar snpEff.jar dump -v -txt GRCh37.70 > GRCh37.70.txt
+$ java -Xmx8g -jar snpEff.jar dump -v -txt GRCh37.70 > GRCh37.70.txt
 00:00:00.000	Reading database for genome 'GRCh37.70' (this might take a while)
 00:00:31.961	done
 00:00:31.962	Building interval forest
@@ -279,7 +279,7 @@ Dumps a selected set of genes as BED intervals.
 
 Example:
 ```
-$ java -Xmx4g -jar snpEff.jar genes2bed GRCh37.66 DDX11L1 WASH7P
+$ java -Xmx8g -jar snpEff.jar genes2bed GRCh37.66 DDX11L1 WASH7P
 #chr	start	end	geneName;geneId
 1	11868	14411	DDX11L1;ENSG00000223972
 1	14362	29805	WASH7P;ENSG00000227232

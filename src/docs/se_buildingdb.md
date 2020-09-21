@@ -35,7 +35,7 @@ E.g. if you want to install the SnpEff database for the human genome, you can ru
     If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
     This is done using the `-c` command line option:
 
-        $ java -Xmx4g -jar snpEff.jar download -c path/to/snpEff/snpEff.config -v GRCh37.75
+        $ java -Xmx8g -jar snpEff.jar download -c path/to/snpEff/snpEff.config -v GRCh37.75
 
 ### Building a database
 

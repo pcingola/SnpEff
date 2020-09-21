@@ -1125,14 +1125,14 @@ echo
 echo &quot;Annotate using SnpEff&quot;
 echo &quot;    Input file  : $in&quot;
 echo &quot;    Output file : $eff&quot;
-java -Xmx4G -jar $snpeff -c $HOME/snpEff/snpEff.config -v -o gatk hg19 $in &gt; $eff
+java -Xmx8g -jar $snpeff -c $HOME/snpEff/snpEff.config -v -o gatk hg19 $in &gt; $eff
 
 # Use GATK
 echo
 echo &quot;Annotating using GATK's VariantAnnotator:&quot;
 echo &quot;    Input file  : $in&quot;
 echo &quot;    Output file : $out&quot;
-java -Xmx4g -jar $gatk \
+java -Xmx8g -jar $gatk \
     -T VariantAnnotator \
     -R $ref \
     -A SnpEff \

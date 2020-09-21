@@ -40,7 +40,7 @@ So we can annotate using any of those tracks.
 
 E.g. To use 'HeLa-S3' and 'NHEK' tracks, you can run:
 ```
-$ java -Xmx4g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/test.1KG.vcf > test.1KG.ann_reg.vcf
+$ java -Xmx8g -jar snpEff.jar -v -reg HeLa-S3 -reg NHEK GRCh37.75 examples/test.1KG.vcf > test.1KG.ann_reg.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.377	done
 00:00:00.377	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -90,7 +90,7 @@ cd db/encode
 wget "http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/byDataType/openchrom/jan2011/fdrPeaks/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb"
 
 # Annotate using ENCODE's data:
-java -Xmx4g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.75 examples/test.1KG.vcf > test.1KG.ann_encode.vcf
+java -Xmx8g -jar snpEff.jar -v -interval db/encode/wgEncodeDukeDnase8988T.fdr01peaks.hg19.bb GRCh37.75 examples/test.1KG.vcf > test.1KG.ann_encode.vcf
 
 # Annotations are added as "CUSTOM" intervals:
 $ grep CUSTOM test.1KG.ann_encode.vcf | head
@@ -128,7 +128,7 @@ wget https://snpeff.blob.core.windows.net/databases/epigenome_latest.tgz/downloa
 tar -xvzf epigenome_latest.tgz
 
 # Annotate using SnpEff and "-interval" command line
-java -Xmx4g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.ann.vcf
+java -Xmx8g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.ann.vcf
 
 # See the data represented as "CUSTOM" EFF fields
 $ grep CUSTOM test.ann.vcf
@@ -150,7 +150,7 @@ NextProt databases are available by for in some GRCh37 genomes (e.g. file `data/
 
 Annotations example:
 ```
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
+$ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.374	done
 00:00:00.374	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -180,7 +180,7 @@ Older versions requires using the `-motif` command line option.
 
 Example of transcription factor binding sites prediction predictions:
 ```
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
+$ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.393	done
 00:00:00.394	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)

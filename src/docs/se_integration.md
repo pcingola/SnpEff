@@ -57,14 +57,14 @@ echo
 echo "Annotate using SnpEff"
 echo "    Input file  : $in"
 echo "    Output file : $eff"
-java -Xmx4G -jar $snpeff -c $HOME/snpEff/snpEff.config -v -o gatk hg19 $in > $eff
+java -Xmx8g -jar $snpeff -c $HOME/snpEff/snpEff.config -v -o gatk hg19 $in > $eff
 
 # Use GATK
 echo
 echo "Annotating using GATK's VariantAnnotator:"
 echo "    Input file  : $in"
 echo "    Output file : $out"
-java -Xmx4g -jar $gatk \
+java -Xmx8g -jar $gatk \
     -T VariantAnnotator \
     -R $ref \
     -A SnpEff \

@@ -1388,10 +1388,10 @@
 <p><strong>Computer hardware:</strong> The materials required for this protocol are:</p>
 <ul>
 <li>a computer running a Unix operating system (Linux, OS.X),</li>
-<li>at least 4GB of RAM</li>
-<li>at least 1Gb of free disk space,</li>
-<li>Java version 1.8 or higher installed, and</li>
-<li>a reasonably fast internet connection.</li>
+<li>at least 16GB of RAM</li>
+<li>at least 8Gb of free disk space,</li>
+<li>Java</li>
+<li>a reasonably fast internet connection</li>
 </ul>
 <p>Users of Windows computers can install CygWin, a free Linux-like environment for Windows, although the precise commands listed in the protocol may need to adapted.</p>
 <p><strong>Software:</strong> We use the SnpEff annotation program and its companion tool SnpSift. These programs can perform annotation, primary impact assessment and variants filtering,
@@ -1449,7 +1449,7 @@ SnpEff has several command line options that can be used in this annotation stag
 <li>protein domain annotations from the curated NextProt database;</li>
 <li>putative transcription factor binding sites from the ENSEMBL 'Regulatory Build' and Jaspar database;</li>
 <li>use HGVS notation for amino acid changes; and</li>
-<li>to create a web page summarizing the annotation results in "ex1.html" (option <code>-stats</code>):<pre><code>java -Xmx4g -jar snpEff.jar -v -stats ex1.html GRCh37.75 protocols/ex1.vcf &gt; protocols/ex1.ann.vcf
+<li>to create a web page summarizing the annotation results in "ex1.html" (option <code>-stats</code>):<pre><code>java -Xmx8g -jar snpEff.jar -v -stats ex1.html GRCh37.75 protocols/ex1.vcf &gt; protocols/ex1.ann.vcf
 </code></pre>
 </li>
 </ul>
@@ -1672,7 +1672,7 @@ This was a conscious trade-off made by the designers of GATK, partly because mos
 <li>Using GATK's VariantAnnotator to incorporate those annotations into the final VCF file.</li>
 </ol>
 <p>When using SnpEff for GATK compatibility, we must use the <code>-o gatk</code> command line option:</p>
-<pre><code>java -Xmx4g -jar snpEff.jar \
+<pre><code>java -Xmx8g -jar snpEff.jar \
     -v \
     -o gatk \
     GRCh37.75 \
@@ -1687,7 +1687,7 @@ This was a conscious trade-off made by the designers of GATK, partly because mos
 <li>a dictionary file must be pre-computed.</li>
 </ul>
 <p>Assuming these requirements are satisfied, we can run the following command, which will produce a GATK annotated file ("ex1.gatk.vcf"):</p>
-<pre><code>java -Xmx4g -jar $HOME/tools/gatk/GenomeAnalysisTK.jar \
+<pre><code>java -Xmx8g -jar $HOME/tools/gatk/GenomeAnalysisTK.jar \
     -T VariantAnnotator \
     -R $HOME/genomes/GRCh37.75.fa \
     -A SnpEff \
@@ -1713,7 +1713,7 @@ Coding mutations in TBX5 have been frequently identified in patients with Holt-O
 <h3 id="step-1-annotating-variants">Step 1. Annotating variants.</h3>
 <p>We will perform non-coding variant annotation using SnpEff following a similar approach to Procedure I.
 In this case, we construct a command line that instructs SnpEff to include motif information ("-motif") and putative transcription factor binding sites (TFBS) identified in the ENSEMBL Regulatory Build and the Jaspar database:</p>
-<pre><code>java -Xmx4g -jar snpEff.jar \
+<pre><code>java -Xmx8g -jar snpEff.jar \
     -v \
     -motif \
     GRCh37.75 \
@@ -1728,7 +1728,7 @@ In this case, basic annotations did not provide additional information that can 
 <p>To solve this, the authors examined data from other sources, including ChIP-seq data for H3K4me1 (a post-translationally modified histone protein found in transcriptionally active genome regions, including enhancers and promoters).
 Data produced from ChIP-Seq analysis are frequently published in BED, BigBed or similar formats, which can be used directly by SnpEff by adding the <code>-interval</code> command line option.</p>
 <p>This command line option can be used to add annotations using ChIP-Seq experiments from the ENCODE and Epigenome Roadmap projects: since multiple <code>-interval</code> options are allowed in each command line, it is a simple way to combine several annotations:</p>
-<pre><code>java -Xmx4g -jar snpEff.jar \
+<pre><code>java -Xmx8g -jar snpEff.jar \
     -v \
     -motif \
     -interval protocols/ex2_regulatory.bed \
@@ -1795,7 +1795,7 @@ samtools sort s.bam s_sort
 samtools mpileup -uf dm5.34.fasta s_sort.bam | bcftools view -vcg - &gt; s.vcf
 
 # Analyze variants using snpEff
-java -Xmx4g -jar snpEff.jar dm5.34 s.vcf &gt; s.ann.vcf
+java -Xmx8g -jar snpEff.jar dm5.34 s.vcf &gt; s.ann.vcf
 </code></pre>
 
 <p>This highly simplified sequencing data analysis pipeline, has these basic steps:</p>
@@ -1828,7 +1828,7 @@ Those stats are based on the presence of an ID field. If the ID is non-empty, th
 </li>
 <li>
 <p>Annotate using SnpEff:</p>
-<pre><code>java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 file.dbSnp.vcf &gt; file.ann.vcf
+<pre><code>java -Xmx8g -jar snpEff.jar eff -v GRCh37.75 file.dbSnp.vcf &gt; file.ann.vcf
 </code></pre>
 </li>
 <li>
@@ -1851,7 +1851,7 @@ This means that the ID field does not exists (i.e. the value is empty) which is 
 </div>
 <p>So the previous commands would be:</p>
 <pre><code>java -jar SnpSif.jar annotate -dbsnp file.vcf \
-    | java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 - \
+    | java -Xmx8g -jar snpEff.jar eff -v GRCh37.75 - \
     | java -jar SnpSift.jar filter &quot;! exists ID&quot; \
     &gt; file.ann.not_in_dbSnp.vcf
 </code></pre>

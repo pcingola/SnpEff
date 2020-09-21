@@ -217,7 +217,7 @@ You can use the `-fi intervals.bed` command line option (filterInterval). For in
 ```
 In order to get only variants matching your intervals, you can use the command:
 
-    $ java -Xmx4G -jar snpEff.jar -fi intervals.bed GRCh38.76 test.chr22.vcf
+    $ java -Xmx8g -jar snpEff.jar -fi intervals.bed GRCh38.76 test.chr22.vcf
 
 ### Canonical transcripts
 
@@ -233,11 +233,11 @@ SnpEff allows to annotate using canonical transcripts by using `-canon` command 
 
 Example on how to use canonical transcripts annotations:
 
-    $ java -Xmx4G -jar snpEff.jar -v -canon GRCh37.75 examples/test.chr22.vcf > file.ann.canon.vcf
+    $ java -Xmx8g -jar snpEff.jar -v -canon GRCh37.75 examples/test.chr22.vcf > file.ann.canon.vcf
 
 In order to get a list of canonical transcripts, you can use the `-d` (debug) command line option. E.g.:
 ```
-$ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.75 test.vcf
+$ java -Xmx8g -jar snpEff.jar -d -v -canon GRCh37.75 test.vcf
 00:00:00.000    Reading configuration file 'snpEff.config'
 00:00:00.173    done
 00:00:00.173    Reading database for genome version 'GRCh37.66'
@@ -262,7 +262,7 @@ $ java -Xmx4G -jar snpEff.jar -d -v -canon GRCh37.75 test.vcf
 SnpEff allows you to provide a list of transcripts to use for annotations by using the `-onlyTr file.txt` and providing a file with one transcript ID per line.
 Any other transcript will be ignored.
 
-    $ java -Xmx4G -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+    $ java -Xmx8g -jar snpEff.jar -onlyTr my_transcripts.txt GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
 
 ###  Upstream and downstream
 
@@ -271,7 +271,7 @@ This also allows to eliminate any upstream and downstream effect by using "-ud 0
 
 Example: Make upstream and downstream size zero (i.e. do not report any upstream or downstream effect).
 
-    $ java -Xmx4G -jar snpEff.jar -ud 0 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+    $ java -Xmx8g -jar snpEff.jar -ud 0 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
 
 ### Splice site size
 
@@ -279,7 +279,7 @@ You can change the default splice site size (default is 2 bases) using the `-spl
 
 Example: Make splice sites four bases long
 
-    $ java -Xmx4G -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+    $ java -Xmx8g -jar snpEff.jar -spliceSiteSize 4 GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
 
 ### Adding your own annotations
 SnpEff allows user defined intervals to be annotated.
@@ -297,7 +297,7 @@ $ cat test.vcf
 
 Annotate (output edited for readability)
 
-$ java -Xmx4g -jar snpEff.jar -interval my_annotations.bed GRCh37.66 test.vcf
+$ java -Xmx8g -jar snpEff.jar -interval my_annotations.bed GRCh37.66 test.vcf
 1    10469    .    C    G    365.78    PASS    AC=30;AF=0.0732;
                                                ANN=G|upstream_gene_variant|MODIFIER|DDX11L1|ENSG00000223972|transcript|ENST00000456328|processed_transcript||n.-1C>G|||||1400|
                                                ...
@@ -314,7 +314,7 @@ Note: This is only for the old 'EFF' field ('ANN' field always shows both gene n
 
 Example:
 
-    $ java -Xmx4g -jar snpEff.jar -geneId GRCh37.66 test.vcf 
+    $ java -Xmx8g -jar snpEff.jar -geneId GRCh37.66 test.vcf 
     1  902128  3617  C  T  .  PASS  AC=80;EFF=NON_SYNONYMOUS_CODING(MODERATE|MISSENSE|gCt/gTt|A43V|576|ENSG00000187583|protein_coding|CODING|ENST00000379407|2|1),...
 
 Note: The gene 'PLEKHN1' was annotated as 'ENSG00000187583'.
@@ -331,7 +331,7 @@ cp examples/test.chr22.vcf my.vcf
 gzip my.vcf 
 
 # Annotate (note the it doesn't require the ending '.gz')
-java -Xmx4g -jar snpEff.jar GRCh37.75 my.vcf > my.ann.vcf
+java -Xmx8g -jar snpEff.jar GRCh37.75 my.vcf > my.ann.vcf
 ```
 
 ### Streaming files
@@ -343,11 +343,11 @@ For example, you can easily stream files like this:
 # These three commands are the same
 
 # Using STDIN (pipe), implicit (no input file name)
-cat test.chr22.vcf | java -Xmx4g -jar snpEff.jar hg19 > test.chr22.ann.vcf
+cat test.chr22.vcf | java -Xmx8g -jar snpEff.jar hg19 > test.chr22.ann.vcf
 
 # Using STDIN (pipe), exlicit '-' input file name
-cat test.chr22.vcf | java -Xmx4g -jar snpEff.jar hg19 - > test.chr22.ann.vcf
+cat test.chr22.vcf | java -Xmx8g -jar snpEff.jar hg19 - > test.chr22.ann.vcf
 
 # Using explicit file name
-java -Xmx4g -jar snpEff.jar hg19 test.chr22.vcf > test.chr22.ann.vcf
+java -Xmx8g -jar snpEff.jar hg19 test.chr22.vcf > test.chr22.ann.vcf
 ```

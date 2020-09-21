@@ -15,7 +15,7 @@ Using the `-cancer` command line option, you can compare somatic vs germline sam
 
 So an example command line would be:
 
-    $ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.ann.vcf
+    $ java -Xmx8g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.ann.vcf
 
 ### Representing cancer data
 
@@ -72,7 +72,7 @@ E.g. In our example, the file name is 'samples_cancer.txt', so the command line 
 $ cat examples/samples_cancer_one.txt
 Patient_01_Germline    Patient_01_Somatic
 
-$ java -Xmx4g -jar snpEff.jar -v \
+$ java -Xmx8g -jar snpEff.jar -v \
                 -cancer \
                 -cancerSamples examples/samples_cancer_one.txt \
                 GRCh37.75 \
@@ -98,7 +98,7 @@ $ cat examples/cancer_pedigree.vcf
 1   69511   .   A   C,G .       PASS    AF=0.3580   GT      1/1                 2/2
 
 
-$ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 examples/cancer_pedigree.vcf > examples/cancer_pedigree.ann.vcf
+$ java -Xmx8g -jar snpEff.jar -v -cancer GRCh37.75 examples/cancer_pedigree.vcf > examples/cancer_pedigree.ann.vcf
 ```
 Here we say that the sample called `Patient_01_Somatic` is derived from the sample called `Patient_01_Germline`.
 In this context, this means that cancer sample is derived from the healthy tissue.
@@ -126,7 +126,7 @@ Example: Sample output for the previously mentioned VCF example would be (the ou
 
 For the first line we get (edited for readability):
 ```
-$ java -Xmx4g -jar snpEff.jar -v -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf > examples/cancer.eff.vcf
+$ java -Xmx8g -jar snpEff.jar -v -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf > examples/cancer.eff.vcf
 
 1   69091   .   A   C,G .   PASS    AF=0.1122;
                   ANN=G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Met1?|1/918|1/918|1/305||
@@ -177,7 +177,7 @@ EFF = Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Chan
 
 For the previous example, we get (edited for readability):
 ```
-$ java -Xmx4g -jar snpEff.jar -v -classic -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf > examples/cancer.eff.vcf
+$ java -Xmx8g -jar snpEff.jar -v -classic -cancer -cancerSamples examples/samples_cancer_one.txt GRCh37.75 examples/cancer.vcf > examples/cancer.eff.vcf
 
 1	69091	.	A	C,G	.	PASS	AC=1;
                      EFF=START_LOST(HIGH|MISSENSE|Atg/Gtg|M1V|305|OR4F5|protein_coding|CODING|ENST00000335137|1|G)

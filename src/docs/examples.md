@@ -7,10 +7,10 @@ In this protocol we show how to analyze genomic variants using the SnpEff pipeli
 **Computer hardware:** The materials required for this protocol are:
 
 * a computer running a Unix operating system (Linux, OS.X),
-* at least 4GB of RAM
-* at least 1Gb of free disk space,
-* Java version 1.8 or higher installed, and
-* a reasonably fast internet connection.
+* at least 16GB of RAM
+* at least 8Gb of free disk space,
+* Java
+* a reasonably fast internet connection
 
 Users of Windows computers can install CygWin, a free Linux-like environment for Windows, although the precise commands listed in the protocol may need to adapted.
 
@@ -86,7 +86,7 @@ In this example, we annotate (all these annotations are activated by default whe
 * use HGVS notation for amino acid changes; and
 * to create a web page summarizing the annotation results in "ex1.html" (option `-stats`):
 
-        java -Xmx4g -jar snpEff.jar -v -stats ex1.html GRCh37.75 protocols/ex1.vcf > protocols/ex1.ann.vcf
+        java -Xmx8g -jar snpEff.jar -v -stats ex1.html GRCh37.75 protocols/ex1.vcf > protocols/ex1.ann.vcf
 
 SnpEff produces three output files :
 
@@ -330,7 +330,7 @@ The method requires two steps:
 
 When using SnpEff for GATK compatibility, we must use the `-o gatk` command line option:
 ```
-java -Xmx4g -jar snpEff.jar \
+java -Xmx8g -jar snpEff.jar \
     -v \
     -o gatk \
     GRCh37.75 \
@@ -346,7 +346,7 @@ Next, we process these variants using GATK. For this step to work correctly, we 
 
 Assuming these requirements are satisfied, we can run the following command, which will produce a GATK annotated file ("ex1.gatk.vcf"):
 ```
-java -Xmx4g -jar $HOME/tools/gatk/GenomeAnalysisTK.jar \
+java -Xmx8g -jar $HOME/tools/gatk/GenomeAnalysisTK.jar \
     -T VariantAnnotator \
     -R $HOME/genomes/GRCh37.75.fa \
     -A SnpEff \
@@ -384,7 +384,7 @@ We will perform non-coding variant annotation using SnpEff following a similar a
 In this case, we construct a command line that instructs SnpEff to include motif information ("-motif") and putative transcription factor binding sites (TFBS) identified in the ENSEMBL Regulatory Build and the Jaspar database:
 
 ```
-java -Xmx4g -jar snpEff.jar \
+java -Xmx8g -jar snpEff.jar \
     -v \
     -motif \
     GRCh37.75 \
@@ -404,7 +404,7 @@ Data produced from ChIP-Seq analysis are frequently published in BED, BigBed or 
 This command line option can be used to add annotations using ChIP-Seq experiments from the ENCODE and Epigenome Roadmap projects: since multiple `-interval` options are allowed in each command line, it is a simple way to combine several annotations:
 
 ```
-java -Xmx4g -jar snpEff.jar \
+java -Xmx8g -jar snpEff.jar \
     -v \
     -motif \
     -interval protocols/ex2_regulatory.bed \
@@ -480,7 +480,7 @@ samtools sort s.bam s_sort
 samtools mpileup -uf dm5.34.fasta s_sort.bam | bcftools view -vcg - > s.vcf
 
 # Analyze variants using snpEff
-java -Xmx4g -jar snpEff.jar dm5.34 s.vcf > s.ann.vcf
+java -Xmx8g -jar snpEff.jar dm5.34 s.vcf > s.ann.vcf
 ```
 
 This highly simplified sequencing data analysis pipeline, has these basic steps:
@@ -516,7 +516,7 @@ Here is how to do it:
 
 2. Annotate using SnpEff:
 
-        java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 file.dbSnp.vcf > file.ann.vcf
+        java -Xmx8g -jar snpEff.jar eff -v GRCh37.75 file.dbSnp.vcf > file.ann.vcf
 
 3. Filter out variants that have a non-empty ID field.
     These variants are the ones that are NOT in dbSnp, since we annotated the ID field using rs-numbers from dbSnp in step 1.
@@ -537,7 +537,7 @@ Obviously you can perform the three previous commands, pipeling the out from one
 So the previous commands would be:
 ```
 java -jar SnpSif.jar annotate -dbsnp file.vcf \
-    | java -Xmx4g -jar snpEff.jar eff -v GRCh37.75 - \
+    | java -Xmx8g -jar snpEff.jar eff -v GRCh37.75 - \
     | java -jar SnpSift.jar filter "! exists ID" \
     > file.ann.not_in_dbSnp.vcf
 ```

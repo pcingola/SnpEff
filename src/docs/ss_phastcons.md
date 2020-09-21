@@ -49,7 +49,7 @@ samtools faidx path/to/genome/hg19.fa.gz
 cp path/to/genome/hg19.fa.gz.fai ./genome.fai
 
 # Now we are ready to annotate
-java -Xmx4g -jar SnpSift.jar phastCons ~/snpEff/db/phastCons file.vcf > file.phastCons.vcf
+java -Xmx8g -jar SnpSift.jar phastCons ~/snpEff/db/phastCons file.vcf > file.phastCons.vcf
 ```
 
 You can annotate intervals using BED files and `-bed` command line option.

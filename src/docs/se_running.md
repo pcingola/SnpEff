@@ -28,7 +28,7 @@ An example file is provided in `examples/test.chr22.vcf` (this data is from the 
 You can annotate the file by running the following command (as an input, we use a Variant Call Format (VCF) file available in SnpEff's `examples` directory).
 
 ```
-$ java -Xmx4g -jar snpEff.jar GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
+$ java -Xmx8g -jar snpEff.jar GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 
 # Here is how the output looks like
 $ head examples/test.chr22.ann.vcf
@@ -54,7 +54,7 @@ You can also annotate using the "verbose" mode (command line option `-v`), this 
 Here output is edited for brevity:
 
 ```
-$ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
+$ java -Xmx8g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 00:00:00.000	Reading configuration file 'snpEff.config'. Genome: 'GRCh37.75'
 00:00:00.434	done
 00:00:00.434	Reading database for genome version 'GRCh37.75' from file '/home/pcingola/snpEff_v4_0/./data/GRCh37.75/snpEffectPredictor.bin' (this might take a while)
@@ -168,7 +168,7 @@ The annotated variants will be in the new file "test.chr22.ann.vcf".
     Take a quick look at it.
 
 !!! info
-    We used the java parameter -Xmx4g to increase the memory available to the Java Virtual Machine to 4G.
+    We used the java parameter -Xmx8g to increase the memory available to the Java Virtual Machine to 4G.
     SnpEff's human genome database is large and it has to be loaded into memory.
     If your computer doesn't have at least 4G of memory, you probably won't be able to run this example.
 
@@ -176,7 +176,7 @@ The annotated variants will be in the new file "test.chr22.ann.vcf".
     If you are running SnpEff from a directory different than the one it was installed, you will have to specify where the config file is.
     This is done using the '-c' command line option:
 
-        java -Xmx4g -jar snpEff.jar -c path/to/snpEff/snpEff.config -v GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
+        java -Xmx8g -jar snpEff.jar -c path/to/snpEff/snpEff.config -v GRCh37.75 test.chr22.vcf > test.chr22.ann.vcf
 
 ### Detailed examples
 
@@ -188,7 +188,7 @@ Sometimes you need to specify the path to the config file.
 For instance, when you run SnpEff from a different directory than your install directory, you have to
 specify where the config file is located using the '-c' command line option.
 
-    java -Xmx4g path/to/snpEff/snpEff.jar -c path/to/snpEff/snpEff.config GRCh37.75 path/to/snps.vcf
+    java -Xmx8g path/to/snpEff/snpEff.jar -c path/to/snpEff/snpEff.config GRCh37.75 path/to/snps.vcf
 
 !!! info
     Since version 4.1B, you can use the `-configOption` command line option to override any value in the config file
@@ -203,7 +203,7 @@ This can be easily done using the Java command line option `-Xmx`.
 E.g. In this example I use 4Gb:
 
     # Run using 4 Gb of memory
-    java -Xmx4G snpEff.jar hg19 path/to/your/files/snps.vcf
+    java -Xmx8g snpEff.jar hg19 path/to/your/files/snps.vcf
 
 Note: There is no space between `-Xmx` and `4G`.
 
@@ -229,7 +229,7 @@ $ ssh -i ./aws_amazon/pcingola_aws.pem ec2-user@ec2-54-234-14-244.compute-1.amaz
 00:00:00.000    Downloading database for 'hg19'
 ...
 00:00:36.340    Done
-[ec2-user@ip-10-2-202-163 snpEff]$ java -Xmx4G -jar snpEff.jar dump -v hg19 > /dev/null
+[ec2-user@ip-10-2-202-163 snpEff]$ java -Xmx8g -jar snpEff.jar dump -v hg19 > /dev/null
 00:00:00.000    Reading database for genome 'hg19' (this might take a while)
 00:00:20.688    done
 00:00:20.688    Building interval forest
