@@ -70,9 +70,10 @@ pip install mkdocs-material==5.2
 # Go to snpEff's install dir, activate virtual environment containing mkdocs
 cd ~/snpEff; source ./bin/activate
 
-# Clean directory and rebuild
-rm -rvf site
+# Clean directory, rebuild site, overwrite index.html
+rm -rvf site/
 mkdocs build
+cp -vf src/docs/index.html site/
 ```
 
 - Localhost web-server starting: This will create local web-site on <http://127.0.0.1:8000> (ref: <https://www.mkdocs.org/#getting-started>)
