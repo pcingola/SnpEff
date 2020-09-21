@@ -184,8 +184,9 @@ Annotation software should have a command line option to override this behaviour
 
 Effects information is added to the INFO field using an 'EFF' tag.
 
-**Important:** This section refers the old annotation format using the 'EFF' tag which can be activated using the `-formatEff` command line option.
-As of version 4.1 SnpEff uses the 'ANN' field by default.
+!!!warning
+    This section refers the obsolete annotation format using the 'EFF' tag which can be activated using the `-formatEff` command line option.
+    As of version 4.1 SnpEff uses the 'ANN' field by default.
 
 Notes:
 

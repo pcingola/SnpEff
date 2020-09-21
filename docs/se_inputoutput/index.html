@@ -1469,8 +1469,11 @@ Then annotations are calculated, thus the reported annotations will be consisten
 Annotation software should have a command line option to override this behaviour (e.g. <code>-no_shift_hgvs</code>)</p>
 <h3 id="eff-field-vcf-output-files">EFF field (VCF output files)</h3>
 <p>Effects information is added to the INFO field using an 'EFF' tag.</p>
-<p><strong>Important:</strong> This section refers the old annotation format using the 'EFF' tag which can be activated using the <code>-formatEff</code> command line option.
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This section refers the obsolete annotation format using the 'EFF' tag which can be activated using the <code>-formatEff</code> command line option.
 As of version 4.1 SnpEff uses the 'ANN' field by default.</p>
+</div>
 <p>Notes:</p>
 <ul>
 <li>As of version 4.0, the default output uses Sequence Ontology for 'Effect' names. You can output "old" style effect names by using the <code>-classic</code> command line option.</li>

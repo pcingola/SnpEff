@@ -1174,8 +1174,7 @@ $ unzip snpEff_latest_core.zip
 <h3 id="basic-example-annotate-using-snpeff">Basic example: Annotate using SnpEff</h3>
 <p>Let's assume you have a VCF file and you want to annotate the variants in that file.
 An example file is provided in <code>examples/test.chr22.vcf</code> (this data is from the 1000 Genomes project, so the reference genome is the human genome GRCh37).</p>
-<p>You can annotate the file by running the following command (as an input, we use a
-<a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41">Variant Call Format (VCF)</a> file available in SnpEff's <code>examples</code> directory).</p>
+<p>You can annotate the file by running the following command (as an input, we use a Variant Call Format (VCF) file available in SnpEff's <code>examples</code> directory).</p>
 <pre><code>$ java -Xmx4g -jar snpEff.jar GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
 
 # Here is how the output looks like

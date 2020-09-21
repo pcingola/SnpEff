@@ -100,7 +100,7 @@ git clone https://github.com/pcingola/SnpSift.git
 ###  Building from the source
 Most libraries should be install using Maven, so you just need to run `mvn` command.
 
-* Java 8 (JDK)
+* Java (JDK)
 * ANT
 * Maven
 
