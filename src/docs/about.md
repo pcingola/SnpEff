@@ -1,10 +1,9 @@
-# About, contact info, feature requests & bug reports
 
-## 1. About
+# About
 
 This project is maintained by [**Pablo Cingolani**](http://www.linkedin.com/in/pablocingolani)
 
-## 2. Acknowledgements
+# Acknowledgements
 
 Acknowledgements and special thanks to (in order of appearance):
 
@@ -34,7 +33,7 @@ Acknowledgements and special thanks to (in order of appearance):
 * Uma Devi (U. Virginia), Karen Eilbeck (U. Utah) &amp; Nicole Marie Ruiz (U. Utah): Sequence Ontology, made right.
 * Ryan Calhoun (Apistry): SnpSift annotate, tabix index bug.
 
-## 3. Bug reports
+# Bug reports
 
 Please send any bug reports by creating issues in repositories:
 * SnpEff:  <https://github.com/pcingola/SnpEff/issues>
@@ -67,7 +66,7 @@ Results      | What you expect to obtain (if applicable)| "we expected result X,
 * **Try SnpEff's latest version.**
     SnpEff is updated often, may be the bug has already been corrected (e.g you are using version 5.0A, but I've already fixed it in version 5.0B).
 
-## 4. Asking for help
+# Asking for help
 
 Please send any questions by creating issues in repositories:
 * SnpEff:  <https://github.com/pcingola/SnpEff/issues>
@@ -111,7 +110,7 @@ Results      | What you expect to obtain | "we wanted to get information on vari
       However I won't be able to help you with all the details (due to limited bamdwith), so most times, the best I can do is to provide some pointers and general advise you can follow up on.
 
 
-## 5. Asking for new features
+# Asking for new features
 
 I always take into account features request.
 So don't hesitate to send me your ideas by creating issues in repositories:
@@ -127,7 +126,7 @@ Please, don't be frustrated if I tell you I cannot implement your suggestion / i
 * SnpEff is used by a LOT of people in MANY different pipelines. New features must be compatible with current infrastructure and cannot break operational production pipelines.
 * Some feature requests are just too difficult to code, requiring large changes.
 
-## 6. Asking for new database / genome
+# Asking for new database / genome
 
 I'm willing to help you out if you need to build a new database (a.k.a. add a new reference genome).
 Building a new database (i.e. adding a new reference genome) is relatively easy and the procedure is described in detail [in the documentation](se_buildingdb.md).
@@ -148,6 +147,6 @@ In order to do so, I need you to send me the following information:
 
 I'm well aware that I could try to google that information myself, but I need you to send the information because I want to be absolutely sure we are using exactly the reference genome version, sub-version, and data files you need.
 
-## 7. Contact information
+# Contact information
 
 <strong>[Pablo Cingolani](http://www.linkedin.com/in/pablocingolani).</strong>
