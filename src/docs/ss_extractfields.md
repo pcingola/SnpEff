@@ -1,4 +1,4 @@
-# 10. SnpSift Extract Fields
+# SnpSift Extract Fields
 
 Extract fields from a VCF file to a TXT, tab separated format, that you can easily load in R, XLS, etc.
 
@@ -105,28 +105,28 @@ This means to extract:
 The result will look something like:
 ```
 #CHROM  POS     ID              THETA   GEN[0].GL[1]    GEN[1].GL               GEN[3].GL[*]            GEN[*].GT
-1       10583   rs58108140      0.0046  -0.47           -0.24,-0.44,-1.16       -0.48   -0.48   -0.48   0|0     0|0     0|0     0|1     0|0     0|1     0|0     0|0     0|1 
-1       10611   rs189107123     0.0077  -0.48           -0.24,-0.44,-1.16       -0.48   -0.48   -0.48   0|0     0|1     0|0     0|0     0|0     0|0     0|0     0|0     0|0 
-1       13302   rs180734498     0.0048  -0.58           -2.45,-0.00,-5.00       -0.48   -0.48   -0.48   0|0     0|1     0|0     0|0     0|0     1|0     0|0     0|1     0|0 
-1       13327   rs144762171     0.0204  -1.11           -1.97,-0.01,-2.51       -0.48   -0.48   -0.48   0|0     0|1     0|0     0|0     0|0     1|0     0|0     0|0     0|0 
-1       13957   rs201747181     0.0100  0               0,0,0                   0       0       0       0|0     0|1     0|0     0|0     0|0     0|0     0|0     0|0     0|0 
-1       13980   rs151276478     0.0139  -0.48           -0.48,-0.48,-0.48       -0.48   -0.48   -0.48   0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0 
-1       30923   rs140337953     0.0162  -0.61           -0.10,-0.69,-2.81       -0.48   -0.48   -0.48   1|1     0|0     0|0     1|1     1|0     0|0     1|1     1|0     1|1 
-1       46402   rs199681827     0.0121  0               0,0,0                   0       0       0       0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0 
-1       47190   rs200430748     0.0153  0               0,0,0                   0       0       0       0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0 
+1       10583   rs58108140      0.0046  -0.47           -0.24,-0.44,-1.16       -0.48   -0.48   -0.48   0|0     0|0     0|0     0|1     0|0     0|1     0|0     0|0     0|1
+1       10611   rs189107123     0.0077  -0.48           -0.24,-0.44,-1.16       -0.48   -0.48   -0.48   0|0     0|1     0|0     0|0     0|0     0|0     0|0     0|0     0|0
+1       13302   rs180734498     0.0048  -0.58           -2.45,-0.00,-5.00       -0.48   -0.48   -0.48   0|0     0|1     0|0     0|0     0|0     1|0     0|0     0|1     0|0
+1       13327   rs144762171     0.0204  -1.11           -1.97,-0.01,-2.51       -0.48   -0.48   -0.48   0|0     0|1     0|0     0|0     0|0     1|0     0|0     0|0     0|0
+1       13957   rs201747181     0.0100  0               0,0,0                   0       0       0       0|0     0|1     0|0     0|0     0|0     0|0     0|0     0|0     0|0
+1       13980   rs151276478     0.0139  -0.48           -0.48,-0.48,-0.48       -0.48   -0.48   -0.48   0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0
+1       30923   rs140337953     0.0162  -0.61           -0.10,-0.69,-2.81       -0.48   -0.48   -0.48   1|1     0|0     0|0     1|1     1|0     0|0     1|1     1|0     1|1
+1       46402   rs199681827     0.0121  0               0,0,0                   0       0       0       0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0
+1       47190   rs200430748     0.0153  0               0,0,0                   0       0       0       0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0     0|0
 ```
 
 ### Example 3: Extracting fields with multiple values in a friendlier format
 
 You can use command line option `-s` to specify multiple field separator and `-e` to specify how to represent empty fields.
 
-    $ java -jar SnpSift.jar extractFields -s "," -e "." test.chr22.ann.vcf CHROM POS REF ALT "EFF[*].EFFECT" "EFF[*].AA" 
+    $ java -jar SnpSift.jar extractFields -s "," -e "." test.chr22.ann.vcf CHROM POS REF ALT "EFF[*].EFFECT" "EFF[*].AA"
 
 Notice how we separate same fields using "," instead of the default tab using the option `-s ","`, and we use "." for empty fields (option `-e "."`).
 
 The results is:
 ```
-$ java -jar SnpSift.jar extractFields -s "," -e "." examples/test.chr22.ann.vcf CHROM POS REF ALT "ANN[*].EFFECT" "ANN[*].HGVS_P" 
+$ java -jar SnpSift.jar extractFields -s "," -e "." examples/test.chr22.ann.vcf CHROM POS REF ALT "ANN[*].EFFECT" "ANN[*].HGVS_P"
 #CHROM	POS	REF	ALT	ANN[*].EFFECT	ANN[*].HGVS_P
 22	17071756	T	C	3_prime_UTR_variant,downstream_gene_variant	.,.
 22	17072035	C	T	missense_variant,downstream_gene_variant	p.Gly469Glu,.
@@ -143,7 +143,7 @@ $ java -jar SnpSift.jar extractFields -s "," -e "." examples/test.chr22.ann.vcf 
 
 In order to extract effects, you can simply do something like this (notice that there are multiple columns per line because there are multiple effects per variant):
 ```
-$ java -jar SnpSift.jar extractFields examples/test.chr22.ann.vcf CHROM POS REF ALT "ANN[*].EFFECT" 
+$ java -jar SnpSift.jar extractFields examples/test.chr22.ann.vcf CHROM POS REF ALT "ANN[*].EFFECT"
 #CHROM	POS	REF	ALT	ANN[*].EFFECT
 22	17071756	T	C	3_prime_UTR_variant	downstream_gene_variant
 22	17072035	C	T	missense_variant	downstream_gene_variant
@@ -216,13 +216,13 @@ $ java -jar SnpSift.jar  extractFields kath.gerp.vcf CHROM POS REF ALT dbNSFP_GE
 7	151933217	C	A		
 7	151933251	T	C		
 7	151933302	T	C		
-7	151945101	G	C	-0.892	
+7	151945101	G	C	-0.892
 7	151945167	G	T		
 7	151962176	T	A		
 7	151970672	A	T		
-7	151970856	T	A	3.71	
+7	151970856	T	A	3.71
 18	14183638	G	C		
 18	14183710	A	G		
 18	14542909	G	A		
-18	14543039	T	C	-0.942	
+18	14543039	T	C	-0.942
 ```

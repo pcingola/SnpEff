@@ -1,4 +1,4 @@
-# 3. SnpSift Annotate
+# SnpSift Annotate
 
 Annotate using fields from another VCF file (e.g. dbSnp, 1000 Genomes projects, ClinVar, ExAC, etc.).
 
@@ -40,7 +40,7 @@ $ cat test.chr22.vcf
 22      17072394    .            C    G    0.0    PASS    NS=463
 22      17072411    .            G    T    0.0    PASS    NS=464
 
-$ java -jar SnpSift.jar annotate -id db/dbSnp/dbSnp137.20120616.vcf test.chr22.vcf 
+$ java -jar SnpSift.jar annotate -id db/dbSnp/dbSnp137.20120616.vcf test.chr22.vcf
 #CHROM  POS         ID           REF  ALT  QUAL   FILTER  INFO
 22      16157571    .            T    G    0.0    FAIL    NS=53
 22      16346045    rs56234788   T    C    0.0    FAIL    NS=244
@@ -66,7 +66,7 @@ $ cat test.chr22.vcf
 22      17072394    .            C    G    0.0    PASS    NS=463
 22      17072411    .            G    T    0.0    PASS    NS=464
 
-$ java -jar SnpSift.jar annotate db/dbSnp/dbSnp137.20120616.vcf test.chr22.vcf 
+$ java -jar SnpSift.jar annotate db/dbSnp/dbSnp137.20120616.vcf test.chr22.vcf
 #CHROM  POS         ID           REF  ALT  QUAL   FILTER  INFO
 22      16157571    .            T    G    0.0    FAIL    NS=53
 22      16346045    rs56234788   T    C    0.0    FAIL    NS=244;RSPOS=16346045;GMAF=0.162248628884826;dbSNPBuildID=129;SSR=0;SAO=0;VP=050100000000000100000100;WGT=0;VC=SNV;SLO;GNO

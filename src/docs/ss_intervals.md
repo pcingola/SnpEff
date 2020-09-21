@@ -1,4 +1,4 @@
-# 5. SnpSift Intervals
+# SnpSift Intervals
 
 This is used to extract variants that intersect any interval.
 

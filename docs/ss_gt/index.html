@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#22-snpsift-gt" class="md-skip">
+        <a href="#snpsift-gt" class="md-skip">
           Skip to content
         </a>
       
@@ -1061,7 +1061,7 @@
                   
                 
                 
-                <h1 id="22-snpsift-gt">22. SnpSift GT</h1>
+                <h1 id="snpsift-gt">SnpSift GT</h1>
 <p>Compress genotype calls, reducing the overall size of the VCF file.</p>
 <p>This is intended for compressing very large VCF in very large sequencing projects (e.g. thousands of samples).</p>
 <div class="admonition info">
@@ -1099,7 +1099,7 @@ $ java -jar SnpSift.jar gt test.vcf | tee test.gt.vcf
 #---
 # Uncompress genotypes (command line option '-u')
 #---
-$ java -jar SnpSift.jar gt -u test.gt.vcf 
+$ java -jar SnpSift.jar gt -u test.gt.vcf
 #CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO  FORMAT  Sample_1  Sample_2  Sample_3  Sample_4  Sample_5  Sample_6  Sample_7  Sample_8  Sample_9  Sample_10  Sample_11  Sample_12  Sample_13  Sample_14  Sample_15
 1       861276  .   A    G    .     PASS    AC=1  GT      0/0       1/1       0/0       0/0       0/0       0/0       0/0       0/0       0/0       0/0        0/0        0/0        0/0        0/0        0/0
 </code></pre>

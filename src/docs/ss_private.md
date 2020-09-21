@@ -1,4 +1,4 @@
-# 17. SnpSift Private
+# SnpSift Private
 
 Annotate if a variant is private to a family.
 

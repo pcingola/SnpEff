@@ -1,4 +1,4 @@
-# 11. SnpSift Variant type
+# SnpSift Variant type
 
 Adds an INFO field denoting variant type.
 

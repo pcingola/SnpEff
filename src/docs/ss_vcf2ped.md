@@ -1,4 +1,4 @@
-# 18. SnpSift Vcf2Tped
+# SnpSift Vcf2Tped
 
 Convert from VCF to PLINK's TPED file format.
 

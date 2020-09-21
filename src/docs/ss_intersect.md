@@ -1,4 +1,4 @@
-#  19. SnpSift Intersect
+# SnpSift Intersect
 
 This command intersects several intervals files (e.g. BED, BigBed, TXT) and produces a result of all intersections.
 

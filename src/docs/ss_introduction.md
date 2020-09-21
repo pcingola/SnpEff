@@ -1,4 +1,4 @@
-#1. SnpSift
+# SnpSift
 
 **SnpSift** is a toolbox that allows you to filter and manipulate annotated files.
 

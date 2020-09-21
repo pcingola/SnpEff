@@ -1,4 +1,4 @@
-# 22. SnpSift GT
+# SnpSift GT
 
 Compress genotype calls, reducing the overall size of the VCF file.
 
@@ -42,7 +42,7 @@ $ java -jar SnpSift.jar gt test.vcf | tee test.gt.vcf
 #---
 # Uncompress genotypes (command line option '-u')
 #---
-$ java -jar SnpSift.jar gt -u test.gt.vcf 
+$ java -jar SnpSift.jar gt -u test.gt.vcf
 #CHROM  POS     ID  REF  ALT  QUAL  FILTER  INFO  FORMAT  Sample_1  Sample_2  Sample_3  Sample_4  Sample_5  Sample_6  Sample_7  Sample_8  Sample_9  Sample_10  Sample_11  Sample_12  Sample_13  Sample_14  Sample_15
 1       861276  .   A    G    .     PASS    AC=1  GT      0/0       1/1       0/0       0/0       0/0       0/0       0/0       0/0       0/0       0/0        0/0        0/0        0/0        0/0        0/0
 ```

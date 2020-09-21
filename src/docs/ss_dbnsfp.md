@@ -1,4 +1,4 @@
-# 13. SnpSift dbNSFP
+# SnpSift dbNSFP
 
 The dbNSFP is an integrated database of functional predictions from multiple algorithms (SIFT, Polyphen2, LRT and MutationTaster, PhyloP and GERP++, etc.).
 

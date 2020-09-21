@@ -1,4 +1,4 @@
-# 2. SnpSift filter
+# SnpSift filter
 
 SnpSift filter is one of the most useful SnpSift commands.
 Using SnpSift filter you can filter VCF files using arbitrary expressions, for instance `"(QUAL > 30) | (exists INDEL) | ( countHet() > 2 )"`. The actual expressions can be quite complex, so it allows for a lot of flexibility.
@@ -80,15 +80,15 @@ All VCF fields can be used as variables names, as long as they are declared in t
 
     * The alternative is 'T':
 
-            "( ALT = 'T' )" 
+            "( ALT = 'T' )"
 
     * Quality over 30:
 
-            "( QUAL > 30 )" 
+            "( QUAL > 30 )"
 
     * Filter value is either 'PASS' or it is missing:
 
-            "( na FILTER ) | (FILTER = 'PASS')" 
+            "( na FILTER ) | (FILTER = 'PASS')"
 
 * **INFO field** names in the INFO field. E.g. if the info field has "DP=48;AF1=0;..." you can use something like:
 
@@ -121,12 +121,12 @@ When variables have multiple values, you can access individual values as if it w
 
     So, for instance, the following expressions:
 
-        "( CI95[ALL] > 0.1 )" 
-        "( CI95[?] > 0.1 )" 
+        "( CI95[ALL] > 0.1 )"
+        "( CI95[?] > 0.1 )"
 
     are equivalent to (in this case, there are only two values in the array):
 
-        "( CI95[0] > 0.1 ) & ( CI95[1] > 0.1 )" 
+        "( CI95[0] > 0.1 ) & ( CI95[1] > 0.1 )"
 
 
 ### Genotype fields
@@ -157,7 +157,7 @@ Vcf genotype fields can be accessed individually using array notation.
     You can create an expression using sample names instead of genotype numbers.
     E.g.
 
-        $ java -jar SnpSift.jar filter "( GEN[HG00096].DS > 0.2 ) & ( GEN[HG00097].DS > 0.5 )" examples/1kg.head_chr1.vcf.gz 
+        $ java -jar SnpSift.jar filter "( GEN[HG00096].DS > 0.2 ) & ( GEN[HG00097].DS > 0.5 )" examples/1kg.head_chr1.vcf.gz
 
 
 ### Sets
@@ -298,7 +298,7 @@ Similarly `LOF` and `NMD` sub-fields are available:
 
 For instance, if we want to obtain genes having a Loss of Function effect in more than 90% of the transcripts, you can do this:
 
-    $cat test.snpeff.vcf | java -Xmx1G -jar SnpSift.jar filter "(exists LOF[*].PERC) & (LOF[*].PERC > 0.9)" 
+    $cat test.snpeff.vcf | java -Xmx1G -jar SnpSift.jar filter "(exists LOF[*].PERC) & (LOF[*].PERC > 0.9)"
 
 
 !!! warning

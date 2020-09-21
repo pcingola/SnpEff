@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#4-snpsift-casecontrol" class="md-skip">
+        <a href="#snpsift-casecontrol" class="md-skip">
           Skip to content
         </a>
       
@@ -1125,7 +1125,7 @@
                   
                 
                 
-                <h1 id="4-snpsift-casecontrol">4. SnpSift CaseControl</h1>
+                <h1 id="snpsift-casecontrol">SnpSift CaseControl</h1>
 <p>Allows you to count how many samples are in 'case' and 'control' groups.</p>
 <h3 id="typical-usage">Typical usage</h3>
 <p>This command counts the number of 'homozygous', 'heterozygous' and 'total' variants in a case and control groups and performs some basic pValue calculation using Fisher exact test and Cochran-Armitage test.</p>
@@ -1134,7 +1134,7 @@
 <p>E.g. We have ten samples, which means ten genotype columns in the VCF file.
 The first four are 'cases', the fifth one is 'neutral', and the last five are 'control'.
 So the description string would be "++++0-----" (note that the following output has been edited, only counts are shown, no pValues):</p>
-<pre><code>$ java -jar SnpSift.jar caseControl &quot;++++0-----&quot; cc.vcf 
+<pre><code>$ java -jar SnpSift.jar caseControl &quot;++++0-----&quot; cc.vcf
 #CHROM  POS    ID  REF  ALT  QUAL  FILTER  INFO                                FORMAT  Sample_01  Sample_02  Sample_03  Sample_04  Sample_05  Sample_06  Sample_07  Sample_08  Sample_09  Sample_10
 1       69496  .   G    A    .     PASS    AF=0.01;Cases=1,2,4;Controls=2,2,6  GT      0/1        1/1        1/0        0/0        0/0        0/1        1/1        1/1        1/0        0/0
 </code></pre>

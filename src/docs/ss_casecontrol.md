@@ -1,4 +1,4 @@
-# 4. SnpSift CaseControl
+# SnpSift CaseControl
 
 Allows you to count how many samples are in 'case' and 'control' groups.
 
@@ -14,7 +14,7 @@ E.g. We have ten samples, which means ten genotype columns in the VCF file.
 The first four are 'cases', the fifth one is 'neutral', and the last five are 'control'.
 So the description string would be "++++0-----" (note that the following output has been edited, only counts are shown, no pValues):
 ```
-$ java -jar SnpSift.jar caseControl "++++0-----" cc.vcf 
+$ java -jar SnpSift.jar caseControl "++++0-----" cc.vcf
 #CHROM  POS    ID  REF  ALT  QUAL  FILTER  INFO                                FORMAT  Sample_01  Sample_02  Sample_03  Sample_04  Sample_05  Sample_06  Sample_07  Sample_08  Sample_09  Sample_10
 1       69496  .   G    A    .     PASS    AF=0.01;Cases=1,2,4;Controls=2,2,6  GT      0/1        1/1        1/0        0/0        0/0        0/1        1/1        1/1        1/0        0/0
 ```
@@ -35,7 +35,7 @@ Thus the annotation is `Controls=2,2,6`
     You can use the `-name nameString` command line option to add name to the INFO tags.
 
     This can be used to count different case/control groups in the same dataset (e.g. multiple phenotypes)
-    
+
         $  java -jar SnpSift.jar caseControl -name "_MY_GROUP" "++++0-----" cc.vcf \
         | java -jar SnpSift.jar caseControl -name "_ANOTHER_GROUP" "+-+-+-+-+-" -
 

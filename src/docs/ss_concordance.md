@@ -1,4 +1,4 @@
-# 16. SnpSift Concordance
+# SnpSift Concordance
 
 Calculate concordance between two VCF files.
 

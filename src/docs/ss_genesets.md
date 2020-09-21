@@ -1,4 +1,4 @@
-# 21. SnpSift GeneSets
+# SnpSift GeneSets
 
 Annotating GeneSets, such as Gene Ontology (GO), KEGG, Reactome, etc.; can be quite useful to find significant variants.
 

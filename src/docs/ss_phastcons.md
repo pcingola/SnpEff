@@ -1,4 +1,4 @@
-# 15. SnpSift phastCons
+# SnpSift phastCons
 
 Annotate using PhastCons conservation scores.
 
@@ -42,7 +42,7 @@ wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.
 wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chr22.phastCons100way.wigFix.gz                 
 wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chrM.phastCons100way.wigFix.gz                  
 wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chrX.phastCons100way.wigFix.gz                  
-wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chrY.phastCons100way.wigFix.gz 
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/hg19.100way.phastCons/chrY.phastCons100way.wigFix.gz
 
 # Create a chromosome size file and name it "genome.fai"
 samtools faidx path/to/genome/hg19.fa.gz

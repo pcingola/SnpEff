@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#2-snpsift-filter" class="md-skip">
+        <a href="#snpsift-filter" class="md-skip">
           Skip to content
         </a>
       
@@ -1251,7 +1251,7 @@
                   
                 
                 
-                <h1 id="2-snpsift-filter">2. SnpSift filter</h1>
+                <h1 id="snpsift-filter">SnpSift filter</h1>
 <p>SnpSift filter is one of the most useful SnpSift commands.
 Using SnpSift filter you can filter VCF files using arbitrary expressions, for instance <code>"(QUAL &gt; 30) | (exists INDEL) | ( countHet() &gt; 2 )"</code>. The actual expressions can be quite complex, so it allows for a lot of flexibility.</p>
 <h3 id="typical-usage">Typical usage</h3>
@@ -1381,7 +1381,7 @@ Options:
 </code></pre>
 <p><strong>ALL</strong> or <strong>?</strong>: If you use 'ALL' as index, the expression will be true if all field satisfy the expression.</p>
 <p>So, for instance, the following expressions:</p>
-<pre><code>"( CI95[ALL] &gt; 0.1 )" 
+<pre><code>"( CI95[ALL] &gt; 0.1 )"
 "( CI95[?] &gt; 0.1 )"
 </code></pre>
 <p>are equivalent to (in this case, there are only two values in the array):</p>

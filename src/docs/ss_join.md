@@ -1,4 +1,4 @@
-# 7. SnpSift Join
+# SnpSift Join
 
 Join files by genomic regions (i.e. chr:start-end).
 
@@ -6,7 +6,7 @@ Files can be generic TXT (tab separated), VCF or BED.
 
 Usage example:
 ```
-Usage: java -jar SnpSift.jar join [options] file1 file2 
+Usage: java -jar SnpSift.jar join [options] file1 file2
 Note: It is assumed that both files fit in memory.
 Options:
     -if1 <num>       : Offset for file1 (e.g. 1 if coordinates are one-based. Default: 1

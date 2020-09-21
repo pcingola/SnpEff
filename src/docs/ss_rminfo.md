@@ -1,4 +1,4 @@
-# 20. SnpSift RmInfo
+# SnpSift RmInfo
 
 This command removes INFO fields from a VCF file (i.e. removes annotations)
 
@@ -13,7 +13,7 @@ This confusion often leads to problems in downstream steps of your pipelines, so
 
 Usage example:
 ```
-$ cat test.snpeff.vcf 
+$ cat test.snpeff.vcf
 #CHROM	POS 	ID	    REF	ALT	QUAL	FILTER	INFO
 1	    734462	1032	G	A	.	    s50	    AC=348;EFF=DOWNSTREAM(MODIFIER|||||RP11-206L10.8|processed_transcript|NON_CODING|ENST00000447500||1),INTRON(MODIFIER|||||RP11-206L10.6|processed_transcript|NON_CODING|ENST00000429505|1|1)
 

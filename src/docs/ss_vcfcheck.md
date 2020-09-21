@@ -1,4 +1,4 @@
-# 23. SnpSift VcfCheck
+# SnpSift VcfCheck
 
 Perform some basic check ups on VCF files to spot common problems.
 
@@ -7,7 +7,7 @@ Given that many common VCF problems cause analysis tools and pipelines to behave
 
 E.g.:
 ```
-$ java -jar SnpSift.jar vcfCheck bad.vcf 
+$ java -jar SnpSift.jar vcfCheck bad.vcf
 
 WARNING: Malformed VCF entryfile 'bad.vcf', line 7:
         Entry  : 3	148885779	.	A	ATT,AT	999.0	PASS	UK10KWES_AC=0,0;MDV=94

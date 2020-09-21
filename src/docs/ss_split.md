@@ -1,4 +1,4 @@
-# 14. SnpSift Split
+# SnpSift Split
 
 Simply split (or join) VCF files.
 Allows to create one file per chromosome or one file every N lines.
