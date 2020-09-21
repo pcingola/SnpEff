@@ -137,7 +137,7 @@ This command provides a list of configured databases, i.e. available in `snpEff.
 Example:
 ```
 $ java -jar snpEff.jar databases
-Genome                                                        Organism                                                    Status    Bundle                        Database download link
+Genome                                                      Organism                                                    Status    Bundle                        Database download link
 ------                                                      --------                                                    ------    ------                        ----------------------
 129S1_SvImJ_v1.99                                           Mus_musculus_129s1svimj                                                                             https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_129S1_SvImJ_v1.99.zip
 AIIM_Pcri_1.0.99                                            Pavo_cristatus                                                                                      https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_AIIM_Pcri_1.0.99.zip
