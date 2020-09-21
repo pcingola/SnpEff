@@ -82,6 +82,8 @@ nav:
      - SnpSift VcfCheck: ss_vcfcheck.md
   - 'Download & Install':
      - Download and install: download.md
+  - 'Examples':
+     - Examples: examples.md
   - About:
      - About: about.md
      - In Memory: xiangyi_lu_donate.md
