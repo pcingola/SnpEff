@@ -40,8 +40,4 @@ In order to cite SnpSift, please use the following [example](citing.md#citing-sn
 
 ### Source code
 
-The project is hosted at SourceForge.
-
-Here is the SVN command to check out the development version of the code:
-
-    svn co https://snpeff.svn.sourceforge.net/svnroot/snpeff/SnpSift/trunk
+The project is hosted at [GitHub](https://github.com/pcingola/SnpEff).

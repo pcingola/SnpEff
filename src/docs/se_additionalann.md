@@ -65,7 +65,7 @@ $ grep -i regulatory_region test.1KG.ann_reg.vcf | head -n 1 | ./scripts/vcfInfo
                                                 ,T|regulatory_region_variant|MODIFIER|||REGULATION&H3K4me3:NHEK|NHEK_H3K4me3_133|||||||||
                                                 ,T|regulatory_region_variant|MODIFIER|||REGULATION&DNase1:HeLa-S3|HeLa-S3_DNase1_108|||||||||
                                                 ,T|regulatory_region_variant|MODIFIER|||REGULATION&DNase1:NHEK|NHEK_DNase1_63|||||||||
-                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&FAIRE:NHEK|NHEK_FAIRE_149||||||||| 
+                                                ,T|regulatory_region_variant|MODIFIER|||REGULATION&FAIRE:NHEK|NHEK_FAIRE_149|||||||||
 ```
 
 ### ENCODE
@@ -116,22 +116,22 @@ They will be available later in the project.
 So, for the time being, data has to be downloaded an pre-processed.
 We'll be processing these information and making it available (as SnpEff databases) as soon as we can.
 
-The latest Epigenome project processed information, can be found [here](http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz/download).
+The latest Epigenome project processed information, can be found [here](https://snpeff.blob.core.windows.net/databases/epigenome_latest.tgz/download).
 This includes genomic intervals for high confidence peaks in form of `BED` files.
 
 To annotate you can do:
 ```
 # Download Epigenome project database (pre-processed as BED files)
-wget http://sourceforge.net/projects/snpeff/files/databases/epigenome_latest.tgz/download
+wget https://snpeff.blob.core.windows.net/databases/epigenome_latest.tgz/download
 
 # Open tar file
 tar -xvzf epigenome_latest.tgz
 
 # Annotate using SnpEff and "-interval" command line
-java -Xmx4g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.ann.vcf 
+java -Xmx4g -jar snpEff.jar -v -interval db/epigenome/BI_Pancreatic_Islets_H3K4me3.peaks.bed GRCh37.75 test.vcf > test.ann.vcf
 
 # See the data represented as "CUSTOM" EFF fields
-$ grep CUSTOM test.ann.vcf 
+$ grep CUSTOM test.ann.vcf
 1	894573	.	G	A	.	PASS	AC=725;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_8||||1),INTRON(MODIFIER||||749|NOC2L|protein_coding|CODING|ENST00000327044|1|1),INTRON(MODIFIER|||||NOC2L|processed_transcript|CODING|ENST00000487214|1|1),INTRON(MODIFIER|||||NOC2L|retained_intron|CODING|ENST00000469563|1|1),UPSTREAM(MODIFIER||||642|KLHL17|protein_coding|CODING|ENST00000338591||1),UPSTREAM(MODIFIER|||||KLHL17|nonsense_mediated_decay|CODING|ENST00000466300||1),UPSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000463212||1),UPSTREAM(MODIFIER|||||KLHL17|retained_intron|CODING|ENST00000481067||1),UPSTREAM(MODIFIER|||||NOC2L|retained_intron|CODING|ENST00000477976||1)
 1	948692	.	G	A	.	PASS	AC=896;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_9||||1),INTERGENIC(MODIFIER||||||||||1),UPSTREAM(MODIFIER||||165|ISG15|protein_coding|CODING|ENST00000379389||1),UPSTREAM(MODIFIER|||||RP11-54O7.11|antisense|NON_CODING|ENST00000458555||1)
 1	948921	.	T	C	.	PASS	AC=904;EFF=CUSTOM[BI_Pancreatic_Islets_H3K4me3](MODIFIER||||||MACS_peak_9||||1),UPSTREAM(MODIFIER|||||RP11-54O7.11|antisense|NON_CODING|ENST00000458555||1),UTR_5_PRIME(MODIFIER||||165|ISG15|protein_coding|CODING|ENST00000379389|1|1)

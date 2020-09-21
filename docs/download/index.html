@@ -1231,7 +1231,7 @@
                 <h2 id="downloading-snpeff-snpsift">Downloading SnpEff &amp; SnpSift</h2>
 <p>SnpEff and SnpSift are bundled together.</p>
 <blockquote>
-<p><a href="https://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip/download">Download SnpEff</a></p>
+<p><a href="https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip">Download SnpEff</a></p>
 <p>Old versions <a href="https://sourceforge.net/projects/snpeff/files/">here</a>.</p>
 </blockquote>
 <h3 id="license">License</h3>
@@ -1248,7 +1248,7 @@ For large genomes, such as the human genome, you'll probably need at least 4Gb o
 cd
 
 # Download latest version
-wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
 
 # Unzip file
 unzip snpEff_latest_core.zip
@@ -1288,10 +1288,6 @@ data.dir = ./data/
 <pre><code> java -jar snpEff.jar download GRCh38.76
 </code></pre>
 <p>Note: Current human genome version at the time of writing is GRCh38.76.</p>
-</li>
-<li>
-<p>Manual download: You can browse all available databases <a href="https://sourceforge.net/projects/snpeff/files/">here</a>.
-      Make sure the database version matches your SnpEff version (e.g. do not use a 2.1 database with SnpEff 3.0).</p>
 </li>
 </ul>
 <h2 id="available-databases">Available databases</h2>
@@ -1362,8 +1358,8 @@ ln -s $HOME/workspace/SnpEff/scripts_build
 <pre><code># Install test databases in SnpEff's development directory (not the soruce code dir!)
 cd $HOME/snpEff
 
-# Download dtabases and genome for test cases
-wget http://sourceforge.net/projects/snpeff/files/databases/test_cases.tgz
+# Download databases and genome for test cases
+wget https://snpeff.blob.core.windows.net/databases/test_cases.tgz
 
 # Uncompress
 tar -xvzf test_cases.tgz

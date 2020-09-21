@@ -2,7 +2,7 @@
 
 Genomic variant annotations and functional effect prediction toolbox.
 
-[Download SnpEff](https://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip/download){: .button}
+[Download SnpEff](https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip){: .button}
 
 Important: This version implements the [VCF annotation standard 'ANN' field](adds/VCFannotationformat_v1.0.pdf).
 

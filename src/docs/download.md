@@ -2,7 +2,7 @@
 
 SnpEff and SnpSift are bundled together.
 
-> [Download SnpEff](https://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip/download)
+> [Download SnpEff](https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip)
 
 > Old versions [here](https://sourceforge.net/projects/snpeff/files/).
 
@@ -31,7 +31,7 @@ It is better if you install SnpEff in `snpEff` directory in your home directory 
 cd
 
 # Download latest version
-wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
 
 # Unzip file
 unzip snpEff_latest_core.zip
@@ -75,9 +75,6 @@ Databases can be downloaded in three different ways:
          java -jar snpEff.jar download GRCh38.76
 
       Note: Current human genome version at the time of writing is GRCh38.76.
-
-* Manual download: You can browse all available databases [here](https://sourceforge.net/projects/snpeff/files/).
-      Make sure the database version matches your SnpEff version (e.g. do not use a 2.1 database with SnpEff 3.0).
 
 ## Available databases
 There are over 20,000 databases available.
@@ -154,8 +151,8 @@ Test cases require special "test cases databases and genome", you can find them 
 # Install test databases in SnpEff's development directory (not the soruce code dir!)
 cd $HOME/snpEff
 
-# Download dtabases and genome for test cases
-wget http://sourceforge.net/projects/snpeff/files/databases/test_cases.tgz
+# Download databases and genome for test cases
+wget https://snpeff.blob.core.windows.net/databases/test_cases.tgz
 
 # Uncompress
 tar -xvzf test_cases.tgz

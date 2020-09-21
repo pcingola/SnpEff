@@ -15,7 +15,7 @@ Using the `-cancer` command line option, you can compare somatic vs germline sam
 
 So an example command line would be:
 
-    $ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.ann.vcf 
+    $ java -Xmx4g -jar snpEff.jar -v -cancer GRCh37.75 cancer.vcf > cancer.ann.vcf
 
 ### Representing cancer data
 
@@ -77,7 +77,7 @@ $ java -Xmx4g -jar snpEff.jar -v \
                 -cancerSamples examples/samples_cancer_one.txt \
                 GRCh37.75 \
                 examples/cancer.vcf \
-                > cancer.ann.vcf 
+                > cancer.ann.vcf
 ```
 **VCF header**
 
@@ -86,7 +86,7 @@ You have to add the `PEDIGREE` header with the appropriate information to your V
 Obviously this requires you to edit you VCF file's header.
 
 !!! warning
-    How to edit VCF headers is beyond the scope of this manual (we recommend using `vcf-annotate` from [VCFtools](http://vcftools.sourceforge.net/docs.html#annotate)). But if you find adding PEDIGREE information to your VCF file difficult, just use the TXT file method described in the previous sub-section.
+    How to edit VCF headers is beyond the scope of this manual (we recommend using `vcf-annotate` from VCFtools). But if you find adding PEDIGREE information to your VCF file difficult, just use the TXT file method described in the previous sub-section.
 
 E.g.: Pedigree information in a VCF file would look like this:
 ```
@@ -132,7 +132,7 @@ $ java -Xmx4g -jar snpEff.jar -v -cancer -cancerSamples examples/samples_cancer_
                   ANN=G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Met1?|1/918|1/918|1/305||
                  ,G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>G|p.Leu1?|1/918|1/918|1/305||
                  ,C|initiator_codon_variant|LOW|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A>C|p.Met1?|1/918|1/918|1/305||
-               GT  1/0 2/1 
+               GT  1/0 2/1
 ```
 What does it mean:
 

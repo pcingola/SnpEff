@@ -10,7 +10,7 @@ This allows for faster annotations.
 
 **Database:** In order to annotate using dbNSFP, you need to download the dbNSFP database and the index file.
 dbNSFP is large (several GB) so it might take a while to download it.
-The database is compressed (block-gzip) and [tabix](http://samtools.sourceforge.net/tabix.shtml) indexed, so two files are required (the data *.gz file and the *.gz.tbi index file).
+The database is compressed (block-gzip) and tabix-indexed, so two files are required (the data *.gz file and the *.gz.tbi index file).
 
 You can download the files from SnpEff's site (remember that you need both the database and the index file):
 

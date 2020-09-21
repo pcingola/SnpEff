@@ -1189,7 +1189,7 @@ $ java -Xmx4g -jar snpEff.jar -v \
                 -cancerSamples examples/samples_cancer_one.txt \
                 GRCh37.75 \
                 examples/cancer.vcf \
-                &gt; cancer.ann.vcf 
+                &gt; cancer.ann.vcf
 </code></pre>
 
 <p><strong>VCF header</strong></p>
@@ -1198,7 +1198,7 @@ You have to add the <code>PEDIGREE</code> header with the appropriate informatio
 Obviously this requires you to edit you VCF file's header.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>How to edit VCF headers is beyond the scope of this manual (we recommend using <code>vcf-annotate</code> from <a href="http://vcftools.sourceforge.net/docs.html#annotate">VCFtools</a>). But if you find adding PEDIGREE information to your VCF file difficult, just use the TXT file method described in the previous sub-section.</p>
+<p>How to edit VCF headers is beyond the scope of this manual (we recommend using <code>vcf-annotate</code> from VCFtools). But if you find adding PEDIGREE information to your VCF file difficult, just use the TXT file method described in the previous sub-section.</p>
 </div>
 <p>E.g.: Pedigree information in a VCF file would look like this:</p>
 <pre><code>$ cat examples/cancer_pedigree.vcf
@@ -1237,7 +1237,7 @@ It is important that you understand the meaning of the last one, because you'll 
                   ANN=G|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A&gt;G|p.Met1?|1/918|1/918|1/305||
                  ,G-C|start_lost|HIGH|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A&gt;G|p.Leu1?|1/918|1/918|1/305||
                  ,C|initiator_codon_variant|LOW|OR4F5|ENSG00000186092|transcript|ENST00000335137|protein_coding|1/1|c.1A&gt;C|p.Met1?|1/918|1/918|1/305||
-               GT  1/0 2/1 
+               GT  1/0 2/1
 </code></pre>
 
 <p>What does it mean:</p>

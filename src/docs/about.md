@@ -2,7 +2,7 @@
 
 ## 1. About
 
-This project is maintained by [**Pablo Cingolani**](http://www.linkedin.com/in/pablocingolani) [pcingola@users.sourceforge.net](mailto:pcingola@users.sourceforge.net)
+This project is maintained by [**Pablo Cingolani**](http://www.linkedin.com/in/pablocingolani)
 
 ## 2. Acknowledgements
 
@@ -160,7 +160,3 @@ I'm well aware that I could try to google that information myself, but I need yo
 ## 7. Contact information
 
 <strong>[Pablo Cingolani](http://www.linkedin.com/in/pablocingolani).</strong>
-
-[pcingola@users.sourceforge.net](mailto:pcingola@users.sourceforge.net)
-
-

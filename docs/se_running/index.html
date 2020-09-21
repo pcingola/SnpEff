@@ -1162,13 +1162,13 @@ You have to download the core program and then uncompress the ZIP file.
 In Windows systems, you can just double click and copy the contents of the ZIP file to wherever you want the program installed.
 If you have a Unix or a Mac system, the command line would be:</p>
 <pre><code># Download using wget
-$ wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+$ wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
 
 # If you prefer to use 'curl' instead of 'wget', you can type:
-#     curl -L http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip &gt; snpEff_latest_core.zip
+#     curl -L https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip &gt; snpEff_latest_core.zip
 
 # Install
-$ unzip snpEff_latest_core.zip 
+$ unzip snpEff_latest_core.zip
 </code></pre>
 
 <h3 id="basic-example-annotate-using-snpeff">Basic example: Annotate using SnpEff</h3>
@@ -1179,7 +1179,7 @@ An example file is provided in <code>examples/test.chr22.vcf</code> (this data i
 <pre><code>$ java -Xmx4g -jar snpEff.jar GRCh37.75 examples/test.chr22.vcf &gt; test.chr22.ann.vcf
 
 # Here is how the output looks like
-$ head examples/test.chr22.ann.vcf 
+$ head examples/test.chr22.ann.vcf
 ##SnpEffVersion=&quot;4.1 (build 2015-01-07), by Pablo Cingolani&quot;
 ##SnpEffCmd=&quot;SnpEff  GRCh37.75 examples/test.chr22.vcf &quot;
 ##INFO=&lt;ID=ANN,Number=.,Type=String,Description=&quot;Functional annotations: 'Allele | Annotation | Annotation_Impact | Gene_Name | Gene_ID | Feature_Type | Feature_ID | Transcript_BioType | Rank | HGVS.c | HGVS.p | cDNA.pos / cDNA.length | CDS.pos / CDS.length | AA.pos / AA.length | Distance | ERRORS / WARNINGS / INFO' &quot;&gt;
@@ -1242,7 +1242,7 @@ Note: Older SnpEff version used 'EFF' field (details about the 'EFF' field forma
 # Transcripts                : 215170
 # Avg. transcripts per gene  : 3.38
 #-----------------------------------------------
-# Checked transcripts        : 
+# Checked transcripts        :
 #               AA sequences : 104254 ( 114.79% )
 #              DNA sequences : 179360 ( 83.36% )
 #-----------------------------------------------
@@ -1340,7 +1340,7 @@ If you don't assign more memory to the process, you will most likely have an "Ou
 <p>You should set the amount of memory in your java virtual machine to, at least, 2 Gb.
 This can be easily done using the Java command line option <code>-Xmx</code>.
 E.g. In this example I use 4Gb:</p>
-<pre><code># Run using 4 Gb of memory 
+<pre><code># Run using 4 Gb of memory
 java -Xmx4G snpEff.jar hg19 path/to/your/files/snps.vcf
 </code></pre>
 <p>Note: There is no space between <code>-Xmx</code> and <code>4G</code>.</p>
@@ -1355,7 +1355,7 @@ You should not have any problems at all.</p>
       ___|\___|___|
 
 
-[ec2-user@ip-10-2-202-163 ~]$ wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+[ec2-user@ip-10-2-202-163 ~]$ wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
 [ec2-user@ip-10-2-202-163 ~]$ unzip snpEff_latest_core.zip
 [ec2-user@ip-10-2-202-163 ~]$ cd snpEff/
 [ec2-user@ip-10-2-202-163 snpEff]$ java -jar snpEff.jar download -v hg19

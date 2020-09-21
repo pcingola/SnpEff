@@ -11,13 +11,13 @@ If you have a Unix or a Mac system, the command line would be:
 
 ```
 # Download using wget
-$ wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+$ wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
 
 # If you prefer to use 'curl' instead of 'wget', you can type:
-#     curl -L http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip > snpEff_latest_core.zip
+#     curl -L https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip > snpEff_latest_core.zip
 
 # Install
-$ unzip snpEff_latest_core.zip 
+$ unzip snpEff_latest_core.zip
 ```
 
 ### Basic example: Annotate using SnpEff
@@ -32,7 +32,7 @@ You can annotate the file by running the following command (as an input, we use 
 $ java -Xmx4g -jar snpEff.jar GRCh37.75 examples/test.chr22.vcf > test.chr22.ann.vcf
 
 # Here is how the output looks like
-$ head examples/test.chr22.ann.vcf 
+$ head examples/test.chr22.ann.vcf
 ##SnpEffVersion="4.1 (build 2015-01-07), by Pablo Cingolani"
 ##SnpEffCmd="SnpEff  GRCh37.75 examples/test.chr22.vcf "
 ##INFO=<ID=ANN,Number=.,Type=String,Description="Functional annotations: 'Allele | Annotation | Annotation_Impact | Gene_Name | Gene_ID | Feature_Type | Feature_ID | Transcript_BioType | Rank | HGVS.c | HGVS.p | cDNA.pos / cDNA.length | CDS.pos / CDS.length | AA.pos / AA.length | Distance | ERRORS / WARNINGS / INFO' ">
@@ -100,7 +100,7 @@ $ java -Xmx4g -jar snpEff.jar -v GRCh37.75 examples/test.chr22.vcf > test.chr22.
 # Transcripts                : 215170
 # Avg. transcripts per gene  : 3.38
 #-----------------------------------------------
-# Checked transcripts        : 
+# Checked transcripts        :
 #               AA sequences : 104254 ( 114.79% )
 #              DNA sequences : 179360 ( 83.36% )
 #-----------------------------------------------
@@ -203,7 +203,7 @@ You should set the amount of memory in your java virtual machine to, at least, 2
 This can be easily done using the Java command line option `-Xmx`.
 E.g. In this example I use 4Gb:
 
-    # Run using 4 Gb of memory 
+    # Run using 4 Gb of memory
     java -Xmx4G snpEff.jar hg19 path/to/your/files/snps.vcf
 
 Note: There is no space between `-Xmx` and `4G`.
@@ -223,7 +223,7 @@ $ ssh -i ./aws_amazon/pcingola_aws.pem ec2-user@ec2-54-234-14-244.compute-1.amaz
       ___|\___|___|
 
 
-[ec2-user@ip-10-2-202-163 ~]$ wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+[ec2-user@ip-10-2-202-163 ~]$ wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
 [ec2-user@ip-10-2-202-163 ~]$ unzip snpEff_latest_core.zip
 [ec2-user@ip-10-2-202-163 ~]$ cd snpEff/
 [ec2-user@ip-10-2-202-163 snpEff]$ java -jar snpEff.jar download -v hg19

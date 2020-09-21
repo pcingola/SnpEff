@@ -28,7 +28,7 @@ The exon belongs to transcript "ENST00000423562" of gene "WASH7P".
 
 The input can also be a BED file, the output file has the same information as CLOSEST info field, added to the fourth column of the output BED file:
 ```
-$ snpeff closest -bed GRCh37.66 test.bed 
+$ snpeff closest -bed GRCh37.66 test.bed
 1	12077	12078	line_1;0,exon_1_11869_12227,ENST00000456328,DDX11L1
 1	16096	16097	line_2;150,exon_1_15796_15947,ENST00000423562,WASH7P
 1	40260	40261	line_3;4180,exon_1_35721_36081,ENST00000417324,FAM138A
@@ -50,7 +50,7 @@ If you need to count how many reads (and bases) from a BAM file hit each genomic
 
 The command line is quite simple. E.g. in order to count how many reads (from N BAM files) hit regions of the human genome, you simply run:
 
-    java -Xmx4g -jar snpEff.jar count GRCh37.68 readsFile_1.bam readsFile_2.bam ...  readsFile_N.bam > countReads.txt 
+    java -Xmx4g -jar snpEff.jar count GRCh37.68 readsFile_1.bam readsFile_2.bam ...  readsFile_N.bam > countReads.txt
 
 The output is a TXT (tab-separated) file, that looks like this:
 ```
@@ -137,23 +137,16 @@ This command provides a list of configured databases, i.e. available in `snpEff.
 Example:
 ```
 $ java -jar snpEff.jar databases
-Genome                                                          Organism                                                        Database download link
-------                                                          --------                                                        ----------------------
-ADWO01                                                          Prevotella bryantii B14                                         http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Prevotella bryantii B14.zip
-Acholeplasma_laidlawii_PG_8A_uid58901                           Acholeplasma_laidlawii_PG_8A_uid58901                           http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acholeplasma_laidlawii_PG_8A_uid58901.zip
-Achromobacter_xylosoxidans_A8_uid59899                          Achromobacter_xylosoxidans_A8_uid59899                          http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Achromobacter_xylosoxidans_A8_uid59899.zip
-Acidaminococcus_fermentans_DSM_20731_uid43471                   Acidaminococcus_fermentans_DSM_20731_uid43471                   http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidaminococcus_fermentans_DSM_20731_uid43471.zip
-Acidaminococcus_intestini_RyC_MR95_uid74445                     Acidaminococcus_intestini_RyC_MR95_uid74445                     http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidaminococcus_intestini_RyC_MR95_uid74445.zip
-Acidianus_hospitalis_W1_uid66875                                Acidianus_hospitalis_W1_uid66875                                http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidianus_hospitalis_W1_uid66875.zip
-Acidilobus_saccharovorans_345_15_uid51395                       Acidilobus_saccharovorans_345_15_uid51395                       http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidilobus_saccharovorans_345_15_uid51395.zip
-Acidimicrobium_ferrooxidans_DSM_10331_uid59215                  Acidimicrobium_ferrooxidans_DSM_10331_uid59215                  http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidimicrobium_ferrooxidans_DSM_10331_uid59215.zip
-Acidiphilium_cryptum_JF_5_uid58447                              Acidiphilium_cryptum_JF_5_uid58447                              http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidiphilium_cryptum_JF_5_uid58447.zip
-Acidiphilium_multivorum_AIU301_uid63345                         Acidiphilium_multivorum_AIU301_uid63345                         http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidiphilium_multivorum_AIU301_uid63345.zip
-Acidithiobacillus_caldus_SM_1_uid70791                          Acidithiobacillus_caldus_SM_1_uid70791                          http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidithiobacillus_caldus_SM_1_uid70791.zip
-Acidithiobacillus_ferrivorans_SS3_uid67387                      Acidithiobacillus_ferrivorans_SS3_uid67387                      http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidithiobacillus_ferrivorans_SS3_uid67387.zip
-Acidithiobacillus_ferrooxidans_ATCC_23270_uid57649              Acidithiobacillus_ferrooxidans_ATCC_23270_uid57649              http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidithiobacillus_ferrooxidans_ATCC_23270_uid57649.zip
-Acidithiobacillus_ferrooxidans_ATCC_53993_uid58613              Acidithiobacillus_ferrooxidans_ATCC_53993_uid58613              http://sourceforge.net/projects/snpeff/files/databases/v3.2/snpEff_v3.2_Acidithiobacillus_ferrooxidans_ATCC_53993_uid58613.zip
-...
+Genome                                                        Organism                                                    Status    Bundle                        Database download link
+------                                                      --------                                                    ------    ------                        ----------------------
+129S1_SvImJ_v1.99                                           Mus_musculus_129s1svimj                                                                             https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_129S1_SvImJ_v1.99.zip
+AIIM_Pcri_1.0.99                                            Pavo_cristatus                                                                                      https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_AIIM_Pcri_1.0.99.zip
+AKR_J_v1.99                                                 Mus_musculus_akrj                                                                                   https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_AKR_J_v1.99.zip
+AP006557.1                                                  SARS coronavirus TWH genomic RNA, complete genome.                                                                  https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_AP006557.1.zip
+AP006558.1                                                  SARS coronavirus TWJ genomic RNA, complete genome.                                                                  https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_AP006558.1.zip
+AP006559.1                                                  SARS coronavirus TWK genomic RNA, complete genome.                                                                  https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_AP006559.1.zip
+AP006560.1                                                  SARS coronavirus TWS genomic RNA, complete genome.                                                                  https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_AP006560.1.zip
+AP006561.1                                                  SARS coronavirus TWY genomic RNA, complete genome.                                                                  https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_AP006561.1.zip
 ...
 ```
 
@@ -364,7 +357,7 @@ Convert a fasta file to a two column tab-separated TXT file (name \t sequence)
 
 Example (output truncated for brevity):
 ```
-$ zcat ce6.fa.gz | ./scripts/fasta2tab.pl 
+$ zcat ce6.fa.gz | ./scripts/fasta2tab.pl
 chrI    gcctaagcctaagcctaagcctaagcctaagcctaagcctaagcct...
 chrV    GAATTcctaagcctaagcctaagcctaagcctaagcctaagcctaa...
 chrII   cctaagcctaagcctaagcctaagcctaagcctaagcctaagccta...
@@ -396,7 +389,7 @@ Given a list of numbers (one per line), shows a histogram. Note: It requires R.
 
 Example: Extract the file sizes in a directory and show a histogram
 
-    $ ls -al scripts/ | tr -s " " | cut -f 5 -d " " | ./scripts/hist.pl 
+    $ ls -al scripts/ | tr -s " " | cut -f 5 -d " " | ./scripts/hist.pl
 
 Creates the following plot:
 ![hist_example](images/hist_example.png){: .smallerimg .center}
@@ -470,4 +463,3 @@ $ cat test.stop.vcf | ./scripts/vcfEffOnePerLine.pl
 1	897062	.	C	T	100.0	PASS	AC=1;EFF=UPSTREAM(MODIFIER||||611|PLEKHN1||CODING|NM_032129|)
 1	897062	.	C	T	100.0	PASS	AC=1;EFF=UPSTREAM(MODIFIER||||749|NOC2L||CODING|NM_015658|)
 ```
-

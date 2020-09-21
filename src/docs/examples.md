@@ -24,7 +24,7 @@ Before starting the protocol, it is necessary to download and install SnpEff. To
 cd
 
 # Download and install SnpEff
-curl -v -L http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip > snpEff_latest_core.zip
+curl -v -L https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip > snpEff_latest_core.zip
 unzip snpEff_latest_core.zip
 ```
 
@@ -60,7 +60,7 @@ We now download and un-compress the example data used in this protocol, which, f
 cd ~/snpEff
 
 # Download sample data
-curl -v -L http://sourceforge.net/projects/snpeff/files/protocols.zip > protocols.zip
+curl -v -L https://snpeff.blob.core.windows.net/files/protocols.zip > protocols.zip
 unzip protocols.zip
 ```
 
@@ -461,7 +461,7 @@ wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/dmel_r5.34_FB2011_02/
 gunzip dmel-all-chromosome-r5.34.fasta.gz
 mv dmel-all-chromosome-r5.34.fasta dm5.34.fasta
 
-# Create a genome index (we assume you installed BWA http://bio-bwa.sourceforge.net/)
+# Create a genome index (we assume you installed BWA)
 bwa index -bwtsw dm5.34.fasta
 
 # Map sequences to the genome: Create SAI file
@@ -470,7 +470,7 @@ bwa aln -bwtsw dm5.34.fasta s.fastq > s.sai
 # Map sequences to the genome: Create SAM file
 bwa samse dm5.34.fasta s.sai s.fastq > s.sam
 
-# Create BAM file (we assume you installed SamTools http://samtools.sourceforge.net/)
+# Create BAM file (we assume you installed SamTools)
 samtools view -S -b s.sam > s.bam
 
 # Sort BAM file (will create s_sort.bam)
