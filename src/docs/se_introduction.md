@@ -1,4 +1,4 @@
-# Introduction
+# SnpEff
 
 **SnpEff** is a variant annotation and effect prediction tool.
 It annotates and predicts the effects of genetic variants (such as amino acid changes).
