@@ -177,7 +177,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../se_annfield/" class="md-tabs__link md-tabs__link--active">
+        <a href="../se_introduction/" class="md-tabs__link md-tabs__link--active">
           SnpEff
         </a>
       
@@ -204,7 +204,7 @@
     <li class="md-tabs__item">
       
         <a href="../download/" class="md-tabs__link">
-          Download&Install
+          Download & Install
         </a>
       
     </li>
@@ -414,18 +414,6 @@
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../se_annfield/" title="Important changes. 'ANN' field" class="md-nav__link">
-      Important changes. 'ANN' field
-    </a>
-  </li>
-
         
           
           
@@ -1032,17 +1020,17 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
     
     <label class="md-nav__link" for="nav-4">
-      Download&Install
+      Download & Install
       <span class="md-nav__icon md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
       </span>
     </label>
-    <nav class="md-nav" aria-label="Download&Install" data-md-level="1">
+    <nav class="md-nav" aria-label="Download & Install" data-md-level="1">
       <label class="md-nav__title" for="nav-4">
         <span class="md-nav__icon md-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
         </span>
-        Download&Install
+        Download & Install
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -1323,6 +1311,16 @@ SnpEff also adds the command line options used to annotate the file as well as S
 
 <h3 id="ann-field-vcf-output-files">ANN field (VCF output files)</h3>
 <p>Functional annotations information is added to the INFO field using an <code>ANN</code> tag.</p>
+<p><strong>NOTE:</strong> field. SnpEff implements the <a href="../adds/VCFannotationformat_v1.0.pdf"><strong>VCF annotation standard 'ANN' field.</strong></a></p>
+<p>This format specification has been created by the developers of the most widely used variant annotation programs (SnpEff, ANNOVAR and ENSEMBL's VEP)
+and attempts to:</p>
+<ul>
+<li>provide a common framework for variant annotation,</li>
+<li>make pipeline development easier,</li>
+<li>facilitate benchmarking, and</li>
+<li>improve some known problems in variant annotations.</li>
+</ul>
+<p>Obviously this 'ANN' field broke compatibility with the old 'EFF' field from old SnpEff versions. In order to use the old 'EFF' field, you can use the <code>-formatEff</code> command line option.</p>
 <p>The annotation 'ANN' field looks like this (the full annotation standard specification can be found <a href="../adds/VCFannotationformat_v1.0.pdf">here</a>).</p>
 <pre><code>ANN=T|missense_variant|MODERATE|CCT8L2|ENSG00000198445|transcript|ENST00000359963|protein_coding|1/1|c.1406G&gt;A|p.Gly469Glu|1666/2034|1406/1674|469/557||,T|downstream_gene_variant|MODIFIER|FABP5P11|ENSG00000240122|transcript|ENST00000430910|processed_pseudogene||n.*397G&gt;A|||||3944|
 </code></pre>
