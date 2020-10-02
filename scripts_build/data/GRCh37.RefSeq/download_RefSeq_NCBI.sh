@@ -84,4 +84,9 @@ gunzip -c "$PROT_FASTA_ORI" | $SCRIPTS_BUILD_DIR/fix_fasta_protein_cds.pl protei
 echo "Processing RNA FASTA files"
 gunzip -c "$RNA_FASTA_ORI" | perl -pe 's/^>(\S+).*/>$1/' > "$DB_DIR/mrna.fa"
 
+#---
+# Compress
+#---
+pigz -v genes.gtf mrna.fa protein.fa protein_id.map.txt sequences.fa
+
 echo "Done."
