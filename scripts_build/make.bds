@@ -633,7 +633,7 @@ void uploadDbNsfp2Gdrive() {
 #-------------------------------------------------------------------------------
 void uploadDbs2Azure() {
 	if( azureQueryString.isEmpty() ) error("Command line option '-azureQueryString' must be provided")
-	ver := versionUnd()
+	ver := 'v' + versionUnd()
 	sys ln -s $dirZip $ver
 	sys azcopy cp $ver/ "$azureBlobEndpoint/$azureContainer/$azureQueryString" --recursive
 }
