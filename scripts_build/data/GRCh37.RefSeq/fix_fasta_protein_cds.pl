@@ -55,14 +55,14 @@ die "Empty chromosome ID map file '$mapFile'\n" if $count <= 0;
 #---
 $name = $seq = "";
 while( $l = <STDIN> ) {
-	if( $l =~ /^>/ ) {
+	if( $l =~ /^>(\S+).*/ ) {
+		$nameNew = $1;
+		print STDERR "NEW SEQUENCE '$name': $l\n" if $debug;
+
 		# Show previous sequence
 		show($seq, $name2id{$name}, $name) if $name ne '';
 
 		# Parse sequence header lines
-		chomp $l;
-		if( $l =~ />(.*)/ ) { $nameNew = $1; }
-	
 		$name = $nameNew;
 		$seq = "";
 	} else {

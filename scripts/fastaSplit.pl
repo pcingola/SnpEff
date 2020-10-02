@@ -27,9 +27,8 @@ sub writeSeq($$) {
 
 my($seq, $name) = ('', '');
 my($lineNum, $l, $newName);
-#---
+
 # Read fasta file
-#---
 for($lineNum=0 ; $l = <STDIN> ; $lineNum++ ) {
 	if( $l =~/^>\s*(.*?)\s+.*/ ) {
 		$newName = $1;
