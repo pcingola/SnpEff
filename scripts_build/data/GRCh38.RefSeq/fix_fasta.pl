@@ -28,7 +28,7 @@ while( $l = <CHR> ) {
 	chomp $l;
 	($chr, $id) = split /\s+/, $l;
 	$chr{$id} = $chr;
-	print "MAP: chr{$id} = $chr\n" if $debug;
+	print STDERR "MAP: chr{$id} = $chr\n" if $debug;
 	$count++;
 }
 close CHR;
@@ -41,20 +41,24 @@ while( $l = <STDIN> ) {
 	if( $l =~ /^>/ ) {
 		# Parse sequence header lines
 		chomp $l;
-		# Format: '>gi|224514676|ref|NT_167209.1| Homo sapiens unplaced genomic scaffold, GRCh38.p2 Primary Assembly HSCHRUN_RANDOM_CTG4'
-		@t = split /\|/, $l;
-		$chrId = $t[3];
-	
-		# Map ID to name
-		$chr = $chr{$chrId};
-		if( $chr eq '' ) {
-			print STDERR "Not found '$chrId'\n";
-			$chr = $chrId;
-		} else {
-			print STDERR "OK '$chrId' => '$chr'\n"; 
-		}
+		print STDERR "New sequence:\t$l\n" if $debug;
+		# Format: ">NC_000001.10 Homo sapiens chromosome 1, GRCh37.p13 Primary Assembly"
+		if( $l =~ /^>(\S+).*/ ) {
+			$chrId = $1;
+		
+			# Map ID to name
+			$chr = $chr{$chrId};
+			if( $chr eq '' ) {
+				print STDERR "Not found '$chrId'\n";
+				$chr = $chrId;
+			} else {
+				print STDERR "OK '$chrId' => '$chr'\n"; 
+			}
 
-		print ">$chr\n";
+			print ">$chr\n";
+		} else {
+			die "ERROR matching chromosome name for line: $l\n";
+		}
 	} else {
 		# Print all other lines (sequence)
 		print $l;

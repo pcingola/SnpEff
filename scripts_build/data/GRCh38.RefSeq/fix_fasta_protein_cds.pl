@@ -14,10 +14,10 @@ $debug = 0;
 #-------------------------------------------------------------------------------
 # Show all sequences
 #-------------------------------------------------------------------------------
-sub show($$) {
-	my($seq, $ids)  = @_;
+sub show($$$) {
+	my($seq, $ids, $name)  = @_;
 	my(@t) = split /\t/, $ids;
-	if( $debug && $#t > 1 ) { print STDERR "Duplicated name ($#t): $ids\n"; }
+	if( $debug && $#t > 1 ) { print STDERR "Duplicated name '$name' ($#t): $ids\n"; }
 	foreach $id ( @t ) { print ">$id\n$seq"; }
 }
 
@@ -35,7 +35,7 @@ die "Missing command line argument 'map_file.txt'\n" if $mapFile eq '';
 print STDERR "Reading file $mapFile\n";
 open IDMAP, $mapFile || die "Cannot open chromosome ID map file '$mapFile'\n";
 $count = 0;
-while( $l = <IDMAP> ) {
+for($ln=1 ; $l = <IDMAP> ; $ln++) {
 	chomp $l;
 	($id, $name) = split /\s+/, $l;
 	$id2name{$id} = $name;
@@ -43,27 +43,27 @@ while( $l = <IDMAP> ) {
 	if( $name2id{$name} eq '' ) { $name2id{$name} = $id; }
 	else						{ $name2id{$name} .= "\t$id"; }
 
-	print "MAP: name2id{$name} = '$name2id{$name}'\n" if $debug;
+	print STDERR "MAP: id2name{$id} = '$id2name{$id}'\n" if $debug;
 	$count++;
 }
 close IDMAP;
-print STDERR "Done\n";
+print STDERR "Done, $ln lines\n";
 die "Empty chromosome ID map file '$mapFile'\n" if $count <= 0;
 
 #---
 # Parse FASTA files from STDIN
 #---
-$id = $seq = "";
+$name = $seq = "";
 while( $l = <STDIN> ) {
-	if( $l =~ /^>/ ) {
+	if( $l =~ /^>(\S+).*/ ) {
+		$nameNew = $1;
+		print STDERR "NEW SEQUENCE '$name': $l\n" if $debug;
+
 		# Show previous sequence
-		show($seq, $name2id{$id}) if $id ne '';
+		show($seq, $name2id{$name}, $name) if $name ne '';
 
 		# Parse sequence header lines
-		chomp $l;
-		if( $l =~ />(.*)/ ) { $idNew = $1; }
-	
-		$id = $idNew;
+		$name = $nameNew;
 		$seq = "";
 	} else {
 		# Append sequence
@@ -71,4 +71,5 @@ while( $l = <STDIN> ) {
 	}
 }
 
-show($seq, $name2id{$id}) if $id ne '';
+show($seq, $name2id{$name}, $name) if $name ne '';
+

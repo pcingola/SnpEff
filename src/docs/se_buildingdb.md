@@ -83,9 +83,9 @@ This example shows how to add a new genome to the config files. For this example
 
 1. Edit the config file to create the new genome:
 
-        vi snpEffect.config
+        vi snpEff.config
 
-    Add the following lines (you are editing snpEffect.config):
+    Add the following lines (you are editing snpEff.config):
 
         # Mouse genome, version mm37.61
         mm37.61.genome : Mouse

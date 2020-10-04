@@ -1,87 +1,92 @@
-#!/bin/sh -e
+#!/bin/bash -eu
+set -o pipefail
 
-# Genome name (in SnpEff's config file)
+PROGRAM_DIR=$(cd $(dirname $0); pwd -P)
+
+# Reference
+# https://ftp.ncbi.nih.gov/genomes/refseq/vertebrate_mammalian/Homo_sapiens/annotation_releases/109.20200815/
+
 VER="GRCh38"
-SUBVER="p7"
+SUBVER="p13"
+ASSEMBLY_ID="GCF_000001405.39"
+RELEASE="109.20200815"
 GENOME="$VER.$SUBVER.RefSeq"
 
 # Path to scripts
 SNPEFF_DIR="$HOME/snpEff"
 SCRIPTS_DIR="$SNPEFF_DIR/scripts"
-SCRIPTS_BUILD_DIR="$SNPEFF_DIR/scripts_build/data/$VER.RefSeq"
+SCRIPTS_BUILD_DIR="$PROGRAM_DIR"
 DB_DIR="$SNPEFF_DIR/data/$GENOME"
 
-# File names
-GFF_REF="ref_$VER.$SUBVER""_top_level.gff3.gz"
-CHR_IDS="$DB_DIR/chromosomes.txt"
-CHR_IDS_2_NAME="$DB_DIR/chromosomes2name.txt"
+# URLs
+HTTP_URL="http://ftp.ncbi.nih.gov/"
+HTTP_DIR="$HTTP_URL/genomes/refseq/vertebrate_mammalian/Homo_sapiens/all_assembly_versions/${ASSEMBLY_ID}_${VER}.${SUBVER}"
+
+URL_BASE="$HTTP_DIR/${ASSEMBLY_ID}_${VER}.${SUBVER}_"
+URL_SEQ="${URL_BASE}genomic.fna.gz"
+URL_RNASEQ="${URL_BASE}rna.fna.gz"
+URL_PROTSEQ="${URL_BASE}protein.faa.gz"
+URL_GTF="${URL_BASE}genomic.gtf.gz"
+URL_ASSEMBLY_REPORT="${URL_BASE}assembly_report.txt"
+
+# Files
+CHR_IDS_2_NAME="$DB_DIR/ORI/chromosomes2name.txt"
+GTF_ORI="$DB_DIR/ORI/${ASSEMBLY_ID}_${VER}.${SUBVER}_genomic.gtf.gz"
+FASTQ_ORI="$DB_DIR/ORI/${ASSEMBLY_ID}_${VER}.${SUBVER}_genomic.fna.gz"
+PROT_FASTA_ORI="$DB_DIR/ORI/${ASSEMBLY_ID}_${VER}.${SUBVER}_protein.faa.gz"
+RNA_FASTA_ORI="$DB_DIR/ORI/${ASSEMBLY_ID}_${VER}.${SUBVER}_rna.fna.gz"
+
+#---
+# Download files
+#---
 
 # Create dir
 mkdir -p $DB_DIR/ORI
 cd $DB_DIR/ORI
 
-#---
-# Download FASTA files
-#---
-
-echo Downloading reference seuquences
-wget -N "ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/Assembled_chromosomes/seq/hs_ref_$VER.$SUBVER\_*.fa.gz"
+echo "Download reference genome"
+wget -N "$URL_SEQ"
 
 echo Downloading mRNA sequences
-wget -N "ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.*.rna.fna.gz"
+wget -N "$URL_RNASEQ"
 
 echo Downloading protein sequences
-wget -N "ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/mRNA_Prot/human.*.protein.faa.gz"
+wget -N "$URL_PROTSEQ"
 
-#---
-# Download GFF data
-#---
-
-echo "Download GFF files"
-wget -N ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/H_sapiens/GFF/$GFF_REF
-
-echo "Copying genes.ORI.gff file"
-cp $GFF_REF genes.ORI.gff.gz
-gunzip -c genes.ORI.gff.gz > genes.ORI.gff
-
-#---
-# Download chromosome IDs file
-#---
-
-if [ -z "$ASSEMBLY_ID" ]
-then
-	ASSEMBLY_ID=`cat genes.ORI.gff | head -n 100 | grep "^#" | grep genome-build-accession | cut -f 2 -d :`
-	echo "Assembly ID: $ASSEMBLY_ID"
-fi
+echo "Download GTF files"
+wget -N "$URL_GTF"
 
 echo "Download chromosome IDs map file"
-wget -O - ftp://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/All/$ASSEMBLY_ID.assembly.txt > $CHR_IDS
+wget -N "$URL_ASSEMBLY_REPORT"
+
+cd ..
+
+#---
+# Chromosome IDs file
+#---
 
 echo "Create a file mapping chromosome IDs to names: $CHR_IDS_2_NAME"
-cat $CHR_IDS | cut -f 1,7 | grep -v "^#" > $CHR_IDS_2_NAME
+cat "ORI/${ASSEMBLY_ID}_${VER}.${SUBVER}_assembly_report.txt" | cut -f 1,7 | grep -v "^#" > "$CHR_IDS_2_NAME"
 
 #---
 # Process files
 #---
 
 echo "Processing GFF file"
-$SCRIPTS_BUILD_DIR/fix_gff.pl genes.ORI.gff $CHR_IDS_2_NAME > $DB_DIR/genes.gff 
-gzip $DB_DIR/genes.gff
+$SCRIPTS_BUILD_DIR/fix_gtf.pl "$GTF_ORI" "$CHR_IDS_2_NAME" > "$DB_DIR/genes.gtf"
 
 echo "Processing reference FASTA files"
-gunzip -c hs_ref*.fa.gz | $SCRIPTS_BUILD_DIR/fix_fasta.pl $CHR_IDS_2_NAME | $SCRIPTS_DIR/fastaSplit.pl 
-
-echo "Creating and compressing FASTA file $GENOME.fa"
-cat chr[1-9].fa chr[1,2][0-9].fa chrX.fa chrY.fa chrMT.fa chr???*.fa | gzip -c > $DB_DIR/$GENOME.fa.gz
+gunzip -c "$FASTQ_ORI" | $SCRIPTS_BUILD_DIR/fix_fasta.pl "$CHR_IDS_2_NAME" > "$DB_DIR/sequences.fa"
 
 echo "Processing protein FASTA files"
-gunzip -c human.?.protein.faa.gz | sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" > protein.ORI.fa 
-cat protein.ORI.fa | $SCRIPTS_BUILD_DIR/fix_fasta_protein_cds.pl protein_id.map.txt > $DB_DIR/protein.fa
-gzip $DB_DIR/protein.fa
+gunzip -c "$PROT_FASTA_ORI" | $SCRIPTS_BUILD_DIR/fix_fasta_protein_cds.pl protein_id.map.txt > "$DB_DIR/protein.fa"
 
 echo "Processing RNA FASTA files"
-gunzip -c human.?.rna.fna.gz | sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" > cds.ORI.fa 
-cat cds.ORI.fa | $SCRIPTS_BUILD_DIR/fix_fasta_protein_cds.pl ids.map.txt > $DB_DIR/cds.fa
-gzip $DB_DIR/cds.fa
+gunzip -c "$RNA_FASTA_ORI" | perl -pe 's/^>(\S+).*/>$1/' > "$DB_DIR/mrna.fa"
+
+#---
+# Compress
+#---
+pigz -v genes.gtf mrna.fa protein.fa protein_id.map.txt sequences.fa
 
 echo "Done."
