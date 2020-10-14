@@ -14,10 +14,10 @@ The database is compressed (block-gzip) and tabix-indexed, so two files are requ
 
 You can download the files from SnpEff's site (remember that you need both the database and the index file):
 
-* GRCh37 / hg19 (dbNSFP version 2.9, Academic):
+* GRCh37 / hg19 (dbNSFP Academic):
     * [Database](https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz). Save file as `dbNSFP.txt.gz`
     * [Index](https://snpeff.blob.core.windows.net/databases/dbs/GRCh37/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
-* GRCh38 / hg38  (dbNSFP version 3.2 Academic):
+* GRCh38 / hg38  (dbNSFP Academic):
     * [Database](https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz). Save file as `dbNSFP.txt.gz`
     * [Index](https://snpeff.blob.core.windows.net/databases/dbs/GRCh38/dbNSFP_4.1a/dbNSFP4.1a.txt.gz.tbi). Save file as `dbNSFP.txt.gz.tbi`
 

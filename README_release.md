@@ -87,7 +87,12 @@ mkdocs serve
 - Deploying docs: You just need to copy the `site` directory to `docs` and push to GitHub
 ```
 cd ~/workspace/SnpEff
-rm -rvf docs/*
+
+# Cleanup old 'mkdocs' files
+rm docs/*/index.html
+rmdir docs/*
+
+# Copy new 'mkdocs' files
 cp -rvf ~/snpEff/site/* docs/
 
 ./git/commit 'Documentation updated'
