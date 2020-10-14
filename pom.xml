@@ -3,6 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.snpeff</groupId>
   <artifactId>SnpEff</artifactId>
+  <version>5.0</version>
   <packaging>jar</packaging>
   <name>SnpEff</name>
   <description>Variant annotation and effect prediction package.</description>
@@ -14,12 +15,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  <!--
-  <scm>
-    <url>https://snpeff.svn.sourceforge.net/svnroot/snpeff/SnpEffect/</url>
-    <connection>https://snpeff.svn.sourceforge.net/svnroot/snpeff/SnpEffect/</connection>
-  </scm>
-  -->
   <developers>
     <developer>
       <id>pcingola</id>
@@ -214,5 +209,4 @@
       </plugin>
     </plugins>
   </build>
-  <version>5.0</version>
 </project>
