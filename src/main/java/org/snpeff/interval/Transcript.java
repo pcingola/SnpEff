@@ -1224,7 +1224,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 					if (size > 0) {
 						// Add intron to list
 						intron = new Intron(this, start, end, strandMinus, id + "_intron_" + rank, exBefore, ex);
-
 						intron.setRank(rank);
 						introns.add(intron);
 					}

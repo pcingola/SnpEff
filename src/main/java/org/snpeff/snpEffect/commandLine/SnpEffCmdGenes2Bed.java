@@ -7,6 +7,7 @@ import org.snpeff.interval.Cds;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
+import org.snpeff.interval.Intron;
 import org.snpeff.interval.Transcript;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Timer;
@@ -22,6 +23,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	boolean onlyProteinCoding;
 	boolean showCds;
 	boolean showExons;
+	boolean showIntrons;
 	boolean showTranscripts;
 	int expandUpstreamDownstream = 0;
 
@@ -60,20 +62,25 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 			String arg = args[i];
 			if (isOpt(arg)) {
 				switch (arg.toLowerCase()) {
-				case "-e":
-					// Show exons for all transcripts
-					showExons = true;
-					break;
-
 				case "-cds":
 					// Show exons in CDS
 					showCds = true;
+					break;
+
+				case "-e":
+					// Show exons for all transcripts
+					showExons = true;
 					break;
 
 				case "-f":
 					// List in a file?
 					if ((i + 1) < args.length) fileName = args[++i];
 					else usage("Option '-f' without file argument");
+					break;
+
+				case "-i":
+					// Show introns for all transcripts
+					showIntrons = true;
 					break;
 
 				case "-pc":
@@ -132,6 +139,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	void show(Gene g) {
 		if (showCds) showCds(g);
 		else if (showExons) showExons(g);
+		else if (showIntrons) showIntrons(g);
 		else if (showTranscripts) showTr(g);
 		else showGene(g);
 	}
@@ -168,7 +176,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	void showExons(Gene g) {
 		// Show exon for each transcript
 		for (Transcript tr : g) {
-			for (Exon ex : tr) {
+			for (Exon ex : tr.sorted()) {
 				int start = ex.getStart() - expandUpstreamDownstream;
 				int end = ex.getEnd() + 1 + expandUpstreamDownstream;
 
@@ -208,7 +216,8 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	public void showGenes() {
 		// Show title
 		if (showCds) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;exonRank;strand");
-		else if (showExons) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;exonRank;stramd");
+		else if (showExons) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;exonRank;strand");
+		else if (showIntrons) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;exonRank;strand");
 		else if (showTranscripts) System.out.println("#chr\tstart\tend\tgeneName;geneId;transcriptId;strand");
 		else System.out.println("#chr\tstart\tend\tgeneName;geneId;strand");
 
@@ -238,6 +247,29 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	}
 
 	/**
+	 * Show exons coordinates
+	 */
+	void showIntrons(Gene g) {
+		// Show exon for each transcript
+		for (Transcript tr : g) {
+			for (Intron intr : tr.introns()) {
+				int start = intr.getStart() - expandUpstreamDownstream;
+				int end = intr.getEnd() + 1 + expandUpstreamDownstream;
+
+				System.out.println(intr.getChromosomeName() //
+						+ "\t" + start //
+						+ "\t" + end //
+						+ "\t" + g.getGeneName() //
+						+ ";" + g.getId() //
+						+ ";" + tr.getId() //
+						+ ";" + intr.getRank() //
+						+ ";" + (intr.isStrandPlus() ? "+" : "-") //
+				);
+			}
+		}
+	}
+
+	/**
 	 * Show transcript coordinates
 	 */
 	void showTr(Gene g) {
@@ -262,8 +294,9 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		System.err.println("Usage: " + SnpEffCmdGenes2Bed.class.getSimpleName() + " genomeVer [-f genes.txt | geneList]}");
 		System.err.println("Options: ");
 		System.err.println("\t-cds           : Show coding exons (no UTRs).");
-		System.err.println("\t-e             : Show exons.");
+		System.err.println("\t-e             : Show exons for every transcript.");
 		System.err.println("\t-f <file.txt>  : A TXT file having one gene ID (or name) per line.");
+		System.err.println("\t-i             : Show introns for every transcript.");
 		System.err.println("\t-pc            : Use only protein coding genes.");
 		System.err.println("\t-tr            : Show transcript coordinates.");
 		System.err.println("\t-ud <num>      : Expand gene interval upstream and downstream by 'num' bases.");
