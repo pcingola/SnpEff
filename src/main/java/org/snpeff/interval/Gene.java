@@ -192,7 +192,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			shift = chr.size();
 		} else if (end > chr.getEnd()) {
 			shift = -chr.size();
-		} else throw new RuntimeException("Sanity check: This should neve happen!");
+		} else throw new RuntimeException("Sanity check: This should never happen!");
 
 		newGene.shiftCoordinates(shift);
 		if (Config.get().isVerbose()) {
