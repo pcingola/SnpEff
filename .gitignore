@@ -1,4 +1,5 @@
 /data
+/config/data
 /db
 /target
 snpEff_genes.txt
