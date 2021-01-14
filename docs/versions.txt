@@ -1,1 +1,1 @@
-SNPEFF	5.0	2020-10-04	https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
+SNPEFF	5.0C	2020-11-25	https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip

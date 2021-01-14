@@ -43,6 +43,7 @@ public class Config implements Serializable, Iterable<String> {
 	public static final String KEY_DATA_DIR = "data.dir";
 	public static final String KEY_DATABASE_LOCAL = "database";
 	public static final String KEY_DATABASE_REPOSITORY = "database.repository";
+	public static final String KEY_DATABASE_REPOSITORY_KEY = "database.repositoryKey";
 	public static final String KEY_DBNSFP_FIELDS = "dbnsfp.fields";
 	public static final String KEY_GENOME_SUFIX = ".genome";
 	public static final String KEY_LOF_IGNORE_PROTEIN_CODING_AFTER = "lof.ignoreProteinCodingAfter";
@@ -80,6 +81,7 @@ public class Config implements Serializable, Iterable<String> {
 	HashMap<String, String> bundleByGenomeId;
 	SnpEffectPredictor snpEffectPredictor;
 	String databaseRepository = "";
+	String databaseRepositoryKey = "";
 	String versionsUrl = "";
 	CountByType warningsCounter = new CountByType();
 
@@ -210,6 +212,9 @@ public class Config implements Serializable, Iterable<String> {
 			String bundleName = getBundleName(genomeVer);
 			if (bundleName != null) urlsb.append("v" + version + "/snpEff_v" + version + "_" + bundleName + ".zip");
 			else urlsb.append("v" + version + "/snpEff_v" + version + "_" + genomeVer + ".zip");
+
+			// Is there a key?
+			if (databaseRepositoryKey != null && !databaseRepositoryKey.isEmpty()) urlsb.append(databaseRepositoryKey);
 
 			return new URL(urlsb.toString());
 		} catch (MalformedURLException e) {
@@ -600,7 +605,8 @@ public class Config implements Serializable, Iterable<String> {
 		dataDir = canonicalDir(dataDir); // Parse data dir
 
 		// Repository
-		databaseRepository = properties.getProperty(KEY_DATABASE_REPOSITORY, "");
+		databaseRepository = unquote(properties.getProperty(KEY_DATABASE_REPOSITORY, ""));
+		databaseRepositoryKey = unquote(properties.getProperty(KEY_DATABASE_REPOSITORY_KEY, ""));
 
 		//---
 		// Find all genomes in this configuration file
@@ -813,6 +819,20 @@ public class Config implements Serializable, Iterable<String> {
 		}
 
 		return sb.toString();
+	}
+
+	/**
+	 * Remove quotes from a string
+	 */
+	private String unquote(String s) {
+		if (s == null || s.length() < 2) return s;
+		int l = s.length();
+		if ((s.charAt(0) == '"' && s.charAt(l - 1) == '"') //
+				|| (s.charAt(0) == '\'' && s.charAt(l - 1) == '\'') //
+		) { //
+			return s.substring(1, l - 1);
+		}
+		return s;
 	}
 
 	/**

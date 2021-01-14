@@ -63,8 +63,13 @@ public class Download {
 	 * File name from URL (i.e. anything after the last '/')
 	 */
 	public static String urlBaseName(String url) {
-		String f[] = url.toString().split("/");
-		return f[f.length - 1];
+		String f[] = url.split("/");
+		String base = f[f.length - 1];
+
+		int qidx = base.indexOf('?');
+		if (qidx > 0) base = base.substring(0, qidx);
+
+		return base;
 	}
 
 	public Download() {
