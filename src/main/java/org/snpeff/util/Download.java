@@ -5,9 +5,12 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.KeyManagementException;
@@ -54,6 +57,8 @@ public class Download {
 	}
 
 	private static int BUFFER_SIZE = 102400;
+	public static final int DEFAULT_PROXY_PORT = 80;
+
 	boolean debug = false;
 	boolean verbose = false;
 
@@ -113,12 +118,14 @@ public class Download {
 			sslSetup(); // Set up SSL for websites having issues with certificates (e.g. Sourceforge)
 
 			if (verbose) Timer.showStdErr("Connecting to " + url);
-			URLConnection connection = url.openConnection();
+
+			URLConnection connection = openConnection(url);
 
 			// Follow redirect? (only for http connections)
 			if (connection instanceof HttpURLConnection) {
 				for (boolean followRedirect = true; followRedirect;) {
 					HttpURLConnection httpConnection = (HttpURLConnection) connection;
+					if (verbose) Timer.showStdErr("Connecting to " + url + ", using proxy: " + httpConnection.usingProxy());
 					int code = httpConnection.getResponseCode();
 
 					if (code == 200) {
@@ -127,7 +134,7 @@ public class Download {
 						String newUrl = connection.getHeaderField("Location");
 						if (verbose) Timer.showStdErr("Following redirect: " + newUrl);
 						url = new URL(newUrl);
-						connection = url.openConnection();
+						connection = openConnection(url);
 					} else if (code == 404) {
 						throw new RuntimeException("File not found on the server. Make sure the database name is correct.");
 					} else throw new RuntimeException("Error code from server: " + code);
@@ -135,7 +142,7 @@ public class Download {
 			}
 
 			// Copy resource to local file, use remote file if no local file name specified
-			InputStream is = url.openStream();
+			InputStream is = connection.getInputStream();
 
 			// Print info about resource
 			Date date = new Date(connection.getLastModified());
@@ -187,6 +194,14 @@ public class Download {
 	}
 
 	/**
+	 * Open a connection
+	 */
+	URLConnection openConnection(URL url) throws IOException {
+		Proxy proxy = proxy();
+		return (proxy == null ? url.openConnection() : url.openConnection(proxy));
+	}
+
+	/**
 	 * Parse an entry path from a ZIP file
 	 */
 	String parseEntryPath(String entryName, String mainDir, String dataDir) {
@@ -204,6 +219,85 @@ public class Download {
 		}
 
 		return entryName;
+	}
+
+	/**
+	 * Parse proxy value from environment
+	 * @param envVarName: Environment variable name
+	 * @return A Tuple with host and port, null if not found or could not be parsed
+	 */
+	Tuple<String, Integer> parseProxyEnv(String envVarName) {
+		String envProxy = System.getenv(envVarName);
+		if (envProxy == null || envProxy.isBlank()) return null;
+
+		// Parse URL from environment variable
+		if (verbose) Timer.showStdErr("Using proxy from environment variable '" + envVarName + "', value '" + envProxy + "'");
+
+		String proxyHost = null;
+		int port = DEFAULT_PROXY_PORT;
+
+		try {
+			URL url;
+			url = new URL(envProxy);
+			proxyHost = url.getHost();
+			port = url.getPort();
+		} catch (MalformedURLException e) {
+			// Could not parse URL
+
+			if (envProxy.indexOf(':') > 0) {
+				// Try "host:port" format
+				String[] hp = envProxy.split(":");
+				proxyHost = hp[0];
+				port = Gpr.parseIntSafe(hp[1]);
+			} else {
+				// Use just host (leave port as default)
+				proxyHost = envVarName;
+			}
+		}
+
+		if (verbose) Timer.showStdErr("Parsing proxy value '" + envProxy + "', host: '" + proxyHost + "', port: '" + port + "'");
+		return new Tuple<>(proxyHost, port);
+	}
+
+	/**
+	 * Parse proxy from Java propperties
+	 * @return A Tuple with host and port, null if not found or could not be parsed
+	 */
+	Tuple<String, Integer> parseProxyJavaPropperty() {
+		// Try java properties, i.e. '-D' command line argument
+		String proxyHost = System.getProperty("http.proxyHost");
+		String proxyPort = System.getProperty("http.proxyPort");
+
+		// Java property not found
+		if (proxyHost == null || proxyHost.isBlank()) return null;
+
+		if (verbose) Timer.showStdErr("Using proxy from Java properties: http.proxyHost: '" + proxyHost + "', http.proxyPort: '" + proxyPort + "'");
+		int port = (proxyPort != null && !proxyPort.isBlank() ? Gpr.parseIntSafe(proxyPort) : DEFAULT_PROXY_PORT);
+
+		if (verbose) Timer.showStdErr("Parsing proxy value from Java propperties, host: '" + proxyHost + "', port: '" + port + "'");
+		return new Tuple<>(proxyHost, port);
+	}
+
+	/**
+	 * Create a proxy if the system properties are set
+	 * I.e.: If java is run using something like
+	 *    java -Dhttp.proxyHost=$PROXY -Dhttp.proxyPort=$PROXY_PORT -jar ...
+	 *
+	 * @return A proxy object if system properties were defined, null otherwise
+	 */
+	Proxy proxy() {
+		// Try environment variable
+		Tuple<String, Integer> proxyHostPort = parseProxyEnv("http_proxy");
+
+		// Try another environment variable
+		if (proxyHostPort == null) proxyHostPort = parseProxyEnv("HTTP_PROXY");
+
+		// Not found in environment? Try java properties
+		if (proxyHostPort == null) proxyHostPort = parseProxyJavaPropperty();
+
+		if (proxyHostPort == null) return null;
+
+		return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHostPort.getFirst(), proxyHostPort.getSecond()));
 	}
 
 	public void setDebug(boolean debug) {

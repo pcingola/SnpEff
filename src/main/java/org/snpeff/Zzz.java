@@ -1,84 +1,48 @@
 package org.snpeff;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
+import java.util.Map.Entry;
 
-import org.snpeff.interval.Chromosome;
-import org.snpeff.interval.Exon;
-import org.snpeff.interval.Gene;
-import org.snpeff.interval.Transcript;
-import org.snpeff.snpEffect.Config;
-import org.snpeff.snpEffect.SnpEffectPredictor;
+import org.snpeff.util.Gpr;
 
 public class Zzz {
 
-	public static void main(String[] args) {
-		boolean verbose = false;
-		String genome = "GRCh38.92";
+	public static void main(String[] args) throws Exception {
+		String urlstr = "https://snpeff.blob.core.windows.net/databases/v5_0/snpEff_v5_0_GRCh37.75.zip";
+		URL url = new URL(urlstr);
+		URLConnection connection = openConnection(url);
+		HttpURLConnection httpConnection = (HttpURLConnection) connection;
 
-		System.out.println("Loading config");
-		Config conf = new Config(genome);
-		System.out.println("Loading genome");
-		SnpEffectPredictor sep = conf.loadSnpEffectPredictor();
+		System.out.println("Connecting to " + url + ", using proxy: " + httpConnection.usingProxy());
 
-		// Selected chromosomes
-		Set<String> chrs = new HashSet<>();
-		for (int i = 1; i < 23; i++)
-			chrs.add("" + i);
-		chrs.add("X");
-		chrs.add("Y");
-		chrs.add("M");
-		chrs.add("MT");
-
-		// Count lengths
-		int gcount = 0, tcount = 0;
-		long glength = 0, tlength = 0, elength = 0, ilength = 0;
-		for (Gene g : sep.getGenome().getGenes()) {
-			//			if (!g.isProteinCoding()) continue;
-			if (!chrs.contains(g.getChromosomeName())) {
-				System.err.println("Gene '" + g.getGeneName() + "', not in main chromosomes '" + g.getChromosomeName() + "', skipping");
-				continue;
-			}
-
-			gcount++;
-			int glen = g.size();
-			glength += glen;
-			if (verbose) System.out.println("Gene: " + g.getGeneName() + "\tsize: " + glen);
-
-			for (Transcript t : g) {
-				tcount++;
-				int tlen = t.size();
-				int elen = 0;
-				for (Exon e : t)
-					elen += e.size();
-				int ilen = tlen - elen;
-				if (verbose) System.out.println("\t" + t.getId() + "\ttr size: " + tlen + "\texon length: " + elen + "\tintron length: " + ilen);
-
-				tlength += tlen;
-				ilength += ilen;
-				elength += elen;
-			}
+		for (Entry<String, List<String>> e : httpConnection.getHeaderFields().entrySet()) {
+			System.out.println("Key: " + e.getKey() + "\nValue:" + e.getValue() + "\n");
 		}
+	}
 
-		int chrCount = 0;
-		long chrLength = 0;
-		for (Chromosome chr : sep.getGenome().getChromosomes()) {
-			if (!chrs.contains(chr.getChromosomeName())) continue;
-			System.out.println("Chr: " + chr.getChromosomeName() + "\tlen: " + chr.size());
-			chrCount++;
-			chrLength += chr.size();
-		}
+	public static URLConnection openConnection(URL url) throws IOException {
+		Proxy proxy = proxy();
+		return (proxy == null ? url.openConnection() : url.openConnection(proxy));
+	}
 
-		System.out.println("Totals:" //
-				+ "\nChromsomes\t" + chrCount//
-				+ "\nChromsomes length\t" + chrLength//
-				+ "\nNumber of genes\t" + gcount//
-				+ "\nTotal genes length\t" + glength //
-				+ "\nNumber of transcripts\t" + tcount//
-				+ "\nTotal transcript length\t" + tlength //
-				+ "\nTotal intron length\t" + ilength //
-				+ "\nTotal exon length\t" + elength //
-		);
+	public static Proxy proxy() {
+		String proxyHost = System.getProperty("http.proxyHost");
+		String proxyPort = System.getProperty("http.proxyPort");
+
+		if (proxyHost == null || proxyHost.isBlank()) return null;
+
+		int port = Gpr.parseIntSafe(proxyPort);
+		if (port <= 0) port = 80;
+
+		System.out.println("Using proxy host '" + proxyHost + "', port " + port);
+
+		return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, port));
 	}
 
 }
