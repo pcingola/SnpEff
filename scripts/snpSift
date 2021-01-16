@@ -4,7 +4,7 @@
 #
 # Wrapper for HomeBrew-science project 
 #
-# snpEff executable shell script
+# snpSift executable shell script
 # https://pcingola.github.io/SnpEff/
 # Extracts memory and system property Java arguments from the list of provided arguments
 # (ie -Xms 1g -Xmx 4g)
@@ -21,7 +21,7 @@ then
 	java="$JAVA_HOME/bin/java"
 fi
 
-default_jvm_mem_opts="-Xms1g -Xmx8g"
+default_jvm_mem_opts="-Xms1g -Xmx4g"
 jvm_mem_opts=""
 jvm_prop_opts=""
 pass_args=""
@@ -42,9 +42,6 @@ done
 if [ "$jvm_mem_opts" == "" ]; then
     jvm_mem_opts="$default_jvm_mem_opts"
 fi
-if [[ "$pass_args" != "" && ! "$pass_args" =~ "-c " ]]; then
-    pass_args="$pass_args -c ${jardir}/snpEff.config"
-fi
 
-exec $java $jvm_mem_opts $jvm_prop_opts -jar ${jardir}/snpEff.jar $pass_args
+exec $java $jvm_mem_opts $jvm_prop_opts -jar ${jardir}/SnpSift.jar $pass_args
 exit
