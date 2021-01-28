@@ -1,0 +1,313 @@
+# SnpEff: Frequently Asked Questions
+
+
+
+# Error and Warning messages
+
+SnpEff defines several messages in roughly 3 categories:
+
+- INFO: An informative message
+- WARNING: A problem in the reference genome definition that **MAY** result in an incorrect variant annotation
+- ERROR: A problem in the reference genome definition that **WILL ALMOST CERTAINLY** result in an incorrect variant annotation
+
+**INFO_REALIGN_3_PRIME**
+
+The variant has been realigned to the most 3-prime position within the transcript.
+
+This is usually done to comply with HGVS specification to always report the most 3-prime annotation. While VCF requires to realign to the left-most of the reference genome, HGSV requires to realign to the most 3-prime. These two specifications are contradicting in some cases, so in order to comply with HGSV, sometimes a local realignment is required.
+
+IMPORTANT: This message is just indicating that a realignment was performed, so ** when this INFO message is present, the original coordinates from the VCF file are not exactly the same as the coordinates used to calculate the variant annotation **
+
+**WARNING_SEQUENCE_NOT_AVAILABLE**
+
+The exon does not have reference sequence information. 
+The annotation may not be calculated (e.g. incomplete transcripts).
+
+**WARNING_REF_DOES_NOT_MATCH_GENOME**
+
+The genome reference does not match the variant's reference.
+
+For example, if the VCF file indicates that the reference at a certain location is 'A', while SnpEff's database indicates that the reference should be 'C', this WARNING would be added.
+
+Under normal circumstances, there should be none of these warnings (or at most a handful). 
+
+IMPORTANT: If too many of these warnings are seen, this indicates a severe problem (version mismatch between your VCF files and the reference genome). A typical case when too many of these warning are seen is when trying to annotate using a different genome than the one used for alignment (e.g. reads are aligned to hg19 but variants are annotated to using hg38)
+
+**WARNING_TRANSCRIPT_INCOMPLETE**
+
+The number of coding bases is NOT multiple of 3, so there is missing information for at least one codon.
+This indicates an error in the reference genome gene and/or transcript definition.
+This could happen in genomes that are not well understood.
+
+**WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS**
+
+Multiple STOP codons found in a CDS.
+There should be only one STOP codon at the end of the transcript, but in this case, the transcript has multiple STOP codons, which is unlikely to be real.
+
+This usually indicates an error on the reference genome (or database).
+Could for, for example, indicating frame errors in the reference genome for one or more exons in this transcript.
+
+**WARNING_TRANSCRIPT_NO_START_CODON**
+
+Start codon does not match any 'start' codon in the CodonTable.
+
+This usually indicates an error on the reference genome (or database) but could be also due to a misconfigured codon table for the genome. You should check that the codon table is properly set in `snpEff.config`
+
+**WARNING_TRANSCRIPT_NO_STOP_CODON**
+
+Stop codon does not match any 'stop' codon in the CodonTable.
+
+This usually indicates an error on the reference genome (or database) but could be also due to a misconfigured codon table for the genome. You should check that the codon table is properly set in `snpEff.config`
+
+**ERROR_CHROMOSOME_NOT_FOUND** 
+
+Chromosome name not found. Typically due to mismatch in chromosome naming conventions between variants file and database, but can be a more several problems (different reference genome).
+
+See more details (here)[https://github.com/pcingola/SnpEff/wiki/ERROR_CHROMOSOME_NOT_FOUND]
+
+**ERROR_OUT_OF_CHROMOSOME_RANGE**
+
+Variant's genomic position is outside chromosome's range.
+
+Simple, the variant coordinate is outside the reference genome chromosome's length.
+
+IMPORTANT: If too many of these warnings are seen, this indicates a severe problem (version mismatch between your VCF files and the reference genome). A typical case when too many of these warning are seen is when trying to annotate using a different genome than the one used for alignment (e.g. reads are aligned to hg19 but variants are annotated to using hg38)
+
+**ERROR_OUT_OF_EXON**
+
+An exonic variant is falling outside the exon.
+
+**ERROR_MISSING_CDS_SEQUENCE**
+
+Missing coding sequence information. 
+In this case, the full variant annotation cannot be calculated due to missing CDS information.
+
+This usually indicates an error on the reference genome (or database).
+
+
+
+# Details about error code `ERROR_CHROMOSOME_NOT_FOUND`
+
+The error is due to a difference between the chromosome names in input VCF file and the chromosome names in SnpEff's database.
+
+Chromosome does not exist in the reference database. Typically this means that there is a mismatch between the chromosome names in your input file and the chromosome names used in the reference genome to build SnpEff's database. 
+
+This error could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment. Obviously doing this makes no sense and the annotation information you'll get will be garbage. That's why SnpEff shows you an error message. 
+
+#### Solution
+
+Sometimes SnpEff database matches the reference genome for your organism, and it's just that the chromosome names are changed. In this case, you can fix the error by changing the chromosome names in your input file. 
+
+You can see the chromosome names used by SnpEff's database by using `-v` (verbose) option. SnpEff will show a line like this one:
+
+```
+$ java -Xmx4g -jar snpEff.jar -v genomeName my.vcf > my.ann.vcf
+...
+... 
+# Chromosomes names [sizes]  : '1' [249250621] '2' [243199373]
+...
+...
+```
+
+You can see the chromosome names in your input VCF file using a command like this one
+
+```
+cat input.vcf | grep -v "^#" | cut -f 1 | uniq
+```
+
+Once you know the names of the input file and the name used by SnpEff's database, you can adjust the chromosome name using a simple sed command. For example, if you input file's chromosome name is `INPUT_CHR_NAME` and the name in SnpEff's database is `SNPEFF_CHR_NAME`, you could use the following command:
+
+```
+cat input.vcf | sed "s/^INPUT_CHR_NAME/SNPEFF_CHR_NAME/" > input_updated_chr.vcf
+```
+
+
+
+# How to building an NCBI genome (GenBank file)
+
+When building a database with SnpEff if your genomic reference is in NCBI, there is a script that might help you build the database.
+
+The script is `buildDbNcbi.sh` and is located in snpEff's scripts directory.
+It takes only one argument, which is the NCBI's ID.
+
+#### Example: Salmonella enterica 
+
+In this example, we build the database for _"Salmonella enterica subsp. enterica serovar Typhi str. P-stx-12"_ having accession ID CP003278.1
+
+```
+$ cd ~/snpEff
+
+# Note: Output edited for brevity
+$ ./scripts/buildDbNcbi.sh CP003278.1
+Downloading genome CP003278.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 10.2M    0 10.2M    0     0  3627k      0 --:--:--  0:00:02 --:--:-- 3627k
+00:00:00	SnpEff version SnpEff 4.3p (build 2017-07-28 14:02), by Pablo Cingolani
+00:00:00	Command: 'build'
+00:00:00	Building database for 'CP003278.1'
+00:00:00	Reading configuration file 'snpEff.config'. Genome: 'CP003278.1'
+00:00:00	Reading config file: /home/pcingola/workspace/SnpEff/snpEff.config
+00:00:00	done
+Chromosome: 'CP003278'	length: 4768352
+
+	Create exons from CDS (if needed): ..................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+	Exons created for 4690 transcripts.
+
+...
+00:00:01	Reading proteins from file '/home/pcingola/workspace/SnpEff/./data/CP003278.1/genes.gbk'...
+00:00:01	done (4690 Proteins).
+00:00:01	Comparing Proteins...
+	Labels:
+		'+' : OK
+		'.' : Missing
+		'*' : Error
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+...
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	Protein check:	CP003278.1	OK: 4690	Not found: 0	Errors: 0	Error percentage: 0.0%
+00:00:02	Saving database
+...
+00:00:04	Done.
+```
+
+
+
+# Creating a protein sequence FASTA file
+
+SnpEff `ann` command has a command line option called `-fastaProt` that tells SnpEff to output the "original" and "resulting" protein sequences for each variant into a FASTA file.
+
+This means that for each variant, the output FASTA file will have an entry with protein sequence resulting from applying that variant to the reference sequence.
+
+Here is an example:
+```
+$ cat z.vcf
+1	889455	.	G	A	.	.	.
+
+$ java -Xmx6g -jar snpEff.jar ann -fastaProt z.prot.fa hg19 z.vcf > z.ann.vcf
+```
+
+The resulting fasta file `z.prot.fa` looks like this (lines edited for readibility):
+
+```
+>NM_015658.3 Ref
+MAAAGSR...LLFGKVAKDSSRMLQPSSSPLWGKLRVDIKAYLGS...
+
+>NM_015658.3 Variant 1:889455-889455 Ref:G Alt:A HGVS.p:p.Gln236*
+MAAAGSR...LLFGKVAKDSSRML*PSSSPLWGKLRVDIKAYLGS...
+```
+
+
+
+# Genome reference data sources
+
+SnpEff genome databases are built from genomic data sources, such as Ensembl, RefSeq, NCBI, UCSC, etc.
+
+Sometimes, information is provided in the `snpEff.config` file, under the `genome_name.reference` entry.
+
+#### Example 1: GRCh37.75
+
+If you are looking for the `GRCh37.75` genome, you can search for the entry in `snpEff.conf` file:
+
+```
+$ grep -A 1 GRCh37.75 snpEff.config
+GRCh37.75.genome : Homo_sapiens
+GRCh37.75.reference : ftp://ftp.ensembl.org/pub/release-75/gtf/
+```
+ As you can see, the genome data is from Ensembl, release 75 (as expected).
+
+#### Example 2: hg19
+
+If you are looking for the `hg19` genome, you can also search for the entry in `snpEff.conf` file:
+
+```
+$ grep -i hg19.genome snpEff.config 
+hg19.genome : Homo_sapiens (USCS)
+...
+```
+
+In this case, there is no `hg19.reference` entry, but the genome name clearly states that the database was retrieved from UCSC (having RefSeq).
+Which exact sub-version is this hg19?
+Well, unfortunately, UCSC does not keep track of sub-versions.
+A rule of the thumb is that the database is retrieved before it is built, so you can look at the date/time from the snpEff database:
+
+```
+$ ls -al data/hg19/snpEffectPredictor.bin
+-rw-r--r-- 1 pcingola pcingola 52630202 Mar 19 08:27 data/hg19/snpEffectPredictor.bin
+```
+
+So this`hg19` database was retrieved from UCSC around on March 19th.
+
+#### Example 3: Salmonella_enterica
+
+Sometimes the information is in the genome's `reference` entry is not enough to determine which exact version was used, but the `snpEff.config` file provides some additional information in the comments
+For example, let's say we'd like to find the data source for `Salmonella_enterica` genome
+
+If we edit the `snpEff.config` and find the entry for Salmonella_enterica, we see something like this:
+```
+Salmonella_enterica.genome : Salmonella_enterica
+Salmonella_enterica.reference : ftp.ensemblgenomes.org
+```
+
+OK, it is from Ensembl, but which version?
+If you scroll up in the config file, you'll see a comment like this:
+
+```
+#---
+# ENSEMBL BFMPP release 32
+#---
+```
+
+Here `ENSEMBL BFMPP` stands for Endembl Bacteria, Fungi, Metazoa, Plants and Protists.
+So the comment is indicating that this is Ensembl's release 32.
+
+
+
+# Number of variants in VCF and HTML summary do not match
+
+First of all, SnpEff probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.
+
+#### How to count variants / annotations properly
+
+It is important to remember that the VCF format specification allows having multiple variants in a single line.
+Also, a single variant can have more than one annotation, due to:
+- Multiple transcripts (isoforms) of a gene.
+- Multiple (overlapping) genes in the genomic location of the variant.
+- A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)
+
+When you count the number of variants, you must keep all these in mind to count them properly. 
+Obviously, SnpEff does take all this into account when counting the variants for the summary HTML.
+
+#### Typical counting mistake
+
+Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previous items.
+
+A typical scenario is, for example, that people are "counting missense variants" using something like this:
+```
+grep missense file.vcf | wc -l
+```
+This is counting _"lines in a VCF file that have at least one missense variants"_, as opposed to counting _"missense annotations"_ and, as mentioned previously, the number of lines in a VCF file is not the same as the number of annotations or the number of variants.
+
+
+
+#### SnpEff taking too long
+
+Usually SnpEff runs within minutes.
+Unless you are analyzing extremely large files with thousands (or hundreds of thousands) of samples.
+But even in those cases SnpEff is efficient and it doesn't take too long. 
+
+There are several things you should do to optimize:
+
+1. Run with "-v" option to check progress
+1. Use enough memory in your Java process (see "How much memory should I use" FAQ)
+1. You can disable the HTML report (command line option `-noStats`). The report is usually quite time consuming, particularly if the number of samples in the VCF is large
+
+
+
+#### How much memory should I use
+
+How much memory to use is very specifcic to your project / application, but here are some guidelines:
+- Default 8 GB: Typically 8G of memory is enough for analyzing a human genome (i.e. `java -Xmx8G -jar snpEff.jar ... ~)
+- Medium 16 GB: It is rare that for single sample VCF file annotations more than 8G is required, but for some large genomes and/or VCF with too many samples, you might need more memory.
+- Very large 128GB: It is extremely uncommon for SnpEff to require over 128GB of RAM for annotating with SnpEff, but it might happen on very large projects.

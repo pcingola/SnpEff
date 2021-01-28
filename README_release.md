@@ -58,7 +58,7 @@ To build docs you need mkdocs-material theme installed.
 # Go to snpEff's install dir, activate virtual environment containing mkdocs
 cd ~/snpEff; source ./bin/activate
 
-pip install mkdocs-material==5.2
+pip install mkdocs-material
 ```
 
 - **NOTES**:
@@ -72,7 +72,7 @@ cd ~/snpEff; source ./bin/activate
 
 # Clean directory, rebuild site, overwrite index.html
 rm -rvf site/
-mkdocs build
+./bin/mkdocs build
 cp -vf src/docs/index.html site/
 ```
 
@@ -81,7 +81,7 @@ cp -vf src/docs/index.html site/
 # Go to snpEff's install dir, activate virtual environment containing mkdocs
 cd ~/snpEff; source ./bin/activate
 
-mkdocs serve
+./bin/mkdocs serve
 ```
 
 - Deploying docs: You just need to copy the `site` directory to `docs` and push to GitHub
@@ -90,7 +90,6 @@ cd ~/workspace/SnpEff
 
 # Cleanup old 'mkdocs' files
 rm docs/*/index.html
-rmdir docs/*
 
 # Copy new 'mkdocs' files
 cp -rvf ~/snpEff/site/* docs/

@@ -56,6 +56,7 @@ nav:
      - Building databases. Regulatory and Non-coding: se_buildingreg.md
      - Integration. GATK and Galaxy: se_integration.md
      - Commands and utilities: se_commands.md
+     - Frequently asked questions: se_faq.md
   - SnpSift:
      - Introduction: ss_introduction.md
      - SnpSift Filter: ss_filter.md
@@ -80,6 +81,7 @@ nav:
      - SnpSift GeneSets: ss_genesets.md
      - SnpSift GT: ss_gt.md
      - SnpSift VcfCheck: ss_vcfcheck.md
+     - Frequently asked questions: ss_faq.md
   - 'Download & Install':
      - Download and install: download.md
   - 'Examples':

@@ -1,0 +1,1318 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SnpEff and SnpSift documentation">
+      
+      
+      
+        <meta name="author" content="Pablo Cingolani">
+      
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.6">
+    
+    
+      
+        <title>Frequently asked questions - SnpEff & SnpSift Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.39b8e14a.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="indigo" data-md-color-accent="indigo">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#snpeff-frequently-asked-questions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="SnpEff &amp; SnpSift Documentation" class="md-header-nav__button md-logo" aria-label="SnpEff & SnpSift Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            SnpEff & SnpSift Documentation
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Frequently asked questions
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SnpEff &amp; SnpSift Documentation" class="md-nav__button md-logo" aria-label="SnpEff & SnpSift Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    SnpEff & SnpSift Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1" >
+      
+      <label class="md-nav__link" for="nav-1">
+        Home
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="nav-1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/" class="md-nav__link">
+        Features
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        Usage examples
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../citing/" class="md-nav__link">
+        Paper & Citations
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../users_of_snpeff/" class="md-nav__link">
+        Who uses SnpEff?
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration/" class="md-nav__link">
+        Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        FAQ
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      
+      <label class="md-nav__link" for="nav-2">
+        SnpEff
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="SnpEff" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          SnpEff
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_running/" class="md-nav__link">
+        Running SnpEff
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_commandline/" class="md-nav__link">
+        Commands &amp; command line options
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_inputoutput/" class="md-nav__link">
+        Input &amp; output files
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_cansersamples/" class="md-nav__link">
+        Cancer samples
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_additionalann/" class="md-nav__link">
+        Additional annotations
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_outputsummary/" class="md-nav__link">
+        Output summary files
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_buildingdb/" class="md-nav__link">
+        Building databases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_buildingreg/" class="md-nav__link">
+        Building databases. Regulatory and Non-coding
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_integration/" class="md-nav__link">
+        Integration. GATK and Galaxy
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_commands/" class="md-nav__link">
+        Commands and utilities
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Frequently asked questions
+      </a>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+      
+      <label class="md-nav__link" for="nav-3">
+        SnpSift
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="SnpSift" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          SnpSift
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_filter/" class="md-nav__link">
+        SnpSift Filter
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_annotate/" class="md-nav__link">
+        SnpSift Annotate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_casecontrol/" class="md-nav__link">
+        SnpSift CaseControl
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_intervals/" class="md-nav__link">
+        SnpSift Intervals
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_intervalsindex/" class="md-nav__link">
+        SnpSift Intervals Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_join/" class="md-nav__link">
+        SnpSift Join
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_rmrefgen/" class="md-nav__link">
+        SnpSift RmRefGen
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_tstv/" class="md-nav__link">
+        SnpSift TsTv
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_extractfields/" class="md-nav__link">
+        SnpSift Extract Fields
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_varianttype/" class="md-nav__link">
+        SnpSift Variant Type
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_gwascatalog/" class="md-nav__link">
+        SnpSift GWAS Catalog
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_dbnsfp/" class="md-nav__link">
+        SnpSift dbNSFP
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_split/" class="md-nav__link">
+        SnpSift Split
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_phastcons/" class="md-nav__link">
+        SnpSift PhastCons
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_concordance/" class="md-nav__link">
+        SnpSift Concordance
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_private/" class="md-nav__link">
+        SnpSift Private
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_vcf2ped/" class="md-nav__link">
+        SnpSift Vcf2Tped
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_intersect/" class="md-nav__link">
+        SnpSift Intersect
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_rminfo/" class="md-nav__link">
+        SnpSift RmInfo
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_genesets/" class="md-nav__link">
+        SnpSift GeneSets
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_gt/" class="md-nav__link">
+        SnpSift GT
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_vcfcheck/" class="md-nav__link">
+        SnpSift VcfCheck
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ss_faq/" class="md-nav__link">
+        Frequently asked questions
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" >
+      
+      <label class="md-nav__link" for="nav-4">
+        Download & Install
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Download & Install" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Download & Install
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../download/" class="md-nav__link">
+        Download and install
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" >
+      
+      <label class="md-nav__link" for="nav-5">
+        Examples
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Examples" data-md-level="1">
+        <label class="md-nav__title" for="nav-5">
+          <span class="md-nav__icon md-icon"></span>
+          Examples
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        Examples
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" >
+      
+      <label class="md-nav__link" for="nav-6">
+        About
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="About" data-md-level="1">
+        <label class="md-nav__title" for="nav-6">
+          <span class="md-nav__icon md-icon"></span>
+          About
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../xiangyi_lu_donate/" class="md-nav__link">
+        In Memory
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="snpeff-frequently-asked-questions">SnpEff: Frequently Asked Questions</h1>
+<h1 id="error-and-warning-messages">Error and Warning messages</h1>
+<p>SnpEff defines several messages in roughly 3 categories:</p>
+<ul>
+<li>INFO: An informative message</li>
+<li>WARNING: A problem in the reference genome definition that <strong>MAY</strong> result in an incorrect variant annotation</li>
+<li>ERROR: A problem in the reference genome definition that <strong>WILL ALMOST CERTAINLY</strong> result in an incorrect variant annotation</li>
+</ul>
+<p><strong>INFO_REALIGN_3_PRIME</strong></p>
+<p>The variant has been realigned to the most 3-prime position within the transcript.</p>
+<p>This is usually done to comply with HGVS specification to always report the most 3-prime annotation. While VCF requires to realign to the left-most of the reference genome, HGSV requires to realign to the most 3-prime. These two specifications are contradicting in some cases, so in order to comply with HGSV, sometimes a local realignment is required.</p>
+<p>IMPORTANT: This message is just indicating that a realignment was performed, so <strong> when this INFO message is present, the original coordinates from the VCF file are not exactly the same as the coordinates used to calculate the variant annotation </strong></p>
+<p><strong>WARNING_SEQUENCE_NOT_AVAILABLE</strong></p>
+<p>The exon does not have reference sequence information. 
+The annotation may not be calculated (e.g. incomplete transcripts).</p>
+<p><strong>WARNING_REF_DOES_NOT_MATCH_GENOME</strong></p>
+<p>The genome reference does not match the variant's reference.</p>
+<p>For example, if the VCF file indicates that the reference at a certain location is 'A', while SnpEff's database indicates that the reference should be 'C', this WARNING would be added.</p>
+<p>Under normal circumstances, there should be none of these warnings (or at most a handful). </p>
+<p>IMPORTANT: If too many of these warnings are seen, this indicates a severe problem (version mismatch between your VCF files and the reference genome). A typical case when too many of these warning are seen is when trying to annotate using a different genome than the one used for alignment (e.g. reads are aligned to hg19 but variants are annotated to using hg38)</p>
+<p><strong>WARNING_TRANSCRIPT_INCOMPLETE</strong></p>
+<p>The number of coding bases is NOT multiple of 3, so there is missing information for at least one codon.
+This indicates an error in the reference genome gene and/or transcript definition.
+This could happen in genomes that are not well understood.</p>
+<p><strong>WARNING_TRANSCRIPT_MULTIPLE_STOP_CODONS</strong></p>
+<p>Multiple STOP codons found in a CDS.
+There should be only one STOP codon at the end of the transcript, but in this case, the transcript has multiple STOP codons, which is unlikely to be real.</p>
+<p>This usually indicates an error on the reference genome (or database).
+Could for, for example, indicating frame errors in the reference genome for one or more exons in this transcript.</p>
+<p><strong>WARNING_TRANSCRIPT_NO_START_CODON</strong></p>
+<p>Start codon does not match any 'start' codon in the CodonTable.</p>
+<p>This usually indicates an error on the reference genome (or database) but could be also due to a misconfigured codon table for the genome. You should check that the codon table is properly set in <code>snpEff.config</code></p>
+<p><strong>WARNING_TRANSCRIPT_NO_STOP_CODON</strong></p>
+<p>Stop codon does not match any 'stop' codon in the CodonTable.</p>
+<p>This usually indicates an error on the reference genome (or database) but could be also due to a misconfigured codon table for the genome. You should check that the codon table is properly set in <code>snpEff.config</code></p>
+<p><strong>ERROR_CHROMOSOME_NOT_FOUND</strong> </p>
+<p>Chromosome name not found. Typically due to mismatch in chromosome naming conventions between variants file and database, but can be a more several problems (different reference genome).</p>
+<p>See more details (here)[https://github.com/pcingola/SnpEff/wiki/ERROR_CHROMOSOME_NOT_FOUND]</p>
+<p><strong>ERROR_OUT_OF_CHROMOSOME_RANGE</strong></p>
+<p>Variant's genomic position is outside chromosome's range.</p>
+<p>Simple, the variant coordinate is outside the reference genome chromosome's length.</p>
+<p>IMPORTANT: If too many of these warnings are seen, this indicates a severe problem (version mismatch between your VCF files and the reference genome). A typical case when too many of these warning are seen is when trying to annotate using a different genome than the one used for alignment (e.g. reads are aligned to hg19 but variants are annotated to using hg38)</p>
+<p><strong>ERROR_OUT_OF_EXON</strong></p>
+<p>An exonic variant is falling outside the exon.</p>
+<p><strong>ERROR_MISSING_CDS_SEQUENCE</strong></p>
+<p>Missing coding sequence information. 
+In this case, the full variant annotation cannot be calculated due to missing CDS information.</p>
+<p>This usually indicates an error on the reference genome (or database).</p>
+<h1 id="details-about-error-code-error_chromosome_not_found">Details about error code <code>ERROR_CHROMOSOME_NOT_FOUND</code></h1>
+<p>The error is due to a difference between the chromosome names in input VCF file and the chromosome names in SnpEff's database.</p>
+<p>Chromosome does not exist in the reference database. Typically this means that there is a mismatch between the chromosome names in your input file and the chromosome names used in the reference genome to build SnpEff's database. </p>
+<p>This error could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment. Obviously doing this makes no sense and the annotation information you'll get will be garbage. That's why SnpEff shows you an error message. </p>
+<h4 id="solution">Solution</h4>
+<p>Sometimes SnpEff database matches the reference genome for your organism, and it's just that the chromosome names are changed. In this case, you can fix the error by changing the chromosome names in your input file. </p>
+<p>You can see the chromosome names used by SnpEff's database by using <code>-v</code> (verbose) option. SnpEff will show a line like this one:</p>
+<pre><code>$ java -Xmx4g -jar snpEff.jar -v genomeName my.vcf &gt; my.ann.vcf
+...
+... 
+# Chromosomes names [sizes]  : '1' [249250621] '2' [243199373]
+...
+...
+</code></pre>
+<p>You can see the chromosome names in your input VCF file using a command like this one</p>
+<pre><code>cat input.vcf | grep -v &quot;^#&quot; | cut -f 1 | uniq
+</code></pre>
+<p>Once you know the names of the input file and the name used by SnpEff's database, you can adjust the chromosome name using a simple sed command. For example, if you input file's chromosome name is <code>INPUT_CHR_NAME</code> and the name in SnpEff's database is <code>SNPEFF_CHR_NAME</code>, you could use the following command:</p>
+<pre><code>cat input.vcf | sed &quot;s/^INPUT_CHR_NAME/SNPEFF_CHR_NAME/&quot; &gt; input_updated_chr.vcf
+</code></pre>
+<h1 id="how-to-building-an-ncbi-genome-genbank-file">How to building an NCBI genome (GenBank file)</h1>
+<p>When building a database with SnpEff if your genomic reference is in NCBI, there is a script that might help you build the database.</p>
+<p>The script is <code>buildDbNcbi.sh</code> and is located in snpEff's scripts directory.
+It takes only one argument, which is the NCBI's ID.</p>
+<h4 id="example-salmonella-enterica">Example: Salmonella enterica</h4>
+<p>In this example, we build the database for <em>"Salmonella enterica subsp. enterica serovar Typhi str. P-stx-12"</em> having accession ID CP003278.1</p>
+<pre><code>$ cd ~/snpEff
+
+# Note: Output edited for brevity
+$ ./scripts/buildDbNcbi.sh CP003278.1
+Downloading genome CP003278.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 10.2M    0 10.2M    0     0  3627k      0 --:--:--  0:00:02 --:--:-- 3627k
+00:00:00    SnpEff version SnpEff 4.3p (build 2017-07-28 14:02), by Pablo Cingolani
+00:00:00    Command: 'build'
+00:00:00    Building database for 'CP003278.1'
+00:00:00    Reading configuration file 'snpEff.config'. Genome: 'CP003278.1'
+00:00:00    Reading config file: /home/pcingola/workspace/SnpEff/snpEff.config
+00:00:00    done
+Chromosome: 'CP003278'  length: 4768352
+
+    Create exons from CDS (if needed): ..................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+    Exons created for 4690 transcripts.
+
+...
+00:00:01    Reading proteins from file '/home/pcingola/workspace/SnpEff/./data/CP003278.1/genes.gbk'...
+00:00:01    done (4690 Proteins).
+00:00:01    Comparing Proteins...
+    Labels:
+        '+' : OK
+        '.' : Missing
+        '*' : Error
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+...
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    Protein check:  CP003278.1  OK: 4690    Not found: 0    Errors: 0   Error percentage: 0.0%
+00:00:02    Saving database
+...
+00:00:04    Done.
+</code></pre>
+<h1 id="creating-a-protein-sequence-fasta-file">Creating a protein sequence FASTA file</h1>
+<p>SnpEff <code>ann</code> command has a command line option called <code>-fastaProt</code> that tells SnpEff to output the "original" and "resulting" protein sequences for each variant into a FASTA file.</p>
+<p>This means that for each variant, the output FASTA file will have an entry with protein sequence resulting from applying that variant to the reference sequence.</p>
+<p>Here is an example:</p>
+<pre><code>$ cat z.vcf
+1   889455  .   G   A   .   .   .
+
+$ java -Xmx6g -jar snpEff.jar ann -fastaProt z.prot.fa hg19 z.vcf &gt; z.ann.vcf
+</code></pre>
+<p>The resulting fasta file <code>z.prot.fa</code> looks like this (lines edited for readibility):</p>
+<pre><code>&gt;NM_015658.3 Ref
+MAAAGSR...LLFGKVAKDSSRMLQPSSSPLWGKLRVDIKAYLGS...
+
+&gt;NM_015658.3 Variant 1:889455-889455 Ref:G Alt:A HGVS.p:p.Gln236*
+MAAAGSR...LLFGKVAKDSSRML*PSSSPLWGKLRVDIKAYLGS...
+</code></pre>
+<h1 id="genome-reference-data-sources">Genome reference data sources</h1>
+<p>SnpEff genome databases are built from genomic data sources, such as Ensembl, RefSeq, NCBI, UCSC, etc.</p>
+<p>Sometimes, information is provided in the <code>snpEff.config</code> file, under the <code>genome_name.reference</code> entry.</p>
+<h4 id="example-1-grch3775">Example 1: GRCh37.75</h4>
+<p>If you are looking for the <code>GRCh37.75</code> genome, you can search for the entry in <code>snpEff.conf</code> file:</p>
+<pre><code>$ grep -A 1 GRCh37.75 snpEff.config
+GRCh37.75.genome : Homo_sapiens
+GRCh37.75.reference : ftp://ftp.ensembl.org/pub/release-75/gtf/
+</code></pre>
+<p>As you can see, the genome data is from Ensembl, release 75 (as expected).</p>
+<h4 id="example-2-hg19">Example 2: hg19</h4>
+<p>If you are looking for the <code>hg19</code> genome, you can also search for the entry in <code>snpEff.conf</code> file:</p>
+<pre><code>$ grep -i hg19.genome snpEff.config 
+hg19.genome : Homo_sapiens (USCS)
+...
+</code></pre>
+<p>In this case, there is no <code>hg19.reference</code> entry, but the genome name clearly states that the database was retrieved from UCSC (having RefSeq).
+Which exact sub-version is this hg19?
+Well, unfortunately, UCSC does not keep track of sub-versions.
+A rule of the thumb is that the database is retrieved before it is built, so you can look at the date/time from the snpEff database:</p>
+<pre><code>$ ls -al data/hg19/snpEffectPredictor.bin
+-rw-r--r-- 1 pcingola pcingola 52630202 Mar 19 08:27 data/hg19/snpEffectPredictor.bin
+</code></pre>
+<p>So this<code>hg19</code> database was retrieved from UCSC around on March 19th.</p>
+<h4 id="example-3-salmonella_enterica">Example 3: Salmonella_enterica</h4>
+<p>Sometimes the information is in the genome's <code>reference</code> entry is not enough to determine which exact version was used, but the <code>snpEff.config</code> file provides some additional information in the comments
+For example, let's say we'd like to find the data source for <code>Salmonella_enterica</code> genome</p>
+<p>If we edit the <code>snpEff.config</code> and find the entry for Salmonella_enterica, we see something like this:</p>
+<pre><code>Salmonella_enterica.genome : Salmonella_enterica
+Salmonella_enterica.reference : ftp.ensemblgenomes.org
+</code></pre>
+<p>OK, it is from Ensembl, but which version?
+If you scroll up in the config file, you'll see a comment like this:</p>
+<pre><code>#---
+# ENSEMBL BFMPP release 32
+#---
+</code></pre>
+<p>Here <code>ENSEMBL BFMPP</code> stands for Endembl Bacteria, Fungi, Metazoa, Plants and Protists.
+So the comment is indicating that this is Ensembl's release 32.</p>
+<h1 id="number-of-variants-in-vcf-and-html-summary-do-not-match">Number of variants in VCF and HTML summary do not match</h1>
+<p>First of all, SnpEff probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.</p>
+<h4 id="how-to-count-variants-annotations-properly">How to count variants / annotations properly</h4>
+<p>It is important to remember that the VCF format specification allows having multiple variants in a single line.
+Also, a single variant can have more than one annotation, due to:
+- Multiple transcripts (isoforms) of a gene.
+- Multiple (overlapping) genes in the genomic location of the variant.
+- A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)</p>
+<p>When you count the number of variants, you must keep all these in mind to count them properly. 
+Obviously, SnpEff does take all this into account when counting the variants for the summary HTML.</p>
+<h4 id="typical-counting-mistake">Typical counting mistake</h4>
+<p>Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previous items.</p>
+<p>A typical scenario is, for example, that people are "counting missense variants" using something like this:</p>
+<pre><code>grep missense file.vcf | wc -l
+</code></pre>
+<p>This is counting <em>"lines in a VCF file that have at least one missense variants"</em>, as opposed to counting <em>"missense annotations"</em> and, as mentioned previously, the number of lines in a VCF file is not the same as the number of annotations or the number of variants.</p>
+<h4 id="snpeff-taking-too-long">SnpEff taking too long</h4>
+<p>Usually SnpEff runs within minutes.
+Unless you are analyzing extremely large files with thousands (or hundreds of thousands) of samples.
+But even in those cases SnpEff is efficient and it doesn't take too long. </p>
+<p>There are several things you should do to optimize:</p>
+<ol>
+<li>Run with "-v" option to check progress</li>
+<li>Use enough memory in your Java process (see "How much memory should I use" FAQ)</li>
+<li>You can disable the HTML report (command line option <code>-noStats</code>). The report is usually quite time consuming, particularly if the number of samples in the VCF is large</li>
+</ol>
+<h4 id="how-much-memory-should-i-use">How much memory should I use</h4>
+<p>How much memory to use is very specifcic to your project / application, but here are some guidelines:
+- Default 8 GB: Typically 8G of memory is enough for analyzing a human genome (i.e. `java -Xmx8G -jar snpEff.jar ... ~)
+- Medium 16 GB: It is rare that for single sample VCF file annotations more than 8G is required, but for some large genomes and/or VCF with too many samples, you might need more memory.
+- Very large 128GB: It is extremely uncommon for SnpEff to require over 128GB of RAM for annotating with SnpEff, but it might happen on very large projects.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../se_commands/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Commands and utilities
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../ss_introduction/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Introduction
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Pablo Cingolani
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="http://www.linkedin.com/in/pablocingolani" target="_blank" rel="noopener" title="www.linkedin.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/pcingola/SnpEff" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.53cc9318.min.js"></script>
+      <script src="../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: ['tabs'],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
