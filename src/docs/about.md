@@ -37,6 +37,7 @@ Acknowledgements and special thanks to (in order of appearance):
 ## Bug reports
 
 Please send any bug reports by creating issues in repositories:
+
 * SnpEff:  <https://github.com/pcingola/SnpEff/issues>
 * SnpSift: <https://github.com/pcingola/SnpSift/issues>
 
