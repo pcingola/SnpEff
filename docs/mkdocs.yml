@@ -56,7 +56,7 @@ nav:
      - Building databases. Regulatory and Non-coding: se_buildingreg.md
      - Integration. GATK and Galaxy: se_integration.md
      - Commands and utilities: se_commands.md
-     - Frequently asked questions: se_faq.md
+     - Frequently Asked Questions: se_faq.md
   - SnpSift:
      - Introduction: ss_introduction.md
      - SnpSift Filter: ss_filter.md

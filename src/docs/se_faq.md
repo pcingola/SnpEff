@@ -1,8 +1,6 @@
 # SnpEff: Frequently Asked Questions
 
-
-
-# Error and Warning messages
+## Error and Warning messages
 
 SnpEff defines several messages in roughly 3 categories:
 
@@ -86,7 +84,7 @@ This usually indicates an error on the reference genome (or database).
 
 
 
-# Details about error code `ERROR_CHROMOSOME_NOT_FOUND`
+## ERROR_CHROMOSOME_NOT_FOUND: Details
 
 The error is due to a difference between the chromosome names in input VCF file and the chromosome names in SnpEff's database.
 
@@ -94,7 +92,7 @@ Chromosome does not exist in the reference database. Typically this means that t
 
 This error could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment. Obviously doing this makes no sense and the annotation information you'll get will be garbage. That's why SnpEff shows you an error message. 
 
-#### Solution
+**Solution**
 
 Sometimes SnpEff database matches the reference genome for your organism, and it's just that the chromosome names are changed. In this case, you can fix the error by changing the chromosome names in your input file. 
 
@@ -123,14 +121,14 @@ cat input.vcf | sed "s/^INPUT_CHR_NAME/SNPEFF_CHR_NAME/" > input_updated_chr.vcf
 
 
 
-# How to building an NCBI genome (GenBank file)
+## How to building an NCBI genome (GenBank file)
 
 When building a database with SnpEff if your genomic reference is in NCBI, there is a script that might help you build the database.
 
 The script is `buildDbNcbi.sh` and is located in snpEff's scripts directory.
 It takes only one argument, which is the NCBI's ID.
 
-#### Example: Salmonella enterica 
+**Example: Salmonella enterica**
 
 In this example, we build the database for _"Salmonella enterica subsp. enterica serovar Typhi str. P-stx-12"_ having accession ID CP003278.1
 
@@ -174,7 +172,7 @@ Chromosome: 'CP003278'	length: 4768352
 
 
 
-# Creating a protein sequence FASTA file
+## Creating a protein sequence FASTA file
 
 SnpEff `ann` command has a command line option called `-fastaProt` that tells SnpEff to output the "original" and "resulting" protein sequences for each variant into a FASTA file.
 
@@ -200,13 +198,13 @@ MAAAGSR...LLFGKVAKDSSRML*PSSSPLWGKLRVDIKAYLGS...
 
 
 
-# Genome reference data sources
+## Genome reference data sources
 
 SnpEff genome databases are built from genomic data sources, such as Ensembl, RefSeq, NCBI, UCSC, etc.
 
 Sometimes, information is provided in the `snpEff.config` file, under the `genome_name.reference` entry.
 
-#### Example 1: GRCh37.75
+**Example 1: GRCh37.75**
 
 If you are looking for the `GRCh37.75` genome, you can search for the entry in `snpEff.conf` file:
 
@@ -217,7 +215,7 @@ GRCh37.75.reference : ftp://ftp.ensembl.org/pub/release-75/gtf/
 ```
  As you can see, the genome data is from Ensembl, release 75 (as expected).
 
-#### Example 2: hg19
+**Example 2: hg19**
 
 If you are looking for the `hg19` genome, you can also search for the entry in `snpEff.conf` file:
 
@@ -239,7 +237,7 @@ $ ls -al data/hg19/snpEffectPredictor.bin
 
 So this`hg19` database was retrieved from UCSC around on March 19th.
 
-#### Example 3: Salmonella_enterica
+**Example 3: Salmonella_enterica**
 
 Sometimes the information is in the genome's `reference` entry is not enough to determine which exact version was used, but the `snpEff.config` file provides some additional information in the comments
 For example, let's say we'd like to find the data source for `Salmonella_enterica` genome
@@ -264,11 +262,11 @@ So the comment is indicating that this is Ensembl's release 32.
 
 
 
-# Number of variants in VCF and HTML summary do not match
+## Number of variants in VCF and HTML summary do not match
 
 First of all, SnpEff probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.
 
-#### How to count variants / annotations properly
+**Counting variants / annotations**
 
 It is important to remember that the VCF format specification allows having multiple variants in a single line.
 Also, a single variant can have more than one annotation, due to:
@@ -279,7 +277,7 @@ Also, a single variant can have more than one annotation, due to:
 When you count the number of variants, you must keep all these in mind to count them properly. 
 Obviously, SnpEff does take all this into account when counting the variants for the summary HTML.
 
-#### Typical counting mistake
+**Typical counting mistake**
 
 Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previous items.
 
@@ -291,7 +289,7 @@ This is counting _"lines in a VCF file that have at least one missense variants"
 
 
 
-#### SnpEff taking too long
+## SnpEff taking too long
 
 Usually SnpEff runs within minutes.
 Unless you are analyzing extremely large files with thousands (or hundreds of thousands) of samples.
@@ -305,7 +303,7 @@ There are several things you should do to optimize:
 
 
 
-#### How much memory should I use
+## How much memory should I use
 
 How much memory to use is very specifcic to your project / application, but here are some guidelines:
 - Default 8 GB: Typically 8G of memory is enough for analyzing a human genome (i.e. `java -Xmx8G -jar snpEff.jar ... ~)

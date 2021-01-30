@@ -18,7 +18,7 @@
     
     
       
-        <title>Frequently asked questions - SnpEff & SnpSift Documentation</title>
+        <title>Frequently Asked Questions - SnpEff & SnpSift Documentation</title>
       
     
     
@@ -100,7 +100,7 @@
         <div class="md-header-nav__topic">
           <span class="md-ellipsis">
             
-              Frequently asked questions
+              Frequently Asked Questions
             
           </span>
         </div>
@@ -509,9 +509,87 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Frequently Asked Questions
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
-        Frequently asked questions
+        Frequently Asked Questions
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#error-and-warning-messages" class="md-nav__link">
+    Error and Warning messages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error_chromosome_not_found-details" class="md-nav__link">
+    ERROR_CHROMOSOME_NOT_FOUND: Details
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-building-an-ncbi-genome-genbank-file" class="md-nav__link">
+    How to building an NCBI genome (GenBank file)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-protein-sequence-fasta-file" class="md-nav__link">
+    Creating a protein sequence FASTA file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#genome-reference-data-sources" class="md-nav__link">
+    Genome reference data sources
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#number-of-variants-in-vcf-and-html-summary-do-not-match" class="md-nav__link">
+    Number of variants in VCF and HTML summary do not match
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff-taking-too-long" class="md-nav__link">
+    SnpEff taking too long
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-much-memory-should-i-use" class="md-nav__link">
+    How much memory should I use
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1001,6 +1079,70 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#error-and-warning-messages" class="md-nav__link">
+    Error and Warning messages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error_chromosome_not_found-details" class="md-nav__link">
+    ERROR_CHROMOSOME_NOT_FOUND: Details
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-building-an-ncbi-genome-genbank-file" class="md-nav__link">
+    How to building an NCBI genome (GenBank file)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-protein-sequence-fasta-file" class="md-nav__link">
+    Creating a protein sequence FASTA file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#genome-reference-data-sources" class="md-nav__link">
+    Genome reference data sources
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#number-of-variants-in-vcf-and-html-summary-do-not-match" class="md-nav__link">
+    Number of variants in VCF and HTML summary do not match
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff-taking-too-long" class="md-nav__link">
+    SnpEff taking too long
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-much-memory-should-i-use" class="md-nav__link">
+    How much memory should I use
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1013,7 +1155,7 @@
                 
                 
                 <h1 id="snpeff-frequently-asked-questions">SnpEff: Frequently Asked Questions</h1>
-<h1 id="error-and-warning-messages">Error and Warning messages</h1>
+<h2 id="error-and-warning-messages">Error and Warning messages</h2>
 <p>SnpEff defines several messages in roughly 3 categories:</p>
 <ul>
 <li>INFO: An informative message</li>
@@ -1060,11 +1202,11 @@ Could for, for example, indicating frame errors in the reference genome for one 
 <p>Missing coding sequence information. 
 In this case, the full variant annotation cannot be calculated due to missing CDS information.</p>
 <p>This usually indicates an error on the reference genome (or database).</p>
-<h1 id="details-about-error-code-error_chromosome_not_found">Details about error code <code>ERROR_CHROMOSOME_NOT_FOUND</code></h1>
+<h2 id="error_chromosome_not_found-details">ERROR_CHROMOSOME_NOT_FOUND: Details</h2>
 <p>The error is due to a difference between the chromosome names in input VCF file and the chromosome names in SnpEff's database.</p>
 <p>Chromosome does not exist in the reference database. Typically this means that there is a mismatch between the chromosome names in your input file and the chromosome names used in the reference genome to build SnpEff's database. </p>
 <p>This error could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment. Obviously doing this makes no sense and the annotation information you'll get will be garbage. That's why SnpEff shows you an error message. </p>
-<h4 id="solution">Solution</h4>
+<p><strong>Solution</strong></p>
 <p>Sometimes SnpEff database matches the reference genome for your organism, and it's just that the chromosome names are changed. In this case, you can fix the error by changing the chromosome names in your input file. </p>
 <p>You can see the chromosome names used by SnpEff's database by using <code>-v</code> (verbose) option. SnpEff will show a line like this one:</p>
 <pre><code>$ java -Xmx4g -jar snpEff.jar -v genomeName my.vcf &gt; my.ann.vcf
@@ -1080,11 +1222,11 @@ In this case, the full variant annotation cannot be calculated due to missing CD
 <p>Once you know the names of the input file and the name used by SnpEff's database, you can adjust the chromosome name using a simple sed command. For example, if you input file's chromosome name is <code>INPUT_CHR_NAME</code> and the name in SnpEff's database is <code>SNPEFF_CHR_NAME</code>, you could use the following command:</p>
 <pre><code>cat input.vcf | sed &quot;s/^INPUT_CHR_NAME/SNPEFF_CHR_NAME/&quot; &gt; input_updated_chr.vcf
 </code></pre>
-<h1 id="how-to-building-an-ncbi-genome-genbank-file">How to building an NCBI genome (GenBank file)</h1>
+<h2 id="how-to-building-an-ncbi-genome-genbank-file">How to building an NCBI genome (GenBank file)</h2>
 <p>When building a database with SnpEff if your genomic reference is in NCBI, there is a script that might help you build the database.</p>
 <p>The script is <code>buildDbNcbi.sh</code> and is located in snpEff's scripts directory.
 It takes only one argument, which is the NCBI's ID.</p>
-<h4 id="example-salmonella-enterica">Example: Salmonella enterica</h4>
+<p><strong>Example: Salmonella enterica</strong></p>
 <p>In this example, we build the database for <em>"Salmonella enterica subsp. enterica serovar Typhi str. P-stx-12"</em> having accession ID CP003278.1</p>
 <pre><code>$ cd ~/snpEff
 
@@ -1122,7 +1264,7 @@ Chromosome: 'CP003278'  length: 4768352
 ...
 00:00:04    Done.
 </code></pre>
-<h1 id="creating-a-protein-sequence-fasta-file">Creating a protein sequence FASTA file</h1>
+<h2 id="creating-a-protein-sequence-fasta-file">Creating a protein sequence FASTA file</h2>
 <p>SnpEff <code>ann</code> command has a command line option called <code>-fastaProt</code> that tells SnpEff to output the "original" and "resulting" protein sequences for each variant into a FASTA file.</p>
 <p>This means that for each variant, the output FASTA file will have an entry with protein sequence resulting from applying that variant to the reference sequence.</p>
 <p>Here is an example:</p>
@@ -1138,17 +1280,17 @@ MAAAGSR...LLFGKVAKDSSRMLQPSSSPLWGKLRVDIKAYLGS...
 &gt;NM_015658.3 Variant 1:889455-889455 Ref:G Alt:A HGVS.p:p.Gln236*
 MAAAGSR...LLFGKVAKDSSRML*PSSSPLWGKLRVDIKAYLGS...
 </code></pre>
-<h1 id="genome-reference-data-sources">Genome reference data sources</h1>
+<h2 id="genome-reference-data-sources">Genome reference data sources</h2>
 <p>SnpEff genome databases are built from genomic data sources, such as Ensembl, RefSeq, NCBI, UCSC, etc.</p>
 <p>Sometimes, information is provided in the <code>snpEff.config</code> file, under the <code>genome_name.reference</code> entry.</p>
-<h4 id="example-1-grch3775">Example 1: GRCh37.75</h4>
+<p><strong>Example 1: GRCh37.75</strong></p>
 <p>If you are looking for the <code>GRCh37.75</code> genome, you can search for the entry in <code>snpEff.conf</code> file:</p>
 <pre><code>$ grep -A 1 GRCh37.75 snpEff.config
 GRCh37.75.genome : Homo_sapiens
 GRCh37.75.reference : ftp://ftp.ensembl.org/pub/release-75/gtf/
 </code></pre>
 <p>As you can see, the genome data is from Ensembl, release 75 (as expected).</p>
-<h4 id="example-2-hg19">Example 2: hg19</h4>
+<p><strong>Example 2: hg19</strong></p>
 <p>If you are looking for the <code>hg19</code> genome, you can also search for the entry in <code>snpEff.conf</code> file:</p>
 <pre><code>$ grep -i hg19.genome snpEff.config 
 hg19.genome : Homo_sapiens (USCS)
@@ -1162,7 +1304,7 @@ A rule of the thumb is that the database is retrieved before it is built, so you
 -rw-r--r-- 1 pcingola pcingola 52630202 Mar 19 08:27 data/hg19/snpEffectPredictor.bin
 </code></pre>
 <p>So this<code>hg19</code> database was retrieved from UCSC around on March 19th.</p>
-<h4 id="example-3-salmonella_enterica">Example 3: Salmonella_enterica</h4>
+<p><strong>Example 3: Salmonella_enterica</strong></p>
 <p>Sometimes the information is in the genome's <code>reference</code> entry is not enough to determine which exact version was used, but the <code>snpEff.config</code> file provides some additional information in the comments
 For example, let's say we'd like to find the data source for <code>Salmonella_enterica</code> genome</p>
 <p>If we edit the <code>snpEff.config</code> and find the entry for Salmonella_enterica, we see something like this:</p>
@@ -1177,9 +1319,9 @@ If you scroll up in the config file, you'll see a comment like this:</p>
 </code></pre>
 <p>Here <code>ENSEMBL BFMPP</code> stands for Endembl Bacteria, Fungi, Metazoa, Plants and Protists.
 So the comment is indicating that this is Ensembl's release 32.</p>
-<h1 id="number-of-variants-in-vcf-and-html-summary-do-not-match">Number of variants in VCF and HTML summary do not match</h1>
+<h2 id="number-of-variants-in-vcf-and-html-summary-do-not-match">Number of variants in VCF and HTML summary do not match</h2>
 <p>First of all, SnpEff probably giving you the right numbers, the mismatch might not be a bug, but a simple interpretation issue.</p>
-<h4 id="how-to-count-variants-annotations-properly">How to count variants / annotations properly</h4>
+<p><strong>Counting variants / annotations</strong></p>
 <p>It is important to remember that the VCF format specification allows having multiple variants in a single line.
 Also, a single variant can have more than one annotation, due to:
 - Multiple transcripts (isoforms) of a gene.
@@ -1187,13 +1329,13 @@ Also, a single variant can have more than one annotation, due to:
 - A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)</p>
 <p>When you count the number of variants, you must keep all these in mind to count them properly. 
 Obviously, SnpEff does take all this into account when counting the variants for the summary HTML.</p>
-<h4 id="typical-counting-mistake">Typical counting mistake</h4>
+<p><strong>Typical counting mistake</strong></p>
 <p>Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previous items.</p>
 <p>A typical scenario is, for example, that people are "counting missense variants" using something like this:</p>
 <pre><code>grep missense file.vcf | wc -l
 </code></pre>
 <p>This is counting <em>"lines in a VCF file that have at least one missense variants"</em>, as opposed to counting <em>"missense annotations"</em> and, as mentioned previously, the number of lines in a VCF file is not the same as the number of annotations or the number of variants.</p>
-<h4 id="snpeff-taking-too-long">SnpEff taking too long</h4>
+<h2 id="snpeff-taking-too-long">SnpEff taking too long</h2>
 <p>Usually SnpEff runs within minutes.
 Unless you are analyzing extremely large files with thousands (or hundreds of thousands) of samples.
 But even in those cases SnpEff is efficient and it doesn't take too long. </p>
@@ -1203,7 +1345,7 @@ But even in those cases SnpEff is efficient and it doesn't take too long. </p>
 <li>Use enough memory in your Java process (see "How much memory should I use" FAQ)</li>
 <li>You can disable the HTML report (command line option <code>-noStats</code>). The report is usually quite time consuming, particularly if the number of samples in the VCF is large</li>
 </ol>
-<h4 id="how-much-memory-should-i-use">How much memory should I use</h4>
+<h2 id="how-much-memory-should-i-use">How much memory should I use</h2>
 <p>How much memory to use is very specifcic to your project / application, but here are some guidelines:
 - Default 8 GB: Typically 8G of memory is enough for analyzing a human genome (i.e. `java -Xmx8G -jar snpEff.jar ... ~)
 - Medium 16 GB: It is rare that for single sample VCF file annotations more than 8G is required, but for some large genomes and/or VCF with too many samples, you might need more memory.
