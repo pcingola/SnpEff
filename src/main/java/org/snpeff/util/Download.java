@@ -182,7 +182,7 @@ public class Download {
 			// Close streams
 			is.close();
 			os.close();
-			if (verbose) Timer.showStdErr("Donwload finished. Total " + total + " bytes.");
+			if (verbose) Timer.showStdErr("Download finished. Total " + total + " bytes.");
 
 			res = true;
 		} catch (Exception e) {
