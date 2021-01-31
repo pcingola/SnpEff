@@ -90,13 +90,15 @@ The error is due to a difference between the chromosome names in input VCF file 
 
 Chromosome does not exist in the reference database. Typically this means that there is a mismatch between the chromosome names in your input file and the chromosome names used in the reference genome to build SnpEff's database. 
 
-This error could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment. Obviously doing this makes no sense and the annotation information you'll get will be garbage. That's why SnpEff shows you an error message. 
+!!! warning
+	This error could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment. Obviously doing this makes no sense and the annotation information you'll get will be garbage. That's why SnpEff shows you an error message. 
 
 **Solution**
 
 Sometimes SnpEff database matches the reference genome for your organism, and it's just that the chromosome names are changed. In this case, you can fix the error by changing the chromosome names in your input file. 
 
-You can see the chromosome names used by SnpEff's database by using `-v` (verbose) option. SnpEff will show a line like this one:
+!!! info
+	You can see the chromosome names used by SnpEff's database by using `-v` (verbose) option. SnpEff will show a line like this one:
 
 ```
 $ java -Xmx4g -jar snpEff.jar -v genomeName my.vcf > my.ann.vcf
@@ -107,7 +109,8 @@ $ java -Xmx4g -jar snpEff.jar -v genomeName my.vcf > my.ann.vcf
 ...
 ```
 
-You can see the chromosome names in your input VCF file using a command like this one
+!!! info
+	You can see the chromosome names in your input VCF file using a command like this one
 
 ```
 cat input.vcf | grep -v "^#" | cut -f 1 | uniq
@@ -309,3 +312,64 @@ How much memory to use is very specifcic to your project / application, but here
 - Default 8 GB: Typically 8G of memory is enough for analyzing a human genome (i.e. `java -Xmx8G -jar snpEff.jar ... ~)
 - Medium 16 GB: It is rare that for single sample VCF file annotations more than 8G is required, but for some large genomes and/or VCF with too many samples, you might need more memory.
 - Very large 128GB: It is extremely uncommon for SnpEff to require over 128GB of RAM for annotating with SnpEff, but it might happen on very large projects.
+
+
+
+## Multiple version of RefSeq transcripts
+
+When using RefSeq transcripts, for instance in the human genome versions `hg38` or `hg19`, can lead to some confusion due to multiply mapped transcripts.
+
+**Example: `NM_001135865.1` from hg38**
+
+From the original RefSeq data, you can see that there are actually four mappings of NM_001135865.1: 
+```
+# Note: Output edited for readbility
+$ zgrep NM_001135865.1 ~/snpEff/data/hg38/genes.refseq.gz
+
+751 NM_001135865.1  chr16   -   21834582    21857657    21834717    21857378    11  ...
+756 NM_001135865.1  chr16   +   22513522    22536520    22513801    22536385    7   ...
+597 NM_001135865.1  chr16_KV880768v1_fix    +   1679394 1702742 1679673 1702607 11  ...
+589 NM_001135865.1  chr16_KV880768v1_fix    -   568516  591514  568651  591235  7   ...
+```
+
+!!! warning
+	To make matters even worse, not only `NM_001135865.1` maps twice to regions in `chr16`, but also one is mapped in the forward strand and the other on the reverse strnad (notice the `+` and `-` signs)
+
+How do you know which of the four `NM_001135865.1` version is SnpEff refering to?
+When there are multiple mappings for a transcipt SnpEff will make sure each mapping is uniquely identified by appending a number to the original transcript ID.
+
+So the transcript IDs are named (notice that the first one is not changed):
+
+- `NM_001135865.1`
+- `NM_001135865.1.2`
+- `NM_001135865.1.3`
+- `NM_001135865.1.4`
+
+Even though they are mapped to different chromosomes and strands in `chr16`, the protein sequence will be very similar (that's why RefSeq has multiple mappings of the same transcript).
+
+
+!!! info
+	You can get details of each transcript using the SnpEff `show` command (e.g. `java -jar snpEff.jar show ...`)
+
+We can analyse the difference, for instance `NM_001135865.1` and `NM_001135865.1.4` are mapped to `chr16`.
+If you look at the protein sequences you'll notice that there is one small difference in amino acid 138 ('G' vs 'V'):
+
+```
+$ java -jar snpEff.jar show NM_001135865.1 NM_001135865.1.4 | tee show.txt
+# Note: Output edited for readability
+#
+# Scroll right to see the difference ------>>>                                                                                                           | AA 138
+#                                                                                                                                                        |
+/Users/kqrw311/snpEff/issue_284$                                                                                                                         |
+Showing genes and transcripts using zero-based coordinates                                                                                               |
+Transcript (codon table: Standard ) :   16:22513522-22536519, strand: +, id:NM_001135865.1, Protein, DNA check                                           |
+    ...                                                                                                                                                  |
+    Protein :   MVKLSIVLTPQFLSHDQGQLTKELQQHVKSVTCPCEYLRKVINTLADHHHRGTDFGGSPWLHVIIAFPTSYKVVITLWIVYLWVSLLKTIFWSRNGHDGSTDVQQRAWRSNRRRQEGLRSICMHTKKRVSSFRGNKIGLKDVITLRRHVETKVRAKIRKRKVTTKINHHDKINGKRKTARKQKMFQRAQELRRRAEDYHKCKIPPSARKALCNWVRMA...
+    ...                                                                                                                                                  | NM_001135865.1 has a 'G'
+                                                                                                                                                         |
+Transcript (codon table: Standard ) :   16:21834582-21857656, strand: -, id:NM_001135865.1.4, Protein                                                    |
+    ...                                                                                                                                                  |
+    Protein :   MVKLSIVLTPQFLSHDQGQLTKELQQHVKSVTCPCEYLRKVINTLADHHHRGTDFGGSPWLHVIIAFPTSYKVVITLWIVYLWVSLLKTIFWSRNGHDGSTDVQQRAWRSNRRRQEGLRSICMHTKKRVSSFRGNKIVLKDVITLRRHVETKVRAKIRKRKVTTKINHHDKINGKRKTARKQKMFQRAQELRRRAEDYHKCKIPPSARKALCNWVRMA...
+    ...                                                                                                                                                  | NM_001135865.1.4 has a 'V'
+
+```

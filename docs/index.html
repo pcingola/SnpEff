@@ -1,258 +1,1294 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta name="google-site-verification" content="MOUUS0MUa9v3_MQCuvqML-batd2JFvN2XL-9gc_6_9E" />
-	<meta charset="utf-8">
-	<title>SnpEff and SnpSift</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
-	<meta name="author" content="">
 
-	<!-- Styles -->
-	<link href="css/bootstrap.css" rel="stylesheet">
-	<style type="text/css">
-	body {
-		padding-top: 60px;
-		padding-bottom: 40px;
-	}
-	.sidebar-nav {
-		padding: 9px 0;
-	}
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="SnpEff and SnpSift documentation">
+      
+      
+      
+        <meta name="author" content="Pablo Cingolani">
+      
+      
+      <link rel="shortcut icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.6">
+    
+    
+      
+        <title>Home - SnpEff & SnpSift Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.39b8e14a.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="stylesheets/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="indigo" data-md-color-accent="indigo">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#snpeffsnpsift" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
 
-	@media (max-width: 980px) {
-		/* Enable use of floated navbar text */
-		.navbar-text.pull-right {
-		float: none;
-		padding-left: 5px;
-		padding-right: 5px;
-		}
-	}
-	</style>
-	<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="." title="SnpEff &amp; SnpSift Documentation" class="md-header-nav__button md-logo" aria-label="SnpEff & SnpSift Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
-	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-	<!--[if lt IE 9]>
-	<script src="js/html5shiv.js"></script>
-	<![endif]-->
-
-	<!-- Fav and touch icons -->
-	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
-	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
-	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
-	<link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
-	<link rel="shortcut icon" href="ico/favicon.png">
-	<script>
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-		ga('create', 'UA-66345247-1', 'auto');
-		ga('send', 'pageview');
-	</script>
-</head>
-<body>
-	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container-fluid">
-				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="brand" href="#">SnpEff</a>
-				<div class="nav-collapse collapse">
-					<p class="navbar-text pull-right"> </p>
-					<ul class="nav">
-						<li class="active"><a href="index.html">Home</a></li>
-						<li><a href="se_introduction/">SnpEff</a></li>
-						<li><a href="ss_introduction/">SnpSift</a></li>
-						<li><a href="download/">Download</a></li>
-						<li><a href="examples/">Examples</a></li>
-						<li><a href="about/">About</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="container-fluid">
-		<div class="row-fluid">
-			<!-- Side menu (links) -->
-			<div class="span3">
-				<div class="well sidebar-nav">
-					<ul class="nav nav-list">
-						<li class="nav-header">SnpEff</li>
-						<li class="active"><a href="index.html">Home</a></li>
-						<li><a href="se_introduction/">SnpEff description</a></li>
-						<li><a href="download/">Download</a></li>
-						<li><a href="features/">Features</a></li>
-						<li><a href="ss_introduction/">SnpSift</a></li>
-						<li><a href="citing/">Paper &amp; Citing</a></li>
-						<li><a href="users_of_snpeff/">Who uses SnpEff?</a></li>
-						<li><a href="integration/">Integration</a></li>
-						<li class="nav-header">Help</li>
-						<li><a href="about/#bug-reports">Bug reports</a></li>
-						<li><a href="about/#asking-for-help">Asking for help</a></li>
-						<li><a href="about/#asking-for-new-database-genome">Asking for genomes</a></li>
-						<li><a href="about/">About</a></li>
-						<li class="nav-header">Documentation</li>
-						<li><a href="se_introduction/">SnpEff manual</a></li>
-						<li><a href="ss_introduction/">SnpSift manual</a></li>
-						<li><a href="examples/">Usage Examples</a></li>
-					</ul>
-				</div>
-			</div>
-
-			<!-- Main pane: Start -->
-			<div class="span9">
-				<div class="hero-unit">
-					<h1>SnpEff & SnpSift</h1>
-					<p>
-					Genomic variant annotations and functional effect prediction toolbox.
-					<br>
-					<br>
-					<div class="row-fluid">
-						<div class="span4">
-							<a href="https://datasetsnpeff.blob.core.windows.net/dataset/versions/snpEff_latest_core.zip?sv=2019-10-10&st=2020-09-01T00%3A00%3A00Z&se=2050-09-01T00%3A00%3A00Z&si=prod&sr=c&sig=isafOa9tGnYBAvsXFUMDGMTbsG2z%2FShaihzp7JE5dHw%3D" class="btn btn-primary btn-large" onClick="ga('send', 'event', { eventCategory: 'download', eventAction: 'snpeff_core'});">Download SnpEff</a>
-							<br>
-							Latest version 5.0d (2021-01-28)<br>
-							Requires Java 12<br>
-							</p>
-						</div>
-						<div class="span4">
-							<a href="https://www.microsoft.com/en-us/genomics/"><img width=108 src="https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31"></a><br>
-							SnpEff and SnpSift are hosted by <br>
-							<a href="https://www.microsoft.com/en-us/genomics/">Microsoft Genomics</a><br>
-							</a>
-						</div>
-
-					</div>
-				</div>
-
-				<!-- Rows: Start -->
-				<!--Row: 1 -->
-				<div class="row-fluid">
-					<div class="span4">
-						<h2><a href="http://www.dnaminer.com/">ClinEff</a></h2>
-						<p>
-							<a href="http://www.dnaminer.com/">Professional verison</a> of SnpEff &amp; SnpSift suites.
-							<a href="http://www.dnaminer.com/">ClinEff</a> is considered more stable thus suitable for Clinical and Production operations, whereas SnpEff/SnpSfit is designed for Research and Academic usage.
-							<br>
-							Features:
-							<ul>
-								<li> Compliance support (CLIA and CAP)
-								<li> Long Term Support
-								<li> Prioritized bug fixes and feature development
-								<li> Customized databases and annotation pipelines
-								<li> Integration with open, private and proprietary databases
-								<li> Privacy: Tickets, issues, pipeline-specific analysis
-							</ul>
-						</p>
-						<p><a class="btn" href="http://www.dnaminer.com/">View details &raquo;</a></p>
-					</div>
-					<div class="span4">
-						<h2>SnpEff</h2>
-						<p>
-							Genetic variant annotation and functional effect prediction toolbox. It annotates and predicts the effects of genetic variants on genes and proteins (such as amino acid changes).
-							<br>
-							Features:
-							<ul>
-								<li> Supports over <b>38,000 genomes</b>.
-								<li> Standard <b>ANN</b> annotation format
-								<li> <b>Cancer</b> variants analysis
-								<li> <b>GATK</b> compatible (<code>-o gatk</code>)
-								<li> <b>HGVS</b> notation
-								<li> <b>Sequence Ontology</b> standardized terms
-							</ul>
-						</p>
-						<p><a class="btn" href="se_introduction/">View details &raquo;</a></p>
-					</div>
-					<div class="span4">
-						<h2>SnpSift</h2>
-						<p>
-						SnpSift annotates genomic variants using databases, filters, and manipulates genomic annotated variants.
-						Once you annotated your files using SnpEff, you can use SnpSift to help you filter large genomic datasets in order to find the most significant variants for your experiment.
-						</p>
-						<p><a class="btn" href="ss_introduction/">View details &raquo;</a></p>
-					</div>
-				</div>
-
-				<!--Row: 2 -->
-				<div class="row-fluid">
-					<div class="span4">
-						<h2>Version 5.0</h2>
-						<p> Features:
-							<ul>
-								<li> Moved databases to Microsoft Azure
-								<li> Added Covid19 and many SARS / Coronoviros genomes
-							</ul>
-						</p>
-						<p><a class="btn" href="features/">View details &raquo;</a></p>
-					</div>
-					<div class="span4">
-						<h2>Paper &amp; Citing</h2>
-						<p> If you are using SnpEff or SnpSift in an research or academic environment, please cite our <a class="body" href="SnpEff_paper.pdf">papers</a>.</p>
-						<p><a class="btn" href="citing/">View details &raquo;</a></p>
-					</div>
-					<div class="span4">
-						<h2>Who uses SnpEff?</h2>
-						<p>Users of SnpEff include most major research an academic institutions, as well as pharmaceutical companies and clinical sequencing projects. </p>
-						<p><a class="btn" href="users_of_snpeff/">View details &raquo;</a></p>
-					</div>
-				</div>
-
-				<!--Row: 3 -->
-				<div class="row-fluid">
-					<div class="span4">	</div>
-					<div class="span4">
-						<h2>Galaxy, GATK &amp; GKNO</h2>
-						<p>SnpEff is integrated with other tools commonly used in sequencing data analysis pipelines.
-							Most notably <a href="http://galaxyproject.org/">Galaxy</a>, <a href="http://www.broadinstitute.org/gatk/">GATK</a> and <a href="http://gkno.me/">GKNO</a> projects support SnpEff.</p>
-						<p><a class="btn" href="integration">View details &raquo;</a></p>
-					</div>
-					<div class="span4"> </div>
-				</div>
-				<!-- Rows: End -->
-
-				<!-- In memory of Xiangyi: Start -->
-				<div class="row-fluid">
-					<div class="span12">
-						<!-- <div class="hero-unit"> -->
-							<div class="span9">
-									<h3>In memory of Dr. Xiangyi Lu: <a href="xiangyi_lu_donate/">Please donate</a></h3>
-									On October 22, 2017, Xiangyi Lu, a co-author on the SnpEff and SnpSift papers, died of ovarian cancer after a three year struggle.
-									Douglas Ruden, Xiangyi's husband and senior author on the papers, has requested that a non-mandatory gift of at least $10 for using SnpEff or SnpSift be donated to WSU to honor Xiangyi Lu.
-									All gifts will go to a newly named fund, the <b>"Xiangyi Lu Graduate Student Fellowship in Bioinformatics Fund."</b> with the goal of raising $1 million, in order to permanently endow one graduate student research position in bioinformatics every year.
-							</div>
-							<div class="span3"> <img src="images/xiangy_small.jpg">	</div>
-						<!-- </div> -->
-					</div>
-				</div>
-				<!-- In memory of Xiangyi: End -->
-			</div>
-			<!-- Main pane: End -->
-		</div>
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            SnpEff & SnpSift Documentation
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
 
 
-			</div>
-		<hr>
-		<footer> <p class="text-center">&copy; <a class="body" href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a></p> </footer>
-	</div><!--/.fluid-container-->
 
-	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="js/jquery.js"></script>
-	<script src="js/bootstrap-transition.js"></script>
-	<script src="js/bootstrap-alert.js"></script>
-	<script src="js/bootstrap-modal.js"></script>
-	<script src="js/bootstrap-dropdown.js"></script>
-	<script src="js/bootstrap-scrollspy.js"></script>
-	<script src="js/bootstrap-tab.js"></script>
-	<script src="js/bootstrap-tooltip.js"></script>
-	<script src="js/bootstrap-popover.js"></script>
-	<script src="js/bootstrap-button.js"></script>
-	<script src="js/bootstrap-collapse.js"></script>
-	<script src="js/bootstrap-carousel.js"></script>
-	<script src="js/bootstrap-typeahead.js"></script>
 
-</body>
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="SnpEff &amp; SnpSift Documentation" class="md-nav__button md-logo" aria-label="SnpEff & SnpSift Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    SnpEff & SnpSift Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/pcingola/SnpEff" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    SnpEff
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1" checked>
+      
+      <label class="md-nav__link" for="nav-1">
+        Home
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="nav-1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        Home
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#clineff" class="md-nav__link">
+    ClinEff
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff" class="md-nav__link">
+    SnpEff
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpsift" class="md-nav__link">
+    SnpSift
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#version-43" class="md-nav__link">
+    Version 4.3
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paper-citing" class="md-nav__link">
+    Paper &amp; Citing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#who-uses-snpeff" class="md-nav__link">
+    Who uses SnpEff?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#galaxy-gatk" class="md-nav__link">
+    Galaxy &amp; GATK
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-memory-of-dr-xiangyi-lu-please-donate" class="md-nav__link">
+    In memory of Dr. Xiangyi Lu: Please donate
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="features/" class="md-nav__link">
+        Features
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="examples/" class="md-nav__link">
+        Usage examples
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="citing/" class="md-nav__link">
+        Paper & Citations
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="users_of_snpeff/" class="md-nav__link">
+        Who uses SnpEff?
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="integration/" class="md-nav__link">
+        Integration
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+      
+      <label class="md-nav__link" for="nav-2">
+        SnpEff
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="SnpEff" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          SnpEff
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_running/" class="md-nav__link">
+        Running SnpEff
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_commandline/" class="md-nav__link">
+        Commands &amp; command line options
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_inputoutput/" class="md-nav__link">
+        Input &amp; output files
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_cansersamples/" class="md-nav__link">
+        Cancer samples
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_additionalann/" class="md-nav__link">
+        Additional annotations
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_outputsummary/" class="md-nav__link">
+        Output summary files
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_buildingdb/" class="md-nav__link">
+        Building databases
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_buildingreg/" class="md-nav__link">
+        Building databases. Regulatory and Non-coding
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_integration/" class="md-nav__link">
+        Integration. GATK and Galaxy
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_commands/" class="md-nav__link">
+        Commands and utilities
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="se_faq/" class="md-nav__link">
+        Frequently Asked Questions
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+      
+      <label class="md-nav__link" for="nav-3">
+        SnpSift
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="SnpSift" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          SnpSift
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_introduction/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_filter/" class="md-nav__link">
+        SnpSift Filter
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_annotate/" class="md-nav__link">
+        SnpSift Annotate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_casecontrol/" class="md-nav__link">
+        SnpSift CaseControl
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_intervals/" class="md-nav__link">
+        SnpSift Intervals
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_intervalsindex/" class="md-nav__link">
+        SnpSift Intervals Index
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_join/" class="md-nav__link">
+        SnpSift Join
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_rmrefgen/" class="md-nav__link">
+        SnpSift RmRefGen
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_tstv/" class="md-nav__link">
+        SnpSift TsTv
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_extractfields/" class="md-nav__link">
+        SnpSift Extract Fields
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_varianttype/" class="md-nav__link">
+        SnpSift Variant Type
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_gwascatalog/" class="md-nav__link">
+        SnpSift GWAS Catalog
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_dbnsfp/" class="md-nav__link">
+        SnpSift dbNSFP
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_split/" class="md-nav__link">
+        SnpSift Split
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_phastcons/" class="md-nav__link">
+        SnpSift PhastCons
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_concordance/" class="md-nav__link">
+        SnpSift Concordance
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_private/" class="md-nav__link">
+        SnpSift Private
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_vcf2ped/" class="md-nav__link">
+        SnpSift Vcf2Tped
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_intersect/" class="md-nav__link">
+        SnpSift Intersect
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_rminfo/" class="md-nav__link">
+        SnpSift RmInfo
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_genesets/" class="md-nav__link">
+        SnpSift GeneSets
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_gt/" class="md-nav__link">
+        SnpSift GT
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_vcfcheck/" class="md-nav__link">
+        SnpSift VcfCheck
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ss_faq/" class="md-nav__link">
+        Frequently asked questions
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" >
+      
+      <label class="md-nav__link" for="nav-4">
+        Download & Install
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Download & Install" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Download & Install
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="download/" class="md-nav__link">
+        Download and install
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" >
+      
+      <label class="md-nav__link" for="nav-5">
+        Examples
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Examples" data-md-level="1">
+        <label class="md-nav__title" for="nav-5">
+          <span class="md-nav__icon md-icon"></span>
+          Examples
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="examples/" class="md-nav__link">
+        Examples
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" >
+      
+      <label class="md-nav__link" for="nav-6">
+        About
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="About" data-md-level="1">
+        <label class="md-nav__title" for="nav-6">
+          <span class="md-nav__icon md-icon"></span>
+          About
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="about/" class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="xiangyi_lu_donate/" class="md-nav__link">
+        In Memory
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#clineff" class="md-nav__link">
+    ClinEff
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpeff" class="md-nav__link">
+    SnpEff
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snpsift" class="md-nav__link">
+    SnpSift
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#version-43" class="md-nav__link">
+    Version 4.3
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paper-citing" class="md-nav__link">
+    Paper &amp; Citing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#who-uses-snpeff" class="md-nav__link">
+    Who uses SnpEff?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#galaxy-gatk" class="md-nav__link">
+    Galaxy &amp; GATK
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-memory-of-dr-xiangyi-lu-please-donate" class="md-nav__link">
+    In memory of Dr. Xiangyi Lu: Please donate
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="snpeffsnpsift">SnpEff&amp;SnpSift</h1>
+<p>Genomic variant annotations and functional effect prediction toolbox.</p>
+<p><a class="button" href="https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip">Download SnpEff</a></p>
+<p>Important: This version implements the <a href="adds/VCFannotationformat_v1.0.pdf">VCF annotation standard 'ANN' field</a>.</p>
+<p>Latest version 4.3T (2017-11-24)</p>
+<p>Requires Java 1.8</p>
+<h2 id="clineff"><a href="http://www.dnaminer.com/">ClinEff</a></h2>
+<p><a href="http://www.dnaminer.com/">Professional version</a> of SnpEff &amp; SnpSift suites. <a href="http://www.dnaminer.com/">ClinEff</a> is considered more stable thus suitable for Clinical and Production operations, whereas SnpEff/SnpSfit is designed for Research and Academic usage.</p>
+<p>Features:</p>
+<ul>
+<li>Compliance support (CLIA and CAP)</li>
+<li>Long Term Support</li>
+<li>Prioritized bug fixes and feature development</li>
+<li>Customized databases and annotation pipelines</li>
+<li>Integration with open, private and proprietary databases</li>
+<li>Privacy: Tickets, issues, pipeline-specific analysis</li>
+</ul>
+<h2 id="snpeff">SnpEff</h2>
+<p>Genetic variant annotation and functional effect prediction toolbox. It annotates and predicts the effects of genetic variants on genes and proteins (such as amino acid changes).</p>
+<p>Features:</p>
+<ul>
+<li>Supports over <strong>38,000 genomes</strong>.</li>
+<li>Standard <strong>ANN</strong> annotation format</li>
+<li><strong>Cancer</strong> variants analysis</li>
+<li><strong>GATK</strong> compatible (<code>-o gatk</code>)</li>
+<li><strong>HGVS</strong> notation</li>
+<li><strong>Sequence Ontology</strong> standardized terms</li>
+</ul>
+<h2 id="snpsift">SnpSift</h2>
+<p>SnpSift annotates genomic variants using databases, filters, and manipulates genomic annotated variants.</p>
+<p>Once you annotated your files using SnpEff, you can use SnpSift to help you filter large genomic datasets in order to find the most significant variants for your experiment.</p>
+<p><a class="button" href="ss_introduction/">View details</a></p>
+<h2 id="version-43">Version 4.3</h2>
+<p>Features:</p>
+<ul>
+<li>Significant improvements in translocations annotations</li>
+<li>Improvements in large structural variant annotations</li>
+<li>Protein-Protein interaction loci annotations (from PDB)</li>
+</ul>
+<p><a class="button" href="features/">View details</a></p>
+<h2 id="paper-citing">Paper &amp; Citing</h2>
+<p>If you are using SnpEff or SnpSift in an research or academic environment, please cite our <a href="adds/SnpEff_paper.pdf">papers</a>.</p>
+<p><a class="button" href="citing/">View details</a></p>
+<h2 id="who-uses-snpeff">Who uses SnpEff?</h2>
+<p>Users of SnpEff include most major research an academic institutions, as well as pharmaceutical companies and clinical sequencing projects.</p>
+<p><a class="button" href="users_of_snpeff/">View details</a></p>
+<h2 id="galaxy-gatk">Galaxy &amp; GATK</h2>
+<p>SnpEff is integrated with other tools commonly used in sequencing data analysis pipelines.</p>
+<p>Most notably <a href="http://galaxyproject.org/">Galaxy</a> and <a href="http://www.broadinstitute.org/gatk/">GATK</a> projects support SnpEff.</p>
+<p><a class="button" href="se_integration/">View details</a></p>
+<h2 id="in-memory-of-dr-xiangyi-lu-please-donate">In memory of Dr. Xiangyi Lu: <a href="xiangyi_lu_donate/">Please donate</a></h2>
+<p><img alt="" class="right" src="images/xiangy_small.jpg" />
+On October 22, 2017, Xiangyi Lu, a co-author on the SnpEff and SnpSift papers, died of ovarian cancer after a three year struggle.
+Douglas Ruden, Xiangyi's husband and senior author on the papers, has requested that a non-mandatory gift of at least $10 for using
+SnpEff or SnpSift be donated to WSU to honor Xiangyi Lu. All gifts will go to a newly named fund, the "Xiangyi Lu Graduate Student Fellowship in Bioinformatics Fund."
+with the goal of raising $1 million, in order to permanently endow one graduate student research position in bioinformatics every year.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+        
+          <a href="features/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Features
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Pablo Cingolani
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="http://www.linkedin.com/in/pablocingolani" target="_blank" rel="noopener" title="www.linkedin.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/pcingola/SnpEff" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="assets/javascripts/vendor.53cc9318.min.js"></script>
+      <script src="assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: ".",
+          features: ['tabs'],
+          search: Object.assign({
+            worker: "assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
 </html>

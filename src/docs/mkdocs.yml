@@ -41,7 +41,6 @@ nav:
       - Paper & Citations: citing.md
       - Who uses SnpEff?: users_of_snpeff.md
       - Integration: integration.md
-      - FAQ: faq.md
       - License: license.md
   - SnpEff:
      - Introduction: se_introduction.md
