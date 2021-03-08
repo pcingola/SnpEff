@@ -748,7 +748,7 @@ void zipCore() {
 	sys mkdir $dir
 
 	# Copy core files
-	sys cp -RvfL snpEff.config snpEff.jar SnpSift.jar examples galaxy scripts exec $dir
+	sys cp -RvfL snpEff.config snpEff.jar SnpSift.jar LICENSE.md examples galaxy scripts exec $dir
 
 	# Create 'core' zip file
 	zip := "snpEff_v" + ver + "_core.zip"
