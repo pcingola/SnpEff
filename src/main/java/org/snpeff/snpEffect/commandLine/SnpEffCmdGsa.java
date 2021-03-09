@@ -108,9 +108,9 @@ public class SnpEffCmdGsa extends SnpEff {
 			snpEffectPredictor.setUpDownStreamLength(upDownStreamLength);
 
 			// Build tree
-			if (verbose) Timer.showStdErr("Building interval forest");
+			if (verbose) Log.info("Building interval forest");
 			snpEffectPredictor.buildForest();
-			if (verbose) Timer.showStdErr("done.");
+			if (verbose) Log.info("done.");
 		}
 	}
 
@@ -156,7 +156,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		//---
 		String commandLine = correctionCmd + " " + scoresFile + " " + residuesFile;
 		try {
-			if (verbose) Timer.showStdErr("Correction: Invoking command " + commandLine);
+			if (verbose) Log.info("Correction: Invoking command " + commandLine);
 			Process process = Runtime.getRuntime().exec(commandLine);
 			process.waitFor();
 			if (process.exitValue() > 0) throw new RuntimeException("Process execution error, exit value '" + process.exitValue() + "'\n\tCommand line:\t" + commandLine);
@@ -167,7 +167,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		//---
 		// Read output
 		//---
-		if (verbose) Timer.showStdErr("Correction: Reading results from file '" + residuesFile + "'");
+		if (verbose) Log.info("Correction: Reading results from file '" + residuesFile + "'");
 		if (!Gpr.canRead(residuesFile)) throw new RuntimeException("Cannot read correction's results from file '" + residuesFile + "'");
 		geneScore = new HashMap<String, Double>();
 		String lines[] = Gpr.readFile(residuesFile).split("\n");
@@ -181,7 +181,7 @@ public class SnpEffCmdGsa extends SnpEff {
 			geneScore.put(geneId, score);
 		}
 
-		if (verbose) Timer.showStdErr("Correction: Done, " + lines.length + " values added.");
+		if (verbose) Log.info("Correction: Done, " + lines.length + " values added.");
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		}
 
 		if (verbose) {
-			Timer.showStdErr("Intereting genes from file" //
+			Log.info("Intereting genes from file" //
 					+ "\n\tIntereting genes in file  : " + genesInteresting.size() //
 					+ "\n\tFound genes               : " + hasGene //
 			);
@@ -243,7 +243,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		if (verbose) {
 			double realPerc = (100.0 * count) / geneScore.size();
 			double realPercAdded = (100.0 * countAdded) / geneScore.size();
-			Timer.showStdErr(String.format("Score threshold:"//
+			Log.info(String.format("Score threshold:"//
 					+ "\n\tRange                    : [ %f , %f ]"//
 					+ "\n\tQuantile                 : %.2f%%"//
 					+ "\n\tThreshold                : %f"//
@@ -287,7 +287,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		}
 
 		// Save to file
-		if (verbose) Timer.showStdErr("Saving gene scores to file: '" + fileName + "'");
+		if (verbose) Log.info("Saving gene scores to file: '" + fileName + "'");
 		Gpr.toFile(fileName, scores);
 	}
 
@@ -369,7 +369,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		algorithm.select();
 
 		if (saveFile != null) {
-			if (verbose) Timer.showStdErr("Saving results to '" + saveFile + "'");
+			if (verbose) Log.info("Saving results to '" + saveFile + "'");
 			Gpr.toFile(saveFile, algorithm.getOutput());
 		}
 	}
@@ -388,9 +388,9 @@ public class SnpEffCmdGsa extends SnpEff {
 		}
 
 		// Read gene set database
-		if (verbose) Timer.showStdErr("Reading MSigDb from file: '" + msigdb + "'");
+		if (verbose) Log.info("Reading MSigDb from file: '" + msigdb + "'");
 		geneSets = enrichmentAlgorithmType.isRank() ? new GeneSetsRanked(msigdb) : new GeneSets(msigdb);
-		if (verbose) Timer.showStdErr("Done." //
+		if (verbose) Log.info("Done." //
 				+ "\n\t\tGene sets added : " + geneSets.getGeneSetCount() //
 				+ "\n\t\tGenes added     : " + geneSets.getGeneCount() //
 		);
@@ -400,7 +400,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	 * Map <chr,pos, score> to gene
 	 */
 	void mapToGenes() {
-		if (verbose) Timer.showStdErr("Mapping scores to genes.");
+		if (verbose) Log.info("Mapping scores to genes.");
 
 		// Create an auto-hash
 		if (usePvalues) geneScores = new AutoHashMap<String, ScoreList>(new PvaluesList());
@@ -431,7 +431,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		//---
 		// Show a summary
 		//---
-		if (verbose) Timer.showStdErr("Done:" //
+		if (verbose) Log.info("Done:" //
 				+ "\n\tNumber of scores         : " + chrPosScoreList.size() //
 				+ "\n\tUnmapped                 : " + unmapped //
 				+ "\n\tMapped to multiple genes : " + mappedMultiple //
@@ -595,12 +595,12 @@ public class SnpEffCmdGsa extends SnpEff {
 	 * @param geneScoreFile
 	 */
 	void readGeneInteresting(String geneScoreFile) {
-		if (verbose) Timer.showStdErr("Reading interesting genes file '" + geneInterestingFile + "'");
+		if (verbose) Log.info("Reading interesting genes file '" + geneInterestingFile + "'");
 		String lines[] = Gpr.readFile(geneScoreFile).split("\n");
 		genesInteresting = new HashSet<String>();
 		for (String g : lines)
 			genesInteresting.add(g.trim());
-		if (verbose) Timer.showStdErr("Done. Added: " + genesInteresting.size());
+		if (verbose) Log.info("Done. Added: " + genesInteresting.size());
 	}
 
 	/**
@@ -610,7 +610,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	 * @param geneScoreFile
 	 */
 	void readGeneScores(String geneScoreFile) {
-		if (verbose) Timer.showStdErr("Reading gene scores file '" + geneScoreFile + "'");
+		if (verbose) Log.info("Reading gene scores file '" + geneScoreFile + "'");
 
 		geneScore = new HashMap<String, Double>();
 
@@ -631,7 +631,7 @@ public class SnpEffCmdGsa extends SnpEff {
 			} else if (verbose) System.err.println("\tWarning: Ignoring entry (zero p-value):\t'" + line + "'");
 		}
 
-		if (verbose) Timer.showStdErr("Done."//
+		if (verbose) Log.info("Done."//
 				+ "\n\tScores added        : " + geneScore.size() //
 				+ "\n\tMin score (p-value) : " + minp //
 				+ "\n\tMax score (p-value) : " + maxp //
@@ -642,7 +642,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	 * Read input file and populate 'chrPosScoreList'
 	 */
 	void readInput() {
-		if (verbose) Timer.showStdErr("Reading input file '" + inputFile + "' (format '" + inputFormat + "')");
+		if (verbose) Log.info("Reading input file '" + inputFile + "' (format '" + inputFormat + "')");
 
 		switch (inputFormat) {
 		case VCF:
@@ -659,7 +659,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 		if (verbose) {
 			System.err.println("");
-			Timer.showStdErr("Done.");
+			Log.info("Done.");
 		}
 
 		if (debug) {
@@ -800,7 +800,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		enrichmentAnalysis(); // Perform enrichment analysis
 		if (randIterations > 0) runAnalisisRand(); // Perform random iterations
 
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose) Log.info("Done.");
 		return true;
 	}
 
@@ -811,7 +811,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		HashMap<String, Double> geneScoreOri = geneScore; // Save original scores
 
 		for (int iter = 1; iter <= randIterations; iter++) {
-			Timer.showStdErr("Random scores. Iteration " + iter);
+			Log.info("Random scores. Iteration " + iter);
 
 			// Create random Scores based on input
 			geneScore = new HashMap<String, Double>();
@@ -823,7 +823,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		}
 
 		geneScore = geneScoreOri; // Restore original values
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose) Log.info("Done.");
 		return true;
 	}
 
@@ -841,7 +841,7 @@ public class SnpEffCmdGsa extends SnpEff {
 		// Parse commands from file
 		for (String commnadLine : Gpr.readFile(commandsFile).split("\n")) {
 			if (verbose) {
-				Timer.showStdErr("COMMAND: " + commnadLine);
+				Log.info("COMMAND: " + commnadLine);
 				System.out.println("COMMAND: " + commnadLine);
 			}
 
@@ -859,7 +859,7 @@ public class SnpEffCmdGsa extends SnpEff {
 			ok &= run(snpEffCmdGsa, args, err);
 		}
 
-		if (verbose) Timer.showStdErr("Done!");
+		if (verbose) Log.info("Done!");
 		return ok;
 	}
 
@@ -867,7 +867,7 @@ public class SnpEffCmdGsa extends SnpEff {
 	 * Get one score (Score) per gene
 	 */
 	void scoreGenes() {
-		if (verbose) Timer.showStdErr("Aggregating scores by gene (scoring genes)");
+		if (verbose) Log.info("Aggregating scores by gene (scoring genes)");
 
 		// Create one Score per gene
 		double scoreMin = Double.MAX_VALUE, scoreMax = Double.MIN_VALUE;
@@ -886,7 +886,7 @@ public class SnpEffCmdGsa extends SnpEff {
 			geneScore.put(geneId, score);
 		}
 
-		if (verbose) Timer.showStdErr("Done. Score range: [ " + scoreMin + " , " + scoreMax + " ]");
+		if (verbose) Log.info("Done. Score range: [ " + scoreMin + " , " + scoreMax + " ]");
 	}
 
 	/**

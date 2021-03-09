@@ -18,7 +18,7 @@ import org.snpeff.stats.plot.GoogleBarChart;
 import org.snpeff.stats.plot.GoogleGeneRegionChart;
 import org.snpeff.stats.plot.GoogleGeneRegionNumExonsChart;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Count how many reads map (from many SAM/BAM files) onto markers
@@ -88,7 +88,7 @@ public class CountReadsOnMarkers {
 			countReadsByFile.add(countReads); // Add count to list
 		}
 
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose) Log.info("Done.");
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class CountReadsOnMarkers {
 	}
 
 	/**
-	 * Show charts in html 
+	 * Show charts in html
 	 * @return
 	 */
 	public String html() {
@@ -296,9 +296,9 @@ public class CountReadsOnMarkers {
 
 	/**
 	 * Show probabilities
-	 * 
-	 * @param prob : Probabilities for each 
-	 * 
+	 *
+	 * @param prob : Probabilities for each
+	 *
 	 * @return A string showing a tab delimited table
 	 */
 	public String probabilityTable(CountByType prob) {

@@ -87,7 +87,7 @@ public class OsCmdQueue implements Iterable<OsCmdRunner> {
 
 		// Move from running list to done
 		for (OsCmdRunner cmd : toDelete) {
-			if (verbose) Timer.showStdErr("Finished command: " + cmd);
+			if (verbose) Log.info("Finished command: " + cmd);
 			commandsRunning.remove(cmd);
 			commandsDone.add(cmd);
 		}
@@ -112,7 +112,7 @@ public class OsCmdQueue implements Iterable<OsCmdRunner> {
 	 * Run commands
 	 */
 	public void run() {
-		if (verbose) Timer.showStdErr("Starting " + this);
+		if (verbose) Log.info("Starting " + this);
 
 		// Sanity check (has this queue been run before?
 		if (commandsDone != null) throw new RuntimeException("Cannot re-run a queue! Please create a new one.");
@@ -136,7 +136,7 @@ public class OsCmdQueue implements Iterable<OsCmdRunner> {
 				doneCommands(); // Have commands finished?
 				sleep();
 
-				if (debug) Timer.showStdErr("Queue processes:\tPending : " + commandsToRun.size() + "\tRunning: " + commandsRunning.size() + "\tDone: " + commandsDone.size());
+				if (debug) Log.info("Queue processes:\tPending : " + commandsToRun.size() + "\tRunning: " + commandsRunning.size() + "\tDone: " + commandsDone.size());
 			}
 		} catch (Throwable t) {
 			// Kill all commands
@@ -152,7 +152,7 @@ public class OsCmdQueue implements Iterable<OsCmdRunner> {
 		// Run only if outFile exists?
 		String outputFile = outputFiles.get(cmd);
 
-		if (verbose) Timer.showStdErr("Running command: '" + cmd + "'");
+		if (verbose) Log.info("Running command: '" + cmd + "'");
 
 		if (outputFile == null) {
 			// No 'outFile'? => Always run

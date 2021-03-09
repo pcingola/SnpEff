@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.snpeff.collections.AutoHashMap;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Map IDs
@@ -85,13 +85,13 @@ public class IdMapper {
 	}
 
 	public void load(String fileName) {
-		if (verbose) Timer.showStdErr("Loading IDs from file: " + fileName);
+		if (verbose) Log.info("Loading IDs from file: " + fileName);
 		count = 0;
 		String lines[] = Gpr.readFile(fileName).split("\n");
 		for (String line : lines)
 			parseLine(line);
 
-		if (verbose) Timer.showStdErr("Done. Total entries added: " + count);
+		if (verbose) Log.info("Done. Total entries added: " + count);
 	}
 
 	/**

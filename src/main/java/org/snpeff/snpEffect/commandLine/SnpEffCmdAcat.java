@@ -4,7 +4,7 @@ import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.stats.CountByType;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.VcfHeaderInfo;
@@ -13,7 +13,8 @@ import org.snpeff.vcf.VcfInfoType;
 /**
  * ACAT: Create ACAT score for T2D project
  *
- * Note: This is just used to compile 'ACAT' score in T2D-GENES project, not useful at all for general audience.
+ * Note: This is just used to compile 'ACAT' score in T2D-GENES project, not
+ * useful at all for general audience.
  *
  * @author pcingola
  */
@@ -198,7 +199,7 @@ public class SnpEffCmdAcat extends SnpEff {
 	 */
 	@Override
 	public boolean run() {
-		if (verbose) Timer.showStdErr("Calculating ACAT score on input: " + vcfFile);
+		if (verbose) Log.info("Calculating ACAT score on input: " + vcfFile);
 		countByAcat = new CountByType();
 		countByEff = new CountByType();
 
@@ -221,7 +222,7 @@ public class SnpEffCmdAcat extends SnpEff {
 		if (verbose) {
 			System.err.println(countByAcat);
 			System.err.println(countByEff);
-			Timer.showStdErr("Done.");
+			Log.info("Done.");
 		}
 
 		return true;

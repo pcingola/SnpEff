@@ -19,11 +19,11 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.snpeff.fastq.FastqVariant;
 import org.snpeff.util.GprSeq;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Convert qseq file to fastq
- * 
+ *
  * @author pcingola
  */
 public class Qseq2FastqSplit {
@@ -67,37 +67,37 @@ public class Qseq2FastqSplit {
 			CommandLine line = parser.parse(options, args);
 
 			// Show help message?
-			if( line.hasOption("help") ) {
+			if (line.hasOption("help")) {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp(Qseq2FastqSplit.class.getSimpleName(), options);
 				System.exit(-1);
 			}
 
-			if( line.hasOption("1") ) inPe1 = line.getOptionValue("1");
+			if (line.hasOption("1")) inPe1 = line.getOptionValue("1");
 			else parsingError("Missing required parameter '-1'");
 
-			if( line.hasOption("2") ) inPe2 = line.getOptionValue("2");
+			if (line.hasOption("2")) inPe2 = line.getOptionValue("2");
 			else parsingError("Missing required parameter '-2'");
 
-			if( line.hasOption("i") ) inIndex = line.getOptionValue("i");
+			if (line.hasOption("i")) inIndex = line.getOptionValue("i");
 			else parsingError("Missing required parameter '-i'");
 
-			if( line.hasOption("o") ) outBase = line.getOptionValue("o");
+			if (line.hasOption("o")) outBase = line.getOptionValue("o");
 			else parsingError("Missing required parameter '-o'");
 
-			if( line.hasOption("s") ) {
+			if (line.hasOption("s")) {
 				String seqsStr = line.getOptionValue("s");
-				for( String s : seqsStr.split(",") )
+				for (String s : seqsStr.split(","))
 					seqs.add(s.toUpperCase());
 			} else parsingError("Missing required parameter '-s'");
 
-		} catch(ParseException e) {
+		} catch (ParseException e) {
 			parsingError(e.getMessage());
 		}
 	}
 
 	void parsingError(String msg) {
-		if( msg != null ) System.out.println("Error:" + msg);
+		if (msg != null) System.out.println("Error:" + msg);
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp(Qseq2FastqSplit.class.getSimpleName(), options);
 		System.exit(-1);
@@ -107,7 +107,7 @@ public class Qseq2FastqSplit {
 		long countUnknown = 0;
 		long lineNum = 1;
 
-		Timer.showStdErr("Converting lines from QSEQ to FASTQ (Sanger)");
+		Log.info("Converting lines from QSEQ to FASTQ (Sanger)");
 
 		// Process file
 		try {
@@ -119,7 +119,7 @@ public class Qseq2FastqSplit {
 			BufferedReader indexBuff = new BufferedReader(new InputStreamReader(new FileInputStream(inIndex)));
 
 			// Open outputs
-			for( String seq : seqs ) {
+			for (String seq : seqs) {
 				String fileName = outBase + "_1_" + seq + ".fastq";
 				BufferedWriter outBuff = new BufferedWriter(new FileWriter(fileName));
 				outsPe1.put(seq, outBuff);
@@ -130,11 +130,11 @@ public class Qseq2FastqSplit {
 			}
 
 			// Read inputs
-			for( ; ((linePe1 = inPe1Buff.readLine()) != null) & ((linePe2 = inPe2Buff.readLine()) != null) & ((lineIdx = indexBuff.readLine()) != null); lineNum++ ) {
+			for (; ((linePe1 = inPe1Buff.readLine()) != null) & ((linePe2 = inPe2Buff.readLine()) != null) & ((lineIdx = indexBuff.readLine()) != null); lineNum++) {
 				// Get index sequence
 				String t[] = lineIdx.split("\t");
 				String seqIdx = t[8].toUpperCase();
-				if( seqs.contains(seqIdx) ) { // Is it one of the sequences from command line?
+				if (seqs.contains(seqIdx)) { // Is it one of the sequences from command line?
 					writeFastq(linePe1, outsPe1.get(seqIdx), lineNum);
 					writeFastq(linePe2, outsPe2.get(seqIdx), lineNum);
 				} else {
@@ -142,11 +142,11 @@ public class Qseq2FastqSplit {
 					countUnknown++;
 				}
 
-				if( lineNum % SHOW_EVERY == 0 ) Timer.showStdErr(lineNum + " lines, " + countUnknown + " unknown.");
+				if (lineNum % SHOW_EVERY == 0) Log.info(lineNum + " lines, " + countUnknown + " unknown.");
 			}
 
 			// Close outputs
-			for( String seq : seqs ) {
+			for (String seq : seqs) {
 				outsPe1.get(seq).close();
 				outsPe2.get(seq).close();
 			}
@@ -155,12 +155,12 @@ public class Qseq2FastqSplit {
 			inPe1Buff.close();
 			inPe2Buff.close();
 			indexBuff.close();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
 		lineNum--;
-		Timer.showStdErr(lineNum + " lines, " + countUnknown + " unknown.");
+		Log.info(lineNum + " lines, " + countUnknown + " unknown.");
 	}
 
 	/**

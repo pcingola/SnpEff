@@ -65,7 +65,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	 * Add sequences from genome's exons
 	 */
 	boolean addExonSequences(String chr) {
-		if (verbose) Timer.showStdErr("Creating sequences from exon information '" + chr + "'");
+		if (verbose) Log.info("Creating sequences from exon information '" + chr + "'");
 		Itree tree = intervalForest.getOrCreateTreeChromo(chr);
 
 		// Add all exon sequences. Collapse them if possible
@@ -76,9 +76,9 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 		tree.add(exonMarkers);
 
 		// Build tree
-		if (verbose) Timer.showStdErr("Building sequence tree for chromosome '" + chr + "'");
+		if (verbose) Log.info("Building sequence tree for chromosome '" + chr + "'");
 		build();
-		if (verbose) Timer.showStdErr("Done. Loaded " + tree.getIntervals().size() + " sequences.");
+		if (verbose) Log.info("Done. Loaded " + tree.getIntervals().size() + " sequences.");
 
 		return !tree.isEmpty();
 	}
@@ -128,9 +128,9 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	 * Build interval forest
 	 */
 	public void build() {
-		if (verbose) Timer.showStdErr("Building sequence tree for genome sequences");
+		if (verbose) Log.info("Building sequence tree for genome sequences");
 		intervalForest.build();
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose) Log.info("Done.");
 	}
 
 	public void clear() {
@@ -238,12 +238,12 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 		// File does not exists?  Cannot load...
 		String fileName = Config.get().getFileNameSequence();
 		if (!Gpr.exists(fileName)) {
-			if (Config.get().isDebug()) Timer.showStdErr("Attempting to load sequences from file '" + fileName + "' failed, nothing done.");
+			if (Config.get().isDebug()) Log.info("Attempting to load sequences from file '" + fileName + "' failed, nothing done.");
 			return false;
 		}
 
 		// Load markers
-		if (verbose) Timer.showStdErr("Loading sequences from file '" + fileName + "'");
+		if (verbose) Log.info("Loading sequences from file '" + fileName + "'");
 		Markers markers = new Markers();
 		Set<Itree> toBuild = new HashSet<>();
 		markers.load(fileName, genome);
@@ -256,7 +256,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 
 		// Build all trees
 		for (Itree itree : toBuild) {
-			if (itree.getIntervals().size() > 0 && verbose) Timer.showStdErr("Building sequence tree for chromosome '" + itree.getIntervals().get(0).getChromosomeName() + "'");
+			if (itree.getIntervals().size() > 0 && verbose) Log.info("Building sequence tree for chromosome '" + itree.getIntervals().get(0).getChromosomeName() + "'");
 			itree.build();
 
 		}
@@ -276,17 +276,17 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 		// File does not exists?  Cannot load...
 		String fileName = Config.get().getFileNameSequence(chr);
 		if (!Gpr.exists(fileName)) {
-			if (Config.get().isDebug()) Timer.showStdErr("Attempting to load sequences for chromosome '" + chr + "' from file '" + fileName + "' failed, nothing done.");
+			if (Config.get().isDebug()) Log.info("Attempting to load sequences for chromosome '" + chr + "' from file '" + fileName + "' failed, nothing done.");
 			return false;
 		}
 
 		// Load markers
-		if (verbose) Timer.showStdErr("Loading sequences for chromosome '" + chr + "' from file '" + fileName + "'");
+		if (verbose) Log.info("Loading sequences for chromosome '" + chr + "' from file '" + fileName + "'");
 		Itree tree = intervalForest.getOrCreateTreeChromo(chr);
 		tree.load(fileName, genome);
-		if (verbose) Timer.showStdErr("Building sequence tree for chromosome '" + chr + "'");
+		if (verbose) Log.info("Building sequence tree for chromosome '" + chr + "'");
 		tree.build();
-		if (verbose) Timer.showStdErr("Done. Loaded " + tree.getIntervals().size() + " sequences.");
+		if (verbose) Log.info("Done. Loaded " + tree.getIntervals().size() + " sequences.");
 		return !tree.isEmpty();
 	}
 
@@ -391,7 +391,7 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 
 			// Save to file
 			String fileName = Config.get().getFileNameSequence();
-			if (verbose) Timer.showStdErr("Saving sequences for small chromosmes to file '" + fileName + "'");
+			if (verbose) Log.info("Saving sequences for small chromosmes to file '" + fileName + "'");
 			markers.save(fileName);
 		}
 	}
@@ -401,14 +401,14 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 	 */
 	void save(String chr) {
 		if (!intervalForest.hasTree(chr)) {
-			if (verbose) Timer.showStdErr("No tree found for chromosome '" + chr + "'");
+			if (verbose) Log.info("No tree found for chromosome '" + chr + "'");
 			return;
 		}
 
 		// OK, there is something to save => Save markers to file
 		Itree tree = intervalForest.getTreeChromo(chr);
 		String fileName = Config.get().getFileNameSequence(chr);
-		if (verbose) Timer.showStdErr("Saving sequences for chromosome '" + chr + "' to file '" + fileName + "'");
+		if (verbose) Log.info("Saving sequences for chromosome '" + chr + "' to file '" + fileName + "'");
 		tree.getIntervals().save(fileName, chr);
 	}
 

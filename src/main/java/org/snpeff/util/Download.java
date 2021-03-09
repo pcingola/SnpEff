@@ -117,7 +117,7 @@ public class Download {
 		try {
 			sslSetup(); // Set up SSL for websites having issues with certificates (e.g. Sourceforge)
 
-			if (verbose) Timer.showStdErr("Connecting to " + url);
+			if (verbose) Log.info("Connecting to " + url);
 
 			URLConnection connection = openConnection(url);
 
@@ -125,14 +125,14 @@ public class Download {
 			if (connection instanceof HttpURLConnection) {
 				for (boolean followRedirect = true; followRedirect;) {
 					HttpURLConnection httpConnection = (HttpURLConnection) connection;
-					if (verbose) Timer.showStdErr("Connecting to " + url + ", using proxy: " + httpConnection.usingProxy());
+					if (verbose) Log.info("Connecting to " + url + ", using proxy: " + httpConnection.usingProxy());
 					int code = httpConnection.getResponseCode();
 
 					if (code == 200) {
 						followRedirect = false; // We are done
 					} else if (code == 302) {
 						String newUrl = connection.getHeaderField("Location");
-						if (verbose) Timer.showStdErr("Following redirect: " + newUrl);
+						if (verbose) Log.info("Following redirect: " + newUrl);
 						url = new URL(newUrl);
 						connection = openConnection(url);
 					} else if (code == 404) {
@@ -146,17 +146,17 @@ public class Download {
 
 			// Print info about resource
 			Date date = new Date(connection.getLastModified());
-			if (debug) Timer.showStdErr("Copying file (type: " + connection.getContentType() + ", modified on: " + date + ")");
+			if (debug) Log.info("Copying file (type: " + connection.getContentType() + ", modified on: " + date + ")");
 
 			// Open local file
-			if (verbose) Timer.showStdErr("Local file name: '" + localFile + "'");
+			if (verbose) Log.info("Local file name: '" + localFile + "'");
 
 			// Create local directory if it doesn't exists
 			File file = new File(localFile);
 			if (file != null && file.getParent() != null) {
 				File path = new File(file.getParent());
 				if (!path.exists()) {
-					if (verbose) Timer.showStdErr("Local path '" + path + "' doesn't exist, creating.");
+					if (verbose) Log.info("Local path '" + path + "' doesn't exist, creating.");
 					path.mkdirs();
 				}
 			}
@@ -182,11 +182,11 @@ public class Download {
 			// Close streams
 			is.close();
 			os.close();
-			if (verbose) Timer.showStdErr("Download finished. Total " + total + " bytes.");
+			if (verbose) Log.info("Download finished. Total " + total + " bytes.");
 
 			res = true;
 		} catch (Exception e) {
-			Timer.showStdErr("ERROR while connecting to " + url);
+			Log.info("ERROR while connecting to " + url);
 			throw new RuntimeException(e);
 		}
 
@@ -215,7 +215,7 @@ public class Download {
 			String entryPath[] = entryName.split("/"); // Entry name should be something like 'data/genomeVer/file';
 			String dataName = entryPath[entryPath.length - 2] + "/" + entryPath[entryPath.length - 1]; // remove the 'data/' part
 			entryName = dataDir + "/" + dataName; // Ad local 'data' dir
-			if (debug) Timer.showStdErr("Local file name: '" + entryName + "'");
+			if (debug) Log.info("Local file name: '" + entryName + "'");
 		}
 
 		return entryName;
@@ -231,7 +231,7 @@ public class Download {
 		if (envProxy == null || envProxy.isBlank()) return null;
 
 		// Parse URL from environment variable
-		if (verbose) Timer.showStdErr("Using proxy from environment variable '" + envVarName + "', value '" + envProxy + "'");
+		if (verbose) Log.info("Using proxy from environment variable '" + envVarName + "', value '" + envProxy + "'");
 
 		String proxyHost = null;
 		int port = DEFAULT_PROXY_PORT;
@@ -255,7 +255,7 @@ public class Download {
 			}
 		}
 
-		if (verbose) Timer.showStdErr("Parsing proxy value '" + envProxy + "', host: '" + proxyHost + "', port: '" + port + "'");
+		if (verbose) Log.info("Parsing proxy value '" + envProxy + "', host: '" + proxyHost + "', port: '" + port + "'");
 		return new Tuple<>(proxyHost, port);
 	}
 
@@ -271,10 +271,10 @@ public class Download {
 		// Java property not found
 		if (proxyHost == null || proxyHost.isBlank()) return null;
 
-		if (verbose) Timer.showStdErr("Using proxy from Java properties: http.proxyHost: '" + proxyHost + "', http.proxyPort: '" + proxyPort + "'");
+		if (verbose) Log.info("Using proxy from Java properties: http.proxyHost: '" + proxyHost + "', http.proxyPort: '" + proxyPort + "'");
 		int port = (proxyPort != null && !proxyPort.isBlank() ? Gpr.parseIntSafe(proxyPort) : DEFAULT_PROXY_PORT);
 
-		if (verbose) Timer.showStdErr("Parsing proxy value from Java propperties, host: '" + proxyHost + "', port: '" + port + "'");
+		if (verbose) Log.info("Parsing proxy value from Java propperties, host: '" + proxyHost + "', port: '" + port + "'");
 		return new Tuple<>(proxyHost, port);
 	}
 
@@ -335,7 +335,7 @@ public class Download {
 			// Create a ZIP backup file (only if we are updating)
 			if (update) {
 				backupFile = String.format("%s/backup_%2$tY-%2$tm-%2$td_%2$tH:%2$tM:%2$tS.zip", mainDir, new GregorianCalendar());
-				if (verbose) Timer.showStdErr("Creating backup file '" + backupFile + "'");
+				if (verbose) Log.info("Creating backup file '" + backupFile + "'");
 				zipBackup = new ZipOutputStream(new FileOutputStream(backupFile));
 			}
 
@@ -346,8 +346,8 @@ public class Download {
 			while ((entry = zipIn.getNextEntry()) != null) {
 				if (!entry.isDirectory()) {
 					String localEntryName = parseEntryPath(entry.getName(), mainDir, dataDir);
-					if (debug) Timer.showStdErr("Extracting file '" + entry.getName() + "' to '" + localEntryName + "'");
-					else if (verbose) Timer.showStdErr("Extracting file '" + entry.getName() + "'");
+					if (debug) Log.info("Extracting file '" + entry.getName() + "' to '" + localEntryName + "'");
+					else if (verbose) Log.info("Extracting file '" + entry.getName() + "'");
 
 					// Backup entry
 					if (zipBackup != null) backupFile(zipBackup, localEntryName);
@@ -359,7 +359,7 @@ public class Download {
 					File dir = new File(dirName);
 					if (!dir.exists()) {
 						// Create local dir
-						if (verbose) Timer.showStdErr("Creating local directory: '" + dir + "'");
+						if (verbose) Log.info("Creating local directory: '" + dir + "'");
 						if (!dir.mkdirs()) throw new RuntimeException("Cannot create directory '" + dir.getCanonicalPath() + "'");
 					}
 
@@ -379,7 +379,7 @@ public class Download {
 				} else if (entry.isDirectory()) {
 					String dir = parseEntryPath(entry.getName(), mainDir, dataDir);
 					// Create local dir
-					if (verbose) Timer.showStdErr("Creating local directory: '" + dir + "'");
+					if (verbose) Log.info("Creating local directory: '" + dir + "'");
 					if (!(new File(dir)).mkdirs()) throw new RuntimeException("Cannot create directory '" + dir + "'");
 				}
 			}
@@ -388,7 +388,7 @@ public class Download {
 			zipIn.close();
 			if (zipBackup != null) {
 				zipBackup.close();
-				Timer.showStdErr("Backup file created: '" + backupFile + "'");
+				Log.info("Backup file created: '" + backupFile + "'");
 			}
 
 		} catch (Exception e) {

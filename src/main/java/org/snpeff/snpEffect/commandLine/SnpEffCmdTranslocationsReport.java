@@ -78,7 +78,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		// Search using geneName
 		Genes genes = sep.getGenome().getGenes();
 		g = genes.getGeneByName(gene);
-		if (g == null) Timer.showStdErr("Gene '" + gene + "' not found. Skipping plot");
+		if (g == null) Log.info("Gene '" + gene + "' not found. Skipping plot");
 
 		return g;
 	}
@@ -179,7 +179,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 			String geneStr = veff.getGeneId();
 			String genes[] = geneStr.split("&");
 
-			if (verbose) Timer.showStdErr("Plotting translocation: '" + veff + "'");
+			if (verbose) Log.info("Plotting translocation: '" + veff + "'");
 
 			if (genes.length < 2) continue;
 			String geneName1 = genes[0];
@@ -203,7 +203,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 			for (Transcript tr2 : g2) {
 				sb.append(reportBnd(varBnd, veff, tr1, tr2));
 				if (onlyOneTranscript) {
-					if (verbose) Timer.showStdErr("Plotting only one transcript pair");
+					if (verbose) Log.info("Plotting only one transcript pair");
 					return sb.toString();
 				}
 			}
@@ -235,7 +235,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 					+ "-" + tr2.getId() //
 					+ ".html";
 			Gpr.toFile(fileName, svgPlot);
-			if (verbose) Timer.showStdErr("Saved to file " + fileName);
+			if (verbose) Log.info("Saved to file " + fileName);
 		}
 
 		return trRep;
@@ -247,7 +247,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		loadDb();
 		report();
 		summary(REPORT_TEMPLATE, reportFile, false);
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose) Log.info("Done.");
 		return true;
 	}
 
@@ -261,7 +261,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 
 	boolean summary(String templateFile, String outputFile, boolean noCommas) {
 		try {
-			if (verbose) Timer.showStdErr("Creating report file '" + outputFile + "'");
+			if (verbose) Log.info("Creating report file '" + outputFile + "'");
 			// Configure FreeMaker
 			Configuration cfg = new Configuration();
 

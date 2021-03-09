@@ -10,11 +10,11 @@ import org.snpeff.interval.Genome;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.GprSeq;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Get promoter sequences from genes
- * 
+ *
  * @author pablocingolani
  */
 public class PromoterSequences {
@@ -62,19 +62,19 @@ public class PromoterSequences {
 
 		genes = new HashSet<Gene>();
 
-		Timer.showStdErr("Loading database");
+		Log.info("Loading database");
 		String configFile = HOME + "/snpEff/snpEff.config";
 		config = new Config(genomeName, configFile);
 		config.loadSnpEffectPredictor();
 		snpEffectPredictor = config.getSnpEffectPredictor();
 		genome = snpEffectPredictor.getGenome();
 
-		//		Timer.showStdErr("Building forest");
+		//		Log.info("Building forest");
 		//		snpEffectPredictor.buildForest();
 	}
 
 	public void run() {
-		Timer.showStdErr("Finding genes ");
+		Log.info("Finding genes ");
 		for (Gene gene : genome.getGenes()) {
 			if (geneIds.contains(gene.getId())) {
 				System.err.println("\t" + gene.getId());
@@ -82,17 +82,17 @@ public class PromoterSequences {
 				geneIds.remove(gene.getId());
 			}
 		}
-		if (!geneIds.isEmpty()) Timer.showStdErr("Not found: " + geneIds);
+		if (!geneIds.isEmpty()) Log.info("Not found: " + geneIds);
 
 		//---
 		// Read fasta file
 		//---
-		Timer.showStdErr("Reading fasta file: " + fastaFile);
+		Log.info("Reading fasta file: " + fastaFile);
 		HashSet<Gene> done = new HashSet<Gene>();
 		FastaFileIterator ffi = new FastaFileIterator(fastaFile);
 		for (String seq : ffi) {
 			String chrName = ffi.getName();
-			Timer.showStdErr("Read: " + chrName);
+			Log.info("Read: " + chrName);
 
 			for (Gene gene : genes) {
 				if (gene.getChromosomeName().equals(chrName)) {
@@ -121,6 +121,6 @@ public class PromoterSequences {
 		}
 		ffi.close();
 
-		Timer.showStdErr("Done");
+		Log.info("Done");
 	}
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 import org.snpeff.fileIterator.RegulationFileIterator;
 import org.snpeff.interval.Regulation;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
@@ -93,7 +94,7 @@ public class RegulationFileSplitBytType {
 			String fileName = outputFileName(regType);
 			if (verbose) {
 				String createAppend = Gpr.exists(fileName) ? "Appending" : "Creating";
-				Timer.showStdErr("\t\t" + createAppend + " file '" + fileName + "'");
+				Log.info("\t\t" + createAppend + " file '" + fileName + "'");
 			}
 			Gpr.toFile(fileName, lineByRegType.get(regType), true);
 			regFileNames.add(fileName);

@@ -24,7 +24,7 @@ import org.snpeff.snpEffect.EffectType;
 import org.snpeff.stats.CountByType;
 import org.snpeff.stats.IntStats;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 import org.snpeff.util.Tuple;
 
 /**
@@ -370,16 +370,16 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 		// Save
 		//---
 		String outputFile = outputDir + "/" + this.getClass().getSimpleName() + "_" + genomeVer + ".html";
-		if (verbose) Timer.showStdErr("Saving output to: " + outputFile);
+		if (verbose) Log.info("Saving output to: " + outputFile);
 		Gpr.toFile(outputFile, out);
 
 		if (saveDb) {
-			if (verbose) Timer.showStdErr("Saving database to file: " + config.getFileSnpEffectPredictor());
+			if (verbose) Log.info("Saving database to file: " + config.getFileSnpEffectPredictor());
 			config.getSnpEffectPredictor().save(config);
-			if (verbose) Timer.showStdErr("Done.");
-		} else if (verbose) Timer.showStdErr("Not saving database.");
+			if (verbose) Log.info("Done.");
+		} else if (verbose) Log.info("Not saving database.");
 
-		if (verbose) Timer.showStdErr("Finished!");
+		if (verbose) Log.info("Finished!");
 		return true;
 	}
 
@@ -387,7 +387,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 	 * Run PWM analysis
 	 */
 	void splicePwmAnalysis() {
-		if (verbose) Timer.showStdErr("Splice analysis (PWM). Reading fasta file: " + genomeFasta);
+		if (verbose) Log.info("Splice analysis (PWM). Reading fasta file: " + genomeFasta);
 
 		//---
 		// Main analysis: Iterate over all chromosomes
@@ -402,7 +402,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 		// Create U12 sites
 		//---
 		String bedFile = outputDir + "/" + this.getClass().getSimpleName() + "_" + genomeVer + "_introns_branchSitesU12.bed";
-		if (verbose) Timer.showStdErr("Writing Introns and SpliceSitesBranchU12 file to BED file: '" + bedFile + "'");
+		if (verbose) Log.info("Writing Introns and SpliceSitesBranchU12 file to BED file: '" + bedFile + "'");
 
 		// ArrayList<Marker> markers = new ArrayList<Marker>();
 		Markers markersBed = new Markers();
@@ -436,12 +436,12 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 		}
 		Gpr.toFile(bedFile, sb);
 
-		if (verbose) Timer.showStdErr("Added " + countBranch + " branch U12 to genome.");
+		if (verbose) Log.info("Added " + countBranch + " branch U12 to genome.");
 
 		//---
 		// Show results
 		//---
-		if (verbose) Timer.showStdErr("Filter out low count splice sites. Exons: " + countIntrons + "\tThreshold: " + THRESHOLD_COUNT);
+		if (verbose) Log.info("Filter out low count splice sites. Exons: " + countIntrons + "\tThreshold: " + THRESHOLD_COUNT);
 		ArrayList<PwmSet> pwmsets = new ArrayList<PwmSet>();
 		pwmsets.addAll(pwmSetsByName.values());
 		Collections.sort(pwmsets);
@@ -512,7 +512,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 			countTr++;
 		}
 
-		if (verbose) Timer.showStdErr("\tChromosome: " + chrName + "\tTranscripts: " + countTr + "\tExons: " + countEx);
+		if (verbose) Log.info("\tChromosome: " + chrName + "\tTranscripts: " + countTr + "\tExons: " + countEx);
 	}
 
 	/**

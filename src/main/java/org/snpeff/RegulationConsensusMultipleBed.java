@@ -9,7 +9,7 @@ import java.util.List;
 import org.snpeff.collections.AutoHashMap;
 import org.snpeff.fileIterator.RegulationBedFileIterator;
 import org.snpeff.interval.Regulation;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Create a regulation consensus from multiple BED files
@@ -36,13 +36,13 @@ public class RegulationConsensusMultipleBed {
 	 * Create a consensus for each cell type
 	 */
 	RegulationFileConsensus consensus(RegulationFileConsensus regCons, String cellType) {
-		if (verbose) Timer.showStdErr("Creating consensus for cell type: " + cellType);
+		if (verbose) Log.info("Creating consensus for cell type: " + cellType);
 		ArrayList<Regulation> regs = regCons.getRegulationList(cellType);
 
-		if (verbose) Timer.showStdErr("Sorting: " + cellType + "\t, size: " + regs.size());
+		if (verbose) Log.info("Sorting: " + cellType + "\t, size: " + regs.size());
 		Collections.sort(regs);
 
-		if (verbose) Timer.showStdErr("Adding to final consensus");
+		if (verbose) Log.info("Adding to final consensus");
 		RegulationFileConsensus consCellType = new RegulationFileConsensus();
 		regCons.setVerbose(verbose);
 
@@ -50,7 +50,7 @@ public class RegulationConsensusMultipleBed {
 			consCellType.consensus(reg);
 
 		regs = consCellType.getRegulationList(cellType);
-		if (verbose) Timer.showStdErr("Final consensus for cell type: " + cellType + "\t, size: " + regs.size());
+		if (verbose) Log.info("Final consensus for cell type: " + cellType + "\t, size: " + regs.size());
 
 		return consCellType;
 	}
@@ -61,7 +61,7 @@ public class RegulationConsensusMultipleBed {
 	void consensusByRegType() {
 		for (String cellType : filesByCellType.keySet()) {
 			ArrayList<String> bedFiles = filesByCellType.getOrCreate(cellType);
-			if (verbose) Timer.showStdErr("Creating consensus for cellType '" + cellType + "', files: " + bedFiles);
+			if (verbose) Log.info("Creating consensus for cellType '" + cellType + "', files: " + bedFiles);
 
 			RegulationFileConsensus regCons = readBeds(bedFiles, cellType);
 			regCons.setOutputDir(outDir);
@@ -82,7 +82,7 @@ public class RegulationConsensusMultipleBed {
 
 		// Read all files, creating a consensus for each
 		for (String bedFile : bedFiles) {
-			if (verbose) Timer.showStdErr("Reading file '" + bedFile + "'");
+			if (verbose) Log.info("Reading file '" + bedFile + "'");
 
 			String epigeneticMark = epiMarkByFile.get(bedFile);
 			RegulationBedFileIterator regFile = new RegulationBedFileIterator(bedFile, epigeneticMark, cellType);
@@ -128,7 +128,7 @@ public class RegulationConsensusMultipleBed {
 			}
 		}
 
-		if (verbose) Timer.showStdErr("Directory has " + countFiles + " bed files and " + filesByCellType.size() + " cell types");
+		if (verbose) Log.info("Directory has " + countFiles + " bed files and " + filesByCellType.size() + " cell types");
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class RegulationConsensusMultipleBed {
 	public void run() {
 		readDir(inDir);
 		consensusByRegType();
-		if (verbose) Timer.showStdErr("Done");
+		if (verbose) Log.info("Done");
 	}
 
 	public void setCellType(String cellType) {

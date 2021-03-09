@@ -10,7 +10,7 @@ import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Transcript;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * A set of transcripts
@@ -40,7 +40,7 @@ public class TranscriptSet implements Iterable<Transcript> {
 	 * Filter out "bad transcripts"
 	 */
 	public void filter() {
-		if (verbose) Timer.showStdErr("Filtering transcripts: Removing non-coding and transcripts with errors");
+		if (verbose) Log.info("Filtering transcripts: Removing non-coding and transcripts with errors");
 
 		int total = 0, kept = 0;
 		for (Gene gene : genome.getGenes()) {
@@ -67,7 +67,7 @@ public class TranscriptSet implements Iterable<Transcript> {
 			}
 		}
 
-		if (verbose) Timer.showStdErr("Done. Kept / total: " + kept + " / " + total);
+		if (verbose) Log.info("Done. Kept / total: " + kept + " / " + total);
 
 	}
 

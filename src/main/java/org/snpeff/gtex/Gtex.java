@@ -6,13 +6,13 @@ import java.util.Iterator;
 
 import org.snpeff.fileIterator.LineFileIterator;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Load data from GTEx files.
- * 
+ *
  * References: http://www.broadinstitute.org/gtex/
- * 
+ *
  * @author pcingola
  */
 public class Gtex implements Iterable<GtexExperiment> {
@@ -52,7 +52,7 @@ public class Gtex implements Iterable<GtexExperiment> {
 	 * @param data
 	 */
 	protected void loadData(String data) {
-		if (verbose) Timer.showStdErr("Loaded GTEx data from file " + data);
+		if (verbose) Log.info("Loaded GTEx data from file " + data);
 
 		if (!Gpr.canRead(data)) throw new RuntimeException("Cannot find data file '" + data + "'");
 
@@ -82,7 +82,7 @@ public class Gtex implements Iterable<GtexExperiment> {
 
 				// Add data for each experiment
 				for (int i = 2; i < fields.length; i++) {
-					// Get appropriate experiment 
+					// Get appropriate experiment
 					String exId = exIds[i];
 					GtexExperiment gtexExperiment = experiments.get(exId);
 
@@ -101,7 +101,7 @@ public class Gtex implements Iterable<GtexExperiment> {
 			}
 		}
 
-		if (verbose) Timer.showStdErr("Done. Loaded " + experiments.size() + " experiments.");
+		if (verbose) Log.info("Done. Loaded " + experiments.size() + " experiments.");
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class Gtex implements Iterable<GtexExperiment> {
 	 * @param samples
 	 */
 	protected void loadSamples(String samples) {
-		if (verbose) Timer.showStdErr("Loaded GTEx experiments from file " + samples);
+		if (verbose) Log.info("Loaded GTEx experiments from file " + samples);
 
 		if (!Gpr.canRead(samples)) throw new RuntimeException("Cannot find samples file '" + samples + "'");
 
@@ -122,7 +122,7 @@ public class Gtex implements Iterable<GtexExperiment> {
 			experiments.put(gtexExperiment.getId(), gtexExperiment);
 		}
 
-		if (verbose) Timer.showStdErr("Done. Loaded " + experiments.size() + " experiments.");
+		if (verbose) Log.info("Done. Loaded " + experiments.size() + " experiments.");
 	}
 
 	public void setVerbose(boolean verbose) {

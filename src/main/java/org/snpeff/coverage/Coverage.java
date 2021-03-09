@@ -12,11 +12,11 @@ import org.snpeff.sam.SamEntry;
 import org.snpeff.sam.SamHeaderRecord;
 import org.snpeff.sam.SamHeaderRecordSq;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Base by base coverage (one chromsome)
- * 
+ *
  * @author pcingola
  */
 public class Coverage implements Serializable {
@@ -40,13 +40,13 @@ public class Coverage implements Serializable {
 		Coverage coverage = new Coverage();
 		Pattern patternCigar = Pattern.compile("(\\d+)([A-Z])");
 
-		if( verbose ) Timer.showStdErr("Processing file '" + samFile + "'");
+		if (verbose) Log.info("Processing file '" + samFile + "'");
 
-		for( SamEntry se : sfi ) {
-			if( header ) {
+		for (SamEntry se : sfi) {
+			if (header) {
 				header = false;
 				// Create coverage records
-				for( SamHeaderRecord rec : sfi.getHeaders().getRecords("SQ") ) {
+				for (SamHeaderRecord rec : sfi.getHeaders().getRecords("SQ")) {
 					SamHeaderRecordSq sq = (SamHeaderRecordSq) rec;
 					coverage.createChr(sq.getSequenceName(), sq.getLength());
 				}
@@ -59,18 +59,18 @@ public class Coverage implements Serializable {
 			int start = se.getPos() - 1; // One-based coordinates
 			String cigar = se.getCigar();
 			Matcher matcher = patternCigar.matcher(cigar);
-			while(matcher.find()) {
+			while (matcher.find()) {
 				int len = Gpr.parseIntSafe(matcher.group(1));
 				String op = matcher.group(2);
-				if( op.equals("M") ) coverage.inc(chrName, start, start + len - 1);
-				if( op.equals("M") || op.equals("D") || op.equals("N") || op.equals("EQ") || op.equals("X") || op.equals("P") ) start += len;
+				if (op.equals("M")) coverage.inc(chrName, start, start + len - 1);
+				if (op.equals("M") || op.equals("D") || op.equals("N") || op.equals("EQ") || op.equals("X") || op.equals("P")) start += len;
 			}
 
 			// Show mark
-			if( verbose ) {
-				if( !chrName.equals(chrPrev) ) {
+			if (verbose) {
+				if (!chrName.equals(chrPrev)) {
 					System.err.println("");
-					Timer.showStdErr(chrName + "\t");
+					Log.info(chrName + "\t");
 				}
 				chrPrev = chrName;
 				Gpr.showMark(i++, SHOW_EVERY);
@@ -86,27 +86,27 @@ public class Coverage implements Serializable {
 
 	/**
 	 * Calculate average coverage per base
-	 * 
+	 *
 	 * @param m : A marker interval
 	 * @return
 	 */
 	public double avgCoverage(Marker m) {
 		String chr = m.getChromosomeName();
 		CoverageChr cchr = get(chr);
-		if( cchr == null ) throw new RuntimeException("Chromosome '" + chr + "' not found!");
+		if (cchr == null) throw new RuntimeException("Chromosome '" + chr + "' not found!");
 		return cchr.avgCoverage(m.getStart(), m.getEnd());
 	}
 
 	/**
 	 * Calculate total coverage per base
-	 * 
+	 *
 	 * @param m : A marker interval
 	 * @return
 	 */
 	public long coverage(Marker m) {
 		String chr = m.getChromosomeName();
 		CoverageChr cchr = get(chr);
-		if( cchr == null ) throw new RuntimeException("Chromosome '" + chr + "' not found!");
+		if (cchr == null) throw new RuntimeException("Chromosome '" + chr + "' not found!");
 		return cchr.coverage(m.getStart(), m.getEnd());
 	}
 

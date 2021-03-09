@@ -176,7 +176,7 @@ public class ExonSpliceCharacterizer {
 	 */
 	void type() {
 		if (verbose) {
-			Timer.showStdErr("Caracterizing exons by splicing (stage 1) : ");
+			Log.info("Caracterizing exons by splicing (stage 1) : ");
 			System.out.print("\t");
 		}
 
@@ -216,7 +216,7 @@ public class ExonSpliceCharacterizer {
 
 		if (verbose) {
 			System.err.println("");
-			Timer.showStdErr("Caracterizing exons by splicing (stage 2) : ");
+			Log.info("Caracterizing exons by splicing (stage 2) : ");
 			System.out.print("\t");
 		}
 
@@ -239,7 +239,7 @@ public class ExonSpliceCharacterizer {
 			}
 		}
 
-		if (verbose) Timer.showStdErr("done.");
+		if (verbose) Log.info("done.");
 	}
 
 	/**

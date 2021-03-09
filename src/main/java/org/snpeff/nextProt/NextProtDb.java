@@ -12,7 +12,7 @@ import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.snpEffect.Config;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -69,14 +69,14 @@ public class NextProtDb {
 	 */
 	public boolean parse() {
 		genome = config.getGenome();
-		if (verbose) Timer.showStdErr("done");
+		if (verbose) Log.info("done");
 
 		// Parse all XML files in directory
-		if (verbose) Timer.showStdErr("Reading NextProt files from directory '" + xmlDirName + "'");
+		if (verbose) Log.info("Reading NextProt files from directory '" + xmlDirName + "'");
 		String files[] = (new File(xmlDirName)).list();
 		if (files != null) {
 			for (String xmlFileName : files) {
-				if (verbose) Timer.showStdErr("\tNextProt file '" + xmlFileName + "'");
+				if (verbose) Log.info("\tNextProt file '" + xmlFileName + "'");
 				if (xmlFileName.endsWith(".xml.gz") || xmlFileName.endsWith(".xml")) {
 					String path = xmlDirName + "/" + xmlFileName;
 					parse(path);
@@ -89,7 +89,7 @@ public class NextProtDb {
 
 	void parse(Node doc) {
 		int xmlVersion = nextProtXmlVersion(doc);
-		if (verbose) Timer.showStdErr("NextProt XML version:" + xmlVersion);
+		if (verbose) Log.info("NextProt XML version:" + xmlVersion);
 
 		NextProtParser nextProtParser;
 		switch (xmlVersion) {
@@ -118,14 +118,14 @@ public class NextProtDb {
 	void parse(String xmlFileName) {
 		try {
 			// Load document
-			if (verbose) Timer.showStdErr("Reading file:" + xmlFileName);
+			if (verbose) Log.info("Reading file:" + xmlFileName);
 			File xmlFile = new File(xmlFileName);
 
 			Document doc = null;
 			if (xmlFileName.endsWith(".gz")) doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new GZIPInputStream(new FileInputStream(xmlFile)));
 			else doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
 
-			if (verbose) Timer.showStdErr("Normalizing XML document");
+			if (verbose) Log.info("Normalizing XML document");
 			doc.getDocumentElement().normalize();
 
 			// Parse document
@@ -140,7 +140,7 @@ public class NextProtDb {
 	 */
 	public void saveDatabase() {
 		String nextProtBinFile = config.getDirDataGenomeVersion() + "/nextProt.bin";
-		if (verbose) Timer.showStdErr("Saving database to file '" + nextProtBinFile + "'");
+		if (verbose) Log.info("Saving database to file '" + nextProtBinFile + "'");
 
 		// Add chromosomes
 		HashSet<Chromosome> chromos = new HashSet<>();

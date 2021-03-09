@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.BedFileIterator;
@@ -74,8 +75,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	boolean createSummaryHtml = true;
 	boolean lossOfFunction = true; // Create loss of function LOF tag?
 	boolean useGeneId = false; // Use gene ID instead of gene name (VCF output)
-	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for
-										// development and debugging)
+	boolean useLocalTemplate = false; // Use template from 'local' file instead of 'jar' (this is only used for development and debugging)
 	boolean useOicr = false; // Use OICR tag
 	boolean useSequenceOntology = true; // Use Sequence Ontology terms
 	int totalErrs = 0;
@@ -238,7 +238,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 				countInputLines++;
 
 				countVariants++;
-				if (verbose && (countVariants % SHOW_EVERY == 0)) Timer.showStdErr("\t" + countVariants + " variants");
+				if (verbose && (countVariants % SHOW_EVERY == 0)) Log.info("\t" + countVariants + " variants");
 
 				// Does it pass the filter? => Analyze
 
@@ -284,17 +284,17 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 		// Creates a summary output file
 		if (createSummaryCsv) {
-			if (verbose) Timer.showStdErr("Creating summary file: " + summaryFileCsv);
+			if (verbose) Log.info("Creating summary file: " + summaryFileCsv);
 			ok &= summary(SUMMARY_CSV_TEMPLATE, summaryFileCsv, true);
 		}
 		if (createSummaryHtml) {
-			if (verbose) Timer.showStdErr("Creating summary file: " + summaryFileHtml);
+			if (verbose) Log.info("Creating summary file: " + summaryFileHtml);
 			ok &= summary(SUMMARY_TEMPLATE, summaryFileHtml, false);
 		}
 
 		// Creates genes output file
 		if (createSummaryHtml || createSummaryCsv) {
-			if (verbose) Timer.showStdErr("Creating genes file: " + summaryGenesFile);
+			if (verbose) Log.info("Creating genes file: " + summaryGenesFile);
 			ok &= summary(SUMMARY_GENES_TEMPLATE, summaryGenesFile, true);
 		}
 
@@ -326,13 +326,11 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 		if (fastaProt != null) {
 			if ((new File(fastaProt)).delete() && verbose) {
-				Timer.showStdErr("Deleted protein fasta output file '" + fastaProt + "'");
+				Log.info("Deleted protein fasta output file '" + fastaProt + "'");
 			}
 		}
 
-		// ---
 		// Create output formatter
-		// ---
 		outputFormatter = null;
 		switch (outputFormat) {
 		case VCF:
@@ -473,8 +471,14 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		vcfFile.setDebug(debug);
 
 		// Iterate over VCF entries
-		for (VcfEntry vcfEntry : vcfFile)
-			annotate(vcfEntry);
+		if (multiThreaded) {
+			// Multi-thread loop
+			StreamSupport.stream(vcfFile.spliterator(), true).forEach(this::annotate);
+		} else {
+			// Single thread
+			for (VcfEntry vcfEntry : vcfFile)
+				annotate(vcfEntry);
+		}
 
 		// Empty file? Show at least the header
 		if (countVcfEntries == 0) outputFormatter.print(vcfFile.getVcfHeader().toString());
@@ -487,50 +491,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 		return vcfFile;
 	}
-
-	// /**
-	// * Multi-threaded iteration on VCF inputs and calculates effects.
-	// * Note: This is used only on input format VCF, which has a different
-	// iteration modality
-	// */
-	// VcfFileIterator annotateVcfMulti(String inputFile, final OutputFormatter
-	// outputFormatter) {
-	// if (verbose) Timer.showStdErr("Running multi-threaded mode (numThreads=" +
-	// numWorkers + ").");
-	//
-	// outputFormatter.setShowHeader(false); // Master process takes care of the
-	// header (instead of outputFormatter). Otherwise you get the header printed one
-	// time per worker.
-	//
-	// // We need final variables for the inner class
-	// final SnpEffectPredictor snpEffectPredictor = config.getSnpEffectPredictor();
-	// final VcfOutputFormatter vcfOutForm = (VcfOutputFormatter) outputFormatter;
-	// final SnpEffCmdEff snpEffCmdEff = this;
-	//
-	// VcfFileIterator vcf = new VcfFileIterator(inputFile, config.getGenome());
-	//
-	// // Master factory
-	// Props props = new Props(new UntypedActorFactory() {
-	//
-	// private static final long serialVersionUID = 1L;
-	//
-	// @Override
-	// public Actor create() {
-	// MasterEff master = new MasterEff(numWorkers, snpEffCmdEff,
-	// snpEffectPredictor, outputFormatter, filterIntervals);
-	// master.setAddHeader(vcfOutForm.getNewHeaderLines().toArray(new String[0]));
-	// return master;
-	// }
-	// });
-	//
-	// // Create and run queue
-	// int batchSize = 10;
-	// VcfWorkQueue vcfWorkQueue = new VcfWorkQueue(inputFile, config, batchSize,
-	// -1, props);
-	// vcfWorkQueue.run(true);
-	//
-	// return vcf;
-	// }
 
 	public VariantEffectStats getChangeEffectResutStats() {
 		return variantEffectStats;
@@ -927,9 +887,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 * Run according to command line options
 	 */
 	public List<VcfEntry> run(boolean createList) {
-		// ---
 		// Prepare to run
-		// ---
 
 		// Nothing to filter out => don't waste time
 		if (!variantEffectResutFilter.anythingSet()) variantEffectResutFilter = null;
@@ -945,16 +903,16 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Read filter interval files
 		for (String filterIntFile : filterIntervalFiles) {
 			if (filterIntervals == null) filterIntervals = new IntervalForest();
-			if (verbose) Timer.showStdErr("Reading filter interval file '" + filterIntFile + "'");
+			if (verbose) Log.info("Reading filter interval file '" + filterIntFile + "'");
 			int count = readFilterIntFile(filterIntFile);
-			if (verbose) Timer.showStdErr("done (" + count + " intervals loaded). ");
+			if (verbose) Log.info("done (" + count + " intervals loaded). ");
 		}
 
 		// Build interval forest for filter (if any)
 		if (filterIntervals != null) {
-			if (verbose) Timer.showStdErr("Building filter interval forest");
+			if (verbose) Log.info("Building filter interval forest");
 			filterIntervals.build();
-			if (verbose) Timer.showStdErr("done.");
+			if (verbose) Log.info("done.");
 		}
 
 		// Store VCF results in a list?
@@ -962,7 +920,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
 		// Predict
 		boolean ok = true;
-		if (verbose) Timer.showStdErr("Predicting variants");
+		if (verbose) Log.info("Predicting variants");
 		if (inputFiles == null) {
 			// Single input file, output to STDOUT (typical usage)
 			ok = annotate(inputFile, null);
@@ -970,7 +928,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			// Multiple input and output files
 			for (String inputFile : inputFiles) {
 				String outputFile = outputFile(inputFile);
-				if (verbose) Timer.showStdErr("Analyzing file" //
+				if (verbose) Log.info("Analyzing file" //
 						+ "\n\tInput         : '" + inputFile + "'" //
 						+ "\n\tOutput        : '" + outputFile + "'" //
 						+ (createSummaryHtml ? "\n\tSummary (HTML): '" + summaryFileHtml + "'" : "") //
@@ -979,7 +937,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 				ok &= annotate(inputFile, outputFile);
 			}
 		}
-		if (verbose) Timer.showStdErr("done.");
+		if (verbose) Log.info("done.");
 
 		if (!ok) return null;
 		if (vcfEntriesDebug == null) return new ArrayList<>();
@@ -1009,7 +967,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			int secs = millisec / 1000;
 			if (secs > 0) {
 				int varsPerSec = (int) (countVariants * 1000.0 / millisec);
-				Timer.showStdErr("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
+				Log.info("\t" + countVariants + " variants (" + varsPerSec + " variants per second), " + countVcfEntries + " VCF entries");
 			}
 		}
 	}

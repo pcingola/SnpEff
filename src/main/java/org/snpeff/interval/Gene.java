@@ -196,7 +196,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 
 		newGene.shiftCoordinates(shift);
 		if (Config.get().isVerbose()) {
-			Timer.showStdErr("Gene '" + id + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
+			Log.info("Gene '" + id + "' spans across coordinate zero: Assuming circular chromosome, creating mirror gene at the end." //
 					+ "\n\tGene        :" + toStr() //
 					+ "\n\tNew gene    :" + newGene.toStr() //
 					+ "\n\tChrsomosome :" + chr.toStr() //

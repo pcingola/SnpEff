@@ -14,7 +14,7 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEntry;
 
 /**
@@ -244,16 +244,16 @@ public class SnpEffCmdClosest extends SnpEff {
 		loadDb();
 
 		// Build db
-		if (verbose) Timer.showStdErr("Building interval forest...");
+		if (verbose) Log.info("Building interval forest...");
 		snpEffectPredictor = config.getSnpEffectPredictor();
 		snpEffectPredictor.buildForest();
-		if (verbose) Timer.showStdErr("done");
+		if (verbose) Log.info("done");
 
 		// Annotate
-		if (verbose) Timer.showStdErr("Reading file '" + inFile + "'");
+		if (verbose) Log.info("Reading file '" + inFile + "'");
 		if (bedFormat) bedIterate();
 		else vcfIterate();
-		if (verbose) Timer.showStdErr("done");
+		if (verbose) Log.info("done");
 
 		return true;
 	}

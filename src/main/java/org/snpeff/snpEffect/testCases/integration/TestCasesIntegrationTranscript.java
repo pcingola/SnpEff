@@ -32,11 +32,11 @@ public class TestCasesIntegrationTranscript {
 		String genome = "testHg3766Chr1";
 		Config config = new Config(genome);
 
-		if (verbose) Timer.showStdErr("Loading genome " + genome);
+		if (verbose) Log.info("Loading genome " + genome);
 		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
-		if (verbose) Timer.showStdErr("Building interval forest");
+		if (verbose) Log.info("Building interval forest");
 		sep.buildForest();
-		if (verbose) Timer.showStdErr("Done");
+		if (verbose) Log.info("Done");
 
 		int count = 1;
 		for (Gene gene : sep.getGenome().getGenes()) {
@@ -70,11 +70,11 @@ public class TestCasesIntegrationTranscript {
 		String genome = "testHg3766Chr1";
 		Config config = new Config(genome);
 
-		if (verbose) Timer.showStdErr("Loading genome " + genome);
+		if (verbose) Log.info("Loading genome " + genome);
 		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
-		if (verbose) Timer.showStdErr("Building interval forest");
+		if (verbose) Log.info("Building interval forest");
 		sep.buildForest();
-		if (verbose) Timer.showStdErr("Done");
+		if (verbose) Log.info("Done");
 
 		int count = 1;
 		for (Gene gene : sep.getGenome().getGenes()) {
@@ -108,9 +108,9 @@ public class TestCasesIntegrationTranscript {
 		String genome = "testHg19Chr1";
 		Config config = new Config(genome);
 
-		if (verbose) Timer.showStdErr("Loading genome " + genome);
+		if (verbose) Log.info("Loading genome " + genome);
 		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
-		if (verbose) Timer.showStdErr("Done");
+		if (verbose) Log.info("Done");
 
 		int countOk = 0;
 		for (Gene gene : sep.getGenome().getGenes()) {
@@ -169,9 +169,9 @@ public class TestCasesIntegrationTranscript {
 		String genome = "testHg19Chr1";
 		Config config = new Config(genome);
 
-		if (verbose) Timer.showStdErr("Loading genome " + genome);
+		if (verbose) Log.info("Loading genome " + genome);
 		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
-		if (verbose) Timer.showStdErr("Done");
+		if (verbose) Log.info("Done");
 
 		int countOk = 0;
 		for (Gene gene : sep.getGenome().getGenes()) {
@@ -238,9 +238,9 @@ public class TestCasesIntegrationTranscript {
 		String genome = "testHg19Chr1";
 		Config config = new Config(genome);
 
-		if (verbose) Timer.showStdErr("Loading genome " + genome);
+		if (verbose) Log.info("Loading genome " + genome);
 		SnpEffectPredictor sep = config.loadSnpEffectPredictor();
-		if (verbose) Timer.showStdErr("Done");
+		if (verbose) Log.info("Done");
 
 		int countOk = 0;
 		for (Gene gene : sep.getGenome().getGenes()) {

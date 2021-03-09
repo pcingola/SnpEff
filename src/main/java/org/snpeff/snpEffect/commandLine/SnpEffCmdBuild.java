@@ -62,14 +62,14 @@ public class SnpEffCmdBuild extends SnpEff {
 		String cdsFile = config.getFileNameCds();
 		if (Gpr.canRead(cdsFile)) {
 			// Use FASTA format
-			if (verbose) Timer.showStdErr("CDS check (FASTA file): '" + cdsFile + "'\n");
+			if (verbose) Log.info("CDS check (FASTA file): '" + cdsFile + "'\n");
 			snpEffCmdCds = new SnpEffCmdCds(config);
 			snpEffCmdCds.setVerbose(verbose);
 			snpEffCmdCds.setDebug(debug);
 			snpEffCmdCds.setStoreAlignments(storeAlignments);
 			snpEffCmdCds.setCheckNumOk(checkNumOk);
 			snpEffCmdCds.run();
-		} else if (debug) Timer.showStdErr("\tOptional file '" + cdsFile + "' not found, nothing done.");
+		} else if (debug) Log.info("\tOptional file '" + cdsFile + "' not found, nothing done.");
 
 		//---
 		// Check using proteins file
@@ -88,7 +88,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		}
 
 		if (Gpr.canRead(protFile)) {
-			if (verbose) Timer.showStdErr("Protein check file: '" + protFile + "'\n");
+			if (verbose) Log.info("Protein check file: '" + protFile + "'\n");
 			snpEffCmdProtein = new SnpEffCmdProtein(config, protFile);
 			snpEffCmdProtein.setVerbose(verbose);
 			snpEffCmdProtein.setDebug(debug);
@@ -96,7 +96,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			snpEffCmdProtein.setCheckNumOk(checkNumOk);
 			snpEffCmdProtein.setProteinByTrId(proteinByTrId);
 			snpEffCmdProtein.run();
-		} else if (debug) Timer.showStdErr("\tOptional file '" + protFile + "' not found, nothing done.");
+		} else if (debug) Log.info("\tOptional file '" + protFile + "' not found, nothing done.");
 
 	}
 
@@ -242,7 +242,7 @@ public class SnpEffCmdBuild extends SnpEff {
 	 * Calculate and add annotations for rare amino acids
 	 */
 	void rareAa(SnpEffectPredictor snpEffectPredictor) {
-		if (verbose) Timer.showStdErr("[Optional] Rare amino acid annotations");
+		if (verbose) Log.info("[Optional] Rare amino acid annotations");
 		String proteinsFile = config.getFileNameProteins();
 
 		try {
@@ -257,10 +257,10 @@ public class SnpEffCmdBuild extends SnpEff {
 				snpEffectPredictor.add(raa);
 			}
 
-			if (verbose) Timer.showStdErr("Done.");
+			if (verbose) Log.info("Done.");
 		} catch (Throwable t) {
 			// If file does not exists, no problem
-			if (verbose) Timer.showStdErr("Warning: Cannot read optional protein sequence file '" + proteinsFile + "', nothing done.");
+			if (verbose) Log.info("Warning: Cannot read optional protein sequence file '" + proteinsFile + "', nothing done.");
 			if (debug) t.printStackTrace();
 		}
 	}
@@ -269,7 +269,7 @@ public class SnpEffCmdBuild extends SnpEff {
 	 * Read regulatory elements from multiple BED files
 	 */
 	void readRegulationBed() {
-		if (verbose) Timer.showStdErr("[Optional] Reading regulation elements: BED ");
+		if (verbose) Log.info("[Optional] Reading regulation elements: BED ");
 
 		String inDir = config.getDirRegulationBed();
 		String outDir = config.getDirDataGenomeVersion();
@@ -277,7 +277,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		// Is the directory present?
 		File dir = new File(inDir);
 		if (!dir.exists() || !dir.isDirectory()) {
-			if (verbose) Timer.showStdErr("Cannot find optional regulation dir '" + inDir + "', nothing done.");
+			if (verbose) Log.info("Cannot find optional regulation dir '" + inDir + "', nothing done.");
 			return;
 		}
 
@@ -291,12 +291,12 @@ public class SnpEffCmdBuild extends SnpEff {
 	 * Read regulation elements (only GFF3 file supported)
 	 */
 	void readRegulationGff() {
-		if (verbose) Timer.showStdErr("[Optional] Reading regulation elements: GFF");
+		if (verbose) Log.info("[Optional] Reading regulation elements: GFF");
 		String regulationFileName = config.getBaseFileNameRegulation() + ".gff";
 
 		// If file does not exists, no problem
 		if (!Gpr.canRead(regulationFileName)) {
-			if (verbose) Timer.showStdErr("Warning: Cannot read optional regulation file '" + regulationFileName + "', nothing done.");
+			if (verbose) Log.info("Warning: Cannot read optional regulation file '" + regulationFileName + "', nothing done.");
 			return;
 		}
 
@@ -316,42 +316,42 @@ public class SnpEffCmdBuild extends SnpEff {
 			regulationGffConsensus.readFile(regulationFileIterator); // Read info from file
 			regulationGffConsensus.save(); // Save database
 		}
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose) Log.info("Done.");
 	}
 
 	/**
 	 * Read regulation motif files
 	 */
 	void readRegulationMotif() {
-		if (verbose) Timer.showStdErr("[Optional] Reading motifs: GFF");
+		if (verbose) Log.info("[Optional] Reading motifs: GFF");
 		String motifFileName = config.getBaseFileNameMotif() + ".gff";
 		String motifBinFileName = config.getBaseFileNameMotif() + ".bin";
 		String pwmsFileName = config.getDirDataGenomeVersion() + "/pwms.bin";
 
 		if (!Gpr.exists(pwmsFileName)) {
-			if (verbose) Timer.showStdErr("Warning: Cannot open PWMs file " + pwmsFileName + ". Nothing done");
+			if (verbose) Log.info("Warning: Cannot open PWMs file " + pwmsFileName + ". Nothing done");
 			return;
 		}
 
 		try {
 			// Load all PWMs
-			if (verbose) Timer.showStdErr("\tLoading PWMs from : " + pwmsFileName);
+			if (verbose) Log.info("\tLoading PWMs from : " + pwmsFileName);
 			Jaspar jaspar = new Jaspar();
 			jaspar.load(pwmsFileName);
 
 			// Open the regulation file and create a consensus
-			if (verbose) Timer.showStdErr("\tLoading motifs from : " + motifFileName);
+			if (verbose) Log.info("\tLoading motifs from : " + motifFileName);
 			MotifFileIterator motifFileIterator = new MotifFileIterator(motifFileName, config.getGenome(), jaspar);
 			Markers motifs = new Markers();
 			for (Motif motif : motifFileIterator)
 				motifs.add(motif);
-			if (verbose) Timer.showStdErr("\tLoadded motifs: " + motifs.size());
+			if (verbose) Log.info("\tLoadded motifs: " + motifs.size());
 
-			if (verbose) Timer.showStdErr("\tSaving motifs to: " + motifBinFileName);
+			if (verbose) Log.info("\tSaving motifs to: " + motifBinFileName);
 			motifs.save(motifBinFileName);
 		} catch (Throwable t) {
 			// If file does not exists, no problem
-			if (verbose) Timer.showStdErr("Warning: Cannot read optional motif file '" + motifFileName + "', nothing done.");
+			if (verbose) Log.info("Warning: Cannot read optional motif file '" + motifFileName + "', nothing done.");
 			if (debug) t.printStackTrace();
 		}
 	}
@@ -361,7 +361,7 @@ public class SnpEffCmdBuild extends SnpEff {
 	 */
 	@Override
 	public boolean run() {
-		if (verbose) Timer.showStdErr("Building database for '" + genomeVer + "'");
+		if (verbose) Log.info("Building database for '" + genomeVer + "'");
 		loadConfig(); // Read configuration file
 
 		// Create SnpEffectPredictor
@@ -382,7 +382,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			checkDb(snpEffectPredictorFactory);
 
 			// Save database
-			if (verbose) Timer.showStdErr("Saving database");
+			if (verbose) Log.info("Saving database");
 			snpEffectPredictor.save(config);
 		}
 
@@ -391,7 +391,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		readRegulationBed();
 		readRegulationMotif();
 
-		if (verbose) Timer.showStdErr("Done");
+		if (verbose) Log.info("Done");
 
 		return true;
 	}

@@ -51,7 +51,7 @@ public class CytoBands {
 	 * Load cytobands form BED interval
 	 */
 	void load(String bedFile) {
-		if (verbose) Timer.showStdErr("Loading cytobands form file '" + bedFile + "'");
+		if (verbose) Log.info("Loading cytobands form file '" + bedFile + "'");
 		BedFileIterator bed = new BedFileIterator(bedFile);
 
 		int count = 0;
@@ -61,8 +61,8 @@ public class CytoBands {
 		}
 
 		if (verbose) {
-			if (count <= 0) Timer.showStdErr("WARNING: Unable to load cytobands from file '" + bedFile + "'");
-			else Timer.showStdErr("Loaded " + count + " cytoband intervals");
+			if (count <= 0) Log.info("WARNING: Unable to load cytobands from file '" + bedFile + "'");
+			else Log.info("Loaded " + count + " cytoband intervals");
 		}
 
 		build();

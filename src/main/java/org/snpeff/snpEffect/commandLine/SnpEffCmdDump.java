@@ -9,7 +9,7 @@ import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Utr;
 import org.snpeff.interval.tree.Itree;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Command line program: Build database
@@ -187,9 +187,9 @@ public class SnpEffCmdDump extends SnpEff {
 		loadDb();
 
 		// Build forest
-		if (verbose) Timer.showStdErr("Building interval forest");
+		if (verbose) Log.info("Building interval forest");
 		config.getSnpEffectPredictor().buildForest();
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose) Log.info("Done.");
 
 		// Dump database
 		if (dumpFormat == DumpFormat.DUMP) config.getSnpEffectPredictor().print();

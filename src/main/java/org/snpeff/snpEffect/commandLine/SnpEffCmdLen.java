@@ -12,7 +12,7 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.stats.ReadsOnMarkersModel;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Calculate the maximum interval length by type, for all markers in a genome
@@ -34,11 +34,11 @@ public class SnpEffCmdLen extends SnpEff {
 	 * Calculate effective length for all genes
 	 */
 	void effectiveCodingLength() {
-		if (verbose) Timer.showStdErr("Calclating gene effective coding lengths");
+		if (verbose) Log.info("Calclating gene effective coding lengths");
 
 		System.out.println("gene.name\tgene.id\tchr\tstart\tend\teffective.length\tmax.cds.length");
 		for (Chromosome chr : snpEffectPredictor.getGenome()) {
-			if (verbose) Timer.showStdErr("Effective coding lengths for chromosome " + chr.getId());
+			if (verbose) Log.info("Effective coding lengths for chromosome " + chr.getId());
 
 			for (Gene gene : snpEffectPredictor.getGenome().getGenes()) {
 				if (gene.getChromosomeName().equals(chr.getId()) && gene.isProteinCoding()) {
@@ -156,7 +156,7 @@ public class SnpEffCmdLen extends SnpEff {
 		loadConfig();
 		loadDb();
 
-		if (verbose) Timer.showStdErr("Building interval forest");
+		if (verbose) Log.info("Building interval forest");
 		snpEffectPredictor.buildForest();
 
 		//---
@@ -167,7 +167,7 @@ public class SnpEffCmdLen extends SnpEff {
 		readsOnMarkersModel = new ReadsOnMarkersModel(snpEffectPredictor);
 		readsOnMarkersModel.setVerbose(verbose);
 
-		if (verbose) Timer.showStdErr("Counting bases");
+		if (verbose) Log.info("Counting bases");
 		readsOnMarkersModel.run(); // Count
 		if (!quiet) System.out.println(readsOnMarkersModel);
 

@@ -114,7 +114,7 @@ public class LogStats extends Thread {
 		logStats.start();
 
 		// Finish up
-		if (verbose) Timer.showStdErr("Logging");
+		if (verbose) Log.info("Logging");
 		for (int i = 0; i < LOG_THREAD_WAIT_TIME_REPEAT; i++) {
 			if (!logStats.isAlive()) break;
 			try {

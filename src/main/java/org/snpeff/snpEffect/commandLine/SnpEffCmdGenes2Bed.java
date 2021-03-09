@@ -10,7 +10,7 @@ import org.snpeff.interval.Genome;
 import org.snpeff.interval.Intron;
 import org.snpeff.interval.Transcript;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Simple test program
@@ -41,7 +41,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	void loadGenes() {
 		// Parse file
 		if (fileName != null) {
-			if (verbose) Timer.showStdErr("Loading genes list from file '" + fileName + "'");
+			if (verbose) Log.info("Loading genes list from file '" + fileName + "'");
 
 			String lines[] = Gpr.readFile(fileName).split("\n");
 			if (lines.length <= 0) throw new RuntimeException("Cannot read file '" + fileName + "'");
@@ -119,8 +119,8 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 	public boolean run() {
 		loadGenes();
 		if (verbose) {
-			Timer.showStdErr("Number of gene IDs to look up: " + geneIds.size());
-			if (geneIds.isEmpty()) Timer.showStdErr("Empty list of IDs. Using all genes.");
+			Log.info("Number of gene IDs to look up: " + geneIds.size());
+			if (geneIds.isEmpty()) Log.info("Empty list of IDs. Using all genes.");
 		}
 
 		// Load config & database
@@ -223,7 +223,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 
 		// Find genes
 		Genome genome = config.getGenome();
-		if (verbose) Timer.showStdErr("Finding genes.");
+		if (verbose) Log.info("Finding genes.");
 		int found = 0, filtered = 0;
 		for (Gene g : genome.getGenesSortedPos()) {
 			// Is gene.id or gene.name in geneSet? => Show it
@@ -240,7 +240,7 @@ public class SnpEffCmdGenes2Bed extends SnpEff {
 		}
 
 		if (verbose) {
-			Timer.showStdErr("Done\n\tFound      : " + found + " / " + geneIds.size() //
+			Log.info("Done\n\tFound      : " + found + " / " + geneIds.size() //
 					+ (filtered > 0 ? "\n\tFiltered out : " + filtered + " / " + found : "") //
 			);
 		}

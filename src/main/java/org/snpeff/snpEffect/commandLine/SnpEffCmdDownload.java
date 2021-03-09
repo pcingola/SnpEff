@@ -8,7 +8,7 @@ import org.snpeff.SnpEff;
 import org.snpeff.logStatsServer.VersionCheck;
 import org.snpeff.util.Download;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Command line program: Build database
@@ -31,9 +31,9 @@ public class SnpEffCmdDownload extends SnpEff {
 		download.setUpdate(update);
 		if (download.download(url, localFile)) {
 			if (download.unzip(localFile, config.getDirMain(), config.getDirData())) {
-				if (verbose) Timer.showStdErr("Unzip: OK");
+				if (verbose) Log.info("Unzip: OK");
 				if ((new File(localFile)).delete()) {
-					if (verbose) Timer.showStdErr("Deleted local file '" + localFile + "'");
+					if (verbose) Log.info("Deleted local file '" + localFile + "'");
 				}
 			}
 		}
@@ -79,13 +79,13 @@ public class SnpEffCmdDownload extends SnpEff {
 	boolean runDownloadGenome() {
 		loadConfig(); // Read config file
 
-		if (verbose) Timer.showStdErr("Downloading database for '" + genomeVer + "'");
+		if (verbose) Log.info("Downloading database for '" + genomeVer + "'");
 
 		URL url = config.downloadUrl(genomeVer);
 		String localFile = System.getProperty("java.io.tmpdir") + "/" + Download.urlBaseName(url.toString());
 		downloadAndInstall(url, localFile);
 
-		if (verbose) Timer.showStdErr("Done");
+		if (verbose) Log.info("Done");
 		return true;
 	}
 
@@ -101,19 +101,19 @@ public class SnpEffCmdDownload extends SnpEff {
 		//---
 		VersionCheck versionCheck = VersionCheck.version(SnpEff.SOFTWARE_NAME, SnpEff.VERSION_SHORT, config.getVersionsUrl(), verbose);
 		if (versionCheck.isNewVersion()) {
-			Timer.showStdErr("New version: " //
+			Log.info("New version: " //
 					+ "\n\tNew version  : " + versionCheck.getLatestVersion() //
 					+ "\n\tRelease date : " + versionCheck.getLatestReleaseDate() //
 					+ "\n\tDownload URL : " + versionCheck.getLatestUrl() //
 			);
 		} else {
 			// Already updated?
-			Timer.showStdErr("No new version found. This seems to be the latest version (" + versionCheck.getLatestVersion() + ") or server could not be contacted. Nothing done.");
+			Log.info("No new version found. This seems to be the latest version (" + versionCheck.getLatestVersion() + ") or server could not be contacted. Nothing done.");
 			return false;
 		}
 
 		// OK, download
-		if (verbose) Timer.showStdErr("Downloading SnpEff");
+		if (verbose) Log.info("Downloading SnpEff");
 
 		URL url;
 		try {
@@ -124,7 +124,7 @@ public class SnpEffCmdDownload extends SnpEff {
 		String localFile = System.getProperty("java.io.tmpdir") + "/" + Gpr.baseName(url.toString());
 		downloadAndInstall(url, localFile); // Download and unzip
 
-		if (verbose) Timer.showStdErr("Done");
+		if (verbose) Log.info("Done");
 		return true;
 	}
 

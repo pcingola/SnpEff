@@ -33,7 +33,7 @@ public class VersionCheck extends Thread {
 		versionCheck.start();
 
 		// Finish up
-		if (verbose) Timer.showStdErr("Checking for updates...");
+		if (verbose) Log.info("Checking for updates...");
 		for (int i = 0; i < LOG_THREAD_WAIT_TIME_REPEAT; i++) {
 			if (!versionCheck.isAlive()) break;
 			try {

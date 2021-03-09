@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Load PWM matrices from a Jaspar file
- * 
+ *
  * @author pablocingolani
  */
 public class Jaspar implements Iterable<Pwm> {
@@ -29,13 +29,13 @@ public class Jaspar implements Iterable<Pwm> {
 	}
 
 	/**
-	 * Load matrix file 
+	 * Load matrix file
 	 * @param jasparMatrixFile
 	 */
 	public void load(String jasparMatrixFile) {
 		pwms = new HashMap<String, Pwm>();
 
-		if (verbose) Timer.showStdErr("Loading jaspar matrix from file " + jasparMatrixFile);
+		if (verbose) Log.info("Loading jaspar matrix from file " + jasparMatrixFile);
 
 		String lines[] = Gpr.readFile(jasparMatrixFile, true).split("\n");
 

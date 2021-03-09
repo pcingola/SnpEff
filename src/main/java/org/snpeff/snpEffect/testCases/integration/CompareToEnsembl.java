@@ -18,7 +18,7 @@ import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Compare our results to ENSEML's Variant Effect predictor's output
@@ -38,9 +38,7 @@ public class CompareToEnsembl {
 	 * Main
 	 */
 	public static void main(String args[]) {
-		//---
 		// Parse command line arguments
-		//---
 		if ((args.length != 2) && (args.length != 3)) {
 			System.err.println("Usage: " + CompareToEnsembl.class.getSimpleName() + " genomeName ensemblFile [transcriptId]");
 			System.exit(1);
@@ -51,16 +49,14 @@ public class CompareToEnsembl {
 		String trName = null;
 		if (args.length > 2) trName = args[2];
 
-		//---
 		// Run
-		//---
 		CompareToEnsembl compareToEnsembl = new CompareToEnsembl(genomeName, false);
 		compareToEnsembl.compareEnsembl(ensemblFile, trName);
 	}
 
 	public CompareToEnsembl(String genomeName, boolean throwException) {
 		this.throwException = throwException;
-		if (verbose) Timer.showStdErr("Loading predictor");
+		if (verbose) Log.info("Loading predictor");
 		config = new Config(genomeName, Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 		snpEffectPredictor = config.getSnpEffectPredictor();

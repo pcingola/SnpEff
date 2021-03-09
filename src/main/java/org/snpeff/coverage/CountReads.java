@@ -20,7 +20,7 @@ import org.snpeff.stats.CountByType;
 import org.snpeff.stats.CoverageByType;
 import org.snpeff.stats.PosStats;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEntry;
 
 import htsjdk.samtools.SAMRecord;
@@ -85,7 +85,7 @@ public class CountReads {
 
 		// Iterate over all BAM/SAM files
 		try {
-			if (verbose) Timer.showStdErr("Reading file '" + fileName + "'");
+			if (verbose) Log.info("Reading file '" + fileName + "'");
 			countReads = new CountByKey<>();
 			countBases = new CountByKey<>();
 			countTypes = new CountByType();
@@ -97,9 +97,9 @@ public class CountReads {
 
 		if (verbose) {
 			System.err.println("");
-			Timer.showStdErr("Finished reding file " + fileName + "\n\tTotal reads: " + countTotalReads);
+			Log.info("Finished reding file " + fileName + "\n\tTotal reads: " + countTotalReads);
 		}
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose) Log.info("Done.");
 	}
 
 	/**

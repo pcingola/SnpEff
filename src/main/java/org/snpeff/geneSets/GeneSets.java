@@ -154,7 +154,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 	 * Throws an exception on error
 	 */
 	public void checkInterestingGenes(Set<String> intGenes) {
-		if (debug) Timer.showStdErr("Checking genes (" + intGenes.size() + ") : " + intGenes);
+		if (debug) Log.info("Checking genes (" + intGenes.size() + ") : " + intGenes);
 
 		// Check that genes contains interestingGenes
 		if (!intGenes.containsAll(interestingGenes)) { throw new RuntimeException("Not every gene in :" + label + " as an interesting symbol"); }

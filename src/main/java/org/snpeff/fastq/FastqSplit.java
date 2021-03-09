@@ -9,11 +9,11 @@ import java.util.ArrayList;
 
 import org.snpeff.snpEffect.commandLine.CommandLine;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Split a fastq into N files
- * 
+ *
  * @author pablocingolani
  */
 public class FastqSplit implements CommandLine {
@@ -118,7 +118,7 @@ public class FastqSplit implements CommandLine {
 						idx++;
 						if ((idx < buffer.length) && (buffer[idx] == '@')) {
 							// Is there a '@\n'? => This is probably a record start
-							// Note: It may be a quality line that has the first base quality of 31 (i.e. '@' in phred-33 coding) 
+							// Note: It may be a quality line that has the first base quality of 31 (i.e. '@' in phred-33 coding)
 							if (isRecordStart(buffer, idx)) {
 								long recordStart = p + idx;
 								return recordStart;
@@ -145,7 +145,7 @@ public class FastqSplit implements CommandLine {
 
 	/**
 	 * Is this a FASTQ record start?
-	 *  
+	 *
 	 * @param buffer
 	 * @param idx
 	 * @return
@@ -211,7 +211,7 @@ public class FastqSplit implements CommandLine {
 
 		// Split size
 		long size = file.length();
-		if (verbose) Timer.showStdErr("Splitting file '" + fastqFile + "' into " + numSplits + " parts. File size: " + fileSizeStr(size) + " ( " + size + " bytes).");
+		if (verbose) Log.info("Splitting file '" + fastqFile + "' into " + numSplits + " parts. File size: " + fileSizeStr(size) + " ( " + size + " bytes).");
 		long step = size / numSplits;
 		if (step < 0) error("Error: Split file size less than 1 byte!");
 
@@ -230,7 +230,7 @@ public class FastqSplit implements CommandLine {
 		}
 
 		close();
-		if (verbose) Timer.showStdErr("Done.");
+		if (verbose) Log.info("Done.");
 		return true;
 	}
 
@@ -241,7 +241,7 @@ public class FastqSplit implements CommandLine {
 	/**
 	 * Create a split of the file by dumping bytes from 'start' to 'end'.
 	 * Note: Both start and end are included.
-	 * 
+	 *
 	 * @param splitNumber
 	 * @param start
 	 * @param end
@@ -250,7 +250,7 @@ public class FastqSplit implements CommandLine {
 		// Split file name
 		String splitFileName = String.format("%s/%s.%03d.%s", dirName, baseName, splitNumber, ext);
 		if ((dirName == null) || dirName.isEmpty()) splitFileName = String.format("%s.%03d.%s", baseName, splitNumber, ext);
-		if (verbose) Timer.showStdErr("Split " + splitNumber + ":\t[ " + start + " , " + end + " ]\t=>\t" + splitFileName);
+		if (verbose) Log.info("Split " + splitNumber + ":\t[ " + start + " , " + end + " ]\t=>\t" + splitFileName);
 
 		try {
 			// Open output file

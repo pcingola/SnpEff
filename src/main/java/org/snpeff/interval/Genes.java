@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.snpeff.snpEffect.Config;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * A collection of genes (marker intervals)
@@ -58,7 +58,7 @@ public class Genes implements Iterable<Gene>, Serializable {
 		if (!newGenes.isEmpty()) {
 			for (Gene g : newGenes)
 				genome.getGenes().add(g);
-			if (Config.get().isVerbose()) Timer.showStdErr("Total: " + newGenes.size() + " added as circular mirrored genes (appended '" + Gene.CIRCULAR_GENE_ID + "' to IDs).");
+			if (Config.get().isVerbose()) Log.info("Total: " + newGenes.size() + " added as circular mirrored genes (appended '" + Gene.CIRCULAR_GENE_ID + "' to IDs).");
 		}
 
 	}

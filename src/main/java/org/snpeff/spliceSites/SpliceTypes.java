@@ -19,7 +19,7 @@ import org.snpeff.motif.Pwm;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 import org.snpeff.util.Tuple;
 
 /**
@@ -134,12 +134,12 @@ public class SpliceTypes {
 	 * Analyze and create conserved splice sites donor-acceptor pairs.
 	 */
 	public boolean analyzeAndCreate() {
-		if (verbose) Timer.showStdErr("Splice site sequence conservation analysis: Start");
+		if (verbose) Log.info("Splice site sequence conservation analysis: Start");
 		load(); // Load data
 		spliceSequences(); // Find splice sequences
 		spliceDonoAcceptorPairs(); // Find donor acceptor pairs
 		createSpliceSites();
-		if (verbose) Timer.showStdErr("Splice site sequence conservation analysis: Done.");
+		if (verbose) Log.info("Splice site sequence conservation analysis: Done.");
 		return true;
 	}
 
@@ -194,7 +194,7 @@ public class SpliceTypes {
 	 * E.g. branchU12Threshold(0.95) gives the 95% percentile threshold
 	 */
 	public double branchU12Threshold(double thresholdU12Percentile) {
-		Timer.showStdErr("Finding U12 PWM score distribution and threshold.");
+		Log.info("Finding U12 PWM score distribution and threshold.");
 		ArrayList<Double> scores = new ArrayList<Double>();
 
 		//for (String branch : branchesList) {
@@ -229,7 +229,7 @@ public class SpliceTypes {
 	 * Create one fasta file for each donor-acceptor pair
 	 */
 	public void createSpliceFasta(String outputDir) {
-		if (verbose) Timer.showStdErr("Creating FASTA files for each dono-acceptor pair.");
+		if (verbose) Log.info("Creating FASTA files for each dono-acceptor pair.");
 
 		for (int i = 0; i < getDonorAccPairSize(); i++) {
 			String d = getDonor(i);
@@ -256,7 +256,7 @@ public class SpliceTypes {
 		}
 
 		// Write fasta file
-		if (verbose) Timer.showStdErr("\tWriting fasta sequences to file: " + fastaFile);
+		if (verbose) Log.info("\tWriting fasta sequences to file: " + fastaFile);
 		Gpr.toFile(fastaFile, fasta);
 	}
 
@@ -264,14 +264,14 @@ public class SpliceTypes {
 	 * Create Splice sites
 	 */
 	void createSpliceSites() {
-		if (verbose) Timer.showStdErr("\tCreating splice sites.");
+		if (verbose) Log.info("\tCreating splice sites.");
 
 		int count = 0;
 		for (Transcript tr : transcriptSet)
 			for (Intron intron : tr.introns())
 				createSpliceSites(intron);
 
-		if (verbose) Timer.showStdErr("\tCreated : " + count + " splice sites.");
+		if (verbose) Log.info("\tCreated : " + count + " splice sites.");
 	}
 
 	/**
@@ -389,14 +389,14 @@ public class SpliceTypes {
 	 */
 	void load() {
 		String u12file = config.getDirData() + "/spliceSites/u12_branch.pwm";
-		if (verbose) Timer.showStdErr("\tLoading U12 PWM form file '" + u12file + "'");
+		if (verbose) Log.info("\tLoading U12 PWM form file '" + u12file + "'");
 		pwmU12 = new Pwm(u12file);
 
 		// Load predictor?
 		if (config.getSnpEffectPredictor() == null) {
-			if (verbose) Timer.showStdErr("\tLoading: " + config.getGenome().getGenomeName());
+			if (verbose) Log.info("\tLoading: " + config.getGenome().getGenomeName());
 			config.loadSnpEffectPredictor();
-			if (verbose) Timer.showStdErr("\tdone.");
+			if (verbose) Log.info("\tdone.");
 		}
 
 		// Create transcript set?
@@ -486,7 +486,7 @@ public class SpliceTypes {
 		//---
 		// Create trees
 		//---
-		if (verbose) Timer.showStdErr("\tFinding donor-acceptor pairs: Creating quaternary trees");
+		if (verbose) Log.info("\tFinding donor-acceptor pairs: Creating quaternary trees");
 		for (String donor : donorsByIntron.values())
 			if (donor.indexOf('N') < 0) acgtTreeDonors.add(donor);
 
@@ -496,19 +496,19 @@ public class SpliceTypes {
 		//---
 		// Find donor - acceptor pairs
 		//---
-		if (verbose) Timer.showStdErr("\tCalculate thresholds");
+		if (verbose) Log.info("\tCalculate thresholds");
 		thresholdPDonor = findPthreshold(acgtTreeDonors);
 		thresholdEntropyDonor = findEntropyThreshold(acgtTreeDonors);
 		thresholdPAcc = findPthreshold(acgtTreeAcc);
 		thresholdEntropyAcc = findEntropyThreshold(acgtTreeAcc);
 
-		if (verbose) Timer.showStdErr("\tDonors Thresholds:\t\tEntropy: " + thresholdEntropyDonor + "\t\tProbability: " + thresholdPDonor);
+		if (verbose) Log.info("\tDonors Thresholds:\t\tEntropy: " + thresholdEntropyDonor + "\t\tProbability: " + thresholdPDonor);
 		for (String seq : acgtTreeDonors.findNodeNames(thresholdEntropyDonor, thresholdPDonor, THRESHOLD_COUNT)) {
 			if (seq.length() > 1) acc4donor(seq);
 		}
 
-		if (verbose) Timer.showStdErr("\tFind acceptors");
-		if (verbose) Timer.showStdErr("\tAcceptors Thresholds:\t\tEntropy: " + thresholdEntropyAcc + "\t\tProbability: " + thresholdPAcc);
+		if (verbose) Log.info("\tFind acceptors");
+		if (verbose) Log.info("\tAcceptors Thresholds:\t\tEntropy: " + thresholdEntropyAcc + "\t\tProbability: " + thresholdPAcc);
 		for (String seq : acgtTreeAcc.findNodeNames(thresholdEntropyAcc, thresholdPAcc, THRESHOLD_COUNT)) {
 			if (seq.length() > 1) donor4acc(GprSeq.reverse(seq));
 		}
@@ -516,7 +516,7 @@ public class SpliceTypes {
 		//---
 		// Show all donor - acc pairs (sort by number of matches)
 		//---
-		if (verbose) Timer.showStdErr("\tAdd Donor - Acceptors pairs: ");
+		if (verbose) Log.info("\tAdd Donor - Acceptors pairs: ");
 		ArrayList<String> keys = new ArrayList<String>();
 		keys.addAll(donorAcc.keySet());
 		Collections.sort(keys, new Comparator<String>() {
@@ -533,7 +533,7 @@ public class SpliceTypes {
 				donorAccPairDonor.add(da[0]);
 				donorAccPairAcc.add(da[1]);
 
-				if (verbose) Timer.showStdErr("\t\t\t" + donorAcc.get(key) + "\t" + key);
+				if (verbose) Log.info("\t\t\t" + donorAcc.get(key) + "\t" + key);
 			}
 		}
 	}
@@ -543,7 +543,7 @@ public class SpliceTypes {
 	 */
 	void spliceSequences() {
 		if (genomeFasta == null) genomeFasta = config.getFileNameGenomeFasta();
-		if (verbose) Timer.showStdErr("\tFinding splice sequences. Reading fasta file: " + genomeFasta);
+		if (verbose) Log.info("\tFinding splice sequences. Reading fasta file: " + genomeFasta);
 
 		// Iterate over all chromosomes
 		FastaFileIterator ffi = new FastaFileIterator(genomeFasta);
@@ -584,7 +584,7 @@ public class SpliceTypes {
 			countTr++;
 		}
 
-		if (verbose) Timer.showStdErr("\t\tChromosome: " + chrName //
+		if (verbose) Log.info("\t\tChromosome: " + chrName //
 				+ "\tTranscripts: " + countTr //
 				+ "\tExons: " + countEx //
 				+ "\tTotal Splice sites: " + donorsByIntron.size() //

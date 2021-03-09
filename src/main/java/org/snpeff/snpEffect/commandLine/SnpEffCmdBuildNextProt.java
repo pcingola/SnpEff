@@ -2,7 +2,7 @@ package org.snpeff.snpEffect.commandLine;
 
 import org.snpeff.SnpEff;
 import org.snpeff.nextProt.NextProtDb;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Parse NetxProt XML file and build a database
@@ -65,7 +65,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 		nextProtDb.parse(); // Parse XML files
 		nextProtDb.saveDatabase(); // Save database
 
-		if (verbose) Timer.showStdErr("Done!");
+		if (verbose) Log.info("Done!");
 		return true;
 	}
 

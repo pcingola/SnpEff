@@ -8,7 +8,7 @@ import org.snpeff.interval.Markers;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantWithScore;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Opens a sequence change file and iterates over all intervals in BED format.
@@ -31,7 +31,7 @@ import org.snpeff.util.Timer;
 public class BedFileIterator extends VariantFileIterator {
 
 	public static Markers load(String bedFileName, boolean verbose) {
-		if (verbose) Timer.showStdErr("Reading intervals from BED file '" + bedFileName + "'");
+		if (verbose) Log.info("Reading intervals from BED file '" + bedFileName + "'");
 
 		BedFileIterator bed = new BedFileIterator(bedFileName);
 		Markers markers = new Markers();

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.VcfGenotype;
 
@@ -41,53 +41,45 @@ public class Genotypes implements Serializable {
 
 	/**
 	 * Load data
-	 * @return
 	 */
 	public boolean loadVcf() {
-		//---
 		// Create data structure
-		//---
-		Timer.showStdErr("Counting lines form file: " + vcfFileName);
+		Log.info("Counting lines form file: " + vcfFileName);
 		int numLines = Gpr.countLines(vcfFileName);
-		Timer.showStdErr("Done. Number of lines: " + numLines);
+		Log.info("Done. Number of lines: " + numLines);
 
-		Timer.showStdErr("Loading file " + vcfFileName);
+		Log.info("Loading file " + vcfFileName);
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		int entryNum = 0;
 		for (VcfEntry ve : vcf) {
 			if (genotypeVectors == null) {
 				long mem = ((long) ve.getVcfGenotypes().size()) * numLines / 4L;
 				double memG = mem / (1024.0 * 1024 * 1024);
-				Timer.showStdErr(String.format("Initializing data structures. Expected memory consumption (lower bound): %d bytes (%.2f Gb).", mem, memG));
+				Log.info(String.format("Initializing data structures. Expected memory consumption (lower bound): %d bytes (%.2f Gb).", mem, memG));
 
 				genotypeVectors = new GenotypeVector[ve.getVcfGenotypes().size()];
 				for (int i = 0; i < genotypeVectors.length; i++)
 					genotypeVectors[i] = new GenotypeVector(numLines);
 
-				Timer.showStdErr("Done.");
-				Timer.showStdErr("Loading: ");
+				Log.info("Done.");
+				Log.info("Loading: ");
 			}
 
-			//System.out.print(ve.getChromosomeName() + ":" + ve.getStart());
 			int sampleNum = 0;
-			for (VcfGenotype vg : ve) {
+			for (VcfGenotype vg : ve)
 				set(entryNum, sampleNum++, vg);
-				//System.out.print(String.format("%2d", code));
-			}
-			//System.out.println("");
 
 			entryNum++;
 			Gpr.showMark(entryNum, MARK);
 		}
 
 		System.err.println("");
-		Timer.showStdErr("Done");
+		Log.info("Done");
 		return true;
 	}
 
 	/**
 	 * Parse command line arguments
-	 * @param args
 	 */
 	public void parse(String[] args) {
 		if (args.length != 1) {
@@ -103,16 +95,12 @@ public class Genotypes implements Serializable {
 	 * @param fileName
 	 */
 	public void save(String fileName) {
-		Timer.showStdErr("Saving to file: " + fileName);
+		Log.info("Saving to file: " + fileName);
 		Gpr.toFileSerializeGz(fileName, this);
 	}
 
 	/**
 	 * Set an entry
-	 * 
-	 * @param entryNum
-	 * @param sampleNum
-	 * @param vg
 	 */
 	public void set(int entryNum, int sampleNum, VcfGenotype vg) {
 		genotypeVectors[sampleNum].set(entryNum, vg);

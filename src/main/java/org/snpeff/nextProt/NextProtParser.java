@@ -146,7 +146,7 @@ public class NextProtParser {
 	 * Show annotations counters in a table
 	 */
 	void analyzeSequenceConservation() {
-		if (verbose) Timer.showStdErr("Sequence conservation analysis."//
+		if (verbose) Log.info("Sequence conservation analysis."//
 				+ "\n\tAA sequence length  : " + 1 //
 				+ "\n\tMin AA count        : " + HIGHLY_CONSERVED_AA_COUNT //
 				+ "\n\tMin AA conservation : " + HIGHLY_CONSERVED_AA_PERCENT //
@@ -227,7 +227,7 @@ public class NextProtParser {
 					}
 				}
 
-				if (verbose) Timer.showStdErr("NextProt " + count + " markers type '" + key + "' marked as highly conserved AA sequence");
+				if (verbose) Log.info("NextProt " + count + " markers type '" + key + "' marked as highly conserved AA sequence");
 			}
 		}
 	}
@@ -568,9 +568,9 @@ public class NextProtParser {
 	public void parse(Node doc) {
 		addTranscripts();
 
-		if (verbose) Timer.showStdErr("Parsing XML data.");
+		if (verbose) Log.info("Parsing XML data.");
 		List<Node> nodeList = findNodes(doc.getChildNodes(), NODE_NAME_PROTEIN, null, null, null);
-		if (verbose) Timer.showStdErr("Found " + nodeList.size() + " protein nodes");
+		if (verbose) Log.info("Found " + nodeList.size() + " protein nodes");
 
 		// Parse each node
 		for (Node node : nodeList) {
@@ -670,12 +670,12 @@ public class NextProtParser {
 	 */
 	void parseProteinNode(Node node) {
 		String uniqueName = getAttribute(node, ATTR_NAME_UNIQUE_NAME);
-		if (debug) Timer.showStdErr("Parsing protein node: " + uniqueName);
+		if (debug) Log.info("Parsing protein node: " + uniqueName);
 
 		// Find Ensembl gene ID
 		String geneId = getGeneId(node, uniqueName);
 		if (geneId != null) {
-			if (debug) Timer.showStdErr("\tFound matching gene ID: " + geneId);
+			if (debug) Log.info("\tFound matching gene ID: " + geneId);
 			// Get transcript IDs
 			if (findTrIds(node)) {
 				findSequences(node); // Find sequences
@@ -690,7 +690,7 @@ public class NextProtParser {
 	void readTrIdMap() {
 		trIdMap = new HashMap<>();
 		if (trIdFile == null) return;
-		if (verbose) Timer.showStdErr("Reading transcripts file '" + trIdFile + "'");
+		if (verbose) Log.info("Reading transcripts file '" + trIdFile + "'");
 
 		String lines[] = Gpr.readFile(trIdFile).split("\n");
 		for (String line : lines) {
@@ -791,7 +791,7 @@ public class NextProtParser {
 							trData.codon = tr.cds().substring(codonStart, codonEnd + 1);
 							trData.aa = CodonTables.getInstance().aa(trData.codon, genome, trData.chrName);
 							if (!subSeq.equals(trData.aa) && verbose) {
-								Timer.showStdErr("WARNING: AA differ: " //
+								Log.info("WARNING: AA differ: " //
 										+ "\tUniqueName : " + isoformRef //
 										+ "\tEnsembl ID : " + trId //
 										+ "\tEnsembl  AA: '" + trData.aa + "'"//
@@ -801,7 +801,7 @@ public class NextProtParser {
 						}
 					}
 				} else {
-					if (!proteinDifferences.contains(trId) && verbose) Timer.showStdErr("WARNING: Protein sequences differ: " //
+					if (!proteinDifferences.contains(trId) && verbose) Log.info("WARNING: Protein sequences differ: " //
 							+ "\tUniqueName" + isoformRef //
 							+ "\tEnsembl ID: " + trId //
 							+ "\n\tEnsembl  (" + protein.length() + "): " + protein //

@@ -10,7 +10,7 @@ import org.snpeff.fileIterator.RegulationFileIterator;
 import org.snpeff.interval.Markers;
 import org.snpeff.interval.Regulation;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Create a regulation consensus from a regulation file.
@@ -103,7 +103,7 @@ public class RegulationFileConsensus {
 	public ArrayList<Regulation> getRegulationList(String regType) {
 		ArrayList<Regulation> regs = regListByRegType.get(regType);
 		if (regs == null) {
-			if (verbose) Timer.showStdErr("\tAdding regulatory type: '" + regType + "'");
+			if (verbose) Log.info("\tAdding regulatory type: '" + regType + "'");
 			regs = new ArrayList<>();
 			regListByRegType.put(regType, regs);
 		}
@@ -135,7 +135,7 @@ public class RegulationFileConsensus {
 
 		// Show stats
 		if (verbose) {
-			Timer.showStdErr("Done");
+			Log.info("Done");
 			double perc = (100.0 * totalCount / totalLineNum);
 			System.err.println("\tTotal lines                 : " + lineNum);
 			System.err.println("\tTotal annotation count      : " + totalCount);
@@ -158,7 +158,7 @@ public class RegulationFileConsensus {
 			if (!markersToSave.isEmpty()) {
 				String rType = Gpr.sanityzeFileName(regType);
 				String fileName = outputDir + "/regulation_" + rType + ".bin";
-				if (verbose) Timer.showStdErr("\tSaving database '" + regType + "' (" + markersToSave.size() + " markers) in file '" + fileName + "'");
+				if (verbose) Log.info("\tSaving database '" + regType + "' (" + markersToSave.size() + " markers) in file '" + fileName + "'");
 
 				// Save markers to file
 				markersToSave.save(fileName);

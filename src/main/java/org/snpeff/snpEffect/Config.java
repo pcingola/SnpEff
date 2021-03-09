@@ -562,7 +562,7 @@ public class Config implements Serializable, Iterable<String> {
 	boolean loadProperties(String configFileName) {
 		try {
 			File confFile = new File(configFileName);
-			if (verbose) Timer.showStdErr("Reading config file: " + confFile.getCanonicalPath());
+			if (verbose) Log.info("Reading config file: " + confFile.getCanonicalPath());
 
 			if (Gpr.canRead(configFileName)) {
 				// Load properties

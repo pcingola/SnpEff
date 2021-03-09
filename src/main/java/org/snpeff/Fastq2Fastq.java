@@ -4,11 +4,11 @@ import org.snpeff.fastq.Fastq;
 import org.snpeff.fastq.FastqVariant;
 import org.snpeff.fileIterator.FastqFileIterator;
 import org.snpeff.util.GprSeq;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Convert FASTQ (phred64) file to FASTQ (phred33)
- * 
+ *
  * @author pcingola
  */
 public class Fastq2Fastq {
@@ -27,7 +27,7 @@ public class Fastq2Fastq {
 
 		// Parse command lien argument
 		String inFile = args[0];
-		Timer.showStdErr("Converting lines from FASTQ (Illumina) to FASTQ (Sanger). Input file '" + inFile + "'");
+		Log.info("Converting lines from FASTQ (Illumina) to FASTQ (Sanger). Input file '" + inFile + "'");
 
 		// Process file
 		try {
@@ -40,7 +40,7 @@ public class Fastq2Fastq {
 				System.out.println("+");
 				System.out.println(GprSeq.changeQuality(fastq.getQuality(), fastqVariantIn, fastqVariantOut)); // Convert quality to Sanger
 
-				if (i % SHOW_EVERY == 0) Timer.showStdErr(i + " sequences.");
+				if (i % SHOW_EVERY == 0) Log.info(i + " sequences.");
 				i++;
 			}
 			ffi.close();

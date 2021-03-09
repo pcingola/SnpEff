@@ -505,9 +505,9 @@ public class SnpEffCmdPdb extends SnpEff {
 
 		// Load SnpEff database
 		if (genomeVer != null) {
-			Timer.showStdErr("Loading SnpEff's database: " + genomeVer);
+			Log.info("Loading SnpEff's database: " + genomeVer);
 			loadDb();
-			Timer.showStdErr("Done.");
+			Log.info("Done.");
 		}
 
 		// Initialize trancriptById
@@ -543,7 +543,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	}
 
 	public void loadIdMapper() {
-		if (verbose) Timer.showStdErr("Loading id maps " + idMapFile);
+		if (verbose) Log.info("Loading id maps " + idMapFile);
 		idMapper = new IdMapper();
 		idMapper.setVerbose(verbose);
 		idMapper.load(idMapFile);
@@ -554,7 +554,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	 */
 	void openOuptut(String outputPdbFile) {
 		try {
-			if (verbose) Timer.showStdErr("Saving results to database file '" + outputPdbFile + "'");
+			if (verbose) Log.info("Saving results to database file '" + outputPdbFile + "'");
 			outpufFile = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(new File(outputPdbFile)))));
 			saved = new HashSet<String>();
 		} catch (IOException e) {
@@ -651,7 +651,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	 */
 	public void pdb() {
 		// Find all pdb files
-		if (verbose) Timer.showStdErr("Finding PDB files");
+		if (verbose) Log.info("Finding PDB files");
 		pdbFileNames = findPdbFiles();
 
 		// Create transcript map
@@ -659,7 +659,7 @@ public class SnpEffCmdPdb extends SnpEff {
 
 		// Map IDs and confirm that amino acid sequence matches (within certain error
 		// rate)
-		if (verbose) Timer.showStdErr("Analyzing PDB sequences");
+		if (verbose) Log.info("Analyzing PDB sequences");
 		pdbAnalysis();
 		closeOuptut();
 	}
@@ -670,12 +670,12 @@ public class SnpEffCmdPdb extends SnpEff {
 	 * and PDB)
 	 */
 	protected void pdbAnalysis() {
-		if (verbose) Timer.showStdErr("Analyzing PDB files");
+		if (verbose) Log.info("Analyzing PDB files");
 
 		for (String pdbFileName : pdbFileNames)
 			pdbAnalysis(pdbFileName);
 
-		if (verbose) Timer.showStdErr("Done." //
+		if (verbose) Log.info("Done." //
 				+ "\n\tNumber of PDB files : " + pdbFileNames.size() //
 				+ "\n\tPDB files analyzed  : " + countFilesPass //
 				+ "\n\tAA 'in contact'     : " + countMapOk //
@@ -786,7 +786,7 @@ public class SnpEffCmdPdb extends SnpEff {
 	public Structure readPdbFile(String pdbFileName) {
 		try {
 			PdbFile pdbreader = new PdbFile();
-			if (verbose) Timer.showStdErr("Reading PDB file: " + pdbFileName);
+			if (verbose) Log.info("Reading PDB file: " + pdbFileName);
 			return pdbreader.getStructure(pdbFileName);
 		} catch (IOException e) {
 			if (verbose) e.printStackTrace();

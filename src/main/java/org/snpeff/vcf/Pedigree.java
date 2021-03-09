@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.util.Gpr;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 import org.snpeff.util.Tuple;
 
 /**
@@ -144,7 +144,7 @@ public class Pedigree implements Iterable<PedigreeEntry> {
 	 */
 	void readPedigreeTxt(String cancerSamples) {
 		// Read from TXT file
-		if (verbose) Timer.showStdErr("Reading cancer samples pedigree from file '" + cancerSamples + "'.");
+		if (verbose) Log.info("Reading cancer samples pedigree from file '" + cancerSamples + "'.");
 
 		List<String> sampleNames = vcfFile.getVcfHeader().getSampleNames();
 		pedigree = new ArrayList<>();
@@ -166,9 +166,9 @@ public class Pedigree implements Iterable<PedigreeEntry> {
 	 */
 	void readPedigreeVcf() {
 		// Read from VCF header
-		if (verbose) Timer.showStdErr("Reading cancer samples pedigree from VCF header.");
+		if (verbose) Log.info("Reading cancer samples pedigree from VCF header.");
 		pedigree = vcfFile.getVcfHeader().getPedigree();
-		if (verbose) Timer.showStdErr("Pedigree: " + pedigree);
+		if (verbose) Log.info("Pedigree: " + pedigree);
 	}
 
 	public void setDebug(boolean debug) {

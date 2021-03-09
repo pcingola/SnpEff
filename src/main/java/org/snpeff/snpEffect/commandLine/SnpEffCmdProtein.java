@@ -120,7 +120,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	 * Check proteins using all possible codon tables
 	 */
 	void checkCodonTables() {
-		if (verbose) Timer.showStdErr("Comparing Proteins...");
+		if (verbose) Log.info("Comparing Proteins...");
 
 		createTrByChromo(); // Create lists of transcripts by chromosome
 
@@ -135,14 +135,14 @@ public class SnpEffCmdProtein extends SnpEff {
 			}
 		}
 
-		if (verbose) Timer.showStdErr("done");
+		if (verbose) Log.info("done");
 	}
 
 	/**
 	 * Check proteins
 	 */
 	void checkProteins() {
-		if (verbose) Timer.showStdErr("Comparing Proteins...");
+		if (verbose) Log.info("Comparing Proteins...");
 
 		if (codonTables) {
 			// Compare proteins using ALL codon tables
@@ -426,7 +426,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	 * Read a file that has all proteins in fasta format
 	 */
 	void readProteinFile() {
-		if (verbose) Timer.showStdErr("Reading proteins from file '" + proteinFile + "'...");
+		if (verbose) Log.info("Reading proteins from file '" + proteinFile + "'...");
 		proteinByTrId = new HashMap<>();
 
 		if (proteinFile.endsWith("txt") || proteinFile.endsWith("txt.gz")) readProteinFileTxt();
@@ -434,7 +434,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		else if (proteinFile.endsWith(SnpEffPredictorFactoryEmbl.EXTENSION_EMBL)) readProteinFileEmbl();
 		else readProteinFileFasta();
 
-		if (verbose) Timer.showStdErr("done (" + proteinByTrId.size() + " Proteins).");
+		if (verbose) Log.info("done (" + proteinByTrId.size() + " Proteins).");
 	}
 
 	/**
@@ -549,7 +549,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	 */
 	@Override
 	public boolean run() {
-		if (verbose) Timer.showStdErr("Checking database using protein sequences");
+		if (verbose) Log.info("Checking database using protein sequences");
 
 		loadConfig(); // Load config
 		if (proteinByTrId == null) readProteinFile(); // Read proteins

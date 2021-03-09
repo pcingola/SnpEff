@@ -332,23 +332,23 @@ public class SnpEffCmdCds extends SnpEff {
 	 */
 	@Override
 	public boolean run() {
-		if (verbose) Timer.showStdErr("Checking database using CDS sequences");
+		if (verbose) Log.info("Checking database using CDS sequences");
 
 		// Load config
 		if (config == null) loadConfig();
 
 		// Read CDS form file
-		if (verbose) Timer.showStdErr("Reading CDSs from file '" + cdsFile + "'...");
+		if (verbose) Log.info("Reading CDSs from file '" + cdsFile + "'...");
 		readCdsFile(); // Load CDS
-		if (verbose) Timer.showStdErr("done (" + cdsByTrId.size() + " CDSs).");
+		if (verbose) Log.info("done (" + cdsByTrId.size() + " CDSs).");
 
 		// Load predictor
 		if (config.getSnpEffectPredictor() == null) loadDb();
 
 		// Compare CDS
-		if (verbose) Timer.showStdErr("Comparing CDS...");
+		if (verbose) Log.info("Comparing CDS...");
 		cdsCompare();
-		if (verbose) Timer.showStdErr("done");
+		if (verbose) Log.info("done");
 
 		return true;
 	}

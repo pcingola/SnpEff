@@ -5,15 +5,15 @@ import org.snpeff.geneSets.GeneSet;
 import org.snpeff.geneSets.GeneSets;
 import org.snpeff.gsa.ScoreList;
 import org.snpeff.probablility.FisherExactTest;
-import org.snpeff.util.Timer;
+import org.snpeff.util.Log;
 
 /**
  * Leading edge fraction algorithm
- * 
+ *
  * References: "Common Inherited Variation in Mitochondrial Genes Is Not Enriched for Associations with Type 2 Diabetes or Related Glycemic Traits"
- * 				http://www.plosgenetics.org/article/info%3Adoi%2F10.1371%2Fjournal.pgen.1001058 
+ * 				http://www.plosgenetics.org/article/info%3Adoi%2F10.1371%2Fjournal.pgen.1001058
  * 				See page 12, "Step 4"
- * 
+ *
  * @author pablocingolani
  */
 public class LeadingEdgeFractionAlgorithm extends FisherPValueGreedyAlgorithm {
@@ -21,7 +21,7 @@ public class LeadingEdgeFractionAlgorithm extends FisherPValueGreedyAlgorithm {
 	public static final double SCORE_CUTOFF_QUANTILE_DEFAULT = 0.05; // This it the value used in the paper (top 95%)
 	public static final Apfloat ONE = new Apfloat(1.0);
 
-	boolean orderDescending = false; // If 'true', high scores are better (sort descending and get the first values) 
+	boolean orderDescending = false; // If 'true', high scores are better (sort descending and get the first values)
 	double scoreCutOff;
 	double scoreCutOffQuantile = SCORE_CUTOFF_QUANTILE_DEFAULT;
 	int N, D;
@@ -49,7 +49,7 @@ public class LeadingEdgeFractionAlgorithm extends FisherPValueGreedyAlgorithm {
 				if (isTopScore(geneId)) D++;
 			}
 
-		if (verbose) Timer.showStdErr("Fisher Exact test parameters:\n\tN : " + N + "\n\tD : " + D);
+		if (verbose) Log.info("Fisher Exact test parameters:\n\tN : " + N + "\n\tD : " + D);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class LeadingEdgeFractionAlgorithm extends FisherPValueGreedyAlgorithm {
 		if (debug) {
 			// Calculate and show 'leading edge fraction'
 			double leadingEdgeFraction = ((double) count) / ((double) tot);
-			Timer.showStdErr("Gene set: " + geneSet.getName() + "\tsize: " + geneSet.size() + "\tsize (eff): " + geneSet.sizeEffective() + "\t" + count + "\tleadingEdgeFraction: " + leadingEdgeFraction);
+			Log.info("Gene set: " + geneSet.getName() + "\tsize: " + geneSet.size() + "\tsize (eff): " + geneSet.sizeEffective() + "\t" + count + "\tleadingEdgeFraction: " + leadingEdgeFraction);
 		}
 
 		// Calculate p-value
@@ -110,12 +110,12 @@ public class LeadingEdgeFractionAlgorithm extends FisherPValueGreedyAlgorithm {
 		double pco = scoreList.quantile(quantile);
 
 		// Show
-		if (verbose) Timer.showStdErr("Calculate pValue_CutOff: " //
+		if (verbose) Log.info("Calculate pValue_CutOff: " //
 				+ "\n\tSize (effective) : " + scoreList.size() //
 				+ "\n\tQuantile         : " + scoreCutOffQuantile //
 				+ "\n\tScore CutOff     : " + pco //
 		);
-		if (debug) Timer.showStdErr("\tp-values: " + scoreList);
+		if (debug) Log.info("\tp-values: " + scoreList);
 
 		return pco;
 	}
