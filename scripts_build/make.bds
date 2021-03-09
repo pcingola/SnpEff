@@ -10,7 +10,7 @@
 # Command line options
 help Build and test options
 bundleLists			:= false		help Create bundle lists and config entries. OBSOLETE
-config				:= false		help Create config file
+doConfig			:= false		help Create config file
 db					:= false		help Build databases
 string[] dbs						help Build databases
 dbTest				:= false		help Build databases used in test cases
@@ -37,6 +37,7 @@ uploadHtml 			:= false		help Upload web pages
 string[] zipGenome	= []			help Zip a specific genome
 
 help Azure options
+azureKeysFile		:= "$HOME/snpEff/.azure"					help Azure credentials file
 azureBlobEndpoint	:= 'https://snpeff.blob.core.windows.net'	help Azure Blob entry point
 azureContainer		:= 'databases'								help Azure container for databases
 azureQueryString	:= ''										help Azure 'query string' containing a security token.
@@ -591,12 +592,16 @@ void runTestsSnpEffUnity() {
 # Upload core files to Azure
 #-------------------------------------------------------------------------------
 void uploadCore2Azure() {
-	if( azureQueryString.isEmpty() ) error("Command line option '-azureQueryString' must be provided")
+	if( azureQueryString.isEmpty() ) {
+		println "Reading keys from '$azureKeysFile'"
+		azureKeys := azureKeysFile.config()
+		azureQueryString = azureKeys{'versions_query_string'}
+	}
 	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
 	zipLatest := "snpEff_latest_core.zip"
 	azureContainer = 'versions'
-	sys azcopy cp $zip       "$azureBlobEndpoint/$azureContainer/$azureQueryString"
-	sys azcopy cp $zipLatest "$azureBlobEndpoint/$azureContainer/$azureQueryString"
+	sys azcopy cp $zip       "$azureBlobEndpoint/$azureContainer/$zip$azureQueryString"
+	sys azcopy cp $zipLatest "$azureBlobEndpoint/$azureContainer/$zipLatest$azureQueryString"
 	# Add version file
 	htmlDir := "$HOME/workspace/SnpEff/docs"
 	verFile := htmlDir.createVersionFile()
@@ -818,7 +823,7 @@ print("Building\n")
 
 if( args.isEmpty() )			build()										# No arguments? Build (create JAR files)
 if( bundleLists )				buildBundleLists()							# Create bundle list and config files
-if( config )					buildConfig()								# Create config file
+if( doConfig )					buildConfig()								# Create config file
 if( db || !dbs.isEmpty() )		buildDb()									# Build ALL genomes
 if( dbTest )					buildDbTest()								# Build databases used in test cases
 if( distro )					makeDistro()								# Create distribution files
