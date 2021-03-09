@@ -9,6 +9,7 @@ import org.snpeff.coverage.CountReadsOnMarkers;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.stats.ReadsOnMarkersModel;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 import htsjdk.samtools.BAMIndex;
@@ -19,7 +20,7 @@ import htsjdk.samtools.SamReaderFactory;
 
 /**
  * Count reads from a BAM file given a list of intervals
- * 
+ *
  * @author pablocingolani
  */
 public class SnpEffCmdCount extends SnpEff {
@@ -36,15 +37,14 @@ public class SnpEffCmdCount extends SnpEff {
 
 	/**
 	 * Count all reads in a BAM file Note: It uses the BAM index
-	 * 
+	 *
 	 * @param samReader
 	 * @return
 	 */
 	int countTotalReads(String samFileName) {
 		try {
 			int count = 0;
-			if (verbose)
-				Timer.showStdErr("Counting reads on file: " + samFileName);
+			if (verbose) Timer.showStdErr("Counting reads on file: " + samFileName);
 			// SAMFileReader samReader = new SAMFileReader(new File(samFileName));
 			// AbstractBAMFileIndex index = (AbstractBAMFileIndex) samReader.getIndex();
 			SamReader samReader = SamReaderFactory.makeDefault().open(new File(samFileName));
@@ -57,8 +57,7 @@ public class SnpEffCmdCount extends SnpEff {
 				count += meta.getAlignedRecordCount();
 			}
 			samReader.close();
-			if (verbose)
-				Timer.showStdErr("Total " + count + " reads.");
+			if (verbose) Timer.showStdErr("Total " + count + " reads.");
 			return count;
 		} catch (Exception e) {
 			// Error? (e.g. no index)
@@ -69,39 +68,30 @@ public class SnpEffCmdCount extends SnpEff {
 
 	/**
 	 * Parse
-	 * 
+	 *
 	 * @param args
 	 */
 	@Override
 	public void parseArgs(String[] args) {
 		// Parse command line arguments
 		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("-p"))
-				calcProbModel = true;
-			else if (args[i].equals("-n"))
-				outputBaseNames = args[++i];
-			else if ((genomeVer == null) || genomeVer.isEmpty())
-				genomeVer = args[i];
-			else
-				fileNames.add(args[i]);
+			if (args[i].equals("-p")) calcProbModel = true;
+			else if (args[i].equals("-n")) outputBaseNames = args[++i];
+			else if ((genomeVer == null) || genomeVer.isEmpty()) genomeVer = args[i];
+			else fileNames.add(args[i]);
 		}
 
 		// Sanity check
-		if ((genomeVer == null) || genomeVer.isEmpty())
-			usage("Missing genome version");
-		if (fileNames.size() < 1)
-			usage("Missing input file/s");
+		if ((genomeVer == null) || genomeVer.isEmpty()) usage("Missing genome version");
+		if (fileNames.size() < 1) usage("Missing input file/s");
 
 		for (String file : fileNames)
-			if (!Gpr.canRead(file))
-				fatalError("Cannot read input file '" + file + "'");
+			if (!Gpr.canRead(file)) Log.fatalError("Cannot read input file '" + file + "'");
 
 		for (String file : customIntervalFiles)
-			if (!Gpr.canRead(file))
-				fatalError("Cannot read custom intervals file '" + file + "'");
+			if (!Gpr.canRead(file)) Log.fatalError("Cannot read custom intervals file '" + file + "'");
 
-		if (noGenome && customIntervalFiles.isEmpty())
-			usage("No user defined intervals were defined (mandatory if '-noGenome' option is enabled)");
+		if (noGenome && customIntervalFiles.isEmpty()) usage("No user defined intervals were defined (mandatory if '-noGenome' option is enabled)");
 	}
 
 	/**
@@ -109,8 +99,7 @@ public class SnpEffCmdCount extends SnpEff {
 	 */
 	ReadsOnMarkersModel pvalues() {
 		int readLength = countReadsOnMarkers.getReadLengthAvg();
-		if (verbose)
-			Timer.showStdErr("Calculating probability model for read length " + readLength);
+		if (verbose) Timer.showStdErr("Calculating probability model for read length " + readLength);
 
 		// Cannot load from file: Create model and save it
 		ReadsOnMarkersModel readsOnMarkersModel = new ReadsOnMarkersModel(snpEffectPredictor);
@@ -143,11 +132,9 @@ public class SnpEffCmdCount extends SnpEff {
 		snpEffectPredictor = config.getSnpEffectPredictor();
 
 		// Build forest
-		if (verbose)
-			Timer.showStdErr("Building interval forest");
+		if (verbose) Timer.showStdErr("Building interval forest");
 		snpEffectPredictor.buildForest();
-		if (verbose)
-			Timer.showStdErr("done");
+		if (verbose) Timer.showStdErr("done");
 
 		// ---
 		// Count reads
@@ -168,33 +155,25 @@ public class SnpEffCmdCount extends SnpEff {
 			// Show results : Details marker by marker counts
 			if (outputBaseNames != null) {
 				String detailsFile = outputBaseNames + ".txt";
-				if (verbose)
-					Timer.showStdErr("Saving counts by marker to file '" + detailsFile + "'");
+				if (verbose) Timer.showStdErr("Saving counts by marker to file '" + detailsFile + "'");
 				Gpr.toFile(detailsFile, countReadsOnMarkers);
-			} else
-				System.out.println(countReadsOnMarkers);
+			} else System.out.println(countReadsOnMarkers);
 
 			// Calculate p-values
 			ReadsOnMarkersModel readsOnMarkersModel = new ReadsOnMarkersModel(snpEffectPredictor);
-			if (calcProbModel)
-				readsOnMarkersModel = pvalues();
+			if (calcProbModel) readsOnMarkersModel = pvalues();
 
 			// Show results (summary)
 			if (outputBaseNames != null) {
 				String summaryFile = outputBaseNames + ".summary.txt";
-				if (verbose)
-					Timer.showStdErr("Saving summary to file '" + summaryFile + "'");
-				Gpr.toFile(summaryFile,
-						"# Summary\n" + countReadsOnMarkers.probabilityTable(readsOnMarkersModel.getProb()));
-			} else
-				System.err.println("# Summary\n" + countReadsOnMarkers.probabilityTable(readsOnMarkersModel.getProb()));
+				if (verbose) Timer.showStdErr("Saving summary to file '" + summaryFile + "'");
+				Gpr.toFile(summaryFile, "# Summary\n" + countReadsOnMarkers.probabilityTable(readsOnMarkersModel.getProb()));
+			} else System.err.println("# Summary\n" + countReadsOnMarkers.probabilityTable(readsOnMarkersModel.getProb()));
 
 			// Save HTML file
 			String htmlFile = "snpeff.count.html";
-			if (outputBaseNames != null)
-				htmlFile = outputBaseNames + ".summary.html";
-			if (verbose)
-				Timer.showStdErr("Saving charts to file : " + htmlFile);
+			if (outputBaseNames != null) htmlFile = outputBaseNames + ".summary.html";
+			if (verbose) Timer.showStdErr("Saving charts to file : " + htmlFile);
 			Gpr.toFile(htmlFile, countReadsOnMarkers.html());
 		}
 
@@ -203,14 +182,12 @@ public class SnpEffCmdCount extends SnpEff {
 
 	@Override
 	public void usage(String message) {
-		if (message != null)
-			System.err.println("Error: " + message + "\n");
+		if (message != null) System.err.println("Error: " + message + "\n");
 		System.err.println("snpEff version " + VERSION);
 		System.err.println("Usage: snpEff count [options] genome file_1 file_2 ...  file_N");
 		System.err.println("\t-n name          : Output file base name. ");
 		System.err.println("\t-p               : Calculate probability model (binomial). Default: " + calcProbModel);
-		System.err.println(
-				"\tfile             : A file contianing intervals or reads. Either BAM, SAM, VCF, BED or BigBed format.");
+		System.err.println("\tfile             : A file contianing intervals or reads. Either BAM, SAM, VCF, BED or BigBed format.");
 
 		usageGenericAndDb();
 

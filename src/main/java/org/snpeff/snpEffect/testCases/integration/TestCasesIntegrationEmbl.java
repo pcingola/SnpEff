@@ -7,7 +7,7 @@ import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.SnpEffectPredictor;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -38,7 +38,7 @@ public class TestCasesIntegrationEmbl extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_Exon_Simple() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// Create SnpEff predictor
 		String genome = "testEmblPberghei";
 		String resultFile = path("testEmblPberghei.genes.embl");

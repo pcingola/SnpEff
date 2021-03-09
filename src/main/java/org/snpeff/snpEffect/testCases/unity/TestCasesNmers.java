@@ -9,7 +9,7 @@ import java.util.Random;
 import org.junit.Test;
 import org.snpeff.binseq.coder.DnaCoder;
 import org.snpeff.nmer.Nmer;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 public class TestCasesNmers {
 
@@ -33,7 +33,7 @@ public class TestCasesNmers {
 
 	@Test
 	public void test_03_Nmers() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20100615;
 		Random rand = new Random(seed);
 
@@ -52,7 +52,7 @@ public class TestCasesNmers {
 
 	@Test
 	public void test_20_Nmers_read_write() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String testFile = "/tmp/nmer_test.bin";
 		int nmerSize = 32;
 		int numNmers = 100000;

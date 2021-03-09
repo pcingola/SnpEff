@@ -2,7 +2,7 @@ package net.sf.samtools.tabix;
 
 import java.util.Iterator;
 
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Iterate on a result from TabixReader.query()
@@ -59,52 +59,52 @@ public class TabixIterator implements Iterator<String>, Iterable<String> {
 	private String readNext() {
 		try {
 			if (isEof) {
-				if (debug) Gpr.debug("readNext return: EOF");
+				if (debug) Log.debug("readNext return: EOF");
 				return null;
 			}
 
 			for (;;) {
 				if (currentOffset == 0 || !TPair64.less64(currentOffset, offsets[i].v)) { // then jump to the next chunk
 					if (i == offsets.length - 1) {
-						if (debug) Gpr.debug("readNext break: No more chunks");
+						if (debug) Log.debug("readNext break: No more chunks");
 						break; // no more chunks
 					}
-					if (i >= 0) assert(currentOffset == offsets[i].v); // Otherwise bug
+					if (i >= 0) assert (currentOffset == offsets[i].v); // Otherwise bug
 					if (i < 0 || offsets[i].v != offsets[i + 1].u) { // Not adjacent chunks; then seek
 						long pos = offsets[i + 1].u;
 						tabixReader.seek(pos);
 						currentOffset = tabixReader.getFilePointer();
-						if (debug) Gpr.debug("readNext seek: " + offsets[i + 1].u + "\tcurr_off: " + currentOffset);
+						if (debug) Log.debug("readNext seek: " + offsets[i + 1].u + "\tcurr_off: " + currentOffset);
 					}
 					++i;
 				}
 
 				String s;
 				if ((s = tabixReader.readLine()) != null) {
-					if (debug) Gpr.debug("reding line: " + s);
+					if (debug) Log.debug("reding line: " + s);
 
 					// TIntv intv;
 					char[] str = s.toCharArray();
 					currentOffset = tabixReader.getFilePointer();
 					if (str.length == 0) {
-						if (debug) Gpr.debug("readNext continue, empty line");
+						if (debug) Log.debug("readNext continue, empty line");
 						continue;
 					}
 
 					// Check header
 					if (str[0] == tabixReader.getmMeta()) {
 						if (!showHeader) {
-							if (debug) Gpr.debug("readNext continue, header line: " + s);
+							if (debug) Log.debug("readNext continue, header line: " + s);
 							continue;
 						}
 
-						if (debug) Gpr.debug("readNext return, line: " + s);
+						if (debug) Log.debug("readNext return, line: " + s);
 						return s;
 					}
 
 					// Any line we read is OK when reading the whole compression block
 					if (readBlock) {
-						if (debug) Gpr.debug("readNext return (block), line: " + s);
+						if (debug) Log.debug("readNext return (block), line: " + s);
 						return s;
 					}
 
@@ -112,17 +112,17 @@ public class TabixIterator implements Iterator<String>, Iterable<String> {
 					TabixInterval latestIntv = new TabixInterval(tabixReader, s);
 					if (((tid >= 0) && (latestIntv.tid != tid)) || latestIntv.beg >= end) { // Note: tid < 0 means any-chromosome (i.e. no-limits)
 						// Past end coordinate, no need to proceed.
-						if (debug) Gpr.debug("readNext break: Interval from file after query:" //
+						if (debug) Log.debug("readNext break: Interval from file after query:" //
 								+ "\n\tQuery        :\t" + "tid: " + tid + ", start: " + beg + ", end: " + end //
 								+ "\n\tFile interval:\t" + latestIntv //
 						);
 						break;
 					} else if (latestIntv.end > beg && latestIntv.beg < end) {
-						if (debug) Gpr.debug("readNext return, line: " + s);
+						if (debug) Log.debug("readNext return, line: " + s);
 						return s; // overlap; return
 					}
 				} else {
-					if (debug) Gpr.debug("readNext break: End of file");
+					if (debug) Log.debug("readNext break: End of file");
 					break; // end of file
 				}
 			}
@@ -132,7 +132,7 @@ public class TabixIterator implements Iterator<String>, Iterable<String> {
 			throw new RuntimeException(e);
 		}
 
-		if (debug) Gpr.debug("readNext return, line: null");
+		if (debug) Log.debug("readNext return, line: null");
 		return null;
 	}
 

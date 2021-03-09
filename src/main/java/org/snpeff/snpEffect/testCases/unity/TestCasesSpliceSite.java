@@ -7,6 +7,7 @@ import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test Splice sites variants
@@ -30,7 +31,7 @@ public class TestCasesSpliceSite extends TestCasesBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Test N times
 		//	- Create a random gene transcript, exons

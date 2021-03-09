@@ -48,6 +48,7 @@ import org.snpeff.snpEffect.commandLine.SnpEffCmdShow;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdTranslocationsReport;
 import org.snpeff.spliceSites.SnpEffCmdSpliceAnalysis;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
@@ -395,22 +396,14 @@ public class SnpEff implements CommandLine {
 		cmd.configOverride = configOverride;
 	}
 
-	/**
-	 * Show an error (if not 'quiet' mode)
-	 */
-	public void error(Throwable e, String message) {
-		if (verbose && (e != null)) e.printStackTrace();
-		if (!quiet) System.err.println("Error: " + message);
-	}
-
-	/**
-	 * Show an error message and exit
-	 */
-	public void fatalError(String message) {
-		System.err.println("Fatal error: " + message);
-		System.exit(-1);
-	}
-
+	//	/**
+	//	 * Show an error (if not 'quiet' mode)
+	//	 */
+	//	public void error(Throwable e, String message) {
+	//		if (verbose && (e != null)) e.printStackTrace();
+	//		if (!quiet) System.err.println("Error: " + message);
+	//	}
+	//
 	@Override
 	public String[] getArgs() {
 		return args;
@@ -468,6 +461,7 @@ public class SnpEff implements CommandLine {
 		// Verbose & debug
 		config.setDebug(debug);
 		config.setVerbose(verbose);
+		config.setQuiet(quiet);
 	}
 
 	/**
@@ -580,7 +574,7 @@ public class SnpEff implements CommandLine {
 		if (strict) {
 			if (verbose) Timer.showStdErr("Filtering out non-verified transcripts.");
 			if (config.getSnpEffectPredictor().removeUnverified()) {
-				fatalError("All transcripts have been removed form every single gene!\nUsing strickt on this database leaves no information.");
+				Log.fatalError("All transcripts have been removed form every single gene!\nUsing strickt on this database leaves no information.");
 			}
 			if (verbose) Timer.showStdErr("done.");
 		}
@@ -598,7 +592,7 @@ public class SnpEff implements CommandLine {
 			int removed = config.getSnpEffectPredictor().retainAllTranscripts(trIds);
 			int countTr = config.getSnpEffectPredictor().countTranscripts();
 			if (verbose) Timer.showStdErr("Done: " + removed + " transcripts removed, " + countTr + " transcripts left.");
-			if (countTr <= 0) fatalError("No transcripts left for analysis after filter using file '" + onlyTranscriptsFile + "'");
+			if (countTr <= 0) Log.fatalError("No transcripts left for analysis after filter using file '" + onlyTranscriptsFile + "'");
 		}
 
 		// Use protein coding transcripts

@@ -3,16 +3,16 @@ package org.snpeff.osCmd;
 import java.io.File;
 import java.io.OutputStream;
 
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Launches an 'OS command' (e.g. "ls", "dir")
- * 
+ *
  * Note: Launching a system command in Java is not trivial, we need to start 2 threads that read STDOUT and STDERR of
  * the process, otherwise it will block (actually it may even cause a deadlock)
- * 
+ *
  * References: http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html?page=1
- * 
+ *
  * @author pcingola
  */
 public class ExecuteOsCommand extends Thread implements Progress {
@@ -38,7 +38,7 @@ public class ExecuteOsCommand extends Thread implements Progress {
 	OutputStream stdin = null; // We write to command's STDIN (so for us is an output stream)
 	StreamGobbler stdErrGobbler = null, stdOutGobbler = null; // Gobblers for command's STDOUT and STDERR
 	LineFilter stdOutFilter = null; // Line filter: Keep (and show) everything from STDOUT that matches this filter
-	Process pr; // Java process (the one that actually executes our command) 
+	Process pr; // Java process (the one that actually executes our command)
 
 	public ExecuteOsCommand(String args[]) {
 		commandArgs = args;
@@ -56,9 +56,9 @@ public class ExecuteOsCommand extends Thread implements Progress {
 			if (pwd != null) pb.directory(new File(pwd));
 
 			if (debug) {
-				Gpr.debug("PWD: " + pwd);
+				Log.debug("PWD: " + pwd);
 				for (String arg : commandArgs)
-					Gpr.debug("ARGS: " + arg);
+					Log.debug("ARGS: " + arg);
 			}
 
 			pr = pb.start();
@@ -112,7 +112,7 @@ public class ExecuteOsCommand extends Thread implements Progress {
 				Thread.sleep(100);
 			}
 
-			if (debug && (exitValue != 0)) Gpr.debug("Exit value: " + exitValue);
+			if (debug && (exitValue != 0)) Log.debug("Exit value: " + exitValue);
 		} catch (Exception e) {
 			error = e.getMessage();
 			exitValue = -1;
@@ -218,7 +218,7 @@ public class ExecuteOsCommand extends Thread implements Progress {
 
 	public void kill() {
 		if (pr != null) pr.destroy();
-		if (debug) Gpr.debug("Process was killed");
+		if (debug) Log.debug("Process was killed");
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class ExecuteOsCommand extends Thread implements Progress {
 
 	@Override
 	public void run() {
-		if (debug) Gpr.debug("Running ExecOsCommand thread");
+		if (debug) Log.debug("Running ExecOsCommand thread");
 		exec();
 	}
 

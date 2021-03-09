@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.Test;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -26,7 +26,7 @@ public class TestCasesIntegrationDup extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01_dup() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genome = "testHg19Chr8";
 		String vcf = path("dup_01.vcf");

@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdBuild;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdProtein;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -23,7 +23,7 @@ public class TestCasesIntegrationGenBank extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_multiple_CDS() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Build genome
 		String genome = "test_NC_031965.1";

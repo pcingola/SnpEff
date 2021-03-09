@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -22,7 +22,7 @@ public class TestCasesIntegrationInsEtc extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01_InsOffByOne() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-classic", "-noHgvs", "testENST00000268124", path("ins_off_by_one.vcf") };
 
 		SnpEff cmd = new SnpEff(args);

@@ -8,6 +8,7 @@ import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.testCases.integration.TestCasesHgvsBase;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test random SNP changes
@@ -18,7 +19,7 @@ public class TestCasesHgvsIntron extends TestCasesHgvsBase {
 
 	@Test
 	public void test_01_intron() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int N = 1000;
 
 		int testIter = -1;
@@ -34,7 +35,7 @@ public class TestCasesHgvsIntron extends TestCasesHgvsBase {
 
 			// Skip test?
 			if (testIter >= 0 && it < testIter) {
-				Gpr.debug("Skipping iteration: " + it);
+				Log.debug("Skipping iteration: " + it);
 				continue;
 			}
 
@@ -63,7 +64,7 @@ public class TestCasesHgvsIntron extends TestCasesHgvsBase {
 
 					// Skip base?
 					if (testPos >= 0 && pos < testPos) {
-						Gpr.debug("\tSkipping\tpos: " + pos + " [" + j + "]");
+						Log.debug("\tSkipping\tpos: " + pos + " [" + j + "]");
 						continue;
 					}
 

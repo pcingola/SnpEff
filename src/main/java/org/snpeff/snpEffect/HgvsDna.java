@@ -6,8 +6,8 @@ import org.snpeff.interval.Intron;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.interval.VariantBnd;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  * Coding DNA reference sequence
@@ -136,15 +136,15 @@ public class HgvsDna extends Hgvs {
 
 		Exon ex = variantEffect.getExon();
 		if (ex != null && ex.includes(m)) {
-			if (debug) Gpr.debug("Variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (strandPlus ? "+" : "-"));
+			if (debug) Log.debug("Variant: " + variant + "\n\tmarker: " + m.toStr() + "\tsstart:" + sstart + "\tsend: " + send + "\n\texon: " + ex + "\n\tstrand: " + (strandPlus ? "+" : "-"));
 			seq = ex.getSequence(m);
-			if (debug) Gpr.debug("Sequence (Exon)  [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + alt() + "'\tsequence (+ strand): " + (ex.isStrandPlus() ? ex.getSequence() : GprSeq.reverseWc(ex.getSequence())));
+			if (debug) Log.debug("Sequence (Exon)  [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + alt() + "'\tsequence (+ strand): " + (ex.isStrandPlus() ? ex.getSequence() : GprSeq.reverseWc(ex.getSequence())));
 		}
 
 		// May be it is not completely in the exon. Use genomic sequences
 		if (seq == null) {
 			seq = genome.getGenomicSequences().querySequence(m);
-			if (debug) Gpr.debug("Sequence (Genome) [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + alt() + "'\tsequence (+ strand): " + seq);
+			if (debug) Log.debug("Sequence (Genome) [ " + sstart + " , " + send + " ]: '" + seq + "'\talt: '" + alt() + "'\tsequence (+ strand): " + seq);
 		}
 
 		// Compare to ALT sequence
@@ -267,7 +267,7 @@ public class HgvsDna extends Hgvs {
 		if (isDownstream(pos)) return posDownstream(pos);
 		if (isUpstream(pos)) return posUpstream(pos);
 
-		if (debug) Gpr.debug("Unknown HGVS position " + pos + ", transcript " + tr);
+		if (debug) Log.debug("Unknown HGVS position " + pos + ", transcript " + tr);
 		return null;
 	}
 
@@ -377,16 +377,16 @@ public class HgvsDna extends Hgvs {
 
 	/**
 	 * Position upstream of the transcript
-	 * 
+	 *
 	 * Note: How to calculate Upstream position:
 	 * If strand is '-' as for NM_016176.3, "genomicTxStart" being the rightmost tx coord:
 	 *     cDotUpstream = -(cdsStart + variantPos - genomicTxStart)
-	 *     
+	 *
 	 * Instead of "-(variantPos - genomicCdsStart)":
-	 * 
+	 *
 	 * The method that stays in transcript space until extending beyond the transcript is
 	 * correct because of these statements on http://varnomen.hgvs.org/bg-material/numbering/:
-	 * 
+	 *
 	 *     * nucleotides upstream (5') of the ATG-translation initiation
 	 *       codon (start) are marked with a "-" (minus) and numbered c.-1,
 	 *       c.-2, c.-3, etc. (i.e. going further upstream)

@@ -16,6 +16,7 @@ import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.tree.IntervalForest;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * A collection of markers
@@ -257,7 +258,7 @@ public class Markers implements Serializable, Collection<Marker> {
 			if (i.start > end) {
 				if ((start >= 0) && (end >= 0)) {
 					if (end < start) { // Sanity check
-						Gpr.debug("This should never happen!\tstart: " + start + "\tend:" + end);
+						Log.debug("This should never happen!\tstart: " + start + "\tend:" + end);
 						for (Marker m : this)
 							System.err.println("\t" + m);
 					} else {

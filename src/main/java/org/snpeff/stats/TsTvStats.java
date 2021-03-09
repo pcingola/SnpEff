@@ -2,7 +2,7 @@ package org.snpeff.stats;
 
 import java.util.List;
 
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.VcfGenotype;
 
@@ -134,7 +134,7 @@ public class TsTvStats implements SamplingStats<VcfEntry> {
 			for (VcfGenotype vcfGenotype : vcfEntry) {
 
 				if (sampleNum >= countTs.length) {
-					Gpr.debug("WARNING: VCF entry has more genotype fields than expected (expected: " + countTs.length + ", number of genotypes: " + sampleNum + ").\n" + vcfEntry);
+					Log.debug("WARNING: VCF entry has more genotype fields than expected (expected: " + countTs.length + ", number of genotypes: " + sampleNum + ").\n" + vcfEntry);
 				} else if (vcfGenotype.isVariant()) {
 					String alts[] = vcfEntry.getAlts();
 					int gens[] = vcfGenotype.getGenotype();

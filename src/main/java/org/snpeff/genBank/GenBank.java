@@ -2,6 +2,7 @@ package org.snpeff.genBank;
 
 import org.snpeff.fileIterator.LineFileIterator;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * A class representing the same data as a GenBank file (a 'GB' file)
@@ -116,7 +117,7 @@ public class GenBank extends Features {
 		int fieldLineNum = 0;
 		String name = null;
 		String value = "";
-		if (debug) Gpr.debug("NAME: " + name + "\tvalue: " + value);
+		if (debug) Log.debug("NAME: " + name + "\tvalue: " + value);
 
 		// Read file
 		for (String line : lineFileIterator) {
@@ -130,7 +131,7 @@ public class GenBank extends Features {
 				String kv[] = line.split(" ", 2);
 				name = kv[0];
 				value = (kv.length > 1 ? kv[1] : "");
-				if (debug) Gpr.debug("Line: " + line + "\n\tNAME: " + name + "\tvalue: " + value);
+				if (debug) Log.debug("Line: " + line + "\n\tNAME: " + name + "\tvalue: " + value);
 				fieldLineNum = 0;
 			}
 

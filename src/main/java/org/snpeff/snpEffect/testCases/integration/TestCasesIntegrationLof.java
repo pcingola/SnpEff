@@ -19,6 +19,7 @@ import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.LossOfFunction;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -83,7 +84,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		Variant.setStart(ex.getStart());
 		Variant.setEnd(ex.getEnd());
 		Variant.setVariantType(VariantType.DEL);
-		if (verbose) Gpr.debug("Variant:" + Variant);
+		if (verbose) Log.debug("Variant:" + Variant);
 		LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.EXON_DELETED, ex);
 
 		// Calculate LOF
@@ -106,7 +107,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 			Variant Variant = new Variant(tr.getChromosome(), delStart, "AC", "A");
 			Variant.setStart(delStart);
 			Variant.setEnd(delEnd);
-			if (verbose) Gpr.debug("Variant:" + Variant);
+			if (verbose) Log.debug("Variant:" + Variant);
 			Variant.setVariantType(VariantType.DEL);
 
 			// How many coding bases are affected?
@@ -149,7 +150,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				if (ins) Variant = new Variant(tr.getChromosome(), pos, "A", "AC");
 				else Variant = new Variant(tr.getChromosome(), pos, "AC", "A");
 				Variant.setVariantType(ins ? VariantType.INS : VariantType.DEL);
-				if (verbose) Gpr.debug("Variant:" + Variant);
+				if (verbose) Log.debug("Variant:" + Variant);
 
 				// Create change effect
 				LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.FRAME_SHIFT, ex);
@@ -188,7 +189,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		// Find start codon position
 		int pos = tr.getCdsStart();
 		Variant Variant = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a Variant
-		if (verbose) Gpr.debug("Variant:" + Variant);
+		if (verbose) Log.debug("Variant:" + Variant);
 
 		// Finr exon
 		Exon exon = null;
@@ -216,7 +217,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 			// Splice site size
 			int maxSize = Math.min(intron.size(), SpliceSite.CORE_SPLICE_SITE_SIZE);
 			posDonor -= step * (maxSize - 1);
-			if (verbose) Gpr.debug("Intron size: " + intron.size());
+			if (verbose) Log.debug("Intron size: " + intron.size());
 			if (maxSize <= 0) throw new RuntimeException("Max splice size is " + maxSize);
 
 			//---
@@ -226,7 +227,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				Variant Variant = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a Variant
 				Marker marker = findMarker(config.getSnpEffectPredictor(), Variant, EffectType.SPLICE_SITE_ACCEPTOR, null, intron);
 				LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.SPLICE_SITE_ACCEPTOR, marker); // Create a SPLICE_SITE_ACCEPTOR effect
-				if (verbose) Gpr.debug("Variant:" + Variant);
+				if (verbose) Log.debug("Variant:" + Variant);
 
 				// Create a LOF object and analyze the effect
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
@@ -250,18 +251,18 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 
 			// Splice site size
 			int maxSize = Math.min(intron.size(), SpliceSite.CORE_SPLICE_SITE_SIZE);
-			if (verbose) Gpr.debug("Intron size: " + intron.size() + "\tmaxSize: " + maxSize);
+			if (verbose) Log.debug("Intron size: " + intron.size() + "\tmaxSize: " + maxSize);
 			if (maxSize <= 0) throw new RuntimeException("Max splice size is non-positive: " + maxSize);
 
 			//---
 			// For all position on splice site donor positions, make sure it is LOF
 			//---
 			for (int pos = posDonor, i = 0; i < maxSize; i++, pos += step) {
-				if (verbose) Gpr.debug("Position: " + tr.getChromosome().getId() + ":" + posDonor);
+				if (verbose) Log.debug("Position: " + tr.getChromosome().getId() + ":" + posDonor);
 				Variant variant = new Variant(tr.getChromosome(), pos, "A", "C"); // Create a Variant
 				Marker marker = findMarker(config.getSnpEffectPredictor(), variant, EffectType.SPLICE_SITE_DONOR, null, intron);
 				LinkedList<VariantEffect> changeEffects = variantEffects(variant, EffectType.SPLICE_SITE_DONOR, marker); // Create a SPLICE_DONOR effect
-				if (verbose) Gpr.debug("Variant:" + variant);
+				if (verbose) Log.debug("Variant:" + variant);
 
 				// Create a LOF object and analyze the effect
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
@@ -274,7 +275,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Load database
 		String genomeVer = "testHg3766Chr1";

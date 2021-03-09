@@ -1,17 +1,17 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.reactome.Entity;
 import org.snpeff.reactome.Entity.TransferFunction;
 import org.snpeff.reactome.events.Reaction;
 import org.snpeff.reactome.events.Reaction.RegulationType;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
+
+import junit.framework.Assert;
 
 /**
  * Test Reactome circuits
- * 
+ *
  * @author pcingola
  */
 public class TestCasesReactome {
@@ -29,7 +29,7 @@ public class TestCasesReactome {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int id = 1;
 		Entity e1 = new Entity(id++, "input_1");
 		Entity e2 = new Entity(id++, "input_2");
@@ -45,7 +45,7 @@ public class TestCasesReactome {
 		Entity.BETA = 3.0;
 
 		double out = r.calc();
-		Gpr.debug("Out: " + out);
+		Log.debug("Out: " + out);
 		Assert.assertEquals(0.9051482536448667, out);
 	}
 
@@ -54,7 +54,7 @@ public class TestCasesReactome {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int id = 1;
 		Entity e1 = new Entity(id++, "input_1");
 		Entity e2 = new Entity(id++, "input_2");
@@ -72,12 +72,12 @@ public class TestCasesReactome {
 		Entity.TRANSFER_FUNCTION = TransferFunction.SIGM_PLUS_MINUS;
 
 		double out = r.calc();
-		Gpr.debug("Out: " + out);
+		Log.debug("Out: " + out);
 		Assert.assertEquals(-0.8192933610763514, out);
 
 		cat.setWeight(0.5);
 		out = r.calc();
-		Gpr.debug("Out: " + out);
+		Log.debug("Out: " + out);
 		Assert.assertEquals(2.1152011710898737, out);
 	}
 
@@ -86,7 +86,7 @@ public class TestCasesReactome {
 	 */
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int id = 1;
 		Entity e1 = new Entity(id++, "input_1");
 		Entity e2 = new Entity(id++, "input_2");
@@ -102,12 +102,12 @@ public class TestCasesReactome {
 		reg.setFixedOutput(-1.0);
 
 		double out = r.calc();
-		Gpr.debug("Out: " + out);
+		Log.debug("Out: " + out);
 		Assert.assertEquals(0.86631007995171, out);
 
 		reg.setFixedOutput(0.37);
 		out = r.calc();
-		Gpr.debug("Out: " + out);
+		Log.debug("Out: " + out);
 		Assert.assertEquals(2.1219547901144384, out);
 	}
 
@@ -116,7 +116,7 @@ public class TestCasesReactome {
 	 */
 	@Test
 	public void test_04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int id = 1;
 		Entity e1 = new Entity(id++, "input_1");
 		Entity e2 = new Entity(id++, "input_2");
@@ -132,12 +132,12 @@ public class TestCasesReactome {
 		reg.setFixedOutput(-1.0);
 
 		double out = r.calc();
-		Gpr.debug("Out: " + out);
+		Log.debug("Out: " + out);
 		Assert.assertEquals(0.6973026352658382, out);
 
 		reg.setFixedOutput(0.37);
 		out = r.calc();
-		Gpr.debug("Out: " + out);
+		Log.debug("Out: " + out);
 		Assert.assertEquals(-0.5583420748968899, out);
 	}
 
@@ -146,7 +146,7 @@ public class TestCasesReactome {
 	 */
 	@Test
 	public void test_05() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int id = 1;
 		Entity e1 = new Entity(id++, "input_1");
 		Entity e2 = new Entity(id++, "input_2");
@@ -162,12 +162,12 @@ public class TestCasesReactome {
 		reg.setFixedOutput(-1.0);
 
 		double out = r.calc();
-		Gpr.debug("Out: " + out);
+		Log.debug("Out: " + out);
 		Assert.assertEquals(-0.9154962776570641, out);
 
 		reg.setFixedOutput(0.37);
 		out = r.calc();
-		Gpr.debug("Out: " + out);
+		Log.debug("Out: " + out);
 		Assert.assertEquals(0.34014843250566407, out);
 	}
 

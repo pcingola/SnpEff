@@ -8,7 +8,7 @@ import org.snpeff.interval.SpliceSite;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 
@@ -36,7 +36,7 @@ public class TestCasesEffectCollapse2 extends TestCasesBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Show gene(s)
 		Genome genome = snpEffectPredictor.getGenome();

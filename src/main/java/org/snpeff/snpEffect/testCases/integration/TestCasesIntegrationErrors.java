@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -25,7 +25,7 @@ public class TestCasesIntegrationErrors extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01_ERROR_CHROMOSOME_NOT_FOUND() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg3775Chr1";
 		String vcf = path("missing_chromo.vcf");
 
@@ -54,7 +54,7 @@ public class TestCasesIntegrationErrors extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_02_ERROR_CHROMOSOME_NOT_FOUND() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg3775Chr1";
 		String vcf = path("missing_chromo.vcf");
 

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.snpeff.fileIterator.LineFileIterator;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Tuple;
 
 /**
@@ -70,7 +71,7 @@ public abstract class Features implements Iterable<Feature> {
 	void addFeature(String typeStr, StringBuilder values, int lineNum) {
 		Feature.Type type = Feature.Type.parse(typeStr);
 		if (type == null) {
-			if (debug) Gpr.debug("WARNING: Unknown feature '" + typeStr + "', not added.");
+			if (debug) Log.debug("WARNING: Unknown feature '" + typeStr + "', not added.");
 			return;
 		}
 
@@ -78,7 +79,7 @@ public abstract class Features implements Iterable<Feature> {
 			Feature newFeature = featureFactory(type, values.toString(), lineNum); // Create new feature
 			features.add(newFeature); // Add features to list
 		} catch (Exception e) {
-			Gpr.debug("Error parsing feature type '" + typeStr + "' -> '" + type + "':\n" + values);
+			Log.debug("Error parsing feature type '" + typeStr + "' -> '" + type + "':\n" + values);
 			throw new RuntimeException(e);
 		}
 	}
@@ -239,7 +240,7 @@ public abstract class Features implements Iterable<Feature> {
 		int lineNum = featuresStartLine;
 		for (String line : featuresStr.toString().split("\n")) {
 			lineNum++;
-			if (debug) Gpr.debug("Line:" + lineNum + "\tLine:" + line);
+			if (debug) Log.debug("Line:" + lineNum + "\tLine:" + line);
 
 			// Feature start
 			if (isNewFeature(line)) {

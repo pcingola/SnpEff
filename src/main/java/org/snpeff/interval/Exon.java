@@ -9,7 +9,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Interval for an exon
@@ -138,7 +138,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 		// Can correct?
 		if (size() <= frameCorrection) {
-			Gpr.debug("Exon too short (size: " + size() + "), cannot correct frame!\n" + this);
+			Log.debug("Exon too short (size: " + size() + "), cannot correct frame!\n" + this);
 			return false;
 		}
 

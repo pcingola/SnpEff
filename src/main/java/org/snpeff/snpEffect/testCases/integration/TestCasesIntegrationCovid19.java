@@ -3,7 +3,7 @@ package org.snpeff.snpEffect.testCases.integration;
 import org.junit.Test;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdBuild;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdProtein;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -21,7 +21,7 @@ public class TestCasesIntegrationCovid19 extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "test_NC_045512_01";
 		SnpEffCmdBuild buildCmd = buildGetBuildCmd(genome);
 

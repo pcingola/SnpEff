@@ -1,14 +1,14 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.HgvsDna;
 import org.snpeff.snpEffect.HgvsProtein;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
+
+import junit.framework.Assert;
 
 /**
  *
@@ -28,15 +28,15 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		prependSequenceToFirstExon("atgaaaatgggccatcagcagcagtgctgc"); // This is 'MKMGHQQQCC' as a DNA sequence
 
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 898, "", "ggccatcag", ""); // Add 'GHQ' amino acids
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -50,9 +50,9 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) {
-			Gpr.debug("Eff        : " + eff);
-			Gpr.debug("HGVS (DNA) : '" + hgvsDna + "'");
-			Gpr.debug("HGVS (Prot): '" + hgvsProt + "'");
+			Log.debug("Eff        : " + eff);
+			Log.debug("HGVS (DNA) : '" + hgvsDna + "'");
+			Log.debug("HGVS (Prot): '" + hgvsProt + "'");
 		}
 
 		Assert.assertEquals("c.10_18dupGGCCATCAG", hgvsDna);
@@ -67,15 +67,15 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		prependSequenceToFirstExon("atgaaaatgggccatcagcatcagcagcagtgctgc"); // This is 'MKMGHQQQCC' as a DNA sequence
 
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 904, "", "catcag", ""); // Add 'HQ' amino acids
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -89,9 +89,9 @@ public class TestCasesHgvsProtDup extends TestCasesBase {
 
 		// Check result
 		if (verbose) {
-			Gpr.debug("Eff        : " + eff);
-			Gpr.debug("HGVS (DNA) : '" + hgvsDna + "'");
-			Gpr.debug("HGVS (Prot): '" + hgvsProt + "'");
+			Log.debug("Eff        : " + eff);
+			Log.debug("HGVS (DNA) : '" + hgvsDna + "'");
+			Log.debug("HGVS (Prot): '" + hgvsProt + "'");
 		}
 
 		Assert.assertEquals("c.19_24dupCATCAG", hgvsDna);

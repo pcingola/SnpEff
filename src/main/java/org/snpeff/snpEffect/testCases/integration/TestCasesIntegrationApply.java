@@ -13,6 +13,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  * Test 'apply' method (apply variant to marker)
@@ -33,7 +34,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01_Exon_SNPs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Config config = new Config("testHg3765Chr22");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
 
@@ -104,7 +105,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02_Exon_INS() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Config config = new Config("testHg3765Chr22");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
 
@@ -152,7 +153,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 							newSeq = newSeq.toLowerCase();
 
 							Variant variant = new Variant(t.getChromosome(), i, "", altsb.toString(), "");
-							if (debug) Gpr.debug("variant: " + variant.getVariantType() + "\t" + variant);
+							if (debug) Log.debug("variant: " + variant.getVariantType() + "\t" + variant);
 
 							Exon exNew = ex.apply(variant);
 
@@ -163,7 +164,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 										+ "\n\t\tOriginal            : " + ex //
 										+ "\n\t\tSequence (expected) : " + newSeq + "'" //
 										+ "\n\t\tSequence            : " + exNew.getSequence() + "'" //
-										;
+								;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}
@@ -185,7 +186,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_03_Exon_DEL() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Config config = new Config("testHg3765Chr22");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
 
@@ -231,7 +232,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 							newSeq = newSeq.toLowerCase();
 
 							Variant variant = new Variant(t.getChromosome(), i, ref, "", "");
-							if (debug) Gpr.debug("variant: " + variant.getVariantType() + "\t" + variant);
+							if (debug) Log.debug("variant: " + variant.getVariantType() + "\t" + variant);
 
 							Exon exNew = ex.apply(variant);
 
@@ -243,7 +244,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 										+ "\n\t\tOriginal  : " + ex //
 										+ "\n\t\tNew       : " + exNew //
 										+ "\n\t\tNew seq   : " + newSeq //
-										;
+								;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}
@@ -265,7 +266,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_04_Exon_MNP() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Config config = new Config("testHg3765Chr22");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
 
@@ -331,7 +332,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 
 							// Create variant and apply
 							Variant variant = new Variant(t.getChromosome(), i, refsb.toString(), altsb.toString(), "");
-							if (debug) Gpr.debug("variant: " + variant);
+							if (debug) Log.debug("variant: " + variant);
 							Exon exNew = ex.apply(variant);
 
 							// Check
@@ -341,7 +342,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 										+ "\n\t\tOriginal  : " + ex //
 										+ "\n\t\tNew       : " + exNew //
 										+ "\n\t\tNew seq   : " + newSeq //
-										;
+								;
 								System.err.println(msg);
 								throw new RuntimeException(msg);
 							}
@@ -361,7 +362,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_apply_05_delete_whole_exon() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		snpEffect("testHg19Chr1", path("test_apply_05_delete_whole_exon.vcf"), null);
 	}
 
@@ -371,7 +372,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_apply_06_delete_upstream() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Transcript trNew = applyTranscript("testHg19Chr11", "NM_001004460.1", path("test_apply_06_delete_upstream.vcf"));
 
 		// Check expected sequence
@@ -385,7 +386,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_apply_07_delete_upstream() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Transcript trNew = applyTranscript("testHg3775Chr11", "ENST00000379829", path("test_apply_07_delete_upstream.vcf"));
 
 		// Check expected sequence

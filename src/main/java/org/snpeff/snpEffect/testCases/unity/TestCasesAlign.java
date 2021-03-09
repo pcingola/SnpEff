@@ -1,11 +1,11 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.align.NeedlemanWunsch;
 import org.snpeff.align.VcfRefAltAlign;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
+
+import junit.framework.Assert;
 
 /**
  * test cases for Sequence alignment
@@ -18,7 +18,7 @@ public class TestCasesAlign {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String as[] = { "TTT", "TTTGTT", "GCG", "G" };
 		String bs[] = { "TTTGTT", "TTT", "G", "GCG" };
 		String res[] = { "-GTT", "+GTT", "+CG", "-CG" };
@@ -39,7 +39,7 @@ public class TestCasesAlign {
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String as[] = { "TTT", "TTTGTT", "GCG", "G" };
 		String bs[] = { "TTTGTT", "TTT", "G", "GCG" };
 		String res[] = { "-GTT", "+GTT", "+CG", "-CG" };

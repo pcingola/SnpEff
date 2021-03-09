@@ -10,6 +10,7 @@ import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.testCases.integration.TestCasesHgvsBase;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEntry;
 
 /**
@@ -21,7 +22,7 @@ public class TestCasesHgvsExon extends TestCasesHgvsBase {
 
 	@Test
 	public void test_01_coding() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		int N = 1000;
 		CodonTable codonTable = genome.codonTable();

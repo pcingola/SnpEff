@@ -3,11 +3,11 @@ package org.snpeff.spliceSites;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * ACGT tree
- * 
+ *
  * @author pcingola
  */
 public class AcgtTree {
@@ -231,7 +231,7 @@ public class AcgtTree {
 				if (((n.entropy() <= thresholdEntropy) || (p[idx] >= thresholdP)) //
 						&& (counts[idx] >= thresholdCount) //
 				) {
-					Gpr.debug("Name:" + n.name + "\tIdx:" + +idx + "\tEntropy: " + n.entropy() + "\tP:" + p[idx] + "\tCount:" + counts[idx]);
+					Log.debug("Name:" + n.name + "\tIdx:" + +idx + "\tEntropy: " + n.entropy() + "\tP:" + p[idx] + "\tCount:" + counts[idx]);
 					sb.append(n.toString(tabs + "\t", thresholdEntropy, thresholdP, thresholdCount));
 				}
 

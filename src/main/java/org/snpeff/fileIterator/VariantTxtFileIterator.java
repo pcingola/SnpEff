@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Variant;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  * Opens a sequence change file and iterates over all sequence changes
@@ -109,7 +109,7 @@ public class VariantTxtFileIterator extends VariantFileIterator {
 	 * Used for debugging
 	 */
 	void showFifo() {
-		Gpr.debug("Fifo:" + fifo.size());
+		Log.debug("Fifo:" + fifo.size());
 		for (Variant v : fifo)
 			System.err.println("\t\t" + v);
 	}

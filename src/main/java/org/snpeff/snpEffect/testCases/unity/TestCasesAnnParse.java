@@ -3,7 +3,7 @@ package org.snpeff.snpEffect.testCases.unity;
 import org.junit.Test;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -25,7 +25,7 @@ public class TestCasesAnnParse extends TestCasesBase {
 	 */
 	@Test
 	public void test_EffectType() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		for (EffectType eff : EffectType.values()) {
 			if (verbose) System.out.println("\t" + eff);
 
@@ -41,7 +41,7 @@ public class TestCasesAnnParse extends TestCasesBase {
 
 	@Test
 	public void test_old_SO() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		EffectType eff = EffectType.parse(EffFormatVersion.DEFAULT_FORMAT_VERSION, "non_coding_exon_variant");
 		Assert.assertTrue("Effect type not found", eff != null);
 		Assert.assertEquals("Effect type does not match", eff, EffectType.EXON);
@@ -49,7 +49,7 @@ public class TestCasesAnnParse extends TestCasesBase {
 
 	@Test
 	public void test_old_SO_vcf() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String vcfFile = path("test_old_SO_01.vcf");
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
@@ -67,7 +67,7 @@ public class TestCasesAnnParse extends TestCasesBase {
 	 */
 	@Test
 	public void testCase_tfbs_ablation() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String vcfFile = path("tfbs_ablation.vcf");
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 

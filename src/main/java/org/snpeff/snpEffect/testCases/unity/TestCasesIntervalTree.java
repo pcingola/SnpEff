@@ -11,6 +11,7 @@ import org.snpeff.interval.Markers;
 import org.snpeff.interval.tree.IntervalTree;
 import org.snpeff.interval.tree.Itree;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -40,12 +41,12 @@ public class TestCasesIntervalTree {
 	 * Compare results and throw an exception if any difference exists
 	 */
 	protected int compareQuery(Marker m, Itree intTree) {
-		if (debug) Gpr.debug("Query: " + m);
+		if (debug) Log.debug("Query: " + m);
 		Markers resultsNaive = queryNaive(m);
 		Markers resultsIntForest = intTree.query(m);
 
 		if (debug) {
-			Gpr.debug("Query: " + m + "\n\tResults: " + resultsIntForest.size());
+			Log.debug("Query: " + m + "\n\tResults: " + resultsIntForest.size());
 			for (Marker res : resultsIntForest)
 				System.err.println("\t" + res + (res.intersects(m) ? "" : "\tERROR!"));
 		}
@@ -114,6 +115,10 @@ public class TestCasesIntervalTree {
 		markers = createRandomMarkers();
 	}
 
+	protected Itree newItree(Markers markers) {
+		return new IntervalTree(markers);
+	}
+
 	/**
 	 * Naively find all intervals intersecting 'marker'
 	 */
@@ -127,16 +132,12 @@ public class TestCasesIntervalTree {
 		return results;
 	}
 
-	protected Itree newItree(Markers markers) {
-		return new IntervalTree(markers);
-	}
-
 	/**
 	 * Test small intervals
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Itree intTree = newItree(markers);
 		intTree.build();
@@ -159,7 +160,7 @@ public class TestCasesIntervalTree {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Itree intForest = newItree(markers);
 		intForest.build();

@@ -11,7 +11,7 @@ import java.util.Iterator;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * A set of interval trees (e.g. one per chromosome, one per transcript ID, etc)
@@ -65,7 +65,7 @@ public class IntervalForest implements Serializable, Iterable<Itree> {
 	 */
 	public void build() {
 		for (String key : forest.keySet()) {
-			if (debug) Gpr.debug("Building interval tree for '" + key + "'");
+			if (debug) Log.debug("Building interval tree for '" + key + "'");
 			Itree tree = forest.get(key);
 			tree.build();
 		}

@@ -4,7 +4,7 @@ import org.apfloat.Apfloat;
 import org.snpeff.geneSets.GeneSet;
 import org.snpeff.geneSets.GeneSets;
 import org.snpeff.probablility.FisherExactTest;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 public class FisherPValueGreedyAlgorithm extends EnrichmentAlgorithmGreedyVariableSize {
 
@@ -26,7 +26,7 @@ public class FisherPValueGreedyAlgorithm extends EnrichmentAlgorithmGreedyVariab
 
 		//double pValue = FisherExactTest.get().fisherExactTestUpThreshold(k, N, D, n, threshold);
 		double pValue = FisherExactTest.get().fisherExactTestUp(k, N, D, n);
-		if (debug) Gpr.debug("Fisher exact test\tk: " + k + "\tN: " + N + "\tD: " + D + "\tn: " + n + "\tpValue: " + pValue);
+		if (debug) Log.debug("Fisher exact test\tk: " + k + "\tN: " + N + "\tD: " + D + "\tn: " + n + "\tpValue: " + pValue);
 		return new Apfloat(pValue);
 	}
 }

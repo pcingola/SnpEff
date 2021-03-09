@@ -39,6 +39,7 @@ import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGtf22;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryRefSeq;
 import org.snpeff.util.Diff;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -92,7 +93,7 @@ public class TestCasesIntegrationBase {
 		for (VcfEntry ve : vcf) {
 			for (Variant var : ve.variants()) {
 				Transcript trNew = tr.apply(var);
-				if (debug) Gpr.debug(trNew);
+				if (debug) Log.debug(trNew);
 				return trNew;
 			}
 		}
@@ -729,7 +730,7 @@ public class TestCasesIntegrationBase {
 					msg += e + " ";
 
 				msg += "\n\tMarker    : " + ve.getChromosomeName() + ":" + ve.getStart() + "-" + ve.getEnd();
-				Gpr.debug(msg);
+				Log.debug(msg);
 				throw new RuntimeException(msg);
 			}
 
@@ -748,7 +749,7 @@ public class TestCasesIntegrationBase {
 
 			Transcript mtr = (Transcript) m.findParent(Transcript.class);
 
-			if (debug) Gpr.debug("\tLooking for '" + effectType + "' in '" + (markerFilter != null ? markerFilter.getId() : "NULL") //
+			if (debug) Log.debug("\tLooking for '" + effectType + "' in '" + (markerFilter != null ? markerFilter.getId() : "NULL") //
 					+ "', class: " + (markerFilter != null ? markerFilter.getClass().getSimpleName() : "") //
 					+ "\t\tFound: '" + m.getType() + "', mfilter: " + (mfilter != null ? mfilter.getId() : "NULL") //
 					+ ", parent: " + m.getParent().getClass().getSimpleName() //
@@ -806,7 +807,7 @@ public class TestCasesIntegrationBase {
 		String oldPath = BASE_DIR + "/old/" + fileName;
 
 		if (!Gpr.exists(dir)) {
-			Gpr.debug("File migration: Creating dir:" + dir);
+			Log.debug("File migration: Creating dir:" + dir);
 			File d = new File(dir);
 			d.mkdir();
 		}
@@ -815,11 +816,11 @@ public class TestCasesIntegrationBase {
 			if (Gpr.exists(oldPath + ".gz")) {
 				oldPath += ".gz";
 				path += ".gz";
-			} else Gpr.debug("File migration: Cannot find original file:" + oldPath);
+			} else Log.debug("File migration: Cannot find original file:" + oldPath);
 		}
 
 		if (!Gpr.exists(path) && Gpr.exists(oldPath)) {
-			Gpr.debug("File migration: Moving file:" + path);
+			Log.debug("File migration: Moving file:" + path);
 			try {
 				FileUtils.moveFile(new File(oldPath), new File(path));
 			} catch (IOException e) {

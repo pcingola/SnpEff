@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.snpeff.fileIterator.SeekableBufferedReader;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -55,7 +55,7 @@ public class TestCasesSeekableReader extends TestCasesBase {
 
 	@Test
 	public void test_00() throws IOException {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String fileName = path("testLukas.vcf");
 		long hashExp = calcHashBufferedReader(fileName);
 		long hash = calcHash(fileName);
@@ -70,7 +70,7 @@ public class TestCasesSeekableReader extends TestCasesBase {
 	 */
 	@Test
 	public void test_01() throws IOException {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String fileName = path("testLukas.vcf");
 		long hashExp = calcHashBufferedReader(fileName);
 		long hash = calcHash(fileName);

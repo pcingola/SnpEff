@@ -3,7 +3,7 @@ package org.snpeff.snpEffect;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.VariantBnd;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Coding change in HGVS notation (amino acid changes)
@@ -182,7 +182,7 @@ public class HgvsProtein extends Hgvs {
 
 		// Compare to ALT sequence
 		String dupAaRef = aaRef + aaRef;
-		if (debug) Gpr.debug("AA.Ref: '" + aaRef + "'\tAA.Alt: '" + aaAlt);
+		if (debug) Log.debug("AA.Ref: '" + aaRef + "'\tAA.Alt: '" + aaAlt);
 		if (aaAlt.equals(dupAaRef)) return true;
 
 		//---
@@ -204,7 +204,7 @@ public class HgvsProtein extends Hgvs {
 
 		// Compare to ALT sequence
 		boolean dup = aaRef.equalsIgnoreCase(aaAlt);
-		if (debug) Gpr.debug("SEQUENCE [ " + aaStart + " , " + aaEnd + " ]: '" + aaRef + "'" //
+		if (debug) Log.debug("SEQUENCE [ " + aaStart + " , " + aaEnd + " ]: '" + aaRef + "'" //
 				+ "\n\tAA Ref       : '" + variantEffect.getAaRef() + "'" //
 				+ "\n\tAA Alt       : '" + variantEffect.getAaAlt() + "'" //
 				+ "\n\tAA Alt (net) : '" + aaAlt + "'" //

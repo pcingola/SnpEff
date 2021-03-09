@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apfloat.Apcomplex;
 import org.apfloat.Apfloat;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Store a result form a greedy search algorithm
@@ -91,9 +91,9 @@ public class Result implements Comparable<Result> {
 		if (geneSetCount.size() != geneSets.size()) {
 
 			for (GeneSet gs : geneSets)
-				Gpr.debug("Gene set: " + gs.getName());
+				Log.debug("Gene set: " + gs.getName());
 			for (Integer c : geneSetCount)
-				Gpr.debug("Gene set count: " + c);
+				Log.debug("Gene set count: " + c);
 
 			throw new RuntimeException("Incompatible gene count sizes." //
 					+ "\n\tGeneSetCount.size : " + geneSetCount.size() //
@@ -144,7 +144,7 @@ public class Result implements Comparable<Result> {
 	}
 
 	/**
-	 * Assign geneSets 
+	 * Assign geneSets
 	 * @param newGeneSets
 	 */
 	public void setGeneSets(List<GeneSet> newGeneSets) {

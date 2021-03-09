@@ -5,7 +5,7 @@ import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.MarkerSeq;
 import org.snpeff.interval.Variant;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Re-align a variant towards the leftmost (rightmost) position
@@ -85,7 +85,7 @@ public class VariantRealign {
 		if (!vref.isEmpty()) {
 			// Sanity check
 			if (!seqVar.startsWith(vref)) {
-				if (debug) Gpr.debug("Variant not found in reference sequence. This should never happen!" //
+				if (debug) Log.debug("Variant not found in reference sequence. This should never happen!" //
 						+ "\n\tSeq: '" + seqVar //
 						+ "'\n\tVariant's ref: '" + vref + "'" //
 				);
@@ -179,7 +179,7 @@ public class VariantRealign {
 				basesAddedRight = PROGRESSIVE_BASES_MULTIPLIER * basesAddedRight + PROGRESSIVE_BASES_EXTRA;
 			}
 
-			if (debug) Gpr.debug("Bases\tleft: " + basesAddedLeft + (needMoreBasesLeft ? " [more]" : "") + "\tright: " + basesAddedRight + (needMoreBasesRight ? " [more]" : ""));
+			if (debug) Log.debug("Bases\tleft: " + basesAddedLeft + (needMoreBasesLeft ? " [more]" : "") + "\tright: " + basesAddedRight + (needMoreBasesRight ? " [more]" : ""));
 			// Can we add those many bases?
 			if (!basesToAdd(basesAddedLeft, basesAddedRight)) return false;
 
@@ -205,7 +205,7 @@ public class VariantRealign {
 
 		// Create new variant
 		realigned = createRealignedVariant();
-		if (debug) Gpr.debug("Realign:\n" + this);
+		if (debug) Log.debug("Realign:\n" + this);
 		return realigned;
 	}
 

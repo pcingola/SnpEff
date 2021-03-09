@@ -11,6 +11,7 @@ import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * A sorted collection of variant effects
@@ -62,7 +63,7 @@ public class VariantEffects implements Iterable<VariantEffect> {
 		VariantEffect veff = get();
 		if (veff != null) veff.addErrorWarningInfo(errwarn);
 		else {
-			if (debug) Gpr.debug("Could not get latest " + VariantEffect.class.getSimpleName());
+			if (debug) Log.debug("Could not get latest " + VariantEffect.class.getSimpleName());
 			veff = new VariantEffect(variant);
 			veff.addErrorMessage(errwarn);
 			add(veff);
@@ -122,7 +123,7 @@ public class VariantEffects implements Iterable<VariantEffect> {
 	public void setMarker(Marker marker) {
 		VariantEffect veff = get();
 		if (veff != null) veff.setMarker(marker);
-		else Gpr.debug("Could not get latest VariantEffect");
+		else Log.debug("Could not get latest VariantEffect");
 	}
 
 	public int size() {

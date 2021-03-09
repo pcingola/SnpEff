@@ -24,6 +24,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryEmbl;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGenBank;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
@@ -111,7 +112,7 @@ public class SnpEffCmdProtein extends SnpEff {
 
 		// Use whole trId
 		proteinByTrId.put(trId, seq); // Add it to the hash
-		if (debug) Gpr.debug("Adding proteinByTrId{'" + trId + "'} :\t" + seq);
+		if (debug) Log.debug("Adding proteinByTrId{'" + trId + "'} :\t" + seq);
 
 	}
 
@@ -213,7 +214,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		int maxTrIds = 20;
 		sb.append("Transcript IDs from database (sample):\n" + sampleTrIds(maxTrIds));
 		sb.append("Transcript IDs from database (fasta file):\n" + sampleTrIdsFasta(maxTrIds));
-		fatalError("No proteins checked. This is might be caused by differences in FASTA file transcript IDs respect to database's transcript's IDs.\n" + sb);
+		Log.fatalError("No proteins checked. This is might be caused by differences in FASTA file transcript IDs respect to database's transcript's IDs.\n" + sb);
 	}
 
 	public HashMap<String, SmithWaterman> getAlignmentByTrId() {
@@ -486,7 +487,7 @@ public class SnpEffCmdProtein extends SnpEff {
 
 					String seq = f.getAasequence();
 
-					if (debug) Gpr.debug(trId + "\t" + seq);
+					if (debug) Log.debug(trId + "\t" + seq);
 					if ((trId != null) && (seq != null)) add(trId, seq, -1, true);
 				}
 			}

@@ -6,6 +6,7 @@ import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Utr5prime;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -30,7 +31,7 @@ public class TestCasesCds extends TestCasesBase {
 
 	@Test
 	public void test_CdsPos() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Test N times:
 		//		- Create a random gene transcript, exons
@@ -67,7 +68,7 @@ public class TestCasesCds extends TestCasesBase {
 	 */
 	@Test
 	public void test_cdsStartEnd_1() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Gene g = new Gene(chromosome, 0, 100, false, "g1", "g1", null);
 		Transcript tr = new Transcript(g, 10, 100, false, "tr1");
 
@@ -90,7 +91,7 @@ public class TestCasesCds extends TestCasesBase {
 	 */
 	@Test
 	public void test_cdsStartEnd_2() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Gene g = new Gene(chromosome, 10, 100, false, "g1", "g1", null);
 		Transcript tr = new Transcript(g, 10, 100, false, "tr1");
 

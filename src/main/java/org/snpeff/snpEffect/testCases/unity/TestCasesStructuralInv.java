@@ -17,8 +17,8 @@ import org.snpeff.snpEffect.HgvsProtein;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 
@@ -118,17 +118,17 @@ public class TestCasesStructuralInv extends TestCasesBase {
 		initSnpEffPredictor(genesToAdd);
 
 		if (verbose) {
-			Gpr.debug("Variant: " + variant);
+			Log.debug("Variant: " + variant);
 			for (Gene g : genome.getGenes()) {
-				Gpr.debug("\tGene: " + g.toStr());
+				Log.debug("\tGene: " + g.toStr());
 				for (Transcript tr : g)
-					Gpr.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
+					Log.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
 			}
 		}
 
 		// Calculate effects
 		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
-		if (verbose) Gpr.debug("VariantEffects: " + effects);
+		if (verbose) Log.debug("VariantEffects: " + effects);
 
 		// Checknumber of results
 		Assert.assertEquals(true, effects.size() >= 1);
@@ -156,7 +156,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 			String annField = vcfEffect.toString();
 			anns.add(annField);
 
-			if (verbose) Gpr.debug("Effect: " + varEff.toStr() //
+			if (verbose) Log.debug("Effect: " + varEff.toStr() //
 					+ "\n\tHGVS.c: " + hgvsDna //
 					+ "\n\tHGVS.p: " + hgvsProt //
 					+ "\n\tANN   : " + annField //
@@ -218,7 +218,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test01_invGene() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 950, 1250, "");
@@ -235,7 +235,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test01_invTr() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 950, 1200, "");
@@ -253,7 +253,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1040, 1100, "");
 		variant.setVariantType(VariantType.INV);
@@ -270,7 +270,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1040, 1160, "");
 		variant.setVariantType(VariantType.INV);
@@ -287,7 +287,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1040, 1050, "");
 		variant.setVariantType(VariantType.INV);
@@ -304,7 +304,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test05() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1050, 1150, "");
 		variant.setVariantType(VariantType.INV);
@@ -321,7 +321,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test06() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1050, 2160, "");
 		variant.setVariantType(VariantType.INV);
@@ -338,7 +338,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test07() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1100, 2075, "");
 		variant.setVariantType(VariantType.INV);
@@ -356,7 +356,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test08() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1050, 2120, "");
 		variant.setVariantType(VariantType.INV);
@@ -374,7 +374,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test09() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 991, 1020, "");
 		variant.setVariantType(VariantType.INV);
@@ -391,7 +391,7 @@ public class TestCasesStructuralInv extends TestCasesBase {
 	 */
 	@Test
 	public void test10() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1050, 2120, "");
 		variant.setVariantType(VariantType.INV);

@@ -1,7 +1,7 @@
 package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.Test;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test case where VCF entries has no sequence change (either REF=ALT or ALT=".")
@@ -16,14 +16,14 @@ public class TestCasesIntegrationNoChange extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-classic", "testHg3766Chr1", path("test.no_change.vcf") };
 		checkNoChange(args);
 	}
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-classic", "testHg3766Chr1", path("test.no_change_02.vcf") };
 		checkNoChange(args);
 	}

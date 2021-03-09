@@ -4,6 +4,7 @@ import org.biojava.nbio.structure.AminoAcid;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Transcript;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 public class DistanceResult {
 
@@ -87,7 +88,7 @@ public class DistanceResult {
 	 */
 	int aaNum2ChrPos(Transcript tr, int aaNum, char aa) {
 		if (aaNum < 0) {
-			if (debug) Gpr.debug("Invalid AA number:" + aaNum //
+			if (debug) Log.debug("Invalid AA number:" + aaNum //
 					+ "\n\tDistanceResult: " + this //
 					+ "\n\tTranscript    : " + tr //
 			);
@@ -97,7 +98,7 @@ public class DistanceResult {
 		// Does transcript's AA sequence match the expected AA?
 		String protein = tr.protein();
 		if (protein == null || protein.length() <= aaNum) {
-			if (debug) Gpr.debug("Invalid AA number:" //
+			if (debug) Log.debug("Invalid AA number:" //
 					+ "\n\tAA number     : " + aaNum //
 					+ "\n\tProtein length: " + protein.length() //
 					+ "\n\tDistanceResult: " + this //
@@ -108,7 +109,7 @@ public class DistanceResult {
 
 		// Does transcript's AA sequence match the expected AA?
 		if (protein.charAt(aaNum) != aa) {
-			if (debug) Gpr.debug("AA not matching the expected sequence:" //
+			if (debug) Log.debug("AA not matching the expected sequence:" //
 					+ "\n\tAA             :\t" + aa //
 					+ "\n\ttr.protein     :\t" + protein //
 					+ "\n\ttr.protein[" + aaNum + "]:\t" + protein.charAt(aaNum) //
@@ -121,7 +122,7 @@ public class DistanceResult {
 		// Find genomic position based on AA position
 		int aa2pos[] = tr.aaNumber2Pos();
 		if (aa2pos.length <= aaNum) {
-			if (debug) Gpr.debug("AA number out of range in aa2pos[]: " //
+			if (debug) Log.debug("AA number out of range in aa2pos[]: " //
 					+ "\n\tAA number        : " + aaNum //
 					+ "\n\ttr.aa2pos.length : " + aa2pos.length //
 					+ "\n\tDistanceResult: " + this //

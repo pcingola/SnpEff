@@ -215,7 +215,7 @@ public class VcfHeaderInfo extends VcfHeaderEntry {
 		else {
 			int num = Gpr.parseIntSafe(number);
 			if (num < 0) {
-				// Gpr.debug("Vcf header's INFO field '" + id + "' should be a non-negative integer 'Number' parameter (value: '" + number + "').");
+				// Log.debug("Vcf header's INFO field '" + id + "' should be a non-negative integer 'Number' parameter (value: '" + number + "').");
 				vcfInfoNumber = VcfInfoNumber.UNLIMITED; // Try to overcome the error by setting it no 'UNLIMITED'
 			} else setNumber(num);
 		}

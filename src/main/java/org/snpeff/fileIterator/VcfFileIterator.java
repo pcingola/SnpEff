@@ -10,6 +10,7 @@ import org.snpeff.fileIterator.parser.Parser;
 import org.snpeff.interval.Genome;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.VcfHeader;
 
@@ -129,7 +130,7 @@ public class VcfFileIterator extends MarkerFileIterator<VcfEntry> implements Par
 				header.addLine(line); // Header?
 			} else if ((line.length() > 0) && (!line.startsWith("#"))) return new VcfEntry(this, line, lineNum, parseNow); // Vcf entry?
 		} catch (Throwable t) {
-			Gpr.debug("Fatal error reading file '" + fileName + "' (line: " + lineNum + "):\n" + line);
+			Log.debug("Fatal error reading file '" + fileName + "' (line: " + lineNum + "):\n" + line);
 			throw new RuntimeException(t);
 		}
 		// Could not create a VcfEntry from this line (e.g. header line)

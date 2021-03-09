@@ -14,7 +14,7 @@ import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Compare effects in tests cases
@@ -75,7 +75,7 @@ public class CompareEffects {
 		if (expAa.isEmpty()) return true; // We don't have AA information to compare
 
 		String aa = useAaNoNum ? varEff.getAaChangeOld() : varEff.getAaChange();
-		if (debug) Gpr.debug("AA compare: '" + aa + "'\tExpected AA: '" + expAa + "'");
+		if (debug) Log.debug("AA compare: '" + aa + "'\tExpected AA: '" + expAa + "'");
 
 		return aa.equals(expAa);
 	}
@@ -84,10 +84,10 @@ public class CompareEffects {
 	 * Compare effects
 	 */
 	boolean compareEff(VariantEffect varEff, String expEffs) {
-		if (verbose) Gpr.debug("Variant effect: " + varEff);
+		if (verbose) Log.debug("Variant effect: " + varEff);
 		for (EffectType effType : varEff.getEffectTypes())
 			for (String realEff : findEffTypes(expEffs)) {
-				if (debug) Gpr.debug("Compare effect\texp:" + effType + "\treal:" + realEff);
+				if (debug) Log.debug("Compare effect\texp:" + effType + "\treal:" + realEff);
 				if (effType.toString().equals(realEff)) return true;
 			}
 
@@ -195,7 +195,7 @@ public class CompareEffects {
 						);
 					}
 				} else {
-					Gpr.debug(msg);
+					Log.debug(msg);
 					throw new RuntimeException(msg);
 				}
 			}

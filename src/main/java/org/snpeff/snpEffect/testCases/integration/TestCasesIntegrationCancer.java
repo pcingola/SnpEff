@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -28,7 +28,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String file = path("test.cancer.snp.01.vcf");
 		snpEffectCancer(file, null, "testHg3766Chr1", true, "p.Leu1?", "c.1C>G", "G-C", null);
 	}
@@ -38,7 +38,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String fileVcf = path("test.cancer_no_ped.vcf");
 		String fileTxt = path("test.cancer_no_ped.txt");
 		snpEffectCancer(fileVcf, fileTxt, "testHg3766Chr1", true, "p.Leu1?", "c.1C>G", "G-C", null);
@@ -49,7 +49,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_03_cancer_concurrent_modification() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-cancer"//
 				, "-cancerSamples", path("test_cancer_concurrent_modification.txt") //
 				, "-ud", "0" //
@@ -92,7 +92,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String file = path("test_04.vcf");
 		snpEffectCancer(file, null, "testHg19Chr22", false, "p.Gln133Leu", "c.398A>T", "A-T", null);
 	}
@@ -102,7 +102,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_05() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String file = path("test.cancer_05.vcf");
 		snpEffectCancer(file, null, "testHg19Chr17", false, "p.Arg72Pro", "c.215G>C", "G-C", "NM_000546.5");
 	}
@@ -112,7 +112,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_06() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String file = path("test.cancer_06.vcf");
 		snpEffectCancer(file, null, "testHg19Chr17", false, "p.Arg72Pro", "c.215G>C", "G-C", "NM_000546.5");
 	}
@@ -122,7 +122,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_06_phased() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String file = path("test.cancer_06_phased.vcf");
 		snpEffectCancer(file, null, "testHg19Chr17", false, "p.Arg72Pro", "c.215G>C", "G-C", "NM_000546.5");
 	}
@@ -132,7 +132,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_07() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String file = path("test.cancer_07.vcf");
 		snpEffectCancer(file, null, "testHg19Chr17", false, "p.His72Pro", "c.215A>C", "G-T", "NM_000546.5");
 	}
@@ -142,7 +142,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_07_phase() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String file = path("test.cancer_07_phased.vcf");
 		snpEffectCancer(file, null, "testHg19Chr17", false, "p.His72Pro", "c.215A>C", "G-T", "NM_000546.5");
 	}

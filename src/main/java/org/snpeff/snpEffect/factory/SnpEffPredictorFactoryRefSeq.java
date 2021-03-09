@@ -15,6 +15,7 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * This class creates a SnpEffectPredictor from a TXT file dumped using UCSC table browser
@@ -266,7 +267,7 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 
 			reader.close();
 		} catch (Exception e) {
-			Gpr.debug("Offending line (lineNum: " + lineNum + "): '" + line + "'");
+			Log.debug("Offending line (lineNum: " + lineNum + "): '" + line + "'");
 			throw new RuntimeException(e);
 		}
 	}

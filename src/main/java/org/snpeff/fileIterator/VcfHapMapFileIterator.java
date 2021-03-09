@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEntry;
 
 /**
@@ -29,7 +29,7 @@ public class VcfHapMapFileIterator extends MarkerFileIterator<VcfEntry> {
 		this.genome = genome;
 	}
 
-	/** 
+	/**
 	 * Parse a line from a hapMap file and create a VCF entry.
 	 * @param line
 	 * @return
@@ -94,7 +94,7 @@ public class VcfHapMapFileIterator extends MarkerFileIterator<VcfEntry> {
 			}
 
 			// System.out.println(line + "\n" + vcfEntry + "\n");
-		} else Gpr.debug("WARNING! Skipping entry:\t" + line);
+		} else Log.debug("WARNING! Skipping entry:\t" + line);
 
 		return vcfEntry;
 	}
@@ -121,7 +121,7 @@ public class VcfHapMapFileIterator extends MarkerFileIterator<VcfEntry> {
 		return null;
 	}
 
-	/** 
+	/**
 	 * Read sequence from fasta file. Only one sequence per file, so we just read the first sequence.
 	 * WARING: Chromosome is created if it doesn't exist
 	 */

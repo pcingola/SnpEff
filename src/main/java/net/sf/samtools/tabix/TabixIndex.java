@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Tabix Index (i.e. the structure stored in *.tbi file)
@@ -62,7 +62,7 @@ public class TabixIndex {
 				+ ", size: " + binSize //
 				+ ", offset: " + offsetLevel //
 				+ ", interval: [ " + start + " , " + end + " )" //
-				;
+		;
 	}
 
 	public TabixIndex() {
@@ -92,7 +92,7 @@ public class TabixIndex {
 
 	public void readIndex(InputStream is) throws IOException {
 		int numBins = TabixReader.readInt(is);
-		if (debug) Gpr.debug("Number of bins: " + numBins);
+		if (debug) Log.debug("Number of bins: " + numBins);
 
 		// Load each bin
 		for (int j = 0; j < numBins; ++j) {
@@ -100,13 +100,13 @@ public class TabixIndex {
 			int numChunks = TabixReader.readInt(is); // How many 'chunks' in this bin?
 
 			TPair64[] chunks = new TPair64[numChunks];
-			if (debug) Gpr.debug("\t" + binInfo(binNumber) + "\tnumChunks: " + numChunks);
+			if (debug) Log.debug("\t" + binInfo(binNumber) + "\tnumChunks: " + numChunks);
 
 			for (int chunNum = 0; chunNum < chunks.length; ++chunNum) {
 				TPair64 tp = new TPair64();
 				tp.readIndex(is);
 				chunks[chunNum] = tp;
-				if (debug) Gpr.debug("\t\tchunk[" + chunNum + "]: " + chunks[chunNum]);
+				if (debug) Log.debug("\t\tchunk[" + chunNum + "]: " + chunks[chunNum]);
 			}
 
 			put(binNumber, chunks);
@@ -117,7 +117,7 @@ public class TabixIndex {
 		long[] linearIndex = new long[linearIndexLen];
 		for (int tid = 0; tid < linearIndex.length; ++tid) {
 			linearIndex[tid] = TabixReader.readLong(is);
-			if (debug) Gpr.debug("\tlinearIndex[" + tid + "] :" + linearIndex[tid]);
+			if (debug) Log.debug("\tlinearIndex[" + tid + "] :" + linearIndex[tid]);
 		}
 		setLinearIndex(linearIndex);
 

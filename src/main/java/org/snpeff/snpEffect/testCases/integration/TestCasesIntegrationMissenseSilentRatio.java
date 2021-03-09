@@ -3,7 +3,7 @@ package org.snpeff.snpEffect.testCases.integration;
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -20,7 +20,7 @@ public class TestCasesIntegrationMissenseSilentRatio extends TestCasesIntegratio
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-i", "vcf" //
 				, "-classic" //
 				, "-useLocalTemplate" //

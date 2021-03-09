@@ -5,6 +5,7 @@ import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test Nonsense mediated decay prediction
@@ -19,11 +20,11 @@ public class TestCasesIntegrationNmd extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Load database
 		String genomeVer = "testHg3766Chr1";
-		Gpr.debug("Loading database '" + genomeVer + "'");
+		Log.debug("Loading database '" + genomeVer + "'");
 		Config config = new Config(genomeVer, Config.DEFAULT_CONFIG_FILE);
 		config.setTreatAllAsProteinCoding(true); // For historical reasons...
 		config.loadSnpEffectPredictor();

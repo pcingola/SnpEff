@@ -5,6 +5,7 @@ import java.util.Random;
 import org.junit.Test;
 import org.snpeff.stats.IntStats;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -27,7 +28,7 @@ public class TestCasesIntStats extends TestCasesBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String fileName = path("intStats_test_01.txt");
 		String file = Gpr.readFile(fileName);
 		String lines[] = file.split("\n");

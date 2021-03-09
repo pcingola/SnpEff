@@ -20,6 +20,7 @@ import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.interval.VariantBnd;
 import org.snpeff.snpEffect.LossOfFunction;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * A VCF entry (a line) in a VCF file
@@ -259,8 +260,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * @param value : Can be null if it is a boolean field.
 	 */
 	public void addInfo(String key, String value) {
-		if (!isValidInfoKey(key)) throw new RuntimeException("Illegal INFO key / name. Key: \"" + key + "\" does not match regular expression ^[A-Za-z_][0-9A-Za-z_.]*$");
-		if (!isValidInfoValue(value)) throw new RuntimeException("No white-space, semi-colons, or equals-signs are permitted in INFO field values. Name:\"" + key + "\" Value:\"" + value + "\"");
+		if (!isValidInfoKey(key)) Log.warning("Illegal INFO key", "Illegal INFO key / name. Key: \"" + key + "\" does not match regular expression ^[A-Za-z_][0-9A-Za-z_.]*$");
+		if (!isValidInfoValue(value)) Log.warning("Illegal INFO value", "No white-space, semi-colons, or equals-signs are permitted in INFO field values. Name:\"" + key + "\" Value:\"" + value + "\"");
 
 		// Remove previous 'key' for INFO field?
 		removeInfo(key);
@@ -396,7 +397,7 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 		// Check number of INFO elements
 		if (vcfInfo.isNumberNumber() && vcfInfo.getNumber() != values.length) {
 			VcfInfoType type = vcfInfo.getVcfInfoType();
-			if (type == VcfInfoType.Flag && values.length == 1) ; // OK, flags must have one or zero values
+			if (type == VcfInfoType.Flag && values.length == 1); // OK, flags must have one or zero values
 			else return "INFO filed '" + infoName + "' has 'Number=" + vcfInfo.getNumber() + "' in header, but it contains '" + values.length + "' elements.";
 		}
 		if (vcfInfo.isNumberAllAlleles() && values.length != (alts.length + 1)) return "INFO filed '" + infoName + "' has 'Number=R' in header, but it contains '" + values.length + "' elements when there are '" + alts.length + "' alleles (it should have '" + (alts.length + 1) + "' elements).";

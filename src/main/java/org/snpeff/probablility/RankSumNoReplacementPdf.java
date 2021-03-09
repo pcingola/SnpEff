@@ -10,13 +10,13 @@ import java.util.HashMap;
 
 import org.apfloat.Apcomplex;
 import org.apfloat.Apfloat;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
- * 
+ *
  * Calculate rank sum probability distribution function (pdf) and cumulative distribution function (cdf).
  * Note: This class assumes that ranks cannot be repeated (selecting without replacement)
- * 
+ *
  * @author Pablo Cingolani
  *
  */
@@ -38,12 +38,12 @@ public class RankSumNoReplacementPdf {
 	public static int warnCDF = 0;
 
 	private static RankSumNoReplacementPdf rankSumNoReplacementPdf = null;
-	String cacheFile; // Cache file 
-	int cacheHit, cacheMiss; // Cache statistics 
-	HashMap<String, Apfloat> cachePdf, cacheCdf; // A cache to speedup calculations  cache[n][nt][r] 
+	String cacheFile; // Cache file
+	int cacheHit, cacheMiss; // Cache statistics
+	HashMap<String, Apfloat> cachePdf, cacheCdf; // A cache to speedup calculations  cache[n][nt][r]
 
 	public static RankSumNoReplacementPdf get() {
-		if( rankSumNoReplacementPdf == null ) rankSumNoReplacementPdf = new RankSumNoReplacementPdf();
+		if (rankSumNoReplacementPdf == null) rankSumNoReplacementPdf = new RankSumNoReplacementPdf();
 		return rankSumNoReplacementPdf;
 	}
 
@@ -64,7 +64,7 @@ public class RankSumNoReplacementPdf {
 	private Apfloat cacheGetCdf(int n, int nt, long r) {
 		String key = cacheKey(n, nt, r, 1, 0);
 		Apfloat prob = cacheCdf.get(key);
-		if( prob != null ) {
+		if (prob != null) {
 			cacheHit++;
 			return prob;
 		}
@@ -75,7 +75,7 @@ public class RankSumNoReplacementPdf {
 	private Apfloat cacheGetPdf(int n, int nt, long r, long rmin, int out) {
 		String key = cacheKey(n, nt, r, rmin, out);
 		Apfloat prob = cachePdf.get(key);
-		if( prob != null ) {
+		if (prob != null) {
 			cacheHit++;
 			return prob;
 		}
@@ -83,7 +83,7 @@ public class RankSumNoReplacementPdf {
 		return RankSumPdf.BAD;
 	}
 
-	/** 
+	/**
 	 * Initialize cache
 	 */
 	private void cacheInit() {
@@ -107,7 +107,7 @@ public class RankSumNoReplacementPdf {
 	/**
 	 * Deletes all values such that N=n, NT <= nt, rmin > 1 or out > 0
 	 * i.e. deletes intermediate results not likely to be used again
-	 * 
+	 *
 	 * @param n
 	 * @param nt
 	 * @return
@@ -115,7 +115,7 @@ public class RankSumNoReplacementPdf {
 	private void cachePrune(int n) {
 		int deleted = 0;
 		HashMap<String, Apfloat> newCachePdf = new HashMap<String, Apfloat>();
-		for( String key : cachePdf.keySet() ) {
+		for (String key : cachePdf.keySet()) {
 			// Parse key
 			String field[] = key.split("_");
 			int keyN = Integer.parseInt(field[0]);
@@ -123,21 +123,21 @@ public class RankSumNoReplacementPdf {
 			int keyOut = Integer.parseInt(field[4]);
 
 			// Delete this entry?
-			if( (keyN == n) && ((keyRmin > 1) || (keyOut > 0)) ) deleted++;
+			if ((keyN == n) && ((keyRmin > 1) || (keyOut > 0))) deleted++;
 			else newCachePdf.put(key, cachePdf.get(key));
 		}
 
 		cachePdf = newCachePdf;
 	}
 
-	/** 
+	/**
 	 * Set a result in cache
 	 * @param r
 	 * @param nt
 	 * @param p
 	 */
 	private void cacheSetCdf(int n, int nt, long r, Apfloat cdf) {
-		if( canBeCached(n, nt) ) {
+		if (canBeCached(n, nt)) {
 			String key = cacheKey(n, nt, r, 1, 0);
 			cacheCdf.put(key, cdf);
 		}
@@ -147,14 +147,14 @@ public class RankSumNoReplacementPdf {
 		cacheSetPdf(n, nt, r, 1, 0, new Apfloat(pdf));
 	}
 
-	/** 
+	/**
 	 * Set a result in cache
 	 * @param r
 	 * @param nt
 	 * @param p
 	 */
 	private void cacheSetPdf(int n, int nt, long r, long rmin, int out, Apfloat pdf) {
-		if( canBeCached(n, nt) ) {
+		if (canBeCached(n, nt)) {
 			String key = cacheKey(n, nt, r, rmin, out);
 			cachePdf.put(key, pdf);
 		}
@@ -169,11 +169,11 @@ public class RankSumNoReplacementPdf {
 	}
 
 	/**
-	 * Probability of getting a rank sum less or equal to 'r' when adding the ranks 
+	 * Probability of getting a rank sum less or equal to 'r' when adding the ranks
 	 * of 'nt' selected items. Items are ranked '1..n' (from 1 to 'n')
-	 *  
+	 *
 	 * Note: Approximated when 'n > 30'
-	 * 
+	 *
 	 * @param n : Maximum rank number
 	 * @param nt : Number of elements in the sum
 	 * @param r : rank sum value
@@ -185,33 +185,33 @@ public class RankSumNoReplacementPdf {
 		long maxR = maxRankSum(n, nt);
 
 		// Check variable's limits
-		if( (nt <= 0) || (nt > n) ) return Apcomplex.ZERO;
-		if( n <= 0 ) return Apcomplex.ZERO;
-		if( r < minR ) return Apcomplex.ZERO;
-		if( r >= maxR ) return Apcomplex.ONE;
+		if ((nt <= 0) || (nt > n)) return Apcomplex.ZERO;
+		if (n <= 0) return Apcomplex.ZERO;
+		if (r < minR) return Apcomplex.ZERO;
+		if (r >= maxR) return Apcomplex.ONE;
 
 		// If we select all the numbers in the rank, the rank sum has only one possible value (minRankSum = maxRankSum)
-		if( n == nt ) {
-			if( minR <= r ) return Apcomplex.ONE;
+		if (n == nt) {
+			if (minR <= r) return Apcomplex.ONE;
 			return Apcomplex.ZERO;
 		}
 
 		// What's the probability distribution if there is no ranked items? => the rank sum is always 0
-		if( nt == 0 ) {
-			if( 0 <= r ) return Apcomplex.ONE; // P( r_sum <= r ) = P( 0 <= r ) = 1.0
+		if (nt == 0) {
+			if (0 <= r) return Apcomplex.ONE; // P( r_sum <= r ) = P( 0 <= r ) = 1.0
 			return Apcomplex.ZERO;
 		}
 
 		Algorithm algorithm;
 
 		// Calculate CDF
-		if( n <= CACHE_MAX_N ) { // Small 'n' values => Use exact calculation
+		if (n <= CACHE_MAX_N) { // Small 'n' values => Use exact calculation
 			cdf = cdfExact(n, nt, r);
 			algorithm = Algorithm.EXACT;
-		} else if( (nt == 1) || (nt == n - 1) ) { // If NT is 1 or N-1 => Uniform distribution
+		} else if ((nt == 1) || (nt == n - 1)) { // If NT is 1 or N-1 => Uniform distribution
 			cdf = cdfUniform(n, nt, r);
 			algorithm = Algorithm.UNIFORM;
-		} else if( (nt == 2) || (nt == n - 2) ) { // If NT is 2 or N-2 => Triangular distribution
+		} else if ((nt == 2) || (nt == n - 2)) { // If NT is 2 or N-2 => Triangular distribution
 			cdf = cdfTriangle(n, nt, r);
 			algorithm = Algorithm.TRIANGULAR;
 		} else { // Use Normal approximation
@@ -220,10 +220,10 @@ public class RankSumNoReplacementPdf {
 		}
 
 		// Sanity check
-		// Note: CDF cannot be 0.0 because those conditions were checked at the begining of this method 
-		if( (cdf.compareTo(Apcomplex.ZERO) <= 0) || (cdf.compareTo(Apcomplex.ONE) > 1.0) ) {
+		// Note: CDF cannot be 0.0 because those conditions were checked at the begining of this method
+		if ((cdf.compareTo(Apcomplex.ZERO) <= 0) || (cdf.compareTo(Apcomplex.ONE) > 1.0)) {
 			warnCDF++;
-			if( warnCDF < 100 ) Gpr.debug("Warning! CDF should be greater then zero for (algorith: " + algorithm + "):\tN = " + n + "\tNT = " + nt + "\tR = " + r + "\tminRankSum = " + minR + "\tmean = " + mean(n, nt) + "\tsigma = " + sigma(n, nt));
+			if (warnCDF < 100) Log.debug("Warning! CDF should be greater then zero for (algorith: " + algorithm + "):\tN = " + n + "\tNT = " + nt + "\tR = " + r + "\tminRankSum = " + minR + "\tmean = " + mean(n, nt) + "\tsigma = " + sigma(n, nt));
 			throw new RuntimeException("Warning! CDF should be greater then zero for (algorith: " + algorithm + "):\tN = " + n + "\tNT = " + nt + "\tR = " + r + "\tminRankSum = " + minR + "\tmean = " + mean(n, nt) + "\tsigma = " + sigma(n, nt));
 		}
 
@@ -240,14 +240,14 @@ public class RankSumNoReplacementPdf {
 	public Apfloat cdfExact(int n, int nt, long r) {
 		// Is it in the cache?
 		Apfloat cdf = cacheGetCdf(n, nt, r);
-		if( RankSumPdf.isOk(cdf) ) {
+		if (RankSumPdf.isOk(cdf)) {
 			cacheHit++;
 			return (cdf);
 		}
 
 		// cdf = Sum pdf
 		cdf = new Apfloat(0);
-		for( int i = 1; i <= r; i++ )
+		for (int i = 1; i <= r; i++)
 			cdf = cdf.add(pdfExact(n, nt, i));
 
 		// Cache result
@@ -270,46 +270,46 @@ public class RankSumNoReplacementPdf {
 	}
 
 	/**
-	 * Uniform 'approximation' to rank sum statistic 
+	 * Uniform 'approximation' to rank sum statistic
 	 * @param n : Maximum rank number
 	 * @param nt : Number of elements in the sum
 	 * @param dr : rank sum value
 	 * @return The probability that selecting 'nt' elements out of 'n' ranked elements, the rank sum is equal to 'r'
 	 */
 	public Apfloat cdfTriangle(int n, int nt, long r) {
-		if( (nt != 2) && (nt != n - 2) ) throw new RuntimeException("Triangle approximation is only valid fot 'nt = {2, N-2}'!");
+		if ((nt != 2) && (nt != n - 2)) throw new RuntimeException("Triangle approximation is only valid fot 'nt = {2, N-2}'!");
 		double dr = r;
 
 		double rMin = minRankSum(n, nt) - 1;
-		if( dr <= rMin ) return Apcomplex.ZERO;
+		if (dr <= rMin) return Apcomplex.ZERO;
 
 		double rMax = maxRankSum(n, nt) + 1;
-		if( dr >= rMax ) return Apcomplex.ONE;
+		if (dr >= rMax) return Apcomplex.ONE;
 
 		double mean = mean(n, nt);
 
 		double cdf;
-		if( dr <= mean ) cdf = (((dr - rMin) * (dr - rMin)) / ((rMax - rMin) * (mean - rMin)));
+		if (dr <= mean) cdf = (((dr - rMin) * (dr - rMin)) / ((rMax - rMin) * (mean - rMin)));
 		else cdf = (1.0 - ((rMax - dr) * (rMax - dr)) / ((rMax - rMin) * (rMax - mean)));
 
 		return new Apfloat(cdf);
 	}
 
 	/**
-	 * Uniform 'approximation' to rank sum statistic 
+	 * Uniform 'approximation' to rank sum statistic
 	 * @param n : Maximum rank number
 	 * @param nt : Number of elements in the sum
 	 * @param r : rank sum value
 	 * @return The probability that selecting 'nt' elements out of 'n' ranked elements, the rank sum is equal to 'r'
 	 */
 	public Apfloat cdfUniform(int n, int nt, long r) {
-		if( (nt != 1) && (nt != n - 1) ) throw new RuntimeException("Uniform approximation is only valid fot 'nt = {1, N-1}'!");
+		if ((nt != 1) && (nt != n - 1)) throw new RuntimeException("Uniform approximation is only valid fot 'nt = {1, N-1}'!");
 
 		double rMin = minRankSum(n, nt);
-		if( r < rMin ) return Apcomplex.ZERO;
+		if (r < rMin) return Apcomplex.ZERO;
 
 		double rMax = maxRankSum(n, nt);
-		if( r > rMax ) return Apcomplex.ONE;
+		if (r > rMax) return Apcomplex.ONE;
 
 		double cdf = ((r) - rMin + 1) / (n);
 		return new Apfloat(cdf);
@@ -325,11 +325,11 @@ public class RankSumNoReplacementPdf {
 		try {
 			BufferedWriter outFile = new BufferedWriter(new FileWriter(cacheFile));
 
-			for( int n = 1; n <= CACHE_MAX_N; n++ ) {
+			for (int n = 1; n <= CACHE_MAX_N; n++) {
 				System.out.print("N: " + n + "\t");
-				for( int nt = 1; nt <= n; nt++ ) {
+				for (int nt = 1; nt <= n; nt++) {
 					System.out.print('.');
-					for( long r = 1; r <= (n * nt); r++ ) {
+					for (long r = 1; r <= (n * nt); r++) {
 						// Calculate pdf
 						Apfloat pdf = pdfExact(n, nt, r);
 
@@ -348,7 +348,7 @@ public class RankSumNoReplacementPdf {
 			}
 
 			outFile.close();
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -394,11 +394,11 @@ public class RankSumNoReplacementPdf {
 	}
 
 	/**
-	 * Probability of getting a rank sum equal to 'r' when adding the ranks 
+	 * Probability of getting a rank sum equal to 'r' when adding the ranks
 	 * of 'nt' selected items. Items are ranked '1..n' (from 1 to 'n')
-	 *  
+	 *
 	 * Note: Approximated when 'n > 30'
-	 * 
+	 *
 	 * @param n : Maximum rank number
 	 * @param nt : Number of elements in the sum
 	 * @param r : rank sum value
@@ -409,20 +409,20 @@ public class RankSumNoReplacementPdf {
 		long maxR = maxRankSum(n, nt);
 
 		// Check variable's limits
-		if( (nt <= 0) || (nt > n) ) return Apcomplex.ZERO;
-		if( n <= 0 ) return Apcomplex.ZERO;
-		if( r < minR ) return Apcomplex.ZERO;
-		if( r >= maxR ) return Apcomplex.ONE;
+		if ((nt <= 0) || (nt > n)) return Apcomplex.ZERO;
+		if (n <= 0) return Apcomplex.ZERO;
+		if (r < minR) return Apcomplex.ZERO;
+		if (r >= maxR) return Apcomplex.ONE;
 
 		// If we select all the numbers in the rank, the rank sum has only one possible value (minRankSum = maxRankSum)
-		if( n == nt ) {
-			if( minR <= r ) return Apcomplex.ONE;
+		if (n == nt) {
+			if (minR <= r) return Apcomplex.ONE;
 			return Apcomplex.ZERO;
 		}
 
 		// What's the probability distribution if there is no ranked items? => the rank sum is always 0
-		if( nt == 0 ) {
-			if( 0 <= r ) return Apcomplex.ONE; // P( r_sum <= r ) = P( 0 <= r ) = 1.0
+		if (nt == 0) {
+			if (0 <= r) return Apcomplex.ONE; // P( r_sum <= r ) = P( 0 <= r ) = 1.0
 			return Apcomplex.ZERO;
 		}
 
@@ -430,13 +430,13 @@ public class RankSumNoReplacementPdf {
 		Apfloat pdf;
 		Algorithm algorithm;
 
-		if( n <= CACHE_MAX_N ) {
+		if (n <= CACHE_MAX_N) {
 			pdf = pdfExact(n, nt, r); // Small 'n' values => Use exact calculation
 			algorithm = Algorithm.EXACT;
-		} else if( (nt == 1) || (nt == n - 1) ) {
+		} else if ((nt == 1) || (nt == n - 1)) {
 			pdf = pdfUniform(n, nt, r); // If NT is 1 or N-1 => Uniform distribution
 			algorithm = Algorithm.UNIFORM;
-		} else if( (nt == 2) || (nt == n - 2) ) {
+		} else if ((nt == 2) || (nt == n - 2)) {
 			pdf = pdfTriangle(n, nt, r); // If NT is 2 or N-2 => Triangular distribution
 			algorithm = Algorithm.TRIANGULAR;
 		} else {
@@ -445,18 +445,18 @@ public class RankSumNoReplacementPdf {
 		}
 
 		// Sanity check
-		// Note: PDF cannot be 0.0 because those conditions were checked at the begining of this method 
-		if( (pdf.compareTo(Apcomplex.ZERO) <= 0) || (pdf.compareTo(Apcomplex.ONE) > 1.0) ) throw new RuntimeException("Warning! PDF should be greater then zero for (algorith: " + algorithm + "):\tN = " + n + "\tNT = " + nt + "\tR = " + r + "\tminRankSum = " + minR + "\tmean = " + mean(n, nt) + "\tsigma = " + sigma(n, nt));
+		// Note: PDF cannot be 0.0 because those conditions were checked at the begining of this method
+		if ((pdf.compareTo(Apcomplex.ZERO) <= 0) || (pdf.compareTo(Apcomplex.ONE) > 1.0)) throw new RuntimeException("Warning! PDF should be greater then zero for (algorith: " + algorithm + "):\tN = " + n + "\tNT = " + nt + "\tR = " + r + "\tminRankSum = " + minR + "\tmean = " + mean(n, nt) + "\tsigma = " + sigma(n, nt));
 
 		return pdf;
 	}
 
 	/**
-	 * Probability of getting a rank sum equal to 'r' when adding the ranks 
-	 * of 'nt' selected items. Items are ranked '1..n' (from 1 to 'n') 
+	 * Probability of getting a rank sum equal to 'r' when adding the ranks
+	 * of 'nt' selected items. Items are ranked '1..n' (from 1 to 'n')
 	 * Note: Exact calculation
 	 * Wrapper to 'real' pdf function
-	 * 
+	 *
 	 * @param n : Maximum rank number
 	 * @param nt : Number of elements in the sum
 	 * @param r : rank sum value
@@ -478,26 +478,26 @@ public class RankSumNoReplacementPdf {
 		long minR = (int) ((nt + 1) * ((double) nt) / 2);
 		long minR2 = nt * (rmin - 1) + minR;
 		long maxR = nt * (n - nt) + minR;
-		if( (r < minR2) || (r > maxR) || (r < rmin) ) return Apcomplex.ZERO;
-		if( (nt <= 0) || (nt > n) ) return Apcomplex.ZERO;
-		if( n <= 0 ) return Apcomplex.ZERO;
-		if( n < rmin ) return Apcomplex.ZERO;
+		if ((r < minR2) || (r > maxR) || (r < rmin)) return Apcomplex.ZERO;
+		if ((nt <= 0) || (nt > n)) return Apcomplex.ZERO;
+		if (n <= 0) return Apcomplex.ZERO;
+		if (n < rmin) return Apcomplex.ZERO;
 
 		// Cut conditions
-		if( nt == 1 ) {
+		if (nt == 1) {
 			double p = 1.0 / (n - out);
 			return new Apfloat(p); // For NT=1
 		}
 
 		// Is it cached?
 		Apfloat p = cacheGetPdf(n, nt, r, rmin, out);
-		if( RankSumPdf.isOk(p) ) return p;
+		if (RankSumPdf.isOk(p)) return p;
 
 		// Perform recursion & sum
 		Apfloat sum = new Apfloat(0);
 		long rmax = n;
-		if( rmax > (r - 1) ) rmax = r - 1;
-		for( long i = rmin; i < rmax; i++ ) {
+		if (rmax > (r - 1)) rmax = r - 1;
+		for (long i = rmin; i < rmax; i++) {
 			Apfloat p1 = pdfExact(n, 1, i, i, out);
 			Apfloat p2 = pdfExact(n, nt - 1, r - i, i + 1, out + 1);
 			sum = sum.add(p1.multiply(p2).multiply(new Apfloat(nt)));
@@ -511,7 +511,7 @@ public class RankSumNoReplacementPdf {
 	}
 
 	/**
-	 * Normal approximation to rank sum statistic 
+	 * Normal approximation to rank sum statistic
 	 * @param n : Maximum rank number
 	 * @param nt : Number of elements in the sum
 	 * @param r : rank sum value
@@ -524,45 +524,45 @@ public class RankSumNoReplacementPdf {
 	}
 
 	/**
-	 * Uniform 'approximation' to rank sum statistic 
+	 * Uniform 'approximation' to rank sum statistic
 	 * @param n : Maximum rank number
 	 * @param nt : Number of elements in the sum
 	 * @param dr : rank sum value
 	 * @return The probability that selecting 'nt' elements out of 'n' ranked elements, the rank sum is equal to 'r'
 	 */
 	public Apfloat pdfTriangle(int n, int nt, long r) {
-		if( (nt != 2) && (nt != n - 2) ) throw new RuntimeException("Triangle approximation is only valid fot 'nt = {2, N-2}'!");
+		if ((nt != 2) && (nt != n - 2)) throw new RuntimeException("Triangle approximation is only valid fot 'nt = {2, N-2}'!");
 		double dr = r;
 
 		double rMin = minRankSum(n, nt) - 1;
-		if( dr <= rMin ) return Apcomplex.ZERO;
+		if (dr <= rMin) return Apcomplex.ZERO;
 
 		double rMax = maxRankSum(n, nt) + 1;
-		if( dr >= rMax ) return Apcomplex.ZERO;
+		if (dr >= rMax) return Apcomplex.ZERO;
 
 		double mean = mean(n, nt);
 
 		double pdf;
-		if( dr <= mean ) pdf = (2.0 * (dr - rMin) / ((rMax - rMin) * (mean - rMin)));
+		if (dr <= mean) pdf = (2.0 * (dr - rMin) / ((rMax - rMin) * (mean - rMin)));
 		else pdf = (2 * (rMax - dr) / ((rMax - rMin) * (rMax - mean)));
 		return new Apfloat(pdf);
 	}
 
 	/**
-	 * Uniform 'approximation' to rank sum statistic 
+	 * Uniform 'approximation' to rank sum statistic
 	 * @param n : Maximum rank number
 	 * @param nt : Number of elements in the sum
 	 * @param r : rank sum value
 	 * @return The probability that selecting 'nt' elements out of 'n' ranked elements, the rank sum is equal to 'r'
 	 */
 	public Apfloat pdfUniform(int n, int nt, long r) {
-		if( (nt != 1) && (nt != n - 1) ) throw new RuntimeException("Uniform approximation is only valid fot 'nt = {1, N-1}'!");
+		if ((nt != 1) && (nt != n - 1)) throw new RuntimeException("Uniform approximation is only valid fot 'nt = {1, N-1}'!");
 
 		double rMin = minRankSum(n, nt);
-		if( r < rMin ) return Apcomplex.ZERO;
+		if (r < rMin) return Apcomplex.ZERO;
 
 		double rMax = maxRankSum(n, nt);
-		if( r > rMax ) return Apcomplex.ZERO;
+		if (r > rMax) return Apcomplex.ZERO;
 
 		double pdf = 1.0 / (n);
 		return new Apfloat(pdf);
@@ -576,9 +576,9 @@ public class RankSumNoReplacementPdf {
 			BufferedReader inFile = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("rank_sum_no_replacement.prob")));
 
 			String line;
-			for( int lineNum = 1; (line = inFile.readLine()) != null; lineNum++ ) {
+			for (int lineNum = 1; (line = inFile.readLine()) != null; lineNum++) {
 				String fields[] = line.split("\t");
-				if( fields.length == 4 ) {
+				if (fields.length == 4) {
 					int n = Integer.parseInt(fields[0]);
 					int nt = Integer.parseInt(fields[1]);
 					long r = Long.parseLong(fields[2]);
@@ -590,7 +590,7 @@ public class RankSumNoReplacementPdf {
 			}
 
 			inFile.close();
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -600,7 +600,7 @@ public class RankSumNoReplacementPdf {
 	}
 
 	/**
-	 * Wrapper to Sqrt(variance) 
+	 * Wrapper to Sqrt(variance)
 	 * @param n
 	 * @param nt
 	 * @return
@@ -615,7 +615,7 @@ public class RankSumNoReplacementPdf {
 	 */
 	public String toStringCache() {
 		double perc = 0;
-		if( cacheHit > 0 ) perc = ((int) (10000 * (((double) cacheMiss) / ((double) cacheHit)))) / 100;
+		if (cacheHit > 0) perc = ((int) (10000 * (((double) cacheMiss) / ((double) cacheHit)))) / 100;
 		return "Cache size: " + cachePdf.size() + "\tMiss/Hit: " + cacheMiss + " / " + cacheHit + " ( " + perc + "% )";
 	}
 
@@ -647,11 +647,11 @@ public class RankSumNoReplacementPdf {
 		double dnt = nt;
 		double dn = n;
 		double mu = mean(n, nt);
-		for( int i = 1; i <= n; i++ )
-			for( int j = 1; j <= n; j++ ) {
+		for (int i = 1; i <= n; i++)
+			for (int j = 1; j <= n; j++) {
 				double di = i;
 				double dj = j;
-				if( i == j ) var += di * dj * dnt / dn;
+				if (i == j) var += di * dj * dnt / dn;
 				else var += di * dj * dnt * (dnt - 1) / (dn * (dn - 1));
 			}
 

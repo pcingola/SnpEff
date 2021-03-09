@@ -10,8 +10,8 @@ import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
 import org.snpeff.snpEffect.Config;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  * Test case
@@ -32,7 +32,7 @@ public class TestCasesGenomicSequences {
 		for (String fn : (new File(dir)).list()) {
 			if (fn.startsWith("sequence") && fn.endsWith(".bin")) {
 				count++;
-				if (verbose) Gpr.debug("Found file (" + count + "): " + fn);
+				if (verbose) Log.debug("Found file (" + count + "): " + fn);
 			}
 		}
 
@@ -46,7 +46,7 @@ public class TestCasesGenomicSequences {
 		for (File f : (new File(dir)).listFiles()) {
 			String fn = f.getName();
 			if (fn.startsWith("sequence") && fn.endsWith(".bin")) {
-				if (verbose) Gpr.debug("Deleting file: " + f.getAbsolutePath());
+				if (verbose) Log.debug("Deleting file: " + f.getAbsolutePath());
 				f.delete();
 			}
 		}
@@ -58,7 +58,7 @@ public class TestCasesGenomicSequences {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int numberOfChromos = 1000;
 
 		//---
@@ -104,7 +104,7 @@ public class TestCasesGenomicSequences {
 			Chromosome chr = genome.getChromosome("chr" + i);
 			Marker marker = new Marker(chr, 0, chrSeqs[i].length() - 1);
 			String seqRead = gsRead.querySequence(marker);
-			if (verbose) Gpr.debug("Query marker: " + marker + ", sequence: " + seqRead);
+			if (verbose) Log.debug("Query marker: " + marker + ", sequence: " + seqRead);
 			Assert.assertEquals("Chromosome sequences do not match", chrSeqs[i].toUpperCase(), seqRead.toUpperCase());
 		}
 	}
@@ -117,7 +117,7 @@ public class TestCasesGenomicSequences {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int numberOfLargeChromos = 10;
 		int numberOfChromos = 1000;
 		int longChrLen = GenomicSequences.CHR_LEN_SEPARATE_FILE + 1;
@@ -169,7 +169,7 @@ public class TestCasesGenomicSequences {
 			Chromosome chr = genome.getChromosome("chr" + i);
 			Marker marker = new Marker(chr, 0, chrSeqs[i].length() - 1);
 			String seqRead = gsRead.querySequence(marker);
-			if (verbose) Gpr.debug("Query marker: " + marker + ", sequence: " + seqRead);
+			if (verbose) Log.debug("Query marker: " + marker + ", sequence: " + seqRead);
 			Assert.assertEquals("Chromosome sequences do not match", chrSeqs[i].toUpperCase(), seqRead.toUpperCase());
 		}
 	}

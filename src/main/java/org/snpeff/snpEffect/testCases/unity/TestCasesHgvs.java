@@ -7,7 +7,7 @@ import org.snpeff.snpEffect.HgvsDna;
 import org.snpeff.snpEffect.HgvsProtein;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -25,7 +25,7 @@ public class TestCasesHgvs extends TestCasesBase {
 		prependSequenceToFirstExon("atgaaaatgggccatcagcagcagtgctgc"); // This is 'MKMGHQQQCC' as a DNA sequence
 
 		if (verbose) {
-			Gpr.debug("\nChromsome : " + chromoSequence //
+			Log.debug("\nChromsome : " + chromoSequence //
 					+ "\nTranscript:\n" + transcript //
 					+ "\nVariant   : " + variant //
 			);
@@ -43,9 +43,9 @@ public class TestCasesHgvs extends TestCasesBase {
 
 		// Check result
 		if (verbose) {
-			Gpr.debug("Eff        : " + eff);
-			Gpr.debug("HGVS (DNA) : '" + hgvsDna + "'");
-			Gpr.debug("HGVS (Prot): '" + hgvsProt + "'");
+			Log.debug("Eff        : " + eff);
+			Log.debug("HGVS (DNA) : '" + hgvsDna + "'");
+			Log.debug("HGVS (Prot): '" + hgvsProt + "'");
 		}
 
 		if (expectedHgvsC != null) Assert.assertEquals("HGVS.c notation does not match", expectedHgvsC, hgvsDna);
@@ -57,7 +57,7 @@ public class TestCasesHgvs extends TestCasesBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Config.get().setHgvsOneLetterAA(true);
 		Variant variant = new Variant(chromosome, 898, "C", "A", ""); // Add 'GHQ' amino acids
@@ -70,7 +70,7 @@ public class TestCasesHgvs extends TestCasesBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Config.get().setHgvsTrId(true);
 		Variant variant = new Variant(chromosome, 898, "C", "A", ""); // Add 'GHQ' amino acids
@@ -84,7 +84,7 @@ public class TestCasesHgvs extends TestCasesBase {
 	 */
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Config.get().setHgvsOld(true);
 		Variant variant = new Variant(chromosome, 898, "C", "A", ""); // Add 'GHQ' amino acids

@@ -8,7 +8,7 @@ import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.snpEffect.Config;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test case for cytobands
@@ -24,7 +24,7 @@ public class TestCasesCytoBands {
 	 */
 	@Test
 	public void test01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genomeVer = "testHg19Chr22";
 		Config config = new Config(genomeVer);
@@ -41,7 +41,7 @@ public class TestCasesCytoBands {
 	 */
 	@Test
 	public void test02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genomeVer = "testHg19Chr22";
 		Config config = new Config(genomeVer);

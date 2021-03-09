@@ -38,6 +38,7 @@ import org.snpeff.stats.VariantEffectStats;
 import org.snpeff.stats.VariantStats;
 import org.snpeff.stats.VcfStats;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 import org.snpeff.util.Tuple;
 import org.snpeff.vcf.EffFormatVersion;
@@ -211,7 +212,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			printed = true;
 		} catch (Throwable t) {
 			totalErrs++;
-			error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
+			Log.error(t, "Error while processing VCF entry (line " + vcfFile.getLineNum() + ") :\n\t" + vcfEntry + "\n" + t);
 		} finally {
 			if (!printed && !filteredOut) outputFormatter.printSection(vcfEntry);
 		}
@@ -264,7 +265,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 				outputFormatter.printSection(variant);
 			} catch (Throwable t) {
 				totalErrs++;
-				error(t, "Error while processing variant (line " + variantFileIterator.getLineNum() + ") :\n\t" + variant + "\n" + t);
+				Log.error(t, "Error while processing variant (line " + variantFileIterator.getLineNum() + ") :\n\t" + variant + "\n" + t);
 			}
 		}
 
@@ -797,7 +798,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 								variantEffectResutFilter.add(EffectType.UTR_3_DELETED);
 								variantEffectResutFilter.add(EffectType.UTR_5_PRIME);
 								variantEffectResutFilter.add(EffectType.UTR_5_DELETED);
-							} else if (filterStr.equalsIgnoreCase("None")) ; // OK, nothing to do
+							} else if (filterStr.equalsIgnoreCase("None")); // OK, nothing to do
 							else variantEffectResutFilter.add(EffectType.valueOf(filterStr.toUpperCase()));
 						}
 						break;
@@ -881,8 +882,8 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	 */
 	String readFile(String fileName) {
 		File file = new File(fileName);
-		if (!file.exists()) fatalError("No such file '" + fileName + "'");
-		if (!file.canRead()) fatalError("Cannot open file '" + fileName + "'");
+		if (!file.exists()) Log.fatalError("No such file '" + fileName + "'");
+		if (!file.canRead()) Log.fatalError("Cannot open file '" + fileName + "'");
 		return Gpr.readFile(fileName);
 	}
 
@@ -1042,10 +1043,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			error(e, "Error creating summary: " + e.getMessage());
+			Log.error(e, "Error creating summary: " + e.getMessage());
 			return false;
 		} catch (TemplateException e) {
-			error(e, "Error creating summary: " + e.getMessage());
+			Log.error(e, "Error creating summary: " + e.getMessage());
 			return false;
 		}
 

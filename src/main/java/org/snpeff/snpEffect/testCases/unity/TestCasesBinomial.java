@@ -6,10 +6,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.snpeff.probablility.Binomial;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
- * Test for Binomial distribution 
- * 
+ * Test for Binomial distribution
+ *
  * @author pcingola
  *
  */
@@ -72,7 +73,7 @@ public class TestCasesBinomial {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void generate_test() {
 		StringBuilder sb = new StringBuilder();
@@ -95,7 +96,7 @@ public class TestCasesBinomial {
 
 	@Ignore
 	public void test_00() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		//		generate_test();
 		//		generate_test();
 		//		generate_test();
@@ -103,7 +104,7 @@ public class TestCasesBinomial {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compare(0.2880550055924883, 220, 254, 2.27799916244268e-82);
 		compare(0.48868610851489847, 25, 31, 0.000221268194173791);
 		compare(0.6629132547126394, 293, 559, 3.86472550479299e-12);
@@ -208,7 +209,7 @@ public class TestCasesBinomial {
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareCdf(0.5, 10, 20, 0.588098526000976);
 		compareCdf(0.5, 9, 20, 0.411901473999024);
 
@@ -316,7 +317,7 @@ public class TestCasesBinomial {
 
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareCdfUp(0.5, 10, 20, 0.411901473999024);
 
 		compareCdfUp(0.4325241487200683, 510, 684, 1.2630255422394e-62);

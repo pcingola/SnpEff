@@ -1,7 +1,7 @@
 package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.Test;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test random SNP changes
@@ -16,7 +16,7 @@ public class TestCasesIntegrationSnpEnsembl extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01_ENST00000369219() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String trName = "ENST00000369219";
 		String ensemblFile = path(trName + "_ensembl.txt");
 
@@ -26,7 +26,7 @@ public class TestCasesIntegrationSnpEnsembl extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01_ENST00000369368() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String trName = "ENST00000369368";
 		String ensemblFile = path(trName + "_ensembl.txt");
 
@@ -36,7 +36,7 @@ public class TestCasesIntegrationSnpEnsembl extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01_ENST00000415551() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String ensemblFile = path("ENST00000415551_ensembl.txt");
 		String trName = "ENST00000415551";
 
@@ -46,7 +46,7 @@ public class TestCasesIntegrationSnpEnsembl extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01_ENST00000434489() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String trName = "ENST00000434489";
 		String ensemblFile = path(trName + "_ensembl.txt");
 
@@ -56,7 +56,7 @@ public class TestCasesIntegrationSnpEnsembl extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String ensemblFile = path("ENST00000430575_ensembl.txt");
 		String trName = "ENST00000430575";
 
@@ -66,7 +66,7 @@ public class TestCasesIntegrationSnpEnsembl extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String ensemblFile = path("ENST00000382896_ensembl.txt");
 		String trName = "ENST00000382896";
 

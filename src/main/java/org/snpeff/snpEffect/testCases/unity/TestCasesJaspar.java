@@ -2,7 +2,7 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.Test;
 import org.snpeff.motif.Jaspar;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -19,7 +19,7 @@ public class TestCasesJaspar extends TestCasesBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Jaspar jaspar = new Jaspar();
 		jaspar.load(path("jaspar_old.txt.gz"));
 
@@ -53,7 +53,7 @@ public class TestCasesJaspar extends TestCasesBase {
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Jaspar jaspar = new Jaspar();
 		jaspar.load(path("jaspar_2013.txt.gz"));
 

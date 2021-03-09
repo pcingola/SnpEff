@@ -13,8 +13,8 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.LossOfFunction;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.KeyValue;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -118,7 +118,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 						for (VariantEffect ce : variantEffects)
 							sb.append("\t" + ce + "\n");
 						sb.append("--------------------------------------------------------------------------------\n");
-						Gpr.debug("WARNING: Repeated effect!\n" + sb);
+						Log.debug("WARNING: Repeated effect!\n" + sb);
 					}
 				} else effsSorted.add(effStr);
 

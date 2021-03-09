@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
@@ -90,7 +91,7 @@ public class LogStats extends Thread {
 				logStats.add(prop, System.getProperty(prop));
 			} catch (Exception e) {
 				; // Do nothing, just skip the values
-			};
+			} ;
 		}
 
 		// What kind of computers are users using?
@@ -99,7 +100,7 @@ public class LogStats extends Thread {
 			logStats.add("total.mem", Runtime.getRuntime().totalMemory() + "");
 		} catch (Exception e) {
 			; // Do nothing, just skip the values
-		};
+		} ;
 
 		//---
 		// Add custom values
@@ -169,7 +170,7 @@ public class LogStats extends Thread {
 		for (String name : names)
 			urlsb.append("&" + name + "=").append(encode2url(values.get(name)));
 
-		if (debug) Gpr.debug("URL: " + urlsb);
+		if (debug) Log.debug("URL: " + urlsb);
 		return new URL(urlsb.toString());
 	}
 
@@ -190,29 +191,29 @@ public class LogStats extends Thread {
 		// Step 0 : Build URL
 		int step = 0;
 		long t0 = System.currentTimeMillis();
-		if (debug) Gpr.debug("Connect Step = " + step);
+		if (debug) Log.debug("Connect Step = " + step);
 		try {
 			URL url = buildUrlWrap();
 
 			// Step 1: Open connection
 			step = 1;
-			if (debug) Gpr.debug("Connect Step = " + step);
+			if (debug) Log.debug("Connect Step = " + step);
 			URLConnection httpConnection = url.openConnection();
 
 			// Step 2: Set parameters
 			step = 2;
-			if (debug) Gpr.debug("Connect Step = " + step);
+			if (debug) Log.debug("Connect Step = " + step);
 			httpConnection.setConnectTimeout(HTTP_CONNECT_TIMEOUT_MSECS);
 			httpConnection.setReadTimeout(HTTP_READ_TIMEOUT_MSECS);
 
 			// Step 3: Connect to server
 			step = 3;
-			if (debug) Gpr.debug("Connect Step = " + step);
+			if (debug) Log.debug("Connect Step = " + step);
 
 			// Step 4: Parse results (nothing done here)
 			step = 4;
 			String responseStr = Gpr.read(httpConnection.getInputStream());
-			if (debug) Gpr.debug("Server response: " + responseStr);
+			if (debug) Log.debug("Server response: " + responseStr);
 			// parseResponse(responseStr);
 
 			res = RequestResult.OK;
@@ -222,10 +223,10 @@ public class LogStats extends Thread {
 			res = RequestResult.ERROR;
 		} finally {
 			duration = System.currentTimeMillis() - t0;
-			if (debug && !res.completed()) Gpr.debug("Error in connection: " + res + " step=" + step + " duration(msecs)=" + duration + " " + msg);
+			if (debug && !res.completed()) Log.debug("Error in connection: " + res + " step=" + step + " duration(msecs)=" + duration + " " + msg);
 		}
 
-		if (debug) Gpr.debug("Connect done!");
+		if (debug) Log.debug("Connect done!");
 	}
 
 	/**
@@ -249,9 +250,9 @@ public class LogStats extends Thread {
 	@Override
 	public void run() {
 		try {
-			if (debug) Gpr.debug("Running thread");
+			if (debug) Log.debug("Running thread");
 			connect();
-			if (debug) Gpr.debug("Thread finished");
+			if (debug) Log.debug("Thread finished");
 		} catch (Throwable t) {
 			if (debug) t.printStackTrace();; // Do nothing if it fails
 		}

@@ -2,12 +2,12 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.probablility.FisherExactTest;
 import org.snpeff.probablility.Hypergeometric;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
+
+import junit.framework.Assert;
 
 /**
  * Test for Hypergeometric distribution and Fisher exact test
@@ -39,7 +39,7 @@ public class TestCasesFisherExactTest {
 					+ "\n\tpValue:\t" + p //
 					+ "\n\tExpected:\t" + result //
 					+ "\n\tR: " + FisherExactTest.get().toR(k, N, D, n, true);
-			Gpr.debug("Error\n" + err);
+			Log.debug("Error\n" + err);
 			throw new RuntimeException(err);
 		}
 	}
@@ -105,13 +105,13 @@ public class TestCasesFisherExactTest {
 
 	@Test
 	public void test_0() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// generate_test();
 	}
 
 	@Test
 	public void test_03_fisher() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareFisherUp(59, 545, 136, 95, 8.28958173422445e-18);
 		compareFisherUp(36, 345, 190, 41, 2.40265087580901e-06);
 		compareFisherUp(97, 202, 133, 105, 1.18466240918432e-17);
@@ -216,7 +216,7 @@ public class TestCasesFisherExactTest {
 
 	@Test
 	public void test_04_fisher() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareFisherDown(57, 470, 141, 281, 6.6866974987128e-09);
 		compareFisherDown(152, 912, 754, 203, 0.000440144803784442);
 		compareFisherDown(14, 873, 552, 42, 1.37118944858872e-05);
@@ -321,7 +321,7 @@ public class TestCasesFisherExactTest {
 
 	@Test
 	public void test_05_fisher() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareFisherDown(1, 100, 50, 0, 1);
 		compareFisherDown(1, 100, 0, 20, 1);
 		compareFisherDown(0, 100, 50, 0, 0);
@@ -337,18 +337,18 @@ public class TestCasesFisherExactTest {
 		     [,1] [,2]
 		[1,]   25    5
 		[2,]   15   15
-
+	
 		> chisq.test(data,correct=FALSE)
-
+	
 			Pearson's Chi-squared test
-
+	
 		data:  data
 		X-squared = 7.5, df = 1, p-value = 0.00617
-
+	
 		> fisher.test(data, alternative="greater")
-
+	
 			Fisher's Exact Test for Count Data
-
+	
 		data:  data
 		p-value = 0.006349
 		alternative hypothesis: true odds ratio is greater than 1
@@ -360,7 +360,7 @@ public class TestCasesFisherExactTest {
 	 */
 	@Test
 	public void test_06_fisher_vs_chi2() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int n11 = 25, n12 = 5;
 		int n21 = 15, n22 = 15;
 

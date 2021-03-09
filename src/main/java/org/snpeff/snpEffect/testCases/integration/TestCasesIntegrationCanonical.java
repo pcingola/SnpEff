@@ -5,7 +5,7 @@ import org.snpeff.SnpEff;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -26,7 +26,7 @@ public class TestCasesIntegrationCanonical extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String geneId = "APOBEC3H";
 		String trId = "NM_001166003.2";
 		String args[] = { "-canon", "testHg19Chr22", path("empty.vcf") };
@@ -47,7 +47,7 @@ public class TestCasesIntegrationCanonical extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String geneId = "APOBEC3H";
 		String trId = "NM_181773.4";
 		String args[] = { "-canonList", path("canon_geneId2trId_test02.txt"), "testHg19Chr22", path("empty.vcf") };

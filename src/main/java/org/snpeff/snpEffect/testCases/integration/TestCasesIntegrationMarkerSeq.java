@@ -11,6 +11,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  *
@@ -35,7 +36,7 @@ public class TestCasesIntegrationMarkerSeq extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		initRand();
 		int maxSize = 20; // Max subsequence size to test
 
@@ -64,7 +65,7 @@ public class TestCasesIntegrationMarkerSeq extends TestCasesIntegrationBase {
 
 					String sequence = ex.getSequence();
 					if (ex.isStrandMinus()) sequence = GprSeq.reverseWc(sequence);
-					if (verbose) Gpr.debug("Transcript: " + tr.getId() + "\tExon: " + ex.getId() + ", strand: " + (ex.isStrandPlus() ? "+" : "-") + "\tSequence: " + sequence);
+					if (verbose) Log.debug("Transcript: " + tr.getId() + "\tExon: " + ex.getId() + ", strand: " + (ex.isStrandPlus() ? "+" : "-") + "\tSequence: " + sequence);
 
 					for (int i = 0, pos = ex.getStart(); pos <= ex.getEnd(); i++, pos++) {
 						// Random size

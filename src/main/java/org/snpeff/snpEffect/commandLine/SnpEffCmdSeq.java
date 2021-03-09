@@ -7,6 +7,7 @@ import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;
 import org.snpeff.interval.Genome;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  * Command line program: Show a transcript or a gene
@@ -65,7 +66,7 @@ public class SnpEffCmdSeq extends SnpEff {
 		Genome genome = config.getGenome();
 		CodonTable codonTable = CodonTables.getInstance().getTable(genome);
 		if (codonTable == null) {
-			fatalError("Could not find codon table for genome '" + genome.getId() + "'");
+			Log.fatalError("Could not find codon table for genome '" + genome.getId() + "'");
 		}
 
 		// Translate sequences

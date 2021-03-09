@@ -7,7 +7,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -24,7 +24,7 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 	 */
 	@Test
 	public void test_01_within_protein_interactions() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		List<VcfEntry> vcfEntries = snpEffect("testHg19Pdb", path("test_interaction_01.vcf"), null, null);
 
@@ -67,7 +67,7 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 	 */
 	@Test
 	public void test_02_protein_protein_interactions() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		List<VcfEntry> vcfEntries = snpEffect("testHg19Pdb", path("test_interaction_02.vcf"), null, null);
 
@@ -108,7 +108,7 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 	 */
 	@Test
 	public void test_03_protein_protein_interactions_hgvs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String args[] = { "-canon" };
 		List<VcfEntry> vcfEntries = snpEffect("testHg19Chr22", path("test_interaction_03.vcf"), args, null);

@@ -11,7 +11,7 @@ import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 
 import junit.framework.Assert;
@@ -28,7 +28,7 @@ public class TestCasesCircular {
 
 	@Test
 	public void test_circular_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Genome genome = new Genome("test");
 		Chromosome chr = new Chromosome(genome, 0, 999, "1");
@@ -56,7 +56,7 @@ public class TestCasesCircular {
 
 	@Test
 	public void test_circular_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Genome genome = new Genome("test");
 		Chromosome chr = new Chromosome(genome, 0, 999, "1");
@@ -85,7 +85,7 @@ public class TestCasesCircular {
 
 	@Test
 	public void test_circular_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Genome genome = new Genome("test");
 		Chromosome chr = new Chromosome(genome, 0, 999, "1");
@@ -105,7 +105,7 @@ public class TestCasesCircular {
 
 	@Test
 	public void test_circular_04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Genome genome = new Genome("test");
 		Chromosome chr = new Chromosome(genome, 0, 999, "1");

@@ -13,7 +13,7 @@ import org.snpeff.interval.SpliceSite;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactory;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -43,7 +43,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_01_Exon_Simple() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testCase";
 		String gff3File = path("exonSimple.gff3");
 		String resultFile = path("exonSimple.txt");
@@ -52,7 +52,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_02_ExonIn() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testCase";
 		String gff3File = path("exonIn.gff3");
 		String resultFile = path("exonIn.txt");
@@ -61,7 +61,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_03_ExonOut() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testCase";
 		String gff3File = path("exonOut.gff3");
 		String resultFile = path("exonOut.txt");
@@ -70,7 +70,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_04_AthalianaTair10_AT5G66790() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testAthalianaTair10"; //"athalianaTair10";
 		String gff3File = path("AT5G66790.gff3");
@@ -80,7 +80,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_05_PaeruPA14muccA() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testPaeru.PA14";
 		String gff3File = path("paeru.PA14.muccA.gff");
@@ -97,7 +97,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_06_Ppersica() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testPpersica139";
 		String gff3File = path("ppersica_139.gff");
@@ -107,7 +107,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_07_Rice5() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testRice5";
 		String gff3File = path("Os03t0150600.gff");
 		String resultFile = path("Os03t0150600.txt");
@@ -116,7 +116,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_08_Vibrio() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testVibrio";
 		String gff3File = path("vibrio.gff3");
@@ -126,7 +126,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_09() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testAP";
 		String gff3File = path("testAP_genes.gff.gz");
 		String resultFile = path("testAP.txt");
@@ -135,7 +135,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCase_09_AP() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testAP";
 		String gff3File = path("testAP_genes.gff.gz");
 		String resultFile = path("testAP.txt");
@@ -166,7 +166,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void testCase_10_MaizeZmB73() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testMaizeZmB73";
 		String gff3File = path("testMaizeZmB73.gff3");
 		String resultFile = path("testMaizeZmB73.txt");
@@ -178,7 +178,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void testCase_11_mita() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testMita";
 		String gff3File = path("testMita.gff");
 		String resultFile = null; // We only check that there is no "Out of memory" error due to infinite loop

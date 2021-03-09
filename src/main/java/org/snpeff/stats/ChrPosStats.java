@@ -1,7 +1,7 @@
 package org.snpeff.stats;
 
 import org.snpeff.stats.plot.GoogleHistogram;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * How many changes per position do we have in a chromosome.
@@ -74,7 +74,7 @@ public class ChrPosStats {
 		if ((i >= 0) && (i < count.length)) {
 			count[i]++;
 			total++;
-		} else if (debug) Gpr.debug("Error counting samples on chromosome '" + name + "'. Position '" + position + "' => count[" + i + "]  (count.length: " + count.length + ", factor: " + factor + ", chrLength: " + length + ").");
+		} else if (debug) Log.debug("Error counting samples on chromosome '" + name + "'. Position '" + position + "' => count[" + i + "]  (count.length: " + count.length + ", factor: " + factor + ", chrLength: " + length + ").");
 	}
 
 	public int size() {

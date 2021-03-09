@@ -10,6 +10,7 @@ import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 
 import junit.framework.Assert;
@@ -135,7 +136,7 @@ public class TestCasesDels extends TestCasesBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CodonTable codonTable = genome.codonTable();
 
 		// Test N times

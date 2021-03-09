@@ -4,8 +4,8 @@ import java.util.Random;
 
 import org.junit.Test;
 import org.snpeff.binseq.DnaSequenceByte;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 public class TestCasesDnaSequenceByte {
 
@@ -13,7 +13,7 @@ public class TestCasesDnaSequenceByte {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Random random = new Random(20120907);
 		for (int len = 1; len < 1000; len++) {
 			for (int i = 0; i < 10; i++) {

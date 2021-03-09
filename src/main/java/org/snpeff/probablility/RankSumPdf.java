@@ -2,13 +2,13 @@ package org.snpeff.probablility;
 
 import org.apfloat.Apcomplex;
 import org.apfloat.Apfloat;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
- * 
+ *
  * Calculate rank sum probability distribution function (pdf) and cumulative distribution function (cdf).
  * Note: This class assumes that ranks can be repeated (selecting with replacement)
- * 
+ *
  * @author Pablo Cingolani
  *
  */
@@ -31,7 +31,7 @@ public class RankSumPdf {
 	public static double SMALL = 1E-20;
 
 	//-------------------------------------------------------------------------
-	// Static init 
+	// Static init
 	//-------------------------------------------------------------------------
 
 	static {
@@ -43,21 +43,21 @@ public class RankSumPdf {
 	// Static methods
 	//-------------------------------------------------------------------------
 
-	/** 
+	/**
 	 * Get a cached result
 	 */
 	private static Apfloat cacheGetCdf(int n, int nt, int r) {
 		return cacheCdf[n][nt][r];
 	}
 
-	/** 
+	/**
 	 * Get a cached result
 	 */
 	private static Apfloat cacheGetPdf(int n, int nt, int r) {
 		return cachePdf[n][nt][r];
 	}
 
-	/** 
+	/**
 	 * Initialize cache
 	 */
 	private static void cacheInit() {
@@ -67,15 +67,15 @@ public class RankSumPdf {
 		cacheCdf = new Apfloat[CACHE_MAX_N + 1][CACHE_MAX_NT + 1][];
 
 		// Initialize (memory and reset)
-		for( int n = 1; n <= CACHE_MAX_N; n++ )
-			for( int nt = 1; nt <= CACHE_MAX_NT; nt++ ) {
+		for (int n = 1; n <= CACHE_MAX_N; n++)
+			for (int nt = 1; nt <= CACHE_MAX_NT; nt++) {
 				int maxRankSum = n * nt;
 
 				cachePdf[n][nt] = new Apfloat[maxRankSum + 1];
 				cacheCdf[n][nt] = new Apfloat[maxRankSum + 1];
 
 				// Initialize values for this N & NT combination
-				for( int rs = 1; rs <= maxRankSum; rs++ ) {
+				for (int rs = 1; rs <= maxRankSum; rs++) {
 					cachePdf[n][nt][rs] = BAD;
 					cacheCdf[n][nt][rs] = BAD;
 				}
@@ -83,14 +83,14 @@ public class RankSumPdf {
 
 		// Initialize: Calculate pdf/cdf values
 		System.out.print("Initializing rankSum Pdf/Cdf caches:");
-		for( int n = 1; n <= CACHE_MAX_N; n++ ) {
+		for (int n = 1; n <= CACHE_MAX_N; n++) {
 			System.out.print('.');
-			for( int nt = 1; nt < n; nt++ ) {
+			for (int nt = 1; nt < n; nt++) {
 
 				int maxRankSum = n * nt;
 				Apfloat c = new Apfloat(0);
 
-				for( int r = 1; r <= maxRankSum; r++ ) {
+				for (int r = 1; r <= maxRankSum; r++) {
 					Apfloat p = pdf(n, nt, r);
 					c = c.add(p);
 					cacheSetCdf(n, nt, r, c);
@@ -100,7 +100,7 @@ public class RankSumPdf {
 		System.out.println("done");
 	}
 
-	/** 
+	/**
 	 * Set a result in cache
 	 * @param r
 	 * @param nt
@@ -111,7 +111,7 @@ public class RankSumPdf {
 		cacheMiss++;
 	}
 
-	/** 
+	/**
 	 * Set a result in cache
 	 * @param r
 	 * @param nt
@@ -139,26 +139,26 @@ public class RankSumPdf {
 	 */
 	public static Apfloat cdf(int n, int nt, int r) {
 		// Check variable's limits
-		if( (nt <= 0) || (nt > n) ) return Apcomplex.ZERO;
-		if( n <= 0 ) return Apcomplex.ZERO;
+		if ((nt <= 0) || (nt > n)) return Apcomplex.ZERO;
+		if (n <= 0) return Apcomplex.ZERO;
 		long max = maxRankSum(n, nt);
 		long min = minRankSum(n, nt);
-		if( r < min ) return Apcomplex.ZERO;
-		if( r >= max ) return Apcomplex.ONE;
+		if (r < min) return Apcomplex.ZERO;
+		if (r >= max) return Apcomplex.ONE;
 
 		// Approximate by normal distribution?
-		if( !canBeCached(n, nt) ) return cdfNormal(n, nt, r);
+		if (!canBeCached(n, nt)) return cdfNormal(n, nt, r);
 
 		// Is it in the cache?
 		Apfloat cdf = cacheGetCdf(n, nt, r);
-		if( cdf.compareTo(Apcomplex.ZERO) >= 0 ) {
+		if (cdf.compareTo(Apcomplex.ZERO) >= 0) {
 			cacheHit++;
 			return cdf;
 		}
 
 		// Sum pdf
 		Apfloat sum = new Apfloat(0);
-		for( int i = 1; i <= r; i++ )
+		for (int i = 1; i <= r; i++)
 			sum = sum.add(pdf(n, nt, i));
 
 		// Cache result
@@ -181,15 +181,25 @@ public class RankSumPdf {
 		return cdf;
 	}
 
+	/**
+	 * Is the value OK? (i.e. not 'BAD')
+	 *
+	 * @param p
+	 * @return
+	 */
+	public static boolean isOk(Apfloat p) {
+		return (p.compareTo(RankSumPdf.BAD) != 0);
+	}
+
 	//-------------------------------------------------------------------------
 	// Main
 	//-------------------------------------------------------------------------
 	public static void main(String[] args) {
 		System.out.println("Begin: RankSumPdf");
 
-		for( double x = 0.0; x > -100; x -= 1.0 ) {
+		for (double x = 0.0; x > -100; x -= 1.0) {
 			Apfloat cdf = NormalDistribution.cdf(x, 0.0, 1.0);
-			Gpr.debug("x: " + x + "\tcdf: " + cdf + "\tcdfOri: " + DistLib.normal.cumulative(x, 0.0, 1.0) + "\t" + new org.apache.commons.math3.distribution.NormalDistribution(0.0, 1.0).density(x));
+			Log.debug("x: " + x + "\tcdf: " + cdf + "\tcdfOri: " + DistLib.normal.cumulative(x, 0.0, 1.0) + "\t" + new org.apache.commons.math3.distribution.NormalDistribution(0.0, 1.0).density(x));
 		}
 
 		System.out.println("End: RankSumPdf");
@@ -233,25 +243,25 @@ public class RankSumPdf {
 	 * @return The probability that selecting 'nt' elements out of 'n' ranked elements, the rank sum is equal to 'r'
 	 */
 	public static Apfloat pdf(int n, int nt, int r) {
-		if( (nt <= 0) || (nt > n) ) return Apcomplex.ZERO;
-		if( n <= 0 ) return Apcomplex.ZERO;
+		if ((nt <= 0) || (nt > n)) return Apcomplex.ZERO;
+		if (n <= 0) return Apcomplex.ZERO;
 		long max = maxRankSum(n, nt);
 		long min = minRankSum(n, nt);
-		if( r < min ) return Apcomplex.ZERO;
-		if( r > max ) return Apcomplex.ZERO;
+		if (r < min) return Apcomplex.ZERO;
+		if (r > max) return Apcomplex.ZERO;
 
 		// Cut conditions
-		if( nt == 1 ) {
+		if (nt == 1) {
 			double p = 1.0 / (n);
 			return new Apfloat(p); // For NT=1
 		}
 
 		// Approximate by normal distribution?
-		if( !canBeCached(n, nt) ) return pdfNormal(n, nt, r);
+		if (!canBeCached(n, nt)) return pdfNormal(n, nt, r);
 
 		// Is it in the cache?
 		Apfloat pdf = cacheGetPdf(n, nt, r);
-		if( pdf.compareTo(Apcomplex.ZERO) >= 0 ) {
+		if (pdf.compareTo(Apcomplex.ZERO) >= 0) {
 			cacheHit++;
 			return pdf;
 		}
@@ -259,7 +269,7 @@ public class RankSumPdf {
 		// Perform recursion & sum
 		Apfloat sum = new Apfloat(0);
 		int maxSum = Math.max(Math.min(r - nt + 1, n), 1);
-		for( int i = 1; i <= maxSum; i++ )
+		for (int i = 1; i <= maxSum; i++)
 			sum.add(pdf(n, nt - 1, r - i));
 		Apfloat p = sum.divide(new Apfloat(n));
 
@@ -270,7 +280,7 @@ public class RankSumPdf {
 	}
 
 	/**
-	 * Normal approximation to rank sum statistic 
+	 * Normal approximation to rank sum statistic
 	 * @param n : Maximum rank number
 	 * @param nt : Number of elements in the sum
 	 * @param r : rank sum value
@@ -283,7 +293,7 @@ public class RankSumPdf {
 	}
 
 	/**
-	 * Wrapper to Sqrt(variance) 
+	 * Wrapper to Sqrt(variance)
 	 * @param n
 	 * @param nt
 	 * @return
@@ -301,16 +311,6 @@ public class RankSumPdf {
 	public static double variance(int n, int nt) {
 		double dn = (n);
 		return (nt) * (dn * dn - 1.0) / 12.0;
-	}
-
-	/**
-	 * Is the value OK? (i.e. not 'BAD')
-	 * 
-	 * @param p
-	 * @return
-	 */
-	public static boolean isOk(Apfloat p) {
-		return (p.compareTo(RankSumPdf.BAD) != 0);
 	}
 
 }

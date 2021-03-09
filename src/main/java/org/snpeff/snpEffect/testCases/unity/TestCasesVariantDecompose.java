@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Variant;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -33,7 +33,7 @@ public class TestCasesVariantDecompose {
 	 */
 	@Test
 	public void test_00_decomposeVariant_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Variant variant = new Variant(chr, 300, "TTTATC", "ACG", "MIXED");
 		Variant variants[] = variant.decompose();
 
@@ -43,7 +43,7 @@ public class TestCasesVariantDecompose {
 
 	@Test
 	public void test_00_decomposeVariant_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Variant variant = new Variant(chr, 300, "TTT", "ACGATC", "MIXED");
 		Variant variants[] = variant.decompose();
 

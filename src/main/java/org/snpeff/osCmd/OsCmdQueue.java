@@ -7,12 +7,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
  * A queue of commands to be run.
  * They are run in multiple threads (default number of threads = number of CPUs in the computer)
- * 
+ *
  * @author pcingola
  */
 public class OsCmdQueue implements Iterable<OsCmdRunner> {
@@ -97,12 +98,12 @@ public class OsCmdQueue implements Iterable<OsCmdRunner> {
 		return commands.iterator();
 	}
 
-	/** 
+	/**
 	 * Kill all commands
 	 */
 	public void kill() {
 		for (OsCmdRunner cmd : commands) {
-			Gpr.debug("Queue failed. Killing command: " + cmd);
+			Log.debug("Queue failed. Killing command: " + cmd);
 			cmd.finish();
 		}
 	}

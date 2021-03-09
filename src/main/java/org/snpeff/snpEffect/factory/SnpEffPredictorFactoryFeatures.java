@@ -21,6 +21,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  * This class creates a SnpEffectPredictor from a 'features' file.
@@ -173,7 +174,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	 * Add transcript information
 	 */
 	Transcript addMrna(Feature f, Gene geneLatest) {
-		if (debug) Gpr.debug("Feature:" + f);
+		if (debug) Log.debug("Feature:" + f);
 		// Convert coordinates to zero-based
 		int start = f.getStart() - inOffset;
 		int end = f.getEnd() - inOffset;

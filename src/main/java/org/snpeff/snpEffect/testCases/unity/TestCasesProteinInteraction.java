@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.snpeff.interval.ProteinInteractionLocus;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -21,21 +21,21 @@ public class TestCasesProteinInteraction extends TestCasesBaseApply {
 	 */
 	@Test
 	public void test_01_split_codon_base() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		initSnpEffPredictor();
 
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 		String protein = transcript.protein();
 		int codonNum = 33;
 		int codonsPos[] = transcript.codonNumber2Pos(codonNum);
-		if (verbose) Gpr.debug("AA[" + codonNum + "]: " + protein.charAt(codonNum) + "\t" + codonsPos[0] + "\t" + codonsPos[1] + "\t" + codonsPos[2]);
+		if (verbose) Log.debug("AA[" + codonNum + "]: " + protein.charAt(codonNum) + "\t" + codonsPos[0] + "\t" + codonsPos[1] + "\t" + codonsPos[2]);
 
 		// Create list o interactions
 		List<ProteinInteractionLocus> list = ProteinInteractionLocus.factory(transcript, codonNum, transcript, "POS_" + codonNum);
 		if (verbose) {
 			for (ProteinInteractionLocus pil : list)
-				Gpr.debug("Interaction locus: " + pil);
+				Log.debug("Interaction locus: " + pil);
 		}
 
 		Assert.assertEquals("Number of loci do not match", 2, list.size());
@@ -52,21 +52,21 @@ public class TestCasesProteinInteraction extends TestCasesBaseApply {
 	 */
 	@Test
 	public void test_02_split_codon_base() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		initSnpEffPredictor();
 
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 		String protein = transcript.protein();
 		int codonNum = 66;
 		int codonsPos[] = transcript.codonNumber2Pos(codonNum);
-		if (verbose) Gpr.debug("AA[" + codonNum + "]: " + protein.charAt(codonNum) + "\t" + codonsPos[0] + "\t" + codonsPos[1] + "\t" + codonsPos[2]);
+		if (verbose) Log.debug("AA[" + codonNum + "]: " + protein.charAt(codonNum) + "\t" + codonsPos[0] + "\t" + codonsPos[1] + "\t" + codonsPos[2]);
 
 		// Create list o interactions
 		List<ProteinInteractionLocus> list = ProteinInteractionLocus.factory(transcript, codonNum, transcript, "POS_" + codonNum);
 		if (verbose) {
 			for (ProteinInteractionLocus pil : list)
-				Gpr.debug("Interaction locus: " + pil);
+				Log.debug("Interaction locus: " + pil);
 		}
 
 		Assert.assertEquals("Number of loci do not match", 2, list.size());

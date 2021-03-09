@@ -15,7 +15,7 @@ import org.snpeff.snpEffect.HgvsProtein;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 
@@ -112,17 +112,17 @@ public class TestCasesStructuralDel extends TestCasesBase {
 		initSnpEffPredictor();
 
 		if (verbose) {
-			Gpr.debug("Variant: " + variant);
+			Log.debug("Variant: " + variant);
 			for (Gene g : genome.getGenes()) {
-				Gpr.debug("\tGene: " + g.getId() + "\t" + gene.getStart() + " - " + gene.getEnd());
+				Log.debug("\tGene: " + g.getId() + "\t" + gene.getStart() + " - " + gene.getEnd());
 				for (Transcript tr : g)
-					Gpr.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
+					Log.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
 			}
 		}
 
 		// Calculate effects
 		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
-		if (verbose) Gpr.debug("VariantEffects: " + effects);
+		if (verbose) Log.debug("VariantEffects: " + effects);
 
 		// Checknumber of results
 		Assert.assertEquals(true, effects.size() >= 1);
@@ -150,7 +150,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 			String annField = vcfEffect.toString();
 			anns.add(annField);
 
-			if (verbose) Gpr.debug("Effect: " + varEff.toStr() //
+			if (verbose) Log.debug("Effect: " + varEff.toStr() //
 					+ "\n\tHGVS.c: " + hgvsDna //
 					+ "\n\tHGVS.p: " + hgvsProt //
 					+ "\n\tANN   : " + annField //
@@ -212,7 +212,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test01_delGene() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 950, 2500, "");
@@ -230,7 +230,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test01_delTr() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Create variant
 		// Note that Gene ends at 1216, so this variant covers transcript (but not gene)
@@ -249,7 +249,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1040, 1100, "");
 		variant.setVariantType(VariantType.DEL);
@@ -266,7 +266,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		Variant variant = new Variant(chromosome, 1040, 1160, "");
 		variant.setVariantType(VariantType.DEL);
@@ -283,7 +283,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		int start = 1040;
 		int end = 1050;
@@ -302,7 +302,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test05() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		int start = 1050;
 		int end = 1150;
@@ -321,15 +321,15 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test06() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		int start = 1050;
 		int end = 2160;
 		Variant variant = new Variant(chromosome, start, chromoSequence.substring(start, end + 1), "", "");
 
 		EffectType expEffs[] = { EffectType.EXON_DELETED //
-		, EffectType.CODON_DELETION //
-		, EffectType.TRANSCRIPT_DELETED //
+				, EffectType.CODON_DELETION //
+				, EffectType.TRANSCRIPT_DELETED //
 		};
 		String expHgvsc[] = { "n.1051_2161del" };
 		EffectImpact expectedImpact = EffectImpact.HIGH;
@@ -342,7 +342,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test07() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		int start = 1100;
 		int end = 2000;
@@ -360,7 +360,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test08() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		int start = 1100;
 		int end = 2075;
@@ -379,7 +379,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test09() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		int start = 1050;
 		int end = 2120;
@@ -398,7 +398,7 @@ public class TestCasesStructuralDel extends TestCasesBase {
 	 */
 	@Test
 	public void test10() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		int start = 991;
 		int end = 1020;

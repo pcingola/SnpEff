@@ -10,7 +10,7 @@ import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.MarkerUtil;
 import org.snpeff.interval.Markers;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Tuple;
 
 public class TestCasesMarkerUtils {
@@ -41,7 +41,7 @@ public class TestCasesMarkerUtils {
 	 * Create a list of markers
 	 * @param chr
 	 * @param numMarkers
-	 * 
+	 *
 	 * @return Two collections of markers (in a tuple), the original one and the collapsed one
 	 */
 	Tuple<Markers, Markers> createMarkers(Chromosome chr, int numMarkers) {
@@ -108,11 +108,11 @@ public class TestCasesMarkerUtils {
 	}
 
 	/**
-	 * Test for collapsing markers with zero gaps 
+	 * Test for collapsing markers with zero gaps
 	 */
 	@Test
 	public void test_collapseZeroGap() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		initRand();
 		int numMarkers = 20;
 		Chromosome chr = genome.getChromosome("1");
@@ -128,7 +128,7 @@ public class TestCasesMarkerUtils {
 			//---
 			String mStr = markers2string(markersOri);
 			String mColOriStr = markers2string(markersCollapsedOri);
-			if (verbose) Gpr.debug("Iteration : " + num + "\n\tMarkers           : " + mStr + "\n\tMarkers collapsed : " + mColOriStr);
+			if (verbose) Log.debug("Iteration : " + num + "\n\tMarkers           : " + mStr + "\n\tMarkers collapsed : " + mColOriStr);
 
 			// Are generated intervasl OK?
 			if (!mStr.equals(mColOriStr)) {
@@ -155,11 +155,11 @@ public class TestCasesMarkerUtils {
 
 			Markers markers = new Markers();
 			markers.addAll(collapsed);
-			String mColStr = markers2string(markers); // Create string 
+			String mColStr = markers2string(markers); // Create string
 
 			// Are generated intervasl OK?
 			if (!mColStr.equals(mStr)) {
-				Gpr.debug("Error checing markers! Markers and collapsed marker do not match!\n\t" + mStr + "\n\t" + mColStr);
+				Log.debug("Error checing markers! Markers and collapsed marker do not match!\n\t" + mStr + "\n\t" + mColStr);
 
 				System.err.println("Markers : ");
 				for (Marker m : markersOri)

@@ -5,7 +5,7 @@ import java.util.Random;
 import org.junit.Test;
 import org.snpeff.probablility.FisherExactTest;
 import org.snpeff.probablility.Hypergeometric;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test for Hypergeometric distribution and Fisher exact test
@@ -73,13 +73,13 @@ public class TestCasesHypergeometric {
 
 	@Test
 	public void test_0() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// generate_test();
 	}
 
 	@Test
 	public void test_01_hyper() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// Compare to values calculated using other programs (R)
 		compareHypergeometric(1, 19, 2, 12, 0.4912281);
 		compareHypergeometric(1, 70, 51, 1, 0.7285714);
@@ -198,7 +198,7 @@ public class TestCasesHypergeometric {
 
 	@Test
 	public void test_02_hyper() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// Compare to values calculated using other programs (R)
 		compareHypergeometric(57, 470, 141, 281, 1.507456e-08);
 		compareHypergeometric(152, 912, 754, 203, 0.0004373848);

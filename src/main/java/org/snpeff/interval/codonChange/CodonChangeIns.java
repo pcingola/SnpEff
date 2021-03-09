@@ -21,7 +21,7 @@ public class CodonChangeIns extends CodonChange {
 	//	public void codonChange() {
 	//		// Special case: Is the insertion at the edge of the CDS?
 	//		int pos = variant.getEnd();
-	//		Gpr.debug("pos: " + pos + "\tcds start: " + transcript.getCdsStart() + "\tcds end: " + transcript.getCdsEnd());
+	//		Log.debug("pos: " + pos + "\tcds start: " + transcript.getCdsStart() + "\tcds end: " + transcript.getCdsEnd());
 	//		if (pos == transcript.getCdsStart() || pos == transcript.getCdsEnd()) {
 	//			codonChangeCdsEdge();
 	//			return;

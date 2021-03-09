@@ -18,6 +18,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.stats.CountByType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -573,7 +574,7 @@ public class NextProtParser {
 
 		// Parse each node
 		for (Node node : nodeList) {
-			if (debug) Gpr.debug("Processing protein node: " + toString(node));
+			if (debug) Log.debug("Processing protein node: " + toString(node));
 			parseProteinNode(node);
 		}
 
@@ -584,14 +585,14 @@ public class NextProtParser {
 	 * Parse a protein node
 	 */
 	void parseAnnotation(Node ann, String geneId, String category) {
-		if (debug) Gpr.debug("\t\tAnnotation: " + toString(ann) + "\tCategory: " + category);
+		if (debug) Log.debug("\t\tAnnotation: " + toString(ann) + "\tCategory: " + category);
 		String description = getAnnDescription(ann);
 		String contrVoc = getControlledVocubulary(ann);
 
 		// Search annotations
 		List<Node> posNodes = findNodes(ann, NODE_NAME_POSITION, null, null, null);
 		for (Node pos : posNodes) {
-			if (debug) Gpr.debug("\t\t\tPosition: " + toString(pos));
+			if (debug) Log.debug("\t\t\tPosition: " + toString(pos));
 			// Get first & last position
 			int aaStart = getAaStart(pos);
 			int aaEnd = getAaStart(pos);
@@ -620,7 +621,7 @@ public class NextProtParser {
 			String id = key(category, contrVoc, description);
 			NextProt nextProt = new NextProt(trData.tr, trData.chrPosStart, trData.chrPosEnd, id);
 			markers.add(nextProt);
-			if (debug) Gpr.debug("Added NextProt entry:" + nextProt //
+			if (debug) Log.debug("Added NextProt entry:" + nextProt //
 					+ "\n\tgeneId:" + geneId //
 					+ "\n\tisoformRef:" + isoformRef //
 					+ "\n\ttrId:" + trData.tr.getId() //

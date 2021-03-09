@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
@@ -74,7 +74,7 @@ public class VersionCheck extends Thread {
 			line = buff.readLine();
 		}
 
-		if (debug) Gpr.debug("Downloaded data:\n" + text.toString());
+		if (debug) Log.debug("Downloaded data:\n" + text.toString());
 		return text.toString();
 	}
 
@@ -97,12 +97,12 @@ public class VersionCheck extends Thread {
 	/**
 	 * Parse versions page
 	 * Format: One entry per line
-	 * Line format: "softwareName \t version \t date \t URL \n" 
+	 * Line format: "softwareName \t version \t date \t URL \n"
 	 */
 	protected void parse(String text) {
 		String lines[] = text.split("\n");
 		for (String line : lines) {
-			if (debug) Gpr.debug("Parse line: " + line);
+			if (debug) Log.debug("Parse line: " + line);
 			if (line.startsWith("#")) {
 				// Ignore comments
 			} else if (line.length() < 1) {
@@ -112,7 +112,7 @@ public class VersionCheck extends Thread {
 
 				if (debug) {
 					for (int i = 0; i < recs.length; i++)
-						Gpr.debug("RECS[" + i + "]:" + recs[i]);
+						Log.debug("RECS[" + i + "]:" + recs[i]);
 				}
 
 				if (recs.length > 3) {
@@ -121,7 +121,7 @@ public class VersionCheck extends Thread {
 					String date = recs[2];
 					String url = recs[3];
 
-					if (debug) Gpr.debug("VERSION CHECK: " + softwareName.equals(software) + "\t" + version + " cmp " + latestVersion + " : " + (version.compareTo(latestVersion) > 0));
+					if (debug) Log.debug("VERSION CHECK: " + softwareName.equals(software) + "\t" + version + " cmp " + latestVersion + " : " + (version.compareTo(latestVersion) > 0));
 
 					// Update latest
 					if (softwareName.toUpperCase().equals(software.toUpperCase()) && version.compareTo(latestVersion) > 0) {
@@ -129,7 +129,7 @@ public class VersionCheck extends Thread {
 						latestReleaseDate = date;
 						latestUrl = url;
 						newVersion = true;
-						if (debug) Gpr.debug("Found new release:\t" + latestVersion + "\t" + latestReleaseDate + "\t" + latestUrl);
+						if (debug) Log.debug("Found new release:\t" + latestVersion + "\t" + latestReleaseDate + "\t" + latestUrl);
 					}
 				}
 			}
@@ -142,10 +142,10 @@ public class VersionCheck extends Thread {
 	@Override
 	public void run() {
 		try {
-			if (debug) Gpr.debug("Running thread");
+			if (debug) Log.debug("Running thread");
 			String page = getData();
 			parse(page);
-			if (debug) Gpr.debug("Thread finished");
+			if (debug) Log.debug("Thread finished");
 		} catch (Throwable t) {
 			if (debug) t.printStackTrace();; // Do nothing if it fails
 		}

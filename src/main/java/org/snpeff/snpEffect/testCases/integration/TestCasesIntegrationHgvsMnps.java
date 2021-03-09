@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -24,7 +24,7 @@ public class TestCasesIntegrationHgvsMnps extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr17";
 		String vcf = path("hgvs_mnps_01.vcf");
 		compareHgvs(genome, vcf, false);
@@ -35,7 +35,7 @@ public class TestCasesIntegrationHgvsMnps extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genome = "testHg19Chr17";
 		String vcf = path("hgvs_mnps_02.vcf");
@@ -56,7 +56,7 @@ public class TestCasesIntegrationHgvsMnps extends TestCasesIntegrationBase {
 		// Check HGVS 'p.' notation
 		boolean ok = false;
 		for (VcfEffect veff : ve.getVcfEffects()) {
-			if (verbose) Gpr.debug("\t" + veff + "\n\t\ttranscript: " + veff.getTranscriptId() + "\n\t\tHgvs (DNA): " + veff.getHgvsDna());
+			if (verbose) Log.debug("\t" + veff + "\n\t\ttranscript: " + veff.getTranscriptId() + "\n\t\tHgvs (DNA): " + veff.getHgvsDna());
 			if (veff.getTranscriptId().equals("NM_001042492.2")) {
 				Assert.assertEquals("HGVS p. notation does not match", "p.Gln1055*", veff.getHgvsProt());
 				ok = true;

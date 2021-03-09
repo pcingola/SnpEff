@@ -5,6 +5,7 @@ import org.snpeff.interval.SpliceSite;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test Splice sites variants
@@ -29,9 +30,9 @@ public class TestCasesSpliceRegion extends TestCasesBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
-		if (verbose) Gpr.debug("Transcript:" + transcript);
+		if (verbose) Log.debug("Transcript:" + transcript);
 
 		// All these positions should have splice_region effects
 		int spliceRegionPos[] = { 808, 809, 810 // Exon_1 end

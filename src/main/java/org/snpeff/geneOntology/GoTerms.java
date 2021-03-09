@@ -14,10 +14,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * A collection of GO terms
- * 
+ *
  * @author Pablo Cingolani
  *
  */
@@ -28,7 +29,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	public static boolean verbose = false; // Verbose mode for this class?
 	static int warnCount = 0;
 
-	String label; // Label for this set of nodes 
+	String label; // Label for this set of nodes
 	int maxRank;
 	String nameSpace;
 	HashMap<String, GoTerm> goTermsByGoTermAcc; // Go terms indexed by GoTermName (all of them for a given ontology)
@@ -62,9 +63,9 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 		maxRank = 0;
 
 		// Read go <-> genes file
-		if( oboFile != null ) readOboFile(oboFile, removeObsolete);
-		if( geneAssocFile != null ) readGeneAssocFile(geneAssocFile, useGeneId);
-		if( interestingGenesFile != null ) readInterestingSymbolIdsFile(interestingGenesFile);
+		if (oboFile != null) readOboFile(oboFile, removeObsolete);
+		if (geneAssocFile != null) readGeneAssocFile(geneAssocFile, useGeneId);
+		if (interestingGenesFile != null) readInterestingSymbolIdsFile(interestingGenesFile);
 	}
 
 	/**
@@ -74,7 +75,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	public GoTerm add(GoTerm goTerm) {
 		goTermsByGoTermAcc.put(goTerm.getAcc(), goTerm);
 
-		for( String symbolId : goTerm.getSymbolIdSet() )
+		for (String symbolId : goTerm.getSymbolIdSet())
 			addSymbolId(goTerm, symbolId);
 
 		return goTerm;
@@ -90,11 +91,11 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 
 		// Find GOTerms associated with this 'interesting symbol' (and add this symbols as 'interesting')
 		Set<GoTerm> goTerms = getGoTermsBySymbolId(symbolId);
-		if( goTerms != null ) {
-			for( GoTerm gt : goTerms )
+		if (goTerms != null) {
+			for (GoTerm gt : goTerms)
 				gt.addInterestingSymbolId(symbolId);
-		} else if( noGoTermFound != null ) noGoTermFound.add(symbolId);
-		else Gpr.debug("No GOTerms related to SymbolId:" + symbolId + " were found in this DAG (" + label + ")");
+		} else if (noGoTermFound != null) noGoTermFound.add(symbolId);
+		else Log.debug("No GOTerms related to SymbolId:" + symbolId + " were found in this DAG (" + label + ")");
 	}
 
 	/**
@@ -105,20 +106,20 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 * @return 0 if 'ok', 1 if symbol's ID is not found
 	 */
 	public void addInterestingSymbol(String symbolId, int rank, HashSet<String> noGoTermFound) {
-		rankSymbolId.put(symbolId, rank); // Add symbol -> rank pair 
+		rankSymbolId.put(symbolId, rank); // Add symbol -> rank pair
 		addInterestingSymbol(symbolId, noGoTermFound); // Add symbol
-		if( maxRank < rank ) maxRank = rank;
+		if (maxRank < rank) maxRank = rank;
 	}
 
 	/**
 	 * Add a symbolId (as well as all needed mappings)
-	 * 
+	 *
 	 * @param goTermAcc
 	 * @param symbolId
 	 * @param symbolName
 	 * @param goTermType
 	 * @param description
-	 * 
+	 *
 	 * @return true if OK, false on error (GOTerm 'goTermAcc' not found)
 	 */
 	public boolean addSymbolId(GoTerm goTerm, String symbolId) {
@@ -127,7 +128,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 
 		// Add symbolId -> Set<GOTerm> mapping (a symbolId identifies a set of goTerms)
 		Set<GoTerm> termsSet = goTermsBySymbolId.get(symbolId);
-		if( termsSet == null ) { // Need to create a new list?
+		if (termsSet == null) { // Need to create a new list?
 			termsSet = new HashSet<GoTerm>();
 			goTermsBySymbolId.put(symbolId, termsSet);
 		}
@@ -143,7 +144,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 * so that root term contains every symbol and every interestingSymbol
 	 */
 	public void addSymbolsFromChilds() {
-		for( GoTerm gt : this )
+		for (GoTerm gt : this)
 			gt.addSymbolsFromChilds(gt);
 	}
 
@@ -152,7 +153,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 */
 	public Set<String> allSymbols() {
 		HashSet<String> syms = new HashSet<String>();
-		for( GoTerm gt : this )
+		for (GoTerm gt : this)
 			syms.addAll(gt.getSymbolIdSet());
 		return syms;
 	}
@@ -165,50 +166,50 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	public void checkInterestingSymbolIds(Set<String> interestingSymbolIds) {
 		HashSet<String> issc = new HashSet<String>(); // Interesting symbols (sanity check)
 
-		if( debug ) Gpr.debug("Checking symbols (" + interestingSymbolIds.size() + ") : " + interestingSymbolIds);
+		if (debug) Log.debug("Checking symbols (" + interestingSymbolIds.size() + ") : " + interestingSymbolIds);
 
 		// Add every interesting symbol in the DAG
-		for( GoTerm gt : this )
+		for (GoTerm gt : this)
 			issc.addAll(gt.getInterestingSymbolIdSet());
 
 		// Check that symbolIds contains issc
-		if( !interestingSymbolIds.containsAll(issc) ) throw new RuntimeException("Not every term in symbolIds is marked in DAG:" + label + " as an interesting symbol");
+		if (!interestingSymbolIds.containsAll(issc)) throw new RuntimeException("Not every term in symbolIds is marked in DAG:" + label + " as an interesting symbol");
 
 		// Check that every interesting symbol in DAG is from symbolIds
-		if( !issc.containsAll(interestingSymbolIds) ) throw new RuntimeException("Not every term marked as interesting in DAG " + label + " is from symbolIds\n\tInteresting symbols(" + issc.size() + "): " + issc + "\n\tsymbolIds(" + interestingSymbolIds.size() + "): " + interestingSymbolIds);
+		if (!issc.containsAll(interestingSymbolIds)) throw new RuntimeException("Not every term marked as interesting in DAG " + label + " is from symbolIds\n\tInteresting symbols(" + issc.size() + "): " + issc + "\n\tsymbolIds(" + interestingSymbolIds.size() + "): " + interestingSymbolIds);
 
 		// Are ranks being used? => Check them
-		if( (rankSymbolId != null) && (rankSymbolId.keySet().size() > 0) ) {
+		if ((rankSymbolId != null) && (rankSymbolId.keySet().size() > 0)) {
 			int maxRank = interestingSymbolIds.size();
 
 			// Check that every rank is being used
 			int ranksUsed[] = new int[maxRank + 1];
-			for( int i = 0; i < maxRank; i++ )
+			for (int i = 0; i < maxRank; i++)
 				ranksUsed[i] = 0;
 
 			// Check that every interestingSymbolId is ranked (if ranks are being used)
-			for( String symbolId : interestingSymbolIds ) {
+			for (String symbolId : interestingSymbolIds) {
 				Integer rank = rankSymbolId.get(symbolId);
-				if( (rank == null) || (rank <= 0) || (rank > maxRank) ) throw new RuntimeException("Invalid rank for symbolId:" + symbolId + ", rank:" + rank + "(should be [1," + maxRank + "]");
+				if ((rank == null) || (rank <= 0) || (rank > maxRank)) throw new RuntimeException("Invalid rank for symbolId:" + symbolId + ", rank:" + rank + "(should be [1," + maxRank + "]");
 				ranksUsed[rank]++;
 			}
 
-			for( int rank = 1; rank < maxRank; rank++ )
-				if( ranksUsed[rank] != 1 ) throw new RuntimeException("Rank number " + rank + " is used " + ranksUsed[rank] + " times (should be used exactly 1 time)");
+			for (int rank = 1; rank < maxRank; rank++)
+				if (ranksUsed[rank] != 1) throw new RuntimeException("Rank number " + rank + " is used " + ranksUsed[rank] + " times (should be used exactly 1 time)");
 		}
 	}
 
 	/**
 	 * Produce a GOTerm based on a list of GOTerms and a 'mask'
-	 * 
+	 *
 	 * @param goTermList : A list of GOTerms
-	 * @param activeSets : An integer (binary mask) that specifies weather a set in the list should be taken into account or not. The operation performed is: 
-	 * 
+	 * @param activeSets : An integer (binary mask) that specifies weather a set in the list should be taken into account or not. The operation performed is:
+	 *
 	 * 		Intersection{ GOTerms where mask_bit == 1 } - Union{ GOTerms where mask_bit == 0 } )
-	 * 
+	 *
 	 * where the minus sign '-' is actually a 'set minus' operation. This operation is done for both sets
 	 * in GOTerm (i.e. symbolIds and interestingSymbolIds)
-	 * 
+	 *
 	 * @return A GOTerm
 	 */
 	public GoTerm disjointSet(List<GoTerm> goTermList, int activeSets) {
@@ -220,18 +221,18 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 
 		int i = 0;
 		boolean firstIntersection = true;
-		for( GoTerm goTerm : goTermList ) {
+		for (GoTerm goTerm : goTermList) {
 			// Extract the i_th bit from 'activeSets'
 			boolean biti = (activeSets & (1L << i)) > 0;
 
-			if( biti ) { // Is this bit is 1? => perform an intersection
-				if( firstIntersection ) { // Initialize intersection set (otherwise all intersections are empty)
+			if (biti) { // Is this bit is 1? => perform an intersection
+				if (firstIntersection) { // Initialize intersection set (otherwise all intersections are empty)
 					gtIntersect.union(goTerm);
 					firstIntersection = false;
 				} else {
 					gtIntersect.intersection(goTerm);
 					// Are we done? (if the intersection set is empty, it doesn't make any sense to continue
-					if( gtIntersect.getTotalCount() <= 0 ) return gtIntersect;
+					if (gtIntersect.getTotalCount() <= 0) return gtIntersect;
 				}
 			} else gtUnion.union(goTerm);
 			i++;
@@ -250,7 +251,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 */
 	GoTerm findOrCreate(String symbolId) {
 		GoTerm gt = getGoTerm(symbolId);
-		if( gt == null ) gt = new GoTerm(symbolId, this, nameSpace, "");
+		if (gt == null) gt = new GoTerm(symbolId, this, nameSpace, "");
 		goTermsByGoTermAcc.put(gt.getAcc(), gt);
 		return gt;
 	}
@@ -298,7 +299,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 */
 	public int getRank(String symbolId) {
 		Integer rank = rankSymbolId.get(symbolId);
-		if( rank == null ) return 0;
+		if (rank == null) return 0;
 		return rank;
 	}
 
@@ -324,7 +325,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 */
 	public int levels() {
 		int maxLevel = 0;
-		for( GoTerm gt : this )
+		for (GoTerm gt : this)
 			maxLevel = Math.max(maxLevel, gt.getLevel());
 		return maxLevel;
 	}
@@ -339,13 +340,13 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 
 		// Create a list of terms (to be ordered)
 		LinkedList<GoTerm> ll = new LinkedList<GoTerm>();
-		for( String go : goTermsByGoTermAcc.keySet() )
+		for (String go : goTermsByGoTermAcc.keySet())
 			ll.add(goTermsByGoTermAcc.get(go));
 		Collections.sort(ll);
 
 		int i = 0;
-		for( GoTerm goTerm : ll )
-			if( i++ < numberToSelect ) list.add(goTerm);
+		for (GoTerm goTerm : ll)
+			if (i++ < numberToSelect) list.add(goTerm);
 			else break;
 
 		return list;
@@ -357,7 +358,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 */
 	public int numberOfInterestingSymbols() {
 		HashSet<String> intSym = new HashSet<String>();
-		for( GoTerm gt : this )
+		for (GoTerm gt : this)
 			intSym.addAll(gt.getInterestingSymbolIdSet());
 		return intSym.size();
 	}
@@ -376,8 +377,8 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 */
 	public int numberOfNodesWithOneInterestingSymbol() {
 		int num = 0;
-		for( GoTerm gt : this )
-			if( gt.getInterestingSymbolIdsSize() >= 1 ) num++;
+		for (GoTerm gt : this)
+			if (gt.getInterestingSymbolIdsSize() >= 1) num++;
 		return num;
 	}
 
@@ -387,8 +388,8 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 */
 	public int numberOfNodesWithOneSymbol() {
 		int num = 0;
-		for( GoTerm gt : this )
-			if( gt.getTotalCount() >= 1 ) num++;
+		for (GoTerm gt : this)
+			if (gt.getTotalCount() >= 1) num++;
 		return num;
 	}
 
@@ -398,7 +399,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 */
 	public int numberOfSymbols() {
 		HashSet<String> syms = new HashSet<String>();
-		for( GoTerm gt : this )
+		for (GoTerm gt : this)
 			syms.addAll(gt.getSymbolIdSet());
 		return syms.size();
 	}
@@ -419,16 +420,16 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 			int lineNum;
 
 			// Read each line
-			for( lineNum = 1; (line = inFile.readLine()) != null; lineNum++ ) {
-				if( !line.startsWith("!") ) {
+			for (lineNum = 1; (line = inFile.readLine()) != null; lineNum++) {
+				if (!line.startsWith("!")) {
 					String items[] = line.split("\t");
-					if( items.length > 4 ) {
+					if (items.length > 4) {
 						String geneName = useGeneId ? items[1] : items[2]; // Use geneID or geneName?
 						String goTermAcc = items[4];
 
 						// Add mappings
 						GoTerm goTerm = getGoTerm(goTermAcc);
-						if( goTerm == null ) notFound.add(goTermAcc);
+						if (goTerm == null) notFound.add(goTermAcc);
 						else addSymbolId(goTerm, geneName);
 					} else System.err.println("Ignoring line " + lineNum + ": '" + line + "'");
 				}
@@ -438,14 +439,14 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 			inFile.close();
 
 			// Show errors if any
-			if( notFound.size() > 0 ) {
+			if (notFound.size() > 0) {
 				LinkedList<String> ll = new LinkedList<String>(notFound);
 				Collections.sort(ll);
 				System.err.println("WARNING: Couldn't find some GOTerms while reading file '" + goGenesFile + "'\n\tNot found (" + notFound.size() + ") : " + ll);
 			}
 
-			if( verbose ) System.err.println("Finished reding GoGenes file '" + goGenesFile + "' : " + lineNum + " lines.");
-		} catch(IOException e) {
+			if (verbose) System.err.println("Finished reding GoGenes file '" + goGenesFile + "' : " + lineNum + " lines.");
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -463,7 +464,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 		HashSet<String> noGoTermFound = new HashSet<String>();
 		HashSet<String> symbolNotFound = new HashSet<String>();
 
-		if( fileName.equals("-") ) return;
+		if (fileName.equals("-")) return;
 
 		// Read file
 		int lineNum;
@@ -473,19 +474,19 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 			String line;
 
 			// Read each line
-			for( lineNum = 1; (line = inFile.readLine()) != null; lineNum++ ) {
+			for (lineNum = 1; (line = inFile.readLine()) != null; lineNum++) {
 				String symbolName = line.trim();
 				addInterestingSymbol(symbolName, lineNum, noGoTermFound);
 			}
 
 			// Ok, finished
 			inFile.close();
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 
 		// Any missing value?
-		if( (symbolNotFound.size() > 0) || (noGoTermFound.size() > 0) ) {
+		if ((symbolNotFound.size() > 0) || (noGoTermFound.size() > 0)) {
 			LinkedList<String> ngtfs = new LinkedList<String>(noGoTermFound);
 			Collections.sort(ngtfs);
 			System.err.println("WARNING: There were some missing values while reading interesting symbolIds file: '" + fileName + "'" + "\n\tGenes's list size: " + lineNum + "\n\tFound: " + getInterestingSymbolIdsSize() + "\n\tNo GOTerm found for symbolIds (" + ngtfs.size() + "): " + ngtfs);
@@ -494,7 +495,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 
 	/**
 	 * Read an OBO file
-	 * 
+	 *
 	 * @param oboFile
 	 * @param nameSpace
 	 */
@@ -510,24 +511,24 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 			HashSet<String> goNotFound = new HashSet<String>();
 
 			// Read each line
-			for( lineNum = 0; (line = inFile.readLine()) != null; lineNum++ ) {
+			for (lineNum = 0; (line = inFile.readLine()) != null; lineNum++) {
 				// Get term's accesion
-				if( line.startsWith("id: ") ) {
+				if (line.startsWith("id: ")) {
 					goTermAcc = line.substring(4);
-					if( goTermAcc.startsWith("GO:") ) goTerm = findOrCreate(goTermAcc);
+					if (goTermAcc.startsWith("GO:")) goTerm = findOrCreate(goTermAcc);
 					else goTerm = null;
-				} else if( goTerm != null ) {
-					if( line.startsWith("namespace: ") ) { // Read namespace
+				} else if (goTerm != null) {
+					if (line.startsWith("namespace: ")) { // Read namespace
 						String termNameSpace = line.substring(11);
 						goTerm.setNameSpace(termNameSpace);
 						// Different nameSpaces? => Ignore GOTerm
-						if( (nameSpace != null) && (!nameSpace.equals(termNameSpace)) ) goTermAcc = null;
-					} else if( line.startsWith("name: ") ) { // GO name
+						if ((nameSpace != null) && (!nameSpace.equals(termNameSpace))) goTermAcc = null;
+					} else if (line.startsWith("name: ")) { // GO name
 						goTerm.setSescription(line.substring(6).trim());
-					} else if( line.startsWith("is_obsolete: ") && removeObsolete ) { // Is this an obsolete term? => ignore it
+					} else if (line.startsWith("is_obsolete: ") && removeObsolete) { // Is this an obsolete term? => ignore it
 						removeGOTerm(goTermAcc);
 						removed++;
-					} else if( (goTermAcc != null) && (line.startsWith("is_a: ")) ) { // Add childs & parents as needed
+					} else if ((goTermAcc != null) && (line.startsWith("is_a: "))) { // Add childs & parents as needed
 						isa = line.substring(6, 16);
 						GoTerm parent = findOrCreate(isa); // Add this as child
 						parent.addChild(goTerm);
@@ -539,12 +540,12 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 			inFile.close();
 
 			// Show errors (if any)
-			if( goNotFound.size() > 0 ) {
+			if (goNotFound.size() > 0) {
 				LinkedList<String> ll = new LinkedList<String>(goNotFound);
 				Collections.sort(ll);
 				System.err.println("WARNING: Some GO-Terms were not found while loading OBO file \'" + oboFile + "\':\n\tNot found: " + goNotFound.size() + "\n\tFound:" + found + "\n\tNot found GOTerms: " + ll);
 			}
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 
@@ -562,14 +563,14 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	 */
 	public void resetInterestingSymbolIds() {
 		maxRank = 0;
-		for( GoTerm gt : this )
+		for (GoTerm gt : this)
 			gt.resetInterestingSymbolIdSet();
 	}
 
 	public Set<GoTerm> rootNodes() {
 		HashSet<GoTerm> roots = new HashSet<GoTerm>();
 
-		for( GoTerm gt : this )
+		for (GoTerm gt : this)
 			roots.add(gt.rootNode());
 
 		return roots;
@@ -578,25 +579,25 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 	/**
 	 * Save gene sets file for GSEA analysis
 	 * Format specification: http://www.broad.mit.edu/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29
-	 * 
+	 *
 	 * @param fileName
 	 */
 	public void saveGseaGeneSets(String fileName) {
 		// Create a string with all the data
 		StringBuffer out = new StringBuffer();
-		for( GoTerm gt : this ) {
+		for (GoTerm gt : this) {
 			// Save GOTerm that have at least 1 symbolId
-			if( gt.getSymbolIdSet().size() > 0 ) {
+			if (gt.getSymbolIdSet().size() > 0) {
 				out.append(gt.getAcc() + "\t" + gt.getDescription() + "\t");
 
 				// Add all symbols for this GOTerm
-				for( String symbolId : gt.getSymbolIdSet() )
+				for (String symbolId : gt.getSymbolIdSet())
 					out.append(symbolId + "\t");
 				out.append("\n");
 			}
 		}
 
-		// Save it 
+		// Save it
 		Gpr.toFile(fileName, out);
 	}
 
@@ -610,12 +611,12 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 
 		// Create a list of terms (to be ordered)
 		LinkedList<GoTerm> ll = new LinkedList<GoTerm>();
-		for( String go : goTermsByGoTermAcc.keySet() )
+		for (String go : goTermsByGoTermAcc.keySet())
 			ll.add(goTermsByGoTermAcc.get(go));
 		Collections.sort(ll);
 
 		// Append each term
-		for( GoTerm goTerm : ll )
+		for (GoTerm goTerm : ll)
 			stb.append(goTerm.toStringAll() + "\n");
 
 		return stb.toString();

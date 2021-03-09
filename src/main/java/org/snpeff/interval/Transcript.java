@@ -17,6 +17,7 @@ import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  * Codon position
@@ -247,7 +248,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		// Sanity check
 		strandSumTr = countStrandPlus - countStrandMinus; // Some exons have incorrect strands, we use the strand indicated by most exons
 		boolean newStrandMinus = strandSumTr < 0;
-		if ((countStrandPlus > 0) && (countStrandMinus > 0)) Gpr.debug("Transcript '" + id + "' has " + countStrandPlus + " exons on the plus and " + countStrandMinus + " exons on the minus strand! This should never happen!");
+		if ((countStrandPlus > 0) && (countStrandMinus > 0)) Log.debug("Transcript '" + id + "' has " + countStrandPlus + " exons on the plus and " + countStrandMinus + " exons on the minus strand! This should never happen!");
 
 		// Change transcript strand?
 		if (strandMinus != newStrandMinus) {
@@ -303,7 +304,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				} else {
 					// This might happen when a duplication affecting part of an exon
 					// E.g. If the duplication affects the coding part and NOT the 3'UTR then the UTR doesn't have a
-					if (Config.get().isDebug()) Gpr.debug("WARNING: applying variant: Could not find 'new' parent exon for 'new' UTR" //
+					if (Config.get().isDebug()) Log.debug("WARNING: applying variant: Could not find 'new' parent exon for 'new' UTR" //
 							+ "\n\t\tVariant           : " + variant //
 							+ "\n" //
 							+ "\n\t\tUTR        (ori) :" + utr //
@@ -879,7 +880,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Other exons are corrected by changing the start (or end) coordinates.
 		// boolean changedNonFirst = false;
-		// Gpr.debug("UNCOMMENT!");
+		// Log.debug("UNCOMMENT!");
 		boolean changedNonFirst = frameCorrectionNonFirstCodingExon();
 
 		boolean changed = changedFirst || changedNonFirst;

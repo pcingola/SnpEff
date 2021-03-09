@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.snpeff.stats.plot.GoogleHistogram;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEntry;
 import org.snpeff.vcf.VcfGenotype;
 
@@ -141,7 +141,7 @@ public class GenotypeStats implements SamplingStats<VcfEntry> {
 			int gtNum = 0;
 			for (VcfGenotype vcfGenotype : vcfEntry) {
 				if (gtNum >= countHet.length) {
-					Gpr.debug("WARNING: VCF entry has more genotype fields than expected (expected: " + countHet.length + ", number of genotypes: " + gtNum + ").\n" + vcfEntry);
+					Log.debug("WARNING: VCF entry has more genotype fields than expected (expected: " + countHet.length + ", number of genotypes: " + gtNum + ").\n" + vcfEntry);
 				} else {
 					int code = vcfGenotype.getGenotypeCode();
 

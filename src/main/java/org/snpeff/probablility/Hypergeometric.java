@@ -4,17 +4,17 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
- * 
+ *
  * Calculate hypergeometric distribution using an optimized algorithm
  * that avoids problems with big factorials.
- * 
+ *
  * Also calculated Fisher's exact test
  *
  * In general everything is expressed in a 2x2 'contingency' table
- * form sequence of 'n' draws from a finite population without 
+ * form sequence of 'n' draws from a finite population without
  * replacement
  *					drawn		not drawn		|	total
  *	defective 		k			D - k			|	D
@@ -22,15 +22,15 @@ import org.snpeff.util.Gpr;
  *					----------------------------+----------
  *	total 			n			N - n 			|	N
  *
- * This can be viewed as if we have a bag of N marbles 
- * having D white marbles, and we take a sample of n 
+ * This can be viewed as if we have a bag of N marbles
+ * having D white marbles, and we take a sample of n
  * marbles(without replacement)
- *  
+ *
  * N : Total marbles
  * D : White marbles => N-D : Black marbles
  * n : marbles drawn => N-n : not drawn
  * k : white marbles drawn
- * 
+ *
  * @author pcingola
  *
  */
@@ -66,7 +66,7 @@ public class Hypergeometric {
 			Hypergeometric.get().hypergeometric(k, N, D, n);
 		}
 		Date end = new Date();
-		Gpr.debug("Elapsed:" + (end.getTime() - start.getTime()));
+		Log.debug("Elapsed:" + (end.getTime() - start.getTime()));
 
 	}
 
@@ -109,7 +109,7 @@ public class Hypergeometric {
 	 * @param D : White marbles => N-D : Black marbles
 	 * @param n : marbles drawn => N-n : not drawn
 	 * @return Hypergeometric distribution
-	 * 
+	 *
 	 * References:
 	 * 		http://en.wikipedia.org/wiki/Fisher%27s_exact_test
 	 * 		http://en.wikipedia.org/wiki/Hypergeometric_distribution
@@ -134,18 +134,18 @@ public class Hypergeometric {
 
 		// Check values
 		if ((a < 0) || (b < 0) || (c < 0) || (d < 0) || (N < 0) || (D < 0) || (n < 0) || (k < 0)) {
-			Gpr.debug("WARNING: Invalid values. k:" + k + ", N:" + N + ", D:" + D + ", n:" + n + "\t=> a:" + a + ", b:" + b + ", c:" + c + ", d:" + d);
+			Log.debug("WARNING: Invalid values. k:" + k + ", N:" + N + ", D:" + D + ", n:" + n + "\t=> a:" + a + ", b:" + b + ", c:" + c + ", d:" + d);
 			return 0;
 		}
 
 		/*
 		 * Here we calculate de formula
-		 * 		Hyper() = (a+b)! (c+d)! (a+c)! (b+d)! / ( N! a! b! c! d! ) 
+		 * 		Hyper() = (a+b)! (c+d)! (a+c)! (b+d)! / ( N! a! b! c! d! )
 		 *              =     D! (N-D)!     n! (N-n)! / ( N! a! b! c! d! )
-		 * by representing numerator and denominator by a 
-		 * multiplicity, e.g.: 
-		 * 		If for i=7, count=3 we need to multiply by 7^3. 
-		 * 		If for i=9, count=-2 we need to divide by 9^2. 
+		 * by representing numerator and denominator by a
+		 * multiplicity, e.g.:
+		 * 		If for i=7, count=3 we need to multiply by 7^3.
+		 * 		If for i=9, count=-2 we need to divide by 9^2.
 		 */
 
 		denominatorLog += sumLog(N);
@@ -189,7 +189,7 @@ public class Hypergeometric {
 	/**
 	 * Calculate the sum of logs and store results in cache
 	 * @param n
-	 * @return Sum_{i \in 1..n}[ log(i) ] 
+	 * @return Sum_{i \in 1..n}[ log(i) ]
 	 */
 	double sumLog(int n) {
 		// Not in the array? => update size
@@ -198,7 +198,7 @@ public class Hypergeometric {
 	}
 
 	/**
-	 * Convert values to 'R' command 
+	 * Convert values to 'R' command
 	 * @return
 	 */
 	public String toR(int k, int N, int D, int n) {

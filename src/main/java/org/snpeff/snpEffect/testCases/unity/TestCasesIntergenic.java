@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.snpeff.interval.Intergenic;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -27,7 +27,7 @@ public class TestCasesIntergenic extends TestCasesBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		numGenes = 2;
 		maxGeneLen = 100;
 

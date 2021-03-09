@@ -23,6 +23,7 @@ import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
 import org.snpeff.stats.CountByType;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 public class Config implements Serializable, Iterable<String> {
@@ -56,6 +57,7 @@ public class Config implements Serializable, Iterable<String> {
 
 	boolean debug = false; // Debug mode?
 	boolean verbose = false; // Verbose
+	boolean quiet = false; // Quiet
 	boolean treatAllAsProteinCoding; // Calculate effect only in coding genes. Default is true for testing and debugging reasons (command line default is 'false')
 	boolean onlyRegulation; // Only use regulation features
 	boolean errorOnMissingChromo; // Error if chromosome is missing
@@ -528,6 +530,10 @@ public class Config implements Serializable, Iterable<String> {
 		return onlyRegulation;
 	}
 
+	public boolean isQuiet() {
+		return quiet;
+	}
+
 	public boolean isTreatAllAsProteinCoding() {
 		return treatAllAsProteinCoding;
 	}
@@ -776,6 +782,10 @@ public class Config implements Serializable, Iterable<String> {
 		this.onlyRegulation = onlyRegulation;
 	}
 
+	public void setQuiet(boolean quiet) {
+		this.quiet = quiet;
+	}
+
 	public void setSnpEffectPredictor(SnpEffectPredictor snpEffectPredictor) {
 		this.snpEffectPredictor = snpEffectPredictor;
 	}
@@ -842,11 +852,11 @@ public class Config implements Serializable, Iterable<String> {
 		long count = warningsCounter.inc(warningType);
 
 		if (debug || count < MAX_WARNING_COUNT) {
-			if (debug) Gpr.debug(warningType + details, 1);
+			if (debug) Log.debug(warningType + details, 1);
 			else System.err.println(warningType + details);
 		} else if (count <= MAX_WARNING_COUNT) {
 			String msg = "Too many '" + warningType + "' warnings, no further warnings will be shown:\n" + warningType + details;
-			if (debug) Gpr.debug(msg, 1);
+			if (debug) Log.debug(msg, 1);
 			else System.err.println(msg);
 		}
 	}

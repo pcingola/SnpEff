@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -27,7 +27,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", path("eff_sort.vcf"), null);
 
 		for (VcfEntry ve : vcfEntries) {
@@ -49,7 +49,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01_canonical() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		List<VcfEntry> vcfEntries = snpEffect("testHg3775Chr8", path("eff_sort_canon.vcf"), null);
 
 		// Only one entry in this file
@@ -66,7 +66,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-o", "gatk" };
 		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", path("eff_sort.vcf"), args);
 
@@ -82,7 +82,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_03_EmptyVcf() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "eff", "-noLog" };
 		snpEffect("testHg3770Chr22", path("empty_only_header.vcf"), args);
 	}
@@ -92,7 +92,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-csvStats", "test_04_TestCasesEff.csv" };
 		snpEffect("testHg3770Chr22", path("eff_sort.vcf"), args);
 	}
@@ -102,7 +102,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_05() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3775Chr1";
 		String vcf = path("gatk_NO_splice_regions.vcf");
 		String args[] = { "eff", "-noLog", "-o", "gatk" };
@@ -123,7 +123,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_06() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = {};
 		List<VcfEntry> list = snpEffect("testHg3775Chr15", path("mnp_insertion_at_transcript_end.vcf"), args);
 
@@ -136,7 +136,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_07() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = {};
 		List<VcfEntry> list = snpEffect("testHg3775Chr10", path("mnp_deletion.vcf"), args);
 
@@ -149,7 +149,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_08_gatk_missing_annotations() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genomeName = "testMycobacterium_tuberculosis_CCDC5079_uid203790";
 		String vcf = path("test_gatk_no_annotations.vcf");

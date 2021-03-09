@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Represents the header of a vcf file.
@@ -178,7 +178,7 @@ public class VcfHeader {
 
 		List<String> sampleNames = getSampleNames();
 		if (sampleNames.isEmpty()) {
-			Gpr.debug("Error: Could not get sample names");
+			Log.debug("Error: Could not get sample names");
 			return list;
 		}
 		for (String line : getLines()) {

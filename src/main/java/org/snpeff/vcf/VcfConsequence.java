@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * An 'CSQ' entry in a vcf line ('Consequence' from ENSEMBL's VEP)
@@ -84,7 +84,7 @@ public class VcfConsequence {
 				name2value.put(fieldNames[i], fieldValues[i]);
 
 		} catch (Exception e) {
-			Gpr.debug("Error parsing\n\tCSQ string: " + csqString);
+			Log.debug("Error parsing\n\tCSQ string: " + csqString);
 			throw new RuntimeException(e);
 		}
 	}

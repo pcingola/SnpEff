@@ -9,6 +9,7 @@ import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEntry;
 
@@ -54,7 +55,7 @@ public class TestCasesIntegrationVcfs extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01_vcf_bed_filter() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String vcfFile = path("test_vcf_filter.vcf");
 		String bedFile = path("test_vcf_filter.bed");
 
@@ -68,7 +69,7 @@ public class TestCasesIntegrationVcfs extends TestCasesIntegrationBase {
 		List<VcfEntry> vcfEntries = effcmd.run(true);
 
 		// All VCF entries should be filtered out
-		Gpr.debug("Vcf entries: " + vcfEntries.size());
+		Log.debug("Vcf entries: " + vcfEntries.size());
 		Assert.assertEquals(0, vcfEntries.size());
 
 		// Nothing should be printed

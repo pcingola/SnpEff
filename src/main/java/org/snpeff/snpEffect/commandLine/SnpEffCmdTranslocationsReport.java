@@ -23,6 +23,7 @@ import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.stats.TranslocationReport;
 import org.snpeff.svg.SvgTranslocation;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -61,7 +62,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		return vt != VariantType.BND //
 				&& vt != VariantType.DUP //
 				&& vt != VariantType.DEL //
-				;
+		;
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 		return effType == EffectType.GENE_FUSION //
 				|| effType == EffectType.GENE_FUSION_REVERESE //
 				|| effType == EffectType.GENE_FUSION_HALF //
-				;
+		;
 	}
 
 	/**
@@ -284,10 +285,10 @@ public class SnpEffCmdTranslocationsReport extends SnpEff {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			error(e, "Error creating summary: " + e.getMessage());
+			Log.error(e, "Error creating summary: " + e.getMessage());
 			return false;
 		} catch (TemplateException e) {
-			error(e, "Error creating summary: " + e.getMessage());
+			Log.error(e, "Error creating summary: " + e.getMessage());
 			return false;
 		}
 

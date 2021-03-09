@@ -2,6 +2,7 @@ package org.snpeff.binseq.coder;
 
 import org.snpeff.nmer.Nmer;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Class used to encode & decode sequences into binary and vice-versa
@@ -230,7 +231,7 @@ public class DnaCoder extends Coder {
 	void d(String m, long l) {
 		Nmer n = new Nmer(32);
 		n.setNmer(l);
-		Gpr.debug(String.format("%10s\t%s\t%s", m, Gpr.bin64(l), n.toString()));
+		Log.debug(String.format("%10s\t%s\t%s", m, Gpr.bin64(l), n.toString()));
 	}
 
 	/**

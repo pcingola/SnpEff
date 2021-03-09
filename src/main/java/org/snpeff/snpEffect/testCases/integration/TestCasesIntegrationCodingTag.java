@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -26,7 +26,7 @@ public class TestCasesIntegrationCodingTag extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-classic", "-ud", "0", "-noOut", "testHg19Chr1", path("missing_coding_tr_tag.vcf") };
 
 		// Run snpeff

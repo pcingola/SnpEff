@@ -3,11 +3,11 @@ package org.snpeff.snpEffect.testCases.unity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.probablility.FisherExactTest;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test for Hypergeometric distribution and Fisher exact test
- * 
+ *
  * @author pcingola
  *
  */
@@ -23,7 +23,7 @@ public class TestCasesChiSquare {
 
 	@Test
 	public void test_1() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// Data calculated using R:
 		// 		x <- 1:100
 		// 		pchisq(x,1,lower.tail=F)
@@ -35,7 +35,7 @@ public class TestCasesChiSquare {
 			double x = i + 1;
 			double p = FisherExactTest.get().chiSquareCDFComplementary(x, 1);
 			double diff = Math.abs(p - chiSqPcomp[i]) / chiSqPcomp[i];
-			if (verbose) Gpr.debug("pvalue: " + p + "\tpvalue (from R): " + chiSqPcomp[i] + "\tdifference: " + diff);
+			if (verbose) Log.debug("pvalue: " + p + "\tpvalue (from R): " + chiSqPcomp[i] + "\tdifference: " + diff);
 			Assert.assertTrue(diff < MAX_DIFF);
 		}
 	}

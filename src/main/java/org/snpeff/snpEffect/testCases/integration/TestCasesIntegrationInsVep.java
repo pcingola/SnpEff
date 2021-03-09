@@ -1,7 +1,7 @@
 package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.Test;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test random SNP changes
@@ -12,13 +12,13 @@ public class TestCasesIntegrationInsVep extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_03_InsVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareVep("testENST00000268124", path("testENST00000268124_ins_vep.vcf"), "ENST00000268124");
 	}
 
 	@Test
 	public void test_04_InsVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareVep("testHg3770Chr22", path("testENST00000445220_ins_vep.vcf"), "ENST00000445220");
 	}
 

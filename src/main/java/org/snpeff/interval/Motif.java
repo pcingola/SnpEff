@@ -3,10 +3,10 @@ package org.snpeff.interval;
 import org.snpeff.motif.Pwm;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
-import org.snpeff.util.Gpr;
+import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  * Regulatory elements
@@ -72,7 +72,7 @@ public class Motif extends Marker {
 				double scoreBest = pwm.score(seqBest);
 				double scoreNew = pwm.score(variantd);
 				double diff = scoreBest - scoreNew;
-				if (debug) Gpr.debug("Sequences: " + seqBest + "\t" + variantd + "\tScores: " + scoreBest + " + " + scoreNew + " = " + diff);
+				if (debug) Log.debug("Sequences: " + seqBest + "\t" + variantd + "\tScores: " + scoreBest + " + " + scoreNew + " = " + diff);
 
 				// Over threshold?
 				if (Math.abs(diff) > SCORE_THRESHOLD) effectImpact = EffectImpact.LOW;
@@ -109,7 +109,7 @@ public class Motif extends Marker {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + pwmId //
 				+ "\t" + pwmName //
-				;
+		;
 	}
 
 	public void setPwm(Pwm pwm) {

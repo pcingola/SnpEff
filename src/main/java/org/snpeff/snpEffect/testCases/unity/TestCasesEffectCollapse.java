@@ -5,7 +5,7 @@ import org.snpeff.interval.SpliceSite;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -30,9 +30,9 @@ public class TestCasesEffectCollapse extends TestCasesBase {
 	}
 
 	void check(int pos, String effStrExpected) {
-		if (verbose) Gpr.debug("Transcript:" + transcript);
+		if (verbose) Log.debug("Transcript:" + transcript);
 
-		// Create a variant 
+		// Create a variant
 		Variant variant = new Variant(chromosome, pos, "A", "T");
 
 		// Calculate variant
@@ -65,31 +65,31 @@ public class TestCasesEffectCollapse extends TestCasesBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		check(809, "NON_SYNONYMOUS_CODING+SPLICE_SITE_REGION");
 	}
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		check(811, "SPLICE_SITE_DONOR+INTRON");
 	}
 
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		check(1010, "SPLICE_SITE_REGION+INTRON");
 	}
 
 	@Test
 	public void test_04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		check(1012, "SPLICE_SITE_ACCEPTOR+INTRON");
 	}
 
 	@Test
 	public void test_05() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		check(1013, "NON_SYNONYMOUS_CODING+SPLICE_SITE_REGION");
 	}
 

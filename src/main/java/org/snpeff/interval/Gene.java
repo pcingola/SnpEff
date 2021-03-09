@@ -13,7 +13,7 @@ import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.stats.ObservedOverExpectedCpG;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
@@ -106,7 +106,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 				changed = true;
 			}
 		} else if (Config.get().isDebug()) {
-			Gpr.debug("Gene '" + id + "' (name:'" + geneName + "') not adjusted: " + this);
+			Log.debug("Gene '" + id + "' (name:'" + geneName + "') not adjusted: " + this);
 		}
 
 		return changed;
@@ -366,7 +366,7 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 			}
 		}
 
-		if (Config.get().isDebug()) Gpr.debug("Gene '', removing " + countRemoved + " / " + numChilds() + " unchecked transcript.");
+		if (Config.get().isDebug()) Log.debug("Gene '', removing " + countRemoved + " / " + numChilds() + " unchecked transcript.");
 
 		// Remove
 		for (Transcript t : toDelete)

@@ -26,6 +26,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  * This class creates a SnpEffectPredictor from a file (or a set of files) and a configuration
@@ -119,7 +120,7 @@ public abstract class SnpEffPredictorFactory {
 	 * Add a Gene
 	 */
 	protected void add(Gene gene) {
-		if (debug) Gpr.debug("\tAdding gene\tID: '" + gene.getId() + "'\tname: '" + gene.getGeneName() + "'\t" + gene.toStr());
+		if (debug) Log.debug("\tAdding gene\tID: '" + gene.getId() + "'\tname: '" + gene.getGeneName() + "'\t" + gene.toStr());
 		snpEffectPredictor.add(gene);
 
 		if (genesById.containsKey(gene.getId())) throw new RuntimeException("Gene  '" + gene.getId() + "' already exists");
@@ -130,7 +131,7 @@ public abstract class SnpEffPredictorFactory {
 	 * Add a generic Marker
 	 */
 	protected void add(Marker marker) {
-		if (debug) Gpr.debug("\tAdding " + marker.getClass().getSimpleName() + ":\tID: '" + marker.getId() + "'\t" + marker.toStr());
+		if (debug) Log.debug("\tAdding " + marker.getClass().getSimpleName() + ":\tID: '" + marker.getId() + "'\t" + marker.toStr());
 		addMarker(marker, false);
 	}
 
@@ -139,7 +140,7 @@ public abstract class SnpEffPredictorFactory {
 	 */
 	protected void add(Transcript tr) {
 		Gene gene = (Gene) tr.getParent();
-		if (debug) Gpr.debug("\tAdding transcript :\tID: '" + tr.getId() + "' to gene '" + gene.getId() + "'\t" + tr.toStr());
+		if (debug) Log.debug("\tAdding transcript :\tID: '" + tr.getId() + "' to gene '" + gene.getId() + "'\t" + tr.toStr());
 		gene.add(tr);
 
 		if (transcriptsById.containsKey(tr.getId())) throw new RuntimeException("Transcript  '" + tr.getId() + "' already exists");

@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.Test;
 import org.snpeff.pdb.DistanceResult;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdPdb;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -22,7 +22,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Command line arguments
 		String genome = "testHg19Pdb";
@@ -42,7 +42,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 		boolean ok = false;
 		for (DistanceResult dr : distanceResults) {
 			ok |= dr.pdbId.equals("1A12") && dr.aaPos1 == 24 && dr.aaPos2 == 135;
-			if (verbose) Gpr.debug("INTERACTION:\t" + dr);
+			if (verbose) Log.debug("INTERACTION:\t" + dr);
 		}
 
 		Assert.assertTrue("Interaction not found!", ok);
@@ -59,7 +59,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Command line arguments
 		String genome = "testHg19Pdb";
@@ -84,7 +84,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 					&& dr.trId1.equals("NM_006218.2") //
 					&& dr.trId2.equals("NM_181523.2") //
 			;
-			if (verbose) Gpr.debug(dr);
+			if (verbose) Log.debug(dr);
 		}
 
 		Assert.assertTrue("Interaction not found!", ok);

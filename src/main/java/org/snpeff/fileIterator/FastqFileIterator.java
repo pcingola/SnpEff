@@ -12,23 +12,23 @@ import java.util.Iterator;
 import org.snpeff.fastq.Fastq;
 import org.snpeff.fastq.FastqBuilder;
 import org.snpeff.fastq.FastqVariant;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Opens a fastq file and iterates over all fastq sequences in the file
- * Unlike BioJava's version, this one does NOT load all sequences in 
+ * Unlike BioJava's version, this one does NOT load all sequences in
  * memory. Thus it allows to process much larger files
- * 
+ *
  * @author pcingola
  */
 public class FastqFileIterator implements Iterable<Fastq>, Iterator<Fastq> {
 
 	private static enum State {
-		DESCRIPTION, // Description parser state. 
-		SEQUENCE, // Sequence parser state. 
-		REPEAT_DESCRIPTION, // Repeat description parser state. 
-		QUALITY, // Quality score parser state. 
-		COMPLETE; // Complete parser state. 
+		DESCRIPTION, // Description parser state.
+		SEQUENCE, // Sequence parser state.
+		REPEAT_DESCRIPTION, // Repeat description parser state.
+		QUALITY, // Quality score parser state.
+		COMPLETE; // Complete parser state.
 	}
 
 	public static boolean debug = false;
@@ -133,7 +133,7 @@ public class FastqFileIterator implements Iterable<Fastq>, Iterator<Fastq> {
 					lineNum++;
 				}
 
-				if (debug) Gpr.debug("State:" + state + "\tLine " + lineNum + ": " + line);
+				if (debug) Log.debug("State:" + state + "\tLine " + lineNum + ": " + line);
 				switch (state) {
 				case DESCRIPTION:
 					if (line.startsWith("@")) {

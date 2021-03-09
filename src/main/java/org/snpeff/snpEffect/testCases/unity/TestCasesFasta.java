@@ -2,7 +2,7 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.Test;
 import org.snpeff.fileIterator.FastaFileIterator;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test case for FASTA file parsing
@@ -20,7 +20,7 @@ public class TestCasesFasta extends TestCasesBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String fastaFileName = path("emptyLine.fa");
 		FastaFileIterator ffi = new FastaFileIterator(fastaFileName);
 		for (String seq : ffi) {

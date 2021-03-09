@@ -138,7 +138,7 @@ public class Qseq2FastqSplit {
 					writeFastq(linePe1, outsPe1.get(seqIdx), lineNum);
 					writeFastq(linePe2, outsPe2.get(seqIdx), lineNum);
 				} else {
-					// Gpr.debug("Line: " + lineNum + "\t" + seqIdx);
+					// Log.debug("Line: " + lineNum + "\t" + seqIdx);
 					countUnknown++;
 				}
 

@@ -8,6 +8,7 @@ import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -32,7 +33,7 @@ public class TestCasesIntervalVariant extends TestCasesBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Test N times
 		//	- Create a random gene transcript, exons

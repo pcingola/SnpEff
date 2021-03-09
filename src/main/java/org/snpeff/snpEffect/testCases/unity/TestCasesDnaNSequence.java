@@ -3,13 +3,13 @@ package org.snpeff.snpEffect.testCases.unity;
 import java.util.HashSet;
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.binseq.DnaNSequence;
 import org.snpeff.binseq.coder.DnaCoder;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
+
+import junit.framework.Assert;
 
 public class TestCasesDnaNSequence {
 
@@ -190,7 +190,7 @@ public class TestCasesDnaNSequence {
 
 	@Test
 	public void test_01_short() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20100615;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -199,7 +199,7 @@ public class TestCasesDnaNSequence {
 
 	@Test
 	public void test_01_short_getBase() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110217;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -209,7 +209,7 @@ public class TestCasesDnaNSequence {
 
 	@Test
 	public void test_01_short_getBases() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110218;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -219,7 +219,7 @@ public class TestCasesDnaNSequence {
 
 	@Test
 	public void test_01_short_replaceBase() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110218;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -229,7 +229,7 @@ public class TestCasesDnaNSequence {
 
 	@Test
 	public void test_02_long() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20100614;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -238,7 +238,7 @@ public class TestCasesDnaNSequence {
 
 	@Test
 	public void test_02_long_getBase() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110217;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -248,7 +248,7 @@ public class TestCasesDnaNSequence {
 
 	@Test
 	public void test_02_long_getBases() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110218;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -258,7 +258,7 @@ public class TestCasesDnaNSequence {
 
 	@Test
 	public void test_02_long_replaceBase() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110217;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -268,7 +268,7 @@ public class TestCasesDnaNSequence {
 
 	@Test
 	public void test_13_reverseWc() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20100615;
 		int lenMask = 0xfff;
 		int numTests = 1000;

@@ -8,7 +8,7 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdProtein;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -21,7 +21,7 @@ public class TestCasesIntegrationProtein extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() throws IOException {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "testHg3763ChrY", path("proteins_testHg3763ChrY.txt") };
 
 		SnpEffCmdProtein cmd = new SnpEffCmdProtein();
@@ -35,7 +35,7 @@ public class TestCasesIntegrationProtein extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_start_codon_translate() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Initialize
 		String genomeName = "testHg19ChrM";

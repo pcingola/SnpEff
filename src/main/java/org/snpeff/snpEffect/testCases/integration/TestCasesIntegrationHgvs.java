@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.Test;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -21,7 +21,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genomeName = "testHg3775Chr1";
 		String vcf = path("hgvs_1.vep.vcf");
@@ -34,7 +34,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3775Chr1";
 		String vcf = path("ensembl_hgvs_intron.1.vep.vcf");
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
@@ -48,7 +48,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3775Chr1";
 		String vcf = path("ensembl_hgvs_intron.outsideCds.vep.vcf");
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
@@ -62,7 +62,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_05() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3775Chr1";
 		String vcf = path("ensembl_hgvs_intron.vep.vcf");
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
@@ -76,7 +76,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_06() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3775Chr1";
 		String vcf = path("ensembl_hgvs_intron.within_cds.vep.vcf");
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
@@ -90,7 +90,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_10_MixedVep_HGVS() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg3775Chr1";
 		String vcf = path("mixed_10_hgvs.vep.vcf");
 		CompareToVep comp = new CompareToVep(genome, verbose);
@@ -103,7 +103,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_11_Hg19Hgvs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genome = "testHg19Hgvs";
 		String vcf = path("hgvs_counsyl.vcf");
@@ -118,7 +118,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_11_Hg19Hgvs_noShift() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Hgvs";
 		String vcf = path("hgvs_counsyl.noShift.vcf");
 		CompareToVep comp = new CompareToVep(genome, verbose);
@@ -136,7 +136,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_12_BRCA_Splice_15_Hgvs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int spliceSize = 15;
 		String genome = "test_BRCA";
 		String vcf = path("test_BRCA_splice_15.vcf");
@@ -162,7 +162,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		// Make sure the spleice site is annotatted as "c.1909+12delT" (instead of "c.1910delT")
 		boolean ok = false;
 		for (VcfEffect veff : ve.getVcfEffects()) {
-			if (verbose) Gpr.debug("\t" + veff + "\n\t\ttranscript: " + veff.getTranscriptId() + "\n\t\tHgvs (DNA): " + veff.getHgvsDna());
+			if (verbose) Log.debug("\t" + veff + "\n\t\ttranscript: " + veff.getTranscriptId() + "\n\t\tHgvs (DNA): " + veff.getHgvsDna());
 			ok |= veff.getTranscriptId().equals("ENST00000544455") && veff.getHgvsDna().equals("c.1909+12delT");
 		}
 
@@ -175,7 +175,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_14_splice_region_Hgvs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr1";
 		String vcf = path("hgvs_splice_region.vcf");
 
@@ -213,7 +213,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_15_hgvs_INS_intergenic() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg3775Chr22";
 		String vcf = path("test_hgvs_INS_intergenic.vcf");
 

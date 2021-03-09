@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEntry;
 
 import junit.framework.Assert;
@@ -25,7 +25,7 @@ public class TestCasesIntegrationCutsomIntervals extends TestCasesIntegrationBas
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Load database
 		String[] args = { "-classic"//
@@ -47,7 +47,7 @@ public class TestCasesIntegrationCutsomIntervals extends TestCasesIntegrationBas
 
 		// Check propper annotations
 		VcfEntry ve = vcfEntries.get(0);
-		if (verbose) Gpr.debug("VCF entry: " + ve);
+		if (verbose) Log.debug("VCF entry: " + ve);
 		Assert.assertEquals("R02837:N/A", ve.getInfo("custom_intervals_01_type"));
 		Assert.assertEquals("TRANSFAC_site", ve.getInfo("custom_intervals_01_source"));
 		Assert.assertEquals("R02837", ve.getInfo("custom_intervals_01_siteAcc"));

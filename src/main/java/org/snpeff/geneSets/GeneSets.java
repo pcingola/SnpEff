@@ -19,20 +19,21 @@ import org.snpeff.fileIterator.LineFileIterator;
 import org.snpeff.geneOntology.GoTerm;
 import org.snpeff.geneOntology.GoTerms;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
  * A collection of GeneSets
- * 
+ *
  * Genes have associated "experimental values"
- * 
+ *
  * @author Pablo Cingolani
  */
 @SuppressWarnings("serial")
 public class GeneSets implements Iterable<GeneSet>, Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -359594418467719013L;
 	public static boolean debug = false; // Debug mode for this class?
@@ -42,7 +43,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 
 	boolean verbose = false; // Verbose mode for this class?
 	boolean doNotAddIfNotInGeneSet = false; // Do not add genes that don't belong to geneset
-	String label; // Label, or name, for this GeneSet (e.g. "mSigDb.C2", or "GO")  
+	String label; // Label, or name, for this GeneSet (e.g. "mSigDb.C2", or "GO")
 	HashSet<String> genes; // All genes in this experiment
 	HashMap<String, GeneSet> geneSetsByName; // Gene sets indexed by GeneSet.name
 	HashMap<String, HashSet<GeneSet>> geneSetsByGene; // Gene sets indexed by gene name
@@ -129,7 +130,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 	}
 
 	/**
-	 * Add a symbol as 'interesting' gene (to every corresponding GeneSet in this collection) 
+	 * Add a symbol as 'interesting' gene (to every corresponding GeneSet in this collection)
 	 * @returns : true if it was added OK, false on error.
 	 */
 	public boolean addInteresting(String gene) {
@@ -180,15 +181,15 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 
 	/**
 	 * Produce a GeneSet based on a list of GeneSets and a 'mask'
-	 * 
+	 *
 	 * @param geneSetList : A list of GeneSets
-	 * @param activeSets : An integer (binary mask) that specifies weather a set in the list should be taken into account or not. The operation performed is: 
-	 * 
+	 * @param activeSets : An integer (binary mask) that specifies weather a set in the list should be taken into account or not. The operation performed is:
+	 *
 	 * 		Intersection{ GeneSets where mask_bit == 1 } - Union{ GeneSets where mask_bit == 0 } )
-	 * 
+	 *
 	 * where the minus sign '-' is actually a 'set minus' operation. This operation is done for both sets
 	 * in GeneSet (i.e. genes and interestingGenes)
-	 * 
+	 *
 	 * @return A GeneSet
 	 */
 	public GeneSet disjointSet(List<GeneSet> geneSetList, int activeSets) {
@@ -265,7 +266,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 		return genes.size();
 	}
 
-	/** 
+	/**
 	 * Get all genes in this set
 	 * @return
 	 */
@@ -416,7 +417,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 	/**
 	 * Reads a file with a list of genes and experimental values.
 	 * Format: "gene \t value \n"
-	 * @param fileName 
+	 * @param fileName
 	 * @return A list of genes not found
 	 */
 	@SuppressWarnings("unchecked")
@@ -492,7 +493,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 					String description = fields[1];
 
 					// Sanity check: Does gene set already exist?
-					if (getGeneSet(geneSetName) != null) Gpr.debug("Error: File '" + gmtFile + "' line " + lfi.getLineNum() + ". Gene set name '" + geneSetName + "' duplicated.");
+					if (getGeneSet(geneSetName) != null) Log.debug("Error: File '" + gmtFile + "' line " + lfi.getLineNum() + ". Gene set name '" + geneSetName + "' duplicated.");
 
 					// Create geneSet and all genes
 					GeneSet gs = new GeneSet(geneSetName, description, this);
@@ -541,7 +542,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 		for (GeneSet gs : todelete)
 			remove(gs);
 
-		Gpr.debug("Removind unused gene sets:" //
+		Log.debug("Removind unused gene sets:" //
 				+ "\n\t\tTotal removed: " + todelete.size() //
 				+ "\n\t\tRemaining: " + geneSetsByName.size() //
 		);
@@ -562,7 +563,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 	/**
 	 * Save gene sets file for GSEA analysis
 	 * Format specification: http://www.broad.mit.edu/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29
-	 * 
+	 *
 	 * @param fileName
 	 */
 	public void saveGseaGeneSets(String fileName) {
@@ -580,7 +581,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 			}
 		}
 
-		// Save it 
+		// Save it
 		Gpr.toFile(fileName, out);
 	}
 

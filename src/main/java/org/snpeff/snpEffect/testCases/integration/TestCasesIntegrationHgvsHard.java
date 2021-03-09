@@ -1,7 +1,7 @@
 package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.Test;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  *
@@ -19,7 +19,7 @@ public class TestCasesIntegrationHgvsHard extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_hgvs_dup() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genome = "testHg19Chr17";
 		String vcf = path("hgvs_dup.vcf");
@@ -29,7 +29,7 @@ public class TestCasesIntegrationHgvsHard extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_hgvs_md_chr17() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr17";
 		String vcf = path("hgvs_md.chr17.vcf");
 		compareHgvs(genome, vcf, false);
@@ -37,7 +37,7 @@ public class TestCasesIntegrationHgvsHard extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_hgvs_walk_and_roll_1() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genome = "testHg19Chr1";
 		String vcf = path("hgvs_jeremy_1.vcf");
@@ -47,7 +47,7 @@ public class TestCasesIntegrationHgvsHard extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_hgvs_walk_and_roll_2() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genome = "testHg19Chr17";
 		String vcf = path("hgvs_walk_and_roll.1.vcf");
@@ -57,7 +57,7 @@ public class TestCasesIntegrationHgvsHard extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_hgvs_walk_and_roll_3() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr13";
 		String vcf = path("hgvs_savant.vcf");
 		compareHgvs(genome, vcf, true);
@@ -68,7 +68,7 @@ public class TestCasesIntegrationHgvsHard extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_HgvsP_deleteion_length() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr1";
 		String vcf = path("hgvs_protein_deleteion_length.vcf");
 		compareHgvs(genome, vcf);
@@ -79,7 +79,7 @@ public class TestCasesIntegrationHgvsHard extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_HgvsP_deleteion_length_2() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr2";
 		String vcf = path("hgvs_protein_deleteion_length_2.vcf");
 		compareHgvs(genome, vcf);

@@ -12,6 +12,7 @@ import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
@@ -63,7 +64,7 @@ public class SnpEffCmdCds extends SnpEff {
 
 		// Use whole trId
 		cdsByTrId.put(trId, seq); // Add it to the hash
-		if (debug) Gpr.debug("Adding cdsByTrId{'" + trId + "'} :\t" + seq);
+		if (debug) Log.debug("Adding cdsByTrId{'" + trId + "'} :\t" + seq);
 	}
 
 	/**
@@ -234,7 +235,7 @@ public class SnpEffCmdCds extends SnpEff {
 		int maxTrIds = 20;
 		sb.append("Transcript IDs from database (sample):\n" + sampleTrIds(maxTrIds));
 		sb.append("Transcript IDs from database (fasta file):\n" + sampleTrIdsFasta(maxTrIds));
-		fatalError("No CDS checked. This is might be caused by differences in FASTA file transcript IDs respect to database's transcript's IDs.\n" + sb);
+		Log.fatalError("No CDS checked. This is might be caused by differences in FASTA file transcript IDs respect to database's transcript's IDs.\n" + sb);
 	}
 
 	/**
@@ -271,7 +272,7 @@ public class SnpEffCmdCds extends SnpEff {
 		if (cdsFile.endsWith("txt") || cdsFile.endsWith("txt.gz")) readCdsFileTxt();
 		else readCdsFileFasta();
 
-		if (cdsByTrId.isEmpty()) fatalError("CDS file is empty!");
+		if (cdsByTrId.isEmpty()) Log.fatalError("CDS file is empty!");
 	}
 
 	/**

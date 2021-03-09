@@ -5,7 +5,7 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Calculate codon changes produced by a duplication
@@ -39,7 +39,7 @@ public abstract class CodonChangeStructural extends CodonChange {
 		codonStartIndex = 0;
 		for (int i = 0; i <= min; i++) {
 			codonStartNum = i;
-			if (debug) Gpr.debug("cdsDiff Start\tcodonEquals(" + i + " , " + i + "): " + codonEquals(cdsRef, cdsAlt, i, i) //
+			if (debug) Log.debug("cdsDiff Start\tcodonEquals(" + i + " , " + i + "): " + codonEquals(cdsRef, cdsAlt, i, i) //
 					+ "\n\tcodonsRef [" + codonStartNum + "]: " + codons(cdsRef, codonStartNum, -1) //
 					+ "\n\tcodonsAlt [" + codonStartNum + "]: " + codons(cdsAlt, codonStartNum, -1) //
 			);
@@ -57,7 +57,7 @@ public abstract class CodonChangeStructural extends CodonChange {
 		int codonNumEndAlt = cdsAlt.length() / 3; //+ (cdsAlt.length() % 3 == 0 ? 0 : 1);
 
 		for (; codonNumEndRef >= codonStartNum && codonNumEndAlt >= codonStartNum; codonNumEndRef--, codonNumEndAlt--) {
-			if (debug) Gpr.debug("cdsDiff End\tcodonEquals(" + codonNumEndRef + " , " + codonNumEndAlt + "): " + codonEquals(cdsRef, cdsAlt, codonNumEndRef, codonNumEndAlt) //
+			if (debug) Log.debug("cdsDiff End\tcodonEquals(" + codonNumEndRef + " , " + codonNumEndAlt + "): " + codonEquals(cdsRef, cdsAlt, codonNumEndRef, codonNumEndAlt) //
 					+ "\n\tcodonsRef [" + codonStartNum + " , " + codonNumEndRef + "]: " + codons(cdsRef, codonStartNum, codonNumEndRef) //
 					+ "\n\tcodonsAlt [" + codonStartNum + " , " + codonNumEndAlt + "]: " + codons(cdsAlt, codonStartNum, codonNumEndAlt) //
 			);
@@ -132,7 +132,7 @@ public abstract class CodonChangeStructural extends CodonChange {
 	 */
 	protected void codonsRefAlt() {
 		Transcript trNew = transcript.apply(variant);
-		if (debug) Gpr.debug("Transcript after apply: " + trNew);
+		if (debug) Log.debug("Transcript after apply: " + trNew);
 
 		cdsAlt = trNew.cds();
 		cdsRef = transcript.cds();

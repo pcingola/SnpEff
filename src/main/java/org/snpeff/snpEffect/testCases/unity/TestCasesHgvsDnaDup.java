@@ -5,7 +5,7 @@ import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.HgvsDna;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -27,13 +27,13 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 881, "", "T", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -44,18 +44,18 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
 		Assert.assertEquals("c.1dupT", hgvsDna);
 	}
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
-		if (verbose) Gpr.debug(transcript);
+		Log.debug("Test");
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 883, "", "A", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -66,7 +66,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
 		Assert.assertEquals("c.3dupA", hgvsDna);
 	}
 
@@ -77,15 +77,15 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 */
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String prepend = "ACTCTGTGCC";
 
 		prependSequenceToFirstExon(prepend);
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 885, "", "T", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -96,7 +96,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
 		Assert.assertEquals("c.5dupT", hgvsDna);
 	}
 
@@ -107,15 +107,15 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 */
 	@Test
 	public void test_04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String prepend = "AGACTTTGTGCC";
 
 		prependSequenceToFirstExon(prepend);
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 887, "", "T", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -126,7 +126,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
 		Assert.assertEquals("c.7dupT", hgvsDna);
 	}
 
@@ -137,16 +137,16 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 */
 	@Test
 	public void test_05() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String prepend = "ACTTTGTGCC";
 
 		prependSequenceToFirstExon(prepend);
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 888, "", "TG", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -157,21 +157,21 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
 		Assert.assertEquals("c.7_8dupTG", hgvsDna);
 	}
 
 	@Test
 	public void test_06() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String prepend = "ACTTTGTGCC";
 
 		prependSequenceToFirstExon(prepend);
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 888, "", "GTG", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -182,7 +182,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
 		Assert.assertEquals("c.6_8dupGTG", hgvsDna);
 	}
 
@@ -191,13 +191,13 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 */
 	@Test
 	public void test_07() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 882, "", "A", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -208,7 +208,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
 		Assert.assertEquals("c.3dupA", hgvsDna);
 	}
 
@@ -217,13 +217,13 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 */
 	@Test
 	public void test_08() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 884, "", "C", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -234,7 +234,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
 		Assert.assertEquals("c.7dupC", hgvsDna);
 	}
 
@@ -243,17 +243,17 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 */
 	@Test
 	public void test_09() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// We need at least 2 exons for this test case
 		minExons = 2;
 		initSnpEffPredictor();
 
-		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
+		if (verbose) Log.debug(transcript + "\nChromosome: " + chromoSequence);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 485, "", "TA", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -264,7 +264,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
 		Assert.assertEquals("c.49+3_49+4dupTA", hgvsDna);
 	}
 
@@ -273,18 +273,18 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 */
 	@Test
 	public void test_10() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// We need at least 2 exons for this test case
 		minExons = 2;
 		shiftHgvs = false;
 		initSnpEffPredictor();
 
-		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
+		if (verbose) Log.debug(transcript + "\nChromosome: " + chromoSequence);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 483, "", "TATA", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -295,7 +295,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'");
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'");
 		Assert.assertEquals("c.48_49+2dupTATA", hgvsDna);
 	}
 
@@ -304,18 +304,18 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 	 */
 	@Test
 	public void test_11() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// We need at least 2 exons for this test case
 		minExons = 2;
 
 		initSnpEffPredictor();
 
-		if (verbose) Gpr.debug(transcript + "\nChromosome: " + chromoSequence);
+		if (verbose) Log.debug(transcript + "\nChromosome: " + chromoSequence);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 739, "", "AAAG", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Analyze variant
 		VariantEffects effs = snpEffectPredictor.variantEffect(variant);
@@ -326,7 +326,7 @@ public class TestCasesHgvsDnaDup extends TestCasesBase {
 		String hgvsDna = hgvsc.toString();
 
 		// Check result
-		if (verbose) Gpr.debug("HGVS (DNA): '" + hgvsDna + "'" + "\nEffects:" + effs);
+		if (verbose) Log.debug("HGVS (DNA): '" + hgvsDna + "'" + "\nEffects:" + effs);
 		Assert.assertEquals("c.50-2_51dupAAAG", hgvsDna);
 	}
 

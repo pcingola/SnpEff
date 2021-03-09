@@ -11,6 +11,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 import junit.framework.Assert;
@@ -27,7 +28,7 @@ public class TestCasesIntegrationTranscript {
 
 	@Test
 	public void test_01_mRnaSequence() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg3766Chr1";
 		Config config = new Config(genome);
 
@@ -65,7 +66,7 @@ public class TestCasesIntegrationTranscript {
 
 	@Test
 	public void test_02_mapping_mRna_Cds() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg3766Chr1";
 		Config config = new Config(genome);
 
@@ -103,7 +104,7 @@ public class TestCasesIntegrationTranscript {
 
 	@Test
 	public void test_03_baseNumberCds2Codon() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr1";
 		Config config = new Config(genome);
 
@@ -117,7 +118,7 @@ public class TestCasesIntegrationTranscript {
 				if (!tr.isProteinCoding()) continue;
 				if (tr.hasErrorOrWarning()) continue;
 
-				if (debug) Gpr.debug(tr);
+				if (debug) Log.debug(tr);
 				CodonTable codonTable = tr.codonTable();
 
 				String cds = tr.cds().toLowerCase();
@@ -131,7 +132,7 @@ public class TestCasesIntegrationTranscript {
 					String aa = codonTable.aa(codon);
 					String aaReal = "" + protein.charAt(aaNum);
 
-					if (debug) Gpr.debug("CDS base: " + cdsBaseNum + "\taaNum: " + aaNum + "\tAA: " + aa + " / " + aaReal + "\tcodon: " + codon);
+					if (debug) Log.debug("CDS base: " + cdsBaseNum + "\taaNum: " + aaNum + "\tAA: " + aa + " / " + aaReal + "\tcodon: " + codon);
 
 					if (aaNum == 0 && aaReal.equals("M") && !aaReal.equals(aa)) {
 						// First AA not always codes to 'M', we allow this exception
@@ -146,9 +147,9 @@ public class TestCasesIntegrationTranscript {
 									+ "\n\tAA [real] : " + protein.charAt(aaNum) //
 									+ "\n\tCount OK  : " + countOk //
 									+ "\n\n" + tr //
-									;
+							;
 
-							Gpr.debug(msg);
+							Log.debug(msg);
 							Assert.assertEquals(msg, aa, aaReal);
 						}
 					}
@@ -164,7 +165,7 @@ public class TestCasesIntegrationTranscript {
 
 	@Test
 	public void test_04_codonNumber2Pos() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr1";
 		Config config = new Config(genome);
 
@@ -178,7 +179,7 @@ public class TestCasesIntegrationTranscript {
 				if (!tr.isProteinCoding()) continue;
 				if (tr.hasErrorOrWarning()) continue;
 
-				if (debug) Gpr.debug(tr);
+				if (debug) Log.debug(tr);
 				CodonTable codonTable = tr.codonTable();
 				String protein = tr.protein();
 
@@ -219,8 +220,8 @@ public class TestCasesIntegrationTranscript {
 								+ "\n\tAA [real]  : " + aaReal //
 								+ "\n\tAA         : " + aa //
 								+ "\n\n" + tr //
-								;
-						Gpr.debug(msg);
+						;
+						Log.debug(msg);
 						Assert.assertEquals(msg, aaReal, aa);
 					}
 					countOk++;
@@ -233,7 +234,7 @@ public class TestCasesIntegrationTranscript {
 
 	@Test
 	public void test_05_codonNumber_aaNumber() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr1";
 		Config config = new Config(genome);
 
@@ -247,7 +248,7 @@ public class TestCasesIntegrationTranscript {
 				if (!tr.isProteinCoding()) continue;
 				if (tr.hasErrorOrWarning()) continue;
 
-				if (debug) Gpr.debug(tr);
+				if (debug) Log.debug(tr);
 				String protein = tr.protein();
 				int aanum2pos[] = tr.aaNumber2Pos();
 

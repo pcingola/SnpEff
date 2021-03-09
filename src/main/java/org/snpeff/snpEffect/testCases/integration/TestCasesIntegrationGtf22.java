@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.snpeff.interval.Exon;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test case for GTF22 file parsing
@@ -32,7 +32,7 @@ public class TestCasesIntegrationGtf22 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCaseHg37_61_ENST00000250838() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg37.61";
 		String gtfFile = path("ENST00000250838.gtf");
 		String fastaFile = path("chrY.fa.gz");
@@ -42,7 +42,7 @@ public class TestCasesIntegrationGtf22 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCaseHg37_61_ENST00000331397() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg37.61";
 		String gtfFile = path("ENST00000331397.gtf22");
 		String fastaFile = path("chrY.fa.gz");
@@ -52,7 +52,7 @@ public class TestCasesIntegrationGtf22 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCaseMm37_61_ENSMUSG00000051951() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testMm37.61";
 		String gtfFile = path("ENSMUSG00000051951.gtf");
 		String resultFile = path("ENSMUSG00000051951.txt");
@@ -61,7 +61,7 @@ public class TestCasesIntegrationGtf22 extends TestCasesIntegrationBase {
 
 	@Test
 	public void testCaseMm37_61_ENSMUST00000070533() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testMm37.61";
 		String gtfFile = path("ENSMUST00000070533.gtf");
 		String resultFile = path("ENSMUST00000070533.txt");

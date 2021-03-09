@@ -12,6 +12,7 @@ import org.snpeff.fastq.Fastq;
 import org.snpeff.fastq.FastqVariant;
 import org.snpeff.fileIterator.FastqFileIterator;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -46,7 +47,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 	}
 
 	/**
-	 * Create random sequences and store them in a DnaSequence. 
+	 * Create random sequences and store them in a DnaSequence.
 	 * Compare getting a few random bases from the original and DnaSequence sequences.
 	 * @param numTests
 	 * @param lenMask
@@ -75,7 +76,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 	}
 
 	/**
-	 * Create random sequences and store them in a DnaSequence. 
+	 * Create random sequences and store them in a DnaSequence.
 	 * Compare getting a single random base from the original and DnaSequence sequences.
 	 * @param numTests
 	 * @param lenMask
@@ -137,7 +138,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 	}
 
 	/**
-	 * Create random sequences and store them in a DnaSequence. 
+	 * Create random sequences and store them in a DnaSequence.
 	 * Compare after replacing random bases from the original and DnaSequence sequences.
 	 * @param numTests
 	 * @param lenMask
@@ -222,7 +223,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_01_short() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20100615;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -231,7 +232,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_01_short_getBase() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110217;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -241,7 +242,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_01_short_getBases() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110218;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -251,7 +252,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_01_short_replaceBase() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110218;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -261,7 +262,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_02_long() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20100614;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -270,7 +271,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_02_long_getBase() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110217;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -280,7 +281,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_02_long_getBases() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110218;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -290,7 +291,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_02_long_replaceBase() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20110217;
 		int lenMask = 0xffff;
 		int numTests = 10;
@@ -300,7 +301,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_04_Pe() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int numTests = 1000;
 		Random rand = new Random(20100617);
 
@@ -332,7 +333,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_05_fastqReader() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String fastqFileName = path("fastq_test.fastq");
 		String txtFileName = path("fastq_test.txt");
 
@@ -351,7 +352,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_05_quality_short() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20100804;
 		int lenMask = 0xff;
 		int numTests = 1000;
@@ -360,7 +361,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 	@Test
 	public void test_06_quality_long() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		long seed = 20100804;
 		int lenMask = 0xffff;
 		int numTests = 10;

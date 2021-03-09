@@ -28,6 +28,7 @@ import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGtf22;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryKnownGene;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryRefSeq;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
@@ -154,7 +155,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		if (fileExists(genesBase + ".kg")) return GeneDatabaseFormat.KNOWN_GENES;
 		if (fileExists(genesBase + ".biomart")) return GeneDatabaseFormat.BIOMART;
 
-		if (geneDatabaseFormat == null) fatalError("Cannot guess input database format for genome '" + genomeVer + "'. No genes file found '" + genesBase + ".*'");
+		if (geneDatabaseFormat == null) Log.fatalError("Cannot guess input database format for genome '" + genomeVer + "'. No genes file found '" + genesBase + ".*'");
 
 		return null;
 	}

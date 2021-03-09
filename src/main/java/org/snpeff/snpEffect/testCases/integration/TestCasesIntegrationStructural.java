@@ -7,7 +7,7 @@ import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -25,7 +25,7 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01_DUP_fusion() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "hg19";
 		String vcf = path("test_fusion_FGFR3-TACC3.vcf");
 
@@ -57,7 +57,7 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02_INV_fusion() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr2";
 		String vcf = path("test_fusion_EML4-ALK.vcf");
 
@@ -89,7 +89,7 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_03_DEL_fusion() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr21";
 		String vcf = path("test_fusion_TTC3-DSCAM.vcf");
 
@@ -121,7 +121,7 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_04_fusion() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr10";
 		String vcf = path("/test_fusion_CCDC6-RET.vcf");
 
@@ -153,7 +153,7 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_05_fusion() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "hg19";
 		String vcf = path("test_fusion_ROS1-SLC34A2.vcf");
 
@@ -185,7 +185,7 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_06_fusion() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr3";
 		String vcf = path("test_fusion_intron_rank.vcf");
 

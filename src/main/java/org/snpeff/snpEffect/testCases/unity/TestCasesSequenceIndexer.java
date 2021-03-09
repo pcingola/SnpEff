@@ -16,6 +16,7 @@ import org.snpeff.fastq.FastqVariant;
 import org.snpeff.fileIterator.FastaFileIterator;
 import org.snpeff.fileIterator.FastqFileIterator;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -66,7 +67,7 @@ public class TestCasesSequenceIndexer extends TestCasesBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		readFile(path("indexer_test_01.fastq"));
 
 		// Compare random references
@@ -96,7 +97,7 @@ public class TestCasesSequenceIndexer extends TestCasesBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		readFile("tests/indexer_test_01.fastq");
 
 		// Sort all references
@@ -120,7 +121,7 @@ public class TestCasesSequenceIndexer extends TestCasesBase {
 	 */
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String fastqFileName = "tests/short.fastq";
 
 		// Create indexer
@@ -147,7 +148,7 @@ public class TestCasesSequenceIndexer extends TestCasesBase {
 	 */
 	@Test
 	public void test_04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String fastqFileName = "tests/short.fastq";
 
 		// Create indexer
@@ -177,7 +178,7 @@ public class TestCasesSequenceIndexer extends TestCasesBase {
 	 */
 	@Test
 	public void test_05() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String fileName = path("a_thaliana_test/assembly_test.fa");
 		String result = Gpr.readFile(path("a_thaliana_test/assembly_test.result"));
 
@@ -202,7 +203,7 @@ public class TestCasesSequenceIndexer extends TestCasesBase {
 	 */
 	@Test
 	public void test_06() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }; // Two almost equal sequences (first one is longer)
 
 		SuffixIndexerNmer<DnaSequence> seqIndex = new SuffixIndexerNmer<>(new DnaSubsequenceComparator<>(true, 0), NMER_SIZE);
@@ -220,7 +221,7 @@ public class TestCasesSequenceIndexer extends TestCasesBase {
 	 */
 	@Test
 	public void test_07() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int nmerSize = 32;
 		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // Sequence length = 32 (same as Nmer size)
 				, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // Same sequence
@@ -242,9 +243,9 @@ public class TestCasesSequenceIndexer extends TestCasesBase {
 	 */
 	@Test
 	public void test_08() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int nmerSize = 32;
-		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // 
+		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" //
 				, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac" // Prepend 'c', append 'g'
 		};
 
@@ -262,9 +263,9 @@ public class TestCasesSequenceIndexer extends TestCasesBase {
 	 */
 	@Test
 	public void test_09() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int nmerSize = 32;
-		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // 
+		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" //
 				, "caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // Prepend 'c', append 'g'
 		};
 
@@ -282,9 +283,9 @@ public class TestCasesSequenceIndexer extends TestCasesBase {
 	 */
 	@Test
 	public void test_10() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		int nmerSize = 32;
-		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" // 
+		String seqStr[] = { "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" //
 				, "caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaag" // Prepend 'c', append 'g'
 		};
 

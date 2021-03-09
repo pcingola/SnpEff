@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -25,11 +25,11 @@ public class TestCasesIntegrationSpliceRegion extends TestCasesIntegrationBase {
 	}
 
 	/**
-	 * Splice region not found in some cases when there is an insertion 
+	 * Splice region not found in some cases when there is an insertion
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String file = path("test.splice_region_01.vcf");
 		String args[] = { "-canon" };
 		int pos = 117174416;

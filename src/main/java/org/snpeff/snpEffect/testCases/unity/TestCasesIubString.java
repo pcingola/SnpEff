@@ -1,10 +1,10 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.IubString;
+import org.snpeff.util.Log;
+
+import junit.framework.Assert;
 
 public class TestCasesIubString {
 
@@ -26,7 +26,7 @@ public class TestCasesIubString {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String expected = "A C G T";
 		String out = expand("N");
@@ -36,7 +36,7 @@ public class TestCasesIubString {
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String expected = "ACGA ACGC ACGG ACGT";
 		String out = expand("ACGN");
@@ -46,7 +46,7 @@ public class TestCasesIubString {
 
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String expected = "ACGA " //
 				+ "CCGA " //
@@ -65,7 +65,7 @@ public class TestCasesIubString {
 
 	@Test
 	public void test_04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String expected = "" //
 				+ "ACGA " //

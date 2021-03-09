@@ -18,6 +18,7 @@ import org.snpeff.geneSets.GeneSets;
 import org.snpeff.geneSets.GeneSetsRanked;
 import org.snpeff.geneSets.GeneStats;
 import org.snpeff.geneSets.algorithm.EnrichmentAlgorithm;
+import org.snpeff.geneSets.algorithm.EnrichmentAlgorithm.EnrichmentAlgorithmType;
 import org.snpeff.geneSets.algorithm.EnrichmentAlgorithmGreedyVariableSize;
 import org.snpeff.geneSets.algorithm.FisherPValueAlgorithm;
 import org.snpeff.geneSets.algorithm.FisherPValueGreedyAlgorithm;
@@ -25,7 +26,6 @@ import org.snpeff.geneSets.algorithm.LeadingEdgeFractionAlgorithm;
 import org.snpeff.geneSets.algorithm.NoneAlgorithm;
 import org.snpeff.geneSets.algorithm.RankSumPValueAlgorithm;
 import org.snpeff.geneSets.algorithm.RankSumPValueGreedyAlgorithm;
-import org.snpeff.geneSets.algorithm.EnrichmentAlgorithm.EnrichmentAlgorithmType;
 import org.snpeff.gsa.ChrPosScoreList;
 import org.snpeff.gsa.PvaluesList;
 import org.snpeff.gsa.ScoreList;
@@ -39,6 +39,7 @@ import org.snpeff.interval.Variant;
 import org.snpeff.interval.VariantWithScore;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 import org.snpeff.vcf.VcfEntry;
 
@@ -248,7 +249,7 @@ public class SnpEffCmdGsa extends SnpEff {
 					+ "\n\tThreshold                : %f"//
 					+ "\n\tInteresting genes        : %d  (%.2f%%)" //
 					+ "\n\tInteresting genes added  : %d  (%.2f%%)" //
-			, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
+					, scores.min(), scores.max(), 100.0 * interestingPerc, scoreThreshold, count, realPerc, countAdded, realPercAdded));
 		}
 	}
 
@@ -360,7 +361,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 		// if (enrichmentAlgorithmType.isRank() && enrichmentAlgorithmType.isGreedy()) {
 		if (enrichmentAlgorithmType.isGreedy()) {
-			if (debug) Gpr.debug("Setting initGeneSetSize:" + initGeneSetSize);
+			if (debug) Log.debug("Setting initGeneSetSize:" + initGeneSetSize);
 			((EnrichmentAlgorithmGreedyVariableSize) algorithm).setInitialSize(initGeneSetSize);
 		}
 
@@ -572,10 +573,10 @@ public class SnpEffCmdGsa extends SnpEff {
 			if ((inputFormat == InputFormat.VCF) && infoName.isEmpty() && geneScoreFile.isEmpty() && geneInterestingFile.isEmpty()) usage("Missing '-info' comamnd line option.");
 
 			if (inputFile.isEmpty()) inputFile = "-"; // Default is STDIN
-			if (!Gpr.canRead(inputFile)) fatalError("Cannot read input file '" + inputFile + "'");
+			if (!Gpr.canRead(inputFile)) Log.fatalError("Cannot read input file '" + inputFile + "'");
 
-			if (msigdb.isEmpty()) fatalError("Missing Gene-Sets file");
-			if (!Gpr.canRead(msigdb)) fatalError("Cannot read Gene-Sets file '" + msigdb + "'");
+			if (msigdb.isEmpty()) Log.fatalError("Missing Gene-Sets file");
+			if (!Gpr.canRead(msigdb)) Log.fatalError("Cannot read Gene-Sets file '" + msigdb + "'");
 
 			if (maxGeneSetSize <= 0) usage("MaxSetSize must be a positive number.");
 			if (minGeneSetSize >= maxGeneSetSize) usage("MaxSetSize (" + maxGeneSetSize + ") must larger than MinSetSize (" + minGeneSetSize + ").");
@@ -584,7 +585,7 @@ public class SnpEffCmdGsa extends SnpEff {
 
 			if (!geneInterestingFile.isEmpty() && !enrichmentAlgorithmType.isBinary()) usage("Cannot specify '-geneInterestingFile' using algorithm '" + enrichmentAlgorithmType + "'");
 		} else {
-			if (!Gpr.canRead(commandsFile)) fatalError("Cannot read commands file '" + commandsFile + "'");
+			if (!Gpr.canRead(commandsFile)) Log.fatalError("Cannot read commands file '" + commandsFile + "'");
 		}
 
 	}
@@ -652,12 +653,8 @@ public class SnpEffCmdGsa extends SnpEff {
 			chrPosScoreList = readInputBed();
 			break;
 
-		//		case TXT:
-		//			chrPosScoreList = readInputTxt();
-		//			break;
-
 		default:
-			fatalError("Input format '" + inputFormat + "' not supported!");
+			Log.fatalError("Input format '" + inputFormat + "' not supported!");
 		}
 
 		if (verbose) {

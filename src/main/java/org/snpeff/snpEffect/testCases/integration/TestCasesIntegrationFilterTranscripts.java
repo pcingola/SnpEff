@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -28,7 +28,7 @@ public class TestCasesIntegrationFilterTranscripts extends TestCasesIntegrationB
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { //
 				"-noStats" //
 				, "-i", "vcf" //
@@ -62,7 +62,7 @@ public class TestCasesIntegrationFilterTranscripts extends TestCasesIntegrationB
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { //
 				"-noStats" //
 				, "-i", "vcf" //

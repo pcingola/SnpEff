@@ -1,7 +1,7 @@
 package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.Test;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test cases for HGVS notation on insertions
@@ -17,7 +17,7 @@ public class TestCasesIntegrationHgvsDel extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01_hgvs_deletions_chr11() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genomeName = "testHg19Chr11";
 		String vcf = path("test_01_hgvs_deletions_chr11.vcf");

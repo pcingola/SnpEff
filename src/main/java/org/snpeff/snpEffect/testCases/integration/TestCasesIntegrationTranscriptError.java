@@ -2,7 +2,7 @@ package org.snpeff.snpEffect.testCases.integration;
 
 import org.junit.Test;
 import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Test case where VCF entries hit a transcript that has errors
@@ -17,14 +17,14 @@ public class TestCasesIntegrationTranscriptError extends TestCasesIntegrationBas
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-classic", "testHg3763Chr20", path("short_codon_bug.vcf") };
 		checkTranscriptError(args, ErrorWarningType.WARNING_TRANSCRIPT_INCOMPLETE);
 	}
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-classic", "testHg3763Chr20", path("incorrect_ref.vcf") };
 		checkTranscriptError(args, ErrorWarningType.WARNING_REF_DOES_NOT_MATCH_GENOME);
 	}

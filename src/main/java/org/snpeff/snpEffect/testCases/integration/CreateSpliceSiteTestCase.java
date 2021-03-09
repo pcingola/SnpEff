@@ -9,6 +9,7 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 public class CreateSpliceSiteTestCase {
 
@@ -31,7 +32,7 @@ public class CreateSpliceSiteTestCase {
 	 * @param args
 	 */
 	public void run() {
-		Gpr.debug("Loading config files");
+		Log.debug("Loading config files");
 		Config config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 

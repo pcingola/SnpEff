@@ -6,7 +6,7 @@ import org.snpeff.codons.CodonTables;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
 import org.snpeff.snpEffect.Config;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -25,7 +25,7 @@ public class TestCasesCodonTable {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CodonTable codonTable = CodonTables.getInstance().getTable(CodonTables.STANDARD_TABLE_NAME);
 
 		/**
@@ -56,19 +56,19 @@ public class TestCasesCodonTable {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeVersion = "test_ctab";
 		Config config = new Config(genomeVersion);
 
 		String chr1Name = "any_chromo";
 		Genome genome = config.getGenome();
 		Chromosome chr1 = genome.getOrCreateChromosome(chr1Name);
-		if (debug) Gpr.debug("Codon table [" + chr1Name + "]: " + chr1.getCodonTable().getName());
+		if (debug) Log.debug("Codon table [" + chr1Name + "]: " + chr1.getCodonTable().getName());
 		Assert.assertEquals("Blepharisma_Macronuclear", chr1.getCodonTable().getName());
 
 		String chrMtName = "MT";
 		Chromosome chrMt = genome.getOrCreateChromosome(chrMtName);
-		if (debug) Gpr.debug("Codon table [" + chrMtName + "]: " + chrMt.getCodonTable().getName());
+		if (debug) Log.debug("Codon table [" + chrMtName + "]: " + chrMt.getCodonTable().getName());
 		Assert.assertEquals("Vertebrate_Mitochondrial", chrMt.getCodonTable().getName());
 	}
 

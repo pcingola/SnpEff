@@ -4,7 +4,7 @@ import org.apfloat.Apfloat;
 import org.snpeff.geneSets.GeneSet;
 import org.snpeff.geneSets.GeneSets;
 import org.snpeff.probablility.FisherExactTest;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 public class FisherPValueAlgorithm extends EnrichmentAlgorithm {
 
@@ -27,7 +27,7 @@ public class FisherPValueAlgorithm extends EnrichmentAlgorithm {
 		int n = geneSet.getGeneCount(); // marbles drawn
 
 		double pValue = FisherExactTest.get().fisherExactTestUp(k, N, D, n, threshold);
-		if (debug) Gpr.debug("k: " + k + "\tN: " + N + "\tD: " + D + "\tn: " + n + "\tpValue: " + pValue + "\t" + geneSet.getName());
+		if (debug) Log.debug("k: " + k + "\tN: " + N + "\tD: " + D + "\tn: " + n + "\tpValue: " + pValue + "\t" + geneSet.getName());
 		return new Apfloat(pValue);
 	}
 }

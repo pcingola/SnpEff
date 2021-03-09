@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -24,7 +24,7 @@ public class TestCasesIntegrationDelEtc extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01_del_repeated_effects() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-ud", "0", "testHg3775Chr1", path("del_multiple_splice_region.vcf") };
 
 		SnpEff cmd = new SnpEff(args);
@@ -65,7 +65,7 @@ public class TestCasesIntegrationDelEtc extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02_del_repeated_effects_gatk() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-ud", "0", "-o", "gatk", "testHg3775Chr1", path("del_multiple_splice_region.vcf") };
 
 		SnpEff cmd = new SnpEff(args);

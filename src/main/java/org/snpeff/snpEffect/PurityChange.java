@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Analize purity changes in codons and amino acids
@@ -21,7 +22,7 @@ public class PurityChange {
 	CodonTable codonTable;
 
 	public static void main(String[] args) {
-		if( args.length <= 0 ) {
+		if (args.length <= 0) {
 			System.err.println("Usage: PurityChange snpEff_results_file");
 			System.exit(-1);
 		}
@@ -43,7 +44,7 @@ public class PurityChange {
 	 */
 	void add(HashMap<String, Integer> count, String key, int add) {
 		Integer c = count.get(key);
-		if( c == null ) c = 1;
+		if (c == null) c = 1;
 		else c += add;
 		count.put(key, c);
 	}
@@ -67,25 +68,25 @@ public class PurityChange {
 	void load(String resFileName) {
 		StringBuffer out = new StringBuffer();
 
-		//--- 
+		//---
 		// Read snpEffect results files
 		//---
-		Gpr.debug("Reading file: " + resFileName);
+		Log.debug("Reading file: " + resFileName);
 		String resFile = Gpr.readFile(resFileName);
 		String resLines[] = resFile.split("\n");
 
 		int countIgnored = 0, countOk = 0;
-		for( String resLine : resLines ) {
+		for (String resLine : resLines) {
 			String recs[] = resLine.split("\t");
-			if( recs.length > 21 ) {
+			if (recs.length > 21) {
 				String chr = recs[0];
 				String pos = recs[1];
 				String ref = recs[2];
 				String change = recs[3];
 
-				if( change.length() / CODONS_SIZE == 1 ) {
+				if (change.length() / CODONS_SIZE == 1) {
 					String codonsAround[] = recs[20].split("/");
-					if( codonsAround.length > 1 ) {
+					if (codonsAround.length > 1) {
 						// Analyze codon purity
 						String codonsAroundOld = codonsAround[0].trim();
 						String codonsAroundNew = codonsAround[1].trim();
@@ -109,15 +110,15 @@ public class PurityChange {
 						out.append(lineOut + "\n");
 					} else {
 						countIgnored++;
-						if( debug ) Gpr.debug("Change is no one codon: ignored");
+						if (debug) Log.debug("Change is no one codon: ignored");
 					}
 				} else {
 					countIgnored++;
-					if( debug ) Gpr.debug("Change '" + change + "' ignored");
+					if (debug) Log.debug("Change '" + change + "' ignored");
 				}
 			} else {
 				countIgnored++;
-				if( debug ) Gpr.debug("Line has not enough fields: ignored");
+				if (debug) Log.debug("Line has not enough fields: ignored");
 			}
 		}
 
@@ -130,9 +131,9 @@ public class PurityChange {
 		// Find the amino acid with max count
 		//---
 
-		// Count all amino acid 
+		// Count all amino acid
 		HashMap<String, Integer> countAa = new HashMap<String, Integer>();
-		for( String key : count.keySet() ) {
+		for (String key : count.keySet()) {
 			int cnt = count.get(key);
 			String aa = key.split(KEY_SEPARATOR)[0];
 			add(countAa, aa, cnt);
@@ -141,9 +142,9 @@ public class PurityChange {
 		// Find AA with largest count
 		int maxCountAa = 0;
 		String maxAa = "";
-		for( String aa : countAa.keySet() ) {
+		for (String aa : countAa.keySet()) {
 			int cntAa = countAa.get(aa);
-			if( maxCountAa < cntAa ) {
+			if (maxCountAa < cntAa) {
 				maxCountAa = cntAa;
 				maxAa = aa;
 			}
@@ -154,12 +155,12 @@ public class PurityChange {
 		//---
 		int totalMaxAa = 0, maxCountCodon = 0;
 		String maxCodon = "";
-		for( String key : count.keySet() ) {
+		for (String key : count.keySet()) {
 			String aa = key.split(KEY_SEPARATOR)[0];
-			if( aa.equals(maxAa) ) { // Is this count related to maxAa?
+			if (aa.equals(maxAa)) { // Is this count related to maxAa?
 				int cnt = count.get(key);
 				totalMaxAa += cnt;
-				if( maxCountCodon < cnt ) { // New maximum for a codon?
+				if (maxCountCodon < cnt) { // New maximum for a codon?
 					maxCountCodon = cnt;
 					maxCodon = key.split(KEY_SEPARATOR)[1];
 				}
@@ -167,8 +168,8 @@ public class PurityChange {
 		}
 
 		double purity = 0;
-		if( maxCountCodon >= MIN_COUNT_CODON ) purity = ((double) maxCountCodon) / ((double) totalMaxAa);
-		if( debug ) Gpr.debug("MaxAa: '" + maxAa + "'\ttotal: " + totalMaxAa + "\tmaxCodon: '" + maxCodon + "'\tcountCodon: " + maxCountCodon + "\t=> " + purity);
+		if (maxCountCodon >= MIN_COUNT_CODON) purity = ((double) maxCountCodon) / ((double) totalMaxAa);
+		if (debug) Log.debug("MaxAa: '" + maxAa + "'\ttotal: " + totalMaxAa + "\tmaxCodon: '" + maxCodon + "'\tcountCodon: " + maxCountCodon + "\t=> " + purity);
 		return purity;
 	}
 
@@ -182,20 +183,20 @@ public class PurityChange {
 	double purity(String codon, String around) {
 		String pre = around.substring(0, CODONS_SIZE * CODONS_AROUND);
 		String post = around.substring(around.length() - CODONS_SIZE * CODONS_AROUND);
-		if( debug ) Gpr.debug("codon: '" + codon + "'\tAround: '" + around + "'\tpre: '" + pre + "'\tpost: '" + post + "'");
+		if (debug) Log.debug("codon: '" + codon + "'\tAround: '" + around + "'\tpre: '" + pre + "'\tpost: '" + post + "'");
 
 		// Count all codons
 		HashMap<String, Integer> count = new HashMap<String, Integer>();
 
 		// First use 'codons'
 		int maxSyms = codon.length() / CODONS_SIZE;
-		for( int i = 0; i < maxSyms; i++ ) {
+		for (int i = 0; i < maxSyms; i++) {
 			String sym = getCodon(codon, i);
 			addAa(count, sym, 1);
 		}
 
 		// Now count codons 'around' (pre and post)
-		for( int i = 0; i < CODONS_AROUND; i++ ) {
+		for (int i = 0; i < CODONS_AROUND; i++) {
 			String cod = getCodon(pre, i);
 			addAa(count, cod, 1);
 
@@ -203,7 +204,7 @@ public class PurityChange {
 			addAa(count, cod, 1);
 		}
 
-		// Find AA-codon purity 
+		// Find AA-codon purity
 		return maxPurity(count);
 	}
 
@@ -216,7 +217,7 @@ public class PurityChange {
 		double purityNew = purity(newcodon, aroundNew);
 
 		double purityChange = purityNew - purityOld;
-		if( debug ) Gpr.debug("Purity: " + purityChange + "\tPurity OLD: " + purityOld + "\tPurity NEW: " + purityNew);
+		if (debug) Log.debug("Purity: " + purityChange + "\tPurity OLD: " + purityOld + "\tPurity NEW: " + purityNew);
 
 		return purityChange;
 	}

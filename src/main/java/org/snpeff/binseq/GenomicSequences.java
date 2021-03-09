@@ -20,6 +20,7 @@ import org.snpeff.interval.tree.Itree;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 import org.snpeff.util.Timer;
 
 /**
@@ -69,9 +70,9 @@ public class GenomicSequences implements Iterable<MarkerSeq>, Serializable {
 
 		// Add all exon sequences. Collapse them if possible
 		Markers exonMarkers = exonMarkers(chr);
-		if (debug) Gpr.debug("Before union: " + exonMarkers.size());
+		if (debug) Log.debug("Before union: " + exonMarkers.size());
 		exonMarkers = exonMarkers.union();
-		if (debug) Gpr.debug("After union: " + exonMarkers.size());
+		if (debug) Log.debug("After union: " + exonMarkers.size());
 		tree.add(exonMarkers);
 
 		// Build tree

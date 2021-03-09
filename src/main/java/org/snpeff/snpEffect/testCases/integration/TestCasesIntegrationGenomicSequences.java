@@ -1,7 +1,5 @@
 package org.snpeff.snpEffect.testCases.integration;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.binseq.GenomicSequences;
 import org.snpeff.interval.Exon;
@@ -9,6 +7,9 @@ import org.snpeff.interval.Gene;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
+
+import junit.framework.Assert;
 
 /**
  *
@@ -28,7 +29,7 @@ public class TestCasesIntegrationGenomicSequences {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg3775Chr1";
 
 		// Create SnpEff
@@ -68,7 +69,7 @@ public class TestCasesIntegrationGenomicSequences {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg3775Chr22";
 
 		// Create SnpEff

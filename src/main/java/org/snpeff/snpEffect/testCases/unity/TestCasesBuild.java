@@ -3,7 +3,7 @@ package org.snpeff.snpEffect.testCases.unity;
 import org.junit.Test;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGff3;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -16,7 +16,7 @@ public class TestCasesBuild extends TestCasesBase {
 
 	@Test
 	public void test_01_chromoNamesDoNotMatch_Gff() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genome = "testChromoNamesDoNotMatch";
 		String gff = path("testChromoNamesDoNotMatch.genes.gff");
@@ -51,7 +51,7 @@ public class TestCasesBuild extends TestCasesBase {
 
 	@Test
 	public void test_02_chromoNamesDoNotMatch_GffFasta() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String genome = "testChromoNamesDoNotMatch";
 		String gff = path("testChromoNamesDoNotMatch.genes.no_fasta.gff");

@@ -10,7 +10,7 @@ import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.interval.NextProt;
 import org.snpeff.interval.Transcript;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Create an SVG representation of a NextProt annotation tracks
@@ -56,7 +56,7 @@ public class SvgNextProt extends Svg {
 			}
 			byCat.add(np);
 		}
-		if (debug) Gpr.debug("Added " + nextprotMarkers.size() + " markers");
+		if (debug) Log.debug("Added " + nextprotMarkers.size() + " markers");
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class SvgNextProt extends Svg {
 		baseY = baseY + 2 * order * RECT_HEIGHT;
 		nextBaseY = baseY;
 
-		if (debug) Gpr.debug("Plotting NextProt category:" + category);
+		if (debug) Log.debug("Plotting NextProt category:" + category);
 		StringBuilder sb = new StringBuilder();
 		sb.append(hline(rectHeight / 2));
 

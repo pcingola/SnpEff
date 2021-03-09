@@ -7,7 +7,7 @@ import org.snpeff.interval.Genome;
 import org.snpeff.interval.Interval;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Interval tree structure using arrays
@@ -172,7 +172,7 @@ public class IntervalTreeArray implements Itree {
 	 * Store VCF entries in 'results'
 	 */
 	protected void query(Interval marker, int idx, Markers results) {
-		if (debug) Gpr.debug("query( " + marker + ", " + idx + " )\t" + toString(idx));
+		if (debug) Log.debug("query( " + marker + ", " + idx + " )\t" + toString(idx));
 
 		// Negative index? Nothing to do
 		if (idx < 0) return;
@@ -182,7 +182,7 @@ public class IntervalTreeArray implements Itree {
 
 		// Recurse left or right
 		int midPos = mid[idx];
-		if (debug) Gpr.debug("midPos:" + midPos);
+		if (debug) Log.debug("midPos:" + midPos);
 
 		// Recurse left?
 		if ((marker.getStart() < midPos) && (left[idx] >= 0)) {
@@ -199,7 +199,7 @@ public class IntervalTreeArray implements Itree {
 	 * Query entries intersecting 'marker' at node 'idx'
 	 */
 	protected void queryIntersects(Interval marker, int idx, Markers results) {
-		if (debug) Gpr.debug("queryIntersects( " + marker + ", " + idx + " )");
+		if (debug) Log.debug("queryIntersects( " + marker + ", " + idx + " )");
 
 		// Null? Nothing ti check
 		if (intersectMarkers[idx] == null) return;
@@ -209,7 +209,7 @@ public class IntervalTreeArray implements Itree {
 		for (Marker m : markers) {
 			if (m.intersects(marker)) {
 				results.add(m);
-				if (debug) Gpr.debug("\tMatches entry: " + m);
+				if (debug) Log.debug("\tMatches entry: " + m);
 			}
 		}
 	}
@@ -260,7 +260,7 @@ public class IntervalTreeArray implements Itree {
 	}
 
 	protected void stab(int point, int idx, Markers results) {
-		if (debug) Gpr.debug("stab( " + point + ", " + idx + " )\t" + toString(idx));
+		if (debug) Log.debug("stab( " + point + ", " + idx + " )\t" + toString(idx));
 
 		// Negative index? Nothing to do
 		if (idx < 0) return;
@@ -270,7 +270,7 @@ public class IntervalTreeArray implements Itree {
 
 		// Recurse left or right
 		int midPos = mid[idx];
-		if (debug) Gpr.debug("midPos:" + midPos);
+		if (debug) Log.debug("midPos:" + midPos);
 		if ((point < midPos) && (left[idx] >= 0)) {
 			stab(point, left[idx], results);
 		}
@@ -284,7 +284,7 @@ public class IntervalTreeArray implements Itree {
 	 * Stab entries intersecting 'point' at node 'idx'
 	 */
 	protected void stabIntersects(int point, int idx, Markers results) {
-		if (debug) Gpr.debug("stabIntersects( " + point + ", " + idx + " )");
+		if (debug) Log.debug("stabIntersects( " + point + ", " + idx + " )");
 
 		// Null? Nothing to check
 		if (intersectMarkers[idx] == null) return;
@@ -294,7 +294,7 @@ public class IntervalTreeArray implements Itree {
 		for (Marker m : markers) {
 			if (m.intersects(point)) {
 				results.add(m);
-				if (debug) Gpr.debug("\tMatches entry: " + m);
+				if (debug) Log.debug("\tMatches entry: " + m);
 			}
 		}
 	}
@@ -303,7 +303,7 @@ public class IntervalTreeArray implements Itree {
 	public String toString() {
 		return "Size: " + lastIdx //
 				+ ", capacity: " + capacity() //
-				;
+		;
 	}
 
 	public String toString(int idx) {

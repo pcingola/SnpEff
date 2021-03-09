@@ -24,8 +24,8 @@ import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 
@@ -115,17 +115,17 @@ public class TestCasesStructuralTranslocations {
 		Set<String> expectedAnns = arrayToSet(expAnns);
 
 		if (verbose) {
-			Gpr.debug("Variant: " + variant);
+			Log.debug("Variant: " + variant);
 			for (Gene g : genome.getGenes()) {
-				Gpr.debug("\tGene: " + g.getId() + "\t" + gene1.getStart() + " - " + gene1.getEnd());
+				Log.debug("\tGene: " + g.getId() + "\t" + gene1.getStart() + " - " + gene1.getEnd());
 				for (Transcript tr : g)
-					Gpr.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
+					Log.debug(tr + "\n\n" + tr.toStringAsciiArt(true));
 			}
 		}
 
 		// Calculate effects
 		VariantEffects effects = snpEffectPredictor.variantEffect(variant);
-		if (verbose) Gpr.debug("VariantEffects: " + effects);
+		if (verbose) Log.debug("VariantEffects: " + effects);
 
 		// Checknumber of results
 		Assert.assertEquals(true, effects.size() >= 1);
@@ -153,7 +153,7 @@ public class TestCasesStructuralTranslocations {
 			String annField = vcfEffect.toString();
 			anns.add(annField);
 
-			if (verbose) Gpr.debug("Effect: " + varEff.toStr() //
+			if (verbose) Log.debug("Effect: " + varEff.toStr() //
 					+ "\n\tHGVS.c: " + hgvsDna //
 					+ "\n\tHGVS.p: " + hgvsProt //
 					+ "\n\tANN   : " + annField //
@@ -161,10 +161,9 @@ public class TestCasesStructuralTranslocations {
 		}
 
 		// Check effects
-		Assert.assertTrue(
-				"Effects do not match" //
-						+ "\n\tExpected : " + expectedEffs //
-						+ "\n\tFound    : " + effs//
+		Assert.assertTrue("Effects do not match" //
+				+ "\n\tExpected : " + expectedEffs //
+				+ "\n\tFound    : " + effs//
 				, effs.containsAll(expectedEffs) //
 		);
 
@@ -177,26 +176,23 @@ public class TestCasesStructuralTranslocations {
 		Assert.assertTrue("Effect impact '" + expectedImpact + "' not found", impactOk);
 
 		// Check HGVS.c
-		Assert.assertTrue(
-				"HGVS.c do not match" //
-						+ "\n\tExpected : " + expectedHgvsc //
-						+ "\n\tFound    : " + hgvscs//
+		Assert.assertTrue("HGVS.c do not match" //
+				+ "\n\tExpected : " + expectedHgvsc //
+				+ "\n\tFound    : " + hgvscs//
 				, hgvscs.containsAll(expectedHgvsc) //
 		);
 
 		// Check HGVS.p
-		Assert.assertTrue(
-				"HGVS.p do not match" //
-						+ "\n\tExpected : " + expectedHgvsp //
-						+ "\n\tFound    : " + hgvsps//
+		Assert.assertTrue("HGVS.p do not match" //
+				+ "\n\tExpected : " + expectedHgvsp //
+				+ "\n\tFound    : " + hgvsps//
 				, hgvsps.containsAll(expectedHgvsp) //
 		);
 
 		// Check ANN fields
-		Assert.assertTrue(
-				"ANN fields do not match" //
-						+ "\n\tExpected : " + expectedAnns //
-						+ "\n\tFound    : " + anns //
+		Assert.assertTrue("ANN fields do not match" //
+				+ "\n\tExpected : " + expectedAnns //
+				+ "\n\tFound    : " + anns //
 				, anns.containsAll(expectedAnns) //
 		);
 
@@ -276,7 +272,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test01_0() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		init(false, false);
 
 		// Create variant
@@ -303,7 +299,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test01_0_nonFs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, false);
 
@@ -332,7 +328,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test01_1() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, true);
 
@@ -360,7 +356,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test01_2() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, false);
 
@@ -388,7 +384,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test01_3() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, true);
 
@@ -416,7 +412,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test01_3_noFs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, true);
 
@@ -445,7 +441,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test02_0() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, false);
 
@@ -473,7 +469,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test02_1() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, true);
 
@@ -501,7 +497,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test02_1_nonFs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, true);
 
@@ -530,7 +526,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test02_2() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, false);
 
@@ -558,7 +554,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test02_2_nonFs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, false);
 
@@ -587,7 +583,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test02_3() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, true);
 
@@ -615,7 +611,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test03_0() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, false);
 
@@ -643,7 +639,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test03_1() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, true);
 
@@ -671,7 +667,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test03_1_nonFs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, true);
 
@@ -700,7 +696,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test03_2() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, false);
 
@@ -728,7 +724,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test03_2_nonFs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, false);
 
@@ -757,7 +753,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test03_3() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, true);
 
@@ -785,7 +781,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test04_0() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, false);
 
@@ -813,7 +809,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test04_0_nonFs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, false);
 
@@ -842,7 +838,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test04_1() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(false, true);
 
@@ -870,7 +866,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test04_2() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, false);
 
@@ -898,7 +894,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test04_3() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, true);
 
@@ -926,7 +922,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test04_3_nonFs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, true);
 
@@ -958,7 +954,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test05_1_one_gene() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, true);
 
@@ -990,7 +986,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test05_2_one_gene() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, true);
 
@@ -1020,7 +1016,7 @@ public class TestCasesStructuralTranslocations {
 	 */
 	@Test
 	public void test06_no_gene() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		init(true, true);
 

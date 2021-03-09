@@ -4,12 +4,13 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * PLINK MAP file
- * 
+ *
  * References: http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml
- * 
+ *
  * @author pcingola
  */
 public class PlinkMap {
@@ -51,16 +52,16 @@ public class PlinkMap {
 
 	/**
 	 * Reads MAP file
-	 * 
+	 *
 	 * MAP file format (http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml)
-	 * 
+	 *
 	 *  Space separated or tab columns:
 	 *		chromosome (1-22, X, Y or 0 if unplaced)
 	 *		rs# or snp identifier
 	 *		Genetic distance (morgans)
 	 *		Base-pair position (bp units)
-	 *            
-	 *            
+	 *
+	 *
 	 * @param dataFileName
 	 */
 	protected void read(String mapFileName) {
@@ -88,7 +89,7 @@ public class PlinkMap {
 				// Is it duplicate?
 				if (id2LineNumber.containsKey(id)) throw new RuntimeException("Duplicate ID '" + id + "'. File '" + mapFileName + "', line '" + (lineNum + 1) + "'");
 				id2LineNumber.put(id, lineNum);
-				if (debug) Gpr.debug("genotypeNames.put(" + id + ", " + lineNum + ")");
+				if (debug) Log.debug("genotypeNames.put(" + id + ", " + lineNum + ")");
 			}
 			lineNum++;
 		}

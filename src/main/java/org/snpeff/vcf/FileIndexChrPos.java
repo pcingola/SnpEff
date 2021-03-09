@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.snpeff.interval.Chromosome;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Index a file that has "chr \t pos" as the beginning of a line (e.g. VCF)
@@ -35,7 +36,7 @@ public class FileIndexChrPos {
 			return start + "\t" + lineStart //
 					+ "\n"//
 					+ end + "\t" + lineEnd //"
-					;
+			;
 		}
 	}
 
@@ -162,7 +163,7 @@ public class FileIndexChrPos {
 		//---
 		int posStart = pos(lineStart);
 		int posEnd = pos(lineEnd);
-		if (debug) Gpr.debug("Find:\t" + chrPos + "\t[" + posStart + ", " + posEnd + "]\tFile: [" + start + " , " + end + "]\tsize: " + (end - start) //
+		if (debug) Log.debug("Find:\t" + chrPos + "\t[" + posStart + ", " + posEnd + "]\tFile: [" + start + " , " + end + "]\tsize: " + (end - start) //
 				+ "\n\t\t\t\t" + s(lineStart) //
 				+ "\n\t\t\t\t" + s(lineEnd) //
 				+ "\n");
@@ -418,7 +419,7 @@ public class FileIndexChrPos {
 		}
 		linePos.line = sb.toString();
 
-		// if (debug) Gpr.debug("Line & Position: " + linePos);
+		// if (debug) Log.debug("Line & Position: " + linePos);
 		return linePos;
 	}
 
@@ -481,7 +482,7 @@ public class FileIndexChrPos {
 	 * @param lineEnd
 	 */
 	void indexChromos(long start, String lineStart, long end, String lineEnd) {
-		if (debug) Gpr.debug("Index:"//
+		if (debug) Log.debug("Index:"//
 				+ "\n\t" + start + "(" + (((double) start) / size()) + ") :\t" + s(lineStart) //
 				+ "\n\t" + end + "(" + (((double) end) / size()) + ") :\t" + s(lineEnd));
 
@@ -501,10 +502,10 @@ public class FileIndexChrPos {
 		);
 
 		if (chrStart.equals(chrEnd)) {
-			if (debug) Gpr.debug("Chromo:\tlineStart: " + chrStart + "\tlineEnd: " + chrEnd + "\t==> Back!");
+			if (debug) Log.debug("Chromo:\tlineStart: " + chrStart + "\tlineEnd: " + chrEnd + "\t==> Back!");
 			return;
 		}
-		if (debug) Gpr.debug("Chromo:\tlineStart: " + chrStart + "\tlineEnd: " + chrEnd);
+		if (debug) Log.debug("Chromo:\tlineStart: " + chrStart + "\tlineEnd: " + chrEnd);
 
 		if ((start + lineStart.length() + 1) >= end) {
 			if (verbose) System.err.println("\t\t" + chrStart + " / " + chrEnd + "\t" + start + " / " + end);
@@ -521,12 +522,12 @@ public class FileIndexChrPos {
 
 		long mid = (start + end) / 2;
 		String lineMid = getLine(mid).line;
-		if (debug) Gpr.debug("Mid: " + mid + "\t" + s(lineMid));
+		if (debug) Log.debug("Mid: " + mid + "\t" + s(lineMid));
 
-		if (debug) Gpr.debug("First half recustion:");
+		if (debug) Log.debug("First half recustion:");
 		indexChromos(start, lineStart, mid, lineMid);
 
-		if (debug) Gpr.debug("Second half recustion:");
+		if (debug) Log.debug("Second half recustion:");
 		indexChromos(mid, lineMid, end, lineEnd);
 	}
 

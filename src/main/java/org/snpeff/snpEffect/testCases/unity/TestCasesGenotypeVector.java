@@ -2,11 +2,11 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.snpeff.genotypes.GenotypeVector;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
+
+import junit.framework.Assert;
 
 /**
  * Test cases for GenotypeVector class
@@ -19,7 +19,7 @@ public class TestCasesGenotypeVector {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// Show masks (just to check they are OK)
 		for (byte m : GenotypeVector.mask) {
 			String line = "Mask          :" + m + "\t" + Integer.toBinaryString(m & 0xff);
@@ -44,7 +44,7 @@ public class TestCasesGenotypeVector {
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Random rand = new Random(20121221);
 		GenotypeVector gv = new GenotypeVector(1000);
 

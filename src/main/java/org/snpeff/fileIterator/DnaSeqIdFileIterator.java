@@ -1,13 +1,13 @@
 package org.snpeff.fileIterator;
 
 import org.snpeff.binseq.DnaSequenceId;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 public class DnaSeqIdFileIterator extends BinSeqFileIterator<DnaSequenceId> {
 
 	public DnaSeqIdFileIterator(String fileName) {
 		super(fileName);
-		Gpr.debug("SEQID");
+		Log.debug("SEQID");
 		readerObject = new DnaSequenceId(null);
 	}
 

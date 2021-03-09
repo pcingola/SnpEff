@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -25,7 +25,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-classic", "-noOut", "testHg3766Chr1", path("huge_deletion_DEL.vcf") };
 
 		SnpEff cmd = new SnpEff(args);
@@ -52,7 +52,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-classic", "-noOut", "testHg3766Chr1", path("huge_deletion.vcf.gz") };
 
 		SnpEff cmd = new SnpEff(args);
@@ -71,7 +71,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "-classic", "-noOut", "testHg19Chr9", path("huge_deletion_chr9.vcf") };
 
 		SnpEff cmd = new SnpEff(args);
@@ -114,7 +114,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 	 */
 	@Test
 	public void test_04() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19Chr9";
 		String vcfFile = path("huge_deletion_fusion_chr9.vcf");
 		List<VcfEntry> vcfs = snpEffect(genome, vcfFile, null, EffFormatVersion.FORMAT_ANN_1);

@@ -6,7 +6,7 @@ import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -23,7 +23,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01_build() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String args[] = { "buildNextProt", "testHg3770Chr22", path("nextProt") };
 		SnpEff snpEff = new SnpEff(args);
 		snpEff.setVerbose(verbose);
@@ -34,7 +34,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_02_ann() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// Note: Normally this EffectImpact should be 'HIGH' impact, but
 		// since the database we build in test_01_build is small, there
 		// are not enough stats.
@@ -48,7 +48,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_02_eff() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// Note: Normally this EffectImpact should be 'HIGH' impact, but
 		// since the database we build in test_01_build is small, there are
 		// not enough stats.
@@ -62,7 +62,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_03_ann() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// Note: Normally this EffectImpact should be 'MODERATE' impact, but
 		// since the database we build in test_01_build is small, there are
 		// not enough stats.
@@ -76,7 +76,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_03_eff() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// Note: Normally this EffectImpact should be 'MODERATE' impact, but
 		// since the database we build in test_01_build is small, there are
 		// not enough stats.
@@ -90,7 +90,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_04_parse() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String vcfFile = path("test.nextProt_paren.vcf");
 		int count = 0;
 		for (VcfEntry ve : new VcfFileIterator(vcfFile)) {

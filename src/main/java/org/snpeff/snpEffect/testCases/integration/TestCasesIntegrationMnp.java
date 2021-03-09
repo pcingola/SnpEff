@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -19,7 +20,7 @@ public class TestCasesIntegrationMnp extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		// Run
 		String args[] = { "-classic", "-noHgvs", "-ud", "0", "testHg3766Chr1", path("test.mnp.01.vcf") };
 		SnpEff cmd = new SnpEff(args);

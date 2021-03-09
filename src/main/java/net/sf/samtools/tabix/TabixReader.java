@@ -40,6 +40,7 @@ import java.util.HashMap;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Variant;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import htsjdk.samtools.util.BlockCompressedInputStream;
 
@@ -101,12 +102,10 @@ public class TabixReader implements Iterable<String> {
 	 */
 	private static int reg2bins(final int beg, final int _end, final int[] list) {
 		int i = 0, k, end = _end;
-		if (beg >= end)
-			return 0;
+		if (beg >= end) return 0;
 
 		// Max size = 2^29
-		if (end >= 1 << 29)
-			end = 1 << 29;
+		if (end >= 1 << 29) end = 1 << 29;
 		--end;
 		list[i++] = 0;
 
@@ -141,16 +140,13 @@ public class TabixReader implements Iterable<String> {
 	}
 
 	protected int chr2tid(String chr) {
-		if (sequenceName2tid.containsKey(chr))
-			return sequenceName2tid.get(chr);
+		if (sequenceName2tid.containsKey(chr)) return sequenceName2tid.get(chr);
 
 		// Try simple chromosome names (no 'chr')
 		chr = Chromosome.simpleName(chr);
-		if (sequenceName2tid.containsKey(chr))
-			return sequenceName2tid.get(chr);
+		if (sequenceName2tid.containsKey(chr)) return sequenceName2tid.get(chr);
 
-		else
-			return -1;
+		else return -1;
 	}
 
 	public void close() {
@@ -190,8 +186,7 @@ public class TabixReader implements Iterable<String> {
 
 	@Override
 	public TabixIterator iterator() {
-		if (tabixIterator != null)
-			return tabixIterator;
+		if (tabixIterator != null) return tabixIterator;
 
 		// No query performed yet: create one
 		TPair64 off[] = new TPair64[1];
@@ -225,7 +220,7 @@ public class TabixReader implements Iterable<String> {
 
 	/**
 	 * Query for a given interval:
-	 * 
+	 *
 	 * @param tid
 	 *            : Chromosome number
 	 * @param beg
@@ -238,8 +233,7 @@ public class TabixReader implements Iterable<String> {
 		TPair64[] chunksOff, chunks;
 		long minFileOffset;
 
-		if (tid < 0)
-			return null;
+		if (tid < 0) return null;
 
 		// Get index for chromosome 'tid'
 		TabixIndex idx = tabixIndexes[tid];
@@ -252,8 +246,7 @@ public class TabixReader implements Iterable<String> {
 
 		// Minimum offset within file
 		minFileOffset = idx.minOffset(beg);
-		if (debug)
-			Gpr.debug("minFileOffset: " + minFileOffset);
+		if (debug) Log.debug("minFileOffset: " + minFileOffset);
 
 		// Add chunk lengths for all blocks within the interval
 		for (i = numChunks = 0; i < numBins; ++i) {
@@ -264,14 +257,13 @@ public class TabixReader implements Iterable<String> {
 					StringBuilder sb = new StringBuilder();
 					for (TPair64 tp : chunks)
 						sb.append("\t\t" + tp + "\n");
-					Gpr.debug("\tnumChunks: " + numChunks + "\n" + sb);
+					Log.debug("\tnumChunks: " + numChunks + "\n" + sb);
 				}
 			}
 		}
 
 		// Zero chunks? Then there is nothing in the index matching the interval
-		if (numChunks == 0)
-			return null;
+		if (numChunks == 0) return null;
 
 		// Collect all chunks having their end coordinated after min_off
 		chunksOff = new TPair64[numChunks];
@@ -289,8 +281,7 @@ public class TabixReader implements Iterable<String> {
 		}
 
 		// No chunks left? Nothing to do (index doesn't match query)
-		if (numChunks == 0)
-			return null;
+		if (numChunks == 0) return null;
 
 		// Sort chunks (note, after 'numChunks' the array is null)
 		Arrays.sort(chunksOff, 0, numChunks);
@@ -308,13 +299,11 @@ public class TabixReader implements Iterable<String> {
 		// Resolve overlaps between adjacent blocks; this may happen due to the merge in
 		// indexing
 		for (i = 1; i < numChunks; ++i)
-			if (!TPair64.less64(chunksOff[i - 1].v, chunksOff[i].u))
-				chunksOff[i - 1].v = chunksOff[i].u;
+			if (!TPair64.less64(chunksOff[i - 1].v, chunksOff[i].u)) chunksOff[i - 1].v = chunksOff[i].u;
 
 		// Merge adjacent blocks
 		for (i = 1, l = 0; i < numChunks; ++i) {
-			if (chunksOff[l].v >> 16 == chunksOff[i].u >> 16)
-				chunksOff[l].v = chunksOff[i].v;
+			if (chunksOff[l].v >> 16 == chunksOff[i].u >> 16) chunksOff[l].v = chunksOff[i].v;
 			else {
 				++l;
 				chunksOff[l].u = chunksOff[i].u;
@@ -348,14 +337,11 @@ public class TabixReader implements Iterable<String> {
 		// marker has zero-based, closed coordinates.
 		int start = variant.getStart();
 		int end = variant.getEnd() + 1;
-		if (variant.isIns())
-			start--;
+		if (variant.isIns()) start--;
 
 		TabixIterator tabixIterator = query(tid, start, end);
-		if (tabixIterator != null)
-			tabixIterator.setDebug(debug);
-		if (debug)
-			Gpr.debug("Query: " + variant + "\ttabixIterator: " + tabixIterator);
+		if (tabixIterator != null) tabixIterator.setDebug(debug);
+		if (debug) Log.debug("Query: " + variant + "\ttabixIterator: " + tabixIterator);
 		return tabixIterator;
 	}
 
@@ -373,8 +359,7 @@ public class TabixReader implements Iterable<String> {
 	 *            File pointer
 	 */
 	public void readIndex(File fp) throws IOException {
-		if (fp == null)
-			return;
+		if (fp == null) return;
 		BlockCompressedInputStream is = new BlockCompressedInputStream(fp);
 		byte[] buf = new byte[4];
 
@@ -390,16 +375,15 @@ public class TabixReader implements Iterable<String> {
 		mMeta = readInt(is);
 		mSkip = readInt(is);
 
-		if (debug)
-			Gpr.debug("Tabix index:" //
-					+ "\n\tNumber of sequences: " + numSeqs //
-					+ "\n\tmPreset: " + mPreset //
-					+ "\n\tmSc    : " + mSc //
-					+ "\n\tmBc    : " + mBc //
-					+ "\n\tmEc    : " + mEc //
-					+ "\n\tmMeta  : " + mMeta //
-					+ "\n\tmSkip  : " + mSkip //
-			);
+		if (debug) Log.debug("Tabix index:" //
+				+ "\n\tNumber of sequences: " + numSeqs //
+				+ "\n\tmPreset: " + mPreset //
+				+ "\n\tmSc    : " + mSc //
+				+ "\n\tmBc    : " + mBc //
+				+ "\n\tmEc    : " + mEc //
+				+ "\n\tmMeta  : " + mMeta //
+				+ "\n\tmSkip  : " + mSkip //
+		);
 
 		// Read sequence dictionary
 		int sequencesLength = readInt(is);
@@ -419,8 +403,7 @@ public class TabixReader implements Iterable<String> {
 				String chrName = new String(b);
 
 				// Add chromosome mapping
-				if (debug)
-					Gpr.debug("sequenceNames[" + tid + "] = s: '" + chrName + "'");
+				if (debug) Log.debug("sequenceNames[" + tid + "] = s: '" + chrName + "'");
 				sequenceName2tid.put(chrName, tid);
 				sequenceName2tid.put(Chromosome.simpleName(chrName), tid); // Add simple name as well
 
@@ -440,7 +423,7 @@ public class TabixReader implements Iterable<String> {
 
 			if (debug) {
 				String txtfile = fileName + ".tabixIndex_" + sequenceNames[seqNum] + ".txt";
-				Gpr.debug("Writing to file " + txtfile);
+				Log.debug("Writing to file " + txtfile);
 				Gpr.toFile(txtfile, tabixIndexes[seqNum]);
 			}
 		}
@@ -457,14 +440,12 @@ public class TabixReader implements Iterable<String> {
 		int c;
 		while ((c = fileInputStream.read()) >= 0 && c != '\n')
 			buf.append((char) c);
-		if (c < 0)
-			return null;
+		if (c < 0) return null;
 		return buf.toString();
 	}
 
 	void seek(long pos) throws IOException {
-		if (debug)
-			Gpr.debug("seek(" + pos + ")");
+		if (debug) Log.debug("seek(" + pos + ")");
 		fileInputStream.seek(pos);
 	}
 

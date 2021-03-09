@@ -9,7 +9,7 @@ import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -36,7 +36,7 @@ public class TestCasesIntegrationMixedVariants extends TestCasesIntegrationBase 
 	 */
 	@Test
 	public void test_01_MixedVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String vcfFile = path("mixed_01.vcf");
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
@@ -50,49 +50,49 @@ public class TestCasesIntegrationMixedVariants extends TestCasesIntegrationBase 
 
 	@Test
 	public void test_02_MixedVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareVep("testHg3775Chr22", path("mixed_chr22.vcf"));
 	}
 
 	@Test
 	public void test_03_MixedVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareVep("testHg3775Chr14", path("mixed_chr14.vcf"));
 	}
 
 	@Test
 	public void test_04_MixedVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareVep("testHg3775Chr12", path("mixed_chr12.vcf"));
 	}
 
 	@Test
 	public void test_05_MixedVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareVep("testHg3775Chr22", path("mixed_chr22.vcf"));
 	}
 
 	@Test
 	public void test_06_MixedVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareVep("testHg3775Chr7", path("mixed_chr7.vcf"));
 	}
 
 	@Test
 	public void test_07_MixedVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareVep("testHg3775Chr6", path("mixed_chr6.vcf"));
 	}
 
 	@Test
 	public void test_08_MixedVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		compareVep("testHg3775Chr1", path("mixed_chr1.vcf"));
 	}
 
 	@Test
 	public void test_09_MixedVep() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String vcfFileName = path("mixed_09.vcf");
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
@@ -107,7 +107,7 @@ public class TestCasesIntegrationMixedVariants extends TestCasesIntegrationBase 
 
 	@Test
 	public void test_11_ExonRank() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String vcfFileName = path("mixed_11.vcf");
 		String args[] = { "testHg19Chr20", vcfFileName };

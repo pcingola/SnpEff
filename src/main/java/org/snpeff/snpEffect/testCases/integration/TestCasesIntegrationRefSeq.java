@@ -11,7 +11,7 @@ import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdBuild;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -28,7 +28,7 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		/// Build SnpEffectPredictor using a RefSeq file
 		String genome = "hg19";
@@ -52,7 +52,7 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		/// Build SnpEffectPredictor using a RefSeq file
 		String genome = "testNM_015296";
@@ -70,7 +70,7 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 		// Make sure the alignment matches on most bases after exon rank 49
 		HashMap<String, SmithWaterman> alignmentByTrId = snpeffBuild.getSnpEffCmdProtein().getAlignmentByTrId();
 		SmithWaterman sw = alignmentByTrId.get("NM_015296.2");
-		if (debug) Gpr.debug(sw.getAlignmentScore() + "\n" + sw);
+		if (debug) Log.debug(sw.getAlignmentScore() + "\n" + sw);
 		Assert.assertTrue(sw.getAlignmentScore() >= 2061);
 	}
 }

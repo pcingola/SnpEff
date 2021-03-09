@@ -5,7 +5,7 @@ import org.snpeff.align.VariantRealign;
 import org.snpeff.binseq.GenomicSequences;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Variant;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -35,7 +35,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 		// Realign variant
 		VariantRealign vr = new VariantRealign(variant);
 		vr.realign();
-		if (verbose) Gpr.debug("Realigned variant: " + vr);
+		if (verbose) Log.debug("Realigned variant: " + vr);
 
 		// Check results
 		Assert.assertEquals(expectedVariantRealign, vr.getVariantRealigned().toString());
@@ -54,19 +54,19 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Change exon's sequence
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 754, "", "T", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Shift variant
-		if (verbose) Gpr.debug("Variant (before): " + variant);
+		if (verbose) Log.debug("Variant (before): " + variant);
 		Variant variantShifted = variant.realignLeft();
-		if (verbose) Gpr.debug("Variant (after): " + variantShifted);
+		if (verbose) Log.debug("Variant (after): " + variantShifted);
 
 		// Check that shifted variant is oK
 		Assert.assertFalse(variant == variantShifted);
@@ -80,19 +80,19 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Change exon's sequence
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 754, "", "A", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Shift variant
-		if (verbose) Gpr.debug("Variant (before): " + variant);
+		if (verbose) Log.debug("Variant (before): " + variant);
 		Variant variantShifted = variant.realignLeft();
-		if (verbose) Gpr.debug("Variant (after): " + variantShifted);
+		if (verbose) Log.debug("Variant (after): " + variantShifted);
 
 		// Check that shifted variant is the same object
 		Assert.assertTrue(variant == variantShifted);
@@ -103,19 +103,19 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 */
 	@Test
 	public void test_03() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Change exon's sequence
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 1025, "", "G", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Shift variant
-		if (verbose) Gpr.debug("Variant (before): " + variant);
+		if (verbose) Log.debug("Variant (before): " + variant);
 		Variant variantShifted = variant.realignLeft();
-		if (verbose) Gpr.debug("Variant (after): " + variantShifted);
+		if (verbose) Log.debug("Variant (after): " + variantShifted);
 
 		// Check that shifted variant is oK
 		Assert.assertFalse(variant == variantShifted);
@@ -129,19 +129,19 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 */
 	@Test
 	public void test_04_Intron() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Change exon's sequence
-		if (verbose) Gpr.debug(transcript);
+		if (verbose) Log.debug(transcript);
 
 		// Create variant
 		Variant variant = new Variant(chromosome, 920, "", "C", "");
-		if (verbose) Gpr.debug("Variant: " + variant);
+		if (verbose) Log.debug("Variant: " + variant);
 
 		// Shift variant
-		if (verbose) Gpr.debug("Variant (before): " + variant);
+		if (verbose) Log.debug("Variant (before): " + variant);
 		Variant variantShifted = variant.realignLeft();
-		if (verbose) Gpr.debug("Variant (after): " + variantShifted);
+		if (verbose) Log.debug("Variant (after): " + variantShifted);
 
 		// Check that shifted variant is oK
 		Assert.assertFalse(variant == variantShifted);
@@ -155,7 +155,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 */
 	@Test
 	public void test_05_savant() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String seqRef = "AAACTGTATTT";
 		String seqAlt = "AAACTATTT";
 
@@ -163,7 +163,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 		vr.setSequenceRef(seqRef);
 		vr.setSequenceAlt(seqAlt);
 		vr.realignSeqs();
-		if (verbose) Gpr.debug(vr);
+		if (verbose) Log.debug(vr);
 
 		// Check resutls
 		Assert.assertEquals("GT", vr.getRefRealign());
@@ -172,7 +172,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 
 	@Test
 	public void test_05_savant_opposite() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String seqRef = "AAACTATTT";
 		String seqAlt = "AAACTGTATTT";
 
@@ -180,7 +180,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 		vr.setSequenceRef(seqRef);
 		vr.setSequenceAlt(seqAlt);
 		vr.realignSeqs();
-		if (verbose) Gpr.debug(vr);
+		if (verbose) Log.debug(vr);
 
 		// Check resutls
 		Assert.assertEquals("", vr.getRefRealign());
@@ -192,7 +192,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 */
 	@Test
 	public void test_06_savant() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		checkRealign("1", "AAACTGTATTT", 4, "TG", "", "chr1:5_GT/");
 	}
 
@@ -201,7 +201,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 */
 	@Test
 	public void test_07_savant() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		checkRealign("1", "TATGTTTAGGTTTATTGCATTCT", 8, "", "GGG", "chr1:10_/GGG");
 	}
 
@@ -211,7 +211,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 */
 	@Test
 	public void test_08_reallyLongRealign() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		checkRealign("1", "tatgaccagcagcagcagcagcagcagcagcagcagcagcagcagcaagcccttcagag", 6, "CAG", "", "chr1:44_GCA/");
 	}
 
@@ -222,7 +222,7 @@ public class TestCasesVariantRealignment extends TestCasesBase {
 	 */
 	@Test
 	public void test_09_reallyLongRealign() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		checkRealign("1", "tatgaccagcagcagcagcagcagcagcagcagcag", 6, "CAG", "", "chr1:33_CAG/");
 	}
 

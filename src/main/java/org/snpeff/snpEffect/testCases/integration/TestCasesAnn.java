@@ -12,7 +12,7 @@ import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.snpEffect.testCases.unity.TestCasesBase;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -77,13 +77,13 @@ public class TestCasesAnn extends TestCasesBase {
 
 	@Test
 	public void test_01_Annotation_Stop() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String vcfFile = path("test_ann_01.vcf");
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, "ENST00000472155");
 
-		if (verbose) Gpr.debug(veff);
+		if (verbose) Log.debug(veff);
 
 		//---
 		// Check results
@@ -142,7 +142,7 @@ public class TestCasesAnn extends TestCasesBase {
 	 */
 	@Test
 	public void test_01_VcfRawAlt() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Create command
 		String args[] = { "testHg3775Chr1", path("test_ann_integration_01.vcf") };
@@ -183,13 +183,13 @@ public class TestCasesAnn extends TestCasesBase {
 
 	@Test
 	public void test_02_Annotation_SpliceRegion() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String vcfFile = path("test_ann_02.vcf");
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, "ENST00000374221");
 
-		if (verbose) Gpr.debug(veff);
+		if (verbose) Log.debug(veff);
 
 		//---
 		// Check results
@@ -245,13 +245,13 @@ public class TestCasesAnn extends TestCasesBase {
 
 	@Test
 	public void test_03_Annotation_NonSyn() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String vcfFile = path("test_ann_03.vcf");
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, "ENST00000374221");
 
-		if (verbose) Gpr.debug(veff);
+		if (verbose) Log.debug(veff);
 
 		//---
 		// Check results
@@ -307,13 +307,13 @@ public class TestCasesAnn extends TestCasesBase {
 
 	@Test
 	public void test_04_Annotation_Intergenic() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String vcfFile = path("test_ann_04.vcf");
 
 		// Annotate
 		VcfEffect veff = annotateFirst(vcfFile, null);
 
-		if (verbose) Gpr.debug(veff);
+		if (verbose) Log.debug(veff);
 
 		//---
 		// Check results
@@ -369,7 +369,7 @@ public class TestCasesAnn extends TestCasesBase {
 
 	@Test
 	public void test_05_Annotation_EndOfChromosome() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Create a variant: Insertion after last chromosome base
 		Variant variant = new Variant(genome.getChromosome("1"), 2001, "", "TTT", "");

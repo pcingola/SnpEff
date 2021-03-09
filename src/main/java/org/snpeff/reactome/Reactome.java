@@ -628,7 +628,7 @@ public class Reactome implements Iterable<Entity> {
 			if (id.equals("DB_ID")) continue; // Skip title
 
 			// Add event to pathway
-			//			Gpr.debug("Adding:\tregulatedEntityId: " + regulatedEntityId + "\t" + objectType.get(regulatedEntityId));
+			//			Log.debug("Adding:\tregulatedEntityId: " + regulatedEntityId + "\t" + objectType.get(regulatedEntityId));
 			Reaction reaction = (Reaction) entityById.get(regulatedEntityId);
 			if (reaction == null) continue; // Reaction not found? Skip
 

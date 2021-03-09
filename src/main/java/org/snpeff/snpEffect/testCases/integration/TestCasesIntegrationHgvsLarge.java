@@ -5,7 +5,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
@@ -23,7 +23,7 @@ public class TestCasesIntegrationHgvsLarge extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_13_large_Del_Hgvs() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg3775Chr22";
 		String vcf = path("test_large_del_hgvs_13.vcf");
 

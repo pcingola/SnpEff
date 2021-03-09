@@ -10,7 +10,7 @@ import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 
@@ -25,7 +25,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 	@Test
 	public void testCase_01_CircularGenome() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Create database & build interval forest
 		String genomeName = "testCase";
@@ -48,7 +48,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 	@Test
 	public void testCase_02_CircularGenome() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		//---
 		// Create database & build interval forest
@@ -94,7 +94,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 	@Test
 	public void testCase_02_CircularGenome_end() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		//---
 		// Create database & build interval forest
@@ -126,7 +126,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 	@Test
 	public void testCase_03_CircularGenome() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String prot = "MQTECSAGAYEFPASCGRRVVARFDGGRMSSDGGVILVKQADDILGLSRRF" //
 				+ "AACFRDKRHPGFVEYIPQSRDAAYRENRQQSGG*" //
@@ -150,7 +150,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 	@Test
 	public void testCase_04_CircularGenome() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String prot = "MTNNIVIAGRLVADAELFFTNNGSAICNFTLANNKRYKDIEKSTFIEASIFGNYAESMNK" //
 				+ "YLKKGVSIDVIGELVQESWSKDGKIYYKHKIKVKEIDFRTPKDNISEANFENEDTPSNHL" //
@@ -183,7 +183,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 	@Test
 	public void testCase_05_CircularGenome_ExonsOrder() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String expectedProtein = "MGSLEMVPMGAGPPSPGGDPDGYDGGNNSQYPSASGSSGNTPTP" //
 				+ "PNDEERESNEEPPPPYEDPYWGNGDRHSDYQPLGTQDQSLYLGLQHDGNDGLPPPPYS" //
@@ -209,14 +209,14 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 		Transcript tr = gene.get("YP_401631.1");
 		Assert.assertTrue("Transcript ID not found", tr != null);
 
-		if (verbose) Gpr.debug("Transcript: " + tr);
+		if (verbose) Log.debug("Transcript: " + tr);
 		String prot = tr.protein();
 		Assert.assertEquals("Protein sequence deas not match", expectedProtein, prot);
 	}
 
 	@Test
 	public void testCase_06_CircularGenome_ExonsOrder() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		String expectedProtein = "MALQTDTQAWRVEIGTRGLMFSNCVPLHLPEGQYHKLRLPVSAY" //
 				+ "EALAVARYGLVGSLWEVPAVNSALQCLAAAAPCKDVKIYPSCIFQVHAPMFVTIKTSL" //
@@ -241,7 +241,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 		Transcript tr = gene.iterator().next();
 		String prot = tr.protein();
 
-		if (verbose) Gpr.debug("Transcript: " + tr);
+		if (verbose) Log.debug("Transcript: " + tr);
 		Assert.assertEquals("Protein sequence does not match", expectedProtein, prot);
 	}
 

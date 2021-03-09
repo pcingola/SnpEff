@@ -7,7 +7,7 @@ import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -25,7 +25,7 @@ public class TestCasesIntegrationSnp extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02_Start_NonSyn() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19ChrM";
 		String vcf = path("test_chrM_start_codon_nonSyn.vcf");
 
@@ -57,7 +57,7 @@ public class TestCasesIntegrationSnp extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02_StopGained_HighImpact() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg3775Chr2";
 		String vcf = path("stop_gained_chr2.vcf");
 
@@ -89,7 +89,7 @@ public class TestCasesIntegrationSnp extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_03_Start_Loss() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genome = "testHg19ChrM";
 		String vcf = path("test_chrM_start_codon.vcf");
 

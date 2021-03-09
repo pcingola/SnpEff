@@ -3,7 +3,7 @@ package org.snpeff.snpEffect.testCases.integration;
 import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.Config;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -17,7 +17,7 @@ public class TestCasesIntegrationConfig extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01_ConfigOverride() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Create command
 		String repo = "http://nonsense.url/test/zzz";

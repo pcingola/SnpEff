@@ -10,7 +10,7 @@ import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
@@ -32,7 +32,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_01() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		//---
 		// Build database
 		//---
@@ -60,7 +60,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
 			for (Transcript tr : gene)
 				transcript = tr;
 
-		if (verbose) Gpr.debug("Trasncript:" + transcript);
+		if (verbose) Log.debug("Trasncript:" + transcript);
 
 		// Check parameters
 		Assert.assertEquals(454127, transcript.getCdsStart());
@@ -118,7 +118,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_02() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 
 		// Build database
 		String genomeName = "testMacuminata";

@@ -9,11 +9,11 @@ import org.apfloat.Apfloat;
 import org.snpeff.geneSets.GeneSet;
 import org.snpeff.geneSets.GeneSets;
 import org.snpeff.geneSets.Result;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * A generic greedy enrichment algorithm for selecting gene-sets
- * 
+ *
  * @author pcingola
  */
 public abstract class EnrichmentAlgorithmGreedy extends EnrichmentAlgorithm {
@@ -40,7 +40,7 @@ public abstract class EnrichmentAlgorithmGreedy extends EnrichmentAlgorithm {
 	/**
 	 * Calculate best list of terms by adding a new term to a list that minimize p-value (rank sum)
 	 * Only look for genesets within [minGeneSetSize, maxGeneSetSize] size range
-	 * 
+	 *
 	 * @return
 	 */
 	protected Result greedyPvalue(Result prevResult, int minGeneSetSize, int maxGeneSetSize) {
@@ -82,7 +82,7 @@ public abstract class EnrichmentAlgorithmGreedy extends EnrichmentAlgorithm {
 
 		// Update gene set counts. This is used in order to adjust pValue
 		best.addGeneSetCount(geneSetCount);
-		if (debug) Gpr.debug("Select: Best p-value: " + best.getPvalueDouble());
+		if (debug) Log.debug("Select: Best p-value: " + best.getPvalueDouble());
 		return best;
 	}
 
@@ -149,9 +149,9 @@ public abstract class EnrichmentAlgorithmGreedy extends EnrichmentAlgorithm {
 		this.verbose = verbose;
 	}
 
-	/** 
+	/**
 	 * Show something every now and then?
-	 * 
+	 *
 	 * @param geneSetListNew
 	 * @param pValue
 	 * @param best

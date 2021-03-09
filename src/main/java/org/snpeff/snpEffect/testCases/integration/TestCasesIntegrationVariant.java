@@ -19,6 +19,7 @@ import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGtf22;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  *
@@ -41,7 +42,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_08() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.initSnpEffPredictor();
 
@@ -80,7 +81,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	@Test
 	public void test_09() {
 		String trId = "ENST00000250823";
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.setUseAaNoNum(true);
 		comp.snpEffect(path(trId + ".out"), trId, true);
@@ -92,7 +93,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	@Test
 	public void test_11() {
 		String trId = "ENST00000250823";
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.setUseAaNoNum(true);
 		comp.snpEffect(path(trId + "_all.out"), trId, false);
@@ -103,7 +104,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_12() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect(path("splice_site.out"), null, true);
 	}
@@ -113,7 +114,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_12_2() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect(path("splice_site_2.out"), null, true);
 	}
@@ -123,7 +124,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_19() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000439108";
 		comp.snpEffect(path(trId + ".snps"), trId, true);
@@ -134,7 +135,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_20() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000382673";
 		comp.snpEffect(path(trId + ".snps"), trId, true);
@@ -145,7 +146,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_21() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000250823";
 		comp.snpEffect(path(trId + "_InDels.out"), trId, true);
@@ -156,7 +157,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_21_2() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000250823";
 		comp.snpEffect(path(trId + "_InDels_2.out"), trId, true);
@@ -167,7 +168,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_21_3() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000250823";
 		comp.setUseAaNoNum(true);
@@ -179,7 +180,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_22() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 
 		VariantFileIterator snpFileIterator;
@@ -191,7 +192,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 		try {
 			// Read all SNPs from file. Note: This should throw an exception "Chromosome not found"
 			for (Variant variant : snpFileIterator) {
-				Gpr.debug(variant);
+				Log.debug(variant);
 			}
 		} catch (RuntimeException e) {
 			trown = true;
@@ -209,7 +210,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_23_MNP_on_exon_edge() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		String trId = "ENST00000250823";
 		comp.setUseAaNoNum(true);
@@ -221,14 +222,14 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_24_delete_exon_utr() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect(path("delete_exon_utr.txt"), null, true);
 	}
 
 	@Test
 	public void test_25_exon_bases() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Config config = new Config("testCase", Config.DEFAULT_CONFIG_FILE);
 		config.loadSnpEffectPredictor();
 
@@ -251,7 +252,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 						} else {
 							countErr++;
 							String msg = "ERROR:\tPosition: " + i + "\tExpected: " + base + "\tGot: " + exonBase;
-							if (verbose) Gpr.debug(msg);
+							if (verbose) Log.debug(msg);
 							throw new RuntimeException(msg);
 						}
 					}
@@ -267,7 +268,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_26_chr15_78909452() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3761Chr15";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect(path("chr15_78909452.txt"), null, true);
@@ -278,7 +279,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_28_Splice_mm37_ENSMUSG00000005763() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		//---
 		// Build snpEffect
 		//---
@@ -309,7 +310,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_29_Intergenic_in_Gene() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3763Chr20";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect(path("warren.eff.missing.chr20.txt"), null, true);
@@ -320,7 +321,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_30_RareAa() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3765Chr22";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect(path("rareAa.txt"), null, true);
@@ -335,7 +336,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_31_CodonTable() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3767ChrMt";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect(path("mt.txt"), null, true);
@@ -346,7 +347,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_32_StartGained() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3769Chr12";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect(path("start_gained_test.txt"), null, true);
@@ -357,7 +358,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_33_StartGained_NOT() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3769Chr12";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffectNegate(path("start_gained_NOT_test.txt"), null, true);
@@ -368,7 +369,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_34_StartGained() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3766Chr1";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect(path("start_gained_test_2.txt"), null, true);
@@ -379,7 +380,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_35_StartGained_NOT() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		String genomeName = "testHg3766Chr1";
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffectNegate(path("start_gained_NOT_test_2.txt"), null, true);
@@ -390,7 +391,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_36_EffectImpact() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		Chromosome chr = new Chromosome(null, 0, 1, "1");
 		Variant var = new Variant(chr, 1, "A", "C");
 		var.setVariantType(VariantType.SNP);
@@ -408,7 +409,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	 */
 	@Test
 	public void test_38_NON_SYNONYMOUS_START() {
-		Gpr.debug("Test");
+		Log.debug("Test");
 		CompareEffects comp = new CompareEffects(genomeName, randSeed, verbose);
 		comp.snpEffect(path("nonSynStart.out"), "ENST00000250823", true);
 	}

@@ -7,7 +7,7 @@ import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
-import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Calculate codon changes produced by a 'mixed' variant
@@ -69,7 +69,7 @@ public class CodonChangeMixed extends CodonChangeMnp {
 		VariantEffect varEff = variantEffects.get(0);
 
 		if (debug) {
-			Gpr.debug("Mixed variant:" + variant + "\n\t\tSNP/MNP : " + mnp + "\n\t\tInDel   : " + indel + "\n\t\tEffects : ");
+			Log.debug("Mixed variant:" + variant + "\n\t\tSNP/MNP : " + mnp + "\n\t\tInDel   : " + indel + "\n\t\tEffects : ");
 			for (VariantEffect ve : variantEffects)
 				System.err.println("\t\t\t" + ve.toStringSimple(true));
 		}
