@@ -90,7 +90,7 @@ public class VcfOutputFormatter extends OutputFormatter {
 		boolean addCustomFields = false;
 		for (VariantEffect variantEffect : variantEffects) {
 
-			// If it is not filtered out by changeEffectResutFilter => Show it
+			// If it is not filtered out by variantEffectResutFilter => Show it
 			if ((variantEffectResutFilter == null) || (!variantEffectResutFilter.filter(variantEffect))) {
 				//---
 				// Create INFO field value as a string

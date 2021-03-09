@@ -135,8 +135,6 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Iterate over input files
 		switch (inputFormat) {
 		case VCF:
-			// FIXME: Need to fix multithreding mode
-			// vcf = (multiThreaded ? annotateVcfMulti(inputFile, outputFormatter) : annotateVcf(inputFile));
 			vcf = annotateVcf(inputFile);
 			break;
 
@@ -230,17 +228,13 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 		// Create an input file iterator
 		VariantFileIterator variantFileIterator = new BedFileIterator(inputFile, config.getGenome());
 
-		// ---
 		// Iterate over input file
-		// ---
 		for (Variant variant : variantFileIterator) {
 			try {
 				countInputLines++;
 
 				countVariants++;
 				if (verbose && (countVariants % SHOW_EVERY == 0)) Log.info("\t" + countVariants + " variants");
-
-				// Does it pass the filter? => Analyze
 
 				// Skip if there are filter intervals and they are not matched
 				if ((filterIntervals != null) && (filterIntervals.stab(variant).size() <= 0)) continue;
@@ -443,8 +437,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 	}
 
 	/**
-	 * Do we analyze cancer samples? Here we deal with Somatic vs Germline
-	 * comparisons
+	 * Do we analyze cancer samples? Here we deal with Somatic vs Germline comparisons
 	 */
 	void annotateVariantCancer(List<Variant> variants, VcfEntry vcfEntry) {
 		if (!shouldAnnotateVariantCancer(variants, vcfEntry)) return;
@@ -561,9 +554,7 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			String arg = args[i];
 
 			// Is it a command line option?
-			// Note: Generic options (such as config, verbose, debug, quiet, etc.) are
-			// parsed by SnpEff class
-			// ---
+			// Note: Generic options (such as config, verbose, debug, quiet, etc.) are parsed by SnpEff class
 			if (isOpt(arg)) {
 				if (arg.equalsIgnoreCase("-fileList")) isFileList = true;
 				else {
