@@ -1062,9 +1062,9 @@ public class SnpEff implements CommandLine {
 					strict = true;
 					break;
 
-				case "-t":
-					multiThreaded = true;
-					break;
+				//				case "-t":
+				//					multiThreaded = true;
+				//					break;
 
 				case "-treatallasproteincoding":
 					if ((i + 1) < args.length) {
@@ -1317,7 +1317,7 @@ public class SnpEff implements CommandLine {
 		System.err.println("\t-h , -help                   : Show this help and exit");
 		System.err.println("\t-noLog                       : Do not report usage statistics to server");
 		System.err.println("\t-q , -quiet                  : Quiet mode (do not show any messages or errors)");
-		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
+		//		System.err.println("\t-t                           : Use multiple threads (implies '-noStats'). Default 'off'");
 		System.err.println("\t-v , -verbose                : Verbose mode");
 		System.err.println("\t-version                     : Show version number and exit");
 	}
