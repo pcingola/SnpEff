@@ -371,16 +371,16 @@ public class TestCasesFisherExactTest {
 
 		// Chi square approximation (without Yates correction)
 		double pChi = FisherExactTest.get().chiSquareApproximation(k, N, D, n);
-		if (verbose) System.out.println("Chi^2  p-value: " + pChi);
+		if (verbose) Log.info("Chi^2  p-value: " + pChi);
 		Assert.assertEquals(pChi, 0.00617, 0.00001);
 
 		// Fisher exact test
 		double pFish = FisherExactTest.get().fisherExactTestUp(k, N, D, n);
-		if (verbose) System.out.println("Fisher p-value: " + pFish);
+		if (verbose) Log.info("Fisher p-value: " + pFish);
 		Assert.assertEquals(pFish, 0.006349, 0.000001);
 
 		double ratio = pFish / pChi;
-		if (verbose) System.out.println("Ratio: " + ratio);
+		if (verbose) Log.info("Ratio: " + ratio);
 	}
 
 }

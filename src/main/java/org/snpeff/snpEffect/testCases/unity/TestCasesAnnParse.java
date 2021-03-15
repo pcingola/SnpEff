@@ -27,7 +27,7 @@ public class TestCasesAnnParse extends TestCasesBase {
 	public void test_EffectType() {
 		Log.debug("Test");
 		for (EffectType eff : EffectType.values()) {
-			if (verbose) System.out.println("\t" + eff);
+			if (verbose) Log.info("\t" + eff);
 
 			// None of these should throw an exception
 			eff.effectImpact();
@@ -54,9 +54,9 @@ public class TestCasesAnnParse extends TestCasesBase {
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println(veff.getEffectsStrSo() + "\t" + veff.getEffectType());
+				if (verbose) Log.info(veff.getEffectsStrSo() + "\t" + veff.getEffectType());
 				Assert.assertEquals("Effect type does not match", veff.getEffectType(), EffectType.EXON);
 			}
 		}
@@ -73,9 +73,9 @@ public class TestCasesAnnParse extends TestCasesBase {
 
 		boolean ok = false;
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t" + veff.getEffectsStrSo());
+				if (verbose) Log.info("\t" + veff.getEffectsStrSo());
 				ok |= veff.getEffectsStrSo().indexOf("TFBS_ablation") >= 0;
 			}
 		}

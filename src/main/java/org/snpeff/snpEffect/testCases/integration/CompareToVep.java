@@ -10,6 +10,7 @@ import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
+import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfConsequence;
 import org.snpeff.vcf.VcfConsequenceHeader;
@@ -165,7 +166,7 @@ public class CompareToVep {
 
 		// Split all effects
 		for (String et : effStr.split("\\" + EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD)) {
-			if (verbose) System.out.println("\t\t" + et + "\t" + eff.getTranscriptId());
+			if (verbose) Log.info("\t\t" + et + "\t" + eff.getTranscriptId());
 
 			// Match all consequences
 			for (VcfConsequence csq : csqs) {
@@ -203,10 +204,10 @@ public class CompareToVep {
 			for (String cons : consecuences) {
 				if (compare(et, cons)) {
 					countEff++;
-					if (verbose) System.out.println("\t\t\tOK :" + eff.getTranscriptId() + "\t" + et + "\t" + cons);
+					if (verbose) Log.info("\t\t\tOK :" + eff.getTranscriptId() + "\t" + et + "\t" + cons);
 					return true;
 				}
-				if (verbose) System.out.println("\t\t\t    " + eff.getTranscriptId() + "\t" + et + "\t" + cons);
+				if (verbose) Log.info("\t\t\t    " + eff.getTranscriptId() + "\t" + et + "\t" + cons);
 			}
 		}
 
@@ -286,7 +287,7 @@ public class CompareToVep {
 	 * Compare all VCF entries
 	 */
 	public void compareVep(String vcf) {
-		if (verbose) System.out.println(this.getClass().getSimpleName() + ": Compare VEP, genome " + genomeName + ", file " + vcf);
+		if (verbose) Log.info(this.getClass().getSimpleName() + ": Compare VEP, genome " + genomeName + ", file " + vcf);
 
 		parseCsqHeader(vcf);
 

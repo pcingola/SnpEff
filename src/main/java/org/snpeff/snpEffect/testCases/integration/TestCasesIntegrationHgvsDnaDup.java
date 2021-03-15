@@ -78,7 +78,7 @@ public class TestCasesIntegrationHgvsDnaDup extends TestCasesIntegrationBase {
 				String trId = veff.getTranscriptId();
 				String hgvsCactual = veff.getHgvsDna() != null ? veff.getHgvsDna() : "";
 				String hgvsPactual = veff.getHgvsProt() != null ? veff.getHgvsProt() : "";
-				if (verbose) System.out.println("\t" + veff //
+				if (verbose) Log.info("\t" + veff //
 						+ "\n\t\tEFF    : " + veff.getEffectsStr() //
 						+ "\n\t\tHGVS_C : " + hgvsCactual //
 						+ "\n\t\tHGVS_P : " + hgvsPactual //

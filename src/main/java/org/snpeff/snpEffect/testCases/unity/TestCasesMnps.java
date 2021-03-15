@@ -194,7 +194,7 @@ public class TestCasesMnps extends TestCasesBase {
 			initSnpEffPredictor();
 
 			if (debug) System.out.println("MNP Test iteration: " + i + "\nChromo:\t" + chromoSequence + "\n" + transcript);
-			else if (verbose) System.out.println("MNP Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+			else if (verbose) Log.info("MNP Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
 			else Gpr.showMark(i + 1, 1);
 
 			if (debug) {

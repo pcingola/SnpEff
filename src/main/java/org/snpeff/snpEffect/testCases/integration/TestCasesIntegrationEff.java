@@ -31,13 +31,13 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 		List<VcfEntry> vcfEntries = snpEffect("testHg3770Chr22", path("eff_sort.vcf"), null);
 
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			EffectImpact impPrev = EffectImpact.HIGH;
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				EffectImpact imp = veff.getImpact();
 
-				if (verbose) System.out.println("\t" + imp + "\t" + impPrev + "\t" + imp.compareTo(impPrev) + "\t" + veff);
+				if (verbose) Log.info("\t" + imp + "\t" + impPrev + "\t" + imp.compareTo(impPrev) + "\t" + veff);
 				Assert.assertTrue(impPrev.compareTo(imp) <= 0); // Higher impact go first
 				impPrev = imp;
 			}
@@ -72,7 +72,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 
 		for (VcfEntry ve : vcfEntries) {
 			int numEffs = ve.getVcfEffects().size();
-			if (verbose) System.out.println("Num effects:" + numEffs + "\t" + ve);
+			if (verbose) Log.info("Num effects:" + numEffs + "\t" + ve);
 			Assert.assertTrue(numEffs <= 1);
 		}
 	}
@@ -109,10 +109,10 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 		List<VcfEntry> vcfEntries = snpEffect(genomeName, vcf, args);
 
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t'" + veff.getEffectsStr() + "'\t" + veff);
+				if (verbose) Log.info("\t'" + veff.getEffectsStr() + "'\t" + veff);
 				if (veff.getEffectsStr().indexOf("SPLICE_SITE_REGION") >= 0) throw new RuntimeException("Splice region effects should not present in GATK compatible mode");
 			}
 		}
@@ -158,10 +158,10 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 
 		for (VcfEntry ve : vcfEntries) {
 			int count = 0;
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t'" + veff.getEffectsStr() + "'\t" + veff);
+				if (verbose) Log.info("\t'" + veff.getEffectsStr() + "'\t" + veff);
 				count++;
 			}
 

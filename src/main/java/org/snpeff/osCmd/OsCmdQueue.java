@@ -136,7 +136,7 @@ public class OsCmdQueue implements Iterable<OsCmdRunner> {
 				doneCommands(); // Have commands finished?
 				sleep();
 
-				if (debug) Log.info("Queue processes:\tPending : " + commandsToRun.size() + "\tRunning: " + commandsRunning.size() + "\tDone: " + commandsDone.size());
+				if (debug) Log.debug("Queue processes:\tPending : " + commandsToRun.size() + "\tRunning: " + commandsRunning.size() + "\tDone: " + commandsDone.size());
 			}
 		} catch (Throwable t) {
 			// Kill all commands

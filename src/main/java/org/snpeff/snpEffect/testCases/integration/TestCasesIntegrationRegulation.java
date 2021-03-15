@@ -35,7 +35,7 @@ public class TestCasesIntegrationRegulation extends TestCasesIntegrationBase {
 		//---
 		// Make sure database file does not exists
 		//---
-		if (verbose) System.err.println("Deleting file '" + dbFileName + "'");
+		if (verbose) Log.info("Deleting file '" + dbFileName + "'");
 		File f = (new File(dbFileName));
 		f.delete();
 
@@ -64,9 +64,9 @@ public class TestCasesIntegrationRegulation extends TestCasesIntegrationBase {
 		List<VcfEntry> vcfEntries = snpeffRun.run(true);
 		ok = false;
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t" + veff + "\t\t" + veff.getFeatureType());
+				if (verbose) Log.info("\t" + veff + "\t\t" + veff.getFeatureType());
 				ok |= veff.getFeatureType().equals("REGULATION&H3K27me3:HepG2");
 			}
 		}

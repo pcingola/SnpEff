@@ -10,11 +10,12 @@ import org.snpeff.interval.Markers;
 import org.snpeff.probablility.RandMarker;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Calculate the maximum interval length by type, for all markers in a genome
  * Create a probability model based on binomial ditribution.
- * 
+ *
  * @author pcingola
  */
 public class ReadsOnMarkersModel {
@@ -78,7 +79,7 @@ public class ReadsOnMarkersModel {
 		// Count number of bases for each marker type (overlap and join)
 		//---
 		for (String mtype : rawCountMarkers.keysSorted()) {
-			if (mtype.equals(Chromosome.class.getSimpleName())) continue; // We calculate chromosomes later (it's faster) 
+			if (mtype.equals(Chromosome.class.getSimpleName())) continue; // We calculate chromosomes later (it's faster)
 
 			if (verbose) System.err.print(mtype + ":");
 
@@ -87,7 +88,7 @@ public class ReadsOnMarkersModel {
 					countBases(mtype, chr, markers);
 			}
 
-			if (verbose) System.err.println("");
+			if (verbose) Log.info("");
 		}
 
 		// Show chromosomes length
@@ -171,7 +172,7 @@ public class ReadsOnMarkersModel {
 				continue;
 			}
 
-			// Split line and parse data 
+			// Split line and parse data
 			String recs[] = line.split("\t");
 
 			String mtype = recs[0];
@@ -193,7 +194,7 @@ public class ReadsOnMarkersModel {
 		long chrCount = countMarkers.get(chrType);
 		if (chrCount <= 0) return; // Zero length genome? Forgot to count bases?
 
-		// Correct readLength 
+		// Correct readLength
 		int readLength = this.readLength;
 		if (readLength < 1) readLength = 1;
 
@@ -213,9 +214,9 @@ public class ReadsOnMarkersModel {
 	}
 
 	/**
-	 * Sample and calculate the probability of hitting each type 
-	 * of marker (marker.class). Creates 'numReads' reads of 
-	 * size 'readLen' and count how many of them hit each marker 
+	 * Sample and calculate the probability of hitting each type
+	 * of marker (marker.class). Creates 'numReads' reads of
+	 * size 'readLen' and count how many of them hit each marker
 	 * type.
 	 */
 	CountByType randomSampling(int readLen, int numReads) {
@@ -250,9 +251,9 @@ public class ReadsOnMarkersModel {
 	}
 
 	/**
-	 * Sample and calculate the probability of hitting each type 
-	 * of marker (marker.class). Creates 'numReads' reads of 
-	 * size 'readLen' and count how many of them hit each marker 
+	 * Sample and calculate the probability of hitting each type
+	 * of marker (marker.class). Creates 'numReads' reads of
+	 * size 'readLen' and count how many of them hit each marker
 	 * type. Iterate 'iterations' times to obtain a distribution.
 	 */
 	public void randomSampling(int iterations, int readLen, int numReads) {
@@ -272,10 +273,10 @@ public class ReadsOnMarkersModel {
 
 	/**
 	 * Run
-	 * @return 
+	 * @return
 	 */
 	public boolean run() {
-		countBases(); // Count 
+		countBases(); // Count
 		probabilities(); // Calculate probabilities
 		return true;
 	}

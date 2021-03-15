@@ -43,7 +43,7 @@ public class TestCasesNmers {
 		for (int len = 1; len <= 32; len++) {
 			for (int t = 0; t < numTests; t++) {
 				String seq = randSeq(len, rand); // Create a random sequence
-				if (verbose) System.out.println("Nmer test:" + t + "\tlen:" + len + "\t" + seq);
+				if (verbose) Log.info("Nmer test:" + t + "\tlen:" + len + "\t" + seq);
 				Nmer nmer = new Nmer(seq);
 				if (!seq.equals(nmer.toString())) throw new RuntimeException("Sequences do not match:\n\tSeq    :\t" + seq + "\n\tBinSeq :\t" + nmer);
 			}

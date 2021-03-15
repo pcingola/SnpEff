@@ -123,7 +123,7 @@ public class CompareToEnsembl {
 			if (verbose) if (ok && verbose) System.out.println("OK   :\t" + variant + "\t'" + changesSb + "'\n\tEnsembl :\t" + variants.get(variant) + "\n" + changesAllSb);
 			else {
 				String line = "DIFF :\t" + variant + "\t'" + changesSb + "'\n\tEnsembl :\t" + variants.get(variant) + "\n" + changesAllSb;
-				if (verbose) System.out.println(line);
+				if (verbose) Log.info(line);
 				if (throwException) throw new RuntimeException(line);
 			}
 		}

@@ -23,12 +23,12 @@ public class TestCasesGenotypeVector {
 		// Show masks (just to check they are OK)
 		for (byte m : GenotypeVector.mask) {
 			String line = "Mask          :" + m + "\t" + Integer.toBinaryString(m & 0xff);
-			if (verbose) System.out.println(line);
+			if (verbose) Log.info(line);
 		}
 
 		for (byte m : GenotypeVector.reverseMask) {
 			String line = "Reverse Mask  :" + m + "\t" + Integer.toBinaryString(m & 0xff);
-			if (verbose) System.out.println(line);
+			if (verbose) Log.info(line);
 		}
 
 		for (int code = 0; code < 4; code++) {

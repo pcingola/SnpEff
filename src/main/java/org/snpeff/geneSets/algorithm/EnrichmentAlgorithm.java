@@ -10,6 +10,7 @@ import org.snpeff.geneSets.GeneSet;
 import org.snpeff.geneSets.GeneSets;
 import org.snpeff.geneSets.GeneSetsRanked;
 import org.snpeff.geneSets.Result;
+import org.snpeff.util.Log;
 
 /**
  * A generic enrichment algorithm for selecting gene-sets from a collection of gene-sets
@@ -51,6 +52,7 @@ public abstract class EnrichmentAlgorithm {
 	public static final String HTML_BG_COLOR[] = { "dddddd", "eeeeee" };
 	public static final String HTML_BG_COLOR_TITLE = "cccccc";
 
+	public static long PRINT_SOMETHING_TIME = 5000; // Print something every X milliseconds
 	boolean debug = false;
 	boolean verbose = false;
 	boolean htmlTable = false;
@@ -62,7 +64,6 @@ public abstract class EnrichmentAlgorithm {
 	StringBuilder output = new StringBuilder();
 	GeneSets geneSets;
 	Set<String> filterOutputGeneSets;
-	public static long PRINT_SOMETHING_TIME = 5000; // Print something every X milliseconds
 
 	public EnrichmentAlgorithm(GeneSets geneSets, int numberToSelect) {
 		this.geneSets = geneSets;
@@ -96,7 +97,7 @@ public abstract class EnrichmentAlgorithm {
 		if (filterOutputGeneSets != null) {
 			String gsName = result.getLatestGeneSet().getName();
 			boolean show = filterOutputGeneSets.contains(gsName);
-			if (verbose) System.err.println("\tFilter output list. Show geneSet '" + gsName + "' : " + show);
+			if (verbose) Log.info("\tFilter output list. Show geneSet '" + gsName + "' : " + show);
 			return show;
 		}
 
@@ -195,7 +196,7 @@ public abstract class EnrichmentAlgorithm {
 							+ "\t" + result.getGeneSets() //
 							+ "\t" + interestingGenes //
 							+ "\t" + (geneSets.isRanked() ? geneSet.rankSum() : 0) //
-							);
+					);
 				}
 
 			}
@@ -242,7 +243,7 @@ public abstract class EnrichmentAlgorithm {
 			if ((geneSet.getGeneCount() > 0) // This term is empty? => skip it
 					&& (geneSet.getGeneCount() >= minGeneSetSize) // Use gene sets bigger than minGeneSetSize
 					&& (geneSet.getGeneCount() <= maxGeneSetSize) // Use gene sets smaller than maxGeneSetSize
-					) {
+			) {
 				// Calculate pValue
 				Apfloat pValue = pValue(geneSet);
 				Result result = new Result(geneSet, pValue, 0); // We'll update the geneSetCount later

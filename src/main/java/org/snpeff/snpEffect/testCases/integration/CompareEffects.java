@@ -175,7 +175,7 @@ public class CompareEffects {
 			for (VariantEffect res : results)
 				msg += "\t\t'" + res.toStringSimple(useShort) + "'\n";
 
-			if (verbose) System.out.println(msg);
+			if (verbose) Log.info(msg);
 
 			// Compare each result. If one matches, we consider it OK
 			// StringBuilder resultsSoFar = new StringBuilder();

@@ -42,12 +42,12 @@ public class TestCasesIntegrationHgvsLarge extends TestCasesIntegrationBase {
 
 		// Make sure HGVS string is not so long
 		for (VcfEffect veff : ve.getVcfEffects()) {
-			if (verbose) System.out.println(veff);
+			if (verbose) Log.info(veff);
 
-			if (verbose) System.out.println("\tAA change    : " + veff.getAa());
+			if (verbose) Log.info("\tAA change    : " + veff.getAa());
 			Assert.assertTrue(veff.getAa() == null || veff.getAa().length() < 100);
 
-			if (verbose) System.out.println("\tCodon change : " + veff.getCodon());
+			if (verbose) Log.info("\tCodon change : " + veff.getCodon());
 			Assert.assertTrue(veff.getCodon() == null || veff.getCodon().length() < 100);
 
 		}

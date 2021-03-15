@@ -39,9 +39,9 @@ public class TestCasesIntegrationSnp extends TestCasesIntegrationBase {
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.NON_SYNONYMOUS_START) {
 					Assert.assertEquals(EffectImpact.LOW, veff.getImpact());
 					checked = true;
@@ -71,9 +71,9 @@ public class TestCasesIntegrationSnp extends TestCasesIntegrationBase {
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.STOP_GAINED) {
 					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
 					checked = true;
@@ -103,9 +103,9 @@ public class TestCasesIntegrationSnp extends TestCasesIntegrationBase {
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.START_LOST) {
 					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
 					checked = true;

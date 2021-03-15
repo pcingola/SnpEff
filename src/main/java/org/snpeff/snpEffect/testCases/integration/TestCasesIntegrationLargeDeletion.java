@@ -38,11 +38,11 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getEnd() + "\tsize:" + ve.size());
+			if (verbose) Log.info(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getEnd() + "\tsize:" + ve.size());
 
 			boolean ok = false;
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println(veff);
+				if (verbose) Log.info(veff);
 				ok |= (veff.getEffectType() == EffectType.CHROMOSOME_LARGE_DELETION);
 			}
 
@@ -64,7 +64,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
+			if (verbose) Log.info(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
 			Assert.assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
 		}
 	}
@@ -87,12 +87,12 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
+			if (verbose) Log.info(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
 
 			Assert.assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t" + veff);
+				if (verbose) Log.info("\t" + veff);
 
 				EffectType eff = veff.getEffectType();
 				String geneName = veff.getGeneName();
@@ -125,13 +125,13 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 		// Find effects
 		boolean foundFusion = false, foundTrDel = false, foundExDel = false;
 		for (VcfEffect veff : vcfs.get(0).getVcfEffects()) {
-			if (verbose) System.out.println(veff);
+			if (verbose) Log.info(veff);
 
 			// Fusion
 			if (veff.getEffectType() == EffectType.GENE_FUSION_REVERESE //
 					&& veff.getGeneName().equals("CDKN2A&CDKN2B-AS1") //
 			) {
-				if (verbose) System.out.println("FOUND:\t" + veff);
+				if (verbose) Log.info("FOUND:\t" + veff);
 				foundFusion = true;
 			}
 
@@ -139,7 +139,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 			if (veff.getEffectType() == EffectType.TRANSCRIPT_DELETED //
 					&& veff.getTranscriptId().equals("NM_004936.3") //
 			) {
-				if (verbose) System.out.println("FOUND:\t" + veff);
+				if (verbose) Log.info("FOUND:\t" + veff);
 				foundTrDel = true;
 			}
 
@@ -147,7 +147,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 			if (veff.getEffectType() == EffectType.EXON_DELETED //
 					&& veff.getTranscriptId().equals("NM_001195132.1") //
 			) {
-				if (verbose) System.out.println("FOUND EXON LOSS:\t" + veff);
+				if (verbose) Log.info("FOUND EXON LOSS:\t" + veff);
 				foundExDel = true;
 			}
 

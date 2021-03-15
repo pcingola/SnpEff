@@ -283,7 +283,7 @@ public class TestCasesDnaOverlap {
 		// First sequence
 		int len1 = rand.nextInt(maxLen) + minLen;
 		String seq1 = randSeq(len1, rand);
-		if (verbose) System.out.println("\nseq1:\t" + seq1);
+		if (verbose) Log.info("\nseq1:\t" + seq1);
 
 		// Second sequence
 		int over = rand.nextInt(len1 - minLen + 1);
@@ -296,7 +296,7 @@ public class TestCasesDnaOverlap {
 			overlap = seq1.substring(over);
 			overlapChanges = Math.min(overlapChanges, overlap.length());
 			overlap = change(overlap, overlapChanges, rand);
-			if (verbose) System.out.println("over:\t" + overlap);
+			if (verbose) Log.info("over:\t" + overlap);
 			nonOverlap = randSeq(len2, rand);
 			seq2 = overlap + nonOverlap;
 		} else {
@@ -304,16 +304,16 @@ public class TestCasesDnaOverlap {
 			overlap = seq1.substring(0, over);
 			overlapChanges = Math.min(overlapChanges, overlap.length());
 			overlap = change(overlap, overlapChanges, rand);
-			if (verbose) System.out.println("over:\t" + overlap);
+			if (verbose) Log.info("over:\t" + overlap);
 			nonOverlap = randSeq(len2, rand);
 			seq2 = nonOverlap + overlap;
 			start = -nonOverlap.length();
 		}
-		if (verbose) System.out.println("seq2:\t" + seq2);
+		if (verbose) Log.info("seq2:\t" + seq2);
 
 		// Expected result
 		expectedScore = overlapChanges <= threshold ? overlap.length() - overlapChanges : 0;
-		if (verbose) System.out.println("start:\t" + start + "\tthreshold: " + threshold + "\toverlapChanges: " + overlapChanges + "\tscore: " + expectedScore);
+		if (verbose) Log.info("start:\t" + start + "\tthreshold: " + threshold + "\toverlapChanges: " + overlapChanges + "\tscore: " + expectedScore);
 
 		// Caclualte
 		score(seq1, seq2, start, threshold, expectedScore);

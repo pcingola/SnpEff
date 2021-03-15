@@ -376,7 +376,7 @@ public class SnpEffCmdProtein extends SnpEff {
 
 		// Relative error rate
 		double errorRate = ((double) countErrors) / ((double) (countErrors + countOk));
-		if (verbose) System.out.println("\n");
+		if (verbose) Log.info("\n");
 		System.out.println("\tProtein check:" //
 				+ "\t" + genome.getVersion() //
 				+ (chr != null ? "\tChromosome: " + chr : "") //

@@ -47,11 +47,11 @@ public class TestCasesIntegrationFilterTranscripts extends TestCasesIntegrationB
 		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			// Get effect string
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\ttrId:" + veff.getTranscriptId() + "\t" + veff);
+				if (verbose) Log.info("\ttrId:" + veff.getTranscriptId() + "\t" + veff);
 				Assert.assertEquals("ENST00000400573", veff.getTranscriptId());
 			}
 		}
@@ -82,11 +82,11 @@ public class TestCasesIntegrationFilterTranscripts extends TestCasesIntegrationB
 		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			// Get effect string
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\ttrId:" + veff.getTranscriptId() + "\t" + veff);
+				if (verbose) Log.info("\ttrId:" + veff.getTranscriptId() + "\t" + veff);
 
 				if (veff.getTranscriptId().equals("ENST00000400573") || veff.getTranscriptId().equals("ENST00000262608")) {
 					// OK

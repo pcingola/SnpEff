@@ -28,7 +28,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		CompareToVep comp = new CompareToVep(genomeName, verbose);
 		comp.setCompareHgvs();
 		comp.compareVep(vcf);
-		if (verbose) System.out.println(comp);
+		if (verbose) Log.info(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -42,7 +42,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setStrict(true);
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
-		if (verbose) System.out.println(comp);
+		if (verbose) Log.info(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -56,7 +56,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setStrict(true);
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
-		if (verbose) System.out.println(comp);
+		if (verbose) Log.info(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -70,7 +70,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setStrict(true);
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
-		if (verbose) System.out.println(comp);
+		if (verbose) Log.info(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -84,7 +84,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setStrict(true);
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
-		if (verbose) System.out.println(comp);
+		if (verbose) Log.info(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -97,7 +97,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setCompareHgvs();
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
-		if (verbose) System.out.println(comp);
+		if (verbose) Log.info(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -112,7 +112,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setCompareHgvsProt(false);
 		comp.setShiftHgvs(true);
 		comp.compareVep(vcf);
-		if (verbose) System.out.println(comp);
+		if (verbose) Log.info(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -126,7 +126,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setCompareHgvsProt(false);
 		comp.setShiftHgvs(false);
 		comp.compareVep(vcf);
-		if (verbose) System.out.println(comp);
+		if (verbose) Log.info(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -198,7 +198,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		// Make sure the spleice site is annotatted as "c.1909+12delT" (instead of "c.1910delT")
 		boolean ok = false;
 		for (VcfEffect veff : ve.getVcfEffects()) {
-			if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
+			if (verbose) Log.info("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
 			ok |= veff.hasEffectType(EffectType.SPLICE_SITE_REGION) //
 					&& veff.getTranscriptId().equals("NM_001232.3") //
 					&& veff.getHgvsDna().equals("c.420+6T>C");
@@ -233,7 +233,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		// Make sure the HCVGs annotaion is correct
 		boolean ok = false;
 		for (VcfEffect veff : ve.getVcfEffects()) {
-			if (verbose) System.out.println("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
+			if (verbose) Log.info("\t" + veff + "\t" + veff.getEffectsStr() + "\t" + veff.getHgvsDna());
 			ok |= veff.hasEffectType(EffectType.INTERGENIC) //
 					&& veff.getHgvsDna().equals("n.15070000_15070001insT") //
 			;

@@ -120,7 +120,7 @@ public class TestCasesIntegrationVcfs extends TestCasesIntegrationBase {
 
 		// Check output
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			if (ve.hasInfo(EffFormatVersion.VCF_INFO_ANN_NAME) || ve.hasInfo(EffFormatVersion.VCF_INFO_EFF_NAME)) //
 				throw new RuntimeException("Effect field should not be annotated on non-variant entries!\n" + ve);

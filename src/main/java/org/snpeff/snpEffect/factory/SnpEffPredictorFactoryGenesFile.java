@@ -12,6 +12,7 @@ import org.snpeff.interval.Utr5prime;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * This class creates a SnpEffectPredictor from a file (or a set of files) and a configuration
@@ -46,7 +47,7 @@ public class SnpEffPredictorFactoryGenesFile extends SnpEffPredictorFactory {
 
 			finishUp(); // Perform adjustments
 
-			if (verbose) System.out.println(config.getGenome());
+			if (verbose) Log.info(config.getGenome());
 		} catch (Exception e) {
 			if (verbose) e.printStackTrace();
 			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);

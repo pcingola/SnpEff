@@ -16,6 +16,7 @@ import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 import junit.framework.Assert;
 
@@ -73,7 +74,7 @@ public class TestCasesDel {
 		}
 		tr.rankExons();
 
-		if (verbose) System.out.println("Transcript:\n" + tr);
+		if (verbose) Log.info("Transcript:\n" + tr);
 		Assert.assertEquals("FLPYKAVLCR", tr.protein());
 
 		snpEffectPredictor = new SnpEffectPredictor(genome);
@@ -86,16 +87,16 @@ public class TestCasesDel {
 	public void test_01() {
 		// Create variant
 		Variant var = new Variant(chr, 397, "GCCCGATAGGA", "", "");
-		if (verbose) System.out.println("Variant: " + var + "\n" + tr.toStringAsciiArt(true));
+		if (verbose) Log.info("Variant: " + var + "\n" + tr.toStringAsciiArt(true));
 		Assert.assertEquals("chr1:397_GCCCGATAGGA/", var.toString());
 
 		// Calculate effects
 		int countMatch = 0;
 		VariantEffects effectsAll = snpEffectPredictor.variantEffect(var);
 		for (VariantEffect eff : effectsAll) {
-			if (verbose) System.out.println("\t" + eff);
+			if (verbose) Log.info("\t" + eff);
 			if (eff.getEffectType() == EffectType.CODON_CHANGE_PLUS_CODON_DELETION) {
-				if (verbose) System.out.println("\t" + eff.getEffectTypeString(false) + "\t" + eff.getCodonsRef() + "\t" + eff.getCodonsAlt());
+				if (verbose) Log.info("\t" + eff.getEffectTypeString(false) + "\t" + eff.getCodonsRef() + "\t" + eff.getCodonsAlt());
 				Assert.assertEquals("TCT", eff.getCodonsAlt().toUpperCase());
 				countMatch++;
 			}
@@ -109,13 +110,13 @@ public class TestCasesDel {
 		// Create variant
 		int start = 300;
 		Variant var = new Variant(chr, start, chrSeq.substring(300, 450), "", "");
-		if (verbose) System.out.println("Transcript:" + tr + "\nVariant: " + var);
+		if (verbose) Log.info("Transcript:" + tr + "\nVariant: " + var);
 
 		// Calculate effects
 		int countMatch = 0;
 		VariantEffects effectsAll = snpEffectPredictor.variantEffect(var);
 		for (VariantEffect eff : effectsAll) {
-			if (verbose) System.out.println("\t" + eff.getEffectTypeString(false) + "\tHGVS.p: '" + eff.getHgvsProt() + "'");
+			if (verbose) Log.info("\t" + eff.getEffectTypeString(false) + "\tHGVS.p: '" + eff.getHgvsProt() + "'");
 			if (eff.getEffectType() == EffectType.TRANSCRIPT_DELETED) {
 				countMatch++;
 				Assert.assertEquals("HGVS.p notation error", "p.0?", eff.getHgvsProt());

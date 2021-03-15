@@ -77,7 +77,7 @@ public class TestCasesDnaNSequence {
 				String basesOri = seq.substring(randPos, randPos + randLen);
 				String basesBin = bseq.getBases(randPos, randLen);
 				Assert.assertEquals(basesOri, basesBin);
-				if (verbose) System.out.println("randDnaSeqGetBasesTest:\tPos: " + randPos + "\t" + "Len: " + randLen + "\t'" + basesOri + "'\t=\t'" + basesBin + "'");
+				if (verbose) Log.info("randDnaSeqGetBasesTest:\tPos: " + randPos + "\t" + "Len: " + randLen + "\t'" + basesOri + "'\t=\t'" + basesBin + "'");
 			}
 		}
 	}
@@ -97,7 +97,7 @@ public class TestCasesDnaNSequence {
 			int len = (rand.nextInt() & lenMask) + 10; // Randomly select sequence length
 			seq = randSeq(len, rand); // Create a random sequence
 
-			if (verbose) System.out.println("DnaNSequence test:" + t + "\tlen:" + len + "\t" + seq);
+			if (verbose) Log.info("DnaNSequence test:" + t + "\tlen:" + len + "\t" + seq);
 			DnaNSequence bseq = new DnaNSequence(seq);
 
 			// Retrieve numTestsPerSeq random bases from the sequence
@@ -124,7 +124,7 @@ public class TestCasesDnaNSequence {
 			int len = (rand.nextInt() & lenMask) + 10; // Randomly select sequence length
 			seq = randSeq(len, rand); // Create a random sequence
 
-			if (verbose) System.out.println("DnaNSequence test:" + t + "\tlen:" + len + "\t" + seq);
+			if (verbose) Log.info("DnaNSequence test:" + t + "\tlen:" + len + "\t" + seq);
 			DnaNSequence bseq = new DnaNSequence(seq);
 			Assert.assertEquals(seq, bseq.toString());
 		}
@@ -148,7 +148,7 @@ public class TestCasesDnaNSequence {
 			DnaNSequence bseq = new DnaNSequence(seq);
 
 			// Replace numTestsPerSeq random bases from the sequence
-			if (verbose) System.out.println("randReplaceBaseTest\nOri    :\t" + seq);
+			if (verbose) Log.info("randReplaceBaseTest\nOri    :\t" + seq);
 			for (int i = 0; i < numTestsPerSeq; i++) {
 				// Random position
 				int randPos = rand.nextInt(len);
@@ -166,7 +166,7 @@ public class TestCasesDnaNSequence {
 
 				// Replace i DnaNSequence
 				bseq.setBase(randPos, randBase);
-				if (verbose) System.out.println("Changed:\t" + seq + "\tpos: " + randPos + "\trandbase: " + randBase + "\n\t\t" + bseq);
+				if (verbose) Log.info("Changed:\t" + seq + "\tpos: " + randPos + "\trandbase: " + randBase + "\n\t\t" + bseq);
 
 				// Compare results
 				Assert.assertEquals(seq, bseq.toString());

@@ -186,7 +186,7 @@ public class TestCasesBase {
 			String effStr = effect.getEffectTypeString(false);
 
 			// Check effect
-			if (verbose) System.out.println(effect.toStringSimple(true) + "\n\tEffect type: '" + effStr + "'\tExpected: '" + effectExpected + "'");
+			if (verbose) Log.info(effect.toStringSimple(true) + "\n\tEffect type: '" + effStr + "'\tExpected: '" + effectExpected + "'");
 			found |= effect.hasEffectType(effectExpected);
 
 			// Check that 'effectNotExpected' is not present

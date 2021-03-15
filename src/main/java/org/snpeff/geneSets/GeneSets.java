@@ -154,7 +154,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 	 * Throws an exception on error
 	 */
 	public void checkInterestingGenes(Set<String> intGenes) {
-		if (debug) Log.info("Checking genes (" + intGenes.size() + ") : " + intGenes);
+		if (debug) Log.debug("Checking genes (" + intGenes.size() + ") : " + intGenes);
 
 		// Check that genes contains interestingGenes
 		if (!intGenes.containsAll(interestingGenes)) { throw new RuntimeException("Not every gene in :" + label + " as an interesting symbol"); }
@@ -424,7 +424,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 	public List<String> loadExperimentalValues(String fileName, boolean maskException) {
 		LinkedList<String> notFound = new LinkedList<String>();
 
-		if (verbose) System.err.println("Reading 'ranked' genes from file: '" + fileName + "'");
+		if (verbose) Log.info("Reading 'ranked' genes from file: '" + fileName + "'");
 
 		// First: Initialize
 		reset();
@@ -473,7 +473,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 	 */
 	public boolean loadMSigDb(String gmtFile, boolean maskException) {
 		try {
-			if (verbose) System.err.println("Reading gene sets file: '" + gmtFile + "'");
+			if (verbose) Log.info("Reading gene sets file: '" + gmtFile + "'");
 
 			genes = new HashSet<String>(); // Reset genes
 			geneSetsByName = new HashMap<String, GeneSet>(); // and genesets by name
@@ -506,7 +506,7 @@ public class GeneSets implements Iterable<GeneSet>, Serializable {
 			}
 
 			// OK, finished
-			if (verbose) System.err.println("GeneSets added: " + geneSetsByName.size());
+			if (verbose) Log.info("GeneSets added: " + geneSetsByName.size());
 
 		} catch (Exception e) {
 			if (maskException) return false;

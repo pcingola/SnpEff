@@ -89,7 +89,7 @@ public abstract class EnrichmentAlgorithmGreedy extends EnrichmentAlgorithm {
 	@Override
 	void printTitle() {
 		if (htmlTable) System.out.println("<table border=0> <tr bgcolor=\"" + HTML_BG_COLOR_TITLE + "\"> <th>Iteration</th>\t<th>p-value</th>\t<th>p-value adj</th>\t<th>Latest result</th>\t<th>Size</th>\t<th>Description</th>\t<th>Interesting genes </th>\t<th> Score </th> </tr>");
-		else if (verbose) System.out.println("Iteration\tp-value\tp-value adj\tLatest result\tSize\tDescription\tResult\tInteresting genes");
+		else if (verbose) Log.info("Iteration\tp-value\tp-value adj\tLatest result\tSize\tDescription\tResult\tInteresting genes");
 	}
 
 	/**

@@ -6,6 +6,7 @@ import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Motif;
 import org.snpeff.motif.Jaspar;
+import org.snpeff.util.Log;
 
 /**
  * Opens a regulation file and create Motif elements.
@@ -77,11 +78,11 @@ public class MotifFileIterator extends MarkerFileIterator<Motif> {
 
 						// Create marker
 						if (name.isEmpty()) {
-							if (verbose) System.err.println("Warning: Name not found, line " + lineNum + "\t" + line);
+							if (verbose) Log.info("Warning: Name not found, line " + lineNum + "\t" + line);
 						} else if (pwmId.isEmpty()) {
-							if (verbose) System.err.println("Warning: PWM ID not found, line " + lineNum + "\t" + line);
+							if (verbose) Log.info("Warning: PWM ID not found, line " + lineNum + "\t" + line);
 						} else if (jaspar.getPwm(pwmId) == null) {
-							if (verbose) System.err.println("Warning: PWM '" + pwmId + "' not found, line " + lineNum + "\t" + line);
+							if (verbose) Log.info("Warning: PWM '" + pwmId + "' not found, line " + lineNum + "\t" + line);
 						} else {
 							Motif motif = new Motif(chromo, start, end, strandMinus, id, name, pwmId);
 							motif.setPwm(jaspar.getPwm(pwmId));

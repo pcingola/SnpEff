@@ -51,7 +51,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
 		//---
 		String configFile = Config.DEFAULT_CONFIG_FILE;
 		Config config = new Config(genomeName, configFile);
-		if (verbose) System.out.println("Loading database");
+		if (verbose) Log.info("Loading database");
 		SnpEffectPredictor snpEffectPredictor = config.loadSnpEffectPredictor();
 
 		// Find transcript (there is only one)
@@ -83,7 +83,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
 		// Analyze annotations
 		ok = false;
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve.toStringNoGt());
+			if (verbose) Log.info(ve.toStringNoGt());
 
 			EffectType expectedEffect = EffectType.valueOf(ve.getInfo("EXP_EFF"));
 			String expectedAa = ve.getInfo("EXP_AA");

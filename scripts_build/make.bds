@@ -10,7 +10,7 @@
 # Command line options
 help Build and test options
 bundleLists			:= false		help Create bundle lists and config entries. OBSOLETE
-doConfig			:= false		help Create config file
+createConfig		:= false		help Create config file
 db					:= false		help Build databases
 string[] dbs						help Build databases
 dbTest				:= false		help Build databases used in test cases
@@ -823,7 +823,7 @@ print("Building\n")
 
 if( args.isEmpty() )			build()										# No arguments? Build (create JAR files)
 if( bundleLists )				buildBundleLists()							# Create bundle list and config files
-if( doConfig )					buildConfig()								# Create config file
+if( createConfig )				buildConfig()								# Create config file
 if( db || !dbs.isEmpty() )		buildDb()									# Build ALL genomes
 if( dbTest )					buildDbTest()								# Build databases used in test cases
 if( distro )					makeDistro()								# Create distribution files

@@ -46,11 +46,11 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 		for (Gene g : genome.getGenes()) {
 
 			if (g.isProteinCoding()) { // Only protein coding ones...
-				if (verbose) System.out.println(g.getGeneName());
+				if (verbose) Log.info(g.getGeneName());
 
 				// All transcripts
 				for (Transcript t : g) {
-					if (verbose) System.out.println("\t" + t.getId());
+					if (verbose) Log.info("\t" + t.getId());
 
 					// All exons
 					for (Exon ex : t) {
@@ -62,7 +62,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 						if (random.nextInt(10) > 1) continue; // Randomly some exons
 						if (ex.size() > 1000) continue; // Skip exon if too long
 
-						if (verbose) System.out.println("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
+						if (verbose) Log.info("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
 
 						// Change each base
 						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {
@@ -117,11 +117,11 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 		for (Gene g : genome.getGenes()) {
 
 			if (g.isProteinCoding()) { // Only protein coding ones...
-				if (verbose) System.out.println(g.getGeneName());
+				if (verbose) Log.info(g.getGeneName());
 
 				// All transcripts
 				for (Transcript t : g) {
-					if (verbose) System.out.println("\t" + t.getId());
+					if (verbose) Log.info("\t" + t.getId());
 
 					// All exons
 					for (Exon ex : t) {
@@ -133,7 +133,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 						if (random.nextInt(10) > 1) continue; // Randomly some exons
 						if (ex.size() > 1000) continue; // Skip exon if too long
 
-						if (verbose) System.out.println("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
+						if (verbose) Log.info("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
 
 						// Change each base
 						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {
@@ -198,11 +198,11 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 		for (Gene g : genome.getGenes()) {
 
 			if (g.isProteinCoding()) { // Only protein coding ones...
-				if (verbose) System.out.println(g.getGeneName());
+				if (verbose) Log.info(g.getGeneName());
 
 				// All transcripts
 				for (Transcript t : g) {
-					if (verbose) System.out.println("\t" + t.getId());
+					if (verbose) Log.info("\t" + t.getId());
 
 					// All exons
 					for (Exon ex : t) {
@@ -214,7 +214,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 						if (random.nextInt(10) > 1) continue; // Randomly some exons
 						if (ex.size() > 1000) continue; // Skip exon if too long
 
-						if (verbose) System.out.println("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
+						if (verbose) Log.info("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
 
 						// Change each base
 						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {
@@ -278,11 +278,11 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 		for (Gene g : genome.getGenes()) {
 
 			if (g.isProteinCoding()) { // Only protein coding ones...
-				if (verbose) System.out.println(g.getGeneName());
+				if (verbose) Log.info(g.getGeneName());
 
 				// All transcripts
 				for (Transcript t : g) {
-					if (verbose) System.out.println("\t" + t.getId());
+					if (verbose) Log.info("\t" + t.getId());
 
 					// All exons
 					for (Exon ex : t) {
@@ -294,7 +294,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 						if (random.nextInt(10) > 1) continue; // Randomly some exons
 						if (ex.size() > 1000) continue; // Skip exon if too long
 
-						if (verbose) System.out.println("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
+						if (verbose) Log.info("\t\t" + ex.getId() + "\tStrand: " + ex.getStrand() + "\tSize: " + ex.size());
 
 						// Change each base
 						for (int i = ex.getStart(), idx = 0; i < ex.getEnd(); i++, idx++) {

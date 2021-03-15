@@ -38,18 +38,18 @@ public class TestCasesIntegrationDelEtc extends TestCasesIntegrationBase {
 		List<VcfEntry> vcfEnties = snpeff.run(true);
 		for (VcfEntry ve : vcfEnties) {
 
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			// Get first effect (there should be only one)
 			List<VcfEffect> veffs = ve.getVcfEffects();
 
 			for (VcfEffect veff : veffs) {
 				Set<String> effs = new HashSet<>();
-				if (verbose) System.out.println("\t" + veff.getEffString());
+				if (verbose) Log.info("\t" + veff.getEffString());
 
 				// Make sure each effect is unique
 				for (String eff : veff.getEffString().split("\\&")) {
-					if (verbose) System.out.println("\t\t" + eff);
+					if (verbose) Log.info("\t\t" + eff);
 					if (!effs.add(eff)) repeat = true;
 					countEffs++;
 				}
@@ -78,18 +78,18 @@ public class TestCasesIntegrationDelEtc extends TestCasesIntegrationBase {
 		List<VcfEntry> vcfEnties = snpeff.run(true);
 		for (VcfEntry ve : vcfEnties) {
 
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			// Get first effect (there should be only one)
 			List<VcfEffect> veffs = ve.getVcfEffects();
 
 			for (VcfEffect veff : veffs) {
-				if (verbose) System.out.println("\t" + veff.getEffString());
+				if (verbose) Log.info("\t" + veff.getEffString());
 
 				// Make sure each effect is unique
 				countEffs = 0;
 				for (String eff : veff.getEffString().split("\\+")) {
-					if (verbose) System.out.println("\t\t" + eff);
+					if (verbose) Log.info("\t\t" + eff);
 					countEffs++;
 				}
 

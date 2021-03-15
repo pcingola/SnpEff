@@ -50,7 +50,7 @@ public class TestCasesIntegrationDup extends TestCasesIntegrationBase {
 		VcfEntry ve = results.get(0);
 		boolean found = false;
 		for (VcfEffect veff : ve.getVcfEffects()) {
-			if (verbose) System.out.println("\t" + veff.getEffectType() + "\t" + veff);
+			if (verbose) Log.info("\t" + veff.getEffectType() + "\t" + veff);
 			if (veff.getEffectType() == EffectType.CHROMOSOME_LARGE_DUPLICATION) {
 				found |= veff.getGeneName().contains("FGFR1");
 			}

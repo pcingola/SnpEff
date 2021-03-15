@@ -36,7 +36,7 @@ public class TestCasesIntegrationConfig extends TestCasesIntegrationBase {
 		cmd.run();
 
 		// Check that config option really changed
-		if (verbose) System.out.println("Repository: " + cmd.getConfig().getDatabaseRepository());
+		if (verbose) Log.info("Repository: " + cmd.getConfig().getDatabaseRepository());
 		Assert.assertEquals(repo, cmd.getConfig().getDatabaseRepository());
 	}
 

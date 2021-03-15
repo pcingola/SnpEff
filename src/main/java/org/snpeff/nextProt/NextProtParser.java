@@ -161,7 +161,7 @@ public class NextProtParser {
 		for (char aa : GprSeq.AMINO_ACIDS)
 			title.append(aa + "\t");
 		title.append("\t" + title);
-		if (verbose) System.out.println("Amino acid regions:\n\tTotal\tMax count\tAvg len\tConservation\tCatergory\tControlled Vocabulary\t" + title + "\tOther AA sequences:");
+		if (verbose) Log.info("Amino acid regions:\n\tTotal\tMax count\tAvg len\tConservation\tCatergory\tControlled Vocabulary\t" + title + "\tOther AA sequences:");
 
 		// Show AA counts for each 'key'
 		for (String key : keys) {
@@ -207,7 +207,7 @@ public class NextProtParser {
 			long avgLen = seqLen / totalSeqs;
 
 			// Show line
-			if (verbose) System.out.println( //
+			if (verbose) Log.info( //
 					"\t" + total //
 							+ "\t" + maxCount //
 							+ "\t" + avgLen //
@@ -670,12 +670,12 @@ public class NextProtParser {
 	 */
 	void parseProteinNode(Node node) {
 		String uniqueName = getAttribute(node, ATTR_NAME_UNIQUE_NAME);
-		if (debug) Log.info("Parsing protein node: " + uniqueName);
+		if (debug) Log.debug("Parsing protein node: " + uniqueName);
 
 		// Find Ensembl gene ID
 		String geneId = getGeneId(node, uniqueName);
 		if (geneId != null) {
-			if (debug) Log.info("\tFound matching gene ID: " + geneId);
+			if (debug) Log.debug("\tFound matching gene ID: " + geneId);
 			// Get transcript IDs
 			if (findTrIds(node)) {
 				findSequences(node); // Find sequences

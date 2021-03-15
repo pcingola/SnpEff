@@ -5,6 +5,7 @@ import java.io.PrintStream;
 
 import org.snpeff.snpEffect.commandLine.CommandLine;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Base class for integration tests
@@ -13,8 +14,8 @@ import org.snpeff.util.Gpr;
  */
 public class IntegrationTest extends TestCasesIntegrationBase {
 
-	public final int BUFFER_SIZE = 10 * 1024 * 1024;
 	public static final int MAX_LINES_DIFF = 20;
+	public final int BUFFER_SIZE = 10 * 1024 * 1024;
 
 	public IntegrationTest() {
 		super();
@@ -51,11 +52,11 @@ public class IntegrationTest extends TestCasesIntegrationBase {
 	 * Run a command and compare to an expected output (form a file)
 	 */
 	public void command(CommandLine command, String expectedOutputFile) {
-		if (verbose) System.err.println("Executing command '" + showCommand(command) + "'");
+		if (verbose) Log.info("Executing command '" + showCommand(command) + "'");
 		String actualOutput = command(command);
 		actualOutput = removeVcfHeader(actualOutput);
 
-		if (verbose) System.err.println("Reading results file '" + expectedOutputFile + "'");
+		if (verbose) Log.info("Reading results file '" + expectedOutputFile + "'");
 		String expectedOutput = Gpr.readFile(expectedOutputFile);
 		expectedOutput = removeVcfHeader(expectedOutput);
 
@@ -64,7 +65,7 @@ public class IntegrationTest extends TestCasesIntegrationBase {
 		int actualOutputCountLines = actualOutput.split("\n").length;
 
 		// Show differences (if any)
-		if (verbose) System.err.println("Comparing outputs\t\tExpected size: " + expectedOutput.length() + " (" + expectedOutputCountLines + " lines)\t\tActual size: " + actualOutput.length() + " (" + actualOutputCountLines + " lines)");
+		if (verbose) Log.info("Comparing outputs\t\tExpected size: " + expectedOutput.length() + " (" + expectedOutputCountLines + " lines)\t\tActual size: " + actualOutput.length() + " (" + actualOutputCountLines + " lines)");
 		if (!expectedOutput.equals(actualOutput)) {
 			String msg = "Outputs differ!\n\tFile    : '" + expectedOutputFile + "'\n\tCommand : '" + showCommand(command) + "'";
 			System.err.println(msg);

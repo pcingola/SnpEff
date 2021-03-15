@@ -143,7 +143,7 @@ public class Reactome implements Iterable<Entity> {
 			}
 			if (verbose) System.err.print(".");
 		}
-		if (verbose) System.err.println(" " + iteration);
+		if (verbose) Log.info(" " + iteration);
 
 		return changed;
 	}
@@ -280,7 +280,7 @@ public class Reactome implements Iterable<Entity> {
 			if (verbose) Gpr.showMark(i++, SHOW_EVERY);
 		}
 
-		if (verbose) System.err.println("");
+		if (verbose) Log.info("");
 		if (verbose) Log.info("Total catalyst entities assigned: " + (i - 1));
 	}
 
@@ -311,7 +311,7 @@ public class Reactome implements Iterable<Entity> {
 			if (verbose) Gpr.showMark(i++, SHOW_EVERY);
 		}
 
-		if (verbose) System.err.println("");
+		if (verbose) Log.info("");
 		if (verbose) Log.info("Total entities added: " + entityById.size());
 	}
 
@@ -346,7 +346,7 @@ public class Reactome implements Iterable<Entity> {
 			if (verbose) Gpr.showMark(i++, SHOW_EVERY);
 		}
 
-		if (verbose) System.err.println("");
+		if (verbose) Log.info("");
 		if (verbose) Log.info("Total objects loaded: " + objectName.size());
 	}
 
@@ -433,7 +433,7 @@ public class Reactome implements Iterable<Entity> {
 			if (verbose) Gpr.showMark(i++, SHOW_EVERY);
 		}
 
-		if (verbose) System.err.println("");
+		if (verbose) Log.info("");
 		if (verbose) Log.info("Total objects loaded: " + map.size());
 	}
 
@@ -465,7 +465,7 @@ public class Reactome implements Iterable<Entity> {
 			if (verbose) Gpr.showMark(i++, SHOW_EVERY);
 		}
 
-		if (verbose) System.err.println("");
+		if (verbose) Log.info("");
 		if (verbose) Log.info("Total events assigned: " + (i - 1));
 	}
 
@@ -500,7 +500,7 @@ public class Reactome implements Iterable<Entity> {
 			if (verbose) Gpr.showMark(i++, SHOW_EVERY);
 		}
 
-		if (verbose) System.err.println("");
+		if (verbose) Log.info("");
 		if (verbose) Log.info("Total compartments assigned: " + (i - 1));
 	}
 
@@ -534,7 +534,7 @@ public class Reactome implements Iterable<Entity> {
 			if (verbose) Gpr.showMark(i++, SHOW_EVERY);
 		}
 
-		if (verbose) System.err.println("");
+		if (verbose) Log.info("");
 		if (verbose) Log.info("Total outputs assigned: " + (i - 1));
 	}
 
@@ -568,7 +568,7 @@ public class Reactome implements Iterable<Entity> {
 			if (verbose) Gpr.showMark(i++, SHOW_EVERY);
 		}
 
-		if (verbose) System.err.println("");
+		if (verbose) Log.info("");
 		if (verbose) Log.info("Total inputs assigned: " + (i - 1));
 	}
 
@@ -602,7 +602,7 @@ public class Reactome implements Iterable<Entity> {
 			if (verbose) Gpr.showMark(i++, SHOW_EVERY);
 		}
 
-		if (verbose) System.err.println("");
+		if (verbose) Log.info("");
 		if (verbose) Log.info("Total outputs assigned: " + (i - 1));
 	}
 
@@ -638,7 +638,7 @@ public class Reactome implements Iterable<Entity> {
 			if (verbose) Gpr.showMark(i++, SHOW_EVERY);
 		}
 
-		if (verbose) System.err.println("");
+		if (verbose) Log.info("");
 		if (verbose) Log.info("Total regulations assigned: " + (i - 1));
 	}
 

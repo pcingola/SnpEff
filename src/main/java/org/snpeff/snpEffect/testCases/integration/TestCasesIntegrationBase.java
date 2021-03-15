@@ -128,7 +128,7 @@ public class TestCasesIntegrationBase {
 
 		// Compare result
 		String result = showTranscripts(sep.getGenome(), hideProtein).trim();
-		if (verbose) System.out.println(result);
+		if (verbose) Log.info(result);
 		Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 
 		return sep;
@@ -229,7 +229,7 @@ public class TestCasesIntegrationBase {
 
 		// Compare result
 		String result = showTranscripts(sep.getGenome(), true).trim();
-		if (verbose) System.out.println(result);
+		if (verbose) Log.info(result);
 		Assert.assertEquals(Gpr.noSpaces(expectedResult), Gpr.noSpaces(result));
 	}
 
@@ -245,7 +245,7 @@ public class TestCasesIntegrationBase {
 		VariantEffects varEffs = sep.variantEffect(var);
 		for (VariantEffect varEff : varEffs) {
 			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println("\t" + vcfEff);
+			if (verbose) Log.info("\t" + vcfEff);
 
 			Assert.assertEquals(hgvsP, vcfEff.getHgvsProt());
 			Assert.assertEquals(hgvsC, vcfEff.getHgvsDna());
@@ -261,10 +261,10 @@ public class TestCasesIntegrationBase {
 
 		int countCheck = 0;
 		for (VcfEntry ve : list) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			String transcriptId = ve.getInfo("TR");
-			if (verbose) System.out.println("\tLooking for transcript '" + transcriptId + "'");
+			if (verbose) Log.info("\tLooking for transcript '" + transcriptId + "'");
 			for (VcfEffect veff : ve.getVcfEffects()) {
 
 				if (veff.getTranscriptId().equals(transcriptId)) {
@@ -291,7 +291,7 @@ public class TestCasesIntegrationBase {
 			}
 		}
 
-		if (verbose) System.out.println("Total checked: " + countCheck);
+		if (verbose) Log.info("Total checked: " + countCheck);
 		Assert.assertTrue("Too few variants checked: " + countCheck, countCheck >= minCheck);
 	}
 
@@ -299,7 +299,7 @@ public class TestCasesIntegrationBase {
 	void checkHgvscForTr(List<VcfEntry> list, String trId) {
 		boolean found = false;
 		for (VcfEntry ve : list) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals(trId)) {
@@ -338,7 +338,7 @@ public class TestCasesIntegrationBase {
 		int numNextProt = 0;
 		for (VcfEntry ve : vcfEntries) {
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t" + veff.getVcfFieldString());
+				if (verbose) Log.info("\t" + veff.getVcfFieldString());
 
 				// Is it motif?
 				if (veff.getEffectType() == EffectType.MOTIF) {
@@ -451,7 +451,7 @@ public class TestCasesIntegrationBase {
 		}
 
 		// Show string
-		if (verbose) System.err.println(nmdStr);
+		if (verbose) Log.info(nmdStr);
 		if (debug) System.err.println("\tCoding Exons:" + codingExons.size());
 
 		// ---
@@ -487,10 +487,10 @@ public class TestCasesIntegrationBase {
 		List<VcfEntry> vcfEntries = snpeff.run(true);
 
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				EffectImpact imp = veff.getImpact();
-				if (verbose) System.out.println("\t" + imp + "\t" + veff);
+				if (verbose) Log.info("\t" + imp + "\t" + veff);
 				Assert.assertEquals(EffectImpact.MODIFIER, imp);
 			}
 		}
@@ -508,10 +508,10 @@ public class TestCasesIntegrationBase {
 
 		boolean hasWarning = false;
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				EffectImpact imp = veff.getImpact();
-				if (verbose) System.out.println("\t" + imp + "\t" + veff);
+				if (verbose) Log.info("\t" + imp + "\t" + veff);
 
 				// Check if the warning type we expect is there
 				if (veff.getErrorsWarning() != null) hasWarning |= veff.getErrorsWarning().indexOf(warningType.toString()) >= 0;

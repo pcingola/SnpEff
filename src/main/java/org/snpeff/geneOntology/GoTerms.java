@@ -445,7 +445,7 @@ public class GoTerms implements Iterable<GoTerm>, Serializable {
 				System.err.println("WARNING: Couldn't find some GOTerms while reading file '" + goGenesFile + "'\n\tNot found (" + notFound.size() + ") : " + ll);
 			}
 
-			if (verbose) System.err.println("Finished reding GoGenes file '" + goGenesFile + "' : " + lineNum + " lines.");
+			if (verbose) Log.info("Finished reding GoGenes file '" + goGenesFile + "' : " + lineNum + " lines.");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

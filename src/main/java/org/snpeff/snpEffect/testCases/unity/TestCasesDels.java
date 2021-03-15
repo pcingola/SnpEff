@@ -147,7 +147,7 @@ public class TestCasesDels extends TestCasesBase {
 
 			initSnpEffPredictor();
 			if (debug) System.out.println("DEL Test iteration: " + i + "\n" + transcript);
-			else if (verbose) System.out.println("DEL Test iteration: " + i + "\t" + transcript.cds());
+			else if (verbose) Log.info("DEL Test iteration: " + i + "\t" + transcript.cds());
 			else Gpr.showMark(i + 1, 1);
 			int cdsBaseNum = 0;
 
@@ -294,7 +294,7 @@ public class TestCasesDels extends TestCasesBase {
 						msg.append(line + "\n");
 
 						if (debug) System.out.println(msg);
-						else if (verbose) System.out.println(line);
+						else if (verbose) Log.info(line);
 
 						for (String e : effStr.split("\\" + EffFormatVersion.EFFECT_TYPE_SEPARATOR_OLD)) {
 							if (effectExpected.equals(e)) {

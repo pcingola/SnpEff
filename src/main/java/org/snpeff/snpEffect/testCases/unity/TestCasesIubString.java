@@ -16,7 +16,7 @@ public class TestCasesIubString {
 
 		StringBuilder sb = new StringBuilder();
 		for (String str : iubString) {
-			if (verbose) System.out.println(str);
+			if (verbose) Log.info(str);
 			sb.append(str + " ");
 		}
 

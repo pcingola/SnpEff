@@ -47,7 +47,7 @@ public class TestCasesEffectCollapse2 extends TestCasesBase {
 
 		// Create variant
 		Variant variant = new Variant(genome.getChromosome("1"), 695, "ACGTACGTACGTACGT", "");
-		if (verbose) System.out.println(variant.getVariantType() + "\t" + variant.getStart() + "-" + variant.getEnd() + "\t" + variant);
+		if (verbose) Log.info(variant.getVariantType() + "\t" + variant.getStart() + "-" + variant.getEnd() + "\t" + variant);
 
 		// Calculate effect
 		VariantEffects veffs = snpEffectPredictor.variantEffect(variant);
@@ -58,7 +58,7 @@ public class TestCasesEffectCollapse2 extends TestCasesBase {
 		boolean foundAnn = false;
 		for (VariantEffect veff : veffs) {
 			VcfEffect vcfEff = new VcfEffect(veff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println(vcfEff.getEffectsStrSo() + "\t" + vcfEff);
+			if (verbose) Log.info(vcfEff.getEffectsStrSo() + "\t" + vcfEff);
 
 			foundSo |= vcfEff.getEffectsStrSo().equalsIgnoreCase(expectedAnn);
 			foundAnn |= vcfEff.toString().indexOf(expectedAnn) >= 0;

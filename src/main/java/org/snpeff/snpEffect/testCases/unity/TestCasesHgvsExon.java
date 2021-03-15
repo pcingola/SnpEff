@@ -34,7 +34,7 @@ public class TestCasesHgvsExon extends TestCasesHgvsBase {
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor(false, true);
 			if (debug) System.out.println("HGSV Test iteration: " + i + "\n" + transcript);
-			else if (verbose) System.out.println("HGSV Coding\titeration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
+			else if (verbose) Log.info("HGSV Coding\titeration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
 			else Gpr.showMark(i + 1, 1);
 
 			int cdsBaseNum = 0;

@@ -39,7 +39,7 @@ public class TestCasesSpliceSite extends TestCasesBase {
 		//	- Calculate effect and check
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor();
-			if (verbose) System.out.println("Splice Test iteration: " + i + "\n" + transcript);
+			if (verbose) Log.info("Splice Test iteration: " + i + "\n" + transcript);
 			else Gpr.showMark(i + 1, 1);
 
 			for (Intron intron : transcript.introns()) {

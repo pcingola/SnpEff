@@ -69,7 +69,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			snpEffCmdCds.setStoreAlignments(storeAlignments);
 			snpEffCmdCds.setCheckNumOk(checkNumOk);
 			snpEffCmdCds.run();
-		} else if (debug) Log.info("\tOptional file '" + cdsFile + "' not found, nothing done.");
+		} else if (debug) Log.debug("\tOptional file '" + cdsFile + "' not found, nothing done.");
 
 		//---
 		// Check using proteins file
@@ -96,7 +96,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			snpEffCmdProtein.setCheckNumOk(checkNumOk);
 			snpEffCmdProtein.setProteinByTrId(proteinByTrId);
 			snpEffCmdProtein.run();
-		} else if (debug) Log.info("\tOptional file '" + protFile + "' not found, nothing done.");
+		} else if (debug) Log.debug("\tOptional file '" + protFile + "' not found, nothing done.");
 
 	}
 
@@ -253,7 +253,7 @@ public class SnpEffCmdBuild extends SnpEff {
 
 			// Add them all
 			for (RareAminoAcid raa : raas) {
-				if (verbose) System.err.println("\tAdding: " + raa);
+				if (verbose) Log.info("\tAdding: " + raa);
 				snpEffectPredictor.add(raa);
 			}
 

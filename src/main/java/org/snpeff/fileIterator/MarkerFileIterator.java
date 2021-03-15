@@ -7,6 +7,7 @@ import org.snpeff.interval.Genome;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * Opens a Marker file and iterates over all markers
@@ -90,7 +91,7 @@ public abstract class MarkerFileIterator<M extends Marker> extends FileIterator<
 	public void sanityCheckChromo(String chromoName, Chromosome chromo) {
 		if (chromo == null) {
 			if (ignoreChromosomeErrors) {
-				if (verbose) System.err.println("WARNING: Chromosome '" + chromoName + "' not found. File '" + fileName + "', line " + lineNum);
+				if (verbose) Log.info("WARNING: Chromosome '" + chromoName + "' not found. File '" + fileName + "', line " + lineNum);
 				return;
 			}
 			throw new RuntimeException("ERROR: Chromosome '" + chromoName + "' not found! File '" + fileName + "', line " + lineNum);

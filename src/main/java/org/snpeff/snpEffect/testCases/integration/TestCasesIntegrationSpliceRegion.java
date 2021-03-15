@@ -45,12 +45,12 @@ public class TestCasesIntegrationSpliceRegion extends TestCasesIntegrationBase {
 				.findFirst();
 
 		// Sanity check
-		if (verbose) System.out.println("VcfEffect:" + oeff);
+		if (verbose) Log.info("VcfEffect:" + oeff);
 		Assert.assertNotNull("Could not find any variant effect at position " + pos, oeff.isPresent());
 
 		// Get effects
 		List<EffectType> effTypes = oeff.get().getEffectTypes();
-		if (verbose) System.out.println("effTypes:" + effTypes);
+		if (verbose) Log.info("effTypes:" + effTypes);
 		Assert.assertTrue("Effect type 'SPLICE_SITE_REGION' not found", effTypes.contains(EffectType.SPLICE_SITE_REGION));
 	}
 

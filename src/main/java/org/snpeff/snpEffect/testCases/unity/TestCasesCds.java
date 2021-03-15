@@ -39,7 +39,7 @@ public class TestCasesCds extends TestCasesBase {
 		for (int iter = 0; iter < N; iter++) {
 			initSnpEffPredictor();
 			if (debug) System.err.println("Test CDS pos iteration: " + iter + "\n" + transcript);
-			else if (verbose) System.err.println("Test CDS pos iteration: " + iter + "\t" + transcript.getStrand() + "\t" + transcript.cds());
+			else if (verbose) Log.info("Test CDS pos iteration: " + iter + "\t" + transcript.getStrand() + "\t" + transcript.cds());
 			else Gpr.showMark(iter + 1, 1);
 
 			int cdsBaseNum = 0;
@@ -82,8 +82,8 @@ public class TestCasesCds extends TestCasesBase {
 
 		Assert.assertEquals(10, tr.getCdsStart());
 		Assert.assertEquals(100, tr.getCdsEnd());
-		if (verbose) System.out.println("Transcript : " + tr);
-		if (verbose) System.out.println("CDS.start: " + tr.getCdsStart() + "\tCDS.end: " + tr.getCdsEnd());
+		if (verbose) Log.info("Transcript : " + tr);
+		if (verbose) Log.info("CDS.start: " + tr.getCdsStart() + "\tCDS.end: " + tr.getCdsEnd());
 	}
 
 	/**
@@ -113,8 +113,8 @@ public class TestCasesCds extends TestCasesBase {
 
 		Assert.assertEquals(10, tr.getCdsStart());
 		Assert.assertEquals(10, tr.getCdsEnd());
-		if (verbose) System.out.println("Transcript : " + tr);
-		if (verbose) System.out.println("CDS.start: " + tr.getCdsStart() + "\tCDS.end: " + tr.getCdsEnd());
+		if (verbose) Log.info("Transcript : " + tr);
+		if (verbose) Log.info("CDS.start: " + tr.getCdsStart() + "\tCDS.end: " + tr.getCdsEnd());
 	}
 
 }

@@ -28,9 +28,9 @@ public class TestCasesAlign {
 			String a = as[i];
 			String b = bs[i];
 			NeedlemanWunsch align = new NeedlemanWunsch(a, b);
-			if (verbose) System.out.println("---------------------------------------- " + align.getClass().getSimpleName() + ": " + i + " ----------------------------------------");
+			if (verbose) Log.info("---------------------------------------- " + align.getClass().getSimpleName() + ": " + i + " ----------------------------------------");
 			align.align();
-			if (verbose) System.out.println("a    : '" + a + "'\nb    : '" + b + "'\nAlign: '" + align.getAlignment() + "'" + "\tOffset: " + align.getOffset() + "\n");
+			if (verbose) Log.info("a    : '" + a + "'\nb    : '" + b + "'\nAlign: '" + align.getAlignment() + "'" + "\tOffset: " + align.getOffset() + "\n");
 
 			Assert.assertEquals(res[i], align.getAlignment());
 			Assert.assertEquals(offset[i], align.getOffset());
@@ -49,9 +49,9 @@ public class TestCasesAlign {
 			String a = as[i];
 			String b = bs[i];
 			VcfRefAltAlign align = new VcfRefAltAlign(a, b);
-			if (verbose) System.out.println("---------------------------------------- " + align.getClass().getSimpleName() + ": " + i + " ----------------------------------------");
+			if (verbose) Log.info("---------------------------------------- " + align.getClass().getSimpleName() + ": " + i + " ----------------------------------------");
 			align.align();
-			if (verbose) System.out.println("a    : '" + a + "'\nb    : '" + b + "'\nAlign: '" + align.getAlignment() + "'" + "\tOffset: " + align.getOffset() + "\n");
+			if (verbose) Log.info("a    : '" + a + "'\nb    : '" + b + "'\nAlign: '" + align.getAlignment() + "'" + "\tOffset: " + align.getOffset() + "\n");
 
 			Assert.assertEquals(res[i], align.getAlignment());
 			Assert.assertEquals(offset[i], align.getOffset());

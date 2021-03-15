@@ -103,7 +103,7 @@ public class FileIndexChrPos {
 	 * @return If toString is 'true', return a string with file's content between those coordinates (this is used only for test cases and debugging)
 	 */
 	String dump(long start, long end, boolean toString) {
-		if (verbose) System.err.println("\tDumping file '" + fileName + "' interval [ " + start + " , " + end + " ]");
+		if (verbose) Log.info("\tDumping file '" + fileName + "' interval [ " + start + " , " + end + " ]");
 
 		StringBuilder sb = new StringBuilder();
 
@@ -452,7 +452,7 @@ public class FileIndexChrPos {
 		FileRegion fr = getFileRegion(chrEnd);
 		fr.end = end;
 		fr.lineEnd = lineEnd;
-		if (verbose) System.err.println("\tindex:\t" + chrEnd + "\t" + end);
+		if (verbose) Log.info("\tindex:\t" + chrEnd + "\t" + end);
 
 		// Find first non-comment line
 		long start = 0;
@@ -468,7 +468,7 @@ public class FileIndexChrPos {
 		fr = getFileRegion(chrStart);
 		fr.start = start;
 		fr.lineStart = lineStart;
-		if (verbose) System.err.println("\tindex:\t" + chrStart + "\t" + start);
+		if (verbose) Log.info("\tindex:\t" + chrStart + "\t" + start);
 
 		// Index the rest of the file
 		indexChromos(start, lineStart, end, lineEnd);
@@ -508,7 +508,7 @@ public class FileIndexChrPos {
 		if (debug) Log.debug("Chromo:\tlineStart: " + chrStart + "\tlineEnd: " + chrEnd);
 
 		if ((start + lineStart.length() + 1) >= end) {
-			if (verbose) System.err.println("\t\t" + chrStart + " / " + chrEnd + "\t" + start + " / " + end);
+			if (verbose) Log.info("\t\t" + chrStart + " / " + chrEnd + "\t" + start + " / " + end);
 
 			// Add index where chromosome starts
 			getFileRegion(chrEnd).start = getLine(end).position;

@@ -212,7 +212,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			// OK?
 			if (toAdd != null) {
 				add(toAdd);
-				if (verbose) System.out.println("\tAdding " + toAdd);
+				if (verbose) Log.info("\tAdding " + toAdd);
 				retVal = true;
 			}
 		}
@@ -880,7 +880,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 
 		// Other exons are corrected by changing the start (or end) coordinates.
 		// boolean changedNonFirst = false;
-		// Log.debug("UNCOMMENT!");
 		boolean changedNonFirst = frameCorrectionNonFirstCodingExon();
 
 		boolean changed = changedFirst || changedNonFirst;
@@ -908,7 +907,6 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		if ((exons == null) || exons.isEmpty()) return false;
 
 		Exon exonFirst = getFirstCodingExon(); // Get first exon
-		// Exon exonFirst =  exons.get(0); // Get first exon
 		if (exonFirst.getFrame() <= 0) return false; // Frame OK (or missing), nothing to do
 
 		// First exon is not zero? => Create a UTR5 prime to compensate
@@ -923,6 +921,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			utr5 = new Utr5prime(exonFirst, start, exonFirst.getEnd(), isStrandMinus(), exonFirst.getId());
 		}
 
+		if (Config.get().isDebug()) Log.debug("Frame correction for first coding exon: Added 5'UTR to compensate frame=" + frame + ", new UTR: " + utr5);
 		// Reset frame, since it was already corrected
 		exonFirst.setFrame(0);
 		Cds cds = findCds(exonFirst);
@@ -945,19 +944,19 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		List<Exon> exons = sortedStrand();
 		StringBuilder sequence = new StringBuilder();
 
-		// We don't need to correct if there is no sequence! (the problem only exists due to sequence frame)
+		// We don't need to correct if there is no sequence!
+		// Note: The problem only exists due to sequence frame
+		//       If there is no sequence we cannot do functional predictions anyway
 		for (Exon exon : exons)
 			if (!exon.hasSequence()) return false;
 
-		// 5'UTR length
+		// Create an interval spanning all 5'UTRs
 		int utr5Start = Integer.MAX_VALUE, utr5End = -1;
 		for (Utr utr : get5primeUtrs()) {
 			utr.size();
 			utr5Start = Math.min(utr5Start, utr.getStart());
 			utr5End = Math.max(utr5End, utr.getEnd());
 		}
-
-		// Create UTR
 		Marker utr5 = utr5End >= 0 ? new Marker(this, utr5Start, utr5End, strandMinus, "") : null;
 
 		// Append all exon sequences
@@ -1006,31 +1005,32 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 								+ "\n\tshould have taken care of this problem." //
 								+ "\n\t" + this //
 						);
-					} else {
-						if (Config.get().isDebug()) {
-							System.err.println("\t\tFrame correction: " //
-									+ "Position " + toStr() //
-									+ "Transcript '" + getId() + "'" //
-									+ "\tExon rank " + exon.getRank() //
-									+ "\tExpected frame: " + frameReal //
-									+ "\tExon frame: " + exon.getFrame() //
-									+ "\tSequence len: " + sequence.length() //
-							);
-						}
-						// Find matching CDS
-						Cds cdsToCorrect = findCds(exon);
-
-						// Correct exon until we get the expected frame
-						for (boolean ok = true; ok && frameReal != exon.getFrame();) {
-							// Correct both Exon and CDS
-							ok &= exon.frameCorrection(1);
-							if (cdsToCorrect != null) cdsToCorrect.frameCorrection(1);
-							corrected = true;
-						}
-
-						// Get new exon's sequence
-						seq = exon.getSequence();
 					}
+
+					if (Config.get().isDebug()) {
+						Log.debug("Frame correction: " //
+								+ "Transcript '" + getId() + "'" //
+								+ " " + toStr() //
+								+ ", exon rank: " + exon.getRank() //
+								+ ", expected frame: " + frameReal //
+								+ ", exon frame: " + exon.getFrame() //
+								+ ", sequence len: " + sequence.length() //
+						);
+					}
+
+					// Find matching CDS
+					Cds cdsToCorrect = findCds(exon);
+
+					// Correct exon until we get the expected frame
+					for (boolean ok = true; ok && frameReal != exon.getFrame();) {
+						// Correct both Exon and CDS
+						ok &= exon.frameCorrection(1);
+						if (cdsToCorrect != null) cdsToCorrect.frameCorrection(1);
+						corrected = true;
+					}
+
+					// Get new exon's sequence
+					seq = exon.getSequence();
 				}
 			}
 

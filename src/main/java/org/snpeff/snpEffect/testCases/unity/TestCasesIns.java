@@ -44,7 +44,7 @@ public class TestCasesIns extends TestCasesBase {
 			CodonTable codonTable = genome.codonTable();
 
 			if (debug) System.out.println("INS Test iteration: " + i + "\t" + (transcript.isStrandPlus() ? "+" : "-") + "\t" + transcript.cds());
-			else if (verbose) System.out.println("INS Test iteration: " + i + "\n" + transcript);
+			else if (verbose) Log.info("INS Test iteration: " + i + "\n" + transcript);
 			else Gpr.showMark(i + 1, 1);
 
 			int cdsBaseNum = 0;

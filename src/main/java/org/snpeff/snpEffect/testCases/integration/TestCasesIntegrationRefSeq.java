@@ -42,7 +42,7 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 		Variant variant = new Variant(sep.getGenome().getChromosome("1"), 521603, "A", "G");
 		VariantEffects effs = sep.variantEffect(variant);
 		for (VariantEffect eff : effs) {
-			if (verbose) System.out.println("\t" + eff);
+			if (verbose) Log.info("\t" + eff);
 			Assert.assertEquals(eff.getEffectType(), EffectType.INTERGENIC);
 		}
 	}

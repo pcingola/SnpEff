@@ -308,7 +308,7 @@ public class Config implements Serializable, Iterable<String> {
 	public String getDbNsfpFields() {
 		String coordinates = getCoordinates();
 		if (coordinates == null) {
-			if (verbose) System.err.println("Cannot find coordinates config entry for genome '" + genomeVersion + "'");
+			if (verbose) Log.info("Cannot find coordinates config entry for genome '" + genomeVersion + "'");
 			return null;
 		}
 

@@ -20,7 +20,7 @@ public class TestCasesDnaSequenceByte {
 				String seq = GprSeq.randSequence(random, len);
 				DnaSequenceByte dna = new DnaSequenceByte(seq);
 
-				if (verbose) System.out.println("Len: " + len + "\t" + seq + "\t" + dna);
+				if (verbose) Log.info("Len: " + len + "\t" + seq + "\t" + dna);
 
 				if (seq.equals(dna.toString())) throw new RuntimeException("Sequences do not match! Lnegth: " + len + "\n\t" + seq + "\n\t" + dna);
 			}

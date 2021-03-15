@@ -132,7 +132,7 @@ public class SnpEffPredictorFactoryRefSeq extends SnpEffPredictorFactory {
 
 			finishUp(); // Perform adjustments
 
-			if (verbose) System.out.println(config.getGenome());
+			if (verbose) Log.info(config.getGenome());
 		} catch (Exception e) {
 			if (verbose) e.printStackTrace();
 			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);

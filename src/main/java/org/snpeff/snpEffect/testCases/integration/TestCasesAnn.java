@@ -171,7 +171,7 @@ public class TestCasesAnn extends TestCasesBase {
 
 			for (VcfEffect eff : vcfEntry.getVcfEffects()) {
 				String allele = eff.getAllele();
-				if (verbose) System.err.println("\t" + eff + "\n\t\tAllele: " + allele);
+				if (verbose) Log.info("\t" + eff + "\n\t\tAllele: " + allele);
 
 				Assert.assertTrue("Unexpected allele '" + allele + "'", allelesExpected.contains(allele));
 				allelesReal.add(allele);
@@ -376,11 +376,11 @@ public class TestCasesAnn extends TestCasesBase {
 		VariantEffects veffs = snpEffectPredictor.variantEffect(variant);
 
 		// Check output
-		if (verbose) System.out.println("Number of effects: " + veffs.size());
+		if (verbose) Log.info("Number of effects: " + veffs.size());
 		Assert.assertEquals(1, veffs.size());
 
 		VariantEffect veff = veffs.get(0);
-		if (verbose) System.out.println("Effect type : " + veff.getEffectType());
+		if (verbose) Log.info("Effect type : " + veff.getEffectType());
 		Assert.assertEquals(EffectType.CHROMOSOME_ELONGATION, veff.getEffectType());
 	}
 

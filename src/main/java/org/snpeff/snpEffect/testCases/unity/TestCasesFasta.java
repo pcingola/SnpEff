@@ -24,7 +24,7 @@ public class TestCasesFasta extends TestCasesBase {
 		String fastaFileName = path("emptyLine.fa");
 		FastaFileIterator ffi = new FastaFileIterator(fastaFileName);
 		for (String seq : ffi) {
-			if (verbose) System.out.println("SeqName: " + ffi.getName() + "\tSize: " + seq.length());
+			if (verbose) Log.info("SeqName: " + ffi.getName() + "\tSize: " + seq.length());
 		}
 	}
 }

@@ -32,7 +32,7 @@ public class TestCasesIntegrationNmd extends TestCasesIntegrationBase {
 		// For each gene, transcript, check that NMD works
 		int countTest = 1;
 		for (Gene gene : config.getGenome().getGenes()) {
-			if (verbose) System.err.println("NMD test\tGene ID:" + gene.getId());
+			if (verbose) Log.info("NMD test\tGene ID:" + gene.getId());
 			for (Transcript tr : gene) {
 				if (debug) System.err.println(tr);
 				checkNmd(config, gene, tr);

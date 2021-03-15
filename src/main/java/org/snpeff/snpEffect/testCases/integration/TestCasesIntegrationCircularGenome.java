@@ -42,7 +42,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 		VariantEffects varEffs = sep.variantEffect(var);
 		for (VariantEffect varEff : varEffs) {
 			VcfEffect vcfEff = new VcfEffect(varEff, EffFormatVersion.FORMAT_ANN_1);
-			if (verbose) System.out.println("\t" + vcfEff);
+			if (verbose) Log.info("\t" + vcfEff);
 		}
 	}
 
@@ -65,7 +65,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 
 		// Check if chr is circular
 		Chromosome chr = sep.getGenome().getChromosome("p948");
-		if (verbose) System.out.println("Chromosome:" + chr);
+		if (verbose) Log.info("Chromosome:" + chr);
 		Assert.assertTrue("Chromosome is not circular", chr.isCircular());
 
 		// Check protien sequence
@@ -73,7 +73,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 		for (Gene g : sep.getGenome().getGenes()) {
 			for (Transcript tr : g) {
 				Assert.assertEquals("Expected protein sequence does not match", protein, tr.protein());
-				if (verbose) System.out.println(tr);
+				if (verbose) Log.info(tr);
 			}
 		}
 

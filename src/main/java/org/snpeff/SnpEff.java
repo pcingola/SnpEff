@@ -510,7 +510,7 @@ public class SnpEff implements CommandLine {
 			// treatAllAsProteinCoding was set to 'auto'
 			// I.e.: Use 'true' if there is protein coding info, otherwise use false.
 			boolean tapc = !config.getGenome().hasCodingInfo();
-			if (debug) Log.info("Setting '-treatAllAsProteinCoding' to '" + tapc + "'");
+			if (debug) Log.debug("Setting '-treatAllAsProteinCoding' to '" + tapc + "'");
 			config.setTreatAllAsProteinCoding(tapc);
 		}
 
@@ -743,7 +743,7 @@ public class SnpEff implements CommandLine {
 					motif.setPwm(pwm);
 					snpEffectPredictor.add(motif);
 					countAddded++;
-				} else if (debug) Log.info("Cannot find PWM for motif '" + motif.getPwmId() + "'");
+				} else if (debug) Log.debug("Cannot find PWM for motif '" + motif.getPwmId() + "'");
 			}
 
 		if (verbose) Log.info("\tMotif database: " + countAddded + " markers loaded.");
@@ -758,7 +758,7 @@ public class SnpEff implements CommandLine {
 		// Read nextProt binary file
 		String nextProtBinFile = config.getDirDataGenomeVersion() + "/nextProt.bin";
 		if (!Gpr.canRead(nextProtBinFile)) {
-			if (debug) Log.info("NextProt database '" + nextProtBinFile + "' doesn't exist. Ignoring.");
+			if (debug) Log.debug("NextProt database '" + nextProtBinFile + "' doesn't exist. Ignoring.");
 			return;
 		}
 		if (verbose) Log.info("Reading NextProt database from file '" + nextProtBinFile + "'");

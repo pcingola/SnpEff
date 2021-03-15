@@ -242,7 +242,7 @@ public class TestCasesStructuralTranslocations {
 		tr1.rankExons();
 		tr2.rankExons();
 
-		if (verbose) System.out.println("Transcripts:\n" + tr1 + "\n" + tr2);
+		if (verbose) Log.info("Transcripts:\n" + tr1 + "\n" + tr2);
 
 		snpEffectPredictor = new SnpEffectPredictor(genome);
 		snpEffectPredictor.setUpDownStreamLength(0);

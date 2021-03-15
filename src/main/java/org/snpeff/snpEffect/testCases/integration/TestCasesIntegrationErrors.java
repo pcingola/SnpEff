@@ -39,10 +39,10 @@ public class TestCasesIntegrationErrors extends TestCasesIntegrationBase {
 		List<VcfEntry> vcfEntries = seff.run(true);
 		int count = 0;
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				Assert.assertEquals(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND.toString(), veff.getErrorsWarning());
 				count++;
 			}
@@ -68,10 +68,10 @@ public class TestCasesIntegrationErrors extends TestCasesIntegrationBase {
 		List<VcfEntry> vcfEntries = seff.run(true);
 		int count = 0;
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				Assert.assertEquals(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND.toString(), veff.getErrorsWarning());
 				count++;
 			}

@@ -66,7 +66,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 					// Compare CDS sequences
 					if (!seqOri.equalsIgnoreCase(seq)) throw new RuntimeException("CDS do not match:\nTranscipt:" + tint.getId() + " " + tint.isStrandMinus() + "\n\t" + seq + "\n\t" + seqOri + "\n");
 					else {
-						if (verbose) System.out.println("CDS compare:\n\t" + seqOri + "\n\t" + seq);
+						if (verbose) Log.info("CDS compare:\n\t" + seqOri + "\n\t" + seq);
 						totalOk++;
 					}
 				}
@@ -240,7 +240,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 		int countOk = 0, countErr = 0;
 		for (Gene gint : config.getGenome().getGenes()) {
 			for (Transcript tr : gint) {
-				if (verbose) System.out.println("Transcript: " + tr.getId());
+				if (verbose) Log.info("Transcript: " + tr.getId());
 				List<Exon> exons = tr.sortedStrand();
 				for (Exon exon : exons) {
 					for (int i = exon.getStart(); i <= exon.getEnd(); i++) {
@@ -260,7 +260,7 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 			}
 		}
 
-		if (verbose) System.out.println("Count OK: " + countOk + "\tCount Err: " + countErr);
+		if (verbose) Log.info("Count OK: " + countOk + "\tCount Err: " + countErr);
 	}
 
 	/**
@@ -396,11 +396,11 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 		Variant var = new Variant(chr, 1, "A", "C");
 		var.setVariantType(VariantType.SNP);
 
-		if (verbose) System.out.println(var);
+		if (verbose) Log.info(var);
 		for (EffectType eff : EffectType.values()) {
 			VariantEffect varEff = new VariantEffect(var);
 			varEff.setEffectType(eff);
-			if (verbose) System.out.println(var.isVariant() + "\t" + eff + "\t" + varEff.getEffectImpact());
+			if (verbose) Log.info(var.isVariant() + "\t" + eff + "\t" + varEff.getEffectImpact());
 		}
 	}
 

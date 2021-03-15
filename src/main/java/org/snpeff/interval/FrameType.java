@@ -6,7 +6,7 @@ package org.snpeff.interval;
  *
  * Technically, these are 'frame' and 'phase' which are calculated in different ways
  *
- * 		UCSC type: Indicated the coding base number modulo 3. This is the 'classical' definition of frame).
+ * 		UCSC type: Indicated the coding base number modulo 3. This is the 'classical' definition of frame.
  *
  * 		GFF/GTF type: Indicates the number of bases that should be removed from the beginning
  * 				of this feature to reach the first base of the next codon.

@@ -628,7 +628,7 @@ public class SnpEffCmdGsa extends SnpEff {
 				geneScore.put(geneId, score);
 				minp = Math.min(minp, score);
 				maxp = Math.max(maxp, score);
-			} else if (verbose) System.err.println("\tWarning: Ignoring entry (zero p-value):\t'" + line + "'");
+			} else if (verbose) Log.info("\tWarning: Ignoring entry (zero p-value):\t'" + line + "'");
 		}
 
 		if (verbose) Log.info("Done."//

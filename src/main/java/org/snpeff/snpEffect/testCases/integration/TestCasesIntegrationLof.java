@@ -289,7 +289,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		for (Gene gene : config.getGenome().getGenes()) {
 			Gpr.showMark(i++, 10);
 			for (Transcript tr : gene) {
-				if (verbose) System.err.println(tr);
+				if (verbose) Log.info(tr);
 				checkLof(tr);
 			}
 		}

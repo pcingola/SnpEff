@@ -115,7 +115,7 @@ public class LeadingEdgeFractionAlgorithm extends FisherPValueGreedyAlgorithm {
 				+ "\n\tQuantile         : " + scoreCutOffQuantile //
 				+ "\n\tScore CutOff     : " + pco //
 		);
-		if (debug) Log.info("\tp-values: " + scoreList);
+		if (debug) Log.debug("\tp-values: " + scoreList);
 
 		return pco;
 	}

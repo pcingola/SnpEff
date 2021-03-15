@@ -51,7 +51,7 @@ public class TestCasesIntegrationGenomicSequences {
 					Gpr.showMark(i++, 100);
 
 					String seq = genomicSequences.querySequence(ex);
-					if (verbose) System.out.println(g.getGeneName() + "\t" + tr.getId() + "\t" + ex.getId() + "\n\t" + ex.getSequence() + "\n\t" + seq);
+					if (verbose) Log.info(g.getGeneName() + "\t" + tr.getId() + "\t" + ex.getId() + "\n\t" + ex.getSequence() + "\n\t" + seq);
 
 					// Sanity checks
 					Assert.assertNotNull(seq == null);
@@ -93,7 +93,7 @@ public class TestCasesIntegrationGenomicSequences {
 				for (Exon ex : tr) {
 					Gpr.showMark(i++, 100);
 					String seq = genomicSequences.querySequence(ex);
-					if (verbose) System.out.println(g.getGeneName() + "\t" + tr.getId() + "\t" + ex.getId() + "\n\t" + ex.getSequence() + "\n\t" + seq);
+					if (verbose) Log.info(g.getGeneName() + "\t" + tr.getId() + "\t" + ex.getId() + "\n\t" + ex.getSequence() + "\n\t" + seq);
 
 					// Sanity checks
 					Assert.assertNotNull(seq == null);

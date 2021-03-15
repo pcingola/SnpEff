@@ -45,7 +45,7 @@ public class TestCasesIntegrationProtein extends TestCasesIntegrationBase {
 		// Find transcript and make sure start codon is 'M'
 		boolean checked = false;
 		for (Gene g : sep.getGenome().getGenes()) {
-			if (verbose) System.out.println(g);
+			if (verbose) Log.info(g);
 			if (g.getId().equals("ENSG00000198763")) {
 				Transcript tr = g.iterator().next();
 				checked = true;

@@ -39,9 +39,9 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION) {
 					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
 					Assert.assertEquals(veff.getGeneId(), "FGFR3&TACC3");
@@ -71,9 +71,9 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION) {
 					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
 					Assert.assertEquals(veff.getGeneId(), "ALK&EML4");
@@ -103,9 +103,9 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION_REVERESE) {
 					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
 					Assert.assertEquals(veff.getGeneId(), "DSCAM&TTC3");
@@ -135,9 +135,9 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION) {
 					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
 					Assert.assertEquals(veff.getGeneId(), "CCDC6&RET");
@@ -167,9 +167,9 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION) {
 					Assert.assertEquals("Impact does not match", EffectImpact.HIGH, veff.getImpact());
 					Assert.assertEquals("Affected genes do not match", "ROS1&SLC34A2", veff.getGeneId());
@@ -199,11 +199,11 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 		boolean checked = false;
 		List<VcfEntry> vcfEntries = seff.run(true);
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.TRANSCRIPT_DELETED && veff.getTranscriptId().equals("NM_001777.3")) {
-					if (verbose) System.err.println("VcfEffect: " + veff);
+					if (verbose) Log.info("VcfEffect: " + veff);
 					Assert.assertEquals("Expected rank does not match", 7, veff.getRank());
 					Assert.assertEquals("Expected rankMax does not match", 10, veff.getRankMax());
 					checked = true;

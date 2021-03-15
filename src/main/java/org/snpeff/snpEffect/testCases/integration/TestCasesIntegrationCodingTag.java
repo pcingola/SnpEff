@@ -39,11 +39,11 @@ public class TestCasesIntegrationCodingTag extends TestCasesIntegrationBase {
 
 		// Make sure transcript coding tags are there
 		for (VcfEntry ve : vcfEntries) {
-			if (verbose) System.out.println(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
+			if (verbose) Log.info(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getImpact() == EffectImpact.MODERATE) {
-					if (verbose) System.out.println("\t" + veff);
+					if (verbose) Log.info("\t" + veff);
 					Assert.assertFalse(veff.getBioType() == null || (veff.getBioType() == null)); // Make sure the biotype field is avaialble
 				}
 			}

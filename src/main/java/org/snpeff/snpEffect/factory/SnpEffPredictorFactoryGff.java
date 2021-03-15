@@ -23,6 +23,7 @@ import org.snpeff.interval.Utr5prime;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
+import org.snpeff.util.Log;
 
 /**
  * This class creates a SnpEffectPredictor from a GFF file.
@@ -275,7 +276,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 		// Check that gene and transcript are in the same chromosome
 		if (!gene.getChromosomeName().equals(tr.getChromosomeName())) {
-			error("Trying to assign Transcript to a Gene in a different chromosome!" //
+			Log.fatalError("Trying to assign Transcript to a Gene in a different chromosome!" //
 					+ "\n\tTranscript : " + tr.toStr()//
 					+ "\n\tGene       : " + gene.toStr() //
 			);
@@ -336,7 +337,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	@Override
 	public SnpEffectPredictor create() {
 		// Read gene intervals from a file
-		if (verbose) System.out.println("Reading " + version + " data file  : '" + fileName + "'");
+		if (verbose) Log.info("Reading " + version + " data file  : '" + fileName + "'");
 		try {
 			readGff();
 
@@ -346,12 +347,12 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			if (readSequences) readExonSequences();
 			else if (createRandSequences) createRandSequences();
 
-			if (verbose) System.out.println("\tTotal: " + totalSeqsAdded + " sequences added, " + totalSeqsIgnored + " sequences ignored.");
+			if (verbose) Log.info("\tTotal: " + totalSeqsAdded + " sequences added, " + totalSeqsIgnored + " sequences ignored.");
 
 			// Finish up (fix problems, add missing info, etc.)
 			finishUp();
 
-			if (verbose) System.out.println(config.getGenome());
+			if (verbose) Log.info(config.getGenome());
 		} catch (Exception e) {
 			if (verbose) e.printStackTrace();
 			throw new RuntimeException("Error reading file '" + fileName + "'\n" + e);
@@ -427,7 +428,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	@Override
 	protected void readExonSequences() {
 		// Read chromosome sequences and set exon sequences
-		if (verbose) System.out.print("\tReading sequences   :\n");
+		if (verbose) Log.info("\tReading sequences   :");
 		if (mainFileHasFasta) readExonSequencesGff(fileName); // Read from GFF file (it has a '##FASTA' delimiter)
 		else super.readExonSequences(); // Read them from FASTA file
 	}
@@ -436,6 +437,8 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	 * Read chromosome sequence from GFF3 file and extract exons' sequences
 	 */
 	protected void readExonSequencesGff(String gffFileName) {
+		if (debug) Log.info("Reading exon sequences from GFF file '" + gffFileName + "'");
+
 		try {
 			BufferedReader reader = Gpr.reader(gffFileName);
 
@@ -465,7 +468,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 					// Initialize buffer
 					chromoSb = new StringBuffer();
-					if (verbose) System.out.println("\t\tReading sequence '" + chromoName + "'");
+					if (verbose) Log.info("\t\tReading sequence '" + chromoName + "'");
 				} else chromoSb.append(line.trim());
 			}
 
@@ -484,6 +487,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 	 * Read GFF file from the beginning looking for 'typeToRead' elements
 	 */
 	protected void readGff() throws Exception {
+		if (verbose) Log.info("Reading file '" + fileName + "'");
 		int count = 0;
 		BufferedReader reader = Gpr.reader(fileName);
 		if (reader == null) return; // Error
@@ -507,10 +511,10 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				}
 			}
 		} catch (Exception e) {
-			error("Offending line (lineNum: " + lineNum + "): '" + line + "'", e);
+			Log.fatalError(e, "Offending line (lineNum: " + lineNum + "): '" + line + "'");
 		}
 
 		reader.close();
-		if (verbose) System.out.println((count > 0 ? "\n" : "") + "\tTotal: " + count + " markers added.");
+		if (verbose) Log.info((count > 0 ? "\n" : "") + "\tTotal: " + count + " markers added.");
 	}
 }

@@ -99,7 +99,7 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 
 		// Sanity check
 		if (chromosome == null) throw new RuntimeException("Could not find SOURCE feature");
-		if (verbose) System.err.println("Chromosome: '" + chromosome.getId() + "'\tlength: " + chromosome.size());
+		if (verbose) Log.info("Chromosome: '" + chromosome.getId() + "'\tlength: " + chromosome.size());
 
 		//---
 		// Add a genes, transcripts and CDSs
@@ -518,11 +518,11 @@ public abstract class SnpEffPredictorFactoryFeatures extends SnpEffPredictorFact
 	String sequence(Features features) {
 		String seq = features.getSequence();
 		if ((seq != null) && !seq.isEmpty()) return seq;
-		if (verbose) System.out.println("No sequence found in feature file.");
+		if (verbose) Log.info("No sequence found in feature file.");
 
 		// No sequence information in 'features' file? => Try to read a sequence from a fasta file
 		for (String fastaFile : config.getFileListGenomeFasta()) {
-			if (verbose) System.out.println("\tTrying fasta file '" + fastaFile + "'");
+			if (verbose) Log.info("\tTrying fasta file '" + fastaFile + "'");
 
 			if (Gpr.canRead(fastaFile)) {
 				seq = GprSeq.fastaSimpleRead(fastaFile);

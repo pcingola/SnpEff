@@ -67,12 +67,18 @@ public class Log {
 		System.exit(-1);
 	}
 
+	public static void fatalError(Throwable e, String message) {
+		System.err.println("FATAL ERROR" + message);
+		e.printStackTrace();
+		System.exit(-1);
+	}
+
 	/**
 	 * Show absolute timer value and a message on STDERR
 	 * @param msg
 	 */
 	public static void info(Object msg) {
-		System.err.println(timer + "\t" + (msg == null ? "null" : msg.toString()));
+		System.err.println(timer + " " + (msg == null ? "null" : msg.toString()));
 	}
 
 	public static void warning(String msg) {

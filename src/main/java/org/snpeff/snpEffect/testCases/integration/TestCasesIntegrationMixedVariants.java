@@ -27,7 +27,7 @@ public class TestCasesIntegrationMixedVariants extends TestCasesIntegrationBase 
 	public void compareVep(String genome, String vcf) {
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		comp.compareVep(vcf);
-		if (verbose) System.out.println(comp);
+		if (verbose) Log.info(comp);
 		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
@@ -41,9 +41,9 @@ public class TestCasesIntegrationMixedVariants extends TestCasesIntegrationBase 
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (Variant var : ve.variants()) {
-				if (verbose) System.out.println("\t" + var);
+				if (verbose) Log.info("\t" + var);
 			}
 		}
 	}
@@ -97,9 +97,9 @@ public class TestCasesIntegrationMixedVariants extends TestCasesIntegrationBase 
 		String vcfFileName = path("mixed_09.vcf");
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (Variant v : ve.variants()) {
-				if (verbose) System.out.println("\t\t" + v);
+				if (verbose) Log.info("\t\t" + v);
 				Assert.assertTrue("Variant is not MIXED", v.getVariantType() == VariantType.MIXED);
 			}
 		}

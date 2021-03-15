@@ -420,7 +420,7 @@ public class SnpEffCmdSpliceAnalysis extends SnpEff {
 					tr.add(bu12); // Add branch site to transcript
 					markersBed.add(bu12); // Add to bed file
 					countBranch++;
-					if (verbose) System.out.println("\tAdding BranchU12 '" + bu12 + "' to transcript " + tr.getId() + "\tDonor-acceptor pair: " + donorAcc + "\tObs/Expected: " + getPwmSet(donorAcc).countU12ObsExp());
+					if (verbose) Log.info("\tAdding BranchU12 '" + bu12 + "' to transcript " + tr.getId() + "\tDonor-acceptor pair: " + donorAcc + "\tObs/Expected: " + getPwmSet(donorAcc).countU12ObsExp());
 				}
 			}
 		}

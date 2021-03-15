@@ -95,12 +95,12 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		int count = 0;
 		for (VcfEntry ve : new VcfFileIterator(vcfFile)) {
 			for (VcfEffect eff : ve.getVcfEffects()) {
-				if (verbose) System.out.println(eff);
+				if (verbose) Log.info(eff);
 				if (eff.hasEffectType(EffectType.NEXT_PROT)) count++;
 			}
 		}
 
-		if (verbose) System.out.println("Count: " + count);
+		if (verbose) Log.info("Count: " + count);
 		Assert.assertTrue(count > 0);
 
 	}

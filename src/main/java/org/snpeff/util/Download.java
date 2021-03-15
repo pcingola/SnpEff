@@ -146,7 +146,7 @@ public class Download {
 
 			// Print info about resource
 			Date date = new Date(connection.getLastModified());
-			if (debug) Log.info("Copying file (type: " + connection.getContentType() + ", modified on: " + date + ")");
+			if (debug) Log.debug("Copying file (type: " + connection.getContentType() + ", modified on: " + date + ")");
 
 			// Open local file
 			if (verbose) Log.info("Local file name: '" + localFile + "'");
@@ -177,7 +177,7 @@ public class Download {
 					lastShown = total;
 				}
 			}
-			if (verbose) System.err.println("");
+			if (verbose) Log.info("");
 
 			// Close streams
 			is.close();
@@ -215,7 +215,7 @@ public class Download {
 			String entryPath[] = entryName.split("/"); // Entry name should be something like 'data/genomeVer/file';
 			String dataName = entryPath[entryPath.length - 2] + "/" + entryPath[entryPath.length - 1]; // remove the 'data/' part
 			entryName = dataDir + "/" + dataName; // Ad local 'data' dir
-			if (debug) Log.info("Local file name: '" + entryName + "'");
+			if (debug) Log.debug("Local file name: '" + entryName + "'");
 		}
 
 		return entryName;
@@ -346,7 +346,7 @@ public class Download {
 			while ((entry = zipIn.getNextEntry()) != null) {
 				if (!entry.isDirectory()) {
 					String localEntryName = parseEntryPath(entry.getName(), mainDir, dataDir);
-					if (debug) Log.info("Extracting file '" + entry.getName() + "' to '" + localEntryName + "'");
+					if (debug) Log.debug("Extracting file '" + entry.getName() + "' to '" + localEntryName + "'");
 					else if (verbose) Log.info("Extracting file '" + entry.getName() + "'");
 
 					// Backup entry

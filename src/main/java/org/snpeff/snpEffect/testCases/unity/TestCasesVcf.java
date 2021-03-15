@@ -64,7 +64,7 @@ public class TestCasesVcf extends TestCasesBase {
 		for (VcfEntry vcfEntry : vcf) {
 			for (Variant variant : vcfEntry.variants()) {
 				String variantStr = "chr" + variant.toStringOld();
-				if (verbose) System.out.println(variant + "\t'" + variantStr + "'");
+				if (verbose) Log.info(variant + "\t'" + variantStr + "'");
 				Assert.assertEquals(variant.getId(), variantStr);
 			}
 		}
@@ -98,10 +98,10 @@ public class TestCasesVcf extends TestCasesBase {
 		for (VcfEntry vcfEntry : vcf) {
 			for (VcfGenotype gen : vcfEntry) {
 				boolean var = gen.isVariant(); // This used to cause an exception
-				if (verbose) System.out.println("\t" + var + "\t" + gen);
+				if (verbose) Log.info("\t" + var + "\t" + gen);
 			}
 		}
-		if (verbose) System.out.println("");
+		if (verbose) Log.info("");
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class TestCasesVcf extends TestCasesBase {
 		vcf.setCreateChromos(true);
 
 		for (VcfEntry vcfEntry : vcf) {
-			if (verbose) System.out.println(vcfEntry);
+			if (verbose) Log.info(vcfEntry);
 
 			// Compare variants to what we expect
 			List<Variant> variants = vcfEntry.variants();
@@ -158,9 +158,9 @@ public class TestCasesVcf extends TestCasesBase {
 
 		// They are so long that they may produce 'Out of memory' errors
 		for (VcfEntry vcfEntry : vcf) {
-			if (verbose) System.out.println(vcfEntry.getChromosomeName() + ":" + vcfEntry.getStart());
+			if (verbose) Log.info(vcfEntry.getChromosomeName() + ":" + vcfEntry.getStart());
 			for (VcfGenotype vg : vcfEntry)
-				if (verbose) System.out.println("\t" + vg);
+				if (verbose) Log.info("\t" + vg);
 		}
 
 		// Too much time? we are doing something wrong...
@@ -181,12 +181,12 @@ public class TestCasesVcf extends TestCasesBase {
 
 		// They are so long that they may produce 'Out of memory' errors
 		for (VcfEntry vcfEntry : vcf) {
-			if (verbose) System.out.println(vcfEntry);
+			if (verbose) Log.info(vcfEntry);
 
 			boolean hasDel = false;
 			for (Variant sc : vcfEntry.variants()) {
 				hasDel |= sc.isDel();
-				if (verbose) System.out.println("\t" + sc + "\t" + sc.isDel());
+				if (verbose) Log.info("\t" + sc + "\t" + sc.isDel());
 			}
 
 			Assert.assertEquals(true, hasDel);
@@ -203,7 +203,7 @@ public class TestCasesVcf extends TestCasesBase {
 
 		VcfFileIterator vcf = new VcfFileIterator(file);
 		for (VcfEntry vcfEntry : vcf) {
-			if (verbose) System.out.println(vcfEntry);
+			if (verbose) Log.info(vcfEntry);
 			Assert.assertEquals(false, vcfEntry.isVariant());
 		}
 	}
@@ -218,7 +218,7 @@ public class TestCasesVcf extends TestCasesBase {
 
 		VcfFileIterator vcf = new VcfFileIterator(file);
 		for (VcfEntry vcfEntry : vcf) {
-			if (verbose) System.out.println(vcfEntry);
+			if (verbose) Log.info(vcfEntry);
 			Assert.assertEquals(0.0, vcfEntry.getQuality(), 10 ^ -6);
 		}
 	}
@@ -233,7 +233,7 @@ public class TestCasesVcf extends TestCasesBase {
 
 		VcfFileIterator vcf = new VcfFileIterator(file);
 		for (VcfEntry vcfEntry : vcf) {
-			if (verbose) System.out.println(vcfEntry);
+			if (verbose) Log.info(vcfEntry);
 			Assert.assertEquals("1\t11169327\t.\tT\t.\t.\tPASS\tAC=0;AF=0.00;AN=176;DP=7756;MQ0=0;set=ReferenceInAll\tGT:DP\t0/0:115", vcfEntry.toString());
 		}
 	}
@@ -248,7 +248,7 @@ public class TestCasesVcf extends TestCasesBase {
 
 		int numLines = 0;
 		for (VcfEntry vcfEntry : vcfFile) {
-			if (verbose) System.out.println(vcfEntry);
+			if (verbose) Log.info(vcfEntry);
 			numLines++;
 		}
 
@@ -292,7 +292,7 @@ public class TestCasesVcf extends TestCasesBase {
 		String testOut[] = { "Hi_", "Hi_how_", "Hi_how_are_", "Hi_how_are_you_", "Hi_how_are_you_doing_", "Hi_how_are_you_doing_today_._", "_.ann" };
 		for (int i = 0; i < testIn.length; i++) {
 			String safe = VcfEntry.vcfInfoKeySafe(testIn[i]);
-			if (verbose) System.out.println("'" + testIn[i] + "'\t'" + safe + "'\t'" + testOut[i] + "'");
+			if (verbose) Log.info("'" + testIn[i] + "'\t'" + safe + "'\t'" + testOut[i] + "'");
 			Assert.assertEquals(testOut[i], safe);
 		}
 	}
@@ -305,7 +305,7 @@ public class TestCasesVcf extends TestCasesBase {
 		String testOut[] = { "Hi_", "Hi_how_", "Hi_how_are_", "Hi_how_are_you_", "Hi_how_are_you_doing_", "Hi_how_are_you_doing_today_._" };
 		for (int i = 0; i < testIn.length; i++) {
 			String safe = VcfEntry.vcfInfoValueSafe(testIn[i]);
-			if (verbose) System.out.println("'" + testIn[i] + "'\t'" + safe + "'\t'" + testOut[i] + "'");
+			if (verbose) Log.info("'" + testIn[i] + "'\t'" + safe + "'\t'" + testOut[i] + "'");
 			Assert.assertEquals(testOut[i], safe);
 		}
 	}
@@ -329,7 +329,7 @@ public class TestCasesVcf extends TestCasesBase {
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			StringBuilder variantResult = new StringBuilder();
 
 			for (Variant v : ve.variants()) {
@@ -338,7 +338,7 @@ public class TestCasesVcf extends TestCasesBase {
 				String vs = v.toStringOld();
 				vs = vs.substring(vs.indexOf('_') + 1);
 
-				if (verbose) System.out.println("\t" + v + "\t" + v.toStringOld() + "\t" + vs);
+				if (verbose) Log.info("\t" + v + "\t" + v.toStringOld() + "\t" + vs);
 
 				variantResult.append(vs);
 			}
@@ -356,7 +356,7 @@ public class TestCasesVcf extends TestCasesBase {
 
 		String chrpos = "";
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			chrpos += ve.getChromosomeName() + ":" + ve.getStart() + " ";
 		}
 
@@ -374,7 +374,7 @@ public class TestCasesVcf extends TestCasesBase {
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 		}
 
 		Assert.assertTrue(timer.elapsed() < 1000); // We should be able to iterate the whole file in less than a second
@@ -392,7 +392,7 @@ public class TestCasesVcf extends TestCasesBase {
 		String expectedErrorMessage = "VCF file 'tests/unity/vcf/out_of_order.vcf' is not sorted, genomic position 20:2622038 is before 20:2621729";
 		try {
 			for (VcfEntry ve : vcf) {
-				if (verbose) System.out.println(ve);
+				if (verbose) Log.info(ve);
 			}
 		} catch (Throwable e) {
 			errorFound = e.getMessage().startsWith(expectedErrorMessage);
@@ -418,9 +418,9 @@ public class TestCasesVcf extends TestCasesBase {
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (VcfEffect veff : ve.getVcfEffects())
-				if (verbose) System.out.println("\t\t" + veff);
+				if (verbose) Log.info("\t\t" + veff);
 		}
 	}
 
@@ -435,7 +435,7 @@ public class TestCasesVcf extends TestCasesBase {
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		int start = -1;
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			if (start < 0) start = ve.getStart();
 
 			// Check
@@ -444,7 +444,7 @@ public class TestCasesVcf extends TestCasesBase {
 			boolean ok = false;
 			for (Variant var : ve.variants()) {
 				ok |= var.getVariantType().toString().equals(ve.getInfo("Type"));
-				if (verbose) System.out.println(ve + "\n\t\tSize   : " + ve.size() + "\n\t\tVariant: " + ve.isVariant() + "\n\t\tType   : " + var.getVariantType() + "\n");
+				if (verbose) Log.info(ve + "\n\t\tSize   : " + ve.size() + "\n\t\tVariant: " + ve.isVariant() + "\n\t\tType   : " + var.getVariantType() + "\n");
 			}
 			if (!ok) throw new RuntimeException("Variant type should be '" + ve.getInfo("Type") + "'\n" + ve);
 
@@ -471,14 +471,14 @@ public class TestCasesVcf extends TestCasesBase {
 			if (vcf.isHeadeSection()) {
 				// Add INFO field to header
 				vcf.getVcfHeader().addInfo(vhInfo);
-				if (verbose) System.out.println(vcf.getVcfHeader());
+				if (verbose) Log.info(vcf.getVcfHeader());
 				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader));
 			}
 
 			// Add INFO field values
 			String value = "" + ((int) (1000 * Math.random()));
 			ve.addInfo(infoFieldName, value);
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			// Check that 'info=value' is there
 			Assert.assertTrue(ve.toString().contains(infoFieldName + "=" + value));
@@ -509,12 +509,12 @@ public class TestCasesVcf extends TestCasesBase {
 			if (vcf.isHeadeSection()) {
 				// Add INFO field to header
 				vcf.getVcfHeader().addInfo(vhInfo);
-				if (verbose) System.out.println(vcf.getVcfHeader());
+				if (verbose) Log.info(vcf.getVcfHeader());
 				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader));
 
 				// Add second INFO field to header (should replace first one)
 				vcf.getVcfHeader().addInfo(vhInfo2);
-				if (verbose) System.out.println(vcf.getVcfHeader());
+				if (verbose) Log.info(vcf.getVcfHeader());
 				Assert.assertTrue(vcf.getVcfHeader().toString().contains(expectedHeader2)); // New header
 				Assert.assertTrue(!vcf.getVcfHeader().toString().contains(expectedHeader)); // Old header should be gone
 			}
@@ -522,7 +522,7 @@ public class TestCasesVcf extends TestCasesBase {
 			// Add INFO field values
 			String value = "" + ((int) (1000 * Math.random()));
 			ve.addInfo(infoFieldName, value);
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			// Check that 'info=value' is there
 			Assert.assertTrue(ve.toString().contains(infoFieldName + "=" + value));
@@ -553,7 +553,7 @@ public class TestCasesVcf extends TestCasesBase {
 
 			// Replace value
 			ve.addInfo(infoKey, infoValue);
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			// Check that new 'key=value' is there
 			String keyVal = infoKey + "=" + infoValue;
@@ -574,10 +574,10 @@ public class TestCasesVcf extends TestCasesBase {
 		VcfFileIterator vcf = new VcfFileIterator(fileName);
 
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
-				if (verbose) System.out.println("\t" + veff);
+				if (verbose) Log.info("\t" + veff);
 
 				// Check
 				Assert.assertEquals(EffectType.UTR_5_DELETED.toString(), veff.getEffectTypes().get(0).toString());
@@ -597,25 +597,25 @@ public class TestCasesVcf extends TestCasesBase {
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFileName);
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			// Check variants
 			// The last variant is "<NON_REF>" which is interpreted as non-variant (it gives no information)
 			int countNonVariants = 0;
 			for (Variant var : ve.variants()) {
-				if (verbose) System.out.println("\t" + var);
+				if (verbose) Log.info("\t" + var);
 				if (!var.isVariant()) countNonVariants++;
 			}
 			Assert.assertEquals(1, countNonVariants);
 
 			// Check that we can parse genotypes
 			for (VcfGenotype vgt : ve.getVcfGenotypes()) {
-				if (verbose) System.out.println("\t\tVCF_GT: " + vgt);
+				if (verbose) Log.info("\t\tVCF_GT: " + vgt);
 			}
 
 			// Check GT score
 			for (byte gt : ve.getGenotypesScores()) {
-				if (verbose) System.out.println("\t\tGT    : " + gt);
+				if (verbose) Log.info("\t\tGT    : " + gt);
 				Assert.assertEquals(1, gt);
 			}
 		}
@@ -628,9 +628,9 @@ public class TestCasesVcf extends TestCasesBase {
 
 		int countVariants = 0;
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			for (Variant v : ve.variants()) {
-				if (verbose) System.out.println("\t" + v + "\tis Variant: " + v.isVariant());
+				if (verbose) Log.info("\t" + v + "\tis Variant: " + v.isVariant());
 				if (v.isVariant()) countVariants++;
 			}
 		}
@@ -658,11 +658,11 @@ public class TestCasesVcf extends TestCasesBase {
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			boolean ok = false;
 			for (Variant var : ve.variants()) {
-				if (verbose) System.out.println("\t" + var.getVariantType() + "\t" + var);
+				if (verbose) Log.info("\t" + var.getVariantType() + "\t" + var);
 				Assert.assertEquals("Variant type is not 'BND'", VariantType.BND, var.getVariantType());
 				ok = true;
 			}
@@ -686,10 +686,10 @@ public class TestCasesVcf extends TestCasesBase {
 
 		VcfFileIterator vcf = new VcfFileIterator(vcfFile);
 		for (VcfEntry ve : vcf) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 			boolean ok = false;
 			for (Variant var : ve.variants()) {
-				if (verbose) System.out.println("\t" + var.getVariantType() + "\t" + var);
+				if (verbose) Log.info("\t" + var.getVariantType() + "\t" + var);
 				Assert.assertEquals("Variant type is not 'BND'", VariantType.BND, var.getVariantType());
 
 				VariantBnd vbnd = (VariantBnd) var;

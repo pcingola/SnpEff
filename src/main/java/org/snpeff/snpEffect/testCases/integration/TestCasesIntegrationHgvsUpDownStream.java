@@ -27,7 +27,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 		List<VcfEntry> list = snpEffect("testHg19Chr2", path("hgvs_upstream.vcf"), null);
 
 		for (VcfEntry ve : list) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals("NM_000463.2")) {
@@ -54,7 +54,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 		List<VcfEntry> list = snpEffect("testHg19Chr2", path("hgvs_downstream.vcf"), null);
 
 		for (VcfEntry ve : list) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals("NM_000463.2")) {
@@ -81,7 +81,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 		List<VcfEntry> list = snpEffect("testHg3765Chr22", path("hgvs_upstream_del.vcf"), null);
 
 		for (VcfEntry ve : list) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals("ENST00000404751")) {
@@ -108,7 +108,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 		List<VcfEntry> list = snpEffect("testHg19Chr17", path("hgvs_upstream_negative_strand.vcf"), null);
 
 		for (VcfEntry ve : list) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals("NM_000199.3")) {
@@ -135,7 +135,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 		List<VcfEntry> list = snpEffect("testHg19Chr17", path("hgvs_downstream_negative_strand.vcf"), null);
 
 		for (VcfEntry ve : list) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getTranscriptId().equals("NM_000199.3")) {

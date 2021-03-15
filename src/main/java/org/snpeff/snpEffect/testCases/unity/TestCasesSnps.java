@@ -51,7 +51,7 @@ public class TestCasesSnps extends TestCasesBase {
 		for (int i = 0; i < N; i++) {
 			initSnpEffPredictor();
 			if (debug) System.out.println("SNP Test iteration: " + i + "\n" + transcript);
-			else if (verbose) System.out.println("SNP Test iteration: " + i + "\t" + transcript.getStrand() + "\t" + transcript.cds());
+			else if (verbose) Log.info("SNP Test iteration: " + i + "\t" + transcript.getStrand() + "\t" + transcript.cds());
 			else Gpr.showMark(i + 1, 1);
 
 			int cdsBaseNum = 0;

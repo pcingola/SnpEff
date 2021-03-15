@@ -68,16 +68,16 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 
 		int countCancer = 0, countCancerWarnings = 0;
 		for (VcfEntry ve : vcfEnties) {
-			if (verbose) System.out.println(ve);
+			if (verbose) Log.info(ve);
 
 			// Get first effect (there should be only one)
 			List<VcfEffect> veffs = ve.getVcfEffects();
 
 			for (VcfEffect veff : veffs) {
-				if (verbose) System.out.println("\t" + veff.getAllele() + "\t" + veff);
+				if (verbose) Log.info("\t" + veff.getAllele() + "\t" + veff);
 				if (veff.getAllele().indexOf('-') > 0) {
 					countCancer++;
-					if (verbose) System.out.println("\t\t" + veff.getErrorsWarning());
+					if (verbose) Log.info("\t\t" + veff.getErrorsWarning());
 					if ((veff.getErrorsWarning() != null) && (!veff.getErrorsWarning().isEmpty())) countCancerWarnings++;
 				}
 			}

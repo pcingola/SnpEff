@@ -142,6 +142,8 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 			return false;
 		}
 
+		if (Config.get().isDebug()) Log.debug("Frame correction: " + this.toStr());
+
 		// Correct start or end coordinates
 		if (isStrandPlus()) start += frameCorrection;
 		else end -= frameCorrection;

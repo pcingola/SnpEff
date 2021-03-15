@@ -70,7 +70,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 				String basesOri = seq.substring(randPos, randPos + randLen);
 				String basesBin = bseq.getBases(randPos, randLen);
 				Assert.assertEquals(basesOri, basesBin);
-				if (verbose) System.out.println("randDnaSeqGetBasesTest:\tPos: " + randPos + "\t" + "Len: " + randLen + "\t'" + basesOri + "'\t=\t'" + basesBin + "'");
+				if (verbose) Log.info("randDnaSeqGetBasesTest:\tPos: " + randPos + "\t" + "Len: " + randLen + "\t'" + basesOri + "'\t=\t'" + basesBin + "'");
 			}
 		}
 	}
@@ -90,7 +90,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 			int len = (rand.nextInt() & lenMask) + 10; // Randomly select sequence length
 			seq = randSeq(len, rand); // Create a random sequence
 
-			if (verbose) System.out.println("DnaSequence test:" + t + "\tlen:" + len + "\t" + seq);
+			if (verbose) Log.info("DnaSequence test:" + t + "\tlen:" + len + "\t" + seq);
 			DnaSequence bseq = new DnaSequence(seq);
 
 			// Retrieve numTestsPerSeq random bases from the sequence
@@ -117,7 +117,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 			int len = (rand.nextInt() & lenMask) + 10; // Randomly select sequence length
 			seq = randSeq(len, rand); // Create a random sequence
 
-			if (verbose) System.out.println("DnaSequence test:" + t + "\tlen:" + len + "\t" + seq);
+			if (verbose) Log.info("DnaSequence test:" + t + "\tlen:" + len + "\t" + seq);
 			DnaSequence bseq = new DnaSequence(seq);
 			Assert.assertEquals(seq, bseq.toString());
 		}
@@ -155,7 +155,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 			DnaSequence bseq = new DnaSequence(seq);
 
 			// Replace numTestsPerSeq random bases from the sequence
-			if (verbose) System.out.println("randReplaceBaseTest\nOri    :\t" + seq);
+			if (verbose) Log.info("randReplaceBaseTest\nOri    :\t" + seq);
 			for (int i = 0; i < numTestsPerSeq; i++) {
 				// Random position
 				int randPos = rand.nextInt(len);
@@ -175,7 +175,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 
 				// Replace i DnaSequence
 				bseq.setBase(randPos, randBase);
-				if (verbose) System.out.println("Changed:\t" + seq + "\tpos: " + randPos + "\trandbase: " + randBase + "\n\t\t" + bseq);
+				if (verbose) Log.info("Changed:\t" + seq + "\tpos: " + randPos + "\trandbase: " + randBase + "\n\t\t" + bseq);
 
 				// Compare results
 				Assert.assertEquals(seq, bseq.toString());
@@ -215,7 +215,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 			qual = randQual(len, rand); // Create a random quality
 			String fullSeq = seq + "\t" + qual;
 
-			if (verbose) System.out.println("DnaAndQualitySequence test:" + t + "\tlen:" + len + "\t" + seq);
+			if (verbose) Log.info("DnaAndQualitySequence test:" + t + "\tlen:" + len + "\t" + seq);
 			DnaAndQualitySequence bseq = new DnaAndQualitySequence(seq, qual, FastqVariant.FASTQ_SANGER);
 			if (!fullSeq.equals(bseq.toString())) throw new RuntimeException("Sequences do not match:\n\tOriginal:\t" + fullSeq + "\n\tDnaAndQSeq:\t" + bseq);
 		}
@@ -325,7 +325,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 			String seq = seq1 + gapStr + seq2;
 
 			DnaSequencePe bseqpe = new DnaSequencePe(seq1, seq2, gap);
-			if (verbose) System.out.println("PE test: " + t + "\t" + bseqpe);
+			if (verbose) Log.info("PE test: " + t + "\t" + bseqpe);
 
 			if (!bseqpe.toString().equals(seq)) throw new RuntimeException("Sequences do not match:\n\t" + seq + "\n\t" + bseqpe);
 		}
@@ -341,7 +341,7 @@ public class TestCasesDnaSequence extends TestCasesBase {
 		StringBuilder sb = new StringBuilder();
 		for (Fastq fq : new FastqFileIterator(fastqFileName, FastqVariant.FASTQ_ILLUMINA))
 			sb.append(fq.getSequence() + "\t" + fq.getQuality() + "\n");
-		if (verbose) System.out.println("Fastq test:\n" + sb);
+		if (verbose) Log.info("Fastq test:\n" + sb);
 
 		// Read txt file
 		String txt = Gpr.readFile(txtFileName);

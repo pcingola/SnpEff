@@ -48,7 +48,7 @@ public class TestCasesIntervals extends TestCasesBase {
 		boolean ok = false;
 		for (VariantEffect chEff : resultsList) {
 			String resStr = chEff.toStringSimple(!useSimple);
-			if (verbose) System.out.println(variant + "\t'" + resStr + "'");
+			if (verbose) Log.info(variant + "\t'" + resStr + "'");
 
 			String effTrId = chEff.getMarker().findParent(Transcript.class).getId();
 			if ((transcriptId == null) || (transcriptId.equals(effTrId))) {
@@ -95,7 +95,7 @@ public class TestCasesIntervals extends TestCasesBase {
 
 		String sequence = new String(bases);
 		DnaSequence DnaSequence = new DnaSequence(sequence);
-		if (verbose) System.out.println("DnaSequence (len:" + len + ") : " + DnaSequence);
+		if (verbose) Log.info("DnaSequence (len:" + len + ") : " + DnaSequence);
 
 		for (int i = 0; i < bases.length; i++) {
 			char base = Character.toUpperCase(DnaSequence.getBase(i));
@@ -190,7 +190,7 @@ public class TestCasesIntervals extends TestCasesBase {
 		initRand();
 		Markers intervals = randomIntervals(20, maxLen, 10, 2);
 		Markers merge = intervals.merge();
-		if (verbose) System.out.println("Merge :\n" + merge.toStringAsciiArt(maxLen));
+		if (verbose) Log.info("Merge :\n" + merge.toStringAsciiArt(maxLen));
 		compareToFile(merge.toStringTxt(), path("test_04.txt"));
 	}
 
@@ -283,7 +283,7 @@ public class TestCasesIntervals extends TestCasesBase {
 		Markers minus = intervals.minus(intervals2);
 		Assert.assertEquals(0, minus.size());
 
-		if (verbose) System.out.println(minus.toStringAsciiArt(maxLen));
+		if (verbose) Log.info(minus.toStringAsciiArt(maxLen));
 	}
 
 	/**
@@ -304,7 +304,7 @@ public class TestCasesIntervals extends TestCasesBase {
 		Markers minus = intervals.minus(intervals2);
 		Assert.assertEquals(0, minus.size());
 
-		if (verbose) System.out.println(minus.toStringAsciiArt(maxLen));
+		if (verbose) Log.info(minus.toStringAsciiArt(maxLen));
 	}
 
 	/**
@@ -328,7 +328,7 @@ public class TestCasesIntervals extends TestCasesBase {
 		Assert.assertEquals(51, minusInt.getStart());
 		Assert.assertEquals(90, minusInt.getEnd());
 
-		if (verbose) System.out.println(minus.toStringAsciiArt(maxLen));
+		if (verbose) Log.info(minus.toStringAsciiArt(maxLen));
 	}
 
 	/**
@@ -348,7 +348,7 @@ public class TestCasesIntervals extends TestCasesBase {
 
 		Markers minus = intervals.minus(intervals2);
 
-		if (verbose) System.out.println(minus.toStringAsciiArt(maxLen));
+		if (verbose) Log.info(minus.toStringAsciiArt(maxLen));
 
 		Assert.assertEquals(1, minus.size());
 		Marker minusInt = minus.iterator().next();
@@ -373,7 +373,7 @@ public class TestCasesIntervals extends TestCasesBase {
 
 		Markers minus = intervals.minus(intervals2);
 
-		if (verbose) System.out.println(minus.toStringAsciiArt(maxLen));
+		if (verbose) Log.info(minus.toStringAsciiArt(maxLen));
 
 		Assert.assertEquals(2, minus.size());
 		Iterator<Marker> it = minus.iterator();

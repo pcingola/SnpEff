@@ -38,7 +38,7 @@ public class TestCasesIntegrationMnp extends TestCasesIntegrationBase {
 			String aa = eff.getAa();
 			String aaNumStr = aa.substring(1, aa.length() - 1);
 			int aanum = Gpr.parseIntSafe(aaNumStr);
-			if (verbose) System.out.println("AA: '" + eff.getAa() + "'\tAA Num Str: '" + aaNumStr + "'\teff: " + eff);
+			if (verbose) Log.info("AA: '" + eff.getAa() + "'\tAA Num Str: '" + aaNumStr + "'\teff: " + eff);
 
 			if (aanum <= 0) throw new RuntimeException("Missing AA number!");
 		}
