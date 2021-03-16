@@ -506,6 +506,16 @@ void downloadOneSet(string setToDownload) {
 }
 
 #-------------------------------------------------------------------------------
+# Get Azure query string from azure keys file, if not already defined
+#-------------------------------------------------------------------------------
+string getAzureQueryString(string type) {
+	if( !azureQueryString.isEmpty() ) return azureQueryString
+	println "Reading keys from '$azureKeysFile'"
+	azureKeys := azureKeysFile.config()
+	return azureKeys{"$type\_query_string"}
+}
+
+#-------------------------------------------------------------------------------
 # Inger coordinates type fr huma genome: 'GRCh37' or 'GRCh38'
 #-------------------------------------------------------------------------------
 string grch(string hg) {
@@ -592,21 +602,17 @@ void runTestsSnpEffUnity() {
 # Upload core files to Azure
 #-------------------------------------------------------------------------------
 void uploadCore2Azure() {
-	if( azureQueryString.isEmpty() ) {
-		println "Reading keys from '$azureKeysFile'"
-		azureKeys := azureKeysFile.config()
-		azureQueryString = azureKeys{'versions_query_string'}
-	}
+	aqs := getAzureQueryString('versions')
 	zip := "snpEff_v" + versionSubUnd() + "_core.zip"
 	zipLatest := "snpEff_latest_core.zip"
 	azureContainer = 'versions'
-	sys azcopy cp $zip       "$azureBlobEndpoint/$azureContainer/$zip$azureQueryString"
-	sys azcopy cp $zipLatest "$azureBlobEndpoint/$azureContainer/$zipLatest$azureQueryString"
+	sys azcopy cp $zip       "$azureBlobEndpoint/$azureContainer/$zip$aqs"
+	sys azcopy cp $zipLatest "$azureBlobEndpoint/$azureContainer/$zipLatest$aqs"
 	# Add version file
 	htmlDir := "$HOME/workspace/SnpEff/docs"
 	verFile := htmlDir.createVersionFile()
 	verBase := verFile.baseName()
-	sys azcopy cp $verFile "$azureBlobEndpoint/$azureContainer/$verBase$azureQueryString"
+	sys azcopy cp $verFile "$azureBlobEndpoint/$azureContainer/$verBase$aqs"
 }
 
 #-------------------------------------------------------------------------------
@@ -637,10 +643,10 @@ void uploadDbNsfp2Gdrive() {
 # Upload database files to Azure
 #-------------------------------------------------------------------------------
 void uploadDbs2Azure() {
-	if( azureQueryString.isEmpty() ) error("Command line option '-azureQueryString' must be provided")
+	aqs := getAzureQueryString('databases')
 	ver := 'v' + versionUnd()
 	sys ln -s $dirZip $ver || true
-	sys azcopy cp $ver/ "$azureBlobEndpoint/$azureContainer/$azureQueryString" --recursive
+	sys azcopy cp $ver/ "$azureBlobEndpoint/$azureContainer/$aqs" --recursive
 }
 
 #-------------------------------------------------------------------------------
@@ -656,10 +662,10 @@ void uploadDbs2Sf() {
 # Upload core development files to azure
 #-------------------------------------------------------------------------------
 void uploadDev2Azure() {
-	if( azureQueryString.isEmpty() ) error("Command line option '-azureQueryString' must be provided")
+	aqs := getAzureQueryString('versions')
 	azureContainer = 'versions'
 	zipDev := "snpEff_development.zip"
-	sys azcopy cp $zipDev "$azureBlobEndpoint/$azureContainer/$zipDev$azureQueryString"
+	sys azcopy cp $zipDev "$azureBlobEndpoint/$azureContainer/$zipDev$aqs"
 }
 
 #-------------------------------------------------------------------------------
