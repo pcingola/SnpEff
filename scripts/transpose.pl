@@ -3,13 +3,14 @@
 
 use strict;
 
-my(%data);
+my(%data, $l);
 my($maxcol) = 0;
 my($rownum) = 0;
 
 # Read data
-while (<STDIN>) {
-	my(@row) = split /\t/;
+while($l = <STDIN>) {
+	chomp $l;
+	my(@row) = split /\t/, $l;
 	my($colnum) = 0;
 	foreach my $val (@row) { $data{$rownum}{$colnum++} = $val; }
 	$rownum++;
