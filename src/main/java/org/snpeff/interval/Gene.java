@@ -14,7 +14,6 @@ import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * Interval for a gene, as well as transcripts
@@ -96,17 +95,17 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		if (newStart < newEnd) {
 			// Change start?
 			if (start != newStart) {
+				if (Config.get().isVerbose()) Log.warning("Gene '" + id + "' (name:'" + geneName + "'), adjusting start coordinate from " + start + " to " + newStart);
 				start = newStart;
 				changed = true;
 			}
 
 			// Change end?
 			if (end != newEnd) {
+				if (Config.get().isVerbose()) Log.warning("Gene '" + id + "' (name:'" + geneName + "'), adjusting end coordinate from " + end + " to " + newEnd);
 				end = newEnd;
 				changed = true;
 			}
-		} else if (Config.get().isDebug()) {
-			Log.debug("Gene '" + id + "' (name:'" + geneName + "') not adjusted: " + this);
 		}
 
 		return changed;

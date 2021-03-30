@@ -211,7 +211,8 @@ public class LossOfFunction {
 		if (variantEffect.hasEffectType(EffectType.EXON_DELETED)) {
 			Variant variant = variantEffect.getVariant();
 			if (variant == null) throw new RuntimeException("Cannot retrieve 'variant' from EXON_DELETED effect!");
-			if (variant.includes(tr.getFirstCodingExon())) return true;
+			Exon firstExon = tr.getFirstCodingExon();
+			if (firstExon != null && variant.includes(firstExon)) return true;
 		}
 
 		// Fusion are loss of functions

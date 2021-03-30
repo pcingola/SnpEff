@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * A genomic interval.
- * 
+ *
  * Note: Intervals are assumed to be zero-based and inclusive
  *       i.e. an interval including the first base up to base X would
  *       be [0,X] NOT [1,X]
@@ -285,6 +285,13 @@ public class Interval implements Comparable<Interval>, Serializable, Cloneable {
 		}
 
 		return sb.toString();
+	}
+
+	/**
+	 * To string as a simple "chr:start-end" format
+	 */
+	public String toStrPos() {
+		return getChromosomeName() + ":" + (start + 1) + "-" + (end + 1);
 	}
 
 }

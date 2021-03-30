@@ -855,7 +855,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (pos <= ex.getEnd()) return pos;
 		}
 
-		System.err.println("WARNING: Cannot find first exonic position after " + pos + " for transcript '" + id + "'");
+		Log.warning("WARNING: Cannot find first exonic position after " + pos + " for transcript '" + id + "'");
 		return -1;
 	}
 
@@ -907,6 +907,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		if ((exons == null) || exons.isEmpty()) return false;
 
 		Exon exonFirst = getFirstCodingExon(); // Get first exon
+		if (exonFirst == null) return false;
 		if (exonFirst.getFrame() <= 0) return false; // Frame OK (or missing), nothing to do
 
 		// First exon is not zero? => Create a UTR5 prime to compensate
@@ -1134,7 +1135,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 				if (exon.intersects(cstart)) firstCodingExon = exon;
 
 			// Sanity check
-			if (firstCodingExon == null) throw new RuntimeException("Error: Cannot find first coding exon for transcript:\n" + this);
+			if (firstCodingExon == null) {
+				Gene g = (Gene) getParent();
+				Log.warning("Cannot find first coding exon for transcript '" + getId() + "', gene name '" + (g != null ? g.getGeneName() : "") + "', gene ID '" + (g != null ? g.getId() : "") + "'");
+			}
 		}
 		return firstCodingExon;
 	}

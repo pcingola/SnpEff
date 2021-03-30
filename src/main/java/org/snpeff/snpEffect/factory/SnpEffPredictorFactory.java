@@ -258,6 +258,10 @@ public abstract class SnpEffPredictorFactory {
 		for (Gene gene : config.getGenome().getGenes()) {
 			String chrName = gene.getChromosomeName();
 			Integer len = lenByChr.get(chrName);
+
+			Chromosome chr = gene.getChromosome();
+			if (chr.getEnd() > 0 && gene.getEnd() > chr.getEnd()) Log.warning("Chromosome '" + chr.getChromosomeName() + "' has end coordinate " + chr.getEnd() + ", but gene ID '" + gene.getId() + "' has end coordiante " + gene.getEnd());
+
 			int max = Math.max(gene.getEnd(), (len != null ? len : 0));
 			lenByChr.put(chrName, max);
 		}
@@ -271,7 +275,7 @@ public abstract class SnpEffPredictorFactory {
 				if (chr.size() <= 1) { // If start = end = 0, then size() is 1
 					chr.setEnd(lenByChr.get(chrName));
 					mark(adjusted++);
-				} else if (verbose) Log.info("\t\tChromosome '" + chr.getId() + "' has length of " + chr.size() + ", but genes end at " + lenByChr.get(chrName) + ". Assuming circular genome, not adjusting");
+				} else if (verbose) Log.info("\t\tChromosome '" + chr.getId() + "' has length of " + chr.size() + ", but genes end at " + lenByChr.get(chrName));
 			}
 		}
 	}
@@ -844,7 +848,7 @@ public abstract class SnpEffPredictorFactory {
 	 * @param msg
 	 */
 	void warning(String msg) {
-		if (verbose) Log.info("WARNING: " + msg + ". File '" + fileName + "' line " + lineNum + "\t'" + line + "'");
+		Log.warning(msg + ". File '" + fileName + "' line " + lineNum + "\t'" + line + "'");
 	}
 
 }

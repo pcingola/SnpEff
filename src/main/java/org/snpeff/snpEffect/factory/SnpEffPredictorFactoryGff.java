@@ -144,17 +144,29 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		return list.isEmpty() ? null : list;
 	}
 
+	protected Gene addGene(GffMarker gffMarker) {
+		return addGene(gffMarker, false);
+	}
+
 	/**
 	 * Create and add a gene based on GffMarker
 	 */
-	protected Gene addGene(GffMarker gffMarker) {
+	protected Gene addGene(GffMarker gffMarker, boolean findNextGeneId) {
 		BioType bioType = gffMarker.getGeneBiotype();
 
+		String geneIdOri = gffMarker.getGeneId();
+		String geneId = geneIdOri;
+
+		// Find a unique gene ID?
+		for (int count = 2; findNextGeneId && genesById.containsKey(geneId); count++)
+			geneId = geneIdOri + "_" + count;
+
+		// Create gene
 		Gene gene = new Gene(gffMarker.getChromosome() //
 				, gffMarker.getStart() //
 				, gffMarker.getEnd() //
 				, gffMarker.isStrandMinus() //
-				, gffMarker.getGeneId() //
+				, geneId //
 				, gffMarker.getGeneName() //
 				, bioType);
 
@@ -391,6 +403,19 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		// Find gene
 		Gene gene = findGene(gffMarker.getGeneId());
 		if (gene == null) gene = findGene(gffMarker.getId());
+
+		// Found a gene? Check if gene includes gffMarker
+		if (gene != null) {
+			if (!gene.includes(gffMarker)) {
+				// Gene does not include transcript? Create a new gene
+				Gene geneOri = gene;
+				gene = addGene(gffMarker, true);
+				warning("Gene '" + geneOri.getId() + "' (" + geneOri.toStrPos() + ")" //
+						+ " does not include '" + gffMarker.getId() + "' (" + gffMarker.toStrPos() + "). " //
+						+ "Created new gene '" + gene.getId() + "' (" + gene.toStrPos() + ")" //
+				);
+			}
+		}
 
 		// Add gene if needed
 		if (gene == null) gene = addGene(gffMarker);
