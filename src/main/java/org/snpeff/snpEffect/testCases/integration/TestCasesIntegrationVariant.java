@@ -14,6 +14,7 @@ import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryGtf22;
@@ -280,6 +281,8 @@ public class TestCasesIntegrationVariant extends TestCasesIntegrationBase {
 	@Test
 	public void test_28_Splice_mm37_ENSMUSG00000005763() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND);
+
 		//---
 		// Build snpEffect
 		//---

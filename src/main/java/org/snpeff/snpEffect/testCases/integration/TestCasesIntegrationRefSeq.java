@@ -7,6 +7,7 @@ import org.snpeff.SnpEff;
 import org.snpeff.align.SmithWaterman;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
@@ -29,6 +30,7 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 	@Test
 	public void test_01() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_FRAMES_ZERO);
 
 		/// Build SnpEffectPredictor using a RefSeq file
 		String genome = "hg19";
