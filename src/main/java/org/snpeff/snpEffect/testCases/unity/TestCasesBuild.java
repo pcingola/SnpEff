@@ -12,8 +12,6 @@ import junit.framework.Assert;
  */
 public class TestCasesBuild extends TestCasesBase {
 
-	boolean verbose = false;
-
 	@Test
 	public void test_01_chromoNamesDoNotMatch_Gff() {
 		Log.debug("Test");
@@ -22,14 +20,13 @@ public class TestCasesBuild extends TestCasesBase {
 		String gff = path("testChromoNamesDoNotMatch.genes.gff");
 
 		// Expected error message
-		String expectedError = "Error reading file 'tests/unity/build/testChromoNamesDoNotMatch.genes.gff'" //
-				+ "\njava.lang.RuntimeException: FATAL ERROR: Most Exons do not have sequences!\n" //
-				+ "There might be differences in the chromosome names used in the genes file ('tests/unity/build/testChromoNamesDoNotMatch.genes.gff')\n" //
-				+ "and the chromosme names used in the 'reference sequence' file.\n" //
-				+ "Please check that chromosome names in both files match.\n" //
-				+ "\tChromosome names missing in 'reference sequence' file:\t'1'\n" //
-				+ "\tChromosome names missing in 'genes' file             :\t'1ZZZ'\n" //"
-		;
+		String[] expectedErrorLines = { "Error reading file" //
+				, "Most Exons do not have sequences!" //
+				, "There might be differences in the chromosome names used in the genes file" //
+				, "and the chromosme names used in the 'reference sequence' file" //
+				, "Chromosome names missing in 'reference sequence' file:\t'1'" //
+				, "Chromosome names missing in 'genes' file             :\t'1ZZZ'\n" //
+		};
 
 		// Build
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
@@ -39,11 +36,13 @@ public class TestCasesBuild extends TestCasesBase {
 
 		// Run: We expect an error
 		try {
+			Log.setFatalErrorBehabiour(Log.FatalErrorBehabiour.EXCEPTION_QUIET);
 			sefGff.create();
 		} catch (Throwable t) {
-			String errmsg = t.getMessage().substring(0, expectedError.length());
-			if (verbose) t.printStackTrace();
-			Assert.assertEquals(expectedError, errmsg);
+			String errmsg = t.getMessage();
+			if (debug) Log.debug("ERROR MESSAGE: '" + errmsg + "'");
+			for (String errLine : expectedErrorLines)
+				Assert.assertTrue("Line not found: '" + errLine + "'", errmsg.indexOf(errLine) >= 0);
 			return;
 		}
 		throw new RuntimeException("Expected error not found!");
@@ -58,14 +57,14 @@ public class TestCasesBuild extends TestCasesBase {
 		String fasta = path("testChromoNamesDoNotMatch.fa");
 
 		// Expected error message
-		String expectedError = "Error reading file 'tests/unity/build/testChromoNamesDoNotMatch.genes.no_fasta.gff'" //
-				+ "\njava.lang.RuntimeException: FATAL ERROR: Most Exons do not have sequences!\n" //
-				+ "There might be differences in the chromosome names used in the genes file ('tests/unity/build/testChromoNamesDoNotMatch.genes.no_fasta.gff')\n" //
-				+ "and the chromosme names used in the 'reference sequence' file ('tests/unity/build/testChromoNamesDoNotMatch.fa').\n" //
-				+ "Please check that chromosome names in both files match.\n" //
-				+ "\tChromosome names missing in 'reference sequence' file:\t'1'\n" //
-				+ "\tChromosome names missing in 'genes' file             :\t'1ZZZ'\n" //"
-		;
+		String[] expectedErrorLines = { "Error reading file" //
+				, "Most Exons do not have sequences!" //
+				, "There might be differences in the chromosome names used in the genes file" //
+				, "and the chromosme names used in the 'reference sequence' file" //
+				, "Please check that chromosome names in both files match" //
+				, "Chromosome names missing in 'reference sequence' file:\t'1'" //
+				, "Chromosome names missing in 'genes' file             :\t'1ZZZ'" //"
+		};
 
 		// Build
 		Config config = new Config(genome, Config.DEFAULT_CONFIG_FILE);
@@ -76,12 +75,13 @@ public class TestCasesBuild extends TestCasesBase {
 
 		// Run: We expect an error
 		try {
+			Log.setFatalErrorBehabiour(Log.FatalErrorBehabiour.EXCEPTION_QUIET);
 			sefGff.create();
 		} catch (Throwable t) {
-			int len = Math.min(t.getMessage().length(), expectedError.length());
-			String errmsg = t.getMessage().substring(0, len);
-			if (verbose) t.printStackTrace();
-			Assert.assertEquals(expectedError, errmsg);
+			String errmsg = t.getMessage();
+			if (debug) Log.debug("ERROR MESSAGE: '" + errmsg + "'");
+			for (String errLine : expectedErrorLines)
+				Assert.assertTrue("Line not found: '" + errLine + "'", errmsg.indexOf(errLine) >= 0);
 			return;
 		}
 		throw new RuntimeException("Expected error not found!");
