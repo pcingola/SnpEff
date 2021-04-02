@@ -30,8 +30,10 @@ public class TestCasesIntegrationEmbl extends TestCasesIntegrationBase {
 		Exon.ToStringVersion = exonToStringVersionOri;
 	}
 
+	@Override
 	@Before
 	public void before() {
+		super.before();
 		exonToStringVersionOri = Exon.ToStringVersion;
 		Exon.ToStringVersion = 1; // Set "toString()" version
 	}

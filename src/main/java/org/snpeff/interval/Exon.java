@@ -138,7 +138,7 @@ public class Exon extends MarkerSeq implements MarkerWithFrame {
 
 		// Can correct?
 		if (size() <= frameCorrection) {
-			Log.debug("Exon too short (size: " + size() + "), cannot correct frame!\n" + this);
+			Log.warning(ErrorWarningType.WARNING_EXON_TOO_SHORT, "Exon too short (size: " + size() + "), cannot correct frame!\n" + this);
 			return false;
 		}
 

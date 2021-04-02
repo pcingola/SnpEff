@@ -98,6 +98,10 @@ public class Log {
 		}
 	}
 
+	public static Map<ErrorWarningType, Integer> getWarnCount() {
+		return warnCount;
+	}
+
 	/**
 	 * Show absolute timer value and a message on STDERR
 	 * @param msg
@@ -133,7 +137,14 @@ public class Log {
 		int count = warnCount.get(warnType);
 		warnCount.put(warnType, count + 1);
 
-		if (count < MAX_WARNINGS && !silenceWarning.contains(warnType)) System.err.println(warnType + ": " + msg);
+		if (silenceWarning.contains(warnType)) {
+			// Ignore this warning
+		} else if (count < MAX_WARNINGS) {
+			System.err.println(warnType + ": " + msg);
+		} else if (count == MAX_WARNINGS) {
+			System.err.println(warnType + ": " + msg);
+			System.err.println(warnType + ": Too many '" + warnType + "' warnings, no further warnings will be shown.");
+		}
 	}
 
 }

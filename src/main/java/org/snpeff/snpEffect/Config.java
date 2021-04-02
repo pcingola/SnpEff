@@ -21,10 +21,8 @@ import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
-import org.snpeff.stats.CountByType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 public class Config implements Serializable, Iterable<String> {
 
@@ -33,7 +31,6 @@ public class Config implements Serializable, Iterable<String> {
 	public static final String DEFAULT_CONFIG_FILE = "snpEff.config";
 	public static final String DEFAULT_DATA_DIR = "./data";
 	public static String GENOMES_DIR = "genomes"; // Directory has one genomes information (FASTA files)
-	public static int MAX_WARNING_COUNT = 20;
 	public static String DEFAULT_COORDINATES = "GRCh37";
 
 	// Keys in properties file
@@ -85,7 +82,6 @@ public class Config implements Serializable, Iterable<String> {
 	String databaseRepository = "";
 	String databaseRepositoryKey = "";
 	String versionsUrl = "";
-	CountByType warningsCounter = new CountByType();
 
 	public static Config get() {
 		return configInstance;
@@ -843,21 +839,5 @@ public class Config implements Serializable, Iterable<String> {
 			return s.substring(1, l - 1);
 		}
 		return s;
-	}
-
-	/**
-	 * Show a warning message and exit
-	 */
-	public void warning(String warningType, String details) {
-		long count = warningsCounter.inc(warningType);
-
-		if (debug || count < MAX_WARNING_COUNT) {
-			if (debug) Log.debug(warningType + details, 1);
-			else System.err.println(warningType + details);
-		} else if (count <= MAX_WARNING_COUNT) {
-			String msg = "Too many '" + warningType + "' warnings, no further warnings will be shown:\n" + warningType + details;
-			if (debug) Log.debug(msg, 1);
-			else System.err.println(msg);
-		}
 	}
 }

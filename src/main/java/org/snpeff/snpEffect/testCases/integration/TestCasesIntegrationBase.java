@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Before;
 import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Chromosome;
@@ -75,8 +76,6 @@ public class TestCasesIntegrationBase {
 		prefixes.add("TestsCase");
 		prefixes.add("Unit");
 		prefixes.add("Integration");
-
-		Log.reset();
 	}
 
 	/**
@@ -101,6 +100,11 @@ public class TestCasesIntegrationBase {
 		}
 
 		throw new RuntimeException("Could not apply any variant!");
+	}
+
+	@Before
+	public void before() {
+		Log.reset();
 	}
 
 	/**

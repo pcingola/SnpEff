@@ -1,8 +1,9 @@
 package org.snpeff.interval;
 
-import org.snpeff.SnpEff;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.ErrorWarningType;
+import org.snpeff.util.Log;
 
 /**
  * CDS: The coding region of a gene, also known as the coding sequence or CDS (from Coding DNA Sequence), is
@@ -43,7 +44,7 @@ public class Cds extends Marker implements MarkerWithFrame {
 
 		// Can correct?
 		if (size() <= frameCorrection) {
-			SnpEff.warning("CDS too short, cannot correct frame:", " frame size " + size() + ", frame correction " + frameCorrection + ", CDS: " + this);
+			Log.warning(ErrorWarningType.WARNING_CDS_TOO_SHORT, "CDS too short, cannot correct frame: frame size " + size() + ", frame correction " + frameCorrection + ", CDS: " + this);
 			return false;
 		}
 
@@ -78,7 +79,7 @@ public class Cds extends Marker implements MarkerWithFrame {
 	public String serializeSave(MarkerSerializer markerSerializer) {
 		return super.serializeSave(markerSerializer) //
 				+ "\t" + frame //
-				;
+		;
 	}
 
 	/**
@@ -98,7 +99,7 @@ public class Cds extends Marker implements MarkerWithFrame {
 				+ type //
 				+ ((id != null) && (id.length() > 0) ? " '" + id + "'" : "") //
 				+ ", frame: " + frame //
-				;
+		;
 	}
 
 }

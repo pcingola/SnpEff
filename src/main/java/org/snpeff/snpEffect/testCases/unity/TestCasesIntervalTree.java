@@ -36,6 +36,15 @@ public class TestCasesIntervalTree {
 		super();
 	}
 
+	@Before
+	public void before() {
+		int randSeed = 20151117;
+		rand = new Random(randSeed);
+		genome = new Genome();
+		chromosome = new Chromosome(genome, 0, CHR_SIZE, "1");
+		markers = createRandomMarkers();
+	}
+
 	/**
 	 * Perform a query using 'naive' lookup and interval forest.
 	 * Compare results and throw an exception if any difference exists
@@ -104,15 +113,6 @@ public class TestCasesIntervalTree {
 		}
 
 		return markers;
-	}
-
-	@Before
-	public void init() {
-		int randSeed = 20151117;
-		rand = new Random(randSeed);
-		genome = new Genome();
-		chromosome = new Chromosome(genome, 0, CHR_SIZE, "1");
-		markers = createRandomMarkers();
 	}
 
 	protected Itree newItree(Markers markers) {

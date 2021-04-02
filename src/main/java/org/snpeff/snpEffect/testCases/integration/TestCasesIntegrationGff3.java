@@ -11,6 +11,7 @@ import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.SpliceSite;
 import org.snpeff.interval.Transcript;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactory;
 import org.snpeff.util.Log;
@@ -35,8 +36,10 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 		Exon.ToStringVersion = exonToStringVersionOri;
 	}
 
+	@Override
 	@Before
 	public void before() {
+		super.before();
 		exonToStringVersionOri = Exon.ToStringVersion;
 		Exon.ToStringVersion = 1; // Set "toString()" version
 	}
@@ -71,6 +74,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	@Test
 	public void testCase_04_AthalianaTair10_AT5G66790() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND);
+
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testAthalianaTair10"; //"athalianaTair10";
 		String gff3File = path("AT5G66790.gff3");
@@ -81,6 +86,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	@Test
 	public void testCase_05_PaeruPA14muccA() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND);
+
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testPaeru.PA14";
 		String gff3File = path("paeru.PA14.muccA.gff");
@@ -117,6 +124,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	@Test
 	public void testCase_08_Vibrio() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND);
+
 		Exon.ToStringVersion = exonToStringVersionOri;
 		String genome = "testVibrio";
 		String gff3File = path("vibrio.gff3");
@@ -127,6 +136,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	@Test
 	public void testCase_09() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_FRAMES_ZERO);
 		String genome = "testAP";
 		String gff3File = path("testAP_genes.gff.gz");
 		String resultFile = path("testAP.txt");
@@ -157,8 +167,9 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 		}
 
 		// Show stderr and check message
-		System.err.println("STDERR:\n" + myErr);
-		Assert.assertTrue(myErr.toString().indexOf("WARNING: All frames are zero!") >= 0);
+		if (verbose) System.err.println("STDERR:\n" + myErr);
+
+		Assert.assertEquals("Expecting one warning 'WARNING_FRAMES_ZERO'", 1, (int) Log.getWarnCount().get(ErrorWarningType.WARNING_FRAMES_ZERO));
 	}
 
 	/**
@@ -167,6 +178,8 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 	@Test
 	public void testCase_10_MaizeZmB73() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_EXON_TOO_SHORT);
+		Log.silenceWarning(ErrorWarningType.WARNING_CDS_TOO_SHORT);
 		String genome = "testMaizeZmB73";
 		String gff3File = path("testMaizeZmB73.gff3");
 		String resultFile = path("testMaizeZmB73.txt");

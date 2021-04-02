@@ -26,6 +26,7 @@ import org.snpeff.motif.Pwm;
 import org.snpeff.pdb.DistanceResult;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.commandLine.CommandLine;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdAcat;
@@ -158,10 +159,6 @@ public class SnpEff implements CommandLine {
 		SnpEff snpEff = new SnpEff(args);
 		boolean ok = snpEff.run();
 		System.exit(ok ? 0 : -1);
-	}
-
-	public static void warning(String warningType, String details) {
-		Config.get().warning(warningType, details);
 	}
 
 	public SnpEff() {
@@ -623,7 +620,7 @@ public class SnpEff implements CommandLine {
 		// Sanity checks
 		String intFileName = config.getDirDataGenomeVersion() + "/" + SnpEffCmdPdb.PROTEIN_INTERACTION_FILE;
 		if (!Gpr.exists(intFileName)) {
-			if (debug) if (!Gpr.exists(intFileName)) warning("Warning: Cannot open interactions file ", intFileName);
+			if (debug) if (!Gpr.exists(intFileName)) Log.warning(ErrorWarningType.WARNING_FILE_NOT_FOUND, "Cannot open interactions file '" + intFileName + "'");
 			return;
 		}
 
@@ -710,8 +707,8 @@ public class SnpEff implements CommandLine {
 
 			// OK, we don't have motif annotations, no problem
 			if (debug) {
-				if (!Gpr.exists(pwmsFileName)) warning("Warning: Cannot open PWMs file ", pwmsFileName);
-				if (!Gpr.exists(motifBinFileName)) warning("Warning: Cannot open Motifs file ", motifBinFileName);
+				if (!Gpr.exists(pwmsFileName)) Log.warning(ErrorWarningType.WARNING_FILE_NOT_FOUND, "Cannot open PWMs file '" + pwmsFileName + "'");
+				if (!Gpr.exists(motifBinFileName)) Log.warning(ErrorWarningType.WARNING_FILE_NOT_FOUND, "Cannot open Motifs file '" + motifBinFileName + "'");
 			}
 			return;
 		}

@@ -343,7 +343,7 @@ public abstract class SnpEffPredictorFactory {
 
 		int countByFrameTotal = countByFrame[0] + countByFrame[1] + countByFrame[2];
 		int countByFrameNonZero = countByFrame[1] + countByFrame[2];
-		if ((countByFrameTotal >= MIN_TOTAL_FRAME_COUNT) && (countByFrameNonZero <= 0)) System.err.println("WARNING: All frames are zero! This seems rather odd, please check that 'frame' information in your 'genes' file is accurate.");
+		if ((countByFrameTotal >= MIN_TOTAL_FRAME_COUNT) && (countByFrameNonZero <= 0)) Log.warning(ErrorWarningType.WARNING_FRAMES_ZERO, "All frames are zero! This seems rather odd, please check that 'frame' information in your 'genes' file is accurate.");
 	}
 
 	/**

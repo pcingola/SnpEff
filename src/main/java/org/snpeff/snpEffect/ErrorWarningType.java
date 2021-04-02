@@ -21,6 +21,7 @@ public enum ErrorWarningType {
 	//
 	// Build errors and warnings
 	//
+	, WARNING_CDS_TOO_SHORT // CDS is too short and cannot be corrected
 	, WARNING_CHROMOSOME_NOT_FOUND // Chromosome not found
 	, WARNING_CHROMOSOME_CIRCULAR // Chromosome might be circular
 	, WARNING_CHROMOSOME_LENGTH // Chromosome length might be incorrect (e.g. genes have boundaries outside chromosome coordiantes)
@@ -29,15 +30,22 @@ public enum ErrorWarningType {
 	, WARNING_GENE_NOT_FOUND // Gene not found
 	, WARNING_EXON_NOT_FOUND // Could not find exon
 	, WARNING_EXON_SEQUENCE_LENGTH // Exon sequence doesn't match exon size
+	, WARNING_EXON_TOO_SHORT // Exon is too short, cannot be corrected
 	, WARNING_TRANSCRIPT_NOT_FOUND // Transcript not found
 	, WARNING_TRANSCRIPT_ID_DUPLICATE // Transcript ID already exists
 	, WARNING_CANNOT_ADD_UTR // UTR cannot be added
+	, WARNING_FRAMES_ZERO // Frames have zero values
 	//
 	// VCF
 	//
 	, WARNING_INVALID_INFO_KEY // INFO name has invalid characters
 	, WARNING_INVALID_INFO_VALUE // INFO value has invalid characters
 
+	//
+	// Other
+	//
+	, ERROR_FILE_NOT_FOUND // File not found, or cannot read it
+	, WARNING_FILE_NOT_FOUND // File not found, or cannot read it
 	;
 
 	public boolean isError() {
