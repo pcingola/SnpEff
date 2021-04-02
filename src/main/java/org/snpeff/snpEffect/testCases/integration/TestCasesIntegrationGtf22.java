@@ -37,6 +37,7 @@ public class TestCasesIntegrationGtf22 extends TestCasesIntegrationBase {
 	public void testCaseHg37_61_ENST00000250838() {
 		Log.debug("Test");
 		Log.silenceWarning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND);
+		Log.silenceWarning(ErrorWarningType.WARNING_FRAMES_ZERO);
 		String genome = "testHg37.61";
 		String gtfFile = path("ENST00000250838.gtf");
 		String fastaFile = path("chrY.fa.gz");

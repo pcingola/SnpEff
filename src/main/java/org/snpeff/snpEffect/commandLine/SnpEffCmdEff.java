@@ -58,6 +58,7 @@ import freemarker.template.TemplateException;
  */
 public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 
+	public static final String TEMPLATES_DIR = "src/main/resources";
 	public static final String SUMMARY_TEMPLATE = "snpEff_summary.ftl"; // Summary template file name
 	public static final String SUMMARY_CSV_TEMPLATE = "snpEff_csv_summary.ftl"; // Summary template file name
 	public static final String SUMMARY_GENES_TEMPLATE = "snpEff_genes.ftl"; // Genes template file name
@@ -972,11 +973,10 @@ public class SnpEffCmdEff extends SnpEff implements VcfAnnotator {
 			Configuration cfg = new Configuration();
 
 			// Specify the data source where the template files come from
-			if (useLocalTemplate) cfg.setDirectoryForTemplateLoading(new File("./templates/")); // Use local 'template' directory
+			if (useLocalTemplate) cfg.setDirectoryForTemplateLoading(new File(TEMPLATES_DIR)); // Use local 'template' directory
 			else cfg.setClassForTemplateLoading(SnpEffCmdEff.class, "/"); // Use current directory in JAR file
 
-			cfg.setObjectWrapper(new DefaultObjectWrapper()); // Specify how templates will see the data-model. This is
-																// an advanced topic...
+			cfg.setObjectWrapper(new DefaultObjectWrapper()); // Specify how templates will see the data-model. This is an advanced topic...
 			cfg.setLocale(java.util.Locale.US);
 			if (noCommas) cfg.setNumberFormat("0.######");
 
