@@ -89,7 +89,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				tr = findTranscript(trId);
 				if (tr == null) {
 					tr = addTranscript(gene, gffMarker, trId);
-					if (debug) warning("Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for this exon.");
+					warning("Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for " + gffMarker);
 				}
 			}
 
@@ -106,7 +106,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				tr = addTranscript(gene, gffMarker, trId);
 
 				// Add gene & transcript
-				if (debug) warning("Cannot find transcript '" + parentId + "'. Created transcript '" + tr.getId() + "' and gene '" + gene.getId() + "' for this exon");
+				warning("Cannot find transcript '" + parentId + "'. Created transcript '" + tr.getId() + "' and gene '" + gene.getId() + "' for " + gffMarker);
 			}
 
 			// This can be added in different ways
@@ -159,7 +159,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 		// Find a unique gene ID?
 		for (int count = 2; findNextGeneId && genesById.containsKey(geneId); count++)
-			geneId = geneIdOri + "_" + count;
+			geneId = geneIdOri + "." + count;
 
 		// Create gene
 		Gene gene = new Gene(gffMarker.getChromosome() //

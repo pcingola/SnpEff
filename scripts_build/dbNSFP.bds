@@ -1,0 +1,110 @@
+#!/usr/bin/env bds
+
+version := "4.1a"	help dbNSFP Version
+genome  := "GRCh38"	help Genome name
+dirDb   := "$HOME/snpEff/db/$genome/dbNSFP"	help Path to database directory
+dbNsfp  := "$dirDb/dbNSFP$version\.txt.gz"	help dbNSFP output file name
+cpusCompress := 8	help Number of CPUs used for compression
+
+genomeHg19 := "GRCh37"	help Genome name for hg19 coordinates
+dirDbHg19  := "$HOME/snpEff/db/$genomeHg19/dbNSFP"	help Path to database directory
+dbNsfpHg19  := "$dirDbHg19/dbNSFP$version\.txt.gz"	help dbNSFP output file name
+
+scriptsDir := programPath.dirName()		help Path to helper scripts
+
+# Chromosomes
+chrs := ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y', 'M']
+
+# Create a compressed (bgzip) and indexed (tabix) dbNSFP file
+string compressAndIndex(string header, string[] txts, string dbNsfp) {
+	println "Compress + index:\n\t: dbNsfp: $dbNsfp\n\tfiles: $txts"
+	# Compress
+	txtsStr := txts.join(' ')
+	task(dbNsfp <- txts, cpus := cpusCompress, taskName := "compress") {
+		sys cat '$header' $txtsStr | bgzip -@ $cpusCompress -c > '$dbNsfp'
+	}
+
+	# Create index
+	tbidx := dbNsfp + '.tbi'
+	task(tbidx <- dbNsfp, taskName := "index") {
+		sys tabix -s 1 -b 2 -e 2 $dbNsfp
+	}
+
+	return dbNsfp
+}
+
+# Create dnNsfp file from a list of unsorted files
+void createDbNsfp(string[] files, string dbNsfp) {
+	header := createHeader(files)
+	txts := sortChromos(files)
+	compressAndIndex(header, txts, dbNsfp)
+}
+
+# Create a dbNFSP heade file
+string createHeader(string[] files) {
+	header := "$dirDb/dbNSFP$version\.header"
+	if( header.exists() ) return header
+	println "Creating header file 'header'"
+	file := files[0]
+	cat := whichCat(file)
+	sys ($cat '$file' || true) | head -n 1 > '$header'
+	return header
+}
+
+# Filter files in a directory matching 'prefix' and 'suffix'
+string[] filterFiles(string dbDir, string prefix, string suffix) {
+	string[] files
+	for(string file : dirDb.dir()) {
+		if(file.startsWith(prefix) && file.endsWith(suffix)) files += "$dbDir/$file"
+	}
+	return files
+}
+
+# Sort chromosome files
+# Returns: list of sorted files
+string[] sortChromos(string[] files) {
+	println "Sorting files: $files"
+	string[] txts # List of sorted files
+	for(string file : files) {
+		# File names
+		println("File: $file")
+		sorted := file.dirName() + '/' + file.baseName() + ".sort.txt"
+		txts += sorted
+		
+		# Sort file
+		cat := whichCat(file)
+		task(sorted <- file, cpus := 2, mem := 10*G, taskName := "sort_" + file.baseName()) {
+			sys $cat '$file' \
+				| $scriptsDir/dbNSFP_sort.pl \
+				| grep -v "^#" \
+				> '$sorted'
+		}
+	}
+
+	return txts
+}
+
+# Split dbNsfp into chromosome files from hg19 mapping column
+string[] splitHg19Chromos(string dbDir, string dbNsfp) {
+	println("Splitting by hg19 chromosomes")
+	string[] chrFiles
+	for(string chr: chrs) chrFiles += "$dbDir/dbNSFP.split.$chr\.txt"
+	cat := whichCat(dbNsfp)
+	task(chrFiles <- dbNsfp, taskName := "split_hg19_chrs") {
+		sys cd '$dbDir' ; $cat '$dbNsfp' | $scriptsDir/dbNSFP_split_by_chr.pl 7 8
+	}
+	return chrFiles
+}
+
+# Which 'cat' command to use for this file?
+string whichCat(string file) return (file.endsWith('gz') ? 'gunzip -c' : 'cat')
+
+#---
+# Main
+#---
+files := filterFiles(dirDb, "dbNSFP$version\_variant", ".gz")
+createDbNsfp(files, dbNsfp)
+
+# Build hg19 version
+filesHg19 := splitHg19Chromos(dirDbHg19, dbNsfp)
+createDbNsfp(filesHg19, dbNsfpHg19)
