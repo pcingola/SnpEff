@@ -9,8 +9,8 @@ import org.snpeff.interval.tree.Itree;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Log;
@@ -95,14 +95,14 @@ public class Gene extends IntervalAndSubIntervals<Transcript> implements Seriali
 		if (newStart < newEnd) {
 			// Change start?
 			if (start != newStart) {
-				if (Config.get().isVerbose()) Log.warning("Gene '" + id + "' (name:'" + geneName + "'), adjusting start coordinate from " + start + " to " + newStart);
+				if (Config.get().isVerbose()) Log.warning(ErrorWarningType.WARNING_GENE_COORDINATES, "Gene '" + id + "' (name:'" + geneName + "'), adjusting start coordinate from " + start + " to " + newStart);
 				start = newStart;
 				changed = true;
 			}
 
 			// Change end?
 			if (end != newEnd) {
-				if (Config.get().isVerbose()) Log.warning("Gene '" + id + "' (name:'" + geneName + "'), adjusting end coordinate from " + end + " to " + newEnd);
+				if (Config.get().isVerbose()) Log.warning(ErrorWarningType.WARNING_GENE_COORDINATES, "Gene '" + id + "' (name:'" + geneName + "'), adjusting end coordinate from " + end + " to " + newEnd);
 				end = newEnd;
 				changed = true;
 			}

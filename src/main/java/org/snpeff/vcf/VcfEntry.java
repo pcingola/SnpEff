@@ -18,6 +18,7 @@ import org.snpeff.interval.Marker;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.Variant.VariantType;
 import org.snpeff.interval.VariantBnd;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.LossOfFunction;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
@@ -260,8 +261,8 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	 * @param value : Can be null if it is a boolean field.
 	 */
 	public void addInfo(String key, String value) {
-		if (!isValidInfoKey(key)) Log.warning("Illegal INFO key", "Illegal INFO key / name. Key: \"" + key + "\" does not match regular expression ^[A-Za-z_][0-9A-Za-z_.]*$");
-		if (!isValidInfoValue(value)) Log.warning("Illegal INFO value", "No white-space, semi-colons, or equals-signs are permitted in INFO field values. Name:\"" + key + "\" Value:\"" + value + "\"");
+		if (!isValidInfoKey(key)) Log.warning(ErrorWarningType.WARNING_INVALID_INFO_KEY, "Illegal INFO key / name. Key: \"" + key + "\" does not match regular expression ^[A-Za-z_][0-9A-Za-z_.]*$");
+		if (!isValidInfoValue(value)) Log.warning(ErrorWarningType.WARNING_INVALID_INFO_VALUE, "No white-space, semi-colons, or equals-signs are permitted in INFO field values. Name:\"" + key + "\" Value:\"" + value + "\"");
 
 		// Remove previous 'key' for INFO field?
 		removeInfo(key);

@@ -7,7 +7,7 @@ import org.snpeff.interval.codonChange.CodonChange;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.util.Log;
 

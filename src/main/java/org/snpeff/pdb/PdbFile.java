@@ -28,8 +28,15 @@ public class PdbFile {
 	 */
 	public Structure getStructure(String filename) throws IOException {
 		File file = new File(filename);
-		//		System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
+
+		// Set property to avoid "Illegal reflective access"
+		//		WARNING: An illegal reflective access operation has occurred
+		//		WARNING: Illegal reflective access by com.sun.xml.bind.v2.runtime.reflect.opt.Injector (file:/Users/kqrw311/.m2/repository/com/sun/xml/bind/jaxb-impl/2.3.0/jaxb-impl-2.3.0.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int)
+		System.setProperty("com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true");
+
+		// Setting system property so BioJava doesn't print 'PDB_DIR' missing warnings
 		System.setProperty(UserConfiguration.PDB_DIR, file.getParent());
+
 		InputStreamProvider isp = new InputStreamProvider();
 		InputStream inStream = isp.getInputStream(file);
 		PDBFileParser pdbpars = new PDBFileParser();

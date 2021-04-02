@@ -6,12 +6,13 @@ import java.util.Map;
 /**
  * Compare two elements in a Map (e.g. HashMap) accessing them by keys.
  * Useful to sort by values elements in a Map
- * 
+ *
  * Note: Decreasing order
- * 
- * @author root
+ *
+ * @author pcingola
  *
  */
+@SuppressWarnings("rawtypes")
 public class CompareByValue implements Comparator {
 
 	Map map;
@@ -20,6 +21,8 @@ public class CompareByValue implements Comparator {
 		this.map = map;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
 	public int compare(Object arg1, Object arg2) {
 		if (!map.containsKey(arg1) || !map.containsKey(arg2)) { return 0; }
 

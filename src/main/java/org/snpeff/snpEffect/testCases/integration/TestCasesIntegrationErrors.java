@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.snpeff.SnpEff;
-import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;

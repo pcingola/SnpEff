@@ -5,6 +5,7 @@ import org.snpeff.codons.CodonTable;
 import org.snpeff.codons.CodonTables;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
 
@@ -112,17 +113,17 @@ public class Chromosome extends Marker {
 					} else if ((ssStart < 0) && (ssEnd > 0)) {
 						// Negative start coordinates? This is probably a circular genome
 						circular = true;
-						Log.warning("Chromosome '" + chr + "' (len=" + size() + ") has exon with negative start coordinate: Marking as 'circular'. Exon:" + exon);
+						Log.warning(ErrorWarningType.WARNING_CHROMOSOME_CIRCULAR, "Chromosome '" + chr + "' (len=" + size() + ") has exon with negative start coordinate: Marking as 'circular'. Exon:" + exon);
 						return circular;
 					} else if ((ssStart < 0) && (ssEnd < 0)) {
 						// Negative start coordinates? This is probably a circular genome
 						circular = true;
-						Log.warning("Chromosome '" + chr + "' (len=" + size() + ") has exon with negative coordinates: Marking as 'circular'. Exon:" + exon);
+						Log.warning(ErrorWarningType.WARNING_CHROMOSOME_CIRCULAR, "Chromosome '" + chr + "' (len=" + size() + ") has exon with negative coordinates: Marking as 'circular'. Exon:" + exon);
 						return circular;
 					} else if (ssEnd > chrLen) {
 						// Exon ends is after chromosme length
 						circular = true;
-						Log.warning("Chromosome '" + chr + "' (len=" + size() + ") has exon with end coordinate after chromosome end: Marking as 'circular'. Exon:" + exon);
+						Log.warning(ErrorWarningType.WARNING_CHROMOSOME_CIRCULAR, "Chromosome '" + chr + "' (len=" + size() + ") has exon with end coordinate after chromosome end: Marking as 'circular'. Exon:" + exon);
 						return circular;
 					}
 				}

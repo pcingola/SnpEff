@@ -23,6 +23,7 @@ import org.snpeff.interval.IntervalComparatorByStart;
 import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
@@ -229,7 +230,7 @@ public abstract class SnpEffPredictorFactory {
 					// Set sequence
 					if (seq != null) {
 						// Sanity check
-						if (seq.length() != exon.size()) warning("Exon sequence length does not match exon.size()\n" + exon);
+						if (seq.length() != exon.size()) warning(ErrorWarningType.WARNING_EXON_SEQUENCE_LENGTH, "Exon sequence length does not match exon.size()\n" + exon);
 
 						// Reverse strand? => reverse complement of the sequence
 						if (exon.isStrandMinus()) seq = GprSeq.reverseWc(seq);
@@ -260,7 +261,7 @@ public abstract class SnpEffPredictorFactory {
 			Integer len = lenByChr.get(chrName);
 
 			Chromosome chr = gene.getChromosome();
-			if (chr.getEnd() > 0 && gene.getEnd() > chr.getEnd()) Log.warning("Chromosome '" + chr.getChromosomeName() + "' has end coordinate " + chr.getEnd() + ", but gene ID '" + gene.getId() + "' has end coordiante " + gene.getEnd());
+			if (chr.getEnd() > 0 && gene.getEnd() > chr.getEnd()) Log.warning(ErrorWarningType.WARNING_CHROMOSOME_LENGTH, "Chromosome '" + chr.getChromosomeName() + "' has end coordinate " + chr.getEnd() + ", but gene ID '" + gene.getId() + "' has end coordiante " + gene.getEnd());
 
 			int max = Math.max(gene.getEnd(), (len != null ? len : 0));
 			lenByChr.put(chrName, max);
@@ -847,8 +848,8 @@ public abstract class SnpEffPredictorFactory {
 	 * Warning: Show a warning message (show some details)
 	 * @param msg
 	 */
-	void warning(String msg) {
-		Log.warning(msg + ". File '" + fileName + "' line " + lineNum + "\t'" + line + "'");
+	void warning(ErrorWarningType warnType, String msg) {
+		Log.warning(warnType, msg + ". File '" + fileName + "' line " + lineNum + "\t'" + line + "'");
 	}
 
 }

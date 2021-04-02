@@ -4,9 +4,12 @@
 package org.snpeff.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.snpeff.snpEffect.Config;
+import org.snpeff.snpEffect.ErrorWarningType;
 
 /**
  * Logging
@@ -19,12 +22,13 @@ public class Log {
 		, EXCEPTION_QUIET // Silence the output and throw an exception (used in test cases)
 	}
 
-	public static final int MAX_WARNINGS = 25; // Report a warningi no more than X times
+	public static final int MAX_WARNINGS = 25; // Report a warnings no more than X times
 	public static final int MAX_ERRORS = 10; // Report an error no more than X times
 
-	protected static Map<String, Integer> warnCount = new HashMap<>(); // Count warningns
+	protected static Map<ErrorWarningType, Integer> warnCount = new HashMap<>(); // Count warnings
 	private static Timer timer = new Timer(); // Keep track of time (since first class instantiation)
 	private static FatalErrorBehabiour fatalErrorBehabiour = FatalErrorBehabiour.EXIT; // How do we exit in case of a fatal error (for testing, we use 'EXCEPTION')
+	private static Set<ErrorWarningType> silenceWarning = new HashSet<>();
 
 	/**
 	 * Prints a debug message (prints class name, method and line number)
@@ -102,24 +106,34 @@ public class Log {
 		System.err.println(timer + " " + (msg == null ? "null" : msg.toString()));
 	}
 
+	/**
+	 * Reset all parameters, warning counters, silenced warningis, etc.
+	 */
+	public static void reset() {
+		warnCount = new HashMap<>(); // Count warningns
+		timer = new Timer(); // Keep track of time (since first class instantiation)
+		fatalErrorBehabiour = FatalErrorBehabiour.EXIT; // How do we exit in case of a fatal error (for testing, we use 'EXCEPTION')
+		silenceWarning = new HashSet<>();
+	}
+
 	public static void setFatalErrorBehabiour(FatalErrorBehabiour fatalErrorBehabiour) {
 		Log.fatalErrorBehabiour = fatalErrorBehabiour;
 	}
 
-	public static void warning(String msg) {
-		System.err.println("WARNING: " + msg);
+	public static void silenceWarning(ErrorWarningType warningType) {
+		silenceWarning.add(warningType);
 	}
 
 	/**
 	 * Show a warning message (up to MAX_ERRORS times)
 	 */
-	public static void warning(String warnType, String msg) {
+	public static void warning(ErrorWarningType warnType, String msg) {
 		if (!warnCount.containsKey(warnType)) warnCount.put(warnType, 0);
 
 		int count = warnCount.get(warnType);
 		warnCount.put(warnType, count + 1);
 
-		if (count < MAX_WARNINGS) System.err.println("WARNING: " + msg);
+		if (count < MAX_WARNINGS && !silenceWarning.contains(warnType)) System.err.println(warnType + ": " + msg);
 	}
 
 }

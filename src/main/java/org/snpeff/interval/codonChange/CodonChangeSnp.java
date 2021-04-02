@@ -4,7 +4,7 @@ import org.snpeff.interval.Exon;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffects;
 
 /**

@@ -7,6 +7,7 @@ import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffects;
@@ -49,6 +50,9 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 	@Test
 	public void testCase_02_CircularGenome() {
 		Log.debug("Test");
+
+		Log.silenceWarning(ErrorWarningType.WARNING_CHROMOSOME_CIRCULAR);
+		Log.silenceWarning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND);
 
 		//---
 		// Create database & build interval forest
@@ -95,6 +99,8 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 	@Test
 	public void testCase_02_CircularGenome_end() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_CHROMOSOME_CIRCULAR);
+		Log.silenceWarning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND);
 
 		//---
 		// Create database & build interval forest
@@ -106,7 +112,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 		if (verbose) {
 			Genome genome = sep.getGenome();
 			for (Chromosome chr : genome.getChromosomes())
-				System.out.println(chr);
+				Log.info(chr);
 		}
 
 		//---
@@ -127,6 +133,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 	@Test
 	public void testCase_03_CircularGenome() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_CHROMOSOME_CIRCULAR);
 
 		String prot = "MQTECSAGAYEFPASCGRRVVARFDGGRMSSDGGVILVKQADDILGLSRRF" //
 				+ "AACFRDKRHPGFVEYIPQSRDAAYRENRQQSGG*" //
@@ -151,6 +158,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 	@Test
 	public void testCase_04_CircularGenome() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_CHROMOSOME_CIRCULAR);
 
 		String prot = "MTNNIVIAGRLVADAELFFTNNGSAICNFTLANNKRYKDIEKSTFIEASIFGNYAESMNK" //
 				+ "YLKKGVSIDVIGELVQESWSKDGKIYYKHKIKVKEIDFRTPKDNISEANFENEDTPSNHL" //
@@ -184,6 +192,7 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
 	@Test
 	public void testCase_05_CircularGenome_ExonsOrder() {
 		Log.debug("Test");
+		Log.silenceWarning(ErrorWarningType.WARNING_CHROMOSOME_CIRCULAR);
 
 		String expectedProtein = "MGSLEMVPMGAGPPSPGGDPDGYDGGNNSQYPSASGSSGNTPTP" //
 				+ "PNDEERESNEEPPPPYEDPYWGNGDRHSDYQPLGTQDQSLYLGLQHDGNDGLPPPPYS" //

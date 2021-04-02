@@ -23,12 +23,12 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.Hgvs;
 import org.snpeff.snpEffect.LossOfFunction;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
-import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdBuild;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
@@ -75,6 +75,8 @@ public class TestCasesIntegrationBase {
 		prefixes.add("TestsCase");
 		prefixes.add("Unit");
 		prefixes.add("Integration");
+
+		Log.reset();
 	}
 
 	/**

@@ -9,7 +9,6 @@ import org.snpeff.interval.Marker;
 import org.snpeff.interval.Transcript;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
-import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
 

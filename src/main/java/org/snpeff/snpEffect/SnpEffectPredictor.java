@@ -24,7 +24,6 @@ import org.snpeff.interval.Utr;
 import org.snpeff.interval.Variant;
 import org.snpeff.interval.tree.IntervalForest;
 import org.snpeff.serializer.MarkerSerializer;
-import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
 import org.snpeff.util.Gpr;
 
 /**

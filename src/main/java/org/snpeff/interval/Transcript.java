@@ -12,7 +12,7 @@ import org.snpeff.interval.codonChange.CodonChange;
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.VariantEffect.ErrorWarningType;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.stats.ObservedOverExpectedCpG;
 import org.snpeff.util.Gpr;
@@ -855,7 +855,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			if (pos <= ex.getEnd()) return pos;
 		}
 
-		Log.warning("WARNING: Cannot find first exonic position after " + pos + " for transcript '" + id + "'");
+		Log.warning(ErrorWarningType.WARNING_EXON_NOT_FOUND, "WARNING: Cannot find first exonic position after " + pos + " for transcript '" + id + "'");
 		return -1;
 	}
 
@@ -1137,7 +1137,7 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 			// Sanity check
 			if (firstCodingExon == null) {
 				Gene g = (Gene) getParent();
-				Log.warning("Cannot find first coding exon for transcript '" + getId() + "', gene name '" + (g != null ? g.getGeneName() : "") + "', gene ID '" + (g != null ? g.getId() : "") + "'");
+				Log.warning(ErrorWarningType.WARNING_EXON_NOT_FOUND, "Cannot find first coding exon for transcript '" + getId() + "', gene name '" + (g != null ? g.getGeneName() : "") + "', gene ID '" + (g != null ? g.getId() : "") + "'");
 			}
 		}
 		return firstCodingExon;

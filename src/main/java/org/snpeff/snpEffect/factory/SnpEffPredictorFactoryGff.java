@@ -21,6 +21,7 @@ import org.snpeff.interval.TranscriptSupportLevel;
 import org.snpeff.interval.Utr3prime;
 import org.snpeff.interval.Utr5prime;
 import org.snpeff.snpEffect.Config;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
@@ -71,7 +72,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		// Add exon to each parent (can belong to more than one transcript)
 		String parentIds[] = gffMarker.getGffParentIds();
 		if (parentIds == null) {
-			if (debug) warning("Cannot find parent ID for exon:\n\t" + gffMarker);
+			if (debug) warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Cannot find parent ID for exon:\n\t" + gffMarker);
 			return null;
 		}
 
@@ -89,7 +90,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				tr = findTranscript(trId);
 				if (tr == null) {
 					tr = addTranscript(gene, gffMarker, trId);
-					warning("Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for " + gffMarker);
+					warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Exon's parent '" + parentId + "' is a Gene instead of a transcript. Created transcript '" + tr.getId() + "' for " + gffMarker);
 				}
 			}
 
@@ -106,7 +107,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				tr = addTranscript(gene, gffMarker, trId);
 
 				// Add gene & transcript
-				warning("Cannot find transcript '" + parentId + "'. Created transcript '" + tr.getId() + "' and gene '" + gene.getId() + "' for " + gffMarker);
+				warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Cannot find transcript '" + parentId + "'. Created transcript '" + tr.getId() + "' and gene '" + gene.getId() + "' for " + gffMarker);
 			}
 
 			// This can be added in different ways
@@ -195,7 +196,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// Sanity check: Have we already added this one?
 			String geneId = gffMarker.getGeneId();
 			if ((geneId != null) && (findGene(geneId) != null)) {
-				warning("Gene '" + geneId + "' already added");
+				warning(ErrorWarningType.WARNING_GENE_ID_DUPLICATE, "Gene '" + geneId + "' already added");
 				return false;
 			}
 
@@ -205,7 +206,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// Sanity check: Have we already added this one?
 			String trId = gffMarker.getTranscriptId();
 			if ((trId != null) && (findTranscript(trId) != null)) {
-				warning("Transcript '" + trId + "' already added");
+				warning(ErrorWarningType.WARNING_TRANSCRIPT_ID_DUPLICATE, "Transcript '" + trId + "' already added");
 				return false;
 			}
 
@@ -246,7 +247,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		Transcript tr = findTranscript(trId);
 		if (tr == null) tr = findTranscript(gffMarker.getId());
 		if (tr == null) {
-			warning("Could not find transcript '" + trId + "'");
+			warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Could not find transcript '" + trId + "'");
 			return null;
 		}
 
@@ -316,7 +317,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				tr.add(u3);
 				add(u3);
 				list.add(u3);
-			} else warning("Could not add UTR");
+			} else warning(ErrorWarningType.WARNING_CANNOT_ADD_UTR, "Could not add UTR");
 		}
 
 		return list.isEmpty() ? null : list;
@@ -340,7 +341,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				tr.add(u5);
 				add(u5);
 				list.add(u5);
-			} else warning("Could not add UTR");
+			} else warning(ErrorWarningType.WARNING_CANNOT_ADD_UTR, "Could not add UTR");
 		}
 
 		return list.isEmpty() ? null : list;
@@ -381,7 +382,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 		Transcript tr = findTranscript(parentId);
 		if (tr == null) tr = findTranscript(gffMarker.getTranscriptId());
 		if (tr == null) {
-			warning("Cannot find transcript '" + parentId + "'");
+			warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Cannot find transcript '" + parentId + "'");
 			return null;
 		}
 
@@ -392,7 +393,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 
 		// Nothing found? Create exon
 		exon = addExon(tr, gffMarker, gffMarker.getId());
-		if (debug) warning("Cannot find exon for UTR: '" + utr.getId() + "'. Creating exon '" + gffMarker.getId() + "'");
+		if (debug) warning(ErrorWarningType.WARNING_EXON_NOT_FOUND, "Cannot find exon for UTR: '" + utr.getId() + "'. Creating exon '" + gffMarker.getId() + "'");
 		return exon;
 	}
 
@@ -410,9 +411,10 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 				// Gene does not include transcript? Create a new gene
 				Gene geneOri = gene;
 				gene = addGene(gffMarker, true);
-				warning("Gene '" + geneOri.getId() + "' (" + geneOri.toStrPos() + ")" //
-						+ " does not include '" + gffMarker.getId() + "' (" + gffMarker.toStrPos() + "). " //
-						+ "Created new gene '" + gene.getId() + "' (" + gene.toStrPos() + ")" //
+				warning(ErrorWarningType.WARNING_GENE_NOT_FOUND, //
+						"Gene '" + geneOri.getId() + "' (" + geneOri.toStrPos() + ")" //
+								+ " does not include '" + gffMarker.getId() + "' (" + gffMarker.toStrPos() + "). " //
+								+ "Created new gene '" + gene.getId() + "' (" + gene.toStrPos() + ")" //
 				);
 			}
 		}
@@ -500,7 +502,7 @@ public abstract class SnpEffPredictorFactoryGff extends SnpEffPredictorFactory {
 			// Last chromosome
 			// Set chromosome sequneces and length (create it if it doesn't exist)
 			if (chromoName != null) addSequences(chromoName, chromoSb.toString()); // Add all sequences
-			else warning("Ignoring sequences for '" + chromoName + "'. Cannot find chromosome"); // Chromosome not found
+			else warning(ErrorWarningType.WARNING_CHROMOSOME_NOT_FOUND, "Ignoring sequences for '" + chromoName + "'. Cannot find chromosome"); // Chromosome not found
 
 			reader.close();
 		} catch (Exception e) {
