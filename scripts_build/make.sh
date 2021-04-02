@@ -1,8 +1,9 @@
 #!/bin/sh -e
 
+export VERSION=5.0
+
 # Separate version-subversion by '_'
 # E.g.: '4_1' (instead of '4.1')
-export VERSION=5.0
 export VERSION_UND=`echo $VERSION | tr '.' '_'`
 
 #---
@@ -11,7 +12,7 @@ export VERSION_UND=`echo $VERSION | tr '.' '_'`
 
 cd $HOME/workspace/SnpEff/
 
-mvn clean compile assembly:assembly
+mvn clean compile assembly:single jar:jar
 
 cp target/SnpEff-$VERSION-jar-with-dependencies.jar $HOME/snpEff/snpEff.jar
 
@@ -32,7 +33,7 @@ cd -
 #---
 cd $HOME/workspace/SnpSift/
 
-mvn clean compile assembly:assembly
+mvn clean compile assembly:single jar:jar
 
 cp target/SnpSift-$VERSION-jar-with-dependencies.jar $HOME/snpEff/SnpSift.jar
 

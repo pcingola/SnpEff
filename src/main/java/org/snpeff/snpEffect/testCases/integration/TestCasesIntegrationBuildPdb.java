@@ -14,9 +14,6 @@ import junit.framework.Assert;
  */
 public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 
-	public TestCasesIntegrationBuildPdb() {
-	}
-
 	/**
 	 * Interaction within protein using PDB entry '1A12'
 	 */

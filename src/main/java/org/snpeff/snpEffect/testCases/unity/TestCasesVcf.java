@@ -27,8 +27,6 @@ import org.snpeff.vcf.VcfInfoType;
  */
 public class TestCasesVcf extends TestCasesBase {
 
-	boolean verbose = false;
-	boolean debug = false;
 	boolean createOutputFile = false;
 
 	public TestCasesVcf() {
