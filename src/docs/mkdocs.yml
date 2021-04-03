@@ -56,6 +56,7 @@ nav:
      - Integration. GATK and Galaxy: se_integration.md
      - Commands and utilities: se_commands.md
      - Frequently Asked Questions: se_faq.md
+     - Test cases: se_tests.md
   - SnpSift:
      - Introduction: ss_introduction.md
      - SnpSift Filter: ss_filter.md
@@ -87,4 +88,5 @@ nav:
      - Examples: examples.md
   - About:
      - About: about.md
+     - Help and Bugs: help.md
      - In Memory: xiangyi_lu_donate.md
