@@ -18,7 +18,7 @@
     
     
       
-        <title>SnpSift Concordance - SnpEff & SnpSift Documentation</title>
+        <title>Test cases - SnpEff & SnpSift Documentation</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#snpsift-concordance" class="md-skip">
+        <a href="#snpeff-and-snpsift-test-cases" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header-nav__topic">
           <span class="md-ellipsis">
             
-              SnpSift Concordance
+              Test cases
             
           </span>
         </div>
@@ -319,12 +319,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
       
       <label class="md-nav__link" for="nav-2">
         SnpEff
@@ -497,11 +499,70 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../se_tests/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Test cases
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Test cases
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#nomenclature" class="md-nav__link">
+    Nomenclature
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-test-datasets" class="md-nav__link">
+    Install test datasets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-unit-tests" class="md-nav__link">
+    Running Unit tests
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-integration-tests" class="md-nav__link">
+    Running integration tests
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -518,14 +579,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
       
       <label class="md-nav__link" for="nav-3">
         SnpSift
@@ -722,83 +781,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          SnpSift Concordance
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../ss_concordance/" class="md-nav__link">
         SnpSift Concordance
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#typical-usage" class="md-nav__link">
-    Typical usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#output" class="md-nav__link">
-    Output
-  </a>
-  
-    <nav class="md-nav" aria-label="Output">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#concordance-by-variant" class="md-nav__link">
-    Concordance by variant
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#concordance-by-sample" class="md-nav__link">
-    Concordance by sample
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    Summary
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1083,43 +1070,30 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#typical-usage" class="md-nav__link">
-    Typical usage
+  <a href="#nomenclature" class="md-nav__link">
+    Nomenclature
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#output" class="md-nav__link">
-    Output
-  </a>
-  
-    <nav class="md-nav" aria-label="Output">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#concordance-by-variant" class="md-nav__link">
-    Concordance by variant
+  <a href="#install-test-datasets" class="md-nav__link">
+    Install test datasets
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#concordance-by-sample" class="md-nav__link">
-    Concordance by sample
+      
+        <li class="md-nav__item">
+  <a href="#running-unit-tests" class="md-nav__link">
+    Running Unit tests
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    Summary
+      
+        <li class="md-nav__item">
+  <a href="#running-integration-tests" class="md-nav__link">
+    Running integration tests
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1136,130 +1110,47 @@
               
                 
                 
-                <h1 id="snpsift-concordance">SnpSift Concordance</h1>
-<p>Calculate concordance between two VCF files.</p>
-<h3 id="typical-usage">Typical usage</h3>
-<p>This is typically used when you want to calculate concordance between a genotyping experiment and a sequencing experiment.</p>
-<p>For instance, you sequenced several samples and, as part of a related experiment or just as quality control, you also genotype the same samples using a genotyping array.
-Now you want to compare the two experiments.
-Ideally there would be no difference between the variants from genotyping and sequencing, but this is hardly the case in real world.</p>
-<p>You can use <code>SnpSift concordance</code> to measure the differences between the two experiments.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>It is assumed that both VCF files are sorted by chromosome and position.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Sample names are defined in '#CHROM' line of the header section.
-Concordance is calculated only if sample label matches in both files.</p>
-</div>
-<p>Example:</p>
-<pre><code>$ java -Xmx1g -jar SnpSift.jar concordance -v genotype.vcf sequencing.vcf &gt; concordance.txt
-00:00:00.000    Indexing file 'genotype.vcf'
-        index:  MT  460030998
-        index:  1   19705
-                1 / 2   45170805 / 45174315
-                2 / 3   77052081 / 77055591
-                3 / 4   104065531 / 104069041
-                4 / 5   124098372 / 124101881
-                5 / 6   146535292 / 146538802
-                6 / 7   184793526 / 184797035
-                7 / 8   206156508 / 206160018
-                8 / 9   223072816 / 223076326
-                9 / 10  242315995 / 242319505
-                10 / 11 261053789 / 261057299
-                11 / 12 290190553 / 290194063
-                12 / 13 312869636 / 312873146
-                13 / 14 321966539 / 321970049
-                14 / 15 336131317 / 336134827
-                15 / 16 350871669 / 350875179
-                16 / 17 368900523 / 368904032
-                17 / 18 391305860 / 391309369
-                18 / 19 398932237 / 398935747
-                19 / 20 425219198 / 425222708
-                20 / 21 437022008 / 437025517
-                21 / 22 442563678 / 442567188
-                22 / X  451783418 / 451786927
-                X / Y   459553691 / 459557200
-                Y / MT  459588787 / 459592296
-00:00:01.137    Open VCF file 'genotype.vcf'
-00:00:01.141    Open VCF file 'sequencing.vcf'
-00:00:01.176    Chromosome: '1'
-00:00:02.127        1:1550992   1:1528859
-00:00:02.739        1:2426313   1:2389636
-...
-00:02:13.780        1:248487058 1:248471945
+                <h1 id="snpeff-and-snpsift-test-cases">SnpEff and SnpSift: Test cases</h1>
+<p>SnpEff and SnpSift have a comprehensive set of unit and integration test cases.</p>
+<p>Some of these test cases require genome databases or other large files, see instructions below on how to download and install the test files.</p>
+<h3 id="nomenclature">Nomenclature</h3>
+<p>In this document we assume you have the following variables properly set in your environment</p>
+<pre><code># Change this to where you installed the SnpEff project from GitHub
+export SNPEFF_PROJECT_DIR=&quot;$HOME/workspace/SnpEff&quot;
+
+# Change this to your SnpEff install dir
+export SNPEFF_DIR=&quot;$HOME/snpEff&quot;
 </code></pre>
-<h3 id="output">Output</h3>
-<p>SnpSift's concordance output is written to STDOUT and two files.
-For instance the command <code>java -jar SnpSift.jar concordance -v genotype.vcf sequencing.vcf</code> will write:</p>
-<ul>
-<li>Concordance by variant: Written to STDOUT</li>
-<li>Concordance by sample: Written to <code>concordance_genotyping_sequencing.by_sample.txt</code></li>
-<li>Summary:  Written to <code>concordance_genotyping_sequencing.summary.txt</code></li>
-</ul>
-<h4 id="concordance-by-variant">Concordance by variant</h4>
-<p>This sections is a table showing concordance details for every entry (chr:position) that both files have in common.
-E.g.:</p>
-<pre><code>chr  pos     ref  alt  change_0_0  change_0_1  change_0_2  change_1_0  change_1_1  change_1_2  change_2_0  change_2_1  change_2_2  missing_genotype_genotype  missing_genotype_sequencing
-1    865584  G    A        508         0           0           0           2           0           0           0           0           0                                 5
-1    865625  G    A        512         0           0           0           1           0           0           0           0           0                                 1
-1    865628  G    A        511         0           0           0           2           0           0           0           0           0                                 1
-1    865665  G    A        495         0           0           0           4           0           0           0           0           0                                17
-1    865694  C    T        428         0           0           0          82           0           0           0           4           0                                 0
+<h3 id="install-test-datasets">Install test datasets</h3>
+<p>Download the <a href="">test dataset here</a> </p>
+<p>Untar and move the files to your SnpEff's <code>data</code> directory</p>
+<pre><code># Here we assume that your 'data' directory is in '$SNPEFF_DIR/data'
+cd $SNPEFF_DIR/data
+tar -cvf path/to/data_test.5.0.tar
+mv data_test/* .
 </code></pre>
-<p>Each genotype is coded according to the number of ALT variants. i.e.:</p>
-<ul>
-<li>'0/0' (homozygous reference) is coded as '0'</li>
-<li>'0/1' or '1/0' (heterozygous ALT) coded as '1'</li>
-<li>'1/1' (homozygous ALT) is coded as '1'</li>
-</ul>
-<p>So the column "change_X_Y" on the table shows how many genotypes coded 'X' in the first VCF, changed to 'Y' in the second VCF.
-For example, 'change_0_1' counts the number of "homozygous reference in genotype.vcf" that changed to "heterozygous ALT in sequencing.vcf".
-Or 'change_2_2' counts the number of "homozygous ALT" that did not change (in both files they are '2').</p>
-<p>A few rules apply:</p>
-<ul>
-<li>If a VCF entry (chr:pos) is present in only one of the files, obviously we cannot calculate concordance, so it is ignored.</li>
-<li>If a VCF entry (chr:pos) has more than one ALT it is ignored. This means that non-biallelic variants are ignored.</li>
-<li>If, for the same chr:pos, REF field is different between the two files, then the entry is ignored.</li>
-<li>If, for the same chr:pos, ALT field is different between the two files, then the entry is ignored.</li>
-</ul>
-<h4 id="concordance-by-sample">Concordance by sample</h4>
-<p>This section shows details in the same format as the previous section.
-Here, concordance metrics are shown aggregated for each sample.
-E.g.:</p>
-<pre><code># Totals by sample
-sample  change_0_0  change_0_1  change_0_2  change_1_0  change_1_1  change_1_2  change_2_0  change_2_1  change_2_2  missing_genotype_genotype  missing_genotype_sequencing
-ID_003  79          0           0           1           8           0           0           0           2           1                          1
-ID_004  83          0           0           1           2           0           0           0           5           0                          1
-ID_005  80          0           0           0           7           0           0           0           4           1                          0
-ID_006  79          0           0           0           5           0           0           0           6           0                          2
-ID_008  81          0           0           0           4           0           0           0           4           0                          3
-ID_009  80          0           0           0           7           0           0           0           3           0                          2
-ID_012  74          0           0           0           10          0           0           0           1           0                          7
-ID_013  79          1           0           0           4           0           0           0           5           0                          3
-ID_018  84          0           0           0           5           0           0           0           3           0                          0
-...
+<h2 id="running-unit-tests">Running Unit tests</h2>
+<p>To run unit test suite, you can run the following commands:</p>
+<pre><code>cd $SNPEFF_PROJECT_DIR
+
+java -Xmx4g \
+    -cp $SNPEFF_DIR/snpEff.jar \
+    org.junit.runner.JUnitCore \
+    org.snpeff.snpEffect.testCases.TestSuiteUnity \
+    2&gt;&amp;1 \
+    | tee testcases.snpeff.unity.txt
 </code></pre>
-<h4 id="summary">Summary</h4>
-<p>Summary file contains overall information and errors.
-Here is an example of a summary file:</p>
-<pre><code>$ cat concordance_genotyping_sequencing.summary.txt
-Number of samples:
-    929    File genotype.vcf
-    583    File sequencing.vcf
-    514    Both files
-Errors:
-        ALT field does not match    19
+<h2 id="running-integration-tests">Running integration tests</h2>
+<p>To run integration test suite, you can run the following commands:</p>
+<pre><code>cd $SNPEFF_PROJECT_DIR
+
+java -Xmx4g \
+    -cp $SNPEFF_DIR/snpEff.jar \
+    org.junit.runner.JUnitCore \
+    org.snpeff.snpEffect.testCases.TestSuiteUnity \
+    2&gt;&amp;1 \
+    | tee testcases.snpeff.unity.txt
 </code></pre>
-<p>The header indicates that one file ('genotype.vcf') has 929 samples, the other file has 583 and there are 514 matching sample IDs in both files.</p>
-<p>At the end of the file, a footer shows the total for each column followed by number of possible errors (or mismatches).
-In this case the were 19 ALT fields that did not match between 'genotype.vcf' and 'sequencing.vcf'.
-This can happen, for instance, when there are INDELs, which cannot be detected by genotyping arrays.</p>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>Summary messages are shown to STDERR if you use verbose mode (command line option <code>-v</code>).</p>
-</div>
                 
               
               
@@ -1278,7 +1169,7 @@ This can happen, for instance, when there are INDELs, which cannot be detected b
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../ss_phastcons/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../se_faq/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -1287,19 +1178,19 @@ This can happen, for instance, when there are INDELs, which cannot be detected b
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                SnpSift PhastCons
+                Frequently Asked Questions
               </div>
             </div>
           </a>
         
         
-          <a href="../ss_private/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../ss_introduction/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                SnpSift Private
+                Introduction
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">

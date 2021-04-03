@@ -494,6 +494,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../se_tests/" class="md-nav__link">
+        Test cases
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -982,34 +994,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bug-reports" class="md-nav__link">
-    Bug reports
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#asking-for-help" class="md-nav__link">
-    Asking for help
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#asking-for-new-features" class="md-nav__link">
-    Asking for new features
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#asking-for-new-database-genome" class="md-nav__link">
-    Asking for new database / genome
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#contact-information" class="md-nav__link">
     Contact information
   </a>
@@ -1020,6 +1004,18 @@
   
 </nav>
       
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../help/" class="md-nav__link">
+        Help and Bugs
+      </a>
     </li>
   
 
@@ -1081,34 +1077,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bug-reports" class="md-nav__link">
-    Bug reports
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#asking-for-help" class="md-nav__link">
-    Asking for help
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#asking-for-new-features" class="md-nav__link">
-    Asking for new features
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#asking-for-new-database-genome" class="md-nav__link">
-    Asking for new database / genome
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#contact-information" class="md-nav__link">
     Contact information
   </a>
@@ -1160,200 +1128,6 @@
 <li>Uma Devi (U. Virginia), Karen Eilbeck (U. Utah) &amp; Nicole Marie Ruiz (U. Utah): Sequence Ontology, made right.</li>
 <li>Ryan Calhoun (Apistry): SnpSift annotate, tabix index bug.</li>
 </ul>
-<h2 id="bug-reports">Bug reports</h2>
-<p>Please send any bug reports by creating issues in repositories:</p>
-<ul>
-<li>SnpEff:  <a href="https://github.com/pcingola/SnpEff/issues">https://github.com/pcingola/SnpEff/issues</a></li>
-<li>SnpSift: <a href="https://github.com/pcingola/SnpSift/issues">https://github.com/pcingola/SnpSift/issues</a></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p><strong>Important:</strong> In order to assess and fix the issue, I must be able to reproduce exactly your error condition.</p>
-</div>
-<p>This means that I need the following information:</p>
-<table>
-<thead>
-<tr>
-<th>Item</th>
-<th>Explanation</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>What?</td>
-<td>A clear explanation of the bug condition.<br>Please copy the full stack trace if one is available.</td>
-<td>"a RuntimeException occurss when trying to annotate..."</td>
-</tr>
-<tr>
-<td>How?</td>
-<td>A minimal bug-demonstrating test case</td>
-<td>"when running the following command/s...".<br> Make sure you send the exact command lines you are using.</td>
-</tr>
-<tr>
-<td>Which?</td>
-<td>Which organism and genome version you are using (if applicable)</td>
-<td>"we use GRCh37.72"</td>
-</tr>
-<tr>
-<td>Version</td>
-<td>Which SnpEFf version and sub-version you are using?<br> Make sure to try the <strong>latest version</strong> since the bug might be already fixed.</td>
-<td>"we are using SnpEFf 3.3H").<br> Hint: Running <code>java -jar snpEff.jar</code> shows version information.</td>
-</tr>
-<tr>
-<td>Command line</td>
-<td>The full command line that shows the issue.</td>
-<td><code>java -Xmx8g -jar snpEff.jar GRCh37.75 sample.vcf ...</code></td>
-</tr>
-<tr>
-<td>Data</td>
-<td>Sample data enough to reproduce the conditions<br><strong>Always attach the data files</strong> such as VCF lines (even if you added some snippets in the email's body)</td>
-<td>"find attached a sample of the VCF file..."</td>
-</tr>
-<tr>
-<td>Results</td>
-<td>What you expect to obtain (if applicable)</td>
-<td>"we expected result X, but we obtained Y instead..."</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Important tips:</strong></p>
-<ul>
-<li>
-<p>Make sure you <strong>attached</strong> a minimal dataset to reproduce the error condition.
-    For instance, a few VCF lines showing the problem are enough (sometimes one VCF line is enough), most of the times I don't need the whole VCF file.</p>
-</li>
-<li>
-<p>Always send the data <strong>attached</strong>, even if it's only one VCF line. Many times the problem is a malformed line, which I can only asses if the data is attached, and</p>
-</li>
-<li>
-<p>If you have to send large files, as sometimes happens with genome references, try uploading them to a server (e.g. Google Drive) and sending me a link. Remember to always compress them.</p>
-</li>
-<li>
-<p><strong>Try SnpEff's latest version.</strong>
-    SnpEff is updated often, may be the bug has already been corrected (e.g you are using version 5.0A, but I've already fixed it in version 5.0B).</p>
-</li>
-</ul>
-<h2 id="asking-for-help">Asking for help</h2>
-<p>Please send any questions by creating issues in repositories:
-* SnpEff:  <a href="https://github.com/pcingola/SnpEff/issues">https://github.com/pcingola/SnpEff/issues</a>
-* SnpSift: <a href="https://github.com/pcingola/SnpSift/issues">https://github.com/pcingola/SnpSift/issues</a></p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p><strong>Important:</strong> In order to assess and your problem precisely, I must be able to reproduce your example.</p>
-</div>
-<p>Any request for help should include at least the following items:</p>
-<table>
-<thead>
-<tr>
-<th>Item</th>
-<th>Explanation</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>What?</td>
-<td>A clear explanation of what you are trying to achieve</td>
-<td>"I want to annotate variants... and then filter them to obtain..."</td>
-</tr>
-<tr>
-<td>How?</td>
-<td>A minimal demonstration of how you are trying to do it</td>
-<td>"we run the following command...".<br> Make sure you send the exact command lines you are using.</td>
-</tr>
-<tr>
-<td>Which?</td>
-<td>Which organism and genome version you are using</td>
-<td>"we are analyzing human samples using GRCh37.72 reference genome"</td>
-</tr>
-<tr>
-<td>Version</td>
-<td>Which SnpEFf version and sub-version you are using?<br> Make sure to try the <strong>latest version</strong> since the issue might be already solved.</td>
-<td>"we are using SnpEFf 3.3H").<br> Hint: Running <code>java -jar snpEff.jar</code> shows version information.</td>
-</tr>
-<tr>
-<td>Command line</td>
-<td>The full command line that shows the issue.</td>
-<td><code>java -Xmx8g -jar snpEff.jar GRCh37.75 sample.vcf ...</code></td>
-</tr>
-<tr>
-<td>Data</td>
-<td>Sample data enough to reproduce the conditions<br><strong>Always attach the data files</strong> such as VCF lines (even if you added some snippets in the email's body)</td>
-<td>"find attached a sample of the VCF file..."</td>
-</tr>
-<tr>
-<td>Results</td>
-<td>What you expect to obtain</td>
-<td>"we wanted to get information on variants that affect splcie regions..."</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Note:</strong> A few guidelines when asking for help...</p>
-<ul>
-<li>
-<p><strong>Use the latest version.</strong> SnpEff is updated often, may be the issue has already been corrected (e.g you are using version 5.0A, but I've already fixed it in version 5.0B).</p>
-</li>
-<li>
-<p><strong>Read the documentation first.</strong> Please make sure you've read the documentation before asking fo help.
-        I know this is obvious, but a lot of people ask for questions in that are answered or shown as examples in the documentation.</p>
-</li>
-<li>
-<p><strong>If the documentation did not help.</strong> I'm aware that the documentation is not always "easy reading".
-        So let me know which part of the manual is confusing, outdated or plain wrong.
-        I'll do my best to update and improve the docs.</p>
-</li>
-<li>
-<p><strong>Be polite.</strong> This one should be obvious, but there is a reason it's in the list...</p>
-</li>
-<li>
-<p><strong>I'm too busy.</strong> I always try to help people, but oftentimes I'm busy and I won't be able to answer your emails &amp; requests in due time and manner.
-     Apologies in advanced.</p>
-</li>
-<li>
-<p><strong>If I don't get back to you...</strong> Do remind me if I don't get back to you within a few days.
-      Sometimes I'm swamped with work or just out of town, a polite reminder helps.</p>
-</li>
-<li>
-<p><strong> Ask for too much advice.</strong> I don't mind helping, I've been doing it forever.
-      However I won't be able to help you with all the details (due to limited bamdwith), so most times, the best I can do is to provide some pointers and general advise you can follow up on.</p>
-</li>
-</ul>
-<h2 id="asking-for-new-features">Asking for new features</h2>
-<p>I always take into account features request.
-So don't hesitate to send me your ideas by creating issues in repositories:
-* SnpEff:  <a href="https://github.com/pcingola/SnpEff/issues">https://github.com/pcingola/SnpEff/issues</a>
-* SnpSift: <a href="https://github.com/pcingola/SnpSift/issues">https://github.com/pcingola/SnpSift/issues</a></p>
-<p>Of course, it  doesn't mean I'll get all suggestions implemented as soon as I get a request.
-But if a lot of people are asking for the same feature, it is a strong indicator that I should try to implement it.</p>
-<p>Please, don't be frustrated if I tell you I cannot implement your suggestion / idea. Keep in mind that some features are too difficult to implement for non-obvious reasons, e.g.:</p>
-<ul>
-<li>SnpEff uses some standard (e.g. VCF) and new features cannot break those standards.</li>
-<li>SnpEff is used by a LOT of people in MANY different pipelines. New features must be compatible with current infrastructure and cannot break operational production pipelines.</li>
-<li>Some feature requests are just too difficult to code, requiring large changes.</li>
-</ul>
-<h2 id="asking-for-new-database-genome">Asking for new database / genome</h2>
-<p>I'm willing to help you out if you need to build a new database (a.k.a. add a new reference genome).
-Building a new database (i.e. adding a new reference genome) is relatively easy and the procedure is described in detail <a href="../se_buildingdb/">in the documentation</a>.
-If you are unable to build the database, I can try to help you out. Please, create issue in repository: <a href="https://github.com/pcingola/SnpEff">https://github.com/pcingola/SnpEff</a>.</p>
-<p>In order to do so, I need you to send me the following information:</p>
-<ul>
-<li>Name of the species</li>
-<li>Reference genome version</li>
-<li>A link to the reference genome sequence (i.e. a link to the FASTA file)</li>
-<li>A link to a gene and transcript definition file (either GTF, GFF, GenBank, etc.)</li>
-<li>At least one of the following (preferably, both):<ul>
-<li>A link to the CDS sequences (FASTA file)</li>
-<li>A link to the protein sequences (FASTA files)</li>
-</ul>
-</li>
-<li>Codon table information (take a look a the codon tables in <code>snpEff.config</code> file):<ul>
-<li>Which codon table does the organism use? (e.g. <code>codon.Standard</code> or <code>codon.Mycoplasma</code>).</li>
-<li>Specific codon tables used by some chromosomes (e.g. chromosome <code>'MT'</code> uses <code>codon.Vertebrate_Mitochondrial</code> table)</li>
-</ul>
-</li>
-</ul>
-<p>I'm well aware that I could try to google that information myself, but I need you to send the information because I want to be absolutely sure we are using exactly the reference genome version, sub-version, and data files you need.</p>
 <h2 id="contact-information">Contact information</h2>
 <p><strong><a href="http://www.linkedin.com/in/pablocingolani">Pablo Cingolani</a>.</strong></p>
                 
@@ -1389,13 +1163,13 @@ If you are unable to build the database, I can try to help you out. Please, crea
           </a>
         
         
-          <a href="../xiangyi_lu_donate/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../help/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                In Memory
+                Help and Bugs
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
