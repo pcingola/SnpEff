@@ -49,6 +49,36 @@ mvn install:install-file -Dfile=antlr-4.5.1-complete.jar -DgroupId=org.antlr -Da
 
 # SnpEff's Documentation
 
+- **NOTES**:
+	- GitHub pages are published from `/docs` directory (main project's directory). This is configured in GitHub's project settings.
+	- Markdown source for `mkdocs` is under `src/docs`
+
+### Building docs
+
+```
+./make.bds -createDocs
+```
+
+This will create `site` directory (ref: <https://www.mkdocs.org/#building-the-site>) and copy the html pages to `docs` directory, so when you push to github it will be "published"
+
+### Testing: Local
+
+Localhost web-server starting: This will create local web-site on <http://127.0.0.1:8000> (ref: <https://www.mkdocs.org/#getting-started>)
+```
+# Go to snpEff's install dir, activate virtual environment containing mkdocs
+cd ~/snpEff; source ./bin/activate
+./bin/mkdocs serve
+```
+
+### Publishing docs
+
+Just commit to GitHub, the updated pages in `docs` directory will be shown after a few minutes
+
+```
+./git/commit 'Documentation updated'
+```
+
+### Requirements
 
 SnpEff uses `mkdocs`.
 To build docs you need mkdocs-material theme installed.
@@ -61,38 +91,3 @@ cd ~/snpEff; source ./bin/activate
 pip install mkdocs-material
 ```
 
-- **NOTES**:
-	- GitHub pages are published from `/docs` directory (main project's directory). This is configured in GitHub's project settings.
-	- Markdown source for `mkdocs` is under `src/docs`
-
-- Building docs: This will create `site` directory (ref: <https://www.mkdocs.org/#building-the-site>)
-```
-# Go to snpEff's install dir, activate virtual environment containing mkdocs
-cd ~/snpEff; source ./bin/activate
-
-# Clean directory, rebuild site, overwrite index.html
-rm -rvf site/
-./bin/mkdocs build
-cp -vf src/docs/index.html site/
-```
-
-- Localhost web-server starting: This will create local web-site on <http://127.0.0.1:8000> (ref: <https://www.mkdocs.org/#getting-started>)
-```
-# Go to snpEff's install dir, activate virtual environment containing mkdocs
-cd ~/snpEff; source ./bin/activate
-
-./bin/mkdocs serve
-```
-
-- Deploying docs: You just need to copy the `site` directory to `docs` and push to GitHub
-```
-cd ~/workspace/SnpEff
-
-# Cleanup old 'mkdocs' files
-rm docs/*/index.html
-
-# Copy new 'mkdocs' files
-cp -rvf ~/snpEff/site/* docs/
-
-./git/commit 'Documentation updated'
-```

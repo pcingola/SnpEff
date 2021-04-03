@@ -2,6 +2,7 @@ package org.snpeff.snpEffect.testCases.integration;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
@@ -9,8 +10,6 @@ import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
-
-import junit.framework.Assert;
 
 /**
  * Test random SNP changes
@@ -107,6 +106,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 
 		String genome = "testHg19Hgvs";
 		String vcf = path("hgvs_counsyl.vcf");
+		if (verbose) Log.info("Genome: " + genome + "\nVCF: " + vcf);
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		comp.setCompareHgvs();
 		comp.setCompareHgvsProt(false);

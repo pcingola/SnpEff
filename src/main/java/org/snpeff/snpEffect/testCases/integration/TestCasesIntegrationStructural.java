@@ -26,7 +26,8 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 	@Test
 	public void test_01_DUP_fusion() {
 		Log.debug("Test");
-		String genome = "hg19";
+
+		String genome = "testHg19Chr4";
 		String vcf = path("test_fusion_FGFR3-TACC3.vcf");
 
 		String args[] = { "-noLog", "-ud", "0", genome, vcf };
@@ -154,7 +155,7 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 	@Test
 	public void test_05_fusion() {
 		Log.debug("Test");
-		String genome = "hg19";
+		String genome = "testHg19Chr4Chr6";
 		String vcf = path("test_fusion_ROS1-SLC34A2.vcf");
 
 		String args[] = { "-noLog", "-ud", "0", genome, vcf };

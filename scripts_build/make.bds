@@ -11,6 +11,7 @@
 help Build and test options
 bundleLists			:= false		help Create bundle lists and config entries. OBSOLETE
 createConfig		:= false		help Create config file
+createDocs			:= false		help Create documentation web pages from markdown
 db					:= false		help Build databases
 string[] dbs						help Build databases
 dbTest				:= false		help Build databases used in test cases
@@ -327,7 +328,6 @@ void buildDbSpecial() {
 #-------------------------------------------------------------------------------
 void buildDbTest() {
 	dirs := "$dirSnpEff/data/".dir("test*")
-	dirs += 'hg19'
 	dirs.remove('testNM_015296')	# This database is supposed to build with an error in one of the test cases
 
 	# This one needs PWMs
@@ -393,6 +393,28 @@ void buildDbNextProt() {
 			print("NextProt ($hg): OK\t\tNextProt db file: '$npfile'\n")
 		}
 	}
+}
+
+#-------------------------------------------------------------------------------
+# Create documenation web pages from markdown
+#-------------------------------------------------------------------------------
+void buildDocs() {
+	println "Building documentation"
+
+	# Cleanup old 'site' directory 
+	sys rm -rvf '$dirSnpEff/site'
+	
+	# Build with mkdocs
+	sys cd '$dirSnpEff' ; source ./bin/activate ; ./bin/mkdocs build
+
+	# Copy 'index.html' 
+	sys cp -vf '$dirSnpEff/src/docs/index.html' '$dirSnpEff/site/'
+
+	# Cleanup old docs
+	sys rm -vf '$dirSnpEff/docs/*/index.html'
+
+	# Copy new pages
+	sys cp -rvf $dirSnpEff/site/* $dirSnpEff/docs/
 }
 
 #-------------------------------------------------------------------------------
@@ -841,6 +863,7 @@ print("Building\n")
 if( args.isEmpty() )			build()										# No arguments? Build (create JAR files)
 if( bundleLists )				buildBundleLists()							# Create bundle list and config files
 if( createConfig )				buildConfig()								# Create config file
+if( createDocs )				buildDocs()									# Create documentation and web page
 if( db || !dbs.isEmpty() )		buildDb()									# Build ALL genomes
 if( dbTest )					buildDbTest()								# Build databases used in test cases
 if( distro )					makeDistro()								# Create distribution files

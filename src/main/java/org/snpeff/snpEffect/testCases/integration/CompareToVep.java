@@ -94,6 +94,9 @@ public class CompareToVep {
 	 */
 	boolean compare(List<VcfEffect> effs, List<VcfConsequence> csqs) {
 		HashSet<String> trIds = new HashSet<String>();
+
+		int countMatch = 0;
+
 		for (VcfEffect eff : effs)
 			trIds.add(eff.getTranscriptId());
 
@@ -101,9 +104,10 @@ public class CompareToVep {
 		for (String trId : trIds) {
 			boolean match = compare(effs, csqs, trId);
 			if (!match) return false;
+			countMatch++;
 		}
 
-		return true;
+		return countMatch > 0;
 	}
 
 	/**
@@ -311,7 +315,9 @@ public class CompareToVep {
 				System.out.println("\tCompare:");
 			}
 
-			Assert.assertTrue("EFF and CSQ do not match", compare(effs, csqs));
+			boolean comparissonOk = compare(effs, csqs);
+			if (verbose) System.out.println("Comparisosns: " + this);
+			Assert.assertTrue("EFF and CSQ do not match", comparissonOk);
 		}
 	}
 
