@@ -17,6 +17,8 @@ import junit.framework.Assert;
  */
 public class TestCasesGenePvalueList {
 
+	public static final double EPSILON = 1e-10;
+
 	/**
 	 * Combined p-value : MIN
 	 */
@@ -32,7 +34,7 @@ public class TestCasesGenePvalueList {
 
 		// Check pvalues
 		double pvalue = gpl.score(ScoreSummary.MIN);
-		Assert.assertEquals(0.01, pvalue);
+		Assert.assertEquals(0.01, pvalue, EPSILON);
 	}
 
 	/**
@@ -50,7 +52,7 @@ public class TestCasesGenePvalueList {
 
 		// Check pvalues
 		double pvalue = gpl.score(ScoreSummary.AVG);
-		Assert.assertEquals(0.17, pvalue);
+		Assert.assertEquals(0.17, pvalue, EPSILON);
 	}
 
 	/**
@@ -68,7 +70,7 @@ public class TestCasesGenePvalueList {
 
 		// Check pvalues
 		double pvalue = gpl.score(ScoreSummary.AVG_MIN_10);
-		Assert.assertEquals(0.17, pvalue);
+		Assert.assertEquals(0.17, pvalue, EPSILON);
 	}
 
 	/**
@@ -97,7 +99,7 @@ public class TestCasesGenePvalueList {
 			double prob = new ChiSquaredDistribution(degOfFreedom).cumulativeProbability(chi2);
 
 			// Assert that statistics add to 1.0
-			Assert.assertEquals(1.0, pval + prob);
+			Assert.assertEquals(1.0, pval + prob, EPSILON);
 		}
 	}
 
@@ -116,7 +118,7 @@ public class TestCasesGenePvalueList {
 
 		// Check pvalues
 		double pvalue = gpl.score(ScoreSummary.FISHER_CHI_SQUARE);
-		Assert.assertEquals(0.021561751324834642, pvalue);
+		Assert.assertEquals(0.021561751324834642, pvalue, EPSILON);
 	}
 
 	/**
@@ -134,7 +136,7 @@ public class TestCasesGenePvalueList {
 
 		// Check pvalues
 		double pvalue = gpl.score(ScoreSummary.Z_SCORES);
-		Assert.assertEquals(0.01651203260896289, pvalue);
+		Assert.assertEquals(0.01651203260896289, pvalue, EPSILON);
 	}
 
 	/**
@@ -161,7 +163,7 @@ public class TestCasesGenePvalueList {
 
 		// Check pvalues
 		double pvalue = gpl.score(ScoreSummary.FDR);
-		Assert.assertEquals(0.028244949999999998, pvalue);
+		Assert.assertEquals(0.028244949999999998, pvalue, EPSILON);
 
 		// Check p-value for the second and third entries in the array
 		/*
@@ -171,9 +173,9 @@ public class TestCasesGenePvalueList {
 		 * 			 [3,] 2.576842e-05 4.294736e-04		<-- Same as previous line (this is because an adjusted p-value cannot decrease)
 		 */
 		pvalue = gpl.pValueFdr(0.0005);
-		Assert.assertEquals(4.294736666666667E-4, pvalue);
+		Assert.assertEquals(4.294736666666667E-4, pvalue, EPSILON);
 		pvalue = gpl.pValueFdr(0.0006);
-		Assert.assertEquals(4.294736666666667E-4, pvalue);
+		Assert.assertEquals(4.294736666666667E-4, pvalue, EPSILON);
 
 	}
 
@@ -195,7 +197,7 @@ public class TestCasesGenePvalueList {
 		for (int i = 0; i < max; i++) {
 			double quantile = ((double) i) / max;
 			double pval = pvlist.quantile(quantile);
-			Assert.assertEquals(quantile, pval); // Make sure they match
+			Assert.assertEquals(quantile, pval, EPSILON); // Make sure they match
 		}
 	}
 
@@ -217,7 +219,7 @@ public class TestCasesGenePvalueList {
 		for (int i = 0; i < max; i++) {
 			double quantile = ((double) i) / max;
 			double pval = pvlist.cdf(quantile);
-			Assert.assertEquals(quantile, pval); // Make sure they match
+			Assert.assertEquals(quantile, pval, EPSILON); // Make sure they match
 		}
 	}
 
