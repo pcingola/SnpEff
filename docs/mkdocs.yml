@@ -35,13 +35,14 @@ extra:
 
 nav:
   - Home:
-      - Home: index.md
-      - Features: features.md
-      - Usage examples: examples.md
-      - Paper & Citations: citing.md
-      - Who uses SnpEff?: users_of_snpeff.md
-      - Integration: integration.md
-      - License: license.md
+     - Home: index.md
+     - Features: features.md
+     - Usage examples: examples.md
+     - Paper & Citations: citing.md
+     - Who uses SnpEff?: users_of_snpeff.md
+     - Integration: integration.md
+     - License: license.md
+     - Test cases: tests.md
   - SnpEff:
      - Introduction: se_introduction.md
      - Running SnpEff: se_running.md
@@ -56,7 +57,6 @@ nav:
      - Integration. GATK and Galaxy: se_integration.md
      - Commands and utilities: se_commands.md
      - Frequently Asked Questions: se_faq.md
-     - Test cases: se_tests.md
   - SnpSift:
      - Introduction: ss_introduction.md
      - SnpSift Filter: ss_filter.md

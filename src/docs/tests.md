@@ -30,7 +30,7 @@ tar -cvf path/to/data_test.5.0.tar
 mv data_test/* .
 ```
 
-## Running Unit tests
+## SnpEff Unit tests
 
 To run unit test suite, you can run the following commands:
 
@@ -45,7 +45,7 @@ java -Xmx4g \
     | tee testcases.snpeff.unity.txt
 ```
 
-## Running integration tests
+## SnpEff integration tests
 
 To run integration test suite, you can run the following commands:
 
@@ -58,4 +58,19 @@ java -Xmx4g \
     org.snpeff.snpEffect.testCases.TestSuiteUnity \
     2>&1 \
     | tee testcases.snpeff.unity.txt
+```
+
+## SnpSift tests
+
+To run SnpSift test suite, you can run the following commands:
+
+```
+cd $SNPEFF_PROJECT_DIR
+
+java -Xmx4g \
+    -cp $SNPEFF_DIR/SnpSift.jar \
+    org.junit.runner.JUnitCore \
+    org.snpsift.testCases.TestSuiteAll \
+    2>&1 \
+    | tee testcases.snpsift.all.txt
 ```
