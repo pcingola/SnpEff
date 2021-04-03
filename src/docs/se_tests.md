@@ -18,9 +18,11 @@ export SNPEFF_DIR="$HOME/snpEff"
 
 ### Install test datasets
 
-Download the [test dataset here]() 
+- Note that the download link includes a SnpEff version, so it might change in future releases
 
-Untar and move the files to your SnpEff's `data` directory
+- Download the [test dataset here](https://snpeff.blob.core.windows.net/databases/data_test.5.0.tar) 
+
+- Untar and move the files to your SnpEff's `data` directory
 ```
 # Here we assume that your 'data' directory is in '$SNPEFF_DIR/data'
 cd $SNPEFF_DIR/data

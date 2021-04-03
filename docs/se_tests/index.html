@@ -1122,8 +1122,17 @@ export SNPEFF_PROJECT_DIR=&quot;$HOME/workspace/SnpEff&quot;
 export SNPEFF_DIR=&quot;$HOME/snpEff&quot;
 </code></pre>
 <h3 id="install-test-datasets">Install test datasets</h3>
-<p>Download the <a href="">test dataset here</a> </p>
+<ul>
+<li>
+<p>Note that the download link includes a SnpEff version, so it might change in future releases</p>
+</li>
+<li>
+<p>Download the <a href="https://snpeff.blob.core.windows.net/databases/data_test.5.0.tar">test dataset here</a> </p>
+</li>
+<li>
 <p>Untar and move the files to your SnpEff's <code>data</code> directory</p>
+</li>
+</ul>
 <pre><code># Here we assume that your 'data' directory is in '$SNPEFF_DIR/data'
 cd $SNPEFF_DIR/data
 tar -cvf path/to/data_test.5.0.tar
