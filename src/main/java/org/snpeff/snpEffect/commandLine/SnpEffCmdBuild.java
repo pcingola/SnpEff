@@ -17,6 +17,7 @@ import org.snpeff.interval.Markers;
 import org.snpeff.interval.Motif;
 import org.snpeff.interval.RareAminoAcid;
 import org.snpeff.motif.Jaspar;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactory;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryEmbl;
@@ -29,7 +30,6 @@ import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryKnownGene;
 import org.snpeff.snpEffect.factory.SnpEffPredictorFactoryRefSeq;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * Command line program: Build database
@@ -260,7 +260,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			if (verbose) Log.info("Done.");
 		} catch (Throwable t) {
 			// If file does not exists, no problem
-			if (verbose) Log.info("Warning: Cannot read optional protein sequence file '" + proteinsFile + "', nothing done.");
+			if (verbose) Log.warning(ErrorWarningType.WARNING_FILE_NOT_FOUND, "Cannot read optional protein sequence file '" + proteinsFile + "', nothing done.");
 			if (debug) t.printStackTrace();
 		}
 	}
@@ -296,7 +296,7 @@ public class SnpEffCmdBuild extends SnpEff {
 
 		// If file does not exists, no problem
 		if (!Gpr.canRead(regulationFileName)) {
-			if (verbose) Log.info("Warning: Cannot read optional regulation file '" + regulationFileName + "', nothing done.");
+			if (verbose) Log.warning(ErrorWarningType.WARNING_FILE_NOT_FOUND, "Cannot read optional regulation file '" + regulationFileName + "', nothing done.");
 			return;
 		}
 
@@ -329,7 +329,7 @@ public class SnpEffCmdBuild extends SnpEff {
 		String pwmsFileName = config.getDirDataGenomeVersion() + "/pwms.bin";
 
 		if (!Gpr.exists(pwmsFileName)) {
-			if (verbose) Log.info("Warning: Cannot open PWMs file " + pwmsFileName + ". Nothing done");
+			if (verbose) Log.warning(ErrorWarningType.WARNING_FILE_NOT_FOUND, "Cannot open PWMs file " + pwmsFileName + ". Nothing done");
 			return;
 		}
 
@@ -351,7 +351,7 @@ public class SnpEffCmdBuild extends SnpEff {
 			motifs.save(motifBinFileName);
 		} catch (Throwable t) {
 			// If file does not exists, no problem
-			if (verbose) Log.info("Warning: Cannot read optional motif file '" + motifFileName + "', nothing done.");
+			if (verbose) Log.warning(ErrorWarningType.WARNING_FILE_NOT_FOUND, "Cannot read optional motif file '" + motifFileName + "', nothing done.");
 			if (debug) t.printStackTrace();
 		}
 	}

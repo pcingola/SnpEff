@@ -9,11 +9,13 @@ import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
 import org.snpeff.interval.RareAminoAcid;
 import org.snpeff.interval.Transcript;
+import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.util.GprSeq;
+import org.snpeff.util.Log;
 
 /**
  * Find intervals where rare amino acids occur
- * 
+ *
  * @author pablocingolani
  */
 public class FindRareAaIntervals {
@@ -50,7 +52,7 @@ public class FindRareAaIntervals {
 		int e = Math.max(start, end);
 
 		String key = tr.getChromosomeName() + ":" + s + "-" + e;
-		if( rareAaByPos.containsKey(key) ) return; // Nothing to add
+		if (rareAaByPos.containsKey(key)) return; // Nothing to add
 
 		RareAminoAcid raa = new RareAminoAcid(tr, s, e, "");
 		rareAaByPos.put(key, raa);
@@ -69,7 +71,7 @@ public class FindRareAaIntervals {
 
 		// Find rare amino acids
 		String rare = findRareNames();
-		if( rare.isEmpty() ) return new LinkedList<RareAminoAcid>(); // Nothing to do
+		if (rare.isEmpty()) return new LinkedList<RareAminoAcid>(); // Nothing to do
 
 		// Find all sites were rare amino acids are
 		findRareAaSites(proteinFastaFile, rare);
@@ -84,17 +86,17 @@ public class FindRareAaIntervals {
 	 */
 	void findRareAaSites(String trId, int aaIdx) {
 		// Create index?
-		if( trById == null ) {
+		if (trById == null) {
 			trById = new HashMap<String, Transcript>();
-			for( Gene gene : genome.getGenome().getGenes() )
-				for( Transcript tr : gene )
+			for (Gene gene : genome.getGenome().getGenes())
+				for (Transcript tr : gene)
 					trById.put(tr.getId(), tr);
 		}
 
 		// Find transcript
 		Transcript tr = trById.get(trId);
-		if( tr == null ) {
-			if( verbose ) System.err.println("WARNING: Cannot find transcript '" + trId + "'");
+		if (tr == null) {
+			Log.warning(ErrorWarningType.WARNING_RARE_AA_POSSITION_NOT_FOUND, "Cannot find transcript '" + trId + "'");
 			return;
 		}
 
@@ -102,10 +104,10 @@ public class FindRareAaIntervals {
 		int cds2pos[] = tr.baseNumberCds2Pos();
 		int pos = 0, posPrev = 0, start = -1;
 		int step = tr.isStrandPlus() ? 1 : -1;
-		for( int cds = aaIdx * 3; cds < (aaIdx + 1) * 3; cds++ ) {
+		for (int cds = aaIdx * 3; cds < (aaIdx + 1) * 3; cds++) {
 			pos = cds2pos[cds];
-			if( start < 0 ) start = pos;
-			else if( pos != posPrev + step ) {
+			if (start < 0) start = pos;
+			else if (pos != posPrev + step) {
 				// Non-contiguous: Create a new marker and add it to the list
 				addRareAa(tr, start, pos);
 				start = -1;
@@ -114,7 +116,7 @@ public class FindRareAaIntervals {
 			posPrev = pos;
 		}
 
-		if( start >= 0 ) addRareAa(tr, start, pos);
+		if (start >= 0) addRareAa(tr, start, pos);
 	}
 
 	/**
@@ -125,11 +127,11 @@ public class FindRareAaIntervals {
 		FastaFileIterator ffi = new FastaFileIterator(proteinFastaFile);
 
 		// For every protein sequence
-		for( String seq : ffi ) {
+		for (String seq : ffi) {
 			// For every rare AA
-			for( char aa : rareAaChr ) {
+			for (char aa : rareAaChr) {
 				int aaIdx = seq.indexOf(aa);
-				if( aaIdx >= 0 ) { // Has this protein sequence any rare AA?
+				if (aaIdx >= 0) { // Has this protein sequence any rare AA?
 					String trId = ffi.getTranscriptId();
 					findRareAaSites(trId, aaIdx);
 				}
@@ -143,9 +145,9 @@ public class FindRareAaIntervals {
 	 */
 	String findRareNames() {
 		StringBuilder rare = new StringBuilder();
-		for( int i = 0; i < count.length; i++ ) {
+		for (int i = 0; i < count.length; i++) {
 			double p = ((double) count[i]) / countTotal;
-			if( (count[i] > 0) && ((p < rareThreshold) || !isInTable[i]) ) rare.append((char) i);
+			if ((count[i] > 0) && ((p < rareThreshold) || !isInTable[i])) rare.append((char) i);
 		}
 		return rare.toString();
 	}
@@ -158,9 +160,9 @@ public class FindRareAaIntervals {
 	 * Calculate all AA in a codon table
 	 */
 	void isInTable() {
-		for( char c1 : GprSeq.BASES )
-			for( char c2 : GprSeq.BASES )
-				for( char c3 : GprSeq.BASES ) {
+		for (char c1 : GprSeq.BASES)
+			for (char c2 : GprSeq.BASES)
+				for (char c3 : GprSeq.BASES) {
 					String codon = "" + c1 + c2 + c3;
 					String aa = codonTable.aa(codon);
 					isInTable[aa.toUpperCase().charAt(0)] = true;
@@ -173,12 +175,12 @@ public class FindRareAaIntervals {
 	 */
 	void proteingFileStats(String proteinFastaFile) {
 		FastaFileIterator ffi = new FastaFileIterator(proteinFastaFile);
-		for( String seq : ffi ) {
+		for (String seq : ffi) {
 			// For each protein sequence, count amino acids
-			for( char c : seq.toUpperCase().toCharArray() ) {
+			for (char c : seq.toUpperCase().toCharArray()) {
 				// Ignore non-letters (e.g. '*' = stop codon)
 				// Ignore unknown amino acids
-				if( Character.isLetter(c) && (c != 'X') ) {
+				if (Character.isLetter(c) && (c != 'X')) {
 					count[c]++;
 					countTotal++;
 				}
@@ -197,9 +199,9 @@ public class FindRareAaIntervals {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for( int i = 0; i < count.length; i++ ) {
+		for (int i = 0; i < count.length; i++) {
 			double p = ((double) count[i]) / countTotal;
-			if( count[i] > 0 ) sb.append(String.format("\t%s\t%d\t%.2e\t%b\n", (char) i, count[i], p, isInTable[i]));
+			if (count[i] > 0) sb.append(String.format("\t%s\t%d\t%.2e\t%b\n", (char) i, count[i], p, isInTable[i]));
 		}
 
 		return sb.toString();

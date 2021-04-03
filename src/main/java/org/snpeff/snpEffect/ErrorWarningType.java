@@ -35,6 +35,7 @@ public enum ErrorWarningType {
 	, WARNING_TRANSCRIPT_ID_DUPLICATE // Transcript ID already exists
 	, WARNING_CANNOT_ADD_UTR // UTR cannot be added
 	, WARNING_FRAMES_ZERO // Frames have zero values
+	, WARNING_RARE_AA_POSSITION_NOT_FOUND // The genomic position for a rare amino acid was not found
 	//
 	// VCF
 	//
