@@ -345,6 +345,9 @@ void buildDbTest() {
 		}
 	}
 
+	# All databases must be built before next sections
+	wait
+
 	# Build PDB database for testHg19Chr1
 	# We need to make sure that PDB entries for test cases are in these dirs
 	pdbTestCases := ['testHg19Chr1', 'testHg19Chr22']
@@ -356,6 +359,14 @@ void buildDbTest() {
 					-idMap $dirPdb/idMap_pdbId_ensemblId_refseqId.txt.gz \
 					$genome
 		}
+	}
+
+	# Build nextprot databases
+	nextProtTestCases := ['testHg3770Chr22']
+	for( string genome : nextProtTestCases ) {
+		nextProtDir := "$dirSnpEff/tests/integration/nextProt/nextProt"
+		nextProtDb := "$dirSnpEff/data/$genome/nextProt.bin"
+		task(!nextProtDb.exists()) sys $snpeff buildNextProt -v $genome '$nextProtDir'
 	}
 }
 

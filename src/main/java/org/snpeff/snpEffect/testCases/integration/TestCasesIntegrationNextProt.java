@@ -17,10 +17,6 @@ import org.snpeff.vcf.VcfEntry;
  */
 public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 
-	public TestCasesIntegrationNextProt() {
-		super();
-	}
-
 	@Test
 	public void test_01_build() {
 		Log.debug("Test");
