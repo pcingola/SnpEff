@@ -20,7 +20,7 @@ export SNPEFF_DIR="$HOME/snpEff"
 
 - Note that the download link includes a SnpEff version, so it might change in future releases
 
-- Download the [test dataset here](https://snpeff.blob.core.windows.net/databases/data_test.5.0.tar) 
+- Download the [test dataset here](https://snpeff.blob.core.windows.net/databases/data_test_5.0.tar) 
 
 - Untar and move the files to your SnpEff's `data` directory
 ```
