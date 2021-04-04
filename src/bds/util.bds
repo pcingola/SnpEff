@@ -1,0 +1,5 @@
+#!/usr/bin/env bds
+
+# Which 'cat' command to use for this file?
+string whichCat(string file) return (file.endsWith('gz') ? 'gunzip -c' : 'cat')
+

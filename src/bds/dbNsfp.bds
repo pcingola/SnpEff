@@ -1,0 +1,147 @@
+#!/usr/bin/env bds
+
+urlDbNsfp          := "ftp://dbnsfp:dbnsfp@dbnsfp.softgenetics.com/dbNSFP$dbNsfpVersion\.zip"
+
+dbNsfpCpusCompress := 8	help Number of CPUs used for compression
+
+# Chromosomes
+dbNsfpChrs := ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y', 'M']
+
+# Class for creating tabix-bgzip files for dbNSFP
+class DbNsfp {
+	string header
+	string genome
+	string[] txts
+	string dbNsfp
+	string dbNsfpDir
+
+	void DbNsfp(string dirDb, string genome) {
+		this.genome = genome
+		this.dbNsfpDir = "$dirDb/$genome/dbNSFP"
+		this.dbNsfp = "$dbNsfpDir/dbNSFP$dbNsfpVersion\.txt.gz"
+	}
+
+	# Create a compressed (bgzip) and indexed (tabix) dbNSFP file
+	void compressAndIndex() {
+		logd "Compress + index:\n\t: dbNsfp: $dbNsfp\n\tfiles: $txts"
+		# Compress
+		txtsStr := txts.join(' ')
+		task(dbNsfp <- txts, cpus := dbNsfpCpusCompress, taskName := "compress") {
+			sys cat '$header' $txtsStr | bgzip -@ $dbNsfpCpusCompress -c > '$dbNsfp'
+		}
+
+		# Create index
+		tbidx := dbNsfp + '.tbi'
+		task(tbidx <- dbNsfp, taskName := "index") {
+			sys tabix -s 1 -b 2 -e 2 $dbNsfp
+		}
+	}
+
+	# This is the main method
+	#   If 'dbNsfpOri' is non-empty, creates a new dbNSFP using hg19 coordiates from 'dbNsfpOri'
+	#   Otherwise, it creates a a new dbNSFP from the original files
+	string create(string dbNsfpOri) {
+		dbNsfpDir.mkdir()
+
+		if( dbNsfpOri.isEmpty() ) {
+			println "Build GRCh38/hg38 dbNsfpVersion"
+			files := filterFiles("dbNSFP$dbNsfpVersion\_variant", ".gz")
+			createDbNsfp(files)
+		} else {
+			println "Build GRCh37/hg19 dbNsfpVersion from '$dbNsfpOri'"
+			files := splitHg19Chromos(dbNsfpOri)
+			createDbNsfp(files)
+		}
+
+		return dbNsfp
+	}
+
+	# Create dnNsfp file from a list of unsorted files
+	void createDbNsfp(string[] files) {
+		header = createHeader(files)
+		txts = sortChromos(files)
+		compressAndIndex()
+	}
+
+	# Create a dbNFSP heade file
+	string createHeader(string[] files) {
+		header := "$dbNsfpDir/dbNSFP$dbNsfpVersion\.header"
+		if( header.exists() ) return header
+		file := files[0]
+		println "Creating header file '$header' from '$file'"
+		cat := whichCat(file)
+		task(header <- file) sys ($cat '$file' || true) | head -n 1 > '$header'
+		wait
+		return header
+	}
+
+	# Download dbNSFP
+	void download() {
+		log("Downloading dbNSFP\n\tURL: '$urlDbNsfp'\n\tLocal file: '$dbNsfp'")
+
+		dbNsfpDir.mkdir()
+		zip := dbNsfpDir + '/' + urlDbNsfp.baseName()
+
+		# Download
+		if( !zip.exists() ) {
+			dbNsfpDir.chdir()
+			wget(urlDbNsfp)
+		} else logd "File '$dbNsfp' exists, skipping"
+
+		unzip(zip)
+	}
+
+	# Filter files in a directory matching 'prefix' and 'suffix'
+	string[] filterFiles(string prefix, string suffix) {
+		string[] files
+		for(string file : dbNsfpDir.dir()) {
+			if(file.startsWith(prefix) && file.endsWith(suffix)) files += "$dbNsfpDir/$file"
+		}
+		return files
+	}
+
+	# Sort chromosome files
+	# Returns: list of sorted files
+	string[] sortChromos(string[] files) {
+		logd "Sorting files: $files"
+		string[] txts
+		for(string file : files) {
+			# File names
+			println("File: $file")
+			sorted := file.dirName() + '/' + file.baseName() + ".sort.txt"
+			txts += sorted
+			
+			# Sort file
+			cat := whichCat(file)
+			task(sorted <- file, cpus := 2, mem := 10*G, taskName := "sort_" + file.baseName()) {
+				sys $cat '$file' \
+					| $dirScriptsBuild/dbNSFP_sort.pl \
+					| grep -v "^#" \
+					> '$sorted'
+			}
+		}
+
+		return txts
+	}
+
+	# Split dbNsfp into chromosome files from hg19 mapping column
+	string[] splitHg19Chromos(string dbNsfpOri) {
+		logd "Splitting by hg19 chromosomes"
+		string[] chrFiles
+		for(string chr: dbNsfpChrs) chrFiles += "$dbNsfpDir/dbNSFP.split.$chr\.txt"
+		cat := whichCat(dbNsfpOri)
+		task(chrFiles <- dbNsfpOri, taskName := "split_hg19_chrs") {
+			sys cd '$dbNsfpDir' ; $cat '$dbNsfpOri' | $dirScriptsBuild/dbNSFP_split_by_chr.pl 7 8
+		}
+		return chrFiles
+	}
+
+	# Unzip dbNSFP file
+	void unzip(string zip) {
+		files := filterFiles("dbNSFP$dbNsfpVersion\_variant", ".gz")
+		if( files.size() == 0 ) {
+			log("Unzipping file '$zip'")
+			sys cd '$dbNsfpDir' ; unzip '$zip'
+		} else log("Unzipped files seem to be present, skipping")
+	}
+}
