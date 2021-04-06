@@ -16,13 +16,13 @@ include 'downloadUcsc'
 # Fetch (wget) a file to current dir
 # Returns true if download command is executed
 #-------------------------------------------------------------------------------
-bool wget(string url) {
-	return wget(url, true, false)
-}
+bool wget(string url) return wget(url, '', true, false)
 
-bool wgetTask(string url) {
-	return wget(url, false, false)
-}
+bool wgetTask(string url) return wget(url, '', false, false)
+
+bool wget(string url, string localPath) return wget(url, localPath, true, false)
+
+bool wgetTask(string url, string localPath) return wget(url, localPath, false, false)
 
 #-------------------------------------------------------------------------------
 # Fetch (wget) a list of files to current dir
@@ -31,7 +31,7 @@ bool wgetTask(string url) {
 bool wgetTask(string[] urls) {
 	oks := true
 	for(string url: urls) {
-		ok := wget(url, false, false)
+		ok := wget(url, '', false, false)
 		oks &= ok
 	}
 	return oks
@@ -41,13 +41,29 @@ bool wgetTask(string[] urls) {
 # Fetch (wget) a file, provide local file path
 # Returns true if download command is executed (or task created)
 #-------------------------------------------------------------------------------
-bool wget(string url, bool doWait, bool canFail) {
+bool wget(string url, string localPath, bool doWait, bool canFail) {
+	log("Downloading '$url'")
+
 	canFailStr := (canFail ? '|| true' : '')
-	print "Downloading '$url'"
-	if( doWait ) {
-		sys $wgetCmd '$url' $canFailStr
-	} else {
-		task $wgetCmd '$url' $canFailStr
+
+	localStr := ''
+	if( !localPath.isEmpty() ) {
+		if( localPath.exists() && localPath.size() > 0) {
+			log("Downloading: Local file '$localPath' exists, skipping")
+			return true	# Already downloaded, success
+		}
+		localStr = "-O '$localPath'"
 	}
+
+	if( !url.exists() ) {
+		log("Cannot find remote file '$url'")
+		return false
+	}
+
+	if( doWait ) {
+		sys $wgetCmd $localStr '$url' $canFailStr
+	} else {
+		task $wgetCmd $localStr '$url' $canFailStr
+	} 
 	return true
 }

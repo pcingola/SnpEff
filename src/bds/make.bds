@@ -27,7 +27,6 @@ download 			:= false		help Download all genomes
 downloadSet			:= ''			help Download one genomes set
 downloadUcsc		:= ''			help Download genome files from UCSC (genome name)
 downloadNcbi		:= ''			help Download genome files from NCBI (genome name)
-query	 			:= false		help Run queries against UCSC MySql server
 
 help Upload options
 uploadCore			:= false		help Upload 'core' package
@@ -64,7 +63,6 @@ ucscGenomesRefGene	:= [ 'hg19', 'hg38', 'mm9', 'mm10' ]
 ucscGenomesKg		:= [ 'hg19', 'hg38', 'mm9', 'mm10' ]
 
 # Configuration parameters
-#bundles				:= ["NCBI_bacteria", "NCBI_viruses", "ENSEMBL_BFMPP_$ensemblBfmppRelease"]
 bundles				:= ["ENSEMBL_BFMPP_$ensemblBfmppRelease"]
 
 # Commands
@@ -479,6 +477,22 @@ void downloadAll() {
 #-------------------------------------------------------------------------------
 void downloadOneSet(string setToDownload) {
 	switch( setToDownload ) {
+		case 'clinvar':
+			downloadClinvar()
+			break
+
+		case 'cytobands':
+			error "REFACTORED TO CLASS" #downloadCytoBands()
+			break
+
+		case 'dbnsfp':
+			downloadDbNsfp()
+			break
+
+		case 'dbsnp':
+			downloadDbSnp()
+			break
+
 		case 'ensembl':
 			for( int ensemblRelease : ensemblReleases ) downloadEnsembl(ensemblRelease)
 			break
@@ -487,52 +501,38 @@ void downloadOneSet(string setToDownload) {
 			downloadEnsemblBfmpp()
 			break
 
-		case 'ucsc':
-			for( string ref : ucscGenomes ) ref.downloadUcscGenome()
-			break
-
-		case 'hg38':
-			downloadUcscHg38()	
-			break
-
-		case 'ucsckg':
-			for( string ref : ucscGenomesKg ) ref.downloadUcscKg()
-			break
-
-		case 'pdb':
-			downloadPdb()
-			break
-
-		case 'dbsnp':
-			downloadDbSnp()
-			break
-
-		case 'dbnsfp':
-			downloadDbNsfp()
-			break
-
-		case 'cytobands':
-			downloadCytoBands()
-			break
-
-		case 'jaspar':
-			downloadJaspar()
+		case 'flybase':
+			downloadFlyBase()
 			break
 
 		case 'gwasCatalog':
 			downloadGwasCatalog()
 			break
 
+		case 'jaspar':
+			downloadJaspar()
+			break
+
 		case 'nextprot':
 			downloadNextProt()
 			break
 
-		case 'clinvar':
-			downloadClinvar()
+		case 'pdb':
+			downloadPdb()
 			break
 
-		case 'flybase':
-			downloadFlyBase()
+		case 'ucsc':
+			for( string ref : ucscGenomes ) {
+				dg := new DownloadUcsc(ref)
+				dg.download()
+			}
+			break
+
+		case 'ucsckg':
+			for( string ref : ucscGenomesKg ) {
+				dg := new DownloadUcscKg(ref)
+				dg.download()
+			}
 			break
 
 		default:
@@ -868,7 +868,6 @@ if( !downloadNcbi.isEmpty() )	downloadNcbi.downloadNcbiGenome()			# Download NCB
 if( !downloadUcsc.isEmpty() )	downloadUcsc.downloadUcscGenome()			# Download UCSC genome
 if( !downloadSet.isEmpty() )	downloadSet.downloadOneSet()				# Download one set
 if( make )						build()										# Build (create JAR files)
-if( query )						queryUcscAll()								# Query UCSC database
 if( test )						runTests()									# Run test cases 
 if( testHgvs )					runTestsSnpEffHgvs()						# Run test cases (SnpEff HGVS)
 if( uploadCore )				uploadCore2Azure()							# Upload 'core' files
