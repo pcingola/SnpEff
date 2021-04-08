@@ -1,0 +1,310 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+#
+# Download 'bulk' genomic data from NCBI
+#
+#-------------------------------------------------------------------------------
+
+urlNcbiFtp         := "ftp://ftp.ncbi.nlm.nih.gov/"
+urlNcbiGenomes     := "ftp.ncbi.nih.gov::genomes"
+urlNcbiBacteria    := "ftp.ncbi.nih.gov::genomes/Bacteria"
+urlNcbiViruses     := "ftp.ncbi.nih.gov::genomes/Viruses"
+
+#-------------------------------------------------------------------------------
+# Find chrID from fasta file
+#-------------------------------------------------------------------------------
+string chrIdFromNcbiFastaFileName(string chrFile) {
+	chrId := sys zcat $chrFile | head -n 1 | cut -f 4 -d '|'
+	chrId = chrId.trim()
+	return chrId
+}
+
+#-------------------------------------------------------------------------------
+# Find chr from file name
+#-------------------------------------------------------------------------------
+string chrFromNcbiFastaFileName(string chrFile) {
+	chrStr := chrFile.baseName('.fa.gz')
+	chrSplit := chrStr.split('_')
+	chr := chrSplit[chrSplit.size() - 1]
+	return chr
+}
+
+#-------------------------------------------------------------------------------
+# Find fasta files in a directory
+#-------------------------------------------------------------------------------
+string[] findFasta(string dir) {
+	chrFilesStr := sys find $dir -type f -iname "*chr*.fa.gz" | sort
+	string[] chrs
+	for( string chrFile : chrFilesStr.lines() ) chrs += chrFile.trim()
+	return chrs
+}
+
+#-------------------------------------------------------------------------------
+# Create a map file from NCBI downloaded (single FASTA per chromsome) files
+#-------------------------------------------------------------------------------
+string createChromosomeMap(string dir) {
+	println "Creating chromosome map file"
+	chrMapFile := "$dir/chromosome_ID_map_file.txt"
+	if( chrMapFile.exists() ) {
+		println "Chromosome map file '$chrMapFile' exists, nothing done"
+		return chrMapFile
+	}
+
+	# Find all files and add chr/chrId to map file
+	chrFiles := dir.findFasta()
+	mapStr := ''
+	for( string chrFile : chrFiles ) {
+		chr := chrFile.chrFromNcbiFastaFileName()
+		chrId := chrFile.chrIdFromNcbiFastaFileName()
+		mapStr += "$chr\t$chrId\n"
+	}
+
+	chrMapFile.write(mapStr)
+	return chrMapFile
+}
+
+#-------------------------------------------------------------------------------
+# Create files for a genome downloaded from NCBI
+#-------------------------------------------------------------------------------
+void createFilesFromNcbi(string genome) { 
+	# Path to scripts
+	dbDir      := "$dirData/$genome"
+	oriDir     := "$dbDir/ORI"
+	scriptsDir := "$dirScriptsBuild/ncbi"
+
+	# File names
+	cds        := "$dbDir/cds.fa.gz"
+	gff        := "$dbDir/genes.gff.gz"
+	protein    := "$dbDir/protein.fa.gz"
+	seq        := "$dbDir/sequences.fa.gz"
+	idMap      := "$dbDir/id_map.txt"
+	idMapProt  := "$dbDir/id_map_protein.txt"
+	chrMap     := "$dbDir/chromosome_ID_map_file.txt"
+
+	# Original file names
+	cdsOri     := "$oriDir/rna.fa.gz"
+	gffGzOri   := "$oriDir/genes.gff.gz"
+	proteinOri := "$oriDir/protein.fa.gz"
+	seqOri     := "$oriDir/sequences.fa.gz"
+
+	println "Fix GFF ids"
+	task([gff, idMap, idMapProt] <- gffGzOri) {
+		sys $scriptsDir/fix_gff.pl $gffGzOri $idMap $idMapProt $chrMap \
+				| gzip -c \
+				> $gff
+	}
+
+	println "Processing protein FASTA files"
+	task(protein <- [proteinOri, idMapProt]) {
+		sys gunzip -c $proteinOri \
+				| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
+				| $scriptsDir/fix_fasta_protein_cds.pl $idMapProt \
+				| gzip -c \
+				> $protein
+	}
+
+	println "Processing RNA FASTA files"
+	task( cds <- gff) {
+		sys gunzip -c $cdsOri \
+				| sed "s/^>gi|[0-9]*|ref|\(.*\)|.*/>\1/" \
+				| gzip -c \
+				> $cds
+	}
+}
+
+#-------------------------------------------------------------------------------
+# Download NCBI genome
+#-------------------------------------------------------------------------------
+#void downloadNcbiGenome(string genome) {
+#	println "Download NCBI genome '$genome'"
+#
+#	configFile := "$dirSnpEff/config/snpEff.NCBI.$genome\.config"
+#	if( configFile.exists() ) {
+#		println "\tConfig file '$configFile' exists: nothing done"
+#		return
+#	}
+#
+#	# Create download dir
+#	dir := "$dirDownload/ncbi_genome/$genome"
+#	dir.mkdir()
+#	dir.chdir()
+#
+#	downloadOk := "download.ok"
+#	url := "$urlNcbiGenomes/$genome/"
+#	println "URL: $url"
+#	if( ! downloadOk.exists() ) {
+#		println "Downloading NCBI genome '$genome'"
+#
+#		sys rsync -avP \
+#			--include='/GFF/*_top_level.gff3.gz' \
+#			--include='/protein/protein.fa.gz' \
+#			--include='/RNA/rna.fa.gz' \
+#			--include='/Assembled_chromosomes/seq/*_chr*.fa.gz' \
+#			--include='*/' \
+#			--exclude='*' \
+#			$url \
+#			.
+#
+#		sys chmod -Rf u+rw $dir
+#
+#		downloadOk.write("OK")	# Mark as all downloads OK
+#	} else {
+#		println "File $downloadOk exists, nothing done"
+#	}
+#
+#	# Create genome's dir
+#	dirDataGenome := "$dirData/$genome"
+#	dirDataGenomeOri := "$dirDataGenome/ORI"
+#	dirDataGenomeOri.mkdir()
+#
+#	# Create genome FASTA file and copy other files
+#	dir.createChromosomeMap()
+#	fa := dir.fastaFromNcbi()
+#	sys cp -vn $fa $dirDataGenome
+#	sys cp -vn RNA/rna.fa.gz $dirDataGenomeOri
+#	sys cp -vn protein/protein.fa.gz $dirDataGenomeOri
+#	sys cp -vn GFF/*_top_level.gff3.gz $dirDataGenomeOri/genes.gff.gz
+#	sys cp -vn chromosome_ID_map_file.txt $dirDataGenome/
+#
+#	# Create snpEff files
+#	genome.createFilesFromNcbi()
+#
+#	# Create config file
+#	today := sys date +"%Y-%m-%d"
+#	configLines := "$genome\.genome : $genome\n"
+#	configLines += "$genome\.reference : ftp://ftp.ncbi.nih.gov/genomes/$genome/\n"
+#	configLines += "$genome\.retrieval_date : $today"
+#	configFile.write(configLines)
+#}
+
+#-------------------------------------------------------------------------------
+# Download NCBI Bacteria
+#-------------------------------------------------------------------------------
+void downloadNcbiBacteria() {
+	println "Download NCBI bacteria"
+
+	configFile := "$dirSnpEff/config/snpEff.NCBI_bacteria.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	dir := "$dirDownload/ncbi_bacteria"
+	dir.mkdir()
+	dir.chdir()
+
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Downloading NCBI (Bacteria)"
+
+		sys rsync -avP \
+			--include='*.gbk' \
+			--exclude='*' \
+			$urlNcbiBacteria \
+			.
+
+		sys chmod -Rf u+rw $dir
+
+		downloadOk.write("OK")	# Mark as all downloads OK
+	}
+
+	# Create genes.gbk files and create config
+	# lines (one per subdirectory in dataDir)
+	string[] configLines
+	println "Creating genes.gbk:"
+	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
+	for( string gdir : genomes.lines() ) {
+		gen := gdir.baseName()
+		println "\t$gen"
+		configLines += "$gen\.genome : $gen\n$gen\.reference : http://ftp.ncbi.nih.gov/genomes/Bacteria/"
+
+		# Collapse all geneBank files into one 
+		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk
+	}
+
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+
+	# Copy files to data directory
+	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + cp -rvf + $dirData
+}
+
+#-------------------------------------------------------------------------------
+# Download NCBI Virus
+#-------------------------------------------------------------------------------
+void downloadNcbiVirus() {
+	println "Download NCBI virus"
+
+	configFile := "$dirSnpEff/config/snpEff.NCBI_viruses.config"
+	if( configFile.exists() ) {
+		println "\tConfig file '$configFile' exists: nothing done"
+		return
+	}
+
+	dir := "$dirDownload/ncbi_viruses"
+	dir.mkdir()
+	dir.chdir()
+
+	downloadOk := "download.ok"
+	if( ! downloadOk.exists() ) {
+		println "Downloading NCBI (Viruses)"
+
+		sys rsync -avP \
+			--include='*.gbk' \
+			--exclude='*' \
+			$urlNcbiViruses \
+			.
+
+		sys chmod -Rf u+rw $dir
+
+		downloadOk.write("OK")	# Mark as all downloads OK
+	}
+
+	# Create genes.gbk files and create config
+	# lines (one per subdirectory in dataDir)
+	string[] configLines
+	println "Creating genes.gbk:"
+	genomes := sys find . -mindepth 1 -maxdepth 1 -type d 
+	for( string gdir : genomes.lines() ) {
+		gen := gdir.baseName()
+		println "\t$gen"
+		configLines += "$gen\.genome : $gen\n$gen\.reference : http://ftp.ncbi.nih.gov/genomes/Viruses/"
+
+		# Collapse all geneBank files into one 
+		sys cd $gdir; rm -f genes.gbk; cat *.gbk > genes.gbk || true
+	}
+
+	println "Writing config file $configFile"
+	configFile.write( configLines.join("\n") )
+
+	# Copy files to data directory
+	sys find . -mindepth 1 -maxdepth 1 -type d | xargs -I + cp -rvf + $dirData
+}
+
+#-------------------------------------------------------------------------------
+# Create a single fasta file from an NCBI download 
+# of 'single FASTA per chromosome'
+#-------------------------------------------------------------------------------
+string fastaFromNcbi(string dir) {
+	fa := "$dir/sequences.fa"
+	faGz := "$fa\.gz"
+
+	# Already finished?
+	println "Creating genome fasta file '$faGz'"
+	if( faGz.exists() ) {
+		println "Fasta file '$faGz' exists, nothing done"
+		return faGz
+	}
+
+	# Create a big FASTA file including all chromosomes
+	chrFiles := dir.findFasta()
+	for(string chrFile: chrFiles) {
+		chr := chrFile.chrFromNcbiFastaFileName()
+		println "\tAdding chromosome '$chr' from file '$chrFile'"
+		sys ( echo ">$chr" ; gunzip -c $chrFile | grep -v "^>" ) | gzip -c >> $faGz
+	}
+	
+	return faGz
+}
+

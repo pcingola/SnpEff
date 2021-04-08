@@ -6,9 +6,11 @@
 #
 #-------------------------------------------------------------------------------
 
+include 'downloadGenome'
 include 'downloadEnsembl'
 include 'downloadHumanDb'
 include 'downloadNcbi'
+include 'downloadNcbiBulk'
 include 'downloadOther'
 include 'downloadUcsc'
 

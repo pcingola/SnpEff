@@ -11,14 +11,19 @@
 # Debug mode?
 $debug = 0;
 
+my($countSeq) = 0;
+
 #-------------------------------------------------------------------------------
 # Show all sequences
 #-------------------------------------------------------------------------------
-sub show($$$) {
-	my($seq, $ids, $name)  = @_;
+sub show($$) {
+	my($seq, $ids)  = @_;
 	my(@t) = split /\t/, $ids;
-	if( $debug && $#t > 1 ) { print STDERR "Duplicated name '$name' ($#t): $ids\n"; }
-	foreach $id ( @t ) { print ">$id\n$seq"; }
+	if( $debug && $#t > 1 ) { print STDERR "Duplicated name ($#t): $ids\n"; }
+	foreach $id ( @t ) {
+		print ">$id\n$seq"; 
+		$countSeq++;
+	}
 }
 
 #-------------------------------------------------------------------------------
@@ -35,7 +40,7 @@ die "Missing command line argument 'map_file.txt'\n" if $mapFile eq '';
 print STDERR "Reading file $mapFile\n";
 open IDMAP, $mapFile || die "Cannot open chromosome ID map file '$mapFile'\n";
 $count = 0;
-for($ln=1 ; $l = <IDMAP> ; $ln++) {
+while( $l = <IDMAP> ) {
 	chomp $l;
 	($id, $name) = split /\s+/, $l;
 	$id2name{$id} = $name;
@@ -43,27 +48,29 @@ for($ln=1 ; $l = <IDMAP> ; $ln++) {
 	if( $name2id{$name} eq '' ) { $name2id{$name} = $id; }
 	else						{ $name2id{$name} .= "\t$id"; }
 
-	print STDERR "MAP: id2name{$id} = '$id2name{$id}'\n" if $debug;
+	print "MAP: name2id{$name} = '$name2id{$name}'\n" if $debug;
 	$count++;
 }
 close IDMAP;
-print STDERR "Done, $ln lines\n";
+print STDERR "\tDone: $count entries loaded.\n";
 die "Empty chromosome ID map file '$mapFile'\n" if $count <= 0;
 
 #---
 # Parse FASTA files from STDIN
 #---
-$name = $seq = "";
+print STDERR "Creating output sequences\n";
+$id = $seq = "";
 while( $l = <STDIN> ) {
-	if( $l =~ /^>(\S+).*/ ) {
-		$nameNew = $1;
-		print STDERR "NEW SEQUENCE '$name': $l\n" if $debug;
-
+	if( $l =~ /^>/ ) {
 		# Show previous sequence
-		show($seq, $name2id{$name}, $name) if $name ne '';
+		show($seq, $name2id{$id}) if $id ne '';
 
 		# Parse sequence header lines
-		$name = $nameNew;
+		chomp $l;
+		if( $l =~ />(.*?)\s+.*/ ) { $idNew = $1; }
+		elsif( $l =~ />(.*)/ ) { $idNew = $1; }
+	
+		$id = $idNew;
 		$seq = "";
 	} else {
 		# Append sequence
@@ -71,5 +78,5 @@ while( $l = <STDIN> ) {
 	}
 }
 
-show($seq, $name2id{$name}, $name) if $name ne '';
-
+show($seq, $name2id{$id}) if $id ne '';
+print STDERR "\tDone. Output $countSeq sequences.\n";

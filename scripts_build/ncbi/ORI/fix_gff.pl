@@ -13,49 +13,18 @@ use strict;
 # Debug mode?
 my($debug) = 0;
 
-# Map chromosome IDs to names
-my(%chr);
 my(@keys) = ();		# GFF attribute key order
-
-#-------------------------------------------------------------------------------
-# Read an ID map file
-#-------------------------------------------------------------------------------
-sub readMap($) {
-	my($mapFile) = @_;
-	my($l, $name, $id, %ids);
-
-	open IDS, $mapFile || die "Cannot open chromosome ID map file '$mapFile'\n";
-	while( $l = <IDS> ) {
-		chomp $l;
-		($name, $id) = split /\s+/, $l;
-		$ids{$id} = $name;
-		print "MAP: ids{$id} = $name\n" if $debug;
-	}
-	close IDS;
-
-	return (%ids);
-}
-
 
 #-------------------------------------------------------------------------------
 # Parse GFF line
 #-------------------------------------------------------------------------------
 sub parseGffLine($) {
 	my($l) = @_;
-	my($chrid, $source, $type, $start, $end, $score, $strand, $phase, $attrs);
+	my($chr, $source, $type, $start, $end, $score, $strand, $phase, $attrs);
 
 	chomp $l;
-	($chrid, $source, $type, $start, $end, $score, $strand, $phase, $attrs) = split /\t/, $l;
-	print STDERR "Parsing GFF line:\t$chrid\t$source\t$type\t$start\t$end\t$score\t$strand\t$phase\t$attrs\n" if $debug;
-
-	#---
-	# Find chromosome name
-	#---
-	my($chr) = $chr{$chrid};
-	if( $chr eq '' ) {
-		print STDERR "WARNING: Cannot find chromosome name for id '$chrid'\n";
-		$chr{$chrid} = $chrid;
-	}
+	($chr, $source, $type, $start, $end, $score, $strand, $phase, $attrs) = split /\t/, $l;
+	print STDERR "Parsing GFF line:\t$chr\t$source\t$type\t$start\t$end\t$score\t$strand\t$phase\t$attrs\n" if $debug;
 
 	#---
 	# Translate types
@@ -80,18 +49,37 @@ sub parseGffLine($) {
 }
 
 #-------------------------------------------------------------------------------
+# Read chromosome ID to chromosome name mapping from file
+#-------------------------------------------------------------------------------
+sub readChrMap($) {
+	my($chrMapFile) = @_;
+	my($l, $chrName, $chrId, %chrMap);
+	open CHRMAP, $chrMapFile;
+	while( $l = <CHRMAP> ) {
+		chomp $l;
+		($chrName, $chrId) = split /\t/, $l;
+		$chrMap{$chrId} = $chrName;
+	}
+	close CHRMAP;
+	return %chrMap;
+}
+
+#-------------------------------------------------------------------------------
 # Main
 #-------------------------------------------------------------------------------
 
 # Parse command line arguments
-die "Usage: $0 file.gff chromosome_ID_map_file.txt\n" if $#ARGV <= 0;
+die "Usage: $0 file.gff id_map.txt id_map_protein.txt chr_map.txt\n" if $#ARGV < 0;
 my($gff) = $ARGV[0];
-my($chrMapFile) = $ARGV[1];
 die "Missing command line argument 'file.gff'\n" if $gff eq '';
-die "Missing command line argument 'chromosome_ID_map_file.txt'\n" if $chrMapFile eq '';
+my($idMapFile) = $ARGV[1];
+die "Missing command line argument 'id_map.txt' (output file)\n" if $idMapFile eq '';
+my($idProtMapFile) = $ARGV[2];
+die "Missing command line argument 'id_map_protein.txt' (output file)\n" if $idProtMapFile eq '';
+my($chrMapFile) = $ARGV[3];
+die "Missing command line argument 'chr_map.txt' (input file)\n" if $chrMapFile eq '';
 
-# Read chromosome ID map file
-%chr = readMap($chrMapFile);
+my(%chrMap) = readChrMap($chrMapFile);
 
 #---
 # Parse GFF files from STDIN
@@ -103,6 +91,7 @@ my($idsToChange) = {
 	,'D_gene_segment' => 1
 	,'J_gene_segment' => 1
 	,'V_gene_segment' => 1
+	, 'lnc_RNA' => 1
 	, 'mRNA' => 1
 	, 'ncRNA' => 1
 	, 'primary_transcript' => 1
@@ -118,11 +107,21 @@ my(%prot);		# Map protein ID to transcript ID
 my($l, $id, $key, $value, $name, $paren, $newParent);
 
 print STDERR "Parsing GFF file '$gff'\n";
-open GFF, $gff || die "Cannot open file '$gff'\n";
+if( $gff =~ /.gz$/ ) {
+	open GFF, "gunzip -c $gff |" || die "Cannot open file '$gff'\n";
+} else {
+	open GFF, $gff || die "Cannot open file '$gff'\n";
+}
+
 while( $l = <GFF> ) {
 	# Skip headers
 	if( $l !~ /^#/ ) {
 		($chr, $source, $type, $start, $end, $score, $strand, $phase, $attr) = parseGffLine($l);
+
+		# Map chromosme id to name
+		if( $chrMap{$chr} ne '' ) {
+			$chr = $chrMap{$chr};
+		}
 
 		$name = $attr->{'Name'};
 		$id = $attr->{'ID'};
@@ -135,7 +134,7 @@ while( $l = <GFF> ) {
 					$name2id{$name} .= "\t$id";
 					$idOld2New{$id} = "$name.$id"; # Append 'id' to make it unique
             
-					print STDERR "Duplicated name '$name' using '$idOld2New{$id}'\n";
+					print STDERR "Duplicated name '$name' using '$idOld2New{$id}'\n" if $debug;
 				} else {
 					$idOld2New{$id} = $name;
 					$name2id{$name} = $id;
@@ -190,15 +189,13 @@ close GFF;
 #---
 # Write IDs map file
 #---
-my($mapFile) = "ids.map.txt";
-print STDERR "Creating IDs transcript map file '$mapFile'\n";
-open IDS, "> $mapFile";
+print STDERR "Creating IDs transcript map file '$idMapFile'\n";
+open IDS, "> $idMapFile";
 foreach $key ( sort keys %idOld2New ) { print IDS "$key\t$idOld2New{$key}\n"; }
 close IDS;
 
-$mapFile = "protein_id.map.txt";
-print STDERR "Creating protein IDs map file '$mapFile'\n";
-open IDS, "> $mapFile";
+print STDERR "Creating protein IDs map file '$idProtMapFile'\n";
+open IDS, "> $idProtMapFile";
 foreach $key ( sort keys %prot ) { print IDS "$key\t$prot{$key}\n"; }
 close IDS;
 

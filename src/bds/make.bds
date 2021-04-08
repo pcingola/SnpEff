@@ -26,7 +26,8 @@ help Data download options
 download 			:= false		help Download all genomes
 downloadSet			:= ''			help Download one genomes set
 downloadUcsc		:= ''			help Download genome files from UCSC (genome name)
-downloadNcbi		:= ''			help Download genome files from NCBI (genome name)
+downloadNcbi		:= ''			help Download genome files from NCBI (both 'genome name' and 'genome ID' are required)
+ncbiId				:= ''			help Download genome ID from NCBI (both 'genome name' and 'genome ID' are required)
 
 help Upload options
 uploadCore			:= false		help Upload 'core' package
@@ -864,7 +865,7 @@ if( distro )					makeDistro()								# Create distribution files
 if( distroCore )				zipCore()									# Create distribution files (core 'zip')
 if( distroBundles )				zipBundles()								# Create 'bundle' distribution files
 if( download )					downloadAll()								# Perform downloads
-if( !downloadNcbi.isEmpty() )	downloadNcbi.downloadNcbiGenome()			# Download NCBI genome
+if( !downloadNcbi.isEmpty() )	downloadNcbi.downloadNcbiGenome(ncbiId)		# Download NCBI genome
 if( !downloadUcsc.isEmpty() )	downloadUcsc.downloadUcscGenome()			# Download UCSC genome
 if( !downloadSet.isEmpty() )	downloadSet.downloadOneSet()				# Download one set
 if( make )						build()										# Build (create JAR files)

@@ -19,20 +19,10 @@ void downloadUcscGenome(string genome) {
 }
 
 # Class to downoad files and query MySql database from UCSC
-class DownloadUcsc {
-	string genome			# Genome to download
-	string downloadDir		# Where to download the files
-	string downloadDirOri	# Where to download the original files, if there is a transformation needed
-	string dirDataGenome	# SnpEff's data directory for this genome
+class DownloadUcsc extends DownloadGenome {
 
 	void DownloadUcsc(string genome) {
-		this.genome = genome
-		downloadDir = "$dirDownload/ucsc/$genome"
-		dirDataGenome = "$dirData/$genome"
-
-		dirDataGenome.mkdir()
-		downloadDir.mkdir()
-		downloadDir.chdir()
+		super.DownloadGenome(genome)
 	}
 
 	string downloadCytoBand() {
@@ -42,21 +32,7 @@ class DownloadUcsc {
 		return localFile
 	}
 
-	void download() {
-		# Download all genomic files
-		fa := downloadFasta()
-		genes := downloadGenes()
-		cyto := downloadCytoBand()
-		cds := downloadCdsFasta()
-		wait
-
-		# Install files
-		install(fa, "$dirData/genomes")
-		install(cds, dirDataGenome)
-		install(genes, dirDataGenome)
-		install(cyto, dirDataGenome)
-	}
-
+	
 	# Download mRNA file and create a 'cds.fa.gz'
 	string downloadCdsFasta() {
 		log("Downloading '$genome' (UCSC): mRNA FASTA file")
@@ -116,6 +92,17 @@ class DownloadUcsc {
 		return wgetTask(url, gtf) ? gtf : ''
 	}
 
+	string downloadProteinFasta() {
+		# We don't get protein fasta files from UCSC: Nothing to do
+		return ''
+	}
+
+	# Download other files
+	string[] downloadOther() {
+		cyto := downloadCytoBand()
+		return [cyto]
+	}
+
 	# Create a single fasta file from a set of fasta in a tar
 	string fastaFromTar(string tar) {
 		log("Creating '$genome' FASTA file from tarball")
@@ -132,13 +119,6 @@ class DownloadUcsc {
 		}
 
 		return fasta
-	}
-
-	# Install a file in 'dstDir' directory
-	void install(string src, string dstDir) {
-		log("Installing file '$src' to '$dstDir'")
-		dst := "$dstDir/" + src.baseName()
-		task( dst <- src ) sys cp -vf '$src' '$dst'
 	}
 
 	string query() {
