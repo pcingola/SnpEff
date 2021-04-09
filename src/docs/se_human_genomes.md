@@ -39,9 +39,13 @@ Which Human genome version correspond to which genome names:
 
 - GRCh37.p*NN* (e.g. GRCh37.p13): These are RefSeq transcripts from NCBI mapped to GRCh38/hg19 reference genome sequence
 
-- hg38: This is a genome that uses RefSeq transcripts mapped to GRCh38/hg38 reference genome sequence
+- hg38: UCSC genome with RefSeq transcripts mapped to GRCh38/hg38 reference genome sequence
 
-- hg19: This is a genome that uses RefSeq transcripts mapped to GRCh38/hg38 reference genome sequence
+- hg19: UCSC genome with RefSeq transcripts mapped to GRCh37/hg19 reference genome sequence
+
+- hg38kg: UCSC genome with KnownGenes transcripts mapped to GRCh38/hg38 reference genome sequence
+
+- hg19kg: UCSC genome with KnownGenes transcripts mapped to GRCh37/hg19 reference genome sequence
 
 
 ### Important considerations
@@ -83,6 +87,7 @@ NT_113949.2 BestRefSeq  gene    139138  151310  .   -   .   gene_id "KIR3DL3_46"
 - **UCSC transcripts (hg19/hg38) are not unique.** Transcript IDs might not be unique. Many assume that IDs are unique, but this is not always true to UCSC's genomic files. 
 
 - **A UCSC transcripts (hg19/hg38) can map to multiple loci.** A transcript from hg19/hg39 can map to multiple genomic loci, this is a consequence of transcripts IDs not being unique. For example, transcript NR_110738.1 is mapped to 123 loci:
+
 
 ```
 $ cat hg38.refseq | cut -f 2 | sort | uniq -c | sort -rn | head
