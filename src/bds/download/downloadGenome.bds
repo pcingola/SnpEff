@@ -37,25 +37,25 @@ class DownloadGenome {
 		initLocal()
 
 		# Download files
-		fa := downloadFasta()
-		genes := downloadGenes()
-		cds := downloadCdsFasta()
-		prot := downloadProteinFasta()
+		fastaLocal = downloadFasta()
+		genesLocal = downloadGenes()
+		cdsLocal = downloadCdsFasta()
+		protLocal = downloadProteinFasta()
 		other := downloadOther()
 		wait
 
 		# Process files
 		preProcess()
-		genes = processGenes(genes)
-		fa = processFasta(fa)
-		cds = processCds(cds)
-		prot = processProt(prot)
+		genes := processGenes(genesLocal)
+		fa := processFasta(fastaLocal)
+		cds := processCds(cdsLocal)
+		prot := processProt(protLocal)
 
 		# Install files
+		install(genes, dirDataGenome + "/genes.$genesExt\.gz")
 		install(fa, "$dirData/genomes/$genome\.fa.gz")
-		install(genesLocal, dirDataGenome + "/genes.$genesExt\.gz")
-		install(cdsLocal, dirDataGenome + "/cds.fa.gz")
-		install(protLocal, dirDataGenome + "/proteing.fa.gz")
+		install(cds, dirDataGenome + "/cds.fa.gz")
+		install(prot, dirDataGenome + "/proteing.fa.gz")
 		for(string f: other) {
 			install(f, dirDataGenome + '/' + f.baseName())
 		}

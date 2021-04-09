@@ -56,6 +56,7 @@ nav:
      - Building databases. Regulatory and Non-coding: se_buildingreg.md
      - Integration. GATK and Galaxy: se_integration.md
      - Commands and utilities: se_commands.md
+     - Human Genomes: se_human_genomes.md
      - Frequently Asked Questions: se_faq.md
   - SnpSift:
      - Introduction: ss_introduction.md
