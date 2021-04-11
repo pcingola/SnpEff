@@ -1,40 +1,54 @@
 
 # Generic class to download a genome
 class DownloadGenome {
-	string genome			# Genome to download
+	string className		# This class' short name
+	string genome			# Genome as appeard in SnpEff's config file (it usually includes relase / version number)
+	string genomeNoVer		# Genome name without any version / release 
+	string version			# Genom version
 	string downloadDir		# Where to download the files
 	string downloadDirOri	# Where to download the original files, if there is a transformation needed
 	string dirDataGenome	# SnpEff's data directory for this genome
-	string cdsUrl, fastaUrl, genesUrl, protUrl
-	string cdsLocal, fastaLocal, genesLocal, protLocal
+	string cdsUrl, fastaUrl, genesUrl, protUrl	# Source URLs
+	string cdsLocal, fastaLocal, genesLocal, protLocal	# Local downlaod files
+	string cdsData, fastaData, genesData, protData	# SnpEff 'data' files
 	string genesExt			# Genes file extension ('gtf', 'gff', genBank', etc.)
 
 	void DownloadGenome(string genome) {
 		this.genome = genome
 		dirDataGenome = "$dirData/$genome"
-		dirDataGenome.mkdir()
 
 		# Get class (short) name to infer download dir (remove the 'Download' prefix to the class name)
-		className := type(this).toLower()
+		className = type(this).toLower()
 		if( className.startsWith('download') ) className = className.substr('download'.length())
 
 		downloadDir = "$dirDownload/$className/$genome"
-		log("Download '$genome', using download dir '$downloadDir'")
-		downloadDir.mkdir()
-		downloadDir.chdir()
+
+		# Genome name without version number
+		setGenomeAndVersion()
 	}
 
-	void initLocal() {
+	void init() {
 		cdsLocal = cdsUrl.isEmpty() ? '' : downloadDir + '/' + cdsUrl.baseName()
 		fastaLocal = fastaUrl.isEmpty() ? '' : downloadDir + '/' + fastaUrl.baseName()
 		genesLocal = genesUrl.isEmpty() ? '' : downloadDir + '/' + genesUrl.baseName()
 		protLocal = protUrl.isEmpty() ? '' : downloadDir + '/' + protUrl.baseName()
-		genesExt = 'gtf'
+
+		genesExt = genesExt.isEmpty() ? 'gtf' : genesExt
+
+		genesData = dirDataGenome + "/genes.$genesExt\.gz"
+		fastaData = "$dirData/genomes/$genome\.fa.gz"
+		cdsData = dirDataGenome + "/cds.fa.gz"
+		protData = dirDataGenome + "/proteing.fa.gz"
+
+		dirDataGenome.mkdir()
+		downloadDir.mkdir()
+		downloadDir.chdir()
 	}
 	
 	# Download and install all genomic files for 'genome'
 	void download() {
-		initLocal()
+		log("Download '$genome', using download dir '$downloadDir'")
+		init()
 
 		# Download files
 		fastaLocal = downloadFasta()
@@ -46,16 +60,16 @@ class DownloadGenome {
 
 		# Process files
 		preProcess()
-		genes := processGenes(genesLocal)
-		fa := processFasta(fastaLocal)
-		cds := processCds(cdsLocal)
-		prot := processProt(protLocal)
+		if( !genesLocal.isEmpty() ) genesLocal = processGenes(genesLocal)
+		if( !fastaLocal.isEmpty() ) fastaLocal = processFasta(fastaLocal)
+		if( !cdsLocal.isEmpty() )	cdsLocal = processCds(cdsLocal)
+		if( !protLocal.isEmpty() )	protLocal = processProt(protLocal)
 
 		# Install files
-		install(genes, dirDataGenome + "/genes.$genesExt\.gz")
-		install(fa, "$dirData/genomes/$genome\.fa.gz")
-		install(cds, dirDataGenome + "/cds.fa.gz")
-		install(prot, dirDataGenome + "/proteing.fa.gz")
+		install(genesLocal, dirDataGenome + "/genes.$genesExt\.gz")
+		install(fastaLocal, fastaData)
+		install(cdsLocal, cdsData)
+		install(protLocal, protData)
 		for(string f: other) {
 			install(f, dirDataGenome + '/' + f.baseName())
 		}
@@ -64,12 +78,20 @@ class DownloadGenome {
 	# Download (and build) 'cds' FASTA file to local download dir
 	# Returns: Path to file
 	string downloadCdsFasta() {
+		if( cdsData.exists() ) {
+			log("Download CDS FASTA: Data file '$cdsData' already exists, skipping")
+			return ''
+		}
 		return downloadFile(cdsUrl, cdsLocal, "CDS FASTA", false)
 	}
 
 	# Download (and build) reference genome FASTA file to local download dir
 	# Returns: Path to fasta file
 	string downloadFasta() {
+		if( fastaData.exists() ) {
+			log("Download Reference FASTA: Data file '$fastaData' already exists, skipping")
+			return ''
+		}
 		return downloadFile(fastaUrl, fastaLocal, "FASTA reference", false)
 	}
 
@@ -96,6 +118,10 @@ class DownloadGenome {
 	# Download (and build) 'genes' file to local download dir
 	# Returns: Path to file (GTF, GFF, RefSeq, GeneBank, etc.)
 	string downloadGenes() {
+		if( genesData.exists() ) {
+			log("Download Genes: Data file '$genesData' already exists, skipping")
+			return ''
+		}
 		return downloadFile(genesUrl, genesLocal, "Genes", false)
 	}
 
@@ -103,13 +129,17 @@ class DownloadGenome {
 	# Returns: A list of all paths
 	string[] downloadOther() {
 		string[] files
-		error("Unimplemented!")
+		# Override this method if you need to download "other" files
 		return files
 	}
 
 	# Download (and build) 'protein' FASTA file to local download dir
 	# Returns: Path to file
 	string downloadProteinFasta() {
+		if( protData.exists() ) {
+			log("Download Protein FASTA: Data file '$protData' already exists, skipping")
+			return ''
+		}
 		return downloadFile(protUrl, protLocal, "Protein FASTA", false)
 	}
 
@@ -136,4 +166,17 @@ class DownloadGenome {
 	# Process protein file (default, do nothing)
 	string processProt(string prot)	return prot
 
+	# Set genomeNoVer (i.e. genome name without version number) and version number
+	void setGenomeAndVersion() {
+		string[] gv
+
+		if( genome.indexOf('.') > 0 ) gv = genome.split('\.')
+		else if( genome.indexOf('_') > 0 ) gv = genome.split('_')
+
+		if( gv.isEmpty() ) (genomeNoVer, version) = [genome, '']
+		else (genomeNoVer, version) = gv
+
+		log("Download genome '$genome': genomeNoVer '$genomeNoVer' version '$version'")
+	}
 }
+

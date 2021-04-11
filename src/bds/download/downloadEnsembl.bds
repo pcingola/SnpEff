@@ -2,310 +2,40 @@
 
 #-------------------------------------------------------------------------------
 #
-# Download genome data
+# Download genome data from ENSEMBL
 #
 #-------------------------------------------------------------------------------
 
-ensemblFtp         := "ftp.ensembl.org"
-ensemblHttp        := "http://$ensemblFtp"
-ensemblBfmppFtp    := "ftp.ensemblgenomes.org"
-
-ensemblSpeciesRegulatory := ['homo_sapiens', 'mus_musculus']
-
-# ENSEMBL file names used a different format prior to this version
-ensemblVer1     := 75
-
-#-------------------------------------------------------------------------------
-# Download ENSEMBL genomes
-#-------------------------------------------------------------------------------
-void downloadEnsembl(int ensemblRelease) {
-	println "Download ENSEMBL $ensemblRelease"
-
-	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_$ensemblRelease\.config"
-
-	doneFile := "$dirDownload/ensembl_$ensemblRelease\.done"
-	if( doneFile.exists() ) {
-		println "\tConfig file '$doneFile' exists: nothing done"
-		return
-	}
-
-	dir := "$dirDownload/ensembl_$ensemblRelease"
-	dir.mkdir()
-	dir.chdir()
-
-	#---
-	# Download all files
-	#---
-	downloadOk := "download.ok"
-	if( ! downloadOk.exists() ) {
-		# downloadEnsemblRsync(ensemblRelease)
-		# downloadEnsemblFtp(ensemblRelease)
-		downloadEnsemblHttp(ensemblRelease)
-		downloadOk.write("OK")	# Mark as all downloads OK
-	}
-
-	# Move downloaded files to current dir
-	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
-
-	# Move files
-	println 'Copying files to data dir'
-	today := sys date +"%Y-%m-%d"
-	string[] configLines
-	for( string gtf : ".".dir("*.gtf.gz") ) {
-		base := gtf.baseName('.gtf.gz')
-		baseNoVer := base.removeExt()
-		longName := base.split('\.').head()
-		name := base.split('\.').tail().join('.')
-		if( name.isEmpty() ) continue
-		println "\t$name"
-    
-		fasta := "$baseNoVer\.dna.toplevel.fa.gz"
-		cds := "$baseNoVer\.cdna.all.fa.gz"
-		prot := "$baseNoVer\.pep.all.fa.gz"
-		if( ensemblRelease <= ensemblVer1 ) {
-			# Slightly different name format in prior versions
-			fasta = "$base\.dna.toplevel.fa.gz"
-			cds = "$base\.cdna.all.fa.gz"
-			prot = "$base\.pep.all.fa.gz"
-		}
-    
-		# Copy files
-		genomeDir := "$dirData/$name"
-		genomeDir.mkdir()
-		if( "$genomeDir/genes.gtf.gz" <- gtf )		sys $cp $gtf   $genomeDir/genes.gtf.gz
-		if( "$genomeDir/cds.fa.gz" <- cds )			sys $cp $cds   $genomeDir/cds.fa.gz
-		if( "$genomeDir/sequences.fa.gz" <- fasta )	sys $cp $fasta $genomeDir/sequences.fa.gz
-		if( "$genomeDir/protein.fa.gz" <- prot ) {
-			sys gunzip -c $prot \
-					| $dirScriptsBuild/ensembl_protein_transcriptId.sh \
-					| gzip -c \
-					> $genomeDir/protein.fa.gz
-		}
-    
-		# Append config lines
-		configLines += "$name\.genome : $longName"
-		configLines += "$name\.reference : ftp://ftp.ensembl.org/pub/release-$ensemblRelease/gtf/"
-		configLines += "$name\.retrieval_date : $today"
-	}
-
-	# Regulation tracks (human and mouse only)
-	genomeDir := "$dirData/$GRCH\.$ensemblRelease"
-	genomeDir.mkdir()
-	sys $cp homo_sapiens/AnnotatedFeatures.gff.gz $genomeDir/regulation.gff.gz || true
-	sys $cp homo_sapiens/MotifFeatures.gff.gz $genomeDir/motif.gff.gz || true
-
-	genomeDir = "$dirData/$GRCM.$ensemblRelease"
-	genomeDir.mkdir()
-	sys $cp mus_musculus/AnnotatedFeatures.gff.gz $genomeDir/regulation.gff.gz || true
-	sys $cp mus_musculus/MotifFeatures.gff.gz $genomeDir/motif.gff.gz || true
-
-	# Create config file
-	if( configFile.exists() ) {
-		println "WARNING: Config file exists, skipping ('$configFile')"
-	} else {
-		println "Writing config file $configFile"
-		configFile.write( configLines.join("\n") )
-	}
-
-	# Create 'done' file
-	doneFile.write('OK')
+void downloadEnsemblGenome(string genome) {
+	if( downloadEnsemblSpecies.isEmpty() ) error "Missing parameter 'downloadEnsemblSpecies'"
+	dg := new DownloadEnsembl(genome, downloadEnsemblSpecies)
+	dg.download()
 }
 
-#-------------------------------------------------------------------------------
-# Download ENSEMBL genomes via rsync
-#-------------------------------------------------------------------------------
-void downloadEnsemblRsync(int ensemblRelease) {
-	println "Downloading ENSEMBL (ftp) $ensemblRelease"
 
-	# Download GTF files
-	sys rsync -av	--include='*$ensemblRelease\.gtf.gz' \
-					--include='*/' \
-					--exclude='*' \
-					rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/gtf/ \
-					.
+class DownloadEnsembl extends DownloadGenome {
+	string species
 
-	# Download FASTA files (reference genomes)
-	sys rsync -av	--include='*.dna.toplevel.fa.gz' \
-					--include='*.cdna.all.fa.gz' \
-					--include='*.pep.all.fa.gz' \
-					--include='*/' \
-					--exclude='*' \
-					rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/fasta/ \
-					.
+	void DownloadEnsembl(string genome, string species) {
+		super.DownloadGenome(genome)
+		this.species = species
 
-	# Download regulation tracks
-	sys rsync -av	\
-					--exclude='*chromosome*motif_features.gff.gz' \
-					--include='*.gff.gz' \
-					--include='*/' \
-					--exclude='*' \
-					rsync://$ensemblFtp/ensembl/pub/release-$ensemblRelease/regulation/ \
-					.
+		speciesLower := species.toLower()
+		downloadDir = "$dirDownload/$className/$version/$genome"
+		urlBase := "http://ftp.ensembl.org/pub/release-$version"
 
-	# Move downloaded files to current dir
-	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
-}
-
-#-------------------------------------------------------------------------------
-# Download ENSEMBL genomes via ftp
-#-------------------------------------------------------------------------------
-void downloadEnsemblFtp(int ensemblRelease) {
-	downloadEnsemblUrl(ensemblRelease, "ftp://$ensemblFtp/pub/release-$ensemblRelease")
-}
-
-void downloadEnsemblHttp(int ensemblRelease) {
-	downloadEnsemblUrl(ensemblRelease, "$ensemblHttp/pub/release-$ensemblRelease")
-}
-
-void downloadEnsemblUrl(int ensemblRelease, string baseUrl) {
-	println "Downloading ENSEMBL (http) $ensemblRelease: '$baseUrl'"
-
-	dirFasta := "$baseUrl/fasta"
-	dirGtf := "$baseUrl/gtf"
-	dirRegulation := "$baseUrl/regulation"
-
-	# List of species
-	println("Getting directory from '$dirFasta'")
-	for(string sp: "$dirFasta/".dir()) {
-		println "\tSpecie: '$sp'"
-		
-		# Download GTF files
-		gtfs := "$dirGtf/$sp".dirPath("**.$ensemblRelease\.gtf.gz")
-		println "\t\tgtfs: $gtfs"
-
-		# Download FASTA files (reference genome)
-		dirBase := "$dirFasta/$sp"
-		fastasDna := "$dirBase/dna".dirPath('**.dna.toplevel.fa.gz')
-		println "\t\tfastasDna: $fastasDna"
-
-		# Download FASTA files (cDna)
-		fastasCdnas := "$dirBase/cdna".dirPath('**.cdna.all.fa.gz')
-		println "\t\tfastasCdnas: $fastasCdnas"
-
-		# Download FASTA files (protein)
-		fastasProts := "$dirBase/pep".dirPath('**.pep.all.fa.gz')
-		println "\t\tfastasProts: $fastasProts"
-
-		if( gtfs.isEmpty() || fastasDna.isEmpty() || fastasCdnas.isEmpty() || fastasProts.isEmpty() ) {
-			println "WARNING: Missing files for species '$sp', skipping download"
-			continue
-		}
-		wgetTask(gtfs + fastasDna + fastasCdnas + fastasProts)
-	}
-
-	# Download regulatory tracks only for some species
-	for(string sp: ensemblSpeciesRegulatory) {
-		# Download regulation tracks
-		path := "$dirRegulation/$sp/MotifFeatures/"
-		string[] gffs
-		if( ensemblRelease <= ensemblVer1 ) {
-			gffs = ["$dirRegulation/$sp/MotifFeatures.gff.gz"]
+		versionNum := version.parseInt()
+		if( versionNum > 75 ) {
+			cdsUrl = "$urlBase/fasta/$speciesLower/cds/$species\.$genomeNoVer\.cds.all.fa.gz"
+			fastaUrl = "$urlBase/fasta/$speciesLower/dna/$species\.$genomeNoVer\.dna.toplevel.fa.gz"
+			genesUrl = "$urlBase/gtf/$speciesLower/$species\.$genome\.gtf.gz"
+			protUrl = "$urlBase/fasta/$speciesLower/pep/$species\.$genomeNoVer\.pep.all.fa.gz"
 		} else {
-			gffs = path.dirPath('**.chromosome*motif_features.gff.gz')
+			cdsUrl = "$urlBase/fasta/$speciesLower/cds/$species\.$genome\.cds.all.fa.gz"
+			fastaUrl = "$urlBase/fasta/$speciesLower/dna/$species\.$genome\.dna.toplevel.fa.gz"
+			genesUrl = "$urlBase/gtf/$speciesLower/$species\.$genome\.gtf.gz"
+			protUrl = "$urlBase/fasta/$speciesLower/pep/$species\.$genome\.pep.all.fa.gz"
 		}
-		println "\t\tgffs: $gffs"
-
-		wgetTask(gffs)
 	}
-
-	wait
-}
-
-#-------------------------------------------------------------------------------
-# Download ENSEMBL genomes (BFMPP)
-#-------------------------------------------------------------------------------
-void downloadEnsemblBfmpp() {
-	println "ENSEMBL BFMPP $ensemblBfmppRelease"
-
-	configFile := "$dirSnpEff/config/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.config"
-
-	doneFile := "$dirDownload/ensembl_bfmpp_$ensemblBfmppRelease\.done"
-	if( doneFile.exists() ) {
-		println "\tDone file '$doneFile' exists: nothing done"
-		return
-	}
-
-	dir := "$dirDownload/ensembl_bfmpp_$ensemblBfmppRelease"
-	dir.mkdir()
-	dir.chdir()
-
-	#---
-	# Download all files
-	#---
-	downloadOk := "download.ok"
-	if( ! downloadOk.exists() ) {
-		println "ENSEMBL BFMPP $ensemblBfmppRelease: Downloading"
-
-		for(string org : [ 'bacteria', 'fungi', 'metazoa', 'plants', 'protists'] ) {
-			# Download GTF files (annotations)
-			sys rsync -av	--include='*.$ensemblBfmppRelease\.gtf.gz' \
-							--include='*/' \
-							--exclude='*' \
-							rsync://$ensemblBfmppFtp/all/pub/$org/release-$ensemblBfmppRelease/gtf/ \
-							.
-        
-			# Download FASTA files (reference genomes)
-			sys rsync -av	--include='*.dna.toplevel.fa.gz' \
-							--include='*.cdna.all.fa.gz' \
-							--include='*.pep.all.fa.gz' \
-							--include='*/' \
-							--exclude='*' \
-							rsync://$ensemblBfmppFtp/all/pub/$org/release-$ensemblBfmppRelease/fasta/ \
-							.
-		}
-
-		downloadOk.write("OK")	# Mark as all downloads OK
-	} else {
-		println "ENSEMBL BFMPP $ensemblBfmppRelease: File '$dir/$downloadOk' exist, skipping download"
-	}
-
-	#---
-	# Move files to propper structure in 'local data' dir
-	#---
-	# Copy files to local dir
-	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to parent dir"
-	sys find . -mindepth 2 -type f -not -path "*/data/*" | xargs -I + $cp + .
-
-	# Move files
-	println "ENSEMBL BFMPP $ensemblBfmppRelease: Copying files to data dir"
-	string[] configLines
-	today := sys date +"%Y-%m-%d"
-	for( string gtf : ".".dir("*.gtf.gz") ) {
-		base := gtf.baseName('.gtf.gz')
-		baseNoVer := base.removeExt()
-		longName := base.split('\.').head()
-		name := longName
-		println "name: $name\tbase: $base"
-
-		if( name.isEmpty() ) continue
-		fasta := "$baseNoVer\.dna.toplevel.fa.gz"
-		cds := "$baseNoVer\.cdna.all.fa.gz"
-		prot := "$baseNoVer\.pep.all.fa.gz"
-		println "\t$name\t$fasta\t$cds\t$prot"
-        
-		# Copy files (some source files might not exist)
-		genomeDir := "$dirData/$name"
-		genomeDir.mkdir()
-		if( "$genomeDir/genes.gtf.gz" <- gtf )		sys mv -vf $gtf   $genomeDir/genes.gtf.gz    || true
-		if( "$genomeDir/cds.fa.gz" <- cds )			sys mv -vf $cds   $genomeDir/cds.fa.gz       || true
-		if( "$genomeDir/protein.fa.gz" <- prot )	sys mv -vf $prot  $genomeDir/protein.fa.gz   || true
-		if( "$genomeDir/sequences.fa.gz" <- fasta )	sys mv -vf $fasta $genomeDir/sequences.fa.gz || true
-        
-		# Append config lines
-		configLines += "$name\.genome : $longName"
-		configLines += "$name\.reference : $ensemblBfmppFtp/pub/release-$ensemblBfmppRelease"
-		configLines += "$name\.retrieval_date : $today"
-	}
-
-	# Create config file
-	if( configFile.exists() ) {
-		println "WARNING: Config file exists, skipping ('$configFile')"
-	} else {
-		println "ENSEMBL BFMPP $ensemblBfmppRelease: Writing config file $configFile"
-		configFile.write( configLines.join("\n") )
-	}
-
-	# Create 'done' file
-	doneFile.write('OK')
 }
 

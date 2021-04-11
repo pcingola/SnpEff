@@ -9,15 +9,15 @@
 urlNcbiHttp := "https://ftp.ncbi.nlm.nih.gov/"
 
 
-void downloadNcbiGenome(string genome, string genomeVersionId) {
-	if( genomeVersionId.isEmpty() ) error "Error downloading genome '$genome' from NCBI, missing 'genome ID'"
-	dg := new DownloadNcbi(genome, genomeVersionId)
+void downloadNcbiGenome(string genome, string version) {
+	if( version.isEmpty() ) error "Error downloading genome '$genome' from NCBI, missing 'genome ID'"
+	dg := new DownloadNcbi(genome, version)
 	dg.download()
 }
 
 
 class DownloadNcbi extends DownloadGenome {
-	string genomeVersionId
+	string version
 	string urlBase
 	string assemblyReport
 	string chrsIds2Name
@@ -25,28 +25,28 @@ class DownloadNcbi extends DownloadGenome {
 
 	# Initialize with genome name and NCBI genome version ID
 	# e.g.: new DownloadNcbi('GRCh38.p13', 'GCF_000001405.39')
-	void DownloadNcbi(string genome, string genomeVersionId) {
+	void DownloadNcbi(string genome, string version) {
 		super.DownloadGenome(genome)
-		this.genomeVersionId = genomeVersionId
+		this.version = version
 
-		# Build a base URL form 'genomeVersionId' and 'genome'
+		# Build a base URL form 'version' and 'genome'
 		# The URL look like this: https://ftp.ncbi.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.39_GRCh38.p13/
 		string code, num 
-		(code, num) = genomeVersionId.split('_')
+		(code, num) = version.split('_')
 		n1 := num.substr(0,3)
 		n2 := num.substr(3,6)
 		n3 := num.substr(6,9)
-		urlBase = "$urlNcbiHttp/genomes/all/$code/$n1/$n2/$n3/$genomeVersionId\_$genome"
-		log("Download NCBI: genome '$genome', genomeVersionId: '$genomeVersionId', urlBase: '$urlBase'")
+		urlBase = "$urlNcbiHttp/genomes/all/$code/$n1/$n2/$n3/$version\_$genome"
+		log("Download NCBI: genome '$genome', version: '$version', urlBase: '$urlBase'")
 
-		cdsUrl = "$urlBase/$genomeVersionId\_$genome\_rna.fna.gz"
-		fastaUrl = "$urlBase/$genomeVersionId\_$genome\_genomic.fna.gz"
-		genesUrl = "$urlBase/$genomeVersionId\_$genome\_genomic.gtf.gz"
-		protUrl = "$urlBase/$genomeVersionId\_$genome\_protein.faa.gz"
+		cdsUrl = "$urlBase/$version\_$genome\_rna.fna.gz"
+		fastaUrl = "$urlBase/$version\_$genome\_genomic.fna.gz"
+		genesUrl = "$urlBase/$version\_$genome\_genomic.gtf.gz"
+		protUrl = "$urlBase/$version\_$genome\_protein.faa.gz"
 	}
 
 	string downloadAssemblyReport() {
-		arUrl := "$urlBase/$genomeVersionId\_$genome\_assembly_report.txt"
+		arUrl := "$urlBase/$version\_$genome\_assembly_report.txt"
 		arLocal := downloadDir + '/' + arUrl.baseName()
 		return downloadFile(arUrl, arLocal, "Assembly report", false)
 	}

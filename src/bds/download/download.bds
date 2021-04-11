@@ -8,7 +8,9 @@
 
 include 'downloadGenome'
 include 'downloadEnsembl'
+include 'downloadEnsemblBulk'
 include 'downloadHumanDb'
+include 'downloadMane'
 include 'downloadNcbi'
 include 'downloadNcbiBulk'
 include 'downloadOther'

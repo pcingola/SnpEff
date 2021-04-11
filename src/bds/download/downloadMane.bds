@@ -1,0 +1,42 @@
+#!/usr/bin/env bds
+
+#-------------------------------------------------------------------------------
+#
+# Download genome data from ENSEMBL
+#
+#-------------------------------------------------------------------------------
+
+urlMane := "https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/"
+
+void downloadManeGenome() {
+	dg := new DownloadMane(maneGenome, maneRelease, maneTrIdType)
+	dg.download()
+}
+
+
+class DownloadMane extends DownloadGenome {
+	string release		# MANE release 
+	string trType		# Transcript ID type: {'ensembl', 'refseq'}
+
+	void DownloadMane(string genome, string release, string trType) {
+		super.DownloadGenome("$genome\.mane.$release\.$trType")
+		this.release = release
+		this.trType = trType
+
+		downloadDir = "$dirDownload/$className/$release/$trType/$genome"
+		log("Downloading MANE '$genome': release '$release', transcript type '$trType', to '$downloadDir'")
+
+		# Download from NCBI's MANE site
+		urlBase := "$urlMane/release_$release"
+		cdsUrl = "$urlBase/MANE.$genome\.v$release\.select_$trType\_rna.fna.gz"
+		genesUrl = "$urlBase/MANE.$genome\.v$release\.select_$trType\_genomic.gtf.gz"
+		protUrl = "$urlBase/MANE.$genome\.v$release\.select_$trType\_protein.faa.gz"
+
+		# Download genome reference from NCBI
+		urlEnsemblBase := "http://ftp.ensembl.org/pub/release-$ensemblRelease"
+		species := 'Homo_sapiens'
+		speciesLower := species.toLower()
+		fastaUrl = "$urlEnsemblBase/fasta/$speciesLower/dna/$species\.$genome\.dna.toplevel.fa.gz"
+	}
+}
+

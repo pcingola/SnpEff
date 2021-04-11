@@ -14,15 +14,27 @@ urlUcscSoe         := "http://$soe/goldenPath"
 ftpUcscSoe         := "ftp://$soe/goldenPath"
 
 void downloadUcscGenome(string genome) {
-	dg := new DownloadUcsc(genome)
-	dg.download()
+	if( genome.endsWith('kg') ) {
+		dg := new DownloadUcscKg(genome)
+		dg.download()
+	} else {
+		dg := new DownloadUcsc(genome)
+		dg.download()
+	}
 }
+
 
 # Class to downoad files and query MySql database from UCSC
 class DownloadUcsc extends DownloadGenome {
+	string fastaTarUrl
 
 	void DownloadUcsc(string genome) {
 		super.DownloadGenome(genome)
+		cdsUrl = "$urlUcscSoe/$genome/bigZips/refMrna.fa.gz"
+		fastaUrl = "$urlUcscCse/$genome/bigZips/$genome\.fa.gz"
+		fastaTarUrl = "$urlUcscCse/$genome/bigZips/chromFa.tar.gz"
+		genesUrl = "$urlUcscSoe/$genome/bigZips/genes/$genome\.refGene.gtf.gz"
+		protUrl = ''  # It looks like there is no protein file with RefSeq transcripts at this moment
 	}
 
 	string downloadCytoBand() {
@@ -35,16 +47,18 @@ class DownloadUcsc extends DownloadGenome {
 	
 	# Download mRNA file and create a 'cds.fa.gz'
 	string downloadCdsFasta() {
-		log("Downloading '$genome' (UCSC): mRNA FASTA file")
-		urlMrna := "$urlUcscSoe/$genome/bigZips/refMrna.fa.gz"
-		localMrna := "$downloadDir/refMrna.fa.gz"
-		wget(urlMrna, localMrna)
+		if( cdsUrl.isEmpty() ) {
+			log("Downloading '$genome' (UCSC): CDS FASTA file. Empty URL, skipping")
+			return ''
+		}
+		log("Downloading '$genome' (UCSC): CDS FASTA file")
+		wget(cdsUrl, cdsLocal)
 		wait
 
 		cds := "$downloadDir/cds.fa.gz"
-		task(cds <- localMrna) {
-			sys echo 'Creating CDS FASTA from "$localMrna"'
-			sys gunzip -c '$localMrna' | tr " " "." | gzip -c > '$cds'
+		task(cds <- cdsLocal) {
+			sys echo 'Creating CDS FASTA from "$cdsLocal"'
+			sys gunzip -c '$cdsLocal' | tr " " "." | gzip -c > '$cds'
 		}
 
 		return cds
@@ -53,25 +67,22 @@ class DownloadUcsc extends DownloadGenome {
 	# Download FASTA geome from UCSC
 	string downloadFasta() {
 		log("Downloading '$genome' (UCSC): Reference FASTA file")
-		localFile := "$downloadDir/$genome\.fa.gz"
-		if( localFile.exists() ) {
-			println "Local file '$localFile' exists, skipping download"
-			return localFile
+		if( fastaLocal.exists() ) {
+			println "Local file '$fastaLocal' exists, skipping download"
+			return fastaLocal
 		}
 
-		urlFaGz := "$urlUcscCse/$genome/bigZips/$genome\.fa.gz"
-		urlTar := "$urlUcscCse/$genome/bigZips/chromFa.tar.gz"
-		if( urlFaGz.exists() ) {
-			wgetTask(urlFaGz, localFile)
-		} else if( urlTar.exists() ) {
+		if( fastaUrl.exists() ) {
+			wgetTask(fastaUrl, fastaLocal)
+		} else if( fastaTarUrl.exists() ) {
 			localTar := "$downloadDir/chromFa.tar.gz"
-			wgetTask(urlTar, localTar)
-			localFile = fastaFromTar(localTar) # Create fasta from tar
+			wgetTask(fastaTarUrl, localTar)
+			fastaLocal = fastaFromTar(localTar) # Create fasta from tar
 		} else {
-			println "Could not download FASTA refernce genome file\n\tFASTA: '$urlFaGz'\n\tTAR: '$urlTar'"
+			println "Could not download FASTA reference genome file\n\tFASTA: '$fastaUrl'\n\tTAR: '$fastaTarUrl'"
 		}
 
-		return localFile
+		return fastaLocal
 	}
 
 	# Download genes file. Either download GTF or query MySql server
@@ -87,9 +98,7 @@ class DownloadUcsc extends DownloadGenome {
 	# Download geome from UCSC, ony if it has a GTF file
 	string downloadGtf() {
 		log("Downloading '$genome' (UCSC): GTF file")
-		url := "$urlUcscSoe/$genome/bigZips/genes/$genome\.refGene.gtf.gz"
-		gtf := "$downloadDir/genes.gtf.gz"
-		return wgetTask(url, gtf) ? gtf : ''
+		return wgetTask(genesUrl, genesLocal) ? genesLocal : ''
 	}
 
 	string downloadProteinFasta() {
@@ -192,82 +201,31 @@ class DownloadUcsc extends DownloadGenome {
 	}
 }
 
-#	# Download geome from UCSC (Known genes)
-#	void downloadUcscKg(string refdb) {
-#		log("Download '$genome' (UCSC): Knonwn Genes")
-#		ref := refdb + 'kg'
-#
-#		dir := "$dirDownload/ucsc/$genome"
-#		dir.mkdir()
-#		dir.chdir()
-#
-#		# Query database
-#		queryUcscKg(ref, refdb, dir)
-#
-#		# Copy files to snpEff/data dir
-#		sys mkdir -p $dirData/$genome; cd $dir ; cp -vf genes.kg.gz $dirData/$genome/
-#		sys cd $dirData/genomes; rm -vf $genome\.fa.gz ; ln -s $refdb\.fa.gz $genome\.fa.gz
-#	}
-#
-#	# Download geome from UCSC
-#	void downloadGenomeFasta(string ref) {
-#		log("Download $genome (UCSC)")
-#
-#		# Initialize
-#		seDataDir := "$dirData/$genome"
-#		seDataDir.mkdir()
-#
-#		dir := "$dirDownload/ucsc/$genome"
-#		dir.mkdir()
-#		dir.chdir()
-#
-#		ori := "$dir/ORI"
-#		ori.mkdir()
-#		ori.chdir()
-#
-#		# Download reference fasta
-#		fagz := ref.downloadUcscGenomeFasta(dir)
-#		if( !fagz.exists() ) error "Genome FASTA reference file '$fagz' not found"
-#
-#		# Download CDS fasta
-#		cdsgz := ref.downloadUcscGenomeFastaMrna(dir)
-#		if( cdsgz.isEmpty() ) error "CDS FASTA file '$cdsgz' not found"
-#
-#		# Query gene database
-#		if( ucscGenomesRefGene.has(ref) ) queryUcscRefGene(ref, dir)
-#		else queryUcscXenoRefGene(ref, dir)
-#
-#		# Copy files to snpEff/data dir
-#		fagzData := "$dirData/genomes/$genome\.fa.gz"
-#		if( fagzData <- fagz ) sys cp -vf $fagz $fagzData
-#
-#		sys cd $dir ; cp -vf cds.fa.gz genes.refseq.gz $seDataDir/
-#	}
 
-
-#	# Query MySql's database (RefSeq) for refLink table
-#	string queryUcscRefLink() {
-#		refLink := "$downloadDir/refLink.txt.gz"
-#		if( !refLink.exists() ) {
-#			log("Querying database for RefLink table: $genome")
-#			query := "use $genome; select * from hgFixed.refLink;"
-#			sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $genome | gzip -c > '$refLink'
-#		}
-#		return refLink
-#	}
-#
-
+# Download a 'knaownGenes' version of the genome
 class DownloadUcscKg extends DownloadUcsc {
 	string refdb
+
 	void DownloadUcscKg(string genome) {
-		this.genome = genome
-		this.refdb = genome + 'kg'
+		if( genome.endsWith('kg') ) {
+			this.refdb = genome
+			this.genome = genome.substr(0, genome.length() - 2)	# Remove the 'kg' trailing
+		} else {
+			this.genome = genome
+			this.refdb = genome + 'kg'
+		}
 		downloadDir = "$dirDownload/ucsc/$refdb"
 		dirDataGenome = "$dirData/$refdb"
 
 		dirDataGenome.mkdir()
 		downloadDir.mkdir()
 		downloadDir.chdir()
+
+		fastaUrl = "$urlUcscCse/$this.genome/bigZips/$this.genome\.fa.gz"
+		fastaTarUrl = "$urlUcscCse/$this.genome/bigZips/chromFa.tar.gz"
+		genesUrl = "$urlUcscSoe/$this.genome/bigZips/genes/$this.genome\.knownGene.gtf.gz"
+		cdsUrl = ''   # It looks like there is no CDS file with knownGene transcripts at this moment
+		protUrl = ''  # It looks like there is no protein file with knownGene transcripts at this moment
 	}
 
 	string query() {

@@ -1,11 +1,10 @@
 package org.snpeff.nextProt;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.HashSet;
-import java.util.zip.GZIPInputStream;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
@@ -13,7 +12,6 @@ import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Log;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
@@ -42,14 +40,6 @@ public class NextProtDb {
 		this.config = config;
 		this.xmlDirName = xmlDirName;
 		markers = new Markers();
-	}
-
-	/**
-	 * Show an error message and exit
-	 */
-	protected void fatalError(String message) {
-		System.err.println("Fatal error: " + message);
-		System.exit(-1);
 	}
 
 	/**
@@ -82,7 +72,7 @@ public class NextProtDb {
 					parse(path);
 				}
 			}
-		} else fatalError("No XML files found in directory '" + xmlDirName + "'");
+		} else Log.fatalError("No XML files found in directory '" + xmlDirName + "'");
 
 		return true;
 	}
@@ -119,17 +109,11 @@ public class NextProtDb {
 		try {
 			// Load document
 			if (verbose) Log.info("Reading file:" + xmlFileName);
-			File xmlFile = new File(xmlFileName);
-
-			Document doc = null;
-			if (xmlFileName.endsWith(".gz")) doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new GZIPInputStream(new FileInputStream(xmlFile)));
-			else doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFile);
-
-			if (verbose) Log.info("Normalizing XML document");
-			doc.getDocumentElement().normalize();
-
-			// Parse document
-			parse(doc);
+			SAXParserFactory factory = SAXParserFactory.newInstance();
+			factory.setValidating(true);
+			SAXParser saxParser = factory.newSAXParser();
+			File file = new File(xmlFileName);
+			saxParser.parse(file, new NextProtHandler()); // specify handler
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

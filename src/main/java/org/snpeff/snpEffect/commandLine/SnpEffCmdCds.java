@@ -13,7 +13,6 @@ import org.snpeff.interval.Transcript;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.util.Timer;
 
 /**
  * Command line: Calculate coding sequences from a file and compare them to the ones calculated from our data structures
@@ -62,9 +61,9 @@ public class SnpEffCmdCds extends SnpEff {
 					+ "\n\tProtein (new) : " + seq //
 			);
 
-		// Use whole trId
-		cdsByTrId.put(trId, seq); // Add it to the hash
-		if (debug) Log.debug("Adding cdsByTrId{'" + trId + "'} :\t" + seq);
+		if (cdsByTrId.put(trId, seq) == null) { // Add it to the hash
+			if (debug) Log.debug("Adding cdsByTrId{'" + trId + "'} :\t" + seq);
+		}
 	}
 
 	/**
@@ -102,6 +101,7 @@ public class SnpEffCmdCds extends SnpEff {
 					if (debug) System.err.println("\nWARNING:Empty CDS for transcript '" + tr.getId() + "'");
 				} else if (cds.equals(cdsReference)) {
 					status = '+';
+					if (debug) System.err.println("\nOK:CDS for transcript '" + tr.getId() + "', match");
 
 					// Sanity check: Start and stop codons
 					if ((cds != null) && (cds.length() >= 3)) {
@@ -123,20 +123,24 @@ public class SnpEffCmdCds extends SnpEff {
 					}
 				} else if (mRna.equals(cdsReference)) { // May be the file has mRNA instead of CDS?
 					status = '+';
+					if (debug) System.err.println("\nOK: mRNA for transcript '" + tr.getId() + "', match");
 				} else if ((mRna.length() < cdsReference.length()) // CDS longer than mRNA? May be it is actually an mRNA + poly-A tail (instead of a CDS)
 						&& cdsReference.substring(mRna.length()).replace('A', ' ').trim().isEmpty() // May be it is an mRNA and it has a ploy-A tail added
 						&& cdsReference.substring(0, mRna.length()).equals(mRna) // Compare cutting poly-A tail
 				) {
 					// OK, it was a mRNA +  polyA
 					status = '+';
+					if (debug) System.err.println("\nOK: mRNA + polyA for transcript '" + tr.getId() + "', match");
 				} else if ((mRna.length() > cdsReference.length()) // PolyA in the reference?
 						&& mRna.substring(cdsReference.length()).replace('A', ' ').trim().isEmpty() //
 						&& mRna.substring(0, cdsReference.length()).equals(mRna) //
 				) {
 					// OK, it was a mRNA +  polyA
 					status = '+';
+					if (debug) System.err.println("\nOK: CDS + polyA for transcript '" + tr.getId() + "', match");
 				} else if (cdsReference.indexOf(cds) >= 0) { // CDS fully included in reference?
 					status = '+';
+					if (debug) System.err.println("\nOK: CDS is a substring from reference, for transcript '" + tr.getId() + "'");
 				} else {
 					status = '*';
 

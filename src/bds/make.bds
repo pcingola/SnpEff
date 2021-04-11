@@ -25,9 +25,6 @@ testHgvs 			:= false		help Run SnpEff HGVS test cases
 help Data download options
 download 			:= false		help Download all genomes
 downloadSet			:= ''			help Download one genomes set
-downloadUcsc		:= ''			help Download genome files from UCSC (genome name)
-downloadNcbi		:= ''			help Download genome files from NCBI (both 'genome name' and 'genome ID' are required)
-ncbiId				:= ''			help Download genome ID from NCBI (both 'genome name' and 'genome ID' are required)
 
 help Upload options
 uploadCore			:= false		help Upload 'core' package
@@ -47,21 +44,45 @@ azureQueryString	:= ''										help Azure 'query string' containing a security 
 cpus = 1
 
 # Versions
-ensemblReleases		:= [75, 99]
-ensemblBfmppRelease	:= "46"
-flybaseRelease		:= "FB2019_06"
+help Ensembl
+downloadEnsembl			:= ''			help Download Ensemlb genome, e.g. 'GRCh38.103'. Note: You also must to specify 'downloadEnsemblSpecies'
+downloadEnsemblSpecies	:= ''			help Ensembl species to download, e.g. 'Homo_sapiens', Note: It must be capitalized exactly as Ensembl defines it
+ensemblBfmppRelease		:= 46			help Ensembl BFMPP release number
+ensemblRelease			:= 103			help Vertebrate release number
+ensemblReleaseGrch37	:= 75			help Final release for Ensembl's GRCh37
+ensemblReleases			:= [ensemblReleaseGrch37, ensemblRelease]
+
+help MANE 
+downloadMane			:= false		help Download MANE
+maneGenome				:= 'GRCh38'		help MANE genome
+maneRelease				:= '0.93'		help MANE release version
+maneTrIdType			:= 'ensembl'	help MANE release transcript ID type: {'ensembl', 'refseq'}
+
+help UCSC
+downloadUcsc		:= ''			help Download genome files from UCSC (genome name)
+
+help NCBI
+downloadNcbi		:= ''			help Download genome files from NCBI (both 'genome name' and 'genome ID' are required)
+ncbiId				:= ''			help Download genome ID from NCBI (both 'genome name' and 'genome ID' are required)
+
+help Flybase
+flybaseRelease		:= "FB2019_06"	help Flybase release
 #flybaseGenomes		:= [ 'dana_r1.06', 'dere_r1.05', 'dgri_r1.05', 'dmel_r6.31', 'dmoj_r1.04', 'dper_r1.3', 'dpse_r3.04', 'dsec_r1.3', 'dsim_r2.02', 'dvir_r1.07', 'dwil_r1.05', 'dyak_r1.05' ]
 flybaseGenomes		:= [ 'dana_r1.06', 'dmel_r6.31', 'dpse_r3.04', 'dsim_r2.02', 'dvir_r1.07' ]	# Many FlyBase models do not have GFF or GTF files
+
+# Human
 GRCH				:= "GRCh38"
 GRCHs				:= ["GRCh37", "GRCh38"]
 GRCh2Hg				:= {"GRCh37" => "hg19", "GRCh38" => "hg38"}
-GRCM				:= "GRCm38"
 humanChrs			:= [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 humanChrsDd			:= [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', 'X', 'Y', 'MT']
 dbNsfpVersion		:= '4.1a'
 ucscGenomes			:= ['ailMel1', 'allMis1', 'anoCar2', 'anoGam3', 'apiMel3', 'aplCal1', 'aptMan1', 'aquChr2', 'balAcu1', 'bisBis1', 'bosTau9', 'bosTauMd3', 'braFlo2', 'caeJap1', 'caePb2', 'caeRem3', 'calJac1', 'calJac3', 'calMil1', 'canFam3', 'cavPor3', 'cb3', 'ce11', 'cerSim1', 'chlSab2', 'choHof1', 'chrPic1', 'ci3', 'criGri1', 'criGriChoV2', 'danRer11', 'dasNov3', 'dipOrd1', 'dm6', 'dp4', 'droAna3', 'droEre2', 'droGri2', 'droMoj3', 'droPer1', 'droSec1', 'droSim2', 'droVir3', 'droWil1', 'droYak2', 'eboVir3', 'echTel2', 'equCab3', 'eriEur2', 'felCat9', 'fr3', 'gadMor1', 'galGal6', 'galVar1', 'gasAcu1', 'geoFor1', 'gorGor5', 'hetGla2', 'hg19', 'hg38', 'latCha1', 'loxAfr3', 'macEug2', 'macFas5', 'manPen1', 'melGal5', 'melUnd1', 'micMur3', 'mm10', 'mm9', 'monDom5', 'musFur1', 'myoLuc2', 'nanPar1', 'nasLar1', 'nomLeu3', 'ochPri3', 'oreNil2', 'ornAna2', 'oryCun2', 'oryLat2', 'otoGar3', 'oviAri4', 'panPan2', 'panTro6', 'papAnu4', 'papHam1', 'petMar3', 'ponAbe3', 'priPac1', 'proCap1', 'rheMac10', 'rhiRox1', 'rn6', 'sacCer3', 'saiBol1', 'sarHar1', 'sc1', 'sorAra2', 'speTri2', 'strPur2', 'susScr11', 'taeGut2', 'tarSyr2', 'tetNig2', 'thaSir1', 'triCas2', 'triMan1', 'tupBel1', 'turTru2', 'uniProt', 'venter1', 'vicPac2', 'xenLae2', 'xenTro9'] # Get full list from "curl ftp://hgdownload.cse.ucsc.edu/goldenPath/"
 ucscGenomesRefGene	:= [ 'hg19', 'hg38', 'mm9', 'mm10' ]
 ucscGenomesKg		:= [ 'hg19', 'hg38', 'mm9', 'mm10' ]
+
+# Mouse
+GRCM				:= "GRCm38"
 
 # Configuration parameters
 bundles				:= ["ENSEMBL_BFMPP_$ensemblBfmppRelease"]
@@ -81,7 +102,6 @@ dirData				:= "$dirSnpEff/data"
 dirDb				:= "$dirSnpEff/db"
 dirDarned			:= "$dirDb/darned"
 dirDownload			:= "$dirSnpEff/download"
-dirGdrive           := "$HOME/gdrive"
 dirNextProt         := "$dirDb/nextProt"
 dirPdb              := "$dirDb/pdb"
 dirScripts			:= "$dirSnpEff/scripts"
@@ -188,12 +208,12 @@ void buildConfig() {
 	sys cat $confDir/snpEff.dbs.config >> $conf
 	sys cat	$confDir/snpEff.test.config >> $conf
 
-	for(int ensemblRelease : ensemblReleases ) {
+	for(int release : ensemblReleases ) {
 		sys echo >> $conf
 		sys echo "#---" >> $conf
-		sys echo "# ENSEMBL release $ensemblRelease" >> $conf
+		sys echo "# ENSEMBL release $release" >> $conf
 		sys echo "#---" >> $conf
-		sys cat $confDir/snpEff.ENSEMBL_$ensemblRelease\.config >> $conf
+		sys cat $confDir/snpEff.ENSEMBL_$release\.config >> $conf
 	}
 
 	sys echo >> $conf
@@ -469,7 +489,7 @@ string[] dirsHg() {
 # Download all datasets
 #-------------------------------------------------------------------------------
 void downloadAll() {
-	dsets := ['ensembl', 'ensemblBfmpp', 'ucsc', 'hg38', 'ucsckg', 'pdb', 'dbsnp', 'dbnsfp', 'cytobands', 'jaspar', 'gwasCatalog', 'nextprot', 'clinvar', 'flybase']
+	dsets := ['ensembl', 'ensemblBfmpp', 'ucsc', 'ucsckg', 'pdb', 'dbsnp', 'dbnsfp', 'cytobands', 'jaspar', 'gwasCatalog', 'nextprot', 'clinvar', 'flybase']
 	for(string dset: dsets) dset.downloadOneSet()
 }
 
@@ -495,7 +515,7 @@ void downloadOneSet(string setToDownload) {
 			break
 
 		case 'ensembl':
-			for( int ensemblRelease : ensemblReleases ) downloadEnsembl(ensemblRelease)
+			for( int ensemblRelease : ensemblReleases ) downloadEnsemblBulk(ensemblRelease)
 			break
 
 		case 'ensemblBfmpp':
@@ -865,8 +885,10 @@ if( distro )					makeDistro()								# Create distribution files
 if( distroCore )				zipCore()									# Create distribution files (core 'zip')
 if( distroBundles )				zipBundles()								# Create 'bundle' distribution files
 if( download )					downloadAll()								# Perform downloads
+if( !downloadEnsembl.isEmpty() )	downloadEnsembl.downloadEnsemblGenome()		# Download ENSEMBL genome
+if( downloadMane )				downloadManeGenome()						# Download MANE genome
 if( !downloadNcbi.isEmpty() )	downloadNcbi.downloadNcbiGenome(ncbiId)		# Download NCBI genome
-if( !downloadUcsc.isEmpty() )	downloadUcsc.downloadUcscGenome()			# Download UCSC genome
+if( !downloadUcsc.isEmpty() )	downloadUcsc.downloadUcscGenome()			# Download UCSC genome (either refseq or kg)
 if( !downloadSet.isEmpty() )	downloadSet.downloadOneSet()				# Download one set
 if( make )						build()										# Build (create JAR files)
 if( test )						runTests()									# Run test cases 
