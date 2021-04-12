@@ -60,7 +60,7 @@ public class Log {
 	/**
 	 * Show a warning message (up to MAX_ERRORS times)
 	 */
-	protected static void error(String msg) {
+	public static void error(String msg) {
 		System.err.println("ERROR: " + msg);
 	}
 

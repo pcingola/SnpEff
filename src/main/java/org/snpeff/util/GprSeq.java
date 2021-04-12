@@ -364,6 +364,23 @@ public class GprSeq {
 	}
 
 	/**
+	 * Show differences between two sequences
+	 */
+	public static String showMismatch(String seq1, String seq2, String prefix) {
+		var sb = new StringBuilder();
+		sb.append(prefix + seq1 + "\n");
+
+		sb.append(prefix);
+		var len = Math.min(seq1.length(), seq2.length());
+		for (int i = 0; i < len; i++)
+			sb.append(seq1.charAt(i) == seq2.charAt(i) ? '|' : '*');
+		sb.append('\n');
+
+		sb.append(prefix + seq2 + "\n");
+		return sb.toString();
+	}
+
+	/**
 	 * Transform into a FASTA formatted string
 	 */
 	public static String string2fasta(String name, String sequence) {
@@ -426,5 +443,4 @@ public class GprSeq {
 			rwc[i] = wc(bases[i]);
 		return new String(rwc);
 	}
-
 }

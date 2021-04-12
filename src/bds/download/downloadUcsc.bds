@@ -27,6 +27,7 @@ void downloadUcscGenome(string genome) {
 # Class to downoad files and query MySql database from UCSC
 class DownloadUcsc extends DownloadGenome {
 	string fastaTarUrl
+	string cytoBandUrl
 
 	void DownloadUcsc(string genome) {
 		super.DownloadGenome(genome)
@@ -34,14 +35,14 @@ class DownloadUcsc extends DownloadGenome {
 		fastaUrl = "$urlUcscCse/$genome/bigZips/$genome\.fa.gz"
 		fastaTarUrl = "$urlUcscCse/$genome/bigZips/chromFa.tar.gz"
 		genesUrl = "$urlUcscSoe/$genome/bigZips/genes/$genome\.refGene.gtf.gz"
+		cytoBandUrl = "$urlUcscCse/$genome/database/cytoBand.txt.gz"
 		protUrl = ''  # It looks like there is no protein file with RefSeq transcripts at this moment
 	}
 
 	string downloadCytoBand() {
-		localFile := "$downloadDir/cytoBand.txt.gz"
-		url := "$urlUcscCse/$genome/database/cytoBand.txt.gz"
-		if( !localFile.exists() ) wget(url, localFile)
-		return localFile
+		cytoBandFile := "$downloadDir/cytoBand.txt.gz"
+		if( !cytoBandFile.exists() ) wget(cytoBandUrl, cytoBandFile)
+		return cytoBandFile
 	}
 
 	
@@ -66,12 +67,6 @@ class DownloadUcsc extends DownloadGenome {
 
 	# Download FASTA geome from UCSC
 	string downloadFasta() {
-		log("Downloading '$genome' (UCSC): Reference FASTA file")
-		if( fastaLocal.exists() ) {
-			println "Local file '$fastaLocal' exists, skipping download"
-			return fastaLocal
-		}
-
 		if( fastaUrl.exists() ) {
 			wgetTask(fastaUrl, fastaLocal)
 		} else if( fastaTarUrl.exists() ) {
@@ -207,25 +202,15 @@ class DownloadUcscKg extends DownloadUcsc {
 	string refdb
 
 	void DownloadUcscKg(string genome) {
-		if( genome.endsWith('kg') ) {
-			this.refdb = genome
-			this.genome = genome.substr(0, genome.length() - 2)	# Remove the 'kg' trailing
-		} else {
-			this.genome = genome
-			this.refdb = genome + 'kg'
-		}
-		downloadDir = "$dirDownload/ucsc/$refdb"
-		dirDataGenome = "$dirData/$refdb"
+		super.DownloadUcsc(genome)
+		this.refdb = genome.substr(0, genome.length() - 2)	# Remove the 'kg' trailing
 
-		dirDataGenome.mkdir()
-		downloadDir.mkdir()
-		downloadDir.chdir()
-
-		fastaUrl = "$urlUcscCse/$this.genome/bigZips/$this.genome\.fa.gz"
-		fastaTarUrl = "$urlUcscCse/$this.genome/bigZips/chromFa.tar.gz"
-		genesUrl = "$urlUcscSoe/$this.genome/bigZips/genes/$this.genome\.knownGene.gtf.gz"
+		genesUrl = "$urlUcscSoe/$this.genome/bigZips/genes/$this.refdb\.knownGene.gtf.gz"
 		cdsUrl = ''   # It looks like there is no CDS file with knownGene transcripts at this moment
 		protUrl = ''  # It looks like there is no protein file with knownGene transcripts at this moment
+		cytoBandUrl = "$urlUcscCse/$refdb/database/cytoBand.txt.gz"
+
+		fastaDataEq = "$dirData/genomes/$refdb\.fa.gz"
 	}
 
 	string query() {
@@ -254,7 +239,7 @@ class DownloadUcscKg extends DownloadUcsc {
 				from knownGene kg
 				;
 				"
-			sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $refdb | gzip -c > '$refSeq'
+			sys echo "$query" | mysql --user=genome --host=$ucscMysqlServer -A $genome | gzip -c > '$refSeq'
 		}
 		return refSeq
 	}

@@ -128,9 +128,9 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 	 * Find a genomic position of the first base in a Amino Acid 'aaNum'
 	 */
 	public int aaNumber2Pos(int aaNum) {
-		aaNumber2Pos();
-
-		return -1;
+		var aa2pos = aaNumber2Pos();
+		if (aaNum < 0 || aaNum > aa2pos.length) return -1;
+		return aa2pos[aaNum];
 	}
 
 	/**
@@ -451,6 +451,12 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
 		}
 
 		return cds2pos;
+	}
+
+	public int baseNumberCds2Pos(int cdsBaseNum) {
+		if (cds2pos == null) baseNumberCds2Pos();
+		if (cdsBaseNum < 0 || cdsBaseNum >= cds2pos.length) return -1;
+		return cds2pos[cdsBaseNum];
 	}
 
 	/**

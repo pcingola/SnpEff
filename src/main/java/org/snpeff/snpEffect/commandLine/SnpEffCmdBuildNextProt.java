@@ -32,10 +32,11 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 			// Argument starts with '-'?
 			if (isOpt(arg)) {
 				switch (arg.toLowerCase()) {
-				case "-trids":
-					if ((i + 1) < args.length) trIdFile = args[++i];
-					else usage("Option '-trids' without transcript id file");
-					break;
+				// DEPRECATED: Get mappings directly from NextProt XML
+				//				case "-trids":
+				//					if ((i + 1) < args.length) trIdFile = args[++i];
+				//					else usage("Option '-trids' without transcript id file");
+				//					break;
 
 				default:
 					usage("Unknonwn option '" + arg + "'");
@@ -61,7 +62,7 @@ public class SnpEffCmdBuildNextProt extends SnpEff {
 		NextProtDb nextProtDb = new NextProtDb(xmlDirName, config);
 		nextProtDb.setVerbose(verbose);
 		nextProtDb.setDebug(debug);
-		nextProtDb.setTrIdFile(trIdFile);
+		//		nextProtDb.setTrIdFile(trIdFile);
 		nextProtDb.parse(); // Parse XML files
 		nextProtDb.saveDatabase(); // Save database
 

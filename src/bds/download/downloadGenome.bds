@@ -11,6 +11,7 @@ class DownloadGenome {
 	string cdsUrl, fastaUrl, genesUrl, protUrl	# Source URLs
 	string cdsLocal, fastaLocal, genesLocal, protLocal	# Local downlaod files
 	string cdsData, fastaData, genesData, protData	# SnpEff 'data' files
+	string fastaDataEq		# This genome fasta is equivalent, if present, create a link (typical is the major name of the genome without version, e.g. 'hg38')
 	string genesExt			# Genes file extension ('gtf', 'gff', genBank', etc.)
 
 	void DownloadGenome(string genome) {
@@ -27,34 +28,25 @@ class DownloadGenome {
 		setGenomeAndVersion()
 	}
 
-	void init() {
-		cdsLocal = cdsUrl.isEmpty() ? '' : downloadDir + '/' + cdsUrl.baseName()
-		fastaLocal = fastaUrl.isEmpty() ? '' : downloadDir + '/' + fastaUrl.baseName()
-		genesLocal = genesUrl.isEmpty() ? '' : downloadDir + '/' + genesUrl.baseName()
-		protLocal = protUrl.isEmpty() ? '' : downloadDir + '/' + protUrl.baseName()
-
-		genesExt = genesExt.isEmpty() ? 'gtf' : genesExt
-
-		genesData = dirDataGenome + "/genes.$genesExt\.gz"
-		fastaData = "$dirData/genomes/$genome\.fa.gz"
-		cdsData = dirDataGenome + "/cds.fa.gz"
-		protData = dirDataGenome + "/proteing.fa.gz"
-
-		dirDataGenome.mkdir()
-		downloadDir.mkdir()
-		downloadDir.chdir()
+	# If the referce FASTA file 'fastaDataEq' exists, create a link
+	void checkRefrenceFasta() {
+		if( !fastaDataEq.exists() || fastaData.exists() ) return
+		log("Download '$genome': FASTA refernce file '$fastaDataEq' exists, linking")
+		sys ln -s '$fastaDataEq' '$fastaData'
 	}
-	
+
 	# Download and install all genomic files for 'genome'
 	void download() {
 		log("Download '$genome', using download dir '$downloadDir'")
 		init()
 
-		# Download files
-		fastaLocal = downloadFasta()
-		genesLocal = downloadGenes()
-		cdsLocal = downloadCdsFasta()
-		protLocal = downloadProteinFasta()
+		checkRefrenceFasta()
+
+		# Download files (check if data is already downloaded)
+		fastaLocal = downloadFastaCheck()
+		genesLocal = downloadGenesCheck()
+		cdsLocal = downloadCdsFastaCheck()
+		protLocal = downloadProteinFastaCheck()
 		other := downloadOther()
 		wait
 
@@ -76,22 +68,40 @@ class DownloadGenome {
 	}
 	
 	# Download (and build) 'cds' FASTA file to local download dir
-	# Returns: Path to file
 	string downloadCdsFasta() {
+		return downloadFile(cdsUrl, cdsLocal, "CDS FASTA", false)
+	}
+
+	# Download (and build) 'cds' FASTA file to local download dir
+	# Returns: Path to file
+	string downloadCdsFastaCheck() {
 		if( cdsData.exists() ) {
 			log("Download CDS FASTA: Data file '$cdsData' already exists, skipping")
 			return ''
 		}
-		return downloadFile(cdsUrl, cdsLocal, "CDS FASTA", false)
+		if( cdsLocal.exists() ) {
+			log("Download CDS FASTA: Data file '$cdsLocal' already exists, skipping")
+			return cdsLocal
+		}
+		return downloadCdsFasta()
 	}
 
 	# Download (and build) reference genome FASTA file to local download dir
-	# Returns: Path to fasta file
-	string downloadFasta() {
+	# Returns: Path to fasta file or empty if no download is needed
+	string downloadFastaCheck() {
 		if( fastaData.exists() ) {
 			log("Download Reference FASTA: Data file '$fastaData' already exists, skipping")
 			return ''
 		}
+		if( fastaLocal.exists() ) {
+			log("Download Reference FASTA: Data file '$fastaLocal' already exists, skipping")
+			return fastaLocal
+		}
+		return downloadFasta()
+	}
+
+	# Download (and build) reference genome FASTA file to local download dir
+	string downloadFasta() {
 		return downloadFile(fastaUrl, fastaLocal, "FASTA reference", false)
 	}
 
@@ -117,11 +127,21 @@ class DownloadGenome {
 
 	# Download (and build) 'genes' file to local download dir
 	# Returns: Path to file (GTF, GFF, RefSeq, GeneBank, etc.)
-	string downloadGenes() {
+	string downloadGenesCheck() {
 		if( genesData.exists() ) {
 			log("Download Genes: Data file '$genesData' already exists, skipping")
 			return ''
 		}
+		if( genesLocal.exists() ) {
+			log("Download Genes: Data file '$genesLocal' already exists, skipping")
+			return genesLocal
+		}
+
+		return downloadGenes()
+	}
+
+	# Download (and build) 'genes' file to local download dir
+	string downloadGenes() {
 		return downloadFile(genesUrl, genesLocal, "Genes", false)
 	}
 
@@ -135,14 +155,43 @@ class DownloadGenome {
 
 	# Download (and build) 'protein' FASTA file to local download dir
 	# Returns: Path to file
-	string downloadProteinFasta() {
+	string downloadProteinFastaCheck() {
 		if( protData.exists() ) {
 			log("Download Protein FASTA: Data file '$protData' already exists, skipping")
 			return ''
 		}
+		if( protLocal.exists() ) {
+			log("Download Protein FASTA: Data file '$protLocal' already exists, skipping")
+			return protLocal
+		}
+		return downloadProteinFasta()
+	}
+
+	# Download (and build) 'protein' FASTA file to local download dir
+	string downloadProteinFasta() {
 		return downloadFile(protUrl, protLocal, "Protein FASTA", false)
 	}
 
+	# Initialize default values
+	void init() {
+		cdsLocal = cdsUrl.isEmpty() ? '' : downloadDir + '/' + cdsUrl.baseName()
+		fastaLocal = fastaUrl.isEmpty() ? '' : downloadDir + '/' + fastaUrl.baseName()
+		genesLocal = genesUrl.isEmpty() ? '' : downloadDir + '/' + genesUrl.baseName()
+		protLocal = protUrl.isEmpty() ? '' : downloadDir + '/' + protUrl.baseName()
+
+		genesExt = genesExt.isEmpty() ? 'gtf' : genesExt
+
+		if( genesData.isEmpty() )	genesData = dirDataGenome + "/genes.$genesExt\.gz"
+		if( fastaData.isEmpty() )	fastaData = "$dirData/genomes/$genome\.fa.gz"
+		if( fastaDataEq.isEmpty() )	fastaDataEq = "$dirData/genomes/$genomeNoVer\.fa.gz"
+		if( cdsData.isEmpty() )	cdsData = dirDataGenome + "/cds.fa.gz"
+		if( protData.isEmpty() )	protData = dirDataGenome + "/proteing.fa.gz"
+
+		dirDataGenome.mkdir()
+		downloadDir.mkdir()
+		downloadDir.chdir()
+	}
+	
 	# Install a file in 'dstDir' directory
 	void install(string src, string dst) {
 		if( src.isEmpty() ) return
@@ -167,6 +216,7 @@ class DownloadGenome {
 	string processProt(string prot)	return prot
 
 	# Set genomeNoVer (i.e. genome name without version number) and version number
+	# This is the name of the genome, with "major" number but no version (e.g. 'GRCh38' instead of 'GRCh38.103')
 	void setGenomeAndVersion() {
 		string[] gv
 
