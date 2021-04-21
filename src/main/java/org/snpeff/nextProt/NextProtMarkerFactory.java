@@ -85,6 +85,12 @@ public class NextProtMarkerFactory {
 
 		var match = aaSeqIso.equals(aaSeqTr);
 		if (!match) Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + tr.getId() + "' protein sequence does not match isform '" + isoform.getAccession() + "'\n" + GprSeq.showMismatch(tr.protein(), isoform.getSequence(), "\t"));
+
+
+		!!!!!!!!!!!!!!!!!!
+		CHECK THAT THE PROTEINS MATCH IN THE [start, end] INTERVAL
+		!!!!!!!!!!!!!!!!!!
+
 		return match;
 	}
 
