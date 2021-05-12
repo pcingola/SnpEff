@@ -47,6 +47,7 @@ public enum ErrorWarningType {
 	//
 	, ERROR_FILE_NOT_FOUND // File not found, or cannot read it
 	, WARNING_FILE_NOT_FOUND // File not found, or cannot read it
+	, WARNING_DUPLICATE_PRIMARY_KEY // A primary key is duplicated (e.g. a hash key)
 	;
 
 	public boolean isError() {
