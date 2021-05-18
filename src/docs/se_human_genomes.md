@@ -24,15 +24,19 @@ Here is a brief explanation of who are the key releases of the Human Genome (all
 - *“The goal of the GENCODE project is to identify and classify all gene features in the human and mouse genomes with high accuracy based on biological evidence, and to release these annotations for the benefit of biomedical research and genome interpretation.”*
 - *“The GENCODE annotation is made by merging the manual gene annotation produced by the Ensembl-Havana team and the Ensembl-genebuild automated gene annotation. … The GENCODE releases coincide with the Ensembl releases…. In practical terms, the GENCODE annotation is essentially identical to the Ensembl annotation.”*
 
-**[GRCh]([https://www.ncbi.nlm.nih.gov/grc/human])**: Genome Reference Consortium (human) 
+**[GRCh]([https://www.ncbi.nlm.nih.gov/grc/human])**: Genome Reference Consortium (human)
 
 
 ### Human Genome versions
 
 Which Human genome version correspond to which genome names:
 
-- GRCh38.*NN* (e.g. GRCh38.103): These are genome annotations from ENSEMBL, created from GRCh38/hg38 reference genome sequence.
- 
+- GRCh38.mane.0.93.ensembl: Human genome GRCh38, using MANE transcripts v0.93, Ensembl IDs. See MANE below for details.
+
+- GRCh38.mane.0.93.refseq: Human genome GRCh38, using MANE transcripts v0.93, RefSeq IDs. See MANE below for details.
+
+- GRCh38.*NN* (e.g. GRCh38.104): These are genome annotations from ENSEMBL, created from GRCh38/hg38 reference genome sequence.
+
 - GRCh37.*NN* (e.g. GRCh37.75): These are the genome annotations from ENSEMBL, created from GRCh37/hg19 reference genome sequence. **WARNING:** Ensembl stopped releasing genomes based on GRCh37/hg19 on February 2014.
 
 - GRCh38.p*NN* (e.g. GRCh38.p13): These are RefSeq transcripts from NCBI mapped to GRCh38/hg38 reference genome sequence
@@ -55,7 +59,10 @@ There are some things you need to consider when looking at genomic variants resu
 - **Do not mix genome versions.** It is important not to confuse different genome versions when comparing results. For example, if you use SnpEff to annotate variants using GRCh38.103 (from ENSEMBL) and then look at the variant using UCSC's genome browser (which uses RefSeq transcripts) there might be differences because your are using different transcripts set, thus the variant annotations may not match.
 
 - **Canonical is ill-defined:** Everybody has a different definition of what a canonical transcript is (see details in the next section).
- 
+
+- **HGSV requires realignment**: HGVS "sometimes" recommends to shift the variants "right" respect to the transcript, whereas VCF specification requires to always shift left respect to he genome. This can catch off guard many scientist who are unaware of this side effect of using HGVS notation and wonder why the variant annotation software is reporting some variants as if they were aligned to "another location". In order to warn the users that such realignment occurred, an `INFO_REALIGN_3_PRIME` message is added to annotation in the VCF entry.
+
+
 ### Important considerations: RefSeq
 
 These are some considerations to keep in mind while working with RefSeq transcripts, this includes SnpEff genomes hg19, hg38, GRCh38.p13, GRCh37.p13, etc.
@@ -84,7 +91,7 @@ NT_187687.1 BestRefSeq  gene    132277  144472  .   -   .   gene_id "KIR3DL3_45"
 NT_113949.2 BestRefSeq  gene    139138  151310  .   -   .   gene_id "KIR3DL3_46"; ...
 ```
 
-- **UCSC transcripts (hg19/hg38) are not unique.** Transcript IDs might not be unique. Many assume that IDs are unique, but this is not always true to UCSC's genomic files. 
+- **UCSC transcripts (hg19/hg38) are not unique.** Transcript IDs might not be unique. Many assume that IDs are unique, but this is not always true to UCSC's genomic files.
 
 - **A UCSC transcripts (hg19/hg38) can map to multiple loci.** A transcript from hg19/hg39 can map to multiple genomic loci, this is a consequence of transcripts IDs not being unique. For example, transcript NR_110738.1 is mapped to 123 loci:
 
@@ -110,29 +117,53 @@ You need to be careful because the definition of "Canonical trnascript" changes 
 
 The definition used by SnpEff is: *“The canonical transcript is defined as either the longest CDS, if the gene has translated transcripts, or the longest cDNA.”* (Ref: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2686571)
 
-Just to show that there are subtle differences, here some of the definitions Canonical from some prominent genomic source
+Just to show that there are subtle differences, here some of the definitions Canonical from some prominent genomic sources:
 
-- Ensembl (Ref: http://useast.ensembl.org/Help/Glossary)
+**Ensembl** (Ref: http://useast.ensembl.org/Help/Glossary)
 
-  1. Longest CCDS translation with no stop codons
-  1. longest Ensembl/Havana merged translation with no stop codons
-  1. longest translation with no stop codons. 
-  1. If no translation, choose the longest non-protein-coding transcript. 
-  1. Note: “…does not necessarily reflect the most biologically relevant transcript of a gene”
+1. Longest CCDS translation with no stop codons
+1. longest Ensembl/Havana merged translation with no stop codons
+1. longest translation with no stop codons.
+1. If no translation, choose the longest non-protein-coding transcript.
+1. Note: “…does not necessarily reflect the most biologically relevant transcript of a gene”
 
-- UCSC (Ref: https://genome.ucsc.edu/FAQ/FAQgenes.html)
+**UCSC** (Ref: https://genome.ucsc.edu/FAQ/FAQgenes.html)
 
-  1. hg19: “Generally, this is the longest isoform.”
-  1. hg38: “The canonical transcript is chosen using the APPRIS principal transcript when available. If no APPRIS tag exists for any transcript associated with the cluster, then a transcript in the BASIC set is chosen. If no BASIC transcript exists, then the longest isoform is used”.
+1. hg19: “Generally, this is the longest isoform.”
+1. hg38: “The canonical transcript is chosen using the APPRIS principal transcript when available. If no APPRIS tag exists for any transcript associated with the cluster, then a transcript in the BASIC set is chosen. If no BASIC transcript exists, then the longest isoform is used”.
 
-- UniProt (Ref: https://www.uniprot.org/help/canonical_and_isoforms)
+**UniProt** (Ref: https://www.uniprot.org/help/canonical_and_isoforms)
 
-  1. It is the most prevalent.
-  1. It is the most similar to orthologous sequences found in other species.
-  1. By virtue of its length or amino acid composition, it allows the clearest description of domains, isoforms, genetic variation, post-translational modifications, etc.
-  1. In the absence of any information, we choose the longest sequence.
+1. It is the most prevalent.
+1. It is the most similar to orthologous sequences found in other species.
+1. By virtue of its length or amino acid composition, it allows the clearest description of domains, isoforms, genetic variation, post-translational modifications, etc.
+1. In the absence of any information, we choose the longest sequence.
 
 
 As you can see these definitions do not match and obviously these differences could affect your analysis.
 
 
+### MANE
+
+Fortunately both NCBI and ENSEMBL have been joining efforts in a new initiative to provide a joint transcript set compatible with both.
+
+MANE stands for "Matched Annotation from NCBI and EMBL-EBI".
+
+This is a relatively new effort, started in 2018, to converge into a common set of transcripts that has desirable characteristics:
+
+- contains one well-supported transcript per protein-coding locus,
+- perfectly align to the reference genome,
+- has 100\% match between RefSeq and ENSEMBL (including coding sequence and UTRs),
+- has been manually curated by both groups,
+- is versioned and largely stable.
+- includes additional transcripts (i.e. more than one per gene) required to report variants of clinical interest, and
+- will become the default transcripts shown in Genome Browsers.
+
+
+As of this writing, version 0.93 was released in January 2021.
+Furthermore, the upcoming ENSEMBL release 104 is expected to switch the definition of "Canonical Transcript" to favor MANE transcripts.
+
+References:
+- https://www.ncbi.nlm.nih.gov/refseq/MANE/
+- https://www.ensembl.info/tag/mane/
+- https://useast.ensembl.org/info/genome/genebuild/mane.html

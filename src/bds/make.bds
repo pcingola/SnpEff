@@ -31,7 +31,6 @@ uploadCore			:= false		help Upload 'core' package
 uploadDbNsfp		:= false		help Upload dbNsfp to google drive
 uploadDbs			:= false		help Upload all databases in 'zip' directory
 uploadDev			:= false		help Upload 'development' version
-uploadHtml 			:= false		help Upload web pages
 string[] zipGenome	= []			help Zip a specific genome
 
 help Azure options
@@ -714,29 +713,6 @@ void uploadDev2Azure() {
 	azureContainer = 'versions'
 	zipDev := "snpEff_development.zip"
 	sys azcopy cp $zipDev "$azureBlobEndpoint/$azureContainer/$zipDev$aqs"
-}
-
-#-------------------------------------------------------------------------------
-# Upload core development files to SourceForge
-# DEPRECATED
-#-------------------------------------------------------------------------------
-void uploadDev2Sf() {
-	zipDev    := "snpEff_development.zip"
-	sys scp -v $zipDev pcingola,snpeff@frs.sourceforge.net:/home/frs/project/s/sn/snpeff/
-}
-
-#-------------------------------------------------------------------------------
-# Upload binary files
-# DEPRECATED: Pages moved to GitHub
-#-------------------------------------------------------------------------------
-void uploadHtml2Sf() {
-	htmlDir := "$HOME/workspace/SnpEff/docs"
-	verFile := htmlDir.createVersionFile()
-
-	# Upload HTML, versions and images to SF
-	println "Upload web pages"
-	#sys cd $htmlDir ; scp -v -r style.css *.html *.txt *.pdf images/ pcingola,snpeff@frs.sourceforge.net:htdocs/
-	sys cd $htmlDir ; scp -v -r style.css *.html *.txt *.pdf images/ pcingola@web.sourceforge.net:/home/project-web/snpeff/htdocs/
 }
 
 #-------------------------------------------------------------------------------
