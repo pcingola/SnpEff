@@ -145,11 +145,10 @@ As you can see these definitions do not match and obviously these differences co
 
 ### MANE
 
-Fortunately both NCBI and ENSEMBL have been joining efforts in a new initiative to provide a joint transcript set compatible with both.
-
 MANE stands for "Matched Annotation from NCBI and EMBL-EBI".
+Both NCBI and ENSEMBL have been joining efforts in this new initiative to provide a joint transcript set compatible with both.
 
-This is a relatively new effort, started in 2018, to converge into a common set of transcripts that has desirable characteristics:
+MANE started in 2018, to converge into a common set of transcripts that has desirable characteristics:
 
 - contains one well-supported transcript per protein-coding locus,
 - perfectly align to the reference genome,
@@ -164,6 +163,7 @@ As of this writing, version 0.93 was released in January 2021.
 Furthermore, the upcoming ENSEMBL release 104 is expected to switch the definition of "Canonical Transcript" to favor MANE transcripts.
 
 References:
+
 - https://www.ncbi.nlm.nih.gov/refseq/MANE/
 - https://www.ensembl.info/tag/mane/
 - https://useast.ensembl.org/info/genome/genebuild/mane.html
