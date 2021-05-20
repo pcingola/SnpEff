@@ -147,7 +147,7 @@ public class NextProtMarkerFactory {
 		int end = tr.aaNumber2Pos(aaEnd);
 		var aaSubSeq = isoform.getSequence().substring(aaStart, aaEnd + 1);
 
-		if (count++ % 1000 == 0) Log.debug("ANNOTATION: " + annotation.getCategory() + "\t" + trId + "\t" + aaStart + "\t" + aaEnd + "\t'" + aaSubSeq + "'");
+		if (count++ % 1000 == 0) Log.debug("ANNOTATION: " + annotation.name() + "\t" + trId + "\t" + aaStart + "\t" + aaEnd + "\t'" + aaSubSeq + "'");
 
 		sequenceConservation.add(annotation.name(), aaSubSeq);
 
