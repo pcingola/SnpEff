@@ -502,7 +502,7 @@ public abstract class SnpEffPredictorFactory {
 			cdsStrandSum += cds.isStrandMinus() ? -1 : 1;
 		boolean cdsStrandMinus = cdsStrandSum < 0;
 		if (cdsStrandMinus != trStrandMinus) {
-			if (verbose) Log.info(cdsStrandMinus ? '-' : '+');
+			if (verbose) System.out.print(cdsStrandMinus ? '-' : '+');
 			tr.setStrandMinus(cdsStrandMinus);
 		}
 
@@ -522,7 +522,7 @@ public abstract class SnpEffPredictorFactory {
 			}
 
 			rank++;
-			if (verbose) Log.info('.');
+			if (verbose) System.out.print('.');
 		}
 	}
 

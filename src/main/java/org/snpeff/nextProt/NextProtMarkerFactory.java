@@ -23,15 +23,18 @@ import org.snpeff.util.Log;
  */
 public class NextProtMarkerFactory {
 
+	int count;
 	Config config;
 	Genome genome;
 	Markers markers;
 	Map<String, Transcript> trById;
+	NextProtSequenceConservation sequenceConservation;
 
 	public NextProtMarkerFactory(Config config) {
 		this.config = config;
 		genome = config.getGenome();
 		trById = new HashMap<String, Transcript>();
+		sequenceConservation = new NextProtSequenceConservation();
 		addTranscripts();
 	}
 
@@ -58,10 +61,15 @@ public class NextProtMarkerFactory {
 				addTr(tr);
 	}
 
+	public void conservation() {
+		sequenceConservation.analyzeSequenceConservation();
+	}
+
 	/**
 	 * Are the AA sequences from transcript and Isoform equal?
 	 */
-	boolean isProteinMatch(Transcript tr, NextProtXmlIsoform isoform) {
+	boolean isProteinMatch(Transcript tr, NextProtXmlIsoform isoform, Location location) {
+		// Check transcript protein sequence
 		if (!tr.isProteinCoding()) {
 			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + tr.getId() + "' is not protein coding");
 			return false;
@@ -74,24 +82,36 @@ public class NextProtMarkerFactory {
 		}
 
 		aaSeqTr = proteinSequenceCleanup(aaSeqTr);
-		if (aaSeqTr.isBlank()) return false; // Nothing left after cleanup?
+		if (aaSeqTr.isBlank()) {
+			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Empty protein sequence after cleanup,  transcript '" + tr.getId() + "'");
+			return false; // Nothing left after cleanup?
+		}
 
+		// Check isoform sequence
 		var aaSeqIso = isoform.getSequence();
 		if (aaSeqIso == null || aaSeqIso.isBlank()) return false;
 
+		// Check that 'location' is within transcript
+		int aaStart = location.begin;
+		int aaEnd = location.end;
+		if (aaStart > aaEnd || aaStart < 0 || aaEnd >= aaSeqTr.length()) {
+			Log.error("Amino acid coordinates error, transcript '" + tr.getId() + "', location " + location + ", for protein length " + aaSeqTr.length());
+			return false;
+		}
+
+		// Compare protein sequences at 'location'
 		int minLen = Math.min(aaSeqTr.length(), aaSeqIso.length());
-		aaSeqIso = aaSeqIso.substring(0, minLen);
-		aaSeqTr = aaSeqTr.substring(0, minLen);
+		aaSeqIso = aaSeqIso.substring(aaStart, aaEnd).toUpperCase();
+		aaSeqTr = aaSeqTr.substring(aaStart, aaEnd).toUpperCase();
+		if (!aaSeqIso.equals(aaSeqTr)) {
+			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, //
+					"Transcript '" + tr.getId() + "' protein sequence does not match isform '" + isoform.getAccession() + "' at [" + aaStart + ", " + aaEnd + "]\n" //
+							+ GprSeq.showMismatch(tr.protein(), isoform.getSequence(), "\t") //
+			);
+			return false;
+		}
 
-		var match = aaSeqIso.equals(aaSeqTr);
-		if (!match) Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + tr.getId() + "' protein sequence does not match isform '" + isoform.getAccession() + "'\n" + GprSeq.showMismatch(tr.protein(), isoform.getSequence(), "\t"));
-
-
-		!!!!!!!!!!!!!!!!!!
-		CHECK THAT THE PROTEINS MATCH IN THE [start, end] INTERVAL
-		!!!!!!!!!!!!!!!!!!
-
-		return match;
+		return true;
 	}
 
 	/**
@@ -112,27 +132,24 @@ public class NextProtMarkerFactory {
 		}
 
 		// Sanity check: Compare protein sequence
-		if (!isProteinMatch(tr, isoform)) {
-			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + tr.getId() + "' protein sequence does not match isform '" + isoform.getAccession() + "'\n\t" + tr.protein() + "\n\t" + isoform.getSequence());
+		if (!isProteinMatch(tr, isoform, location)) {
+			//			Log.debug("Cannot add annotation: " + annotation //
+			//					+ "\nTranscript '" + tr.getId() + "' protein sequence does not match isform '" + isoform.getAccession() + "'at " + location + "\n" //
+			//					+ GprSeq.showMismatch(tr.protein(), isoform.getSequence(), "\t") //
+			//			);
 			return null;
 		}
-
-		// Get AA coordinates
-		var aaSeq = tr.protein();
-		int aaStart = location.begin;
-		int aaEnd = location.end;
-		// Check AA coordinates
-		if (aaStart > aaEnd || aaStart < 0 || aaEnd >= aaSeq.length()) {
-			Log.error("Amino acid coordinates error, AA coordinates [" + aaStart + ", " + aaEnd + "] for protein length " + aaSeq.length());
-			return null;
-		}
-
-		var aaSubSeq = aaSeq.substring(aaStart, aaEnd + 1);
 
 		// Convert from AA number to genomic coordinates
+		int aaStart = location.begin;
+		int aaEnd = location.end;
 		int start = tr.aaNumber2Pos(aaStart);
 		int end = tr.aaNumber2Pos(aaEnd);
-		Log.debug("ANNOTATION: " + annotation.getCategory() + "\t" + trId + "\t" + aaStart + "\t" + aaEnd + "\t'" + aaSubSeq + "'");
+		var aaSubSeq = isoform.getSequence().substring(aaStart, aaEnd + 1);
+
+		if (count++ % 1000 == 0) Log.debug("ANNOTATION: " + annotation.getCategory() + "\t" + trId + "\t" + aaStart + "\t" + aaEnd + "\t'" + aaSubSeq + "'");
+
+		sequenceConservation.add(annotation.name(), aaSubSeq);
 
 		// TODO: Specialized NextProt annotation
 		NextProt nextProt = new NextProt(tr, start, end, annotation.category);

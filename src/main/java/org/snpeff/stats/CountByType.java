@@ -89,8 +89,8 @@ public class CountByType implements Serializable {
 	 * Count for this type
 	 */
 	public long getCount(String type) {
-		Long score = countByType.get(type);
-		return score != null ? score : 0;
+		Long count = countByType.get(type);
+		return count != null ? count : 0;
 	}
 
 	/**
@@ -99,6 +99,13 @@ public class CountByType implements Serializable {
 	public double getScore(String type) {
 		Double score = scoreByType.get(type);
 		return score != null ? score : 0.0;
+	}
+
+	public long getTotalCount() {
+		long total = 0;
+		for (Long count : countByType.values())
+			total += (count != null ? count : 0);
+		return total;
 	}
 
 	/**
@@ -242,7 +249,7 @@ public class CountByType implements Serializable {
 	 * Sum all counts.
 	 */
 	public long sum() {
-		return get(TOTAL_TYPE);
+		return getTotalCount();
 	}
 
 	double toProb(long num, long total) {

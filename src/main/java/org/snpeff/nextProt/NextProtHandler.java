@@ -2,6 +2,7 @@ package org.snpeff.nextProt;
 
 import java.util.Stack;
 
+import org.snpeff.stats.CountByType;
 import org.snpeff.util.Log;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -16,21 +17,29 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class NextProtHandler extends DefaultHandler {
 
-	StringBuilder text; // Latest XML entry text
-	Stack<String> stack; // Stack of XML entries
+	NextProtXmlAnnotation annotation; // Current annotation
+	String annotationCategory; // Annotation category
+	CvTerm cvTerm; // Controlled vocabulary term
 	NextProtXmlEntry entry; // Current nextprot entry
 	String isoformAccession; // Latest isoform sequence accesssion
-	NextProtXmlAnnotation annotation; // Current annotation
 	NextProtMarkerFactory markersFactory;
+	CountByType missingCategories;
+	Stack<String> stack; // Stack of XML entries
+	StringBuilder text; // Latest XML entry text
 
 	public NextProtHandler(NextProtMarkerFactory markersFactory) {
 		this.markersFactory = markersFactory;
 		stack = new Stack<>();
+		missingCategories = new CountByType();
 	}
 
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		text.append(ch, start, length);
+	}
+
+	public void countMissingCategory(String category) {
+		missingCategories.inc(category);
 	}
 
 	/**
@@ -43,13 +52,29 @@ public class NextProtHandler extends DefaultHandler {
 		if (!qNamePop.equals(qName)) Log.info("Stack does not match: '" + qNamePop + "' != '" + qName + "'");
 
 		switch (qName) {
-		case "annotation-category":
-			if (!annotation.isEmpty()) entry.add(annotation);
+		case "annotation":
+			if (annotation != null && !annotation.isEmpty()) entry.add(annotation);
 			annotation = null;
 			break;
 
+		case "annotation-category":
+			annotationCategory = null;
+			break;
+
+		case "cv-term":
+			if (annotation != null && !annotation.hasCvTerm() && cvTerm != null && level().equals("annotation")) {
+				cvTerm.description = text.toString();
+				annotation.setCvTerm(cvTerm);
+			}
+			cvTerm = null;
+			break;
+
+		case "description":
+			if (annotation != null && level().equals("annotation")) annotation.setDescription(text.toString());
+			break;
+
 		case "entry":
-			entry.markers(markersFactory);
+			if (entry != null) entry.markers(markersFactory);
 			entry = null;
 			break;
 
@@ -72,6 +97,14 @@ public class NextProtHandler extends DefaultHandler {
 		}
 	}
 
+	public CountByType getMissingCategories() {
+		return missingCategories;
+	}
+
+	String level() {
+		return stack.lastElement();
+	}
+
 	/**
 	 * Parse XML's element start
 	 */
@@ -83,13 +116,20 @@ public class NextProtHandler extends DefaultHandler {
 		var accession = attributes.getValue("accession");
 
 		switch (qName) {
+		case "annotation":
+			if (entry != null) annotation = new NextProtXmlAnnotation(entry, annotationCategory);
+			break;
+
 		case "annotation-category":
-			var category = attributes.getValue("category");
-			annotation = new NextProtXmlAnnotation(entry, category);
+			annotationCategory = attributes.getValue("category");
 			break;
 
 		case "begin":
 			if (annotation != null) annotation.locationBeginPos(attributes);
+			break;
+
+		case "cv-term":
+			if (annotation != null) cvTerm = new CvTerm(attributes);
 			break;
 
 		case "end":
@@ -97,7 +137,7 @@ public class NextProtHandler extends DefaultHandler {
 			break;
 
 		case "entry":
-			entry = new NextProtXmlEntry(accession);
+			entry = new NextProtXmlEntry(accession, this);
 			break;
 
 		case "identifier":
@@ -110,7 +150,7 @@ public class NextProtHandler extends DefaultHandler {
 			break;
 
 		case "location":
-			if (annotation != null) annotation.locationStart();
+			if (annotation != null) annotation.locationStart(attributes);
 			break;
 
 		case "target-isoform":

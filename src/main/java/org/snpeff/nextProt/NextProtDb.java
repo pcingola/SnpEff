@@ -22,6 +22,7 @@ public class NextProtDb {
 	String xmlDirName;
 	Config config;
 	NextProtMarkerFactory markersFactory;
+	NextProtHandler handler;
 
 	public NextProtDb(String xmlDirName, Config config) {
 		this.config = config;
@@ -48,6 +49,15 @@ public class NextProtDb {
 			}
 		} else Log.fatalError("No XML files found in directory '" + xmlDirName + "'");
 
+		markersFactory.conservation();
+
+		// Show missing categories
+		Log.info("Missing categories");
+		var missingCats = handler.getMissingCategories();
+		for (String cat : missingCats.keysRanked(true)) {
+			Log.info("\t" + missingCats.get(cat) + "\t" + cat);
+		}
+
 		return true;
 	}
 
@@ -62,7 +72,9 @@ public class NextProtDb {
 			factory.setValidating(true);
 			SAXParser saxParser = factory.newSAXParser();
 			File file = new File(xmlFileName);
-			saxParser.parse(file, new NextProtHandler(markersFactory)); // specify handler
+
+			handler = new NextProtHandler(markersFactory);
+			saxParser.parse(file, handler); // specify handler
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

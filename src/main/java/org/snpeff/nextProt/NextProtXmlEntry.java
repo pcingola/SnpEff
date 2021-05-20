@@ -32,16 +32,18 @@ class Identifier {
  */
 public class NextProtXmlEntry extends NextProtXmlNode {
 
-	Map<String, NextProtXmlIsoform> isoformsByAccession;
-	Set<Identifier> identifiers;
-	Identifier currentIdentifier;
 	List<NextProtXmlAnnotation> annotations;
+	Identifier currentIdentifier;
+	NextProtHandler handler;
+	Set<Identifier> identifiers;
+	Map<String, NextProtXmlIsoform> isoformsByAccession;
 
-	public NextProtXmlEntry(String accession) {
+	public NextProtXmlEntry(String accession, NextProtHandler handler) {
 		super(accession);
 		isoformsByAccession = new HashMap<>();
 		identifiers = new HashSet<>();
 		annotations = new ArrayList<>();
+		this.handler = handler;
 	}
 
 	/**
@@ -60,6 +62,10 @@ public class NextProtXmlEntry extends NextProtXmlNode {
 
 	public List<NextProtXmlAnnotation> getAnnotations() {
 		return annotations;
+	}
+
+	public NextProtHandler getHandler() {
+		return handler;
 	}
 
 	public Set<Identifier> getIdentifiers() {
