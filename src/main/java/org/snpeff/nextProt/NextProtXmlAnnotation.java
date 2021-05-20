@@ -3,10 +3,10 @@ package org.snpeff.nextProt;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.snpeff.interval.Markers;
 import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
+import org.snpeff.vcf.VcfEffect;
 import org.xml.sax.Attributes;
 
 /**
@@ -97,6 +97,43 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 		init();
 	}
 
+	/**
+	 * Create all markers for this annotation
+	 */
+	public void addMarkers(NextProtMarkerFactory markersFactory) {
+		// Add markers for each location
+		for (var l : locations) {
+			// Note: This cast may not be always possible in future NextProt version, or when adding new categories
+			var loc = (LocationTargetIsoform) l;
+
+			// Get Isoform
+			var iso = entry.getIsoform(loc.accession);
+			if (iso == null) {
+				Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Isoform '" + loc.accession + "' not found for entry '" + entry.getAccession() + "'");
+				continue;
+			}
+
+			// Create markers
+			for (var trId : iso.getTranscriptIds()) {
+				markersFactory.addMarkers(entry, iso, this, loc, trId);
+			}
+		}
+	}
+
+	public String description() {
+		// Some annotations have control-vocabulary terms (e.g. "modified-residue")
+		if (cvTerm != null) return category + ":" + cvTerm.description;
+
+		// Some annotations do not have controlled vocabularies, but have a "desription" (e.g. "active-site")
+		if (description != null) {
+			// Sometimes a description can be split at ';'
+			if (description.indexOf(';') > 0) return category + ":" + description.split(";")[0];
+			return category + ":" + description;
+		}
+
+		return null;
+	}
+
 	public String getCategory() {
 		return category;
 	}
@@ -118,6 +155,41 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 	}
 
 	void init() {
+		if (isIgnore(category)) return;
+		locations = new ArrayList<>();
+	}
+
+	/**
+	 * Should we annotate this category?
+	 */
+	boolean isAnnotate(String category) {
+		switch (category) {
+		// Only store locations for these types of annotations
+		case "active-site":
+		case "binding-site":
+		case "cleavage-site":
+		case "cysteines":
+		case "disulfide-bond": // Note: Disulfide bonds are marked as start-end, even though they are not intervals
+		case "glycosylation-site":
+		case "lipidation-site":
+		case "modified-residue":
+		case "metal-binding-site":
+		case "selenocysteine":
+			return true;
+
+		default:
+			return false;
+		}
+	}
+
+	public boolean isEmpty() {
+		return locations == null || locations.isEmpty();
+	}
+
+	/**
+	 * Should we ignore this category?
+	 */
+	boolean isIgnore(String category) {
 		switch (category) {
 		// Ignore these types of annotations
 		case "antibody-mapping":
@@ -126,7 +198,6 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 		case "coiled-coil-region":
 		case "compositionally-biased-region":
 		case "cross-link":
-			// case "disulfide-bond": // TODO: Add the one base ones?
 		case "dna-binding-region":
 		case "domain":
 		case "expression-info":
@@ -165,30 +236,11 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 		case "uniprot-keyword":
 		case "variant":
 		case "zinc-finger-region":
-			break;
-
-		// Only store locations for these types of annotations
-		case "active-site":
-		case "binding-site":
-		case "cleavage-site":
-		case "cysteines":
-		case "disulfide-bond": // Note: Disulfide bonds are marked as start-end, even though they are not intervals
-		case "glycosylation-site":
-		case "lipidation-site":
-		case "modified-residue":
-		case "metal-binding-site":
-		case "selenocysteine":
-			locations = new ArrayList<>();
-			break;
+			return true;
 
 		default:
-			entry.getHandler().countMissingCategory(category);
-			locations = new ArrayList<>();
+			return false;
 		}
-	}
-
-	public boolean isEmpty() {
-		return locations == null || locations.isEmpty();
 	}
 
 	public void locationBeginPos(Attributes attributes) {
@@ -200,8 +252,9 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 	 */
 	public void locationEnd() {
 		if (locations != null) {
-
 			locations.add(location);
+			// Check: This category should be added to 'isAnnotate'?
+			if (!isAnnotate(category)) entry.getHandler().countMissingCategory(category);
 		}
 		location = null;
 	}
@@ -221,41 +274,12 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 		}
 	}
 
-	public Markers markers(NextProtMarkerFactory markersFactory) {
-		for (var l : locations) {
-			// Note: This cast may not be always possible in future NextProt version, or when adding new categories
-			var loc = (LocationTargetIsoform) l;
-
-			// Get Isoform
-			var iso = entry.getIsoform(loc.accession);
-			if (iso == null) {
-				Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Isoform '" + loc.accession + "' not found for entry '" + entry.getAccession() + "'");
-				continue;
-			}
-
-			// Create markers
-			for (var trId : iso.getTranscriptIds())
-				markersFactory.markers(entry, iso, this, loc, trId);
-		}
-		return null;
-	}
-
 	/**
 	 * Return an annotaion "name"
 	 */
 	public String name() {
-		// Some annotations have control-vocabulary terms (e.g. "modified-residue")
-		if (cvTerm != null) return category + ":" + cvTerm.description;
-
-		// Some annotations do not have controlled vocabularies, but have a "desription" (e.g. "active-site")
-		if (description != null) {
-			// Sometimes a description can be split at ';'
-			if (description.indexOf(';') > 0) return category + ":" + description.split(";")[0];
-			return category + ":" + description;
-		}
-
-		// No additional information, just use category
-		return category;
+		var descr = description();
+		return VcfEffect.vcfSafe(category + (descr != null ? " " + descr : ""));
 	}
 
 	public void setCvTerm(CvTerm cvTerm) {
@@ -263,7 +287,7 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 	}
 
 	public void setDescription(String description) {
-		if (this.description == null) this.description = description;
+		this.description = description;
 	}
 
 	@Override

@@ -114,6 +114,14 @@ public class VcfEffect {
 	}
 
 	/**
+	 * Return a string safe to be used in an info field (VCF file)
+	 */
+	public static String vcfSafe(String str) {
+		if (str == null) return null;
+		return str.trim().replaceAll("(,|;|=| |\t)+", "_");
+	}
+
+	/**
 	 * Constructor: Guess format version
 	 */
 	public VcfEffect(String effectString) {

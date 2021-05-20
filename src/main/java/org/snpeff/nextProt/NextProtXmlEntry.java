@@ -60,6 +60,14 @@ public class NextProtXmlEntry extends NextProtXmlNode {
 		getOrCreateIsoform(isoformAccession).setSequence(sequence);
 	}
 
+	/**
+	 * Create all Markers for this entry
+	 */
+	public void addMarkers(NextProtMarkerFactory markersFactory) {
+		for (var a : annotations)
+			a.addMarkers(markersFactory);
+	}
+
 	public List<NextProtXmlAnnotation> getAnnotations() {
 		return annotations;
 	}
@@ -106,14 +114,6 @@ public class NextProtXmlEntry extends NextProtXmlNode {
 	 */
 	void identifierStart(Attributes attributes) {
 		currentIdentifier = new Identifier(attributes);
-	}
-
-	/**
-	 * Create all Markers for this entry
-	 */
-	public void markers(NextProtMarkerFactory markersFactory) {
-		for (var a : annotations)
-			a.markers(markersFactory);
 	}
 
 	@Override

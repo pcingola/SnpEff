@@ -2,8 +2,8 @@ package org.snpeff.interval;
 
 import org.snpeff.serializer.MarkerSerializer;
 import org.snpeff.snpEffect.EffectType;
-import org.snpeff.snpEffect.VariantEffects;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
+import org.snpeff.snpEffect.VariantEffects;
 
 /**
  * NextProt annotation marker
@@ -16,6 +16,7 @@ public class NextProt extends Marker {
 
 	String transcriptId;
 	boolean highlyConservedAaSequence;
+	String name;
 
 	public NextProt() {
 		super();
@@ -28,12 +29,23 @@ public class NextProt extends Marker {
 		transcriptId = transcript.getId();
 	}
 
+	public NextProt(Transcript transcript, int start, int end, String id, String name) {
+		super(transcript.getChromosome(), start, end, false, id);
+		type = EffectType.NEXT_PROT;
+		this.name = name;
+		transcriptId = transcript.getId();
+	}
+
 	@Override
 	public NextProt cloneShallow() {
 		NextProt clone = (NextProt) super.cloneShallow();
 		clone.transcriptId = transcriptId;
 		clone.highlyConservedAaSequence = highlyConservedAaSequence;
 		return clone;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public String getTranscriptId() {
@@ -65,6 +77,7 @@ public class NextProt extends Marker {
 		if (!intersects(variant)) return false;
 
 		// Assess effect impact
+		// TODO: This should depend on whether the effect is non-synonymous
 		EffectImpact effectImpact = EffectImpact.MODIFIER;
 		if (isHighlyConservedAaSequence()) effectImpact = EffectImpact.MODERATE;
 		else effectImpact = EffectImpact.LOW;

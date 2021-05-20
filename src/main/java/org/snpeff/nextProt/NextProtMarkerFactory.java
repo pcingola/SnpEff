@@ -33,9 +33,56 @@ public class NextProtMarkerFactory {
 	public NextProtMarkerFactory(Config config) {
 		this.config = config;
 		genome = config.getGenome();
-		trById = new HashMap<String, Transcript>();
+		trById = new HashMap<>();
 		sequenceConservation = new NextProtSequenceConservation();
+		markers = new Markers();
 		addTranscripts();
+	}
+
+	/**
+	 * Create markers and add them
+	 * @return New markers created
+	 */
+	public Markers addMarkers(NextProtXmlEntry entry, NextProtXmlIsoform isoform, NextProtXmlAnnotation annotation, Location location, String trId) {
+		if (isoform.getSequence() == null) {
+			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Isoform '" + isoform.getAccession() + "' has no sequence");
+			return null;
+		}
+
+		// Find protein coding transcript
+		var tr = trById.get(trId);
+		if (tr == null) {
+			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + trId + "' not found");
+			return null;
+		}
+
+		// Sanity check: Compare protein sequence
+		if (!isProteinMatch(tr, isoform, location)) return null;
+
+		// Convert from AA number to genomic coordinates
+		int aaStart = location.begin;
+		int aaEnd = location.end;
+		int start = tr.aaNumber2Pos(aaStart);
+		int end = tr.aaNumber2Pos(aaEnd);
+		var aaSubSeq = isoform.getSequence().substring(aaStart, aaEnd + 1);
+
+		if (count++ % 1000 == 0) Log.debug("ANNOTATION: " + annotation.name() + "\t" + trId + "\t" + aaStart + "\t" + aaEnd + "\t'" + aaSubSeq + "'");
+
+		// Analysis of sequence conservation
+		var name = annotation.name();
+		sequenceConservation.add(name, aaSubSeq);
+
+		// Add NextProt annotation
+		NextProt nextProt = new NextProt(tr, start, end, annotation.accession, name);
+
+		// TODO: Marker needs to be split across exon junction
+		Markers newmarkers = new Markers();
+		newmarkers.add(nextProt);
+
+		// Add all new markers
+		markers.add(newmarkers);
+
+		return newmarkers;
 	}
 
 	/**
@@ -61,8 +108,16 @@ public class NextProtMarkerFactory {
 				addTr(tr);
 	}
 
+	/**
+	 * Sequence conservations analysis.
+	 * Tag highly conserved NextProt markers
+	 */
 	public void conservation() {
-		sequenceConservation.analyzeSequenceConservation();
+		sequenceConservation.analyzeSequenceConservation(markers);
+	}
+
+	public Markers getMarkers() {
+		return markers;
 	}
 
 	/**
@@ -100,7 +155,6 @@ public class NextProtMarkerFactory {
 		}
 
 		// Compare protein sequences at 'location'
-		int minLen = Math.min(aaSeqTr.length(), aaSeqIso.length());
 		aaSeqIso = aaSeqIso.substring(aaStart, aaEnd).toUpperCase();
 		aaSeqTr = aaSeqTr.substring(aaStart, aaEnd).toUpperCase();
 		if (!aaSeqIso.equals(aaSeqTr)) {
@@ -112,51 +166,6 @@ public class NextProtMarkerFactory {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Create a marker
-	 * @return A NextProt marker
-	 */
-	public Markers markers(NextProtXmlEntry entry, NextProtXmlIsoform isoform, NextProtXmlAnnotation annotation, Location location, String trId) {
-		if (isoform.getSequence() == null) {
-			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Isoform '" + isoform.getAccession() + "' has no sequence");
-			return null;
-		}
-
-		// Find protein coding transcript
-		var tr = trById.get(trId);
-		if (tr == null) {
-			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + trId + "' not found");
-			return null;
-		}
-
-		// Sanity check: Compare protein sequence
-		if (!isProteinMatch(tr, isoform, location)) {
-			//			Log.debug("Cannot add annotation: " + annotation //
-			//					+ "\nTranscript '" + tr.getId() + "' protein sequence does not match isform '" + isoform.getAccession() + "'at " + location + "\n" //
-			//					+ GprSeq.showMismatch(tr.protein(), isoform.getSequence(), "\t") //
-			//			);
-			return null;
-		}
-
-		// Convert from AA number to genomic coordinates
-		int aaStart = location.begin;
-		int aaEnd = location.end;
-		int start = tr.aaNumber2Pos(aaStart);
-		int end = tr.aaNumber2Pos(aaEnd);
-		var aaSubSeq = isoform.getSequence().substring(aaStart, aaEnd + 1);
-
-		if (count++ % 1000 == 0) Log.debug("ANNOTATION: " + annotation.name() + "\t" + trId + "\t" + aaStart + "\t" + aaEnd + "\t'" + aaSubSeq + "'");
-
-		sequenceConservation.add(annotation.name(), aaSubSeq);
-
-		// TODO: Specialized NextProt annotation
-		NextProt nextProt = new NextProt(tr, start, end, annotation.category);
-
-		// TODO: Marker needs to be split across exon junction
-
-		return null;
 	}
 
 	/**

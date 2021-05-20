@@ -70,11 +70,11 @@ public class NextProtHandler extends DefaultHandler {
 			break;
 
 		case "description":
-			if (annotation != null && level().equals("annotation")) annotation.setDescription(text.toString());
+			if (annotation != null && level().equals("annotation") && annotation.getDescription() == null) annotation.setDescription(text.toString());
 			break;
 
 		case "entry":
-			if (entry != null) entry.markers(markersFactory);
+			if (entry != null) entry.addMarkers(markersFactory);
 			entry = null;
 			break;
 

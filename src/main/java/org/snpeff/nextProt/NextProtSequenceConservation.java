@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.snpeff.collections.AutoHashMap;
+import org.snpeff.interval.Marker;
+import org.snpeff.interval.Markers;
+import org.snpeff.interval.NextProt;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.stats.CountByType;
 import org.snpeff.util.Log;
@@ -41,9 +44,9 @@ public class NextProtSequenceConservation {
 	}
 
 	/**
-	 * Show annotations counters in a table
+	 * Sequence conservation analysis
 	 */
-	void analyzeSequenceConservation() {
+	void analyzeSequenceConservation(Markers markers) {
 		if (verbose) Log.info("Sequence conservation analysis."//
 				+ "\n\tAA sequence length  : " + 1 //
 				+ "\n\tMin AA count        : " + HIGHLY_CONSERVED_AA_COUNT //
@@ -56,31 +59,34 @@ public class NextProtSequenceConservation {
 
 		// Show AA counts for each 'key'
 		for (String key : keys) {
-			analyzeSequenceConservation(key);
+			analyzeSequenceConservation(key, markers);
 		}
 	}
 
-	void analyzeSequenceConservation(String category) {
-		CountByType cbt = countAaSequenceByType.get(category);
-		boolean highlyConservedAaSequence = isHighlyConserved(category);
-
+	/**
+	 * Sequence conservation analysis for 'category'
+	 */
+	void analyzeSequenceConservation(String category, Markers markers) {
 		// Mark highly conserved
-		if (highlyConservedAaSequence) {
+		if (isHighlyConserved(category)) {
 			int count = 0;
-			// Mark as highly conserved!!!!!!!!!!!!!
-			Log.debug("MARK AS HIGHLY CONSERVED: " + category);
-			//				for (Marker m : markers) {
-			//					NextProt nextProt = (NextProt) m;
-			//					if (m.getId().equals(key)) {
-			//						nextProt.setHighlyConservedAaSequence(true);
-			//						count++;
-			//					}
-			//				}
+			// Mark as highly conserved
+			for (Marker m : markers) {
+				NextProt nextProt = (NextProt) m;
+				if (nextProt.getName().equals(category)) {
+					nextProt.setHighlyConservedAaSequence(true);
+					count++;
+				}
+			}
 
 			if (verbose) Log.info("NextProt " + count + " markers type '" + category + "' marked as highly conserved AA sequence");
 		}
 	}
 
+	/**
+	 * Calculate average sequence length
+	 * Note: CountByType has sequences as keys
+	 */
 	int averageAaSeqLength(CountByType cbt) {
 		int totlen = 0;
 		for (String aas : cbt.keySet())

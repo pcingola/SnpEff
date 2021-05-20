@@ -49,6 +49,7 @@ public class NextProtDb {
 			}
 		} else Log.fatalError("No XML files found in directory '" + xmlDirName + "'");
 
+		// Conservation analysis
 		markersFactory.conservation();
 
 		// Show missing categories

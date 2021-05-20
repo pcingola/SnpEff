@@ -100,4 +100,61 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		Assert.assertTrue(count > 0);
 
 	}
+
+	@Test
+	public void test_05_parse() {
+		// TODO: Parse glycosilation site
+		Log.debug("Test");
+		throw new RuntimeException("Unimplemented test");
+	}
+
+	@Test
+	public void test_06_parse() {
+		// TODO: Parse single AA annotation spanning an exon boundary
+		Log.debug("Test");
+		throw new RuntimeException("Unimplemented test");
+	}
+
+	@Test
+	public void test_07_parse() {
+		// TODO: Parse multiple AA annotation spanning two exon boundaries
+		Log.debug("Test");
+		throw new RuntimeException("Unimplemented test");
+	}
+
+	@Test
+	public void test_08_parse() {
+		// TODO: Parse disulphide bond annotations (start end is not an insterval, it's the interaction points)
+		Log.debug("Test");
+		throw new RuntimeException("Unimplemented test");
+	}
+
+	@Test
+	public void test_09() {
+		// TODO: Test annotaion
+		Log.debug("Test");
+		throw new RuntimeException("Unimplemented test");
+	}
+
+	@Test
+	public void test_10() {
+		// TODO: Test annotation not highly conserved (synonymous change) => EffectImpact.MODIFIER;
+		Log.debug("Test");
+		throw new RuntimeException("Unimplemented test");
+	}
+
+	@Test
+	public void test_11() {
+		// TODO: Test annotation highly conserved (non-synonymous change) => EffectImpact.HIGH;
+		Log.debug("Test");
+		throw new RuntimeException("Unimplemented test");
+	}
+
+	@Test
+	public void test_12() {
+		// TODO: Test annotation highly conserved (INDEL) => EffectImpact.HIGH;
+		Log.debug("Test");
+		throw new RuntimeException("Unimplemented test");
+	}
+
 }
