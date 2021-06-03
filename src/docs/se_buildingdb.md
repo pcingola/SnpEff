@@ -1,7 +1,7 @@
 # Building databases
 
 SnpEff needs a database to perform genomic annotations.
-There are pre-built databases for over 2,500 genomes, so chances are that your organism of choice already has a SnpEff database available.
+There are pre-built databases for thousands of genomes, so chances are that your organism of choice already has a SnpEff database available.
 In the (unlikely?) event that you need to build one yourself, here we describe how to it.
 
 !!! info
@@ -98,7 +98,7 @@ This example shows how to add a new genome to the config files. For this example
 
         cd /path/to/galaxy
         cd tools/snpEffect/
-        vi snpEffect.xml 
+        vi snpEffect.xml
 
     Add the following lines to the file:
 
@@ -142,11 +142,11 @@ GTF 2.2 files are supported by SnpEff (e.g. ENSEMBL releases genome annotations 
         cd /path/to/snpEff/data/
         mkdir mm37.61
         cd mm37.61
-        
+
         # Get annotation files
         wget ftp://ftp.ensembl.org/pub/current/gtf/mus_musculus/Mus_musculus.NCBIM37.61.gtf.gz
         mv Mus_musculus.NCBIM37.61.gtf.gz genes.gtf.gz
-        
+
         # Get the genome
         cd /path/to/snpEff/data/genomes
         wget ftp://ftp.ensembl.org/pub/current/fasta/mus_musculus/dna/Mus_musculus.NCBIM37.61.dna.toplevel.fa.gz

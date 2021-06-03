@@ -118,6 +118,7 @@ public class VcfEffect {
 	 */
 	public static String vcfSafe(String str) {
 		if (str == null) return null;
+		!!!!!!! ADD PARENTHESIS
 		return str.trim().replaceAll("(,|;|=| |\t)+", "_");
 	}
 

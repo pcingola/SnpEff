@@ -47,7 +47,7 @@ help Ensembl
 downloadEnsembl			:= ''			help Download Ensemlb genome, e.g. 'GRCh38.103'. Note: You also must to specify 'downloadEnsemblSpecies'
 downloadEnsemblSpecies	:= ''			help Ensembl species to download, e.g. 'Homo_sapiens', Note: It must be capitalized exactly as Ensembl defines it
 ensemblBfmppRelease		:= 46			help Ensembl BFMPP release number
-ensemblRelease			:= 103			help Vertebrate release number
+ensemblRelease			:= 99			help Vertebrate release number
 ensemblReleaseGrch37	:= 75			help Final release for Ensembl's GRCh37
 ensemblReleases			:= [ensemblReleaseGrch37, ensemblRelease]
 
@@ -203,55 +203,70 @@ void buildConfig() {
 
 	println "Building config file '$conf'"
 
-	sys cat $confDir/snpEff.core.config > $conf
-	sys cat $confDir/snpEff.dbs.config >> $conf
-	sys cat	$confDir/snpEff.test.config >> $conf
+	sys rm '$conf'
+	for(string c: ["snpEff.core.config", "snpEff.dbs.config", "snpEff.test.config"] ) {
+		println("Adding config '$c'")
+		sys cat '$confDir/$c' >> '$conf'
+	}
 
 	for(int release : ensemblReleases ) {
-		sys echo >> $conf
-		sys echo "#---" >> $conf
-		sys echo "# ENSEMBL release $release" >> $conf
-		sys echo "#---" >> $conf
-		sys cat $confDir/snpEff.ENSEMBL_$release\.config >> $conf
+		sys echo >> '$conf'
+		sys echo "#---" >> '$conf'
+		sys echo "# ENSEMBL release $release" >> '$conf'
+		sys echo "#---" >> '$conf'
+		c := "$confDir/snpEff.ENSEMBL_$release\.config"
+		println("Adding config '$c'")
+		sys cat '$c' >> '$conf'
 	}
 
-	sys echo >> $conf
-	sys echo "#---" >> $conf
-	sys echo "# NCBI genomes" >> $conf
-	sys echo "#---" >> $conf
-	sys cat	$confDir/snpEff.NCBI.*.config >> $conf
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# NCBI genomes" >> '$conf'
+	sys echo "#---" >> '$conf'
+	println("Adding configs '$confDir/snpEff.NCBI.*.config'")
+	sys cat	$confDir/snpEff.NCBI.*.config >> '$conf'
 
-	sys echo >> $conf
-	sys echo "#---" >> $conf
-	sys echo "# ENSEMBL BFMPP release $ensemblBfmppRelease" >> $conf
-	sys echo "#---" >> $conf
-	sys cat $confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.config >> $conf
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# ENSEMBL BFMPP release $ensemblBfmppRelease" >> '$conf'
+	sys echo "#---" >> '$conf'
+	c := "$confDir/snpEff.ENSEMBL_BFMPP_$ensemblBfmppRelease\.config"
+	println("Adding config '$c'")
+	sys cat "$c" >> '$conf'
 
-	sys echo >> $conf
-	sys echo "#---" >> $conf
-	sys echo "# FLYBASE release $flybaseRelease" >> $conf
-	sys echo "#---" >> $conf
-	sys cat	$confDir/snpEff.FLYBASE_$flybaseRelease\.config >> $conf
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# FLYBASE release $flybaseRelease" >> '$conf'
+	sys echo "#---" >> '$conf'
+	c = "$confDir/snpEff.FLYBASE_$flybaseRelease\.config"
+	println("Adding config '$c'")
+	sys cat	'$c' >> '$conf'
 
 	for( string b : bundles) {
-		sys echo >> $conf
-		sys echo "#---" >> $conf
-		sys echo "# ENSEMBL Bundles $b" >> $conf
-		sys echo "#---" >> $conf
-		sys cat $confDir/snpEff.bundles.$b\.config >> $conf
+		sys echo >> '$conf'
+		sys echo "#---" >> '$conf'
+		sys echo "# ENSEMBL Bundles $b" >> '$conf'
+		sys echo "#---" >> '$conf'
+		c = "$confDir/snpEff.bundles.$b\.config"
+		println("Adding config '$c'")
+		sys cat '$c' >> '$conf'
 	}
 
-	sys echo >> $conf
-	sys echo "#---" >> $conf
-	sys echo "# Custom requests " >> $conf
-	sys echo "#---" >> $conf
-	sys cat	$confDir/snpEff.custom_requests.config >> $conf
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# Custom requests " >> '$conf'
+	sys echo "#---" >> '$conf'
+	c = "$confDir/snpEff.custom_requests.config"
+	println("Adding config '$c'")
+	sys cat	'$c' >> '$conf'
 
-	sys echo >> $conf
-	sys echo "#---" >> $conf
-	sys echo "# COVID19 " >> $conf
-	sys echo "#---" >> $conf
-	sys cat	$confDir/snpEff.covid19.config >> $conf
+	sys echo >> '$conf'
+	sys echo "#---" >> '$conf'
+	sys echo "# COVID19 " >> '$conf'
+	sys echo "#---" >> '$conf'
+	c = "$confDir/snpEff.covid19.config"
+	println("Adding config '$c'")
+	sys cat	'$c' >> '$conf'
 }
 
 #-------------------------------------------------------------------------------

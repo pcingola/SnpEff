@@ -61,11 +61,12 @@ public class NextProt extends Marker {
 		super.serializeParse(markerSerializer);
 		transcriptId = markerSerializer.getNextField();
 		highlyConservedAaSequence = markerSerializer.getNextFieldBoolean();
+		name = markerSerializer.getNextField();
 	}
 
 	@Override
 	public String serializeSave(MarkerSerializer markerSerializer) {
-		return super.serializeSave(markerSerializer) + "\t" + transcriptId + "\t" + highlyConservedAaSequence;
+		return super.serializeSave(markerSerializer) + "\t" + transcriptId + "\t" + highlyConservedAaSequence + "\t" + name;
 	}
 
 	public void setHighlyConservedAaSequence(boolean highlyConservedAaSequence) {

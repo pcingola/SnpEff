@@ -122,13 +122,13 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 
 	public String description() {
 		// Some annotations have control-vocabulary terms (e.g. "modified-residue")
-		if (cvTerm != null) return category + ":" + cvTerm.description;
+		if (cvTerm != null) return cvTerm.description;
 
 		// Some annotations do not have controlled vocabularies, but have a "desription" (e.g. "active-site")
 		if (description != null) {
 			// Sometimes a description can be split at ';'
-			if (description.indexOf(';') > 0) return category + ":" + description.split(";")[0];
-			return category + ":" + description;
+			if (description.indexOf(';') > 0) return description.split(";")[0];
+			return description;
 		}
 
 		return null;

@@ -572,6 +572,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#genome-reference" class="md-nav__link">
+    Genome reference
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#genome-reference-data-sources" class="md-nav__link">
     Genome reference data sources
   </a>
@@ -1145,6 +1152,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#genome-reference" class="md-nav__link">
+    Genome reference
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#genome-reference-data-sources" class="md-nav__link">
     Genome reference data sources
   </a>
@@ -1205,12 +1219,12 @@
 <p>This is usually done to comply with HGVS specification to always report the most 3-prime annotation. While VCF requires to realign to the left-most of the reference genome, HGSV requires to realign to the most 3-prime. These two specifications are contradicting in some cases, so in order to comply with HGSV, sometimes a local realignment is required.</p>
 <p>IMPORTANT: This message is just indicating that a realignment was performed, so <strong> when this INFO message is present, the original coordinates from the VCF file are not exactly the same as the coordinates used to calculate the variant annotation </strong></p>
 <p><strong>WARNING_SEQUENCE_NOT_AVAILABLE</strong></p>
-<p>The exon does not have reference sequence information. 
+<p>The exon does not have reference sequence information.
 The annotation may not be calculated (e.g. incomplete transcripts).</p>
 <p><strong>WARNING_REF_DOES_NOT_MATCH_GENOME</strong></p>
 <p>The genome reference does not match the variant's reference.</p>
 <p>For example, if the VCF file indicates that the reference at a certain location is 'A', while SnpEff's database indicates that the reference should be 'C', this WARNING would be added.</p>
-<p>Under normal circumstances, there should be none of these warnings (or at most a handful). </p>
+<p>Under normal circumstances, there should be none of these warnings (or at most a handful).</p>
 <p>IMPORTANT: If too many of these warnings are seen, this indicates a severe problem (version mismatch between your VCF files and the reference genome). A typical case when too many of these warning are seen is when trying to annotate using a different genome than the one used for alignment (e.g. reads are aligned to hg19 but variants are annotated to using hg38)</p>
 <p><strong>WARNING_TRANSCRIPT_INCOMPLETE</strong></p>
 <p>The number of coding bases is NOT multiple of 3, so there is missing information for at least one codon.
@@ -1227,7 +1241,7 @@ Could for, for example, indicating frame errors in the reference genome for one 
 <p><strong>WARNING_TRANSCRIPT_NO_STOP_CODON</strong></p>
 <p>Stop codon does not match any 'stop' codon in the CodonTable.</p>
 <p>This usually indicates an error on the reference genome (or database) but could be also due to a misconfigured codon table for the genome. You should check that the codon table is properly set in <code>snpEff.config</code></p>
-<p><strong>ERROR_CHROMOSOME_NOT_FOUND</strong> </p>
+<p><strong>ERROR_CHROMOSOME_NOT_FOUND</strong></p>
 <p>Chromosome name not found. Typically due to mismatch in chromosome naming conventions between variants file and database, but can be a more several problems (different reference genome).</p>
 <p>See more details (here)[https://github.com/pcingola/SnpEff/wiki/ERROR_CHROMOSOME_NOT_FOUND]</p>
 <p><strong>ERROR_OUT_OF_CHROMOSOME_RANGE</strong></p>
@@ -1237,25 +1251,25 @@ Could for, for example, indicating frame errors in the reference genome for one 
 <p><strong>ERROR_OUT_OF_EXON</strong></p>
 <p>An exonic variant is falling outside the exon.</p>
 <p><strong>ERROR_MISSING_CDS_SEQUENCE</strong></p>
-<p>Missing coding sequence information. 
+<p>Missing coding sequence information.
 In this case, the full variant annotation cannot be calculated due to missing CDS information.</p>
 <p>This usually indicates an error on the reference genome (or database).</p>
 <h2 id="error_chromosome_not_found-details">ERROR_CHROMOSOME_NOT_FOUND: Details</h2>
 <p>The error is due to a difference between the chromosome names in input VCF file and the chromosome names in SnpEff's database.</p>
-<p>Chromosome does not exist in the reference database. Typically this means that there is a mismatch between the chromosome names in your input file and the chromosome names used in the reference genome to build SnpEff's database. </p>
+<p>Chromosome does not exist in the reference database. Typically this means that there is a mismatch between the chromosome names in your input file and the chromosome names used in the reference genome to build SnpEff's database.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This error could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment. Obviously doing this makes no sense and the annotation information you'll get will be garbage. That's why SnpEff shows you an error message. </p>
+<p>This error could be caused because you are trying to annotate using a reference genome that is different than the one you used for sequence alignment. Obviously doing this makes no sense and the annotation information you'll get will be garbage. That's why SnpEff shows you an error message.</p>
 </div>
 <p><strong>Solution</strong></p>
-<p>Sometimes SnpEff database matches the reference genome for your organism, and it's just that the chromosome names are changed. In this case, you can fix the error by changing the chromosome names in your input file. </p>
+<p>Sometimes SnpEff database matches the reference genome for your organism, and it's just that the chromosome names are changed. In this case, you can fix the error by changing the chromosome names in your input file.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>You can see the chromosome names used by SnpEff's database by using <code>-v</code> (verbose) option. SnpEff will show a line like this one:</p>
 </div>
 <pre><code>$ java -Xmx4g -jar snpEff.jar -v genomeName my.vcf &gt; my.ann.vcf
 ...
-... 
+...
 # Chromosomes names [sizes]  : '1' [249250621] '2' [243199373]
 ...
 ...
@@ -1327,9 +1341,17 @@ MAAAGSR...LLFGKVAKDSSRMLQPSSSPLWGKLRVDIKAYLGS...
 &gt;NM_015658.3 Variant 1:889455-889455 Ref:G Alt:A HGVS.p:p.Gln236*
 MAAAGSR...LLFGKVAKDSSRML*PSSSPLWGKLRVDIKAYLGS...
 </code></pre>
+<h2 id="genome-reference">Genome reference</h2>
+<p>Having a standard reference sequence is the key to establish comparisons and analysis.
+In order to compare DNA from different individuals (or samples), we need a \textit{reference genome sequence} and \textit{genomic annotations}.</p>
+<p>Alignment and annotations must be based on the exact same reference genome sequence.
+Variants are called based on the reference genome, thus variant annotations must be performed using same reference genome.
+For instance, performing variant calling respect to hg19 and then performing variant annotations using hg38 genome, would result in completely erroneous results.</p>
+<p>Oftentimes lack of consistency between SnpEff annotations and genome coordinated from other data sources (e.g. a genome browser or other online databases) are due to the fact that there is a difference in genome reference versions.
+For example, maybe the VCF file was annotated using SnpEff's <code>GRCh38.99</code> database, but you are looking at an <code>hg38</code> genome browser (both reference are human, version 38, but different transcript versions).</p>
 <h2 id="genome-reference-data-sources">Genome reference data sources</h2>
 <p>SnpEff genome databases are built from genomic data sources, such as Ensembl, RefSeq, NCBI, UCSC, etc.</p>
-<p>Sometimes, information is provided in the <code>snpEff.config</code> file, under the <code>genome_name.reference</code> entry.</p>
+<p>To find which data source was used, sometimes the information is provided in the <code>snpEff.config</code> file, under the <code>genome_name.reference</code> entry.</p>
 <p><strong>Example 1: GRCh37.75</strong></p>
 <p>If you are looking for the <code>GRCh37.75</code> genome, you can search for the entry in <code>snpEff.conf</code> file:</p>
 <pre><code>$ grep -A 1 GRCh37.75 snpEff.config
@@ -1339,7 +1361,7 @@ GRCh37.75.reference : ftp://ftp.ensembl.org/pub/release-75/gtf/
 <p>As you can see, the genome data is from Ensembl, release 75 (as expected).</p>
 <p><strong>Example 2: hg19</strong></p>
 <p>If you are looking for the <code>hg19</code> genome, you can also search for the entry in <code>snpEff.conf</code> file:</p>
-<pre><code>$ grep -i hg19.genome snpEff.config 
+<pre><code>$ grep -i hg19.genome snpEff.config
 hg19.genome : Homo_sapiens (USCS)
 ...
 </code></pre>
@@ -1374,7 +1396,7 @@ Also, a single variant can have more than one annotation, due to:
 - Multiple transcripts (isoforms) of a gene.
 - Multiple (overlapping) genes in the genomic location of the variant.
 - A variant spanning multiple genes (e.g. a translocation, large deletion, etc.)</p>
-<p>When you count the number of variants, you must keep all these in mind to count them properly. 
+<p>When you count the number of variants, you must keep all these in mind to count them properly.
 Obviously, SnpEff does take all this into account when counting the variants for the summary HTML.</p>
 <p><strong>Typical counting mistake</strong></p>
 <p>Many people who claim that there is a mismatch between the number of variants in the summary (HTML) file and the number of variants in the VCF file, are just making mistakes when counting the variants because they forget one or more of these previous items.</p>
@@ -1385,7 +1407,7 @@ Obviously, SnpEff does take all this into account when counting the variants for
 <h2 id="snpeff-taking-too-long">SnpEff taking too long</h2>
 <p>Usually SnpEff runs within minutes.
 Unless you are analyzing extremely large files with thousands (or hundreds of thousands) of samples.
-But even in those cases SnpEff is efficient and it doesn't take too long. </p>
+But even in those cases SnpEff is efficient and it doesn't take too long.</p>
 <p>There are several things you should do to optimize:</p>
 <ol>
 <li>Run with "-v" option to check progress</li>
@@ -1400,7 +1422,7 @@ But even in those cases SnpEff is efficient and it doesn't take too long. </p>
 <h2 id="multiple-version-of-refseq-transcripts">Multiple version of RefSeq transcripts</h2>
 <p>When using RefSeq transcripts, for instance in the human genome versions <code>hg38</code> or <code>hg19</code>, can lead to some confusion due to multiply mapped transcripts.</p>
 <p><strong>Example: <code>NM_001135865.1</code> from hg38</strong></p>
-<p>From the original RefSeq data, you can see that there are actually four mappings of NM_001135865.1: </p>
+<p>From the original RefSeq data, you can see that there are actually four mappings of NM_001135865.1:</p>
 <pre><code># Note: Output edited for readbility
 $ zgrep NM_001135865.1 ~/snpEff/data/hg38/genes.refseq.gz
 
