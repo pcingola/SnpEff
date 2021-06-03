@@ -202,7 +202,7 @@ MAAAGSR...LLFGKVAKDSSRML*PSSSPLWGKLRVDIKAYLGS...
 ## Genome reference
 
 Having a standard reference sequence is the key to establish comparisons and analysis.
-In order to compare DNA from different individuals (or samples), we need a \textit{reference genome sequence} and \textit{genomic annotations}.
+In order to compare DNA from different individuals (or samples), we need a *reference genome sequence* and *genomic annotations*.
 
 Alignment and annotations must be based on the exact same reference genome sequence.
 Variants are called based on the reference genome, thus variant annotations must be performed using same reference genome.
