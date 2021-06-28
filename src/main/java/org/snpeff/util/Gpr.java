@@ -251,27 +251,6 @@ public class Gpr {
 		}
 	}
 
-	//	/**
-	//	 * Prits a debug message (prints class name, method and line number)
-	//	 */
-	//	public static void debug(Object obj) {
-	//		debug(obj, 1, true);
-	//	}
-	//
-	//	public static void debug(Object obj, int offset) {
-	//		debug(obj, offset, true);
-	//	}
-	//
-	//	public static void debug(Object obj, int offset, boolean newLine) {
-	//		StackTraceElement ste = new Exception().getStackTrace()[1 + offset];
-	//		String steStr = ste.getClassName();
-	//		int ind = steStr.lastIndexOf('.');
-	//		steStr = steStr.substring(ind + 1);
-	//		steStr += "." + ste.getMethodName() + "(" + ste.getLineNumber() + "):\t" + (obj == null ? null : obj.toString());
-	//		if (newLine) System.err.println(steStr);
-	//		else System.err.print(steStr);
-	//	}
-
 	/**
 	 * Return file's dir
 	 */

@@ -107,22 +107,6 @@ public class VcfEffect {
 	}
 
 	/**
-	 * Return a string safe to be used in an 'EFF' info field (VCF file)
-	 */
-	public static String vcfEffSafe(String str) {
-		return str.replaceAll("(\\s|\\(|\\)|\\[|\\]|;|,|\\|)+", "_");
-	}
-
-	/**
-	 * Return a string safe to be used in an info field (VCF file)
-	 */
-	public static String vcfSafe(String str) {
-		if (str == null) return null;
-		!!!!!!! ADD PARENTHESIS
-		return str.trim().replaceAll("(,|;|=| |\t)+", "_");
-	}
-
-	/**
 	 * Constructor: Guess format version
 	 */
 	public VcfEffect(String effectString) {

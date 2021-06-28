@@ -106,6 +106,32 @@ public class VcfEntry extends Marker implements Iterable<VcfGenotype> {
 	protected ArrayList<VcfGenotype> vcfGenotypes = null;
 
 	/**
+	 * Return a string without leading, trailing and duplicated underscores
+	 */
+	public static String cleanUnderscores(String s) {
+		if (s == null || s.isEmpty()) return s;
+		var sb = new StringBuilder();
+		var schars = s.toCharArray();
+		var first = true;
+		var previusIsUnderscore = false;
+		for (char c : schars) {
+			if (c == '_') {
+				if (!first) previusIsUnderscore = true;
+				continue;
+			}
+
+			if (previusIsUnderscore) {
+				previusIsUnderscore = false;
+				sb.append('_');
+			}
+
+			sb.append(c);
+			first = false; // First character must not be an underscore
+		}
+		return sb.toString();
+	}
+
+	/**
 	 * Does 'value' represent an EMPTY / MISSING value in a VCF field?
 	 * (or multiple MISSING comma-separated values)
 	 */

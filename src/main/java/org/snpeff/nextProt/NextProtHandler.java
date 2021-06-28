@@ -9,7 +9,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Parse NetxProt XML file and build a database
+ * Handler used in XML parsing for NextProt database
+ *
+ * It keeps track of the tags and saves state data to create Markers using NextProtMarkerFactory
  *
  * http://www.nextprot.org/
  *

@@ -183,6 +183,7 @@ public class SnpEffCmdDatabases extends SnpEff {
 
 			// Show
 			System.out.println(String.format("%-60s\t%-60s\t%-10s\t%-30s\t%s", genomeVer, name, status, bundle, url));
+			System.out.println(String.format("URL:\t%s", url));
 		}
 	}
 

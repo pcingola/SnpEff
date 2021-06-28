@@ -21,7 +21,7 @@ import org.snpeff.interval.TranscriptSupportLevel;
 import org.snpeff.interval.Variant;
 import org.snpeff.util.Gpr;
 import org.snpeff.vcf.EffFormatVersion;
-import org.snpeff.vcf.VcfEffect;
+import org.snpeff.vcf.VcfEntry;
 
 /**
  * Effect of a variant.
@@ -280,7 +280,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		// Create effect string
 		if (!codonEffect.isEmpty()) e = codonEffect;
 		else if (isRegulation()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + ((Regulation) marker).getName() + "]";
-		else if (isNextProt()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + VcfEffect.vcfEffSafe(((NextProt) marker).getId()) + "]"; // Make sure this 'id' is not dangerous in a VCF 'EFF' field
+		else if (isNextProt()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + VcfEntry.vcfInfoValueSafe(((NextProt) marker).getId()) + "]"; // Make sure this 'id' is not dangerous in a VCF 'EFF' field
 		else if (isMotif()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + ((Motif) marker).getPwmId() + ":" + ((Motif) marker).getPwmName() + "]";
 		else if (isCustom()) {
 			// Custom interval

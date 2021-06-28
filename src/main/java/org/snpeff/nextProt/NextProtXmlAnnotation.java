@@ -6,7 +6,7 @@ import java.util.List;
 import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
-import org.snpeff.vcf.VcfEffect;
+import org.snpeff.vcf.VcfEntry;
 import org.xml.sax.Attributes;
 
 /**
@@ -169,7 +169,7 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 		case "binding-site":
 		case "cleavage-site":
 		case "cysteines":
-		case "disulfide-bond": // Note: Disulfide bonds are marked as start-end, even though they are not intervals
+		case "disulfide-bond":
 		case "glycosylation-site":
 		case "lipidation-site":
 		case "modified-residue":
@@ -243,6 +243,10 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 		}
 	}
 
+	boolean isIntreactionStartEnd(String category) {
+		return category.equals("disulfide-bond");
+	}
+
 	public void locationBeginPos(Attributes attributes) {
 		if (location != null) location.begin = Gpr.parseIntSafe(attributes.getValue("position")) - 1; // Transform to zero-based
 	}
@@ -252,9 +256,19 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 	 */
 	public void locationEnd() {
 		if (locations != null) {
-			locations.add(location);
+			if (isIntreactionStartEnd(category)) {
+				// In these cases, the "interval" [start, end] but in
+				// reality they are just an interaction from position start to position end
+				Log.debug("DISULPHIDE BOND");
+			} else {
+				// Add location
+				locations.add(location);
+			}
+
 			// Check: This category should be added to 'isAnnotate'?
-			if (!isAnnotate(category)) entry.getHandler().countMissingCategory(category);
+			if (!isAnnotate(category)) {
+				entry.getHandler().countMissingCategory(category);
+			}
 		}
 		location = null;
 	}
@@ -275,11 +289,14 @@ public class NextProtXmlAnnotation extends NextProtXmlNode {
 	}
 
 	/**
-	 * Return an annotaion "name"
+	 * Return an annotation "name"
+	 * Clean up characters to make them compatible with VCF annotations
 	 */
 	public String name() {
 		var descr = description();
-		return VcfEffect.vcfSafe(category + (descr != null ? " " + descr : ""));
+		var name = category + (descr != null ? " " + descr : "");
+		name = name.replace('.', '_');
+		return VcfEntry.cleanUnderscores(VcfEntry.vcfInfoValueSafe(name));
 	}
 
 	public void setCvTerm(CvTerm cvTerm) {
