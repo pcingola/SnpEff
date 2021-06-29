@@ -2,6 +2,7 @@ package org.snpeff.codons;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.Genome;
@@ -53,7 +54,7 @@ public class CodonTables implements Iterable<CodonTable> {
 	/**
 	 * Translate an amino acid into a codon for a given genome+chromosome
 	 */
-	public String codon(String aa, Genome genome, String chromosome) {
+	public List<String> codon(String aa, Genome genome, String chromosome) {
 		return getTable(genome, chromosome).codon(aa);
 	}
 

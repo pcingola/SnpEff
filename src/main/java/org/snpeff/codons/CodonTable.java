@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.snpeff.binseq.coder.DnaCoder;
 
@@ -60,7 +61,7 @@ public class CodonTable {
 
 	String name;
 	HashMap<String, String> codon2aa;
-	HashMap<String, String> aa2codon;
+	HashMap<String, List<String>> aa2codon;
 	HashSet<String> startCodons;
 	HashSet<String> stopCodons;
 	HashMap<String, Integer> degeneracy;
@@ -173,10 +174,8 @@ public class CodonTable {
 	/**
 	 * Translate an amino acid into a codon
 	 */
-	public String codon(String aa) {
-		String codon = aa2codon.get(aa.toUpperCase());
-		if (codon == null) return "???";
-		return codon;
+	public List<String> codon(String aa) {
+		return aa2codon.get(aa.toUpperCase());
 	}
 
 	/**
@@ -283,7 +282,9 @@ public class CodonTable {
 					// If it contains a '*' then is is a STOP codon
 					if (aa.indexOf('*') >= 0) stopCodons.add(codon);
 
-					aa2codon.put(aa, codon);
+					if (!aa2codon.containsKey(aa)) aa2codon.put(aa, new ArrayList<String>());
+					aa2codon.get(aa).add(codon);
+
 					codon2aa.put(codon, aa);
 				} else throw new RuntimeException("Error reading codon table. Cannot parse entry: '" + entry + "'\n\tTable: '" + table + "'");
 			}
