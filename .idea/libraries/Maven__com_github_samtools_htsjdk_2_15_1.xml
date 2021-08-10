@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.github.samtools:htsjdk:2.15.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/samtools/htsjdk/2.15.1/htsjdk-2.15.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/samtools/htsjdk/2.15.1/htsjdk-2.15.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/samtools/htsjdk/2.15.1/htsjdk-2.15.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
