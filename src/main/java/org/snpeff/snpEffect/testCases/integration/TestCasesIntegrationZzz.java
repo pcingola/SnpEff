@@ -1,11 +1,11 @@
 package org.snpeff.snpEffect.testCases.integration;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdBuild;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdProtein;
 import org.snpeff.util.Log;
-
-import junit.framework.Assert;
 
 /**
  * Test case
@@ -20,17 +20,16 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
 	}
 
 	@Test
-	public void test_01() {
+	public void test_01_build() {
 		Log.debug("Test");
-		verbose = debug = true;
-		String genome = "test_NC_045512_01";
-		SnpEffCmdBuild buildCmd = buildGetBuildCmd(genome);
-
-		// Make sure all proteins are OK
-		SnpEffCmdProtein protCmd = buildCmd.getSnpEffCmdProtein();
-		Assert.assertEquals(5, protCmd.getTotalOk());
-		Assert.assertEquals(0, protCmd.getTotalErrors());
-		Assert.assertEquals(0, protCmd.getTotalWarnings());
+		verbose = true;
+		String args[] = { "buildNextProt", "testHg3770Chr22", path("nextProt") };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		boolean ok = snpEff.run();
+		Assert.assertEquals(true, ok);
 	}
+
 
 }

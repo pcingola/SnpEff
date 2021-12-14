@@ -98,7 +98,6 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 
 		if (verbose) Log.info("Count: " + count);
 		Assert.assertTrue(count > 0);
-
 	}
 
 	@Test
@@ -124,7 +123,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_08_parse() {
-		// TODO: Parse disulphide bond annotations (start end is not an insterval, it's the interaction points)
+		// TODO: Parse disulphide bond annotations (start end is not an interval, it's the interaction points)
 		Log.debug("Test");
 		throw new RuntimeException("Unimplemented test");
 	}

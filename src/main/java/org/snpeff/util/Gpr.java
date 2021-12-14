@@ -277,44 +277,44 @@ public class Gpr {
 		return "";
 	}
 
-	/**
-	 * Generate an evenly separated pallette of colors
-	 * @param num	Number of colors
-	 */
-	public static Paint[] getPaints(int num) {
-		return getPaints(num, false);
-	}
-
-	public static Paint[] getPaints(int num, boolean goUp) {
-		int r, g, b, i, jump, jumpr, jumpg, jumpb;
-		Paint paints[] = new Paint[num];
-
-		for (jump = 1; (jump * jump * jump) <= num; jump++);
-
-		jumpr = jumpg = jumpb = jump;
-		if (((jumpr - 1) * jumpg * jumpb) <= num) jumpr--;
-
-		if ((jumpr * (jumpg - 1) * jumpb) <= num) jumpg--;
-
-		if (jumpr > 1) jumpr = 255 / (jumpr - 1);
-		else jumpr = 255;
-
-		if (jumpg > 1) jumpg = 255 / (jumpg - 1);
-		else jumpg = 255;
-
-		if (jumpb > 1) jumpb = 255 / (jumpb - 1);
-		else jumpb = 255;
-
-		if (goUp) for (i = 0, r = 0; (r <= 255) && (i < num); r += jumpr)
-			for (g = 0; (g <= 255) && (i < num); g += jumpg)
-				for (b = 0; (b <= 255) && (i < num); b += jumpb, i++)
-					paints[i] = new Color(r, g, b);
-		else for (i = 0, r = 255; (r >= 0) && (i < num); r -= jumpr)
-			for (g = 255; (g >= 0) && (i < num); g -= jumpg)
-				for (b = 255; (b >= 0) && (i < num); b -= jumpb, i++)
-					paints[i] = new Color(r, g, b);
-		return paints;
-	}
+//	/**
+//	 * Generate an evenly separated pallette of colors
+//	 * @param num	Number of colors
+//	 */
+//	public static Paint[] getPaints(int num) {
+//		return getPaints(num, false);
+//	}
+//
+//	public static Paint[] getPaints(int num, boolean goUp) {
+//		int r, g, b, i, jump, jumpr, jumpg, jumpb;
+//		Paint paints[] = new Paint[num];
+//
+//		for (jump = 1; (jump * jump * jump) <= num; jump++);
+//
+//		jumpr = jumpg = jumpb = jump;
+//		if (((jumpr - 1) * jumpg * jumpb) <= num) jumpr--;
+//
+//		if ((jumpr * (jumpg - 1) * jumpb) <= num) jumpg--;
+//
+//		if (jumpr > 1) jumpr = 255 / (jumpr - 1);
+//		else jumpr = 255;
+//
+//		if (jumpg > 1) jumpg = 255 / (jumpg - 1);
+//		else jumpg = 255;
+//
+//		if (jumpb > 1) jumpb = 255 / (jumpb - 1);
+//		else jumpb = 255;
+//
+//		if (goUp) for (i = 0, r = 0; (r <= 255) && (i < num); r += jumpr)
+//			for (g = 0; (g <= 255) && (i < num); g += jumpg)
+//				for (b = 0; (b <= 255) && (i < num); b += jumpb, i++)
+//					paints[i] = new Color(r, g, b);
+//		else for (i = 0, r = 255; (r >= 0) && (i < num); r -= jumpr)
+//			for (g = 255; (g >= 0) && (i < num); g -= jumpg)
+//				for (b = 255; (b >= 0) && (i < num); b -= jumpb, i++)
+//					paints[i] = new Color(r, g, b);
+//		return paints;
+//	}
 
 	public static String head(Object o) {
 		StringBuilder sb = new StringBuilder();

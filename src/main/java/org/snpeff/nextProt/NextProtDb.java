@@ -1,11 +1,14 @@
 package org.snpeff.nextProt;
 
 import java.io.File;
+import java.util.Locale;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.input.ReaderInputStream;
 import org.snpeff.snpEffect.Config;
+import org.snpeff.util.Gpr;
 import org.snpeff.util.Log;
 
 /**
@@ -110,10 +113,14 @@ public class NextProtDb {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			factory.setValidating(true);
 			SAXParser saxParser = factory.newSAXParser();
-			File file = new File(xmlFileName);
+
+			// Create an input stream that can handle compressed files
+			var isGzipped = xmlFileName.toLowerCase(Locale.ROOT).endsWith(".gz");
+			var reader = Gpr.reader(xmlFileName, isGzipped);
+			var inStream = new ReaderInputStream(reader);
 
 			handler = new NextProtHandler(markersFactory);
-			saxParser.parse(file, handler); // specify handler
+			saxParser.parse(inStream, handler); // specify handler
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

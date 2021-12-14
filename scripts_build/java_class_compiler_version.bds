@@ -1,0 +1,15 @@
+#!/usr/bin/env bds
+
+# Show java compiler version for each class in the current directory
+
+files := sys find . -iname "*.class" 
+
+for(string f: files.lines()) {
+	out := f.swapExt('version')
+	task(out <- f) {
+		sys javap -v '$f' | grep major | tr -d "\\n" > '$out'
+		sys echo '        $f' >> '$out'
+		sys echo 'OUT: $out'
+		sys cat '$out'
+	}
+}

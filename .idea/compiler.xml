@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="SnpEff" target="12" />
+      <module name="SnpEff" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
