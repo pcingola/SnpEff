@@ -58,7 +58,11 @@ In order to build a database for a new genome, you need to:
     3. [Option 3:](#option-3-building-a-database-from-refseq-table-from-ucsc) Building a database from RefSeq table from UCSC
     4. [Option 4:](#option-4-building-a-database-from-genbank-files) Building a database from GenBank files
 
-4. Run a command to create the database (i.e. `java -jar snpEff.jar build ...`"`)
+4. Run a command to create the database (i.e. `java -jar snpEff.jar build ...`)
+5. Checking the database: SnpEff will attempt to check the database by comparing predicted protein sequences and CDS sequences with ones provided by the user.
+
+    1. [Checking CDS sequences](#checking-cds-sequences)
+    2. [Checking Protein sequences](#checking-protein-sequences)
 
 **Note:** All files can be compressed using gzip. E.g. the reference file 'hg19.fa' can be compressed to 'hg19.fa.gz', snpEff will automatically decompress the file.
 
@@ -66,6 +70,8 @@ In order to build a database for a new genome, you need to:
     Some files claimed to be compressed using GZIP are actually not or even use a block compression variant not supported by Java's gzip library.
     If you notice that your build process finishes abruptly for no apparent reason, try uncompressing the files.
     This sometimes happens with ENSEMBL files.
+
+**Checking database build:** 
 
 ### Configuring a new genome
 
@@ -323,6 +329,97 @@ gunzip GRCh37.70.fa.gz
 cd ~/snpeff
 java -Xmx20g -jar snpEff.jar build -v GRCh37.70 2>&1 | tee GRCh37.70.build
 ```
+
+### Checking CDS sequences
+
+When building a database, SnpEff will try to check CDS sequences for all transcripts in the database when
+- building via GFT/GFF/RefSeq: A CDS sequences FASTA file is available.
+- building via GenBank file: CDS sequences are available within the GenBank file
+
+FASTA cds file format:
+- The file name should be `cds.fa` (or `cds.fa.gz` if compressed)
+- Each transcript should have one CDS sequence
+- Each FASTA header has the transcript ID either:
+    - The header contains only the transcript ID
+    - The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these
+    - Some example sequences with valid header examples:
+```
+>ENST00000448914
+ACTGGGGGATACG
+
+>chromosome:GRCh38:14:22449113:22449125:1 transcript:ENST00000448914.1 cds gene:ENSG00000228985.1 gene_biotype:TR_D_gene transcript_biotype:TR_D_gene gene_symbol:TRDD3 description:T cell receptor delta diversity 3
+ACTGGGGGATACG
+```
+
+CSD checking output.
+When run using the `-v` (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character
+- `+`: OK, the CDS sequence matches the one predicted by SnpEff
+- `.`: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the 
+- `*`: Error. The CDS sequence from inferred from SnpEff's database and the one provided in the CDS file do not match.
+After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:
+```
+CDS check:	GRCh38.86	OK: 94384	Warnings: 22766	Not found: 103618	Errors: 0	Error percentage: 0.0%
+```
+As a "rule of the thumb", you should not get more than 2% or 3% of errors.
+
+Debugging. You can run SnpEff using `-d` (debug) command line option to get detailed messages for each CDS sequence comparison.
+The message shows the transcript ID, CDS sequence inferred by SnpEff's, and the CDS sequence from the FASTA file, as well as the places where they differ.  
+
+### Checking Protein sequences
+
+This is very similar to the CDS checking in the previous sub-section.
+When building a database, SnpEff will also try to check Protein sequences for all transcripts when
+- building via GFT/GFF/RefSeq: A protein sequences FASTA file is available.
+- building via GenBank file: protein sequences are available within the GenBank file
+
+FASTA protein file format:
+- The file name should be `protein.fa` (or `protein.fa.gz` if compressed)
+- Each transcript should have one protein sequence
+- Each FASTA header has the transcript ID either:
+    - The header contains only the transcript ID
+    - The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these
+    - Some example sequences with valid header examples (sequences have been cut for readability):
+```
+>ENST00000382044
+MPGEQMDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKE
+NPVLDVVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPN
+RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
+...
+
+>ENSP00000371475 pep chromosome:GRCh38:15:43403061:43493171:-1 gene:ENSG00000067369 transcript:ENST00000382044 gene_biotype:protein_coding transcript_biotype:protein_coding gene_symbol:TP53BP1 description:tumor protein p53 binding protein
+MPGEQMDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKE
+NPVLDVVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPN
+RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
+...
+```
+
+**Protein checking output:**
+When run using the `-v` (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character:
+- `+`: OK, the protein sequence matches the one predicted by SnpEff
+- `.`: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the
+- `*`: Error. The Protein sequence from inferred from SnpEff's database and the one provided in the protein file do not match.
+  After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:
+```
+Protein check:  GRCh38.86       OK: 94371       Not found: 0    Errors: 13      Error percentage: 0.01377352093575182%
+```
+As a "rule of the thumb", you should not get more than 2% or 3% of errors.
+
+**How exactly protein sequences are compared**
+The rules used for protein sequence comparison are:
+- Comparison is case-insensitive
+- Trailing STOP codon (`'*'`) is removed
+- Trailing incomplete codon (`'?'`) is removed
+- Leading incomplete codons (`'?'`) are removed
+
+If these comparisons fails, further attempts are made:   
+- Replace "unknown" codon characters: Codons using old `'X'` characters are replaced by newer `'?'` characters
+- If any of the sequences only differ by the first codon, they are considered equal (the start codon is translates as 'Met' even when the codon code translates to another Amino acid)
+- Replace rare amino acids, which often tranlate as stop codons in the middle of the sequence: E.g. replace `'*'` by `'U'`
+- Try replacing unknown aminco acids (`'?'`) by the ones at the same position in the protein sequence from the FASTA file
+If after all these attempts the protein sequence still do not match, they are considered "not equal".
+
+**Debugging:** You can run SnpEff using `-d` (debug) command line option to get detailed messages for each protein sequence comparison.
+The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.
 
 ### Troubleshooting Database builds
 

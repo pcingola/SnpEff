@@ -113,7 +113,6 @@ public class SnpEffCmdProtein extends SnpEff {
 		// Use whole trId
 		proteinByTrId.put(trId, seq); // Add it to the hash
 		if (debug) Log.debug("Adding proteinByTrId{'" + trId + "'} :\t" + seq);
-
 	}
 
 	/**

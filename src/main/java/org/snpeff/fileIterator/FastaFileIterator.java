@@ -21,7 +21,7 @@ public class FastaFileIterator extends FileIterator<String> {
 		COMPLETE; // Complete parser state.
 	}
 
-	public static String TRANSCRIPT_ID_SEPARATORS_REGEX = "[ \t:,.=]";
+	public static String TRANSCRIPT_ID_SEPARATORS_REGEX = "[ \t:,.=;]";
 	public static char TRANSCRIPT_ID_SEPARATORS[] = TRANSCRIPT_ID_SEPARATORS_REGEX.substring(1, TRANSCRIPT_ID_SEPARATORS_REGEX.length() - 1).toCharArray();
 
 	Pattern transcriptPattern = Pattern.compile("transcript:(\\S*)");
