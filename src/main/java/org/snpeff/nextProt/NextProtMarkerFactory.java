@@ -57,19 +57,11 @@ public class NextProtMarkerFactory {
         if (count++ % 1000 == 0)
             Log.debug("ANNOTATION: " + annotation.name() + "\t" + trId + "\t" + location.begin + "\t" + location.end);
 
-        // Convert from AA number to genomic coordinates
-        int start = tr.aaNumber2Pos(location.begin);
-        int end = tr.aaNumber2Pos(location.end);
-
         // Analysis of sequence conservation
         addConservation(isoform, annotation, location, tr);
 
         // Add NextProt annotation
-        NextProt nextProt = new NextProt(tr, start, end, annotation.accession, annotation.name());
-
-        // TODO: Marker needs to be split across exon junction
-        Markers newmarkers = new Markers();
-        newmarkers.add(nextProt);
+        Markers newmarkers = createNextProt(tr, annotation, location);
 
         // Add all new markers
         markers.add(newmarkers);
@@ -131,6 +123,33 @@ public class NextProtMarkerFactory {
      */
     public void conservation() {
         sequenceConservation.analyzeSequenceConservation(markers);
+    }
+
+    Markers createNextProt(Transcript tr, NextProtXmlAnnotation annotation, Location location) {
+        // Get chromosome location
+        int start = tr.aaNumber2Pos(location.begin);
+        int end = tr.aaNumber2Pos(location.end);
+        if (start > end) { // Swap if not ordered
+            start = tr.aaNumber2Pos(location.end);
+            end = tr.aaNumber2Pos(location.begin);
+        }
+
+        // TODO: Marker needs to be split across exon junction
+        Markers newmarkers = new Markers();
+
+        if (location.isInteraction()) {
+            // Interaction
+            NextProt nextProtStart = new NextProt(tr, start, start, annotation.accession, annotation.name());
+            NextProt nextProtEnd = new NextProt(tr, end, end, annotation.accession, annotation.name());
+            newmarkers.add(nextProtStart);
+            newmarkers.add(nextProtEnd);
+        } else {
+            // Convert from AA number to genomic coordinates
+            NextProt nextProt = new NextProt(tr, start, end, annotation.accession, annotation.name());
+            newmarkers.add(nextProt);
+        }
+
+        return newmarkers;
     }
 
     public Markers getMarkers() {
