@@ -25,11 +25,12 @@ import org.snpeff.util.Log;
 public class SnpEffCmdCds extends SnpEff {
 
 	public static boolean onlyOneError = false; // This is used in some test-cases
-	public static double maxErrorPercentage = 0.01; // Maximum allowed error is 1% (otherwise test fails)
+	public static double MAX_ERROR_PERCENTAGE = 0.05; // Maximum allowed error is 5% (otherwise test fails)
 	public static int MAX_ALIGN_LENGTH = 33000;
 
 	boolean storeAlignments; // Store alignments (used for some test cases)
-	boolean checkNumOk = true;
+	boolean checkNumOk = true; // Require transcripts to be checked (more than zero)
+	double maxErrorPercentage = MAX_ERROR_PERCENTAGE; // Maximum allowed error
 	int totalErrors = 0;
 	int totalOk = 0;
 	int totalWarnings = 0;
@@ -351,10 +352,10 @@ public class SnpEffCmdCds extends SnpEff {
 
 		// Compare CDS
 		if (verbose) Log.info("Comparing CDS...");
-		cdsCompare();
+		var errorRate = cdsCompare();
 		if (verbose) Log.info("done");
 
-		return true;
+		return errorRate <= maxErrorPercentage;
 	}
 
 	/**
