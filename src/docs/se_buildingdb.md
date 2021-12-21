@@ -71,8 +71,6 @@ In order to build a database for a new genome, you need to:
     If you notice that your build process finishes abruptly for no apparent reason, try uncompressing the files.
     This sometimes happens with ENSEMBL files.
 
-**Checking database build:** 
-
 ### Configuring a new genome
 
 In order to tell SnpEff that there is a new genome available, you must update SnpEff's configuration file `snpEff.config`.
@@ -137,6 +135,10 @@ E.g. Here we say the chromosome 'M' from fly genome (dm3) uses Invertebrate_Mito
 As we previously mentioned, reference genome information can be in different formats: GTF, GFF, RefSeq or GenBank.
 
 In the following sub-sections, we show how to build a database for each type of genomic information file.
+
+!!! warning
+    You should always check the databases you build! See sections [Checking CDS sequences](#checking-cds-sequences) and [Checking Protein sequences](#checking-protein-sequences)
+
 
 #### Option 1: Building a database from GTF files
 
@@ -369,10 +371,12 @@ The message shows the transcript ID, CDS sequence inferred by SnpEff's, and the 
 
 This is very similar to the CDS checking in the previous sub-section.
 When building a database, SnpEff will also try to check Protein sequences for all transcripts when
+
 - building via GFT/GFF/RefSeq: A protein sequences FASTA file is available.
 - building via GenBank file: protein sequences are available within the GenBank file
 
-FASTA protein file format:
+FASTA protein file:
+
 - The file name should be `protein.fa` (or `protein.fa.gz` if compressed)
 - Each transcript should have one protein sequence
 - Each FASTA header has the transcript ID either:
@@ -394,6 +398,7 @@ RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
 ```
 
 **Protein checking output:**
+
 When run using the `-v` (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character:
 - `+`: OK, the protein sequence matches the one predicted by SnpEff
 - `.`: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the
@@ -402,24 +407,30 @@ When run using the `-v` (verbose) command line option, for each transcript in th
 ```
 Protein check:  GRCh38.86       OK: 94371       Not found: 0    Errors: 13      Error percentage: 0.01377352093575182%
 ```
-As a "rule of the thumb", you should not get more than 2% or 3% of errors.
+
+!!! warning
+    As a "rule of the thumb", the errors should be below 2% or 3%.
 
 **How exactly protein sequences are compared**
 The rules used for protein sequence comparison are:
+
 - Comparison is case-insensitive
 - Trailing STOP codon (`'*'`) is removed
 - Trailing incomplete codon (`'?'`) is removed
 - Leading incomplete codons (`'?'`) are removed
 
-If these comparisons fails, further attempts are made:   
+If these comparisons fails, further attempts are made:
+
 - Replace "unknown" codon characters: Codons using old `'X'` characters are replaced by newer `'?'` characters
 - If any of the sequences only differ by the first codon, they are considered equal (the start codon is translates as 'Met' even when the codon code translates to another Amino acid)
 - Replace rare amino acids, which often tranlate as stop codons in the middle of the sequence: E.g. replace `'*'` by `'U'`
 - Try replacing unknown aminco acids (`'?'`) by the ones at the same position in the protein sequence from the FASTA file
+
 If after all these attempts the protein sequence still do not match, they are considered "not equal".
 
-**Debugging:** You can run SnpEff using `-d` (debug) command line option to get detailed messages for each protein sequence comparison.
-The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.
+!!! info
+    You can run SnpEff using `-d` (debug) command line option to get detailed messages for each protein sequence comparison.
+    The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.
 
 ### Troubleshooting Database builds
 

@@ -1449,7 +1449,6 @@ So unless you are working with a rare genome you most likely don't need to do it
 If you notice that your build process finishes abruptly for no apparent reason, try uncompressing the files.
 This sometimes happens with ENSEMBL files.</p>
 </div>
-<p><strong>Checking database build:</strong> </p>
 <h3 id="configuring-a-new-genome">Configuring a new genome</h3>
 <p>In order to tell SnpEff that there is a new genome available, you must update SnpEff's configuration file <code>snpEff.config</code>.</p>
 <p>You must add a new genome entry to <code>snpEff.config</code>.</p>
@@ -1502,6 +1501,10 @@ The format is a comma separated list of <code>CODON/AMINO_ACID</code>.</p>
 <h3 id="reference-genome-gtf-gff-refseq-or-genbank">Reference genome: GTF, GFF, RefSeq or GenBank</h3>
 <p>As we previously mentioned, reference genome information can be in different formats: GTF, GFF, RefSeq or GenBank.</p>
 <p>In the following sub-sections, we show how to build a database for each type of genomic information file.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You should always check the databases you build! See sections <a href="#checking-cds-sequences">Checking CDS sequences</a> and <a href="#checking-protein-sequences">Checking Protein sequences</a></p>
+</div>
 <h4 id="option-1-building-a-database-from-gtf-files">Option 1: Building a database from GTF files</h4>
 <p>GTF 2.2 files are supported by SnpEff (e.g. ENSEMBL releases genome annotations in this format).</p>
 <ol>
@@ -1723,16 +1726,22 @@ After these line a "Summary statistics" line shows the total number of FASTA ent
 The message shows the transcript ID, CDS sequence inferred by SnpEff's, and the CDS sequence from the FASTA file, as well as the places where they differ.  </p>
 <h3 id="checking-protein-sequences">Checking Protein sequences</h3>
 <p>This is very similar to the CDS checking in the previous sub-section.
-When building a database, SnpEff will also try to check Protein sequences for all transcripts when
-- building via GFT/GFF/RefSeq: A protein sequences FASTA file is available.
-- building via GenBank file: protein sequences are available within the GenBank file</p>
-<p>FASTA protein file format:
-- The file name should be <code>protein.fa</code> (or <code>protein.fa.gz</code> if compressed)
-- Each transcript should have one protein sequence
-- Each FASTA header has the transcript ID either:
-    - The header contains only the transcript ID
-    - The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these
-    - Some example sequences with valid header examples (sequences have been cut for readability):</p>
+When building a database, SnpEff will also try to check Protein sequences for all transcripts when</p>
+<ul>
+<li>building via GFT/GFF/RefSeq: A protein sequences FASTA file is available.</li>
+<li>building via GenBank file: protein sequences are available within the GenBank file</li>
+</ul>
+<p>FASTA protein file:</p>
+<ul>
+<li>The file name should be <code>protein.fa</code> (or <code>protein.fa.gz</code> if compressed)</li>
+<li>Each transcript should have one protein sequence</li>
+<li>Each FASTA header has the transcript ID either:<ul>
+<li>The header contains only the transcript ID</li>
+<li>The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these</li>
+<li>Some example sequences with valid header examples (sequences have been cut for readability):</li>
+</ul>
+</li>
+</ul>
 <pre><code>&gt;ENST00000382044
 MPGEQMDPTGSQLDSDFSQQDTPCLIIEDSQPESQVLEDDSGSHFSMLSRHLPNLQTHKE
 NPVLDVVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPN
@@ -1745,29 +1754,39 @@ NPVLDVVSNPEQTAGEERGDGNSGFNEHLKENKVADPVDSSNLDTCGSISQVIEQLPQPN
 RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
 ...
 </code></pre>
-<p><strong>Protein checking output:</strong>
-When run using the <code>-v</code> (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character:
+<p><strong>Protein checking output:</strong></p>
+<p>When run using the <code>-v</code> (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character:
 - <code>+</code>: OK, the protein sequence matches the one predicted by SnpEff
 - <code>.</code>: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the
 - <code>*</code>: Error. The Protein sequence from inferred from SnpEff's database and the one provided in the protein file do not match.
   After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:</p>
 <pre><code>Protein check:  GRCh38.86       OK: 94371       Not found: 0    Errors: 13      Error percentage: 0.01377352093575182%
 </code></pre>
-<p>As a "rule of the thumb", you should not get more than 2% or 3% of errors.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>As a "rule of the thumb", the errors should be below 2% or 3%.</p>
+</div>
 <p><strong>How exactly protein sequences are compared</strong>
-The rules used for protein sequence comparison are:
-- Comparison is case-insensitive
-- Trailing STOP codon (<code>'*'</code>) is removed
-- Trailing incomplete codon (<code>'?'</code>) is removed
-- Leading incomplete codons (<code>'?'</code>) are removed</p>
-<p>If these comparisons fails, further attempts are made: <br />
-- Replace "unknown" codon characters: Codons using old <code>'X'</code> characters are replaced by newer <code>'?'</code> characters
-- If any of the sequences only differ by the first codon, they are considered equal (the start codon is translates as 'Met' even when the codon code translates to another Amino acid)
-- Replace rare amino acids, which often tranlate as stop codons in the middle of the sequence: E.g. replace <code>'*'</code> by <code>'U'</code>
-- Try replacing unknown aminco acids (<code>'?'</code>) by the ones at the same position in the protein sequence from the FASTA file
-If after all these attempts the protein sequence still do not match, they are considered "not equal".</p>
-<p><strong>Debugging:</strong> You can run SnpEff using <code>-d</code> (debug) command line option to get detailed messages for each protein sequence comparison.
+The rules used for protein sequence comparison are:</p>
+<ul>
+<li>Comparison is case-insensitive</li>
+<li>Trailing STOP codon (<code>'*'</code>) is removed</li>
+<li>Trailing incomplete codon (<code>'?'</code>) is removed</li>
+<li>Leading incomplete codons (<code>'?'</code>) are removed</li>
+</ul>
+<p>If these comparisons fails, further attempts are made:</p>
+<ul>
+<li>Replace "unknown" codon characters: Codons using old <code>'X'</code> characters are replaced by newer <code>'?'</code> characters</li>
+<li>If any of the sequences only differ by the first codon, they are considered equal (the start codon is translates as 'Met' even when the codon code translates to another Amino acid)</li>
+<li>Replace rare amino acids, which often tranlate as stop codons in the middle of the sequence: E.g. replace <code>'*'</code> by <code>'U'</code></li>
+<li>Try replacing unknown aminco acids (<code>'?'</code>) by the ones at the same position in the protein sequence from the FASTA file</li>
+</ul>
+<p>If after all these attempts the protein sequence still do not match, they are considered "not equal".</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>You can run SnpEff using <code>-d</code> (debug) command line option to get detailed messages for each protein sequence comparison.
 The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.</p>
+</div>
 <h3 id="troubleshooting-database-builds">Troubleshooting Database builds</h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
