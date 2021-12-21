@@ -93,10 +93,10 @@ public class SnpEff implements CommandLine {
 
 	// Version info
 	public static final String SOFTWARE_NAME = "SnpEff";
-	public static final String REVISION = "f";
+	public static final String REVISION = "";
 	public static final String BUILD = Gpr.compileTimeStamp(SnpEff.class);
 	public static final String BUILD_DATE = Gpr.compileDate(SnpEff.class);
-	public static final String VERSION_MAJOR = "5.0";
+	public static final String VERSION_MAJOR = "5.1";
 	public static final String VERSION_SHORT = VERSION_MAJOR + REVISION;
 	public static final String VERSION_BUILD = VERSION_SHORT + " (build " + BUILD + ")";
 	public static final String VERSION_AUTHOR = VERSION_BUILD + ", by " + Pcingola.BY;

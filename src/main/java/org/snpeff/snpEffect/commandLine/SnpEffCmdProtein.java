@@ -43,6 +43,7 @@ public class SnpEffCmdProtein extends SnpEff {
 	boolean checkNumOk = true;
 	boolean codonTables;
 	boolean storeAlignments; // Store alignments (used for some test cases)
+	double maxErrorRate = MAX_ERROR_RATE; // Maximum acceptable error rate
 	int totalErrors = 0;
 	int totalOk = 0;
 	int totalWarnings = 0;
@@ -118,37 +119,41 @@ public class SnpEffCmdProtein extends SnpEff {
 	/**
 	 * Check proteins using all possible codon tables
 	 */
-	void checkCodonTables() {
+	boolean checkCodonTables() {
 		if (verbose) Log.info("Comparing Proteins...");
 
 		createTrByChromo(); // Create lists of transcripts by chromosome
 
 		// For each chromosome...
+		var ok = true;
 		for (Chromosome chromo : genome) {
 			String chr = chromo.getId();
 
 			// Check against each codon table
 			for (CodonTable codonTable : CodonTables.getInstance()) {
 				setCodonTable(chromo, codonTable);
-				proteinCompare(chr, false, false);
+				var errorRate = proteinCompare(chr, false, false);
+				ok |= (errorRate < maxErrorRate);
 			}
 		}
 
 		if (verbose) Log.info("done");
+		return ok;
 	}
 
 	/**
 	 * Check proteins
 	 */
-	void checkProteins() {
+	boolean checkProteins() {
 		if (verbose) Log.info("Comparing Proteins...");
 
 		if (codonTables) {
 			// Compare proteins using ALL codon tables
-			checkCodonTables();
+			return checkCodonTables();
 		} else {
 			// Compare proteins
-			proteinCompare(null, true, true);
+			var errorRate = proteinCompare(null, true, true);
+			return errorRate <= maxErrorRate;
 		}
 	}
 
@@ -553,9 +558,7 @@ public class SnpEffCmdProtein extends SnpEff {
 		loadConfig(); // Load config
 		if (proteinByTrId == null) readProteinFile(); // Read proteins
 		loadDb(); // Load database
-		checkProteins(); // Compare proteins
-
-		return true;
+		return checkProteins(); // Compare proteins
 	}
 
 	/**
