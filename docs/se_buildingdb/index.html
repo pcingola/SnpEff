@@ -1697,6 +1697,10 @@ java -Xmx20g -jar snpEff.jar build -v GRCh37.70 2&gt;&amp;1 | tee GRCh37.70.buil
 <li>building via GFT/GFF/RefSeq: A CDS sequences FASTA file is available.</li>
 <li>building via GenBank file: CDS sequences are available within the GenBank file</li>
 </ul>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>You can disable this check unsing command line option <code>-noCheckCds</code></p>
+</div>
 <p>FASTA cds file format:</p>
 <ul>
 <li>The file name should be <code>cds.fa</code> (or <code>cds.fa.gz</code> if compressed)</li>
@@ -1740,6 +1744,10 @@ When building a database, SnpEff will also try to check Protein sequences for al
 <li>building via GFT/GFF/RefSeq: A protein sequences FASTA file is available.</li>
 <li>building via GenBank file: protein sequences are available within the GenBank file</li>
 </ul>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>You can disable this check unsing command line option <code>-noCheckProtein</code></p>
+</div>
 <p>FASTA protein file:</p>
 <ul>
 <li>The file name should be <code>protein.fa</code> (or <code>protein.fa.gz</code> if compressed)</li>

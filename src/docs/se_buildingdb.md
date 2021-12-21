@@ -335,6 +335,9 @@ When building a database, SnpEff will try to check CDS sequences for all transcr
 - building via GFT/GFF/RefSeq: A CDS sequences FASTA file is available.
 - building via GenBank file: CDS sequences are available within the GenBank file
 
+!!! info
+    You can disable this check unsing command line option `-noCheckCds`
+
 FASTA cds file format:
 
 - The file name should be `cds.fa` (or `cds.fa.gz` if compressed)
@@ -378,6 +381,9 @@ When building a database, SnpEff will also try to check Protein sequences for al
 
 - building via GFT/GFF/RefSeq: A protein sequences FASTA file is available.
 - building via GenBank file: protein sequences are available within the GenBank file
+
+!!! info
+    You can disable this check unsing command line option `-noCheckProtein`
 
 FASTA protein file:
 
