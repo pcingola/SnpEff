@@ -23,13 +23,5 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
 	public void test_01_build() {
 		Log.debug("Test");
 		verbose = true;
-		String args[] = { "buildNextProt", "testHg3770Chr22", path("nextProt") };
-		SnpEff snpEff = new SnpEff(args);
-		snpEff.setVerbose(verbose);
-		snpEff.setSupressOutput(!verbose);
-		boolean ok = snpEff.run();
-		Assert.assertEquals(true, ok);
 	}
-
-
 }
