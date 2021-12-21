@@ -52,6 +52,7 @@ public class SnpEffCmdBuild extends SnpEff {
      * @return: true if at least one check (cds or protein) is successful
      */
     boolean checkDb(SnpEffPredictorFactory snpEffectPredictorFactory) {
+        Log.debug("checkCds: " + checkCds + ", checkProtein: " + checkProtein);
         return (checkCds && checkDbCds(snpEffectPredictorFactory)) // Check CDS sequences if enabled
                 || (checkProtein && checkDbProtein(snpEffectPredictorFactory)) // Check protein sequences if enabled
                 || (!checkCds && !checkProtein); // If both are disabled, we "pass" the no test
@@ -75,7 +76,7 @@ public class SnpEffCmdBuild extends SnpEff {
             snpEffCmdCds.setCheckNumOk(checkNumOk);
             okCds = snpEffCmdCds.run();
             if (!okCds && verbose) Log.info("\tCDS sequences comparison failed!");
-        } else if (debug) Log.debug("\tOptional file '" + cdsFile + "' not found, nothing done.");
+        } else Log.error("CDS check file '" + cdsFile + "' not found.");
         return okCds;
     }
 
@@ -113,7 +114,7 @@ public class SnpEffCmdBuild extends SnpEff {
                 if (verbose) Log.info("\tProtein sequences comparison failed!");
                 return false;
             }
-        } else if (debug) Log.debug("\tOptional file '" + protFile + "' not found, nothing done.");
+        } else Log.error("Protein check file '" + protFile + "' not found.");
 
         return okProtein;
     }
@@ -290,7 +291,7 @@ public class SnpEffCmdBuild extends SnpEff {
         } catch (Throwable t) {
             // If file does not exists, no problem
             if (verbose)
-                Log.warning(ErrorWarningType.WARNING_FILE_NOT_FOUND, "Cannot read optional protein sequence file '" + proteinsFile + "', nothing done.");
+                Log.warning(ErrorWarningType.WARNING_FILE_NOT_FOUND, "Rare Amino Acid analysis: Cannot read protein sequence file '" + proteinsFile + "', nothing done.");
             if (debug) t.printStackTrace();
         }
     }
@@ -414,7 +415,7 @@ public class SnpEffCmdBuild extends SnpEff {
             // Check database
             var okCheck = checkDb(snpEffectPredictorFactory);
             if (!okCheck) {
-                if (verbose) Log.error("Database check failed.");
+                Log.error("Database check failed.");
                 return false;
             }
 
