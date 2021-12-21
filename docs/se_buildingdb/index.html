@@ -1380,11 +1380,6 @@ In the (unlikely?) event that you need to build one yourself, here we describe h
 <p>Most people do NOT need to build a database, and can safely use a pre-built one.
 So unless you are working with an rare genome you most likely don't need to do it either.</p>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Again, chances are that you DO NOT NEED to build a database.
-Sorry to repeat this, but I cannot tell how many times I get emails asking for help to build database that is already available.</p>
-</div>
 <h3 id="managing-snpeff-databases-manually">Managing SnpEff databases manually</h3>
 <p>SnpEff databases for the most popular genomes are already pre-built and available for you to download.
 So, chances are that you don't need to build a database yourself (this will save you a LOT of work).</p>
@@ -1697,16 +1692,22 @@ cd ~/snpeff
 java -Xmx20g -jar snpEff.jar build -v GRCh37.70 2&gt;&amp;1 | tee GRCh37.70.build
 </code></pre>
 <h3 id="checking-cds-sequences">Checking CDS sequences</h3>
-<p>When building a database, SnpEff will try to check CDS sequences for all transcripts in the database when
-- building via GFT/GFF/RefSeq: A CDS sequences FASTA file is available.
-- building via GenBank file: CDS sequences are available within the GenBank file</p>
-<p>FASTA cds file format:
-- The file name should be <code>cds.fa</code> (or <code>cds.fa.gz</code> if compressed)
-- Each transcript should have one CDS sequence
-- Each FASTA header has the transcript ID either:
-    - The header contains only the transcript ID
-    - The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these
-    - Some example sequences with valid header examples:</p>
+<p>When building a database, SnpEff will try to check CDS sequences for all transcripts in the database when</p>
+<ul>
+<li>building via GFT/GFF/RefSeq: A CDS sequences FASTA file is available.</li>
+<li>building via GenBank file: CDS sequences are available within the GenBank file</li>
+</ul>
+<p>FASTA cds file format:</p>
+<ul>
+<li>The file name should be <code>cds.fa</code> (or <code>cds.fa.gz</code> if compressed)</li>
+<li>Each transcript should have one CDS sequence</li>
+<li>Each FASTA header has the transcript ID either:<ul>
+<li>The header contains only the transcript ID</li>
+<li>The header contains Transcript ID and maybe other IDs separated by either spaces, commas, colon, dots, equal sign, or some combination of these</li>
+<li>Some example sequences with valid header examples:</li>
+</ul>
+</li>
+</ul>
 <pre><code>&gt;ENST00000448914
 ACTGGGGGATACG
 
@@ -1714,16 +1715,24 @@ ACTGGGGGATACG
 ACTGGGGGATACG
 </code></pre>
 <p>CSD checking output.
-When run using the <code>-v</code> (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character
-- <code>+</code>: OK, the CDS sequence matches the one predicted by SnpEff
-- <code>.</code>: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the 
-- <code>*</code>: Error. The CDS sequence from inferred from SnpEff's database and the one provided in the CDS file do not match.
-After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:</p>
+When run using the <code>-v</code> (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character</p>
+<ul>
+<li><code>+</code>: OK, the CDS sequence matches the one predicted by SnpEff</li>
+<li><code>.</code>: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the </li>
+<li><code>*</code>: Error. The CDS sequence from inferred from SnpEff's database and the one provided in the CDS file do not match.</li>
+</ul>
+<p>After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:</p>
 <pre><code>CDS check:  GRCh38.86   OK: 94384   Warnings: 22766 Not found: 103618   Errors: 0   Error percentage: 0.0%
 </code></pre>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <p>As a "rule of the thumb", you should not get more than 2% or 3% of errors.</p>
-<p>Debugging. You can run SnpEff using <code>-d</code> (debug) command line option to get detailed messages for each CDS sequence comparison.
+</div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p><strong>Debugging:</strong> You can run SnpEff using <code>-d</code> (debug) command line option to get detailed messages for each CDS sequence comparison.
 The message shows the transcript ID, CDS sequence inferred by SnpEff's, and the CDS sequence from the FASTA file, as well as the places where they differ.  </p>
+</div>
 <h3 id="checking-protein-sequences">Checking Protein sequences</h3>
 <p>This is very similar to the CDS checking in the previous sub-section.
 When building a database, SnpEff will also try to check Protein sequences for all transcripts when</p>
@@ -1755,11 +1764,13 @@ RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
 ...
 </code></pre>
 <p><strong>Protein checking output:</strong></p>
-<p>When run using the <code>-v</code> (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character:
-- <code>+</code>: OK, the protein sequence matches the one predicted by SnpEff
-- <code>.</code>: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the
-- <code>*</code>: Error. The Protein sequence from inferred from SnpEff's database and the one provided in the protein file do not match.
-  After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:</p>
+<p>When run using the <code>-v</code> (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character:</p>
+<ul>
+<li><code>+</code>: OK, the protein sequence matches the one predicted by SnpEff</li>
+<li><code>.</code>: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the</li>
+<li><code>*</code>: Error. The Protein sequence from inferred from SnpEff's database and the one provided in the protein file do not match.</li>
+</ul>
+<p>After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:</p>
 <pre><code>Protein check:  GRCh38.86       OK: 94371       Not found: 0    Errors: 13      Error percentage: 0.01377352093575182%
 </code></pre>
 <div class="admonition warning">
@@ -1784,7 +1795,7 @@ The rules used for protein sequence comparison are:</p>
 <p>If after all these attempts the protein sequence still do not match, they are considered "not equal".</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>You can run SnpEff using <code>-d</code> (debug) command line option to get detailed messages for each protein sequence comparison.
+<p><strong>Debugging:</strong> You can run SnpEff using <code>-d</code> (debug) command line option to get detailed messages for each protein sequence comparison.
 The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.</p>
 </div>
 <h3 id="troubleshooting-database-builds">Troubleshooting Database builds</h3>

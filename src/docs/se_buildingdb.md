@@ -13,10 +13,6 @@ In the (unlikely?) event that you need to build one yourself, here we describe h
     Most people do NOT need to build a database, and can safely use a pre-built one.
     So unless you are working with an rare genome you most likely don't need to do it either.
 
-!!! warning
-    Again, chances are that you DO NOT NEED to build a database.
-    Sorry to repeat this, but I cannot tell how many times I get emails asking for help to build database that is already available.
-
 ### Managing SnpEff databases manually
 
 SnpEff databases for the most popular genomes are already pre-built and available for you to download.
@@ -335,10 +331,12 @@ java -Xmx20g -jar snpEff.jar build -v GRCh37.70 2>&1 | tee GRCh37.70.build
 ### Checking CDS sequences
 
 When building a database, SnpEff will try to check CDS sequences for all transcripts in the database when
+
 - building via GFT/GFF/RefSeq: A CDS sequences FASTA file is available.
 - building via GenBank file: CDS sequences are available within the GenBank file
 
 FASTA cds file format:
+
 - The file name should be `cds.fa` (or `cds.fa.gz` if compressed)
 - Each transcript should have one CDS sequence
 - Each FASTA header has the transcript ID either:
@@ -355,17 +353,23 @@ ACTGGGGGATACG
 
 CSD checking output.
 When run using the `-v` (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character
+
 - `+`: OK, the CDS sequence matches the one predicted by SnpEff
 - `.`: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the 
 - `*`: Error. The CDS sequence from inferred from SnpEff's database and the one provided in the CDS file do not match.
+
 After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:
+
 ```
 CDS check:	GRCh38.86	OK: 94384	Warnings: 22766	Not found: 103618	Errors: 0	Error percentage: 0.0%
 ```
-As a "rule of the thumb", you should not get more than 2% or 3% of errors.
 
-Debugging. You can run SnpEff using `-d` (debug) command line option to get detailed messages for each CDS sequence comparison.
-The message shows the transcript ID, CDS sequence inferred by SnpEff's, and the CDS sequence from the FASTA file, as well as the places where they differ.  
+!!! warning
+    As a "rule of the thumb", you should not get more than 2% or 3% of errors.
+
+!!! info
+    **Debugging:** You can run SnpEff using `-d` (debug) command line option to get detailed messages for each CDS sequence comparison.
+    The message shows the transcript ID, CDS sequence inferred by SnpEff's, and the CDS sequence from the FASTA file, as well as the places where they differ.  
 
 ### Checking Protein sequences
 
@@ -400,10 +404,12 @@ RTSSVLGMSVESAPAVEEEKGEELEQKEKEKEEDTSGNTTHSLGAEDTASSQLGFGVLEL
 **Protein checking output:**
 
 When run using the `-v` (verbose) command line option, for each transcript in the FASTA file, SnpEff will output one character:
+
 - `+`: OK, the protein sequence matches the one predicted by SnpEff
 - `.`: Missing transcript. SnpEff could not find the transcript ID from the FASTA file. This might indicate a problem parsing the FASTA file header to find the
 - `*`: Error. The Protein sequence from inferred from SnpEff's database and the one provided in the protein file do not match.
-  After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:
+
+After these line a "Summary statistics" line shows the total number of FASTA entries checked, as well as the number of errors (and a percentage), e.g.:
 ```
 Protein check:  GRCh38.86       OK: 94371       Not found: 0    Errors: 13      Error percentage: 0.01377352093575182%
 ```
@@ -429,7 +435,7 @@ If these comparisons fails, further attempts are made:
 If after all these attempts the protein sequence still do not match, they are considered "not equal".
 
 !!! info
-    You can run SnpEff using `-d` (debug) command line option to get detailed messages for each protein sequence comparison.
+    **Debugging:** You can run SnpEff using `-d` (debug) command line option to get detailed messages for each protein sequence comparison.
     The message shows the transcript ID, protein sequence inferred by SnpEff's, and the protein sequence from the FASTA file, as well as the places where they differ.
 
 ### Troubleshooting Database builds
