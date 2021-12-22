@@ -53,8 +53,8 @@ public class NextProtMarkerFactory {
         // Sanity check: Compare protein sequence
         if (!isProteinMatch(tr, isoform, location)) return null;
 
-        if (count++ % 1000 == 0)
-            Log.debug("ANNOTATION: " + annotation.name() + "\t" + trId + "\t" + location.begin + "\t" + location.end);
+        if (count++ % 1000 == 0 && config.isVerbose())
+            Log.info("ANNOTATION: " + annotation.name() + "\t" + trId + "\t" + location.begin + "\t" + location.end);
 
         // Analysis of sequence conservation
         addConservation(isoform, annotation, location, tr);
