@@ -25,9 +25,29 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
 	}
 
 	@Test
-	public void test_05_ann_disulphide_bond() {
-		// TODO: Parse disulphide bond
+	public void test_01_build() {
 		Log.debug("Test");
-		throw new RuntimeException("Unimplemented test");
+		String args[] = { "buildNextProt", "testHg3770Chr22", path("nextProt") };
+		SnpEff snpEff = new SnpEff(args);
+		snpEff.setVerbose(verbose);
+		snpEff.setSupressOutput(!verbose);
+		boolean ok = snpEff.run();
+		Assert.assertEquals(true, ok);
+	}
+
+	@Test
+	public void test_05_ann_disulphide_bond() {
+		Log.debug("Test");
+		verbose = true;
+		// Note: Normally this EffectImpact should be 'MODERATE' impact, but
+		// since the database we build in test_01_build is small, there are
+		// not enough stats.
+		// Gene: IGLV4-69, Transcript: ENST00000390282
+		checkNextProt("testHg3770Chr22" //
+				, path("test_nextProt_05.vcf") //
+				, "modified-residue_Phosphoserine" //
+				, VariantEffect.EffectImpact.MODERATE //
+				, true //
+		);
 	}
 }

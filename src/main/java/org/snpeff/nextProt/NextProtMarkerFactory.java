@@ -16,7 +16,6 @@ import java.util.Map;
  * @author Pablo Cingolani
  */
 public class NextProtMarkerFactory {
-
     int count;
     Config config;
     Genome genome;
@@ -60,13 +59,10 @@ public class NextProtMarkerFactory {
         // Analysis of sequence conservation
         addConservation(isoform, annotation, location, tr);
 
-        // Add NextProt annotation
-        Markers newmarkers = createNextProt(tr, annotation, location);
+        // Create and add all nextProt markers
+        markers.add(nextProt(tr, annotation, location));
 
-        // Add all new markers
-        markers.add(newmarkers);
-
-        return newmarkers;
+        return markers;
     }
 
     /**
@@ -125,38 +121,6 @@ public class NextProtMarkerFactory {
         sequenceConservation.analyzeSequenceConservation(markers);
     }
 
-    /**
-     * Create a list of NextProt markers according to this annotation
-     */
-    Markers createNextProt(Transcript tr, NextProtXmlAnnotation annotation, Location location) {
-        // Get chromosome location
-        int start = -1, end = -1;
-        if (tr.isStrandPlus()) {
-            start = tr.aaNumber2Pos(location.begin);
-            end = tr.aaNumber2Pos(location.end + 1) - 1;
-        } else {
-            end = tr.aaNumber2Pos(location.begin);
-            start = tr.aaNumber2Pos(location.end + 1) - 1;
-        }
-
-        // TODO: Marker needs to be split across exon junction
-        Markers newmarkers = new Markers();
-
-        if (location.isInteraction()) {
-            // Interaction
-            NextProt nextProtStart = new NextProt(tr, start, start, annotation.accession, annotation.name());
-            NextProt nextProtEnd = new NextProt(tr, end, end, annotation.accession, annotation.name());
-            newmarkers.add(nextProtStart);
-            newmarkers.add(nextProtEnd);
-        } else {
-            // Convert from AA number to genomic coordinates
-            NextProt nextProt = new NextProt(tr, start, end, annotation.accession, annotation.name());
-            newmarkers.add(nextProt);
-        }
-
-        return newmarkers;
-    }
-
     public Markers getMarkers() {
         return markers;
     }
@@ -207,6 +171,49 @@ public class NextProtMarkerFactory {
         }
 
         return true;
+    }
+
+    /**
+     * Create a list of NextProt markers according to this annotation
+     */
+    public Markers nextProt(Transcript tr, NextProtXmlAnnotation annotation, Location location) {
+        if (location.isInteraction()) {
+            // Interaction, we need to add two (sets or) markers, one on each side of the interaction (i.e. location.begin and location.end)
+            Markers nextprotMarkers = new Markers();
+            nextprotMarkers.add(nextProt(tr, annotation.accession, annotation.name(), location.begin, location.begin));
+            nextprotMarkers.add(nextProt(tr, annotation.accession, annotation.name(), location.end, location.end));
+            return nextprotMarkers;
+        } else {
+            return nextProt(tr, annotation.accession, annotation.name(), location.begin, location.end);
+        }
+    }
+
+    /**
+     * Create a single NextProt marker
+     */
+    public Markers nextProt(Transcript tr, String accession, String name, int aaStart, int aaEnd) {
+        int start = -1, end = -1;
+
+        // Find the start and end coordiantes from AA numbers
+        if (tr.isStrandPlus()) { // Plus strand
+            start = tr.codonNumber2Pos(aaStart)[0]; // Start codon's left-most base
+            end = tr.codonNumber2Pos(aaEnd)[2]; // End codon's right-most base
+        } else { // Minus strand
+            start = tr.codonNumber2Pos(aaEnd)[0]; // End codon's left-most base
+            end = tr.codonNumber2Pos(aaStart)[2]; // Start codon's right-most base
+        }
+        // Create an interval
+        Marker marker = new Marker(tr.getChromosome(), start, end);
+
+        // The interval could span multiple exons, create one marker for each exon it intersects
+        Markers exons = new Markers();
+        exons.addAll(tr.getExons());
+        var exonsIntersected = exons.intersect(marker);
+        Markers nextProtMarkers = new Markers();
+        // Create one nextProt marker for each intersection with a different exon
+        for (Marker m : exonsIntersected)
+            nextProtMarkers.add(new NextProt(tr, m.getStart(), m.getEnd(), accession, name));
+        return nextProtMarkers;
     }
 
     /**
