@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
@@ -36,8 +37,8 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		// are not enough stats.
 		checkNextProt("testHg3770Chr22" //
 				, path("test_nextProt_02.vcf")//
-				, "amino_acid_modification:N-acetylglycine"//
-				, EffectImpact.LOW //
+				, "modified-residue_N-acetylglycine"//
+				, VariantEffect.EffectImpact.LOW //
 				, true //
 		);
 	}
@@ -50,8 +51,8 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		// not enough stats.
 		checkNextProt("testHg3770Chr22" //
 				, path("test_nextProt_02.vcf") //
-				, "amino_acid_modification:N-acetylglycine" //
-				, EffectImpact.LOW //
+				, "modified-residue_N-acetylglycine" //
+				, VariantEffect.EffectImpact.LOW //
 				, false //
 		);
 	}
@@ -64,8 +65,8 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		// not enough stats.
 		checkNextProt("testHg3770Chr22" //
 				, path("test_nextProt_03.vcf") //
-				, "amino_acid_modification:Phosphoserine" //
-				, EffectImpact.MODERATE //
+				, "modified-residue_Phosphoserine" //
+				, VariantEffect.EffectImpact.MODERATE //
 				, true //
 		);
 	}
@@ -78,8 +79,8 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		// not enough stats.
 		checkNextProt("testHg3770Chr22" //
 				, path("test_nextProt_03.vcf") //
-				, "amino_acid_modification:Phosphoserine" //
-				, EffectImpact.MODERATE //
+				, "modified-residue_Phosphoserine" //
+				, VariantEffect.EffectImpact.MODERATE //
 				, false //
 		);
 	}
@@ -101,8 +102,8 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 	}
 
 	@Test
-	public void test_05_parse() {
-		// TODO: Parse glycosilation site
+	public void test_05_ann_disulphide_bond() {
+		// TODO: Parse disulphide bond
 		Log.debug("Test");
 		throw new RuntimeException("Unimplemented test");
 	}
