@@ -103,37 +103,28 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 
 	@Test
 	public void test_05_ann_disulphide_bond() {
-		// TODO: Parse disulphide bond
 		Log.debug("Test");
-		throw new RuntimeException("Unimplemented test");
-	}
-
-	@Test
-	public void test_06_parse() {
-		// TODO: Parse single AA annotation spanning an exon boundary
-		Log.debug("Test");
-		throw new RuntimeException("Unimplemented test");
-	}
-
-	@Test
-	public void test_07_parse() {
-		// TODO: Parse multiple AA annotation spanning two exon boundaries
-		Log.debug("Test");
-		throw new RuntimeException("Unimplemented test");
-	}
-
-	@Test
-	public void test_08_parse() {
-		// TODO: Parse disulphide bond annotations (start end is not an interval, it's the interaction points)
-		Log.debug("Test");
-		throw new RuntimeException("Unimplemented test");
-	}
-
-	@Test
-	public void test_09() {
-		// TODO: Test annotaion
-		Log.debug("Test");
-		throw new RuntimeException("Unimplemented test");
+		// Disufide bond spanning across an intron
+		// Gene: GGT1, Transcript: ENST00000400382
+		//		1:	22	25016879	25016879	NextProt	null
+		//		2:	22	25016485	25016486	NextProt	null
+		//		3:	22	25016889	25016891	NextProt	null
+		//
+		//		Annotation 'disulfide-bond'
+		//		Description: null
+		//		null
+		//		LocationTargetIsoformInteraction(NX_P19440-1, 191, 195)
+		//		LocationTargetIsoformInteraction(NX_P19440-2, 191, 195)
+		//
+		//		TR: ENST00000400382
+		//		Gene: GGT1
+		checkNextProt("testHg3770Chr22" //
+				, path("test_nextProt_05.vcf") //
+				, "disulfide-bond" //
+				, VariantEffect.EffectImpact.MODERATE //
+				, true //
+				, "ENST00000400382" //
+		);
 	}
 
 	@Test

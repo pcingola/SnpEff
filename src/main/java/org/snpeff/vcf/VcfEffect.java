@@ -955,12 +955,16 @@ public class VcfEffect {
 		} else if (gene != null) {
 			geneName = gene.getGeneName();
 			geneId = gene.getId();
+
+			// Transcript ID
+			if (tr != null)  transcriptId = tr.getId();
 		} else if (marker instanceof Intergenic) {
 			geneName = ((Intergenic) marker).getName();
 			geneId = marker.getId();
 		} else {
 			geneName = geneId = "";
 		}
+
 
 		// Feature type & ID
 		featureType = featureId = "";
@@ -989,7 +993,7 @@ public class VcfEffect {
 				featureId = marker.getId();
 			} else if (tr != null) {
 				featureType = "transcript";
-				featureId = transcriptId = tr.getId();
+				featureId = tr.getId();
 				// Append version number (this is recommended by HGVS specification)
 				if (tr.getVersion() != null && !tr.getVersion().isEmpty()) featureId += "." + tr.getVersion();
 			} else {
@@ -1000,7 +1004,7 @@ public class VcfEffect {
 
 		// Biotype
 		if (tr != null) {
-			if ((tr.getBioType() != null) && (tr.getBioType() != null)) {
+			if (tr.getBioType() != null)  {
 				bioType = tr.getBioType();
 			} else {
 				// No biotype? Add protein_coding of we know it is.
@@ -1068,7 +1072,6 @@ public class VcfEffect {
 
 			errorsWarnings = err.toString();
 		}
-
 	}
 
 	public void setAa(String aa) {

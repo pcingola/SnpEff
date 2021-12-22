@@ -1170,6 +1170,10 @@ public class Transcript extends IntervalAndSubIntervals<Exon> {
         return firstCodingExon;
     }
 
+    public Gene getGene() {
+        return (Gene) findParent(Gene.class);
+    }
+
     public TranscriptSupportLevel getTranscriptSupportLevel() {
         return transcriptSupportLevel;
     }
