@@ -79,11 +79,9 @@ public class NextProt extends Marker {
 
 		// Assess effect impact
 		// TODO: This should depend on whether the effect is non-synonymous
-		EffectImpact effectImpact = EffectImpact.MODIFIER;
-		if (isHighlyConservedAaSequence()) effectImpact = EffectImpact.MODERATE;
-		else effectImpact = EffectImpact.LOW;
+		EffectImpact effectImpact = isHighlyConservedAaSequence() ? EffectImpact.MODERATE : EffectImpact.LOW;
 
-		variantEffects.add(variant, this, type, effectImpact, "");
+		variantEffects.add(variant, this, type, effectImpact, name);
 		return true;
 	}
 

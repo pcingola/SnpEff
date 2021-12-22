@@ -125,13 +125,18 @@ public class NextProtMarkerFactory {
         sequenceConservation.analyzeSequenceConservation(markers);
     }
 
+    /**
+     * Create a list of NextProt markers according to this annotation
+     */
     Markers createNextProt(Transcript tr, NextProtXmlAnnotation annotation, Location location) {
         // Get chromosome location
-        int start = tr.aaNumber2Pos(location.begin);
-        int end = tr.aaNumber2Pos(location.end);
-        if (start > end) { // Swap if not ordered
-            start = tr.aaNumber2Pos(location.end);
+        int start = -1, end = -1;
+        if (tr.isStrandPlus()) {
+            start = tr.aaNumber2Pos(location.begin);
+            end = tr.aaNumber2Pos(location.end + 1) - 1;
+        } else {
             end = tr.aaNumber2Pos(location.begin);
+            start = tr.aaNumber2Pos(location.end + 1) - 1;
         }
 
         // TODO: Marker needs to be split across exon junction

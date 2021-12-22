@@ -280,7 +280,7 @@ public class VariantEffect implements Cloneable, Comparable<VariantEffect> {
 		// Create effect string
 		if (!codonEffect.isEmpty()) e = codonEffect;
 		else if (isRegulation()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + ((Regulation) marker).getName() + "]";
-		else if (isNextProt()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + VcfEntry.vcfInfoValueSafe(((NextProt) marker).getId()) + "]"; // Make sure this 'id' is not dangerous in a VCF 'EFF' field
+		else if (isNextProt()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + VcfEntry.vcfInfoValueSafe(((NextProt) marker).getName()) + "]"; // Make sure this 'id' is not dangerous in a VCF 'EFF' field
 		else if (isMotif()) return getEffectTypeString(useSeqOntology, useFirstEffect) + "[" + ((Motif) marker).getPwmId() + ":" + ((Motif) marker).getPwmName() + "]";
 		else if (isCustom()) {
 			// Custom interval

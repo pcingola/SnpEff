@@ -975,7 +975,7 @@ public class VcfEffect {
 				featureType = reg.getType() + formatVersion.separator() + reg.getName() + ":" + reg.getRegulationType();
 				featureId = marker.getId();
 			} else if (marker instanceof NextProt) {
-				featureType = marker.getId();
+				featureType = ((NextProt) marker).getName();
 				featureId = ((NextProt) marker).getTranscriptId();
 			} else if (marker instanceof Motif) {
 				Motif motif = (Motif) marker;
