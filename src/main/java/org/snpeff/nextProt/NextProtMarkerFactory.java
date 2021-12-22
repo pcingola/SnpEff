@@ -182,9 +182,6 @@ public class NextProtMarkerFactory {
             Markers nextprotMarkers = new Markers();
             nextprotMarkers.add(nextProt(tr, annotation.accession, annotation.name(), location.begin, location.begin));
             nextprotMarkers.add(nextProt(tr, annotation.accession, annotation.name(), location.end, location.end));
-            if(nextprotMarkers.size()>2) {
-                Log.info("Markers: " + nextprotMarkers + "\n\t" + annotation + "\n\tTR: " + tr.getId() + "\n\tGene: " + tr.getGene().getGeneName());
-            }
             return nextprotMarkers;
         } else {
             return nextProt(tr, annotation.accession, annotation.name(), location.begin, location.end);

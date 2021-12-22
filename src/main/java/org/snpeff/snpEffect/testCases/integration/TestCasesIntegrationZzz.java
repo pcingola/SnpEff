@@ -21,6 +21,7 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
     @Test
     public void test_01_build() {
         Log.debug("Test");
+        verbose = true;
         String[] args = {"buildNextProt", "testHg3770Chr22", path("nextProt")};
         SnpEff snpEff = new SnpEff(args);
         snpEff.setVerbose(verbose);
@@ -30,31 +31,18 @@ public class TestCasesIntegrationZzz extends TestCasesIntegrationBase {
     }
 
     @Test
-    public void test_06_ann_disulphide_bond() {
+    public void test_10() {
+        // TODO: Test annotation not highly conserved (synonymous change) => EffectImpact.MODIFIER;
         Log.debug("Test");
         verbose = true;
-        // Note: Normally this EffectImpact should be 'MODERATE' impact, but
-        // since the database we build in test_01_build is small, there are
-        // not enough stats.
-        // Gene: GGT1, Transcript: ENST00000400382
-		//		1:	22	25016879	25016879	NextProt	null
-		//		2:	22	25016485	25016486	NextProt	null
-		//		3:	22	25016889	25016891	NextProt	null
-		//
-		//		Annotation 'disulfide-bond'
-		//		Description: null
-		//		null
-		//		LocationTargetIsoformInteraction(NX_P19440-1, 191, 195)
-		//		LocationTargetIsoformInteraction(NX_P19440-2, 191, 195)
-		//
-		//		TR: ENST00000400382
-		//		Gene: GGT1
+        // Gene: ODF3B, Transcript: ENST00000329363, modified-residue_Phosphoserine (annotation is always in Amino Acis 'S')
         checkNextProt("testHg3770Chr22" //
-                , path("test_nextProt_05.vcf") //
-                , "disulfide-bond" //
-                , VariantEffect.EffectImpact.MODERATE //
+                , path("test_nextProt_07.vcf") //
+                , "modified-residue_Phosphoserine" //
+                , VariantEffect.EffectImpact.HIGH //
                 , true //
-                , "ENST00000400382" //
+                , "ENST00000329363" //
         );
     }
+
 }

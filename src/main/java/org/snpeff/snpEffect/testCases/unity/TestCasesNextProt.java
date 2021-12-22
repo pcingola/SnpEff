@@ -319,5 +319,18 @@ public class TestCasesNextProt {
         Assert.assertEquals(1901, nextProt2.getEnd());
     }
 
+    @Test
+    public void test_14() {
+        // TODO: Test annotation not highly conserved (synonymous change) => EffectImpact.MODIFIER;
+        Log.debug("Test");
+        throw new RuntimeException("Unimplemented test");
+    }
+
+    @Test
+    public void test_15() {
+        // TODO: Test annotation highly conserved (non-synonymous change) => EffectImpact.HIGH;
+        Log.debug("Test");
+        throw new RuntimeException("Unimplemented test");
+    }
 
 }
