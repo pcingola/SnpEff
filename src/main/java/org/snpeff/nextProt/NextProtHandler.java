@@ -22,8 +22,8 @@ public class NextProtHandler extends DefaultHandler {
 	NextProtXmlAnnotation annotation; // Current annotation
 	String annotationCategory; // Annotation category
 	CvTerm cvTerm; // Controlled vocabulary term
-	NextProtXmlEntry entry; // Current nextprot entry
-	String isoformAccession; // Latest isoform sequence accesssion
+	NextProtXmlEntry entry; // Current NextProt entry
+	String isoformAccession; // Latest iso-form sequence accession
 	NextProtMarkerFactory markersFactory;
 	CountByType missingCategories;
 	Stack<String> stack; // Stack of XML entries

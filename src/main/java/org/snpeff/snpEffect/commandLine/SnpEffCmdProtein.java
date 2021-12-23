@@ -302,7 +302,7 @@ public class SnpEffCmdProtein extends SnpEff {
 			if (proteinReference == null) {
 				if (tr.isProteinCoding()) {
 					status = '.';
-					if (debug) System.err.println("\nWARNING:Cannot find Protein for transcript " + tr.getId());
+					if (debug) Log.warningln("Cannot find Protein for transcript " + tr.getId());
 				}
 			} else if (equals(protein, proteinReference)) {
 				status = '+';
@@ -322,7 +322,7 @@ public class SnpEffCmdProtein extends SnpEff {
 					int score = sw.getAlignmentScore();
 
 					if (debug || onlyOneError) {
-						System.err.println("\nERROR: Proteins do not match for transcript " + tr.getId() //
+						Log.infoln("\nERROR: Proteins do not match for transcript " + tr.getId() //
 								+ "\tStrand:" + (tr.isStrandPlus() ? "+" : "-") //
 								+ "\tExons: " + tr.numChilds() //
 								+ "\n" //
@@ -334,12 +334,12 @@ public class SnpEffCmdProtein extends SnpEff {
 								+ "\tDiff: " + (maxScore - score) //
 								+ "\n" + sw //
 						);
-						System.err.println("Transcript details:\n" + tr);
+						Log.info("Transcript details:\n" + tr);
 					}
 				}
 
 				if (onlyOneError) {
-					System.err.println("Transcript details:\n" + tr);
+					Log.info("Transcript details:\n" + tr);
 					throw new RuntimeException("DIE");
 				}
 			}
@@ -354,10 +354,12 @@ public class SnpEffCmdProtein extends SnpEff {
 			case '+':
 				countOk++;
 				ok = true;
+				if (debug) System.out.println("\nFASTA_PROTEIN_OK\t>" + tr.getId() + "\nFASTA_PROTEIN_OK\t" + proteinReference);
 				break;
 
 			case '*':
 				countErrors++;
+				if (debug) System.out.println("\nFASTA_PROTEIN_ERROR\t>" + tr.getId() + "\nFASTA_PROTEIN_ERROR\t" + proteinReference);
 				break;
 
 			case ' ':

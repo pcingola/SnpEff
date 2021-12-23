@@ -265,7 +265,7 @@ public class IntervalAndSubIntervals<T extends Marker> extends Marker implements
 
 	/**
 	 * Return a collection of sub intervals sorted by start position (if strand is >= 0) or
-	 * by reverse end position (if strans < 0)
+	 * by reverse end position (if strand < 0)
 	 */
 	public synchronized List<T> sortedStrand() {
 		if (sortedStrand != null) return sortedStrand;

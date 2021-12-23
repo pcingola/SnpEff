@@ -207,9 +207,9 @@ public class Genome extends Marker implements Serializable, Iterable<Chromosome>
 		return cytoBands;
 	}
 
-	public String getFastaDir() {
-		return fastaDir;
-	}
+//	public String getFastaDir() {
+//		return fastaDir;
+//	}
 
 	public Genes getGenes() {
 		return genes;

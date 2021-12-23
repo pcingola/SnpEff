@@ -106,7 +106,7 @@ public class SnpEffPredictorFactoryRand extends SnpEffPredictorFactoryGff {
 			String seq = chromoSequence.substring(start, end + 1);
 			if (exon.isStrandMinus()) seq = GprSeq.reverseWc(seq); // Reverse strand? => reverse complement of the sequence
 			exon.setSequence(seq);
-			exon = add(exon);
+			add(exon);
 		}
 
 		// Add UTRs

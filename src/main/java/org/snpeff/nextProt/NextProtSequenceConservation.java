@@ -102,7 +102,7 @@ public class NextProtSequenceConservation {
 		long total = cbt.sum();
 
 		var avgLen = averageAaSeqLength(cbt);
-		Log.info("Category '" + category + "', count: " + cbt.getTotalCount() + ", different sequences: " + cbt.keySet().size() + ", AA sequence length: " + avgLen);
+		if(verbose) Log.info("Category '" + category + "', count: " + cbt.getTotalCount() + ", different sequences: " + cbt.keySet().size() + ", AA sequence length: " + avgLen);
 
 		StringBuilder sb = new StringBuilder();
 		boolean highlyConservedAaSequence = false;
@@ -110,7 +110,7 @@ public class NextProtSequenceConservation {
 		for (String aas : cbt.keysRanked(false)) {
 			long count = cbt.get(aas);
 			double perc = ((double) count) / total;
-			Log.info("\t" + count + "\t" + 100 * perc + "%\t" + "\t" + aas);
+			if(verbose) Log.info("\t" + count + "\t" + 100 * perc + "%\t" + "\t" + aas);
 			if ((perc > HIGHLY_CONSERVED_AA_PERCENT) && (total >= HIGHLY_CONSERVED_AA_COUNT)) highlyConservedAaSequence = true;
 			rank++;
 

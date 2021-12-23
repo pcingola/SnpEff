@@ -1,20 +1,14 @@
 package org.snpeff.nextProt;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
-import org.snpeff.interval.Chromosome;
-import org.snpeff.interval.Gene;
-import org.snpeff.interval.Genome;
-import org.snpeff.interval.Marker;
-import org.snpeff.interval.Markers;
-import org.snpeff.interval.NextProt;
-import org.snpeff.interval.Transcript;
+import org.snpeff.interval.*;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.snpEffect.ErrorWarningType;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Creates Markers from nextprot XML annotations
@@ -22,191 +16,253 @@ import org.snpeff.util.Log;
  * @author Pablo Cingolani
  */
 public class NextProtMarkerFactory {
+    int count;
+    Config config;
+    Genome genome;
+    Markers markers;
+    NextProtSequenceConservation sequenceConservation;
+    Map<String, Transcript> trById;
+    boolean verbose;
 
-	int count;
-	Config config;
-	Genome genome;
-	Markers markers;
-	Map<String, Transcript> trById;
-	NextProtSequenceConservation sequenceConservation;
+    public NextProtMarkerFactory(Config config) {
+        this.config = config;
+        genome = config.getGenome();
+        trById = new HashMap<>();
+        sequenceConservation = new NextProtSequenceConservation();
+        markers = new Markers();
+        addTranscripts();
+        verbose = Config.get().isVerbose();
+    }
 
-	public NextProtMarkerFactory(Config config) {
-		this.config = config;
-		genome = config.getGenome();
-		trById = new HashMap<>();
-		sequenceConservation = new NextProtSequenceConservation();
-		markers = new Markers();
-		addTranscripts();
-	}
+    /**
+     * Create markers and add them
+     *
+     * @return New markers created
+     */
+    public Markers addMarkers(NextProtXmlEntry entry, NextProtXmlIsoform isoform, NextProtXmlAnnotation annotation, Location location, String trId) {
+        if (isoform.getSequence() == null) {
+            if (verbose)
+                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Isoform '" + isoform.getAccession() + "' has no sequence");
+            return null;
+        }
 
-	/**
-	 * Create markers and add them
-	 * @return New markers created
-	 */
-	public Markers addMarkers(NextProtXmlEntry entry, NextProtXmlIsoform isoform, NextProtXmlAnnotation annotation, Location location, String trId) {
-		if (isoform.getSequence() == null) {
-			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Isoform '" + isoform.getAccession() + "' has no sequence");
-			return null;
-		}
+        // Find protein coding transcript
+        var tr = trById.get(trId);
+        if (tr == null) {
+            if (verbose)
+                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + trId + "' not found");
+            return null;
+        }
 
-		// Find protein coding transcript
-		var tr = trById.get(trId);
-		if (tr == null) {
-			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + trId + "' not found");
-			return null;
-		}
+        // Sanity check: Compare protein sequence
+        if (!isProteinMatch(tr, isoform, location)) return null;
 
-		// Sanity check: Compare protein sequence
-		if (!isProteinMatch(tr, isoform, location)) return null;
+        if (verbose && count++ % 1000 == 0)
+            Log.info("ANNOTATION: " + annotation.name() + "\t" + trId + "\t" + location.begin + "\t" + location.end);
 
-		// Convert from AA number to genomic coordinates
-		int aaStart = location.begin;
-		int aaEnd = location.end;
-		int start = tr.aaNumber2Pos(aaStart);
-		int end = tr.aaNumber2Pos(aaEnd);
-		var aaSubSeq = isoform.getSequence().substring(aaStart, aaEnd + 1);
+        // Analysis of sequence conservation
+        addConservation(isoform, annotation, location, tr);
 
-		if (count++ % 1000 == 0) Log.debug("ANNOTATION: " + annotation.name() + "\t" + trId + "\t" + aaStart + "\t" + aaEnd + "\t'" + aaSubSeq + "'");
+        // Create and add all nextProt markers
+        markers.add(nextProt(tr, annotation, location));
 
-		// Analysis of sequence conservation
-		var name = annotation.name();
-		sequenceConservation.add(name, aaSubSeq);
+        return markers;
+    }
 
-		// Add NextProt annotation
-		NextProt nextProt = new NextProt(tr, start, end, annotation.accession, name);
+    /**
+     * Add annotation for conservation analysis
+     */
+    void addConservation(NextProtXmlIsoform isoform, NextProtXmlAnnotation annotation, Location location, Transcript tr) {
+        int aaStart = location.begin;
+        int aaEnd = location.end;
+        int start = tr.aaNumber2Pos(aaStart);
+        int end = tr.aaNumber2Pos(aaEnd);
 
-		// TODO: Marker needs to be split across exon junction
-		Markers newmarkers = new Markers();
-		newmarkers.add(nextProt);
+        if (location.isInteraction()) {
+            // In this case we need to add both sides of the interaction separately
+            var seq = isoform.getSequence();
+            var aaSubSeq1 = seq.substring(aaStart, aaStart + 1);
+            var aaSubSeq2 = seq.substring(aaEnd, aaEnd + 1);
+            var name = annotation.name();
+            sequenceConservation.add(name, aaSubSeq1);
+            sequenceConservation.add(name, aaSubSeq2);
+        } else if (location.isIsoform()) {
+            // Add the sequences of AAs in the [start, end] interval
+            var aaSubSeq = isoform.getSequence().substring(aaStart, aaEnd + 1);
+            var name = annotation.name();
+            sequenceConservation.add(name, aaSubSeq);
+        }
+    }
 
-		// Add all new markers
-		markers.add(newmarkers);
+    /**
+     * Add a transcript by ID mapping
+     */
+    void addTr(Transcript tr) {
+        var trId = tr.getId();
+        trById.put(trId, tr);
 
-		return newmarkers;
-	}
+        // Remove transcript version (if any)
+        if (trId.indexOf('.') > 0) {
+            trId = trId.split("\\.")[0];
+            trById.put(trId, tr);
+        }
+    }
 
-	/**
-	 * Add a transcript by ID mapping
-	 */
-	void addTr(Transcript tr) {
-		var trId = tr.getId();
-		trById.put(trId, tr);
+    /**
+     * Build transcript map
+     */
+    void addTranscripts() {
+        for (Gene gene : genome.getGenes())
+            for (Transcript tr : gene)
+                addTr(tr);
+    }
 
-		// Remove transcript version (if any)
-		if (trId.indexOf('.') > 0) {
-			trId = trId.split("\\.")[0];
-			trById.put(trId, tr);
-		}
-	}
+    /**
+     * Sequence conservations analysis.
+     * Tag highly conserved NextProt markers
+     */
+    public void conservation() {
+        sequenceConservation.analyzeSequenceConservation(markers);
+    }
 
-	/**
-	 * Build transcript map
-	 */
-	void addTranscripts() {
-		for (Gene gene : genome.getGenes())
-			for (Transcript tr : gene)
-				addTr(tr);
-	}
+    public Markers getMarkers() {
+        return markers;
+    }
 
-	/**
-	 * Sequence conservations analysis.
-	 * Tag highly conserved NextProt markers
-	 */
-	public void conservation() {
-		sequenceConservation.analyzeSequenceConservation(markers);
-	}
+    /**
+     * Are the AA sequences from transcript and Isoform equal?
+     */
+    boolean isProteinMatch(Transcript tr, NextProtXmlIsoform isoform, Location location) {
+        // Check transcript protein sequence
+        if (!tr.isProteinCoding()) {
+            if (verbose)
+                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + tr.getId() + "' is not protein coding");
+            return false;
+        }
 
-	public Markers getMarkers() {
-		return markers;
-	}
+        var aaSeqTr = tr.protein();
+        if (aaSeqTr == null || aaSeqTr.isBlank()) {
+            if (verbose)
+                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Could not find protein sequence for transcript '" + tr.getId() + "'");
+            return false;
+        }
 
-	/**
-	 * Are the AA sequences from transcript and Isoform equal?
-	 */
-	boolean isProteinMatch(Transcript tr, NextProtXmlIsoform isoform, Location location) {
-		// Check transcript protein sequence
-		if (!tr.isProteinCoding()) {
-			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + tr.getId() + "' is not protein coding");
-			return false;
-		}
+        aaSeqTr = proteinSequenceCleanup(aaSeqTr);
+        if (aaSeqTr.isBlank()) {
+            if (verbose)
+                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Empty protein sequence after cleanup,  transcript '" + tr.getId() + "'");
+            return false; // Nothing left after cleanup?
+        }
 
-		var aaSeqTr = tr.protein();
-		if (aaSeqTr == null || aaSeqTr.isBlank()) {
-			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Could not find protein sequence for transcript '" + tr.getId() + "'");
-			return false;
-		}
+        // Check isoform sequence
+        var aaSeqIso = isoform.getSequence();
+        if (aaSeqIso == null || aaSeqIso.isBlank()) return false;
 
-		aaSeqTr = proteinSequenceCleanup(aaSeqTr);
-		if (aaSeqTr.isBlank()) {
-			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Empty protein sequence after cleanup,  transcript '" + tr.getId() + "'");
-			return false; // Nothing left after cleanup?
-		}
+        // Check that 'location' is within transcript
+        int aaStart = location.begin;
+        int aaEnd = location.end;
+        if (aaStart > aaEnd || aaStart < 0 || aaEnd >= aaSeqTr.length()) {
+            if (verbose)
+                Log.warning("Amino acid coordinates error, transcript '" + tr.getId() + "', location [" + location.begin + ", " + location.end + "], for protein length " + aaSeqTr.length());
+            return false;
+        }
 
-		// Check isoform sequence
-		var aaSeqIso = isoform.getSequence();
-		if (aaSeqIso == null || aaSeqIso.isBlank()) return false;
+        // Compare protein sequences at 'location'
+        aaSeqIso = aaSeqIso.substring(aaStart, aaEnd).toUpperCase();
+        aaSeqTr = aaSeqTr.substring(aaStart, aaEnd).toUpperCase();
+        if (!aaSeqIso.equals(aaSeqTr)) {
+            if (verbose)
+                Log.warning("Transcript '" + tr.getId() + "' protein sequence does not match isform '" + isoform.getAccession() + "' at [" + aaStart + ", " + aaEnd + "]\n" //
+                        + GprSeq.showMismatch(tr.protein(), isoform.getSequence(), "\t") //
+                );
+            return false;
+        }
 
-		// Check that 'location' is within transcript
-		int aaStart = location.begin;
-		int aaEnd = location.end;
-		if (aaStart > aaEnd || aaStart < 0 || aaEnd >= aaSeqTr.length()) {
-			Log.error("Amino acid coordinates error, transcript '" + tr.getId() + "', location " + location + ", for protein length " + aaSeqTr.length());
-			return false;
-		}
+        return true;
+    }
 
-		// Compare protein sequences at 'location'
-		aaSeqIso = aaSeqIso.substring(aaStart, aaEnd).toUpperCase();
-		aaSeqTr = aaSeqTr.substring(aaStart, aaEnd).toUpperCase();
-		if (!aaSeqIso.equals(aaSeqTr)) {
-			Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, //
-					"Transcript '" + tr.getId() + "' protein sequence does not match isform '" + isoform.getAccession() + "' at [" + aaStart + ", " + aaEnd + "]\n" //
-							+ GprSeq.showMismatch(tr.protein(), isoform.getSequence(), "\t") //
-			);
-			return false;
-		}
+    /**
+     * Create a list of NextProt markers according to this annotation
+     */
+    public Markers nextProt(Transcript tr, NextProtXmlAnnotation annotation, Location location) {
+        if (location.isInteraction()) {
+            // Interaction, we need to add two (sets or) markers, one on each side of the interaction (i.e. location.begin and location.end)
+            Markers nextprotMarkers = new Markers();
+            nextprotMarkers.add(nextProt(tr, annotation.accession, annotation.name(), location.begin, location.begin));
+            nextprotMarkers.add(nextProt(tr, annotation.accession, annotation.name(), location.end, location.end));
+            return nextprotMarkers;
+        } else {
+            return nextProt(tr, annotation.accession, annotation.name(), location.begin, location.end);
+        }
+    }
 
-		return true;
-	}
+    /**
+     * Create a single NextProt marker
+     */
+    public Markers nextProt(Transcript tr, String accession, String name, int aaStart, int aaEnd) {
+        int start = -1, end = -1;
 
-	/**
-	 * Clean up protein sequence:  Remove trailing stop or unknown codons ('*' / '?')
-	 */
-	String proteinSequenceCleanup(String protein) {
-		boolean change;
-		do {
-			change = false;
-			var lastAa = (!protein.isEmpty() ? protein.charAt(protein.length() - 1) : ' ');
+        // Find the start and end coordiantes from AA numbers
+        if (tr.isStrandPlus()) { // Plus strand
+            start = tr.codonNumber2Pos(aaStart)[0]; // Start codon's left-most base
+            end = tr.codonNumber2Pos(aaEnd)[2]; // End codon's right-most base
+        } else { // Minus strand
+            start = tr.codonNumber2Pos(aaEnd)[0]; // End codon's left-most base
+            end = tr.codonNumber2Pos(aaStart)[2]; // Start codon's right-most base
+        }
+        // Create an interval
+        Marker marker = new Marker(tr.getChromosome(), start, end);
 
-			if (lastAa == '*' || lastAa == '?') {
-				protein = protein.substring(0, protein.length() - 1);
-				change = true;
-			}
-		} while (change);
+        // The interval could span multiple exons, create one marker for each exon it intersects
+        Markers exons = new Markers();
+        exons.addAll(tr.getExons());
+        var exonsIntersected = exons.intersect(marker);
+        Markers nextProtMarkers = new Markers();
+        // Create one nextProt marker for each intersection with a different exon
+        for (Marker m : exonsIntersected)
+            nextProtMarkers.add(new NextProt(tr, m.getStart(), m.getEnd(), accession, name));
+        return nextProtMarkers;
+    }
 
-		return protein;
-	}
+    /**
+     * Clean up protein sequence:  Remove trailing stop or unknown codons ('*' / '?')
+     */
+    String proteinSequenceCleanup(String protein) {
+        boolean change;
+        do {
+            change = false;
+            var lastAa = (!protein.isEmpty() ? protein.charAt(protein.length() - 1) : ' ');
 
-	/**
-	 * Save nextprot markers as databases
-	 */
-	public void saveDatabase() {
-		String nextProtBinFile = config.getDirDataGenomeVersion() + "/nextProt.bin";
-		if (config.isVerbose()) Log.info("Saving database to file '" + nextProtBinFile + "'");
+            if (lastAa == '*' || lastAa == '?') {
+                protein = protein.substring(0, protein.length() - 1);
+                change = true;
+            }
+        } while (change);
 
-		// Add chromosomes
-		HashSet<Chromosome> chromos = new HashSet<>();
-		for (Marker m : markers)
-			chromos.add(m.getChromosome());
+        return protein;
+    }
 
-		// Create a set of all markers to be saved
-		Markers markersToSave = new Markers();
-		markersToSave.add(genome);
-		for (Chromosome chr : chromos)
-			markersToSave.add(chr);
-		for (Marker m : markers)
-			markersToSave.add(m);
+    /**
+     * Save nextprot markers as databases
+     */
+    public void saveDatabase() {
+        String nextProtBinFile = config.getDirDataGenomeVersion() + "/nextProt.bin";
+        if (config.isVerbose()) Log.info("Saving database to file '" + nextProtBinFile + "'");
 
-		// Save
-		markersToSave.save(nextProtBinFile);
-	}
+        // Add chromosomes
+        HashSet<Chromosome> chromos = new HashSet<>();
+        for (Marker m : markers)
+            chromos.add(m.getChromosome());
+
+        // Create a set of all markers to be saved
+        Markers markersToSave = new Markers();
+        markersToSave.add(genome);
+        for (Chromosome chr : chromos)
+            markersToSave.add(chr);
+        for (Marker m : markers)
+            markersToSave.add(m);
+
+        // Save
+        markersToSave.save(nextProtBinFile);
+    }
 }

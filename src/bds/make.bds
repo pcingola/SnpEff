@@ -374,8 +374,12 @@ void buildDbTest() {
 		db := "$dirSnpEff/data/$gen/snpEffectPredictor.bin"
 		if( ! db.exists() )	{
 			println "Genome: $gen\tdb: '$db'"
+			cdsFasta := "$dirSnpEff/data/$gen/cds.fa.gz"
+			proteinFasta := "$dirSnpEff/data/$gen/protein.fa.gz"
+			checkCdsFlag := (cdsFasta.exists() ? '' : '-noCheckCds')
+			checkProteinFlag := (proteinFasta.exists() ? '' : '-noCheckProtein')
 			task( cpus := 2 ) {
-				sys $snpeff build -v -storeSeqs $gen
+				sys $snpeff build -v -storeSeqs $checkCdsFlag $checkProteinFlag $gen 2>&1 | tee $gen\.build
 			}
 		}
 	}

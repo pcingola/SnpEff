@@ -1,8 +1,8 @@
 # The following table is formatted as tab separated values. 
 #GeneName	GeneId	TranscriptId	BioType	variants_impact_HIGH	variants_impact_LOW	variants_impact_MODERATE	variants_impact_MODIFIER	variants_effect_3_prime_UTR_variant	variants_effect_5_prime_UTR_premature_start_codon_gain_variant	variants_effect_5_prime_UTR_variant	variants_effect_conservative_inframe_deletion	variants_effect_disruptive_inframe_deletion	variants_effect_downstream_gene_variant	variants_effect_frameshift_variant	variants_effect_initiator_codon_variant	variants_effect_intron_variant	variants_effect_missense_variant	variants_effect_non_coding_transcript_exon_variant	variants_effect_sequence_feature	variants_effect_splice_acceptor_variant	variants_effect_splice_donor_variant	variants_effect_splice_region_variant	variants_effect_start_lost	variants_effect_stop_gained	variants_effect_synonymous_variant	variants_effect_upstream_gene_variant
 AC000089.3	ENSG00000235776	ENST00000424559	processed_pseudogene	0	0	0	51	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	51
-ADORA2A	ENSG00000128271	ENST00000337539	protein_coding	1	40	39	12	2	2	5	0	0	0	1	0	5	39	0	0	0	0	0	0	0	38	0
-ADORA2A	ENSG00000128271	ENST00000417596	protein_coding	1	50	39	12	2	2	5	0	0	0	1	0	5	39	0	10	0	0	0	0	0	38	0
+ADORA2A	ENSG00000128271	ENST00000337539	protein_coding	1	41	39	12	2	2	5	0	0	0	1	0	5	39	0	1	0	0	0	0	0	38	0
+ADORA2A	ENSG00000128271	ENST00000417596	protein_coding	1	40	39	12	2	2	5	0	0	0	1	0	5	39	0	0	0	0	0	0	0	38	0
 ADORA2A	ENSG00000128271	ENST00000424232	protein_coding	0	16	10	9	0	2	5	0	0	4	0	0	0	10	0	0	0	0	0	0	0	14	0
 ADORA2A	ENSG00000128271	ENST00000436735	protein_coding	0	12	7	16	0	2	5	0	0	11	0	0	0	7	0	0	0	0	0	0	0	10	0
 ADORA2A	ENSG00000128271	ENST00000439591	protein_coding	0	16	10	9	0	2	5	0	0	4	0	0	0	10	0	0	0	0	0	0	0	14	0
@@ -18,7 +18,7 @@ ADORA2A	ENSG00000128271	ENST00000541988	protein_coding	1	39	39	12	2	1	3	0	0	0	1	
 ADORA2A-AS1	ENSG00000178803	ENST00000326341	protein_coding	0	0	0	90	0	0	0	0	0	0	0	0	90	0	0	0	0	0	0	0	0	0	0
 ADORA2A-AS1	ENSG00000178803	ENST00000427813	processed_transcript	0	0	0	90	0	0	0	0	0	33	0	0	57	0	0	0	0	0	0	0	0	0	0
 ADORA2A-AS1	ENSG00000178803	ENST00000543438	protein_coding	0	0	0	90	0	0	0	0	0	0	0	0	90	0	0	0	0	0	0	0	0	0	0
-ADRBK2	ENSG00000100077	ENST00000324198	protein_coding	4	50	50	111	3	1	5	0	0	0	2	0	112	50	0	0	0	0	15	0	2	40	0
+ADRBK2	ENSG00000100077	ENST00000324198	protein_coding	4	51	50	111	3	1	5	0	0	0	2	0	112	50	0	1	0	0	15	0	2	40	0
 ADRBK2	ENSG00000100077	ENST00000455558	nonsense_mediated_decay	0	5	0	97	14	0	0	0	0	19	0	0	42	0	17	0	0	0	5	0	0	0	10
 C22orf29	ENSG00000215012	ENST00000328554	protein_coding	7	18	51	4	3	0	1	1	1	0	2	0	0	49	0	0	0	0	0	0	5	18	0
 C22orf29	ENSG00000215012	ENST00000405640	protein_coding	7	18	51	4	3	0	1	1	1	0	2	0	0	49	0	0	0	0	0	0	5	18	0
@@ -54,12 +54,12 @@ GUSBP11	ENSG00000228315	ENST00000451919	processed_transcript	0	0	0	87	0	0	0	0	0	
 GUSBP11	ENSG00000228315	ENST00000452737	processed_transcript	0	0	0	246	0	0	0	0	0	0	0	0	246	0	0	0	0	0	0	0	0	0	0
 GUSBP11	ENSG00000228315	ENST00000455485	processed_transcript	0	0	0	211	0	0	0	0	0	0	0	0	0	0	90	0	0	0	0	0	0	0	121
 GUSBP11	ENSG00000228315	ENST00000458554	processed_transcript	0	0	0	158	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	158
-MCHR1	ENSG00000128285	ENST00000249016	protein_coding	2	46	76	11	5	0	2	1	0	0	1	0	5	75	0	0	0	0	1	0	1	45	0
+MCHR1	ENSG00000128285	ENST00000249016	protein_coding	2	47	76	11	5	0	2	1	0	0	1	0	5	75	0	1	0	0	1	0	1	45	0
 MCHR1	ENSG00000128285	ENST00000381433	protein_coding	2	44	66	23	5	0	2	1	0	0	1	0	17	65	0	0	0	0	1	0	1	43	0
 MCHR1	ENSG00000128285	ENST00000465662	processed_transcript	0	1	0	134	0	0	0	0	0	63	0	0	3	0	26	0	0	0	1	0	0	0	43
 MCHR1	ENSG00000128285	ENST00000498400	processed_transcript	0	1	0	134	0	0	0	0	0	0	0	0	46	0	89	0	0	0	1	0	0	0	0
 OR11H1	ENSG00000130538	ENST00000252835	protein_coding	2	0	0	0	0	0	0	0	0	0	2	0	0	0	0	0	0	0	0	0	0	0	0
-RAC2	ENSG00000128340	ENST00000249071	protein_coding	0	20	8	68	0	0	6	1	0	0	0	0	64	7	0	0	0	0	3	0	0	18	0
+RAC2	ENSG00000128340	ENST00000249071	protein_coding	0	21	8	69	0	0	6	1	0	0	0	0	64	7	0	2	0	0	3	0	0	18	0
 RAC2	ENSG00000128340	ENST00000401529	protein_coding	0	8	3	33	0	0	6	0	0	0	0	0	27	3	0	0	0	0	0	0	0	8	0
 RAC2	ENSG00000128340	ENST00000405484	protein_coding	0	20	8	68	0	0	6	1	0	0	0	0	64	7	0	0	0	0	3	0	0	18	0
 RAC2	ENSG00000128340	ENST00000406508	protein_coding	0	18	8	71	0	1	3	1	0	0	0	0	70	7	0	0	0	0	3	0	0	15	0
