@@ -187,12 +187,12 @@ public class SnpEffCmdCds extends SnpEff {
                     case '+':
                         totalOk++;
                         ok = true;
-						if (debug) System.out.println("\nFASTA_OK\t>" + tr.getId() + "\nFASTA_OK\t" + cdsReference);
+						if (debug) System.out.println("\nFASTA_CDS_OK\t>" + tr.getId() + "\nFASTA_CDS_OK\t" + cdsReference);
                         break;
 
                     case '*':
                         totalErrors++;
-						if (debug) System.out.println("\nFASTA_ERROR\t>" + tr.getId() + "\nFASTA_ERROR\t" + cdsReference);
+						if (debug) System.out.println("\nFASTA_CDS_ERROR\t>" + tr.getId() + "\nFASTA_CDS_ERROR\t" + cdsReference);
                         break;
 
                     case ' ':

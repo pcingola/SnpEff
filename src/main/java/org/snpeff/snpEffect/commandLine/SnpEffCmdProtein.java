@@ -354,12 +354,12 @@ public class SnpEffCmdProtein extends SnpEff {
 			case '+':
 				countOk++;
 				ok = true;
-				if (debug) System.out.println("\nFASTA_OK\t>" + tr.getId() + "\nFASTA_OK\t" + proteinReference);
+				if (debug) System.out.println("\nFASTA_PROTEIN_OK\t>" + tr.getId() + "\nFASTA_PROTEIN_OK\t" + proteinReference);
 				break;
 
 			case '*':
 				countErrors++;
-				if (debug) System.out.println("\nFASTA_ERROR\t>" + tr.getId() + "\nFASTA_ERROR\t" + proteinReference);
+				if (debug) System.out.println("\nFASTA_PROTEIN_ERROR\t>" + tr.getId() + "\nFASTA_PROTEIN_ERROR\t" + proteinReference);
 				break;
 
 			case ' ':
