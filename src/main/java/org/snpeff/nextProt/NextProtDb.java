@@ -100,7 +100,7 @@ public class NextProtDb {
         var missingCats = handler.getMissingCategories();
         for (String cat : missingCats.keysRanked(true))
             sb.append("\t" + missingCats.get(cat) + "\t" + cat + "\n");
-        if (sb.length() > 0) Log.info("Missing categories:\n" + sb);
+        if (sb.length() > 0) Log.warning("Missing categories:\n" + sb);
 
         return true;
     }

@@ -20,8 +20,9 @@ public class NextProtMarkerFactory {
     Config config;
     Genome genome;
     Markers markers;
-    Map<String, Transcript> trById;
     NextProtSequenceConservation sequenceConservation;
+    Map<String, Transcript> trById;
+    boolean verbose;
 
     public NextProtMarkerFactory(Config config) {
         this.config = config;
@@ -30,6 +31,7 @@ public class NextProtMarkerFactory {
         sequenceConservation = new NextProtSequenceConservation();
         markers = new Markers();
         addTranscripts();
+        verbose = Config.get().isVerbose();
     }
 
     /**
@@ -39,21 +41,23 @@ public class NextProtMarkerFactory {
      */
     public Markers addMarkers(NextProtXmlEntry entry, NextProtXmlIsoform isoform, NextProtXmlAnnotation annotation, Location location, String trId) {
         if (isoform.getSequence() == null) {
-            Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Isoform '" + isoform.getAccession() + "' has no sequence");
+            if (verbose)
+                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Isoform '" + isoform.getAccession() + "' has no sequence");
             return null;
         }
 
         // Find protein coding transcript
         var tr = trById.get(trId);
         if (tr == null) {
-            Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + trId + "' not found");
+            if (verbose)
+                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + trId + "' not found");
             return null;
         }
 
         // Sanity check: Compare protein sequence
         if (!isProteinMatch(tr, isoform, location)) return null;
 
-        if (count++ % 1000 == 0 && config.isVerbose())
+        if (verbose && count++ % 1000 == 0)
             Log.info("ANNOTATION: " + annotation.name() + "\t" + trId + "\t" + location.begin + "\t" + location.end);
 
         // Analysis of sequence conservation
@@ -131,19 +135,22 @@ public class NextProtMarkerFactory {
     boolean isProteinMatch(Transcript tr, NextProtXmlIsoform isoform, Location location) {
         // Check transcript protein sequence
         if (!tr.isProteinCoding()) {
-            Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + tr.getId() + "' is not protein coding");
+            if (verbose)
+                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Transcript '" + tr.getId() + "' is not protein coding");
             return false;
         }
 
         var aaSeqTr = tr.protein();
         if (aaSeqTr == null || aaSeqTr.isBlank()) {
-            Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Could not find protein sequence for transcript '" + tr.getId() + "'");
+            if (verbose)
+                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Could not find protein sequence for transcript '" + tr.getId() + "'");
             return false;
         }
 
         aaSeqTr = proteinSequenceCleanup(aaSeqTr);
         if (aaSeqTr.isBlank()) {
-            Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Empty protein sequence after cleanup,  transcript '" + tr.getId() + "'");
+            if (verbose)
+                Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "Empty protein sequence after cleanup,  transcript '" + tr.getId() + "'");
             return false; // Nothing left after cleanup?
         }
 
@@ -155,7 +162,8 @@ public class NextProtMarkerFactory {
         int aaStart = location.begin;
         int aaEnd = location.end;
         if (aaStart > aaEnd || aaStart < 0 || aaEnd >= aaSeqTr.length()) {
-            Log.error("Amino acid coordinates error, transcript '" + tr.getId() + "', location [" + location.begin + ", " + location.end + "], for protein length " + aaSeqTr.length());
+            if (verbose)
+                Log.warning("Amino acid coordinates error, transcript '" + tr.getId() + "', location [" + location.begin + ", " + location.end + "], for protein length " + aaSeqTr.length());
             return false;
         }
 
@@ -163,10 +171,10 @@ public class NextProtMarkerFactory {
         aaSeqIso = aaSeqIso.substring(aaStart, aaEnd).toUpperCase();
         aaSeqTr = aaSeqTr.substring(aaStart, aaEnd).toUpperCase();
         if (!aaSeqIso.equals(aaSeqTr)) {
-            Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, //
-                    "Transcript '" + tr.getId() + "' protein sequence does not match isform '" + isoform.getAccession() + "' at [" + aaStart + ", " + aaEnd + "]\n" //
-                            + GprSeq.showMismatch(tr.protein(), isoform.getSequence(), "\t") //
-            );
+            if (verbose)
+                Log.warning("Transcript '" + tr.getId() + "' protein sequence does not match isform '" + isoform.getAccession() + "' at [" + aaStart + ", " + aaEnd + "]\n" //
+                        + GprSeq.showMismatch(tr.protein(), isoform.getSequence(), "\t") //
+                );
             return false;
         }
 

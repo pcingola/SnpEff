@@ -37,7 +37,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
 		// Build database
 		//---
 		String genomeName = "testLukas";
-		String args[] = { "build", "-noLog", "-gff3", genomeName };
+		String args[] = { "build", "-noLog", "-noCheckCds", "-noCheckProtein", "-gff3", genomeName };
 
 		SnpEff snpEff = new SnpEff(args);
 		snpEff.setVerbose(verbose);

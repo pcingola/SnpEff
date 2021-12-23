@@ -50,7 +50,6 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 	@Test
 	public void test_03_cancer_concurrent_modification() {
 		Log.debug("Test");
-		verbose = true;
 		String args[] = { "-cancer"//
 				, "-cancerSamples", path("test_cancer_concurrent_modification.txt") //
 				, "-ud", "0" //

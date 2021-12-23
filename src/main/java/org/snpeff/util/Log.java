@@ -127,8 +127,12 @@ public class Log {
         silenceWarning.add(warningType);
     }
 
-    public static void warningln(String msg) {
+    public static void warning(String msg) {
         System.err.println("\nWARNING: " + msg);
+    }
+
+    public static void warningln(String msg) {
+        System.err.println("WARNING: " + msg);
     }
 
     /**
