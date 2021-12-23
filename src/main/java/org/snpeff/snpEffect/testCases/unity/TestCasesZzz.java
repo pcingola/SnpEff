@@ -28,28 +28,5 @@ public class TestCasesZzz extends TestCasesIntegrationBase {
 	}
 
 
-//	@Test
-//	public void test_16() {
-//		// TODO: Test annotation not highly conserved (synonymous change) => EffectImpact.MODIFIER;
-//		Log.debug("Test");
-//
-//		// TODO: Create veff (syn, low, etc)
-//		// TODO: Create nextprot (high conserved)
-//		// TODO: Variant effect
-//		// TODO: Check result
-//		throw new RuntimeException("Unimplemented test");
-//	}
-//
-//	@Test
-//	public void test_17() {
-//		// TODO: Test annotation not highly conserved (synonymous change) => EffectImpact.MODIFIER;
-//		Log.debug("Test");
-//
-//		// TODO: Create veff (InDel, etc)
-//		// TODO: Create nextprot (high conserved)
-//		// TODO: Variant effect
-//		// TODO: Check result
-//		throw new RuntimeException("Unimplemented test");
-//	}
 
 }

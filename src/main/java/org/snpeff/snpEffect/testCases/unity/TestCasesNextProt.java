@@ -2,15 +2,16 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.snpeff.interval.*;
-import org.snpeff.nextProt.*;
-import org.snpeff.snpEffect.Config;
+import org.snpeff.interval.Markers;
+import org.snpeff.interval.NextProt;
+import org.snpeff.interval.Variant;
+import org.snpeff.nextProt.LocationTargetIsoform;
+import org.snpeff.nextProt.LocationTargetIsoformInteraction;
+import org.snpeff.nextProt.NextProtMarkerFactory;
+import org.snpeff.nextProt.NextProtXmlAnnotation;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
-
-import java.util.Random;
 
 public class TestCasesNextProt {
 
@@ -22,10 +23,10 @@ public class TestCasesNextProt {
         Log.debug("Test");
         var testGenome = new TestGenome(false);
         NextProtMarkerFactory factory = new NextProtMarkerFactory(testGenome.config);
-        Markers nextProtMarkers =  factory.nextProt(testGenome.tr, "nextprot_accession_1", "nextprot_name", 0, 0);
+        Markers nextProtMarkers = factory.nextProt(testGenome.tr, "nextprot_accession_1", "nextprot_name", 0, 0);
 
         Assert.assertEquals(1, nextProtMarkers.size());
-        NextProt nextProt = (NextProt)nextProtMarkers.get(0);
+        NextProt nextProt = (NextProt) nextProtMarkers.get(0);
 
         // Check nextProt marker
         Assert.assertEquals(1000, nextProt.getStart());
@@ -43,9 +44,9 @@ public class TestCasesNextProt {
         Markers nextProtMarkers = factory.nextProt(testGenome.tr, "nextprot_accession_1", "nextprot_name", 1, 1);
 
         Assert.assertEquals(1, nextProtMarkers.size());
-        NextProt nextProt = (NextProt)nextProtMarkers.get(0);
+        NextProt nextProt = (NextProt) nextProtMarkers.get(0);
 
-                // Check nextProt marker
+        // Check nextProt marker
         Assert.assertEquals(1003, nextProt.getStart());
         Assert.assertEquals(1005, nextProt.getEnd());
         Assert.assertEquals("nextprot_name", nextProt.getName());
@@ -62,8 +63,8 @@ public class TestCasesNextProt {
 
         Assert.assertEquals(2, nextProtMarkers.size());
         nextProtMarkers.sort();
-        NextProt nextProt0 = (NextProt)nextProtMarkers.get(0);
-        NextProt nextProt1 = (NextProt)nextProtMarkers.get(1);
+        NextProt nextProt0 = (NextProt) nextProtMarkers.get(0);
+        NextProt nextProt1 = (NextProt) nextProtMarkers.get(1);
 
         // Check nextProt markers
         Assert.assertEquals(1048, nextProt0.getStart());
@@ -78,10 +79,10 @@ public class TestCasesNextProt {
         Log.debug("Test");
         var testGenome = new TestGenome(true);
         NextProtMarkerFactory factory = new NextProtMarkerFactory(testGenome.config);
-        Markers nextProtMarkers =  factory.nextProt(testGenome.tr, "nextprot_accession_1", "nextprot_name", 0, 0);
+        Markers nextProtMarkers = factory.nextProt(testGenome.tr, "nextprot_accession_1", "nextprot_name", 0, 0);
 
         Assert.assertEquals(1, nextProtMarkers.size());
-        NextProt nextProt = (NextProt)nextProtMarkers.get(0);
+        NextProt nextProt = (NextProt) nextProtMarkers.get(0);
 
         // Check nextProt marker
         Assert.assertEquals(1947, nextProt.getStart());
@@ -99,7 +100,7 @@ public class TestCasesNextProt {
         Markers nextProtMarkers = factory.nextProt(testGenome.tr, "nextprot_accession_1", "nextprot_name", 1, 1);
 
         Assert.assertEquals(1, nextProtMarkers.size());
-        NextProt nextProt = (NextProt)nextProtMarkers.get(0);
+        NextProt nextProt = (NextProt) nextProtMarkers.get(0);
 
         // Check nextProt marker
         Assert.assertEquals(1944, nextProt.getStart());
@@ -118,8 +119,8 @@ public class TestCasesNextProt {
 
         Assert.assertEquals(2, nextProtMarkers.size());
         nextProtMarkers.sort();
-        NextProt nextProt0 = (NextProt)nextProtMarkers.get(0);
-        NextProt nextProt1 = (NextProt)nextProtMarkers.get(1);
+        NextProt nextProt0 = (NextProt) nextProtMarkers.get(0);
+        NextProt nextProt1 = (NextProt) nextProtMarkers.get(1);
 
         // Check nextProt markers
         Assert.assertEquals(1849, nextProt0.getStart());
@@ -136,13 +137,13 @@ public class TestCasesNextProt {
         NextProtMarkerFactory factory = new NextProtMarkerFactory(testGenome.config);
 
         NextProtXmlAnnotation annotation = new NextProtXmlAnnotation(null, "category");
-        LocationTargetIsoform location = new LocationTargetIsoform(testGenome.tr.getId(),0, 20);
-        Markers nextProtMarkers = factory.nextProt(testGenome.tr,  annotation,  location);
+        LocationTargetIsoform location = new LocationTargetIsoform(testGenome.tr.getId(), 0, 20);
+        Markers nextProtMarkers = factory.nextProt(testGenome.tr, annotation, location);
 
         Assert.assertEquals(2, nextProtMarkers.size());
         nextProtMarkers.sort();
-        NextProt nextProt0 = (NextProt)nextProtMarkers.get(0);
-        NextProt nextProt1 = (NextProt)nextProtMarkers.get(1);
+        NextProt nextProt0 = (NextProt) nextProtMarkers.get(0);
+        NextProt nextProt1 = (NextProt) nextProtMarkers.get(1);
 
         // Check nextProt markers
         Assert.assertEquals(1000, nextProt0.getStart());
@@ -159,13 +160,13 @@ public class TestCasesNextProt {
         NextProtMarkerFactory factory = new NextProtMarkerFactory(testGenome.config);
 
         NextProtXmlAnnotation annotation = new NextProtXmlAnnotation(null, "category");
-        LocationTargetIsoform location = new LocationTargetIsoform(testGenome.tr.getId(),0, 20);
-        Markers nextProtMarkers = factory.nextProt(testGenome.tr,  annotation,  location);
+        LocationTargetIsoform location = new LocationTargetIsoform(testGenome.tr.getId(), 0, 20);
+        Markers nextProtMarkers = factory.nextProt(testGenome.tr, annotation, location);
 
         Assert.assertEquals(2, nextProtMarkers.size());
         nextProtMarkers.sort();
-        NextProt nextProt0 = (NextProt)nextProtMarkers.get(0);
-        NextProt nextProt1 = (NextProt)nextProtMarkers.get(1);
+        NextProt nextProt0 = (NextProt) nextProtMarkers.get(0);
+        NextProt nextProt1 = (NextProt) nextProtMarkers.get(1);
 
         // Check nextProt markers
         Assert.assertEquals(1837, nextProt0.getStart());
@@ -182,13 +183,13 @@ public class TestCasesNextProt {
         NextProtMarkerFactory factory = new NextProtMarkerFactory(testGenome.config);
 
         NextProtXmlAnnotation annotation = new NextProtXmlAnnotation(null, "category");
-        LocationTargetIsoform location = new LocationTargetIsoform(testGenome.tr.getId(),0, 20);
-        Markers nextProtMarkers = factory.nextProt(testGenome.tr,  annotation,  location);
+        LocationTargetIsoform location = new LocationTargetIsoform(testGenome.tr.getId(), 0, 20);
+        Markers nextProtMarkers = factory.nextProt(testGenome.tr, annotation, location);
 
         Assert.assertEquals(2, nextProtMarkers.size());
         nextProtMarkers.sort();
-        NextProt nextProt0 = (NextProt)nextProtMarkers.get(0);
-        NextProt nextProt1 = (NextProt)nextProtMarkers.get(1);
+        NextProt nextProt0 = (NextProt) nextProtMarkers.get(0);
+        NextProt nextProt1 = (NextProt) nextProtMarkers.get(1);
 
         // Check nextProt markers
         Assert.assertEquals(1000, nextProt0.getStart());
@@ -205,13 +206,13 @@ public class TestCasesNextProt {
         NextProtMarkerFactory factory = new NextProtMarkerFactory(testGenome.config);
 
         NextProtXmlAnnotation annotation = new NextProtXmlAnnotation(null, "category");
-        LocationTargetIsoformInteraction location = new LocationTargetIsoformInteraction(testGenome.tr.getId(),10, 20);
-        Markers nextProtMarkers = factory.nextProt(testGenome.tr,  annotation,  location);
+        LocationTargetIsoformInteraction location = new LocationTargetIsoformInteraction(testGenome.tr.getId(), 10, 20);
+        Markers nextProtMarkers = factory.nextProt(testGenome.tr, annotation, location);
 
         Assert.assertEquals(2, nextProtMarkers.size());
         nextProtMarkers.sort();
-        NextProt nextProt0 = (NextProt)nextProtMarkers.get(0);
-        NextProt nextProt1 = (NextProt)nextProtMarkers.get(1);
+        NextProt nextProt0 = (NextProt) nextProtMarkers.get(0);
+        NextProt nextProt1 = (NextProt) nextProtMarkers.get(1);
 
         // Check nextProt markers
         Assert.assertEquals(1030, nextProt0.getStart());
@@ -228,13 +229,13 @@ public class TestCasesNextProt {
         NextProtMarkerFactory factory = new NextProtMarkerFactory(testGenome.config);
 
         NextProtXmlAnnotation annotation = new NextProtXmlAnnotation(null, "category");
-        LocationTargetIsoformInteraction location = new LocationTargetIsoformInteraction(testGenome.tr.getId(),10, 20);
-        Markers nextProtMarkers = factory.nextProt(testGenome.tr,  annotation,  location);
+        LocationTargetIsoformInteraction location = new LocationTargetIsoformInteraction(testGenome.tr.getId(), 10, 20);
+        Markers nextProtMarkers = factory.nextProt(testGenome.tr, annotation, location);
 
         Assert.assertEquals(2, nextProtMarkers.size());
         nextProtMarkers.sort();
-        NextProt nextProt0 = (NextProt)nextProtMarkers.get(0);
-        NextProt nextProt1 = (NextProt)nextProtMarkers.get(1);
+        NextProt nextProt0 = (NextProt) nextProtMarkers.get(0);
+        NextProt nextProt1 = (NextProt) nextProtMarkers.get(1);
 
         // Check nextProt markers
         Assert.assertEquals(1837, nextProt0.getStart());
@@ -251,14 +252,14 @@ public class TestCasesNextProt {
         NextProtMarkerFactory factory = new NextProtMarkerFactory(testGenome.config);
 
         NextProtXmlAnnotation annotation = new NextProtXmlAnnotation(null, "category");
-        LocationTargetIsoformInteraction location = new LocationTargetIsoformInteraction(testGenome.tr.getId(),16, 20);
-        Markers nextProtMarkers = factory.nextProt(testGenome.tr,  annotation,  location);
+        LocationTargetIsoformInteraction location = new LocationTargetIsoformInteraction(testGenome.tr.getId(), 16, 20);
+        Markers nextProtMarkers = factory.nextProt(testGenome.tr, annotation, location);
 
         Assert.assertEquals(3, nextProtMarkers.size());
         nextProtMarkers.sort();
-        NextProt nextProt0 = (NextProt)nextProtMarkers.get(0);
-        NextProt nextProt1 = (NextProt)nextProtMarkers.get(1);
-        NextProt nextProt2 = (NextProt)nextProtMarkers.get(2);
+        NextProt nextProt0 = (NextProt) nextProtMarkers.get(0);
+        NextProt nextProt1 = (NextProt) nextProtMarkers.get(1);
+        NextProt nextProt2 = (NextProt) nextProtMarkers.get(2);
 
         // Check nextProt markers
         Assert.assertEquals(1048, nextProt0.getStart());
@@ -277,14 +278,14 @@ public class TestCasesNextProt {
         NextProtMarkerFactory factory = new NextProtMarkerFactory(testGenome.config);
 
         NextProtXmlAnnotation annotation = new NextProtXmlAnnotation(null, "category");
-        LocationTargetIsoformInteraction location = new LocationTargetIsoformInteraction(testGenome.tr.getId(),16, 20);
-        Markers nextProtMarkers = factory.nextProt(testGenome.tr,  annotation,  location);
+        LocationTargetIsoformInteraction location = new LocationTargetIsoformInteraction(testGenome.tr.getId(), 16, 20);
+        Markers nextProtMarkers = factory.nextProt(testGenome.tr, annotation, location);
 
         Assert.assertEquals(3, nextProtMarkers.size());
         nextProtMarkers.sort();
-        NextProt nextProt0 = (NextProt)nextProtMarkers.get(0);
-        NextProt nextProt1 = (NextProt)nextProtMarkers.get(1);
-        NextProt nextProt2 = (NextProt)nextProtMarkers.get(2);
+        NextProt nextProt0 = (NextProt) nextProtMarkers.get(0);
+        NextProt nextProt1 = (NextProt) nextProtMarkers.get(1);
+        NextProt nextProt2 = (NextProt) nextProtMarkers.get(2);
 
         // Check nextProt markers
         Assert.assertEquals(1837, nextProt0.getStart());
@@ -365,6 +366,42 @@ public class TestCasesNextProt {
         Variant variant = new Variant(testGenome.chr, pos, "C", "A"); // synonimous variant ('P' to 'P')
         // Predict effect and check results
         testGenome.checkEffect(variant, EffectType.NEXT_PROT, VariantEffect.EffectImpact.MODIFIER, 1);
+    }
+
+    @Test
+    public void test_18() {
+        // Test annotation DEL variant + "NextProt highly conserved"
+        // => Nextprot.EffectImpact = HIGH;
+        Log.debug("Test");
+        // Create a genome
+        var testGenome = new TestGenome(false);
+        // Add a highly conserved 'nextprot' effect
+        var pos = testGenome.tr.getStart() + 3;
+        NextProt nextProt = new NextProt(testGenome.tr, pos, pos, "nextprot_1", "test_nexprot_effect");
+        nextProt.setHighlyConservedAaSequence(true);
+        testGenome.add(nextProt);
+        // Create a variant
+        Variant variant = new Variant(testGenome.chr, pos, "C", ""); // Deletion
+        // Predict effect and check results
+        testGenome.checkEffect(variant, EffectType.NEXT_PROT, VariantEffect.EffectImpact.HIGH, 1);
+    }
+
+    @Test
+    public void test_19() {
+        // Test annotation DEL variant + "NextProt highly conserved"
+        // => Nextprot.EffectImpact = HIGH;
+        Log.debug("Test");
+        // Create a genome
+        var testGenome = new TestGenome(false);
+        // Add a highly conserved 'nextprot' effect
+        var pos = testGenome.tr.getStart() + 3;
+        NextProt nextProt = new NextProt(testGenome.tr, pos, pos, "nextprot_1", "test_nexprot_effect");
+        nextProt.setHighlyConservedAaSequence(false);
+        testGenome.add(nextProt);
+        // Create a variant
+        Variant variant = new Variant(testGenome.chr, pos, "C", ""); // Deletion
+        // Predict effect and check results
+        testGenome.checkEffect(variant, EffectType.NEXT_PROT, VariantEffect.EffectImpact.HIGH, 1);
     }
 
 }

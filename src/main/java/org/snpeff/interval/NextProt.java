@@ -97,7 +97,7 @@ public class NextProt extends Marker {
             // For instance, a synnimous effect wil have no impac on NextProd, because the AA doesn't change in the sequence
             switch (prevEffImpact) {
                 case HIGH:
-                    effectImpact = isHighlyConservedAaSequence() ? EffectImpact.HIGH : EffectImpact.MODERATE;
+                    effectImpact = EffectImpact.HIGH ;
                     break;
 
                 case MODERATE:
