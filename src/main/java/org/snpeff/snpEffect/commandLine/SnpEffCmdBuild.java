@@ -52,10 +52,10 @@ public class SnpEffCmdBuild extends SnpEff {
      * @return: true if at least one check (cds or protein) is successful
      */
     boolean checkDb(SnpEffPredictorFactory snpEffectPredictorFactory) {
-        Log.debug("checkCds: " + checkCds + ", checkProtein: " + checkProtein);
-        return (checkCds && checkDbCds(snpEffectPredictorFactory)) // Check CDS sequences if enabled
-                || (checkProtein && checkDbProtein(snpEffectPredictorFactory)) // Check protein sequences if enabled
-                || (!checkCds && !checkProtein); // If both are disabled, we "pass" the no test
+        boolean ok = true;
+        if(checkCds) ok &= checkDbCds(snpEffectPredictorFactory);
+        if(checkProtein) ok &= checkDbProtein(snpEffectPredictorFactory);
+        return ok;
     }
 
     /**
