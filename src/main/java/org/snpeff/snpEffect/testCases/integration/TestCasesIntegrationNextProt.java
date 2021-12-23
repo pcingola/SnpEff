@@ -32,56 +32,76 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 	@Test
 	public void test_02_ann() {
 		Log.debug("Test");
-		// Note: Normally this EffectImpact should be 'HIGH' impact, but
-		// since the database we build in test_01_build is small, there
-		// are not enough stats.
+		// Gene               : YWHAH
+		// Transcript         : ENST00000248975
+		// Variant            : NON_SYNONYMOUS_CODING
+		// Variant Impact     : MODERATE
+		// NextProt           : modified-residue_N-acetylglycine
+		// NextProt conserved : false (not enough statistics in database)
+		// Expected impact    : LOW
 		checkNextProt("testHg3770Chr22" //
 				, path("test_nextProt_02.vcf")//
 				, "modified-residue_N-acetylglycine"//
 				, VariantEffect.EffectImpact.LOW //
 				, true //
+				, "ENST00000248975" //
 		);
 	}
 
 	@Test
 	public void test_02_eff() {
 		Log.debug("Test");
-		// Note: Normally this EffectImpact should be 'HIGH' impact, but
-		// since the database we build in test_01_build is small, there are
-		// not enough stats.
+		// Gene               : YWHAH
+		// Transcript         : ENST00000248975
+		// Variant            : NON_SYNONYMOUS_CODING
+		// Variant Impact     : MODERATE
+		// NextProt           : modified-residue_N-acetylglycine
+		// NextProt conserved : false (not enough statistics in database)
+		// Expected impact    : LOW
 		checkNextProt("testHg3770Chr22" //
 				, path("test_nextProt_02.vcf") //
 				, "modified-residue_N-acetylglycine" //
 				, VariantEffect.EffectImpact.LOW //
 				, false //
+				, "ENST00000248975" //
 		);
 	}
 
 	@Test
 	public void test_03_ann() {
 		Log.debug("Test");
-		// Note: Normally this EffectImpact should be 'MODERATE' impact, but
-		// since the database we build in test_01_build is small, there are
-		// not enough stats.
+		// Gene               : YWHAH
+		// Transcript         : ENST00000248975
+		// Variant            : NON_SYNONYMOUS_CODING
+		// Variant Impact     : MODERATE
+		// NextProt           : modified-residue_Phosphoserine
+		// NextProt conserved : true
+		// Expected impact    : HIGH
 		checkNextProt("testHg3770Chr22" //
 				, path("test_nextProt_03.vcf") //
 				, "modified-residue_Phosphoserine" //
-				, VariantEffect.EffectImpact.MODERATE //
+				, VariantEffect.EffectImpact.HIGH //
 				, true //
+				, "ENST00000248975" //
 		);
 	}
 
 	@Test
 	public void test_03_eff() {
 		Log.debug("Test");
-		// Note: Normally this EffectImpact should be 'MODERATE' impact, but
-		// since the database we build in test_01_build is small, there are
-		// not enough stats.
+		// Gene               : YWHAH
+		// Transcript         : ENST00000248975
+		// Variant            : NON_SYNONYMOUS_CODING
+		// Variant Impact     : MODERATE
+		// NextProt           : modified-residue_Phosphoserine
+		// NextProt conserved : true
+		// Expected impact    : HIGH
 		checkNextProt("testHg3770Chr22" //
 				, path("test_nextProt_03.vcf") //
 				, "modified-residue_Phosphoserine" //
-				, VariantEffect.EffectImpact.MODERATE //
+				, VariantEffect.EffectImpact.HIGH //
 				, false //
+				, "ENST00000248975" //
 		);
 	}
 
@@ -105,23 +125,25 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 	public void test_05_ann_disulphide_bond() {
 		Log.debug("Test");
 		// Disufide bond spanning across an intron
-		// Gene: GGT1, Transcript: ENST00000400382
+		//
+		// Gene               : GGT1
+		// Variant            : 22:25016879 G / A
+		// Variant Effect     : stop_gained&splice_region_variant
+		// Variant Impact     : HIGH
+		// NextProt           : disulfide-bond
+		// NextProt conserved : true
+		// Expected impact    : HIGH
+		//
+		// Transcript: ENST00000400382
 		//		1:	22	25016879	25016879	NextProt	null
 		//		2:	22	25016485	25016486	NextProt	null
 		//		3:	22	25016889	25016891	NextProt	null
 		//
-		//		Annotation 'disulfide-bond'
-		//		Description: null
-		//		null
-		//		LocationTargetIsoformInteraction(NX_P19440-1, 191, 195)
-		//		LocationTargetIsoformInteraction(NX_P19440-2, 191, 195)
-		//
-		//		TR: ENST00000400382
-		//		Gene: GGT1
+		// NextProt: LocationTargetIsoformInteraction(NX_P19440-1, 191, 195)
 		checkNextProt("testHg3770Chr22" //
 				, path("test_nextProt_05.vcf") //
 				, "disulfide-bond" //
-				, VariantEffect.EffectImpact.MODERATE //
+				, VariantEffect.EffectImpact.HIGH //
 				, true //
 				, "ENST00000400382" //
 		);
@@ -130,51 +152,52 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 	@Test
 	public void test_06_ann_disulphide_bond() {
 		Log.debug("Test");
-		verbose = true;
-		// Note: Normally this EffectImpact should be 'MODERATE' impact, but
-		// since the database we build in test_01_build is small, there are
-		// not enough stats.
-		// Gene: GGT1, Transcript: ENST00000400382
+		// Disufide bond spanning across an intron
+		//
+		// Gene               : GGT1
+		// Variant            : chr22:25016486 G / A
+		// Variant Effect     : missense_variant&splice_region_variant|
+		// Variant Impact     : MODERATE
+		// NextProt           : disulfide-bond
+		// NextProt conserved : true
+		// Expected impact    : HIGH
+		//
+		// Transcript: ENST00000400382
 		//		1:	22	25016879	25016879	NextProt	null
 		//		2:	22	25016485	25016486	NextProt	null
 		//		3:	22	25016889	25016891	NextProt	null
 		//
-		//		Annotation 'disulfide-bond'
-		//		Description: null
-		//		null
-		//		LocationTargetIsoformInteraction(NX_P19440-1, 191, 195)
-		//		LocationTargetIsoformInteraction(NX_P19440-2, 191, 195)
-		//
-		//		TR: ENST00000400382
-		//		Gene: GGT1
+		// NextProt: LocationTargetIsoformInteraction(NX_P19440-1, 191, 195)
 		checkNextProt("testHg3770Chr22" //
 				, path("test_nextProt_06.vcf") //
 				, "disulfide-bond" //
-				, VariantEffect.EffectImpact.MODERATE //
+				, VariantEffect.EffectImpact.HIGH //
 				, true //
 				, "ENST00000400382" //
 		);
 	}
 
 	@Test
-	public void test_10() {
-		// TODO: Test annotation not highly conserved (synonymous change) => EffectImpact.MODIFIER;
+	public void test_07() {
+		// Test annotation not highly conserved (synonymous change) => EffectImpact.LOW;
+		//
+		// Gene               : ODF3B
+		// Variant            : chr22:50969624 G / A
+		// Variant Effect     : synonymous_variant
+		// Variant Impact     : LOW
+		// NextProt           : modified-residue_Phosphoserine
+		// NextProt conserved : true
+		// Expected impact    : LOW
+		//
+		// Transcript: ENST00000329363
+		// NextProt: LocationTargetIsoformInteraction(NX_P19440-1, 191, 195)
 		Log.debug("Test");
-		throw new RuntimeException("Unimplemented test");
+		checkNextProt("testHg3770Chr22" //
+				, path("test_nextProt_07.vcf") //
+				, "modified-residue_Phosphoserine" //
+				, VariantEffect.EffectImpact.LOW //
+				, true //
+				, "ENST00000329363" //
+		);
 	}
-
-	@Test
-	public void test_11() {
-		// TODO: Test annotation highly conserved (non-synonymous change) => EffectImpact.HIGH;
-		Log.debug("Test");
-		throw new RuntimeException("Unimplemented test");
-	}
-
-	@Test
-	public void test_12() {
-		// TODO: Test annotation highly conserved (INDEL) => EffectImpact.HIGH;
-		Log.debug("Test");
-		throw new RuntimeException("Unimplemented test");
-	}
-
 }

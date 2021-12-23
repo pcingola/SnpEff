@@ -360,16 +360,16 @@ public class TestCasesIntegrationBase {
         int numNextProt = 0;
         for (VcfEntry ve : vcfEntries) {
             for (VcfEffect veff : ve.getVcfEffects()) {
-                Log.debug("TR ID: '" + veff.getTranscriptId() + "'");
+                boolean matchDetails = false;
                 if ((veff.hasEffectType(EffectType.NEXT_PROT)) // Is it nextProt?
                         && (impact == veff.getImpact()) // Is impact OK?
-                        && ((trId == null) || trId.equals(veff.getFeatureId())) // Filter by transcript ID
+                        && ((trId == null) || trId.equals(veff.getFeatureId()) || trId.equals(veff.getTranscriptId())) // Filter by transcript ID
                 ) {
                     // Are details OK?
-                    boolean match = !useAnn && effectDetails.equals(veff.getEffectDetails());
-                    if (useAnn && effectDetails.equals(veff.getFeatureType())) match = true;
+                    if (useAnn)  matchDetails = effectDetails.equals(veff.getFeatureType());
+                    else matchDetails = effectDetails.equals(veff.getEffectDetails());
 
-                    if (match) numNextProt++;
+                    if (matchDetails) numNextProt++;
                 }
 
                 if (verbose) //
@@ -382,7 +382,9 @@ public class TestCasesIntegrationBase {
                             + "\n\t\tExpected impact   : '" + impact + "'" //
                             + "\n\t\tCount matches     : " + numNextProt //
                             + "\thasEffectType : " + veff.hasEffectType(EffectType.NEXT_PROT) //
-                            + "\tmatch details : " + effectDetails.equals(veff.getEffectDetails()) //
+                            + "\tmatch impact : " + (impact == veff.getImpact()) //
+                            + "\tmatch trId : " + ((trId == null) || trId.equals(veff.getFeatureId())) //
+                            + "\tmatch details : " + matchDetails //
                             + "\tmatch impact: " + (impact == veff.getImpact()) //
                     );
             }
