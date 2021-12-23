@@ -5,36 +5,12 @@ import org.junit.Test;
 import org.snpeff.interval.*;
 import org.snpeff.nextProt.*;
 import org.snpeff.snpEffect.Config;
+import org.snpeff.snpEffect.EffectType;
+import org.snpeff.snpEffect.VariantEffect;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
 
 import java.util.Random;
-
-class TestGenome {
-    public Config config;
-    public Genome genome;
-    public Chromosome chr;
-    public Gene gene;
-    public Transcript tr;
-    String genomeName;
-
-    public TestGenome(boolean strandMinus) {
-        Random random = new Random(20211222);
-        genomeName = "test_genome";
-        genome = new Genome(genomeName);
-        chr = new Chromosome(genome, 1, 10000000, "chr1");
-        gene = new Gene(chr, 1000, 2000, strandMinus, "gene1", "gene1", BioType.protein_coding);
-        tr = new Transcript(gene, gene.getStart(), gene.getEnd(), strandMinus, "tr1");
-        tr.setProteinCoding(true);
-        for (int i = gene.getStart(); i < gene.getEnd(); i += 100) {
-            Exon exon = new Exon(tr, i, i + 49, strandMinus, "exon" + i, i); // Exon is 50 bases (so that there are amino acids spanning across introns)
-            exon.setSequence(GprSeq.randSequence(random, exon.size()));
-            tr.add(exon);
-        }
-
-        config = new Config(genome);
-    }
-}
 
 public class TestCasesNextProt {
 
@@ -321,16 +297,74 @@ public class TestCasesNextProt {
 
     @Test
     public void test_14() {
-        // TODO: Test annotation not highly conserved (synonymous change) => EffectImpact.MODIFIER;
+        // Test annotation non-synonymous variant + "NextProt highly conserved"
+        // => Nextprot.EffectImpact = HIGH;
         Log.debug("Test");
-        throw new RuntimeException("Unimplemented test");
+        // Create a genome
+        var testGenome = new TestGenome(false);
+        // Add a highly conserved 'nextprot' effect
+        var pos = testGenome.tr.getStart() + 3;
+        NextProt nextProt = new NextProt(testGenome.tr, pos, pos, "nextprot_1", "test_nexprot_effect");
+        nextProt.setHighlyConservedAaSequence(true);
+        testGenome.add(nextProt);
+        // Create a variant
+        Variant variant = new Variant(testGenome.chr, pos, "C", "A"); // Non-synonimous variant ('P' to 'T')
+        // Predict effect and check results
+        testGenome.checkEffect(variant, EffectType.NEXT_PROT, VariantEffect.EffectImpact.HIGH, 1);
     }
 
     @Test
     public void test_15() {
-        // TODO: Test annotation highly conserved (non-synonymous change) => EffectImpact.HIGH;
+        // Test annotation synonymous variant + "NextProt highly conserved"
+        // => Nextprot.EffectImpact = LOW;
         Log.debug("Test");
-        throw new RuntimeException("Unimplemented test");
+        // Create a genome
+        var testGenome = new TestGenome(false);
+        // Add a highly conserved 'nextprot' effect
+        var pos = testGenome.tr.getStart() + 5;
+        NextProt nextProt = new NextProt(testGenome.tr, pos, pos, "nextprot_1", "test_nexprot_effect");
+        nextProt.setHighlyConservedAaSequence(true);
+        testGenome.add(nextProt);
+        // Create a variant
+        Variant variant = new Variant(testGenome.chr, pos, "C", "A"); // synonimous variant ('P' to 'P')
+        // Predict effect and check results
+        testGenome.checkEffect(variant, EffectType.NEXT_PROT, VariantEffect.EffectImpact.LOW, 1);
+    }
+
+    @Test
+    public void test_16() {
+        // Test annotation non-synonymous variant + "NextProt NOT highly conserved"
+        // => Nextprot.EffectImpact = LOW;
+        Log.debug("Test");
+        // Create a genome
+        var testGenome = new TestGenome(false);
+        // Add a highly conserved 'nextprot' effect
+        var pos = testGenome.tr.getStart() + 3;
+        NextProt nextProt = new NextProt(testGenome.tr, pos, pos, "nextprot_1", "test_nexprot_effect");
+        nextProt.setHighlyConservedAaSequence(false);
+        testGenome.add(nextProt);
+        // Create a variant
+        Variant variant = new Variant(testGenome.chr, pos, "C", "A"); // Non-synonimous variant ('P' to 'T')
+        // Predict effect and check results
+        testGenome.checkEffect(variant, EffectType.NEXT_PROT, VariantEffect.EffectImpact.LOW, 1);
+    }
+
+    @Test
+    public void test_17() {
+        // Test annotation synonymous variant + "NextProt NOT highly conserved"
+        // => Nextprot.EffectImpact = MODIFIER;
+        Log.debug("Test");
+        // Create a genome
+        var testGenome = new TestGenome(false);
+        // Add a highly conserved 'nextprot' effect
+        var pos = testGenome.tr.getStart() + 5;
+        NextProt nextProt = new NextProt(testGenome.tr, pos, pos, "nextprot_1", "test_nexprot_effect");
+        nextProt.setHighlyConservedAaSequence(false);
+        testGenome.add(nextProt);
+        // Create a variant
+        Variant variant = new Variant(testGenome.chr, pos, "C", "A"); // synonimous variant ('P' to 'P')
+        // Predict effect and check results
+        testGenome.checkEffect(variant, EffectType.NEXT_PROT, VariantEffect.EffectImpact.MODIFIER, 1);
     }
 
 }

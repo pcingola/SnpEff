@@ -88,16 +88,36 @@ public class NextProt extends Marker {
         if (!intersects(variant)) return false;
 
         // Assess effect impact
-        // Impact depends on whether the effect is non-synonymous or other high impact effects
         EffectImpact effectImpact = EffectImpact.LOW;
         EffectImpact prevEffImpact = variantEffects.highestImpact(getTranscriptId());
         if (prevEffImpact == null)
             Log.warning(ErrorWarningType.WARNING_TRANSCRIPT_NOT_FOUND, "NextProt '" + name + "' could not find previous effect impact for transcript '" + getTranscriptId() + "', ");
-        else if (prevEffImpact == EffectImpact.HIGH)
-            effectImpact = isHighlyConservedAaSequence() ? EffectImpact.HIGH : EffectImpact.MODERATE;
-        else if (prevEffImpact == EffectImpact.MODERATE)
-            effectImpact = isHighlyConservedAaSequence() ? EffectImpact.HIGH : EffectImpact.LOW;
+        else {
+            // Impact depends on whether the previoius analysis had a high/moderate impact.
+            // For instance, a synnimous effect wil have no impac on NextProd, because the AA doesn't change in the sequence
+            switch (prevEffImpact) {
+                case HIGH:
+                    effectImpact = isHighlyConservedAaSequence() ? EffectImpact.HIGH : EffectImpact.MODERATE;
+                    break;
 
+                case MODERATE:
+                    effectImpact = isHighlyConservedAaSequence() ? EffectImpact.HIGH : EffectImpact.LOW;
+                    break;
+
+                case LOW:
+                    effectImpact = isHighlyConservedAaSequence() ? EffectImpact.LOW : EffectImpact.MODIFIER;
+                    break;
+
+                case MODIFIER:
+                    effectImpact = EffectImpact.MODIFIER;
+                    break;
+
+                default:
+                    throw new RuntimeException("Unexpected previous impact when assesing NextProt annotation: '" + prevEffImpact + "'");
+            }
+        }
+
+        // Create variant effect
         variantEffects.add(variant, this, type, effectImpact, name);
         return true;
     }
