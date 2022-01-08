@@ -2,8 +2,7 @@ package org.snpeff.snpEffect.testCases.integration;
 
 import java.util.Random;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Gene;
 import org.snpeff.interval.Genome;
@@ -14,6 +13,8 @@ import org.snpeff.snpEffect.SnpEffectPredictor;
 import org.snpeff.util.Gpr;
 import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test 'apply' method (apply variant to marker)
@@ -96,7 +97,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 				}
 			}
 		}
-		System.err.println("");
+		System.err.println();
 	}
 
 	/**
@@ -147,8 +148,8 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 
 							// Resulting sequence
 							String newSeq;
-							if (idx > 0) newSeq = seq.substring(0, idx) + altsb.toString() + seq.substring(idx);
-							else newSeq = altsb.toString() + seq;
+							if (idx > 0) newSeq = seq.substring(0, idx) + altsb + seq.substring(idx);
+							else newSeq = altsb + seq;
 							newSeq = ex.isStrandPlus() ? newSeq : GprSeq.reverseWc(newSeq);
 							newSeq = newSeq.toLowerCase();
 
@@ -177,7 +178,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 				}
 			}
 		}
-		System.err.println("");
+		System.err.println();
 	}
 
 	/**
@@ -256,7 +257,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 				}
 			}
 		}
-		System.err.println("");
+		System.err.println();
 
 	}
 
@@ -353,7 +354,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 				}
 			}
 		}
-		System.err.println("");
+		System.err.println();
 	}
 
 	/**

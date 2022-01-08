@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.interval.Transcript;
@@ -16,6 +15,8 @@ import org.snpeff.vcf.VcfConsequence;
 import org.snpeff.vcf.VcfConsequenceHeader;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Compare our results to ENSEML's Variant Effect predictor's output
@@ -317,7 +318,7 @@ public class CompareToVep {
 
 			boolean comparissonOk = compare(effs, csqs);
 			if (verbose) System.out.println("Comparisosns: " + this);
-			assertTrue("EFF and CSQ do not match", comparissonOk);
+			assertTrue(comparissonOk, "EFF and CSQ do not match");
 		}
 	}
 

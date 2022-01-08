@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
@@ -16,7 +16,8 @@ import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * Test case
@@ -33,7 +34,7 @@ public class TestCasesAnn extends TestCasesBase {
 	List<VcfEntry> annotate(String vcfFile) {
 		String genome = "test_ENSG00000158062";
 
-		String args[] = { "-noLog", "-noStats", genome, vcfFile };
+		String[] args = { "-noLog", "-noStats", genome, vcfFile };
 		SnpEff snpEff = new SnpEff(args);
 		snpEff.setVerbose(verbose);
 		snpEff.setSupressOutput(!verbose);
@@ -42,7 +43,7 @@ public class TestCasesAnn extends TestCasesBase {
 		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.cmd();
 		List<VcfEntry> vcfEntries = seff.run(true);
 
-		assertTrue("Empty annotataions list!", !vcfEntries.isEmpty());
+		assertFalse(vcfEntries.isEmpty(), "Empty annotataions list!");
 		return vcfEntries;
 	}
 
@@ -145,7 +146,7 @@ public class TestCasesAnn extends TestCasesBase {
 		Log.debug("Test");
 
 		// Create command
-		String args[] = { "testHg3775Chr1", path("test_ann_integration_01.vcf") };
+		String[] args = { "testHg3775Chr1", path("test_ann_integration_01.vcf") };
 
 		SnpEff cmd = new SnpEff(args);
 		SnpEffCmdEff cmdEff = (SnpEffCmdEff) cmd.cmd();
@@ -154,7 +155,7 @@ public class TestCasesAnn extends TestCasesBase {
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);
-		assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+		assertTrue(cmdEff.getTotalErrs() <= 0, "Errors while executing SnpEff");
 
 		// Expected results
 		Set<String> allelesExpected = new HashSet<>();
@@ -173,7 +174,7 @@ public class TestCasesAnn extends TestCasesBase {
 				String allele = eff.getAllele();
 				if (verbose) Log.info("\t" + eff + "\n\t\tAllele: " + allele);
 
-				assertTrue("Unexpected allele '" + allele + "'", allelesExpected.contains(allele));
+				assertTrue(allelesExpected.contains(allele), "Unexpected allele '" + allele + "'");
 				allelesReal.add(allele);
 			}
 		}
@@ -341,7 +342,7 @@ public class TestCasesAnn extends TestCasesBase {
 		assertEquals("", veff.getTranscriptId());
 
 		// Biotype
-		assertTrue(veff.getBioType() == null);
+		assertNull(veff.getBioType());
 
 		// Rank
 		assertEquals("-1", "" + veff.getRank());

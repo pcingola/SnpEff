@@ -2,7 +2,7 @@ package org.snpeff.snpEffect.testCases.integration;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Log;
@@ -10,10 +10,9 @@ import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- *
  * Test case
  */
 public class TestCasesIntegrationDup extends TestCasesIntegrationBase {
@@ -32,7 +31,7 @@ public class TestCasesIntegrationDup extends TestCasesIntegrationBase {
 		String vcf = path("dup_01.vcf");
 
 		// Create SnpEff
-		String args[] = { genome, vcf };
+		String[] args = { genome, vcf };
 		SnpEffCmdEff snpeff = new SnpEffCmdEff();
 		snpeff.parseArgs(args);
 		snpeff.setDebug(debug);
@@ -56,7 +55,7 @@ public class TestCasesIntegrationDup extends TestCasesIntegrationBase {
 			}
 		}
 
-		assertTrue("Gene FGFR1 not found in <DUP>", found);
+		assertTrue(found, "Gene FGFR1 not found in <DUP>");
 	}
 
 }
