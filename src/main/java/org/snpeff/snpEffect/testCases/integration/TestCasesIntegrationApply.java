@@ -169,7 +169,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 								throw new RuntimeException(msg);
 							}
 
-							Assert.assertEquals(newSeq, exNew.getSequence());
+							assertEquals(newSeq, exNew.getSequence());
 
 							Gpr.showMark(count++, 1000);
 						}
@@ -237,7 +237,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 							Exon exNew = ex.apply(variant);
 
 							String newExSeq = (exNew != null ? exNew.getSequence() : "");
-							Assert.assertEquals(newSeq, newExSeq);
+							assertEquals(newSeq, newExSeq);
 							if (!newExSeq.equals(newSeq)) {
 								String msg = "Error:" //
 										+ "\n\t\tVariant   : " + variant //
@@ -376,7 +376,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 		Transcript trNew = applyTranscript("testHg19Chr11", "NM_001004460.1", path("test_apply_06_delete_upstream.vcf"));
 
 		// Check expected sequence
-		Assert.assertEquals("atgagcttctcttccctgcctactgaaatacagtcattactctttctgacatttctaaccatctacctggtcaccctgatgggaaactgcctcatcattctggttaccctagctgaccccatgctacacagccccatgtacttcttcctcagaaacttatctttcctggagattggcttcaacctagtcattgtgcccaaaatgctggggaccctgcttgcccaggacacaaccatctccttccttggctgtgccactcagatgtatttcttcttct" //
+		assertEquals("atgagcttctcttccctgcctactgaaatacagtcattactctttctgacatttctaaccatctacctggtcaccctgatgggaaactgcctcatcattctggttaccctagctgaccccatgctacacagccccatgtacttcttcctcagaaacttatctttcctggagattggcttcaacctagtcattgtgcccaaaatgctggggaccctgcttgcccaggacacaaccatctccttccttggctgtgccactcagatgtatttcttcttct" //
 				, trNew.mRna());
 	}
 
@@ -390,7 +390,7 @@ public class TestCasesIntegrationApply extends TestCasesIntegrationBase {
 		Transcript trNew = applyTranscript("testHg3775Chr11", "ENST00000379829", path("test_apply_07_delete_upstream.vcf"));
 
 		// Check expected sequence
-		Assert.assertEquals("ttttttggggctgctgagtgctgcctcctggccaccatggcatatgaccgctacgtggccatctgtgaccccttgcactacccagtcatcatgggccacatatcctgtgcccagctggcagctgcctcttggttctcagggttttcagtggccactgtgcaaaccacatggattttcagtttccctttttgtggccccaacagggtgaaccacttcttctgtgacagccctcctgttattgcactggtctgtgctgacacctctgtgtttgaactggaggctctgacagccactgtcctattcattctctttcctttcttgctgatcctgggatcctatgtccgcatcctctccactatcttcaggatgccgtcagctgaggggaaacatcaggcattctccacctgttccgcccacctcttggttgtctctctcttctatagcactgccatcctcacgtatttccgaccccaatccagtgcctcttctgagagcaagaagctgctgtcactctcttccacagtggtgactcccatgttgaaccccatcatctacagctcaaggaataaagaagtgaaggctgcactgaagcggcttatccacaggaccctgggctctcagaaactatga" //
+		assertEquals("ttttttggggctgctgagtgctgcctcctggccaccatggcatatgaccgctacgtggccatctgtgaccccttgcactacccagtcatcatgggccacatatcctgtgcccagctggcagctgcctcttggttctcagggttttcagtggccactgtgcaaaccacatggattttcagtttccctttttgtggccccaacagggtgaaccacttcttctgtgacagccctcctgttattgcactggtctgtgctgacacctctgtgtttgaactggaggctctgacagccactgtcctattcattctctttcctttcttgctgatcctgggatcctatgtccgcatcctctccactatcttcaggatgccgtcagctgaggggaaacatcaggcattctccacctgttccgcccacctcttggttgtctctctcttctatagcactgccatcctcacgtatttccgaccccaatccagtgcctcttctgagagcaagaagctgctgtcactctcttccacagtggtgactcccatgttgaaccccatcatctacagctcaaggaataaagaagtgaaggctgcactgaagcggcttatccacaggaccctgggctctcagaaactatga" //
 				, trNew.cds());
 	}
 }

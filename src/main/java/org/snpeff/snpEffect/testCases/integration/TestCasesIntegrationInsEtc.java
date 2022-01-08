@@ -37,7 +37,7 @@ public class TestCasesIntegrationInsEtc extends TestCasesIntegrationBase {
 			List<VcfEffect> veffs = ve.getVcfEffects();
 			VcfEffect veff = veffs.get(0);
 
-			Assert.assertEquals("Q53QQ", veff.getAa());
+			assertEquals("Q53QQ", veff.getAa());
 		}
 	}
 

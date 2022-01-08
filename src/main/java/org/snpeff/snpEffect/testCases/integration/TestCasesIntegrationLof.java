@@ -90,7 +90,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		// Calculate LOF
 		LossOfFunction lof = new LossOfFunction(config, changeEffects);
 		boolean islof = lof.isLof();
-		Assert.assertEquals(true, islof);
+		assertEquals(true, islof);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.TRANSCRIPT, tr); // Notice that we don't care what type of effect is, so we just use 'TRANSCRIPT'
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
 				boolean islof = lof.isLof();
-				Assert.assertEquals(delIsLof, islof);
+				assertEquals(delIsLof, islof);
 			}
 		}
 	}
@@ -169,7 +169,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				// Is LOF as expected?
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
 				boolean islof = lof.isLof();
-				Assert.assertEquals(isFsLof, islof);
+				assertEquals(isFsLof, islof);
 			}
 		}
 	}
@@ -201,7 +201,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		LinkedList<VariantEffect> changeEffects = variantEffects(Variant, EffectType.START_LOST, exon);
 		LossOfFunction lof = new LossOfFunction(config, changeEffects);
 		boolean islof = lof.isLof();
-		Assert.assertEquals(true, islof);
+		assertEquals(true, islof);
 	}
 
 	/**
@@ -232,7 +232,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				// Create a LOF object and analyze the effect
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
 				boolean islof = lof.isLof();
-				Assert.assertEquals(true, islof);
+				assertEquals(true, islof);
 			}
 		}
 
@@ -267,7 +267,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 				// Create a LOF object and analyze the effect
 				LossOfFunction lof = new LossOfFunction(config, changeEffects);
 				boolean islof = lof.isLof();
-				Assert.assertEquals(true, islof);
+				assertEquals(true, islof);
 			}
 		}
 
@@ -305,7 +305,7 @@ public class TestCasesIntegrationLof extends TestCasesIntegrationBase {
 		snpeff.setVerbose(verbose);
 		snpeff.setSupressOutput(!verbose);
 		boolean ok = snpeff.run();
-		Assert.assertEquals(true, ok);
+		assertEquals(true, ok);
 	}
 
 	/**

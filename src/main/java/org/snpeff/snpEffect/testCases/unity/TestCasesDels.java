@@ -1,6 +1,7 @@
 package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.codons.CodonTable;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Transcript;
@@ -13,7 +14,8 @@ import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test random DEL changes
@@ -191,8 +193,8 @@ public class TestCasesDels extends TestCasesBase {
 					Variant variant = new Variant(chromosome, start, "", "-" + del, "");
 
 					// Sanity checks
-					Assert.assertEquals(true, variant.isDel()); // Is it a deletion?
-					Assert.assertEquals(del.length(), variant.size()); // Does variant have the correct size?
+					assertEquals(true, variant.isDel()); // Is it a deletion?
+					assertEquals(del.length(), variant.size()); // Does variant have the correct size?
 
 					//---
 					// Expected Effect
@@ -259,7 +261,7 @@ public class TestCasesDels extends TestCasesBase {
 
 					// There should be only one effect in most cases
 					if (effects.isEmpty()) System.err.println("No effects for variant: " + variant + ", expecting '" + effectExpected + "'");
-					Assert.assertEquals(false, effects.isEmpty()); // There should be at least one effect
+					assertEquals(false, effects.isEmpty()); // There should be at least one effect
 
 					if (debug && (effects.size() > 1)) {
 						System.out.println("Found more than one effect: " + effects.size() + "\n" + transcript);
@@ -311,8 +313,8 @@ public class TestCasesDels extends TestCasesBase {
 									String codonsNewEff = effect.getCodonsAlt().toUpperCase();
 									if (codonsNewEff.equals("-")) codonsNewEff = "";
 
-									Assert.assertTrue(msg.toString(), codonsOld.equals(effect.getCodonsRef().toUpperCase())); // Check codons old
-									Assert.assertTrue(msg.toString(), codonsNew.equals(codonsNewEff)); // Check codons new
+									assertTrue(msg.toString(), codonsOld.equals(effect.getCodonsRef().toUpperCase())); // Check codons old
+									assertTrue(msg.toString(), codonsNew.equals(codonsNewEff)); // Check codons new
 								}
 							}
 						}
@@ -322,7 +324,7 @@ public class TestCasesDels extends TestCasesBase {
 						System.err.println("Cannot find '" + effectExpected + "'");
 					}
 
-					Assert.assertEquals(true, ok);
+					assertEquals(true, ok);
 				}
 			}
 		}

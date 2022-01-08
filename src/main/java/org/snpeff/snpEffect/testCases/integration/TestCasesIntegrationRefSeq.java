@@ -45,7 +45,7 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 		VariantEffects effs = sep.variantEffect(variant);
 		for (VariantEffect eff : effs) {
 			if (verbose) Log.info("\t" + eff);
-			Assert.assertEquals(eff.getEffectType(), EffectType.INTERGENIC);
+			assertEquals(eff.getEffectType(), EffectType.INTERGENIC);
 		}
 	}
 
@@ -73,6 +73,6 @@ public class TestCasesIntegrationRefSeq extends TestCasesIntegrationBase {
 		HashMap<String, SmithWaterman> alignmentByTrId = snpeffBuild.getSnpEffCmdProtein().getAlignmentByTrId();
 		SmithWaterman sw = alignmentByTrId.get("NM_015296.2");
 		if (debug) Log.debug(sw.getAlignmentScore() + "\n" + sw);
-		Assert.assertTrue(sw.getAlignmentScore() >= 2061);
+		assertTrue(sw.getAlignmentScore() >= 2061);
 	}
 }

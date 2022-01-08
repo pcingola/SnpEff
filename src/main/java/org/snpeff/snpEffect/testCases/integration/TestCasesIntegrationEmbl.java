@@ -57,7 +57,7 @@ public class TestCasesIntegrationEmbl extends TestCasesIntegrationBase {
 						String seq = e.getSequence();
 						String base = e.basesAtPos(pos, 1);
 						if (debug) System.out.println("Seq : " + seq + "\nBase: " + base);
-						Assert.assertEquals("g", base);
+						assertEquals("g", base);
 					}
 				}
 			}

@@ -64,7 +64,7 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 		snpeff.setVerbose(verbose);
 
 		List<VcfEntry> vcfEnties = snpeff.run(true);
-		Assert.assertFalse("Annotation finished with errors", snpeff.getTotalErrs() > 0);
+		assertFalse("Annotation finished with errors", snpeff.getTotalErrs() > 0);
 
 		int countCancer = 0, countCancerWarnings = 0;
 		for (VcfEntry ve : vcfEnties) {
@@ -83,8 +83,8 @@ public class TestCasesIntegrationCancer extends TestCasesIntegrationBase {
 			}
 		}
 
-		Assert.assertTrue("Cancer effects not found", countCancer > 0);
-		Assert.assertTrue("There should be no warnings: countCancerWarnings = " + countCancerWarnings, countCancerWarnings == 0);
+		assertTrue("Cancer effects not found", countCancer > 0);
+		assertTrue("There should be no warnings: countCancerWarnings = " + countCancerWarnings, countCancerWarnings == 0);
 	}
 
 	/**

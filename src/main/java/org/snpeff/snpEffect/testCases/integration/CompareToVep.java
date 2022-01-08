@@ -317,7 +317,7 @@ public class CompareToVep {
 
 			boolean comparissonOk = compare(effs, csqs);
 			if (verbose) System.out.println("Comparisosns: " + this);
-			Assert.assertTrue("EFF and CSQ do not match", comparissonOk);
+			assertTrue("EFF and CSQ do not match", comparissonOk);
 		}
 	}
 

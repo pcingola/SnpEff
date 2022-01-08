@@ -172,7 +172,7 @@ public class TestCasesHgvsBase {
 
 		// Run command
 		List<VcfEntry> list = cmdEff.run(true);
-		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+		assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Find HGVS in any 'EFF' field
 		int entryNum = 1;

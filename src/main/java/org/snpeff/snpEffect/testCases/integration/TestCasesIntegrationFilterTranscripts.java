@@ -44,7 +44,7 @@ public class TestCasesIntegrationFilterTranscripts extends TestCasesIntegrationB
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
-		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+		assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) Log.info(ve);
@@ -52,7 +52,7 @@ public class TestCasesIntegrationFilterTranscripts extends TestCasesIntegrationB
 			// Get effect string
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\ttrId:" + veff.getTranscriptId() + "\t" + veff);
-				Assert.assertEquals("ENST00000400573", veff.getTranscriptId());
+				assertEquals("ENST00000400573", veff.getTranscriptId());
 			}
 		}
 	}
@@ -79,7 +79,7 @@ public class TestCasesIntegrationFilterTranscripts extends TestCasesIntegrationB
 		cmdEff.setSupressOutput(!verbose);
 
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
-		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+		assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) Log.info(ve);

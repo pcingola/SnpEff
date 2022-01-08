@@ -9,12 +9,12 @@ import org.snpeff.interval.tree.Itree;
  */
 public class TestCasesIntervalTreeArray extends TestCasesIntervalTree {
 
-	@Override
-	protected Itree newItree(Markers markers) {
-		IntervalTreeArray ita = new IntervalTreeArray(markers);
-		ita.setVerbose(verbose);
-		ita.setDebug(debug);
-		return ita;
-	}
+    @Override
+    protected Itree newItree(Markers markers) {
+        IntervalTreeArray ita = new IntervalTreeArray(markers);
+        ita.setVerbose(verbose);
+        ita.setDebug(debug);
+        return ita;
+    }
 
 }

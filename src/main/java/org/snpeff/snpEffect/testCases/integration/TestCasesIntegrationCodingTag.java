@@ -35,7 +35,7 @@ public class TestCasesIntegrationCodingTag extends TestCasesIntegrationBase {
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
-		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+		assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Make sure transcript coding tags are there
 		for (VcfEntry ve : vcfEntries) {
@@ -44,7 +44,7 @@ public class TestCasesIntegrationCodingTag extends TestCasesIntegrationBase {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (veff.getImpact() == EffectImpact.MODERATE) {
 					if (verbose) Log.info("\t" + veff);
-					Assert.assertFalse(veff.getBioType() == null || (veff.getBioType() == null)); // Make sure the biotype field is avaialble
+					assertFalse(veff.getBioType() == null || (veff.getBioType() == null)); // Make sure the biotype field is avaialble
 				}
 			}
 		}

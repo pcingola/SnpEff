@@ -44,13 +44,13 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION) {
-					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
-					Assert.assertEquals(veff.getGeneId(), "FGFR3&TACC3");
+					assertEquals(EffectImpact.HIGH, veff.getImpact());
+					assertEquals(veff.getGeneId(), "FGFR3&TACC3");
 					checked = true;
 				}
 			}
 		}
-		Assert.assertTrue("No translocation found", checked);
+		assertTrue("No translocation found", checked);
 	}
 
 	/**
@@ -76,13 +76,13 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION) {
-					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
-					Assert.assertEquals(veff.getGeneId(), "ALK&EML4");
+					assertEquals(EffectImpact.HIGH, veff.getImpact());
+					assertEquals(veff.getGeneId(), "ALK&EML4");
 					checked = true;
 				}
 			}
 		}
-		Assert.assertTrue("No translocation found", checked);
+		assertTrue("No translocation found", checked);
 	}
 
 	/**
@@ -108,13 +108,13 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION_REVERESE) {
-					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
-					Assert.assertEquals(veff.getGeneId(), "DSCAM&TTC3");
+					assertEquals(EffectImpact.HIGH, veff.getImpact());
+					assertEquals(veff.getGeneId(), "DSCAM&TTC3");
 					checked = true;
 				}
 			}
 		}
-		Assert.assertTrue("No translocation found", checked);
+		assertTrue("No translocation found", checked);
 	}
 
 	/**
@@ -140,13 +140,13 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION) {
-					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
-					Assert.assertEquals(veff.getGeneId(), "CCDC6&RET");
+					assertEquals(EffectImpact.HIGH, veff.getImpact());
+					assertEquals(veff.getGeneId(), "CCDC6&RET");
 					checked = true;
 				}
 			}
 		}
-		Assert.assertTrue("No translocation found", checked);
+		assertTrue("No translocation found", checked);
 	}
 
 	/**
@@ -172,13 +172,13 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.GENE_FUSION) {
-					Assert.assertEquals("Impact does not match", EffectImpact.HIGH, veff.getImpact());
-					Assert.assertEquals("Affected genes do not match", "ROS1&SLC34A2", veff.getGeneId());
+					assertEquals("Impact does not match", EffectImpact.HIGH, veff.getImpact());
+					assertEquals("Affected genes do not match", "ROS1&SLC34A2", veff.getGeneId());
 					checked = true;
 				}
 			}
 		}
-		Assert.assertTrue("No translocation found", checked);
+		assertTrue("No translocation found", checked);
 	}
 
 	/**
@@ -205,12 +205,12 @@ public class TestCasesIntegrationStructural extends TestCasesIntegrationBase {
 				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.TRANSCRIPT_DELETED && veff.getTranscriptId().equals("NM_001777.3")) {
 					if (verbose) Log.info("VcfEffect: " + veff);
-					Assert.assertEquals("Expected rank does not match", 7, veff.getRank());
-					Assert.assertEquals("Expected rankMax does not match", 10, veff.getRankMax());
+					assertEquals("Expected rank does not match", 7, veff.getRank());
+					assertEquals("Expected rankMax does not match", 10, veff.getRankMax());
 					checked = true;
 				}
 			}
 		}
-		Assert.assertTrue("No translocation found", checked);
+		assertTrue("No translocation found", checked);
 	}
 }

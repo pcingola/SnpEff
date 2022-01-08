@@ -43,7 +43,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
         snpEff.setDebug(debug);
         snpEff.setSupressOutput(!verbose);
         boolean ok = snpEff.run();
-        Assert.assertTrue(ok);
+        assertTrue(ok);
 
         //---
         // Load database and check some numbers
@@ -62,8 +62,8 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
         if (verbose) Log.debug("Trasncript:" + transcript);
 
         // Check parameters
-        Assert.assertEquals(454127, transcript.getCdsStart());
-        Assert.assertEquals(450599, transcript.getCdsEnd());
+        assertEquals(454127, transcript.getCdsStart());
+        assertEquals(450599, transcript.getCdsEnd());
 
         //---
         // Check annotations
@@ -77,7 +77,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
         cmdEff.setVerbose(verbose);
         cmdEff.setSupressOutput(!verbose);
         List<VcfEntry> vcfEntries = cmdEff.run(true);
-        Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+        assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
         // Analyze annotations
         ok = false;
@@ -110,7 +110,7 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
             if (!found)
                 throw new RuntimeException("Cannot find expected effect '" + expectedEffect + "', amino acid change '" + expectedAa + "' and codon change '" + expectedCodon + "'");
         }
-        Assert.assertTrue("No match found", ok);
+        assertTrue("No match found", ok);
     }
 
     /**
@@ -128,6 +128,6 @@ public class TestCasesIntegrationExonFrame extends TestCasesIntegrationBase {
         snpEff.setVerbose(verbose);
         snpEff.setSupressOutput(!verbose);
         boolean ok = snpEff.run();
-        Assert.assertTrue(ok);
+        assertTrue(ok);
     }
 }

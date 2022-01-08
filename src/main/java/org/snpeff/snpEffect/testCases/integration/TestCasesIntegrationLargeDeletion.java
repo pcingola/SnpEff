@@ -34,7 +34,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 		cmdEff.setSupressOutput(!verbose);
 
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
-		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+		assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {
@@ -46,7 +46,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 				ok |= (veff.getEffectType() == EffectType.CHROMOSOME_LARGE_DELETION);
 			}
 
-			if (!ok) Assert.assertTrue("Expecting 'CHROMOSOME_LARGE_DELETION', not found", ok);
+			if (!ok) assertTrue("Expecting 'CHROMOSOME_LARGE_DELETION', not found", ok);
 		}
 	}
 
@@ -60,12 +60,12 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
-		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+		assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		// Make sure these are "CHROMOSOME_LARGE_DELETION" type of variants
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) Log.info(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
-			Assert.assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
+			assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
 		}
 	}
 
@@ -79,7 +79,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 		cmdEff.setVerbose(verbose);
 		cmdEff.setSupressOutput(!verbose);
 		List<VcfEntry> vcfEntries = cmdEff.run(true);
-		Assert.assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
+		assertTrue("Errors while executing SnpEff", cmdEff.getTotalErrs() <= 0);
 
 		boolean okCdkn2a = false;
 		boolean okCdkn2aTr = false;
@@ -89,7 +89,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 		for (VcfEntry ve : vcfEntries) {
 			if (verbose) Log.info(ve.getChromosomeName() + "\t" + ve.getStart() + "\t" + ve.getInfoStr());
 
-			Assert.assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
+			assertTrue(ve.getInfo("EFF").startsWith("CHROMOSOME_LARGE_DELETION(HIGH"));
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t" + veff);
@@ -104,9 +104,9 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 			}
 		}
 
-		Assert.assertTrue("GENE_DELETED CDKN2A: Not found", okCdkn2a);
-		Assert.assertTrue("GENE_DELETED CDKN2B: Not found", okCdkn2b);
-		Assert.assertTrue("TRANSCRIPT_DELETED CDKN2A (NM_000077.4): Not found", okCdkn2aTr);
+		assertTrue("GENE_DELETED CDKN2A: Not found", okCdkn2a);
+		assertTrue("GENE_DELETED CDKN2B: Not found", okCdkn2b);
+		assertTrue("TRANSCRIPT_DELETED CDKN2A (NM_000077.4): Not found", okCdkn2aTr);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 		List<VcfEntry> vcfs = snpEffect(genome, vcfFile, null, EffFormatVersion.FORMAT_ANN_1);
 
 		// Sanity check
-		Assert.assertEquals(1, vcfs.size());
+		assertEquals(1, vcfs.size());
 
 		// Find effects
 		boolean foundFusion = false, foundTrDel = false, foundExDel = false;
@@ -154,9 +154,9 @@ public class TestCasesIntegrationLargeDeletion extends TestCasesIntegrationBase 
 		}
 
 		// All three must be present
-		Assert.assertTrue("Could not find expected gene fusion", foundFusion);
-		Assert.assertTrue("Could not find expected transcript deletion", foundTrDel);
-		Assert.assertTrue("Could not find expected exon deletion", foundExDel);
+		assertTrue("Could not find expected gene fusion", foundFusion);
+		assertTrue("Could not find expected transcript deletion", foundTrDel);
+		assertTrue("Could not find expected exon deletion", foundExDel);
 	}
 
 }

@@ -39,7 +39,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 					// Compare against expected result
 					String expectedHgvsC = ve.getInfo("HGVSC");
 					String actualHgvsC = veff.getHgvsC();
-					Assert.assertEquals(expectedHgvsC, actualHgvsC);
+					assertEquals(expectedHgvsC, actualHgvsC);
 				}
 			}
 		}
@@ -66,7 +66,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 					// Compare against expected result
 					String expectedHgvsC = ve.getInfo("HGVSC");
 					String actualHgvsC = veff.getHgvsC();
-					Assert.assertEquals(expectedHgvsC, actualHgvsC);
+					assertEquals(expectedHgvsC, actualHgvsC);
 				}
 			}
 		}
@@ -93,7 +93,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 					// Compare against expected result
 					String expectedHgvsC = ve.getInfo("HGVSC");
 					String actualHgvsC = veff.getHgvsC();
-					Assert.assertEquals(expectedHgvsC, actualHgvsC);
+					assertEquals(expectedHgvsC, actualHgvsC);
 				}
 			}
 		}
@@ -120,7 +120,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 					// Compare against expected result
 					String expectedHgvsC = ve.getInfo("HGVSC");
 					String actualHgvsC = veff.getHgvsC();
-					Assert.assertEquals(expectedHgvsC, actualHgvsC);
+					assertEquals(expectedHgvsC, actualHgvsC);
 				}
 			}
 		}
@@ -147,7 +147,7 @@ public class TestCasesIntegrationHgvsUpDownStream extends TestCasesIntegrationBa
 					// Compare against expected result
 					String expectedHgvsC = ve.getInfo("HGVSC");
 					String actualHgvsC = veff.getHgvsC();
-					Assert.assertEquals(expectedHgvsC, actualHgvsC);
+					assertEquals(expectedHgvsC, actualHgvsC);
 				}
 			}
 		}

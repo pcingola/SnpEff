@@ -56,8 +56,8 @@ public class TestCasesIntegrationDelEtc extends TestCasesIntegrationBase {
 			}
 		}
 
-		Assert.assertTrue("No effect annotated", countEffs > 0);
-		Assert.assertFalse("Duplicated effect", repeat);
+		assertTrue("No effect annotated", countEffs > 0);
+		assertFalse("Duplicated effect", repeat);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class TestCasesIntegrationDelEtc extends TestCasesIntegrationBase {
 					countEffs++;
 				}
 
-				Assert.assertEquals(1, countEffs);
+				assertEquals(1, countEffs);
 			}
 		}
 	}

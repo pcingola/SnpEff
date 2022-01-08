@@ -48,8 +48,8 @@ public class TestCasesIntegrationCutsomIntervals extends TestCasesIntegrationBas
 		// Check propper annotations
 		VcfEntry ve = vcfEntries.get(0);
 		if (verbose) Log.debug("VCF entry: " + ve);
-		Assert.assertEquals("R02837:N/A", ve.getInfo("custom_intervals_01_type"));
-		Assert.assertEquals("TRANSFAC_site", ve.getInfo("custom_intervals_01_source"));
-		Assert.assertEquals("R02837", ve.getInfo("custom_intervals_01_siteAcc"));
+		assertEquals("R02837:N/A", ve.getInfo("custom_intervals_01_type"));
+		assertEquals("TRANSFAC_site", ve.getInfo("custom_intervals_01_source"));
+		assertEquals("R02837", ve.getInfo("custom_intervals_01_siteAcc"));
 	}
 }

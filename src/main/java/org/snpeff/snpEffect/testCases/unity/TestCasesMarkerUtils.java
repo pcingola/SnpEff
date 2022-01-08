@@ -1,179 +1,171 @@
 package org.snpeff.snpEffect.testCases.unity;
 
+import org.junit.jupiter.api.Test;
+import org.snpeff.interval.*;
+import org.snpeff.util.Log;
+import org.snpeff.util.Tuple;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
-import org.junit.Test;
-import org.snpeff.interval.Chromosome;
-import org.snpeff.interval.Genome;
-import org.snpeff.interval.Marker;
-import org.snpeff.interval.MarkerUtil;
-import org.snpeff.interval.Markers;
-import org.snpeff.util.Log;
-import org.snpeff.util.Tuple;
-
 public class TestCasesMarkerUtils {
 
-	int maxLen = 100;
-	int minLen = 1;
-	int maxGap = 100;
-	int minGap = 50;
-	boolean verbose = false;
-	boolean compareCdsTestsEnable = false;
-	Random rand;
-	Genome genome;
+    int maxLen = 100;
+    int minLen = 1;
+    int maxGap = 100;
+    int minGap = 50;
+    boolean verbose = false;
+    boolean compareCdsTestsEnable = false;
+    Random rand;
+    Genome genome;
 
-	public TestCasesMarkerUtils() {
-		super();
-		initRand();
-		String genomeName = "testCaseHg";
-		genome = new Genome(genomeName);
+    public TestCasesMarkerUtils() {
+        super();
+        initRand();
+        String genomeName = "testCaseHg";
+        genome = new Genome(genomeName);
 
-		// Create chromosomes
-		for (int i = 1; i < 22; i++)
-			genome.add(new Chromosome(genome, 0, 0, "" + i));
-		genome.add(new Chromosome(genome, 0, 0, "X"));
-		genome.add(new Chromosome(genome, 0, 0, "Y"));
-	}
+        // Create chromosomes
+        for (int i = 1; i < 22; i++)
+            genome.add(new Chromosome(genome, 0, 0, "" + i));
+        genome.add(new Chromosome(genome, 0, 0, "X"));
+        genome.add(new Chromosome(genome, 0, 0, "Y"));
+    }
 
-	/**
-	 * Create a list of markers
-	 * @param chr
-	 * @param numMarkers
-	 *
-	 * @return Two collections of markers (in a tuple), the original one and the collapsed one
-	 */
-	Tuple<Markers, Markers> createMarkers(Chromosome chr, int numMarkers) {
-		Markers markers = new Markers();
-		Markers markersCollapsed = new Markers();
-		int start = 0, startPrev = -1, end = 0, gap = 0;
+    /**
+     * Create a list of markers
+     *
+     * @return Two collections of markers (in a tuple), the original one and the collapsed one
+     */
+    Tuple<Markers, Markers> createMarkers(Chromosome chr, int numMarkers) {
+        Markers markers = new Markers();
+        Markers markersCollapsed = new Markers();
+        int start = 0, startPrev = -1, end = 0, gap = 0;
 
-		Marker m = null, mcol = null;
-		for (int i = 0; i < numMarkers; i++) {
-			// Interval size
-			int size = rand.nextInt(maxLen) + minLen;
-			end = start + size;
-			if (startPrev < 0) startPrev = start;
+        Marker m = null, mcol = null;
+        for (int i = 0; i < numMarkers; i++) {
+            // Interval size
+            int size = rand.nextInt(maxLen) + minLen;
+            end = start + size;
+            if (startPrev < 0) startPrev = start;
 
-			// Create marker
-			m = new Marker(chr, start, end, false, "");
-			markers.add(m);
+            // Create marker
+            m = new Marker(chr, start, end, false, "");
+            markers.add(m);
 
-			// Next interval
-			gap = rand.nextInt(maxGap);
-			mcol = new Marker(chr, startPrev, end, false, "");
-			if (gap <= minGap) {
-				gap = 1;
-			} else {
-				markersCollapsed.add(mcol);
-				mcol = null;
-				startPrev = -1;
-			}
+            // Next interval
+            gap = rand.nextInt(maxGap);
+            mcol = new Marker(chr, startPrev, end, false, "");
+            if (gap <= minGap) {
+                gap = 1;
+            } else {
+                markersCollapsed.add(mcol);
+                mcol = null;
+                startPrev = -1;
+            }
 
-			start = end + gap;
-		}
-		if (mcol != null) markersCollapsed.add(mcol);
+            start = end + gap;
+        }
+        if (mcol != null) markersCollapsed.add(mcol);
 
-		return new Tuple<Markers, Markers>(markers, markersCollapsed);
-	}
+        return new Tuple<>(markers, markersCollapsed);
+    }
 
-	void initRand() {
-		rand = new Random(20121115);
-	}
+    void initRand() {
+        rand = new Random(20121115);
+    }
 
-	/**
-	 * Show a collection of sorted intervals as a string
-	 * @param markers
-	 * @return
-	 */
-	String markers2string(Markers markers) {
-		StringBuilder sb = new StringBuilder();
+    /**
+     * Show a collection of sorted intervals as a string
+     */
+    String markers2string(Markers markers) {
+        StringBuilder sb = new StringBuilder();
 
-		int prevEnd = -1;
-		markers.sort(false, false);
-		for (Marker m : markers) {
-			if (prevEnd >= 0) {
-				for (int i = prevEnd; i < m.getStart(); i++)
-					sb.append('-');
-			}
+        int prevEnd = -1;
+        markers.sort(false, false);
+        for (Marker m : markers) {
+            if (prevEnd >= 0) {
+                for (int i = prevEnd; i < m.getStart(); i++)
+                    sb.append('-');
+            }
 
-			for (int i = m.getStart(); i <= m.getEnd(); i++)
-				sb.append('M');
+            for (int i = m.getStart(); i <= m.getEnd(); i++)
+                sb.append('M');
 
-			prevEnd = m.getEnd() + 1;
-		}
+            prevEnd = m.getEnd() + 1;
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	/**
-	 * Test for collapsing markers with zero gaps
-	 */
-	@Test
-	public void test_collapseZeroGap() {
-		Log.debug("Test");
-		initRand();
-		int numMarkers = 20;
-		Chromosome chr = genome.getChromosome("1");
+    /**
+     * Test for collapsing markers with zero gaps
+     */
+    @Test
+    public void test_collapseZeroGap() {
+        Log.debug("Test");
+        initRand();
+        int numMarkers = 20;
+        Chromosome chr = genome.getChromosome("1");
 
-		for (int num = 1; num < 1000; num++) {
-			// Create markers
-			Tuple<Markers, Markers> tupleMarkers = createMarkers(chr, numMarkers);
-			Markers markersOri = tupleMarkers.first;
-			Markers markersCollapsedOri = tupleMarkers.second;
+        for (int num = 1; num < 1000; num++) {
+            // Create markers
+            Tuple<Markers, Markers> tupleMarkers = createMarkers(chr, numMarkers);
+            Markers markersOri = tupleMarkers.first;
+            Markers markersCollapsedOri = tupleMarkers.second;
 
-			//---
-			// Compare created markers
-			//---
-			String mStr = markers2string(markersOri);
-			String mColOriStr = markers2string(markersCollapsedOri);
-			if (verbose) Log.debug("Iteration : " + num + "\n\tMarkers           : " + mStr + "\n\tMarkers collapsed : " + mColOriStr);
+            //---
+            // Compare created markers
+            //---
+            String mStr = markers2string(markersOri);
+            String mColOriStr = markers2string(markersCollapsedOri);
+            if (verbose)
+                Log.debug("Iteration : " + num + "\n\tMarkers           : " + mStr + "\n\tMarkers collapsed : " + mColOriStr);
 
-			// Are generated intervasl OK?
-			if (!mStr.equals(mColOriStr)) {
-				System.err.println("Markers : ");
-				for (Marker m : markersOri)
-					System.err.println(m);
+            // Are generated intervasl OK?
+            if (!mStr.equals(mColOriStr)) {
+                System.err.println("Markers : ");
+                for (Marker m : markersOri)
+                    System.err.println(m);
 
-				System.err.println("Markers collapsed: ");
-				for (Marker m : markersCollapsedOri)
-					System.err.println(m);
+                System.err.println("Markers collapsed: ");
+                for (Marker m : markersCollapsedOri)
+                    System.err.println(m);
 
-				throw new RuntimeException("Error creating markers! Markers and collapsed marker do not match!\n\t" + mStr + "\n\t" + mColOriStr);
-			}
+                throw new RuntimeException("Error creating markers! Markers and collapsed marker do not match!\n\t" + mStr + "\n\t" + mColOriStr);
+            }
 
-			//---
-			// Compare to Markers.collapseZeroGap
-			//---
+            //---
+            // Compare to Markers.collapseZeroGap
+            //---
 
-			// Collapse
-			Map<Marker, Marker> collapse = MarkerUtil.collapseZeroGap(markersOri);
-			// Get unique markers
-			HashSet<Marker> collapsed = new HashSet<Marker>();
-			collapsed.addAll(collapse.values());
+            // Collapse
+            Map<Marker, Marker> collapse = MarkerUtil.collapseZeroGap(markersOri);
+            // Get unique markers
+            HashSet<Marker> collapsed = new HashSet<>(collapse.values());
 
-			Markers markers = new Markers();
-			markers.addAll(collapsed);
-			String mColStr = markers2string(markers); // Create string
+            Markers markers = new Markers();
+            markers.addAll(collapsed);
+            String mColStr = markers2string(markers); // Create string
 
-			// Are generated intervasl OK?
-			if (!mColStr.equals(mStr)) {
-				Log.debug("Error checing markers! Markers and collapsed marker do not match!\n\t" + mStr + "\n\t" + mColStr);
+            // Are generated intervasl OK?
+            if (!mColStr.equals(mStr)) {
+                Log.debug("Error checing markers! Markers and collapsed marker do not match!\n\t" + mStr + "\n\t" + mColStr);
 
-				System.err.println("Markers : ");
-				for (Marker m : markersOri)
-					System.err.println(m);
+                System.err.println("Markers : ");
+                for (Marker m : markersOri)
+                    System.err.println(m);
 
-				System.err.println("Markers collapsed: ");
-				markers = new Markers();
-				markers.addAll(collapse.keySet());
-				Markers keySorted = markers.sort(false, false);
-				for (Marker mkey : keySorted)
-					System.err.println(mkey + "\t->\t" + collapse.get(mkey));
+                System.err.println("Markers collapsed: ");
+                markers = new Markers();
+                markers.addAll(collapse.keySet());
+                Markers keySorted = markers.sort(false, false);
+                for (Marker mkey : keySorted)
+                    System.err.println(mkey + "\t->\t" + collapse.get(mkey));
 
-				throw new RuntimeException("Error checing markers! Markers and collapsed marker do not match!\n\t" + mStr + "\n\t" + mColStr);
-			}
-		}
-	}
+                throw new RuntimeException("Error checing markers! Markers and collapsed marker do not match!\n\t" + mStr + "\n\t" + mColStr);
+            }
+        }
+    }
 }

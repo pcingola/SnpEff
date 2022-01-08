@@ -1,11 +1,12 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import org.junit.Assert;
 import org.snpeff.interval.*;
 import org.snpeff.snpEffect.*;
 import org.snpeff.util.GprSeq;
 
 import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Creates a simple "genome" for testing:
@@ -94,7 +95,7 @@ public class TestGenome {
                         + "\n");
         }
 
-        Assert.assertEquals(countMatchExpected, countMatch);
+        assertEquals(countMatchExpected, countMatch);
     }
 
     /**

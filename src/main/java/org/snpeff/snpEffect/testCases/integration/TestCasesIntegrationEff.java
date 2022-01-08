@@ -38,7 +38,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 				EffectImpact imp = veff.getImpact();
 
 				if (verbose) Log.info("\t" + imp + "\t" + impPrev + "\t" + imp.compareTo(impPrev) + "\t" + veff);
-				Assert.assertTrue(impPrev.compareTo(imp) <= 0); // Higher impact go first
+				assertTrue(impPrev.compareTo(imp) <= 0); // Higher impact go first
 				impPrev = imp;
 			}
 		}
@@ -53,12 +53,12 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 		List<VcfEntry> vcfEntries = snpEffect("testHg3775Chr8", path("eff_sort_canon.vcf"), null);
 
 		// Only one entry in this file
-		Assert.assertEquals(1, vcfEntries.size());
+		assertEquals(1, vcfEntries.size());
 
 		VcfEntry ve = vcfEntries.get(0);
 		VcfEffect veff = ve.getVcfEffects().get(0);
 
-		Assert.assertEquals("ENST00000456015", veff.getTranscriptId());
+		assertEquals("ENST00000456015", veff.getTranscriptId());
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 		for (VcfEntry ve : vcfEntries) {
 			int numEffs = ve.getVcfEffects().size();
 			if (verbose) Log.info("Num effects:" + numEffs + "\t" + ve);
-			Assert.assertTrue(numEffs <= 1);
+			assertTrue(numEffs <= 1);
 		}
 	}
 
@@ -128,7 +128,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 		List<VcfEntry> list = snpEffect("testHg3775Chr15", path("mnp_insertion_at_transcript_end.vcf"), args);
 
 		// We should be able to annotate this entry (if INFO is empty, something went wrong)
-		Assert.assertFalse(list.get(0).getInfoStr().isEmpty());
+		assertFalse(list.get(0).getInfoStr().isEmpty());
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 		List<VcfEntry> list = snpEffect("testHg3775Chr10", path("mnp_deletion.vcf"), args);
 
 		// We should be able to annotate this entry (if INFO is empty, something went wrong)
-		Assert.assertFalse(list.get(0).getInfoStr().isEmpty());
+		assertFalse(list.get(0).getInfoStr().isEmpty());
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class TestCasesIntegrationEff extends TestCasesIntegrationBase {
 			}
 
 			// Check that there is one and only one annotation
-			Assert.assertEquals(1, count);
+			assertEquals(1, count);
 		}
 	}
 

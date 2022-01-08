@@ -54,11 +54,11 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 				}
 			}
 
-			Assert.assertTrue("No protein interaction effect found", countPi > 0);
+			assertTrue("No protein interaction effect found", countPi > 0);
 
 			// Check if we've found all interactions
 			for (String id : expectedIds.keySet())
-				Assert.assertTrue("Interaction not found: " + id, expectedIds.get(id));
+				assertTrue("Interaction not found: " + id, expectedIds.get(id));
 		}
 	}
 
@@ -93,11 +93,11 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 				}
 			}
 
-			Assert.assertTrue("No protein interaction effect found", countPi > 0);
+			assertTrue("No protein interaction effect found", countPi > 0);
 
 			// Check if we've found all interactions
 			for (String id : expectedIds.keySet())
-				Assert.assertTrue("Interaction not found: " + id, expectedIds.get(id));
+				assertTrue("Interaction not found: " + id, expectedIds.get(id));
 		}
 	}
 
@@ -124,28 +124,28 @@ public class TestCasesIntegrationProteinInteraction extends TestCasesIntegration
 				if (verbose) Log.info("\tEFF\t" + veff.getEffectType() + "\t" + veff);
 				if (veff.getEffectType() == EffectType.PROTEIN_STRUCTURAL_INTERACTION_LOCUS) {
 					countPi++;
-					Assert.assertTrue("Expected HGVS.c possition does not match", veff.getHgvsDna().startsWith("c.679"));
-					Assert.assertTrue("Expected HGVS.p possition does not match", //
+					assertTrue("Expected HGVS.c possition does not match", veff.getHgvsDna().startsWith("c.679"));
+					assertTrue("Expected HGVS.p possition does not match", //
 							veff.getFeatureId().startsWith("1H4R:A_227") //
 									|| veff.getFeatureId().startsWith("1H4R:B_227") //
 					);
 					foundPi = true;
 				} else if (veff.getEffectType() == EffectType.FRAME_SHIFT) {
-					Assert.assertTrue("Expected HGVS.c possition does not match", veff.getHgvsDna().startsWith("c.683"));
-					Assert.assertTrue("Expected HGVS.p possition does not match", veff.getHgvsProt().startsWith("p.Lys228"));
+					assertTrue("Expected HGVS.c possition does not match", veff.getHgvsDna().startsWith("c.683"));
+					assertTrue("Expected HGVS.p possition does not match", veff.getHgvsProt().startsWith("p.Lys228"));
 					foundFs = true;
 				}
 			}
 
 			if (ve.isSingleSnp()) {
-				Assert.assertTrue("No interactions found", countPi > 0);
+				assertTrue("No interactions found", countPi > 0);
 			} else {
-				Assert.assertFalse("There should be no interactions", countPi > 0);
+				assertFalse("There should be no interactions", countPi > 0);
 			}
 		}
 
-		Assert.assertTrue("Interaction term not found", foundPi);
-		Assert.assertTrue("Frameshift term not found", foundFs);
+		assertTrue("Interaction term not found", foundPi);
+		assertTrue("Frameshift term not found", foundFs);
 	}
 
 }

@@ -9,9 +9,9 @@ import org.snpeff.interval.tree.Itree;
  */
 public class TestCasesIntervalTreeOri extends TestCasesIntervalTree {
 
-	@Override
-	protected Itree newItree(Markers markers) {
-		return new IntervalTreeOri(markers);
-	}
+    @Override
+    protected Itree newItree(Markers markers) {
+        return new IntervalTreeOri(markers);
+    }
 
 }

@@ -2,7 +2,7 @@ package org.snpeff.snpEffect.testCases.unity;
 
 import java.io.Serializable;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.interval.Exon;
 import org.snpeff.interval.Variant;
 import org.snpeff.snpEffect.EffectType;
@@ -45,7 +45,7 @@ public class TestCasesMnps extends TestCasesBase {
 		super();
 	}
 
-	void addIfDiff(char codonOld[], char codonNew[]) {
+	void addIfDiff(char[] codonOld, char codonNew[]) {
 		String cold = new String(codonOld);
 		String cnew = new String(codonNew);
 		if (!cold.equals(cnew)) {
@@ -81,10 +81,10 @@ public class TestCasesMnps extends TestCasesBase {
 			String effStr = effect.effect(true, true, true, false, false);
 
 			if (codons.length() > 1) {
-				String codonsExp[] = codons.split("/");
+				String[] codonsExp = codons.split("/");
 
-				boolean error = (!codonsExp[0].toUpperCase().equals(effect.getCodonsRef().toUpperCase()) //
-						|| !codonsExp[1].toUpperCase().equals(effect.getCodonsAlt().toUpperCase()));
+				boolean error = (!codonsExp[0].equalsIgnoreCase(effect.getCodonsRef()) //
+						|| !codonsExp[1].equalsIgnoreCase(effect.getCodonsAlt()));
 
 				if (error || debug) {
 					Log.debug("Fatal error:"//
@@ -99,7 +99,7 @@ public class TestCasesMnps extends TestCasesBase {
 					);
 				}
 
-				/**
+				/*
 				 * Error? Dump so we can debug...
 				 */
 				if (error) {
@@ -120,16 +120,16 @@ public class TestCasesMnps extends TestCasesBase {
 	}
 
 	String codons() {
-		char seq[] = chromoSequence.toCharArray();
-		char seqNew[] = chromoNewSequence.toCharArray();
+		char[] seq = chromoSequence.toCharArray();
+		char[] seqNew = chromoNewSequence.toCharArray();
 
 		codonsOld = "";
 		codonsNew = "";
 		int codonIdx = 0;
 		int i = 0;
 		int step = transcript.isStrandPlus() ? 1 : -1;
-		char codonOld[] = new char[3];
-		char codonNew[] = new char[3];
+		char[] codonOld = new char[3];
+		char[] codonNew = new char[3];
 		for (Exon ex : transcript.sortedStrand()) {
 			int start = ex.isStrandPlus() ? ex.getStart() : ex.getEnd();
 			for (i = start; ex.intersects(i); i += step, codonIdx = (codonIdx + 1) % 3) {
@@ -152,17 +152,17 @@ public class TestCasesMnps extends TestCasesBase {
 	 * Create a MNP
 	 */
 	String createMnp(int pos, int mnpLen) {
-		char chSeq[] = chromoSequence.toCharArray();
-		char chSeqNew[] = chromoSequence.toCharArray();
+		char[] chSeq = chromoSequence.toCharArray();
+		char[] chSeqNew = chromoSequence.toCharArray();
 
-		String mnp = "";
+		StringBuilder mnp = new StringBuilder();
 		for (int i = pos; i < (pos + mnpLen); i++) {
 			chSeqNew[i] = snp(chSeq[i]);
-			mnp += chSeqNew[i];
+			mnp.append(chSeqNew[i]);
 		}
 
 		chromoNewSequence = new String(chSeqNew);
-		return mnp;
+		return mnp.toString();
 	}
 
 	@Override
@@ -216,7 +216,7 @@ public class TestCasesMnps extends TestCasesBase {
 			}
 		}
 
-		System.err.println("");
+		System.err.println();
 	}
 
 }

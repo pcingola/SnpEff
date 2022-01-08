@@ -86,18 +86,18 @@ public class TestCasesIntegrationHgvsDnaDup extends TestCasesIntegrationBase {
 
 				// Compare results
 				if (trId != null && trId.equals(trIdC)) {
-					Assert.assertEquals(hgvsCexp, hgvsCactual);
+					assertEquals(hgvsCexp, hgvsCactual);
 					okC = true;
 				}
 
 				if (trId != null && trId.equals(trIdP)) {
-					Assert.assertEquals(hgvsPexp, hgvsPactual);
+					assertEquals(hgvsPexp, hgvsPactual);
 					okP = true;
 				}
 			}
 
-			Assert.assertTrue("HGVS (DNA) not found: '" + hgvsCexp + "'", okC);
-			if (!hgvsPexp.isEmpty()) Assert.assertTrue("HGVS (Protein) not found: '" + hgvsPexp + "'", okP);
+			assertTrue("HGVS (DNA) not found: '" + hgvsCexp + "'", okC);
+			if (!hgvsPexp.isEmpty()) assertTrue("HGVS (Protein) not found: '" + hgvsPexp + "'", okP);
 		}
 	}
 

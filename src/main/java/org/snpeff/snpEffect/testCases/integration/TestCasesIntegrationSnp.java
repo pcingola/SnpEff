@@ -43,12 +43,12 @@ public class TestCasesIntegrationSnp extends TestCasesIntegrationBase {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.NON_SYNONYMOUS_START) {
-					Assert.assertEquals(EffectImpact.LOW, veff.getImpact());
+					assertEquals(EffectImpact.LOW, veff.getImpact());
 					checked = true;
 				}
 			}
 		}
-		Assert.assertEquals(true, checked);
+		assertEquals(true, checked);
 
 	}
 
@@ -75,13 +75,13 @@ public class TestCasesIntegrationSnp extends TestCasesIntegrationBase {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.STOP_GAINED) {
-					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
+					assertEquals(EffectImpact.HIGH, veff.getImpact());
 					checked = true;
 				}
 			}
 		}
 
-		Assert.assertEquals(true, checked);
+		assertEquals(true, checked);
 	}
 
 	/**
@@ -107,12 +107,12 @@ public class TestCasesIntegrationSnp extends TestCasesIntegrationBase {
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t\t" + veff);
 				if (veff.getEffectType() == EffectType.START_LOST) {
-					Assert.assertEquals(EffectImpact.HIGH, veff.getImpact());
+					assertEquals(EffectImpact.HIGH, veff.getImpact());
 					checked = true;
 				}
 			}
 		}
-		Assert.assertEquals(true, checked);
+		assertEquals(true, checked);
 
 	}
 

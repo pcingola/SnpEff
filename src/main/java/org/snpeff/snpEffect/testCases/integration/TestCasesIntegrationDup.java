@@ -56,7 +56,7 @@ public class TestCasesIntegrationDup extends TestCasesIntegrationBase {
 			}
 		}
 
-		Assert.assertTrue("Gene FGFR1 not found in <DUP>", found);
+		assertTrue("Gene FGFR1 not found in <DUP>", found);
 	}
 
 }

@@ -70,7 +70,7 @@ public class TestCasesIntegrationVcfs extends TestCasesIntegrationBase {
 
 		// All VCF entries should be filtered out
 		Log.debug("Vcf entries: " + vcfEntries.size());
-		Assert.assertEquals(0, vcfEntries.size());
+		assertEquals(0, vcfEntries.size());
 
 		// Nothing should be printed
 		for (VcfEntry ve : vcfEntries)
@@ -95,7 +95,7 @@ public class TestCasesIntegrationVcfs extends TestCasesIntegrationBase {
 
 		// This should run OK
 		boolean ok = snpEff.run();
-		Assert.assertTrue("SnpEff run failed!", ok);
+		assertTrue("SnpEff run failed!", ok);
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class TestCasesIntegrationVcfs extends TestCasesIntegrationBase {
 		// Run command
 		SnpEffCmdEff seff = (SnpEffCmdEff) snpEff.cmd();
 		List<VcfEntry> vcfEntries = seff.run(true);
-		Assert.assertFalse("SnpEff run failed, returned an empty list", vcfEntries.isEmpty());
+		assertFalse("SnpEff run failed, returned an empty list", vcfEntries.isEmpty());
 
 		// Check output
 		for (VcfEntry ve : vcfEntries) {

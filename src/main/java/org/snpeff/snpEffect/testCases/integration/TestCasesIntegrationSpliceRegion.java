@@ -51,7 +51,7 @@ public class TestCasesIntegrationSpliceRegion extends TestCasesIntegrationBase {
 		// Get effects
 		List<EffectType> effTypes = oeff.get().getEffectTypes();
 		if (verbose) Log.info("effTypes:" + effTypes);
-		Assert.assertTrue("Effect type 'SPLICE_SITE_REGION' not found", effTypes.contains(EffectType.SPLICE_SITE_REGION));
+		assertTrue("Effect type 'SPLICE_SITE_REGION' not found", effTypes.contains(EffectType.SPLICE_SITE_REGION));
 	}
 
 }

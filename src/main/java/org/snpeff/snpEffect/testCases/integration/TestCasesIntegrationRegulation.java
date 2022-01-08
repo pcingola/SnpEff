@@ -48,7 +48,7 @@ public class TestCasesIntegrationRegulation extends TestCasesIntegrationBase {
 		snpeffBuild.setVerbose(verbose);
 		snpeffBuild.setSupressOutput(!verbose);
 		boolean ok = snpeffBuild.run();
-		Assert.assertTrue("Error building regulatory regions", ok);
+		assertTrue("Error building regulatory regions", ok);
 
 		//---
 		// Annotate using the regulatory region database we've just created
@@ -71,7 +71,7 @@ public class TestCasesIntegrationRegulation extends TestCasesIntegrationBase {
 			}
 		}
 
-		Assert.assertTrue("Error annotating regulatory regions", ok);
+		assertTrue("Error annotating regulatory regions", ok);
 
 	}
 }

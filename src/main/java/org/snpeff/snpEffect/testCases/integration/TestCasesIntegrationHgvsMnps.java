@@ -58,12 +58,12 @@ public class TestCasesIntegrationHgvsMnps extends TestCasesIntegrationBase {
 		for (VcfEffect veff : ve.getVcfEffects()) {
 			if (verbose) Log.debug("\t" + veff + "\n\t\ttranscript: " + veff.getTranscriptId() + "\n\t\tHgvs (DNA): " + veff.getHgvsDna());
 			if (veff.getTranscriptId().equals("NM_001042492.2")) {
-				Assert.assertEquals("HGVS p. notation does not match", "p.Gln1055*", veff.getHgvsProt());
+				assertEquals("HGVS p. notation does not match", "p.Gln1055*", veff.getHgvsProt());
 				ok = true;
 			}
 		}
 
-		Assert.assertTrue("Transcript not found", ok);
+		assertTrue("Transcript not found", ok);
 	}
 
 }

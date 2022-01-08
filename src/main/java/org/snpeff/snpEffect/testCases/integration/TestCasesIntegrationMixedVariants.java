@@ -28,7 +28,7 @@ public class TestCasesIntegrationMixedVariants extends TestCasesIntegrationBase 
 		CompareToVep comp = new CompareToVep(genome, verbose);
 		comp.compareVep(vcf);
 		if (verbose) Log.info(comp);
-		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+		assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class TestCasesIntegrationMixedVariants extends TestCasesIntegrationBase 
 			if (verbose) Log.info(ve);
 			for (Variant v : ve.variants()) {
 				if (verbose) Log.info("\t\t" + v);
-				Assert.assertTrue("Variant is not MIXED", v.getVariantType() == VariantType.MIXED);
+				assertTrue("Variant is not MIXED", v.getVariantType() == VariantType.MIXED);
 			}
 		}
 	}
@@ -124,7 +124,7 @@ public class TestCasesIntegrationMixedVariants extends TestCasesIntegrationBase 
 		List<VcfEffect> veffs = ve.getVcfEffects();
 		VcfEffect veff = veffs.get(0);
 
-		Assert.assertEquals("Exon rank does not match", 12, veff.getRank());
+		assertEquals("Exon rank does not match", 12, veff.getRank());
 
 	}
 

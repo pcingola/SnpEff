@@ -99,7 +99,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 		Transcript tr = gene.iterator().next();
 		tr.createSpliceSites(SpliceSite.CORE_SPLICE_SITE_SIZE, 0, 0, 0);
 		List<SpliceSite> spliceSites = tr.spliceSites();
-		Assert.assertEquals(0, spliceSites.size());
+		assertEquals(0, spliceSites.size());
 	}
 
 	@Test
@@ -169,7 +169,7 @@ public class TestCasesIntegrationGff3 extends TestCasesIntegrationBase {
 		// Show stderr and check message
 		if (verbose) System.err.println("STDERR:\n" + myErr);
 
-		Assert.assertEquals("Expecting one warning 'WARNING_FRAMES_ZERO'", 1, (int) Log.getWarnCount().get(ErrorWarningType.WARNING_FRAMES_ZERO));
+		assertEquals("Expecting one warning 'WARNING_FRAMES_ZERO'", 1, (int) Log.getWarnCount().get(ErrorWarningType.WARNING_FRAMES_ZERO));
 	}
 
 	/**

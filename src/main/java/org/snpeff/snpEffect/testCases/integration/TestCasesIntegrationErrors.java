@@ -43,13 +43,13 @@ public class TestCasesIntegrationErrors extends TestCasesIntegrationBase {
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t\t" + veff);
-				Assert.assertEquals(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND.toString(), veff.getErrorsWarning());
+				assertEquals(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND.toString(), veff.getErrorsWarning());
 				count++;
 			}
 
 		}
 
-		Assert.assertEquals(9, count);
+		assertEquals(9, count);
 	}
 
 	@Test
@@ -72,13 +72,13 @@ public class TestCasesIntegrationErrors extends TestCasesIntegrationBase {
 
 			for (VcfEffect veff : ve.getVcfEffects()) {
 				if (verbose) Log.info("\t\t" + veff);
-				Assert.assertEquals(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND.toString(), veff.getErrorsWarning());
+				assertEquals(ErrorWarningType.ERROR_CHROMOSOME_NOT_FOUND.toString(), veff.getErrorsWarning());
 				count++;
 			}
 
 		}
 
-		Assert.assertEquals(9, count);
+		assertEquals(9, count);
 	}
 
 }

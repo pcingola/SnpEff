@@ -150,7 +150,7 @@ public class TestCasesIntegrationTranscript {
 							;
 
 							Log.debug(msg);
-							Assert.assertEquals(msg, aa, aaReal);
+							assertEquals(msg, aa, aaReal);
 						}
 					}
 
@@ -160,7 +160,7 @@ public class TestCasesIntegrationTranscript {
 			}
 		}
 
-		Assert.assertTrue("No codon/AA checked!", countOk > 1);
+		assertTrue("No codon/AA checked!", countOk > 1);
 	}
 
 	@Test
@@ -222,14 +222,14 @@ public class TestCasesIntegrationTranscript {
 								+ "\n\n" + tr //
 						;
 						Log.debug(msg);
-						Assert.assertEquals(msg, aaReal, aa);
+						assertEquals(msg, aaReal, aa);
 					}
 					countOk++;
 				}
 			}
 		}
 
-		Assert.assertTrue("No codon/AA checked!", countOk > 0);
+		assertTrue("No codon/AA checked!", countOk > 0);
 	}
 
 	@Test
@@ -257,7 +257,7 @@ public class TestCasesIntegrationTranscript {
 					// Get codon coordinateshrow new RuntimeException("FINISH THIS TEST CASE!!!!" + aanum2pos);
 					int codon[] = tr.codonNumber2Pos(aaNum);
 					int codonPos = (tr.isStrandPlus() ? codon[0] : codon[2]);
-					Assert.assertEquals("Genomic locations do not matcn:" //
+					assertEquals("Genomic locations do not matcn:" //
 							+ "\n\taaNum           : " + aaNum //
 							+ "\n\tcodonNumber2Pos : " + codonPos //
 							+ "\n\taanum2pos       : " + aanum2pos[aaNum] //
@@ -270,6 +270,6 @@ public class TestCasesIntegrationTranscript {
 			}
 		}
 
-		Assert.assertTrue("No codon/AA checked!", countOk > 0);
+		assertTrue("No codon/AA checked!", countOk > 0);
 	}
 }

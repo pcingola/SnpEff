@@ -28,7 +28,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setCompareHgvs();
 		comp.compareVep(vcf);
 		if (verbose) Log.info(comp);
-		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+		assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 	@Test
@@ -42,7 +42,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
 		if (verbose) Log.info(comp);
-		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+		assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 	@Test
@@ -56,7 +56,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
 		if (verbose) Log.info(comp);
-		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+		assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
 		if (verbose) Log.info(comp);
-		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+		assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
 		if (verbose) Log.info(comp);
-		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+		assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 	@Test
@@ -97,7 +97,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setOnlyProtein(true);
 		comp.compareVep(vcf);
 		if (verbose) Log.info(comp);
-		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+		assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 	@Test
@@ -113,7 +113,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setShiftHgvs(true);
 		comp.compareVep(vcf);
 		if (verbose) Log.info(comp);
-		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+		assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 	@Test
@@ -127,7 +127,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 		comp.setShiftHgvs(false);
 		comp.compareVep(vcf);
 		if (verbose) Log.info(comp);
-		Assert.assertTrue("No comparissons were made!", comp.checkComapred());
+		assertTrue("No comparissons were made!", comp.checkComapred());
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 			ok |= veff.getTranscriptId().equals("ENST00000544455") && veff.getHgvsDna().equals("c.1909+12delT");
 		}
 
-		Assert.assertTrue(ok);
+		assertTrue(ok);
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 					&& veff.getHgvsDna().equals("c.420+6T>C");
 		}
 
-		Assert.assertTrue(ok);
+		assertTrue(ok);
 	}
 
 	/**
@@ -239,7 +239,7 @@ public class TestCasesIntegrationHgvs extends TestCasesIntegrationBase {
 			;
 		}
 
-		Assert.assertTrue("Error in HGVS annotaiton", ok);
+		assertTrue("Error in HGVS annotaiton", ok);
 	}
 
 }

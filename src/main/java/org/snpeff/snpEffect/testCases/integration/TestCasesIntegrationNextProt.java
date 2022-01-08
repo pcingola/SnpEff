@@ -26,7 +26,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		snpEff.setVerbose(verbose);
 		snpEff.setSupressOutput(!verbose);
 		boolean ok = snpEff.run();
-		Assert.assertEquals(true, ok);
+		assertEquals(true, ok);
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 		}
 
 		if (verbose) Log.info("Count: " + count);
-		Assert.assertTrue(count > 0);
+		assertTrue(count > 0);
 	}
 
 	@Test

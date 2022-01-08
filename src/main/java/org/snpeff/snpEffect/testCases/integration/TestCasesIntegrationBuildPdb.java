@@ -42,7 +42,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 			if (verbose) Log.debug("INTERACTION:\t" + dr);
 		}
 
-		Assert.assertTrue("Interaction not found!", ok);
+		assertTrue("Interaction not found!", ok);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class TestCasesIntegrationBuildPdb extends TestCasesIntegrationBase {
 			if (verbose) Log.debug(dr);
 		}
 
-		Assert.assertTrue("Interaction not found!", ok);
+		assertTrue("Interaction not found!", ok);
 	}
 
 }

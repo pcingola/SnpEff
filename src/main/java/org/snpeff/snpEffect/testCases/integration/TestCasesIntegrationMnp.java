@@ -31,7 +31,7 @@ public class TestCasesIntegrationMnp extends TestCasesIntegrationBase {
 		List<VcfEntry> results = snpeff.run(true);
 
 		// Check
-		Assert.assertEquals(1, results.size());
+		assertEquals(1, results.size());
 		VcfEntry result = results.get(0);
 
 		for (VcfEffect eff : result.getVcfEffects()) {

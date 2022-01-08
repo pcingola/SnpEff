@@ -45,10 +45,10 @@ public class TestCasesIntegrationHgvsLarge extends TestCasesIntegrationBase {
 			if (verbose) Log.info(veff);
 
 			if (verbose) Log.info("\tAA change    : " + veff.getAa());
-			Assert.assertTrue(veff.getAa() == null || veff.getAa().length() < 100);
+			assertTrue(veff.getAa() == null || veff.getAa().length() < 100);
 
 			if (verbose) Log.info("\tCodon change : " + veff.getCodon());
-			Assert.assertTrue(veff.getCodon() == null || veff.getCodon().length() < 100);
+			assertTrue(veff.getCodon() == null || veff.getCodon().length() < 100);
 
 		}
 	}

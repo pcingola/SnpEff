@@ -38,6 +38,6 @@ public class TestCasesIntegrationMissenseSilentRatio extends TestCasesIntegratio
 		double silentRatio = snpeff.getChangeEffectResutStats().getSilentRatio();
 		if (verbose) Log.info("Missense / Silent ratio: " + silentRatio);
 
-		Assert.assertEquals(1.19, silentRatio, 0.1);
+		assertEquals(1.19, silentRatio, 0.1);
 	}
 }

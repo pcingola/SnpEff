@@ -1,7 +1,6 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.interval.Chromosome;
 import org.snpeff.interval.CytoBands;
 import org.snpeff.interval.Genome;
@@ -9,6 +8,8 @@ import org.snpeff.interval.Marker;
 import org.snpeff.interval.Markers;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Log;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Test case for cytobands
@@ -33,7 +34,7 @@ public class TestCasesCytoBands {
 
 		Genome genome = config.getGenome();
 		CytoBands cytoBands = genome.getCytoBands();
-		Assert.assertFalse("No cytobands found!", cytoBands.isEmpty());
+		assertFalse("No cytobands found!", cytoBands.isEmpty());
 	}
 
 	/**
@@ -62,8 +63,8 @@ public class TestCasesCytoBands {
 				System.out.println(cb);
 		}
 
-		Assert.assertTrue("Should find one cytoband for query: " + m, cbs.size() == 1);
-		Assert.assertEquals("Expected cytoband 'p12' not found: " + m, "p12", cbs.get(0).getId());
+		assertTrue("Should find one cytoband for query: " + m, cbs.size() == 1);
+		assertEquals("Expected cytoband 'p12' not found: " + m, "p12", cbs.get(0).getId());
 
 	}
 

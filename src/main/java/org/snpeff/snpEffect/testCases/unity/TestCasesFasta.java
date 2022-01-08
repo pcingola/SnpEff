@@ -1,6 +1,6 @@
 package org.snpeff.snpEffect.testCases.unity;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.fileIterator.FastaFileIterator;
 import org.snpeff.util.Log;
 
@@ -11,20 +11,20 @@ import org.snpeff.util.Log;
  */
 public class TestCasesFasta extends TestCasesBase {
 
-	public TestCasesFasta() {
-		super();
-	}
+    public TestCasesFasta() {
+        super();
+    }
 
-	/**
-	 * Bug: Fasta file iterator should not crash if first line is empty
-	 */
-	@Test
-	public void test_01() {
-		Log.debug("Test");
-		String fastaFileName = path("emptyLine.fa");
-		FastaFileIterator ffi = new FastaFileIterator(fastaFileName);
-		for (String seq : ffi) {
-			if (verbose) Log.info("SeqName: " + ffi.getName() + "\tSize: " + seq.length());
-		}
-	}
+    /**
+     * Bug: Fasta file iterator should not crash if first line is empty
+     */
+    @Test
+    public void test_01() {
+        Log.debug("Test");
+        String fastaFileName = path("emptyLine.fa");
+        FastaFileIterator ffi = new FastaFileIterator(fastaFileName);
+        for (String seq : ffi) {
+            if (verbose) Log.info("SeqName: " + ffi.getName() + "\tSize: " + seq.length());
+        }
+    }
 }

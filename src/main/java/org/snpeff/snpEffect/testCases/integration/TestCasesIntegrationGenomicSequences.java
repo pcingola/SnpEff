@@ -55,7 +55,7 @@ public class TestCasesIntegrationGenomicSequences {
 
 					// Sanity checks
 					Assert.assertNotNull(seq == null);
-					Assert.assertEquals(seq, ex.getSequence());
+					assertEquals(seq, ex.getSequence());
 				}
 			}
 		}
@@ -97,7 +97,7 @@ public class TestCasesIntegrationGenomicSequences {
 
 					// Sanity checks
 					Assert.assertNotNull(seq == null);
-					Assert.assertEquals(seq, ex.getSequence());
+					assertEquals(seq, ex.getSequence());
 				}
 			}
 		}

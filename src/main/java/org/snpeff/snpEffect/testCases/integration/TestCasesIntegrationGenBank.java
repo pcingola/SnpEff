@@ -36,7 +36,7 @@ public class TestCasesIntegrationGenBank extends TestCasesIntegrationBase {
 
 		// Check
 		SnpEffCmdProtein sprot = snpeffBuild.getSnpEffCmdProtein();
-		Assert.assertEquals("Wrong number of matching proteins", 3, sprot.getTotalOk());
-		Assert.assertEquals("Errors while checking sequenced", 0, sprot.getTotalErrors());
+		assertEquals("Wrong number of matching proteins", 3, sprot.getTotalOk());
+		assertEquals("Errors while checking sequenced", 0, sprot.getTotalErrors());
 	}
 }
