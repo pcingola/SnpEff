@@ -26,7 +26,7 @@
 package org.broad.igv.bbfile;
 
 import org.broad.tribble.util.LittleEndianInputStream;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.broad.tribble.util.SeekableStream;
 import org.broad.tribble.util.SeekableFileStream;
 
