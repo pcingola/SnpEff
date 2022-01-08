@@ -8,6 +8,7 @@ import org.snpeff.util.GprSeq;
 import org.snpeff.util.Log;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test random DEL changes
@@ -92,7 +93,7 @@ public class TestCasesDel {
             }
         }
 
-        assertTrue("No variant effects found", countMatch > 0);
+        assertTrue(countMatch > 0, "No variant effects found");
     }
 
     @Test
@@ -112,6 +113,6 @@ public class TestCasesDel {
                 assertEquals("HGVS.p notation error", "p.0?", eff.getHgvsProt());
             }
         }
-        assertTrue("No variant effects found", countMatch > 0);
+        assertTrue(countMatch > 0, "No variant effects found");
     }
 }

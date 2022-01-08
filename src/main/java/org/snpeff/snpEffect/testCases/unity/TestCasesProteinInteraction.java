@@ -6,7 +6,8 @@ import org.snpeff.util.Log;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.AssertEquals.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
@@ -29,7 +30,7 @@ public class TestCasesProteinInteraction extends TestCasesBaseApply {
         if (verbose) Log.debug(transcript);
         String protein = transcript.protein();
         int codonNum = 33;
-        int codonsPos[] = transcript.codonNumber2Pos(codonNum);
+        int[] codonsPos = transcript.codonNumber2Pos(codonNum);
         if (verbose)
             Log.debug("AA[" + codonNum + "]: " + protein.charAt(codonNum) + "\t" + codonsPos[0] + "\t" + codonsPos[1] + "\t" + codonsPos[2]);
 
@@ -40,13 +41,13 @@ public class TestCasesProteinInteraction extends TestCasesBaseApply {
                 Log.debug("Interaction locus: " + pil);
         }
 
-        assertEquals("Number of loci do not match", 2, list.size());
+        assertEquals(2, list.size(), "Number of loci do not match");
 
         ProteinInteractionLocus pil = list.get(0);
-        assertTrue("Interactions coordinates do not match: " + pil, (pil.getStart() == 199) && (pil.getEnd() == 199));
+        assertTrue((pil.getStart() == 199) && (pil.getEnd() == 199), "Interactions coordinates do not match: " + pil);
 
         pil = list.get(1);
-        assertTrue("Interactions coordinates do not match: " + pil, (pil.getStart() == 300) && (pil.getEnd() == 301));
+        assertTrue((pil.getStart() == 300) && (pil.getEnd() == 301), "Interactions coordinates do not match: " + pil);
     }
 
     /**
@@ -61,7 +62,7 @@ public class TestCasesProteinInteraction extends TestCasesBaseApply {
         if (verbose) Log.debug(transcript);
         String protein = transcript.protein();
         int codonNum = 66;
-        int codonsPos[] = transcript.codonNumber2Pos(codonNum);
+        int[] codonsPos = transcript.codonNumber2Pos(codonNum);
         if (verbose)
             Log.debug("AA[" + codonNum + "]: " + protein.charAt(codonNum) + "\t" + codonsPos[0] + "\t" + codonsPos[1] + "\t" + codonsPos[2]);
 
@@ -72,13 +73,13 @@ public class TestCasesProteinInteraction extends TestCasesBaseApply {
                 Log.debug("Interaction locus: " + pil);
         }
 
-        assertEquals("Number of loci do not match", 2, list.size());
+        assertEquals(2, list.size(), "Number of loci do not match");
 
         ProteinInteractionLocus pil = list.get(0);
-        assertTrue("Interactions coordinates do not match: " + pil, (pil.getStart() == 398) && (pil.getEnd() == 399));
+        assertTrue((pil.getStart() == 398) && (pil.getEnd() == 399), "Interactions coordinates do not match: " + pil);
 
         pil = list.get(1);
-        assertTrue("Interactions coordinates do not match: " + pil, (pil.getStart() == 900) && (pil.getEnd() == 900));
+        assertTrue((pil.getStart() == 900) && (pil.getEnd() == 900), "Interactions coordinates do not match: " + pil);
     }
 
 }

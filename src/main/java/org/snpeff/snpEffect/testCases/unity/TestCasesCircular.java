@@ -8,6 +8,7 @@ import org.snpeff.vcf.EffFormatVersion;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 /**
@@ -94,7 +95,7 @@ public class TestCasesCircular {
         CircularCorrection cc = new CircularCorrection(tr);
         cc.setDebug(debug);
         cc.correct();
-        assertFalse("No correction expexted for this transcript", cc.isCorrected());
+        assertFalse(cc.isCorrected(), "No correction expexted for this transcript");
     }
 
     @Test

@@ -128,7 +128,7 @@ public class TestCasesBase {
         // Check that reference sequence matches chromosome
         if (!variant.getReference().isEmpty()) {
             String chrSeq = chromoSequence.substring(variant.getStart(), variant.getEnd() + 1);
-            assertEquals("Reference sequence does not match: " + chrSeq + " vs " + variant.getReference(), chrSeq, variant.getReference());
+            assertEquals(chrSeq, variant.getReference(), "Reference sequence does not match: " + chrSeq + " vs " + variant.getReference());
         }
 
         // Check variant type
@@ -137,7 +137,7 @@ public class TestCasesBase {
         // Check sequences
         assertEquals(expectedCds, newTr.cds(), "CDS sequence should not change");
         if (expectedProtein != null)
-            assertEquals("Protein sequence should not change", expectedProtein, newTr.protein());
+            assertEquals(expectedProtein, newTr.protein(), "Protein sequence should not change");
 
         // Check exon coordinates
         Exon newEx1 = newTr.sorted().get(1);

@@ -12,7 +12,7 @@ import org.snpeff.util.Log;
 import java.io.File;
 import java.util.Random;
 
-import static org.junit.jupiter.api.AssertEquals.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test case
@@ -73,12 +73,12 @@ public class TestCasesGenomicSequences {
         // Remove all previous sequence*.bin files
         String dir = config.getDirDataGenomeVersion();
         deleteAllBinFiles(dir);
-        assertEquals("Sequence files have not been deleted from " + dir, 0, countSequenceBinFiles(dir));
+        assertEquals(0, countSequenceBinFiles(dir), "Sequence files have not been deleted from " + dir);
 
         //---
         // Create random chromosome sequences
         //---
-        String chrSeqs[] = new String[numberOfChromos];
+        String[] chrSeqs = new String[numberOfChromos];
         Random random = new Random(20151124);
         for (int i = 0; i < numberOfChromos; i++) {
             String chrSeq = GprSeq.randSequence(random, 100);
@@ -90,7 +90,7 @@ public class TestCasesGenomicSequences {
 
         // Count number of sequence*.bin files
         int countSeqFiles = countSequenceBinFiles(config.getDirDataGenomeVersion());
-        assertEquals("Unexpected number of sequence*.bin files", 1, countSeqFiles);
+        assertEquals(1, countSeqFiles, "Unexpected number of sequence*.bin files");
 
         //---
         // Check that we can recover the sequences from the file
@@ -105,7 +105,7 @@ public class TestCasesGenomicSequences {
             Marker marker = new Marker(chr, 0, chrSeqs[i].length() - 1);
             String seqRead = gsRead.querySequence(marker);
             if (verbose) Log.debug("Query marker: " + marker + ", sequence: " + seqRead);
-            assertEquals("Chromosome sequences do not match", chrSeqs[i].toUpperCase(), seqRead.toUpperCase());
+            assertEquals(chrSeqs[i].toUpperCase(), seqRead.toUpperCase(), "Chromosome sequences do not match");
         }
     }
 
@@ -135,12 +135,12 @@ public class TestCasesGenomicSequences {
         // Remove all previous sequence*.bin files
         String dir = config.getDirDataGenomeVersion();
         deleteAllBinFiles(dir);
-        assertEquals("Sequence files have not been deleted from " + dir, 0, countSequenceBinFiles(dir));
+        assertEquals(0, countSequenceBinFiles(dir), "Sequence files have not been deleted from " + dir);
 
         //---
         // Create random chromosome sequences
         //---
-        String chrSeqs[] = new String[numberOfChromos];
+        String[] chrSeqs = new String[numberOfChromos];
         Random random = new Random(20151124);
         for (int i = 0; i < numberOfChromos; i++) {
             String chrSeq = "";
@@ -155,7 +155,7 @@ public class TestCasesGenomicSequences {
 
         // Count number of sequence*.bin files
         int countSeqFiles = countSequenceBinFiles(config.getDirDataGenomeVersion());
-        assertEquals("Unexpected number of sequence*.bin files", (numberOfLargeChromos + 1), countSeqFiles);
+        assertEquals((numberOfLargeChromos + 1), countSeqFiles, "Unexpected number of sequence*.bin files");
 
         //---
         // Check that we can recover the sequences from the file
@@ -170,7 +170,7 @@ public class TestCasesGenomicSequences {
             Marker marker = new Marker(chr, 0, chrSeqs[i].length() - 1);
             String seqRead = gsRead.querySequence(marker);
             if (verbose) Log.debug("Query marker: " + marker + ", sequence: " + seqRead);
-            assertEquals("Chromosome sequences do not match", chrSeqs[i].toUpperCase(), seqRead.toUpperCase());
+            assertEquals(chrSeqs[i].toUpperCase(), seqRead.toUpperCase(), "Chromosome sequences do not match");
         }
     }
 

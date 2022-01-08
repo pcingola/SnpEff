@@ -36,8 +36,8 @@ public class TestCasesVariantDecompose {
         Variant variant = new Variant(chr, 300, "TTTATC", "ACG", "MIXED");
         Variant[] variants = variant.decompose();
 
-        assertEquals("Variant decomposition MNP part failed", "chr1:300_TTT/ACG 'MIXED_MNP'", variants[0].toString());
-        assertEquals("Variant decomposition InDel part failed", "chr1:303_ATC/ 'MIXED_DEL'", variants[1].toString());
+        assertEquals("chr1:300_TTT/ACG 'MIXED_MNP'", variants[0].toString(), "Variant decomposition MNP part failed");
+        assertEquals("chr1:303_ATC/ 'MIXED_DEL'", variants[1].toString(), "Variant decomposition InDel part failed");
     }
 
     @Test
@@ -46,8 +46,8 @@ public class TestCasesVariantDecompose {
         Variant variant = new Variant(chr, 300, "TTT", "ACGATC", "MIXED");
         Variant[] variants = variant.decompose();
 
-        assertEquals("Variant decomposition MNP part failed", "chr1:300_TTT/ACG 'MIXED_MNP'", variants[0].toString());
-        assertEquals("Variant decomposition InDel part failed", "chr1:303_/ATC 'MIXED_INS'", variants[1].toString());
+        assertEquals("chr1:300_TTT/ACG 'MIXED_MNP'", variants[0].toString(), "Variant decomposition MNP part failed");
+        assertEquals("chr1:303_/ATC 'MIXED_INS'", variants[1].toString(), "Variant decomposition InDel part failed");
     }
 
 }

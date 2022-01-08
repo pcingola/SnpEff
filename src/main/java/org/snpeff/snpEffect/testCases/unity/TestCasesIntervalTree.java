@@ -64,7 +64,7 @@ public class TestCasesIntervalTree {
         // Compare all results
         String resultsNaiveStr = resultsNaive.sort().toString();
         String resultsIntForestStr = resultsIntForest.sort().toString();
-        assertEquals("Results differ for query '" + m + "'.", resultsNaiveStr, resultsIntForestStr);
+        assertEquals(resultsNaiveStr, resultsIntForestStr, "Results differ for query '" + m + "'.");
 
         return resultsNaive.size();
     }
@@ -152,7 +152,7 @@ public class TestCasesIntervalTree {
             Gpr.showMark(i++, 100);
         }
 
-        assertTrue("Not a signle result found in all queries!", totalResults > 0);
+        assertTrue(totalResults > 0, "Not a signle result found in all queries!");
         System.err.println("");
     }
 
@@ -174,7 +174,7 @@ public class TestCasesIntervalTree {
             Gpr.showMark(i++, 10);
         }
 
-        assertTrue("Not a signle result found in all queries!", totalResults > 0);
+        assertTrue(totalResults > 0, "Not a signle result found in all queries!");
         System.err.println("");
 
     }

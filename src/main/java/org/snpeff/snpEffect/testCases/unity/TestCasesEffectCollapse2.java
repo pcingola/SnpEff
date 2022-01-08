@@ -11,6 +11,8 @@ import org.snpeff.util.Log;
 import org.snpeff.vcf.EffFormatVersion;
 import org.snpeff.vcf.VcfEffect;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Test case
  */
@@ -61,12 +63,12 @@ public class TestCasesEffectCollapse2 extends TestCasesBase {
             if (verbose) Log.info(vcfEff.getEffectsStrSo() + "\t" + vcfEff);
 
             foundSo |= vcfEff.getEffectsStrSo().equalsIgnoreCase(expectedAnn);
-            foundAnn |= vcfEff.toString().indexOf(expectedAnn) >= 0;
+            foundAnn |= vcfEff.toString().contains(expectedAnn);
         }
 
         // Annotation found?
-        assertTrue("Annotation (SO) '" + expectedAnn + "' not found", foundSo);
-        assertTrue("Annotation '" + expectedAnn + "' not found in 'ANN' field", foundAnn);
+        assertTrue(foundSo, "Annotation (SO) '" + expectedAnn + "' not found");
+        assertTrue(foundAnn, "Annotation '" + expectedAnn + "' not found in 'ANN' field");
     }
 
 }

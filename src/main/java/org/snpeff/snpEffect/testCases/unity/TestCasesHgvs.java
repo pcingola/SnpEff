@@ -44,8 +44,8 @@ public class TestCasesHgvs extends TestCasesBase {
             Log.debug("HGVS (Prot): '" + hgvsProt + "'");
         }
 
-        if (expectedHgvsC != null) assertEquals("HGVS.c notation does not match", expectedHgvsC, hgvsDna);
-        if (expectedHgvsP != null) assertEquals("HGVS.p notation does not match", expectedHgvsP, hgvsProt);
+        if (expectedHgvsC != null) assertEquals(expectedHgvsC, hgvsDna, "HGVS.c notation does not match");
+        if (expectedHgvsP != null) assertEquals(expectedHgvsP, hgvsProt, "HGVS.p notation does not match");
     }
 
     /**

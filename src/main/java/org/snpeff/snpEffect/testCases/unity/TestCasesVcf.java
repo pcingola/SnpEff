@@ -545,7 +545,7 @@ public class TestCasesVcf extends TestCasesBase {
 
             // Check that 'key=value' is in INFO
             String keyValPrev = infoKey + "=" + infoValuePrev;
-            assertTrue("Old key=valu is not present", ve.getInfoStr().contains(keyValPrev));
+            assertTrue(ve.getInfoStr().contains(keyValPrev), "Old key=valu is not present");
 
             // Replace value
             ve.addInfo(infoKey, infoValue);
@@ -553,10 +553,10 @@ public class TestCasesVcf extends TestCasesBase {
 
             // Check that new 'key=value' is there
             String keyVal = infoKey + "=" + infoValue;
-            assertTrue("New key=value is present", ve.toString().contains(keyVal));
+            assertTrue(ve.toString().contains(keyVal), "New key=value is present");
 
             // Check that previous 'key=value' is no longer there
-            assertTrue("Old key=value is still in INOF field", !ve.getInfoStr().contains(keyValPrev));
+            assertTrue(!ve.getInfoStr().contains(keyValPrev), "Old key=value is still in INOF field");
         }
     }
 
@@ -640,11 +640,11 @@ public class TestCasesVcf extends TestCasesBase {
         String keysFail[] = {"ann+", "9ann", ".gene"};
 
         for (String key : keysPass) {
-            assertTrue("String '" + key + "' should be a valid INFO key", VcfEntry.isValidInfoKey(key));
+            assertTrue(VcfEntry.isValidInfoKey(key), "String '" + key + "' should be a valid INFO key");
         }
 
         for (String key : keysFail)
-            assertFalse("String '" + key + "' should be an invalid INFO key", VcfEntry.isValidInfoKey(key));
+            assertFalse(VcfEntry.isValidInfoKey(key), "String '" + key + "' should be an invalid INFO key");
     }
 
     @Test
@@ -659,11 +659,11 @@ public class TestCasesVcf extends TestCasesBase {
             boolean ok = false;
             for (Variant var : ve.variants()) {
                 if (verbose) Log.info("\t" + var.getVariantType() + "\t" + var);
-                assertEquals("Variant type is not 'BND'", VariantType.BND, var.getVariantType());
+                assertEquals(VariantType.BND, var.getVariantType(), "Variant type is not 'BND'");
                 ok = true;
             }
 
-            assertTrue("No variants found!", ok);
+            assertTrue(ok, "No variants found!");
         }
     }
 
@@ -672,7 +672,7 @@ public class TestCasesVcf extends TestCasesBase {
         String str = "hi;hello;bye;\nadios=chau\tbye\nhi=hello\thola";
         String enc = VcfEntry.vcfInfoEncode(str);
         String dec = VcfEntry.vcfInfoDecode(enc);
-        assertEquals("Encoding-Decoding cycle failed", str, dec);
+        assertEquals(str, dec, "Encoding-Decoding cycle failed");
     }
 
     @Test
@@ -686,15 +686,15 @@ public class TestCasesVcf extends TestCasesBase {
             boolean ok = false;
             for (Variant var : ve.variants()) {
                 if (verbose) Log.info("\t" + var.getVariantType() + "\t" + var);
-                assertEquals("Variant type is not 'BND'", VariantType.BND, var.getVariantType());
+                assertEquals(VariantType.BND, var.getVariantType(), "Variant type is not 'BND'");
 
                 VariantBnd vbnd = (VariantBnd) var;
-                assertEquals("Variant BND 'left' does not match", ve.getInfoFlag("LEFT"), vbnd.isLeft());
-                assertEquals("Variant BND 'before' does not match", ve.getInfoFlag("BEFORE"), vbnd.isBefore());
+                assertEquals(ve.getInfoFlag("LEFT"), vbnd.isLeft(), "Variant BND 'left' does not match");
+                assertEquals(ve.getInfoFlag("BEFORE"), vbnd.isBefore(), "Variant BND 'before' does not match");
                 ok = true;
             }
 
-            assertTrue("No variants found!", ok);
+            assertTrue(ok, "No variants found!");
         }
     }
 

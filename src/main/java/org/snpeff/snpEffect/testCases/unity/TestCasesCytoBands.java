@@ -1,71 +1,66 @@
 package org.snpeff.snpEffect.testCases.unity;
 
 import org.junit.jupiter.api.Test;
-import org.snpeff.interval.Chromosome;
-import org.snpeff.interval.CytoBands;
-import org.snpeff.interval.Genome;
-import org.snpeff.interval.Marker;
-import org.snpeff.interval.Markers;
+import org.snpeff.interval.*;
 import org.snpeff.snpEffect.Config;
 import org.snpeff.util.Log;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test case for cytobands
- *
  */
 public class TestCasesCytoBands {
 
-	boolean debug = false;
-	boolean verbose = false || debug;
+    boolean debug = false;
+    boolean verbose = false || debug;
 
-	/**
-	 * Test that we can load cytobands
-	 */
-	@Test
-	public void test01() {
-		Log.debug("Test");
+    /**
+     * Test that we can load cytobands
+     */
+    @Test
+    public void test01() {
+        Log.debug("Test");
 
-		String genomeVer = "testHg19Chr22";
-		Config config = new Config(genomeVer);
-		config.setVerbose(verbose);
-		config.setDebug(debug);
+        String genomeVer = "testHg19Chr22";
+        Config config = new Config(genomeVer);
+        config.setVerbose(verbose);
+        config.setDebug(debug);
 
-		Genome genome = config.getGenome();
-		CytoBands cytoBands = genome.getCytoBands();
-		assertFalse("No cytobands found!", cytoBands.isEmpty());
-	}
+        Genome genome = config.getGenome();
+        CytoBands cytoBands = genome.getCytoBands();
+        assertFalse(cytoBands.isEmpty(), "No cytobands found!");
+    }
 
-	/**
-	 * Query cytobands
-	 */
-	@Test
-	public void test02() {
-		Log.debug("Test");
+    /**
+     * Query cytobands
+     */
+    @Test
+    public void test02() {
+        Log.debug("Test");
 
-		String genomeVer = "testHg19Chr22";
-		Config config = new Config(genomeVer);
-		config.setVerbose(verbose);
-		config.setDebug(debug);
+        String genomeVer = "testHg19Chr22";
+        Config config = new Config(genomeVer);
+        config.setVerbose(verbose);
+        config.setDebug(debug);
 
-		Genome genome = config.getGenome();
-		CytoBands cytoBands = genome.getCytoBands();
+        Genome genome = config.getGenome();
+        CytoBands cytoBands = genome.getCytoBands();
 
-		Chromosome chr = genome.getOrCreateChromosome("22");
-		int pos = 4800000;
-		Marker m = new Marker(chr, pos, pos);
-		Markers cbs = cytoBands.query(m);
+        Chromosome chr = genome.getOrCreateChromosome("22");
+        int pos = 4800000;
+        Marker m = new Marker(chr, pos, pos);
+        Markers cbs = cytoBands.query(m);
 
-		if (verbose) {
-			System.out.println("Resutls: ");
-			for (Marker cb : cbs)
-				System.out.println(cb);
-		}
+        if (verbose) {
+            System.out.println("Resutls: ");
+            for (Marker cb : cbs)
+                System.out.println(cb);
+        }
 
-		assertTrue("Should find one cytoband for query: " + m, cbs.size() == 1);
-		assertEquals("Expected cytoband 'p12' not found: " + m, "p12", cbs.get(0).getId());
+        assertTrue(cbs.size() == 1, "Should find one cytoband for query: " + m);
+        assertEquals("p12", cbs.get(0).getId(), "Expected cytoband 'p12' not found: " + m);
 
-	}
+    }
 
 }
