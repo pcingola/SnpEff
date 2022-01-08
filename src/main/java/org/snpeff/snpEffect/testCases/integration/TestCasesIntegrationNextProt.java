@@ -1,15 +1,15 @@
 package org.snpeff.snpEffect.testCases.integration;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.snpeff.SnpEff;
 import org.snpeff.fileIterator.VcfFileIterator;
 import org.snpeff.snpEffect.EffectType;
 import org.snpeff.snpEffect.VariantEffect;
-import org.snpeff.snpEffect.VariantEffect.EffectImpact;
 import org.snpeff.util.Log;
 import org.snpeff.vcf.VcfEffect;
 import org.snpeff.vcf.VcfEntry;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test NextProt databases
@@ -21,12 +21,12 @@ public class TestCasesIntegrationNextProt extends TestCasesIntegrationBase {
 	@Test
 	public void test_01_build() {
 		Log.debug("Test");
-		String args[] = { "buildNextProt", "testHg3770Chr22", path("nextProt") };
+		String[] args = { "buildNextProt", "testHg3770Chr22", path("nextProt") };
 		SnpEff snpEff = new SnpEff(args);
 		snpEff.setVerbose(verbose);
 		snpEff.setSupressOutput(!verbose);
 		boolean ok = snpEff.run();
-		assertEquals(true, ok);
+		assertTrue(ok);
 	}
 
 	@Test

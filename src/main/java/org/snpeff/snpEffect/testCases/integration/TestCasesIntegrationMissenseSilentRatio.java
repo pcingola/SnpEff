@@ -5,6 +5,8 @@ import org.snpeff.SnpEff;
 import org.snpeff.snpEffect.commandLine.SnpEffCmdEff;
 import org.snpeff.util.Log;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Calculate missense over silent ratio
  *
