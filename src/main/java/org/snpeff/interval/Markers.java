@@ -57,9 +57,9 @@ public class Markers implements Serializable, Collection<Marker> {
         if (flLower.endsWith(".txt"))
             return new BedFileIterator(fileName, null).loadMarkers(); // TXT is assumed to be "chr \t start \t end"
         else if (flLower.endsWith(".bed")) return new BedFileIterator(fileName).loadMarkers();
-        else if (flLower.endsWith(".bb")) return new BigBedFileIterator(fileName).loadMarkers();
         else if (flLower.endsWith(".vcf")) return new VcfFileIterator(fileName).loadMarkers();
         else if (flLower.endsWith(".gff")) return new Gff3FileIterator(fileName).loadMarkers();
+        // else if (flLower.endsWith(".bb")) return new BigBedFileIterator(fileName).loadMarkers();
         else throw new RuntimeException("Unrecognized genomig interval file type '" + fileName + "'");
     }
 
