@@ -110,7 +110,7 @@ public class TestCasesDel {
             if (verbose) Log.info("\t" + eff.getEffectTypeString(false) + "\tHGVS.p: '" + eff.getHgvsProt() + "'");
             if (eff.getEffectType() == EffectType.TRANSCRIPT_DELETED) {
                 countMatch++;
-                assertEquals("HGVS.p notation error", "p.0?", eff.getHgvsProt());
+                assertEquals("p.0?", eff.getHgvsProt(), "HGVS.p notation error");
             }
         }
         assertTrue(countMatch > 0, "No variant effects found");

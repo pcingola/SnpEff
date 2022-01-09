@@ -213,7 +213,7 @@ public class TestCasesVcf extends TestCasesBase {
         VcfFileIterator vcf = new VcfFileIterator(file);
         for (VcfEntry vcfEntry : vcf) {
             if (verbose) Log.info(vcfEntry);
-            assertEquals(0.0, vcfEntry.getQuality(), 10 ^ -6);
+            assertEquals(0.0, vcfEntry.getQuality());
         }
     }
 

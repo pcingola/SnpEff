@@ -24,10 +24,7 @@ public class TestCasesDnaSequenceByte {
 
                 if (verbose) Log.info("Len: " + len + "\t" + seq + "\t" + dna);
 
-                // FIXME: Use assertEquals
                 assertEquals(seq, dna.toString());
-//                if (seq.equals(dna.toString()))
-//                    throw new RuntimeException("Sequences do not match! Length: " + len + "\n\t" + seq + "\n\t" + dna);
             }
         }
     }
