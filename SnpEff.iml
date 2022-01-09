@@ -28,6 +28,10 @@
     <orderEntry type="library" name="Maven: org.apiguardian:apiguardian-api:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.junit.platform:junit-platform-engine:1.8.2" level="project" />
+    <orderEntry type="library" name="Maven: org.junit.platform:junit-platform-suite-api:1.8.2" level="project" />
+    <orderEntry type="library" name="Maven: org.junit.platform:junit-platform-suite-engine:1.8.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.junit.platform:junit-platform-suite-commons:1.8.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.junit.platform:junit-platform-launcher:1.8.2" level="project" />
     <orderEntry type="library" name="Maven: net.sf.trove4j:trove4j:3.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.freemarker:freemarker:2.3.19" level="project" />
     <orderEntry type="library" name="Maven: distlib:distlib:0.9.1" level="project" />

@@ -50,18 +50,6 @@
       <artifactId>commons-cli</artifactId>
       <version>1.5.0</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>junit</groupId>-->
-<!--      <artifactId>junit</artifactId>-->
-<!--      <version>4.4</version>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>junit</groupId>-->
-<!--      <artifactId>junit</artifactId>-->
-<!--      <version>4.13.2</version>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -70,7 +58,16 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-suite-api</artifactId>
+      <version>1.8.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-suite-engine</artifactId>
+      <version>1.8.2</version>
+    </dependency>
     <dependency>
       <groupId>net.sf.trove4j</groupId>
       <artifactId>trove4j</artifactId>
