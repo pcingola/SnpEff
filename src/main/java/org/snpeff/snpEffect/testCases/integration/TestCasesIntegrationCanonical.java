@@ -38,7 +38,7 @@ public class TestCasesIntegrationCanonical extends TestCasesIntegrationBase {
 
         Gene gene = cmdEff.getConfig().getSnpEffectPredictor().getGene(geneId);
         Transcript tr = gene.subIntervals().iterator().next();
-        assertEquals("Expecting transcript ID does not match", trId, tr.getId());
+        assertEquals(trId, tr.getId(), "Expecting transcript ID does not match");
     }
 
     /**
@@ -59,7 +59,7 @@ public class TestCasesIntegrationCanonical extends TestCasesIntegrationBase {
 
         Gene gene = cmdEff.getConfig().getSnpEffectPredictor().getGene(geneId);
         Transcript tr = gene.subIntervals().iterator().next();
-        assertEquals("Expecting transcript ID does not match", trId, tr.getId());
+        assertEquals(trId, tr.getId(), "Expecting transcript ID does not match");
     }
 
 }

@@ -148,8 +148,8 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
         SnpEffectPredictor sep = build(genomeName);
         Gene g = sep.getGene("DB34_00005");
         Transcript tr = g.subIntervals().iterator().next();
-        assertEquals("Protein sequence differs", prot, tr.protein());
-        assertEquals("CDS sequence differs", cds, tr.cds().toUpperCase());
+        assertEquals(prot, tr.protein(), "Protein sequence differs");
+        assertEquals(cds, tr.cds().toUpperCase(), "CDS sequence differs");
     }
 
     @Test
@@ -182,8 +182,8 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
         SnpEffectPredictor sep = build(genomeName);
         Gene g = sep.getGene("CFV354_1968");
         Transcript tr = g.subIntervals().iterator().next();
-        assertEquals("Protein sequence differs", prot, tr.protein());
-        assertEquals("CDS sequence differs", cds, tr.cds().toUpperCase());
+        assertEquals(prot, tr.protein(), "Protein sequence differs");
+        assertEquals(cds, tr.cds().toUpperCase(), "CDS sequence differs");
     }
 
     @Test
@@ -248,7 +248,6 @@ public class TestCasesIntegrationCircularGenome extends TestCasesIntegrationBase
         String prot = tr.protein();
 
         if (verbose) Log.debug("Transcript: " + tr);
-        assertEquals("Protein sequence does not match", expectedProtein, prot);
+        assertEquals(expectedProtein, prot, "Protein sequence does not match");
     }
-
 }

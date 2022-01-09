@@ -60,7 +60,7 @@ public class TestCasesIntegrationHgvsMnps extends TestCasesIntegrationBase {
             if (verbose)
                 Log.debug("\t" + veff + "\n\t\ttranscript: " + veff.getTranscriptId() + "\n\t\tHgvs (DNA): " + veff.getHgvsDna());
             if (veff.getTranscriptId().equals("NM_001042492.2")) {
-                assertEquals("HGVS p. notation does not match", "p.Gln1055*", veff.getHgvsProt());
+                assertEquals("p.Gln1055*", veff.getHgvsProt(), "HGVS p. notation does not match");
                 ok = true;
             }
         }

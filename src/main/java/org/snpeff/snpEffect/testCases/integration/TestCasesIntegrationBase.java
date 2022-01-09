@@ -256,14 +256,14 @@ public class TestCasesIntegrationBase {
                     String expectedHgvsC = ve.getInfo("HGVSC");
                     if (expectedHgvsC != null) {
                         String actualHgvsC = veff.getHgvsC();
-                        assertEquals("HGVS.c mismatch", expectedHgvsC, actualHgvsC);
+                        assertEquals(expectedHgvsC, actualHgvsC, "HGVS.c mismatch");
                         countCheck++;
                     }
 
                     String expectedHgvsP = ve.getInfo("HGVSP");
                     if (expectedHgvsP != null) {
                         String actualHgvsP = veff.getHgvsP();
-                        assertEquals("HGVS.p mismatch", expectedHgvsP, actualHgvsP);
+                        assertEquals(expectedHgvsP, actualHgvsP, "HGVS.p mismatch");
                         countCheck++;
                     }
                 }
