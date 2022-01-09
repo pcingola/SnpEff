@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.biojava.thirdparty:forester:1.039">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/biojava/thirdparty/forester/1.039/forester-1.039.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/biojava/thirdparty/forester/1.039/forester-1.039-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/biojava/thirdparty/forester/1.039/forester-1.039-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

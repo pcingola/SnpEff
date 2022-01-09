@@ -67,7 +67,7 @@ public class LineClassFileIterator<T> extends FileIterator<T> {
 		// Create a new instance
 		T tObj;
 		try {
-			tObj = (T) clazz.newInstance();
+			tObj = (T) clazz.getConstructor().newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
