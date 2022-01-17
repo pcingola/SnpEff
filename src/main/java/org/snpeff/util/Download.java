@@ -1,18 +1,11 @@
 package org.snpeff.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.URL;
-import java.net.URLConnection;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.io.*;
+import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -24,11 +17,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 /**
  * Command line program: Build database
  *
@@ -36,365 +24,376 @@ import javax.net.ssl.X509TrustManager;
  */
 public class Download {
 
-	/**
-	 * Used to get rid of some SSL Certificateproblems
-	 * Ref: http://stackoverflow.com/questions/1828775/how-to-handle-invalid-ssl-certificates-with-apache-httpclient
-	 */
-	private static class DefaultTrustManager implements X509TrustManager {
+    public static final int DEFAULT_PROXY_PORT = 80;
+    private static final int BUFFER_SIZE = 102400;
+    boolean debug = false;
+    boolean verbose = false;
+    boolean update; // Are we updating SnpEff itself?
 
-		@Override
-		public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-		}
+    boolean maskDownloadException = false;
 
-		@Override
-		public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-		}
+    public Download() {
+    }
 
-		@Override
-		public X509Certificate[] getAcceptedIssuers() {
-			return null;
-		}
-	}
+    /**
+     * File name from URL (i.e. anything after the last '/')
+     */
+    public static String urlBaseName(String url) {
+        String[] f = url.split("/");
+        String base = f[f.length - 1];
 
-	private static int BUFFER_SIZE = 102400;
-	public static final int DEFAULT_PROXY_PORT = 80;
+        int qidx = base.indexOf('?');
+        if (qidx > 0) base = base.substring(0, qidx);
 
-	boolean debug = false;
-	boolean verbose = false;
+        return base;
+    }
 
-	boolean update; // Are we updating ?
+    /**
+     * Add files to 'backup' ZIP file
+     */
+    void backupFile(ZipOutputStream zos, String fileName) {
+        try {
+            FileInputStream fis = new FileInputStream(fileName);
 
-	/**
-	 * File name from URL (i.e. anything after the last '/')
-	 */
-	public static String urlBaseName(String url) {
-		String f[] = url.split("/");
-		String base = f[f.length - 1];
+            zos.putNextEntry(new ZipEntry(fileName));
+            int len;
+            byte[] buf = new byte[BUFFER_SIZE];
+            while ((len = fis.read(buf)) > 0)
+                zos.write(buf, 0, len);
 
-		int qidx = base.indexOf('?');
-		if (qidx > 0) base = base.substring(0, qidx);
+            zos.closeEntry();
+            fis.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-		return base;
-	}
+    public boolean download(String urlString, String localFile) {
+        try {
+            URL url = new URL(urlString);
+            return download(url, localFile);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public Download() {
-	}
+    /**
+     * Download a file
+     */
+    public boolean download(URL url, String localFile) {
+        boolean res = false;
+        try {
+            sslSetup(); // Set up SSL for websites having issues with certificates (e.g. Sourceforge)
 
-	/**
-	 * Add files to 'backup' ZIP file
-	 */
-	void backupFile(ZipOutputStream zos, String fileName) {
-		try {
-			FileInputStream fis = new FileInputStream(fileName);
+            if (verbose) Log.info("Connecting to " + url);
 
-			zos.putNextEntry(new ZipEntry(fileName));
-			int len;
-			byte[] buf = new byte[BUFFER_SIZE];
-			while ((len = fis.read(buf)) > 0)
-				zos.write(buf, 0, len);
+            URLConnection connection = openConnection(url);
 
-			zos.closeEntry();
-			fis.close();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+            // Follow redirect? (only for http connections)
+            if (connection instanceof HttpURLConnection) {
+                for (boolean followRedirect = true; followRedirect; ) {
+                    HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                    if (verbose) Log.info("Connecting to " + url + ", using proxy: " + httpConnection.usingProxy());
+                    int code = httpConnection.getResponseCode();
 
-	public boolean download(String urlString, String localFile) {
-		try {
-			URL url = new URL(urlString);
-			return download(url, localFile);
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
-	}
+                    if (code == 200) {
+                        followRedirect = false; // We are done
+                    } else if (code == 302) {
+                        String newUrl = connection.getHeaderField("Location");
+                        if (verbose) Log.info("Following redirect: " + newUrl);
+                        url = new URL(newUrl);
+                        connection = openConnection(url);
+                    } else if (code == 404) {
+                        throw new RuntimeException("File not found on the server. Make sure the database name is correct.");
+                    } else throw new RuntimeException("Error code from server: " + code);
+                }
+            }
 
-	/**
-	 * Download a file
-	 */
-	public boolean download(URL url, String localFile) {
-		boolean res = false;
-		try {
-			sslSetup(); // Set up SSL for websites having issues with certificates (e.g. Sourceforge)
+            // Copy resource to local file, use remote file if no local file name specified
+            InputStream is = connection.getInputStream();
 
-			if (verbose) Log.info("Connecting to " + url);
+            // Print info about resource
+            Date date = new Date(connection.getLastModified());
+            if (debug) Log.debug("Copying file (type: " + connection.getContentType() + ", modified on: " + date + ")");
 
-			URLConnection connection = openConnection(url);
+            // Open local file
+            if (verbose) Log.info("Local file name: '" + localFile + "'");
 
-			// Follow redirect? (only for http connections)
-			if (connection instanceof HttpURLConnection) {
-				for (boolean followRedirect = true; followRedirect;) {
-					HttpURLConnection httpConnection = (HttpURLConnection) connection;
-					if (verbose) Log.info("Connecting to " + url + ", using proxy: " + httpConnection.usingProxy());
-					int code = httpConnection.getResponseCode();
+            // Create local directory if it doesn't exists
+            File file = new File(localFile);
+            if (file != null && file.getParent() != null) {
+                File path = new File(file.getParent());
+                if (!path.exists()) {
+                    if (verbose) Log.info("Local path '" + path + "' doesn't exist, creating.");
+                    path.mkdirs();
+                }
+            }
 
-					if (code == 200) {
-						followRedirect = false; // We are done
-					} else if (code == 302) {
-						String newUrl = connection.getHeaderField("Location");
-						if (verbose) Log.info("Following redirect: " + newUrl);
-						url = new URL(newUrl);
-						connection = openConnection(url);
-					} else if (code == 404) {
-						throw new RuntimeException("File not found on the server. Make sure the database name is correct.");
-					} else throw new RuntimeException("Error code from server: " + code);
-				}
-			}
+            FileOutputStream os = null;
+            os = new FileOutputStream(localFile);
 
-			// Copy resource to local file, use remote file if no local file name specified
-			InputStream is = connection.getInputStream();
+            // Copy to file
+            int count = 0, total = 0, lastShown = 0;
+            byte[] data = new byte[BUFFER_SIZE];
+            while ((count = is.read(data, 0, BUFFER_SIZE)) != -1) {
+                os.write(data, 0, count);
+                total += count;
 
-			// Print info about resource
-			Date date = new Date(connection.getLastModified());
-			if (debug) Log.debug("Copying file (type: " + connection.getContentType() + ", modified on: " + date + ")");
+                // Show every MB
+                if ((total - lastShown) > (1024 * 1024)) {
+                    if (verbose) System.err.print(".");
+                    lastShown = total;
+                }
+            }
+            if (verbose) Log.info("");
 
-			// Open local file
-			if (verbose) Log.info("Local file name: '" + localFile + "'");
+            // Close streams
+            is.close();
+            os.close();
+            if (verbose) Log.info("Download finished. Total " + total + " bytes.");
 
-			// Create local directory if it doesn't exists
-			File file = new File(localFile);
-			if (file != null && file.getParent() != null) {
-				File path = new File(file.getParent());
-				if (!path.exists()) {
-					if (verbose) Log.info("Local path '" + path + "' doesn't exist, creating.");
-					path.mkdirs();
-				}
-			}
+            res = true;
+        } catch (Exception e) {
+            res = false;
+            Log.info("ERROR while connecting to " + url);
+            if (!maskDownloadException) throw new RuntimeException(e);
+        }
 
-			FileOutputStream os = null;
-			os = new FileOutputStream(localFile);
+        return res;
+    }
 
-			// Copy to file
-			int count = 0, total = 0, lastShown = 0;
-			byte data[] = new byte[BUFFER_SIZE];
-			while ((count = is.read(data, 0, BUFFER_SIZE)) != -1) {
-				os.write(data, 0, count);
-				total += count;
+    /**
+     * Open a connection
+     */
+    URLConnection openConnection(URL url) throws IOException {
+        Proxy proxy = proxy();
+        return (proxy == null ? url.openConnection() : url.openConnection(proxy));
+    }
 
-				// Show every MB
-				if ((total - lastShown) > (1024 * 1024)) {
-					if (verbose) System.err.print(".");
-					lastShown = total;
-				}
-			}
-			if (verbose) Log.info("");
+    /**
+     * Parse an entry path from a ZIP file
+     */
+    String parseEntryPath(String entryName, String mainDir, String dataDir) {
+        if (update) {
+            // Software update: Entry name should be something like 'snpEff_vXX/dir/file';
+            int idx = entryName.indexOf('/');
+            if (idx > 0) entryName = mainDir + entryName.substring(idx);
+            else throw new RuntimeException("Expecting at least one directory in path '" + entryName + "'");
+        } else {
+            // Database download
+            String[] entryPath = entryName.split("/"); // Entry name should be something like 'data/genomeVer/file';
+            String dataName = entryPath[entryPath.length - 2] + "/" + entryPath[entryPath.length - 1]; // remove the 'data/' part
+            entryName = dataDir + "/" + dataName; // Ad local 'data' dir
+            if (debug) Log.debug("Local file name: '" + entryName + "'");
+        }
 
-			// Close streams
-			is.close();
-			os.close();
-			if (verbose) Log.info("Download finished. Total " + total + " bytes.");
+        return entryName;
+    }
 
-			res = true;
-		} catch (Exception e) {
-			Log.info("ERROR while connecting to " + url);
-			throw new RuntimeException(e);
-		}
+    /**
+     * Parse proxy value from environment
+     *
+     * @param envVarName: Environment variable name
+     * @return A Tuple with host and port, null if not found or could not be parsed
+     */
+    Tuple<String, Integer> parseProxyEnv(String envVarName) {
+        String envProxy = System.getenv(envVarName);
+        if (envProxy == null || envProxy.isBlank()) return null;
 
-		return res;
-	}
+        // Parse URL from environment variable
+        if (verbose) Log.info("Using proxy from environment variable '" + envVarName + "', value '" + envProxy + "'");
 
-	/**
-	 * Open a connection
-	 */
-	URLConnection openConnection(URL url) throws IOException {
-		Proxy proxy = proxy();
-		return (proxy == null ? url.openConnection() : url.openConnection(proxy));
-	}
+        String proxyHost = null;
+        int port = DEFAULT_PROXY_PORT;
 
-	/**
-	 * Parse an entry path from a ZIP file
-	 */
-	String parseEntryPath(String entryName, String mainDir, String dataDir) {
-		if (update) {
-			// Software update: Entry name should be something like 'snpEff_vXX/dir/file';
-			int idx = entryName.indexOf('/');
-			if (idx > 0) entryName = mainDir + entryName.substring(idx);
-			else throw new RuntimeException("Expecting at least one directory in path '" + entryName + "'");
-		} else {
-			// Database download
-			String entryPath[] = entryName.split("/"); // Entry name should be something like 'data/genomeVer/file';
-			String dataName = entryPath[entryPath.length - 2] + "/" + entryPath[entryPath.length - 1]; // remove the 'data/' part
-			entryName = dataDir + "/" + dataName; // Ad local 'data' dir
-			if (debug) Log.debug("Local file name: '" + entryName + "'");
-		}
+        try {
+            URL url;
+            url = new URL(envProxy);
+            proxyHost = url.getHost();
+            port = url.getPort();
+        } catch (MalformedURLException e) {
+            // Could not parse URL
 
-		return entryName;
-	}
+            if (envProxy.indexOf(':') > 0) {
+                // Try "host:port" format
+                String[] hp = envProxy.split(":");
+                proxyHost = hp[0];
+                port = Gpr.parseIntSafe(hp[1]);
+            } else {
+                // Use just host (leave port as default)
+                proxyHost = envVarName;
+            }
+        }
 
-	/**
-	 * Parse proxy value from environment
-	 * @param envVarName: Environment variable name
-	 * @return A Tuple with host and port, null if not found or could not be parsed
-	 */
-	Tuple<String, Integer> parseProxyEnv(String envVarName) {
-		String envProxy = System.getenv(envVarName);
-		if (envProxy == null || envProxy.isBlank()) return null;
+        if (verbose)
+            Log.info("Parsing proxy value '" + envProxy + "', host: '" + proxyHost + "', port: '" + port + "'");
+        return new Tuple<>(proxyHost, port);
+    }
 
-		// Parse URL from environment variable
-		if (verbose) Log.info("Using proxy from environment variable '" + envVarName + "', value '" + envProxy + "'");
+    /**
+     * Parse proxy from Java propperties
+     *
+     * @return A Tuple with host and port, null if not found or could not be parsed
+     */
+    Tuple<String, Integer> parseProxyJavaPropperty() {
+        // Try java properties, i.e. '-D' command line argument
+        String proxyHost = System.getProperty("http.proxyHost");
+        String proxyPort = System.getProperty("http.proxyPort");
 
-		String proxyHost = null;
-		int port = DEFAULT_PROXY_PORT;
+        // Java property not found
+        if (proxyHost == null || proxyHost.isBlank()) return null;
 
-		try {
-			URL url;
-			url = new URL(envProxy);
-			proxyHost = url.getHost();
-			port = url.getPort();
-		} catch (MalformedURLException e) {
-			// Could not parse URL
+        if (verbose)
+            Log.info("Using proxy from Java properties: http.proxyHost: '" + proxyHost + "', http.proxyPort: '" + proxyPort + "'");
+        int port = (proxyPort != null && !proxyPort.isBlank() ? Gpr.parseIntSafe(proxyPort) : DEFAULT_PROXY_PORT);
 
-			if (envProxy.indexOf(':') > 0) {
-				// Try "host:port" format
-				String[] hp = envProxy.split(":");
-				proxyHost = hp[0];
-				port = Gpr.parseIntSafe(hp[1]);
-			} else {
-				// Use just host (leave port as default)
-				proxyHost = envVarName;
-			}
-		}
+        if (verbose)
+            Log.info("Parsing proxy value from Java propperties, host: '" + proxyHost + "', port: '" + port + "'");
+        return new Tuple<>(proxyHost, port);
+    }
 
-		if (verbose) Log.info("Parsing proxy value '" + envProxy + "', host: '" + proxyHost + "', port: '" + port + "'");
-		return new Tuple<>(proxyHost, port);
-	}
+    /**
+     * Create a proxy if the system properties are set
+     * I.e.: If java is run using something like
+     * java -Dhttp.proxyHost=$PROXY -Dhttp.proxyPort=$PROXY_PORT -jar ...
+     *
+     * @return A proxy object if system properties were defined, null otherwise
+     */
+    Proxy proxy() {
+        // Try environment variable
+        Tuple<String, Integer> proxyHostPort = parseProxyEnv("http_proxy");
 
-	/**
-	 * Parse proxy from Java propperties
-	 * @return A Tuple with host and port, null if not found or could not be parsed
-	 */
-	Tuple<String, Integer> parseProxyJavaPropperty() {
-		// Try java properties, i.e. '-D' command line argument
-		String proxyHost = System.getProperty("http.proxyHost");
-		String proxyPort = System.getProperty("http.proxyPort");
+        // Try another environment variable
+        if (proxyHostPort == null) proxyHostPort = parseProxyEnv("HTTP_PROXY");
 
-		// Java property not found
-		if (proxyHost == null || proxyHost.isBlank()) return null;
+        // Not found in environment? Try java properties
+        if (proxyHostPort == null) proxyHostPort = parseProxyJavaPropperty();
 
-		if (verbose) Log.info("Using proxy from Java properties: http.proxyHost: '" + proxyHost + "', http.proxyPort: '" + proxyPort + "'");
-		int port = (proxyPort != null && !proxyPort.isBlank() ? Gpr.parseIntSafe(proxyPort) : DEFAULT_PROXY_PORT);
+        if (proxyHostPort == null) return null;
 
-		if (verbose) Log.info("Parsing proxy value from Java propperties, host: '" + proxyHost + "', port: '" + port + "'");
-		return new Tuple<>(proxyHost, port);
-	}
+        return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHostPort.getFirst(), proxyHostPort.getSecond()));
+    }
 
-	/**
-	 * Create a proxy if the system properties are set
-	 * I.e.: If java is run using something like
-	 *    java -Dhttp.proxyHost=$PROXY -Dhttp.proxyPort=$PROXY_PORT -jar ...
-	 *
-	 * @return A proxy object if system properties were defined, null otherwise
-	 */
-	Proxy proxy() {
-		// Try environment variable
-		Tuple<String, Integer> proxyHostPort = parseProxyEnv("http_proxy");
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
 
-		// Try another environment variable
-		if (proxyHostPort == null) proxyHostPort = parseProxyEnv("HTTP_PROXY");
+    public void setMaskDownloadException(boolean maskDownloadException) {
+        this.maskDownloadException = maskDownloadException;
+    }
 
-		// Not found in environment? Try java properties
-		if (proxyHostPort == null) proxyHostPort = parseProxyJavaPropperty();
+    public void setUpdate(boolean update) {
+        this.update = update;
+    }
 
-		if (proxyHostPort == null) return null;
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
 
-		return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHostPort.getFirst(), proxyHostPort.getSecond()));
-	}
+    /**
+     * Sourceforge certificates throw exceptions if we don't add this SSL setup
+     * Reference: http://stackoverflow.com/questions/1828775/how-to-handle-invalid-ssl-certificates-with-apache-httpclient
+     */
+    void sslSetup() throws NoSuchAlgorithmException, KeyManagementException {
+        SSLContext ctx = SSLContext.getInstance("TLS");
+        ctx.init(new KeyManager[0], new TrustManager[]{new DefaultTrustManager()}, new SecureRandom());
+        SSLContext.setDefault(ctx);
+    }
 
-	public void setDebug(boolean debug) {
-		this.debug = debug;
-	}
+    /**
+     * UnZIP all files
+     */
+    public boolean unzip(String zipFile, String mainDir, String dataDir) {
+        try {
+            FileInputStream fis = new FileInputStream(zipFile);
+            ZipInputStream zipIn = new ZipInputStream(new BufferedInputStream(fis));
+            ZipOutputStream zipBackup = null;
+            String backupFile = "";
 
-	public void setUpdate(boolean update) {
-		this.update = update;
-	}
+            // Create a ZIP backup file (only if we are updating)
+            if (update) {
+                backupFile = String.format("%s/backup_%2$tY-%2$tm-%2$td_%2$tH:%2$tM:%2$tS.zip", mainDir, new GregorianCalendar());
+                if (verbose) Log.info("Creating backup file '" + backupFile + "'");
+                zipBackup = new ZipOutputStream(new FileOutputStream(backupFile));
+            }
 
-	public void setVerbose(boolean verbose) {
-		this.verbose = verbose;
-	}
+            //---
+            // Extract ZIP file
+            //---
+            ZipEntry entry;
+            while ((entry = zipIn.getNextEntry()) != null) {
+                if (!entry.isDirectory()) {
+                    String localEntryName = parseEntryPath(entry.getName(), mainDir, dataDir);
+                    if (debug) Log.debug("Extracting file '" + entry.getName() + "' to '" + localEntryName + "'");
+                    else if (verbose) Log.info("Extracting file '" + entry.getName() + "'");
 
-	/**
-	 * Sourceforge certificates throw exceptions if we don't add this SSL setup
-	 * Reference: http://stackoverflow.com/questions/1828775/how-to-handle-invalid-ssl-certificates-with-apache-httpclient
-	 */
-	void sslSetup() throws NoSuchAlgorithmException, KeyManagementException {
-		SSLContext ctx = SSLContext.getInstance("TLS");
-		ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
-		SSLContext.setDefault(ctx);
-	}
+                    // Backup entry
+                    if (zipBackup != null) backupFile(zipBackup, localEntryName);
 
-	/**
-	 * UnZIP all files
-	 */
-	public boolean unzip(String zipFile, String mainDir, String dataDir) {
-		try {
-			FileInputStream fis = new FileInputStream(zipFile);
-			ZipInputStream zipIn = new ZipInputStream(new BufferedInputStream(fis));
-			ZipOutputStream zipBackup = null;
-			String backupFile = "";
+                    //---
+                    // Does directory exists?
+                    //---
+                    String dirName = Gpr.dirName(localEntryName);
+                    File dir = new File(dirName);
+                    if (!dir.exists()) {
+                        // Create local dir
+                        if (verbose) Log.info("Creating local directory: '" + dir + "'");
+                        if (!dir.mkdirs())
+                            throw new RuntimeException("Cannot create directory '" + dir.getCanonicalPath() + "'");
+                    }
 
-			// Create a ZIP backup file (only if we are updating)
-			if (update) {
-				backupFile = String.format("%s/backup_%2$tY-%2$tm-%2$td_%2$tH:%2$tM:%2$tS.zip", mainDir, new GregorianCalendar());
-				if (verbose) Log.info("Creating backup file '" + backupFile + "'");
-				zipBackup = new ZipOutputStream(new FileOutputStream(backupFile));
-			}
+                    //---
+                    // Extract entry
+                    //---
+                    FileOutputStream fos = new FileOutputStream(localEntryName);
+                    BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER_SIZE);
 
-			//---
-			// Extract ZIP file
-			//---
-			ZipEntry entry;
-			while ((entry = zipIn.getNextEntry()) != null) {
-				if (!entry.isDirectory()) {
-					String localEntryName = parseEntryPath(entry.getName(), mainDir, dataDir);
-					if (debug) Log.debug("Extracting file '" + entry.getName() + "' to '" + localEntryName + "'");
-					else if (verbose) Log.info("Extracting file '" + entry.getName() + "'");
+                    int count = 0;
+                    byte[] data = new byte[BUFFER_SIZE];
+                    while ((count = zipIn.read(data, 0, BUFFER_SIZE)) != -1)
+                        dest.write(data, 0, count);
 
-					// Backup entry
-					if (zipBackup != null) backupFile(zipBackup, localEntryName);
+                    dest.flush();
+                    dest.close();
+                } else if (entry.isDirectory()) {
+                    String dir = parseEntryPath(entry.getName(), mainDir, dataDir);
+                    // Create local dir
+                    if (verbose) Log.info("Creating local directory: '" + dir + "'");
+                    if (!(new File(dir)).mkdirs()) throw new RuntimeException("Cannot create directory '" + dir + "'");
+                }
+            }
 
-					//---
-					// Does directory exists?
-					//---
-					String dirName = Gpr.dirName(localEntryName);
-					File dir = new File(dirName);
-					if (!dir.exists()) {
-						// Create local dir
-						if (verbose) Log.info("Creating local directory: '" + dir + "'");
-						if (!dir.mkdirs()) throw new RuntimeException("Cannot create directory '" + dir.getCanonicalPath() + "'");
-					}
+            // Close zip files
+            zipIn.close();
+            if (zipBackup != null) {
+                zipBackup.close();
+                Log.info("Backup file created: '" + backupFile + "'");
+            }
 
-					//---
-					// Extract entry
-					//---
-					FileOutputStream fos = new FileOutputStream(localEntryName);
-					BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER_SIZE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-					int count = 0;
-					byte data[] = new byte[BUFFER_SIZE];
-					while ((count = zipIn.read(data, 0, BUFFER_SIZE)) != -1)
-						dest.write(data, 0, count);
+        return true;
+    }
 
-					dest.flush();
-					dest.close();
-				} else if (entry.isDirectory()) {
-					String dir = parseEntryPath(entry.getName(), mainDir, dataDir);
-					// Create local dir
-					if (verbose) Log.info("Creating local directory: '" + dir + "'");
-					if (!(new File(dir)).mkdirs()) throw new RuntimeException("Cannot create directory '" + dir + "'");
-				}
-			}
+    /**
+     * Used to get rid of some SSL Certificateproblems
+     * Ref: http://stackoverflow.com/questions/1828775/how-to-handle-invalid-ssl-certificates-with-apache-httpclient
+     */
+    private static class DefaultTrustManager implements X509TrustManager {
 
-			// Close zip files
-			zipIn.close();
-			if (zipBackup != null) {
-				zipBackup.close();
-				Log.info("Backup file created: '" + backupFile + "'");
-			}
+        @Override
+        public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+        }
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+        @Override
+        public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+        }
 
-		return true;
-	}
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+    }
 }
